@@ -20,7 +20,7 @@ class CacheInvalidator implements \Doctrine\DBAL\Logging\SQLLogger
 {
 	/**
 	 * This is a table_name => RepositoryName we'll use to call invalidateFromQuery($sql)
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $cache_tables = array(
@@ -37,11 +37,6 @@ class CacheInvalidator implements \Doctrine\DBAL\Logging\SQLLogger
 
 	public function startQuery($sql, array $params = null, array $types = null)
 	{
-		$cache = App::getCache('common', false);
-		if (!$cache) {
-			return;
-		}
-
 		$sql = trim($sql);
 		if (!preg_match('#^(INSERT INTO|UPDATE|TRUNCATE|DELETE FROM)\s+(.*?)\s+#', $sql, $match)) {
 			return;
@@ -49,6 +44,11 @@ class CacheInvalidator implements \Doctrine\DBAL\Logging\SQLLogger
 
 		$table = $match[2];
 		if (!isset($this->cache_tables[$table])) {
+			return;
+		}
+
+		$cache = App::getCache('common', false);
+		if (!$cache) {
 			return;
 		}
 

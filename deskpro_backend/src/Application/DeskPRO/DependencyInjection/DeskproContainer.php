@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
  * This is an extension to the DI container that knows how to initialize
@@ -47,6 +48,12 @@ class DeskproContainer extends Container
 	/**#@-*/
 
 	protected $system_services = array();
+
+	public function __construct(ParameterBagInterface $parameterBag = null)
+	{
+		$GLOBALS['DP_CONTAINER'] = $this;
+		parent::__construct($parameterBag);
+	}
 
 	/**
 	 * This returns a reference to a system service.

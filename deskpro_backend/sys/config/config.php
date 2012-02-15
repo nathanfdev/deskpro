@@ -115,6 +115,21 @@ $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Profiler\\RequestMatcher');
 $container->setDefinition('deskpro.profiler.request_matcher', $definition);
 
+// deskpro.interface_value
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\InterfaceValue');
+$container->setDefinition('deskpro.interface_value', $definition);
+
+// doctrine.orm.default_query_cache
+$definition = new Definition();
+$definition->setClass('Orb\\Doctrine\\Common\\Cache\\PreloadedMysqlCache');
+$definition->setArguments(array(
+	new Reference('database_connection')
+));
+$definition->addMethodCall('setPrefix', array(new Reference('deskpro.interface_value')));
+$definition->addMethodCall('preloadPrefix', array(new Reference('deskpro.interface_value')));
+$container->setDefinition('doctrine.orm.default_query_cache', $definition);
+
 ############################################################################
 # Framework Configuration
 ############################################################################

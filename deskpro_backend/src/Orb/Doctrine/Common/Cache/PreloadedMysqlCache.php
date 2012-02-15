@@ -236,8 +236,8 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 			}
 		}
 
-		if ($this->auto_unserialize && !is_numeric($data) && preg_match('#^a:[0-9]+:\{#', $data)) {
-			$data = unserialize($data);
+		if (is_scalar($data) && $this->auto_unserialize && !is_numeric($data) && preg_match('#^(a|O):[0-9]+:#', $data)) {
+			$this->loaded[$prefix_id] = $data = unserialize($data);
 		}
 
 		return $data;

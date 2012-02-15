@@ -69,7 +69,6 @@ class CoreExtension extends Extension
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);
 		$this->loadSettings($container);
-		$this->loadDoctrineCaches($container);
     }
 
 	/**
@@ -172,33 +171,6 @@ class CoreExtension extends Extension
 		$definition->addMethodCall('loadGroups', array('core'));
 		$container->setDefinition('deskpro.core.settings', $definition);
 	}
-
-	protected function loadDoctrineCaches(ContainerBuilder $container)
-	{
-		if (App::getConfig('doctrine_cache_type') == 'sqlite') {
-			$definition = new Definition('Orb\\Doctrine\\Common\\Cache\\SqliteCache', array(
-				$container->getParameter('kernel.cache_dir') . '/doctrinecache.db',
-				'query_cache',
-				'doctrinecache'
-			));
-			$container->setDefinition('doctrine.orm.default_query_cache', $definition);
-
-			$definition = new Definition('Orb\\Doctrine\\Common\\Cache\\SqliteCache', array(
-				$container->getParameter('kernel.cache_dir') . '/doctrinecache.db',
-				'metadata_cache',
-				'doctrinecache'
-			));
-			$container->setDefinition('doctrine.orm.default_metadata_cache', $definition);
-
-			$definition = new Definition('Orb\\Doctrine\\Common\\Cache\\SqliteCache', array(
-				$container->getParameter('kernel.cache_dir') . '/doctrinecache.db',
-				'result_cache',
-				'doctrinecache'
-			));
-			$container->setDefinition('doctrine.orm.default_result_cache', $definition);
-		}
-	}
-
 
 	public function getXsdValidationBasePath()
 	{
