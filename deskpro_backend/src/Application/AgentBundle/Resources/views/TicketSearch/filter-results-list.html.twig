@@ -70,7 +70,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<h1>{{ phrase('agent.tickets') }}</h1>
 	</header>
 	<article>
-		{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' %}
+		{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' with {show_all: 1 } %}
 
 		{% include 'AgentBundle:TicketSearch:filter-grouping-bar.html.twig' %}
 

@@ -11,16 +11,18 @@
 		<td class="check-all" style="vertical-align: middle;">
 			<input type="checkbox" value="{{ticket.id}}" class="ticket item-select" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/>
 		</td>
-		<td class="subject">
-			<a class="subject-link"><span>{{ticket.subject}}</span></a>
-		</td>
-		<td>
-			<a data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}" data-route-title="@text">
-				{{ticket.person.getDisplayName()}}
-			</a>
-		</td>
 		{% for field in display_fields %}
-			{% if field == 'date_created' %}
+			{% if field == 'subject' %}
+				<td class="subject">
+					<a class="subject-link"><span>{{ticket.subject}}</span></a>
+				</td>
+			{% elseif field == 'user' %}
+				<td>
+					<a data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}" data-route-title="@text">
+						{{ticket.person.getDisplayName()}}
+					</a>
+				</td>
+			{% elseif field == 'date_created' %}
 				<td class="{{field}}">
 					<span class="timestamp timeago" title="{{ticket.date_created|date('c')}}">{{ticket.date_created|date('Y-m-d')}}</span>
 				</td>

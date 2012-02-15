@@ -3,11 +3,11 @@
 		{% if not disable_actions %}
 			<th width="20" class="check-all check" width="5" valign="middle" style="vertical-align: middle;"><input type="checkbox" class="check-all-box selection-control" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/></th>
 		{% endif %}
-		<th width="20%">Subject</th>
-		<th>User</th>
 		{% set perc = (80 / display_fields|length) %}
 		{% for field in display_fields %}
-			{% if field == 'deleted_reason' %}<th width="{{perc}}%" data-field="deleted_reason">Deleted Reason</th>
+			{% if field == 'subject' %}<th width="20%">Subject</th>
+			{% elseif field == 'user' %}<th>User</th>
+			{% elseif field == 'deleted_reason' %}<th width="{{perc}}%" data-field="deleted_reason">Deleted Reason</th>
 			{% elseif field == 'person_email' %}<th width="{{perc}}%" data-field="person">User Email</th>
 			{% elseif field == 'person_organization' %}<th width="{{perc}}%" data-field="person_organization">Organization</th>
 			{% elseif field == 'department' %}<th width="{{perc}}%" data-field="department">Department</th>
