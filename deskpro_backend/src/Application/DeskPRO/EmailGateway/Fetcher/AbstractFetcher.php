@@ -107,8 +107,6 @@ abstract class AbstractFetcher
 			# Store the message
 			#------------------------------
 
-			$db = App::getDb();
-
 			$source = new Entity\EmailSource();
 			$source->fromArray(array(
 				'gateway' => $this->gateway,
@@ -116,21 +114,18 @@ abstract class AbstractFetcher
 				'status' => 'inserted'
 			));
 
+			$desc = App::getSystemService('filestorage')->createRandomPath();
+			$desc->write($raw_message->content, array(
+				'filename' => 'email.dat',
+			));
+
+			$blob_id = $desc->getPath();
+			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+
+			$source->blob = $blob;
+
 			App::getOrm()->persist($source);
 			App::getOrm()->flush();
-
-			$data_len = strlen($raw_message->content);
-
-			// /2 for worst-case scenario of every character needing escape, -200 for wiggle room fo rest of query
-			$max_size = ($db->getMaxPacketSize()/2)-200;
-			$parts = ceil($data_len / $max_size);
-
-			for ($i = 0; $i < $parts; $i++) {
-				$db->insert('email_sources_blobs', array(
-					'source_id' => $source['id'],
-					'data' => substr($raw_message->content, $i * $max_size, $max_size)
-				));
-			}
 
 			App::getOrm()->commit();
 

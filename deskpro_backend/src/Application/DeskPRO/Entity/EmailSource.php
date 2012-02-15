@@ -33,6 +33,13 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\Blob
+	 * @ORM_Mapping\ManyToOne(targetEntity="Blob")
+	 * @ORM_Mapping\JoinColumn(name="blob_id", referencedColumnName="id", onDelete="cascade")
+	 */
+	protected $blob = null;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\EmailGateway
 	 * @ORM_Mapping\ManyToOne(targetEntity="EmailGateway")
 	 * @ORM_Mapping\JoinColumn(name="gateway_id", referencedColumnName="id", onDelete="cascade")
@@ -119,15 +126,8 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($this->_raw !== null) return $this->_raw;
 
-		$parts = array();
-		$statement = App::getDb()->executeQuery("SELECT data FROM email_sources_blobs WHERE source_id = ?", array($this->id));
-
-		while ($row = $statement->fetch(\PDO::FETCH_NUM)) {
-			$parts[] = $row[0];
-		}
-
-		$parts = implode('', $parts);
-		$this->_raw = $parts;
+		$desc = App::getSystemService('filesystem')->getFileDescriptor($this->blob->id);
+		$this->_raw = $desc->get();
 
 		return $this->_raw;
 	}
