@@ -823,6 +823,16 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * Get the raw password hash
+	 *
+	 * @return string
+	 */
+	public function getPasswordHash()
+	{
+		return $this->password;
+	}
+
 
 	/**
 	 * Create a new password hash using the salt and algorithm used with this user.

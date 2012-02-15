@@ -164,20 +164,9 @@ class UsersStep extends AbstractDeskpro3Step
 		$person->is_confirmed = true;
 		$person->name = $user_info['name'];
 		$person->date_created = new \DateTime('@' . $user_info['date_registered']);
+		$person->setPassword($user_deskpro['password']);
 		if ($user_info['last_activity']) {
 			$person->date_last_login = new \DateTime('@' . $user_info['last_activity']);
-		}
-
-		// "Secure passwords" was enabled, which means we have a salt and the password is hashed
-		if ($user_deskpro['salt']) {
-			$person->password_scheme = 'deskpro3';
-			$person->setRawPassword($user_deskpro['password']);
-			$person->salt = $user_deskpro['salt'];
-
-		// "Secure passwords" was disabled, which means we dont have a salt and the password is plaintext
-		// so we can just set a password normally and use DP4 scheme
-		} else {
-			$person->setPassword($user_deskpro['password']);
 		}
 
 		//---
@@ -192,6 +181,20 @@ class UsersStep extends AbstractDeskpro3Step
 		}
 
 		$insert_person = $person->toArray(Person::TOARRAY_ONLY_PRIMATIVES, true);
+		// "Secure passwords" was enabled, which means we have a salt and the password is hashed
+		if ($user_deskpro['salt']) {
+			$insert_person['password_scheme'] = 'deskpro3';
+			$insert_person['password'] = $user_deskpro['password'];
+			$insert_person['salt'] = $user_deskpro['salt'];
+
+		// "Secure passwords" was disabled, which means we dont have a salt and the password is plaintext
+		// so we can just set a password normally and use DP4 scheme
+		} else {
+			$person->setPassword($user_deskpro['password']);
+			$insert_person['password'] = $person->getPasswordHash();
+			$insert_person['salt'] = $person->salt;
+		}
+
 		$this->getDb()->insert('people', $insert_person);
 		$insert_person['id'] = $this->getDb()->lastInsertId();
 

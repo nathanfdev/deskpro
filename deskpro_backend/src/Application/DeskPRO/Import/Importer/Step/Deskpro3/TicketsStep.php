@@ -301,7 +301,7 @@ class TicketsStep extends AbstractDeskpro3Step
 				}
 			}
 
-			$insert_message['message'] = $message_info['message'];
+			$insert_message['message'] = nl2br(htmlspecialchars($message_info['message'], \ENT_QUOTES, 'UTF-8'));
 
 			$this->getDb()->insert('tickets_messages', $insert_message);
 			$insert_message['id'] = $this->getDb()->lastInsertId();
