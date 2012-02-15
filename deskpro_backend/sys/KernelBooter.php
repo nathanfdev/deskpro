@@ -193,6 +193,19 @@ class KernelBooter
 		$app->run($input);
 	}
 
+	public static function bootUpgrade($env = 'prod', $debug = false)
+	{
+		static::ensureCli();
+		$app = static::getCliApp($env, $debug);
+
+		$argv = $_SERVER['argv'];
+		array_shift($argv); // remove cron.php
+		array_unshift($argv, 'upgrade.php', 'dp:import', '--run'); // so we can add the command name in the right spot
+		$input = new \Symfony\Component\Console\Input\ArgvInput($argv);
+
+		$app->run($input);
+	}
+
 	protected static function getCliApp($env = 'prod', $debug = false)
 	{
 		global $DP_CONFIG;
