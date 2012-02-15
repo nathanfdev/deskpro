@@ -18,11 +18,17 @@ use Orb\Util\Arrays;
 class BodyText
 {
 	public $body;
+	public $body_utf8;
 	public $original_charset;
 
 	public function getBody()
 	{
 		return $this->body;
+	}
+
+	public function getBodyUtf8()
+	{
+		return $this->body_utf8;
 	}
 
 	public function getOriginalCharset()

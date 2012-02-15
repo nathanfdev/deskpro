@@ -34,7 +34,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Blob
-	 * @ORM_Mapping\ManyToOne(targetEntity="Blob")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Blob", fetch="EAGER")
 	 * @ORM_Mapping\JoinColumn(name="blob_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $blob = null;
@@ -83,14 +83,6 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="status", type="string", length=15)
 	 */
 	protected $status = 'inserted';
-
-	/**
-	 * The path to the raw email if it was saved to the filesystem
-	 *
-	 * @var string
-	 * @ORM_Mapping\Column(name="save_path", type="string", length=255)
-	 */
-	protected $save_path = '';
 
 	/**
 	 * @var \DateTime

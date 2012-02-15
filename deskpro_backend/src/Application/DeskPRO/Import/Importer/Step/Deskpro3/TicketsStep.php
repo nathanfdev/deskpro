@@ -293,10 +293,6 @@ class TicketsStep extends AbstractDeskpro3Step
 					$message_info['charset'] = 'ISO-8859-1';
 				}
 
-				if (!self::isValidCharset($message_info['charset'])) {
-					$message_info['charset'] = 'ISO-8859-1';
-				}
-
 				$new_msg = @iconv($message_info['charset'], 'UTF-8//IGNORE//TRANSLIT', $message_info['message']);
 				if ($new_msg) {
 					$message_info['message'] = $new_msg;

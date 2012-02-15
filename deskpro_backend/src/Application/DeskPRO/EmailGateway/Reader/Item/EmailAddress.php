@@ -19,6 +19,8 @@ class EmailAddress
 {
 	public $email;
 	public $name;
+	public $name_utf8;
+	public $original_charset;
 
 	public function getEmail()
 	{
@@ -28,5 +30,15 @@ class EmailAddress
 	public function getName()
 	{
 		return $this->name;
+	}
+
+	public function getNameUtf8()
+	{
+		return $this->name_utf8;
+	}
+
+	public function getOriginalCharset()
+	{
+		return $this->original_charset;
 	}
 }

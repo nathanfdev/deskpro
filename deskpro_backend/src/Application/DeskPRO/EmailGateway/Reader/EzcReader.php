@@ -39,6 +39,11 @@ class EzcReader extends AbstractReader
 		$opt = new \ezcMailParserOptions();
 
 		$this->parser = new \ezcMailParser($opt);
+
+		// Dont have ezc try and convert charsets, we'll handle that ourselves tyvm
+		\ezcMailCharsetConverter::setConvertMethod(function($text) {
+			return $text;
+		});
 	}
 
 	protected function _setRawSource($source)
@@ -69,9 +74,13 @@ class EzcReader extends AbstractReader
 		$emails = array();
 
 		foreach ($this->mail->cc as $cc) {
+			if (!$cc->charset) $cc->charset = 'us-ascii';
+
 			$email = new Item\EmailAddress();
 			$email->name = $cc->name;
+			$email->name_utf8 = Strings::convertToUtf8($cc->name, $cc->charset);
 			$email->email = $cc->email;
+			$email->original_charset = $cc->charset;
 
 			$emails[] = $email;
 		}
@@ -84,9 +93,13 @@ class EzcReader extends AbstractReader
 		$emails = array();
 
 		foreach ($this->mail->to as $to) {
+			if (!$to->charset) $cc->charset = 'us-ascii';
+
 			$email = new Item\EmailAddress();
 			$email->name = $to->name;
+			$email->name_utf8 = Strings::convertToUtf8($to->name, $to->charset);
 			$email->email = $to->email;
+			$email->original_charset = $to->charset;
 
 			$emails[] = $email;
 		}
@@ -96,8 +109,11 @@ class EzcReader extends AbstractReader
 
 	protected function _getFromAddress()
 	{
+		if (!$this->mail->from->charset) $this->mail->from->charset = 'us-ascii';
+
 		$email = new Item\EmailAddress();
 		$email->name = $this->mail->from->name;
+		$email->name_utf8 = Strings::convertToUtf8($this->mail->from->name, $this->mail->from->charset);
 		$email->email = $this->mail->from->email;
 
 		return $email;
@@ -105,8 +121,12 @@ class EzcReader extends AbstractReader
 
 	protected function _getSubject()
 	{
+		if (!$this->mail->subjectCharset) $this->mail->subjectCharset = 'us-ascii';
+
 		$subject = new Item\Subject();
 		$subject->subject = $this->mail->subject;
+		$subject->subject_utf8 = Strings::convertToUtf8($this->mail->subject, $this->mail->subjectCharset);
+		$subject->original_charset = $this->mail->subjectCharset;
 
 		return $subject;
 	}
@@ -131,8 +151,11 @@ class EzcReader extends AbstractReader
 	{
 		foreach ($this->mail->fetchParts(array('ezcMailText')) as $part) {
 			if ($part->subType == 'html') {
+				if (!$part->originalCharset) $part->originalCharset = 'us-ascii';
+
 				$body = new Item\BodyHtml();
 				$body->body = $part->text;
+				$body->body_utf8 = Strings::convertToUtf8($part->text, $part->originalCharset);
 				$body->original_charset = $part->originalCharset;
 
 				return $body;
@@ -142,7 +165,7 @@ class EzcReader extends AbstractReader
 		// Default to a blank body
 		$body = new Item\BodyHtml();
 		$body->body = '';
-		$body->original_charset = 'us-ascii';
+		$body->original_charset = 'UTF-8';
 		return $body;
 	}
 
@@ -150,8 +173,11 @@ class EzcReader extends AbstractReader
 	{
 		foreach ($this->mail->fetchParts(array('ezcMailText')) as $part) {
 			if ($part->subType == 'plain') {
+				if (!$part->originalCharset) $part->originalCharset = 'us-ascii';
+
 				$body = new Item\BodyHtml();
 				$body->body = $part->text;
+				$body->body_utf8 = Strings::convertToUtf8($part->text, $part->originalCharset);
 				$body->original_charset = $part->originalCharset;
 
 				return $body;
@@ -161,7 +187,7 @@ class EzcReader extends AbstractReader
 		// Default to a blank body
 		$body = new Item\BodyHtml();
 		$body->body = '';
-		$body->original_charset = 'us-ascii';
+		$body->original_charset = 'UTF-8';
 		return $body;
 	}
 }

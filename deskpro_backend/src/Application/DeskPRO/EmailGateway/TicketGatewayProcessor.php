@@ -39,6 +39,15 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	 */
 	protected $cutterDef;
 
+	/**
+	 * True when there was an error converting an incoming charset to utf8.
+	 * When this happens, the standard is to use the original string (unconverted)
+	 * and save an original version of the message.
+	 *
+	 * @var bool
+	 */
+	protected $charset_error = false;
+
 	protected function init()
 	{
 		$this->cutterDef = CutterDefFactory::getDef($this->reader);
@@ -178,12 +187,28 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	protected function doNewReply($ticket, $person)
 	{
 		$email_info = array();
-		$email_info['subject'] = $this->reader->getSubject()->subject;
+
+		$email_info['subject'] = $this->reader->getSubject()->getSubjectUtf8();
+		if (!$email_info['subject'] && $this->reader->getSubject()->getSubject()) {
+			$email_info['subject'] = $this->reader->getSubject()->getSubject();
+		}
+
 		if ($this->reader->getBodyHtml()->getBody()) {
-			$email_info['body'] = $this->reader->getBodyHtml()->getBody();
+			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
+			if (!$email_info['body']) {
+				$email_info['body'] = $this->reader->getBodyHtml()->getBody();
+				$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
+			}
 			$email_info['body_is_html'] = true;
+
 		} else {
-			$email_info['body'] = nl2br(htmlspecialchars($this->reader->getBodyText()->getBody(), ENT_QUOTES, 'UTF-8'));
+			$txt = $this->reader->getBodyText()->getBodyUtf8();
+			if (!$txt && $this->reader->getBodyText()->getBody()) {
+				$txt = $this->reader->getBodyText()->getBody();
+				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
+			}
+
+			$email_info['body'] = nl2br(htmlspecialchars($txt, ENT_QUOTES, 'UTF-8'));
 			$email_info['body_is_html'] = false;
 		}
 
@@ -236,11 +261,20 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$ticket['status'] = Entity\Ticket::STATUS_AWAITING_AGENT;
 		}
 
-		App::getOrm()->transactional(function($em) use ($ticket, $message, $person) {
+		$charset_error = $this->charset_error;
+		App::getOrm()->transactional(function($em) use ($ticket, $message, $person, $charset_error, $email_body) {
 			$em->persist($ticket);
 			$em->persist($message);
 			$em->persist($person);
 			$em->flush();
+
+			if ($charset_error) {
+				$em->getConnection()->insert('tickets_messages_raw', array(
+					'message_id' => $message['id'],
+					'raw'        => $email_info['body'],
+					'charset'    => $charset_error,
+				));
+			}
 		});
 
 		$ev = $this->createGatewayEvent(array(
@@ -313,14 +347,31 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	protected function runNewTicket(Entity\Person $person)
 	{
 		$email_info = array();
-		$email_info['subject'] = $this->reader->getSubject()->subject;
+
+		$email_info['subject'] = $this->reader->getSubject()->getSubjectUtf8();
+		if (!$email_info['subject'] && $this->reader->getSubject()->getSubject()) {
+			$email_info['subject'] = $this->reader->getSubject()->getSubject();
+		}
+
 		if ($this->reader->getBodyHtml()->getBody()) {
-			$email_info['body'] = $this->reader->getBodyHtml()->getBody();
+			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
+			if (!$email_info['body']) {
+				$email_info['body'] = $this->reader->getBodyHtml()->getBody();
+				$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
+			}
 			$email_info['body_is_html'] = true;
+
 			$this->logMessage('[TicketGatewayProcessor] Using text email');
 		} else {
-			$email_info['body'] = nl2br(htmlspecialchars($this->reader->getBodyText()->getBody(), ENT_QUOTES, 'UTF-8'));
+			$txt = $this->reader->getBodyText()->getBodyUtf8();
+			if (!$txt && $this->reader->getBodyText()->getBody()) {
+				$txt = $this->reader->getBodyText()->getBody();
+				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
+			}
+
+			$email_info['body'] = nl2br(htmlspecialchars($txt, ENT_QUOTES, 'UTF-8'));
 			$email_info['body_is_html'] = false;
+
 			$this->logMessage('[TicketGatewayProcessor] Using HTML email with stripped tags');
 		}
 
@@ -394,6 +445,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		App::getOrm()->persist($message);
 		App::getOrm()->persist($person);
 		App::getOrm()->flush();
+
+		if ($this->charset_error) {
+			$em->getConnection()->insert('tickets_messages_raw', array(
+				'message_id' => $message['id'],
+				'raw'        => $email_info['body'],
+				'charset'    => $this->charset_error,
+			));
+		}
 
 		$this->logMessage('[TicketGatewayProcessor] Created ticket ' . $ticket['id']);
 

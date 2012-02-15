@@ -51,6 +51,8 @@
 
 	'core.sessions_lifetime' => 3600,
 
+	'core.email_source_storetime' => 7776000,
+
 	'core.use_mail_queue'  => 'never',
 	'core.disqus_shortname' => '',
 

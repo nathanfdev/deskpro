@@ -1081,6 +1081,29 @@ class Strings
 	}
 
 
+	/**
+	 * Try to convert a string from one encoding into UTF-8
+	 *
+	 * @param string $string
+	 * @param string $from_charset
+	 * @return string
+	 */
+	public static function convertToUtf8($string, $from_charset)
+	{
+		if (strtoupper($from_charset) == 'UTF-8') {
+			return $string;
+		}
+
+		$new = '';
+		if (function_exists('iconv')) {
+			$new = @iconv($from_charset, 'UTF-8//IGNORE//TRANSLIT', $string);
+		} else if (strtoupper($from_charset) == 'ISO-8859-1') {
+			$new = utf8_encode($string);
+		}
+
+		return $new;
+	}
+
 
 	/**
 	 * Set the path to the php-utf8 library functions, and thereby enable
