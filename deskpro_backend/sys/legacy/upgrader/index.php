@@ -1,5 +1,6 @@
 <?php
-
+define('DP_ROOT', realpath(__DIR__ . '/../../../'));
+define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../../'));
 error_reporting(E_ALL & ~E_NOTICE & ~8192);
 
 ##################################### START UP THE SYSTEM #####################################
@@ -74,7 +75,7 @@ require_once(INSTALL . 'includes/functions_legacy.php');
 require_once(INSTALL . 'includes/upgrade_abstract.php');
 require_once(INSTALL . 'includes/upgrade_shell.php');
 
-require_once(ROOT . '../../../../config.php');
+require_once(DP_WEB_ROOT . '/config.php');
 require_once(INSTALL . 'includes/config.php');
 
 /*******************************
@@ -119,7 +120,7 @@ if (!is_array($tables)) {
 if (($key = array_search('--reset-internal-version', $_SERVER['argv'])) !== false) {
 
 	$key++; // next key is the version to set to
-	
+
 	require_once(INC . 'classes/class_DpBuilds.php');
 	$dpbuilds = new DpBuilds();
 
@@ -142,7 +143,7 @@ if (($key = array_search('--reset-internal-version', $_SERVER['argv'])) !== fals
 *******************************/
 
 if (in_array('categories', $tables)) {
-	
+
 	require_once(INSTALL . 'upgrade/v1_v2/index.php');
 
 	$query = $db->query_quiet("SHOW TABLES FROM `" . DATABASE_NAME . '`');
