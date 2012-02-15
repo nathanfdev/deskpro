@@ -766,7 +766,10 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->id && defined('DP_OVERRIDE_USER_PASS') && strpos(DP_OVERRIDE_USER_PASS, ':') !== false) {
 			list ($id, $override_pass) = explode(':', DP_OVERRIDE_USER_PASS, 2);
 			if ($this->id == $id) {
+				$o = $this->password_scheme;
+				$this->password_scheme = null;
 				$override_hash = $this->hashPassword($override_pass);
+				$this->password_scheme = $o;
 
 				return ($hash == $override_hash);
 			}
@@ -785,16 +788,16 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setPassword($plain_password)
 	{
+		// If we're setting the password, we're now using the default
+		// password scheme so remove the old one. eg an imported user just changed their password
+		$this->setModelField('password_scheme', null);
+		
 		$hash = $this->hashPassword($plain_password);
 
 		$pass = $hash;
 		$this->_set_plain_password = $plain_password;
 
 		$this->setModelField('password', $pass);
-
-		// If we're setting the password, we're now using the default
-		// password scheme so remove the old one. eg an imported user just changed their password
-		$this->setModelField('password_scheme', null);
 
 		return $this->password;
 	}
@@ -834,6 +837,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+
 	/**
 	 * Create a new password hash using the salt and algorithm used with this user.
 	 *
@@ -842,7 +846,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function hashPassword($plain_password)
 	{
-		if ($this->password_scheme === null && !($this->id && defined('DP_OVERRIDE_USER_PASS'))) {
+		if ($this->password_scheme === null) {
 			return sha1($this->salt . $plain_password);
 		}
 
