@@ -106,7 +106,6 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 		if (!$this->exists()) {
 			$blob_data = array(
 				'date_created' => date('Y-m-d H:i:s'),
-				'authcode' => Strings::random(20, Strings::CHARS_KEY_ALPHA)
 			);
 			if ($this->blob_id !== null) {
 				$blob_data['id'] = $this->blob_id;
@@ -122,6 +121,28 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			$this->db->delete('blobs_storage', array('blob_id' => $this->blob_id));
 		}
 
+		if (!isset($meta[self::METADATA_FILENAME])) {
+			$meta[self::METADATA_FILENAME] = 'file';
+		}
+
+		if (!$meta[self::METADATA_CONTENT_TYPE]) {
+			$meta[self::METADATA_CONTENT_TYPE] = 'application/octet-stream';
+		}
+
+		if (!Strings::getExtension($meta[self::METADATA_FILENAME])) {
+			$ext = \Orb\Data\ContentTypes::findExtensionForContentType($meta[self::METADATA_CONTENT_TYPE]);
+			if ($ext) {
+				$meta[self::METADATA_FILENAME] = $meta[self::METADATA_FILENAME] . '.' . $ext;
+			}
+		}
+
+		// id - authseg - 0
+		// zero is used by the loader to denote a database-stored string
+		$authcode = $this->blob_id . Strings::random(15, Strings::CHARS_KEY_ALPHA) . '0';
+
+		$meta[self::METADATA_FILENAME] = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $meta[self::METADATA_FILENAME]);
+		$meta[self::METADATA_FILENAME] = preg_replace('#\-{2,}#', '-', $meta[self::METADATA_FILENAME]);
+
 		$data_len = strlen($data);
 
 		// /2 for worst-case scenario of every character needing escape, -200 for wiggle room fo rest of query
@@ -135,7 +156,7 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			));
 		}
 
-		$metadata = array('filesize' => $data_len);
+		$metadata = array('filesize' => $data_len, 'authcode' => $authcode);
 		if ($metadata) {
 			if (!empty($meta[self::METADATA_CONTENT_TYPE])) $metadata['content_type']       = $meta[self::METADATA_CONTENT_TYPE];
 			if (!empty($meta[self::METADATA_FILENAME]))     $metadata['filename']           = $meta[self::METADATA_FILENAME];

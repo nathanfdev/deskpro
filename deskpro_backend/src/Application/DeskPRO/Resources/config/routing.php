@@ -14,7 +14,7 @@ $collection->add('proxy', new Route(
 
 $collection->add('serve_blob', new Route(
 	'/file.php/{blob_auth_id}/{filename}',
-	array('_controller' => 'DeskPRO:Blob:showBlob', 'filename' => ''),
+	array('_controller' => 'DeskPRO:Blob:showBlob'),
 	array(),
 	array()
 ));

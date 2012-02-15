@@ -9,8 +9,6 @@
 
 namespace Orb\Data;
 
-use Orb\Util\Arrays;
-
 class ContentTypes
 {
 	protected static $ext_to_contenttype = array(
@@ -291,7 +289,28 @@ class ContentTypes
 			return $ext ? $ext : null;
 		}
 
-		return Arrays::searchAll(self::$ext_to_contenttype, $content_type, false);
+		return self::_arraySearchAll(self::$ext_to_contenttype, $content_type, false);
+	}
+
+	protected static function _arraySearchAll($array, $search, $strict = false)
+	{
+		$found_keys = array();
+
+		if ($strict) {
+			foreach ($array as $k => $v) {
+				if ($search === $v) {
+					$found_keys[] = $k;
+				}
+			}
+		} else {
+			foreach ($array as $k => $v) {
+				if ($search == $v) {
+					$found_keys[] = $k;
+				}
+			}
+		}
+
+		return $found_keys;
 	}
 
 
@@ -308,6 +327,18 @@ class ContentTypes
 			'image/jpg',
 			'image/jpeg',
 		);
+	}
+
+
+	/**
+	 * Check to see if a content type is an image type
+	 *
+	 * @param $content_type
+	 * @return bool
+	 */
+	public static function isImageContentType($content_type)
+	{
+		return in_array($content_type, self::getImageContentTypes());
 	}
 
 

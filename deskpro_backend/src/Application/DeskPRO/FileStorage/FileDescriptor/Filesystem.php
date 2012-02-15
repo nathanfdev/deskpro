@@ -143,7 +143,6 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 		if (!$this->exists()) {
 			$blob_data = array(
 				'date_created' => date('Y-m-d H:i:s'),
-				'authcode' => Strings::random(20, Strings::CHARS_KEY_ALPHA)
 			);
 			if ($this->blob_id !== null) {
 				$blob_data['id'] = $this->blob_id;
@@ -156,18 +155,34 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 
 		}
 
-		$dirs = array();
-		$dirs[] = (int)($this->blob_id / 1000);
+		if (!isset($meta[self::METADATA_FILENAME])) {
+			$meta[self::METADATA_FILENAME] = 'file';
+		}
 
-		$key = sha1($this->blob_id . mt_rand(10000,99999) . microtime());
-		$segs = str_split($key, 2);
-		$dirs[] = array_shift($segs);
-		$dirs[] = array_shift($segs);
+		if (!$meta[self::METADATA_CONTENT_TYPE]) {
+			$meta[self::METADATA_CONTENT_TYPE] = 'application/octet-stream';
+		}
 
-		$dir_path = implode(DIRECTORY_SEPARATOR, $dirs);
+		if (!Strings::getExtension($meta[self::METADATA_FILENAME])) {
+			$ext = \Orb\Data\ContentTypes::findExtensionForContentType($meta[self::METADATA_CONTENT_TYPE]);
+			if ($ext) {
+				$meta[self::METADATA_FILENAME] = $meta[self::METADATA_FILENAME] . '.' . $ext;
+			}
+		}
+
+		$meta[self::METADATA_FILENAME] = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $meta[self::METADATA_FILENAME]);
+		$meta[self::METADATA_FILENAME] = preg_replace('#\-{2,}#', '-', $meta[self::METADATA_FILENAME]);
+
+		$namehash = strtoupper(substr(sha1($meta[self::METADATA_FILENAME] . $this->blob_id), 0, 3));
+		$namehash .= strtoupper(substr(md5($meta[self::METADATA_FILENAME] . $this->blob_id), 0, 3));
+
+		$batch = (int)($this->blob_id / 1000);
+		$authcode = $batch  . Strings::random(10, Strings::CHARS_KEY_ALPHA) . $this->blob_id . $namehash;
+
+		$dir_path = $batch;
 		$dir_path_full = $this->base_path . DIRECTORY_SEPARATOR . $dir_path;
 
-		$filename = $this->blob_id . '-' . implode('', $segs);
+		$filename = $authcode;
 		$file_path = $dir_path . DIRECTORY_SEPARATOR . $filename;
 		$file_path_full = $dir_path_full . DIRECTORY_SEPARATOR . $filename;
 
@@ -190,6 +205,7 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			'filesize'    => strlen($data),
 			'storage_loc' => $this->is_pre_s3 ? 's3fs' : 'fs',
 			'save_path'   => $file_path,
+			'authcode'    => $authcode
 		);
 		if ($metadata) {
 			if (!empty($meta[self::METADATA_CONTENT_TYPE])) $metadata['content_type']       = $meta[self::METADATA_CONTENT_TYPE];

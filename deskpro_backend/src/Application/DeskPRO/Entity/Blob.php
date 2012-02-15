@@ -97,7 +97,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="authcode", type="string", length=20)
+	 * @ORM_Mapping\Column(name="authcode", type="string", length=50)
 	 */
 	protected $authcode;
 
@@ -259,7 +259,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getAuthId()
 	{
-		return $this->id . '-' . $this->authcode;
+		return $this->authcode;
 	}
 
 

@@ -10,6 +10,42 @@
 
 namespace DeskPRO\Kernel;
 
+require_once DP_ROOT.'/src/Orb/Data/ContentTypes.php';
+
+/**
+ * Database and filesystem-stored files are served through this file.
+ *
+ * Every blob has an "authcode" which doubely serves as a sort of password,
+ * but it also embeds the blobs own ID and other required data.
+ *
+ * Database Files
+ * --------------
+ *
+ * There is nothing very special about database-stored files. The blobs authcode is:
+ * (id)(password)(0)
+ *
+ * That is the blob ID, a random string, and zero. The trailing zero tells this script
+ * that it needs to fetch it from the database rather than the filesystem.
+ *
+ * Filesystem Files
+ * ----------------
+ *
+ * Files in the filesystem are stored under the file root in folders counting up from 0. Each
+ * folder has 1000 files in it.
+ *
+ * The authcode is:
+ * (folder)(password)(id)(namehash)
+ *
+ * The "namehash" is a specil hash of the file filename. Since we don't connect to the database,
+ * there's no way to know what the "real" filename of a file is. We output URLs with the correct filename in it
+ * (aka it's a template-time thing), but we use the namehash to verify it is correct as an anti-spoofing mechanism.
+ *
+ * The hash is six characters, the three is part of a sha1 and the second three is part of an md5. While probably
+ * possible to spoof the name still, using two different hashing functions should make it relatively hard.
+ *
+ * Since we can now trust the filename, we can use it to guess a mime-type based on extension, and send the correct headers,
+ * all without connecting to the database.
+ */
 class FilestorageLoader
 {
 	protected $base_url;
@@ -23,10 +59,6 @@ class FilestorageLoader
 
 	public function run()
 	{
-		#------------------------------
-		# Config and DB connection
-		#------------------------------
-
 		global $DP_CONFIG;
 		require DP_CONFIG_FILE;
 
@@ -39,9 +71,6 @@ class FilestorageLoader
 		if (!isset($DP_CONFIG['db']['user']))      $DP_CONFIG['db']['user']      = DP_DATABASE_USER;
 		if (!isset($DP_CONFIG['db']['password']))  $DP_CONFIG['db']['password']  = DP_DATABASE_PASSWORD;
 		if (!isset($DP_CONFIG['db']['dbname']))    $DP_CONFIG['db']['dbname']    = DP_DATABASE_NAME;
-
-		$this->pdo = new \PDO("mysql:dbname={$DP_CONFIG['db']['dbname']};host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
-		$this->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 
 		#------------------------------
 		# Run appropriate action
@@ -66,9 +95,23 @@ class FilestorageLoader
 			} elseif (preg_match('#^/o-avatar/([0-9]+)#', $pathinfo, $m)) {
 				$this->orgAvatarAction($m[1]);
 
-			// Any other blob: /123-AUTH/filename.zip
-			} elseif (preg_match('#^/([0-9]+)\-([A-Z0-9]+)/?(.*?)$#', $pathinfo, $m)) {
-				$this->handleBlobRequest($m[1], $m[2], $m[3]);
+			// A filesystem blob like /123AJKJKHSD1244AXC/filename.zip
+			// That is: /(batch)(authcode)(id)(namehash)/name.zip
+			//0XNSNTQHTNR43DD567
+			} elseif (preg_match('#^/([0-9]+)([A-Z]+)([0-9]+)([A-Z0-9]{6})/(.*?)$#', $pathinfo, $m)) {
+				$this->handleFilesystemBlobRequest(
+					$m[1],
+					$m[2],
+					$m[3],
+					$m[4],
+					$m[5]
+				);
+
+			// A database-stored bloblike /123AHSDHJGSD0/filename.zip
+			// That is (id)(authcode0)
+			// The trailing 0 denotes it as a database storage authcode
+			} elseif (preg_match('#^/([0-9]+)([A-Z]+0)/(.*?)$#', $pathinfo, $m)) {
+				$this->handleDbBlobRequest($m[1], $m[2], $m[3]);
 			} else {
 				header("HTTP/1.0 404 Not Found");
 				echo "File not found.";
@@ -89,7 +132,7 @@ class FilestorageLoader
 	 */
 	public function personAvatarAction($person_id)
 	{
-		$sth = $this->pdo->prepare("
+		$sth = $this->getPdo()->prepare("
 			SELECT *
 			FROM blobs
 			LEFT JOIN people ON (blobs.id = people.picture_blob_id)
@@ -120,7 +163,7 @@ class FilestorageLoader
 	 */
 	public function orgAvatarAction($org_id)
 	{
-		$sth = $this->pdo->prepare("
+		$sth = $this->getPdo()->prepare("
 			SELECT *
 			FROM blobs
 			LEFT JOIN organizations ON (blobs.id = organizations.picture_blob_id)
@@ -153,7 +196,7 @@ class FilestorageLoader
 			$name = 'picture-default-agent';
 		}
 
-		$sth = $this->pdo->prepare("SELECT * FROM blobs WHERE sys_name = :sys_name");
+		$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE sys_name = :sys_name");
 		$sth->execute(array('sys_name' => $name));
 		$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
@@ -167,7 +210,7 @@ class FilestorageLoader
 				'sys_name' => $name,
 			));
 
-			$sth = $this->pdo->prepare("SELECT * FROM blobs WHERE id = :id");
+			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE id = :id");
 			$sth->execute(array('id' => $desc->getPath()));
 			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 		}
@@ -188,7 +231,7 @@ class FilestorageLoader
 	{
 		$name = 'orgpicture-default';
 
-		$sth = $this->pdo->prepare("SELECT * FROM blobs WHERE sys_name = :sys_name");
+		$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE sys_name = :sys_name");
 		$sth->execute(array('sys_name' => $name));
 		$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
@@ -202,7 +245,7 @@ class FilestorageLoader
 				'sys_name' => $name,
 			));
 
-			$sth = $this->pdo->prepare("SELECT * FROM blobs WHERE id = :id");
+			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE id = :id");
 			$sth->execute(array('id' => $desc->getPath()));
 			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 		}
@@ -221,40 +264,10 @@ class FilestorageLoader
 	 * @param string $blob_auth
 	 * @param string $blob_filename
 	 */
-	protected function handleBlobRequest($blob_id, $blob_auth, $blob_filename)
+	protected function handleFilesystemBlobRequest($batch, $authcode, $blob_id, $namehash, $filename)
 	{
 		#------------------------------
-		# Fetch and verify the blob
-		#------------------------------
-
-		$sth = $this->pdo->prepare("SELECT * FROM blobs WHERE id = :id");
-		$sth->execute(array('id' => $blob_id));
-		$blob = $sth->fetch(\PDO::FETCH_ASSOC);
-
-		if (!$blob || $blob['authcode'] != $blob_auth) {
-			header("HTTP/1.0 404 Not Found");
-			echo "File not found.";
-			return;
-		}
-
-		$filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $blob['filename']);
-		$filename_safe = preg_replace('#\-{2,}#', '-', $filename_safe);
-		$blob['filename_safe'] = $filename_safe;
-
-		if ($blob_filename != $filename_safe) {
-			// Invalid filename, redirect to the correct one
-			$qs = '';
-			if (!empty($_GET)) {
-				$qs = '?' . http_build_query($_GET	, '', '&');
-			}
-			$url = $this->getScheme().'://'.$this->getHttpHost() . $this->getBaseUrl() . '/' . $blob['id'] . '-' . $blob['authcode'] . '/' . $filename_safe . $qs;
-			header("HTTP/1.1 301 Moved Permanently");
-			header("Location: $url");
-			return;
-		}
-
-		#------------------------------
-		# Serve the file
+		# See if we need to resize
 		#------------------------------
 
 		$size = null;
@@ -262,7 +275,75 @@ class FilestorageLoader
 			$size = $_GET['s'];
 		}
 
-		$this->showBlob($blob, $size);
+		if ($size) {
+			$this->showBlob($blob_id, $size);
+			return;
+		}
+
+		#------------------------------
+		# If its a simple file request we
+		# can serve it without a db connection
+		#------------------------------
+
+		global $DP_CONFIG;
+
+		if (isset($DP_CONFIG['folder_files'])) {
+			$base_path = $GLOBALS['DP_CONFIG']['folder_files'];
+		} else {
+			$base_path = DP_WEB_ROOT . '/data_files';
+		}
+
+		$filepath = $base_path . DIRECTORY_SEPARATOR . $batch . DIRECTORY_SEPARATOR . $batch.$authcode . $blob_id . $namehash;
+
+		$check_namehash = strtoupper(substr(sha1($filename . $blob_id), 0, 3));
+		$check_namehash .= strtoupper(substr(md5($filename . $blob_id), 0, 3));
+
+		// Invalid hash, or the file doesnt exist on disk
+		if ($check_namehash != $namehash || !file_exists($filepath)) {
+			header("HTTP/1.0 404 Not Found");
+			echo "File not found.";
+			return;
+		}
+
+		$mimetype = \Orb\Data\ContentTypes::getContentTypeFromFilename($filename);
+		if (!$mimetype) {
+			$mimetype = 'application/octet-stream';
+		}
+
+		$content_disposition = 'attachment';
+		if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isImageContentType($mimetype)) {
+			$content_disposition = 'inline';
+		}
+
+		header('Content-Type: ' . $mimetype . '; filename=' . $filename);
+		header('Content-Length: ' . filesize($filepath));
+		header('Content-Disposition: '.$content_disposition.'; filename=' . $filename);
+		header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('2010-01-01')).' GMT');
+		header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
+		header('Cache-Control: max-age=31556926,private');
+
+		if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
+			header("X-Sendfile: $filepath");
+		} else {
+			$fh = fopen($filepath, 'r');
+			while (!feof($fh)) {
+				echo fread($fh, 8192);
+				flush();
+			}
+			fclose($fh);
+		}
+	}
+
+	protected function handleDbBlobRequest($blob_id, $authseg, $filename)
+	{
+		$authcode = $blob_id . $authseg;
+
+		$size = null;
+		if (isset($_GET['s']) && is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] < 201) {
+			$size = $_GET['s'];
+		}
+
+		$this->showBlob($blob_id, $size, $authcode);
 	}
 
 
@@ -272,8 +353,27 @@ class FilestorageLoader
 	 * @param $blob
 	 * @param null $size
 	 */
-	protected function showBlob($blob, $size = null)
+	protected function showBlob($blob, $size = null, $blob_auth = null)
 	{
+		#------------------------------
+		# Fetch the blob
+		#------------------------------
+
+		if (!is_array($blob)) {
+
+			$blob_id = $blob;
+
+			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE id = :id");
+			$sth->execute(array('id' => $blob_id));
+			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+
+			if (!$blob || ($blob_auth && $blob['authcode'] != $blob_auth)) {
+				header("HTTP/1.0 404 Not Found");
+				echo "File not found.";
+				return;
+			}
+		}
+
 		$blob_id = $blob['id'];
 
 		#------------------------------
@@ -297,7 +397,7 @@ class FilestorageLoader
 		}
 
 		if ($is_image && $size) {
-			$sth = $this->pdo->prepare("SELECT * FROM blobs WHERE original_blob_id = :original_blob_id AND sys_name = :sys_name");
+			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE original_blob_id = :original_blob_id AND sys_name = :sys_name");
 			$sth->execute(array('original_blob_id' => $blob_id, 'sys_name' => "blob-$blob_id-$size"));
 			$sub_blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
@@ -308,15 +408,14 @@ class FilestorageLoader
 
 			// Generate the resized blob and save it now
 			} else {
-				$blob = $this->createSizedBlob($blob, $size, $this->pdo);
+				$blob = $this->createSizedBlob($blob, $size, $this->getPdo());
 			}
 		}
 
 		if ($blob['storage_loc'] == 'fs') {
-			unset($this->pdo);
 			$this->sendFromFilesystem($blob);
 		} else {
-			$this->sendFromDatabase($blob, $this->pdo);
+			$this->sendFromDatabase($blob, $this->getPdo());
 		}
 	}
 
@@ -396,7 +495,7 @@ class FilestorageLoader
 	{
 		$this->sendHeaders($blob);
 
-		$sth = $this->pdo->prepare("SELECT data FROM blobs_storage WHERE blob_id = :blob_id ORDER BY id DESC");
+		$sth = $this->getPdo()->prepare("SELECT data FROM blobs_storage WHERE blob_id = :blob_id ORDER BY id DESC");
 		$sth->execute(array('blob_id' => $blob['id']));
 
 		while (($seg = $sth->fetchColumn(0)) !== false) {
@@ -461,7 +560,7 @@ class FilestorageLoader
 
 			// Used in the connection factory for the doctrine connection,
 			// so it doesnt try and connect twice
-			$GLOBALS['DP_DEFAULT_CONNECTION_PDO'] = $this->pdo;
+			$GLOBALS['DP_DEFAULT_CONNECTION_PDO'] = $this->getPdo();
 
 			$kernel_class = 'DeskPRO\\Kernel\\SysKernel';
 			define('DP_INTERFACE', 'sys');
@@ -474,6 +573,23 @@ class FilestorageLoader
 		}
 
 		return $container;
+	}
+
+
+	/**
+	 * @return \PDO
+	 */
+	public function getPdo()
+	{
+		if ($this->pdo) {
+			return $this->pdo;
+		}
+
+		global $DP_CONFIG;
+		$this->pdo = new \PDO("mysql:dbname={$DP_CONFIG['db']['dbname']};host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+		$this->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+
+		return $this->pdo;
 	}
 
 
