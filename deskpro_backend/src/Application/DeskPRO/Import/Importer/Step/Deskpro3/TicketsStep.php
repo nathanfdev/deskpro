@@ -264,7 +264,6 @@ class TicketsStep extends AbstractDeskpro3Step
 			$insert_message['message'] = nl2br(htmlspecialchars($message_info['message'], \ENT_QUOTES));
 			$insert_message['person_id'] = $pid;
 			$insert_message['ticket_id'] = $insert_ticket['id'];
-			$insert_message['is_agent_note'] = 1;
 			$insert_message['creation_system'] = 'web';
 			$insert_message['date_created'] = date('Y-m-d H:i:s', $message_info['timestamp']);
 			$insert_message['ip_address'] = $message_info['ipaddress'];
