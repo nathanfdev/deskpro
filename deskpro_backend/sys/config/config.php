@@ -126,7 +126,7 @@ $definition->setClass('Orb\\Doctrine\\Common\\Cache\\PreloadedMysqlCache');
 $definition->setArguments(array(
 	new Reference('database_connection')
 ));
-$definition->addMethodCall('setPrefix', array(new Reference('deskpro.interface_value')));
+$definition->addMethodCall('setPrefix', array('dql', new Reference('deskpro.interface_value')));
 $definition->addMethodCall('preloadPrefix', array(new Reference('deskpro.interface_value')));
 $container->setDefinition('doctrine.orm.default_query_cache', $definition);
 

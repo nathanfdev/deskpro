@@ -89,7 +89,17 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 	 */
 	public function setPrefix($prefix)
 	{
-		$this->id_prefix = $prefix;
+		if (func_num_args() == 1) {
+			$this->id_prefix = $prefix;
+		} else {
+			$args = func_get_args();
+			$args = Arrays::castToType($args, 'string');
+			$this->id_prefix = implode('.', $args);
+		}
+
+		if (substr($this->id_prefix, -1, 1) != '.') {
+			$this->id_prefix .= '.';
+		}
 	}
 
 
