@@ -791,7 +791,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		// If we're setting the password, we're now using the default
 		// password scheme so remove the old one. eg an imported user just changed their password
 		$this->setModelField('password_scheme', null);
-		
+
 		$hash = $this->hashPassword($plain_password);
 
 		$pass = $hash;
@@ -1499,6 +1499,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			if ($this->picture_blob) {
 				$url = App::get('router')->generate('serve_blob', array(
 					'blob_auth_id' => $this->picture_blob->getAuthId(),
+					'filename' => $this->picture_blob->filename,
 					's' => $size
 				), true);
 
