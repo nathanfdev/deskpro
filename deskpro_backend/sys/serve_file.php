@@ -473,6 +473,12 @@ class FilestorageLoader
 
 		$filepath = $base_path . DIRECTORY_SEPARATOR . $blob['save_path'];
 
+		if (!file_exists($filepath)) {
+			header("HTTP/1.0 404 Not Found");
+			echo "File not found.";
+			return;
+		}
+
 		if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
 			header("X-Sendfile: $filepath");
 		} else {
