@@ -259,7 +259,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getAuthId()
 	{
-		return $this->id . $this->authcode;
+		return $this->id . '-' . $this->authcode;
 	}
 
 
@@ -271,7 +271,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getDownloadUrl($absolute = false)
 	{
-		return App::get('router')->generate('serve_blob', array('blob_auth_id' => $this->getAuthId()), $absolute);
+		return App::get('router')->generate('serve_blob', array('blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe()), $absolute);
 	}
 
 
