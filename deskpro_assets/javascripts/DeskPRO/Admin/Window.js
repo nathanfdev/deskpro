@@ -184,6 +184,36 @@ DeskPRO.Admin.Window = new Orb.Class({
 		});
 
 		this._initHelp();
+
+		// User menu
+		$('#userSetting_trigger').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var list = $('#userSetting');
+			list.hide().detach().appendTo('body');
+
+			var left = $('#userSetting_trigger').offset().left;
+			left -= 126;
+
+			list.css({
+				top: 41,
+				left: left
+			});
+			list.show();
+
+			var backdrop = $('<div class="backdrop" />').appendTo('body');
+
+			var close = function() {
+				list.hide();
+				backdrop.remove();
+			};
+			backdrop.on('click', close);
+			list.on('click', close);
+			$('ul', list).on('click', function(ev) {
+				ev.stopPropagation();
+			});
+		});
 	},
 
 	updatePageNavPos: function() {

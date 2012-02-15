@@ -75,22 +75,23 @@
 		<div id="DP-userControl">
 			<div class="currentUserAvatar">
 				<div class="userWrapper">
-					<a onclick="toggle_visibility('userSetting');"><img src="{{ app.user.getPictureUrl(20) }}" alt="" /></a>
+					<a id="userSetting_trigger">
+						<em style="background-image: url({{ app.user.getPictureUrl(20) }});"></em>
+						<span class="drop"></span>
+					</a>
 				</div>
-				<span class="dropdownIcon" onclick="toggle_visibility('userSetting');"></span>
 			</div>
 		</div>
 		<!-- Header - User Control Dropdown -->
 		<div id="userSetting" style="display:none;">
 			<div class="userProfileDropdown" >
 				<div class="userProfileDropdownHeader">
-					<a onclick="toggle_visibility('userSetting');"><img src="{{ app.user.getPictureUrl(20) }}" alt="" /></a>
+					<a><em style="background-image: url({{ app.user.getPictureUrl(20) }});"></em></a>
+					<span class="drop"></span>
 				</div>
 				<ul>
-					<li class="logggedAs"><p>Logged in as</p></li>
 					<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
-					<li class="setting" id="user_settings_link"><a>Settings</a></li>
-					<li class="help"><a>Help</a></li>
+					<li class="help"><a>{{ phrase('agent.window.help') }}</a></li>
 					<li class="logout"><a href="{{ app.request.getBaseUrl() }}/logout/{{ static_security_token('user_logout') }}?to=admin">{{ phrase('agent.window.logout') }}</a></li>
 				</ul>
 			</div>
