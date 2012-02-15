@@ -217,7 +217,12 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		data.tabBtn.data('tab', data);
 
 		var wasActive = false;
+		var otherTab = null;
 		if (data.page && data.page.meta.tabPlaceholderId) {
+			otherTab = this.getTab(data.page.meta.tabPlaceholderId);
+		}
+
+		if (otherTab) {
 			// We may have had a placeholder, in which case we want to place
 			// the new tab where the old one was while also removing the placeholder
 			// content in the body pane
@@ -234,7 +239,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			this.removeTab(otherTab, true);
 
 		} else {
-			data.tabBtn.appendTo(this.tabList);
+			data.tabBtn.prependTo(this.tabList);
 		}
 
 		//----------
@@ -283,6 +288,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		}
 
 		var id = this.addTab(page);
+		this.activateTabById(id);
 
 		if (routeData.tabLoad) {
 			routeData.tabLoad();
@@ -416,8 +422,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		if (!silent) {
 
-			data.tabBtn.remove();
-
 			this.fireEvent('removeTab', [data, this]);
 
 			if (wasActive) {
@@ -426,6 +430,8 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 					this.activateTabById(last_tab_id);
 				}
 			}
+
+			data.tabBtn.remove();
 		}
 
 		DeskPRO_Window.updateWindowUrlFragment();
@@ -442,6 +448,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		var tab = this.getTab(id);
 		if (!tab) {
 			DP.console.log("Cannot remove, unknown tab %s", id);
+			return null;
 		}
 		this.removeTab(tab);
 	},
