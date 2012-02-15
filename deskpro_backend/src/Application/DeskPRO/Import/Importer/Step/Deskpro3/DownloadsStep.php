@@ -175,6 +175,7 @@ class DownloadsStep extends AbstractDeskpro3Step
 		$new_download->title = $download['filename'];
 		$new_download->content = $download['filename'];
 		$new_download->date_created = new \DateTime('@' . $download['timestamp']);
+		$new_download->date_published = new \DateTime('@' . $download['timestamp']);
 
 		$this->getEm()->persist($new_download);
 		$this->getEm()->flush();

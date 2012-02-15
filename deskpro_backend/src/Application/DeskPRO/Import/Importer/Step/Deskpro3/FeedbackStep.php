@@ -129,6 +129,7 @@ class FeedbackStep extends AbstractDeskpro3Step
 		$new_feedback->title = $feedback['title'];
 		$new_feedback->content = $feedback['message'];
 		$new_feedback->date_created = new \DateTime('@' . $feedback['created_at']);
+		$new_feedback->date_published = new \DateTime('@' . $feedback['created_at']);
 
 		$this->getEm()->persist($new_feedback);
 		$this->getEm()->flush();

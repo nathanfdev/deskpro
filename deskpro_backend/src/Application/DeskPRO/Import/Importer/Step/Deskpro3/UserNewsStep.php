@@ -92,6 +92,7 @@ class UserNewsStep extends AbstractDeskpro3Step
 			$new_news->setStatusCode(News::STATUS_ARCHIVED);
 		}
 		$new_news->date_created = new \DateTime('@' . $news['timestamp']);
+		$new_news->date_published = new \DateTime('@' . $news['timestamp']);
 		$new_news->person = $new_person;
 		$new_news->title = $news['title'];
 		$new_news->content = $news['details'];
