@@ -169,6 +169,16 @@ class UsersStep extends AbstractDeskpro3Step
 			$person->date_last_login = new \DateTime('@' . $user_info['last_activity']);
 		}
 
+		// If we have a blank name,
+		// Set the name to the part before the @ in their email address
+		if (!$person->name && $user_emails) {
+			$first = \Orb\Util\Arrays::getFirstItem($user_emails);
+			$parts = explode('@', $first['email']);
+			if ($parts) {
+				$person->name = $parts[0];
+			}
+		}
+
 		//---
 		// Company
 		//---
