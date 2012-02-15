@@ -30,15 +30,32 @@ define('DP_DATABASE_NAME', 'deskpro');
 $DP_CONFIG = array();
 
 ######################################################
-# OPTIONAL : Location of PHP Binary                  #
+# Location of PHP Binary                             #
 #                                                    #
-# On linux PHP is often located at:                  #
+# You need to specify this path if the system        #
+# cannot detect it automatically.                    #
+#                                                    #
+# On Linux PHP is often located at:                  #
 #    /usr/bin/php or /usr/local/bin/php              #
-# On windows a typical path maybe                    #
+# On Windows a typical path may be                   #
 #	 C:\wamp\bin\php\php5.3.8\php.exe                #
 ######################################################
 
 // $DP_CONFIG['php_path'] = '';
+
+######################################################
+# Location of mysqldump                              #
+#                                                    #
+# You need to specify this path if the system        #
+# cannot detect it automatically.                    #
+#                                                    #
+# On Linux PHP is often located at:                  #
+#    /usr/bin/mysqldump or /usr/local/bin/mysqldump  #
+# On Windows a typical path may be                   #
+#	 C:\wamp\bin\php\php5.3.8\php.exe                #
+######################################################
+
+// $DP_CONFIG['mysqldump_path'] = '';
 
 ######################################################
 # OPTIONAL : Location of Folders                     #
