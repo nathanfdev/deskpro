@@ -57,6 +57,7 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 	{
 		parent::boot();
 		App::setContainer($this->container, 'default');
+		$this->container->kernel = $this;
 	}
 
 

@@ -49,6 +49,11 @@ class DeskproContainer extends Container
 	/**#@-*/
 
 	/**
+	 * @var \DeskPRO\Kernel\BaseAbstractKernel
+	 */
+	public $kernel;
+
+	/**
 	 * @var array
 	 */
 	protected $system_services = array();
@@ -472,5 +477,14 @@ class DeskproContainer extends Container
 		}
 
 		return $mysqdump_path;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getLogDir()
+	{
+		return $this->kernel->getLogDir();
 	}
 }
