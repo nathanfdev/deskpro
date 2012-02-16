@@ -8,6 +8,12 @@ pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete', { 'l
 pageMeta.labelsSaveUrl = '{{ path('agent_person_ajax_labels_save', {'person_id': person.id}) }}';
 pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_id': person.id }) }}';
 
+{% if person.picture_blob %}
+pageMeta.personPicIcon = '{{ person.picture_blob.getThumbnailUrl(13) }}';
+{% elseif app.getSetting('core.use_gravatar') and person.primary_email %}
+pageMeta.personGravatarIcon = '{{ person.primary_email.getGravatarUrl() }}&s=13';
+{% endif %}
+
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>

@@ -315,7 +315,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Usersource associations
 	 *
-	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @ORM_Mapping\OneToMany(targetEntity="PersonUsersourceAssoc", mappedBy="person", indexBy="id")
 	 */
 	protected $usersource_assoc;

@@ -17,8 +17,8 @@
 	{{ dp_asset_html('user') }}
 {% endif %}
 
-<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBaseUrl() }}/dp/res/user/main.css?{{ app.style.css_updated|date('u')|crc32 }}{{ rand(1,99999999)}}" media="screen,print" />
-<link rel="stylesheet" type="text/css" href="{{ app.request.getBaseUrl() }}/dp/res/user/main-print.css?{{ app.style.css_updated|date('u')|crc32 }}{{ rand(1,99999999)}}" media="print" />
+<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBaseUrl() }}/dp/res/user/main.css?{{ app.style.css_updated|date('u')|crc32 }}" media="screen,print" />
+<link rel="stylesheet" type="text/css" href="{{ app.request.getBaseUrl() }}/dp/res/user/main-print.css?{{ app.style.css_updated|date('u')|crc32 }}" media="print" />
 
 <!--[if IE ]><link href="{{ asset('stylesheets/user/main-ie.css') }}" rel="stylesheet" type="text/css"><![endif]-->
 

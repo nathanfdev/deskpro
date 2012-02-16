@@ -1,6 +1,7 @@
 <script>
 	var BASE_URL = '{{ path('user') }}';
 	var ASSETS_BASE_URL = '{{ asset('') }}';
+	var ASSETS_BASE_URL_FULL = '{{ asset_full('') }}';
 	var DESKPRO_PERSON_ID = {{ app.user.id }};
 	var DESKPRO_TEAM_IDS = {{ app.user.getAgent.getTeamIds()|json_encode }};
 	var DESKPRO_SESSION_ID = {{ app.session.getEntityId() }};

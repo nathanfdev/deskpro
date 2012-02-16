@@ -4,8 +4,15 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
 	initializeProperties: function() {
+		var self = this;
 		this.parent();
 		this.TYPENAME = 'person';
+		this.tabBtn = null;
+		this.addEvent('render', function(container, id) {
+			if (id) {
+				self.tabBtn = $('#tabbtn_' + id);
+			}
+		});
 	},
 
 	initPage: function(el) {
@@ -17,6 +24,19 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		var self = this;
 
 		var cw = this.contentWrapper;
+
+		if (this.tabBtn) {
+			if (this.getMetaData('personPicIcon')) {
+				this.tabBtn.find('a').css('background-image', this.getMetaData('personPicIcon'));
+			} else if (this.getMetaData('personGravatarIcon')) {
+				var defaultIcon = ASSETS_BASE_URL_FULL + 'images/agent/tabs/tabtype-person.png';
+				var url = this.getMetaData('personGravatarIcon');
+				url = Orb.appendQueryData(url, 'd', defaultIcon);
+
+				var a = this.tabBtn.find('a');
+				a.css('background-image', 'url(' + url + ')');
+			}
+		}
 
 		// TextExt doesnt play well with fluid columns
 		// so this listens for resizes, and then updates the input width,

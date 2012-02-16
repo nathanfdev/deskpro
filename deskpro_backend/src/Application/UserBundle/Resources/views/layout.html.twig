@@ -11,7 +11,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{% block page_title %}{{ app.getSetting('core.deskpro_name') }}{% endblock %}</title>
 
-	{% include 'UserBundle:Common:resources.html.twig' %}
+
 
 	<meta property="og:site_name" content="{{ app.getSetting('core.site_name')|default(app.getSetting('core.core.helpdesk_name')) }}" />
 	{% if app.getSetting('core.facebook_admins') %}<meta property="fb:admins" content="{{ app.getSetting('core.facebook_admins') }}" />{% endif %}

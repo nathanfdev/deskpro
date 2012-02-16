@@ -154,25 +154,24 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		var id = Orb.uuid();
 		page.meta.tabId = id;
 
-		var data = {
-			id: id,
-			page: page,
-			title: page.getMetaData('title', 'Untitled'),
-			callback_render: function(data, container) {
-				container = $(container);
-				page.fireEvent('render', [container]);
-			},
-			callback_remove_content: function(data, container) {
-				if (data.isInserted && data.isInited) {
-					page.fireEvent('destroy');
-				}
-			},
-			callback_activate: function() {
-				page.fireEvent('activate');
-			},
-			callback_deactivate: function() {
-				page.fireEvent('deactivate');
+		var data = {};
+		data.id = id;
+		data.page = page;
+		data.title = page.getMetaData('title', 'Untitled');
+		data.callback_render = function(container) {
+			container = $(container);
+			page.fireEvent('render', [container, id]);
+		};
+		data.callback_remove_content = function(data, container) {
+			if (data.isInserted && data.isInited) {
+				page.fireEvent('destroy');
 			}
+		};
+		data.callback_activate = function() {
+			page.fireEvent('activate');
+		};
+		data.callback_deactivate = function() {
+			page.fireEvent('deactivate');
 		};
 
 		data.isInited = false;
@@ -325,7 +324,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			data.isInited = true;
 
 			if (data.callback_render !== undefined) {
-				data.callback_render(data, wrapper, this);
+				data.callback_render(wrapper);
 			}
 
 			this.fireEvent('activateTabRender', [data, $('#' + data.wrapperId), this]);
