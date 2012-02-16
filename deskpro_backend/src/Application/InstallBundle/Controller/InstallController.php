@@ -248,10 +248,9 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 				$this->getOrm()->flush();
 			}
 
-			$this->getOrm()->getConnection()->commit();
-
 			$data_init = new \Application\InstallBundle\Data\DataInitializer($this->container);
 			$data_init->run();
+			$this->getOrm()->getConnection()->commit();
 		} catch (\Exception $e) {
 			$this->getOrm()->getConnection()->rollback();
 			throw $e;
@@ -282,7 +281,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			'created_at' => date('Y-m-d H:i:s'),
 			'updated_at' => date('Y-m-d H:i:s'),
 		));
-		$db->replace(('settings', array(
+		$db->replace('settings', array(
 			'name' => 'core.deskpro_build',
 			'groupname' => 'core',
 			'value' => DP_BUILD_TIME,
