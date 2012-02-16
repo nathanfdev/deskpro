@@ -7,7 +7,7 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 	init: function() {
 		var self = this;
 
-		this.backdrop    = $('<div class="dp-backdrop" />').hide().appendTo('body');
+		this.backdrop    = $('<div class="dp-backdrop" />').hide().appendTo('#deskpro');
 		this.assistEl    = $('#dp_search_assist');
 		this.searchboxEl = $('#deskpro_search');
 
