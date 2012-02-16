@@ -200,23 +200,24 @@ class MainController extends AbstractController
 		# Email address: Full or partial
 		#------------------------------
 
-		} else if (preg_match('#^[a-zA-Z0-9\-_.]*@[a-zA-Z0-9\-_.]+$#', $q)) {
+		} else {
+			if (preg_match('#^[a-zA-Z0-9\-_.]*@[a-zA-Z0-9\-_.]+$#', $q)) {
 
-			$people_top = true;
+				$people_top = true;
 
-			// Complete email address
-			if (\Orb\Validator\StringEmail::isValueValid($q)) {
-				$p = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($q);
-				$people = array();
-				if ($p) {
-					$people[] = $p;
-				}
-			} else {
-				if (strpos($q, '@') === 0) {
-					$email = substr($q, 1);
-					$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
+				// Complete email address
+				if (\Orb\Validator\StringEmail::isValueValid($q)) {
+					$p = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($q);
+					$people = array();
+					if ($p) {
+						$people[] = $p;
+					}
+				} else {
+					if (strpos($q, '@') === 0) {
+						$email = substr($q, 1);
+						$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
 
-					$people = $this->em->createQuery("
+						$people = $this->em->createQuery("
 						SELECT p
 						FROM DeskPRO:Person p
 						LEFT JOIN p.emails e
@@ -224,30 +225,30 @@ class MainController extends AbstractController
 						ORDER BY p.id ASC
 					")->setParameter(1, $email)->setMaxResults(15)->execute();
 
-				} else {
-					// Search an email address
-					$people = $this->em->getRepository('DeskPRO:Person')->searchByEmailStartingWith($q);
+					} else {
+						// Search an email address
+						$people = $this->em->getRepository('DeskPRO:Person')->searchByEmailStartingWith($q);
+					}
+				}
+
+				foreach ($people as $p) {
+					$results['person'][] = $p;
+
+					if ($p->organization) {
+						$results['organization'][] = $p;
+					}
+				}
+
+				$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsForPeople($people, 15);
+				foreach ($tickets as $t) {
+					$results['ticket'][] = $t;
 				}
 			}
 
-			foreach ($people as $p) {
-				$results['person'][] = $p;
+			#------------------------------
+			# Labels
+			#------------------------------
 
-				if ($p->organization) {
-					$results['organization'][] = $p;
-				}
-			}
-
-			$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsForPeople($people, 15);
-			foreach ($tickets as $t) {
-				$results['ticket'][] = $t;
-			}
-
-		#------------------------------
-		# Labels
-		#------------------------------
-
-		} else {
 			$label_search = new \Application\DeskPRO\Labels\LabelSearch($this->em);
 			$results = $label_search->search($q);
 		}

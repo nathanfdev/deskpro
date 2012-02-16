@@ -133,7 +133,7 @@ class LabelSearch
 				SELECT labels_feedback.feedback_id
 				FROM labels_feedback
 				LEFT JOIN feedback ON feedback.id = labels_feedback.feedback_id
-				WHERE labels_feedback.label = ? AND feedback.hidden_status NOT IN('spam', 'deleted')
+				WHERE labels_feedback.label = ? AND (feedback.hidden_status NOT IN('spam', 'deleted') OR feedback.hidden_status IS NULL)
 				ORDER BY labels_feedback.feedback_id DESC
 				LIMIT {$this->limit}
 			", array($label));
@@ -148,7 +148,7 @@ class LabelSearch
 				SELECT labels_articles.article_id
 				FROM labels_articles
 				LEFT JOIN articles ON articles.id = labels_articles.article_id
-				WHERE labels_articles.label = ? AND articles.hidden_status NOT IN('spam', 'deleted')
+				WHERE labels_articles.label = ? AND (articles.hidden_status NOT IN('spam', 'deleted') OR articles.hidden_status IS NULL)
 				ORDER BY labels_articles.article_id DESC
 				LIMIT {$this->limit}
 			", array($label));
@@ -163,7 +163,7 @@ class LabelSearch
 				SELECT labels_news.news_id
 				FROM labels_news
 				LEFT JOIN news ON news.id = labels_news.news_id
-				WHERE labels_news.label = ? AND news.hidden_status NOT IN('spam', 'deleted')
+				WHERE labels_news.label = ? AND (news.hidden_status NOT IN('spam', 'deleted') OR news.hidden_status IS NULL)
 				ORDER BY labels_news.news_id DESC
 				LIMIT {$this->limit}
 			", array($label));
@@ -178,7 +178,7 @@ class LabelSearch
 				SELECT labels_downloads.download_id
 				FROM labels_downloads
 				LEFT JOIN downloads ON downloads.id = labels_downloads.download_id
-				WHERE labels_downloads.label = ? AND downloads.hidden_status NOT IN('spam', 'deleted')
+				WHERE labels_downloads.label = ? AND (downloads.hidden_status NOT IN('spam', 'deleted') OR downloads.hidden_status IS NULL)
 				ORDER BY labels_downloads.download_id DESC
 				LIMIT {$this->limit}
 			", array($label));
