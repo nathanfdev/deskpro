@@ -114,11 +114,20 @@ class FilestorageLoader
 				$this->handleDbBlobRequest($m[1], $m[2], $m[3]);
 			} else {
 				header("HTTP/1.0 404 Not Found");
-				echo "File not found.";
+				echo "File not found. (1)";
 			}
-		} catch (\Exception $e) {
+		} catch (\Exception $exception) {
+
 			header("HTTP/1.1 500 Internal Server Error");
 			echo "An error occurred.";
+
+			if (isset($DP_CONFIG['debug']['dev'])) {
+				$backtrace = $exception->getTrace();
+				$trace = self::formatBacktrace($backtrace);
+
+				echo "\n\n\n";
+				echo $trace;
+			}
 		}
 	}
 
@@ -301,7 +310,7 @@ class FilestorageLoader
 		// Invalid hash, or the file doesnt exist on disk
 		if ($check_namehash != $namehash || !file_exists($filepath)) {
 			header("HTTP/1.0 404 Not Found");
-			echo "File not found.";
+			echo "File not found. (2)";
 			return;
 		}
 
@@ -369,7 +378,7 @@ class FilestorageLoader
 
 			if (!$blob || ($blob_auth && $blob['authcode'] != $blob_auth)) {
 				header("HTTP/1.0 404 Not Found");
-				echo "File not found.";
+				echo "File not found. (3)";
 				return;
 			}
 		}
@@ -475,7 +484,7 @@ class FilestorageLoader
 
 		if (!file_exists($filepath)) {
 			header("HTTP/1.0 404 Not Found");
-			echo "File not found.";
+			echo "File not found. (4)";
 			return;
 		}
 
@@ -802,6 +811,57 @@ class FilestorageLoader
 
 		return trim($host);
 	}
+
+	public static function formatBacktrace(array $backtrace)
+	{
+		$trace = '';
+		foreach($backtrace as $k=>$v){
+
+			$line = "#$k ";
+
+			if (isset($v['object'])) {
+				$line .= get_class($v['object']) . "::";
+			} elseif (isset($v['class'])) {
+				$line .= $v['class'] . "::";
+			}
+
+			$line .= "{$v['function']}(";
+
+			if (!empty($v['args'])) {
+				$line .= self::varToString($v['args']);
+			}
+
+			$line .= ")";
+
+			if (!empty($v['file'])) {
+				$line .= " called at [{$v['file']}:{$v['line']}]";
+			}
+
+			$line .= "\n";
+
+			$trace .= $line;
+		}
+
+		return $trace;
+	}
+
+	public static function varToString($var)
+    {
+        if (is_object($var)) {
+            return sprintf('[object](%s)', get_class($var));
+        }
+        if (is_array($var)) {
+            $a = array();
+            foreach ($var as $k => $v) {
+                $a[] = sprintf('%s => %s', $k, self::varToString($v));
+            }
+            return sprintf("[array](%s)", implode(', ', $a));
+        }
+        if (is_resource($var)) {
+            return '[resource]';
+        }
+        return str_replace("\n", '', var_export((string) $var, true));
+    }
 }
 
 $file_loader = new FilestorageLoader();
