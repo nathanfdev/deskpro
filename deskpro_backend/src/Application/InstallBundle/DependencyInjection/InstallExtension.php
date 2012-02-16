@@ -23,6 +23,18 @@ class InstallExtension extends Extension
 		$definition = new Definition('Application\\DeskPRO\\ConfigServiceLoader');
 		$container->setDefinition('deskpro.config_service_loader', $definition);
 
+		$definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
+			array(
+				'core'  => DP_ROOT . '/src/Application/DeskPRO/Resources/settings',
+				'agent' => DP_ROOT . '/src/Application/AgentBundle/Resources/settings',
+				'user'  => DP_ROOT . '/src/Application/UserBundle/Resources/settings',
+				'dev'   => DP_ROOT . '/src/Application/DevBundle/Resources/settings',
+			),
+			new Reference('database_connection')
+		));
+		$definition->addMethodCall('loadGroups', array('core'));
+		$container->setDefinition('deskpro.core.settings', $definition);
+
 		$this->loadInputReader($container);
     }
 
