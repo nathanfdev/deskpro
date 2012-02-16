@@ -99,7 +99,7 @@ class InstallSchema
 	 * @param bool $halt_on_error True to stop and throw an exception when an error is encountered.
 	 * @return bool True on success, false on error
 	 */
-	public function run($halt_on_error = true, $limit = 1000000, $skip = 0, $callback)
+	public function run($halt_on_error = true, $limit = 1000000, $skip = 0, $callback = null)
 	{
 		$has_error = false;
 
