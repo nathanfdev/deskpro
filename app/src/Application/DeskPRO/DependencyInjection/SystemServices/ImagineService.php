@@ -18,7 +18,7 @@ class ImagineService
 	public static function create(DeskproContainer $container)
 	{
 		if (function_exists('gd_info')) {
-				$im = new \Imagine\Gd\Imagine();
+			$im = new \Imagine\Gd\Imagine();
 		} elseif (class_exists('Imagick', false)) {
 			$im = new \Imagine\Imagick\Imagine();
 		} elseif (class_exists('Gmagick', false)) {

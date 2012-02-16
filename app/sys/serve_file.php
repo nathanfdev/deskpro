@@ -122,10 +122,10 @@ class FilestorageLoader
 			echo "An error occurred.";
 
 			if (isset($DP_CONFIG['debug']['dev'])) {
+				echo "\n\n[{$exception->getCode()}] {$exception->getMessage()}\n\n";
+
 				$backtrace = $exception->getTrace();
 				$trace = self::formatBacktrace($backtrace);
-
-				echo "\n\n\n";
 				echo $trace;
 			}
 		}
