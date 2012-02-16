@@ -431,6 +431,10 @@ body.dp-simple-popup .dp-content-block {
 	padding:  8px 10px 8px 10px;
 }
 
+#deskpro #dp_search_bar input.loading {
+	background: #fff url(../../images/spinners/loading-small.gif) no-repeat 99% 50%;
+}
+
 #deskpro #dp_search_bar button {
 	width: 85px;
 	margin-left: 10px;

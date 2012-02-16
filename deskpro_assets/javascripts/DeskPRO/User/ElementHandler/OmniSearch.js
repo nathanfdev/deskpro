@@ -115,10 +115,14 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 
 		this.lastTerms = terms;
 
+		this.searchboxEl.addClass('loading');
 		$.ajax({
 			url: BASE_URL + 'search/omnisearch/' + encodeURI(terms),
 			dataType: 'html',
 			context: this,
+			complete: function() {
+				this.searchboxEl.removeClass('loading');
+			},
 			success: function(html) {
 				var wrap = $(html);
 				this.resultsEl.empty();
