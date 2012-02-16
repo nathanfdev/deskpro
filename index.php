@@ -4,7 +4,6 @@
  * You may wish to turn the display of PHP errors off.
  * You should monitor your PHP error log (location defined in php.ini) if you do.
  */
-error_reporting(E_ALL | E_STRICT);
 ini_set('display_errors', true);
 
 /**
@@ -23,6 +22,7 @@ define('DP_CONFIG_FILE', dirname(__FILE__) . '/config.php');
 /**
  * You should not change anything below this line.
  */
+error_reporting(E_ALL | E_STRICT);
 define('DP_WEB_ROOT', dirname(__FILE__));
 require DP_ROOT . '/sys/preboot.php';
 
