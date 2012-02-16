@@ -39,6 +39,16 @@ class TicketPrioritiesStep extends AbstractDeskpro3Step
 				$this->processPriority($pri);
 			}
 
+			if ($priorities) {
+				$this->getDb()->replace('settings', array(
+					'name' => 'core.use_ticket_priority',
+					'groupname' => 'core',
+					'value' => 1,
+					'created_at' => date('Y-m-d H:i:s'),
+					'updated_at' => date('Y-m-d H:i:s'),
+				));
+			}
+
 			$this->getDb()->commit();
 		} catch (\Exception $e) {
 			$this->getDb()->rollback();
