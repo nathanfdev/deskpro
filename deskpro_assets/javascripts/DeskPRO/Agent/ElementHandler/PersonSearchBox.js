@@ -102,7 +102,6 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 					next.addClass('on');
 				}
 			} else {
-				console.log(ev.keyCode);
 				updateCaller.touch(self.getTerm());
 			}
 		}).on('change', function() { updateCaller.touch(self.getTerm()); });
@@ -215,6 +214,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 			value: term
 		});
 
+		this.termInput.parent().addClass('loading');
 		this.runningAjax = $.ajax({
 			type: 'GET',
 			url: url,
@@ -222,6 +222,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			complete: function() {
+				this.termInput.parent().removeClass('loading');
 				this.runningAjax = null;
 			},
 			success: function(data) {

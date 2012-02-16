@@ -85,11 +85,13 @@ DeskPRO.Form.InlineEdit = new Class({
 
 		if (j_el.is('.parent-trigger')) {
 			var parent = j_el.parent();
-			parent.on('dblclick', function() {
+			var evname = parent.hasClass('single-click-activate') ? 'clcik' : 'dblclick';
+			parent.on(evname, function() {
 				self.startEditable(j_el);
 			});
 		} else {
-			j_el.on('dblclick', function() { self.startEditable(this); });
+			var evname = j_el.hasClass('single-click-activate') ? 'clcik' : 'dblclick';
+			j_el.on(evname, function() { self.startEditable(this); });
 		}
 
 		if (this.options.triggers) {
@@ -150,7 +152,9 @@ DeskPRO.Form.InlineEdit = new Class({
 
 		rendered_els.fadeOut('fast', function() {
 			rendered_els.detach();
-			form_elements.addClass('editable-fields-on').hide().appendTo(editable).fadeIn('fast');
+			form_elements.addClass('editable-fields-on').hide().appendTo(editable).fadeIn('fast', function() {
+				form_elements.find('input, textarea, select').first().focus();
+			});
 
 			$('input, textarea, select', form_elements)
 				.addClass('unchanged')

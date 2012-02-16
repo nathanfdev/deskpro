@@ -192,7 +192,7 @@ class OrganizationController extends AbstractController
 					$person->organization_position = $this->in->getString('position');
 					$this->em->persist($person);
 					$data['add_person_id'] = $person['id'];
-					$data['row_html'] = $this->renderView('AgentBundle:Organization:view-members-row.html.twig', array('person' => $person));
+					$data['row_html'] = $this->renderView('AgentBundle:Organization:view-members-row.html.twig', array('person' => $person, 'org' => $org));
 				}
 				break;
 

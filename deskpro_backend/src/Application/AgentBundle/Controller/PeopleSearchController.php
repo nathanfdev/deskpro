@@ -536,7 +536,7 @@ class PeopleSearchController extends AbstractController
 					OR p.name LIKE ?
 					OR p.first_name LIKE ?
 					OR p.last_name LIKE ?)
-					" . ($not_in_org ? " AND p.organization_id != $not_in_org " : '') . "
+					" . ($not_in_org ? " AND (p.organization_id IS NULL OR p.organization_id != $not_in_org) " : '') . "
 				GROUP BY p.id
 				ORDER BY p.name ASC
 				LIMIT $limit
