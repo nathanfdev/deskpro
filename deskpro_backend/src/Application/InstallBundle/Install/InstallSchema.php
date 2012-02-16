@@ -80,7 +80,7 @@ class InstallSchema
 
 	public function countQueries()
 	{
-		return count($this->schema['create']) + count($this->schema['alter']);
+		return count($this->schema['create']) + count($this->schema['alter']) + count($this->schema['trigger']);
 	}
 
 	public function hasDoneStep($id)
