@@ -233,6 +233,14 @@ class PersonController extends AbstractController
 				}
 				break;
 
+			case 'quick-edit-name':
+				$person->name = $this->in->getString('name');
+				if ($person->organization) {
+					$person->organization_position = $this->in->getString('organization_position');
+				}
+				$this->em->persist($person);
+				break;
+
 			case 'timezone':
 				if (in_array($this->in->getString('timezone'), \DateTimeZone::listIdentifiers())) {
 					$person->timezone = $this->in->getString('timezone');

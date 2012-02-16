@@ -29,17 +29,16 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<div class="titlewrap">
 		<h1>
-			<span class="editable" data-editable-for="#{{baseId}}_editname">{{ person.name|default('Double-click to set Name') }}</span>
-			<span class="edit-name-gear"></span>
-			<div id="{{baseId}}_editname" style="display: none">
-				<input type="hidden" name="action" value="name" />
-				<input type="text" size="20" name="name" value="{{ person.name }}" />
-			</div>
+			<span id="{{baseId}}_showname">{{ person.name|default('Double-click to set Name') }}</span>
+			<span id="{{baseId}}_editname" style="display: none"><input type="text" size="20" name="name" value="{{ person.name }}" /></span>
+			<span id="{{baseId}}_editname_start" class="edit-name-gear"></span>
+			<a id="{{baseId}}_editname_end" class="edit-name-save clean-white small" style="display: none">Done</a>
 		</h1>
 		<div class="meta-line">
 			<div class="org"><span>
 				{% if person.organization %}
-					<span class="org-pos" {% if not person.organization_position %}style="display: none"{% endif %}><span class="org-pos-display">{{ person.organization_position }}</span>, </span>
+					<span id="{{baseId}}_showorgpos" class="org-pos" {% if not person.organization_position %}style="display: none"{% endif %}><span class="org-pos-display">{{ person.organization_position }}</span>, </span>
+					<span id="{{baseId}}_editorgpos" style="display: none"><input type="text" name="organization_position" value="{{ person.organization_position }}" placeholder="Position" /></span>
 					<span class="org-title-display"><a data-route="page:{{ path('agent_org_view', {'organization_id': person.organization.id}) }}" class="as-popover">{{ person.organization.name }}</a></span>
 				{% else %}
 					&nbsp;

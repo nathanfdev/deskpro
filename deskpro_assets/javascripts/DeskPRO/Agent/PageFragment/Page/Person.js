@@ -92,26 +92,76 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 		});
 
-		// Name is editable
-		var name = $('h3.name.editable:first', el);
-		if (!name.attr('id')) {
-			name.attr('id', Orb.getUniqueId());
-		}
+		var namef       = this.getEl('showname');
+		var editName    = this.getEl('editname');
+		var orgpos      = this.getEl('showorgpos');
+		var editOrgpos  = this.getEl('editorgpos');
+		var startBtn    = this.getEl('editname_start');
+		var stopBtn     = this.getEl('editname_end');
 
-		var editable = new DeskPRO.Form.InlineEdit({
-			baseElement: this.wrapper,
-			ajax: {
-				url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save'
-			},
-			triggers: '.edit-name-gear'
-		});
+		var startEditable = function() {
+			namef.hide();
+			orgpos.hide();
+			editName.show();
+			editOrgpos.show();
+			startBtn.hide();
+			stopBtn.show();
+		};
 
-		// Attach click to wrapper because
-		// this same code is used on popout on ticket,
-		// and clicks dont bubble to document click
-		$(this.wrapper).on('click', function (ev) {
-			editable.handleDocumentClick(ev);
+		var stopEditable = function() {
+			var nametxt = editName.find('input').first();
+			var postxt  = editOrgpos.find('input').first();
+
+			var setName = nametxt.val().trim();
+			var setPos  = postxt.val().trim();
+
+			namef.show().text(setName ? setName : 'Double-click to set name');
+			if (setPos) {
+				orgpos.show().find('.org-pos-display').text(setPos);
+			} else {
+				orgpos.hide();
+			}
+
+			editName.hide();
+			editOrgpos.hide();
+			startBtn.show();
+			stopBtn.hide();
+
+			var postData = [];
+			postData.push({
+				name: 'action',
+				value: 'quick-edit-name'
+			});
+			postData.push({
+				name: 'name',
+				value: setName
+			});
+			postData.push({
+				name: 'organization_position',
+				value: setPos
+			});
+
+			$.ajax({
+				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+				type: 'POST',
+				data: postData
+			});
+		};
+
+		namef.on('dblclick', startEditable).on('keypress', function(ev) {
+			if (ev.keyCode == 13 /* enter key */) {
+				ev.preventDefault();
+				stopEditable();
+			}
 		});
+		editOrgpos.find('input').first().on('keypress', function(ev) {
+			if (ev.keyCode == 13 /* enter key */) {
+				ev.preventDefault();
+				stopEditable();
+			}
+		});
+		this.getEl('editname_start').on('click', startEditable);
+		this.getEl('editname_end').on('click', stopEditable);
 
 		var self = this;
 		$('.create-ticket', this.getEl('action_buttons')).on('click', function() {
