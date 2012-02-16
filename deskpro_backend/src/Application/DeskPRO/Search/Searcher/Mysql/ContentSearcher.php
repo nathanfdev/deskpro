@@ -48,9 +48,14 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		}
 		$limit_types = "'" . implode('\',\'', $limit_types) . "'";
 
+		$words = explode(' ', $query_text);
+		foreach ($words as $w) {
+			$query_text .= " " . MysqlAdapter::encodeLabel(strtolower($w));
+		}
+
 		$where = "
 			object_type IN ($limit_types)
-			AND MATCH (content) AGAINST (?)
+			AND MATCH (content) AGAINST (? IN BOOLEAN MODE)
 		";
 
 		$count_query = "
