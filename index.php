@@ -11,7 +11,7 @@ ini_set('display_errors', true);
  * The path to the 'deskpro_backend' directory.
  * If you move the deskpro_backend directory, you must update this path.
  */
-define('DP_ROOT', dirname(__FILE__) . '/deskpro_backend');
+define('DP_ROOT', dirname(__FILE__) . '/app');
 
 /**
  * The path to the config.php file.

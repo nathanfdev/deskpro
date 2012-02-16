@@ -26,7 +26,7 @@ class AsseticManagerService
 	{
 		$manager = new \Application\DeskPRO\Assetic\AsseticManager(
 			App::getConfigFromFile('assets'),
-			realpath(DP_ROOT . '/../deskpro_assets'),
+			realpath(DP_ROOT . '/../web'),
 			'build'
 		);
 

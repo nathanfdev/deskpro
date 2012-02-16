@@ -2,8 +2,8 @@
 <ruleset name="DeskPRO Standard">
 	<description>DeskPRO Standards</description>
 
-	<exclude-pattern>deskpro_backend/vendor/*</exclude-pattern>
-	<exclude-pattern>deskpro_backend/sys/cache</exclude-pattern>
+	<exclude-pattern>app/vendor/*</exclude-pattern>
+	<exclude-pattern>app/sys/cache</exclude-pattern>
 
 	<rule ref="Generic.Files.LineEndings">
 		<properties>

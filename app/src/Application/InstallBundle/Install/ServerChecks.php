@@ -332,7 +332,7 @@ class ServerChecks
 			if (is_writable(DP_ROOT.'/sys/cache')) {
 				$this->getLogger()->log("[OK] Cache dir is writable", Logger::DEBUG);
 			} else {
-				$msg = "The deskpro_backend/sys/cache directory must be writable";
+				$msg = "The app/sys/cache directory must be writable";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['cache_write'] = array(
 					'message' => $msg,

@@ -44,7 +44,7 @@ DeskPRO.Report.Chart.AmChart.Base = new Orb.Class({
 		}
 
 		var vars = {
-			path: "/deskpro_assets/vendor/amcharts/flash/",
+			path: "/web/vendor/amcharts/flash/",
 
 			settings_file: setting_url
 		};
@@ -52,12 +52,12 @@ DeskPRO.Report.Chart.AmChart.Base = new Orb.Class({
 		if ((this.support_mode == 'fallback' || this.support_mode == 'flash') &&
 			swfobject.hasFlashPlayerVersion("8"))
 		{
-			swfobject.embedSWF("/deskpro_assets/vendor/amcharts/flash/am" + this.chart_type + ".swf", this.element_id, "100%", "100%", "8.0.0", "/deskpro_assets/vendor/amcharts/flash/expressInstall.swf", vars, params);
+			swfobject.embedSWF("/web/vendor/amcharts/flash/am" + this.chart_type + ".swf", this.element_id, "100%", "100%", "8.0.0", "/web/vendor/amcharts/flash/expressInstall.swf", vars, params);
 		}
 		else if (this.isJavaScriptSupported()) {
 			this.chart = new AmCharts.AmFallback();
 			this.chart.settingsFile = vars.settings_file;
-			this.chart.pathToImages = "/deskpro_assets/vendor/amcharts/javascript/images/";
+			this.chart.pathToImages = "/web/vendor/amcharts/javascript/images/";
 			this.chart.type = this.chart_type;
 			this.chart.write(this.element_id);
 		}

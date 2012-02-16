@@ -69,7 +69,7 @@ function deskpro_install_check_writable()
 function deskpro_install_basic_error($message)
 {
 	// We dont know the root path yet, so lets just inline the CSS
-	$css = file_get_contents(DP_WEB_ROOT.'/deskpro_assets/stylesheets/install/install.css');
+	$css = file_get_contents(DP_WEB_ROOT.'/web/stylesheets/install/install.css');
 	$html = <<<HTML
 <!DOCTYPE html>
 <html lang="en">

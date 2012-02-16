@@ -85,7 +85,7 @@ class UserStyle
 		}, $css);
 
 		// Fix url to static
-		$css = str_replace('url(../../', 'url(../../deskpro_assets/', $css);
+		$css = str_replace('url(../../', 'url(../../web/', $css);
 
 		// Strip comments
 		$css = preg_replace('#/\*[^*]*.*?\*/#s', '', $css);

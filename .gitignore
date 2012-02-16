@@ -18,18 +18,14 @@
 /app/src/Application/InstallBundle/Data/schema.php
 
 /data/logs/*
-!/data/logs/.htaccess
 !/data/logs/index.html
 /data/logs/emails/*
-!/data/logs/emails/.htaccess
 !/data/logs/emails/index.html
 
 /data/backups/*
-!/data/backups/.htaccess
 !/data/backups/index.html
 
 /data/files/*
-!/data/files/.htaccess
 !/data/files/index.html
 
 /web/build

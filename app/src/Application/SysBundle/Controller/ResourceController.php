@@ -23,13 +23,13 @@ class ResourceController extends \Symfony\Bundle\FrameworkBundle\Controller\Cont
 			$info = $cache->load($cache_name);
 		}
 		if (!$info || $info['css_updated'] < $style->css_updated->getTimestamp()) {
-			$file = file_get_contents(DP_WEB_ROOT.'/deskpro_assets/' . $style->css_dir . '/' . $filename);
+			$file = file_get_contents(DP_WEB_ROOT.'/web/' . $style->css_dir . '/' . $filename);
 			$userstyle = new \Application\DeskPRO\Style\UserStyle($file);
 
 			$file = $userstyle->compileCss($style->getCssVars());
 
 			// Fix url to static
-			$file = str_replace('url(../../', 'url(../../../../deskpro_assets/', $file);
+			$file = str_replace('url(../../', 'url(../../../../web/', $file);
 
 			// Strip comments
 			$file = preg_replace('#/\*[^*]*.*?\*/#s', '', $file);

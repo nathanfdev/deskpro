@@ -35,7 +35,7 @@ class DataInitializer
 	{
 		$style = $this->container->getEm()->find('DeskPRO:Style', 1);
 
-		$css_source = file_get_contents(DP_WEB_ROOT . '/deskpro_assets/stylesheets/user/main.css');
+		$css_source = file_get_contents(DP_WEB_ROOT . '/web/stylesheets/user/main.css');
 		$css = new \Application\DeskPRO\Style\UserStyle($css_source);
 
 		$desc = $this->container->getFilestorage()->createRandomPath();

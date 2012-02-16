@@ -42,7 +42,7 @@ if (!deskpro_install_check_config()) {
 }
 
 if (!deskpro_install_check_writable()) {
-	$errors[] = sprintf("You must make <code>/deskpro_backend/sys/cache</code> and <code>/deskpro_backend/sys/logs</code> writable by the server.");
+	$errors[] = sprintf("You must make <code>/app/sys/cache</code> and <code>/app/sys/logs</code> writable by the server.");
 }
 
 if ($errors) {
