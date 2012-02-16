@@ -229,7 +229,7 @@ class Ticket extends AbstractEntityRepository
 			FROM DeskPRO:Ticket t INDEX BY t.id
 			WHERE t.id IN (?1)
 			ORDER BY t.id DESC
-		")->setParameters(array(1=>$ids))->setMaxResults($limit)->execute();
+		")->setParameters(array(1=>$ids))->setMaxResults($num)->execute();
 
 		$tickets = \Orb\Util\Arrays::orderIdArray($ids, $tickets);
 
