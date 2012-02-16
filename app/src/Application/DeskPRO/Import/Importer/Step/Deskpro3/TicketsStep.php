@@ -173,7 +173,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		}
 
 		if ($ticket_info['timestamp_closed']) {
-			$insert_ticket['date_closed'] = date('Y-m-d H:i:s', $ticket_info['timestamp_closed']);
+			$insert_ticket['date_resolved'] = date('Y-m-d H:i:s', $ticket_info['timestamp_closed']);
 		}
 		if ($ticket_info['timestamp_lastreply_user']) {
 			$insert_ticket['date_last_user_reply'] = date('Y-m-d H:i:s', $ticket_info['timestamp_lastreply_user']);
@@ -186,6 +186,9 @@ class TicketsStep extends AbstractDeskpro3Step
 		}
 		if ($ticket_info['timestamp_tech_waiting']) {
 			$insert_ticket['date_agent_waiting'] = date('Y-m-d H:i:s', $ticket_info['timestamp_tech_waiting']);
+		}
+		if ($ticket_info['timestamp_user_waiting']) {
+			$insert_ticket['date_user_waiting'] = date('Y-m-d H:i:s', $ticket_info['timestamp_user_waiting']);
 		}
 
 		switch ($ticket_info['status']) {
@@ -247,13 +250,25 @@ class TicketsStep extends AbstractDeskpro3Step
 		# Messages
 		#------------------------------
 
-		$ticket_messages = $this->getOldDb()->fetchAll("SELECT * FROM ticket_message WHERE ticketid = ?", array($ticket_info['id']));
+
+		$first_agent_reply_ts = null;
+		$first_agent_reply = null;
+		$last_agent_reply = null;
+		$last_user_reply = null;
+
+		$ticket_messages = $this->getOldDb()->fetchAll("SELECT * FROM ticket_message WHERE ticketid = ? ORDER BY id", array($ticket_info['id']));
 		foreach ($ticket_messages as $message_info) {
 
 			if ($message_info['techid']) {
 				$pid = $this->getMappedNewId('tech', $message_info['techid']);
+				if (!$first_agent_reply) {
+					$first_agent_reply_ts = $message_info['timestamp'];
+					$first_agent_reply = date('Y-m-d H:i:s', $message_info['timestamp']);
+				}
+				$last_agent_reply = date('Y-m-d H:i:s', $message_info['timestamp']);
 			} else {
 				$pid = $this->getMappedNewId('user', $message_info['userid']);
+				$last_user_reply = date('Y-m-d H:i:s', $message_info['timestamp']);
 			}
 			if (!$pid) {
 				continue;
@@ -315,6 +330,20 @@ class TicketsStep extends AbstractDeskpro3Step
 				));
 			}
 		}
+
+		$up = array();
+		if ($first_agent_reply) {
+			$up['date_first_agent_reply'] = $first_agent_reply;
+			$up['total_to_first_reply'] = $first_agent_reply_ts - $ticket_info['timestamp_opened'];
+		}
+		if ($last_agent_reply) {
+			$up['date_last_agent_reply'] = $last_agent_reply;
+		}
+		if ($last_user_reply) {
+			$up['date_last_user_reply'] = $last_user_reply;
+		}
+
+		$this->getDb()->update('tickets', $up, array('id' => $insert_ticket['id']));
 
 		#------------------------------
 		# Attachments

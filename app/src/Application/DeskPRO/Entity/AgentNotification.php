@@ -36,13 +36,13 @@ class AgentNotification extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketFilter
 	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\ManyToOne(targetEntity="TicketFilter")
+	 * @ORM_Mapping\ManyToOne(targetEntity="TicketFilter")date_resolved
 	 * @ORM_Mapping\JoinColumn(name="filter_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $filter = null;
 
 	/**
-	 * @var Application\DeskPRO\Entity\Person
+	 * @var \Application\DeskPRO\Entity\Person
 	 * @ORM_Mapping\Id
 	 * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="emails")
 	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")

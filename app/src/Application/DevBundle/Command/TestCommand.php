@@ -35,8 +35,17 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
-		$data_init->run();
+		/** @var $reader \Doctrine\Common\Annotations\CachedReader */
+		$reader = $this->getContainer()->get('annotation_reader');
+
+		/** @var $parser \Doctrine\Common\Annotations\DocParser */
+		$parser = $reader->delegate->parser;
+
+		$parser->parse('/** * Tracks notification preferences for each agent on each queue. * * @ORM_Mapping\\Entity(repositoryClass="Application\\DeskPRO\\EntityRepository\\AgentNotification") * @ORM_Mapping\\Table(name="agent_notifications") */');
+
+		$parser->parser->setTarget(1);
+        $parser->parser->setImports($reader->delegate->getImports($class));
+        $parser->parser->setIgnoredAnnotationNames($reader->getIgnoredAnnotationNames($class));
 
 		echo "done\n";
 	}
