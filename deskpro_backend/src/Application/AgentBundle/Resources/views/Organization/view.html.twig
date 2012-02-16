@@ -6,6 +6,10 @@ pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete', { 'l
 pageMeta.labelsSaveUrl = '{{ path('agent_org_ajax_labels_save', {'organization_id': org.id}) }}';
 pageMeta.url_fragment  = '{{ url_fragment('agent_org_view', {'organization_id': org.id}) }}';
 
+{% if org.picture_blob %}
+pageMeta.orgPicIcon = '{{ org.picture_blob.getThumbnailUrl(13) }}';
+{% endif %}
+
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>

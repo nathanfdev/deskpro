@@ -4,13 +4,26 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
 	initializeProperties: function() {
+		var self = this;
 		this.parent();
 		this.TYPENAME = 'organization';
+		this.tabBtn = null;
+		this.addEvent('render', function(container, id) {
+			if (id) {
+				self.tabBtn = $('#tabbtn_' + id);
+			}
+		});
 	},
 
 	initPage: function(el) {
 		this.wrapper = el;
 		this.contentWrapper = $('div.layout-content:first', el);
+
+		if (this.tabBtn) {
+			if (this.getMetaData('orgPicIcon')) {
+				this.tabBtn.find('a').css('background-image', 'url(' + this.getMetaData('orgPicIcon') + ')');
+			}
+		}
 
 		var self = this;
 

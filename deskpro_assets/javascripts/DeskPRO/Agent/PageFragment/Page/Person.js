@@ -27,7 +27,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		if (this.tabBtn) {
 			if (this.getMetaData('personPicIcon')) {
-				this.tabBtn.find('a').css('background-image', this.getMetaData('personPicIcon'));
+				this.tabBtn.find('a').css('background-image', 'url(' + this.getMetaData('personPicIcon') + ')');
 			} else if (this.getMetaData('personGravatarIcon')) {
 				var defaultIcon = ASSETS_BASE_URL_FULL + 'images/agent/tabs/tabtype-person.png';
 				var url = this.getMetaData('personGravatarIcon');
