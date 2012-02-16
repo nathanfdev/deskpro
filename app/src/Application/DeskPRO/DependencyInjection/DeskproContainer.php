@@ -496,4 +496,22 @@ class DeskproContainer extends Container
 	{
 		return $this->kernel->getLogDir();
 	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getBlobDir()
+	{
+		return $this->kernel->getBlobDir();
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getBackupDir()
+	{
+		return $this->kernel->getBackupDir();
+	}
 }

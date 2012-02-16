@@ -37,11 +37,7 @@ class MoveBlobs extends AbstractJob
 			$mover = new DatabaseToFilesystem(App::getDb(), $fs);
 			$blob_fetcher = 'getNonFilesystemBlobs';
 		} else {
-			$base_path = $container->getSetting('core.filestorage_fs_basepath');
-			if (!$base_path) {
-				$base_path = DP_WEB_ROOT . '/data_files';
-			}
-			$mover = new DatabaseToFilesystem(App::getDb(), $base_path);
+			$mover = new DatabaseToFilesystem(App::getDb(), App::getContainer()->getBlobDir());
 			$blob_fetcher = 'getNonDatabaseBlobs';
 		}
 

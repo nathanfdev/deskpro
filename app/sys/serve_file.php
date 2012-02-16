@@ -299,7 +299,7 @@ class FilestorageLoader
 		if (isset($DP_CONFIG['folder_files'])) {
 			$base_path = $GLOBALS['DP_CONFIG']['folder_files'];
 		} else {
-			$base_path = DP_WEB_ROOT . '/data_files';
+			$base_path = DP_WEB_ROOT . '/data/files';
 		}
 
 		$filepath = $base_path . DIRECTORY_SEPARATOR . $batch . DIRECTORY_SEPARATOR . $batch.$authcode . $blob_id . $namehash;
@@ -477,7 +477,7 @@ class FilestorageLoader
 		if (isset($DP_CONFIG['folder_files'])) {
 			$base_path = $GLOBALS['DP_CONFIG']['folder_files'];
 		} else {
-			$base_path = DP_WEB_ROOT . '/data_files';
+			$base_path = DP_WEB_ROOT . '/data/files';
 		}
 
 		$filepath = $base_path . DIRECTORY_SEPARATOR . $blob['save_path'];

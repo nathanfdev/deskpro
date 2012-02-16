@@ -141,10 +141,10 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 		if ($log_dir === null) {
 			global $DP_CONFIG;
-			if (isset($DP_CONFIG['folder_logs'])) {
-				$log_dir = $DP_CONFIG['folder_logs'];
+			if (isset($DP_CONFIG['dir_logs'])) {
+				$log_dir = $DP_CONFIG['dir_logs'];
 			} else {
-				$log_dir = DP_WEB_ROOT . '/data_logs';
+				$log_dir = DP_WEB_ROOT . '/data/logs';
 			}
 		}
 
@@ -157,10 +157,10 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 		if ($backup_dir === null) {
 			global $DP_CONFIG;
-			if (isset($DP_CONFIG['folder_backups'])) {
-				$backup_dir = $DP_CONFIG['folder_backups'];
+			if (isset($DP_CONFIG['dir_backups'])) {
+				$backup_dir = $DP_CONFIG['dir_backups'];
 			} else {
-				$backup_dir = DP_WEB_ROOT . '/data_backups';
+				$backup_dir = DP_WEB_ROOT . '/dir/backups';
 			}
 		}
 
@@ -173,10 +173,10 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 		if ($blob_dir === null) {
 			global $DP_CONFIG;
-			if (isset($DP_CONFIG['folder_files'])) {
-				$blob_dir = $DP_CONFIG['folder_files'];
+			if (isset($DP_CONFIG['dir_files'])) {
+				$blob_dir = $DP_CONFIG['dir_files'];
 			} else {
-				$blob_dir = DP_WEB_ROOT . '/data_files';
+				$blob_dir = DP_WEB_ROOT . '/data/files';
 			}
 		}
 

@@ -49,13 +49,13 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$wr->addFilter(new \Orb\Log\Filter\PriorityFilter(Logger::INFO));
 		$logger->addWriter($wr);
 
-		$log_file_path = App::getKernel()->getLogDir() . '/import.log';
+		$log_file_path = $this->getContainer()->getLogDir() . '/import.log';
 		try {
 			$wr = new \Orb\Log\Writer\Stream($log_file_path);
 			$logger->addWriter($wr);
 		} catch (\Exception $e) {
 			$output->writeln("<error>Log file not writable: $log_file_path</error>");
-			$output->writeln("Make the data_logs directory writable and try again.");
+			$output->writeln("Make the logs directory ({$this->getContainer()->getLogDir()} is writable and try again.");
 			return 1;
 		}
 
@@ -297,7 +297,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$other_version = $importer->getOldDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('deskpro_version_internal'));
 				if ($other_version < 3050502) {
 					$output->writeln('Your DeskPRO v3 installation is outdated. Before we can import your helpdesk into the system, you must run the upgrader.');
-					$output->writeln('Do you want to upgrade your v3 database now? A backup will be generated to the /data_backups directory first.');
+					$output->writeln('Do you want to upgrade your v3 database now? A backup will be generated to '.$this->getContainer()->getBackupDir().' directory first.');
 					$yes = $this->getHelper('dialog')->askConfirmation($output, '[y/N]> ', false);
 					if (!$yes) {
 						$output->writeln('<error>Aborting. You can re-run this command when you are ready to proceed.</error>');
@@ -317,7 +317,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 					$f = "{$config['db_name']}-" . date('Y-m-d-H-i-s') . '.sql';
 					$cmd = $mysqldump_path . " --opt -Q -h{$config['db_host']} -u{$config['db_user']} -p{$config['db_password']} {$config['db_name']} > $f";
 
-					$proc = new \Symfony\Component\Process\Process($cmd, DP_WEB_ROOT . '/data_backups');
+					$proc = new \Symfony\Component\Process\Process($cmd, $this->getContainer()->getBackupDir());
 					$proc->setTimeout(10000);
 					$proc->run(function ($type, $buffer) {
 						if ('err' === $type) {

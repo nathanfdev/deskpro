@@ -58,16 +58,16 @@ $DP_CONFIG = array();
 // $DP_CONFIG['mysqldump_path'] = '';
 
 ######################################################
-# OPTIONAL : Location of Folders                     #
+# OPTIONAL : Location of Directories                 #
 #                                                    #
 # You may wish to move the files, logs and backups   #
-# folder out of the webroot. If you move the folders #
-# you must update the paths below                    #
+# directories out of the webroot. If you move them,  #
+# you must update the paths below.                   #
 ######################################################
 
-// $DP_CONFIG['folder_files'] = '';
-// $DP_CONFIG['folder_backups'] = '';
-// $DP_CONFIG['folder_logs'] = '';
+// $DP_CONFIG['dir_files'] = '';
+// $DP_CONFIG['dir_backups'] = '';
+// $DP_CONFIG['dir_logs'] = '';
 
 ######################################################
 # OPTIONAL : Memcached                               #
