@@ -277,6 +277,9 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				'created_at' => date('Y-m-d H:i:s'),
 				'updated_at' => date('Y-m-d H:i:s'),
 			));
+
+			$data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
+			$data_init->run();
 		}
 
 		#----------------------------------------

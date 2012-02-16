@@ -17,9 +17,8 @@
 	{{ dp_asset_html('user') }}
 {% endif %}
 
-<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBaseUrl() }}/dp/res/user/main.css?{{ app.style.css_updated|date('u')|crc32 }}" media="screen,print" />
-<link rel="stylesheet" type="text/css" href="{{ app.request.getBaseUrl() }}/dp/res/user/main-print.css?{{ app.style.css_updated|date('u')|crc32 }}" media="print" />
-
+<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.style.css_blob.getDownloadUrl() }}?{{ app.style.css_blob.id }}" media="screen,print" />
+<link rel="stylesheet" type="text/css" href="{{ asset('stylesheets/user/main-print.css') }}" media="print" />
 <!--[if IE ]><link href="{{ asset('stylesheets/user/main-ie.css') }}" rel="stylesheet" type="text/css"><![endif]-->
 
 <script type="text/javascript">

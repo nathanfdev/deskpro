@@ -249,6 +249,9 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			}
 
 			$this->getOrm()->getConnection()->commit();
+
+			$data_init = new \Application\InstallBundle\Data\DataInitializer($this->container);
+			$data_init->run();
 		} catch (\Exception $e) {
 			$this->getOrm()->getConnection()->rollback();
 			throw $e;

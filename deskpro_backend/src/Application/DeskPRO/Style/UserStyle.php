@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\Style;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Style;
 
 class UserStyle
 {
@@ -82,6 +83,18 @@ class UserStyle
 			$color = rtrim($m[1], '#');
 			return $self->hex2RGB($color, ',');
 		}, $css);
+
+		// Fix url to static
+		$css = str_replace('url(../../', 'url(../../deskpro_assets/', $css);
+
+		// Strip comments
+		$css = preg_replace('#/\*[^*]*.*?\*/#s', '', $css);
+
+		// Superflous whitespace
+		$css = preg_replace("#\n{2,}#", "\n", $css);
+		$css = preg_replace("#\s*\{\s*#", "{", $css);
+		$css = preg_replace("#\s*\;\s*#", ";", $css);
+		$css = preg_replace("#\s*\:\s*#", ":", $css);
 
 		return $css;
 	}

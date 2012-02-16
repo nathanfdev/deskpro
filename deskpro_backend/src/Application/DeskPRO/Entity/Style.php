@@ -74,6 +74,13 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	protected $logo_blob_id = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\Blob
+	 * @ORM_Mapping\OneToOne(targetEntity="Blob", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="css_blob_id", referencedColumnName="id", onDelete="set null")
+	 */
+	protected $css_blob = null;
+
+	/**
 	 * CSS dir under static with CSS files
 	 *
 	 * @var string

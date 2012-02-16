@@ -389,6 +389,15 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @return \Application\DeskPRO\FileStorage\Filesystem
+	 */
+	public function getFilestorage()
+	{
+		return $this->getSystemService('filestorage');
+	}
+
+
+	/**
 	 * Get the value of a setting.
 	 *
 	 * @param string $name The name of the setting to get

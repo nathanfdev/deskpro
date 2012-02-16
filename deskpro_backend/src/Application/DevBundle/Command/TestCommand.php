@@ -35,10 +35,9 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$path = '/Users/chroder/Sites/deskpro/dp_400/cache-test.php';
-		$cache = new \Orb\Doctrine\Common\Cache\ArrayFileCache($path);
-		$cache->registerShutdownCommit();
+		$data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
+		$data_init->run();
 
-		echo $cache->fetch('test');
+		echo "done\n";
 	}
 }
