@@ -396,6 +396,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		#----------------------------------------
 
 		if ($input->getOption('info')) {
+			$importer_class = get_class($importer);
 			$output->writeln("Importer: {$importer_class}");
 			$output->writeln("Importer ID: {$importer->getId()}");
 			$output->writeln("Number of steps: {$importer->countSteps()}");
