@@ -20,8 +20,7 @@ class TicketMacro extends EntityRepository
 {
 	public function getMacrosForPerson(Entity\Person $person)
 	{
-		// TODO sort out permissions etc
-
+		// TODO:permissions
 		return $this->findAll();
 	}
 }

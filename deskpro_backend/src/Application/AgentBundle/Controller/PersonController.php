@@ -622,85 +622,10 @@ class PersonController extends AbstractController
 		));
 	}
 
-
-	############################################################################
-	# /agent/people/:person_id/ajax-save-emails       agent_people_ajaxsave_emails
-	############################################################################
-
-	// TODO error checking
-	public function ajaxSaveEmailsAction($person_id)
-	{
-		if ($person_id) {
-			$person = $this->getPersonOr404($person_id);
-		} else {
-			$person = new Person();
-		}
-
-		$del_ids = $this->in->getCleanValueArray('del_ids', 'uint', 'discard');
-		$new_emails = $this->in->getCleanValueArray('new_emails', 'string', 'discard');
-		$primary_id = $this->in->getString('primary_id');
-
-		$this->em->beginTransaction();
-
-		if (ctype_digit($primary_id) AND $person['primary_email_id'] != $primary_id) {
-			$email = $person->getEmailId($primary_id);
-			$person['primary_email'] = $email;
-			$person['primary_email_id'] = $primary_id;
-		}
-
-		foreach ($del_ids as $id) {
-			$person->removeEmailAddressId($id);
-		}
-
-		foreach ($new_emails as $email_address) {
-			$email = new PersonEmail();
-			$email['email'] = $email_address;
-			$email['is_validated'] = true;
-
-			$person->addEmailAddress($email);
-
-			if ($primary_id == $email['email']) {
-				$person['primary_email'] = $email;
-				$primary_id = $email['id'];
-			}
-		}
-
-		$first_email = null;
-		$found = false;
-		foreach ($person['emails'] as $email) {
-			if (!$first_email) $first_email = $email;
-			if ($email['id'] == $primary_id) {
-				$found = true;
-				break;
-			}
-		}
-
-		if (!$found) {
-			$person['primary_email'] = $first_email;
-		}
-
-		$this->em->persist($person);
-		$this->em->flush();
-		$this->em->commit();
-
-		$emails_list = array();
-		foreach ($person['emails'] as $email) {
-			$emails_list[] = $email['email'];
-		}
-
-		return $this->createJsonResponse(array(
-			'success' => true,
-			'person_id' => $person['id'],
-			'dlg_html' => $this->renderView('AgentBundle:Person:email-dlg-li.html.twig', array('person' => $person)),
-			'emails_list' => $emails_list
-		));
-	}
-
 	############################################################################
 	# /agent/people/:person_id/ajax-save-note           agent_people_ajaxsave_note
 	############################################################################
 
-	// TODO error checking
 	public function ajaxSaveNoteAction($person_id)
 	{
 		if ($person_id) {
@@ -710,6 +635,14 @@ class PersonController extends AbstractController
 		}
 
 		$note_txt = $this->in->getString('note');
+
+		if (!$note_txt) {
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'error_code' => 'no_message',
+				'person_id' => $person->id,
+			));
+		}
 
 		$em = App::getOrm();
 		$em->beginTransaction();

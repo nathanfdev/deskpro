@@ -1556,7 +1556,6 @@ class TicketController extends AbstractController
 		}
 	}
 
-	// TODO abstract this bit out somewhere,same as in PublishController
 	protected function _getCommentEntityName($typename)
 	{
 		switch ($typename) {

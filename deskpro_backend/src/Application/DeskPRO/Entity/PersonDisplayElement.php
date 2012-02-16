@@ -106,6 +106,4 @@ class PersonDisplayElement extends \Application\DeskPRO\Domain\DomainObject
 
 		return 0;
 	}
-
-	/* todo need similar static php term matchign against people as we do for tickets */
 }

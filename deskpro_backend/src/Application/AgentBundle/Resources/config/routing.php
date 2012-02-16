@@ -435,13 +435,6 @@ $collection->add('agent_people_changepicoverlay', new Route(
 	array()
 ));
 
-$collection->add('agent_people_ajaxsave_emails', new Route(
-	'/people/{person_id}/ajax-save-emails',
-	array('_controller' => 'AgentBundle:Person:ajaxSaveEmails'),
-	array('person_id' => '\\d+'),
-	array()
-));
-
 $collection->add('agent_people_ajaxsave_note', new Route(
 	'/people/{person_id}/ajax-save-note',
 	array('_controller' => 'AgentBundle:Person:ajaxSaveNote'),

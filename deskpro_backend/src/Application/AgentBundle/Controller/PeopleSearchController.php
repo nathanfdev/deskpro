@@ -407,10 +407,6 @@ class PeopleSearchController extends AbstractController
 
 		foreach ($feedback as $feedback) {
 			switch ($action) {
-				case 'delete':
-					// todo need way to handle soft-deleted
-					break;
-
 				case 'add-to-organization':
 					if ($organization) {
 						foreach ($people as $p) {

@@ -93,8 +93,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 	{
 		if ($this->_allowed_ids !== null) return $this->_allowed_ids;
 
-		// TODO after we figure out how we're doing the ui around
-		// permissions
+		// TODO:permissions
 
 		$this->_allowed_ids = App::getEntityRepository('DeskPRO:Department')->getDepartmentIds();
 

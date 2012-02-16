@@ -371,8 +371,6 @@ class TaskController extends AbstractController
         return $this->createJsonResponse(array('success' => 1));
     }
 
-	// TODO error checking
-
     /**
      * Save the comment for tasks
      *
@@ -384,6 +382,13 @@ class TaskController extends AbstractController
         $task = $this->getTaskOr404($task_id);
 
         $comment_txt = $this->in->getString('comment');
+
+		if (!$comment_txt) {
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'error_code' => 'no_message'
+			));
+		}
 
         $comment = new TaskComment($this->person, $comment_txt);
         $comment['person'] = $this->person;

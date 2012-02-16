@@ -123,8 +123,7 @@ class TicketWorkflowsController extends AbstractController
 		$workflow = App::getEntityRepository('DeskPRO:TicketWorkflow')->find($workflow_id);
 
 		if (!$this->session->getEntity()->checkSecurityToken('delete_workflow', $security_token)) {
-			// TODO err
-			die('invalid token');
+			return $this->renderStandardTokenError();
 		}
 
 		$this->em->beginTransaction();

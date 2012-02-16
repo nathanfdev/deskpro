@@ -62,7 +62,7 @@ class TicketActions
 						if ($agent) {
 							$action['agent'] = $agent['id'];
 						} else {
-							return;// todo err?
+							$action['agent'] = 0;
 						}
 					}
 

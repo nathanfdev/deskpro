@@ -12,7 +12,7 @@ namespace Application\DeskPRO\EmailGateway\Cutter\Def;
 
 use Orb\Util\Strings;
 
-class Generic implements ForwardDef, QuoteDef
+class Generic implements ForwardDef
 {
 	/**
 	 * Get an array of info from the forwarded block
@@ -103,7 +103,7 @@ class Generic implements ForwardDef, QuoteDef
 		if (!$parts) return null;
 
 		$msg = trim($parts[1]);
-		
+
 		if ($is_html) {
 			$msg = Strings::trimHtml($msg);
 		}
@@ -182,53 +182,5 @@ class Generic implements ForwardDef, QuoteDef
 		}
 
 		return $info;
-	}
-
-	/**
-	 * Get info from the quote block
-	 *
-	 * @param string $body
-	 * @param bool $is_html
-	 * @return string
-	 */
-	public function getQuoteInfo($body, $is_html = false)
-	{
-		// TODO: Implement getQuoteInfo() method.
-	}
-
-	/**
-	 * Cut out the quote block
-	 *
-	 * @param string $body
-	 * @param bool $is_html
-	 * @return string
-	 */
-	public function cutQuoteBlock($body, $is_html = false)
-	{
-		// TODO: Implement cutQuoteBlock() method.
-	}
-
-	/**
-	 * Get the full quote block
-	 *
-	 * @param string $body
-	 * @param bool $is_html
-	 * @return string
-	 */
-	public function getQuoteBlock($body, $is_html = false)
-	{
-		// TODO: Implement getQuoteBlock() method.
-	}
-
-	/**
-	 * Get the quoted message
-	 *
-	 * @param string $body
-	 * @param bool $is_html
-	 * @return string
-	 */
-	public function getQuotedMessage($body, $is_html = false)
-	{
-		// TODO: Implement getQuotedMessage() method.
 	}
 }

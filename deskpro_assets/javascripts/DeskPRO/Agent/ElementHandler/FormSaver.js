@@ -88,6 +88,11 @@ DeskPRO.Agent.ElementHandler.FormSaver = new Orb.Class({
 				}).bind(this), 1000);
 			},
 			success: function(data) {
+
+				if (data.error) {
+					return;
+				}
+
 				if (this.list) {
 					var newRow = $(data[this.resultHtmlKey]);
 					DeskPRO_Window.initInterfaceServices(newRow);

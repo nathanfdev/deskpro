@@ -50,12 +50,10 @@ class Ticket extends AbstractEntityRepository
 	/**
 	 * Get tickets by specific ids
 	 *
-	 * TODO: Verify agent permissions with $person_context if supplied
-	 *
 	 * @param array $ids
 	 * @return array
 	 */
-	public function getTicketsFromIds(array $ids, Entity\Person $person_context = null)
+	public function getTicketsFromIds(array $ids)
 	{
 		// Only valid ID's please :)
 		// Do this because Doctrine doesnt have proper IN()

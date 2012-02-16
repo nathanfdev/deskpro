@@ -222,15 +222,15 @@ class DepartmentsController extends AbstractController
 
 		if ($has_data) {
 			$move_department = App::getEntityRepository('DeskPRO:Department')->find($this->in->getUint('move_to_department'));
-			if (!$move_department || count($move_department->children)) {
-				// TODO err
-				die('invalid new department');
+			if (!$move_department) {
+				return $this->renderStandardError('You need to choose a department to move existing data into.');
+			} elseif (count($move_department->children)) {
+				return $this->renderStandardError('You chose an invalid department to move existing data into. The new department cannot have children.');
 			}
 		}
 
 		if (!$this->session->getEntity()->checkSecurityToken('delete_department', $security_token)) {
-			// TODO err
-			die('invalid token');
+			return $this->renderStandardTokenError();
 		}
 
 		$this->em->beginTransaction();

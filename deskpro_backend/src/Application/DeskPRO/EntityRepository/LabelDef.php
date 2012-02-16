@@ -69,10 +69,6 @@ class LabelDef extends EntityRepository
 	 */
 	public function getLabelCounts($type, $limit = 25)
 	{
-		// TODO this should be cached somehow, or probably
-		// needs new column in LaeblDef to store counts statically, and then
-		// add postInsert code to each label entity to increase the count automatically
-
 		switch ($type) {
 			case 'tickets':
 			case 'ticket':

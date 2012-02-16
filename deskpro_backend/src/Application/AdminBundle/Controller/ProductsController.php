@@ -143,8 +143,7 @@ class ProductsController extends AbstractController
 		$product = App::getEntityRepository('DeskPRO:Product')->find($product_id);
 
 		if (!$this->session->getEntity()->checkSecurityToken('delete_product', $security_token)) {
-			// TODO err
-			die('invalid token');
+			return $this->renderStandardTokenError();
 		}
 
 		$this->em->beginTransaction();

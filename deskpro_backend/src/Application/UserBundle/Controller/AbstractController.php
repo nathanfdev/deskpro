@@ -92,4 +92,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			'vars'          => $vars
 		));
 	}
+
+	/**
+	 * @return Response
+	 */
+	public function renderStandardTokenError()
+	{
+		return $this->renderStandardError('@user.error_expired_token');
+	}
 }

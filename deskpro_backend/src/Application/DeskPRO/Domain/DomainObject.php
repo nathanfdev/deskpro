@@ -86,8 +86,6 @@ abstract class DomainObject extends BasicDomainObject
 
 	public static function getEntityName()
 	{
-		// todo must be a cleaner way of doing this with metadata class?
-
 		$name = Util::getBaseClassname(get_called_class());
 		if (preg_match('#^ApplicationDeskPROEntity(.*?)Proxy$#', $name, $m)) {
 			$name = $m[1];

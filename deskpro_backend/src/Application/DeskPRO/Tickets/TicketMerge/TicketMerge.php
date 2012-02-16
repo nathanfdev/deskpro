@@ -72,7 +72,7 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 
 	public function checkPersonPermission()
 	{
-		// todo
+		// TODO:permissions
 		return true;
 	}
 

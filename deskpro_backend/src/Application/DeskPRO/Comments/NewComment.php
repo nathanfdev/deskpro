@@ -101,7 +101,7 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 			$obj->visitor = App::getSession()->getVisitor();
 			$obj->content = htmlspecialchars($this->content);
 
-			// TODO visibility based on setting
+			// TODO:permission visibility based on setting
 			$obj->status = 'visible';
 
 			foreach ($this->assignments as $k => $v) {

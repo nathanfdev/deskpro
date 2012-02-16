@@ -135,8 +135,7 @@ class TicketCategoriesController extends AbstractController
 		$category = App::getEntityRepository('DeskPRO:TicketCategory')->find($category_id);
 
 		if (!$this->session->getEntity()->checkSecurityToken('delete_ticket_category', $security_token)) {
-			// TODO err
-			die('invalid token');
+			return $this->renderStandardTokenError();
 		}
 
 		$this->em->beginTransaction();

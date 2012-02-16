@@ -136,7 +136,7 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 			$feedback['validating']   = $validating;
 
 			if ($validating) {
-				// TODO visibility based on setting
+				// TODO:permissions visibility based on setting
 				$feedback->setStatusCode('hidden.validating');
 			}
 

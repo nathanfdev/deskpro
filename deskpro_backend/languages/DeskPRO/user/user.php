@@ -113,6 +113,7 @@
 
 	'user.log_in_btn' => 'Log In',
 
+	'user.error_expired_token' => 'The page you are trying to access has expire. Go back and try again.',
 	'user.error_not_allowed_title' => 'You are not allowed to do that',
 	'user.error_not_allowed' => 'Sorry, the action you are trying to perform is not allowed.',
 	'user.error_not_allowed_help' => 'You are currently logged out. <a href="{{login_url}}">Log in</a> and try again.',

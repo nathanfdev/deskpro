@@ -73,7 +73,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 			$this->getEm()->flush();
 		}
 
-		// TODO permission mapping when permissions are final
+		// TODO:permissions mapping when permissions are final
 
 		$this->saveMappedId('usergroup', $group_info['id'], $usergroup->id);
 

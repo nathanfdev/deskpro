@@ -17,7 +17,7 @@ use Application\DeskPRO\Entity;
 /**
  * Helper added to People who are agents, works with agent-specific stuff.
  *
- * // TODO: Team related things: Store a flag somewhere to see if any teams exist in the db.
+ * // PERF: Team related things: Store a flag somewhere to see if any teams exist in the db.
  * // if they dont, all team realted stuff can be optimized a bit
  */
 class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Helper\ShortCallableInterface

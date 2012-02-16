@@ -70,7 +70,7 @@ class FeedbackMerge implements PersonContextInterface
 
 	public function checkPersonPermission()
 	{
-		// todo
+		// TODO:permission
 		return true;
 	}
 

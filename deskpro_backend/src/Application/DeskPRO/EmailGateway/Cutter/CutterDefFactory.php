@@ -16,8 +16,6 @@ class CutterDefFactory
 {
 	public static function getDef(AbstractReader $reader)
 	{
-		// Todo differente Def's based on X-Mailer etc
-
 		$def = new Def\Generic();
 		return $def;
 	}

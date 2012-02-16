@@ -49,7 +49,7 @@ class UserNotificationNewTicketValidatingAction extends AbstractUserNotification
 			$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 
 		} else {
-			// TODO agent validation?
+			// TODO:permissions agent validation?
 			//$this->applyAgentValidating($ticket);
 		}
 	}

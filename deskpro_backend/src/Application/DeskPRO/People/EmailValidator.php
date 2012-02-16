@@ -129,7 +129,6 @@ class EmailValidator
 					$entity_name = str_replace('Application\\DeskPRO\\Entity\\', 'DeskPRO:', $entity_name);
 				}
 
-				// TODO tear these out into their own validator ahndlers
 				switch ($entity_name) {
 					case 'DeskPRO:Feedback':
 						$feedback = App::findEntity('DeskPRO:Feedback', $entity_id);

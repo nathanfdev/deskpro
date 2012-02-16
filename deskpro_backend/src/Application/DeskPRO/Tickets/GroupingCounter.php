@@ -237,7 +237,7 @@ class GroupingCounter
 			// TODO this should be using active table
 			$sql = "
 				SELECT " . implode(', ', $select_fields) . "
-				FROM tickets
+				FROM tickets_search_active
 				LEFT JOIN tickets_participants ON (tickets_participants.ticket = tickets.id)
 				LEFT JOIN tickets_participants AS part_check ON (part_check.ticket = tickets.id)
 				WHERE " . implode(' AND ', $wheres) . "

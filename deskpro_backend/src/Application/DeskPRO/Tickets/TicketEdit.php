@@ -81,7 +81,6 @@ class TicketEdit
 
 					if (!$agent) {
 						continue;
-						//todo err?
 					}
 
 					$this->ticket->setFlagForPerson($agent, $action);
@@ -116,7 +115,6 @@ class TicketEdit
 
 					if (!$agent) {
 						continue;
-						//todo err?
 					}
 
 					$message = new Entity\TicketMessage();

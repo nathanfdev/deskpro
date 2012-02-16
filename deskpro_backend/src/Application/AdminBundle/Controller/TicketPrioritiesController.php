@@ -129,8 +129,7 @@ class TicketPrioritiesController extends AbstractController
 		$priority = App::getEntityRepository('DeskPRO:TicketPriority')->find($priority_id);
 
 		if (!$this->session->getEntity()->checkSecurityToken('delete_ticket_priority', $security_token)) {
-			// TODO err
-			die('invalid token');
+			return $this->renderStandardTokenError();
 		}
 
 		$this->em->beginTransaction();

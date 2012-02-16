@@ -285,7 +285,6 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 
 		$searcher = $this->getSearcher();
 
-		// !TODO make person be passed in directly to this method
 		if (!$person) {
 			$person = App::getCurrentPerson();
 		}

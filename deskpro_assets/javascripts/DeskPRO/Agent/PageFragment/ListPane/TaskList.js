@@ -222,6 +222,11 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 				},
 				success: function(data) {
 					closefn();
+
+					if (data.error) {
+						return;
+					}
+
 					var list = $('ul.task-comment-list', row);
 					$(data.comment_li_html).appendTo(list);
 					$('.task-comments', row).show();

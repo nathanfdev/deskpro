@@ -192,7 +192,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Get the DeskPRO form field object that knows how to render data etc.
 	 *
-	 * @return Application\DeskPRO\Form\FieldHandler\AbstractFieldHandler
+	 * @return \Application\DeskPRO\Form\FieldHandler\AbstractFieldHandler
 	 */
 	public function getHandler()
 	{
@@ -205,9 +205,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$classname = $this['handler_class'];
-
-		// TODO: Maybe something to do with admin saving the name and magic quotes
-		// Look into that, then remove this line because it shouldnt be needed
 		$classname = preg_replace('#\\\\+#', '\\', $classname);
 
 		$this->_handler_instance = new $classname($this);

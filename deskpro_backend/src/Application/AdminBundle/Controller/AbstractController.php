@@ -37,8 +37,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		}
 
 		if (!$this->_userHasPermissions()) {
-			// Todo need this to be a no permissions screen
-			return $this->redirect($this->get('router')->generate('admin_login'));
+			return $this->renderStandardPermissionError('You do not have permission to use the admin interface.');
 		}
 
 		$setup_guide = new \Application\AdminBundle\SetupGuide($this->container, $this);
@@ -64,19 +63,56 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function renderStandardError($error_message = '', $error_title = '', $code = 200, array $vars = array())
 	{
-		if ($error_message AND $error_message[0] == '@') {
-			$error_message = App::getTranslator()->getPhraseText(substr($error_message, 1));
+		$tpl_standard = 'AdminBundle:Main:error-standard.html.twig';
+		$tpl_specific = "AdminBundle:Main:error-{$code}.html.twig";
+
+		$tpl = $tpl_standard;
+		if (App::getTemplating()->exists($tpl_specific)) {
+			$tpl = $tpl_specific;
 		}
 
-		if ($error_title AND $error_title[0] == '@') {
-			$error_title = App::getTranslator()->getPhraseText(substr($error_title, 1));
-		}
-
-		return $this->forward('AdminBundle:Main:standardError', array(
+		$vars = array_merge($vars, array(
 			'error_message' => $error_message,
-			'error_title'   => $error_title,
-			'code'          => $code,
-			'vars'          => $vars
+			'error_title'   => $error_title
 		));
+
+		$res = $this->render($tpl, $vars);
+
+		$res->setStatusCode($code);
+
+		return $res;
+	}
+
+	/**
+	 * Render a standard permission error message.
+	 *
+	 * @param string $error_message
+	 * @param string $error_title
+	 * @return Response
+	 */
+	public function renderStandardPermissionError($error_message = '', $error_title = '', $code = 200, array $vars = array())
+	{
+		$tpl = 'AdminBundle:Main:error-permission.html.twig';
+
+		$vars = array_merge($vars, array(
+			'error_message' => $error_message,
+			'error_title'   => $error_title
+		));
+
+		$res = $this->render($tpl, $vars);
+
+		$res->setStatusCode($code);
+
+		return $res;
+	}
+
+	/**
+	 * Standard error displayed when we're given an invalid security token.
+	 *
+	 * @return Response
+	 */
+	public function renderStandardTokenError()
+	{
+		return $this->renderStandardError('The page you are trying to access has expired. Go back, refresh, and try again.');
 	}
 }

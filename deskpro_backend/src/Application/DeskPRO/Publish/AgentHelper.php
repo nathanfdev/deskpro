@@ -65,7 +65,6 @@ class AgentHelper implements PersonContextInterface
 	 */
 	public function getCategoryStructure($type, $flat = false)
 	{
-		// TODO cacheable
 		$entity_name = self::getCatEntityNameFor($type);
 
 		return App::getEntityRepository($entity_name)->getRootNodes();

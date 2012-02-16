@@ -217,16 +217,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $ticket_hash;
 
 	/**
-	 * @!TODO Make this an enum type
-	 *
 	 * @var string
 	 * @ORM_Mapping\Column(name="status", type="string", length=30)
 	 */
 	protected $status;
 
 	/**
-	 * @!TODO Make this an enum type
-	 *
 	 * @var string
 	 * @ORM_Mapping\Column(name="hidden_status", type="string", length=30, nullable=true)
 	 */
@@ -529,45 +525,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->urgency = $new_u;
 			$this->_onPropertyChanged('urgency', $old_u, $new_u);
 		}
-	}
-
-
-	/**
-	 * Get a summary line. This is the ticket subject, and if $max_len allows,
-	 * the first characters of the first message.
-	 *
-	 * This is usually used in templates where a line or two are displayed in a list
-	 *
-	 * @return string
-	 */
-	public function getSummaryLine($max_len = 200, $include_subject = false)
-	{
-		if ($include_subject) {
-			$summary = $this->subject;
-		} else {
-			$summary = '';
-		}
-
-		if (strlen($summary) < $max_len) {
-			if ($include_subject) {
-				$summary .= '. ';
-			}
-
-			// !TODO
-			// THis is used in the result listings, so this needs
-			// to be made more efficient than running a query per message
-
-			$first_message = App::getEntityRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($this);
-			if ($first_message) {
-				$summary .= Strings::removeLineBreaks($first_message->getMessageText());
-			}
-		}
-
-		if (strlen($summary) > $max_len) {
-			$summary = substr($summary, 0, $max_len);
-		}
-
-		return $summary;
 	}
 
 
@@ -1206,7 +1163,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		if ($id) {
 			$agent = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
 			if (!$agent['is_agent']) {
-				// !TODO err
+				throw new \InvalidArgumentException("$id is not an agent");
 			}
 
 			$this['agent'] = $agent;
@@ -1727,7 +1684,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getPublicId()
 	{
-		// !TODO controller by setting
 		return $this->id;
 	}
 

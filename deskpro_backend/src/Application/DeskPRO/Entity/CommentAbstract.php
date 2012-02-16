@@ -208,8 +208,6 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * TODO: Is this still used?
-	 *
 	 * @return string
 	 */
 	public function getContentHtml()
@@ -219,8 +217,6 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * TODO: Is this still used
-	 *
 	 * @return string
 	 */
 	public function getContentHtmlPlain()

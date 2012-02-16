@@ -45,8 +45,6 @@ class PersonProps
 			}
 
 			$this->email = $person->getPrimaryEmailAddress();
-
-			//todo prefill fields
 		}
 	}
 }

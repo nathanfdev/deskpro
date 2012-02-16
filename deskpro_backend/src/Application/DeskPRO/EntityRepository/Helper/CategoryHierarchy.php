@@ -424,8 +424,6 @@ class CategoryHierarchy
 	}
 
 	/**
-	 * TODO: Remove this call
-	 *
 	 * @deprecated
 	 */
 	public function children($category = null, $direct = true)

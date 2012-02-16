@@ -269,7 +269,6 @@ class Feedback extends AbstractEntityRepository
 
 	public function getNewest($status, $num = 10, $node = false)
 	{
-		// TODO this can be shortened by using a builder
 		if (!$status) {
 			$feedback = $this->getEntityManager()->createQuery("
 				SELECT i
