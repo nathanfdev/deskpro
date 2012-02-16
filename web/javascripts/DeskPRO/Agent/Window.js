@@ -58,6 +58,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				el.text(count);
 
+				if (el.data('tag')) {
+					$('i.' + el.data('tag')).text(count);
+				}
+
 				return count;
 			},
 

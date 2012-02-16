@@ -22,7 +22,7 @@
 	<header>
 		<nav>
 			<ul>
-				<li data-tab-for="#{{baseId}}_members_tab" class="on">{{ phrase('agent.members') }} <span class="count" id="{{baseId}}_members_count">{{members_count|default(0)}}</span></li>
+				<li data-tab-for="#{{baseId}}_members_tab" class="on">{{ phrase('agent.members') }} <i class="count" data-tag="org-members-count-{{ org.id }}" id="{{baseId}}_members_count">{{members_count|default(0)}}</i></li>
 				{% if org_tickets_count %}
 					<li data-tab-for="#{{baseId}}_tickets_tab">{{ phrase('agent.tickets') }} <span class="count" id="{{baseId}}_tickets_count">{{ org_tickets_count|default(0) }}</span></li>
 				{% endif %}
