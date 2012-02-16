@@ -255,6 +255,28 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$this->getContainer()->getEm()->getConnection()->rollback();
 				throw $e;
 			}
+
+			App::getDb()->replace('settings', array(
+				'name' => 'core.install_timestamp',
+				'groupname' => 'core',
+				'value' => time(),
+				'created_at' => date('Y-m-d H:i:s'),
+				'updated_at' => date('Y-m-d H:i:s'),
+			));
+			App::getDb()->replace('settings', array(
+				'name' => 'core.deskpro_build',
+				'groupname' => 'core',
+				'value' => DP_BUILD_TIME,
+				'created_at' => date('Y-m-d H:i:s'),
+				'updated_at' => date('Y-m-d H:i:s'),
+			));
+			App::getDb()->replace('settings', array(
+				'name' => 'core.install_key',
+				'groupname' => 'core',
+				'value' => \Orb\Util\Strings::random(20, \Orb\Util\Strings::CHARS_KEY),
+				'created_at' => date('Y-m-d H:i:s'),
+				'updated_at' => date('Y-m-d H:i:s'),
+			));
 		}
 
 		#----------------------------------------

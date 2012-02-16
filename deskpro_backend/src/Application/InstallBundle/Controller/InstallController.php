@@ -265,17 +265,24 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 	public function installDoneAction()
 	{
 		$db = $this->getOrm()->getConnection();
-		$db->insert('settings', array(
+		$db->replace('settings', array(
 			'name' => 'core.install_timestamp',
 			'groupname' => 'core',
 			'value' => time(),
 			'created_at' => date('Y-m-d H:i:s'),
 			'updated_at' => date('Y-m-d H:i:s'),
 		));
-		$db->insert('settings', array(
+		$db->replace('settings', array(
 			'name' => 'core.install_key',
 			'groupname' => 'core',
 			'value' => Strings::random(20, Strings::CHARS_KEY),
+			'created_at' => date('Y-m-d H:i:s'),
+			'updated_at' => date('Y-m-d H:i:s'),
+		));
+		$db->replace(('settings', array(
+			'name' => 'core.deskpro_build',
+			'groupname' => 'core',
+			'value' => DP_BUILD_TIME,
 			'created_at' => date('Y-m-d H:i:s'),
 			'updated_at' => date('Y-m-d H:i:s'),
 		));

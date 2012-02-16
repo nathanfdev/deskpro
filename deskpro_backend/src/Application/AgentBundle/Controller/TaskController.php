@@ -484,8 +484,6 @@ class TaskController extends AbstractController
 
 	protected function getCmForAssigned(Task $task, $is_new)
 	{
-		// todo move this out into a task manager or handler, like with chats
-
 		$cms = array();
 
 		$data = array(
