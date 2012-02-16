@@ -426,7 +426,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 					var domain = $(this).closest('tr').data('org-domain');
 
 					$.ajax({
-						url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/move-users',
+						url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/domain/move-users',
 						type: 'POST',
 						data: { domain: domain },
 						dataType: 'html',
@@ -440,7 +440,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 					var domain = $(this).closest('tr').data('org-domain');
 
 					$.ajax({
-						url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/move-users',
+						url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/domain/reassign-users',
 						type: 'POST',
 						data: { domain: domain },
 						dataType: 'html',

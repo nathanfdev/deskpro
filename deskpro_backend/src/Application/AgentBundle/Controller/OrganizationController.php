@@ -421,7 +421,7 @@ class OrganizationController extends AbstractController
 	{
 		$org_email_domains = App::getEntityRepository('DeskPRO:OrganizationEmailDomain')->getDomainsForOrganization($org);
 
-		$org_count_domain_nonmembers   = App::getEntityRepository('DeskPRO:PersonEmail')->countDomainsWithNoCompany($org_email_domains);
+		$org_count_domain_nonmembers   = App::getEntityRepository('DeskPRO:PersonEmail')->countDomainsWithNoCompany($org_email_domains, $org);
 		$org_count_domain_takenmembers = App::getEntityRepository('DeskPRO:PersonEmail')->countDomainsWithOtherCompany($org_email_domains, $org);
 		$org_count_domain_members      = App::getEntityRepository('DeskPRO:OrganizationEmailDomain')->countMembersAtDomains($org, $org_email_domains);
 
@@ -474,11 +474,11 @@ class OrganizationController extends AbstractController
 		$org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
 		$domain = $this->in->getString('domain');
 
-		if ($orgdomain) {
-			$orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
-		}
+		$orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
 
-		$count = $org_domain_manager->moveNonCompanyUsers($orgdomain);
+		if ($orgdomain) {
+			$count = $org_domain_manager->moveNonCompanyUsers($orgdomain);
+		}
 
 		$data = $this->getOrgEmailDisplayData($org);
 		return $this->render('AgentBundle:Organization:orgemail-display.html.twig', $data);

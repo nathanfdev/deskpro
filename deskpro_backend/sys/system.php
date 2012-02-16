@@ -99,8 +99,6 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		$content = str_replace("'" . DP_ROOT, 'DP_ROOT.\'', $content);
 
 		$cache->write($content, $container->getResources());
-
-		if (file_exists($this->getCacheDir() . '/annotations')) rmdir($this->getCacheDir() . '/annotations');
 	}
 
 	protected function getContainerClass()
@@ -205,6 +203,11 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			'Bundle'             => DP_ROOT.'/src/Bundle',
 			'Symfony\\Bundle'    => DP_ROOT.'/vendor/symfony/src/Symfony/Bundle',
 		);
+	}
+
+	public function setClassCache(array $classes)
+	{
+
 	}
 }
 
