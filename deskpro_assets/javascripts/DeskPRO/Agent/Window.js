@@ -1290,9 +1290,20 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var self = this;
 		if (routeData.tabPlaceholderId) {
-			var errorFn = function() { DeskPRO_Window.TabBar.removeTabById(routeData.tabPlaceholderId); };
+			var errorFn = function(x, t) {
+				DeskPRO_Window.TabBar.removeTabById(routeData.tabPlaceholderId);
+
+				if (t == 'timeout') {
+					DeskPRO_Window.showAlert('The request timed out while trying to load the tab. Please try again.');
+				}
+			};
 		} else {
-			var errorFn = function() {};
+			var errorFn = function(x, t) {
+				$('#dp_list_loading').hide();
+				if (t == 'timeout') {
+					DeskPRO_Window.showAlert('The request timed out. Please try again.');
+				}
+			};
 		}
 
 		if (routeData && routeData.postData) {
@@ -1305,7 +1316,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 					successFn(data);
 				}).bind(this),
 				error: errorFn,
-				noErrorOverride: true
+				noErrorOverride: true,
+				timeout: 20000
 			});
 
 			routeData.xhr = xhr;
@@ -1318,7 +1330,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 					successFn(data);
 				}).bind(this),
 				error: errorFn,
-				noErrorOverride: true
+				noErrorOverride: true,
+				timeout: 20000
 			});
 
 			routeData.xhr = xhr;

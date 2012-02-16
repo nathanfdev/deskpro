@@ -544,6 +544,7 @@ class TicketSearchController extends AbstractController
 
 	protected function _getResponseForTickets($type, $type_id, $results_helper, array $vars = array())
 	{
+		sleep(10);
 		$view_type = $this->in->getString('view_type');
 		if (!$view_type OR !in_array($view_type, array('list', 'simple', 'simple-ext'))) {
 			$view_type = 'simple-ext';
