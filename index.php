@@ -8,8 +8,8 @@ error_reporting(E_ALL | E_STRICT);
 ini_set('display_errors', true);
 
 /**
- * The path to the 'deskpro_backend' directory.
- * If you move the deskpro_backend directory, you must update this path.
+ * The path to the 'app' directory.
+ * If you move the app directory, you must update this path.
  */
 define('DP_ROOT', dirname(__FILE__) . '/app');
 
