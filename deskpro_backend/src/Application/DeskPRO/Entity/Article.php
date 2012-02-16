@@ -104,6 +104,16 @@ class Article extends ContentAbstract
 		return $url;
 	}
 
+	/**
+	 * Add a label
+	 * @param \Application\DeskPRO\Entity\LabelTicket $label
+	 */
+	public function addLabel(LabelArticle $label)
+	{
+		$label['article'] = $this;
+		$this->labels->add($label);
+	}
+
 	public function addCustomData(CustomDataArticle $data)
 	{
 		$this->custom_data->add($data);

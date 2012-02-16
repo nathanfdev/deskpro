@@ -362,7 +362,8 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	public function getLabelManager()
 	{
 		if ($this->_label_manager === null) {
-			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelArticle');
+			$name = Util::getBaseClassname($this);
+			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:Label' . $name);
 		}
 
 		return $this->_label_manager;
