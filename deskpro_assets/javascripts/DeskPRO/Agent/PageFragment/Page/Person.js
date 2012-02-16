@@ -113,7 +113,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			var postxt  = editOrgpos.find('input').first();
 
 			var setName = nametxt.val().trim();
-			var setPos  = postxt.val().trim();
+			if (postxt) {
+				var setPos  = '';
+			} else {
+				var setPos  = postxt.val().trim();
+			}
 
 			namef.show().text(setName ? setName : 'Double-click to set name');
 			if (setPos) {
