@@ -156,7 +156,7 @@ class PersonEmail extends \Doctrine\ORM\EntityRepository
 			SELECT people_emails.email_domain, COUNT(*) as count
 			FROM people_emails
 			LEFT JOIN people ON (people.id = people_emails.person_id)
-			WHERE people_emails.email_domain IN ($domains) AND people.organization_id IS NULL
+			WHERE people_emails.email_domain IN ($domains) AND people.id IS NOT NULL AND people.organization_id IS NULL
 			GROUP BY people_emails.email_domain
 		"));
 
