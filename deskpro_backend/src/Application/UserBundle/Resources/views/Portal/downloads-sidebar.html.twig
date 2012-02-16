@@ -8,7 +8,7 @@
 				<li>
 					<div class="dp-faded-container">
 						<span class="dp-icon-file dp-icon-{{ download.blob.extension }}">
-							<a href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id}) }}">{{ download.filename }}</a>
+							<a href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id, 'filename': download.blob.filename}) }}">{{ download.filename }}</a>
 						</span>
 						| {{ download.readable_filesize }}
 						<div class="dp-bound-faded"></div>

@@ -31,7 +31,7 @@
 						<div class="dp-bound-faded"></div>
 					</div>
 					<div class="meta">
-						<a href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id}) }}">{{ download.filename }}</a> | {{ download.readable_filesize }}
+						<a href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id, 'filename': download.blob.filename}) }}">{{ download.filename }}</a> | {{ download.readable_filesize }}
 						{% if comment_counts[download.id] %}| Comments: {{ comment_counts[download.id] }}{% endif %}
 					</div>
 				</li>

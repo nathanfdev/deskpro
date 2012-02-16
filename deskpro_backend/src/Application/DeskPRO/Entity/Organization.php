@@ -303,6 +303,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->picture_blob) {
 			$url = App::get('router')->generate('serve_blob', array(
 				'blob_auth_id' => $this->picture_blob->getAuthId(),
+				'filename' => $this->picture_blob->filename,
 				's' => $size
 			), true);
 		}

@@ -5,7 +5,7 @@
 	</div>
 	<div class="dp-content-body">
 		<div class="dp-post">
-			<p><a class="btn" href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id}) }}">
+			<p><a class="btn" href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id, 'filename': download.blob.filename}) }}">
 				{{ phrase('user.downloads.label_download') }}: {{ download.filename }} <small>({{ download.readable_filesize }})</small>
 			</a></p>
 			{{ download.content_html|raw }}

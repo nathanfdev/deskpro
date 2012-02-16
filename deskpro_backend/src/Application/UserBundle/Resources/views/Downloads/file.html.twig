@@ -34,7 +34,7 @@
 						{{ download.content_html|raw }}
 					</div>
 					<div class="dp-download-btn-wrap">
-						<a class="btn" href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id}) }}">
+						<a class="btn" href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id, 'filename': download.blob.filename}) }}">
 							{{ phrase('user.downloads.label_download') }}: {{ download.filename }} <small>({{ download.readable_filesize }})</small>
 						</a>
 					</div>
