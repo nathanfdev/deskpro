@@ -124,7 +124,7 @@
 		</li>
 		{% endif %}
 
-		{% if term_options.languages %}
+		{% if ticket_options.languages %}
 			<li class="ob">
 				<label>Language</label>
 				<div class="values">
@@ -135,6 +135,17 @@
 					</select>
 				</div>
 			</li>
+		{% endif %}
+
+		{% if ticket_options.custom_ticket_fields %}
+			{% for field in ticket_options.custom_ticket_fields %}
+				<li {% if 'choice' in field.field_def.handler_class %}class="ob"{% else %}class="field-input"{% endif %}>
+					<label>{{field.field_def.title}}</label>
+					<div class="values">
+						{{ form_widget(field.formView) }}
+					</div>
+				</li>
+			{% endfor %}
 		{% endif %}
 	</ul>
 	<br class="clear" />
@@ -164,6 +175,6 @@
 	classname: 'search-builder-tpl',
 	id: 'tickersearch_criteria_tpl',
 	term_options: term_options,
-	no_show_fields: ['department', 'status', 'agent', 'agent_team', 'participant', 'category', 'product', 'priority', 'workflow', 'organizaton', 'language'],
+	no_show_fields: ['department', 'status', 'agent', 'agent_team', 'participant', 'category', 'product', 'priority', 'workflow', 'organizaton', 'language', 'ticket_field'],
 	search_context: 'filter'
 } %}
