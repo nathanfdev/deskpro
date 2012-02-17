@@ -58,6 +58,8 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 				$this->log_explain = $DP_CONFIG['debug']['querylog']['log_trace'];
 			}
 		}
+
+		register_shutdown_function(array($this, 'processLast'));
 	}
 
 	public function startQuery($sql, array $params = null, array $types = null)
@@ -65,6 +67,8 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		if (isset($GLOBALS['DP_NOSQL_LOG'])) return;
 		if ($this->is_logging) return;
 		if (!$this->is_enabled) return;
+
+		$this->processLast();
 
 		$sql = trim($sql);
 		if (preg_match('#^SELECT#i', $sql)) {
@@ -93,17 +97,17 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		);
 	}
 
-	public function stopQuery()
+	public function processLast()
 	{
 		if (isset($GLOBALS['DP_NOSQL_LOG'])) return;
 		if ($this->is_logging) {
 			return;
 		}
-		$this->is_logging = true;
 
 		if (!$this->is_enabled OR !$this->last_query) {
 			return;
 		}
+		$this->is_logging = true;
 
 		$queryinfo = $this->last_query;
 		$queryinfo['time_end']   = microtime(true);
@@ -171,5 +175,13 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
 		$this->last_query = null;
 		$this->is_logging = false;
+	}
+
+	public function stopQuery()
+	{
+		// Dont process anything here
+		// It'll interfere with mysql's last insert ID if we insert log items now (it'll return the log items id!)
+		// Instead, only process when processing a new query, and also we registered a shutdown function to
+		// process the last query on the page.
 	}
 }
