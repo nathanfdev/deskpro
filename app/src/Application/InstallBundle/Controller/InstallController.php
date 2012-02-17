@@ -49,7 +49,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			'errors' => $server_check->getErrors(),
 			'has_config' => $has_config,
 			'is_fatal' => $is_fatal,
-			'has_db_checks' => $has_db_checks
+			'has_db_checks' => $has_db_checks,
+			'db_config' => App::getConfig('db'),
 		));
 	}
 

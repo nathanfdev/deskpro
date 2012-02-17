@@ -35,6 +35,11 @@ class InstallExtension extends Extension
 		$definition->addMethodCall('loadGroups', array('core'));
 		$container->setDefinition('deskpro.core.settings', $definition);
 
+		$definition = new Definition('Application\\DeskPRO\\Search\\Adapter\\AbstractAdapter');
+		$definition->setFactoryClass('Application\\DeskPRO\\StaticLoader\\SearchAdapter');
+		$definition->setFactoryMethod('getSearchAdapter');
+		$container->setDefinition('deskpro.search_adapter', $definition);
+
 		$this->loadInputReader($container);
     }
 

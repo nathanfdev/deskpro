@@ -190,7 +190,7 @@
 						<?php else: $failed = true; ?>
 							<span class="label important" style="float:right">FAIL</span>
 						<?php endif ?>
-						Checking database connection
+						Checking database connection (<?php echo $db_config['user'] ?>@<?php echo $db_config['host'] ?>/<?php echo $db_config['dbname'] ?>)
 						<?php if ($failed): ?>
 							<div class="alert-message block-message error">
 								A database connection could not be established. Check your config.php to make sure

@@ -507,12 +507,15 @@ SQL;
 		foreach ($all_sql as $s) {
 			$s = trim($s);
 
+			// Trigger
 			if (preg_match('#^CREATE TRIGGER#', $s)) {
 				$s_ex = var_export($s, true);
 
 				$this->triggers[] = $s;
 				$php_triggers[] = "\$queries['trigger'][$xt] = $s_ex;";
 				$xt++;
+
+			// Alter
 			} elseif (preg_match('#^ALTER#', $s)) {
 				$s = str_replace(array("\r\n", "\n"), ' ', $s);
 				$s_ex = var_export($s, true);
@@ -520,9 +523,15 @@ SQL;
 				$this->alters[] = $s;
 				$php_alters[] = "\$queries['alter'][$xa] = $s_ex;";
 				$xa++;
+
+			// Create
 			} else {
 				$s = str_replace(array("\r\n", "\n"), ' ', $s);
 				$s .= ' DEFAULT CHARSET=utf8';
+
+				if (strpos($s, 'CREATE TABLE person2usergroups') !== false) {
+					$s = str_replace('INDEX IDX_356C969E217BBB47 (person_id), ', '', $s);
+				}
 
 				$s_ex = var_export($s, true);
 
