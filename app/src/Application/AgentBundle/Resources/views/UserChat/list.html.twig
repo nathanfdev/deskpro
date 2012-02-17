@@ -1,0 +1,44 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.UserChatFilter';
+pageMeta.fetchResultsUrl = '{{ path('agent_userchat_filterlist_page') }}';
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
+
+pageMeta.perPage = 50;
+pageMeta.resultIds = {{ chat_ids|json_encode|raw }};
+</script>
+{{ agentui.scroll_containers('page-chat-list') }}
+
+{% if chat_ids|length %}
+	<section class="list-listing">
+		{% include 'AgentBundle:UserChat:list-page.html.twig' %}
+	</section>
+
+	<footer class="results-nav">
+		<div class="cursor">
+			Showing results
+			<span class="results-showing-count" id="{{baseId}}_showing_count"></span>
+			of
+			<span class="results-total-count" id="{{baseId}}_total_count">{{ chat_ids|length }}</span>
+		</div>
+		{% if chat_ids|length > 50 %}
+			<ul class="pagenav no-prev">
+				<li class="prev"></li>
+				<li class="next"></li>
+			</ul>
+		{% endif %}
+		<div class="loading">
+
+		</div>
+	</footer>
+{% else %}
+	<section class="list-listing no-results">
+		<article class="row-item no-results">
+			<p style="padding: 15px;">{{ phrase('agent.there_are_no_results') }}</p>
+		</article>
+	</section>
+{% endif %}
+
+{{ agentui.scroll_containers_end() }}

@@ -2101,6 +2101,20 @@ $collection->add('agent_userchat_view', new Route(
 	array('fragment_name' => 'c')
 ));
 
+$collection->add('agent_userchat_filterlist', new Route(
+	'/chat/filter',
+	array('_controller' => 'AgentBundle:UserChat:filter'),
+	array(),
+	array()
+));
+
+$collection->add('agent_userchat_filterlist_page', new Route(
+	'/chat/filter',
+	array('_controller' => 'AgentBundle:UserChat:getChatsPage'),
+	array(),
+	array()
+));
+
 $collection->add('agent_userchat_listopen', new Route(
 	'/chat/list-open',
 	array('_controller' => 'AgentBundle:UserChat:listChats'),

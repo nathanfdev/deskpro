@@ -16,8 +16,20 @@
 {% endmacro %}
 
 <section class="source-section sys-filters-section">
+	{% if ended_chats_count %}
+		<article>
+			<ul class="source-list">
+				<li>
+					<h3 class="title" data-route="listpane:{{ path('agent_userchat_filterlist') }}">
+						<span class="list-counter" id="userchat_ended_count" data-count="{{ ended_chats_count }}">{{ ended_chats_count }}</span>
+						Ended Chats
+					</h3>
+				</li>
+			</ul>
+		</article>
+	{% endif %}
 	<header>
-		<h1>{{ phrase('agent.chat.title_chats') }}</h1>
+		<h1>Open Chats</h1>
 	</header>
 	<article>
 		<p id="userchat_no_chats" {% if not dep_counts['0_total'] and not counts['all'] %}{% else %}style="display: none"{% endif %} class="source-list-no-results">There are currently no open chats.</p>

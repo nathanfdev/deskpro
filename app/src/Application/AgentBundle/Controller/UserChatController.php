@@ -331,12 +331,19 @@ class UserChatController extends AbstractController
 			$dep_counts['0_total'] += $total;
 		}
 
+		// Count ended
+		$ended_chats_count = $this->container->getDb()->fetchColumn("
+			SELECT COUNT(*) FROM chat_conversations
+			WHERE status = 'ended' AND is_agent = 0
+		");
+
 		$html = $this->renderView('AgentBundle:UserChat:window-section.html.twig', array(
 			'counts' => $initial_counts,
 			'dep_counts' => $dep_counts,
 			'agent_names' => $agent_names,
 			'departments' => $departments,
 			'single_dep_mode' => $single_dep_mode,
+			'ended_chats_count' => $ended_chats_count,
 		));
 
 		return $this->createJsonResponse(array('section_html' => $html));
@@ -420,5 +427,41 @@ class UserChatController extends AbstractController
 		$other_data['client_messages'] = $client_messages;
 
 		return $this->createJsonResponse($other_data);
+	}
+
+
+	/**
+	 * Lists previously closed chats
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function filterAction()
+	{
+		$chat_ids = $this->container->getDb()->fetchAllCol("
+			SELECT id FROM chat_conversations
+			WHERE status = 'ended' AND is_agent = 0
+			ORDER BY id DESC
+			LIMIT 1000
+		");
+
+		$chats = $this->container->getEm()->getRepository('DeskPRO:ChatConversation')->getByIds($chat_ids, true);
+
+		return $this->render('AgentBundle:UserChat:list.html.twig', array(
+			'chat_ids' => $chat_ids,
+			'chats' => $chats
+		));
+	}
+
+	/**
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function getChatsPageAction()
+	{
+		$chat_ids = $this->container->getIn()->getCleanValueArray('ids', 'uint', 'discard');
+		$chats = $this->container->getEm()->getRepository('DeskPRO:ChatConversation')->getByIds($chat_ids, true);
+
+		return $this->render('AgentBundle:UserChat:list-page.html.twig', array(
+			'chats' => $chats
+		));
 	}
 }

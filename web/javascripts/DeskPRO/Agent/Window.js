@@ -942,7 +942,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			handler = this.sections['people_section'];
 		} else if (testcl('.AgentChat')) {
 			handler = this.sections['agent_chat_section'];
-		} else if (testcl('.OpenChats')) {
+		} else if (testcl('.OpenChats') || testcl('.UserChatFilter')) {
 			handler = this.sections['chat_section'];
 		} else if (testcl('.Feedback')) {
 			handler = this.sections['feedback_section'];
