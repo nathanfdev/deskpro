@@ -300,7 +300,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
 				$em = $this->getContainer()->getEm();
 
-				$total = $install_data->countQueries();
+				$total = $install_data->count();
 				$count = 0;
 				foreach ($install_data as $php) {
 					$count++;

@@ -250,12 +250,12 @@ class TicketsStep extends AbstractDeskpro3Step
 		# Messages
 		#------------------------------
 
-
 		$first_agent_reply_ts = null;
 		$first_agent_reply = null;
 		$last_agent_reply = null;
 		$last_user_reply = null;
 
+		$first_charset = null;
 		$ticket_messages = $this->getOldDb()->fetchAll("SELECT * FROM ticket_message WHERE ticketid = ? ORDER BY id", array($ticket_info['id']));
 		foreach ($ticket_messages as $message_info) {
 
@@ -283,33 +283,33 @@ class TicketsStep extends AbstractDeskpro3Step
 			$insert_message['date_created'] = date('Y-m-d H:i:s', $message_info['timestamp']);
 			$insert_message['ip_address'] = $message_info['ipaddress'];
 
+			// Attempt to fix malformed email emssages to that wrap with ='s and =20
+			// This is a quick test to see if theres a line that ends with an = which marks a soft warp
+			// in quoted-printable, which is a pretty good indicator we can use
+			if (preg_match('#=$#', $insert_message['message'])) {
+				$new_msg = @quoted_printable_decode($insert_message['message']);
+				if ($new_msg) {
+					$insert_message['message'] = $new_msg;
+				}
+			}
+
 			$save_raw = false;
 			$orig_charset = $message_info['charset'];
+
+			// Fix common missing charsets
+			if (strtoupper($message_info['charset']) == 'US-ASCII' || !trim($message_info['charset'])) {
+				$message_info['charset'] = 'ISO-8859-1';
+			}
+
 			if ($message_info['charset'] && strtoupper($message_info['charset']) != 'UTF-8') {
-
-				// Fix common missing charsets
-				if (strtoupper($message_info['charset']) == 'US-ASCII' || !trim($message_info['charset'])) {
-					$message_info['charset'] = 'ISO-8859-1';
-				}
-
-				// Fix charsets with a country prepended like en_US.ISO-8859-1
-				if (strpos($message_info['charset'], '.')) {
-					$parts = explode('.', $message_info['charset'], 2);
-					$message_info['charset'] = $parts[1];
-				}
-
-				// Surrounded in curlies like {windows-1251} (why? dont ask me)
-				if (preg_match('#^\{(.*?)\}$#', $message_info['charset'], $m)) {
-					$message_info['charset'] = $m[1];
-				}
-
-				if (!preg_match('#^[a-zA-Z0-9\-]+$#', $message_info['charset'])) {
-					$message_info['charset'] = 'ISO-8859-1';
-				}
-
-				$new_msg = @iconv($message_info['charset'], 'UTF-8//IGNORE//TRANSLIT', $message_info['message']);
+				$new_msg = \Orb\Util\Strings::convertToUtf8($message_info['message'], $message_info['charset']);
 				if ($new_msg) {
+					$new_msg = \Orb\Util\Strings::htmlEntityDecodeUtf8($new_msg);
 					$message_info['message'] = $new_msg;
+
+					if (!$first_charset) {
+						$first_charset = $message_info['charset'];
+					}
 				} else {
 					$save_raw = true;
 				}
@@ -343,7 +343,20 @@ class TicketsStep extends AbstractDeskpro3Step
 			$up['date_last_user_reply'] = $last_user_reply;
 		}
 
-		$this->getDb()->update('tickets', $up, array('id' => $insert_ticket['id']));
+		// If we have a valid charset from the first message,
+		// we'll convert the subject too
+		if ($first_charset) {
+			$subject = $ticket_info['subject'];
+			$subject = \Orb\Util\Strings::convertToUtf8($subject, $first_charset);
+			if ($subject) {
+				$subject = \Orb\Util\Strings::htmlEntityDecodeUtf8($subject);
+				$up['subject'] = $subject;
+			}
+		}
+
+		if ($up) {
+			$this->getDb()->update('tickets', $up, array('id' => $insert_ticket['id']));
+		}
 
 		#------------------------------
 		# Attachments

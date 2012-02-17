@@ -1094,6 +1094,17 @@ class Strings
 			return $string;
 		}
 
+		// Fix charsets with a country prepended like en_US.ISO-8859-1
+		if (strpos($from_charset, '.')) {
+			$parts = explode('.', $from_charset, 2);
+			$from_charset = $parts[1];
+		}
+
+		// Surrounded in curlies like {windows-1251} (why? dont ask me, appears in some emails)
+		if (preg_match('#^\{(.*?)\}$#', $from_charset, $m)) {
+			$from_charset = $m[1];
+		}
+
 		$new = '';
 		if (function_exists('iconv')) {
 			$new = @iconv($from_charset, 'UTF-8//IGNORE//TRANSLIT', $string);
@@ -1102,6 +1113,105 @@ class Strings
 		}
 
 		return $new;
+	}
+
+
+	/**
+	 * Just like chr() except works with UTF-8 code points too.
+	 *
+	 * @param $code
+	 * @return string
+	 */
+	public static function chrUtf8($code)
+	{
+		// Invalid code
+		if ($code < 0) {
+			return false;
+		}
+
+		// Standard ascii
+		if ($code < 128) {
+			return chr($code);
+		}
+
+		// Remove Windows Illegals Cars
+		if ($code < 160) {
+			if ($code==128) $code=8364;
+			elseif ($code==129) $code=160; // not affected
+			elseif ($code==130) $code=8218;
+			elseif ($code==131) $code=402;
+			elseif ($code==132) $code=8222;
+			elseif ($code==133) $code=8230;
+			elseif ($code==134) $code=8224;
+			elseif ($code==135) $code=8225;
+			elseif ($code==136) $code=710;
+			elseif ($code==137) $code=8240;
+			elseif ($code==138) $code=352;
+			elseif ($code==139) $code=8249;
+			elseif ($code==140) $code=338;
+			elseif ($code==141) $code=160; // not affected
+			elseif ($code==142) $code=381;
+			elseif ($code==143) $code=160; // not affected
+			elseif ($code==144) $code=160; // not affected
+			elseif ($code==145) $code=8216;
+			elseif ($code==146) $code=8217;
+			elseif ($code==147) $code=8220;
+			elseif ($code==148) $code=8221;
+			elseif ($code==149) $code=8226;
+			elseif ($code==150) $code=8211;
+			elseif ($code==151) $code=8212;
+			elseif ($code==152) $code=732;
+			elseif ($code==153) $code=8482;
+			elseif ($code==154) $code=353;
+			elseif ($code==155) $code=8250;
+			elseif ($code==156) $code=339;
+			elseif ($code==157) $code=160; // not affected
+			elseif ($code==158) $code=382;
+			elseif ($code==159) $code=376;
+		}
+
+		if ($code < 2048) {
+			return chr(192 | ($code >> 6)) . chr(128 | ($code & 63));
+		} elseif ($code < 65536) {
+			return chr(224 | ($code >> 12)) . chr(128 | (($code >> 6) & 63)) . chr(128 | ($code & 63));
+		} else {
+			return chr(240 | ($code >> 18)) . chr(128 | (($code >> 12) & 63)) . chr(128 | (($code >> 6) & 63)) . chr(128 | ($code & 63));
+		}
+	}
+
+
+	/**
+	 * Takes a string with HTML entities and decodes them into their real UTF-8 characters.
+	 *
+	 * Note that the string is expected to already be UTF-8 or in a charset that it doesn't matter (ie ascii).
+	 * This doesn't do actual charset conversion, it just reverses entities.
+	 *
+	 * @param $string
+	 */
+	public static function htmlEntityDecodeUtf8($string)
+	{
+		// If we have mbstring then we can use that
+		if (function_exists('mb_convert_encoding')) {
+			return mb_convert_encoding($string, 'UTF-8', 'HTML-ENTITIES');
+		}
+
+		$fn = function($matches) {
+			if ($matches[2]) {
+				return chr_utf8(hexdec($matches[3]));
+			} elseif ($matches[1]) {
+				return chr_utf8($matches[3]);
+			}
+
+			return '';
+		};
+
+		// This catches all the normal named entities (nbsp etc)
+		$string = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
+
+		// Replaces the rest like &#x20AC; (euro)
+		$string = preg_replace_callback('~&(#(x?))?([^;]+);~', $fn, $string);
+
+		return $string;
 	}
 
 
