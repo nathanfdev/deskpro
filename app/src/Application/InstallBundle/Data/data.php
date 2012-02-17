@@ -6,7 +6,7 @@
 
 ##BEGIN:locale.language##
 $l = new \Application\DeskPRO\Entity\Language();
-$l['title'] = 'Default Engligh';
+$l['title'] = 'Default English';
 $l['locale'] = 'en_US';
 $l['language_package'] = 'DeskproLanguages\\DeskPRO\\LangPackage';
 $em->persist($l);
