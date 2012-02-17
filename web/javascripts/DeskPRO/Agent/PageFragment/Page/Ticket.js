@@ -96,10 +96,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			if (messages) {
 				$('article.message:not(.note-message)', msgWrap).show();
+				$('.attachment-lone', msgWrap).hide();
 			} else {
 				$('article.message:not(.note-message)', msgWrap).hide();
 				if (attach) {
-					$('article.message.with-attach', msgWrap).show();
+					$('.attachment-lone', msgWrap).show();
 				}
 			}
 			if (notes) {
@@ -254,6 +255,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			if (!showAttach) {
 				$('.attachment-list', new_messages).hide();
+			}
+			if (showMessages) {
+				$('.attachment-lone', new_messages).hide();
 			}
 
 			if (!showMessages) {
