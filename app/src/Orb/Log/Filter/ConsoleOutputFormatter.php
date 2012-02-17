@@ -31,7 +31,7 @@ class ConsoleOutputFormatter extends \Orb\Filter\AbstractFilter
 			case Logger::CRIT:
 			case Logger::EMERG:
 			case Logger::ALERT:
-				$message = '<warn>'.$message.'</warn>';
+				$message = '<error>'.$message.'</error>';
 				break;
 
 			case Logger::NOTICE:

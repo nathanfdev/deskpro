@@ -46,8 +46,14 @@ if (!deskpro_install_check_writable()) {
 }
 
 if ($errors) {
-	$errors = '<ul><li>' . implode('</li><li>', $errors) . '</li></ul>';
-	echo deskpro_install_basic_error($errors);
+	if (php_sapi_name() == 'cli') {
+		echo "There are problems with your server that prevent DeskPRO from executing this command:\n\n";
+		echo '- ' . implode("\n- ", $errors);
+		echo "\n\n";
+	} else {
+		$errors = '<ul><li>' . implode('</li><li>', $errors) . '</li></ul>';
+		echo deskpro_install_basic_error($errors);
+	}
 	exit;
 }
 unset($errors);

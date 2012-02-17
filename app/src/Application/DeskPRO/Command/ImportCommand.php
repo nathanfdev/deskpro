@@ -58,7 +58,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$wr = new \Orb\Log\Writer\Stream($log_file_path);
 			$logger->addWriter($wr);
 		} catch (\Exception $e) {
-			$output->writeln("<error>Log file not writable: $log_file_path</error>");
+			$output->writeln("Log file not writable: $log_file_path");
 			$output->writeln("Make the logs directory ({$this->getContainer()->getLogDir()} is writable and try again.");
 			return 1;
 		}
@@ -67,45 +67,11 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$GLOBALS['DP_ERR_LOGGER'] = $logger;
 		$this->logger = $logger;
 
-		#----------------------------------------
-		# Check for database
-		#----------------------------------------
-
-		/** @var $db \Application\DeskPRO\DBAL\Connection */
-		$db = $this->getContainer()->getDb();
 		$DP_CONFIG = $this->getContainer()->getSysConfig('*');
 
-		try {
-			$db->connect();
-		} catch (\PDOException $e) {
-			if ($e->getCode() == '1049') {
-
-				$logger->log("We have detected that the database {$DP_CONFIG['db']['dbname']} does not exist. We will try to create it now ...\n", Logger::INFO, array('ignore_pri_filter' => true));
-
-				// Attempt to create an empty database
-				try {
-					$dbh = new \PDO("mysql:host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
-					$dbh->exec("CREATE DATABASE `{$DP_CONFIG['db']['dbname']}`");
-					$success = true;
-				} catch (\Exception $e) {
-					$success = false;
-				}
-
-				if (!$success) {
-					$logger->log('<error>The database name you have set in config.php does not exist and we could not create it.</error>'  . PHP_EOL, Logger::ERR);
-					return 21;
-				} else {
-					$logger->log('The database was created successfully.', Logger::INFO, array('ignore_pri_filter' => true));
-				}
-			} elseif ($e->getCode() == '1044' || $e->getCode() == '1045') {
-				$logger->log('<error>The database name you have set in config.php does not exist</error>'  . PHP_EOL, Logger::ERR);
-				return 21;
-			} else {
-				$logger->log('<error>There was a problem while trying to connect to your database: ' . $e->getMessage() . '</error>'  . PHP_EOL, Logger::ERR);
-				return 21;
-			}
-
-			$db->connect();
+		if (!isset($DP_CONFIG['import']['db_host'])) {
+			$logger->log('You need to fill in the "import" section of config.php before running this tool.', Logger::ERR);
+			return 1;
 		}
 
 		#----------------------------------------
@@ -124,7 +90,91 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 
 		if (!$mode) {
-			$logger->log("<error>Choose one of the run modes: --info, --run, --step or --exec-step</error>\n", Logger::INFO);
+			$logger->log("Choose one of the run modes: --info, --run, --step or --exec-step\n", Logger::INFO);
+			return 1;
+		}
+
+		#----------------------------------------
+		# Check for database
+		#----------------------------------------
+
+		/** @var $db \Application\DeskPRO\DBAL\Connection */
+		$db = $this->getContainer()->getDb();
+
+		try {
+			$db->connect();
+		} catch (\PDOException $e) {
+			if ($e->getCode() == '1049') {
+
+				$logger->log("We have detected that the database {$DP_CONFIG['db']['dbname']} does not exist. We will try to create it now ...\n", Logger::INFO, array('ignore_pri_filter' => true));
+
+				// Attempt to create an empty database
+				try {
+					$dbh = new \PDO("mysql:host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+					$dbh->exec("CREATE DATABASE `{$DP_CONFIG['db']['dbname']}`");
+					$success = true;
+				} catch (\Exception $e) {
+					$success = false;
+				}
+
+				if (!$success) {
+					$logger->log('The database name you have set in config.php does not exist and we could not create it.'  . PHP_EOL, Logger::ERR);
+					return 21;
+				} else {
+					$logger->log('The database was created successfully.', Logger::INFO, array('ignore_pri_filter' => true));
+				}
+			} elseif ($e->getCode() == '1044' || $e->getCode() == '1045') {
+				$logger->log('The database name you have set in config.php does not exist'  . PHP_EOL, Logger::ERR);
+				return 21;
+			} else {
+				$logger->log('There was a problem while trying to connect to your database: ' . $e->getMessage() . ''  . PHP_EOL, Logger::ERR);
+				return 21;
+			}
+
+			$db->connect();
+		}
+
+		// Check thei mport db too
+		try {
+			$old_db = $this->getContainer()->get('doctrine.dbal.connection_factory')->createConnection(array(
+				'driver'   => 'pdo_mysql',
+				'host'     => $DP_CONFIG['import']['db_host'],
+				'user'     => $DP_CONFIG['import']['db_user'],
+				'password' => $DP_CONFIG['import']['db_password'],
+				'dbname'   => $DP_CONFIG['import']['db_name']
+			));
+			$old_db->connect();
+		} catch (\Exception $e) {
+			$logger->log('There was a problem while trying to connect to your DeskPRO v3 database. Check config.php to make sure you entered the correct details. ' . PHP_EOL . $e->getMessage() . ''  . PHP_EOL, Logger::ERR);
+			return 1;
+		}
+
+		#----------------------------------------
+		# Check requirements
+		#----------------------------------------
+
+		$server_check = new \Application\InstallBundle\Install\ServerChecks();
+		$server_check->checkServer();
+
+		$is_fatal = $server_check->hasFatalErrors();
+		$has_config = false;
+		$has_db_checks = false;
+
+		if (!$is_fatal) {
+			$has_db_checks = true;
+			if (file_exists(DP_CONFIG_FILE)) {
+				$has_config = true;
+				$server_check->checkDatabase($DP_CONFIG['db']);
+			}
+		}
+
+		if ($server_check->hasFatalErrors()) {
+			$str = "There are problems with your server setup that prevents DeskPRO v4 from installing:\n";
+			foreach ($server_check->getErrors() as $err) {
+				$str .= "\t- {$err['message']}\n";
+			}
+			echo "Fix these problems and try again.\n";
+			$logger->log($str, Logger::ERR);
 			return 1;
 		}
 
@@ -134,7 +184,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		$config = App::getConfig('import');
 		if (!$config) {
-			$logger->log("<error>There is no `import` configuration.</error>\n", Logger::ERR);
+			$logger->log("There is no `import` configuration.\n", Logger::ERR);
 			return 1;
 		}
 
@@ -144,7 +194,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		$importer_class = 'Application\\DeskPRO\\Import\\Importer\\' . $config['importer'] . 'Importer';
 		if (!class_exists($importer_class)) {
-			$logger->log("<error>The `import.importer` class of {$config['importer']} does not exist.</error>\n", Logger::ERR);
+			$logger->log("The `import.importer` class of {$config['importer']} does not exist.\n", Logger::ERR);
 			return 3;
 		}
 
@@ -160,7 +210,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$php_path = $this->getContainer()->getPhpBinaryPath();
 
 		if (!$php_path) {
-			$logger->log("<error>Unknow path to PHP executable. Edit your /config.php file and specify a value for php_path.</error>\n", Logger::ERR);
+			$logger->log("Unknow path to PHP executable. Edit your /config.php file and specify a value for php_path.\n", Logger::ERR);
 			return 1;
 		}
 
@@ -173,7 +223,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		$tables = $sm->listTableNames();
 		if ($tables && (!in_array('agent_access', $tables) || !in_array('worker_jobs', $tables))) {
-			$logger->log('<error>Your database contains tables but they do not appear to be DeskPRO v4 tables. DeskPRO requires a new, empty database.</error>' . PHP_EOL, Logger::ERR);
+			$logger->log('Your database contains tables but they do not appear to be DeskPRO v4 tables. DeskPRO requires a new, empty database.' . PHP_EOL, Logger::ERR);
 			$logger->log('Create a new empty database and edit /config.php with the new details, then try again.'  . PHP_EOL, Logger::ERR);
 			return 22;
 		}
@@ -220,7 +270,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$install_schema->run(false, 100000000, 0, $fn);
 
 			if ($errors) {
-				$logger->log("<error>There were errors while trying to install the database: " . implode("\n", $errors) . "</error>\n", Logger::ERR);
+				$logger->log("There were errors while trying to install the database: " . implode("\n", $errors) . "\n", Logger::ERR);
 				$logger->log("Re-create the database and try again.\n", Logger::INFO);
 				return 23;
 			}
@@ -304,7 +354,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 					$output->writeln('Do you want to upgrade your v3 database now? A backup will be generated to '.$this->getContainer()->getBackupDir().' directory first.');
 					$yes = $this->getHelper('dialog')->askConfirmation($output, '[y/N]> ', false);
 					if (!$yes) {
-						$output->writeln('<error>Aborting. You can re-run this command when you are ready to proceed.</error>');
+						$output->writeln('Aborting. You can re-run this command when you are ready to proceed.');
 						return 24;
 					}
 
@@ -363,7 +413,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 					});
 
 					if (!$proc->isSuccessful() || strpos($proc->getOutput(), 'There was an error determining which build') !== false) {
-						$output->writeln(PHP_EOL . '<error>We detected an error while executing the DeskPRO v3 upgrade. You should contact support@deskpro.com.</error>');
+						$output->writeln(PHP_EOL . 'We detected an error while executing the DeskPRO v3 upgrade. You should contact support@deskpro.com.');
 						return 26;
 					}
 				}
@@ -414,7 +464,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			if ($errors = $importer->validateOptions()) {
 				$output->writeln("Config errors:");
 				foreach ($errors as $e) {
-					$output->writeln("<error>\t{$e}</error>");
+					$output->writeln("\t{$e}");
 				}
 			}
 
@@ -481,7 +531,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			}
 
 			if ($i < 1 || $i > $importer->countSteps()) {
-				$output->writeln("<error>`step` must be between 1 and {$importer->countSteps()}</error>");
+				$output->writeln("`step` must be between 1 and {$importer->countSteps()}");
 				return 1;
 			}
 
@@ -517,6 +567,10 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 						return 1;
 					}
 
+					if ($p == 1 && $num_pages == 1) {
+						$this->updateStatus($output, sprintf('%2d.', $i) .' '.$step::getTitle(), 1, 2);
+						usleep(500000);
+					}
 					$this->updateStatus($output, sprintf('%2d.', $i) .' '.$step::getTitle(), $p, $num_pages);
 				}
 
@@ -545,7 +599,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		// Erase previous line
 		echo "\r";
-		echo str_repeat(' ', 40+25+2+5);
+		echo str_repeat(' ', 40+25+2+6);
 		echo "\r";
 
 		$perc  = ceil(($cur / $max) * 100);
@@ -555,17 +609,30 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		printf("%-40s", $title);
 
 		if ($cur >= $max) {
-			echo "DONE\n";
-			return;
+			$pips = $width;
+			$perc = 100;
 		}
 
 		echo "[";
 		echo str_repeat('=',$pips);
 		if ($width-$pips > 0) {
 			echo ">";
+		} else {
+			echo "=";
 		}
 		echo str_repeat(' ',$width-$pips);
-		echo "]";
-		echo " {$perc}%";
+		echo "] ";
+		echo sprintf("%3d", $perc) . "%";
+
+		if ($cur >= $max) {
+			usleep(750000);
+
+			// Erase previous line
+			echo "\r";
+			echo str_repeat(' ', 40+25+2+6);
+			echo "\r";
+			printf("%-40s", $title);
+			echo "DONE\n";
+		}
 	}
 }
