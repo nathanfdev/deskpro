@@ -176,7 +176,7 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 		$namehash = strtoupper(substr(sha1($meta[self::METADATA_FILENAME] . $this->blob_id), 0, 3));
 		$namehash .= strtoupper(substr(md5($meta[self::METADATA_FILENAME] . $this->blob_id), 0, 3));
 
-		$batch = (int)($this->blob_id / 1000);
+		$batch = (int)(($this->blob_id-1) / 1000) + 1;
 		$authcode = $batch  . Strings::random(10, Strings::CHARS_KEY_ALPHA) . $this->blob_id . $namehash;
 
 		$dir_path = $batch;
