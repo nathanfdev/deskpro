@@ -121,6 +121,7 @@
 	'agent.label_url_slug' => 'URL Slug',
 	'agent.label_labels' => 'Labels',
 	'agent.label_rating' => 'Rating',
+	'agent.label_votes' => 'Votes',
 
 	'agent.created_and_published' => 'Created and Published',
 	'agent.created' => 'Created',
