@@ -622,7 +622,12 @@ abstract class SearcherAbstract implements PersonContextInterface
 		}
 
 		if (is_array($title)) {
+			$last = array_pop($title);
 			$title = implode(', ', (array)$title);
+			if ($title) {
+				$title .= ' or ';
+			}
+			$title .= $last;
 		}
 
 		switch ($op) {
@@ -633,10 +638,10 @@ abstract class SearcherAbstract implements PersonContextInterface
 				$summary = App::getTranslator()->phrase('agent.x_is_not_y', array('field' => $field, 'value' => $title));
 				break;
 			case self::OP_CONTAINS:
-				$summary = App::getTranslator()->phrase('agent.x_include_y', array('field' => $field, 'value' => $title));
+				$summary = App::getTranslator()->phrase('agent.x_is_y', array('field' => $field, 'value' => $title));
 				break;
 			case self::OP_NOTCONTAINS:
-				$summary = App::getTranslator()->phrase('agent.x_not_include_y', array('field' => $field, 'value' => $title));
+				$summary = App::getTranslator()->phrase('agent.x_is_not_y', array('field' => $field, 'value' => $title));
 				break;
 		}
 

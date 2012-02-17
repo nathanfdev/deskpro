@@ -561,6 +561,8 @@ class TicketSearchController extends AbstractController
 			$per_page = 50;
 		}
 
+		$vars['viewtpl'] = $type;
+
 		#------------------------------
 		# Get the tickets to show
 		#------------------------------
