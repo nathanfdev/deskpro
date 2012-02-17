@@ -1444,6 +1444,7 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 	background: #fff;
 
 	display: none;
+	min-width: 660px;
 
 	.gradient(#f4f5f6, #dfe5eb);
 	.rounded(5px);
@@ -1528,6 +1529,21 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 	}
 }
 
+#omnisearch_reset {
+	position: absolute;
+	top: 10px;
+	right: 41px;
+	cursor: pointer;
+	color: #94999E;
+	font-size: 11px;
+	display: block;
+	line-height: 100%;
+
+	&:hover {
+		color: #575A5D;
+	}
+}
+
 #dp_searchsheet > article {
 	min-height: 100px;
 	margin-top: 33px;
@@ -1544,6 +1560,7 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
     margin: 0;
 
 	> li {
+	    box-sizing: border-box;
 		float: left;
 		width: 45%;
 		padding: 0 4px 0 4px;
@@ -1563,6 +1580,7 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 			float: none;
 			width: auto;
 			margin-top: 44px;
+			margin-right: 16px;
 			padding: 8px;
 
 			input[type="text"] {
@@ -1582,6 +1600,10 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 			margin: 2px;
 		}
 	}
+}
+
+#dp_searchsheet_tickets li.search-input {
+	margin-top: -8px !important;
 }
 
 #dp_searchsheet .search-form {

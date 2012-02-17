@@ -1,0 +1,143 @@
+<form action="{{ path('agent_ticketsearch_runcustomfilter') }}">
+	<ul class="property-list">
+		<li class="ob">
+			<label>Department</label>
+			<div class="values">
+				{% include 'AgentBundle:Common:select-department.html.twig' with {
+					'name': 'set_term[department][]',
+					'blank_title': phrase('agent.department'),
+					'departments': ticket_options.departments_hierarchy,
+					'add_attr': 'multiple="multiple"'
+				} %}
+			</div>
+		</li>
+		<li class="ob">
+			<label>Status</label>
+			<div class="values">
+				<select name="set_term[status][]">
+					<option value="awaiting_agent">Awaiting Agent</option>
+					<option value="awaiting_user">Awaiting User</option>
+					<option value="resolved">Resolved</option>
+					<option value="closed">Closed</option>
+					<option value="hidden">Hidden (awaiting validating, spam)</option>
+				</select>
+			</div>
+		</li>
+		<li class="ob">
+			<label>Agent</label>
+			<div class="values">
+				{% include 'AgentBundle:Common:select-agent.html.twig' with {
+					'name': 'set_term[agent][]',
+					'blank_title': phrase('agent.agent'),
+					'departments': ticket_options.agents,
+					'add_attr': 'multiple="multiple"'
+				} %}
+			</div>
+		</li>
+		{% if app.getSetting('core.use_agent_team') %}
+			<li class="ob">
+				<label>Agent Team</label>
+				<div class="values">
+					{% include 'AgentBundle:Common:select-agent-team.html.twig' with {
+						'name': 'set_term[agent_team][]',
+						'blank_title': phrase('agent.agent_team'),
+						'departments': ticket_options.agent_teams,
+						'add_attr': 'multiple="multiple"'
+					} %}
+				</div>
+			</li>
+		{% endif %}
+		<li class="ob">
+			<label>Followers</label>
+			<div class="values">
+				{% include 'AgentBundle:Common:select-agent.html.twig' with {
+					'name': 'set_term[participant][]',
+					'blank_title': phrase('agent.agent'),
+					'departments': ticket_options.agents,
+					'add_attr': 'multiple="multiple"'
+				} %}
+			</div>
+		</li>
+		{% if app.getSetting('core.use_ticket_category') %}
+		<li class="ob">
+			<label>Category</label>
+			<div class="values">
+				{% include 'AgentBundle:Common:select-category.html.twig' with {
+					'name': 'set_term[category][]',
+					'blank_title': phrase('agent.category'),
+					'categories': ticket_options.ticket_categories_hierarchy,
+					'add_attr': 'multiple="multiple"'
+				} %}
+			</div>
+		</li>
+		{% endif %}
+		{% if app.getSetting('core.use_product') %}
+		<li class="ob">
+			<label>Product</label>
+			<div class="values">
+				{% include 'AgentBundle:Common:select-product.html.twig' with {
+					'name': 'actions[product][]',
+					'blank_title': phrase('agent.product'),
+					'products': ticket_options.products_hierarchy,
+					'add_attr': 'multiple="multiple"'
+				} %}
+			</div>
+		</li>
+		{% endif %}
+		{% if app.getSetting('core.use_ticket_priority') %}
+		<li class="ob">
+			<label>Priority</label>
+			<div class="values">
+				{% include 'AgentBundle:Common:select-priority.html.twig' with {
+					'name': 'set_term[priority][]',
+					'blank_title': phrase('agent.priority'),
+					'priorities': ticket_options.ticket_priorities,
+					'add_attr': 'multiple="multiple"'
+				} %}
+			</div>
+		</li>
+		{% endif %}
+		{% if app.getSetting('core.use_ticket_workflow') %}
+		<li class="ob">
+			<label>Workflow</label>
+			<div class="values">
+				{% include 'AgentBundle:Common:select-workflow.html.twig' with {
+					'name': 'set_term[workflow][]',
+					'blank_title': phrase('agent.workflow'),
+					'workflows': ticket_options.ticket_workflows,
+					'add_attr': 'multiple="multiple"'
+				} %}
+			</div>
+		</li>
+		{% endif %}
+	</ul>
+	<br class="clear" />
+
+	<div class="search-form" id="tickersearch_criteria_list" data-templates="#tickersearch_criteria_tpl">
+		<div class="search-terms"></div>
+		<div class="term"><span class="add-term">+</span> {{ phrase('agent.add_criteria_term') }}</div>
+	</div>
+
+	<ul class="property-list">
+		<li class="search-input">
+			<div class="values">
+				<input type="text" name="query" />
+				<br />
+				Search in <select name="types">
+					<option value="both">Message and Subject</option>
+					<option value="message">Message</option>
+					<option value="subject">Subject</option>
+				</select>
+			</div>
+		</li>
+	</ul>
+	<br class="clear" />
+</form>
+
+{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with {
+	classname: 'search-builder-tpl',
+	id: 'tickersearch_criteria_tpl',
+	term_options: term_options,
+	no_show_fields: ['department', 'status', 'agent', 'agent_team', 'participant', 'category', 'product', 'priority', 'workflow'],
+	search_context: 'filter'
+} %}

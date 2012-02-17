@@ -110,6 +110,67 @@ class MainController extends AbstractController
 		));
     }
 
+	/**
+	 * Load a search sheet.
+	 *
+	 * @param $type
+	 */
+	public function loadSearchSheetAction($type)
+	{
+		switch ($type) {
+			case 'tickets':
+				$tpl = 'AgentBundle:Main:search-sheet-tickets.html.twig';
+				break;
+
+			case 'people':
+				$tpl = 'AgentBundle:Main:search-sheet-people.html.twig';
+				break;
+
+			case 'orgs':
+				$tpl = 'AgentBundle:Main:search-sheet-orgs.html.twig';
+				break;
+
+			case 'content':
+				$tpl = 'AgentBundle:Main:search-sheet-content.html.twig';
+				break;
+
+			default:
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		// Used in some header menus for search options
+        $titles = array();
+        $titles['organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
+        $titles['usergroups'] = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
+        $titles['languages'] = App::getEntityRepository('DeskPRO:Language')->getTitles();
+
+		$people_fields = $this->container->getSystemService('person_fields_manager')->getDisplayArray();
+		$org_fields = $this->container->getSystemService('org_fields_manager')->getDisplayArray();
+
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
+		$ticket_options['custom_ticket_fields'] = $custom_fields;
+
+		// People stuff
+		$ticket_options['people_organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
+		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+		$ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
+
+		$people_options = $titles;
+		$people_options['custom_people_fields'] = $ticket_options['custom_people_fields'];
+
+		$org_options = array(
+			'custom_org_fields' => $this->container->getSystemService('org_fields_manager')->getDisplayArray()
+		);
+
+		return $this->render($tpl, array(
+			'people_fields' => $people_fields,
+			'org_fields' => $org_fields,
+			'ticket_options' => $ticket_options,
+			'org_options' => $org_options,
+		));
+	}
+
 
 	public function getCombinedSectionDataAction()
 	{

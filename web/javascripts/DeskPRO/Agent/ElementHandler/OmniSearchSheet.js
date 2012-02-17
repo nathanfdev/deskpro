@@ -73,6 +73,44 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 				}
 			}
 		});
+
+		$('#omnisearch_reset').on('click', function(ev) {
+			self.reloadForm();
+		});
+	},
+
+	reloadForm: function(section) {
+		if (!section) {
+			section = this.typeTabs.lastActiveTabContent;
+		}
+
+		var type = section.data('type');
+
+		var method = null;
+		switch (type) {
+			case 'tickets':
+				method = '_initTicketSearch';
+				break;
+			case 'people':
+				method = '_initPeopleSearch';
+				break;
+			case 'orgs':
+				method = '_initOrgsSearch';
+				break;
+			case 'content':
+				method = '_initContentSearch';
+				break;
+		}
+
+		$.ajax({
+			url: BASE_URL + 'agent/ui/load-search-sheet/' + type,
+			dataType: 'html',
+			context: this,
+			success: function(html) {
+				section.empty().html(html);
+				this[method](section, true);
+			}
+		});
 	},
 
 	updatePositions: function() {
@@ -114,8 +152,8 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 	//# Ticket Search
 	//##########################################################################
 
-	_initTicketSearch: function(tab) {
-		if (this._hasInitTicketSearch) return;
+	_initTicketSearch: function(tab, force) {
+		if (this._hasInitTicketSearch && !force) return;
 		this._hasInitTicketSearch = true;
 
 		this._initFormElements(tab);
@@ -126,8 +164,8 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 	//# People Search
 	//##########################################################################
 
-	_initPeopleSearch: function(tab) {
-		if (this._hasInitPeopleSearch) return;
+	_initPeopleSearch: function(tab, force) {
+		if (this._hasInitPeopleSearch && !force) return;
 		this._hasInitPeopleSearch = true;
 
 		this._initFormElements(tab);
@@ -138,8 +176,8 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 	//# Org Search
 	//##########################################################################
 
-	_initOrgsSearch: function(tab) {
-		if (this._hasInitOrgsSearch) return;
+	_initOrgsSearch: function(tab, force) {
+		if (this._hasInitOrgsSearch && !force) return;
 		this._hasInitOrgsSearch = true;
 
 		this._initFormElements(tab);
@@ -150,8 +188,8 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 	//# Content Search
 	//##########################################################################
 
-	_initContentSearch: function(tab) {
-		if (this._hasInitContentSearch) return;
+	_initContentSearch: function(tab, force) {
+		if (this._hasInitContentSearch && !force) return;
 		this._hasInitContentSearch = true;
 	},
 

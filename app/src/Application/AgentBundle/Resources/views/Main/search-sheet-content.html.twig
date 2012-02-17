@@ -1,0 +1,20 @@
+<form action="{{ path('agent_publish_search') }}">
+	<ul class="property-list">
+		<li class="search-input">
+			<label>Search</label>
+			<div class="values">
+				<input type="text" name="query" />
+				<br />
+				Search in types:
+				<select name="types">
+					<option value="">All</option>
+					<option value="article">Articles</option>
+					<option value="download">Downloads</option>
+					<option value="feedback">Feedback</option>
+					<option value="news">News</option>
+				</select>
+			</div>
+		</li>
+	</ul>
+	<br class="clear" />
+</form>
