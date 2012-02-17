@@ -46,7 +46,11 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		$logger = new Logger();
 		$wr = new \Orb\Log\Writer\ConsoleOutputWriter($output);
-		$wr->addFilter(new \Orb\Log\Filter\PriorityFilter(Logger::INFO));
+		if ($output->getVerbosity() > 1) {
+			$wr->addFilter(new \Orb\Log\Filter\PriorityFilter(Logger::DEBUG));
+		} else {
+			$wr->addFilter(new \Orb\Log\Filter\PriorityFilter(Logger::NOTICE));
+		}
 		$logger->addWriter($wr);
 
 		$log_file_path = $this->getContainer()->getLogDir() . '/import.log';
@@ -76,7 +80,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		} catch (\PDOException $e) {
 			if ($e->getCode() == '1049') {
 
-				$logger->log("We have detected that the database {$DP_CONFIG['db']['dbname']} does not exist. We will try to create it now ...\n", Logger::INFO);
+				$logger->log("We have detected that the database {$DP_CONFIG['db']['dbname']} does not exist. We will try to create it now ...\n", Logger::INFO, array('ignore_pri_filter' => true));
 
 				// Attempt to create an empty database
 				try {
@@ -91,10 +95,10 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 					$logger->log('<error>The database name you have set in config.php does not exist and we could not create it.</error>'  . PHP_EOL, Logger::ERR);
 					return 21;
 				} else {
-					$logger->log('The database was created successfully.', Logger::INFO);
+					$logger->log('The database was created successfully.', Logger::INFO, array('ignore_pri_filter' => true));
 				}
 			} elseif ($e->getCode() == '1044' || $e->getCode() == '1045') {
-				$logger->writeln('<error>The database name you have set in config.php does not exist</error>'  . PHP_EOL);
+				$logger->log('<error>The database name you have set in config.php does not exist</error>'  . PHP_EOL, Logger::ERR);
 				return 21;
 			} else {
 				$logger->log('<error>There was a problem while trying to connect to your database: ' . $e->getMessage() . '</error>'  . PHP_EOL, Logger::ERR);
@@ -175,7 +179,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 
 		if (!$tables) {
-			$logger->log('The database you specified is empty. We will now install the DeskPRO v4 tables. This may take a minute.'  . PHP_EOL, Logger::INFO);
+			$logger->log('The database you specified is empty. We will now install the DeskPRO v4 tables. This may take a minute.'  . PHP_EOL, Logger::INFO, array('ignore_pri_filter' => true));
 
 			$db->exec("
 				CREATE TABLE IF NOT EXISTS `install_data` (
@@ -490,6 +494,9 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 				$num_pages = $step->countPages();
 				for ($p = 1; $p <= $num_pages; $p++) {
+
+					$this->updateStatus($output, sprintf('%2d.', $i) .' '.$step::getTitle(), $p-1, $num_pages);
+
 					if ($num_pages > 1) {
 						$logger->log(sprintf("Part %d of %d", $p, $num_pages), 'INFO');
 					}
@@ -509,11 +516,12 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 						$logger->log("Error detected, stopping.", 'ERROR');
 						return 1;
 					}
+
+					$this->updateStatus($output, sprintf('%2d.', $i) .' '.$step::getTitle(), $p, $num_pages);
 				}
 
 				$end_step_time = microtime(true);
-				$logger->log(sprintf("Step #%d complete: Took %0.3f seconds.", $i, $end_step_time-$start_step_time), 'INFO');
-				echo "\n";
+				$logger->log(sprintf("Step #%d complete: Took %0.3f seconds.\n", $i, $end_step_time-$start_step_time), 'INFO');
 			}
 
 			$importer->cleanupImport();
@@ -527,5 +535,37 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 
 		return 0;
+	}
+
+	protected function updateStatus($output, $title, $cur, $max)
+	{
+		if ($output->getVerbosity() > 1) {
+			return;
+		}
+
+		// Erase previous line
+		echo "\r";
+		echo str_repeat(' ', 40+25+2+5);
+		echo "\r";
+
+		$perc  = ceil(($cur / $max) * 100);
+		$width = 25;
+		$pips  = floor($perc / 4);
+
+		printf("%-40s", $title);
+
+		if ($cur >= $max) {
+			echo "DONE\n";
+			return;
+		}
+
+		echo "[";
+		echo str_repeat('=',$pips);
+		if ($width-$pips > 0) {
+			echo ">";
+		}
+		echo str_repeat(' ',$width-$pips);
+		echo "]";
+		echo " {$perc}%";
 	}
 }

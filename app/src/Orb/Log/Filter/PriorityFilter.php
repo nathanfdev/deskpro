@@ -30,6 +30,11 @@ class PriorityFilter extends \Orb\Filter\AbstractFilter
 	{
 		if (!$log_item) return null;
 
+		if (isset($log_item['ignore_pri_filter'])) {
+			unset($log_item['ignore_pri_filter']);
+			return $log_item;
+		}
+
 		if ($log_item[LogItem::PRIORITY] > $this->min_level) {
 			return null;
 		}

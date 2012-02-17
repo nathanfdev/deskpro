@@ -43,6 +43,11 @@ abstract class AbstractImporter
 	protected $cached_maps = null;
 
 	/**
+	 * @var callback
+	 */
+	protected $update_status_fn;
+
+	/**
 	 * Which maps to cache totally
 	 *
 	 * @var array
