@@ -106,7 +106,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<li class="tab-trigger" data-tab-for="#{{baseId}}_content_tab"><a>{{ phrase('agent.label_description') }}</a></li>
 		<li class="tab-trigger" data-tab-for="#{{baseId}}_comments_tab"><a>{{ phrase('agent.label_comments') }} (<span id="{{baseId}}_count_comments">{{feedback_comments|length|default(0)}}</span>)</a></li>
 		<li class="tab-trigger" data-tab-for="#{{baseId}}_revs"><a>{{ phrase('agent.label_revisions') }}</a></li>
-		<li class="tab-trigger" data-tab-for="#{{baseId}}_"><a>{{ phrase('agent.label_related_content') }}</a></li>
+		<li class="tab-trigger" data-tab-for="#{{baseId}}_related_content"><a>{{ phrase('agent.label_related_content') }}</a></li>
 		<li class="tab-trigger" data-tab-for="#{{baseId}}_searchtab"><a>{{ phrase('agent.label_search') }}</a></li>
 	</ul>
 </nav>
@@ -170,7 +170,7 @@ pageMeta.baseId = '{{ baseId }}';
 	{# /Tab: Revisions #}
 
 	{# Tab: Related #}
-	<div id="{{baseId}}_related_content" class="deskpro-tab-item">
+	<div id="{{baseId}}_related_content" class="deskpro-tab-item related-content">
 		{% include 'AgentBundle:Common:content-related-list.html.twig' %}
 	</div>
 	{# /Tab: Related #}

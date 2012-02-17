@@ -143,6 +143,11 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li.tab-trigger', this.getEl('bodytabs')),
 			onTabSwitch: (function(info) {
+				if ($(info.tabContent).is('.related-content')) {
+					$('body').addClass('related-controls-on');
+				} else {
+					$('body').removeClass('related-controls-on');
+				}
 				if ($(info.tabContent).is('.feedback-revs') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
 						url: BASE_URL + 'agent/feedback/view/' + this.feedback_id + '/view-revisions',

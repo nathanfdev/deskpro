@@ -132,6 +132,8 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 		this.lastActiveTab.addClass(this.options.activeClassname);
 		eventData.tabContent.addClass(this.options.activeClassname).show();
 
+		this.lastActiveTabContent = eventData.tabContent;
+
 		this.fireEvent('tabSwitch', eventData);
 	},
 

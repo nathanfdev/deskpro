@@ -167,6 +167,12 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li', this.getEl('bodytabs')),
 			onTabSwitch: (function(info) {
+				if ($(info.tabContent).is('.kb-related-content')) {
+					$('body').addClass('related-controls-on');
+				} else {
+					$('body').removeClass('related-controls-on');
+				}
+
 				if ($(info.tabContent).is('.revisions') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
 						url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/view-revisions',

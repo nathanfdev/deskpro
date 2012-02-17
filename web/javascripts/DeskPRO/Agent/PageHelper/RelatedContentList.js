@@ -25,7 +25,6 @@ DeskPRO.Agent.PageHelper.RelatedContentList = new Orb.Class({
 		var types = ['article', 'download', 'news', 'feedback'];
 
 		this.addEvent('watchedTabActivated', function(tab) {
-
 			// Instant feedback: Enable all buttons again, but disable ourselves
 			// when the tab actually loads the proper routines will be called
 			// and the correct items will be shown/hidden
@@ -42,6 +41,17 @@ DeskPRO.Agent.PageHelper.RelatedContentList = new Orb.Class({
 
 			var tabtype = DeskPRO_Window.getTabWatcher().getTabType(tab);
 			if (types.indexOf(tabtype) !== -1) {
+
+				if (tab.page && tab.page.relatedContent) {
+					if (tab.page.relatedContent.isViewing()) {
+						$('body').addClass('related-controls-on');
+					} else {
+						$('body').removeClass('related-controls-on');
+					}
+				} else {
+					$('body').removeClass('related-controls-on');
+				}
+
 				this.enableControls(tab);
 			} else {
 				this.disableControls();
@@ -50,6 +60,7 @@ DeskPRO.Agent.PageHelper.RelatedContentList = new Orb.Class({
 		this.addEvent('watchedTabDeactivated', function(tab, isLast) {
 			if (isLast) {
 				this.disableControls();
+				$('body').removeClass('related-controls-on');
 			}
 		}, this);
 
@@ -108,6 +119,7 @@ DeskPRO.Agent.PageHelper.RelatedContentList = new Orb.Class({
 	},
 
 	enableControls: function(tab) {
+
 		var page = tab.page;
 		if (!page.relatedContent) {
 			return;

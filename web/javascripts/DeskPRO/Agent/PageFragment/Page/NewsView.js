@@ -96,6 +96,11 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li', this.getEl('bodytabs')),
 			onTabSwitch: (function(info) {
+				if ($(info.tabContent).is('.related-content')) {
+					$('body').addClass('related-controls-on');
+				} else {
+					$('body').removeClass('related-controls-on');
+				}
 				if ($(info.tabContent).is('.revisions') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
 						url: BASE_URL + 'agent/news/post/' + this.meta.news_id + '/view-revisions',

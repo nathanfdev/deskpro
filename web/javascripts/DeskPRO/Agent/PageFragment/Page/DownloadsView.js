@@ -97,6 +97,11 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li', this.getEl('bodytabs')),
 			onTabSwitch: (function(info) {
+				if ($(info.tabContent).is('.related-content')) {
+					$('body').addClass('related-controls-on');
+				} else {
+					$('body').removeClass('related-controls-on');$('body').addClass('related-controls-off');
+				}
 				if ($(info.tabContent).is('.revisions') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
 						url: BASE_URL + 'agent/downloads/file/' + this.meta.download_id + '/view-revisions',

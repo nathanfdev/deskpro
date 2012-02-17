@@ -49,6 +49,15 @@ DeskPRO.Agent.PageHelper.RelatedContent = new Orb.Class({
 		});
 	},
 
+	isViewing: function() {
+		var tab = this.page.bodyTabs.lastActiveTabContent;
+		if (tab && tab.is('.related-content')) {
+			return true;
+		}
+
+		return false;
+	},
+
 	_refreshInstructionEl: function() {
 		if ($('.related-content:not(.removing):first', this.listEl).length) {
 			// There is related content.
