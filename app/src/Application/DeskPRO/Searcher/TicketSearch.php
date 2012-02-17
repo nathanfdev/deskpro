@@ -683,34 +683,45 @@ class TicketSearch extends SearcherAbstract
 					}
 					break;
 				case self::TERM_STATUS:
+
 					$this->affected_fields[] = 'ticket.status';
 					$set_status = true;
 
+					$show_status = array();
+					$hidden_status = array();
+
 					$choice_str = array();
+
 					foreach ((array)$choice as $c) {
-						$choice_str[] = $tr->phrase('agent.tickets.status_' . $c);
+						if (strpos($c, '.') !== false) {
+							list ($status, $hstatus) = explode('.', $c, 2);
+							$hidden_status[] = $hstatus;
+							$choice_str[] = $tr->phrase('agent.tickets.hidden_status_' . $c);
+							$this->enableArchiveSearch();
+						} else {
+							$show_status[] = $show_status;
+							$choice_str[] = $tr->phrase('agent.tickets.status_' . $c);
+							if ($c != 'awaiting_agent' && $c != 'awaiting_user') {
+								$this->enableArchiveSearch();
+							}
+						}
 					}
+
 					$choice_str = implode(', ', $choice_str);
 
-					$phrase = 'agent.x_is_y';
-					if ($op == self::OP_NOT OR $op == self::OP_NOTCONTAINS) {
-						$phrase = 'agent.x_is_not_y';
+					$w = '(';
+					if ($show_status) {
+						$w .= '(';
+						$w .= $this->_choiceMatch("$tickets_table.status", $op, $choice);
+						$w .= ')';
+					} else {
+						$w .= '(';
+						$w .= $this->_choiceMatch("$tickets_table.hidden_status", $op, $choice);
+						$w .= ')';
 					}
-					$this->summary[] = $tr->phrase($phrase, array('field' => $tr->phrase('agent.tickets.status'), 'value' => $choice_str));
+					$w .= ')';
 
-					$archive_statuses = array_filter((array)$choice, function($val) {
-						if ($val != 'awaiting_agent' AND $val != 'awaiting_user') {
-							return true;
-						}
-
-						return false;
-					});
-
-					if ($archive_statuses) {
-						$this->enableArchiveSearch();
-					}
-
-					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, $choice);
+					$wheres[] = $w;
 					break;
 				case self::TERM_HIDDEN_STATUS:
 					$this->affected_fields[] = 'ticket.hidden_status';
@@ -776,8 +787,8 @@ class TicketSearch extends SearcherAbstract
 					$this->affected_fields[] = 'ticket.subject';
 					$field = 'tickets.subject';
 					if (!$this->is_archive) {
-						$joins[] = 'tickets_search_subjects';
-						$field = 'tickets_search_subjects.subject';
+						$joins[] = 'tickets_search_subject';
+						$field = 'tickets_search_subject.subject';
 					}
 
 					if ($op == self::OP_IS) {

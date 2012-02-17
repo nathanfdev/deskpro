@@ -14,12 +14,14 @@
 		<li class="ob">
 			<label>Status</label>
 			<div class="values">
-				<select name="set_term[status][]">
-					<option value="awaiting_agent">Awaiting Agent</option>
-					<option value="awaiting_user">Awaiting User</option>
-					<option value="resolved">Resolved</option>
+				<select name="set_term[status][]" multiple="multiple">
+					<option class="start" value="awaiting_agent">Awaiting Agent</option>
+					<option class="start" value="awaiting_user">Awaiting User</option>
+					<option class="start" value="resolved">Resolved</option>
 					<option value="closed">Closed</option>
-					<option value="hidden">Hidden (awaiting validating, spam)</option>
+					<option value="hidden.validated">Awaiting Validation</option>
+					<option value="hidden.spam">Spam</option>
+					<option value="hidden.deleted">Deleted</option>
 				</select>
 			</div>
 		</li>
