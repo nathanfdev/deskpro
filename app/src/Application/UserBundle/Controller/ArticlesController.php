@@ -374,40 +374,4 @@ class ArticlesController extends AbstractController
 			'slug' => $article->getUrlSlug()
 		));
 	}
-
-
-	/**
-	 * Rate an article
-	 *
-	 * @param  $feedback_id
-	 */
-	public function rateAction($article_id)
-	{
-		$article = App::getEntityRepository('DeskPRO:Article')->find($article_id);
-		if (!$article) {
-			return $this->renderStandardError('@user_articles.error_not_found', '@core.not_found', 404);
-		}
-
-		if ($this->person['id']) {
-			App::getDb()->delete('article_ratings', array('article_id' => $article['id'], 'person_id' => $this->person['id']));
-		}
-
-		App::getDb()->delete('article_ratings', array('article_id' => $article['id'], 'visitor_id' => App::getSession()->getVisitor()->getId()));
-
-		$rating = new Entity\ArticleRating();
-		$rating['article'] = $article;
-		if ($this->person['id']) {
-			$rating['person'] = $this->person;
-		} else {
-			$rating['visitor'] = App::getSession()->getVisitor();
-		}
-		$rating['rating'] = $this->in->getInt('rating');
-		$rating['date_created'] = new \DateTime();
-
-		App::getOrm()->persist($rating);
-		App::getOrm()->persist($article);
-		App::getOrm()->flush();
-
-		return $this->redirectRoute('user_articles_article', array('slug' => $article['slug']));
-	}
 }

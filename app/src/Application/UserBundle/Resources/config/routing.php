@@ -412,13 +412,6 @@ $collection->add('user_articles_article', new Route(
 	array()
 ));
 
-$collection->add('user_articles_rate', new Route(
-	'/kb/rate-article/{article_id}',
-	array('_controller' => 'UserBundle:Articles:rate'),
-	array(),
-	array()
-));
-
 $collection->add('user_articles_newcomment', new Route(
 	'/kb/new-comment/{article_id}',
 	array('_controller' => 'UserBundle:Articles:newComment'),

@@ -1,5 +1,5 @@
 <ul>
 	{% for res in results %}
-		{% include 'UserBundle:Common:searchlist-simplerow.html.twig' with { type: res.type, item: res.object } %}
+		{% include 'UserBundle:Common:searchlist-simplerow.html.twig' with { type: res.type, item: res.object, q: query, count: results|length } %}
 	{% endfor %}
 </ul>

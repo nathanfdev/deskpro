@@ -176,6 +176,14 @@ class ContentRating
 			if ($searchlog->visitor && $this->visitor && $searchlog->visitor['id'] == $this->visitor['id']) {
 				$rating->searchlog = $searchlog;
 			}
+		} else {
+			if ($this->session->get('from_search')) {
+				$searchlog = App::findEntity('DeskPRO:SearchLog', $this->session->get('last_searchlog_id'));
+				$rating->searchlog = $searchlog;
+
+				$this->session->remove('from_search');
+				$this->session->save();
+			}
 		}
 
 		$this->content_object->addRating($rating);

@@ -28,6 +28,23 @@ class SearchController extends AbstractController
 	{
 		$q = $this->in->getString('q');
 
+		if ($this->in->getString('gourl')) {
+			$gourl = $this->in->getString('gourl');
+			$count = $this->in->getUint('c');
+
+			$validate = $this->checkRequestToken($gourl . $count, 't');
+			if ($validate || 1) {
+				$searchlog = SearchLog::create($q, $count, true);
+				$this->em->persist($searchlog);
+				$this->em->flush();
+
+				$this->session->set('from_search', true);
+				$this->session->set('last_searchlog_id', $searchlog->id);
+				$this->session->save();
+			}
+			return $this->redirect($this->in->getString('gourl'));
+		}
+
 		$is_search = false;
 		$results = false;
 		$sticky_results = false;
@@ -56,6 +73,7 @@ class SearchController extends AbstractController
 			});
 
 			$this->session->set('last_searchlog_id', $searchlog->id);
+			$this->session->save();
 		}
 
 		$pageinfo = Numbers::getPaginationPages($total, $cur_page, $per_page);

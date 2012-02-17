@@ -1,5 +1,16 @@
 <li class="{{ type }} {{ type }}-{{ item.id }}">
-	<a href="{{ item.getLink() }}" class="view-item" data-content-type="{{ type }}" data-content-id="{{ item.id }}">
+	{% if q %}
+		<a
+			href="{{ path('user_search', {q: q, c: count, t: security_token(q ~ count), gourl: item.getLink() }) }}"
+			onmouseover="window.status='item.getLink()';"
+			onmouseout="window.status='item.getLink()';"
+			class="view-item"
+			data-content-type="{{ type }}"
+			data-content-id="{{ item.id }}"
+		>
+	{% else %}
+		<a href="{{ item.getLink() }}" class="view-item" data-content-type="{{ type }}" data-content-id="{{ item.id }}">
+	{% endif %}
 		<span>{{ item.title }}</span>
 	</a>
 	<div class="summary">
