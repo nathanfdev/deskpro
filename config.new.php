@@ -113,4 +113,14 @@ $DP_CONFIG = array();
 // $DP_CONFIG['debug']['mail']['force_to'] = '';
 // $DP_CONFIG['debug']['mail']['disable_send'] = 1;
 
+// $DP_CONFIG['debug']['querylog'] = array(
+// 	'enabled'       => true,
+// 	'log_maxtime'   => 0.2,      // Log all queries that take longer than this
+// 	'log_nowhere'   => 0.08,     // Log all queries without a WHERE clause that take longer than this
+// 	'log_countstar' => false,    // Log all COUNT(*) queries without a WHERE clause
+// 	'log_all'       => true,     // Log all queries regardless of other settings
+// 	'log_explain'   => false,    // Re-execute a query with an EXPLAIN when it is logged
+// 	'log_trace'     => false,    // Save a stacktrace when a query is logged
+// );
+
 // $DP_CONFIG['debug']['enable_profiler'] = true;
