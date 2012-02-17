@@ -1,7 +1,7 @@
 <?php
 ##BEGIN:locale.language##
 $l = new \Application\DeskPRO\Entity\Language();
-$l['title'] = 'Default English';
+$l['title'] = 'English';
 $l['locale'] = 'en_US';
 $l['language_package'] = 'DeskproLanguages\\DeskPRO\\LangPackage';
 \Application\DeskPRO\App::getOrm()->persist($l);
