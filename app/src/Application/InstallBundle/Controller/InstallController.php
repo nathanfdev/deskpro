@@ -107,6 +107,14 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 				$res->headers->set('Content-Type', 'text/html');
 				return $res;
 			}
+
+			$tableinfo = $db->fetchColumn("SHOW CREATE TABLE `install_data`", array(), 1);
+			if (stripos($tableinfo, 'innodb') === false) {
+				$html = deskpro_install_basic_error('Your database server created a new table, but it ignored the instruction to use the InnoDB engine. Please refer to our helpdesk for information on how to resolve this error.');
+				$res = new \Symfony\Component\HttpFoundation\Response($html);
+				$res->headers->set('Content-Type', 'text/html');
+				return $res;
+			}
 		}
 
 		return $this->render('InstallBundle:Install:install-tables.html.php', array(

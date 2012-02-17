@@ -62,6 +62,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
 	public function startQuery($sql, array $params = null, array $types = null)
 	{
+		if (isset($GLOBALS['DP_NOSQL_LOG'])) return;
 		if ($this->is_logging) return;
 		if (!$this->is_enabled) return;
 
@@ -94,6 +95,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
 	public function stopQuery()
 	{
+		if (isset($GLOBALS['DP_NOSQL_LOG'])) return;
 		if ($this->is_logging) {
 			return;
 		}

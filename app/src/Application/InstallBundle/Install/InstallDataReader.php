@@ -4,7 +4,7 @@ namespace Application\InstallBundle\Install;
 
 use Orb\Util\Strings;
 
-class InstallDataReader implements \IteratorAggregate
+class InstallDataReader implements \IteratorAggregate, \Countable
 {
 	protected $filename;
 	protected $filepath;
@@ -141,11 +141,21 @@ class InstallDataReader implements \IteratorAggregate
 	}
 
 	/**
-	 * @return ArrayObject
+	 * @return \ArrayObject
 	 */
 	public function getIterator()
 	{
 		$this->_read();
 		return new \ArrayObject($this->data);
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function count()
+	{
+		$this->_read();
+		return count($this->data);
 	}
 }

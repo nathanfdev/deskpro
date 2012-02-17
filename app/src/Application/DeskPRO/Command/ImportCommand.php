@@ -35,6 +35,10 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$output->setFormatter(new \Orb\Console\Formatter\MaxLineLengthFormatter(80));
+
+		$GLOBALS['DP_NOSQL_LOG'] = true;
+
 		#----------------------------------------
 		# Set environment
 		#----------------------------------------
@@ -237,8 +241,14 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				  `name` varchar(75) NOT NULL DEFAULT '',
 				  `data` blob NOT NULL,
 				  PRIMARY KEY (`build`,`name`)
-				) ENGINE=InnoDB DEFAULT CHARSET=latin1
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8
 			");
+
+			$tableinfo = $db->fetchColumn("SHOW CREATE TABLE `install_data`", array(), 1);
+			if (stripos($tableinfo, 'innodb') === false) {
+				$logger->log('Your database server created a new table, but it ignored the instruction to use the InnoDB engine. Please refer to our helpdesk for information on how to resolve this error: http://support.deskpro.com/', Logger::ERR);
+				return 1;
+			}
 
 			if (!defined('DP_BUILD_TIME')) {
 				$build_file = DP_ROOT.'/sys/config/build-time.php';
@@ -258,12 +268,14 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 			$errors = array();
 
-			$fn = function($section, $status, $sql, $x, $e = null) use (&$errors) {
+			$total = $install_schema->countQueries();
+			$count = 0;
+			$self = $this;
+			$fn = function($section, $status, $sql, $x, $e = null) use (&$errors, &$count, $total, $self, $output) {
+				$count++;
+				$self->updateStatus($output, '1. Installing Database', $count, $total);
 				if ($status == 'error') {
-					echo '!';
 					$errors[] = $e;
-				} else {
-					echo '.';
 				}
 			};
 
@@ -282,10 +294,17 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 			$this->getContainer()->getEm()->beginTransaction();
 
+			echo "\n";
+
 			try {
 				$install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
 				$em = $this->getContainer()->getEm();
+
+				$total = $install_data->countQueries();
+				$count = 0;
 				foreach ($install_data as $php) {
+					$count++;
+					$self->updateStatus($output, '2. Installing Initial Records', $count, $total);
 					eval($php);
 				}
 
@@ -334,6 +353,9 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 			$data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
 			$data_init->run();
+
+			echo "\n";
+			echo "Proceeding with the import...\n\n";
 		}
 
 		#----------------------------------------
@@ -585,13 +607,15 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 			$end_time = microtime(true);
 			$logger->log(sprintf("Importer complete. Took %0.3f seconds.", $end_time-$start_time), 'INFO');
+
+			echo "Import Complete.\n";
 			return 0;
 		}
 
 		return 0;
 	}
 
-	protected function updateStatus($output, $title, $cur, $max)
+	public function updateStatus($output, $title, $cur, $max)
 	{
 		if ($output->getVerbosity() > 1) {
 			return;
