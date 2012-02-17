@@ -374,6 +374,24 @@
 		</div>
 	{% endif %}
 
+	{% if 'language' not in no_show_fields and term_options.languages %}
+	<div class="type" title="Language" data-term-type="GenericMenuTerm" data-rule-type="language" data-term-triggers="lang,language">
+		<div class="op">
+			<select name="op">
+				<option value="is">is</option>
+				<option value="not">is not</option>
+			</select>
+		</div>
+		<div class="options">
+			<select name="language">
+				{% for id,title in term_options.languages %}
+				<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	{% endif %}
+
 	{% if 'date_created' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
 	<div class="type" title="Date created" data-rule-type="date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-type="GenericDateTerm" data-term-triggers="date-created">
 		<div class="op">

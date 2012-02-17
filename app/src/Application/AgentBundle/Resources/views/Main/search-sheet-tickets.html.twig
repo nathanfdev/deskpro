@@ -110,6 +110,32 @@
 			</div>
 		</li>
 		{% endif %}
+
+		{% if ticket_options.people_organizations %}
+		<li class="ob">
+			<label>Organization</label>
+			<div class="values">
+				<select name="set_term[organization][]" multiple="multiple">
+					{% for id,title in ticket_options.people_organizations %}
+						<option value="{{ id }}">{{ title }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</li>
+		{% endif %}
+
+		{% if term_options.languages %}
+			<li class="ob">
+				<label>Language</label>
+				<div class="values">
+					<select name="language">
+						{% for id,title in term_options.languages %}
+						<option value="{{id}}">{{title}}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</li>
+		{% endif %}
 	</ul>
 	<br class="clear" />
 
@@ -138,6 +164,6 @@
 	classname: 'search-builder-tpl',
 	id: 'tickersearch_criteria_tpl',
 	term_options: term_options,
-	no_show_fields: ['department', 'status', 'agent', 'agent_team', 'participant', 'category', 'product', 'priority', 'workflow'],
+	no_show_fields: ['department', 'status', 'agent', 'agent_team', 'participant', 'category', 'product', 'priority', 'workflow', 'organizaton', 'language'],
 	search_context: 'filter'
 } %}

@@ -355,6 +355,8 @@ class TicketSearchController extends AbstractController
 				'product'       => array('op' => 'contains', 'options' => array()),
 				'priority'      => array('op' => 'contains', 'options' => array()),
 				'workflow'      => array('op' => 'contains', 'options' => array()),
+				'organization'  => array('op' => 'contains', 'options' => array()),
+				'language'      => array('op' => 'contains', 'options' => array()),
 			);
 			foreach ($set_terms_map as $name => $info) {
 				$in_val = $this->container->getIn()->getCleanValueArray('set_term.'.$name, 'raw', 'discard');
