@@ -64,6 +64,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 				return $this->redirect($redirect_url);
 			}
 		}
+
+		if (!($this instanceof LoginController)) {
+			if ($this->container->getSetting('core.user_mode') == 'closed' && !$this->person->id) {
+				return $this->redirectRoute('user_login');
+			}
+		}
 	}
 
 
