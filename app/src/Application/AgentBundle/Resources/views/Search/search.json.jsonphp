@@ -1,0 +1,108 @@
+<?php
+$OUTPUT = array();
+
+if ($results['ticket']) {
+	$OUTPUT['ticket'] = array();
+	foreach ($results['ticket'] as $r) {
+		$OUTPUT['ticket'][] = array(
+			'id' => $r->id,
+			'person_id' => $r->person->id,
+			'person' => $r->person->getDisplayName(),
+			'subject' => $r->subject,
+			'title' => $r->subject,
+			'route' => 'ticket:' . $router->generate('agent_ticket_view', array('ticket_id' => $r->id))
+		);
+	}
+}
+
+if ($results['chat_conversation']) {
+	$OUTPUT['chat_conversation'] = array();
+	foreach ($results['chat_conversation'] as $r) {
+		$OUTPUT['ticket'][] = array(
+			'id' => $r->id,
+			'person_id' => $r->person->id,
+			'person' => $r->person->getDisplayName(),
+			'title' => $r->subject,
+			'route' => 'page:' . $router->generate('agent_userchat_view', array('conversation_id' => $r->id))
+		);
+	}
+}
+
+if ($results['person']) {
+	$OUTPUT['person'] = array();
+	foreach ($results['person'] as $r) {
+		$OUTPUT['person'][] = array(
+			'id' => $r->id,
+			'person_id' => $r->id,
+			'person' => $r->getDisplayName(),
+			'title' => $r->getDisplayName() . ($r->getPrimaryEmailAddress() ? '&lt;' . $r->getPrimaryEmailAddress() . '&gt;' : ''),
+			'email' => $r->getPrimaryEmailAddress(),
+			'organization' => $r->organization ? $r->organization->name : null,
+			'route' => 'person:' . $router->generate('agent_people_view', array('person_id' => $r->id))
+		);
+	}
+}
+
+if ($results['organization']) {
+	$OUTPUT['organization'] = array();
+	foreach ($results['organization'] as $r) {
+		$OUTPUT['organization'][] = array(
+			'id' => $r->id,
+			'name' => $r->name,
+			'title' => $r->name,
+			'route' => 'page:' . $router->generate('agent_org_view', array('organization_id' => $r->id))
+		);
+	}
+}
+
+if ($results['article']) {
+	$OUTPUT['article'] = array();
+	foreach ($results['article'] as $r) {
+		$OUTPUT['article'][] = array(
+			'id' => $r->id,
+			'person_id' => $r->person->id,
+            'person' => $r->person->getDisplayName(),
+			'title' => $r->title,
+			'route' => 'page:' . $router->generate('agent_kb_article', array('article_id' => $r->id))
+		);
+	}
+}
+
+if ($results['feedback']) {
+	$OUTPUT['feedback'] = array();
+	foreach ($results['feedback'] as $r) {
+		$OUTPUT['feedback'][] = array(
+			'id' => $r->id,
+			'person_id' => $r->person->id,
+			'person' => $r->person->getDisplayName(),
+			'title' => $r->title,
+			'route' => 'page:' . $router->generate('agent_feedback_view', array('feedback_id' => $r->id))
+		);
+	}
+}
+
+if ($results['download']) {
+	$OUTPUT['download'] = array();
+	foreach ($results['download'] as $r) {
+		$OUTPUT['download'][] = array(
+			'id' => $r->id,
+			'person_id' => $r->person->id,
+			'person' => $r->person->getDisplayName(),
+			'title' => $r->title,
+			'route' => 'page:' . $router->generate('agent_downloads_view', array('download_id' => $r->id))
+		);
+	}
+}
+
+if ($results['news']) {
+	$OUTPUT['news'] = array();
+	foreach ($results['news'] as $r) {
+		$OUTPUT['news'][] = array(
+			'id' => $r->id,
+			'person_id' => $r->person->id,
+			'person' => $r->person->getDisplayName(),
+			'title' => $r->title,
+			'route' => 'page:' . $router->generate('agent_news_view', array('news_id' => $r->id))
+		);
+	}
+}

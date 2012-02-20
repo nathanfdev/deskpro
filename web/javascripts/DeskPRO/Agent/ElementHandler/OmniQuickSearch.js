@@ -64,9 +64,7 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 		var current = this.resultWrap.find('.result-focus');
 		if (ev.keyCode == 13 /* enter key */) {
 			ev.preventDefault();
-
-			// We run a full search when we press enter key
-			DeskPRO_Window.loadListPane(BASE_URL + 'agent/search/search?q=' + encodeURI(self.el.val().trim()));
+			self.updateResultsLong();
 
 		} else if (ev.keyCode == 27 /* escape key */) {
 			// First escape just deselects
@@ -119,6 +117,44 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 				}
 			}
 		}
+	},
+
+	updateResultsLong: function() {
+		var self = this;
+		var q = this.el.val().trim();
+
+		if (!q.length) {
+			this.clearAll();
+			return;
+		}
+
+		var now = new Date();
+
+		this.el.addClass('loading');
+		this.runningAjax = $.ajax({
+			url: BASE_URL + 'agent/search/search.json',
+			data: { q: q },
+			type: 'GET',
+			dataType: 'json'
+		});
+
+		this.runningAjax.done(function(results) {
+			self.setResults(results, true);
+
+			// Abort all ajax requests made before this one
+			Object.each(self.ajaxLoading, function(v, k) {
+				if (v[1].getTime() < now.getTime()) {
+					self._abortAjax(v[0]);
+				}
+			});
+		}).always(function() {
+			self.runningAjax = null;
+			self.el.removeClass('loading');
+		});
+
+		var id = Orb.uuid();
+		this.runningAjax.xDeskproId = id;
+		this.ajaxLoading[id] = [this.runningAjax, now];
 	},
 
 	updateResultsQuick: function() {
@@ -218,6 +254,10 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 
 					resultEl.appendTo(listEl);
 				}
+
+				if (ri >= 5) {
+					resultEl.hide();
+				}
 			}
 		}, this);
 
@@ -241,6 +281,8 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 			left: boundToOffset.left,
 			width: width
 		});
+
+		this.resultWrap.css('max-height', $(window).height() - 200);
 	},
 
 	clear: function() {

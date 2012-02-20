@@ -142,6 +142,13 @@ $collection->add('agent_search', new Route(
 	array()
 ));
 
+$collection->add('agent_search_json', new Route(
+	'/search/search.json',
+	array('_controller' => 'AgentBundle:Search:searchResults'),
+	array(),
+	array()
+));
+
 ################################################################################
 # Snippets
 ################################################################################
