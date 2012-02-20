@@ -1,0 +1,170 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.UserModePage' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/UserModePage.js') }}"></script>
+{% endblock %}
+{% block pagebar %}
+     <ul>
+         <li>Registration Settings</li>
+     </ul>
+{% endblock %}
+{% block sidebar_right %}
+	<div class="dp-page-box" style="margin-top: 15px;">
+		<div class="resource-item-list">
+			<header>
+				<div class="controls">
+					<a class="clean-white small" href="{{ '' }}">Add User Source</a>
+				</div>
+				<h4>User Sources</h4>
+			</header>
+			<article>
+				<article class="box-hint">A user source is an external database that DeskPRO will use to authenticate users when they want to log in.</article>
+				<ul>
+					<li>
+						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_facebook_toggle') }}';" {% if app.getSetting('core.facebook_source_enabled') %}checked="checked"{% endif %} />
+						Facebook
+					</li>
+					<li>
+						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_google_toggle') }}';" {% if app.getSetting('core.google_source_enabled') %}checked="checked"{% endif %} />
+						Google
+					</li>
+				</ul>
+			</article>
+		</div>
+	</div>
+{% endblock %}
+{% block page %}
+<form action="{{ path('admin_userreg_options_save') }}" method="POST" id="mode_form">
+
+<div class="dp-form" id="general_settings">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>
+				Force email validation
+			</label>
+		</div>
+		<div class="dp-form-input">
+			<label>
+				<input type="checkbox" name="email_validation" value="1" {% if app.getSetting('core.email_validation') %}checked="checked"{% endif %} />
+				Force users to validate their email address when they first register. Until a user validates, any submitted tickets on their account will
+				be invisible.
+			</label>
+		</div>
+	</div>
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>
+				Force login for existing users
+			</label>
+		</div>
+		<div class="dp-form-input">
+			<label>
+				<input type="checkbox" name="existing_account_login" value="1" {% if app.getSetting('core.existing_account_login') %}checked="checked"{% endif %} />
+				If a user tries to submit a new ticket, submit new feedback, start a new chat or add a comment using an email address that belongs to an existing
+				account, they will be prompted to login before the submission is accepted.
+			</label>
+		</div>
+	</div>
+</div>
+
+<div class="dp-form">
+<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Registration Mode</label>
+		</div>
+		<div class="dp-form-input" style="width: 95%;">
+			<div class="dp-input-group">
+				<label>
+					<input class="option-trigger" type="radio" name="mode" value="open" {% if not app.getSetting('core.user_mode') or app.getSetting('core.user_mode') == 'open' %}checked="checked"{% endif %}>
+					Open Helpdesk
+				</label>
+				<div class="dp-group-options" style="display: none">
+					<p>With an open helpdesk, anyone can use the helpdesk and anyone can register and log in.</p>
+					<div class="dp-form">
+						<div class="dp-form-row">
+							<div class="dp-form-label">
+								<label>Registration URL</label>
+								<em class="desc">When users want to register, this link will be provided.</em>
+							</div>
+							<div class="dp-form-input">
+								<input type="text" name="reg_url" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="dp-input-group">
+				<label>
+					<input class="option-trigger" type="radio" name="mode" value="external" {% if app.getSetting('core.user_mode') == 'require_reg' %}checked="checked"{% endif %}>
+					Require Registration
+				</label>
+				<div class="dp-group-options" style="display: none">
+					<p>With this mode, the helpdesk is readable by everyone but users must log in to submit content such as new tickets, new feedback, or new comments.</p>
+					<div class="dp-form">
+						<div class="dp-form-row">
+							<div class="dp-form-label">
+								<label>Registration URL</label>
+								<em class="desc">When users want to register, this link will be provided.</em>
+							</div>
+							<div class="dp-form-input">
+								<input type="text" name="reg_url" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="dp-input-group">
+				<label>
+					<input class="option-trigger" type="radio" name="mode" value="closed_agent_validation" {% if app.getSetting('core.user_mode') == 'require_reg_agent_validation' %}checked="checked"{% endif %}>
+					Require Registration with Agent Validation
+				</label>
+				<div class="dp-group-options" style="display: none">
+					<p>This is the same as "Request Registration" except that users must be manually validated by agents before they are able interact with the helpdesk.</p>
+					<div class="dp-form">
+						<div class="dp-form-row">
+							<div class="dp-form-label">
+								<label>Registration URL</label>
+								<em class="desc">When users want to register, this link will be provided.</em>
+							</div>
+							<div class="dp-form-input">
+								<input type="text" name="reg_url" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="dp-input-group">
+				<label>
+					<input class="option-trigger" type="radio" name="mode" value="closed" {% if app.getSetting('core.user_mode') == 'closed' %}checked="checked"{% endif %}>
+					Closed
+				</label>
+				<div class="dp-group-options" style="display: none">
+					<p>With a closed helpdeks, registration is closed so users must already exist in an external user-source or their accounts must be created
+					manually by an agent.</p>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+
+	<footer class="controls">
+		<div class="is-not-loading">
+			<button class="clean-white">Save Registration Settings</button>
+		</div>
+		<div class="is-loading">
+			<div class="loading-icon-flat">&nbsp;</div>
+		</div>
+	</footer>
+
+	<br class="clear" />
+</div>
+</div>
+
+</form>
+
+{% endblock %}

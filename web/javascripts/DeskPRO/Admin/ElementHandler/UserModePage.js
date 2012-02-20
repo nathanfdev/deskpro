@@ -27,7 +27,10 @@ DeskPRO.Admin.ElementHandler.UserModePage = new Orb.Class({
 
 			ev.preventDefault();
 
-			var formData = form.serializeArray();
+			var selectedLi = $('.dp-input-group.on');
+			var formData = selectedLi.find('input, textarea, select').serializeArray();
+
+			formData.append($('#general_settings').find('input, textarea, select').serializeArray());
 
 			form.addClass('loading');
 			$.ajax({
@@ -41,6 +44,11 @@ DeskPRO.Admin.ElementHandler.UserModePage = new Orb.Class({
 					$('#save_btn_wrap').hide();
 				}
 			});
+		});
+
+		var reg_urls = $('input[name="reg_url"]');
+		reg_urls.on('change', function() {
+			reg_urls.val($(this).val());
 		});
 	}
 });

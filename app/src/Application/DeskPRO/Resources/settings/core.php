@@ -1,85 +1,225 @@
 <?php return array(
 
-	'core.helpdesk_enabled' => true,
+	/**
+	 * When there's a problem where we cant get user input any other way, this address will be displayed.
+	 */
 	'core.emergency_contact' => 'emergency-contact@example.com',
+
+	/**
+	 * User registration mode: open, require_reg, require_reg_agent_validation, closed
+	 * See AdminBundle:UserReg
+	 */
 	'core.user_mode' => 'open',
 
+	/**
+	 * Are ticket categories enabled?
+	 */
 	'core.use_ticket_category' => false,
+
+	/**
+	 * Are ticket priorities enabled?
+	 */
 	'core.use_ticket_priority' => false,
+
+	/**
+	 * Are ticket workflows enabled?
+	 */
 	'core.use_ticket_workflow' => false,
+
+	/**
+	 * Are agent teams enabled?
+	 */
 	'core.use_agent_team' => false,
+
+	/**
+	 * Are products enabled?
+	 */
 	'core.use_product' => false,
+
+	/**
+	 * Is the helpdesk disabled? A disabled helpdesk doesn't fully boot and shows a maintanance message.
+	 */
 	'core.helpdesk_disabled' => false,
 
+	/**
+	 * The URL to the DeskPRO installation
+	 */
 	'core.deskpro_url' => 'http://localhost/',
+
+	/**
+	 * The name of the DeskPRO helpdesk
+	 */
 	'core.deskpro_name' => 'DeskPRO',
+
+	/**
+	 * The optional tagline or sub-title of the helpdesk
+	 */
 	'core.deskpro_tagline' => 'Support',
+
+	/**
+	 * The optional URL to a main website
+	 */
 	'core.site_url' => '',
+
+	/**
+	 * The optional title for the site URL
+	 */
 	'core.site_name' => '',
+
+	/**
+	 * The full URL to assets. These are hot-linked from remote sources like widgets.
+	 * If not specified, the /web/ directory of deskpro_url above is used.
+	 */
 	'core.deskpro_assets_full_url' => '',
+
+	/**
+	 * The secret string used for this installation used when generating various hashes
+	 */
 	'core.app_secret' => 'EE31CDD75AFA0ECC46004FD80B376C1180DBB0E7FCFEC925341A68FE6CF8630F',
 
+	/**
+	 * The default "from" address to send all email from
+	 */
 	'core.default_from_email' => '',
+
+	/**
+	 * Optionally BCC all emails to this address
+	 */
 	'core.bcc_all_emails' => '',
+
+	/**
+	 * How long, in days, to save successfully sent emails to
+	 */
 	'core.store_sent_mail_days' => 7,
 
-	'core.deskpro_version' => '4.0',
-	'core.deskpro_version_id' => '',
-
+	/**
+	 * When the installation took place
+	 */
 	'core.install_time' => 0,
 
+	/**
+	 * True to enable https://
+	 */
 	'core.force_ssl' => false,
+
+	/**
+	 * True to force the access domain to that of deskpro_url
+	 */
 	'core.force_domain' => false,
 
+	/**
+	 * True to use single-language ode
+	 */
 	'core.single_lang_mode' => true,
 
+	/**
+	 * The site ID. Only used when multiple helpdesks need to talk to eachother.
+	 */
 	'core.site_id' => '1',
 
+	/**
+	 * The cookie path
+	 */
 	'core.cookie_path' => '/',
+
+	/**
+	 * The cookie domains
+	 */
 	'core.cookie_domain' => '',
 
+	/**
+	 * The language to use by default when a user has no selection
+	 */
 	'core.default_language_id' => 1,
+
+	/**
+	 * The style to use
+	 */
 	'core.default_style_id' => 1,
-	'core.everyone_usergroup_id' => 2,
+
+	/**
+	 * The timezone to use by default when a user has no selection
+	 */
 	'core.default_timezone' => 'UTC',
 
-	'core.use_addthis' => false,
-	'core.addthis_username' => '',
-
+	/**
+	 * Use gravatar for default avatars?
+	 */
 	'core.use_gravatar' => 1,
 	'core.use_default_gravatar' => 1,
 
+	/**
+	 * How long, in seconds, are sessions valid for?
+	 */
 	'core.sessions_lifetime' => 3600,
 
+	/**
+	 * How long, in seconds, are email sources kept for before being cleaned up
+	 */
 	'core.email_source_storetime' => 7776000,
 
+	/**
+	 * When to use the mail queue: never, hint, always
+	 */
 	'core.use_mail_queue'  => 'never',
-	'core.disqus_shortname' => '',
 
-	'core.facebook_comments_num_posts' => 10,
-	'core.facebook_admins' => '',
+	//'core.disqus_shortname' => '',
+	//'core.facebook_comments_num_posts' => 10,
+	//'core.facebook_admins' => '',
+	//'core.facebook_like' => false,
 
-	'core.facebook_like' => false,
-
-	// false=use deskpro, disqus=use disqus, facebook=use facebook
+	/**
+	 * Which comment adapter to use: false=deskpro, disqus or facebook
+	 */
 	'core.comments_adapter' => false,
 
+	/**
+	 * Recaptcha public key
+	 */
 	'core.recaptcha_public_key'  => '6LcWL8YSAAAAAJu1CrtS9RdOJyKd_NbArNgUFWV9',
+
+	/**
+	 * Recaptcha private key
+	 */
 	'core.recaptcha_private_key' => '6LcWL8YSAAAAAJVZ5AEMb5Vq7wkZoGHfKfAqvB2U',
 
-	'core.email_validation' => true,
+	/**
+	 * Require email validation for newly registered users
+	 */
+	'core.email_validation' => false,
 
+	/**
+	 * Require a user to log in if they enter an email address that is owned by an existing accounts
+	 */
+	'core.existing_account_login' => false,
+
+	/**
+	 * The max attachment an agent can upload
+	 */
 	'core.attach_agent_maxsize' => '5242880',
+
+	/**
+	 * The only file extensions that an agent can upload (whitelist)
+	 */
 	'core.attach_agent_must_exts' => null,
+
+	/**
+	 * File extensions that an agent is forbidden from uploading (blacklist)
+	 */
 	'core.attach_agent_not_exts' => null,
 
+	/**
+	 * The max attachment a user can upload
+	 */
 	'core.attach_user_maxsize' => '5242880',
-	'core.attach_user_must_exts' => null,
-	'core.attach_user_not_exts' => null,
 
-	'core.enable_departments' => true,
-	'core.enable_products' => true,
-	'core.enable_ticket_categories' => true,
-	'core.enable_ticket_priorities' => true,
-	'core.enable_ticket_workflows' => true,
+	/**
+	 * The only file extensions that users can upload (whitelist)
+	 */
+	'core.attach_user_must_exts' => null,
+
+	/**
+	 * File extensions that a user is forbidden from uploading (blacklist)
+	 */
+	'core.attach_user_not_exts' => null,
 );

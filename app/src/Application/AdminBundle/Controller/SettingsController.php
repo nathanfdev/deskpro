@@ -31,7 +31,7 @@ class SettingsController extends AbstractController
 				'core.deskpro_url'      => $_POST['settings']['core.deskpro_url'],
 				'core.site_name'        => $_POST['settings']['core.site_name'],
 				'core.site_url'         => $_POST['settings']['core.site_url'],
-				'core.helpdesk_enabled' => empty($_POST['settings']['core.helpdesk_enabled']) ? 0 : 1,
+				'core.helpdesk_disabled' => empty($_POST['settings']['core.helpdesk_disabled']) ? 0 : 1,
 				'core.force_ssl'        => empty($_POST['settings']['core.force_ssl']) ? 0 : 1,
 				'core.force_domain'     => empty($_POST['settings']['core.force_domain']) ? 0 : 1,
 				'core.cookie_path'      => $_POST['settings']['core.cookie_path'],
@@ -209,23 +209,6 @@ class SettingsController extends AbstractController
 		App::getEntityRepository('DeskPRO:Setting')->updateSetting($setting_name, $this->in->getRaw('value'));
 
 		return $this->createJsonResponse(array('success' => true));
-	}
-
-
-	############################################################################
-	# user-settings
-	############################################################################
-
-	public function userModeAction()
-	{
-		return $this->render('AdminBundle:Settings:user-mode.html.twig');
-	}
-
-	public function saveUserModeAction()
-	{
-		App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.user_mode', $this->in->getString('mode'));
-
-		return $this->createJsonResponse(array('success'=> true));
 	}
 
 

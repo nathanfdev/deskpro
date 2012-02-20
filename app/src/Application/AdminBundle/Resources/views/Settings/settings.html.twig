@@ -50,8 +50,8 @@
 	<h4>Helpdesk</h4>
 	<div class="setting_fields">
 		<div class="field_row">
-			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
-				The helpdesk is currently enabled</label>
+			<label><input type="checkbox" name="settings[core.helpdesk_disabled]" {% if app.getSetting('core.helpdesk_disabled') %}checked="checked"{% endif %} />
+				The helpdesk is currently disabled</label>
 		</div>
 		<div class="field_row">
 			<label><input type="checkbox" name="settings[core.force_ssl]" {% if app.getSetting('core.force_ssl') %}checked="checked"{% endif %} />

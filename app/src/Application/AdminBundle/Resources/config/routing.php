@@ -429,20 +429,6 @@ $collection->add('admin_settings_adv_set', new Route(
 	array()
 ));
 
-$collection->add('admin_settings_usermode', new Route(
-	'/settings/user-mode',
-	array('_controller' => 'AdminBundle:Settings:userMode'),
-	array(),
-	array()
-));
-
-$collection->add('admin_settings_usermode_save', new Route(
-	'/settings/user-mode/save.json',
-	array('_controller' => 'AdminBundle:Settings:saveUserMode'),
-	array(),
-	array()
-));
-
 $collection->add('admin_labels', new Route(
 	'/settings/labels/{label_type}',
 	array('_controller' => 'AdminBundle:Settings:labels'),
@@ -471,6 +457,44 @@ $collection->add('admin_labels_del', new Route(
 	array()
 ));
 
+################################################################################
+# User Registration
+################################################################################
+
+$collection->add('admin_userreg_options', new Route(
+	'/settings/user-registration',
+	array('_controller' => 'AdminBundle:UserReg:options'),
+	array(),
+	array()
+));
+
+$collection->add('admin_userreg_options_save', new Route(
+	'/settings/user-registration/save.json',
+	array('_controller' => 'AdminBundle:UserReg:saveOptions'),
+	array(),
+	array()
+));
+
+$collection->add('admin_userreg_facebook_toggle', new Route(
+	'/settings/user-registration/facebook/toggle',
+	array('_controller' => 'AdminBundle:UserReg:facebookToggle'),
+	array(),
+	array()
+));
+
+$collection->add('admin_userreg_facebook_edit', new Route(
+	'/settings/user-registration/facebook',
+	array('_controller' => 'AdminBundle:UserReg:facebookEdit'),
+	array(),
+	array()
+));
+
+$collection->add('admin_userreg_google_toggle', new Route(
+	'/settings/user-registration/google/toggle',
+	array('_controller' => 'AdminBundle:UserReg:googleToggle'),
+	array(),
+	array()
+));
 
 ################################################################################
 # User : Banning

@@ -42,6 +42,15 @@ class Usersource extends EntityRepository
 		}
 	}
 
+	public function getByType($type)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT u
+			FROM DeskPRO:Usersource u
+			WHERE u.source_type = ?1
+		")->setParameter(1, $type)->setMaxResults(1)->getOneOrNullResult();
+	}
+
 	public function getUsersource($id)
 	{
 		if ($this->usersources === null) $this->getAllUsersources();

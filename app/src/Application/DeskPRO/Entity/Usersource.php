@@ -49,13 +49,12 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	protected $title = '';
 
 	/**
-	 * The adapter classname. An adapter is created from this usersource, and is responsible for
-	 * handling things like creating auth adapters and rendering web templates.
+	 * The type of usersource this is. This maps to an adapter class.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="adapter_class", type="string", length=255)
+	 * @ORM_Mapping\Column(name="source_type", type="string", length=255)
 	 */
-	protected $adapter_class;
+	protected $source_type;
 
 	/**
 	 * Options we'll pass to the adapter. These options should be set up with some installer.
@@ -96,7 +95,20 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 			return $this->_adapter_instance;
 		}
 
-		$classname = $this->adapter_class;
+		switch ($this->source_type) {
+			case 'facebook':
+				$classname = 'Application\\DeskPRO\\Usersource\\Adapter\\Facebook';
+				break;
+
+			case 'google':
+				$classname = 'Application\\DeskPRO\\Usersource\\Adapter\\Google';
+				break;
+
+			default:
+				throw new \RuntimeException("Unknown usersource type `{$this->source_type}`");
+				break;
+		}
+
 		$this->_adapter_instance = new $classname($this);
 
 		return $this->_adapter_instance;

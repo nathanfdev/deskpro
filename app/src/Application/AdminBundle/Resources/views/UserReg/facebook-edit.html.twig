@@ -1,0 +1,54 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
+     <ul>
+         <li><a href="{{ path('admin_userreg_options') }}">Registration Settings</a></li>
+		 <li>Facebook Setup</li>
+     </ul>
+{% endblock %}
+{% block prepage %}
+	<div style="padding: 10px 10px 0 10px;">
+		{{ design.helpbox() }}
+			<p>
+				To enable Facebook integration, you must register with Facebook to get your own application key and application secret.
+				<a href="https://developers.facebook.com/docs/opengraph/tutorial/#create-app">Click here here to sign up now</a>.
+			</p>
+		{{ design.helpbox_end() }}
+	</div>
+{% endblock %}
+{% block page %}
+
+<form action="{{ path('admin_userreg_facebook_edit') }}" method="post" class="dp-form">
+	{{ form_token('facebook_setup') }}
+	<input type="hidden" name="process" value="1" />
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Application Key</label>
+		</div>
+		<div class="dp-form-input">
+			<input type="text" name="facebook[app_key]" value="{{ options.app_key }}" placeholder="Enter your Facebook API application key" />
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Application Secret</label>
+		</div>
+		<div class="dp-form-input">
+			<input type="text" name="facebook[app_secret]" value="{{ options.app_secret }}" placeholder="Enter your Facebook API application secret" />
+		</div>
+	</div>
+
+	<footer class="controls">
+	<div class="is-not-loading">
+		<button class="clean-white">Save</button>
+	</div>
+	<div class="is-loading">
+		<div class="loading-icon-flat">&nbsp;</div>
+	</div>
+</footer>
+
+<br class="clear" />
+</form>
+{% endblock %}
