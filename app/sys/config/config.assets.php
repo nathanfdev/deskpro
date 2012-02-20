@@ -168,6 +168,7 @@ $CONFIG['agent_pages_lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackCommentsValidating.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackContentValidating.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TaskList.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/Search.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/DealList.js',
 	)
 );

@@ -17,15 +17,15 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
 
 use Application\DeskPRO\Search\Adapter\MysqlAdapter;
-use Application\DeskPRO\Search\Searcher\TicketSearcherInterface;
+use Application\DeskPRO\Search\Searcher\ContentSearcherInterface;
 
 use Application\DeskPRO\Search\SearcherResult\ResultSet;
 use Application\DeskPRO\Search\SearcherResult\Result;
 
 /**
- * The content searcher searches: tickets
+ * The combined searcher searches everything: tickets, chats, articles, news, downloads, feedback
  */
-class TicketSearcher implements TicketSearcherInterface, PersonContextInterface
+class AgentCombinedSearcher
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -40,30 +40,49 @@ class TicketSearcher implements TicketSearcherInterface, PersonContextInterface
 		$this->person = $person;
 	}
 
-	public function query($query, $per_page = 25, $page = 1, $top = false)
+	public function query($query_text, $per_page = 25, $page = 1, array $limit_types = null, $top = true)
 	{
-		$where = "
-			object_type = 'ticket'
-			AND MATCH (content) AGAINST (?)
-		";
+		$limit_types = \Orb\Util\Arrays::removeFalsey((array)$limit_types);
 
-		$count_query = "
-			SELECT COUNT(*)
-			FROM content_search
-			WHERE $where
-		";
+		// Incase they are label matches, try encoding those as labels
+		$words = explode(' ', $query_text);
+		foreach ($words as $w) {
+			$query_text .= " " . MysqlAdapter::encodeLabel(strtolower($w));
+		}
+
+		if ($limit_types) {
+			$limit_types = "'" . implode('\',\'', $limit_types) . "'";
+			$where = "
+				object_type IN ($limit_types)
+				AND MATCH (content) AGAINST (? IN BOOLEAN MODE)
+			";
+		} else {
+			$where = "
+				MATCH (content) AGAINST (? IN BOOLEAN MODE)
+			";
+		}
+
+
+		$total = null;
+		if (!$top) {
+			$count_query = "
+				SELECT COUNT(*)
+				FROM content_search
+				WHERE $where
+			";
+			$total = App::getDb()->fetchColumn($count_query, array($query_text));
+		}
 
 		$start = ($page - 1) * $per_page;
 		$select_query = "
-			SELECT object_type, object_id, MATCH (content) AGAINST (?) AS _rel
+			SELECT object_type, object_id, MATCH (content) AGAINST (?) AS _relevancy
 			FROM content_search
 			WHERE $where
-			ORDER BY _rel DESC
+			ORDER BY _relevancy DESC
 			LIMIT $start, $per_page
 		";
 
-		$total        = App::getDb()->fetchColumn($count_query, array($query));
-		$results_raw  = App::getDb()->fetchAll($select_query, array($query, $query));
+		$results_raw  = App::getDb()->fetchAll($select_query, array($query_text, $query_text));
 		$results      = array();
 
 		foreach ($results_raw as $result_raw) {
@@ -75,13 +94,12 @@ class TicketSearcher implements TicketSearcherInterface, PersonContextInterface
 			$results[] = $result;
 		}
 
+		if ($total === null) {
+			$total = count($result);
+		}
+
 		$result_set = new ResultSet($total, $results);
 
 		return $result_set;
-	}
-
-	public function similar(Ticket $ticket)
-	{
-		throw new \BadMethodCallException('Similar ticket matching not supported with the Mysql search adapter');
 	}
 }

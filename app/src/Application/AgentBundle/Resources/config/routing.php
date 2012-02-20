@@ -135,6 +135,12 @@ $collection->add('agent_quicksearch', new Route(
 	array()
 ));
 
+$collection->add('agent_search', new Route(
+	'/search/search',
+	array('_controller' => 'AgentBundle:Search:search'),
+	array(),
+	array()
+));
 
 ################################################################################
 # Snippets

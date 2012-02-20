@@ -25,7 +25,7 @@ use Application\DeskPRO\Search\SearcherResult\Result;
 /**
  * The content searcher searches: tickets
  */
-class TicketSearcher implements TicketSearcherInterface, PersonContextInterface
+class ChatConversationSearcher implements PersonContextInterface
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -43,7 +43,7 @@ class TicketSearcher implements TicketSearcherInterface, PersonContextInterface
 	public function query($query, $per_page = 25, $page = 1, $top = false)
 	{
 		$where = "
-			object_type = 'ticket'
+			object_type = 'chat_conversation'
 			AND MATCH (content) AGAINST (?)
 		";
 
@@ -58,11 +58,15 @@ class TicketSearcher implements TicketSearcherInterface, PersonContextInterface
 			SELECT object_type, object_id, MATCH (content) AGAINST (?) AS _rel
 			FROM content_search
 			WHERE $where
-			ORDER BY _rel DESC
+			ORDER BY _rel
 			LIMIT $start, $per_page
 		";
 
-		$total        = App::getDb()->fetchColumn($count_query, array($query));
+		if ($top) {
+			$total = null;
+		} else {
+			$total = App::getDb()->fetchColumn($count_query, array($query));
+		}
 		$results_raw  = App::getDb()->fetchAll($select_query, array($query, $query));
 		$results      = array();
 
@@ -73,6 +77,10 @@ class TicketSearcher implements TicketSearcherInterface, PersonContextInterface
 			));
 
 			$results[] = $result;
+		}
+
+		if ($total === null) {
+			$total = count($results);
 		}
 
 		$result_set = new ResultSet($total, $results);

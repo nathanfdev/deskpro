@@ -1839,6 +1839,21 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * @ORM_Mapping\PostUpdate
+	 * @ORM_Mapping\PostPersist
+	 */
+	public function _queueSearchIndexUpdate($op = 'update')
+	{
+		$container = App::getContainer();
+		if (!($container instanceof \Application\DeskPRO\DependencyInjection\DeskproContainer)) {
+			return;
+		}
+
+		$queue = $container->getQueue('search_object_update');
+		$queue->send(array('entity_type' => 'DeskPRO:Ticket', 'id' => $this->id, 'op' => $op));
+	}
+
+	/**
 	 * @return \Application\DeskPRO\Tickets\TicketChangeTracker
 	 */
 	public function getTicketLogger()

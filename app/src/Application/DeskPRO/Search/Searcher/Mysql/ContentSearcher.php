@@ -40,7 +40,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		$this->person = $person;
 	}
 
-	public function query($query_text, $per_page = 25, $page = 1, array $limit_types = null)
+	public function query($query_text, $per_page = 25, $page = 1, array $limit_types = null, $top = false)
 	{
 		$limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
 		if (!$limit_types) {
@@ -55,7 +55,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
 		$where = "
 			object_type IN ($limit_types)
-			AND MATCH (content) AGAINST (? IN BOOLEAN MODE)
+			AND MATCH (content) AGAINST (?)
 		";
 
 		$count_query = "
@@ -64,14 +64,22 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 			WHERE $where
 		";
 
+		$start = ($page - 1) * $per_page;
 		$select_query = "
-			SELECT object_type, object_id
+			SELECT object_type, object_id, MATCH (content) AGAINST (?) AS _rel
 			FROM content_search
 			WHERE $where
+			ORDER BY _rel
+			LIMIT $start, $per_page
 		";
 
-		$total        = App::getDb()->fetchColumn($count_query, array($query_text));
-		$results_raw  = App::getDb()->fetchAll($select_query, array($query_text));
+		if ($top) {
+			$total = null;
+		} else {
+			$total = App::getDb()->fetchColumn($count_query, array($query_text));
+		}
+
+		$results_raw  = App::getDb()->fetchAll($select_query, array($query_text, $query_text));
 		$results      = array();
 
 		foreach ($results_raw as $result_raw) {
@@ -81,6 +89,10 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 			));
 
 			$results[] = $result;
+		}
+
+		if ($total === null) {
+			$total = count($results);
 		}
 
 		$result_set = new ResultSet($total, $results);

@@ -64,11 +64,10 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 		var current = this.resultWrap.find('.result-focus');
 		if (ev.keyCode == 13 /* enter key */) {
 			ev.preventDefault();
-			if (current.length) {
-				var route = current.data('route');
-				DeskPRO_Window.runPageRoute(route);
-				self.el.blur();
-			}
+
+			// We run a full search when we press enter key
+			DeskPRO_Window.loadListPane(BASE_URL + 'agent/search/search?q=' + encodeURI(self.el.val().trim()));
+
 		} else if (ev.keyCode == 27 /* escape key */) {
 			// First escape just deselects
 			if (current.length) {

@@ -16,25 +16,27 @@ use Application\DeskPRO\Search\Adapter\MysqlAdapter;
 use Application\DeskPRO\Search\SearcherResult\ResultInterface;
 use Application\DeskPRO\Search\Indexer\Document;
 
-class Ticket extends AbstractContentType
+class ChatConversation extends AbstractContentType
 {
-	const ENTITY_NAME = 'DeskPRO:Ticket';
+	const ENTITY_NAME = 'DeskPRO:ChatConversation';
 
-	public function objectToDocument($ticket)
+	public function objectToDocument($convo)
 	{
 		$data = array();
-		$data['id'] = $ticket['id'];
-		$data['content_type'] = 'ticket';
+		$data['id'] = $convo['id'];
+		$data['content_type'] = 'chat_conversation';
+		$data['content'] = $convo['title'] . "\n" . $convo['content'] . "\n";
 
 		$content = array();
 		$content[] = $ticket['subject'];
-		foreach ($ticket->messages as $message) {
-			$content[] = $message->getMessageText();
-		}
+		foreach ($convo->messages as $message) {
+			if ($message->is_sys) continue;
 
-		foreach ($ticket->getLabelManager()->getLabelsArray() as $label) {
-			$label = MysqlAdapter::encodeLabel($label);
-			$data['content'][] = $label;
+			if ($message->is_html) {
+				$content[] = strip_tags($message->content);
+			} else {
+				$content[] = $message->content;
+			}
 		}
 
 		$data['content'] = implode(" ", $content);

@@ -555,4 +555,23 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 		return $info;
 	}
+
+	/**
+	 * @ORM_Mapping\PostUpdate
+	 */
+	public function _queueSearchIndexUpdate($op = 'update')
+	{
+		// Only index once the chat has ended
+		if ($this->status != self::STATUS_ENDED) {
+			return;
+		}
+
+		$container = App::getContainer();
+		if (!($container instanceof \Application\DeskPRO\DependencyInjection\DeskproContainer)) {
+			return;
+		}
+
+		$queue = $container->getQueue('search_object_update');
+		$queue->send(array('entity_type' => 'DeskPRO:ChatConversation', 'id' => $this->id, 'op' => $op));
+	}
 }

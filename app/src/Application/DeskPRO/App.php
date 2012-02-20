@@ -319,7 +319,7 @@ class App
 	/**
 	 * Get the search adapter.
 	 *
-	 * @return \Application\DeskPRO\Search\Adapter\AbstractAdapter
+	 * @return \Application\DeskPRO\Search\Adapter\MysqlAdapter
 	 */
 	public static function getSearchAdapter()
 	{

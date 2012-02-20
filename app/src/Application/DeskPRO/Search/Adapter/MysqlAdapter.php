@@ -16,10 +16,10 @@ use Orb\Util\CapabilityInformerInterface;
 use Application\DeskPRO\App;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use Application\DeskPRO\Search\EntityListener;
-
 use Application\DeskPRO\Search\Searcher\Mysql\ContentSearcher;
 use Application\DeskPRO\Search\Searcher\Mysql\TicketSearcher;
+use Application\DeskPRO\Search\Searcher\Mysql\ChatConversationSearcher;
+use Application\DeskPRO\Search\Searcher\Mysql\AgentCombinedSearcher;
 
 use Application\DeskPRO\Search\SearcherResult\ResultSet;
 use Application\DeskPRO\Search\SearcherResult\ResultInterface;
@@ -43,7 +43,7 @@ class MysqlAdapter extends AbstractAdapter
 		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\Feedback', 'feedback');
 		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\News', 'news');
 		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\Ticket', 'ticket');
-		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\TicketMessage', 'ticket_message');
+		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\ChatConversation', 'chat_conversation');
 	}
 
 
@@ -119,11 +119,11 @@ class MysqlAdapter extends AbstractAdapter
 	 *
 	 * Factory method.
 	 *
-	 * @return \Application\DeskPRO\Search\Searcher\ContentSearcherInterface
+	 * @return \Application\DeskPRO\Search\Searcher\Mysql\TicketSearcher
 	 */
 	public function getTicketSearcher()
 	{
-		$searcher = new ContentSearcher();
+		$searcher = new TicketSearcher();
 		$searcher->setPersonContext($this->getPersonContext());
 
 		return $searcher;
@@ -140,6 +140,38 @@ class MysqlAdapter extends AbstractAdapter
 	public function getContentSearcher()
 	{
 		$searcher = new ContentSearcher();
+		$searcher->setPersonContext($this->getPersonContext());
+
+		return $searcher;
+	}
+
+
+	/**
+	 * Get the combined agent searcher.
+	 *
+	 * Factory method.
+	 *
+	 * @return \Application\DeskPRO\Search\Searcher\Mysql\AgentCombinedSearcher
+	 */
+	public function getAgentCombinedSearcher()
+	{
+		$searcher = new AgentCombinedSearcher();
+		$searcher->setPersonContext($this->getPersonContext());
+
+		return $searcher;
+	}
+
+
+	/**
+	 * Get the combined agent searcher.
+	 *
+	 * Factory method.
+	 *
+	 * @return \Application\DeskPRO\Search\Searcher\Mysql\ChatConversationSearcher
+	 */
+	public function getChatConversationSearcher()
+	{
+		$searcher = new ChatConversationSearcher();
 		$searcher->setPersonContext($this->getPersonContext());
 
 		return $searcher;

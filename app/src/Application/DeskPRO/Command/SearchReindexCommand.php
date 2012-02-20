@@ -48,6 +48,11 @@ class SearchReindexCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 				$table = 'news';
 				break;
 
+			case 'ticket':
+				$entity = 'DeskPRO:Ticket';
+				$table = 'tickets';
+				break;
+
 			default:
 				$output->writeln("<warn>Unsupported content type `$content_type`</warn>");
 				return 1;
@@ -70,7 +75,9 @@ class SearchReindexCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 		# Process each
 		#------------------------------
 
+		$x = 0;
 		foreach ($all_batch_ids as $batch_ids) {
+			$x++;
 			$batch = $this->getContainer()->getEm()->getRepository($entity)->getByIds($batch_ids);
 			if ($batch) {
 				$this->getContainer()->getSearchAdapter()->updateObjectsInIndex($batch);
@@ -79,6 +86,11 @@ class SearchReindexCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 			$this->getContainer()->getEm()->clear();
 
 			$output->write('.');
+
+			if ($x % 50 === 0) {
+				set_time_limit(40);
+				$this->getContainer()->getEm()->clear();
+			}
 		}
 		$output->writeln('');
 
