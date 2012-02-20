@@ -1,0 +1,56 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagebar %}
+	<ul>
+		<li>MySQL Status</li>
+	</ul>
+{% endblock %}
+{% block page %}
+{% if mysqlprocs %}
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th style="text-align:left"> &nbsp; ID</th>
+				<th style="text-align:left"> &nbsp; User</th>
+				<th style="text-align:left"> &nbsp; Command</th>
+				<th style="text-align:left"> &nbsp; Time</th>
+				<th style="text-align:left"> &nbsp; State</th>
+				<th style="text-align:left"> &nbsp; Info</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for info in mysqlprocs %}
+				<tr>
+					<td>{{ info.Id }}</td>
+					<td>{{ info.User }}@{{ info.Host }}/{{ info.db }}</td>
+					<td>{{ info.Command }}</td>
+					<td>{{ info.Time }}</td>
+					<td>{{ info.State }}</td>
+					<td>{{ info.Info }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+<br />
+{% endif %}
+
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th style="text-align:left" width="50%">&nbsp; Variable Name</th>
+				<th style="text-align:left">&nbsp; Value</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for name,value in mysqlstatus %}
+				<tr>
+					<td>{{ name }}</td>
+					<td>{{ value }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}

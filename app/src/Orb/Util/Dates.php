@@ -192,7 +192,7 @@ class Dates
 		} elseif ($lang == 'short') {
 			$lang = $lang_en_short;
 		} elseif (!is_array($lang)) {
-			throw new Exception('Language must be long, short or an array of phrases');
+			throw new \Exception('Language must be long, short or an array of phrases');
 		}
 
 		$parts = self::secsToPartsArray($seconds);

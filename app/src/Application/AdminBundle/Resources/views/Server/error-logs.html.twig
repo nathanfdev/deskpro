@@ -1,0 +1,58 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagebar %}
+	<nav>
+          <ul>
+               <li><a href="{{ path('admin_server_error_logs_clear', {x: security_token('clear_error_logs') }) }}">Clear Logs</a></li>
+          </ul>
+     </nav>
+	<ul>
+		<li>Error Logs</li>
+	</ul>
+{% endblock %}
+{% block page %}
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th width="50">ID</th>
+				<th width="50">Pri</th>
+				<th>Message</th>
+				<th width="180">Date</th>
+				<th>Details&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for log in logs %}
+				<tr>
+					<td>{{log.id}}</td>
+					<td>{{log.priority_name}}</td>
+					<td>{{log.message}}</td>
+					<td>{{log.date_created|date('Y-m-d H:m:s')}}</td>
+					<td><a href="{{ path('admin_server_error_logs_view', {'log_id': log.id}) }}">view</a></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div><br />
+
+{% if pagination.pages|length > 1 %}
+<div class="page_nav">
+	<ul>
+		{% if pagination.curpage != pagination.first %}
+			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.first}) }}">First</a></li>
+			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.prev}) }}">Prev</a></li>
+		{% endif %}
+
+		{% for i in pagination.pages %}
+			<li><a href="{{ path('admin_server_error_logs', {'p': i}) }}" {% if i == pagination.curpage %}class="cur_page"{% endif %}>{{i}}</a></li>
+		{% endfor %}
+
+		{% if pagination.curpage != pagination.last %}
+			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.next}) }}">Next</a></li>
+			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.last}) }}">Last</a></li>
+		{% endif %}
+	</ul>
+</div>
+{% endif %}
+
+{% endblock %}

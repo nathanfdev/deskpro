@@ -675,6 +675,30 @@ $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\SendmailQueue::DEFAULT_I
 $em->persist($j);
 $em->flush();
 
+##BEGIN:create_jobs.move_blobs##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'move_blobs';
+$j['worker_group'] = 'move_blobs';
+$j['title'] = 'Move Blobs';
+$j['description'] = 'When the storage mechanism is changed, this job moves existing blobs to the new mechanism a bit at a time';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\MoveBlobs';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\MoveBlobs::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
+
+##BEGIN:create_jobs.process_email_gateways##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'process_email_gateways';
+$j['worker_group'] = 'process_email_gateways';
+$j['title'] = 'Process Email Gateways';
+$j['description'] = 'Runs through the email gateways and processes new messages';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\ProcessEmailGateways';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\ProcessEmailGateways::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
+
 ################################################################################
 # Portal Blocks
 ################################################################################

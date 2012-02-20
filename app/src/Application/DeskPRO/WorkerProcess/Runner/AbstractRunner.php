@@ -98,7 +98,7 @@ abstract class AbstractRunner
 	public function getLoggerForWorkerJob(Entity\WorkerJob $worker_job)
 	{
 		$logger_session = $worker_job['id'] . '.' . microtime(true);
-		$logger = App::createNewLogger('worker', $logger_session);
+		$logger = App::createNewLogger('worker_job.' . $worker_job, $logger_session);
 
 		$this->_initLogger($logger, $worker_job);
 		if ($this->_init_logger_callback) {

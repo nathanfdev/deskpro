@@ -1,0 +1,34 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagebar %}
+	<nav>
+          <ul>
+               <li><a href="{{ path('admin_server_cron_logs_clear', {x: security_token('clear_cron_logs') }) }}">Clear Logs</a></li>
+          </ul>
+     </nav>
+	<ul>
+		<li><a href="{{ path('admin_server_cron_logs') }}">Scheduled Tasks</a></li>
+		<li>Logs</li>
+	</ul>
+{% endblock %}
+{% block page %}
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th style="text-align:center" width="80">Log</th>
+				<th style="text-align:center"Message</th>
+				<th style="text-align:center" width="185">Date</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for log in logs %}
+				<tr>
+					<td style="text-align:center">{{ log.log_name }}</td>
+					<td>{{ log.message }}</td>
+					<td style="text-align:center">{{ log.date_created|date('Y-m-d H:i:s') }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}

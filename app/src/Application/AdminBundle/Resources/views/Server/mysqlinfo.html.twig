@@ -1,0 +1,26 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagebar %}
+	<ul>
+		<li>MySQL Info</li>
+	</ul>
+{% endblock %}
+{% block page %}
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th style="text-align:left" width="50%">&nbsp; Variable Name</th>
+				<th style="text-align:left">&nbsp; Value</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for name,value in mysqlinfo %}
+				<tr>
+					<td>{{ name }}</td>
+					<td>{{ value }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}

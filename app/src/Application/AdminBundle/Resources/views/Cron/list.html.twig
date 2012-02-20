@@ -1,0 +1,39 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagebar %}
+	<nav>
+		<ul>
+			<li><a href="{{ path('admin_server_cron_logs') }}">View Logs</a></li>
+		</ul>
+	</nav>
+	<ul>
+		<li>Scheduled Tasks</li>
+	</ul>
+{% endblock %}
+{% block page %}
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th style="text-align:left">&nbsp; Task</th>
+				<th style="text-align:center" width="80">Interval</th>
+				<th style="text-align:center" width="185">Last Run</th>
+				<th style="text-align:center" width="185">Next Run</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for job in jobs %}
+				<tr>
+					<td>{{ job.title }}</td>
+					<td style="text-align:center">{{ job.interval_readable }}</td>
+					<td style="text-align:center">
+						{% if job.last_run_date %}{{ job.last_run_date|date('Y-m-d H:i:s') }}{% else %}Never{% endif %}
+					</td>
+					<td style="text-align:center">
+						{{ job.next_run_date|date('Y-m-d H:i:s') }}
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}

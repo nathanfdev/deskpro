@@ -40,24 +40,28 @@
 	<div id="server_menu">
 		<ul>
 			<li class="link-scheduled-task">
-				<a href="" data-search-keywords="scheduled tasks cron" data-search-name="Server &rsaquo; Scheduled Tasks">Scheduled Tasks</a>
+				<a href="{{ path('admin_server_cron') }}" data-search-keywords="server scheduled tasks cron" data-search-name="Server &rsaquo; Scheduled Tasks">Scheduled Tasks</a>
 				<p>View and manage scheduled tasks like email collection and cleanup</p>
 			</li>
 			<li class="link-database-tools">
-				<a href="" data-search-keywords="database tools" data-search-name="Server &rsaquo; Database Tools">Database Tools</a>
-				<p>View information about your database</p>
+				<a href="{{ path('admin_server_phpinfo') }}" data-search-keywords="server php phpinfo" data-search-name="Server &rsaquo; PHP Info">PHP Info</a>
+				<p>View information about your PHP installation</p>
 			</li>
 			<li class="link-server-info">
-				<a href="" data-search-keywords="server tools info" data-search-name="Server &rsaquo; Server Info">Server Info</a>
-				<p>View information about your server and its capabilities</p>
+				<a href="{{ path('admin_server_mysqlinfo') }}" data-search-keywords="server mysql" data-search-name="Server &rsaquo; MySQL Info">MySQL Info</a>
+				<p>View information about your MySQL installation</p>
 			</li>
 			<li class="link-logs">
-				<a href="{{ path('admin_logs') }}" data-search-keywords="logs errors" data-search-name="Server &rsaquo; Logs">Logs</a>
-				<p>Check error logs and email collection logs</p>
+				<a href="{{ path('admin_server_mysqlstatus') }}" data-search-keywords="server mysql" data-search-name="Server &rsaquo; Logs">MySQL Status</a>
+				<p>View information about the status of your MySQL installation</p>
 			</li>
-			<li class="link-tests">
-				<a href="" data-search-keywords="tests server" data-search-name="Server &rsaquo; Tests">Tests</a>
-				<p>Tests to ensure proper operations of your server.</p>
+			<li class="link-logs">
+				<a href="{{ path('admin_server_error_logs') }}" data-search-keywords="logs errors" data-search-name="Server &rsaquo; Error Logs">Error Logs</a>
+				<p>View logged errors</p>
+			</li>
+			<li class="link-logs">
+				<a href="{{ path('admin_server_test_attach') }}" data-search-keywords="attachments uploads files" data-search-name="Server &rsaquo; Test Attachment Uploads">Test Attachment Uploads</a>
+				<p>Test uploading of attachments and files</p>
 			</li>
 		</ul>
 	</div>

@@ -1218,54 +1218,6 @@ $collection->add('admin_twitter_accounts_edit', new Route(
 	array()
 ));
 
-
-################################################################################
-# Logs
-################################################################################
-
-$collection->add('admin_logs', new Route(
-	'/logs',
-	array('_controller' => 'AdminBundle:Logs:index'),
-	array(),
-	array()
-));
-
-$collection->add('admin_logs_view', new Route(
-	'/logs/{log_id}',
-	array('_controller' => 'AdminBundle:Logs:view'),
-	array('log_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_logs_view_sn', new Route(
-	'/logs/sn/{log_sn}',
-	array('_controller' => 'AdminBundle:Logs:viewSn'),
-	array(),
-	array()
-));
-
-$collection->add('admin_logs_errors', new Route(
-	'/logs/errors',
-	array('_controller' => 'AdminBundle:Logs:errorLogs', 'page' => 1),
-	array(),
-	array()
-));
-
-$collection->add('admin_logs_errors_page', new Route(
-	'/logs/errors/{page}',
-	array('_controller' => 'AdminBundle:Logs:errorLogs'),
-	array('page' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_logs_errors_clear', new Route(
-	'/logs/errors/clear-all',
-	array('_controller' => 'AdminBundle:Logs:errorLogsClearAll'),
-	array(),
-	array()
-));
-
-
 ################################################################################
 # Plugins
 ################################################################################
@@ -1539,6 +1491,87 @@ $collection->add('admin_emailtrans_del', new Route(
 $collection->add('admin_emailtrans_testaccount', new Route(
 	'/email/outgoing/accounts/test-account.json',
 	array('_controller' => 'AdminBundle:EmailTransports:ajaxTest'),
+	array(),
+	array()
+));
+
+################################################################################
+# Server related stuff
+################################################################################
+
+$collection->add('admin_server_cron', new Route(
+	'/server/cron',
+	array('_controller' => 'AdminBundle:Cron:list'),
+	array(),
+	array()
+));
+
+$collection->add('admin_server_cron_logs', new Route(
+	'/server/cron/logs',
+	array('_controller' => 'AdminBundle:Cron:logs'),
+	array(),
+	array()
+));
+
+$collection->add('admin_server_cron_logs_clear', new Route(
+	'/server/cron/logs/clear',
+	array('_controller' => 'AdminBundle:Cron:clearLogs'),
+	array(),
+	array()
+));
+
+$collection->add('admin_server_phpinfo', new Route(
+	'/server/phpinfo',
+	array('_controller' => 'AdminBundle:Server:phpinfo'),
+	array(),
+	array()
+));
+
+$collection->add('admin_server_mysqlinfo', new Route(
+	'/server/mysqlinfo',
+	array('_controller' => 'AdminBundle:Server:mysqlinfo'),
+	array(),
+	array()
+));
+
+$collection->add('admin_server_mysqlstatus', new Route(
+	'/server/mysqlstatus',
+	array('_controller' => 'AdminBundle:Server:mysqlstatus'),
+	array(),
+	array()
+));
+
+$collection->add('admin_server_error_logs', new Route(
+	'/server/error-logs',
+	array('_controller' => 'AdminBundle:Server:errorLogs'),
+	array(),
+	array()
+));
+
+$collection->add('admin_server_error_logs_clear', new Route(
+	'/server/error-logs/clear-all',
+	array('_controller' => 'AdminBundle:Server:errorLogsClearAll'),
+	array(),
+	array()
+));
+
+$collection->add('admin_server_error_logs_view', new Route(
+	'/server/error-logs/{log_id}',
+	array('_controller' => 'AdminBundle:Server:view'),
+	array('log_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_server_error_logs_view_sn', new Route(
+	'/server/error-logs/{log_sn}',
+	array('_controller' => 'AdminBundle:Server:viewSn'),
+	array(),
+	array()
+));
+
+$collection->add('admin_server_test_attach', new Route(
+	'/server/test-attachments',
+	array('_controller' => 'AdminBundle:Server:testAttachments'),
 	array(),
 	array()
 ));

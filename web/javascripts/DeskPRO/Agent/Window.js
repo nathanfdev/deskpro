@@ -1676,7 +1676,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (sn) {
 			var showsn = 'SN' + sn;
 			if (DESKPRO_PERSON_ISADMIN) {
-				showsn = '<a href="' + BASE_URL + 'admin/logs/sn/SN' + sn + '">SN' + sn + '</a>';
+				showsn = '<a href="' + BASE_URL + 'admin/server/error-logs/SN' + sn + '">SN' + sn + '</a>';
 			}
 
 			this._showAjaxError('<div>If the error persists, give your administrator this code: ' + showsn + '</div>');

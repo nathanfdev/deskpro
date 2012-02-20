@@ -1,0 +1,83 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagebar %}
+	<ul>
+		<li>Test File Attachments</li>
+	</ul>
+{% endblock %}
+{% block page %}
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th >Setting</th>
+				<th width="200">Value</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<h3>file_uploads</h3>
+					<p>This setting must be enabled for PHP to accept file uploads at all.</p>
+				</td>
+				<td>{{ php_vars.file_uploads }}
+			</tr>
+
+			<tr>
+				<td>
+					<h3>upload_tmp_dir</h3>
+					<p>This is where PHP saves files to temporarily before they are processed by DeskPRO. This path must be writable by the web server for file uploads to work.</p>
+				</td>
+				<td>{{ php_vars.upload_tmp_dir }}
+			</tr>
+
+			<tr>
+				<td>
+					<h3>upload_max_filesize</h3>
+					<p>This is the maximum size for any single file that PHP will accept from a client upload. The max size is also affected by post_max_size. The effective maximum is essentially the smallest of upload_max_filesize and post_max_size.</p>
+				</td>
+				<td>{{ php_vars.upload_max_filesize }}
+			</tr>
+
+			<tr>
+				<td>
+					<h3>post_max_size</h3>
+					<p>This is the max size of any POST request that PHP will accept. That is, the size of any file uploads comboned with the size of actual form data cannot exceed this value. This setting and upload_max_filesize are generally about the same.</p>
+				</td>
+				<td>{{ php_vars.post_max_size }}
+			</tr>
+		</tbody>
+	</table>
+</div><br />
+
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th colspan="10">Test a file upload</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% if has_uploaded %}
+				<tr>
+					<td>
+						{% if failed %}<h3>Failed</h3><br />{{ failed }}
+						{% else %}
+							<h3>Success</h3>
+							Download attachment: <a href="{{ attach.getDownloadUrl() }}">{{ attach.getDownloadUrl() }}</a><br />
+						{% endif %}
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td>
+						<form action="{{ path('admin_server_test_attach', {test: 1}) }}" method="post" enctype="multipart/form-data">
+							<input type="file" name="file" /> <button>Test Upload</button>
+						</form>
+					</td>
+				</tr>
+			{% endif %}
+		</tbody>
+	</table>
+</div>
+
+{% endblock %}

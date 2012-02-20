@@ -1,0 +1,9 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagebar %}
+	<ul>
+		<li>PHP Info</li>
+	</ul>
+{% endblock %}
+{% block page %}
+{{ phpinfo|raw }}
+{% endblock %}

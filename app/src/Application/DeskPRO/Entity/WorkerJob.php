@@ -81,11 +81,45 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * The last time this job was run
 	 *
-	 * @var DateTime
+	 * @var \DateTime
 	 * @ORM_Mapping\Column(name="last_run_date",type="datetime", nullable=true)
 	 */
 	protected $last_run_date = null;
 
+
+	/**
+	 * Get the date of the next run
+	 *
+	 * @return \DateTime
+	 */
+	public function getNextRunDate()
+	{
+		if ($this->last_run_date) {
+			$d = clone $this->last_run_date;
+		} else {
+			$d = new \DateTime();
+		}
+
+		$d->add(new \DateInterval('PT' . $this->interval . 'S'));
+		return $d;
+	}
+
+
+	/**
+	 * Get interval in readable Enlgish
+	 *
+	 * @return string
+	 */
+	public function getIntervalReadable()
+	{
+		return \Orb\Util\Dates::secsToReadable($this->interval, 5, 'short');
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\Log\Logger $logger
+	 * @return \Application\DeskPRO\WorkerProcess\Job\AbstractJob
+	 */
 	public function createJobObj(Logger $logger)
 	{
 		$classname = $this->job_class;
@@ -93,6 +127,10 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 		return $job;
 	}
 
+
+	/**
+	 * @return bool
+	 */
 	public function isReady()
 	{
 		if (!$this->interval OR !$this->last_run_date) {
