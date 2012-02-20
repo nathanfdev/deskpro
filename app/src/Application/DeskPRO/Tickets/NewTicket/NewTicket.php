@@ -136,6 +136,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 					$email = new Entity\PersonEmail();
 					$email->email = $this->person->email;
 					$email->person = $person;
+					$person->addEmailAddress($email);
 					App::getOrm()->persist($email);
 
 					$email_validating = null;

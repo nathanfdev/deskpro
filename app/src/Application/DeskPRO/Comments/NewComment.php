@@ -106,6 +106,7 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 					$email = new PersonEmail();
 					$email->email = $this->email;
 					$email->person = $person;
+					$person->addEmailAddress($email);
 					App::getOrm()->persist($email);
 
 					$email_validating = null;

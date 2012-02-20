@@ -76,6 +76,47 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	 */
 	public function done()
 	{
+		if ($this->is_new_person && $this->person->getPrimaryEmail()) {
+			$change = false;
 
+			$rules = App::getContainer()->getEm()->getRepository('DeskPRO:UserRule')->getMatching($this->person->getEmailAddress());
+			if ($rules) {
+				foreach ($rules as $r) {
+					if ($r->add_usergroup) {
+						$change = true;
+						$this->person->addUsergroup($r->add_usergroup);
+					}
+					if ($r->add_organization) {
+						$change = true;
+						$this->person->organization = $r->add_organization;
+					}
+				}
+			}
+
+			// And check orgs with domain assocs
+			$domain = $this->person->getPrimaryEmail()->email_domain;
+			$org = App::getContainer()->getEm()->createQuery("
+				SELECT od
+				FROM DeskPRO:OrganizationEmailDomain od
+				WHERE od.domain = ?1
+			")->setParameter(1, $domain)->setMaxResults(1)->getOneOrNullResult();
+
+			if ($org) {
+				$change = true;
+				$this->person->organization = $org;
+			}
+
+			if ($change) {
+				App::getContainer()->getEm()->getConnection()->beginTransaction();
+
+				try {
+					App::getContainer()->getEm()->persist($this->person);
+					App::getContainer()->getEm()->getConnection()->commit();
+				} catch (\Exception $e) {
+					App::getContainer()->getEm()->getConnection()->rollback();
+					throw $e;
+				}
+			}
+		}
 	}
 }

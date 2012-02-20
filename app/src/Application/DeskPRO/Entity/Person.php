@@ -1427,7 +1427,31 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function addUsergroup(Usergroup $usergroup)
 	{
+		foreach ($this->usergroups as $ug) {
+			if ($ug->id == $usergroup->id) {
+				return false;
+			}
+		}
 		$this['usergroups']->add($usergroup);
+		return true;
+	}
+
+
+	/**
+	 * Check if hte user belongs to a usergroup
+	 *
+	 * @param $usergroup
+	 * @return bool
+	 */
+	public function hasUsergroup($usergroup)
+	{
+		foreach ($this->usergroups as $ug) {
+			if ($ug->id == $usergroup->id) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 

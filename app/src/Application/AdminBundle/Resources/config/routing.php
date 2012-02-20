@@ -1036,6 +1036,38 @@ $collection->add('admin_customdeforganizations_test', new Route(
 
 
 ################################################################################
+# User Rules
+################################################################################
+
+$collection->add('admin_userrules', new Route(
+	'/user-rules',
+	array('_controller' => 'AdminBundle:UserRules:list'),
+	array(),
+	array()
+));
+
+$collection->add('admin_userrules_new', new Route(
+	'/user-rules/new',
+	array('_controller' => 'AdminBundle:UserRules:edit', 'rule_id' => 0),
+	array(),
+	array()
+));
+
+$collection->add('admin_userrules_edit', new Route(
+	'/user-rules/{rule_id}',
+	array('_controller' => 'AdminBundle:UserRules:edit'),
+	array('rule_id' => '\\d+'),
+	array()
+));
+
+$collection->add('admin_userrules_delete', new Route(
+	'/user-rules/{rule_id}/delete',
+	array('_controller' => 'AdminBundle:UserRules:delete'),
+	array('rule_id' => '\\d+'),
+	array()
+));
+
+################################################################################
 # Users : Usergroups
 ################################################################################
 

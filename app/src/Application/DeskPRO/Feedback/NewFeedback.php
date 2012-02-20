@@ -133,6 +133,7 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 					$email = new PersonEmail();
 					$email->email = $this->person_email;
 					$email->person = $person;
+					$person->addEmailAddress($email);
 					App::getOrm()->persist($email);
 
 					$email_validating = null;

@@ -1,0 +1,50 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagebar %}
+	<ul>
+		<li><a href="{{ path('admin_usergroups_new') }}">User Rules</a></li>
+		{% if rule.id %}
+			<li>New Rule</li>
+		{% else %}
+			<li>Edit Rule</li>
+		{% endif %}
+	</ul>
+{% endblock %}
+{% block page %}
+
+<form action="{{ path('admin_userrules_edit', {'rule_id': rule.id|default(0)}) }}" method="post">
+<input type="hidden" name="process" value="1" />
+{{ form_token('edit_userrule') }}
+
+<div class="dp-form">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Email Address Pattern</label>
+		</div>
+		<div class="dp-form-input">
+			<textarea name="rule[patterns_string]" placeholder="Enter a pattern, one per line. Example: *@example.com" rows="6" style="height: 115px">{{ rule.patterns_string }}</textarea>
+		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>When matching, add user to usergroup</label>
+		</div>
+		<div class="dp-form-input">
+			<select name="rule[add_usergroup]">
+				{% for id,name in usergroups %}
+					<option value="{{ id }}" {% if rule.add_usergroup.id == id %}checked="checked"{% endif %}>{{ name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+</div>
+
+<button class="btn primary save-trigger">Save</button>
+</form>
+
+{% if rule.id %}
+	<div class="delete-link-wrap">
+		<a href="{{ path('admin_userrules_delete', {'rule_id': rule.id, _dp_security_token: security_token('delete_userrule') }) }}">delete</a>
+	</div>
+{% endif %}
+{% endblock %}
