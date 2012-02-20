@@ -330,7 +330,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 						$p->usergroup = $USERGROUP_EVERYONE;
 						$p->name = $p_name;
 						$p->value = 1;
-						$this->getOrm()->persist($p);
+						$this->getContainer()->getEm()->persist($p);
 					}
 					$this->getOrm()->flush();
 				}
