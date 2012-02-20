@@ -368,6 +368,10 @@ class TicketSearchController extends AbstractController
 				}
 			}
 
+			if ($this->in->getString('query')) {
+				$terms[] = array('type' => 'text', 'op' => 'is', 'options' => array('query' => $this->in->getString('query')));
+			}
+
 			$do_run = true;
 		}
 

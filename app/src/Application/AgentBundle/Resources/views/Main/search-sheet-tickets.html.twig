@@ -78,7 +78,7 @@
 			<label>Product</label>
 			<div class="values">
 				{% include 'AgentBundle:Common:select-product.html.twig' with {
-					'name': 'actions[product][]',
+					'name': 'set_term[product][]',
 					'blank_title': phrase('agent.product'),
 					'products': ticket_options.products_hierarchy,
 					'add_attr': 'multiple="multiple"'
@@ -160,13 +160,7 @@
 	<ul class="property-list">
 		<li class="search-input">
 			<div class="values">
-				<input type="text" name="query" />
-				<br />
-				Search in <select name="types">
-					<option value="both">Message and Subject</option>
-					<option value="message">Message</option>
-					<option value="subject">Subject</option>
-				</select>
+				<input type="text" name="query" placeholder="Search for text or a phrase" />
 			</div>
 		</li>
 	</ul>

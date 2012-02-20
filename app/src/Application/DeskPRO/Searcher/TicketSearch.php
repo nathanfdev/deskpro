@@ -45,6 +45,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_GATEWAY_ADDRESS           = 'email_gateway_address';
 	const TERM_HOLD                      = 'is_hold';
 	const TERM_FLAGGED                   = 'flagged';
+	const TERM_TEXT                      = 'text';
 
 	/**
 	 * True to search in the non-search tables (aka all tickets not just active)
@@ -493,6 +494,22 @@ class TicketSearch extends SearcherAbstract
 					}
 					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.id'), $op, $choice);
 					break;
+
+				case self::TERM_TEXT:
+					if (is_array($choice)) {
+						$choice = array_pop($choice);
+					}
+
+					$joins[] = array(
+						'content_search',
+						"LEFT JOIN content_search AS $join_name ON ($join_name.object_type = 'ticket' AND $join_name.object_id = tickets.id)"
+					);
+
+					$wheres[] = "MATCH ($join_name.content) AGAINST (" . App::getDb()->quote($choice) . ")";
+
+					$this->summary[] = "Ticket content matches: " . $choice;
+					break;
+
 				case self::TERM_ARCHIVE_SEARCH:
 					if ($choice) {
 						$this->enableArchiveSearch();
