@@ -296,6 +296,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			$cc_person = $person_processor->findPerson($cc);
 			if (!$cc_person) {
+				// Closed helpdesk and an unknown CC means we drop it
+				if (App::getContainer()->getSetting('core.user_mode') == 'closed') {
+					continue;
+				}
 				$cc_person = $person_processor->createPerson($cc);
 			}
 
