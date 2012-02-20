@@ -15,7 +15,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PermissionCache;
-
 use Application\DeskPRO\People\PersonContextInterface;
 
 use Orb\Util\Arrays;
@@ -230,7 +229,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	 * Using property overloading to give direct access to individual loaders.
 	 *
 	 * @param  $name
-	 * @return \Application\DeskPRO\People\PermissionLoader
+	 * @return \Application\DeskPRO\People\PermissionLoader\AbstractLoader
 	 */
 	public function __get($name)
 	{
@@ -243,7 +242,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	 * Get a loader
 	 *
 	 * @param  $name
-	 * @return \Application\DeskPRO\People\PermissionLoader
+	 * @return \Application\DeskPRO\People\PermissionLoader\AbstractLoader
 	 */
 	public function get($name)
 	{
@@ -272,12 +271,6 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	 */
 	public function hasPerm($name)
 	{
-		// TODO:permissions until admin interface for perms is done
-		return true;
-
-		if ($name == 'users.delete-emails' || $name == 'users.set-password' || $name == 'users.add-emails' || $name == 'users.delete' || $name == 'orgs.delete') {
-			return true;
-		}
 		return $this->get('Usergroups')->getPermission($name) ? true : false;
 	}
 

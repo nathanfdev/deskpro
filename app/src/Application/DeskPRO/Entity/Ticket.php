@@ -43,6 +43,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	const HIDDEN_STATUS_VALIDATING = 'validating';
 	const HIDDEN_STATUS_SPAM = 'spam';
 	const HIDDEN_STATUS_DELETED = 'deleted';
+	const HIDDEN_STATUS_TEMP = 'temp';
 
 	/**
 	 * @var int
@@ -1473,7 +1474,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		if ($hstatus && !in_array($hstatus, array(
 			self::HIDDEN_STATUS_DELETED,
 			self::HIDDEN_STATUS_SPAM,
-			self::HIDDEN_STATUS_VALIDATING
+			self::HIDDEN_STATUS_VALIDATING,
+			self::HIDDEN_STATUS_TEMP
 		))) {
 			throw new \InvalidArgumentException("Invalid hidden status `$hstatus`");
 		}

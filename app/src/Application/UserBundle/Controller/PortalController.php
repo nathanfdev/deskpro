@@ -72,4 +72,44 @@ class PortalController extends AbstractController
 
 		return $this->redirect($content_object->getLink());
 	}
+
+	public function newCommentFinishLoginAction($comment_type, $comment_id)
+	{
+		if ($this->person->isGuest()) {
+			$return_url = $this->generateUrl('user_newcomment_finishlogin', array(
+				'comment_type' => $comment_type,
+				'comment_id' => $comment_id
+			));
+			return $this->redirectRoute('user_login', array('return' => $return_url));
+		}
+
+		switch ($comment_type) {
+			case 'article': $entity = 'DeskPRO:ArticleComment'; break;
+			case 'news': $entity = 'DeskPRO:NewsComment'; break;
+			case 'download': $entity = 'DeskPRO:DownloadComment'; break;
+			case 'feedback': $entity = 'DeskPRO:FeedbackComment'; break;
+			default:
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+		}
+
+		$comment = $this->em->find($entity, $comment_id);
+		if (!$comment) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+		}
+
+		$comment->status = 'validating';
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($comment);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->redirect($comment->getObject()->getLink());
+	}
 }

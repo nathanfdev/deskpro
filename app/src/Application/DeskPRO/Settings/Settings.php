@@ -61,12 +61,26 @@ class Settings implements \ArrayAccess
 	 */
 	protected $_has_loaded_db = false;
 
+	/**
+	 * Virtual settings are not real settings, but depend on other states. For example,
+	 * 'core.interact_require_login' isn't a real setting, it is true depending on the registration mode.
+	 *
+	 * This is a map of varname => callback
+	 *
+	 * @var array
+	 */
+	protected $virtual_settings = array();
+
 
 
 	public function __construct(array $settings_paths, \Application\DeskPRO\DBAL\Connection $db = null)
 	{
 		$this->settings_paths = new SettingsLocator($settings_paths);
 		$this->db = $db;
+
+		$this->virtual_settings['core.interact_require_login'] = function($settings) {
+			return in_array($settings->get('core.user_mode'), array('require_reg', 'require_reg_agent_validation', 'closed'));
+		};
 	}
 
 
@@ -94,6 +108,11 @@ class Settings implements \ArrayAccess
 		}
 
 		if (!isset($this->settings[$name])) {
+
+			if (isset($this->virtual_settings[$name])) {
+				return call_user_func($this->virtual_settings[$name], $this, $name);
+			}
+
 			$check_group = $this->getGroupFromName($name);
 
 			if (!in_array($check_group, $this->_loaded_groups)) {

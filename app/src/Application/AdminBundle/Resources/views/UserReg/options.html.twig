@@ -97,7 +97,7 @@
 
 			<div class="dp-input-group">
 				<label>
-					<input class="option-trigger" type="radio" name="mode" value="external" {% if app.getSetting('core.user_mode') == 'require_reg' %}checked="checked"{% endif %}>
+					<input class="option-trigger" type="radio" name="mode" value="require_reg" {% if app.getSetting('core.user_mode') == 'require_reg' %}checked="checked"{% endif %}>
 					Require Registration
 				</label>
 				<div class="dp-group-options" style="display: none">
@@ -118,7 +118,7 @@
 
 			<div class="dp-input-group">
 				<label>
-					<input class="option-trigger" type="radio" name="mode" value="closed_agent_validation" {% if app.getSetting('core.user_mode') == 'require_reg_agent_validation' %}checked="checked"{% endif %}>
+					<input class="option-trigger" type="radio" name="mode" value="require_reg_agent_validation" {% if app.getSetting('core.user_mode') == 'require_reg_agent_validation' %}checked="checked"{% endif %}>
 					Require Registration with Agent Validation
 				</label>
 				<div class="dp-group-options" style="display: none">

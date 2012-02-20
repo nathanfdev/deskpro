@@ -20,92 +20,85 @@
 					</li>
 				{% endfor %}
 				{% if not no_comment_form %}
-				<li class="new-comment {% if not app.user.is_guest %}no-nav{% endif %}" id="comments_login_info">
-					<form action="{{ form_action }}" method="post" class="with-form-validator">
-						<div class="login-area">
-							<div class="tabs-wrap">
-								<div>
-									<textarea name="new_comment[content]" cols="120" rows="5" placeholder="Add a comment"></textarea>
+					{% if not app.user.id and app.getSetting('core.interact_require_login') %}
+						<li class="new-comment no-nav">
+							<a href="{{ path('user_register') }}">Register</a> or
+							<a href="{{ path('user_login') }}">Login</a> to submit comments.
+						</li>
+					{% elseif app.user.hasPerm(check_perm) %}
+					<li class="new-comment {% if not app.user.is_guest %}no-nav{% endif %}" id="comments_login_info">
+						<form action="{{ form_action }}" method="post" class="with-form-validator">
+							<div class="login-area">
+								<div class="tabs-wrap">
+									<div>
+										<textarea name="new_comment[content]" cols="120" rows="5" placeholder="Add a comment"></textarea>
+									</div>
+									{% if not app.user.is_guest %}
+										<div class="dp-form">
+											<div class="dp-form-row">
+												<div class="dp-form-label">
+													<label>{{ phrase('user.label_name') }} *</label>
+												</div>
+												<div class="dp-form-input">
+													<input
+														type="text"
+														name="new_comment[name]"
+														class="display-name-field"
+														value="{{ app.user.display_name }}"
+														data-field-validators="DeskPRO.Form.LengthValidator"
+														data-min-len="2"
+													/>
+												</div>
+											</div>
+										</div>
+										<div style="padding-top: 0">
+											<button class="btn primary" style="margin-top: 10px;">{{ phrase('user.post_comment_btn') }}</button>
+										</div>
+									{% else %}
+										<div class="tab dp-form">
+											<div class="dp-form-row source-extra" style="display: none">
+												<div class="dp-form-label">
+													<label>{{ phrase('user.label_logged_in_as') }}</label>
+												</div>
+												<div class="dp-form-input">
+													<span class="source-extra-name"></span>
+												</div>
+											</div>
+											<div class="dp-form-row">
+												<div class="dp-form-label">
+													<label>{{ phrase('user.label_name') }}</label>
+													<em class="desc">{{ phrase('user.required') }}</em>
+												</div>
+												<div class="dp-form-input">
+													<input
+														type="text"
+														name="new_comment[name]"
+														class="display-name-field"
+														value=""
+														data-field-validators="DeskPRO.Form.LengthValidator"
+														data-min-len="2"
+													/>
+												</div>
+											</div>
+											<div class="dp-form-row email-address-row">
+												<div class="dp-form-label">
+													<label>{{ phrase('user.label_email_address') }}</label>
+													<em class="desc">{{ phrase('user.required_not_displayed') }}</em>
+												</div>
+												<div class="dp-form-input">
+													<input type="text" name="new_comment[email]" />
+												</div>
+											</div>
+										</div>
+										<div style="padding-top: 0">
+											<button class="btn primary" style="margin-top: 10px;">{{ phrase('user.post_comment_btn') }}</button>
+										</div>
+									{% endif %}
 								</div>
-								{% if not app.user.is_guest %}
-                                    <div class="dp-form">
-                                    	<div class="dp-form-row">
-											<div class="dp-form-label">
-												<label>{{ phrase('user.label_name') }} *</label>
-											</div>
-											<div class="dp-form-input">
-												<input
-													type="text"
-													name="new_comment[name]"
-													class="display-name-field"
-													value="{{ app.user.display_name }}"
-													data-field-validators="DeskPRO.Form.LengthValidator"
-													data-min-len="2"
-												/>
-											</div>
-										</div>
-                                    </div>
-                                    <div style="padding-top: 0">
-                                    	<button class="btn primary" style="margin-top: 10px;">{{ phrase('user.post_comment_btn') }}</button>
-                                    </div>
-								{% else %}
-									<div class="tab dp-form">
-										<div class="dp-form-row source-extra" style="display: none">
-											<div class="dp-form-label">
-												<label>{{ phrase('user.label_logged_in_as') }}</label>
-											</div>
-											<div class="dp-form-input">
-												<span class="source-extra-name"></span>
-											</div>
-										</div>
-										<div class="dp-form-row">
-											<div class="dp-form-label">
-												<label>{{ phrase('user.label_name') }}</label>
-												<em class="desc">{{ phrase('user.required') }}</em>
-											</div>
-											<div class="dp-form-input">
-												<input
-													type="text"
-													name="new_comment[name]"
-													class="display-name-field"
-													value=""
-													data-field-validators="DeskPRO.Form.LengthValidator"
-													data-min-len="2"
-												/>
-											</div>
-										</div>
-										<div class="dp-form-row email-address-row">
-											<div class="dp-form-label">
-												<label>{{ phrase('user.label_email_address') }}</label>
-												<em class="desc">{{ phrase('user.required_not_displayed') }}</em>
-											</div>
-											<div class="dp-form-input">
-												<input type="text" name="new_comment[email]" />
-											</div>
-										</div>
-									</div>
-									<div style="padding-top: 0">
-										<button class="btn primary" style="margin-top: 10px;">{{ phrase('user.post_comment_btn') }}</button>
-									</div>
-								{% endif %}
 							</div>
-							{#
-							{% if app.user.is_guest and app.usersources|length %}
-							<div class="nav">
-								<ul>
-									<li class="on" data-tab-for="#comments_login_local"><a class="btn small"><span>Guest</span></a></li>
-									{% for usersource in app.usersources %}
-										<li class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.CommentFormLogin" data-auth-type="{{ get_type(usersource.adapter)|lower }}">
-											{{ render_usersource(usersource, 'button', {'button_type': 'button'}) }}
-										</li>
-									{% endfor %}
-								</ul>
-							</div>
-							{% endif %}
-							#}
-						</div>
-					</form>
-				</li>
+						</form>
+					</li>
+					{% endif %}
 				{% endif %}
 			</ul>
 		{% endif %}

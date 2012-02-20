@@ -275,6 +275,10 @@ class DownloadsController extends AbstractController
 	 */
 	public function newCommentAction($download_id)
 	{
+		if ($this->container->getSetting('core.interact_require_login')) {
+			return $this->forward('UserBundle:Login:index');
+		}
+
 		$download = App::getEntityRepository('DeskPRO:Download')->find($download_id);
 		if (!$download) {
 			return $this->renderStandardError('@user_downloads.error_not_found', '@core.not_found', 404);
@@ -294,6 +298,13 @@ class DownloadsController extends AbstractController
 
 			if ($form->isValid()) {
 				$comment = $new_comment->save();
+
+				if ($new_comment->require_login) {
+					return $this->redirectRoute('user_newcomment_finishlogin', array(
+						'comment_type' => 'article',
+						'comment_id' => $comment->id,
+					));
+				}
 			}
 		}
 		return $this->redirectRoute('user_downloads_file', array(

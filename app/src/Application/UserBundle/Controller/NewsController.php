@@ -221,6 +221,10 @@ class NewsController extends AbstractController
 	 */
 	public function newCommentAction($post_id)
 	{
+		if ($this->container->getSetting('core.interact_require_login')) {
+			return $this->forward('UserBundle:Login:index');
+		}
+
 		$post = App::getEntityRepository('DeskPRO:News')->find($post_id);
 		if (!$post) {
 			return $this->renderStandardError('@user_news.error_not_found', '@core.not_found', 404);
@@ -238,6 +242,13 @@ class NewsController extends AbstractController
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));
 			$comment = $new_comment->save();
+
+			if ($new_comment->require_login) {
+				return $this->redirectRoute('user_newcomment_finishlogin', array(
+					'comment_type' => 'news',
+					'comment_id' => $comment->id,
+				));
+			}
 		}
 
 		return $this->redirectRoute('user_news_view', array(

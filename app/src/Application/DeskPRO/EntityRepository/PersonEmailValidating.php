@@ -30,7 +30,7 @@ class PersonEmailValidating extends \Doctrine\ORM\EntityRepository
 	{
 		return $this->getEntityManager()->createQuery("
 			SELECT e
-			FROM DeskPRO:PersonEmail e
+			FROM DeskPRO:PersonEmailValidating e
 			WHERE e.email = ?1
 		")->setParameters(array(1=> $email_address))->setMaxResults(1)->getOneOrNullResult();
 	}

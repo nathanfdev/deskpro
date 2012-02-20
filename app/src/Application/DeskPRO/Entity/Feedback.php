@@ -53,7 +53,7 @@ class Feedback extends ContentAbstract
 	protected $validating = null;
 
 	/**
-	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @ORM_Mapping\ManyToOne(targetEntity="FeedbackCategory", cascade={"persist", "remove", "merge"})
 	 */
 	protected $category;

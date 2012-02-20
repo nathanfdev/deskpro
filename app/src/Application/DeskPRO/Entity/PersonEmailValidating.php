@@ -44,7 +44,7 @@ class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * @var Application\DeskPRO\Entity\Person
+	 * @var \Application\DeskPRO\Entity\Person
 	 * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="emails")
 	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */

@@ -351,6 +351,10 @@ class ArticlesController extends AbstractController
 	 */
 	public function newCommentAction($article_id)
 	{
+		if ($this->container->getSetting('core.interact_require_login')) {
+			return $this->forward('UserBundle:Login:index');
+		}
+
 		$article = App::getEntityRepository('DeskPRO:Article')->find($article_id);
 		if (!$article) {
 			return $this->renderStandardError('@user_articles.error_not_found', '@core.not_found', 404);
@@ -368,6 +372,14 @@ class ArticlesController extends AbstractController
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));
 			$comment = $new_comment->save();
+
+			if ($new_comment->require_login) {
+				$return_url = $this->generateUrl('user_newcomment_finishlogin', array(
+					'comment_type' => 'article',
+					'comment_id' => $comment->id,
+				));
+				return $this->redirectRoute('user_login', array('return' => $return_url));
+			}
 		}
 
 		return $this->redirectRoute('user_articles_article', array(

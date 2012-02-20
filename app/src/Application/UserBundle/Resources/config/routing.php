@@ -26,6 +26,13 @@ $collection->add('user_saverating', new Route(
 	array()
 ));
 
+$collection->add('user_newcomment_finishlogin', new Route(
+	'/portal/save-comment/login-finished/{comment_type}/{comment_id}',
+	array('_controller' => 'UserBundle:Portal:newCommentFinishLogin'),
+	array(),
+	array()
+));
+
 $collection->add('user_accept_upload', new Route(
 	'/accept-temp-upload',
 	array('_controller' => 'UserBundle:Main:acceptTempUpload'),
@@ -246,6 +253,13 @@ $collection->add('user_tickets', new Route(
 $collection->add('user_tickets_new', new Route(
 	'/new-ticket/{for_department_id}',
 	array('_controller' => 'UserBundle:NewTicket:new', 'format' => 'normal', 'for_department_id' => 0),
+	array(),
+	array()
+));
+
+$collection->add('user_tickets_new_finishlogin', new Route(
+	'/new-ticket/login-finish/{ticket_id}',
+	array('_controller' => 'UserBundle:NewTicket:newFinishLogin'),
 	array(),
 	array()
 ));
@@ -506,6 +520,13 @@ $collection->add('user_feedback_view', new Route(
 $collection->add('user_feedback_newfeedback', new Route(
 	'/feedback/new-feedback',
 	array('_controller' => 'UserBundle:Feedback:newFeedback'),
+	array(),
+	array()
+));
+
+$collection->add('user_feedback_newfeedback_finishlogin', new Route(
+	'/feedback/new-feedback/login-finished/{feedback_id}',
+	array('_controller' => 'UserBundle:Feedback:newFinishLogin'),
 	array(),
 	array()
 ));

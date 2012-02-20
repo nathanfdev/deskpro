@@ -25,6 +25,8 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 {
 	protected $perms = null;
 
+	protected $person;
+
 	/**
 	 * @var int
 	 */
@@ -32,6 +34,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 
 	public function setPersonContext(Person $person)
 	{
+		$this->person = $person;
 		$this->person_id = $person->id;
 	}
 
@@ -44,6 +47,32 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 	public function getPermission($name)
 	{
 		$this->getAllPermissions();
+
+		switch ($name) {
+			case 'core.tickets_submit_check':
+				if ($this->getPermission('tickets.use')) {
+					if (!$this->person->id && App::getSetting('core.interact_require_login')) {
+						return 0;
+					} else {
+						return 1;
+					}
+				} else {
+					return 0;
+				}
+				break;
+
+			case 'core.feedback_submit_check':
+				if ($this->getPermission('feedback.use')) {
+					if (!$this->person->id && App::getSetting('core.interact_require_login')) {
+						return 0;
+					} else {
+						return true;
+					}
+				} else {
+					return 0;
+				}
+				break;
+		}
 
 		if (!isset($this->perms[$name])) {
 			return null;

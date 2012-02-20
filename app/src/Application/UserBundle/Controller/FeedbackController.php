@@ -164,6 +164,10 @@ class FeedbackController extends AbstractController
 	 */
 	public function newFeedbackAction()
 	{
+		if (!$this->person->hasPerm('core.tickets_submit_check')) {
+			return $this->renderLoginOrPermissionError($this->generateUrl('user_feedback_newfeedback'));
+		}
+
 		$newfeedback = new \Application\DeskPRO\Feedback\NewFeedback(
 			App::getSession()->getVisitor()
 		);
@@ -190,7 +194,13 @@ class FeedbackController extends AbstractController
 			if ($validator->isValid($newfeedback)) {
 				$feedback = $newfeedback->save();
 
-				return $this->redirectRoute('user_feedback_view', array('slug' => $feedback->getUrlSlug()));
+				if ($newfeedback->require_login) {
+					return $this->redirectRoute('user_login', array('return' => $this->generateUrl('user_feedback_newfeedback_finishlogin', array('feedback_id' => $feedback->id))));
+				} elseif ($feedback->getStatusCode() == 'hidden.user_validating') {
+					return $this->redirectRoute('user');
+				} else {
+					return $this->redirectRoute('user_feedback_view', array('slug' => $feedback->getUrlSlug()));
+				}
 			} else {
 				$errors = $validator->getErrors(true);
 				$error_fields = $validator->getErrorGroups(true);
@@ -205,6 +215,38 @@ class FeedbackController extends AbstractController
 			'errors' => $errors,
 			'error_fields' => $error_fields,
 		));
+	}
+
+	public function newFinishLoginAction($feedback_id)
+	{
+		if ($this->person->isGuest()) {
+			$return_url = $this->generateUrl('user_feedback_newfeedback_finishlogin', array('feedback_id' => $feedback_id));
+			return $this->redirectRoute('user_login', array('return' => $return_url));
+		}
+
+		$feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
+		if (!$feedback) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if ($feedback->person->id != $this->person->id) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$feedback->setStatusCode('hidden.validating');
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($feedback);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('user_feedback_view', array('slug' => $feedback->getUrlSlug()));
 	}
 
 
@@ -363,6 +405,13 @@ class FeedbackController extends AbstractController
 
 			if ($form->isValid()) {
 				$comment = $new_comment->save();
+
+				if ($new_comment->require_login) {
+					return $this->redirectRoute('user_newcomment_finishlogin', array(
+						'comment_type' => 'feedback',
+						'comment_id' => $comment->id,
+					));
+				}
 			}
 		}
 		return $this->redirectRoute('user_feedback_view', array(
@@ -373,6 +422,10 @@ class FeedbackController extends AbstractController
 
 	public function quickBrowserAction($status, $category_id = 0, $num = 10)
 	{
+		if ($this->container->getSetting('core.interact_require_login')) {
+			return $this->forward('UserBundle:Login:index');
+		}
+
 		$category = null;
 		if ($category_id) {
 			$category = App::findEntity('DeskPRO:FeedbackCategory', $category_id);

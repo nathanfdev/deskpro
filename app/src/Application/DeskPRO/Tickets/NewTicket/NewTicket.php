@@ -42,6 +42,8 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 	public $is_html = false;
 
+	public $require_login = false;
+
 	protected $mode = 'untrusted';
 
 	public function __construct($creation_system, Entity\Person $person = null)
@@ -87,22 +89,28 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			if ($this->person_context->isGuest()) {
 
 				$email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->person->email);
+				$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person->email);
 
+				// Email already exists on an account
+				// Means use the same person, but depending on the setting we
+				// might require the user to log in (in which case the ticket is a temp ticket for a bit)
 				if ($email) {
-					$validating = 'existing';
+					if (App::getSetting('core.existing_account_login')) {
+						$person = $email->person;
+						$person->name = $this->person->name;
+						$this->require_login = true;
 
-					$person = $email->person;
+					} else {
+						$person = $email->person;
+						$person->name = $this->person->name;
+					}
 
-					$email_validating = new Entity\PersonEmailValidating();
-					$email_validating->email = $email->email;
-					$email_validating->person = $person;
-					App::getOrm()->persist($email_validating);
+					$email_validating = null;
 
-				} else {
+				// Email doesnt exist,
+				// Might already be validating, or we might require validation based on the setting
+				} elseif ($email_validating || App::getSetting('core.email_validation')) {
 					$validating = 'new';
-
-					$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person->email);
-
 					if (!$email_validating) {
 						$person = Entity\Person::newContactPerson();
 						$person->name = $this->person->name;
@@ -116,6 +124,21 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 					} else {
 						$person = $email_validating->person;
 					}
+
+				// If we get here, then its a new user and we dont require validation
+				// Note a user isnt a "user" at this point, they cant log in etc,
+				// no validation just means they dont need to validate to get their ticket reads
+				} else {
+					$person = Entity\Person::newContactPerson();
+					$person->name = $this->person->name;
+					App::getOrm()->persist($person);
+
+					$email = new Entity\PersonEmail();
+					$email->email = $this->person->email;
+					$email->person = $person;
+					App::getOrm()->persist($email);
+
+					$email_validating = null;
 				}
 			} else {
 				$person = $this->person_context;
@@ -143,7 +166,14 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			} else {
 				$ticket['person_email'] = $email;
 			}
+
 			$ticket['status'] = 'awaiting_agent';
+
+			if ($this->require_login) {
+				$ticket->setStatus('hidden.temp');
+			} elseif ($email_validating) {
+				$ticket->setStatus('hidden.validating');
+			}
 
 			foreach (array('department_id', 'category_id', 'product_id', 'priority_id') as $prop) {
 				$ticket[$prop] = $this->ticket->$prop;
@@ -210,12 +240,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 			$this->new_message = $ticket_message;
 			$ticket->addMessage($ticket_message);
-
-			if ($email_validating) {
-				$ticket['status'] = 'hidden.validating';
-			} else {
-				$ticket['status'] = 'awaiting_agent';
-			}
 
 			App::getOrm()->persist($ticket);
 			App::getOrm()->flush();

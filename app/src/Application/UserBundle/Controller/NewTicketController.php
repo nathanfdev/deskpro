@@ -29,6 +29,10 @@ class NewTicketController extends AbstractController
 	 */
     public function newAction($format = 'normal', $for_department_id = 0)
     {
+		if (!$this->person->hasPerm('core.tickets_submit_check')) {
+			return $this->renderLoginOrPermissionError($this->generateUrl('user_tickets_new'));
+		}
+
 		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
 			Entity\Ticket::CREATED_WEB_PERSON,
 			$this->person
@@ -105,10 +109,19 @@ class NewTicketController extends AbstractController
 
 				if ($ticket->person_email_validating) {
 					$this->session->setFlash('new_ticket_validating', $ticket->person_email_validating->getEmail());
+					$this->session->save();
 				}
 
+				// Require login means we need to ask the user to log in now
+				if ($newticket->require_login) {
+
+					$this->session->setFlash('new_ticket_login');
+					$this->session->save();
+
+					return $this->redirectRoute('user_login', array('return' => $this->generateUrl('user_tickets_new_finishlogin', array('ticket_id' => $ticket->id))));
+
 				// New users are always sent back to home with flash message.
-				if ($person->isNewPerson()) {
+				} elseif ($person->isNewPerson() || !$person->is_user) {
 					$go = 'front';
 
 				// Existing users are redirected to the ticket if they're using a validated email address.
@@ -365,5 +378,37 @@ class NewTicketController extends AbstractController
 		return $this->render('UserBundle:NewTicket:thanks-simple.html.twig', array(
 
 		));
+	}
+
+	public function newFinishLoginAction($ticket_id)
+	{
+		if ($this->person->isGuest()) {
+			$return_url = $this->generateUrl('user_tickets_new_finishlogin', array('ticket_id' => $ticket_id));
+			return $this->redirectRoute('user_login', array('return' => $return_url));
+		}
+
+		$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
+		if (!$ticket) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if ($ticket->person->id != $this->person->id) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$ticket->status = 'awaiting_agent';
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($ticket);
+			$this->em->flush();
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
 	}
 }

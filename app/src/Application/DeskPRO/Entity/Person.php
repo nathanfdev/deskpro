@@ -450,7 +450,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public static function newRegularPerson()
 	{
 		$person = new self();
-		$person['is_user'] = true;
 		return $person;
 	}
 

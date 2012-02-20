@@ -49,7 +49,8 @@
 
 					{% include 'UserBundle:Common:comments-box.html.twig' with {
 						'comments': comments,
-						'form_action': path('user_downloads_newcomment', {'download_id': download.id})
+						'form_action': path('user_downloads_newcomment', {'download_id': download.id}),
+						'check_perm': 'downloads.comment'
 					} %}
 				</div>
 			</div>

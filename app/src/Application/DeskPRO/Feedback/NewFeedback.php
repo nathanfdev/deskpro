@@ -33,6 +33,7 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 	 */
 	protected $person_context;
 
+	public $require_login = false;
 	public $person_name = '';
 	public $person_email = '';
 
@@ -85,22 +86,28 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 			if ($this->person_context->isGuest()) {
 
 				$email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->person_email);
+				$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person_email);
 
+				// Email already exists on an account
+				// Means use the same person, but depending on the setting we
+				// might require the user to log in (in which case the ticket is a temp ticket for a bit)
 				if ($email) {
-					$validating = 'existing';
+					if (App::getSetting('core.existing_account_login')) {
+						$person = $email->person;
+						$person->name = $this->person_name;
+						$this->require_login = true;
 
-					$person = $email->person;
+					} else {
+						$person = $email->person;
+						$person->name = $this->person_name;
+					}
 
-					$email_validating = new PersonEmailValidating();
-					$email_validating->email = $email->email;
-					$email_validating->person = $person;
-					App::getOrm()->persist($email_validating);
+					$email_validating = null;
 
-				} else {
+				// Email doesnt exist,
+				// Might already be validating, or we might require validation based on the setting
+				} elseif ($email_validating || App::getSetting('core.email_validation')) {
 					$validating = 'new';
-
-					$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person_email);
-
 					if (!$email_validating) {
 						$person = Person::newContactPerson();
 						$person->name = $this->person_name;
@@ -114,6 +121,21 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 					} else {
 						$person = $email_validating->person;
 					}
+
+				// If we get here, then its a new user and we dont require validation
+				// Note a user isnt a "user" at this point, they cant log in etc,
+				// no validation just means they dont need to validate to get their ticket reads
+				} else {
+					$person = Person::newContactPerson();
+					$person->name = $this->person_name;
+					App::getOrm()->persist($person);
+
+					$email = new PersonEmail();
+					$email->email = $this->person_email;
+					$email->person = $person;
+					App::getOrm()->persist($email);
+
+					$email_validating = null;
 				}
 			} else {
 				$person = $this->person_context;
@@ -134,9 +156,17 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 			$feedback['status']       = Feedback::STATUS_NEW;
 			$feedback['date_created'] = new \DateTime();
 			$feedback['validating']   = $validating;
+			$feedback['person']       = $person;
 
-			if ($validating) {
-				// TODO:permissions visibility based on setting
+			if ($this->require_login) {
+				$feedback->setStatusCode('hidden.temp');
+			} elseif ($validating) {
+				$feedback->setStatusCode('hidden.user_validating');
+			} else {
+				// Visible stuff always starts off as validating,
+				//the meaing just changes based on setting. ie they could
+				// be visible to end users or hidden. An agent always needs to approve or dismiss
+				// it.
 				$feedback->setStatusCode('hidden.validating');
 			}
 
