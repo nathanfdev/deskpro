@@ -19,7 +19,7 @@
 		<thead>
 			<tr>
 				<th style="text-align:left">&nbsp; Usergroup</th>
-				<th style="text-align:center" width="100">Number of members</th>
+				<th style="text-align:center" width="180">Number of members</th>
 				<th style="text-align:left" width="50">&nbsp;</th>
 			</tr>
 		</thead>
@@ -27,9 +27,11 @@
 			<tr>
 				<td>Everyone</td>
 				<td style="text-align:center">
-					<a href="{{ path('admin_usergroups_browse', {'id': '0'})}}">{{ member_counts[0]|default('0') }}</a>
+					<a href="{{ path('admin_usergroups_browse', {'id': '1'})}}">{{ member_counts[0]|default('0') }}</a>
 				</td>
-				<td>&nbsp;</td>
+				<td style="padding: 3px 3px 0 0; text-align: right;">
+					<a href="{{ path('admin_usergroups_edit', {'id': 1}) }}"><span class="btn-edit-gear"></span></a>
+				</td>
 			</tr>
 		{% for usergroup in usergroups %}
 			<tr>

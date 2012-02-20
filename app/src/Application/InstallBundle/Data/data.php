@@ -824,10 +824,11 @@ $em->flush();
 ##BEGIN:usergroups.everyone##
 $g = new \Application\DeskPRO\Entity\Usergroup();
 $g['title'] = 'Everyone';
-$g['note'] = '(system group)';
+$g['note'] = 'Permissions applied to every user in the system by default';
 $g['sys_name'] = 'everyone';
 $em->persist($g);
 $em->flush();
+$USERGROUP_EVERYONE = $g;
 
 ##BEGIN:usergroups.agent_all##
 $AGENTGROUP_ALL = new \Application\DeskPRO\Entity\Usergroup();

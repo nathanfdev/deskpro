@@ -1,0 +1,202 @@
+<nav class="check-grid-tabs">
+	<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
+		<li class="on" data-tab-for="#permgroup_tickets"><span>Tickets</span></li>
+		<li data-tab-for="#permgroup_chat"><span>Chat</span></li>
+		<li data-tab-for="#permgroup_feedback"><span>Feedback</span></li>
+		<li data-tab-for="#permgroup_articles"><span>Articles</span></li>
+		<li data-tab-for="#permgroup_downloads"><span>Downloads</span></li>
+		<li data-tab-for="#permgroup_news"><span>News</span></li>
+	</ul>
+</nav>
+
+<div id="permgroup_tickets" style="display: none" class="dp-form-box">
+	<!-- PERMISSION:tickets.use --><input class="onoff-slider" type="checkbox" {% if permissions['tickets.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[tickets.use]" value="1" /> Can use tickets
+	<div class="check-grid" style="max-height: 200px; overflow: auto;">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th style="text-align: left;">Departments</th>
+					<th width="60">&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for dep in departments %}
+					<tr>
+						{% if dep.children|length %}
+							<td class="title title-group">{{ dep.title }}</td>
+							<td class="prop">&nbsp;</td>
+						{% else %}
+							<td class="title">{{ dep.title }}</td>
+							<td class="prop"><input class="onoff-slider" type="checkbox" {% if ug_deps[dep.id].tickets or not usergroup.id %}checked="checked"{% endif %} name="department_permissions[{{ dep.id }}][tickets]" value="1" /></td>
+						{% endif %}
+					</tr>
+					{% if dep.children %}
+						{% for subdep in dep.children %}
+							<tr>
+								<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ subdep.title }}</td>
+								<td class="prop"><input class="onoff-slider" type="checkbox" {% if ug_deps[subdep.id].tickets or not usergroup.id %}checked="checked"{% endif %} name="department_permissions[{{ subdep.id }}][tickets]" value="1" /></td>
+							</tr>
+						{% endfor %}
+					{% endif %}
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div id="permgroup_chat" style="display: none" class="dp-form-box">
+	<!-- PERMISSION:chat.use --><input class="onoff-slider" type="checkbox" {% if permissions['chat.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[chat.use]" value="1" /> Can use chat
+	<div class="check-grid" style="max-height: 200px; overflow: auto;">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th style="text-align: left;">Departments</th>
+					<th width="60">&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for dep in departments %}
+					<tr>
+						{% if dep.children|length %}
+							<td class="title title-group">{{ dep.title }}</td>
+							<td class="prop">&nbsp;</td>
+						{% else %}
+							<td class="title">{{ dep.title }}</td>
+							<td class="prop"><input class="onoff-slider" type="checkbox" {% if ug_deps[dep.id].chat or not usergroup.id %}checked="checked"{% endif %} name="department_permissions[{{ dep.id }}][chat]" value="1" /></td>
+						{% endif %}
+					</tr>
+					{% if dep.children %}
+						{% for subdep in dep.children %}
+							<tr>
+								<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ subdep.title }}</td>
+								<td class="prop"><input class="onoff-slider" type="checkbox" {% if ug_deps[subdep.id].chat or not usergroup.id %}checked="checked"{% endif %} name="department_permissions[{{ subdep.id }}][chat]" value="1" /></td>
+							</tr>
+						{% endfor %}
+					{% endif %}
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div id="permgroup_feedback" style="display: none" class="dp-form-box">
+	<!-- PERMISSION:feedback.use --><input class="onoff-slider" type="checkbox" {% if permissions['feedback.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[feedback.use]" value="1" /> Can use feedback
+	<div class="check-grid" style="max-height: 200px; overflow: auto;">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th style="text-align: left;">Permission</th>
+					<th width="60">&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="title">Can submit new feedback</td>
+					<td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['feedback.submit'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[feedback.submit]" value="1" /></td>
+				</tr>
+				<tr>
+					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; Require agent validation</td>
+					<td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['feedback.submit_validate'] %}checked="checked"{% endif %} name="permissions[feedback.submit_validate]" value="1" /></td>
+				</tr>
+				<tr>
+					<td class="title">Can vote on feedback</td>
+					<td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['feedback.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[feedback.rate]" value="1" /></td>
+				</tr>
+				<tr>
+					<td class="title">Submit comments on feedback</td>
+					<td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['feedback.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[feedback.comment]" value="1" /></td>
+				</tr>
+				<tr>
+					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; Require agent validation</td>
+					<td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['feedback.comment_validate'] %}checked="checked"{% endif %} name="permissions[feedback.comment_validate]" value="1" /></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div id="permgroup_articles" style="display: none" class="dp-form-box">
+	<!-- PERMISSION:articles.use --><input class="onoff-slider" type="checkbox" {% if permissions['articles.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[articles.use]" value="1" /> Can use knowledgebase
+	<div class="check-grid" style="max-height: 200px; overflow: auto;">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th style="text-align: left;">Permission</th>
+					<th width="60">&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="title">Can rate articles</td>
+					<!-- PERMISSION:articles.rate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['articles.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[articles.rate]" value="1" /></td>
+				</tr>
+				<tr>
+					<td class="title">Submit comments on articles</td>
+					<!-- PERMISSION:articles.comment --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['articles.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[articles.comment]" value="1" /></td>
+				</tr>
+				<tr>
+					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; Require agent validation</td>
+					<!-- PERMISSION:articles.comment_validate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['articles.comment_validate'] %}checked="checked"{% endif %} name="permissions[articles.comment_validate]" value="1" /></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div id="permgroup_downloads" style="display: none" class="dp-form-box">
+	<!-- PERMISSION:downloads.use --><input class="onoff-slider" type="checkbox" {% if permissions['downloads.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[downloads.use]" value="1" />
+	Can use downloads
+	<div class="check-grid" style="max-height: 200px; overflow: auto;">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th style="text-align: left;">Permission</th>
+					<th width="60">&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="title">Can rate downloads</td>
+					<!-- PERMISSION:downloads.rate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['downloads.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[downloads.rate]" value="1" /></td>
+				</tr>
+				<tr>
+					<td class="title">Submit comments on downloads</td>
+					<!-- PERMISSION:downloads.comment --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['downloads.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[downloads.comment]" value="1" /></td>
+				</tr>
+				<tr>
+					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; Require agent validation</td>
+					<!-- PERMISSION:downloads.comment_validate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['downloads.comment_validate'] %}checked="checked"{% endif %} name="permissions[downloads.comment_validate]" value="1" /></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div id="permgroup_news" style="display: none" class="dp-form-box">
+	<!-- PERMISSION:news.use --><input class="onoff-slider" type="checkbox" {% if permissions['downloads.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.use]" value="1" />
+	News
+	<div class="check-grid" style="max-height: 200px; overflow: auto;">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th style="text-align: left;">Permission</th>
+					<th width="60">&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="title">Can rate news posts</td>
+					<!-- PERMISSION:news.rate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['downloads.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.rate]" value="1" /></td>
+				</tr>
+				<tr>
+					<td class="title">Submit comments on news posts</td>
+					<!-- PERMISSION:news.comment --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['downloads.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.comment]" value="1" /></td>
+				</tr>
+				<tr>
+					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; Require agent validation</td>
+					<!-- PERMISSION:news.comment_validate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['downloads.comment_validate'] %}checked="checked"{% endif %} name="permissions[news.comment_validate]" value="1" /></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

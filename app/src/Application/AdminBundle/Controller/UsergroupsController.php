@@ -27,7 +27,7 @@ class UsergroupsController extends AbstractController
 
 	public function listAction()
 	{
-		$usergroups = App::getOrm()->createQuery("
+		$usergroups = $this->em->createQuery("
 			SELECT ug
 			FROM DeskPRO:Usergroup ug
 			WHERE ug.is_agent_group = false AND ug.sys_name IS NULL
@@ -59,24 +59,83 @@ class UsergroupsController extends AbstractController
 	{
 		if (!$id) {
 			$usergroup = new Entity\Usergroup();
+			$is_new = true;
 		} else {
 			$usergroup = App::getEntityRepository('DeskPRO:Usergroup')->find($id);
+			$is_new = false;
 		}
 
-		if (!$usergroup || $usergroup->sys_name) {
+		if (!$usergroup) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
+		#------------------------------
+		# Saving form
+		#------------------------------
+
 		if ($this->in->getBool('process')) {
 			$this->ensureRequestToken('edit_usergroup');
-			$usergroup['title'] = $this->in->getString('usergroup.title');
-			$usergroup['note'] = $this->in->getString('usergroup.note');
 
-			App::getOrm()->persist($usergroup);
-			App::getOrm()->flush();
+			$this->em->getConnection()->beginTransaction();
 
-			return $this->redirectRoute('admin_usergroups');
+			try {
+				$usergroup['title'] = $this->in->getString('usergroup.title');
+				$usergroup['note'] = $this->in->getString('usergroup.note');
+
+				$this->em->persist($usergroup);
+				$this->em->flush();
+
+				#---
+				# Department selections
+				#---
+
+				if (!$is_new) {
+					$this->db->delete('department_permissions', array('usergroup_id' => $usergroup->id));
+				}
+
+				$department_selections = $this->in->getCleanValueArray('department_permissions', 'raw', 'uint');
+				foreach ($department_selections as $dep_id => $app_choices) {
+					foreach ($app_choices as $app => $x) {
+						if ($x) {
+							$this->db->insert('department_permissions', array(
+								'department_id' => $dep_id,
+								'usergroup_id' => $usergroup->id,
+								'app' => $app
+							));
+						}
+					}
+				}
+
+				#---
+				# Permission selections
+				#---
+
+				if (!$is_new) {
+					$this->db->delete('permissions', array('usergroup_id' => $usergroup->id));
+				}
+
+				$permission_selections = $this->container->getIn()->getCleanValueArray('permissions', 'ibool', 'string');
+				foreach ($permission_selections as $perm => $x) {
+					if ($x) {
+						$this->db->insert('permissions', array(
+							'usergroup_id' => $usergroup->id,
+							'name' => $perm,
+							'value' => 1
+						));
+					}
+				}
+
+				$this->em->getConnection()->commit();
+				return $this->redirectRoute('admin_usergroups');
+			} catch (\Exception $e) {
+				$this->em->getConnection()->rollback();
+				throw $e;
+			}
 		}
+
+		#------------------------------
+		# Display form
+		#------------------------------
 
 		$form = $this->get('form.factory')->createNamedBuilder('form', 'usergroup');
 		$form->add('title', 'text', array('data' => $usergroup['title']));
@@ -91,10 +150,27 @@ class UsergroupsController extends AbstractController
 			", array($id));
 		}
 
+		$departments = $this->em->getRepository('DeskPRO:Department')->getAll();
+
+		$ug_deps = $this->db->fetchAllGrouped("
+			SELECT department_id, app
+			FROM department_permissions
+			WHERE usergroup_id = ?
+		", array($usergroup->id), 'department_id', 'app', 'app');
+
+		$permissions = App::getDb()->fetchAllKeyValue("
+			SELECT name, value
+			FROM permissions
+			WHERE permissions.usergroup_id = ?
+		", array($usergroup->id));
+
 		return $this->render('AdminBundle:Usergroups:edit.html.twig', array(
 			'usergroup' => $usergroup,
 			'form'      => $form->getForm()->createView(),
 			'member_count' => $member_count,
+			'departments' => $departments,
+			'ug_deps' => $ug_deps,
+			'permissions' => $permissions,
 		));
 	}
 
@@ -141,7 +217,7 @@ class UsergroupsController extends AbstractController
 			}
 		}
 
-		if ($id) {
+		if ($id && $id != 1) {
 			$member_count = App::getDb()->fetchColumn("
 				SELECT COUNT(*)
 				FROM person2usergroups
@@ -159,7 +235,7 @@ class UsergroupsController extends AbstractController
 		$page = $pageinfo['curpage'];
 		$offset = ($page - 1) * $per_page;
 
-		$q = App::getOrm()->createQueryBuilder();
+		$q = $this->em->createQueryBuilder();
 		$q->from('DeskPRO:Person', 'p')
 		  ->select('p')
 		  ->leftJoin('p.usergroups', 'u')

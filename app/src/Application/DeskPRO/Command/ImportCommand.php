@@ -289,6 +289,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 			// Install default data
 			$AGENTGROUP_ALL = null; // should be defiend by the time we finish processing data.php
+			$USERGROUP_EVERYONE = null; // should be defiend by the time we finish processing data.php
 			$WEB_INSTALL = false;
 			$IMPORT_INSTALL = true;
 
@@ -321,6 +322,17 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 						$this->getContainer()->getEm()->persist($p);
 					}
 					$this->getContainer()->getEm()->flush();
+				}
+				if ($USERGROUP_EVERYONE) {
+					$scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
+					foreach ($scanner->getNames() as $p_name) {
+						$p = new \Application\DeskPRO\Entity\Permission();
+						$p->usergroup = $USERGROUP_EVERYONE;
+						$p->name = $p_name;
+						$p->value = 1;
+						$this->getOrm()->persist($p);
+					}
+					$this->getOrm()->flush();
 				}
 
 				$this->getContainer()->getEm()->getConnection()->commit();

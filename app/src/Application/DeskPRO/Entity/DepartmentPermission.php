@@ -37,6 +37,17 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
 	protected $department = null;
 
 	/**
+	 * The connected usergroup. If this is set, then person cannot be set.
+	 *
+	 * @var \Application\DeskPRO\Entity\Department
+	 * @ORM_Mapping\ManyToOne(targetEntity="Usergroup")
+	 * @ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")
+	 */
+	protected $usergroup = null;
+
+	/**
+	 * The connected person. If this is set, then usergroup cannot be set.
+	 *
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
 	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
@@ -47,4 +58,23 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="app", type="string", length=50)
 	 */
 	protected $app;
+
+
+	public function setUsergroup($ug)
+	{
+		$this->setModelField('usergroup', $ug);
+
+		if ($ug !== null) {
+			$this->person = null;
+		}
+	}
+
+	public function setPerson($p)
+	{
+		$this->setModelField('person', $p);
+
+		if ($p !== null) {
+			$this->usergroup = null;
+		}
+	}
 }
