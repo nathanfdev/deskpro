@@ -332,7 +332,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 						$p->value = 1;
 						$this->getContainer()->getEm()->persist($p);
 					}
-					$this->getOrm()->flush();
+					$this->getContainer()->getEm()->flush();
 				}
 
 				$this->getContainer()->getEm()->getConnection()->commit();
