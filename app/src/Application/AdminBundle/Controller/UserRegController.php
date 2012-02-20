@@ -40,6 +40,20 @@ class UserRegController extends AbstractController
 
 
 	############################################################################
+	# deskpro
+	############################################################################
+
+	public function deskproSourceToggleAction()
+	{
+		$onoff = App::getSetting('core.deskpro_source_enabled');
+
+		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_source_enabled', (int)(!$onoff));
+
+		return $this->redirectRoute('admin_userreg_options');
+	}
+
+
+	############################################################################
 	# facebook
 	############################################################################
 
@@ -67,7 +81,7 @@ class UserRegController extends AbstractController
 			$this->ensureRequestToken('facebook_setup');
 
 			$facebook->setOptions(array(
-				'app_key' => $this->in->getString('facebook.app_key'),
+				'app_key'    => $this->in->getString('facebook.app_key'),
 				'app_secret' => $this->in->getString('facebook.app_secret'),
 			));
 

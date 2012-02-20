@@ -496,6 +496,13 @@ $collection->add('admin_userreg_google_toggle', new Route(
 	array()
 ));
 
+$collection->add('admin_userreg_deskpro_source_toggle', new Route(
+	'/settings/user-registration/deskpro-source/toggle',
+	array('_controller' => 'AdminBundle:UserReg:deskproSourceToggle'),
+	array(),
+	array()
+));
+
 ################################################################################
 # User : Banning
 ################################################################################

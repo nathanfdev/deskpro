@@ -18,11 +18,15 @@
 				<h4>User Sources</h4>
 			</header>
 			<article>
-				<article class="box-hint">A user source is an external database that DeskPRO will use to authenticate users when they want to log in.</article>
+				<article class="box-hint">A user source is any database that DeskPRO will use to authenticate users when they want to log in.</article>
 				<ul>
 					<li>
+						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_deskpro_source_toggle') }}';" {% if app.getSetting('core.deskpro_source_enabled') %}checked="checked"{% endif %} />
+						DeskPRO
+					</li>
+					<li>
 						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_facebook_toggle') }}';" {% if app.getSetting('core.facebook_source_enabled') %}checked="checked"{% endif %} />
-						Facebook
+						Facebook <a href="{{ path('admin_userreg_facebook_edit') }}" class="btn-edit-gear2" style="position: relative; top: 2px;"></a>
 					</li>
 					<li>
 						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_google_toggle') }}';" {% if app.getSetting('core.google_source_enabled') %}checked="checked"{% endif %} />
@@ -36,36 +40,26 @@
 {% block page %}
 <form action="{{ path('admin_userreg_options_save') }}" method="POST" id="mode_form">
 
-<div class="dp-form" id="general_settings">
-	<div class="dp-form-row">
-		<div class="dp-form-label">
-			<label>
-				Force email validation
-			</label>
-		</div>
-		<div class="dp-form-input">
-			<label>
-				<input type="checkbox" name="email_validation" value="1" {% if app.getSetting('core.email_validation') %}checked="checked"{% endif %} />
-				Force users to validate their email address when they first register. Until a user validates, any submitted tickets on their account will
+{% macro options_table() %}
+	<table cellspacing="0" cellpadding="0" width="100%" style="margin-left: 8px; margin-right: 6px;">
+		<tr>
+			<td width="10"><input type="checkbox" name="email_validation" value="1" {% if app.getSetting('core.email_validation') %}checked="checked"{% endif %} /></td>
+			<td>
+				<h3>Force email validation</h3>
+				Force users to validate their email address when they first register. Until a user validates, any submitted content on their account will
 				be invisible.
-			</label>
-		</div>
-	</div>
-	<div class="dp-form-row">
-		<div class="dp-form-label">
-			<label>
-				Force login for existing users
-			</label>
-		</div>
-		<div class="dp-form-input">
-			<label>
-				<input type="checkbox" name="existing_account_login" value="1" {% if app.getSetting('core.existing_account_login') %}checked="checked"{% endif %} />
+			</td>
+		</tr>
+		<tr>
+			<td width="10"><input type="checkbox" name="existing_account_login" value="1" {% if app.getSetting('core.existing_account_login') %}checked="checked"{% endif %} /></td>
+			<td>
+				<h3>Force login for existing users</h3>
 				If a user tries to submit a new ticket, submit new feedback, start a new chat or add a comment using an email address that belongs to an existing
 				account, they will be prompted to login before the submission is accepted.
-			</label>
-		</div>
-	</div>
-</div>
+			</td>
+		</tr>
+	</table>
+{% endmacro %}
 
 <div class="dp-form">
 <div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
@@ -81,17 +75,7 @@
 				</label>
 				<div class="dp-group-options" style="display: none">
 					<p>With an open helpdesk, anyone can use the helpdesk and anyone can register and log in.</p>
-					<div class="dp-form">
-						<div class="dp-form-row">
-							<div class="dp-form-label">
-								<label>Registration URL</label>
-								<em class="desc">When users want to register, this link will be provided.</em>
-							</div>
-							<div class="dp-form-input">
-								<input type="text" name="reg_url" />
-							</div>
-						</div>
-					</div>
+					{{ _self.options_table() }}
 				</div>
 			</div>
 
@@ -102,17 +86,7 @@
 				</label>
 				<div class="dp-group-options" style="display: none">
 					<p>With this mode, the helpdesk is readable by everyone but users must log in to submit content such as new tickets, new feedback, or new comments.</p>
-					<div class="dp-form">
-						<div class="dp-form-row">
-							<div class="dp-form-label">
-								<label>Registration URL</label>
-								<em class="desc">When users want to register, this link will be provided.</em>
-							</div>
-							<div class="dp-form-input">
-								<input type="text" name="reg_url" />
-							</div>
-						</div>
-					</div>
+					{{ _self.options_table() }}
 				</div>
 			</div>
 
@@ -123,17 +97,7 @@
 				</label>
 				<div class="dp-group-options" style="display: none">
 					<p>This is the same as "Request Registration" except that users must be manually validated by agents before they are able interact with the helpdesk.</p>
-					<div class="dp-form">
-						<div class="dp-form-row">
-							<div class="dp-form-label">
-								<label>Registration URL</label>
-								<em class="desc">When users want to register, this link will be provided.</em>
-							</div>
-							<div class="dp-form-input">
-								<input type="text" name="reg_url" />
-							</div>
-						</div>
-					</div>
+					{{ _self.options_table() }}
 				</div>
 			</div>
 

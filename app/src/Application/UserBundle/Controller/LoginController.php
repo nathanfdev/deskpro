@@ -121,6 +121,13 @@ HTML;
 
 	public function authenticateLocalAction($usersource_id)
 	{
+		// DeskPRO is disabled
+		if (!$this->container->getSetting('core.deskpro_source_enabled')) {
+			$this->session->set('failed_login_name', $this->in->getString('email'));
+			$this->session->save();
+			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+		}
+
 		$adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
 		$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
 		$result = $adapter->authenticate();

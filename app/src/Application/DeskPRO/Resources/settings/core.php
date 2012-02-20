@@ -222,4 +222,9 @@
 	 * File extensions that a user is forbidden from uploading (blacklist)
 	 */
 	'core.attach_user_not_exts' => null,
+
+	/**
+	 * True to have the DeskPRO local user source enabled
+	 */
+	'core.deskpro_source_enabled' => true,
 );
