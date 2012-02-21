@@ -257,11 +257,12 @@ class MainController extends AbstractController
 				}
 			}
 
-		#------------------------------
-		# Email address: Full or partial
-		#------------------------------
-
 		} else {
+
+			#------------------------------
+			# Email address: Full or partial
+			#------------------------------
+
 			if (preg_match('#^[a-zA-Z0-9\-_.]*@[a-zA-Z0-9\-_.]+$#', $q)) {
 
 				$people_top = true;
@@ -288,7 +289,7 @@ class MainController extends AbstractController
 
 					} else {
 						// Search an email address
-						$people = $this->em->getRepository('DeskPRO:Person')->searchByEmailStartingWith($q);
+						$people = $this->em->getRepository('DeskPRO:Person')->searchByEmail($q, 25);
 					}
 				}
 
@@ -300,7 +301,23 @@ class MainController extends AbstractController
 					}
 				}
 
-				$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsForPeople($people, 15);
+			#------------------------------
+			# Search for string match in name or email
+			#------------------------------
+
+			} else {
+				$people = $this->em->getRepository('DeskPRO:Person')->search($q, 25);
+				foreach ($people as $p) {
+					$results['person'][] = $p;
+
+					if ($p->organization) {
+						$results['organization'][] = $p;
+					}
+				}
+			}
+
+			if ($results['person']) {
+				$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsForPeople($results['person'], 15);
 				foreach ($tickets as $t) {
 					$results['ticket'][] = $t;
 				}
@@ -311,7 +328,15 @@ class MainController extends AbstractController
 			#------------------------------
 
 			$label_search = new \Application\DeskPRO\Labels\LabelSearch($this->em);
-			$results = $label_search->search($q);
+			$label_results = $label_search->search($q);
+
+			if ($label_results) {
+				foreach ($label_results as $type => $type_results) {
+					foreach ($type_results as $res) {
+						$results[$type][] = $res;
+					}
+				}
+			}
 		}
 
 		return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', array(

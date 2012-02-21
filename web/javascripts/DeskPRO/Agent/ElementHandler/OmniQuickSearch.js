@@ -57,6 +57,36 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 		});
 
 		this.ajaxLoading = {};
+
+		this.resultWrap.on('click', '.expand-btn', function(ev) {
+			var sectionEl = $(this).closest('section.section');
+			if (!sectionEl[0]) {
+				return;
+			}
+
+			self.cancelClose = true;
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var lis = sectionEl.find('li.result-item');
+			if (lis.length <= 5) {
+				return;
+			}
+
+			if ($(this).hasClass('expanded')) {
+				$(this).removeClass('expanded').text($(this).data('more-text'));
+				var x = 0;
+				lis.each(function() {
+					x++;
+					if (x > 5) {
+						$(this).hide();
+					}
+				});
+			} else {
+				$(this).addClass('expanded').text('Show less');
+				lis.show();
+			}
+		});
 	},
 
 	_handleKeyPress: function(ev) {
@@ -234,8 +264,10 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 				sectionEl.appendTo(this.resultWrap);
 			}
 
-			listEl = $('ul.result-list', sectionEl);
+			sectionEl.find('.expand-btn').removeClass('expanded').hide();
 
+			listEl = $('ul.result-list', sectionEl);
+			var hasMore = false;
 			for (var ri = 0; ri < typeResults.length; ri++) {
 				count++;
 				res = typeResults[ri];
@@ -252,12 +284,21 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 					resultEl = $(resultElHtml);
 					resultEl.data('route', res.route).attr('data-route', res.route);
 
+					if (res.subtitle) {
+						$('<span>').addClass('subtitle').html(res.subtitle).appendTo(resultEl);
+					}
+
 					resultEl.appendTo(listEl);
 				}
 
 				if (ri >= 5) {
 					resultEl.hide();
+					hasMore = true;
 				}
+			}
+			if (hasMore) {
+				var title = 'Show ' + (typeResults.length - 5) + ' more';
+				sectionEl.find('.expand-btn').text(title).data('more-text', title).show();
 			}
 		}, this);
 
@@ -317,6 +358,10 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 	},
 
 	close: function() {
+		if (this.cancelClose) {
+			this.cancelClose = false;
+			return;
+		}
 		if (!this._isOpen) return;
 		this._isOpen = false;
 		this.resultWrap.hide();

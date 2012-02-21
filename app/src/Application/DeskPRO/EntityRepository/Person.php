@@ -160,6 +160,19 @@ class Person extends AbstractEntityRepository
 		")->setParameter(1, $email)->setMaxResults($limit)->execute();
 	}
 
+	public function searchByEmail($email, $limit = null)
+	{
+		$email = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
+
+		return $this->getEntityManager()->createQuery("
+			SELECT p
+			FROM DeskPRO:Person p
+			LEFT JOIN p.emails e
+			WHERE e.email LIKE ?1
+			ORDER BY p.id ASC
+		")->setParameter(1, $email)->setMaxResults($limit)->execute();
+	}
+
 
 	public function getPeopleFromIds(array $ids)
 	{
@@ -201,6 +214,19 @@ class Person extends AbstractEntityRepository
 		  ->execute();
 
 		return $people;
+	}
+
+	public function search($q, $limit = null)
+	{
+		$q = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
+
+		return $this->getEntityManager()->createQuery("
+			SELECT p
+			FROM DeskPRO:Person p
+			LEFT JOIN p.emails e
+			WHERE (p.name LIKE ?1) OR (p.first_name LIKE ?2) OR (p.last_name LIKE ?3) OR (e.email LIKE ?4)
+			ORDER BY p.date_last_login DESC, p.id DESC
+		")->setParameters(array(1=> $q, 2=> $q, 3=> $q, 4=>$q))->setMaxResults($limit)->execute();
 	}
 
 

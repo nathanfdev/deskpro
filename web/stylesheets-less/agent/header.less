@@ -409,10 +409,38 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 		padding: 0;
 		padding-left: 6px;
 		line-height: 24px;
+
+		> .expand-btn {
+		    display: block;
+			font-size: 11px;
+			float: right;
+			background-color: #fff;
+			.rounded(3px);
+			line-height: 100%;
+			padding: 1px 4px 1px 4px;
+			text-transform: none;
+			font-weight: normal;
+			font-family: @body-font;
+			position: relative;
+			top: 4px;
+			right: 5px;
+			border: 1px solid #B0B9C4;
+			cursor: pointer;
+		}
 	}
 
 	ul.result-list > li {
 		padding: 3px 5px 3px 8px;
+		height: 18px;
+		overflow: hidden;
+		white-space:nowrap;
+		text-overflow: ellipsis;
+
+		.subtitle {
+			padding-left: 8px;
+			color: #818891;
+			font-size: 10px;
+		}
 
 		&:hover, &.result-focus {
 			background-color: #5182B3;
@@ -420,6 +448,10 @@ ul#dp_notify_list li.notifPaging ul#notifPages li:hover a{
 
 			.prop-id {
 				background-color: darken(#B1CBE1, 40%);
+			}
+
+			.subtitle {
+				color: darken(#fff, 20%);
 			}
 		}
 
