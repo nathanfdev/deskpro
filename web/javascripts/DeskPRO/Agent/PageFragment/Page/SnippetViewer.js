@@ -117,6 +117,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 		this.newCatOverlayObj = new DeskPRO.UI.Overlay({
 			contentElement: this.newCatOverlay,
+			zIndex: 30010,
 			onPosition: function(ev) {
 				var pos = self.newCategoryBtn.offset();
 
@@ -206,6 +207,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				var pos = catRow.offset();
 				var overlayObj = new DeskPRO.UI.Overlay({
 					contentElement: overlay,
+					zIndex: 30020,
 					onPosition: function(ev) {
 						ev.setLeft(pos.left);
 						ev.setTop(pos.top);
