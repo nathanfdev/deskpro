@@ -29,10 +29,11 @@ class ServerController extends AbstractController
 		phpinfo();
 		$phpinfo = ob_get_clean();
 
-		preg_match('#<body>(.*?)</body>#ms', $phpinfo, $m);
-		preg_match('#<style(.*?)</style>#ms', $phpinfo, $m2);
+		preg_match('#<body.*?>(.*?)</body>#ms', $phpinfo, $m);
 
-		$phpinfo = $m[1];
+		if (isset($m[1])) {
+			$phpinfo = $m[1];
+		}
 
 		return $this->render('AdminBundle:Server:phpinfo.html.twig', array(
 			'phpinfo' => $phpinfo,
