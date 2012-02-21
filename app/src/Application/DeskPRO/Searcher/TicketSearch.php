@@ -630,7 +630,13 @@ class TicketSearch extends SearcherAbstract
 						$this->specific_fields[] = self::TERM_LANGUAGE;
 					}
 
-					$wheres[] = $this->_choiceMatch("$tickets_table.language_id", $op, $choice, true);
+					$choice = array_pop($choice);
+
+					if ($choice == App::getSetting('core.default_language_id')) {
+						$wheres[] = "(" . $this->_choiceMatch("$tickets_table.language_id", $op, $choice, true) . " OR " . $this->_choiceMatch("$tickets_table.language_id", $op, 0, true) . ")";
+					} else {
+						$wheres[] = $this->_choiceMatch("$tickets_table.language_id", $op, $choice, true);
+					}
 					break;
 				case self::TERM_AGENT:
 					$this->affected_fields[] = 'ticket.agent_id';
