@@ -104,7 +104,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 	{
 		$base = parent::getBaseUrl();
 
-		if (strpos($base, 'index.php') === false) {
+		if (strpos($base, 'index.php') === false && !isset($GLOBALS['DP_CONFIG']['rewrite_urls'])) {
 			$base .= '/index.php';
 		}
 

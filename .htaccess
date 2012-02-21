@@ -1,7 +1,14 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine On
-	#RewriteBase /deskpropath
-	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule ^(.*)$ index.php/$1 [L,QSA]
+
+	# If you are getting 404 errors then you may need to uncomment
+	# the following line and change it to the path of DeskPRO.
+	#RewriteBase /deskpro
+
+	RewriteCond %{REQUEST_FILENAME} -f [OR]
+	RewriteCond %{REQUEST_FILENAME} -l [OR]
+	RewriteCond %{REQUEST_FILENAME} -d
+	RewriteRule ^.*$ - [NC,L]
+	RewriteRule ^web/ - [NC,L]
+	RewriteRule ^.*$ index.php [NC,L]
 </IfModule>

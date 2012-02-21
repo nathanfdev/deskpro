@@ -88,10 +88,18 @@ class KernelBooter
 		}
 		$path = $request->getPathInfo();
 
-		// Always force index.php
-		if (strpos($request->getRequestUri(), '/index.php') === false) {
-			header('Location: ' . rtrim($request->getBasePath(), '/') . '/index.php' . $path);
-			exit;
+		if (isset($GLOBALS['DP_CONFIG']['rewrite_urls'])) {
+			// Force no index.php
+			if (strpos($request->getRequestUri(), '/index.php') !== false) {
+				header('Location: ' . rtrim($request->getBasePath(), '/') . $path);
+				exit;
+			}
+		} else {
+			// Force index.php
+			if (strpos($request->getRequestUri(), '/index.php') === false) {
+				header('Location: ' . rtrim($request->getBasePath(), '/') . '/index.php' . $path);
+				exit;
+			}
 		}
 
 		if (preg_match('#^/agent(/|\?|$)#', $path)) {
@@ -117,8 +125,12 @@ class KernelBooter
 			define('DP_INTERFACE', 'install');
 
 			// Always force full URL with trailing slash
-			if (strpos($request->getRequestUri(), '/index.php/install') === false) {
-				header('Location: ' . $request->getServerBaseUrl() . '/index.php/install/');
+			if (strpos($request->getRequestUri(), '/install/') === false) {
+				if (isset($GLOBALS['DP_CONFIG']['rewrite_urls'])) {
+					header('Location: ' . $request->getServerBaseUrl() . '/install/');
+				} else {
+					header('Location: ' . $request->getServerBaseUrl() . '/index.php/install/');
+				}
 				exit;
 			}
 

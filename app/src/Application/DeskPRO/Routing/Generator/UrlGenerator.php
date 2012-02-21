@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Generator\UrlGenerator as BaseUrlGenerator;
 use Application\DeskPRO\Routing\Generator\ObjectUrlGenerator;
+use Orb\Util\Strings;
 
 use Application\DeskPRO\App;
 
@@ -31,7 +32,11 @@ class UrlGenerator extends BaseUrlGenerator
 		// /file.php/ is a hint to say that we want to serve through the file loader,
 		// Any route that is prefixed with /file.php/ has this magic below applied
 		if (strpos($url, '/file.php/') !== false) {
-			$url = str_replace('/index.php', '', $url);
+			if (isset($GLOBALS['DP_CONFIG']['rewrite_urls'])) {
+				$url = str_replace('/index.php', '', $url);
+			} else {
+				$url = Strings::strReplaceOne('/', '/file.php/', $url);
+			}
 		}
 
 		return $url;

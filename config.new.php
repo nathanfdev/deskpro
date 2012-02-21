@@ -30,6 +30,14 @@ define('DP_DATABASE_NAME', 'deskpro');
 $DP_CONFIG = array();
 
 ######################################################
+# If your server supports URL rewriting you can      #
+# eliminate the "index.php" part from all URLs by    #
+# enabling this setting.                             #
+######################################################
+
+// $DP_CONFIG['rewrite_urls'] = true;
+
+######################################################
 # Location of PHP Binary                             #
 #                                                    #
 # You need to specify this path if the system        #

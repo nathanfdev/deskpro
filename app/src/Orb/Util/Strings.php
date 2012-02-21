@@ -1216,6 +1216,24 @@ class Strings
 
 
 	/**
+	 * Like str_replace() except it only does the first
+	 *
+	 * @param string $find
+	 * @param string $replace
+	 * @param string $string
+	 */
+	public static function strReplaceOne($find, $replace, $string)
+	{
+		$pos = strpos($string, $find);
+		if ($pos !== false){
+			return substr_replace($string, $replace, $pos, strlen($replace));
+		}
+
+		return $string;
+	}
+
+
+	/**
 	 * Set the path to the php-utf8 library functions, and thereby enable
 	 * dynamic calling of utf8_xxx calls on this string class.
 	 *
