@@ -303,6 +303,7 @@ body.dp-simple-popup .dp-content-block {
 #deskpro #dp_page:after {clear:both;}
 #deskpro #dp_page > #dp_sidebar {float:right; width:222px; margin-right: 14px;}
 #deskpro #dp_page > #dp_content {margin-right:232px;}
+#deskpro #dp_page.no-sidebar > #dp_content {margin-right:5px;}
 
 #deskpro #dp_sidebar {
 	z-index: 1;

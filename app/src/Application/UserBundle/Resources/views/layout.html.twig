@@ -118,7 +118,8 @@
 </div>
 {% endif %}
 
-<div id="dp_page">
+{% set sidebar %}{% block sidebar %}{{ portal_section('sidebar') }}{% endblock %}{% endset %}
+<div id="dp_page" {% if not sidebar|trim|length %}class="no-sidebar"{% endif %}>
 	<div id="dp_header_bar">
 		{% include 'UserBundle:Common:layout-userbar.html.twig' %}
 		<div id="dp_search_bar" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
@@ -129,11 +130,11 @@
 		</div>
 	</div>
 
+	{% if sidebar|trim|length %}
 	<div id="dp_sidebar">
-		{% block sidebar %}
-			{{ portal_section('sidebar') }}
-		{% endblock %}
+		{{ sidebar }}
 	</div>
+	{% endif %}
 
 	{% if breadcrumb %}
 		<div id="dp_breadcrumb">
