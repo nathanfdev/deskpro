@@ -181,6 +181,29 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		}).bind(this));
 
 		//------------------------------
+		// Urgency
+		//------------------------------
+
+		var menuEl = ['<ul>'];
+		for (var i = 1; i <= 10; i++) {
+			menuEl.push('<li data-urgency="' + i + '">' + i + '</li>');
+		}
+		menuEl.push('</ul>');
+		menuEl = $(menuEl.join(''));
+
+		this.urgencyMenu = new DeskPRO.UI.Menu({
+			triggerElement: this.getEl('urgency'),
+			menuElement: menuEl,
+			onItemClicked: (function(info) {
+				var item = $(info.itemEl);
+				var prop = this.changeManager.getPropertyManager('urgency');
+
+				var urgency = item.data('urgency');
+				this.changeManager.setInstantChange(prop, urgency);
+			}).bind(this)
+		});
+
+		//------------------------------
 		// Macros
 		//------------------------------
 

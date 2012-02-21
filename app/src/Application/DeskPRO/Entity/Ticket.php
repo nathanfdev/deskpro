@@ -498,7 +498,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function modifyUrgency($mod, $reset_on_reply = false)
 	{
 		$old_u = $this->urgency;
-		$new_u = \Orb\Util\Numbers::bound($old_u + $mod, 1, 100);
+		$new_u = \Orb\Util\Numbers::bound($old_u + $mod, 1, 10);
 
 		if ($old_u != $new_u) {
 			$this->urgency = $new_u;
@@ -520,7 +520,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function setUrgency($set)
 	{
 		$old_u = $this->urgency;
-		$new_u = \Orb\Util\Numbers::bound($set, 1, 100);
+		$new_u = \Orb\Util\Numbers::bound($set, 1, 10);
 
 		if ($old_u != $new_u) {
 			$this->urgency = $new_u;
@@ -1361,17 +1361,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		return $ticket_flagged;
 	}
-
-	/**
-	 * Gets the urgency rounded to nearest 10. Useful in ex templates to specify a color
-	 *
-	 * @return int
-	 */
-	public function getRoundedUrgency()
-	{
-		return \Orb\Util\Numbers::roundToMultiple($this->urgency, 10, \Orb\Util\Numbers::ROUND_MULTIPLE_NEAR);
-	}
-
 
 
 	/**

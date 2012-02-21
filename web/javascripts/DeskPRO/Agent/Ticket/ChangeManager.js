@@ -70,6 +70,9 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 			case 'is_hold':
 				manager = new DeskPRO.Agent.Ticket.Property.Hold(this.ticketPage);
 				break;
+			case 'urgency':
+				manager = new DeskPRO.Agent.Ticket.Property.Urgency(this.ticketPage);
+				break;
 		}
 
 		if (manager === null && type.indexOf('_id') == -1) {

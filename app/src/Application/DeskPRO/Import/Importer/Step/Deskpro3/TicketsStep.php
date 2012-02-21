@@ -164,6 +164,7 @@ class TicketsStep extends AbstractDeskpro3Step
 			'ticket_hash' => sha1(microtime(true) . mt_rand(1000,99999)), // bogus hash
 			'date_created' => date('Y-m-d H:i:s', $ticket_info['timestamp_opened']),
 			'ref' => $ticket_info['ref'],
+			'urgency' => 1,
 		);
 
 		if ($ticket_info['creation'] == 'gateway') {

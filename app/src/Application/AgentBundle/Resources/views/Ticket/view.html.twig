@@ -41,7 +41,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<button class="cancel" id="macro_cancel_btn">Cancel</button>
 </div>
 
-<div class="layout-content with-scrollbar page-ticket {% if ticket.is_locked %}locked{% endif %} {% if ticket.hidden_status == 'deleted' %}deleted{% endif %}">
+<div class="layout-content with-scrollbar page-ticket {% if ticket.is_locked %}locked{% endif %} {% if ticket.hidden_status == 'deleted' %}deleted{% endif %} {{ ticket.status_code|replace({'.': '_'}) }}">
 {% if ticket.is_locked %}
 <div class="locked-bar" id="{{baseId}}_locked_bar">
 	<button class="clean-white dismiss">{{ phrase('agent.dismiss') }}</button>
@@ -94,6 +94,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 <header class="page-header">
 	<h4 class="id-number">#{{ ticket.id }}</h4>
 	<h1>{{ ticket.subject }}</h1>
+	<div class="ticket-urgency" id="{{baseId}}_urgency" data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</div>
 	<br class="clear" />
 	<div class="meta-line">
 		<div class="status set-status awaiting_agent" {% if ticket.status_code != 'awaiting_agent' %}style="display: none"{% endif %}><span>Awaiting Agent</span></div>

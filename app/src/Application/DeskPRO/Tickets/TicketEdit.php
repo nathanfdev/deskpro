@@ -136,6 +136,10 @@ class TicketEdit
 					}
 
 					break;
+
+				case 'urgency':
+					$this->ticket->urgency = $action;
+					break;
 			}
 		}
 

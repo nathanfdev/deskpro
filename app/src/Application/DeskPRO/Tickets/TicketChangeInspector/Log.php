@@ -150,6 +150,12 @@ class Log
 						}
 						break;
 
+					case 'urgency':
+						if (!$this->tracker->isNewTicket()) {
+							$action = new LogActions\Urgency($old_val, $new_val);
+						}
+						break;
+
 					default:
 						$unknown[] = $prop;
 						break;

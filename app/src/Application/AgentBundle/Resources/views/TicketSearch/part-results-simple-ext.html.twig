@@ -1,7 +1,7 @@
 <section class="search-reuslts page-set" data-page="{{page}}">
 {% for ticket in tickets %}
 
-<article class="row-item ticket-{{ ticket.id }}" data-ticket-id="{{ ticket.id }}" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@selector(a.subject)" data-route-openclass="open">
+<article class="row-item ticket-{{ ticket.id }} {% if ticket.status == 'awaiting_agent' %}urgency-{{ ticket.urgency }}{% endif %}" data-ticket-id="{{ ticket.id }}" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@selector(a.subject)" data-route-openclass="open">
 	<div class="loading-arrow">loading</div>
 	<input type="checkbox" class="item-select" value="{{ ticket.id }}"/>
 	<div class="top-row">
@@ -14,7 +14,7 @@
 		</div>
 		<div class="top-row-right">
 			<div class="bound-fade"></div>
-			<div class="urgency"><a>{{ ticket.urgency }}</a></div>
+			{% if ticlet.status == 'awaiting_agent' %}<div class="urgency"><a>{{ ticket.urgency }}</a></div>{% endif %}
 			<div class="status {{ ticket.status_code }}">{{ phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.': '_'})) }}</div>
 			{% if ticket.is_hold %}<div class="on-hold">{{ phrase('agent.tickets.on_hold') }}</div>{% endif %}
 			<br class="clear" />
