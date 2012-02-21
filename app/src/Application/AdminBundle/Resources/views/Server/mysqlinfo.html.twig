@@ -17,7 +17,9 @@
 			{% for name,value in mysqlinfo %}
 				<tr>
 					<td>{{ name }}</td>
-					<td>{{ value }}</td>
+					<td>
+						<input type="text" value="{{ value }}" style="border: none; background: transparent; box-shadow: none; width: 98%; font-size: 11px; font-family: monospace; color: #000;" />
+					</td>
 				</tr>
 			{% endfor %}
 		</tbody>
