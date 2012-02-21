@@ -126,16 +126,16 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 		var checkFields = function(rowTypeEl) {
 			var row = $('li', rowTypeEl).last();
 
+			var show = false;
 			if (row.is('.new')) {
 				var fields = $('input, textarea, select', row);
-				var show = false;
 				fields.each(function() {
 					if ($(this).val()) {
 						show = true;
 					}
 				});
 			} else {
-				show = true;
+				show = false;
 			}
 
 			if (show) {
@@ -161,13 +161,12 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 			row.fadeOut('fast', function() {
 				row.remove();
 				checkFields(rowTypeEl);
+
+				var lis = $('li', rowTypeEl);
+				if (lis.length < 1) { /* two because the fade is going now and it hasnt been removed yet */
+					rowTypeEl.removeClass('with-values');
+				}
 			});
-
-			var lis = $('li', rowTypeEl);
-
-			if (lis.length < 2) { /* two because the fade is going now and it hasnt been removed yet */
-				rowTypeEl.removeClass('with-values');
-			}
 		};
 		contactEditor.on('click', '.remove', function(ev) {
 			var rowTypeEl = $(this).closest('.row-type');
