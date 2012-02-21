@@ -108,6 +108,21 @@
 	</div>
 </div>
 <div class="setting_field_row">
+	<h4>Gravatar</h4>
+	<div class="setting_fields">
+		<div class="field_row">
+			<table cellspacing="0" cellpadding="0"><tr>
+				<td style="padding-right: 10px;">
+					<label>
+						<input type="checkbox" name="settings[core.use_gravatar]" {% if app.getSetting('core.use_gravatar') %}checked="checked"{% endif %} />
+						Use Gravatar profile pictures by default until a custom picture is uploaded
+					</label>
+				</td>
+			</tr></table>
+		</div>
+	</div>
+</div>
+<div class="setting_field_row">
 	<h4>Advanced</h4>
 	<div class="setting_fields">
 		<div class="field_row">
