@@ -33,14 +33,10 @@ class RegisterType extends AbstractType
 	 */
 	protected function buildPersonForm(FormBuilder $builder)
 	{
-		$person_builder = $builder->create('person', 'form')
-			->add('name', 'text', array('required' => false));
-
-		$person_builder->add('email', 'text');
-		$person_builder->add('password', 'password');
-		$person_builder->add('password2', 'password');
-
-		$builder->add($person_builder);
+		$builder->add('name', 'text', array('required' => false));
+		$builder->add('email', 'text', array('required' => false));
+		$builder->add('password', 'password', array('required' => false));
+		$builder->add('password2', 'password', array('required' => false));
 	}
 
 	public function getName()

@@ -22,14 +22,39 @@ class RegisterController extends AbstractController
 {
 	public function registerAction()
 	{
+		$register = new \Application\UserBundle\Form\Model\Register();
 		$reg_formtype = new RegisterType();
-		$form = $this->get('form.factory')->create($reg_formtype);
+		$form = $this->get('form.factory')->create($reg_formtype, $register);
+
+		$error_fields = null;
+		$errors = null;
+		if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
+			$form->bindRequest($this->get('request'));
+
+			$validator = new \Application\UserBundle\Validator\RegisterValidator();
+			if ($validator->isValid($register)) {
+				$person = $register->save();
+
+				if ($person->primary_email) {
+					$this->session->set('auth_person_id', $person->id);
+					$this->session->set('dp_interface', DP_INTERFACE);
+					$this->session->save();
+				}
+
+				return $this->redirectRoute('user');
+			} else {
+				$errors = $validator->getErrors(true);
+				$error_fields = $validator->getErrorGroups(true);
+			}
+		}
 
 		return $this->render('UserBundle:Register:register.html.twig', array(
 			'form' => $form->createView(),
+			'errors' => $errors,
+			'error_fields' => $error_fields,
 		));
 	}
-	
+
 	public function finishAction()
 	{
 		$person = App::getEntityRepository('DeskPRO:Person')->find($this->session->get('finish_register_person', 0));

@@ -15,31 +15,38 @@
 				<form action="" method="post">
 				<input type="hidden" name="process" value="1" />
 
-					<div class="dp-form-row">
+					<div class="dp-form-row {% if error_fields['name'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
 							<label>{{ phrase('user.label_your_name') }} *</label>
 						</div>
 						<div class="dp-form-input">
-							{{ form_widget(form.person.name) }}
+							{{ form_widget(form.name) }}
+							<div class="dp-error-explain">
+								Please enter your name
+							</div>
 						</div>
 					</div>
 
-					<div class="dp-form-row">
+					<div class="dp-form-row {% if error_fields['email'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
 							<label>{{ phrase('user.label_your_email') }} *</label>
 						</div>
 						<div class="dp-form-input">
-							{{ form_widget(form.person.email) }}
+							{{ form_widget(form.email) }}
+							{% if errors['email.invalid'] %}<div class="dp-error-explain">Please enter a valid email address</div>{% endif %}
+							{% if errors['email.in_use'] %}<div class="dp-error-explain">This email address already belongs to a registered user.</div>{% endif %}
 						</div>
 					</div>
 
-					<div class="dp-form-row">
+					<div class="dp-form-row {% if error_fields['password'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
 							<label>{{ phrase('user.profile.label_password') }} *</label>
 						</div>
 						<div class="dp-form-input">
-							{{ form_widget(form.person.password) }}
+							{{ form_widget(form.password) }}
 						</div>
+						{% if errors['password.short'] %}<div class="dp-error-explain">Please enter a password of at least 5 characters.</div>{% endif %}
+						{% if errors['password.mismatch'] %}<div class="dp-error-explain">The two password fields did not match.</div>{% endif %}
 					</div>
 
 					<div class="dp-form-row">
@@ -47,7 +54,7 @@
 							<label>{{ phrase('user.profile.label_repeat_password') }} *</label>
 						</div>
 						<div class="dp-form-input">
-							{{ form_widget(form.person.password2) }}
+							{{ form_widget(form.password2) }}
 						</div>
 					</div>
 
