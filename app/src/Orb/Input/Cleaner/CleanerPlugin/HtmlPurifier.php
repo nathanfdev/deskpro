@@ -49,7 +49,7 @@ class HtmlPurifier implements CleanerPlugin
 
 	/**
 	 * @param string $type
-	 * @return HTMLPurifier_Config
+	 * @return \HTMLPurifier_Config
 	 */
 	public function getConfigForType($type)
 	{
@@ -81,6 +81,8 @@ class HtmlPurifier implements CleanerPlugin
 				$config->set('AutoFormat.RemoveEmpty', true);
 				$config->set('CSS.AllowedFonts', array('courier', 'courier new', 'monospace', 'monospaced', 'monaco'));
 				$config->set('CSS.AllowedProperties', array('font-family', 'font-weight', 'font-style'));
+				$config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
+				$config->set('HTML.TidyLevel', 'medium');
 				break;
 		}
 
