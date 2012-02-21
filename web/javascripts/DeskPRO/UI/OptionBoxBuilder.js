@@ -80,7 +80,8 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 						value: el.val(),
 						hasChild: has_child,
 						hasParent: is_child,
-						childDepth: child_depth
+						childDepth: child_depth,
+						isSelected: el.hasClass('start') || el.data('start')
 					});
 				} else {
 					if (!is_child) is_sub = false;
@@ -89,7 +90,8 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 						value: el.val(),
 						hasChild: has_child,
 						hasParent: is_child,
-						childDepth: child_depth
+						childDepth: child_depth,
+						isSelected: el.hasClass('start') || el.data('start')
 					});
 				}
 			});
@@ -177,11 +179,21 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 				li.addClass('child');
 			}
 
+			if (opt.isSelected) {
+				li.addClass('on');
+				li.find('input').prop('checked', true);
+			}
+
 			$('ul', obEl).append(li);
 		})
 
 		options.element = obEl;
 
 		this.parent(options);
+
+		if (selectEl) {
+			selectEl.find('.start').prop('selected', true);
+			selectEl.trigger('change');
+		}
 	}
 });
