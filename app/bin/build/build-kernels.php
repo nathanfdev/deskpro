@@ -12,6 +12,8 @@ chdir(__DIR__);
 
 define('DP_BUILDING', true);
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
+define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
+
 require DP_ROOT . '/bin/build/inc.php';
 
 $proc_kernel = null;
@@ -31,19 +33,18 @@ $kernel_classes = array(
 );
 
 if ($proc_kernel === null) {
-	$cache_dir = DP_ROOT.'/sys/cache/prod';
-	if (file_exists($cache_dir)) {
-		echo "Removing existing cache dir $cache_dir ... ";
-		$proc = new Symfony\Component\Process\Process('rm -rf prod', DP_ROOT.'/sys/cache');
-		$proc->run();
-		if (!$proc->isSuccessful()) {
-			echo "ERROR\n\n";
-			$proc->getOutput();
-			$proc->getErrorOutput();
-			exit($proc->getExitCode());
-		}
-		echo "Done\n";
+	$cache_dir = DP_ROOT.'/sys/cache';
+
+	echo "Removing existing caches dir $cache_dir ... ";
+	$proc = new Symfony\Component\Process\Process('rm -rf dev prod doctrine-proxies prod twig-compiled annotations.php', DP_ROOT.'/sys/cache');
+	$proc->run();
+	if (!$proc->isSuccessful()) {
+		echo "ERROR\n\n";
+		$proc->getOutput();
+		$proc->getErrorOutput();
+		exit($proc->getExitCode());
 	}
+	echo "Done\n";
 
 	foreach ($kernel_classes as $k => $kernel_class) {
 		echo "Building {$kernel_class} ... ";

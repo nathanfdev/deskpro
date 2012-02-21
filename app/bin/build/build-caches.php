@@ -12,6 +12,8 @@ chdir(__DIR__);
 
 define('DP_BUILDING', true);
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
+define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
+
 require DP_ROOT . '/bin/build/inc.php';
 require DP_ROOT.'/sys/system.php';
 

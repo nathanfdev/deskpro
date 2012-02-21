@@ -8,6 +8,8 @@ if (php_sapi_name() != 'cli') {
 
 define('DP_BUILDING', true);
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
+define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
+
 require(DP_ROOT . '/bin/build/inc.php');
 
 use Symfony\Component\ClassLoader\ClassCollectionLoader;
@@ -22,7 +24,7 @@ if (file_exists($cachefile)) {
 # Files that symfony thinks we should preload
 ######################################################################
 
-$files = require DP_ROOT.'/sys/cache/prod/agent/classes.map';
+$files = require DP_ROOT.'/sys/cache/prod/classes.map';
 
 ######################################################################
 # Our files
@@ -63,7 +65,6 @@ $files = array_merge($files, array(
 
 	'Application\\DeskPRO\\ORM\\Util\\Util',
 	'Application\\DeskPRO\\ORM\\CollectionHelper',
-	'Application\\DeskPRO\\ORM\\EntityManager',
 	'Application\\DeskPRO\\ORM\\QueryPartial',
 
 	'Application\\DeskPRO\\Settings\\Settings',

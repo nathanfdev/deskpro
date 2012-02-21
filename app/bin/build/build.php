@@ -12,6 +12,7 @@ chdir(__DIR__);
 
 define('DP_BUILDING', true);
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
+define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
 
 $htaccess_path = realpath(DP_ROOT . '/../.htaccess');
 if (is_file($htaccess_path) && is_writable($htaccess_path)) {

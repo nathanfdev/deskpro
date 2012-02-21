@@ -8,6 +8,8 @@ if (php_sapi_name() != 'cli') {
 
 define('DP_BUILDING', true);
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
+define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
+
 require DP_ROOT . '/../config.php';
 
 if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {

@@ -205,9 +205,16 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		);
 	}
 
-	public function setClassCache(array $classes)
+	public function loadClassCache($name = 'classes', $extension = '.php')
 	{
 
+	}
+
+	public function setClassCache(array $classes)
+	{
+		if (defined('DP_BUILDING')) {
+			parent::setClassCache($classes);
+		}
 	}
 }
 
@@ -719,7 +726,7 @@ class KernelErrorHandler
 		return $trace;
 	}
 
-	public static function varToString($var)
+	public static function varToString($var, $_depth = 0)
     {
         if (is_object($var)) {
             return sprintf('[object](%s)', get_class($var));
@@ -727,7 +734,11 @@ class KernelErrorHandler
         if (is_array($var)) {
             $a = array();
             foreach ($var as $k => $v) {
-                $a[] = sprintf('%s => %s', $k, self::varToString($v));
+				if ($_depth > 8) {
+					$a[] = sprintf('%s => %s', $k, '(string)');
+				} else {
+					$a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth+1));
+				}
             }
             return sprintf("[array](%s)", implode(', ', $a));
         }

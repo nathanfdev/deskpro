@@ -8,6 +8,7 @@ if (php_sapi_name() != 'cli') {
 
 define('DP_BUILDING', true);
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
+define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
 
 $only_vendor_id = false;
 if (($k = array_search('--vendor-id', $_SERVER['argv'])) !== false) {

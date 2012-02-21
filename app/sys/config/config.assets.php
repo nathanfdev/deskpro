@@ -30,6 +30,10 @@ $CONFIG['OPTIONS'] = array(
 	'smartsprites'    => '/usr/local/bin/smartsprites-0.2.8/smartsprites.sh',
 );
 
+if (isset($GLOBALS['DP_CONFIG']['assetic_config'])) {
+	$CONFIG['OPTIONS'] = array_merge($CONFIG['OPTIONS'], $GLOBALS['DP_CONFIG']['assetic_config']);
+}
+
 ###############################################################################
 # JAVASCRIPTS
 ###############################################################################

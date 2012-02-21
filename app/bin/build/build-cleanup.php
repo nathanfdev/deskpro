@@ -8,36 +8,14 @@ if (php_sapi_name() != 'cli') {
 
 define('DP_BUILDING', true);
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
+define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
 
 // Remove log stuff
 $rm_paths = array(
-	DP_ROOT.'/sys/cache/prod/admin/AdminKernelDebugContainer.php.meta',
-	DP_ROOT.'/sys/cache/prod/admin/AdminKernelDebugContainer.xml',
-	DP_ROOT.'/sys/cache/prod/admin/AdminKernelDebugContainerCompiler.log',
-
-	DP_ROOT.'/sys/cache/prod/agent/AgentKernelDebugContainer.php.meta',
-	DP_ROOT.'/sys/cache/prod/agent/AgentKernelDebugContainer.xml',
-	DP_ROOT.'/sys/cache/prod/agent/AgentKernelDebugContainerCompiler.log',
-
-	DP_ROOT.'/sys/cache/prod/cli/CliKernelDebugContainer.php.meta',
-	DP_ROOT.'/sys/cache/prod/cli/CliKernelDebugContainer.xml',
-	DP_ROOT.'/sys/cache/prod/cli/CliKernelDebugContainerCompiler.log',
-
-	DP_ROOT.'/sys/cache/prod/install/InstallKernelDebugContainer.php.meta',
-	DP_ROOT.'/sys/cache/prod/install/InstallKernelDebugContainer.xml',
-	DP_ROOT.'/sys/cache/prod/install/InstallKernelDebugContainerCompiler.log',
-
-	DP_ROOT.'/sys/cache/prod/report/ReportKernelDebugContainer.php.meta',
-	DP_ROOT.'/sys/cache/prod/report/ReportKernelDebugContainer.xml',
-	DP_ROOT.'/sys/cache/prod/report/ReportKernelDebugContainerCompiler.log',
-
-	DP_ROOT.'/sys/cache/prod/user/UserKernelDebugContainer.php.meta',
-	DP_ROOT.'/sys/cache/prod/user/UserKernelDebugContainer.xml',
-	DP_ROOT.'/sys/cache/prod/user/UserKernelDebugContainerCompiler.log',
+	DP_ROOT.'/sys/cache/dev',
+	DP_ROOT.'/sys/cache/prod/classes.map'
 );
 
 foreach ($rm_paths as $p) {
-	if (file_exists($p)) {
-		unlink($p);
-	}
+	system('rm -rf ' . $p);
 }
