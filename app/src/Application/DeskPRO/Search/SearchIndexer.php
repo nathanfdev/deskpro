@@ -59,7 +59,7 @@ class SearchIndexer
 
 		$content_type = App::getContainer()->getSearchAdapter()->getContentTypeForObject($object);
 
-		$queue->send(array('entity_type' => $content_type, 'id' => $object->getId(), 'op' => $op));
+		$this->queue->send(array('entity_type' => $content_type, 'id' => $object->getId(), 'op' => $op));
 	}
 
 	public function updateNow($object, $op = 'update')
