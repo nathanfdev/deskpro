@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\Attachments\MoveStorage\DatabaseToFilesystem;
+use Application\DeskPRO\Attachments\MoveStorage\FilesystemToDatabase;
 use Application\DeskPRO\FileStorage\Filesystem as FilesystemStorage;
 
 use Application\DeskPRO\App;
@@ -37,7 +38,7 @@ class MoveBlobs extends AbstractJob
 			$mover = new DatabaseToFilesystem(App::getDb(), $fs);
 			$blob_fetcher = 'getNonFilesystemBlobs';
 		} else {
-			$mover = new DatabaseToFilesystem(App::getDb(), App::getContainer()->getBlobDir());
+			$mover = new FilesystemToDatabase(App::getDb(), App::getContainer()->getBlobDir());
 			$blob_fetcher = 'getNonDatabaseBlobs';
 		}
 

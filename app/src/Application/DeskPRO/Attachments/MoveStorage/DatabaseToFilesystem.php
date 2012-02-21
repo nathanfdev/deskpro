@@ -76,7 +76,7 @@ class DatabaseToFilesystem
 		$desc->blob_info = $blob;
 
 		$data = implode('', $this->db->fetchAllCol("SELECT data FROM blobs_storage WHERE blob_id = ? ORDER BY id DESC", array($blob['id'])));
-		$desc->write($data);
+		$desc->write($data, $blob);
 
 		$this->db->delete('blobs_storage', array('blob_id' => $blob['id']));
 	}
