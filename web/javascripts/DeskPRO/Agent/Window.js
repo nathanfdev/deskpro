@@ -1303,7 +1303,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			};
 		} else {
 			var errorFn = function(x, t) {
-				$('#dp_list_loading').hide();
+				$('#dp_list_loading').removeClass('on');
 				if (t == 'timeout') {
 					DeskPRO_Window.showAlert('The request timed out. Please try again.');
 				}
