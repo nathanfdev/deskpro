@@ -724,7 +724,8 @@ class TicketSearch extends SearcherAbstract
 						}
 					}
 
-					$choice_str = implode(', ', $choice_str);
+					$choice_str = implode(' or ', $choice_str);
+					$this->summary[] = 'Status is ' . $choice_str;
 
 					$w = '(';
 					if ($show_status) {
