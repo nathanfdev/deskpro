@@ -1,0 +1,174 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagebar %}
+	<ul>
+		<li>File Uploads</li>
+	</ul>
+{% endblock %}
+{% block page %}
+
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th colspan="4">File Storage Mechanism</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% if use_fs %}
+				<tr>
+					<td width="200">Storage Mechanism</td>
+					<td>
+						File Storage
+						<div style="font-size: 11px">
+							You are currently using the most efficient storage mechanism. {% if not moving_id %}While not recommended, you can <a class="switch-trigger">switch back to using database storage</a>.{% endif %}
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>Storage Path</td>
+					<td>{{ filestorage_path }}</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td>Storage Mechanism</td>
+					<td>
+						Database Storage
+						<div style="font-size: 11px">
+							Databases are not designed to store files.{% if not moving_id %} We recommend <a class="switch-trigger">switching to filesystem storage</a> where files are store as files in a directory on your server.{% endif %}
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>Storage Table</td>
+					<td>blobs_storage</td>
+				</tr>
+			{% endif %}
+			{% if moving_id %}
+				<tr>
+					<td colspan="4">
+						Currently transferring files from {% if use_fs %}the database to the filesystem{% else %}the filesystem to the database{% endif %}.
+						{{ count_done }} of {{ count_todo }} ({{ count_perc }}%) files have been processed.
+					</td>
+				</tr>
+			{% endif %}
+		</tbody>
+	</table>
+</div><br />
+
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th >Setting</th>
+				<th width="200">Value</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<h3>file_uploads</h3>
+					<p>This setting must be enabled for PHP to accept file uploads at all.</p>
+				</td>
+				<td>{{ php_vars.file_uploads }}
+			</tr>
+
+			<tr>
+				<td>
+					<h3>upload_tmp_dir</h3>
+					<p>This is where PHP saves files to temporarily before they are processed by DeskPRO. This path must be writable by the web server for file uploads to work.</p>
+				</td>
+				<td>{{ php_vars.upload_tmp_dir }}
+			</tr>
+
+			<tr>
+				<td>
+					<h3>upload_max_filesize</h3>
+					<p>This is the maximum size for any single file that PHP will accept from a client upload. The max size is also affected by post_max_size. The effective maximum is essentially the smallest of upload_max_filesize and post_max_size.</p>
+				</td>
+				<td>{{ php_vars.upload_max_filesize }}
+			</tr>
+
+			<tr>
+				<td>
+					<h3>post_max_size</h3>
+					<p>This is the max size of any POST request that PHP will accept. That is, the size of any file uploads comboned with the size of actual form data cannot exceed this value. This setting and upload_max_filesize are generally about the same.</p>
+				</td>
+				<td>{{ php_vars.post_max_size }}
+			</tr>
+		</tbody>
+	</table>
+</div><br />
+
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th colspan="10">Test a file upload</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% if has_uploaded %}
+				<tr>
+					<td>
+						{% if failed %}<h3>Failed</h3><br />{{ failed }}
+						{% else %}
+							<h3>Success</h3>
+							Download attachment: <a href="{{ attach.getDownloadUrl() }}">{{ attach.getDownloadUrl() }}</a><br />
+						{% endif %}
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td>
+						<form action="{{ path('admin_server_attach', {test: 1}) }}" method="post" enctype="multipart/form-data">
+							<input type="file" name="file" /> <button>Test Upload</button>
+						</form>
+					</td>
+				</tr>
+			{% endif %}
+		</tbody>
+	</table>
+</div>
+
+{% if not moving_id %}
+<div id="switch_confirm" style="display: none; width: 500px; height: 300px">
+	<div class="overlay-title">
+		<span class="close-overlay"></span>
+		<h4>Change Storage Mechanism</h4>
+	</div>
+	<div class="overlay-content">
+		{% if use_fs %}
+			<p style="margin-bottom: 10px;">You are currently storing files in the filesystem at {{ filestorage_path }}.<br /><br />Are you sure you want to switch back to using the database
+			storage mechanism?</p>
+		{% else %}
+			<p style="margin-bottom: 10px;">You are currently storing files in the database. Do you want to switch to the filesystem storage mechanism? Files will be stored
+			on your server at {{ filestorage_path }}</p>
+		{% endif %}
+
+		<p style="margin: 10px; background-color: #F5F5F5; padding: 10px;">
+			{{ count_todo }} files with a total size of {{ total_size_readable }} will be moved.
+			<br /><br />
+			The transfer is done gradually via a scheduled task.
+			It may take some time before all of your files are completely transferred. All normal attachment functions like uploading and downloading
+			will continue to work.
+		</p>
+	</div>
+	<div class="overlay-footer">
+		<form action="{{ path('admin_server_attach_switch') }}">
+			{{ form_token() }}
+			<button class="clean-white">Confirm: Switch to the {% if use_fs %}database{% else %}filesystem{% endif %} storage mechanism</button>
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	var overlay = new DeskPRO.UI.Overlay({
+		triggerElement: $('.switch-trigger'),
+		contentElement: $('#switch_confirm')
+	});
+});
+</script>
+{% endif %}
+
+{% endblock %}

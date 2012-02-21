@@ -189,6 +189,11 @@
 	'core.email_validation' => false,
 
 	/**
+	 * Default storage method for blobs is the db. Other values: fs
+	 */
+	'core.filestorage_method' => 'db',
+
+	/**
 	 * Require a user to log in if they enter an email address that is owned by an existing accounts
 	 */
 	'core.existing_account_login' => false,

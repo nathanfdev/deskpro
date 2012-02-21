@@ -39,6 +39,10 @@
 
 	<div id="server_menu">
 		<ul>
+			<li class="link-logs">
+				<a href="{{ path('admin_server_attach') }}" data-search-keywords="attachments uploads files" data-search-name="Server &rsaquo; File Uploads">File Uploads</a>
+				<p>Test file uploading and change storage mechanism</p>
+			</li>
 			<li class="link-scheduled-task">
 				<a href="{{ path('admin_server_cron') }}" data-search-keywords="server scheduled tasks cron" data-search-name="Server &rsaquo; Scheduled Tasks">Scheduled Tasks</a>
 				<p>View and manage scheduled tasks like email collection and cleanup</p>
@@ -58,10 +62,6 @@
 			<li class="link-logs">
 				<a href="{{ path('admin_server_error_logs') }}" data-search-keywords="logs errors" data-search-name="Server &rsaquo; Error Logs">Error Logs</a>
 				<p>View logged errors</p>
-			</li>
-			<li class="link-logs">
-				<a href="{{ path('admin_server_test_attach') }}" data-search-keywords="attachments uploads files" data-search-name="Server &rsaquo; Test Attachment Uploads">Test Attachment Uploads</a>
-				<p>Test uploading of attachments and files</p>
 			</li>
 		</ul>
 	</div>

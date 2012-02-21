@@ -159,7 +159,7 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			$meta[self::METADATA_FILENAME] = 'file';
 		}
 
-		if (!$meta[self::METADATA_CONTENT_TYPE]) {
+		if (!isset($meta[self::METADATA_CONTENT_TYPE]) || !$meta[self::METADATA_CONTENT_TYPE]) {
 			$meta[self::METADATA_CONTENT_TYPE] = 'application/octet-stream';
 		}
 

@@ -159,10 +159,10 @@ class ServerController extends AbstractController
 	}
 
 	############################################################################
-	# test-attachments
+	# attachments
 	############################################################################
 
-	public function testAttachmentsAction()
+	public function attachmentsAction()
 	{
 		$php_vars = array();
 
@@ -186,11 +186,62 @@ class ServerController extends AbstractController
 			}
 		}
 
-		return $this->render('AdminBundle:Server:test-attachments.html.twig', array(
+		$filestorage_path = $this->container->getBlobDir();
+		$use_fs = ($this->container->getSetting('core.filestorage_method') == 'fs');
+
+		$moving_id = $this->container->getSetting('core.filesystem_move_from_id');
+		if ($moving_id) {
+			if ($moving_id < 1) {
+				$count_done = 0;
+			} else {
+				$count_done = $this->container->getDb()->fetchColumn("SELECT COUNT(*) FROM blobs WHERE id < ?", array($moving_id));
+			}
+			$count_todo = $this->container->getDb()->fetchColumn("SELECT COUNT(*) FROM blobs", array($moving_id));
+			if (!$count_todo) {
+				$count_todo = 1;
+			}
+			$count_left = $count_todo - $count_done;
+			$count_perc = floor(($count_done / $count_todo) * 100);
+		} else {
+			$count_done = $count_todo = $count_left = $count_perc = 0;
+
+			$count_todo = $this->container->getDb()->fetchColumn("SELECT COUNT(*) FROM blobs");
+		}
+
+		$total_size = $this->container->getDb()->fetchColumn("SELECT SUM(filesize) FROM blobs");
+		$total_size_readable = Numbers::filesizeDisplay($total_size);
+
+		return $this->render('AdminBundle:Server:attachments.html.twig', array(
 			'php_vars' => $php_vars,
 			'has_uploaded' => $has_uploaded,
 			'attach' => $attach,
-			'failed' => $failed
+			'failed' => $failed,
+
+			'filestorage_path' => $filestorage_path,
+			'use_fs' => $use_fs,
+			'moving_id' => $moving_id,
+			'count_done' => $count_done,
+			'count_todo' => $count_todo,
+			'count_left' => $count_left,
+			'count_perc' => $count_perc,
+			'total_size' => $total_size,
+			'total_size_readable' => $total_size_readable,
 		));
+	}
+
+	public function attachmentsSwitchAction()
+	{
+		$this->ensureRequestToken();
+
+		$use_fs = ($this->container->getSetting('core.filestorage_method') == 'fs');
+		if ($use_fs) {
+			$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.filestorage_method', 'db');
+		} else {
+			$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.filestorage_method', 'fs');
+		}
+
+		$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', '-1');
+
+		return $this->redirectRoute('admin_server_attach');
 	}
 }

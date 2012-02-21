@@ -1632,9 +1632,16 @@ $collection->add('admin_server_error_logs_view_sn', new Route(
 	array()
 ));
 
-$collection->add('admin_server_test_attach', new Route(
-	'/server/test-attachments',
-	array('_controller' => 'AdminBundle:Server:testAttachments'),
+$collection->add('admin_server_attach', new Route(
+	'/server/attachments',
+	array('_controller' => 'AdminBundle:Server:attachments'),
+	array(),
+	array()
+));
+
+$collection->add('admin_server_attach_switch', new Route(
+	'/server/attachments/switch',
+	array('_controller' => 'AdminBundle:Server:attachmentsSwitch'),
 	array(),
 	array()
 ));
