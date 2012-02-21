@@ -148,7 +148,11 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 	{
 		$class = get_class($object);
 		if (!isset($this->class_to_contenttype[$class])) {
-			throw new \InvalidArgumentException("Unknown contenttype for supplied object");
+			foreach ($this->class_to_contenttype as $class => $class_type) {
+				if ($object instanceof $class) {
+					return $class_type;
+				}
+			}
 		}
 
 		return $this->class_to_contenttype[$class];

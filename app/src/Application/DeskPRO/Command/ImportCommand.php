@@ -38,6 +38,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$output->setFormatter(new \Orb\Console\Formatter\MaxLineLengthFormatter(80));
 
 		$GLOBALS['DP_NOSQL_LOG'] = true;
+		$GLOBALS['DP_INDEX_NOINDEX'] = true;
 
 		#----------------------------------------
 		# Set environment

@@ -23,7 +23,7 @@ class TicketCategoriesStep extends AbstractDeskpro3Step
 	public function run($page = 1)
 	{
 		// If there arent any tickets besides the default one, then remove the default data
-		$default_check = $this->getDb()->fetchColumn("SELECT id FROM tickets ORDER BY id DESC LIMIT 1");
+		$default_check = $this->getDb()->fetchColumn("SELECT COUNT(*) FROM tickets ORDER BY id DESC LIMIT 2");
 		if (!$default_check || $default_check == 1) {
 			$this->getDb()->exec("DELETE FROM tickets");
 			$this->getDb()->exec("DELETE FROM departments");

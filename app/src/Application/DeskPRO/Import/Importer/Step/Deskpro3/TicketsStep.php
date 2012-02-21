@@ -114,6 +114,8 @@ class TicketsStep extends AbstractDeskpro3Step
 		# Make the ticket
 		#------------------------------
 
+		$search_content = array();
+
 		$ticket_info = $this->getOldDb()->fetchAssoc("SELECT * FROM ticket WHERE id = ?", array($ticket_id));
 
 		$new_person_id = $this->getMappedNewId('user', $ticket_info['userid']);
@@ -222,6 +224,8 @@ class TicketsStep extends AbstractDeskpro3Step
 
 		$this->saveMappedId('ticket', $ticket_id, $insert_ticket['id']);
 
+		$search_content[] = $ticket_info['subject'];
+
 		#------------------------------
 		# Notes
 		#------------------------------
@@ -242,6 +246,8 @@ class TicketsStep extends AbstractDeskpro3Step
 			$insert_message['is_agent_note'] = 1;
 			$insert_message['creation_system'] = 'web';
 			$insert_message['date_created'] = date('Y-m-d H:i:s', $note_info['timestamp']);
+
+			$search_content[] = $note_info['note'];
 
 			$this->getDb()->insert('tickets_messages', $insert_message);
 		}
@@ -315,6 +321,7 @@ class TicketsStep extends AbstractDeskpro3Step
 				}
 			}
 
+			$search_content[] = $message_info['message'];
 			$insert_message['message'] = nl2br(htmlspecialchars($message_info['message'], \ENT_QUOTES, 'UTF-8'));
 
 			$this->getDb()->insert('tickets_messages', $insert_message);
@@ -423,7 +430,19 @@ class TicketsStep extends AbstractDeskpro3Step
 		}
 
 		#------------------------------
-		// Custom fields
+		# Insert fulltext search copy
+		#------------------------------
+
+		$search_content = implode(' ', $search_content);
+
+		$this->getDb()->insert('content_search', array(
+			'object_type' => 'ticket',
+			'object_id' => $insert_ticket['id'],
+			'content' => $search_content,
+		));
+
+		#------------------------------
+		# Custom fields
 		#------------------------------
 
 		foreach ($this->custom_field_info as $field_info) {

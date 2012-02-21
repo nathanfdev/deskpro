@@ -136,10 +136,8 @@ class News extends ContentAbstract
 	public function _queueSearchIndexUpdate($op = 'update')
 	{
 		$container = App::getContainer();
-		if (!($container instanceof \Application\DeskPRO\DependencyInjection\DeskproContainer)) {
-			return;
+		if ($container instanceof \Application\DeskPRO\DependencyInjection\DeskproContainer) {
+			$container->getSystemService('search_indexer')->update($this, $op);
 		}
-		$queue = $container->getQueue('search_object_update');
-		$queue->send(array('entity_type' => 'DeskPRO:News', 'id' => $this->id, 'op' => $op));
 	}
 }
