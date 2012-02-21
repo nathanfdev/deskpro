@@ -601,7 +601,7 @@ class FilestorageLoader
 			// so it doesnt try and connect twice
 			$GLOBALS['DP_DEFAULT_CONNECTION_PDO'] = $this->getPdo();
 
-			$kernel_class = 'DeskPRO\\Kernel\\SysKernel';
+			$kernel_class = 'DeskPRO\\Kernel\\UserKernel';
 			define('DP_INTERFACE', 'sys');
 
 			$kernel = new $kernel_class($env, $debug);
