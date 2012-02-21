@@ -27,15 +27,26 @@ define('DP_CONFIG_FILE', dirname(__FILE__) . '/config.php');
 error_reporting(E_ALL | E_STRICT);
 define('DP_WEB_ROOT', dirname(__FILE__));
 
-if (isset($_GET['_sys']) && isset($_GET['_'])) {
+if (isset($_GET['_sys'])) {
 	if (!file_exists(DP_CONFIG_FILE)) exit;
-	if (md5_file(DP_CONFIG_FILE) != $_GET['_']) exit;
+
+	$is_authed = false;
+	if (isset($_GET['_'])) {
+		$is_authed = (md5_file(DP_CONFIG_FILE) == $_GET['_']);
+	}
 
 	switch ($_GET['_sys']) {
 		case 'memtest':
+			if (!$is_authed) exit;
 			require DP_ROOT . '/sys/scripts/memtest.php';
 			exit;
+
+		case 'check':
+			require DP_ROOT . '/sys/scripts/check.php';
+			exit;
 	}
+
+	unset($is_authed);
 }
 
 
