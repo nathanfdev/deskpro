@@ -32,6 +32,12 @@ class PersonSearch extends SearcherAbstract
 	const TERM_CONTACT_IM       = 'person_contact_im';
 
 	/**
+	 * From getSqlParts()
+	 * @var array
+	 */
+	protected $sql_parts = null;
+
+	/**
 	 * Summary of terms in phrases
 	 * @var array
 	 */
@@ -209,6 +215,8 @@ class PersonSearch extends SearcherAbstract
 	 */
 	public function getSqlParts()
 	{
+		if ($this->sql_parts !== null) return $this->sql_parts;
+
 		$people_table = 'people';
 
 		$db = App::getDb();
@@ -271,6 +279,10 @@ class PersonSearch extends SearcherAbstract
 						"LEFT JOIN people_emails AS $join_name ON ($join_name.person_id = people.id)"
 					);
 					$wheres[] = $this->_stringMatch("$join_name.email", $op, $choice);
+
+					$choice = implode(' or ', (array)$choice);
+					$this->summary[] = "Email is " . $choice;
+
 					break;
 				case self::TERM_EMAIL_DOMAIN:
 					$joins[] = array(
@@ -278,6 +290,9 @@ class PersonSearch extends SearcherAbstract
 						"LEFT JOIN people_emails AS $join_name ON ($join_name.person_id = people.id)"
 					);
 					$wheres[] = $this->_stringMatch("$join_name.email_domain", $op, $choice);
+
+					$choice = implode(' or ', (array)$choice);
+					$this->summary[] = "Email domain is " . $choice;
 					break;
 
 				case self::TERM_DATE_CREATED:
@@ -296,6 +311,7 @@ class PersonSearch extends SearcherAbstract
 
 					$wheres[] = $w;
 
+					$choice = implode(' or ', (array)$choice);
 					$this->summary[] = "Name is " . $choice;
 
 					break;
@@ -457,10 +473,12 @@ class PersonSearch extends SearcherAbstract
 
 		$joins = array_unique($joins);
 
-		return array(
+		$this->sql_parts = array(
 			'joins' => $joins,
 			'wheres' => $wheres
 		);
+
+		return $this->sql_parts;
 	}
 
 
