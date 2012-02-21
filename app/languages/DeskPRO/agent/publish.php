@@ -5,7 +5,7 @@
 	'agent.publish.related_downloads' => 'Related Downloads',
 	'agent.publish.related_articles' => 'Related News',
 
-	'agent.publish.comments_to_validate' => 'Comments to validate',
+	'agent.publish.comments_to_validate' => 'Comments to review',
 
 	'agent.publish.compare_selected' => 'Compare Selected',
 	'agent.publish.compare_older_title' => 'Older',
@@ -59,7 +59,7 @@
 	'agent.publish.searches_most_popular_terms' => 'The most popular search terms',
 	'agent.publish.searches_most_popular_low' => 'The most popular search terms that returned the least results',
 
-	'agent.publish.comments_to_validate' => 'Comments to Validate',
+	'agent.publish.comments_to_validate' => 'Comments to Review',
 	'agent.publish.content_to_validate' => 'Content to Validate',
 	'agent.publish.pending_articles' => 'Pending Articles',
 	'agent.publish.draft_content' => 'Drafts',
