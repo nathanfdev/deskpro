@@ -20,7 +20,7 @@
 		{{ dp_asset_html('user') }}
 	{% endif %}
 
-	<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBaseUrl() }}/dp/res/user/main.css?{{ app.style.css_updated|date('u')|crc32 }}" media="screen,print" />
+	<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getServerBaseUrl() }}/file.php/res/user/main.css?{{ app.style.css_updated|date('u')|crc32 }}" media="screen,print" />
 	<!--[if IE ]><link href="{{ asset('stylesheets/user/main-ie.css') }}" rel="stylesheet" type="text/css"><![endif]-->
 
 	<script src="{{ asset('javascripts/DeskPRO/TouchCaller.js') }}" type="text/javascript"></script>

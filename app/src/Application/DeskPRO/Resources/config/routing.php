@@ -75,4 +75,11 @@ $collection->add('serve_org_picture', new Route(
 	array()
 ));
 
+$collection->add('sys_log_js_error', new Route(
+	'/dp/log-js-error.json',
+	array('_controller' => 'DeskPRO:Data:logJsError'),
+	array(),
+	array()
+));
+
 return $collection;

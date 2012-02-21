@@ -31,10 +31,6 @@ $rm_paths = array(
 	DP_ROOT.'/sys/cache/prod/report/ReportKernelDebugContainer.xml',
 	DP_ROOT.'/sys/cache/prod/report/ReportKernelDebugContainerCompiler.log',
 
-	DP_ROOT.'/sys/cache/prod/sys/SysKernelDebugContainer.php.meta',
-	DP_ROOT.'/sys/cache/prod/sys/SysKernelDebugContainer.xml',
-	DP_ROOT.'/sys/cache/prod/sys/SysKernelDebugContainerCompiler.log',
-
 	DP_ROOT.'/sys/cache/prod/user/UserKernelDebugContainer.php.meta',
 	DP_ROOT.'/sys/cache/prod/user/UserKernelDebugContainer.xml',
 	DP_ROOT.'/sys/cache/prod/user/UserKernelDebugContainerCompiler.log',

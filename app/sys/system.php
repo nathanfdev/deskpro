@@ -464,41 +464,6 @@ class ReportKernel extends AbstractKernel
 
 
 ###############################################################################
-# SysKernel
-###############################################################################
-
-class SysKernel extends \DeskPRO\Kernel\BaseAbstractKernel
-{
-	public function registerBundles()
-	{
-		$bundles = array(
-			new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-			new \Symfony\Bundle\MonologBundle\MonologBundle(),
-			new \Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
-			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
-			new \Symfony\Bundle\TwigBundle\TwigBundle(),
-			new \Application\DeskPRO\DeskPROBundle(),
-			new \Application\SysBundle\SysBundle(),
-		);
-
-		if ($this->isDebug()) {
-			$bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
-			$bundles[] = new \Elao\WebProfilerExtraBundle\WebProfilerExtraBundle();
-			$bundles[] = new \Application\DevBundle\DevBundle();
-			$bundles[] = new \Profiler\LiveBundle\ProfilerLiveBundle();
-		}
-
-		return $bundles;
-	}
-
-	public function registerContainerConfiguration(LoaderInterface $loader)
-	{
-		$loader->load(DP_ROOT.'/sys/config/sys/config_'.$this->getEnvironment().'.php');
-	}
-}
-
-
-###############################################################################
 # UserKernel
 ###############################################################################
 

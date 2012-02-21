@@ -117,9 +117,6 @@ class KernelBooter
 		} elseif (preg_match('#^/dev(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
 			define('DP_INTERFACE', 'dev');
-		} elseif (preg_match('#^/dp(/|\?|$)#', $path)) {
-			$kernel_class = 'DeskPRO\\Kernel\\SysKernel';
-			define('DP_INTERFACE', 'sys');
 		} elseif (preg_match('#^/install(/|\?|$)#', $path)) {
 			$kernel_class = 'DeskPRO\\Kernel\\InstallKernel';
 			define('DP_INTERFACE', 'install');

@@ -28,7 +28,6 @@ $kernel_classes = array(
 	'DeskPRO\\Kernel\\CliKernel',
 	'DeskPRO\\Kernel\\ReportKernel',
 	'DeskPRO\\Kernel\\UserKernel',
-	'DeskPRO\\Kernel\\SysKernel',
 	'DeskPRO\\Kernel\\InstallKernel',
 );
 

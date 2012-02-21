@@ -95,6 +95,10 @@ class FilestorageLoader
 			} elseif (preg_match('#^/o-avatar/([0-9]+)#', $pathinfo, $m)) {
 				$this->orgAvatarAction($m[1]);
 
+			// User CSS
+			} elseif (preg_match('#^/res/user/main.css#', $pathinfo, $m)) {
+				$this->userCssAction();
+
 			// A filesystem blob like /123AJKJKHSD1244AXC/filename.zip
 			// That is: /(batch)(authcode)(id)(namehash)/name.zip
 			//0XNSNTQHTNR43DD567
@@ -129,6 +133,26 @@ class FilestorageLoader
 				echo $trace;
 			}
 		}
+	}
+
+
+	/**
+	 * Serve user CSS blob
+	 */
+	public function userCssAction()
+	{
+		$sth = $this->getPdo()->prepare("
+			SELECT blobs.*
+			FROM styles
+			LEFT JOIN blobs ON blobs.id = styles.css_blob_id
+			LEFT JOIN settings ON (settings.name = 'core.default_style_id' AND settings.value = styles.id)
+			WHERE settings.id IS NOT NULL OR styles.id = 1
+			LIMIT 1
+		");
+		$sth->execute();
+		$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+
+		$this->showBlob($blob);
 	}
 
 
