@@ -19,11 +19,26 @@ define('DP_ROOT', dirname(__FILE__) . '/app');
  */
 define('DP_CONFIG_FILE', dirname(__FILE__) . '/config.php');
 
-/**
- * You should not change anything below this line.
- */
+
+#########################################################################################################
+# You should not change anything below this line
+#########################################################################################################
+
 error_reporting(E_ALL | E_STRICT);
 define('DP_WEB_ROOT', dirname(__FILE__));
+
+if (isset($_GET['_sys']) && isset($_GET['_'])) {
+	if (!file_exists(DP_CONFIG_FILE)) exit;
+	if (md5_file(DP_CONFIG_FILE) != $_GET['_']) exit;
+
+	switch ($_GET['_sys']) {
+		case 'memtest':
+			require DP_ROOT . '/sys/scripts/memtest.php';
+			exit;
+	}
+}
+
+
 require DP_ROOT . '/sys/preboot.php';
 
 if (!defined('DP_BOOT_MODE')) define('DP_BOOT_MODE', 'web');

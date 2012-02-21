@@ -25,6 +25,13 @@ class ServerController extends AbstractController
 
 	public function phpinfoAction()
 	{
+		$config_hash = md5_file(DP_CONFIG_FILE);
+		$php_config = array(
+			'version' => phpversion(),
+			'memory_limit' => \Orb\Util\Env::getMemoryLimit(),
+			'error_log' => ini_get('error_log'),
+		);
+
 		ob_start();
 		phpinfo();
 		$phpinfo = ob_get_clean();
@@ -37,6 +44,8 @@ class ServerController extends AbstractController
 
 		return $this->render('AdminBundle:Server:phpinfo.html.twig', array(
 			'phpinfo' => $phpinfo,
+			'config_hash' => $config_hash,
+			'php_config' => $php_config,
 		));
 	}
 

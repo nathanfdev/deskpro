@@ -5,5 +5,34 @@
 	</ul>
 {% endblock %}
 {% block page %}
+
+<h1>Important Configuration Values</h1>
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th style="text-align:left">&nbsp; Setting</th>
+				<th style="text-align:left">Value</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>php_version</td>
+				<td>{{ php_config.version }}</td>
+			</tr>
+			<tr>
+				<td>memory_limit</td>
+				<td>{{ php_config.memory_limit }} (<a href="{{ app.request.getBaseUrl() }}?_sys=memtest&amp;_={{ config_hash }}">test this value</a>)</td>
+			</tr>
+			<tr>
+				<td>error_log</td>
+				<td>{{ php_config.error_log }}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<hr />
+
 {{ phpinfo|raw }}
 {% endblock %}
