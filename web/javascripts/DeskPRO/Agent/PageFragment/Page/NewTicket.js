@@ -433,6 +433,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			self.openSnippetsViewer();
 		});
 
+		/*
 		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay();
 		function updateFields() {
 			$('.fieldprop', self.wrapper).hide();
@@ -452,10 +453,23 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				});
 			});
 		};
+		*/
+
+		this.wrapper.find('.fieldprop select').each(function() {
+			var el = $(this);
+			if (el.is('.has-init')) return;
+
+			var ob = new DeskPRO.UI.OptionBoxBuilder({
+				values: el,
+				noValText: 'None',
+				title: 'Choose an option'
+			});
+			el.addClass('has-init');
+		});
 
 		var depOb = new DeskPRO.UI.OptionBoxBuilder({
 			values: this.getEl('dep'),
-			noValText: 'Choose a department',
+			noValText: 'None',
 			title: 'Department',
 			onClose: function() {
 				updateFields();

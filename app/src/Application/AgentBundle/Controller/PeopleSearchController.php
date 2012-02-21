@@ -538,7 +538,7 @@ class PeopleSearchController extends AbstractController
 					OR p.last_name LIKE ?)
 					" . ($not_in_org ? " AND (p.organization_id IS NULL OR p.organization_id != $not_in_org) " : '') . "
 				GROUP BY p.id
-				ORDER BY p.name ASC
+				ORDER BY p.date_last_login DESC, p.id DESC
 				LIMIT $limit
 			", array("%$q%", "%$q%", "%$q%", "%$q%"));
 		}

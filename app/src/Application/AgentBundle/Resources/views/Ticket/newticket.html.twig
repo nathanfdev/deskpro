@@ -120,11 +120,72 @@ pageMeta.baseId = '{{ baseId }}';
 			<h4>Assignment</h4>
 			<input type="hidden" name="newticket[agent_id]" value="0" id="{{baseId}}_agent_id" />
 			<input type="hidden" name="newticket[agent_team_id]" value="0" id="{{baseId}}_agent_team_id" />
-			<span id="{{baseId}}_assign_btn" class="agent-prop-links">
+			<span id="{{baseId}}_assign_btn" class="menu-trigger">
 				<span id="{{baseId}}_agent_label">Me</span>
 				{% if app.getSetting('core.use_agent_team') %}and <span id="{{baseId}}_agent_team_label">No Team</span>{% endif %}
 			</span>
 		</div>
+		{% if app.getSetting('core.use_ticket_category') %}
+			<div class="col fieldprop ticket_category">
+				<h4>Category</h4>
+				{% include 'AgentBundle:Common:select-category.html.twig' with {
+					'name': "newticket[category_id]",
+					'id': baseId ~ '_cat',
+					'categories': ticket_options.ticket_categories_hierarchy,
+					'with_blank': true
+				} %}
+			</div>
+		{% endif %}
+
+		{% if app.getSetting('core.use_ticket_priority') %}
+			<div class="col fieldprop ticket_priority">
+				<h4>Priority</h4>
+					{% include 'AgentBundle:Common:select-priority.html.twig' with {
+						'name': "newticket[priority_id]",
+						'id': baseId ~ '_pri',
+						'add_classname': 'ticket_priority',
+						'priorities': ticket_options.ticket_priorities,
+						'with_blank': true
+					} %}
+			</div>
+		{% endif %}
+
+		{% if app.getSetting('core.use_ticket_workflow') %}
+			<div class="col fieldprop ticket_workflow">
+				<h4>Workflow</h4>
+					{% include 'AgentBundle:Common:select-workflow.html.twig' with {
+						'name': "newticket[workflow_id]",
+						'id': baseId ~ '_work',
+						'add_classname': 'ticket_workflow',
+						'workflows': ticket_options.ticket_workflows,
+						'with_blank': true
+					} %}
+			</div>
+		{% endif %}
+
+		{% if app.getSetting('core.use_product') %}
+			<div class="col fieldprop ticket_product">
+				<h4>Product</h4>
+					{% include 'AgentBundle:Common:select-product.html.twig' with {
+						'name': "newticket[product_id]",
+						'id': baseId ~ '_prod',
+						'add_classname': 'ticket_product',
+						'products': ticket_options.products_hierarchy,
+						'with_blank': true
+					} %}
+			</div>
+		{% endif %}
+
+		{% if custom_fields %}
+			{% for f in custom_fields %}
+				<br class="clear" />
+				<div class="col fieldprop ticket-field ticket-field-{{f.field_def.id}} inline-field">
+					<h4>{{f.title}}</h4>
+					{{ render_custom_field_form(f) }}
+				</div>
+			{% endfor %}
+		{% endif %}
+
 		<br class="clear" />
 	</div>
 </div>
@@ -177,78 +238,6 @@ pageMeta.baseId = '{{ baseId }}';
 							<input type="text" value="" />
 						</dd>
 					</dl>
-
-					{% if app.getSetting('core.use_ticket_category') %}
-						<dl class="fieldprop ticket_category" style="display: none">
-							<dt class="prop">Category</dt>
-							<dd class="prop">
-								{% include 'AgentBundle:Common:select-category.html.twig' with {
-									'name': "newticket[category_id]",
-									'id': baseId ~ '_cat',
-									'categories': ticket_options.ticket_categories_hierarchy,
-									'with_blank': true
-								} %}
-							</dd>
-						</dl>
-					{% endif %}
-
-					{% if app.getSetting('core.use_ticket_priority') %}
-						<dl class="fieldprop ticket_priority" style="display: none">
-							<dt class="prop">Priority</dt>
-							<dd class="prop">
-								{% include 'AgentBundle:Common:select-priority.html.twig' with {
-									'name': "newticket[priority_id]",
-									'id': baseId ~ '_pri',
-									'add_classname': 'ticket_priority',
-									'priorities': ticket_options.ticket_priorities,
-									'with_blank': true
-								} %}
-							</dd>
-						</dl>
-					{% endif %}
-
-					{% if app.getSetting('core.use_ticket_workflow') %}
-						<dl class="fieldprop ticket_workflow" style="display: none">
-							<dt class="prop">Workflow</dt>
-							<dd class="prop">
-								{% include 'AgentBundle:Common:select-workflow.html.twig' with {
-									'name': "newticket[workflow_id]",
-									'id': baseId ~ '_work',
-									'add_classname': 'ticket_workflow',
-									'workflows': ticket_options.ticket_workflows,
-									'with_blank': true
-								} %}
-							</dd>
-						</dl>
-					{% endif %}
-
-					{% if app.getSetting('core.use_product') %}
-						<dl class="fieldprop ticket_product" style="display: none">
-							<dt class="prop">Product</dt>
-							<dd class="prop">
-								{% include 'AgentBundle:Common:select-product.html.twig' with {
-									'name': "newticket[product_id]",
-									'id': baseId ~ '_prod',
-									'add_classname': 'ticket_product',
-									'products': ticket_options.products_hierarchy,
-									'with_blank': true
-								} %}
-							</dd>
-						</dl>
-					{% endif %}
-
-					{% if custom_fields %}
-						{% for f in custom_fields %}
-							<div class="fieldprop ticket-field ticket-field-{{f.field_def.id}}" style="display: none">
-								<dl>
-									<dt class="prop">{{f.title}}</dt>
-									<dd class="porp">
-										{{ render_custom_field_form(f) }}
-									</dd>
-								</dl>
-							</div>
-						{% endfor %}
-					{% endif %}
 
 					<br class="clear" />
 				</div>
