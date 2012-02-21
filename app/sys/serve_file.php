@@ -152,6 +152,23 @@ class FilestorageLoader
 		$sth->execute();
 		$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
+		if (isset($_GET['reload']) && filemtime(DP_WEB_ROOT . '/web/stylesheets/user/main.css') > strtotime($blob['date_created'])) {
+			$container = $this->bootFullSystem();
+			$css_source = file_get_contents(DP_WEB_ROOT . '/web/stylesheets/user/main.css');
+			$css = new \Application\DeskPRO\Style\UserStyle($css_source);
+
+			$desc = $container->getFilestorage()->createRandomPath();
+			$desc->write($css->compileCss(), array(
+				'content_type' => 'text/css',
+				'filename' => 'main.css'
+			));
+			$blob_id = $desc->getPath();
+
+			$container->getDb()->update('styles', array('css_blob_id' => $blob_id), array('css_blob_id' => $blob['id']));
+
+			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+		}
+
 		$this->showBlob($blob);
 	}
 
