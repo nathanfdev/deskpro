@@ -27,7 +27,9 @@ pageMeta.baseId = '{{ baseId }}';
 	<nav class="actions" id="{{baseId}}_action_buttons">
 		<ul>
 			<li class="create-ticket"><a class="clean-white large">{{ phrase('agent.create_ticket') }}</a></li>
-			<li class="more menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.more') }} <em></em></a></li>
+			{% if app.user.hasPerm('users.set-password') or app.user.hasPerm('users.delete') %}
+				<li class="more menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.more') }} <em></em></a></li>
+			{% endif %}
 		</ul>
 	</nav>
 	<div class="person-picture-box tipped" title="Click to upload a new picture" id="{{baseId}}_change_user_picture">
@@ -59,7 +61,8 @@ pageMeta.baseId = '{{ baseId }}';
 			<li
 				data-action="delete"
 				data-delete-url="{{ path('agent_people_delete', {'person_id': person.id, 'security_token': security_token('delete_person') }) }}"
-				class="delete-trigger">{{ phrase('agent.people.delete_user') }}</li>{% endif %}
+				class="delete-trigger">{{ phrase('agent.people.delete_user') }}</li>
+		{% endif %}
 	</ul>
 	<br class="clear" />
 </header>
