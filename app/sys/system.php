@@ -326,6 +326,12 @@ abstract class AbstractKernel extends BaseAbstractKernel
 
 		$this->postResponseHandled($response);
 
+		if ($response->headers->get('Content-Type') == 'text/html') {
+			$content = $response->getContent();
+			$content = str_replace('<head>', "<head>\n\t<meta name=\"Generator\" content=\"DeskPRO ".DP_BUILD_TIME."\" />", $content);
+			$response->setContent($content);
+		}
+
 		return $response;
 	}
 
