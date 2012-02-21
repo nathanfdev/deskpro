@@ -161,6 +161,7 @@ class TicketsStep extends AbstractDeskpro3Step
 			'workflow_id' => $new_workflow_id,
 			'priority_id' => $new_priority_id,
 			'organization_id' => $new_org_id,
+			'language_id' => 1,
 			'ticket_hash' => sha1(microtime(true) . mt_rand(1000,99999)), // bogus hash
 			'date_created' => date('Y-m-d H:i:s', $ticket_info['timestamp_opened']),
 			'ref' => $ticket_info['ref'],
