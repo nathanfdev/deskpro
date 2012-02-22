@@ -250,6 +250,21 @@ class PortalPage extends BasicPage implements PersonContextInterface
 
 
 	/**
+	 * @param $section
+	 */
+	public function getSectionDisplayItems($section)
+	{
+		$this->_loadSection($section);
+
+		if (empty($this->page_display_items[$section])) {
+			return array();
+		}
+
+		return $this->page_display_items[$section];
+	}
+
+
+	/**
 	 * Get the renderable HTML for a section.
 	 *
 	 * @param $section

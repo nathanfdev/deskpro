@@ -24,6 +24,19 @@ class PortalController extends AbstractController
     {
 		$show_portal_controls = $this->in->getBool('admin_portal_controls');
 
+		if (!$show_portal_controls) {
+			$portal_page = $this->container->get('deskpro.user_portal_page');
+
+			// The user cant see anything on the page
+			if (!$portal_page->getSectionDisplayItems('portal')) {
+				if ($this->person->isGuest() && ($this->container->getSetting('core.user_mode') == 'require_reg' || $this->container->getSetting('core.user_mode') == 'require_reg_agent_validation')) {
+					return $this->redirectRoute('user_login');
+				} else {
+					return $this->redirectRoute('user_tickets_new');
+				}
+			}
+		}
+
         return $this->render('UserBundle:Portal:portal.html.twig', array(
 			'admin_portal_controls' => $show_portal_controls
 		));
