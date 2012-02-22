@@ -286,7 +286,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		var tabId = this.getTabId();
 		if (!tabId) return null;
 
-		return DeskPRO_Window.getTabStrip().getTabById(tabId);
+		return DeskPRO_Window.TabBar.getTab(tabId);
 	},
 
 

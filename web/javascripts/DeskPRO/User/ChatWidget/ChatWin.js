@@ -1,0 +1,552 @@
+Orb.createNamespace('DeskPRO.User.WebsiteWidget');
+
+DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
+	Implements: [Orb.Util.Options, Orb.Util.Events],
+
+	initialize: function(options) {
+
+		this.options = {};
+		this.setOptions(options || {});
+
+		this.comms = {
+			intervalId: null,
+			lastHash: null,
+			hasPostMessage: !!window.postMessage,
+			cacheBust: 0,
+			pollingInterval: 130,
+			recieveCallback: null,
+			send: function(message, targetUrl, target) {
+				if (this.hasPostMessage) {
+					target.postMessage(message, targetUrl.replace( /([^:]+:\/\/[^\/]+).*/, '$1'))
+				} else {
+					target.location = targetUrl.replace( /#.*$/, '' ) + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
+				}
+			},
+			setupReciever: function(callback, sourceUrl) {
+				// Unset existing
+				if (callback && this.recieveCallback) {
+					this.recieveCallback = null;
+					this.setupReciever(null, '');
+				}
+
+				this.recieveCallback = callback;
+
+				if (this.hasPostMessage) {
+					if (window.addEventListener) {
+		        		window[this.recieveCallback ? 'addEventListener' : 'removeEventListener']('message', this.recieveCallback, false);
+		      		} else {
+		        		window[this.recieveCallback ? 'attachEvent' : 'detachEvent' ]('onmessage', this.recieveCallback);
+		      		}
+				} else {
+					if (this.intervalId) {
+						window.clearInterval(this.intervalId);
+					}
+
+					if (this.recieveCallback) {
+						var me = this;
+						this.intervalId = window.setInterval(function() {
+							var hash = document.location.hash;
+		            		var re = /^#?\d+&/;
+							if (hash !== last_hash && re.test(hash)) {
+								me.lastHash = hash;
+								me.recieveCallback({ data: hash.replace( re, '') });
+							}
+						}, this.pollingInterval);
+					}
+				}
+			}
+		};
+
+		this.parentUrl = decodeURIComponent(document.location.hash.replace( /^#/, ''));
+		this.typingIndicatorTime = null;
+		this.hasStarted = false;
+		this.sessionCode = options.sessionCode || null;
+		this.lastMessageId = 0;
+		this.conversationId = options.conversationId || 0;
+
+		this._initSysObjects();
+	},
+
+	initPage: function() {
+		var self = this;
+
+		$('#dp_chat_start_go').on('click', function() {
+			self.startChat();
+		});
+
+		$('#dp_chat_message_send').on('click', function() {
+			self.sendTypedMessage();
+		});
+
+		$('#dp_chat_message_input').on('keypress', (function(ev) {
+			if (ev.keyCode == 13 && !ev.metaKey) {
+				ev.preventDefault();
+				self.sendTypedMessage();
+			}
+		}).bind(this));
+
+		if (this.conversationId) {
+			if (this.options.initialMessages) {
+				$('#dp_chat_start').hide();
+				$('#dp_chat_finding_agent').hide();
+				$('#dp_chat_active').show();
+
+				Array.each(this.options.initialMessages, function(m) {
+					self.addMessageRow(m);
+				});
+
+			} else {
+				$('#dp_chat_start').hide();
+				$('#dp_chat_finding_agent').show();
+				$('#dp_chat_active').hide();
+			}
+
+			if (this.options.assignedAgentId) {
+				this.chatAssigned(
+					this.options.assignedAgentId,
+					this.options.assignedAgentName,
+					this.options.assignedAgentAvatar
+				);
+			}
+
+			this.ajaxPoller.options.interval = 2000;
+			this.ajaxPoller.disable = false;
+			this.ajaxPoller.send();
+		}
+
+		$('body').fileupload({
+			url: this.options.uploadTo,
+			dropZone: $(document),
+			autoUpload: true,
+			formData: {
+				security_token: this.options.uploadSecurityToken
+			},
+			start: function() {
+				$('document').find('li.attach-error').remove();
+			},
+			uploadTemplate: $('.dptpl-attach-upload'),
+			downloadTemplate: $('.dptpl-attach-download')
+		});
+
+		$('body').bind('fileuploaddone', function(ev, data) {
+			if (data.result && data.result.length) {
+				var items = data.result, x;
+				for (x = 0; x < items.length; x++) {
+					items[0].blob_id
+					$.ajax({
+						cache: false,
+						url: BASE_URL + 'chat/send-attach/' + self.sessionCode,
+						context: this,
+						data: { send_blob_id: items[0].blob_id },
+						dataType: 'json',
+						success: function(data) {
+							self.addMessageRow(data);
+						}
+					});
+				}
+			}
+
+			$('#uploading_list').hide().find('> ul').empty();
+		});
+		$('body').bind('fileuploadstart', function() {
+			$('#uploading_list').detach().appendTo($('#dp_chat_messages_pane')).show();
+			$('#dp_chat_messages_pane').scrollTop(10000);
+		});
+
+		// Prevents default browser action of navigating to a dropped file
+		// if a drop target isnt configured yet (ie no tab open to accept a file)
+		$(document).bind('drop dragover', function (e) {
+			e.preventDefault();
+		});
+
+		$(document).bind('dragover', function (e) {
+			var timeout = window.dropZoneTimeout;
+			if (!timeout) {
+				$('body').addClass('file-drag-over');
+			} else {
+				clearTimeout(timeout);
+			}
+
+			window.dropZoneTimeout = setTimeout(function () {
+				window.dropZoneTimeout = null;
+				$('body').removeClass('file-drag-over');
+			}, 100);
+		});
+	},
+
+	startChat: function() {
+		var data = $('#dp_chat_start').find('input, select').serializeArray();
+		this.sendMessage('', data, { starting: true });
+
+		$('#dp_chat_start').hide();
+		$('#dp_chat_finding_agent').show();
+	},
+
+	sendTypedMessage: function() {
+		var message = $('#dp_chat_message_input').val().trim();
+		$('#dp_chat_message_input').val('');
+
+		if (!message) {
+			return;
+		}
+
+		this.sendMessage(message);
+		$('#dp_chat_message_input').focus();
+	},
+
+	/**
+	 * Sends a new chat message. The server decides if the chat should be new or not
+	 *
+	 * @param message
+	 */
+	sendMessage: function(message, data, meta) {
+
+		console.log('ChatWin.sendMessage: %s', message);
+
+		this.hasStarted = true;
+		if (this.typingIndicatorTime) window.clearTimeout(this.typingIndicatorTime);
+
+		data = data || [];
+		data.push({
+			name: 'content',
+			value: message
+		});
+
+		this.addMessageRow({
+			author_type: 'user',
+			content: message
+		});
+
+		$.ajax({
+			cache: false,
+			url: BASE_URL + 'chat/send-message/' + this.sessionCode,
+			context: this,
+			data: data,
+			dataType: 'json',
+			success: function(data) {
+				if (data.conversation_id) {
+					conversationId = data.conversation_id;
+				}
+
+				if (this.ajaxPoller.disable) {
+					this.ajaxPoller.options.interval = 2000;
+					this.ajaxPoller.disable = false;
+					this.ajaxPoller.send();
+				}
+			}
+		});
+	},
+
+	/**
+	 * Add a message row
+	 */
+	addMessageRow: function(data) {
+
+		var tpl = '';
+		var message = data.content;
+		if (!data.is_html) {
+			message = Orb.escapeHtml(message);
+			message = Orb.linkUrls(message);
+		}
+
+		//data.author_name, data.content, data.author_type, data.metadata
+
+		if (data.author_type == 'user') {
+
+			tpl = document.getElementById('dp_chat_tpl_user_message').innerHTML;
+			tpl = tpl.replace(/%message%/g, message);
+
+		} else if (data.author_type == 'agent') {
+
+			tpl = document.getElementById('dp_chat_tpl_agent_message').innerHTML;
+			tpl = tpl.replace(/%avatar_url_icon%/g, data.metadata.person_avatar_icon);
+			tpl = tpl.replace(/%message%/g, message);
+			tpl = tpl.replace(/%name%/g, data.author_name);
+
+		} else if (data.author_type == 'sys') {
+
+			tpl = document.getElementById('dp_chat_tpl_sys_message').innerHTML;
+			tpl = tpl.replace(/%message%/g, message);
+
+		}
+
+		var row = $(tpl);
+		row.appendTo($('#dp_chat_messages_pane'));
+		$('#dp_chat_messages_pane').scrollTop(10000000);
+	},
+
+	/**
+	 * Pass a message up to the parent controller
+	 *
+	 * @param {String} messageId
+	 * @param {Object} [data]
+	 */
+	tellParent: function(messageId, data) {
+		if (typeof data != 'undefined' && !data.join) {
+			data = [data];
+		}
+
+		data = data || [];
+		var messageStr = messageId + ':' + data.join(':');
+		this.comms.send(messageStr, this.parentUrl, window.parent);
+
+		console.log('[ChatWin] comms.send: %s %o', messageId, data);
+
+		return null;
+	},
+
+	handleIncomingMessage: function(data) {
+		if (!data.metadata) {
+			data.metadata = {};
+		}
+		if (data.is_html) {
+			data.metadata.is_html = true;
+		}
+
+		console.log('DpChat:handleIncomingMessage: %o', data);
+
+		this.addMessageRow(data);
+
+		if (data.metadata.chat_unassigned) {
+			this.chatAssigned(0, null, null);
+		}
+		if (data.metadata.chat_assigned) {
+			this.chatAssigned(
+				data.metadata.assigned_to,
+				data.metadata.assigned_name,
+				data.metadata.assigned_avatar
+			);
+		}
+
+		if (data.metadata.chat_ended) {
+			this.chatEnded();
+		}
+	},
+
+	chatEnded: function() {
+
+	},
+
+	chatAssigned: function(agentId, name, avatar) {
+		if (parseInt(agentId)) {
+			$('#dp_chat_start').hide();
+			$('#dp_chat_finding_agent').hide();
+			$('#dp_chat_active').show();
+
+			var tpl = document.getElementById('dp_chat_tpl_agent_header').innerHTML;
+			tpl = tpl.replace(/%avatar_url%/g, avatar);
+			tpl = tpl.replace(/%name%/g, Orb.escapeHtml(name));
+
+			$('#dpchat_without_agent').hide();
+			$('#dpchat_with_agent').show().html(tpl);
+
+		} else {
+			$('#dpchat_without_agent').show();
+			$('#dpchat_with_agent').hide().html('');
+		}
+	},
+
+	//#################################################################
+	//# Simple implementations of message broker and poller
+	//#################################################################
+
+	_initSysObjects: function() {
+		var self = this;
+
+		var messageBroker = this.messageBroker = {
+			messageListeners: {},
+
+			sendMessage: function (name, data) {
+
+				if (this.messageListeners[name] !== undefined) {
+					for (var x = 0; x < this.messageListeners[name].length; x++) {
+						this.messageListeners[name][x](data, name);
+					}
+				}
+
+				var nameparts = name.split('.');
+				var cur_name = null;
+
+				while (nameparts.pop()) {
+					cur_name = nameparts.join('.') + '.*';
+					if (this.messageListeners[cur_name] !== undefined) {
+						for (var x = 0; x < this.messageListeners[cur_name].length; x++) {
+							this.messageListeners[cur_name][x](data, name);
+						}
+					}
+				}
+			},
+
+			addMessageListener: function(name, callback) {
+				if (this.messageListeners[name] === undefined) {
+					this.messageListeners[name] = [];
+				}
+
+				this.messageListeners[name].push(callback);
+			}
+		};
+		this.mesageBroker = messageBroker;
+
+		messageBroker.addMessageListener('newmessage', this.handleIncomingMessage.bind(this));
+
+		var ajaxPoller = {
+			options: {
+				interval: 2000,
+				initialDelay: 1500
+			},
+			filterdData: [],
+			disable: true,
+			maxDelayTimers: [],
+
+			init: function() {
+				this.autoSendTimeout = this.send.delay(this.options.initialDelay, this);
+			},
+
+			addData: function(data, name, options) {
+				name = name || 'default';
+				options = options || {};
+
+				if (options.addedTime === undefined) {
+					options.addedTime = new Date();
+				}
+
+				if (options.maxDelay) {
+					(function() {
+						this.send();
+					}).delay(options.maxDelay, this);
+				}
+
+				this.filterdData.push([name, data, options]);
+			},
+
+			send: function() {
+
+				this._clearDelays();
+
+				if (this.disable) {
+					this.autoSendTimeout = this.send.delay(this.options.interval, this);
+					return;
+				}
+
+				//------------------------------
+				// Build data to send
+				//------------------------------
+
+				var now = new Date();
+
+				var send_data = [];
+				var sent_info = [];
+
+				var filterdData = this.filterdData;
+				this.filterdData = [];
+
+				var item = null;
+				while (item = filterdData.shift()) {
+					var item_name = item[0];
+					var item_data = item_orig_data = item[1];
+					var item_opts = item[2];
+
+					if (item_opts.minDelay && !(item_opts.minDelayAfterOne && !item_opts.sentCount)) {
+						// If its too soon, add it back immediately
+						if (item_opts.minDelay > (now.getTime() - item_opts.addedTime.getTime())) {
+							this.addData(item_orig_data, item_name, item_opts);
+							continue;
+						}
+					}
+
+					item_data = item_data(item_name, {}, item_opts);
+					send_data.push(item_data);
+
+					sent_info.push([item_orig_data, item_name, item_opts]);
+				}
+
+				send_data.push({
+					name: 'since',
+					value: self.lastMessageId
+				});
+				send_data.push({
+					name: 'conversation_id',
+					value: self.conversationId
+				});
+
+				//------------------------------
+				// Send data
+				//------------------------------
+
+				$.ajax({
+					cache: false,
+					url: BASE_URL + 'chat/poll/' + self.sessionCode,
+					context: this,
+					data: send_data,
+					dataType: 'json',
+					complete: function() {
+						// Start auto timer
+						this.autoSendTimeout = this.send.delay(this.options.interval, this);
+					},
+					success: function (data) {
+
+						if (data.conversation_id) {
+							self.conversationId = data.conversation_id;
+						}
+						if (data.last_id) {
+							self.lastMessageId = data.last_id;
+						}
+						this._handleAjaxSuccess({
+							messages: data.messages
+						}, sent_info);
+					}
+				});
+			},
+
+			_handleAjaxSuccess: function (data, sent_info) {
+
+				var item = null;
+				while (item = sent_info.shift()) {
+					var item_name = item[0];
+					var item_data = item[1];
+					var item_opts = item[2];
+
+					if (item_opts.recurring) {
+						item_opts.lastSent = new Date();
+
+						if (item_opts.sentCount === undefined) item_opts.sentCount = 0;
+						item_opts.sentCount++;
+
+						// Delete addedTime so minDelay check will reset too
+						delete item_opts.addedTime;
+
+						this.addData(item_name, item_data, item_opts);
+					}
+				}
+
+				if (data.messages === undefined) {
+					return;
+				}
+
+				if (data.messages.length) {
+
+					console.log('ChatWin Poll Data: %o', data);
+
+					var message = null;
+					while (message = data.messages.shift()) {
+						var name = message[0].replace(/chat_convo\.([0-9]+)\./, '');
+						messageBroker.sendMessage(name, message[1]);
+					}
+				}
+			},
+
+			_clearDelays: function() {
+
+				this.autoSendTimeout = window.clearTimeout(this.autoSendTimeout);
+				this.autoSendTimeout = null;
+
+				var t = null;
+				while (t = this.maxDelayTimers.pop()) {
+					window.clearTimeout(t);
+				}
+			}
+		};
+
+		this.ajaxPoller = ajaxPoller;
+	}
+});

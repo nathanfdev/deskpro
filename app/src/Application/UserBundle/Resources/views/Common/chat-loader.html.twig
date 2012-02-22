@@ -1,14 +1,14 @@
 <!-- DeskPRO Chat Loader -->
 <script type="text/javascript">
-var DpChat_Options = DpChat_Options || {};
-DpChat_Options.staticUrl = '{{ asset_url('') }}';
-DpChat_Options.deskproUrl = '{{ url('user') }}';
-DpChat_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
-DpChat_Options.currentPageUrl = window.location;
-DpChat_Options.referrerPageUrl = document.referrer;
-{% if constant('DP_DEBUG') %}var DpChat_EnableDebug = true;{% endif %}
+var DpChatWidget_Options = DpChatWidget_Options || {};
+DpChatWidget_Options.staticUrl = '{{ asset_url('') }}';
+DpChatWidget_Options.deskproUrl = '{{ url('user') }}';
+DpChatWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
+DpChatWidget_Options.currentPageUrl = window.location;
+DpChatWidget_Options.referrerPageUrl = document.referrer;
+{% if constant('DP_DEBUG') %}var DpChatWidget_EnableDebug = true;{% endif %}
 {% if app.getSetting('user.chat_intercept_leaving_domains') %}
-DpChat_Options.interceptLeavingDomains = [
+DpChatWidget_Options.interceptLeavingDomains = [
 	{% for domain in app.getSetting('user.chat_intercept_leaving_domains')|explode(',') %}
 		{{ domain|json_encode|raw }}{% if not loop.last %},{% endif %}
 	{% endfor %}
@@ -17,7 +17,7 @@ DpChat_Options.interceptLeavingDomains = [
 
 (function() {
 	var scr = document.createElement('script');
-	scr.src = '{{ asset('javascripts/DeskPRO/User/Chat/DpChat.js') }}';
+	scr.src = '{{ asset('javascripts/DeskPRO/User/ChatWidget/ChatWidget.js') }}';
 	scr.setAttribute('async', 'true');
 	document.documentElement.firstChild.appendChild(scr);
 })();

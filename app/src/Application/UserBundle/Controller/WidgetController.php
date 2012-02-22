@@ -153,4 +153,49 @@ class WidgetController extends AbstractController
 			));
 		}
 	}
+
+	################################################################################
+	# chat
+	################################################################################
+
+	public function chatAction()
+	{
+		$sessionObj = $this->get('session');
+		$session = $sessionObj->getEntity();
+
+		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $session));
+		$convo = $chat_manager->getChat();
+
+		if ($convo && $convo->status == 'ended') {
+			$convo = null;
+		}
+
+		$convo_messages = false;
+		if ($convo) {
+			$convo_messages_obj = App::getOrm()->createQuery("
+				SELECT m
+				FROM DeskPRO:ChatMessage m
+				WHERE m.conversation = ?1 AND m.is_user_hidden = false
+				ORDER BY m.id ASC
+			")->setParameter(1, $convo)->execute();
+
+			if ($convo_messages_obj) {
+				$convo_messages = array();
+				foreach ($convo_messages_obj as $obj) {
+					$convo_messages[] = $obj->getInfo();
+				}
+			}
+		}
+
+		$departments = $this->container->getEm()->getRepository('DeskPRO:Department')->getAll();
+
+		$vars = array(
+			'session_code' => $session->getSessionCode(),
+			'convo' => $convo,
+			'convo_messages' => $convo_messages,
+			'departments' => $departments,
+		);
+
+		return $this->render('UserBundle:Widget:chat.html.twig', $vars);
+	}
 }

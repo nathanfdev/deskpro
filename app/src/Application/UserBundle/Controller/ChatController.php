@@ -116,7 +116,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			$data['conversation_id'] = $convo->id;
 		}
 
-		return $this->createJsonpResponse($data);
+		return $this->createJsonResponse($data);
 	}
 
 
@@ -136,12 +136,42 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			$chat_manager->addUserMessage($convo, $this->in->getString('content'));
 		}
 
-		$response = $this->createJsonpResponse(array(
+		$response = $this->createJsonResponse(array(
 			'conversation_id' => $convo['id'],
 		));
 		$response->setLastModified(date_create('-1 day'));
 		$response->setExpires(date_create("-1 day"));
 		return $response;
+	}
+
+	/**
+	 * @param $conversation_id
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function sendFileAction($session_code)
+	{
+		$chat_manager = $this->getChatManager($session_code);
+		$convo = $chat_manager->getChat();
+
+		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->in->getUint('send_blob_id'));
+
+		$msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">" . htmlspecialchars($blob->filename) . "</a> (" . $blob->getReadableFilesize() . ")";
+		if ($blob->isImage()) {
+			$msg .= '<div class="file-thumb"><img src="' . $blob->getThumbnailUrl(50, true) . '" /></div>';
+		}
+
+		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+		$sessionObj = $this->get('session');
+		$session = $sessionObj->getEntity();
+		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $session));
+		$msg = $chat_manager->addMessage(
+			$convo,
+			$sessionObj->getPerson(),
+			$msg,
+			array('is_html' => true, 'type' => 'file', 'blob_id' => $blob->id)
+		);
+
+		return $this->createJsonResponse($msg->getInfo());
 	}
 
 
@@ -156,12 +186,12 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		$convo = $chat_manager->getChat();
 
 		if (!$convo) {
-			return $this->createJsonpResponse(array());
+			return $this->createJsonResponse(array());
 		}
 
 		$chat_manager->setUserTypingIndicator($convo, $this->in->getString('partial_message'));
 
-		return $this->createJsonpResponse(array());
+		return $this->createJsonResponse(array());
 	}
 
 
@@ -185,54 +215,8 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		$sessionObj = $this->get('session');
 		$session = $sessionObj->getEntity();
 
-		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getLatestChatForSession($session);
-
-		// If there exists a convo going already, but the user has popped it into
-		// a separate window, then other pages with the widget on it will just act like chat is
-		// unavailable
-		if (!$this->in->getBool('is_window') AND $conversation AND $conversation['is_window']) {
-			return $this->render('UserBundle:Chat:chat-session-unavailable.js.php', array(
-				'conversation' => $conversation
-			));
-		}
-
 		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $session));
 		$convo = $chat_manager->getChat();
-
-		$convo_messages = false;
-		if ($convo) {
-			$convo_messages = App::getOrm()->createQuery("
-				SELECT m
-				FROM DeskPRO:ChatMessage m
-				WHERE m.conversation = ?1 AND m.is_user_hidden = false
-				ORDER BY m.id DESC
-			")->setParameter(1, $convo)->execute();
-		}
-
-		$department_sel = null;
-		if (App::getSetting('core_chat.require_department')) {
-			$department_options = App::getOrm()->getRepository('DeskPRO:Department')->getFullDepartmentNames(null, false);
-			$department_sel = array('<select name="department_id">');
-			foreach ($department_options as $k => $v) {
-				$department_sel[] = '<option value="'.$k.'">'.htmlspecialchars($v).'</option>';
-			}
-			$department_sel[] = '</select>';
-			$department_sel = implode('', $department_sel);
-		}
-
-		$proactive_ignore_time = empty($_COOKIE['dpchat_no_proactive']) ? 0 : $_COOKIE['dpchat_no_proactive'];
-		$proactive = false;
-		if (!$conversation AND $proactive_ignore_time < time() - 64800) {
-			if (App::getSetting('core_chat.proactive_time')) {
-				$timecut = time() - App::getSetting('core_chat.proactive_time');
-				if ($session['date_created']->getTimestamp() > $timecut) {
-					$proactive = true;
-				}
-			}
-			if (App::getSetting('core_chat.proactive_pages') AND $session['page_count'] > App::getSetting('core_chat.proactive_pages')) {
-				$proactive = true;
-			}
-		}
 
 		// If the user is on a new page, tell the agent
 		if ($convo) {
@@ -241,10 +225,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 
 		$response = $this->render('UserBundle:Chat:chat-session.js.php', array(
 			'session' => $session,
-			'convo_messages' => $convo_messages,
 			'conversation' => $convo,
-			'department_sel' => $department_sel,
-			'proactive' => $proactive
 		));
 
 		$response->setLastModified(date_create('-1 day'));
@@ -285,7 +266,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		}
 
 		if ($this->request->isXmlHttpRequest() || $this->in->getBool('is_ajax')) {
-			return $this->createJsonpResponse(array('ended' => true, 'sent_transcript' => $sent_transcript));
+			return $this->createJsonResponse(array('ended' => true, 'sent_transcript' => $sent_transcript));
 		}
 
 		if ($this->in->getBool('process')) {
@@ -370,7 +351,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 	{
 		$cookie = Cookie::makeCookie('dpchat_no_proactive', time(), '+2 days');
 
-		$response = $this->createJsonpResponse('');
+		$response = $this->createJsonResponse('');
 		$response->headers->setCookie($cookie);
 
 		return $response;

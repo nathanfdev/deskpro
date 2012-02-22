@@ -26,6 +26,8 @@
 	box-shadow: inset 1px 1px 4px 1px rgba(255, 255, 255, 0.2);
 
     cursor: pointer;
+
+	font-family: "Lucida Grande", "Lucida Sans Unicode", "Tahoma", Arial, sans-serif;
 }
 
 #dpchat_btn:hover {
@@ -65,6 +67,8 @@
 	box-shadow: 0px 0px 7px 5px rgba(255, 255, 255, 1);
 
     display: none;
+
+	font-family: "Lucida Grande", "Lucida Sans Unicode", "Tahoma", Arial, sans-serif;
 }
 
 #dpchat_panel.dpchat-panel-open {
@@ -178,7 +182,7 @@
 }
 
 #dpchat_input {
-    height: 60px;
+    height: 80px;
     position: relative;
 
     border-top: 1px solid #898D96;
@@ -196,6 +200,16 @@
     resize: none;
 
     border: 1px solid #CCCDCD;
+}
+
+#dpchat_input #dpchat_upload {
+	position: absolute;
+	bottom: 4px;
+	left: 8px;
+	font-size: 11px;
+	text-decoration: underline;
+	cursor: pointer;
+	color: #0069D6;
 }
 
 #dpchat_send {

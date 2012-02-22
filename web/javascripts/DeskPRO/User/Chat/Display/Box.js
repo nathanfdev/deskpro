@@ -75,7 +75,7 @@ var DpChat_Display = (function() {
 				html.push('<div class="dpchat-finding-agent" style="display: none">Please wait while we find an agent to take your chat.</div>');
 				html.push('<div class="dpchat-finding-agent-long" style="display: none">We are still trying to find an agent to take your chat but it is taking longer than we thought. Maybe you want to <a href="'+DpChat_Options.deskproUrl+'tickets/new">send us an email</a> instead?</div>');
 			html.push('</div>');
-			html.push('<div id="dpchat_input" ' + (options.departmentSelect ? 'style="display:none"' : '') + '><textarea></textarea><button id="dpchat_send">Send</button></div>')
+			html.push('<div id="dpchat_input" ' + (options.departmentSelect ? 'style="display:none"' : '') + '><textarea></textarea><button id="dpchat_send">Send</button><div id="dpchat_upload"><span id="dpchat_upload_label">Send a file from your computer</span><span id="dpchat_upload_exist" style="display: none"></span></div></div>')
 			html.push('<div id="dpchat_ended" style="display:none">Your chat has finished. <a id="dpchat_ended_send_btn">Click here to send a chat transcript.</a><span id="dpchat_ended_did_send">A transcript has been sent to <span class="dp-chat-insert-email"></span></span><div style="padding-top: 10px;text-align: center;"><button id="dpchat_start_new">Start another chat</button></div></div>')
 			html.push('<div id="dpchat_sound_tpl" style="display:none"><audio preload="preload"><source src="' + DpChat_Options.staticUrl + 'sounds/pop.mp3" /><source src="' + DpChat_Options.staticUrl + 'sounds/pop.ogg" /></audio></div>');
 		html.push('</div>');

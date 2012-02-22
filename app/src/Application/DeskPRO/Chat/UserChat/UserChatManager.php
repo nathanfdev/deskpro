@@ -360,7 +360,15 @@ class UserChatManager
 			$convo->agent = $agent;
 			$this->em->persist($convo);
 
-			$this->addSystemMessage($convo, 'user.chat.assigned_to', array('name' => $agent->display_name), array('chat_assigned' => true, 'assigned_to' => $agent->id, 'assigned_name' => $agent->getDisplayName(), 'old_assigned_to' => $old_agent_id, 'old_assigned_name' => $old_agent_name));
+			$this->addSystemMessage($convo, 'user.chat.assigned_to', array('name' => $agent->display_name), array(
+				'chat_assigned' => true,
+				'assigned_to' => $agent->id,
+				'assigned_name' => $agent->getDisplayName(),
+				'assigned_avatar' => $agent->getPictureUrl(40),
+				'assigned_avatar' => $agent->getPictureUrl(16),
+				'old_assigned_to' => $old_agent_id,
+				'old_assigned_name' => $old_agent_name,
+			));
 
 			$this->em->flush();
 
@@ -744,6 +752,11 @@ class UserChatManager
 		if (isset($metadata['is_html'])) {
 			$msg->is_html = true;
 			unset($metadata['is_html']);
+		}
+
+		if ($author) {
+			$metadata['person_avatar'] = $author->getPictureUrl(40);
+			$metadata['person_avatar_icon'] = $author->getPictureUrl(16);
 		}
 
 		$msg->metadata = $metadata;

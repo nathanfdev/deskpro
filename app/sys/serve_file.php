@@ -96,7 +96,7 @@ class FilestorageLoader
 				$this->orgAvatarAction($m[1]);
 
 			// User CSS
-			} elseif (preg_match('#^/res/user/main.css#', $pathinfo, $m)) {
+			} elseif (preg_match('#^/res-user/main.css#', $pathinfo, $m)) {
 				$this->userCssAction();
 
 			// A filesystem blob like /123AJKJKHSD1244AXC/filename.zip

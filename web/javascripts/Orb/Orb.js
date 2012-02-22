@@ -187,8 +187,13 @@ Orb.escapeHtml = function(string) {
  */
 Orb.linkUrls = function(string) {
 	string = string||'';
-	return string
-		.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1">$1</a>');
+	return string.replace(/\b(https?:\/\/|www\.)([^\s]+)\b/gi, function(match, o1, o2, offset, s) {
+		if (o1 == 'www.') {
+			return '<a href="http://www.'+o2+'">' + match + '</a>';
+		} else {
+			return '<a href="'+o1+o2+'">' + match + '</a>';
+		}
+	});
 };
 
 /**

@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<script type="text/javascript">
+		var BASE_URL = '{{ path('user') }}';
+		var ASSETS_BASE_URL = '{{ asset('') }}';
+		var DESKPRO_PERSON_ID = {{ app.user.id|default(0) }};
+
+		{% if constant('DP_DEBUG') %}
+			DP_DEBUG = true;
+		{% else %}
+			DP_DEBUG = false;
+		{% endif %}
+	</script>
+
+	{% if app.isDebug() %}
+		{{ dp_asset_html('user_vendors') }}
+		{{ dp_asset_html('user_common') }}
+		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getServerBaseUrl() }}/file.php/res-user/main.css?{{ app.style.css_updated|date('u')|crc32 }}&amp;reload=1" media="screen,print" />
+	{% else %}
+		{{ dp_asset_html('user') }}
+		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.style.css_blob.getDownloadUrl() }}?{{ app.style.css_blob.id }}" media="screen,print" />
+	{% endif %}
+
+	<link rel="stylesheet" type="text/css" href="{{ asset('stylesheets/user/main-print.css') }}" media="print" />
+	<!--[if IE ]><link href="{{ asset('stylesheets/user/main-ie.css') }}" rel="stylesheet" type="text/css"><![endif]-->
+
+	<script src="{{ asset('javascripts/DeskPRO/TouchCaller.js') }}" type="text/javascript"></script>
+	<script src="{{ asset('javascripts/DeskPRO/WordHighlighter.js') }}" type="text/javascript"></script>
+	<script src="{{ asset('javascripts/DeskPRO/User/ChatWidget/ChatWin.js') }}" type="text/javascript"></script>
+
+	<script type="text/javascript">
+		var ChatWin = new DeskPRO.User.WebsiteWidget.ChatWin({
+			sessionCode: '{{ session_code }}',
+			conversationId: {{ convo.id|default(0) }},
+			assignedAgentId: {{ convo.agent.id|default(0) }},
+			assignedAgentName: '{{ convo.agent.display_name|default(0) }}',
+			assignedAgentAvatar: '{{ convo.agent.getPictureUrl(40)|default(0) }}',
+			assignedAgentAvatarIcon: '{{ convo.agent.getPictureUrl(16)|default(0) }}',
+			initialMessages: {{ convo_messages|json_encode|raw }},
+			uploadTo: '{{ path('user_accept_upload') }}',
+			uploadSecurityToken: '{{ security_token('attach_temp') }}'
+		});
+		$(document).ready(function() {
+			ChatWin.initPage();
+		});
+	</script>
+</head>
+<body id="dp_chat">
+<div id="dp_chat_wrap">
+
+<div id="dp_chat_start">
+	<input type="text" name="name" placeholder="Your name" /><br />
+	<input type="text" name="email" placeholder="Your email address" /><br />
+	<select name="department_id">
+		<option value="0">Choose a department</option>
+		{% for dep in departments %}
+			{% if dep.children|length %}
+				<optgroup label="{{ dep.title }}">
+					{% for subdep in dep.children %}
+						<option value="{{ subdep.id }}">{{ subdep.title }}</option>
+					{% endfor %}
+				</optgroup>
+			{% else %}
+				<option value="{{ dep.id }}">{{ dep.title }}</option>
+			{% endif %}
+		{% endfor %}
+	</select><br />
+	<button id="dp_chat_start_go">Start Chatting</button>
+</div>
+
+<div id="dp_chat_finding_agent" style="display: none">
+	<p>Please wait while we find an agent to take your chat</p>
+</div>
+
+<div id="dp_chat_active" style="display: none">
+	<div id="dp_chat_filedrag">Drop your file here to upload it</div>
+	<div id="dp_chat_header_pane">
+		<div id="dpchat_with_agent" style="display: none"></div>
+		<div id="dpchat_without_agent">
+			Please wait while we find an agent for you
+		</div>
+	</div>
+	<div id="dp_chat_messages_pane">
+		<div id="uploading_list" class="uploading-list">
+			<ul class="files"></ul>
+		</div>
+	</div>
+	<div id="dp_chat_input_pane">
+		<textarea id="dp_chat_message_input"></textarea>
+		<button id="dp_chat_message_send" class="btn primary">Send</button>
+		<div id="dp_chat_message_upload">
+			<a id="dp_chat_upload_link">Send a file from your computer</a>
+			<input type="file" name="attach" id="dp_chat_message_upload_file" />
+		</div>
+	</div>
+</div>
+
+</div>
+
+<script type="text/x-deskpro-plain" id="dp_chat_tpl_agent_header">
+	<div class="avatar"><img src="%avatar_url%" /></div>
+	<div class="info">
+		<em>You're chatting with</em>
+		<h1>%name%</h1>
+	</div>
+</script>
+<script type="text/x-deskpro-plain" id="dp_chat_tpl_user_message">
+	<div class="row message user">
+		<div class="author">You</div>
+		<div class="message">%message%</div>
+	</div>
+</script>
+<script type="text/x-deskpro-plain" id="dp_chat_tpl_agent_message">
+	<div class="row message agent">
+		<div class="avatar"><img src="%avatar_url_icon%" /></div>
+		<div class="author">%name%</div>
+		<div class="message">%message%</div>
+	</div>
+</script>
+<script type="text/x-deskpro-plain" id="dp_chat_tpl_sys_message">
+	<div class="row message sys">
+		<div class="author">*</div>
+		<div class="message">%message%</div>
+	</div>
+</script>
+<script type="text/x-deskpro-plain" id="dp_chat_tpl_sys_message_prompt">
+	<div class="row message sys-prompt">
+		<div class="message">%message%</div>
+	</div>
+</script>
+
+<script class="dptpl-attach-upload" type="text/x-jquery-tmpl">
+	<li class="uploading">{{ phrase('user.label_file_uploading') }}: ${name} <span class="cancel">{{ phrase('user.cancel') }}</span></li>
+</script>
+<script class="dptpl-attach-download" type="text/x-jquery-tmpl">
+	{{ '{{if error}} '}}
+		<li class="error">
+			${error}
+		</li>
+	{{ '{{else}} '}}
+		<li class="uploaded">
+			<input type="hidden" name="{{ blob_field_name }}" value="${blob_auth_id}" />
+			<a href="${download_url}" target="_blank">${filename}</a>
+			<span class="size">${filesize_readable}</span>
+			<span class="remove">remove</span>
+		</li>
+	{{ '{{/if}} '}}
+</script>
+
+</body>
+</html>

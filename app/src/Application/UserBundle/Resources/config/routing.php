@@ -587,6 +587,13 @@ $collection->add('user_chat_sendmessage', new Route(
 	array()
 ));
 
+$collection->add('user_chat_sendmessage_attach', new Route(
+	'/chat/send-attach/{session_code}',
+	array('_controller' => 'UserBundle:Chat:sendFile'),
+	array(),
+	array()
+));
+
 $collection->add('user_chat_sendusertyping', new Route(
 	'/chat/user-typing/{session_code}',
 	array('_controller' => 'UserBundle:Chat:userTyping'),
@@ -641,6 +648,14 @@ $collection->add('user_widget_newticket', new Route(
 $collection->add('user_widget_newfeedback', new Route(
 	'/widget/new-feedback.json',
 	array('_controller' => 'UserBundle:Widget:newFeedback'),
+	array(),
+	array()
+));
+
+
+$collection->add('user_widget_chat', new Route(
+	'/widget/chat.html',
+	array('_controller' => 'UserBundle:Widget:chat'),
 	array(),
 	array()
 ));
