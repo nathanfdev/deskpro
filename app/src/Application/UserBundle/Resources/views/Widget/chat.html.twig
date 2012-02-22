@@ -59,8 +59,30 @@
 <i id="dp_chatwin_close"></i>
 
 <div id="dp_chat_start">
-	<input type="text" name="name" placeholder="Your name" /><br />
-	<input type="text" name="email" placeholder="Your email address" /><br />
+	{% if app.user.id %}
+		{% if not app.user.name %}
+			<input type="text" name="name" placeholder="Your name" /><br />
+		{% else %}
+			{{ app.user.name }}
+		{% endif %}
+		{% if not app.user.email_address %}
+			<input type="text" name="email" placeholder="Your email address" />
+		{% else %}
+			{{ app.user.email_address }}
+		{% endif %}
+	{% else %}
+		<input type="text" name="name" placeholder="Your name" /><br />
+		<input type="text" name="email" placeholder="Your email address" />
+		{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+			<div class="connect-with">
+				Or connect with
+				{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+					{{ render_usersource(usersource, 'widget_overlay_btn') }}
+				{% endfor %}
+			</div>
+		{% endif %}
+	{% endif %}
+	<br />
 	<select name="department_id">
 		<option value="0">Choose a department</option>
 		{% for dep in departments %}

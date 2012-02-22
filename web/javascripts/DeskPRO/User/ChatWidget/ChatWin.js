@@ -70,6 +70,15 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 	initPage: function() {
 		var self = this;
 
+		$('.auth-popup').click(function(ev) {
+			ev.preventDefault();
+			window.open($(this).attr('href'),'dpauth','width=600,height=400,location=0,menubar=0,scrollbars=0,status=0,toolbar=0,resizable=0');
+
+			window.DP_LOGIN_NOTIFY = function() {
+				window.location.reload(true);
+			};
+		});
+
 		self.tellParent('started', []);
 		$('#dp_chatwin_min').on('click', function(ev) {
 			ev.preventDefault();
@@ -207,7 +216,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 	},
 
 	startChat: function() {
-		this.hasEmailAddress = !!$('#dp_chat_start').find('input[name="email"]').val().trim();
+		this.hasEmailAddress = !!$('#dp_chat_start').find('input[name="email"]').val();
 		var data = $('#dp_chat_start').find('input, select').serializeArray();
 		this.sendMessage('', data, { starting: true });
 

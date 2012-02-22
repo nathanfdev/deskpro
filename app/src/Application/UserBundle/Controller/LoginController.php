@@ -369,6 +369,7 @@ HTML;
 
 		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
 			$adapter->setCallbackUrl(
+				App::getRequest()->getScheme().'://'.App::getRequest()->getHttpHost() .
 				$this->generateUrl('user_login_callback', array('usersource_id' => $usersource['id']), false)
 			);
 		}

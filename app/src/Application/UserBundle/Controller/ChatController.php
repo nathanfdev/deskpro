@@ -28,20 +28,8 @@ use Orb\Util\Util;
 /**
  * Handles ticket searches
  */
-class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controller
+class ChatController extends AbstractController
 {
-	/**
-	 * Input reader
-	 * @var \Orb\Input\Reader\Reader
-	 */
-	public $in;
-
-	public function init()
-	{
-		$this->in = $this->get('deskpro.core.input_reader');
-	}
-
-
 	/**
 	 * This is like DeskPRO:ClientMessages except that it's exclusively for chat,
 	 * and the channels are hard-coded for chat. The chat client
