@@ -12,6 +12,11 @@
 	'core.user_mode' => 'open',
 
 	/**
+	 * Enable URL rewriting (removes index.php/ from URLs)
+	 */
+	'core.rewrite_urls' => false,
+
+	/**
 	 * Are ticket categories enabled?
 	 */
 	'core.use_ticket_category' => false,

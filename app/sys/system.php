@@ -67,11 +67,21 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			$this->boot();
 		}
 
+		$response = $this->preResponseHandled($request, $type, $catch);
+		if ($response) {
+			return $response;
+		}
+
 		$response = $this->getHttpKernel()->handle($request, $type, $catch);
 
 		$this->postResponseHandled($response);
 
 		return $response;
+	}
+
+	protected function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+	{
+		return null;
 	}
 
 	protected function postResponseHandled($response)
@@ -260,6 +270,17 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			return $response;
 		}
 
+		if (!isset($GLOBALS['DP_CONFIG']['rewrite_urls'])) {
+			$GLOBALS['DP_CONFIG']['rewrite_urls'] = App::getSetting('core.rewrite_urls');
+		}
+
+		// Kernels might have work to do before loading a page
+		// This is where index.php checks take place
+		$res = $this->preResponseHandled($request, $type, $catch);
+		if ($res) {
+			return $res;
+		}
+
 		/** @var $response \Symfony\Component\HttpFoundation\Response */
 		$response = $this->getHttpKernel()->handle($request, $type, $catch);
 
@@ -366,6 +387,34 @@ abstract class AbstractKernel extends BaseAbstractKernel
 	}
 
 	abstract protected function registerAdditionalBundles();
+
+
+	/**
+	 * Returns a Response if the kernel shouldnt route and pass control off to a controller.
+	 * Returns null if things should progress normally.
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Request|null
+	 */
+	protected function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+	{
+		$path = $request->getPathInfo();
+
+		if (isset($GLOBALS['DP_CONFIG']['rewrite_urls']) && $GLOBALS['DP_CONFIG']['rewrite_urls']) {
+			// Force no index.php
+			if (strpos($request->getRequestUri(), '/index.php') !== false) {
+				$response = new RedirectResponse(rtrim($request->getBasePath(), '/') . $path);
+				return $response;
+			}
+		} else {
+			// Force index.php
+			if (strpos($request->getRequestUri(), '/index.php') === false) {
+				$response = new RedirectResponse(rtrim($request->getBasePath(), '/') . '/index.php' . $path);
+				return $response;
+			}
+		}
+
+		return null;
+	}
 }
 
 
@@ -444,6 +493,11 @@ class InstallKernel extends \DeskPRO\Kernel\BaseAbstractKernel
 	public function registerContainerConfiguration(LoaderInterface $loader)
 	{
 		$loader->load(DP_ROOT.'/sys/config/install/config.php');
+	}
+
+	public function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+	{
+		return null;
 	}
 }
 
