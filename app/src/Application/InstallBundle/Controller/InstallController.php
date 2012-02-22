@@ -440,7 +440,9 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$client->setMethod(\Zend\Http\Request::METHOD_GET);
 			$client->setUri($url_noindex);
 			$result = $client->send();
+			$this->getLogger()->log('core.rewrite_urls check result: ' . $result->getBody(), 'debug');
 			if ($result->isSuccess() && strpos($result->getBody(), 'dp_check_url_ok') !== false) {
+				$this->getLogger()->log('Enabling core.rewrite_urls', 'debug');
 				$rewrite_urls = true;
 			}
 
