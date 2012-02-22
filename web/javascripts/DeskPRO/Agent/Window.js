@@ -1606,7 +1606,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	_globalHandleAjaxError: function(event, xhr, ajaxOptions, errorThrown) {
-
 		// We dont care about aborts
 		// This is caused when the user navigates away from a page, any running
 		// ajax requests are aborted by the browser. Without this the user
@@ -1677,7 +1676,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			this._showAjaxError('<div>If the error persists, give your administrator this code: ' + showsn + '</div>');
 		} else {
-			this._showAjaxError('<div class="error-details">Here is the raw output returned from the server error:<textarea class="raw">' + Orb.escapeHtml(xhr.responseText) + '</textarea></div>');
+			var status = (xhr.status || '') + ' ' + (errorThrown || '') + ' ' + (xhr.statusText || '');
+			this._showAjaxError('<div class="error-details">Here is the raw output returned from the server error:<textarea class="raw">' + status + "\n\n" + Orb.escapeHtml(xhr.responseText) + '</textarea></div>');
 		}
 	},
 
