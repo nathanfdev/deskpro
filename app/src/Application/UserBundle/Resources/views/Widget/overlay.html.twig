@@ -144,7 +144,7 @@
 					<table cellspacing="0" cellpadding="0" width="100%"><tr><td><div style="position: relative">
 						<div class="dp-drop-file-zone"><h1>Drop your file here to attach it to your message</h1></div>
 						{% include 'UserBundle:NewTicket:field-message.html.twig' with {form: ticketform, addclass: 'search-collect'} %}
-						{% include 'UserBundle:Common:form-upload-input.html.twig' %}
+						{% include 'UserBundle:Common:form-upload-input.html.twig'  with { showAsLink: true } %}
 					</div></td></tr></table>
 				</div>
 

@@ -32,7 +32,14 @@
 			{{ '{{/if}} '}}
 		</script>
 		<div class="file-input">
-			<input type="file" name="{{ good_field_name }}" multiple="multiple" /> <button class="btn small">{{ phrase('user.upload_btn') }}</button>
+			{% if showAsLink %}
+				<div class="hidden-file-upload">
+					<span class="link">Upload a file</span>
+					<input type="file" name="{{ good_field_name }}" multiple="multiple" />
+				</div>
+			{% else %}
+				<input type="file" name="{{ good_field_name }}" multiple="multiple" /> <button class="btn small">{{ phrase('user.upload_btn') }}</button>
+			{% endif %}
 		</div>
 
 		<ul class="files file-list"></ul>

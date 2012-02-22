@@ -3093,3 +3093,30 @@ body.file-drag-over .dp-drop-file-zone {
 	overflow: auto;
 	padding: 10px;
 }
+
+
+#dp_overlay .hidden-file-upload {
+	position: relative;
+	width: 150px;
+}
+
+#dp_overlay .hidden-file-upload span {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	font-size: 11px;
+}
+
+#dp_overlay .hidden-file-upload span.link {
+	color: blue;
+	text-decoration: underline;
+}
+
+#dp_overlay .hidden-file-upload input {
+	filter: alpha(opacity=0);
+	-khtml-opacity: 0;
+	-moz-opacity: 0;
+	opacity: 0;
+}
