@@ -49,6 +49,15 @@
 <body id="dp_chat">
 <div id="dp_chat_wrap">
 
+<div id="dp_chat_end_confirm" style="display: none">
+	Are you sure you want to end your chat?
+	<button id="dp_chat_end_no">Cancel</button>
+	<button id="dp_chat_end_yes">End Chat</button>
+</div>
+
+<i id="dp_chatwin_min"></i>
+<i id="dp_chatwin_close"></i>
+
 <div id="dp_chat_start">
 	<input type="text" name="name" placeholder="Your name" /><br />
 	<input type="text" name="email" placeholder="Your email address" /><br />
@@ -94,6 +103,44 @@
 			<input type="file" name="attach" id="dp_chat_message_upload_file" />
 		</div>
 	</div>
+</div>
+
+<div id="dp_chat_done" style="display: none">
+	{# Field is hidden if the user entered an email addy, its sent automatically when chat ended #}
+	<div class="form-row email-field">
+		Send a transcript of this chat to <input type="text" name="email" value="" placeholder="enter your email address" />
+	</div>
+
+	<div class="form-row">
+		Rate our response time
+		<select name="rating_response_time">
+			<option value="0"></option>
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+		</select>
+	</div>
+
+	<div class="form-row">
+		Rate your overall satisfaction
+		<select name="rating_overall">
+			<option value="0"></option>
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+		</select>
+	</div>
+
+	<div class="form-row">
+		Comments?
+		<textarea name="comments"></textarea>
+	</div>
+
+	<button id="dp_chat_end_real">Send and close this window</button>
 </div>
 
 </div>

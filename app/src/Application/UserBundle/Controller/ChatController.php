@@ -271,28 +271,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 
 		if ($this->in->getBool('process')) {
 
-			$convo_messages = App::getOrm()->createQuery("
-				SELECT m
-				FROM DeskPRO:ChatMessage m
-				WHERE m.conversation = ?1 AND m.is_user_hidden = false
-				ORDER BY m.id DESC
-			")->setParameter(1, $convo)->execute();
-
-			$vars = array(
-				'convo' => $convo,
-				'convo_messages' => $convo_messages
-			);
-
-			$email_subject = 'Chat Transcript';
-			$email_body = App::get('templating')->render('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
-
-			$message = App::getMailer()->createMessage();
-			$message->setTo($this->in->getString('email'), $this->in->getString('name'));
-			$message->setSubject($email_subject);
-			$message->setBody($email_body, 'text/html');
-			$message->enableQueueHint();
-
-			App::getMailer()->send($message);
+			$this->_sendTranscript($convo, $convo->person, '');
 
 			return $this->render('UserBundle:Chat:chat-ended-thanks.html.twig', array(
 				'session'  => $session,
@@ -305,6 +284,73 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 				'convo'    => $convo,
 			));
 		}
+	}
+
+	protected function _sendTranscript($convo, $email, $name)
+	{
+		$convo_messages = App::getOrm()->createQuery("
+			SELECT m
+			FROM DeskPRO:ChatMessage m
+			WHERE m.conversation = ?1 AND m.is_user_hidden = false
+			ORDER BY m.id DESC
+		")->setParameter(1, $convo)->execute();
+
+		$vars = array(
+			'convo' => $convo,
+			'convo_messages' => $convo_messages
+		);
+
+		$email_subject = 'Chat Transcript';
+		$email_body = App::get('templating')->render('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
+
+		$message = App::getMailer()->createMessage();
+		$message->setTo($email, $name);
+		$message->setSubject($email_subject);
+		$message->setBody($email_body, 'text/html');
+		$message->enableQueueHint();
+
+		App::getMailer()->send($message);
+	}
+
+	public function chatEndedFeedbackAction($session_code)
+	{
+		$chat_manager = $this->getChatManager($session_code);
+		$convo = $chat_manager->getChat();
+		$session = $chat_manager->getSession();
+
+		if (!$convo) {
+			if ($this->in->getUint('conversation_id')) {
+				$convo = App::findEntity('DeskPRO:ChatConversation', $this->in->getUint('conversation_id'));
+				if (!$convo || !$convo->session || $convo->session->id != $session->id) {
+					$convo = null;
+				}
+			}
+		}
+
+		if (!$convo) {
+			return $this->createJsonResponse(array('success' => false));
+		}
+
+		if (!$convo->person_email && $this->in->getString('email') && \Orb\Validator\StringEmail::isValueValid($this->in->getString('email'))) {
+			$convo->person_email = $this->in->getString('email');
+
+			$this->_sendTranscript($convo, $convo->person_email, '');
+		}
+
+		if ($this->in->getString('comments')) {
+			$convo->rating_comment = $this->in->getString('comments');
+		}
+		if ($this->in->getUint('rating_response_time')) {
+			$convo->rating_response_time = $this->in->getUint('rating_response_time');
+		}
+		if ($this->in->getUint('rating_overall')) {
+			$convo->rating_overall = $this->in->getUint('rating_overall');
+		}
+
+		App::getOrm()->persist($convo);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 

@@ -36,6 +36,7 @@ var DpChatWidget = new (function() {
 	 * @var {jQuery}
 	 */
 	var chatIframe;
+	var closingChatIframe;
 
 	/**
 	 * The URL of the iframe
@@ -264,6 +265,32 @@ var DpChatWidget = new (function() {
 		var messageId = data.shift();
 
 		console.log('[ChatWidget] comms recieved: %s %o', messageId, data);
+
+		switch (messageId) {
+			case 'started':
+				$('#dpchat_btn_label').find('.start-chat').hide();
+				$('#dpchat_btn_label').find('.open-chat').show();
+
+				// The button might be hidden because of doResume above,
+				// but we want to show it all the time (its overlapped anyway)
+				openBtn.show();
+				break;
+
+			case 'hide':
+				self.close();
+				break;
+
+			case 'show':
+				chatIframe.hide();
+				break;
+
+			case 'destroy':
+				self.close();
+				chatIframe.remove();
+				chatIframe = null;
+				comms.setupReciever(null, null);
+				break;
+		}
 	};
 
 	var comms = {

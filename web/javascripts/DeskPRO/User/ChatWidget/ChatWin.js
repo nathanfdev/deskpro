@@ -70,12 +70,44 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 	initPage: function() {
 		var self = this;
 
-		$('#dp_chat_start_go').on('click', function() {
+		self.tellParent('started', []);
+		$('#dp_chatwin_min').on('click', function(ev) {
+			ev.preventDefault();
+			self.tellParent('hide', []);
+		});
+
+		$('#dp_chatwin_close').on('click', function(ev) {
+			ev.preventDefault();
+			if (self.hasEnded || !self.conversationId) {
+				self.tellParent('destroy', []);
+			} else {
+				$('#dp_chat_end_confirm').show();
+			}
+		});
+
+		$('#dp_chat_end_no').on('click', function(ev) {
+			ev.preventDefault();
+			$('#dp_chat_end_confirm').hide();
+		});
+		$('#dp_chat_end_yes').on('click', function(ev) {
+			ev.preventDefault();
+			$('#dp_chat_end_confirm').hide();
+			self.chatEnded(true);
+		});
+
+		$('#dp_chat_start_go').on('click', function(ev) {
+			ev.preventDefault();
 			self.startChat();
 		});
 
-		$('#dp_chat_message_send').on('click', function() {
+		$('#dp_chat_message_send').on('click', function(ev) {
+			ev.preventDefault();
 			self.sendTypedMessage();
+		});
+
+		$('#dp_chat_end_real').on('click', function(ev) {
+			ev.preventDefault();
+			self.endChatReal();
 		});
 
 		$('#dp_chat_message_input').on('keypress', (function(ev) {
@@ -175,6 +207,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 	},
 
 	startChat: function() {
+		this.hasEmailAddress = !!$('#dp_chat_start').find('input[name="email"]').val().trim();
 		var data = $('#dp_chat_start').find('input, select').serializeArray();
 		this.sendMessage('', data, { starting: true });
 
@@ -323,8 +356,46 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		}
 	},
 
-	chatEnded: function() {
+	chatEnded: function(userEnded, callback) {
+		this.hasEnded = true;
+		if (userEnded) {
+			$.ajax({
+				cache: false,
+				url: BASE_URL + 'chat/chat-finished/' + this.sessionCode + '?conversation_id=' + this.conversationId + '&is_ajax=1',
+				context: this,
+				dataType: 'json',
+				complete: callback || function() {}
+			});
+		}
 
+		this.ajaxPoller.disable = true;
+		this.ajaxPoller._clearDelays();
+
+		$('#dp_chat_start').hide();
+		$('#dp_chat_finding_agent').hide();
+		$('#dp_chat_active').hide();
+		$('#dp_chat_done').show();
+
+		if (this.hasEmailAddress) {
+			$('#dp_chat_done').find('.form-row.email-field').hide();
+		}
+	},
+
+	endChatReal: function() {
+		var self = this;
+		var data = $('#dp_chat_done').find('input, select, textarea').serializeArray();
+
+		$.ajax({
+			cache: false,
+			url: BASE_URL + 'chat/chat-finished-feedback/' + this.sessionCode + '?conversation_id=' + this.conversationId + '&is_ajax=1',
+			type: 'POST',
+			data: data,
+			context: this,
+			dataType: 'json',
+			complete: function() {
+				self.tellParent('destroy', []);
+			}
+		});
 	},
 
 	chatAssigned: function(agentId, name, avatar) {

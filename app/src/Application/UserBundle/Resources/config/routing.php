@@ -608,6 +608,13 @@ $collection->add('user_chat_chatended', new Route(
 	array()
 ));
 
+$collection->add('user_chat_chatended_feedback', new Route(
+	'/chat/chat-finished-feedback/{session_code}',
+	array('_controller' => 'UserBundle:Chat:chatEndedFeedback'),
+	array(),
+	array()
+));
+
 $collection->add('user_chat_chatwin', new Route(
 	'/chat/chat-window/{session_code}',
 	array('_controller' => 'UserBundle:Chat:chatWindow'),

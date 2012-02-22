@@ -18,6 +18,7 @@ use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerat
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 
 /**
  * A conversation between one or more people
@@ -129,6 +130,24 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\OneToMany(targetEntity="ChatMessage", mappedBy="conversation", cascade={"persist", "remove", "merge"})
 	 */
 	protected $messages;
+
+	/**
+	 * @var string
+	 * @ORM_Mapping\Column(name="rating_response_time", type="integer", nullable=true)
+	 */
+	protected $rating_response_time = null;
+
+	/**
+	 * @var string
+	 * @ORM_Mapping\Column(name="rating_overall", type="integer", nullable=true)
+	 */
+	protected $rating_overall = null;
+
+	/**
+	 * @var string
+	 * @ORM_Mapping\Column(name="rating_comment", type="text")
+	 */
+	protected $rating_comment = '';
 
 	/**
 	 * Is this an agent chat
@@ -521,6 +540,15 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		return $line;
 	}
 
+	public function setRatingOverall($rating)
+	{
+		$this->rating_overall = Numbers::bound($rating, 1, 5);
+	}
+
+	public function setRatingResponseTime($rating)
+	{
+		$this->rating_response_time = Numbers::bound($rating, 1, 5);
+	}
 
 	/**
 	 * Get a basic array of information. These are generally used in templates or with
