@@ -12,6 +12,13 @@ $collection->add('install', new Route(
 	array()
 ));
 
+$collection->add('install_license', new Route(
+	'/license',
+	array('_controller' => 'InstallBundle:Install:license'),
+	array(),
+	array()
+));
+
 $collection->add('install_verify_files', new Route(
 	'/verify-files',
 	array('_controller' => 'InstallBundle:Install:verifyFiles'),

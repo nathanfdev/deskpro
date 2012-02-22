@@ -1,7 +1,6 @@
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
-<?php $view['slots']->start('subtitle') ?>Step 4: Install initial data objects<?php $view['slots']->stop() ?>
+<?php $view['slots']->start('subtitle') ?>Step 5: Install initial data objects<?php $view['slots']->stop() ?>
 <?php $failed = false ?>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script type="text/javascript">
 var validate = function() {
 	var ret = true;

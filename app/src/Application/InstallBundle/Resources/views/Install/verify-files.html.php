@@ -1,6 +1,5 @@
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
-<?php $view['slots']->start('subtitle') ?>Step 2: Verifying file integrity<?php $view['slots']->stop() ?>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<?php $view['slots']->start('subtitle') ?>Step 3: Verifying file integrity<?php $view['slots']->stop() ?>
 <script type="text/javascript">
 window.DpStatus = {
 	allCount: <?php echo $count ?>,
@@ -194,7 +193,7 @@ $(document).ready(function() {
 		<strong>Done!</strong> You're ready to go to the next step.
 
 		<div class="alert-actions">
-			<a class="btn" href="<?php echo $view['router']->generate('install_create_tables') ?>">Go to step 3: Install database</a>
+			<a class="btn" href="<?php echo $view['router']->generate('install_create_tables') ?>">Go to step 4: Install database</a>
 		</div>
 	</div>
 </div>

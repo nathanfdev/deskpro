@@ -1,6 +1,5 @@
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
-<?php $view['slots']->start('subtitle') ?>Step 3: Installing database tables<?php $view['slots']->stop() ?>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<?php $view['slots']->start('subtitle') ?>Step 4: Installing database tables<?php $view['slots']->stop() ?>
 <script type="text/javascript">
 var installStatus = {
 	update: function(info) {
@@ -165,7 +164,7 @@ $(document).ready(function() {
 		<strong>Done!</strong> You're ready to go to the next step.
 
 		<div class="alert-actions">
-			<a class="btn" href="<?php echo $view['router']->generate('install_install_data') ?>">Go to step 3: Create your admin account</a>
+			<a class="btn" href="<?php echo $view['router']->generate('install_install_data') ?>">Go to step 5: Create your admin account</a>
 		</div>
 	</div>
 </div>

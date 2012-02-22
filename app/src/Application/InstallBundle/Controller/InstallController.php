@@ -109,6 +109,21 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		));
 	}
 
+
+	###############################################################################
+	# license
+	###############################################################################
+
+	public function licenseAction()
+	{
+		$lictext = file_get_contents(DP_ROOT.'/docs/license.txt');
+
+		return $this->render('InstallBundle:Install:license.html.php', array(
+			'lictext' => $lictext
+		));
+	}
+
+
 	###############################################################################
 	# verify-files
 	###############################################################################
@@ -415,6 +430,22 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 		$this->getLogger()->log('Install::installDone', 'debug');
 
+		$rewrite_urls = false;
+		try {
+
+			$url = App::getRequest()->getUriForPath('/?_sys=checkurl');
+			$url_noindex = str_replace('/index.php/', '/', $url);
+
+			$client = new \Zend\Http\Client(null, array('timeout' => 5));
+			$client->setMethod(\Zend\Http\Request::METHOD_GET);
+			$client->setUri($url_noindex);
+			$result = $client->send();
+			if ($result->isSuccess() && strpos($result->getBody(), 'dp_check_url_ok') !== false) {
+				$rewrite_urls = true;
+			}
+
+		} catch (\Exception $e) {}
+
 		$this->getOrm()->getConnection()->beginTransaction();
 		try {
 			$db = $this->getOrm()->getConnection();
@@ -441,6 +472,16 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 				'updated_at' => date('Y-m-d H:i:s'),
 			));
 
+			if ($rewrite_urls) {
+				$db->replace('settings', array(
+					'name' => 'core.rewrite_urls',
+					'groupname' => 'core',
+					'value' => '1',
+					'created_at' => date('Y-m-d H:i:s'),
+					'updated_at' => date('Y-m-d H:i:s'),
+				));
+			}
+
 			$this->getOrm()->getConnection()->commit();
 
 		} catch (\Exception $e) {
@@ -462,7 +503,6 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			'base_url' => $base_url,
 		));
 	}
-
 
 	###############################################################################
 

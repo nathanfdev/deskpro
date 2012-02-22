@@ -44,6 +44,10 @@ if (isset($_GET['_sys'])) {
 		case 'check':
 			require DP_ROOT . '/sys/scripts/check.php';
 			exit;
+
+		case 'checkurl':
+			require DP_ROOT . '/sys/scripts/checkurl.php';
+			exit;
 	}
 
 	unset($is_authed);

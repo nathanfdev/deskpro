@@ -293,7 +293,7 @@
 		to the next step.
 
 		<div class="alert-actions">
-			<a class="btn" href="<?php echo $view['router']->generate('install_verify_files') ?>">Go to step 2: Verify file integrity</a>
+			<a class="btn" href="<?php echo $view['router']->generate('install_license') ?>">Continue to Step 2</a>
 		</div>
 	</div>
 <?php endif ?>

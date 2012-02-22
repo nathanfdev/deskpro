@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<title>DeskPRO</title>
 	<link rel="stylesheet" type="text/css" href="../../web/stylesheets/install/install.css" />
+	<script type="text/javascript" src="../../web/vendor/jquery/jquery.min.js"></script>
 	<?php $view['slots']->output('head') ?>
 </head>
 <body>
