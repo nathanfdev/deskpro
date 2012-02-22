@@ -31,3 +31,51 @@
 	white-space: nowrap;
 }
 
+.dp-hide-print {
+	display: none !important;
+}
+
+#deskpro .dp-content-block {
+	border: none;
+	box-shadow: none;
+	white-space: normal;
+}
+
+#dp_content {
+	border: none;
+	background: #fff;
+	margin: 0;
+}
+
+#dp_breadcrumb {
+	border: none;
+	background: #fff;
+	margin: 0;
+}
+
+#deskpro {
+	width: auto;
+	margin: 0;
+}
+
+#deskpro #dp_page {
+	border: none;
+	background: #fff;
+	margin: 0;
+	width: auto;
+	max-width: 100%;
+}
+
+#deskpro #dp_page > #dp_content {
+	margin: 0;
+}
+
+#dp_overlay_btn {
+	display: none !important;
+	visibility: hidden !important;
+}
+#deskpro #dp_header {
+	width: auto;
+	margin-left: 0;
+	margin-right: 0;
+}

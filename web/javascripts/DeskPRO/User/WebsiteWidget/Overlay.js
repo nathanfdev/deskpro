@@ -437,7 +437,7 @@ var DpOverlayWidget = new (function() {
 
 		css.push('background-image: url(' + url + ')');
 		css = css.join(';');
-		$('<div id="dp_overlay_btn" class="dp-overlay-widget-trigger" style="' + css + '" class="' + options.tabClass + '"></div>').appendTo('body');
+		$('<div id="dp_overlay_btn" class="dp-overlay-widget-trigger" style="' + css + '" class="dp-hide-print ' + options.tabClass + '"></div>').appendTo('body');
 
 		$('.dp-overlay-widget-trigger').on('click', function(ev) {
 			ev.preventDefault();
