@@ -67,6 +67,8 @@
 	'agent.tickets.set_awaiting_user' => 'Set awaiting user',
 	'agent.tickets.set_awaiting_agent' => 'Set awaiting agent',
 	'agent.tickets.set_resolved' => 'Set resolved',
+	'agent.tickets.set_spam' => 'Mark As Spam',
+	'agent.tickets.set_delete' => 'Mark For Deletion',
 
 	'agent.tickets.tickets_on_hold' => 'Tickets on hold',
 	'agent.tickets.inbox' => 'Inbox',
