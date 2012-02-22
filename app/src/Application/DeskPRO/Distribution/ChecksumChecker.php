@@ -18,6 +18,9 @@ class ChecksumChecker extends \Orb\File\ChecksumChecker
 		parent::__construct(realpath(DP_ROOT.'/../'));
 		$this->finder->notName('distro-checksums.php')
 			->notName('.gitignore')
+			->notName('.gitmodules')
+			->notName('.buildpath')
+			->notName('.project')
 			->notName('.DS_Store')
 			->notName('dev_debug.php')
 			->notName('config.php')
@@ -26,6 +29,9 @@ class ChecksumChecker extends \Orb\File\ChecksumChecker
 			->notName('.htaccess')
 			->ignoreVCS(true)
 			->exclude('sys/cache/dev')
+			->exclude('.settings')
+			->exclude('.idea')
+			->exclude('data')
 			->exclude('.feedback');
 	}
 
