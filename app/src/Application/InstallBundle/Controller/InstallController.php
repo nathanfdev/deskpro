@@ -486,6 +486,21 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 			$this->getOrm()->getConnection()->commit();
 
+			try {
+				$stats = new \Application\InstallBundle\Data\ServerStats($this->getDb());
+
+				$this->getLogger()->log(DP_LIC_SERVER . '/report-stats.json', 'debug');
+
+				$client = new \Zend\Http\Client(null, array('timeout' => 7));
+				$client->setMethod(\Zend\Http\Request::METHOD_POST);
+				$client->setUri(DP_LIC_SERVER . '/report-stats.json');
+				foreach ($stats->getStats() as $k => $v) {
+					$client->getRequest()->post()->set("stats[$k]", $v);
+				}
+				$r = $client->send();
+				$this->getLogger()->log('Stat server responds: ' . $r->getBody(), 'debug');
+			} catch (\Exception $e) {}
+
 		} catch (\Exception $e) {
 			$this->getLogger()->log("[InstallDone] Exception {$e->getCode()} {$e->getMessage()}", 'err');
 

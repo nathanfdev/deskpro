@@ -35,8 +35,8 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$str = 'NEWS: Update your &quot;get rated&quot; HTML code';
-		echo Strings::htmlEntityDecodeUtf8($str);
+		$stats = new \Application\InstallBundle\Data\ServerStats(App::getDb());
+		print_r($stats->getStats());
 
 		echo "\n\ndone\n";
 	}
