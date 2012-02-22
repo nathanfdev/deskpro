@@ -11,7 +11,7 @@
 				<?php else: $failed = true; ?>
 					<span class="label important" style="float:right">FAIL</span>
 				<?php endif ?>
-				PHP version is &gt;= 5.3.2
+				Check that the <a href="http://php.net/">PHP</a> version is &gt;= 5.3.2
 				<?php if ($failed): ?>
 					<div class="alert-message block-message error">
 						DeskPRO requires PHP 5.3.2. You have <?php echo phpversion() ?>
@@ -22,13 +22,34 @@
 
 		<tr>
 			<td>
+				<?php if (!isset($errors['config']) && !isset($errors['config_values'])): ?>
+					<span class="label success" style="float:right">OK</span>
+				<?php else: $failed = true; ?>
+					<span class="label important" style="float:right">FAIL</span>
+				<?php endif ?>
+				Check for valid config.php
+				<?php if ($failed): ?>
+					<div class="alert-message block-message error">
+						<?php if (isset($errors['config'])): ?>
+							/config.php is missing. Copy /config.new.php and edit it to add your database settings.
+						<?php elseif (!isset($errors['config_values'])): ?>
+							/config.php exists but it does not contain the required settings. You should copy /config.new.php and edit it to add your database settings.
+						<?php endif ?>
+					</div>
+				<?php endif ?>
+			</td>
+		</tr>
+
+
+		<tr>
+			<td>
 				<?php $failed = false ?>
 				<?php if (!isset($errors['pdo_ext']) && !isset($errors['pdo_mysql_ext'])): ?>
 					<span class="label success" style="float:right">OK</span>
 				<?php else: $failed = true; ?>
 					<span class="label important" style="float:right">FAIL</span>
 				<?php endif ?>
-				PDO enabled and has the MySQL driver installed
+				Check that the <a href="http://php.net/manual/en/pdo.installation.php">PDO extension</a> is enabled and has the MySQL driver installed
 				<?php if ($failed): ?>
 					<div class="alert-message block-message error">
 						DeskPRO requires the PDO extension and the MySQL driver
@@ -40,15 +61,15 @@
 		<tr>
 			<td>
 				<?php $failed = false ?>
-				<?php if (!isset($errors['mbstring_ext']) && !isset($errors['mbstring_ext'])): ?>
+				<?php if (!isset($errors['iconv_ext']) && !isset($errors['iconv_ext'])): ?>
 					<span class="label success" style="float:right">OK</span>
 				<?php else: $failed = true; ?>
 					<span class="label important" style="float:right">FAIL</span>
 				<?php endif ?>
-				mbstring extension installed
+				Check that the <a href="http://php.net/manual/en/iconv.installation.php">iconv extension</a> is installed
 				<?php if ($failed): ?>
 					<div class="alert-message block-message error">
-						DeskPRO requires the mbstring extension
+						DeskPRO requires the iconv extension to be installed and enabled
 					</div>
 				<?php endif ?>
 			</td>
@@ -62,7 +83,7 @@
 				<?php else: $failed = true; ?>
 					<span class="label important" style="float:right">FAIL</span>
 				<?php endif ?>
-				json_encode extension installed
+				Check that the <a href="http://php.net/manual/en/json.installation.php">json_encode extension</a> is installed
 				<?php if ($failed): ?>
 					<div class="alert-message block-message error">
 						DeskPRO requires the json_encode extension
@@ -79,7 +100,7 @@
 				<?php else: $failed = true; ?>
 					<span class="label important" style="float:right">FAIL</span>
 				<?php endif ?>
-				session extension installed
+				Check that the <a href="http://php.net/manual/en/session.installation.php">session extension</a> is installed
 				<?php if ($failed): ?>
 					<div class="alert-message block-message error">
 						DeskPRO requires the session extension
@@ -96,7 +117,7 @@
 				<?php else: $failed = true; ?>
 					<span class="label important" style="float:right">FAIL</span>
 				<?php endif ?>
-				ctype extension installed
+				Check that the <a href="http://php.net/manual/en/ctype.installation.php">ctype extension</a> is installed
 				<?php if ($failed): ?>
 					<div class="alert-message block-message error">
 						DeskPRO requires ctype extension
@@ -113,7 +134,7 @@
 				<?php else: $failed = true; ?>
 					<span class="label important" style="float:right">FAIL</span>
 				<?php endif ?>
-				tokenizer extension installed
+				Check that the <a href="http://php.net/manual/en/tokenizer.installation.php">tokenizer extension</a> is installed
 				<?php if ($failed): ?>
 					<div class="alert-message block-message error">
 						DeskPRO requires tokenizer extension
@@ -130,7 +151,7 @@
 				<?php else: $failed = true; ?>
 					<span class="label important" style="float:right">FAIL</span>
 				<?php endif ?>
-				An image manipulation extension is installed
+				Check that an image manipulation extension is installed (<a href="http://php.net/manual/en/imagick.installation.php">Imagick</a>, <a href="http://php.net/manual/en/gmagick.installation.php">Gmagick</a>, or <a href="http://php.net/manual/en/image.installation.php">GD</a>)
 				<?php if ($failed): ?>
 					<div class="alert-message block-message error">
 						DeskPRO requires one of the following extensions: Imagick, Gmagick or GD
@@ -148,10 +169,27 @@
 				<?php else: $failed = true; ?>
 					<span class="label important" style="float:right">FAIL</span>
 				<?php endif ?>
-				PHP Memory Limit (at least 128 MB)
+				Check that PHP's <a href="http://php.net/manual/en/ini.core.php#ini.memory-limit">memory limit</a> is at least 128 MB
 				<?php if ($failed): ?>
 					<div class="alert-message block-message error">
 						DeskPRO requires PHP's memory_limit option to be at least 128 MB.
+					</div>
+				<?php endif ?>
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<?php $failed = false ?>
+				<?php if (!isset($errors['logs_write'])): ?>
+					<span class="label success" style="float:right">OK</span>
+				<?php else: $failed = true; ?>
+					<span class="label important" style="float:right">FAIL</span>
+				<?php endif ?>
+				Check that the logs directory is writable
+				<?php if ($failed): ?>
+					<div class="alert-message block-message error">
+						The logs directory (<?php echo $logs_dir_info ?>) must exist and be writable.
 					</div>
 				<?php endif ?>
 			</td>
@@ -160,103 +198,83 @@
 </table>
 
 <?php if ($has_db_checks): ?>
-	<h3>Configuration and Database Checks</h3>
-	<?php if(!$has_config): ?>
-		<div class="alert-message block-message error">
-			<strong>You don't have a config file</strong>!
-			<p>
-				In the root directory, rename <code>config.new.php</code> to <code>config.php</code>
-				and edit the values inside with your database connection details. Once you have done this,
-				re-run this page.
-			</p>
-			<div class="alert-actions">
-				<a class="btn" href="<?php echo $view['router']->generate('install') ?>">I have made my config.php file, refresh this page</a>
-			</div>
-		</div>
-	<?php else: ?>
-		<table class="bordered-table zebra-striped">
-			<tbody>
-				<tr>
-					<td>
+<h3>Database Checks</h3>
+	<table class="bordered-table zebra-striped">
+		<tbody>
+			<tr>
+				<td>
+					<?php $failed = false ?>
+					<?php if (!isset($errors['db_connect'])): ?>
 						<span class="label success" style="float:right">OK</span>
-						Config file exists and is readable
-					</td>
-				</tr>
+					<?php else: $failed = true; ?>
+						<span class="label important" style="float:right">FAIL</span>
+					<?php endif ?>
+					Check database connection (<?php echo $db_config['user'] ?>@<?php echo $db_config['host'] ?>/<?php echo $db_config['dbname'] ?>)
+					<?php if ($failed): ?>
+						<div class="alert-message block-message error">
+							A database connection could not be established. Check your config.php to make sure
+							the details you entered are correct.
+							<p><code><?php echo $errors['db_connect']['message'] ?></code></p>
+						</div>
+					<?php endif ?>
+				</td>
+			</tr>
+
+			<?php if (!isset($errors['db_connect'])): ?>
 				<tr>
 					<td>
 						<?php $failed = false ?>
-						<?php if (!isset($errors['db_connect'])): ?>
+						<?php if (!isset($errors['db_version'])): ?>
 							<span class="label success" style="float:right">OK</span>
 						<?php else: $failed = true; ?>
 							<span class="label important" style="float:right">FAIL</span>
 						<?php endif ?>
-						Checking database connection (<?php echo $db_config['user'] ?>@<?php echo $db_config['host'] ?>/<?php echo $db_config['dbname'] ?>)
+						Check MySQL version is &gt;= 5.5
 						<?php if ($failed): ?>
 							<div class="alert-message block-message error">
-								A database connection could not be established. Check your config.php to make sure
-								the details you entered are correct.
-								<p><code><?php echo $errors['db_connect']['message'] ?></code></p>
+								DeskPRO requires MySQL v5.5. You need to update your version of MySQL.
 							</div>
 						<?php endif ?>
 					</td>
 				</tr>
 
-				<?php if (!isset($errors['db_connect'])): ?>
-					<tr>
-						<td>
-							<?php $failed = false ?>
-							<?php if (!isset($errors['db_version'])): ?>
-								<span class="label success" style="float:right">OK</span>
-							<?php else: $failed = true; ?>
-								<span class="label important" style="float:right">FAIL</span>
-							<?php endif ?>
-							Checking MySQL version
-							<?php if ($failed): ?>
-								<div class="alert-message block-message error">
-									DeskPRO requires MySQL v5.5. You need to update your version of MySQL.
-								</div>
-							<?php endif ?>
-						</td>
-					</tr>
+				<tr>
+					<td>
+						<?php $failed = false ?>
+						<?php if (!isset($errors['db_no_innodb'])): ?>
+							<span class="label success" style="float:right">OK</span>
+						<?php else: $failed = true; ?>
+							<span class="label important" style="float:right">FAIL</span>
+						<?php endif ?>
+						Check for InnoDB Engine
+						<?php if ($failed): ?>
+							<div class="alert-message block-message error">
+								Your MySQL server does not support the InnoDB engine.
+							</div>
+						<?php endif ?>
+					</td>
+				</tr>
 
-					<tr>
-						<td>
-							<?php $failed = false ?>
-							<?php if (!isset($errors['db_no_innodb'])): ?>
-								<span class="label success" style="float:right">OK</span>
-							<?php else: $failed = true; ?>
-								<span class="label important" style="float:right">FAIL</span>
-							<?php endif ?>
-							Checking for InnoDB Engine
-							<?php if ($failed): ?>
-								<div class="alert-message block-message error">
-									Your MySQL server does not support the InnoDB engine.
-								</div>
-							<?php endif ?>
-						</td>
-					</tr>
-
-					<tr>
-						<td>
-							<?php $failed = false ?>
-							<?php if (!isset($errors['db_not_empty'])): ?>
-								<span class="label success" style="float:right">OK</span>
-							<?php else: $failed = true; ?>
-								<span class="label important" style="float:right">FAIL</span>
-							<?php endif ?>
-							Checking for existing tables
-							<?php if ($failed): ?>
-								<div class="alert-message block-message error">
-									Existing tables were detected in your database. DeskPRO should be installed
-									into a new, fresh database.
-								</div>
-							<?php endif ?>
-						</td>
-					</tr>
-				<?php endif ?>
-			</tbody>
-		</table>
-	<?php endif ?>
+				<tr>
+					<td>
+						<?php $failed = false ?>
+						<?php if (!isset($errors['db_not_empty'])): ?>
+							<span class="label success" style="float:right">OK</span>
+						<?php else: $failed = true; ?>
+							<span class="label important" style="float:right">FAIL</span>
+						<?php endif ?>
+						Check for existing tables
+						<?php if ($failed): ?>
+							<div class="alert-message block-message error">
+								Existing tables were detected in your database. DeskPRO should be installed
+								into a new, fresh database.
+							</div>
+						<?php endif ?>
+					</td>
+				</tr>
+			<?php endif ?>
+		</tbody>
+	</table>
 <?php endif ?>
 
 <?php if ($is_fatal): ?>

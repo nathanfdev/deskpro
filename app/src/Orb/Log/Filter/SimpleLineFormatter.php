@@ -18,8 +18,8 @@ use \Orb\Log\LogItem;
  */
 class SimpleLineFormatter extends \Orb\Filter\AbstractFilter
 {
-	const DEFAULT_FORMAT = '%datetime% %priority_name% (%priority%): %message%';
-	const DEFAULT_TIME_FORMAT = 'c';
+	const DEFAULT_FORMAT = '[%datetime% %priority_name%] %message%';
+	const DEFAULT_TIME_FORMAT = 'Y-m-d H:i:s';
 
     /**
      * @var string
@@ -39,14 +39,14 @@ class SimpleLineFormatter extends \Orb\Filter\AbstractFilter
 		if (!$log_item) return null;
 
 		$message = $log_item[LogItem::MESSAGE];
-		$message_line = $message;
+		$message_line = $this->_format;
 
 		foreach ($log_item as $k => $v) {
 			if ($v instanceof \DateTime) {
 				$v = $v->format($this->_time_format);
 			}
 
-			$message_line = str_replace("%$k%", $v, $message);
+			$message_line = str_replace("%$k%", $v, $message_line);
 		}
 
 		$log_item[LogItem::MESSAGE_LINE] = $message_line;

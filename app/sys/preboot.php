@@ -30,19 +30,11 @@ unset($max_time);
 $errors = array();
 
 if (!deskpro_install_check_version()) {
-	$errors[] = sprintf("The version of PHP you have (%s) is too old. DeskPRO requires PHP v5.3.2 or newer. You need to upgrade your version.", phpversion());
+	$errors[] = "The version of PHP you have is too old. DeskPRO requires PHP v5.3.2 or newer. You need to upgrade your version.";
 }
 
 if (!deskpro_install_check_safemode()) {
 	$errors[] = "PHP currently has <code>safe_mode</code> enabled. DeskPRO requires safe_mode to be set to \"Off\". You need to edit your PHP configuration to make this change.";
-}
-
-if (!deskpro_install_check_config()) {
-	$errors[] = sprintf("You do not have a configuration file. Copy <code>/config.new.php</code> to <code>/config.php</code> and edit the values within.");
-}
-
-if (!deskpro_install_check_writable()) {
-	$errors[] = sprintf("You must make <code>/app/sys/cache</code> and <code>/app/sys/logs</code> writable by the server.");
 }
 
 if ($errors) {

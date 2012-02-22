@@ -12,14 +12,14 @@
 namespace Application\InstallBundle\Install;
 
 use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Log\Logger;
+use Orb\Log\Logger;
 
 use Application\DeskPRO\App;
 
 class ServerChecks
 {
 	/**
-	 * @var \Application\DeskPRO\Log\Logger
+	 * @var \Orb\Log\Logger
 	 */
 	protected $logger = null;
 
@@ -29,7 +29,7 @@ class ServerChecks
 	protected $server_errors = array();
 
 	/**
-	 * @param \Application\DeskPRO\Log\Logger $logger
+	 * @param \Orb\Log\Logger $logger
 	 */
 	public function setLogger(Logger $logger)
 	{
@@ -133,6 +133,35 @@ class ServerChecks
 
 				// Lets not go any further in case the php version is so old something in this script fails
 				return false;
+			}
+		}
+
+		#------------------------------
+		# config
+		#------------------------------
+
+		if ($type == 'config' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking config file", Logger::DEBUG);
+			if (file_exists(DP_CONFIG_FILE)) {
+				require_once(DP_CONFIG_FILE);
+
+				if (!defined('DP_DATABASE_HOST') || !defined('DP_DATABASE_USER') || !defined('DP_DATABASE_PASSWORD') || !defined('DP_DATABASE_NAME')) {
+					$msg = "/config.php exists but does not contain the required database values";
+					$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+					$this->server_errors['config_values'] = array(
+						'message' => $msg,
+						'level' => 'fatal'
+					);
+				} else {
+					$this->getLogger()->log("[OK] config file exists and contains required values", Logger::DEBUG);
+				}
+			} else {
+				$msg = "/config.php file is missing";
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['config'] = array(
+					'message' => $msg,
+					'level' => 'fatal'
+				);
 			}
 		}
 
@@ -288,17 +317,17 @@ class ServerChecks
 		}
 
 		#------------------------------
-		# mbstring_ext
+		# iconv_ext
 		#------------------------------
 
-		if ($type == 'mbstring_ext' || $type == 'all') {
-			$this->getLogger()->log("[CHECK] Checking mbstring is installed", Logger::DEBUG);
-			if (is_writable(DP_ROOT.'/sys/cache')) {
-				$this->getLogger()->log("[OK] mbstring is installed", Logger::DEBUG);
+		if ($type == 'iconv_ext' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking iconv is installed", Logger::DEBUG);
+			if (function_exists('iconv')) {
+				$this->getLogger()->log("[OK] iconv is installed", Logger::DEBUG);
 			} else {
-				$msg = "You must install and enabled the mbstring extension";
+				$msg = "You must install and enabled the iconv extension";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
-				$this->server_errors['mbstring_ext'] = array(
+				$this->server_errors['iconv_ext'] = array(
 					'message' => $msg,
 					'level' => 'recommended'
 				);
@@ -324,34 +353,16 @@ class ServerChecks
 		}
 
 		#------------------------------
-		# cache_write
-		#------------------------------
-
-		if ($type == 'cache_write' || $type == 'all') {
-			$this->getLogger()->log("[CHECK] Checking if cache dir is writable", Logger::DEBUG);
-			if (is_writable(DP_ROOT.'/sys/cache')) {
-				$this->getLogger()->log("[OK] Cache dir is writable", Logger::DEBUG);
-			} else {
-				$msg = "The " .DP_ROOT.'/sys/cache'. " directory must be writable";
-				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
-				$this->server_errors['cache_write'] = array(
-					'message' => $msg,
-					'level' => 'fatal'
-				);
-			}
-		}
-
-		#------------------------------
 		# logs_write
 		#------------------------------
 
 		if ($type == 'logs_write' || $type == 'all') {
 			$this->getLogger()->log("[CHECK] Checking if logs dir is writable", Logger::DEBUG);
 			$dir = App::getKernel()->getLogDir();
-			if (is_writable($dir)) {
+			if (is_dir($dir) && is_writable($dir)) {
 				$this->getLogger()->log("[OK] Logs dir is writable", Logger::DEBUG);
 			} else {
-				$msg = "The " . str_replace(DP_WEB_ROOT, '', $dir) . " directory must be writable";
+				$msg = "The " . str_replace(DP_WEB_ROOT, '', $dir) . " directory must exist and be writable";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['logs_write'] = array(
 					'message' => $msg,
@@ -424,5 +435,20 @@ class ServerChecks
 		}
 
 		return true;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function hasDbErrors()
+	{
+		foreach ($this->server_errors as $k => $info) {
+			if (strpos($k, 'db_') === 0) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

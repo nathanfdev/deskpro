@@ -22,17 +22,28 @@ class KernelBooter
 			return;
 		}
 
-		require DP_CONFIG_FILE;
+		if (file_exists(DP_CONFIG_FILE)) {
+			require DP_CONFIG_FILE;
 
-		if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
-			$DP_CONFIG = array();
+			if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
+				$DP_CONFIG = array();
+			}
+
+			if (!isset($DP_CONFIG['db'])) $DP_CONFIG['db'] = array();
+			if (!isset($DP_CONFIG['db']['host']))      $DP_CONFIG['db']['host']      = defined('DP_DATABASE_HOST')    ? DP_DATABASE_HOST      : 'localhost';
+			if (!isset($DP_CONFIG['db']['user']))      $DP_CONFIG['db']['user']      = defined('DP_DATABASE_USER')    ? DP_DATABASE_USER      : 'YOUR_DATABASE_USER';
+			if (!isset($DP_CONFIG['db']['password']))  $DP_CONFIG['db']['password']  = defined('DP_DATABASE_PASSWORD') ? DP_DATABASE_PASSWORD : 'YOUR_DATABASE_PASS';
+			if (!isset($DP_CONFIG['db']['dbname']))    $DP_CONFIG['db']['dbname']    = defined('DP_DATABASE_NAME')     ? DP_DATABASE_NAME     : 'YOUR_DATABASE_NAME';
+		} else {
+			if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
+				$DP_CONFIG = array();
+				$DP_CONFIG['db'] = array();
+				$DP_CONFIG['db']['host']      = 'localhost';
+				$DP_CONFIG['db']['user']      = 'YOUR_DATABASE_USER';
+				$DP_CONFIG['db']['password']  = 'YOUR_DATABASE_PASS';
+				$DP_CONFIG['db']['dbname']    = 'YOUR_DATABASE_NAME';
+			}
 		}
-
-		if (!isset($DP_CONFIG['db'])) $DP_CONFIG['db'] = array();
-		if (!isset($DP_CONFIG['db']['host']))      $DP_CONFIG['db']['host']      = DP_DATABASE_HOST;
-		if (!isset($DP_CONFIG['db']['user']))      $DP_CONFIG['db']['user']      = DP_DATABASE_USER;
-		if (!isset($DP_CONFIG['db']['password']))  $DP_CONFIG['db']['password']  = DP_DATABASE_PASSWORD;
-		if (!isset($DP_CONFIG['db']['dbname']))    $DP_CONFIG['db']['dbname']    = DP_DATABASE_NAME;
 
 		if (!defined('DP_BUILD_TIME')) {
 			if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
