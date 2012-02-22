@@ -13,11 +13,6 @@
 				</div>
 			{% endif %}
 			<textarea class="edit-content-field" name="article[content]" rows="5" cols="50">{{ state.article.content|default(article.content) }}</textarea>
-
-			<br />
-
-			<button class="clean-white editor-save-trigger">{{ phrase('agent.save') }}</button>
-			<button class="clean-white editor-cancel-trigger">{{ phrase('agent.cancel') }}</button>
 		</div>
 	</div>
 </div>

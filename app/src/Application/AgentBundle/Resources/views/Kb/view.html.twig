@@ -36,21 +36,12 @@ pageMeta.baseId = '{{ baseId }}';
 	<h1 class="editable hover-edit" data-editable-for=".inline-editable .title">{{ article.title }}</h1>
 	<br class="clear" />
 	<div class="meta-line">
-		<div class="status the-status article-status"><span>
-			{% if feedback.status == 'new' %}
-				New
-			{% elseif feedback.status == 'active' %}
-				Active: {{ feedback.status_category.title }}
-			{% elseif feedback.status == 'closed' %}
-				Closed: {{ feedback.status_category.title }}
-			{% else %}
-				Hidden
-			{% endif %}
-		</span></div>
+		<div class="status the-status article-status"><span>{{ phrase('agent.publish.status_' ~ article.status_code|replace({'.':'_'})) }}</span></div>
 	</div>
 	<br class="clear" />
 </header>
 
+<div class="profile-box-container-outer">
 <div class="profile-box-container">
 	<header>
 		<h4>{{ phrase('agent.label_properties') }}</h4>
@@ -184,6 +175,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</ul>
 	</section>
 </div>
+</div>
 
 <nav class="page-tabs" id="{{baseId}}_bodytabs">
 	<ul>
@@ -193,7 +185,11 @@ pageMeta.baseId = '{{ baseId }}';
 		<li data-tab-for="#{{baseId}}_tab_contents .kb-related-content"><span>{{ phrase('agent.label_related_content') }}</span></li>
 		<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('agent.label_search') }}</span></li>
 	</ul>
-	<button class="clean-white small kb-editor-edit" style="float:right; margin: 6px 10px 0 0;">{{ phrase('agent.edit') }}</button>
+	<div class="buttons">
+		<button class="clean-white small kb-editor-edit" id="{{baseId}}_edit_btn">{{ phrase('agent.edit') }}</button>
+		<button class="clean-white small editor-save-trigger" id="{{baseId}}_save_btn">{{ phrase('agent.save') }}</button>
+		<button class="clean-white small editor-cancel-trigger" id="{{baseId}}_cancel_btn">{{ phrase('agent.cancel') }}</button>
+	</div>
 </nav>
 
 {# Tab Contents #}

@@ -64,4 +64,12 @@
 	'agent.publish.pending_articles' => 'Pending Articles',
 	'agent.publish.draft_content' => 'Drafts',
 	'agent.publish.search_logs' => 'Search Logs',
+
+	'agent.publish.status_published' => 'Published',
+	'agent.publish.status_archived' => 'Archived',
+	'agent.publish.status_hidden_deleted' => 'Deleted',
+	'agent.publish.status_hidden_unpublished' => 'Unpublished',
+	'agent.publish.status_hidden_validating' => 'Validating',
+	'agent.publish.status_hidden_user_validating' => 'User Validating',
+	'agent.publish.status_hidden_spam' => 'Spam',
 );
