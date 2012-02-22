@@ -128,6 +128,20 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 				$('body').removeClass('file-drag-over');
 			}, 100);
 		});
+
+		$('#cancel_related').on('click', function() { self.disableRelatedMode(); });
+
+		var searchCollect = $('.search-collect');
+		this.searchCollect = searchCollect;
+		var collectToucher = new DeskPRO.TouchCaller({
+			timeout: 200,
+			callback: function() {
+				self.enableRelatedMode();
+			}
+		});
+		searchCollect.on('keypress', function() {
+			collectToucher.touch();
+		});
 	},
 
 
@@ -155,6 +169,16 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 	//# Search Bar
 	//##################################################################################################################
 
+	enableRelatedMode: function() {
+		$('#left_pane').addClass('showing-related');
+		this.updateResults();
+	},
+
+	disableRelatedMode: function() {
+		$('#left_pane').removeClass('showing-related');
+		this.updateResults();
+	},
+
 	_initSearch: function() {
 		var self = this;
 		this.searchBox = $('#search_box');
@@ -166,11 +190,20 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			self.clearSearch();
 			self.searchBox.val('').focus();
 		});
+
+		var touchCaller = new DeskPRO.TouchCaller({
+			timeout: 200,
+			callback: function() {
+				self.updateResults();
+			}
+		});
+
 		this.searchBox.on('keypress', function(ev) {
 			if (ev.keyCode == 13 && !ev.metaKey) {
 				ev.preventDefault();//dont enter enter key
 				self.updateResults();
 			} else {
+				touchCaller.touch($(this).val().trim());
 				$('#search_box_clear').show();
 			}
 		});
@@ -190,6 +223,15 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 	updateResults: function() {
 		var self = this;
 		var q = this.searchBox.val().trim();
+
+		if ($('#left_pane').hasClass('showing-related')) {
+			q = [];
+			this.searchCollect.each(function() {
+				q.push($(this).val());
+			});
+
+			q = q.join(' ').trim();
+		}
 
 		if (!q.length) {
 			this.clearSearch();

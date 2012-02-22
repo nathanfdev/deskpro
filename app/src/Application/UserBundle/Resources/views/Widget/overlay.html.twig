@@ -16,11 +16,13 @@
 	{% if app.isDebug() %}
 		{{ dp_asset_html('user_vendors') }}
 		{{ dp_asset_html('user_common') }}
+		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getServerBaseUrl() }}/file.php/res-user/main.css?{{ app.style.css_updated|date('u')|crc32 }}&amp;reload=1" media="screen,print" />
 	{% else %}
 		{{ dp_asset_html('user') }}
+		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.style.css_blob.getDownloadUrl() }}?{{ app.style.css_blob.id }}" media="screen,print" />
 	{% endif %}
 
-	<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getServerBaseUrl() }}/file.php/res/user/main.css?{{ app.style.css_updated|date('u')|crc32 }}" media="screen,print" />
+	<link rel="stylesheet" type="text/css" href="{{ asset('stylesheets/user/main-print.css') }}" media="print" />
 	<!--[if IE ]><link href="{{ asset('stylesheets/user/main-ie.css') }}" rel="stylesheet" type="text/css"><![endif]-->
 
 	<script src="{{ asset('javascripts/DeskPRO/TouchCaller.js') }}" type="text/javascript"></script>
@@ -37,6 +39,10 @@
 <body id="dp_overlay">
 
 <div id="left_pane">
+	<div class="related-title">
+		We've found the following results that are similar to your message
+		<span id="cancel_related">x</span>
+	</div>
 	<div class="search-area">
 		<input id="search_box" type="text" placeholder="Search for something..." />
 		<span id="search_box_clear" style="display: none">x</span>
@@ -124,7 +130,7 @@
 
 				<div class="form-row">
 					<table cellspacing="0" cellpadding="0" width="100%"><tr><td>
-						{% include 'UserBundle:NewTicket:field-subject.html.twig' with {form: ticketform} %}
+						{% include 'UserBundle:NewTicket:field-subject.html.twig' with {form: ticketform, addclass: 'search-collect'} %}
 					</td></tr></table>
 				</div>
 
@@ -137,7 +143,7 @@
 				<div class="form-row">
 					<table cellspacing="0" cellpadding="0" width="100%"><tr><td><div style="position: relative">
 						<div class="dp-drop-file-zone"><h1>Drop your file here to attach it to your message</h1></div>
-						{% include 'UserBundle:NewTicket:field-message.html.twig' with {form: ticketform} %}
+						{% include 'UserBundle:NewTicket:field-message.html.twig' with {form: ticketform, addclass: 'search-collect'} %}
 						{% include 'UserBundle:Common:form-upload-input.html.twig' %}
 					</div></td></tr></table>
 				</div>
@@ -199,6 +205,14 @@
 							</div>
 							<div class="dp-form-input">
 								<input type="text" class="email-field" id="dp_newfeedback_email" name="feedback[person_email]" value="" placeholder="Your Email Address" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+								{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+									<div class="connect-with">
+										Or connect with
+										{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+											{{ render_usersource(usersource, 'widget_overlay_btn') }}
+										{% endfor %}
+									</div>
+								{% endif %}
 								<div class="dp-error-explain">
 									Please enter your name
 								</div>
@@ -247,7 +261,8 @@
 						{{ form_widget(feedbackform.title, {
 							'attr': {
 								'data-field-validators': 'DeskPRO.Form.LengthValidator',
-								'data-min-len': 5
+								'data-min-len': 5,
+								'class': 'search-collect'
 							}
 						}) }}
 						<div class="dp-error-explain">
@@ -264,7 +279,8 @@
 						{{ form_widget(feedbackform.content, {
 							'attr': {
 								'data-field-validators': 'DeskPRO.Form.LengthValidator',
-								'data-min-len': 5
+								'data-min-len': 5,
+								'class': 'search-collect'
 							}
 						}) }}
 						<div class="dp-error-explain">
@@ -315,6 +331,14 @@
 							<div class="dp-form-label">
 								<label>Your Email Address *</label>
 							</div>
+							{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+								<div class="connect-with">
+									Or connect with
+									{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+										{{ render_usersource(usersource, 'widget_overlay_btn') }}
+									{% endfor %}
+								</div>
+							{% endif %}
 							<div class="dp-form-input">
 								<input type="text" class="email-field" id="dp_newchat_email" name="email" value="" placeholder="Your Email Address" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 								<div class="dp-error-explain">
