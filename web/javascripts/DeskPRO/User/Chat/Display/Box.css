@@ -286,8 +286,8 @@ background-color: #eeeeee;
 }
 
 #dpchat_messages {
-    max-height: 250px;
-    min-height: 80px;
+    max-height: 300px;
+    min-height: 160px;
     overflow: auto;
 }
 
