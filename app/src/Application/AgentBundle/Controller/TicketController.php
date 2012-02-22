@@ -106,6 +106,13 @@ class TicketController extends AbstractController
 			if ($hard_delete_time) {
 				$hard_delete_time = Dates::secsToReadable($hard_delete_time);
 			}
+		} elseif ($ticket['hidden_status'] == 'spam') {
+			$hard_delete_time = $ticket->date_status->getTimestamp() + App::getSetting('core_tickets.spam_delete_time');
+			$hard_delete_time = max(0, $hard_delete_time - time());
+
+			if ($hard_delete_time) {
+				$hard_delete_time = Dates::secsToReadable($hard_delete_time);
+			}
 		}
 
 		// Check if the search adapter
@@ -1231,6 +1238,31 @@ class TicketController extends AbstractController
 			'reason' => $this->in->getString('reason'),
 			'date_created' => date('Y-m-d H:i:s')
 		));
+
+		return $this->createJsonResponse(array(
+			'success' => true
+		));
+	}
+
+	/**
+	 * Spam a ticket
+	 *
+	 * @param  $ticket_id
+	 */
+	public function spamAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$ticket->setStatus('hidden.spam');
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
 
 		return $this->createJsonResponse(array(
 			'success' => true

@@ -304,6 +304,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $date_user_waiting = null;
 
 	/**
+	 * @var \DateTime
+	 * @ORM_Mapping\Column(name="date_status",type="datetime")
+	 */
+	protected $date_status = null;
+
+	/**
 	 * @var int
 	 * @ORM_Mapping\Column(name="total_user_waiting", type="integer")
 	 */
@@ -376,6 +382,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->access_codes = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->date_created = new \DateTime();
+		$this->date_status = new \DateTime();
 
 		$len = App::getSetting('core_tickets.ptac_auth_code_len');
 		$this->auth = Strings::random($len, Strings::CHARS_KEY);
@@ -1429,6 +1436,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setStatus($status)
 	{
+		$this['date_status'] = new \DateTime();
+
 		$old_status  = $this->status;
 
 		if ($status == 'awaiting_user' && $old_status == 'awaiting_agent' && $this->date_user_waiting) {

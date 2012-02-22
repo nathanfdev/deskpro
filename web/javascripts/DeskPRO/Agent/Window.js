@@ -985,11 +985,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 * Checks views for a specific page and removes it
 	 */
 	removePage: function(page) {
-
-		var tabId = DeskPRO_Window.TabBar.findTabByPage(page);
-		if (tabId) {
-			DeskPRO_Window.TabBar.removeTabById(tabId);
-		}
+		DeskPRO_Window.TabBar.removeTabById(page.meta.tabId);
 	},
 
 	/**

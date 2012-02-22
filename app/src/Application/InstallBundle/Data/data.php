@@ -699,6 +699,17 @@ $em->persist($j);
 $em->flush();
 
 
+##BEGIN:create_jobs.delete_spam_tickets##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'delete_spam_tickets';
+$j['worker_group'] = 'delete_spam_tickets';
+$j['title'] = 'Delete Spam Tickets';
+$j['description'] = 'Runs through old spammed tickets and deletes them';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\DeleteSpamTickets';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\DeleteSpamTickets::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
 ################################################################################
 # Portal Blocks
 ################################################################################

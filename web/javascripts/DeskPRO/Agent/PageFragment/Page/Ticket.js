@@ -46,6 +46,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (this.meta.isDeleted) {
 			$('button.undelete-trigger', this.wrapper).on('click', this.doTicketUndelete.bind(this));
 		}
+		if (this.meta.isSpam) {
+			$('button.unspam-trigger', this.wrapper).on('click', this.doTicketUnspam.bind(this));
+		}
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.opened', { ticketId: this.getMetaData('ticket_id') });
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.tab.opened', { type: 'tickets', id: this.getMetaData('ticket_id') });
@@ -525,6 +528,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var self = this;
 
 		this.getEl('delete_trigger').click(function() { self.showDeleteOverlay(); });
+		this.getEl('spam_trigger').click(function() { self.doTicketSpam(); });
 		this.getEl('print_trigger').click(function() { window.print(); });
 	},
 
@@ -577,9 +581,36 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 	},
 
+	doTicketSpam: function() {
+		var self = this;
+
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/spam',
+			type: 'POST',
+			dataType: 'json',
+			success: function(data) {
+				DeskPRO_Window.removePage(self);
+
+				// Reload the ticket page
+				DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+			}
+		});
+	},
+
 	doTicketUndelete: function() {
 		var self = this;
-		var prop = this.getPropertyManager('status');
+		var prop = this.changeManager.getPropertyManager('status');
+		this.changeManager.setInstantChange(prop, 'awaiting_agent', function() {
+			DeskPRO_Window.removePage(self);
+
+			// Reload the ticket page
+			DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+		});
+	},
+
+	doTicketUnspam: function() {
+		var self = this;
+		var prop = this.changeManager.getPropertyManager('status');
 		this.changeManager.setInstantChange(prop, 'awaiting_agent', function() {
 			DeskPRO_Window.removePage(self);
 

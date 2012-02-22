@@ -1039,6 +1039,12 @@ $collection->add('agent_ticket_delete', new Route(
 	array()
 ));
 
+$collection->add('agent_ticket_spam', new Route(
+	'/tickets/{ticket_id}/spam',
+	array('_controller' => 'AgentBundle:Ticket:spam'),
+	array('ticket_id' => '\\d+'),
+	array()
+));
 
 ################################################################################
 # Twitter

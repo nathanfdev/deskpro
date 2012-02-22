@@ -20,6 +20,8 @@
 	'agent.save' => 'Save',
 	'agent.update' => 'Update',
 	'agent.delete' => 'Delete',
+	'agent.spam' => 'Spam',
+	'agent.unspam' => 'Unspam',
 	'agent.insert' => 'Insert',
 	'agent.add' => 'Add',
 	'agent.send' => 'Send',
