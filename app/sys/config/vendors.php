@@ -29,11 +29,6 @@
 		'repos' => 'git://github.com/facebook/php-sdk.git',
 		'version' => 'v3.1.1',
 	),
-	'htmlpurifier' => array(
-		'into' => DP_ROOT.'/vendor/htmlpurifier',
-		'repos' => 'git://github.com/ezyang/htmlpurifier.git',
-		'version' => 'v4.3.0',
-	),
 	'imagine' => array(
 		'into' => DP_ROOT.'/vendor/imagine',
 		'repos' => 'git://github.com/avalanche123/Imagine.git',

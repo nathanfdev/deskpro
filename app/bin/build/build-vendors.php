@@ -319,11 +319,6 @@ function deskpro_build_cleanvendors_facebook($dir)
 	deskpro_build_exec_exit_error("rm -rf examples tests readme.md", $dir);
 }
 
-function deskpro_build_cleanvendors_htmlpurifier($dir)
-{
-	deskpro_build_exec_exit_error("rm -rf art benchmarks configdoc docs extras maintenance plugins smoketests tests .gitattributes .gitignore CREDITS Doxyfile FOCUS INSTALL INSTALL.fr.utf8 NEWS README TODO VERSION WHATSNEW UPGRADE README.md composer.json build.properties WYSIWYG package.php phpdoc.ini release1-update.php release2-tag.php test-settings.sample.php", $dir);
-}
-
 function deskpro_build_cleanvendors_imagine($dir)
 {
 	deskpro_build_exec_exit_error("rm -rf docs tests .gitignore .travis.yml composer.json Gemfile imagine.phar phpunit.xml.dist Rakefile README.md", $dir);
