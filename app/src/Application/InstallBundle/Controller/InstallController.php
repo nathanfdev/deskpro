@@ -425,7 +425,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 	public function installDoneAction()
 	{
 		if (!$this->ensureNotInstalled()) {
-			return $this->redirect($this->generateUrl('install'));
+			//return $this->redirect($this->generateUrl('install'));
 		}
 
 		$this->getLogger()->log('Install::installDone', 'debug');
@@ -433,7 +433,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		$rewrite_urls = false;
 		try {
 
-			$url = App::getRequest()->getUriForPath('/?_sys=checkurl');
+			$url = App::getRequest()->getUriForPath('/__checkurlrewrite');
 			$url_noindex = str_replace('/index.php/', '/', $url);
 
 			$client = new \Zend\Http\Client(null, array('timeout' => 5));
