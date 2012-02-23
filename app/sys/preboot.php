@@ -33,6 +33,10 @@ if (!deskpro_install_check_version()) {
 	$errors[] = "The version of PHP you have is too old. DeskPRO requires PHP v5.3.2 or newer. You need to upgrade your version.";
 }
 
+if (!deskpro_install_check_pcre()) {
+	$errors[] = "PHP is configured with a `pcre.backtrack_limit` value that is too low. Edit your php.ini configuration and change it to at least 100000.";
+}
+
 if (!deskpro_install_check_safemode()) {
 	$errors[] = "PHP currently has <code>safe_mode</code> enabled. DeskPRO requires safe_mode to be set to \"Off\". You need to edit your PHP configuration to make this change.";
 }

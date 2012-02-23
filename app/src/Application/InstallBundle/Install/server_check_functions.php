@@ -5,6 +5,17 @@ function deskpro_install_check_version()
 	return version_compare(phpversion(), '5.3.2', '>=');
 }
 
+function deskpro_install_check_pcre()
+{
+	$backtrack_limit = (int)(@ini_get('pcre.backtrack_limit'));
+
+	if ($backtrack_limit < 100000) {
+		return false;
+	}
+
+	return true;
+}
+
 function deskpro_install_check_safemode()
 {
 	$v = ini_get('safe_mode');
