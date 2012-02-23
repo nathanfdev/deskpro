@@ -487,6 +487,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$this->getOrm()->getConnection()->commit();
 
 			try {
+				\DeskPRO\Kernel\License::getLicense();
 				$stats = new \Application\InstallBundle\Data\ServerStats($this->getDb());
 
 				$this->getLogger()->log(DP_LIC_SERVER . '/report-stats.json', 'debug');
