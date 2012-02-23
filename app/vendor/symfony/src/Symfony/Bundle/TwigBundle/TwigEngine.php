@@ -16,7 +16,6 @@ use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables;
 use Symfony\Component\Templating\TemplateNameParserInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-
 /**
  * This engine knows how to render Twig templates.
  *
