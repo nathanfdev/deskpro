@@ -79,7 +79,3 @@ AnnotationRegistry::registerLoader(function($class) use ($loader) {
 AnnotationRegistry::registerFile(DP_ROOT.'/vendor/doctrine/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php');
 
 require DP_ROOT.'/vendor/swiftmailer/lib/swift_required.php';
-
-define('HTMLPURIFIER_PREFIX', DP_ROOT.'/vendor/htmlpurifier/library');
-require DP_ROOT.'/vendor/htmlpurifier/library/HTMLPurifier/Bootstrap.php';
-spl_autoload_register(array('HTMLPurifier_Bootstrap', 'autoload'));

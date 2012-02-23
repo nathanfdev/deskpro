@@ -39,6 +39,8 @@ class HtmlPurifier implements CleanerPlugin
 			return $value;
 		}
 
+		require_once DP_ROOT.'/vendor/htmlpurifier/HTMLPurifier.standalone.php';
+
 		$purifier = new \HTMLPurifier();
 		$config = $this->getConfigForType($type);
 
