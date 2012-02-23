@@ -90,7 +90,7 @@ class ServerStats
 			$stats['server_os'] = PHP_OS;
 		}
 
-		$stats['server_uname'] = php_uname();
+		$stats['server_uname'] = php_uname('s') . ' ' . php_uname('r') . ' ' . php_uname('v') . ' ' . php_uname('m');
 
 		#------------------------------
 		# Web server

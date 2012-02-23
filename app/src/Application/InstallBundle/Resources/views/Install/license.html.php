@@ -1,12 +1,153 @@
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
-<?php $view['slots']->start('subtitle') ?>Step 2: License Agreement<?php $view['slots']->stop() ?>
+<?php $view['slots']->start('subtitle') ?>Step 1: License Agreement<?php $view['slots']->stop() ?>
 <?php $failed = false ?>
 <h3>License Agreement</h3>
 <table class="bordered-table zebra-striped">
 	<tbody>
 		<tr>
 			<td>
-				<pre style="height: 300px; overflow: auto; font-family: monospace; border: none; margin: 0; padding: 0;"><?php echo $lictext ?></pre>
+				<div style="height: 300px; overflow: auto;">
+					<pre style="font-family: monospace; border: none; margin: 0; padding: 0;">
+This document contains the End User License Agreement between Headstart
+Solutions Limited, herein referred to as "the company", "we", "us", and "our",
+and the End User (herein referred to as "you", "your", "yours", etc.). By
+installing and using DeskPRO (herein referred to as "the software"), you are
+agreeing to these terms and conditions.
+
+Terms and Definitions
+
+An "instance" of the software is a unique installation of the software on a
+system capable of running it, whether used for production purposes or for
+testing. A "technician" is a unique account installed in an instance of
+DeskPRO, used by a member of your technical staff to provide technical support
+assistance to your users. An "administrator" or "admin" is a technician with
+additional administration privileges. A "user" is a unique account installed
+in an instance of DeskPRO, used by one or more persons to obtain support from
+your technical staff. A "ticket" is a single support request tracked in the
+software. These are normally submitted by your users but can also be created
+by your technicians. Right To Run
+
+Your purchase of a DeskPRO license grants you the right to make use of a
+single instance of the software. You may temporarily install a second instance
+of DeskPRO on an internal development server for testing and deployment
+planning, but only one instance of DeskPRO shall be in operation (available
+for access to your users or technicians).
+
+If you wish to run more than one instance of DeskPRO, you must purchase an
+additional license for each additional instance.
+
+Modifications to the software or database to circumvent the
+one-license-one-instance rule are prohibited.
+
+Licensee
+
+The Software is licensed only to you. You may not rent, lease, sublicence,
+sell, assign, pledge, transfer or otherwise dispose of the Software in any
+form, on a temporary or permanent basis, without the prior written consent of
+DeskPRO Ltd.
+
+Accurte License Information
+
+Your right to use a DeskPRO instance under a purchased license requires you to
+provide accurate information regarding the location (or planned location) of
+the software instance. You must maintain accurate contact information in your
+Members Area profile and maintain accurate location details for your software
+instance(s).
+
+Alteration of Source Code
+
+If you have purchased DeskPRO Enterprise, which includes visible source code,
+you are permitted to make modifications to the software to suit your needs,
+subject to these conditions:
+
+You may not distribute the software or any portion thereof, or permit or cause
+to be exposed any portion of the source code to any other party without the
+express written consent of DeskPRO Limited. You may not attempt to
+circumvent any license validation checks. Unless you have purchased a
+copyright removal license, all copyright notices must remain intact in the
+source code. Removal of Copyright Notices
+
+If you have not purchased a copyright removal license, all copyright notices
+included in the software (including in source code and templates) must remain
+intact. This includes "Powered by DeskPRO" and similar notices. You may,
+however, change the appearance of all other aspects of the interface.
+
+If you have purchased the copyright removal license, you may make any desired
+changes to templates, including to the copyright notices.
+
+Circumvention of Software Limits
+
+If you have purchased a version of the software that includes restrictions on
+any resource, you may not attempt to circumvent the internal checks performed
+by the software to ensure compliance with these restrictions.
+
+Verification of Minimum Server Requirements
+
+If you have purchased a license for a standalone instance of DeskPRO, it is
+your responsibility to verify your target equipment meets the minimum
+requirements specified by the software's documentation. Refunds are not
+offered.
+
+Anonymous Server Statistics
+
+The Software will collect information about your server that will be used for
+statistical analysis. This information does not include any personally
+identified information and cannot be used to track or identify you or your
+website. <span style="border-bottom: 1px dotted #888; cursor: pointer;" id="stats_expand">Click here to see the data that will be sent.</span>
+
+<div id="stats_list" style="display: none;"><?php echo $stats ?></div><input type="checkbox" style="width: 10px;" name="stats_opt_out" /> If you do not want to participate in the anonymous server statistics program,
+check this box to opt out.
+
+License Transfer
+
+We may, at our discretion, allow you to transfer your license to another
+party, providing the license:
+
+has not already been transferred was purchased more than 4 months ago the
+members area access is active the license was purchased at full cost (for
+example a 2nd license purchased at a discount can not be transfered)
+Disclaimer of Liability
+
+THE SOFTWARE AND THE ACCCOMPANYING FILES ARE SOLD "AS IS" AND WITHOUT
+WARRANTIES AS TO PERFORMANCE OF MERCHANTABILITY OR ANY OTHER WARRANTIED
+WHETHER EXPRESSED OR IMPLIED.
+
+NO ORAL OR WRITTEN INFORMATION OR ADVICE GIVEN BY DESKPRO LIMITED,
+ITS DEALERS, DISTRIBUTORS, AGENTS OR EMPLOYEES SHALL CREATE A WARRANTY OR IN
+ANY WAY INCREASE THE SCOPE OF ANY WARRANTY PROVIDED HEREIN.
+
+DESKPRO LIMITED SHALL HAVE NO RESPONSIBILITY IF THE SOFTWARE HAS
+BEEN ALTERED IN ANY WAY, OR FOR ANY FAILURE THAT ARISES OUT OF USE OF THE
+SOFTWARE WITH OTHER THAN A RECOMMENDED HARDWARE CONFIGURATION, PLATFORM OR
+OPERATING SYSTEM.
+
+NEITHER DESKPRO LIMITED NOR ITS SUPPLIERS SHALL BE LIABLE TO YOU
+OR ANY THIRD PARTY FOR ANY INDIRECT, SPECIAL, INCIDENTAL, PUNITIVE, COVER OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, DAMAGES FOR THE
+INABILITY TO USE EQUIPMENT OR ACCESS DATA, LOSS OF BUSINESS, LOSS OF PROFITS,
+BUSINESS INTERRUPTION OR THE LIKE), ARISING OUT OF THE USE OF, OR INABILITY TO
+USE, THE SOFTWARE AND BASED ON ANY THEORY OF LIABILITY INCLUDING BREACH OF
+CONTRACT, BREACH OF WARRANTY, TORT (INCLUDING NEGLIGENCE), PRODUCT LIABILITY
+OR OTHERWISE, EVEN IF DESKPRO LIMITED OR ITS REPRESENTATIVES HAVE
+BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES AND EVEN IF A REMEDY SET FORTH
+HEREIN IS FOUND TO HAVE FAILED OF ITS ESSENTIAL PURPOSE.
+
+Termination of License
+
+DeskPRO Limited reserves the right to terminate your license if
+any clause of this agreement is found to have been violated.
+
+Enforcability
+
+This Agreement constitutes the complete statement of the agreement between you
+and DeskPRO Ltd, and supercedes all representations,
+understandings or prior agreements between you and DeskPRO Ltd.
+
+DeskPRO Ltd reserves the right to modify these terms at any time.
+
+This Agreement is governed by the laws of England and Wales.
+					</pre>
+				</div>
 			</td>
 		</tr>
 	</tbody>
@@ -16,7 +157,7 @@
 	<label style="float: none; width: 100%;"><input type="checkbox" id="accept_check" /> I agree to the above license agreement</label>
 
 	<div class="alert-actions">
-		<a class="btn disabled" id="next_btn" href="<?php echo $view['router']->generate('install_verify_files') ?>">Go to step 3: Verify file integrity</a>
+		<a class="btn disabled" id="next_btn" href="<?php echo $view['router']->generate('install_checks') ?>">Go to step 2: Perform server checks</a>
 	</div>
 </div>
 <script type="text/javascript">
@@ -35,6 +176,11 @@ $(document).ready(function() {
 		if ($(this).hasClass('disabled')) {
 			ev.preventDefault();
 		}
+	});
+
+	$('#stats_expand').click(function() {
+		$(this).text('Here is the data that will be submitted:').css({'border-bottom': 'none', 'cursor': 'default'});
+		$('#stats_list').show();
 	});
 });
 </script>

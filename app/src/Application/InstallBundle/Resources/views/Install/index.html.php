@@ -1,5 +1,5 @@
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
-<?php $view['slots']->start('subtitle') ?>Step 1: Server and Config Checks<?php $view['slots']->stop() ?>
+<?php $view['slots']->start('subtitle') ?>Step 2: Server and Config Checks<?php $view['slots']->stop() ?>
 <?php $failed = false ?>
 <h3>Server Checks</h3>
 <table class="bordered-table zebra-striped">
@@ -293,7 +293,7 @@
 		to the next step.
 
 		<div class="alert-actions">
-			<a class="btn" href="<?php echo $view['router']->generate('install_license') ?>">Continue to Step 2</a>
+			<a class="btn" href="<?php echo $view['router']->generate('install_license') ?>">Go to step 3: Verify file integrity</a>
 		</div>
 	</div>
 <?php endif ?>

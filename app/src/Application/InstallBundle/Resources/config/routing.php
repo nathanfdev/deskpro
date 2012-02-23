@@ -5,15 +5,21 @@ use Symfony\Component\Routing\Route;
 
 $collection = new RouteCollection();
 
-$collection->add('install', new Route(
-	'/',
+$collection->add('install_checks', new Route(
+	'/server-checks',
 	array('_controller' => 'InstallBundle:Install:index'),
 	array(),
 	array()
 ));
 
 $collection->add('install_license', new Route(
-	'/license',
+	'/',
+	array('_controller' => 'InstallBundle:Install:license'),
+	array(),
+	array()
+));
+$collection->add('install', new Route(
+	'/',
 	array('_controller' => 'InstallBundle:Install:license'),
 	array(),
 	array()

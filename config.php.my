@@ -1,0 +1,261 @@
+<?php
+
+define('DP_OVERRIDE_USER_PASS', '2:pass');
+define('DP_LIC_SERVER', 'http://deskpro.devput/deskpro_tools/index_dev.php');
+define('DP_LIC_STR', 'MDAwMC0wMDAwLTAwMDBUR1FHQ1NPSFhMQk9IQ1ZJU0ZLUGlSA3p0aQFic35UP1UpUWcLaRt+ZmNZaDQ6VFR3LwQkNzxNejMmIRsOelxiChREPwEXGikODgkfLHlADRAXCAQ/fj0uIXhqa2J6H1NLfFBnbXcCXyBrFnIMak03fz5JeFg8SSpfKwZxSXpUfwUqCykAP1wwIDhdZg86NxYQCRIAZztRGiQ/PnUubyoYAytbKkMbBjENI2gdDBQFJgkhOFYZDFIwCR5dFn8HHCIpOBx1BjFzHRABUix3blUHLScILx47CWB1LUBmbGoVZDdpHnxYfh11DHtJEkkvRj1gfQx4TC9LfGQoA10AF18eGiVDB3ooJgILEFgMMyk0MlY5MQcyOTYiSQ4ANR0FGBNZMR4pLVYWW28+CgxYfw9/ACxEDmYAU3EcWgABYGldcV59AmFbKh9AXnkFVjZt');
+define('DP_INSTALL_KEY', 'DXRPIOOUEFHSRPLIIWPT');
+
+
+$DP_CONFIG = array();
+
+$DP_CONFIG['import'] = array(
+	'importer' => 'Deskpro3',
+	'db_host' => 'localhost',
+	'db_user' => 'root',
+	'db_password' => 'root',
+	//'db_name' => 'dp_realhd'
+	'db_name' => 'dp_realhd',
+	'store_attachment_files' => false,
+	//'existing_attachment_files' => ''
+);
+
+$DP_CONFIG['php_path'] = '/Applications/MAMP/bin/php/php5.3.6/bin/php';
+$DP_CONFIG['no_report_errors'] = true;
+$DP_CONFIG['mail'] = array();
+$DP_CONFIG['mail']['default_from'] = 'chris.nadeau@deskpro.com';
+
+$DP_CONFIG['SETTINGS'] = array();
+$DP_CONFIG['SETTINGS']['core.site_url'] = 'http://www.deskpro.com/';
+$DP_CONFIG['SETTINGS']['core.site_name'] = 'DeskPRO.com';
+$DP_CONFIG['SETTINGS']['core.deskpro_name'] = 'Helpdesk';
+$DP_CONFIG['SETTINGS']['core.deskpro_url'] = 'http://deskpro.devput/dp_400/';
+//$DP_CONFIG['SETTINGS']['core.deskpro_assets_full_url'] = 'http://deskpro.devput/dp_400/deskpro_assets/';
+$DP_CONFIG['SETTINGS']['core.disqus_shortname'] = 'deskprodev';
+$DP_CONFIG['SETTINGS']['core.facebook_like'] = false;
+//$DP_CONFIG['SETTINGS']['core.filestorage_method'] = 'fs';
+//$DP_CONFIG['SETTINGS']['core.filesystem_move_from_id'] = '1';
+//$DP_CONFIG['SETTINGS']['core.helpdesk_disabled'] = true;
+$DP_CONFIG['SETTINGS']['user.disable_chat_element'] = false;
+$DP_CONFIG['SETTINGS']['core.use_ticket_category'] = true;
+$DP_CONFIG['SETTINGS']['core.use_ticket_priority'] = true;
+$DP_CONFIG['SETTINGS']['core.use_ticket_workflow'] = true;
+$DP_CONFIG['SETTINGS']['core.use_agent_team'] = 0;
+$DP_CONFIG['SETTINGS']['core.install_key'] = DP_INSTALL_KEY;
+$DP_CONFIG['SETTINGS']['core.default_from_email'] = 'chris.nadeau@deskpro.com';
+//$DP_CONFIG['SETTINGS']['core.comments_adapter'] = 'disqus';
+//$DP_CONFIG['SETTINGS']['core.comments_adapter'] = 'facebook';
+//$DP_CONFIG['SETTINGS']['core.facebook_like'] = true;
+
+$DP_CONFIG['rewrite_urls'] = true;
+
+################################################################################
+# Database Configuration
+################################################################################
+define('DP_DATABASE_HOST', 'localhost');
+define('DP_DATABASE_USER', 'root');
+define('DP_DATABASE_PASSWORD', 'root');
+define('DP_DATABASE_NAME', 'dp_real_03');
+define('DP_DATABASE_NAME', 'dp_real_03');
+//define('DP_DATABASE_NAME', 'dp_test');
+//define('DP_DATABASE_NAME', 'dp_400');
+
+################################################################################
+# Misc
+################################################################################
+
+/**
+ * Path to serve static files from, with trailing slash.
+ * When none provided, the /static/ directory under the current request is used.
+ */
+//$DP_CONFIG['static_path'] = 'file:///Users/chroder/Sites/deskpro/dp_400/static';
+
+/**
+ * Path to store cache files. Defaults to appfiles/sys/cache
+ */
+//$DP_CONFIG['cache_dir'] = '/home/chroder/dp400_cache/%env%';
+
+//$DP_CONFIG['debug'] = array('dev' => true);
+
+$DP_CONFIG['debug'] = array();
+$DP_CONFIG['debug']['dev'] = true;
+
+$DP_CONFIG['debug']['querylog'] = array(
+	'enabled'       => false,
+	'log_maxtime'   => 0.2,
+	'log_nowhere'   => 0.08,
+	'log_countstar' => false,
+	'log_all'       => false,
+	'log_explain'   => false,
+	'log_trace'     => false,
+);
+$DP_CONFIG['debug']['querylog_time'] = 0.2;
+
+$DP_CONFIG['debug']['querylog_nowhere'] = true;
+
+$DP_CONFIG['debug']['querylog_debug'] = false;
+//$DP_CONFIG['debug']['enable_profiler'] = true;
+
+/**
+ * Disable message duplication checks
+ */
+//$DP_CONFIG['debug']['disable_dupe_check'] = true;
+
+################################################################################
+# Mail related
+################################################################################
+
+$DP_CONFIG['debug']['mail'] = array();
+$DP_CONFIG['debug']['mail']['save_to_file'] = true;
+$DP_CONFIG['debug']['mail']['disable_send'] = 1;
+$DP_CONFIG['debug']['ticket_change_logger'] = 1;
+
+
+################################################################################
+# Templates
+################################################################################
+
+$DP_CONFIG['debug']['raw_assets'] = array();
+$DP_CONFIG['debug']['enable_profiler'] = true;
+//$DP_CONFIG['debug']['raw_assets'][] = 'all -vendors';
+//$DP_CONFIG['debug']['raw_assets'][] = 'all';
+//$DP_CONFIG['debug']['raw_assets'][] = 'agent_agent_ui';
+//$DP_CONFIG['debug']['raw_assets'][] = 'agent_window_sections';
+//$DP_CONFIG['debug']['raw_assets'][] = 'agent_pages';
+//$DP_CONFIG['debug']['raw_assets'][] = 'agent_pages_lists';
+//$DP_CONFIG['debug']['raw_assets'][] = 'agent_settingswin';
+//$DP_CONFIG['debug']['raw_assets'][] = 'agent_interface_css';
+
+/**
+ * Dont cache user CSS after processing
+ */
+$DP_CONFIG['debug']['no_css_cache'] = true;
+
+/**
+ * True to rename .less to .css and change stylesheets-less to stylesheets/.
+ * This is only useful if you are auto-compiling LESS stylesheets to CSS which
+ * may be useful in development.
+ */
+$DP_CONFIG['debug']['less_use_css_dir'] = true;
+
+$DP_CONFIG['debug']['templates'] = array();
+
+/**
+ * When enabled, templates are never fetched from the database.
+ */
+$DP_CONFIG['debug']['templates']['disable_db_templates'] = 1;
+
+/**
+ * These options are passed to JS handlers to enable various debug options.
+ */
+$x = 1;
+$DP_CONFIG['debug']['js'] = array(
+	//'devbar' => true,
+
+	'pollerInterval' => 10000,
+
+	// Disables section handlers in the agent interface,
+	//'disableSectionHandlers' => true,
+
+	/**
+	 * Show the 'test' section, and also disable the requirement of a listpane
+	 * matching a section. When no match is found, it'll use the test
+	 */
+	//'useTestSection' => true,
+
+	// When the above option is true, still enable these
+	'enableSectionHandlers' => array(
+		//'DeskPRO.Agent.WindwElement.Section.Test',
+		//'DeskPRO.Agent.WindowElement.Section.Feedback',
+		//'DeskPRO.Agent.WindowElement.Section.Publish',
+		//'DeskPRO.Agent.WindowElement.Section.Tickets',
+		//'DeskPRO.Agent.WindowElement.Section.Tasks',
+		//'DeskPRO.Agent.WindowElement.Section.People',
+		//'DeskPRO.Agent.WindowElement.Section.UserChat',
+		//'DeskPRO.Agent.WindowElement.Section.AgentChat',
+		//'DeskPRO.Agent.WindowElement.Section.Twitter',
+		//'DeskPRO.Agent.WindowElement.Section.Deal',
+	),
+
+	// When selecting a new section, dont run the auto load route
+	'noAutoLoadList' => true,
+
+	// Disables the AJAX that saves and relaods previous state
+	'disableSaveState' => true,
+
+	// Disables use of URL fragments
+	'disableUrlFragments' => true,
+
+	// Run these routes automatically when first entering the agent UI
+	// array(array('ticket', 'route_name', array('param' => 'xxx')))
+	'autoLoadRoutes' => array(
+		//array('person', 'agent_people_view', array('person_id' => 20001)),
+		//array('person', 'agent_people_view', array('person_id' => 2)),
+		//array('person', 'agent_people_view', array('person_id' => 47980)),
+		//array('person', 'agent_people_view', array('person_id' => 20112)),
+		//array('person', 'agent_people_view', array('person_id' => 20171)),
+		//array('page', 'agent_org_view', array('organization_id' => 1)),
+		//array('page', 'agent_org_view', array('organization_id' => 53)),
+		//array('ticket', 'agent_ticket_view', array('ticket_id' => 2)),
+		//array('ticket', 'agent_ticket_view', array('ticket_id' => 58)),
+		//array('ticket', 'agent_ticket_view', array('ticket_id' => 59)),
+		//array('ticket', 'agent_ticket_view', array('ticket_id' => 57)),
+		//array('ticket', 'agent_ticket_view', array('ticket_id' => 2348)),
+		//array('ticket', 'agent_ticket_view', array('ticket_id' => 1500)),
+		//array('ticket', 'agent_ticket_view', array('ticket_id' => 23507)),
+		//array('ticket', 'agent_ticket_view', array('ticket_id' => 20126)),
+		//array('ticket', 'agent_ticket_view', array('ticket_id' => 500)),
+		//array('ticket', 'agent_ticket_view', array('ticket_id' => 502)),
+		//array('ticket', 'agent_ticket_view', array('ticket_id' => 503)),
+		//array('ticket', 'agent_ticket_view', array('ticket_id' => 504)),
+		//array('ticket', 'agent_ticket_view', array('ticket_id' => 21568)),
+		//array('ticket', 'agent_ticket_view', array('ticket_id' => 21569)),
+		//array('ticket', 'agent_ticket_view', array('ticket_id' => 23705)),
+		//array('ticket', 'agent_ticket_view', array('ticket_id' => 13117)),
+		//array('page', 'agent_ticket_snippetviewer', array('ticket_id' => 23705)),
+		//array('ticket', 'agent_ticket_new', array()),
+		//array('page', 'agent_ticket_new', array()),
+		//array('listpane', 'agent_ticketsearch_runnamedfilter', array('filter_name' => 'all')),
+		//array('listpane', 'agent_ticketsearch_runnamedfilter', array('filter_name' => 'agent_team')),
+		//array('listpane', 'agent_ticketsearch_deletedlist', array()),
+		//array('listpane', 'agent_recyclebin', array()),
+		//array('listpane', 'agent_ticketsearch_customfilter', array()),
+		//array('listpane', 'agent_peoplesearch_customfilter', array()),
+		//array('listpane', 'agent_orgsearch_customfilter', array()),
+		//array('page', 'agent_test_tab', array('page_count' => $x++, 'rand' => mt_rand(1,1000000))),
+		//array('page', 'agent_test_tab', array('page_count' => $x++, 'rand' => mt_rand(1,1000000))),
+		//array('page', 'agent_test_tab', array('page_count' => $x++, 'rand' => mt_rand(1,1000000))),
+		//array('page', 'agent_test_tab', array('page_count' => $x++, 'rand' => mt_rand(1,1000000))),
+		//array('page', 'agent_test_tab', array('page_count' => $x++, 'rand' => mt_rand(1,1000000))),
+		//array('page', 'agent_test_tab', array('page_count' => $x++, 'rand' => mt_rand(1,1000000))),
+		//array('page', 'agent_test_tab', array('page_count' => $x++, 'rand' => mt_rand(1,1000000))),
+		//array('page', 'agent_test_tab', array('page_count' => $x++, 'rand' => mt_rand(1,1000000))),
+		//array('page', 'agent_test_tab', array('page_count' => $x++, 'rand' => mt_rand(1,1000000))),
+		//array('page', 'agent_test_tab', array('page_count' => $x++, 'rand' => mt_rand(1,1000000))),
+		//array('page', 'agent_test_tab', array('rand' => mt_rand(1,1000000))),
+		//array('page', 'agent_test_tab', array('rand' => mt_rand(1,1000000))),
+		//array('page', 'agent_test_tab', array('rand' => mt_rand(1,1000000))),
+		//array('page', 'agent_kb_newarticle', array()),
+		//array('page', 'agent_kb_glossary', array()),
+		//array('page', 'agent_userchat_view', array('conversation_id' => 14)),
+		//array('listpane', 'agent_kb_validating', array()),
+		//array('listpane', 'agent_feedback_validating', array()),
+		//array('listpane', 'agent_feedback_validating_comments', array()),
+		//array('listpane', 'agent_feedback_status', array('status' => 'active')),
+		//array('page', 'agent_news_view', array('news_id' => 20)),
+		//array('page', 'agent_org_view', array('organization_id' => 1)),
+		//array('page', 'agent_downloads_view', array('download_id' => 3)),
+		//array('page', 'agent_kb_article', array('article_id' => 1)),
+		//array('page', 'agent_news_view', array('news_id' => 20)),
+		//array('page', 'agent_feedback_view', array('feedback_id' => 1)),
+		//array('page', 'agent_ticket_new', array()),
+	),
+
+	// Write incoming client messages to console.log (see AbstractChanneler)
+	'logClientMessages' => true,
+);
+
+//$DP_CONFIG['static_path'] = 'file:///Users/chroder/Sites/deskpro/dp_400/static';
+
+if (isset($_SERVER['HTTP_USER_AGENT']) AND strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') !== false) {
+	$DP_CONFIG['static_path'] = null;
+}

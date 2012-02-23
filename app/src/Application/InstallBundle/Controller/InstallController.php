@@ -99,20 +99,22 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		$logs_dir_info = $this->container->getLogDir();
 		$logs_dir_info = str_replace(DP_WEB_ROOT, '', $logs_dir_info);
 
-		try {
-			$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($this->getDb());
-			$stats = $stats_fetcher->getStats();
-			$stats['server_check_errors'] = $server_check->getErrors();
+		if (!isset($_POST['stats_opt_out'])) {
+			try {
+				$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($this->getDb());
+				$stats = $stats_fetcher->getStats();
+				$stats['server_check_errors'] = $server_check->getErrors();
 
-			$client = new \Zend\Http\Client(null, array('timeout' => 5));
-			$client->setMethod(\Zend\Http\Request::METHOD_POST);
-			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/report-stats.json');
-			foreach ($stats as $k => $v) {
-				$client->getRequest()->post()->set("stats[$k]", $v);
-			}
-			$r = $client->send();
-			$this->getLogger()->log('Stat server responds: ' . $r->getBody(), 'debug');
-		} catch (\Exception $e) { }
+				$client = new \Zend\Http\Client(null, array('timeout' => 5));
+				$client->setMethod(\Zend\Http\Request::METHOD_POST);
+				$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/report-stats.json');
+				foreach ($stats as $k => $v) {
+					$client->getRequest()->post()->set("stats[$k]", $v);
+				}
+				$r = $client->send();
+				$this->getLogger()->log('Stat server responds: ' . $r->getBody(), 'debug');
+			} catch (\Exception $e) { }
+		}
 
 		return $this->render('InstallBundle:Install:index.html.php', array(
 			'errors' => $server_check->getErrors(),
@@ -131,10 +133,14 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 	public function licenseAction()
 	{
-		$lictext = file_get_contents(DP_ROOT.'/docs/license.txt');
+		try {
+			$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($this->getDb());
+			$stats = $stats_fetcher->getStats();
+			$stats = \Orb\Util\Arrays::implodeTemplate($stats, "{KEY}: {VAL}\n");
+		} catch (\Exception $e) {}
 
 		return $this->render('InstallBundle:Install:license.html.php', array(
-			'lictext' => $lictext
+			'stats' => $stats,
 		));
 	}
 
