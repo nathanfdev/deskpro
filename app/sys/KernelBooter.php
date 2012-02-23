@@ -120,15 +120,15 @@ class KernelBooter
 
 			// Always force full URL with trailing slash
 			if (strpos($request->getRequestUri(), '/index.php/install/') === false) {
-				header('Location: ' . $request->getServerBaseUrl() . '/index.php/install/');
+				header('Location: ' . $request->getBasePath() . '/index.php/install/');
 				exit;
 			}
 
 		} elseif (preg_match('#^/tech(/|\?|$)#i', $path)) {
-			header('Location: ' . $request->getServerBaseUrl() . '/agent');
+			header('Location: ' . $request->getBasePath() . '/agent');
 			exit;
 		} elseif (preg_match('#^/admincp(/|\?|$)#i', $path)) {
-			header('Location: ' . $request->getServerBaseUrl() . '/admin');
+			header('Location: ' . $request->getBasePath() . '/admin');
 			exit;
 		} else {
 			$kernel_class = 'DeskPRO\\Kernel\\UserKernel';
