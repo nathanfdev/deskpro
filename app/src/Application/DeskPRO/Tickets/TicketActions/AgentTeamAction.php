@@ -123,7 +123,7 @@ class AgentTeamAction implements ActionInterface, PersonContextInterface
 	/**
 	 * @return string
 	 */
-	public function getDescription()
+	public function getDescription($as_html = true)
 	{
 		if ($this->agent_team_id == -1) {
 			return 'Assign team to current logged in agents team';

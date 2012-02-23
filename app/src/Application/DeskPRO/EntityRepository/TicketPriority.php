@@ -37,11 +37,11 @@ class TicketPriority extends EntityRepository
 	/**
 	 * @return array
 	 */
-	public function getPriorityNames()
+	public function getPriorityNames($for_ids = null)
 	{
-		if ($this->priority_names !== null) return $this->priority_names;
+		if ($this->priority_names !== null && !$for_ids) return $this->priority_names;
 
-		if (($this->priority_names = App::getCache('common')->load('priority_names')) === false) {
+		if (!$this->priority_names && ($this->priority_names = App::getCache('common')->load('priority_names')) === false) {
 
 			$db = App::getDb();
 			$this->priority_names = $db->fetchAllKeyValue("
@@ -51,6 +51,14 @@ class TicketPriority extends EntityRepository
 			");
 
 			App::getCache('common')->save($this->priority_names, null, array('ticket_priorities'));
+		}
+
+		if ($for_ids) {
+			$ret = array();
+			foreach ($for_ids as $id) {
+				$ret[$id] = $this->priority_names[$id];
+			}
+			return $ret;
 		}
 
 		return $this->priority_names;

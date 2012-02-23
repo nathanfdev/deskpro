@@ -243,10 +243,10 @@ class PersonSearch extends SearcherAbstract
 			switch ($term) {
                 case self::TERM_ID:
 					$wheres[] = $this->_rangeMatch("$people_table.id", $op, $choice, true);
-					$this->summary[] = $this->_rangeSummary($tr->phrase('core.id'), $op, $choice);
+					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.id'), $op, $choice);
 					break;
                 case self::TERM_LANGUAGE:
-					$this->summary[] = $this->_choiceSummary($tr->phrase('core.language'), $op, $choice, function($choice) {
+					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.language'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:Language')->getTitles((array)$choice);
 						return $titles;
 					});
@@ -254,7 +254,7 @@ class PersonSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch("$people_table.language_id", $op, $choice, true);
 					break;
 				case self::TERM_ORGANIZATION:
-                    $this->summary[] = $this->_choiceSummary($tr->phrase('core.organization'), $op, $choice, function($choice) {
+                    $this->summary[] = $this->_choiceSummary($tr->phrase('agent.organization'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames((array)$choice);
 						return $titles;
 					});
@@ -266,7 +266,7 @@ class PersonSearch extends SearcherAbstract
                         "LEFT JOIN person2usergroups AS $join_name ON ($join_name.person_id = $people_table.id)"
                     );
 
-                    $this->summary[] = $this->_choiceSummary($tr->phrase('core.usergroup'), $op, $choice, function($choice) {
+                    $this->summary[] = $this->_choiceSummary($tr->phrase('agent.usergroup'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames((array)$choice);
 						return $titles;
 					});

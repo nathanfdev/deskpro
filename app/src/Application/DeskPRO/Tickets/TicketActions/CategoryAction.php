@@ -79,7 +79,7 @@ class CategoryAction implements ActionInterface
 	/**
 	 * @return string
 	 */
-	public function getDescription()
+	public function getDescription($as_html = true)
 	{
 		if ($this->category_id == 0) {
 			return 'Remove category';

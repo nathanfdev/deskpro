@@ -92,7 +92,7 @@ class RemoveParticipants implements ActionInterface
 	/**
 	 * @return string
 	 */
-	public function getDescription()
+	public function getDescription($as_html = true)
 	{
 		$people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->remove_people_ids);
 		if (!$people) return '';

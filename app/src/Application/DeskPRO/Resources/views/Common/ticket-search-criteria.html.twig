@@ -221,7 +221,7 @@
 	</div>
 	{% endif %}
 
-	{% if 'organization' not in no_show_fields %}
+	{% if 'organization' not in no_show_fields and term_options.organizations %}
 	<div class="type" title="Organization" data-term-type="GenericMenuTerm" data-term-triggers="org,organization,company" data-rule-type="organization">
 		<div class="op">
 			<select name="op">

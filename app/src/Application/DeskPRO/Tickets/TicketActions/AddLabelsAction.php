@@ -105,7 +105,7 @@ class AddLabelsAction implements ActionInterface
 	/**
 	 * @return string
 	 */
-	public function getDescription()
+	public function getDescription($as_html = true)
 	{
 		return "Add labels: " . implode($this->add_labels, ', ');
 	}

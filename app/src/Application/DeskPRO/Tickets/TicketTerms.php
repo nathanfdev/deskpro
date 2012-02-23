@@ -5,6 +5,7 @@ namespace Application\DeskPRO\Tickets;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Searcher\TicketSearch;
+use Application\DeskPRO\Searcher\PersonSearch;
 
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 
@@ -462,143 +463,20 @@ class TicketTerms
 
 	public function getTermDescription($term, $op, $choice)
 	{
-		switch ($term) {
-			case 'creation_system':
-				$choice = (array)$choice;
-				$choice = array_pop($choice);
-				if ($op == 'is') {
-					return "Creation system is {$choice}";
-				}
-				if ($op == 'not') {
-					return "Creation system is not {$choice}";
-				}
-				break;
-
-			case 'action_performer':
-				$choice = (array)$choice;
-				$choice = array_pop($choice);
-				return 'Action performer is ' . ($choice == 'agent' ? 'agent' : 'user');
-				break;
-
-			case TicketSearch::TERM_DEPARTMENT:
-				$choice = $choice['department'];
-				$name = App::getEntityRepository('DeskPRO:Department')->getFullDepartmentNames($choice);
-				if (!isset($name[$choice])) return '';
-				return 'Department is ' . $name[$choice];
-				break;
-			case TicketSearch::TERM_CATEGORY:
-				$choice = $choice['category'];
-				$name = App::getEntityRepository('DeskPRO:TicketCategory')->getFullCategoryNames($choice);
-				if (!isset($name[$choice])) return '';
-				return 'Category is ' . $name[$choice];
-				break;
-			case TicketSearch::TERM_PRODUCT:
-				$choice = $choice['product'];
-				$name = App::getEntityRepository('DeskPRO:Product')->getFullCategoryNames($choice);
-				if (!isset($name[$choice])) return '';
-				return 'Product is ' . $name[$choice];
-				break;
-			case TicketSearch::TERM_PRIORITY:
-				$choice = $choice['priority'];
-				$name = App::getEntityRepository('DeskPRO:TicketPriority')->getPriorityNames($choice);
-				if (!isset($name[$choice])) return '';
-				return 'Priority is ' . $name[$choice];
-				break;
-			case TicketSearch::TERM_ORGANIZATION:
-				$choice = $choice['organization'];
-				$name = App::getEntityRepository('DeskPRO:TicketCategory')->getOrganizationNames($choice);
-				if (!isset($name[$choice])) return '';
-				return 'Organization is ' . $name[$choice];
-				break;
-			case TicketSearch::TERM_LANGUAGE:
-				$choice = $choice['language'];
-				$name = App::getEntityRepository('DeskPRO:Language')->getTitles($choice);
-				if (!isset($name[$choice])) return '';
-				return 'Language is ' . $name[$choice];
-				break;
-			case TicketSearch::TERM_AGENT:
-				$choice = $choice['agent'];
-
-				if ($choice == -1) {
-					return 'Agent is currently logged in agent';
-				}
-
-				$name = App::getEntityRepository('DeskPRO:Person')->getAgentNames($choice);
-				if (!isset($name[$choice])) return '';
-				return 'Agent is ' . $name[$choice];
-				break;
-			case TicketSearch::TERM_URGENCY:
-				switch ($op) {
-					case self::OP_BETWEEN:
-						return "Urgency is between {$choice['min']} and {$choice['max']}";
-						break;
-
-					case self::OP_IS:
-						return "Urgency is {$choice['num']}";
-						break;
-
-					case self::OP_NOT:
-						return "Urgency is not {$choice['num']}";
-						break;
-
-					case self::OP_LT:
-						return "Urgency is less than {$choice['num']}";
-						break;
-
-					case self::OP_LTE:
-						return "Urgency is less than or equal to {$choice['num']}";
-						break;
-
-					case self::OP_GT:
-						return "Urgency is greater than {$choice['num']}";
-						break;
-
-					case self::OP_GTE:
-						return "Urgency is greater than or equal to {$choice['num']}";
-						break;
-				}
-				break;
-			case TicketSearch::TERM_PARTICIPANT:
-				$choice = $choice['product'];
-				if (is_array($choice)) {
-					$name = App::getEntityRepository('DeskPRO:Person')->getAgentNames($choice);
-					if (!$name) return '';
-
-					if ($op == self::OP_CONTAINS) {
-						return "Participants include " . implode(', ', $name);
-					} elseif ($op == self::OP_NOTCONTAINS) {
-						return "Participants do not include " . implode(', ', $name);
-					}
-				} else {
-					$name = App::getEntityRepository('DeskPRO:Person')->getAgentNames($choice);
-					if (!isset($name[$choice])) return '';
-
-					if ($op == self::OP_NOT) {
-						"Participants does not include {$name[$choice]}";
-					} elseif ($op == self::OP_IS) {
-						"Participants include include {$name[$choice]}";
-					}
-				}
-				break;
-			case TicketSearch::TERM_SUBJECT:
-				$choice = $choice['subject'];
-				switch ($op) {
-					case self::OP_IS:
-						return "Subject is: {$choice}";
-						break;
-					case self::OP_NOT:
-						return "Subject is not {$choice}";
-						break;
-					case self::OP_CONTAINS:
-						return "Subject contains the phrase: {$choice}";
-						break;
-					case self::OP_NOTCONTAINS:
-						return "Subject does not contain the phrase: {$choice}";
-						break;
-				}
-				break;
+		$term_summary = new \Application\DeskPRO\Translate\TermSummary();
+		if (strpos($term, 'person_') === 0) {
+			$summary = $term_summary->getSummary($term, $op, $choice);
+			if (!$summary) {
+				$summary = $term_summary->getSummary(preg_replace('#^person_#', '', $term), $op, $choice);
+			}
+		} else {
+			$summary = $term_summary->getSummary("ticket_$term", $op, $choice);
 		}
 
-		return '';
+		if (!$summary) {
+			$summary = $term_summary->getSummary($term, $op, $choice);
+		}
+
+		return $summary;
 	}
 }

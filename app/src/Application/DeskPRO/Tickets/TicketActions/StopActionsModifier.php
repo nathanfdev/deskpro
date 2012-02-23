@@ -28,7 +28,7 @@ class StopActionsModifier implements CollectionModifierInterface
 	/**
 	 * @return string
 	 */
-	public function getDescription()
+	public function getDescription($as_html = true)
 	{
 		return "Stop processing later triggers";
 	}

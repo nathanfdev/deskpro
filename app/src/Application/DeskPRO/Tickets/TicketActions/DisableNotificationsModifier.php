@@ -30,7 +30,7 @@ class DisableNotificationsModifier implements CollectionModifierInterface
 	/**
 	 * @return string
 	 */
-	public function getDescription()
+	public function getDescription($as_html = true)
 	{
 		return 'Disable all notifications';
 	}

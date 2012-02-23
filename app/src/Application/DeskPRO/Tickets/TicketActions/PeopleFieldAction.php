@@ -96,7 +96,7 @@ class PeopleFieldAction implements ActionInterface
 	/**
 	 * @return string
 	 */
-	public function getDescription()
+	public function getDescription($as_html = true)
 	{
 		$title = $this->field_def->title;
 		$value = $this->value;

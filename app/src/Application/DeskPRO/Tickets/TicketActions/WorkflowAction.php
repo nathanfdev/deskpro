@@ -78,7 +78,7 @@ class WorkflowAction implements ActionInterface
 	/**
 	 * @return string
 	 */
-	public function getDescription()
+	public function getDescription($as_html = true)
 	{
 		if ($this->workflow_id == 0) {
 			return 'Remove workflow';

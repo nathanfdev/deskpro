@@ -77,7 +77,7 @@ class UrgencyAction implements ActionInterface
 	/**
 	 * @return string
 	 */
-	public function getDescription()
+	public function getDescription($as_html = true)
 	{
 		if (!$this->num) return '';
 

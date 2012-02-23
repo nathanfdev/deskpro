@@ -38,7 +38,7 @@
 			<div class="actions">
 				<em class="op ctrl">then</em>
 				{% for desc in trigger.getActionDescriptions() %}
-					<span class="term">{{ desc }}</span>
+					<span class="term">{{ desc|raw }}</span>
 					{% if not loop.last %}<em class="op">and</em>{% endif %}
 				{% endfor %}
 			</div>

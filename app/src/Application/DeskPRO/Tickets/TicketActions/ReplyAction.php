@@ -118,8 +118,13 @@ class ReplyAction implements ActionInterface, PersonContextInterface
 	/**
 	 * @return string
 	 */
-	public function getDescription()
+	public function getDescription($as_html = true)
 	{
+		if ($as_html) {
+			$flat = str_replace(array("\r\n", "\n"), ' ', $this->reply_text);
+			if (strlen($flat) > 80) $flat = substr($flat, 0, 80) . '...';
+			return 'Add reply <span class="highlight-description">'.htmlspecialchars($flat).'</span>';
+		}
 		return "Add reply";
 	}
 }

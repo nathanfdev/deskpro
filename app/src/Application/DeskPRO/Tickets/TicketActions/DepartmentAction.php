@@ -79,7 +79,7 @@ class DepartmentAction implements ActionInterface
 	/**
 	 * @return string
 	 */
-	public function getDescription()
+	public function getDescription($as_html = true)
 	{
 		$names = App::getEntityRepository('DeskPRO:Department')->getFullDepartmentNames();
 		if (!isset($names[$this->department_id])) return '';

@@ -48,7 +48,7 @@ class UserNotificationNewReplyAction extends AbstractUserNotificationAction
 	/**
 	 * @return string
 	 */
-	public function getDescription()
+	public function getDescription($as_html = true)
 	{
 		return '';
 	}
