@@ -32,10 +32,8 @@ class UrlGenerator extends BaseUrlGenerator
 		// /file.php/ is a hint to say that we want to serve through the file loader,
 		// Any route that is prefixed with /file.php/ has this magic below applied
 		if (strpos($url, '/file.php/') !== false) {
-			if (isset($GLOBALS['DP_CONFIG']['rewrite_urls']) && $GLOBALS['DP_CONFIG']['rewrite_urls']) {
+			if (!(isset($GLOBALS['DP_CONFIG']['rewrite_urls']) && $GLOBALS['DP_CONFIG']['rewrite_urls'])) {
 				$url = str_replace('/index.php', '', $url);
-			} else {
-				$url = Strings::strReplaceOne('/', '/file.php/', $url);
 			}
 		}
 
