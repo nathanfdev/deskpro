@@ -99,15 +99,4 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 
 		return $this->url_locale;
 	}
-
-	public function getServerBaseUrl()
-	{
-		$base = parent::getBaseUrl();
-
-		if (strpos($base, 'index.php') === false && !(isset($GLOBALS['DP_CONFIG']['rewrite_urls']) && $GLOBALS['DP_CONFIG']['rewrite_urls'])) {
-			$base .= '/index.php';
-		}
-
-		return $base;
-	}
 }
