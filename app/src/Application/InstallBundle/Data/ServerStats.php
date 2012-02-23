@@ -61,16 +61,18 @@ class ServerStats
 		# MySQL info
 		#------------------------------
 
-		$stats['mysql_version'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'version'", array(), 1);
-		$stats['mysql_read_buffer_size'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'read_buffer_size'", array(), 1);
-		$stats['mysql_default_storage_engine'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'default_storage_engine'", array(), 1);
-		$stats['mysql_innodb_log_buffer_size'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'innodb_log_buffer_size'", array(), 1);
-		$stats['mysql_innodb_log_file_size'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'innodb_log_file_size'", array(), 1);
-		$stats['mysql_join_buffer_size'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'join_buffer_size'", array(), 1);
-		$stats['mysql_key_buffer_size'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'key_buffer_size'", array(), 1);
-		$stats['mysql_max_allowed_packet'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_allowed_packet'", array(), 1);
-		$stats['mysql_max_tmp_tables'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_tmp_tables'", array(), 1);
-		$stats['mysql_max_user_connections'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_user_connections'", array(), 1);
+		try {
+			$stats['mysql_version'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'version'", array(), 1);
+			$stats['mysql_read_buffer_size'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'read_buffer_size'", array(), 1);
+			$stats['mysql_default_storage_engine'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'default_storage_engine'", array(), 1);
+			$stats['mysql_innodb_log_buffer_size'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'innodb_log_buffer_size'", array(), 1);
+			$stats['mysql_innodb_log_file_size'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'innodb_log_file_size'", array(), 1);
+			$stats['mysql_join_buffer_size'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'join_buffer_size'", array(), 1);
+			$stats['mysql_key_buffer_size'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'key_buffer_size'", array(), 1);
+			$stats['mysql_max_allowed_packet'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_allowed_packet'", array(), 1);
+			$stats['mysql_max_tmp_tables'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_tmp_tables'", array(), 1);
+			$stats['mysql_max_user_connections'] = $this->db->fetchColumn("SHOW VARIABLES LIKE 'max_user_connections'", array(), 1);
+		} catch (\Exception $e) {}
 
 		#------------------------------
 		# OS / Server info

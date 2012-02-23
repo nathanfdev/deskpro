@@ -99,6 +99,21 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		$logs_dir_info = $this->container->getLogDir();
 		$logs_dir_info = str_replace(DP_WEB_ROOT, '', $logs_dir_info);
 
+		try {
+			$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($this->getDb());
+			$stats = $stats_fetcher->getStats();
+			$stats['server_check_errors'] = $server_check->getErrors();
+
+			$client = new \Zend\Http\Client(null, array('timeout' => 5));
+			$client->setMethod(\Zend\Http\Request::METHOD_POST);
+			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/report-stats.json');
+			foreach ($stats as $k => $v) {
+				$client->getRequest()->post()->set("stats[$k]", $v);
+			}
+			$r = $client->send();
+			$this->getLogger()->log('Stat server responds: ' . $r->getBody(), 'debug');
+		} catch (\Exception $e) { }
+
 		return $this->render('InstallBundle:Install:index.html.php', array(
 			'errors' => $server_check->getErrors(),
 			'has_config' => $has_config,
@@ -485,22 +500,6 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			}
 
 			$this->getOrm()->getConnection()->commit();
-
-			try {
-				\DeskPRO\Kernel\License::getLicense();
-				$stats = new \Application\InstallBundle\Data\ServerStats($this->getDb());
-
-				$this->getLogger()->log(DP_LIC_SERVER . '/report-stats.json', 'debug');
-
-				$client = new \Zend\Http\Client(null, array('timeout' => 7));
-				$client->setMethod(\Zend\Http\Request::METHOD_POST);
-				$client->setUri(DP_LIC_SERVER . '/report-stats.json');
-				foreach ($stats->getStats() as $k => $v) {
-					$client->getRequest()->post()->set("stats[$k]", $v);
-				}
-				$r = $client->send();
-				$this->getLogger()->log('Stat server responds: ' . $r->getBody(), 'debug');
-			} catch (\Exception $e) {}
 
 		} catch (\Exception $e) {
 			$this->getLogger()->log("[InstallDone] Exception {$e->getCode()} {$e->getMessage()}", 'err');

@@ -842,6 +842,21 @@ final class License
 	 */
 	private $error_code = null;
 
+
+	/**
+	 * @static
+	 * @return string
+	 */
+	public static function getLicServer()
+	{
+		if (!defined('DP_LIC_SERVER')) {
+			define('DP_LIC_SERVER', 'http://dev.deskprodev.com/lic/index.php');
+		}
+
+		return DP_LIC_SERVER;
+	}
+
+
 	/**
 	 * @static
 	 * @param $license_code
@@ -849,9 +864,7 @@ final class License
 	 */
 	public static function create($license_code, $install_key = '')
 	{
-		if (!defined('DP_LIC_SERVER')) {
-			define('DP_LIC_SERVER', 'http://dev.deskprodev.com/lic/index.php');
-		}
+		self::getLicServer();
 
 		$inst = new self($license_code, $install_key);
 
