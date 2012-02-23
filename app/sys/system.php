@@ -256,7 +256,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		} catch (\PDOException $e) {
 			global $DP_CONFIG;
 			if ($e->getCode() == '42S02' || @$DP_CONFIG['db']['user'] == 'YOUR_DATABASE_USER' || @$DP_CONFIG['db']['password'] == 'YOUR_DATABASE_PASS' || @$DP_CONFIG['db']['dbname'] == 'YOUR_DATABASE_NAME') {
-				$response = new RedirectResponse($request->getServerBaseUrl() . '/install/');
+				$response = new RedirectResponse($request->getBasePath() . '/install/');
 				return $response;
 			} else {
 				throw $e;
@@ -308,7 +308,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 				&& !preg_match('#^/admin/setup/default-smtp#', $path)
 				&& !preg_match('#^/admin/license#', $path)
 			) {
-				$response = new RedirectResponse($request->getServerBaseUrl() . '/admin/license');
+				$response = new RedirectResponse($request->getBasePath() . '/admin/license');
 				return $response;
 			}
 
@@ -331,7 +331,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 				if (DP_INTERFACE == 'admin' && !preg_match('#^/admin/agents#', $path) && !preg_match('#^/admin/license#', $path) && !preg_match('#^/admin/login#', $path)) {
 					$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1");
 					if ($count > License::getLicense()->getMaxAgents()) {
-						$response = new RedirectResponse($request->getServerBaseUrl() . '/admin/agents');
+						$response = new RedirectResponse($request->getBasePath() . '/admin/agents');
 						return $response;
 					}
 				}
@@ -344,7 +344,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			if (License::getLicense()->isPastExpireDate()) {
 				// On every admin page, redirect them to license management
 				if (DP_INTERFACE == 'admin' && !preg_match('#^/admin/license#', $path) && !preg_match('#^/admin/login#', $path)) {
-					$response = new RedirectResponse($request->getServerBaseUrl() . '/admin/license');
+					$response = new RedirectResponse($request->getBasePath() . '/admin/license');
 					return $response;
 				} else {
 					die('[LIC ERR 2] License has expired');
