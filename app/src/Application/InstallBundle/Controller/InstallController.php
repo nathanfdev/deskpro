@@ -80,6 +80,21 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$has_db_checks = true;
 			if (file_exists(DP_CONFIG_FILE)) {
 				$has_config = true;
+
+				try {
+					App::getDb()->connect();
+				} catch (\PDOException $e) {
+					if ($e->getCode() == '1049') {
+
+						// Attempt to create an empty database
+						try {
+							global $DP_CONFIG;
+							$dbh = new \PDO("mysql:host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+							$dbh->exec("CREATE DATABASE `{$DP_CONFIG['db']['dbname']}`");
+						} catch (\Exception $e) {}
+					}
+				}
+
 				$server_check->checkDatabase(App::getConfig('db'));
 
 				if (!$server_check->hasDbErrors()) {
