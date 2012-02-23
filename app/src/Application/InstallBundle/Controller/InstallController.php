@@ -425,7 +425,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 	public function installDoneAction()
 	{
 		if (!$this->ensureNotInstalled()) {
-			//return $this->redirect($this->generateUrl('install'));
+			return $this->redirect($this->generateUrl('install'));
 		}
 
 		$this->getLogger()->log('Install::installDone', 'debug');
