@@ -6,6 +6,33 @@ DeskPRO.Admin.ElementHandler.TicketTriggersPage = new Orb.Class({
 	init: function() {
 		var self = this;
 
+		$('.trigger-toggle').on('click', function() {
+			var row = $(this).closest('.trigger-row');
+
+			if (!row.hasClass('off')) {
+				row.addClass('off');
+				$(this).find('.on').hide();
+				$(this).find('.off').show();
+				var mode = 0;
+			} else {
+				row.removeClass('off');
+				$(this).find('.off').hide();
+				$(this).find('.on').show();
+				var mode = 1;
+			}
+
+			var tid = row.data('trigger-id');
+			$.ajax({
+				url: BASE_URL + 'admin/tickets/business-rules/toggle-enabled.json',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					trigger_id: tid,
+					onoff: mode
+				}
+			});
+		});
+
 		$('li.trigger-val').each(function() {
 			var li = $(this);
 			var name = $(this).data('trigger-name');
@@ -23,7 +50,7 @@ DeskPRO.Admin.ElementHandler.TicketTriggersPage = new Orb.Class({
 
 				$('.loading-icon-small-inline', li).show();
 				$.ajax({
-					url: BASE_URL + '/admin/tickets/business-rules/save-built-in.json',
+					url: BASE_URL + 'admin/tickets/business-rules/save-built-in.json',
 					type: 'post',
 					dataType: 'json',
 					data: postData,

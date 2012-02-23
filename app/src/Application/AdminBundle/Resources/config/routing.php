@@ -985,6 +985,13 @@ $collection->add('admin_tickettriggers_updateorder', new Route(
 	array()
 ));
 
+$collection->add('admin_tickettriggers_toggle', new Route(
+	'/tickets/business-rules/toggle-enabled.json',
+	array('_controller' => 'AdminBundle:TicketTriggers:toggleEnabled'),
+	array(),
+	array()
+));
+
 $collection->add('admin_ticketurgency_saveoptions', new Route(
 	'/tickets/urgency/save-options',
 	array('_controller' => 'AdminBundle:TicketTriggers:saveUrgencyOptions'),

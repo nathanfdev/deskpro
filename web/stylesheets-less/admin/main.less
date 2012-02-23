@@ -2198,6 +2198,17 @@ ul.labels-list .dp-block-controls {
     width: auto;
 }
 
+.dp-block-controls ul li.dp-on-off span {
+	width: 26px;
+	text-align: center;
+	text-indent: 0 !important;
+	padding-left: 23px;
+	background-position: 5px 50%;
+}
+
+.dp-block-controls ul li.dp-on-off span.on { background-image: url(../../images/admin/icons/block-on.png); }
+.dp-block-controls ul li.dp-on-off span.off { background-image: url(../../images/admin/icons/block-off.png); }
+
 ul.labels-list li > div:hover .dp-block-controls {
     display: block;
 	.transition(0.1s);
@@ -3250,4 +3261,9 @@ THE SOFTWARE.
 	background-color: #fff;
 	padding: 0px 4px 0px 4px;
 	border: 1px solid #ddd;
+}
+
+.trigger-row.off {
+	.opacity(80);
+	background-color: #EDEDED;
 }

@@ -19,14 +19,15 @@
 {% block page %}
 
 {% macro trigger_row(trigger) %}
-	<li class="item-row trigger-row is-trigger" data-trigger-id="{{ trigger.id }}">
+	<li class="item-row trigger-row is-trigger {% if trigger.is_enabled %}{% else %}off{% endif %}" id="trigger_{{ trigger.id }}" data-trigger-id="{{ trigger.id }}">
 		<div class="dp-block-controls">
 			<ul>
 				<li class="dp-edit"><a href="{{ path('admin_tickettriggers_edit', {'trigger_id': trigger.id}) }}" class="popout-trigger"><span></span></a></li>
 				<li class="dp-move"><span></span></li>
+				<li class="dp-on-off trigger-toggle"><span class="off" {% if trigger.is_enabled %}style="display: none"{% endif %}>OFF</span><span class="on" {% if not trigger.is_enabled %}style="display: none"{% endif %}>ON</span></li>
 			</ul>
 		</div>
-		{% if trigger.title %}<lable><h3>{{ trigger.title }}</h3></lable>{% endif %}
+		{% if trigger.title %}<lable><h2>{{ trigger.title }}</h2></lable>{% endif %}
 		<div class="trigger-desc">
 			<div class="terms">
 				<em class="op ctrl">if</em>

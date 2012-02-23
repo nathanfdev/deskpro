@@ -210,4 +210,21 @@ class TicketTriggersController extends AbstractController
 
 		return $this->createJsonResponse(array('success' => true));
 	}
+
+	############################################################################
+	# toggle-enabled
+	############################################################################
+
+	public function toggleEnabledAction()
+	{
+		$trigger = $this->em->find('DeskPRO:TicketTrigger', $this->in->getUint('trigger_id'));
+
+		if ($trigger) {
+			$trigger->is_enabled = $this->in->getBool('onoff');
+			$this->em->persist($trigger);
+			$this->em->flush();
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
 }
