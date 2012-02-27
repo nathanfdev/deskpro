@@ -4,8 +4,8 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	Implements: [Orb.Util.Events, Orb.Util.Options],
 
 	initialize: function() {
-		$(document).bind('keydown', 'ctrl+left', this.tabLeft.bind(this));
-		$(document).bind('keydown', 'ctrl+right', this.tabRight.bind(this));
+		$(document).bind('keydown', 'ctrl+shift+left', this.tabLeft.bind(this));
+		$(document).bind('keydown', 'ctrl+shift+right', this.tabRight.bind(this));
 		$(document).bind('keydown', 'ctrl+shift+c', this.closeTab.bind(this));
 
 		// Navigating list pane
@@ -161,27 +161,27 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	},
 
 	tabLeft: function() {
-		var activeTab = $('li.active-tab', DeskPRO_Window.TabBar.tabList);
+		var activeTab = $('li.activeTabList', DeskPRO_Window.TabBar.tabList);
 		var next = activeTab.prev();
 
 		if (!next.length) {
 			next = $('li:last', DeskPRO_Window.TabBar.tabList);
 		}
 
-		if (!next.is('.active-tab')) {
+		if (!next.is('.activeTabList')) {
 			DeskPRO_Window.TabBar.activateTabById(next.data('tab-id'));
 		}
 	},
 
 	tabRight: function() {
-		var activeTab = $('li.active-tab', DeskPRO_Window.TabBar.tabList);
+		var activeTab = $('li.activeTabList', DeskPRO_Window.TabBar.tabList);
 		var next = activeTab.next();
 
 		if (!next.length) {
 			next = $('li:first', DeskPRO_Window.TabBar.tabList);
 		}
 
-		if (!next.is('.active-tab')) {
+		if (!next.is('.activeTabList')) {
 			DeskPRO_Window.TabBar.activateTabById(next.data('tab-id'));
 		}
 	},
