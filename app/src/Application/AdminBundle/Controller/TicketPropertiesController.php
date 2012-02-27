@@ -124,7 +124,10 @@ class TicketPropertiesController extends AbstractController
 
 		$page_display_default = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionDataResolve($department, $section, 'default');
 		$page_display = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getOrCreate($department, $section, 'default');
-		$page_display->data = $page_display_default;
+
+		if ($page_display_default) {
+			$page_display->data = $page_display_default;
+		}
 
 		App::getOrm()->transactional(function($em) use ($page_display) {
 			$em->persist($page_display);
