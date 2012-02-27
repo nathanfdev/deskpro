@@ -30,10 +30,13 @@
 								</ul>
 							</div>
 
-							{% if transport.match_type == 'exact' %}From: {{ transport.match_pattern }}
-							{% elseif transport.match_type == 'domain' %}From: *@{{ transport.match_pattern }}
-							{% elseif transport.match_type == 'regex' %}From: {{ transport.match_pattern }}
+							From:
+							<a href="{{ path('admin_emailtrans_editaccount', { 'id': transport.id }) }}">
+							{% if transport.match_type == 'exact' %}{{ transport.match_pattern }}
+							{% elseif transport.match_type == 'domain' %}*@{{ transport.match_pattern }}
+							{% elseif transport.match_type == 'regex' %}{{ transport.match_pattern }}
 							{% endif %}
+							</a>
 							<br />
 							Send through:<br />
 							&nbsp;&nbsp;&nbsp;<span title="{{ transport.title }}">{{ transport.title|truncate(45) }}</span>
