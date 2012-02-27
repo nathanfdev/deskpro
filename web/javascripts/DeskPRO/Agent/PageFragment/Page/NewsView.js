@@ -30,8 +30,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 			this.ownObject(this.validatingEdit);
 		}
 
-		var btn = $('.news-editor-edit', this.wrapper);
-		btn.on('click', this.showEditor.bind(this));
+		this.getEl('edit_btn').on('click', this.showEditor.bind(this));
 
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
 			typename: 'news',
@@ -59,7 +58,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		this.ownObject(this.relatedContent);
 
 		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
-			revisionCompareUrl: BASE_URL + 'agent/downloads/compare-revs/{OLD}/{NEW}'
+			revisionCompareUrl: BASE_URL + 'agent/news/compare-revs/{OLD}/{NEW}'
 		});
 		this.ownObject(this.miscContent);
 
@@ -96,9 +95,18 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li', this.getEl('bodytabs')),
 			onTabSwitch: (function(info) {
+				if ($(info.tabContent).is('.news-content')) {
+					self.getEl('content_edit_btns').show();
+				} else {
+					self.getEl('content_edit_btns').hide();
+				}
+
 				if ($(info.tabContent).is('.related-content')) {
 					$('body').addClass('related-controls-on');
 				} else {
+					if ($(info.tabContent).is('.search-tab')) {
+						self._initSearchTab();
+					}
 					$('body').removeClass('related-controls-on');
 				}
 				if ($(info.tabContent).is('.revisions') && !$(info.tabContent).is('.loaded')) {
@@ -205,7 +213,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 			var html = [];
 			html.push('<div>');
 			html.push('The permalink to this post on the website is:<br />');
-			html.push('<input type="text" style="width:450px;" />');
+			html.push('<input type="text" style="width:80%;" />');
 			html.push('</div>');
 
 			var msg = $(html.join(''));
@@ -226,21 +234,12 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 	_initLabels: function() {
 		// Tags
-		this.labelsList = $(".news-tags input", this.wrapper);
-
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'news',
-			textarea: this.labelsList,
+			textarea: this.getEl('labels_input'),
 			onChange: this.saveLabels.bind(this)
 		});
 		this.ownObject(this.labelsInput);
-
-		this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
-			contentType: 'news',
-			contentId: this.meta.news_id,
-			element: $('.sticky-search-words ul', this.wrapper)
-		});
-		this.ownObject(this.stickyWords);
 	},
 
 	saveLabels: function() {
@@ -268,6 +267,18 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 	_handleSaveLabelsSuccess: function(data) {
 
+	},
+
+	_initSearchTab: function() {
+		if (this.hasInitSearchTab) return;
+		this.hasInitSearchTab = true;
+
+		this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
+			contentType: 'news',
+			contentId: this.meta.news_id,
+			element: this.getEl('stickysearch_input')
+		});
+		this.ownObject(this.stickyWords);
 	},
 
 	//#################################################################
@@ -310,7 +321,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 				this.newCommentWrapper.before(el);
 
 				// Inc note count
-				this.incCount('news-comments');
+				DeskPRO_Window.util.modCountEl(this.getEl('count_comments'), '+');
 			}
 		});
 	},
@@ -321,7 +332,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 	_initPostArea: function() {
 		this._hasInitEd = false;
-		$('.editor-cancel-trigger', this.getEl('content_ed')).on('click', (function() {
+		this.getEl('cancel_btn').on('click', (function() {
 			this.hideEditor();
 		}).bind(this));
 
@@ -337,7 +348,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		});
 		this.ownObject(this.editStateSaver);
 
-		$('.editor-save-trigger', this.getEl('content_ed')).on('click', (function(ev) {
+		this.getEl('save_btn').on('click', (function(ev) {
 			ev.preventDefault();
 
 			var data = {
@@ -402,9 +413,16 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 				}
 			});
 		}
+
+		this.getEl('edit_btn').hide();
+		this.getEl('save_btn').show();
+		this.getEl('cancel_btn').show();
 	},
 
 	hideEditor: function() {
+		this.getEl('edit_btn').show();
+		this.getEl('save_btn').hide();
+		this.getEl('cancel_btn').hide();
 		$('.news-editor-wrap', this.getEl('content_ed')).hide();
 		$('.news-content-wrap', this.getEl('content_ed')).show();
 	},

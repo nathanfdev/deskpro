@@ -195,8 +195,6 @@ class NewsController extends AbstractController
 		$diff_info = ContentRevisionUtil::compareRevisions('DeskPRO:NewsRevision', $rev_old_id, $rev_new_id);
 
 		return $this->render('AgentBundle:News:compare-revs.html.twig', array(
-			'rev_old' => $rev_old,
-			'rev_new' => $rev_new,
 			'rendered_content_diff' => $diff_info['rendered_content_diff'],
 			'rendered_title_diff'   => $diff_info['rendered_title_diff'],
 		));

@@ -211,7 +211,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			var html = [];
 			html.push('<div>');
 			html.push('The permalink to this download on the website is:<br />');
-			html.push('<input type="text" style="width:80%;" />');
+			html.push('<input type="text" style="width:95%;" />');
 			html.push('</div>');
 
 			var msg = $(html.join(''));

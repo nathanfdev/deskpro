@@ -73,6 +73,10 @@ class Util
 		$rev_old = App::findEntity($entity, $rev_old_id);
 		$rev_new = App::findEntity($entity, $rev_new_id);
 
+		if (!$rev_old || !$rev_new) {
+			return array('rendered_content_diff' => '', 'rendered_title_diff' => '');
+		}
+
 		$old_data = $rev_old->toArray();
 		$new_data = $rev_new->toArray();
 
