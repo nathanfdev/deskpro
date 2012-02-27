@@ -24,6 +24,8 @@
 	</table>
 </div>
 
-<div style="text-align: right;padding-top: 8px;">
-	<button class="clean-white compare-trigger">{{ phrase('agent.publish.compare_selected') }}</button>
-</div>
+{% if article.revisions|length >= 2 %}
+	<div style="text-align: right;padding-top: 8px;">
+		<button class="clean-white compare-trigger">{{ phrase('agent.publish.compare_selected') }}</button>
+	</div>
+{% endif %}

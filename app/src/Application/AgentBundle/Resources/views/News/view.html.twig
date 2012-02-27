@@ -39,47 +39,47 @@ pageMeta.baseId = '{{ baseId }}';
 	<br class="clear" />
 </header>
 
-	<div class="profile-box-container-outer">
-<div class="profile-box-container">
-	<header>
-		<h4>{{ phrase('agent.label_properties') }}</h4>
-	</header>
-	<section class="description-area">
-		<dl class="info-list">
-			<dt class="type-labels">{{ phrase('agent.label_labels') }}:</dt>
-			<dd class="kb-tags tags-wrap">
-				<input type="text" id="{{baseId}}_labels_input" value="{% for label in news.labels %}{{label.label}},{% endfor %}" />
-			</dd>
+<div class="profile-box-container-outer">
+	<div class="profile-box-container">
+		<header>
+			<h4>{{ phrase('agent.label_properties') }}</h4>
+		</header>
+		<section class="description-area">
+			<dl class="info-list">
+				<dt class="type-labels">{{ phrase('agent.label_labels') }}:</dt>
+				<dd class="kb-tags tags-wrap">
+					<input type="text" id="{{baseId}}_labels_input" value="{% for label in news.labels %}{{label.label}},{% endfor %}" />
+				</dd>
 
-			<dt>{{ phrase('agent.label_rating') }}</dt>
-			<dd>
-				{{ news.rating_percent }}% helpful (<span class="link-look who-voted-trigger">{{ news.num_ratings }} votes</span>)<br />
-				<small>{{ news.up_votes }} found the post helpful, {{ news.down_votes }} found the post unhelpful</small>
-			</dd>
+				<dt>{{ phrase('agent.label_rating') }}</dt>
+				<dd>
+					{{ news.rating_percent }}% helpful (<span class="link-look who-voted-trigger">{{ news.num_ratings }} votes</span>)<br />
+					<small>{{ news.up_votes }} found the post helpful, {{ news.down_votes }} found the post unhelpful</small>
+				</dd>
 
-			<dt></dt>
-			<dd>
-				{{ phrase('agent.created_timeago_by_x_on_y', {
-					'timeago': '<time class="timeago" datetime="' ~ news.date_created|date('c') ~'"></time>',
-					'name': news.person.display_name,
-					'date': '<time>' ~ news.date_created|date('H:ia M j Y') ~ '</time>'
-				}) }}
-			</dd>
-		</dl>
+				<dt></dt>
+				<dd>
+					{{ phrase('agent.created_timeago_by_x_on_y', {
+						'timeago': '<time class="timeago" datetime="' ~ news.date_created|date('c') ~'"></time>',
+						'name': news.person.display_name,
+						'date': '<time>' ~ news.date_created|date('H:ia M j Y') ~ '</time>'
+					}) }}
+				</dd>
+			</dl>
 
-		<div class="controls" id="{{baseId}}_action_buttons">
-			<button class="clean-white delete" {% if news.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.delete') }}</button>
-			<button class="clean-white permalink">{{ phrase('agent.copy_permalink') }}</button>
-			<button class="clean-white view-user-interface">{{ phrase('agent.view_in_user_interface') }}</button>
-			<br class="clear" />
-		</div>
+			<div class="controls" id="{{baseId}}_action_buttons">
+				<button class="clean-white delete" {% if news.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.delete') }}</button>
+				<button class="clean-white permalink">{{ phrase('agent.copy_permalink') }}</button>
+				<button class="clean-white view-user-interface">{{ phrase('agent.view_in_user_interface') }}</button>
+				<br class="clear" />
+			</div>
 
-		<ul id="{{baseId}}_more_menu" style="display: none;">
-			<li data-op="delete">{{ phrase('agent.delete') }}</li>
-			<li data-op="print">{{ phrase('agent.print') }}</li>
-		</ul>
-	</section>
-</div>
+			<ul id="{{baseId}}_more_menu" style="display: none;">
+				<li data-op="delete">{{ phrase('agent.delete') }}</li>
+				<li data-op="print">{{ phrase('agent.print') }}</li>
+			</ul>
+		</section>
+	</div>
 </div>
 
 <div class="profile-box-container reply-box-wrap">

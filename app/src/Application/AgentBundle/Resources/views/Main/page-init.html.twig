@@ -19,8 +19,10 @@
 
 	$(document).ready(function() {
 
-		DpErrorLog.saveUrl = '{{ app.request.getBaseUrl() }}/dp/log-js-error.json';
-		DpErrorLog.init();
+		{% if not constant('DP_DEBUG') %}
+			DpErrorLog.saveUrl = '{{ app.request.getBaseUrl() }}/dp/log-js-error.json';
+			DpErrorLog.init();
+		{% endif %}
 
 		$('pane_list_content').css('display', '');
 		$('pane_content').css('display', '');

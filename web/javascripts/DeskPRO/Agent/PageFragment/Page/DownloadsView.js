@@ -29,8 +29,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			this.ownObject(this.validatingEdit);
 		}
 
-		var btn = $('.download-editor-edit', this.wrap);
-		btn.on('click', this.showEditor.bind(this));
+		this.getEl('edit_btn').on('click', this.showEditor.bind(this));
 
         $('time.timeago', this.wrapper).timeago();
 
@@ -97,9 +96,18 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li', this.getEl('bodytabs')),
 			onTabSwitch: (function(info) {
+				if ($(info.tabContent).is('.dl-content')) {
+					self.getEl('content_edit_btns').show();
+				} else {
+					self.getEl('content_edit_btns').hide();
+				}
+
 				if ($(info.tabContent).is('.related-content')) {
 					$('body').addClass('related-controls-on');
 				} else {
+					if ($(info.tabContent).is('.search-tab')) {
+						self._initSearchTab();
+					}
 					$('body').removeClass('related-controls-on');$('body').addClass('related-controls-off');
 				}
 				if ($(info.tabContent).is('.revisions') && !$(info.tabContent).is('.loaded')) {
@@ -200,7 +208,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			var html = [];
 			html.push('<div>');
 			html.push('The permalink to this download on the website is:<br />');
-			html.push('<input type="text" style="width:450px;" />');
+			html.push('<input type="text" style="width:95%" />');
 			html.push('</div>');
 
 			var msg = $(html.join(''));
@@ -222,17 +230,10 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'downloads',
-			textarea: $(".download-tags input", this.wrapper),
+			textarea: this.getEl('labels_input'),
 			onChange: this.saveLabels.bind(this)
 		});
 		this.ownObject(this.labelsInput);
-
-		this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
-			contentType: 'downloads',
-			contentId: this.meta.download_id,
-			element: $('.sticky-search-words ul', this.wrapper)
-		});
-		this.ownObject(this.stickyWords);
 	},
 
 	saveLabels: function() {
@@ -260,6 +261,18 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 
 	_handleSaveLabelsSuccess: function(data) {
 
+	},
+
+	_initSearchTab: function() {
+		if (this.hasInitSearchTab) return;
+		this.hasInitSearchTab = true;
+
+		this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
+			contentType: 'news',
+			contentId: this.meta.news_id,
+			element: this.getEl('stickysearch_input')
+		});
+		this.ownObject(this.stickyWords);
 	},
 
 	//#################################################################
@@ -300,6 +313,8 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 				$('textarea', this.newCommentWrapper).val('');
 				var el = $(html);
 				this.newCommentWrapper.before(el);
+
+				DeskPRO_Window.util.modCountEl(this.getEl('count_comments'), '+');
 			}
 		});
 	},
@@ -310,7 +325,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 
 	_initPostArea: function() {
 		this._hasInitEd = false;
-		$('.editor-cancel-trigger', this.getEl('content_ed')).on('click', (function() {
+		this.getEl('cancel_btn').on('click', (function() {
 			this.hideEditor();
 		}).bind(this));
 
@@ -326,7 +341,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		});
 		this.ownObject(this.editStateSaver);
 
-		$('.editor-save-trigger', this.getEl('content_ed')).on('click', (function(ev) {
+		this.getEl('save_btn').on('click', (function(ev) {
 			ev.preventDefault();
 
 			var data = {
@@ -381,7 +396,9 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 				h = 425;
 			}
 
-			DP.rteTextarea($('.edit-content-field', this.getEl('content_ed')), {
+			txt.css({ width: w, height: h });
+
+			DP.rteTextarea(txt, {
 				setup: function(ed) {
 					ed.onKeyPress.add(function() {
 						self.editStateSaver.triggerChange();
@@ -389,13 +406,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 				}
 			});
 
-			// Attachments
 			var list = $('.file-list', this.getEl('content_ed'));
-
-			if (this._hasInitEdBefore) {
-				this.wrapper.fileupload('destroy');
-			}
-
 			DeskPRO_Window.util.fileupload(this.wrapper, { page: this });
 			this.wrapper.bind('fileuploadadd', function() {
 				$('ul.file-list', self.getEl('content_ed')).empty();
@@ -403,10 +414,17 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 
 			this._hasInitEdBefore = true;
 		}
+
+		this.getEl('edit_btn').hide();
+		this.getEl('save_btn').show();
+		this.getEl('cancel_btn').show();
 	},
 
 	hideEditor: function() {
 		$('.download-editor-wrap', this.getEl('content_ed')).hide();
 		$('.download-content-wrap', this.getEl('content_ed')).show();
+		this.getEl('edit_btn').show();
+		this.getEl('save_btn').hide();
+		this.getEl('cancel_btn').hide();
 	}
 });

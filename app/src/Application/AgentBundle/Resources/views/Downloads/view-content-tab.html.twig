@@ -16,7 +16,7 @@
 		{# /Top #}
 		{{ download.content_html|raw }}
 	</div>
-	<div class="download-editor-wrap" style="display: none">
+	<div class="download-editor-wrap article-editor-wrap" style="display: none">
 		<div class="download-editor">
 			{% if state.download.content %}
 				<div class="revert-message-notice">
@@ -49,11 +49,6 @@
 				{{ '{{/if}}' }}
 			</script>
 			<ul class="files file-list"></ul>
-
-			<br />
-
-			<button class="clean-white editor-save-trigger">{{ phrase('agent.save') }}</button>
-			<button class="clean-white editor-cancel-trigger">{{ phrase('agent.cancel') }}</button>
 		</div>
 	</div>
 </div>
