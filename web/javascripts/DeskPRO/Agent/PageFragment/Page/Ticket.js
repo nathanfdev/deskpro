@@ -61,7 +61,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.new-messages.' + this.getMetaData('ticket_id'), this.getNewTicketMessages.bind(this), this.pageUid);
 
-		this.addEvent('shortcutFocusReply', (function() {
+		this.addEvent('shortcutFocusReply', (function(ev) {
+
+			ev.preventDefault();
 
 			// Scroll down
 			$('div.scroll-content:first, div.scroll-viewport:first', this.wrapper).scrollTop(100000);
