@@ -172,6 +172,10 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		// has its own strucutred array anyway,
 		// since it could be large we can delete it from memory
 		delete this.meta.peopleResultIds;
+
+		if (this.meta.viewType != 'list') {
+			this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
+		}
 	},
 
 	destroyPage: function() {

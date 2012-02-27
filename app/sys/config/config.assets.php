@@ -196,6 +196,7 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageHelper/RelatedContentList.js',
 		'javascripts/DeskPRO/Agent/PageHelper/Comments.js',
 		'javascripts/DeskPRO/Agent/PageHelper/MiscContent.js',
+		'javascripts/DeskPRO/Agent/PageHelper/ListNav.js',
 		'javascripts/DeskPRO/Agent/PageHelper/AutoSave.js',
 		'javascripts/DeskPRO/Agent/PageHelper/StateSaver.js',
 		'javascripts/DeskPRO/Agent/PageHelper/Results.js',

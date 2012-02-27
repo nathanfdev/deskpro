@@ -31,5 +31,7 @@ DeskPRO.Agent.PageFragment.ListPane.NewsList = new Orb.Class({
 		this.ownObject(this.relatedContentList);
 
 		this.enableHighlightOpenRows('news', 'news_id', 'article.news-');
+
+		this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
 	}
 });

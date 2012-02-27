@@ -7,7 +7,32 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		$(document).bind('keydown', 'ctrl+left', this.tabLeft.bind(this));
 		$(document).bind('keydown', 'ctrl+right', this.tabRight.bind(this));
 		$(document).bind('keydown', 'ctrl+shift+c', this.closeTab.bind(this));
-		$(document).bind('keydown', 'alt+c', this.saveContent.bind(this));
+
+		// Navigating list pane
+		$(document).bind('keydown', 'down', function() {
+			var p = DeskPRO_Window.getListPage();
+			if (p && p.listNav) {
+				p.listNav.down();
+			}
+		});
+		$(document).bind('keydown', 'up', function() {
+			var p = DeskPRO_Window.getListPage();
+			if (p && p.listNav) {
+				p.listNav.up();
+			}
+		});
+		$(document).bind('keydown', 'return', function() {
+			var p = DeskPRO_Window.getListPage();
+			if (p && p.listNav) {
+				p.listNav.enter();
+			}
+		});
+		$(document).bind('keydown', 'space', function() {
+			var p = DeskPRO_Window.getListPage();
+			if (p && p.listNav) {
+				p.listNav.check();
+			}
+		});
 
 		// Create-type
 		$(document).bind('keydown', 't', this.showNewTicket.bind(this));
@@ -22,7 +47,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 
 		this.boundShortkuts = {};
 
-		this.addContextShortcut('ticket', 'ctrl+shift+r', 'shortcutFocusReply');
+		this.addContextShortcut('ticket', 'shift+r', 'shortcutFocusReply');
 	},
 
 

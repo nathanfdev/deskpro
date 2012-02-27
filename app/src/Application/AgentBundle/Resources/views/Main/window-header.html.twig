@@ -141,6 +141,9 @@
 				<li class="networkStatIndicator">
 					<a class="tipped" data-tipped="<div id='network_status_tip'>{{ phrase('agent.window.network_status') }}<br /><div class='network-status-green'>{{ phrase('agent.window.network_status_okay') }}</div><div class='network-status-red'>{{ phrase('agent.window.network_status_bad') }}</div></div>" data-tipped-options="hook: 'bottommiddle'"></a>
 				</li>
+				<li class="keyboardIcon">
+					<a id="keyboard_shortcuts_trigger" class="tipped" title="Keyboard shortcuts" data-tipped-options="hook: 'bottommiddle'"></a>
+				</li>
 				<li class="soundIcon">
 					<a class="tipped" id="sound_icon" title="{{ phrase('agent.window.sound_explain') }}" data-tipped-options="hook: 'bottommiddle'"></a>
 				</li>
@@ -167,6 +170,8 @@
 		<li class="result-item {TYPE}-{ID}"><span class="prop-id">{ID}</span> {TITLE}</li>
 	</script>
 </div>
+
+{% include 'AgentBundle:Main:keyboard-shortcuts-sheet.html.twig' %}
 
 <div id="dp_searchsheet" data-element-handler="DeskPRO.Agent.ElementHandler.OmniSearchSheet">
 	<header>

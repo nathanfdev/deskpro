@@ -70,6 +70,7 @@ DeskPRO.Agent.PageFragment.ListPane.DownloadList = new Orb.Class({
 		this.ownObject(this.sortingMenu);
 
 		this.enableHighlightOpenRows('download', 'download_id', 'article.download-');
+		this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
 	},
 
 	initVisibleTicket: function() {

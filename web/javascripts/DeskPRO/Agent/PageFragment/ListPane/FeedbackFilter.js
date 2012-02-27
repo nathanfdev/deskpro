@@ -148,5 +148,7 @@ DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter = new Orb.Class({
 		this.ownObject(this.resultsHelper);
 
 		this.enableHighlightOpenRows('feedback', 'feedback_id', 'article.feedback-');
+
+		this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
 	}
 });

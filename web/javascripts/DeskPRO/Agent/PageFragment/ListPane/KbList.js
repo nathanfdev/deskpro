@@ -70,6 +70,8 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 		this.ownObject(this.sortingMenu);
 
 		this.enableHighlightOpenRows('article', 'article_id', 'article.article-');
+
+		this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
 	},
 
 	initVisibleTicket: function() {

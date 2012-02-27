@@ -42,5 +42,7 @@ DeskPRO.Agent.PageFragment.ListPane.UserChatFilter = new Orb.Class({
 		}
 		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
 		this.ownObject(this.resultsHelper);
+
+		this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
 	}
 });

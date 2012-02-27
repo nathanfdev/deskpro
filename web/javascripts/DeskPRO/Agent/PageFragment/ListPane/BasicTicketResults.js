@@ -124,6 +124,10 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 		this.enableHighlightOpenRows('ticket', 'ticket_id', '.row-item.ticket-');
 		this.countTotal = parseInt(this.getEl('total_count').text().trim()) || 0;
+
+		if (this.meta.viewType != 'list') {
+			this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
+		}
 	},
 
 	_handleResize: function() {

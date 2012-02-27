@@ -331,7 +331,7 @@
 }
 
 .list-listing .row-item.open {
-	background-color: #D4E7FC;
+	background-color: #D4E7FC !important;
 	-webkit-box-shadow: inset 1px 1px 2px 0px rgba(0, 0, 0, 0.3);
 	-moz-box-shadow: inset 1px 1px 2px 0px rgba(0, 0, 0, 0.3);
 	box-shadow: inset 1px 1px 2px 0px rgba(0, 0, 0, 0.3);
@@ -343,6 +343,25 @@
 
 	& .top-row {
 		top: 1px;
+	}
+}
+
+.list-listing .row-item.open.selection-on {
+	padding-bottom: 0px;
+	padding-top: 0px;
+	& .top-row {
+		top: 0px;
+	}
+}
+
+.list-listing .row-item.selection-on {
+	border-top: 1px dashed #000;
+	border-bottom: 1px dashed #000;
+	background-color: #fff;
+
+	.top-row-right .bound-fade,
+	.userinfo .bound-fade {
+		background: #fff;
 	}
 }
 

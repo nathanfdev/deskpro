@@ -2079,6 +2079,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		$('#agent_status').data('status', 'available');
+
+		$('#dp_keyboard_shortcuts').find('.close').on('click', function() {
+			$('#dp_keyboard_shortcuts').hide();
+		});
+		$('#keyboard_shortcuts_trigger').on('click', function() {
+			$('#dp_keyboard_shortcuts').show();
+		});
 	},
 
 	toggleAgentStatus: function(status) {
