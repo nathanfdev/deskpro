@@ -31,8 +31,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			this.ownObject(this.validatingEdit);
 		}
 
-		var btn = $('.feedback-editor-edit', this.wrapper);
-		btn.on('click', this.showEditor.bind(this));
+		this.getEl('edit_btn').on('click', this.showEditor.bind(this));
 
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
 			typename: 'feedback',
@@ -143,9 +142,18 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li.tab-trigger', this.getEl('bodytabs')),
 			onTabSwitch: (function(info) {
+				if ($(info.tabContent).is('.content-tab')) {
+					self.getEl('content_edit_btns').show();
+				} else {
+					self.getEl('content_edit_btns').hide();
+				}
+
 				if ($(info.tabContent).is('.related-content')) {
 					$('body').addClass('related-controls-on');
 				} else {
+					if ($(info.tabContent).is('.search-tab')) {
+						self._initSearchTab();
+					}
 					$('body').removeClass('related-controls-on');
 				}
 				if ($(info.tabContent).is('.feedback-revs') && !$(info.tabContent).is('.loaded')) {
@@ -232,10 +240,11 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 				});
 			}
 		});
+		this.statusOb = statusOb;
 
 		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
 			ajaxSaveUrl: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
-			statusMenu: this.statusMenu,
+			statusMenu: this.statusOb,
 			type: 'spam'
 		});
 		this.ownObject(this.deleteHelper);
@@ -273,7 +282,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			var html = [];
 			html.push('<div>');
 			html.push('The permalink to this feedback on the website is:<br />');
-			html.push('<input type="text" style="width:450px;" />');
+			html.push('<input type="text" style="width:95%;" />');
 			html.push('</div>');
 
 			var msg = $(html.join(''));
@@ -317,17 +326,10 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 	_initLabels: function() {
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'feedback',
-			textarea: $(".feedback-tags input", this.wrapper),
+			textarea: this.getEl('labels_input'),
 			onChange: this.saveLabels.bind(this)
 		});
 		this.ownObject(this.labelsInput);
-
-		this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
-			contentType: 'feedback',
-			contentId: this.feedback_id,
-			element: $('.sticky-search-words ul', this.wrapper)
-		});
-		this.ownObject(this.stickyWords);
 	},
 
 	saveLabels: function() {
@@ -355,6 +357,18 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 
 	_handleSaveLabelsSuccess: function(data) {
 
+	},
+
+	_initSearchTab: function() {
+		if (this.hasInitSearchTab) return;
+		this.hasInitSearchTab = true;
+
+		this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
+			contentType: 'feedback',
+			contentId: this.meta.feedback_id,
+			element: this.getEl('stickysearch_input')
+		});
+		this.ownObject(this.stickyWords);
 	},
 
 	//#################################################################
@@ -404,7 +418,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 				this.newCommentWrapper.before(el);
 
 				// Inc note count
-				this.incCount('feedback-comments');
+				DeskPRO_Window.util.modCountEl(this.getEl('count_comments'), '+');
 			}
 		});
 	},
@@ -415,7 +429,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 
 	_initPostArea: function() {
 		this._hasInitEd = false;
-		$('.editor-cancel-trigger', this.getEl('content_ed')).on('click', (function() {
+		this.getEl('cancel_btn').on('click', (function() {
 			this.hideEditor();
 		}).bind(this));
 
@@ -431,7 +445,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		});
 		this.ownObject(this.editStateSaver);
 
-		$('.editor-save-trigger', this.getEl('content_ed')).on('click', (function(ev) {
+		this.getEl('save_btn').on('click', (function(ev) {
 			ev.preventDefault();
 
 			var data = {
@@ -476,6 +490,18 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		if (!this._hasInitEd) {
 			this._hasInitEd = true;
 
+			var txt = $('.edit-content-field', this.getEl('content_ed'));
+			var w = $(txt.closest('.content-tab-item')).width() - 30;
+
+			// Means the whole thign is visible at once, lets try and max out the viewport
+			if (this.wrapper.find('> .layout-content > .scrollbar.disabled')) {
+				var h = $(window).height() - 90 - txt.offset().top;
+			} else {
+				h = 425;
+			}
+
+			txt.css({ width: w, height: h });
+
 			DP.rteTextarea($('.edit-content-field', this.getEl('content_ed')), {
 				setup: function(ed) {
 					ed.onKeyPress.add(function() {
@@ -484,9 +510,16 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 				}
 			});
 		}
+
+		this.getEl('edit_btn').hide();
+		this.getEl('save_btn').show();
+		this.getEl('cancel_btn').show();
 	},
 
 	hideEditor: function() {
+		this.getEl('edit_btn').show();
+		this.getEl('save_btn').hide();
+		this.getEl('cancel_btn').hide();
 		$('.feedback-editor-wrap', this.getEl('content_ed')).hide();
 		$('.feedback-content-wrap', this.getEl('content_ed')).show();
 	},

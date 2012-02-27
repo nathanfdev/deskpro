@@ -347,6 +347,7 @@ class FeedbackController extends AbstractController
 			case 'vote':
 
 				$content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($feedback, $this->person, $this->session->getVisitor());
+				$content_rating->setRequest($this->request);
 				$content_rating->setRating(1);
 
 				break;
@@ -735,6 +736,20 @@ class FeedbackController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'success' => 1
+		));
+	}
+
+	############################################################################
+	# Compare revisions
+	############################################################################
+
+	public function compareRevisionsAction($rev_old_id, $rev_new_id)
+	{
+		$diff_info = ContentRevisionUtil::compareRevisions('DeskPRO:FeedbackRevision', $rev_old_id, $rev_new_id);
+
+		return $this->render('AgentBundle:Feedback:compare-revs.html.twig', array(
+			'rendered_content_diff' => $diff_info['rendered_content_diff'],
+			'rendered_title_diff'   => $diff_info['rendered_title_diff'],
 		));
 	}
 

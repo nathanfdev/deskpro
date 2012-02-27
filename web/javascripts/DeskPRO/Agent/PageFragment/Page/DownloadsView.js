@@ -268,8 +268,8 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		this.hasInitSearchTab = true;
 
 		this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
-			contentType: 'news',
-			contentId: this.meta.news_id,
+			contentType: 'download',
+			contentId: this.meta.download_id,
 			element: this.getEl('stickysearch_input')
 		});
 		this.ownObject(this.stickyWords);

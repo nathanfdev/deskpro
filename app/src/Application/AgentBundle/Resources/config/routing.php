@@ -1982,6 +1982,13 @@ $collection->add('agent_feedback_view', new Route(
 	array('fragment_name' => 'i')
 ));
 
+$collection->add('agent_feedback_comparerevs', new Route(
+	'/feedback/compare-revs/{rev_old_id}/{rev_new_id}',
+	array('_controller' => 'AgentBundle:Feedback:compareRevisions'),
+	array(),
+	array()
+));
+
 $collection->add('agent_feedback_ajaxsavecustomfields', new Route(
 	'/feedback/view/{feedback_id}/ajax-save-custom-fields',
 	array('_controller' => 'AgentBundle:Feedback:ajaxSaveCustomFields'),
