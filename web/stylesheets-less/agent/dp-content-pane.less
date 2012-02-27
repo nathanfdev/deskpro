@@ -854,7 +854,6 @@ dl.table-list dt.type-labels {
 	margin: 10px;
 }
 .sticky-search-words .explain {
-	clear: both;
 	font-size: 9px;
 }
 
@@ -995,6 +994,13 @@ article.content-message .content header .comment-validate-btn {
 article.content-message .content .body-text {
 	padding: 6px;
 	font-size: 12px;
+}
+
+article.content-message .content .footer-text {
+    background-color: #ECEBF2;
+    padding: 6px;
+    margin-top: 5px;
+    text-align: center;
 }
 
 article.content-message .content .feedback {
@@ -4633,6 +4639,10 @@ article.task .new-comment .comment-input span {
 .content-tab-item {
 	background-color: #fff;
 
+	&.comments-tab, &.revisions-tab, &.related-content-tab, &.search-tab {
+		padding: 15px;
+	}
+
 	.article-editor-wrap {
 		padding: 15px;
 	}
@@ -4893,5 +4903,17 @@ ul.attachment-list {
 
 	input[type="text"] {
 		min-width: 250px;
+	}
+}
+
+
+.diff-box {
+	del {
+		background-color: #FFDDDD;
+		color: #f00;
+	}
+	ins {
+		background-color: #DDFFDD;
+		color: green;
 	}
 }

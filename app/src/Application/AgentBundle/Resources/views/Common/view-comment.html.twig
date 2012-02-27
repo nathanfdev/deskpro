@@ -5,8 +5,8 @@
 >
 	<div class="avatar">
 		<img
-			src="{% if comment.person %}{{ comment.person.getPictureUrl(20) }}{% else %}{{ path('serve_default_picture', {'s': 20}) }}{% endif %}"
-			alt="" width="20" height="20"
+			src="{% if comment.person %}{{ comment.person.getPictureUrl(40) }}{% else %}{{ path('serve_default_picture', {'s': 40}) }}{% endif %}"
+			alt="" width="40" height="40"
 		/>
 	</div>
 	<div class="content">
@@ -14,7 +14,6 @@
 			<span class="message-counter with-gear comment-edit-btn count">
 				#{{ loop.index }}
 			</span>
-			<span class="comment-validate-btn count tipped" title="Comment is awaiting validation. Click to manage.">Validate comment</span>
 			{% if comment.person %}
 				<h4
 					class="with-route person-popover"

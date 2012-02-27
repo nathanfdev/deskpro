@@ -69,7 +69,9 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 		this.ownObject(this.whoVotedOverlay);
 
-		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {});
+		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
+			revisionCompareUrl: BASE_URL + 'agent/kb/compare-revs/{OLD}/{NEW}'
+		});
 		this.ownObject(this.miscContent);
 
 		var fieldsRendered = this.getEl('custom_fields_rendered');
@@ -167,10 +169,18 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li', this.getEl('bodytabs')),
 			onTabSwitch: (function(info) {
+				if ($(info.tabContent).is('.kb-content')) {
+					self.getEl('content_edit_btns').show();
+				} else {
+					self.getEl('content_edit_btns').hide();
+				}
 				if ($(info.tabContent).is('.kb-related-content')) {
 					$('body').addClass('related-controls-on');
 				} else {
 					$('body').removeClass('related-controls-on');
+					if ($(info.tabContent).is('.search-tab')) {
+						self._initSearchTab();
+					}
 				}
 
 				if ($(info.tabContent).is('.revisions') && !$(info.tabContent).is('.loaded')) {
@@ -201,7 +211,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			var html = [];
 			html.push('<div>');
 			html.push('The permalink to this download on the website is:<br />');
-			html.push('<input type="text" style="width:450px;" />');
+			html.push('<input type="text" style="width:80%;" />');
 			html.push('</div>');
 
 			var msg = $(html.join(''));
@@ -400,19 +410,15 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	//#################################################################
 
 	_initLabels: function() {
+		if (this.hasInitLabels) return;
+		this.hasInitLabels = true;
+
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
-			type: 'articles',
-			textarea: $(".kb-tags input", this.wrapper),
+			type: 'article',
+			textarea: this.getEl('labels_input'),
 			onChange: this.saveLabels.bind(this)
 		});
 		this.ownObject(this.labelsInput);
-
-		this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
-			contentType: 'articles',
-			contentId: this.meta.article_id,
-			element: $('.sticky-search-words ul', this.wrapper)
-		});
-		this.ownObject(this.stickyWords);
 	},
 
 	saveLabels: function() {
@@ -440,6 +446,18 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 	_handleSaveLabelsSuccess: function(data) {
 
+	},
+
+	_initSearchTab: function() {
+		if (this.hasInitSearchTab) return;
+		this.hasInitSearchTab = true;
+
+		this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
+			contentType: 'articles',
+			contentId: this.meta.article_id,
+			element: this.getEl('stickysearch_input')
+		});
+		this.ownObject(this.stickyWords);
 	},
 
 	//#################################################################
@@ -813,6 +831,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				$('textarea', this.newCommentWrapper).val('');
 				var el = $(html);
 				this.newCommentWrapper.before(el);
+
+				DeskPRO_Window.util.modCountEl(this.getEl('count_comments'), '+');
 			}
 		});
 	}

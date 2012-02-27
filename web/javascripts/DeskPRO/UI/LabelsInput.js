@@ -30,24 +30,28 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 			 */
 			type: '',
 
-			showMax: 50
+			showMax: 50,
+
+			placeholder: false,
 		};
 
 		this.setOptions(options);
 
 		var tagSource = false;
 
-		if (DeskPRO.UI.LabelsInput_Grouped[this.options.type]) {
-			tagSource = DeskPRO.UI.LabelsInput_Grouped[this.options.type];
-		} else if (window.DESKPRO_DATA_REGISTRY.labels) {
-			tagSource = [];
-			Object.each(window.DESKPRO_DATA_REGISTRY.labels, function(types, label) {
-				if (types.indexOf(this.options.type) != -1) {
-					tagSource.push(label);
-				}
-			}, this);
+		if (this.options.type) {
+			if (DeskPRO.UI.LabelsInput_Grouped[this.options.type]) {
+				tagSource = DeskPRO.UI.LabelsInput_Grouped[this.options.type];
+			} else if (window.DESKPRO_DATA_REGISTRY.labels) {
+				tagSource = [];
+				Object.each(window.DESKPRO_DATA_REGISTRY.labels, function(types, label) {
+					if (types.indexOf(this.options.type) != -1) {
+						tagSource.push(label);
+					}
+				}, this);
 
-			DeskPRO.UI.LabelsInput_Grouped[this.options.type] = tagSource;
+				DeskPRO.UI.LabelsInput_Grouped[this.options.type] = tagSource;
+			}
 		}
 
 		if (!tagSource) tagSource = [];
@@ -70,7 +74,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 		this.options.textarea.textext({
 			plugins: 'autocomplete suggestions tags prompt',
 			suggestions: tagSource,
-			prompt: 'Add a label...',
+			prompt: this.options.placeholder || 'Add a label...',
 			tags: {
 				items: exist
 			}

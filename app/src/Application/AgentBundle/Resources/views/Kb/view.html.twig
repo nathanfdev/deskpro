@@ -50,7 +50,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<dl class="info-list">
 			<dt class="type-labels">{{ phrase('agent.label_labels') }}:</dt>
 			<dd class="kb-tags tags-wrap">
-				<input type="text" value="{% for label in article.labels %}{{label.label}},{% endfor %}" />
+				<input type="text" id="{{baseId}}_labels_input" value="{% for label in article.labels %}{{label.label}},{% endfor %}" />
 			</dd>
 			<dt class="">{{ phrase('agent.categories') }}</dt>
 			<dd>
@@ -157,12 +157,12 @@ pageMeta.baseId = '{{ baseId }}';
 			</dl>
 		{% endif %}
 
-		<div class="controls" id="{{baseId}}_properties_controls">
+		<div class="controls" id="{{baseId}}_action_buttons">
 			<div class="showing-editing-fields" style="display: none">
 				<button class="clean-white save-fields-trigger"><span>{{ phrase('agent.save') }}</span></button>
 			</div>
 			<div class="showing-rendered-fields">
-				<button class="clean-white edit-fields-trigger"><span>{{ phrase('agent.edit_properties') }}</span></button>
+				{% if custom_fields|length  %}<button class="clean-white edit-fields-trigger"><span>{{ phrase('agent.edit_properties') }}</span></button>{% endif %}
 				<button class="clean-white delete" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.delete') }}</button>
 				<button class="clean-white permalink">{{ phrase('agent.copy_permalink') }}</button>
 				<button class="clean-white view-user-interface">{{ phrase('agent.view_in_user_interface') }}</button>
@@ -181,11 +181,11 @@ pageMeta.baseId = '{{ baseId }}';
 	<ul>
 		<li class="on" data-tab-for="#{{baseId}}_tab_contents .kb-content"><span>{{ phrase('agent.label_article') }}</span></li>
 		<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.label_comments') }} (<span id="{{baseId}}_count_comments">{{article_comments|length|default(0)}}</span>)</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .revisions"><span>{{ phrase('agent.label_revisions') }}</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .kb-related-content"><span>{{ phrase('agent.label_related_content') }}</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.label_revisions') }}</span></li>
+		<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.label_related_content') }}</span></li>
 		<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('agent.label_search') }}</span></li>
 	</ul>
-	<div class="buttons">
+	<div class="buttons" id="{{baseId}}_content_edit_btns">
 		<button class="clean-white small kb-editor-edit" id="{{baseId}}_edit_btn">{{ phrase('agent.edit') }}</button>
 		<button class="clean-white small editor-save-trigger" id="{{baseId}}_save_btn">{{ phrase('agent.save') }}</button>
 		<button class="clean-white small editor-cancel-trigger" id="{{baseId}}_cancel_btn">{{ phrase('agent.cancel') }}</button>
@@ -211,30 +211,32 @@ pageMeta.baseId = '{{ baseId }}';
 						{% include 'AgentBundle:Kb:view-comment.html.twig' %}
 					{% endfor %}
 				</div>
-			</div>
-
-			<div class="message admin-message new-note">
-				<div class="message-avatar left">
-					<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
-				</div>
-				<div class="message-body">
-					<div class="message-meta">
-						<span class="arrow-left"></span>
-						<h4>{{ app.user.display_name }}</h4>
-					</div>
-					<div class="message-text">
-						<p>
-							<textarea style="width:98%; height: 80px;"></textarea>
-							<div style="text-align:center; margin-top: 9px;">
+				<div class="messages-wrap new-note">
+					<article
+						class="content-message agent-message"
+						data-comment-id="{{comment.id}}"
+						data-content-type="{{ comment.object_content_type }}"
+					>
+						<div class="avatar">
+							<img src="{{ app.user.getPictureUrl(40) }}" alt="" width="40" height="40" />
+						</div>
+						<div class="content">
+							<header>
+								<h4>New Comment</h4>
+							</header>
+							<div class="body-text">
+								<textarea style="width:99%; height: 80px;"></textarea>
+							</div>
+							<div class="footer-text">
 								<div class="loading-off">
-									<button class="dp-button x-small">{{ phrase('agent.add_comment') }}</button>
+									<button class="clean-white">{{ phrase('agent.add_comment') }}</button>
 								</div>
 								<div class="loading-on" style="display:none">
 									{{ phrase('agent.loading_saving') }}
 								</div>
 							</div>
-						</p>
-					</div>
+						</div>
+					</article>
 				</div>
 			</div>
 		</div>
@@ -242,30 +244,31 @@ pageMeta.baseId = '{{ baseId }}';
 	{# /Tab: Comments #}
 
 	{# Tab: Revisions #}
-	<div id="{{baseId}}_revs" class="loaded deskpro-tab-item revisions">
+	<div id="{{baseId}}_revs" class="loaded deskpro-tab-item content-tab-item revisions-tab">
 		{% include 'AgentBundle:Kb:view-revisions-tab.html.twig' %}
 	</div>
 	{# /Tab: Revisions #}
 
 	{# Tab: Related #}
-	<div id="{{baseId}}_related_content" class="deskpro-tab-item kb-related-content related-content">
+	<div id="{{baseId}}_related_content" class="deskpro-tab-item content-tab-item kb-related-content related-content-tab">
 		{% include 'AgentBundle:Common:content-related-list.html.twig' %}
 	</div>
 	{# /Tab: Related #}
 
 	{# Tab: Search #}
 	<div id="{{baseId}}_searchtab" class="deskpro-tab-item search-tab">
-		<div class="tags-wrap sticky-search-words">
-			<dl class="table-list">
-				<dt class="type-labels">{{ phrase('agent.publish.sticky_words_title') }}</dt>
-				<dd>
-					<input type="text" value="{% for label in sticky_search_words %}{{label}},{% endfor %}" />
+		<section class="description-area sticky-search-words">
+			<dl class="info-list">
+				<dt>{{ phrase('agent.publish.sticky_words_title') }}</dt>
+				<dd class="ticket-tags tags-wrap">
+					<input type="text" id="{{baseId}}_stickysearch_input" value="{% for label in sticky_search_words %}{{label}},{% endfor %}" />
+					<br class="clear" />
 					<div class="explain">
 						{{ phrase('agent.publish.search_sticky_words_explain') }}
 					</div>
 				</dd>
 			</dl>
-		</div>
+		</section>
 
 		<br />
 

@@ -1,39 +1,27 @@
-<div class="revision-compare">
-	<table class="list" cellspacing="0" width="100%">
-		<tbody>
-			<tr class="line-1">
-				<td>{{ phrase('agent.publish.compare_older_title') }}</td>
-				<td>
-					By {{ rev_old.person.display_name }} ({{ rev_old.date_created|date('H:ia M j Y') }})
-				</td>
-			</tr>
-			<tr class="line-1">
-				<td>{{ phrase('agent.publish.compare_newer_title') }}</td>
-				<td>
-					By {{ rev_new.person.display_name }} ({{ rev_new.date_created|date('H:ia M j Y') }})
-				</td>
-			</tr>
-
+<div id="overlay_wrapper" style="width: 800px; height: 600px;">
+	<div class="overlay-title">
+		<span class="close-overlay"></span>
+		<h4>Comparing Revisions</h4>
+	</div>
+	<div class="overlay-content">
+		<div class="revision-compare">
 			{% if rendered_title_diff %}
-			<tr class="line-2">
-				<td>{{ phrase('agent.publish.changes_in_title') }}</td>
-				<td><div class="diff-box">{{ rendered_title_diff|raw }}</div></td>
-			</tr>
+			<div class="batch">
+				<div class="diff-box">{{ rendered_title_diff|raw }}</div>
+			</div>
 			{% endif %}
 
 			{% if rendered_content_diff %}
-			<tr class="line-2">
-				<td>{{ phrase('agent.publish.changes_in_content') }}</td>
-				<td><div class="diff-box">{{ rendered_content_diff|raw }}</div></td>
-			</tr>
+			<div class="batch">
+				<div class="diff-box">{{ rendered_content_diff|raw }}</div>
+			</div>
 			{% endif %}
 
 			{% if not rendered_title_diff and not rendered_content_diff %}
-			<tr class="line-2">
-				<td>&nbsp;</td>
-				<td>{{ phrase('agent.publish.no_changes') }}</td>
-			</tr>
+			<div class="batch">
+				{{ phrase('agent.publish.no_changes') }}
+			</div>
 			{% endif %}
-		</tbody>
-	</table>
+		</div>
+	</div>
 </div>

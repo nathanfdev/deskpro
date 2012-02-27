@@ -53,6 +53,7 @@ DeskPRO.Agent.PageHelper.MiscContent = new Orb.Class({
 		var new_id = checks.last().val();
 
 		if (!old_id || !new_id || old_id == new_id) {
+			console.log('bad compare');
 			return;
 		}
 

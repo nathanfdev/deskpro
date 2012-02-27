@@ -36,19 +36,18 @@ DeskPRO.Agent.PageFragment.Page.Content.StickyWords = new Orb.Class({
 			this.options.saveUrl = BASE_URL + 'agent/publish/save-sticky-search-words/' + this.options.contentType + '/' + this.options.contentId;
 		}
 
-		var tagitOptions = {
-			enableBackspace: false,
-			fieldName: 'sticky_search_words',
-			onchange: (function() {
-				this._updated();
-			}).bind(this)
-		};
-
-		this.tagit = $(this.options.element).addClass('tagit').tagit(tagitOptions);
+		this.termsInput = new DeskPRO.UI.LabelsInput({
+			textarea: this.options.element,
+			placeholder: 'Enter a search word...'
+		});
+		this.termsInput.addEvent('change', function() {
+			self._updated();
+		});
 	},
 
 	_updated: function() {
-		var labels = this.tagit.getLabels();
+
+		var labels = this.termsInput.getLabels();
 		var ev = {
 			labels: labels,
 			cancel: false
