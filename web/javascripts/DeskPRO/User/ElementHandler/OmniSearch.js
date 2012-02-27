@@ -31,11 +31,15 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 			callback: this.updateResults.bind(this)
 		});
 
-		this.searchboxEl.on('keypress', function() {
+		this.searchboxEl.on('keyup', function(ev) {
 			if (!$(this).val().trim().length) {
 				self.close();
 			} else {
-				self.searchTimer.touch();
+				if (ev.keyCode == '32') {
+					self.searchTimer.exec(true);
+				} else {
+					self.searchTimer.touch();
+				}
 			}
 		});
 

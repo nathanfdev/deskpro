@@ -476,6 +476,10 @@ body.dp-simple-popup .dp-content-block {
 	border-bottom:  1px solid #D9DBDB;
 }
 
+#deskpro #dp_search_assist .results ul li .summary {
+	display: none;
+}
+
 #deskpro #dp_search_assist .results ul li a {
 	display: block;
 	padding: 3px 3px 3px 8px;
