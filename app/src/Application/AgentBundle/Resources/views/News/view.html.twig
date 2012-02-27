@@ -82,107 +82,113 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 </div>
 
-<nav class="page-tabs" id="{{baseId}}_bodytabs">
-	<ul>
-		<li class="on" data-tab-for="#{{baseId}}_tab_contents .news-content"><span>{{ phrase('agent.label_page') }}</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.label_comments') }} (<span id="{{baseId}}_count_comments">{{news_comments|length|default(0)}}</span>)</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.label_revisions') }}</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.label_related_content') }}</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('agent.label_search') }}</span></li>
-	</ul>
-	<div class="buttons" id="{{baseId}}_content_edit_btns">
-		<button class="clean-white small" id="{{baseId}}_edit_btn">{{ phrase('agent.edit') }}</button>
-		<button class="clean-white small editor-save-trigger" id="{{baseId}}_save_btn">{{ phrase('agent.save') }}</button>
-		<button class="clean-white small editor-cancel-trigger" id="{{baseId}}_cancel_btn">{{ phrase('agent.cancel') }}</button>
-	</div>
-</nav>
+<div class="profile-box-container reply-box-wrap">
+	<header>
+		<nav  id="{{baseId}}_bodytabs">
+			<ul>
+				<li class="on" data-tab-for="#{{baseId}}_tab_contents .news-content"><span>{{ phrase('agent.label_page') }}</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.label_comments') }} (<span id="{{baseId}}_count_comments">{{news_comments|length|default(0)}}</span>)</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.label_revisions') }}</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.label_related_content') }}</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('agent.label_search') }}</span></li>
+			</ul>
+			<div class="buttons" id="{{baseId}}_content_edit_btns">
+				<button class="clean-white small" id="{{baseId}}_edit_btn">{{ phrase('agent.edit') }}</button>
+				<button class="clean-white small editor-save-trigger" id="{{baseId}}_save_btn">{{ phrase('agent.save') }}</button>
+				<button class="clean-white small editor-cancel-trigger" id="{{baseId}}_cancel_btn">{{ phrase('agent.cancel') }}</button>
+			</div>
+		</nav>
+	</header>
+	<section>
 
-{# Tab Contents #}
-<div id="{{baseId}}_tab_contents" class="tabbed-page-contents">
-	{# Tab: Content #}
-	<div class="deskpro-tab-item content-tab-item news-content on">
-		{# Content #}
-		<div class="news-content" id="{{baseId}}_content_ed">
-		{% include 'AgentBundle:News:view-content-tab.html.twig' %}
-		</div>
-		{# /Content #}
-	</div>
+		{# Tab Contents #}
+		<div id="{{baseId}}_tab_contents">
+			{# Tab: Content #}
+			<div class="deskpro-tab-item content-tab-item news-content on">
+				{# Content #}
+				<div class="news-content" id="{{baseId}}_content_ed">
+				{% include 'AgentBundle:News:view-content-tab.html.twig' %}
+				</div>
+				{# /Content #}
+			</div>
 
-	{# Tab: Comments #}
-	<div class="deskpro-tab-item comments-tab">
-		<div class="news-comments">
-			<div class="full-tab-content">
-				<div class="messages-wrap" id="{{baseId}}_comments_wrap">
-					{% for comment in news_comments %}
-						{% include 'AgentBundle:News:view-comment.html.twig' %}
-					{% endfor %}
+			{# Tab: Comments #}
+			<div class="deskpro-tab-item content-tab-item comments-tab">
+				<div class="news-comments">
+					<div class="full-tab-content">
+						<div class="messages-wrap" id="{{baseId}}_comments_wrap">
+							{% for comment in news_comments %}
+								{% include 'AgentBundle:News:view-comment.html.twig' %}
+							{% endfor %}
+						</div>
+					</div>
+
+					<div class="messages-wrap new-note">
+						<article
+							class="content-message agent-message"
+							data-comment-id="{{comment.id}}"
+							data-content-type="{{ comment.object_content_type }}"
+						>
+							<div class="avatar">
+								<img src="{{ app.user.getPictureUrl(40) }}" alt="" width="40" height="40" />
+							</div>
+							<div class="content">
+								<header>
+									<h4>New Comment</h4>
+								</header>
+								<div class="body-text">
+									<textarea style="width:99%; height: 80px;"></textarea>
+								</div>
+								<div class="footer-text">
+									<div class="loading-off">
+										<button class="clean-white">{{ phrase('agent.add_comment') }}</button>
+									</div>
+									<div class="loading-on" style="display:none">
+										{{ phrase('agent.loading_saving') }}
+									</div>
+								</div>
+							</div>
+						</article>
+					</div>
 				</div>
 			</div>
+			{# /Tab: Comments #}
 
-			<div class="messages-wrap new-note">
-				<article
-					class="content-message agent-message"
-					data-comment-id="{{comment.id}}"
-					data-content-type="{{ comment.object_content_type }}"
-				>
-					<div class="avatar">
-						<img src="{{ app.user.getPictureUrl(40) }}" alt="" width="40" height="40" />
-					</div>
-					<div class="content">
-						<header>
-							<h4>New Comment</h4>
-						</header>
-						<div class="body-text">
-							<textarea style="width:99%; height: 80px;"></textarea>
-						</div>
-						<div class="footer-text">
-							<div class="loading-off">
-								<button class="clean-white">{{ phrase('agent.add_comment') }}</button>
-							</div>
-							<div class="loading-on" style="display:none">
-								{{ phrase('agent.loading_saving') }}
-							</div>
-						</div>
-					</div>
-				</article>
+			{# Tab: Revisions #}
+			<div id="{{baseId}}_revs" class="deskpro-tab-item content-tab-item revisions-tab">
+				{% include 'AgentBundle:News:view-revisions-tab.html.twig' %}
 			</div>
+			{# /Tab: Revisions #}
+
+			{# Tab: Related #}
+			<div id="{{baseId}}_related_content" class="deskpro-tab-item content-tab-item related-content-tab">
+				{% include 'AgentBundle:Common:content-related-list.html.twig' %}
+			</div>
+			{# /Tab: Related #}
+
+			{# Tab: Search #}
+			<div id="{{baseId}}_searchtab" class="deskpro-tab-item search-tab">
+				<section class="description-area sticky-search-words">
+					<dl class="info-list">
+						<dt class="type-labels">{{ phrase('agent.publish.sticky_words_title') }}</dt>
+						<dd>
+							<input type="text" value="{% for label in sticky_search_words %}{{label}},{% endfor %}" id="{{baseId}}_stickysearch_input" />
+							<div class="explain">
+								{{ phrase('agent.publish.search_sticky_words_explain') }}
+							</div>
+						</dd>
+					</dl>
+				</section>
+
+				<br />
+
+				{% include 'AgentBundle:Publish:rated-searches.html.twig' %}
+			</div>
+			{# /Tab: Search #}
 		</div>
-	</div>
-	{# /Tab: Comments #}
-
-	{# Tab: Revisions #}
-	<div id="{{baseId}}_revs" class="deskpro-tab-item revisions-tab">
-		{% include 'AgentBundle:News:view-revisions-tab.html.twig' %}
-	</div>
-	{# /Tab: Revisions #}
-
-	{# Tab: Related #}
-	<div id="{{baseId}}_related_content" class="deskpro-tab-item related-content-tab">
-		{% include 'AgentBundle:Common:content-related-list.html.twig' %}
-	</div>
-	{# /Tab: Related #}
-
-	{# Tab: Search #}
-	<div id="{{baseId}}_searchtab" class="deskpro-tab-item search-tab">
-		<section class="description-area sticky-search-words">
-			<dl class="info-list">
-				<dt class="type-labels">{{ phrase('agent.publish.sticky_words_title') }}</dt>
-				<dd>
-					<input type="text" value="{% for label in sticky_search_words %}{{label}},{% endfor %}" id="{{baseId}}_stickysearch_input" />
-					<div class="explain">
-						{{ phrase('agent.publish.search_sticky_words_explain') }}
-					</div>
-				</dd>
-			</dl>
-		</section>
-
-		<br />
-
-		{% include 'AgentBundle:Publish:rated-searches.html.twig' %}
-	</div>
-	{# /Tab: Search #}
+		{# /Main Tabs #}
+</section>
 </div>
-{# /Main Tabs #}
 
 <div class="inline-editable" style="display:none">
 	<div class="title">
