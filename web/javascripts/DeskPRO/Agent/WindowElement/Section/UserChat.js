@@ -42,12 +42,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	onShow: function() {
-
-		// Dont autorefresh until at least 8 seconds
-		if ((new Date()).getTime() - this._lastLoaded.getTime() < 8000) {
-			return;
-		}
-
 		this._lastLoaded = new Date();
 		DeskPRO_Window.getSectionData('chat_section', (function(data) {
 			this.setHasInitialLoaded();

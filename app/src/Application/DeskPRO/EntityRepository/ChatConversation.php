@@ -79,14 +79,26 @@ class ChatConversation extends AbstractEntityRepository
 		$params['status'] = 'open';
 
 		if ($agent) {
-			$qb->andWhere('c.agent = :agent');
-			$params['agent'] = $agent;
-		} else {
-			$qb->andWhere('c.agent IS NULL');
+			if (is_object($agent)) {
+				$agent = $agent->id;
+			}
+			if ($agent == -1) {
+				$qb->andWhere('c.agent IS NULL');
+			} else {
+				$qb->andWhere('c.agent = :agent');
+				$params['agent'] = $agent;
+			}
 		}
 		if ($department) {
-			$qb->andWhere('c.department = :dep');
-			$params['dep'] = $department;
+			if (is_object($department)) {
+				$department = $department->id;
+			}
+			if ($department == -1) {
+				$qb->andWhere('c.department IS NULL');
+			} else {
+				$qb->andWhere('c.department = :dep');
+				$params['dep'] = $department;
+			}
 		}
 
 		return $qb->getQuery()->execute($params);

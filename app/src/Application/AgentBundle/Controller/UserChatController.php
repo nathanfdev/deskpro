@@ -287,7 +287,7 @@ class UserChatController extends AbstractController
 
 		// Initial counts
 		$initial_counts = App::getDb()->fetchAllKeyValue("
-			SELECT IF(agent_id, agent_id, 0) AS agent_id, COUNT(*) AS count
+			SELECT IF(agent_id, agent_id, -1) AS agent_id, COUNT(*) AS count
 			FROM chat_conversations c
 			WHERE c.status = 'open'
 			GROUP BY agent_id
@@ -296,13 +296,16 @@ class UserChatController extends AbstractController
 		$initial_counts['total'] = array_sum(array_values($initial_counts));
 
 		$dep_counts = App::getDb()->fetchAllKeyValue("
-			SELECT IF(department_id, department_id, 0) AS department_id, COUNT(*) AS count
+			SELECT IF(department_id, department_id, -1) AS department_id, COUNT(*) AS count
 			FROM chat_conversations c
 			WHERE c.status = 'open' AND c.agent_id IS NULL
 			GROUP BY department_id
 		");
 
-		$dep_counts['0_total'] = 0;
+		$dep_counts['none_total'] = isset($dep_counts[-1]) ? $dep_counts[-1] : 0;
+		$dep_counts['none'] = isset($dep_counts[-1]) ? $dep_counts[-1] : 0;
+
+		$dep_counts['0_total'] = $dep_counts['none'];
 
 		// Departments
 		$departments = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
