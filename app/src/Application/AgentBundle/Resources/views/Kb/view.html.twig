@@ -177,106 +177,112 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 </div>
 
-<nav class="page-tabs" id="{{baseId}}_bodytabs">
-	<ul>
-		<li class="on" data-tab-for="#{{baseId}}_tab_contents .kb-content"><span>{{ phrase('agent.label_article') }}</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.label_comments') }} (<span id="{{baseId}}_count_comments">{{article_comments|length|default(0)}}</span>)</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.label_revisions') }}</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.label_related_content') }}</span></li>
-		<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('agent.label_search') }}</span></li>
-	</ul>
-	<div class="buttons" id="{{baseId}}_content_edit_btns">
-		<button class="clean-white small kb-editor-edit" id="{{baseId}}_edit_btn">{{ phrase('agent.edit') }}</button>
-		<button class="clean-white small editor-save-trigger" id="{{baseId}}_save_btn">{{ phrase('agent.save') }}</button>
-		<button class="clean-white small editor-cancel-trigger" id="{{baseId}}_cancel_btn">{{ phrase('agent.cancel') }}</button>
-	</div>
-</nav>
+<div class="profile-box-container reply-box-wrap">
+	<header>
+		<nav  id="{{baseId}}_bodytabs">
+			<ul>
+				<li class="on" data-tab-for="#{{baseId}}_tab_contents .kb-content"><span>{{ phrase('agent.label_article') }}</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.label_comments') }} (<span id="{{baseId}}_count_comments">{{article_comments|length|default(0)}}</span>)</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.label_revisions') }}</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.label_related_content') }}</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('agent.label_search') }}</span></li>
+			</ul>
+			<div class="buttons" id="{{baseId}}_content_edit_btns">
+				<button class="clean-white small kb-editor-edit" id="{{baseId}}_edit_btn">{{ phrase('agent.edit') }}</button>
+				<button class="clean-white small editor-save-trigger" id="{{baseId}}_save_btn">{{ phrase('agent.save') }}</button>
+				<button class="clean-white small editor-cancel-trigger" id="{{baseId}}_cancel_btn">{{ phrase('agent.cancel') }}</button>
+			</div>
+		</nav>
+	</header>
+	<section>
 
-{# Tab Contents #}
-<div id="{{baseId}}_tab_contents">
-	{# Tab: Content #}
-	<div class="deskpro-tab-item content-tab-item kb-content on" style="display: block">
-		<div id="{{baseId}}_content_ed">
-		{% include 'AgentBundle:Kb:view-content-tab.html.twig' %}
-		</div>
-	</div>
-	{# /Tab: Content #}
-
-	{# Tab: Comments #}
-	<div class="deskpro-tab-item content-tab-item comments-tab">
-		<div class="article-comments">
-			<div class="full-deskpro-tab-item">
-				<div class="messages-wrap" id="{{baseId}}_comments_wrap">
-					{% for comment in article_comments %}
-						{% include 'AgentBundle:Kb:view-comment.html.twig' %}
-					{% endfor %}
-				</div>
-				<div class="messages-wrap new-note">
-					<article
-						class="content-message agent-message"
-						data-comment-id="{{comment.id}}"
-						data-content-type="{{ comment.object_content_type }}"
-					>
-						<div class="avatar">
-							<img src="{{ app.user.getPictureUrl(40) }}" alt="" width="40" height="40" />
-						</div>
-						<div class="content">
-							<header>
-								<h4>New Comment</h4>
-							</header>
-							<div class="body-text">
-								<textarea style="width:99%; height: 80px;"></textarea>
-							</div>
-							<div class="footer-text">
-								<div class="loading-off">
-									<button class="clean-white">{{ phrase('agent.add_comment') }}</button>
-								</div>
-								<div class="loading-on" style="display:none">
-									{{ phrase('agent.loading_saving') }}
-								</div>
-							</div>
-						</div>
-					</article>
+		{# Tab Contents #}
+		<div id="{{baseId}}_tab_contents">
+			{# Tab: Content #}
+			<div class="deskpro-tab-item content-tab-item kb-content on" style="display: block">
+				<div id="{{baseId}}_content_ed">
+				{% include 'AgentBundle:Kb:view-content-tab.html.twig' %}
 				</div>
 			</div>
-		</div>
-	</div>
-	{# /Tab: Comments #}
+			{# /Tab: Content #}
 
-	{# Tab: Revisions #}
-	<div id="{{baseId}}_revs" class="loaded deskpro-tab-item content-tab-item revisions-tab">
-		{% include 'AgentBundle:Kb:view-revisions-tab.html.twig' %}
-	</div>
-	{# /Tab: Revisions #}
-
-	{# Tab: Related #}
-	<div id="{{baseId}}_related_content" class="deskpro-tab-item content-tab-item kb-related-content related-content-tab">
-		{% include 'AgentBundle:Common:content-related-list.html.twig' %}
-	</div>
-	{# /Tab: Related #}
-
-	{# Tab: Search #}
-	<div id="{{baseId}}_searchtab" class="deskpro-tab-item search-tab">
-		<section class="description-area sticky-search-words">
-			<dl class="info-list">
-				<dt>{{ phrase('agent.publish.sticky_words_title') }}</dt>
-				<dd class="ticket-tags tags-wrap">
-					<input type="text" id="{{baseId}}_stickysearch_input" value="{% for label in sticky_search_words %}{{label}},{% endfor %}" />
-					<br class="clear" />
-					<div class="explain">
-						{{ phrase('agent.publish.search_sticky_words_explain') }}
+			{# Tab: Comments #}
+			<div class="deskpro-tab-item content-tab-item comments-tab">
+				<div class="article-comments">
+					<div class="full-deskpro-tab-item">
+						<div class="messages-wrap" id="{{baseId}}_comments_wrap">
+							{% for comment in article_comments %}
+								{% include 'AgentBundle:Kb:view-comment.html.twig' %}
+							{% endfor %}
+						</div>
+						<div class="messages-wrap new-note">
+							<article
+								class="content-message agent-message"
+								data-comment-id="{{comment.id}}"
+								data-content-type="{{ comment.object_content_type }}"
+							>
+								<div class="avatar">
+									<img src="{{ app.user.getPictureUrl(40) }}" alt="" width="40" height="40" />
+								</div>
+								<div class="content">
+									<header>
+										<h4>New Comment</h4>
+									</header>
+									<div class="body-text">
+										<textarea style="width:99%; height: 80px;"></textarea>
+									</div>
+									<div class="footer-text">
+										<div class="loading-off">
+											<button class="clean-white">{{ phrase('agent.add_comment') }}</button>
+										</div>
+										<div class="loading-on" style="display:none">
+											{{ phrase('agent.loading_saving') }}
+										</div>
+									</div>
+								</div>
+							</article>
+						</div>
 					</div>
-				</dd>
-			</dl>
-		</section>
+				</div>
+			</div>
+			{# /Tab: Comments #}
 
-		<br />
+			{# Tab: Revisions #}
+			<div id="{{baseId}}_revs" class="loaded deskpro-tab-item content-tab-item revisions-tab">
+				{% include 'AgentBundle:Kb:view-revisions-tab.html.twig' %}
+			</div>
+			{# /Tab: Revisions #}
 
-		{% include 'AgentBundle:Publish:rated-searches.html.twig' %}
-	</div>
-	{# /Tab: Search #}
+			{# Tab: Related #}
+			<div id="{{baseId}}_related_content" class="deskpro-tab-item content-tab-item kb-related-content related-content-tab">
+				{% include 'AgentBundle:Common:content-related-list.html.twig' %}
+			</div>
+			{# /Tab: Related #}
+
+			{# Tab: Search #}
+			<div id="{{baseId}}_searchtab" class="deskpro-tab-item search-tab">
+				<section class="description-area sticky-search-words">
+					<dl class="info-list">
+						<dt>{{ phrase('agent.publish.sticky_words_title') }}</dt>
+						<dd class="ticket-tags tags-wrap">
+							<input type="text" id="{{baseId}}_stickysearch_input" value="{% for label in sticky_search_words %}{{label}},{% endfor %}" />
+							<br class="clear" />
+							<div class="explain">
+								{{ phrase('agent.publish.search_sticky_words_explain') }}
+							</div>
+						</dd>
+					</dl>
+				</section>
+
+				<br />
+
+				{% include 'AgentBundle:Publish:rated-searches.html.twig' %}
+			</div>
+			{# /Tab: Search #}
+		</div>
+		{# /Tab Contents #}
+	</section>
 </div>
-{# /Tab Contents #}
 
 <div class="inline-editable" style="display:none">
 	<div class="title">
