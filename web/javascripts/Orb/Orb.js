@@ -249,6 +249,42 @@ Orb.regexQuote = function(strRegex) {
 
 
 /**
+ * Check if a string is an email address
+ *
+ * @param email
+ */
+Orb.strIsEmail = function(email) {
+	if (email.indexOf('@') === -1) {
+		return false;
+	}
+
+	var parts = email.split('@');
+	if (parts.length != 2) {
+		return false;
+	}
+
+	// Match the part before the @
+	var regexName = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*$/i;
+
+	// Match a regular domain name after the @
+	var regexDomain = /^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2,15})$/i;
+
+	// Match a IP address after the @
+	var regexIp = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/i;
+
+	if (!regexName.test(parts[0])) {
+		return false;
+	}
+
+	if (!regexDomain.test(parts[1]) && !regexIp.test(parts[1])) {
+		return false;
+	}
+
+	return true;
+};
+
+
+/**
  * Take elements of array and chunk them into subarrays of size
  *
  * @param {Array}   array

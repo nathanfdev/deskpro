@@ -120,13 +120,23 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 		function handleAdd() {
 			var label, newId;
 
-			var pattern = newInput.val();
+			var pattern = newInput.val().trim();
 			newInput.val('');
+
+			if (!pattern.length) {
+				return;
+			}
 
 			var type = newInputType.val();
 			newInputType.val('');
 
-			label = pattern
+			label = pattern;
+
+			// We only support full addresses now, so we know this must be a real address
+			if (!Orb.strIsEmail(pattern)) {
+				alert('Please only enter valid email addresses here');
+				return;
+			}
 
 			newId = Orb.getUniqueId();
 
