@@ -408,6 +408,11 @@ class MiscController extends AbstractController
 
 	public function redirectExternalAction($url)
 	{
+		if (!$this->container->getSetting('core.agent_intercept_external_link')) {
+			$res = new \Symfony\Component\HttpFoundation\RedirectResponse($url, 302);
+			return $res;
+		}
+
 		$urlinfo = parse_url($url);
 
 		return $this->render('AgentBundle:Misc:redirect-external.html.twig', array(

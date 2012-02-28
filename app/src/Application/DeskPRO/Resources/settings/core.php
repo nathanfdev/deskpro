@@ -237,4 +237,9 @@
 	 * True to have the DeskPRO local user source enabled
 	 */
 	'core.deskpro_source_enabled' => true,
+
+	/**
+	 * True to have links from chat intercepted and sent through the security page
+	 */
+	'core.agent_intercept_external_link' => false,
 );
