@@ -1,3 +1,4 @@
+{% if app.user.hasPerm('agent_publish.validate') %}
 <section class="group-section first open">
 	<header><h2>Pending</h2></header>
 	<article>
@@ -31,6 +32,7 @@
 		</section>
 	</article>
 </section>
+{% endif %}
 
 <section class="group-section open">
 	<header><h2>Knowledgebase</h2></header>
