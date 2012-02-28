@@ -87,6 +87,37 @@ span.gear{
 	z-index: 0;
 	color: #404040;
 }
+
+#dp_content_info {
+	z-index: 1;
+	background-color: #ECEEF0;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+
+	table {
+		width: 100%;
+		height: 100%;
+
+		td {
+			vertical-align: middle;
+			text-align: center;
+			padding: 0 25px 0 25px;
+		}
+	}
+
+	h1 {
+		font-family: @heading-font;
+		font-weight: bold;
+		font-size: 16px;
+		color: #C9CBCE;
+		text-shadow: px 1px 1px #ffffff;
+		filter: ~"dropshadow(color=#ffffff, offx=, offy=1)";
+	}
+}
+
 #dp_content_wrap{
 	text-shadow: 0 1px 0 #fff;
 	position: absolute;
@@ -95,12 +126,15 @@ span.gear{
 	bottom: 0;
 	left: 0;
 }
+
 #dp_content_wrap > div.tabViewDetailContent {
 	position: absolute;
 	top: 0;
 	right: 0;
 	bottom: 0;
 	left: 0;
+	z-index: 2;
+	background-color: #ECEEF0;
 }
 #dp_content_wrap > div.tabViewDetailContent > .with-scrollbar {
 	position: absolute;
@@ -4926,4 +4960,70 @@ ul.attachment-list {
 		background-color: #DDFFDD;
 		color: green;
 	}
+}
+
+.sub-box-nav {
+	.gradient(#ffffff, #e5e5e5);
+	height: 22px;
+	border-bottom: 1px solid #B3B6B8;
+	overflow: hidden;
+	position: relative;
+}
+
+.sub-box-nav ul.option-buttons.right {
+	float: right;
+}
+
+.sub-box-nav ul.option-buttons.right li {
+	border-right: none;
+	border-left: 1px solid #B3B6B8;
+}
+
+.sub-box-nav ul.option-buttons li {
+
+	.gradient(#f9f9f9, #dddddd);
+
+	float: left;
+	display: block;
+	height: 22px;
+	border-right: 1px solid #B3B6B8;
+	cursor: pointer;
+}
+
+.sub-box-nav ul.option-buttons li:hover {
+	-webkit-box-shadow: inset 0px 0px 10px 0px rgba(255, 255, 255, 1);
+	-moz-box-shadow: inset 0px 0px 10px 0px rgba(255, 255, 255, 1);
+	box-shadow: inset 0px 0px 10px 0px rgba(255, 255, 255, 1);
+}
+
+.sub-box-nav ul.option-buttons li span {
+	display: block;
+	height: 22px;
+	line-height: 22px;
+	padding: 0 5px 0 5px;
+	overflow: hidden;
+}
+
+.sub-box-nav ul.option-buttons li.edit span {
+	background-image: url(../../images/agent/icons/document_pencil.png);
+	background-position: 0 50%;
+	background-repeat: no-repeat;
+	padding-left: 20px;
+	margin-left: 4px;
+}
+
+.sub-box-nav ul.option-buttons li.save span {
+	background-image: url(../../images/agent/icons/tick.png);
+	background-position: 0 50%;
+	background-repeat: no-repeat;
+	padding-left: 20px;
+	margin-left: 4px;
+}
+
+.sub-box-nav ul.option-buttons li.cancel span {
+	background-image: url(../../images/agent/icons/cross.png);
+	background-position: 0 50%;
+	background-repeat: no-repeat;
+	padding-left: 20px;
+	margin-left: 4px;
 }
