@@ -157,6 +157,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	},
 
 	onShow: function() {
+		if (!this.hasLoaded) {
+			DeskPRO_Window.getSectionData('tickets_section', this._initSection.bind(this));
+		}
 		this.activeNavClass = null;
 	},
 

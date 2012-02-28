@@ -1605,12 +1605,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 	},
 
-	_globalHandleAjaxError: function(event, xhr, ajaxOptions, errorThrown) {
+	_globalHandleAjaxError: function(event, xhr, ajaxOptions, errorThrown, force) {
 		// We dont care about aborts
 		// This is caused when the user navigates away from a page, any running
 		// ajax requests are aborted by the browser. Without this the user
 		// would see the error popup briefly before the page went away
-		if (xhr.status == '0' || (xhr.statusText && xhr.statusText == 'abort')) {
+		if (force || (xhr.status == '0' || (xhr.statusText && xhr.statusText == 'abort'))) {
 			return;
 		}
 
@@ -2468,7 +2468,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	getSectionData: function(section_id, callback) {
+		var self = this;
 		var url;
+
+		if (!this.loadingSections) {
+			this.loadingSections = {};
+		}
+
+		if (this.loadingSections[section_id]) {
+			return;
+		}
+
+		this.loadingSections[section_id] = true;
 
 		// If we're in queued mode, then dont send anything yet
 		if (this._getSectionDataQueued) {
@@ -2521,7 +2532,23 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		$.ajax({
 			url: url,
-			success: callback
+			timeout: 15000,
+			success: function(data) {
+				delete self.loadingSections[section_id];
+				callback(data);
+			},
+			tryCount : 0,
+		    retryLimit: 3,
+			error: function(xhr, textStatus, errorThrown) {
+				this.tryCount++;
+				if (this.tryCount <= this.retryLimit) {
+					$.ajax(this);
+					return;
+				}
+				var status = (xhr.status || '') + ' ' + (errorThrown || '') + ' ' + (xhr.statusText || '');
+				self._showAjaxError('<div class="error-details">Here is the raw output returned from the server error:<textarea class="raw">' + status + "\n\n" + Orb.escapeHtml(xhr.responseText) + '</textarea></div>');
+				delete self.loadingSections[section_id];
+			}
 		});
 	},
 
@@ -2530,6 +2557,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	getSectionDataSendQueued: function() {
+		var self = this;
 		if (!this._getSectionDataQueued || !this._getSectionDataQueued.length) {
 			return;
 		}
@@ -2552,7 +2580,23 @@ DeskPRO.Agent.Window = new Orb.Class({
 			type: 'GET',
 			data: data,
 			dataType: 'json',
+			timeout: 15000,
+			tryCount : 0,
+		    retryLimit: 3,
+			error: function(xhr, textStatus, errorThrown) {
+				this.tryCount++;
+				if (this.tryCount <= this.retryLimit) {
+					$.ajax(this);
+					return;
+				}
+				var status = (xhr.status || '') + ' ' + (errorThrown || '') + ' ' + (xhr.statusText || '');
+				self._showAjaxError('<div class="error-details">Here is the raw output returned from the server error:<textarea class="raw">' + status + "\n\n" + Orb.escapeHtml(xhr.responseText) + '</textarea></div>');
+
+				self.loadingSections = {};
+			},
 			success: function(data) {
+				self.loadingSections = {};
+
 				Object.each(data, function(sectionData, sectionId) {
 					if (callback_map[sectionId]) {
 						callback_map[sectionId](sectionData);
