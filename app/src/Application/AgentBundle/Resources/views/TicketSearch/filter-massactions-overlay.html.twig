@@ -115,6 +115,7 @@
 					{% endif %}
 				</dd>
 			</dl>
+			{% if app.user.hasPerm('agent_tickets.reply_mass') %}
 			<div class="profile-box-container reply-box-wrap">
 				<header>
 					<nav>
@@ -166,6 +167,7 @@
 					</article>
 				</section>
 			</div>
+			{% endif %}
 			<dl>
 				<dt>{{ phrase('agent.other_properties') }}</dt>
 				<dd>
