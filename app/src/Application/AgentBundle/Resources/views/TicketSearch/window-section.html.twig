@@ -12,6 +12,7 @@
 	<article id="system_filters_wrap">
 		<ul id="tickets_outline_sys_filters" class="source-list">
 			{% for filter in sys_filters %}
+				{% if filter.sys_name != 'unassigned' or app.user.hasPerm('agent_tickets.view_unassigned') %}
 				<li
 					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %}"
 					data-filter-id="{{filter.id}}"
@@ -34,11 +35,13 @@
 					</h3>
 					<ul class="sub-group" style="display: none;"></ul>
 				</li>
+				{% endif %}
 			{% endfor %}
 		</ul>
 
 		<ul id="tickets_outline_sys_hold_filters" class="source-list" style="display: none;">
 			{% for filter in sys_filters_hold %}
+				{% if filter.sys_name != 'unassigned_w_hold' or app.user.hasPerm('agent_tickets.view_unassigned') %}
 				<li
 					class="filter filter-{{filter.id}} filter-{{filter.sys_name}} is-hold-filter nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %}"
 					data-filter-id="{{filter.id}}"
@@ -50,6 +53,7 @@
 					</h3>
 					<ul class="sub-group" style="display: none;"></ul>
 				</li>
+				{% endif %}
 			{% endfor %}
 		</ul>
 	</article>

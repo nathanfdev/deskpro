@@ -60,10 +60,6 @@
 			<tbody>
 				<!-- PERMISSION:agent_tickets.use -->{{ _self.perm_col('User ticket application', usergroup_values, 'tickets', 'use') }}
 				<!-- PERMISSION:agent_tickets.create -->{{ _self.perm_col('Create tickets', usergroup_values, 'tickets', 'create', 'tickets_use') }}
-			</tbody>
-			<tbody>
-				<!-- PERMISSION:agent_tickets.view_own -->{{ _self.perm_col('View own and teams tickets', usergroup_values, 'tickets', 'view_own', 'tickets_use') }}
-				<!-- PERMISSION:agent_tickets.modify_own -->{{ _self.perm_col('Modify own and teams tickets', usergroup_values, 'tickets', 'modify_own', 'tickets_use') }}
 				<!-- PERMISSION:agent_tickets.delete_own -->{{ _self.perm_col('Delete own and teams tickets', usergroup_values, 'tickets', 'delete_own', 'tickets_use') }}
 				<!-- PERMISSION:agent_tickets.resolve_own -->{{ _self.perm_col('Resolve own and teams tickets', usergroup_values, 'tickets', 'resolve_own', 'tickets_use') }}
 			</tbody>

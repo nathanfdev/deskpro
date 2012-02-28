@@ -249,29 +249,36 @@ class TicketSearch extends SearcherAbstract
 
 		if ($this->person AND $this->person['is_agent']) {
 
-			$agent = $this->person;
-			if ($agent AND $agent['is_agent']) {
-				$agent->loadHelper('AgentPermissions');
-				$agent->loadHelper('AgentTeam');
+			$where_perm = array();
+			$where = '((';
 
-				// perms only matter if person has permissions applied at all
-				if ($agent->getDisallowedDepartments()) {
-
-					$ticket_parts['joins'] = array('tickets_participants_perm', "LEFT JOIN tickets_participants AS part_check ON (part_check.ticket_id = tickets.id)");
-
-					$where_perm[] = "tickets.agent_id = {$agent['id']}";
-					if ($agent->getAgentTeamIds()) {
-						$where_perm[] = "tickets.agent_team_id IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
-					}
-
-					$where_perm[] = "tickets.department_id IN (" . implode(',', $agent->getAllowedDepartments()) . ")";
-					$where_perm[] = "part_check.person_id = {$agent['id']}";
-
-					$where_perm = implode(' OR ', $where_perm);
-
-					$where = "($where_perm) AND ";
-				}
+			if ($this->person->getDisallowedDepartments()) {
+				$where_perm[] = "tickets.department_id NOT IN (" . implode(',', $this->person->getDisallowedDepartments()) . ")";
 			}
+
+			if (!$this->person->hasPerm('agent_tickets.view_unassigned')) {
+				$where_perm[] = 'tickets.agent_id IS NOT NULL';
+			}
+
+			if (!$this->person->hasPerm('agent_tickets.view_others')) {
+				$part = array();
+				$part[] = "tickets.agent_id = {$this->person['id']}";
+				if ($this->person->getAgentTeamIds()) {
+					$part[] = "tickets.agent_team_id IN (" . implode(',', $this->person->getAgentTeamIds()) . ")";
+				}
+
+				$where_perm[] = '(' . implode(' OR ', $part) . ')';
+			}
+
+			$where = '((' . implode(' AND ', $where_perm) . ') OR (';
+
+			$ticket_parts['joins'][] = array('tickets_participants_perm', "LEFT JOIN tickets_participants AS tickets_participants_perm ON (tickets_participants_perm.ticket_id = tickets.id)");
+			$where .= "tickets.agent_id = {$this->person['id']} OR ";
+			if ($this->person->getAgentTeamIds()) {
+				$where .= "tickets.agent_team_id IN (" . implode(',', $this->person->getAgentTeamIds()) . ") OR ";
+			}
+
+			$where .= "tickets_participants_perm.person_id = {$this->person->id})) AND ";
 		}
 
 
