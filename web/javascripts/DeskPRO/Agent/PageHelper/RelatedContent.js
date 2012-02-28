@@ -151,6 +151,29 @@ DeskPRO.Agent.PageHelper.RelatedContent = new Orb.Class({
 			var title = routeEl.text().trim();
 		}
 
+		if (el.data('route-title')) {
+			title = el.data('route-title');
+			if (title == '@text') {
+				title = el.text().trim().replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ');
+			} else if (title == '@title') {
+				title = el.attr('title');
+			} else if (title.test(/^@selector\((.*?)\)$/)) {
+				var sel = title.match(/^@selector\((.*?)\)$/)[1];
+				var titleEl = null;
+				if (sel[0] == "#") {
+					titleEl = $(sel);
+				} else {
+					titleEl = $(sel, el);
+				}
+
+				if (titleEl && titleEl.length) {
+					title = titleEl.text().trim().replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ');
+				} else {
+					title = el.text().trim();
+				}
+			}
+		}
+
 		return this.addLink(typename, content_id, title, route);
 	},
 

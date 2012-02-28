@@ -3,7 +3,7 @@
 	'agent.publish.no_related_explain' => 'No other articles, downloads or news posts have been linked to this. Browse the listings and click "Add as related" to add related content.',
 	'agent.publish.related_articles' => 'Related Articles',
 	'agent.publish.related_downloads' => 'Related Downloads',
-	'agent.publish.related_articles' => 'Related News',
+	'agent.publish.related_news' => 'Related News',
 
 	'agent.publish.comments_to_validate' => 'Comments to review',
 

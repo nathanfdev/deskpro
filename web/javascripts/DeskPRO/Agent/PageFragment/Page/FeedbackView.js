@@ -148,7 +148,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 					self.getEl('content_edit_btns').hide();
 				}
 
-				if ($(info.tabContent).is('.related-content')) {
+				if ($(info.tabContent).is('.related-content-tab')) {
 					$('body').addClass('related-controls-on');
 				} else {
 					if ($(info.tabContent).is('.search-tab')) {
