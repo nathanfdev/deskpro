@@ -18,18 +18,21 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		this._initBasic();
 		this._initLabels();
 		this._initCommentForm();
-		this._initPostArea();
 		this._initActions();
 
-		if (this.meta.isValidating) {
-			this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
-				typename: 'downloads',
-				contentId: this.meta.download_id
-			});
-			this.ownObject(this.validatingEdit);
-		}
+		if (this.meta.canEdit) {
+			this._initPostArea();
 
-		this.getEl('edit_btn').on('click', this.showEditor.bind(this));
+			if (this.meta.isValidating) {
+				this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
+					typename: 'downloads',
+					contentId: this.meta.download_id
+				});
+				this.ownObject(this.validatingEdit);
+			}
+
+			this.getEl('edit_btn').on('click', this.showEditor.bind(this));
+		}
 
         $('time.timeago', this.wrapper).timeago();
 
@@ -37,6 +40,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			typename: 'downloads',
 			content_id: this.meta.download_id,
 			listEl: $('section.linked-content:first', this.wrapper),
+			disabled: !this.meta.canEdit,
 			onContentLinked: function(typename, content_id) {
 				$.ajax({
 					url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
@@ -128,69 +132,71 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		});
 		this.ownObject(this.bodyTabs);
 
-		// Name is editable
-		var name = $('h3.title.editable:first', this.wrapper);
-		if (!name.attr('id')) {
-			name.attr('id', Orb.getUniqueId());
-		}
+		if (this.meta.canEdit) {
+			// Name is editable
+			var name = $('h3.title.editable:first', this.wrapper);
+			if (!name.attr('id')) {
+				name.attr('id', Orb.getUniqueId());
+			}
 
-		var editable = new DeskPRO.Form.InlineEdit({
-			baseElement: this.wrapper,
-			ajax: {
-				url: BASE_URL + 'agent/downloads/file/' + this.meta.download_id + '/ajax-save',
-				success: function(data) {
-					self.handleUnloadRevisions(data.revision_id);
+			var editable = new DeskPRO.Form.InlineEdit({
+				baseElement: this.wrapper,
+				ajax: {
+					url: BASE_URL + 'agent/downloads/file/' + this.meta.download_id + '/ajax-save',
+					success: function(data) {
+						self.handleUnloadRevisions(data.revision_id);
+					}
 				}
-			}
-		});
+			});
 
-		// Change category menu
-		var catOb = new DeskPRO.UI.OptionBoxRevertable({
-			trigger: this.getEl('cat_trigger'),
-			element: this.getEl('cat_ob'),
-			onSave: function(ob) {
-				var catEl = ob.getSelectedElements('category');
-				var catId = catEl.data('item-id');
-				var title = catEl.data('full-title');
+			// Change category menu
+			var catOb = new DeskPRO.UI.OptionBoxRevertable({
+				trigger: this.getEl('cat_trigger'),
+				element: this.getEl('cat_ob'),
+				onSave: function(ob) {
+					var catEl = ob.getSelectedElements('category');
+					var catId = catEl.data('item-id');
+					var title = catEl.data('full-title');
 
-				self.getEl('cat_label').text(title);
+					self.getEl('cat_label').text(title);
 
-				$.ajax({
-					url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
-					type: 'POST',
-					data: { action: 'category', category_id: catId },
-					dataType: 'json'
-				});
-			}
-		});
+					$.ajax({
+						url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
+						type: 'POST',
+						data: { action: 'category', category_id: catId },
+						dataType: 'json'
+					});
+				}
+			});
 
-		// Status
-		var trigger = $('.the-status:first', this.wrapper);
-		this.statusMenu = new DeskPRO.UI.Menu({
-			triggerElement: trigger,
-			menuElement: $('.status-menu:first', this.wrapper),
-			onItemClicked: function(info) {
-				var status = $(info.itemEl).data('option-value');
+			// Status
+			var trigger = $('.the-status:first', this.wrapper);
+			this.statusMenu = new DeskPRO.UI.Menu({
+				triggerElement: trigger,
+				menuElement: $('.status-menu:first', this.wrapper),
+				onItemClicked: function(info) {
+					var status = $(info.itemEl).data('option-value');
 
-				$('.download-status', trigger).attr('title', status);
-				$('.download-status span', trigger).attr('class', '').addClass('ticket-' + status.replace(/\./, '_'));
+					$('.download-status', trigger).attr('title', status);
+					$('.download-status span', trigger).attr('class', '').addClass('ticket-' + status.replace(/\./, '_'));
 
-				$.ajax({
-					url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
-					type: 'POST',
-					data: {action: 'status', status: status},
-					context: self,
-					dataType: 'json'
-				});
-			}
-		});
-		this.ownObject(this.statusMenu);
+					$.ajax({
+						url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
+						type: 'POST',
+						data: {action: 'status', status: status},
+						context: self,
+						dataType: 'json'
+					});
+				}
+			});
+			this.ownObject(this.statusMenu);
 
-		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
-			ajaxSaveUrl: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
-			statusMenu: this.statusMenu
-		});
-		this.ownObject(this.deleteHelper);
+			this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
+				ajaxSaveUrl: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
+				statusMenu: this.statusMenu
+			});
+			this.ownObject(this.deleteHelper);
+		}
 	},
 
 	//#################################################################
