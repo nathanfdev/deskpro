@@ -24,7 +24,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this._initAutoUnpublishOptions();
 		this._initAutoPublishOptions();
 
-		var btn = $('.kb-editor-edit', this.wrap);
+		var btn = $('.kb-editor-edit', this.wrapper);
 		btn.on('click', this.showEditor.bind(this));
 
 		if (this.meta.isValidating) {
