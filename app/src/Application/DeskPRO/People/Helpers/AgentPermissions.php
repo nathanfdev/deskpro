@@ -21,8 +21,8 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 {
 	protected $person;
 
-	protected $_allowed_ids = null;
-	protected $_disallowed_ids = null;
+	protected $_allowed_ids = array();
+	protected $_disallowed_ids = array();
 
 	public function __construct(Entity\Person $person)
 	{
@@ -52,13 +52,13 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 	 * @param int|Department $dep
 	 * @return bool
 	 */
-	public function isDepartmentAllowed($dep)
+	public function isDepartmentAllowed($dep, $context = 'tickets')
 	{
 		if ($dep instanceof Entity\Department) {
 			$dep = $dep['id'];
 		}
 
-		return in_array($dep, $this->getAllowedDepartments());
+		return in_array($dep, $this->getAllowedDepartments($context));
 	}
 
 
@@ -68,18 +68,20 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 	 *
 	 * @return array
 	 */
-	public function getDisallowedDepartments()
+	public function getDisallowedDepartments($context = 'tickets')
 	{
-		if ($this->_disallowed_ids !== null) return $this->_disallowed_ids;
+		if (isset($this->_disallowed_ids[$context])) {
+			return $this->_disallowed_ids[$context];
+		}
 
 		$all_ids = App::getEntityRepository('DeskPRO:Department')->getDepartmentIds();
-		$allowed_ids = $this->getAllowedDepartments();
+		$allowed_ids = $this->getAllowedDepartments($context);
 
 		$disallowed_ids = array_diff($all_ids, $allowed_ids);
 
-		$this->_disallowed_ids = $disallowed_ids;
+		$this->_disallowed_ids[$context] = $disallowed_ids;
 
-		return $this->_disallowed_ids;
+		return $this->_disallowed_ids[$context];
 	}
 
 
@@ -89,17 +91,19 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 	 *
 	 * @return array
 	 */
-	public function getAllowedDepartments()
+	public function getAllowedDepartments($context = 'tickets')
 	{
-		if ($this->_allowed_ids !== null) return $this->_allowed_ids;
+		if (isset($this->_allowed_ids[$context])) {
+			return $this->_allowed_ids[$context];
+		}
 
-		$this->_allowed_ids = App::getDb()->fetchAllCol("
+		$this->_allowed_ids[$context] = App::getDb()->fetchAllCol("
 			SELECT department_id
 			FROM department_permissions
-			WHERE person_id = {$this->person->id}
-		");
+			WHERE person_id = ? AND app = ?
+		", array($this->person->id, $context));
 
-		return $this->_allowed_ids;
+		return $this->_allowed_ids[$context];
 	}
 
 

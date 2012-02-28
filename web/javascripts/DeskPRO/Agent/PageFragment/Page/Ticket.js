@@ -43,11 +43,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initMessageActionsMenu();
 		this._initLabels();
 
-		if (this.meta.isDeleted) {
-			$('button.undelete-trigger', this.wrapper).on('click', this.doTicketUndelete.bind(this));
+		if (this.meta.can_delete) {
+			if (this.meta.isDeleted) {
+				$('button.undelete-trigger', this.wrapper).on('click', this.doTicketUndelete.bind(this));
+			}
 		}
-		if (this.meta.isSpam) {
-			$('button.unspam-trigger', this.wrapper).on('click', this.doTicketUnspam.bind(this));
+		if (this.meta.can_modify) {
+			if (this.meta.isSpam) {
+				$('button.unspam-trigger', this.wrapper).on('click', this.doTicketUnspam.bind(this));
+			}
 		}
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.opened', { ticketId: this.getMetaData('ticket_id') });
@@ -126,32 +130,36 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			updateMessageTypes();
 		});
 
-		this.getEl('merge_trigger').on('click', function() {
-			var mergeOverlay = new DeskPRO.Agent.Widget.MergeTicket({
-				ticketId: self.getMetaData('ticket_id'),
-				destroyOnClose: true,
-				onMergeSuccess: function(data) {
+		if (this.meta.can_modify) {
+			this.getEl('merge_trigger').on('click', function() {
+				var mergeOverlay = new DeskPRO.Agent.Widget.MergeTicket({
+					ticketId: self.getMetaData('ticket_id'),
+					destroyOnClose: true,
+					onMergeSuccess: function(data) {
 
-					// remove old tabs, theyre outdated
-					Array.each(DeskPRO_Window.getTabWatcher().findTabType('ticket'), function(tab) {
-						var tid = tab.page.getMetaData('ticket_id');
-						if (tid == data.old_ticket_id || tid == data.ticket_id) {
-							DeskPRO_Window.TabBar.removeTabById(tab.id);
-						}
-					});
+						// remove old tabs, theyre outdated
+						Array.each(DeskPRO_Window.getTabWatcher().findTabType('ticket'), function(tab) {
+							var tid = tab.page.getMetaData('ticket_id');
+							if (tid == data.old_ticket_id || tid == data.ticket_id) {
+								DeskPRO_Window.TabBar.removeTabById(tab.id);
+							}
+						});
 
-					DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
+						DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
 
-					mergeOverlay.close();
-				}
+						mergeOverlay.close();
+					}
+				});
+				mergeOverlay.open();
 			});
-			mergeOverlay.open();
-		});
 
-		$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
+			$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
+		}
 
-		this.ticketActions = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this);
-		this.ownObject(this.ticketActions);
+		if (this.meta.can_modify) {
+			this.ticketActions = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this);
+			this.ownObject(this.ticketActions);
+		}
 
 		if (this.meta.isLocked) {
 			this.ticketLocked = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketLocked(this);
@@ -529,8 +537,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	_initTicketActionsMenu: function() {
 		var self = this;
 
-		this.getEl('delete_trigger').click(function() { self.showDeleteOverlay(); });
-		this.getEl('spam_trigger').click(function() { self.doTicketSpam(); });
+		if (this.meta.can_delete) {
+			this.getEl('delete_trigger').click(function() { self.showDeleteOverlay(); });
+		}
+		if (this.meta.can_modify) {
+			this.getEl('spam_trigger').click(function() { self.doTicketSpam(); });
+		}
 		this.getEl('print_trigger').click(function() { window.print(); });
 	},
 

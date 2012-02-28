@@ -838,84 +838,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 	},
 
-
-	/**
-	 * Show a status message.
-	 *
-	 * @param message
-	 * @param options
-	 */
-	showStatusMessage: function(message, options) {
-		options = Object.merge({
-			btnCallback: null,
-			btnText: 'Dismiss',
-			autoClose: 4500,
-			extraClasses: ''
-		}, options||{});
-
-		// undoCallback for bc, use btnCallback please
-		if (options.undoCallback) {
-			options.btnCallback = options.undoCallback;
-			delete options.undoCallback;
-		}
-
-		var wrap = $('#status_box');
-
-		if (wrap.data('added-classes')) {
-			wrap.removeClass(wrap.data('added-classes'));
-			wrap.data('added-classes', null);
-		}
-
-		if (options.extraClasses) {
-			wrap.addClass(options.extraClasses);
-			wrap.data('added-classes', options.extraClasses);
-		}
-
-		var timeoutId = null;
-		var closeFn = function() {
-			wrap.fadeOut(250);
-			if (timeoutId) {
-				window.clearTimeout(timeoutId);
-			}
-		}
-
-		if (options.autoClose) {
-			timeoutId = closeFn.delay(options.autoClose);
-		}
-
-		$('#status_message').html(message);
-		$('#status_dismiss_button em').html(options.btnText);
-
-		if (options.btnCallback) {
-			$('#status_dismiss_button').one('click', function(ev) {
-				closeFn();
-				options.btnCallback(ev, options);
-			});
-		} else {
-			$('#status_dismiss_button').one('click', function(ev) {
-				closeFn();
-			});
-		}
-
-		wrap.fadeIn(300);
-	},
-
-
-
-	/**
-	 * Shows a status message with defaults for an 'undo' type button.
-	 *
-	 * @param message
-	 * @param callback
-	 */
-	showUndoMessage: function(message, callback) {
-		this.showStatusMessage(message, {
-			btnCallback: callback,
-			btnText: 'Undo',
-			extraClasses: 'undo'
-		});
-	},
-
 	//#################################################################
 	//# Routes and page loading
 	//#################################################################
@@ -1606,6 +1528,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	_globalHandleAjaxError: function(event, xhr, ajaxOptions, errorThrown, force) {
+
+		console.log(arguments);
+
+		if (xhr && xhr.status && xhr.status == '404') {
+			this.showAlert($('<div><strong>Not Found</strong><br />The page you are trying to view could not be found. It may have been moved or deleted.</div>'));
+			return;
+		}
+
 		// We dont care about aborts
 		// This is caused when the user navigates away from a page, any running
 		// ajax requests are aborted by the browser. Without this the user
@@ -1635,13 +1565,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 				ajaxOptions.error = null;
 				ajaxOptions.complete = null;
 
-				this.showStatusMessage('Your session has timed out, you must log in');
+				this.showAlert('Your session has timed out, you must log in');
 
 				return;
 			}
 
 			if (data && data.error && data.error == 'not_allowed') {
-				this.showStatusMessage('The action you attempted to execute is not allowed:<br />' + data.errorMessage);
+				this.showAlert($('<div>The action you attempted to execute is not allowed:<br />' + data.errorMessage + '</div>'));
 				return;
 			}
 		}

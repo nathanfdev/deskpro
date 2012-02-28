@@ -113,9 +113,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		// Status
 		//------------------------------
 
+		var menuEl = $('#ticket_status_menu');
+		if (!this.page.meta.can_resolve) {
+			menuEl = menuEl.clone();
+			menuEl.find('li[data-status="resolved"]').remove();
+		}
+
 		this.statusMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.set-status', wrapper),
-			menuElement: $('#ticket_status_menu'),
+			menuElement: menuEl,
 			onItemClicked: (function(info) {
 				var item = $(info.itemEl);
 				var prop = this.changeManager.getPropertyManager('status');

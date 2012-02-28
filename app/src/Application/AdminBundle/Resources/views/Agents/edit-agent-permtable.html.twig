@@ -1,5 +1,4 @@
 {% macro perm_col(title, usergroup_values, permgroup, name, depends_on) %}
-	{% set permgroup = 'agent_' ~ permgroup %}
 	{% set perm_fname_flat = permgroup ~ '_' ~ name %}
 	<tr
 		class="permrow perm-{{ permgroup }}_{{ name }}"
@@ -58,22 +57,22 @@
 				</tr>
 			</thead>
 			<tbody>
-				<!-- PERMISSION:agent_tickets.use -->{{ _self.perm_col('User ticket application', usergroup_values, 'tickets', 'use') }}
-				<!-- PERMISSION:agent_tickets.create -->{{ _self.perm_col('Create tickets', usergroup_values, 'tickets', 'create', 'tickets_use') }}
-				<!-- PERMISSION:agent_tickets.delete_own -->{{ _self.perm_col('Delete own and teams tickets', usergroup_values, 'tickets', 'delete_own', 'tickets_use') }}
-				<!-- PERMISSION:agent_tickets.resolve_own -->{{ _self.perm_col('Resolve own and teams tickets', usergroup_values, 'tickets', 'resolve_own', 'tickets_use') }}
+				<!-- PERMISSION:agent_tickets.use -->{{ _self.perm_col('User ticket application', usergroup_values, 'agent_tickets', 'use') }}
+				<!-- PERMISSION:agent_tickets.create -->{{ _self.perm_col('Create tickets', usergroup_values, 'agent_tickets', 'create', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.delete_own -->{{ _self.perm_col('Delete own and teams tickets', usergroup_values, 'agent_tickets', 'delete_own', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.resolve_own -->{{ _self.perm_col('Resolve own and teams tickets', usergroup_values, 'agent_tickets', 'resolve_own', 'agent_tickets_use') }}
 			</tbody>
 			<tbody>
-				<!-- PERMISSION:agent_tickets.view_unassigned -->{{ _self.perm_col('View unassigned tickets', usergroup_values, 'tickets', 'view_unassigned', 'tickets_use') }}
-				<!-- PERMISSION:agent_tickets.modify_unassigned -->{{ _self.perm_col('Modify unassigned tickets', usergroup_values, 'tickets', 'modify_unassigned', 'tickets_view_unassigned') }}
-				<!-- PERMISSION:agent_tickets.delete_unassigned -->{{ _self.perm_col('Delete unassigned tickets', usergroup_values, 'tickets', 'delete_unassigned', 'tickets_view_unassigned') }}
-				<!-- PERMISSION:agent_tickets.resolve_unassigned -->{{ _self.perm_col('Resolve unassigned tickets', usergroup_values, 'tickets', 'resolve_unassigned', 'tickets_view_unassigned') }}
+				<!-- PERMISSION:agent_tickets.view_unassigned -->{{ _self.perm_col('View unassigned tickets', usergroup_values, 'agent_tickets', 'view_unassigned', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.modify_unassigned -->{{ _self.perm_col('Modify unassigned tickets', usergroup_values, 'agent_tickets', 'modify_unassigned', 'agent_tickets_view_unassigned') }}
+				<!-- PERMISSION:agent_tickets.delete_unassigned -->{{ _self.perm_col('Delete unassigned tickets', usergroup_values, 'agent_tickets', 'delete_unassigned', 'agent_tickets_view_unassigned') }}
+				<!-- PERMISSION:agent_tickets.resolve_unassigned -->{{ _self.perm_col('Resolve unassigned tickets', usergroup_values, 'agent_tickets', 'resolve_unassigned', 'agent_tickets_view_unassigned') }}
 			</tbody>
 			<tbody>
-				<!-- PERMISSION:agent_tickets.view_others -->{{ _self.perm_col('View others tickets', usergroup_values, 'tickets', 'view_others', 'tickets_use') }}
-				<!-- PERMISSION:agent_tickets.modify_others -->{{ _self.perm_col('Modify others tickets', usergroup_values, 'tickets', 'modify_others', 'tickets_view_others') }}
-				<!-- PERMISSION:agent_tickets.delete_others -->{{ _self.perm_col('Delete others tickets', usergroup_values, 'tickets', 'delete_others', 'tickets_view_others') }}
-				<!-- PERMISSION:agent_tickets.resolve_others -->{{ _self.perm_col('Resolve others tickets', usergroup_values, 'tickets', 'resolve_others', 'tickets_view_others') }}
+				<!-- PERMISSION:agent_tickets.view_others -->{{ _self.perm_col('View others tickets', usergroup_values, 'agent_tickets', 'view_others', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.modify_others -->{{ _self.perm_col('Modify others tickets', usergroup_values, 'agent_tickets', 'modify_others', 'agent_tickets_view_others') }}
+				<!-- PERMISSION:agent_tickets.delete_others -->{{ _self.perm_col('Delete others tickets', usergroup_values, 'agent_tickets', 'delete_others', 'agent_tickets_view_others') }}
+				<!-- PERMISSION:agent_tickets.resolve_others -->{{ _self.perm_col('Resolve others tickets', usergroup_values, 'agent_tickets', 'resolve_others', 'agent_tickets_view_others') }}
 			</tbody>
 		</table>
 	</div>
@@ -91,17 +90,17 @@
 				</tr>
 			</thead>
 			<tbody>
-				<!-- PERMISSION:agent_people.create -->{{ _self.perm_col('Create people', usergroup_values, 'people', 'create') }}
-				<!-- PERMISSION:agent_people.edit -->{{ _self.perm_col('Edit people', usergroup_values, 'people', 'edit') }}
-				<!-- PERMISSION:agent_people.delete -->{{ _self.perm_col('Delete people', usergroup_values, 'people', 'delete') }}
-				<!-- PERMISSION:agent_people.validate -->{{ _self.perm_col('Validate users and user email addresses', usergroup_values, 'people', 'validate') }}
-				<!-- PERMISSION:agent_people.manage_emails -->{{ _self.perm_col('Edit email addresses <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Be careful who you allow to manage email addresses. Since an agent can add any email address, including ones they might have control over, it means they could use that to gain access to the account if they really wanted to."></span>', usergroup_values, 'people', 'manage_emails') }}
-				<!-- PERMISSION:agent_people.reset_password -->{{ _self.perm_col('Reset passwords <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Be careful who you allow to reset user passwords. Since an agent can reset the password to anything they want, it means they can gain access to the account if they really wanted to."></span>', usergroup_values, 'people', 'reset_password') }}
+				<!-- PERMISSION:agent_people.create -->{{ _self.perm_col('Create people', usergroup_values, 'agent_people', 'create') }}
+				<!-- PERMISSION:agent_people.edit -->{{ _self.perm_col('Edit people', usergroup_values, 'agent_people', 'edit') }}
+				<!-- PERMISSION:agent_people.delete -->{{ _self.perm_col('Delete people', usergroup_values, 'agent_people', 'delete') }}
+				<!-- PERMISSION:agent_people.validate -->{{ _self.perm_col('Validate users and user email addresses', usergroup_values, 'agent_people', 'validate') }}
+				<!-- PERMISSION:agent_people.manage_emails -->{{ _self.perm_col('Edit email addresses <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Be careful who you allow to manage email addresses. Since an agent can add any email address, including ones they might have control over, it means they could use that to gain access to the account if they really wanted to."></span>', usergroup_values, 'agent_people', 'manage_emails') }}
+				<!-- PERMISSION:agent_people.reset_password -->{{ _self.perm_col('Reset passwords <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Be careful who you allow to reset user passwords. Since an agent can reset the password to anything they want, it means they can gain access to the account if they really wanted to."></span>', usergroup_values, 'agent_people', 'reset_password') }}
 			</tbody>
 			<tbody>
-				<!-- PERMISSION:agent_org.create -->{{ _self.perm_col('Create organizations', usergroup_values, 'org', 'create') }}
-				<!-- PERMISSION:agent_org.edit -->{{ _self.perm_col('Edit organizations', usergroup_values, 'org', 'edit') }}
-				<!-- PERMISSION:agent_org.delete -->{{ _self.perm_col('Delete organizations', usergroup_values, 'org', 'delete') }}
+				<!-- PERMISSION:agent_org.create -->{{ _self.perm_col('Create organizations', usergroup_values, 'agent_org', 'create') }}
+				<!-- PERMISSION:agent_org.edit -->{{ _self.perm_col('Edit organizations', usergroup_values, 'agent_org', 'edit') }}
+				<!-- PERMISSION:agent_org.delete -->{{ _self.perm_col('Delete organizations', usergroup_values, 'agent_org', 'delete') }}
 			</tbody>
 		</table>
 	</div>
@@ -119,10 +118,10 @@
 				</tr>
 			</thead>
 			<tbody>
-				<!-- PERMISSION:agent_chat.use -->{{ _self.perm_col('Use chat system', usergroup_values, 'chat', 'use') }}
-				<!-- PERMISSION:agent_chat.view_unassigned -->{{ _self.perm_col('Can see new unassigned chats', usergroup_values, 'chat', 'view_unassigned') }}
-				<!-- PERMISSION:agent_chat.view_others -->{{ _self.perm_col('Can see chats assigned to others', usergroup_values, 'chat', 'view_others') }}
-				<!-- PERMISSION:agent_chat.delete -->{{ _self.perm_col('Can delete chat transcripts', usergroup_values, 'chat', 'delete') }}
+				<!-- PERMISSION:agent_chat.use -->{{ _self.perm_col('Use chat system', usergroup_values, 'agent_chat', 'use') }}
+				<!-- PERMISSION:agent_chat.view_unassigned -->{{ _self.perm_col('Can see new unassigned chats', usergroup_values, 'agent_chat', 'view_unassigned') }}
+				<!-- PERMISSION:agent_chat.view_others -->{{ _self.perm_col('Can see chats assigned to others', usergroup_values, 'agent_chat', 'view_others') }}
+				<!-- PERMISSION:agent_chat.delete -->{{ _self.perm_col('Can delete chat transcripts', usergroup_values, 'agent_chat', 'delete') }}
 			</tbody>
 		</table>
 	</div>
@@ -140,10 +139,10 @@
 				</tr>
 			</thead>
 			<tbody>
-				<!-- PERMISSION:agent_publish.create -->{{ _self.perm_col('Create content', usergroup_values, 'publish', 'create') }}
-				<!-- PERMISSION:agent_publish.delete -->{{ _self.perm_col('Delete content', usergroup_values, 'publish', 'delete') }}
-				<!-- PERMISSION:agent_publish.edit -->{{ _self.perm_col('Edit others content', usergroup_values, 'publish', 'edit') }}
-				<!-- PERMISSION:agent_publish.validate -->{{ _self.perm_col('Validate content and comments (including own) <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="If an agent does not have this permission, then any new content they create or edits they make will be held in a validation queue before they appear live on the site."></span>', usergroup_values, 'publish', 'validate') }}
+				<!-- PERMISSION:agent_publish.create -->{{ _self.perm_col('Create content', usergroup_values, 'agent_publish', 'create') }}
+				<!-- PERMISSION:agent_publish.delete -->{{ _self.perm_col('Delete content', usergroup_values, 'agent_publish', 'delete') }}
+				<!-- PERMISSION:agent_publish.edit -->{{ _self.perm_col('Edit others content', usergroup_values, 'agent_publish', 'edit') }}
+				<!-- PERMISSION:agent_publish.validate -->{{ _self.perm_col('Validate content and comments (including own) <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="If an agent does not have this permission, then any new content they create or edits they make will be held in a validation queue before they appear live on the site."></span>', usergroup_values, 'agent_publish', 'validate') }}
 			</tbody>
 		</table>
 	</div>

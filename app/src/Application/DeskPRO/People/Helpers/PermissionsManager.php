@@ -62,6 +62,12 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	protected $loaders = array();
 
 	/**
+	 * Initialized checkers
+	 * @var \Application\DeskPRO\People\PermissionChecker\AbstractChecker[]
+	 */
+	protected $checkers = array();
+
+	/**
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 */
 	public function __construct(Person $person)
@@ -247,16 +253,24 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	public function get($name)
 	{
 		$namel = strtolower($name);
+
+		if (preg_match('#Checker$#', $name)) {
+			if (!isset($this->checkers[$namel])) {
+				$class = 'Application\\DeskPRO\\People\\PermissionChecker\\' . $name;
+				if (!$class) {
+					throw new \InvalidArgumentException("Unknown permission checker `{$name}`");
+				}
+
+				$this->checkers[$namel] = new $class($this->person);
+			}
+
+			return $this->checkers[$namel];
+		}
+
 		if (!isset($this->loaders[$namel])) {
 			$this->loadPermissions($name);
 			$this->_loadQueued();
 		}
-
-		// This should never actually happen i think, since it'd be caught
-		// by the loadPermissions as an invalid loader
-		//if (!isset($this->loaders)) {
-		//	throw new \RuntimeException('No such permission loader exists');
-		//}
 
 		return $this->loaders[$namel];
 	}
