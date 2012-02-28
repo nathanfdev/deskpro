@@ -47,6 +47,8 @@ DeskPRO.Agent.PageHelper.RelatedContent = new Orb.Class({
 
 			self.removeLinkByElement(li);
 		});
+
+		this.page.getEl('count_related').text(this.listEl.find('li.related-content').length);
 	},
 
 	isViewing: function() {
@@ -70,6 +72,8 @@ DeskPRO.Agent.PageHelper.RelatedContent = new Orb.Class({
 			$('.related-section', this.listEl).hide();
 			$('.no-related-content', this.listEl).show();
 		}
+
+		this.page.getEl('count_related').text(this.listEl.find('li.related-content').length);
 	},
 
 

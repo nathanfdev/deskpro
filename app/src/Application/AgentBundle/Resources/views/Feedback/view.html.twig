@@ -109,8 +109,8 @@ pageMeta.baseId = '{{ baseId }}';
 			<ul>
 				<li class="tab-trigger" data-tab-for="#{{baseId}}_content_tab">{{ phrase('agent.label_description') }}</li>
 				<li class="tab-trigger" data-tab-for="#{{baseId}}_comments_tab">{{ phrase('agent.label_comments') }} (<span id="{{baseId}}_count_comments">{{feedback_comments|length|default(0)}}</span>)</li>
-				<li class="tab-trigger" data-tab-for="#{{baseId}}_revs">{{ phrase('agent.label_revisions') }}</li>
-				<li class="tab-trigger" data-tab-for="#{{baseId}}_related_content">{{ phrase('agent.label_related_content') }}</li>
+				<li class="tab-trigger" data-tab-for="#{{baseId}}_revs">{{ phrase('agent.label_revisions') }} (<span id="{{baseId}}_count_revs">{{feedback.revisions|length|default(0)}}</span>)</li>
+				<li class="tab-trigger" data-tab-for="#{{baseId}}_related_content">{{ phrase('agent.label_related_content') }} (<span id="{{baseId}}_count_related">0</span>)</li>
 				<li class="tab-trigger" data-tab-for="#{{baseId}}_searchtab">{{ phrase('agent.label_search') }}</li>
 			</ul>
 		</nav>

@@ -129,6 +129,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		}
 
 		this.getEl('revs').empty().removeClass('loaded');
+		DeskPRO_Window.util.modCountEl(this.getEl('count_revs'), '+');
 	},
 
 	//#################################################################
@@ -161,7 +162,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 						url: BASE_URL + 'agent/feedback/view/' + this.feedback_id + '/view-revisions',
 						type: 'GET',
 						dataType: 'html',
-						context: this,
+						context: self,
 						success: function(html) {
 							this.getEl('revs').html(html);
 							this.miscContent._initCompareRevs();
@@ -429,7 +430,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 
 	_initPostArea: function() {
 		this._hasInitEd = false;
-		this.getEl('cancel_btn').on('click', (function() {
+		this.getEl('cancel_btn').off('click').on('click', (function() {
 			this.hideEditor();
 		}).bind(this));
 
@@ -445,7 +446,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		});
 		this.ownObject(this.editStateSaver);
 
-		this.getEl('save_btn').on('click', (function(ev) {
+		this.getEl('save_btn').off('click').on('click', (function(ev) {
 			ev.preventDefault();
 
 			var data = {

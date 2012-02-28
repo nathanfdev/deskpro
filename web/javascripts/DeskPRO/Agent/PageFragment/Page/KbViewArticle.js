@@ -124,6 +124,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		}
 
 		this.getEl('revs').empty().removeClass('loaded');
+		DeskPRO_Window.util.modCountEl(this.getEl('count_revs'), '+');
 	},
 
 	scanGlossaryWords: function() {
@@ -183,22 +184,16 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 					}
 				}
 
-				if ($(info.tabContent).is('.revisions') && !$(info.tabContent).is('.loaded')) {
+				if ($(info.tabContent).is('.revisions-tab') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
 						url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/view-revisions',
 						type: 'GET',
 						dataType: 'html',
-						context: this,
+						context: self,
 						success: function(html) {
 							this.getEl('revs').html(html);
-
-							if (this.miscContent) {
-								this.miscContent.destroy();
-								this.miscContent = null;
-							}
-
-							this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {});
-							this.ownObject(this.miscContent);
+							this.miscContent._initCompareRevs();
+							$(info.tabContent).addClass('loaded');
 						}
 					});
 				}
@@ -645,7 +640,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 	_initPostArea: function() {
 		this._hasInitEd = false;
-		this.getEl('cancel_btn').on('click', (function() {
+		this.getEl('cancel_btn').off('click').on('click', (function() {
 			this.hideEditor();
 		}).bind(this));
 
@@ -681,7 +676,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 		var wrap = this.wrapper;
 
-		this.getEl('save_btn').on('click', (function(ev) {
+		this.getEl('save_btn').off('click').on('click', (function(ev) {
 			ev.preventDefault();
 
 			var data = [];

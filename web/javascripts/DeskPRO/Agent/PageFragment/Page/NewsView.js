@@ -82,6 +82,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		}
 
 		this.getEl('revs').empty().removeClass('loaded');
+		DeskPRO_Window.util.modCountEl(this.getEl('count_revs'), '+');
 	},
 
 	//#################################################################
@@ -109,12 +110,12 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 					}
 					$('body').removeClass('related-controls-on');
 				}
-				if ($(info.tabContent).is('.revisions') && !$(info.tabContent).is('.loaded')) {
+				if ($(info.tabContent).is('.revisions-tab') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
 						url: BASE_URL + 'agent/news/post/' + this.meta.news_id + '/view-revisions',
 						type: 'GET',
 						dataType: 'html',
-						context: this,
+						context: self,
 						success: function(html) {
 							this.getEl('revs').html(html);
 							this.miscContent._initCompareRevs();
@@ -332,7 +333,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 	_initPostArea: function() {
 		this._hasInitEd = false;
-		this.getEl('cancel_btn').on('click', (function() {
+		this.getEl('cancel_btn').off('click').on('click', (function() {
 			this.hideEditor();
 		}).bind(this));
 
@@ -348,7 +349,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		});
 		this.ownObject(this.editStateSaver);
 
-		this.getEl('save_btn').on('click', (function(ev) {
+		this.getEl('save_btn').off('click').on('click', (function(ev) {
 			ev.preventDefault();
 
 			var data = {

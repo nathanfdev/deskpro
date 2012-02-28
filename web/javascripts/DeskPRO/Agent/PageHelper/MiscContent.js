@@ -29,7 +29,8 @@ DeskPRO.Agent.PageHelper.MiscContent = new Orb.Class({
 		var all_checks = $('input.rev-compare-check', this.wrapper);
 		var counter = 0;
 
-		$('.revision-compare-table', this.wrapper).on('click', 'input.rev-compare-check', function() {
+		var table = this.wrapper.find('.revision-compare-table');
+		table.on('click', 'input.rev-compare-check', function() {
 			if ($(this).is(':checked')) {
 				var checked = all_checks.filter(':checked');
 				if (checked.length > 2) {
@@ -43,6 +44,9 @@ DeskPRO.Agent.PageHelper.MiscContent = new Orb.Class({
 				$(this).data('check-count', ++counter);
 			}
 		});
+
+		var count = table.find('input.rev-compare-check').length;
+		this.page.getEl('count_revs').text(count);
 	},
 
 	showCompareRev: function() {
