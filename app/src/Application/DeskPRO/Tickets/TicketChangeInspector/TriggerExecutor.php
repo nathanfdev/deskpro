@@ -85,6 +85,10 @@ class TriggerExecutor
 			$this->tracker->recordExtra('ticket_created_validating', true);
 		}
 
+		#------------------------------
+		# Handle built-in events
+		#------------------------------
+
 		if ($this->tracker->isExtraSet('ticket_created_validating')) {
 
 			$this->tracker->logMessage('[TriggerExecutor] Normal events not being executed because ticket is validating');
@@ -149,6 +153,23 @@ class TriggerExecutor
 			$trigger->terms = array();
 			$trigger->actions = array(
 				array('type' => 'agent_notification', 'options' => array())
+			);
+
+			array_unshift($all_triggers, $trigger);
+		}
+
+		#------------------------------
+		# Handle vacation mode agent
+		#------------------------------
+
+		// If the assigned agent is on vacation and the status is now awaiting_agent,
+		// the ticket must be unasssigned
+
+		if ($this->tracker->getTicket()->status == 'awaiting_agent' && $this->tracker->getTicket()->agent && $this->tracker->getTicket()->agent->is_vacation_mode) {
+			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+			$trigger->terms = array();
+			$trigger->actions = array(
+				array('type' => 'agent', 'options' => array('agent' => 0))
 			);
 
 			array_unshift($all_triggers, $trigger);

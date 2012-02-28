@@ -710,6 +710,18 @@ $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\DeleteSpamTickets::DEFAU
 $em->persist($j);
 $em->flush();
 
+
+##BEGIN:create_jobs.agent_mode_ticket_reasssign##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'agent_mode_ticket_reasssign';
+$j['worker_group'] = 'agent_mode_ticket_reasssign';
+$j['title'] = 'Reassign tickets of vacation or deleted agents';
+$j['description'] = 'When an agent enters vacation mode or is deleted, we need to batch-update their tickets to unassigned';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\AgentModeTicketReassign';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\AgentModeTicketReassign::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
 ################################################################################
 # Portal Blocks
 ################################################################################

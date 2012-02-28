@@ -471,7 +471,6 @@ class AgentsController extends AbstractController
 		try {
 			$this->em->persist($agent);
 			$this->em->flush();
-
 			$this->em->getConnection()->commit();
 		} catch (\Exception $e) {
 			$this->em->getConnection()->rollback();
