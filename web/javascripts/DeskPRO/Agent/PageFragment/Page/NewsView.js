@@ -16,26 +16,33 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		this.news_id = this.getMetaData('news_id');
 
 		this._initBasic();
-		this._initMenus();
+
+		if (this.meta.canEdit) {
+			this._initMenus();
+			this._initPostArea();
+		}
 		this._initActions();
 		this._initLabels();
-		this._initPostArea();
+
 		this._initCommentForm();
 
-		if (this.meta.isValidating) {
-			this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
-				typename: 'news',
-				contentId: this.meta.news_id
-			});
-			this.ownObject(this.validatingEdit);
-		}
+		if (this.meta.canEdit) {
+			if (this.meta.isValidating) {
+				this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
+					typename: 'news',
+					contentId: this.meta.news_id
+				});
+				this.ownObject(this.validatingEdit);
+			}
 
-		this.getEl('edit_btn').on('click', this.showEditor.bind(this));
+			this.getEl('edit_btn').on('click', this.showEditor.bind(this));
+		}
 
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
 			typename: 'news',
 			content_id: this.meta.news_id,
 			listEl: $('section.linked-content:first', this.wrapper),
+			disabled: !this.meta.canEdit,
 			onContentLinked: function(typename, content_id) {
 				$.ajax({
 					url: BASE_URL + 'agent/news/post/' + self.meta.news_id + '/ajax-save',
@@ -127,21 +134,23 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		});
 		this.ownObject(this.bodyTabs);
 
-		// Name is editable
-		var name = $('h3.title.editable:first', this.wrapper);
-		if (!name.attr('id')) {
-			name.attr('id', Orb.getUniqueId());
-		}
-
-		var editable = new DeskPRO.Form.InlineEdit({
-			baseElement: this.wrapper,
-			ajax: {
-				url: BASE_URL + 'agent/news/' + this.meta.news_id + '/ajax-save',
-				success: function(data) {
-					self.handleUnloadRevisions(data.revision_id);
-				}
+		if (this.meta.canEdit) {
+			// Name is editable
+			var name = $('h3.title.editable:first', this.wrapper);
+			if (!name.attr('id')) {
+				name.attr('id', Orb.getUniqueId());
 			}
-		});
+
+			var editable = new DeskPRO.Form.InlineEdit({
+				baseElement: this.wrapper,
+				ajax: {
+					url: BASE_URL + 'agent/news/' + this.meta.news_id + '/ajax-save',
+					success: function(data) {
+						self.handleUnloadRevisions(data.revision_id);
+					}
+				}
+			});
+		}
 	},
 
 
