@@ -16,27 +16,32 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		this.feedback_id = this.getMetaData('feedback_id');
 
 		this._initBasic();
-		this._initMenus();
+		if (this.meta.canEdit) {
+			this._initMenus();
+			this._initPostArea();
+		}
 		this._initActions();
 		this._initLabels();
-		this._initPostArea();
 		this._initCommentForm();
 
-		if (this.meta.isValidating) {
-			this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
-				typename: 'feedback',
-				contentId: this.feedback_id,
-				singleTyle: 'feedback'
-			});
-			this.ownObject(this.validatingEdit);
-		}
+		if (this.meta.canEdit) {
+			if (this.meta.isValidating) {
+				this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
+					typename: 'feedback',
+					contentId: this.feedback_id,
+					singleTyle: 'feedback'
+				});
+				this.ownObject(this.validatingEdit);
+			}
 
-		this.getEl('edit_btn').on('click', this.showEditor.bind(this));
+			this.getEl('edit_btn').on('click', this.showEditor.bind(this));
+		}
 
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
 			typename: 'feedback',
 			content_id: this.feedback_id,
 			listEl: $('section.linked-content:first', this.wrapper),
+			disabled: !this.meta.canEdit,
 			onContentLinked: function(typename, content_id) {
 				$.ajax({
 					url: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
@@ -174,21 +179,23 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		});
 		this.ownObject(this.bodyTabs);
 
-		// Name is editable
-		var name = $('h3.title.editable:first', this.wrapper);
-		if (!name.attr('id')) {
-			name.attr('id', Orb.getUniqueId());
-		}
-
-		var editable = new DeskPRO.Form.InlineEdit({
-			baseElement: this.wrapper,
-			ajax: {
-				url: BASE_URL + 'agent/feedback/view/' + this.feedback_id + '/ajax-save',
-				success: function(data) {
-					self.handleUnloadRevisions(data.revision_id);
-				}
+		if (this.meta.canEdit) {
+			// Name is editable
+			var name = $('h3.title.editable:first', this.wrapper);
+			if (!name.attr('id')) {
+				name.attr('id', Orb.getUniqueId());
 			}
-		});
+
+			var editable = new DeskPRO.Form.InlineEdit({
+				baseElement: this.wrapper,
+				ajax: {
+					url: BASE_URL + 'agent/feedback/view/' + this.feedback_id + '/ajax-save',
+					success: function(data) {
+						self.handleUnloadRevisions(data.revision_id);
+					}
+				}
+			});
+		}
 	},
 
 	toggleMyVote: function() {
@@ -221,54 +228,56 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 
 		var self = this;
 
-		// Status
-		var statusOb = new DeskPRO.UI.OptionBoxRevertable({
-			trigger: this.getEl('status_trigger'),
-			element: this.getEl('status_ob'),
-			onSave: function(ob) {
-				var catEl = ob.getSelectedElements('status');
-				var catId = catEl.data('item-id');
-				var title = catEl.data('full-title');
+		if (this.meta.canEdit) {
+			// Status
+			var statusOb = new DeskPRO.UI.OptionBoxRevertable({
+				trigger: this.getEl('status_trigger'),
+				element: this.getEl('status_ob'),
+				onSave: function(ob) {
+					var catEl = ob.getSelectedElements('status');
+					var catId = catEl.data('item-id');
+					var title = catEl.data('full-title');
 
-				self.getEl('status_label').text(title);
+					self.getEl('status_label').text(title);
 
-				$.ajax({
-					url: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
-					type: 'POST',
-					data: {action: 'status', status: catId},
-					context: self,
-					dataType: 'json'
-				});
-			}
-		});
-		this.statusOb = statusOb;
+					$.ajax({
+						url: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
+						type: 'POST',
+						data: {action: 'status', status: catId},
+						context: self,
+						dataType: 'json'
+					});
+				}
+			});
+			this.statusOb = statusOb;
 
-		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
-			ajaxSaveUrl: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
-			statusMenu: this.statusOb,
-			type: 'spam'
-		});
-		this.ownObject(this.deleteHelper);
+			this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
+				ajaxSaveUrl: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
+				statusMenu: this.statusOb,
+				type: 'spam'
+			});
+			this.ownObject(this.deleteHelper);
 
-		// Change category menu
-		var catOb = new DeskPRO.UI.OptionBoxRevertable({
-			trigger: this.getEl('cat_trigger'),
-			element: this.getEl('cat_ob'),
-			onSave: function(ob) {
-				var catEl = ob.getSelectedElements('category');
-				var catId = catEl.data('item-id');
-				var title = catEl.data('full-title');
+			// Change category menu
+			var catOb = new DeskPRO.UI.OptionBoxRevertable({
+				trigger: this.getEl('cat_trigger'),
+				element: this.getEl('cat_ob'),
+				onSave: function(ob) {
+					var catEl = ob.getSelectedElements('category');
+					var catId = catEl.data('item-id');
+					var title = catEl.data('full-title');
 
-				self.getEl('cat_label').text(title);
+					self.getEl('cat_label').text(title);
 
-				$.ajax({
-					url: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
-					type: 'POST',
-					data: { action: 'category', category_id: catId },
-					dataType: 'json'
-				});
-			}
-		});
+					$.ajax({
+						url: BASE_URL + 'agent/feedback/view/' + self.feedback_id + '/ajax-save',
+						type: 'POST',
+						data: { action: 'category', category_id: catId },
+						dataType: 'json'
+					});
+				}
+			});
+		}
 	},
 
 	_initActions: function() {
