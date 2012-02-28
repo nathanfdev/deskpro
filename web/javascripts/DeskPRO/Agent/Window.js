@@ -1884,81 +1884,66 @@ DeskPRO.Agent.Window = new Orb.Class({
 			autostart = false;
 		}
 
-		this.newTicketLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-			loadUrl: BASE_URL + 'agent/tickets/new',
-			tabRoute: 'page:' + BASE_URL + 'agent/tickets/new',
-			autostart: autostart
-		});
-		this.newPersonLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-			loadUrl: BASE_URL + 'agent/people/new',
-			tabRoute: 'page:' + BASE_URL + 'agent/people/new',
-			autostart: autostart
-		});
-		this.newOrganizationLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-			loadUrl: BASE_URL + 'agent/organizations/new',
-			tabRoute: 'page:' + BASE_URL + 'agent/organizations/new',
-			autostart: autostart
-		});
-		this.newArticleLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-			loadUrl: BASE_URL + 'agent/kb/article/new',
-			tabRoute: 'page:' + BASE_URL + 'agent/kb/article/new',
-			autostart: autostart
-		});
-		this.newNewsLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-			loadUrl: BASE_URL + 'agent/news/new',
-			tabRoute: 'page:' + BASE_URL + 'agent/news/new',
-			autostart: autostart
-		});
-		this.newDownloadLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-			loadUrl: BASE_URL + 'agent/downloads/new',
-			tabRoute: 'page:' + BASE_URL + 'agent/news/new',
-			autostart: autostart
-		});
-		this.newFeedbackLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-			loadUrl: BASE_URL + 'agent/feedback/new',
-			tabRoute: 'page:' + BASE_URL + 'agent/feedback/new',
-			autostart: autostart
-		});
+		if (DESKPRO_PERSON_PERMS['agent_agent_tickets.create']) {
+			this.newTicketLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+				loadUrl: BASE_URL + 'agent/tickets/new',
+				tabRoute: 'page:' + BASE_URL + 'agent/tickets/new',
+				autostart: autostart
+			});
+			$('#create_ticket_btn').on('click', function() { DeskPRO_Window.newTicketLoader.toggle(); });
+		}
+
+		if (DESKPRO_PERSON_PERMS['agent_agent_people.create']) {
+			this.newPersonLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+				loadUrl: BASE_URL + 'agent/people/new',
+				tabRoute: 'page:' + BASE_URL + 'agent/people/new',
+				autostart: autostart
+			});
+			$('#create_person_btn').on('click', function() { DeskPRO_Window.newPersonLoader.toggle(); });
+		}
+
+		if (DESKPRO_PERSON_PERMS['agent_agent_org.create']) {
+			this.newOrganizationLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+				loadUrl: BASE_URL + 'agent/organizations/new',
+				tabRoute: 'page:' + BASE_URL + 'agent/organizations/new',
+				autostart: autostart
+			});
+			$('#create_organization_btn').on('click', function() { DeskPRO_Window.newOrganizationLoader.toggle(); });
+		}
+
+		if (DESKPRO_PERSON_PERMS['agent_agent_publish.create']) {
+			this.newArticleLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+				loadUrl: BASE_URL + 'agent/kb/article/new',
+				tabRoute: 'page:' + BASE_URL + 'agent/kb/article/new',
+				autostart: autostart
+			});
+			this.newNewsLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+				loadUrl: BASE_URL + 'agent/news/new',
+				tabRoute: 'page:' + BASE_URL + 'agent/news/new',
+				autostart: autostart
+			});
+			this.newDownloadLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+				loadUrl: BASE_URL + 'agent/downloads/new',
+				tabRoute: 'page:' + BASE_URL + 'agent/news/new',
+				autostart: autostart
+			});
+			this.newFeedbackLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+				loadUrl: BASE_URL + 'agent/feedback/new',
+				tabRoute: 'page:' + BASE_URL + 'agent/feedback/new',
+				autostart: autostart
+			});
+
+			$('#create_article_btn').on('click', function() { DeskPRO_Window.newArticleLoader.toggle(); });
+			$('#create_news_btn').on('click', function() { DeskPRO_Window.newNewsLoader.toggle(); });
+			$('#create_download_btn').on('click', function() { DeskPRO_Window.newDownloadLoader.toggle(); });
+			$('#create_feedback_btn').on('click', function() { DeskPRO_Window.newFeedbackLoader.toggle(); });
+		}
+
 		this.newTaskLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/tasks/new',
 			autostart: autostart
 		});
-
-		/*
-        this.newDealLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-			loadUrl: BASE_URL + 'agent/deals/new',
-			tabRoute: 'page:' + BASE_URL + 'agent/deals/new'
-		});
-		*/
-
-		$('#create_ticket_btn').on('click', function() {
-			DeskPRO_Window.newTicketLoader.toggle();
-		});
-		$('#create_person_btn').on('click', function() {
-			DeskPRO_Window.newPersonLoader.toggle();
-		});
-		$('#create_organization_btn').on('click', function() {
-			DeskPRO_Window.newOrganizationLoader.toggle();
-		});
-		$('#create_article_btn').on('click', function() {
-			DeskPRO_Window.newArticleLoader.toggle();
-		});
-		$('#create_news_btn').on('click', function() {
-			DeskPRO_Window.newNewsLoader.toggle();
-		});
-		$('#create_download_btn').on('click', function() {
-			DeskPRO_Window.newDownloadLoader.toggle();
-		});
-		$('#create_feedback_btn').on('click', function() {
-			DeskPRO_Window.newFeedbackLoader.toggle();
-		});
-		$('#create_task_btn').on('click', function() {
-			$('form#newTaskForm input, form#newTaskForm select').val('');
-			DeskPRO_Window.newTaskLoader.toggle();
-		});
-		$('#create_deal_btn').on('click', function() {
-			DeskPRO_Window.newDealLoader.toggle();
-		});
+		$('#create_task_btn').on('click', function() { $('form#newTaskForm input, form#newTaskForm select').val(''); DeskPRO_Window.newTaskLoader.toggle(); });
 
 		// Create toggle
 		$('#createContentTrigger').on('click', function(ev) {

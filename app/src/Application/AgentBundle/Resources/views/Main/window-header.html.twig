@@ -52,15 +52,22 @@
 			</div>
 			<div class="createDropdown">
 				<ul class="createBtnPopups">
-					<li id="create_ticket_btn"><a><span class="createTicket">{{ phrase('agent.window.new_ticket') }} <kbd>t</kbd></span></a></li>
+					{% if app.user.hasPerm('tickets.create') %}
+						<li id="create_ticket_btn"><a><span class="createTicket">{{ phrase('agent.window.new_ticket') }} <kbd>t</kbd></span></a></li>
+					{% endif %}
+					{% if app.user.hasPerm('people.create') %}
+						<li id="create_person_btn"><a><span class="createPerson">{{ phrase('agent.window.new_person') }} <kbd>p</kbd></span></a></li>
+					{% endif %}
+					{% if app.user.hasPerm('org.create') %}
+						<li id="create_organization_btn"><a><span class="createOrg">{{ phrase('agent.window.new_organization') }} <kbd>o</kbd></span></a></li>
+					{% endif %}
 					<li id="create_task_btn"><a><span class="createTask">{{ phrase('agent.window.new_task') }} <kbd>k</kbd></span></a></li>
-					<li id="create_person_btn"><a><span class="createPerson">{{ phrase('agent.window.new_person') }} <kbd>p</kbd></span></a></li>
-					<li id="create_organization_btn"><a><span class="createOrg">{{ phrase('agent.window.new_organization') }} <kbd>o</kbd></span></a></li>
-					<li id="create_article_btn"><a><span class="createArticle">{{ phrase('agent.window.new_article') }} <kbd>a</kbd></span></a></li>
-					<li id="create_news_btn"><a><span class="createNews">{{ phrase('agent.window.new_news') }} <kbd>n</kbd></span></a></li>
-					<li id="create_download_btn"><a><span class="createDownload">{{ phrase('agent.window.new_download') }} <kbd>d</kbd></span></a></li>
-					<li id="create_feedback_btn"><a><span class="createFeedback">{{ phrase('agent.window.new_feedback') }} <kbd>i</kbd></span></a></li>
-					{#<li id="create_deal_btn"><a><span class="createDeals">{{ phrase('agent.window.new_deal') }} <kbd>l</kbd></span></a></li>#}
+					{% if app.user.hasPerm('publish.create') %}
+						<li id="create_article_btn"><a><span class="createArticle">{{ phrase('agent.window.new_article') }} <kbd>a</kbd></span></a></li>
+						<li id="create_news_btn"><a><span class="createNews">{{ phrase('agent.window.new_news') }} <kbd>n</kbd></span></a></li>
+						<li id="create_download_btn"><a><span class="createDownload">{{ phrase('agent.window.new_download') }} <kbd>d</kbd></span></a></li>
+						<li id="create_feedback_btn"><a><span class="createFeedback">{{ phrase('agent.window.new_feedback') }} <kbd>i</kbd></span></a></li>
+					{% endif %}
 				</ul>
 			</div>
 		</div>

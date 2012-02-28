@@ -35,15 +35,23 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		});
 
 		// Create-type
-		$(document).bind('keydown', 't', this.showNewTicket.bind(this));
-		$(document).bind('keydown', 'a', this.showNewArticle.bind(this));
-		$(document).bind('keydown', 'n', this.showNewNews.bind(this));
-		$(document).bind('keydown', 'd', this.showNewDownload.bind(this));
-		$(document).bind('keydown', 'i', this.showNewFeedback.bind(this));
-		$(document).bind('keydown', 'p', this.showNewPerson.bind(this));
-		$(document).bind('keydown', 'o', this.showNewOrganization.bind(this));
+		if (DESKPRO_PERSON_PERMS['agent_tickets.create']) {
+			$(document).bind('keydown', 't', this.showNewTicket.bind(this));
+		}
+		if (DESKPRO_PERSON_PERMS['agent_publish.create']) {
+			$(document).bind('keydown', 'a', this.showNewArticle.bind(this));
+			$(document).bind('keydown', 'n', this.showNewNews.bind(this));
+			$(document).bind('keydown', 'd', this.showNewDownload.bind(this));
+			$(document).bind('keydown', 'i', this.showNewFeedback.bind(this));
+		}
+		if (DESKPRO_PERSON_PERMS['agent_people.create']) {
+			$(document).bind('keydown', 'p', this.showNewPerson.bind(this));
+		}
+		if (DESKPRO_PERSON_PERMS['agent_org.create']) {
+			$(document).bind('keydown', 'o', this.showNewOrganization.bind(this));
+		}
+
 		$(document).bind('keydown', 'k', this.showNewTask.bind(this));
-        //$(document).bind('keydown', 'l', this.showNewDeal.bind(this));
 
 		this.boundShortkuts = {};
 

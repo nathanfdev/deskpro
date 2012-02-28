@@ -16,29 +16,34 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.article_id = this.getMetaData('article_id');
 
 		this._initBasic();
-		this._initMenus();
+
 		this._initLabels();
 		this._initCommentForm();
-		this._initPostArea();
 
-		this._initAutoUnpublishOptions();
-		this._initAutoPublishOptions();
+		if (this.meta.canEdit) {
+			this._initMenus();
 
-		var btn = $('.kb-editor-edit', this.wrapper);
-		btn.on('click', this.showEditor.bind(this));
+			this._initPostArea();
+			this._initAutoUnpublishOptions();
+			this._initAutoPublishOptions();
 
-		if (this.meta.isValidating) {
-			this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
-				typename: 'articles',
-				contentId: this.meta.article_id
-			});
-			this.ownObject(this.validatingEdit);
+			var btn = $('.kb-editor-edit', this.wrapper);
+			btn.on('click', this.showEditor.bind(this));
+
+			if (this.meta.isValidating) {
+				this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
+					typename: 'articles',
+					contentId: this.meta.article_id
+				});
+				this.ownObject(this.validatingEdit);
+			}
 		}
 
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
 			typename: 'articles',
 			content_id: this.meta.article_id,
 			listEl: $('section.linked-content:first', this.wrapper),
+			disabled: !this.meta.canEdit,
 			onContentLinked: function(typename, content_id) {
 				$.ajax({
 					url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
@@ -140,31 +145,34 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 	_initBasic: function() {
 		var self = this;
-		$('.edit-trigger', this.wrapper).on('click', function() {
-			DeskPRO_Window.runPageRoute('kb_article_edit:' + BASE_URL + 'agent/kb/article/' + self.article_id);
-			DeskPRO_Window.removePage(self);
-		});
 
-		$('.validate-trigger', this.wrapper).on('click', function() {
-			DeskPRO_Window.runPageRoute('kb_article_edit:' + BASE_URL + 'agent/kb/article/' + self.article_id + '?do_validate=1');
-			DeskPRO_Window.removePage(self);
-		});
+		if (this.meta.canEdit) {
+			$('.edit-trigger', this.wrapper).on('click', function() {
+				DeskPRO_Window.runPageRoute('kb_article_edit:' + BASE_URL + 'agent/kb/article/' + self.article_id);
+				DeskPRO_Window.removePage(self);
+			});
 
-		// Name is editable
-		var name = $('h3.title.editable:first', this.wrapper);
-		if (!name.attr('id')) {
-			name.attr('id', Orb.getUniqueId());
-		}
+			$('.validate-trigger', this.wrapper).on('click', function() {
+				DeskPRO_Window.runPageRoute('kb_article_edit:' + BASE_URL + 'agent/kb/article/' + self.article_id + '?do_validate=1');
+				DeskPRO_Window.removePage(self);
+			});
 
-		var editable = new DeskPRO.Form.InlineEdit({
-			baseElement: this.wrapper,
-			ajax: {
-				url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
-				success: function(data) {
-					self.handleUnloadRevisions(data.revision_id);
-				}
+			// Name is editable
+			var name = $('h3.title.editable:first', this.wrapper);
+			if (!name.attr('id')) {
+				name.attr('id', Orb.getUniqueId());
 			}
-		});
+
+			var editable = new DeskPRO.Form.InlineEdit({
+				baseElement: this.wrapper,
+				ajax: {
+					url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+					success: function(data) {
+						self.handleUnloadRevisions(data.revision_id);
+					}
+				}
+			});
+		}
 
 		// Tabs
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({

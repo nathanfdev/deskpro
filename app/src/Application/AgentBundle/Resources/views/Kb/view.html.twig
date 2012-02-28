@@ -14,11 +14,14 @@ pageMeta.isValidating = true;
 
 pageMeta.glossaryWords = {{ glossary_words|json_encode|raw }};
 
+pageMeta.canEdit   = {% if article.person.id != app.user.id and not app.user.hasPerm('agent_publish.edit') %}false{% else %}true{% endif %};
+pageMeta.canDelete = {% if not app.user.hasPerm('agent_publish.delete') %}false{% else %}true{% endif %};
+
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
 {# scroll containers #}
-<div class="layout-content with-scrollbar page-listing page-kb-view">
+<div class="layout-content with-scrollbar page-listing page-kb-view {% if article.person.id != app.user.id and not app.user.hasPerm('agent_publish.edit') %}perm-no-edit{% endif %} {% if not app.user.hasPerm('agent_publish.delete') %}perm-no-delete{% endif %}">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 {# /scroll containers #}
@@ -49,7 +52,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<section class="description-area">
 		<dl class="info-list">
 			<dt class="type-labels">{{ phrase('agent.label_labels') }}:</dt>
-			<dd class="kb-tags tags-wrap">
+			<dd class="kb-tags tags-wrap noedit-tags">
 				<input type="text" id="{{baseId}}_labels_input" value="{% for label in article.labels %}{{label.label}},{% endfor %}" />
 			</dd>
 			<dt class="">{{ phrase('agent.categories') }}</dt>
@@ -57,12 +60,12 @@ pageMeta.baseId = '{{ baseId }}';
 				<ul id="{{baseId}}_categories" class="add-remove-list">
 					{% for cat in article.categories %}
 						<li>
-							<span class="remove">remove</span>
+							<span class="remove noedit-hide">remove</span>
 							{{ cat.full_title }}
 							<input type="hidden" name="category_ids[]" value="{{ cat.id }}" />
 						</li>
 					{% endfor %}
-					<li class="add">
+					<li class="add noedit-hide">
 						<span class="add"></span>
 						{{ phrase('agent.add_category') }}
 					</li>
@@ -80,7 +83,7 @@ pageMeta.baseId = '{{ baseId }}';
 								<input type="hidden" name="product_ids[]" value="{{ prod.id }}" />
 							</li>
 						{% endfor %}
-						<li class="add">
+						<li class="add noedit-hide">
 							<span class="add"></span>
 							{{ phrase('agent.add_product') }}
 						</li>
@@ -129,7 +132,6 @@ pageMeta.baseId = '{{ baseId }}';
 
 				<ul class="end-action-menu" style="display: none">
 					<li data-action="unpublish">{{ phrase('agent.unpublish') }}</li>
-					<li data-action="delete">{{ phrase('agent.delete') }}</li>
 					<li data-action="archive">{{ phrase('agent.action_archive') }}</li>
 				</ul>
 			</dd>
@@ -162,17 +164,12 @@ pageMeta.baseId = '{{ baseId }}';
 				<button class="clean-white save-fields-trigger"><span>{{ phrase('agent.save') }}</span></button>
 			</div>
 			<div class="showing-rendered-fields">
-				{% if custom_fields|length  %}<button class="clean-white edit-fields-trigger"><span>{{ phrase('agent.edit_properties') }}</span></button>{% endif %}
-				<button class="clean-white delete" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.delete') }}</button>
+				{% if custom_fields|length %}<button class="clean-white edit-fields-trigger noedit-hide"><span>{{ phrase('agent.edit_properties') }}</span></button>{% endif %}
+				<button class="clean-white delete nodelete-hide" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.delete') }}</button>
 				<button class="clean-white permalink">{{ phrase('agent.copy_permalink') }}</button>
 				<button class="clean-white view-user-interface">{{ phrase('agent.view_in_user_interface') }}</button>
 			</div>
 		</div>
-
-		<ul id="{{baseId}}_more_menu" style="display: none;">
-			<li data-op="delete">{{ phrase('agent.delete') }}</li>
-			<li data-op="print">{{ phrase('agent.print') }}</li>
-		</ul>
 	</section>
 </div>
 </div>
@@ -195,7 +192,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<div id="{{baseId}}_tab_contents">
 			{# Tab: Content #}
 			<div class="deskpro-tab-item kb-content on" style="display: block">
-				<nav class="sub-box-nav">
+				<nav class="sub-box-nav noedit-hide">
 					<ul class="option-buttons right" id="{{baseId}}_content_edit_btns">
 						<li class="kb-editor-edit edit" id="{{baseId}}_edit_btn"><span>{{ phrase('agent.edit') }}</span></li>
 						<li class="editor-save-trigger save" id="{{baseId}}_save_btn"><span>{{ phrase('agent.save') }}</span></li>
@@ -266,7 +263,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<section class="description-area sticky-search-words">
 					<dl class="info-list">
 						<dt>{{ phrase('agent.publish.sticky_words_title') }}</dt>
-						<dd class="ticket-tags tags-wrap">
+						<dd class="ticket-tags tags-wrap noedit-tags">
 							<input type="text" id="{{baseId}}_stickysearch_input" value="{% for label in sticky_search_words %}{{label}},{% endfor %}" />
 							<br class="clear" />
 							<div class="explain">

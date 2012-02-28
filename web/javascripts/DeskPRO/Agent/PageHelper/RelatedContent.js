@@ -27,7 +27,9 @@ DeskPRO.Agent.PageHelper.RelatedContent = new Orb.Class({
 			/**
 			 * The template to use when we need to render a new related content item
 			 */
-			newItemTpl: '#related_content_newitem'
+			newItemTpl: '#related_content_newitem',
+
+			disabled: false
 		};
 
 		this.setOptions(options);
@@ -270,6 +272,9 @@ DeskPRO.Agent.PageHelper.RelatedContent = new Orb.Class({
 	 * @param content_id
 	 */
 	isLinkable: function(typename, content_id) {
+		if (this.options.disabled) {
+			return false;
+		}
 		if (typename == this.options.typename && content_id == this.options.content_id) {
 			return false;
 		}
@@ -291,6 +296,9 @@ DeskPRO.Agent.PageHelper.RelatedContent = new Orb.Class({
 	 * @param el
 	 */
 	elementIsLinkable: function(el) {
+		if (this.options.disabled) {
+			return false;
+		}
 		return this.isLinkable(el.data('content-type'), el.data('content-id'));
 	},
 
