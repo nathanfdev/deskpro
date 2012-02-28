@@ -113,63 +113,50 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		// Status
 		//------------------------------
 
-		var menuEl = $('#ticket_status_menu');
-		if (!this.page.meta.can_resolve) {
-			menuEl = menuEl.clone();
-			menuEl.find('li[data-status="resolved"]').remove();
+		if (this.page.meta.ticket_perms.modify_set_resolved || this.page.meta.ticket_perms.modify_set_awaiting_agent || this.page.meta.ticket_perms.modify_set_awaiting_user) {
+			var menuEl = $('#ticket_status_menu');
+			if (!this.page.meta.ticket_perms.modify_set_resolved) {
+				menuEl = menuEl.clone();
+				menuEl.find('li[data-status="resolved"]').remove();
+			}
+			if (!this.page.meta.ticket_perms.modify_set_awaiting_agent) {
+				menuEl = menuEl.clone();
+				menuEl.find('li[data-status="awaiting_agent"]').remove();
+			}
+			if (!this.page.meta.ticket_perms.modify_set_awaiting_user) {
+				menuEl = menuEl.clone();
+				menuEl.find('li[data-status="awaiting_user"]').remove();
+			}
+
+			this.statusMenu = new DeskPRO.UI.Menu({
+				triggerElement: $('.set-status', wrapper),
+				menuElement: menuEl,
+				onItemClicked: (function(info) {
+					var item = $(info.itemEl);
+					var prop = this.changeManager.getPropertyManager('status');
+
+					var status = item.data('status');
+					this.changeManager.setInstantChange(prop, status);
+				}).bind(this)
+			});
 		}
-
-		this.statusMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.set-status', wrapper),
-			menuElement: menuEl,
-			onItemClicked: (function(info) {
-				var item = $(info.itemEl);
-				var prop = this.changeManager.getPropertyManager('status');
-
-				var status = item.data('status');
-				this.changeManager.setInstantChange(prop, status);
-			}).bind(this)
-		});
-
-		$('.set-resolved button', actionsButtons).on('click', (function() {
-			var prop = this.changeManager.getPropertyManager('status');
-			this.changeManager.setInstantChange(prop, 'resolved');
-		}).bind(this));
-
-		$('.set-closed button', actionsButtons).on('click', (function() {
-			var prop = this.changeManager.getPropertyManager('status');
-			this.changeManager.setInstantChange(prop, 'closed');
-		}).bind(this));
-
-		$('.set-opem button', actionsButtons).on('click', (function() {
-			var prop = this.changeManager.getPropertyManager('status');
-			this.changeManager.setInstantChange(prop, 'open');
-		}).bind(this));
-
-		$('.set-open button', actionsButtons).on('click', (function() {
-			var prop = this.changeManager.getPropertyManager('status');
-			this.changeManager.setInstantChange(prop, 'open');
-		}).bind(this));
-
-		$('.marks-spam button', actionsButtons).on('click', (function() {
-			var prop = this.changeManager.getPropertyManager('status');
-			this.changeManager.setInstantChange(prop, 'hidden.spam');
-		}).bind(this));
 
 		//------------------------------
 		// Department
 		//------------------------------
 
-		var el = $(DeskPRO_Window.util.getPlainTpl($('#department_option_box_tpl')));
-		this.departmentOptionBox = new DeskPRO.UI.OptionBox({
-			element: el,
-			trigger: $('.set-department', wrapper),
-			onClose: function(ob) {
-				var prop = self.changeManager.getPropertyManager('department_id');
-				var depId = parseInt(ob.getSelected('department'));
-				self.changeManager.setInstantChange(prop, depId);
-			}
-		});
+		if (this.page.meta.ticket_perms.modify_department) {
+			var el = $(DeskPRO_Window.util.getPlainTpl($('#department_option_box_tpl')));
+			this.departmentOptionBox = new DeskPRO.UI.OptionBox({
+				element: el,
+				trigger: $('.set-department', wrapper),
+				onClose: function(ob) {
+					var prop = self.changeManager.getPropertyManager('department_id');
+					var depId = parseInt(ob.getSelected('department'));
+					self.changeManager.setInstantChange(prop, depId);
+				}
+			});
+		}
 
 		//------------------------------
 		// Hold/unhold
@@ -190,24 +177,26 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		// Urgency
 		//------------------------------
 
-		var menuEl = ['<ul>'];
-		for (var i = 1; i <= 10; i++) {
-			menuEl.push('<li data-urgency="' + i + '">' + i + '</li>');
+		if (this.page.meta.ticket_perms.modify_fields) {
+			var menuEl = ['<ul>'];
+			for (var i = 1; i <= 10; i++) {
+				menuEl.push('<li data-urgency="' + i + '">' + i + '</li>');
+			}
+			menuEl.push('</ul>');
+			menuEl = $(menuEl.join(''));
+
+			this.urgencyMenu = new DeskPRO.UI.Menu({
+				triggerElement: this.getEl('urgency'),
+				menuElement: menuEl,
+				onItemClicked: (function(info) {
+					var item = $(info.itemEl);
+					var prop = this.changeManager.getPropertyManager('urgency');
+
+					var urgency = item.data('urgency');
+					this.changeManager.setInstantChange(prop, urgency);
+				}).bind(this)
+			});
 		}
-		menuEl.push('</ul>');
-		menuEl = $(menuEl.join(''));
-
-		this.urgencyMenu = new DeskPRO.UI.Menu({
-			triggerElement: this.getEl('urgency'),
-			menuElement: menuEl,
-			onItemClicked: (function(info) {
-				var item = $(info.itemEl);
-				var prop = this.changeManager.getPropertyManager('urgency');
-
-				var urgency = item.data('urgency');
-				this.changeManager.setInstantChange(prop, urgency);
-			}).bind(this)
-		});
 
 		//------------------------------
 		// Macros

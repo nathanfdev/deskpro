@@ -41,8 +41,8 @@
 	<header>
 		<nav>
 			<ul>
-				<li id="{{replyBaseId}}_replybox_replytab_btn" class="on">{{ phrase('agent.reply') }}</li>
-				<li id="{{replyBaseId}}_replybox_notetab_btn" class="note-type">{{ phrase('agent.note') }}</li>
+				{% if ticket_perms.reply %}<li id="{{replyBaseId}}_replybox_replytab_btn" class="on">{{ phrase('agent.reply') }}</li>{% endif %}
+				{% if ticket_perms.modify_note %}<li id="{{replyBaseId}}_replybox_notetab_btn" class="note-type {% if not ticket_perms.reply %}on{% endif %}">{{ phrase('agent.note') }}</li>{% endif %}
 			</ul>
 		</nav>
 	</header>
@@ -86,18 +86,20 @@
 							{% endif %}
 						</div>
 					</li>
-					<li id="{{replyBaseId}}_cc_row" class="cc-row hide-note {% if not user_parts|length %}is-hidden{% endif %}" {% if not user_parts|length %}style="display: none;"{% endif %}>
-						<label>CC:</label>
-						<div>
-							<input
-								type="text"
-								placeholder="Enter an email address..."
-								name="user_parts"
-								value="{% for p in user_parts %}{{ p.person_email.email }}{% if not loop.last %},{% endif %}{% endfor %}"
-								id="{{replyBaseId}}_cc_input"
-							/>
-						</div>
-					</li>
+					{% if ticket_perms.modify_cc or user_parts|length %}
+						<li id="{{replyBaseId}}_cc_row" class="cc-row hide-note {% if not user_parts|length %}is-hidden{% endif %}" {% if not user_parts|length %}style="display: none;"{% endif %}>
+							<label>CC:</label>
+							<div>
+								<input
+									type="text"
+									placeholder="Enter an email address..."
+									name="user_parts"
+									value="{% for p in user_parts %}{{ p.person_email.email }}{% if not loop.last %},{% endif %}{% endfor %}"
+									id="{{replyBaseId}}_cc_input"
+								/>
+							</div>
+						</li>
+					{% endif %}
 					<li class="hide-note">
 						<label>{{ phrase('agent.status') }}:</label>
 						<div id="{{replyBaseId}}_status_detail" class="{% if ticket.status_code == 'awaiting_agent' %}changed{% endif %}">

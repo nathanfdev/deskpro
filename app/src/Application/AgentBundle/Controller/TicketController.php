@@ -153,14 +153,18 @@ class TicketController extends AbstractController
 		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
+		$ticket_perms = array();
+		$ticket_perms['delete'] = $this->person->PermissionsManager->TicketChecker->canDelete($ticket);
+		$ticket_perms['reply'] = $this->person->PermissionsManager->TicketChecker->canDelete($ticket);
+		foreach (array('department', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaitng_user', 'set_resolved') as $p) {
+			$ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
+		}
+
 		return $this->render($tpl, array(
 			'agents' => $agents,
 			'agent_teams' => $agent_teams,
 
-			'can_modify' => $this->person->PermissionsManager->TicketChecker->canModify($ticket),
-			'can_delete' => $this->person->PermissionsManager->TicketChecker->canDelete($ticket),
-			'can_resolve' => $this->person->PermissionsManager->TicketChecker->canResolve($ticket),
-
+			'ticket_perms' => $this->_getTicketPerms($ticket),
 			'ticket' => $ticket,
 			'ticket_attachments' => $ticket_attachments,
 
@@ -188,6 +192,18 @@ class TicketController extends AbstractController
 
 			'agent_signature' => $this->person->getPref('agent.ticket_signature')
 		));
+	}
+
+	protected function _getTicketPerms($ticket)
+	{
+		$ticket_perms = array();
+		$ticket_perms['delete'] = $this->person->PermissionsManager->TicketChecker->canDelete($ticket);
+		$ticket_perms['reply'] = $this->person->PermissionsManager->TicketChecker->canDelete($ticket);
+		foreach (array('department', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaitng_user', 'set_resolved') as $p) {
+			$ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
+		}
+
+		return $ticket_perms;
 	}
 
 	protected function _getMessageBlockInfo($ticket, $since_message_id = 0, $since_log_id = 0, array $ticket_attachments = null)
@@ -539,7 +555,7 @@ class TicketController extends AbstractController
 
 	public function ajaxSaveCustomFieldsAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id, 'edit');
+		$ticket = $this->getTicketOr404($ticket_id, 'fields');
 
 		$this->em->beginTransaction();
 
@@ -579,26 +595,63 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'edit');
 
-		if ($this->in->checkIsset('department')) {
+		$tcheck = $this->person->PermissionsManager->TicketChecker;
+
+		if ($this->in->checkIsset('department') && $tcheck->canModify($ticket, 'department')) {
 			$ticket['department_id'] = $this->in->getUint('department');
 		}
-		if ($this->in->checkIsset('category')) {
-			$ticket['category_id'] = $this->in->getUint('category');
+
+		if ($tcheck->canModify($ticket, 'fields')) {
+			if ($this->in->checkIsset('category')) {
+				$ticket['category_id'] = $this->in->getUint('category');
+			}
+			if ($this->in->checkIsset('product')) {
+				$ticket['product_id'] = $this->in->getUint('product');
+			}
+			if ($this->in->checkIsset('priority')) {
+				$ticket['priority_id'] = $this->in->getUint('priority');
+			}
 		}
-		if ($this->in->checkIsset('product')) {
-			$ticket['product_id'] = $this->in->getUint('product');
-		}
-		if ($this->in->checkIsset('priority')) {
-			$ticket['priority_id'] = $this->in->getUint('priority');
-		}
+
 		if ($this->in->checkIsset('status')) {
-			$ticket['status'] = $this->in->getString('status');
+			$status = $this->in->checkIsset('status');
+			if ($status == 'resolved' && !$tcheck->canModify($ticket, 'set_resolved')) {
+				$status = null;
+			}
+			if ($status == 'awaiting_agent' && !$tcheck->canModify($ticket, 'set_awaiting_agent')) {
+				$status = null;
+			}
+			if ($status == 'awaiting_user' && !$tcheck->canModify($ticket, 'set_awaiting_user')) {
+				$status = null;
+			}
+			if ($status) {
+				$ticket['status'] = $this->in->getString('status');
+			}
 		}
+
 		if ($this->in->checkIsset('agent')) {
-			$ticket['agent_id'] = $this->in->getUint('agent');
+			$agent = $this->in->checkIsset('agent');
+			if ($agent == $this->person->id && !$tcheck->canModify($ticket, 'assign_self')) {
+				$agent = null;
+			} elseif (!$tcheck->canModify($ticket, 'assign_agent')) {
+				$agent = null;
+			}
+
+			if ($agent) {
+				$ticket['agent_id'] = $this->in->getUint('agent');
+			}
 		}
 		if ($this->in->checkIsset('agent_team')) {
-			$ticket['agent_team_id'] = $this->in->getUint('agent_team');
+			$team = $this->in->checkIsset('agent_team');
+			if ($this->person->Agent->isTeamMember($team) && !$tcheck->canModify($ticket, 'assign_self')) {
+				$team = null;
+			} elseif (!$tcheck->canModify($ticket, 'assign_team')) {
+				$team = null;
+			}
+
+			if ($team) {
+				$ticket['agent_team_id'] = $this->in->getUint('agent_team');
+			}
 		}
 
 		$this->db->beginTransaction();
@@ -620,7 +673,7 @@ class TicketController extends AbstractController
 
 	public function addParticipantAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id, 'edit');
+		$ticket = $this->getTicketOr404($ticket_id, 'modify_cc');
 
 		$person = null;
 		if ($this->in->getUint('person_id')) {
@@ -673,7 +726,7 @@ class TicketController extends AbstractController
 
 	public function removeParticipantAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id, 'edit');
+		$ticket = $this->getTicketOr404($ticket_id, 'modify_cc');
 		$person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
 
 		if (!$person) {
@@ -700,7 +753,7 @@ class TicketController extends AbstractController
 
 	public function setAgentParticipantsAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id, 'edit');
+		$ticket = $this->getTicketOr404($ticket_id, 'modify_assign_agent');
 
 		$agents = $this->em->getRepository('DeskPRO:Person')->getPeopleFromIds($this->in->getCleanValueArray('agent_part_ids', 'uint', 'discard'));
 
@@ -727,7 +780,7 @@ class TicketController extends AbstractController
 
 	public function ajaxSaveLabelsAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id, 'edit');
+		$ticket = $this->getTicketOr404($ticket_id, 'modify_labels');
 
 		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 
@@ -746,7 +799,7 @@ class TicketController extends AbstractController
 
 	public function ajaxSaveReplyAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id, 'edit');
+		$ticket = $this->getTicketOr404($ticket_id, 'reply');
 
 		#------------------------------
 		# Handle new message
@@ -962,7 +1015,8 @@ class TicketController extends AbstractController
 			'participant_ids' => $participant_ids,
 			'agent_parts' => $agent_parts,
 			'user_parts' => $user_parts,
-			'agent_signature' => $this->person->getPref('agent.ticket_signature')
+			'agent_signature' => $this->person->getPref('agent.ticket_signature'),
+			'ticket_perms' => $this->_getTicketPerms($ticket),
 		));
 
 		$data = array_merge($data, array(
@@ -981,7 +1035,7 @@ class TicketController extends AbstractController
 
 	public function ajaxUpdateCheckAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id, 'edit');
+		$ticket = $this->getTicketOr404($ticket_id);
 
 		$data = $this->_getMessageBlockInfo(
 			$ticket,
@@ -998,8 +1052,9 @@ class TicketController extends AbstractController
 
 	public function ajaxSaveActionsAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id, 'edit');
+		$ticket = $this->getTicketOr404($ticket_id);
 		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
+
 		$result = $ticket_edit->applyActions($this->in->getCleanValueArray('actions', 'raw', 'raw'));
 
 		// If department is changed,
@@ -1041,16 +1096,18 @@ class TicketController extends AbstractController
 			$ticket_edit->save();
 			$this->em->flush();
 
-			$field_manager = $this->container->getSystemService('ticket_fields_manager');
+			if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+				$field_manager = $this->container->getSystemService('ticket_fields_manager');
 
-			if (!empty($_POST['custom_fields'])) {
-				$post_custom_fields = $this->request->request->get('custom_fields', array());
-				if (!empty($post_custom_fields)) {
-					$field_manager->saveFormToObject($post_custom_fields, $ticket);
-					$this->em->persist($ticket);
+				if (!empty($_POST['custom_fields'])) {
+					$post_custom_fields = $this->request->request->get('custom_fields', array());
+					if (!empty($post_custom_fields)) {
+						$field_manager->saveFormToObject($post_custom_fields, $ticket);
+						$this->em->persist($ticket);
+					}
+
+					$this->em->flush();
 				}
-
-				$this->em->flush();
 			}
 
 			$ticket->getTicketLogger()->done();
@@ -1087,7 +1144,7 @@ class TicketController extends AbstractController
 
 	public function ajaxGetMacroAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id, 'edit');
+		$ticket = $this->getTicketOr404($ticket_id);
 
 		$macro_id = $this->in->getUint('macro_id');
 		$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
@@ -1187,7 +1244,7 @@ class TicketController extends AbstractController
 
 	public function saveAgentPartsAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id, 'edit');
+		$ticket = $this->getTicketOr404($ticket_id, 'modify_assign_agent');
 
 		$set_agent_ids = $this->in->getCleanValueArray('person_ids', 'uint', 'discard');
 		$ticket->setParticipantAgentIds($set_agent_ids);
@@ -1222,7 +1279,7 @@ class TicketController extends AbstractController
 	 */
 	public function deleteAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id, 'edit');
+		$ticket = $this->getTicketOr404($ticket_id, 'delete');
 
 		if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -1259,7 +1316,7 @@ class TicketController extends AbstractController
 	 */
 	public function spamAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id, 'edit');
+		$ticket = $this->getTicketOr404($ticket_id, 'delete');
 
 		$this->em->getConnection()->beginTransaction();
 
@@ -1284,7 +1341,7 @@ class TicketController extends AbstractController
 
 	public function mergeOverlayAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id, 'edit');
+		$ticket = $this->getTicketOr404($ticket_id, 'modify_merge');
 
 		$tickets_by_user = $this->em->getRepository('DeskPRO:Ticket')->getLatestByUser($ticket->person);
 		$open_tickets    = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($this->in->getCleanValueArray('open_ticket_ids', 'uint', 'discard'));
@@ -1311,8 +1368,8 @@ class TicketController extends AbstractController
 	 */
 	public function mergeAction($ticket_id, $other_ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id, 'edit');
-		$other_ticket = $this->getTicketOr404($other_ticket_id, 'edit');
+		$ticket = $this->getTicketOr404($ticket_id, 'modify_merge');
+		$other_ticket = $this->getTicketOr404($other_ticket_id, 'modify_merge');
 
 		$old_ticket_id = $other_ticket['id'];
 
@@ -1656,17 +1713,34 @@ class TicketController extends AbstractController
 	/**
 	 * @return \Application\DeskPRO\Entity\Ticket
 	 */
-	protected function getTicketOr404($ticket_id, $context = 'view')
+	protected function getTicketOr404($ticket_id, $check_perm = null)
 	{
 		$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
 
-		$check = 'canView';
-		if ($context == 'edit') {
-			$check = 'canModify';
+		if (!$ticket || !$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_id");
 		}
 
-		if (!$ticket || !$this->person->PermissionsManager->TicketChecker->$check($ticket)) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_id");
+		if ($check_perm) {
+			$fail = false;
+			if (strpos($check_perm, 'modify_') === 0) {
+				$check_perm = str_replace('modify_', '', $check_perm);
+				if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, $check_perm)) {
+					$fail = true;
+				}
+			} elseif ($check_perm == 'delete') {
+				if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
+					$fail = true;
+				}
+			} elseif ($check_perm == 'reply') {
+				if (!$this->person->PermissionsManager->TicketChecker->canReply($ticket)) {
+					$fail = true;
+				}
+			}
+
+			if ($fail) {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_id");
+			}
 		}
 
 		return $ticket;

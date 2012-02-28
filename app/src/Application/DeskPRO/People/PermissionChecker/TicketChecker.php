@@ -137,63 +137,17 @@ class TicketChecker extends AbstractChecker
 	 * @param \Application\DeskPRO\Entity\Ticket $ticket
 	 * @return bool
 	 */
-	public function canModify(Ticket $ticket)
+	public function canReply(Ticket $ticket)
 	{
 		if (!$this->canView($ticket)) {
 			return false;
 		}
 
 		#------------------------------
-		# Can always modify own
+		# Can delete own
 		#------------------------------
 
-		if ($ticket->agent && $ticket->agent->id = $this->person->id) {
-			return true;
-		}
-
-		if ($ticket->agent_team && $this->person->getHelper('Agent')->isTeamMember($ticket->agent_team->id)) {
-			return true;
-		}
-
-		#------------------------------
-		# Can modify unassigned
-		#------------------------------
-
-		if (!$ticket->agent && $this->person->hasPerm('agent_tickets.modify_unassigned')) {
-			return true;
-		}
-
-		#------------------------------
-		# Can modify others
-		#------------------------------
-
-		if ($ticket->agent && $this->person->hasPerm('agent_tickets.modify_others')) {
-			return true;
-		}
-
-		#------------------------------
-		# Cant modift
-		#------------------------------
-
-		return false;
-	}
-
-
-	/**
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 * @return bool
-	 */
-	public function canResolve(Ticket $ticket)
-	{
-		if (!$this->canView($ticket)) {
-			return false;
-		}
-
-		#------------------------------
-		# Can resolve own
-		#------------------------------
-
-		if ($this->person->hasPerm('agent_tickets.resolve_own')) {
+		if ($this->person->hasPerm('agent_tickets.reply_own')) {
 			if ($ticket->agent && $ticket->agent->id = $this->person->id) {
 				return true;
 			}
@@ -204,24 +158,64 @@ class TicketChecker extends AbstractChecker
 		}
 
 		#------------------------------
-		# Can resolve unassigned
+		# Can delete unassigned
 		#------------------------------
 
-		if (!$ticket->agent && $this->person->hasPerm('agent_tickets.resolve_unassigned')) {
+		if (!$ticket->agent && $this->person->hasPerm('agent_tickets.reply_unassigned')) {
 			return true;
 		}
 
 		#------------------------------
-		# Can resolve others
+		# Can delete others
 		#------------------------------
 
-		if ($ticket->agent && $this->person->hasPerm('agent_tickets.resolve_others')) {
+		if ($ticket->agent && $this->person->hasPerm('agent_tickets.reply_others')) {
 			return true;
 		}
 
 		#------------------------------
-		# Cant modift
+		# Cant delete
 		#------------------------------
+
+		return false;
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 * @return bool
+	 */
+	public function canModify(Ticket $ticket, $op)
+	{
+		if (!$this->canView($ticket)) {
+			return false;
+		}
+
+
+		#------------------------------
+		# Figure out which set of permissions
+		# the current ticket falls into
+		#------------------------------
+
+		// Own tickets
+		if (($ticket->agent && $ticket->agent->id == $this->person->id) || $ticket->agent_team && $this->person->getHelper('Agent')->isTeamMember($ticket->agent_team->id)) {
+			$set_suffix = 'own';
+
+		// Unassigned tickets
+		} elseif (!$ticket->agent && !$ticket->agent_team) {
+			$set_suffix = 'unassigned';
+
+		// Other
+		} else {
+			$set_suffix = 'other';
+		}
+
+		$perm_gloabl   = 'agent_tickets.modify_' . $set_suffix;
+		$perm_specific = 'agent_tickets.modify_' . $op . '_' . $set_suffix;
+
+		if ($this->person->hasPerm($perm_gloabl) || $this->person->hasPerm($perm_specific)) {
+			return true;
+		}
 
 		return false;
 	}
