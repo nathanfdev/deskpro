@@ -427,9 +427,9 @@ body.dp-simple-popup .dp-content-block {
 }
 
 #deskpro #dp_search_bar input {
-	width: 760px;
+	width: 99%;
 	margin-left: 2px;
-	padding:  8px 10px 8px 10px;
+	padding: 8px 10px 8px 10px;
 }
 
 #deskpro #dp_search_bar input.loading {
