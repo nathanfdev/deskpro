@@ -290,16 +290,19 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$this->_authors = array();
 		$this->_authors[$this->person['id']] = $this->person;
 
+		$ent = $this->getEntityName() . 'Revision';
+		$field = strtolower(str_replace('DeskPRO:', '', $this->getEntityName()));
+
 		$revs = App::getOrm()->createQuery("
 			SELECT r, p
-			FROM DeskPRO:ArticleRevision r
+			FROM $ent r
 			LEFT JOIN r.person p
-			WHERE r.article = ?1
+			WHERE r.$field = ?1
 			ORDER BY r.date_created DESC
 		")->setParameter(1, $this)->execute();
 
 		foreach ($revs as $r) {
-			$this->_authors[$r['id']] = $r->person;
+			$this->_authors[$r->person->id] = $r->person;
 		}
 
 		return $this->_authors;
