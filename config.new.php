@@ -99,28 +99,3 @@ $DP_CONFIG = array();
 //   'existing_attachment_files' => ''
 //  );
 
-######################################################
-# OPTIONAL: Debug Settings                           #
-######################################################
-
-// $DP_CONFIG['debug'] = array();
-// $DP_CONFIG['debug']['dev'] = true;
-///$DP_CONFIG['debug']['raw_assets'] = array();
-// $DP_CONFIG['debug']['raw_assets'][] = 'all';
-
-// $DP_CONFIG['debug']['mail'] = array();
-// $DP_CONFIG['debug']['mail']['save_to_file'] = true;    // true logs to /data_logs/emails
-// $DP_CONFIG['debug']['mail']['force_to'] = '';
-// $DP_CONFIG['debug']['mail']['disable_send'] = 1;
-
-// $DP_CONFIG['debug']['querylog'] = array(
-// 	'enabled'       => true,
-// 	'log_maxtime'   => 0.2,      // Log all queries that take longer than this
-// 	'log_nowhere'   => 0.08,     // Log all queries without a WHERE clause that take longer than this
-// 	'log_countstar' => false,    // Log all COUNT(*) queries without a WHERE clause
-// 	'log_all'       => true,     // Log all queries regardless of other settings
-// 	'log_explain'   => false,    // Re-execute a query with an EXPLAIN when it is logged
-// 	'log_trace'     => false,    // Save a stacktrace when a query is logged
-// );
-
-// $DP_CONFIG['debug']['enable_profiler'] = true;
