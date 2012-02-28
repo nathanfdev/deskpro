@@ -55,12 +55,12 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 
 		this.usergroupChecks = $('#usergroup_checks :checkbox');
 
-		$('#usergroup_checks').on('click', ':checkbox', this.updatePermissionsGrid.bind(this));
-		$('#permgroup_table').find(':checkbox').on('change', (function() {
-			if (!this.suppressChange) {
-				this.updatePermissionsGrid();
+		$('#usergroup_checks').on('click', ':checkbox', function() { self.updatePermissionsGrid($(this)); });
+		$('#permgroup_table').find(':checkbox').on('change', function() {
+			if (!self.suppressChange) {
+				self.updatePermissionsGrid($(this));
 			}
-		}).bind(this));
+		});
 
 		this.updatePermissionsGrid();
 
@@ -75,6 +75,32 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 		this.deleteOverlay = new DeskPRO.UI.Overlay({
 			triggerElement: '#delete_overlay_trigger',
 			contentElement: '#delete_overlay'
+		});
+
+		$('#permgroup_table .expand-toggle').on('click', function(ev) {
+			ev.preventDefault();
+
+			var section = $(this).closest('tbody');
+			var rows = section.find('.' + $(this).data('expand'));
+
+			if ($(this).hasClass('expanded')) {
+				$(this).removeClass('expanded');
+				rows.hide();
+			} else {
+				$(this).addClass('expanded');
+				rows.show();
+			}
+		});
+
+		// For every parnet option, if its off but children are checked,
+		// expand them
+		$('#permgroup_table tr.parentperm').not('.on').each(function() {
+			var tbody = $(this).closest('tbody');
+			var subs = tbody.find('.' + $(this).find('i').data('expand'));
+			if (subs.filter('.on')[0]) {
+				$(this).find('i').addClass('expanded');
+				subs.show();
+			}
 		});
 
 		this._pageLoaded = true;
@@ -130,7 +156,7 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 		}
 	},
 
-	updatePermissionsGrid: function() {
+	updatePermissionsGrid: function(updatedEl) {
 		var self = this;
 		var ug_ids = this.getUsergroupIds();
 
@@ -146,6 +172,59 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 		$('#permgroup_table tr.permrow').each(function() {
 			var vis = $(this).is(':visible');
 			self.updatePermrowEnabled($(this), vis);
+		});
+
+		if (updatedEl) {
+			var elRow = updatedEl.closest('tr');
+			if (elRow.hasClass('on')) {
+				var i = elRow.find('i');
+				var tbody = elRow.closest('tbody');
+				tbody.find('.' + i.data('expand')).each(function() {
+					var row = $(this);
+					row.addClass('on').removeClass('disabled');
+					row.find('.effective').addClass('effective-on');
+					row.find('.jquery-checkbox-checked').addClass('jquery-checkbox-checked')
+					row.find('.onoff-slider').prop('checked', true);
+				});
+			}
+		}
+
+		$('#permgroup_table tr.subperm').each(function() {
+			if (!$(this).hasClass('on')) {
+				var tr = $(this);
+				var tbody = $(this).closest('tbody');
+				var parent = tbody.find('tr.parentperm');
+				if (parent.length > 1) {
+					var real = null;
+					parent.each(function() {
+						if (tr.hasClass($(this).find('i').data('expand'))) {
+							real = true;
+							return false;
+						}
+					});
+					parent = real;
+				}
+				parent.removeClass('on').addClass('disabled');
+				parent.find('.effective').removeClass('effective-on');
+				parent.find('.jquery-checkbox-checked').removeClass('jquery-checkbox-checked')
+				parent.find('.onoff-slider').prop('checked', false);
+			}
+		});
+
+		$('#permgroup_table tr.parentperm').each(function() {
+			if (!$(this).hasClass('on')) {
+				return;
+			}
+
+			var i = $(this).find('i');
+			var tbody = $(this).closest('tbody');
+			tbody.find('.' + i.data('expand')).each(function() {
+				var row = $(this);
+				row.addClass('on').removeClass('disabled');
+				row.find('.effective').addClass('effective-on');
+				row.find('.jquery-checkbox-checked').addClass('jquery-checkbox-checked')
+				row.find('.onoff-slider').prop('checked', true);
+			});
 		});
 
 		this.suppressChange = true;
@@ -168,9 +247,23 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 	 */
 	processDependencies: function() {
 		var self = this;
-		var ons = $('#permgroup_table tr.on.permrow');
+		var ons = $('#permgroup_table tr.permrow');
+		if (!this.depend_cache) {
+			this.depend_cache = {};
+		}
+
 		ons.each(function() {
-			var deps = self.traceDependencies($(this));
+			if (!$(this).attr('id')) {
+				$(this).attr('id', Orb.getUniqueId());
+			}
+			var id = $(this).attr('id');
+
+			if (self.depend_cache[id]) {
+				var deps = self.depend_cache[id];
+			} else {
+				var deps = self.traceDependencies($(this));
+				self.depend_cache[id] = deps;
+			}
 
 			var pass = true;
 			for (var i = 0; i < deps.length; i++) {
@@ -181,12 +274,14 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 				}
 			}
 
+			var row = $(this);
 			if (!pass) {
-				var row = $(this);
-				row.removeClass('on');
+				row.removeClass('on').addClass('disabled');
 				row.find('.effective').removeClass('effective-on');
 				row.find('.jquery-checkbox-checked').removeClass('jquery-checkbox-checked')
 				row.find('.onoff-slider').prop('checked', false);
+			} else {
+				row.removeClass('disabled');
 			}
 		});
 	},

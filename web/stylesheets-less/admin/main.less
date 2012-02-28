@@ -3271,3 +3271,34 @@ THE SOFTWARE.
 	.opacity(80);
 	background-color: #EDEDED;
 }
+
+.check-grid i.expand-toggle {
+    position: relative;
+    top: 1px;
+	display: inline-block;
+	.iconbase(11px, 11px);
+	background: url(../../images/agent/expand.png);
+	cursor: pointer;
+
+	&.expanded {
+		background: url(../../images/agent/collapse.png);
+	}
+}
+
+.check-grid > table tr.subperm {
+    display: none;
+
+	td.title {
+		padding-left: 30px;
+	}
+}
+
+.check-grid > table tr.disabled {
+	td.title {
+		color: #A3A5A5;
+	}
+
+	.jquery-checkbox, i.expand-toggle {
+		.opacity(50);
+	}
+}
