@@ -45,6 +45,12 @@
 			iScroll = 0;
 			iMouse['start'] = oThumb.obj.offset()[sDirection];
 		});
+		oWrapper.on('goscrollbottom', function() {
+			iScroll = 100000;
+			iScroll = Math.min((oContent[options.axis] - oViewport[options.axis]), Math.max(0, iScroll));
+			oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
+			oContent.obj.css(sDirection, -iScroll);
+		});
 
 		var oViewport = { obj: $('.scroll-viewport:first', this) };
 		var oContent = { obj: $('.scroll-content:first', this) };

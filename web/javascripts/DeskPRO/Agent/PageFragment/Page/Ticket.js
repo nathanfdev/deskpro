@@ -20,6 +20,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	initPage: function(el) {
+		var self = this;
 
 		this.valueForm = $('form.value-form:first', this.wrapper);
 		this.valueForm.on('submit', function(ev) {
@@ -36,7 +37,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this._initCustomFieldsEditor();
 
-		var self = this;
 		this._initMessage($('.messages-wrap'));
 
 		this._initTicketActionsMenu();
@@ -63,16 +63,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.new-messages.' + this.getMetaData('ticket_id'), this.getNewTicketMessages.bind(this), this.pageUid);
 
-		this.addEvent('shortcutFocusReply', (function(ev) {
+		this.addEvent('shortcutFocusReply', function(ev) {
 
 			ev.preventDefault();
 
 			// Scroll down
-			$('div.scroll-content:first, div.scroll-viewport:first', this.wrapper).scrollTop(100000);
+			self.wrapper.find('div.layout-content').trigger('goscrollbottom');
 
 			// Focus reply
-			$('textarea[name="message"]', this.ticketReply).focus();
-		}).bind(this));
+			$('textarea[name="message"]', self.ticketReply).focus();
+		});
 
 		$('.ticket-urgency', this.wrapper).on('mouseover', function() {
 			Tipped.show(this);
