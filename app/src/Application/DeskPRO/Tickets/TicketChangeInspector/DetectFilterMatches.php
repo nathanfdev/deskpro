@@ -98,6 +98,10 @@ class DetectFilterMatches
 					$changed_fields[] = 'ticket.product_id';
 					break;
 
+				case 'workflow':
+					$changed_fields[] = 'ticket.workflow_id';
+					break;
+
 				case 'status':
 					$changed_fields[] = 'ticket.status';
 					break;
@@ -262,7 +266,7 @@ class DetectFilterMatches
 		$total_time = microtime(true) - $time;
 
 		$this->logMessage('Found ' . count($this->filter_changes) . ' matches');
-		$this->logMessage("Full check done in iterations: " . $scope_counts . "  in time " . $total_time . " seconds");
+		$this->logMessage("Full check done in iterations: " . $scope_counts . "  in time " . sprintf('%.5f', $total_time) . " seconds");
 		$this->logMessage(\Orb\Util\Util::debugVar($this->filter_changes));
 
 		return $this->filter_changes;

@@ -129,13 +129,15 @@ class TriggerExecutor
 			# Notify the user of course
 			#------------------------------
 
-			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
-			$trigger->terms = array();
-			$trigger->actions = array(
-				array('type' => 'user_notification_new_ticket', 'options' => array())
-			);
+			if ($this->tracker->isExtraSet('ticket_created')) {
+				$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+				$trigger->terms = array();
+				$trigger->actions = array(
+					array('type' => 'user_notification_new_ticket', 'options' => array())
+				);
 
-			array_unshift($all_triggers, $trigger);
+				array_unshift($all_triggers, $trigger);
+			}
 
 			#------------------------------
 			# Add built-in agent notifications based off prefs
@@ -187,6 +189,8 @@ class TriggerExecutor
 
 		foreach ($all_triggers as $trigger) {
 			if ($trigger->isTriggerMatch($this->tracker->getTicket(), $this->tracker)) {
+				$this->tracker->logMessage("[TriggerExecutor] Executing trigger {$trigger->id} {$trigger->event_trigger} " . print_r($trigger->terms,true) . " " . print_r($trigger->actions, true));
+
 				foreach ($trigger['actions'] as $action_info) {
 					$action = $factory->createFromInfo($action_info);
 					if ($action) {
