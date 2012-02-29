@@ -107,6 +107,24 @@ abstract class DomainObject extends BasicDomainObject
 	protected function setModelField($field, $value)
 	{
 		$old = $this->$field;
+
+		// Detect fields that did not change
+		if (is_null($value) && is_null($old)) {
+			return;
+		} elseif (is_scalar($value)) {
+			if ($value == $old) {
+				return;
+			}
+		} elseif ($value instanceof \DateTime) {
+			if ($value->getTimestamp() == $old->getTimestamp()) {
+				return;
+			}
+		} elseif (is_object($value) && isset($value->id) && is_object($old)) {
+			if ($value->id == $old->id) {
+				return;
+			}
+		}
+
 		$this->$field = $value;
 
 		$this->_onPropertyChanged($field, $old, $value);

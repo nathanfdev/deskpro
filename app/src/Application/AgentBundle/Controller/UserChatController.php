@@ -28,7 +28,7 @@ class UserChatController extends AbstractController
 	{
 		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
-		if (!$this->person->PermissionsManager->ChatChecker($convo)) {
+		if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
@@ -78,7 +78,7 @@ class UserChatController extends AbstractController
 	{
 		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
-		if (!$this->person->PermissionsManager->ChatChecker($convo)) {
+		if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
@@ -109,7 +109,7 @@ class UserChatController extends AbstractController
 	{
 		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
-		if (!$this->person->PermissionsManager->ChatChecker($convo)) {
+		if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
@@ -138,7 +138,7 @@ class UserChatController extends AbstractController
 	{
 		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
-		if (!$this->person->PermissionsManager->ChatChecker($convo)) {
+		if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
@@ -169,7 +169,7 @@ class UserChatController extends AbstractController
 	{
 		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
-		if (!$this->person->PermissionsManager->ChatChecker($convo)) {
+		if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
@@ -223,7 +223,7 @@ class UserChatController extends AbstractController
 	{
 		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
-		if (!$this->person->PermissionsManager->ChatChecker($convo)) {
+		if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
@@ -264,7 +264,7 @@ class UserChatController extends AbstractController
 	{
 		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
-		if (!$this->person->PermissionsManager->ChatChecker($convo)) {
+		if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 

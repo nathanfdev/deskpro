@@ -36,12 +36,12 @@ class Agent implements LogActionInterface
 			'id_before' => $this->old_agent['id'] ?: null,
 			'id_after'  => $this->new_agent['id'] ?: null,
 
-			'old_agent_id' => $this->old_agent['id'],
-			'old_agent_name' => $this->old_agent['display_name'],
-			'old_agent_email' => $this->old_agent['primary_email_address'],
-			'new_agent_id' => $this->new_agent['id'],
-			'new_agent_name' => $this->new_agent['display_name'],
-			'new_agent_email' => $this->new_agent['primary_email_address'],
+			'old_agent_id'     => $this->old_agent ? $this->old_agent['id'] : 0,
+			'old_agent_name'   => $this->old_agent ? $this->old_agent['display_name'] : '',
+			'old_agent_email'  => $this->old_agent ? $this->old_agent['primary_email_address'] : '',
+			'new_agent_id'     => $this->new_agent ? $this->new_agent['id'] : 0,
+			'new_agent_name'   => $this->new_agent ? $this->new_agent['display_name'] : '',
+			'new_agent_email'  => $this->new_agent ? $this->new_agent['primary_email_address'] : '',
 		);
 	}
 

@@ -224,6 +224,10 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 					$this->original_ticket['product'] = $old_val;
 					break;
 
+				case 'workflow':
+					$this->original_ticket['workflow'] = $old_val;
+					break;
+
 				case 'status':
 					$this->original_ticket['status'] = $old_val;
 					break;

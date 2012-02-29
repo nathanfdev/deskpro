@@ -17,7 +17,7 @@
 	<span class="old-val">{{log.details.old_category_title|default('None')}}</span> to <span class="new-val">{{log.details.new_category_title|default('None')}}</span>
 {% elseif log.action_type == 'changed_department' %}
 	<span class="type">Department</span> changed from
-	<span class="old-val">{{log.details.old_department_title}}</span> to <span class="new-val">{{log.details.new_department_title}}</span>
+	<span class="old-val">{{log.details.old_department_title|default('None')}}</span> to <span class="new-val">{{log.details.new_department_title|default('None')}}</span>
 {% elseif log.action_type == 'message_created' %}
 	<span class="type">New message</span> <span class="new-val">#{{log.details.message_id}}</span>
 	{% if log.details.ip_address %}
@@ -28,13 +28,16 @@
 	{% endif %}
 {% elseif log.action_type == 'changed_priority' %}
 	<span class="type">Priority</span> changed from
-	<span class="old-val">{{log.details.old_priority_title}}</span> to <span class="new-val">{{log.details.new_priority_title|default('None')}}</span>
+	<span class="old-val">{{log.details.old_priority_title|default('None')}}</span> to <span class="new-val">{{log.details.new_priority_title|default('None')}}</span>
+{% elseif log.action_type == 'changed_workflow' %}
+	<span class="type">Workflow</span> changed from
+	<span class="old-val">{{log.details.old_workflow_title|default('None')}}</span> to <span class="new-val">{{log.details.new_workflow_title|default('None')}}</span>
 {% elseif log.action_type == 'changed_urgency' %}
 	<span class="type">Urgency</span> changed from
 	<span class="old-val">{{log.details.old_urgency}}</span> to <span class="new-val">{{log.details.new_urgency}}</span>
 {% elseif log.action_type == 'changed_product' %}
 	<span class="type">Product</span> changed from
-	<span class="old-val">{{log.details.old_product_title}}</span> to <span class="new-val">{{log.details.new_product_title|default('None')}}</span>
+	<span class="old-val">{{log.details.old_product_title|default('None')}}</span> to <span class="new-val">{{log.details.new_product_title|default('None')}}</span>
 {% elseif log.action_type == 'changed_status' %}
 	<span class="type">Status</span> changed from
 	<span class="old-val">{{ phrase( 'agent.tickets.status_' ~ log.details.old_status) }}</span> to <span class="new-val">{{ phrase( 'agent.tickets.status_' ~ log.details.new_status) }}</span>

@@ -36,10 +36,10 @@ class Category implements LogActionInterface
 			'id_before' => $this->old_cat['id'] ?: null,
 			'id_after'  => $this->new_cat['id'] ?: null,
 
-			'old_category_id' => $this->old_cat['id'],
-			'old_category_title' => $this->old_cat['title'],
-			'new_category_id' => $this->new_cat['id'],
-			'new_category_title' => $this->new_cat['title'],
+			'old_category_id' => $this->old_cat ? $this->old_cat['id'] : 0,
+			'old_category_title' => $this->old_cat ? $this->old_cat['title'] : '',
+			'new_category_id' => $this->new_cat ? $this->new_cat['id'] : 0,
+			'new_category_title' => $this->new_cat ? $this->new_cat['title'] : '',
 		);
 	}
 

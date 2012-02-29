@@ -36,12 +36,12 @@ class Priority implements LogActionInterface
 			'id_before' => $this->old_pri['id'] ?: null,
 			'id_after'  => $this->new_pri['id'] ?: null,
 
-			'old_priority_id' => $this->old_pri['id'],
-			'old_priority_title' => $this->old_pri['title'],
-			'old_priority_pri' => $this->old_pri['priority'],
-			'new_priority_id' => $this->new_pri['id'],
-			'new_priority_title' => $this->new_pri['title'],
-			'new_priority_pri' => $this->new_pri['priority'],
+			'old_priority_id'    => $this->old_pri ? $this->old_pri['id'] : 0,
+			'old_priority_title' => $this->old_pri ? $this->old_pri['title'] : '',
+			'old_priority_pri'   => $this->old_pri ? $this->old_pri['priority'] : 0,
+			'new_priority_id'    => $this->new_pri ? $this->new_pri['id'] : 0,
+			'new_priority_title' => $this->new_pri ? $this->new_pri['title'] : '',
+			'new_priority_pri'   => $this->new_pri ? $this->new_pri['priority'] : 0,
 		);
 	}
 

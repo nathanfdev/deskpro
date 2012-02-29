@@ -138,6 +138,12 @@ class Log
 						}
 						break;
 
+					case 'workflow':
+						if (!$this->tracker->isNewTicket()) {
+							$action = new LogActions\Workflow($old_val, $new_val);
+						}
+						break;
+
 					case 'product':
 						if (!$this->tracker->isNewTicket()) {
 							$action = new LogActions\Product($old_val, $new_val);

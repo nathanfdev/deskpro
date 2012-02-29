@@ -61,6 +61,23 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
 	 */
 	public function recordPropertyChanged($prop, $old_val, $new_val)
 	{
+		// Detect fields that did not change
+		if (is_null($new_val) && is_null($old_val)) {
+			return;
+		} elseif (is_scalar($new_val)) {
+			if ($new_val == $old_val) {
+				return;
+			}
+		} elseif ($new_val instanceof \DateTime) {
+			if ($new_val->getTimestamp() == $old_val->getTimestamp()) {
+				return;
+			}
+		} elseif (is_object($new_val) && isset($new_val->id) && is_object($old_val)) {
+			if ($new_val->id == $old_val->id) {
+				return;
+			}
+		}
+
 		// It may have been reset more than once before being saved
 		if (isset($this->changes[$prop])) {
 			$old_val = $this->changes[$prop]['old'];
