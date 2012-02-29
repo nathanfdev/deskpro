@@ -6,7 +6,7 @@
 	</select></div>
 {% endblock %}
 {% block display_elements_list %}
-	<li data-field="author"><input type="checkbox" name="author" /> Author</li>
-	<li data-field="category"><input type="checkbox" name="category" /> Category</li>
-	<li data-field="date_created"><input type="checkbox" name="date_created" /> Date Created</li>
+	<li data-field="author"><input type="checkbox" name="author" {% if 'author' in display_fields %}checked="checked"{% endif %} /> Author</li>
+	<li data-field="category"><input type="checkbox" name="category" {% if 'category' in display_fields %}checked="checked"{% endif %} /> Category</li>
+	<li data-field="date_created"><input type="checkbox" name="date_created" {% if 'date_created' in display_fields %}checked="checked"{% endif %} /> Date Created</li>
 {% endblock %}

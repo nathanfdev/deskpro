@@ -14,7 +14,8 @@ DeskPRO.Agent.PageFragment.ListPane.NewsList = new Orb.Class({
 		this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
 			prefId: 'news-filter',
 			resultId: this.meta.resultId,
-			refreshUrl: this.meta.refreshUrl
+			refreshUrl: this.meta.refreshUrl,
+			prefSaveResultId: '0'
 		});
 		this.ownObject(this.displayOptions);
 

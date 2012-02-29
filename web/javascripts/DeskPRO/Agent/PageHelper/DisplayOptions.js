@@ -12,10 +12,15 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		this.options = {
 			triggerElement: null,
 			resultId: 0,
+			prefSaveResultId: null,
 			prefId: '',
 			refreshUrl: ''
 		};
 		this.setOptions(options);
+
+		if (this.options.prefSaveResultId === null) {
+			this.options.prefSaveResultId = this.options.resultId;
+		}
 
 		if (!this.options.triggerElement) {
 			this.options.triggerElement = $('.display-options-trigger', this.page.wrapper);
@@ -139,7 +144,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		var wrap = this.getWrapperElement();
 
 		var data = [];
-		var pref_name = 'prefs[agent.ui.'+ this.options.prefId + '-display-fields.' + this.options.resultId +'][]';
+		var pref_name = 'prefs[agent.ui.'+ this.options.prefId + '-display-fields.' + this.options.prefSaveResultId +'][]';
 
 		var has = false;
 
@@ -160,7 +165,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 
 		// and the ordering
 		data.push({
-			name: 'prefs[agent.ui.'+ this.options.prefId + '-order-by.' + this.options.resultId +']',
+			name: 'prefs[agent.ui.'+ this.options.prefId + '-order-by.' + this.options.prefSaveResultId +']',
 			value: $('select[name="order_by"]', wrap).val()
 		});
 
