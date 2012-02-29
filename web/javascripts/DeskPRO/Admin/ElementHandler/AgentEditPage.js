@@ -44,6 +44,8 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 				self.el.removeClass('loading');
 			}).done(function(data) {
 				if (data.success) {
+					// When really submitting, still show the spinner to prevent double-posts
+					self.el.addClass('loading');
 					self.okSubmit = true;
 					self.el.submit();
 				} else {
