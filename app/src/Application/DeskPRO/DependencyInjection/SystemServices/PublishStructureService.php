@@ -18,6 +18,7 @@ class PublishStructureService
 	public static function create(DeskproContainer $container)
 	{
 		$structure = new \Application\DeskPRO\Publish\Structure(
+			$container->getSession()->getPerson(),
 			$container->getEm(),
 			$container->getSystemService('publish_structure_cache')
 		);

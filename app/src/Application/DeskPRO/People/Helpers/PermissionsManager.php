@@ -194,8 +194,10 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		#-------------------------
 
 		$do_cache = array();
+		$queued_types = $this->queued_types;
+		$this->queued_types = array();
 
-		foreach ($this->queued_types as $name) {
+		foreach ($queued_types as $name) {
 
 			if (isset($this->loaders[strtolower($name)])) {
 				continue;
@@ -210,7 +212,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
 			$this->loaders[strtolower($name)] = $loader;
 
-			$do_cache[] = PermissionCache::newFromLoader($loader, $this->person->id);
+			//$do_cache[] = PermissionCache::newFromLoader($loader, $this->person->id);
 		}
 
 		if (false && $do_cache) {

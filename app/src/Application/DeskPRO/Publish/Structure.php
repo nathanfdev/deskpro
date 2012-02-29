@@ -20,6 +20,8 @@ use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
 
+use Application\DeskPRO\People\PersonContextInterface;
+
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
@@ -30,7 +32,7 @@ use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 
-class Structure
+class Structure implements PersonContextInterface
 {
 	/**
 	 * @var \Doctrine\ORM\EntityManager
@@ -48,14 +50,44 @@ class Structure
 	protected $category_data = array();
 
 	/**
+	 * Category data processed in the context of $person_context
+	 *
+	 * @var array
+	 */
+	protected $context_category_data = array();
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $person_context;
+
+	/**
 	 * @param \Doctrine\ORM\EntityManager $em
 	 */
-	public function __construct(EntityManager $em, PreloadedMysqlCache $cache)
+	public function __construct(Person $person_context, EntityManager $em, PreloadedMysqlCache $cache)
 	{
+		$this->person_context = $person_context;
+
 		$this->em = $em;
 		$this->cache = $cache;
 	}
 
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Person $person_context
+	 */
+	public function setPersonContext(Person $person_context)
+	{
+		if ($this->person_context == $person_context) {
+			return;
+		}
+		if ($this->person_context && $person_context && $this->person_context->id == $person_context->id) {
+			return;
+		}
+
+		$this->person_context = $person_context;
+		$this->context_category_data = array();
+	}
 
 
 	####################################################################################################################
@@ -71,7 +103,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:ArticleCategory';
 		$this->loadCategories($ent);
-		return $this->category_data[$ent]['all'];
+		return $this->context_category_data[$ent]['all'];
 	}
 
 
@@ -82,7 +114,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:ArticleCategory';
 		$this->loadCategories($ent);
-		return $this->category_data[$ent]['hierarchy'];
+		return $this->context_category_data[$ent]['hierarchy'];
 	}
 
 
@@ -95,7 +127,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:ArticleCategory';
 		$this->loadCategories($ent);
-		return $this->category_data[$ent]['ids'];
+		return $this->context_category_data[$ent]['ids'];
 	}
 
 
@@ -108,11 +140,11 @@ class Structure
 		$ent = 'DeskPRO:ArticleCategory';
 		$this->loadCategories($ent);
 
-		if (!isset($this->category_data[$ent]['all'][$id])) {
+		if (!isset($this->context_category_data[$ent]['all'][$id])) {
 			throw new \InvalidArgumentException("Invalid category id `$id`");
 		}
 
-		return $this->category_data[$ent]['all'][$id];
+		return $this->context_category_data[$ent]['all'][$id];
 	}
 
 
@@ -125,7 +157,7 @@ class Structure
 		$ent = 'DeskPRO:ArticleCategory';
 		$this->loadCategories($ent);
 
-		return isset($this->category_data[$ent]['all'][$id]);
+		return isset($this->context_category_data[$ent]['all'][$id]);
 	}
 
 
@@ -140,7 +172,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:ArticleCategory';
 		$this->loadCategories($ent);
-		return $this->_getFullCategoryNames(array(), $this->category_data[$ent]['hierarchy'], $sep, $include_tops);
+		return $this->_getFullCategoryNames(array(), $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
 	}
 
 
@@ -151,7 +183,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:ArticleCategory';
 		$this->loadCategories($ent);
-		return $this->category_data[$ent]['helper'];
+		return $this->context_category_data[$ent]['helper'];
 	}
 
 
@@ -171,7 +203,7 @@ class Structure
 
 		$counts = array('0' => 0, '0_total' => 0);
 
-		foreach ($this->category_data[$ent]['ids'] as $cid) {
+		foreach ($this->context_category_data[$ent]['ids'] as $cid) {
 			$searcher = new ArticleSearch();
 			$searcher->setPersonContext($person_context);
 			$searcher->addTerm(ArticleSearch::TERM_CATEGORY_SPECIFIC, 'is', $cid);
@@ -180,7 +212,7 @@ class Structure
 			$counts[$cid] = $searcher->getCount();
 		}
 
-		$counts = $this->_getTotalCounts($counts, $this->category_data[$ent]['all'], $this->category_data[$ent]['helper']);
+		$counts = $this->_getTotalCounts($counts, $this->context_category_data[$ent]['all'], $this->context_category_data[$ent]['helper']);
 
 		$this->cache->save($id, $counts);
 
@@ -200,7 +232,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:FeedbackCategory';
 		$this->loadCategories($ent);
-		return $this->category_data[$ent]['all'];
+		return $this->context_category_data[$ent]['all'];
 	}
 
 
@@ -211,7 +243,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:FeedbackCategory';
 		$this->loadCategories($ent);
-		return $this->category_data[$ent]['hierarchy'];
+		return $this->context_category_data[$ent]['hierarchy'];
 	}
 
 
@@ -224,7 +256,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:FeedbackCategory';
 		$this->loadCategories($ent);
-		return $this->category_data[$ent]['ids'];
+		return $this->context_category_data[$ent]['ids'];
 	}
 
 
@@ -237,11 +269,11 @@ class Structure
 		$ent = 'DeskPRO:FeedbackCategory';
 		$this->loadCategories($ent);
 
-		if (!isset($this->category_data[$ent]['all'][$id])) {
+		if (!isset($this->context_category_data[$ent]['all'][$id])) {
 			throw new \InvalidArgumentException("Invalid category id `$id`");
 		}
 
-		return $this->category_data[$ent]['all'][$id];
+		return $this->context_category_data[$ent]['all'][$id];
 	}
 
 
@@ -254,7 +286,7 @@ class Structure
 		$ent = 'DeskPRO:FeedbackCategory';
 		$this->loadCategories($ent);
 
-		return isset($this->category_data[$ent]['all'][$id]);
+		return isset($this->context_category_data[$ent]['all'][$id]);
 	}
 
 
@@ -269,7 +301,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:FeedbackCategory';
 		$this->loadCategories($ent);
-		return $this->_getFullCategoryNames(array(), $this->category_data[$ent]['hierarchy'], $sep, $include_tops);
+		return $this->_getFullCategoryNames(array(), $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
 	}
 
 
@@ -280,7 +312,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:FeedbackCategory';
 		$this->loadCategories($ent);
-		return $this->category_data[$ent]['helper'];
+		return $this->context_category_data[$ent]['helper'];
 	}
 
 
@@ -355,7 +387,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:DownloadCategory';
 		$this->loadCategories($ent);
-		return $this->category_data[$ent]['all'];
+		return $this->context_category_data[$ent]['all'];
 	}
 
 
@@ -366,7 +398,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:DownloadCategory';
 		$this->loadCategories($ent);
-		return $this->category_data[$ent]['hierarchy'];
+		return $this->context_category_data[$ent]['hierarchy'];
 	}
 
 
@@ -379,7 +411,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:DownloadCategory';
 		$this->loadCategories($ent);
-		return $this->category_data[$ent]['ids'];
+		return $this->context_category_data[$ent]['ids'];
 	}
 
 
@@ -392,11 +424,11 @@ class Structure
 		$ent = 'DeskPRO:DownloadCategory';
 		$this->loadCategories($ent);
 
-		if (!isset($this->category_data[$ent]['all'][$id])) {
+		if (!isset($this->context_category_data[$ent]['all'][$id])) {
 			throw new \InvalidArgumentException("Invalid category id `$id`");
 		}
 
-		return $this->category_data[$ent]['all'][$id];
+		return $this->context_category_data[$ent]['all'][$id];
 	}
 
 
@@ -409,7 +441,7 @@ class Structure
 		$ent = 'DeskPRO:DownloadCategory';
 		$this->loadCategories($ent);
 
-		return isset($this->category_data[$ent]['all'][$id]);
+		return isset($this->context_category_data[$ent]['all'][$id]);
 	}
 
 
@@ -424,7 +456,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:DownloadCategory';
 		$this->loadCategories($ent);
-		return $this->_getFullCategoryNames(array(), $this->category_data[$ent]['hierarchy'], $sep, $include_tops);
+		return $this->_getFullCategoryNames(array(), $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
 	}
 
 
@@ -435,7 +467,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:DownloadCategory';
 		$this->loadCategories($ent);
-		return $this->category_data[$ent]['helper'];
+		return $this->context_category_data[$ent]['helper'];
 	}
 
 
@@ -485,7 +517,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:NewsCategory';
 		$this->loadCategories($ent);
-		return $this->category_data[$ent]['all'];
+		return $this->context_category_data[$ent]['all'];
 	}
 
 
@@ -496,7 +528,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:NewsCategory';
 		$this->loadCategories($ent);
-		return $this->category_data[$ent]['hierarchy'];
+		return $this->context_category_data[$ent]['hierarchy'];
 	}
 
 
@@ -509,7 +541,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:NewsCategory';
 		$this->loadCategories($ent);
-		return $this->category_data[$ent]['ids'];
+		return $this->context_category_data[$ent]['ids'];
 	}
 
 
@@ -522,11 +554,11 @@ class Structure
 		$ent = 'DeskPRO:NewsCategory';
 		$this->loadCategories($ent);
 
-		if (!isset($this->category_data[$ent]['all'][$id])) {
+		if (!isset($this->context_category_data[$ent]['all'][$id])) {
 			throw new \InvalidArgumentException("Invalid category id `$id`");
 		}
 
-		return $this->category_data[$ent]['all'][$id];
+		return $this->context_category_data[$ent]['all'][$id];
 	}
 
 
@@ -539,7 +571,7 @@ class Structure
 		$ent = 'DeskPRO:NewsCategory';
 		$this->loadCategories($ent);
 
-		return isset($this->category_data[$ent]['all'][$id]);
+		return isset($this->context_category_data[$ent]['all'][$id]);
 	}
 
 
@@ -554,7 +586,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:NewsCategory';
 		$this->loadCategories($ent);
-		return $this->_getFullCategoryNames(array(), $this->category_data[$ent]['hierarchy'], $sep, $include_tops);
+		return $this->_getFullCategoryNames(array(), $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
 	}
 
 
@@ -565,7 +597,7 @@ class Structure
 	{
 		$ent = 'DeskPRO:NewsCategory';
 		$this->loadCategories($ent);
-		return $this->category_data[$ent]['helper'];
+		return $this->context_category_data[$ent]['helper'];
 	}
 
 
@@ -703,70 +735,130 @@ class Structure
 	 */
 	protected function loadCategories($ent)
 	{
-		if (isset($this->category_data[$ent])) {
+		if (isset($this->category_data[$ent]) && isset($this->context_category_data[$ent])) {
 			return;
 		}
 
-		$this->cache->preloadPrefix('categories');
+		#------------------------------
+		# Category data: This is un-permissioned data
+		#------------------------------
 
-		$cats = $this->em->createQuery("
-			SELECT cat
-			FROM $ent cat INDEX BY cat.id
-			ORDER BY cat.display_order
-		")->setFetchMode($ent, 'children', 'EAGER')
-		  ->setFetchMode($ent, 'parent', 'EAGER')
-		  ->setResultCacheDriver($this->cache)->setResultCacheId('categories.recs.'.$ent)
-		  ->execute();
+		if (!isset($this->category_data[$ent])) {
+			$this->cache->preloadPrefix('categories');
+
+			$cats = $this->em->createQuery("
+				SELECT cat
+				FROM $ent cat INDEX BY cat.id
+				ORDER BY cat.display_order
+			")->setFetchMode($ent, 'children', 'EAGER')
+			  ->setFetchMode($ent, 'parent', 'EAGER')
+			  ->setResultCacheDriver($this->cache)->setResultCacheId('categories.recs.'.$ent)
+			  ->execute();
+
+			foreach ($cats as $c) {
+				$c->structure_helper = $this;
+			}
+
+			$this->category_data[$ent] = array();
+			$this->category_data[$ent]['all'] = $cats;
+			$this->category_data[$ent]['ids'] = array_keys($cats);
+
+			$maps = $this->cache->fetch('categories.maps.' . $ent);
+			if (!$maps) {
+				$parent_map = $this->em->getConnection()->fetchAll("
+					SELECT id, COALESCE(parent_id, 0) AS parent_id
+					FROM " . $this->em->getRepository($ent)->getTableName() . "
+					ORDER BY display_order DESC
+				");
+				$parent_map = Arrays::keyFromData($parent_map, 'id', 'parent_id');
+
+				$child_map = array(0 => array());
+				foreach ($parent_map as $parent_id => $child_id) {
+					if ($parent_id == 0) {
+						$child_map[0][] = $child_id;
+					}
+				}
+
+				foreach ($parent_map as $child_id => $parent_id) {
+					if (!isset($child_map[$parent_id])) {
+						$child_map[$parent_id] = array();
+					}
+					$child_map[$parent_id][] = $child_id;
+				}
+
+				$maps = array('parent_map' => $parent_map, 'child_map' => $child_map);
+				$this->cache->save('categories.maps.' . $ent, $maps);
+			}
+
+			$this->category_data[$ent]['parent_map'] = $parent_map = $maps['parent_map'];
+			$this->category_data[$ent]['child_map'] =  $child_map  = $maps['child_map'];
+
+			// Getting hierarchy is easy because they already have parent/children,
+			// hierarchy then is simply getting the root nodes from our collection
+			$this->category_data[$ent]['hierarchy'] = array();
+
+			foreach ($child_map[0] as $cat_id) {
+				$this->category_data[$ent]['hierarchy'][] = $cats[$cat_id];
+			}
+
+			$h = new \Orb\Util\HierarchyStructure($cats);
+			$h->parent_map = $this->category_data[$ent]['parent_map'];
+			$h->child_map = $this->category_data[$ent]['child_map'];
+			$this->category_data[$ent]['helper'] = $h;
+		}
+
+		#------------------------------
+		# Categories viewable by the user
+		#------------------------------
+
+		// No valid context means all categories
+		if (!$this->person_context || $this->person_context->is_agent) {
+			$this->context_category_data[$ent] = $this->category_data[$ent];
+			return;
+		}
+
+		foreach ($cats as $c) {
+			$c->structure_helper = null;
+		}
+
+		$perm_manager = null;
+		switch ($ent) {
+			case 'DeskPRO:ArticleCategory':  $perm_manager = $this->person_context->PermissionsManager->get('ArticleCategories');   break;
+			case 'DeskPRO:DownloadCategory': $perm_manager = $this->person_context->PermissionsManager->get('DownloadCategories');  break;
+			case 'DeskPRO:NewsCategory':     $perm_manager = $this->person_context->PermissionsManager->get('NewsCategories');      break;
+			case 'DeskPRO:FeedbackCategory': $perm_manager = $this->person_context->PermissionsManager->get('NewsCategories');      break;
+		}
+
+		// They're allowed to see it all
+		if (!$perm_manager || !$perm_manager->getDisallowedCategories()) {
+			$this->context_category_data[$ent] = $this->category_data[$ent];
+			return;
+		}
+
+		$this->context_category_data[$ent] = array();
+		$this->context_category_data[$ent]['all'] = array();
+		foreach ($perm_manager->getAllowedCategories() as $id) {
+			$this->context_category_data[$ent]['all'][$id] = $this->category_data[$ent]['all'][$id];
+		}
+		$this->context_category_data[$ent]['ids'] = array_keys($this->context_category_data[$ent]['all']);
+
+		// Getting hierarchy is easy because they already have parent/children,
+		// hierarchy then is simply getting the root nodes from our collection
+		$this->context_category_data[$ent]['hierarchy'] = array();
+
+		foreach ($child_map[0] as $cat_id) {
+			if ($perm_manager->isCategoryAllowed($cat_id)) {
+				$this->context_category_data[$ent]['hierarchy'][] = $cats[$cat_id];
+			}
+		}
+
+		$h = new \Orb\Util\HierarchyStructure($this->context_category_data[$ent]['all']);
+		$h->parent_map = $this->category_data[$ent]['parent_map'];
+		$h->child_map = $this->category_data[$ent]['child_map'];
+		$this->context_category_data[$ent]['helper'] = $h;
 
 		foreach ($cats as $c) {
 			$c->structure_helper = $this;
 		}
-
-		$this->category_data[$ent] = array();
-		$this->category_data[$ent]['all'] = $cats;
-		$this->category_data[$ent]['ids'] = array_keys($cats);
-
-		$maps = $this->cache->fetch('categories.maps.' . $ent);
-		if (!$maps) {
-			$parent_map = $this->em->getConnection()->fetchAll("
-				SELECT id, COALESCE(parent_id, 0) AS parent_id
-				FROM " . $this->em->getRepository($ent)->getTableName() . "
-				ORDER BY display_order DESC
-			");
-			$parent_map = Arrays::keyFromData($parent_map, 'id', 'parent_id');
-
-			$child_map = array(0 => array());
-			foreach ($parent_map as $parent_id => $child_id) {
-				if ($parent_id == 0) {
-					$child_map[0][] = $child_id;
-				}
-			}
-
-			foreach ($parent_map as $child_id => $parent_id) {
-				if (!isset($child_map[$parent_id])) {
-					$child_map[$parent_id] = array();
-				}
-				$child_map[$parent_id][] = $child_id;
-			}
-
-			$maps = array('parent_map' => $parent_map, 'child_map' => $child_map);
-			$this->cache->save('categories.maps.' . $ent, $maps);
-		}
-
-		$this->category_data[$ent]['parent_map'] = $parent_map = $maps['parent_map'];
-		$this->category_data[$ent]['child_map'] =  $child_map  = $maps['child_map'];
-
-		// Getting hierarchy is easy because they already have parent/children,
-		// hierarchy then is simply getting the root nodes from our collection
-		$this->category_data[$ent]['hierarchy'] = array();
-
-		foreach ($child_map[0] as $cat_id) {
-			$this->category_data[$ent]['hierarchy'][] = $cats[$cat_id];
-		}
-
-		$h = new \Orb\Util\HierarchyStructure($cats);
-		$h->parent_map = $this->category_data[$ent]['parent_map'];
-		$h->child_map = $this->category_data[$ent]['child_map'];
-		$this->category_data[$ent]['helper'] = $h;
 	}
 }

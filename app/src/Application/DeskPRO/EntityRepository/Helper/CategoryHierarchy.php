@@ -546,10 +546,6 @@ class CategoryHierarchy
 			throw new \BadMethodCallException('There is no permissions table set');
 		}
 
-		$usergroup_ids = array_filter($usergroup_ids, function ($val) {
-			return ctype_digit($val);
-		});
-
 		if (!$usergroup_ids) {
 			return array();
 		}
