@@ -129,19 +129,24 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		$('li.online-now', '#agent_offline_list').each(function() {
 			self.addOnlineAgent($(this).removeClass('online-now').data('agent-id'));
 		});
+
+		this.panelEl.on('click', function() {
+
+		});
 	},
 
 	close: function() {
 		this.panelEl.removeClass('open');
-		$('> section', this.chatsWrapper).removeClass('open');
 	},
 
 	newChatWindow: function(agent_ids) {
+		var self = this;
 
 		var chatWin = DeskPRO.Agent.Widget.AgentChatWin_FindAgents(agent_ids);
 		if (!chatWin) {
 			chatWin = new DeskPRO.Agent.Widget.AgentChatWin({
-				agentIds: agent_ids
+				agentIds: agent_ids,
+				onDestroy: function() { self.reflowButtons(); }
 			});
 		}
 
@@ -151,16 +156,29 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 	},
 
 	newIncomingMessage: function(info) {
+		var self = this;
+
 		var chatWin = DeskPRO.Agent.Widget.AgentChatWin_Find(info.conversation_id);
 		if (!chatWin) {
 			chatWin = new DeskPRO.Agent.Widget.AgentChatWin({
 				convoId: info.conversation_id,
-				agentIds: info.participant_ids
+				agentIds: info.participant_ids,
+				onDestroy: function() { self.reflowButtons(); }
 			});
 		}
 
 		chatWin.showMessage(info.author_id, info.message);
 		chatWin.open();
+	},
+
+	/**
+	 * Re-positions buttons after one is closed
+	 */
+	reflowButtons: function() {
+		$('> section.agent-chat', this.chatsWrapper).css('left', 0);
+		Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(chatWin) {
+			chatWin.resetPosition();
+		});
 	},
 
 	//#########################################################################

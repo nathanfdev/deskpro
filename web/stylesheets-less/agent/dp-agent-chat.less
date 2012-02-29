@@ -51,7 +51,7 @@
 	bottom: 0;
 	left: 8px;
 	width: 300px;
-	z-index: 21002;
+	z-index: 25005;
 	height: 350px;
 }
 
@@ -280,11 +280,11 @@
 #agent_chats_wrapper section.agent-chat {
 	position: absolute;
 	left: 0;
-	bottom: 0;
+	bottom: 26px;
 }
 
 #agent_chats_wrapper section.agent-chat nav {
-	.gradient(desaturate(lighten(#6ea4c3, 20%), 20%), desaturate(lighten(#375288, 20%), 20%));
+	.gradient(desaturate(lighten(#6ea4c3, 30%), 30%), desaturate(lighten(#375288, 30%), 30%));
 
 	border-right: 1px solid #334d66;
 	border-left: 1px solid #334d66;
@@ -297,7 +297,7 @@
 	padding: 5px;
 	position: absolute;
 	width: 75px;
-	bottom: 0;
+	bottom: -26px;
 	height: 16px;
 	overflow: hidden;
 
@@ -312,11 +312,11 @@
 
 		line-height: 26px;
 
-		color: #fff;
-		width: 100px;
-		white-space: nowrap;
+		color: #000;
+		text-shadow: none;
 
-		text-shadow: 1px 0px 0px rgba(0, 0, 0, 0.6);
+		width: 75px;
+		white-space: nowrap;
 	}
 
 	.close-trigger {
@@ -324,12 +324,12 @@
 	    display: block;
 	 	background-repeat: no-repeat;
 		background-position: 0 0;
-		background-image: url(../../images/agent/chat/win-button-closebtn.png) /** sprite-ref: ui-v */;
-		height: 16px;
+		background-image: url(../../images/agent/chat/win-button-closebtn-on.png) /** sprite-ref: ui-v */;
+		height: 14px;
 		right: 5px;
-		top: 5px;
+		top: 6px;
 		text-indent: -100px;
-		width: 16px;
+		width: 14px;
 		cursor:pointer;
 		.imgel;
 
@@ -361,6 +361,7 @@
 
 	a {
 		color: #000;
+		text-shadow: none;
 	}
 
 	.close-trigger {
@@ -437,7 +438,7 @@
 
     .messages-box {
 		position: absolute;
-		top: 37px; right: 0; bottom: 77px; left: 0;
+		top: 37px; right: 0; bottom: 51px; left: 0;
 
     	background: #E4E7EB;
 		border: 1px solid #b6babf;
@@ -455,7 +456,7 @@
 		border-top: none;
 
 		position: absolute;
-		right: 0; bottom: 26px; left: 0;
+		right: 0; bottom: 0px; left: 0;
 		height: 50px;
 	}
 
@@ -481,6 +482,7 @@
 		outline: none;
 		background: transparent;
 		resize: none;
+		box-shadow: none;
 	}
 }
 

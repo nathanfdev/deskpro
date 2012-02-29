@@ -109,16 +109,23 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 
 		this.wrapper = newContainer;
 
-		// Modify position of button if there are others
-		var lastChat = $('> section.agent-chat:last', this.chatsWrapper);
-		if (lastChat.length) {
-			var leftPos = lastChat.position().left + $('> nav', lastChat).outerWidth() + 8;
-			newContainer.css('left', leftPos);
-		}
+		newContainer.find('> .window').find('> header, > div.messages-box, > .input-message-wrap').on('click', function(ev) {
+			var count = 0;
+			Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(win) {
+				win.wrapper.css('z-index', count++);
+			});
+			self.wrapper.css('z-index', count+1);
+		});
+		newContainer.find('> nav').on('click', function() {
+			var count = 0;
+			Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(win) {
+				win.wrapper.css('z-index', count++);
+			});
+			self.wrapper.css('z-index', count+1);
+		});
 
 		this.chatsWrapper.append(newContainer);
-
-		newContainer.addClass('new-message');
+		this.resetPosition();
 
 		$('textarea', newContainer).on('keypress', (function(ev) {
 			// Enter, but not when meta key (alt, ctrl etc) are pressed
@@ -130,7 +137,6 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 
 		var nav = $('> nav', newContainer);
 		nav.on('click', function(ev) {
-			ev.stopPropagation();
 			if (newContainer.is('.open')) {
 				newContainer.removeClass('open');
 			} else {
@@ -140,17 +146,31 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 
 		$('.close-trigger', nav).on('click', function(ev) {
 			ev.stopPropagation();
+			self.fireEvent('close');
 			self.destroy();
 		});
 
 		$('.minimize', newContainer).on('click', function(ev) {
 			ev.stopPropagation();
+			self.fireEvent('minimize');
 			self.close();
 		});
 		$('.close', newContainer).on('click', function(ev) {
 			ev.stopPropagation();
+			self.fireEvent('close');
 			self.destroy();
 		});
+	},
+
+	resetPosition: function() {
+		var chats = $('> section.agent-chat', this.chatsWrapper);
+		if (chats.length > 1) {
+			var lastChat = chats.last();
+			var leftPos = lastChat.position().left + $('> nav', lastChat).outerWidth() + 8;
+			this.wrapper.css('left', leftPos);
+		} else {
+			this.wrapper.css('left', 0);
+		}
 	},
 
 	_fireSendMessage: function() {
@@ -272,6 +292,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 	 * Open the chat tab
 	 */
 	open: function() {
+		var self = this;
 		this.wrapper.addClass('open');
 	},
 
@@ -293,7 +314,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			this.wrapper = null;
 		}
 
-		this.fireEvent('destroy', [this]);
 		delete DeskPRO.Agent.Widget.AgentChatWin_Registry[this.uuid];
+		this.fireEvent('destroy', [this]);
 	}
 });
