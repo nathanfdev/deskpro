@@ -14,10 +14,17 @@
 			{% set count_all = count_all + grouped_info.counts[subcat.id].total %}
 		{% endfor %}
 	{% endif %}
-	{% if count > 0 %}
+	{% if count_all > 0 %}
 		<li data-grouping-option="{{ cat.id }}" class="grouping-{{ cat.id }}">
 			<span class="title is-nav-item">
-				<span class="list-counter">{{ count }}{% if cat.children and count != count_all %}/{{ count_all }}{% endif %}</span>
+				<span class="list-counter">
+					{% if cat.children %}
+						{% if count %}{{ count }}{% endif %}{% if count and count_all %}/{% endif %}{% if count_all %}{{ count_all }}{% endif %}
+						{% if not count and not count_all %}0{% endif %}
+					{% elseif count %}
+						{{ count|default('0') }}
+					{% endif %}
+				</span>
 				{{ cat.title }}
 			</span>
 		</li>

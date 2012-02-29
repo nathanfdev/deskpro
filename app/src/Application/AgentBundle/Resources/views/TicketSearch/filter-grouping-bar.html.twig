@@ -38,11 +38,18 @@
 					{% set count_all = count_all + grouped_info.counts[subcat.id].total %}
 				{% endfor %}
 			{% endif %}
-			{% if count > 0 %}
+			{% if count_all > 0 %}
 				<li data-grouping-option="{{ cat.id }}" {% if not (grouping_option == 'DP_NOT_SET' or grouping_option == '-1') and grouping_option == cat.id %}class="on"{% endif %} id="{{baseId}}_total_grouped_count">
 					<a data-route="{{ grouping_url ~ cat.id }}">
 						{{ cat.title }}
-						<span>{{ count }}{% if cat.children and count != count_all %}/{{ count_all }}{% endif %}</span>
+						<span>
+							{% if cat.children %}
+								{% if count %}{{ count }}{% endif %}{% if count and count_all %}/{% endif %}{% if count_all %}{{ count_all }}{% endif %}
+								{% if not count and not count_all %}0{% endif %}
+							{% elseif count %}
+								{{ count|default('0') }}
+							{% endif %}
+						</span>
 					</a>
 				</li>
 				{% if cat.children %}
