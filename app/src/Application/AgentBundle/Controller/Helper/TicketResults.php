@@ -166,7 +166,9 @@ class TicketResults
 		$searcher->setPerson($this->controller->getPerson());
 		$searcher->enableArchiveSearch();
 		$searcher->addTerm(TicketSearch::TERM_ID, TicketSearch::OP_IS, $this->getTicketIds());
-		$searcher->addTerm($this->group_field, TicketSearch::OP_IS, $field_id);
+
+		$term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($this->group_field, $field_id);
+		$searcher->addTerm($term['type'], $term['op'], $term['options']);
 
 		if ($this->order_by) {
 			$searcher->setOrderByCode($this->order_by);
