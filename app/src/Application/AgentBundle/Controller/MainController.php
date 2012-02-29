@@ -249,7 +249,12 @@ class MainController extends AbstractController
 		# ID based
 		#------------------------------
 
-		if (Numbers::isInteger($q)) {
+		$is_label = false;
+		if (preg_match('#^\[(.*?)\]$#', $q, $m)) {
+			$is_label = $m[1];
+		}
+
+		if (!$is_label && Numbers::isInteger($q)) {
 			foreach ($type_to_ent as $type => $ent) {
 				$obj = $this->em->find($ent, $q);
 				if ($obj) {
@@ -259,76 +264,78 @@ class MainController extends AbstractController
 
 		} else {
 
-			#------------------------------
-			# Email address: Full or partial
-			#------------------------------
+			if (!$is_label) {
+				#------------------------------
+				# Email address: Full or partial
+				#------------------------------
 
-			if (preg_match('#^[a-zA-Z0-9\-_.]*@[a-zA-Z0-9\-_.]+$#', $q)) {
+				if (preg_match('#^[a-zA-Z0-9\-_.]*@[a-zA-Z0-9\-_.]+$#', $q)) {
 
-				$people_top = true;
+					$people_top = true;
 
-				// Complete email address
-				if (\Orb\Validator\StringEmail::isValueValid($q)) {
-					$p = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($q);
-					$people = array();
-					if ($p) {
-						$people[] = $p;
-					}
-				} else {
-					if (strpos($q, '@') === 0) {
-						$email = substr($q, 1);
-						$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
-
-						$people = $this->em->createQuery("
-						SELECT p
-						FROM DeskPRO:Person p
-						LEFT JOIN p.emails e
-						WHERE e.email_domain LIKE ?1
-						ORDER BY p.id ASC
-					")->setParameter(1, $email)->setMaxResults(15)->execute();
-
+					// Complete email address
+					if (\Orb\Validator\StringEmail::isValueValid($q)) {
+						$p = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($q);
+						$people = array();
+						if ($p) {
+							$people[] = $p;
+						}
 					} else {
-						// Search an email address
-						$people = $this->em->getRepository('DeskPRO:Person')->searchByEmail($q, 25);
+						if (strpos($q, '@') === 0) {
+							$email = substr($q, 1);
+							$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
+
+							$people = $this->em->createQuery("
+							SELECT p
+							FROM DeskPRO:Person p
+							LEFT JOIN p.emails e
+							WHERE e.email_domain LIKE ?1
+							ORDER BY p.id ASC
+						")->setParameter(1, $email)->setMaxResults(15)->execute();
+
+						} else {
+							// Search an email address
+							$people = $this->em->getRepository('DeskPRO:Person')->searchByEmail($q, 25);
+						}
+					}
+
+					foreach ($people as $p) {
+						$results['person'][] = $p;
+
+						if ($p->organization) {
+							$results['organization'][] = $p;
+						}
+					}
+
+				#------------------------------
+				# Search for string match in name or email
+				#------------------------------
+
+				} else {
+					$people = $this->em->getRepository('DeskPRO:Person')->search($q, 25);
+					foreach ($people as $p) {
+						$results['person'][] = $p;
+
+						if ($p->organization) {
+							$results['organization'][] = $p;
+						}
 					}
 				}
 
-				foreach ($people as $p) {
-					$results['person'][] = $p;
-
-					if ($p->organization) {
-						$results['organization'][] = $p;
+				if ($results['person']) {
+					$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsForPeople($results['person'], 15);
+					foreach ($tickets as $t) {
+						$results['ticket'][] = $t;
 					}
 				}
-
-			#------------------------------
-			# Search for string match in name or email
-			#------------------------------
-
-			} else {
-				$people = $this->em->getRepository('DeskPRO:Person')->search($q, 25);
-				foreach ($people as $p) {
-					$results['person'][] = $p;
-
-					if ($p->organization) {
-						$results['organization'][] = $p;
-					}
-				}
-			}
-
-			if ($results['person']) {
-				$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsForPeople($results['person'], 15);
-				foreach ($tickets as $t) {
-					$results['ticket'][] = $t;
-				}
-			}
+			} // is label
 
 			#------------------------------
 			# Labels
 			#------------------------------
 
 			$label_search = new \Application\DeskPRO\Labels\LabelSearch($this->em);
-			$label_results = $label_search->search($q);
+			$label_results = $label_search->search($is_label ? $is_label : $q);
 
 			if ($label_results) {
 				foreach ($label_results as $type => $type_results) {

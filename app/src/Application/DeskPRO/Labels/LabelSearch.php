@@ -28,7 +28,7 @@ class LabelSearch
 	/**
 	 * @var array
 	 */
-	protected $search_types = array('article', 'download', 'feedback', 'news', 'organization', 'people', 'ticket');
+	protected $search_types = array('article', 'download', 'feedback', 'news', 'organization', 'person', 'ticket');
 
 	/**
 	 * @var int

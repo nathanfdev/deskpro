@@ -563,7 +563,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			dataType: 'json',
 			success: function(data) {
 				var sect = DeskPRO_Window.sections.people_section;
-				sect.reloadLabels();
+				if (sect) {
+					sect.reloadLabels();
+				}
 			}
 		});
 	}

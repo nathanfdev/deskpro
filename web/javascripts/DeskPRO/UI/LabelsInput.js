@@ -93,6 +93,21 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 				self.fireEvent('change', data);
 			}
 		});
+
+		// Clicking a label opens the omni search boxeroo
+		this.options.textarea.textext()[0].hiddenInput().closest('.text-core').on('click', '.text-tag', function(ev) {
+			if (ev.target && $(ev.target).is('.text-remove')) {
+				return;
+			}
+
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var label = $(this).find('.text-label').text().trim();
+			if (label) {
+				$('#dp_omniinput').data('handler').setSearch('[' + label + ']');
+			}
+		});
 	},
 
 

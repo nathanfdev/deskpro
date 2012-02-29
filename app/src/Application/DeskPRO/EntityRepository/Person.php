@@ -80,7 +80,7 @@ class Person extends AbstractEntityRepository
 			FROM DeskPRO:Person p
 			LEFT JOIN p.primary_email email
 			LEFT JOIN p.picture_blob pic
-			WHERE p.is_agent = true AND is_deleted = false AND is_vacation_mode = false
+			WHERE p.is_agent = true AND p.is_deleted = false AND p.is_vacation_mode = false
 			ORDER BY p.name ASC
 		")->execute();
 	}

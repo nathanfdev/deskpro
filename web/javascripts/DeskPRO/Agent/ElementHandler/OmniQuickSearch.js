@@ -1,4 +1,4 @@
-	Orb.createNamespace('DeskPRO.Agent.ElementHandler');
+Orb.createNamespace('DeskPRO.Agent.ElementHandler');
 
 /**
  * This handles the quick search and results
@@ -26,7 +26,7 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 		});
 
 		this.resultWrap = $('#dp_omniresults').on('click', '[data-route]', function(ev) {
-			self.runPageRouteFromElement($(this));
+			//self.runPageRouteFromElement($(this));
 		});
 
 		this.tplResultSection = DeskPRO_Window.util.getPlainTpl($('#dp_omniresults_section'));
@@ -152,6 +152,11 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 				}
 			}
 		}
+	},
+
+	setSearch: function(q) {
+		this.el.val(q).focus();
+		this.updateCallerQuick.exec();
 	},
 
 	updateResultsLong: function() {
