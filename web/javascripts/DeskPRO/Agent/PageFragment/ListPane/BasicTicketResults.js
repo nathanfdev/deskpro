@@ -385,6 +385,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 				$('option', sel).prop('selected', false);
 				$('option.' + prop, sel).prop('selected', true);
 
+				self.wrapper.find('header.list-grouping-bar').hide();
+				self.getEl('grouping_loading').show();
 				self.displayOptions.saveAndRefresh();
 			}
 		});
