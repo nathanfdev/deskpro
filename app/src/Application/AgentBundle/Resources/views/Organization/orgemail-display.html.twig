@@ -1,7 +1,8 @@
+{% if org_email_domains|length or app.user.hasPerm('agent_org.edit') %}
 <div>
 	<div class="profile-box-container email-assoc">
 		<header>
-			<span class="edit-gear email-assoc-edit"></span>
+			{% if app.user.hasPerm('agent_org.edit') %}<span class="edit-gear email-assoc-edit"></span>{% endif %}
 			<h4>{{ phrase('agent.org.email_domain_assoc') }}</h4>
 		</header>
 		<section>
@@ -21,3 +22,4 @@
 		{% include 'AgentBundle:Organization:orgemail-overlay.html.twig' %}
 	</div>
 </div>
+{% endif %}

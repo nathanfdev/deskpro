@@ -40,40 +40,44 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		// then forces textext to invalidatebounds
 		var propBox = self.getEl('properties_box');
 		var input = self.getEl('label_input');
-		input.width(propBox.width() - 140);
+		if (input[0]) {
+			input.width(propBox.width() - 140);
 
-		$(window).resize(function() {
-			window.setTimeout(function() {
-				var w = propBox.width() - 130;
-				input.width(w);
-				if (self.labelsInput && self.labelsInput.options.textarea.textext()[0]) {
-					self.labelsInput.options.textarea.textext()[0].originalWidth = w;
-					self.labelsInput.options.textarea.textext()[0].invalidateBounds();
-				}
-			}, 500);
-		});
-
-		// Name is editable
-		var name = $('h3.name.editable:first', el);
-		if (!name.attr('id')) {
-			name.attr('id', Orb.getUniqueId());
+			$(window).resize(function() {
+				window.setTimeout(function() {
+					var w = propBox.width() - 130;
+					input.width(w);
+					if (self.labelsInput && self.labelsInput.options.textarea.textext()[0]) {
+						self.labelsInput.options.textarea.textext()[0].originalWidth = w;
+						self.labelsInput.options.textarea.textext()[0].invalidateBounds();
+					}
+				}, 500);
+			});
 		}
 
-		var editable = new DeskPRO.Form.InlineEdit({
-			baseElement: this.wrapper,
-			editableClass: 'person-name-editable',
-			ajax: {
-				url: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save'
-			},
-			triggers: '.edit-name-gear'
-		});
+		if (this.meta.perms.edit) {
+			// Name is editable
+			var name = $('h3.name.editable:first', el);
+			if (!name.attr('id')) {
+				name.attr('id', Orb.getUniqueId());
+			}
 
-		// Attach click to wrapper because
-		// this same code is used on popout on ticket,
-		// and clicks dont bubble to document click
-		$(this.wrapper).on('click', function (ev) {
-			editable.handleDocumentClick(ev);
-		});
+			var editable = new DeskPRO.Form.InlineEdit({
+				baseElement: this.wrapper,
+				editableClass: 'person-name-editable',
+				ajax: {
+					url: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save'
+				},
+				triggers: '.edit-name-gear'
+			});
+
+			// Attach click to wrapper because
+			// this same code is used on popout on ticket,
+			// and clicks dont bubble to document click
+			$(this.wrapper).on('click', function (ev) {
+				editable.handleDocumentClick(ev);
+			});
+		}
 
 		this.getEl('delete_btn').on('click', function() {
 			var url = $(this).data('delete-url');
@@ -261,11 +265,12 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 		var summaryTxt = this.getEl('summary').TextAreaExpander(40, 225);
 
-		this._initEmailDomainAssoc();
+		if (this.meta.perms.edit) {
+			this._initEmailDomainAssoc();
+		}
 
 		this.refreshPropBox();
 
-		// TODO Refactor this and same from Person.js into helper
 		var fieldsRendered = this.getEl('custom_fields_rendered');
 		var fieldsForm = this.getEl('custom_fields_editable');
 		var box = $('.profile-box-container.properties ', el);
@@ -312,6 +317,13 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		$('.cancel', box).on('click', function() {
 			propToggle('display');
 		});
+
+		if (!this.meta.perms.edit) {
+			var contactBox = $('.profile-box-container.contact', this.el);
+			if (!contactBox.find('> section > .table-content > *')[0]) {
+				contactBox.hide();
+			}
+		}
 	},
 
 	refreshPropBox: function() {
@@ -521,12 +533,14 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		// Tags
 		this.labelsList = $(".org-tags input", this.wrapper);
 
-		this.labelsInput = new DeskPRO.UI.LabelsInput({
-			type: 'organizations',
-			textarea: this.labelsList,
-			onChange: this.saveLabels.bind(this)
-		});
-		this.ownObject(this.labelsInput);
+		if (this.labelsList[0]) {
+			this.labelsInput = new DeskPRO.UI.LabelsInput({
+				type: 'organizations',
+				textarea: this.labelsList,
+				onChange: this.saveLabels.bind(this)
+			});
+			this.ownObject(this.labelsInput);
+		}
 	},
 
 	saveLabels: function() {

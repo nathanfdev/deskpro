@@ -10,11 +10,15 @@ pageMeta.url_fragment  = '{{ url_fragment('agent_org_view', {'organization_id': 
 pageMeta.orgPicIcon = '{{ org.picture_blob.getThumbnailUrl(13) }}';
 {% endif %}
 
+pageMeta.perms = {
+	edit: {% if app.user.hasPerm('agent_org.edit') %}true{% else %}false{% endif %}
+};
+
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
 {# Page Containers #}
-<div class="profile org-profile profile layout-content with-scrollbar">
+<div class="profile org-profile profile layout-content with-scrollbar {% if not app.user.hasPerm('agent_org.edit') %}perm-no-edit{% endif %}">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 {# /Page Containers #}
@@ -23,7 +27,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<nav class="actions" id="{{baseId}}_action_buttons">
 		<ul>
 			<li>
-				{% if app.user.hasPerm('orgs.delete') %}
+				{% if app.user.hasPerm('agent_org.delete') %}
 				<button
 					id="{{baseId}}_delete_btn"
 					class="clean-white delete-trigger"
@@ -39,7 +43,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="titlewrap">
 		<h1>
 			<span class="editable person-name-editable" data-editable-for="#{{baseId}}_editname">{{ org.name|default('Double-click to set Name') }}</span>
-			<span class="edit-name-gear"></span>
+			{% if app.user.hasPerm('agent_org.edit') %}<span class="edit-name-gear"></span>{% endif %}
 			<div id="{{baseId}}_editname" style="display: none">
 				<input type="hidden" name="action" value="name" />
 				<input type="text" size="20" name="name" value="{{ org.name }}" />

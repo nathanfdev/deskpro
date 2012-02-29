@@ -143,6 +143,14 @@ class PersonController extends AbstractController
 		$person_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForPerson($person);
 		$person_chats_count = count($person_chats);
 
+		$perms = array(
+			'edit'             => $this->person->hasPerm('agent_people.edit'),
+			'delete'           => $this->person->hasPerm('agent_people.delete'),
+			'edit_emails'      => $this->person->hasPerm('agent_people.manage_emails'),
+			'reset_password'   => $this->person->hasPerm('agent_people.reset_password'),
+			'org_create'       => $this->person->hasPerm('agent_org.create')
+		);
+
 		return $this->render('AgentBundle:Person:view.html.twig', array(
 			'with_warn_for_email' => $with_warn_for_email,
 			'person' => $person,
@@ -163,6 +171,7 @@ class PersonController extends AbstractController
 			'person_tickets_count' => $person_tickets_count,
 			'org_members_count' => $org_members_count,
 			'org_contact_data' => $org_contact_data,
+			'perms' => $perms,
 		));
 	}
 
@@ -218,6 +227,7 @@ class PersonController extends AbstractController
 
 	public function ajaxSaveAction($person_id)
 	{
+
 		$person = $this->getPersonOr404($person_id);
 
 		$this->em->beginTransaction();
@@ -225,7 +235,13 @@ class PersonController extends AbstractController
 			'success' => true
 		);
 
-		switch ($this->in->getString('action')) {
+		$action = $this->in->getString('action');
+
+		if (!$this->person->hasPerm('agent_people.edit')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		switch ($action) {
 			case 'name':
 				if ($this->in->getString('name')) {
 					$person->name = $this->in->getString('name');
@@ -257,6 +273,10 @@ class PersonController extends AbstractController
 				break;
 
 			case 'set-primary-email':
+				if (!$this->person->hasPerm('agent_people.edit_emails')) {
+					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+				}
+
 				$email_id = $this->in->getUint('email_id');
 				if (isset($person->emails[$email_id])) {
 					$person->primary_email = $person->emails[$email_id];
@@ -353,23 +373,24 @@ class PersonController extends AbstractController
 				break;
 
 			case 'password':
-				if ($this->person->hasPerm('users.set-password')) {
-					if ($this->in->getString('password')) {
-						$person->password = $this->in->getString('password');
-						$this->em->persist($person);
+				if (!$this->person->hasPerm('agent_people.reset_password')) {
+					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+				}
+				if ($this->in->getString('password')) {
+					$person->password = $this->in->getString('password');
+					$this->em->persist($person);
 
-						if ($this->in->getBool('send_email')) {
-							$email_body = App::get('templating')->render('DeskPRO:emails_user:agent-changed-password.html.twig', array(
-								'person' => $person
-							));
+					if ($this->in->getBool('send_email')) {
+						$email_body = App::get('templating')->render('DeskPRO:emails_user:agent-changed-password.html.twig', array(
+							'person' => $person
+						));
 
-							$message = App::getMailer()->createMessage();
-							$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-							$message->setSubject('New Password');
-							$message->setBody($email_body, 'text/html');
-							$message->enableQueueHint();
-							App::getMailer()->send($message);
-						}
+						$message = App::getMailer()->createMessage();
+						$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+						$message->setSubject('New Password');
+						$message->setBody($email_body, 'text/html');
+						$message->enableQueueHint();
+						App::getMailer()->send($message);
 					}
 				}
 				break;
@@ -387,7 +408,12 @@ class PersonController extends AbstractController
 
 	public function ajaxSaveCustomFieldsAction($person_id)
 	{
+		if (!$this->person->hasPerm('agent_people.edit')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$person = $this->getPersonOr404($person_id);
+
 		$timezone_options = \DateTimeZone::listIdentifiers();
 
 		$timezone = $this->in->getString('timezone');
@@ -440,6 +466,10 @@ class PersonController extends AbstractController
 
 	public function saveContactDataAction($person_id)
 	{
+		if (!$this->person->hasPerm('agent_people.edit')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$person = $this->getPersonOr404($person_id);
 
 		$this->em->beginTransaction();
@@ -450,65 +480,67 @@ class PersonController extends AbstractController
 
 		try {
 
-			// Editing emails
-			if ($this->person->hasPerm('users.add-emails')) {
-				$email_comments = $this->in->getCleanValueArray('emails_comment', 'string', 'uint');
+			if ($this->person->hasPerm('agent_people.edit_emails')) {
+				// Editing emails
+				if ($this->person->hasPerm('users.add-emails')) {
+					$email_comments = $this->in->getCleanValueArray('emails_comment', 'string', 'uint');
 
-				// Setting comment
-				foreach ($email_comments as $email_id => $comment) {
-					if (isset($person->emails[$email_id])) {
-						$person->emails[$email_id]->comment = $comment;
-						$this->em->persist($person->emails[$email_id]);
-					}
-				}
-
-				// Adding emails
-				$email_comments = $this->in->getCleanValueArray('new_emails_comment', 'string', 'uint');
-				foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $k => $email) {
-
-					if (!\Orb\Validator\StringEmail::isValueValid($email)) {
-						$errors[] = "\"$email\" was not saved because it is an invalid email address";
-						continue;
-					}
-
-					$check = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($email);
-					if ($check) {
-						if ($check->person->id == $person->id) {
-							// silent discard
-						} else {
-							$errors[] = "\"$email\" was not saved because it is already added to another user";
+					// Setting comment
+					foreach ($email_comments as $email_id => $comment) {
+						if (isset($person->emails[$email_id])) {
+							$person->emails[$email_id]->comment = $comment;
+							$this->em->persist($person->emails[$email_id]);
 						}
-						continue;
 					}
 
-					$email_rec = $person->addEmailAddressString($email);
-					$email_rec->comment = isset($email_comments[$k]) ? $email_comments[$k] : '';
-					$this->em->persist($email_rec);
-				}
-			}
+					// Adding emails
+					$email_comments = $this->in->getCleanValueArray('new_emails_comment', 'string', 'uint');
+					foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $k => $email) {
 
-			// Removing emails
-			if ($this->person->hasPerm('users.remove-emails')) {
-				foreach ($this->in->getCleanValueArray('remove_emails', 'uint') as $email_id) {
-					if (isset($person->emails[$email_id])) {
-
-						if ($person->primary_email->id == $email_id) {
-							$changed_primary_email = true;
-							$person->primary_email = null;
+						if (!\Orb\Validator\StringEmail::isValueValid($email)) {
+							$errors[] = "\"$email\" was not saved because it is an invalid email address";
+							continue;
 						}
 
-						$this->em->remove($person->emails[$email_id]);
-						$person->emails->remove($email_id);
+						$check = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($email);
+						if ($check) {
+							if ($check->person->id == $person->id) {
+								// silent discard
+							} else {
+								$errors[] = "\"$email\" was not saved because it is already added to another user";
+							}
+							continue;
+						}
+
+						$email_rec = $person->addEmailAddressString($email);
+						$email_rec->comment = isset($email_comments[$k]) ? $email_comments[$k] : '';
+						$this->em->persist($email_rec);
 					}
 				}
 
-				if ($changed_primary_email && count($person->emails)) {
-					foreach ($person->emails as $e) {
-						$person->primary_email = $e;
-						break;
+				// Removing emails
+				if ($this->person->hasPerm('users.remove-emails')) {
+					foreach ($this->in->getCleanValueArray('remove_emails', 'uint') as $email_id) {
+						if (isset($person->emails[$email_id])) {
+
+							if ($person->primary_email->id == $email_id) {
+								$changed_primary_email = true;
+								$person->primary_email = null;
+							}
+
+							$this->em->remove($person->emails[$email_id]);
+							$person->emails->remove($email_id);
+						}
+					}
+
+					if ($changed_primary_email && count($person->emails)) {
+						foreach ($person->emails as $e) {
+							$person->primary_email = $e;
+							break;
+						}
 					}
 				}
-			}
+			} // email perm
 
 			// Adding contact data
 			foreach ($this->in->getCleanValueArray('new_contact_data') as $type => $inputs) {
@@ -583,11 +615,11 @@ class PersonController extends AbstractController
 
 	public function ajaxSaveOrganizationAction($person_id)
 	{
-		if ($person_id) {
-			$person = $this->getPersonOr404($person_id);
-		} else {
-			$person = new Person();
+		if (!$this->person->hasPerm('agent_people.edit_emails')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
+
+		$person = $this->getPersonOr404($person_id);
 
 		$org_id = $this->in->getUint('organization_id');
 		if (!$org_id) {
@@ -629,11 +661,11 @@ class PersonController extends AbstractController
 
 	public function ajaxSaveNoteAction($person_id)
 	{
-		if ($person_id) {
-			$person = $this->getPersonOr404($person_id);
-		} else {
-			$person = new Person();
+		if (!$this->person->hasPerm('agent_people.notes')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
+
+		$person = $this->getPersonOr404($person_id);
 
 		$note_txt = $this->in->getString('note');
 
@@ -670,6 +702,10 @@ class PersonController extends AbstractController
 
 	public function ajaxSaveLabelsAction($person_id)
 	{
+		if (!$this->person->hasPerm('agent_people.edit')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$person = $this->getPersonOr404($person_id);
 
 		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
@@ -688,6 +724,10 @@ class PersonController extends AbstractController
 
 	public function deletePersonAction($person_id, $security_token)
 	{
+		if (!$this->person->hasPerm('agent_people.delete')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$person = $this->getPersonOr404($person_id);
 
 		if (!$this->session->getEntity()->checkSecurityToken('delete_person', $security_token) OR !$this->person->hasPerm('users.delete')) {
@@ -706,6 +746,10 @@ class PersonController extends AbstractController
 
 	public function newPersonAction()
 	{
+		if (!$this->person->hasPerm('agent_people.create')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newperson', $this->person->id);
 
 		#------------------------------
@@ -734,6 +778,10 @@ class PersonController extends AbstractController
 
 	public function newPersonSaveAction()
 	{
+		if (!$this->person->hasPerm('agent_people.create')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$newperson = new \Application\AgentBundle\Form\Model\NewPerson($this->person);
 
 		$formType = new \Application\AgentBundle\Form\Type\NewPerson();

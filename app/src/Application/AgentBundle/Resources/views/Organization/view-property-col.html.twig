@@ -1,7 +1,9 @@
 {# Box Contact #}
 <div class="profile-box-container contact">
 	<header>
-		<span class="edit-gear contact-edit"></span>
+		{% if app.user.hasPerm('agent_org.edit') %}
+			<span class="edit-gear contact-edit"></span>
+		{% endif %}
 		<h4>{{ phrase('agent.people.contact_info') }}</h4>
 	</header>
 	<section>
@@ -15,24 +17,28 @@
 {# Properties Box #}
 <div class="profile-box-container properties" id="{{baseId}}_properties_box">
 	<header>
-		<div class="controls">
-			<span class="edit-gear prop-edit-trigger"></span>
-			<div class="is-loading">{{ phrase('agent.loading_saving') }}</div>
-			<button class="cancel" style="display: none">{{ phrase('agent.cancel') }}</button>
-			<button class="save" style="display: none">{{ phrase('agent.save') }}</button>
-		</div>
+		{% if app.user.hasPerm('agent_org.edit') %}
+			<div class="controls">
+				<span class="edit-gear prop-edit-trigger"></span>
+				<div class="is-loading">{{ phrase('agent.loading_saving') }}</div>
+				<button class="cancel" style="display: none">{{ phrase('agent.cancel') }}</button>
+				<button class="save" style="display: none">{{ phrase('agent.save') }}</button>
+			</div>
+		{% endif %}
 		<h4>{{ phrase('agent.label_properties') }}</h4>
 	</header>
 	<section>
-		<div>
-			<dl class="table-list">
-				<dt class="type-labels">{{ phrase('agent.label_labels') }}</dt>
-				<dd class="org-tags tags-wrap">
-					<input id="{{baseId}}_label_input" type="text" value="{% for label in org.labels %}{{label.label}},{% endfor %}" />
-				</dd>
-			</dl>
-			<br class="clear" />
-		</div>
+		{% if org.labels|length or app.user.hasPerm('agent_org.edit') %}
+			<div>
+				<dl class="table-list">
+					<dt class="type-labels">{{ phrase('agent.label_labels') }}</dt>
+					<dd class="org-tags tags-wrap noedit-tags">
+						<input id="{{baseId}}_label_input" type="text" value="{% for label in org.labels %}{{label.label}},{% endfor %}" />
+					</dd>
+				</dl>
+				<br class="clear" />
+			</div>
+		{% endif %}
 
 		{% if custom_fields|length %}
 			<dl class="table-list" id="{{baseId}}_custom_fields_rendered">

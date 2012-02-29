@@ -42,150 +42,182 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		// so this listens for resizes, and then updates the input width,
 		// then forces textext to invalidatebounds
 		var propBox = self.getEl('properties_box');
-		var input = self.getEl('label_input');
-		input.width(propBox.width() - 140);
 
-		$(window).resize(function() {
-			window.setTimeout(function() {
-				var w = propBox.width() - 140;
-				input.width(w);
-				if (self.labelsInput && self.labelsInput.options.textarea.textext()[0]) {
-					self.labelsInput.options.textarea.textext()[0].originalWidth = w;
-					self.labelsInput.options.textarea.textext()[0].invalidateBounds();
-				}
-			}, 500);
-		});
+		if (input) {
+			var input = self.getEl('label_input');
+			input.width(propBox.width() - 140);
 
-		this.contactEditor = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this, {
-			saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/save-contact-data.json',
-			displayEl: this.getEl('contact_display'),
-			outsideEl: this.getEl('contact_outside'),
-			onReplaceEditor: function() {
-				self.refreshPropBox();
-			},
-			onSuccess: function(data) {
-				if (data.changed_primary_email) {
-					DeskPRO_Window.util.updateUserEmailAddressDisplay(self.meta.person_id, data.primary_email_address);
-				}
-			}
-		});
-		this.ownObject(this.contactEditor);
+			$(window).resize(function() {
+				window.setTimeout(function() {
+					var w = propBox.width() - 140;
+					input.width(w);
+					if (self.labelsInput && self.labelsInput.options.textarea.textext()[0]) {
+						self.labelsInput.options.textarea.textext()[0].originalWidth = w;
+						self.labelsInput.options.textarea.textext()[0].invalidateBounds();
+					}
+				}, 500);
+			});
+		}
 
-		var tzMenu = new DeskPRO.UI.Menu({
-			menuElement: this.getEl('timezone')
-		});
-		this.ownObject(tzMenu);
-
-		var autoResMenu = new DeskPRO.UI.Menu({
-			menuElement: this.getEl('is_autoresponder')
-		});
-		this.ownObject(autoResMenu);
-
-		this.getEl('timezone').on('change', function(){
-			var val = $(this).val();
-			$('.timezone-info', this.wrapper).empty();
-			$.ajax({
-				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					action: 'timezone',
-					timezone: val
+		if (this.meta.perms.edit) {
+			this.contactEditor = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor(this, {
+				saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/save-contact-data.json',
+				displayEl: this.getEl('contact_display'),
+				outsideEl: this.getEl('contact_outside'),
+				onReplaceEditor: function() {
+					self.refreshPropBox();
 				},
-				context: this,
-				success: function(data) {
-					$('.timezone-info', this.wrapper).empty().html(data.bit_html);
+				onSuccess: function(data) {
+					if (data.changed_primary_email) {
+						DeskPRO_Window.util.updateUserEmailAddressDisplay(self.meta.person_id, data.primary_email_address);
+					}
 				}
 			});
-		});
+			this.ownObject(this.contactEditor);
 
-		this.getEl('is_autoresponder').on('change', function(){
-			var val = $(this).val();
-			$.ajax({
-				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					action: 'is_autoresponder',
-					is_autoresponder: val
-				}
+			var tzMenu = new DeskPRO.UI.Menu({
+				menuElement: this.getEl('timezone')
 			});
-		});
+			this.ownObject(tzMenu);
 
-		var namef       = this.getEl('showname');
-		var editName    = this.getEl('editname');
-		var orgpos      = this.getEl('showorgpos');
-		var editOrgpos  = this.getEl('editorgpos');
-		var startBtn    = this.getEl('editname_start');
-		var stopBtn     = this.getEl('editname_end');
+			var autoResMenu = new DeskPRO.UI.Menu({
+				menuElement: this.getEl('is_autoresponder')
+			});
+			this.ownObject(autoResMenu);
 
-		var startEditable = function() {
-			namef.hide();
-			orgpos.hide();
-			editName.show();
-			editOrgpos.show();
-			startBtn.hide();
-			stopBtn.show();
-		};
+			this.getEl('timezone').on('change', function(){
+				var val = $(this).val();
+				$('.timezone-info', this.wrapper).empty();
+				$.ajax({
+					url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						action: 'timezone',
+						timezone: val
+					},
+					context: this,
+					success: function(data) {
+						$('.timezone-info', this.wrapper).empty().html(data.bit_html);
+					}
+				});
+			});
 
-		var stopEditable = function() {
-			var nametxt = editName.find('input').first();
-			var postxt  = editOrgpos.find('input').first();
+			this.getEl('is_autoresponder').on('change', function(){
+				var val = $(this).val();
+				$.ajax({
+					url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						action: 'is_autoresponder',
+						is_autoresponder: val
+					}
+				});
+			});
 
-			var setName = nametxt.val().trim();
-			if (postxt) {
-				var setPos  = '';
-			} else {
-				var setPos  = postxt.val().trim();
-			}
+			var namef       = this.getEl('showname');
+			var editName    = this.getEl('editname');
+			var orgpos      = this.getEl('showorgpos');
+			var editOrgpos  = this.getEl('editorgpos');
+			var startBtn    = this.getEl('editname_start');
+			var stopBtn     = this.getEl('editname_end');
 
-			namef.show().text(setName ? setName : 'Double-click to set name');
-			if (setPos) {
-				orgpos.show().find('.org-pos-display').text(setPos);
-			} else {
+			var startEditable = function() {
+				namef.hide();
 				orgpos.hide();
-			}
+				editName.show();
+				editOrgpos.show();
+				startBtn.hide();
+				stopBtn.show();
+			};
 
-			editName.hide();
-			editOrgpos.hide();
-			startBtn.show();
-			stopBtn.hide();
+			var stopEditable = function() {
+				var nametxt = editName.find('input').first();
+				var postxt  = editOrgpos.find('input').first();
 
-			var postData = [];
-			postData.push({
-				name: 'action',
-				value: 'quick-edit-name'
+				var setName = nametxt.val().trim();
+				if (postxt) {
+					var setPos  = '';
+				} else {
+					var setPos  = postxt.val().trim();
+				}
+
+				namef.show().text(setName ? setName : 'Double-click to set name');
+				if (setPos) {
+					orgpos.show().find('.org-pos-display').text(setPos);
+				} else {
+					orgpos.hide();
+				}
+
+				editName.hide();
+				editOrgpos.hide();
+				startBtn.show();
+				stopBtn.hide();
+
+				var postData = [];
+				postData.push({
+					name: 'action',
+					value: 'quick-edit-name'
+				});
+				postData.push({
+					name: 'name',
+					value: setName
+				});
+				postData.push({
+					name: 'organization_position',
+					value: setPos
+				});
+
+				$.ajax({
+					url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+					type: 'POST',
+					data: postData
+				});
+			};
+
+			namef.on('dblclick', startEditable).on('keypress', function(ev) {
+				if (ev.keyCode == 13 /* enter key */) {
+					ev.preventDefault();
+					stopEditable();
+				}
 			});
-			postData.push({
-				name: 'name',
-				value: setName
+			editOrgpos.find('input').first().on('keypress', function(ev) {
+				if (ev.keyCode == 13 /* enter key */) {
+					ev.preventDefault();
+					stopEditable();
+				}
 			});
-			postData.push({
-				name: 'organization_position',
-				value: setPos
+			this.getEl('editname_start').on('click', startEditable);
+			this.getEl('editname_end').on('click', stopEditable);
+
+			$('.contact-list-wrapper', this.wrapper).first().on('click', '.set-primary', function() {
+				var email_id = $(this).data('email-id');
+				$('.contact-list-wrapper .email.is-primary', self.wrapper).removeClass('is-primary');
+				$('.contact-list-wrapper .email-' + email_id, self.wrapper).addClass('is-primary');
+
+				var val = $(this).val();
+				$.ajax({
+					url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						action: 'set-primary-email',
+						email_id: email_id
+					},
+					success: function(data) {
+						DeskPRO_Window.util.updateUserEmailAddressDisplay(self.meta.person_id, data.primary_email_address);
+					}
+				});
 			});
 
-			$.ajax({
-				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
-				type: 'POST',
-				data: postData
+			this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
+				loadUrl: BASE_URL + "agent/people/" + this.meta.person_id + "/change-picture-overlay",
+				saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save'
 			});
-		};
+			this.ownObject(this.changePic);
 
-		namef.on('dblclick', startEditable).on('keypress', function(ev) {
-			if (ev.keyCode == 13 /* enter key */) {
-				ev.preventDefault();
-				stopEditable();
-			}
-		});
-		editOrgpos.find('input').first().on('keypress', function(ev) {
-			if (ev.keyCode == 13 /* enter key */) {
-				ev.preventDefault();
-				stopEditable();
-			}
-		});
-		this.getEl('editname_start').on('click', startEditable);
-		this.getEl('editname_end').on('click', stopEditable);
+		} // can edit
 
 		var self = this;
 		$('.create-ticket', this.getEl('action_buttons')).on('click', function() {
@@ -196,26 +228,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					name: self.getEl('editname').find('input[name="name"]').val()
 				};
 				page.setNewByPerson(data);
-			});
-		});
-
-		$('.contact-list-wrapper', this.wrapper).first().on('click', '.set-primary', function() {
-			var email_id = $(this).data('email-id');
-			$('.contact-list-wrapper .email.is-primary', self.wrapper).removeClass('is-primary');
-			$('.contact-list-wrapper .email-' + email_id, self.wrapper).addClass('is-primary');
-
-			var val = $(this).val();
-			$.ajax({
-				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					action: 'set-primary-email',
-					email_id: email_id
-				},
-				success: function(data) {
-					DeskPRO_Window.util.updateUserEmailAddressDisplay(self.meta.person_id, data.primary_email_address);
-				}
 			});
 		});
 
@@ -271,12 +283,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			}
 		});
 		this.ownObject(this.moreactionsMenu);
-
-		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
-			loadUrl: BASE_URL + "agent/people/" + this.meta.person_id + "/change-picture-overlay",
-			saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save'
-		});
-		this.ownObject(this.changePic);
 
 		this._initLabels();
 
@@ -532,12 +538,14 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		// Tags
 		var labelsList = $(".people-tags input", this.wrapper);
 
-		this.labelsInput = new DeskPRO.UI.LabelsInput({
-			type: 'people',
-			textarea: labelsList,
-			onChange: this.saveLabels.bind(this)
-		});
-		this.ownObject(this.labelsInput);
+		if (labelsList[0]) {
+			this.labelsInput = new DeskPRO.UI.LabelsInput({
+				type: 'people',
+				textarea: labelsList,
+				onChange: this.saveLabels.bind(this)
+			});
+			this.ownObject(this.labelsInput);
+		}
 	},
 
 	saveLabels: function() {

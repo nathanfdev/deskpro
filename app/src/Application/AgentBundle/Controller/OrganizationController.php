@@ -157,7 +157,12 @@ class OrganizationController extends AbstractController
 			'success' => true
 		);
 
-		switch ($this->in->getString('action')) {
+		$action = $this->in->getString('action');
+		if (!$this->person->hasPerm('agent_org.edit') && ($action != 'add-person' && $action != 'remove-person' && $action != 'get-person-row')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		switch ($action) {
 			case 'name':
 				if ($this->in->getString('name')) {
 					$org->name = $this->in->getString('name');
@@ -184,6 +189,9 @@ class OrganizationController extends AbstractController
 				break;
 
 			case 'add-person':
+				if (!$this->person->hasPerm('agent_people.edit')) {
+					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+				}
 				$person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
 				if ($person->organization) {
 					$data['already_in_organization'] = true;
@@ -204,6 +212,9 @@ class OrganizationController extends AbstractController
 				break;
 
 			case 'remove-person':
+				if (!$this->person->hasPerm('agent_people.edit')) {
+					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+				}
 				$person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
 				if ($person && $person->organization && $person->organization->id == $org->id) {
 					$person->organization = null;
@@ -225,6 +236,10 @@ class OrganizationController extends AbstractController
 
 	public function ajaxSaveCustomFieldsAction($organization_id)
 	{
+		if (!$this->person->hasPerm('agent_org.edit')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$org = $this->getOrgOr404($organization_id);
 
 		$this->em->beginTransaction();
@@ -262,6 +277,10 @@ class OrganizationController extends AbstractController
 
 	public function saveContactDataAction($organization_id)
 	{
+		if (!$this->person->hasPerm('agent_org.edit')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$org = $this->getOrgOr404($organization_id);
 
 		$this->em->beginTransaction();
@@ -355,6 +374,10 @@ class OrganizationController extends AbstractController
 
 	public function savePositionAction($organization_id, $person_id)
 	{
+		if (!$this->person->hasPerm('agent_people.edit')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$person = App::findEntity('DeskPRO:Person', $person_id);
 		if ($person) {
 			$person->organization_position = $this->in->getString('organization_position');
@@ -372,6 +395,10 @@ class OrganizationController extends AbstractController
 
 	public function ajaxSaveNoteAction($organization_id)
 	{
+		if (!$this->person->hasPerm('agent_org.note')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$org = $this->getOrgOr404($organization_id);
 
 		$note_txt = $this->in->getString('note');
@@ -401,6 +428,10 @@ class OrganizationController extends AbstractController
 
 	public function ajaxSaveLabelsAction($organization_id)
 	{
+		if (!$this->person->hasPerm('agent_org.edit')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$org = $this->getOrgOr404($organization_id);
 
 		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
@@ -436,6 +467,10 @@ class OrganizationController extends AbstractController
 
 	public function assignDomainAction($organization_id)
 	{
+		if (!$this->person->hasPerm('agent_org.edit')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$org = $this->getOrgOr404($organization_id);
 
 		$org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
@@ -453,6 +488,10 @@ class OrganizationController extends AbstractController
 
 	public function unassignDomainAction($organization_id)
 	{
+		if (!$this->person->hasPerm('agent_org.edit')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$org = $this->getOrgOr404($organization_id);
 
 		$domain = $this->in->getString('domain');
@@ -469,6 +508,10 @@ class OrganizationController extends AbstractController
 
 	public function moveDomainUsersAction($organization_id)
 	{
+		if (!$this->person->hasPerm('agent_org.edit')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$org = $this->getOrgOr404($organization_id);
 
 		$org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
@@ -486,6 +529,10 @@ class OrganizationController extends AbstractController
 
 	public function moveTakenDomainUsersAction($organization_id)
 	{
+		if (!$this->person->hasPerm('agent_org.edit')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$org = $this->getOrgOr404($organization_id);
 
 		$org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
@@ -508,6 +555,10 @@ class OrganizationController extends AbstractController
 
 	public function deleteOrganizationAction($organization_id, $security_token)
 	{
+		if (!$this->person->hasPerm('agent_org.delete')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$org = $this->getOrgOr404($organization_id);
 
 		if (!$this->session->getEntity()->checkSecurityToken('delete_org', $security_token) OR !$this->person->hasPerm('orgs.delete')) {
@@ -527,6 +578,10 @@ class OrganizationController extends AbstractController
 
 	public function newOrganizationAction()
 	{
+		if (!$this->person->hasPerm('agent_org.create')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.neworg', $this->person->id);
 
 		#------------------------------
@@ -548,6 +603,10 @@ class OrganizationController extends AbstractController
 
 	public function newOrganizationSaveAction()
 	{
+		if (!$this->person->hasPerm('agent_org.create')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$neworg = new \Application\AgentBundle\Form\Model\NewOrganization($this->person);
 
 		$formType = new \Application\AgentBundle\Form\Type\NewOrganization();

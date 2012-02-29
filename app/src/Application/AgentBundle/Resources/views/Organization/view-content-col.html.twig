@@ -1,21 +1,25 @@
 {# Box Summary #}
-<div class="profile-box-container summary"
-	data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
-	data-form-save-url="{{ path('agent_org_ajaxsave', {'organization_id': org.id}) }}"
->
-	<header>
-		<div class="controls">
-			<div class="is-loading">{{ phrase('agent.loading_saving') }}</div>
-			<div class="saved" style="display: none">{{ phrase('agent.saved') }}</div>
-			<div class="save" style="display: none">{{ phrase('agent.save') }}</div>
-		</div>
-		<h4>{{ phrase('agent.summary') }}</h4>
-	</header>
-	<section>
-		<input type="hidden" name="action" value="set-summary" />
-		<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary">{{ org.summary }}</textarea></div>
-	</section>
-</div>
+{% if org.summary|length or app.user.hasPerm('agent_org.edit') %}
+	<div class="profile-box-container summary"
+		data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
+		data-form-save-url="{{ path('agent_org_ajaxsave', {'organization_id': org.id}) }}"
+	>
+		<header>
+			{% if app.user.hasPerm('agent_org.edit') %}
+			<div class="controls">
+				<div class="is-loading">{{ phrase('agent.loading_saving') }}</div>
+				<div class="saved" style="display: none">{{ phrase('agent.saved') }}</div>
+				<div class="save" style="display: none">{{ phrase('agent.save') }}</div>
+			</div>
+			{% endif %}
+			<h4>{{ phrase('agent.summary') }}</h4>
+		</header>
+		<section>
+			<input type="hidden" name="action" value="set-summary" />
+			<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary" {% if app.user.hasPerm('agent_org.edit') %}onkeydown="return false;"{% endif %}>{{ org.summary }}</textarea></div>
+		</section>
+	</div>
+{% endif %}
 {# /Box Summary #}
 
 <div class="profile-box-container tabbed">
@@ -34,60 +38,66 @@
 		<article id="{{baseId}}_members_tab" class="on">
 			<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
 				<tbody id="{{baseId}}_members_list">
-					<tr class="add-new-member" id="{{baseId}}_newmember_row">
-						<td colspan="3" class="textarea-section">
-							<div
-								id="{{baseId}}_add_searchbox"
-								data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
-								data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a', 'exclude_org': org.id}) }}"
-								data-highlight-term="1"
-								data-touch-focus="1"
-								data-search-param="term"
-								data-position-bound="@parent(td)"
-							>
-								<script type="text/x-deskpro-tmpl" class="user-row-tpl">
-									<li>
-										<a>
-										<span class="user-name"></span>
-										<address>&lt;<span class="user-email"></span>&gt;</address>
-										<div class="bound-fade"></div>
-									</a></li>
-								</script>
-								<div class="input-wrapper">
-									<input type="input" id="{{baseId}}_add_searchbox_txt" style="width: 98%" class="term integrated" placeholder="{{ phrase('agent.org.add_person') }}" class="user-input" />
-								</div>
-								<input type="hidden" name="person_id" class="person-id" value="" />
-								<div class="person-search-box" style="display: none">
-									<section>
-										<ul class="results-list">
+					{% if app.user.hasPerm('agent_people.edit') %}
+						<tr class="add-new-member" id="{{baseId}}_newmember_row">
+							<td colspan="3" class="textarea-section">
+								<div
+									id="{{baseId}}_add_searchbox"
+									data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+									data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a', 'exclude_org': org.id}) }}"
+									data-highlight-term="1"
+									data-touch-focus="1"
+									data-search-param="term"
+									data-position-bound="@parent(td)"
+								>
+									<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+										<li>
+											<a>
+											<span class="user-name"></span>
+											<address>&lt;<span class="user-email"></span>&gt;</address>
+											<div class="bound-fade"></div>
+										</a></li>
+									</script>
+									<div class="input-wrapper">
+										<input type="input" id="{{baseId}}_add_searchbox_txt" style="width: 98%" class="term integrated" placeholder="{{ phrase('agent.org.add_person') }}" class="user-input" />
+									</div>
+									<input type="hidden" name="person_id" class="person-id" value="" />
+									<div class="person-search-box" style="display: none">
+										<section>
+											<ul class="results-list">
 
-										</ul>
-										<footer>
-											<span class="create-user">{{ phrase('agent.create_a_new_person') }}</span>
-										</footer>
-									</section>
+											</ul>
+											<footer>
+												<span class="create-user">{{ phrase('agent.create_a_new_person') }}</span>
+											</footer>
+										</section>
+									</div>
 								</div>
-							</div>
-						</td>
-					</tr>
-					<tr class="add-new-member-named" style="display: none" id="{{baseId}}_newmember_row_named">
-						<td>
-							<div class="user-name" id="{{baseId}}_newmember_person_name"></div>
-							<div class="user-email" id="{{baseId}}_newmember_person_email"></div>
-						</td>
-						<td colspan="2">
-							<div class="position-input">
-								<input type="text" class="role" placeholder="Enter position" id="{{baseId}}_newmember_position" value="" />
-							</div>
-							<div class="controls">
-								<input type="hidden" id="{{baseId}}_newmember_person_id" value="" />
-								<button class="clean-white small" id="{{baseId}}_newmember_btn">{{ phrase('agent.add') }}</button>
-								<button class="clean-white small" id="{{baseId}}_newmember_cancel_btn">{{ phrase('agent.cancel') }}</button>
-							</div>
-						</td>
-					</tr>
+							</td>
+						</tr>
+						<tr class="add-new-member-named" style="display: none" id="{{baseId}}_newmember_row_named">
+							<td>
+								<div class="user-name" id="{{baseId}}_newmember_person_name"></div>
+								<div class="user-email" id="{{baseId}}_newmember_person_email"></div>
+							</td>
+							<td colspan="2">
+								<div class="position-input">
+									<input type="text" class="role" placeholder="Enter position" id="{{baseId}}_newmember_position" value="" />
+								</div>
+								<div class="controls">
+									<input type="hidden" id="{{baseId}}_newmember_person_id" value="" />
+									<button class="clean-white small" id="{{baseId}}_newmember_btn">{{ phrase('agent.add') }}</button>
+									<button class="clean-white small" id="{{baseId}}_newmember_cancel_btn">{{ phrase('agent.cancel') }}</button>
+								</div>
+							</td>
+						</tr>
+					{% endif %}
 					{% for person in org_members %}
 						{% include 'AgentBundle:Organization:view-members-row.html.twig' %}
+					{% else %}
+						{% if not app.user.hasPerm('agent_people.edit') %}
+							<tr><td colspan="2">This organization has no members.</td></tr>
+						{% endif %}
 					{% endfor %}
 				</tbody>
 			</table>
@@ -132,43 +142,46 @@
 	</section>
 </div>
 
+{% if notes|length or activity_stream|length or app.user.hasPerm('agent_org.notes') %}
 <div class="profile-box-container tabbed">
 	<header>
 		<nav>
 			<ul>
-				<li data-tab-for="#{{baseId}}_notes_tab" class="on">Notes <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>
+				{% if notes|length or app.user.hasPerm('agent_org.notes') %}<li data-tab-for="#{{baseId}}_notes_tab" class="on">Notes <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>{% endif %}
 				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">{{ phrase('agent.activity_stream') }}</li>{% endif %}
 			</ul>
 		</nav>
 	</header>
 	<section>
 		{# Notes Tab #}
-		<article id="{{baseId}}_notes_tab" class="on">
-			<div class="notes-wrap">
-				<ul>
-					{% for note in notes|reverse %}
-						{% include 'AgentBundle:Organization:note-li.html.twig' with {'note': note} %}
-					{% endfor %}
-					<li class="new-note"
-						data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
-						data-form-list-selector="ul"
-						data-form-result-html-key="note_li_html"
-						data-form-save-url="{{ path('agent_org_ajaxsave_note', {'organization_id': org.id}) }}"
-						data-form-count-el="#{{baseId}}_notes_count"
-					>
-						<header>
-							<div class="controls">
-								<div class="is-loading">{{ phrase('agent.loading_saving') }}</div>
-								<div class="saved" style="display: none">{{ phrase('agent.saved') }}</div>
-								<div class="save" style="display: none">{{ phrase('agent.save') }}</div>
-							</div>
-							<h3>{{ phrase('agent.new_note') }}</h3>
-						</header>
-						<div class="textarea-section"><textarea class="integrated" name="note" placeholder=""></textarea></div>
-					</li>
-				</ul>
-			</div>
-		</article>
+		{% if notes|length or app.user.hasPerm('agent_org.notes') %}
+			<article id="{{baseId}}_notes_tab" class="on">
+				<div class="notes-wrap">
+					<ul>
+						{% for note in notes|reverse %}
+							{% include 'AgentBundle:Organization:note-li.html.twig' with {'note': note} %}
+						{% endfor %}
+						<li class="new-note"
+							data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
+							data-form-list-selector="ul"
+							data-form-result-html-key="note_li_html"
+							data-form-save-url="{{ path('agent_org_ajaxsave_note', {'organization_id': org.id}) }}"
+							data-form-count-el="#{{baseId}}_notes_count"
+						>
+							<header>
+								<div class="controls">
+									<div class="is-loading">{{ phrase('agent.loading_saving') }}</div>
+									<div class="saved" style="display: none">{{ phrase('agent.saved') }}</div>
+									<div class="save" style="display: none">{{ phrase('agent.save') }}</div>
+								</div>
+								<h3>{{ phrase('agent.new_note') }}</h3>
+							</header>
+							<div class="textarea-section"><textarea class="integrated" name="note" placeholder=""></textarea></div>
+						</li>
+					</ul>
+				</div>
+			</article>
+		{% endif %}
 		{# /Notes Tab #}
 
 		{# Activity Tab #}
@@ -204,3 +217,4 @@
 		{# /Activity Tab #}
 	</section>
 </div>
+{% endif %}
