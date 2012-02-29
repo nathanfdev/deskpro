@@ -86,6 +86,17 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
 
 
 	/**
+	 * Check the current person context to see if theyre allowed to see this block
+	 *
+	 * @return bool
+	 */
+	public function checkPermission()
+	{
+		return true;
+	}
+
+
+	/**
 	 * Get an array of CSS assets that this item requires
 	 *
 	 * @return array

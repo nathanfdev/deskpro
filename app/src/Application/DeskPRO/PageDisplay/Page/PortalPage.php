@@ -256,7 +256,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
 	{
 		$this->_loadSection($section);
 
-		if (empty($this->page_display_items[$section])) {
+		if (!isset($this->page_display_items[$section])) {
 			return array();
 		}
 
@@ -284,6 +284,10 @@ class PortalPage extends BasicPage implements PersonContextInterface
 
 		$html = array();
 		foreach ($this->page_display_items[$section] as $item) {
+			if (!$item->checkPermission()) {
+				continue;
+			}
+
 			$block_html = null;
 			$cache_info = false;
 

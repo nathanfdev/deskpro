@@ -24,6 +24,11 @@ class Downloads extends PortalItemAbstract implements CacheableItem
 		return array('tags' => array('downloads'));
 	}
 
+	public function checkPermission()
+	{
+		return $this->person_context->hasPerm('downloads.use');
+	}
+
 	public function getHtml()
 	{
 		if ($this->section == 'portal') {

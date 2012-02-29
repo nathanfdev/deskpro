@@ -279,6 +279,10 @@ class DownloadsController extends AbstractController
 			return $this->forward('UserBundle:Login:index');
 		}
 
+		if (!$this->person->hasPerm('downloads.comment')) {
+			return $this->renderLoginOrPermissionError();
+		}
+
 		$download = App::getEntityRepository('DeskPRO:Download')->find($download_id);
 		if (!$download) {
 			return $this->renderStandardError('@user_downloads.error_not_found', '@core.not_found', 404);

@@ -22,6 +22,10 @@ class RegisterController extends AbstractController
 {
 	public function registerAction()
 	{
+		if ($this->container->getSetting('core.user_mode') == 'closed') {
+			return $this->redirectRoute('user');
+		}
+
 		$register = new \Application\UserBundle\Form\Model\Register();
 		$reg_formtype = new RegisterType();
 		$form = $this->get('form.factory')->create($reg_formtype, $register);

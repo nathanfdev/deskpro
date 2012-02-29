@@ -355,6 +355,10 @@ class ArticlesController extends AbstractController
 			return $this->forward('UserBundle:Login:index');
 		}
 
+		if (!$this->person->hasPerm('articles.comment')) {
+			return $this->renderLoginOrPermissionError();
+		}
+
 		$article = App::getEntityRepository('DeskPRO:Article')->find($article_id);
 		if (!$article) {
 			return $this->renderStandardError('@user_articles.error_not_found', '@core.not_found', 404);

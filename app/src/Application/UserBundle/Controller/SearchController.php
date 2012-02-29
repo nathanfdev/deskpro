@@ -59,6 +59,8 @@ class SearchController extends AbstractController
 		if ($q) {
 			$is_search  = true;
 			$search     = App::getSearchAdapter();
+			$search->setPersonContext($this->person);
+
 			$result_set = $search->getContentSearcher()->query($q, $per_page, $cur_page);
 			$total      = $result_set->totalCount();
 			$results    = $search->getResultSetObjects($result_set, true);

@@ -225,6 +225,10 @@ class NewsController extends AbstractController
 			return $this->forward('UserBundle:Login:index');
 		}
 
+		if (!$this->person->hasPerm('news.comment')) {
+			return $this->renderLoginOrPermissionError();
+		}
+
 		$post = App::getEntityRepository('DeskPRO:News')->find($post_id);
 		if (!$post) {
 			return $this->renderStandardError('@user_news.error_not_found', '@core.not_found', 404);

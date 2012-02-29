@@ -22,6 +22,11 @@ class News extends PortalItemAbstract implements CacheableItem
 		return array('tags' => array('news'));
 	}
 
+	public function checkPermission()
+	{
+		return $this->person_context->hasPerm('news.use');
+	}
+
 	public function getHtml()
 	{
 		if ($this->section == 'portal') {

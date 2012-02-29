@@ -12,13 +12,14 @@
 namespace Application\DeskPRO\Search;
 
 use Doctrine\ORM\EntityManager;
-
+use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Entity\Person;
 use Orb\Util\Arrays;
 
 /**
  * This finds sticky results for a search term
  */
-class StickyWordSearch
+class StickyWordSearch implements PersonContextInterface
 {
 	/**
 	 * Entity manager
@@ -32,10 +33,23 @@ class StickyWordSearch
 	 */
 	public $db;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $person_context;
+
 	public function __construct(EntityManager $em)
 	{
 		$this->em = $em;
 		$this->db = $em->getConnection();
+	}
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 */
+	public function setPersonContext(Person $person)
+	{
+		$this->person_context = $person;
 	}
 
 	public function getWordsFromQuery($query)

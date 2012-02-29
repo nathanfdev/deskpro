@@ -30,14 +30,19 @@ class Kb extends PortalItemAbstract implements CacheableItem
 	{
 		return array('tags' => array('articles'));
 	}
-	
+
 	public function init()
 	{
 		if (!$this->hasOption('show_cat_switcher')) {
 			$this->setOption('show_cat_switcher', true);
 		}
 	}
-	
+
+	public function checkPermission()
+	{
+		return $this->person_context->hasPerm('articles.use');
+	}
+
 	public function getHtml()
 	{
 		if ($this->section == 'portal') {

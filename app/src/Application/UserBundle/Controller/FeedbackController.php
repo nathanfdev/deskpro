@@ -164,7 +164,7 @@ class FeedbackController extends AbstractController
 	 */
 	public function newFeedbackAction()
 	{
-		if (!$this->person->hasPerm('core.tickets_submit_check')) {
+		if (!$this->person->hasPerm('core.feedback_submit_check')) {
 			return $this->renderLoginOrPermissionError($this->generateUrl('user_feedback_newfeedback'));
 		}
 
@@ -424,6 +424,10 @@ class FeedbackController extends AbstractController
 	{
 		if ($this->container->getSetting('core.interact_require_login')) {
 			return $this->forward('UserBundle:Login:index');
+		}
+
+		if (!$this->person->hasPerm('feedback.comment')) {
+			return $this->renderLoginOrPermissionError();
 		}
 
 		$category = null;

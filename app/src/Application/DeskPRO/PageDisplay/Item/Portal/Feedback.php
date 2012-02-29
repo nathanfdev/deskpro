@@ -40,6 +40,11 @@ class Feedback extends PortalItemAbstract implements CacheableItem
 		return $opt;
 	}
 
+	public function checkPermission()
+	{
+		return $this->person_context->hasPerm('feedback.use');
+	}
+
 	public function getHtml()
 	{
 		if ($this->section == 'portal') {

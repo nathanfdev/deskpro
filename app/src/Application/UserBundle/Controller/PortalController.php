@@ -25,11 +25,30 @@ class PortalController extends AbstractController
 		$show_portal_controls = $this->in->getBool('admin_portal_controls');
 
 		if (!$show_portal_controls) {
+			/** @var $portal_page \Application\DeskPRO\PageDisplay\Page\PortalPage */
 			$portal_page = $this->container->get('deskpro.user_portal_page');
 
-			// The user cant see anything on the page
+			// The user cant see anything on the page based on reg settings
 			if (!$portal_page->getSectionDisplayItems('portal')) {
-				if ($this->person->isGuest() && ($this->container->getSetting('core.user_mode') == 'require_reg' || $this->container->getSetting('core.user_mode') == 'require_reg_agent_validation')) {
+				if ($this->person->isGuest() && (!$this->person->hasPerm('tickets.use') || $this->container->getSetting('core.user_mode') == 'require_reg' || $this->container->getSetting('core.user_mode') == 'require_reg_agent_validation')) {
+					return $this->redirectRoute('user_login');
+				} else {
+					return $this->redirectRoute('user_tickets_new');
+				}
+			}
+
+
+			// Check if the user can see anythign based on ug permissions
+			$any = false;
+			foreach ($portal_page->getSectionDisplayItems('portal') as $item) {
+				if ($item->checkPermission()) {
+					$any = true;
+					break;
+				}
+			}
+
+			if (!$any) {
+				if ($this->person->isGuest() && (!$this->person->hasPerm('tickets.use') || $this->container->getSetting('core.user_mode') == 'require_reg' || $this->container->getSetting('core.user_mode') == 'require_reg_agent_validation')) {
 					return $this->redirectRoute('user_login');
 				} else {
 					return $this->redirectRoute('user_tickets_new');
@@ -46,6 +65,20 @@ class PortalController extends AbstractController
 	{
 		$entity_name = 'DeskPRO:' . ucfirst($object_type);
 		$content_object = App::findEntity($entity_name, $object_id);
+
+		$perm_name = false;
+		switch ($entity_name) {
+			case 'DeskPRO:Article':  $perm_name = 'articles.rate'; break;
+			case 'DeskPRO:Download': $perm_name = 'downloads.rate'; break;
+			case 'DeskPRO:News':     $perm_name = 'news.rate'; break;
+			case 'DeskPRO:Feedback': $perm_name = 'feedback.rate'; break;
+		}
+
+		if ($perm_name) {
+			if (!$this->person->hasPerm($perm_name)) {
+				return $this->renderLoginOrPermissionError();
+			}
+		}
 
 		$content_rating = new ContentRating($content_object, $this->person, $this->session->getVisitor());
 		$content_rating->setRequest($this->request);

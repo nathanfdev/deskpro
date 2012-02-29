@@ -173,7 +173,7 @@
 </div>
 
 <div id="permgroup_news" style="display: none" class="dp-form-box">
-	<!-- PERMISSION:news.use --><input class="onoff-slider" type="checkbox" {% if permissions['downloads.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.use]" value="1" />
+	<!-- PERMISSION:news.use --><input class="onoff-slider" type="checkbox" {% if permissions['news.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.use]" value="1" />
 	News
 	<div class="check-grid" style="max-height: 200px; overflow: auto;">
 		<table width="100%">
@@ -186,15 +186,15 @@
 			<tbody>
 				<tr>
 					<td class="title">Can rate news posts</td>
-					<!-- PERMISSION:news.rate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['downloads.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.rate]" value="1" /></td>
+					<!-- PERMISSION:news.rate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['news.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.rate]" value="1" /></td>
 				</tr>
 				<tr>
 					<td class="title">Submit comments on news posts</td>
-					<!-- PERMISSION:news.comment --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['downloads.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.comment]" value="1" /></td>
+					<!-- PERMISSION:news.comment --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['news.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.comment]" value="1" /></td>
 				</tr>
 				<tr>
 					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; Require agent validation</td>
-					<!-- PERMISSION:news.comment_validate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['downloads.comment_validate'] %}checked="checked"{% endif %} name="permissions[news.comment_validate]" value="1" /></td>
+					<!-- PERMISSION:news.comment_validate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['news.comment_validate'] %}checked="checked"{% endif %} name="permissions[news.comment_validate]" value="1" /></td>
 				</tr>
 			</tbody>
 		</table>

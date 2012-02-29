@@ -54,4 +54,38 @@ class HelpdeskUser extends \Application\DeskPRO\Domain\DomainObject implements \
 
 		return $this->ticket_count;
 	}
+
+	/**
+	 * Check if the user has access to anything at all.
+	 *
+	 * @return bool
+	 */
+	public function canDoAnything()
+	{
+		if ($this->person->hasPerm('tickets.use')) {
+			return true;
+		}
+
+		if ($this->person->hasPerm('chat.use')) {
+			return true;
+		}
+
+		if ($this->person->hasPerm('feedback.use')) {
+			return true;
+		}
+
+		if ($this->person->hasPerm('articles.use')) {
+			return true;
+		}
+
+		if ($this->person->hasPerm('downloads.use')) {
+			return true;
+		}
+
+		if ($this->person->hasPerm('news.use')) {
+			return true;
+		}
+
+		return false;
+	}
 }

@@ -24,7 +24,9 @@
 	<div class="dp-content-block">
 		<div class="dp-box">
 			<div class="dp-box-header">
-				{% include 'UserBundle:Feedback:voting-widget.html.twig' with {'has_voted_this': num_votes_this} %}
+				{% if app.user.hasPerm('feedback.rate') %}
+					{% include 'UserBundle:Feedback:voting-widget.html.twig' with {'has_voted_this': num_votes_this} %}
+				{% endif %}
 				<h1>{{ feedback.title }}</h1>
 			</div>
 			<div class="dp-box-content-meta">
@@ -44,11 +46,13 @@
 						{% include 'UserBundle:Common:facebook-like.html.twig' with {'page_permalink': article.permalink} %}
 					{% endif %}
 
-					{% include 'UserBundle:Common:comments-box.html.twig' with {
-						'comments': comments,
-						'form_action': path('user_feedback_newcomment', {'feedback_id': feedback.id}),
-						'check_perm': 'feedback.comment'
-					} %}
+					{% if app.user.hasPerm('feedback.comment') %}
+						{% include 'UserBundle:Common:comments-box.html.twig' with {
+							'comments': comments,
+							'form_action': path('user_feedback_newcomment', {'feedback_id': feedback.id}),
+							'check_perm': 'feedback.comment'
+						} %}
+					{% endif %}
 				</div>
 			</div>
 		</div>
