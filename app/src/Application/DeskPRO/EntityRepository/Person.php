@@ -29,7 +29,7 @@ class Person extends AbstractEntityRepository
 		$this->_agent_names = $db->fetchAllKeyValue("
 			SELECT id, CONCAT_WS(' ', first_name, last_name) AS full_name
 			FROM people
-			WHERE is_agent = 1
+			WHERE is_agent = 1 AND is_deleted = 0 AND is_vacation_mode = 0
 			ORDER BY full_name ASC
 		");
 	}
@@ -80,7 +80,7 @@ class Person extends AbstractEntityRepository
 			FROM DeskPRO:Person p
 			LEFT JOIN p.primary_email email
 			LEFT JOIN p.picture_blob pic
-			WHERE p.is_agent = true
+			WHERE p.is_agent = true AND is_deleted = false AND is_vacation_mode = false
 			ORDER BY p.name ASC
 		")->execute();
 	}
