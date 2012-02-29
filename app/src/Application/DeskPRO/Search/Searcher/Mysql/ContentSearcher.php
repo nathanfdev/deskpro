@@ -54,8 +54,8 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		}
 
 		$where = "
-			object_type IN ($limit_types)
-			AND MATCH (content) AGAINST (?)
+			content_search.object_type IN ($limit_types)
+			AND MATCH (content_search.content) AGAINST (?)
 		";
 
 		$count_query = "
@@ -64,14 +64,25 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 			WHERE $where
 		";
 
+		$permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
+		$permfilter->setPersonContext($this->person);
+		$perm_join  = $permfilter->getJoin();
+		$perm_where = $permfilter->getWhere();
+		if (!$perm_where) {
+			$perm_where = '1';
+		}
+
 		$start = ($page - 1) * $per_page;
 		$select_query = "
-			SELECT object_type, object_id, MATCH (content) AGAINST (?) AS _rel
+			SELECT content_search.object_type, content_search.object_id, MATCH (content_search.content) AGAINST (?) AS _rel
 			FROM content_search
-			WHERE $where
+			$perm_join
+			WHERE $perm_where AND $where
 			ORDER BY _rel
 			LIMIT $start, $per_page
 		";
+
+		error_log($select_query);
 
 		if ($top) {
 			$total = null;

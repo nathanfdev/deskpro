@@ -19,7 +19,7 @@ use Application\DeskPRO\Search\Indexer\Document;
 class Feedback extends AbstractContentType
 {
 	const ENTITY_NAME = 'DeskPRO:Feedback';
-	
+
 	public function objectToDocument($feedback)
 	{
 		$data = array();
@@ -30,6 +30,10 @@ class Feedback extends AbstractContentType
 		foreach ($feedback->getLabelManager()->getLabelsArray() as $label) {
 			$label = MysqlAdapter::encodeLabel($label);
 			$data['content'] .= " $label ";
+		}
+
+		if ($feedback->category) {
+			$data['category_id'] = $feedback->category->id;
 		}
 
 		$doc = Document::newFromArray($data);

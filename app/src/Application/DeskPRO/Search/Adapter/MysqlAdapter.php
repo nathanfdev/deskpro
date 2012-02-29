@@ -60,6 +60,10 @@ class MysqlAdapter extends AbstractAdapter
 				'object_type' => $doc->getContentTypeName(),
 				'object_id'   => $doc->getId()
 			));
+			App::getDb()->delete('content_search_attribute', array(
+				'object_type' => $doc->getContentTypeName(),
+				'object_id'   => $doc->getId()
+			));
 		}
 	}
 
@@ -83,6 +87,9 @@ class MysqlAdapter extends AbstractAdapter
 			unset($data['content']);
 
 			foreach ($data as $k => $v) {
+				App::getDb()->executeUpdate("
+					DELETE FROM content_search_attribute WHERE object_type = ? AND object_id = ?
+				", array($doc->getContentTypeName(), $doc->getId()));
 				App::getDb()->executeUpdate("
 					REPLACE INTO content_search_attribute
 					SET object_type = ?, object_id = ?, attribute_id = ?, content = ?

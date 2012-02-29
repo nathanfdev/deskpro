@@ -19,7 +19,7 @@ use Application\DeskPRO\Search\Indexer\Document;
 class Download extends AbstractContentType
 {
 	const ENTITY_NAME = 'DeskPRO:Download';
-	
+
 	public function objectToDocument($download)
 	{
 		$data = array();
@@ -30,6 +30,10 @@ class Download extends AbstractContentType
 		foreach ($download->getLabelManager()->getLabelsArray() as $label) {
 			$label = MysqlAdapter::encodeLabel($label);
 			$data['content'] .= " $label ";
+		}
+
+		if ($download->category) {
+			$data['category_id'] = $download->category->id;
 		}
 
 		$doc = Document::newFromArray($data);

@@ -19,7 +19,7 @@ use Application\DeskPRO\Search\Indexer\Document;
 class News extends AbstractContentType
 {
 	const ENTITY_NAME = 'DeskPRO:News';
-	
+
 	public function objectToDocument($news)
 	{
 		$data = array();
@@ -30,6 +30,10 @@ class News extends AbstractContentType
 		foreach ($news->getLabelManager()->getLabelsArray() as $label) {
 			$label = MysqlAdapter::encodeLabel($label);
 			$data['content'] .= " $label ";
+		}
+
+		if ($news->category) {
+			$data['category_id'] = $news->category->id;
 		}
 
 		$doc = Document::newFromArray($data);

@@ -32,6 +32,16 @@ class Article extends AbstractContentType
 			$data['content'] .= " $label ";
 		}
 
+		$x = 0;
+		foreach ($article->categories as $c) {
+			$k = 'category_id';
+			if ($x++) {
+				$k .= '_' . $x;
+			}
+
+			$data[$k] = $c->id;
+		}
+
 		$doc = Document::newFromArray($data);
 
 		return $doc;
