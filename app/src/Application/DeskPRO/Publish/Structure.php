@@ -798,7 +798,7 @@ class Structure implements PersonContextInterface
 			$this->category_data[$ent]['hierarchy'] = array();
 
 			foreach ($child_map[0] as $cat_id) {
-				$this->category_data[$ent]['hierarchy'][] = $cats[$cat_id];
+				$this->category_data[$ent]['hierarchy'][$cat_id] = $cats[$cat_id];
 			}
 
 			$h = new \Orb\Util\HierarchyStructure($cats);
@@ -826,7 +826,7 @@ class Structure implements PersonContextInterface
 			case 'DeskPRO:ArticleCategory':  $perm_manager = $this->person_context->PermissionsManager->get('ArticleCategories');   break;
 			case 'DeskPRO:DownloadCategory': $perm_manager = $this->person_context->PermissionsManager->get('DownloadCategories');  break;
 			case 'DeskPRO:NewsCategory':     $perm_manager = $this->person_context->PermissionsManager->get('NewsCategories');      break;
-			case 'DeskPRO:FeedbackCategory': $perm_manager = $this->person_context->PermissionsManager->get('NewsCategories');      break;
+			case 'DeskPRO:FeedbackCategory': $perm_manager = $this->person_context->PermissionsManager->get('FeedbackCategories');  break;
 		}
 
 		// They're allowed to see it all
@@ -848,7 +848,7 @@ class Structure implements PersonContextInterface
 
 		foreach ($child_map[0] as $cat_id) {
 			if ($perm_manager->isCategoryAllowed($cat_id)) {
-				$this->context_category_data[$ent]['hierarchy'][] = $cats[$cat_id];
+				$this->context_category_data[$ent]['hierarchy'][$cat_id] = $cats[$cat_id];
 			}
 		}
 
