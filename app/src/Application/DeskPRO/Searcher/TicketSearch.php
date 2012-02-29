@@ -995,7 +995,9 @@ class TicketSearch extends SearcherAbstract
 
 				case self::TERM_TOTAL_USER_WAITING:
 					$this->affected_fields[] = 'ticket.total_user_waiting';
-					$wheres[] = $this->_dateMatch("$tickets_table.total_user_waiting", $op, $choice);
+
+					$now = time();
+					$wheres[] = "(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting), $now))) BETWEEN {$choice[0]} AND {$choice[1]}";
 					break;
 
 				case self::TERM_CREATION_SYSTEM:

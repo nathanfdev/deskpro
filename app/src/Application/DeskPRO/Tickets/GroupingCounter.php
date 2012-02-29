@@ -233,11 +233,9 @@ class GroupingCounter
 					break;
 			}
 
-			//SELECT tickets.department, tickets.priority, COUNT(*) as cnt FROM tickets GROUP BY tickets.department, tickets.priority WITH ROLLUP
-			// TODO this should be using active table
 			$sql = "
 				SELECT " . implode(', ', $select_fields) . "
-				FROM tickets_search_active
+				FROM tickets
 				LEFT JOIN tickets_participants ON (tickets_participants.ticket = tickets.id)
 				LEFT JOIN tickets_participants AS part_check ON (part_check.ticket = tickets.id)
 				WHERE " . implode(' AND ', $wheres) . "
@@ -294,22 +292,32 @@ class GroupingCounter
 	public function makeTimeFieldSelect($field, $select_name)
 	{
 		$times = array_keys($this->getTimeTitles());
-		$times = array_reverse($times);
+
+		// For comparing dates, we need to reverse the time table so
+		// the CASE below properly matches the correct ranges
+		if ($field != TicketSearch::TERM_TOTAL_USER_WAITING) {
+			$times = array_reverse($times);
+		}
 
 		$fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($field);
+
 		$now = time();
 
 		$sql = "CASE ";
 
 		$parts = array();
 		foreach ($times as $t) {
-			// Get a real time so we dont have mysql doing calculations,
-			// and we dont need to do a subquery etc
 
-			$date = date('Y-m-d H:i:s', $now - $t);
-
-
-			$parts[] = " WHEN tickets.$fieldname <= '$date' THEN $t ";
+			if ($field == TicketSearch::TERM_TOTAL_USER_WAITING) {
+				// total time is stored in seconds, so we're not doing a date compare
+				$date = $t;
+				$parts[] = " WHEN (tickets.$fieldname + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting), $now))) <= '$date' THEN $t ";
+			} else {
+				// Get a real time so we dont have mysql doing calculations,
+				// and we dont need to do a subquery etc
+				$date = date('Y-m-d H:i:s', $now - $t);
+				$parts[] = " WHEN tickets.$fieldname <= '$date' THEN $t ";
+			}
 		}
 
 		$sql .= implode('', $parts) . " ELSE 1 END AS $select_name";
@@ -571,12 +579,12 @@ class GroupingCounter
 			604800 => '1 - 2 weeks',	// TIMEWEEK
 			1209600 => '2 - 3 weeks',	// TIMEWEEK * 2
 			1814400 => '3 - 4 weeks',	// TIMEWEEK * 3
-			2419200 => '1 - 2 months',	// TIMEMONTh
-			4838400 => '2 - 3 months',	// TIMEMONTH * 2
-			7257600 => '3 - 4 months',	// TIMEONTH * 3
-			9676800 => '4 - 5 months',	// TIMEMONTH * 4
-			12096000 => '5 - 6 months',	// TIMEMONTH * 5
-			900000000 => '> 6 months'	// Everything else
+			5259487 => '1 - 2 months',
+			7889231 => '2 - 3 months',
+			10518975 => '3 - 4 months',
+			13148719 => '4 - 5 months',
+			15778463 => '5 - 6 months',
+			900000000 => '> 6 months'
 		);
 
 		return $times;
@@ -629,7 +637,6 @@ class GroupingCounter
 	{
 		switch ($groupvar) {
 			case TicketSearch::TERM_USER_WAITING:
-			case TicketSearch::TERM_TOTAL_USER_WAITING:
 			case TicketSearch::TERM_DATE_CREATED:
 
 				$times = array_keys(self::getTimeTitles());
@@ -649,6 +656,28 @@ class GroupingCounter
 				}
 
 				break;
+
+			case TicketSearch::TERM_TOTAL_USER_WAITING:
+
+				$times = array_keys(self::getTimeTitles());
+
+				$prev = 0;
+				$found = $times[1];
+				foreach ($times as $t) {
+					if ($groupchoice <= $t) {
+						$found = $t;
+						break;
+					} else {
+						$prev = $t;
+					}
+				}
+
+				if ($found == 1) {
+					$found = 299;
+				}
+
+				$term = array('type' => $groupvar, 'op' => 'is', 'options' => array($prev, $found));
+				return $term;
 
 			default;
 				return array('type' => $groupvar, 'op' => 'is', 'options' => array($groupchoice));

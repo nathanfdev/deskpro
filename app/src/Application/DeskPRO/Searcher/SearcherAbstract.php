@@ -481,7 +481,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 	 */
 	protected function _rangeMatch($field, $op, $choice)
 	{
-		$where = '';
+		$where = '1';
 
 		$choice = (array)$choice;
 		$range1 = !empty($choice[0]) ? $choice[0] : null;
@@ -489,12 +489,16 @@ abstract class SearcherAbstract implements PersonContextInterface
 
 		// There should always be at least one date
 		if ($range1 === null AND $range2 === null) {
-			return '';
+			return '1';
 		}
 
 		// Normalize operations
 		if ($op == self::OP_LT) $op = self::OP_LTE;
 		if ($op == self::OP_GT) $op = self::OP_GTE;
+
+		if ($range1 && $range2) {
+			$op = self::OP_BETWEEN;
+		}
 
 		// Between with only one date is invalid, so
 		// we'll decide which op we really want to do
