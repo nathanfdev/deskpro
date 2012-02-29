@@ -28,6 +28,10 @@ class UserChatController extends AbstractController
 	{
 		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
+		if (!$this->person->PermissionsManager->ChatChecker($convo)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
 		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
 
@@ -74,6 +78,10 @@ class UserChatController extends AbstractController
 	{
 		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
+		if (!$this->person->PermissionsManager->ChatChecker($convo)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
 		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
 
@@ -100,6 +108,11 @@ class UserChatController extends AbstractController
 	public function sendInviteAction($conversation_id, $agent_id)
 	{
 		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+
+		if (!$this->person->PermissionsManager->ChatChecker($convo)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$agent = App::findEntity('DeskPRO:Person', $agent_id);
 
 		$cm = new ClientMessage();
@@ -124,6 +137,10 @@ class UserChatController extends AbstractController
 	public function changePropertiesAction($conversation_id)
 	{
 		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+
+		if (!$this->person->PermissionsManager->ChatChecker($convo)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
 
 		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
 		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
@@ -151,6 +168,10 @@ class UserChatController extends AbstractController
 	public function addPartAction($conversation_id, $agent_id)
 	{
 		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+
+		if (!$this->person->PermissionsManager->ChatChecker($convo)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
 
 		$agent = App::findEntity('DeskPRO:Person', $agent_id);
 		if (!$agent OR $convo->hasParticipant($agent)) {
@@ -202,6 +223,10 @@ class UserChatController extends AbstractController
 	{
 		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
+		if (!$this->person->PermissionsManager->ChatChecker($convo)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
 		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
 		$chat_manager->endChat($convo, $this->person, '');
@@ -238,6 +263,10 @@ class UserChatController extends AbstractController
 	public function leaveChatAction($conversation_id)
 	{
 		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+
+		if (!$this->person->PermissionsManager->ChatChecker($convo)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
 
 		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
 		if ($convo->status == 'open') {
@@ -285,11 +314,13 @@ class UserChatController extends AbstractController
 	{
 		$agent_names = App::getEntityRepository('DeskPRO:Person')->getAgentNames();
 
+		$where = $this->getAgentWhereSql();
+
 		// Initial counts
 		$initial_counts = App::getDb()->fetchAllKeyValue("
 			SELECT IF(agent_id, agent_id, -1) AS agent_id, COUNT(*) AS count
-			FROM chat_conversations c
-			WHERE c.status = 'open'
+			FROM chat_conversations
+			WHERE $where chat_conversations.status = 'open'
 			GROUP BY agent_id
 		");
 
@@ -297,9 +328,9 @@ class UserChatController extends AbstractController
 
 		$dep_counts = App::getDb()->fetchAllKeyValue("
 			SELECT IF(department_id, department_id, -1) AS department_id, COUNT(*) AS count
-			FROM chat_conversations c
-			WHERE c.status = 'open' AND c.agent_id IS NULL
-			GROUP BY department_id
+			FROM chat_conversations
+			WHERE $where chat_conversations.status = 'open' AND chat_conversations.agent_id IS NULL
+			GROUP BY chat_conversations.department_id
 		");
 
 		$dep_counts['none_total'] = isset($dep_counts[-1]) ? $dep_counts[-1] : 0;
@@ -440,9 +471,11 @@ class UserChatController extends AbstractController
 	 */
 	public function filterAction()
 	{
+		$where = $this->getAgentWhereSql();
+
 		$chat_ids = $this->container->getDb()->fetchAllCol("
 			SELECT id FROM chat_conversations
-			WHERE status = 'ended' AND is_agent = 0
+			WHERE $where status = 'ended' AND is_agent = 0
 			ORDER BY id DESC
 			LIMIT 1000
 		");
@@ -453,6 +486,26 @@ class UserChatController extends AbstractController
 			'chat_ids' => $chat_ids,
 			'chats' => $chats
 		));
+	}
+
+	protected function getAgentWhereSql()
+	{
+		$where_perm = array();
+		if ($this->person->getDisallowedDepartments('chat')) {
+			$where_perm[] = "chat_conversations.department_id NOT IN (" . implode(',', $this->person->getDisallowedDepartments('chat')) . ")";
+		}
+
+		if (!$this->person->hasPerm('agent_tickets.view_unassigned')) {
+			$where_perm[] = 'chat_conversations.agent_id IS NOT NULL';
+		}
+
+		if (!$this->person->hasPerm('agent_tickets.view_others')) {
+			$where_perm[] = "chat_conversations.agent_id = {$this->person['id']}";
+		}
+
+		$where = '((' . implode(' AND ', $where_perm) . ") OR chat_conversations.agent_id = {$this->person['id']}) AND ";
+
+		return $where;
 	}
 
 	/**
