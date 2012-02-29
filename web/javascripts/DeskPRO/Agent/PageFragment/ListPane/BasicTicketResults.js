@@ -409,6 +409,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 				if (self.meta.viewType == 'list') {
 					self.loadNewListviewUrl(url +'&view_type=list');
 				} else {
+					self.wrapper.find('header.list-grouping-bar').hide();
+					self.getEl('grouping_loading').show();
 					DeskPRO_Window.loadListPane(url);
 				}
 			}
