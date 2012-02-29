@@ -163,6 +163,11 @@ class UsersStep extends AbstractDeskpro3Step
 		$person->is_user = true;
 		$person->is_confirmed = true;
 		$person->name = $user_info['name'];
+
+		$name_parts = \Application\DeskPRO\People\Util::guessNameParts($user_info['name'], isset($user_emails[0]) ? $user_emails[0] : null);
+		$person->first_name = $name_parts[0];
+		$person->last_name = $name_parts[1];
+
 		$person->date_created = new \DateTime('@' . $user_info['date_registered']);
 		$person->setPassword($user_deskpro['password']);
 		if ($user_info['last_activity']) {

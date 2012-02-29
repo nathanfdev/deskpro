@@ -35,8 +35,7 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$stats = new \Application\InstallBundle\Data\ServerStats(App::getDb());
-		print_r($stats->getStats());
+		print_r(\Application\DeskPRO\People\Util::guessNameParts('', 'chrisnadeau@deskpro.com'));
 
 		echo "\n\ndone\n";
 	}

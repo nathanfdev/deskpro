@@ -59,7 +59,10 @@ class TechsStep extends AbstractDeskpro3Step
 					$agent->can_admin = (bool)$tech['is_admin'];
 					$agent->can_billing = (bool)$tech['is_admin'];
 					$agent->can_reports = (bool)$tech['is_admin'];
-					$agent->name = $tech['name'];
+
+					$name_parts = \Application\DeskPRO\People\Util::guessNameParts($tech['name'], $tech['email']);
+					$agent->first_name = $name_parts[0];
+					$agent->last_name = $name_parts[1];
 				}
 
 				$agent->is_user = true;
