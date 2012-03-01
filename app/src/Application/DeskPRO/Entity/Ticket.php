@@ -168,6 +168,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @ORM_Mapping\OneToMany(targetEntity="TicketMessage", mappedBy="ticket", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\OrderBy({"date_created" = "ASC"})
 	 */
 	protected $messages;
 

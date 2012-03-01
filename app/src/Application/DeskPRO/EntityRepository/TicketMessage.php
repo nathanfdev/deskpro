@@ -76,9 +76,9 @@ class TicketMessage extends EntityRepository
 	{
 		$options = array_merge(array(
 			'order' => 'ASC',
-			 'limit' => null,
-			 'with_notes' => false,
-			 'since_id' => 0
+			'limit' => null,
+			'with_notes' => false,
+			'since_id' => 0
 		), $set_options);
 
 		$order = strtoupper($options['order']);
@@ -91,7 +91,7 @@ class TicketMessage extends EntityRepository
 		$q->select('m');
 		$q->leftJoin('m.person', 'p');
 		$q->where('m.ticket = :ticket');
-		$q->addOrderBy('m.id', $order);
+		$q->addOrderBy('m.date_created', $order);
 
 		$params = array();
 		$params['ticket'] = $ticket;

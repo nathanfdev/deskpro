@@ -25,14 +25,14 @@ class TicketLog extends EntityRepository
 				SELECT log
 				FROM DeskPRO:TicketLog log INDEX BY log.id
 				WHERE log.ticket = ?1 AND log.id > ?2
-				ORDER BY log.id ASC
+				ORDER BY log.date_created ASC
 			")->setParameter(1, $ticket)->setParameter(2, $options['since_id']);
 		} else {
 			$query = $this->_em->createQuery("
 				SELECT log
 				FROM DeskPRO:TicketLog log INDEX BY log.id
 				WHERE log.ticket = ?1
-				ORDER BY log.id ASC
+				ORDER BY log.date_created ASC
 			")->setParameter(1, $ticket);
 		}
 
