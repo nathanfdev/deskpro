@@ -22,6 +22,8 @@ use Application\DeskPRO\Entity\ChatMessage;
 
 class UserChatsStep extends AbstractDeskpro3Step
 {
+	protected $first_dep_id;
+
 	public static function getTitle()
 	{
 		return 'Import User Chats';
@@ -54,6 +56,8 @@ class UserChatsStep extends AbstractDeskpro3Step
 		if ($page == 1) {
 			$this->preRunAll();
 		}
+
+		$this->first_dep_id = $this->getDb()->fetchColumn("SELECT id FROM departments WHERE is_chat_enabled AND parent_id IS NULL ORDER BY display_order ASC LIMIT 1");
 
 		$sub_start_time = microtime(true);
 		$batch = $this->getIdsBatch($page - 1);
@@ -100,12 +104,13 @@ class UserChatsStep extends AbstractDeskpro3Step
 		$convo->status = 'ended';
 
 		// Department
-		$chat_dep = null;
 		if ($chat_info['depid']) {
 			$dep_id = $this->getMappedNewId('chat_dep', $chat_info['depid']);
 			if ($dep_id) {
 				$convo->department = $this->getEm()->find('DeskPRO:Department', $dep_id);
 			}
+		} else {
+			$convo->department = $this->getEm()->find('DeskPRO:Department', $this->first_dep_id);
 		}
 
 		// User
@@ -185,6 +190,7 @@ class UserChatsStep extends AbstractDeskpro3Step
 		foreach ($all_message_info as $message_info) {
 			$add_end = false;
 			$message = new ChatMessage();
+			$message->conversation = $convo;
 			$message->date_created = new \DateTime('@' . (int)$message_info['timestamp_sent']);
 			if ($message_info['visibility'] == 'tech') {
 				$message->is_user_hidden = true;
