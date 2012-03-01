@@ -116,10 +116,10 @@ abstract class DomainObject extends BasicDomainObject
 				return;
 			}
 		} elseif ($value instanceof \DateTime) {
-			if ($value->getTimestamp() == $old->getTimestamp()) {
+			if ($old instanceof \DateTime && $value->getTimestamp() == $old->getTimestamp()) {
 				return;
 			}
-		} elseif (is_object($value) && isset($value->id) && is_object($old)) {
+		} elseif (is_object($value) && isset($value->id) && is_object($old) && isset($old->id)) {
 			if ($value->id == $old->id) {
 				return;
 			}

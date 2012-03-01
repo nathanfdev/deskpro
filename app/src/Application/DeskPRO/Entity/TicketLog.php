@@ -49,6 +49,16 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 	protected $action_type;
 
 	/**
+	 * If the log involves a specific thing in a ticket (eg a message that was moved),
+	 * then that is this id.
+	 *
+	 * @var int
+	 * @ORM_Mapping\Column(name="id_object", type="integer", nullable=true)
+	 *
+	 */
+	protected $id_object = null;
+
+	/**
 	 * The ID of the previous entity changed, or any other numeric value.
 	 * @var int
 	 * @ORM_Mapping\Column(name="id_before", type="integer", nullable=true)

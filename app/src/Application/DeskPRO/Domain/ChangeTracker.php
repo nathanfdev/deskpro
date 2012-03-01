@@ -69,7 +69,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
 				return;
 			}
 		} elseif ($new_val instanceof \DateTime) {
-			if ($new_val->getTimestamp() == $old_val->getTimestamp()) {
+			if ($old_val instanceof \DateTime && $new_val->getTimestamp() == $old_val->getTimestamp()) {
 				return;
 			}
 		} elseif (is_object($new_val) && isset($new_val->id) && is_object($old_val)) {

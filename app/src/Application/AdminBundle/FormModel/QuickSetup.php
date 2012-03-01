@@ -27,7 +27,7 @@ class QuickSetup
 
 	protected $_settings_map = array(
 		'default_from_email'       => 'core.default_from_email',
-		'site_title'               => 'core.site_title',
+		'site_url'                 => 'core.site_url',
 		'site_name'                => 'core.site_name',
 		'deskpro_name'             => 'core.deskpro_name',
 		'deskpro_url'              => 'core.deskpro_url',
