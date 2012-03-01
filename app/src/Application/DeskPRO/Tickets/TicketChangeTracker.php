@@ -208,6 +208,14 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 					$this->original_ticket['agent'] = $old_val;
 					break;
 
+				case 'agent_team':
+					$this->original_ticket['agent_team'] = $old_val;
+					break;
+
+				case 'person':
+					$this->original_ticket['person'] = $old_val;
+					break;
+
 				case 'category':
 					$this->original_ticket['category'] = $old_val;
 					break;
@@ -230,6 +238,10 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 
 				case 'status':
 					$this->original_ticket['status'] = $old_val;
+					break;
+
+				case 'subject':
+					$this->original_ticket['subject'] = $old_val;
 					break;
 
 				case 'hidden_status':

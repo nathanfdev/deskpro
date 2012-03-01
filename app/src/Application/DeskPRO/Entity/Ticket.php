@@ -819,6 +819,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->setDateUserWaiting($now);
 		}
 
+		if (count($message->attachments) && $this->getTicketLogger()) {
+			foreach ($message->attachments as $attach) {
+				$this->getTicketLogger()->recordMultiPropertyChanged('attachments', null, $attach);
+			}
+		}
+
 		$this->_onPropertyChanged('messages', null, $message);
 	}
 
@@ -833,6 +839,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$attach->ticket = $this;
 		$this->attachments->add($attach);
+
+		if ($this->getTicketLogger()) {
+			$this->getTicketLogger()->recordMultiPropertyChanged('attachments', null, $attach);
+		}
 	}
 
 

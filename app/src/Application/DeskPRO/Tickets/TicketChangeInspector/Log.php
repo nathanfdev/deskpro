@@ -128,7 +128,7 @@ class Log
 						if ($new_val) {
 							$action = new LogActions\Message($new_val);
 						} else {
-							// $old_val means removed
+							$action = new LogActions\MessageRemoved($old_val);
 						}
 						break;
 
@@ -162,6 +162,21 @@ class Log
 						}
 						break;
 
+					case 'person':
+						if (!$this->tracker->isNewTicket()) {
+							$action = new LogActions\Person($old_val, $new_val);
+						}
+
+					case 'organization':
+						if (!$this->tracker->isNewTicket()) {
+							$action = new LogActions\Organization($old_val, $new_val);
+						}
+
+					case 'subject':
+						if (!$this->tracker->isNewTicket()) {
+							$action = new LogActions\Subject($old_val, $new_val);
+						}
+
 					default:
 						$unknown[] = $prop;
 						break;
@@ -185,6 +200,24 @@ class Log
 					$action = new LogActions\ParticipantRemoved($old_val);
 				} else {
 					$action = new LogActions\ParticipantAdded($new_val);
+				}
+
+				$actions[] = $action;
+			}
+		}
+
+		if ($this->tracker->getChangedProperty('attachments')) {
+			foreach ($this->tracker->getChangedProperty('attachments') as $info) {
+				$old_val = null;
+				$new_val = null;
+
+				if (isset($info['old'])) $old_val = $info['old'];
+				if (isset($info['new'])) $new_val = $info['new'];
+
+				if ($old_val) {
+					$action = new LogActions\AttachRemoved($old_val);
+				} else {
+					$action = new LogActions\AttachAdded($new_val);
 				}
 
 				$actions[] = $action;
