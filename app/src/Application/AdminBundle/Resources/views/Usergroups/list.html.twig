@@ -13,7 +13,6 @@
 
 {% block page %}
 
-{% if usergroups|length %}
 <div class="check-grid item-list">
 	<table width="100%">
 		<thead>
@@ -50,10 +49,5 @@
 		</tbody>
 	</table>
 </div>
-{% else %}
-	<p>
-		You haven't created any usergroups yet.
-	</p>
-{% endif %}
 
 {% endblock %}
