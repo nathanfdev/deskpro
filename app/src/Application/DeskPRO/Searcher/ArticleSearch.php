@@ -85,7 +85,7 @@ class ArticleSearch extends SearcherAbstract
 
 		$dis_ids = implode(',', $dis_ids);
 
-		return '(article.category_id NOT IN(' . $dis_ids . '))';
+		return '(catperm.category_id NOT IN(' . $dis_ids . '))';
 	}
 
 
@@ -262,7 +262,9 @@ class ArticleSearch extends SearcherAbstract
 		$tr = App::getTranslator();
 
 		$wheres = array();
-		$joins = array();
+		$joins = array(
+			array('article_to_categories_perm', "LEFT JOIN article_to_categories AS catperm ON (catperm.article_id = articles.id)")
+		);
 
 		foreach ($this->terms as $term => $info) {
 			$join_id = Util::requestUniqueId();
@@ -413,8 +415,6 @@ class ArticleSearch extends SearcherAbstract
 					break;// end labels
 			}
 		}
-
-		$joins = array_unique($joins);
 
 		$wheres = Arrays::removeEmptyString($wheres);
 
