@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsRevision;
 use Application\DeskPRO\Entity\NewsCategory;
 
 class UserNewsStep extends AbstractDeskpro3Step
@@ -101,5 +102,17 @@ class UserNewsStep extends AbstractDeskpro3Step
 		$this->getEm()->flush();
 
 		$this->saveMappedId('news', $news['id'], $new_news->id);
+
+		#------------------------------
+		# Create the first revision
+		#------------------------------
+
+		$revision = new NewsRevision();
+		$revision->news = $new_news;
+		$revision->title = $new_news->title;
+		$revision->content = $new_news->content;
+
+		$this->getEm()->persist($revision);
+		$this->getEm()->flush();
 	}
 }

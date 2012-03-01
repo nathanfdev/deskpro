@@ -13,6 +13,7 @@ namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\DownloadRevision;
 
 class DownloadsStep extends AbstractDeskpro3Step
 {
@@ -181,5 +182,18 @@ class DownloadsStep extends AbstractDeskpro3Step
 		$this->getEm()->flush();
 
 		$this->saveMappedId('file', $download['id'], $new_download->id);
+
+		#------------------------------
+		# Create the first revision
+		#------------------------------
+
+		$revision = new DownloadRevision();
+		$revision->download = $new_download;
+		$revision->blob = $new_download->blob;
+		$revision->title = $new_download->title;
+		$revision->content = $new_download->content;
+
+		$this->getEm()->persist($revision);
+		$this->getEm()->flush();
 	}
 }

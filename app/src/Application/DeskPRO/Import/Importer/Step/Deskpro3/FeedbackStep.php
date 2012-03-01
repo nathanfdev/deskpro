@@ -13,6 +13,7 @@ namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackRevision;
 use Application\DeskPRO\Entity\FeedbackComment;
 
 class FeedbackStep extends AbstractDeskpro3Step
@@ -135,6 +136,18 @@ class FeedbackStep extends AbstractDeskpro3Step
 		$this->getEm()->flush();
 
 		$this->saveMappedId('feedback', $feedback['id'], $new_feedback->id);
+
+		#------------------------------
+		# Create the first revision
+		#------------------------------
+
+		$revision = new FeedbackRevision();
+		$revision->feedback = $new_feedback;
+		$revision->title = $new_feedback->title;
+		$revision->content = $new_feedback->content;
+
+		$this->getEm()->persist($revision);
+		$this->getEm()->flush();
 
 		#------------------------------
 		# Comments

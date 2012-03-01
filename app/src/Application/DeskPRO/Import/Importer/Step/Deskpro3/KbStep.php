@@ -13,6 +13,7 @@ namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleRevision;
 use Application\DeskPRO\Entity\ArticleComment;
 
 class KbStep extends AbstractDeskpro3Step
@@ -126,6 +127,18 @@ class KbStep extends AbstractDeskpro3Step
 		$this->getEm()->flush();
 
 		$this->saveMappedId('faq_article', $article['id'], $new_article->id);
+
+		#------------------------------
+		# Create the first revision
+		#------------------------------
+
+		$revision = new ArticleRevision();
+		$revision->article = $new_article;
+		$revision->title = $new_article->title;
+		$revision->content = $new_article->content;
+
+		$this->getEm()->persist($revision);
+		$this->getEm()->flush();
 
 		#------------------------------
 		# Comments
