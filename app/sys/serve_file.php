@@ -166,6 +166,13 @@ class FilestorageLoader
 
 			$container->getDb()->update('styles', array('css_blob_id' => $blob_id), array('css_blob_id' => $blob['id']));
 
+			$sth = $this->getPdo()->prepare("
+				SELECT blobs.*
+				FROM blobs
+				WHERE blobs.id =?
+				LIMIT 1
+			");
+			$sth->execute(array($blob_id));
 			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 		}
 
