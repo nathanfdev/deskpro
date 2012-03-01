@@ -159,6 +159,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		#----------------------------------------
 
 		$server_check = new \Application\InstallBundle\Install\ServerChecks();
+		$server_check->setLogger($logger);
 		$server_check->checkServer();
 
 		$is_fatal = $server_check->hasFatalErrors();
@@ -203,7 +204,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			return 3;
 		}
 
-		if (isset($config['store_attachment_files'])) {
+		if (isset($config['store_attachment_files']) && $config['store_attachment_files']) {
 			global $DP_CONFIG;
 			$DP_CONFIG['core.filestorage_method'] = 'fs';
 		}
@@ -217,6 +218,8 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		if (!$php_path) {
 			$logger->log("Unknow path to PHP executable. Edit your /config.php file and specify a value for php_path.\n", Logger::ERR);
 			return 1;
+		} else {
+			$logger->log("Path to PHP executable found at " . $php_path, Logger::INFO);
 		}
 
 		#----------------------------------------
@@ -265,7 +268,9 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$schema = require DP_ROOT.'/src/Application/InstallBundle/Data/schema.php';
 			}
 			$install_schema = new \Application\InstallBundle\Install\InstallSchema($db, $schema, DP_BUILD_TIME);
-			$install_schema->setLogger($logger);
+
+			$logger->log("Installing schema ...", Logger::DEBUG);
+			$time_start = microtime(true);
 
 			$errors = array();
 
@@ -281,6 +286,8 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			};
 
 			$install_schema->run(false, 100000000, 0, $fn);
+
+			$logger->log(sprintf("Done installing schema. Took %.5f seconds.", microtime(true)-$time_start), Logger::DEBUG);
 
 			if ($errors) {
 				$logger->log("There were errors while trying to install the database: " . implode("\n", $errors) . "\n", Logger::ERR);
@@ -621,7 +628,25 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$end_time = microtime(true);
 			$logger->log(sprintf("Importer complete. Took %0.3f seconds.", $end_time-$start_time), 'INFO');
 
+			// Submit stats
+			try {
+				$log_file = @file_get_contents($this->getContainer()->getLogDir() . '/import.log');
+				$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($this->getContainer()->getDb());
+				$stats = $stats_fetcher->getStats();
+				$stats['import_log'] = $log_file;
+
+				$client = new \Zend\Http\Client(null, array('timeout' => 10));
+				$client->setMethod(\Zend\Http\Request::METHOD_POST);
+				$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/report-stats.json');
+				$client->getRequest()->post()->set("from_import", 1);
+				foreach ($stats as $k => $v) {
+					$client->getRequest()->post()->set("stats[$k]", $v);
+				}
+				$client->send();
+			} catch (\Exception $e) { }
+
 			echo "Import Complete.\n";
+
 			return 0;
 		}
 

@@ -65,6 +65,11 @@ $definition->addMethodCall('setPrefix', array('dql', new Reference('deskpro.inte
 $definition->addMethodCall('preloadPrefix', array(new Reference('deskpro.interface_value')));
 $container->setDefinition('doctrine.orm.default_query_cache', $definition);
 
+// deskpro.profiler.request_matcher
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Profiler\\RequestMatcher');
+$container->setDefinition('deskpro.profiler.request_matcher', $definition);
+
 ############################################################################
 # Framework Configuration
 ############################################################################
