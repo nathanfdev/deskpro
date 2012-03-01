@@ -101,6 +101,9 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				if (!tabId) return;
 
 				var tabEl = $('#tabbtn_' + tabId);
+				if (!tabEl[0]) {
+					return;
+				}
 				var tabW = tabEl.width();
 
 				evData.left = (tabEl.offset().left + (tabW / 2)) - (evData.w / 2);
