@@ -13,7 +13,7 @@ namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 use Application\DeskPRO\Entity\Department;
 
-class ChatDepartmentsStep extends AbstractDeskpro3Step
+class UserChatDepartmentsStep extends AbstractDeskpro3Step
 {
 	/**
 	 * Existing departments read in
