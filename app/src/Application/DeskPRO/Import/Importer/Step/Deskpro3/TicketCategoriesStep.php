@@ -84,7 +84,7 @@ class TicketCategoriesStep extends AbstractDeskpro3Step
 		$dep->title = $cat['name'];
 		$dep->display_order = $cat['displayorder'];
 		$dep->is_tickets_enabled = true;
-		$dep->is_chat_enabled = true;
+		$dep->is_chat_enabled = false;
 
 		if ($cat['parent']) {
 			$parent = $this->getEm()->find('DeskPRO:Department', $this->getMappedNewId('ticket_category', $cat['parent']));

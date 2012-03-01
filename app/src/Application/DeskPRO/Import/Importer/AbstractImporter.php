@@ -53,15 +53,16 @@ abstract class AbstractImporter
 	 * @var array
 	 */
 	protected $cache_map_types = array(
-		'ticket_category' => true,
-		'ticket_workflow' => true,
-		'ticket_priority' => true,
-		'company' => true,
-		'tech' => true,
-		'ticket_def_choice' => true,
-		'people_def_choice' => true,
-		'usergroup' => true,
-		'usergroup_sys' => true,
+		'ticket_category'    => true,
+		'ticket_workflow'    => true,
+		'ticket_priority'    => true,
+		'company'            => true,
+		'tech'               => true,
+		'ticket_def_choice'  => true,
+		'people_def_choice'  => true,
+		'usergroup'          => true,
+		'usergroup_sys'      => true,
+		'chat_dep'           => true,
 	);
 
 	public function __construct(DeskproContainer $container, $config, Logger $logger = null)
