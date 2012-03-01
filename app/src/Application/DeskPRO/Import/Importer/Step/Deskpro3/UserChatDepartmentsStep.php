@@ -28,12 +28,14 @@ class UserChatDepartmentsStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
+		$start_time = microtime(true);
+
 		$this->departments = $this->getDb()->fetchAllKeyValue("SELECT id, title FROM departments WHERE parent_id IS NULL");
 		foreach ($this->departments as &$title) {
 			$title = strtolower($title);
 		}
 
-		$chat_deps = $this->getOldDb()->fetchAll("SELECT * FROM chat_dep ORDER BY display_order ASC");
+		$chat_deps = $this->getOldDb()->fetchAll("SELECT * FROM chat_dep ORDER BY displayorder ASC");
 
 		$this->getDb()->beginTransaction();
 

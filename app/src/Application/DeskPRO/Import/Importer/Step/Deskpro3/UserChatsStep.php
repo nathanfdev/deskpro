@@ -24,7 +24,7 @@ class UserChatsStep extends AbstractDeskpro3Step
 {
 	public static function getTitle()
 	{
-		return 'Import Tickets';
+		return 'Import User Chats';
 	}
 
 	public function countPages()
@@ -34,11 +34,27 @@ class UserChatsStep extends AbstractDeskpro3Step
 			return 1;
 		}
 
-		return ceil($count / 1000);
+		return ceil($count / 100);
+	}
+
+	public function preRunAll()
+	{
+		$this->importer->removeTableIndexes('chat_conversations');
+		$this->importer->removeTableIndexes('chat_messages');
+	}
+
+	public function postRunAll()
+	{
+		$this->importer->restoreTableIndexes('chat_conversations');
+		$this->importer->restoreTableIndexes('chat_messages');
 	}
 
 	public function run($page = 1)
 	{
+		if ($page == 1) {
+			$this->preRunAll();
+		}
+
 		$sub_start_time = microtime(true);
 		$batch = $this->getIdsBatch($page - 1);
 		$this->logMessage("-- Processing batch {$page}");
@@ -56,6 +72,10 @@ class UserChatsStep extends AbstractDeskpro3Step
 
 		$sub_end_time = microtime(true);
 		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
+
+		if ($page >= $this->countPages()) {
+			$this->postRunAll();
+		}
 	}
 
 	public function processChat($chat_id)
@@ -90,7 +110,7 @@ class UserChatsStep extends AbstractDeskpro3Step
 
 		// User
 		if ($chat_info['userid']) {
-			$person_id = $this->getMappedNewId('user', $chat_info['userd']);
+			$person_id = $this->getMappedNewId('user', $chat_info['userid']);
 			if ($person_id) {
 				$convo->person = $this->getEm()->find('DeskPRO:Person', $person_id);
 			}
@@ -98,7 +118,7 @@ class UserChatsStep extends AbstractDeskpro3Step
 
 		// Agent
 		if ($chat_info['userid']) {
-			$person_id = $this->getMappedNewId('user', $chat_info['userd']);
+			$person_id = $this->getMappedNewId('user', $chat_info['userid']);
 			if ($person_id) {
 				$convo->agent = $this->getEm()->find('DeskPRO:Person', $person_id);
 			}
@@ -129,7 +149,7 @@ class UserChatsStep extends AbstractDeskpro3Step
 		$convo->date_ended = new \DateTime('@' . (int)($chat_info['timestamp_assigned'] ?: $chat_info['timestamp_start']));
 
 		$this->getEm()->persist($convo);
-		$this->getEm()->flushs();
+		$this->getEm()->flush();
 
 		$this->saveMappedId('chat', $chat_info['id'], $convo->id);
 
@@ -137,7 +157,7 @@ class UserChatsStep extends AbstractDeskpro3Step
 		# Attachments
 		#------------------------------
 
-		$chat_attachments = $this->getOldDb()->fetchAll("SELECT * FROM chat_attachment WHERE ticketid = ?", array($ticket_info['id']));
+		$chat_attachments = $this->getOldDb()->fetchAll("SELECT * FROM chat_attachment WHERE chatid = ?", array($chat_info['id']));
 
 		$chat_attach_info = array();
 
@@ -147,7 +167,7 @@ class UserChatsStep extends AbstractDeskpro3Step
 				continue;
 			}
 
-			$chat_attach_info[$id] = array('blob_id' => $blob_id, 'filename' => $attach_info['filename'], 'filesize' => 0);
+			$chat_attach_info[$attach_info['id']] = array('blob_id' => $blob_id, 'filename' => $attach_info['filename'], 'filesize' => 0);
 		}
 
 
@@ -178,6 +198,7 @@ class UserChatsStep extends AbstractDeskpro3Step
 					continue;
 				}
 				$message->author = $agent;
+				$message->person_name = $agent->getDisplayName();
 				$message->content = $message_info['message'];
 
 			// User message
@@ -187,14 +208,13 @@ class UserChatsStep extends AbstractDeskpro3Step
 					continue;
 				}
 				$message->author = $person;
+				$message->person_name = $person->getDisplayName();
 				$message->content = $message_info['message'];
 
 			// System message
 			} else {
-				$message->is_sys = true;
-
 				// assign:from:0:to:8
-				if (preg_match('#^assign:from:([0-9]+):to:([0-9]+)$#', $chat_info['message'], $m)) {
+				if (preg_match('#^assign:from:([0-9]+):to:([0-9]+)$#', $message_info['message'], $m)) {
 					if ($m[1]) {
 						$old_agent = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('tech', $m[1]));
 						if (!$old_agent) {
@@ -213,6 +233,9 @@ class UserChatsStep extends AbstractDeskpro3Step
 						$new = null;
 					}
 
+					$message->is_sys = true;
+					$message->person_name = 'sys';
+
 					if ($old_agent && !$new_agent) {
 						$message->content = App::getTranslator()->phrase('user.chat.unassigned');
 					} elseif (!$old_agent && $new_agent) {
@@ -224,7 +247,7 @@ class UserChatsStep extends AbstractDeskpro3Step
 					}
 
 				// attachment:attachmentId:1:fileName:Front Page.bmml:techId:1
-				} elseif (preg_match('#^attachment:attachmentId:([0-9]+):fileName:(.*?):techId:(.*?)$#', $chat_info['message'], $m)) {
+				} elseif (preg_match('#^attachment:attachmentId:([0-9]+):fileName:(.*?):techId:(.*?)$#', $message_info['message'], $m)) {
 
 					$attach_id = $m[1];
 					$filename = $m[2];
@@ -239,18 +262,28 @@ class UserChatsStep extends AbstractDeskpro3Step
 						continue;
 					}
 
-					$blob = $this->getEm()->find('DeskPRO:Blob', $chat_attach_info[$attach_id]);
+					$blob = $this->getEm()->find('DeskPRO:Blob', $chat_attach_info[$attach_id]['blob_id']);
 					if (!$blob) {
 						continue;
 					}
 
 					$message->author  = $new_agent;
+					$message->person_name = $new_agent->getDisplayName();
 					$message->content = '<a href="' . $blob->getDownloadUrl() . '">' . htmlspecialchars($filename) . '</a>';
 					$message->is_html = true;
 
 				// end:comment:xxxxx:tech:8
-				} elseif (preg_match('#^end:comment:(.*?)$#', $chat_info['message'], $m)) {
-					list ($end_comment, , $agent_id) = \Orb\Util\Strings::rexplode($m[1], 3);
+				} elseif (preg_match('#^end:comment:(.*?)$#', $message_info['message'], $m)) {
+					if (strpos($message_info['message'], '::') !== false) {
+						$end_comment = '';
+						$agent_id = \Orb\Util\Strings::extractRegexMatch('#tech:([0-9]+)$#', $message_info['message'], 1);
+					} else {
+						$parts = explode(':', $m[1]);
+						$agent_id = array_pop($parts);
+						array_pop($parts);
+
+						$end_comment = implode(':', $parts);
+					}
 
 					$agent = $this->getEm()->find('DeskPRO:Person', $this->getMappedNewId('tech', $agent_id));
 					if (!$agent) {
@@ -258,15 +291,20 @@ class UserChatsStep extends AbstractDeskpro3Step
 					}
 
 					$message->author = $agent;
+					$message->person_name = $agent->getDisplayName();
 					$message->content = str_replace('\\:', ':', $end_comment);
 
 					$add_end = new ChatMessage();
 					$add_end->date_created = new \DateTime('@' . (int)$message_info['timestamp_sent']);
 					$add_end->is_sys = true;
+					$add_end->person_name = 'sys';
 					$add_end->content = App::getTranslator()->phrase('user.chat.ended');
 
-				} elseif (preg_match('#^end:who:user$#', $chat_info) || preg_match('#^end:who:user:timeout:#', $chat_info)) {
-					$message->content = App::getTranslator()->phrase('user.chat.ended');
+				} elseif (preg_match('#^end:who:user$#', $message_info['message']) || preg_match('#^end:who:user:timeout:#', $message_info['message'])) {
+					$message->person_name = 'sys';
+					$message->content = 'Chat ended';
+				} else {
+					continue;
 				}
 			}
 
@@ -292,8 +330,8 @@ class UserChatsStep extends AbstractDeskpro3Step
 	 */
 	protected function getIdsBatch($page)
 	{
-		$start = $page * 1000;
-		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM chat_chat ORDER BY id ASC LIMIT $start, 1000");
+		$start = $page * 100;
+		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM chat_chat ORDER BY id ASC LIMIT $start, 100");
 
 		return $ids;
 	}

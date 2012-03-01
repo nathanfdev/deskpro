@@ -35,7 +35,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * The conversation the message belongs to
-	 * @var \Application\DeskPRO\Entity\Conversation
+	 * @var \Application\DeskPRO\Entity\ChatConversation
 	 * @ORM_Mapping\ManyToOne(targetEntity="ChatConversation", fetch="EAGER")
 	 * @ORM_Mapping\JoinColumn(name="conversation_id", referencedColumnName="id", onDelete="cascade")
 	 */
@@ -112,7 +112,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 		// Could be a guest, in which case we dont care
 		if ($author && $author->id) {
 			$this->author = $author;
-			if ($author) {
+			if ($author && !$this->person_name) {
 				$this->person_name = $author->getDisplayName();
 			}
 		}
@@ -147,7 +147,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 	{
 		// If we have no name, then assume the message is
 		// by the user who started the chat
-		if (!$this->person_name) {
+		if (!$this->person_name && $this->conversation['person_name']) {
 			$this->person_name = $this->conversation['person_name'];
 		}
 	}
