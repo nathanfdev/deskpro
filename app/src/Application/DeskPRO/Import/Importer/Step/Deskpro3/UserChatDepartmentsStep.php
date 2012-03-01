@@ -76,11 +76,15 @@ class UserChatDepartmentsStep extends AbstractDeskpro3Step
 			if ($dep_title == $title_l) {
 				// We found a match, so just map this chat department to th existing one,
 				// and enable chat app on it
-				$this->saveMappedId('chat_dep', $chat_dep['id'], $id);
-				$this->getDb()->update('departments', array(
-					'is_chat_enabled' => 1
-				), array('id' => $chat_dep['id']));
-				return;
+
+				// But only if its a top-level
+				if (!$this->getDb()->fetchColumn("SELECT COUNT(*) FROM departments WHERE parent_id = ? LIMIT 1", array($id))) {
+					$this->saveMappedId('chat_dep', $chat_dep['id'], $id);
+					$this->getDb()->update('departments', array(
+						'is_chat_enabled' => 1
+					), array('id' => $chat_dep['id']));
+					return;
+				}
 			}
 		}
 
@@ -91,6 +95,7 @@ class UserChatDepartmentsStep extends AbstractDeskpro3Step
 		$dep = new Department();
 		$dep->title = $chat_dep['name'];
 		$dep->display_order = '1' . $chat_dep['displayorder'];
+		$dep->is_tickets_enabled = true;
 		$dep->is_chat_enabled = true;
 
 		$this->getEm()->persist($dep);
