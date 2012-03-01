@@ -784,7 +784,7 @@ class TicketsStep extends AbstractDeskpro3Step
 
 				case 'subject':
 					$insert_tlog['action_type'] = 'changed_subject';
-					$insert_tlog['details']     = array('subject_before' => $tlog['detail_before'], 'subject_after' => $tlog['detail_after']);
+					$insert_tlog['details']     = array('old_subject' => $tlog['detail_before'], 'new_subject' => $tlog['detail_after']);
 					break;
 
 				case 'created':
@@ -911,10 +911,10 @@ class TicketsStep extends AbstractDeskpro3Step
 
 					$insert_tlog['id_before'] = $id_before;
 					$insert_tlog['id_after']  = $id_after;
-					$insert_tlog['details']['org_id_before']   = $info_before['id'];
-					$insert_tlog['details']['org_name_before'] = $info_before['name'];
-					$insert_tlog['details']['org_id_after']    = $info_after['id'];
-					$insert_tlog['details']['org_name_after']  = $info_after['name'];
+					$insert_tlog['details']['old_org_id']   = $info_before['id'];
+					$insert_tlog['details']['old_org_name'] = $info_before['name'];
+					$insert_tlog['details']['new_org_id']    = $info_after['id'];
+					$insert_tlog['details']['new_org_name']  = $info_after['name'];
 
 					$insert_tlog['action_type'] = 'changed_organization';
 					break;
@@ -1032,13 +1032,6 @@ class TicketsStep extends AbstractDeskpro3Step
 					$insert_tlog['action_type'] = 'merged';
 					break;
 
-				case 'merge':
-					$insert_tlog['id_after'] = $insert_ticket['id'];
-					$insert_tlog['details']['new_ticket_id'] = $insert_ticket['id'];
-					$insert_tlog['details']['old_ticket_id'] = 0;
-					$insert_tlog['action_type'] = 'merged';
-					break;
-
 				case 'merge_message':
 					if (!isset($message_map[$tlog['id_before']])) {
 						break;
@@ -1049,7 +1042,7 @@ class TicketsStep extends AbstractDeskpro3Step
 					$insert_tlog['details']['new_ticket_id'] = $insert_ticket['id'];
 					$insert_tlog['details']['old_ticket_id'] = 0;
 					$insert_tlog['details']['message_id'] = $message_map[$tlog['id_before']];
-					$insert_tlog['action_type'] = 'message_merged';
+					$insert_tlog['action_type'] = 'merged_message';
 					break;
 
 				case 'merge_attachment':
@@ -1069,7 +1062,7 @@ class TicketsStep extends AbstractDeskpro3Step
 					$insert_tlog['details']['blob_id'] = $info['blob_id'];
 					$insert_tlog['details']['filename'] = $info['filename'];
 					$insert_tlog['details']['filesize'] = $info['filesize'];
-					$insert_tlog['action_type'] = 'attach_merged';
+					$insert_tlog['action_type'] = 'merged_attach';
 					break;
 
 				case 'split_from':

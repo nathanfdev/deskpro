@@ -12,34 +12,34 @@
 namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Ticket;
 
-class Merge implements LogActionInterface
+class Subject implements LogActionInterface
 {
-	protected $ticket;
-	protected $old_ticket_id;
+	protected $old_subject;
+	protected $new_subject;
 
-	public function __construct($ticket, $old_ticket_id)
+	public function __construct($old_subject, $new_subject)
 	{
-		$this->ticket = $ticket;
-		$this->old_ticket_id = $old_ticket_id;
+		$this->old_subject = $old_subject;
+		$this->new_subject = $new_subject;
 	}
 
 	public function getLogName()
 	{
-		return 'merged';
+		return 'changed_subject';
 	}
 
 	public function getLogDetails()
 	{
 		return array(
-			'id_before' => $this->old_ticket_id ?: null,
-			'id_after'  => $this->ticket['id'] ?: null,
+			'old_subject' => $this->old_subject,
+			'new_subject' => $this->new_subject,
 		);
 	}
 
 	public function getEventType()
 	{
-		return 'ticket_merge';
+		return 'property';
 	}
 }

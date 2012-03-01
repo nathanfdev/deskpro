@@ -11,37 +11,36 @@
 
 namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 
-class AttachAdded implements LogActionInterface
-{
-	/**
-	 * @var \Application\DeskPRO\Entity\TicketAttachment
-	 */
-	protected $attach;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-	public function __construct($attach)
+class MergeAttach implements LogActionInterface
+{
+	protected $attach;
+	protected $old_ticket_id;
+
+	public function __construct($attach, $old_ticket_id)
 	{
 		$this->attach = $attach;
+		$this->old_ticket_id = $old_ticket_id;
 	}
 
 	public function getLogName()
 	{
-		return 'attach_added';
+		return 'merged_attach';
 	}
 
 	public function getLogDetails()
 	{
-		$details = array();
-		$details['id_after']  = $this->attach->id;
-		$details['attach_id'] = $this->attach->id;
-		$details['blob_id']   = $this->attach->blob->id;
-		$details['filename']  = $this->attach->blob->filename;
-		$details['filesize']  = $this->attach->blob->filesize;
-
-		return $details;
+		return array(
+			'id_before' => $this->old_ticket_id,
+			'id_after'  => $this->attach->ticket->id,
+			'id_object' => $this->attach->id
+		);
 	}
 
 	public function getEventType()
 	{
-		return 'property';
+		return 'ticket_merge';
 	}
 }

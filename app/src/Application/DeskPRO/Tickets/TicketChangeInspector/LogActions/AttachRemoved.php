@@ -11,16 +11,31 @@
 
 namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 
-class AttachAdded implements LogActionInterface
+class AttachRemoved implements LogActionInterface
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketAttachment
 	 */
 	protected $attach;
 
+	/**
+	 * @var int
+	 */
+	protected $old_id;
+
+	/**
+	 * @var int
+	 */
+	protected $old_blob_id;
+
 	public function __construct($attach)
 	{
 		$this->attach = $attach;
+
+		// We need to copy the IDs now because after
+		// the records have been removed, Doctrine sets the IDs to 0
+		$this->old_id = $attach->id;
+		$this->old_blob_id = $attach->blob->id;
 	}
 
 	public function getLogName()
@@ -31,11 +46,11 @@ class AttachAdded implements LogActionInterface
 	public function getLogDetails()
 	{
 		$details = array();
-		$details['id_after']  = $this->attach->id;
-		$details['attach_id'] = $this->attach->id;
-		$details['blob_id']   = $this->attach->blob->id;
-		$details['filename']  = $this->attach->blob->filename;
-		$details['filesize']  = $this->attach->blob->filesize;
+		$details['id_before']     = $this->old_id;
+		$details['old_attach_id'] = $this->old_id;
+		$details['blob_id']       = $this->attach->blob->id;
+		$details['filename']      = $this->attach->blob->filename;
+		$details['filesize']      = $this->attach->blob->filesize;
 
 		return $details;
 	}

@@ -11,31 +11,39 @@
 
 namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 
-class AttachAdded implements LogActionInterface
+class MessageRemoved implements LogActionInterface
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketAttachment
 	 */
-	protected $attach;
+	protected $message;
 
-	public function __construct($attach)
+	/**
+	 * @var int
+	 */
+	protected $old_id;
+
+	public function __construct($message)
 	{
-		$this->attach = $attach;
+		$this->message = $message;
+
+		// We need to copy the ID now because after
+		// the records have been removed, Doctrine sets the IDs to 0
+		$this->old_id = $message->id;
 	}
 
 	public function getLogName()
 	{
-		return 'attach_added';
+		return 'message_removed';
 	}
 
 	public function getLogDetails()
 	{
 		$details = array();
-		$details['id_after']  = $this->attach->id;
-		$details['attach_id'] = $this->attach->id;
-		$details['blob_id']   = $this->attach->blob->id;
-		$details['filename']  = $this->attach->blob->filename;
-		$details['filesize']  = $this->attach->blob->filesize;
+		$details['id_after'] = $this->old_id;
+		$details['message_id'] = $this->old_id;
+		$details['is_agent_note'] = $this->message->is_agent_note;
+		$details['is_agent_message'] = $this->message->person->is_agent;
 
 		return $details;
 	}
