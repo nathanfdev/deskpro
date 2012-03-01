@@ -154,7 +154,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		if (!$new_agent_id) $new_agent_id = null;
 
 		$insert_ticket = array(
-			'subject' => $ticket_info['subject'],
+			'subject' => trim($ticket_info['subject']),
 			'person_id' => $new_person_id,
 			'agent_id' => $new_agent_id,
 			'department_id' => $new_department_id,
@@ -242,7 +242,7 @@ class TicketsStep extends AbstractDeskpro3Step
 
 			$insert_message = array();
 			$insert_message['message_hash'] = sha1(microtime(true) . mt_rand(1000,99999)); // bogus hash
-			$insert_message['message'] = nl2br(htmlspecialchars($note_info['note'], \ENT_QUOTES));
+			$insert_message['message'] = nl2br(htmlspecialchars(trim($note_info['note']), \ENT_QUOTES));
 			$insert_message['person_id'] = $pid;
 			$insert_message['ticket_id'] = $insert_ticket['id'];
 			$insert_message['is_agent_note'] = 1;
@@ -322,6 +322,8 @@ class TicketsStep extends AbstractDeskpro3Step
 					$save_raw = true;
 				}
 			}
+
+			$insert_message['message'] = trim($insert_message['message']);
 
 			$search_content[] = $message_info['message'];
 			$insert_message['message'] = nl2br(htmlspecialchars($message_info['message'], \ENT_QUOTES, 'UTF-8'));
