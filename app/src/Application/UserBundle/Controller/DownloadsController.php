@@ -56,6 +56,7 @@ class DownloadsController extends AbstractController
 			$category_path = $category->getTreeParents();
 
 			$searcher = new \Application\DeskPRO\Searcher\DownloadSearch();
+			$searcher->setPersonContext($this->person);
 			$searcher->addTerm('category', 'is', $category['id']);
 
 		} else {
@@ -63,6 +64,7 @@ class DownloadsController extends AbstractController
 			$category_path = null;
 
 			$searcher = new \Application\DeskPRO\Searcher\DownloadSearch();
+			$searcher->setPersonContext($this->person);
 		}
 
 		$category_counts = $structure->getDownloadCategoryCounts($this->person);
@@ -121,6 +123,7 @@ class DownloadsController extends AbstractController
 		$page = max(1, $page);
 
 		$searcher = new \Application\DeskPRO\Searcher\DownloadSearch();
+		$searcher->setPersonContext($this->person);
 		$searcher->setOrderBy('id', 'desc');
 
 		$download_ids = $searcher->getMatches(array(
@@ -158,6 +161,7 @@ class DownloadsController extends AbstractController
 		$page = max(1, $page);
 
 		$searcher = new \Application\DeskPRO\Searcher\DownloadSearch();
+		$searcher->setPersonContext($this->person);
 		$searcher->addTerm('popular', 'is', '1');
 		$searcher->setOrderBy('num_downloads', 'desc');
 

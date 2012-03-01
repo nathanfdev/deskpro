@@ -60,6 +60,7 @@ class NewsController extends AbstractController
 			$category_path = $category->getTreeParents();
 
 			$searcher = new \Application\DeskPRO\Searcher\NewsSearch();
+			$searcher->setPersonContext($this->person);
 			$searcher->addTerm('category', 'is', $category['id']);
 
 		} else {
@@ -67,6 +68,7 @@ class NewsController extends AbstractController
 			$category_path = null;
 
 			$searcher = new \Application\DeskPRO\Searcher\NewsSearch();
+			$searcher->setPersonContext($this->person);
 		}
 
 		$news_cats = $structure->getNewsCategories();

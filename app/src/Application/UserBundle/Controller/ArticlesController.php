@@ -61,6 +61,7 @@ class ArticlesController extends AbstractController
 			$category_children = $category->getChildren();
 
 			$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
+			$searcher->setPersonContext($this->person);
 			$searcher->addTerm('category_specific', 'is', $category['id']);
 			$searcher->addTerm('status', 'is', 'published');
 			$searcher->setOrderBy('id', 'desc');
@@ -123,6 +124,7 @@ class ArticlesController extends AbstractController
 		$products = App::getEntityRepository('DeskPRO:Product')->getCategoryHelper()->getFlatHierarchy();
 
 		$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
+		$searcher->setPersonContext($this->person);
 		$searcher->addTerm('status', 'is', 'published');
 
 		$search_options = array();
@@ -181,6 +183,7 @@ class ArticlesController extends AbstractController
 		$per_page = 20;
 
 		$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
+		$searcher->setPersonContext($this->person);
 		$searcher->addTerm('status', 'is', 'published');
 		$searcher->setOrderBy('id', 'desc');
 
@@ -222,6 +225,7 @@ class ArticlesController extends AbstractController
 		$per_page = 20;
 
 		$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
+		$searcher->setPersonContext($this->person);
 		$searcher->addTerm('status', 'is', 'published');
 		$searcher->addTerm('popular', 'is', '1');
 		$searcher->setOrderBy('view_count', 'desc');

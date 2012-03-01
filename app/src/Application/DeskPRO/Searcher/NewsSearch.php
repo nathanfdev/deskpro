@@ -66,6 +66,26 @@ class NewsSearch extends SearcherAbstract
 
 
 	/**
+	 * @return string
+	 */
+	public function getPermWhere()
+	{
+		if (!$this->person) {
+			return '';
+		}
+
+		$dis_ids = $this->person->PermissionsManager->NewsCategories->getDisallowedCategories();
+		if (!$dis_ids) {
+			return '';
+		}
+
+		$dis_ids = implode(',', $dis_ids);
+
+		return '(news.category_id NOT IN(' . $dis_ids . '))';
+	}
+
+
+	/**
 	 * Get the total number of matches
 	 *
 	 * @return int
@@ -98,9 +118,15 @@ class NewsSearch extends SearcherAbstract
 		# Add wheres
 		#------------------------------
 
+		$sql .= "WHERE ";
+		$where_perm = $this->getPermWhere();
+		if ($where_perm) {
+			$sql .= $where_perm . ' AND ';
+		}
 		if ($parts['wheres']) {
-			$sql .= "WHERE ";
 			$sql .= implode(" AND ", $parts['wheres']);
+		} else {
+			$sql .= '1';
 		}
 
 		$count = App::getDb()->fetchColumn($sql);
@@ -144,9 +170,15 @@ class NewsSearch extends SearcherAbstract
 		# Add wheres
 		#------------------------------
 
+		$sql .= "WHERE ";
+		$where_perm = $this->getPermWhere();
+		if ($where_perm) {
+			$sql .= $where_perm . ' AND ';
+		}
 		if ($parts['wheres']) {
-			$sql .= "WHERE ";
 			$sql .= implode(" AND ", $parts['wheres']);
+		} else {
+			$sql .= '1';
 		}
 
 		$sql .= " GROUP BY news.id ";

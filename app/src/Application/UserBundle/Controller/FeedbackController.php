@@ -91,6 +91,7 @@ class FeedbackController extends AbstractController
 		$status_subcats = Arrays::mergeAssoc($active_status_cats, $closed_status_cats);
 
 		$searcher = new \Application\DeskPRO\Searcher\FeedbackSearch();
+		$searcher->setPersonContext($this->person);
 
 		if ($status == 'popular') {
 			$searcher->addTerm('status', 'is', array('active', 'new'));
