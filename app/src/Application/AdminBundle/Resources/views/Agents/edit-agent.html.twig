@@ -160,8 +160,8 @@
 											{% for subdep in dep.children %}
 												<tr>
 													<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ subdep.title }}</td>
-													<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][tickets]" value="1" /></td>
-													<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[dep.id].chat or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][chat]" value="1" /></td>
+													<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[subdep.id].tickets or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][tickets]" value="1" /></td>
+													<td class="prop"><input class="onoff-slider" type="checkbox" {% if agent_deps[subdep.id].chat or not agent.id %}checked="checked"{% endif %} name="agent[departments][{{ subdep.id }}][chat]" value="1" /></td>
 												</tr>
 											{% endfor %}
 										{% endif %}
