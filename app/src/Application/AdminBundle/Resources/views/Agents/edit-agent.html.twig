@@ -194,6 +194,7 @@
 										<label>
 											<input type="checkbox" name="agent[usergroups][]" value="{{ usergroup.id }}" {% if (not agent.id and usergroup.id == 2) or (usergroup.id in agent_usergroups) %}checked="checked"{% endif %} />
 											{{ usergroup.title }}
+											<a href="{{ path('admin_agents_groups_edit', {usergroup_id: usergroup.id}) }}" class="tools-menu-icon" style="position: relative; top: 2px;"></a>
 										</label>
 									</li>
 									{% endfor %}

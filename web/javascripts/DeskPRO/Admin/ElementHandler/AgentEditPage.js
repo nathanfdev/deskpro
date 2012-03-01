@@ -57,7 +57,7 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 
 		this.usergroupChecks = $('#usergroup_checks :checkbox');
 
-		$('#usergroup_checks').on('click', ':checkbox', function() { self.updatePermissionsGrid($(this)); });
+		$('#usergroup_checks').on('click', ':checkbox', function() { self.updatePermissionsGrid(); });
 		$('#permgroup_table').find(':checkbox').on('change', function() {
 			if (!self.suppressChange) {
 				self.updatePermissionsGrid($(this));
@@ -188,30 +188,15 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 					row.find('.jquery-checkbox-checked').addClass('jquery-checkbox-checked')
 					row.find('.onoff-slider').prop('checked', true);
 				});
-			}
-		}
-
-		$('#permgroup_table tr.subperm').each(function() {
-			if (!$(this).hasClass('on')) {
-				var tr = $(this);
-				var tbody = $(this).closest('tbody');
+			} else if (elRow.is('.subperm')) {
+				var tbody = elRow.closest('tbody');
 				var parent = tbody.find('tr.parentperm');
-				if (parent.length > 1) {
-					var real = null;
-					parent.each(function() {
-						if (tr.hasClass($(this).find('i').data('expand'))) {
-							real = true;
-							return false;
-						}
-					});
-					parent = real;
-				}
-				parent.removeClass('on').addClass('disabled');
+				parent.removeClass('on');
 				parent.find('.effective').removeClass('effective-on');
 				parent.find('.jquery-checkbox-checked').removeClass('jquery-checkbox-checked')
 				parent.find('.onoff-slider').prop('checked', false);
 			}
-		});
+		}
 
 		$('#permgroup_table tr.parentperm').each(function() {
 			if (!$(this).hasClass('on')) {

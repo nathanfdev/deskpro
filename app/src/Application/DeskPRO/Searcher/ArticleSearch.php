@@ -420,6 +420,7 @@ class ArticleSearch extends SearcherAbstract
 
 		$this->sql_parts = array(
 			'joins' => $joins,
+
 			'wheres' => $wheres
 		);
 
