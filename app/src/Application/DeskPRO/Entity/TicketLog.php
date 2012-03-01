@@ -11,6 +11,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
 /**
@@ -122,6 +123,10 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 		if (isset($details['id_after'])) {
 			$this['id_after'] = $details['id_after'];
 			unset($details['id_after']);
+		}
+		if (isset($details['id_object'])) {
+			$this['id_object'] = $details['id_object'];
+			unset($details['id_object']);
 		}
 
 		$this->setModelField('details', $details);
