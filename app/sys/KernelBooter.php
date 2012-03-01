@@ -92,6 +92,8 @@ class KernelBooter
 			$debug = true;
 		}
 
+		self::ensureEnvFiles($env);
+
 		self::bootstrapLib($debug);
 
 		if (!$request) {
@@ -175,6 +177,7 @@ class KernelBooter
 	public static function bootUpgrade($env = 'prod', $debug = false)
 	{
 		static::ensureCli();
+
 		$app = static::getCliApp($env, $debug);
 
 		$argv = $_SERVER['argv'];
@@ -195,6 +198,7 @@ class KernelBooter
 			$debug = true;
 		}
 
+		self::ensureEnvFiles($env);
 		self::bootstrapLib($debug);
 
 		if (defined('DP_BUILDING')) {
@@ -216,6 +220,88 @@ class KernelBooter
 			echo "This script must only be run from the CLI.\n";
 			echo "Contact support@deskpro.com if you require assistance.\n";
 			exit(1);
+		}
+	}
+
+	/**
+	 * If in prod mode, ensures that the build files etc exist.
+	 * If not in prod mode, ensures that the cached ir exists and is writable.
+	 */
+	protected static function ensureEnvFiles($env)
+	{
+		$cache_dir = DP_ROOT.'/sys/cache';
+
+		#------------------------------
+		# Prod mode: make sure built
+		#------------------------------
+
+		if ($env == 'prod' && (!is_dir($cache_dir . '/prod'))) {
+			if (php_sapi_name() == 'cli') {
+				echo <<<'TXT'
+DeskPRO's internal build files are missing. If you are using a pristine copy of the source code, you will need to do one of the following:
+
+	1) Enable dev mode by editing /config.php and adding these lines:
+
+		$DP_CONFIG['debug'] = array();
+		$DP_CONFIG['debug']['dev'] = true;
+		$DP_CONFIG['debug']['raw_assets'] = array('all);
+
+	2) Or alternatively you can build DeskPRO by running app/bin/build/build.php from the command-line.
+
+Email support@deskpro.com if you need assistance or got this message unexpectedly.
+
+TXT;
+
+				exit(1);
+			} else {
+				$html = <<<'HTML'
+<p>DeskPRO's internal build files are missing. If you are using a pristine copy of the source code, you will need to do one of the following:<br /><br /></p>
+
+<p>1) Enable dev mode by editing <code>/config.php</code> and adding these lines:
+
+<pre>
+$DP_CONFIG['debug'] = array();
+$DP_CONFIG['debug']['dev'] = true;
+$DP_CONFIG['debug']['raw_assets'] = array('all);
+</pre>
+</p>
+
+<p>2) Or alternatively you can build DeskPRO by running <code>app/bin/build/build.php</code> from the command-line.<br /><br /></p>
+
+<p>Email support@deskpro.com if you need assistance or got this message unexpectedly.</p>
+HTML;
+
+				echo deskpro_install_basic_error($html);
+			}
+			exit;
+
+		#------------------------------
+		# Dev mode, make sure cache dir writable
+		#------------------------------
+
+		} elseif (!is_dir($cache_dir) || !is_writable($cache_dir)) {
+if (php_sapi_name() == 'cli') {
+				echo <<<TXT
+DeskPRO is currently in dev mode which requires the cache directory at $cache_dir to be writable. Please
+ensure this directory is writable and try again.
+
+Email support@deskpro.com if you need assistance or got this message unexpectedly.
+
+TXT;
+
+				exit(1);
+			} else {
+				$html = <<<HTML
+<p>DeskPRO is currently in dev mode which requires the cache directory at <code>$cache_dir</code> to be writable. Please
+make this directory writable and try again.<br /><br /></p>
+
+<p>Email support@deskpro.com if you need assistance or got this message unexpectedly.</p>
+HTML;
+
+				echo deskpro_install_basic_error($html);
+			}
+
+			exit;
 		}
 	}
 }
