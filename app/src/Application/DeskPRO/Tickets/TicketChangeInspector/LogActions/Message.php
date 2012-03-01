@@ -34,6 +34,8 @@ class Message implements LogActionInterface
 		$details['id_after'] = $this->message['id'];
 		$details['message_id'] = $this->message['id'];
 		$details['creation_system'] = $this->message['creation_system'];
+		$details['is_agent_note'] = $this->message->is_agent_note;
+		$details['is_agent_message'] = $this->message->person->is_agent;
 
 		if ($this->message['ip_address']) {
 			$details['ip_address'] = $this->message['ip_address'];

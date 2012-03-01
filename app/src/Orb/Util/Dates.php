@@ -252,4 +252,36 @@ class Dates
 		$utc_datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $datetime->format('Y-m-d H:i:s'), new \DateTimeZone('UTC'));
 		return $utc_datetime;
 	}
+
+
+	/**
+	 * Tries to find the name of the timezone for a given offset. Returns false if no timezone found.
+	 *
+	 * @param  float $offset
+	 * @param  null $dst
+	 * @return bool|string
+	 */
+	public static function timezoneOffsetToName($offset, $dst = null)
+	{
+		$offset *= 3600;
+
+		if ($dst === null) {
+			$dst = (bool)((int)date('I'));
+		}
+
+		$timezone = timezone_name_from_abbr('', $offset, $dst);
+
+		if ($timezone !== false) {
+			return $timezone;
+		}
+		foreach (timezone_abbreviations_list() as $abbr) {
+			foreach ($abbr as $city) {
+				if ((bool)$city['dst'] === $dst && $city['timezone_id'] && $city['offset'] == $offset) {
+					return $city['timezone_id'];
+				}
+			}
+		}
+
+		return false;
+    }
 }

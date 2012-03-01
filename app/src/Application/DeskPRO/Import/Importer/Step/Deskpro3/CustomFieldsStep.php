@@ -127,6 +127,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		$this->getEm()->flush();
 
 		$this->saveMappedId('ticket_def', $f['id'], $new_field->id);
+		$this->saveMappedId('ticket_def_name', $f['id'], $f['name']);
 
 		// For choice options, need to insert choices
 		if ($has_choices && ($choice_data = @unserialize($f['data']))) {

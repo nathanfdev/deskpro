@@ -14,31 +14,28 @@ namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-class ParticipantRemoved implements LogActionInterface
+class Free implements LogActionInterface
 {
-	protected $part;
+	protected $message;
+	protected $data;
 
-	public function __construct($part)
+	public function __construct($message, array $misc_data = array())
 	{
-		$this->part = $part;
+		$this->message = $message;
+		$this->data = $misc_data;
 	}
 
 	public function getLogName()
 	{
-		return 'participant_removed';
+		return 'changed_department';
 	}
 
 	public function getLogDetails()
 	{
-		return array(
-			'id_before' => $this->part->id,
-			'id_after'  => null,
+		$details = $this->data;
+		$details['message'] = $this->message;
 
-			'person_id' => $this->part->person ? $this->part->person->id : 0,
-			'name'      => $this->part->getDisplayName(),
-			'email'     => $this->part->getPrimaryEmailAddress(),
-			'is_agent'  => $this->part->person ? $this->part->person->is_agent : false
-		);
+		return $details;
 	}
 
 	public function getEventType()
