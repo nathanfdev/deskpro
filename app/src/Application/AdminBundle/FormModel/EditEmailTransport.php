@@ -95,9 +95,12 @@ class EditEmailTransport
 			} elseif ($this->backup_transport_type == 'gmail') {
 				$this->transport->backup_transport_options = $this->backup_gmail_options;
 			} else {
-				$this->transport->backup_transport_type = '';
+				$this->transport->backup_transport_type = 'mail';
 				$this->transport->backup_transport_options = array();
 			}
+		} else {
+			$this->transport->backup_transport_type = '';
+			$this->transport->backup_transport_options = array();
 		}
 
 		if ($this->match_type == 'any') {
