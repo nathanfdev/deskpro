@@ -148,14 +148,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 	public function licenseAction()
 	{
-		try {
-			$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($this->getDb());
-			$stats = $stats_fetcher->getStats();
-			$stats = \Orb\Util\Arrays::implodeTemplate($stats, "{KEY}: {VAL}\n");
-		} catch (\Exception $e) {}
-
 		return $this->render('InstallBundle:Install:license.html.php', array(
-			'stats' => $stats,
+
 		));
 	}
 

@@ -38,23 +38,57 @@ class ServerStats
 		$stats['php_memory_limit'] = \Orb\Util\Env::getMemoryLimit();
 
 		if (function_exists('apc_cache_info')) {
-			$stats['php_has_apc'] = true;
+			$stats['php_has_apc'] = 1;
+		} else {
+			$stats['php_has_apc'] = 0;
 		}
 
 		if (function_exists('mb_get_info')) {
-			$stats['php_has_mbstring'] = true;
+			$stats['php_has_mbstring'] = 1;
+		} else {
+			$stats['php_has_mbstring'] = 0;
 		}
 
 		if (function_exists('gd_info')) {
-			$stats['php_has_gd'] = true;
+			$stats['php_has_gd'] = 1;
+		} else {
+			$stats['php_has_gd'] = 0;
 		}
 
 		if (class_exists('Imagick', false)) {
-			$stats['php_has_imagick'] = true;
+			$stats['php_has_imagick'] = 1;
+		} else {
+			$stats['php_has_imagick'] = 0;
 		}
 
 		if (class_exists('Gmagick', false)) {
-			$stats['php_has_gmagick'] = true;
+			$stats['php_has_gmagick'] = 1;
+		} else {
+			$stats['php_has_gmagick'] = 0;
+		}
+
+		if (class_exists('PDO')) {
+			$stats['php_has_pdo'] = 1;
+		} else {
+			$stats['php_has_pdo'] = 0;
+		}
+
+		if (function_exists('json_decode')) {
+			$stats['php_has_json'] = 1;
+		} else {
+			$stats['php_has_json'] = 0;
+		}
+
+		if (function_exists('ctype_digit')) {
+			$stats['php_has_ctype'] = 1;
+		} else {
+			$stats['php_has_ctype'] = 0;
+		}
+
+		if (function_exists('token_get_all')) {
+			$stats['php_has_tokenizer'] = 1;
+		} else {
+			$stats['php_has_tokenizer'] = 0;
 		}
 
 		#------------------------------

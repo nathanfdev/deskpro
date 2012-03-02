@@ -95,7 +95,9 @@ statistical analysis. This information does not include any personally
 identified information and cannot be used to track or identify you or your
 website. <span style="border-bottom: 1px dotted #888; cursor: pointer;" id="stats_expand">Click here to see the data that will be sent.</span>
 
-<div id="stats_list" style="display: none;"><?php echo $stats ?></div><input type="checkbox" style="width: 10px;" name="stats_opt_out" /> If you do not want to participate in the anonymous server statistics program,
+<div id="stats_list" style="display: none;">PHP version, PHP memory limit, availability of various PHP extensions, MySQL version, MySQL variables including all innodb*, buffer sizes, and max limits, server OS and uname, webserver and version.
+
+</div><input type="checkbox" style="width: 10px;" name="stats_opt_out" /> If you do not want to participate in the anonymous server statistics program,
 check this box to opt out.
 
 License Transfer

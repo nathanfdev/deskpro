@@ -309,7 +309,7 @@ HTML;
 		# Dev mode, not using raw assets, no build files
 		#------------------------------
 
-		} elseif ($env == 'dev' && (empty($DP_CONFIG['debug']['raw_assets']) && !is_dir($web_dir.'/build'))) {
+		} elseif ($env == 'dev' && (empty($DP_CONFIG['debug']['raw_assets']) && !is_file($web_dir.'/build/js/agent-all.js'))) {
 			if (php_sapi_name() == 'cli') {
 				echo <<<'TXT'
 You are running in dev mode but you have not enabled raw assets and assets have not been built yet. For pages to display properly, you will need to do one of the following:
