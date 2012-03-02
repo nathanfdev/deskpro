@@ -57,6 +57,9 @@ class TechsStep extends AbstractDeskpro3Step
 
 		$this->getDb()->beginTransaction();
 
+		$scanner = new \Application\InstallBundle\Data\AgentGroupPermScanner();
+		$perms = $scanner->getNames();
+
 		try {
 			foreach ($techs as $tech) {
 
@@ -103,6 +106,169 @@ class TechsStep extends AbstractDeskpro3Step
 					'typename' => 'dp3_techpass_' . $tech['id'],
 					'data' => serialize(array('new_id' => $agent->id, 'old_pass' => $tech['password']))
 				));
+
+				#------------------------------
+				# Copy Permissions
+				#------------------------------
+
+				// Admins just have everything
+				if ($agent->can_admin) {
+					$this->getDb()->insert('person2usergroups', array(
+						'person_id' => $agent->id,
+						'usergroup_id' => 1
+					));
+
+				// Otherwise we'll import perms into overrides
+				} else {
+					$insert_perms = array();
+					foreach ($perms as $n) {
+						$insert_perms[$n] = 1;
+					}
+
+					//-----
+					// Tickets (Own)
+					//-----
+
+					if (!$tech['p_delete_own']) {
+						unset($tech['agent_tickets.delete_own']);
+					}
+					if (!$tech['p_start_ticket']) {
+						unset($tech['agent_tickets.create']);
+					}
+
+					if (!$tech['p_close_ticket']) {
+						unset($tech['agent_tickets.modify_set_resolved_own']);
+						unset($tech['agent_tickets.modify_set_resolved_unassigned']);
+						unset($tech['agent_tickets.modify_set_resolved_others']);
+					}
+
+					if (!$tech['p_merge_ticket']) {
+						unset($tech['agent_tickets.modify_set_merge_own']);
+						unset($tech['agent_tickets.modify_set_merge_unassigned']);
+						unset($tech['agent_tickets.modify_set_merge_others']);
+					}
+
+
+					//-----
+					// Tickets (Unassigned)
+					//-----
+
+					if (!$tech['p_unassigned_view']) {
+						unset(
+							$insert_perms['agent_tickets.view_unassigned'],
+							$insert_perms['agent_tickets.reply_unassigned'],
+							$insert_perms['agent_tickets.modify_unassigned'],
+							$insert_perms['agent_tickets.modify_department_unassigned'],
+							$insert_perms['agent_tickets.modify_fields_unassigned'],
+							$insert_perms['agent_tickets.modify_assign_agent_unassigned'],
+							$insert_perms['agent_tickets.modify_assign_team_unassigned'],
+							$insert_perms['agent_tickets.modify_assign_self_unassigned'],
+							$insert_perms['agent_tickets.modify_cc_unassigned'],
+							$insert_perms['agent_tickets.modify_merge_unassigned'],
+							$insert_perms['agent_tickets.modify_labels_unassigned'],
+							$insert_perms['agent_tickets.modify_notes_unassigned'],
+							$insert_perms['agent_tickets.modify_set_hold_unassigned'],
+							$insert_perms['agent_tickets.modify_set_awaiting_user_unassigned'],
+							$insert_perms['agent_tickets.modify_set_awaiting_agent_unassigned'],
+							$insert_perms['agent_tickets.modify_set_resolved_unassigned'],
+							$insert_perms['agent_tickets.delete_unassigned']
+						);
+					}
+
+					//-----
+					// Tickets (Others)
+					//-----
+
+					if (!$tech['p_others_view']) {
+						unset(
+							$insert_perms['agent_tickets.view_others'],
+							$insert_perms['agent_tickets.reply_others'],
+							$insert_perms['agent_tickets.modify_others'],
+							$insert_perms['agent_tickets.modify_department_others'],
+							$insert_perms['agent_tickets.modify_fields_others'],
+							$insert_perms['agent_tickets.modify_assign_agent_others'],
+							$insert_perms['agent_tickets.modify_assign_team_others'],
+							$insert_perms['agent_tickets.modify_assign_self_others'],
+							$insert_perms['agent_tickets.modify_cc_others'],
+							$insert_perms['agent_tickets.modify_merge_others'],
+							$insert_perms['agent_tickets.modify_labels_others'],
+							$insert_perms['agent_tickets.modify_notes_others'],
+							$insert_perms['agent_tickets.modify_set_hold_others'],
+							$insert_perms['agent_tickets.modify_set_awaiting_user_others'],
+							$insert_perms['agent_tickets.modify_set_awaiting_agent_others'],
+							$insert_perms['agent_tickets.modify_set_resolved_others'],
+							$insert_perms['agent_tickets.delete_others']
+						);
+					} else {
+						if (!$tech['p_delete_other']) {
+							unset($insert_perms['agent_tickets.delete_others']);
+						}
+						if (!$tech['p_tech_reply']) {
+							unset($insert_perms['agent_tickets.reply_others']);
+						}
+						if (!$tech['p_tech_edit']) {
+							unset(
+								$insert_perms['agent_tickets.modify_others'],
+								$insert_perms['agent_tickets.modify_department_others'],
+								$insert_perms['agent_tickets.modify_fields_others'],
+								$insert_perms['agent_tickets.modify_assign_agent_others'],
+								$insert_perms['agent_tickets.modify_assign_team_others'],
+								$insert_perms['agent_tickets.modify_assign_self_others'],
+								$insert_perms['agent_tickets.modify_cc_others'],
+								$insert_perms['agent_tickets.modify_merge_others'],
+								$insert_perms['agent_tickets.modify_labels_others'],
+								$insert_perms['agent_tickets.modify_labels_others'],
+								$insert_perms['agent_tickets.modify_set_hold_others'],
+								$insert_perms['agent_tickets.modify_set_awaiting_user_others'],
+								$insert_perms['agent_tickets.modify_set_awaiting_agent_others'],
+								$insert_perms['agent_tickets.modify_set_resolved_others']
+							);
+						}
+					}
+
+					//-----
+					// Users
+					//-----
+
+					if (!$tech['p_create_users']) {
+						unset($insert_perms['agent_people.create']);
+					}
+
+					if (!$tech['p_edit_users']) {
+						unset(
+							$insert_perms['agent_people.edit'],
+							$insert_perms['agent_people.validate'],
+							$insert_perms['agent_people.manage_emails'],
+							$insert_perms['agent_people.reset_password'],
+							$insert_perms['agent_people.delete']
+						);
+					}
+
+					if (!$tech['p_delete_users']) {
+						unset($insert_perms['agent_people.delete']);
+					}
+
+					if (!$tech['p_approve_new_registrations']) {
+						unset($insert_perms['agent_people.validate']);
+					}
+
+					//-----
+					// Chat
+					//-----
+
+					if (!$tech['p_chat']) {
+						unset(
+							$insert_perms['agent_chat.use'],
+							$insert_perms['agent_chat.view_unassigned'],
+							$insert_perms['agent_chat.view_others'],
+							$insert_perms['agent_chat.delete']
+						);
+					} else {
+						if (!$tech['p_chat_del_logs']) {
+							unset($insert_perms['agent_chat.delete']);
+						}
+					}
+				}
 
 				#------------------------------
 				# Category (department) permissions
