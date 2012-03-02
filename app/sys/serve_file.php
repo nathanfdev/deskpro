@@ -1,4 +1,4 @@
-<?php
+<?php if (!defined('DP_ROOT')) exit('No access');
 /**
  * DeskPRO
  *

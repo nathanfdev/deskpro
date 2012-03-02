@@ -1,4 +1,4 @@
-<?php
+<?php if (!defined('DP_ROOT')) exit('No access');
 set_include_path(
 	DP_ROOT.'/vendor/zend/library'
 	.PATH_SEPARATOR.

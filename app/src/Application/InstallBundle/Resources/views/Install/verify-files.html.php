@@ -1,3 +1,4 @@
+<?php if (!defined('DP_ROOT')) exit('No access'); ?>
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
 <?php $view['slots']->start('subtitle') ?>Step 3: Verifying file integrity<?php $view['slots']->stop() ?>
 <script type="text/javascript">

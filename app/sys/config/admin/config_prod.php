@@ -1,4 +1,4 @@
-<?php
+<?php if (!defined('DP_ROOT')) exit('No access');
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerInterface;

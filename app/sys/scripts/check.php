@@ -1,4 +1,4 @@
-<?php
+<?php if (!defined('DP_ROOT')) exit('No access');
 require DP_ROOT . '/src/Application/InstallBundle/Install/server_check_functions.php';
 echo '<pre>';
 

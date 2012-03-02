@@ -1,3 +1,4 @@
+<?php if (!defined('DP_ROOT')) exit('No access'); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
