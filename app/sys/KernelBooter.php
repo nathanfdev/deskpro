@@ -93,6 +93,7 @@ class KernelBooter
 		$fp = fopen(DP_DEBUG_TRACE_FILE, 'r');
 		fseek($fp, -150000, \SEEK_END);
 		$chunk = fread($fp, 150000);
+		fclose($fp);
 		if (strpos($chunk, 'DeskPRO_Done_MarkerCheck') === false) {
 			$new = str_replace('/debug/', '/debug/failed/', DP_DEBUG_TRACE_FILE);
 			rename(DP_DEBUG_TRACE_FILE, $new);
