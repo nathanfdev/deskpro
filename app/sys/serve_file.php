@@ -1,4 +1,4 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
+<?php
 /**
  * DeskPRO
  *
@@ -9,6 +9,8 @@
  */
 
 namespace DeskPRO\Kernel;
+
+if (!defined('DP_ROOT')) exit('No access');
 
 require_once DP_ROOT.'/src/Orb/Data/ContentTypes.php';
 
