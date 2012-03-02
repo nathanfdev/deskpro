@@ -19,6 +19,7 @@ use Application\DeskPRO\EmailGateway\Ticket\ToEmailTicketDetector;
 use Application\DeskPRO\EmailGateway\Ticket\InReplyToDetector;
 use Application\DeskPRO\EmailGateway\Ticket\SubjectMatchDetector;
 use Application\DeskPRO\EmailGateway\Ticket\SubjectRefMatchDetector;
+use Application\DeskPRO\EmailGateway\Ticket\Dp3Detector;
 use Application\DeskPRO\EmailGateway\Cutter\CutterDefFactory;
 use Application\DeskPRO\EmailGateway\Cutter\ForwardCutter;
 
@@ -84,6 +85,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$ticket = $detector->findExistingTicket($this->reader);
 
 			$this->logMessage('[TicketGatewayProcessor] InReplyToDetector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
+		}
+
+		// If we imported form DP3, run the old codes
+		if (App::getSetting('core.deskpro3importer')) {
+			$detector = new Dp3Detector();
+			$ticket = $detector->findExistingTicket($this->reader);
+			$this->logMessage('[TicketGatewayProcessor] Dp3Detector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
 		}
 
 		if (!$ticket) {

@@ -623,7 +623,19 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$importer->cleanupImport();
 
 			// Clear caches like kb/news/ideas/files category caches
-			$importer->getDb()->executeUpdate('DELETE FROM cache');
+			$importer->getDb()->executeUpdate('TRUNCATE TABLE cache');
+
+			// Mark that we've done this import
+			$this->getDb()->replace('settings', array(
+				'name' => 'core.' . strtolower(\Orb\Util\Util::getBaseClassname($importer)),
+				'groupname' => 'core',
+				'value' => '1',
+				'created_at' => date('Y-m-d H:i:s'),
+				'updated_at' => date('Y-m-d H:i:s'),
+			));
+
+			// Clear the map tables
+			$importer->getDb()->exec("TRUNCATE TABLE import_map");
 
 			$end_time = microtime(true);
 			$logger->log(sprintf("Importer complete. Took %0.3f seconds.", $end_time-$start_time), 'INFO');

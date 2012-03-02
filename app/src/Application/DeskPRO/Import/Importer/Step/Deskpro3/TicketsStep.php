@@ -169,7 +169,8 @@ class TicketsStep extends AbstractDeskpro3Step
 			'language_id' => 1,
 			'ticket_hash' => sha1(microtime(true) . mt_rand(1000,99999)), // bogus hash
 			'date_created' => date('Y-m-d H:i:s', $ticket_info['timestamp_opened']),
-			'ref' => $ticket_info['ref'],
+			'ref' => \Application\DeskPRO\App::getRefGenerator()->generateReference('DeskPRO:Ticket'),
+			'auth' => \Orb\Util\Strings::random(6, \Orb\Util\Strings::CHARS_KEY),
 			'urgency' => 1,
 		);
 
@@ -232,6 +233,12 @@ class TicketsStep extends AbstractDeskpro3Step
 		$this->saveMappedId('ticket', $ticket_id, $insert_ticket['id']);
 
 		$search_content[] = $ticket_info['subject'];
+
+		// Save old ref and auth used in gateways
+		$this->getDb()->insert('import_datastore', array(
+			'dp3_ticketref_' . $ticket_info['ref'],
+			serialize(array('new_id' => $insert_ticket['id'], 'old_auth' => $ticket_info['auth']))
+		));
 
 		#------------------------------
 		# Notes

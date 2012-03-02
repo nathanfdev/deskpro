@@ -115,6 +115,7 @@ class Deskpro3Importer extends AbstractImporter
 
 	public function cleanupImport()
 	{
+
 	}
 
 
