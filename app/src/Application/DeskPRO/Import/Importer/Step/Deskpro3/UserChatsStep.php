@@ -257,7 +257,7 @@ class UserChatsStep extends AbstractDeskpro3Step
 						continue;
 					}
 
-					$message['author_id'] = $new_agent;
+					$message['author_id'] = $new_agent->id;
 					$message['person_name'] = $new_agent->getDisplayName();
 					$message['content'] = '<a href="' . $blob->getDownloadUrl() . '">' . htmlspecialchars($filename) . '</a>';
 					$message['is_html'] = true;

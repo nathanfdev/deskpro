@@ -237,7 +237,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		// Save old ref and auth used in gateways
 		$this->getDb()->insert('import_datastore', array(
 			'typename' => 'dp3_ticketref_' . $ticket_info['ref'],
-			'data' => serialize(array('new_id' => $insert_ticket['id'], 'old_auth' => $ticket_info['auth']))
+			'data' => serialize(array('new_id' => $insert_ticket['id'], 'old_auth' => $ticket_info['authcode']))
 		));
 
 		#------------------------------
