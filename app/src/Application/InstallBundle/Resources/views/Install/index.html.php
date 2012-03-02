@@ -284,7 +284,7 @@
 		above have been fixed.
 
 		<div class="alert-actions">
-			<a class="btn" href="<?php echo $view['router']->generate('install') ?>">Refresh the page to re-run he checks</a>
+			<a class="btn" href="<?php echo $view['router']->generate('install_checks') ?>">Refresh the page to re-run he checks</a>
 		</div>
 	</div>
 <?php else: ?>
