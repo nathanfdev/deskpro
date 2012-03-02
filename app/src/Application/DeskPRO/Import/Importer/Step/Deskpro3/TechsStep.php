@@ -268,6 +268,14 @@ class TechsStep extends AbstractDeskpro3Step
 							unset($insert_perms['agent_chat.delete']);
 						}
 					}
+
+					foreach ($insert_perms as $k => $v) {
+						$this->getDb()->insert('permissions', array(
+							'person_id' => $agent->id,
+							'name' => $k,
+							'value' => 1
+						));
+					}
 				}
 
 				#------------------------------

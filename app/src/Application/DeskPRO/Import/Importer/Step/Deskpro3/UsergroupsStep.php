@@ -38,6 +38,14 @@ use Application\DeskPRO\Entity\Usergroup;
 
 class UsergroupsStep extends AbstractDeskpro3Step
 {
+	/**
+	 * @var array
+	 */
+	protected $perms;
+	protected $ticket_cats;
+	protected $faq_cats;
+	protected $files_cats;
+
 	public static function getTitle()
 	{
 		return 'Import Usergroups';
@@ -53,6 +61,17 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		}
 
 		$start_time = microtime(true);
+
+		$scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
+		$this->perms = $scanner->getNames();
+
+		$this->ticket_cats = $this->getOldDb()->fetchAll("SELECT * FROM ticket_cat ORDER BY display_order ASC");
+		$this->ticket_cats = \Orb\Util\Arrays::intoHierarchy($this->ticket_cats, 0, 'parent');
+
+		$this->faq_cats = $this->getOldDb()->fetchAll("SELECT * FROM faq_cats ORDER BY display_order ASC");
+		$this->faq_cats = \Orb\Util\Arrays::intoHierarchy($this->faq_cats, 0, 'parent');
+
+		$this->files_cats = $this->getOldDb()->fetchAll("SELECT * FROM files_cats ORDER BY display_order ASC");
 
 		$this->getDb()->beginTransaction();
 
@@ -84,10 +103,176 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		}
 
 		#------------------------------
+		# Copy permissions
+		#------------------------------
+
+		$insert_perms = $this->perms;
+
+		//-----
+		// Tickets
+		//-----
+
+		if (!$group_info['p_ticket']) {
+			unset($insert_perms['tickets.use']);
+		}
+
+
+		//-----
+		// Chat
+		//-----
+
+		if (!$group_info['p_chat']) {
+			unset($insert_perms['chat.use']);
+		}
+
+		//-----
+		// KB
+		//-----
+
+		if (!$group_info['p_kb']) {
+			unset(
+				$insert_perms['articles.use'],
+				$insert_perms['articles.rate'],
+				$insert_perms['articles.comment'],
+				$insert_perms['articles.comment_validate']
+			);
+		} else {
+			if (!$group_info['p_kb_comment']) {
+				unset($insert_perms['articles.comment']);
+				unset($insert_perms['articles.comment_validate']);
+			}
+			if (!$group_info['p_kb_rate']) {
+				unset($insert_perms['articles.rate']);
+			}
+		}
+
+		//-----
+		// Downloads
+		//-----
+
+		if (!$group_info['p_dl']) {
+			unset(
+				$insert_perms['downloads.use'],
+				$insert_perms['downloads.rate'],
+				$insert_perms['downloads.comment'],
+				$insert_perms['downloads.comment_validate']
+			);
+		} else {
+			if (!$group_info['p_kb'] || !$group_info['p_kb_comment']) {
+				unset($insert_perms['downloads.comment']);
+				unset($insert_perms['downloads.comment_validate']);
+			}
+			if (!$group_info['p_kb'] || !$group_info['p_kb_rate']) {
+				unset($insert_perms['downloads.rate']);
+			}
+		}
+
+		//-----
+		// News
+		//-----
+
+		if (!$group_info['p_kb'] || !$group_info['p_kb_comment']) {
+			unset($insert_perms['news.comment']);
+			unset($insert_perms['news.comment_validate']);
+		}
+		if (!$group_info['p_kb'] || !$group_info['p_kb_rate']) {
+			unset($insert_perms['news.rate']);
+		}
+
+		//-----
+		// Feedback
+		//-----
+
+		if (!$group_info['p_ideas']) {
+			unset(
+				$insert_perms['feedback.use'],
+				$insert_perms['feedback.submit'],
+				$insert_perms['feedback.submit_validate'],
+				$insert_perms['feedback.rate'],
+				$insert_perms['feedback.comment'],
+				$insert_perms['feedback.comment_validate']
+			);
+		} else {
+			if (!$group_info['p_ideas_new']) {
+				unset($insert_perms['feedback.submit']);
+				unset($insert_perms['feedback.submit_validate']);
+			} elseif (!$group_info['p_ideas_new_visible']) {
+				unset($insert_perms['feedback.submit_validate']);
+			}
+			if (!$group_info['p_ideas_comment_new']) {
+				unset($insert_perms['feedback.comment']);
+				unset($insert_perms['feedback.comment_validate']);
+			}
+			if (!$group_info['p_ideas_vote']) {
+				unset($insert_perms['feedback.rate']);
+			}
+		}
+
+		//-----
+		// Departments
+		//-----
+
+		$insert_depperms = array();
+
+		$dep_perms = $this->getDb()->fetchAllCol("SELECT category FROM ticket_cat_permissions WHERE usergroup = ?", $group_info['id']);
+		foreach ($this->ticket_cats as $cat) {
+			if (in_array($cat['id'], $dep_perms)) {
+				if ($cat['children']) {
+					foreach ($cat['children'] as $subcat) {
+						if ($subcat['perm_inherit']) {
+							$insert_depperms[] = $this->getMappedNewId('ticket_category', $subcat['id']);
+						} elseif (in_array($subcat['id'], $dep_perms)) {
+							$insert_depperms[] = $this->getMappedNewId('ticket_category', $subcat['id']);
+						}
+					}
+				} else {
+					$insert_depperms[] = $this->getMappedNewId('ticket_category', $cat['id']);
+				}
+			}
+		}
+
+		//-----
+		// Article Cats
+		//-----
+
+		$insert_faqperms = array();
+
+		$cat_perms = $this->getDb()->fetchAllCol("SELECT catid FROM faq_cats WHERE groupid = ?", $group_info['id']);
+		foreach ($this->faq_cats as $cat) {
+			if (in_array($cat['id'], $cat_perms)) {
+				if ($cat['children']) {
+					foreach ($cat['children'] as $subcat) {
+						if ($subcat['perm_inherit']) {
+							$insert_faqperms[] = $this->getMappedNewId('faq_cat', $subcat['id']);
+						} elseif (in_array($subcat['id'], $cat_perms)) {
+							$insert_faqperms[] = $this->getMappedNewId('faq_cat', $subcat['id']);
+						}
+					}
+				} else {
+					$insert_faqperms[] = $this->getMappedNewId('faq_cat', $cat['id']);
+				}
+			}
+		}
+
+		//-----
+		// Files Cats
+		//-----
+
+		$insert_filesperms = array();
+
+		$cat_perms = $this->getDb()->fetchAllCol("SELECT catid FROM files_permissions WHERE groupid = ?", $group_info['id']);
+		foreach ($this->files_cats as $cat) {
+			if (in_array($cat['id'], $cat_perms)) {
+				$insert_filesperms[] = $this->getMappedNewId('faq_cat', $cat['id']);
+			}
+		}
+
+		#------------------------------
 		# Create it
 		#------------------------------
 
 		if ($group_info['system_name'] == 'guest') {
+			$this->_insertPerms($insert_perms, $insert_depperms, $insert_faqperms, $insert_filesperms, 1);
 			return;
 		} else {
 			$usergroup = new Usergroup();
@@ -96,12 +281,55 @@ class UsergroupsStep extends AbstractDeskpro3Step
 			$this->getEm()->flush();
 		}
 
-		// TODO:permissions mapping when permissions are final
-
 		$this->saveMappedId('usergroup', $group_info['id'], $usergroup->id);
 
 		if ($group_info['system_name'] == 'registered') {
 			$this->saveMappedId('usergroup_sys', 'registered', $usergroup->id);
+		}
+
+		$this->_insertPerms($insert_perms, $insert_depperms, $insert_faqperms, $insert_filesperms, $usergroup->id);
+	}
+
+	protected function _insertPerms($insert_perms, $insert_depperms, $insert_faqperms, $insert_filesperms, $ug_id)
+	{
+		foreach ($insert_perms as $k => $v) {
+			$this->getDb()->insert('permissions', array(
+				'usergroup_id' => $id,
+				'name' => $ug_id,
+				'value' => 1
+			));
+		}
+
+		foreach ($insert_depperms as $v) {
+			if (!$v) continue;
+			$this->getDb()->insert('department_permissions', array(
+				'usergroup_id' => $ug_id,
+				'department_id' => $v,
+				'value' => 1,
+				'app' => 'tickets'
+			));
+			$this->getDb()->insert('department_permissions', array(
+				'usergroup_id' => $ug_id,
+				'department_id' => $v,
+				'value' => 1,
+				'app' => 'chat'
+			));
+		}
+
+		foreach ($insert_faqperms as $v) {
+			if (!$v) continue;
+			$this->getDb()->insert('article_category2usergroup', array(
+				'usergroup_id' => $ug_id,
+				'category_id' => $v,
+			));
+		}
+
+		foreach ($insert_filesperms as $v) {
+			if (!$v) continue;
+			$this->getDb()->insert('download_category2usergroup', array(
+				'usergroup_id' => $ug_id,
+				'category_id' => $v,
+			));
 		}
 	}
 }
