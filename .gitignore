@@ -22,8 +22,7 @@
 /data/logs/emails/*
 !/data/logs/emails/index.html
 /data/debug/*
-/data/debug/failed/*
-!/data/debug/failed/index.html
+!/data/debug/index.html
 
 /data/backups/*
 !/data/backups/index.html

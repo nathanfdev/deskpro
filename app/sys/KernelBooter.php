@@ -65,11 +65,11 @@ class KernelBooter
 				$is_custom = false;
 			}
 
-			if (!is_dir($debug_dir) || !is_writable($debug_dir) || !is_dir($debug_dir . '/failed') || !is_writable($debug_dir . '/failed')) {
+			if (!is_dir($debug_dir) || !is_writable($debug_dir)) {
 				if ($is_custom) {
-					exit('The debug and debug/failed output directory you supplied in `enable_debug_trace_dir` does not exist or is not writable.');
+					exit('The debug output directory you supplied in `enable_debug_trace_dir` does not exist or is not writable.');
 				} else {
-					exit('The debug output directory at /data/debug and /data/debug/failed do not exist or are not writable.');
+					exit('The debug output directory at /data/debug does not exist or is not writable.');
 				}
 			}
 
@@ -90,15 +90,15 @@ class KernelBooter
 		}
 
 		xdebug_stop_trace();
-		$fp = fopen(DP_DEBUG_TRACE_FILE, 'r');
-		fseek($fp, -150000, \SEEK_END);
-		$chunk = fread($fp, 150000);
-		fclose($fp);
-		if (strpos($chunk, 'DeskPRO_Done_MarkerCheck') === false) {
-			$new = str_replace('/debug/', '/debug/failed/', DP_DEBUG_TRACE_FILE);
-			rename(DP_DEBUG_TRACE_FILE, $new);
-		} else {
-			unlink(DP_DEBUG_TRACE_FILE);
+		$fp = @fopen(DP_DEBUG_TRACE_FILE, 'r');
+		if ($fp) {
+			@fseek($fp, -150000, \SEEK_END);
+			$chunk = @fread($fp, 150000);
+			@fclose($fp);
+
+			if (strpos($chunk, 'DeskPRO_Done_MarkerCheck') !== false) {
+				@unlink(DP_DEBUG_TRACE_FILE);
+			}
 		}
 	}
 
