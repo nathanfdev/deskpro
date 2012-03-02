@@ -179,7 +179,7 @@ class TechsStep extends AbstractDeskpro3Step
 					// Tickets (Others)
 					//-----
 
-					if (!$tech['p_others_view']) {
+					if (!$tech['p_tech_view']) {
 						unset(
 							$insert_perms['agent_tickets.view_others'],
 							$insert_perms['agent_tickets.reply_others'],

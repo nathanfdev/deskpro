@@ -699,6 +699,7 @@ class Arrays
 
 			$new_array[$id] = $array[$id];
 
+			unset($array[$id]);
 			$new_array[$id][$child_key] = Arrays::intoHierarchy($array, $id, $parent_key, $child_key, $store_ids);
 		}
 

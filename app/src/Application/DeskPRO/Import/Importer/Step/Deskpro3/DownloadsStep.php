@@ -47,42 +47,6 @@ class DownloadsStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
-		// If there arent any downloads, delete default download cats
-		$default_check = $this->getDb()->fetchColumn("SELECT id FROM downloads LIMIT 1");
-		if (!$default_check) {
-			$this->getDb()->exec("DELETE FROM downloads");
-			$this->getDb()->exec("DELETE FROM download_categories");
-		}
-
-		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM files_cats");
-		if ($count) {
-			$this->logMessage(sprintf("Importing %d download categories", $count));
-
-			$start_time = microtime(true);
-
-			$this->getDb()->beginTransaction();
-			try {
-				$this->processCategories();
-				$this->getDb()->commit();
-			} catch (\Exception $e) {
-				$this->getDb()->rollback();
-				throw $e;
-			}
-
-			$end_time = microtime(true);
-			$this->logMessage(sprintf("Done all categories. Took %.3f seconds.", $end_time-$start_time));
-		}
-
-		if (!$this->getDb()->fetchColumn("SELECT id FROM download_categories LIMIT 1")) {
-			// We need a default category that "top" level downloads will go into
-			$new_cat = new DownloadCategory();
-			$new_cat->title = 'General';
-			$new_cat->display_order = 0;;
-			$this->getEm()->persist($new_cat);
-			$this->getEm()->flush();
-		}
-
-
 		$download_ids = $this->getOldDb()->fetchAllCol("SELECT id FROM files ORDER BY id ASC");
 		if ($download_ids) {
 			$this->logMessage(sprintf("Importing %d downloads", count($download_ids)));
@@ -102,43 +66,6 @@ class DownloadsStep extends AbstractDeskpro3Step
 
 			$end_time = microtime(true);
 			$this->logMessage(sprintf("Done all downloads. Took %.3f seconds.", $end_time-$start_time));
-		}
-	}
-
-
-	/**
-	 * Process all categories
-	 */
-	protected function processCategories()
-	{
-		$cats = $this->getOldDb()->fetchAll("SELECT * FROM files_cats ORDER BY id ASC");
-		if (!$cats) {
-			return;
-		}
-
-		foreach ($cats as $cat) {
-			#------------------------------
-			# Make sure we havent already done them
-			#------------------------------
-
-			$check_exist = $this->getMappedNewId('file_cat', $cat['id']);
-			if ($check_exist) {
-				$this->getLogger()->log("{$cat['id']} already mapped, skipping", 'DEBUG');
-				continue;
-			}
-
-			#------------------------------
-			# Create it
-			#------------------------------
-
-			$new_cat = new DownloadCategory();
-			$new_cat->title = $cat['name'];
-			$new_cat->display_order = $cat['displayorder'];
-
-			$this->getEm()->persist($new_cat);
-			$this->getEm()->flush();
-
-			$this->saveMappedId('file_cat', $cat['id'], $new_cat->id);
 		}
 	}
 

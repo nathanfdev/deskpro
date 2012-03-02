@@ -34,36 +34,33 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Application\DeskPRO\Entity\FeedbackCategory;
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\DownloadCategory;
 
-class FeedbackCatsStep extends AbstractDeskpro3Step
+class DownloadCatsStep extends AbstractDeskpro3Step
 {
 	public static function getTitle()
 	{
-		return 'Import Idea Categories';
+		return 'Import Download Categories';
 	}
 
 	public function run($page = 1)
 	{
-		// If there arent any ideas besides the default, delete default data
-		$default_check = $this->getDb()->fetchColumn("SELECT id FROM feedback ORDER BY id DESC LIMIT 1");
-		$default_check2 = $this->getDb()->fetchColumn("SELECT id FROM feedback_categories ORDER BY id DESC LIMIT 1");
-		if (!$default_check || $default_check == 1 && (!$default_check2 || $default_check2 == 2)) {
-			$this->getDb()->exec("DELETE FROM feedback");
-			$this->getDb()->exec("DELETE FROM feedback_categories");
+		// If there arent any downloads, delete default download cats
+		$default_check = $this->getDb()->fetchColumn("SELECT id FROM downloads LIMIT 1");
+		if (!$default_check) {
+			$this->getDb()->exec("DELETE FROM downloads");
+			$this->getDb()->exec("DELETE FROM download_categories");
 		}
 
-		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM user_idea_categories");
+		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM files_cats");
 		if ($count) {
-			$this->logMessage(sprintf("Importing %d feedback categories", $count));
+			$this->logMessage(sprintf("Importing %d download categories", $count));
 
 			$start_time = microtime(true);
 
 			$this->getDb()->beginTransaction();
 			try {
-				$this->processCategories(0);
+				$this->processCategories();
 				$this->getDb()->commit();
 			} catch (\Exception $e) {
 				$this->getDb()->rollback();
@@ -73,26 +70,26 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 			$end_time = microtime(true);
 			$this->logMessage(sprintf("Done all categories. Took %.3f seconds.", $end_time-$start_time));
 		}
+
+		if (!$this->getDb()->fetchColumn("SELECT id FROM download_categories LIMIT 1")) {
+			// We need a default category that "top" level downloads will go into
+			$new_cat = new DownloadCategory();
+			$new_cat->title = 'General';
+			$new_cat->display_order = 0;;
+			$this->getEm()->persist($new_cat);
+			$this->getEm()->flush();
+		}
 	}
 
 
-	protected function processCategories($parent_id)
+	/**
+	 * Process all categories
+	 */
+	protected function processCategories()
 	{
-		if ($parent_id) {
-			$cats = $this->getOldDb()->fetchAll("SELECT * FROM user_idea_categories WHERE parent_id = ?", array($parent_id));
-		} else {
-			$cats = $this->getOldDb()->fetchAll("SELECT * FROM user_idea_categories WHERE parent_id IS NULL");
-		}
+		$cats = $this->getOldDb()->fetchAll("SELECT * FROM files_cats ORDER BY id ASC");
 		if (!$cats) {
 			return;
-		}
-
-		$new_parent = null;
-		if ($parent_id) {
-			$new_parent = $this->getEm()->find('DeskPRO:FeedbackCategory', $this->getMappedNewId('feedback_cat', $parent_id));
-			if (!$new_parent) {
-				return;
-			}
 		}
 
 		foreach ($cats as $cat) {
@@ -100,7 +97,7 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 			# Make sure we havent already done them
 			#------------------------------
 
-			$check_exist = $this->getMappedNewId('feedback_cat', $cat['id']);
+			$check_exist = $this->getMappedNewId('file_cat', $cat['id']);
 			if ($check_exist) {
 				$this->getLogger()->log("{$cat['id']} already mapped, skipping", 'DEBUG');
 				continue;
@@ -110,20 +107,14 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 			# Create it
 			#------------------------------
 
-			$new_cat = new FeedbackCategory();
-			$new_cat->title = $cat['title'];
-			$new_cat->display_order = $cat['display_order'];
-			if ($new_parent) {
-				$new_cat->parent = $new_parent;
-			}
+			$new_cat = new DownloadCategory();
+			$new_cat->title = $cat['name'];
+			$new_cat->display_order = $cat['displayorder'];
 
 			$this->getEm()->persist($new_cat);
 			$this->getEm()->flush();
 
-			$this->saveMappedId('feedback_cat', $cat['id'], $new_cat->id);
-
-			// Process any subcats
-			$this->processCategories($cat['id']);
+			$this->saveMappedId('file_cat', $cat['id'], $new_cat->id);
 		}
 	}
 }

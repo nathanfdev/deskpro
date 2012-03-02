@@ -65,13 +65,13 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		$scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
 		$this->perms = $scanner->getNames();
 
-		$this->ticket_cats = $this->getOldDb()->fetchAll("SELECT * FROM ticket_cat ORDER BY display_order ASC");
+		$this->ticket_cats = $this->getOldDb()->fetchAll("SELECT * FROM ticket_cat ORDER BY displayorder ASC");
 		$this->ticket_cats = \Orb\Util\Arrays::intoHierarchy($this->ticket_cats, 0, 'parent');
 
-		$this->faq_cats = $this->getOldDb()->fetchAll("SELECT * FROM faq_cats ORDER BY display_order ASC");
+		$this->faq_cats = $this->getOldDb()->fetchAll("SELECT * FROM faq_cats ORDER BY displayorder ASC");
 		$this->faq_cats = \Orb\Util\Arrays::intoHierarchy($this->faq_cats, 0, 'parent');
 
-		$this->files_cats = $this->getOldDb()->fetchAll("SELECT * FROM files_cats ORDER BY display_order ASC");
+		$this->files_cats = $this->getOldDb()->fetchAll("SELECT * FROM files_cats ORDER BY displayorder ASC");
 
 		$this->getDb()->beginTransaction();
 
@@ -106,7 +106,11 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		# Copy permissions
 		#------------------------------
 
-		$insert_perms = $this->perms;
+		$insert_perms = array();
+		foreach ($this->perms as $n) {
+			$insert_perms[$n] = 1;
+		}
+
 
 		//-----
 		// Tickets
@@ -214,9 +218,10 @@ class UsergroupsStep extends AbstractDeskpro3Step
 
 		$insert_depperms = array();
 
-		$dep_perms = $this->getDb()->fetchAllCol("SELECT category FROM ticket_cat_permissions WHERE usergroup = ?", $group_info['id']);
+		$dep_perms = $this->getOldDb()->fetchAllCol("SELECT category FROM ticket_cat_permissions WHERE usergroup = ?", array($group_info['id']));
 		foreach ($this->ticket_cats as $cat) {
-			if (in_array($cat['id'], $dep_perms)) {
+			// top levels are on if theyre added or theyre set to inherit (ie inherit from parent 0 magically means give permission)
+			if ($cat['perm_inherit'] || in_array($cat['id'], $dep_perms)) {
 				if ($cat['children']) {
 					foreach ($cat['children'] as $subcat) {
 						if ($subcat['perm_inherit']) {
@@ -237,9 +242,9 @@ class UsergroupsStep extends AbstractDeskpro3Step
 
 		$insert_faqperms = array();
 
-		$cat_perms = $this->getDb()->fetchAllCol("SELECT catid FROM faq_cats WHERE groupid = ?", $group_info['id']);
+		$cat_perms = $this->getOldDb()->fetchAllCol("SELECT catid FROM faq_permissions WHERE groupid = ?", array($group_info['id']));
 		foreach ($this->faq_cats as $cat) {
-			if (in_array($cat['id'], $cat_perms)) {
+			if ($cat['perm_inherit'] || in_array($cat['id'], $dep_perms)) {
 				if ($cat['children']) {
 					foreach ($cat['children'] as $subcat) {
 						if ($subcat['perm_inherit']) {
@@ -260,7 +265,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 
 		$insert_filesperms = array();
 
-		$cat_perms = $this->getDb()->fetchAllCol("SELECT catid FROM files_permissions WHERE groupid = ?", $group_info['id']);
+		$cat_perms = $this->getOldDb()->fetchAllCol("SELECT catid FROM files_permissions WHERE groupid = ?", array($group_info['id']));
 		foreach ($this->files_cats as $cat) {
 			if (in_array($cat['id'], $cat_perms)) {
 				$insert_filesperms[] = $this->getMappedNewId('faq_cat', $cat['id']);
@@ -294,8 +299,8 @@ class UsergroupsStep extends AbstractDeskpro3Step
 	{
 		foreach ($insert_perms as $k => $v) {
 			$this->getDb()->insert('permissions', array(
-				'usergroup_id' => $id,
-				'name' => $ug_id,
+				'usergroup_id' => $ug_id,
+				'name' => $k,
 				'value' => 1
 			));
 		}
