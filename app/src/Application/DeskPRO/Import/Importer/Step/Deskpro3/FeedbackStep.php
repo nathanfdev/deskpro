@@ -145,6 +145,8 @@ class FeedbackStep extends AbstractDeskpro3Step
 		$revision->feedback = $new_feedback;
 		$revision->title = $new_feedback->title;
 		$revision->content = $new_feedback->content;
+		$revision->person = $new_person;
+		$revision->date_created = $new_feedback->date_created;
 
 		$this->getEm()->persist($revision);
 		$this->getEm()->flush();

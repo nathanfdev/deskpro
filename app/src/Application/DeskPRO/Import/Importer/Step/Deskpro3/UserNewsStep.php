@@ -111,6 +111,8 @@ class UserNewsStep extends AbstractDeskpro3Step
 		$revision->news = $new_news;
 		$revision->title = $new_news->title;
 		$revision->content = $new_news->content;
+		$revision->person = $new_person;
+		$revision->date_created = $new_news->date_created;
 
 		$this->getEm()->persist($revision);
 		$this->getEm()->flush();

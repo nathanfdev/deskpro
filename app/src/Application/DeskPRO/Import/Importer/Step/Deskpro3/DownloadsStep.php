@@ -192,6 +192,8 @@ class DownloadsStep extends AbstractDeskpro3Step
 		$revision->blob = $new_download->blob;
 		$revision->title = $new_download->title;
 		$revision->content = $new_download->content;
+		$revision->person = $new_person;
+		$revision->date_created = $new_download->date_created;
 
 		$this->getEm()->persist($revision);
 		$this->getEm()->flush();

@@ -136,6 +136,8 @@ class KbStep extends AbstractDeskpro3Step
 		$revision->article = $new_article;
 		$revision->title = $new_article->title;
 		$revision->content = $new_article->content;
+		$revision->person = $new_person;
+		$revision->date_created = $new_article->date_created;
 
 		$this->getEm()->persist($revision);
 		$this->getEm()->flush();
