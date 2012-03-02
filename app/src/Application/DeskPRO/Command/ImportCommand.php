@@ -394,7 +394,8 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$other_version = $importer->getOldDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('deskpro_version_internal'));
 				if ($other_version < 3050502) {
 					$output->writeln('Your DeskPRO v3 installation is outdated. Before we can import your helpdesk into the system, you must run the upgrader.');
-					$output->writeln('Do you want to upgrade your v3 database now? A backup will be generated to '.$this->getContainer()->getBackupDir().' directory first.');
+					$output->writeln('Do you want to upgrade your v3 database now?');
+
 					$yes = $this->getHelper('dialog')->askConfirmation($output, '[y/N]> ', false);
 					if (!$yes) {
 						$output->writeln('Aborting. You can re-run this command when you are ready to proceed.');
@@ -405,35 +406,40 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 					# Backup
 					#------------------------------
 
-					$mysqldump_path = $this->getContainer()->getMysqldumpBinaryPath();
-					if (!$mysqldump_path) {
-						$output->writeln('We could not locate the path to the MySQL backup utility "mysqldump". You can edit /config.php to specify this path in the "mysqldump_path" setting.');
-						return 25;
-					}
+					$output->writeln('Do you want to backup your database to '.$this->getContainer()->getBackupDir().' first? This is HIGHLY recommended.');
+					$yes = $this->getHelper('dialog')->askConfirmation($output, '[Y/n]> ', true);
 
-					$f = "{$config['db_name']}-" . date('Y-m-d-H-i-s') . '.sql';
-					$cmd = $mysqldump_path . " --opt -Q -h{$config['db_host']} -u{$config['db_user']} -p{$config['db_password']} {$config['db_name']} > $f";
-
-					$proc = new \Symfony\Component\Process\Process($cmd, $this->getContainer()->getBackupDir());
-					$proc->setTimeout(10000);
-					$proc->run(function ($type, $buffer) {
-						if ('err' === $type) {
-							echo '[ERR] '.$buffer;
-						} else {
-							echo $buffer;
-						}
-					});
-
-					if (!$proc->isSuccessful()) {
-						$output->writeln('<warn>We detected an error while trying to back up your DeskPRO v3 database. Do you want to continue anyway?</warn>');
-						try {
-							$yes = $this->getHelper('dialog')->askConfirmation($output, '[y/N]> ', false);
-						} catch (\Exception $e) {
-							$yes = false;
-						}
-						if (!$yes) {
-							$output->writeln("Aborting. You can re-run this tool once you are ready to proceed.");
+					if ($yes) {
+						$mysqldump_path = $this->getContainer()->getMysqldumpBinaryPath();
+						if (!$mysqldump_path) {
+							$output->writeln('We could not locate the path to the MySQL backup utility "mysqldump". You can edit /config.php to specify this path in the "mysqldump_path" setting.');
 							return 25;
+						}
+
+						$f = "{$config['db_name']}-" . date('Y-m-d-H-i-s') . '.sql';
+						$cmd = $mysqldump_path . " --opt -Q -h{$config['db_host']} -u{$config['db_user']} -p{$config['db_password']} {$config['db_name']} > $f";
+
+						$proc = new \Symfony\Component\Process\Process($cmd, $this->getContainer()->getBackupDir());
+						$proc->setTimeout(10000);
+						$proc->run(function ($type, $buffer) {
+							if ('err' === $type) {
+								echo '[ERR] '.$buffer;
+							} else {
+								echo $buffer;
+							}
+						});
+
+						if (!$proc->isSuccessful()) {
+							$output->writeln('<warn>We detected an error while trying to back up your DeskPRO v3 database. Do you want to continue anyway?</warn>');
+							try {
+								$yes = $this->getHelper('dialog')->askConfirmation($output, '[y/N]> ', false);
+							} catch (\Exception $e) {
+								$yes = false;
+							}
+							if (!$yes) {
+								$output->writeln("Aborting. You can re-run this tool once you are ready to proceed.");
+								return 25;
+							}
 						}
 					}
 
