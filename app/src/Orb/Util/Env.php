@@ -92,4 +92,24 @@ class Env
 
 		return Numbers::parseIniSize($size);
 	}
+
+
+	/**
+	 * Gets the path to the laoded php.ini file by scanning phpinfo
+	 *
+	 * @return false|string
+	 */
+	public static function getPhpIniPath()
+	{
+		ob_start();
+		phpinfo();
+		$phpinfo = ob_get_clean();
+		$phpinfo = html_entity_decode(strip_tags($phpinfo), ENT_QUOTES);
+
+		if (preg_match('#^Loaded Configuration File (.*?)$#m', $phpinfo, $m)) {
+			return $m[1];
+		} else {
+			return false;
+		}
+	}
 }

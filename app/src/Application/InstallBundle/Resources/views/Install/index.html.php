@@ -46,7 +46,7 @@
 				<?php $failed = false ?>
 				<?php if (!isset($errors['pdo_ext']) && !isset($errors['pdo_mysql_ext'])): ?>
 					<span class="label success" style="float:right">OK</span>
-				<?php else: $failed = true; ?>
+				<?php else: $failed = true; $failed_phpini = true; ?>
 					<span class="label important" style="float:right">FAIL</span>
 				<?php endif ?>
 				Check that the <a href="http://php.net/manual/en/pdo.installation.php">PDO extension</a> is enabled and has the MySQL driver installed
@@ -63,7 +63,7 @@
 				<?php $failed = false ?>
 				<?php if (!isset($errors['iconv_ext']) && !isset($errors['iconv_ext'])): ?>
 					<span class="label success" style="float:right">OK</span>
-				<?php else: $failed = true; ?>
+				<?php else: $failed = true; $failed_phpini = true; ?>
 					<span class="label important" style="float:right">FAIL</span>
 				<?php endif ?>
 				Check that the <a href="http://php.net/manual/en/iconv.installation.php">iconv extension</a> is installed
@@ -80,7 +80,7 @@
 				<?php $failed = false ?>
 				<?php if (!isset($errors['json_ext'])): ?>
 					<span class="label success" style="float:right">OK</span>
-				<?php else: $failed = true; ?>
+				<?php else: $failed = true; $failed_phpini = true; ?>
 					<span class="label important" style="float:right">FAIL</span>
 				<?php endif ?>
 				Check that the <a href="http://php.net/manual/en/json.installation.php">json_encode extension</a> is installed
@@ -97,7 +97,7 @@
 				<?php $failed = false ?>
 				<?php if (!isset($errors['session_start'])): ?>
 					<span class="label success" style="float:right">OK</span>
-				<?php else: $failed = true; ?>
+				<?php else: $failed = true; $failed_phpini = true; ?>
 					<span class="label important" style="float:right">FAIL</span>
 				<?php endif ?>
 				Check that the <a href="http://php.net/manual/en/session.installation.php">session extension</a> is installed
@@ -114,7 +114,7 @@
 				<?php $failed = false ?>
 				<?php if (!isset($errors['ctype_ext'])): ?>
 					<span class="label success" style="float:right">OK</span>
-				<?php else: $failed = true; ?>
+				<?php else: $failed = true; $failed_phpini = true; ?>
 					<span class="label important" style="float:right">FAIL</span>
 				<?php endif ?>
 				Check that the <a href="http://php.net/manual/en/ctype.installation.php">ctype extension</a> is installed
@@ -131,7 +131,7 @@
 				<?php $failed = false ?>
 				<?php if (!isset($errors['tokenizer_ext'])): ?>
 					<span class="label success" style="float:right">OK</span>
-				<?php else: $failed = true; ?>
+				<?php else: $failed = true; $failed_phpini = true; ?>
 					<span class="label important" style="float:right">FAIL</span>
 				<?php endif ?>
 				Check that the <a href="http://php.net/manual/en/tokenizer.installation.php">tokenizer extension</a> is installed
@@ -148,7 +148,7 @@
 				<?php $failed = false ?>
 				<?php if (!isset($errors['image_manip'])): ?>
 					<span class="label success" style="float:right">OK</span>
-				<?php else: $failed = true; ?>
+				<?php else: $failed = true; $failed_phpini = true; ?>
 					<span class="label important" style="float:right">FAIL</span>
 				<?php endif ?>
 				Check that an image manipulation extension is installed (<a href="http://php.net/manual/en/imagick.installation.php">Imagick</a>, <a href="http://php.net/manual/en/gmagick.installation.php">Gmagick</a>, or <a href="http://php.net/manual/en/image.installation.php">GD</a>)
@@ -172,7 +172,7 @@
 				Check that PHP's <a href="http://php.net/manual/en/ini.core.php#ini.memory-limit">memory limit</a> is at least 128 MB
 				<?php if ($failed): ?>
 					<div class="alert-message block-message error">
-						DeskPRO requires PHP's memory_limit option to be at least 128 MB.
+						DeskPRO requires PHP's memory_limit option to be at least 128 MB. Edit your php.ini file <?php if ($ini_path): ?>(<code><?php echo $ini_path ?></code>)<?php endif ?> to increase the limit.
 					</div>
 				<?php endif ?>
 			</td>
@@ -282,6 +282,14 @@
 		<strong>There were errors</strong>, as noted above, that must be fixed before you
 		can install DeskPRO. You cannot continue with the installation until the problems
 		above have been fixed.
+
+		<?php if ($ini_path and $failed_phpini): ?>
+			<br /><br />
+			We have detected the path to your php.ini file at <code><?php echo $ini_path ?></code>. You will need to edit
+			this file to enable the missing extensions. Depending on your server, you may also need to download and compile the extensions
+			first.
+			<br /><br />
+		<?php endif ?>
 
 		<div class="alert-actions">
 			<a class="btn" href="<?php echo $view['router']->generate('install_checks') ?>">Refresh the page to re-run he checks</a>

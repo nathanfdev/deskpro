@@ -131,6 +131,11 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			} catch (\Exception $e) { }
 		}
 
+		$ini_path = '';
+		if ($server_check->hasErrors()) {
+			$ini_path = \Orb\Util\Env::getPhpIniPath();
+		}
+
 		return $this->render('InstallBundle:Install:index.html.php', array(
 			'errors' => $server_check->getErrors(),
 			'has_config' => $has_config,
@@ -138,6 +143,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			'has_db_checks' => $has_db_checks,
 			'db_config' => App::getConfig('db'),
 			'logs_dir_info' => $logs_dir_info,
+			'ini_path' => $ini_path,
 		));
 	}
 
