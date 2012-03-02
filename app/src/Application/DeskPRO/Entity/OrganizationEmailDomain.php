@@ -20,10 +20,6 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
-use Application\DeskPRO\Entity\UsergroupPropertyPermission;
-use Application\DeskPRO\Entity;
-
-
 /**
  * Maps known company domains to their company objects
  *

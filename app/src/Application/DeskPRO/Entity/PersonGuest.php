@@ -18,8 +18,6 @@ use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
-use Application\DeskPRO\Entity\UsergroupPropertyPermission;
-
 /**
  * A website visitor when we have no information about them
  */
