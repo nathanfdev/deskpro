@@ -31,8 +31,8 @@ abstract class BasicTreeCategoryPermission extends BasicCategoryPermission
 	protected function init()
 	{
 		$this->specific_cats = App::getEntityRepository($this->getCategoryEntity())->getCategoriesForUsergroups($this->getUsergroupIds());
-
 		$full = App::getEntityRepository($this->getCategoryEntity())->getRootNodes();
+
 		$this->_computeTree($full);
 
 		$all_ids = App::getEntityRepository($this->getCategoryEntity())->getCategoryIds();
@@ -42,14 +42,12 @@ abstract class BasicTreeCategoryPermission extends BasicCategoryPermission
 	protected function _computeTree($tree, $default = null)
 	{
 		foreach ($tree as $node) {
-			$this_tree_default = false;
 			if ($default OR in_array($node['id'], $this->specific_cats)) {
 				$this->allowed_cats[] = $node['id'];
-				$this_tree_default = true;
-			}
 
-			if ($node['children']) {
-				$this->_computeTree($node['children'], $this_tree_default);
+				if ($node['children']) {
+					$this->_computeTree($node['children'], true);
+				}
 			}
 		}
 	}

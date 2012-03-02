@@ -168,7 +168,7 @@ class Article extends AbstractEntityRepository
 	 * @param  $nodes
 	 * @return void
 	 */
-	public function getNewestInNodes($nodes, $num = 5)
+	public function getNewestInNodes($nodes, $num = 5, PersonEntity $person_context = null)
 	{
 		// This needs to be cached since it's quite costly
 		// to get the top results in each category with mysql. And
@@ -186,6 +186,14 @@ class Article extends AbstractEntityRepository
 
 			$cat_ids = $node->getTreeIds(true);
 
+			$perm_where = '';
+			if ($person_context && !$person_context->is_agent) {
+				$dis_ids = $person_context->PermissionsManager->ArticleCategories->getDisallowedCategories();
+				if ($dis_ids) {
+					$perm_where = ' AND cat.id NOT IN ('.implode(',', $dis_ids).') ';
+				}
+			}
+
 			$articles = $this->getEntityManager()->createQuery("
 				SELECT a
 				FROM DeskPRO:Article a INDEX BY a.id
@@ -194,6 +202,7 @@ class Article extends AbstractEntityRepository
 					cat.id IN (".implode(',',$cat_ids).")
 					AND a.id NOT IN (".implode(',',$done_articles).")
 					AND a.status = 'published'
+					$perm_where
 				GROUP BY a.id
 				ORDER BY a.id DESC
 			")->setMaxResults($num)

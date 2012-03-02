@@ -93,7 +93,7 @@ class ArticlesController extends AbstractController
 				->countsOnCollection($articles);
 		}
 
-		$category_children_articles = App::getEntityRepository('DeskPRO:Article')->getNewestInNodes($category_children, 5);
+		$category_children_articles = App::getEntityRepository('DeskPRO:Article')->getNewestInNodes($category_children, 5, $this->person);
 
 		$tpl = 'UserBundle:Articles:browse.html.twig';
 

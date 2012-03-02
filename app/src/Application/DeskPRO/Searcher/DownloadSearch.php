@@ -73,7 +73,7 @@ class DownloadSearch extends SearcherAbstract
 	 */
 	public function getPermWhere()
 	{
-		if (!$this->person) {
+		if (!$this->person || $this->person->is_agent) {
 			return '';
 		}
 
