@@ -99,3 +99,12 @@ $DP_CONFIG = array();
 //   'existing_attachment_files' => ''
 //  );
 
+######################################################
+# OPTIONAL : Enable debug call trace                 #
+#                                                    #
+# Sometimes a support agent may ask you to enable    #
+# this option to generate a call trace that can help #
+# track down the cause of a problem.                 #
+######################################################
+
+// $DP_CONFIG['enable_debug_trace'] = true;

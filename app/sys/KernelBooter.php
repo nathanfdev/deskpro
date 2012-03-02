@@ -52,6 +52,53 @@ class KernelBooter
 				define('DP_BUILD_TIME', 1323444089); // would be used by someone who hasnt built yet
 			}
 		}
+
+		if (isset($DP_CONFIG['enable_debug_trace']) && $DP_CONFIG['enable_debug_trace']) {
+			if (!function_exists('xdebug_start_trace')) {
+				exit('To use the `enable_debug_trace` setting, the xdebug extension must be installed');
+			}
+			if (isset($DP_CONFIG['enable_debug_trace_dir'])) {
+				$debug_dir = $DP_CONFIG['enable_debug_trace_dir'];
+				$is_custom = true;
+			} else {
+				$debug_dir = DP_WEB_ROOT . '/data/debug';
+				$is_custom = false;
+			}
+
+			if (!is_dir($debug_dir) || !is_writable($debug_dir) || !is_dir($debug_dir . '/failed') || !is_writable($debug_dir . '/failed')) {
+				if ($is_custom) {
+					exit('The debug and debug/failed output directory you supplied in `enable_debug_trace_dir` does not exist or is not writable.');
+				} else {
+					exit('The debug output directory at /data/debug and /data/debug/failed do not exist or are not writable.');
+				}
+			}
+
+			$file = $debug_dir . DIRECTORY_SEPARATOR . date('YmdHis') . '-' . mt_rand(10000,99999);
+			xdebug_start_trace($file);
+			ini_set('xdebug.collect_params', 3);
+			define('DP_DEBUG_TRACE_FILE', $file . '.xt');
+		}
+	}
+
+	private static function DeskPRO_Done_MarkerCheck() {}
+
+	public static function DeskPRO_Done()
+	{
+		self::DeskPRO_Done_MarkerCheck();
+		if (!defined('DP_DEBUG_TRACE_FILE')) {
+			return;
+		}
+
+		xdebug_stop_trace();
+		$fp = fopen(DP_DEBUG_TRACE_FILE, 'r');
+		fseek($fp, -150000, \SEEK_END);
+		$chunk = fread($fp, 150000);
+		if (strpos($chunk, 'DeskPRO_Done_MarkerCheck') === false) {
+			$new = str_replace('/debug/', '/debug/failed/', DP_DEBUG_TRACE_FILE);
+			rename(DP_DEBUG_TRACE_FILE, $new);
+		} else {
+			unlink(DP_DEBUG_TRACE_FILE);
+		}
 	}
 
 	public static function bootstrapLib($debug)
