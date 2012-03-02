@@ -229,7 +229,9 @@ class KernelBooter
 	 */
 	protected static function ensureEnvFiles($env)
 	{
+		global $DP_CONFIG;
 		$cache_dir = DP_ROOT.'/sys/cache';
+		$web_dir = realpath(DP_ROOT . '/../web');
 
 		#------------------------------
 		# Prod mode: make sure built
@@ -271,7 +273,7 @@ $DP_CONFIG['debug']['raw_assets'] = array('all);
 <p>Email support@deskpro.com if you need assistance or got this message unexpectedly.</p>
 HTML;
 
-				echo deskpro_install_basic_error($html);
+				echo deskpro_install_basic_error($html, 'DeskPRO');
 			}
 			exit;
 
@@ -279,7 +281,7 @@ HTML;
 		# Dev mode, make sure cache dir writable
 		#------------------------------
 
-		} elseif (!is_dir($cache_dir) || !is_writable($cache_dir)) {
+		} elseif ($env == 'dev' && (!is_dir($cache_dir) || !is_writable($cache_dir))) {
 if (php_sapi_name() == 'cli') {
 				echo <<<TXT
 DeskPRO is currently in dev mode which requires the cache directory at $cache_dir to be writable. Please
@@ -298,9 +300,49 @@ make this directory writable and try again.<br /><br /></p>
 <p>Email support@deskpro.com if you need assistance or got this message unexpectedly.</p>
 HTML;
 
-				echo deskpro_install_basic_error($html);
+				echo deskpro_install_basic_error($html, 'DeskPRO Dev Mode');
 			}
 
+			exit;
+
+		#------------------------------
+		# Dev mode, not using raw assets, no build files
+		#------------------------------
+
+		} elseif ($env == 'dev' && (empty($DP_CONFIG['debug']['raw_assets']) && !is_dir($web_dir.'/build'))) {
+			if (php_sapi_name() == 'cli') {
+				echo <<<'TXT'
+You are running in dev mode but you have not enabled raw assets and assets have not been built yet. For pages to display properly, you will need to do one of the following:
+
+	1) Enable raw assets by editing /config.php and adding this line:
+
+		$DP_CONFIG['debug']['raw_assets'] = array('all);
+
+	2) Or alternatively you can build assets by running app/bin/build/build-assetic.php from the command-line.
+
+Email support@deskpro.com if you need assistance or got this message unexpectedly.
+
+TXT;
+
+				exit(1);
+			} else {
+				$html = <<<'HTML'
+<p>You are running in dev mode but you have not enabled raw assets and assets have not been built yet. For pages to display properly, you will need to do one of the following:<br /><br /></p>
+
+<p>1) Enable raw assets by editing <code>/config.php</code> and adding this line:
+
+<pre>
+$DP_CONFIG['debug']['raw_assets'] = array('all);
+</pre>
+</p>
+
+<p>2) Or alternatively you can build assets by running <code>app/bin/build/build-assetic.php</code> from the command-line.<br /><br /></p>
+
+<p>Email support@deskpro.com if you need assistance or got this message unexpectedly.</p>
+HTML;
+
+				echo deskpro_install_basic_error($html, 'DeskPRO Dev Mode');
+			}
 			exit;
 		}
 	}

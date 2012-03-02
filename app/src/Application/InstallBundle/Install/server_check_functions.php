@@ -77,7 +77,7 @@ function deskpro_install_check_writable()
 	return true;
 }
 
-function deskpro_install_basic_error($message)
+function deskpro_install_basic_error($message, $title = 'DeskPRO Installation')
 {
 	// We dont know the root path yet, so lets just inline the CSS
 	$css = file_get_contents(DP_WEB_ROOT.'/web/stylesheets/install/install.css');
@@ -94,7 +94,7 @@ function deskpro_install_basic_error($message)
 <body>
 <div class="container">
 	<div class="page-header">
-		<h1>DeskPRO Installation</h1>
+		<h1>{$title}</h1>
 	</div>
 	<div class="alert-message block-message error">
 		{$message}
