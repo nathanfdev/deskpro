@@ -1226,7 +1226,7 @@ class Strings
 	{
 		$pos = strpos($string, $find);
 		if ($pos !== false){
-			return substr_replace($string, $replace, $pos, strlen($replace));
+			return substr_replace($string, $replace, $pos, strlen($find));
 		}
 
 		return $string;
