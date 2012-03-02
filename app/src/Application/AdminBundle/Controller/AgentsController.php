@@ -183,10 +183,18 @@ class AgentsController extends AbstractController
 			WHERE person_id = ?
 		", array($agent->id), 'department_id', 'app', 'app');
 
-		$usergroup_values = $this->db->fetchAllGrouped("
+		$all = $this->db->fetchAll("
 			SELECT usergroup_id, name, value
 			FROM permissions
-		", array(), 'usergroup_id', 'name', 'value');
+			WHERE usergroup_id IS NOT NULL
+		");
+		$usergroup_values = array();
+		foreach ($all as $r) {
+			if (!isset($usergroup_values[$r['usergroup_id']])) {
+				$usergroup_values[$r['usergroup_id']] = array();
+			}
+			$usergroup_values[$r['usergroup_id']][$r['name']] = $r['value'];
+		}
 
 		$usergroup_values['override'] = $this->db->fetchAllKeyValue("
 			SELECT name, value

@@ -214,6 +214,11 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 			});
 		});
 
+		$('#permgroup_table tr.permrow').each(function() {
+			var vis = $(this).is(':visible');
+			self.updatePermrowEnabled($(this), vis);
+		});
+
 		this.suppressChange = true;
 		this.processDependencies();
 		this.suppressChange = false;
