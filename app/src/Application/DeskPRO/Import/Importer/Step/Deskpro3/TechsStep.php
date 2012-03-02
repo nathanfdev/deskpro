@@ -77,8 +77,8 @@ class TechsStep extends AbstractDeskpro3Step
 
 				// Save old password string because its used in gateways
 				$this->getDb()->insert('import_datastore', array(
-					'dp3_techpass_' . $tech['id'],
-					serialize(array('new_id' => $agent->id, 'old_pass' => $tech['password']))
+					'typename' => 'dp3_techpass_' . $tech['id'],
+					'data' => serialize(array('new_id' => $agent->id, 'old_pass' => $tech['password']))
 				));
 
 				#------------------------------

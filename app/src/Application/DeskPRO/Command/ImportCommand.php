@@ -372,6 +372,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			));
 
 			$data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
+			$data_init->setImportMode();
 			$data_init->run();
 
 			echo "\n";
