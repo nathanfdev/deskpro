@@ -67,7 +67,7 @@ class FeedbackController extends AbstractController
 			}
 
 			if (!$category) {
-				return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
+				return $this->renderStandardError('@user.error_not_found_title', '@user.error_not_found', 404);
 			}
 
 			$cat_id = $category['id'];
@@ -261,7 +261,7 @@ class FeedbackController extends AbstractController
 	{
 		$feedback = App::getEntityRepository('DeskPRO:Feedback')->getBySlug($slug);
 		if (!$feedback) {
-			return $this->renderStandardError('@user_feedback.error_not_found', '@core.not_found', 404);
+			return $this->renderStandardError('@user_feedback.error_not_found', '@user.error_not_found', 404);
 		}
 
 		// Auto-correct URL
@@ -339,7 +339,7 @@ class FeedbackController extends AbstractController
 	{
 		$feedback = App::getEntityRepository('DeskPRO:Feedback')->find($feedback_id);
 		if (!$feedback) {
-			return $this->renderStandardError('@user_feedback.error_not_found', '@core.not_found', 404);
+			return $this->renderStandardError('@user_feedback.error_not_found', '@user.error_not_found', 404);
 		}
 
 		if ($this->person['id']) {
@@ -389,7 +389,7 @@ class FeedbackController extends AbstractController
 	{
 		$feedback = App::getEntityRepository('DeskPRO:Feedback')->find($feedback_id);
 		if (!$feedback) {
-			return $this->renderStandardError('@user_feedback.error_not_found', '@core.not_found', 404);
+			return $this->renderStandardError('@user_feedback.error_not_found', '@user.error_not_found', 404);
 		}
 
 		$new_comment = new \Application\DeskPRO\Comments\NewComment(
