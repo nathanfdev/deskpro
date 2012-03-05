@@ -312,7 +312,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$count++;
 				$self->updateStatus($output, '1. Installing Database', $count, $total);
 				if ($status == 'error') {
-					$errors[] = $e;
+					$errors[] = $e . " (SQL: $sql)";
 				}
 			};
 
