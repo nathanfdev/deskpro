@@ -305,6 +305,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 			));
 		}
 
+		$insert_depperms = array_unique($insert_depperms);
 		foreach ($insert_depperms as $v) {
 			if (!$v) continue;
 			$this->getDb()->insert('department_permissions', array(
@@ -319,6 +320,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 			));
 		}
 
+		$insert_faqperms = array_unique($insert_faqperms);
 		foreach ($insert_faqperms as $v) {
 			if (!$v) continue;
 			$this->getDb()->insert('article_category2usergroup', array(
@@ -327,6 +329,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 			));
 		}
 
+		$insert_faqperms = array_unique($insert_filesperms);
 		foreach ($insert_filesperms as $v) {
 			if (!$v) continue;
 			$this->getDb()->insert('download_category2usergroup', array(

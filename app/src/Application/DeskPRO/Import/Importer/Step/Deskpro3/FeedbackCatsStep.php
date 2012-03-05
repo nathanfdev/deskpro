@@ -55,8 +55,10 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 		$default_check = $this->getDb()->fetchColumn("SELECT id FROM feedback ORDER BY id DESC LIMIT 1");
 		$default_check2 = $this->getDb()->fetchColumn("SELECT id FROM feedback_categories ORDER BY id DESC LIMIT 1");
 		if (!$default_check || $default_check == 1 && (!$default_check2 || $default_check2 == 2)) {
+			$this->getDb()->exec("SET FOREIGN_KEY_CHECKS = 0");
 			$this->getDb()->exec("DELETE FROM feedback");
 			$this->getDb()->exec("DELETE FROM feedback_categories");
+			$this->getDb()->exec("SET FOREIGN_KEY_CHECKS = 0");
 		}
 
 		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM user_idea_categories");
