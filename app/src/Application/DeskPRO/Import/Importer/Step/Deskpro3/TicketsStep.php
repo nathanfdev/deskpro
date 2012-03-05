@@ -501,6 +501,26 @@ class TicketsStep extends AbstractDeskpro3Step
 		));
 
 		#------------------------------
+		# Saved tickets become flagged
+		#------------------------------
+
+		$saved_tickets = $this->getOldDb()->fetchAll("
+			SELECT techid
+			FROM tech_ticket_save
+			WHERE id = ?
+		", array($ticket_info['id']));
+
+		$saved_tickets = array_unique($saved_tickets);
+
+		foreach ($saved_tickets as $saved_tech) {
+			$this->getDb()->insert('tickets_flagged', array(
+				'ticket_id' => $insert_ticket['id'],
+				'person_id' => $this->getMappedNewId('tech', $saved_tech),
+				'color' => 'red'
+			));
+		}
+
+		#------------------------------
 		# Ticket log
 		#------------------------------
 
