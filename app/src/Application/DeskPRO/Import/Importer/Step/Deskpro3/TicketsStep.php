@@ -512,7 +512,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		# Saved tickets become flagged
 		#------------------------------
 
-		$saved_tickets = $this->getOldDb()->fetchAll("
+		$saved_tickets = $this->getOldDb()->fetchAllCol("
 			SELECT techid
 			FROM tech_ticket_save
 			WHERE id = ?
