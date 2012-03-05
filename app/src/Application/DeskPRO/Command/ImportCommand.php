@@ -189,30 +189,33 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		# Check requirements
 		#----------------------------------------
 
-		$server_check = new \Application\InstallBundle\Install\ServerChecks();
-		$server_check->setLogger($logger);
-		$server_check->checkServer();
+		if ($page == 1) {
 
-		$is_fatal = $server_check->hasFatalErrors();
-		$has_config = false;
-		$has_db_checks = false;
+			$server_check = new \Application\InstallBundle\Install\ServerChecks();
+			$server_check->setLogger($logger);
+			$server_check->checkServer();
 
-		if (!$is_fatal) {
-			$has_db_checks = true;
-			if (file_exists(DP_CONFIG_FILE)) {
-				$has_config = true;
-				$server_check->checkDatabase($DP_CONFIG['db']);
+			$is_fatal = $server_check->hasFatalErrors();
+			$has_config = false;
+			$has_db_checks = false;
+
+			if (!$is_fatal) {
+				$has_db_checks = true;
+				if (file_exists(DP_CONFIG_FILE)) {
+					$has_config = true;
+					$server_check->checkDatabase($DP_CONFIG['db']);
+				}
 			}
-		}
 
-		if ($server_check->hasFatalErrors()) {
-			$str = "There are problems with your server setup that prevents DeskPRO v4 from installing:\n";
-			foreach ($server_check->getErrors() as $err) {
-				$str .= "\t- {$err['message']}\n";
+			if ($server_check->hasFatalErrors()) {
+				$str = "There are problems with your server setup that prevents DeskPRO v4 from installing:\n";
+				foreach ($server_check->getErrors() as $err) {
+					$str .= "\t- {$err['message']}\n";
+				}
+				echo "Fix these problems and try again.\n";
+				$logger->log($str, Logger::ERR);
+				return 1;
 			}
-			echo "Fix these problems and try again.\n";
-			$logger->log($str, Logger::ERR);
-			return 1;
 		}
 
 		#----------------------------------------
