@@ -312,7 +312,7 @@ class KbStep extends AbstractDeskpro3Step
 			SELECT w.word
 			FROM faq_keywords_articles a
 			LEFT JOIN faq_keywords_words AS w ON (w.wordid = a.wordid)
-			WHERE a.articleid = ?
+			WHERE a.articleid = ? AND w.word IS NOT NULL
 		", array($article['id']));
 
 		$words = array_unique($words);
