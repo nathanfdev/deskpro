@@ -184,7 +184,7 @@ class KbStep extends AbstractDeskpro3Step
 		# Import ratings
 		#------------------------------
 
-		$ratings = $this->getDb()->fetchAll("SELECT * FROM faq_rating WHERE faqid = ?", array($article['id']));
+		$ratings = $this->getOldDb()->fetchAll("SELECT * FROM faq_rating WHERE faqid = ?", array($article['id']));
 		foreach ($ratings as $r) {
 
 			if (!$r['timestamp']) $r['timestamp'] = time();
@@ -192,7 +192,7 @@ class KbStep extends AbstractDeskpro3Step
 			$insert_rating = array();
 			$insert_rating['object_type']  = 'article';
 			$insert_rating['object_id']    = $new_article->id;
-			$insert_rating['ip_address']   = $r['ip_address'];
+			$insert_rating['ip_address']   = $r['ipaddress'];
 			$insert_rating['date_created'] = date('Y-m-d H:i:s', $r['timestamp']);
 
 			if ($r['rating'] == '60' || $r['rating'] == '40') {
@@ -212,7 +212,7 @@ class KbStep extends AbstractDeskpro3Step
 		# Rated searches become ratings with linked searches
 		#------------------------------
 
-		$searchlog_solved = $this->getDb()->fetchAll("
+		$searchlog_solved = $this->getOldDb()->fetchAll("
 			SELECT searchid, userid, solved
 			FROM faq_searchlog_solved
 			WHERE articleid = ?
@@ -245,14 +245,13 @@ class KbStep extends AbstractDeskpro3Step
 		# Keywords as sticky words
 		#------------------------------
 
-		$words = $this->getOldDb()->fetchAll("
+		$words = $this->getOldDb()->fetchAllCol("
 			SELECT w.word
 			FROM faq_keywords_articles a
 			LEFT JOIN faq_keywords_words AS w ON (w.wordid = a.wordid)
 			WHERE a.articleid = ?
 		", array($article['id']));
 
-		array_walk($words, 'strtolower');
 		$words = array_unique($words);
 
 		foreach ($words as $w) {
@@ -336,5 +335,6 @@ class KbStep extends AbstractDeskpro3Step
 					}
 					break;
 			}
+		}
 	}
 }
