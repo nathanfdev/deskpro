@@ -34,7 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping as ORM_Mapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Application\DeskPRO\App;
 
@@ -236,4 +237,30 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 
 		return $session_id;
 	}
+
+
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Session'; 
+		$metadata->setPrimaryTable(array( 'name' => 'sessions', 'indexes' => array( 'date_last_idx' => array( 'columns' => array( 0 => 'date_last', 1 => 'is_person', ), ), ), )); 
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT); 
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, )); 
+		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'auth', )); 
+		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'text', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'data', )); 
+		$metadata->mapField(array( 'fieldName' => 'is_person', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'is_person', )); 
+		$metadata->mapField(array( 'fieldName' => 'active_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'active_status', )); 
+		$metadata->mapField(array( 'fieldName' => 'page_count', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'page_count', )); 
+		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'date_created', )); 
+		$metadata->mapField(array( 'fieldName' => 'date_last', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'date_last', )); 
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY); 
+		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, )); 
+		$metadata->mapOneToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
+	}
 }
+

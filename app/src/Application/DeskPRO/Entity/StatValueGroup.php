@@ -34,7 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping as ORM_Mapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * Stat Value Group - The grouping data for a Stat Value
@@ -89,4 +90,25 @@ class StatValueGroup extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->stat_unix = time();
 	}
+
+
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\StatValueGroup'; 
+		$metadata->setPrimaryTable(array( 'name' => 'stat_value_group', )); 
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT); 
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, )); 
+		$metadata->mapField(array( 'fieldName' => 'grouping_ref', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'grouping_ref', )); 
+		$metadata->mapField(array( 'fieldName' => 'value', 'type' => 'decimal', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'value', )); 
+		$metadata->mapField(array( 'fieldName' => 'stat_unix', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'stat_unix', )); 
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY); 
+		$metadata->mapOneToOne(array( 'fieldName' => 'stat_value', 'targetEntity' => 'Application\\DeskPRO\\Entity\\StatValue', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'stat_value_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
+	}
 }
+

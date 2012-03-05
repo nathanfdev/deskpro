@@ -34,12 +34,10 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping as ORM_Mapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Application\DeskPRO\App;
-
-use Symfony\Component\Validator\Constraints;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -85,4 +83,24 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="locale", type="string", length=8)
 	 */
 	protected $locale = 'en_US';
+
+
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Language';
+		$metadata->setPrimaryTable(array( 'name' => 'languages', ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'title', ));
+		$metadata->mapField(array( 'fieldName' => 'language_package', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'language_package', ));
+		$metadata->mapField(array( 'fieldName' => 'locale', 'type' => 'string', 'length' => 8, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'locale', ));
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+	}
 }
+

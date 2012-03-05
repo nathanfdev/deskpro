@@ -34,7 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping as ORM_Mapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ORM\Util\Util as ORM_Util;
@@ -1867,4 +1868,68 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 		$this->organization_position = $organization_position;
 	}
+
+
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Person'; 
+		$metadata->setPrimaryTable(array( 'name' => 'people', 'indexes' => array( 'is_agent_idx' => array( 'columns' => array( 0 => 'is_agent', ), ), ), )); 
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT); 
+		$metadata->addLifecycleCallback('_initPersonLogger', 'postLoad'); 
+		$metadata->addLifecycleCallback('smartSetName', 'prePersist'); 
+		$metadata->addLifecycleCallback('_prePersist', 'prePersist'); 
+		$metadata->addLifecycleCallback('smartSetName', 'preUpdate'); 
+		$metadata->addLifecycleCallback('_savePersonLogs', 'postPersist'); 
+		$metadata->addLifecycleCallback('_savePersonLogs', 'postUpdate'); 
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, )); 
+		$metadata->mapField(array( 'fieldName' => 'gravatar_url', 'type' => 'text', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'gravatar_url', )); 
+		$metadata->mapField(array( 'fieldName' => 'is_contact', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'is_contact', )); 
+		$metadata->mapField(array( 'fieldName' => 'is_user', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'is_user', )); 
+		$metadata->mapField(array( 'fieldName' => 'is_agent', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'is_agent', )); 
+		$metadata->mapField(array( 'fieldName' => 'can_agent', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'can_agent', )); 
+		$metadata->mapField(array( 'fieldName' => 'can_admin', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'can_admin', )); 
+		$metadata->mapField(array( 'fieldName' => 'can_billing', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'can_billing', )); 
+		$metadata->mapField(array( 'fieldName' => 'can_reports', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'can_reports', )); 
+		$metadata->mapField(array( 'fieldName' => 'is_vacation_mode', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'is_vacation_mode', )); 
+		$metadata->mapField(array( 'fieldName' => 'is_autoresponder', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'is_autoresponder', )); 
+		$metadata->mapField(array( 'fieldName' => 'is_confirmed', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'is_confirmed', )); 
+		$metadata->mapField(array( 'fieldName' => 'is_agent_confirmed', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'is_agent_confirmed', )); 
+		$metadata->mapField(array( 'fieldName' => 'is_deleted', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'is_deleted', )); 
+		$metadata->mapField(array( 'fieldName' => 'importance', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'importance', )); 
+		$metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'creation_system', )); 
+		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'text', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'name', )); 
+		$metadata->mapField(array( 'fieldName' => 'first_name', 'type' => 'text', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'first_name', )); 
+		$metadata->mapField(array( 'fieldName' => 'last_name', 'type' => 'text', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'last_name', )); 
+		$metadata->mapField(array( 'fieldName' => 'summary', 'type' => 'text', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'summary', )); 
+		$metadata->mapField(array( 'fieldName' => 'secret_string', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'secret_string', )); 
+		$metadata->mapField(array( 'fieldName' => 'organization_position', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'organization_position', )); 
+		$metadata->mapField(array( 'fieldName' => 'timezone', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'timezone', )); 
+		$metadata->mapField(array( 'fieldName' => 'password', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'password', )); 
+		$metadata->mapField(array( 'fieldName' => 'password_scheme', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'password_scheme', )); 
+		$metadata->mapField(array( 'fieldName' => 'salt', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'salt', )); 
+		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'date_created', )); 
+		$metadata->mapField(array( 'fieldName' => 'date_last_login', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'date_last_login', )); 
+		$metadata->mapField(array( 'fieldName' => 'date_picture_check', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'date_picture_check', )); 
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY); 
+		$metadata->mapOneToOne(array( 'fieldName' => 'picture_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'picture_blob_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, )); 
+		$metadata->mapOneToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, )); 
+		$metadata->mapOneToOne(array( 'fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, )); 
+		$metadata->mapOneToOne(array( 'fieldName' => 'primary_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'primary_email_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, )); 
+		$metadata->mapOneToMany(array( 'fieldName' => 'emails', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => false, )); 
+		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelPerson', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => true, )); 
+		$metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataPerson', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => true, )); 
+		$metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonContactData', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => false, )); 
+		$metadata->mapManyToMany(array( 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'joinTable' => array( 'name' => 'person2usergroups', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), )); 
+		$metadata->mapOneToMany(array( 'fieldName' => 'preferences', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => false, )); 
+		$metadata->mapOneToMany(array( 'fieldName' => 'usersource_assoc', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc', 'cascade' => array( ), 'mappedBy' => 'person', 'orphanRemoval' => false, )); 
+		$metadata->mapManyToMany(array( 'fieldName' => 'twitter_accounts', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'cascade' => array( ), 'joinTable' => array( ), 'mappedBy' => 'persons', )); 
+		$metadata->mapOneToMany(array( 'fieldName' => 'twitter_status_notes', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusNote', 'cascade' => array( ), 'mappedBy' => 'person', 'orphanRemoval' => false, ));
+	}
 }
+

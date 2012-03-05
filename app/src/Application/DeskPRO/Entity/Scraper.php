@@ -34,7 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping as ORM_Mapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * A scraper is something that fetches data from a remote resource. This is the abstract
@@ -86,4 +87,19 @@ abstract class Scraper
 	 * @var Application\DeskPRO\Scraper\Handler\HandlerAbstract
 	 */
 	protected $_handler_instance = null;
+
+
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->isMappedSuperclass = true; 
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
+		$metadata->setPrimaryTable(array( 'name' => 'Scraper', )); 
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+	}
 }
+

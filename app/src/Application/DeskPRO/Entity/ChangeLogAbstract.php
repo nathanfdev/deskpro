@@ -34,7 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping as ORM_Mapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * Tracks changes on objects
@@ -102,4 +103,19 @@ abstract class ChangeLogAbstract extends \Application\DeskPRO\Domain\DomainObjec
 
 		return 0;
 	}
+
+
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->isMappedSuperclass = true; 
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
+		$metadata->setPrimaryTable(array( 'name' => 'ChangeLogAbstract', )); 
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+	}
 }
+

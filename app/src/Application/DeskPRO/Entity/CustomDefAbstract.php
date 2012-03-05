@@ -34,7 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping as ORM_Mapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Orb\Util\Util;
 use Orb\Util\Strings;
@@ -362,4 +363,19 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	{
 		return $this->parent['id'];
 	}
+
+
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->isMappedSuperclass = true; 
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
+		$metadata->setPrimaryTable(array( 'name' => 'CustomDefAbstract', )); 
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+	}
 }
+

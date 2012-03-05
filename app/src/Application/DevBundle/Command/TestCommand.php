@@ -1,35 +1,12 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
  * @category Commands
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
 namespace Application\DevBundle\Command;
@@ -58,56 +35,68 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		echo "ere";
-		return;
-		$box = <<<'BOX'
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
-BOX;
+		$meta_path = DP_ROOT . '/../data/tmp';
+		$ent_path = DP_ROOT . '/src/Application/DeskPRO/Entity';
 
 		$finder = new \Symfony\Component\Finder\Finder();
-		$finder->in(DP_ROOT.'/src')->name('*.php')->files();
+		$finder->in(array($meta_path))->name('*.php')->files();
 
 		foreach ($finder as $file) {
+
+			$name = Strings::extractRegexMatch('#\.([^\.]+)\.php$#', $file->getFilename());
+			echo "Processing $name ... ";
+
 			/** @var \Symfony\Component\Finder\SplFileInfo $file */
 
-			$code = file_get_contents($file->getRealPath());
-			if (strpos($code, '@package DeskPRO') === false && strpos($code, '@package Orb') === false) {
+			$code = php_strip_whitespace($file->getRealPath());
+
+			// Strip off the <?php and use statement
+			$code = substr($code, strpos($code, '$metadata'));
+
+			// Put each declaration on its own line
+			$code = str_replace('$metadata', "\n" . '$metadata', $code);
+			$code = trim($code);
+
+			$ent_code = file_get_contents($ent_path . '/' . $name . '.php');
+			if (strpos($ent_code, 'public static function loadMetadata') !== false) {
+				echo "[SKIP] Appears to have been processed already\n";
 				continue;
 			}
 
-			$code = Strings::strReplaceOne("<?php\n", "<?php\n$box\n\n", $code);
+			$ent_code = str_replace('use Doctrine\ORM\Mapping as ORM_Mapping;', "use Doctrine\\ORM\\Mapping\\ClassMetadata;\nuse Doctrine\\ORM\\Mapping\\ClassMetadataInfo;", $ent_code);
+			$ent_code = trim($ent_code);
 
-			$code = str_replace(" * @author Christopher Nadeau <chris.nadeau@deskpro.com>\n", '', $code);
-			$code = str_replace(" * @license http://www.deskpro.com/license-agreement DeskPRO License\n", '', $code);
-			$code = str_replace(" * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)\n", '', $code);
-			$code = trim($code);
-			$code .= "\n";
+			// Strip off last } that closes the class
+			$ent_code = rtrim($ent_code, '}');
+			$ent_code = rtrim($ent_code);
 
-			file_put_contents($file->getRealPath(), $code);
+			// Indent each line
+			$code = explode("\n", $code);
+			foreach ($code as &$l) {
+				$l = "\t\t" . $l;
+			}
+			$code = implode("\n", $code);
+
+			// Add our new method
+			$ent_code .= "
+
+
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata \$metadata)
+	{
+$code
+	}
+}
+
+";
+
+			file_put_contents($ent_path . '/' . $name . '.php', $ent_code);
+
+			echo "[DONE]\n";
 		}
 	}
 }

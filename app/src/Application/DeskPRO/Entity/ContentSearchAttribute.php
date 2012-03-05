@@ -34,7 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping as ORM_Mapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
@@ -75,4 +76,22 @@ class ContentSearchAttribute extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="content", type="string", length=200)
 	 */
 	protected $content;
+
+
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
+		$metadata->setPrimaryTable(array( 'name' => 'content_search_attribute', )); 
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT); 
+		$metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'object_type', 'id' => true, )); 
+		$metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'object_id', 'id' => true, )); 
+		$metadata->mapField(array( 'fieldName' => 'attribute_id', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'attribute_id', 'id' => true, )); 
+		$metadata->mapField(array( 'fieldName' => 'content', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'content', 'id' => true, ));
+	}
 }
+

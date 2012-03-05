@@ -34,7 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping as ORM_Mapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Application\DeskPRO\App;
 use Orb\Util\Strings;
@@ -114,4 +115,22 @@ class BanIp extends \Application\DeskPRO\Domain\DomainObject
 		$this->ip_start = sprintf("%u", ip2long(implode('.', $start)));
 		$this->ip_end = sprintf("%u", ip2long(implode('.', $end)));
 	}
+
+
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\BanIp'; 
+		$metadata->setPrimaryTable(array( 'name' => 'ban_ips', )); 
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT); 
+		$metadata->mapField(array( 'fieldName' => 'banned_ip', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'banned_ip', 'id' => true, )); 
+		$metadata->mapField(array( 'fieldName' => 'ip_start', 'type' => 'bigint', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'ip_start', )); 
+		$metadata->mapField(array( 'fieldName' => 'ip_end', 'type' => 'bigint', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'ip_end', ));
+	}
 }
+

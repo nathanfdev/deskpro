@@ -34,7 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping as ORM_Mapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * Related content
@@ -80,4 +81,23 @@ class RelatedContent extends \Application\DeskPRO\Domain\DomainObject
 		$this->rel_object_type  = $entity2->getTableName();
 		$this->rel_object_id    = $entity2->getId();
 	}
+
+
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\RelatedContent'; 
+		$metadata->setPrimaryTable(array( 'name' => 'related_content', )); 
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT); 
+		$metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'object_type', 'id' => true, )); 
+		$metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'object_id', 'id' => true, )); 
+		$metadata->mapField(array( 'fieldName' => 'rel_object_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'rel_object_type', 'id' => true, )); 
+		$metadata->mapField(array( 'fieldName' => 'rel_object_id', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'rel_object_id', 'id' => true, ));
+	}
 }
+

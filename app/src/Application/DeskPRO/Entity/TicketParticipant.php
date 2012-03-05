@@ -34,7 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping as ORM_Mapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Orb\Util\Strings;
 
@@ -81,7 +82,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Default checkbox status of the user
-	 * 
+	 *
 	 * @var bool
 	 * @ORM_Mapping\Column(name="default_on", type="boolean")
 	 */
@@ -132,7 +133,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 
 			// try to find an existing TAC for this person and ticket,
 			// ie agents may already have one from them getting notifications
-			
+
 			$access_code = App::getEntityRepository('DeskPRO:TicketAccessCode')->findByTicketAndPerson($this->ticket, $this->person);
 			if (!$access_code) {
 				$access_code = new TicketAccessCode();
@@ -144,4 +145,25 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 		$this->access_code->person = $this->person;
 		$this->access_code->ticket = $this->ticket;
 	}
+
+
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setIdentifier(array('ticket_id', 'person_id'));
+		$metadata->setPrimaryTable(array( 'name' => 'tickets_participants', ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->addLifecycleCallback('_setAccessCode', 'prePersist');
+		$metadata->mapField(array( 'fieldName' => 'default_on', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'default_on', ));
+		$metadata->mapOneToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'participants', 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
+		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
+		$metadata->mapOneToOne(array( 'fieldName' => 'access_code', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAccessCode', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'access_code_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
+		$metadata->mapOneToOne(array( 'fieldName' => 'person_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_email_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
+	}
 }
+

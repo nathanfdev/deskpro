@@ -34,7 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping as ORM_Mapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Application\DeskPRO\App;
 
@@ -140,4 +141,23 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 	{
 		return Usergroup::generateUsergroupSetKey($usergroup_ids);
 	}
+
+
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PermissionCache'; 
+		$metadata->setPrimaryTable(array( 'name' => 'permissions_cache', )); 
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT); 
+		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'name', 'id' => true, )); 
+		$metadata->mapField(array( 'fieldName' => 'usergroup_key', 'type' => 'string', 'length' => 32, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'usergroup_key', 'id' => true, )); 
+		$metadata->mapField(array( 'fieldName' => 'usergroup_ids', 'type' => 'text', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'usergroup_ids', )); 
+		$metadata->mapField(array( 'fieldName' => 'perms', 'type' => 'object', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'perms', ));
+	}
 }
+

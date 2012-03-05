@@ -34,10 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping as ORM_Mapping;
-
-use Symfony\Component\Validator\Constraints;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -89,4 +87,21 @@ class LabelDef extends \Application\DeskPRO\Domain\DomainObject
 
 		return $table;
 	}
+
+
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\LabelDef';
+		$metadata->setPrimaryTable(array( 'name' => 'label_defs', ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->mapField(array( 'fieldName' => 'label_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'label_type', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'label', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'label', 'id' => true, ));
+	}
 }
+

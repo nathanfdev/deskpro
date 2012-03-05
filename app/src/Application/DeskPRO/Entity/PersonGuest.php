@@ -34,7 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping as ORM_Mapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Application\DeskPRO\App;
 
@@ -68,5 +69,10 @@ class PersonGuest extends Person
 	public function noPersist()
 	{
 		throw new \BadMethodCallException('A PersonGuest cannot be persisted');
+	}
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+
 	}
 }

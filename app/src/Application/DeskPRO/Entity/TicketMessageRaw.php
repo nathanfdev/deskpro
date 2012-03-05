@@ -34,7 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping as ORM_Mapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Markdown;
@@ -70,4 +71,22 @@ class TicketMessageRaw extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="charset", type="string", length=100)
 	 */
 	protected $charset = 'UNKNOWN';
+
+
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setIdentifier(array('message_id'));
+		$metadata->setPrimaryTable(array( 'name' => 'tickets_messages_raw', ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->mapField(array( 'fieldName' => 'raw', 'type' => 'dpblob', 'length' => 4294967295, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'raw', ));
+		$metadata->mapField(array( 'fieldName' => 'charset', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'charset', ));
+		$metadata->mapOneToOne(array( 'fieldName' => 'message', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'message_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
+	}
 }
+

@@ -36,7 +36,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping as ORM_Mapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
@@ -510,4 +511,42 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 
 		return $entity;
 	}
+
+
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterStatus'; 
+		$metadata->setPrimaryTable(array( 'name' => 'twitter_statuses', )); 
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT); 
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'bigint', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, )); 
+		$metadata->mapField(array( 'fieldName' => 'text', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'text', )); 
+		$metadata->mapField(array( 'fieldName' => 'is_truncated', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'is_truncated', )); 
+		$metadata->mapField(array( 'fieldName' => 'is_favorited', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'is_favorited', )); 
+		$metadata->mapField(array( 'fieldName' => 'is_archived', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'is_archived', )); 
+		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'date_created', )); 
+		$metadata->mapField(array( 'fieldName' => 'geo_latitude', 'type' => 'decimal', 'length' => NULL, 'precision' => 10, 'scale' => 5, 'nullable' => true, 'unique' => false, 'columnName' => 'geo_latitude', )); 
+		$metadata->mapField(array( 'fieldName' => 'geo_longitude', 'type' => 'decimal', 'length' => NULL, 'precision' => 10, 'scale' => 5, 'nullable' => true, 'unique' => false, 'columnName' => 'geo_longitude', )); 
+		$metadata->mapField(array( 'fieldName' => 'source', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'source', )); 
+		$metadata->mapOneToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'statuses', 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, )); 
+		$metadata->mapOneToOne(array( 'fieldName' => 'in_reply_to_status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'replies', 'joinColumns' => array( 0 => array( 'name' => 'in_reply_to_status_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, )); 
+		$metadata->mapOneToMany(array( 'fieldName' => 'replies', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'cascade' => array( ), 'mappedBy' => 'in_reply_to_status', 'orphanRemoval' => false, )); 
+		$metadata->mapOneToOne(array( 'fieldName' => 'retweet', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'retweets', 'joinColumns' => array( 0 => array( 'name' => 'retweet_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, )); 
+		$metadata->mapOneToMany(array( 'fieldName' => 'retweets', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'cascade' => array( ), 'mappedBy' => 'retweet', 'orphanRemoval' => false, )); 
+		$metadata->mapOneToOne(array( 'fieldName' => 'in_reply_to_user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'replies', 'joinColumns' => array( 0 => array( 'name' => 'in_reply_to_user_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, )); 
+		$metadata->mapOneToOne(array( 'fieldName' => 'recipient', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'messages', 'joinColumns' => array( 0 => array( 'name' => 'recipient_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, )); 
+		$metadata->mapOneToOne(array( 'fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, )); 
+		$metadata->mapOneToOne(array( 'fieldName' => 'agent_team', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_team_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, )); 
+		$metadata->mapOneToOne(array( 'fieldName' => 'long', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusLong', 'cascade' => array( ), 'mappedBy' => 'status', 'inversedBy' => NULL, 'joinColumns' => array( ), 'orphanRemoval' => false, )); 
+		$metadata->mapOneToMany(array( 'fieldName' => 'mentions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusMention', 'cascade' => array( ), 'mappedBy' => 'status', 'orphanRemoval' => false, )); 
+		$metadata->mapOneToMany(array( 'fieldName' => 'tags', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusTag', 'cascade' => array( ), 'mappedBy' => 'status', 'orphanRemoval' => false, )); 
+		$metadata->mapOneToMany(array( 'fieldName' => 'urls', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusUrl', 'cascade' => array( ), 'mappedBy' => 'status', 'orphanRemoval' => false, )); 
+		$metadata->mapOneToMany(array( 'fieldName' => 'notes', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusNote', 'cascade' => array( ), 'mappedBy' => 'status', 'orphanRemoval' => false, ));
+	}
 }
+
