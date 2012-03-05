@@ -41,6 +41,16 @@ use Application\DeskPRO\Entity\ArticleComment;
 
 class KbStep extends AbstractDeskpro3Step
 {
+	/**
+	 * @var array
+	 */
+	protected $custom_field_info = array();
+
+	/**
+	 * @var \Application\DeskPRO\CustomFields\FieldManager
+	 */
+	protected $fieldmanager;
+
 	public static function getTitle()
 	{
 		return 'Import Knowledgebase';
@@ -76,6 +86,11 @@ class KbStep extends AbstractDeskpro3Step
 		if (!$ids) $ids = '0';
 
 		$articles = $this->getOldDb()->fetchAll("SELECT * FROM faq_articles WHERE id IN ($ids)");
+
+		$this->custom_field_info = $this->getOldDb()->fetchAll("SELECT * FROM faq_def");
+		$this->fieldmanager = $this->getContainer()->getSystemService('article_fields_manager');
+		$this->fieldmanager->getFields();
+
 		$sub_start_time = microtime(true);
 		$this->logMessage("-- Processing batch {$page}");
 
@@ -194,6 +209,61 @@ class KbStep extends AbstractDeskpro3Step
 		}
 
 		#------------------------------
+		# Rated searches become ratings with linked searches
+		#------------------------------
+
+		$searchlog_solved = $this->getDb()->fetchAll("
+			SELECT searchid, userid, solved
+			FROM faq_searchlog_solved
+			WHERE articleid = ?
+		", array($article['id']));
+
+		foreach ($searchlog_solved as $solved) {
+			$search_id = $this->getMappedNewId('searchlog', $solved['searchid']);
+			if (!$search_id) continue;
+
+			if ($solved['userid']) {
+				$person_id = $this->getMappedNewId('user', $solved['userid']);
+				if (!$person_id) {
+					continue;
+				}
+			} else {
+				$person_id = null;
+			}
+
+			$insert_rating = array();
+			$insert_rating['object_type']  = 'article';
+			$insert_rating['object_id']    = $new_article->id;
+			$insert_rating['date_created'] = date('Y-m-d H:i:s');
+			$insert_rating['rating']       = $solved['solved'] ? 1 : -1;
+			$insert_rating['searchlog_id'] = $search_id;
+
+			$this->getDb()->insert('ratings', $insert_rating);
+		}
+
+		#------------------------------
+		# Keywords as sticky words
+		#------------------------------
+
+		$words = $this->getOldDb()->fetchAll("
+			SELECT w.word
+			FROM faq_keywords_articles a
+			LEFT JOIN faq_keywords_words AS w ON (w.wordid = a.wordid)
+			WHERE a.articleid = ?
+		", array($article['id']));
+
+		array_walk($words, 'strtolower');
+		$words = array_unique($words);
+
+		foreach ($words as $w) {
+			$this->getDb()->insert('search_sticky_result', array(
+				'word' => $w,
+				'object_type' => 'article',
+				'object_id' => $new_article->id
+			));
+		}
+
+		#------------------------------
 		# Comments
 		#------------------------------
 
@@ -213,5 +283,58 @@ class KbStep extends AbstractDeskpro3Step
 			$this->getEm()->persist($new_comment);
 			$this->getEm()->flush();
 		}
+
+		#------------------------------
+		# Custom fields
+		#------------------------------
+
+		foreach ($this->custom_field_info as $field_info) {
+			$name = $field_info['name'];
+			if (!isset($article[$name]) || !$article[$name]) {
+				continue;
+			}
+
+			$field = $this->fieldmanager->getFieldFromId($this->getMappedNewId('kb_def', $field_info['id']));
+			if (!$field) {
+				continue;
+			}
+
+			$data = null;
+			switch ($field->handler_class) {
+				case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
+				case 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea':
+					$this->getDb()->insert('custom_data_articles', array(
+						'article_id' => $org['id'],
+						'field_id' => $field->id,
+						'input' => $article[$name]
+					));
+					break;
+
+				case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
+					$val = str_replace('|||', '', $article[$name]);
+					$new_val = $this->getMappedNewId('kb_def_choice', $val);
+					if ($new_val) {
+						$this->getDb()->insert('custom_data_articles', array(
+							'article_id' => $org['id'],
+							'field_id' => $new_val,
+							'value' => 1
+						));
+					}
+					break;
+
+				case 'Application\\DeskPRO\\CustomFields\\Handler\\ChoiceMulti':
+					$vals = explode('|||', $article[$name]);
+					foreach ($vals as $val) {
+						$new_val = $this->getMappedNewId('kb_def_choice', $val);
+						if ($new_val) {
+							$this->getDb()->insert('custom_data_articles', array(
+								'article_id' => $org['id'],
+								'field_id' => $new_val,
+								'value' => 1
+							));
+						}
+					}
+					break;
+			}
 	}
 }

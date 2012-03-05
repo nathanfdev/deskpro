@@ -44,6 +44,11 @@ class CompaniesStep extends AbstractDeskpro3Step
 	 */
 	protected $custom_field_info = array();
 
+	/**
+	 * @var \Application\DeskPRO\CustomFields\FieldManager
+	 */
+	protected $fieldmanager;
+
 	public static function getTitle()
 	{
 		return 'Import Companies';
