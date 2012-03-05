@@ -48,6 +48,9 @@ class FeedbackStep extends AbstractDeskpro3Step
 
 	public function countPages()
 	{
+		if (!$this->importer->doesOldTableExist('user_ideas')) {
+			return 1;
+		}
 		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM user_ideas");
 		if (!$count) {
 			return 1;
@@ -70,6 +73,10 @@ class FeedbackStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
+		if (!$this->importer->doesOldTableExist('user_ideas')) {
+			return;
+		}
+
 		$batch = $this->getIdsBatch($page - 1);
 
 		$ids = implode(',', $batch);

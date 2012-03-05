@@ -187,7 +187,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		// Feedback
 		//-----
 
-		if (!$group_info['p_ideas']) {
+		if (!isset($group_info['p_ideas']) || !$group_info['p_ideas']) {
 			unset(
 				$insert_perms['feedback.use'],
 				$insert_perms['feedback.submit'],

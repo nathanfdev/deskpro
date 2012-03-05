@@ -38,6 +38,8 @@ abstract class SaveDataTableAbstractStep extends AbstractDeskpro3Step
 {
 	abstract public function getTable();
 
+	protected $does_exist = null;
+
 	public function getTitle()
 	{
 		return 'Save Data: ' . $this->getTable();
@@ -48,13 +50,25 @@ abstract class SaveDataTableAbstractStep extends AbstractDeskpro3Step
 		return 1000;
 	}
 
+	public function getDoesExist()
+	{
+		return $this->importer->doesOldTableExist($this->getTable());
+	}
+
 	public function countPages()
 	{
+		if (!$this->getDoesExist()) {
+			return 1;
+		}
 		return $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM " . $this->getTable());
 	}
 
 	public function run($page = 1)
 	{
+		if (!$this->getDoesExist()) {
+			return;
+		}
+
 		$table = $this->getTable();
 		$start = ($page - 1) * $this->getPerPage();
 		$limit = $this->getPerPage();
@@ -63,7 +77,7 @@ abstract class SaveDataTableAbstractStep extends AbstractDeskpro3Step
 		foreach ($recs as $rec) {
 			$this->getDb()->insert('import_datastore', array(
 				'typename' => "table_{$table}",
-				'data' => serialize($data)
+				'data' => serialize($rec)
 			));
 		}
 	}

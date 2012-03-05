@@ -54,6 +54,11 @@ class Deskpro3Importer extends AbstractImporter
 	 */
 	protected $time_begin = 0;
 
+	/**
+	 * @var array
+	 */
+	protected $table_exists = array();
+
 	protected $steps = array(
 		'Settings',
 		'Banning',
@@ -321,6 +326,27 @@ class Deskpro3Importer extends AbstractImporter
 		}
 
 		$this->getDb()->exec($data['sql']);
+	}
+
+
+	/**
+	 * @param $table
+	 * @return bool
+	 */
+	public function doesOldTableExist($table)
+	{
+		if (isset($this->table_exists[$table])) {
+			return $this->table_exists[$table];
+		}
+
+		$x = $this->getOldDb()->fetchColumn("show tables like '{$table}'");
+		if ($x) {
+			$this->table_exists[$table] = true;
+		} else {
+			$this->table_exists[$table] = false;
+		}
+
+		return $this->table_exists[$table];
 	}
 
 

@@ -392,7 +392,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		if ($mode == 'run') {
 			if ($importer instanceof \Application\DeskPRO\Import\Importer\Deskpro3Importer) {
 				$other_version = $importer->getOldDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('deskpro_version_internal'));
-				if ($other_version < 3050502) {
+				if ($other_version < 3030001) {
 					$output->writeln('Your DeskPRO v3 installation is outdated. Before we can import your helpdesk into the system, you must run the upgrader.');
 					$output->writeln('Do you want to upgrade your v3 database now?');
 

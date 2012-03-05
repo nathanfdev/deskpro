@@ -47,6 +47,10 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
+		if (!$this->importer->doesOldTableExist('user_idea_categories')) {
+			return;
+		}
+
 		// If there arent any ideas besides the default, delete default data
 		$default_check = $this->getDb()->fetchColumn("SELECT id FROM feedback ORDER BY id DESC LIMIT 1");
 		$default_check2 = $this->getDb()->fetchColumn("SELECT id FROM feedback_categories ORDER BY id DESC LIMIT 1");

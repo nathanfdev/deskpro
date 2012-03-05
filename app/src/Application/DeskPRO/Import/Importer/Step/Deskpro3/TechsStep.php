@@ -264,7 +264,7 @@ class TechsStep extends AbstractDeskpro3Step
 							$insert_perms['agent_chat.delete']
 						);
 					} else {
-						if (!$tech['p_chat_del_logs']) {
+						if (isset($tech['p_chat_del_logs']) && !$tech['p_chat_del_logs']) {
 							unset($insert_perms['agent_chat.delete']);
 						}
 					}
