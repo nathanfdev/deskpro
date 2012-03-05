@@ -513,9 +513,11 @@ class TicketsStep extends AbstractDeskpro3Step
 		$saved_tickets = array_unique($saved_tickets);
 
 		foreach ($saved_tickets as $saved_tech) {
+			$agent_id = $this->getMappedNewId('tech', $saved_tech);
+			if (!$agent_id) continue;
 			$this->getDb()->insert('tickets_flagged', array(
 				'ticket_id' => $insert_ticket['id'],
-				'person_id' => $this->getMappedNewId('tech', $saved_tech),
+				'person_id' => $agent_id,
 				'color' => 'red'
 			));
 		}

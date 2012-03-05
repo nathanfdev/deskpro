@@ -60,6 +60,8 @@ class TechsStep extends AbstractDeskpro3Step
 		$scanner = new \Application\InstallBundle\Data\AgentGroupPermScanner();
 		$perms = $scanner->getNames();
 
+		$has_admin = false;
+
 		try {
 			foreach ($techs as $tech) {
 
@@ -100,6 +102,11 @@ class TechsStep extends AbstractDeskpro3Step
 				$this->getEm()->flush();
 
 				$this->saveMappedId('tech', $tech['id'], $agent->id);
+
+				if ($agent->can_admin && !$has_admin) {
+					$has_admin = true;
+					$this->saveMappedId('first_admin', 0, $agent->id);
+				}
 
 				// Save old password string because its used in gateways
 				$this->getDb()->insert('import_datastore', array(
