@@ -31,7 +31,6 @@
  *
  * @package DeskPRO
  * @category Entities
- * @author Pierre Minnieur <pm@pierre-minnieur.de>
  */
 
 namespace Application\DeskPRO\Entity;

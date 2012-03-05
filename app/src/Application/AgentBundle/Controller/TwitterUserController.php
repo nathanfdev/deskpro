@@ -31,7 +31,6 @@
  *
  * @package DeskPRO
  * @subpackage AgentBundle
- * @author Pierre Minnieur <pm@pierre-minnieur.de>
  */
 
 namespace Application\AgentBundle\Controller;

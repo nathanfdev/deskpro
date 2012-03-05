@@ -32,7 +32,6 @@
  * @package DeskPRO
  * @subpackage AgentBundle
  * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
- * @author Ricardo Rauch <ricardo@gravityonmars.com>
  */
 
 namespace Application\AgentBundle\Controller;

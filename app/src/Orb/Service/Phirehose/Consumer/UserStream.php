@@ -46,7 +46,6 @@ use \Application\DeskPRO\Entity\TwitterUser;
 /**
  * Concrete Twitter API User Stream consuming class.
  *
- * @author Pierre Minnieur <pm@pierre-minnieur.de>
  */
 class UserStream extends \UserstreamPhirehose
 {

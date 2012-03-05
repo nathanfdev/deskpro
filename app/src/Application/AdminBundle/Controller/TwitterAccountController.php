@@ -30,7 +30,6 @@
  *
  * @package DeskPRO
  * @subpackage AdminBundle
- * @author Pierre Minnieur <pm@pierre-minnieur.de>
  */
 
 namespace Application\AdminBundle\Controller;

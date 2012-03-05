@@ -31,7 +31,6 @@
  * @package DeskPRO
  * @category Entities
  * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
- * @author Abdullah Kiser <kiser.bd@gmail.com>
  */
 
 namespace Application\DeskPRO\EntityRepository;

@@ -30,7 +30,6 @@
  *
  * @package DeskPRO
  * @subpackage AgentBundle
- * @author Abdullah Kiser <kiser.bd@gmail.com>
  */
 
 

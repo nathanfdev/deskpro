@@ -30,7 +30,6 @@
  *
  * @package DeskPRO
  * @category Entities
- * @author Basil Thoppil <basil.thoppil@deskpro.com>
  */
 
 namespace Application\DeskPRO\Entity;

@@ -31,7 +31,6 @@
  * @package DeskPRO
  * @category Entities
  * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
- * @author Ricardo Rauch <ricardo@gravityonmars.com>
  */
 
 namespace Application\DeskPRO\Entity;
