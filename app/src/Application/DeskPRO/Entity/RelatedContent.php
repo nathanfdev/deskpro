@@ -40,36 +40,26 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Related content
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\RelatedContent")
- * @ORM_Mapping\Table(name="related_content")
  */
 class RelatedContent extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="object_type", type="string", length=100)
-	 * @ORM_Mapping\Id
 	 */
 	protected $object_type;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="object_id", type="integer")
-	 * @ORM_Mapping\Id
 	 */
 	protected $object_id = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="rel_object_type", type="string", length=100)
-	 * @ORM_Mapping\Id
 	 */
 	protected $rel_object_type;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="rel_object_id", type="integer")
-	 * @ORM_Mapping\Id
 	 */
 	protected $rel_object_id = null;
 
@@ -100,4 +90,3 @@ class RelatedContent extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'rel_object_id', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'rel_object_id', 'id' => true, ));
 	}
 }
-

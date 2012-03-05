@@ -42,8 +42,6 @@ use Application\DeskPRO\App;
 /**
  * Base labels associations class
  *
- * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\MappedSuperclass
  */
 class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -55,8 +53,6 @@ class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\Column(name="label", type="string", length=255)
 	 */
 	protected $label;
 
@@ -66,7 +62,6 @@ class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * After a new association is made, we need to make sure the def table has this
 	 * record.
 	 * 
-	 * @ORM_Mapping\PostPersist
 	 */
 	public function syncWithDef()
 	{
@@ -97,4 +92,3 @@ class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->addLifecycleCallback('syncWithDef', 'postPersist');
 	}
 }
-

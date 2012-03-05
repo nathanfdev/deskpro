@@ -45,42 +45,31 @@ use Application\DeskPRO\Entity;
 /**
  * Twitter Status Tag
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="twitter_statuses_tags")
- * @ORM_Mapping\HasLifecycleCallbacks
  */
 class TwitterStatusTag extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\GeneratedValue(strategy="AUTO")
-	 * @ORM_Mapping\Column(name="id", type="bigint")
 	 */
 	protected $id;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterStatus
-	 * @ORM_Mapping\ManyToOne(targetEntity="TwitterStatus")
-	 * @ORM_Mapping\JoinColumn(name="status_id", referencedColumnName="id")
 	 */
 	protected $status;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="hash", type="string", length=255)
 	 */
 	protected $hash;
 
 	/**
 	 * @var integer
-	 * @ORM_Mapping\Column(name="starts", type="integer")
 	 */
 	protected $starts = 0;
 
 	/**
 	 * @var integer
-	 * @ORM_Mapping\Column(name="ends", type="integer")
 	 */
 	protected $ends = 0;
 
@@ -155,4 +144,3 @@ class TwitterStatusTag extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'status_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

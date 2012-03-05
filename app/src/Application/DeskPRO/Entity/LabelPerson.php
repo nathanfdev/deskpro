@@ -40,8 +40,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Records labels on people.
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="labels_people")
  */
 class LabelPerson extends LabelAssocAbstract
 {
@@ -49,9 +47,6 @@ class LabelPerson extends LabelAssocAbstract
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
@@ -70,4 +65,3 @@ class LabelPerson extends LabelAssocAbstract
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

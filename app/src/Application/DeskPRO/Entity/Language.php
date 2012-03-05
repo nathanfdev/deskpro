@@ -45,8 +45,6 @@ use Orb\Util\Arrays;
 /**
  * A language groups phrases and defines a locale code.
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Language")
- * @ORM_Mapping\Table(name="languages")
  */
 class Language extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -54,8 +52,6 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="integer")
 	 *
 	 */
 	protected $id = null;
@@ -64,7 +60,6 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 	 * Title of the language
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
@@ -72,7 +67,6 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 	 * The language pack used with this lang
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="language_package", type="string", length=255)
 	 */
 	protected $language_package;
 
@@ -80,7 +74,6 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 	 * The locale code
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="locale", type="string", length=8)
 	 */
 	protected $locale = 'en_US';
 
@@ -103,4 +96,3 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
-

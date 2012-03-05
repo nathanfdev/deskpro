@@ -47,8 +47,6 @@ use Orb\Util\Arrays;
  * for things like system services. User services (things users want to do)
  * will want to use OAuth.
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ApiKey")
- * @ORM_Mapping\Table(name="api_keys")
  */
 class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -56,21 +54,17 @@ class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 *
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="code", type="string", length=25)
 	 */
 	protected $code;
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
@@ -78,7 +72,6 @@ class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 	 * A note or description about the key (ie what its used for).
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="note", type="text")
 	 */
 	protected $note = '';
 
@@ -120,4 +113,3 @@ class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

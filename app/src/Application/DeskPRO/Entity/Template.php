@@ -42,9 +42,6 @@ use Orb\Util\Arrays;
 /**
  * Templates used in the system
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Template")
- * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="templates")
  */
 class Template extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -52,8 +49,6 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="integer")
 	 * 
 	 */
 	protected $id = null;
@@ -62,8 +57,6 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 	 * The style this template belongs to
 	 *
 	 * @var Style
-	 * @ORM_Mapping\ManyToOne(targetEntity="Style")
-	 * @ORM_Mapping\JoinColumn(name="style_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $style;
 
@@ -71,31 +64,26 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 	 * The path of the template
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="path", type="string", length=255)
 	 */
 	protected $path;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="template", type="text")
 	 */
 	protected $template = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="template_compiled", type="text")
 	 */
 	protected $template_compiled = '';
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="created_at",type="datetime")
 	 */
 	protected $created_at;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="updated_at",type="datetime")
 	 */
 	protected $updated_at;
 
@@ -128,7 +116,6 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 		return $this->style ? $this->style['id'] : 0;
 	}
 
-	/** @ORM_Mapping\PreUpdate */
 	public function _incUpdatedAt()
 	{
 		$this->updated_at = new \DateTime();
@@ -157,4 +144,3 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'style', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Style', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'style_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

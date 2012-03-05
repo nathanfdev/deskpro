@@ -40,27 +40,22 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Ticket workflows
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketWorkflow")
- * @ORM_Mapping\Table(name="ticket_workflows")
  */
 class TicketWorkflow extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 * 
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
 
@@ -88,4 +83,3 @@ class TicketWorkflow extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
-

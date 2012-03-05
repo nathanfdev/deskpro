@@ -40,9 +40,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Labels on downloads
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="labels_downloads")
  */
 class LabelDownload extends LabelAssocAbstract
 {
@@ -50,9 +47,6 @@ class LabelDownload extends LabelAssocAbstract
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Article
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\ManyToOne(targetEntity="Download")
-	 * @ORM_Mapping\JoinColumn(name="download_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $download;
 
@@ -71,4 +65,3 @@ class LabelDownload extends LabelAssocAbstract
 		$metadata->mapOneToOne(array( 'fieldName' => 'download', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Download', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'download_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

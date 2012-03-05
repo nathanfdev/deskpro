@@ -42,8 +42,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Records labels on task.
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="labels_tasks")
  */
 class LabelTask extends LabelAssocAbstract
 {
@@ -51,9 +49,6 @@ class LabelTask extends LabelAssocAbstract
 
   /**
    * @var \Application\DeskPRO\Entity\Task
-   * @ORM_Mapping\Id
-   * @ORM_Mapping\ManyToOne(targetEntity="Task")
-   * @ORM_Mapping\JoinColumn(name="task_id", referencedColumnName="id", onDelete="cascade")
    */
     protected $task;
 
@@ -72,4 +67,3 @@ class LabelTask extends LabelAssocAbstract
 		$metadata->mapOneToOne(array( 'fieldName' => 'task', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Task', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'task_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

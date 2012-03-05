@@ -43,14 +43,11 @@ use Orb\Util\Util;
 /**
  * A general data store
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TmpData")
- * @ORM_Mapping\Table(name="tmp_data")
  */
 class TmpData extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 * 
 	 */
 	protected $id = null;
@@ -59,7 +56,6 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
 	 * The authcode for the session to verify an id
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="auth", type="string", length=15)
 	 */
 	protected $auth;
 
@@ -67,19 +63,16 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
 	 * Data
 	 *
 	 * @var array
-	 * @ORM_Mapping\Column(name="data", type="array")
 	 */
 	protected $data = array();
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_expire",type="datetime")
 	 */
 	protected $date_expire;
 
@@ -206,4 +199,3 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
-

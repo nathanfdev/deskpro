@@ -44,41 +44,32 @@ use Application\DeskPRO\Translate\Translate;
 /**
  * Ticket categories
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketCategory")
- * @ORM_Mapping\Table(name="ticket_categories")
  */
 class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 *
 	 */
 	protected $id = null;
 
 	/**
 	 * @var TicketCategory
-	 * @ORM_Mapping\ManyToOne(targetEntity="TicketCategory")
-	 * @ORM_Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $parent = null;
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TicketCategory", mappedBy="parent")
-	 * @ORM_Mapping\OrderBy({"title" = "ASC"})
 	 */
 	protected $children = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
 
@@ -218,4 +209,3 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
 		$metadata->mapOneToMany(array( 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCategory', 'cascade' => array( ), 'mappedBy' => 'parent', 'orphanRemoval' => false, 'orderBy' => array( 'title' => 'ASC', ), ));
 	}
 }
-

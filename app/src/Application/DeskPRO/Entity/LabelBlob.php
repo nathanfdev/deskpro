@@ -40,9 +40,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Labels on blobs
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="labels_blobs")
  */
 class LabelBlob extends LabelAssocAbstract
 {
@@ -50,9 +47,6 @@ class LabelBlob extends LabelAssocAbstract
 	
 	/**
 	 * @var \Application\DeskPRO\Entity\Blob
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\ManyToOne(targetEntity="Blob")
-	 * @ORM_Mapping\JoinColumn(name="blob_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $blob;
 
@@ -71,4 +65,3 @@ class LabelBlob extends LabelAssocAbstract
 		$metadata->mapOneToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

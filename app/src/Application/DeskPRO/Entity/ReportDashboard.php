@@ -41,8 +41,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Dashboard of Statistics
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ReportDashboard")
- * @ORM_Mapping\Table(name="report_dashboard")
  */
 class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -64,9 +62,6 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\generatedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -74,7 +69,6 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 	 * The dashboard title
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
@@ -83,12 +77,10 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @ORM_MAPPING\OneToOne(targetEntity="Person", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="author_id", referencedColumnName="id")
 	 */
 	protected $author;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="ReportDashboardStat", mappedBy="report_dashboard", cascade={"remove"})
 	 */
 	protected $report_dashboard_stat;
 
@@ -112,7 +104,6 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 	 * The dashboard creation date
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created", type="datetime")
 	 */
 	protected $date_created;
 
@@ -194,4 +185,3 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToMany(array( 'fieldName' => 'report_dashboard_stat', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportDashboardStat', 'cascade' => array( 0 => 'remove', ), 'mappedBy' => 'report_dashboard', 'orphanRemoval' => false, ));
 	}
 }
-

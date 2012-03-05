@@ -47,8 +47,6 @@ use Application\DeskPRO\Entity;
 /**
  * Tracks notification preferences for each agent on each queue.
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\AgentNotification")
- * @ORM_Mapping\Table(name="agent_notifications")
  */
 class AgentNotification extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -59,24 +57,16 @@ class AgentNotification extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketFilter
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\ManyToOne(targetEntity="TicketFilter")date_resolved
-	 * @ORM_Mapping\JoinColumn(name="filter_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $filter = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="emails")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\Column(name="notify_type", type="string", length=50)
 	 */
 	protected $notify_type = false;
 
@@ -123,4 +113,3 @@ class AgentNotification extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'emails', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

@@ -43,14 +43,11 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 /**
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TextSnippet")
- * @ORM_Mapping\Table(name="text_snippets")
  */
 class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -58,27 +55,21 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 	 * Who created the snippet
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TextSnippetCategory
-	 * @ORM_Mapping\ManyToOne(targetEntity="TextSnippetCategory", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="category_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $category;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="snippet", type="text")
 	 */
 	protected $snippet;
 
@@ -171,4 +162,3 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TextSnippetCategory', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

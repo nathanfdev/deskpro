@@ -42,8 +42,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Records labels on deal.
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="labels_deals")
  */
 class LabelDeal extends LabelAssocAbstract
 {
@@ -51,9 +49,6 @@ class LabelDeal extends LabelAssocAbstract
 
   /**
    * @var \Application\DeskPRO\Entity\Deal
-   * @ORM_Mapping\Id
-   * @ORM_Mapping\ManyToOne(targetEntity="Deal")
-   * @ORM_Mapping\JoinColumn(name="deal_id", referencedColumnName="id", onDelete="cascade")
    */
     protected $deal;
 
@@ -72,4 +67,3 @@ class LabelDeal extends LabelAssocAbstract
 		$metadata->mapOneToOne(array( 'fieldName' => 'deal', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Deal', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'deal_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

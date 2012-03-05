@@ -41,8 +41,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Deal entity definition
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\DealStage")
- * @ORM_Mapping\Table(name="deals_mapper")
  */
 
 class DealMapper extends \Application\DeskPRO\Domain\DomainObject
@@ -51,29 +49,22 @@ class DealMapper extends \Application\DeskPRO\Domain\DomainObject
      * The unique ID
      *
      * @var int
-     * @ORM_Mapping\Id
-     * @ORM_Mapping\generatedValue(strategy="IDENTITY")
-     * @ORM_Mapping\Column(name="id", type="integer")
      *
      */
     protected $id = null;
 
     /**     
      * @var \Application\DeskPRO\Entity\Deal
-     * @ORM_Mapping\ManyToOne(targetEntity="Deal",  cascade={"persist", "remove", "merge"})
-     * @ORM_Mapping\JoinColumn(name="dealid", referencedColumnName="id", onDelete="cascade")
      */
     protected $deal;
 
     /**
      * @var string
-     * @ORM_Mapping\Column(name="type", type="string")
      */
     protected $linktype;
 
     /**
      * @var int
-     * @ORM_Mapping\Column(name="typeid", type="integer")
      */
     protected $typeid;
 
@@ -96,4 +87,3 @@ class DealMapper extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'deal', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Deal', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'dealid', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

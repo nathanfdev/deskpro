@@ -41,35 +41,27 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Ticket log items
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketLog")
- * @ORM_Mapping\Table(name="tickets_logs")
  */
 class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 *
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
-	 * @ORM_Mapping\ManyToOne(targetEntity="Ticket")
-	 * @ORM_Mapping\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="action_type", type="string", length=40)
 	 */
 	protected $action_type;
 
@@ -78,7 +70,6 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 	 * then that is this id.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Column(name="id_object", type="integer", nullable=true)
 	 *
 	 */
 	protected $id_object = null;
@@ -86,7 +77,6 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * The ID of the previous entity changed, or any other numeric value.
 	 * @var int
-	 * @ORM_Mapping\Column(name="id_before", type="integer", nullable=true)
 	 *
 	 */
 	protected $id_before = null;
@@ -94,20 +84,17 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * The ID of the new entity, or any other numeric value.
 	 * @var int
-	 * @ORM_Mapping\Column(name="id_after", type="integer", nullable=true)
 	 *
 	 */
 	protected $id_after = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="details", type="array")
 	 */
 	protected $details = array();
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -180,4 +167,3 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

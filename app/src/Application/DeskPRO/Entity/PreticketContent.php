@@ -47,53 +47,42 @@ use Orb\Util\Util;
  * Tickets that were in the process of being created but were never finished,
  * or that were solved with auto-search.
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="pretickets_content")
  */
 class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Visitor
-	 * @ORM_Mapping\ManyToOne(targetEntity="Visitor", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="visitor_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $visitor = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="ip_address", type="string", length=30)
 	 */
 	protected $ip_address = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="email", type="string", length=255, nullable=true)
 	 */
 	protected $email = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="name", type="string", length=255, nullable=true)
 	 */
 	protected $name = null;
 
 	/**
 	 * The department ID the ticket was in
 	 *
-	 * @ORM_Mapping\Column(name="department_id", type="integer")
 	 */
 	protected $department_id = 0;
 
@@ -101,7 +90,6 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
 	 * The subject
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="subject", type="string", length=255)
 	 */
 	protected $subject = '';
 
@@ -109,7 +97,6 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
 	 * The message
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="message", type="text")
 	 */
 	protected $message = '';
 
@@ -117,7 +104,6 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
 	 * Other raw form data
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="data", type="array")
 	 */
 	protected $data = array();
 
@@ -125,7 +111,6 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
 	 * If the person marked the ticket as solved after reading some content.
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_solved", type="boolean")
 	 */
 	protected $is_solved = false;
 
@@ -133,25 +118,21 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
 	 * Array of array(type,id) that the user said didnt answer their article.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="unsolved_content", type="array")
 	 */
 	protected $unsolved_content = array();
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="object_type", type="string", length=100, nullable=true)
 	 */
 	protected $object_type = null;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="object_id", type="integer", nullable=true)
 	 */
 	protected $object_id = null;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -233,4 +214,3 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

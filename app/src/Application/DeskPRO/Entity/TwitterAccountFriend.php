@@ -44,34 +44,21 @@ use Application\DeskPRO\Entity;
 
 /**
  * Twitter Account following a User
- *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TwitterAccountFriend")
- * @ORM_Mapping\Table(name="twitter_accounts_friends", uniqueConstraints={
- *     @ORM_Mapping\UniqueConstraint(name="account_user_idx", columns={"account_id", "user_id"})
- * })
- * @ORM_Mapping\HasLifecycleCallbacks
  */
 class TwitterAccountFriend extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\GeneratedValue(strategy="AUTO")
-	 * @ORM_Mapping\Column(name="id", type="bigint")
 	 */
 	protected $id;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterAccount
-	 * @ORM_Mapping\ManyToOne(targetEntity="TwitterAccount", inversedBy="friend")
-	 * @ORM_Mapping\JoinColumn(name="account_id", referencedColumnName="id")
 	 */
 	protected $account;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 * @ORM_Mapping\ManyToOne(targetEntity="TwitterUser", inversedBy="friend")
-	 * @ORM_Mapping\JoinColumn(name="user_id", referencedColumnName="id")
 	 */
 	protected $user;
 
@@ -131,14 +118,13 @@ class TwitterAccountFriend extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccountFriend'; 
-		$metadata->setPrimaryTable(array( 'name' => 'twitter_accounts_friends', 'uniqueConstraints' => array( 'account_user_idx' => array( 'columns' => array( 0 => 'account_id', 1 => 'user_id', ), ), ), )); 
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT); 
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'bigint', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, )); 
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY); 
-		$metadata->mapOneToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'friend', 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, )); 
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccountFriend';
+		$metadata->setPrimaryTable(array( 'name' => 'twitter_accounts_friends', 'uniqueConstraints' => array( 'account_user_idx' => array( 'columns' => array( 0 => 'account_id', 1 => 'user_id', ), ), ), ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'bigint', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+		$metadata->mapOneToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'friend', 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 		$metadata->mapOneToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'friend', 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

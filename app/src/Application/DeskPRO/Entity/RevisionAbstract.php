@@ -40,7 +40,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Base reivisons
  *
- * @ORM_Mapping\MappedSuperclass
  */
 abstract class RevisionAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -53,28 +52,21 @@ abstract class RevisionAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\generatedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="status", type="string", length=30)
 	 */
 	protected $status = 'visible';
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -97,4 +89,3 @@ abstract class RevisionAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 	}
 }
-

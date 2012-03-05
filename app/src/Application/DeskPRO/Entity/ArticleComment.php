@@ -42,16 +42,12 @@ use Orb\Util\Arrays;
 /**
  * Comments on articles
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ArticleComment")
- * @ORM_Mapping\Table(name="article_comments")
  */
 class ArticleComment extends CommentAbstract
 {
 	const OBJ_PROP = 'article';
 
 	/**
-	 * @ORM_Mapping\ManyToOne(targetEntity="Article", inversedBy="comment")
-	 * @ORM_Mapping\JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $article;
 
@@ -82,4 +78,3 @@ class ArticleComment extends CommentAbstract
 		$metadata->mapOneToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

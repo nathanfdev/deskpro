@@ -45,43 +45,31 @@ use Application\DeskPRO\Entity;
 /**
  * Twitter Status Mention
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="twitter_statuses_mentions")
- * @ORM_Mapping\HasLifecycleCallbacks
  */
 class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\GeneratedValue(strategy="AUTO")
-	 * @ORM_Mapping\Column(name="id", type="bigint")
 	 */
 	protected $id;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterStatus
-	 * @ORM_Mapping\ManyToOne(targetEntity="TwitterStatus", inversedBy="mentions")
-	 * @ORM_Mapping\JoinColumn(name="status_id", referencedColumnName="id")
 	 */
 	protected $status;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 * @ORM_Mapping\ManyToOne(targetEntity="TwitterUser", inversedBy="mentions")
-	 * @ORM_Mapping\JoinColumn(name="user_id", referencedColumnName="id")
 	 */
 	protected $user;
 
 	/**
 	 * @var integer
-	 * @ORM_Mapping\Column(name="starts", type="integer")
 	 */
 	protected $starts = 0;
 
 	/**
 	 * @var integer
-	 * @ORM_Mapping\Column(name="ends", type="integer")
 	 */
 	protected $ends = 0;
 
@@ -174,4 +162,3 @@ class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'mentions', 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

@@ -44,31 +44,21 @@ use Application\DeskPRO\Entity;
 
 /**
  * Twitter Account Search
- *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="twitter_accounts_searches")
- * @ORM_Mapping\HasLifecycleCallbacks
  */
 class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\GeneratedValue(strategy="AUTO")
-	 * @ORM_Mapping\Column(name="id", type="bigint")
 	 */
 	protected $id;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterAccount
-	 * @ORM_Mapping\ManyToOne(targetEntity="TwitterAccount", inversedBy="searches")
-	 * @ORM_Mapping\JoinColumn(name="account_id", referencedColumnName="id")
 	 */
 	protected $account;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="term", type="string", length=255)
 	 */
 	protected $term;
 
@@ -104,13 +94,12 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
-		$metadata->setPrimaryTable(array( 'name' => 'twitter_accounts_searches', )); 
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT); 
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'bigint', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, )); 
-		$metadata->mapField(array( 'fieldName' => 'term', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'term', )); 
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY); 
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setPrimaryTable(array( 'name' => 'twitter_accounts_searches', ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'bigint', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'term', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'term', ));
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapOneToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'searches', 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

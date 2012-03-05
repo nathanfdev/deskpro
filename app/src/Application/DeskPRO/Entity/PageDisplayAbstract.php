@@ -48,13 +48,11 @@ use Application\DeskPRO\Entity;
  * Standard base for storing display information, such as fields or widgets on a page.
  *
  * @see \Application\DeskPRO\PageDisplay\Zone\BasicZone
- * @ORM_Mapping\MappedSuperclass
  */
 abstract class PageDisplayAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -62,7 +60,6 @@ abstract class PageDisplayAbstract extends \Application\DeskPRO\Domain\DomainObj
 	 * The actual section within the page that this description applies (ex 'toptabs')
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="section", type="string", length=50)
 	 */
 	protected $section = 'default';
 
@@ -71,7 +68,6 @@ abstract class PageDisplayAbstract extends \Application\DeskPRO\Domain\DomainObj
 	 * to reconstruct the display strcuture.
 	 *
 	 * @var array
-	 * @ORM_Mapping\Column(name="data", type="array")
 	 */
 	protected $data = array();
 
@@ -89,4 +85,3 @@ abstract class PageDisplayAbstract extends \Application\DeskPRO\Domain\DomainObj
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 	}
 }
-

@@ -40,26 +40,21 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Flagged tickets
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketFlagged")
- * @ORM_Mapping\Table(name="tickets_flagged")
  */
 class TicketFlagged extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\Column(name="ticket_id", type="integer")
 	 */
 	protected $ticket_id = null;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\Column(name="person_id", type="integer")
 	 */
 	protected $person_id = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="color", type="string", length=20)
 	 */
 	protected $color = 'blue';
 
@@ -80,4 +75,3 @@ class TicketFlagged extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'color', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'color', ));
 	}
 }
-

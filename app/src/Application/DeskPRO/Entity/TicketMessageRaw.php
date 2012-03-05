@@ -43,16 +43,11 @@ use Application\DeskPRO\Markdown;
 /**
  * A raw ticket message without any charset conversion into UTF-8
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="tickets_messages_raw")
  */
 class TicketMessageRaw extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketMessage
-	 * @ORM_Mapping\ManyToOne(targetEntity="TicketMessage")
-	 * @ORM_Mapping\JoinColumn(name="message_id", referencedColumnName="id", onDelete="cascade")
-	 * @ORM_Mapping\Id
 	 */
 	protected $message = null;
 
@@ -60,7 +55,6 @@ class TicketMessageRaw extends \Application\DeskPRO\Domain\DomainObject
 	 * The raw content
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="raw", type="dpblob", length=4294967295)
 	 */
 	protected $raw = '';
 
@@ -68,7 +62,6 @@ class TicketMessageRaw extends \Application\DeskPRO\Domain\DomainObject
 	 * The charset provided
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="charset", type="string", length=100)
 	 */
 	protected $charset = 'UNKNOWN';
 
@@ -89,4 +82,3 @@ class TicketMessageRaw extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'message', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'message_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

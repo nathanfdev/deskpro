@@ -41,20 +41,11 @@ use Orb\Util\Arrays;
 
 /**
  * General logs
- *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\LogItem")
- * @ORM_Mapping\Table(name="log_items",
- *     indexes={
- *         @ORM_Mapping\Index(name="log_name_idx", columns={"log_name","session_name"}),
- *         @ORM_Mapping\Index(name="flag_idx", columns={"flag"})
- *     }
- * )
  */
 class LogItem extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -63,7 +54,6 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * each kind of component (eg. gateways, error_log, etc).
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="log_name", type="string", length=50)
 	 */
 	protected $log_name;
 
@@ -72,7 +62,6 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * procedure.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="session_name", type="string", length=100, nullable=true)
 	 */
 	protected $session_name = null;
 
@@ -80,19 +69,16 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * Any kind of special flag to mark this log item.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="flag", type="string", length=50, nullable=true)
 	 */
 	protected $flag = null;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="priority", type="integer")
 	 */
 	protected $priority;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="priority_name", type="string", length=25)
 	 */
 	protected $priority_name;
 
@@ -100,7 +86,6 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * The log message
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="message", type="text")
 	 */
 	protected $message;
 
@@ -108,7 +93,6 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * Other data, such as backtrace or debug info
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="data", type="array", nullable=true)
 	 */
 	protected $data = null;
 
@@ -116,7 +100,6 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * The date the user was inserted into the system
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -133,20 +116,19 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\LogItem'; 
-		$metadata->setPrimaryTable(array( 'name' => 'log_items', 'indexes' => array( 'log_name_idx' => array( 'columns' => array( 0 => 'log_name', 1 => 'session_name', ), ), 'flag_idx' => array( 'columns' => array( 0 => 'flag', ), ), ), )); 
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT); 
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, )); 
-		$metadata->mapField(array( 'fieldName' => 'log_name', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'log_name', )); 
-		$metadata->mapField(array( 'fieldName' => 'session_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'session_name', )); 
-		$metadata->mapField(array( 'fieldName' => 'flag', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'flag', )); 
-		$metadata->mapField(array( 'fieldName' => 'priority', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'priority', )); 
-		$metadata->mapField(array( 'fieldName' => 'priority_name', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'priority_name', )); 
-		$metadata->mapField(array( 'fieldName' => 'message', 'type' => 'text', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'message', )); 
-		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'data', )); 
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'date_created', )); 
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\LogItem';
+		$metadata->setPrimaryTable(array( 'name' => 'log_items', 'indexes' => array( 'log_name_idx' => array( 'columns' => array( 0 => 'log_name', 1 => 'session_name', ), ), 'flag_idx' => array( 'columns' => array( 0 => 'flag', ), ), ), ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'log_name', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'log_name', ));
+		$metadata->mapField(array( 'fieldName' => 'session_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'session_name', ));
+		$metadata->mapField(array( 'fieldName' => 'flag', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'flag', ));
+		$metadata->mapField(array( 'fieldName' => 'priority', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'priority', ));
+		$metadata->mapField(array( 'fieldName' => 'priority_name', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'priority_name', ));
+		$metadata->mapField(array( 'fieldName' => 'message', 'type' => 'text', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'message', ));
+		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'data', ));
+		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'date_created', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
-

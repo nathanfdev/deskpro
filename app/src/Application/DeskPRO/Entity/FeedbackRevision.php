@@ -40,26 +40,20 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Feedback revisions
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\FeedbackRevision")
- * @ORM_Mapping\Table(name="feedback_revisions")
  */
 class FeedbackRevision extends RevisionAbstract
 {
 	/**
-	 * @ORM_Mapping\ManyToOne(targetEntity="Feedback")
-	 * @ORM_Mapping\JoinColumn(name="feedback_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $feedback;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string")
 	 */
 	protected $title = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="content", type="text")
 	 */
 	protected $content = '';
 
@@ -85,4 +79,3 @@ class FeedbackRevision extends RevisionAbstract
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

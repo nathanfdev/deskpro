@@ -48,41 +48,31 @@ use Application\DeskPRO\Entity;
 /**
  * A Twitter Account contains twitter username and accesstoken
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TwitterAccount")
- * @ORM_Mapping\Table(name="twitter_accounts")
  */
 class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\GeneratedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="bigint")
 	 */
 	protected $id;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="oauth_token", type="string", length=4000)
 	 */
 	protected $oauth_token;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="oauth_token_secret", type="string", length=4000)
 	 */
 	protected $oauth_token_secret;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 * @ORM_Mapping\OneToOne(targetEntity="TwitterUser", inversedBy="account")
-	 * @ORM_Mapping\JoinColumn(name="user_id", referencedColumnName="id")
 	 */
 	protected $user;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TwitterAccountFriend", mappedBy="account")
 	 */
 	protected $friends;
 
@@ -93,7 +83,6 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TwitterAccountFollower", mappedBy="account")
 	 */
 	protected $followers;
 
@@ -104,16 +93,11 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TwitterAccountSearch", mappedBy="account")
 	 */
 	protected $searches;
 
     /**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-     * @ORM_Mapping\ManyToMany(targetEntity="Person", inversedBy="twitter_accounts")
-     * @ORM_Mapping\JoinTable(name="twitter_accounts_person",
-     *   joinColumns={@ORM_Mapping\JoinColumn(name="account_id", referencedColumnName="id")},
-     *   inverseJoinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id")}
      * )
      */
 	protected $persons;
@@ -518,4 +502,3 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapManyToMany(array( 'fieldName' => 'persons', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'joinTable' => array( 'name' => 'twitter_accounts_person', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), ), ));
 	}
 }
-

@@ -40,21 +40,16 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Ticket attachments
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketAttachment")
- * @ORM_Mapping\Table(name="tickets_attachments")
  */
 class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
-	 * @ORM_Mapping\ManyToOne(targetEntity="Ticket")
-	 * @ORM_Mapping\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket;
 
@@ -62,28 +57,21 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
 	 * Who created the attachment
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Blob
-	 * @ORM_Mapping\ManyToOne(targetEntity="Blob", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="blob_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $blob;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketMessage
-	 * @ORM_Mapping\ManyToOne(targetEntity="TicketMessage", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="message_id", referencedColumnName="id")
 	 */
 	protected $message = null;
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_agent_note", type="boolean")
 	 */
 	protected $is_agent_note = false;
 
@@ -127,4 +115,3 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'message', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'message_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

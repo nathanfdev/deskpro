@@ -59,15 +59,11 @@ use Orb\Util\Strings;
  * and the client would later request the full information as an HTTP request or by pushing
  * the ID through the socket.
  *
- * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ClientMessage")
- * @ORM_Mapping\Table(name="client_messages")
  */
 class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -75,7 +71,6 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * The channel the message is placed in.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="channel", type="string", length=255)
 	 */
 	protected $channel;
 
@@ -84,13 +79,11 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * original push sent only a short.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="auth", type="string", length=15)
 	 */
 	protected $auth;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="handler_class", type="string", length=255)
 	 */
 	protected $handler_class = 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray';
 
@@ -98,7 +91,6 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * Data to give the handler
 	 *
 	 * @var array
-	 * @ORM_Mapping\Column(name="data", type="array")
 	 */
 	protected $data = array();
 
@@ -106,7 +98,6 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * The client ID (usully sessionid) that created this message.
 	 * This is so when we fetch messages, we don't get our own messages back.
 	 *
-	 * @ORM_Mapping\Column(name="created_by_client", type="string", length=255)
 	 */
 	protected $created_by_client = '';
 
@@ -114,7 +105,6 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * The client ID (usully sessionid) that this message is for
 	 * specifically.
 	 *
-	 * @ORM_Mapping\Column(name="for_client", type="string", length=255, nullable=true)
 	 */
 	protected $for_client;
 
@@ -122,14 +112,11 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * Who this message is for specifically
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="for_person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $for_person;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -169,7 +156,6 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * @ORM_Mapping\PostPersist
 	 */
 	public function notifyMessageServers()
 	{
@@ -205,4 +191,3 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'for_person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'for_person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

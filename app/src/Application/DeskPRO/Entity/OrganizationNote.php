@@ -42,14 +42,11 @@ use Orb\Util\Arrays;
 /**
  * A note is a private note added by an agent to a persons account.
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\OrganizationNote")
- * @ORM_Mapping\Table(name="organization_notes")
  */
 class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -57,8 +54,6 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
 	 * The org the note is attached to.
 	 *
 	 * @var \Application\DeskPRO\Entity\Organization
-	 * @ORM_Mapping\ManyToOne(targetEntity="Organization")
-	 * @ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $organization;
 
@@ -66,14 +61,11 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
 	 * The agent that added the note
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $agent;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -81,7 +73,6 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
 	 * The note contents
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="note", type="string")
 	 */
 	protected $note;
 
@@ -115,4 +106,3 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

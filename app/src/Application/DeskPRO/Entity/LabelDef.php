@@ -45,22 +45,16 @@ use Application\DeskPRO\App;
 /**
  * These are pre-defined labels that are allowed to be used.
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\LabelDef")
- * @ORM_Mapping\Table(name="label_defs")
  */
 class LabelDef extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var string
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\Column(name="label_type", type="string", length=50)
 	 */
 	protected $label_type;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\Column(name="label", type="string", length=255)
 	 */
 	protected $label;
 
@@ -104,4 +98,3 @@ class LabelDef extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'label', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'label', 'id' => true, ));
 	}
 }
-

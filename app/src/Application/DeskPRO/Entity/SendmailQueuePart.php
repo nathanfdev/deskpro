@@ -40,27 +40,21 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Raw email sources
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="sendmail_queue_part")
  */
 class SendmailQueuePart extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\SendmailQueue
-	 * @ORM_Mapping\ManyToOne(targetEntity="SendmailQueue")
-	 * @ORM_Mapping\JoinColumn(name="sendmail_queue_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $queue = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="data", type="dpblob")
 	 */
 	protected $data;
 
@@ -81,4 +75,3 @@ class SendmailQueuePart extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'queue', 'targetEntity' => 'Application\\DeskPRO\\Entity\\SendmailQueue', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'sendmail_queue_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

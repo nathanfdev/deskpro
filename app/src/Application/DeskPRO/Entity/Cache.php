@@ -44,27 +44,21 @@ use Orb\Util\Strings;
 /**
  * A simple DB table cache for k=>v
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Cache")
- * @ORM_Mapping\Table(name="cache")
  */
 class Cache extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\Column(name="id", type="string", length=100)
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="data", type="array")
 	 */
 	protected $data = array();
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_expire",type="datetime", nullable=true)
 	 */
 	protected $date_expire;
 
@@ -101,4 +95,3 @@ class Cache extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'date_expire', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'date_expire', ));
 	}
 }
-

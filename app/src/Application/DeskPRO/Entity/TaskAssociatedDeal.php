@@ -42,15 +42,12 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Task-Deal association class.
  *
- * @ORM_Mapping\Entity
  */
 class TaskAssociatedDeal extends TaskAssociation
 {
 
   /**
    * @var Application\DeskPRO\Entity\Deal
-   * @ORM_Mapping\ManyToOne(targetEntity="Deal", inversedBy="task_associations")
-   * @ORM_Mapping\JoinColumn(name="deal_id", referencedColumnName="id", onDelete="cascade")
    */
   protected $deal;
 
@@ -74,4 +71,3 @@ class TaskAssociatedDeal extends TaskAssociation
 		$metadata->mapOneToOne(array( 'fieldName' => 'deal', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Deal', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'task_associations', 'joinColumns' => array( 0 => array( 'name' => 'deal_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

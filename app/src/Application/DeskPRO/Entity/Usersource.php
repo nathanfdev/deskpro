@@ -43,8 +43,7 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Usersource")
- * @ORM_Mapping\Table(name="usersources")
+ * Defines information about an external user source
  */
 class Usersource extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -52,7 +51,6 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\GeneratedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -60,7 +58,6 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * A note or description about the user source (admin eyes)
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="note", type="text")
 	 */
 	protected $note = '';
 
@@ -68,7 +65,6 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * The title of this usersource
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title = '';
 
@@ -76,7 +72,6 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * The type of usersource this is. This maps to an adapter class.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="source_type", type="string", length=255)
 	 */
 	protected $source_type;
 
@@ -84,14 +79,12 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * Options we'll pass to the adapter. These options should be set up with some installer.
 	 *
 	 * @var array
-	 * @ORM_Mapping\Column(name="options", type="array")
 	 */
 	protected $options = array();
 
 	/**
 	 * The order in which to display this source
 	 * @var int
-	 * @ORM_Mapping\Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
 
@@ -99,7 +92,6 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * True if this usersource is enabled/usable.
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = true;
 
@@ -175,18 +167,17 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Usersource'; 
-		$metadata->setPrimaryTable(array( 'name' => 'usersources', )); 
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT); 
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, )); 
-		$metadata->mapField(array( 'fieldName' => 'note', 'type' => 'text', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'note', )); 
-		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'title', )); 
-		$metadata->mapField(array( 'fieldName' => 'source_type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'source_type', )); 
-		$metadata->mapField(array( 'fieldName' => 'options', 'type' => 'array', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'options', )); 
-		$metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'display_order', )); 
-		$metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'is_enabled', )); 
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Usersource';
+		$metadata->setPrimaryTable(array( 'name' => 'usersources', ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'note', 'type' => 'text', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'note', ));
+		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'title', ));
+		$metadata->mapField(array( 'fieldName' => 'source_type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'source_type', ));
+		$metadata->mapField(array( 'fieldName' => 'options', 'type' => 'array', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'options', ));
+		$metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'display_order', ));
+		$metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'is_enabled', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
-

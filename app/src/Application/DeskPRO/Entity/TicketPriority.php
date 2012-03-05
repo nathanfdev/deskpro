@@ -40,27 +40,22 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Ticket priorities
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketPriority")
- * @ORM_Mapping\Table(name="ticket_priorities")
  */
 class TicketPriority extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 * 
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="priority", type="integer")
 	 */
 	protected $priority = 10;
 
@@ -82,4 +77,3 @@ class TicketPriority extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
-

@@ -40,53 +40,41 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Feedback left on tickets
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketFeedback")
- * @ORM_Mapping\Table(name="ticket_feedback")
  */
 class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
-	 * @ORM_Mapping\ManyToOne(targetEntity="Ticket")
-	 * @ORM_Mapping\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketMessage
-	 * @ORM_Mapping\ManyToOne(targetEntity="TicketMessage")
-	 * @ORM_Mapping\JoinColumn(name="message_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket_message = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="rating", type="integer")
 	 */
 	protected $rating;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="message", type="text")
 	 */
 	protected $message = '';
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -175,4 +163,3 @@ class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

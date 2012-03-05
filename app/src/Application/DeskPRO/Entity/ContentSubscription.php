@@ -42,21 +42,16 @@ use Orb\Util\Arrays;
 /**
  * A single table that controls subscriptions to all common content types
  * 
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ContentSubscription")
- * @ORM_Mapping\Table(name="content_subscriptions")
  */
 class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
@@ -64,7 +59,6 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
 	 * Enable email notifications for the subscription
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="use_email", type="boolean")
 	 */
 	protected $use_email = false;
 
@@ -72,7 +66,6 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
 	 * The last time the user dismissed a notice about this sub
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="last_dismiss_date",type="datetime")
 	 */
 	protected $last_dismiss_date;
 
@@ -80,7 +73,6 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
 	 * The last time we emailed the user about this sub
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="last_email_date",type="datetime")
 	 */
 	protected $last_email_date;
 
@@ -88,35 +80,26 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
 	 * The last time the subscription was updated.
 	 * 
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="updated_date",type="datetime")
 	 */
 	protected $updated_date;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Article
-	 * @ORM_Mapping\ManyToOne(targetEntity="Article", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $article = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Download
-	 * @ORM_Mapping\ManyToOne(targetEntity="Download", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="download_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $download = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Feedback
-	 * @ORM_Mapping\ManyToOne(targetEntity="Feedback", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="feedback_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $feedback = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\News
-	 * @ORM_Mapping\ManyToOne(targetEntity="News", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="news_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $news = null;
 
@@ -190,4 +173,3 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'news', 'targetEntity' => 'Application\\DeskPRO\\Entity\\News', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'news_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

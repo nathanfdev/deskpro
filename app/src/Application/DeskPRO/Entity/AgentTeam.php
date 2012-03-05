@@ -47,9 +47,6 @@ use Application\DeskPRO\Entity;
 /**
  * An agent team is a group of agents. Similar to usergroups but for agents.
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\AgentTeam")
- * @ORM_Mapping\Table(name="agent_teams")
- * @ORM_Mapping\HasLifecycleCallbacks
  */
 class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -57,24 +54,18 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="name", type="string", length=255)
 	 */
 	protected $name;
 
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="Person", cascade={"persist", "remove", "merge"}, indexBy="id")
-     * @ORM_Mapping\JoinTable(name="agent_team_members", joinColumns={@ORM_Mapping\JoinColumn(name="team_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")})
-	 * @ORM_Mapping\OrderBy({"name" = "ASC"})
 	 */
 	protected $members = null;
 
@@ -116,4 +107,3 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapManyToMany(array( 'fieldName' => 'members', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'joinTable' => array( 'name' => 'agent_team_members', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'team_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'orderBy' => array( 'name' => 'ASC', ), ));
 	}
 }
-

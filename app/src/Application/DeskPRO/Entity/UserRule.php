@@ -43,8 +43,6 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\UserRule")
- * @ORM_Mapping\Table(name="user_rules")
  */
 class UserRule extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -52,28 +50,22 @@ class UserRule extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\GeneratedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * An array of email addres patterns
 	 * @var array
-	 * @ORM_Mapping\Column(name="email_patterns", type="array")
 	 */
 	protected $email_patterns = array();
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Organization
-	 * @ORM_Mapping\ManyToOne(targetEntity="Organization", cascade={"persist", "remove", "merge"})
-	 * @ORM_Mapping\JoinColumn(name="add_organization_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $add_organization;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Usergroup
-	 * @ORM_Mapping\ManyToOne(targetEntity="Usergroup", cascade={"persist", "remove", "merge"})
-	 * @ORM_Mapping\JoinColumn(name="add_usergroup_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $add_usergroup;
 
@@ -81,7 +73,6 @@ class UserRule extends \Application\DeskPRO\Domain\DomainObject
 	 * The order in which to runthis source
 	 *
 	 * @var int
-	 * @ORM_Mapping\Column(name="run_order", type="integer")
 	 */
 	protected $run_order = 0;
 
@@ -158,4 +149,3 @@ class UserRule extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'add_usergroup', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'add_usergroup_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

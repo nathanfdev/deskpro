@@ -42,8 +42,6 @@ use Application\DeskPRO\App;
 /**
  * Task entity definition
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Task")
- * @ORM_Mapping\Table(name="tasks")
  */
 class Task extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -64,9 +62,6 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\generatedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="integer")
 	 *
 	 */
 	protected $id = null;
@@ -75,7 +70,6 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 * Whether this task is completed
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_completed", type="boolean")
 	 */
 	protected $is_completed = false;
 
@@ -83,7 +77,6 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 * The task's title
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="text")
 	 */
 	protected $title = '';
 
@@ -91,7 +84,6 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 * The task's visibility. On of: self::PRIVATE_VISIBILITY or self::PUBLIC_VISIBILITY.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Column(name="visibility", type="integer")
 	 */
 	protected $visibility = 0;
 
@@ -100,7 +92,6 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 *
 
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_due", type="date", nullable=true)
 	 */
 	protected $date_due = null;
 
@@ -108,7 +99,6 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 * The date the task was inserted into the system
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -116,47 +106,37 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 * The date the task was completed
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_completed",type="datetime", nullable=true)
 	 */
 	protected $date_completed;
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person;
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="assigned_tasks")
-	 * @ORM_Mapping\JoinColumn(name="assigned_agent_id", referencedColumnName="id", nullable=true, onDelete="set null")
 	 */
 	protected $assigned_agent;
 
 	/**
 	 * @var Application\DeskPRO\Entity\AgentTeam
-	 * @ORM_Mapping\ManyToOne(targetEntity="AgentTeam", inversedBy="assigned_tasks")
-	 * @ORM_Mapping\JoinColumn(name="assigned_agent_team_id", referencedColumnName="id", nullable=true, onDelete="cascade")
 	 */
 	protected $assigned_agent_team;
 
 
 
 		/**
-	 * @ORM_Mapping\OneToMany(targetEntity="LabelTask", mappedBy="task", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TaskComment", mappedBy="task")
 	 */
 	protected $comments;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TaskAssociation", mappedBy="task", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $task_associations;
 
@@ -473,4 +453,3 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToMany(array( 'fieldName' => 'task_associations', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TaskAssociation', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'task', 'orphanRemoval' => true, ));
 	}
 }
-

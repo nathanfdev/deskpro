@@ -43,14 +43,6 @@ use Orb\Util\Arrays;
  * Email addresses attached to a person. This is a separate entity because emails are
  * roughly tied to identity (ie local login uses email as identity), and are integral
  * in many cases (notifications etc).
- *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\PersonEmail")
- * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="people_emails",
- *     uniqueConstraints={@ORM_Mapping\UniqueConstraint(name="email_idx", columns={"email"})},
- *     indexes={
- *         @ORM_Mapping\Index(name="email_domain_idx", columns={"email_domain"})
- * })
  */
 class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -58,14 +50,11 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="emails")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
@@ -73,7 +62,6 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	 * The email address
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="email", type="string", length=255)
 	 */
 	protected $email;
 
@@ -81,13 +69,11 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	 * The email address domain
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="email_domain", type="string", length=255)
 	 */
 	protected $email_domain;
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_validated", type="boolean")
 	 */
 	protected $is_validated = true;
 
@@ -95,7 +81,6 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	 * A comment or description of the email address. For example, "work" or "home."
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="comment", type="text", length=100)
 	 */
 	protected $comment = '';
 
@@ -104,7 +89,6 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	 * that PersonEmailValidating record was created before this one.
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -114,7 +98,6 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	 * this and date_created will be the same.
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_validated",type="datetime", nullable=true)
 	 */
 	protected $date_validated = null;
 
@@ -216,19 +199,18 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonEmail'; 
-		$metadata->setPrimaryTable(array( 'name' => 'people_emails', 'indexes' => array( 'email_domain_idx' => array( 'columns' => array( 0 => 'email_domain', ), ), ), 'uniqueConstraints' => array( 'email_idx' => array( 'columns' => array( 0 => 'email', ), ), ), )); 
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT); 
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, )); 
-		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'email', )); 
-		$metadata->mapField(array( 'fieldName' => 'email_domain', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'email_domain', )); 
-		$metadata->mapField(array( 'fieldName' => 'is_validated', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'is_validated', )); 
-		$metadata->mapField(array( 'fieldName' => 'comment', 'type' => 'text', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'comment', )); 
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'date_created', )); 
-		$metadata->mapField(array( 'fieldName' => 'date_validated', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'date_validated', )); 
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY); 
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonEmail';
+		$metadata->setPrimaryTable(array( 'name' => 'people_emails', 'indexes' => array( 'email_domain_idx' => array( 'columns' => array( 0 => 'email_domain', ), ), ), 'uniqueConstraints' => array( 'email_idx' => array( 'columns' => array( 0 => 'email', ), ), ), ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'email', ));
+		$metadata->mapField(array( 'fieldName' => 'email_domain', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'email_domain', ));
+		$metadata->mapField(array( 'fieldName' => 'is_validated', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'is_validated', ));
+		$metadata->mapField(array( 'fieldName' => 'comment', 'type' => 'text', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'comment', ));
+		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'date_created', ));
+		$metadata->mapField(array( 'fieldName' => 'date_validated', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'date_validated', ));
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'emails', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

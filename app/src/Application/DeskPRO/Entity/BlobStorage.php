@@ -42,20 +42,16 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  *
  * (Ordering is by id ASC)
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="blobs_storage", indexes={@ORM_Mapping\Index(name="blob_id_idx", columns={"blob_id"})} ))
  */
 class BlobStorage extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="blob_id", type="integer")
 	 */
 	protected $blob_id;
 
@@ -63,7 +59,6 @@ class BlobStorage extends \Application\DeskPRO\Domain\DomainObject
 	 * The users name (best guess from other sources etc)
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="data", type="dpblob", length=4294967295)
 	 */
 	protected $data;
 
@@ -84,4 +79,3 @@ class BlobStorage extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
-

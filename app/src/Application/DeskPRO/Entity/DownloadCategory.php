@@ -42,26 +42,19 @@ use Application\DeskPRO\App;
 /**
  * Feedback categories
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\DownloadCategory")
- * @ORM_Mapping\Table(name="download_categories")
  */
 class DownloadCategory extends CategoryAbstract
 {
 	/**
-	 * @ORM_Mapping\ManyToOne(targetEntity="DownloadCategory", inversedBy="children")
 	 */
 	protected $parent;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="DownloadCategory", mappedBy="parent")
-	 * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	 */
 	protected $children;
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="Usergroup", cascade={"persist", "remove", "merge"})
-     * @ORM_Mapping\JoinTable(name="download_category2usergroup", joinColumns={@ORM_Mapping\JoinColumn(name="category_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")})
 	 */
 	protected $usergroups;
 
@@ -88,4 +81,3 @@ class DownloadCategory extends CategoryAbstract
 		$metadata->mapManyToMany(array( 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'joinTable' => array( 'name' => 'download_category2usergroup', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), ));
 	}
 }
-

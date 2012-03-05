@@ -40,16 +40,11 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * The stats for a dashboard
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ReportDashboardStat")
- * @ORM_Mapping\Table(name="report_dashboard_stat")
  */
 class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\generatedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -64,7 +59,6 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\ReportDashboard
 	 * @ORM_MAPPING\ManyToOne(targetEntity="ReportDashboard", inversedBy="report_dashboard_stat")
-	 * @ORM_Mapping\JoinColumn(name="report_dashboard_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $report_dashboard;
 
@@ -73,7 +67,6 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\Stat
 	 * @ORM_MAPPING\ManyToOne(targetEntity="Stat")
-	 * @ORM_Mapping\JoinColumn(name="stat_id", referencedColumnName="id")
 	 */
 	protected $stat;
 
@@ -143,7 +136,6 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 	 * The dashboard creation date
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created", type="datetime")
 	 */
 	protected $date_created;
 
@@ -289,4 +281,3 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'stat', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Stat', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'stat_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

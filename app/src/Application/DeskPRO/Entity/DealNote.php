@@ -44,14 +44,11 @@ use Orb\Util\Arrays;
 /**
  * A note is a private note added by an agent to a persons account.
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\DealNote")
- * @ORM_Mapping\Table(name="deal_notes")
  */
 class DealNote extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 *
 	 */
 	protected $id = null;
@@ -60,8 +57,6 @@ class DealNote extends \Application\DeskPRO\Domain\DomainObject
 	 * The note is attached to the deal .
 	 *
 	 * @var \Application\DeskPRO\Entity\Deal
-	 * @ORM_Mapping\ManyToOne(targetEntity="Deal")
-	 * @ORM_Mapping\JoinColumn(name="deal_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $deal;
 
@@ -69,14 +64,11 @@ class DealNote extends \Application\DeskPRO\Domain\DomainObject
 	 * The agent that added the note
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $agent;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -84,7 +76,6 @@ class DealNote extends \Application\DeskPRO\Domain\DomainObject
 	 * The note contents
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="note", type="string")
 	 */
 	protected $note;
 
@@ -118,4 +109,3 @@ class DealNote extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

@@ -42,16 +42,12 @@ use Orb\Util\Arrays;
 /**
  * Comments on articles
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\DownloadComment")
- * @ORM_Mapping\Table(name="download_comments")
  */
 class DownloadComment extends CommentAbstract
 {
 	const OBJ_PROP = 'download';
 
 	/**
-	 * @ORM_Mapping\ManyToOne(targetEntity="Download", inversedBy="comment")
-	 * @ORM_Mapping\JoinColumn(name="download_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $download;
 
@@ -82,4 +78,3 @@ class DownloadComment extends CommentAbstract
 		$metadata->mapOneToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

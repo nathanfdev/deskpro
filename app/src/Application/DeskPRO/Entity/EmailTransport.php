@@ -41,8 +41,6 @@ use Orb\Util\Strings;
 /**
  * Describes a mail transport
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\EmailTransport")
- * @ORM_Mapping\Table(name="email_transports")
  */
 class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -58,7 +56,6 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -66,19 +63,16 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 	 * Human friendly name for the transport. ie the account name for smtp etc
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="match_type", type="string", length=15)
 	 */
 	protected $match_type = 'exact';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="match_pattern", type="string", length=255)
 	 */
 	protected $match_pattern = '';
 
@@ -86,14 +80,12 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 	 * The type of transport
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="transport_type", type="string", length=80)
 	 */
 	protected $transport_type;
 
 	/**
 	 * Options for the transport
 	 *
-	 * @ORM_Mapping\Column(name="transport_options", type="array")
 	 */
 	protected $transport_options = array();
 
@@ -101,20 +93,17 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 	 * The type of transport
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="backup_transport_type", type="string", length=80)
 	 */
 	protected $backup_transport_type = '';
 
 	/**
 	 * Options for the transport
 	 *
-	 * @ORM_Mapping\Column(name="backup_transport_options", type="array")
 	 */
 	protected $backup_transport_options = array();
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="run_order", type="integer")
 	 */
 	protected $run_order = 0;
 
@@ -258,4 +247,3 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
-

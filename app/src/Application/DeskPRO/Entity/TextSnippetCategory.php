@@ -40,8 +40,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Arrays;
 
 /**
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TextSnippetCategory")
- * @ORM_Mapping\Table(name="text_snippet_categories")
  */
 class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -50,7 +48,6 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -58,7 +55,6 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	 * The type of snippets this cat contains
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="typename", type="string", length=30)
 	 */
 	protected $typename;
 
@@ -66,8 +62,6 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	 * Who created the cat
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
@@ -75,8 +69,6 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	 * Teams who can use this snippet
 	 *
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="AgentTeam", cascade={"persist", "remove", "merge"})
-     * @ORM_Mapping\JoinTable(name="text_snippetcat_to_team", joinColumns={@ORM_Mapping\JoinColumn(name="team_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="team_id", referencedColumnName="id", onDelete="cascade")})
 	 */
 	protected $agent_teams = null;
 
@@ -84,13 +76,11 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	 * Everyone can see it?
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_global", type="boolean")
 	 */
 	protected $is_global = false;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
@@ -120,4 +110,3 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapManyToMany(array( 'fieldName' => 'agent_teams', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'joinTable' => array( 'name' => 'text_snippetcat_to_team', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'team_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'team_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), ));
 	}
 }
-

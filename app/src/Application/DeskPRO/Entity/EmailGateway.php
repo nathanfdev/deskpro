@@ -42,8 +42,6 @@ use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 /**
  * An email gateway contains info about how to read emails from an email account.
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\EmailGateway")
- * @ORM_Mapping\Table(name="email_gateways")
  */
 class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -55,7 +53,6 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -63,7 +60,6 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 * The human name of the account.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="text", length=100)
 	 */
 	protected $title = '';
 
@@ -71,14 +67,12 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 * The type of connection this class represents
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="connection_type", type="string", length=15)
 	 */
 	protected $connection_type = '';
 
 	/**
 	 * Options for the connection handler
 	 *
-	 * @ORM_Mapping\Column(name="connection_options", type="array")
 	 */
 	protected $connection_options = array();
 
@@ -86,19 +80,16 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 * The type of gateway this is. For example, it processes tickets and ticket replies.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="gateway_type", type="string", length=15)
 	 */
 	protected $gateway_type;
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = true;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="EmailGatewayAddress", mappedBy="gateway", cascade={"persist", "remove", "merge"}, indexBy="id")
 	 */
 	protected $addresses;
 
@@ -106,14 +97,11 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 * The last time this gateway successfully connected and checked for messages.
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_last_check", type="datetime", nullable=true)
 	 */
 	protected $date_last_check = null;
 
 	/**
 	 * @var Application\DeskPRO\Entity\EmailTransport
-	 * @ORM_Mapping\ManyToOne(targetEntity="EmailTransport")
-	 * @ORM_Mapping\JoinColumn(name="linked_transport_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $linked_transport;
 
@@ -217,4 +205,3 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'linked_transport', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailTransport', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'linked_transport_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

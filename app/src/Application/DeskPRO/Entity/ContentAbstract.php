@@ -47,7 +47,6 @@ use Orb\Util\Util;
 /**
  * Basic properties on content
  *
- * @ORM_Mapping\MappedSuperclass
  */
 abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -65,33 +64,26 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 		/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var Language
-	 * @ORM_Mapping\ManyToOne(targetEntity="Language")
-	 * @ORM_Mapping\JoinColumn(name="language_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $language = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="slug", type="string", length=100)
 	 */
 	protected $slug;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
@@ -99,7 +91,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * The main content for the item. This should be HTML!
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="content", type="text")
 	 */
 	protected $content;
 
@@ -107,7 +98,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * View counts
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="view_count", type="integer")
 	 */
 	protected $view_count = 0;
 
@@ -115,7 +105,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * Total rating: This is a tally and must be updated when a rating is added
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="total_rating", type="integer")
 	 */
 	protected $total_rating = 0;
 
@@ -123,7 +112,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * Number of user-visible comments: This is a count that must be updated when a comment is added
 	 *
 	 * @var int
-	 * @ORM_Mapping\Column(name="num_comments", type="integer")
 	 */
 	protected $num_comments = 0;
 
@@ -131,44 +119,37 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * Total rating
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="num_ratings", type="integer")
 	 */
 	protected $num_ratings = 0;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="status", type="string", length=15)
 	 */
 	protected $status;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="hidden_status", type="string", length=15, nullable=true)
 	 */
 	protected $hidden_status = null;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_published",type="datetime", nullable=true)
 	 */
 	protected $date_published;
 
 	// Implement in children
 	///**
 	// * @var \Doctrine\Common\Collections\ArrayCollection
-	// * @ORM_Mapping\OneToMany(targetEntity="ArticleRevision", mappedBy="article", cascade={"persist", "remove", "merge"}, indexBy="id")
 	// */
 	//protected $revisions;
 
 	// Implement in children
 	///**
-	// * @ORM_Mapping\OneToMany(targetEntity="LabelArticle", mappedBy="article", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	// */
 	//protected $labels;
 
@@ -428,4 +409,3 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 	}
 }
-

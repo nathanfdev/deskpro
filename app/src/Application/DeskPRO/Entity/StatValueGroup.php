@@ -40,16 +40,11 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Stat Value Group - The grouping data for a Stat Value
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\StatValueGroup")
- * @ORM_Mapping\Table(name="stat_value_group")
  */
 class StatValueGroup extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\generatedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -58,7 +53,6 @@ class StatValueGroup extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\StatValue
 	 * @ORM_MAPPING\ManyToOne(targetEntity="StatValue", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="stat_value_id", referencedColumnName="id")
 	 */
 	protected $stat_value;
 
@@ -82,7 +76,6 @@ class StatValueGroup extends \Application\DeskPRO\Domain\DomainObject
 	 * The unix time for the period this stat represents
 	 *
 	 * @var int
-	 * @ORM_Mapping\Column(name="stat_unix", type="integer")
 	 */
 	protected $stat_unix;
 
@@ -111,4 +104,3 @@ class StatValueGroup extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'stat_value', 'targetEntity' => 'Application\\DeskPRO\\Entity\\StatValue', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'stat_value_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

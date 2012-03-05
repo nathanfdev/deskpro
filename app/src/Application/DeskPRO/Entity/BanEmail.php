@@ -44,8 +44,6 @@ use Orb\Util\Numbers;
 /**
  * Ban an email address
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\BanEmail")
- * @ORM_Mapping\Table(name="ban_emails")
  */
 class BanEmail extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -53,8 +51,6 @@ class BanEmail extends \Application\DeskPRO\Domain\DomainObject
 	 * The banned email address
 	 *
 	 * @var string
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\Column(name="banned_email", type="string", length=255)
 	 */
 	protected $banned_email;
 
@@ -73,4 +69,3 @@ class BanEmail extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'banned_email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'banned_email', 'id' => true, ));
 	}
 }
-

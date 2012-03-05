@@ -50,8 +50,6 @@ use Application\DeskPRO\Entity;
 /**
  * An organization is a grouping we put similar people into (eg companies).
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Organization")
- * @ORM_Mapping\Table(name="organizations")
  */
 class Organization extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -59,7 +57,6 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 *
 	 */
 	protected $id = null;
@@ -68,8 +65,6 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * The org picture
 	 *
 	 * @var \Application\DeskPRO\Entity\Blob
-	 * @ORM_Mapping\OneToOne(targetEntity="Blob", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="picture_blob_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $picture_blob = null;
 
@@ -77,7 +72,6 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * The organization name
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="name", type="string", length=255)
 	 */
 	protected $name = null;
 
@@ -85,7 +79,6 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * The summary field as filled in by agents
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="summary", type="text")
 	 */
 	protected $summary = '';
 
@@ -93,12 +86,10 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * The org importance
 	 *
 	 * @var int
-	 * @ORM_Mapping\Column(name="importance", type="integer")
 	 */
 	protected $importance = 0;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="CustomDataOrganization", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $custom_data;
 
@@ -106,10 +97,6 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * Usergroups the user belongs to
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="Usergroup", indexBy="id")
-	 * @ORM_Mapping\JoinTable(name="organization2usergroups",
-	 *     joinColumns={@ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")},
-     *     inverseJoinColumns={@ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")}
      * )
 	 */
 	protected $usergroups;
@@ -118,22 +105,16 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * Users who are set to automatically be added to tickets and other org things
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="Person", indexBy="id")
-	 * @ORM_Mapping\JoinTable(name="organizations_auto_cc",
-	 *     joinColumns={@ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")},
-     *     inverseJoinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")}
      * )
 	 */
 	protected $auto_cc_people;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="LabelOrganization", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="OrganizationContactData", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true, indexBy="id")
 	 */
 	protected $contact_data;
 
@@ -141,7 +122,6 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * The date the org was inserted into the system
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -150,7 +130,6 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 //        /**
 //	 * The deals created by this user.
 //	 * @var \Application\DeskPRO\Entity\Deal
-//	 * @ORM_Mapping\ManyToOne(targetEntity="Deal", cascade={"persist", "remove", "merge"})
 //	 */
 //	protected $deal;
 
@@ -411,4 +390,3 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationContactData', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true, ));
 	}
 }
-

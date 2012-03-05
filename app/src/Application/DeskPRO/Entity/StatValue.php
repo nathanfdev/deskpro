@@ -41,16 +41,11 @@ use Application\DeskPRO\App;
 /**
  * Stat Value - A row represent a unit of data for a Stat
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\StatValue")
- * @ORM_Mapping\Table(name="stat_value")
  */
 class StatValue extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\generatedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -59,7 +54,6 @@ class StatValue extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\Stat
 	 * @ORM_MAPPING\ManyToOne(targetEntity="Stat", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="stat_id", referencedColumnName="id")
 	 */
 	protected $stat;
 
@@ -75,7 +69,6 @@ class StatValue extends \Application\DeskPRO\Domain\DomainObject
 	 * The unix time for the period this stat represents
 	 *
 	 * @var int
-	 * @ORM_Mapping\Column(name="stat_unix", type="integer")
 	 */
 	protected $stat_unix;
 
@@ -132,4 +125,3 @@ class StatValue extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'stat', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Stat', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'stat_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

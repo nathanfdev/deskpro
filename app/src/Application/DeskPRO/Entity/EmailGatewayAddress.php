@@ -41,8 +41,6 @@ use Orb\Util\Strings;
 /**
  * Describes which addresses an email gateway expects
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\EmailGatewayAddress")
- * @ORM_Mapping\Table(name="email_gateway_addresses")
  */
 class EmailGatewayAddress extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -52,32 +50,26 @@ class EmailGatewayAddress extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var Application\DeskPRO\Entity\EmailGateway
-	 * @ORM_Mapping\ManyToOne(targetEntity="EmailGateway", inversedBy="addresses")
-	 * @ORM_Mapping\JoinColumn(name="email_gateway_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $gateway;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="match_type", type="string", length=15)
 	 */
 	protected $match_type = 'exact';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="match_pattern", type="string", length=255)
 	 */
 	protected $match_pattern = '';
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="run_order", type="integer")
 	 */
 	protected $run_order = 0;
 
@@ -117,4 +109,3 @@ class EmailGatewayAddress extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'gateway', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailGateway', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'addresses', 'joinColumns' => array( 0 => array( 'name' => 'email_gateway_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

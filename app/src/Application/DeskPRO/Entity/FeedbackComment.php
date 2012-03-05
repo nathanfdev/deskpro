@@ -42,16 +42,12 @@ use Orb\Util\Arrays;
 /**
  * Comments on feedback
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\FeedbackComment")
- * @ORM_Mapping\Table(name="feedback_comments")
  */
 class FeedbackComment extends CommentAbstract
 {
 	const OBJ_PROP = 'feedback';
 
 	/**
-	 * @ORM_Mapping\ManyToOne(targetEntity="Feedback", inversedBy="comment")
-	 * @ORM_Mapping\JoinColumn(name="feedback_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $feedback;
 
@@ -82,4 +78,3 @@ class FeedbackComment extends CommentAbstract
 		$metadata->mapOneToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

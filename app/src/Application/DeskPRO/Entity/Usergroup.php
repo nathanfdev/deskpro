@@ -45,9 +45,6 @@ use Orb\Util\Arrays;
 /**
  * A usergroup is any way to group related users together. Not necessarily just for permissions.
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Usergroup")
- * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="usergroups")
  */
 class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -60,8 +57,6 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="integer")
 	 *
 	 */
 	protected $id = null;
@@ -70,7 +65,6 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 * Title of the usergroup
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
@@ -78,7 +72,6 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 * A note or description about the usergroup
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="note", type="text")
 	 */
 	protected $note = '';
 
@@ -86,7 +79,6 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 * Is this an agent group?
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_agent_group", type="boolean")
 	 */
 	protected $is_agent_group = false;
 
@@ -94,7 +86,6 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 * When non-null, the group is a special system group (hidden from most interfaces).
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="sys_name", type="string", length=50, nullable=true)
 	 */
 	protected $sys_name = null;
 
@@ -147,4 +138,3 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
-

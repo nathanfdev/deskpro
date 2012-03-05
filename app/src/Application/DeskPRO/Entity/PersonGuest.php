@@ -65,7 +65,6 @@ class PersonGuest extends Person
 		return true;
 	}
 
-	/** @ORM_Mapping\PrePersist */
 	public function noPersist()
 	{
 		throw new \BadMethodCallException('A PersonGuest cannot be persisted');

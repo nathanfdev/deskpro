@@ -47,46 +47,37 @@ use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 /**
  * Ticket macros
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketMacro")
- * @ORM_Mapping\Table(name="ticket_macros")
  */
 class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 *
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = true;
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_global", type="boolean")
 	 */
 	protected $is_global = false;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="actions", type="array")
 	 */
 	protected $actions = array();
 
@@ -236,4 +227,3 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

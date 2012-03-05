@@ -42,16 +42,11 @@ use Orb\Util\Arrays;
 /**
  * A custom field definition
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\CustomDefDeal")
- * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="custom_def_deal")
  */
 class CustomDefDeal extends CustomDefAbstract
 {
 	/**
 	 * @var CustomDefDeal
-	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefDeal", inversedBy="children", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $parent = null;
 
@@ -59,8 +54,6 @@ class CustomDefDeal extends CustomDefAbstract
 	 * Field children
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="CustomDefDeal", mappedBy="parent", cascade={"persist", "remove", "merge"}, fetch="EAGER")
-	 * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	 */
 	protected $children = null;
 
@@ -92,4 +85,3 @@ class CustomDefDeal extends CustomDefAbstract
 		$metadata->mapOneToOne(array( 'fieldName' => 'plugin', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Plugin', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'plugin_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

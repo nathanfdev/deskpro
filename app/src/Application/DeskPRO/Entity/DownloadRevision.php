@@ -40,33 +40,25 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Download revisions
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\DownloadRevision")
- * @ORM_Mapping\Table(name="download_revisions")
  */
 class DownloadRevision extends RevisionAbstract
 {
 	/**
-	 * @ORM_Mapping\ManyToOne(targetEntity="Download")
-	 * @ORM_Mapping\JoinColumn(name="download_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $download;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Blob
-	 * @ORM_Mapping\ManyToOne(targetEntity="Blob", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="blob_id", referencedColumnName="id")
 	 */
 	protected $blob = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string")
 	 */
 	protected $title = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="content", type="text")
 	 */
 	protected $content = '';
 
@@ -93,4 +85,3 @@ class DownloadRevision extends RevisionAbstract
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

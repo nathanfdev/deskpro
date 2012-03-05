@@ -42,19 +42,14 @@ use Application\DeskPRO\Translate\Translate;
 /**
  * Products
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Product")
- * @ORM_Mapping\Table(name="products")
  */
 class Product extends CategoryAbstract implements HasPhraseName
 {
 	/**
-	 * @ORM_Mapping\ManyToOne(targetEntity="Product", inversedBy="children")
 	 */
 	protected $parent;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="Product", mappedBy="parent")
-	 * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	 */
 	protected $children;
 
@@ -117,4 +112,3 @@ class Product extends CategoryAbstract implements HasPhraseName
 		$metadata->mapOneToMany(array( 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product', 'cascade' => array( ), 'mappedBy' => 'parent', 'orphanRemoval' => false, 'orderBy' => array( 'display_order' => 'ASC', ), ));
 	}
 }
-

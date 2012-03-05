@@ -43,9 +43,6 @@ use Application\DeskPRO\Markdown;
 /**
  * Ticket messages
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketMessage")
- * @ORM_Mapping\Table(name="tickets_messages")
- * @ORM_Mapping\HasLifecycleCallbacks
  */
 class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -54,65 +51,51 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 *
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
-	 * @ORM_Mapping\ManyToOne(targetEntity="Ticket")
-	 * @ORM_Mapping\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\EmailSource
-	 * @ORM_Mapping\OneToOne(targetEntity="EmailSource")
-	 * @ORM_Mapping\JoinColumn(name="email_source_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $email_source = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Visitor
-	 * @ORM_Mapping\ManyToOne(targetEntity="Visitor", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="visitor_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $visitor = null;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="TicketAttachment", mappedBy="message", cascade={"persist", "remove", "merge"})
 	 */
 	protected $attachments;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_agent_note", type="boolean")
 	 */
 	protected $is_agent_note = false;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="creation_system", type="string", length=20)
 	 */
 	protected $creation_system = 'web';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="ip_address", type="string", length=30)
 	 */
 	protected $ip_address = '';
 
@@ -122,20 +105,17 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * address.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="email", type="string", length=255)
 	 */
 	protected $email = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="message_hash", type="string", length=40)
 	 */
 	protected $message_hash;
 
 	/**
 	 * The message, will be in HTML!
 	 * @var string
-	 * @ORM_Mapping\Column(name="message", type="text")
 	 */
 	protected $message;
 
@@ -270,7 +250,6 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Inits the hash code for this message
 	 *
-	 * @ORM_Mapping\PrePersist
 	 */
 	public function initHashCode()
 	{
@@ -296,7 +275,6 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * When a new message is added to a ticket, make sure the person has
 	 * their own access code ready to use.
 	 *
-	 * @ORM_Mapping\PostPersist
 	 */
 	public function initPersonAccessCode()
 	{
@@ -337,4 +315,3 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToMany(array( 'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAttachment', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'message', 'orphanRemoval' => false, ));
 	}
 }
-

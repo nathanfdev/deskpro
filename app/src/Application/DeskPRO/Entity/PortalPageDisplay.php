@@ -61,8 +61,6 @@ use Orb\Util\Arrays;
  *
  * Keys in the data array are insignificant. They may be used to keep track of things in the designer.
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\PortalPageDisplay")
- * @ORM_Mapping\Table(name="portal_page_display")
  */
 class PortalPageDisplay extends PageDisplayAbstract
 {
@@ -95,19 +93,16 @@ class PortalPageDisplay extends PageDisplayAbstract
 	 * The class handler
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="type", type="string", length=255)
 	 */
 	protected $type;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = 0;
 
@@ -132,4 +127,3 @@ class PortalPageDisplay extends PageDisplayAbstract
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
-

@@ -45,50 +45,36 @@ use Application\DeskPRO\Entity;
 /**
  * Twitter Status Note
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="twitter_statuses_notes")
- * @ORM_Mapping\HasLifecycleCallbacks
  */
 class TwitterStatusNote extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\GeneratedValue(strategy="AUTO")
-	 * @ORM_Mapping\Column(name="id", type="bigint")
 	 */
 	protected $id;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterStatus
-	 * @ORM_Mapping\ManyToOne(targetEntity="TwitterStatus", inversedBy="notes")
-	 * @ORM_Mapping\JoinColumn(name="status_id", referencedColumnName="id")
 	 */
 	protected $status;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="twitter_status_notes")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person;
 
         /**
 	 * @var \Application\DeskPRO\Entity\Deal
-	 * @ORM_Mapping\ManyToOne(targetEntity="Deal", inversedBy="twitter_status_notes")
-	 * @ORM_Mapping\JoinColumn(name="deal_id", referencedColumnName="id")
 	 */
 	protected $deal;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="text", type="string", length=4000)
 	 */
 	protected $text;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created", type="datetime")
 	 */
 	protected $date_created;
 
@@ -136,4 +122,3 @@ class TwitterStatusNote extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'deal', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Deal', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'twitter_status_notes', 'joinColumns' => array( 0 => array( 'name' => 'deal_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

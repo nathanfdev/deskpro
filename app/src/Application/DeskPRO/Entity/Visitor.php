@@ -52,11 +52,6 @@ use Orb\Util\Util;
  *
  * It's sortof like a session except its not used for anything dangerous like granting
  * access to things.
- *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Visitor")
- * @ORM_Mapping\Table(name="visitors", indexes={
- *     @ORM_Mapping\Index(name="date_last_idx", columns={"date_last"})
- * })
  */
 class Visitor extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -64,8 +59,6 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id;
 
@@ -73,14 +66,11 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * The authcode to verify an id
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="auth", type="string", length=15)
 	 */
 	protected $auth;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
@@ -88,7 +78,6 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * The users IP address
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="ip_address", type="string", length=80)
 	 */
 	protected $ip_address;
 
@@ -96,7 +85,6 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * The users user agent string
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="user_agent", type="string", length=255)
 	 */
 	protected $user_agent = '';
 
@@ -104,7 +92,6 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * The page the user came from
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="ref_page", type="string", length=255)
 	 */
 	protected $ref_page = '';
 
@@ -112,7 +99,6 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * The page the user came from
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="landing_page", type="string", length=255)
 	 */
 	protected $landing_page = '';
 
@@ -120,7 +106,6 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * The last page the user was on
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="last_page", type="string", length=255)
 	 */
 	protected $last_page = '';
 
@@ -129,7 +114,6 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * save it in the visitor record for future reference
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="name", type="string", length=255)
 	 */
 	protected $name = '';
 
@@ -137,19 +121,16 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * The users email, like the name above
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="email", type="string", length=255)
 	 */
 	protected $email = '';
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_last",type="datetime")
 	 */
 	protected $date_last;
 
@@ -265,23 +246,22 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Visitor'; 
-		$metadata->setPrimaryTable(array( 'name' => 'visitors', 'indexes' => array( 'date_last_idx' => array( 'columns' => array( 0 => 'date_last', ), ), ), )); 
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT); 
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, )); 
-		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'auth', )); 
-		$metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'ip_address', )); 
-		$metadata->mapField(array( 'fieldName' => 'user_agent', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'user_agent', )); 
-		$metadata->mapField(array( 'fieldName' => 'ref_page', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'ref_page', )); 
-		$metadata->mapField(array( 'fieldName' => 'landing_page', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'landing_page', )); 
-		$metadata->mapField(array( 'fieldName' => 'last_page', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'last_page', )); 
-		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'name', )); 
-		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'email', )); 
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'date_created', )); 
-		$metadata->mapField(array( 'fieldName' => 'date_last', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'date_last', )); 
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY); 
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Visitor';
+		$metadata->setPrimaryTable(array( 'name' => 'visitors', 'indexes' => array( 'date_last_idx' => array( 'columns' => array( 0 => 'date_last', ), ), ), ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'auth', ));
+		$metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'ip_address', ));
+		$metadata->mapField(array( 'fieldName' => 'user_agent', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'user_agent', ));
+		$metadata->mapField(array( 'fieldName' => 'ref_page', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'ref_page', ));
+		$metadata->mapField(array( 'fieldName' => 'landing_page', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'landing_page', ));
+		$metadata->mapField(array( 'fieldName' => 'last_page', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'last_page', ));
+		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'name', ));
+		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'email', ));
+		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'date_created', ));
+		$metadata->mapField(array( 'fieldName' => 'date_last', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'date_last', ));
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

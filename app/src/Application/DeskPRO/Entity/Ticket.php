@@ -46,9 +46,6 @@ use Orb\Util\Util;
 /**
  * Ticket
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Ticket")
- * @ORM_Mapping\Table(name="tickets", uniqueConstraints={@ORM_Mapping\UniqueConstraint(name="ref_idx", columns={"ref"})} )
- * @ORM_Mapping\HasLifecycleCallbacks
  *
  * @property \Application\DeskPRO\Entity\Person $person
  */
@@ -71,19 +68,16 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="ref", type="string", length=25)
 	 */
 	protected $ref = null;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="auth", type="string", length=20)
 	 */
 	protected $auth;
 
@@ -91,118 +85,86 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * The language the ticket is in
 	 *
 	 * @var \Application\DeskPRO\Entity\Language
-	 * @ORM_Mapping\ManyToOne(targetEntity="Language", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="language_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $language = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Department
-	 * @ORM_Mapping\ManyToOne(targetEntity="Department", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="department_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $department = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketCategory
-	 * @ORM_Mapping\ManyToOne(targetEntity="TicketCategory", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="category_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $category = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketPriority
-	 * @ORM_Mapping\ManyToOne(targetEntity="TicketPriority", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="priority_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $priority = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketWorkflow
-	 * @ORM_Mapping\ManyToOne(targetEntity="TicketWorkflow", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="workflow_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $workflow = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Product
-	 * @ORM_Mapping\ManyToOne(targetEntity="Product", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="product_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $product = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\PersonEmail
-	 * @ORM_Mapping\ManyToOne(targetEntity="PersonEmail", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="person_email_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person_email = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\PersonEmailValidating
-	 * @ORM_Mapping\ManyToOne(targetEntity="PersonEmailValidating", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="person_email_validating_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person_email_validating = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $agent = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\AgentTeam
-	 * @ORM_Mapping\ManyToOne(targetEntity="AgentTeam", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="agent_team_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $agent_team = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Organization
-	 * @ORM_Mapping\ManyToOne(targetEntity="Organization", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $organization = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\ChatConversation
-	 * @ORM_Mapping\ManyToOne(targetEntity="ChatConversation")
-	 * @ORM_Mapping\JoinColumn(name="linked_chat_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $linked_chat = null;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="TicketAttachment", mappedBy="ticket", cascade={"persist", "remove", "merge"})
 	 */
 	protected $attachments;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="TicketAccessCode", mappedBy="ticket", cascade={"persist", "remove", "merge"})
 	 */
 	protected $access_codes;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="TicketMessage", mappedBy="ticket", cascade={"persist", "remove", "merge"})
-	 * @ORM_Mapping\OrderBy({"date_created" = "ASC"})
 	 */
 	protected $messages;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="CustomDataTicket", mappedBy="ticket", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $custom_data;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="LabelTicket", mappedBy="ticket", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
 
@@ -210,8 +172,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * The gateway this ticket originated from
 	 *
 	 * @var \Application\DeskPRO\Entity\EmailGateway
-	 * @ORM_Mapping\ManyToOne(targetEntity="EmailGateway")
-	 * @ORM_Mapping\JoinColumn(name="email_gateway_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $email_gateway = null;
 
@@ -219,44 +179,36 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * The gateway email address the ticket matched
 	 *
 	 * @var \Application\DeskPRO\Entity\EmailGatewayAddress
-	 * @ORM_Mapping\ManyToOne(targetEntity="EmailGatewayAddress")
-	 * @ORM_Mapping\JoinColumn(name="email_gateway_address_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $email_gateway_address = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="notify_template", type="string", length=200)
 	 */
 	protected $notify_template = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="creation_system", type="string", length=20)
 	 */
 	protected $creation_system;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="ticket_hash", type="string", length=40)
 	 */
 	protected $ticket_hash;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="status", type="string", length=30)
 	 */
 	protected $status;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="hidden_status", type="string", length=30, nullable=true)
 	 */
 	protected $hidden_status = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="validating", type="string", length=35, nullable=true)
 	 */
 	protected $validating = null;
 
@@ -264,116 +216,96 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * Is the ticket on hold?
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_hold", type="boolean")
 	 */
 	protected $is_hold = false;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="urgency", type="integer")
 	 */
 	protected $urgency = 1;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_resolved",type="datetime",nullable=true)
 	 */
 	protected $date_resolved = null;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_closed",type="datetime",nullable=true)
 	 */
 	protected $date_closed = null;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_first_agent_assign", type="datetime", nullable=true)
 	 */
 	protected $date_first_agent_assign = null;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_first_agent_reply",type="datetime",nullable=true)
 	 */
 	protected $date_first_agent_reply = null;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_last_agent_reply",type="datetime",nullable=true)
 	 */
 	protected $date_last_agent_reply = null;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_last_user_reply",type="datetime",nullable=true)
 	 */
 	protected $date_last_user_reply = null;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_agent_waiting",type="datetime",nullable=true)
 	 */
 	protected $date_agent_waiting = null;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_user_waiting",type="datetime",nullable=true)
 	 */
 	protected $date_user_waiting = null;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_status",type="datetime")
 	 */
 	protected $date_status = null;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="total_user_waiting", type="integer")
 	 */
 	protected $total_user_waiting = 0;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="total_to_first_reply", type="integer")
 	 */
 	protected $total_to_first_reply = 0;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="locked_by_agent", referencedColumnName="id")
 	 */
 	protected $locked_by_agent = null;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_locked",type="datetime",nullable=true)
 	 */
 	protected $date_locked = null;
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="has_attachments", type="boolean")
 	 */
 	protected $has_attachments = false;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="subject", type="string", length=255)
 	 */
 	protected $subject;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TicketParticipant", mappedBy="ticket", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $participants;
 
@@ -424,7 +356,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @ORM_Mapping\PostLoad
 	 */
 	public function _initTicketLogger()
 	{
@@ -1811,7 +1742,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @ORM_Mapping\PrePersist
 	 */
 	public function initHashCode()
 	{
@@ -1824,7 +1754,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * @ORM_Mapping\PrePersist
 	 */
 	public function _preInsert()
 	{
@@ -1839,8 +1768,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @ORM_Mapping\PreUpdate
-	 * @ORM_Mapping\PrePersist
 	 */
 	public function _presaveTicketLogs()
 	{
@@ -1860,8 +1787,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @ORM_Mapping\PostUpdate
-	 * @ORM_Mapping\PostPersist
 	 */
 	public function _saveTicketLogs()
 	{
@@ -1872,8 +1797,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @ORM_Mapping\PostUpdate
-	 * @ORM_Mapping\PostPersist
 	 */
 	public function _queueSearchIndexUpdate($op = 'update')
 	{
@@ -2043,4 +1966,3 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToMany(array( 'fieldName' => 'participants', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketParticipant', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'ticket', 'orphanRemoval' => true, 'orderBy' => array( 'date_created' => 'ASC', ), ));
 	}
 }
-

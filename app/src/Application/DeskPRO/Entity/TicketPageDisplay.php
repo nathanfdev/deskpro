@@ -48,8 +48,6 @@ use Application\DeskPRO\Entity;
  * Description for a section within the ticket page.
  *
  * @see \Application\DeskPRO\PageDisplay\Zone\BasicZone
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketPageDisplay")
- * @ORM_Mapping\Table(name="ticket_page_display")
  */
 class TicketPageDisplay extends PageDisplayAbstract
 {
@@ -64,14 +62,11 @@ class TicketPageDisplay extends PageDisplayAbstract
 	 * - user
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="zone", type="string", length=50)
 	 */
 	protected $zone;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Department
-	 * @ORM_Mapping\ManyToOne(targetEntity="Department")
-	 * @ORM_Mapping\JoinColumn(name="department_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $department = null;
 
@@ -82,7 +77,6 @@ class TicketPageDisplay extends PageDisplayAbstract
 	 * Generally these are saved in the 'default' section.
 	 *
 	 * @var array
-	 * @ORM_Mapping\Column(name="options", type="array")
 	 */
 	protected $options = array();
 
@@ -183,4 +177,3 @@ class TicketPageDisplay extends PageDisplayAbstract
 		$metadata->mapOneToOne(array( 'fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

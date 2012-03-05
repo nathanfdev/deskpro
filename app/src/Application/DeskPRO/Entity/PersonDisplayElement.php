@@ -47,8 +47,6 @@ use Application\DeskPRO\Entity;
 /**
  * Profile-related display information
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="person_display_elements")
  */
 class PersonDisplayElement extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -60,7 +58,6 @@ class PersonDisplayElement extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -68,7 +65,6 @@ class PersonDisplayElement extends \Application\DeskPRO\Domain\DomainObject
 	 * Where this display field description applies: user, agent
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="display_zone", type="string", length=50)
 	 */
 	protected $display_zone;
 
@@ -76,7 +72,6 @@ class PersonDisplayElement extends \Application\DeskPRO\Domain\DomainObject
 	 * The type of elemenet: ticket_field, widget
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="element_type", type="string", length=50)
 	 */
 	protected $element_type;
 
@@ -84,7 +79,6 @@ class PersonDisplayElement extends \Application\DeskPRO\Domain\DomainObject
 	 * The ID of the element
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="element_id", type="integer")
 	 */
 	protected $element_id = 0;
 
@@ -93,7 +87,6 @@ class PersonDisplayElement extends \Application\DeskPRO\Domain\DomainObject
 	 * this state is reversed.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="initial_state", type="string", length=50)
 	 */
 	protected $initial_state = 'visible';
 
@@ -102,7 +95,6 @@ class PersonDisplayElement extends \Application\DeskPRO\Domain\DomainObject
 	 * All of these must match.
 	 *
 	 * @var array
-	 * @ORM_Mapping\Column(name="conds_all", type="array")
 	 */
 	protected $conds_all = array();
 
@@ -111,14 +103,12 @@ class PersonDisplayElement extends \Application\DeskPRO\Domain\DomainObject
 	 * Any one of these must match.
 	 *
 	 * @var array
-	 * @ORM_Mapping\Column(name="conds_any", type="array")
 	 */
 	protected $conds_any = array();
 
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
 
@@ -153,4 +143,3 @@ class PersonDisplayElement extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
-

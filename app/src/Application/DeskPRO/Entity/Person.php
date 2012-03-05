@@ -50,9 +50,6 @@ use Application\DeskPRO\Entity;
  * A "person" is a record in the database that stores information about a person.
  * Every person is capable of logging in, though it may be the case that many wont (ie they are just contact cards).
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Person")
- * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="people", indexes={@ORM_Mapping\Index(name="is_agent_idx", columns={"is_agent"})})
  */
 class Person extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -65,7 +62,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 *
 	 */
 	protected $id = null;
@@ -74,8 +70,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The users profile picture
 	 *
 	 * @var \Application\DeskPRO\Entity\Blob
-	 * @ORM_Mapping\OneToOne(targetEntity="Blob")
-	 * @ORM_Mapping\JoinColumn(name="picture_blob_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $picture_blob = null;
 
@@ -83,7 +77,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The URL to the users gravatar if any
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="gravatar_url", type="text")
 	 */
 	protected $gravatar_url = '';
 
@@ -91,7 +84,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Is this person a contact (someone we care about seeing)?
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_contact", type="boolean")
 	 */
 	protected $is_contact = true;
 
@@ -99,43 +91,36 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Is this person a user (someone with login credentials)?
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_user", type="boolean")
 	 */
 	protected $is_user = false;
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_agent", type="boolean")
 	 */
 	protected $is_agent = 0;
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="can_agent", type="boolean")
 	 */
 	protected $can_agent = 0;
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="can_admin", type="boolean")
 	 */
 	protected $can_admin = 0;
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="can_billing", type="boolean")
 	 */
 	protected $can_billing = 0;
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="can_reports", type="boolean")
 	 */
 	protected $can_reports = 0;
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_vacation_mode", type="boolean")
 	 */
 	protected $is_vacation_mode = 0;
 
@@ -143,7 +128,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Autoresponds
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_autoresponder", type="boolean")
 	 */
 	protected $is_autoresponder = 0;
 
@@ -153,7 +137,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * is an account-wide flag that says the user is at least real.
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_confirmed", type="boolean")
 	 */
 	protected $is_confirmed = false;
 
@@ -161,7 +144,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Has this user ever confirmed themselves via email?
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_agent_confirmed", type="boolean")
 	 */
 	protected $is_agent_confirmed = false;
 
@@ -169,7 +151,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Is the user deleted?
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_deleted", type="boolean")
 	 */
 	protected $is_deleted = false;
 
@@ -177,13 +158,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The user importance, 0-5
 	 *
 	 * @var int
-	 * @ORM_Mapping\Column(name="importance", type="integer")
 	 */
 	protected $importance = 0;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="creation_system", type="string", length=20)
 	 */
 	protected $creation_system = 'web.person';
 
@@ -191,7 +170,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The users name (best guess from other sources etc)
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="name", type="text")
 	 */
 	protected $name = '';
 
@@ -199,7 +177,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The users name (best guess from other sources etc)
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="first_name", type="text", nullable=true)
 	 */
 	protected $first_name = '';
 
@@ -207,7 +184,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The users name (best guess from other sources etc)
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="last_name", type="text", nullable=true)
 	 */
 	protected $last_name = '';
 
@@ -215,7 +191,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The summary field as filled in by agents
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="summary", type="text")
 	 */
 	protected $summary = '';
 
@@ -224,7 +199,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * A secret string used in various hashing or encryption schemes.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="secret_string", type="string", length=40)
 	 */
 	protected $secret_string;
 
@@ -232,8 +206,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The language associate with the user.
 	 *
 	 * @var \Application\DeskPRO\Entity\Language
-	 * @ORM_Mapping\ManyToOne(targetEntity="Language")
-	 * @ORM_Mapping\JoinColumn(name="language_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $language = null;
 
@@ -241,8 +213,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The users organization
 	 *
 	 * @var \Application\DeskPRO\Entity\Organization
-	 * @ORM_Mapping\ManyToOne(targetEntity="Organization", cascade={"persist", "remove", "merge"})
-	 * @ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $organization = null;
 
@@ -250,7 +220,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The persons position at the organization
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="organization_position", type="string", length=100)
 	 */
 	protected $organization_position = '';
 
@@ -258,7 +227,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The timezone associated with this user.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="timezone", type="string", length=50)
 	 */
 	protected $timezone = 'UTC';
 
@@ -267,7 +235,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * an email address.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="password", type="string", length=40, nullable=true)
 	 */
 	protected $password = null;
 
@@ -275,7 +242,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The hashing scheme used with checkPassword(). NULL means default, the built in scheme.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="password_scheme", type="string", length=20, nullable=true)
 	 */
 	protected $password_scheme = null;
 
@@ -283,7 +249,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * A salt used to hash the password with.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="salt", type="string", length=40)
 	 */
 	protected $salt;
 
@@ -291,30 +256,24 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The primary email address used by this account
 	 *
 	 * @var \Application\DeskPRO\Entity\PersonEmail
-	 * @ORM_Mapping\OneToOne(targetEntity="PersonEmail")
-	 * @ORM_Mapping\JoinColumn(name="primary_email_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $primary_email;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="PersonEmail", mappedBy="person", cascade={"persist", "remove", "merge"}, indexBy="id")
 	 */
 	protected $emails;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="LabelPerson", mappedBy="person", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="CustomDataPerson", mappedBy="person", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $custom_data;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="PersonContactData", mappedBy="person", cascade={"persist", "remove", "merge"}, indexBy="id")
 	 */
 	protected $contact_data;
 
@@ -322,17 +281,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Usergroups the user belongs to
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="Usergroup", indexBy="id", cascade={"persist", "remove", "merge"})
-	 * @ORM_Mapping\JoinTable(name="person2usergroups",
-	 *     joinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")},
-     *     inverseJoinColumns={@ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")}
      * )
 	 */
 	protected $usergroups;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="PersonPref", mappedBy="person", cascade={"persist", "remove", "merge"})
 	 */
 	protected $preferences;
 
@@ -340,19 +294,16 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Usersource associations
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="PersonUsersourceAssoc", mappedBy="person", indexBy="id")
 	 */
 	protected $usersource_assoc;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="TwitterAccount", mappedBy="persons")
 	 */
 	protected $twitter_accounts;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TwitterStatusNote", mappedBy="person")
 	 */
 	protected $twitter_status_notes;
 
@@ -360,7 +311,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The date the user was inserted into the system
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -368,7 +318,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The last time the user logged in
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_last_login", type="datetime", nullable=true)
 	 */
 	protected $date_last_login = null;
 
@@ -376,7 +325,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The last time the users gravatar (or other 3rd party image) was checked.
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_picture_check", type="datetime", nullable=true)
 	 */
 	protected $date_picture_check = null;
 
@@ -510,7 +458,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @ORM_Mapping\PostLoad
 	 */
 	public function _initPersonLogger()
 	{
@@ -1695,8 +1642,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * If name is set but not first and last, try to smart-set first/last by splitting up
 	 * the name.
 	 *
-	 * @ORM_Mapping\prePersist
-	 * @ORM_Mapping\preUpdate
 	 * @return void
 	 */
 	public function smartSetName()
@@ -1734,7 +1679,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 
 
-	/** @ORM_Mapping\PrePersist */
 	public function _prePersist()
 	{
 		if (!$this->date_created) {
@@ -1813,8 +1757,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * @ORM_Mapping\PostUpdate
-	 * @ORM_Mapping\PostPersist
 	 */
 	public function _savePersonLogs()
 	{
@@ -1932,4 +1874,3 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToMany(array( 'fieldName' => 'twitter_status_notes', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusNote', 'cascade' => array( ), 'mappedBy' => 'person', 'orphanRemoval' => false, ));
 	}
 }
-

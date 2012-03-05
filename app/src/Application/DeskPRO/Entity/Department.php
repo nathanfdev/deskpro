@@ -44,47 +44,37 @@ use Application\DeskPRO\Translate\Translate;
 /**
  * Departments
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Department")
- * @ORM_Mapping\Table(name="departments")
  */
 class Department extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 *
 	 */
 	protected $id;
 
 	/**
 	 * @var Department
-	 * @ORM_Mapping\ManyToOne(targetEntity="Department")
-	 * @ORM_Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $parent = null;
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="Department", mappedBy="parent")
-	 * @ORM_Mapping\OrderBy({"title" = "ASC"})
 	 */
 	protected $children = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_tickets_enabled", type="boolean")
 	 */
 	protected $is_tickets_enabled = true;
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_chat_enabled", type="boolean")
 	 */
 	protected $is_chat_enabled = true;
 
@@ -93,7 +83,6 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
 
@@ -241,4 +230,3 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		$metadata->mapOneToMany(array( 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'cascade' => array( ), 'mappedBy' => 'parent', 'orphanRemoval' => false, 'orderBy' => array( 'title' => 'ASC', ), ));
 	}
 }
-

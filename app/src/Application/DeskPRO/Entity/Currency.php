@@ -41,8 +41,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Deal entity definition
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Currency")
- * @ORM_Mapping\Table(name="currency")
  */
 class Currency extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -50,9 +48,6 @@ class Currency extends \Application\DeskPRO\Domain\DomainObject
      * The unique ID
      *
      * @var int
-     * @ORM_Mapping\Id
-     * @ORM_Mapping\generatedValue(strategy="IDENTITY")
-     * @ORM_Mapping\Column(name="id", type="integer")
      *
      */
     protected $id = null;
@@ -61,7 +56,6 @@ class Currency extends \Application\DeskPRO\Domain\DomainObject
      * The Deal Type's name
      *
      * @var string
-     * @ORM_Mapping\Column(name="name", type="string")
      */
     protected $name = '';
 
@@ -69,7 +63,6 @@ class Currency extends \Application\DeskPRO\Domain\DomainObject
      * Currency symbol.
      *
      * @var string
-     * @ORM_Mapping\Column(name="symbol", type="string")
      */
     protected $symbol = '$';
 
@@ -91,4 +84,3 @@ class Currency extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
-

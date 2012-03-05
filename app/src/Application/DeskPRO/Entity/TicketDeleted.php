@@ -42,41 +42,32 @@ use Application\DeskPRO\App;
 /**
  * A log of deleted tickets
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="tickets_deleted")
  */
 class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\Column(name="ticket_id", type="integer")
 	 */
 	protected $ticket_id;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="new_ticket_id", type="integer")
 	 */
 	protected $new_ticket_id = 0;
 
 	/**
 	 * @var int
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="by_person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $by_person;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="reason", type="text")
 	 */
 	protected $reason;
 
@@ -122,4 +113,3 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'by_person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'by_person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

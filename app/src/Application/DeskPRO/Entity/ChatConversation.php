@@ -47,9 +47,6 @@ use Orb\Util\Numbers;
 /**
  * A conversation between one or more people
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ChatConversation")
- * @ORM_Mapping\Table(name="chat_conversations")
- * @ORM_Mapping\HasLifecycleCallbacks
  */
 class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -58,27 +55,21 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Department
-	 * @ORM_Mapping\ManyToOne(targetEntity="Department", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="department_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $department = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="subject", type="string", length=255)
 	 */
 	protected $subject = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="status", type="string", length=15)
 	 */
 	protected $status = 'open';
 
@@ -86,8 +77,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * If this is a user conversation, this is the agent assigned.
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $agent = null;
 
@@ -95,8 +84,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * If this is a team chat, the team it is
 	 *
 	 * @var \Application\DeskPRO\Entity\AgentTeam
-	 * @ORM_Mapping\ManyToOne(targetEntity="AgentTeam", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="agent_team_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $agent_team = null;
 
@@ -104,8 +91,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * If this is a user conversation, this is the user who started the chat
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
@@ -113,8 +98,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * If this is a user convo, this is the users session
 	 *
 	 * @var \Application\DeskPRO\Entity\Session
-	 * @ORM_Mapping\ManyToOne(targetEntity="Session")
-	 * @ORM_Mapping\JoinColumn(name="session_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $session = null;
 
@@ -122,7 +105,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * User chat: The users name, if they arent a person
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="person_name", type="string", length=255)
 	 */
 	protected $person_name = '';
 
@@ -130,7 +112,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * User chat: The users email, if they arent a person
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="person_email", type="string", length=255)
 	 */
 	protected $person_email = '';
 
@@ -138,38 +119,30 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * ...and this is the users visitor
 	 *
 	 * @var \Application\DeskPRO\Entity\Visitor
-	 * @ORM_Mapping\ManyToOne(targetEntity="Visitor")
-	 * @ORM_Mapping\JoinColumn(name="visitor_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $visitor = null;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="Person", cascade={"persist", "remove", "merge"})
-     * @ORM_Mapping\JoinTable(name="chat_conversation_to_person", joinColumns={@ORM_Mapping\JoinColumn(name="conversation_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")})
 	 */
 	protected $participants;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="ChatMessage", mappedBy="conversation", cascade={"persist", "remove", "merge"})
 	 */
 	protected $messages;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="rating_response_time", type="integer", nullable=true)
 	 */
 	protected $rating_response_time = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="rating_overall", type="integer", nullable=true)
 	 */
 	protected $rating_overall = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="rating_comment", type="text")
 	 */
 	protected $rating_comment = '';
 
@@ -177,7 +150,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * Is this an agent chat
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_agent", type="boolean")
 	 */
 	protected $is_agent = false;
 
@@ -186,31 +158,26 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * This is used to make sure the JS widget on pages doesn't load again.
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_window", type="boolean")
 	 */
 	protected $is_window = false;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_assigned",type="datetime",nullable=true)
 	 */
 	protected $date_assigned;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_first_agent_message",type="datetime",nullable=true)
 	 */
 	protected $date_first_agent_message;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_ended",type="datetime",nullable=true)
 	 */
 	protected $date_ended;
 
@@ -609,7 +576,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @ORM_Mapping\PostUpdate
 	 */
 	public function _queueSearchIndexUpdate($op = 'update')
 	{
@@ -657,4 +623,3 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToMany(array( 'fieldName' => 'messages', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatMessage', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'conversation', 'orphanRemoval' => false, ));
 	}
 }
-

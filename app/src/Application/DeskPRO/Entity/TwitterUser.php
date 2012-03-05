@@ -45,83 +45,66 @@ use Application\DeskPRO\Entity;
 /**
  * Twitter User
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TwitterUser")
- * @ORM_Mapping\Table(name="twitter_users")
- * @ORM_Mapping\HasLifecycleCallbacks
  */
 class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\GeneratedValue(strategy="NONE")
-	 * @ORM_Mapping\Column(name="id", type="bigint")
 	 */
 	protected $id;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="name", type="string", length=40)
 	 */
 	protected $name;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="screen_name", type="string", length=20)
 	 */
 	protected $screen_name;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="profile_image_url", type="string", length=200)
 	 */
 	protected $profile_image_url;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="language", type="string", length=3)
 	 */
 	protected $language;
 
 	/**
 	 * @var Boolean
-	 * @ORM_Mapping\Column(name="is_protected", type="boolean")
 	 */
 	protected $is_protected = false;
 
 	/**
 	 * @var Boolean
-	 * @ORM_Mapping\Column(name="is_verified", type="boolean")
 	 */
 	protected $is_verified = false;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="location", type="string", length=255, nullable=true)
 	 */
 	protected $location;
 
 	/**
-	 * @ORM_Mapping\Column(name="description", type="string", length=500, nullable=true)
 	 * @var string
 	 */
 	protected $description;
 
 	/**
 	 * @var Boolean
-	 * @ORM_Mapping\Column(name="is_geo_enabled", type="boolean")
 	 */
 	protected $is_geo_enabled = false;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TwitterStatus", mappedBy="user")
 	 */
 	protected $statuses;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TwitterStatus", mappedBy="in_reply_to_user")
 	 */
 	protected $replies;
 
@@ -129,31 +112,26 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TwitterStatusMention", mappedBy="user")
 	 */
 	protected $mentions;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TwitterStatus", mappedBy="recipient")
 	 */
 	protected $messages;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TwitterAccountFriend", mappedBy="user")
 	 */
 	protected $friends;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="TwitterAccountFollower", mappedBy="user")
 	 */
 	protected $followers;
 
 	/**
 	 * @var Application\DeskPRO\EntityRepository\TwitterAccount
-	 * @ORM_Mapping\OneToOne(targetEntity="TwitterAccount", mappedBy="user")
 	 */
 	protected $account;
 
@@ -405,4 +383,3 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'cascade' => array( ), 'mappedBy' => 'user', 'inversedBy' => NULL, 'joinColumns' => array( ), 'orphanRemoval' => false, ));
 	}
 }
-

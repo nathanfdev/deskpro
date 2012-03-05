@@ -42,15 +42,11 @@ use Application\DeskPRO\Log\Logger;
 /**
  * A worker job is some task that needs to run regularly, or on a schedule.
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="worker_jobs")
  */
 class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\Column(name="id", type="string", type="string", length=50)
 	 */
 	protected $id = null;
 
@@ -59,7 +55,6 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 * fields groups them into named bundles.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="worker_group", type="string", length=50, nullable=true)
 	 */
 	protected $worker_group = null;
 
@@ -67,7 +62,6 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 * The name of the job.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=100)
 	 */
 	protected $title = '';
 
@@ -75,7 +69,6 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 * What it does
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="description", type="string", length=255)
 	 */
 	protected $description = '';
 
@@ -83,7 +76,6 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 * The PHP classname of the job executor
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="job_class", type="string", length=100)
 	 */
 	protected $job_class;
 
@@ -91,14 +83,12 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 * Options for the job
 	 *
 	 * @var array
-	 * @ORM_Mapping\Column(name="data", type="array", nullable=true)
 	 */
 	protected $options = array();
 
 	/**
 	 * The most feedbackl interval for this task to run.
 	 *
-	 * @ORM_Mapping\Column(name="run_interval", type="integer")
 	 */
 	protected $interval = 3600;
 
@@ -106,7 +96,6 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 * The last time this job was run
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="last_run_date",type="datetime", nullable=true)
 	 */
 	protected $last_run_date = null;
 
@@ -190,4 +179,3 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'last_run_date', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'unique' => false, 'columnName' => 'last_run_date', ));
 	}
 }
-

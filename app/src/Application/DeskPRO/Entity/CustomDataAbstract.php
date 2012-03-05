@@ -40,7 +40,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Base class used for storing custom field data.
  *
- * @ORM_Mapping\MappedSuperclass
  */
 abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -48,7 +47,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 *
 	 */
 	protected $id = null;
@@ -58,8 +56,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	 * The form field this is attached to
 	 *
 	 * @var \Application\DeskPRO\Entity\CustomDefXXX
-	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefXXX")
-	 * @ORM_Mapping\JoinColumn(name="field_id", referencedColumnName="id")
 	 */
 	//protected $field = null;
 
@@ -67,8 +63,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	 * IMPLEMENT IN CHILD CLASS
 	 *
 	 * @var \Application\DeskPRO\Entity\Xxx
-	 * @ORM_Mapping\ManyToOne(targetEntity="xxx")
-	 * @ORM_Mapping\JoinColumn(name="xxx_id", referencedColumnName="id")
 	 */
 	//protected $xxx;
 
@@ -76,7 +70,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	 * User numeric data
 	 *
 	 * @var int
-	 * @ORM_Mapping\Column(name="value", type="integer")
 	 */
 	protected $value = 0;
 
@@ -84,7 +77,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	 * User string data
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="input", type="text")
 	 */
 	protected $input = '';
 
@@ -120,4 +112,3 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 	}
 }
-

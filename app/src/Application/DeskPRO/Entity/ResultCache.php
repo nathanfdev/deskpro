@@ -42,22 +42,17 @@ use Orb\Util\Arrays;
 /**
  * A result cache is a cached result from a search or filter.
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="result_cache")
  */
 class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 * 
 	 */
 	protected $id = null;
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="preferences")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
@@ -65,7 +60,6 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 	 * Criteria information like what the user searched for
 	 *
 	 * @var array
-	 * @ORM_Mapping\Column(name="criteria", type="array")
 	 */
 	protected $criteria = array();
 
@@ -73,7 +67,6 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 	 * An array of results
 	 *
 	 * @var array
-	 * @ORM_Mapping\Column(name="results", type="array")
 	 */
 	protected $results = array();
 
@@ -81,19 +74,16 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 	 * Any extra data
 	 *
 	 * @var array
-	 * @ORM_Mapping\Column(name="extra", type="array")
 	 */
 	protected $extra = array();
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="num_results", type="integer")
 	 */
 	protected $num_results = 0;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -286,4 +276,3 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'preferences', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

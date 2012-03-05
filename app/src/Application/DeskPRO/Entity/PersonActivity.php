@@ -40,40 +40,32 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Person log items (aka user stream)
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\PersonActivity")
- * @ORM_Mapping\Table(name="person_activity")
  */
 class PersonActivity extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 * 
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="action_type", type="string", length=255)
 	 */
 	protected $action_type;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="details", type="array")
 	 */
 	protected $details = array();
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -113,4 +105,3 @@ class PersonActivity extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

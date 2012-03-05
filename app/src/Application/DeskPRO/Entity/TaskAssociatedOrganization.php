@@ -42,15 +42,12 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Task-Ticket association class.
  *
- * @ORM_Mapping\Entity
  */
 class TaskAssociatedOrganization extends TaskAssociation
 {
 
 	/**
 	 * @var Application\DeskPRO\Entity\Organization
-	 * @ORM_Mapping\ManyToOne(targetEntity="Organization", inversedBy="task_associations")
-	 * @ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $organization;
 
@@ -65,4 +62,3 @@ class TaskAssociatedOrganization extends TaskAssociation
 		$metadata->mapOneToOne(array( 'fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'task_associations', 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

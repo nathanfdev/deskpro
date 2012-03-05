@@ -42,15 +42,11 @@ use Orb\Util\Arrays;
 /**
  * A custom field definition
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\CustomDefOrganization")
- * @ORM_Mapping\Table(name="custom_def_organizations")
  */
 class CustomDefOrganization extends CustomDefAbstract
 {
 	/**
 	 * @var CustomDefOrganization
-	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefOrganization", inversedBy="children")
-	 * @ORM_Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $parent = null;
 
@@ -58,8 +54,6 @@ class CustomDefOrganization extends CustomDefAbstract
 	 * Field children
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="CustomDefOrganization", mappedBy="parent", cascade={"persist", "remove", "merge"})
-	 * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	 */
 	protected $children = null;
 
@@ -91,4 +85,3 @@ class CustomDefOrganization extends CustomDefAbstract
 		$metadata->mapOneToOne(array( 'fieldName' => 'plugin', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Plugin', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'plugin_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

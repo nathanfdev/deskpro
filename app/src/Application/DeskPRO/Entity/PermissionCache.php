@@ -49,8 +49,6 @@ use Orb\Util\Util;
  * A cache of various permissions for a given set of usergroups. For example,
  * a computed array of category ID's 1,3,5 has access to.
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\PermissionCache")
- * @ORM_Mapping\Table(name="permissions_cache")
  */
 class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -58,8 +56,6 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 	 * The type of permissions cache
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="name", type="string", length=255)
-	 * @ORM_Mapping\Id
 	 */
 	protected $name;
 
@@ -68,8 +64,6 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 	 * with a command in asending order.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="usergroup_key", type="string", length=32)
-	 * @ORM_Mapping\Id
 	 */
 	protected $usergroup_key;
 
@@ -77,7 +71,6 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 	 * A comma-separated list of usergroup_ids this cache applies to
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="usergroup_ids", type="text")
 	 */
 	protected $usergroup_ids = '';
 
@@ -85,7 +78,6 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 	 * Permission data
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="perms", type="object")
 	 */
 	protected $perms = array();
 
@@ -160,4 +152,3 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'perms', 'type' => 'object', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'perms', ));
 	}
 }
-

@@ -40,15 +40,11 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * A persons contact data
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="people_contact_data")
  */
 class PersonContactData extends ContactDataAbstract
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
@@ -80,4 +76,3 @@ class PersonContactData extends ContactDataAbstract
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

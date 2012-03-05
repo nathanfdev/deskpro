@@ -42,20 +42,16 @@ use Orb\Util\Arrays;
 /**
  * General ratings (articles, downloads, news)
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Rating")
- * @ORM_Mapping\Table(name="ratings")
  */
 class Rating extends RatingAbstract
 {
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="object_type", type="string", length=100)
 	 */
 	protected $object_type;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="object_id", type="integer")
 	 */
 	protected $object_id;
 
@@ -91,4 +87,3 @@ class Rating extends RatingAbstract
 		$metadata->mapOneToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

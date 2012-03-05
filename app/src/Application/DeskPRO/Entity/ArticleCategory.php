@@ -42,26 +42,19 @@ use Application\DeskPRO\App;
 /**
  * Article categories
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ArticleCategory")
- * @ORM_Mapping\Table(name="article_categories")
  */
 class ArticleCategory extends CategoryAbstract
 {
 	/**
-	 * @ORM_Mapping\ManyToOne(targetEntity="ArticleCategory", inversedBy="children")
 	 */
 	protected $parent;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="ArticleCategory", mappedBy="parent")
-	 * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	 */
 	protected $children;
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="Usergroup", cascade={"persist", "remove", "merge"})
-     * @ORM_Mapping\JoinTable(name="article_category2usergroup", joinColumns={@ORM_Mapping\JoinColumn(name="category_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")})
 	 */
 	protected $usergroups;
 
@@ -71,7 +64,6 @@ class ArticleCategory extends CategoryAbstract
 	 * the user interface
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_agent", type="boolean")
 	 */
 	protected $is_agent = false;
 
@@ -80,7 +72,6 @@ class ArticleCategory extends CategoryAbstract
 	 * is treated as a book (aka manual).
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_book", type="boolean")
 	 */
 	protected $is_book = false;
 
@@ -93,7 +84,6 @@ class ArticleCategory extends CategoryAbstract
 	 * UserBundle:Articles:article-download.html.twig
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="template_suffix", type="string", length=100, nullable=true)
 	 */
 	protected $template_suffix = '';
 
@@ -123,4 +113,3 @@ class ArticleCategory extends CategoryAbstract
 		$metadata->mapManyToMany(array( 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'joinTable' => array( 'name' => 'article_category2usergroup', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), ));
 	}
 }
-

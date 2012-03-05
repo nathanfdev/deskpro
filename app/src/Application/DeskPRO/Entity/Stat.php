@@ -41,8 +41,6 @@ use Application\DeskPRO\App;
 /**
  * Statistic
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Stat")
- * @ORM_Mapping\Table(name="stat")
  */
 class Stat extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -87,9 +85,6 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\generatedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -97,7 +92,6 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 * The stat title
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
@@ -106,7 +100,6 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @ORM_MAPPING\ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="author_id", referencedColumnName="id")
 	 */
 	protected $author;
 
@@ -123,7 +116,6 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 * The stat filter criteria
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="criteria", type="array")
 	 */
 	protected $criteria;
 
@@ -195,7 +187,6 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 * The stat creation date
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created", type="datetime")
 	 */
 	protected $date_created;
 
@@ -909,4 +900,3 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'parent_stat', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Stat', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'parent_stat_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

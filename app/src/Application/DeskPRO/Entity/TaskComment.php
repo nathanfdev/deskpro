@@ -44,8 +44,6 @@ use Application\DeskPRO\App;
 /**
  * TaskComment entity definition
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="task_comments")
  */
 class TaskComment extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -54,9 +52,6 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\generatedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="integer")
 	 *
 	 */
 	protected $id = null;
@@ -65,29 +60,24 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
 	 * The comment's content
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="content", type="text")
 	 */
 	protected $content = '';
 
 	/**
 	 * @var Application\DeskPRO\Entity\Task
-	 * @ORM_Mapping\ManyToOne(
 	 * 	targetEntity="Task",
 	 * 	inversedBy="comments",
 	 * 	cascade={"persist", "remove", "merge"}
 	 * )
-	 * @ORM_Mapping\JoinColumn(name="task_id", referencedColumnName="id", nullable=false, onDelete="cascade")
 	 */
 	protected $task;
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(
 	 * 	targetEntity="Person",
 	 * 	inversedBy="task_comments",
 	 * 	cascade={"persist", "remove", "merge"}
 	 * )
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person;
 
@@ -95,7 +85,6 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
 	 * The date the comment was inserted into the system
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -209,4 +198,3 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => NULL, 'inversedBy' => 'task_comments', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

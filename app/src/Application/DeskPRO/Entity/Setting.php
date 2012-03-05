@@ -42,9 +42,6 @@ use Orb\Util\Arrays;
 /**
  * Settings used by the system.
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Setting")
- * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="settings")
  */
 class Setting extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -52,8 +49,6 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="integer")
 	 * 
 	 */
 	protected $id = null;
@@ -63,7 +58,6 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 	 * The name of the setting
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="name", type="string", length=255)
 	 */
 	protected $name = null;
 
@@ -73,7 +67,6 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 	 * before the first dot in the name. deskpro.url, the group is 'deskpro'
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="groupname", type="string", length=255, nullable=true)
 	 */
 	protected $groupname;
 
@@ -82,7 +75,6 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 	 * The value of a setting
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="value", type="text", nullable=true)
 	 */
 	protected $value;
 
@@ -91,21 +83,18 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 	 * The default value set by DeskPRO.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="default_value", type="text")
 	 */
 	protected $default_value = '';
 
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="created_at",type="datetime")
 	 */
 	protected $created_at;
 
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="updated_at",type="datetime")
 	 */
 	protected $updated_at;
 
@@ -127,8 +116,6 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * @ORM_Mapping\PrePersist
-	 * @ORM_Mapping\PreUpdate
 	 */
 	public function _resetValueIfDefault()
 	{
@@ -138,8 +125,6 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @ORM_Mapping\PrePersist
-	 * @ORM_Mapping\PreUpdate
 	 */
 	public function _resetGroupFromName()
 	{
@@ -151,13 +136,11 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	/** @ORM_Mapping\PrePersist */
 	public function _incCreatedAt()
 	{
 		$this->created_at = $this->updated_at = new \DateTime();
 	}
 
-	/** @ORM_Mapping\PreUpdate */
 	public function _incUpdatedAt()
 	{
 		$this->updated_at = new \DateTime();
@@ -191,4 +174,3 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
-

@@ -42,26 +42,21 @@ use Orb\Util\Strings;
 /**
  * Glossary
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\GlossaryWord")
- * @ORM_Mapping\Table(name="glossary_words")
  */
 class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="word", type="string", length=255)
 	 */
 	protected $word;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="content", type="text")
 	 */
 	protected $content;
 
@@ -83,4 +78,3 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
-

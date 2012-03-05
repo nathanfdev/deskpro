@@ -44,39 +44,26 @@ use Application\DeskPRO\App;
 /**
  * Links participants to tickets
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="tickets_participants")
  */
 class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\ManyToOne(targetEntity="Ticket", inversedBy="participants")
-	 * @ORM_Mapping\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
-	 * @ORM_Mapping\Id
 	 */
 	protected $person = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketAccessCode
-	 * @ORM_Mapping\OneToOne(targetEntity="TicketAccessCode", fetch="EAGER", cascade={"persist", "remove", "merge"})
-	 * @ORM_Mapping\JoinColumn(name="access_code_id", referencedColumnName="id")
 	 */
 	protected $access_code = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\PersonEmail
-	 * @ORM_Mapping\ManyToOne(targetEntity="PersonEmail", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="person_email_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person_email = null;
 
@@ -84,7 +71,6 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 	 * Default checkbox status of the user
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="default_on", type="boolean")
 	 */
 	protected $default_on = true;
 
@@ -125,7 +111,6 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @ORM_Mapping\PrePersist
 	 */
 	public function _setAccessCode()
 	{
@@ -166,4 +151,3 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'person_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_email_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

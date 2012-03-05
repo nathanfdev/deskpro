@@ -46,7 +46,6 @@ use Application\DeskPRO\ContactData\ContactData;
  * Because of the nature, each 'data_type' uses each of the field1-field10
  * differently. Sometimes only a single one might be used, other times multiple.
  *
- * @ORM_Mapping\MappedSuperclass
  */
 abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -54,7 +53,6 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 *
 	 */
 	protected $id = null;
@@ -63,7 +61,6 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 	 * The handler class
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="contact_type", type="string", length=80)
 	 */
 	protected $contact_type;
 
@@ -71,67 +68,56 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 	 * The label/comment/name for this contact entry (Work, Home, etc).
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="comment", type="text")
 	 */
 	protected $comment = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="field_1", type="text")
 	 */
 	protected $field_1 = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="field_2", type="text")
 	 */
 	protected $field_2 = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="field_3", type="text")
 	 */
 	protected $field_3 = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="field_4", type="text")
 	 */
 	protected $field_4 = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="field_5", type="text")
 	 */
 	protected $field_5 = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="field_6", type="text")
 	 */
 	protected $field_6 = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="field_7", type="text")
 	 */
 	protected $field_7 = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="field_8", type="text")
 	 */
 	protected $field_8 = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="field_9", type="text")
 	 */
 	protected $field_9 = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="field_10", type="text")
 	 */
 	protected $field_10 = '';
 
@@ -195,4 +181,3 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 	}
 }
-

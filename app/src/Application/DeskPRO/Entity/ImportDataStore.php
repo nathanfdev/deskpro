@@ -40,22 +40,17 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Stores data from importing for long-term (ie unimplemented features).
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ImportDataStore")
- * @ORM_Mapping\Table(name="import_datastore")
  */
 class ImportDataStore extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The type of id/thing/whatever this is mapping.
 	 * @var string
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\Column(name="typename", type="dpblob", length=80)
 	 */
 	protected $typename;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="data", type="array")
 	 */
 	protected $data = array();
 
@@ -75,4 +70,3 @@ class ImportDataStore extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'data', ));
 	}
 }
-

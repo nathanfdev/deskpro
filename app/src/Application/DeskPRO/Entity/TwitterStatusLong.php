@@ -47,54 +47,41 @@ use Application\DeskPRO\Entity;
  *
  * Long Reply/Message w/ URL Shortener.
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="twitter_statuses_long")
- * @ORM_Mapping\HasLifecycleCallbacks
  */
 class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\GeneratedValue(strategy="AUTO")
-	 * @ORM_Mapping\Column(name="id", type="bigint")
 	 */
 	protected $id;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterStatus
-	 * @ORM_Mapping\OneToOne(targetEntity="TwitterStatus")
-	 * @ORM_Mapping\JoinColumn(name="status_id", referencedColumnName="id")
 	 */
 	protected $status;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="text", type="string", length=4000)
 	 */
 	protected $text;
 
 	/**
 	 * @var Boolean
-	 * @ORM_Mapping\Column(name="is_public", type="boolean")
 	 */
 	protected $is_public = false;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created", type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var Boolean
-	 * @ORM_Mapping\Column(name="is_read", type="boolean")
 	 */
 	protected $is_read = false;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_read", type="datetime", nullable=true)
 	 */
 	protected $date_read = null;
 
@@ -167,4 +154,3 @@ class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'status_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

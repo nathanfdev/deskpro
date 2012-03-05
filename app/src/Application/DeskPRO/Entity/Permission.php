@@ -44,8 +44,6 @@ use Orb\Util\Web;
 /**
  * Permissions are flags applied groups or specific users.
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="permissions")
  */
 class Permission extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -53,8 +51,6 @@ class Permission extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -62,7 +58,6 @@ class Permission extends \Application\DeskPRO\Domain\DomainObject
 	 * The name of the permission
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="name", type="string", length=50)
 	 */
 	protected $name = null;
 
@@ -71,8 +66,6 @@ class Permission extends \Application\DeskPRO\Domain\DomainObject
 	 * a person or a usergroup, never both.
 	 *
 	 * @var Application\DeskPRO\Entity\Usergroup
-	 * @ORM_Mapping\ManyToOne(targetEntity="Usergroup")
-	 * @ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $usergroup;
 
@@ -81,8 +74,6 @@ class Permission extends \Application\DeskPRO\Domain\DomainObject
 	 * a person or a usergroup, never both.
 	 *
 	 * @var Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
@@ -90,7 +81,6 @@ class Permission extends \Application\DeskPRO\Domain\DomainObject
 	 * Any numeric number (ex filesize, flag)
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="value", type="text", nullable=true)
 	 */
 	protected $value = null;
 
@@ -155,4 +145,3 @@ class Permission extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

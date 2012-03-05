@@ -43,8 +43,6 @@ use Application\DeskPRO\App;
 /**
  * Deal entity definition
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Deal")
- * @ORM_Mapping\Table(name="deals")
  */
 
 class Deal extends \Application\DeskPRO\Domain\DomainObject
@@ -84,9 +82,6 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
      * The unique ID
      *
      * @var int
-     * @ORM_Mapping\Id
-     * @ORM_Mapping\generatedValue(strategy="IDENTITY")
-     * @ORM_Mapping\Column(name="id", type="integer")
      *
      */
     protected $id = null;
@@ -94,23 +89,18 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
     /**
      
      * @var strint
-     * @ORM_Mapping\Column(name="title", type="string")
      */
     protected $title;
 
     /**
      * Deal type
      *
-     * @ORM_Mapping\ManyToOne(targetEntity="DealType")
-     * @ORM_Mapping\JoinColumn(name="deal_type_id", referencedColumnName="id", onDelete="set null")
      */
     protected $deal_type;
 
     /**
      * Deal type
      *
-     * @ORM_Mapping\ManyToOne(targetEntity="DealStage")
-     * @ORM_Mapping\JoinColumn(name="deal_stage_id", referencedColumnName="id", onDelete="set null")
      */
     protected $deal_stage;
 
@@ -119,7 +109,6 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
      * self::DEAL_WON or self::DEAL_LOST.
      *
      * @var int
-     * @ORM_Mapping\Column(name="status", type="integer")
      */
     protected $status = 0;
 
@@ -127,15 +116,11 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
      * 
      *
      * @var Application\DeskPRO\Entity\Person
-     * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="deal")
-     * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
      */
     protected $person;
 
     /**
      * @var Application\DeskPRO\Entity\Person
-     * @ORM_Mapping\ManyToOne(targetEntity="Person")
-     * @ORM_Mapping\JoinColumn(name="assigned_agent_id", referencedColumnName="id", nullable=true, onDelete="set null")
      */
     protected $assigned_agent;
 
@@ -143,7 +128,6 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
      * The deal probability
      *
      * @var float
-     * @ORM_Mapping\Column(name="probability", type="float")
      */
     protected $probability = 0.0;
 
@@ -151,25 +135,20 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
      * The deal value
      *
      * @var float
-     * @ORM_Mapping\Column(name="deal_value", type="float")
      */
     protected $deal_value = 0.0;
 
     /**
      * Deal Currency type
      *
-     * @ORM_Mapping\ManyToOne(targetEntity="Currency" , cascade={"persist", "remove", "merge"})
-     * @ORM_Mapping\JoinColumn(name="currency_id", referencedColumnName="id", onDelete="set null")
      */
     protected $deal_currency = null;
 
     /**
-     * @ORM_Mapping\OneToMany(targetEntity="LabelDeal", mappedBy="deal", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
      */
     protected $labels;
 
     /**
-     * @ORM_Mapping\OneToMany(targetEntity="DealMapper", mappedBy="deal", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
      */
     protected $deal_mapper;
 
@@ -177,10 +156,6 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
      * Deal Linked to Relevent peoples.
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
-     * @ORM_Mapping\ManyToMany(targetEntity="Person", fetch="EAGER", indexBy="id", cascade={"persist", "remove", "merge"})
-     * @ORM_Mapping\JoinTable(name="deal_people",
-     *      joinColumns={@ORM_Mapping\JoinColumn(name="deal_id", referencedColumnName="id", onDelete="cascade")},
-     *      inverseJoinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")}
      * )
      */
     protected $peoples;
@@ -189,10 +164,6 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
      * Deal Linked to Relevent organization.
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
-     * @ORM_Mapping\ManyToMany(targetEntity="Organization", fetch="EAGER", indexBy="id", cascade={"persist", "remove", "merge"})
-     * @ORM_Mapping\JoinTable(name="deal_organizations",
-     *      joinColumns={@ORM_Mapping\JoinColumn(name="deal_id", referencedColumnName="id", onDelete="cascade")},
-     *      inverseJoinColumns={@ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")}
      * )
      */
     protected $organizations;
@@ -202,13 +173,11 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
      * or self::PUBLIC_VISIBILITY.
      *
      * @var int
-     * @ORM_Mapping\Column(name="visibility", type="integer")
      */
     protected $visibility = 0;
 
     /**
      * @var \DateTime
-     * @ORM_Mapping\Column(name="date_created",type="datetime")
      */
     protected $date_created;    
 
@@ -220,12 +189,10 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
     protected $_label_manager = null;
 
     /**
-     * @ORM_Mapping\OneToMany(targetEntity="DealAttachment", mappedBy="deal", cascade={"persist", "remove", "merge"})
      */
     protected $attachments;
 
     /**
-     * @ORM_Mapping\OneToMany(targetEntity="CustomDataDeal", mappedBy="deal", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
      */
     protected $custom_data;
 
@@ -637,4 +604,3 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataDeal', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'deal', 'orphanRemoval' => true, ));
 	}
 }
-

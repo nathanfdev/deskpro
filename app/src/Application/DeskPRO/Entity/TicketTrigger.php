@@ -43,9 +43,6 @@ use Orb\Util\Dates;
 /**
  * Ticket triggers
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketTrigger")
- * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="ticket_triggers")
  */
 class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -60,20 +57,16 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="event_trigger", type="string", length=50)
 	 */
 	protected $event_trigger;
 
@@ -83,25 +76,21 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 * For example: 12 days
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="event_trigger_option", type="string", length=255)
 	 */
 	protected $event_trigger_option = '';
 
 	/**
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = true;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="terms", type="array")
 	 */
 	protected $terms = array();
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="actions", type="array")
 	 */
 	protected $actions = array();
 
@@ -110,13 +99,11 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 * Used prefixes: "urgency." for urgency-type triggers.
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="sys_name", type="string", length=50, nullable=true)
 	 */
 	protected $sys_name = null;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="run_order", type="integer")
 	 */
 	protected $run_order = 0;
 
@@ -296,7 +283,6 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * @ORM_Mapping\PostRemove
 	 */
 	public function _removeAssocPlugins()
 	{
@@ -416,4 +402,3 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
-

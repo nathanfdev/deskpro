@@ -47,8 +47,6 @@ use Orb\Util\Numbers;
 /**
  * Maps known company domains to their company objects
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\OrganizationEmailDomain")
- * @ORM_Mapping\Table(name="organization_email_domains")
  */
 class OrganizationEmailDomain extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -56,8 +54,6 @@ class OrganizationEmailDomain extends \Application\DeskPRO\Domain\DomainObject
 	 * The email domain
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\Column(name="domain", type="string", length=255)
 	 *
 	 */
 	protected $domain = null;
@@ -66,8 +62,6 @@ class OrganizationEmailDomain extends \Application\DeskPRO\Domain\DomainObject
 	 * The users organization
 	 *
 	 * @var \Application\DeskPRO\Entity\Organization
-	 * @ORM_Mapping\ManyToOne(targetEntity="Organization")
-	 * @ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $organization = null;
 
@@ -92,4 +86,3 @@ class OrganizationEmailDomain extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

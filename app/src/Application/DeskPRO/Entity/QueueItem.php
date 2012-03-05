@@ -49,9 +49,6 @@ use Orb\Util\Arrays;
  * in the task. So instead, we simply store the QueueItem ID and the task
  * worker can fetch the data when it processes the task.
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="queue_items")
  */
 class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -59,7 +56,6 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 *
 	 */
 	protected $id = null;
@@ -70,7 +66,6 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * In beanstalkd terminology: tube
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="groupname", type="string", length=255, nullable=true)
 	 */
 	protected $groupname;
 
@@ -78,7 +73,6 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * The priority of this job
 	 *
 	 * @var int
-	 * @ORM_Mapping\Column(name="priority", type="integer")
 	 */
 	protected $priority = 0;
 
@@ -86,7 +80,6 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * Don't process this item until this date.
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="delay_until",type="datetime",nullable=true)
 	 */
 	protected $delay_until = null;
 
@@ -98,7 +91,6 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * The minimum value is 1.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Column(name="ttr", type="integer")
 	 */
 	protected $ttr = 60;
 
@@ -106,7 +98,6 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * When this is true, the job is ready to be reserved.
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_ready", type="boolean")
 	 */
 	protected $is_ready = true;
 
@@ -115,7 +106,6 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * alongside other queue systems that are using this as a store for data.
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_dataonly", type="boolean")
 	 */
 	protected $is_dataonly = false;
 
@@ -126,7 +116,6 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * In beanstalkd terminology: buried
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_ignored", type="boolean")
 	 */
 	protected $is_ignored = false;
 
@@ -136,7 +125,6 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * should use this job.
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="reserved_at",type="datetime",nullable=true)
 	 */
 	protected $reserved_at = null;
 
@@ -145,7 +133,6 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * That is, $reserved_at+$ttr
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="timeout_at",type="datetime",nullable=true)
 	 */
 	protected $timeout_at = null;
 
@@ -153,14 +140,12 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * When this job was created.
 	 *
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="created_at",type="datetime")
 	 */
 	protected $created_at = null;
 
 	/**
 	 * Any data pertaining to the job
 	 * @var string
-	 * @ORM_Mapping\Column(name="data", type="array", nullable=true)
 	 */
 	protected $data = array();
 
@@ -195,4 +180,3 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
-

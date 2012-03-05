@@ -40,9 +40,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Labels on tickets
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="labels_news")
  */
 class LabelNews extends LabelAssocAbstract
 {
@@ -50,9 +47,6 @@ class LabelNews extends LabelAssocAbstract
 
 	/**
 	 * @var \Application\DeskPRO\Entity\News
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\ManyToOne(targetEntity="News")
-	 * @ORM_Mapping\JoinColumn(name="news_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $news;
 
@@ -71,4 +65,3 @@ class LabelNews extends LabelAssocAbstract
 		$metadata->mapOneToOne(array( 'fieldName' => 'news', 'targetEntity' => 'Application\\DeskPRO\\Entity\\News', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'news_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

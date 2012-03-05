@@ -42,21 +42,16 @@ use Application\DeskPRO\App;
 /**
  * Stores who has access to departments
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\DepartmentPermission")
- * @ORM_Mapping\Table(name="department_permissions")
  */
 class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Department
-	 * @ORM_Mapping\ManyToOne(targetEntity="Department")
-	 * @ORM_Mapping\JoinColumn(name="department_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $department = null;
 
@@ -64,8 +59,6 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
 	 * The connected usergroup. If this is set, then person cannot be set.
 	 *
 	 * @var \Application\DeskPRO\Entity\Department
-	 * @ORM_Mapping\ManyToOne(targetEntity="Usergroup")
-	 * @ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $usergroup = null;
 
@@ -73,13 +66,10 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
 	 * The connected person. If this is set, then usergroup cannot be set.
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 
 	/**
-	 * @ORM_Mapping\Column(name="app", type="string", length=50)
 	 */
 	protected $app;
 
@@ -122,4 +112,3 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

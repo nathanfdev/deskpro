@@ -52,9 +52,6 @@ use Orb\Util\Arrays;
  * new content generally creates new Person records, we want to make sure each validating content
  * is attached to a single person and not many records.
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\PersonEmailValidating")
- * @ORM_Mapping\HasLifecycleCallbacks
- * @ORM_Mapping\Table(name="people_emails_validating")
  */
 class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -62,15 +59,12 @@ class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 *
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="emails")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
@@ -78,19 +72,16 @@ class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
 	 * The email address
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="email", type="string", length=255)
 	 */
 	protected $email;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="auth", type="string", length=20)
 	 */
 	protected $auth;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -99,7 +90,6 @@ class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
 	 * of content that is validating based on this email address.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="validating_content", type="array")
 	 */
 	protected $validating_content = array();
 
@@ -144,4 +134,3 @@ class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'emails', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

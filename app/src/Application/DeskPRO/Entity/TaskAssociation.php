@@ -41,17 +41,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * Base class for Task Associations.
- *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\InheritanceType("SINGLE_TABLE")
- * @ORM_Mapping\DiscriminatorColumn(name="discr", type="string")
- * @ORM_Mapping\DiscriminatorMap({
- * 	"person" = "TaskAssociatedPerson",
- * 	"ticket" = "TaskAssociatedTicket",
- *      "organization" = "TaskAssociatedOrganization",
- *      "deal" = "TaskAssociatedDeal"
- * })
- * @ORM_Mapping\Table(name="task_associations")
  */
 abstract class TaskAssociation extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -60,17 +49,12 @@ abstract class TaskAssociation extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\generatedValue(strategy="IDENTITY")
-	 * @ORM_Mapping\Column(name="id", type="integer", nullable=false)
 	 *
 	 */
 	protected $id;
 
 	/**
 	 * @var Application\DeskPRO\Entity\Task
-	 * @ORM_Mapping\ManyToOne(targetEntity="Task", inversedBy="task_associations")
-	 * @ORM_Mapping\JoinColumn(name="task_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $task;
 
@@ -97,4 +81,3 @@ abstract class TaskAssociation extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'task', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Task', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'task_associations', 'joinColumns' => array( 0 => array( 'name' => 'task_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

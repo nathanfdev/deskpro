@@ -47,55 +47,44 @@ use Orb\Util\Util;
 /**
  * Basic hierarchicial category entity
  *
- * @ORM_Mapping\MappedSuperclass
  */
 class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
 
 	// IMPLEMENT IN CHILDREN : Limitation of doctrine mapping, you have to map these with the correct targets
 	///**
-	// * @ORM_Mapping\ManyToOne(targetEntity="CategoryAbstract", inversedBy="children")
 	// */
 	//protected $parent;
 	//
 	///**
-	// * @ORM_Mapping\OneToMany(targetEntity="CategoryAbstract", mappedBy="parent")
-	// * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	// */
 	//protected $children;
 
 	// IMPLEMENT IN CHILDREN (optional)
 	///**
 	// * @var Doctrine\Common\Collections\ArrayCollection
-	// * @ORM_Mapping\ManyToMany(targetEntity="Usergroup", cascade={"persist", "remove", "merge"})
-    // * @ORM_Mapping\JoinTable(name="xxx2usergroup", joinColumns={@ORM_Mapping\JoinColumn(name="category_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")})
 	// */
 	//protected $usergroups;
 
 	/**
-	 * @ORM_Mapping\Column(name="depth", type="integer")
 	 */
 	protected $depth = 0;
 
 	/**
-	 * @ORM_Mapping\Column(name="root", type="integer", nullable=true)
 	 */
 	protected $root;
 
@@ -302,4 +291,3 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 	}
 }
-

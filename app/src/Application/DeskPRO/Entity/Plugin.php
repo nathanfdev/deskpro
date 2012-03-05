@@ -42,8 +42,6 @@ use Orb\Util\Arrays;
 /**
  * A plugin is a group of event listeners and other resources.
  *
- * @ORM_Mapping\Entity
- * @ORM_Mapping\Table(name="plugins")
  */
 class Plugin extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -51,26 +49,21 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\Column(name="id", type="string", length=255)
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="description", type="text")
 	 */
 	protected $description;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="version", type="string", length=100)
 	 */
 	protected $version;
 	
@@ -79,7 +72,6 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 	 * install/uninstall etc.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="package_class", type="string", length=255)
 	 */
 	protected $package_class = null;
 
@@ -87,7 +79,6 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 	 * The file of the package class
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="package_class_file", type="string", length=255)
 	 */
 	protected $package_class_file = null;
 
@@ -95,13 +86,11 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 	 * The path where this plugins Resources directory can be found
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="resources_path", type="string", length=255)
 	 */
 	protected $resources_path = null;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="PluginListener", mappedBy="plugin", cascade={"persist", "remove", "merge"})
 	 */
 	protected $listeners;
 
@@ -110,13 +99,11 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 	 * This is just a cache version from PluginPackage
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="autoload_paths", type="array")
 	 */
 	protected $autoload_paths = null;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -161,4 +148,3 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToMany(array( 'fieldName' => 'listeners', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PluginListener', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'plugin', 'orphanRemoval' => false, ));
 	}
 }
-

@@ -46,17 +46,12 @@ use Orb\Util\Arrays;
  * Every person can have various data or preferences associated with their account.
  * These are just key value pairs basically.
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\PersonPref")
- * @ORM_Mapping\Table(name="people_prefs")
  */
 class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 {
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="preferences")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
@@ -64,8 +59,6 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 	 * The name of the pref
 	 *
 	 * @var string
-	 * @ORM_Mapping\Id
-	 * @ORM_Mapping\Column(name="name", type="string", length=255)
 	 */
 	protected $name;
 
@@ -73,7 +66,6 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 	 * String value
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="value_str", type="text", nullable=true)
 	 */
 	protected $value_str = null;
 
@@ -81,13 +73,11 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 	 * Array value
 	 *
 	 * @var array
-	 * @ORM_Mapping\Column(name="value_array", type="array", nullable=true)
 	 */
 	protected $value_array = null;
 
 	/**
 	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_expire",type="datetime", nullable=true)
 	 */
 	protected $date_expire = null;
 
@@ -229,4 +219,3 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'preferences', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-

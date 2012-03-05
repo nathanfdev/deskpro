@@ -40,8 +40,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Feedback status types for accepted/declined statuses
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\FeedbackStatusCategory")
- * @ORM_Mapping\Table(name="feedback_status_categories")
  */
 class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -50,25 +48,21 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="status_type", type="string", length=255)
 	 */
 	protected $status_type;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var int
-	 * @ORM_Mapping\Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
 
@@ -96,4 +90,3 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }
-

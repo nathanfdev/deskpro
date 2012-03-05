@@ -45,7 +45,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * Actual scrapers are also responsible for how to store any scraped data (hence there is no
  * use in an abstract ScraperData class).
  *
- * @ORM_Mapping\MappedSuperclass
  */
 abstract class Scraper
 {
@@ -53,7 +52,6 @@ abstract class Scraper
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 * 
 	 */
 	protected $id;
@@ -63,7 +61,6 @@ abstract class Scraper
 	 * creating all the resources needed for a scraper to do its job.
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="handler_class", type="string", length=255)
 	 */
 	protected $handler_class;
 
@@ -71,7 +68,6 @@ abstract class Scraper
 	 * Options we'll pass to the handler
 	 *
 	 * @var array
-	 * @ORM_Mapping\Column(name="options", type="array")
 	 */
 	protected $options = array();
 
@@ -79,7 +75,6 @@ abstract class Scraper
 	 * True if this scraper is enabled
 	 *
 	 * @var bool
-	 * @ORM_Mapping\Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = true;
 
@@ -102,4 +97,3 @@ abstract class Scraper
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 	}
 }
-

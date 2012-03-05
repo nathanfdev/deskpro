@@ -40,26 +40,20 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Article revisions
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ArticleRevision")
- * @ORM_Mapping\Table(name="article_revisions")
  */
 class ArticleRevision extends RevisionAbstract
 {
 	/**
-	 * @ORM_Mapping\ManyToOne(targetEntity="Article")
-	 * @ORM_Mapping\JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $article;
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string")
 	 */
 	protected $title = '';
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="content", type="text")
 	 */
 	protected $content = '';
 
@@ -85,4 +79,3 @@ class ArticleRevision extends RevisionAbstract
 		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
 	}
 }
-
