@@ -126,6 +126,11 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 			$this->getEm()->persist($new_cat);
 			$this->getEm()->flush();
 
+			$this->getDb()->insert('feedback_category2usergroup', array(
+				'category_id' => $new_cat->id,
+				'usergroup_id' => 1
+			));
+
 			$this->saveMappedId('feedback_cat', $cat['id'], $new_cat->id);
 
 			// Process any subcats
