@@ -12,17 +12,17 @@
 	'doctrine' => array(
 		'into' => DP_ROOT.'/vendor/doctrine',
 		'repos' => 'git://github.com/doctrine/doctrine2.git',
-		'version' => '2.2.0',
+		'version' => '2.2.1',
 	),
 	'doctrine_common' => array(
 		'into' => DP_ROOT.'/vendor/doctrine-common',
 		'repos' => 'git://github.com/doctrine/common.git',
-		'version' => '2.2.0',
+		'version' => '2.2.1',
 	),
 	'doctrine_dbal' => array(
 		'into' => DP_ROOT.'/vendor/doctrine-dbal',
 		'repos' => 'git://github.com/doctrine/dbal.git',
-		'version' => '2.2.0',
+		'version' => '2.2.1',
 	),
 	'facebook' => array(
 		'into' => DP_ROOT.'/vendor/facebook',
