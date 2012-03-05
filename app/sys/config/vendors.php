@@ -67,7 +67,7 @@
 	'symfony' => array(
 		'into' => DP_ROOT.'/vendor/symfony',
 		'repos' => 'git://github.com/symfony/symfony.git',
-		'version' => 'v2.0.10',
+		'version' => 'v2.0.11',
 	),
 	'twig' => array(
 		'into' => DP_ROOT.'/vendor/twig',
