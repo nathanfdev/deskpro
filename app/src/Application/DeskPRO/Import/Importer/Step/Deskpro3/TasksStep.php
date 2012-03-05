@@ -41,8 +41,107 @@ class TasksStep extends AbstractDeskpro3Step
 		return 'Import Calendar Tasks';
 	}
 
+	public static function countPages()
+	{
+		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM calendar_task");
+		if (!$count) {
+			return 1;
+		}
+
+		return ceild($count / 500);
+	}
+
 	public function run($page = 1)
 	{
+		$start = ($page - 1) * 500;
+		$batch = $this->getOldDb()->fetchAll("SELECT * FROM calendar_task ORDER BY id ASC LIMIT $start, 500");
 
+		$this->getDb()->beginTransaction();
+		try {
+			foreach ($batch as $t) {
+				if ($t['repeattype']) {
+					$this->processRepeatingTask($t);
+				} else {
+					$this->processTask($t);
+				}
+			}
+			$this->getDb()->commit();
+		} catch (\Exception $e) {
+			$this->getDb()->rollback();
+			throw $e;
+		}
+	}
+
+	/**
+	 * @param array $task_info
+	 */
+	protected function processTask($task_info)
+	{
+		$by_agent_id = $this->getMappedNewId('tech', $task_info['techmaker']);
+		if (!$by_agent_id) {
+			return;
+		}
+
+		$insert_task_tpl = array();
+		$insert_task_tpl['person_id']          = $by_agent_id;
+		$insert_task_tpl['title']              = $task_info['title'] . " " . strip_tags($task_info['description']);
+		$insert_task_tpl['date_created']       = date('Y-m-d H:i:s', $task_info['startstamp']);
+
+		$assignments = $this->getDb()->fetchAll("
+			SELECT * FROM calendar_task_tech
+			WHERE taskid = ?
+			ORDER BY id ASC
+		", $task_info['id']);
+
+		foreach ($assignments as $as) {
+			$assigned_agent_id = $this->getMappedNewId('tech', $as['techid']);
+			if (!$assigned_agent_id) {
+				continue;
+			}
+
+			$insert_task = $insert_task_tpl;
+			$insert_task['assigned_agent_id'] = $assigned_agent_id;
+			if ($as['completed']) {
+				$insert_task['is_completed']    = 1;
+				$insert_task['date_completed']  = date('Y-m-d H:i:s', $task_info['timestamp'] + 1);
+			}
+
+			$this->getDb()->insert('tasks', $insert_task);
+		}
+	}
+
+	/**
+	 * @param array $task_info
+	 */
+	protected function processRepeatingTask($task_info)
+	{
+		$by_agent_id = $this->getMappedNewId('tech', $task_info['techmaker']);
+		if (!$by_agent_id) {
+			return;
+		}
+
+		$iterations = $this->getDb()->fetchAll("
+			SELECT * FROM calendar_task_iteration
+			WHERE taskid = ?
+			ORDER BY timestamp ASC
+		", array($task_info['id']));
+
+		foreach ($iterations as $it) {
+
+			$assigned_agent_id = $this->getMappedNewId('tech', $it['task_techid']);
+			if (!$assigned_agent_id) {
+				continue;
+			}
+
+			$insert_task = array();
+			$insert_task['person_id']          = $by_agent_id;
+			$insert_task['assigned_agent_id']  = $assigned_agent_id;
+			$insert_task['is_completed']       = 1;
+			$insert_task['title']              = $task_info['title'] . " " . strip_tags($task_info['description']);
+			$insert_task['date_created']       = date('Y-m-d H:i:s', $task_info['startstamp']);
+			$insert_task['date_completed']     = date('Y-m-d H:i:s', $it['timestamp']);
+
+			$this->getDb()->insert('tasks', $insert_task);
+		}
 	}
 }

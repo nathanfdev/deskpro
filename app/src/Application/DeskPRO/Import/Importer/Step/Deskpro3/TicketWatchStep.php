@@ -34,59 +34,65 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Application\DeskPRO\Entity\EmailGateway;
-use Application\DeskPRO\Entity\EmailGatewayAddress;
-
-class SaveDataMiscStep extends AbstractDeskpro3Step
+class TicketWatchStep extends AbstractDeskpro3Step
 {
-	protected $tables = array(
-		'faq_cats_related',
-		'faq_subscriptions',
-		'user_plans',
-		'payment_gateways',
-		'billing_rules',
-		'billing_credit_bundles',
-		'manual_manual_styles',
-		'manual_manuals_perms',
-		'manual_manuals',
-		'ticket_fielddisplay',
-		'gateway_spam',
-		'calendar_def',
-	);
-
 	public static function getTitle()
 	{
-		return 'Save Data: Misc';
+		return 'Import Ticket Watches';
 	}
 
-	public function countPages()
+	public static function countPages()
 	{
-		return count($this->tables);
+		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM tech_ticket_watch");
+		if (!$count) {
+			return 1;
+		}
+
+		return ceild($count / 500);
 	}
 
 	public function run($page = 1)
 	{
-		$table = $this->tables[$page];
-
-		if (!$this->importer->doesOldTableExist($table)) {
-			return;
-		}
+		$start = ($page - 1) * 500;
+		$batch = $this->getOldDb()->fetchAll("SELECT * FROM tech_ticket_watch ORDER BY id ASC LIMIT $start, 500");
 
 		$this->getDb()->beginTransaction();
-
 		try {
-			$data = $this->getOldDb()->fetchColumn("SELECT * FROM $table");
-			foreach ($data as $r) {
-				$this->getDb()->insert('import_datastore', array(
-					'typename' => "table_{$table}",
-					'data' => serialize($r)
-				));
+			foreach ($batch as $w) {
+				$this->processWatch($w);
 			}
 			$this->getDb()->commit();
-
 		} catch (\Exception $e) {
 			$this->getDb()->rollback();
 			throw $e;
 		}
+	}
+
+	/**
+	 * @param array $task_info
+	 */
+	protected function processWatch($watch_info)
+	{
+		$agent_id = $this->getMappedNewId('tech', $watch_info['techid']);
+		if (!$agent_id) {
+			return;
+		}
+
+		$ticket_id = $this->getMappedNewId('ticket', $watch_info['ticketid']);
+		if (!$ticket_id) {
+			return;
+		}
+
+		$insert_taskl = array();
+		$insert_taskl['title']             = "Ticket Watch on {$ticket_id}";
+		$insert_taskl['person_id']         = $agent_id;
+		$insert_taskl['assigned_agent_id'] = $agent_id;
+		$insert_taskl['date_created']      = date('Y-m-d H:i:s', $task_info['timestamp_created']);
+		if ($watch_info['completed']) {
+			$insert_task['is_completed']   = 1;
+			$insert_task['date_completed'] = date('Y-m-d H:i:s', $watch_info['timestamp_complete'] + 1);
+		}
+
+		$this->getDb()->insert('tasks', $insert_task);
 	}
 }
