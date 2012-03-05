@@ -65,6 +65,11 @@ class UserNewsStep extends AbstractDeskpro3Step
 			$this->category->title = "General";
 			$this->getEm()->persist($this->category);
 			$this->getEm()->flush();
+
+			$this->getDb()->insert('news_category2usergroup', array(
+				'category_id' => $this->category->id,
+				'usergroup_id' => 1
+			));
 		}
 
 		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM news");
