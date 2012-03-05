@@ -5,8 +5,12 @@
 			<th width="20" class="check-all check" width="5" valign="middle" style="vertical-align: middle;"><input type="checkbox" class="check-all-box selection-control" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/></th>
 		{% endif %}
 		#}
-		<th width="20%">Name</th>
-		{% set perc = (80 / display_fields|length) %}
+		<th width="30%">Name</th>
+		{% if display_fields %}
+			{% set perc = (70 / display_fields|length) %}
+		{% else %}
+			{% set perc = 70 %}
+		{% endif %}
 		{% for field in display_fields %}
 			{% if field == 'email_address' %}<th width="{{perc}}%" data-field="email_address">Email Address</th>
 			{% elseif field == 'organization' %}<th width="{{perc}}%" data-field="organization">Organization</th>

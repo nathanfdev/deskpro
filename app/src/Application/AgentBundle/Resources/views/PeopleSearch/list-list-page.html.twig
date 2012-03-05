@@ -13,7 +13,11 @@
 		</td>
 		#}
 		<td class="subject">
-			<a class="subject-link"><span>{{person.display_name}}</span></a>
+			<a class="subject-link">
+				<a class="name click-through"><span class="person-name-picture" style="background-image: url({{ person.getPictureUrl(15) }})">{{ person.display_name }}</span></a>
+				{% if person.email_address %}<span class="person-email">&lt;{{ person.email_address }}&gt;</span>{% endif %}
+				{% if person.organization %}<span class="person-org" data-route="org:{{ path('agent_org_view', {organization_id: person.organization.id})}}">{% if person.organization_position %}{{ person.organization_position }}, {% endif %}{{ person.organization.name }}{% endif %}</span>
+			</a>
 		</td>
 		{% for field in display_fields %}
 			{% if field == 'email_address' %}

@@ -26,14 +26,28 @@ pageMeta.baseId = '{{ baseId }}';
 <section class="dp-overlay">
 	<header>
 		<div class="controls">
-			<button class="order-by-menu-trigger clean-white arrow menu-fitted">{{ phrase('agent.ordered_by') }} <span class="label">{{ order_by_summary|default('Date Created') }}</span><em></em></button>
+			<button class="order-by-menu-trigger clean-white arrow menu-fitted">{{ phrase('agent.ordered_by') }}: <span class="label">{% if 'name' in cache.criteria.order_by %}
+						Name
+					{% elseif 'date_last_login' in cache.criteria.order_by %}
+						Last Login Time
+					{% elseif 'organization' in cache.criteria.order_by %}
+						Last Login Time
+					{% elseif 'num_tickets' in cache.criteria.order_by %}
+						Number of Tickets
+					{% else %}
+						{{ phrase('agent.date_created') }}
+					{% endif %}
+				</span><em></em>
+			</button>
 			<button class="display-options-trigger clean-white menu-fitted">{{ phrase('agent.display_options') }}</button>
 		</div>
 
 		<ul style="display: none" class="order-by-menu">
-			<li data-order-by="urgency">{{ phrase('agent.urgency') }}</li>
-			<li data-order-by="date_created">{{ phrase('agent.date_opened') }}</li>
-			<li data-order-by="priority">{{ phrase('agent.priority') }}</li>
+			<li data-order-by="people_name">Name</li>
+			<li data-order-by="date_created">{{ phrase('agent.date_created') }}</li>
+			<li data-order-by="last_login">Last Login Time</li>
+			<li data-order-by="org">Organization</li>
+			<li data-order-by="num_tickets">Number of Tickets</li>
 		</ul>
 
 		<span class="close close-trigger"></span>

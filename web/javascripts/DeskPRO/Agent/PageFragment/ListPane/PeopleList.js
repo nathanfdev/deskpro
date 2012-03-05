@@ -32,11 +32,13 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
 			prefId: 'people-filter',
 			resultId: this.resultId,
-			refreshUrl: this.meta.refreshUrl
+			refreshUrl: this.meta.refreshUrl,
+			isListView: (this.meta.viewType == 'list' ? true : false)
 		});
 		this.ownObject(this.displayOptions);
 
 		// Sorting options
+
 		var sortMenuBtn = $('.order-by-menu-trigger', this.wrapper).first();
 		this.sortingMenu = new DeskPRO.UI.Menu({
 			triggerElement: sortMenuBtn,
