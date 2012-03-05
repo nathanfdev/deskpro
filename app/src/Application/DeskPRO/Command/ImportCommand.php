@@ -264,7 +264,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			}
 
 			$schema = null;
-			if (file_exists(DP_ROOT.'/src/Application/InstallBundle/Data/schema.php')) {
+			if (!DP_DEBUG && file_exists(DP_ROOT.'/src/Application/InstallBundle/Data/schema.php')) {
 				$schema = require DP_ROOT.'/src/Application/InstallBundle/Data/schema.php';
 			}
 			$install_schema = new \Application\InstallBundle\Install\InstallSchema($db, $schema, DP_BUILD_TIME);
