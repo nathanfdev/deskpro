@@ -166,6 +166,34 @@ class KbStep extends AbstractDeskpro3Step
 		$this->getEm()->flush();
 
 		#------------------------------
+		# Import ratings
+		#------------------------------
+
+		$ratings = $this->getDb()->fetchAll("SELECT * FROM faq_rating WHERE faqid = ?", array($article['id']));
+		foreach ($ratings as $r) {
+
+			if (!$r['timestamp']) $r['timestamp'] = time();
+
+			$insert_rating = array();
+			$insert_rating['object_type']  = 'article';
+			$insert_rating['object_id']    = $new_article->id;
+			$insert_rating['ip_address']   = $r['ip_address'];
+			$insert_rating['date_created'] = date('Y-m-d H:i:s', $r['timestamp']);
+
+			if ($r['rating'] == '60' || $r['rating'] == '40') {
+				continue;
+			}
+
+			if ($r['rating'] == '100' || $r['rating'] == '80') {
+				$insert_rating['rating'] = 1;
+			} else {
+				$insert_rating['rating'] = -1;
+			}
+
+			$this->getDb()->insert('ratings', $insert_rating);
+		}
+
+		#------------------------------
 		# Comments
 		#------------------------------
 
