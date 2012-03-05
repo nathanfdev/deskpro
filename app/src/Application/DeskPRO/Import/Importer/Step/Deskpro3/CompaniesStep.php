@@ -39,6 +39,11 @@ use Application\DeskPRO\Entity\OrganizationEmailDomain;
 
 class CompaniesStep extends AbstractDeskpro3Step
 {
+	/**
+	 * @var array
+	 */
+	protected $custom_field_info = array();
+
 	public static function getTitle()
 	{
 		return 'Import Companies';
@@ -52,6 +57,10 @@ class CompaniesStep extends AbstractDeskpro3Step
 		if (!$count) {
 			return;
 		}
+
+		$this->custom_field_info = $this->getOldDb()->fetchAll("SELECT * FROM user_company_def");
+		$this->fieldmanager = $this->getContainer()->getSystemService('org_fields_manager');
+		$this->fieldmanager->getFields();
 
 		$start_time = microtime(true);
 
@@ -117,6 +126,60 @@ class CompaniesStep extends AbstractDeskpro3Step
 					$this->getEm()->persist($org_email_domain);
 				}
 				$this->getEm()->flush();
+			}
+
+			//---
+			// Custom fields
+			//---
+
+			foreach ($this->custom_field_info as $field_info) {
+				$name = $field_info['name'];
+				if (!isset($company_info[$name]) || !$company_info[$name]) {
+					continue;
+				}
+
+				$field = $this->fieldmanager->getFieldFromId($this->getMappedNewId('org_def', $field_info['id']));
+				if (!$field) {
+					continue;
+				}
+
+				$data = null;
+				switch ($field->handler_class) {
+					case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
+					case 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea':
+						$this->getDb()->insert('custom_data_organizations', array(
+							'organization_id' => $org['id'],
+							'field_id' => $field->id,
+							'input' => $company_info[$name]
+						));
+						break;
+
+					case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
+						$val = str_replace('|||', '', $company_info[$name]);
+						$new_val = $this->getMappedNewId('org_def_choice', $val);
+						if ($new_val) {
+							$this->getDb()->insert('custom_data_organizations', array(
+								'organization_id' => $org['id'],
+								'field_id' => $new_val,
+								'value' => 1
+							));
+						}
+						break;
+
+					case 'Application\\DeskPRO\\CustomFields\\Handler\\ChoiceMulti':
+						$vals = explode('|||', $company_info[$name]);
+						foreach ($vals as $val) {
+							$new_val = $this->getMappedNewId('org_def_choice', $val);
+							if ($new_val) {
+								$this->getDb()->insert('custom_data_organizations', array(
+									'organization_id' => $org['id'],
+									'field_id' => $new_val,
+									'value' => 1
+								));
+							}
+						}
+						break;
+				}
 			}
 
 			$this->getDb()->commit();

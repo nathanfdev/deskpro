@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\PersonEmail;
 class UsersStep extends AbstractDeskpro3Step
 {
 	const PERPAGE = 1000;
+
 	/**
 	 * @var array
 	 */
