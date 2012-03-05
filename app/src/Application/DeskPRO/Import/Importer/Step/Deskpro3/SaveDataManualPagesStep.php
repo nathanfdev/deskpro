@@ -36,7 +36,7 @@ namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 class SaveDataManualPagesStep extends SaveDataTableAbstractStep
 {
-	public function getTable()
+	public static function getTable()
 	{
 		return 'manual_pages';
 	}

@@ -61,7 +61,7 @@ class TicketMergeStep extends AbstractDeskpro3Step
 		$start = ($page - 1) * 1000;
 		$batch = $this->getOldDb()->fetchAll("
 			SELECT * FROM ticket_merge
-			ORDER BY id ASC
+			ORDER BY old_id ASC
 			LIMIT $start, 1000
 		");
 

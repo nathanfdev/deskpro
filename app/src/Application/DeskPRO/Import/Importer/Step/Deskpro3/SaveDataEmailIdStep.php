@@ -34,61 +34,10 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-class TicketDeleteLogStep extends AbstractDeskpro3Step
+class SaveDataEmailIdStep extends SaveDataTableAbstractStep
 {
-	/**
-	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer
-	 */
-	protected $importer;
-
-	public static function getTitle()
+	public static function getTable()
 	{
-		return 'Import Ticket Delete Logs';
-	}
-
-	public function countPages()
-	{
-		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM ticket_delete_log");
-		if (!$count) {
-			return 1;
-		}
-
-		return ceil($count / 1000);
-	}
-
-	public function run($page = 1)
-	{
-		$start = ($page - 1) * 1000;
-		$batch = $this->getOldDb()->fetchAll("
-			SELECT * FROM ticket_delete_log
-			ORDER BY id ASC
-			LIMIT $start, 1000
-		");
-
-		$this->getDb()->beginTransaction();
-		try {
-			foreach ($batch as $l) {
-				$this->processDeleteLog($l);
-			}
-			$this->getDb()->commit();
-		} catch (\Exception $e) {
-			$this->getDb()->rollback();
-			throw $e;
-		}
-	}
-
-	public function processDeleteLog(array $delete_log)
-	{
-		$by_agent = $this->getMappedNewId('tech', $delete_log['techid']);
-		if (!$by_agent) {
-			return;
-		}
-
-		$this->getDb()->replace('tickets_deleted', array(
-			'ticket_id' => $delete_log['ticketid'],
-			'by_person_id' => $by_agent,
-			'reason' => $delete_log['subject'],
-			'date_created' => date('Y-m-d H:i:s', $delete_log['timestamp'])
-		));
+		return 'gateway_email_uid';
 	}
 }

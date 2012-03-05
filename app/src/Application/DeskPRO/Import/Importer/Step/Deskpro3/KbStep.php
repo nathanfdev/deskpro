@@ -185,7 +185,7 @@ class KbStep extends AbstractDeskpro3Step
 			}
 
 			$insert_attach = array();
-			$insert_attach['article_id'] = $insert_ticket['id'];
+			$insert_attach['article_id'] = $new_article->id;
 			$insert_attach['person_id'] = $pid;
 			$insert_attach['blob_id'] = $blob_id;
 
@@ -197,7 +197,7 @@ class KbStep extends AbstractDeskpro3Step
 		# Images
 		#------------------------------
 
-		$attachments = $this->getOldDb()->fetchAll("SELECT * FROM images WHERE content_type = ? AND content_id", array('faq_article', $article['id']));
+		$attachments = $this->getOldDb()->fetchAll("SELECT * FROM images WHERE content_type = ? AND content_id = ?", array('faq_article', $article['id']));
 
 		$article_updated = true;
 		foreach ($attachments as $attach_info) {
@@ -208,13 +208,13 @@ class KbStep extends AbstractDeskpro3Step
 
 			$article_updated = true;
 			$insert_attach = array();
-			$insert_attach['article_id'] = $insert_ticket['id'];
+			$insert_attach['article_id'] = $new_article->id;
 			$insert_attach['person_id'] = $new_person->id;
 			$insert_attach['blob_id'] = $blob_id;
 
 			$this->getDb()->insert('article_attachments', $insert_attach);
 
-			$blob = $this->getDb()->fetchAssoc("SELECT * FROM blob WHERE id = ?", array($blob_id));
+			$blob = $this->getDb()->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($blob_id));
 
 			// Rewrite the old getimage.php to for attachments to go through file.php
 			$new_article->content = str_replace(

@@ -36,13 +36,16 @@ namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 abstract class SaveDataTableAbstractStep extends AbstractDeskpro3Step
 {
-	abstract public function getTable();
+	public static function getTable()
+	{
+		return 'override_table_name';
+	}
 
 	protected $does_exist = null;
 
-	public function getTitle()
+	public static function getTitle()
 	{
-		return 'Save Data: ' . $this->getTable();
+		return 'Save Data: ' . static::getTable();
 	}
 
 	public function getPerPage()
@@ -52,7 +55,7 @@ abstract class SaveDataTableAbstractStep extends AbstractDeskpro3Step
 
 	public function getDoesExist()
 	{
-		return $this->importer->doesOldTableExist($this->getTable());
+		return $this->importer->doesOldTableExist(static::getTable());
 	}
 
 	public function countPages()
@@ -60,7 +63,13 @@ abstract class SaveDataTableAbstractStep extends AbstractDeskpro3Step
 		if (!$this->getDoesExist()) {
 			return 1;
 		}
-		return $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM " . $this->getTable());
+
+		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM " . static::getTable());
+		if (!$count) {
+			return 1;
+		}
+
+		return ceil($count / $this->getPerPage());
 	}
 
 	public function run($page = 1)
@@ -69,14 +78,15 @@ abstract class SaveDataTableAbstractStep extends AbstractDeskpro3Step
 			return;
 		}
 
-		$table = $this->getTable();
+		$table = static::getTable();
 		$start = ($page - 1) * $this->getPerPage();
 		$limit = $this->getPerPage();
 
-		$recs = $this->getOldDb()->fetchAll("SELECT * FORM $table LIMIT $start, $limit");
+		$recs = $this->getOldDb()->fetchAll("SELECT * FROM $table LIMIT $start, $limit");
 		foreach ($recs as $rec) {
+			$x = uniqid('', true);
 			$this->getDb()->insert('import_datastore', array(
-				'typename' => "table_{$table}",
+				'typename' => "table_{$table}_$x",
 				'data' => serialize($rec)
 			));
 		}

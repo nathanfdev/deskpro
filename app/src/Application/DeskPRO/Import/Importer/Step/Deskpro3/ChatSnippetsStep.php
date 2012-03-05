@@ -71,14 +71,14 @@ class ChatSnippetsStep extends AbstractDeskpro3Step
 				$this->getDb()->insert('text_snippet_categories', array(
 					'person_id' => $agent_id,
 					'is_global' => $is_global,
-					'title' => $c['name'],
+					'title' => $c['category'],
 					'typename' => 'chat'
 				));
 
 				if (!isset($this->cat_map[$agent_id])) {
 					$this->cat_map[$agent_id] = array();
 				}
-				$this->cat_map[$agent_id][$c['name']] = $this->getDb()->lastInsertId();
+				$this->cat_map[$agent_id][$c['category']] = $this->getDb()->lastInsertId();
 			}
 			unset($cats);
 

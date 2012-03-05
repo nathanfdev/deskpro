@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-class SaveDataFaqSubStep extends SaveDataTableAbstractStep
+class SaveDataFaqSubsStep extends SaveDataTableAbstractStep
 {
-	public function getTable()
+	public static function getTable()
 	{
 		return 'faq_subscriptions';
 	}

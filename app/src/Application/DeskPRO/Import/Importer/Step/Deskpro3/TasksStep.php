@@ -41,14 +41,14 @@ class TasksStep extends AbstractDeskpro3Step
 		return 'Import Calendar Tasks';
 	}
 
-	public static function countPages()
+	public function countPages()
 	{
 		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM calendar_task");
 		if (!$count) {
 			return 1;
 		}
 
-		return ceild($count / 500);
+		return ceil($count / 500);
 	}
 
 	public function run($page = 1)
@@ -87,11 +87,11 @@ class TasksStep extends AbstractDeskpro3Step
 		$insert_task_tpl['title']              = $task_info['title'] . " " . strip_tags($task_info['description']);
 		$insert_task_tpl['date_created']       = date('Y-m-d H:i:s', $task_info['startstamp']);
 
-		$assignments = $this->getDb()->fetchAll("
+		$assignments = $this->getOldDb()->fetchAll("
 			SELECT * FROM calendar_task_tech
 			WHERE taskid = ?
 			ORDER BY id ASC
-		", $task_info['id']);
+		", array($task_info['id']));
 
 		foreach ($assignments as $as) {
 			$assigned_agent_id = $this->getMappedNewId('tech', $as['techid']);
@@ -103,7 +103,7 @@ class TasksStep extends AbstractDeskpro3Step
 			$insert_task['assigned_agent_id'] = $assigned_agent_id;
 			if ($as['completed']) {
 				$insert_task['is_completed']    = 1;
-				$insert_task['date_completed']  = date('Y-m-d H:i:s', $task_info['timestamp'] + 1);
+				$insert_task['date_completed']  = date('Y-m-d H:i:s', $task_info['startstamp'] + 1);
 			}
 
 			$this->getDb()->insert('tasks', $insert_task);
@@ -120,7 +120,7 @@ class TasksStep extends AbstractDeskpro3Step
 			return;
 		}
 
-		$iterations = $this->getDb()->fetchAll("
+		$iterations = $this->getOldDb()->fetchAll("
 			SELECT * FROM calendar_task_iteration
 			WHERE taskid = ?
 			ORDER BY timestamp ASC

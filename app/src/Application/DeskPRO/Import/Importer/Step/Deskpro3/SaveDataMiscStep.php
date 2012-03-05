@@ -66,7 +66,7 @@ class SaveDataMiscStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
-		$table = $this->tables[$page];
+		$table = $this->tables[$page-1];
 
 		if (!$this->importer->doesOldTableExist($table)) {
 			return;
@@ -75,10 +75,11 @@ class SaveDataMiscStep extends AbstractDeskpro3Step
 		$this->getDb()->beginTransaction();
 
 		try {
-			$data = $this->getOldDb()->fetchColumn("SELECT * FROM $table");
+			$data = $this->getOldDb()->fetchAll("SELECT * FROM $table");
 			foreach ($data as $r) {
+				$x = uniqid('', true);
 				$this->getDb()->insert('import_datastore', array(
-					'typename' => "table_{$table}",
+					'typename' => "table_{$table}_$x",
 					'data' => serialize($r)
 				));
 			}

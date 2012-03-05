@@ -36,7 +36,7 @@ namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 class SaveDataManualCommentsStep extends SaveDataTableAbstractStep
 {
-	public function getTable()
+	public static function getTable()
 	{
 		return 'manual_comments';
 	}

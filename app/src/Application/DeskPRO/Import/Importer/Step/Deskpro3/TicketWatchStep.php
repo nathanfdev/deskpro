@@ -41,14 +41,14 @@ class TicketWatchStep extends AbstractDeskpro3Step
 		return 'Import Ticket Watches';
 	}
 
-	public static function countPages()
+	public function countPages()
 	{
 		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM tech_ticket_watch");
 		if (!$count) {
 			return 1;
 		}
 
-		return ceild($count / 500);
+		return ceil($count / 500);
 	}
 
 	public function run($page = 1)
@@ -69,7 +69,7 @@ class TicketWatchStep extends AbstractDeskpro3Step
 	}
 
 	/**
-	 * @param array $task_info
+	 * @param array $watch_info
 	 */
 	protected function processWatch($watch_info)
 	{
@@ -87,7 +87,7 @@ class TicketWatchStep extends AbstractDeskpro3Step
 		$insert_taskl['title']             = "Ticket Watch on {$ticket_id}";
 		$insert_taskl['person_id']         = $agent_id;
 		$insert_taskl['assigned_agent_id'] = $agent_id;
-		$insert_taskl['date_created']      = date('Y-m-d H:i:s', $task_info['timestamp_created']);
+		$insert_taskl['date_created']      = date('Y-m-d H:i:s', $watch_info['timestamp_created']);
 		if ($watch_info['completed']) {
 			$insert_task['is_completed']   = 1;
 			$insert_task['date_completed'] = date('Y-m-d H:i:s', $watch_info['timestamp_complete'] + 1);
