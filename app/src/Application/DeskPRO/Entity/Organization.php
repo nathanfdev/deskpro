@@ -97,7 +97,6 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * Usergroups the user belongs to
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-     * )
 	 */
 	protected $usergroups;
 
@@ -105,11 +104,11 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * Users who are set to automatically be added to tickets and other org things
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-     * )
 	 */
 	protected $auto_cc_people;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $labels;
 

@@ -129,6 +129,24 @@ class CompaniesStep extends AbstractDeskpro3Step
 			}
 
 			//---
+			// Usergroup relations
+			//---
+
+			$ug_rels = $this->getOldDb()->fetchAll("SELECT groupid FROM user_company2group WHERE companyid = ?", array(
+				$company_info['id']
+			));
+
+			foreach ($ug_rels as $ug_id) {
+				$new_ug_id = $this->getMappedNewId('usergroup', $ug_id);
+				if (!$new_ug_id) continue;
+
+				$this->getDb()->insert('organization2usergroups', array(
+					'organization_id' => $org['id'],
+					'usergroup_id'=> $new_ug_id
+				));
+			}
+
+			//---
 			// Custom fields
 			//---
 
