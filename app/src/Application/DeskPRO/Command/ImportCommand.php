@@ -230,7 +230,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$sm = $db->getSchemaManager();
 
 		$tables = $sm->listTableNames();
-		if ($tables && (!in_array('agent_access', $tables) || !in_array('worker_jobs', $tables))) {
+		if ($tables && (!in_array('agent_notifications', $tables) || !in_array('worker_jobs', $tables))) {
 			$logger->log('Your database contains tables but they do not appear to be DeskPRO v4 tables. DeskPRO requires a new, empty database.' . PHP_EOL, Logger::ERR);
 			$logger->log('Create a new empty database and edit /config.php with the new details, then try again.'  . PHP_EOL, Logger::ERR);
 			return 22;
@@ -601,7 +601,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 					}
 
 					$cmd = $php_path . ' cmd.php dp:import --exec-step=' . $i . ' --exec-step-page=' . $p;
-					$proc = new \Symfony\Component\Process\Process($cmd, DP_WEB_ROOT);
+					$proc = new \Symfony\Component\Process\Process($cmd, DP_ROOT);
 					$proc->setTimeout(600);
 					$proc->run(function ($type, $buffer) {
 						if ('err' === $type) {
