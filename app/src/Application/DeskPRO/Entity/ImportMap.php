@@ -67,12 +67,12 @@ class ImportMap extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ImportMap'; 
-		$metadata->setPrimaryTable(array( 'name' => 'import_map', )); 
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT); 
-		$metadata->mapField(array( 'fieldName' => 'typename', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'typename', 'id' => true, )); 
-		$metadata->mapField(array( 'fieldName' => 'old_id', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'old_id', 'id' => true, )); 
-		$metadata->mapField(array( 'fieldName' => 'new_id', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'new_id', ));
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ImportMap';
+		$metadata->setPrimaryTable(array( 'name' => 'import_map', ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->mapField(array( 'fieldName' => 'typename', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'typename', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'old_id', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'old_id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'new_id', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'new_id', ));
 	}
 }

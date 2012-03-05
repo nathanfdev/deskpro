@@ -47,7 +47,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * 
+	 *
 	 */
 	protected $id = null;
 
@@ -99,7 +99,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	
+
 	/**
 	 * Get some data from the extra array
 	 */
@@ -128,7 +128,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -148,7 +148,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get criteria
      *
-     * @return array 
+     * @return array
      */
     public function getCriteria()
     {
@@ -168,7 +168,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get results
      *
-     * @return array 
+     * @return array
      */
     public function getResults()
     {
@@ -188,7 +188,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get extra
      *
-     * @return array 
+     * @return array
      */
     public function getExtra()
     {
@@ -208,7 +208,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get num_results
      *
-     * @return integer 
+     * @return integer
      */
     public function getNumResults()
     {
@@ -228,7 +228,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get date_created
      *
-     * @return datetime 
+     * @return datetime
      */
     public function getDateCreated()
     {
@@ -238,7 +238,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get person
      *
-     * @return Application\DeskPRO\Entity\Person 
+     * @return Application\DeskPRO\Entity\Person
      */
     public function getPerson()
     {
@@ -263,16 +263,16 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
-		$metadata->setPrimaryTable(array( 'name' => 'result_cache', )); 
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT); 
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'id', 'id' => true, )); 
-		$metadata->mapField(array( 'fieldName' => 'criteria', 'type' => 'array', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'criteria', )); 
-		$metadata->mapField(array( 'fieldName' => 'results', 'type' => 'array', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'results', )); 
-		$metadata->mapField(array( 'fieldName' => 'extra', 'type' => 'array', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'extra', )); 
-		$metadata->mapField(array( 'fieldName' => 'num_results', 'type' => 'integer', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'num_results', )); 
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'date_created', )); 
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY); 
-		$metadata->mapOneToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( ), 'mappedBy' => NULL, 'inversedBy' => 'preferences', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'orphanRemoval' => false, ));
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setPrimaryTable(array( 'name' => 'result_cache', ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'criteria', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'criteria', ));
+		$metadata->mapField(array( 'fieldName' => 'results', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'results', ));
+		$metadata->mapField(array( 'fieldName' => 'extra', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'extra', ));
+		$metadata->mapField(array( 'fieldName' => 'num_results', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_results', ));
+		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'preferences', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 	}
 }
