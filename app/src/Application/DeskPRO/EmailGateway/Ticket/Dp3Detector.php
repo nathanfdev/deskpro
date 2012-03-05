@@ -134,6 +134,13 @@ class Dp3Detector implements TicketDetectorInterface
 		$map_info = App::getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('dp3_ticketref_' . $old_ref));
 		if ($map_info) {
 			$map_info = @unserialize($map_info);
+
+		// Might have a merge record
+		} else {
+			$map_info = App::getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('dp3_ticketmerge_' . $old_ref));
+			if ($map_info) {
+				$map_info = @unserialize($map_info);
+			}
 		}
 		if (!$map_info) {
 			return null;
@@ -174,6 +181,13 @@ class Dp3Detector implements TicketDetectorInterface
 		$map_info = App::getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('dp3_ticketref_' . $old_ref));
 		if ($map_info) {
 			$map_info = @unserialize($map_info);
+
+		// Might have a merge record
+		} else {
+			$map_info = App::getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('dp3_ticketmerge_' . $old_ref));
+			if ($map_info) {
+				$map_info = @unserialize($map_info);
+			}
 		}
 		if (!$map_info) {
 			return null;
