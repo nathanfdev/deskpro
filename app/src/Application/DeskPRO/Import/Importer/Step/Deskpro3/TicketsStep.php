@@ -263,6 +263,14 @@ class TicketsStep extends AbstractDeskpro3Step
 			'data' => serialize(array('new_id' => $insert_ticket['id'], 'old_auth' => $ticket_info['authcode']))
 		));
 
+		// Save the old language data so we can reconnect it later
+		if ($ticket_info['language'] && $ticket_info['language'] != 1) {
+			$this->getDb()->insert('import_datastore', array(
+				'typename' => 'dp3_ticketlang_' . $insert_ticket['id'],
+				'data' => $ticket_info['language']
+			));
+		}
+
 		#------------------------------
 		# Notes
 		#------------------------------
