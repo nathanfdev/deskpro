@@ -15,7 +15,7 @@
 	#}
 	<div class="next">
 		Next step: <a href="{{ path(nexttask.route) }}" class="step">{{ phrase('admin.setupguide.' ~ nexttask.id) }}</a>
-		{#<em class="skip">or skip</em>#}
+		<em class="skip" onclick="window.location='{{ path('admin_skip_setup_todo') }}';">or skip</em>
 	</div>
 	<div class="ui-progress-bar ui-container blue">
 		<div class="ui-progress" style="width: {{ app.setup_guide.getPercentComplete() }}%;">

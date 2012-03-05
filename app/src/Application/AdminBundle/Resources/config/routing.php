@@ -33,6 +33,13 @@ $collection->add('admin_networkcheck', new Route(
 	array()
 ));
 
+$collection->add('admin_skip_setup_todo', new Route(
+	'/misc/skip-setup-todo',
+	array('_controller' => 'AdminBundle:Main:skipSetupStep'),
+	array(),
+	array()
+));
+
 ################################################################################
 # License
 ################################################################################

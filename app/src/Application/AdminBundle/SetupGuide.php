@@ -61,7 +61,6 @@ class SetupGuide
 	protected $tasks = array(
 		'incoming_email'     => array('route' => 'admin_emailgateways'),
 		'add_agents'         => array('route' => 'admin_agents_new'),
-		//'custom_header'      => array('route' => 'admin_portal'),
 		'add_ticketcategory' => array('route' => 'admin_ticketcats'),
 		'add_ticketpriority' => array('route' => 'admin_ticketpris'),
 		'add_ticketfield'    => array('route' => 'admin_customdeftickets')
@@ -146,6 +145,24 @@ class SetupGuide
 	{
 		foreach ($this->tasks as $t => $info) {
 			if (!$this->container->getSetting('core.task_completed_' . $t)) {
+				return $info;
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * Goes through the tasks and marks the next todo item as finished.
+	 *
+	 * @return null
+	 */
+	public function skipNextTask()
+	{
+		foreach ($this->tasks as $t => $info) {
+			if (!$this->container->getSetting('core.task_completed_' . $t)) {
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.task_completed_' . $t, time());
 				return $info;
 			}
 		}

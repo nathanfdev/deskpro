@@ -72,6 +72,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		}
 
 		$setup_guide = new \Application\AdminBundle\SetupGuide($this->container, $this);
+		$this->setup_guide = $setup_guide;
 		$this->container->get('templating.globals')->setVariable('setup_guide', $setup_guide);
 		return $setup_guide->preActionHelper($action, $arguments);
 	}

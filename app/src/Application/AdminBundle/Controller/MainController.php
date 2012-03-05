@@ -92,4 +92,10 @@ class MainController extends AbstractController
 			'filesize_readable' => $blob->getReadableFilesize()
 		)));
 	}
+
+	public function skipSetupStepAction()
+	{
+		$this->setup_guide->skipNextTask();
+		return $this->redirectRoute('admin');
+	}
 }
