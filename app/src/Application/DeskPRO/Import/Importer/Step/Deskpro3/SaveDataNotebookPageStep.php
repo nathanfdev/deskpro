@@ -34,58 +34,10 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-use Application\DeskPRO\Entity\EmailGateway;
-use Application\DeskPRO\Entity\EmailGatewayAddress;
-
-class SaveDataMiscStep extends AbstractDeskpro3Step
+class SaveDataNotebookPageStep extends SaveDataTableAbstractStep
 {
-	protected $tables = array(
-		'faq_cats_related',
-		'faq_subscriptions',
-		'user_plans',
-		'payment_gateways',
-		'billing_rules',
-		'billing_credit_bundles',
-		'manual_manual_styles',
-		'manual_manuals_perms',
-		'manual_manuals',
-		'ticket_fielddisplay',
-		'gateway_spam',
-	);
-
-	public static function getTitle()
+	public function getTable()
 	{
-		return 'Save Data: Misc';
-	}
-
-	public function countPages()
-	{
-		return count($this->tables);
-	}
-
-	public function run($page = 1)
-	{
-		$table = $this->tables[$page];
-
-		if (!$this->importer->doesOldTableExist($table)) {
-			return;
-		}
-
-		$this->getDb()->beginTransaction();
-
-		try {
-			$data = $this->getOldDb()->fetchColumn("SELECT * FROM $table");
-			foreach ($data as $r) {
-				$this->getDb()->insert('import_datastore', array(
-					'typename' => "table_{$table}",
-					'data' => serialize($r)
-				));
-			}
-			$this->getDb()->commit();
-
-		} catch (\Exception $e) {
-			$this->getDb()->rollback();
-			throw $e;
-		}
+		return 'notebook_page';
 	}
 }
