@@ -55,15 +55,27 @@ class SettingsStep extends AbstractDeskpro3Step
 			$timezone = 'UTC';
 		}
 
+		$reg_mode = 'open';
+		if (!$dp3_settings['allow_registration']) {
+			$reg_mode = 'closed';
+		}
+
 		$save_settings = array(
 			'core.default_from_email' => $dp3_settings['email_from'],
 			'core.site_url'           => $dp3_settings['site_url'],
 			'core.site_name'          => $dp3_settings['site_name'],
 			'core.deskpro_name'       => $dp3_settings['site_name'],
 			'core.deskpro_url'        => $dp3_settings['helpdesk_url'],
+			'core.date_full'          => $dp3_settings['date_full'],
+			'core.date_day'           => $dp3_settings['date_day'],
+			'core.date_time'          => $dp3_settings['date_time'],
+			'core.dp3_license'        => $dp3_settings['license'],
+			'core.dp3_install_time'   => $dp3_settings['install_timestamp'],
+			'core.reg_url'            => $dp3_settings['register_url'],
 			'core.default_timezone'   => $timezone,
+			'core.user_mode'          => $reg_mode,
 			'user.portal_enabled'     => 1,
-			'core.setup_initial'      => 11
+			'core.setup_initial'      => 11,
 		);
 
 		$this->getDb()->beginTransaction();

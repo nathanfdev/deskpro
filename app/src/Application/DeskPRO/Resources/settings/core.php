@@ -16,6 +16,14 @@
 	 */
 	'core.rewrite_urls' => false,
 
+	/**#@+
+	 * Date formats
+	 */
+	'core.date_full' => 'D, jS M Y g:i a',
+	'core.date_day'  => 'D, jS M Y',
+	'core.date_time' => 'g:i a',
+	/**#@-*/
+
 	/**
 	 * Are ticket categories enabled?
 	 */
