@@ -29,53 +29,36 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Types
  */
 
-namespace Application\DeskPRO\Entity;
+namespace Application\DeskPRO\DBAL\Types;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 /**
- * When blobs are stored in the database, they are stored as muliple parts in this table.
- *
- * (Ordering is by id ASC)
- *
+ * Some enhancements to Doctrine's connection class.
  */
-class BlobStorage extends \Application\DeskPRO\Domain\DomainObject
+class DpBlobFileType extends Type
 {
-	/**
-	 * @var int
-	 */
-	protected $id = null;
-
-	/**
-	 * @var int
-	 */
-	protected $blob_id;
-
-	/**
-	 * The users name (best guess from other sources etc)
-	 *
-	 * @var string
-	 */
-	protected $data;
-
-
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
+	public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'blobs_storage', 'indexes' => array( 'blob_id_idx' => array( 'columns' => array( 0 => 'blob_id', ), ), ), ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'blob_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'blob_id', ));
-		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'dpblob_file', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+		return 'LONGBLOB';
+	}
+
+	public function convertToDatabaseValue($value, AbstractPlatform $platform)
+	{
+		return ($value === null) ? null : $value;
+	}
+
+	public function convertToPHPValue($value, AbstractPlatform $platform)
+	{
+		return ($value === null) ? null : $value;
+	}
+
+	public function getName()
+	{
+		return 'dpblob_file';
 	}
 }
