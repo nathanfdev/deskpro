@@ -66,7 +66,7 @@ class SettingsStep extends AbstractDeskpro3Step
 			'core.site_name'          => $dp3_settings['site_name'],
 			'core.deskpro_name'       => $dp3_settings['site_name'],
 			'core.deskpro_url'        => $dp3_settings['helpdesk_url'],
-			'core.date_full'          => $dp3_settings['date_full'],
+			'core.date_fulltime'      => $dp3_settings['date_full'],
 			'core.date_day'           => $dp3_settings['date_day'],
 			'core.date_time'          => $dp3_settings['date_time'],
 			'core.dp3_license'        => $dp3_settings['license'],
