@@ -167,6 +167,69 @@ class KbStep extends AbstractDeskpro3Step
 		$this->saveMappedId('faq_article', $article['id'], $new_article->id);
 
 		#------------------------------
+		# Attachments
+		#------------------------------
+
+		$attachments = $this->getOldDb()->fetchAll("SELECT * FROM faq_attachments WHERE articleid = ?", array($article['id']));
+
+		foreach ($attachments as $attach_info) {
+
+			$pid = $this->getMappedNewId('tech', $attach_info['techid']);
+			if (!$pid) {
+				continue;
+			}
+
+			$blob_id = $this->getMappedNewId('blob', $attach_info['blobid']);
+			if (!$blob_id) {
+				continue;
+			}
+
+			$insert_attach = array();
+			$insert_attach['article_id'] = $insert_ticket['id'];
+			$insert_attach['person_id'] = $pid;
+			$insert_attach['blob_id'] = $blob_id;
+
+			$this->getDb()->insert('article_attachments', $insert_attach);
+		}
+
+
+		#------------------------------
+		# Images
+		#------------------------------
+
+		$attachments = $this->getOldDb()->fetchAll("SELECT * FROM images WHERE content_type = ? AND content_id", array('faq_article', $article['id']));
+
+		$article_updated = true;
+		foreach ($attachments as $attach_info) {
+			$blob_id = $this->getMappedNewId('blob', $attach_info['blobid']);
+			if (!$blob_id) {
+				continue;
+			}
+
+			$article_updated = true;
+			$insert_attach = array();
+			$insert_attach['article_id'] = $insert_ticket['id'];
+			$insert_attach['person_id'] = $new_person->id;
+			$insert_attach['blob_id'] = $blob_id;
+
+			$this->getDb()->insert('article_attachments', $insert_attach);
+
+			$blob = $this->getDb()->fetchAssoc("SELECT * FROM blob WHERE id = ?", array($blob_id));
+
+			// Rewrite the old getimage.php to for attachments to go through file.php
+			$new_article->content = str_replace(
+				'/getimage.php?id=' . $attach_info['id'],
+				'/file.php/' . $blob['authcode'] . '/' . $blob['filename'],
+				$new_article->content
+			);
+		}
+
+		if ($article_updated) {
+			$this->getEm()->persist($new_article);
+			$this->getEm()->flush();
+		}
+
+		#------------------------------
 		# Create the first revision
 		#------------------------------
 
