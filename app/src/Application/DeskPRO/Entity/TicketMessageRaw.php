@@ -74,7 +74,7 @@ class TicketMessageRaw extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setIdentifier(array('message_id'));
+		$metadata->setIdentifier(array('message'));
 		$metadata->setPrimaryTable(array( 'name' => 'tickets_messages_raw', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->mapField(array( 'fieldName' => 'raw', 'type' => 'dpblob', 'length' => 4294967295, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'raw', ));

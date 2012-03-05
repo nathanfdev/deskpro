@@ -140,7 +140,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setIdentifier(array('ticket_id', 'person_id'));
+		$metadata->setIdentifier(array('ticket', 'person'));
 		$metadata->setPrimaryTable(array( 'name' => 'tickets_participants', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->addLifecycleCallback('_setAccessCode', 'prePersist');

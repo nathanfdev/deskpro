@@ -35,29 +35,24 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$sc = new \Application\InstallBundle\Data\GenerateSchema(App::getOrm());
+		$em = App::getOrm();
+
 		$finder = new \Symfony\Component\Finder\Finder();
-		$finder->in(array(DP_ROOT . '/src/Application/DeskPRO/Entity'))->name('*.php')->files();
+		$finder->in(DP_ROOT.'/src/Application/DeskPRO/Entity')->name('*.php')->files();
 
 		foreach ($finder as $file) {
+			/** @var $file \Symfony\Component\Finder\SplFileInfo */
 
-			$name = Strings::extractRegexMatch('#([^\.]+)\.php$#', $file->getFilename());
-			echo "Processing $name ... ";
+			$name = Strings::extractRegexMatch('#(.*?)\.php$#', $file->getFilename());
+			echo "$name ... ";
 
-			/** @var \Symfony\Component\Finder\SplFileInfo $file */
+			$classname = 'Application\\DeskPRO\\Entity\\' . $name;
+			$metadata = $em->getMetadataFactory()->getMetadataFor($classname);
+			$tool = new \Doctrine\ORM\Tools\SchemaTool($em);
+			$all_sql = $tool->getCreateSchemaSql(array($metadata));
 
-			$code = file($file->getRealPath(), \FILE_IGNORE_NEW_LINES);
-			$code_end = array();
-
-			foreach ($code as $l) {
-				if (strpos($l, '@ORM_Mapping') === false) {
-					$code_end[] = $l;
-				}
-			}
-
-			$code_end = implode("\n", $code_end);
-			file_put_contents(DP_ROOT . '/src/Application/DeskPRO/Entity/' . $name . '.php', $code_end);
-
-			echo "[DONE]\n";
+			echo "\n";
 		}
 	}
 }

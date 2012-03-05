@@ -67,7 +67,11 @@ abstract class TaskAssociation extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_SINGLE_TABLE);
-		$metadata->setDiscriminatorColumn('discr');
+		$metadata->setDiscriminatorColumn(array(
+            'name' => 'assoc_type',
+            'type' => 'string',
+            'length' => '50',
+        ));
 		$metadata->setDiscriminatorMap(array(
 			'person' => 'TaskAssociatedPerson',
 			'ticket' => 'TaskAssociatedTicket',

@@ -96,7 +96,7 @@ class TicketFilterSubscription extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketFilterSubscription';
 		$metadata->setPrimaryTable(array( 'name' => 'ticket_filter_subscriptions', ));
-		$metadata->setIdentifier(array('filter_id', 'person_id'));
+		$metadata->setIdentifier(array('filter', 'person'));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->mapField(array( 'fieldName' => 'email_new', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'email_new', ));
 		$metadata->mapField(array( 'fieldName' => 'email_user_activity', 'type' => 'boolean', 'length' => NULL, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'unique' => false, 'columnName' => 'email_user_activity', ));
