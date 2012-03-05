@@ -85,7 +85,7 @@ $collection->add('admin_tickets_fields', new Route(
 ));
 
 $collection->add('admin_tickets_editor', new Route(
-	'/tickets/editor',
+	'/tickets/editor/{section}',
 	array('_controller' => 'AdminBundle:TicketProperties:editor', 'department_id' => 0, 'section' => 'create'),
 	array(),
 	array()
