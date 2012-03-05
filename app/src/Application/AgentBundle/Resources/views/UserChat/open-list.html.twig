@@ -30,7 +30,7 @@ pageMeta.agent_id = {{ agent.id|default(0)}};
 					{% else %}
 						{{ phrase('agent.anonymous') }}
 					{% endif %}
-    				, <time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('M d') }}</time>
+    				, <time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('day_short') }}</time>
     			</div>
     		</article>
     	{% else %}

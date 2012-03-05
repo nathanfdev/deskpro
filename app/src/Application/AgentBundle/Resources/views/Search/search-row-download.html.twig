@@ -42,7 +42,7 @@
 					{% elseif field == 'date_created' %}
 						<li>
 							<span class="prop-title">{{ phrase('agent.date_created') }}</span>
-							<span class="prop-val">{{ download.date_created|date('M j, Y')}}</span>
+							<span class="prop-val">{{ download.date_created|date('day')}}</span>
 						</li>
 					{% elseif field == 'num_downloads' %}
 						<li>

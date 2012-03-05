@@ -24,7 +24,7 @@
 				</td>
 			{% elseif field == 'date_created' %}
 				<td class="{{field}}">
-					<span class="timestamp timeago" title="{{ticket.date_created|date('c')}}">{{ticket.date_created|date('Y-m-d')}}</span>
+					<span class="timestamp timeago" title="{{ticket.date_created|date('c')}}">{{ticket.date_created|date('day')}}</span>
 				</td>
 			{% elseif field == 'deleted_reason' %}
 				<td class="{{field}}">

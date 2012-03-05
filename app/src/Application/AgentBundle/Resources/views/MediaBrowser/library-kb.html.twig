@@ -19,7 +19,7 @@ Labels: <input type="text" name="labels" value="{{ labels }}" />
 				{% endif %}
 			</td>
 			<td>
-				{{ blob_object.blob.date_created|date('Y-m-d') }}
+				{{ blob_object.blob.date_created|date('day') }}
 			</td>
 		</tr>
 	{% endfor %}

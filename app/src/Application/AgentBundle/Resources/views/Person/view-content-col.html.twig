@@ -209,7 +209,7 @@
 								</a>
 							{% endif %}
 						</span>
-						<time class="timeago" datetime="{{ action.date_created|date('c') }}">{{ action.date_created|date('M j, Y') }}</time>
+						<time class="timeago" datetime="{{ action.date_created|date('c') }}">{{ action.date_created|date('day') }}</time>
 					</li>
 				{% endfor %}
 			</ul>
@@ -229,7 +229,7 @@
 				<tr>
 					<td class="label" width="80">Created</td>
 					<td class="value">
-						<time>{{person.date_created|date('H:ia M j Y')}}</time>
+						<time>{{person.date_created|date('fulltime')}}</time>
 						(<time class="timeago" datetime="{{person.date_created|date('c')}}"></time>)
 					</td>
 				</tr>
@@ -251,7 +251,7 @@
 					<td class="label">{{ phrase('agent.last_login') }}</td>
 					<td class="value">
 						{% if person.date_last_login %}
-							<time>{{person.date_last_login|date('H:ia M j Y')}}</time>
+							<time>{{person.date_last_login|date('fulltime')}}</time>
 							(<time class="timeago" datetime="{{person.date_last_login|date('c')}}"></time>)
 						{% else %}
 							{{ phrase('agent.never') }}
@@ -262,14 +262,14 @@
 					<tr>
 						<td class="label">{{ phrase('agent.online_now') }}</td>
 						<td class="value">
-							<time>{{session.date_created|date('H:ia M j Y')}}</time>
+							<time>{{session.date_created|date('fulltime')}}</time>
 							(<time class="timeago" datetime="{{session.date_created|date('c')}}"></time>)
 						</td>
 					</tr>
 					<tr>
 						<td class="label">{{ phrase('agent.last_activity') }}</td>
 						<td class="value">
-							<time>{{session.date_last|date('H:ia M j Y')}}</time>
+							<time>{{session.date_last|date('fulltime')}}</time>
 							(<time class="timeago" datetime="{{session.date_last|date('c')}}"></time>)
 							on page <em class="short-url-prev tipped" title="{{ session.visitor.last_page }}">{{ session.visitor.last_page|url_domain }}</em>
 					</tr>
@@ -300,7 +300,7 @@
 					<tr>
 						<td class="label">{{ phrase('agent.last_activity') }}</td>
 						<td class="value">
-							<time>{{visitor.date_last|date('H:ia M j Y')}}</time>
+							<time>{{visitor.date_last|date('fulltime')}}</time>
 							(<time class="timeago" datetime="{{visitor.date_last|date('c')}}"></time>)
 							on page <em class="tipped" title="{{ visitor.last_page }}">...</em>
 					</tr>

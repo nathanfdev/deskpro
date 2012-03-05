@@ -65,7 +65,7 @@ pageMeta.baseId = '{{ baseId }}';
 					{{ phrase('agent.created_timeago_by_x_on_y', {
 						'timeago': '<time class="timeago" datetime="' ~ news.date_created|date('c') ~'"></time>',
 						'name': news.person.display_name,
-						'date': '<time>' ~ news.date_created|date('H:ia M j Y') ~ '</time>'
+						'date': '<time>' ~ news.date_created|date('fulltime') ~ '</time>'
 					}) }}
 				</dd>
 			</dl>

@@ -19,8 +19,10 @@
 	/**#@+
 	 * Date formats
 	 */
-	'core.date_full' => 'D, jS M Y g:i a',
-	'core.date_day'  => 'D, jS M Y',
+	'core.date_fulltime' => 'D, jS M Y g:ia',
+	'core.date_full' => 'D, jS M Y',
+	'core.date_day'  => 'M j Y',
+	'core.date_day_short'  => 'M j',
 	'core.date_time' => 'g:i a',
 	/**#@-*/
 

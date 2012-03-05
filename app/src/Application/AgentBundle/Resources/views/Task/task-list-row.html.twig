@@ -1,6 +1,6 @@
 <article
 	class="row-item task task-{{ task.id }} {% if task.is_completed %}completed{% endif %}"
-	data-due-date="{{ task.date_due|date('Y-m-d') }}"
+	data-due-date="{{ task.date_due|date('day') }}"
 	data-task-id="{{ task.id }}"
 
 	{% if task.isOverdue() %}data-in-sublist-overdue="1"
@@ -26,7 +26,7 @@
 						{% elseif task.assigned_agent_team %}{{ task.assigned_agent_team.name }}
 						{% else %}Me{% endif %}
 					</label><span class="drop-icon"></span></li>
-					<li class="noval opt-trigger date_due"><label>{% if not task.date_due %}No due date{% else %}{{ task.date_due|date('Y-m-d') }}{% endif %}</label><span class="drop-icon"></span></li>
+					<li class="noval opt-trigger date_due"><label>{% if not task.date_due %}No due date{% else %}{{ task.date_due|date('day') }}{% endif %}</label><span class="drop-icon"></span></li>
 					<li class="comment-btn">
 						<label>{{ phrase('agent.add_comment') }}</label><span class="drop-icon"></span>
 					</li>

@@ -74,14 +74,14 @@ pageMeta.baseId = '{{ baseId }}';
 					<td class="label">Online Now</td>
 					<td class="value">
 						Since
-						<time>{{session.date_created|date('H:ia M j Y')}}</time>
+						<time>{{session.date_created|date('fulltime')}}</time>
 						(<time class="timeago" datetime="{{session.date_created|date('c')}}"></time>)
 					</td>
 				</tr>
 				<tr>
 					<td class="label">Last Activity</td>
 					<td class="value">
-						<time>{{session.date_last|date('H:ia M j Y')}}</time>
+						<time>{{session.date_last|date('fulltime')}}</time>
 						(<time class="timeago" datetime="{{session.date_last|date('c')}}"></time>)
 						on page <em class="tipped" title="{{ session.visitor.last_page }}">...</em>
 				</tr>

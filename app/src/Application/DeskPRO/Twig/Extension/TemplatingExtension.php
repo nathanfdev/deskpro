@@ -333,6 +333,24 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function userDate($date, $format = 'F j, Y H:i', $timezone = null)
 	{
+		switch ($format) {
+			case 'full':
+				$format = App::getSetting('core.date_full');
+				break;
+
+			case 'day':
+				$format = App::getSetting('core.date_day');
+				break;
+
+			case 'day_short':
+				$format = App::getSetting('core.date_day_short');
+				break;
+
+			case 'time':
+				$format = App::getSetting('core.date_time');
+				break;
+		}
+
 		if (!$date instanceof \DateTime) {
 			if (ctype_digit((string) $date)) {
 				$date = new \DateTime('@'.$date);

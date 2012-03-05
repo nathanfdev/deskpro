@@ -13,7 +13,7 @@
 					<td width="30">{{ loop.index }}</td>
 					<td>
 						{{ phrase('agent.by_x', {'name': rev.person.display_name}) }},
-						{{ rev.date_created|date('Y-m-d') }}
+						{{ rev.date_created|date('day') }}
 					</td>
 					<td width="10" align="center">
 						<input type="checkbox" class="rev-compare-check" value="{{rev.id}}" />
