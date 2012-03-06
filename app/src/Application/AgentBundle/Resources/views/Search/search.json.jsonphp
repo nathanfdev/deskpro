@@ -1,7 +1,7 @@
 <?php
 $OUTPUT = array();
 
-if ($results['ticket']) {
+if (!empty($results['ticket'])) {
 	$OUTPUT['ticket'] = array();
 	foreach ($results['ticket'] as $r) {
 
@@ -24,7 +24,7 @@ if ($results['ticket']) {
 	}
 }
 
-if ($results['person']) {
+if (!empty($results['person'])) {
 	$OUTPUT['person'] = array();
 	foreach ($results['person'] as $r) {
 		$org_str = '';
@@ -45,7 +45,7 @@ if ($results['person']) {
 	}
 }
 
-if ($results['organization']) {
+if (!empty($results['organization'])) {
 	$OUTPUT['organization'] = array();
 	foreach ($results['organization'] as $r) {
 		$OUTPUT['organization'][] = array(
@@ -56,7 +56,7 @@ if ($results['organization']) {
 	}
 }
 
-if ($results['article']) {
+if (!empty($results['article'])) {
 	$OUTPUT['article'] = array();
 	foreach ($results['article'] as $r) {
 		$OUTPUT['article'][] = array(
@@ -67,7 +67,7 @@ if ($results['article']) {
 	}
 }
 
-if ($results['feedback']) {
+if (!empty($results['feedback'])) {
 	$OUTPUT['feedback'] = array();
 	foreach ($results['feedback'] as $r) {
 		$OUTPUT['feedback'][] = array(
@@ -78,7 +78,7 @@ if ($results['feedback']) {
 	}
 }
 
-if ($results['download']) {
+if (!empty($results['download'])) {
 	$OUTPUT['download'] = array();
 	foreach ($results['download'] as $r) {
 		$OUTPUT['download'][] = array(
@@ -89,7 +89,7 @@ if ($results['download']) {
 	}
 }
 
-if ($results['news']) {
+if (!empty($results['news'])) {
 	$OUTPUT['news'] = array();
 	foreach ($results['news'] as $r) {
 		$OUTPUT['news'][] = array(
