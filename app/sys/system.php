@@ -448,7 +448,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 
 
 ###############################################################################
-# AgentKernel
+# AdminKernel
 ###############################################################################
 
 class AdminKernel extends AbstractKernel
@@ -465,6 +465,28 @@ class AdminKernel extends AbstractKernel
 	public function registerContainerConfiguration(LoaderInterface $loader)
 	{
 		$loader->load(DP_ROOT.'/sys/config/admin/config_'.$this->getEnvironment().'.php');
+	}
+}
+
+
+###############################################################################
+# AdminKernel
+###############################################################################
+
+class BillingKernel extends AbstractKernel
+{
+	protected function registerAdditionalBundles()
+	{
+		$bundles = array(
+			new \Application\BillingBundle\BillingBundle(),
+		);
+
+		return $bundles;
+	}
+
+	public function registerContainerConfiguration(LoaderInterface $loader)
+	{
+		$loader->load(DP_ROOT.'/sys/config/billing/config_'.$this->getEnvironment().'.php');
 	}
 }
 

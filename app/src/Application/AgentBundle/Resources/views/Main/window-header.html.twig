@@ -119,7 +119,7 @@
 			</div>
 			<ul>
 				{% if app.user.can_admin %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin/login?dpsid-agent={{ app.getSession().getId() }}"><span>{{ phrase('agent.window.admin_interface') }}</span></a></li>{% endif %}
-				{% if app.user.can_billing %}<li><a class="billing" href=""><span>{{ phrase('agent.window.billing_interface') }}</span></a></li>{% endif %}
+				{% if app.user.can_billing %}<li><a class="billing" href="{{ app.request.getBaseUrl() }}/billing"><span>{{ phrase('agent.window.billing_interface') }}</span></a></li>{% endif %}
 				{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span>{{ phrase('agent.window.reports_interface') }}</span></a></li>{% endif %}
 				{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span>{{ phrase('agent.window.user_interface') }}</span></a></li>{% endif %}
 			</ul>
