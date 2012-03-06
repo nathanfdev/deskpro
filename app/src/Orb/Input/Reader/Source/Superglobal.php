@@ -112,11 +112,6 @@ class Superglobal implements SourceInterface
 			$this->array = $GLOBALS[$this->superglobal];
 		}
 		if (!$this->array) $this->array = array();
-
-		// Process slashes
-		if (\get_magic_quotes_gpc()) {
-			\Orb\Util\Arrays::func($this->array, 'stripslashes');
-		}
 	}
 
 

@@ -73,15 +73,8 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 	public function init()
 	{
-		// Normalize env
-		setlocale(LC_CTYPE, 'C');
-		date_default_timezone_set('UTC');
-		ini_set('default_charset', 'UTF-8');
-
 		set_error_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleError', E_ALL | E_STRICT);
 		set_exception_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleException');
-
-		\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor/php-utf8');
 	}
 
 	public function boot()
