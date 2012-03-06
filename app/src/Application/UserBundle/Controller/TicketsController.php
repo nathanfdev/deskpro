@@ -70,7 +70,8 @@ class TicketsController extends AbstractController
 		$tickets = App::getOrm()->createQuery("
 			SELECT ticket
 			FROM DeskPRO:Ticket ticket
-			WHERE ticket.person = :person
+			LEFT JOIN ticket.participants part
+			WHERE ticket.person = :person OR part.person = :person
 			ORDER BY ticket.id DESC
 		")->execute(array('person' => $this->person));
 
@@ -512,7 +513,9 @@ class TicketsController extends AbstractController
 			$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
 		}
 
-		if (!$ticket OR ($ticket['person_id'] != $this->person['id'] AND !isset($this->session_allowed[$ticket['id']]))) {
+		/** @var $ticket \Application\DeskPRO\Entity\Ticket */
+
+		if (!$ticket OR ($ticket['person_id'] != $this->person['id'] AND !isset($this->session_allowed[$ticket['id']])) AND !$ticket->hasParticipantPerson($this->person)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_ref");
 		}
 

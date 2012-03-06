@@ -111,7 +111,7 @@ class TicketViewController extends AbstractController
 	 */
 	public function viewTicket(Ticket $ticket, array $display_data = array())
 	{
-		if ($this->person->id != $ticket->person->id) {
+		if ($this->person->id != $ticket->person->id && !$ticket->hasParticipantPerson($this->person->id)) {
 			return $this->renderStandardError(null, null, 403);
 		}
 
