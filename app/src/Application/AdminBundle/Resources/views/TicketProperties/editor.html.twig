@@ -17,18 +17,18 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</header>
 		<article id="ticket_elements">
 			<ul>
-				<li class="draggable irremovable" data-item-id="ticket_department"><label>Department</label></li>
+				<li class="draggable irremovable" data-item-id="ticket_department" data-edit-title="Edit Departments" data-edit-url="{{ path('admin_departments') }}"><label>Department</label></li>
 				{% if section == 'create' %}
 					<li class="draggable irremovable" data-item-id="message"><label>Ticket Message</label></li>
 					<li class="draggable irremovable" data-item-id="ticket_subject"><label>Ticket Subject</label></li>
 					<li class="draggable" data-item-id="attachments"><label>Attachments</label></li>
 				{% endif %}
-				<li class="draggable" data-item-id="ticket_category"><label>Category</label></li>
-				<li class="draggable" data-item-id="ticket_product"><label>Product</label></li>
-				<li class="draggable" data-item-id="ticket_priority"><label>Priority</label></li>
+				<li class="draggable" data-item-id="ticket_category" data-edit-title="Edit Categories" data-edit-url="{{ path('admin_ticketcats') }}"><label>Category</label></li>
+				<li class="draggable" data-item-id="ticket_product" data-edit-title="Edit Products" data-edit-url="{{ path('admin_products') }}"><label>Product</label></li>
+				<li class="draggable" data-item-id="ticket_priority" data-edit-title="Edit Priorities" data-edit-url="{{ path('admin_ticketpris') }}"><label>Priority</label></li>
 				{% for field in custom_ticket_fields %}
-					<li class="draggable" data-item-id="ticket_field[{{field.field_def.id}}]">
-						<label>{{field.title}}</label>
+				<li class="draggable" data-item-id="ticket_field[{{field.field_def.id}}]" data-edit-title="Edit Field" data-edit-url="{{ path('admin_customdeftickets_edit', {field_id: field.field_def.id}) }}">
+				<label>{{field.title}}</label>
 					</li>
 				{% endfor %}
 				{% if section == 'create' %}
@@ -134,6 +134,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 	<li class="form-item dp-form-row">
 		<div class="dp-block-controls">
 			<ul>
+				<li class="dp-edit-fields"><span></span></li>
 				<li class="dp-edit edit-field-trigger"><span></span></li>
 				<li class="dp-remove remove-field-trigger"><span></span></li>
 				<li class="dp-move"><span></span></li>

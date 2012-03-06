@@ -49,16 +49,30 @@
 
 <div id="deskpro" class="deskpro {% block body_class %}{% endblock %}{% if breadcrumb %}dp-with-breadcrumb{% endif %}">
 
-<div id="dp_header">
-	<img class="logo" />
+{% if admin_portal_controls %}
+<div id="dp_header" {% if app.logoblob %}class="dp-with-logo"{% endif %}>
+	<a href="{{ path('user') }}"><img class="logo" {% if app.logoblob %}src="{{ app.logoblob.getDownloadUrl() }}"{% endif %} /></a>
+
 	<h1><a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a></h1>
-	<h2>{{ app.getSetting('core.deskpro_tagline') }}</h2>
+	<h2 {% if not app.getSetting('core.deskpro_tagline') %}style="display: none"{% endif %}>{{ app.getSetting('core.deskpro_tagline') }}</h2>
 	{% if admin_portal_controls %}
 	<div id="dp_header_portal_off">
 		{{ phrase('admin.designer.reenable_simple_header') }}
 	</div>
 	{% endif %}
 </div>
+{% else %}
+	<div id="dp_header" {% if app.logoblob %}class="dp-with-logo"{% endif %}>
+		{% if app.logoblob %}
+		<a href="{{ path('user') }}"><img class="logo" src="{{ app.logoblob.getDownloadUrl() }}" /></a>
+		{% else %}
+			<h1><a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a></h1>
+			{% if app.getSetting('core.deskpro_tagline') %}
+				<h2>{{ app.getSetting('core.deskpro_tagline') }}</h2>
+			{% endif %}
+		{% endif %}
+	</div>
+{% endif %}
 
 <div id="dp_search_assist" style="display: none;">
 	<div class="results"></div>

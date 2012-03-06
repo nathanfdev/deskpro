@@ -15,9 +15,9 @@
 			</script>
 			<script class="template-download" type="text/x-jquery-tmpl">
 				<div>
-					<input type="hidden" name="new_blob_id" class="new_blob_id" value="${blob_id}" />
-					<input type="hidden" name="new_logo_url" class="new_logo_url" value="${download_url}" />
-					<img src="${download_url}?s=120" class="pic-new" />
+					<input type="hidden" class="new_blob_auth_id" value="${blob_auth_id}" />
+					<input type="hidden" class="new_logo_url" value="${download_url}" />
+					<img src="${download_url}" class="pic-new" />
 				</div>
 			</script>
 
@@ -27,8 +27,8 @@
 		</div>
 		<div class="text">
 			<h3>... or just enter a title and a tagline</h3>
-			<div class="input-title"><input type="text" name="title" value="" placeholder="Title" /></div>
-			<div class="input-tagline"><input type="text" name="tagline" value="" placeholder="Tagline" /></div>
+			<div class="input-title"><input type="text" class="title" name="title" value="{{ app.getSetting('core.deskpro_name') }}" placeholder="Title" /></div>
+			<div class="input-tagline"><input type="text" class="tagline" name="tagline" value="{{ app.getSetting('core.deskpro_tagline') }}" placeholder="Tagline" /></div>
 
 			<div class="save-btn-wrap">
 				<button class="clean-white save-text-trigger">Save title and tagline</button>

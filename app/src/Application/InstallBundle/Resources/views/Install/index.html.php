@@ -2,6 +2,7 @@
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
 <?php $view['slots']->start('subtitle') ?>Step 2: Server and Config Checks<?php $view['slots']->stop() ?>
 <?php $failed = false ?>
+<?php $failed_phpini = false ?>
 <h3>Server Checks</h3>
 <table class="bordered-table zebra-striped">
 	<tbody>
@@ -192,6 +193,41 @@
 					<div class="alert-message block-message error">
 						The logs directory (<?php echo $logs_dir_info ?>) must exist and be writable.
 					</div>
+				<?php endif ?>
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<?php $failed = false ?>
+				<?php if (!isset($errors['apc_check'])): ?>
+				<span class="label success" style="float:right">OK</span>
+				<?php else: $failed = true; ?>
+				<span class="label notice" style="float:right">RECOMMENDED</span>
+				<?php endif ?>
+				Checking for the <a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a>
+				<?php if ($failed): ?>
+				<div class="alert-message block-message info">
+					We recommend installing the APC extension to dramatically improve performance.
+				</div>
+				<?php endif ?>
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<?php $failed = false ?>
+				<?php if (!isset($errors['magic_quotes_gpc_check'])): ?>
+				<span class="label success" style="float:right">OK</span>
+				<?php else: $failed = true; ?>
+				<span class="label notice" style="float:right">RECOMMENDED</span>
+				<?php endif ?>
+				Checking if <a href="http://www.php.net/manual/en/security.magicquotes.disabling.php">magic_quotes_gpc</a> is disabled
+				<?php if ($failed): ?>
+				<div class="alert-message block-message info">
+					We recommend disabling <code>magic_quotes_gpc</code> in your php.ini for a small performance improvement.
+					<?php if ($ini_path): ?>Your php.ini file is located at <code><?php echo $ini_path ?></code><?php endif ?>
+				</div>
 				<?php endif ?>
 			</td>
 		</tr>

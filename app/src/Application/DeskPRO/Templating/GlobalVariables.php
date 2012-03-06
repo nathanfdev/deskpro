@@ -82,6 +82,11 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::getSystemService('style');
 	}
 
+	public function getLogoBlob()
+	{
+		return App::getSystemService('logo_blob');
+	}
+
 	public function getUsersourceManager()
 	{
 		return App::getSystemService('UsersourceManager');

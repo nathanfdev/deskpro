@@ -102,6 +102,23 @@ class ServerChecks
 
 
 	/**
+	 * Are there any non-fatal errors?
+	 *
+	 * @return bool
+	 */
+	public function hasNonFatalErrors()
+	{
+		foreach ($this->server_errors as $e) {
+			if ($e['level'] != 'fatal') {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * Check if a speciifc error occurred
 	 *
 	 * @param string $type
@@ -119,6 +136,42 @@ class ServerChecks
 	public function getErrors()
 	{
 		return $this->server_errors;
+	}
+
+
+	/**
+	 * Get only fatal errors
+	 *
+	 * @return array
+	 */
+	public function getFatalErrors()
+	{
+		$ret = array();
+		foreach ($this->server_errors as $e) {
+			if ($e['level'] == 'fatal') {
+				$ret[] = $e;
+			}
+		}
+
+		return $ret;
+	}
+
+
+	/**
+	 * Get only non-fatal errors
+	 *
+	 * @return array
+	 */
+	public function getNonFatalErrors()
+	{
+		$ret = array();
+		foreach ($this->server_errors as $e) {
+			if ($e['level'] != 'fatal') {
+				$ret[] = $e;
+			}
+		}
+
+		return $ret;
 	}
 
 
@@ -317,25 +370,33 @@ class ServerChecks
 			$this->getLogger()->log("[CHECK] Checking if APC is enabled", Logger::DEBUG);
 			if (function_exists('apc_store') && ini_get('apc.enabled')) {
 				$this->getLogger()->log("[OK] APC store installed", Logger::DEBUG);
-
-				$this->getLogger()->log("[CHECK] Checking APC version", Logger::DEBUG);
-				if (version_compare(phpversion('apc'), '3.0.17', '>=')) {
-					$this->getLogger()->log("[OK] APC version OK", Logger::DEBUG);
-				} else {
-					$msg = "You should install the APC extension";
-					$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
-					$this->server_errors['apc_check_version'] = array(
-						'message' => $msg,
-						'level' => 'fatal'
-					);
-				}
 			} else {
-				$msg = "You should install the APC extension";
+				$msg = "We recommend installing the APC extension for PHP to dramatically improve performance";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['apc_check'] = array(
 					'message' => $msg,
 					'level' => 'recommended'
 				);
+			}
+		}
+
+		#------------------------------
+		# magic_quotes_check
+		#------------------------------
+
+		if (function_exists('get_magic_quotes_gpc')) {
+			if ($type == 'magic_quotes_gpc_check' || $type == 'all') {
+				$this->getLogger()->log("[CHECK] Checking if magic_quotes_gpc is enabled", Logger::DEBUG);
+				if (!get_magic_quotes_gpc()) {
+					$this->getLogger()->log("[OK] magic_quotes_gpc is disabled", Logger::DEBUG);
+				} else {
+					$msg = "We recommend disabling the `magic_quotes_gpc` setting in your php.ini file.";
+					$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+					$this->server_errors['magic_quotes_gpc_check'] = array(
+						'message' => $msg,
+						'level' => 'recommended'
+					);
+				}
 			}
 		}
 
@@ -381,7 +442,7 @@ class ServerChecks
 
 		if ($type == 'logs_write' || $type == 'all') {
 			$this->getLogger()->log("[CHECK] Checking if logs dir is writable", Logger::DEBUG);
-			$dir = App::getKernel()->getLogDir();
+			$dir = App::getKernel()->getUserLogDir();
 			if (is_dir($dir) && is_writable($dir)) {
 				$this->getLogger()->log("[OK] Logs dir is writable", Logger::DEBUG);
 			} else {

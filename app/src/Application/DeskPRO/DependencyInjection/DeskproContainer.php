@@ -81,6 +81,16 @@ class DeskproContainer extends Container
 	 */
 	protected $system_services = array();
 
+
+	/**
+	 * @return \DeskPRO\Kernel\BaseAbstractKernel
+	 */
+	public function getKernel()
+	{
+		return $this->kernel;
+	}
+
+
 	public function __construct(ParameterBagInterface $parameterBag = null)
 	{
 		$GLOBALS['DP_CONTAINER'] = $this;

@@ -35,6 +35,11 @@ namespace DeskPRO\Kernel;
 
 class KernelBooter
 {
+	/**
+	 * Builds the main $DP_CONFIG array from config.php
+	 *
+	 * @return mixed
+	 */
 	public static function bootstrapConfig()
 	{
 		static $has_loaded = false;
@@ -111,28 +116,13 @@ class KernelBooter
 		}
 	}
 
-	private static function DeskPRO_Done_MarkerCheck() {}
 
-	public static function DeskPRO_Done()
-	{
-		self::DeskPRO_Done_MarkerCheck();
-		if (!defined('DP_DEBUG_TRACE_FILE')) {
-			return;
-		}
-
-		xdebug_stop_trace();
-		$fp = @fopen(DP_DEBUG_TRACE_FILE, 'r');
-		if ($fp) {
-			@fseek($fp, -150000, \SEEK_END);
-			$chunk = @fread($fp, 150000);
-			@fclose($fp);
-
-			if (strpos($chunk, 'DeskPRO_Done_MarkerCheck') !== false) {
-				@unlink(DP_DEBUG_TRACE_FILE);
-			}
-		}
-	}
-
+	/**
+	 * Includes the libraries and autoloading required for the system to boot
+	 *
+	 * @param $debug
+	 * @return mixed
+	 */
 	public static function bootstrapLib($debug)
 	{
 		static $has_loaded = false;
@@ -152,11 +142,49 @@ class KernelBooter
 		require(DP_ROOT . '/sys/system.php');
 	}
 
-	public static function bootEnv()
-	{
 
+	/**
+	 * Gets the environment ready for execution
+	 */
+	public static function bootstrapEnv()
+	{
+		#------------------------------
+		# Normalize env
+		#------------------------------
+
+		setlocale(LC_CTYPE, 'C');
+		date_default_timezone_set('UTC');
+		ini_set('default_charset', 'UTF-8');
+
+		\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor/php-utf8');
+
+		#------------------------------
+		# Undo magic quotes
+		#------------------------------
+
+		// Check exists since its gone in PHP 5.4
+		if (function_exists('get_magic_quotes_gpc')) {
+			ini_set('magic_quotes_runtime', 0);
+
+			if (get_magic_quotes_gpc()) {
+				$clean_fn = function(&$v) {
+					$v = stripslashes($v);
+				};
+
+				array_walk_recursive($_GET,     $clean_fn);
+				array_walk_recursive($_POST,    $clean_fn);
+				array_walk_recursive($_COOKIE,  $clean_fn);
+				array_walk_recursive($_REQUEST, $clean_fn);
+			}
+		}
 	}
 
+
+	/**
+	 * Boots a web kernel
+	 *
+	 * @param null $request
+	 */
 	public static function bootWeb($request = null)
 	{
 		global $DP_CONFIG;
@@ -172,8 +200,8 @@ class KernelBooter
 		}
 
 		self::ensureEnvFiles($env);
-
 		self::bootstrapLib($debug);
+		self::bootstrapEnv();
 
 		if (!$request) {
 			$request = \Application\DeskPRO\HttpFoundation\Request::createfromGlobals();
@@ -231,6 +259,13 @@ class KernelBooter
 		}
 	}
 
+
+	/**
+	 * Boots the CLI
+	 *
+	 * @param string $env
+	 * @param bool $debug
+	 */
 	public static function bootCli($env = 'prod', $debug = false)
 	{
 		static::ensureCli();
@@ -240,6 +275,13 @@ class KernelBooter
 		unset($GLOBALS['DP_IS_IN_CLI']);
 	}
 
+
+	/**
+	 * Boots the CLI and runs the cron command
+	 *
+	 * @param string $env
+	 * @param bool $debug
+	 */
 	public static function bootCron($env = 'prod', $debug = false)
 	{
 		static::ensureCli();
@@ -253,6 +295,13 @@ class KernelBooter
 		$app->run($input);
 	}
 
+
+	/**
+	 * Boots the CLI runs the upgrade CLI command
+	 *
+	 * @param string $env
+	 * @param bool $debug
+	 */
 	public static function bootUpgrade($env = 'prod', $debug = false)
 	{
 		static::ensureCli();
@@ -267,9 +316,18 @@ class KernelBooter
 		$app->run($input);
 	}
 
+
+	/**
+	 * Creates a CLI kernel, and create an console app
+	 *
+	 * @param string $env
+	 * @param bool $debug
+	 * @return \Symfony\Bundle\FrameworkBundle\Console\Application
+	 */
 	protected static function getCliApp($env = 'prod', $debug = false)
 	{
 		global $DP_CONFIG;
+
 		self::bootstrapConfig();
 
 		if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
@@ -279,6 +337,7 @@ class KernelBooter
 
 		self::ensureEnvFiles($env);
 		self::bootstrapLib($debug);
+		self::bootstrapEnv();
 
 		if (defined('DP_BUILDING')) {
 			$debug = false;
@@ -293,6 +352,10 @@ class KernelBooter
 		return $app;
 	}
 
+
+	/**
+	 * Ensures the current invocation is via the command-line
+	 */
 	protected static function ensureCli()
 	{
 		if (php_sapi_name() != 'cli') {
@@ -301,6 +364,7 @@ class KernelBooter
 			exit(1);
 		}
 	}
+
 
 	/**
 	 * If in prod mode, ensures that the build files etc exist.
@@ -425,4 +489,35 @@ HTML;
 			exit;
 		}
 	}
+
+
+	/**#@+
+	 * Handling of xdebug traces
+	 */
+	private static function DeskPRO_Done_MarkerCheck() {}
+	public static function DeskPRO_Done()
+	{
+		static $called = false;
+		if ($called) return;
+		$called = true;
+
+		if (!defined('DP_DEBUG_TRACE_FILE')) {
+			return;
+		}
+
+		self::DeskPRO_Done_MarkerCheck();
+		xdebug_stop_trace();
+
+		$fp = @fopen(DP_DEBUG_TRACE_FILE, 'r');
+		if ($fp) {
+			@fseek($fp, -150000, \SEEK_END);
+			$chunk = @fread($fp, 150000);
+			@fclose($fp);
+
+			if (strpos($chunk, 'DeskPRO_Done_MarkerCheck') !== false) {
+				@unlink(DP_DEBUG_TRACE_FILE);
+			}
+		}
+	}
+	/**#@-*/
 }

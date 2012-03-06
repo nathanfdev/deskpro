@@ -45,12 +45,17 @@ class Setting extends EntityRepository
 	/**
 	 * Update a database setting
 	 *
-	 * @param  $name
-	 * @param  $value
+	 * @param  string $name  The name of the setting
+	 * @param  mixed  $value The value to set. Null means any existing value will be unset
 	 * @return \Application\DeskPRO\Entity\Setting
 	 */
 	public function updateSetting($name, $value)
 	{
+		if ($value === null) {
+			App::getDb()->delete('settings', array('name' => $name));
+			return null;
+		}
+
 		$setting = $this->findOneBy(array('name' => $name));
 		if (!$setting) {
 			$setting = new Entity\Setting();
