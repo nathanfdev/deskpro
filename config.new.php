@@ -58,6 +58,23 @@ $DP_CONFIG = array();
 // $DP_CONFIG['mysqldump_path'] = '';
 
 ######################################################
+# OPTIONAL : DeskPRO Import                          #
+#                                                    #
+# If you are importing                               #
+######################################################
+
+/*
+$DP_CONFIG['import'] = array(
+  'db_host' => 'localhost',
+  'db_user' => 'root',
+  'db_password' => '',
+  'db_name' => 'deskpro_v3',
+  'store_attachment_files' => false,
+  'existing_attachment_files' => ''
+);
+*/
+
+######################################################
 # OPTIONAL : Location of Directories                 #
 #                                                    #
 # You may wish to move the files, logs and backups   #
@@ -83,21 +100,6 @@ $DP_CONFIG = array();
 // $DP_CONFIG['memcached']['servers'][0] = array(
 //   'host' => ''
 // );
-
-######################################################
-# OPTIONAL : DeskPRO Import                          #
-#                                                    #
-# If you are importing                               #
-######################################################
-
-// $DP_CONFIG['import'] = array(
-//   'db_host' => '',
-//   'db_user' => '',
-//   'db_password' => '',
-//   'db_name' => '',
-//   'store_attachment_files' => false,
-//   'existing_attachment_files' => ''
-//  );
 
 ######################################################
 # OPTIONAL : Enable debug call trace                 #
