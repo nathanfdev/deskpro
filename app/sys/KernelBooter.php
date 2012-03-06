@@ -162,15 +162,20 @@ class KernelBooter
 		# Undo magic quotes
 		#------------------------------
 
-		if (get_magic_quotes_gpc()) {
-			$clean_fn = function(&$v) {
-				$v = stripslashes($v);
-			};
+		// Check exists since its gone in PHP 5.4
+		if (function_exists('get_magic_quotes_gpc')) {
+			ini_set('magic_quotes_runtime', 0);
 
-			array_walk_recursive($_GET,     $clean_fn);
-			array_walk_recursive($_POST,    $clean_fn);
-			array_walk_recursive($_COOKIE,  $clean_fn);
-			array_walk_recursive($_REQUEST, $clean_fn);
+			if (get_magic_quotes_gpc()) {
+				$clean_fn = function(&$v) {
+					$v = stripslashes($v);
+				};
+
+				array_walk_recursive($_GET,     $clean_fn);
+				array_walk_recursive($_POST,    $clean_fn);
+				array_walk_recursive($_COOKIE,  $clean_fn);
+				array_walk_recursive($_REQUEST, $clean_fn);
+			}
 		}
 	}
 
