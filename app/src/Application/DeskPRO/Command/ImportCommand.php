@@ -191,6 +191,16 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		if ($page == 1) {
 
+			try {
+				$stat_db = $this->getContainer()->getDb();
+			} catch (\Exception $e) {
+				$stat_db = null;
+			}
+			$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($stat_db);
+			$stats = $stats_fetcher->getStats();
+
+			$logger->log("Server Stats:\n" . \Orb\Util\Arrays::implodeTemplate($stats, "\t{KEY}: {VAL}\n"), Logger::DEBUG);
+
 			$server_check = new \Application\InstallBundle\Install\ServerChecks();
 			$server_check->setLogger($logger);
 			$server_check->checkServer();
