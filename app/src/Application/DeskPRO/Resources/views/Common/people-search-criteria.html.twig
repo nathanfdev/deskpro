@@ -187,6 +187,7 @@
 {% if 'person_field' not in no_show_fields and term_options.custom_people_fields %}
 	{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'contains', 'notcontains': 'does not contain', 'gt': 'is greater than', 'lt': 'is less than'} %}
 	{% for field in term_options.custom_people_fields %}
+	{% if field.field_def.getFilterCapabilities(search_context) %}
 	<div class="type" title="Field: {{field.field_def.title}}" data-rule-group="Person Fields" data-rule-type="person_field[{{field.field_def.id}}]">
 		<div class="op">
 			<select name="op">
@@ -205,6 +206,7 @@
 			{{ form_widget(field.formView) }}
 		</div>
 	</div>
+	{% endif %}
 	{% endfor %}
 {% endif %}
 

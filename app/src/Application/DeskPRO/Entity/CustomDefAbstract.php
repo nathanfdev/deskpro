@@ -211,9 +211,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 			exit;
 		}
 
-		$classname = $this['handler_class'];
-		$classname = preg_replace('#\\\\+#', '\\', $classname);
-
+		$classname = $this->handler_class;
 		$this->_handler_instance = new $classname($this);
 
 		return $this->_handler_instance;
@@ -348,6 +346,17 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * True if this field is an actual form field (aka not a display field without any input controls).
+	 *
+	 * @return bool
+	 */
+	public function isFormField()
+	{
+		return $this->handler_class != 'Application\DeskPRO\CustomFields\Handler\Display';
+	}
+
+
 
 	############################################################################
 	# Doctrine Metadata
@@ -355,9 +364,9 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->isMappedSuperclass = true; 
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
-		$metadata->setPrimaryTable(array( 'name' => 'CustomDefAbstract', )); 
+		$metadata->isMappedSuperclass = true;
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setPrimaryTable(array( 'name' => 'CustomDefAbstract', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 	}
 }

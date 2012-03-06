@@ -43,7 +43,7 @@
 
 	{# Custom fields#}
 	{% for f in custom_fields %}
-		<div class="ticket_field_{{f.id}} custom-field item {% if not ticket.hasCustomField(f.id) %}no-value{% endif %}" data-field-type="ticket_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}">
+		<div class="ticket_field_{{f.id}} custom-field item {% if f.field_def.isFormField() and not ticket.hasCustomField(f.id) %}no-value{% endif %}" data-field-type="ticket_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}">
 			<div class="title">
 				<span class="custom-field edit-trigger ticket_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>
 			</div>
@@ -110,6 +110,7 @@
 	{% endif %}
 
 	{% for f in custom_fields %}
+		{% if f.field_def.isFormField() %}
 		<div class="ticket_field_{{f.id}} custom-field item-input" data-field-type="ticket_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}">
 			<div class="title">{{ f.title }}:</div>
 			<div class="content">
@@ -118,5 +119,6 @@
 				</div>
 			</div>
 		</div>
+		{% endif %}
 	{% endfor %}
 </div>

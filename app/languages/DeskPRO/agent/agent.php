@@ -250,6 +250,7 @@
 	'agent.field_type_choice' => 'Pre-defined choices',
 	'agent.field_type_textemail' => 'Email text box',
 	'agent.field_type_texturl' => 'URL text box',
+	'agent.field_type_display' => 'HTML Display',
 
 	'agent.title_grouped_by_x' => 'Grouped: {{fieldname}}',
 	'agent.title_grouped_by_xy' => 'Grouped: {{fieldname}} and {{fieldname2}}',

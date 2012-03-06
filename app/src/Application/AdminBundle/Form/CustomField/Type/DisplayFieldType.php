@@ -37,7 +37,7 @@ namespace Application\AdminBundle\Form\CustomField\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
-class DisplayType extends CustomFieldTypeAbstract
+class DisplayFieldType extends CustomFieldTypeAbstract
 {
 	protected function buildCustomFieldForm(FormBuilder $builder, array $options)
 	{

@@ -140,20 +140,24 @@
 	</div>
 	{% if term_options.custom_ticket_fields %}
 		{% for field in term_options.custom_ticket_fields %}
+			{% if field.field_def.isFormField() %}
 			<div class="type" title="Set {{field.field_def.title}}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">
 				<div class="options">
 					{{ form_widget(field.formView) }}
 				</div>
 			</div>
+			{% endif %}
 		{% endfor %}
 	{% endif %}
 	{% if term_options.custom_people_fields %}
 		{% for field in term_options.custom_people_fields %}
+			{% if field.field_def.isFormField() %}
 			<div class="type" title="Set User Field: {{field.field_def.title}}" data-rule-group="User Fields"  data-rule-type="people_field[{{field.field_def.id}}]">
 				<div class="options">
 					{{ form_widget(field.formView) }}
 				</div>
 			</div>
+			{% endif %}
 		{% endfor %}
 	{% endif %}
 </div>

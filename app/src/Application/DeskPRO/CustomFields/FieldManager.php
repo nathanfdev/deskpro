@@ -157,6 +157,9 @@ class FieldManager
 		$custom_fields = array();
 		foreach ($this->getFields() as $f_def) {
 			$value = !empty($field_data[$f_def['id']]) ? $field_data[$f_def['id']] : null;
+			if (!$f_def->isFormField()) {
+				$value = array();
+			}
 
 			$f = $f_def->getHandler()->getFormField($value);
 
