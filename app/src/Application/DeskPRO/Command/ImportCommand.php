@@ -209,12 +209,27 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 			if ($server_check->hasFatalErrors()) {
 				$str = "There are problems with your server setup that prevents DeskPRO v4 from installing:\n";
-				foreach ($server_check->getErrors() as $err) {
-					$str .= "\t- {$err['message']}\n";
+				foreach ($server_check->getFatalErrors() as $err) {
+					$str .= "- {$err['message']}\n";
 				}
 				echo "Fix these problems and try again.\n";
 				$logger->log($str, Logger::ERR);
 				return 1;
+			}
+
+			if ($server_check->hasNonFatalErrors()) {
+				$str = "Your server is capable of installing DeskPRO but here are some things you can do to make your helpdesk run more efficiently:\n";
+				foreach ($server_check->getNonFatalErrors() as $err) {
+					$str .= "- {$err['message']}\n";
+				}
+				$logger->log($str, Logger::ERR);
+				$output->writeln('Would you like to continue with the import now anyway?');
+				$yes = $this->getHelper('dialog')->askConfirmation($output, '[Y/n]> ', true);
+
+				if (!$yes) {
+					echo "You can re-run this command again when you are ready to proceed.\n";
+					return 1;
+				}
 			}
 		}
 
