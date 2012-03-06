@@ -2202,7 +2202,8 @@ ul.labels-list .dp-block-controls {
     width: auto;
 }
 
-.dp-block-controls ul li.dp-on-off span {
+.dp-block-controls ul li.dp-on-off span,
+.dp-block-controls ul li.dp-edit-fields span {
 	width: 26px;
 	text-align: center;
 	text-indent: 0 !important;
@@ -2210,8 +2211,24 @@ ul.labels-list .dp-block-controls {
 	background-position: 5px 50%;
 }
 
+.dp-block-controls ul li.dp-edit-fields span {
+	width: auto;
+	padding-left: 25px;
+}
+
 .dp-block-controls ul li.dp-on-off span.on { background-image: url(../../images/admin/icons/block-on.png); }
 .dp-block-controls ul li.dp-on-off span.off { background-image: url(../../images/admin/icons/block-off.png); }
+
+.dp-block-controls ul li.dp-edit-fields {
+	background-color: darken(#DBDFE4, 5%);
+	border-right: 1px solid darken(#DBDFE4, 10%);
+}
+.dp-block-controls ul li.dp-edit-fields:hover {
+	background-color: lighten(#DBDFE4, 5%);
+}
+.dp-block-controls ul li.dp-edit-fields span {
+	background-image: url(../../images/admin/icons/pencil_go.png);
+}
 
 ul.labels-list li > div:hover .dp-block-controls {
     display: block;
