@@ -511,6 +511,10 @@ HTML;
 		self::DeskPRO_Done_MarkerCheck();
 		xdebug_stop_trace();
 
+		if (isset($GLOBALS['DP_CONFIG']['enable_debug_trace_keep']) AND $GLOBALS['DP_CONFIG']['enable_debug_trace_keep']) {
+			return;
+		}
+
 		$fp = @fopen(DP_DEBUG_TRACE_FILE, 'r');
 		if ($fp) {
 			@fseek($fp, -150000, \SEEK_END);
