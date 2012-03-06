@@ -140,7 +140,7 @@ $container->loadFromExtension('doctrine', array(
 		'auto_generate_proxy_classes' => false,
 		'default_entity_manager' => 'default',
 		'entity_managers' => array(
-			'default' => array('mappings' => array('DeskPRO' => array('type' => 'staticphp')))
+			'default' => array('mappings' => array('DeskPRO' => array('type' => 'staticphp')), 'class_metadata_factory_name' => 'Orb\\Doctrine\\ORM\\Mapping\\StaticClassMetadataFactory')
 		)
 	),
 	'dbal' => array(

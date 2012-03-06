@@ -402,4 +402,8 @@ abstract class BasicDomainObject implements \ArrayAccess /*, NotifyPropertyChang
             }
         }
     }
+
+
+	public function __getPropValue__($k) { return $this->$k; }
+	public function __setPropValue__($k, $v) { $this->$k = $v; }
 }
