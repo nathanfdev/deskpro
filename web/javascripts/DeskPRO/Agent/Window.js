@@ -1692,7 +1692,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var self = this;
 
 		this.notifications = new DeskPRO.Agent.Notifications();
-		this.keyboardShortcuts = new DeskPRO.Agent.KeyboardShortcuts();
 
 		// Settings is a window
 		$('#user_settings_link').on('click', function() {
@@ -1814,7 +1813,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			autostart = false;
 		}
 
-		if (DESKPRO_PERSON_PERMS['agent_agent_tickets.create']) {
+		if (DESKPRO_PERSON_PERMS['agent_tickets.create']) {
 			this.newTicketLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 				loadUrl: BASE_URL + 'agent/tickets/new',
 				tabRoute: 'page:' + BASE_URL + 'agent/tickets/new',
@@ -1823,7 +1822,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('#create_ticket_btn').on('click', function() { DeskPRO_Window.newTicketLoader.toggle(); });
 		}
 
-		if (DESKPRO_PERSON_PERMS['agent_agent_people.create']) {
+		if (DESKPRO_PERSON_PERMS['agent_people.create']) {
 			this.newPersonLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 				loadUrl: BASE_URL + 'agent/people/new',
 				tabRoute: 'page:' + BASE_URL + 'agent/people/new',
@@ -1832,7 +1831,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('#create_person_btn').on('click', function() { DeskPRO_Window.newPersonLoader.toggle(); });
 		}
 
-		if (DESKPRO_PERSON_PERMS['agent_agent_org.create']) {
+		if (DESKPRO_PERSON_PERMS['agent_org.create']) {
 			this.newOrganizationLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 				loadUrl: BASE_URL + 'agent/organizations/new',
 				tabRoute: 'page:' + BASE_URL + 'agent/organizations/new',
@@ -1841,7 +1840,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('#create_organization_btn').on('click', function() { DeskPRO_Window.newOrganizationLoader.toggle(); });
 		}
 
-		if (DESKPRO_PERSON_PERMS['agent_agent_publish.create']) {
+		if (DESKPRO_PERSON_PERMS['agent_publish.create']) {
 			this.newArticleLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 				loadUrl: BASE_URL + 'agent/kb/article/new',
 				tabRoute: 'page:' + BASE_URL + 'agent/kb/article/new',
@@ -2001,6 +2000,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('#keyboard_shortcuts_trigger').on('click', function() {
 			$('#dp_keyboard_shortcuts').show();
 		});
+
+		this.keyboardShortcuts = new DeskPRO.Agent.KeyboardShortcuts();
 	},
 
 	toggleAgentStatus: function(status) {
