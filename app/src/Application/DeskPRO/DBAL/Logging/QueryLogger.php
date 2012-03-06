@@ -70,6 +70,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 
 	public $query_count = 0;
 	public $total_time = 0.0;
+	public $tag = '';
 
 	/**
 	 * True when logging a query to the log. We need this incase the logger
@@ -104,6 +105,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 		$this->_last_query++;
 
 		$this->_queries[$this->_last_query] = array(
+			'tag'            => $this->tag,
 			'sql'            => $sql,
 			'params'         => $params,
 			'types'          => $types,
@@ -151,6 +153,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 					}
 				}
 
+				$queryinfo['table'] = $table;
 				$queryinfo['trace'] = $trace;
 
 				$this->getLogger()->log("SQL log against $table", Logger::NOTICE, array('queryinfo' => $queryinfo));

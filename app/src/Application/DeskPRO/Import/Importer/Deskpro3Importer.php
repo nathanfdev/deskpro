@@ -217,13 +217,17 @@ class Deskpro3Importer extends AbstractImporter
 
 		// For current database connection
 		$qlog = new QueryLogger();
-
+		$qlog->tag = 'new_db';
 		if ($this->config->get('enable_query_log')) {
 			$logger = new \Orb\Log\Logger();
 			$logger->addFilter($formatter);
 			$logger->addWriter(new \Orb\Log\Writer\Stream($this->config->get('log_dir') . '/importer-db-sql.log', null, false));
 
 			$qlog->setLogger($logger);
+			$qlog->addSlowLogRule(QueryLogger::TYPE_ALL, 0);
+		} else {
+			$this->logger->addFilter(new \Application\InstallBundle\Logger\Filter\InstallQueryLogFormatter());
+			$qlog->setLogger($this->logger);
 			$qlog->addSlowLogRule(QueryLogger::TYPE_ALL, 0);
 		}
 
@@ -232,12 +236,17 @@ class Deskpro3Importer extends AbstractImporter
 
 		// For olddb too
 		$qlog = new QueryLogger();
+		$qlog->tag = 'old_db';
 		if ($this->config->get('enable_query_log')) {
 			$logger = new \Orb\Log\Logger();
 			$logger->addFilter($formatter);
 			$logger->addWriter(new \Orb\Log\Writer\Stream($this->config->get('log_dir') . '/importer-olddb-sql.log', null, false));
 
 			$qlog->setLogger($logger);
+			$qlog->addSlowLogRule(QueryLogger::TYPE_ALL, 0);
+		} else {
+			$this->logger->addFilter(new \Application\InstallBundle\Logger\Filter\InstallQueryLogFormatter());
+			$qlog->setLogger($this->logger);
 			$qlog->addSlowLogRule(QueryLogger::TYPE_ALL, 0);
 		}
 
