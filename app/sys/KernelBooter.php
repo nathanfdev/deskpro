@@ -325,7 +325,7 @@ DeskPRO's internal build files are missing. If you are using a pristine copy of 
 
 		$DP_CONFIG['debug'] = array();
 		$DP_CONFIG['debug']['dev'] = true;
-		$DP_CONFIG['debug']['raw_assets'] = array('all);
+		$DP_CONFIG['debug']['raw_assets'] = array('all');
 
 	2) Or alternatively you can build DeskPRO by running app/bin/build/build.php from the command-line.
 
@@ -343,7 +343,7 @@ TXT;
 <pre>
 $DP_CONFIG['debug'] = array();
 $DP_CONFIG['debug']['dev'] = true;
-$DP_CONFIG['debug']['raw_assets'] = array('all);
+$DP_CONFIG['debug']['raw_assets'] = array('all');
 </pre>
 </p>
 
@@ -395,7 +395,7 @@ You are running in dev mode but you have not enabled raw assets and assets have 
 
 	1) Enable raw assets by editing /config.php and adding this line:
 
-		$DP_CONFIG['debug']['raw_assets'] = array('all);
+		$DP_CONFIG['debug']['raw_assets'] = array('all');
 
 	2) Or alternatively you can build assets by running app/bin/build/build-assetic.php from the command-line.
 
@@ -411,7 +411,7 @@ TXT;
 <p>1) Enable raw assets by editing <code>/config.php</code> and adding this line:
 
 <pre>
-$DP_CONFIG['debug']['raw_assets'] = array('all);
+$DP_CONFIG['debug']['raw_assets'] = array('all');
 </pre>
 </p>
 
