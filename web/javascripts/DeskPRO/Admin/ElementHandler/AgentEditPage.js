@@ -58,7 +58,27 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 		this.usergroupChecks = $('#usergroup_checks :checkbox');
 
 		$('#usergroup_checks').on('click', ':checkbox', function() { self.updatePermissionsGrid(); });
-		$('#permgroup_table').find(':checkbox').on('change', function() {
+		$('#permgroup_table').find(':checkbox').on('change', function(ev) {
+			var row = $(this).closest('tr');
+			if (row.hasClass('effective-override')) {
+				ev.preventDefault();
+				ev.stopPropagation();
+				ev.stopImmediatePropagation();
+				self.suppressChange = true;
+				$(this).prop('checked', false);
+				self.suppressChange = false;
+
+				if (!$(this).data('tipped')) {
+					var tipped = Tipped.create(this, "This permission is granted through one of the selected usergroups to the left.", {
+						showOn: false,
+						closeButton: true,
+						hideOn: 'click-outside'
+					});
+					$(this).data('tipped', tipped);
+				}
+				$(this).data('tipped').show();
+				return;
+			}
 			if (!self.suppressChange) {
 				self.updatePermissionsGrid($(this));
 			}
@@ -120,6 +140,7 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 
 	updatePermrowEnabled: function(row, isVis) {
 		var has = false;
+		var override = false;
 
 		if ($('input.override-perm', row).is(':checked')) {
 			has = true;
@@ -129,6 +150,7 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 			$('input.in-use', row).each(function() {
 				if ($(this).val() == '1') {
 					has = true;
+					override = true;
 				}
 			});
 		}
@@ -144,8 +166,13 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 					this.effectiveChanged.push(ef);
 				}
 			}
+			if (override) {
+				row.addClass('effective-override');
+			} else {
+				row.removeClass('effective-override');
+			}
 		} else {
-			row.removeClass('on');
+			row.removeClass('on').removeClass('effective-override');
 
 			var ef = row.find('.effective');
 
