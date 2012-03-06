@@ -48,6 +48,11 @@ use Application\DeskPRO\App;
 class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
+	 * @var int
+	 */
+	protected $id = null;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 */
 	protected $ticket = null;
@@ -140,14 +145,15 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setIdentifier(array('ticket', 'person'));
 		$metadata->setPrimaryTable(array( 'name' => 'tickets_participants', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->addLifecycleCallback('_setAccessCode', 'prePersist');
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'default_on', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'default_on', ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => 'participants', 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'access_code', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAccessCode', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'access_code_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'person_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_email_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }

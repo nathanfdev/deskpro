@@ -507,18 +507,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return $ids;
 	}
 
-	public function getParticipants()
-	{
-		/* Temp workaround for Doctrine bug not filling $this->participants */
-		$participants = APp::getOrm()->createQuery("
-			SELECT p
-			FROM DeskPRO:TicketParticipant p
-			WHERE p.ticket = ?1
-		")->setParameter(1, $this->id)->execute();
-
-		return $participants;
-	}
-
 	public function getRawParticipants()
 	{
 		return $this->participants;
