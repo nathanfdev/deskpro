@@ -169,7 +169,7 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		return $cache_dir;
 	}
 
-	public function getLogDir()
+	public function getUserLogDir()
 	{
 		static $log_dir = null;
 
@@ -183,6 +183,11 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		}
 
 		return $log_dir;
+	}
+
+	public function getLogDir()
+	{
+		return $this->getUserLogDir();
 	}
 
 	public function getBackupDir()
@@ -512,6 +517,23 @@ class InstallKernel extends \DeskPRO\Kernel\BaseAbstractKernel
 		);
 
 		return $bundles;
+	}
+
+	/**
+	 * The installer should be okay with a log dir that isnt writable because the user will
+	 * be told about it on the next page. The log dir before that is used in dev mode when the install
+	 * kernel is being built, so for that time we can just use the cache dir.
+	 *
+	 * @return string
+	 */
+	public function getLogDir()
+	{
+		$log_dir = parent::getLogDir();
+		if (!is_writable($log_dir)) {
+			return $this->getCacheDir();
+		}
+
+		return $log_dir;
 	}
 
 	public function registerContainerConfiguration(LoaderInterface $loader)

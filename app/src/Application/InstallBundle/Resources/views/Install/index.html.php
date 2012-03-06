@@ -2,6 +2,7 @@
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
 <?php $view['slots']->start('subtitle') ?>Step 2: Server and Config Checks<?php $view['slots']->stop() ?>
 <?php $failed = false ?>
+<?php $failed_phpini = false ?>
 <h3>Server Checks</h3>
 <table class="bordered-table zebra-striped">
 	<tbody>

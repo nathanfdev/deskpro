@@ -134,7 +134,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 		$is_fatal = $server_check->hasFatalErrors();
 
-		$logs_dir_info = $this->container->getLogDir();
+		$logs_dir_info = $this->container->getKernel()->getUserLogDir();
 		$logs_dir_info = str_replace(DP_WEB_ROOT, '', $logs_dir_info);
 
 		if (!isset($_POST['stats_opt_out'])) {

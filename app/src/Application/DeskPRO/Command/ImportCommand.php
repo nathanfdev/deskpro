@@ -89,13 +89,13 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 		$logger->addWriter($wr);
 
-		$log_file_path = $this->getContainer()->getLogDir() . '/import.log';
+		$log_file_path = $this->getContainer()->getKernel()->getUserLogDir() . '/import.log';
 		try {
 			$wr = new \Orb\Log\Writer\Stream($log_file_path);
 			$logger->addWriter($wr);
 		} catch (\Exception $e) {
 			$output->writeln("Log file not writable: $log_file_path");
-			$output->writeln("Make the logs directory ({$this->getContainer()->getLogDir()} is writable and try again.");
+			$output->writeln("Make the logs directory ({$this->getContainer()->getKernel()->getUserLogDir()} is writable and try again.");
 			return 1;
 		}
 

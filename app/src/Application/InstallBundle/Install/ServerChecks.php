@@ -381,7 +381,7 @@ class ServerChecks
 
 		if ($type == 'logs_write' || $type == 'all') {
 			$this->getLogger()->log("[CHECK] Checking if logs dir is writable", Logger::DEBUG);
-			$dir = App::getKernel()->getLogDir();
+			$dir = App::getKernel()->getUserLogDir();
 			if (is_dir($dir) && is_writable($dir)) {
 				$this->getLogger()->log("[OK] Logs dir is writable", Logger::DEBUG);
 			} else {
