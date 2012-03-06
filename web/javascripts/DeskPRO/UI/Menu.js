@@ -8,8 +8,6 @@ DeskPRO.UI.Menu_Instances = {};
  * Tip: A single menu can be attached to multiple triggers. You can use
  * getOpenTriggerElement to see which element opened a menu, and using
  * the event handlers you can then give any click events context.
- *
- * TODO: Handle nested menus.
  */
 DeskPRO.UI.Menu = new Orb.Class({
 
@@ -782,7 +780,9 @@ DeskPRO.UI.Menu = new Orb.Class({
 		delete DeskPRO.UI.Menu_Instances[this.options.objectGroup][this.objectId];
 
 		Array.each(this.subMenus, function(menuInfo) {
-			menuInfo.menu.destroy();
+			if (!menuInfo.OBJ_DESTROYED) {
+				menuInfo.menu.destroy();
+			}
 		});
 
 		this.subMenus = [];
