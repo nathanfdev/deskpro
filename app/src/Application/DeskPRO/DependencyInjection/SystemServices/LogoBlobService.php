@@ -29,90 +29,31 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Templating
+ * @category DependencyInjection
  */
 
-namespace Application\DeskPRO\Templating;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\CustomFields\FieldManager;
 
-use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables as BaseGlobalVariables;
-
-class GlobalVariables extends BaseGlobalVariables
+class LogoBlobService
 {
-	protected $variables = array();
-
-	public function setVariable($name, $value)
+	public static function create(DeskproContainer $container)
 	{
-		$this->variables[$name] = $value;
-	}
-
-	public function getVariable($name)
-	{
-		return isset($this->variables[$name]) ? $this->variables[$name] : null;
-	}
-
-	public function getUser()
-	{
-		return App::getCurrentPerson();
-	}
-
-	public function getSetting($name)
-	{
-		return App::getSetting($name);
-	}
-
-	public function getSession()
-	{
-		return App::getSession();
-	}
-
-	public function getVisitor()
-	{
-		return App::getSession()->getVisitor();
-	}
-
-	public function isDebug()
-	{
-		return App::isDebug();
-	}
-
-	public function getStyle()
-	{
-		return App::getSystemService('style');
-	}
-
-	public function getLogoBlob()
-	{
-		return App::getSystemService('logo_blob');
-	}
-
-	public function getUsersourceManager()
-	{
-		return App::getSystemService('UsersourceManager');
-	}
-
-	public function __get($name)
-	{
-		if (isset($this->variables[$name])) {
-			return $this->variables[$name];
-		}
-
-		return null;
-	}
-
-	public function __isset($name)
-	{
-		return isset($this->variables[$name]);
-	}
-
-	public function getLastException()
-	{
-		if (!App::has('deskpro.exception_logger')) {
+		$blob_id = $container->getSetting('core.deskpro_logo_blob');
+		if (!$blob_id) {
 			return null;
 		}
 
-		$logger = App::get('deskpro.exception_logger');
-		return $logger->getLastException();
+		$blob = $container->getEm()->find('DeskPRO:Blob', $blob_id);
+
+		// If the blob is invalid for some reason, unset the setting
+		if (!$blob) {
+			$container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_logo_blob', null);
+			return null;
+		}
+
+		return $blob;
 	}
 }

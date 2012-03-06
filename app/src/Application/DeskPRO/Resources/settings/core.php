@@ -69,7 +69,12 @@
 	/**
 	 * The optional tagline or sub-title of the helpdesk
 	 */
-	'core.deskpro_tagline' => 'Support',
+	'core.deskpro_tagline' => '',
+
+	/**
+	 * The blobid of the uploaded logo image
+	 */
+	'core.deskpro_logo_blob' => 0,
 
 	/**
 	 * The optional URL to a main website

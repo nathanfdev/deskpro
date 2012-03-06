@@ -144,20 +144,37 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 						});
 
 						$('.save-logo-trigger', wrapper).on('click', function() {
-							var blobId = $('input.new_blob_id', wrapper).val();
-							if (!blobId) {
-								alert('You need to upload a file');
+							var url = $('input.new_logo_url', wrapper).val();
+							if (!url) {
+								alert('You need to upload an image');
 								return;
 							}
 
-							var url = $('input.new_logo_url', wrapper).val();
-
 							controller.setLogo(url);
+
+							$.ajax({
+								url: BASE_URL + 'admin/portal/save-editor/header_logo',
+								type: 'POST',
+								data: {
+									blob_authid: wrapper.find('input.new_blob_auth_id').val()
+								}
+							});
+
 							ev.overlay.close();
 						});
 
 						$('.save-text-trigger').on('click', function() {
 							controller.setLogoText($('input[name="title"]', wrapper).val(), $('input[name="tagline"]', wrapper).val());
+
+							$.ajax({
+								url: BASE_URL + 'admin/portal/save-editor/header_title',
+								type: 'POST',
+								data: {
+									title: wrapper.find('input.title').val(),
+									tagline: wrapper.find('input.tagline').val()
+								}
+							});
+
 							ev.overlay.close();
 						});
 					}

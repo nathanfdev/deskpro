@@ -105,6 +105,19 @@ class PortalController extends AbstractController
 				});
 
 				break;
+
+			case 'header_title':
+				$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_logo_blob', null);
+				$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_name', $this->in->getString('title'));
+				$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_tagline', $this->in->getString('tagline'));
+				break;
+
+			case 'header_logo':
+				$blob = $this->container->getEm()->getRepository('DeskPRO:Blob')->getByAuthId($this->in->getString('blob_authid'));
+				if ($blob) {
+					$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_logo_blob', $blob->id);
+				}
+				break;
 		}
 
 		return $this->createJsonResponse(array('success' => true));

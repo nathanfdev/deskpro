@@ -252,6 +252,10 @@ var PortalAdmin_SimpleHeader = new Orb.Class({
 	 * @param url
 	 */
 	setLogo: function(url) {
+		if (!url) {
+			this.header.toggleClass('disabled');
+			return;
+		}
 		$('#dp_header img.logo').attr('src', url);
 		$('#dp_header').addClass('dp-with-logo');
 	},
@@ -263,9 +267,20 @@ var PortalAdmin_SimpleHeader = new Orb.Class({
 	 * @param tagline
 	 */
 	setLogoText: function(title, tagline) {
+
+		if (!title.length) {
+			this.header.addClass('disabled');
+			return;
+		}
+
 		$('#dp_header').removeClass('dp-with-logo');
 		$('#dp_header h1').text(title || '');
-		$('#dp_header h2').text(tagline || '');
+
+		if (!tagline.length) {
+			$('#dp_header h2').text('').hide();
+		} else {
+			$('#dp_header h2').text(tagline || '').show();
+		}
 	}
 });
 
