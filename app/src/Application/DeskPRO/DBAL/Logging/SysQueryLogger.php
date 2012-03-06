@@ -78,7 +78,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			}
 
 			if (isset($DP_CONFIG['debug']['querylog']['log_trace'])) {
-				$this->log_explain = $DP_CONFIG['debug']['querylog']['log_trace'];
+				$this->log_trace = $DP_CONFIG['debug']['querylog']['log_trace'];
 			}
 		}
 
@@ -106,12 +106,9 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			$query_typename = 'OTHER';
 		}
 
-		$params_string = \DeskPRO\Kernel\KernelErrorHandler::varToString($params);
-
 		$this->last_query = array(
 			'sql'            => $sql,
 			'params'         => $params,
-			'params_string'  => $params_string,
 			'types'          => $types,
 			'query_typename' => $query_typename,
 			'time_start'     => microtime(true),
@@ -133,6 +130,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$this->is_logging = true;
 
 		$queryinfo = $this->last_query;
+		$queryinfo['params_string'] = \DeskPRO\Kernel\KernelErrorHandler::varToString($queryinfo['params']);
 		$queryinfo['time_end']   = microtime(true);
 		$queryinfo['time_taken'] = $queryinfo['time_end'] - $queryinfo['time_start'];
 		$queryinfo['time_taken_str'] = sprintf('%.2f', $queryinfo['time_taken']);
@@ -174,7 +172,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
 				if ($this->log_explain && $queryinfo['query_typename'] == 'SELECT') {
 					try {
-						$explain = App::getDb()->fetchAll("EXPLAIN $sql", $queryinfo['params']);
+						$explain = App::getDb()->fetchAll("EXPLAIN {$queryinfo['sql']}", $queryinfo['params']);
 					} catch (\Exception $e) {}
 				}
 
