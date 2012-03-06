@@ -174,7 +174,7 @@ class AsseticManager
 		$dir = dirname($file);
 
 		if (!file_exists($dir)) {
-			mkdir($dir, 0644, true);
+			mkdir($dir, 0777, true);
 		}
 
 		if (!is_dir($dir)) {
