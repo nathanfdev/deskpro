@@ -71,7 +71,9 @@ class SimpleLineFormatter extends \Orb\Filter\AbstractFilter
 				$v = $v->format($this->_time_format);
 			}
 
-			$message_line = str_replace("%$k%", $v, $message_line);
+			if (is_scalar($v)) {
+				$message_line = str_replace("%$k%", $v, $message_line);
+			}
 		}
 
 		$log_item[LogItem::MESSAGE_LINE] = $message_line;
