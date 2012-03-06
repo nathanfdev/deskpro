@@ -35,23 +35,14 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		});
 
 		// Create-type
-		if (DESKPRO_PERSON_PERMS['agent_tickets.create']) {
-			$(document).bind('keydown', 't', this.showNewTicket.bind(this));
-		}
-		if (DESKPRO_PERSON_PERMS['agent_publish.create']) {
-			$(document).bind('keydown', 'a', this.showNewArticle.bind(this));
-			$(document).bind('keydown', 'n', this.showNewNews.bind(this));
-			$(document).bind('keydown', 'd', this.showNewDownload.bind(this));
-			$(document).bind('keydown', 'i', this.showNewFeedback.bind(this));
-		}
-		if (DESKPRO_PERSON_PERMS['agent_people.create']) {
-			$(document).bind('keydown', 'p', this.showNewPerson.bind(this));
-		}
-		if (DESKPRO_PERSON_PERMS['agent_org.create']) {
-			$(document).bind('keydown', 'o', this.showNewOrganization.bind(this));
-		}
-
-		$(document).bind('keydown', 'k', this.showNewTask.bind(this));
+		if (DeskPRO_Window.newTicketLoader)        $(document).bind('keydown', 't', this.showNewTicket.bind(this));
+		if (DeskPRO_Window.newArticleLoader)       $(document).bind('keydown', 'a', this.showNewArticle.bind(this));
+		if (DeskPRO_Window.newNewsLoader)          $(document).bind('keydown', 'n', this.showNewNews.bind(this));
+		if (DeskPRO_Window.newDownloadLoader)      $(document).bind('keydown', 'd', this.showNewDownload.bind(this));
+		if (DeskPRO_Window.newFeedbackLoader)      $(document).bind('keydown', 'i', this.showNewFeedback.bind(this));
+		if (DeskPRO_Window.newPersonLoader)        $(document).bind('keydown', 'p', this.showNewPerson.bind(this));
+		if (DeskPRO_Window.newOrganizationLoader)  $(document).bind('keydown', 'o', this.showNewOrganization.bind(this));
+		if (DeskPRO_Window.newArticleLoader)       $(document).bind('keydown', 'k', this.showNewTask.bind(this));
 
 		this.boundShortkuts = {};
 
@@ -124,9 +115,9 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	showNewOrganization: function() {
 		DeskPRO_Window.newOrganizationLoader.toggle();
 	},
-        showNewTask: function() {
+	showNewTask: function() {
 		$('form#newTaskForm input, form#newTaskForm select').val('');
-                DeskPRO_Window.newTaskLoader.toggle();
+		DeskPRO_Window.newTaskLoader.toggle();
 	},
 	showNewDeal: function() {
 		DeskPRO_Window.newDealLoader.toggle();

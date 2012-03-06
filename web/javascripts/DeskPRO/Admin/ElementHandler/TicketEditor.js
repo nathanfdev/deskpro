@@ -180,8 +180,6 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 				});
 				var to_el = $('.criteria-form .search-terms', overlayEl);
 
-				var self = this;
-
 				$('.criteria-form .add-term', this.context).data('add-count', 0).on('click', function() {
 					var basename = 'terms_all['+Orb.uuid()+']';
 					editor.addNewRow(to_el, basename);

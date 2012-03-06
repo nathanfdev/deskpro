@@ -80,6 +80,7 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 		try {
 			if ($this->person_context && !$this->person_context->isGuest()) {
 				$person = $this->person_context;
+				$email_validating = null;
 			} else {
 				$email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->email);
 				$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->email);
