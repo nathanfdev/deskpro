@@ -357,6 +357,11 @@ function deskpro_build_cleanvendors_swiftmailer($dir)
 function deskpro_build_cleanvendors_symfony($dir)
 {
 	deskpro_build_exec_exit_error("rm -rf tests .gitignore .travis.yml autoload.php.dist CHANGELOG-2.0.md check_cs composer.json CONTRIBUTORS.md phpunit.xml.dist README.md UPDATE.ja.md UPDATE.md vendors.php", $dir);
+
+	// Need to add a newline to this file to fix Windows/PHP < 5.3.10/Apache bug where a crash happens on files of exactly 4096 size
+	$fp = fopen($dir . '/src/Symfony/Bundle/TwigBundle/TwigEngine.php', 'a');
+	fwrite($fp, "\n// --\n");
+	fclose($fp);
 }
 
 function deskpro_build_cleanvendors_twig($dir)
