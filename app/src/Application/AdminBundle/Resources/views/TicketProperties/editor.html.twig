@@ -31,7 +31,9 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 						<label>{{field.title}}</label>
 					</li>
 				{% endfor %}
-				<li class="draggable" data-item-id="captcha"><label>CAPTCHA</label></li>
+				{% if section == 'create' %}
+					<li class="draggable" data-item-id="captcha"><label>CAPTCHA</label></li>
+				{% endif %}
 			</ul>
 		</article>
 	</section>
