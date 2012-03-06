@@ -295,7 +295,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 			var filterId = parseInt(el.data('filter-id'));
 			if (this.filterTicketIds[filterId]) {
-				total += this.filterTicketIds[filterId].length;
+				if (el.hasClass('filter-all_w_hold')) {
+					total += this.filterTicketIds[filterId].length;
+				}
 				this.setFilterCount(filterId, this.filterTicketIds[filterId].length);
 			} else {
 				this.setFilterCount(filterId, 0);
@@ -316,6 +318,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		var hold = $('.hold-ticket-count', this.sectionEl);
 		if (total < 1) {
 			hold.hide();
+			if ($('.show-hold-check', this.getSectionElement()).hasClass('checked')) {
+				this.toggleHoldDisplay();
+			}
 		} else {
 			$('.count', hold).text(total);
 			hold.show();
@@ -326,6 +331,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		Object.each(counts, function (count, filter_id) {
 			this.setFilterCount(filter_id, count);
 		}, this);
+
+		this._recountHold();
 	},
 
 	filterUpdated: function(data) {
@@ -364,6 +371,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}
 
 		this.refreshFilterGrouping([filterId]);
+		this._recountHold();
 	},
 
 	refreshFilterGrouping: function(filterIds, doSave) {

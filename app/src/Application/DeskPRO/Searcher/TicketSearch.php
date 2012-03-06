@@ -1205,6 +1205,9 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_LANGUAGE:
 					if (!$this->_testChoiceMatch($ticket['language_id'], $op, $choice)) return false;
 					break;
+				case self::TERM_HOLD:
+					if (!$this->_testChoiceMatch((int)$ticket['is_hold'], $op, $choice)) return false;
+					break;
 				case self::TERM_AGENT:
 					$info = $this->_normalizeAgentChoice($choice);
 

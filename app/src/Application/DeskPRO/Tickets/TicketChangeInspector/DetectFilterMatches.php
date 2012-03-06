@@ -129,6 +129,10 @@ class DetectFilterMatches
 					$changed_fields[] = 'ticket.status';
 					break;
 
+				case 'is_hold':
+					$changed_fields[] = 'ticket.is_hold';
+					break;
+
 				case 'hidden_status':
 					$changed_fields[] = 'ticket.hidden_status';
 					break;

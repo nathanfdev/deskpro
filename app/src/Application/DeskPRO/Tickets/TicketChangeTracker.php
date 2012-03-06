@@ -267,6 +267,10 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 					$this->original_ticket['subject'] = $old_val;
 					break;
 
+				case 'is_hold':
+					$this->original_ticket['is_hold'] = $old_val;
+					break;
+
 				case 'hidden_status':
 					$this->original_ticket['hidden_status'] = $old_val;
 					break;
