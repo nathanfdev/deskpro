@@ -30,26 +30,6 @@ $definition->setArguments(array(
 $definition->addMethodCall('setContainer', array(new Reference('service_container')));
 $container->setDefinition('doctrine.dbal.connection_factory', $definition);
 
-// deskpro.cache.annotations
-$definition = new Definition();
-$definition->setClass('Orb\\Doctrine\\Common\\Cache\\ArrayFileCache');
-$definition->setArguments(array(
-	'%kernel.cache_dir%/../annotations.php'
-));
-$definition->addMethodCall('registerShutdownCommit');
-$container->setDefinition('deskpro.cache.annotations', $definition);
-
-// annotations.file_cache_reader
-$definition = new Definition();
-$definition->setClass('Doctrine\\Common\\Annotations\\CachedReader');
-$definition->setPublic(false);
-$definition->setArguments(array(
-	new Reference('annotations.reader'),
-	new Reference('deskpro.cache.annotations'),
-	false
-));
-$container->setDefinition('annotations.file_cache_reader', $definition);
-
 // deskpro.interface_value
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\InterfaceValue');
@@ -102,7 +82,7 @@ $container->loadFromExtension('doctrine', array(
 		'auto_generate_proxy_classes' => false,
 		'default_entity_manager' => 'default',
 		'entity_managers' => array(
-			'default' => array('mappings' => array('DeskPRO' => array()))
+			'default' => array('mappings' => array('DeskPRO' => array('type' => 'staticphp')))
 		)
 	),
 	'dbal' => array(
