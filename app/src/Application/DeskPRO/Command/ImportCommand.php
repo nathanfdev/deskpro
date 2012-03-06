@@ -189,7 +189,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		# Check requirements
 		#----------------------------------------
 
-		if ($page == 1) {
+		if ($mode == 'run' && $page == 1) {
 
 			try {
 				$stat_db = $this->getContainer()->getDb();
