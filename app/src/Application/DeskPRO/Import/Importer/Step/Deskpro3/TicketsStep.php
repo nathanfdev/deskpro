@@ -537,7 +537,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		$this->getDb()->insert('tickets_logs', array(
 			'ticket_id' => $insert_ticket['id'],
 			'action_type' => 'free',
-			'date_created' => date('Y-m-d H:i:s'),
+			'date_created' => date('Y-m-d H:i:s', $insert_ticket['timestamp_opened']),
 			'details' => serialize(array(
 				'message' => "Ticket imported. (Ticket ID: {$insert_ticket['id']}, Original Ticket ID: {$ticket_info['id']})"
 			))
