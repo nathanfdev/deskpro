@@ -357,8 +357,8 @@ class TicketSearchController extends AbstractController
 
 		$terms = array();
 		$order_by = $this->person->getPref('agent.ui.ticket-basic-order-by.general');
-		$display_fields = $this->person->getPref('agent.ui.ticket-basic-display-fields.general');
 		$group_by = $this->in->getString('group_by');
+		$searcher = null;
 
 		#------------------------------
 		# If there's no result set, we're running it for the first time
@@ -468,7 +468,7 @@ class TicketSearchController extends AbstractController
 			'order_by'            => $result_cache->getExtraData('order_by'),
 			'ticket_ids'          => $result_cache->results,
 			'view_name'           => $this->in->getString('view_name'),
-			'view_extra'          => $this->in->getString('view_extra')
+			'view_extra'          => $this->in->getString('view_extra'),
 		);
 
 		$search_form = array(
@@ -476,10 +476,22 @@ class TicketSearchController extends AbstractController
 			'order_by' => $result_cache->getExtraData('order_by')
 		);
 		$vars['search_form'] = $search_form;
-		$vars['display_fields'] = $display_fields;
 
-		if ($this->in->getString('page_title')) {
-			$vars['page_title'] = $this->in->getString('page_title');
+		if ($this->in->getString('filtername')) {
+			$vars['filtername'] = $this->in->getString('filtername');
+		}
+
+		if ($this->in->getString('view_name')) {
+			$pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.name_' . $this->in->getString('view_name'));
+		} else {
+			$pref_display_fields = $this->person->getPref('agent.ui.ticket-basic-display-fields.general');
+		}
+
+		if ($pref_display_fields) {
+			$vars['display_fields'] = $pref_display_fields;
+		} else {
+			// Default display fields based on the filter
+			$vars['display_fields'] = $this->_suggestedDisplayFields($searcher);
 		}
 
 		return $this->_getResponseForTickets('custom-filter', $result_cache['id'], $helper, $vars);
@@ -759,21 +771,23 @@ class TicketSearchController extends AbstractController
 		return $this->render($tpl, $vars);
 	}
 
-	protected function _suggestedDisplayFields(TicketSearch $searcher)
+	protected function _suggestedDisplayFields(TicketSearch $searcher = null)
 	{
 		$display_fields = array('subject', 'user', 'department', 'agent', 'agent_team');
 
-		$specific_fields = $searcher->getSpecificFields();
+		if ($searcher) {
+			$specific_fields = $searcher->getSpecificFields();
 
-		$max = 5;
-		foreach ($searcher->getTermFields() as $term) {
-			if (!in_array($term, $specific_fields)) {
-				$display_fields[] = $term;
-			}
+			$max = 5;
+			foreach ($searcher->getTermFields() as $term) {
+				if (!in_array($term, $specific_fields)) {
+					$display_fields[] = $term;
+				}
 
-			$display_fields = array_unique($display_fields);
-			if (count($display_fields) >= $max) {
-				break;
+				$display_fields = array_unique($display_fields);
+				if (count($display_fields) >= $max) {
+					break;
+				}
 			}
 		}
 
