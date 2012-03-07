@@ -75,7 +75,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		# Set environment
 		#----------------------------------------
 
-		error_reporting(E_ALL | E_STRICT);
+		error_reporting(E_ALL);
 		@ini_set('display_errors', true);
 		@ini_set('memory_limit', -1);
 		@set_time_limit(0);
