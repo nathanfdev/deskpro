@@ -74,19 +74,29 @@ class TicketsStep extends AbstractDeskpro3Step
 	public function preRunAll()
 	{
 		$this->importer->removeTableIndexes('tickets');
-		$this->importer->removeTableIndexes('ticket_message');
-		$this->importer->removeTableIndexes('ticket_attachments');
-		$this->importer->removeTableIndexes('ticket_participant');
+		$this->importer->removeTableIndexes('tickets_logs');
+		$this->importer->removeTableIndexes('tickets_messages');
+		$this->importer->removeTableIndexes('tickets_attachments');
+		$this->importer->removeTableIndexes('tickets_participant');
 		$this->importer->removeTableIndexes('custom_data_ticket');
+		$this->importer->removeTableIndexes('tickets_search_active');
+		$this->importer->removeTableIndexes('tickets_search_message');
+		$this->importer->removeTableIndexes('tickets_search_message_active');
+		$this->importer->removeTableIndexes('tickets_search_subject');
 	}
 
 	public function postRunAll()
 	{
 		$this->importer->restoreTableIndexes('tickets');
-		$this->importer->restoreTableIndexes('ticket_message');
-		$this->importer->restoreTableIndexes('ticket_attachments');
-		$this->importer->restoreTableIndexes('ticket_participant');
+		$this->importer->restoreTableIndexes('tickets_logs');
+		$this->importer->restoreTableIndexes('tickets_messages');
+		$this->importer->restoreTableIndexes('tickets_attachments');
+		$this->importer->restoreTableIndexes('tickets_participant');
 		$this->importer->restoreTableIndexes('custom_data_ticket');
+		$this->importer->restoreTableIndexes('tickets_search_active');
+		$this->importer->restoreTableIndexes('tickets_search_message');
+		$this->importer->restoreTableIndexes('tickets_search_message_active');
+		$this->importer->restoreTableIndexes('tickets_search_subject');
 	}
 
 	public function run($page = 1)
@@ -549,12 +559,23 @@ class TicketsStep extends AbstractDeskpro3Step
 			ORDER BY id ASC
 		", array($ticket_info['id']));
 
+		$log_sql = array();
+
 		foreach ($ticket_logs as $tlog) {
 			if (!$tlog['timestamp']) {
 				continue;
 			}
 
-			$insert_tlog = array();
+			$insert_tlog = array(
+				'ticket_id' => 0,
+				'person_id' => null,
+				'action_type' => '',
+				'id_object' => null,
+				'id_before' => null,
+				'id_after' => null,
+				'details' => array(),
+				'date_created' => date('Y-m-d H:i:s')
+			);
 			$insert_tlog['ticket_id'] = $insert_ticket['id'];
 
 			if ($tlog['techid']) {
@@ -1195,8 +1216,25 @@ class TicketsStep extends AbstractDeskpro3Step
 
 			if ($insert_tlog['action_type']) {
 				$insert_tlog['details'] = serialize($insert_tlog['details']);
-				$this->getDb()->insert('tickets_logs', $insert_tlog);
+
+				$log_row = array();
+				foreach ($insert_tlog as $k => $v) {
+					if (is_null($v)) {
+						$log_row[] = 'NULL';
+					} elseif (\Orb\Util\Numbers::isInteger($v)) {
+						$log_row[] = $v;
+					} else {
+						$log_row[] = $this->getDb()->quote($v);
+					}
+				}
+
+				$log_sql[] = "(" . implode(',', $log_row) . ")";
 			}
+		}
+
+		if ($log_sql) {
+			$log_sql = "INSERT INTO tickets_logs (ticket_id, person_id, action_type, id_object, id_before, id_after, details, date_created) VALUES " . implode(',', $log_sql);
+			$this->getDb()->executeUpdate($log_sql);
 		}
 
 		#------------------------------
@@ -1242,7 +1280,7 @@ class TicketsStep extends AbstractDeskpro3Step
 					foreach ($vals as $val) {
 						$new_val = $this->getMappedNewId('ticket_def_choice', $val);
 						if ($new_val) {
-							$this->getDb()->insert('custom_data_person', array(
+							$this->getDb()->insert('custom_data_ticket', array(
 								'ticket_id' => $insert_ticket['id'],
 								'field_id' => $new_val,
 								'value' => 1

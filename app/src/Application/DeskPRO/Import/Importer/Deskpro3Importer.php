@@ -60,6 +60,7 @@ class Deskpro3Importer extends AbstractImporter
 	protected $table_exists = array();
 
 	protected $steps = array(
+		'Prepare',
 		'Settings',
 		'Banning',
 		'CustomFields',
@@ -117,6 +118,7 @@ class Deskpro3Importer extends AbstractImporter
 		'SaveDataBillingTransaction',
 		'SaveDataUserPlanSubs',
 		'SaveNotebookBlobs',
+		'Cleanup',
 	);
 
 	public function validateOptions()

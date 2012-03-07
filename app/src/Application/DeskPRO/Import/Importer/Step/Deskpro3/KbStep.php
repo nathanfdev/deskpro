@@ -63,7 +63,7 @@ class KbStep extends AbstractDeskpro3Step
 			return 1;
 		}
 
-		return ceil($count / 150);
+		return ceil($count / 50);
 	}
 
 	/**
@@ -72,14 +72,39 @@ class KbStep extends AbstractDeskpro3Step
 	 */
 	protected function getIdsBatch($page)
 	{
-		$start = $page * 150;
-		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM faq_articles ORDER BY timestamp_made ASC LIMIT $start, 150");
+		$start = $page * 50;
+		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM faq_articles ORDER BY timestamp_made ASC LIMIT $start, 50");
 
 		return $ids;
 	}
 
+	public function preRunAll()
+	{
+		$this->importer->removeTableIndexes('articles');
+		$this->importer->removeTableIndexes('article_comments');
+		$this->importer->removeTableIndexes('article_revisions');
+		$this->importer->removeTableIndexes('article_categories');
+		$this->importer->removeTableIndexes('article_attachments');
+	}
+
+	public function postRunAll()
+	{
+		$this->importer->restoreTableIndexes('articles');
+		$this->importer->restoreTableIndexes('article_comments');
+		$this->importer->restoreTableIndexes('article_revisions');
+		$this->importer->restoreTableIndexes('article_categories');
+		$this->importer->restoreTableIndexes('article_attachments');
+	}
+
 	public function run($page = 1)
 	{
+		$sub_start_time = microtime(true);
+		$this->logMessage("-- Processing batch {$page}");
+
+		if ($page == 1) {
+			$this->preRunAll();
+		}
+
 		$batch = $this->getIdsBatch($page - 1);
 
 		$ids = implode(',', $batch);
@@ -91,9 +116,6 @@ class KbStep extends AbstractDeskpro3Step
 		$this->fieldmanager = $this->getContainer()->getSystemService('article_fields_manager');
 		$this->fieldmanager->getFields();
 
-		$sub_start_time = microtime(true);
-		$this->logMessage("-- Processing batch {$page}");
-
 		foreach ($articles as $a) {
 			$this->getDb()->beginTransaction();
 
@@ -104,6 +126,10 @@ class KbStep extends AbstractDeskpro3Step
 				$this->getDb()->rollback();
 				throw $e;
 			}
+		}
+
+		if ($page >= $this->countPages()) {
+			$this->postRunAll();
 		}
 
 		$sub_end_time = microtime(true);

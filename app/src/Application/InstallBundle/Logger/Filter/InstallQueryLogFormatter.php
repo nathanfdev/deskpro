@@ -73,13 +73,27 @@ class InstallQueryLogFormatter extends \Orb\Filter\AbstractFilter
 			return null;
 		}
 
+		$params = array();
+		foreach ($log_item['queryinfo']['params'] as $k => $v) {
+			$len = strlen($v);
+			if (strlen($v) > 250) {
+				$params[$k] = 'string(' . $len . ')';
+			} else {
+				$v = str_replace(array("\r\n", "\n"), ' ', $v);
+				$params[$k] = $v;
+			}
+		}
+
+		$sql = $log_item['queryinfo']['sql'];
+		$sql = substr($sql, 0, 600);
+
 		$log_item[\Orb\Log\LogItem::MESSAGE] = sprintf(
 			"[%s %s took %.4fs] %s (%s)",
 			$log_item['queryinfo']['tag'],
 			$query_tag,
 			$log_item['queryinfo']['time_taken'],
-			$log_item['queryinfo']['sql'],
-			\DeskPRO\Kernel\KernelErrorHandler::varToString($log_item['queryinfo']['params'])
+			$sql,
+			\DeskPRO\Kernel\KernelErrorHandler::varToString($params)
 		);
 
 		$log_item[\Orb\Log\LogItem::PRIORITY] = \Orb\Log\Logger::DEBUG;

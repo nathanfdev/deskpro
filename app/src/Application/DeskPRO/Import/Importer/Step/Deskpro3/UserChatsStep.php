@@ -63,16 +63,32 @@ class UserChatsStep extends AbstractDeskpro3Step
 		return ceil($count / 50);
 	}
 
+	public function preRunAll()
+	{
+		$this->importer->removeTableIndexes('chat_conversations');
+		$this->importer->removeTableIndexes('chat_messages');
+	}
+
+	public function postRunAll()
+	{
+		$this->importer->restoreTableIndexes('chat_conversations');
+		$this->importer->restoreTableIndexes('chat_messages');
+	}
+
 	public function run($page = 1)
 	{
+		if ($page == 1) {
+			$this->preRunAll();
+		}
+
 		$this->first_dep_id = $this->getDb()->fetchColumn("SELECT id FROM departments WHERE is_chat_enabled AND parent_id IS NULL ORDER BY display_order ASC LIMIT 1");
 
 		$sub_start_time = microtime(true);
 		$batch = $this->getIdsBatch($page - 1);
 		$this->logMessage("-- Processing batch {$page}");
 
+		$this->getDb()->beginTransaction();
 		try {
-			$this->getDb()->beginTransaction();
 			foreach ($batch as $cid) {
 				$this->processChat($cid);
 			}
@@ -84,6 +100,10 @@ class UserChatsStep extends AbstractDeskpro3Step
 
 		$sub_end_time = microtime(true);
 		$this->logMessage(sprintf("-- Done. Took %.3f seconds.", $sub_end_time-$sub_start_time));
+
+		if ($page >= $this->countPages()) {
+			$this->postRunAll();
+		}
 	}
 
 	public function processChat($chat_id)

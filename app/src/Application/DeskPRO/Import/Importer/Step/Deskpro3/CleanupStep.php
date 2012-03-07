@@ -34,76 +34,21 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-abstract class SaveDataTableAbstractStep extends AbstractDeskpro3Step
+class SettingsStep extends AbstractDeskpro3Step
 {
-	public static function getTable()
-	{
-		return 'override_table_name';
-	}
-
-	protected $does_exist = null;
+	/**
+	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer
+	 */
+	protected $importer;
 
 	public static function getTitle()
 	{
-		return 'Save Data: ' . static::getTable();
-	}
-
-	public function getPerPage()
-	{
-		return 1000;
-	}
-
-	public function getDoesExist()
-	{
-		return $this->importer->doesOldTableExist(static::getTable());
-	}
-
-	public function countPages()
-	{
-		if (!$this->getDoesExist()) {
-			return 1;
-		}
-
-		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM " . static::getTable());
-		if (!$count) {
-			return 1;
-		}
-
-		return ceil($count / $this->getPerPage());
+		return 'Cleanup';
 	}
 
 	public function run($page = 1)
 	{
-		if (!$this->getDoesExist()) {
-			return;
-		}
-
-		$table = static::getTable();
-		$start = ($page - 1) * $this->getPerPage();
-		$limit = $this->getPerPage();
-
-		$this->getDb()->exec("SET unique_checks = 0");
-		$this->getDb()->exec("SET foreign_key_checks = 0");
-
-
-		$recs = $this->getOldDb()->fetchAll("SELECT * FROM $table LIMIT $start, $limit");
-
-		$this->getDb()->beginTransaction();
-		try {
-			foreach ($recs as $rec) {
-				$x = uniqid('', true);
-				$this->getDb()->insert('import_datastore', array(
-					'typename' => "table_{$table}_$x",
-					'data' => serialize($rec)
-				));
-			}
-			$this->getDb()->commit();
-		} catch (\Exception $e) {
-			$this->getDb()->rollback();
-			throw $e;
-		}
-
-		$this->getDb()->exec("SET unique_checks = 1");
-		$this->getDb()->exec("SET foreign_key_checks = 1");
+		$this->importer->restoreTableIndexes('content_search');
+		$this->importer->restoreTableIndexes('content_search_attribute');
 	}
 }

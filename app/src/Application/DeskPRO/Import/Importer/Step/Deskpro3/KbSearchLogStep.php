@@ -56,8 +56,22 @@ class KbSearchLogStep extends AbstractDeskpro3Step
 		return ceil($count / 1000);
 	}
 
+	public function preRunAll()
+	{
+		$this->importer->removeTableIndexes('searchlog');
+	}
+
+	public function postRunAll()
+	{
+		$this->importer->restoreTableIndexes('searchlog');
+	}
+
 	public function run($page = 1)
 	{
+		if ($page == 1) {
+			$this->preRunAll();
+		}
+
 		$start = ($page - 1) * 1000;
 		$batch = $this->getOldDb()->fetchAll("
 			SELECT id, `timestamp`, query, total, userid
@@ -80,6 +94,10 @@ class KbSearchLogStep extends AbstractDeskpro3Step
 			));
 
 			$this->saveMappedId('searchlog', $log['id'], $this->getDb()->lastInsertId());
+		}
+
+		if ($page >= $this->countPages()) {
+			$this->postRunAll();
 		}
 	}
 }

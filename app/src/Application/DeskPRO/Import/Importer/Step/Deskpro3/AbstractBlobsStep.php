@@ -58,7 +58,7 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 			return 1;
 		}
 
-		$pages = ceil($count / 500);
+		$pages = ceil($count / 250);
 		return $pages;
 	}
 
@@ -67,8 +67,17 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 		$table = $this->getTable();
 
 		$batch = $this->getIdsBatch($table, $page - 1);
-		foreach ($batch as $rid) {
-			$this->processBlob($table, $rid);
+
+		$this->getDb()->beginTransaction();
+		try {
+			foreach ($batch as $rid) {
+				$this->processBlob($table, $rid);
+			}
+
+			$this->getDb()->commit();
+		} catch (\Exception $e) {
+			$this->getDb()->rollback();
+			throw $e;
 		}
 	}
 
@@ -140,8 +149,8 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 	 */
 	protected function getIdsBatch($table, $page)
 	{
-		$start = $page * 500;
-		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM $table ORDER BY id ASC LIMIT $start, 500");
+		$start = $page * 250;
+		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM $table ORDER BY id ASC LIMIT $start, 250");
 
 		return $ids;
 	}

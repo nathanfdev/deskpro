@@ -56,8 +56,22 @@ class TicketDeleteLogStep extends AbstractDeskpro3Step
 		return ceil($count / 1000);
 	}
 
+	public function preRunAll()
+	{
+		$this->importer->removeTableIndexes('tickets_deleted');
+	}
+
+	public function postRunAll()
+	{
+		$this->importer->restoreTableIndexes('tickets_deleted');
+	}
+
 	public function run($page = 1)
 	{
+		if ($page == 1) {
+			$this->preRunAll();
+		}
+
 		$start = ($page - 1) * 1000;
 		$batch = $this->getOldDb()->fetchAll("
 			SELECT * FROM ticket_delete_log
@@ -74,6 +88,10 @@ class TicketDeleteLogStep extends AbstractDeskpro3Step
 		} catch (\Exception $e) {
 			$this->getDb()->rollback();
 			throw $e;
+		}
+
+		if ($page >= $this->countPages()) {
+			$this->postRunAll();
 		}
 	}
 
