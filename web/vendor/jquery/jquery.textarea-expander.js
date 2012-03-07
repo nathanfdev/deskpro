@@ -56,6 +56,8 @@
 
 				e.valLength = vlen;
 				e.boxWidth = ewidth;
+
+				$(e).trigger('textareaexpander_expanded');
 			}
 
 			return true;
