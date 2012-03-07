@@ -142,7 +142,10 @@ class Settings implements \ArrayAccess
 				$this->_pending_groups[] = $check_group;
 
 				$this->_loadPendingGroups();
-				return $this->get($name);
+				if (!isset($this->settings[$name])) {
+					return null;
+				}
+				return $this->settings[$name];
 			}
 
 			return null;
@@ -239,7 +242,7 @@ class Settings implements \ArrayAccess
 				App::getCache('common')->save($db_settings, null, array('settings'));
 			}
 
-			$this->settings = array_merge($this->settings, $db_settings);
+			$this->settings = array_merge($db_settings, $this->settings);
 		}
 
 		$this->_loaded_groups = array_merge($this->_loaded_groups, $this->_pending_groups);

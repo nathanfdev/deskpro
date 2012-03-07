@@ -13,6 +13,22 @@ DeskPRO.Admin.PageHandler.SettingsAdvanced = new Class({
 		var self = this;
 		$('input.dp-set-value', this.settingsRows).on('change', function() {
 			self.updateSettingFromInput($(this));
+		}).on('keydown', function(ev) {
+			if (ev.keyCode == 13) { // enter saves
+				ev.preventDefault();
+				$(this).blur();
+			}
+		});
+
+		$(document).on('click', '.revert', function() {
+			var row = $(this).closest('tr');
+			self.revertSetting(row)
+			self.updateSettingFromInput(row.find('input.dp-set-value'));
+		});
+
+		var revertOverlay = new DeskPRO.UI.Overlay({
+			contentElement: '#revert_all_warn',
+			triggerElement: '#revert_all_btn'
 		});
 	},
 
@@ -51,7 +67,21 @@ DeskPRO.Admin.PageHandler.SettingsAdvanced = new Class({
 			url: BASE_URL + 'admin/settings/advanced-set/' + name,
 			data: {value: value},
 			dataType: 'json',
-			type: 'POST'
+			type: 'POST',
+			success: function() {
+				DeskPRO_Window.util.showSavePuff(input);
+
+				var row = input.closest('tr');
+				if (row.find('input.dp-set-default').val() == value) {
+					input.closest('tr').removeClass('changed');
+				} else {
+					input.closest('tr').addClass('changed');
+				}
+			}
 		});
+	},
+
+	revertSetting: function(row) {
+		row.find('input.dp-set-value').val(row.find('input.dp-set-default').val());
 	}
 });

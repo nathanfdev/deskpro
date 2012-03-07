@@ -98,11 +98,33 @@ class SettingsController extends AbstractController
 	 */
 	public function advancedAction()
 	{
-		$settings_files = new \Application\DeskPRO\ResourceScanner\SettingFiles();
-		$all_settings = $settings_files->getAllSettings();
+		$settings_files = new \Application\DeskPRO\ResourceScanner\AdvancedSettings();
+		$show_settings = $settings_files->getAllSettings();
+
+		if (App::getSession()->checkSecurityToken('revert_all', $this->in->getString('revert_all'))) {
+			$this->db->beginTransaction();
+			try {
+
+				foreach ($show_settings as $k => $v) {
+					$this->db->delete('settings', array('name' => $k));
+				}
+
+				$this->db->commit();
+			} catch (\Exception $e) {
+				$this->db->rollback();
+				throw $e;
+			}
+
+			return $this->redirectRoute('admin_settings_adv');
+		}
+
+		foreach ($show_settings as $k => &$v) {
+			$set = $this->container->getSetting($k);
+			$v = array('default' => $v, 'set' => $set);
+		}
 
 		return $this->render('AdminBundle:Settings:advanced.html.twig', array(
-			'all_settings' => $all_settings
+			'show_settings' => $show_settings
 		));
 	}
 

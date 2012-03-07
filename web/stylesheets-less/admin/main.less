@@ -1848,8 +1848,8 @@ input[type=button],input[type=reset],input[type=submit]{width:auto;height:auto;}
 }
 
 .setting_section_head a {
-	font-size: 9px;
-	color: #C7CBD1;
+	font-size: 11px;
+	color: darken(#C7CBD1, 20%);
 	text-decoration: none;
 	float: right;
 }
@@ -3369,4 +3369,22 @@ THE SOFTWARE.
 	margin-top: 7px;
 	padding: 5px;
 	.rounded(4px);
+}
+
+
+
+tr.adv-setting {
+	.revert {
+		.iconbase(10px, 10px);
+		background: url(../../images/agent/icons/move-to-tab.png);
+		cursor: pointer;
+		display: none;
+	}
+
+	&.changed {
+		.revert { display: inline-block; }
+		td {
+			background-color: #FFFBEB;
+		}
+	}
 }

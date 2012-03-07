@@ -11,7 +11,7 @@
 {% block page %}
 
 <div class="setting_section_head">
-	<a href="{{ path('admin_settings_adv') }}">Advanced settings view</a>
+	<a href="#" id="adv_settings_btn">Advanced settings view</a>
 </div>
 
 <form action="{{ path('admin_settings') }}" method="POST" id="settings_form">
@@ -145,5 +145,20 @@
 </div>
 
 </form>
+
+<div id="adv_settings_warn" style="width: 400px; height: 200px; display: none;">
+	<div class="overlay-title">
+		<span class="close-overlay"></span>
+		<h4>Advanced Settings</h4>
+	</div>
+	<div class="overlay-content">
+		<p>Warning: Settings listed in "Advanced Settings" are undocumented and changing them can have unexpected consequences.</p>
+		<br />
+		<p>Only make changes if you know what you are doing or have been instructed by a support agent.</p>
+	</div>
+	<div class="overlay-footer">
+		<a href="{{ path('admin_settings_adv') }}" class="clean-white">Continuet to Advanced Settings</a>
+	</div>
+</div>
 
 {% endblock %}

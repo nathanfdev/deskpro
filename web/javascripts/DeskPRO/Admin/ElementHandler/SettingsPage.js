@@ -79,5 +79,9 @@ DeskPRO.Admin.ElementHandler.SettingsPage = new Orb.Class({
 			});
 		}, this);
 
+		var settingsWarn = new DeskPRO.UI.Overlay({
+			contentElement: '#adv_settings_warn',
+			triggerElement: '#adv_settings_btn'
+		});
 	}
 });

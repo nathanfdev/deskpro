@@ -1,12 +1,18 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block pagetitle %}
-	<h1>Settings</h1>
+{% block pagebar %}
+<div style="float:right; padding: 6px 6px 0 0">
+	<input type="text" id="settings_filter" value="" placeholder="Filter" style="width: 200px;" />
+</div>
+<ul>
+	<li><a href="{{ path('admin_settings') }}">Settings</a></li>
+	<li>Advanced</li>
+</ul>
 {% endblock %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/SettingsAdvanced.js') }}"></script>
 <style type="text/css">
 	.setting-input {
-		background-color: #fff;
+		background-color: transparent;
 		border: 1px solid transparent;
 		cursor: pointer;
 		padding: 1px;
@@ -43,29 +49,45 @@ function _page_exec() {
 {% endblock %}
 {% block page %}
 
-<div class="table-list-wrap">
-	<div class="setting-filter-form">
-		Filter: <input type="text" id="settings_filter" value="" />
-	</div>
-	<br class="clear" />
-	<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
+<div style="text-align: right; padding-bottom: 5px;">
+	<a href="#" id="revert_all_btn">Revert All Settings</a>
+</div>
+
+<div class="content-table">
+	<table cellspacing="0" cellpadding="0" width="100%">
 		<thead>
 			<tr>
-				<th width="200">Name</th>
-				<th>Default Value</th>
-				<th>Set Value</th>
+				<th style="text-align:left" width="200">Name</th>
+				<th style="text-align:left">Default Value</th>
+				<th style="text-align:left">Set Value</th>
 			</tr>
 		</thead>
 		<tbody id="settings_rows">
-			{% for name,value in all_settings %}
-				<tr>
-					<td>{{name}}</td>
-					<td><input class="setting-input" value="{{value}}" /></td>
-					<td><input  value="{{ app.getSetting(name) }}" class="setting-input dp-set-value" data-setting-name="{{name}}" /></td>
+			{% for set_name,info in show_settings %}
+				<tr class="adv-setting {% if info.default != info.set %}changed{% endif %}">
+					<td>
+						{{set_name}}
+						<span class="revert tipped" title="Revert setting back to default">revert</span>
+					</td>
+					<td><input class="setting-input dp-set-default" value="{{ info.default }}" /></td>
+					<td><input  value="{{ info.set }}" class="setting-input dp-set-value" data-setting-name="{{set_name}}" /></td>
 				</tr>
 			{% endfor %}
 		</tbody>
 	</table>
+</div>
+
+<div id="revert_all_warn" style="width: 400px; height: 150px; display: none;">
+	<div class="overlay-title">
+		<span class="close-overlay"></span>
+		<h4>Revert Settings</h4>
+	</div>
+	<div class="overlay-content">
+		Are you sure you want to revert ALL settings on this page to their default values? There is no way to undo this action.
+	</div>
+	<div class="overlay-footer">
+		<a href="{{ path('admin_settings_adv', {revert_all: security_token('revert_all')}) }}" class="clean-white">Revert ALL Settings</a>
+	</div>
 </div>
 
 {% endblock %}
