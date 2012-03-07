@@ -356,7 +356,7 @@ class KbStep extends AbstractDeskpro3Step
 			$count_comment++;
 		}
 
-		$this->getDb()->update('article', array(
+		$this->getDb()->update('articles', array(
 			'num_ratings' => $total_rating,
 			'total_rating' => $count_rating,
 			'num_comments' => $count_comment
