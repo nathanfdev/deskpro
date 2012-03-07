@@ -127,7 +127,8 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 		$this->visitor = $vis;
 
-		setcookie('dpvid', $vis['visitor_code'], time()+15778463, '/');
+		$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvid', $vis['visitor_code'], 'never');
+		$cookie->send();
 
 		$this->set('dpvid', $vis['id']);
 		$this->set('dplast', time());

@@ -81,7 +81,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 	public function logoutAction($auth)
 	{
-		if (!$this->container->getSession()->checkSecurityToken('user_logout', $auth)) {
+		if (!\Orb\Util\Util::checkStaticSecurityToken($auth, md5(App::getAppSecret() . 'user_logout'))) {
 			return $this->redirectRoute('user');
 		}
 
@@ -106,7 +106,8 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 				}
 			}
 
-			setcookie($cookie_name, '0', strtotime('-30 days'), '/');
+			$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie($cookie_name);
+			$cookie->send();
 		}
 
 		if ($this->in->getString('quicklogout') == 'ajax') {
