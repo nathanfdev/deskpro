@@ -200,8 +200,8 @@ class FeedbackStep extends AbstractDeskpro3Step
 			$insert_rating['date_created'] = date('Y-m-d H:i:s', $r['created_at']);
 			$insert_rating['rating'] = 1;
 
-			if ($r['userid']) {
-				$person_id = $this->getMappedNewId('user', $r['userid']);
+			if ($r['user_id']) {
+				$person_id = $this->getMappedNewId('user', $r['user_id']);
 				if ($person_id) {
 					$insert_rating['person_id'] = $person_id;
 				}
