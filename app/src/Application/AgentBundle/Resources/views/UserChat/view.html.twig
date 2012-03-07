@@ -15,7 +15,7 @@ pageMeta.conversation_id = {{convo.id}};
 pageMeta.youName         = {{ app.user.display_name|json_encode|raw }};
 pageMeta.tabIdClass      = 'user_chat_tab_{{convo.id}}';
 pageMeta.status = '{{ convo.status }}';
-pageMeta.isEnded = {% if convo.status == 'ended '%}true{% endif %}false;
+pageMeta.isEnded = {% if convo.status == 'ended' %}true{% else %}false{% endif %};
 
 pageMeta.session_id = {{ convo.session.id|default('null') }};
 {% if convo.person.id %}

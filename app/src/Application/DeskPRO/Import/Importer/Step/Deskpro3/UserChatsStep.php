@@ -134,6 +134,9 @@ class UserChatsStep extends AbstractDeskpro3Step
 		}
 
 		$convo->subject = $chat_info['subject'];
+		if (!$convo->subject) {
+			$convo->subject = '(Untitled)';
+		}
 
 		if ($chat_info['rating'] >= 1) {
 			$convo->rating_response_time = $chat_info['rating'];
@@ -195,6 +198,7 @@ class UserChatsStep extends AbstractDeskpro3Step
 			$add_end = false;
 
 			$message = array();
+			$message['metadata'] = 'a:0:{}';
 			$message['conversation_id'] = $convo->id;
 			$message['date_created'] = date('Y-m-d H:i:s', (int)$message_info['timestamp_sent']);
 			if ($message_info['visibility'] == 'tech') {
@@ -214,15 +218,21 @@ class UserChatsStep extends AbstractDeskpro3Step
 				$message['person_name'] = $agent->getDisplayName();
 				$message['content']     = $message_info['message'];
 
+				if (!$message_info['message']) continue;
+
 			// User message
 			} elseif ($message_info['authortype'] == 'user') {
-				$person = $this->getPerson($this->getMappedNewId('user', $message_info['authorid']));
-				if (!$person) {
-					continue;
+				if ($message_info['authorid']) {
+					$person = $this->getPerson($this->getMappedNewId('user', $message_info['authorid']));
+					if (!$person) {
+						continue;
+					}
+					$message['author_id']   = $person->id;
+					$message['person_name'] = $person->getDisplayName();
 				}
-				$message['author_id']   = $person->id;
-				$message['person_name'] = $person->getDisplayName();
 				$message['content']     = $message_info['message'];
+
+				if (!$message_info['message']) continue;
 
 			// System message
 			} else {

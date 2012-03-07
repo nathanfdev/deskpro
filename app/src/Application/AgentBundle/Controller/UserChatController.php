@@ -391,7 +391,7 @@ class UserChatController extends AbstractController
 		// Count ended
 		$ended_chats_count = $this->container->getDb()->fetchColumn("
 			SELECT COUNT(*) FROM chat_conversations
-			WHERE status = 'ended' AND is_agent = 0
+			WHERE $where status = 'ended'
 		");
 
 		$html = $this->renderView('AgentBundle:UserChat:window-section.html.twig', array(
@@ -496,18 +496,34 @@ class UserChatController extends AbstractController
 	{
 		$where = $this->getAgentWhereSql();
 
+		$total = $this->container->getDb()->fetchColumn("
+			SELECT COUNT(*) FROM chat_conversations
+			WHERE $where status = 'ended'
+		");
+
+		$limit = 50;
+		$max_page = ceil($total / $limit);
+
+		$page = $this->in->getUint('p');
+		if (!$page || $page > $max_page) $page = 1;
+
+		$start = ($page - 1) * $limit;
+
 		$chat_ids = $this->container->getDb()->fetchAllCol("
 			SELECT id FROM chat_conversations
-			WHERE $where status = 'ended' AND is_agent = 0
+			WHERE $where status = 'ended'
 			ORDER BY id DESC
-			LIMIT 1000
+			LIMIT $start, $limit
 		");
 
 		$chats = $this->container->getEm()->getRepository('DeskPRO:ChatConversation')->getByIds($chat_ids, true);
 
 		return $this->render('AgentBundle:UserChat:list.html.twig', array(
 			'chat_ids' => $chat_ids,
-			'chats' => $chats
+			'chats' => $chats,
+			'total' => $total,
+			'page' => $page,
+			'max_page' => $max_page,
 		));
 	}
 

@@ -132,7 +132,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		this.addEvent('closeTab', function(event) {
 			// Already ended or not assigned to us
-			if (this.hasEnded || this.getEl('assign_btn').data('agent-id') != DESKPRO_PERSON_ID) {
+			if (this.hasEnded || this.getEl('assign_btn').data('agent-id') != DESKPRO_PERSON_ID || this.meta.isEnded) {
 				return;
 			}
 

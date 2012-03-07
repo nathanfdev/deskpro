@@ -40,8 +40,6 @@ DeskPRO.Agent.PageFragment.ListPane.UserChatFilter = new Orb.Class({
 			opt.resultsContainer = $('.table-result-list table', el);
 			opt.navEl = $('.bottom-action-bar', el);
 		}
-		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
-		this.ownObject(this.resultsHelper);
 
 		this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
 	}

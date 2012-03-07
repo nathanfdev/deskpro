@@ -15,16 +15,14 @@
 			</div>
 			<div class="userinfo general">
 				By {% if convo.person %}
-					<a
-						class="user-link as-popover"
-						data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}"
-					>{{ convo.person.display_name }}</a> &lt;{{ convo.person.primary_email_address }}&gt;</a>
+					<a class="name click-through"><span class="person-name-picture" style="background-image: url({{ convo.person.getPictureUrl(15) }})">{{ convo.person.display_name }}</span></a>
+					{% if convo.person.email_address %}<span class="convo.person-email">&lt;{{ convo.person.email_address }}&gt;</span>{% endif %},
 				{% elseif convo.person_name or convo.person_email %}
-					{{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %}
+					{{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %},
 				{% else %}
-					{{ phrase('agent.anonymous') }}
+					{{ phrase('agent.anonymous') }},
 				{% endif %}
-				, <time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('day_short') }}</time>
+				<time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('day_short') }}</time>
 			</div>
 		</article>
 	{% endfor %}
