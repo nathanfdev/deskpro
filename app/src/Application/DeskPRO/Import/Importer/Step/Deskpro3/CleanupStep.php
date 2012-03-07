@@ -48,6 +48,8 @@ class SettingsStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
+		$this->getDb()->exec("CREATE FULLTEXT INDEX content ON content_search (content)");
+
 		$this->importer->restoreTableIndexes('content_search');
 		$this->importer->restoreTableIndexes('content_search_attribute');
 	}

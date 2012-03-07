@@ -48,6 +48,8 @@ class PrepareStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
+		$this->getDb()->exec("ALTER TABLE content_search DROP INDEX content");
+
 		$this->importer->removeTableIndexes('content_search');
 		$this->importer->removeTableIndexes('content_search_attribute');
 	}

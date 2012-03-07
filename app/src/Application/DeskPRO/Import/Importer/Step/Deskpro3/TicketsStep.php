@@ -81,6 +81,10 @@ class TicketsStep extends AbstractDeskpro3Step
 		$this->importer->removeTableIndexes('custom_data_ticket');
 		$this->importer->removeTableIndexes('tickets_search_active');
 		$this->importer->removeTableIndexes('tickets_search_message');
+
+		$this->getDb()->exec("ALTER TABLE tickets_search_message DROP INDEX content");
+		$this->getDb()->exec("ALTER TABLE tickets_search_message_active DROP INDEX content");
+
 		$this->importer->removeTableIndexes('tickets_search_message_active');
 		$this->importer->removeTableIndexes('tickets_search_subject');
 	}
@@ -95,6 +99,10 @@ class TicketsStep extends AbstractDeskpro3Step
 		$this->importer->restoreTableIndexes('custom_data_ticket');
 		$this->importer->restoreTableIndexes('tickets_search_active');
 		$this->importer->restoreTableIndexes('tickets_search_message');
+
+		$this->getDb()->exec("CREATE FULLTEXT INDEX content ON tickets_search_message (content)");
+		$this->getDb()->exec("CREATE FULLTEXT INDEX content ON tickets_search_message_active (content)");
+
 		$this->importer->restoreTableIndexes('tickets_search_message_active');
 		$this->importer->restoreTableIndexes('tickets_search_subject');
 	}
