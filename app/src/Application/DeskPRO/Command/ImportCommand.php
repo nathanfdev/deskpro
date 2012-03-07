@@ -336,11 +336,15 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$total = $install_schema->countQueries();
 			$count = 0;
 			$self = $this;
-			$fn = function($section, $status, $sql, $x, $e = null) use (&$errors, &$count, $total, $self, $output) {
+			$fn = function($section, $status, $sql, $x, $e = null) use (&$errors, &$count, $total, $self, $output, $logger) {
 				$count++;
 				$self->updateStatus($output, '1. Installing Database', $count, $total);
 				if ($status == 'error') {
 					$errors[] = $e . " (SQL: $sql)";
+				} elseif ($status == 'done') {
+					// $e in this case will be the time
+					$sql = str_replace("\n", ' ', $sql);
+					$logger->log(sprintf("[Install Query %.5f] %s", $e, $sql), 'DEBUG');
 				}
 			};
 
