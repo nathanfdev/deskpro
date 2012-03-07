@@ -101,6 +101,16 @@ class TechsStep extends AbstractDeskpro3Step
 				$this->getEm()->persist($agent);
 				$this->getEm()->flush();
 
+				// Copy signature
+				if ($tech['signature']) {
+					$this->getDb()->insert('people_prefs', array(
+						'name' => 'agent.ticket_signature',
+						'person_id' => $agent->id,
+						'value_str' => $tech['signature'],
+						'value_array' => 'N;'
+					));
+				}
+
 				$this->saveMappedId('tech', $tech['id'], $agent->id);
 
 				if ($agent->can_admin && !$has_admin) {
