@@ -26,19 +26,95 @@
 \**************************************************************************/
 
 /**
- * Loader file for \Orb\Doctrine\ORM\Mapping\StaticReflectionProperty
+ * Orb
  *
- * PHP's implementation of ReflectionProperty::getValue() is overloaded
- * (http://uk.php.net/manual/en/reflectionproperty.getvalue.php)
- * in such a way that it is imposisble to create a strict compliant version
- * in PHP when we want to override it.
- *
- * This loader just changes the error reporting to skip E_STRICT so it can
- * be included without this strict notice:
- * Declaration of Orb\Doctrine\ORM\Mapping\StaticReflectionProperty::getValue() should be compatible with that of ReflectionProperty::getValue()
+ * @package Orb
+ * @subpackage Doctrine
  */
 
-$__olde = error_reporting(E_ALL);
-require __DIR__.'/StaticReflectionProperty_Real.php';
-error_reporting($__olde);
-unset($__olde);
+namespace Orb\Doctrine\ORM\Mapping;
+
+class StaticReflectionProperty extends \ReflectionProperty
+{
+	public $_class;
+	public $_prop;
+
+	public function __construct($class, $prop)
+	{
+		$this->_class = $class;
+		$this->_prop = $prop;
+	}
+
+	public function getName()
+	{
+		return $this->_prop;
+	}
+
+	public function getValue($object)
+	{
+		if (!$object) {
+			throw new \RuntimeException("Unsupported Operation");
+		}
+
+		return $object->__getPropValue__($this->_prop);
+	}
+
+	public function setValue($object = null, $value = null)
+	{
+		if (func_num_args() != 2) {
+			throw new \RuntimeException("Unsupported Operation");
+		}
+
+		return $object->__setPropValue__($this->_prop, $value);
+	}
+
+	public function setAccessible()
+	{
+		// nullop
+	}
+
+	public function getModifiers()
+	{
+		throw new \RuntimeException("Unsupported Operation");
+	}
+
+	public function isDefault()
+	{
+		throw new \RuntimeException("Unsupported Operation");
+	}
+
+	public function getDeclaringClass()
+	{
+		throw new \RuntimeException("Unsupported Operation");
+	}
+
+	public function getDocComment()
+	{
+		throw new \RuntimeException("Unsupported Operation");
+	}
+
+	public function isPrivate()
+	{
+		throw new \RuntimeException("Unsupported Operation");
+	}
+
+	public function isProtected()
+	{
+		throw new \RuntimeException("Unsupported Operation");
+	}
+
+	public function isPublic()
+	{
+		throw new \RuntimeException("Unsupported Operation");
+	}
+
+	public function isStatic()
+	{
+		throw new \RuntimeException("Unsupported Operation");
+	}
+
+	public function __toString()
+	{
+		return "{$this->_class}::{$this->_prop}";
+	}
+}

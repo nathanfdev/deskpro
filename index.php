@@ -24,7 +24,7 @@ define('DP_CONFIG_FILE', dirname(__FILE__) . '/config.php');
 # You should not change anything below this line
 #########################################################################################################
 
-error_reporting(E_ALL);
+error_reporting(E_ALL | E_STRICT);
 define('DP_WEB_ROOT', dirname(__FILE__));
 
 if (isset($_GET['_sys'])) {
