@@ -322,7 +322,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 </div>
 
 {% if ticket_perms.reply or ticket_perms.modify_note %}
-<div id="{{baseId}}_replybox_wrap">
+<div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
 	{% include 'AgentBundle:Ticket:replybox.html.twig' %}
 </div>
 {% endif %}

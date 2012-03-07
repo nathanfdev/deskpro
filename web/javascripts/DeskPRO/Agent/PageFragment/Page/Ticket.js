@@ -21,6 +21,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	initPage: function(el) {
 		var self = this;
+		this.getEl('replybox_wrap').data('page', this);
 
 		this.valueForm = $('form.value-form:first', this.wrapper);
 		this.valueForm.on('submit', function(ev) {
@@ -363,7 +364,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	appendToMessage: function(content) {
-		this.wrapper.find('.ticket-reply-form').data('handler').appendToMessage(content);
+		this.insertTextInReply(content);
+
+		// Scroll down
+		this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+
+		// Focus reply
+		$('textarea[name="message"]', self.ticketReply).focus();
 	},
 
 	addAttachToList: function(attachInfo) {
@@ -664,9 +671,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			case 'quote':
 				var quote = $('textarea.message-quote-' + messageId, this.wrapper).val();
-				var reply = this.getEl('replybox_txt');
-				reply.val(quote + "\n\n" + reply.val());
-				reply.focus();
+				this.insertTextInReply(quote);
+
+				// Scroll down
+				this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+
+				// Focus reply
+				$('textarea[name="message"]', self.ticketReply).focus();
+
 				break;
 
 			case 'split':
@@ -687,5 +699,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				});
 				break;
 		}
+	},
+
+	insertTextInReply: function(text) {
+		var txt = this.getEl('replybox_wrap').find('textarea[name="message"]');
+
+		var pos = txt.getCaretPosition();
+		if (!pos) {
+			txt.setCaretPosition(0);
+		}
+
+		txt.insertAtCaret(text);
 	}
 });
