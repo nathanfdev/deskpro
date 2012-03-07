@@ -48,6 +48,7 @@
 		oWrapper.on('goscrollbottom', function() {
 			iScroll = 100000;
 			iScroll = Math.min((oContent[options.axis] - oViewport[options.axis]), Math.max(0, iScroll));
+			iScroll + 10;
 			oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 			oContent.obj.css(sDirection, -iScroll);
 		});
