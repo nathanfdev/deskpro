@@ -23,13 +23,15 @@
 	</div>
 	<div class="edit" style="display: none">
 		<form>
-			<span class="delete-snippet-trigger" data-snippet-id="{{ snippet.id }}" style="cursor: pointer;">{{ phrase('agent.delete') }}</span>
 			<input type="hidden" name="snippet_id" value="{{ snippet.id }}" />
 			<label><input type="text" name="title" value="{{ snippet.title }}" /></label>
 			<div class="content">
 				<textarea name="snippet">{{ snippet.snippet }}</textarea>
-				<button class="clean-white save-snippet-trigger">{{ phrase('agent.update') }}</button>
-				<button class="clean-white cancel-snippet-trigger">{{ phrase('agent.cancel') }}</button>
+				<div class="edit-controls">
+					<button class="clean-white save-snippet-trigger">{{ phrase('agent.update') }}</button>
+					<button class="clean-white cancel-snippet-trigger">{{ phrase('agent.cancel') }}</button>
+					<span class="delete-snippet-trigger" data-snippet-id="{{ snippet.id }}" style="cursor: pointer;">Delete Snippet</span>
+				</div>
 			</div>
 		</form>
 	</div>

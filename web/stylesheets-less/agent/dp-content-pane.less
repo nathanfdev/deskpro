@@ -2555,6 +2555,10 @@ padding: 30px;
 	}
 }
 
+.snippets-overlay .edit-controls {
+	width: 90%;
+}
+
 .snippets-overlay > nav {
 	position: absolute;
 	top: 0; bottom: 0; left: 0;
@@ -2687,7 +2691,7 @@ padding: 30px;
 	right: 0; bottom: 0; left: 0;
 	height: 7px;
 
-	background-image: url(../../images/agent/button-downarrow.png) no-repeat 50% 50%;
+	background: url(../../images/agent/button-downarrow.png) no-repeat 50% 50%;
 	.opacity(60);
 
 	.rounded(5px);
@@ -2700,7 +2704,6 @@ padding: 30px;
 
 	background: url(../../images/agent/button-uparrow.png) no-repeat 50% 50%;
 	.opacity(60);
-
 	.rounded(5px);
 }
 
@@ -2825,10 +2828,17 @@ padding: 30px;
 
 .snippets-overlay .delete-snippet-trigger {
 	float: right;
-	.iconbase(16px, 16px);
-	background: url(../../images/agent/icons/cross.png);
+	display: block;
+	line-height: 13px;
+	padding-right: 14px;
+	font-size: 11px;
+	background: url(../../images/agent/icons/delete-small.png) no-repeat 100% 50%;
 	cursor: pointer;
-	margin-right: 10px;
+	.opacity(50);
+
+	&:hover {
+		.opacity(100);
+	}
 }
 
 .new-snippet-category {
