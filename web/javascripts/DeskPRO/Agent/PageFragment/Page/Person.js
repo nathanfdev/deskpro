@@ -43,8 +43,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		// then forces textext to invalidatebounds
 		var propBox = self.getEl('properties_box');
 
+		var input = self.getEl('label_input');
 		if (input) {
-			var input = self.getEl('label_input');
 			input.width(propBox.width() - 140);
 
 			$(window).resize(function() {
