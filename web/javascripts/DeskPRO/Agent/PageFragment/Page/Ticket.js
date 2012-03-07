@@ -671,7 +671,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			case 'quote':
 				var quote = $('textarea.message-quote-' + messageId, this.wrapper).val();
-				this.insertTextInReply(quote);
+				this.insertTextInReply(quote.trim() + "\n");
 
 				// Scroll down
 				this.wrapper.find('div.layout-content').trigger('goscrollbottom');
