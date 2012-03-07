@@ -141,12 +141,11 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			if (w > this.options.maxWidth) w = this.options.maxWidth;
 			if (h > this.options.maxHeight) h = this.options.maxHeight;
 
-			$('iframe:first', this.elements.wrapper).css({ width: w, height: h });
+			this.elements.wrapper.css({ width: w, height: h });
+			$('iframe:first', this.elements.wrapper).css({ width: w, height: h-37 });
 
 			var x = ($(window).width() - this.elements.wrapperOuter.outerWidth()) / 2;
 			var y = ($(window).height() - this.elements.wrapperOuter.outerHeight()) / 2;
-
-			this.elements.wrapperOuter.css({'left': x, 'top': y+topOffset});
 
 		} else {
 			var w = this.elements.wrapperOuter.outerWidth();
@@ -343,6 +342,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 				this.hasInit = true;
 
 				this.elements.wrapper.addClass('no-pad').addClass('iframe');
+				this.elements.wrapper.find('> .overlay-content').addClass('no-footer');
 
 				return true;
 				break;
@@ -406,6 +406,10 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			var insideEl = el;
 			var el = $('<div class="overlay-content" />');
 			insideEl.wrap(el);
+		}
+
+		if (this.options.title && !this.elements.wrapper.find('.overlay-title')[0]) {
+			this.elements.wrapper.prepend('<div class="overlay-title"><h4></h4></div>').find('h4').text(this.options.title);
 		}
 
 		if (this.options.addClose && !$('.close-trigger, .close-overlay', this.elements.wrapper).length) {
