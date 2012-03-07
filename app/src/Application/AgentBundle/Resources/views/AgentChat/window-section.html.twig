@@ -9,7 +9,7 @@
 				<span class="list-counter">{{ chatted_counts[0]|default(0) }}</span>
 				Agent Chats
 			</h3>
-			<ul class="subgroup">
+			<ul class="sub-group show">
 				{% for agent in agent_chatted %}
 					<li>
 						<span class="title is-nav-item agent-{{ agent.id }}" data-route="listpane:{{ path('agent_agentchat_history', {'agent_id': agent.id}) }}">
@@ -27,7 +27,7 @@
 				<span class="list-counter">{{ chatted_team_counts[0]|default(0) }}</span>
 				Team Chats
 			</h3>
-			<ul class="subgroup">
+			<ul class="sub-group show">
 				{% for agent_team in agent_team_chatted %}
 					<li>
 						<span class="title is-nav-item agent-team-{{ agent_team.id }}" data-route="listpane:{{ path('agent_agentchat_history_team', {'agent_team_id': agent_team.id}) }}">
