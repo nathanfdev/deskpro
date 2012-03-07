@@ -79,8 +79,8 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Format a snippet
 	 *
-	 * @param Application\DeskPRO\Entity\Ticket $ticket
-	 * @param Application\DeskPRO\Entity\Person $person
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 * @param \Application\DeskPRO\Entity\Person $person
 	 * @return string
 	 */
 	public function snippetFormatted(Ticket $ticket = null, Person $person = null, array $pattern = null)
@@ -198,8 +198,8 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Format a snippet for display as html (ie preview)
 	 *
-	 * @param Application\DeskPRO\Entity\Ticket $ticket
-	 * @param Application\DeskPRO\Entity\Person $person
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 * @param \Application\DeskPRO\Entity\Person $person
 	 * @return string
 	 */
 	public function snippetFormattedHtml(Ticket $ticket = null, Person $person = null)

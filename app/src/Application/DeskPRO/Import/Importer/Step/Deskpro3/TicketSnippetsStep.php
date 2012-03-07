@@ -69,6 +69,15 @@ class TicketSnippetsStep extends AbstractDeskpro3Step
 		}
 		unset($cats);
 
+		$replace = array(
+			'###USER::username###'  => '{{ user.email }}',
+			'###USER::email###'     => '{{ user.email }}',
+			'###USER::name###'      => '{{ user.name }}',
+			'###TICKET::subject###' => '{{ ticket.subject }}',
+			'###TICKET::id###'      => '{{ ticket.id }}',
+			'###TICKET::status###'  => '{{ ticket.status }}',
+		);
+
 		// Import snippets now
 		$quick_replies = $this->getOldDb()->fetchAll("SELECT * FROM quickreply");
 		foreach ($quick_replies as $qr) {
@@ -79,6 +88,8 @@ class TicketSnippetsStep extends AbstractDeskpro3Step
 			if (!isset($this->cat_map[$qr['category']])) {
 				continue;
 			}
+
+			$qr['response'] = str_replace(array_keys($replace), array_values($replace), $qr['response']);
 
 			$this->getDb()->insert('ticket_snippets', array(
 				'person_id' => $agent_id,
