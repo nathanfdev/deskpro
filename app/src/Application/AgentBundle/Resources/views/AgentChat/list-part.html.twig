@@ -8,7 +8,8 @@
 				<div class="top-row-left">
 					<h3>
 						<a class="subject click-through">
-							{% for p in convo.participants %}{% if p.id != app.user.id %}{% if not loop.first %}, {% endif %}{{ p.display_name }}{% endif %}{% endfor %}
+							{% set isfirst = true %}
+							{% for p in convo.participants %}{% if p.id != app.user.id %}{% if not isfirst %}, {% endif %}{{ p.display_name }}{% set isfirst = false %}{% endif %}{% endfor %}
 						</a>
 					</h3>
 				</div>

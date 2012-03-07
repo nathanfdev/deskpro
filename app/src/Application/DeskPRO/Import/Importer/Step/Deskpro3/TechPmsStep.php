@@ -101,7 +101,7 @@ class TechPmsStep extends AbstractDeskpro3Step
 			}
 
 			$chat_message = $convo->addNewMessage(
-				strip_tags($message['message']),
+				html_entity_decode(strip_tags($message['message']), \ENT_QUOTES),
 				$agent
 			);
 

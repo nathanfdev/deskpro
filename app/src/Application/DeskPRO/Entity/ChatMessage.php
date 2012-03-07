@@ -201,6 +201,24 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * Get message as HTML
+	 *
+	 * @return string
+	 */
+	public function getContentHtml()
+	{
+		if ($this->is_html) {
+			return $this->content;
+		}
+
+		$content = htmlspecialchars($this->content, \ENT_QUOTES, 'UTF-8');
+		$content = nl2br($content);
+
+		return $content;
+	}
+
+
 
 	############################################################################
 	# Doctrine Metadata
