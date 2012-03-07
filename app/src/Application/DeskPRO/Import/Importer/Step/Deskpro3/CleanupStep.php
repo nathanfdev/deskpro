@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-class SettingsStep extends AbstractDeskpro3Step
+class CleanupStep extends AbstractDeskpro3Step
 {
 	/**
 	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer
