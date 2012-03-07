@@ -27,6 +27,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			$('.hide-reply', self.el).show();
 			self.getElById('is_note').val('1');
 		});
+
+		this.getElById('replybox_txt').TextAreaExpander(150, 550).on('textareaexpander_expanded', function() {
+			window.setTimeout(function() {
+				self.page.wrapper.find('div.layout-content').trigger('goscrollbottom');
+			}, 250);
+		});
+
 		//------------------------------
 		// Expanding cc row
 		//------------------------------
