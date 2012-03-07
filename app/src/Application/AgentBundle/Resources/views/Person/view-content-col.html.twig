@@ -37,21 +37,21 @@
 	</header>
 	<section>
 		{% if person.labels|length or app.user.hasPerm('agent_people.edit') %}
-		<dl class="table-list">
-			<dt class="type-labels">{{ phrase('agent.label_labels') }}</dt>
-			<dd class="people-tags tags-wrap">
-				<input id="{{baseId}}_label_input" type="text" value="{% for label in person.labels %}{{label.label}},{% endfor %}" />
-			</dd>
-		</dl>
+		<table class="prop-table" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<th>{{ phrase('agent.label_labels') }}</th>
+				<td class="people-tags tags-wrap"><input id="{{baseId}}_label_input" type="text" value="{% for label in person.labels %}{{label.label}},{% endfor %}" /></td>
+			</tr>
+		</table>
 		{% endif %}
 
-		<dl class="table-list" id="{{baseId}}_custom_fields_rendered">
+		<div class="table-list" id="{{baseId}}_custom_fields_rendered">
 			{% include 'AgentBundle:Person:view-customfields-rendered-rows.html.twig' %}
-		</dl>
+		</div>
 		{% if app.user.hasPerm('agent_people.edit') %}
-		<dl class="table-list" id="{{baseId}}_custom_fields_editable" style="display: none">
+		<div class="table-list" id="{{baseId}}_custom_fields_editable" style="display: none">
 			{% include 'AgentBundle:Person:view-customfields-edit-rows.html.twig' %}
-		</dl>
+		</div>
 		{% endif %}
 		<br class="clear" />
 	</section>

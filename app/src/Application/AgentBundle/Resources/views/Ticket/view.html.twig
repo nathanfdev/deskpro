@@ -231,58 +231,68 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<header>
 		<h4>{{ phrase('agent.label_properties') }}</h4>
 	</header>
-	<section class="description-area" id="{{baseId}}_fields_display_main_wrap">
-		<dl class="info-list">
-			<dt class="type-labels noedit-hide">{{ phrase('agent.flag') }}:</dt>
-			<dd
-				class="flagged-wrap noedit-hide"
-				id="{{baseId}}_flag_opt"
-				data-element-handler="DeskPRO.ElementHandler.ListRadio"
-			>
-				<ul>
-					<li class="flag-none tipped {% if not ticket_flagged %}on{% endif %}" data-value="none" title="No flag"><span></span></li>
-					{% for color in ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'yellow'] %}
+	<section class="description-area" id="{{baseId}}_fields_display_main_wrap" style="padding:0">
+		<table class="prop-table noedit-hide" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<th>{{ phrase('agent.flag') }}</th>
+				<td
+					class="flagged-wrap"
+					id="{{baseId}}_flag_opt"
+					data-element-handler="DeskPRO.ElementHandler.ListRadio"
+				>
+					<ul>
+						<li class="flag-none tipped {% if not ticket_flagged %}on{% endif %}" data-value="none" title="No flag"><span></span></li>
+						{% for color in ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'yellow'] %}
 						<li class="flag-{{color}} tipped {% if ticket_flagged == color %}on last-on{% endif %}" data-value="{{ color }}" title="{{ flag.flag_name(color) }}"><span>{{ flag.flag_name(color) }}</span></li>
-					{% endfor %}
-				</ul>
-				<br class="clear"/>
-			</dd>
-
+						{% endfor %}
+					</ul>
+				</td>
+			</tr>
+		</table>
+		<table class="prop-table noedit-hide" cellpadding="0" cellspacing="0" width="100%">
 			{% if ticket.linked_chat %}
-				<dt>Linked Chat:</dt>
-				<dd>
+			<tr>
+				<th>Linked Chat:</th>
+				<td>
 					<a data-route="page:{{ path('agent_userchat_view', { conversation_id: ticket.linked_chat.id }) }}">{{ ticket.linked_chat.getSubjectLine() }}</a>
-				</dd>
+				</td>
+			</tr>
 			{% endif %}
 
 			{% if ticket_perms.modify_labels or ticket.labels|length %}
-				<dt class="type-labels">{{ phrase('agent.label_labels') }}:</dt>
-				<dd class="ticket-tags tags-wrap {% if not ticket_perms.modify_labels %}tags-disable-edit{% endif %}">
-					<input type="text" value="{% for label in ticket.labels %}{{label.label}},{% endfor %}" />
-				</dd>
+				<tr>
+					<th class="type-labels">{{ phrase('agent.label_labels') }}:</th>
+					<td class="ticket-tags tags-wrap {% if not ticket_perms.modify_labels %}tags-disable-edit{% endif %}">
+						<input type="text" value="{% for label in ticket.labels %}{{label.label}},{% endfor %}" />
+					</td>
+				</tr>
 			{% endif %}
 
-			<dt>{{ phrase('agent.created') }}:</dt>
-			<dd>
-				<time class="timeago" datetime="{{ticket.date_created|date('c')}}"></time>
-				on {{ ticket.date_created|date('M j Y H:ia') }}
-			</dd>
+			<tr>
+				<th>{{ phrase('agent.created') }}:</th>
+				<td>
+					<time class="timeago" datetime="{{ticket.date_created|date('c')}}"></time>
+					on {{ ticket.date_created|date('M j Y H:ia') }}
+				</td>
+			</tr>
 
-			<dt>{{ phrase('agent.user_waiting') }}:</dt>
-			<dd>
-				{% set waiting_total %}
+			<tr>
+				<th>{{ phrase('agent.user_waiting') }}:</th>
+				<td>
+					{% set waiting_total %}
 					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting|default('1') ~ " seconds")|date('c') }}"></time>
-				{% endset %}
-				{% if ticket.status == 'awaiting_agent' and ticket.date_user_waiting %}
+					{% endset %}
+					{% if ticket.status == 'awaiting_agent' and ticket.date_user_waiting %}
 					{% set waiting %}
-						<time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c') }}"></time>
+					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c') }}"></time>
 					{% endset %}
 					{{ phrase('agent.tickets.user_waiting_x_and_total_y', {'waiting': waiting, 'total': waiting_total}) }}
-				{% else %}
+					{% else %}
 					{{ phrase('agent.tickets.user_waiting_total_x', {'total': waiting_total}) }}
-				{% endif %}
-			</dd>
-		</dl>
+					{% endif %}
+				</td>
+			</tr>
+		</table>
 
 		<div class="extra-info fields-show">
 			<div class="info-list" id="{{baseId}}_fields_display_main"></div>
@@ -329,10 +339,12 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 {# Wrapper around fields in the properties box #}
 <script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_wrap_tpl">
-	<dl class="info-list display-item">
-		<dt class="prop-title display-title"></dt>
-		<dd class="prop-val display-content"></dd>
-	</dl>
+	<table class="prop-table display-item" cellpadding="0" cellspacing="0" width="100%">
+		<tr>
+			<th class="prop-title display-title"></th>
+			<td class="prop-val display-content"></td>
+		</tr>
+	</table>
 </script>
 <script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_edit_tpl">
 	<div class="fields-edit-container">
@@ -349,10 +361,12 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	</div>
 </script>
 <script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_edit_row_tpl">
-	<dl class="info-list display-item">
-		<dt class="display-title"></dt>
-		<dd class="display-content"></dd>
-	</dl>
+	<table class="prop-table display-item" cellpadding="0" cellspacing="0" width="100%">
+		<tr>
+			<th class="display-title"></th>
+			<td class="display-content"></td>
+		</tr>
+	</table>
 </script>
 
 {# New tab code for bottom tabs (for addition to tabstrip) #}
