@@ -247,6 +247,9 @@ class KbStep extends AbstractDeskpro3Step
 		# Import ratings
 		#------------------------------
 
+		$total_rating = 0;
+		$count_rating = 0;
+
 		$ratings = $this->getOldDb()->fetchAll("SELECT * FROM faq_rating WHERE faqid = ?", array($article['id']));
 		foreach ($ratings as $r) {
 
@@ -264,9 +267,12 @@ class KbStep extends AbstractDeskpro3Step
 
 			if ($r['rating'] == '100' || $r['rating'] == '80') {
 				$insert_rating['rating'] = 1;
+				$total_rating++;
 			} else {
 				$insert_rating['rating'] = -1;
 			}
+
+			$count_rating++;
 
 			$this->getDb()->insert('ratings', $insert_rating);
 		}
@@ -330,6 +336,8 @@ class KbStep extends AbstractDeskpro3Step
 		#------------------------------
 
 		$comments = $this->getOldDb()->fetchAll("SELECT * FROM faq_comments WHERE articleid = ? AND published = 1", array($article['id']));
+		$count_comment = 0;
+
 		foreach ($comments as $comment) {
 			$new_comment = new ArticleComment();
 			$new_comment->date_created = new \DateTime('@' . $comment['timestamp_created']);
@@ -344,7 +352,15 @@ class KbStep extends AbstractDeskpro3Step
 
 			$this->getEm()->persist($new_comment);
 			$this->getEm()->flush();
+
+			$count_comment++;
 		}
+
+		$this->getDb()->update('article', array(
+			'num_ratings' => $total_rating,
+			'total_rating' => $count_rating,
+			'num_comments' => $count_comment
+		), array('id' => $new_article->id));
 
 		#------------------------------
 		# Custom fields

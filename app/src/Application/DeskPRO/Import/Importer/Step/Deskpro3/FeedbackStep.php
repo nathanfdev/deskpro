@@ -182,10 +182,43 @@ class FeedbackStep extends AbstractDeskpro3Step
 		$this->getEm()->flush();
 
 		#------------------------------
+		# Import ratings
+		#------------------------------
+
+		$total_rating = 0;
+		$count_rating = 0;
+
+		$ratings = $this->getOldDb()->fetchAll("SELECT * FROM user_idea_votes WHERE idea_id = ?", array($feedback['id']));
+		foreach ($ratings as $r) {
+
+			if (!$r['created_at']) $r['created_at'] = time();
+
+			$insert_rating = array();
+			$insert_rating['object_type']  = 'idea';
+			$insert_rating['object_id']    = $new_feedback->id;
+			$insert_rating['ip_address']   = $r['user_ip'];
+			$insert_rating['date_created'] = date('Y-m-d H:i:s', $r['created_at']);
+			$insert_rating['rating'] = 1;
+
+			if ($r['userid']) {
+				$person_id = $this->getMappedNewId('user', $r['userid']);
+				if ($person_id) {
+					$insert_rating['person_id'] = $person_id;
+				}
+			}
+
+			$total_rating++;
+			$count_rating++;
+
+			$this->getDb()->insert('ratings', $insert_rating);
+		}
+
+		#------------------------------
 		# Comments
 		#------------------------------
 
 		$comments = $this->getOldDb()->fetchAll("SELECT * FROM user_idea_comments WHERE idea_id = ?", array($feedback['id']));
+		$count_comment = 0;
 		foreach ($comments as $comment) {
 			$new_comment = new FeedbackComment();
 			$new_comment->date_created = new \DateTime('@' . $comment['created_at']);
@@ -206,6 +239,14 @@ class FeedbackStep extends AbstractDeskpro3Step
 
 			$this->getEm()->persist($new_comment);
 			$this->getEm()->flush();
+
+			$count_comment++;
 		}
+
+		$this->getDb()->update('feedback', array(
+			'num_ratings' => $total_rating,
+			'total_rating' => $count_rating,
+			'num_comments' => $count_comment
+		), array('id' => $new_feedback->id));
 	}
 }
