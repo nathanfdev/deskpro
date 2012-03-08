@@ -119,6 +119,7 @@ class Deskpro3Importer extends AbstractImporter
 		'SaveDataUserPlanSubs',
 		'SaveNotebookBlobs',
 		'Cleanup',
+		'CleanupDone',
 	);
 
 	public function validateOptions()
