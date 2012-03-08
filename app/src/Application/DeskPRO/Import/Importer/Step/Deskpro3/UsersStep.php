@@ -58,7 +58,7 @@ class UsersStep extends AbstractDeskpro3Step
 
 	public function countPages()
 	{
-		$count = $this->olddb->fetchColumn("SELECT COUNT(*) FROM user");
+		$count = $this->olddb->fetchColumn("SELECT id FROM user ORDER BY id DESC LIMIT 1");
 		if (!$count) {
 			return 1;
 		}
@@ -342,7 +342,7 @@ class UsersStep extends AbstractDeskpro3Step
 	protected function getBatch($page)
 	{
 		$start = (($page-1) * self::PERPAGE) + 1;
-		$end   = ($page-1) * self::PERPAGE;
+		$end   = ($page) * self::PERPAGE;
 
 		$batch = $this->olddb->fetchAll("SELECT * FROM user WHERE id >= $start AND id <= $end");
 

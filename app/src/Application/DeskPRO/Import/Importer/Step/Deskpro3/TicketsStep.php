@@ -41,6 +41,8 @@ use Application\DeskPRO\Entity\TicketParticipant;
 
 class TicketsStep extends AbstractDeskpro3Step
 {
+	const PERPAGE = 1000;
+
 	/**
 	 * @var array
 	 */
@@ -68,7 +70,7 @@ class TicketsStep extends AbstractDeskpro3Step
 
 	public function countPages()
 	{
-		$count = $this->olddb->fetchColumn("SELECT COUNT(*) FROM ticket");
+		$count = $this->olddb->fetchColumn("SELECT id FROM ticket ORDER BY id DESC LIMIT 1");
 		if (!$count) {
 			return 1;
 		}
@@ -1368,7 +1370,7 @@ class TicketsStep extends AbstractDeskpro3Step
 	protected function getBatch($page)
 	{
 		$start = (($page-1) * self::PERPAGE) + 1;
-		$end   = ($page-1) * self::PERPAGE;
+		$end   = $page * self::PERPAGE;
 
 		$batch = $this->olddb->fetchAll("SELECT * FROM ticket WHERE id >= $start AND id <= $end");
 
