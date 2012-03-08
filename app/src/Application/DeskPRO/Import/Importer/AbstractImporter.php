@@ -336,6 +336,7 @@ abstract class AbstractImporter
 		}
 
 		$sql .= implode(',', $sql_parts);
+		$sql .= '/*DP_QLOG_NOLOG*/';
 
 		$this->db->exec($sql);
 
@@ -359,6 +360,7 @@ abstract class AbstractImporter
 					SELECT typename, old_id, new_id
 					FROM import_map
 					WHERE typename IN ('" . implode("','", array_keys($this->cache_map_types)) . "')
+					/*DP_QLOG_NOLOG*/
 				");
 				$this->cached_maps = array();
 				foreach ($data as $d) {
@@ -378,6 +380,7 @@ abstract class AbstractImporter
 			SELECT new_id
 			FROM import_map
 			WHERE typename = ? AND old_id = ?
+			/*DP_QLOG_NOLOG*/
 		", array($type, $old_id));
 
 		if (!isset($this->cached_maps[$type])) {

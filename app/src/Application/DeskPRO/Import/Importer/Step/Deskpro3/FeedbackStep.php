@@ -56,7 +56,7 @@ class FeedbackStep extends AbstractDeskpro3Step
 			return 1;
 		}
 
-		return ceil($count / 150);
+		return ceil($count / 50);
 	}
 
 	/**
@@ -65,8 +65,8 @@ class FeedbackStep extends AbstractDeskpro3Step
 	 */
 	protected function getIdsBatch($page)
 	{
-		$start = $page * 150;
-		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM user_ideas ORDER BY created_at ASC LIMIT $start, 150");
+		$start = $page * 50;
+		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM user_ideas ORDER BY created_at ASC LIMIT $start, 50");
 
 		return $ids;
 	}

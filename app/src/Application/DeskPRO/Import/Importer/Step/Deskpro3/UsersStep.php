@@ -264,12 +264,14 @@ class UsersStep extends AbstractDeskpro3Step
 		$default_email_id = null;
 		foreach ($user_emails as $email_info) {
 
-			$email = new PersonEmail();
-			$email->email = $email_info['email'];
-			$email->date_validated = new \DateTime();
-
-			$insert_email = $email->toArray(PersonEmail::TOARRAY_ONLY_PRIMATIVES, true);
+			$insert_email = array();
 			$insert_email['person_id'] = $insert_person['id'];
+			$insert_email['email'] = $email_info['email'];
+			list (,$insert_email['email_domain']) = explode('@', $email_info['email'], 2);
+			$insert_email['date_validated'] = date('Y-m-d H:i:s');
+			$insert_email['date_created'] = date('Y-m-d H:i:s');
+			$insert_email['is_validated'] = date('Y-m-d H:i:s');
+
 			$this->getDb()->insert('people_emails', $insert_email);
 
 			if (!$default_email_id || $email_info['id'] == $user_info['default_emailid']) {

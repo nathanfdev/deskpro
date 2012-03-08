@@ -220,6 +220,7 @@ class Deskpro3Importer extends AbstractImporter
 
 		// For current database connection
 		$qlog = new QueryLogger();
+		$qlog->ignore_triggers[] = 'DP_QLOG_NOLOG';
 		$qlog->tag = 'new_db';
 		if ($this->config->get('enable_query_log')) {
 			$logger = new \Orb\Log\Logger();
@@ -245,6 +246,7 @@ class Deskpro3Importer extends AbstractImporter
 
 		// For olddb too
 		$qlog = new QueryLogger();
+		$qlog->ignore_triggers[] = 'DP_QLOG_NOLOG';
 		$qlog->tag = 'olddb';
 		if ($this->config->get('enable_query_log')) {
 			$logger = new \Orb\Log\Logger();

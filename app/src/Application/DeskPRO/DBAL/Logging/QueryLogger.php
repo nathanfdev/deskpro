@@ -72,6 +72,8 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 	public $total_time = 0.0;
 	public $tag = '';
 
+	public $ignore_triggers = array();
+
 	/**
 	 * True when logging a query to the log. We need this incase the logger
 	 * itself is logging to the database, we dont want to log the log of the log log
@@ -84,17 +86,24 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 		if ($this->_is_logging) return;
 		if (!$this->_is_enabled) return;
 
-		$sql = trim($sql);
-		if (preg_match('#^SELECT#i', $sql)) {
+		if ($this->ignore_triggers) {
+			foreach ($this->ignore_triggers as $p) {
+				if (strpos($sql, $p) !== false) {
+					return;
+				}
+			}
+		}
+
+		if (preg_match('#^\s*SELECT#i', $sql)) {
 			$query_type = self::TYPE_SELECT;
 			$query_typename = 'SELECT';
-		} else if (preg_match('#^UPDATE#i', $sql)) {
+		} else if (preg_match('#^\s*UPDATE#i', $sql)) {
 			$query_type = self::TYPE_UPDATE;
 			$query_typename = 'UPDATE';
-		} else if (preg_match('#^INSERT#i', $sql)) {
+		} else if (preg_match('#^\s*INSERT#i', $sql)) {
 			$query_type = self::TYPE_INSERT;
 			$query_typename = 'INSERT';
-		} else if (preg_match('#^DELETE#i', $sql)) {
+		} else if (preg_match('#^\s*DELETE#i', $sql)) {
 			$query_type = self::TYPE_DELETE;
 			$query_typename = 'DELETE';
 		} else {

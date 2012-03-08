@@ -78,6 +78,12 @@ class TicketsStep extends AbstractDeskpro3Step
 
 	public function preRunAll()
 	{
+		if ($this->getMappedNewId('dp3import_ticketsstep_pre', 1)) {
+			return;
+		}
+
+		$this->saveMappedId('dp3import_ticketsstep_pre', 1, 1);
+
 		$this->importer->removeTableIndexes('tickets');
 		$this->importer->removeTableIndexes('tickets_logs');
 		$this->importer->removeTableIndexes('tickets_messages');
@@ -92,10 +98,17 @@ class TicketsStep extends AbstractDeskpro3Step
 		$this->importer->removeTableIndexes('tickets_search_message');
 		$this->importer->removeTableIndexes('tickets_search_message_active');
 		$this->importer->removeTableIndexes('tickets_search_subject');
+
 	}
 
 	public function postRunAll()
 	{
+		if ($this->getMappedNewId('dp3import_ticketsstep_post', 1)) {
+			return;
+		}
+
+		$this->saveMappedId('dp3import_ticketsstep_post', 1, 1);
+
 		$this->importer->restoreTableIndexes('tickets');
 		$this->importer->restoreTableIndexes('tickets_logs');
 		$this->importer->restoreTableIndexes('tickets_messages');

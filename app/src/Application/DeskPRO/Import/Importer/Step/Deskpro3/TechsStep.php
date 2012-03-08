@@ -67,7 +67,6 @@ class TechsStep extends AbstractDeskpro3Step
 
 				$check_exist = $this->getMappedNewId('tech', $tech['id']);
 				if ($check_exist) {
-					$this->getLogger()->log("{$tech['id']} already mapped, skipping", 'DEBUG');
 					return;
 				}
 
