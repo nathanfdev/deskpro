@@ -91,7 +91,9 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		$log_file_path = $this->getContainer()->getKernel()->getUserLogDir() . '/import.log';
 		try {
-			$wr = new \Orb\Log\Writer\Stream($log_file_path);
+			if (!(isset($DP_CONFIG['import']['nolog']) && $DP_CONFIG['import']['nolog'])) {
+				$wr = new \Orb\Log\Writer\Stream($log_file_path);
+			}
 			$logger->addWriter($wr);
 		} catch (\Exception $e) {
 			$output->writeln("Log file not writable: $log_file_path");
@@ -457,7 +459,8 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$other_version = $importer->getOldDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('deskpro_version_internal'));
 				if ($other_version < 3030001) {
 					$output->writeln('Your DeskPRO v3 installation is outdated. Before we can import your helpdesk into the system, you must run the upgrader.');
-					$output->writeln('Do you want to upgrade your v3 database now?');
+					$output->writeln("<warn>\nWARNING: We will perform the upgrade directly on the database you specified ({$DP_CONFIG['import']['db_user']}@{$DP_CONFIG['import']['db_host']}/{$DP_CONFIG['import']['db_name']}). The database will be changed permanantly! You should not perform this upgrade on your live database. We recommend upgrading on a clone or backup.\n</warn>");
+					$output->writeln('Do you want to upgrade your helpdesk database now?');
 
 					$yes = $this->getHelper('dialog')->askConfirmation($output, '[y/N]> ', false);
 					if (!$yes) {

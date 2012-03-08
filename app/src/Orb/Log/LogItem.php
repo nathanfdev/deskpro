@@ -65,23 +65,23 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
 			$this->info = $info;
 		}
 
-		if (!isset($this[self::DATETIME])) {
-			$this[self::DATETIME] = new \DateTime();
+		if (!isset($this->info[self::DATETIME])) {
+			$this->info[self::DATETIME] = new \DateTime();
 		}
-		if (!isset($this[self::PRIORITY])) {
-			$this[self::PRIORITY] = Logger::INFO;
+		if (!isset($this->info[self::PRIORITY])) {
+			$this->info[self::PRIORITY] = Logger::INFO;
 		}
-		if (!isset($this[self::PRIORITY_NAME])) {
-			$this[self::PRIORITY_NAME] = $this[self::PRIORITY];
+		if (!isset($this->info[self::PRIORITY_NAME])) {
+			$this->info[self::PRIORITY_NAME] = $this->info[self::PRIORITY];
 		}
-		if (!isset($this[self::MESSAGE])) {
-			$this[self::MESSAGE] = '';
+		if (!isset($this->info[self::MESSAGE])) {
+			$this->info[self::MESSAGE] = '';
 		}
-		if (!isset($this[self::MESSAGE_LINE])) {
-			$this[self::MESSAGE_LINE] = $this[self::MESSAGE];
+		if (!isset($this->info[self::MESSAGE_LINE])) {
+			$this->info[self::MESSAGE_LINE] = $this->info[self::MESSAGE];
 		}
-		if (!isset($this[self::SESSION_NAME])) {
-			$this[self::SESSION_NAME] = null;
+		if (!isset($this->info[self::SESSION_NAME])) {
+			$this->info[self::SESSION_NAME] = null;
 		}
 
 		$this->init();
@@ -105,7 +105,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function getPriority()
 	{
-		return $this[self::PRIORITY];
+		return $this->info[self::PRIORITY];
 	}
 
 
@@ -116,7 +116,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function getPriorityName()
 	{
-		return $this[self::PRIORITY_NAME];
+		return $this->info[self::PRIORITY_NAME];
 	}
 
 
@@ -127,7 +127,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function getMessage()
 	{
-		return $this[self::MESSAGE];
+		return $this->info[self::MESSAGE];
 	}
 
 
@@ -142,7 +142,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function getMessageLine()
 	{
-		return $this[self::MESSAGE_LINE];
+		return $this->info[self::MESSAGE_LINE];
 	}
 
 
@@ -154,7 +154,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function getDatetime()
 	{
-		return $this[self::DATETIME];
+		return $this->info[self::DATETIME];
 	}
 
 
@@ -166,7 +166,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
 	 */
 	public function getSessionName()
 	{
-		return $this[self::SESSION_NAME];
+		return $this->info[self::SESSION_NAME];
 	}
 
 
