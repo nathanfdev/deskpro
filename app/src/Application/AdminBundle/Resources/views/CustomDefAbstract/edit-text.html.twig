@@ -1,5 +1,15 @@
 {% extends base_edit_tpl %}
 {% block form_extra %}
+
+<div class="dp-form-row">
+	<div class="dp-form-label">
+		<label>Default Value</label>
+	</div>
+	<div class="dp-form-input">
+		{{ form_widget(form.default_value) }}
+	</div>
+</div>
+
 <div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 	<div class="dp-form-row">
 		<div class="dp-form-label">

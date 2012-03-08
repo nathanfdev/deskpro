@@ -194,10 +194,12 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		switch ($f['formtype']) {
 			case 'input':
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
+				$new_field->default_value = $f['default_value'];
 				break;
 
 			case 'textarea':
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea';
+				$new_field->default_value = $f['default_value'];
 				break;
 
 			case 'select':
@@ -254,10 +256,12 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		switch ($f['formtype']) {
 			case 'input':
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
+				$new_field->default_value = $f['default_value'];
 				break;
 
 			case 'textarea':
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea';
+				$new_field->default_value = $f['default_value'];
 				break;
 
 			case 'select':
@@ -313,16 +317,19 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		switch ($f['formtype']) {
 			case 'input':
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
+				$new_field->default_value = $f['default_value'];
 				break;
 
 			case 'textarea':
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea';
+				$new_field->default_value = $f['default_value'];
 				break;
 
 			case 'select':
 			case 'radio':
 			case 'checkbox':
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
+				$new_field->default_value = $f['default_value'];
 				$has_choices = true;
 				break;
 		}
@@ -372,16 +379,19 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		switch ($f['formtype']) {
 			case 'input':
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
+				$new_field->default_value = $f['default_value'];
 				break;
 
 			case 'textarea':
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea';
+				$new_field->default_value = $f['default_value'];
 				break;
 
 			case 'select':
 			case 'radio':
 			case 'checkbox':
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
+				$new_field->default_value = $f['default_value'];
 				$has_choices = true;
 				break;
 		}

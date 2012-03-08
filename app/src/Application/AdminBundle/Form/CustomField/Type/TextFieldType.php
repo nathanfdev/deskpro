@@ -41,6 +41,7 @@ class TextFieldType extends CustomFieldTypeAbstract
 {
 	protected function buildCustomFieldForm(FormBuilder $builder, array $options)
 	{
+		$builder->add('default_value', 'text', array('required' => false));
 		$builder->add('min_length', 'text', array('required' => false));
 		$builder->add('max_length', 'text', array('required' => false));
 		$builder->add('regex', 'text', array('required' => false));

@@ -40,12 +40,16 @@ class TextField extends CustomFieldAbstract
 	public $max_length;
 	public $regex;
 
+	public $default_value = '';
+
 	public $agent_min_length;
 	public $agent_max_length;
 	public $agent_regex;
 
 	public function init()
 	{
+		$this->default_value = $this->_field->default_value;
+
 		if ($this->_field->getOption('min_length')) {
 			$this->validation_type = 'required';
 			$this->min_length = $this->_field->getOption('min_length');
@@ -76,6 +80,8 @@ class TextField extends CustomFieldAbstract
 	protected function setFieldProperties()
 	{
 		$field = $this->_field;
+
+		$field->default_value = $this->default_value;
 
 		if ($this->validation_type == 'required') {
 			$field->setOption('required', true);

@@ -142,7 +142,12 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	protected $display_order = 0;
 
 	/**
-	 * @var Application\DeskPRO\Form\FieldHandler\AbstractFieldHandler
+	 * @var string
+	 */
+	protected $default_value = '';
+
+	/**
+	 * @var \Application\DeskPRO\CustomFields\Handler\HandlerAbstract
 	 */
 	protected $_handler_instance = null;
 
@@ -199,7 +204,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Get the DeskPRO form field object that knows how to render data etc.
 	 *
-	 * @return \Application\DeskPRO\Form\FieldHandler\AbstractFieldHandler
+	 * @return \Application\DeskPRO\CustomFields\Handler\HandlerAbstract
 	 */
 	public function getHandler()
 	{

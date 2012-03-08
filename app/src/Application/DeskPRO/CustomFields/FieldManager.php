@@ -56,7 +56,7 @@ use Doctrine\ORM\EntityManager;
 class FieldManager
 {
 	/**
-	 * @var \Doctrine\ORM\Doctrine\DBAL\Connection
+	 * @var \Doctrine\DBAL\Connection
 	 */
 	protected $db;
 
@@ -148,7 +148,7 @@ class FieldManager
 	 * @param null $field_group       Optionally a form group to add form fields to
 	 * @return array
 	 */
-	public function getDisplayArray($field_data = array(), $field_group = null)
+	public function getDisplayArray($field_data = array(), $field_group = null, $use_default = false)
 	{
 		if (!$field_group) {
 			$field_group = App::get('form.factory')->createNamedBuilder('form', 'custom_fields');
@@ -157,6 +157,9 @@ class FieldManager
 		$custom_fields = array();
 		foreach ($this->getFields() as $f_def) {
 			$value = !empty($field_data[$f_def['id']]) ? $field_data[$f_def['id']] : null;
+			if (!$value && $use_default && $f_def->default_value) {
+				$value = array('value' => $f_def->default_value);
+			}
 			if (!$f_def->isFormField()) {
 				$value = array();
 			}
@@ -253,7 +256,15 @@ class FieldManager
 	public function getDisplayArrayForObject($object, $field_group = null)
 	{
 		$field_data = $this->getFieldDataForObject($object);
-		return $this->getDisplayArray($field_data, $field_group);
+
+		// If the object has no id then it means it isnt perissted,
+		// which means we should use the default value to show on a form somewhre
+		$use_default = false;
+		if (!$object->id) {
+			$use_default = true;
+		}
+
+		return $this->getDisplayArray($field_data, $field_group, $use_default);
 	}
 
 
