@@ -179,7 +179,7 @@ SQL;
 CREATE TABLE `tickets_search_subject` (
   `id` int(11) NOT NULL,
   `subject` varchar(1000) NOT NULL,
-  PRIMARY KEY (`ticket_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM
 SQL;
 
@@ -209,7 +209,7 @@ CREATE TABLE `tickets_search_message` (
   `total_user_waiting` int(11) NOT NULL,
   `total_to_first_reply` int(11) NOT NULL,
   `content` longtext NOT NULL,
-  PRIMARY KEY (`ticket_id`),
+  PRIMARY KEY (`id`),
   KEY `status` (`status`),
   KEY `person_id` (`person_id`) USING BTREE,
   FULLTEXT KEY `content` (`content`)
@@ -242,7 +242,7 @@ CREATE TABLE `tickets_search_message_active` (
   `total_user_waiting` int(11) NOT NULL,
   `total_to_first_reply` int(11) NOT NULL,
   `content` longtext NOT NULL,
-  PRIMARY KEY (`ticket_id`),
+  PRIMARY KEY (`id`),
   KEY `status` (`status`),
   KEY `person_id` (`person_id`) USING BTREE,
   FULLTEXT KEY `content` (`content`)
