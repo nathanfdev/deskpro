@@ -1418,6 +1418,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->date_user_waiting = null;
 		} else if ($status == 'awaiting_agent') {
 			$this->date_user_waiting = new \DateTime();
+		} else if ($status == 'closed') {
+			$this->date_closed = new \DateTime();
+		}
+
+		if ($status != 'closed' && $this->date_closed) {
+			$this->date_closed = null;
 		}
 
 		$old_hstatus = $this->hidden_status;

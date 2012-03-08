@@ -114,31 +114,37 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		//------------------------------
 
 		if (this.page.meta.ticket_perms.modify_set_resolved || this.page.meta.ticket_perms.modify_set_awaiting_agent || this.page.meta.ticket_perms.modify_set_awaiting_user) {
-			var menuEl = $('#ticket_status_menu');
+			var menuEl = $('#ticket_status_menu').clone();
 			if (!this.page.meta.ticket_perms.modify_set_resolved) {
-				menuEl = menuEl.clone();
 				menuEl.find('li[data-status="resolved"]').remove();
 			}
 			if (!this.page.meta.ticket_perms.modify_set_awaiting_agent) {
-				menuEl = menuEl.clone();
 				menuEl.find('li[data-status="awaiting_agent"]').remove();
 			}
 			if (!this.page.meta.ticket_perms.modify_set_awaiting_user) {
-				menuEl = menuEl.clone();
 				menuEl.find('li[data-status="awaiting_user"]').remove();
 			}
+			if (!this.page.meta.ticket_perms.modify_set_closed) {
+				menuEl.find('li[data-status="closed"]').remove();
+			}
 
-			this.statusMenu = new DeskPRO.UI.Menu({
-				triggerElement: $('.set-status', wrapper),
-				menuElement: menuEl,
-				onItemClicked: (function(info) {
-					var item = $(info.itemEl);
-					var prop = this.changeManager.getPropertyManager('status');
+			if (this.page.meta.isClosed && !this.page.meta.ticket_perms.modify_set_closed) {
+				menuEl.find('li').remove();
+			}
 
-					var status = item.data('status');
-					this.changeManager.setInstantChange(prop, status);
-				}).bind(this)
-			});
+			if (menuEl.find('li')[0]) {
+				this.statusMenu = new DeskPRO.UI.Menu({
+					triggerElement: $('.set-status', wrapper),
+					menuElement: menuEl,
+					onItemClicked: (function(info) {
+						var item = $(info.itemEl);
+						var prop = this.changeManager.getPropertyManager('status');
+
+						var status = item.data('status');
+						this.changeManager.setInstantChange(prop, status);
+					}).bind(this)
+				});
+			}
 		}
 
 		//------------------------------

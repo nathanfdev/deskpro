@@ -176,13 +176,6 @@ class TicketController extends AbstractController
 		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
-		$ticket_perms = array();
-		$ticket_perms['delete'] = $this->person->PermissionsManager->TicketChecker->canDelete($ticket);
-		$ticket_perms['reply'] = $this->person->PermissionsManager->TicketChecker->canDelete($ticket);
-		foreach (array('department', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaitng_user', 'set_resolved') as $p) {
-			$ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
-		}
-
 		return $this->render($tpl, array(
 			'agents' => $agents,
 			'agent_teams' => $agent_teams,
@@ -222,6 +215,7 @@ class TicketController extends AbstractController
 		$ticket_perms = array();
 		$ticket_perms['delete'] = $this->person->PermissionsManager->TicketChecker->canDelete($ticket);
 		$ticket_perms['reply'] = $this->person->PermissionsManager->TicketChecker->canDelete($ticket);
+		$ticket_perms['modify_set_closed'] = $this->person->PermissionsManager->TicketChecker->canSetClosed($ticket);
 		foreach (array('department', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaitng_user', 'set_resolved') as $p) {
 			$ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
 		}

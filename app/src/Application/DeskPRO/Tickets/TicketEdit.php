@@ -175,6 +175,11 @@ class TicketEdit implements PersonContextInterface
 				case 'status':
 					if ($this->person_context) {
 						$status = $this->in->checkIsset('status');
+
+						// Switching to or from closed
+						if (($status == 'closed' || $ticket->status == 'closed') && !$tcheck->canSetClosed($ticket)) {
+							$status = null;
+						}
 						if ($status == 'resolved' && !$tcheck->canModify($ticket, 'set_resolved')) {
 							$status = null;
 						}
