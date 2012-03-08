@@ -84,13 +84,13 @@ class UserChatsStep extends AbstractDeskpro3Step
 		$this->first_dep_id = $this->getDb()->fetchColumn("SELECT id FROM departments WHERE is_chat_enabled AND parent_id IS NULL ORDER BY display_order ASC LIMIT 1");
 
 		$sub_start_time = microtime(true);
-		$batch = $this->getIdsBatch($page - 1);
+		$batch = $this->getBatch($page - 1);
 		$this->logMessage("-- Processing batch {$page}");
 
 		$this->getDb()->beginTransaction();
 		try {
-			foreach ($batch as $cid) {
-				$this->processChat($cid);
+			foreach ($batch as $c) {
+				$this->processChat($c);
 			}
 			$this->importer->flushSaveMappedIdBuffer();
 			$this->getDb()->commit();
@@ -107,8 +107,10 @@ class UserChatsStep extends AbstractDeskpro3Step
 		}
 	}
 
-	public function processChat($chat_id)
+	public function processChat($chat_info)
 	{
+		$chat_id = $chat_info['id'];
+
 		#------------------------------
 		# Make sure we havent already done it
 		#------------------------------
@@ -118,8 +120,6 @@ class UserChatsStep extends AbstractDeskpro3Step
 			$this->getLogger()->log("{$chat_id} already mapped, skipping", 'DEBUG');
 			return;
 		}
-
-		$chat_info = $this->getOldDb()->fetchAssoc("SELECT * FROM chat_chat WHERE id = $chat_id");
 
 		#------------------------------
 		# Make the chat
@@ -387,10 +387,10 @@ class UserChatsStep extends AbstractDeskpro3Step
 	 * @param $page
 	 * @return array
 	 */
-	protected function getIdsBatch($page)
+	protected function getBatch($page)
 	{
 		$start = $page * 50;
-		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM chat_chat ORDER BY id ASC LIMIT $start, 50");
+		$ids = $this->getOldDb()->fetchAll("SELECT * FROM chat_chat ORDER BY id ASC LIMIT $start, 50");
 
 		return $ids;
 	}

@@ -66,12 +66,12 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 	{
 		$table = $this->getTable();
 
-		$batch = $this->getIdsBatch($table, $page - 1);
+		$batch = $this->getBatch($table, $page - 1);
 
 		$this->getDb()->beginTransaction();
 		try {
-			foreach ($batch as $rid) {
-				$this->processBlob($table, $rid);
+			foreach ($batch as $r) {
+				$this->processBlob($table, $r);
 			}
 
 			$this->importer->flushSaveMappedIdBuffer();
@@ -82,9 +82,9 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 		}
 	}
 
-	protected function processBlob($table, $record_id)
+	protected function processBlob($table, $record)
 	{
-		$record = $this->getOldDb()->fetchAssoc("SELECT * FROM $table WHERE id = ?", array($record_id));
+		$record_id = $record['id'];
 		$blob = $this->getOldDb()->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($record['blobid']));
 
 		if (!$blob) {
@@ -148,10 +148,10 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 	 * @param $page
 	 * @return array
 	 */
-	protected function getIdsBatch($table, $page)
+	protected function getBatch($table, $page)
 	{
 		$start = $page * 250;
-		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM $table ORDER BY id ASC LIMIT $start, 250");
+		$ids = $this->getOldDb()->fetchAll("SELECT * FROM $table ORDER BY id ASC LIMIT $start, 250");
 
 		return $ids;
 	}

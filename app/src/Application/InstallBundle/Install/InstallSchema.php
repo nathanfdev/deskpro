@@ -108,7 +108,7 @@ class InstallSchema
 
 	public function hasDoneStep($id)
 	{
-		return (bool)($this->db->fetchColumn("SELECT COUNT(*) FROM install_data WHERE build = ? AND name = ?", array($this->build, $id)));
+		return (bool)($this->db->fetchColumn("SELECT COUNT(*) FROM install_data WHERE build = ? AND name = ? LIMIT 1", array($this->build, $id)));
 	}
 
 	public function markStepDone($id)

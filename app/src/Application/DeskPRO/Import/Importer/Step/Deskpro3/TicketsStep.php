@@ -135,13 +135,14 @@ class TicketsStep extends AbstractDeskpro3Step
 		$this->fieldmanager = $this->getContainer()->getSystemService('ticket_fields_manager');
 
 		$sub_start_time = microtime(true);
-		$batch = $this->getBatch($page - 1);
 		$this->logMessage("-- Processing batch {$page}");
+
+		$batch = $this->getBatch($page - 1);
 
 		try {
 			$this->db->beginTransaction();
-			foreach ($batch as $tid) {
-				$this->processTicket($tid);
+			foreach ($batch as $t) {
+				$this->processTicket($t);
 			}
 
 			$this->importer->flushSaveMappedIdBuffer();
@@ -164,8 +165,10 @@ class TicketsStep extends AbstractDeskpro3Step
 	 * Process a single ticket
 	 * @param $ticket_id
 	 */
-	protected function processTicket($ticket_id)
+	protected function processTicket($ticket_info)
 	{
+		$ticket_id = $ticket_info['id'];
+
 		#------------------------------
 		# Make sure we havent already done it
 		#------------------------------
@@ -180,8 +183,6 @@ class TicketsStep extends AbstractDeskpro3Step
 		#------------------------------
 
 		$search_content = array();
-
-		$ticket_info = $this->olddb->fetchAssoc("SELECT * FROM ticket WHERE id = ?", array($ticket_id));
 
 		$new_person_id = $this->getMappedNewId('user', $ticket_info['userid']);
 		$new_agent_id = null;
@@ -1367,7 +1368,7 @@ class TicketsStep extends AbstractDeskpro3Step
 	protected function getBatch($page)
 	{
 		$start = $page * 500;
-		$ids = $this->olddb->fetchAllCol("SELECT id FROM ticket ORDER BY id ASC LIMIT $start, 1000");
+		$ids = $this->olddb->fetchAll("SELECT * FROM ticket ORDER BY id ASC LIMIT $start, 1000");
 		return $ids;
 	}
 

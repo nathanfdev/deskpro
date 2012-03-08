@@ -112,6 +112,9 @@ class TechsStep extends AbstractDeskpro3Step
 
 				$this->saveMappedId('tech', $tech['id'], $agent->id);
 
+				// This is used for email dupe checking in insert users
+				$this->saveMappedId('tech_email', strtolower($agent->getPrimaryEmailAddress()), $agent->id);
+
 				if ($agent->can_admin && !$has_admin) {
 					$has_admin = true;
 					$this->saveMappedId('first_admin', 0, $agent->id);

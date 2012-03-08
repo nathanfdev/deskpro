@@ -88,11 +88,16 @@ abstract class AbstractImporter
 		'ticket_priority'    => true,
 		'company'            => true,
 		'tech'               => true,
+		'tech_email'         => true,
 		'ticket_def_choice'  => true,
 		'people_def_choice'  => true,
 		'usergroup'          => true,
 		'usergroup_sys'      => true,
 		'chat_dep'           => true,
+		'people_def'         => true,
+		'people_def_choice'  => true,
+		'ticket_def'         => true,
+		'ticket_def_choice'  => true,
 	);
 
 	public function __construct(DeskproContainer $container, $config, Logger $logger = null)

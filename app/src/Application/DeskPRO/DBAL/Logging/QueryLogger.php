@@ -73,6 +73,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 	public $tag = '';
 
 	public $ignore_triggers = array();
+	public $ignored_query_start = null;
 
 	/**
 	 * True when logging a query to the log. We need this incase the logger
@@ -87,6 +88,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 		if (!$this->_is_enabled) return;
 
 		if ($this->ignore_triggers) {
+			$this->ignored_query_start = microtime(true);
 			foreach ($this->ignore_triggers as $p) {
 				if (strpos($sql, $p) !== false) {
 					return;
@@ -129,6 +131,17 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 	public function stopQuery()
 	{
 		if ($this->_is_logging) {
+			return;
+		}
+		if ($this->ignored_query_start) {
+			$timetaken = microtime(true) - $this->ignored_query_start;
+			$this->query_count++;
+			$this->total_time += $timetaken;
+
+			$this->_query_counter++;
+			$this->_query_total_time += $timetaken;
+
+			$this->ignored_query_start = 0;
 			return;
 		}
 		if (!$this->_is_enabled OR $this->_last_query == -1) {
