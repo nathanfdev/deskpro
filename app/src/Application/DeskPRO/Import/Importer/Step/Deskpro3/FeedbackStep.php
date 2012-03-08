@@ -86,16 +86,16 @@ class FeedbackStep extends AbstractDeskpro3Step
 		$sub_start_time = microtime(true);
 		$this->logMessage("-- Processing batch {$page}");
 
-		foreach ($ideas as $i) {
-			$this->getDb()->beginTransaction();
-
-			try {
+		$this->getDb()->beginTransaction();
+		try {
+			foreach ($ideas as $i) {
 				$this->processFeedback($i);
-				$this->getDb()->commit();
-			} catch (\Exception $e) {
-				$this->getDb()->rollback();
-				throw $e;
 			}
+			$this->flushSaveMappedIdBuffer();
+			$this->getDb()->commit();
+		} catch (\Exception $e) {
+			$this->getDb()->rollback();
+			throw $e;
 		}
 
 		$sub_end_time = microtime(true);
@@ -165,7 +165,7 @@ class FeedbackStep extends AbstractDeskpro3Step
 		$this->getEm()->persist($new_feedback);
 		$this->getEm()->flush();
 
-		$this->saveMappedId('feedback', $feedback['id'], $new_feedback->id);
+		$this->saveMappedId('feedback', $feedback['id'], $new_feedback->id, true);
 
 		#------------------------------
 		# Create the first revision
