@@ -74,6 +74,7 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 				$this->processBlob($table, $rid);
 			}
 
+			$this->importer->flushSaveMappedIdBuffer();
 			$this->getDb()->commit();
 		} catch (\Exception $e) {
 			$this->getDb()->rollback();
@@ -139,7 +140,7 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 			'date_created' => date('Y-m-d H:i:s', $record['timestamp']),
 		), array('id' => $new_blob_id));
 
-		$this->saveMappedId('blob', $blob['id'], $new_blob_id);
+		$this->saveMappedId('blob', $blob['id'], $new_blob_id, true);
 	}
 
 

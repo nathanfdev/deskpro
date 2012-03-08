@@ -596,6 +596,10 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$importer->validateOptions();
 			$importer->setupImport();
 
+			if (function_exists('xdebug_time_index')) {
+				$logger->log(sprintf('Took %.5f too begin step execution', xdebug_time_index()), 'DEBUG');
+			}
+
 			$step_num = $input->getOption('exec-step');
 			$importer->preRunStep($step_num);
 			$step = $importer->getStep($step_num);

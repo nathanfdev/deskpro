@@ -140,7 +140,6 @@ class UsersStep extends AbstractDeskpro3Step
 
 		$check_exist = $this->getMappedNewId('user', $user_id);
 		if ($check_exist) {
-			$this->getLogger()->log("{$user_id} already mapped, skipping", 'DEBUG');
 			return;
 		}
 

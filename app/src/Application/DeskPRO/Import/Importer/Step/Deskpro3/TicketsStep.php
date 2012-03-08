@@ -56,6 +56,11 @@ class TicketsStep extends AbstractDeskpro3Step
 	 */
 	protected $fieldmanager;
 
+	/**
+	 * @var array
+	 */
+	protected $personinfo_cache = array();
+
 	public static function getTitle()
 	{
 		return 'Import Tickets';
@@ -80,8 +85,8 @@ class TicketsStep extends AbstractDeskpro3Step
 		$this->importer->removeTableIndexes('tickets_participant');
 		$this->importer->removeTableIndexes('custom_data_ticket');
 
-		//$this->db->exec("ALTER TABLE tickets_search_message DROP INDEX content");
-		//$this->db->exec("ALTER TABLE tickets_search_message_active DROP INDEX content");
+		$this->db->exec("ALTER TABLE tickets_search_message DROP INDEX content");
+		$this->db->exec("ALTER TABLE tickets_search_message_active DROP INDEX content");
 
 		$this->importer->removeTableIndexes('tickets_search_active');
 		$this->importer->removeTableIndexes('tickets_search_message');
@@ -471,9 +476,14 @@ class TicketsStep extends AbstractDeskpro3Step
 			$insert_attach = array();
 			$insert_attach['ticket_id'] = $insert_ticket['id'];
 			$insert_attach['person_id'] = $pid;
+			$insert_attach['message_id'] = null;
 
 			if ($attach_info['messageid']) {
 				$insert_attach['message_id'] = $this->getMappedNewId('ticket_message', $attach_info['messageid']);
+			}
+
+			if (!$insert_attach['message_id']) {
+				$insert_attach['message_id'] = null;
 			}
 
 			$insert_attach['blob_id'] = $blob_id;
@@ -484,6 +494,7 @@ class TicketsStep extends AbstractDeskpro3Step
 			$ticket_attach_info[$id] = array('blob_id' => $blob_id, 'filename' => $attach_info['filename'], 'filesize' => 0);
 			$ticket_attach_map[$attach_info['id']] = $id;
 		}
+
 
 		#------------------------------
 		# Participants
@@ -561,6 +572,8 @@ class TicketsStep extends AbstractDeskpro3Step
 				'message' => "Ticket imported. (Ticket ID: {$insert_ticket['id']}, Original Ticket ID: {$ticket_info['id']})"
 			))
 		));
+
+		$ticket_logs = array();
 
 		$ticket_logs = $this->olddb->fetchAll("
 			SELECT * FROM ticket_log
@@ -794,14 +807,14 @@ class TicketsStep extends AbstractDeskpro3Step
 						if (!$old_id) {
 							break;
 						}
-						$old_agent_info = $this->getEm()->find('DeskPRO:Person', $old_id);
+						$old_agent_info = $this->getPersonInfo($old_id);
 					}
 					if ($tlog['id_after']) {
 						$new_id = $this->getMappedNewId('tech', $tlog['id_after']);
 						if (!$new_id) {
 							break;
 						}
-						$new_agent_info = $this->getEm()->find('DeskPRO:Person', $new_id);
+						$new_agent_info = $this->getPersonInfo($new_id);
 					}
 
 					if ($old_id) $insert_tlog['id_before'] = $old_id;
@@ -887,7 +900,7 @@ class TicketsStep extends AbstractDeskpro3Step
 					if (!$new_id) {
 						break;
 					}
-					$new_agent_info = $this->getEm()->find('DeskPRO:Person', $new_id);
+					$new_agent_info = $this->getPersonInfo($new_id);
 
 					$insert_tlog['id_after'] = $new_id;
 					$insert_tlog['details']['person_id'] = $new_agent_info['id'];
@@ -903,7 +916,7 @@ class TicketsStep extends AbstractDeskpro3Step
 					if (!$new_id) {
 						break;
 					}
-					$new_agent_info = $this->getEm()->find('DeskPRO:Person', $new_id);
+					$new_agent_info = $this->getPersonInfo($new_id);
 
 					$insert_tlog['id_after'] = $new_id;
 					$insert_tlog['details']['person_id'] = $new_agent_info['id'];
@@ -922,7 +935,7 @@ class TicketsStep extends AbstractDeskpro3Step
 					if (!$new_id) {
 						break;
 					}
-					$new_user_info = $this->getEm()->find('DeskPRO:Person', $new_id);
+					$new_user_info = $this->getPersonInfo($new_id);
 
 					$insert_tlog['id_after'] = $new_id;
 					$insert_tlog['details']['person_id'] = $new_user_info['id'];
@@ -941,7 +954,7 @@ class TicketsStep extends AbstractDeskpro3Step
 					if (!$new_id) {
 						break;
 					}
-					$new_user_info = $this->getEm()->find('DeskPRO:Person', $new_id);
+					$new_user_info = $this->getPersonInfo($new_id);
 
 					$insert_tlog['id_after'] = $new_id;
 					$insert_tlog['details']['person_id'] = $new_user_info['id'];
@@ -1017,14 +1030,14 @@ class TicketsStep extends AbstractDeskpro3Step
 						if (!$old_id) {
 							break;
 						}
-						$old_user_info = $this->getEm()->find('DeskPRO:Person', $old_id);
+						$old_user_info = $this->getPersonInfo($old_id);
 					}
 					if ($tlog['id_after']) {
 						$new_id = $this->getMappedNewId('user', $tlog['id_after']);
 						if (!$new_id) {
 							break;
 						}
-						$new_user_info = $this->getEm()->find('DeskPRO:Person', $new_id);
+						$new_user_info = $this->getPersonInfo($new_id);
 					}
 
 					if ($old_id) $insert_tlog['id_before'] = $old_id;
@@ -1051,11 +1064,11 @@ class TicketsStep extends AbstractDeskpro3Step
 					foreach ($extra as $techid) {
 						$id = $this->getMappedNewId('tech', $techid);
 						if ($id) {
-							$p = $this->getEm()->find('DeskPRO:Person', $id);
+							$p = $this->getPersonInfo($id);
 							$who[] = array(
-								'person_id'    => $p->id,
-								'person_name'  => $p->getDisplayName(),
-								'person_email' => $p->getPrimaryEmailAddress()
+								'person_id'    => $p['id'],
+								'person_name'  => $p['display_name'],
+								'person_email' => $p['primary_email_address']
 							);
 						}
 					}
@@ -1081,12 +1094,12 @@ class TicketsStep extends AbstractDeskpro3Step
 					if (!$id) {
 						break;
 					}
-					$p = $this->getEm()->find('DeskPRO:Person', $id);
+					$p = $this->getPersonInfo($id);
 
 					$insert_tlog['details']['who_emailed'] = array(
-						'person_id'    => $p->id,
-						'person_name'  => $p->getDisplayName(),
-						'person_email' => $p->getPrimaryEmailAddress()
+						'person_id'    => $p['id'],
+						'person_name'  => $p['display_name'],
+						'person_email' => $p['primary_email_address']
 					);
 					$insert_tlog['details']['who_cced'] = array();
 
@@ -1343,5 +1356,46 @@ class TicketsStep extends AbstractDeskpro3Step
 		$start = $page * 500;
 		$ids = $this->olddb->fetchAllCol("SELECT id FROM ticket ORDER BY id ASC LIMIT $start, 1000");
 		return $ids;
+	}
+
+	public function getPersonInfo($new_id)
+	{
+		if (isset($this->personinfo_cache[$new_id])) {
+			return $this->personinfo_cache[$new_id];
+		}
+
+		$info = $this->getDb()->fetchAssoc("
+			SELECT p.id, p.first_name, p.last_name, p.name, pe.email AS primary_email_address
+			FROM people p
+			LEFT JOIN people_emails AS pe ON (pe.person_id = p.id)
+			WHERE p.id = ?
+		", array($new_id));
+
+		if ($info['first_name'] AND $info['last_name']) {
+			$info['display_name'] = $info['first_name'] . ' ' . $info['last_name'];
+		} elseif ($info['name']) {
+			$info['display_name'] = $info['name'];
+		} elseif ($info['last_name']) {
+			$info['display_name'] = $info['last_name'];
+		} elseif ($info['first_name']) {
+			$info['display_name'] = $info['first_name'];
+		} elseif ($info['primary_email_address']) {
+
+			// try to get a nice name from the email address
+			$email = $info['primary_email_address'];
+			list ($name,) = explode('@', $email, 2);
+
+			$name = str_replace('_', ' ', $name);
+			$name = str_replace('.', ' ', $name);
+			$name = preg_replace('#[ ]{2,}#', ' ', $name); //consec spaces to single space
+
+			$info['display_name'] = ucfirst($name);
+		} else {
+			$info['display_name'] = 'ID-' . $info['id'];
+		}
+
+		$this->personinfo_cache[$new_id] = $info;
+
+		return $this->personinfo_cache[$new_id];
 	}
 }

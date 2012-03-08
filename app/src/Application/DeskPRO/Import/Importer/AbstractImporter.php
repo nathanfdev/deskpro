@@ -75,11 +75,6 @@ abstract class AbstractImporter
 	 */
 	public $db;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	public $em;
-
 	protected $buffered_save_mapped_ids = array();
 
 	/**
@@ -117,7 +112,6 @@ abstract class AbstractImporter
 		$this->logger = $logger;
 
 		$this->db = $this->db;
-		$this->em = $this->container->getEm();
 	}
 
 
@@ -277,7 +271,7 @@ abstract class AbstractImporter
 	 */
 	public function getEm()
 	{
-		return $this->em;
+		return $this->container->getEm();
 	}
 
 

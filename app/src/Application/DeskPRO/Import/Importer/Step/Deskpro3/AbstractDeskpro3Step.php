@@ -67,7 +67,6 @@ abstract class AbstractDeskpro3Step extends AbstractStep
 	{
 		$this->db     = $this->importer->getDb();
 		$this->olddb  = $this->importer->getOldDb();
-		$this->em     = $this->importer->getEm();
 	}
 
 	/**
