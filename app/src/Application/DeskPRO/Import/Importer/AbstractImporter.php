@@ -71,6 +71,16 @@ abstract class AbstractImporter
 	protected $update_status_fn;
 
 	/**
+	 * @var \Application\DeskPRO\DBAL\Connection
+	 */
+	public $db;
+
+	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	public $em;
+
+	/**
 	 * Which maps to cache totally
 	 *
 	 * @var array
@@ -103,6 +113,9 @@ abstract class AbstractImporter
 		}
 
 		$this->logger = $logger;
+
+		$this->db = $this->db;
+		$this->em = $this->container->getEm();
 	}
 
 
@@ -253,7 +266,7 @@ abstract class AbstractImporter
 	 */
 	public function getDb()
 	{
-		return $this->getContainer()->getDb();
+		return $this->db;
 	}
 
 
@@ -262,7 +275,7 @@ abstract class AbstractImporter
 	 */
 	public function getEm()
 	{
-		return $this->getContainer()->getEm();
+		return $this->em;
 	}
 
 
@@ -275,18 +288,16 @@ abstract class AbstractImporter
 	 */
 	public function saveMappedId($type, $old_id, $new_id)
 	{
-		$id = $this->container->getDb()->insert('import_map', array(
+		$id = $this->db->insert('import_map', array(
 			'typename' => $type,
 			'old_id' => $old_id,
 			'new_id' => $new_id
 		));
 
-		if (isset($this->cache_map_types[$type])) {
-			if (!isset($this->cached_maps[$type])) {
-				$this->cached_maps[$type] = array();
-			}
-			$this->cached_maps[$type][$old_id] = $new_id;
+		if (!isset($this->cached_maps[$type])) {
+			$this->cached_maps[$type] = array();
 		}
+		$this->cached_maps[$type][$old_id] = $new_id;
 	}
 
 
@@ -302,7 +313,7 @@ abstract class AbstractImporter
 		$cache = false;
 		if (isset($this->cache_map_types[$type])) {
 			if (!$this->cached_maps) {
-				$data = $this->getDb()->fetchAll("
+				$data = $this->db->fetchAll("
 					SELECT typename, old_id, new_id
 					FROM import_map
 					WHERE typename IN ('" . implode("','", array_keys($this->cache_map_types)) . "')
@@ -321,15 +332,16 @@ abstract class AbstractImporter
 			}
 		}
 
-		$id = $this->container->getDb()->fetchColumn("
+		$id = $this->db->fetchColumn("
 			SELECT new_id
 			FROM import_map
 			WHERE typename = ? AND old_id = ?
 		", array($type, $old_id));
 
-		if ($cache) {
-			$this->cached_maps[$type][$old_id] = $id;
+		if (!isset($this->cached_maps[$type])) {
+			$this->cached_maps[$type] = array();
 		}
+		$this->cached_maps[$type][$old_id] = $id;
 
 		return $id;
 	}
@@ -344,7 +356,7 @@ abstract class AbstractImporter
 	 */
 	public function getMappedOldId($type, $new_id)
 	{
-		return $this->container->getDb()->fetchColumn("
+		return $this->db->fetchColumn("
 			SELECT old_id
 			FROM import_map
 			WHERE typename = ? AND new_id = ?

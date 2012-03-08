@@ -63,7 +63,7 @@ class TicketsStep extends AbstractDeskpro3Step
 
 	public function countPages()
 	{
-		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM ticket");
+		$count = $this->olddb->fetchColumn("SELECT COUNT(*) FROM ticket");
 		if (!$count) {
 			return 1;
 		}
@@ -79,12 +79,12 @@ class TicketsStep extends AbstractDeskpro3Step
 		$this->importer->removeTableIndexes('tickets_attachments');
 		$this->importer->removeTableIndexes('tickets_participant');
 		$this->importer->removeTableIndexes('custom_data_ticket');
+
+		$this->db->exec("ALTER TABLE tickets_search_message DROP INDEX content");
+		$this->db->exec("ALTER TABLE tickets_search_message_active DROP INDEX content");
+
 		$this->importer->removeTableIndexes('tickets_search_active');
 		$this->importer->removeTableIndexes('tickets_search_message');
-
-		$this->getDb()->exec("ALTER TABLE tickets_search_message DROP INDEX content");
-		$this->getDb()->exec("ALTER TABLE tickets_search_message_active DROP INDEX content");
-
 		$this->importer->removeTableIndexes('tickets_search_message_active');
 		$this->importer->removeTableIndexes('tickets_search_subject');
 	}
@@ -100,8 +100,8 @@ class TicketsStep extends AbstractDeskpro3Step
 		$this->importer->restoreTableIndexes('tickets_search_active');
 		$this->importer->restoreTableIndexes('tickets_search_message');
 
-		$this->getDb()->exec("CREATE FULLTEXT INDEX content ON tickets_search_message (content)");
-		$this->getDb()->exec("CREATE FULLTEXT INDEX content ON tickets_search_message_active (content)");
+		$this->db->exec("CREATE FULLTEXT INDEX content ON tickets_search_message (content)");
+		$this->db->exec("CREATE FULLTEXT INDEX content ON tickets_search_message_active (content)");
 
 		$this->importer->restoreTableIndexes('tickets_search_message_active');
 		$this->importer->restoreTableIndexes('tickets_search_subject');
@@ -113,21 +113,21 @@ class TicketsStep extends AbstractDeskpro3Step
 			$this->preRunAll();
 		}
 
-		$this->custom_field_info = $this->getOldDb()->fetchAll("SELECT * FROM ticket_def");
+		$this->custom_field_info = $this->olddb->fetchAll("SELECT * FROM ticket_def");
 		$this->fieldmanager = $this->getContainer()->getSystemService('ticket_fields_manager');
 
 		$sub_start_time = microtime(true);
-		$batch = $this->getIdsBatch($page - 1);
+		$batch = $this->getBatch($page - 1);
 		$this->logMessage("-- Processing batch {$page}");
 
 		try {
-			$this->getDb()->beginTransaction();
+			$this->db->beginTransaction();
 			foreach ($batch as $tid) {
 				$this->processTicket($tid);
 			}
-			$this->getDb()->commit();
+			$this->db->commit();
 		} catch (\Exception $e) {
-			$this->getDb()->rollback();
+			$this->db->rollback();
 			throw $e;
 		}
 
@@ -152,7 +152,6 @@ class TicketsStep extends AbstractDeskpro3Step
 
 		$check_exist = $this->getMappedNewId('ticket', $ticket_id);
 		if ($check_exist) {
-			$this->getLogger()->log("{$ticket_id} already mapped, skipping", 'DEBUG');
 			return;
 		}
 
@@ -162,7 +161,7 @@ class TicketsStep extends AbstractDeskpro3Step
 
 		$search_content = array();
 
-		$ticket_info = $this->getOldDb()->fetchAssoc("SELECT * FROM ticket WHERE id = ?", array($ticket_id));
+		$ticket_info = $this->olddb->fetchAssoc("SELECT * FROM ticket WHERE id = ?", array($ticket_id));
 
 		$new_person_id = $this->getMappedNewId('user', $ticket_info['userid']);
 		$new_agent_id = null;
@@ -176,7 +175,7 @@ class TicketsStep extends AbstractDeskpro3Step
 
 		$new_department_id = $this->getMappedNewId('ticket_category', $ticket_info['category']);
 		if (!$new_department_id) {
-			$new_department_id = $this->getDb()->fetchColumn("SELECT id FROM departments ORDER BY id ASC LIMIT 1");
+			$new_department_id = $this->db->fetchColumn("SELECT id FROM departments ORDER BY id ASC LIMIT 1");
 		}
 
 		$new_workflow_id = null;
@@ -210,7 +209,7 @@ class TicketsStep extends AbstractDeskpro3Step
 			'language_id' => 1,
 			'ticket_hash' => sha1(microtime(true) . mt_rand(1000,99999)), // bogus hash
 			'date_created' => date('Y-m-d H:i:s', $ticket_info['timestamp_opened']),
-			'ref' => \Application\DeskPRO\App::getRefGenerator()->generateReference('DeskPRO:Ticket'),
+			'ref' => \Orb\Util\Strings::random(8, \Orb\Util\Strings::CHARS_KEY),
 			'auth' => \Orb\Util\Strings::random(6, \Orb\Util\Strings::CHARS_KEY),
 			'urgency' => 1,
 		);
@@ -268,22 +267,22 @@ class TicketsStep extends AbstractDeskpro3Step
 				break;
 		}
 
-		$this->getDb()->insert('tickets', $insert_ticket);
-		$insert_ticket['id'] = $this->getDb()->lastInsertId();
+		$this->db->insert('tickets', $insert_ticket);
+		$insert_ticket['id'] = $this->db->lastInsertId();
 
 		$this->saveMappedId('ticket', $ticket_id, $insert_ticket['id']);
 
 		$search_content[] = $ticket_info['subject'];
 
 		// Save old ref and auth used in gateways
-		$this->getDb()->insert('import_datastore', array(
+		$this->db->insert('import_datastore', array(
 			'typename' => 'dp3_ticketref_' . $ticket_info['ref'],
 			'data' => serialize(array('new_id' => $insert_ticket['id'], 'old_auth' => $ticket_info['authcode']))
 		));
 
 		// Save the old language data so we can reconnect it later
 		if ($ticket_info['language'] && $ticket_info['language'] != 1) {
-			$this->getDb()->insert('import_datastore', array(
+			$this->db->insert('import_datastore', array(
 				'typename' => 'dp3_ticketlang_' . $insert_ticket['id'],
 				'data' => $ticket_info['language']
 			));
@@ -296,7 +295,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		// used in ticket logs below
 		$note_map = array();
 
-		$ticket_notes = $this->getOldDb()->fetchAll("SELECT * FROM ticket_notes WHERE ticketid = ?", array($ticket_info['id']));
+		$ticket_notes = $this->olddb->fetchAll("SELECT * FROM ticket_notes WHERE ticketid = ?", array($ticket_info['id']));
 		foreach ($ticket_notes as $note_info) {
 
 			$pid = $this->getMappedNewId('tech', $note_info['techid']);
@@ -315,9 +314,9 @@ class TicketsStep extends AbstractDeskpro3Step
 
 			$search_content[] = $note_info['note'];
 
-			$this->getDb()->insert('tickets_messages', $insert_message);
+			$this->db->insert('tickets_messages', $insert_message);
 
-			$note_map[$note_info['id']] = $this->getDb()->lastInsertId();
+			$note_map[$note_info['id']] = $this->db->lastInsertId();
 		}
 
 		#------------------------------
@@ -330,7 +329,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		$last_user_reply = null;
 
 		$first_charset = null;
-		$ticket_messages = $this->getOldDb()->fetchAll("SELECT * FROM ticket_message WHERE ticketid = ? ORDER BY id", array($ticket_info['id']));
+		$ticket_messages = $this->olddb->fetchAll("SELECT * FROM ticket_message WHERE ticketid = ? ORDER BY id", array($ticket_info['id']));
 
 		// used in ticket logs below
 		$message_map = array();
@@ -398,15 +397,15 @@ class TicketsStep extends AbstractDeskpro3Step
 			$search_content[] = $message_info['message'];
 			$insert_message['message'] = nl2br(htmlspecialchars($message_info['message'], \ENT_QUOTES, 'UTF-8'));
 
-			$this->getDb()->insert('tickets_messages', $insert_message);
-			$insert_message['id'] = $this->getDb()->lastInsertId();
+			$this->db->insert('tickets_messages', $insert_message);
+			$insert_message['id'] = $this->db->lastInsertId();
 
 			$this->saveMappedId('ticket_message', $message_info['id'], $insert_message['id']);
 
 			$message_map[$message_info['id']] = $insert_message['id'];
 
 			if ($save_raw) {
-				$this->getDb()->insert('tickets_messages_raw', array(
+				$this->db->insert('tickets_messages_raw', array(
 					'message_id' => $insert_message['id'],
 					'raw'        => $message_info['message'],
 					'charset'    => $orig_charset,
@@ -438,14 +437,14 @@ class TicketsStep extends AbstractDeskpro3Step
 		}
 
 		if ($up) {
-			$this->getDb()->update('tickets', $up, array('id' => $insert_ticket['id']));
+			$this->db->update('tickets', $up, array('id' => $insert_ticket['id']));
 		}
 
 		#------------------------------
 		# Attachments
 		#------------------------------
 
-		$ticket_attachments = $this->getOldDb()->fetchAll("SELECT * FROM ticket_attachments WHERE ticketid = ?", array($ticket_info['id']));
+		$ticket_attachments = $this->olddb->fetchAll("SELECT * FROM ticket_attachments WHERE ticketid = ?", array($ticket_info['id']));
 
 		// used for add_attach in ticketlog
 		$ticket_attach_map = array();
@@ -477,9 +476,9 @@ class TicketsStep extends AbstractDeskpro3Step
 
 			$insert_attach['blob_id'] = $blob_id;
 
-			$this->getDb()->insert('tickets_attachments', $insert_attach);
+			$this->db->insert('tickets_attachments', $insert_attach);
 
-			$id = $this->getDb()->lastInsertId();
+			$id = $this->db->lastInsertId();
 			$ticket_attach_info[$id] = array('blob_id' => $blob_id, 'filename' => $attach_info['filename'], 'filesize' => 0);
 			$ticket_attach_map[$attach_info['id']] = $id;
 		}
@@ -488,7 +487,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		# Participants
 		#------------------------------
 
-		$ticket_parts = $this->getOldDb()->fetchAll("SELECT * FROM ticket_participant WHERE ticket = ?", array($ticket_info['id']));
+		$ticket_parts = $this->olddb->fetchAll("SELECT * FROM ticket_participant WHERE ticket = ?", array($ticket_info['id']));
 		foreach ($ticket_parts as $part_info) {
 			if ($part_info['user_type'] == 'tech') {
 				$pid = $this->getMappedNewId('tech', $part_info['user']);
@@ -504,14 +503,14 @@ class TicketsStep extends AbstractDeskpro3Step
 			$insert_tac['auth'] = \Orb\Util\Strings::random(6, \Orb\Util\Strings::CHARS_KEY);
 			$insert_tac['person_id'] = $pid;
 			$insert_tac['ticket_id'] = $insert_ticket['id'];
-			$this->getDb()->insert('ticket_access_codes', $insert_tac);
-			$insert_tac['id'] = $this->getDb()->lastInsertId();
+			$this->db->insert('ticket_access_codes', $insert_tac);
+			$insert_tac['id'] = $this->db->lastInsertId();
 
 			$insert_part = array();
 			$insert_part['person_id'] = $pid;
 			$insert_part['ticket_id'] = $insert_ticket['id'];
 			$insert_part['access_code_id'] = $insert_tac['id'];
-			$this->getDb()->insert('tickets_participants', $insert_part);
+			$this->db->insert('tickets_participants', $insert_part);
 		}
 
 		#------------------------------
@@ -520,7 +519,7 @@ class TicketsStep extends AbstractDeskpro3Step
 
 		$search_content = implode(' ', $search_content);
 
-		$this->getDb()->insert('content_search', array(
+		$this->db->insert('content_search', array(
 			'object_type' => 'ticket',
 			'object_id' => $insert_ticket['id'],
 			'content' => $search_content,
@@ -530,7 +529,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		# Saved tickets become flagged
 		#------------------------------
 
-		$saved_tickets = $this->getOldDb()->fetchAllCol("
+		$saved_tickets = $this->olddb->fetchAllCol("
 			SELECT techid
 			FROM tech_ticket_save
 			WHERE id = ?
@@ -541,7 +540,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		foreach ($saved_tickets as $saved_tech) {
 			$agent_id = $this->getMappedNewId('tech', $saved_tech);
 			if (!$agent_id) continue;
-			$this->getDb()->insert('tickets_flagged', array(
+			$this->db->insert('tickets_flagged', array(
 				'ticket_id' => $insert_ticket['id'],
 				'person_id' => $agent_id,
 				'color' => 'red'
@@ -552,7 +551,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		# Ticket log
 		#------------------------------
 
-		$this->getDb()->insert('tickets_logs', array(
+		$this->db->insert('tickets_logs', array(
 			'ticket_id' => $insert_ticket['id'],
 			'action_type' => 'free',
 			'date_created' => date('Y-m-d H:i:s', $ticket_info['timestamp_opened']),
@@ -561,7 +560,7 @@ class TicketsStep extends AbstractDeskpro3Step
 			))
 		));
 
-		$ticket_logs = $this->getOldDb()->fetchAll("
+		$ticket_logs = $this->olddb->fetchAll("
 			SELECT * FROM ticket_log
 			WHERE ticketid = ?
 			ORDER BY id ASC
@@ -954,13 +953,13 @@ class TicketsStep extends AbstractDeskpro3Step
 				case 'ticket_email':
 					$email_id_before = $email_id_after = null;
 					if ($tlog['detail_before']) {
-						$email_id_before = $this->getDb()->fetchColumn("SELECT id FROM people_emails WHERE email = ? LIMIT 1", array($tlog['detail_before']));
+						$email_id_before = $this->db->fetchColumn("SELECT id FROM people_emails WHERE email = ? LIMIT 1", array($tlog['detail_before']));
 						if (!$email_id_before) {
 							$email_id_before = null;
 						}
 					}
 					if ($tlog['detail_after']) {
-						$email_id_before = $this->getDb()->fetchColumn("SELECT id FROM people_emails WHERE email = ? LIMIT 1", array($tlog['detail_after']));
+						$email_id_before = $this->db->fetchColumn("SELECT id FROM people_emails WHERE email = ? LIMIT 1", array($tlog['detail_after']));
 						if (!$email_id_after) {
 							$email_id_after = null;
 						}
@@ -1104,7 +1103,7 @@ class TicketsStep extends AbstractDeskpro3Step
 						break;
 					}
 
-					$field_title = $this->getDb()->fetchColumn("SELECT title FROM custom_def_ticket WHERE id = ?", array($field_id));
+					$field_title = $this->db->fetchColumn("SELECT title FROM custom_def_ticket WHERE id = ?", array($field_id));
 
 					$insert_tlog['details']['value_before'] = $tlog['detail_before'];
 					$insert_tlog['details']['value_after']  = $tlog['detail_after'];
@@ -1232,7 +1231,7 @@ class TicketsStep extends AbstractDeskpro3Step
 					} elseif (\Orb\Util\Numbers::isInteger($v)) {
 						$log_row[] = $v;
 					} else {
-						$log_row[] = $this->getDb()->quote($v);
+						$log_row[] = $this->db->quote($v);
 					}
 				}
 
@@ -1242,7 +1241,7 @@ class TicketsStep extends AbstractDeskpro3Step
 
 		if ($log_sql) {
 			$log_sql = "INSERT INTO tickets_logs (ticket_id, person_id, action_type, id_object, id_before, id_after, details, date_created) VALUES " . implode(',', $log_sql);
-			$this->getDb()->executeUpdate($log_sql);
+			$this->db->executeUpdate($log_sql);
 		}
 
 		#------------------------------
@@ -1264,7 +1263,7 @@ class TicketsStep extends AbstractDeskpro3Step
 			switch ($field->handler_class) {
 				case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
 				case 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea':
-					$this->getDb()->insert('custom_data_ticket', array(
+					$this->db->insert('custom_data_ticket', array(
 						'ticket_id' => $insert_ticket['id'],
 						'field_id' => $field->id,
 						'input' => $ticket_info[$name]
@@ -1275,7 +1274,7 @@ class TicketsStep extends AbstractDeskpro3Step
 					$val = str_replace('|||', '', $ticket_info[$name]);
 					$new_val = $this->getMappedNewId('ticket_def_choice', $val);
 					if ($new_val) {
-						$this->getDb()->insert('custom_data_ticket', array(
+						$this->db->insert('custom_data_ticket', array(
 							'ticket_id' => $insert_ticket['id'],
 							'field_id' => $new_val,
 							'value' => 1
@@ -1288,7 +1287,7 @@ class TicketsStep extends AbstractDeskpro3Step
 					foreach ($vals as $val) {
 						$new_val = $this->getMappedNewId('ticket_def_choice', $val);
 						if ($new_val) {
-							$this->getDb()->insert('custom_data_ticket', array(
+							$this->db->insert('custom_data_ticket', array(
 								'ticket_id' => $insert_ticket['id'],
 								'field_id' => $new_val,
 								'value' => 1
@@ -1305,27 +1304,27 @@ class TicketsStep extends AbstractDeskpro3Step
 		switch ($thing) {
 			case 'department':
 				if (!isset($this->thing_titles[$thing])) {
-					$this->thing_titles[$thing] = $this->getDb()->fetchAllKeyValue("SELECT id, title FROM departments");
+					$this->thing_titles[$thing] = $this->db->fetchAllKeyValue("SELECT id, title FROM departments");
 				}
 				return isset($this->thing_titles[$thing][$id]) ? $this->thing_titles[$thing][$id] : '';
 			case 'ticket_category':
 				if (!isset($this->thing_titles[$thing])) {
-					$this->thing_titles[$thing] = $this->getDb()->fetchAllKeyValue("SELECT id, title FROM ticket_categories");
+					$this->thing_titles[$thing] = $this->db->fetchAllKeyValue("SELECT id, title FROM ticket_categories");
 				}
 				return isset($this->thing_titles[$thing][$id]) ? $this->thing_titles[$thing][$id] : '';
 			case 'ticket_workflow':
 				if (!isset($this->thing_titles[$thing])) {
-					$this->thing_titles[$thing] = $this->getDb()->fetchAllKeyValue("SELECT id, title FROM ticket_workflows");
+					$this->thing_titles[$thing] = $this->db->fetchAllKeyValue("SELECT id, title FROM ticket_workflows");
 				}
 				return isset($this->thing_titles[$thing][$id]) ? $this->thing_titles[$thing][$id] : '';
 			case 'ticket_priority':
 				if (!isset($this->thing_titles[$thing])) {
-					$this->thing_titles[$thing] = $this->getDb()->fetchAllKeyValue("SELECT id, title FROM ticket_priorities");
+					$this->thing_titles[$thing] = $this->db->fetchAllKeyValue("SELECT id, title FROM ticket_priorities");
 				}
 				return isset($this->thing_titles[$thing][$id]) ? $this->thing_titles[$thing][$id] : '';
 			case 'ticket_priority_pri':
 				if (!isset($this->thing_titles[$thing])) {
-					$this->thing_titles['ticket_priority_pri'] = $this->getDb()->fetchAllKeyValue("SELECT id, priority FROM ticket_priorities");
+					$this->thing_titles['ticket_priority_pri'] = $this->db->fetchAllKeyValue("SELECT id, priority FROM ticket_priorities");
 				}
 				return isset($this->thing_titles[$thing][$id]) ? $this->thing_titles[$thing][$id] : '';
 		}
@@ -1337,10 +1336,12 @@ class TicketsStep extends AbstractDeskpro3Step
 	 * @param $page
 	 * @return array
 	 */
-	protected function getIdsBatch($page)
+	protected function getBatch($page)
 	{
-		$start = $page * 1000;
-		$ids = $this->getOldDb()->fetchAllCol("SELECT id FROM ticket ORDER BY id ASC LIMIT $start, 1000");
+		$start = $page * 500;
+		$ids = $this->olddb->fetchAllCol("SELECT id FROM ticket ORDER BY id ASC LIMIT $start, 1000");
+
+
 
 		return $ids;
 	}

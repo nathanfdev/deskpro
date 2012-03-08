@@ -49,7 +49,10 @@ abstract class AbstractStep
 	public function __construct(AbstractImporter $impoter)
 	{
 		$this->importer = $impoter;
+		$this->init();
 	}
+
+	protected function init() {}
 
 
 	/**

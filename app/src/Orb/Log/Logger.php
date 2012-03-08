@@ -83,6 +83,13 @@ class Logger
 	 */
 	protected $_session_name = null;
 
+	/**
+	 * True to disable logger
+	 *
+	 * @var bool
+	 */
+	public $disabled = false;
+
 
 
 	public function __construct()
@@ -162,6 +169,10 @@ class Logger
 	 */
 	public function log($message, $priority, array $info = array())
 	{
+		if ($this->disabled) {
+			return;
+		}
+
 		if (is_string($priority)) {
 			if ($priority == 'ERROR') {
 				$priority = 'ERR';
@@ -197,6 +208,10 @@ class Logger
 	 */
 	public function logItem(LogItem $log_item)
 	{
+		if ($this->disabled) {
+			return;
+		}
+
 		if ($this->_session_name AND !$log_item[LogItem::SESSION_NAME]) {
 			$log_item[LogItem::SESSION_NAME] = $this->_session_name;
 		}

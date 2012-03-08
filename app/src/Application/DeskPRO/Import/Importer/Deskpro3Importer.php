@@ -42,12 +42,12 @@ class Deskpro3Importer extends AbstractImporter
 	/**
 	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
-	protected $db;
+	public $db;
 
 	/**
 	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
-	protected $old_db;
+	public $olddb;
 
 	/**
 	 * @var int
@@ -131,9 +131,9 @@ class Deskpro3Importer extends AbstractImporter
 			}
 		}
 
-		if (!$this->old_db) {
+		if (!$this->olddb) {
 			try {
-				$this->old_db = $this->container->get('doctrine.dbal.connection_factory')->createConnection(array(
+				$this->olddb = $this->container->get('doctrine.dbal.connection_factory')->createConnection(array(
 					'driver'   => 'pdo_mysql',
 					'host'     => $this->config->db_host,
 					'user'     => $this->config->db_user,
@@ -195,6 +195,7 @@ class Deskpro3Importer extends AbstractImporter
 	 */
 	public function preRunStep($step)
 	{
+		global $DP_CONFIG;
 		$formatter = new \Orb\Log\Filter\CallbackFormatter(function ($log_item) {
 			/** @var $log_item \Orb\Log\LogItem */
 			$log_item = $log_item;
@@ -226,11 +227,17 @@ class Deskpro3Importer extends AbstractImporter
 			$logger->addWriter(new \Orb\Log\Writer\Stream($this->config->get('log_dir') . '/importer-db-sql.log', null, false));
 
 			$qlog->setLogger($logger);
-			$qlog->addSlowLogRule(QueryLogger::TYPE_ALL, 0);
+
+			if (!(isset($DP_CONFIG['import']['nolog']) && $DP_CONFIG['import']['nolog'])) {
+				$qlog->addSlowLogRule(QueryLogger::TYPE_ALL, 0);
+			}
 		} else {
 			$this->logger->addFilter(new \Application\InstallBundle\Logger\Filter\InstallQueryLogFormatter());
 			$qlog->setLogger($this->logger);
-			$qlog->addSlowLogRule(QueryLogger::TYPE_ALL, 0);
+
+			if (!(isset($DP_CONFIG['import']['nolog']) && $DP_CONFIG['import']['nolog'])) {
+				$qlog->addSlowLogRule(QueryLogger::TYPE_ALL, 0);
+			}
 		}
 
 		$this->qlog_db = $qlog;
@@ -238,18 +245,24 @@ class Deskpro3Importer extends AbstractImporter
 
 		// For olddb too
 		$qlog = new QueryLogger();
-		$qlog->tag = 'old_db';
+		$qlog->tag = 'olddb';
 		if ($this->config->get('enable_query_log')) {
 			$logger = new \Orb\Log\Logger();
 			$logger->addFilter($formatter);
 			$logger->addWriter(new \Orb\Log\Writer\Stream($this->config->get('log_dir') . '/importer-olddb-sql.log', null, false));
 
 			$qlog->setLogger($logger);
-			$qlog->addSlowLogRule(QueryLogger::TYPE_ALL, 0);
+
+			if (!(isset($DP_CONFIG['import']['nolog']) && $DP_CONFIG['import']['nolog'])) {
+				$qlog->addSlowLogRule(QueryLogger::TYPE_ALL, 0);
+			}
 		} else {
 			$this->logger->addFilter(new \Application\InstallBundle\Logger\Filter\InstallQueryLogFormatter());
 			$qlog->setLogger($this->logger);
-			$qlog->addSlowLogRule(QueryLogger::TYPE_ALL, 0);
+
+			if (!(isset($DP_CONFIG['import']['nolog']) && $DP_CONFIG['import']['nolog'])) {
+				$qlog->addSlowLogRule(QueryLogger::TYPE_ALL, 0);
+			}
 		}
 
 		$this->qlog_olddb = $qlog;
@@ -396,6 +409,6 @@ class Deskpro3Importer extends AbstractImporter
 	 */
 	public function getOldDb()
 	{
-		return $this->old_db;
+		return $this->olddb;
 	}
 }

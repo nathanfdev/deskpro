@@ -44,11 +44,38 @@ abstract class AbstractDeskpro3Step extends AbstractStep
 	protected $importer;
 
 	/**
+	 * @var array
+	 */
+	protected $cached_inserts = array();
+
+	/**
+	 * @var \Application\DeskPRO\DBAL\Connection
+	 */
+	public $db;
+
+	/**
+	 * @var \Application\DeskPRO\DBAL\Connection
+	 */
+	public $olddb;
+
+	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	public $em;
+
+	protected function init()
+	{
+		$this->db     = $this->importer->getDb();
+		$this->olddb  = $this->importer->getOldDb();
+		$this->em     = $this->importer->getEm();
+	}
+
+	/**
 	 * @return \Application\DeskPRO\DBAL\Connection
 	 */
 	public function getOldDb()
 	{
-		return $this->importer->getOldDb();
+		return $this->olddb;
 	}
 
 	public function getStepTime()

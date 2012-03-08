@@ -92,7 +92,7 @@ class InstallQueryLogFormatter extends \Orb\Filter\AbstractFilter
 		}
 
 		$sql = $log_item['queryinfo']['sql'];
-		$sql = substr($sql, 0, 600);
+		$sql = substr($sql, 0, 1500);
 
 		$log_item[\Orb\Log\LogItem::MESSAGE] = sprintf(
 			"[%s %s took %.4fs] %s (%s)",

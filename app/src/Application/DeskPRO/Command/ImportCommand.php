@@ -93,6 +93,8 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		try {
 			if (!(isset($DP_CONFIG['import']['nolog']) && $DP_CONFIG['import']['nolog'])) {
 				$wr = new \Orb\Log\Writer\Stream($log_file_path);
+			} else {
+				$logger->disabled = true;
 			}
 			$logger->addWriter($wr);
 		} catch (\Exception $e) {
