@@ -88,14 +88,15 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 		if (!$this->_is_enabled) return;
 
 		if ($this->ignore_triggers) {
-			$this->ignored_query_start = microtime(true);
 			foreach ($this->ignore_triggers as $p) {
 				if (strpos($sql, $p) !== false) {
+					$this->ignored_query_start = microtime(true);
 					return;
 				}
 			}
 		}
 
+		$sql = trim($sql);
 		if (preg_match('#^\s*SELECT#i', $sql)) {
 			$query_type = self::TYPE_SELECT;
 			$query_typename = 'SELECT';
@@ -141,7 +142,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 			$this->_query_counter++;
 			$this->_query_total_time += $timetaken;
 
-			$this->ignored_query_start = 0;
+			$this->ignored_query_start = false;
 			return;
 		}
 		if (!$this->_is_enabled OR $this->_last_query == -1) {
