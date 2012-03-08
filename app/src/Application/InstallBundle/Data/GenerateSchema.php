@@ -177,7 +177,7 @@ SQL;
 
 		$all_sql[] = <<<SQL
 CREATE TABLE `tickets_search_subject` (
-  `ticket_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `subject` varchar(1000) NOT NULL,
   PRIMARY KEY (`ticket_id`)
 ) ENGINE=MyISAM
@@ -185,7 +185,7 @@ SQL;
 
 		$all_sql[] = <<<SQL
 CREATE TABLE `tickets_search_message` (
-  `ticket_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `language_id` int(11) DEFAULT NULL,
   `department_id` int(11) DEFAULT NULL,
   `category_id` int(11) DEFAULT NULL,
@@ -218,7 +218,7 @@ SQL;
 
 		$all_sql[] = <<<SQL
 CREATE TABLE `tickets_search_message_active` (
-  `ticket_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `language_id` int(11) DEFAULT NULL,
   `department_id` int(11) DEFAULT NULL,
   `category_id` int(11) DEFAULT NULL,

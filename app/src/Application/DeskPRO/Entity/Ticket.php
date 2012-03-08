@@ -1362,6 +1362,22 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * Is the ticket active? An active ticket is one that is not closed or hidden.
+	 * This is used to determine what is in the "active" search tables.
+	 *
+	 * @return bool
+	 */
+	public function isActive()
+	{
+		if ($this->status != 'closed' && $this->status != 'hidden') {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * Is this ticket deleted?
 	 *
 	 * @return bool

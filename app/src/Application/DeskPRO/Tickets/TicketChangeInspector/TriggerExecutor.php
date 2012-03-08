@@ -45,7 +45,7 @@ use Orb\Util\Arrays;
 class TriggerExecutor
 {
 	/**
-	 * @var \TicketChangeTracker\DeskPRO\Tickets\TicketChangeTracker
+	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
 	 */
 	protected $listener;
 
@@ -68,7 +68,7 @@ class TriggerExecutor
 	}
 
 	/**
-	 * @return \TicketChangeTracker\DeskPRO\Tickets\TicketChangeTracker
+	 * @return \Application\DeskPRO\Tickets\TicketChangeTracker
 	 */
 	public function getChangeTracker()
 	{
