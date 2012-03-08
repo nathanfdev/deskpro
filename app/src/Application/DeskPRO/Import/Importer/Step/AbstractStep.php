@@ -144,9 +144,16 @@ abstract class AbstractStep
 	 * @param $old_id
 	 * @param $new_id
 	 */
-	public function saveMappedId($type, $old_id, $new_id)
+	public function saveMappedId($type, $old_id, $new_id, $buffer = false)
 	{
-		$this->importer->saveMappedId($type, $old_id, $new_id);
+		$this->importer->saveMappedId($type, $old_id, $new_id, $buffer);
+	}
+
+
+
+	public function flushSaveMappedIdBuffer()
+	{
+		$this->importer->flushSaveMappedIdBuffer();
 	}
 
 

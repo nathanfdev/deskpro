@@ -107,6 +107,7 @@ class UsersStep extends AbstractDeskpro3Step
 			foreach ($users as $u) {
 				$this->processUser($u);
 			}
+			$this->importer->flushSaveMappedIdBuffer();
 			$this->getDb()->commit();
 		} catch (\Exception $e) {
 			$this->getDb()->rollback();
@@ -170,7 +171,7 @@ class UsersStep extends AbstractDeskpro3Step
 			$this->getLogger()->log("{$user_id} has an email that already exists, re-mapping ID to {$found} and skipping", 'DEBUG');
 
 			// Map this id to the already existing user
-			$this->saveMappedId('user', $user_id, $found);
+			$this->saveMappedId('user', $user_id, $found, true);
 			return;
 		}
 
@@ -231,7 +232,7 @@ class UsersStep extends AbstractDeskpro3Step
 		$this->getDb()->insert('people', $insert_person);
 		$insert_person['id'] = $this->getDb()->lastInsertId();
 
-		$this->saveMappedId('user', $user_id, $insert_person['id']);
+		$this->saveMappedId('user', $user_id, $insert_person['id'], true);
 		unset($person);
 
 

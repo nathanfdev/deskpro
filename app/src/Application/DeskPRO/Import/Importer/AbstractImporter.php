@@ -80,6 +80,8 @@ abstract class AbstractImporter
 	 */
 	public $em;
 
+	protected $buffered_save_mapped_ids = array();
+
 	/**
 	 * Which maps to cache totally
 	 *
@@ -286,18 +288,64 @@ abstract class AbstractImporter
 	 * @param $old_id
 	 * @param $new_id
 	 */
-	public function saveMappedId($type, $old_id, $new_id)
+	public function saveMappedId($type, $old_id, $new_id, $buffer = false)
 	{
-		$id = $this->db->insert('import_map', array(
+		$values = array(
 			'typename' => $type,
 			'old_id' => $old_id,
 			'new_id' => $new_id
-		));
+		);
+
+		if ($buffer) {
+			$this->buffered_save_mapped_ids[] = $values;
+
+			if (count($this->buffered_save_mapped_ids) > 2000) {
+				$this->flushSaveMappedIdBuffer();
+			}
+		} else {
+			$id = $this->db->insert('import_map', $values);
+		}
 
 		if (!isset($this->cached_maps[$type])) {
 			$this->cached_maps[$type] = array();
 		}
 		$this->cached_maps[$type][$old_id] = $new_id;
+	}
+
+
+	/**
+	 * Sends all of the mapped ids to the import_map table
+	 */
+	public function flushSaveMappedIdBuffer()
+	{
+		if (!$this->buffered_save_mapped_ids) {
+			return;
+		}
+
+		$sql = 'INSERT INTO import_map (typename, old_id, new_id) VALUES ';
+		$sql_parts = array();
+
+		foreach ($this->buffered_save_mapped_ids as $vals) {
+			$quoted = array();
+
+			foreach ($vals as $v) {
+				if (is_null($v)) {
+					$quoted[] = 'NULL';
+				} elseif (\Orb\Util\Numbers::isInteger($v)) {
+					$quoted[] = $v;
+				} else {
+					$quoted[] = $this->db->quote($v);
+				}
+			}
+
+			$sql_parts[] = '(' . implode(',', $quoted) . ')';
+		}
+
+		$sql .= implode(',', $sql_parts);
+
+		$this->db->exec($sql);
+
+		$this->buffered_save_mapped_ids = array();
 	}
 
 

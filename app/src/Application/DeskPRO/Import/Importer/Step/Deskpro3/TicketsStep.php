@@ -80,8 +80,8 @@ class TicketsStep extends AbstractDeskpro3Step
 		$this->importer->removeTableIndexes('tickets_participant');
 		$this->importer->removeTableIndexes('custom_data_ticket');
 
-		$this->db->exec("ALTER TABLE tickets_search_message DROP INDEX content");
-		$this->db->exec("ALTER TABLE tickets_search_message_active DROP INDEX content");
+		//$this->db->exec("ALTER TABLE tickets_search_message DROP INDEX content");
+		//$this->db->exec("ALTER TABLE tickets_search_message_active DROP INDEX content");
 
 		$this->importer->removeTableIndexes('tickets_search_active');
 		$this->importer->removeTableIndexes('tickets_search_message');
@@ -125,6 +125,8 @@ class TicketsStep extends AbstractDeskpro3Step
 			foreach ($batch as $tid) {
 				$this->processTicket($tid);
 			}
+
+			$this->importer->flushSaveMappedIdBuffer();
 			$this->db->commit();
 		} catch (\Exception $e) {
 			$this->db->rollback();
@@ -270,7 +272,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		$this->db->insert('tickets', $insert_ticket);
 		$insert_ticket['id'] = $this->db->lastInsertId();
 
-		$this->saveMappedId('ticket', $ticket_id, $insert_ticket['id']);
+		$this->saveMappedId('ticket', $ticket_id, $insert_ticket['id'], true);
 
 		$search_content[] = $ticket_info['subject'];
 
@@ -400,7 +402,7 @@ class TicketsStep extends AbstractDeskpro3Step
 			$this->db->insert('tickets_messages', $insert_message);
 			$insert_message['id'] = $this->db->lastInsertId();
 
-			$this->saveMappedId('ticket_message', $message_info['id'], $insert_message['id']);
+			$this->saveMappedId('ticket_message', $message_info['id'], $insert_message['id'], true);
 
 			$message_map[$message_info['id']] = $insert_message['id'];
 
@@ -1340,9 +1342,6 @@ class TicketsStep extends AbstractDeskpro3Step
 	{
 		$start = $page * 500;
 		$ids = $this->olddb->fetchAllCol("SELECT id FROM ticket ORDER BY id ASC LIMIT $start, 1000");
-
-
-
 		return $ids;
 	}
 }

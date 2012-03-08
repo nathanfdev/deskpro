@@ -92,6 +92,7 @@ class UserChatsStep extends AbstractDeskpro3Step
 			foreach ($batch as $cid) {
 				$this->processChat($cid);
 			}
+			$this->importer->flushSaveMappedIdBuffer();
 			$this->getDb()->commit();
 		} catch (\Exception $e) {
 			$this->getDb()->rollback();
@@ -183,7 +184,7 @@ class UserChatsStep extends AbstractDeskpro3Step
 		$this->getEm()->persist($convo);
 		$this->getEm()->flush();
 
-		$this->saveMappedId('chat', $chat_info['id'], $convo->id);
+		$this->saveMappedId('chat', $chat_info['id'], $convo->id, true);
 
 		#------------------------------
 		# Attachments
