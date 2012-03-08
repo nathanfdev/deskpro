@@ -80,21 +80,31 @@ class KbSearchLogStep extends AbstractDeskpro3Step
 			LIMIT $start, 1000
 		");
 
-		foreach ($batch as $log) {
-			$person_id = $this->getMappedNewId('user', $log['userid']);
-			if (!$person_id) {
-				$person_id = null;
+		$this->getDb()->beginTransaction();
+		try {
+			foreach ($batch as $log) {
+				$person_id = $this->getMappedNewId('user', $log['userid']);
+				if (!$person_id) {
+					$person_id = null;
+				}
+
+				$this->getDb()->insert('searchlog', array(
+					'person_id' => $person_id,
+					'query' => $log['query'],
+					'num_results' => (int)$log['total'],
+					'date_created' => date('Y-m-d H:i:s', $log['timestamp'] ? $log['timestamp'] : time())
+				));
+
+				$this->saveMappedId('searchlog', $log['id'], $this->getDb()->lastInsertId(), true);
 			}
 
-			$this->getDb()->insert('searchlog', array(
-				'person_id' => $person_id,
-				'query' => $log['query'],
-				'num_results' => (int)$log['total'],
-				'date_created' => date('Y-m-d H:i:s', $log['timestamp'] ? $log['timestamp'] : time())
-			));
-
-			$this->saveMappedId('searchlog', $log['id'], $this->getDb()->lastInsertId());
+			$this->flushSaveMappedIdBuffer();
+			$this->getDb()->commit();
+		} catch (\Exception $e) {
+			$this->getDb()->rollback();
+			throw $e;
 		}
+
 
 		if ($page >= $this->countPages()) {
 			$this->postRunAll();
