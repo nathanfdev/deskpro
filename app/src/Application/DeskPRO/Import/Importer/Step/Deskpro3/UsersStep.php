@@ -95,7 +95,7 @@ class UsersStep extends AbstractDeskpro3Step
 		$sub_start_time = microtime(true);
 		$this->logMessage("-- Processing batch {$page}");
 
-		$users = $this->getBatch($page - 1);
+		$users = $this->getBatch($page);
 		$this->db->exec("SET unique_checks = 0");
 		$this->db->exec("SET foreign_key_checks = 0");
 
@@ -341,9 +341,11 @@ class UsersStep extends AbstractDeskpro3Step
 	 */
 	protected function getBatch($page)
 	{
-		$start = $page * self::PERPAGE;
-		$ids = $this->olddb->fetchAll("SELECT * FROM user ORDER BY id ASC LIMIT $start, " . self::PERPAGE);
+		$start = (($page-1) * self::PERPAGE) + 1;
+		$end   = ($page-1) * self::PERPAGE;
 
-		return $ids;
+		$batch = $this->olddb->fetchAll("SELECT * FROM user WHERE id >= $start AND id <= $end");
+
+		return $batch;
 	}
 }

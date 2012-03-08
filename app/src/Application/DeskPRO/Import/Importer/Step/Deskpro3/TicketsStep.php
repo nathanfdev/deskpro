@@ -137,7 +137,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		$sub_start_time = microtime(true);
 		$this->logMessage("-- Processing batch {$page}");
 
-		$batch = $this->getBatch($page - 1);
+		$batch = $this->getBatch($page);
 
 		try {
 			$this->db->beginTransaction();
@@ -1367,9 +1367,12 @@ class TicketsStep extends AbstractDeskpro3Step
 	 */
 	protected function getBatch($page)
 	{
-		$start = $page * 500;
-		$ids = $this->olddb->fetchAll("SELECT * FROM ticket ORDER BY id ASC LIMIT $start, 1000");
-		return $ids;
+		$start = (($page-1) * self::PERPAGE) + 1;
+		$end   = ($page-1) * self::PERPAGE;
+
+		$batch = $this->olddb->fetchAll("SELECT * FROM ticket WHERE id >= $start AND id <= $end");
+
+		return $batch;
 	}
 
 	public function getPersonInfo($new_id)
