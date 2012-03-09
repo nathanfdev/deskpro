@@ -127,7 +127,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($this->_raw !== null) return $this->_raw;
 
-		$desc = App::getSystemService('filesystem')->getFileDescriptor($this->blob->id);
+		$desc = App::getSystemService('filestorage')->getFileDescriptor($this->blob->id);
 		$this->_raw = $desc->get();
 
 		return $this->_raw;

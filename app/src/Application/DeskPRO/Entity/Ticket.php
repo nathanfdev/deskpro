@@ -370,17 +370,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getUserParticipants()
 	{
-		if ($this->_user_participants !== null) return $this->_user_participants;
+		$ret = array();
 
-		$this->_user_participants = array();
-
-		foreach ($this->participants as $p) {
+		foreach ($this['participants'] as $p) {
 			if (!$p['person']['is_agent']) {
-				$this->_user_participants[] = $p;
+				$ret[] = $p;
 			}
 		}
 
-		return $this->_user_participants;
+		return $ret;
 	}
 
 	public function getAgentParticipants()

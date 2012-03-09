@@ -94,6 +94,7 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 		// Is null if not provided,
 		// or an array of people ID's if provided (from agent reply)
 		$only_cc_ids = $this->tracker->getExtra('enabled_cc');
+		$only_cc_ids = null;
 
 		$vars['ticket'] = $ticket;
 		$vars['person'] = $person;
@@ -123,16 +124,14 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 				$message->setTo($vars['validating_email']->getEmail());
 			} else {
 				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+				error_log($person->getPrimaryEmailAddress());
 			}
 			foreach ($parts as $part) {
-				if ($only_cc_ids === null OR in_array($part->person['id'], $only_cc_ids)) {
-					$message->addCc($part['email_address'], $part->person->getDisplayName());
-				}
+				$message->addCc($part['email_address'], $part->person->getDisplayName());
 			}
 			$message->setSubject($email_subject);
 			$message->setBody($email_body, 'text/html');
 			$message->setFrom($from_address);
-			$message->enableQueueHint();
 			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
 
 			App::getMailer()->send($message);

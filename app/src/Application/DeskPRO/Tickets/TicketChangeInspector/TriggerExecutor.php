@@ -160,6 +160,14 @@ class TriggerExecutor
 				);
 
 				array_unshift($all_triggers, $trigger);
+			} elseif ($this->tracker->hasNewAgentReply()) {
+				$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+				$trigger->terms = array();
+				$trigger->actions = array(
+					array('type' => 'user_notification_new_reply_agent', 'options' => array())
+				);
+
+				array_unshift($all_triggers, $trigger);
 			}
 
 			#------------------------------

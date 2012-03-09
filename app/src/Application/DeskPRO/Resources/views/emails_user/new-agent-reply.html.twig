@@ -1,6 +1,16 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block content %}
+{% set content %}
+{{ new_message.person.display_name }} has replied to your ticket.
+<br /><br />
+You can view your ticket online at any time	by visiting:
+<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}">
+	{{ url_display('user_tickets_view', {'ticket_ref': ticket.access_code}) }}
+</a>
+{% endset %}
+{{ layout.section('', content) }}
+
 {{ layout.render_ticket_messages(messages) }}
 
 <br/><br/>
