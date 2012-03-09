@@ -143,8 +143,8 @@ class TicketsStep extends AbstractDeskpro3Step
 
 		try {
 			$this->db->beginTransaction();
-			foreach ($batch as $t) {
-				$this->processTicket($t);
+			foreach ($batch as $tinfo) {
+				$this->processTicketInfo($tinfo);
 			}
 
 			$this->importer->flushSaveMappedIdBuffer();
@@ -167,8 +167,9 @@ class TicketsStep extends AbstractDeskpro3Step
 	 * Process a single ticket
 	 * @param $ticket_id
 	 */
-	protected function processTicket($ticket_info)
+	protected function processTicketInfo($all_ticket_info)
 	{
+		$ticket_info = $all_ticket_info['ticket'];
 		$ticket_id = $ticket_info['id'];
 
 		#------------------------------
@@ -318,7 +319,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		// used in ticket logs below
 		$note_map = array();
 
-		$ticket_notes = $this->olddb->fetchAll("SELECT * FROM ticket_notes WHERE ticketid = ?", array($ticket_info['id']));
+		$ticket_notes = $all_ticket_info['ticket_notes'];
 		foreach ($ticket_notes as $note_info) {
 
 			$pid = $this->getMappedNewId('tech', $note_info['techid']);
@@ -352,7 +353,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		$last_user_reply = null;
 
 		$first_charset = null;
-		$ticket_messages = $this->olddb->fetchAll("SELECT * FROM ticket_message WHERE ticketid = ? ORDER BY id", array($ticket_info['id']));
+		$ticket_messages = $all_ticket_info['ticket_message'];
 
 		// used in ticket logs below
 		$message_map = array();
@@ -467,7 +468,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		# Attachments
 		#------------------------------
 
-		$ticket_attachments = $this->olddb->fetchAll("SELECT * FROM ticket_attachments WHERE ticketid = ?", array($ticket_info['id']));
+		$ticket_attachments = $all_ticket_info['ticket_attachments'];
 
 		// used for add_attach in ticketlog
 		$ticket_attach_map = array();
@@ -516,7 +517,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		# Participants
 		#------------------------------
 
-		$ticket_parts = $this->olddb->fetchAll("SELECT * FROM ticket_participant WHERE ticket = ?", array($ticket_info['id']));
+		$ticket_parts = $all_ticket_info['ticket_participant'];
 		foreach ($ticket_parts as $part_info) {
 			if ($part_info['user_type'] == 'tech') {
 				$pid = $this->getMappedNewId('tech', $part_info['user']);
@@ -558,11 +559,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		# Saved tickets become flagged
 		#------------------------------
 
-		$saved_tickets = $this->olddb->fetchAllCol("
-			SELECT techid
-			FROM tech_ticket_save
-			WHERE id = ?
-		", array($ticket_info['id']));
+		$saved_tickets = $all_ticket_info['tech_ticket_save'];
 
 		$saved_tickets = array_unique($saved_tickets);
 
@@ -589,13 +586,7 @@ class TicketsStep extends AbstractDeskpro3Step
 			))
 		));
 
-		$ticket_logs = array();
-
-		$ticket_logs = $this->olddb->fetchAll("
-			SELECT * FROM ticket_log
-			WHERE ticketid = ?
-			ORDER BY id ASC
-		", array($ticket_info['id']));
+		$ticket_logs =$all_ticket_info['ticket_log'];
 
 		$log_sql = array();
 
@@ -1372,7 +1363,115 @@ class TicketsStep extends AbstractDeskpro3Step
 		$start = (($page-1) * self::PERPAGE) + 1;
 		$end   = $page * self::PERPAGE;
 
-		$batch = $this->olddb->fetchAll("SELECT * FROM ticket WHERE id >= $start AND id <= $end");
+		$between_where = "BETWEEN $start AND $end";
+
+		#------------------------------
+		# Fetch ticket
+		#------------------------------
+
+		$q = $this->olddb->query("SELECT * FROM ticket WHERE id $between_where");
+		$q->execute();
+
+		$batch = array();
+
+		while ($ticket = $q->fetch(\PDO::FETCH_ASSOC)) {
+			$batch[$ticket['id']] = array(
+				'ticket' => $ticket,
+				'ticket_notes' => array(),
+				'ticket_message' => array(),
+				'ticket_attachments' => array(),
+				'ticket_participant' => array(),
+				'tech_ticket_save' => array(),
+				'ticket_log' => array(),
+			);
+		}
+		$q->closeCursor();
+		unset($q);
+
+		#------------------------------
+		# Fetch ticket_notes
+		#------------------------------
+
+		$q = $this->olddb->query("SELECT * FROM ticket_notes WHERE ticketid $between_where ORDER BY id ASC");
+		$q->execute();
+
+		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
+			if (!isset($batch[$r['ticketid']])) continue;
+			$batch[$r['ticketid']]['ticket_notes'][] = $r;
+		}
+		$q->closeCursor();
+		unset($q);
+
+		#------------------------------
+		# Fetch ticket_message
+		#------------------------------
+
+		$q = $this->olddb->query("SELECT * FROM ticket_message WHERE ticketid $between_where ORDER BY id ASC");
+		$q->execute();
+
+		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
+			if (!isset($batch[$r['ticketid']])) continue;
+			$batch[$r['ticketid']]['ticket_message'][] = $r;
+		}
+		$q->closeCursor();
+		unset($q);
+
+		#------------------------------
+		# Fetch ticket_attachments
+		#------------------------------
+
+		$q = $this->olddb->query("SELECT * FROM ticket_attachments WHERE ticketid $between_where");
+		$q->execute();
+
+		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
+			if (!isset($batch[$r['ticketid']])) continue;
+			$batch[$r['ticketid']]['ticket_attachments'][] = $r;
+		}
+		$q->closeCursor();
+		unset($q);
+
+		#------------------------------
+		# Fetch ticket_participant
+		#------------------------------
+
+		$q = $this->olddb->query("SELECT * FROM ticket_participant WHERE ticket $between_where");
+		$q->execute();
+
+		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
+			if (!isset($batch[$r['ticket']])) continue;
+			$batch[$r['ticket']]['ticket_participant'][] = $r;
+		}
+		$q->closeCursor();
+		unset($q);
+
+		#------------------------------
+		# Fetch tech_ticket_save
+		#------------------------------
+
+		$q = $this->olddb->query("SELECT ticketid, techid FROM tech_ticket_save WHERE ticketid $between_where");
+		$q->execute();
+
+		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
+			if (!isset($batch[$r['ticketid']])) continue;
+			$batch[$r['ticketid']]['tech_ticket_save'][] = $r['techid'];
+		}
+		$q->closeCursor();
+		unset($q);
+
+		#------------------------------
+		# Fetch ticket_log
+		#------------------------------
+
+		$q = $this->olddb->query("SELECT * FROM ticket_log WHERE ticketid $between_where ORDER BY id ASC");
+		$q->execute();
+
+		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
+			if (!isset($batch[$r['ticketid']])) continue;
+			$batch[$r['ticketid']]['tickets_logs'][] = $r;
+		}
+		$q->closeCursor();
+		unset($q);
+
 
 		return $batch;
 	}

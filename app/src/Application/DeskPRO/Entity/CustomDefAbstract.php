@@ -144,7 +144,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
-	protected $default_value = '';
+	protected $default_value = null;
 
 	/**
 	 * @var \Application\DeskPRO\CustomFields\Handler\HandlerAbstract
