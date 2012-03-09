@@ -74,20 +74,22 @@ class InstallQueryLogFormatter extends \Orb\Filter\AbstractFilter
 		}
 
 		$params = array();
-		foreach ($log_item['queryinfo']['params'] as $k => $v) {
-			if (!is_scalar($v)) {
-				if (is_object($v)) {
-					$v = get_class($v);
-				} else {
-					$v = gettype($v);
+		if (is_array($log_item['queryinfo']['params'])) {
+			foreach ($log_item['queryinfo']['params'] as $k => $v) {
+				if (!is_scalar($v)) {
+					if (is_object($v)) {
+						$v = get_class($v);
+					} else {
+						$v = gettype($v);
+					}
 				}
-			}
-			$len = strlen($v);
-			if (strlen($v) > 250) {
-				$params[$k] = 'string(' . $len . ')';
-			} else {
-				$v = str_replace(array("\r\n", "\n"), ' ', $v);
-				$params[$k] = $v;
+				$len = strlen($v);
+				if (strlen($v) > 250) {
+					$params[$k] = 'string(' . $len . ')';
+				} else {
+					$v = str_replace(array("\r\n", "\n"), ' ', $v);
+					$params[$k] = $v;
+				}
 			}
 		}
 
