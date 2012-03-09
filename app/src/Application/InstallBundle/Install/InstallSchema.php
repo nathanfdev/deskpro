@@ -61,6 +61,8 @@ class InstallSchema
 	 */
 	protected $build = 'default';
 
+	protected $done_steps = null;
+
 	/**
 	 * @param \Application\DeskPRO\DBAL\Connection $db
 	 * @param array $schema
@@ -108,12 +110,25 @@ class InstallSchema
 
 	public function hasDoneStep($id)
 	{
-		return (bool)($this->db->fetchColumn("SELECT COUNT(*) FROM install_data WHERE build = ? AND name = ? LIMIT 1", array($this->build, $id)));
+
+		if ($this->done_steps === null) {
+			$this->done_steps = $this->db->fetchAllKeyValue("SELECT name, data FROM install_data WHERE build = ? AND name LIKE 'buildstep_%'", array($this->build));
+		}
+
+		if (isset($this->done_steps['buildstep_' . $id])) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public function markStepDone($id)
 	{
-		$this->db->insert('install_data', array('build' => $this->build, 'name' => $id, 'data' => 1));
+		$this->db->insert('install_data', array('build' => $this->build, 'name' => 'buildstep_' . $id, 'data' => 1));
+		if (!is_array($this->done_steps)) {
+			$this->hasDoneStep($id);
+		}
+		$this->done_steps['buildstep_' . $id] = 1;
 	}
 
 	/**

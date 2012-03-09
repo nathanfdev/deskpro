@@ -50,7 +50,7 @@ class AgentHelper implements PersonContextInterface
 	const ARTICLES  = 'articles';
 	const DOWNLOADS = 'downloads';
 	const NEWS      = 'news';
-	const IDEAS     = 'feedback';
+	const FEEDBACK  = 'feedback';
 
 	protected $enabled_types = array('articles', 'downloads', 'news');
 
@@ -532,7 +532,7 @@ class AgentHelper implements PersonContextInterface
 			case self::NEWS:
 				return 'DeskPRO:News';
 				break;
-			case self::IDEAS:
+			case self::FEEDBACK:
 				return 'DeskPRO:Feedback';
 				break;
 		}
@@ -560,7 +560,7 @@ class AgentHelper implements PersonContextInterface
 			case self::NEWS:
 				return 'DeskPRO:NewsCategory';
 				break;
-			case self::IDEAS:
+			case self::FEEDBACK:
 				return 'DeskPRO:FeedbackCategory';
 				break;
 		}
