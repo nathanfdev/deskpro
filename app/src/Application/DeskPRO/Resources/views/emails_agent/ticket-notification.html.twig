@@ -1,31 +1,59 @@
-{% extends 'DeskPRO:emails_user:layout.html.twig' %}
-{% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
+{% extends 'DeskPRO:emails_common:layout.html.twig' %}
+{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block content %}
-	{{ layout.section_start(ticket.subject) }}
-		{% include 'DeskPRO:emails_agent:ticket-info.html.twig' %}
-	{{ layout.section_end() }}
-	{{ layout.section_start("Changes") }}
-		<table cellspacing="0" cellpadding="3" width="100%">
-			<tr>
-				<td>Field</td>
-				<td>Old Value</td>
-				<td>New Value</td>
-			</tr>
-			{% for change in ticket_changes %}
-				<tr>
-					<td width="130">{{ phrase(change.field) }}</td>
-					<td>{{ phrase(change.old) }}</td>
-					<td>{{ phrase(change.new) }}</td>
-				</tr>
-			{% endfor %}
-		</table>
-	{{ layout.section_end() }}
-	{{ layout.section_start('Messages') }}
-		{% for message in messages %}
-			{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {'message': message} %}
-		{% endfor %}
-	{{ layout.section_end() }}
+{% set content %}
+	{% if is_new_ticket %}A new ticket has been created
+	{% elseif is_new_agent_reply %}An agent has replied to "{{ ticket.subject }}"
+	{% elseif is_new_user_reply %}A user has replied to "{{ ticket.subject }}"
+	{% else %}"{{ ticket.subject }}" has been updated{% endif %}
+{% endset %}
+{{ layout.section('', content) }}
 
-	<br/><br/>
-	(#{{tac.access_code}})
+{% set content %}
+	<table cellspacing="0" cellpadding="3" width="100%">
+		<tr>
+			<td width="130">Agent</td>
+			<td>{{ticket.agent.display_name|default('None')}}</td>
+		</tr>
+		<tr>
+			<td width="130">Team</td>
+			<td>{{ticket.agent_team.name|default('None')}}</td>
+		</tr>
+		<tr>
+			<td width="130">Category</td>
+			<td>{{ticket.category.full_title|default('None')}}</td>
+		</tr>
+		<tr>
+			<td width="130">Product</td>
+			<td>{{ticket.product.title|default('None')}}</td>
+		</tr>
+		<tr>
+			<td width="130">Priority</td>
+			<td>{{ticket.priority.title|default('None')}}</td>
+		</tr>
+		<tr>
+			<td width="130">Workflow</td>
+			<td>{{ticket.workflow.title|default('None')}}</td>
+		</tr>
+		<tr>
+			<td width="130">Status</td>
+			<td>
+				{% if not ticket.status or ticket.status == 'awaiting_agent' %}
+				Open
+				{% elseif ticket.status == 'awaiting_user' %}
+				Pending
+				{% elseif ticket.status == 'resolved' %}
+				Resolved
+				{% endif %}
+			</td>
+		</tr>
+	</table>
+{% endset %}
+{{ layout.section('Ticket Properties', content) }}
+
+
+{{ layout.render_ticket_messages(messages, 'Messages') }}
+
+<br/><br/>
+{{ layout.replycode(tac.access_code) }}
 {% endblock %}

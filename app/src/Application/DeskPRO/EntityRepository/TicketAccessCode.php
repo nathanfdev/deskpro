@@ -64,6 +64,9 @@ class TicketAccessCode extends EntityRepository
 
 	public function findByTicketAndPerson($ticket, $person)
 	{
+		if (!$person->id) {
+			return;
+		}
 		try {
 			$rec = $this->getEntityManager()->createQuery("
 				SELECT tac

@@ -126,10 +126,6 @@ class Settings implements \ArrayAccess
 	{
 		if (!$name) return '';
 
-		if (isset($GLOBALS['DP_CONFIG']['SETTINGS'][$name])) {
-			return $GLOBALS['DP_CONFIG']['SETTINGS'][$name];
-		}
-
 		if (!isset($this->settings[$name])) {
 
 			if (isset($this->virtual_settings[$name])) {
@@ -220,7 +216,7 @@ class Settings implements \ArrayAccess
 			$path = $this->settings_paths[$key] . '/' . $name . '.php';
 
 			$group_settings = require($path);
-			$this->settings = array_merge($this->settings, $group_settings);
+			$this->settings = array_merge($group_settings, $this->settings);
 		}
 
 		unset($group_settings);
@@ -233,16 +229,16 @@ class Settings implements \ArrayAccess
 
 			$this->_has_loaded_db = true;
 
-			if (($db_settings = App::getCache('common')->load('settings')) === false) {
-				$db_settings = $this->db->fetchAllKeyValue("
-					SELECT name, value
-					FROM settings
-				");
+			$db_settings = $this->db->fetchAllKeyValue("
+				SELECT name, value
+				FROM settings
+			");
 
-				App::getCache('common')->save($db_settings, null, array('settings'));
+			$this->settings = array_merge($this->settings, $db_settings);
+
+			if (!empty($GLOBALS['DP_CONFIG']['SETTINGS']) && is_array($GLOBALS['DP_CONFIG']['SETTINGS'])) {
+				$this->settings = array_merge($this->settings, $GLOBALS['DP_CONFIG']['SETTINGS']);
 			}
-
-			$this->settings = array_merge($db_settings, $this->settings);
 		}
 
 		$this->_loaded_groups = array_merge($this->_loaded_groups, $this->_pending_groups);

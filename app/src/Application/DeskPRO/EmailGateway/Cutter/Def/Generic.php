@@ -35,8 +35,10 @@ namespace Application\DeskPRO\EmailGateway\Cutter\Def;
 
 use Orb\Util\Strings;
 
-class Generic implements ForwardDef
+class Generic implements ForwardDef, QuoteDef
 {
+
+
 	/**
 	 * Get an array of info from the forwarded block
 	 *
@@ -205,5 +207,26 @@ class Generic implements ForwardDef
 		}
 
 		return $info;
+	}
+
+
+	/**
+	 * Cut out the quote block
+	 *
+	 * @param string $body
+	 * @param bool $is_html
+	 * @return string
+	 */
+	public function cutQuoteBlock($body, $is_html = false)
+	{
+		if (($pos = strpos($body, '<!--DP_TOP_MARK-->')) === false) {
+			if (($pos = strpos($body, '_______________________.')) === false) {
+				return $body;
+			}
+		}
+
+		$body = substr($body, 0, $pos);
+
+		return $body;
 	}
 }

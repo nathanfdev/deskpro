@@ -88,6 +88,7 @@ class SettingsController extends AbstractController
 		$custom_filters   = $filter_info['custom_filters'];
 
 		$my_subs = $this->em->getRepository('DeskPRO:TicketFilterSubscription')->getForAgent($this->person);
+		error_log(print_r(array_keys($my_subs),1));
 
 		return $this->render('AgentBundle:Settings:ticket-notifications.html.twig', array(
 			'all_filters' => $all_filters,

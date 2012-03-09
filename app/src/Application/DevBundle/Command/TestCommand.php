@@ -35,12 +35,7 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$message = App::getMailer()->createMessage();
-		$message->setTo('dpug@nadeau.ws');
-		$message->setSubject('Subject ' . date('Y-m-d H:i:s') . ' - ' . uniqid());
-		$message->setBody('Body ' . date('Y-m-d H:i:s') . ' - ' . uniqid(), 'text/html');
-		$message->setFrom('chroder@gmail.com');
-
-		App::getMailer()->send($message);
+		echo App::getSetting('core.default_from_email');
+		echo "\n";
 	}
 }

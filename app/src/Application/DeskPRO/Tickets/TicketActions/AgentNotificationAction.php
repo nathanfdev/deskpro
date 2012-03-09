@@ -197,6 +197,12 @@ class AgentNotificationAction implements ActionInterface
 
 		$tr = App::getTranslator();
 
+		$messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket,array(
+			'limit' => 25,
+			'order' => 'DESC',
+			'with_notes' => true
+		));
+
 		foreach ($this->notify_agents as $agent_id) {
 			$agent = App::getEntityRepository('DeskPRO:Person')->find($agent_id);
 
@@ -215,12 +221,6 @@ class AgentNotificationAction implements ActionInterface
 			$vars['ticket'] = $ticket;
 			$vars['person'] = $agent;
 			$vars['tac'] = $tac;
-
-			$messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket,array(
-				'limit' => 25,
-				'order' => 'DESC',
-				'with_notes' => true
-			));
 			$vars['messages'] = $messages;
 
 			$email_subject = $tr->phrase($vars['email_subject']);
@@ -232,7 +232,6 @@ class AgentNotificationAction implements ActionInterface
 			$message->setBody($email_body, 'text/html');
 			$message->getHeaders()->get('Message-ID')->setId($tac->getUniqueEmailMessageId());
 			$message->setFrom($this->getFromAddress());
-			$message->enableQueueHint();
 
 			App::getMailer()->send($message);
 

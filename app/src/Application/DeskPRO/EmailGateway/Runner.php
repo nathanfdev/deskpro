@@ -144,6 +144,10 @@ class Runner
 				$created_obj = $proc->run();
 
 				$source['status'] = 'complete';
+				if ($created_obj) {
+					$source['object_type'] = strtolower(\Orb\Util\Util::getBaseClassname($created_obj));
+					$source['object_id'] = $created_obj->id;
+				}
 				App::getOrm()->persist($source);
 				App::getOrm()->flush();
 

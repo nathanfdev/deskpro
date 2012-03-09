@@ -58,7 +58,6 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 	public function __construct(TicketChangeTracker $tracker, $template_suffix = '')
 	{
 		$this->tracker = $tracker;
-		$this->from_address = App::getSetting('core.default_from_email');
 	}
 
 	public function setTemplateSuffix($template_suffix)
@@ -78,12 +77,14 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 
 	public function getFromAddress()
 	{
+		if (!$this->from_address) {
+			return App::getSetting('core.default_from_email');
+		}
 		return $this->from_address;
 	}
 
 	protected function doSend($tpl, $vars, Ticket $ticket, &$change_info = array())
 	{
-		return;
 		$person = $ticket->person;
 		$parts  = $ticket->getUserParticipants();
 
