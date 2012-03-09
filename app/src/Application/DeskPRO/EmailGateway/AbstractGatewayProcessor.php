@@ -109,7 +109,7 @@ abstract class AbstractGatewayProcessor
 		$this->init();
 	}
 
-	public function logMessage($message, $pri = 'info')
+	public function logMessage($message, $pri = 'debug')
 	{
 		if ($this->logger) {
 			$this->logger->log($message, $pri);

@@ -301,6 +301,10 @@ class TicketSearch extends SearcherAbstract
 				$where_perm[] = '(' . implode(' OR ', $part) . ')';
 			}
 
+			if (!$where_perm) {
+				$where_perm[] = '1';
+			}
+
 			$where = '((' . implode(' AND ', $where_perm) . ') OR (';
 
 			$ticket_parts['joins'][] = array('tickets_participants_perm', "LEFT JOIN tickets_participants AS tickets_participants_perm ON (tickets_participants_perm.ticket_id = tickets.id)");
@@ -412,7 +416,7 @@ class TicketSearch extends SearcherAbstract
 
 		switch ($type) {
 			case 'ticket.urgency':
-				$order_by = "ORDER BY tickets.urgency $dir";
+				$order_by = "ORDER BY tickets.urgency $dir, tickets.id $dir";
 				$this->order_summary = "Urgency";
 				break;
 
@@ -424,9 +428,9 @@ class TicketSearch extends SearcherAbstract
 			case 'ticket.priority':
 				$pris = App::getEntityRepository('DeskPRO:TicketPriority')->getIdsInOrder();
 				if ($pris) {
-					$order_by = "ORDER BY FIELD(tickets.priority_id, " . implode(',', $pris) . ")";
+					$order_by = "ORDER BY FIELD(tickets.priority_id, " . implode(',', $pris) . ") $dir, tickets.id $dir";
 				} else {
-					$order_by = "ORDER BY tickets.priority_id $dir";
+					$order_by = "ORDER BY tickets.priority_id $dir, tickets.id $dir";
 				}
 				$this->order_summary = "Priority";
 				break;

@@ -49,7 +49,7 @@ class Runner
 	protected $logger;
 
 	/**
-	 * @var
+	 * @var \Application\DeskPRO\Entity\EmailGateway[]
 	 */
 	protected $gateways;
 
@@ -127,16 +127,14 @@ class Runner
 			$reader->setRawSource($source['raw_source']);
 			$reader->setProperty('email_source', $source);
 
-			if ($verbose) {
-				$to = array();
-				foreach ($reader->getToAddresses() as $x) {
-					$to[] = $x->getEmail();
-				}
-				$to = implode(', ', $to);
-
-				$subj = substr($reader->getSubject()->getSubject(), 0, 40);
-				$this->logger->log("[Message] To: $to :: $subj", 'debug');
+			$to = array();
+			foreach ($reader->getToAddresses() as $x) {
+				$to[] = $x->getEmail();
 			}
+			$to = implode(', ', $to);
+
+			$subj = substr($reader->getSubject()->getSubject(), 0, 40);
+			$this->logger->log("[Message] To: $to :: $subj", 'debug');
 
 			App::getOrm()->beginTransaction();
 
@@ -151,9 +149,7 @@ class Runner
 
 				App::getOrm()->commit();
 
-				if ($verbose) {
-					$this->logger->log("Created " . get_class($created_obj) . ": " . $created_obj->getId(), 'info');
-				}
+				$this->logger->log("Created " . get_class($created_obj) . ": " . $created_obj->getId(), 'debug');
 			} catch (\Exception $e) {
 				App::getOrm()->rollback();
 

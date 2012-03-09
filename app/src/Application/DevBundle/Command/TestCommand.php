@@ -35,24 +35,12 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$sc = new \Application\InstallBundle\Data\GenerateSchema(App::getOrm());
-		$em = App::getOrm();
+		$message = App::getMailer()->createMessage();
+		$message->setTo('dpug@nadeau.ws');
+		$message->setSubject('Subject ' . date('Y-m-d H:i:s') . ' - ' . uniqid());
+		$message->setBody('Body ' . date('Y-m-d H:i:s') . ' - ' . uniqid(), 'text/html');
+		$message->setFrom('chroder@gmail.com');
 
-		$finder = new \Symfony\Component\Finder\Finder();
-		$finder->in(DP_ROOT.'/src/Application/DeskPRO/Entity')->name('*.php')->files();
-
-		foreach ($finder as $file) {
-			/** @var $file \Symfony\Component\Finder\SplFileInfo */
-
-			$name = Strings::extractRegexMatch('#(.*?)\.php$#', $file->getFilename());
-			echo "$name ... ";
-
-			$classname = 'Application\\DeskPRO\\Entity\\' . $name;
-			$metadata = $em->getMetadataFactory()->getMetadataFor($classname);
-			$tool = new \Doctrine\ORM\Tools\SchemaTool($em);
-			$all_sql = $tool->getCreateSchemaSql(array($metadata));
-
-			echo "\n";
-		}
+		App::getMailer()->send($message);
 	}
 }

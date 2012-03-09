@@ -237,7 +237,9 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 					break;
 
 				case 'person':
-					$this->original_ticket['person'] = $old_val;
+					if (!$this->is_new_ticket) {
+						$this->original_ticket['person'] = $old_val;
+					}
 					break;
 
 				case 'category':

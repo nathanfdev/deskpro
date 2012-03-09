@@ -144,11 +144,11 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			$this->db->delete('blobs_storage', array('blob_id' => $this->blob_id));
 		}
 
-		if (!isset($meta[self::METADATA_FILENAME])) {
+		if (!isset($meta[self::METADATA_FILENAME]) || !$meta[self::METADATA_FILENAME]) {
 			$meta[self::METADATA_FILENAME] = 'file';
 		}
 
-		if (!$meta[self::METADATA_CONTENT_TYPE]) {
+		if (!isset($meta[self::METADATA_CONTENT_TYPE]) || !$meta[self::METADATA_CONTENT_TYPE]) {
 			$meta[self::METADATA_CONTENT_TYPE] = 'application/octet-stream';
 		}
 
