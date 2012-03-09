@@ -233,7 +233,7 @@ class TicketsStep extends AbstractDeskpro3Step
 			'language_id' => 1,
 			'ticket_hash' => sha1(microtime(true) . mt_rand(1000,99999)), // bogus hash
 			'date_created' => date('Y-m-d H:i:s', $ticket_info['timestamp_opened']),
-			'ref' => \Orb\Util\Strings::random(8, \Orb\Util\Strings::CHARS_KEY),
+			'ref' => $ticket_info['ref'],
 			'auth' => \Orb\Util\Strings::random(6, \Orb\Util\Strings::CHARS_KEY),
 			'urgency' => 1,
 		);
