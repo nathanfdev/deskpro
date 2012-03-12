@@ -86,6 +86,7 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 	protected function doSend($tpl, $vars, Ticket $ticket, &$change_info = array())
 	{
 		$person = $ticket->person;
+
 		$parts  = $ticket->getUserParticipants();
 
 		$change_info['emailed'] = array($person);

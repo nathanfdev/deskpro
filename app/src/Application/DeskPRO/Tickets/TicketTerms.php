@@ -224,6 +224,20 @@ class TicketTerms
 				}
 				break;
 
+			case 'robot_email':
+				if (!$ticket->email_reader) {
+					return false;
+				}
+
+				$auto = $ticket->email_reader->getHeader('Auto-Submitted')->getAllParts();
+				foreach ($auto as $v) {
+					$v = strtolower($v);
+					if ($v == 'auto-replied' || $v == 'auto-notified' || $v == 'auto-generated') {
+						return true;
+					}
+				}
+				break;
+
 			case TicketSearch::TERM_DEPARTMENT:
 				$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
 				if (count($choice) == 1) $choice = $choice[0];

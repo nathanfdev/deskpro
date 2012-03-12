@@ -290,8 +290,8 @@ class PersonController extends AbstractController
 
 				break;
 
-			case 'is_autoresponder':
-				$person->is_autoresponder = $this->in->getBool('is_autoresponder');
+			case 'disable_autoresponses':
+				$person->disable_autoresponses = $this->in->getBool('disable_autoresponses');
 				$this->em->persist($person);
 				break;
 

@@ -467,6 +467,17 @@
 	</div>
 	{% endif %}
 
+	{% if 'robot_email' not in no_show_fields and event_trigger == 'new_ticket' or event_trigger == 'new_reply'  %}
+	<div class="type" title="Email is sent from a robot" data-rule-type="robot_email">
+		<div class="op">
+			<input type="hidden" name="op" value="is" />
+		</div>
+		<div class="options">
+			<input type="hidden" name="is_robot_email" value="1" />
+		</div>
+	</div>
+	{% endif %}
+
 	{% if 'ticket_field' not in no_show_fields and term_options.custom_ticket_fields %}
 		{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'contains', 'notcontains': 'does not contain', 'gt': 'is greater than', 'lt': 'is less than'} %}
 		{% for field in term_options.custom_ticket_fields %}

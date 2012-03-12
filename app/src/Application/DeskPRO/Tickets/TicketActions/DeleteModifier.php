@@ -34,43 +34,38 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
-
-use Application\DeskPRO\Tickets\TicketChangeTracker;
-use Application\DeskPRO\Translate\DelegatePhrase;
-use Application\DeskPRO\App;
-
-class UserNotificationNewReplyAction extends AbstractUserNotificationAction
+/**
+ * This modifier removes notifications and also sets the status to the ticket to deleted
+ */
+class DeleteModifier implements CollectionModifierInterface
 {
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
+	public function __construct()
 	{
-		// Person has confirmation notifications disabled
-		if ($ticket->person->disable_autoresponses) {
-			return;
+
+	}
+	public function modifyCollection(ActionsCollection $collection)
+	{
+		// If the ticket is being deleted, then dont send any notifications
+		$notify_types = array();
+		$notify_types[] = 'AgentNotification';
+		$notify_types[] = 'AgentAlertNotification';
+		$notify_types[] = 'UserNotificationNewTicket';
+		$notify_types[] = 'UserNotificationNewTicketValidating';
+		$notify_types[] = 'UserNotificationNewReply';
+		$notify_types[] = 'UserNotificationNewReplyAgent';
+
+		foreach ($notify_types as $type) {
+			if ($collection->hasActionType($type)) {
+				$collection->removeActionType($type);
+			}
 		}
 
-		$change_info = array(
-			'type' => 'user_notify',
-			'notify_type' => 'newreply',
-			'emailed' => array(),
-			'cced' => array()
-		);
-
-		$vars = array(
-			'email_subject' => new DelegatePhrase('core_tickets_user_email.subject_new_reply', array('ticket_subject' => $ticket['subject'])),
-		);
-
-		$this->doSend('DeskPRO:emails_user:new-agent-reply', $vars, $ticket, $change_info);
-
-		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
+		if ($collection->hasActionType('Status')) {
+			$collection->getActionType('Status')->setStatus('hidden.deleted');
+		} else {
+			$status_action = new StatusAction('hidden.deleted');
+			$collection->addAction($status_action);
+		}
 	}
 
 	/**

@@ -119,6 +119,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $message;
 
+	/**
+	 * If the message was created from an email just now, then this is the reader
+	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
+	 */
+	public $email_reader;
+
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();

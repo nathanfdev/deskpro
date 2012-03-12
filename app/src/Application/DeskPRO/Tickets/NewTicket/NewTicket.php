@@ -69,6 +69,11 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 	protected $mode = 'untrusted';
 
+	/**
+	 * @var
+	 */
+	protected $email_reader;
+
 	public function __construct($creation_system, Entity\Person $person = null)
 	{
 		if ($person AND !$person['id']) {
@@ -83,6 +88,14 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 		}
 
 		$this->creation_system = $creation_system;
+	}
+
+	/**
+	 * @param $email_reader
+	 */
+	public function setEmailReader($email_reader)
+	{
+		$this->email_reader = $email_reader;
 	}
 
 	public function setPersonContext(Entity\Person $person)
@@ -180,6 +193,9 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			#------------------------------
 
 			$ticket = new Entity\Ticket();
+			if ($this->email_reader) {
+				$ticket->email_reader = $this->email_reader;
+			}
 			$ticket['creation_system']  = $this->creation_system;
 			$ticket['person']  = $person;
 			$ticket['subject'] = $this->ticket->subject;

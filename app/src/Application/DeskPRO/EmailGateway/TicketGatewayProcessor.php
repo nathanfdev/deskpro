@@ -287,6 +287,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$email_info = $ev->email_info;
 
 		$message = new Entity\TicketMessage();
+		$message->email_reader = $this->reader;
 		if ($this->reader->hasProperty('email_source')) {
 			$message['email_source'] = $this->reader->getProperty('email_source');
 		}
@@ -619,6 +620,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			App::getOrm()->beginTransaction();
 			$agent_message = new \Application\DeskPRO\Entity\TicketMessage();
+			$agent_message->email_reader = $this->reader;
 			$agent_message->person = $agent;
 			$agent_message['message'] = strip_tags($agent_reply);
 

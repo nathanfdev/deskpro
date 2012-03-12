@@ -175,4 +175,22 @@ abstract class AbstractReader
 	abstract protected function _getToAddresses();
 	abstract protected function _getCcAddresses();
 	abstract protected function _getHeader($header);
+
+	/**
+	 * Returns true if message marks itself as from a robot
+	 *
+	 * @return bool
+	 */
+	public function isFromRobot()
+	{
+		$auto = $this->getHeader('Auto-Submitted')->getAllParts();
+		foreach ($auto as $v) {
+			$v = strtolower($v);
+			if ($v == 'auto-replied' || $v == 'auto-notified' || $v == 'auto-generated') {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

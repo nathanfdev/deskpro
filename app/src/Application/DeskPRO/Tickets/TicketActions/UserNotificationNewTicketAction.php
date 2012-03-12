@@ -52,6 +52,11 @@ class UserNotificationNewTicketAction extends AbstractUserNotificationAction
 	 */
 	public function apply(Ticket $ticket)
 	{
+		// Person has confirmation notifications disabled
+		if ($ticket->person->disable_autoresponses) {
+			return;
+		}
+
 		$change_info = array(
 			'type' => 'user_notify',
 			'notify_type' => 'newticket',

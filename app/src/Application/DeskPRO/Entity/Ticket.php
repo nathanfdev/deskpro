@@ -330,6 +330,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	protected $_label_manager = null;
 
+	/**
+	 * If the tikcet was created from an email just now, then this is the reader
+	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
+	 */
+	public $email_reader;
+
 	public function __construct($tracker = true)
 	{
 		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();

@@ -43,7 +43,7 @@ use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Application\DeskPRO\Translate\DelegatePhrase;
 use Application\DeskPRO\App;
 
-class UserNotificationNewReplyAction extends AbstractUserNotificationAction
+class WarnNewticketFloodAction extends AbstractUserNotificationAction
 {
 	/**
 	 * Apply the property to the ticket
@@ -52,25 +52,25 @@ class UserNotificationNewReplyAction extends AbstractUserNotificationAction
 	 */
 	public function apply(Ticket $ticket)
 	{
-		// Person has confirmation notifications disabled
-		if ($ticket->person->disable_autoresponses) {
-			return;
-		}
+		$person = $ticket->person;
 
-		$change_info = array(
-			'type' => 'user_notify',
-			'notify_type' => 'newreply',
-			'emailed' => array(),
-			'cced' => array()
-		);
+		$vars['ticket'] = $ticket;
+		$vars['person'] = $person;
+		$vars['participants'] = $parts;
+		$vars['access_code'] = $ticket->getAccessCode();
 
-		$vars = array(
-			'email_subject' => new DelegatePhrase('core_tickets_user_email.subject_new_reply', array('ticket_subject' => $ticket['subject'])),
-		);
+		$from_address = App::getSetting('core.default_from_email');
 
-		$this->doSend('DeskPRO:emails_user:new-agent-reply', $vars, $ticket, $change_info);
+		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $tpl_suffix, $only_cc_ids) {
+			$email_subject = 'Warning: Confirmation emails turned off';
+			$email_body = App::get('templating')->render('gateway-autoresponse-warn.html.twig', $vars);
 
-		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
+			$message->setSubject($email_subject);
+			$message->setBody($email_body, 'text/html');
+			$message->setFrom($from_address);
+
+			App::getMailer()->send($message);
+		});
 	}
 
 	/**
@@ -78,6 +78,6 @@ class UserNotificationNewReplyAction extends AbstractUserNotificationAction
 	 */
 	public function getDescription($as_html = true)
 	{
-		return '';
+		return 'Send email warning that the user is flooding the system';
 	}
 }

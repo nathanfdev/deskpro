@@ -391,6 +391,10 @@ class TermSummary
 					return $titles;
 				});
 				break;
+
+			case 'robot_email':
+				$summary = 'Email sent from a robot (such as an auto-reply)';
+				break;
 		}
 
 		return $summary;

@@ -34,43 +34,19 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
-
-use Application\DeskPRO\Tickets\TicketChangeTracker;
-use Application\DeskPRO\Translate\DelegatePhrase;
-use Application\DeskPRO\App;
-
-class UserNotificationNewReplyAction extends AbstractUserNotificationAction
+class DisableAgentNotificationsModifier implements CollectionModifierInterface
 {
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
+	public function modifyCollection(ActionsCollection $collection)
 	{
-		// Person has confirmation notifications disabled
-		if ($ticket->person->disable_autoresponses) {
-			return;
+		$notify_types = array();
+		$notify_types[] = 'AgentNotification';
+		$notify_types[] = 'AgentAlertNotification';
+
+		foreach ($notify_types as $type) {
+			if ($collection->hasActionType($type)) {
+				$collection->removeActionType($type);
+			}
 		}
-
-		$change_info = array(
-			'type' => 'user_notify',
-			'notify_type' => 'newreply',
-			'emailed' => array(),
-			'cced' => array()
-		);
-
-		$vars = array(
-			'email_subject' => new DelegatePhrase('core_tickets_user_email.subject_new_reply', array('ticket_subject' => $ticket['subject'])),
-		);
-
-		$this->doSend('DeskPRO:emails_user:new-agent-reply', $vars, $ticket, $change_info);
-
-		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 	}
 
 	/**
@@ -78,6 +54,6 @@ class UserNotificationNewReplyAction extends AbstractUserNotificationAction
 	 */
 	public function getDescription($as_html = true)
 	{
-		return '';
+		return 'Disable agent notifications';
 	}
 }
