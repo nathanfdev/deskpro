@@ -305,7 +305,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		}
 
 		$schema = null;
-		if (!DP_DEBUG && file_exists(DP_ROOT.'/src/Application/InstallBundle/Data/schema.php')) {
+		if (file_exists(DP_ROOT.'/src/Application/InstallBundle/Data/schema.php')) {
 			$schema = require DP_ROOT.'/src/Application/InstallBundle/Data/schema.php';
 		} else {
 			$this->getLogger()->log('schema.php does not exist, will auto-generate', 'debug');
