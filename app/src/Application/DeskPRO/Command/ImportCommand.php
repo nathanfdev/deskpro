@@ -146,7 +146,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		} catch (\PDOException $e) {
 			if ($e->getCode() == '1049') {
 
-				$logger->log("We have detected that the database {$DP_CONFIG['db']['dbname']} does not exist. We will try to create it now ...\n", Logger::INFO, array('ignore_pri_filter' => true));
+				$logger->log("We have detected that the database {$DP_CONFIG['db']['dbname']} does not exist. We will try to create it now ...\n", Logger::DEBUG);
 
 				// Attempt to create an empty database
 				try {
@@ -161,10 +161,10 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 					$logger->log('The database name you have set in config.php does not exist and we could not create it.'  . PHP_EOL, Logger::ERR);
 					return 21;
 				} else {
-					$logger->log('The database was created successfully.', Logger::INFO, array('ignore_pri_filter' => true));
+					$logger->log('The database was created successfully.', Logger::DEBUG);
 				}
 			} elseif ($e->getCode() == '1044' || $e->getCode() == '1045') {
-				$logger->log('The database name you have set in config.php does not exist'  . PHP_EOL, Logger::ERR);
+				$logger->log('The new database name you have set in config.php does not exist'  . PHP_EOL, Logger::ERR);
 				return 21;
 			} else {
 				$logger->log('There was a problem while trying to connect to your database: ' . $e->getMessage() . ''  . PHP_EOL, Logger::ERR);
@@ -230,21 +230,6 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$logger->log($str, Logger::ERR);
 				return 1;
 			}
-
-			if ($server_check->hasNonFatalErrors()) {
-				$str = "Your server is capable of installing DeskPRO but here are some things you can do to make your helpdesk run more efficiently:\n";
-				foreach ($server_check->getNonFatalErrors() as $err) {
-					$str .= "- {$err['message']}\n";
-				}
-				$logger->log($str, Logger::ERR);
-				$output->writeln('Would you like to continue with the import now anyway?');
-				$yes = $this->getHelper('dialog')->askConfirmation($output, '[Y/n]> ', true);
-
-				if (!$yes) {
-					echo "You can re-run this command again when you are ready to proceed.\n";
-					return 1;
-				}
-			}
 		}
 
 		#----------------------------------------
@@ -283,6 +268,122 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			return 1;
 		} else {
 			$logger->log("Path to PHP executable found at " . $php_path, Logger::INFO);
+		}
+
+		#----------------------------------------
+		# Execute DP3 upgrade
+		#----------------------------------------
+
+		/** @var $importer \Application\DeskPRO\Import\Importer\Deskpro3Importer */
+		$config['log_dir'] = App::getKernel()->getLogDir();
+		$config['enable_query_log'] = false;
+		$importer = new $importer_class($this->getContainer(), $config, $logger);
+		$importer->validateOptions();
+
+		if ($mode == 'run') {
+			if ($importer instanceof \Application\DeskPRO\Import\Importer\Deskpro3Importer) {
+
+				if ($importer->isLargeDatabase()) {
+					$output->writeln("\n<info>Your database is quite large. Before you continue, we recommend reading our knowledgebase article on importing large databases:\nhttp://www.deskpro.com/g/import-large-db\n</info>");
+					try {
+						$yes = $this->getHelper('dialog')->askConfirmation($output, 'Do you want to continue with the import now? [Y/n]> ');
+					} catch (\Exception $e) {
+						$yes = false;
+					}
+					if (!$yes) {
+						echo "\n";
+						return 0;
+					}
+					echo "\n";
+				}
+
+				$other_version = $importer->getOldDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('deskpro_version_internal'));
+				if ($other_version < 3030001) {
+					$output->writeln('Your DeskPRO v3 installation is outdated. Before we can import your helpdesk into the system, you must run the upgrader.');
+					$output->writeln("<warn>\nWARNING: We will perform the upgrade directly on the database you specified ({$DP_CONFIG['import']['db_user']}@{$DP_CONFIG['import']['db_host']}/{$DP_CONFIG['import']['db_name']}). The database will be changed permanantly! You should not perform this upgrade on your live database. We recommend upgrading on a clone or backup.\n</warn>");
+					$output->writeln('Do you want to upgrade your helpdesk database now?');
+
+					$yes = $this->getHelper('dialog')->askConfirmation($output, '[y/N]> ', false);
+					if (!$yes) {
+						$output->writeln('Aborting. You can re-run this command when you are ready to proceed.');
+						return 24;
+					}
+
+					#------------------------------
+					# Backup
+					#------------------------------
+
+					$output->writeln('Do you want to backup your database to '.$this->getContainer()->getBackupDir().' first? This is HIGHLY recommended.');
+					$yes = $this->getHelper('dialog')->askConfirmation($output, '[Y/n]> ', true);
+
+					if ($yes) {
+						$mysqldump_path = $this->getContainer()->getMysqldumpBinaryPath();
+						if (!$mysqldump_path) {
+							$output->writeln('We could not locate the path to the MySQL backup utility "mysqldump". You can edit /config.php to specify this path in the "mysqldump_path" setting.');
+							return 25;
+						}
+
+						$f = "{$config['db_name']}-" . date('Y-m-d-H-i-s') . '.sql';
+						$cmd = $mysqldump_path . " --opt -Q -h{$config['db_host']} -u{$config['db_user']} -p{$config['db_password']} {$config['db_name']} > $f";
+
+						$proc = new \Symfony\Component\Process\Process($cmd, $this->getContainer()->getBackupDir());
+						$proc->setTimeout(10000);
+						$proc->run(function ($type, $buffer) {
+							if ('err' === $type) {
+								echo '[ERR] '.$buffer;
+							} else {
+								echo $buffer;
+							}
+						});
+
+						if (!$proc->isSuccessful()) {
+							$output->writeln('<warn>We detected an error while trying to back up your DeskPRO v3 database. Do you want to continue anyway?</warn>');
+							try {
+								$yes = $this->getHelper('dialog')->askConfirmation($output, '[y/N]> ', false);
+							} catch (\Exception $e) {
+								$yes = false;
+							}
+							if (!$yes) {
+								$output->writeln("Aborting. You can re-run this tool once you are ready to proceed.");
+								return 25;
+							}
+						}
+					}
+
+					#------------------------------
+					# Run the upgrader command
+					#------------------------------
+
+					$output->writeln("We are now running through the DeskPRO v3 upgrader. This may take some time.");
+
+					$cmd = $this->getContainer()->getPhpBinaryPath() . ' index.php';
+					$dir = DP_ROOT . '/sys/legacy/upgrader';
+
+					$proc = new \Symfony\Component\Process\Process($cmd, $dir);
+					$proc->run(function ($type, $buffer) {
+						if ('err' === $type) {
+							echo '[ERR] '.$buffer;
+						} else {
+							echo $buffer;
+						}
+					});
+
+					if (!$proc->isSuccessful() || strpos($proc->getOutput(), 'There was an error determining which build') !== false) {
+						$output->writeln(PHP_EOL . 'We detected an error while executing the DeskPRO v3 upgrade. You should contact support@deskpro.com.');
+						return 26;
+					}
+				}
+			}
+
+			if (isset($DP_CONFIG['core.filestorage_method']) && $DP_CONFIG['core.filestorage_method'] == 'fs') {
+				$this->getContainer()->getDb()->replace('settings', array(
+					'name' => 'core.filestorage_method',
+					'groupname' => 'core',
+					'value' => 'fs',
+					'created_at' => date('Y-m-d H:i:s'),
+					'updated_at' => date('Y-m-d H:i:s'),
+				));
+			}
 		}
 
 		#----------------------------------------
@@ -447,107 +548,6 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 
 		#----------------------------------------
-		# Execute DP3 upgrade
-		#----------------------------------------
-
-		/** @var $importer \Application\DeskPRO\Import\Importer\Deskpro3Importer */
-		$config['log_dir'] = App::getKernel()->getLogDir();
-		$config['enable_query_log'] = false;
-		$importer = new $importer_class($this->getContainer(), $config, $logger);
-		$importer->validateOptions();
-
-		if ($mode == 'run') {
-			if ($importer instanceof \Application\DeskPRO\Import\Importer\Deskpro3Importer) {
-				$other_version = $importer->getOldDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('deskpro_version_internal'));
-				if ($other_version < 3030001) {
-					$output->writeln('Your DeskPRO v3 installation is outdated. Before we can import your helpdesk into the system, you must run the upgrader.');
-					$output->writeln("<warn>\nWARNING: We will perform the upgrade directly on the database you specified ({$DP_CONFIG['import']['db_user']}@{$DP_CONFIG['import']['db_host']}/{$DP_CONFIG['import']['db_name']}). The database will be changed permanantly! You should not perform this upgrade on your live database. We recommend upgrading on a clone or backup.\n</warn>");
-					$output->writeln('Do you want to upgrade your helpdesk database now?');
-
-					$yes = $this->getHelper('dialog')->askConfirmation($output, '[y/N]> ', false);
-					if (!$yes) {
-						$output->writeln('Aborting. You can re-run this command when you are ready to proceed.');
-						return 24;
-					}
-
-					#------------------------------
-					# Backup
-					#------------------------------
-
-					$output->writeln('Do you want to backup your database to '.$this->getContainer()->getBackupDir().' first? This is HIGHLY recommended.');
-					$yes = $this->getHelper('dialog')->askConfirmation($output, '[Y/n]> ', true);
-
-					if ($yes) {
-						$mysqldump_path = $this->getContainer()->getMysqldumpBinaryPath();
-						if (!$mysqldump_path) {
-							$output->writeln('We could not locate the path to the MySQL backup utility "mysqldump". You can edit /config.php to specify this path in the "mysqldump_path" setting.');
-							return 25;
-						}
-
-						$f = "{$config['db_name']}-" . date('Y-m-d-H-i-s') . '.sql';
-						$cmd = $mysqldump_path . " --opt -Q -h{$config['db_host']} -u{$config['db_user']} -p{$config['db_password']} {$config['db_name']} > $f";
-
-						$proc = new \Symfony\Component\Process\Process($cmd, $this->getContainer()->getBackupDir());
-						$proc->setTimeout(10000);
-						$proc->run(function ($type, $buffer) {
-							if ('err' === $type) {
-								echo '[ERR] '.$buffer;
-							} else {
-								echo $buffer;
-							}
-						});
-
-						if (!$proc->isSuccessful()) {
-							$output->writeln('<warn>We detected an error while trying to back up your DeskPRO v3 database. Do you want to continue anyway?</warn>');
-							try {
-								$yes = $this->getHelper('dialog')->askConfirmation($output, '[y/N]> ', false);
-							} catch (\Exception $e) {
-								$yes = false;
-							}
-							if (!$yes) {
-								$output->writeln("Aborting. You can re-run this tool once you are ready to proceed.");
-								return 25;
-							}
-						}
-					}
-
-					#------------------------------
-					# Run the upgrader command
-					#------------------------------
-
-					$output->writeln("We are now running through the DeskPRO v3 upgrader. This may take some time.");
-
-					$cmd = $this->getContainer()->getPhpBinaryPath() . ' index.php';
-					$dir = DP_ROOT . '/sys/legacy/upgrader';
-
-					$proc = new \Symfony\Component\Process\Process($cmd, $dir);
-					$proc->run(function ($type, $buffer) {
-						if ('err' === $type) {
-							echo '[ERR] '.$buffer;
-						} else {
-							echo $buffer;
-						}
-					});
-
-					if (!$proc->isSuccessful() || strpos($proc->getOutput(), 'There was an error determining which build') !== false) {
-						$output->writeln(PHP_EOL . 'We detected an error while executing the DeskPRO v3 upgrade. You should contact support@deskpro.com.');
-						return 26;
-					}
-				}
-			}
-
-			if (isset($DP_CONFIG['core.filestorage_method']) && $DP_CONFIG['core.filestorage_method'] == 'fs') {
-				$this->getContainer()->getDb()->replace('settings', array(
-					'name' => 'core.filestorage_method',
-					'groupname' => 'core',
-					'value' => 'fs',
-					'created_at' => date('Y-m-d H:i:s'),
-					'updated_at' => date('Y-m-d H:i:s'),
-				));
-			}
-		}
-
-		#----------------------------------------
 		# Execute import
 		#----------------------------------------
 
@@ -630,19 +630,6 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$importer->setupImport();
 			$logger->log(sprintf("There are %d import steps.", $importer->countSteps()), 'INFO');
 			echo "\n";
-
-			if ($importer->isLargeDatabase()) {
-				$output->writeln("\n<info>Your database is quite large. Before you continue, we recommend reading our knowledgebase article on importing large databases:\nhttp://www.deskpro.com/g/import-large-db\n</info>");
-				try {
-					$yes = $this->getHelper('dialog')->askConfirmation($output, 'Do you want to continue with the import now? [Y/n]> ');
-				} catch (\Exception $e) {
-					$yes = false;
-				}
-				if (!$yes) {
-					echo "\n";
-					return 0;
-				}
-			}
 
 			$i = 1;
 			$num = $importer->countSteps();

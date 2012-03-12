@@ -127,8 +127,10 @@ class UsersStep extends AbstractDeskpro3Step
 	 * Process a single user
 	 * @param $user_id
 	 */
-	protected function processUser($user_info)
+	protected function processUser($user_batch)
 	{
+		$user_info = $user_batch['user'];
+
 		$user_id = $user_info['id'];
 
 		#------------------------------
@@ -144,11 +146,11 @@ class UsersStep extends AbstractDeskpro3Step
 		# Get the users info
 		#------------------------------
 
-		$user_map          = $this->olddb->fetchAssoc("SELECT * FROM user_map WHERE localid = ? AND sourceid = 1 /*DP_QLOG_NOLOG*/", array($user_id));
-		$user_deskpro      = $this->olddb->fetchAssoc("SELECT * FROM user_deskpro WHERE id = ? /*DP_QLOG_NOLOG*/", array($user_map['remoteid']));
-		$user_company_id   = $this->olddb->fetchColumn("SELECT company FROM user_member_company WHERE user = ? LIMIT 1 /*DP_QLOG_NOLOG*/", array($user_id));
-		$user_emails       = $this->olddb->fetchAll("SELECT * FROM user_email WHERE userid = ? AND validated = 1 /*DP_QLOG_NOLOG*/", array($user_id));
-		$usergroup_ids     = $this->olddb->fetchAllCol("SELECT usergroup FROM user_member_groups WHERE user = ? /*DP_QLOG_NOLOG*/", array($user_id));
+		$user_map          = $user_batch['user_map'];
+		$user_deskpro      = $user_batch['user_deskpro'];
+		$user_company_id   = $user_batch['user_company_id'];
+		$user_emails       = $user_batch['user_email'];
+		$usergroup_ids     = $user_batch['usergroup_ids'];
 
 		#------------------------------
 		# Make sure their email doesnt already match someone in the system
@@ -342,9 +344,114 @@ class UsersStep extends AbstractDeskpro3Step
 	protected function getBatch($page)
 	{
 		$start = (($page-1) * self::PERPAGE) + 1;
-		$end   = ($page) * self::PERPAGE;
+		$end   = $page * self::PERPAGE;
 
-		$batch = $this->olddb->fetchAll("SELECT * FROM user WHERE id >= $start AND id <= $end");
+		$between_where = "BETWEEN $start AND $end";
+
+		#------------------------------
+		# Fetch ticket
+		#------------------------------
+
+		$q = $this->olddb->query("SELECT * FROM user WHERE id $between_where");
+		$q->execute();
+
+		$batch = array();
+
+		while ($user = $q->fetch(\PDO::FETCH_ASSOC)) {
+			$batch[$user['id']] = array(
+				'user' => $user,
+				'user_map' => array(),
+				'user_deskpro' => array(),
+				'user_company_id' => 0,
+				'user_email' => array(),
+				'usergroup_ids' => array(),
+			);
+		}
+		$q->closeCursor();
+		unset($q);
+
+		#------------------------------
+		# Fetch user_map
+		#------------------------------
+
+		$q = $this->olddb->query("SELECT * FROM user_map WHERE localid $between_where AND sourceid = 1");
+		$q->execute();
+
+		$remote_ids = array();
+		$remote_id_map = array();
+		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
+			if (!isset($batch[$r['localid']])) continue;
+			$batch[$r['localid']]['user_map'][] = $r;
+			$remote_ids[] = $r['remoteid'];
+			$remote_id_map[$r['remoteid']] = $r['localid'];
+		}
+		$q->closeCursor();
+		unset($q);
+
+		#------------------------------
+		# Fetch user_deskpro
+		#------------------------------
+
+		if ($remote_ids) {
+
+			$remote_ids = implode(',', $remote_ids);
+
+			$q = $this->olddb->query("SELECT * FROM user_deskpro WHERE id IN ($remote_ids)");
+			$q->execute();
+
+			while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
+				if (!isset($remote_id_map[$r['id']])) continue;
+				$localid = $remote_id_map[$r['id']];
+				if (!isset($batch[$localid])) continue;
+				$batch[$localid]['user_deskpro'] = $r;
+			}
+			$q->closeCursor();
+			unset($q);
+		}
+
+		unset($remote_ids, $remote_id_map);
+
+		#------------------------------
+		# Fetch user_company_id
+		#------------------------------
+
+		$q = $this->olddb->query("SELECT user, company FROM user_member_company WHERE user $between_where");
+		$q->execute();
+
+		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
+			if (!isset($batch[$r['user']])) continue;
+			$batch[$r['user']]['user_company_id'] = $r['company'];
+		}
+		$q->closeCursor();
+		unset($q);
+
+		#------------------------------
+		# Fetch user_email
+		#------------------------------
+
+		$q = $this->olddb->query("SELECT * FROM user_email WHERE userid $between_where");
+		$q->execute();
+
+		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
+			if (!isset($batch[$r['userid']])) continue;
+			$batch[$r['userid']]['user_email'][] = $r;
+		}
+		$q->closeCursor();
+		unset($q);
+
+		#------------------------------
+		# Fetch usergroup_ids
+		#------------------------------
+
+		$q = $this->olddb->query("SELECT user, usergroup FROM user_member_groups WHERE user $between_where");
+		$q->execute();
+
+		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
+			if (!isset($batch[$r['user']])) continue;
+			$batch[$r['user']]['usergroup_ids'][] = $r['usergroup'];
+		}
+		$q->closeCursor();
+		unset($q);
 
 		return $batch;
 	}

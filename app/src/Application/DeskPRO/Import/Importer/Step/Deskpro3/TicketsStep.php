@@ -1363,7 +1363,7 @@ class TicketsStep extends AbstractDeskpro3Step
 				'ticket_attachments' => array(),
 				'ticket_participant' => array(),
 				'tech_ticket_save' => array(),
-				'ticket_log' => array(),
+				'tickets_logs' => array(),
 			);
 		}
 		$q->closeCursor();
@@ -1440,7 +1440,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		unset($q);
 
 		#------------------------------
-		# Fetch ticket_log
+		# Fetch tickets_logs
 		#------------------------------
 
 		$q = $this->olddb->query("SELECT * FROM ticket_log WHERE ticketid $between_where ORDER BY id ASC");
