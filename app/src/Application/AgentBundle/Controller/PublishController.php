@@ -470,6 +470,10 @@ class PublishController extends AbstractController
 			}
 		}
 
+		if (!$content_validating) {
+			return null;
+		}
+
 		// If we got here, just return the first
 		$info = array_shift($content_validating);
 		$entity =  $this->publish_helper->getEntityNameFor($info['content_type']);
