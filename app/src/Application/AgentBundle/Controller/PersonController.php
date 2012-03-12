@@ -95,7 +95,7 @@ class PersonController extends AbstractController
 		#------------------------------
 
 		$notes = App::getEntityRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
-		$person_tickets = App::getEntityRepository('DeskPRO:Ticket')->getPersonTickets($person, null);
+		$person_tickets = App::getEntityRepository('DeskPRO:Ticket')->getPersonTickets($person, 50);
 		$person_tickets_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForPerson($person);
 
 		$max = 5;
