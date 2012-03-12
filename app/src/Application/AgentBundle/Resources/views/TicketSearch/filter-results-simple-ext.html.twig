@@ -54,7 +54,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% include 'AgentBundle:TicketSearch:filter-terms-bar.html.twig' %}
 			{% endif %}
 
-			<section class="list-listing">
+			<section class="list-listing" id="{{baseId}}_results_wrap">
 				{% include 'AgentBundle:TicketSearch:part-results-simple-ext.html.twig' %}
 			</section>
 

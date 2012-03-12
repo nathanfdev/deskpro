@@ -1,4 +1,5 @@
-<div {% if id %}id="{{ id }}"{% endif %} class="{{ classname|default('actions-tpl') }}" style="display:none">
+<div {% if id %}id="{{ id }}"{% endif %} class="{{ classname|default('actions-tpl') }}" style="display:none"
+	 xmlns="http://www.w3.org/1999/html">
 	<div class="row">
 		<div class="term">
 			<div class="remove">-</div>
@@ -45,6 +46,11 @@
 				<option value="awaiting_user">Awaiting User</option>
 				<option value="resolved">Resolved</option>
 			</select>
+		</div>
+	</div>
+	<div class="type" title="Delete Ticket" data-rule-type="delete">
+		<div class="options">
+			<input type="hidden" name="delete_ticket" value="1" />
 		</div>
 	</div>
 	<div class="type" title="Set Department" data-rule-type="department">
@@ -130,12 +136,51 @@
 	</div>
 	<div class="type" title="Set Urgency" data-rule-type="urgency_set">
 		<div class="options">
-			<input type="text" name="num" />
+			<input type="text" name="num" style="width: 50px" />
+			{% if event_trigger != 'new_ticket' %}
+			<select name="allow_lower">
+				<option value="0">Only set when urgency is lower</option>
+				<option value="1">Always set this urgency</option>
+			</select>
+			{% endif %}
 		</div>
 	</div>
 	<div class="type" title="Add Ticket Reply" data-rule-type="reply">
 		<div class="options" style="display:block">
 			<textarea name="reply_text" cols="80" rows="4"></textarea>
+		</div>
+	</div>
+	<div class="type" title="Disable all notifications" data-rule-type="disable_notifications">
+		<div class="options" style="display:block">
+			<input type="hidden" name="disable_notifications" value="1" />
+		</div>
+	</div>
+	<div class="type" title="Disable user notifications" data-rule-type="disable_user_notifications">
+		<div class="options" style="display:block">
+			<input type="hidden" name="disable_user_notifications" value="1" />
+		</div>
+	</div>
+	<div class="type" title="Disable agent notifications" data-rule-type="disable_agent_notifications">
+		<div class="options" style="display:block">
+			<input type="hidden" name="disable_agent_notifications" value="1" />
+		</div>
+	</div>
+	<div class="type" title="Always notify agents" data-rule-type="add_agent_notify">
+		<div class="options" style="display:block">
+			<select name="codes[]" multiple="multiple" style="display: block">
+				<optgroup label="Agents">
+					<option value="assigned_agent">Assigned agent</option>
+					{% for k,v in term_options.agents %}
+						<option value="agent.{{k}}">{{v}}</option>
+					{% endfor %}
+				</optgroup>
+				<optgroup label="Teams">
+					<option value="assigned_agent_team">Assigned team</option>
+					{% for k,v in term_options.agent_teams %}
+						<option value="agent_team.{{k}}">{{v}}</option>
+					{% endfor %}
+				</optgroup>
+			</select>
 		</div>
 	</div>
 	{% if term_options.custom_ticket_fields %}

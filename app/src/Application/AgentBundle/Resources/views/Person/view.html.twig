@@ -15,11 +15,11 @@ pageMeta.personGravatarIcon = '{{ person.primary_email.getGravatarUrl() }}&s=13'
 {% endif %}
 
 pageMeta.perms = {
-	edit: {% if not app.user.hasPerm('agent_people.edit') %}true{% else %}false{% endif %},
-	delete: {% if not app.user.hasPerm('agent_people.delete') %}true{% else %}false{% endif %},
-	edit_emails: {% if not app.user.hasPerm('agent_people.edit_emails') %}true{% else %}false{% endif %},
-	reset_password: {% if not app.user.hasPerm('agent_people.reset_password') %}true{% else %}false{% endif %},
-	org_create: {% if not app.user.hasPerm('agent_org.create') %}true{% else %}false{% endif %}
+	edit: {% if app.user.hasPerm('agent_people.edit') %}true{% else %}false{% endif %},
+	delete: {% if app.user.hasPerm('agent_people.delete') %}true{% else %}false{% endif %},
+	edit_emails: {% if app.user.hasPerm('agent_people.edit_emails') %}true{% else %}false{% endif %},
+	reset_password: {% if app.user.hasPerm('agent_people.reset_password') %}true{% else %}false{% endif %},
+	org_create: {% if app.user.hasPerm('agent_org.create') %}true{% else %}false{% endif %}
 };
 
 {% set baseId = el_uid() %}

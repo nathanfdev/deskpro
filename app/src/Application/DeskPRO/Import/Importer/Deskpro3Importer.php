@@ -118,7 +118,7 @@ class Deskpro3Importer extends AbstractImporter
 		'SaveDataBillingTransaction',
 		'SaveDataUserPlanSubs',
 		'SaveNotebookBlobs',
-		'Cleanup',
+		'CreateIndexes',
 		'CleanupDone',
 	);
 

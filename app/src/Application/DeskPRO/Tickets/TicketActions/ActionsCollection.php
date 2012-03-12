@@ -269,6 +269,8 @@ class ActionsCollection
 			$desc[] = $mod->getDescription();
 		}
 
+		$desc = \Orb\Util\Arrays::removeFalsey($desc);
+
 		return $desc;
 	}
 }

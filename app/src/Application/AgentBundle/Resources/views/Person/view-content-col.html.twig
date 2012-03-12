@@ -331,9 +331,9 @@
 				<tr>
 					<td class="label">{{ phrase('agent.people.auto_responder') }}</td>
 					<td class="value">
-						<select id="{{baseId}}_is_autoresponder">
-							<option value="0" {% if person.is_autoresponder %}selected="selected"{% endif %}>{{ phrase('agent.no') }}</option>
-							<option value="1" {% if person.is_autoresponder %}selected="selected"{% endif %}>{{ phrase('agent.people.auto_responder_yes') }}</option>
+						<select id="{{baseId}}_disable_autoresponses">
+							<option value="0" {% if person.disable_autoresponses %}selected="selected"{% endif %}>{{ phrase('agent.no') }}</option>
+							<option value="1" {% if person.disable_autoresponses %}selected="selected"{% endif %}>{{ phrase('agent.people.auto_responder_yes') }}</option>
 						</select>
 					</td>
 				</tr>

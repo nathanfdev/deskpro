@@ -87,7 +87,6 @@ class TicketTrigger extends EntityRepository
 		$triggers = $this->getEntityManager()->createQuery("
 			SELECT trig
 			FROM DeskPRO:TicketTrigger trig
-			WHERE trig.sys_name IS NULL
 			ORDER BY trig.run_order ASC
 		")->execute();
 

@@ -430,6 +430,63 @@ $q->actions = array(
 $em->persist($q);
 $em->flush();
 
+##BEGIN:create_trigger.urgency_up1##
+$q = new \Application\DeskPRO\Entity\TicketTrigger();
+$q->title = '';
+$q->event_trigger = 'time_user_waiting';
+$q->event_trigger_option = '86400'; // 1 day
+$q->is_enabled = 1;
+$q->terms = array();
+$q->actions = array(
+	array(
+		'type' => 'urgency_set',
+		'options' => array(
+			'num' => 2
+		)
+	)
+);
+
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_trigger.urgency_up2##
+$q = new \Application\DeskPRO\Entity\TicketTrigger();
+$q->title = '';
+$q->event_trigger = 'time_user_waiting';
+$q->event_trigger_option = '172800'; // 2 days
+$q->is_enabled = 1;
+$q->terms = array();
+$q->actions = array(
+	array(
+		'type' => 'urgency_set',
+		'options' => array(
+			'num' => 3
+		)
+	)
+);
+
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_trigger.urgency_up3##
+$q = new \Application\DeskPRO\Entity\TicketTrigger();
+$q->title = '';
+$q->event_trigger = 'time_user_waiting';
+$q->event_trigger_option = '259200'; // 3 days
+$q->is_enabled = 1;
+$q->terms = array();
+$q->actions = array(
+	array(
+		'type' => 'urgency_set',
+		'options' => array(
+			'num' => 3
+		)
+	)
+);
+
+$em->persist($q);
+$em->flush();
+
 ##BEGIN:create_trigger.auto_close_resolve_user_reply##
 // When a ticket has been awaiting agent for 2 months, set it to resolved
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
@@ -449,7 +506,7 @@ $q->terms = array(
 );
 $q->actions = array(
 	array(
-		'type' => 'satus',
+		'type' => 'status',
 		'options' => array(
 			'status' => 'resolved'
 		)
@@ -465,20 +522,20 @@ $q = new \Application\DeskPRO\Entity\TicketTrigger();
 $q->title = 'auto_close.resolve_agent_reply';
 $q->sys_name = 'auto_close.resolve_agent_reply';
 $q->event_trigger = 'time_agent_waiting';
-$q->event_trigger_option = '432000'; // 2 months
+$q->event_trigger_option = '432000'; // 5 days
 $q->is_enabled = 1;
 $q->terms = array(
 	array (
 		'type' => 'status',
 		'op' => 'is',
 		'options' => array (
-			'status' => 'awaiting_user',
+			'status' => 'awaiting_agent',
 		),
 	)
 );
 $q->actions = array(
 	array(
-		'type' => 'satus',
+		'type' => 'status',
 		'options' => array(
 			'status' => 'resolved'
 		)
@@ -507,7 +564,7 @@ $q->terms = array(
 );
 $q->actions = array(
 	array(
-		'type' => 'satus',
+		'type' => 'status',
 		'options' => array(
 			'status' => 'closed'
 		)

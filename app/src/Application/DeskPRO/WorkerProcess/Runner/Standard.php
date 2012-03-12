@@ -36,6 +36,7 @@ namespace Application\DeskPRO\WorkerProcess\Runner;
 
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\App;
 
 /**
  * A standard runner executes all jobs in sequence one at a time
@@ -52,6 +53,11 @@ class Standard extends AbstractRunner
 	{
 		if ($this->is_verbose) {
 			$out_writer = new \Orb\Log\Writer\Stream('php://stdout');
+			$logger->addWriter($out_writer);
+		}
+
+		if (App::getConfig('debug.write_cron_logfile')) {
+			$out_writer = new \Orb\Log\Writer\Stream(App::getLogDir() . '/cron.log');
 			$logger->addWriter($out_writer);
 		}
 	}

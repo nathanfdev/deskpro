@@ -8,9 +8,13 @@
 	 */
 	'core_email.failed_email_attempts_notify' => 4,
 
-	'core_email.antiflood_newtickets' => 8,
-	'core_email.antiflood_newtickets_warn' => 4,
+
+	'core_email.antiflood_newtickets' => 10,
+	'core_email.antiflood_newtickets_warn' => 5,
+	'core_email.antiflood_newtickets_time' => 900,
+
 	'core_email.antiflood_newreplies' => 10,
 	'core_email.antiflood_newreplies_warn' => 5,
+	'core_email.antiflood_newreplies_time' => 900,
 
 );

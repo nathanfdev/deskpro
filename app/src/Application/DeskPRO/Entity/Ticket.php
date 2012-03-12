@@ -188,6 +188,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $notify_template = '';
 
 	/**
+	 * The "from" address to send from
+	 * @var string
+	 */
+	protected $notify_email = '';
+
+	/**
 	 * @var string
 	 */
 	protected $creation_system;
@@ -330,6 +336,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	protected $_label_manager = null;
 
+	/**
+	 * If the tikcet was created from an email just now, then this is the reader
+	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
+	 */
+	public $email_reader;
+
 	public function __construct($tracker = true)
 	{
 		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
@@ -370,17 +382,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getUserParticipants()
 	{
-		if ($this->_user_participants !== null) return $this->_user_participants;
+		$ret = array();
 
-		$this->_user_participants = array();
-
-		foreach ($this->participants as $p) {
+		foreach ($this['participants'] as $p) {
 			if (!$p['person']['is_agent']) {
-				$this->_user_participants[] = $p;
+				$ret[] = $p;
 			}
 		}
 
-		return $this->_user_participants;
+		return $ret;
 	}
 
 	public function getAgentParticipants()
@@ -1362,6 +1372,22 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * Is the ticket active? An active ticket is one that is not closed or hidden.
+	 * This is used to determine what is in the "active" search tables.
+	 *
+	 * @return bool
+	 */
+	public function isActive()
+	{
+		if ($this->status != 'closed' && $this->status != 'hidden') {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * Is this ticket deleted?
 	 *
 	 * @return bool
@@ -1402,6 +1428,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->date_user_waiting = null;
 		} else if ($status == 'awaiting_agent') {
 			$this->date_user_waiting = new \DateTime();
+		} else if ($status == 'closed') {
+			$this->date_closed = new \DateTime();
+		}
+
+		if ($status != 'closed' && $this->date_closed) {
+			$this->date_closed = null;
 		}
 
 		$old_hstatus = $this->hidden_status;
@@ -1907,6 +1939,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'ref', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ref', ));
 		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
 		$metadata->mapField(array( 'fieldName' => 'notify_template', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'notify_template', ));
+		$metadata->mapField(array( 'fieldName' => 'notify_email', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'notify_email', ));
 		$metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system', ));
 		$metadata->mapField(array( 'fieldName' => 'ticket_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ticket_hash', ));
 		$metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));

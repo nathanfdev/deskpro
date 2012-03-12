@@ -206,6 +206,25 @@ class TicketChecker extends AbstractChecker
 
 	/**
 	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function canSetClosed(Ticket $ticket)
+	{
+		if (!$this->person->hasPerm('agent_tickets.modify_set_closed')) {
+			return false;
+
+		}
+		if ($ticket->status == 'resolved' AND ($this->canModify($ticket, 'modify_set_awaiting_user') || $this->canModify($ticket, 'modify_set_awaiting_agent'))) {
+			return true;
+		} elseif ($this->canModify($ticket, 'modify_set_resolved')) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
 	 * @return bool
 	 */
 	public function canModify(Ticket $ticket, $op)

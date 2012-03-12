@@ -22,11 +22,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 {% block pagebar %}
 	<ul>
 		<li><a href="{{ path('admin_tickettriggers') }}">Triggers</a></li>
-		{% if trigger.trigger_type == 'trigger' %}
-			<li>{% if trigger.id %}Edit Trigger{% else %}New Trigger{% endif %}</li>
-		{% else %}
-			<li>{% if trigger.id %}Edit Escalation{% else %}New Escalation{% endif %}</li>
-		{% endif %}
+		<li>{% if trigger.id %}Edit Trigger{% else %}New Trigger{% endif %}</li>
 	</ul>
 {% endblock %}
 {% block page %}
@@ -40,6 +36,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 			<label>Event</label>
 		</div>
 		<div class="dp-form-input">
+			<input type="hidden" name="trigger[event_trigger]" value="{{ trigger.event_trigger }}" />
 			{% macro time_select(event_trigger_time, event_trigger_scale) %}
 				<input type="text" name="event_trigger_time" value="{{ event_trigger_time }}" size="10" style="width: 80px" class="small" />
 				<select name="event_trigger_scale">
@@ -65,7 +62,12 @@ function TicketTriggerEditPage_initTerms(handler) {
 			<label>Description</label> <em>Optionally enter a description to help you remember what this trigger was created for</em>
 		</div>
 		<div class="dp-form-input">
-			{{ form_widget(form.title) }}
+			{% if trigger.sys_name %}
+				{{ phrase('agent.triggers_' ~ trigger.sys_name|replace({'.': '_'})) }}
+				<div style="display: none">{{ form_widget(form.title) }}</div>
+			{% else %}
+				{{ form_widget(form.title) }}
+			{% endif %}
 		</div>
 	</div>
 

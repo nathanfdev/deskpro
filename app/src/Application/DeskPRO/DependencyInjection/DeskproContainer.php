@@ -412,7 +412,7 @@ class DeskproContainer extends Container
 				'logging' => false,
 			), array());
 
-			$this->getContainer()->set('deskpro.cache.blackhole', $blackhole);
+			$this->set('deskpro.cache.blackhole', $blackhole);
 
 			return $blackhole;
 		}

@@ -155,7 +155,25 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		if ($ticket AND !$person AND $detector->canAddUnknownPerson()) {
-			$person = Entity\Person::newContactPerson(array('email' => $this->reader->getFromAddress()));
+
+			// If the detector didnt find a person, doesnt mean they dont exist
+			$person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->reader->getFromAddress()->getEmail());
+
+			// But we'll create them now if they dont
+			if (!$person) {
+				$person = Entity\Person::newContactPerson(array('email' => $this->reader->getFromAddress()->getEmail()));
+			}
+
+			App::getDb()->beginTransaction();
+			try {
+				App::getOrm()->persist($person);
+				App::getOrm()->flush($person);
+				App::getDb()->commit();
+			} catch (\Exception $e) {
+				App::getDb()->rollback();
+				throw $e;
+			}
+
 			$ticket->addParticipantPerson($person);
 		}
 
@@ -247,6 +265,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
 		}
 
+		$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+		$email_info['body'] = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
+		if ($email_info['body_is_html']) {
+			// Send through cleaner again to fix html problems from cutting
+			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
+		}
+
 		$ev = $this->createGatewayEvent(array(
 			'ticket' => $ticket,
 			'person' => $person,
@@ -262,6 +287,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$email_info = $ev->email_info;
 
 		$message = new Entity\TicketMessage();
+		$message->email_reader = $this->reader;
 		if ($this->reader->hasProperty('email_source')) {
 			$message['email_source'] = $this->reader->getProperty('email_source');
 		}
@@ -270,7 +296,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$message['person'] = $person;
 		$message['email'] = $this->reader->getFromAddress()->getEmail();
 
-		$message['message'] = $email_info['body'];
+		$message['message'] = $email_info['body_is_html'] ? $email_info['body'] : nl2br(htmlspecialchars($email_info['body']));
 
 		foreach ($this->processBlobs() as $blob) {
 			$attach = new Entity\TicketAttachment();
@@ -293,7 +319,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		$charset_error = $this->charset_error;
-		App::getOrm()->transactional(function($em) use ($ticket, $message, $person, $charset_error, $email_body) {
+		App::getOrm()->transactional(function($em) use ($ticket, $message, $person, $charset_error, $email_info) {
 			$em->persist($ticket);
 			$em->persist($message);
 			$em->persist($person);
@@ -476,6 +502,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$ticket->gateway = $this->getGateway();
 		$ticket->gateway_address = $this->getGatewayAddress();
 
+		$message['message'] = $email_info['body_is_html'] ? $email_info['body'] : nl2br(htmlspecialchars($email_info['body']));
+
 		App::getOrm()->persist($ticket);
 		App::getOrm()->persist($message);
 		App::getOrm()->persist($person);
@@ -568,10 +596,15 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$newticket->setPersonContext($person);
 
 		$newticket->ticket->subject = $email_info['subject'];
-		$newticket->ticket->message = strip_tags($fwd_cutter->getForwardedMessage());
 
-		// TODO using strip tags until we have HTML tidy, the cutter
-		// will most likely cut in the middle of a div etc that we need to clean
+		$body = $fwd_cutter->getForwardedMessage();
+		// Send it through cleaner again to fix any unclosed tags that might've resulted
+		// from the cutting process
+		if ($email_info['body_is_html']) {
+			$body = $this->cleaner->clean($body, 'html_email');
+		}
+
+		$newticket->ticket->message = $body;
 
 		App::getOrm()->beginTransaction();
 		$ticket = $newticket->save();
@@ -587,6 +620,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			App::getOrm()->beginTransaction();
 			$agent_message = new \Application\DeskPRO\Entity\TicketMessage();
+			$agent_message->email_reader = $this->reader;
 			$agent_message->person = $agent;
 			$agent_message['message'] = strip_tags($agent_reply);
 

@@ -178,6 +178,8 @@ class ActionsFactory
 			return $this->createActionObject($action_class, $options);
 		} elseif (class_exists($modifier_class)) {
 			return $this->createModifierObject($modifier_class, $options);
+		} else {
+			throw new \InvalidArgumentException("Unknown action or modifier `$name`");
 		}
 
 		return null;

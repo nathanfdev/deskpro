@@ -136,13 +136,14 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 	},
 
 	addTicket: function(ticket_id) {
+		var self = this;
 		if (!this.meta.loadSingleUrl) {
 			return;
 		}
 
 		this.resultsHelper.prependResultId(ticket_id);
 
-		if (this.resultsHelper.getCurrentPage() == 1) {
+		if (1 || this.resultsHelper.getCurrentPage() == 1) {
 			var url = this.meta.loadSingleUrl.replace('$ticket_id', ticket_id).replace('$view_type', this.meta.viewType);
 
 			$.ajax({
@@ -155,7 +156,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 					$('.timeago', el).timeago();
 
-					$('.deskpro-results-list', this.wrapper).prepend(el);
+					self.getEl('results_wrap').prepend(el);
 					el.slideDown();
 
 					this.countTotal++;

@@ -151,6 +151,8 @@ abstract class CustomDefAbstractController extends AbstractController
 					$form->bindRequest($this->get('request'));
 					$editfield->save();
 
+					$this->clearCacheForFieldType($field);
+
 					$this->em->getConnection()->commit();
 				} catch (\Exception $e) {
 					$this->em->getConnection()->rollback();
@@ -284,5 +286,21 @@ abstract class CustomDefAbstractController extends AbstractController
 	public function getApi()
 	{
 		return App::getApi(static::API_NAME);
+	}
+
+
+	/**
+	 * @param $field
+	 */
+	public function clearCacheForFieldType($field)
+	{
+		$repos = $field->getRepository();
+
+		$cache = $this->container->get('doctrine.orm.default_query_cache');
+
+		foreach (array('getfields', 'getenabledfields', 'gettopfields', 'gettopfields') as $n) {
+			$cache_name = $repos::getCacheId($n);
+			$cache->delete($cache_name);
+		}
 	}
 }

@@ -265,12 +265,11 @@ class TicketSearch extends SearcherAbstract
 
 		$where = '';
 
-		if (true || $this->isArchiveSearch()) {
+		if ($this->isArchiveSearch()) {
 			$table = 'tickets';
 		} else {
 			$table = 'tickets_search_active';
 		}
-		$table = 'tickets';
 
 		$sql = "SELECT tickets.id FROM $table AS tickets ";
 
@@ -299,6 +298,10 @@ class TicketSearch extends SearcherAbstract
 				}
 
 				$where_perm[] = '(' . implode(' OR ', $part) . ')';
+			}
+
+			if (!$where_perm) {
+				$where_perm[] = '1';
 			}
 
 			$where = '((' . implode(' AND ', $where_perm) . ') OR (';
@@ -412,7 +415,7 @@ class TicketSearch extends SearcherAbstract
 
 		switch ($type) {
 			case 'ticket.urgency':
-				$order_by = "ORDER BY tickets.urgency $dir";
+				$order_by = "ORDER BY tickets.urgency $dir, tickets.id $dir";
 				$this->order_summary = "Urgency";
 				break;
 
@@ -424,9 +427,9 @@ class TicketSearch extends SearcherAbstract
 			case 'ticket.priority':
 				$pris = App::getEntityRepository('DeskPRO:TicketPriority')->getIdsInOrder();
 				if ($pris) {
-					$order_by = "ORDER BY FIELD(tickets.priority_id, " . implode(',', $pris) . ")";
+					$order_by = "ORDER BY FIELD(tickets.priority_id, " . implode(',', $pris) . ") $dir, tickets.id $dir";
 				} else {
-					$order_by = "ORDER BY tickets.priority_id $dir";
+					$order_by = "ORDER BY tickets.priority_id $dir, tickets.id $dir";
 				}
 				$this->order_summary = "Priority";
 				break;
@@ -762,7 +765,7 @@ class TicketSearch extends SearcherAbstract
 						} else {
 							$show_status[] = $show_status;
 							$choice_str[] = $tr->phrase('agent.tickets.status_' . $c);
-							if ($c != 'awaiting_agent' && $c != 'awaiting_user') {
+							if ($c != 'awaiting_agent' && $c != 'awaiting_user' && $c != 'resolved') {
 								$this->enableArchiveSearch();
 							}
 						}
@@ -797,6 +800,7 @@ class TicketSearch extends SearcherAbstract
 					$this->summary[] = $tr->phrase('agent.x_is_y', array('field' => $tr->phrase('agent.tickets.status'), 'value' => $choice_str));
 
 					$wheres[] = $this->_choiceMatch("$tickets_table.hidden_status", $op, $choice);
+					$this->enableArchiveSearch();
 
 					break;
 				case self::TERM_HOLD:

@@ -44,6 +44,11 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class TicketFilterSubscription extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
+	 * @var int
+	 */
+	protected $id;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\TicketFilter
 	 */
 	protected $filter;
@@ -96,8 +101,9 @@ class TicketFilterSubscription extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketFilterSubscription';
 		$metadata->setPrimaryTable(array( 'name' => 'ticket_filter_subscriptions', ));
-		$metadata->setIdentifier(array('filter', 'person'));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapField(array( 'fieldName' => 'email_new', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_new', ));
 		$metadata->mapField(array( 'fieldName' => 'email_user_activity', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_user_activity', ));
 		$metadata->mapField(array( 'fieldName' => 'email_agent_activity', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_agent_activity', ));

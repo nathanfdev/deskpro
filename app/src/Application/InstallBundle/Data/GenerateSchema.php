@@ -177,15 +177,15 @@ SQL;
 
 		$all_sql[] = <<<SQL
 CREATE TABLE `tickets_search_subject` (
-  `ticket_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `subject` varchar(1000) NOT NULL,
-  PRIMARY KEY (`ticket_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM
 SQL;
 
 		$all_sql[] = <<<SQL
 CREATE TABLE `tickets_search_message` (
-  `ticket_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `language_id` int(11) DEFAULT NULL,
   `department_id` int(11) DEFAULT NULL,
   `category_id` int(11) DEFAULT NULL,
@@ -209,7 +209,7 @@ CREATE TABLE `tickets_search_message` (
   `total_user_waiting` int(11) NOT NULL,
   `total_to_first_reply` int(11) NOT NULL,
   `content` longtext NOT NULL,
-  PRIMARY KEY (`ticket_id`),
+  PRIMARY KEY (`id`),
   KEY `status` (`status`),
   KEY `person_id` (`person_id`) USING BTREE,
   FULLTEXT KEY `content` (`content`)
@@ -218,7 +218,7 @@ SQL;
 
 		$all_sql[] = <<<SQL
 CREATE TABLE `tickets_search_message_active` (
-  `ticket_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `language_id` int(11) DEFAULT NULL,
   `department_id` int(11) DEFAULT NULL,
   `category_id` int(11) DEFAULT NULL,
@@ -242,7 +242,7 @@ CREATE TABLE `tickets_search_message_active` (
   `total_user_waiting` int(11) NOT NULL,
   `total_to_first_reply` int(11) NOT NULL,
   `content` longtext NOT NULL,
-  PRIMARY KEY (`ticket_id`),
+  PRIMARY KEY (`id`),
   KEY `status` (`status`),
   KEY `person_id` (`person_id`) USING BTREE,
   FULLTEXT KEY `content` (`content`)

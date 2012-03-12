@@ -29,28 +29,55 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Import
+ * @subpackage Tickets
  */
 
-namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
+namespace Application\DeskPRO\Tickets\TicketActions;
 
-class CleanupStep extends AbstractDeskpro3Step
+use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
+use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
+
+use Application\DeskPRO\Tickets\TicketChangeTracker;
+use Application\DeskPRO\Translate\DelegatePhrase;
+use Application\DeskPRO\App;
+
+class WarnNewticketFloodAction extends AbstractUserNotificationAction
 {
 	/**
-	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer
+	 * Apply the property to the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
 	 */
-	protected $importer;
-
-	public static function getTitle()
+	public function apply(Ticket $ticket)
 	{
-		return 'Cleanup';
+		$person = $ticket->person;
+
+		$vars['ticket'] = $ticket;
+		$vars['person'] = $person;
+		$vars['participants'] = $parts;
+		$vars['access_code'] = $ticket->getAccessCode();
+
+		$from_address = App::getSetting('core.default_from_email');
+
+		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $tpl_suffix, $only_cc_ids) {
+			$email_subject = 'Warning: Confirmation emails turned off';
+			$email_body = App::get('templating')->render('gateway-autoresponse-warn.html.twig', $vars);
+
+			$message->setSubject($email_subject);
+			$message->setBody($email_body, 'text/html');
+			$message->setFrom($from_address);
+
+			App::getMailer()->send($message);
+		});
 	}
 
-	public function run($page = 1)
+	/**
+	 * @return string
+	 */
+	public function getDescription($as_html = true)
 	{
-		$this->getDb()->exec("CREATE FULLTEXT INDEX content ON content_search (content)");
-
-		$this->importer->restoreTableIndexes('content_search');
-		$this->importer->restoreTableIndexes('content_search_attribute');
+		return 'Send email warning that the user is flooding the system';
 	}
 }

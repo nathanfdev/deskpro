@@ -266,10 +266,10 @@
 						<?php else: $failed = true; ?>
 							<span class="label important" style="float:right">FAIL</span>
 						<?php endif ?>
-						Check MySQL version is &gt;= 5.5
+						Check MySQL version is &gt;= 5.0
 						<?php if ($failed): ?>
 							<div class="alert-message block-message error">
-								DeskPRO requires MySQL v5.5. You need to update your version of MySQL.
+								DeskPRO requires MySQL v5.0. You need to update your version of MySQL.
 							</div>
 						<?php endif ?>
 					</td>

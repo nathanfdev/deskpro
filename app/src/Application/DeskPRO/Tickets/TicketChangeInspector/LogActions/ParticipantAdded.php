@@ -39,11 +39,11 @@ use Application\DeskPRO\Entity;
 
 class ParticipantAdded implements LogActionInterface
 {
-	protected $part;
+	protected $person;
 
-	public function __construct($part)
+	public function __construct($person)
 	{
-		$this->part = $part;
+		$this->person = $person;
 	}
 
 	public function getLogName()
@@ -55,12 +55,12 @@ class ParticipantAdded implements LogActionInterface
 	{
 		return array(
 			'id_before' => null,
-			'id_after'  => $this->part->id,
+			'id_after'  => $this->person->id,
 
-			'person_id' => $this->part->person ? $this->part->person->id : 0,
-			'name'      => $this->part->getDisplayName(),
-			'email'     => $this->part->getPrimaryEmailAddress(),
-			'is_agent'  => $this->part->person ? $this->part->person->is_agent : false
+			'person_id' => $this->person ? $this->person->id : 0,
+			'name'      => $this->person->getDisplayName(),
+			'email'     => $this->person->getPrimaryEmailAddress(),
+			'is_agent'  => $this->person ? $this->person->is_agent : false
 		);
 	}
 

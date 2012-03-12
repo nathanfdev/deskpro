@@ -1,0 +1,59 @@
+{% macro section(title, content, options) %}
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:15px;">
+		{% if title %}
+			<tr>
+				<td style="font-size:18px; color:#0D1C3E; padding-top:6px; padding-bottom:6px;">
+					{{ title }}
+				</td>
+			</tr>
+		{% endif %}
+		{% if content %}
+			<tr>
+				<td style="font-size:12px; line-height:125%; padding-bottom:15px;{% if not options.content_noindent %}padding-left: 8px;{% endif %}">
+					{{ content }}
+				</td>
+			</tr>
+		{% endif %}
+	</table>
+{% endmacro %}
+
+{% macro messages_section(title, content, options) %}
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:15px;margin-bottom:15px;">
+	{% if title %}
+	<tr>
+		<td style="font-size:18px; color:#0D1C3E; padding-top:6px; padding-bottom:6px;">
+			{{ title }}
+		</td>
+	</tr>
+	{% endif %}
+	{% if content %}
+	<tr>
+		<td style="font-size:12px; line-height:125%; border:1px solid #CCCCCC;border-bottom: none;">
+			{{ content }}
+		</td>
+	</tr>
+	{% endif %}
+</table>
+{% endmacro %}
+
+{% macro message(author, time, message) %}
+	<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td style="font-size:12px; line-height:125%; border-bottom:1px solid #CCCCCC;padding: 10px;">
+		{% if author %}<span style="font-family:Arial, Helvetica, sans-serif; color:#388D34; font-size:12px; font-weight:bold;">{{ author|raw }}</span>{% endif %}
+		{% if time %}<span style="font-family:Arial, Helvetica, sans-serif; color:#868686; font-size:11px;">{{ time|raw }}</span>{% endif %}
+		<br />
+		{{ message|raw }}
+	</td></tr></table>
+{% endmacro %}
+
+{% macro render_ticket_messages(messages, title) %}
+	{% set section_content %}
+		{% for message in messages %}
+			{{ _self.message(message.person.display_contact, message.date_created|date('full'), message.message_html) }}
+		{% endfor %}
+	{% endset %}
+	{{ _self.messages_section(title, section_content) }}
+{% endmacro %}
+
+{% macro replycode(code) %}
+	<span style="color:#ffffff;text-size:8px;">(#{{ code }})</span>
+{% endmacro %}

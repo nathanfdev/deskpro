@@ -81,7 +81,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			this.ownObject(tzMenu);
 
 			var autoResMenu = new DeskPRO.UI.Menu({
-				menuElement: this.getEl('is_autoresponder')
+				menuElement: this.getEl('disable_autoresponses')
 			});
 			this.ownObject(autoResMenu);
 
@@ -103,15 +103,15 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				});
 			});
 
-			this.getEl('is_autoresponder').on('change', function(){
+			this.getEl('disable_autoresponses').on('change', function(){
 				var val = $(this).val();
 				$.ajax({
 					url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
 					type: 'POST',
 					dataType: 'json',
 					data: {
-						action: 'is_autoresponder',
-						is_autoresponder: val
+						action: 'disable_autoresponses',
+						disable_autoresponses: val
 					}
 				});
 			});

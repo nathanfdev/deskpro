@@ -32,6 +32,7 @@ pageMeta.urls = {
 pageMeta.baseId = '{{ baseId }}';
 
 pageMeta.isDeleted = {% if ticket.hidden_status == 'deleted' %}true{% else %}false{% endif %};
+pageMeta.isClosed = {% if ticket.status == 'closed' %}true{% else %}false{% endif %};
 pageMeta.isSpam = {% if ticket.hidden_status == 'spam' %}true{% else %}false{% endif %};
 pageMeta.isLocked = {% if ticket.is_locked == 'deleted' %}true{% else %}false{% endif %};
 {% if agent_signature %}

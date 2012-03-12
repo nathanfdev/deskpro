@@ -56,6 +56,7 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	protected $log_inspector;
 	protected $exec_inspector;
 	protected $list_updater;
+	protected $search_updater;
 	protected $filter_detector;
 	protected $notify_list_builder;
 
@@ -236,7 +237,9 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 					break;
 
 				case 'person':
-					$this->original_ticket['person'] = $old_val;
+					if (!$this->is_new_ticket) {
+						$this->original_ticket['person'] = $old_val;
+					}
 					break;
 
 				case 'category':
@@ -311,13 +314,13 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	public function recordPropertyChanged($prop, $old_val, $new_val)
 	{
 		$this->has_non_ignored = true;
-		return parent::recordPropertyChanged($prop, $old_val, $new_val);
+		parent::recordPropertyChanged($prop, $old_val, $new_val);
 	}
 
 	public function recordMultiPropertyChanged($prop, $old_val, $new_val)
 	{
 		$this->has_non_ignored = true;
-		return parent::recordMultiPropertyChanged($prop, $old_val, $new_val);
+		parent::recordMultiPropertyChanged($prop, $old_val, $new_val);
 	}
 
 	/**
@@ -396,6 +399,18 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 
 
 	/**
+	 * @return \Application\DeskPRO\Tickets\TicketChangeInspector\SearchUpdater
+	 */
+	public function getSearchUpdater()
+	{
+		if ($this->search_updater !== null) return $this->search_updater;
+
+		$this->search_updater = new TicketChangeInspector\SearchUpdater($this);
+		return $this->search_updater;
+	}
+
+
+	/**
 	 * Notify all listeners that changes are about to be committed
 	 */
 	public function preDone()
@@ -430,5 +445,7 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 
 		$total_time = microtime(true) - $this->start_time;
 		$this->logMessage("[TicketChangeTracker] END TICKET {$this->ticket['id']} : Took " . $total_time . " seconds");
+
+		$this->getSearchUpdater()->run();
 	}
 }

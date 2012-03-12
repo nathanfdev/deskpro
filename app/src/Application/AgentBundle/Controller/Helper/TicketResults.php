@@ -187,7 +187,6 @@ class TicketResults
 
 		$searcher = new TicketSearch();
 		$searcher->setPerson($this->controller->getPerson());
-		$searcher->enableArchiveSearch();
 		$searcher->addTerm(TicketSearch::TERM_ID, TicketSearch::OP_IS, $this->getTicketIds());
 
 		$term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($this->group_field, $field_id);

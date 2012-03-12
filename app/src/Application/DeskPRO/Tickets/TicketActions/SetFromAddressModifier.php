@@ -58,6 +58,13 @@ class SetFromAddressModifier implements CollectionModifierInterface
 				$action->setFromAddress($this->email_address);
 			}
 		}
+
+		if ($collection->hasActionType('SetTicketEmail')) {
+			$collection->getActionType('SetTicketEmail')->setEmail($this->email_address);
+		} else {
+			$status_action = new SetTicketEmailAction($this->email_address);
+			$collection->addAction($status_action);
+		}
 	}
 
 	/**

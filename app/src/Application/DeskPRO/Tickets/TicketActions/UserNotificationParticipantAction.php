@@ -58,6 +58,11 @@ class UserNotificationParticipantAction extends AbstractUserNotificationAction
 			return;
 		}
 
+		// Person has notifications disabled
+		if ($ticket->person->disable_autoresponses) {
+			return;
+		}
+
 		foreach ($user_ids as $user_id) {
 			$user = App::getEntityRepository('DeskPRO:Person')->find($user_id);
 

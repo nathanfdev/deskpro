@@ -131,9 +131,9 @@ class TemplatingExtension extends \Twig_Extension
         );
     }
 
-	public function relativeTime($secs)
+	public function relativeTime($secs, $detail = 2)
 	{
-		return Dates::secsToReadable($secs);
+		return Dates::secsToReadable($secs, $detail);
 	}
 
 	public function strTruncate($str, $width = 80)

@@ -131,6 +131,10 @@ class DelegatingTransport implements \Swift_Transport
 	 */
 	public function send(\Swift_Mime_Message $message, &$failedRecipients = null)
 	{
+		if ($message instanceof Message) {
+			$message->prepare();
+		}
+
 		if ($evt = $this->event_dispatcher->createSendEvent($this, $message)) {
 			$this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
 			if ($evt->bubbleCancelled()) {

@@ -48,6 +48,11 @@ class Message extends \Swift_Message
 	protected $_queue_hint = false;
 
 	/**
+	 * @var bool
+	 */
+	protected $_suppress_autoreply = true;
+
+	/**
 	 * @var \Swift_Transport
 	 */
 	protected $force_transport;
@@ -76,11 +81,34 @@ class Message extends \Swift_Message
 
 
 	/**
+	 * Prepares the message to be set. This is a hook that is called right before sending.
+	 */
+	public function prepare()
+	{
+		if ($this->_suppress_autoreply) {
+			// Tell Outlook/Exchange to suppress autoreplies (http://msdn.microsoft.com/en-us/library/ee219609(v=exchg.80).aspx)
+			$this->_setHeaderParameter('X-Auto-Response-Suppress', 'All', null);
+		}
+	}
+
+
+	/**
 	 * Enable the queue hint that hints that it's okay to queue and send later.
 	 */
 	public function enableQueueHint()
 	{
 		$this->_queue_hint = true;
+	}
+
+
+	/**
+	 * Set the suppress autoreplies headers
+	 *
+	 * @param bool $on
+	 */
+	public function setSuppressAutoreplies($on = true)
+	{
+		$this->_suppress_autoreply = (bool)$on;
 	}
 
 

@@ -47,6 +47,11 @@ class StatusAction implements ActionInterface
 
 	public function __construct($status)
 	{
+		$this->setStatus($status);
+	}
+
+	public function setStatus($status)
+	{
 		if (!in_array($status, array(
 			'awaiting_agent', 'awaiting_user', 'resolved', 'closed',
 			'hidden.spam', 'hidden.validating', 'hidden.deleted'
@@ -121,6 +126,6 @@ class StatusAction implements ActionInterface
 	 */
 	public function getDescription($as_html = true)
 	{
-		return 'Set status to ' . App::getTranslator()->phrase('agent.tickets.status_' . $this->status);
+		return 'Set status to ' . App::getTranslator()->phrase('agent.tickets.status_' . str_replace('.', '_', $this->status));
 	}
 }

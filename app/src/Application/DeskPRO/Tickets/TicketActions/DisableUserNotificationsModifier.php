@@ -34,79 +34,28 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Entity\Ticket;
-
-use Orb\Util\Numbers;
-
-/**
- * Sets the ticket urgency to a specifc value
- */
-class UrgencySetAction implements ActionInterface
+class DisableUserNotificationsModifier implements CollectionModifierInterface
 {
-	protected $num;
-
-	public function __construct($num)
+	public function modifyCollection(ActionsCollection $collection)
 	{
-		$this->num = $num;
-	}
+		$notify_types = array();
+		$notify_types[] = 'UserNotificationNewTicket';
+		$notify_types[] = 'UserNotificationNewTicketValidating';
+		$notify_types[] = 'UserNotificationNewReply';
+		$notify_types[] = 'UserNotificationNewReplyAgent';
 
-
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		$ticket['urgency'] = $this->num;
-	}
-
-
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		if ($ticket['urgency'] == $this->num) {
-			return array();
+		foreach ($notify_types as $type) {
+			if ($collection->hasActionType($type)) {
+				$collection->removeActionType($type);
+			}
 		}
-
-		return array(
-			array('action' => 'urgency', 'urgency' => $this->num)
-		);
 	}
-
-
-	/**
-	 * Get the number modifier
-	 *
-	 * @return int
-	 */
-	public function getNum()
-	{
-		return $this->num;
-	}
-
-
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		return $other_action;
-	}
-
 
 	/**
 	 * @return string
 	 */
 	public function getDescription($as_html = true)
 	{
-		return 'Set urgency to ' . $this->num;
+		return 'Disable user notifications';
 	}
 }

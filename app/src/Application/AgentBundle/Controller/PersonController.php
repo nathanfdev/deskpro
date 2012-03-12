@@ -95,7 +95,7 @@ class PersonController extends AbstractController
 		#------------------------------
 
 		$notes = App::getEntityRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
-		$person_tickets = App::getEntityRepository('DeskPRO:Ticket')->getPersonTickets($person, null);
+		$person_tickets = App::getEntityRepository('DeskPRO:Ticket')->getPersonTickets($person, 50);
 		$person_tickets_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForPerson($person);
 
 		$max = 5;
@@ -290,8 +290,8 @@ class PersonController extends AbstractController
 
 				break;
 
-			case 'is_autoresponder':
-				$person->is_autoresponder = $this->in->getBool('is_autoresponder');
+			case 'disable_autoresponses':
+				$person->disable_autoresponses = $this->in->getBool('disable_autoresponses');
 				$this->em->persist($person);
 				break;
 

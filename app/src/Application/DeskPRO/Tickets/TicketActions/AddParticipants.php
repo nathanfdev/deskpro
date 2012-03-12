@@ -43,7 +43,7 @@ use Application\DeskPRO\Entity\Person;
 /**
  * Adds participants
  */
-class AddParticipants implements ActionInterface
+class AddParticipantsAction implements ActionInterface
 {
 	protected $add_people_ids;
 

@@ -143,6 +143,8 @@ class DetectFilterMatches
 			}
 		}
 
+		$this->logMessage("Raw Changed: " . implode(', ', array_keys($this->tracker->getAllChangedProperties())));
+
 		$this->logMessage("Changed fields: " . implode(', ', $changed_fields));
 
 		return $changed_fields;
@@ -164,9 +166,10 @@ class DetectFilterMatches
 		$this->logMessage("Filters to check: " . count($filters));
 
 		$changed_fields = $this->getChangedFields();
+		$new_messages = $this->tracker->getChangedProperty('messages') ? true : false;
 
 		foreach ($filters as $filter) {
-			if ($filter->getSearcher()->hasAnyAffectedFields($changed_fields)) {
+			if ($new_messages || $filter->getSearcher()->hasAnyAffectedFields($changed_fields)) {
 				$filters_apply[] = $filter;
 			}
 		}
