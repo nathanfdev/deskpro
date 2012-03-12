@@ -218,6 +218,8 @@ class TriggerExecutor
 
 		$actions_collection = new ActionsCollection();
 
+		$trigger_logs = array();
+
 		foreach ($all_triggers as $trigger) {
 			if ($trigger->isTriggerMatch($this->tracker->getTicket(), $this->tracker)) {
 				$this->tracker->logMessage("[TriggerExecutor] Executing trigger {$trigger->id} {$trigger->event_trigger} " . print_r($trigger->terms,true) . " " . print_r($trigger->actions, true));
@@ -226,6 +228,7 @@ class TriggerExecutor
 					$action = $factory->createFromInfo($action_info);
 					if ($action) {
 						$actions_collection->add($action);
+						$this->tracker->recordExtraMulti('trigger', $trigger);
 					}
 				}
 			}

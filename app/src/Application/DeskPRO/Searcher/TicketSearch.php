@@ -361,14 +361,17 @@ class TicketSearch extends SearcherAbstract
 		}
 
 		if ($where) {
-			$sql .= " WHERE $where ";
+			$sql .= " WHERE $where";
 		}
 
 		$sql .= " GROUP BY tickets.id ";
 		$sql .= $order_by;
 
 		if ($pageinfo) {
-			$sql .= " LIMIT {$pageinfo['offset']}, {$pageinfo['limit']} ";
+			// A null limit means no limit :o
+			if ($pageinfo['limit'] !== null) {
+				$sql .= " LIMIT {$pageinfo['offset']}, {$pageinfo['limit']} ";
+			}
 		} else {
 			$sql .= " LIMIT 1000";
 		}
@@ -1069,6 +1072,22 @@ class TicketSearch extends SearcherAbstract
 					}
 
 					$wheres[] = $this->_choiceMatch("$tickets_table.email_gateway_id", $op, $choice. true);
+					break;
+
+				case 'escalation_eliminator':
+					/** @var $trigger \Application\DeskPRO\Entity\TicketTrigger */
+					$trigger = $choice;
+					$field = $trigger->getTicketTimeField();
+					if (!$field) {
+						break;
+					}
+
+					$joins[] = array(
+						'ticket_trigger_logs',
+						"LEFT JOIN ticket_trigger_logs AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.trigger_id = {$trigger->id} AND $join_name.date_criteria = tickets.$field)"
+					);
+
+					$wheres[] = "$join_name.id IS NULL";
 					break;
 
 				default:

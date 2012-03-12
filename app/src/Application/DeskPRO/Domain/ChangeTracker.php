@@ -189,6 +189,20 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
 	}
 
 
+	/**
+	 * @param $key
+	 * @param $value
+	 */
+	public function recordExtraMulti($key, $value)
+	{
+		if (!isset($this->extra[$key])) {
+			$this->extra[$key] = array();
+		}
+
+		$this->extra[$key][] = $value;
+	}
+
+
 
 	/**
 	 * Get extra data

@@ -107,6 +107,10 @@ class Log
 	{
 		$actions = array();
 
+		if ($this->tracker->getExtra('trigger')) {
+			$actions[] = new LogActions\TicketTriggers($this->tracker->getExtra('trigger'));
+		}
+
 		foreach ($this->tracker->getAllChangedProperties() as $prop => $all_info) {
 
 			if ($prop == 'messages') {
@@ -189,16 +193,19 @@ class Log
 						if (!$this->tracker->isNewTicket()) {
 							$action = new LogActions\Person($old_val, $new_val);
 						}
+						break;
 
 					case 'organization':
 						if (!$this->tracker->isNewTicket()) {
 							$action = new LogActions\Organization($old_val, $new_val);
 						}
+						break;
 
 					case 'subject':
 						if (!$this->tracker->isNewTicket()) {
 							$action = new LogActions\Subject($old_val, $new_val);
 						}
+						break;
 
 					default:
 						$unknown[] = $prop;
