@@ -82,13 +82,9 @@ class InstallQueryLogFormatter extends \Orb\Filter\AbstractFilter
 					} else {
 						$v = gettype($v);
 					}
-				}
-				$len = strlen($v);
-				if (strlen($v) > 250) {
-					$params[$k] = 'string(' . $len . ')';
 				} else {
-					$v = str_replace(array("\r\n", "\n"), ' ', $v);
-					$params[$k] = $v;
+					$len = strlen($v);
+					$params[$k] = 'string(' . $len . ')';
 				}
 			}
 		}
