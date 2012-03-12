@@ -295,6 +295,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			exit;
 		}
 
+		$start = microtime(true);
+
 		if (!defined('DP_BUILD_TIME')) {
 			$build_file = DP_ROOT.'/sys/config/build-time.php';
 			if (is_file($build_file)) {
@@ -362,6 +364,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		flush();
 
 		echo '</body></html>';
+
+		error_log(sprintf("Took %.5f", microtime(true)-$start));
 
 		return new \Symfony\Component\HttpFoundation\Response();
 	}
