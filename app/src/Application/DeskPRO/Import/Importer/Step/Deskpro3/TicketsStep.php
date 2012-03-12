@@ -446,6 +446,45 @@ class TicketsStep extends AbstractDeskpro3Step
 		}
 
 		#------------------------------
+		# Search Tables
+		#------------------------------
+
+		$search_content = implode(' ', $search_content);
+
+		$this->db->insert('content_search', array(
+			'object_type' => 'ticket',
+			'object_id' => $insert_ticket['id'],
+			'content' => $search_content,
+		));
+
+		$fields = array(
+			'id', 'language_id', 'department_id', 'category_id', 'priority_id', 'workflow_id', 'product_id', 'person_id', 'agent_id',
+			'agent_team_id', 'organization_id', 'email_gateway_id', 'status', 'urgency', 'is_hold', 'date_created', 'date_first_agent_reply',
+			'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'total_user_waiting', 'total_to_first_reply',
+		);
+
+		$set_data = array();
+		foreach ($fields as $k) {
+			if (isset($insert_ticket[$k])) {
+				$set_data[$k] = $insert_ticket[$k];
+			}
+		}
+
+		$set_data_content = $set_data;
+		$set_data_content['content'] = $search_content;
+
+		$this->db->replace('tickets_search_message', $set_data_content);
+		$this->db->replace('tickets_search_subject', array(
+			'id' => $insert_ticket['id'],
+			'subject' => $insert_ticket['subject']
+		));
+
+		if ($insert_ticket['status'] != 'closed' && $insert_ticket['status'] != 'hidden') {
+			$this->db->replace('tickets_search_active', $set_data);
+			$this->db->replace('tickets_search_message_active', $set_data_content);
+		}
+
+		#------------------------------
 		# Attachments
 		#------------------------------
 
@@ -523,18 +562,6 @@ class TicketsStep extends AbstractDeskpro3Step
 			$insert_part['access_code_id'] = $insert_tac['id'];
 			$this->db->insert('tickets_participants', $insert_part);
 		}
-
-		#------------------------------
-		# Insert fulltext search copy
-		#------------------------------
-
-		$search_content = implode(' ', $search_content);
-
-		$this->db->insert('content_search', array(
-			'object_type' => 'ticket',
-			'object_id' => $insert_ticket['id'],
-			'content' => $search_content,
-		));
 
 		#------------------------------
 		# Saved tickets become flagged

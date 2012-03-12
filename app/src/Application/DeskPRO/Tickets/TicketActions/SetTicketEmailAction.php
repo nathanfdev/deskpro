@@ -34,44 +34,71 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-class SetFromAddressModifier implements CollectionModifierInterface
+use Application\DeskPRO\App;
+use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
+use Application\DeskPRO\Entity\Ticket;
+
+/**
+ * A hidden action used with the SetFromAddress modifier that actual modified the ticket email address
+ */
+class SetTicketEmailAction implements ActionInterface
 {
-	protected $email_address;
+	protected $email;
 
-	public function __construct($email_address)
+	public function __construct($email)
 	{
-		$this->email_address = $email_address;
+		$this->setEmail($email);
 	}
 
-	public function modifyCollection(ActionsCollection $collection)
+	public function setEmail($email)
 	{
-		$notify_types = array();
-		$notify_types[] = 'AgentNotificationAction';
-		$notify_types[] = 'UserNotificationNewReplyAction';
-		$notify_types[] = 'UserNotificationNewTicketAction';
-		$notify_types[] = 'UserNotificationNewTicketValidatingAction';
-		$notify_types[] = 'UserNotificationParticipantAction';
+		$this->email = $email;
+	}
 
-		foreach ($notify_types as $type) {
-			if ($collection->hasActionType($type)) {
-				$action = $collection->getActionType($type);
-				$action->setFromAddress($this->email_address);
+	/**
+	 * Apply the property to the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function apply(Ticket $ticket)
+	{
+		if ($ticket->notify_email != $this->email) {
+			// dont save default when its blank
+			if (!$ticket->notify_email && $this->email == App::getSetting('core.default_from_email')) {
+				return;
 			}
-		}
 
-		if ($collection->hasActionType('SetTicketEmail')) {
-			$collection->getActionType('SetTicketEmail')->setEmail($this->email_address);
-		} else {
-			$status_action = new SetTicketEmailAction($this->email_address);
-			$collection->addAction($status_action);
+			$ticket->notify_email = $this->email;
 		}
 	}
+
+
+	/**
+	 * Get an array of actions that would be performed on the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function getApplyActions(Ticket $ticket)
+	{
+		return array();
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+	 */
+	public function merge(ActionInterface $other_action)
+	{
+		return $other_action;
+	}
+
 
 	/**
 	 * @return string
 	 */
 	public function getDescription($as_html = true)
 	{
-		return "Send notifications from {$this->email_address}";
+		return '';
 	}
 }

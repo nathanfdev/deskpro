@@ -114,7 +114,11 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 			$tpl_suffix .= '-' . $ticket['notify_template'];
 		}
 
-		$from_address = $this->getFromAddress();
+		if ($ticket->notify_email) {
+			$from_address = $ticket->notify_email;
+		} else {
+			$from_address = $this->getFromAddress();
+		}
 
 		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $tpl_suffix, $only_cc_ids) {
 			$email_subject = $tr->phrase($vars['email_subject']);
