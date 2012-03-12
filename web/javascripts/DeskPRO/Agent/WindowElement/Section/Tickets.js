@@ -58,6 +58,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			listElement: '#tickets_outline_sys_filters',
 			boundListElement: '#tickets_outline_sys_hold_filters',
 			triggerElement: '#ticket_filter_launch_editor',
+			controlElement: '#ticket_filter_group_editor',
 			onGroupingChanged: function(filterId) {
 				self.refreshFilterGrouping([filterId], true);
 			}

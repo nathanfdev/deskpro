@@ -41,13 +41,34 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		}).bind(this));
 	},
 
+	_initSection: function(data) {
+		var self = this;
+
+		this.setHasInitialLoaded();
+		this.contentEl.html(data.section_html);
+
+		this.filterGroupEditor = new DeskPRO.Agent.Widget.FilterGroupEditor({
+			containerElement: '#chat_outline .scroll-content',
+			listElement: '#chats_outline_sys_filters',
+			triggerElement: '#chat_filter_launch_editor',
+			controlElement: '#chat_filter_group_editor',
+			marginTop: 69,
+			onGroupingChanged: function(filterId) {
+				self.refreshFilterGrouping([filterId], true);
+			}
+		});
+		self.filterGroupEditor._initControl();
+
+		this._lastLoaded = new Date();
+	},
+
+	refreshFilterGrouping: function(filterIds, doSave) {
+		
+	},
+
 	onShow: function() {
 		this._lastLoaded = new Date();
-		DeskPRO_Window.getSectionData('chat_section', (function(data) {
-			this.setHasInitialLoaded();
-			this.contentEl.html(data.section_html);
-			this._lastLoaded = new Date();
-		}).bind(this));
+		DeskPRO_Window.getSectionData('chat_section', this._initSection.bind(this));
 	},
 
 	handleUpdateCounts: function(data) {

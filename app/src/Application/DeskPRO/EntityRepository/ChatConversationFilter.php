@@ -1,0 +1,299 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Entities
+ */
+
+namespace Application\DeskPRO\EntityRepository;
+
+use Application\DeskPRO\App;
+
+use \Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\Entity;
+
+class ChatConversationFilter extends EntityRepository
+{
+	public function getAllForActiveAgents()
+	{
+		$online_agents = App::getEntityRepository('DeskPRO:Person')->getActiveAgents(true);
+		if (!$online_agents) return array();
+
+		return $this->getAllForAgents($online_agents);
+	}
+
+	public function getAll()
+	{
+		$filters = $this->getEntityManager()->createQuery("
+			SELECT q
+			FROM DeskPRO:ChatConversationFilter q INDEX BY q.id
+		")->execute();
+
+		return $filters;
+	}
+
+	public function getAllForAgents($agents)
+	{
+		$agent_ids = array();
+		foreach ($agents as $a) {
+			if (is_object($a)) {
+				$agent_ids[] = $a['id'];
+			} else {
+				$agent_ids[] = $a;
+			}
+		}
+
+		if (!$agent_ids) {
+			return array();
+		}
+
+		$teams = App::getEntityRepository('DeskPRO:AgentTeam')->getAllTeamIdsForAgents($agents);
+		if (!$teams) $teams = array(0);
+
+		$agent_ids = implode(',', $agent_ids);
+		$teams = implode(',', $teams);
+
+		$filters = $this->getEntityManager()->createQuery("
+			SELECT q
+			FROM DeskPRO:ChatConversationFilter q INDEX BY q.id
+			WHERE
+				q.is_global = true
+				OR q.person IN ($agent_ids)
+				OR q.agent_team IN ($teams)
+		")->execute();
+
+		return $filters;
+	}
+
+	public function getPersonalFilters($agent)
+	{
+		$filters = $this->getEntityManager()->createQuery("
+			SELECT q
+			FROM DeskPRO:ChatConversationFilter q INDEX BY q.id
+			WHERE q.person = ?1
+			ORDER BY q.title ASC
+		")->execute(array(1=> $agent));
+
+		return $filters;
+	}
+
+	/**
+	 * Gets an array of all global filters.
+	 *
+	 * This is mainly used in admin for listing.
+	 *
+	 * @return array
+	 */
+	public function getAllGlobalFilters()
+	{
+		$filters = $this->getEntityManager()->createQuery("
+			SELECT q
+			FROM DeskPRO:ChatConversationFilter q INDEX BY q.id
+			WHERE q.is_global = true AND q.sys_name IS NULL
+			ORDER BY q.title ASC
+		")->execute();
+
+		return $filters;
+	}
+
+
+	/**
+	 * Gets an array of all team filters, grouped by agent team id.
+	 *
+	 * This is mainly used in admin for listing.
+	 *
+	 * @return array
+	 */
+	public function getAllTeamFilters()
+	{
+		$filters = $this->getEntityManager()->createQuery("
+			SELECT q
+			FROM DeskPRO:ChatConversationFilter q INDEX BY q.id
+			LEFT JOIN q.agent_team at
+			WHERE q.agent_team IS NOT NULL
+			ORDER BY at.name ASC, q.title ASC
+		")->execute();
+
+		$grouped_filters = array();
+
+		foreach ($filters as $filter) {
+			$team_id = $filter->agent_team['id'];
+
+			if (!isset($grouped_filters[$team_id])) {
+				$grouped_filters[$team_id] = array('team' => $filter->agent_team, 'filters' => array());
+			}
+
+			$grouped_filters[$team_id]['filters'][] = $filter;
+		}
+
+		return $grouped_filters;
+	}
+
+
+	/**
+	 * Gets an array of all agent filters, grouped by agent id.
+	 *
+	 * This is mainly used in admin for listing.
+	 *
+	 * @return array
+	 */
+	public function getAllAgentFilters()
+	{
+		$filters = $this->getEntityManager()->createQuery("
+			SELECT q
+			FROM DeskPRO:ChatConversationFilter q INDEX BY q.id
+			LEFT JOIN q.person p
+			WHERE q.agent_team IS NULL AND q.is_global = false
+			ORDER BY p.name ASC, q.title ASC
+		")->execute();
+
+		$grouped_filters = array();
+
+		foreach ($filters as $filter) {
+			$agent_id = $filter->person['id'];
+
+			if (!isset($grouped_filters[$agent_id])) {
+				$grouped_filters[$agent_id] = array('person' => $filter->person, 'filters' => array());
+			}
+
+			$grouped_filters[$agent_id]['filters'][] = $filter;
+		}
+
+		return $grouped_filters;
+	}
+
+
+	/**
+	 *
+	 * @param  $type
+	 * @return void
+	 */
+	public function getFiltersForType($type)
+	{
+		switch ($type) {
+			case 'global':
+				$filters = $this->getEntityManager()->createQuery("
+					SELECT q
+					FROM DeskPRO:ChatConversationFilter q INDEX BY q.id
+					WHERE q.is_global = true
+					ORDER BY q.title ASC
+				")->execute();
+				break;
+
+			case 'team':
+				$filters = $this->getEntityManager()->createQuery("
+					SELECT q
+					FROM DeskPRO:ChatConversationFilter q INDEX BY q.id
+					WHERE q.is_global = true
+					ORDER BY q.title ASC
+				")->execute();
+				break;
+		}
+	}
+
+	public function getSystemFilters($person_id)
+	{
+		if ($person_id instanceof Person) {
+			$person_id = $perosn_id['id'];
+		}
+
+		$filters = $this->getEntityManager()->createQuery("
+			SELECT q
+			FROM DeskPRO:ChatConversationFilter q INDEX BY q.id
+			WHERE q.sys_name IS NOT NULL AND (q.person = ?1 OR q.is_global = true)
+			ORDER BY q.title ASC
+		")->setParameter(1, $person_id)->execute();
+
+		return $filters;
+	}
+
+	/**
+	 * Find all chat conversation filters (system and custom) that a person can see.
+	 *
+	 * @param mixed $person_id
+	 * @return array
+	 */
+	public function getFiltersForPerson($person_id)
+	{
+		if ($person_id instanceof Person) {
+			$person_id = $perosn_id['id'];
+		}
+
+		$filters = $this->getEntityManager()->createQuery("
+			SELECT q
+			FROM DeskPRO:ChatConversationFilter q INDEX BY q.id
+			WHERE q.person = ?1 OR q.is_global = true
+			ORDER BY q.title ASC
+		")->setParameter(1, $person_id)->execute();
+
+		return $filters;
+	}
+
+	/**
+	 * @param $person_id
+	 * @return
+	 */
+	public function getCustomFiltersForPerson($person_id)
+	{
+		if ($person_id instanceof Person) {
+			$person_id = $perosn_id['id'];
+		}
+
+		$filters = $this->getEntityManager()->createQuery("
+			SELECT q
+			FROM DeskPRO:ChatConversationFilter q INDEX BY q.id
+			WHERE q.sys_name IS NULL AND (q.person = ?1 OR q.is_global = true)
+			ORDER BY q.title ASC
+		")->setParameter(1, $person_id)->execute();
+
+		return $filters;
+	}
+
+	public function getChatConversationFilterFromVar($var)
+	{
+		$chatconversation_filter_id = null;
+
+		if (is_int($var) OR ctype_digit($var)) {
+			$chatconversation_filter_id = (int)$var;
+		} elseif (\is_object($var)) {
+			if ($var instanceof Entity\ChatConversationFilter) {
+				return $var;
+			}
+		} elseif (isset($var['chatconversation_filter'])) {
+			return $var['chatconversation_filter'];
+		}
+
+		if ($chatconversation_filter_id) {
+			return $this->find($chatconversation_filter_id);
+		}
+
+		return null;
+	}
+}

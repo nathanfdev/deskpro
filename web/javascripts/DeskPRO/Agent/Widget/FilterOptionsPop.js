@@ -24,7 +24,7 @@ DeskPRO.Agent.Widget.FilterOptionsPop = new Orb.Class({
 			listElement: null,
 
 			/**
-			 * The elements we'll apply this goruping on. This is
+			 * The elements we'll apply this grouping on. This is
 			 * either a selector (run in the context of listElement),
 			 * or actual elements.
 			 *

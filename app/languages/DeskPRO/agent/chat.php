@@ -53,4 +53,10 @@
 
 	'agent.chat.msg_part_joined'       => '{{person_name}} has joined',
 	'agent.chat.msg_part_left'       => '{{person_name}} has left',
+
+	'agent.chat.title_ended' => 'Ended Chats',
+	'agent.chat.title_open' => 'Open Chats',
+
+	'agent.chat.filter_title_all' => 'All Chats',
+	'agent.chat.filter_title_mine' => 'My Chats'
 );

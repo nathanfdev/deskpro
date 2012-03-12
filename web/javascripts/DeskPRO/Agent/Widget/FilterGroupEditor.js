@@ -32,7 +32,7 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			boundListElement: null,
 
 			/**
-			 * The elements we'll apply this goruping on. This is
+			 * The elements we'll apply this grouping on. This is
 			 * either a selector (run in the context of listElement),
 			 * or actual elements.
 			 *
@@ -46,7 +46,7 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			 *
 			 * @option {jQuery}
 			 */
-			controlEl: '#ticket_filter_group_editor',
+			controlElement: null,
 
 			/**
 			 * Provide a selector or an element to automatically configure a trigger to open the eidtor
@@ -58,7 +58,12 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			/**
 			 * How often to sync scrollbars
 			 */
-			scrollWatchTimeout: 100
+			scrollWatchTimeout: 100,
+
+			/**
+			 * Margin for positioning control element.
+			 */
+			marginTop: 25
 		};
 
 		this.setOptions(options);
@@ -83,12 +88,12 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			this.elements = $(this.elements, this.listElement);
 		}
 
-		this.controlEl = $(this.options.controlEl);
-		this.controlEl.detach().hide().appendTo('body');
+		this.controlElement = $(this.options.controlElement);
+		this.controlElement.detach().hide().appendTo('body');
 
-		this.controlEl.on('click', this.close.bind(this));
+		this.controlElement.on('click', this.close.bind(this));
 
-		this.controlRealEl = $('.filter-group-editor', this.controlEl);
+		this.controlRealEl = $('.filter-group-editor', this.controlElement);
 
 		// Dont bubble clicks in the el to the underlaying control el,
 		// that would close the overlay
@@ -96,8 +101,8 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			ev.stopPropagation();
 		});
 
-		this.editorRowTpl    = $('.editor-row-tpl', this.controlEl).first().get(0).innerHTML.trim();
-		this.editorFieldsTpl = $('.editor-fields-tpl', this.controlEl).first().get(0).innerHTML.trim();
+		this.editorRowTpl    = $('.editor-row-tpl', this.controlElement).first().get(0).innerHTML.trim();
+		this.editorFieldsTpl = $('.editor-fields-tpl', this.controlElement).first().get(0).innerHTML.trim();
 
 		this.elements.each((function(i, el) {
 			el = $(el);
@@ -169,7 +174,7 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 	 * @return {jQuery}
 	 */
 	getElement: function() {
-		return this.controlEl;
+		return this.controlElement;
 	},
 
 
@@ -180,7 +185,7 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 	 */
 	isOpen: function() {
 		if (!this._hasInit) return false;
-		return this.controlEl.is('.open');
+		return this.controlElement.is('.open');
 	},
 
 
@@ -191,14 +196,14 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 		if (this.isOpen()) return;
 		this._initControl();
 
-		this.controlEl.addClass('open');
+		this.controlElement.addClass('open');
 
 		var containPos    = this.containerElement.offset();
 		var containHeight = this.containerElement.outerHeight();
 		var containWidth  = this.containerElement.outerWidth();
 
 		// The container elemenet is the fixed element, we can mimic its size
-		this.controlEl.css({
+		this.controlElement.css({
 			top: containPos.top,
 			bottom: 0,
 			left: containPos.left + containWidth + 1, //+1 border
@@ -207,8 +212,8 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 
 		this.updatePositions();
 
-		this.controlEl.addClass('open');
-		this.controlEl.fadeIn();
+		this.controlElement.addClass('open');
+		this.controlElement.fadeIn();
 
 		this.backdrop.css({
 			left: containPos.left + containWidth // so the sidebar remains functional/scrollable
@@ -250,7 +255,7 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 
 		// Update where the position of the container is relative to the outer wrapper
 		// hard-coded value: offset of list from top of pane. aka height of header that says "INBOX"
-		var top = 25;
+		var top = this.options.marginTop;
 
 		this.controlRealEl.css({
 			'margin-top': top /* so the sync below doesnt need to worry about where it is */
@@ -265,13 +270,13 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 
 			if (boundMode) {
 				var otherFilterId = $('.filter-' + el.data('filter-name').replace('_w_hold', ''), this.listElement).data('filter-id');
-				var editEl = $('.filter-' + otherFilterId, this.controlEl);
+				var editEl = $('.filter-' + otherFilterId, this.controlElement);
 			} else {
-				var editEl = $('.filter-' + id, this.controlEl);
+				var editEl = $('.filter-' + id, this.controlElement);
 			}
 
 			editEl.css({
-				top: pos.top-25-1,
+				top: pos.top-this.options.marginTop-1,
 				height: el.height()
 			});
 		}).bind(this));
@@ -321,8 +326,8 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 
 		this._stopScrollWatch();
 
-		this.controlEl.removeClass('open');
-		this.controlEl.fadeOut();
+		this.controlElement.removeClass('open');
+		this.controlElement.fadeOut();
 		this.backdrop.hide();
 		this.backdrop2.hide();
 	},
@@ -346,7 +351,7 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 	 */
 	destroy: function() {
 		if (this._hasInit) {
-			this.controlEl.remove();
+			this.controlElement.remove();
 			this.backdrop.remove();
 			this.backdrop2.remove();
 		}

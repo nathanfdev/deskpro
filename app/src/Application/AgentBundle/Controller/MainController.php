@@ -53,10 +53,10 @@ class MainController extends AbstractController
 		}
 
 		// Used in some header menus for search options
-        $titles = array();
-        $titles['organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
-        $titles['usergroups'] = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
-        $titles['languages'] = App::getEntityRepository('DeskPRO:Language')->getTitles();
+		$titles = array();
+		$titles['organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
+		$titles['usergroups'] = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
+		$titles['languages'] = App::getEntityRepository('DeskPRO:Language')->getTitles();
 
 		// Person menu needs these
 		$people_fields = $this->container->getSystemService('person_fields_manager')->getDisplayArray();
@@ -111,7 +111,7 @@ class MainController extends AbstractController
 			WHERE p.is_agent = true AND s.date_last > ?
 		", array($cutoff));
 
-        return $this->render('AgentBundle:Main:index.html.twig', array(
+		return $this->render('AgentBundle:Main:index.html.twig', array(
 			'has_raw_assets' => $has_raw_assets,
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
 			'agent_names' => App::getEntityRepository('DeskPRO:Person')->getAgentNames(),
@@ -131,7 +131,7 @@ class MainController extends AbstractController
 			'people_options' => $people_options,
 			'org_options' => $org_options,
 		));
-    }
+	}
 
 	/**
 	 * Load a search sheet.

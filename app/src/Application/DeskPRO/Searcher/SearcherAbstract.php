@@ -113,6 +113,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 	}
 
 
+
 	/**
 	 * Set an array of terms at once.
 	 *
