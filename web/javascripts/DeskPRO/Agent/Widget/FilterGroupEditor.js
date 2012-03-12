@@ -63,7 +63,12 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			/**
 			 * Margin for positioning control element.
 			 */
-			marginTop: 25
+			marginTop: 25,
+
+			/**
+			 * Whether or not the id is an integer (will parseInt if true).
+			 */
+			useIntId: true
 		};
 
 		this.setOptions(options);
@@ -128,7 +133,8 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 
 			var self = this;
 			field.on('change', function() {
-				self.fireEvent('groupingChanged', [parseInt(id), field.val(), field, self]);
+				self.fireEvent('groupingChanged',
+					[this.options.useIntId ? parseInt(id) : id, field.val(), field, self]);
 			});
 
 			row.addClass('filter-' + id);

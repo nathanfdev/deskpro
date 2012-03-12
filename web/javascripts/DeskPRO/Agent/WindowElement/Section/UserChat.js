@@ -6,7 +6,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	init: function() {
 		this.buttonEl = $('#chat_section');
 		this.setSectionElement($('<section id="chat_outline"></section>'));
-
+		this.groups = {};
 		this.urlFragmentName = 'userchat';
 
 		$('#new_user_chat_alert').template('new_user_chat_alert');
@@ -53,17 +53,43 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			triggerElement: '#chat_filter_launch_editor',
 			controlElement: '#chat_filter_group_editor',
 			marginTop: 69,
-			onGroupingChanged: function(filterId) {
-				self.refreshFilterGrouping([filterId], true);
-			}
+			useIntId: false,
+			onGroupingChanged: (this.refreshFilterGrouping).bind(this)
 		});
 		self.filterGroupEditor._initControl();
 
 		this._lastLoaded = new Date();
 	},
 
-	refreshFilterGrouping: function(filterIds, doSave) {
-		
+	refreshFilterGrouping: function(filterId) {
+		this.groups[filterId] = this.getGroupingVar(filterId);
+		$.ajax(
+			{
+				type: 'POST',
+				url: BASE_URL + 'agent/chat/filter/group-count.json',
+				data: { filters: this.groups },
+				dataType: 'json',
+				success: this.updateFilterGrouping
+			}
+		);
+	},
+
+	updateFilterGrouping: function(data) {
+		for(filterId in data) {
+			var element = $('.filter-' + filterId + ' .sub-group');
+			element.html(data[filterId]);
+
+			if(data[filterId])
+				element.show();
+			else
+				element.hide();
+		}
+
+		this.filterGroupEditor.updatePositions();
+	},
+
+	getGroupingVar: function(filterId) {
+		return $('#chat_filter_group_editor .filter-' + filterId + ' .field-option').val();
 	},
 
 	onShow: function() {

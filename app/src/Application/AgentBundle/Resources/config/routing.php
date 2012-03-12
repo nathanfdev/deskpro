@@ -2148,6 +2148,13 @@ $collection->add('agent_userchat_filterlist_page', new Route(
 	array()
 ));
 
+$collection->add('agent_userchat_filterlist_group_counts', new Route(
+	'/chat/filter/group-count.json',
+	array('_controller' => 'AgentBundle:UserChat:getGroupByCounts'),
+	array(),
+	array()
+));
+
 $collection->add('agent_userchat_listopen', new Route(
 	'/chat/list-open',
 	array('_controller' => 'AgentBundle:UserChat:listChats'),

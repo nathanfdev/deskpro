@@ -38,10 +38,11 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\ClientMessage;
-use Application\DeslPRO\Searcher\AbstractSearcher;
-use Application\DeslPRO\Searcher\ChatConversationSearch;
+use Application\DeskPRO\Searcher\SearcherAbstract;
+use Application\DeskPRO\Searcher\ChatConversationSearch;
 
 use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
+use Application\DeskPRO\Chat\UserChat\GroupingCounter;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -49,8 +50,8 @@ use Orb\Util\Util;
 
 class UserChatController extends AbstractController
 {
-	protected $filters = array('all', 'mine');
-	protected $groupBy = array('none', 'department', 'agent', 'date_opened');
+	protected $filters  = array('all', 'mine');
+	protected $groups = array('none', 'department', 'agent', 'date_created');
 
 	public function viewAction($conversation_id)
 	{
@@ -91,7 +92,7 @@ class UserChatController extends AbstractController
 			'session' => $session,
 			'visitor' => $visitor,
 			'other_chats' => $other_chats,
-			'agents' => $agents,
+			'agents' => $agents
 		));
 	}
 
@@ -125,6 +126,35 @@ class UserChatController extends AbstractController
 		}
 
 		return $this->createJsonCmResponse();
+	}
+
+	public function getGroupByCountsAction()
+	{
+		$user_groups = $this->in->getArrayValue('filters');
+		$filters = $this->getFilters();
+		$groups = $this->getGroups();
+		$group_counts = array();
+
+		foreach($user_groups as $filter_id => $group_id)
+		{
+			if(!$filter_id || !in_array($filter_id, $filters))
+				$filter_id = $filters[0];
+
+			if(!$group_id || !in_array($group_id, $groups))
+				$group_id = $groups[0];
+
+			$searcher = new ChatConversationSearch();
+			$searcher->setPersonContext($this->person);
+			$searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'ended');
+			$this->updateSearcherFilter($searcher, $filter_id);
+
+			$grouper = new GroupingCounter($group_id);
+			$counts = $grouper->getCounts($searcher);
+			$group_counts[$filter_id] = $this->renderView('AgentBundle:UserChat:window-filter-groupresult.html.twig',
+				array('groups' => $counts, 'filter_id' => $filter_id, 'group_by' => $group_id));
+		}
+
+		return $this->createJsonResponse($group_counts);
 	}
 
 	/**
@@ -342,27 +372,24 @@ class UserChatController extends AbstractController
 	{
 		$agent_names = App::getEntityRepository('DeskPRO:Person')->getAgentNames();
 		$searcher = new ChatConversationSearch();
+		$searcher->setPersonContext($this->person);
 		$searcher->setColumns('IF(agent_id, agent_id, -1) AS agent_id, COUNT(*) AS count');
-		$searcher->setGroupBy('chat_conversations.department_id');
-		$searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, AbstractSearcher::OP_IS, 'open');
-		$searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, AbstractSearcher::OP_IS, 'open');
+		$searcher->setGroupBy('chat_conversations.agent_id');
+		$searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'open');
 
 		// Initial counts
-		$initial_counts = App::getDb()->fetchAllKeyValue("
-			SELECT 
-			FROM chat_conversations
-			WHERE $where chat_conversations.status = 'open'
-			GROUP BY agent_id
-		");
-
+		$initial_counts = App::getDb()->fetchAllKeyValue($searcher->getSql());
 		$initial_counts['total'] = array_sum(array_values($initial_counts));
 
-		$dep_counts = App::getDb()->fetchAllKeyValue("
-			SELECT IF(department_id, department_id, -1) AS department_id, COUNT(*) AS count
-			FROM chat_conversations
-			WHERE $where chat_conversations.status = 'open' AND chat_conversations.agent_id IS NULL
-			GROUP BY 
-		");
+		$searcher = new ChatConversationSearch();
+		$searcher->setPersonContext($this->person);
+		$searcher->setColumns('IF(department_id, department_id, -1) AS department_id, COUNT(*) AS count');
+		$searcher->setGroupBy('chat_conversations.agent_id');
+		$searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'open');
+		// Possible permissions bug!
+		$searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS, 0);
+
+		$dep_counts = App::getDb()->fetchAllKeyValue($searcher->getSql());
 
 		$dep_counts['none_total'] = isset($dep_counts[-1]) ? $dep_counts[-1] : 0;
 		$dep_counts['none'] = isset($dep_counts[-1]) ? $dep_counts[-1] : 0;
@@ -402,9 +429,10 @@ class UserChatController extends AbstractController
 		foreach($this->getFilters() as $filter_id)
 		{
 			$searcher = new ChatConversationSearch();
+			$searcher->setPersonContext($this->person);
 			$searcher->setColumns('COUNT(*)');
-			$searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, AbstractSearcher::OP_IS, 'ended');
-			$this->updateSearcherFilters($searcher, $filter);
+			$searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'ended');
+			$this->updateSearcherFilter($searcher, $filter_id);
 
 			$filter = array();
 			$filter['id'] = $filter_id;
@@ -414,17 +442,29 @@ class UserChatController extends AbstractController
 			$filters[] = $filter;
 		}
 
+		$groups = array();
+
+		foreach($this->getGroups() as $groupby_id)
+		{
+			$groupby = array();
+			$groupby['id'] = $groupby_id;
+			$groupby['title'] = $tr->phrase('agent.' . $groupby_id);
+			$groups[] = $groupby;
+		}
+
 		$html = $this->renderView('AgentBundle:UserChat:window-section.html.twig', array(
 			'counts' => $initial_counts,
 			'dep_counts' => $dep_counts,
 			'agent_names' => $agent_names,
 			'departments' => $departments,
 			'single_dep_mode' => $single_dep_mode,
-			'ended_filters' => $filters
+			'ended_filters' => $filters,
+			'ended_groups' => $groups
 		));
 
 		return $this->createJsonResponse(array('section_html' => $html));
 	}
+
 
 
 	public function listChatsAction()
@@ -514,18 +554,39 @@ class UserChatController extends AbstractController
 	 */
 	public function filterAction()
 	{
-		$where = $this->getAgentWhereSql();
 		$filter_id = $this->in->getString('filter_id');
+		$filters = $this->getFilters();
 
-		if(!$filter_id || !in_array($filter_id, $this->filters))
-			$filter_id = 'all';
+		if(!$filter_id || !in_array($filter_id, $filters))
+			$filter_id = $filters[0];
 
-		list($filter_where, $filter_params) = $this->getFilterWhereSql($filter_id);
+		$searcher = new ChatConversationSearch();
+		$searcher->setPersonContext($this->person);
+		$searcher->setColumns('COUNT(*)');
+		$searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'ended');
+		$this->updateSearcherFilter($searcher, $filter_id);
 
-		$total = $this->container->getDb()->fetchColumn("
-			SELECT COUNT(*) FROM chat_conversations
-			WHERE $where $filter_where status = 'ended'
-		",$filter_params);
+		$groups = $this->getGroups();
+		$group_by = $this->in->getString('group_var');
+		$group_id = '';
+
+		if($group_by && in_array($group_by, $groups))
+		{
+			switch($group_by) {
+				case 'agent':
+					$group_id = $this->in->getInt('group_val');
+					$searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS, $group_id);
+					break;
+				case 'date_created':
+					break;
+				case 'department':
+					$group_id = $this->in->getInt('group_val');
+					$searcher->addTerm(ChatConversationSearch::TERM_DEPARTMENT_ID, SearcherAbstract::OP_IS, $group_id);
+					break;
+			}
+		}
+
+		$total = $this->container->getDb()->fetchColumn($searcher->getSql());
 
 		$limit = 50;
 		$max_page = ceil($total / $limit);
@@ -535,12 +596,10 @@ class UserChatController extends AbstractController
 
 		$start = ($page - 1) * $limit;
 
-		$chat_ids = $this->container->getDb()->fetchAllCol("
-			SELECT id FROM chat_conversations
-			WHERE $where $filter_where status = 'ended'
-			ORDER BY id DESC
-			LIMIT $start, $limit
-		",$filter_params);
+		$searcher->setColumns('id');
+		$searcher->setLimit('start', $start);
+		$searcher->setLimit('limit', $limit);
+		$chat_ids = $this->container->getDb()->fetchAllCol($searcher->getSql());
 
 		$chats = $this->container->getEm()->getRepository('DeskPRO:ChatConversation')->getByIds($chat_ids, true);
 
@@ -550,18 +609,36 @@ class UserChatController extends AbstractController
 			'total' => $total,
 			'page' => $page,
 			'max_page' => $max_page,
-			'filter_id' => $filter_id
+			'filter_id' => $filter_id,
+			'group_var' => $group_by,
+			'group_val' => $group_id
 		));
 	}
 
-	protected function updateSearcherFilter(ChatConversationSearcher $searcher, $filter)
+	protected function updateSearcherFilter($searcher, $filter)
 	{
 		switch($filter) {
 			case 'mine':
 				$searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID,
-					AbstractSearcher::OP_IS,$this->person['id']);
+					SearcherAbstract::OP_IS,$this->person['id']);
 				break;
 		}
+	}
+
+	protected function getGroups()
+	{
+		$groups = array();
+
+		foreach($this->groups as $group) {
+			if($group == 'agent'
+			&& !$this->person->hasPerm('agent_tickets.view_others')
+			&& !$this->person->hasPerm('agent_tickets.view_unassigned'))
+				continue;
+
+			$groups[] = $group;
+		}
+
+		return $groups;
 	}
 
 	protected function getFilters()
@@ -569,14 +646,12 @@ class UserChatController extends AbstractController
 		$filters = array();
 
 		foreach($this->filters as $filter) {
-			switch($filter) {
-				case 'all':
-					if(!$this->person->hasPerm('agent_tickets.view_others')
-					&& !$this->person->hasPerm('agent_tickets.view_unassigned'))
-						continue;
-				default:
-					$filters[] = $filter;
-			}
+			if($filter == 'all'
+			&& !$this->person->hasPerm('agent_tickets.view_others')
+			&& !$this->person->hasPerm('agent_tickets.view_unassigned'))
+				continue;
+
+			$filters[] = $filter;
 		}
 
 		return $filters;

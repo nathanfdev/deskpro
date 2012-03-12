@@ -41,7 +41,7 @@ use Orb\Util\Arrays;
 
 use Application\DeskPRO\Entity;
 
-class TaskSearch extends SearcherAbstract
+class ChatConversationSearch extends SearcherAbstract
 {
 	const TERM_ID            = 'id';
 	const TERM_AGENT_ID      = 'agent_id';
@@ -52,6 +52,7 @@ class TaskSearch extends SearcherAbstract
 	protected $columns = 'chat_conversations.id';
 	protected $groupBy = null;
 	protected $limit = array('start' => null, 'limit' => null);
+	protected $joins = array();
 
 
 	/**
@@ -63,9 +64,9 @@ class TaskSearch extends SearcherAbstract
 	{
 		$db = App::getDb();
 
-		$tasks_ids = $db->fetchAllCol($this->getSql());
+		$ids = $db->fetchAllCol($this->getSql());
 
-		return $tasks_ids;
+		return $ids;
 	}
 
 
@@ -75,9 +76,12 @@ class TaskSearch extends SearcherAbstract
 		$this->limit[$part] = $amount;
 	}
 
+	public function addJoin($join)
+	{
+		$this->joins[] = $join;
+	}
 
-
-	public function setColumnsCount($columns)
+	public function setColumns($columns)
 	{
 		$this->columns = $columns;
 	}
@@ -109,11 +113,7 @@ class TaskSearch extends SearcherAbstract
 		#------------------------------
 
 		foreach ($parts['joins'] as $j) {
-			if (is_array($j)) {
-				$sql .= $j[1] . " ";
-			} else {
-				$sql .= "LEFT JOIN $j ON $j.task_id = tasks.id ";
-			}
+			$sql .= "LEFT JOIN $j ";
 		}
 
 		if (is_array($order_by)) {
@@ -152,7 +152,7 @@ class TaskSearch extends SearcherAbstract
 		$limit = $this->limit['limit'];
 
 		if($limit !== null)
-			$sql .= " LIMIT $start";
+			$sql .= " LIMIT $limit";
 
 		if($start !== null)
 			$sql .= " OFFSET $start";
@@ -171,7 +171,7 @@ class TaskSearch extends SearcherAbstract
 	{
 		// Set a default if none
 		if (!$this->order_by) {
-			$this->order_by = array('tasks.id', 'DESC');
+			$this->order_by = array('chat_conversations.id', 'DESC');
 		}
 
 		list($type, $dir) = $this->order_by;
@@ -185,11 +185,11 @@ class TaskSearch extends SearcherAbstract
 
 		switch ($type) {
 			case 'chat_conversations.id':
-				$order_by = "ORDER BY chat_conversations.id $dir";
+				$order_by = " ORDER BY chat_conversations.id $dir";
 				break;
 
 			case 'chat_conversations.date_created':
-				$order_by = "ORDER BY chat_conversations.date_created $dir";
+				$order_by = " ORDER BY chat_conversations.date_created $dir";
 				break;
 		}
 
@@ -211,12 +211,9 @@ class TaskSearch extends SearcherAbstract
 		$tr = App::getTranslator();
 
 		$wheres = array();
-		$joins = array();
+		$joins = $this->joins;
 
 		foreach ($this->terms as $term => $info) {
-			$join_id = Util::requestUniqueId();
-			$join_name = "j_$join_id";
-
 			list($op, $choice) = $info;
 
 			$term_id = null;
