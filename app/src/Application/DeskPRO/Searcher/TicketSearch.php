@@ -375,8 +375,6 @@ class TicketSearch extends SearcherAbstract
 
 		$this->_last_sql = $sql;
 
-		error_log($sql);
-
 		return $sql;
 	}
 

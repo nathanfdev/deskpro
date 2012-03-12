@@ -18,7 +18,7 @@
 {% endblock %}
 {% block page %}
 
-{% macro trigger_row(trigger) %}
+{% macro trigger_row(trigger, time_explain_prefix) %}
 	<li class="item-row trigger-row is-trigger {% if trigger.is_enabled %}{% else %}off{% endif %}" id="trigger_{{ trigger.id }}" data-trigger-id="{{ trigger.id }}">
 		<div class="dp-block-controls">
 			<ul>
@@ -27,10 +27,17 @@
 				<li class="dp-on-off trigger-toggle"><span class="off" {% if trigger.is_enabled %}style="display: none"{% endif %}>OFF</span><span class="on" {% if not trigger.is_enabled %}style="display: none"{% endif %}>ON</span></li>
 			</ul>
 		</div>
-		{% if trigger.title %}<lable><h2>{{ trigger.title }}</h2></lable>{% endif %}
+		{% if trigger.sys_name %}
+			<lable><h2>{{ phrase('agent.triggers_' ~ trigger.sys_name|replace({'.': '_'})) }}</h2></lable>
+		{% elseif trigger.title %}
+			<lable><h2>{{ trigger.title }}</h2></lable>
+		{% endif %}
 		<div class="trigger-desc">
 			<div class="terms">
 				<em class="op ctrl">if</em>
+				{% if trigger.event_trigger_option %}
+					{{ time_explain_prefix }} {{ relative_time(trigger.event_trigger_option, 1) }} <em class="op">and</em>
+				{% endif %}
 				{% for desc in trigger.getTermDescriptions() %}
 					<span class="term">{{ desc }}</span>
 					{% if not loop.last %}<em class="op">and</em>{% endif %}
@@ -84,50 +91,50 @@
 {% endif %}
 
 {% if triggers.time_open %}
-<h2>Escalations based on the time a ticket has been open</h2>
+<h2>Triggers based on the time a ticket has been open</h2>
 <ul class="item-list">
 	{% for trigger in triggers.time_open %}
-		{{ _self.trigger_row(trigger) }}
+		{{ _self.trigger_row(trigger, 'Ticket has been open') }}
 	{% endfor %}
 </ul>
 <br />
 {% endif %}
 
 {% if triggers.time_user_waiting %}
-<h2>Escalations based on the time a user has been waiting for a reply</h2>
+<h2>Triggers based on the time a user has been waiting for a reply</h2>
 <ul class="item-list">
 	{% for trigger in triggers.time_user_waiting %}
-		{{ _self.trigger_row(trigger) }}
+		{{ _self.trigger_row(trigger, 'Ticket has been awaiting agent for') }}
 	{% endfor %}
 </ul>
 <br />
 {% endif %}
 
 {% if triggers.time_total_user_waiting %}
-<h2>Escalations based on the total time a user has been waiting in a ticket</h2>
+<h2>Triggers based on the total time a user has been waiting in a ticket</h2>
 <ul class="item-list">
 	{% for trigger in triggers.time_total_user_waiting %}
-		{{ _self.trigger_row(trigger) }}
+		{{ _self.trigger_row(trigger, 'Total user waiting time is ') }}
 	{% endfor %}
 </ul>
 <br />
 {% endif %}
 
 {% if triggers.time_agent_waiting %}
-<h2>Escalations based on the total time an agent has been waiting for a user reply</h2>
+<h2>Triggers based on the time an agent has been waiting for a user reply</h2>
 <ul class="item-list">
 	{% for trigger in triggers.time_agent_waiting %}
-		{{ _self.trigger_row(trigger) }}
+		{{ _self.trigger_row(trigger, 'Ticket has been awaiting user for') }}
 	{% endfor %}
 </ul>
 <br />
 {% endif %}
 
 {% if triggers.time_agent_waiting %}
-<h2>Escalations based on the time a ticket was resolved</h2>
+<h2>Triggers based on the time a ticket was resolved</h2>
 <ul class="item-list">
 	{% for trigger in triggers.time_agent_waiting %}
-		{{ _self.trigger_row(trigger) }}
+		{{ _self.trigger_row(trigger, 'Ticket has been resolved for') }}
 	{% endfor %}
 </ul>
 {% endif %}

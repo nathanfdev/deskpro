@@ -36,95 +36,73 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
 
-use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
-
-/**
- * Adds participants
- */
-class AddParticipantsAction implements ActionInterface
+class AddAgentNotifyModifier implements CollectionModifierInterface
 {
-	protected $add_people_ids;
+	protected $codes;
 
-	public function __construct(array $add_participants)
+	public function __construct(array $codes = array())
 	{
-		$this->add_people_ids = $add_participants;
+		$this->codes = $codes;
 	}
 
-
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
+	public function modifyCollection(ActionsCollection $collection)
 	{
-		$people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->add_people_ids);
-		foreach ($people as $person) {
-			$ticket->addParticipantPerson($person);
+		$notify_types = array();
+		$notify_types[] = 'AgentNotification';
+		$notify_types[] = 'AgentAlertNotification';
+
+		foreach ($notify_types as $type) {
+			if ($collection->hasActionType($type)) {
+				$collection->getActionType($type)->addAdditionalAgents($this->codes);
+			}
 		}
 	}
-
-
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		$actions = array();
-
-		foreach ($this->add_people_ids as $pid) {
-			$actions[] = array(
-				'action' => 'add_participant',
-				'person_id' => $pid
-			);
-		}
-
-		return $actions;
-	}
-
-
-	/**
-	 * Get the agent id
-	 *
-	 * @return int
-	 */
-	public function getPersonIds()
-	{
-		return $this->add_people_ids;
-	}
-
-
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		$ids = $this->getPersonIds();
-		$ids = array_merge($other_action->getPersonIds());
-		$ids = array_unique($ids);
-
-		return $ids;
-	}
-
 
 	/**
 	 * @return string
 	 */
 	public function getDescription($as_html = true)
 	{
-		$people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->add_people_ids);
-		if (!$people) return '';
+		$desc_agents = array();
+		$desc_teams = array();
 
-		$names = array();
-		foreach ($people as $p) {
-			$names[] = $p->getDisplayName();
+		$agent_ids = array();
+		$agent_team_ids = array();
+
+		foreach ($this->codes as $send_to) {
+			if ($send_to == 'assigned_agent') {
+				if ($ticket['agent_id']) $desc_agents[] = 'Assigned';
+
+			} elseif ($send_to == 'assigned_agent_team') {
+				if ($ticket['agent_id']) $desc_teams[] = 'Assigned';
+
+			} elseif (strpos($send_to, 'agent.') === 0) {
+				list (, $agent_id) = explode('.', $send_to, 2);
+				$agent_ids[] = $agent_id;
+
+			} elseif (strpos($send_to, 'agent_team.') === 0) {
+				list (, $agent_team_id) = explode('.', $send_to, 2);
+				$agent_team_ids = array_merge($agent_ids, App::getEntityRepository('DeskPRO:AgentTeam')->getMemberIds($agent_team_id));
+			}
 		}
 
-		return "Add participants: " . implode($names, ', ');
+		$desc_agents = $desc_agents + App::getEntityRepository('DeskPRO:Person')->getAgentNames($agent_ids);
+		$desc_teams  = $desc_agents + App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames($agent_team_ids);
+
+		$parts = array();
+		if ($desc_agents) {
+			$parts[] = 'Agents: ' . $desc_agents;
+		}
+		if ($desc_teams) {
+			$parts[] = 'Teams: '. $desc_teams;
+		}
+
+		if (!$parts) {
+			return '';
+		}
+
+		$parts = implode(' and ', $parts);
+
+		return "Always notify $parts";
 	}
 }

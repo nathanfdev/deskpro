@@ -96,6 +96,10 @@ class TicketTriggersController extends AbstractController
 			}
 		}
 
+		if (!$trigger['event_trigger']) {
+			return $this->redirectRoute('admin_tickettriggers_new_choosetype');
+		}
+
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 		$ticket_options['people_term_options']  = array();
 		$ticket_options['people_term_options']  = array();

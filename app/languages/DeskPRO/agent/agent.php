@@ -344,4 +344,9 @@
 	'agent.attach_error_server_error' => 'There was a problem with our server while trying to accept your attachment. Please try again.',
 	'agent.attach_error_not_in_allowed_exts' => 'Only the following file types can be uploaded: {{error_detail}}',
 	'agent.attach_error_not_allowed_exts' => 'The type of file you uploaded is not allowed.',
+
+	'agent.triggers_urgency_base' => 'Default urgency for new tickets',
+	'agent.triggers_auto_close_resolve_user_reply' => 'Auto-resolve tickets that are awaiting user',
+	'agent.triggers_auto_close_resolve_agent_reply' => 'Auto-resolve tickets that are awaiting user',
+	'agent.triggers_auto_close_close_resolved' => 'Auto-close tickets that are resolved',
 );

@@ -46,10 +46,12 @@ use Orb\Util\Numbers;
 class UrgencySetAction implements ActionInterface
 {
 	protected $num;
+	protected $allow_lower;
 
-	public function __construct($num)
+	public function __construct($num, $allow_lower = null)
 	{
 		$this->num = $num;
+		$this->allow_lower = $allow_lower;
 	}
 
 
@@ -60,7 +62,9 @@ class UrgencySetAction implements ActionInterface
 	 */
 	public function apply(Ticket $ticket)
 	{
-		$ticket['urgency'] = $this->num;
+		if ($ticket->urgency < $this->num && !$this->allow_lower) {
+			$ticket['urgency'] = $this->num;
+		}
 	}
 
 
