@@ -34,23 +34,124 @@
 
 namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
-class CleanupStep extends AbstractDeskpro3Step
+class CreateIndexesStep extends AbstractDeskpro3Step
 {
 	/**
 	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer
 	 */
 	protected $importer;
 
+	protected $steps = array(
+		'content_search_fulltext',
+		'content_search_indexes',
+		'content_search_attribute_indexes',
+		'tickets_indexes',
+		'tickets_logs_indexes',
+		'tickets_messages_indexes',
+		'tickets_attachments_indexes',
+		'tickets_participant_indexes',
+		'custom_data_ticket_indexes',
+		'tickets_search_active_indexes',
+		'tickets_search_message_fulltext',
+		'tickets_search_message_indexes',
+		'tickets_search_message_active_fulltext',
+		'tickets_search_message_active_indexes',
+		'tickets_search_subject_indexes',
+	);
+
 	public static function getTitle()
 	{
-		return 'Cleanup';
+		return 'Create Indexes';
+	}
+
+	public function countPages()
+	{
+		return count($this->steps);
 	}
 
 	public function run($page = 1)
 	{
-		$this->getDb()->exec("CREATE FULLTEXT INDEX content ON content_search (content)");
+		$k = $page-1;
+		if (!isset($this->steps[$k])) {
+			return;
+		}
 
+		$method = $this->steps[$k];
+		$this->$method();
+	}
+
+	public function content_search_fulltext()
+	{
+		$this->getDb()->exec("CREATE FULLTEXT INDEX content ON content_search (content)");
+	}
+
+	public function content_search_indexes()
+	{
 		$this->importer->restoreTableIndexes('content_search');
+	}
+
+	public function content_search_attribute_indexes()
+	{
 		$this->importer->restoreTableIndexes('content_search_attribute');
+	}
+
+	public function tickets_indexes()
+	{
+		$this->importer->restoreTableIndexes('tickets');
+	}
+
+	public function tickets_logs_indexes()
+	{
+		$this->importer->restoreTableIndexes('tickets_logs');
+	}
+
+	public function tickets_messages_indexes()
+	{
+		$this->importer->restoreTableIndexes('tickets_messages');
+	}
+
+	public function tickets_attachments_indexes()
+	{
+		$this->importer->restoreTableIndexes('tickets_attachments');
+	}
+
+	public function tickets_participant_indexes()
+	{
+		$this->importer->restoreTableIndexes('tickets_participant');
+	}
+
+	public function custom_data_ticket_indexes()
+	{
+		$this->importer->restoreTableIndexes('tickets_participant');
+	}
+
+	public function tickets_search_active_indexes()
+	{
+		$this->importer->restoreTableIndexes('tickets_search_active');
+	}
+
+	public function tickets_search_message_fulltext()
+	{
+		$this->db->exec("CREATE FULLTEXT INDEX content ON tickets_search_message (content)");
+	}
+
+	public function tickets_search_message_indexes()
+	{
+		$this->importer->restoreTableIndexes('tickets_search_message');
+	}
+
+	public function tickets_search_message_active_fulltext()
+	{
+		$this->db->exec("CREATE FULLTEXT INDEX content ON tickets_search_message_active (content)");
+	}
+
+	public function tickets_search_message_active_indexes()
+	{
+		$this->importer->restoreTableIndexes('tickets_search_message_active');
+	}
+
+	public function tickets_search_subject_indexes()
+	{
+		$this->importer->restoreTableIndexes('tickets_search_subject');
 	}
 }

@@ -105,26 +105,7 @@ class TicketsStep extends AbstractDeskpro3Step
 
 	public function postRunAll()
 	{
-		if ($this->getMappedNewId('dp3import_ticketsstep_post', 1)) {
-			return;
-		}
-
-		$this->saveMappedId('dp3import_ticketsstep_post', 1, 1);
-
-		$this->importer->restoreTableIndexes('tickets');
-		$this->importer->restoreTableIndexes('tickets_logs');
-		$this->importer->restoreTableIndexes('tickets_messages');
-		$this->importer->restoreTableIndexes('tickets_attachments');
-		$this->importer->restoreTableIndexes('tickets_participant');
-		$this->importer->restoreTableIndexes('custom_data_ticket');
-		$this->importer->restoreTableIndexes('tickets_search_active');
-		$this->importer->restoreTableIndexes('tickets_search_message');
-
-		$this->db->exec("CREATE FULLTEXT INDEX content ON tickets_search_message (content)");
-		$this->db->exec("CREATE FULLTEXT INDEX content ON tickets_search_message_active (content)");
-
-		$this->importer->restoreTableIndexes('tickets_search_message_active');
-		$this->importer->restoreTableIndexes('tickets_search_subject');
+		return;
 	}
 
 	public function run($page = 1)
@@ -586,7 +567,7 @@ class TicketsStep extends AbstractDeskpro3Step
 			))
 		));
 
-		$ticket_logs =$all_ticket_info['ticket_log'];
+		$ticket_logs = $all_ticket_info['tickets_logs'];
 
 		$log_sql = array();
 
