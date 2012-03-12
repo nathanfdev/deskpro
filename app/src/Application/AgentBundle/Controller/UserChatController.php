@@ -542,6 +542,10 @@ class UserChatController extends AbstractController
 			$where_perm[] = "chat_conversations.agent_id = {$this->person['id']}";
 		}
 
+		if (!$where_perm) {
+			return '';
+		}
+
 		$where = '((' . implode(' AND ', $where_perm) . ") OR chat_conversations.agent_id = {$this->person['id']}) AND ";
 
 		return $where;
