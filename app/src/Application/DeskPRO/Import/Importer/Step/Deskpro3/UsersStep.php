@@ -217,16 +217,20 @@ class UsersStep extends AbstractDeskpro3Step
 			}
 		}
 
-		// "Secure passwords" was enabled, which means we have a salt and the password is hashed
-		if ($user_deskpro['salt']) {
-			$insert_person['password_scheme'] = 'deskpro3';
-			$insert_person['password'] = $user_deskpro['password'];
-			$insert_person['salt'] = $user_deskpro['salt'];
+		if ($user_deskpro) {
+			// "Secure passwords" was enabled, which means we have a salt and the password is hashed
+			if ($user_deskpro['salt']) {
+				$insert_person['password_scheme'] = 'deskpro3';
+				$insert_person['password'] = $user_deskpro['password'];
+				$insert_person['salt'] = $user_deskpro['salt'];
 
-		// "Secure passwords" was disabled, which means we dont have a salt and the password is plaintext
-		// so we can just set a password normally and use DP4 scheme
+			// "Secure passwords" was disabled, which means we dont have a salt and the password is plaintext
+			// so we can just set a password normally and use DP4 scheme
+			} else {
+				$insert_person['password'] = sha1($insert_person['salt'] . $user_deskpro['password']);
+			}
 		} else {
-			$insert_person['password'] = sha1($insert_person['salt'] . $user_deskpro['password']);
+			$insert_person['password'] = sha1($insert_person['salt'] . uniqid() . mt_rand(10000,99999));
 		}
 
 		$this->db->insert('people', $insert_person);
