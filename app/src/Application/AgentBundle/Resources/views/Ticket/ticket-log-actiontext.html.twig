@@ -32,6 +32,9 @@
 {% elseif log.action_type == 'changed_person' %}
 	<span class="type">User owner</span> changed from
 	<span class="old-val">#{{log.details.old_person_id}} {{old_person_name}}</span> to <span class="new-val">#{{log.details.new_person_id}} {{new_person_name}}</span>
+{% elseif log.action_type == 'changed_person' %}
+	<span class="type">Ticket triggers</span> applied:
+	<span class="new-val">{{ log.details.trigger_ids }}</span>
 {% elseif log.action_type == 'message_created' %}
 	<span class="type">New message</span> <span class="new-val">#{{log.details.message_id}}</span>
 	{% if log.details.ip_address %}

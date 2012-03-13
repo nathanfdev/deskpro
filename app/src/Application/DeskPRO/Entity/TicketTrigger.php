@@ -157,6 +157,65 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * Get a searcher with the criteria terms. This is used in th
+	 */
+	public function getSearcher()
+	{
+		$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+
+		foreach ($this->terms as $term) {
+			$searcher->addTerm($term['term'], $term['is'], $term['options']);
+		}
+
+		switch ($this->event_trigger) {
+			case self::EVENT_TIME_OPEN:
+				$searcher->addTerm('status', 'is', array('awaiting_user', 'awaiting_agent'));
+				break;
+
+			case self::EVENT_TIME_USER_WAITING:
+			case self::EVENT_TIME_TOTAL_USER_WAITING:
+				$searcher->addTerm('status', 'is', array('awaiting_user'));
+				break;
+
+			case self::EVENT_TIME_AGENT_WAITING:
+				$searcher->addTerm('status', 'is', array('awaiting_agent'));
+				break;
+
+			case self::EVENT_TIME_RESOLVED:
+				$searcher->addTerm('status', 'is', array('resolved'));
+				break;
+		}
+
+		return $searcher;
+	}
+
+	/**
+	 * Gets the relevant time field on ticket for a particular ticket trigger.
+	 * For example, 'EVENT_TIME_USER_WAITING' is dependant on ticket.date_user_waiting
+	 *
+	 * @return string
+	 */
+	public function getTicketTimeField()
+	{
+		switch ($this->event_trigger) {
+			case self::EVENT_TIME_OPEN:
+			case self::EVENT_TIME_USER_WAITING:
+			case self::EVENT_TIME_TOTAL_USER_WAITING:
+				return 'date_user_waiting';
+
+			case self::EVENT_TIME_AGENT_WAITING:
+				return 'date_agent_waiting';
+				break;
+
+			case self::EVENT_TIME_RESOLVED:
+				return 'date_resolved';
+		}
+
+		return null;
+	}
+
+
+	/**
 	 * @return \Application\DeskPRO\Tickets\TicketTerms
 	 */
 	public function getTicketTerms()

@@ -209,10 +209,10 @@ class ActionsCollection
 	 * @param \Application\DeskPRO\Entity\Ticket $ticket
 	 * @param \Application\DeskPRO\Entity\Person $person_context
 	 */
-	public function apply(Ticket $ticket, Person $person_context)
+	public function apply(Ticket $ticket, Person $person_context = null)
 	{
 		foreach ($this->actions as $action) {
-			if ($action instanceof PersonContextInterface) {
+			if ($person_context && $action instanceof PersonContextInterface) {
 				$action->setPersonContext($person_context);
 			}
 
