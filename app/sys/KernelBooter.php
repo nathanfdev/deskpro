@@ -327,7 +327,7 @@ class KernelBooter
 	 * @param bool $debug
 	 * @return \Symfony\Bundle\FrameworkBundle\Console\Application
 	 */
-	protected static function getCliApp($env = 'prod', $debug = false)
+	public static function getCliApp($env = 'prod', $debug = false)
 	{
 		global $DP_CONFIG;
 
@@ -359,7 +359,7 @@ class KernelBooter
 	/**
 	 * Ensures the current invocation is via the command-line
 	 */
-	protected static function ensureCli()
+	public static function ensureCli()
 	{
 		if (php_sapi_name() != 'cli') {
 			echo "This script must only be run from the CLI.\n";
@@ -373,7 +373,7 @@ class KernelBooter
 	 * If in prod mode, ensures that the build files etc exist.
 	 * If not in prod mode, ensures that the cached ir exists and is writable.
 	 */
-	protected static function ensureEnvFiles($env)
+	public static function ensureEnvFiles($env)
 	{
 		global $DP_CONFIG;
 		$cache_dir = DP_ROOT.'/sys/cache';

@@ -48,6 +48,11 @@ if (isset($_GET['_sys'])) {
 		case 'checkurl':
 			require DP_ROOT . '/sys/scripts/checkurl.php';
 			exit;
+
+		case 'dev_run_migrations':
+			if (!$is_authed) exit;
+			require DP_ROOT . '/sys/scripts/dev_run_migrations.php';
+			exit;
 	}
 
 	unset($is_authed);
