@@ -26,6 +26,7 @@ define('DP_CONFIG_FILE', dirname(__FILE__) . '/config.php');
 
 error_reporting(E_ALL | E_STRICT);
 define('DP_WEB_ROOT', dirname(__FILE__));
+define('DP_START_TIME', microtime(true));
 
 if (isset($_GET['_sys'])) {
 	if (!file_exists(DP_CONFIG_FILE)) exit;
