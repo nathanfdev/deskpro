@@ -97,7 +97,7 @@ class CollectionHelper
 		foreach ($del_ids as $id) {
 			foreach ($this->entity->$prop as $k => $item) {
 				if ($item->id == $id) {
-					$this->entity->$prop->removeKey($k);
+					$this->entity->$prop->remove($k);
 					break;
 				}
 			}
