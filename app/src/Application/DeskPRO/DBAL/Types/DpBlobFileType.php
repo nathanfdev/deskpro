@@ -35,12 +35,13 @@
 namespace Application\DeskPRO\DBAL\Types;
 
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\BlobType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 /**
  * Some enhancements to Doctrine's connection class.
  */
-class DpBlobFileType extends Type
+class DpBlobFileType extends BlobType
 {
 	public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
 	{

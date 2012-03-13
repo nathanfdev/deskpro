@@ -51,6 +51,10 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		$params['driverOptions'][PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 
+		if (!isset($params['platform'])) {
+			$params['platform'] = new \Application\DeskPRO\DBAL\Platforms\MySqlPlatform();
+		}
+
 		parent::__construct($params, $driver, $config, $eventManager);
 	}
 

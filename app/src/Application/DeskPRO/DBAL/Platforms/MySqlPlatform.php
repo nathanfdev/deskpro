@@ -29,44 +29,21 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Types
+ * @subpackage DBAL
  */
 
-namespace Application\DeskPRO\DBAL\Types;
+namespace Application\DeskPRO\DBAL\Platforms;
 
-use Doctrine\DBAL\Types\BlobType;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
-
-/**
- * Some enhancements to Doctrine's connection class.
- */
-class DpBlobType extends BlobType
+class MySqlPlatform extends \Doctrine\DBAL\Platforms\MySqlPlatform
 {
-	public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+	protected function initializeDoctrineTypeMappings()
 	{
-		$type = $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
+		parent::initializeDoctrineTypeMappings();
 
-		$type = str_replace(
-			array('VARCHAR(', 'CHAR(', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'),
-			array('VARBINARY(', 'BINARY(', 'TINYBLOB', 'BLOB', 'MEDIUMBLOB', 'LONGBLOB'),
-			$type
-		);
-
-		return $type;
-	}
-
-	public function convertToDatabaseValue($value, AbstractPlatform $platform)
-	{
-		return ($value === null) ? null : $value;
-	}
-
-	public function convertToPHPValue($value, AbstractPlatform $platform)
-	{
-		return ($value === null) ? null : $value;
-	}
-
-	public function getName()
-	{
-		return 'dpblob';
+		$this->doctrineTypeMapping['longblob'] = 'dpblob_file';
+		$this->doctrineTypeMapping['blob'] = 'dpblob_file';
+		$this->doctrineTypeMapping['mediumblob'] = 'dpblob_file';
+		$this->doctrineTypeMapping['tinyblob'] = 'dpblob_file';
+		$this->doctrineTypeMapping['varbinary'] = 'dpblob';
 	}
 }

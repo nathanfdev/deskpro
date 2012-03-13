@@ -519,7 +519,13 @@ class AgentKernel extends AbstractKernel
 
 class CliKernel extends AgentKernel
 {
+	protected function registerAdditionalBundles()
+	{
+		$bundles = parent::registerAdditionalBundles();
+		$bundles[] = new \Symfony\Bundle\DoctrineMigrationsBundle\DoctrineMigrationsBundle();
 
+		return $bundles;
+	}
 }
 
 

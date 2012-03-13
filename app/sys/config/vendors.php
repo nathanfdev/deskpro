@@ -24,6 +24,11 @@
 		'repos' => 'git://github.com/doctrine/dbal.git',
 		'version' => '2.2.1',
 	),
+	'doctrine_migrations' => array(
+		'into' => DP_ROOT.'/vendor/doctrine-migrations',
+		'repos' => 'git://github.com/doctrine/migrations.git',
+		'version' => 'HEAD'
+	),
 	'facebook' => array(
 		'into' => DP_ROOT.'/vendor/facebook',
 		'repos' => 'git://github.com/facebook/php-sdk.git',
@@ -68,6 +73,11 @@
 		'into' => DP_ROOT.'/vendor/symfony',
 		'repos' => 'git://github.com/symfony/symfony.git',
 		'version' => 'v2.0.11',
+	),
+	'symfony_doctrine_migrations' => array(
+		'into' => DP_ROOT.'/vendor/bundles/DoctrineMigrationsBundle',
+		'repos' => 'git://github.com/symfony/DoctrineMigrationsBundle.git',
+		'version' => 'HEAD',
 	),
 	'twig' => array(
 		'into' => DP_ROOT.'/vendor/twig',

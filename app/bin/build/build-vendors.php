@@ -34,7 +34,7 @@ function deskpro_build_exec_exit_error($cmd, $dir = null)
 
 	if (!$proc->isSuccessful()) {
 		echo $proc->getErrorOutput();
-		echo $output->writeln("<error>Error with command</error>");
+		$output->writeln("<error>Error with command</error>");
 		exit($proc->getExitCode());
 	}
 
@@ -314,6 +314,11 @@ function deskpro_build_cleanvendors_doctrine_dbal($dir)
 	deskpro_build_exec_exit_error("rm -rf bin tests .travis.yml .gitignore .gitmodules composer.json build.properties build.properties.dev build.xml phpunit.xml.dist README.md run-all.sh UPGRADE", $dir);
 }
 
+function deskpro_build_cleanvendors_doctrine_migrations($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf tests .travis.yml .gitignore .gitmodules build.properties.dev build.xml phpunit.xml.dist README.markdown composer.json package.php phpunit.xml.dist phar-cli-stub.php lib/vendor", $dir);
+}
+
 function deskpro_build_cleanvendors_facebook($dir)
 {
 	deskpro_build_exec_exit_error("rm -rf examples tests readme.md", $dir);
@@ -362,6 +367,11 @@ function deskpro_build_cleanvendors_symfony($dir)
 	$fp = fopen($dir . '/src/Symfony/Bundle/TwigBundle/TwigEngine.php', 'a');
 	fwrite($fp, "\n// --\n");
 	fclose($fp);
+}
+
+function deskpro_build_cleanvendors_symfony_doctrine_migrations($dir)
+{
+	deskpro_build_exec_exit_error("rm -rf README.markdown", $dir);
 }
 
 function deskpro_build_cleanvendors_twig($dir)
@@ -431,8 +441,8 @@ function deskpro_build_cleanvendors_zend($dir)
 
 $output = new \Output();
 
-$vendors_config = require DP_ROOT.'/sys/config/vendors.php';
-foreach ($vendors_config as $vendor_id => $vendors_config) {
+$all_vendors_config = require DP_ROOT.'/sys/config/vendors.php';
+foreach ($all_vendors_config as $vendor_id => $vendors_config) {
 
 	if ($only_vendor_id && $vendor_id != $only_vendor_id) {
 		continue;
