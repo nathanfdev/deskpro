@@ -631,8 +631,10 @@ class KernelErrorHandler
 
 		if ($errinfo['display']) {
 			echo $errinfo['summary'];
-			echo "\n";
-			echo $errinfo['trace'];
+			if (empty($GLOBALS['DP_ERR_NOSHOWTRACE'])) {
+				echo "\n";
+				echo $errinfo['trace'];
+			}
 		}
 
 		try {
@@ -657,8 +659,10 @@ class KernelErrorHandler
 
 		if ($errinfo['display']) {
 			echo $errinfo['summary'];
-			echo "\n";
-			echo $errinfo['trace'];
+			if (empty($GLOBALS['DP_ERR_NOSHOWTRACE'])) {
+				echo "\n";
+				echo $errinfo['trace'];
+			}
 		}
 
 		try {

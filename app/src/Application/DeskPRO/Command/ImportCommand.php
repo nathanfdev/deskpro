@@ -70,6 +70,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		$GLOBALS['DP_NOSQL_LOG'] = true;
 		$GLOBALS['DP_INDEX_NOINDEX'] = true;
+		$GLOBALS['DP_ERR_NOSHOWTRACE'] = true;
 
 		#----------------------------------------
 		# Set environment
@@ -87,6 +88,11 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		} else {
 			$wr->addFilter(new \Orb\Log\Filter\PriorityFilter(Logger::NOTICE));
 		}
+		$wr->addFilter(new \Orb\Log\Filter\CallbackFormatter(function($log_item) {
+			if (isset($log_item['errinfo'])) {
+				return;
+			}
+		}));
 		$logger->addWriter($wr);
 
 		// Special callback for submitting error logs when there is one
@@ -800,7 +806,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 	public static function sendLogFile()
 	{
 		global $DP_CONFIG;
-		if (isset($DP_CONFIG['no_report_errors']) AND !$DP_CONFIG['no_report_errors']) {
+		if (isset($DP_CONFIG['no_report_errors']) AND $DP_CONFIG['no_report_errors']) {
 			return;
 		}
 
