@@ -41,4 +41,3 @@
 # Per-site files
 /config.php
 /app/sys/config/dev_debug.php
-/app/sys/VERSION
