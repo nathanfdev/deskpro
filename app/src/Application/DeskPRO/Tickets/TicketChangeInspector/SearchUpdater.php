@@ -163,7 +163,7 @@ class SearchUpdater
 	{
 		return array(
 			'id', 'language_id', 'department_id', 'category_id', 'priority_id', 'workflow_id', 'product_id', 'person_id', 'agent_id',
-			'agent_team_id', 'organization_id', 'email_gateway_id', 'status', 'urgency', 'is_hold', 'date_created', 'date_first_agent_reply',
+			'agent_team_id', 'organization_id', 'email_gateway_id', 'creation_system', 'status', 'urgency', 'is_hold', 'date_created', 'date_first_agent_reply',
 			'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'total_user_waiting', 'total_to_first_reply',
 		);
 	}
