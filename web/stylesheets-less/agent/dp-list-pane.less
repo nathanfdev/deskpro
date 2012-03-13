@@ -1638,16 +1638,20 @@ section.dp-overlay > article.no-footer {
 	position:absolute;
 	width: 25px;
 	text-align: center;
-	top: 26px;
+	top: 52px;
 	border-right: 1px solid #8D9094;
 	border-bottom: 1px solid #8D9094;
 	border-top: 1px solid #8D9094;
 	z-index: 1;
+	background-color: #F5F7FA;
 }
 
-#people-list-result section.people-list,
-#people-list-result footer.results-nav {
+#people-list-result section.people-list {
 	margin-left: 26px;
+}
+
+#people-list-result footer.results-nav {
+	padding-left: 26px;
 }
 
 #people-list-alpha-list ul.source-list li span.title {
@@ -1658,6 +1662,14 @@ section.dp-overlay > article.no-footer {
 #people-list-alpha-list ul.source-list li {
     border-bottom: 1px solid #E1E3E6;
     border-top: 1px solid #FCFDFE;
+}
+
+#people-list-alpha-list ul.source-list .alpha_list_first {
+	border-top: none;
+}
+
+#people-list-alpha-list ul.source-list .alpha_list_last {
+	border-bottom: none;
 }
 
 #people-list-result .people-list {
