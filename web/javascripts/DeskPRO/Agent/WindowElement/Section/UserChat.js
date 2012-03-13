@@ -52,29 +52,36 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			listElement: '#chats_outline_sys_filters',
 			triggerElement: '#chat_filter_launch_editor',
 			controlElement: '#chat_filter_group_editor',
-			marginTop: 69,
+			marginTop: 82,
 			useIntId: false,
-			onGroupingChanged: (this.refreshFilterGrouping).bind(this)
+			onGroupingChanged: function(data) {
+				self.refreshFilterGrouping(data, self);
+			}
 		});
 		self.filterGroupEditor._initControl();
+		self.refreshFilterGrouping(data, self);
 
 		this._lastLoaded = new Date();
 	},
 
 	refreshFilterGrouping: function(filterId) {
+		var self = this;
 		this.groups[filterId] = this.getGroupingVar(filterId);
+
 		$.ajax(
 			{
 				type: 'POST',
 				url: BASE_URL + 'agent/chat/filter/group-count.json',
 				data: { filters: this.groups },
 				dataType: 'json',
-				success: this.updateFilterGrouping
+				success: function(data) {
+					this.updateFilterGrouping(data, self);
+				}
 			}
 		);
 	},
 
-	updateFilterGrouping: function(data) {
+	updateFilterGrouping: function(data, self) {
 		for(filterId in data) {
 			var element = $('.filter-' + filterId + ' .sub-group');
 			element.html(data[filterId]);
@@ -85,7 +92,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				element.hide();
 		}
 
-		this.filterGroupEditor.updatePositions();
+		self.filterGroupEditor.updatePositions();
 	},
 
 	getGroupingVar: function(filterId) {
@@ -95,6 +102,10 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	onShow: function() {
 		this._lastLoaded = new Date();
 		DeskPRO_Window.getSectionData('chat_section', this._initSection.bind(this));
+	},
+
+	onHide: function() {
+		
 	},
 
 	handleUpdateCounts: function(data) {

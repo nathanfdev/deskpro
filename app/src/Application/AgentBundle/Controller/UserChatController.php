@@ -46,6 +46,7 @@ use Application\DeskPRO\Chat\UserChat\GroupingCounter;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Orb\Util\Dates;
 use Orb\Util\Util;
 
 class UserChatController extends AbstractController
@@ -578,6 +579,22 @@ class UserChatController extends AbstractController
 					$searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS, $group_id);
 					break;
 				case 'date_created':
+					$group_id = $this->in->getString('group_val');
+					$month_year = explode('-',$group_id,2);
+
+					if(count($month_year) != 2)
+						break;
+
+					$month = (int)$month_year[0];
+					$year = (int)$month_year[1];
+
+					if(!checkdate($month, 1, $year))
+						break;
+
+					$beginning = Dates::firstDayInMonth($month, $year);
+					$end = Dates::lastDayInMonth($month, $year);
+					$searcher->addTerm(ChatConversationSearch::TERM_DATE_CREATED_PARTIAL, SearcherAbstract::OP_BETWEEN, array('date1' => $beginning, 'date2' => $end));
+
 					break;
 				case 'department':
 					$group_id = $this->in->getInt('group_val');

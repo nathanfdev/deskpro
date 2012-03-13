@@ -66,14 +66,16 @@ class GroupingCounter
 			case 'agent_id':
 				$searcher->addJoin('people ON agent_id = people.id');
 				$searcher->setColumns('agent_id AS id, COALESCE(people.name, "Unassigned") AS title, COUNT(*) AS count');
+				$searcher->setOrderBy('title');
 				break;
 			case 'department_id':
 				$searcher->addJoin('departments ON department_id = departments.id');
 				$searcher->setColumns('department_id AS id, departments.title AS title, COUNT(*) AS count');
+				$searcher->setOrderBy('departments.title');
 				break;
 			case 'date_created':
 				$searcher->setGroupBy('MONTH(date_created), YEAR(date_created)');
-				$searcher->setColumns('DATE_FORMAT(date_created, "%M-%Y") AS id, DATE_FORMAT(date_created,"%M %Y") AS title, COUNT(*) AS count');
+				$searcher->setColumns('DATE_FORMAT(date_created, "%c-%Y") AS id, DATE_FORMAT(date_created,"%M %Y") AS title, COUNT(*) AS count');
 				$searcher->setOrderBy('chat_conversations.date_created');
 				break;
 		}

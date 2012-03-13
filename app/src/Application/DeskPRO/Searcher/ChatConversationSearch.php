@@ -43,11 +43,12 @@ use Application\DeskPRO\Entity;
 
 class ChatConversationSearch extends SearcherAbstract
 {
-	const TERM_ID            = 'id';
-	const TERM_AGENT_ID      = 'agent_id';
-	const TERM_DEPARTMENT_ID = 'department_id';
-	const TERM_DATE_CREATED  = 'date_created';
-	const TERM_STATUS        = 'status';
+	const TERM_ID                   = 'id';
+	const TERM_AGENT_ID             = 'agent_id';
+	const TERM_DEPARTMENT_ID        = 'department_id';
+	const TERM_DATE_CREATED         = 'date_created';
+	const TERM_STATUS               = 'status';
+	const TERM_DATE_CREATED_PARTIAL = 'date_created';
 
 	protected $columns = 'chat_conversations.id';
 	protected $groupBy = null;
@@ -184,12 +185,8 @@ class ChatConversationSearch extends SearcherAbstract
 		$order_by = '';
 
 		switch ($type) {
-			case 'chat_conversations.id':
-				$order_by = " ORDER BY chat_conversations.id $dir";
-				break;
-
-			case 'chat_conversations.date_created':
-				$order_by = " ORDER BY chat_conversations.date_created $dir";
+			default:
+				$order_by = " ORDER BY $type $dir";
 				break;
 		}
 
@@ -234,6 +231,10 @@ class ChatConversationSearch extends SearcherAbstract
 				case self::TERM_DATE_CREATED:
 					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.tickets.date_created'), $op, $choice);
 					$wheres[] = $this->_dateMatch($org_table . '.' . $term, $op, $choice);
+					break;
+
+				case self::TERM_DATE_CREATED_PARTIAL:
+					$wheres[] = $this->_stringMatch($org_table . '.' . $term, $op, $choice, true, true);
 					break;
 
 				case self::TERM_STATUS:

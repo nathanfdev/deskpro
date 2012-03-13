@@ -1,9 +1,9 @@
 {% for group in groups %}
 	<li data-grouping-option="{{ group.id }}"
 		data-route="listpane:{{ path('agent_userchat_filterlist', {'filter_id': filter_id, 'group_var': group_by, 'group_val': group.id }) }}"
-		class="grouping-{{ group.id }}"
+		class="is-nav-item grouping-{{ group.id }}"
 	>
-		<span class="title is-nav-item">
+		<span class="title">
 			<span class="list-counter">
 				{{ group.count }}
 			</span>
