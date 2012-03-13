@@ -195,7 +195,7 @@ class UserChatsStep extends AbstractDeskpro3Step
 		$chat_attach_info = array();
 
 		foreach ($chat_attachments as $attach_info) {
-			$blob_id = $this->getMappedNewId('blob', $attach_info['blobid']);
+			$blob_id = $this->getMappedNewId('chat_attachment-blob', $attach_info['id']);
 			if (!$blob_id) {
 				continue;
 			}

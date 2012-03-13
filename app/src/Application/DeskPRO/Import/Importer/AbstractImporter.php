@@ -302,7 +302,7 @@ abstract class AbstractImporter
 				$this->flushSaveMappedIdBuffer();
 			}
 		} else {
-			$id = $this->db->insert('import_map', $values);
+			$id = $this->db->replace('import_map', $values);
 		}
 
 		if (!isset($this->cached_maps[$type])) {
@@ -321,7 +321,7 @@ abstract class AbstractImporter
 			return;
 		}
 
-		$sql = 'INSERT INTO import_map (typename, old_id, new_id) VALUES ';
+		$sql = 'REPLACE INTO import_map (typename, old_id, new_id) VALUES ';
 		$sql_parts = array();
 
 		foreach ($this->buffered_save_mapped_ids as $vals) {

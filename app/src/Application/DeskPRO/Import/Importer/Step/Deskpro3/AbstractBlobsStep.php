@@ -91,11 +91,6 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 			return;
 		}
 
-		$check = $this->getMappedNewId('blob', $blob['id']);
-		if ($check) {
-			return;
-		}
-
 		$filetype = ContentTypes::getContentTypeFromExtension($record['extension']);
 		if (!$filetype) {
 			$filetype = 'application/octet-stream';
@@ -140,7 +135,7 @@ abstract class AbstractBlobsStep extends AbstractDeskpro3Step
 			'date_created' => date('Y-m-d H:i:s', $record['timestamp']),
 		), array('id' => $new_blob_id));
 
-		$this->saveMappedId('blob', $blob['id'], $new_blob_id, true);
+		$this->saveMappedId("$table-blob", $record['id'], $new_blob_id, true);
 	}
 
 

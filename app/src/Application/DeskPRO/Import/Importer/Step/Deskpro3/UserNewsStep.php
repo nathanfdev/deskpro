@@ -107,6 +107,11 @@ class UserNewsStep extends AbstractDeskpro3Step
 			return;
 		}
 
+		// Skip empty ones
+		if (!trim($news['title']) && !trim($news['details'])) {
+			return;
+		}
+
 		#------------------------------
 		# Create it
 		#------------------------------
@@ -123,8 +128,8 @@ class UserNewsStep extends AbstractDeskpro3Step
 		$new_news->date_created = new \DateTime('@' . $news['timestamp']);
 		$new_news->date_published = new \DateTime('@' . $news['timestamp']);
 		$new_news->person = $new_person;
-		$new_news->title = $news['title'];
-		$new_news->content = $news['details'];
+		$new_news->title = empty($news['title']) ? 'Untitled' : $news['title'];
+		$new_news->content = empty($news['details']) ? '(empty)' : $news['details'];
 
 		$this->getEm()->persist($new_news);
 		$this->getEm()->flush();

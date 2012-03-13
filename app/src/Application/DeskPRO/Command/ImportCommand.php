@@ -374,16 +374,6 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 					}
 				}
 			}
-
-			if (isset($DP_CONFIG['core.filestorage_method']) && $DP_CONFIG['core.filestorage_method'] == 'fs') {
-				$this->getContainer()->getDb()->replace('settings', array(
-					'name' => 'core.filestorage_method',
-					'groupname' => 'core',
-					'value' => 'fs',
-					'created_at' => date('Y-m-d H:i:s'),
-					'updated_at' => date('Y-m-d H:i:s'),
-				));
-			}
 		}
 
 		#----------------------------------------
@@ -547,6 +537,16 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			echo "Proceeding with the import...\n\n";
 		}
 
+		if (isset($DP_CONFIG['core.filestorage_method']) && $DP_CONFIG['core.filestorage_method'] == 'fs') {
+			$this->getContainer()->getDb()->replace('settings', array(
+				'name' => 'core.filestorage_method',
+				'groupname' => 'core',
+				'value' => 'fs',
+				'created_at' => date('Y-m-d H:i:s'),
+				'updated_at' => date('Y-m-d H:i:s'),
+			));
+		}
+
 		#----------------------------------------
 		# Execute import
 		#----------------------------------------
@@ -595,10 +595,6 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		if ($mode == 'exec-step') {
 			$importer->validateOptions();
 			$importer->setupImport();
-
-			if (function_exists('xdebug_time_index')) {
-				$logger->log(sprintf('Took %.5f too begin step execution', xdebug_time_index()), 'DEBUG');
-			}
 
 			$step_num = $input->getOption('exec-step');
 			$importer->preRunStep($step_num);
