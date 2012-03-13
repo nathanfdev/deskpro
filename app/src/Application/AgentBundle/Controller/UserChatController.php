@@ -398,7 +398,6 @@ class UserChatController extends AbstractController
 		$dep_counts['0_total'] = $dep_counts['none'];
 
 		// Departments
-		// Could I reuse this to address the difficulty with children for groups/filters?
 		$departments = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
 		$single_dep_mode = false;
 		if ($this->em->getRepository('DeskPRO:Department')->countAll() == 1) {
@@ -595,7 +594,7 @@ class UserChatController extends AbstractController
 
 					$beginning = Dates::firstDayInMonth($month, $year);
 					$end = Dates::lastDayInMonth($month, $year);
-					$searcher->addTerm(ChatConversationSearch::TERM_DATE_CREATED_PARTIAL, SearcherAbstract::OP_BETWEEN, array('date1' => $beginning, 'date2' => $end));
+					$searcher->addTerm(ChatConversationSearch::TERM_DATE_CREATED, SearcherAbstract::OP_BETWEEN, array('date1' => $beginning, 'date2' => $end));
 
 					break;
 				case 'department':
