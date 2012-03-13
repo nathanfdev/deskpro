@@ -89,6 +89,18 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 		$logger->addWriter($wr);
 
+		// Special callback for submitting error logs when there is one
+		$wr = new \Orb\Log\Writer\Callback(function ($log_item) {
+			static $count = 0;
+			if (!isset($log_item['errinfo'])) {
+				return;
+			}
+			if ($count++ > 3) return;
+
+			\Application\DeskPRO\Command\ImportCommand::sendLogFile();
+		});
+		$logger->addWriter($wr);
+
 		$log_file_path = $this->getContainer()->getKernel()->getUserLogDir() . '/import.log';
 		try {
 			if (!(isset($DP_CONFIG['import']['nolog']) && $DP_CONFIG['import']['nolog'])) {
@@ -783,5 +795,39 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			printf("%-40s", $title);
 			echo "DONE\n";
 		}
+	}
+
+	public static function sendLogFile()
+	{
+		global $DP_CONFIG;
+		if (isset($DP_CONFIG['no_report_errors']) AND !$DP_CONFIG['no_report_errors']) {
+			return;
+		}
+
+		$import_log_path = App::getKernel()->getUserLogDir() . '/import.log';
+		if (!file_exists($import_log_path)) {
+			return;
+		}
+
+		$import_log_name = 'import.log';
+		$import_log = file_get_contents($import_log_path);
+		$import_log = "[WITH ERROR REPORT]\n\n\n" . $import_log;
+
+		try {
+			$compress_file = new \Orb\File\CompressFile($import_log);
+			if ($compress_file->compress() && file_exists($compress_file->getTmpFile()) && filesize($compress_file->getTmpFile())) {
+				$import_log = file_get_contents($compress_file->getTmpFile());
+				$import_log_name = 'import.log.' . $compress_file->getCompressedType();
+			}
+		} catch (\Exception $e) {}
+
+		try {
+			$client = new \Zend\Http\Client(null, array('timeout' => 20));
+			$client->setMethod(\Zend\Http\Request::METHOD_POST);
+			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/submit-import-log.json');
+			$client->setParameterPost(array('logname' => $import_log_name));
+			$client->setFileUpload($import_log_name, 'logfile', $import_log, 'application/octet-stream');
+			$client->send();
+		} catch (\Exception $e) {}
 	}
 }

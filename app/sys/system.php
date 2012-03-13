@@ -638,7 +638,7 @@ class KernelErrorHandler
 		try {
 			if (!empty($GLOBALS['DP_ERR_LOGGER'])) {
 				$logger = $GLOBALS['DP_ERR_LOGGER'];
-				$logger->log($errinfo['summary'] . "\n" . $errinfo['trace'], 'ERR');
+				$logger->log($errinfo['summary'] . "\n" . $errinfo['trace'], 'ERR', array('errinfo' => $errinfo));
 			} elseif (App::has('deskpro.exception_logger')) {
 				$ex_logger = App::get('deskpro.exception_logger');
 				$ex_logger->handleError($errno, $errstr, $errfile, $errline);
@@ -664,7 +664,7 @@ class KernelErrorHandler
 		try {
 			if (!empty($GLOBALS['DP_ERR_LOGGER'])) {
 				$logger = $GLOBALS['DP_ERR_LOGGER'];
-				$logger->log($errinfo['summary'] . "\n" . $errinfo['trace'], 'ERR');
+				$logger->log($errinfo['summary'] . "\n" . $errinfo['trace'], 'ERR', array('errinfo' => $errinfo));
 			} elseif (App::has('deskpro.exception_logger')) {
 				$ex_logger = App::get('deskpro.exception_logger');
 				$ex_logger->handleException($exception);
