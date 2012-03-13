@@ -19,7 +19,7 @@ pageMeta.resultIds = {{ chat_ids|json_encode|raw }};
 	<footer class="results-nav">
 		<div class="cursor">
 			Showing results
-			<span class="results-showing-count" id="{{baseId}}_showing_count">{{ (page-1) * 50 + 1 }} - {{ page * 50 }}</span>
+			<span class="results-showing-count" id="{{baseId}}_showing_count">{{ (page-1) * 50 + 1 }} - {{ (page - 1) * 50 + chat_ids|length }}</span>
 			of
 			<span class="results-total-count" id="{{baseId}}_total_count">{{ total }}</span>
 		</div>

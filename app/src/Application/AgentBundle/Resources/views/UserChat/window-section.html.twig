@@ -69,9 +69,10 @@
 			<li class="filter filter-{{ filter.id }} nav-filter-{{filter.id}} {% if loop.index == 1 %}active{% endif %}"
 				data-filter-id="{{filter.id}}"
 				data-filter-name="{{filter.sys_name}}"
+				data-grouping-ignore="{{ filter.disallowed }}"
 			>
 				<h3 class="is-nav-item title" data-route="listpane:{{ path('agent_userchat_filterlist', { 'filter_id': filter.id}) }}">
-					<span class="list-counter" id="userchat_{{filter.id}}_count" data-count="{{ ended_my_chats_count }}">{{ filter.count }}</span>
+					<span class="list-counter" id="userchat_{{filter.id}}_count" data-count="{{ filter.count }}">{{ filter.count }}</span>
 					{{ filter.title }}
 				</h3>
 				<ul class="sub-group" style="display: none;"></ul>

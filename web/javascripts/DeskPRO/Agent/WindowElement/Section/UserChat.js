@@ -35,9 +35,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		this._lastLoaded = new Date();
 		DeskPRO_Window.getSectionData('chat_section', (function(data) {
-			this.setHasInitialLoaded();
-			this.contentEl.html(data.section_html);
-			this._lastLoaded = new Date();
+			this._initSection(data);
 		}).bind(this));
 	},
 
@@ -46,6 +44,9 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		this.setHasInitialLoaded();
 		this.contentEl.html(data.section_html);
+
+		if('filterGroupEditor' in this)
+			this.filterGroupEditor.destroy();
 
 		this.filterGroupEditor = new DeskPRO.Agent.Widget.FilterGroupEditor({
 			containerElement: '#chat_outline .scroll-content',
@@ -58,8 +59,9 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				self.refreshFilterGrouping(data, self);
 			}
 		});
-		self.filterGroupEditor._initControl();
-		self.refreshFilterGrouping(data, self);
+		this.filterGroupEditor._initControl();
+		this.refreshFilterGrouping(data, this);
+		this.updateGroupingVars();
 
 		this._lastLoaded = new Date();
 	},
@@ -75,15 +77,17 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				data: { filters: this.groups },
 				dataType: 'json',
 				success: function(data) {
-					this.updateFilterGrouping(data, self);
+					self.updateFilterGrouping(data, self);
 				}
 			}
 		);
 	},
 
 	updateFilterGrouping: function(data, self) {
+		var container = $('#chats_outline_sys_filters');
+
 		for(filterId in data) {
-			var element = $('.filter-' + filterId + ' .sub-group');
+			var element = $('.filter-' + filterId + ' .sub-group', container);
 			element.html(data[filterId]);
 
 			if(data[filterId])
@@ -99,13 +103,18 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		return $('#chat_filter_group_editor .filter-' + filterId + ' .field-option').val();
 	},
 
+	updateGroupingVars: function() {
+		for(filterId in this.groups)
+			$('#chat_filter_group_editor .filter-' + filterId + ' .field-option').val(this.groups[filterId]);
+	},
+
 	onShow: function() {
 		this._lastLoaded = new Date();
 		DeskPRO_Window.getSectionData('chat_section', this._initSection.bind(this));
 	},
 
 	onHide: function() {
-		
+		this.filterGroupEditor.destroy();
 	},
 
 	handleUpdateCounts: function(data) {

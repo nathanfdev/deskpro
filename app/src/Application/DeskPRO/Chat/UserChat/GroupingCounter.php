@@ -61,18 +61,50 @@ class GroupingCounter
 			return array();
 
 		$searcher->setGroupBy($this->group_by);
+		$db = App::getDb();
 
 		switch($this->group_by) {
 			case 'agent_id':
 				$searcher->addJoin('people ON agent_id = people.id');
 				$searcher->setColumns('agent_id AS id, COALESCE(people.name, "Unassigned") AS title, COUNT(*) AS count');
-				$searcher->setOrderBy('title');
+				$searcher->setOrderBy('people.name');
 				break;
 			case 'department_id':
 				$searcher->addJoin('departments ON department_id = departments.id');
-				$searcher->setColumns('department_id AS id, departments.title AS title, COUNT(*) AS count');
+				$searcher->setColumns('department_id AS id, COUNT(*) AS count');
 				$searcher->setOrderBy('departments.title');
-				break;
+				$counts = $db->fetchAll($searcher->getSql());
+				$counts_department = array();
+
+				foreach($counts as $count)
+					$counts_department[$count['id']] = $count;
+
+				$departments = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
+
+				foreach($departments as $i => $department) {
+					if(!isset($counts_department[$department['id']])) {
+						$departments[$i]['count'] = 0;
+					}
+					else {
+						$departments[$i]['count'] = $counts_department[$department['id']]['count'];
+					}
+
+					foreach($department['children'] as $h => $child) {
+						if(!isset($counts_department[$child['id']])) {
+							unset($departments[$i]['children'][$h]);
+							continue;
+						}
+
+						$child['count'] = $counts_department[$child['id']]['count'];
+						$departments[$i]['count'] += $child['count'];
+						$departments[$i]['children'][$h] = $child;
+					}
+
+					if(!$departments[$i]['count'])
+						unset($departments[$i]);
+				}
+
+				return $departments;
 			case 'date_created':
 				$searcher->setGroupBy('MONTH(date_created), YEAR(date_created)');
 				$searcher->setColumns('DATE_FORMAT(date_created, "%c-%Y") AS id, DATE_FORMAT(date_created,"%M %Y") AS title, COUNT(*) AS count');
@@ -80,9 +112,7 @@ class GroupingCounter
 				break;
 		}
 
-		$db = App::getDb();
 		$counts = $db->fetchAll($searcher->getSql());
-
 		return $counts;
 	}
 }

@@ -398,6 +398,7 @@ class UserChatController extends AbstractController
 		$dep_counts['0_total'] = $dep_counts['none'];
 
 		// Departments
+		// Could I reuse this to address the difficulty with children for groups/filters?
 		$departments = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
 		$single_dep_mode = false;
 		if ($this->em->getRepository('DeskPRO:Department')->countAll() == 1) {
@@ -440,17 +441,18 @@ class UserChatController extends AbstractController
 
 			$filter['count'] = $this->container->getDb()->fetchColumn($searcher->getSQL());
 			$filter['title'] = $tr->phrase('agent.chat.filter_title_' . $filter_id);
+			$filter['disallowed'] = implode(',', $this->getDisallowedGroupsForFilter($filter_id));
 			$filters[] = $filter;
 		}
 
-		$groups = array();
+		$groupers = array();
 
-		foreach($this->getGroups() as $groupby_id)
+		foreach($this->getGroups() as $grouper_id)
 		{
-			$groupby = array();
-			$groupby['id'] = $groupby_id;
-			$groupby['title'] = $tr->phrase('agent.' . $groupby_id);
-			$groups[] = $groupby;
+			$grouper = array();
+			$grouper['id'] = $grouper_id;
+			$grouper['title'] = $tr->phrase('agent.' . $grouper_id);
+			$groupers[] = $grouper;
 		}
 
 		$html = $this->renderView('AgentBundle:UserChat:window-section.html.twig', array(
@@ -460,7 +462,7 @@ class UserChatController extends AbstractController
 			'departments' => $departments,
 			'single_dep_mode' => $single_dep_mode,
 			'ended_filters' => $filters,
-			'ended_groups' => $groups
+			'ended_groups' => $groupers
 		));
 
 		return $this->createJsonResponse(array('section_html' => $html));
@@ -656,6 +658,16 @@ class UserChatController extends AbstractController
 		}
 
 		return $groups;
+	}
+
+	protected function getDisallowedGroupsForFilter($filter)
+	{
+		$disallowed = array();
+
+		if($filter == 'mine')
+			$disallowed[] = 'agent';
+
+		return $disallowed;
 	}
 
 	protected function getFilters()

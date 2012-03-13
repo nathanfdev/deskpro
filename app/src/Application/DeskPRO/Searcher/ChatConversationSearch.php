@@ -225,7 +225,10 @@ class ChatConversationSearch extends SearcherAbstract
 				case self::TERM_ID:
 				case self::TERM_AGENT_ID:
 				case self::TERM_DEPARTMENT_ID:
-					$wheres[] = $this->_choiceMatch($org_table . '.' . $term, $op, $choice, true);
+					$children[] = $choice;
+					$children = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
+
+					$wheres[] = $this->_choiceMatch($org_table . '.' . $term, $op, $children, true);
 					break;
 
 				case self::TERM_DATE_CREATED:
