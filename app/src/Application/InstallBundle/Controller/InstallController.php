@@ -536,6 +536,13 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 				'created_at' => date('Y-m-d H:i:s'),
 				'updated_at' => date('Y-m-d H:i:s'),
 			));
+			$db->replace('settings', array(
+				'name' => 'core.deskpro_version',
+				'groupname' => 'core',
+				'value' => date('YmdHis'),
+				'created_at' => date('Y-m-d H:i:s'),
+				'updated_at' => date('Y-m-d H:i:s'),
+			));
 
 			if ($rewrite_urls) {
 				$db->replace('settings', array(

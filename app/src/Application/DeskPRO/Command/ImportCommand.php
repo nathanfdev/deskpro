@@ -553,6 +553,13 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				'updated_at' => date('Y-m-d H:i:s'),
 			));
 			App::getDb()->replace('settings', array(
+				'name' => 'deskpro_version',
+				'groupname' => 'core',
+				'value' => date('YmdHis'),
+				'created_at' => date('Y-m-d H:i:s'),
+				'updated_at' => date('Y-m-d H:i:s'),
+			));
+			App::getDb()->replace('settings', array(
 				'name' => 'core.install_key',
 				'groupname' => 'core',
 				'value' => \Orb\Util\Strings::random(20, \Orb\Util\Strings::CHARS_KEY),
