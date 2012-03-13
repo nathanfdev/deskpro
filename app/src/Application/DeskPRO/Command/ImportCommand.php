@@ -142,8 +142,18 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$db = $this->getContainer()->getDb();
 
 		try {
-			$db->connect();
+			// Some PHP's, PDO's PDO::ATTR_ERRMODE to throw exceptions instead of issue warnings
+			// doesnt work on connect(). Instead it throws the exception, but also issues the warning.
+			// So temporarily disable warnings so we can gracefully handle these events
+
+			$e = error_reporting(E_ALL ^ E_WARNING);
+			if (!$db->connect()) {
+				throw new \PDOException("DB Error", 1);
+			}
+
+			error_reporting($e);
 		} catch (\PDOException $e) {
+			error_reporting($e);
 			if ($e->getCode() == '1049') {
 
 				$logger->log("We have detected that the database {$DP_CONFIG['db']['dbname']} does not exist. We will try to create it now ...\n", Logger::DEBUG);
@@ -170,12 +180,11 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$logger->log('There was a problem while trying to connect to your database: ' . $e->getMessage() . ''  . PHP_EOL, Logger::ERR);
 				return 21;
 			}
-
-			$db->connect();
 		}
 
 		// Check thei mport db too
 		try {
+			$e = error_reporting(E_ALL ^ E_WARNING);
 			$old_db = $this->getContainer()->get('doctrine.dbal.connection_factory')->createConnection(array(
 				'driver'   => 'pdo_mysql',
 				'host'     => $DP_CONFIG['import']['db_host'],
@@ -183,8 +192,12 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				'password' => $DP_CONFIG['import']['db_password'],
 				'dbname'   => $DP_CONFIG['import']['db_name']
 			));
-			$old_db->connect();
+			if (!$old_db->connect()) {
+				throw new \PDOException("DB Error", 1);
+			}
+			error_reporting($e);
 		} catch (\Exception $e) {
+			error_reporting($e);
 			$logger->log('There was a problem while trying to connect to your DeskPRO v3 database. Check config.php to make sure you entered the correct details. ' . PHP_EOL . $e->getMessage() . ''  . PHP_EOL, Logger::ERR);
 			return 1;
 		}
