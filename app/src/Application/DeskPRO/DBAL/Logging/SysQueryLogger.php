@@ -44,6 +44,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 	public $is_logging = false;
 	public $last_query = null;
 
+	public $obj_start_time;
 	public $log_maxtime   = false;
 	public $log_nowhere   = false;
 	public $log_countstar = true;
@@ -51,8 +52,12 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 	public $log_explain   = false;
 	public $log_trace     = false;
 
+	public $queries = array();
+
 	public function __construct()
 	{
+		$this->obj_start_time = microtime(true);
+
 		global $DP_CONFIG;
 		if (isset($DP_CONFIG['debug']['querylog']) && $DP_CONFIG['debug']['querylog']['enabled']) {
 			$this->is_enabled = true;
@@ -82,35 +87,16 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			}
 		}
 
-		register_shutdown_function(array($this, 'processLast'));
+		register_shutdown_function(array($this, 'writeLog'));
 	}
 
 	public function startQuery($sql, array $params = null, array $types = null)
 	{
-		if (isset($GLOBALS['DP_NOSQL_LOG'])) return;
 		if ($this->is_logging) return;
-		if (!$this->is_enabled) return;
-
-		$this->processLast();
-
-		$sql = trim($sql);
-		if (preg_match('#^SELECT#i', $sql)) {
-			$query_typename = 'SELECT';
-		} else if (preg_match('#^UPDATE#i', $sql)) {
-			$query_typename = 'UPDATE';
-		} else if (preg_match('#^INSERT#i', $sql)) {
-			$query_typename = 'INSERT';
-		} else if (preg_match('#^DELETE#i', $sql)) {
-			$query_typename = 'DELETE';
-		} else {
-			$query_typename = 'OTHER';
-		}
 
 		$this->last_query = array(
 			'sql'            => $sql,
 			'params'         => $params,
-			'types'          => $types,
-			'query_typename' => $query_typename,
 			'time_start'     => microtime(true),
 			'time_end'       => 0,
 			'time_taken'     => 0
@@ -119,24 +105,37 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
 	public function processLast()
 	{
+		if (!$this->last_query) {
+			return;
+		}
+
 		if (isset($GLOBALS['DP_NOSQL_LOG'])) return;
 		if ($this->is_logging) {
 			return;
 		}
-
-		if (!$this->is_enabled OR !$this->last_query) {
+		if (!$this->is_enabled) {
 			return;
 		}
 		$this->is_logging = true;
 
 		$queryinfo = $this->last_query;
+
+		if (preg_match('#^\s*SELECT#i', $queryinfo['sql'])) {
+			$query_typename = 'SELECT';
+		} else if (preg_match('#^\s*UPDATE#i', $queryinfo['sql'])) {
+			$query_typename = 'UPDATE';
+		} else if (preg_match('#^\s*INSERT#i', $queryinfo['sql'])) {
+			$query_typename = 'INSERT';
+		} else if (preg_match('#^\s*DELETE#i', $queryinfo['sql'])) {
+			$query_typename = 'DELETE';
+		} else {
+			$query_typename = 'OTHER';
+		}
+		$queryinfo['query_typename'] = $query_typename;
 		$queryinfo['params_string'] = \DeskPRO\Kernel\KernelErrorHandler::varToString($queryinfo['params']);
 		$queryinfo['time_end']   = microtime(true);
 		$queryinfo['time_taken'] = $queryinfo['time_end'] - $queryinfo['time_start'];
 		$queryinfo['time_taken_str'] = sprintf('%.2f', $queryinfo['time_taken']);
-
-		$this->query_count++;
-		$this->total_time += $queryinfo['time_taken'];
 
 		if (preg_match('#\s+(FROM|INSERT INTO|UPDATE|DELETE FROM)\s+(.*?)\s+#', $queryinfo['sql'], $m)) {
 			$table = $m[2];
@@ -200,9 +199,70 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
 	public function stopQuery()
 	{
-		// Dont process anything here
-		// It'll interfere with mysql's last insert ID if we insert log items now (it'll return the log items id!)
-		// Instead, only process when processing a new query, and also we registered a shutdown function to
-		// process the last query on the page.
+		$this->last_query['time_end']   = microtime(true);
+		$this->last_query['time_taken'] = $this->last_query['time_end'] - $this->last_query['time_start'];
+		$this->queries[] = $this->last_query;
+
+		$this->query_count++;
+		$this->total_time += $this->last_query['time_taken'];
+	}
+
+	public function writeLog()
+	{
+		global $DP_CONFIG;
+		if (!isset($DP_CONFIG['enable_slow_page_log']) OR !$DP_CONFIG['enable_slow_page_log']) {
+			return;
+		}
+
+		if (defined('DP_START_TIME')) {
+			$start_time = DP_START_TIME;
+		} else {
+			$start_time = $this->obj_start_time;
+		}
+
+		$total_time = microtime(true) - $start_time;
+		$db_time    = $this->total_time;
+		$php_time   = $total_time - $db_time;
+
+		if ($total_time > $DP_CONFIG['enable_slow_page_log']) {
+			$write = array("--- Page Log Begin ---\n");
+			if (defined('DP_REQUEST_URL')) {
+				$write[] = "URL: " . DP_REQUEST_URL . "\n";
+			}
+
+			$write[] = sprintf("Total Time: %.4f    PHP Time: %.4f    DB Time: %.4f    Queries: %d\n", $total_time, $php_time, $db_time, $this->query_count);
+			foreach ($this->queries as $q) {
+				$sql = trim($q['sql']);
+				$sql = str_replace(array("\r\n", "\n"), ' ', $sql);
+				$sql = substr($sql, 0, 2000);
+
+				$params = array();
+				foreach ($q['params'] as $v) {
+					if (is_numeric($v) || ctype_digit($v)) {
+						$params[] = $v;
+					} elseif (is_string($v)) {
+						$params[] = 'string(' . strlen($v) . ')';
+					} elseif ($v === null) {
+						$params[] = 'NULL';
+					} elseif (is_array($v)) {
+						$params[] = 'array(' . count($v) . ')';
+					} elseif (is_object($v)) {
+						$params[] = get_class($v);
+					} else {
+						$params[] = gettype($v);
+					}
+				}
+
+				$write[] = sprintf("Query(%.4f): %s \t\t [%s]\n", $q['time_taken'], $sql, implode(', ', $params));
+			}
+
+			$prefix = '[' . date('Y-m-d H:i:s') . '] ';
+			foreach ($write as &$l) {
+				$l = $prefix . $l;
+			}
+
+			$write = implode('', $write);
+			file_put_contents(DP_WEB_ROOT.'/data/logs/slow-page-log.log', $write, \FILE_APPEND | \LOCK_EX);
+		}
 	}
 }

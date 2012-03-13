@@ -251,6 +251,8 @@ class KernelBooter
 		# Handle request
 		#------------------------------
 
+		define('DP_REQUEST_URL', $request->getRequestUri());
+
 		try {
 			$kernel = new $kernel_class($env, $debug);
 			$kernel->handle($request)->send();
