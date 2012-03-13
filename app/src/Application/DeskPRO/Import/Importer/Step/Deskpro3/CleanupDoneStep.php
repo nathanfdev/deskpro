@@ -48,29 +48,6 @@ class CleanupDoneStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
-		$import_log_path = $this->importer->getContainer()->getKernel()->getUserLogDir() . '/import.log';
-		if (!file_exists($import_log_path)) {
-			return;
-		}
-
-		$import_log_name = 'import.log';
-		$import_log = file_get_contents($import_log_path);
-
-		try {
-			$compress_file = new \Orb\File\CompressFile($import_log);
-			if ($compress_file->compress() && file_exists($compress_file->getTmpFile()) && filesize($compress_file->getTmpFile())) {
-				$import_log = file_get_contents($compress_file->getTmpFile());
-				$import_log_name = 'import.log.' . $compress_file->getCompressedType();
-			}
-		} catch (\Exception $e) {}
-
-		try {
-			$client = new \Zend\Http\Client(null, array('timeout' => 20));
-			$client->setMethod(\Zend\Http\Request::METHOD_POST);
-			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/submit-import-log.json');
-			$client->setParameterPost(array('logname' => $import_log_name));
-			$client->setFileUpload($import_log_name, 'logfile', $import_log, 'application/octet-stream');
-			$client->send();
-		} catch (\Exception $e) {}
+		\Application\DeskPRO\Command\ImportCommand::sendLogFile();
 	}
 }

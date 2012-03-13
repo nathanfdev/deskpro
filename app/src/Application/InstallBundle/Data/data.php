@@ -779,6 +779,18 @@ $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\AgentModeTicketReassign:
 $em->persist($j);
 $em->flush();
 
+
+##BEGIN:create_jobs.ticket_triggers##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'ticket_triggers';
+$j['worker_group'] = 'ticket_triggers';
+$j['title'] = 'Ticket Triggers';
+$j['description'] = 'Executes time-based ticket triggers';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\TicketTriggers';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\TicketTriggers::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
 ################################################################################
 # Portal Blocks
 ################################################################################

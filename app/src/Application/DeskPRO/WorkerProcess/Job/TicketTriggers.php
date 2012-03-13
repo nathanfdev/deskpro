@@ -61,8 +61,9 @@ class TicketTriggers extends AbstractJob
 			return;
 		}
 
-		foreach ($escalations as $esc) {}
-
+		foreach ($escalations as $esc) {
+			$this->runEscalation($esc);
+		}
 	}
 
 	protected function runEscalation(TicketTrigger $trigger)
@@ -70,7 +71,8 @@ class TicketTriggers extends AbstractJob
 		$searcher = $trigger->getSearcher();
 		$searcher->addTerm('escalation_eliminator', 'is', $trigger);
 
-		$ticket_ids = $searcher->getMatches(array('limit' => 1000));
+		$ticket_ids = $searcher->getMatches(array('offset' => 0, 'limit' => 1000));
+
 		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids);
 
 		App::getDb()->beginTransaction();
@@ -93,11 +95,12 @@ class TicketTriggers extends AbstractJob
 
 				$actions_collection->apply($ticket, null);
 
+				$d = $ticket[$trigger->getTicketTimeField()];
 				$trigger_log = array(
 					'ticket_id'     => $ticket->id,
 					'trigger_id'    => $trigger->id,
-					'date_ran'      => new \DateTime(),
-					'date_criteria' => $ticket[$trigger->getTicketTimeField()]
+					'date_ran'      => date('Y-m-d H:i:s'),
+					'date_criteria' => $d->format('Y-m-d H:i:s')
 				);
 
 				App::getDb()->insert('ticket_trigger_logs', $trigger_log);

@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\DBAL;
 
-use \PDO;
+use PDO;
 
 /**
  * Some enhancements to Doctrine's connection class.
@@ -42,6 +42,17 @@ use \PDO;
 class Connection extends \Doctrine\DBAL\Connection
 {
 	protected $_max_packet_size = null;
+
+	public function __construct(array $params, \Doctrine\DBAL\Driver $driver, \Doctrine\DBAL\Configuration $config = null, \Doctrine\Common\EventManager $eventManager = null)
+	{
+		if (!isset($params['driverOptions'])) {
+			$params['driverOptions'] = array();
+		}
+
+		$params['driverOptions'][PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+
+		parent::__construct($params, $driver, $config, $eventManager);
+	}
 
 	public function connect()
 	{

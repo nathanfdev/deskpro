@@ -70,6 +70,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		$GLOBALS['DP_NOSQL_LOG'] = true;
 		$GLOBALS['DP_INDEX_NOINDEX'] = true;
+		$GLOBALS['DP_ERR_NOSHOWTRACE'] = true;
 
 		#----------------------------------------
 		# Set environment
@@ -87,6 +88,23 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		} else {
 			$wr->addFilter(new \Orb\Log\Filter\PriorityFilter(Logger::NOTICE));
 		}
+		$wr->addFilter(new \Orb\Log\Filter\CallbackFormatter(function($log_item) {
+			if (isset($log_item['errinfo'])) {
+				return;
+			}
+		}));
+		$logger->addWriter($wr);
+
+		// Special callback for submitting error logs when there is one
+		$wr = new \Orb\Log\Writer\Callback(function ($log_item) {
+			static $count = 0;
+			if (!isset($log_item['errinfo'])) {
+				return;
+			}
+			if ($count++ > 3) return;
+
+			\Application\DeskPRO\Command\ImportCommand::sendLogFile();
+		});
 		$logger->addWriter($wr);
 
 		$log_file_path = $this->getContainer()->getKernel()->getUserLogDir() . '/import.log';
@@ -142,8 +160,18 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$db = $this->getContainer()->getDb();
 
 		try {
-			$db->connect();
+			// Some PHP's, PDO's PDO::ATTR_ERRMODE to throw exceptions instead of issue warnings
+			// doesnt work on connect(). Instead it throws the exception, but also issues the warning.
+			// So temporarily disable warnings so we can gracefully handle these events
+
+			$e = error_reporting(E_ALL ^ E_WARNING);
+			if (!$db->connect()) {
+				throw new \PDOException("DB Error", 1);
+			}
+
+			error_reporting($e);
 		} catch (\PDOException $e) {
+			error_reporting($e);
 			if ($e->getCode() == '1049') {
 
 				$logger->log("We have detected that the database {$DP_CONFIG['db']['dbname']} does not exist. We will try to create it now ...\n", Logger::DEBUG);
@@ -170,12 +198,11 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$logger->log('There was a problem while trying to connect to your database: ' . $e->getMessage() . ''  . PHP_EOL, Logger::ERR);
 				return 21;
 			}
-
-			$db->connect();
 		}
 
 		// Check thei mport db too
 		try {
+			$e = error_reporting(E_ALL ^ E_WARNING);
 			$old_db = $this->getContainer()->get('doctrine.dbal.connection_factory')->createConnection(array(
 				'driver'   => 'pdo_mysql',
 				'host'     => $DP_CONFIG['import']['db_host'],
@@ -183,8 +210,12 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				'password' => $DP_CONFIG['import']['db_password'],
 				'dbname'   => $DP_CONFIG['import']['db_name']
 			));
-			$old_db->connect();
+			if (!$old_db->connect()) {
+				throw new \PDOException("DB Error", 1);
+			}
+			error_reporting($e);
 		} catch (\Exception $e) {
+			error_reporting($e);
 			$logger->log('There was a problem while trying to connect to your DeskPRO v3 database. Check config.php to make sure you entered the correct details. ' . PHP_EOL . $e->getMessage() . ''  . PHP_EOL, Logger::ERR);
 			return 1;
 		}
@@ -770,5 +801,39 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			printf("%-40s", $title);
 			echo "DONE\n";
 		}
+	}
+
+	public static function sendLogFile()
+	{
+		global $DP_CONFIG;
+		if (isset($DP_CONFIG['no_report_errors']) AND $DP_CONFIG['no_report_errors']) {
+			return;
+		}
+
+		$import_log_path = App::getKernel()->getUserLogDir() . '/import.log';
+		if (!file_exists($import_log_path)) {
+			return;
+		}
+
+		$import_log_name = 'import.log';
+		$import_log = file_get_contents($import_log_path);
+		$import_log = "[WITH ERROR REPORT]\n\n\n" . $import_log;
+
+		try {
+			$compress_file = new \Orb\File\CompressFile($import_log);
+			if ($compress_file->compress() && file_exists($compress_file->getTmpFile()) && filesize($compress_file->getTmpFile())) {
+				$import_log = file_get_contents($compress_file->getTmpFile());
+				$import_log_name = 'import.log.' . $compress_file->getCompressedType();
+			}
+		} catch (\Exception $e) {}
+
+		try {
+			$client = new \Zend\Http\Client(null, array('timeout' => 20));
+			$client->setMethod(\Zend\Http\Request::METHOD_POST);
+			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/submit-import-log.json');
+			$client->setParameterPost(array('logname' => $import_log_name));
+			$client->setFileUpload($import_log_name, 'logfile', $import_log, 'application/octet-stream');
+			$client->send();
+		} catch (\Exception $e) {}
 	}
 }
