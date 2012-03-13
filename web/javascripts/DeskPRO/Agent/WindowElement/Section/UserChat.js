@@ -8,6 +8,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.setSectionElement($('<section id="chat_outline"></section>'));
 		this.groups = {};
 		this.urlFragmentName = 'userchat';
+		this.hasSectionInitialised = false;
 
 		$('#new_user_chat_alert').template('new_user_chat_alert');
 		$('#invite_chat_alert').template('invite_chat_alert');
@@ -40,6 +41,11 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	_initSection: function(data) {
+		if(this.hasSectionInitialised) {
+			return;
+		}
+
+		this.hasSectionInitialised = true;
 		var self = this;
 
 		this.setHasInitialLoaded();
@@ -114,7 +120,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	onHide: function() {
-		this.filterGroupEditor.destroy();
 	},
 
 	handleUpdateCounts: function(data) {

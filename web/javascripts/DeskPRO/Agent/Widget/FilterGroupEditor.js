@@ -227,7 +227,7 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 
 		this.backdrop2.css({
 			left: 0,
-			width: containPos.left
+			width: containPos.left + containWidth
 		});
 
 		this.backdrop.show();

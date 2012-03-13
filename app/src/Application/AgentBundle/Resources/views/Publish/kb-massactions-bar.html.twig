@@ -1,0 +1,10 @@
+<header class="list-selection-bar">
+	<input class="selection-control" type="checkbox" />
+	{{ phrase('agent.x_selected', {'num_placeholder': '<span class="selected-count">0</span>'}) }}
+
+	<a class="perform-action perform-actions-trigger disabled">
+		<span>{{ phrase('agent.perform_actions') }}</span>
+	</a>
+
+	{% include 'AgentBundle:TicketSearch:filter-massactions-overlay.html.twig' %}
+</header>

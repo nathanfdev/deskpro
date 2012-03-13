@@ -476,7 +476,7 @@ class PeopleSearchController extends AbstractController
 				}
 			}
 		}
-		
+
 		return '*';
 	}
 
