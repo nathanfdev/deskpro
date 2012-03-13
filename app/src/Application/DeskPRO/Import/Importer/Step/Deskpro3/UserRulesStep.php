@@ -72,22 +72,27 @@ class UserRulesStep extends AbstractDeskpro3Step
 		}
 
 		$add_ug = null;
-		if ($rule_info['add_usergroups']) {
+		if (!empty($rule_info['add_usergroups'])) {
 			$add_ug = $this->getMappedNewId('usergroup', array_pop($rule_info['add_usergroups']));
 			if (!$add_ug) return;
 		}
 
 		$add_org = null;
-		if ($rule_info['add_companies']) {
+		if (!empty($rule_info['add_companies'])) {
 			$add_org = $this->getMappedNewId('company', array_pop($rule_info['add_companies']));
 			if (!$add_org) return;
+		}
+
+		// No valid actions
+		if (!$add_org && !$add_ug) {
+			return;
 		}
 
 		$insert_rule = array();
 		$insert_rule['run_order'] = $rule_info['run_order'];
 		$insert_rule['add_organization_id'] = $add_org;
 		$insert_rule['add_usergroup_id'] = $add_ug;
-		$insert_rule['email_patterns'] = $crit['email_match'];
+		$insert_rule['email_patterns'] = serialize($crit['email_match']);
 
 		$this->getDb()->insert('user_rules', $insert_rule);
 	}
