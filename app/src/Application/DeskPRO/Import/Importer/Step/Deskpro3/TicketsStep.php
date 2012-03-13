@@ -505,7 +505,7 @@ class TicketsStep extends AbstractDeskpro3Step
 				continue;
 			}
 
-			$blob_id = $this->getMappedNewId('blob', $attach_info['blobid']);
+			$blob_id = $this->getMappedNewId('ticket_attachments-blob', $attach_info['id']);
 			if (!$blob_id) {
 				continue;
 			}
@@ -1479,7 +1479,6 @@ class TicketsStep extends AbstractDeskpro3Step
 		}
 		$q->closeCursor();
 		unset($q);
-
 
 		return $batch;
 	}

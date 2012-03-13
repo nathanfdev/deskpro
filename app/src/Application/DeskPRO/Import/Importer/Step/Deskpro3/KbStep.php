@@ -205,7 +205,7 @@ class KbStep extends AbstractDeskpro3Step
 				continue;
 			}
 
-			$blob_id = $this->getMappedNewId('blob', $attach_info['blobid']);
+			$blob_id = $this->getMappedNewId('faq_attachments-blob', $attach_info['id']);
 			if (!$blob_id) {
 				continue;
 			}
@@ -227,7 +227,7 @@ class KbStep extends AbstractDeskpro3Step
 
 		$article_updated = true;
 		foreach ($attachments as $attach_info) {
-			$blob_id = $this->getMappedNewId('blob', $attach_info['blobid']);
+			$blob_id = $this->getMappedNewId('images-blob', $attach_info['id']);
 			if (!$blob_id) {
 				continue;
 			}

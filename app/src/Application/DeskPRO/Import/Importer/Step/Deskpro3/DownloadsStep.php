@@ -112,7 +112,7 @@ class DownloadsStep extends AbstractDeskpro3Step
 			$new_person = $this->getEm()->getRepository('DeskPRO:Person')->findOneBy(array('can_admin' => true));
 		}
 
-		$new_blob = $this->getEm()->find('DeskPRO:Blob', $this->getMappedNewId('blob', $download['blobid']));
+		$new_blob = $this->getEm()->find('DeskPRO:Blob', $this->getMappedNewId('files-blob', $download['id']));
 		if (!$new_category) {
 			$this->logMessage("{$download['id']} has an invalid blob, skipping");
 			return;
