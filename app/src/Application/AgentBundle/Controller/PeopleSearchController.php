@@ -179,6 +179,25 @@ class PeopleSearchController extends AbstractController
 		}
 
 		$result_display = new \Application\DeskPRO\People\PeopleResultsDisplay($people);
+
+		$alphabet = $this->getAlphabet();
+		$letters = array();
+		
+		$params = $_GET;
+		$params['letter'] = '*';
+		$letters[] = array('title'=>'*', 'params' => $params);
+		$params['letter'] = '#';
+		$letters[] = array('title'=>'#', 'params' => $params);
+
+		foreach($alphabet as $letter)
+		{
+			$params['letter'] = $letter;
+			$letters[] = array(
+				'title' => $letter,
+				'params' => $params
+			);
+		}
+
 		$vars = array_merge($vars, array(
 			'type'                    => $type,
 			'type_id'                 => $type_id,
@@ -188,6 +207,7 @@ class PeopleSearchController extends AbstractController
 			'load_first'              => $this->in->getBool('load_first'),
 			'user_all_custom_fields'  => $user_all_custom_fields,
 			'result_display'          => $result_display,
+			'alphabet'                => $letters
 		));
 
 		$html = $this->renderView($tpl, $vars);
@@ -264,11 +284,13 @@ class PeopleSearchController extends AbstractController
 			}
 		}
 
+		$user_letter = $this->getLetterFromUser();
+
 		#------------------------------
 		# If there's no result set, we're running it for the first time
 		#------------------------------
 
-		if (!$result_cache) {
+		if (!$result_cache || $user_letter != $result_cache['criteria']['selected_letter']) {
 
 			$old_result_cache = false;
 			if ($this->in->getUint('copy_display_options')) {
@@ -289,6 +311,7 @@ class PeopleSearchController extends AbstractController
 				'person_email'              => array('op' => 'contains', 'options' => array()),
 				'person_contact_phone'      => array('op' => 'contains', 'options' => array()),
 			);
+
 			foreach ($set_terms_map as $name => $info) {
 				$in_val = $this->container->getIn()->getCleanValue('set_term.'.$name, 'raw');
 				if (is_string($in_val)) {
@@ -305,6 +328,9 @@ class PeopleSearchController extends AbstractController
 			}
 
 			$searcher = new \Application\DeskPRO\Searcher\PersonSearch();
+
+			$selected_letter = $this->applyLetterToSearcher($user_letter, $searcher);
+
 			foreach ($terms as $term) {
 				$searcher->addTerm($term['type'], $term['op'], $term['options']);
 			}
@@ -323,7 +349,7 @@ class PeopleSearchController extends AbstractController
 
 			$result_cache = new Entity\ResultCache();
 			$result_cache['person'] = $this->person;
-			$result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
+			$result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => $order_by, 'selected_letter' => $selected_letter);
 			$result_cache['results'] = $results;
 			$result_cache['num_results'] = count($results);
 			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
@@ -346,13 +372,16 @@ class PeopleSearchController extends AbstractController
 
 		$order_pref = $this->person->getPref('agent.ui.people-filter-order-by.' . 0);
 
-		if ($order_pref && $order_pref != $result_cache['criteria']['order_by']) {
+		if (($order_pref && $order_pref != $result_cache['criteria']['order_by'])
+		||  $order_pref != $result_cache['criteria']['selected_letter']) {
+			$searcher = new \Application\DeskPRO\Searcher\PersonSearch();
+
 			$criteria = $result_cache['criteria'];
 			$criteria['order_by'] = $order_pref;
+			$criteria['selected_letter'] = $this->applyLetterToSearcher($user_letter, $searcher);
 
 			$result_cache['criteria'] = $criteria;
 
-			$searcher = new \Application\DeskPRO\Searcher\PersonSearch();
 			$searcher->setTerms($result_cache['criteria']['terms']);
 			$searcher->setOrderByCode($result_cache['criteria']['order_by']);
 
@@ -375,7 +404,8 @@ class PeopleSearchController extends AbstractController
 			'cache' => $result_cache,
 			'cache_id' => $result_cache['id'],
 			'person_ids' => $result_cache['results'],
-			'terms_summary' => $result_cache->getExtraData('terms_summary')
+			'terms_summary' => $result_cache->getExtraData('terms_summary'),
+			'selected_letter' => $result_cache['criteria']['selected_letter']
 		);
 
 		if (!empty($result_cache['extra']['display_fields'])) {
@@ -409,6 +439,64 @@ class PeopleSearchController extends AbstractController
 		$vars['people_fields'] = $people_fields;
 
 		return $this->_getResponseForPeople('list', $result_cache['id'], $results_helper, $vars);
+	}
+
+	protected function applyLetterToSearcher($letter, $searcher)
+	{
+		$selected_letter = '*';
+
+		switch ($letter) {
+			case '#':
+				$selected_letter = '#';
+				$searcher->addTerm('alphabetical', 'contains', $this->getAlphabet(true));
+			case '*':
+				break;
+			default:
+				$selected_letter = $letter;
+				$searcher->addTerm('alphabetical', 'contains', array($letter, strtolower($letter)));
+				break;
+		}
+
+		return $selected_letter;
+	}
+
+	protected function getLetterFromUser()
+	{
+		$letter = $this->in->getString('letter');
+
+		if (is_string($letter) && strlen($letter) == 1) {
+			if ($letter == '#') {
+				return '#';
+			}
+			else {
+				$alphabet = $this->getAlphabet();
+
+				if (in_array($letter, $alphabet)) {
+					return $letter;
+				}
+			}
+		}
+		
+		return '*';
+	}
+
+	protected function getAlphabet($numbers = false)
+	{
+		if ($numbers) {
+			$numbers = array();
+
+			for($i = 0; $i < 10; $i++)
+				$numbers[] = $i;
+
+			return $numbers;
+		}
+
+		$letters = array();
+
+		for ($i = ord('A'); $i <= ord('Z'); $i++)
+			$letters[] = chr($i);
+
+		return $letters;
 	}
 
 	public function massActionsAction($action)

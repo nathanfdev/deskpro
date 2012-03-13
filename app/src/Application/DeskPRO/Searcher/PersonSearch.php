@@ -47,20 +47,21 @@ class PersonSearch extends SearcherAbstract
 	// can be combined with the TicketSearch, so we need to namespace
 	// these term names.
 
-	const TERM_ID               = 'person_id';
-	const TERM_ORGANIZATION     = 'person_organization';
-	const TERM_LANGUAGE         = 'person_language';
-	const TERM_USERGROUP        = 'person_usergroup';
-	const TERM_EMAIL            = 'person_email';
-	const TERM_EMAIL_DOMAIN     = 'person_email_domain';
-	const TERM_NAME             = 'person_name';
-	const TERM_PERSON_FIELD     = 'person_person_field';
-	const TERM_LABEL            = 'person_label';
-	const TERM_DATE_CREATED     = 'person_date_created';
-	const TERM_DIRECTORY_NAME   = 'person_directory_name';
-	const TERM_CONTACT_PHONE    = 'person_contact_phone';
-	const TERM_CONTACT_ADDRESS  = 'person_contact_address';
-	const TERM_CONTACT_IM       = 'person_contact_im';
+	const TERM_ID                 = 'person_id';
+	const TERM_ORGANIZATION       = 'person_organization';
+	const TERM_LANGUAGE           = 'person_language';
+	const TERM_USERGROUP          = 'person_usergroup';
+	const TERM_EMAIL              = 'person_email';
+	const TERM_EMAIL_DOMAIN       = 'person_email_domain';
+	const TERM_NAME               = 'person_name';
+	const TERM_PERSON_FIELD       = 'person_person_field';
+	const TERM_LABEL              = 'person_label';
+	const TERM_DATE_CREATED       = 'person_date_created';
+	const TERM_DIRECTORY_NAME     = 'person_directory_name';
+	const TERM_CONTACT_PHONE      = 'person_contact_phone';
+	const TERM_CONTACT_ADDRESS    = 'person_contact_address';
+	const TERM_CONTACT_IM         = 'person_contact_im';
+	const TERM_ALPHA              = 'alphabetical';
 
 	/**
 	 * From getSqlParts()
@@ -184,6 +185,7 @@ class PersonSearch extends SearcherAbstract
 
 		switch ($type) {
 			case 'people.name':
+			case 'person.name':
 				$order_by = "people.name $dir";
 				break;
 
@@ -344,6 +346,13 @@ class PersonSearch extends SearcherAbstract
 
 					$choice = implode(' or ', (array)$choice);
 					$this->summary[] = "Name is " . $choice;
+
+					break;
+
+				case self::TERM_ALPHA:
+
+					$wheres[] = $this->_stringMatch("people.last_name", $op, $choice, true, true);
+					$this->summary[] = 'Name begins with ' . implode(', ', $choice);
 
 					break;
 
