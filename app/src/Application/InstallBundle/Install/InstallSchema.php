@@ -217,9 +217,12 @@ class InstallSchema
 				$this->getLogger()->log("[QUERY:ALTER:$k] $sql", Logger::DEBUG, array('sql' => $sql));
 
 				try {
+					$time_start = microtime(true);
 					$this->db->exec($sql);
+					$time_end = microtime(true);
+
 					$this->markStepDone($step_id);
-					if ($callback) $callback('alter', 'done', $sql, $k);
+					if ($callback) $callback('alter', 'done', $sql, $k, $time_end-$time_start);
 				} catch (\Exception $e) {
 					$has_error = true;
 					if (strlen($sql) > 30) {
