@@ -156,7 +156,7 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Setting';
-		$metadata->setPrimaryTable(array( 'name' => 'settings', ));
+		$metadata->setPrimaryTable(array( 'name' => 'settings', 'uniqueConstraints' => array( 'name_idx' => array( 'columns' => array( 0 => 'name', ), ), ), ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->addLifecycleCallback('_resetValueIfDefault', 'prePersist');
 		$metadata->addLifecycleCallback('_resetGroupFromName', 'prePersist');
@@ -165,7 +165,7 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->addLifecycleCallback('_resetGroupFromName', 'preUpdate');
 		$metadata->addLifecycleCallback('_incUpdatedAt', 'preUpdate');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
+		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name' ));
 		$metadata->mapField(array( 'fieldName' => 'groupname', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'groupname', ));
 		$metadata->mapField(array( 'fieldName' => 'value', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value', ));
 		$metadata->mapField(array( 'fieldName' => 'default_value', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'default_value', ));
