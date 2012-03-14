@@ -237,6 +237,10 @@ class Util
 		$tebahpla = array_flip($alphabet);
 
 		foreach ($s as $char) {
+			// Invalid character found in string
+			if (!isset($tebahpla[$char])) {
+				return null;
+			}
 			$power = ($strlen - ($idx + 1));
 			$num += $tebahpla[$char] * (pow($base, $power));
 			$idx += 1;
