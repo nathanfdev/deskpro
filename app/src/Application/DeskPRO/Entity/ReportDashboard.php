@@ -116,6 +116,14 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
 	 * Get the author name. Use the associated Person if one exists, otherwise
 	 * its 'deskpro'
 	 */

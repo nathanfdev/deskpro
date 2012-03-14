@@ -101,6 +101,14 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	protected $_adapter_instance = null;
 
 	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
 	 * Get the usersource adapter for this usersource.
 	 *
 	 * @return \Application\DeskPRO\Usersource\Adapter\AbstractAdapter

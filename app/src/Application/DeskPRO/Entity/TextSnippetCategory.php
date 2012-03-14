@@ -89,6 +89,13 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 		$this->agent_teams = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
 
 
 	############################################################################

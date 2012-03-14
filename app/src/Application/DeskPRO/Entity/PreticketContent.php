@@ -142,6 +142,14 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
 	 * @static
 	 * @param Person $person
 	 * @param bool $use_request Use the current request to set visitor (and thus ip etc)

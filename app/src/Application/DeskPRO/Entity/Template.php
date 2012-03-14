@@ -93,6 +93,14 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 		$this->updated_at = new \DateTime();
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function setTemplate($code)
 	{
 		$this->template = $code;

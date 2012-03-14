@@ -173,6 +173,14 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$this->hidden_status = self::HIDDEN_STATUS_DRAFT;
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function setTitle($title)
 	{
 		$this->setModelField('title', $title);
@@ -403,9 +411,9 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->isMappedSuperclass = true; 
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
-		$metadata->setPrimaryTable(array( 'name' => 'ContentAbstract', )); 
+		$metadata->isMappedSuperclass = true;
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setPrimaryTable(array( 'name' => 'ContentAbstract', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 	}
 }

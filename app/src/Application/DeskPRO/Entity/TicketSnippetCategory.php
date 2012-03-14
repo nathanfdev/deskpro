@@ -84,6 +84,14 @@ class TicketSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 		$this->agent_teams = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function getPermType()
 	{
 		if ($this->is_global) {

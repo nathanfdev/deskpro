@@ -87,6 +87,13 @@ class DealType extends \Application\DeskPRO\Domain\DomainObject
         $this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
 
 
 	############################################################################

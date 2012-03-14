@@ -135,6 +135,14 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
 		$this->updated_date       = new \DateTime();
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 	/**
 	 * "touch"es this subscription to update the last_X_date's, so whatever notifications

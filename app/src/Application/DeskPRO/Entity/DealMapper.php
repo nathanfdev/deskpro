@@ -67,7 +67,13 @@ class DealMapper extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $typeid;
 
-
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
 
 	############################################################################
 	# Doctrine Metadata

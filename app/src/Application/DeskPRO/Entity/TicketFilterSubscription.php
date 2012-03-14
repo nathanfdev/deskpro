@@ -90,6 +90,14 @@ class TicketFilterSubscription extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $alert_property_change = false;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 
 	############################################################################

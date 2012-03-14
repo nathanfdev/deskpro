@@ -73,6 +73,14 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $snippet;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	protected function process(array $options)
 	{
 		$options = new \Orb\Util\OptionsArray($options);

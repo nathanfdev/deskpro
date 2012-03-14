@@ -154,6 +154,14 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 		$this->created_at = new \DateTime();
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 
 	############################################################################

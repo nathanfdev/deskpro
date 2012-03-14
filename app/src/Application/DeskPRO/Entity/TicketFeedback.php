@@ -87,6 +87,14 @@ class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
 	 * Is this is a new record? (ie not persisted, or persisted this request)
 	 * @return bool
 	 */

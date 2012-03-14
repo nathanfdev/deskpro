@@ -117,6 +117,14 @@ class SearchLog extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
 	 * Sets the query after trying to normalize it a bit
 	 *
 	 * @param $query

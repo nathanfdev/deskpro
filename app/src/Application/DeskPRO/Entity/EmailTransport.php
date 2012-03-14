@@ -117,6 +117,13 @@ class EmailTransport extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_backup_transport = null;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
 
 	/**
 	 * @return \Swift_Transport

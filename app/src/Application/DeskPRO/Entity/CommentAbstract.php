@@ -120,6 +120,14 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	protected $date_created;
 
 	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
 	 * @static
 	 * @param Person $person
 	 * @param bool $use_request Use the current request to set visitor (and thus ip etc)
@@ -341,9 +349,9 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->isMappedSuperclass = true; 
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
-		$metadata->setPrimaryTable(array( 'name' => 'CommentAbstract', )); 
+		$metadata->isMappedSuperclass = true;
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setPrimaryTable(array( 'name' => 'CommentAbstract', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 	}
 }

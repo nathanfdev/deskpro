@@ -90,6 +90,14 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	protected $sys_name = null;
 
 	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
 	 * Generate a key for a set of usergroups. These same usergroups
 	 * will always generate the same key.
 	 *

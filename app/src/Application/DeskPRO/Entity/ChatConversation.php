@@ -215,6 +215,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		$this->messages = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 	/**
 	 * Create a new message and then add it to this convo

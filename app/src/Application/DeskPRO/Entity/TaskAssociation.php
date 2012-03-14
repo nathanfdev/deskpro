@@ -57,6 +57,14 @@ abstract class TaskAssociation extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $task;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 
 	############################################################################

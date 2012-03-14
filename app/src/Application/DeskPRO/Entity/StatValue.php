@@ -78,6 +78,14 @@ class StatValue extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
 	 * Get a StatValueGroup by date
 	 *
 	 * @param \DateTime $date The DateTime to check

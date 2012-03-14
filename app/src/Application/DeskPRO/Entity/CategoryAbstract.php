@@ -99,6 +99,14 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 	 */
 	public $structure_helper;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function setParent(CategoryAbstract $cat = null)
 	{
 		$this->setModelField('parent', $cat);
@@ -285,9 +293,9 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->isMappedSuperclass = true; 
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
-		$metadata->setPrimaryTable(array( 'name' => 'CategoryAbstract', )); 
+		$metadata->isMappedSuperclass = true;
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setPrimaryTable(array( 'name' => 'CategoryAbstract', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 	}
 }

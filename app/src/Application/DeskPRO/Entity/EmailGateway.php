@@ -115,6 +115,14 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 		$this->addresses = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 	/**
 	 * @return array

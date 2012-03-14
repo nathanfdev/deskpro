@@ -118,6 +118,14 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $template_name;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 	/**
 	 * Get the handler for this widget class.

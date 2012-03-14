@@ -114,6 +114,14 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 		$this->date_created = new \DateTime();
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function addPluginListener(PluginListener $plugin_listener)
 	{
 		$this->listeners->add($plugin_listener);

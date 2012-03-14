@@ -91,6 +91,14 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		$this->children = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function getParentId()
 	{
 		if ($this->parent) {

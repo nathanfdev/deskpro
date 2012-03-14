@@ -99,7 +99,6 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-
 	/**
 	 * Get some data from the extra array
 	 */

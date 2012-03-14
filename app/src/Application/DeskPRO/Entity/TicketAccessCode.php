@@ -78,6 +78,14 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
 		$this->auth = Strings::random($len, Strings::CHARS_KEY);
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 	/**
 	 * Encodes the ticket ID and the auth into a single string.

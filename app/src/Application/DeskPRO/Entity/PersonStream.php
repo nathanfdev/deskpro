@@ -74,6 +74,14 @@ class PersonStream extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_created;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function _prePersist()
 	{
 		if (!$this->date_created) {

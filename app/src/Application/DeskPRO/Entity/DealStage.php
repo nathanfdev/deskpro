@@ -70,6 +70,13 @@ class DealStage extends \Application\DeskPRO\Domain\DomainObject
 //     */
 //    protected $display_order = 0;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
 
 
 	############################################################################

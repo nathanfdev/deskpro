@@ -88,6 +88,14 @@ class ClientChannelSubscription extends \Application\DeskPRO\Domain\DomainObject
 		$this->date_ping    = new \DateTime();
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function setSessionId($session_id)
 	{
 		if ($session_id) {

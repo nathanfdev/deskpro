@@ -73,6 +73,14 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $app;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 	public function setUsergroup($ug)
 	{

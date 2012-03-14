@@ -141,6 +141,14 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
                 //$this->deal      = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 	/**
 	 * Set the default importance of people in this org

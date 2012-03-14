@@ -134,6 +134,14 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_last;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	protected $_changed_last_page = false;
 	protected $is_new = false;
 

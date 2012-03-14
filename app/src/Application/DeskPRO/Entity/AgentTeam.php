@@ -77,6 +77,14 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 		$this->assigned_tasks = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 
 	public function addPerson(Entity\Person $person)

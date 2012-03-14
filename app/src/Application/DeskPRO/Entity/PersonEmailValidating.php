@@ -99,6 +99,14 @@ class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
 		$this->auth = Strings::random(8, Strings::CHARS_KEY);
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function getEmailDomain()
 	{
 		if ($this->email_domain) {

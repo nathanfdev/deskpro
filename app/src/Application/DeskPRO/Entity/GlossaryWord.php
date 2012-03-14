@@ -60,6 +60,14 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $content;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 
 	############################################################################

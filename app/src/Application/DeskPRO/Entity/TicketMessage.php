@@ -131,6 +131,14 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		$this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function setTicketId($id)
 	{
 		$this->ticket = App::getEntityRepository('DeskPRO:Ticket')->find($id);

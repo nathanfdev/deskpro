@@ -73,6 +73,14 @@ class EmailGatewayAddress extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $run_order = 0;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function getTitle()
 	{
 		switch ($this->match_type) {

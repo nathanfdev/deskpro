@@ -106,11 +106,18 @@ class PersonDisplayElement extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $conds_any = array();
 
-
 	/**
 	 * @var int
 	 */
 	protected $display_order = 0;
+
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
 
 	public function getDepartmentId()
 	{

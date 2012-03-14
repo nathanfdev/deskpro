@@ -102,6 +102,13 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
 		$this->date_expire  = new \DateTime('+1 week');
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
 
 	/**
 	 * Get the type

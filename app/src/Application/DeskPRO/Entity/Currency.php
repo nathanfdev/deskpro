@@ -65,6 +65,14 @@ class Currency extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $symbol = '$';
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 
 	############################################################################

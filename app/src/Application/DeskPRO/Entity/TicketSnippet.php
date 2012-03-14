@@ -75,6 +75,14 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $snippet;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 	/**
 	 * Format a snippet

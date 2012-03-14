@@ -118,6 +118,14 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	protected $_ticket_terms;
 
 	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
 	 * Go through the actions on this trigger and find $name, and then
 	 * return its info.
 	 *

@@ -98,6 +98,14 @@ class Article extends ContentAbstract
 		$this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function getLink()
 	{
 		$url = App::getRouter()->generate('user_articles_article', array('slug' => $this->getUrlSlug()), true);

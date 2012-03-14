@@ -76,6 +76,14 @@ class UserRule extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $run_order = 0;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 	/**
 	 * Set the patterns string which is a number of patterns separated by a newline

@@ -140,6 +140,14 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 
 	/**

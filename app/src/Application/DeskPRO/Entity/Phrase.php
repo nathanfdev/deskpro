@@ -109,6 +109,14 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 		$this->created_at = $this->updated_at = new \DateTime();
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function setName($name)
 	{
 		$this->name = $name;

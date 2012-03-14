@@ -79,6 +79,14 @@ class TicketTriggerLog extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_criteria;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 
 	############################################################################

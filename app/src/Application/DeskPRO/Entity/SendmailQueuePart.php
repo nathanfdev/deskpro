@@ -58,6 +58,14 @@ class SendmailQueuePart extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $data;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 
 	############################################################################

@@ -99,6 +99,14 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $last_run_date = null;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 	/**
 	 * Get the date of the next run

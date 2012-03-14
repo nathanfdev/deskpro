@@ -59,6 +59,14 @@ class TicketPriority extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $priority = 10;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 
 
 	############################################################################

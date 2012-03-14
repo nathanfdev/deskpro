@@ -107,6 +107,14 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_results = null;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function getPersonId()
 	{
 		if ($this->person === null) {

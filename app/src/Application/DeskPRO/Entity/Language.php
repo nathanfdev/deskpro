@@ -77,6 +77,13 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $locale = 'en_US';
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
 
 
 	############################################################################

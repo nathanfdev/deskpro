@@ -452,6 +452,14 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->_person_logger->recordExtra('person_created', true);
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function isGuest()
 	{
 		return false;

@@ -116,6 +116,14 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 		$this->date_created = new \DateTime();
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function setAuthor($author)
 	{
 		// Could be a guest, in which case we dont care

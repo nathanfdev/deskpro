@@ -121,6 +121,14 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 		$this->css_updated = new \DateTime();
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function setParentId($parent_id)
 	{
 		if ($parent_id) {

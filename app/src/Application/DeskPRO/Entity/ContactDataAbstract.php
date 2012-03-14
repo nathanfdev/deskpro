@@ -127,6 +127,13 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 	 */
 	protected $_handler = null;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
 
 	/**
 	 * Get the DeskPRO form field object that knows how to render data etc.
@@ -175,9 +182,9 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->isMappedSuperclass = true; 
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
-		$metadata->setPrimaryTable(array( 'name' => 'ContactDataAbstract', )); 
+		$metadata->isMappedSuperclass = true;
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setPrimaryTable(array( 'name' => 'ContactDataAbstract', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 	}
 }

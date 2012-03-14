@@ -81,6 +81,14 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $actions = array();
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function getActionsArrayDesc()
 	{
 		$ret = array();

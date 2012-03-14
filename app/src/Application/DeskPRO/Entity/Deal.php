@@ -213,6 +213,14 @@ class Deal extends \Application\DeskPRO\Domain\DomainObject
         $this->date_created = new \DateTime();
     }
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
     /**
 	 * Set custom field data for a particular field.
 	 *

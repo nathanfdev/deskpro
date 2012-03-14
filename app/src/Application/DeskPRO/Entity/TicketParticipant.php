@@ -79,9 +79,12 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $default_on = true;
 
-	public function __construct()
+	/**
+	 * @return int
+	 */
+	public function getId()
 	{
-
+		return $this->id;
 	}
 
 	public function setPerson(Person $person)

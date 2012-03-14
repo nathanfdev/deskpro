@@ -108,6 +108,14 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 		$this->is_validated = true;
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function getEmailDomain()
 	{
 		if ($this->email_domain) {

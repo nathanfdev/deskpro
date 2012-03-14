@@ -84,6 +84,14 @@ class Permission extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $value = null;
 
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
 	public function __toString()
 	{
 		$str = '[' . $this->name . ':';
