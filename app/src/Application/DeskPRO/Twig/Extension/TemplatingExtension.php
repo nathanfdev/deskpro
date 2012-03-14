@@ -338,6 +338,10 @@ class TemplatingExtension extends \Twig_Extension
 				$format = App::getSetting('core.date_full');
 				break;
 
+			case 'fulltime':
+				$format = App::getSetting('core.date_fulltime');
+				break;
+
 			case 'day':
 				$format = App::getSetting('core.date_day');
 				break;
