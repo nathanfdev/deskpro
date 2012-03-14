@@ -111,3 +111,4 @@ $DP_CONFIG['import'] = array(
 
 // $DP_CONFIG['enable_debug_trace'] = true;
 // $DP_CONFIG['enable_slow_page_log'] = 1.1;
+// $DP_CONFIG['enable_slow_page_log_minquerytime'] = 0.8;
