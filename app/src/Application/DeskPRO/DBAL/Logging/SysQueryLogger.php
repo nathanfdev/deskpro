@@ -268,7 +268,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
 				$sql = str_replace(array("\r\n", "\n", "\t"), ' ', $sql);
 				$sql = preg_replace('# {2,}#', ' ', $sql);
-				$sql = substr($sql, 0, 2000);
+				$sql = substr($sql, 0, 5000);
 
 				$params = array();
 				foreach ($q['params'] as $v) {
@@ -294,7 +294,24 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 					}
 				}
 
-				$write[] = sprintf("=> Query %.4f %s: %s \t\t Query_Params: %s\n", $q['time_taken'], $name, $sql, implode(', ', $params));
+				$m = null;
+				if (preg_match('# FROM ([a-zA-Z_]+)#', $sql, $m)) {
+					$table = $m[1];
+				} elseif (preg_match('#INSERT INTO ([a-zA-Z_]+)#', $sql, $m)) {
+					$table = $m[1];
+				} elseif (preg_match('#UPDATE ([a-zA-Z_]+)#', $sql, $m)) {
+					$table = $m[1];
+				} elseif (preg_match('#DELETE FROM ([a-zA-Z_]+)#', $sql, $m)) {
+					$table = $m[1];
+				} else {
+					$table = '';
+				}
+
+				if ($table) {
+					$table = ' ' . $table;
+				}
+
+				$write[] = sprintf("=> Query %.4f %s$table: %s \t\t Query_Params: %s\n", $q['time_taken'], $name, $sql, implode(', ', $params));
 			}
 
 			foreach ($name_counts as $name => $count) {
