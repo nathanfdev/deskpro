@@ -204,9 +204,10 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 	 *
 	 * @param $prefix
 	 */
-	public function preloadPrefix($prefix)
+	public function preloadPrefix($add_prefix = null)
 	{
-		$prefix = $this->id_prefix . $prefix;
+		if (!$add_prefix) $add_prefix = '';
+		$prefix = $this->id_prefix . $add_prefix;
 
 		if (in_array($prefix, $this->loaded_prefixes)) {
 			return;

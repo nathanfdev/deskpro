@@ -109,7 +109,7 @@ $definition->setArguments(array(
 	new Reference('database_connection')
 ));
 $definition->addMethodCall('setPrefix', array('dql', new Reference('deskpro.interface_value')));
-$definition->addMethodCall('preloadPrefix', array(new Reference('deskpro.interface_value')));
+$definition->addMethodCall('preloadPrefix');
 $container->setDefinition('doctrine.orm.default_query_cache', $definition);
 
 // doctrine.orm.default_result_cache
