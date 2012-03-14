@@ -258,7 +258,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
 				$name = $hashes_to_name[$hash];
 
-				if (!$name_counts[$name]) {
+				if (!isset($name_counts[$name])) {
 					$name_counts[$name] = 0;
 					$name_counts_time[$name] = 0.0;
 				}
