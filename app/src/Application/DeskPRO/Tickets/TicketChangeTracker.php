@@ -94,12 +94,6 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 
 		if (!$ticket['id']) {
 			$this->is_new_ticket = true;
-			$this->orig_parts = array();
-		} else {
-			$this->orig_parts = array();
-			foreach ($ticket->participants as $p) {
-				$this->orig_parts[] = $p->id;
-			}
 		}
 	}
 
@@ -282,20 +276,6 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 					break;
 			}
 		}
-
-		$parts = new \Doctrine\Common\Collections\ArrayCollection();
-
-		foreach ($this->orig_parts as $pid) {
-			$p = App::findEntity('DeskPRO:Person', $pid);
-			if (!$p) continue;
-
-			$ticket_part = new \Application\DeskPRO\Entity\TicketParticipant();
-			$ticket_part['person'] = $p;
-			$ticket_part['ticket'] = $this->original_ticket;
-			$parts->add($ticket_part);
-		}
-
-		$this->original_ticket->setRawParticipants($parts);
 
 		return $this->original_ticket;
 	}
