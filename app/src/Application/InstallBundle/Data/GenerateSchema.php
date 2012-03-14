@@ -232,6 +232,7 @@ CREATE TABLE `tickets_search_message_active` (
   `agent_team_id` int(11) DEFAULT NULL,
   `organization_id` int(11) DEFAULT NULL,
   `email_gateway_id` int(11) DEFAULT NULL,
+  `creation_system` varchar(20) NOT NULL,
   `status` varchar(30) NOT NULL,
   `urgency` int(11) NOT NULL,
   `is_hold` tinyint(1) NOT NULL,
