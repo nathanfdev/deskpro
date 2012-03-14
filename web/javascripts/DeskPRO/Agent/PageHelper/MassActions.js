@@ -212,13 +212,19 @@ DeskPRO.Agent.PageHelper.MassActions = new Orb.Class({
 	apply: function() {
 		if(this.options.applyAction) {
 			var formDataInfo = {
-				checkedCount: 0,
-				actionsCount: 0
-			};
-			var formData = this.selectionBar.getCheckedFormValues('results_ids[]', null, formDataInfo);
+					checkedCount: 0,
+					actionsCount: 0
+				},
+				formData = this.selectionBar.getCheckedFormValues('result_ids[]', null, formDataInfo),
+				rows = [];
 
-			if(formDataInfo.checkedCount)
-				this.options.applyAction(this.wrapper, formData);
+			$(formData).each(function(index, param) {
+				rows.push(param.value);
+			});
+
+			if(formDataInfo.checkedCount) {
+				this.options.applyAction(this.wrapper, {'result_ids': rows});
+			}
 		}
 
 		this.close();

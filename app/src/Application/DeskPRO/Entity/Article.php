@@ -248,6 +248,7 @@ class Article extends ContentAbstract
 
 	public function _queueSearchIndexUpdate($op = 'update')
 	{
+		return;
 		$container = App::getContainer();
 		if ($container instanceof \Application\DeskPRO\DependencyInjection\DeskproContainer) {
 			$container->getSystemService('search_indexer')->update($this, $op);

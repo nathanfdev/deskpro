@@ -83,12 +83,8 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 	},
 
 	massApplyAction: function(wrapper, formData) {
-		var data = {};
-		var myFormData = $('input, select',wrapper).serializeArray();
-
-		$(formData).each(function(index, param) {
-			data[param.name] = param.value;
-		});
+		var data = formData,
+			myFormData = $('input, select',wrapper).serializeArray();
 
 		$(myFormData).each(function(index, param) {
 			data[param.name] = param.value;
@@ -105,7 +101,11 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 
 	actionAppliedCallback: function(data) {
 		if(data && data.success) {
-			DeskPRO_Window.sections.publish_section.init();
+			var selected = $('#publish_outline .nav-selected');
+			selected.click();
+
+			var section = DeskPRO_Window.sections.publish_section;
+			DeskPRO_Window.getSectionData('publish_section', section._initSection.bind(section));
 		}
 	},
 

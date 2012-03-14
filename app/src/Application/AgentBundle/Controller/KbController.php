@@ -157,7 +157,7 @@ class KbController extends AbstractController
 
 	public function ajaxMassSaveAction()
 	{
-		$articles = $this->in->getCleanValueArray('results_ids', 'int', 'discard');
+		$articles = $this->in->getCleanValueArray('result_ids', 'int', 'discard');
 
 		$action = $this->in->getString('action');
 		$data = array('success' => 1);
@@ -169,7 +169,8 @@ class KbController extends AbstractController
 				$to_category = $this->in->getInt('to_category');
 
 				if(!$from_category
-				|| !$to_category) {
+				|| !$to_category
+				|| ($from_category == $to_category)) {
 					$skip = true;
 					break;
 				}
@@ -187,42 +188,36 @@ class KbController extends AbstractController
 		}
 
 		if(!$skip) {
-			try {
-				$this->em->beginTransaction();
+			$this->em->beginTransaction();
 
-				foreach ($articles as $article_id) {
-					$article = App::findEntity('DeskPRO:Article', $article_id);
+			foreach ($articles as $article_id) {
+				$article = App::findEntity('DeskPRO:Article', $article_id);
 
-					if(!$article) {
-						continue;
-					}
-
-					switch ($action) {
-						case 'draft':
-							$article->status_code = 'hidden.draft';
-							break;
-						case 'delete':
-							$article->status_code = 'hidden.deleted';
-							break;
-						case 'move':
-							$article->removeFromCategory($from);
-							// Refactor!
-							if(!$article->isInCategory($to))
-								$article->addToCategory($to);
-
-							break;
-					}
-
-					$this->em->persist($article);
+				if(!$article) {
+					continue;
 				}
 
-				$this->em->flush();
-				$this->em->commit();
+				switch ($action) {
+					case 'draft':
+						$article->status_code = 'hidden.draft';
+						break;
+					case 'delete':
+						$article->status_code = 'hidden.deleted';
+						break;
+					case 'move':
+						$article->removeFromCategory($from);
+						// Refactor!
+						if(!$article->isInCategory($to))
+							$article->addToCategory($to);
+
+						break;
+				}
+
+				$this->em->persist($article);
 			}
-			catch (\Exception $e) {
-				$this->em->rollback();
-				throw $e;
-			}
+
+			$this->em->flush();
+			$this->em->commit();
 		}
 
 		return $this->createJsonResponse($data);
