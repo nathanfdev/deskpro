@@ -1817,16 +1817,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 */
-	public function _queueSearchIndexUpdate($op = 'update')
-	{
-		$container = App::getContainer();
-		if ($container instanceof \Application\DeskPRO\DependencyInjection\DeskproContainer) {
-			$container->getSystemService('search_indexer')->update($this, $op);
-		}
-	}
-
-	/**
 	 * @return \Application\DeskPRO\Tickets\TicketChangeTracker
 	 */
 	public function getTicketLogger()
@@ -1932,9 +1922,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->addLifecycleCallback('_presaveTicketLogs', 'prePersist');
 		$metadata->addLifecycleCallback('_presaveTicketLogs', 'preUpdate');
 		$metadata->addLifecycleCallback('_saveTicketLogs', 'postPersist');
-		$metadata->addLifecycleCallback('_queueSearchIndexUpdate', 'postPersist');
 		$metadata->addLifecycleCallback('_saveTicketLogs', 'postUpdate');
-		$metadata->addLifecycleCallback('_queueSearchIndexUpdate', 'postUpdate');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'ref', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ref', ));
 		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));

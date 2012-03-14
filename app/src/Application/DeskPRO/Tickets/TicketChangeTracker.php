@@ -96,7 +96,10 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 			$this->is_new_ticket = true;
 			$this->orig_parts = array();
 		} else {
-			$this->orig_parts = App::getDb()->fetchAllCol("SELECT person_id FROM tickets_participants WHERE ticket_id = ?", array($ticket->id));
+			$this->orig_parts = array();
+			foreach ($ticket->participants as $p) {
+				$this->orig_parts[] = $p->id;
+			}
 		}
 	}
 
