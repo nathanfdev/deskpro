@@ -11,7 +11,7 @@
 			</h1>
 		</header>
 		<article>
-			<div class="dp-form">
+			<div class="dp-radio-expander-form">
 				<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 					<div class="dp-form-row">
 						<div class="dp-form-input">
@@ -23,7 +23,9 @@
 
 								<div class="dp-group-options" style="display: none">
 									<span>Are you sure you would like to set the selected items as drafts?</span>
-									<a class="apply-actions">Apply Action</a>
+									<div class="execute-row">
+										<a class="apply-actions">Apply Action</a>
+									</div>
 								</div>
 							</div>
 
@@ -34,7 +36,9 @@
 								</label>
 								<div class="dp-group-options" style="display: none">
 									<span>Are you sure you would like to delete the selected items?</span>
-									<a class="apply-actions">Apply Action</a>
+									<div class="execute-row">
+										<a class="apply-actions">Apply Action</a>
+									</div>
 								</div>
 							</div>
 
@@ -45,19 +49,24 @@
 								</label>
 								<div class="dp-group-options" style="display: none">
 
-								<input type="hidden" name="from_category" value="{{ category.id }}" />
-								{% include 'AgentBundle:Common:select-standard.html.twig' with {
-									'name': 'newarticle[category_id]',
-									'id': baseId ~ '_cat',
-									'add_classname': 'category_id',
-									'add_attr': '',
-									'with_blank': 1,
-									'blank_title': '',
-									'categories': article_categories,
-									'selected': 0
-								} %}
+									<input type="hidden" name="from_category" value="{{ category.id }}" />
+									<label>
+										Move to 
+										{% include 'AgentBundle:Common:select-standard.html.twig' with {
+											'name': 'to_category',
+											'id': baseId ~ '_cat',
+											'add_classname': 'category_id',
+											'add_attr': '',
+											'with_blank': 1,
+											'blank_title': '',
+											'categories': article_categories,
+											'selected': 0
+										} %}
+									</label>
 
-								<a class="apply-actions">Apply Action</a>
+									<div class="execute-row">
+										<a class="apply-actions">Apply Action</a>
+									</div>
 								</div>
 							</div>
 						</div>

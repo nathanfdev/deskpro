@@ -128,6 +128,11 @@ class Article extends ContentAbstract
 		$data['article'] = $this;
 	}
 
+	public function isInCategory(ArticleCategory $cat)
+	{
+		return $this->categories->contains($cat);
+	}
+
 	public function addToCategory(ArticleCategory $cat)
 	{
 		$this->categories->add($cat);
@@ -135,7 +140,7 @@ class Article extends ContentAbstract
 
 	public function removeFromCategory(ArticleCategory $cat)
 	{
-		$this->categories->remove($cat);
+		$this->categories->removeElement($cat);
 	}
 
 	public function setCategories(array $cats)

@@ -174,6 +174,19 @@ DeskPRO.Agent.PageHelper.MassActions = new Orb.Class({
 		$('.apply-actions', this.wrapper).on('click', (function(ev) {
 			this.apply();
 		}).bind(this));
+
+		this.selectionBar.addEvent('checkChange', function(el, is_checked, count) {
+			if (!this.isOpen()) return;
+			this.updateCount(count);
+		}, this);
+		this.selectionBar.addEvent('checkAll', function(count) {
+			if (!this.isOpen()) return;
+			this.updateCount(count);
+		}, this);
+		this.selectionBar.addEvent('checkNone', function() {
+			if (!this.isOpen()) return;
+			this.updateCount(0);
+		}, this);
 	},
 
 	updateAssignmentsDisplay: function() {
@@ -184,6 +197,10 @@ DeskPRO.Agent.PageHelper.MassActions = new Orb.Class({
 	},
 
 	updateCount: function(num) {
+		if (num === undefined || num === null) {
+			num = this.selectionBar.getCount();
+		}
+		this.countEl.text(num);
 	},
 
 	getActionFormValues: function(appendArray, isApply, info) {
