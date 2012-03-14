@@ -307,7 +307,7 @@ class KernelBooter
 	 * @param string $env
 	 * @param bool $debug
 	 */
-	public static function bootUpgrade($env = 'prod', $debug = false)
+	public static function bootImport($env = 'prod', $debug = false)
 	{
 		static::ensureCli();
 
@@ -315,7 +315,7 @@ class KernelBooter
 
 		$argv = $_SERVER['argv'];
 		array_shift($argv); // remove cron.php
-		array_unshift($argv, 'upgrade.php', 'dp:import', '--run'); // so we can add the command name in the right spot
+		array_unshift($argv, 'import.php', 'dp:import', '--run'); // so we can add the command name in the right spot
 		$input = new \Symfony\Component\Console\Input\ArgvInput($argv);
 
 		$app->run($input);
