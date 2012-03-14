@@ -57,7 +57,8 @@ DeskPRO.Agent.PageHelper.MassActions = new Orb.Class({
 			/**
 			 * Function to call when apply button is clicked.
 			 */
-			applyAction: null
+			applyAction: function() {
+			},
 		};
 
 		this.setOptions(options);

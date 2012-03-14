@@ -15,6 +15,8 @@
 				<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 					<div class="dp-form-row">
 						<div class="dp-form-input">
+							<input type="hidden" name="from_category" value="{{ category.id }}" />
+
 							<div class="dp-input-group">
 								<label>
 									<input type="radio" class="option-trigger" name="action" value="draft" />
@@ -48,10 +50,8 @@
 									Change Category
 								</label>
 								<div class="dp-group-options" style="display: none">
-
-									<input type="hidden" name="from_category" value="{{ category.id }}" />
 									<label>
-										Move to 
+										Move to: 
 										{% include 'AgentBundle:Common:select-standard.html.twig' with {
 											'name': 'to_category',
 											'id': baseId ~ '_cat',

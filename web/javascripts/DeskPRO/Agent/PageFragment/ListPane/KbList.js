@@ -101,11 +101,13 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 
 	actionAppliedCallback: function(data) {
 		if(data && data.success) {
-			var selected = $('#publish_outline .nav-selected');
-			selected.click();
+			var category = data.category;
 
 			var section = DeskPRO_Window.sections.publish_section;
-			DeskPRO_Window.getSectionData('publish_section', section._initSection.bind(section));
+			DeskPRO_Window.getSectionData('publish_section', function(data) {
+				(section._initSection.bind(section))(data);
+				$('#publish_outline_articlescat_list .kb-cat-' + category + ' .is-nav-item').click();
+			});
 		}
 	},
 

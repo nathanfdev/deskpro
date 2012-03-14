@@ -92,6 +92,7 @@ class PublishController extends AbstractController
 		$counts['validating_comments']   = $this->publish_helper->getValidatingCommentsCount();
 		$counts['validating_content']    = $this->publish_helper->getValidatingContentCount();
 		$counts['drafts']                = $this->publish_helper->getDraftsCount();
+		$counts['all_drafts']            = $this->publish_helper->getDraftsCount(false);
 		$counts['pending']               = App::getDb()->fetchColumn("SELECT COUNT(*) FROM article_pending_create");
 
 		$usergroups = $this->em->getRepository('DeskPRO:Usergroup')->findAll();
@@ -529,6 +530,7 @@ class PublishController extends AbstractController
 	public function listDraftsAction()
 	{
 		$per_page = 25;
+		$get_all = $this->in->getBool('all');
 
 		$curpage = $this->in->getUint('page');
 		if (!$curpage) $curpage = 1;
@@ -545,7 +547,7 @@ class PublishController extends AbstractController
 			$pageinfo = Numbers::getPaginationPages($total, $curpage, $per_page);
 		}
 
-		$drafts =  $this->publish_helper->getDraftContent(null);
+		$drafts =  $this->publish_helper->getDraftContent(null, 'ASC', $get_all);
 
 		$tpl = 'AgentBundle:Publish:drafts.html.twig';
 		if ($this->request->isPartialRequest()) {
@@ -555,7 +557,8 @@ class PublishController extends AbstractController
 		return $this->render($tpl, array(
 			'drafts'   => $drafts,
 			'total'    => $total,
-			'pageinfo' => $pageinfo
+			'pageinfo' => $pageinfo,
+			'all'      => $get_all,
 		));
 	}
 

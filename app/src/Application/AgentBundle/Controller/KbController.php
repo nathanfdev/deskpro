@@ -158,14 +158,14 @@ class KbController extends AbstractController
 	public function ajaxMassSaveAction()
 	{
 		$articles = $this->in->getCleanValueArray('result_ids', 'int', 'discard');
-
+		$from_category = $this->in->getInt('from_category');
 		$action = $this->in->getString('action');
-		$data = array('success' => 1);
+
+		$data = array('success' => 1, 'category' => $from_category);
 		$skip = false;
 
 		switch ($action) {
 			case 'move':
-				$from_category = $this->in->getInt('from_category');
 				$to_category = $this->in->getInt('to_category');
 
 				if(!$from_category

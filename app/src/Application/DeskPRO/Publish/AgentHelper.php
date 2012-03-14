@@ -370,13 +370,13 @@ class AgentHelper implements PersonContextInterface
 	 *
 	 * @return array
 	 */
-	public function getDraftContent($limit = null, $order_dir = 'ASC')
+	public function getDraftContent($limit = null, $order_dir = 'ASC', $all = false)
 	{
-		$results = $this->getDraftInfo($limit, $order_dir);
+		$results = $this->getDraftInfo($limit, $order_dir, $all);
 		return $this->getContentFromInfo($results);
 	}
 
-	public function getDraftInfo($limit = null, $order_dir = 'ASC')
+	public function getDraftInfo($limit = null, $order_dir = 'ASC', $all = false)
 	{
 		$sql_parts = array();
 
@@ -400,11 +400,17 @@ class AgentHelper implements PersonContextInterface
 
 		foreach ($this->enabled_types as $t) {
 			$t_info = $types[$t];
+			$person_sql = '';
+
+			if(!$all) {
+				$person_sql = " AND c.person_id = {$this->person_context['id']}";
+			}
+
 			$sql_parts[] = "(
 				SELECT DISTINCT(c.id) as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
 				FROM $t AS c
 				LEFT JOIN {$t_info['rev_table']} r ON (c.id = r.{$t_info['id_field']})
-				WHERE (c.status = 'hidden' AND c.hidden_status = 'draft' AND c.person_id = {$this->person_context['id']}) OR (r.status = 'draft' AND r.person_id = {$this->person_context['id']})
+				WHERE (c.status = 'hidden' AND c.hidden_status = 'draft' $person_sql) OR (r.status = 'draft' $person_sql)
 				GROUP BY c.id
 			)";
 		}
@@ -428,7 +434,7 @@ class AgentHelper implements PersonContextInterface
 	 *
 	 * @return int
 	 */
-	public function getDraftsCount()
+	public function getDraftsCount($mine = true)
 	{
 		$types = array(
 			'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
@@ -440,11 +446,17 @@ class AgentHelper implements PersonContextInterface
 		$sql_parts = array();
 		foreach ($this->enabled_types as $t) {
 			$t_info = $types[$t];
+			$person_sql = '';
+
+			if($mine) {
+				$person_sql = " AND c.person_id = {$this->person_context['id']}";
+			}
+
 			$sql_parts[] = "(
 				SELECT COUNT(*)
 				FROM $t c
 				LEFT JOIN {$t_info['rev_table']} r ON (r.{$t_info['id_field']} = c.id)
-				WHERE (c.status = 'hidden' AND c.hidden_status = 'draft' AND c.person_id = {$this->person_context['id']}) OR (r.status = 'draft' AND r.person_id = {$this->person_context['id']})
+				WHERE (c.status = 'hidden' AND c.hidden_status = 'draft' $person_sql) OR (r.status = 'draft' $person_sql)
 			) AS count_$t";
 		}
 
