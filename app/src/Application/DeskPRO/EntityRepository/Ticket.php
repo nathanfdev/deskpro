@@ -115,13 +115,7 @@ class Ticket extends AbstractEntityRepository
 			FROM DeskPRO:Ticket t INDEX BY t.id
 			WHERE t.id IN(?1)
 			ORDER BY t.id ASC
-		")->setParameter(1, $ids)
-		  ->setFetchMode('DeskPRO:Ticket', 'custom_data', 'EAGER')
-		  ->setFetchMode('DeskPRO:Ticket', 'person', 'EAGER')
-		  ->setFetchMode('DeskPRO:Person', 'custom_data', 'EAGER')
-		  ->setFetchMode('DeskPRO:Person', 'emails', 'EAGER')
-		  ->setFetchMode('DeskPRO:Person', 'primary_email', 'EAGER')
-		  ->execute();
+		")->setParameter(1, $ids)->execute();
 
 		return $tickets;
 	}

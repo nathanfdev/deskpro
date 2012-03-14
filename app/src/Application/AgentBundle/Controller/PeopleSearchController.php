@@ -149,6 +149,7 @@ class PeopleSearchController extends AbstractController
 
 		$people = $results_helper->getPeopleForPage($page);
 
+
 		#------------------------------
 		# Send results
 		#------------------------------
@@ -161,28 +162,19 @@ class PeopleSearchController extends AbstractController
 		$vars['display_fields'] = array_unique($vars['display_fields']);
 
 		// person defs for columns
-		$person_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+		$user_field_manager = $this->container->getSystemService('person_fields_manager');
+		$person_field_defs = $user_field_manager->getFields();
 
 		$has_u_fields = false;
 		foreach ($vars['display_fields'] as $f) {
 			if (strpos($f, 'person_fields[') === 0) $has_u_fields = true;
 		}
 
-		$user_all_custom_fields = array();
-
-		if ($has_u_fields) {
-			$user_field_manager = $this->container->getSystemService('person_fields_manager');
-
-			foreach ($people as $p) {
-				$user_all_custom_fields[$p->id] = $user_field_manager->getDisplayArrayForObject($p);
-			}
-		}
-
 		$result_display = new \Application\DeskPRO\People\PeopleResultsDisplay($people);
 
 		$alphabet = $this->getAlphabet();
 		$letters = array();
-		
+
 		$params = $_GET;
 		$params['letter'] = '*';
 		$letters[] = array('title'=>'*', 'params' => $params);
@@ -205,7 +197,6 @@ class PeopleSearchController extends AbstractController
 			'page'                    => $page,
 			'person_field_defs'       => $person_field_defs,
 			'load_first'              => $this->in->getBool('load_first'),
-			'user_all_custom_fields'  => $user_all_custom_fields,
 			'result_display'          => $result_display,
 			'alphabet'                => $letters
 		));
@@ -242,8 +233,6 @@ class PeopleSearchController extends AbstractController
 			if (strpos($f, 'person_fields[') === 0) $has_u_fields = true;
 		}
 
-		$user_all_custom_fields = array();
-
 		if ($has_u_fields) {
 			$user_field_manager = $this->container->getSystemService('person_fields_manager');
 
@@ -264,7 +253,6 @@ class PeopleSearchController extends AbstractController
 			'people'                  => $people,
 			'display_fields'          => $display_fields,
 			'person_field_defs'       => $person_field_defs,
-			'user_all_custom_fields'  => $user_all_custom_fields,
 			'result_display'          => $result_display,
 		));
 	}
@@ -433,10 +421,6 @@ class PeopleSearchController extends AbstractController
         $titles['usergroups'] = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
         $titles['languages'] = App::getEntityRepository('DeskPRO:Language')->getTitles();
 		$vars['titles'] = $titles;
-
-		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
-		$people_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
-		$vars['people_fields'] = $people_fields;
 
 		return $this->_getResponseForPeople('list', $result_cache['id'], $results_helper, $vars);
 	}

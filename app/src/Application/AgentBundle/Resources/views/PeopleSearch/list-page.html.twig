@@ -1,12 +1,15 @@
 <section class="search-reuslts page-set" data-page="{{page}}">
 	{% for person in people %}
+
+		{% set person_email = result_display.getEmail(person) %}
+
 		<article class="row-item person person-{{person.id}}" data-route="person:{{ path('agent_people_view', {'person_id': person.id|default('0')}) }}" data-route-title="@selector(a.name)" data-route-openclass="open">
 			<span class="top-row-spacer"></span>
 			<div class="top-row">
 				<div class="top-row-left">
 					<h3>
 						<a class="name click-through"><span class="person-name-picture" style="background-image: url({{ person.getPictureUrl(15) }})">{{ person.display_name }}</span></a>
-						{% if person.email_address %}<span class="person-email">&lt;{{ person.email_address }}&gt;</span>{% endif %}
+						{% if person_email.email %}<span class="person-email">&lt;{{ person_email.email }}&gt;</span>{% endif %}
 						{% if person.organization %}<span class="person-org" data-route="org:{{ path('agent_org_view', {organization_id: person.organization.id})}}">{% if person.organization_position %}{{ person.organization_position }}, {% endif %}{{ person.organization.name }}{% endif %}</span>
 					</h3>
 				</div>
@@ -42,8 +45,9 @@
 								{% set has_set = true %}
 								<li><span class="prop-val num_tickets">Tickets: {{ result_display.getPersonTicketCount(person) }}</span></li>
 							{% else %}
-								{% for f in user_all_custom_fields[person.id] %}
-									{% if field == 'person_fields['~f.id~']' and person.hasCustomField(f.id) %}
+								{% set custom_fields = result_display.getCustomFields(person) %}
+								{% for f in custom_fields %}
+									{% if field == 'person_fields['~f.id~']' and custom_fields[f.id] %}
 									{% set has_set = true %}
 									<li>
 										<span class="prop-title">{{ f.title }}:</span>

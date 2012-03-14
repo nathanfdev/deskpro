@@ -231,9 +231,9 @@ class Person extends AbstractEntityRepository
 			WHERE p.id IN(?1)
 			ORDER BY p.id ASC
 		")->setParameter(1, $ids)
-		  ->setFetchMode('DeskPRO:Person', 'emails', 'EAGER')
-		  ->setFetchMode('DeskPRO:Person', 'primary_email', 'EAGER')
-		  ->setFetchMode('DeskPRO:Person', 'custom_data', 'EAGER')
+		  ->setFetchMode('Application\\DeskPRO\\Entity\\Person', 'emails', \Doctrine\ORM\Mapping\ClassMetadataInfo::FETCH_EAGER)
+		  ->setFetchMode('Application\\DeskPRO\\Entity\\PersonEmail', 'primary_email', \Doctrine\ORM\Mapping\ClassMetadataInfo::FETCH_EAGER)
+		  ->setFetchMode('Application\\DeskPRO\\Entity\\CustomDataPerson', 'custom_data', \Doctrine\ORM\Mapping\ClassMetadataInfo::FETCH_EAGER)
 		  ->execute();
 
 		return $people;

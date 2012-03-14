@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
 
-class PersonEmail extends \Doctrine\ORM\EntityRepository
+class PersonEmail extends AbstractEntityRepository
 {
 	public function getEmail($email_address)
 	{

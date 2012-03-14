@@ -70,6 +70,11 @@ class TicketResultsDisplay
 	protected $all_labels;
 
 	/**
+	 * @var array
+	 */
+	protected $people;
+
+	/**
 	 * @param \Application\DeskPRO\Entity\Ticket[] $tickets
 	 */
 	public function __construct(array $tickets)
@@ -78,9 +83,19 @@ class TicketResultsDisplay
 		$this->ticket_count = count($tickets);
 		$this->ticket_ids = Arrays::flattenToIndex($this->tickets, 'id');
 
-
 		$this->em = App::getOrm();
 		$this->db = $this->em->getConnection();
+
+		$people_ids = array();
+		foreach ($tickets as $ticket) {
+			$people_ids[] = $ticket->person->getId();
+			if ($ticket->agent) {
+				$people_ids[] = $ticket->agent->getId();
+			}
+		}
+
+		$this->dep_names = $this->em->getRepository('DeskPRO:Department')->getFullDepartmentNames();
+		$this->people = $this->em->getRepository('DeskPRO:Person')->getPeopleResultsFromIds($people_ids);
 	}
 
 
@@ -149,5 +164,47 @@ class TicketResultsDisplay
 	{
 		$this->getAllLabels();
 		return !empty($this->all_labels[$ticket->id]);
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 * @return \Application\DeskPRO\Entity\Person
+	 */
+	public function getPerson(Ticket $ticket)
+	{
+		if (!$ticket->person) {
+			return null;
+		}
+
+		return $this->people[$ticket->person->getId()];
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 * @return \Application\DeskPRO\Entity\Person
+	 */
+	public function getAgent(Ticket $ticket)
+	{
+		if (!$ticket->agent) {
+			return null;
+		}
+
+		return $this->people[$ticket->agent->getId()];
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 * @return string
+	 */
+	public function getDepartmentName(Ticket $ticket)
+	{
+		if (!$ticket->department) {
+			return null;
+		}
+
+		return $this->dep_names[$ticket->department->getId()];
 	}
 }
