@@ -155,6 +155,48 @@ class KbController extends AbstractController
 		return $this->createJsonResponse(array('success' => 1));
 	}
 
+	public function ajaxMassSaveAction()
+	{
+		$articles = $this->in->getCleanValueArray('result_ids', 'int', 'discard');
+		$action = $this->in->getString('action');
+		$data = array('success' => 1);
+
+		foreach ($articles as $article_id) {
+			$article = App::findEntity('DeskPRO:Article', $article_id);
+
+			if(!$article) {
+				continue;
+			}
+
+			switch ($action) {
+				case 'draft':
+					$article->status_code = 'hidden.draft';
+					break;
+				case 'delete':
+					$article->status_code = 'hidden.deleted';
+					break;
+				case 'move':
+					$from_category = $this->in->getInt('from_category');
+					$to_category = $this->in->getInt('to_category');
+
+					$from = App::findEntity('DeskPRO:ArticleCategory', $from_category);
+					$to = App::findEntity('DeskPRO:ArticleCategory', $to_category);
+
+					$article->removeFromCategory($from);
+					$article->addToCategory($to);
+
+
+					break;
+			}
+		}
+
+		$this->em->persist($article);
+		$this->em->flush();
+		$this->em->commit();
+
+		$this->createJsonResponse($data);
+	}
+
 	public function ajaxSaveAction($article_id)
 	{
 		$article = App::findEntity('DeskPRO:Article', $article_id);
@@ -473,6 +515,10 @@ class KbController extends AbstractController
 			$tpl = 'AgentBundle:Kb:filter-page.html.twig';
 		}
 
+		$article_categories = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoryHelper()->getCategoriesInHierarchy();
+
+		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newarticle', $this->person->id);
+
 		return $this->render($tpl, array(
 			'results'            => $results,
 			'result_id'          => $result_cache['id'],
@@ -482,6 +528,8 @@ class KbController extends AbstractController
 			'cache'              => $result_cache,
 			'terms_summary'      => $result_cache['extra']['summary'],
 			'category'           => $category,
+
+			'article_categories' => $article_categories
 		));
 	}
 
@@ -527,6 +575,8 @@ class KbController extends AbstractController
 			'state' => $state
 		));
 	}
+
+
 
 	public function newArticleSaveAction()
 	{

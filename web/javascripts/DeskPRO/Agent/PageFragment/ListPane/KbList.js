@@ -75,8 +75,23 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 		this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
 
 		this.massActions = new DeskPRO.Agent.PageHelper.MassActions(this, {
-			isListView: false
+			isListView: false,
+			applyAction: (this.massApplyAction).bind(this)
 		});
+
+		DeskPRO.ElementHandler_Exec($('#kb-mass-action-overlay'));
+	},
+
+	massApplyAction: function(wrapper, formData) {
+		var data = formData;
+		data = $.extend(formData, wrapper.serializeArray());
+		$.post(BASE_URL + "agent/kb/article/ajax-mass-save", data, (this.actionAppliedCallback).bind(this));
+	},
+
+	actionAppliedCallback: function(data) {
+		if(data && data.success) {
+			// Reload view!
+		}
 	},
 
 	initVisibleTicket: function() {

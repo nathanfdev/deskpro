@@ -3,10 +3,7 @@
 	data-base-id="{{baseId}}"
 	data-upload-url="{{ path('agent_accept_upload') }}"
 >
-	<script type="text/x-deskpro-plain" class="radio-tpl">
-		<button class="clean-white radio"><span class="radio-title"></span></button>
-	</script>
-	<section class="mass-actions-overlay">
+	<section id="kb-mass-action-overlay" class="mass-actions-overlay">
 		<header>
 			<span class="close close-trigger"></span>
 			<h1>
@@ -14,37 +11,54 @@
 			</h1>
 		</header>
 		<article>
-			<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
-				<div class="dp-form-row">
-					<div class="dp-form-input">
-						<div class="dp-input-group">
-							<label>
-								<input type="radio" class="option-trigger" name="transport[transport_type]" value="mail" {% if transport.transport_type == 'mail' %}checked="checked"{% endif %} />
-								Set as Draft
-							</label>
+			<div class="dp-form">
+				<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
+					<div class="dp-form-row">
+						<div class="dp-form-input">
+							<div class="dp-input-group">
+								<label>
+									<input type="radio" class="option-trigger" name="action" value="draft" />
+									Set as Draft
+								</label>
 
-							<div class="dp-group-options" style="display: none">
-								Are you sure?
+								<div class="dp-group-options" style="display: none">
+									<span>Are you sure you would like to set the selected items as drafts?</span>
+									<a class="apply-actions">Apply Action</a>
+								</div>
 							</div>
-						</div>
 
-						<div class="dp-input-group">
-							<label>
-								<input type="radio" class="option-trigger" name="transport[transport_type]" value="smtp" {% if not transport.transport_type or transport.transport_type == 'smtp' %}checked="checked"{% endif %} />
-								Delete
-							</label>
-							<div class="dp-group-options" style="display: none">
-								Are you sure?
+							<div class="dp-input-group">
+								<label>
+									<input type="radio" class="option-trigger" name="action" value="delete" />
+									Delete
+								</label>
+								<div class="dp-group-options" style="display: none">
+									<span>Are you sure you would like to delete the selected items?</span>
+									<a class="apply-actions">Apply Action</a>
+								</div>
 							</div>
-						</div>
 
-						<div class="dp-input-group">
-							<label>
-								<input type="radio" class="option-trigger" name="transport[transport_type]" value="gmail" {% if transport.transport_type == 'gmail' %}checked="checked"{% endif %} />
-								Change Category
-							</label>
-							<div class="dp-group-options" style="display: none">
-								List categories.
+							<div class="dp-input-group">
+								<label>
+									<input type="radio" class="option-trigger" name="action" value="move" />
+									Change Category
+								</label>
+								<div class="dp-group-options" style="display: none">
+
+								<input type="hidden" name="from_category" value="{{ category.id }}" />
+								{% include 'AgentBundle:Common:select-standard.html.twig' with {
+									'name': 'newarticle[category_id]',
+									'id': baseId ~ '_cat',
+									'add_classname': 'category_id',
+									'add_attr': '',
+									'with_blank': 1,
+									'blank_title': '',
+									'categories': article_categories,
+									'selected': 0
+								} %}
+
+								<a class="apply-actions">Apply Action</a>
+								</div>
 							</div>
 						</div>
 					</div>

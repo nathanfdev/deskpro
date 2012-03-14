@@ -133,6 +133,11 @@ class Article extends ContentAbstract
 		$this->categories->add($cat);
 	}
 
+	public function removeFromCategory(ArticleCategory $cat)
+	{
+		$this->categories->remove($cat);
+	}
+
 	public function setCategories(array $cats)
 	{
 		// Normalize array

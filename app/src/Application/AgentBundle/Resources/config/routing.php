@@ -1723,6 +1723,13 @@ $collection->add('agent_kb_cat', new Route(
 	array()
 ));
 
+$collection->add('agent_kb_mass_save', new Route(
+	'/kb/article/ajax-mass-save',
+	array('_controller' => 'AgentBundle:Kb:ajaxMassSave'),
+	array(),
+	array()
+));
+
 $collection->add('agent_glossary_newword_json', new Route(
 	'/glossary/new-word.json',
 	array('_controller' => 'AgentBundle:Glossary:glossaryNewWordJson'),

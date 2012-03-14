@@ -200,6 +200,7 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageHelper/AutoSave.js',
 		'javascripts/DeskPRO/Agent/PageHelper/StateSaver.js',
 		'javascripts/DeskPRO/Agent/PageHelper/Results.js',
+		'javascripts/DeskPRO/Agent/PageHelper/MassActions.js',
 
 		'javascripts/DeskPRO/Agent/PageFragment/Page/SnippetViewer.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/TextSnippetViewer.js',
@@ -250,6 +251,7 @@ $CONFIG['agent_element_handlers'] = array(
 		'javascripts/DeskPRO/Agent/ElementHandler/PasswordPrompt.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/OmniSearchSheet.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/OmniQuickSearch.js',
+		'javascripts/DeskPRO/Admin/ElementHandler/RadioExpander.js',
 	)
 );
 
