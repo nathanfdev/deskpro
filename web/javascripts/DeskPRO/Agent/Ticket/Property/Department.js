@@ -25,7 +25,6 @@ DeskPRO.Agent.Ticket.Property.Department = new Class({
 		var el = this.getInterfaceElement();
 
 		var name = DeskPRO_Window.getDisplayName('department_full', value);
-		DP.console.log(name);
 		this.getInterfaceElement().text(name);
 	},
 

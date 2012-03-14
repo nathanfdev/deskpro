@@ -275,7 +275,14 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 					if (is_numeric($v) || ctype_digit($v)) {
 						$params[] = $v;
 					} elseif (is_string($v)) {
-						$params[] = 'string:' . strlen($v);
+						$v = str_replace(array("\r\n", "\n", "\t"), ' ', $v);
+						$v = preg_replace('# {2,}#', ' ', $v);
+
+						if (strlen($v) > 100) {
+							$v = substr($v, 0, 100);
+						}
+
+						$params[] = 'string:' . $v;
 					} elseif ($v === null) {
 						$params[] = 'NULL';
 					} elseif (is_array($v)) {

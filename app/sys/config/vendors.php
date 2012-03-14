@@ -75,7 +75,7 @@
 		'version' => 'v2.0.11',
 	),
 	'symfony_doctrine_migrations' => array(
-		'into' => DP_ROOT.'/vendor/bundles/DoctrineMigrationsBundle',
+		'into' => DP_ROOT.'/vendor/symfony/src/Symfony/Bundle/DoctrineMigrationsBundle',
 		'repos' => 'git://github.com/symfony/DoctrineMigrationsBundle.git',
 		'version' => 'HEAD',
 	),

@@ -39,7 +39,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 {
 	/**
 	 * The currently logged in person.
-	 * @var \Application\DeskPRO\Bundle\DeskPRO\Entity\Person
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	public $person;
 
@@ -51,8 +51,15 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$this->person->loadHelper('HelpMessages');
 
 		if (!$this->person->id) {
-			$cas = new \Application\AgentBundle\Controller\Helper\CarryAdminSession($this);
+			// Carry an agent session
+			$cas = new \Application\AgentBundle\Controller\Helper\CarryAdminSession($this, 'dpsid-agent');
 			$cas->process();
+
+			if (!$this->person->id) {
+				// Or an admin session
+				$cas = new \Application\AgentBundle\Controller\Helper\CarryAdminSession($this);
+				$cas->process();
+			}
 		}
 
 		$dashboards = App::getEntityRepository('DeskPRO:ReportDashboard')->getDashboards();

@@ -159,6 +159,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				onClose: function(ob) {
 					var prop = self.changeManager.getPropertyManager('department_id');
 					var depId = parseInt(ob.getSelected('department'));
+					var currentDepId = prop.getValue();
+
+					if (!depId) {
+						return;
+					}
+
+					if (depId == parseInt(currentDepId)) {
+						return;
+					}
+
 					self.changeManager.setInstantChange(prop, depId);
 				}
 			});
