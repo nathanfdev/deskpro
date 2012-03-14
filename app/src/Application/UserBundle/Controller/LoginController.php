@@ -429,7 +429,9 @@ HTML;
 		App::getOrm()->flush();
 
 		$vars = array(
-			'code' => $code_data->getCode()
+			'code' => $code_data->getCode(),
+			'person' => $person,
+			'email' => $email
 		);
 
 		$email_subject = 'Reset Password';

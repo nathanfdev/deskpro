@@ -50,6 +50,37 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 	 */
 	public function indexAction()
 	{
+		$has_done_reset = false;
+
+		if ($code = $this->in->getString('reset_code')) {
+			$code_data = App::getEntityRepository('DeskPRO:TmpData')->getByCode($code, 'reset-password');
+			$person = null;
+			if ($code_data) {
+				$person = App::findEntity('DeskPRO:Person', $code_data->getData('person_id', 0));
+			}
+
+			if ($code_data AND $person) {
+				if ($this->in->getString('new_password')) {
+					$has_done_reset = true;
+
+					$person->setPassword($this->in->getString('new_password'));
+
+					$this->db->beginTransaction();
+					try {
+						$this->em->persist($person);
+						$this->em->remove($code_data);
+						$this->em->flush();
+						$this->db->commit();
+					} catch (\Exception $e) {
+						$this->db->rollback();
+						throw $e;
+					}
+				} else {
+					return $this->render('AgentBundle:Login:reset-password.html.twig', array('reset_code' => $this->in->getString('reset_code')));
+				}
+			}
+		}
+
 		$url = $this->generateUrl('agent', array(), true);
 		$has_logged_out = $this->in->checkIsset('o');
 
@@ -63,6 +94,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 		return $this->render('AgentBundle:Login:index.html.twig', array(
 			'return'             => $url,
 			'has_logged_out'     => $has_logged_out,
+			'has_done_reset'     => $has_done_reset,
 			'failed_login_name'  => $failed_login_name
 		));
 	}
