@@ -79,6 +79,27 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 			$end_time = microtime(true);
 			$this->logMessage(sprintf("Done all categories. Took %.3f seconds.", $end_time-$start_time));
 		}
+
+		// Create the initial status categories
+		foreach (array('planning' => 'Planning', 'started' => 'Started', 'review' => 'Under Review') as $type => $t) {
+			$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
+			$s->status_type = 'active';
+			$s->title = $t;
+			$em->persist($s);
+			$em->flush();
+
+			$this->saveMappedId('ideas_cat_accepted_' . $type, $s->id);
+		}
+
+		foreach (array('completed' => 'Completed', 'duplidate' => 'Duplicate', 'exists' => 'Already Exists', 'declined' => 'Declined') as $t) {
+			$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
+			$s->status_type = 'closed';
+			$s->title = $t;
+			$em->persist($s);
+			$em->flush();
+			
+			$this->saveMappedId('ideas_cat_declined_' . $type, $s->id);
+		}
 	}
 
 
