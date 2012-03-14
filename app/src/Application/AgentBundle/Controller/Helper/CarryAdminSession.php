@@ -39,16 +39,18 @@ use Application\DeskPRO\App;
 class CarryAdminSession
 {
 	protected $controller;
+	protected $cookie_name;
 
-	public function __construct($controller)
+	public function __construct($controller, $cookie_name = 'dpsid-admin')
 	{
 		$this->controller = $controller;
+		$this->cookie_name = $cookie_name;
 	}
 
 	public function process()
 	{
 		if (!$this->controller->person->id) {
-			$admin_session_code = !empty($_COOKIE['dpsid-admin']) ? $_COOKIE['dpsid-admin'] : false;
+			$admin_session_code = !empty($_COOKIE[$this->cookie_name]) ? $_COOKIE[$this->cookie_name] : false;
 			$admin_session = null;
 			if ($admin_session_code) {
 				$admin_session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($admin_session_code);
