@@ -77,6 +77,11 @@ class FieldManager
 	protected $fields = null;
 
 	/**
+	 * @var array
+	 */
+	protected $field_to_children = array();
+
+	/**
 	 * Array of all fields
 	 *
 	 * @var array
@@ -116,15 +121,39 @@ class FieldManager
 			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
 			foreach ($all_fields as $f) {
 
+				$f->field_manager = $this;
+
 				$this->all_fields[$f->id] = $f;
 
-				if (!$f->parent) {
+				if (!$f->getParentId()) {
 					$this->fields[$f->id] = $f;
+				}
+
+				if ($p = $f->getParentId()) {
+					if (!isset($this->field_to_children[$p])) {
+						$this->field_to_children[$p] = array();
+					}
+					$this->field_to_children[$p][] = $f;
 				}
 			}
 		}
 
 		return $this->fields;
+	}
+
+
+	/**
+	 * @param $field_def
+	 * @return array
+	 */
+	public function getFieldChildren($field_def)
+	{
+		$this->getFields();
+		if (!isset($this->field_to_children[$field_def->getId()])) {
+			return array();
+		}
+
+		return $this->field_to_children[$field_def->getId()];
 	}
 
 
@@ -349,8 +378,8 @@ class FieldManager
 				$item['value'] = $field_datas[$data_keys[$def['id']]]->getData();
 			}
 
-			if ($def['children']) {
-				$item['children'] = $this->_createDataHierarchy($data_keys, $field_datas, $def['children']);
+			if (isset($this->field_to_children[$def->getId()])) {
+				$item['children'] = $this->_createDataHierarchy($data_keys, $field_datas, $this->field_to_children[$def->getId()]);
 			}
 
 			if ($item['value'] || $item['children']) {
@@ -418,8 +447,8 @@ class FieldManager
 
 		if ($field_def->id == $set_field_id) {
 			$set_field = $field_def;
-		} else {
-			foreach ($field_def->children as $c) {
+		} elseif (isset($this->field_to_children[$field_def->getId()])) {
+			foreach ($this->field_to_children[$field_def->getId()] as $c) {
 				if ($c->id == $set_field_id) {
 					$set_field = $c;
 					break;
@@ -462,9 +491,9 @@ class FieldManager
 	public function removeCustomDataOnObject($object, CustomDefAbstract $field_def)
 	{
 		$prop = $this->options->get('custom_data_property');
-		if ($field_def->parent) {
+		if ($field_def->getParentId()) {
 			foreach ($object->$prop as $v) {
-				if ($v->field->id == $field_def->parent->id) {
+				if ($v->field->id == $field_def->getParentId()) {
 					$this->em->remove($v);
 					$object->$prop->removeElement($v);
 				}
@@ -472,7 +501,7 @@ class FieldManager
 		}
 
 		foreach ($object->$prop as $v) {
-			if ($v->field->id == $field_def->id || ($v->field->parent && $v->field->parent->id == $field_def->id)) {
+			if ($v->field->id == $field_def->id || ($v->field->getParentId() && $v->field->getParentId() == $field_def->id)) {
 				$object->$prop->removeElement($v);
 			}
 		}

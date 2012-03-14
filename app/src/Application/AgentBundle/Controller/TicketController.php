@@ -66,6 +66,7 @@ class TicketController extends AbstractController
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
 		$ticket_attachments = $this->em->getRepository('DeskPRO:TicketAttachment')->getTicketAttachments($ticket);
+		if (!$ticket_attachments) $ticket_attachments = array();
 
 		#------------------------------
 		# Custom fields
@@ -78,14 +79,9 @@ class TicketController extends AbstractController
 		# Messages
 		#------------------------------
 
-		if (($ticket_messages_blockcache = $this->em->getRepository('DeskPRO:Cache')->load("ticket_messages.{$ticket['id']}.agent_block")) === false) {
-
-			$ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket, 0, 0, $ticket_attachments);
-
-			$this->em->getRepository('DeskPRO:Cache')->save("ticket_messages.{$ticket['id']}.agent_block", $ticket_messages_blockcache, 259200);
-		}
-
+		$ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket, 0, 0, $ticket_attachments);
 		$ticket_messages_block = $ticket_messages_blockcache['ticket_messages_block'];
+		$ticket_attachments = $ticket_messages_blockcache['ticket_attachments'];
 		$counts['messages'] = $ticket_messages_blockcache['message_count'];
 
 		$ticket_flagged = $this->em->getRepository('DeskPRO:TicketFlagged')->getFlagForTicket($ticket, $this->person);
@@ -140,19 +136,8 @@ class TicketController extends AbstractController
 
 		// Check if the search adapter
 		$show_related_content = false;
-		//if (App::getSearchEngine()->isCapable(AbstractSearchAdapter::CAP_TICKETS_SIMILAR)
-		//	OR App::getSearchEngine()->isCapable(AbstractSearchAdapter::CAP_CONTENT_TICKET_SIMILAR_ARTICLES)
-		//) {
-		//	$show_related_content = true;
-		//})
 
-		$participants = $this->em->createQuery("
-			SELECT p
-			FROM DeskPRO:TicketParticipant p
-			LEFT JOIN p.person person
-			LEFT JOIN p.person_email person_email
-			WHERE p.ticket = ?1
-		")->setParameter(1, $ticket)->execute();
+		$participants = $ticket->participants;
 
 		$participant_ids = array();
 		$agent_parts = array();
@@ -233,7 +218,7 @@ class TicketController extends AbstractController
 			array('since_id' => $since_message_id, 'with_notes' => true)
 		);
 
-		if (!$ticket_attachments) {
+		if ($ticket_attachments === null) {
 			$ticket_attachments = $this->em->getRepository('DeskPRO:TicketAttachment')->getAttachmentsForMessages($ticket_messages);
 		}
 
@@ -324,6 +309,7 @@ class TicketController extends AbstractController
 
 		$ticket_messages_blockcache = array(
 			'ticket_messages_block' => $ticket_messages_block,
+			'ticket_attachments' => $ticket_attachments,
 			'message_count' => $message_count,
 			'note_count' => $note_count,
 			'last_message_id' => $last_message_id,
@@ -1732,7 +1718,12 @@ class TicketController extends AbstractController
 	 */
 	protected function getTicketOr404($ticket_id, $check_perm = null)
 	{
-		$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
+		$q = App::getOrm()->createQuery("SELECT t FROM DeskPRO:Ticket t WHERE t.id = ?0");
+		$q->setFetchMode('DeskPRO:Person', 'person', 'EAGER');
+		$q->setFetchMode('DeskPRO:Person', 'agent', 'EAGER');
+		$q->setParameters(array($ticket_id));
+
+		$ticket = $q->getOneOrNullResult();
 
 		if (!$ticket || !$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_id");

@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
+use Application\DeskPRO\App;
 use Orb\Util\Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -151,10 +152,29 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_handler_instance = null;
 
+	/**
+	 * @var \Application\DeskPRO\CustomFields\FieldManager
+	 */
+	public $field_manager = null;
+
 
 	public function __construct()
 	{
 		$this->children = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	public function getParentId()
+	{
+		if ($this->parent) {
+			return $this->parent->getId();
+		}
+
+		return 0;
 	}
 
 
@@ -343,11 +363,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	public function getFilterCapabilities()
 	{
 		return $this->getHandler()->getFilterCapabilities();
-	}
-
-	public function getParentId()
-	{
-		return $this->parent['id'];
 	}
 
 

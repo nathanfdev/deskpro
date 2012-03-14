@@ -60,6 +60,11 @@ class PeopleResultsDisplay
 	protected $db;
 
 	/**
+	 * @var \Application\DeskPRO\CustomFields\FieldManager
+	 */
+	protected $field_manager;
+
+	/**
 	 * @var int
 	 */
 	protected $people_count;
@@ -75,17 +80,30 @@ class PeopleResultsDisplay
 	protected $people_ticket_counts;
 
 	/**
+	 * @var array
+	 */
+	protected $primary_emails;
+
+	/**
+	 * @var array
+	 */
+	protected $people_fields;
+
+	/**
 	 * @param \Application\DeskPRO\Entity\People[] $people
 	 */
 	public function __construct(array $people)
 	{
 		$this->people = $people;
 		$this->people_count = count($people);
-		$this->people_ids = Arrays::flattenToIndex($this->people, 'id');
-
+		$this->people_ids = array();
+		foreach ($this->people as $p) {
+			$this->people_ids[] = $p->id;
+		}
 
 		$this->em = App::getOrm();
 		$this->db = $this->em->getConnection();
+		$this->field_manager = App::getSystemService('person_fields_manager');
 	}
 
 
@@ -128,6 +146,64 @@ class PeopleResultsDisplay
 		", array(), 'person_id', null, 'label');
 
 		return $this->all_labels;
+	}
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 */
+	public function getEmail(Person $person)
+	{
+		if (!$person->primary_email) {
+			return null;
+		}
+
+		if ($this->primary_emails === null) {
+			$primary_email_ids = array();
+			foreach ($this->people as $p) {
+				if ($person->primary_email) {
+					$primary_email_ids[] = $p->primary_email->getId();
+				}
+			}
+
+			$this->primary_emails = $this->em->getRepository('DeskPRO:PersonEmail')->getByIds($primary_email_ids);
+		}
+
+		return $this->primary_emails[$person->primary_email->getId()];
+	}
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 */
+	public function getCustomFields(Person $person)
+	{
+		if ($this->people_fields === null) {
+			$field_data = $this->em->createQuery("
+				SELECT cp FROM DeskPRO:CustomDataPerson cp
+				WHERE cp.person IN (?0)
+			")->execute(array($this->people_ids));
+
+			$person_data = array();
+
+			foreach ($field_data as $data) {
+				$pid = $data->person->getId();
+				if (!isset($person_data[$pid])) {
+					$person_data[$pid] = array();
+				}
+
+				$person_data[$pid][] = $data;
+			}
+
+			$this->people_fields = array();
+			foreach ($person_data as $pid => $custom_data) {
+				$this->people_fields[$pid] = $this->field_manager->createFieldDataFromArray($custom_data);
+			}
+		}
+
+		if (isset($this->people_fields[$person->id])) {
+			return $this->people_fields[$person->id];
+		} else {
+			return array();
+		}
 	}
 
 

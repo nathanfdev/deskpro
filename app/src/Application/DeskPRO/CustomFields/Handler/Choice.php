@@ -71,7 +71,13 @@ class Choice extends HandlerAbstract
 	{
 		$val = array();
 
-		foreach ($this->field_def['children'] as $child) {
+		if ($this->field_def->field_manager) {
+			$children = $this->field_def->field_manager->getFieldChildren($this->field_def);
+		} else {
+			$children = $this->field_def['children'];
+		}
+
+		foreach ($children as $child) {
 			$id = $child['id'];
 			if (isset($data['children'][$id]) AND isset($data['children'][$id]['value'])) {
 				$val[] = $child['title'];
@@ -90,7 +96,13 @@ class Choice extends HandlerAbstract
 
 		$selected_options = array();
 
-		foreach ($this->field_def['children'] as $child) {
+		if ($this->field_def->field_manager) {
+			$children = $this->field_def->field_manager->getFieldChildren($this->field_def);
+		} else {
+			$children = $this->field_def['children'];
+		}
+
+		foreach ($children as $child) {
 			$id = $child['id'];
 			if ($child['handler_class']) {
 				$has_other = $id;
