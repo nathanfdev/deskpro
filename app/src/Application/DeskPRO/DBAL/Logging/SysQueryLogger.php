@@ -224,16 +224,50 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$db_time    = $this->total_time;
 		$php_time   = $total_time - $db_time;
 
+		$min_log_query = 0;
+		if (isset($DP_CONFIG['enable_slow_page_log_minquerytime']) && $DP_CONFIG['enable_slow_page_log_minquerytime']) {
+			$min_log_query = $DP_CONFIG['enable_slow_page_log_minquerytime'];
+		}
+
 		if ($total_time > $DP_CONFIG['enable_slow_page_log']) {
 			$write = array("--- Page Log Begin ---\n");
 			if (defined('DP_REQUEST_URL')) {
-				$write[] = "URL: " . DP_REQUEST_URL . "\n";
+				$write[] = "=> URL: " . DP_REQUEST_URL . "\n";
 			}
 
-			$write[] = sprintf("Total Time: %.4f    PHP Time: %.4f    DB Time: %.4f    Queries: %d\n", $total_time, $php_time, $db_time, $this->query_count);
+			$write[] = sprintf("=> Time: %.4f    PHP_Time: %.4f    DB_Time: %.4f    Query_Count: %d\n", $total_time, $php_time, $db_time, $this->query_count);
+
+			$hashes_to_name = array();
+			$count = 0;
+			$name_counts = array();
+			$name_counts_time = array();
+
 			foreach ($this->queries as $q) {
+
+				if ($min_log_query && $min_log_query > $q['time_taken']) {
+					continue;
+				}
+
 				$sql = trim($q['sql']);
-				$sql = str_replace(array("\r\n", "\n"), ' ', $sql);
+				$hash = md5($q['sql']);
+
+				if (!isset($hashes_to_name[$hash])) {
+					$hashes_to_name[$hash] = sprintf('query_%04d', $count);
+					$count++;
+				}
+
+				$name = $hashes_to_name[$hash];
+
+				if (!$name_counts[$name]) {
+					$name_counts[$name] = 0;
+					$name_counts_time[$name] = 0.0;
+				}
+
+				$name_counts[$name]++;
+				$name_counts_time[$name] += $q['time_taken'];
+
+				$sql = str_replace(array("\r\n", "\n", "\t"), ' ', $sql);
+				$sql = preg_replace('# {2,}#', ' ', $sql);
 				$sql = substr($sql, 0, 2000);
 
 				$params = array();
@@ -241,11 +275,11 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 					if (is_numeric($v) || ctype_digit($v)) {
 						$params[] = $v;
 					} elseif (is_string($v)) {
-						$params[] = 'string(' . strlen($v) . ')';
+						$params[] = 'string:' . strlen($v);
 					} elseif ($v === null) {
 						$params[] = 'NULL';
 					} elseif (is_array($v)) {
-						$params[] = 'array(' . count($v) . ')';
+						$params[] = 'array:' . count($v);
 					} elseif (is_object($v)) {
 						$params[] = get_class($v);
 					} else {
@@ -253,7 +287,13 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 					}
 				}
 
-				$write[] = sprintf("Query(%.4f): %s \t\t [%s]\n", $q['time_taken'], $sql, implode(', ', $params));
+				$write[] = sprintf("=> Query %.4f %s: %s \t\t Query_Params: %s\n", $q['time_taken'], $name, $sql, implode(', ', $params));
+			}
+
+			foreach ($name_counts as $name => $count) {
+				if ($count > 1) {
+					$write[] = sprintf("=> Repeated_Query %s: %s times    Total_Time: %.4f\n", $name, $count, $name_counts_time[$name]);
+				}
 			}
 
 			$prefix = '[' . date('Y-m-d H:i:s') . '] ';
