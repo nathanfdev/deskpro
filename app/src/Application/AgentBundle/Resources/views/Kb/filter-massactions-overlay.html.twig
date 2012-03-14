@@ -1,0 +1,55 @@
+<div
+	class="mass-actions-overlay-container mass-actions"
+	data-base-id="{{baseId}}"
+	data-upload-url="{{ path('agent_accept_upload') }}"
+>
+	<script type="text/x-deskpro-plain" class="radio-tpl">
+		<button class="clean-white radio"><span class="radio-title"></span></button>
+	</script>
+	<section class="mass-actions-overlay">
+		<header>
+			<span class="close close-trigger"></span>
+			<h1>
+				{{ phrase('agent.apply_to_x_selections', {'placeholder': '<span class="selected-tickets-count"></span>'}) }}
+			</h1>
+		</header>
+		<article>
+			<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
+				<div class="dp-form-row">
+					<div class="dp-form-input">
+						<div class="dp-input-group">
+							<label>
+								<input type="radio" class="option-trigger" name="transport[transport_type]" value="mail" {% if transport.transport_type == 'mail' %}checked="checked"{% endif %} />
+								Set as Draft
+							</label>
+
+							<div class="dp-group-options" style="display: none">
+								Are you sure?
+							</div>
+						</div>
+
+						<div class="dp-input-group">
+							<label>
+								<input type="radio" class="option-trigger" name="transport[transport_type]" value="smtp" {% if not transport.transport_type or transport.transport_type == 'smtp' %}checked="checked"{% endif %} />
+								Delete
+							</label>
+							<div class="dp-group-options" style="display: none">
+								Are you sure?
+							</div>
+						</div>
+
+						<div class="dp-input-group">
+							<label>
+								<input type="radio" class="option-trigger" name="transport[transport_type]" value="gmail" {% if transport.transport_type == 'gmail' %}checked="checked"{% endif %} />
+								Change Category
+							</label>
+							<div class="dp-group-options" style="display: none">
+								List categories.
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</section>
+</div>
