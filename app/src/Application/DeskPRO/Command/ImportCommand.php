@@ -90,8 +90,9 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 		$wr->addFilter(new \Orb\Log\Filter\CallbackFormatter(function($log_item) {
 			if (isset($log_item['errinfo'])) {
-				return;
+				return null;
 			}
+			return $log_item;
 		}));
 		$logger->addWriter($wr);
 

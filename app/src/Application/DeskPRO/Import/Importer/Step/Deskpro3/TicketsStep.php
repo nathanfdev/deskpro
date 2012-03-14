@@ -582,6 +582,39 @@ class TicketsStep extends AbstractDeskpro3Step
 		}
 
 		#------------------------------
+		# Ticket reminders become tasks
+		#------------------------------
+
+		$ticket_reminders = $all_ticket_info['tech_ticket_watch'];
+
+		foreach ($ticket_reminders as $reminder) {
+			$agent_id = $this->getMappedNewId('tech', $reminder['techid']);
+			if (!$agent_id) {
+				continue;
+			}
+
+			$insert_task = array();
+			$insert_task['person_id'] = $agent_id;
+			$insert_task['title'] = 'Ticket Reminder: ' . $insert_ticket['subject'];
+			$insert_task['assigned_agent_id'] = $agent_id;
+			$insert_task['date_created'] = date('Y-m-d H:i:s', $reminder['timestamp_created']);
+			if ($reminder['completed']) {
+				$insert_task['is_completed'] = 1;
+				$insert_task['date_completed'] = date('Y-m-d H:i:s', $reminder['timestamp_complete']);
+			}
+
+			$this->db->insert('tasks', $insert_task);
+			$insert_task['id'] = $this->db->lastInsertId();
+
+			$insert_task_assoc = array();
+			$insert_task_assoc['task_id'] = $insert_task['id'];
+			$insert_task_assoc['ticket_id'] = $insert_ticket['id'];
+			$insert_task_assoc['assoc_type'] = 'ticket';
+
+			$this->db->insert('task_associations', $insert_task_assoc);
+		}
+
+		#------------------------------
 		# Ticket log
 		#------------------------------
 
@@ -1391,6 +1424,7 @@ class TicketsStep extends AbstractDeskpro3Step
 				'ticket_participant' => array(),
 				'tech_ticket_save' => array(),
 				'tickets_logs' => array(),
+				'tech_ticket_watch' => array()
 			);
 		}
 		$q->closeCursor();
@@ -1462,6 +1496,20 @@ class TicketsStep extends AbstractDeskpro3Step
 		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
 			if (!isset($batch[$r['ticketid']])) continue;
 			$batch[$r['ticketid']]['tech_ticket_save'][] = $r['techid'];
+		}
+		$q->closeCursor();
+		unset($q);
+
+		#------------------------------
+		# Fetch tech_ticket_watch
+		#------------------------------
+
+		$q = $this->olddb->query("SELECT * FROM tech_ticket_watch WHERE ticketid $between_where");
+		$q->execute();
+
+		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
+			if (!isset($batch[$r['ticketid']])) continue;
+			$batch[$r['ticketid']]['tech_ticket_watch'][] = $r;
 		}
 		$q->closeCursor();
 		unset($q);
