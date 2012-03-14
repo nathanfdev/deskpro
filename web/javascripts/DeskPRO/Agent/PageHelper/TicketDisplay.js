@@ -202,7 +202,6 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 	 */
 	setDepartment: function(department_id, refresh) {
 		department_id = parseInt(department_id);
-		DP.console.log('Setting %i', department_id);
 
 		this.clearAll();
 
