@@ -144,16 +144,19 @@ class FeedbackStep extends AbstractDeskpro3Step
 			$new_feedback->setStatusCode(Feedback::STATUS_NEW);
 		} elseif ($feedback['status'] == 'accepted') {
 			if ($feedback['completion_status'] == 'planned') {
-				$new_feedback->setStatusCode(Feedback::STATUS_ACTIVE . '.1');
+				$id = $this->getMappedNewId('ideas_cat_active', 'planned');
 			} elseif ($feedback['completion_status'] == 'started') {
-				$new_feedback->setStatusCode(Feedback::STATUS_ACTIVE . '.2');
+				$id = $this->getMappedNewId('ideas_cat_active', 'started');
 			} else {
-				$new_feedback->setStatusCode(Feedback::STATUS_ACTIVE . '.3');
+				$id = $this->getMappedNewId('ideas_cat_active', 'review');
 			}
+			$new_feedback->setStatusCode(Feedback::STATUS_ACTIVE . ".$id");
 		} elseif ($feedback['status'] == 'completed') {
-			$new_feedback->setStatusCode(Feedback::STATUS_CLOSED . '.1');
+			$id = $this->getMappedNewId('ideas_cat_closed', 'completed');
+			$new_feedback->setStatusCode(Feedback::STATUS_CLOSED . ".$id");
 		} else {
-			$new_feedback->setStatusCode(Feedback::STATUS_CLOSED . '.4');
+			$id = $this->getMappedNewId('ideas_cat_closed', 'declined');
+			$new_feedback->setStatusCode(Feedback::STATUS_CLOSED . ".$id");
 		}
 
 		$new_feedback->person = $new_person;

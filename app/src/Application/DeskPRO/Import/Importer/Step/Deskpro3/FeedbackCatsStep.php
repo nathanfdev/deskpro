@@ -81,24 +81,24 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 		}
 
 		// Create the initial status categories
-		foreach (array('planning' => 'Planning', 'started' => 'Started', 'review' => 'Under Review') as $type => $t) {
+		foreach (array('planned' => 'Planning', 'started' => 'Started', 'review' => 'Under Review') as $type => $t) {
 			$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
 			$s->status_type = 'active';
 			$s->title = $t;
-			$em->persist($s);
-			$em->flush();
+			$this->getEm()->persist($s);
+			$this->getEm()->flush();
 
-			$this->saveMappedId('ideas_cat_accepted_' . $type, $s->id);
+			$this->saveMappedId('ideas_cat_active', $type, $s->id);
 		}
 
-		foreach (array('completed' => 'Completed', 'duplidate' => 'Duplicate', 'exists' => 'Already Exists', 'declined' => 'Declined') as $t) {
+		foreach (array('completed' => 'Completed', 'duplidate' => 'Duplicate', 'exists' => 'Already Exists', 'declined' => 'Declined') as $type => $t) {
 			$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
 			$s->status_type = 'closed';
 			$s->title = $t;
-			$em->persist($s);
-			$em->flush();
-			
-			$this->saveMappedId('ideas_cat_declined_' . $type, $s->id);
+			$this->getEm()->persist($s);
+			$this->getEm()->flush();
+
+			$this->saveMappedId('ideas_cat_closed', $type, $s->id);
 		}
 	}
 
