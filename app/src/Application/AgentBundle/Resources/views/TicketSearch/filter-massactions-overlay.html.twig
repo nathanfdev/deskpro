@@ -171,7 +171,18 @@
 			<dl>
 				<dt>{{ phrase('agent.other_properties') }}</dt>
 				<dd>
-					<div class="other-properties-wrapper"></div>
+					<div class="other-properties-wrapper">
+						<div class="dp-form-row">
+							<div class="dp-form-input">
+								<div class="search-form actions-list">
+									<div class="search-terms">
+									</div>
+									<div class="term add-term-row" style="display:none"><span class="add-term">+</span> {{ phrase('agent.add_action_term') }}</div>
+								</div>
+								{% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with { 'classname': 'actions-builder-tpl', 'term_options': ticket_options } %}
+							</div>
+						</div>
+					</div>
 				</dd>
 			</dl>
 		</article>

@@ -325,8 +325,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			}
 		});
 
-		var add = $(DeskPRO_Window.util.getPlainTpl($('#ticketactions_actionsform_tpl')));
-		$('.other-properties-wrapper', this.wrapper).empty().append(add);
+		var add = $('.other-properties-wrapper', this.wrapper);
 
 		// Remove all the stuff we have layed out in a different way
 		// on this popup
