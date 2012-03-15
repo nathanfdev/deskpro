@@ -278,16 +278,12 @@ SQL;
 			// Alter
 			} elseif (preg_match('#^ALTER#', $s)) {
 				$s = str_replace(array("\r\n", "\n"), ' ', $s);
-				$s_ex = var_export($s, true);
-
 				$this->alters[] = $s;
-				$php_alters[] = "\$queries['alter'][$xa] = $s_ex;";
-				$xa++;
 
 			// Create
 			} else {
 				$s = str_replace(array("\r\n", "\n"), ' ', $s);
-				$s .= ' DEFAULT CHARSET=utf8';
+				$s .= ' DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 
 				if (strpos($s, 'CREATE TABLE person2usergroups') !== false) {
 					$s = str_replace('INDEX IDX_356C969E217BBB47 (person_id), ', '', $s);
@@ -300,6 +296,15 @@ SQL;
 				$xc++;
 			}
 		}
+
+		$this->alters = self::combineAlters($this->alters);
+
+		foreach ($this->alters as $s) {
+			$s_ex = var_export($s, true);
+			$php_alters[] = "\$queries['alter'][$xa] = $s_ex;";
+			$xa++;
+		}
+
 		$php = "<?php\n\n\$queries = array('create' => array(), 'alter' => array(), 'trigger' => array());\n\n";
 		$php .= implode("\n", $php_creates);
 		$php .= "\n\n\n\n\n";
@@ -309,5 +314,43 @@ SQL;
 		$php .= "\n\n\n\n\nreturn \$queries;\n";
 
 		$this->php_file = $php;
+	}
+
+
+	/**
+	 * Takes an array of ALTER queries and combines any alters that alter the same table.
+	 * For example, instead of 10 separate ALTER TABLE queries that add 10 separate FK's, there's only one.
+	 *
+	 * @param array $alters
+	 */
+	public static function combineAlters(array $alters)
+	{
+		$segments = array();
+
+		foreach ($alters as $sql) {
+			$sql = str_replace(array("\r\n", "\n", ' '), ' ', $sql);
+			$sql = trim($sql, ' ;');
+
+			$m = null;
+			if (!preg_match('#^ALTER +TABLE +`?(.*?)`? (.*?)$#', $sql, $m)) {
+				throw new \InvalidArgumentException("Invalid ALTER query: $sql");
+			}
+
+			$table = $m[1];
+			$alter_seg = trim($m[2], ' ,');
+
+			if (!isset($segments[$table])) {
+				$segments[$table] = array();
+			}
+
+			$segments[$table][] = $alter_seg;
+		}
+
+		$return = array();
+		foreach ($segments as $table => $segs) {
+			$return[] = "ALTER TABLE " . $table . " " . implode(', ', $segs);
+		}
+
+		return $return;
 	}
 }
