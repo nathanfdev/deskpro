@@ -18,7 +18,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 		this.lastMessageId = -1;
 		this.poller = new DeskPRO.AjaxPoller.Poller({
 			ajaxUrl: this.options.ajaxMessagesUrl,
-			interval: 5000,
+			interval: this.options.interval,
 			ajaxType: 'GET'
 		});
 

@@ -1641,13 +1641,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	_initBasic: function() {
 
+		this.options.messageChanneler.interval = DP_POLLER_INTERVAL;
 		this.messageChanneler = new DeskPRO.MessageChanneler.AjaxChanneler(this.messageBroker, this.options.messageChanneler);
 		//this.messageChanneler = new DeskPRO.MessageChanneler.AbstractChanneler(this.messageBroker, this.options.messageChanneler);
 
-		// todo check if we still need this
 		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {
 			ajaxUrl: BASE_URL + 'agent/poller',
-			interval: DP_POLLER_INTERVAL
+			interval: 60000
 		});
 	},
 

@@ -196,7 +196,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	//#########################################################################
 
 	_initFilters: function() {
-
 		DeskPRO_Window.getPoller().addData(
 			[{name: 'do[]', value: 'get-sys-filter-counts'}],
 			'filters.counts',
