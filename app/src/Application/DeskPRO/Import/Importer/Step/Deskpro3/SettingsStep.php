@@ -75,7 +75,6 @@ class SettingsStep extends AbstractDeskpro3Step
 			'core.default_timezone'   => $timezone,
 			'core.user_mode'          => $reg_mode,
 			'user.portal_enabled'     => 1,
-			'core.setup_initial'      => 11,
 		);
 
 		$this->getDb()->beginTransaction();

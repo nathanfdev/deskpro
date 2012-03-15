@@ -264,6 +264,53 @@ class SettingsController extends AbstractController
 
 	public function quickSetupAction()
 	{
+		if (!App::getSetting('core.rewrite_urls') && !App::getSetting('core.done_rewrite_urls_check')) {
+			$this->db->replace('settings', array(
+				'name' => 'core.done_rewrite_urls_check',
+				'groupname' => 'core',
+				'value' => time(),
+				'created_at' => date('Y-m-d H:i:s'),
+				'updated_at' => date('Y-m-d H:i:s'),
+			));
+
+			$url = App::getRequest()->getUriForPath('/__checkurlrewrite');
+			$url_noindex = str_replace('/index.php/', '/', $url);
+
+			$client = new \Zend\Http\Client(null, array('timeout' => 5));
+			$client->setMethod(\Zend\Http\Request::METHOD_GET);
+			$client->setUri($url_noindex);
+			$result = $client->send();
+			if ($result->isSuccess() && strpos($result->getBody(), 'dp_check_url_ok') !== false) {
+				$this->db->replace('settings', array(
+					'name' => 'core.rewrite_urls',
+					'groupname' => 'core',
+					'value' => '1',
+					'created_at' => date('Y-m-d H:i:s'),
+					'updated_at' => date('Y-m-d H:i:s'),
+				));
+				return $this->redirectRoute('admin_welcome');
+			}
+		}
+
+		// If coming from the importer we already know all this info
+		if (App::getSetting('core.deskpro3importer') && !App::getSetting('core.setup_initial')) {
+
+			// Update URL though
+			$url = App::getRequest()->getUriForPath('/');
+			$url = str_replace('/index.php/', '/', $url);
+			$this->db->replace('settings', array(
+				'name' => 'core.deskpro_url',
+				'groupname' => 'core',
+				'value' => $url,
+				'created_at' => date('Y-m-d H:i:s'),
+				'updated_at' => date('Y-m-d H:i:s'),
+			));
+
+			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '1');
+
+			return $this->redirectRoute('admin');
+		}
+
 		$setup = new \Application\AdminBundle\FormModel\QuickSetup();
 		$form = $this->get('form.factory')->create(new \Application\AdminBundle\Form\QuickSetupType(), $setup);
 

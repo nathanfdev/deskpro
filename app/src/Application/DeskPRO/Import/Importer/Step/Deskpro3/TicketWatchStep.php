@@ -83,11 +83,11 @@ class TicketWatchStep extends AbstractDeskpro3Step
 			return;
 		}
 
-		$insert_taskl = array();
-		$insert_taskl['title']             = "Ticket Watch on {$ticket_id}";
-		$insert_taskl['person_id']         = $agent_id;
-		$insert_taskl['assigned_agent_id'] = $agent_id;
-		$insert_taskl['date_created']      = date('Y-m-d H:i:s', $watch_info['timestamp_created']);
+		$insert_task = array();
+		$insert_task['title']             = "Ticket Watch on {$ticket_id}";
+		$insert_task['person_id']         = $agent_id;
+		$insert_task['assigned_agent_id'] = $agent_id;
+		$insert_task['date_created']      = date('Y-m-d H:i:s', $watch_info['timestamp_created']);
 		if ($watch_info['completed']) {
 			$insert_task['is_completed']   = 1;
 			$insert_task['date_completed'] = date('Y-m-d H:i:s', $watch_info['timestamp_complete'] + 1);

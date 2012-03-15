@@ -516,6 +516,13 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$db = $this->getOrm()->getConnection();
 
 			$db->replace('settings', array(
+				'name' => 'core.done_rewrite_urls_check',
+				'groupname' => 'core',
+				'value' => time(),
+				'created_at' => date('Y-m-d H:i:s'),
+				'updated_at' => date('Y-m-d H:i:s'),
+			));
+			$db->replace('settings', array(
 				'name' => 'core.install_timestamp',
 				'groupname' => 'core',
 				'value' => time(),
