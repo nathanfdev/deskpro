@@ -64,6 +64,7 @@ class DataInitializer
 		$this->runStyleInit();
 		$this->runSearchIndex();
 		$this->runInitPerms();
+		$this->runInitAdminNotifications();
 	}
 
 	public function runInitPerms()
@@ -125,6 +126,50 @@ class DataInitializer
 			if ($batch) {
 				$this->container->getSearchAdapter()->updateObjectsInIndex($batch);
 			}
+		}
+	}
+
+	public function runInitAdminNotifications()
+	{
+		$agent = \Application\DeskPRO\App::getOrm()->createQuery("SELECT p FROM DeskPRO:Person p WHERE p.can_admin = 1 ORDER BY p.id ASC")
+			->setMaxResults(1)
+			->getOneOrNullResult();
+
+		// Possible to be in import mode and no admin
+		if (!$agent) {
+			return;
+		}
+
+		for ($i = 1; $i <= 5; $i++) {
+			$this->container->getDb()->insert('ticket_filter_subscriptions', array(
+				'filter_id' => $i,
+				'person_id' => $agent->id,
+				'email_new' => 1,
+				'email_user_activity' => 1,
+				'email_agent_activity' => 1,
+				'email_property_change' => 1,
+				'alert_new' => 1,
+				'alert_user_activity' => 1,
+				'alert_agent_activity' => 1,
+				'alert_property_change' => 1,
+			));
+		}
+
+		$prefs = aray();
+		$prefs['chat_message.email'] = 1;
+		$prefs['login_attempt_fail.email'] = 1;
+		$prefs['new_feedback.email'] = 1;
+		$prefs['new_feedback_validate.email'] = 1;
+		$prefs['new_comment.email'] = 1;
+		$prefs['new_comment_validate.email'] = 1;
+
+		foreach ($prefs as $p => $v) {
+			$this->container->getDb()->insert('people_prefs', array(
+				'person_id' => $agent->id,
+				'name' => $p,
+				'value_str' => $v,
+				'value_array' => 'N;',
+			));
 		}
 	}
 }
