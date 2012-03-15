@@ -155,7 +155,7 @@ class DataInitializer
 			));
 		}
 
-		$prefs = aray();
+		$prefs = array();
 		$prefs['chat_message.email'] = 1;
 		$prefs['login_attempt_fail.email'] = 1;
 		$prefs['new_feedback.email'] = 1;

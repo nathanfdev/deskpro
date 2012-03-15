@@ -401,13 +401,16 @@ class TechsStep extends AbstractDeskpro3Step
 				$subs = \Orb\Util\Arrays::removeFalsey($subs);
 
 				foreach ($subs as $filter_id => $opts) {
-					$opts['person_id'] = $agent->id;
-					$opts['filter_id'] = $filter_id;
-					$this->db->insert('ticket_filter_subscriptions', $opts);
+					$ins = array();
+					foreach ($opts as $k) $ins[$k] = 1;
+
+					$ins['person_id'] = $agent->id;
+					$ins['filter_id'] = $filter_id;
+					$this->db->insert('ticket_filter_subscriptions', $ins);
 				}
 
 				// Prefs
-				$prefs = aray();
+				$prefs = array();
 				if ($tech['email_pm']) {
 					$prefs['chat_message.email'] = 1;
 				}
