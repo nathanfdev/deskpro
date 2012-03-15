@@ -317,7 +317,10 @@ class TechsStep extends AbstractDeskpro3Step
 						'person_id' => $agent->id,
 						'app' => 'tickets',
 					));
+				}
 
+				// Agents can use all chat cats by default
+				foreach ($this->dep_ids as $did) {
 					$this->getDb()->insert('department_permissions', array(
 						'department_id' => $did,
 						'person_id' => $agent->id,

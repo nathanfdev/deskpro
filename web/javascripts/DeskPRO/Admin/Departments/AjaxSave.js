@@ -78,7 +78,7 @@ DeskPRO.Admin.Departments.AjaxSave = new Orb.Class({
 			value: tickets
 		});
 
-		var url = BASE_URL + '/admin/departments/' + department_id + '/save-feature-state.json';
+		var url = BASE_URL + 'admin/departments/' + department_id + '/save-feature-state.json';
 
 		$.ajax({
 			url: url,
@@ -89,7 +89,7 @@ DeskPRO.Admin.Departments.AjaxSave = new Orb.Class({
 	},
 
 	saveAgentPermissions: function(department_id, app, agent_ids) {
-		var url = BASE_URL + '/admin/departments/' + department_id + '/save-agents.json';
+		var url = BASE_URL + 'admin/departments/' + department_id + '/save-agents.json';
 
 		var postData = [];
 		postData.push({name: 'app', value: app});

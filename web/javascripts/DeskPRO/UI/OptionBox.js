@@ -162,6 +162,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			$('.num', countEl).text(count);
 			countEl.show();
 		} else {
+			$('.num', countEl).text('0');
 			countEl.hide();
 		}
 

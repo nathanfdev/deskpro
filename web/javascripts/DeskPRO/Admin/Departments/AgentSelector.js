@@ -20,7 +20,7 @@ DeskPRO.Admin.Departments.AgentSelector = new Orb.Class({
 					words.push(countAgents + ' agents');
 				}
 
-				if (!words.length) {
+				if (!countAgents) {
 					words = ['No agents'];
 				}
 
