@@ -6,9 +6,8 @@ if (php_sapi_name() != 'cli') {
 	exit(1);
 }
 
-require './php-path.php';
-
 chdir(__DIR__);
+require './php-path.php';
 
 define('DP_BUILDING', true);
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
