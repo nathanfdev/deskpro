@@ -6,15 +6,6 @@
 		<td>Description</Td>
 	</tr>
 	<tr>
-		<td><a href="<?php echo $view['router']->generate('dev_build') ?>">Builds</a></td>
-		<td>
-			<p>Get information about your current build, and perform upgrades if your installation
-			is behind the source.</p>
-			<p>You sholud visit this page every time you pull a new version from version control.</p>
-			<p><a href="<?php echo $view['router']->generate('dev_build_genclass') ?>">Click here to get code for a new build class.</a>
-		</td>
-	</tr>
-	<tr>
 		<td><a href="<?php echo $view['router']->generate('dev_models') ?>">Models</a></td>
 		<td>
 			<p>Get information about models, and easily generate SQL for models.</p>

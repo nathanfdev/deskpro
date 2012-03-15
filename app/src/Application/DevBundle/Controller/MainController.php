@@ -33,9 +33,6 @@
 
 namespace Application\DevBundle\Controller;
 
-use Application\DeskPRO\Build\VersionReader;
-use Application\DeskPRO\Build\Upgrader;
-
 use Application\DeskPRO\App;
 
 class MainController extends \Application\DeskPRO\HttpKernel\Controller\Controller

@@ -37,9 +37,6 @@ namespace Application\DeskPRO\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Application\DeskPRO\App;
 
-use Application\DeskPRO\Build\Upgrader;
-use Application\DeskPRO\Build\VersionReader;
-
 /**
  * The abstract controller sets up some default objects.
  *

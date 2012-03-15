@@ -33,9 +33,6 @@
 
 namespace Application\DevBundle\Controller;
 
-use Application\DeskPRO\Build\VersionReader;
-use Application\DeskPRO\Build\Upgrader;
-
 use Application\DeskPRO\Entity\ClientMessage;
 
 use Application\DeskPRO\App;

@@ -82,34 +82,6 @@ $collection->add('dev_phptest_run', new Route(
 	array()
 ));
 
-$collection->add('dev_build', new Route(
-	'/build',
-	array('_controller' => 'DevBundle:Build:index'),
-	array(),
-	array()
-));
-
-$collection->add('dev_build_genclass', new Route(
-	'/build/gen-build-class',
-	array('_controller' => 'DevBundle:Build:genBuildClass'),
-	array(),
-	array()
-));
-
-$collection->add('dev_build_upgrade', new Route(
-	'/build/upgrade',
-	array('_controller' => 'DevBundle:Build:upgrade'),
-	array(),
-	array()
-));
-
-$collection->add('dev_build_upgrade_do', new Route(
-	'/build/upgrade-do',
-	array('_controller' => 'DevBundle:Build:upgradeDo'),
-	array(),
-	array()
-));
-
 $collection->add('dev_cm', new Route(
 	'/client-messages',
 	array('_controller' => 'DevBundle:ClientMessages:index'),
