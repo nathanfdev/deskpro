@@ -180,6 +180,7 @@ class SettingsController extends AbstractController
 	public function ticketFilterEditSaveAction($filter_id)
 	{
 		if ($filter_id) {
+			$is_new = false;
 			$filter = $this->em->find('DeskPRO:TicketFilter', $filter_id);
 			if ($filter AND $filter['sys_name']) {
 				$filter = null;
@@ -189,6 +190,7 @@ class SettingsController extends AbstractController
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no filter with ID $filter_id");
 			}
 		} else {
+			$is_new = true;
 			$filter = new Entity\TicketFilter;
 		}
 
@@ -205,7 +207,7 @@ class SettingsController extends AbstractController
 		$this->em->persist($filter);
 		$this->em->flush();
 
-		return $this->createJsonResponse(array('success' => true));
+		return $this->createJsonResponse(array('success' => true, 'filter_id' => $filter->id, 'filter_title' => $filter->title, 'is_new' => $is_new));
 	}
 
 	public function ticketFilterDeleteAction($filter_id)

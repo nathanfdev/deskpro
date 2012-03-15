@@ -2755,3 +2755,28 @@ ul.cc-list {
 .tags-disable-edit .text-remove {
 	display: none !important;
 }
+
+
+#reload_overlay {
+	position: absolute;
+	top: 0; right: 0; bottom: 0; left: 0;
+	background: rgba(56,56,64,0.6);
+
+	article {
+		width: 400px;
+		margin: auto;
+		margin-bottom: 150px;
+		padding: 15px;
+		background-color: #F1F3F7;
+		border: 1px solid #C4C6CB;
+		.rounded(5px);
+
+		h3 {
+			font-size: 14px;
+			padding-bottom: 38px;
+			background: url(../../images/spinners/loading-big-circle.gif) no-repeat 50% 100%;
+		}
+	}
+
+	z-index: 1000000;
+}

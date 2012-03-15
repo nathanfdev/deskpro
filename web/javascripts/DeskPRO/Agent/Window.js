@@ -276,6 +276,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 						hideEl.hide();
 					}
 				});
+			},
+
+			reloadInterface: function() {
+				$('#reload_overlay').show().on('click', function(ev) { ev.stopPropagation(); });
+				window.location.reload(false);
 			}
 		};
 	},

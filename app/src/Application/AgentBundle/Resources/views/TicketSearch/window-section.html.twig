@@ -80,7 +80,7 @@
 							data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
 						>
 							<span class="list-counter" id="ticket_filter_{{filter.id}}_count">{{ filter_counts[filter.id]|default(0) }}</span>
-							{{ filter.title }}
+							<label>{{ filter.title }}</label>
 						</h3>
 					</li>
 				{% endfor %}

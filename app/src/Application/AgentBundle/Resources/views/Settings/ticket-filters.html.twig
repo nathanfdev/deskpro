@@ -22,7 +22,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Filters';
 					<td>{{ filter.title }}</td>
 					<td class="prop" style="text-align: center;">
 						<ul class="controls">
-							<li class="delete delete-filter" data-delete-url="{{ path('agent_settings_ticketfilters_del', { 'filter_id': filter.id }) }}"></li>
+							<li class="delete delete-filter" data-delete-url="{{ path('agent_settings_ticketfilters_del', { 'filter_id': filter.id }) }}" data-filter-id="{{ filter.id }}"></li>
 							<li class="edit" data-route="poppage:{{ path('agent_settings_ticketfilters_edit', { 'filter_id': filter.id }) }}" data-zindex="32050"></li>
 						</ul>
 					</td>

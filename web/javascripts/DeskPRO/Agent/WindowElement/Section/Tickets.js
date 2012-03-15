@@ -708,5 +708,35 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		var new_flag_count = parseInt($('#ticket_flag_' + info.new_flag + '_count').text());
 		this.updateFlagCountFor(info.new_flag, new_flag_count+1);
+	},
+
+	/**
+	 * Remove a filter row. This remove doesnt need to be perfect, its used from the settings window
+	 * when you update filters. After the settings overlay is closed, the page is refreshed, this is just
+	 * instant feedback.
+	 */
+	removeCustomFilter: function(id) {
+		$('#tickets_outline_custom_filters').find('li.filter-' + id).remove();
+		if (!$('#tickets_outline_custom_filters').find('li.filter')[0]) {
+			$('#tickets_outline_custom_filters').find('li.no-data').show();
+		}
+	},
+
+	updateCustomFilterTitle: function(id, title) {
+		$('#tickets_outline_custom_filters').find('li.filter-' + id + ' label').text(title);
+	},
+
+	addCustomFilter: function(id, title) {
+		var html = [];
+		html.push('<li class="filter filter-'+id+'">');
+			html.push('<h3 class="is-nav-item title"><label></label></h3>');
+		html.push('</li>');
+		html = html.join('');
+
+		var row = $(html);
+		row.find('label').text(title);
+
+		$('#tickets_outline_custom_filters').append(row);
+		$('#tickets_outline_custom_filters').find('li.no-data').hide();
 	}
 });

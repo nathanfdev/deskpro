@@ -1,15 +1,12 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.SettingsPage');
 
 DeskPRO.Agent.PageFragment.SettingsPage.Filters = new Orb.Class({
-
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
-	initializeProperties: function() {
-		this.parent();
-		this.TYPENAME = 'settings_filters';
-	},
-
 	initPage: function(el) {
+
+		var ticketsSection = DeskPRO_Window.sections.tickets_section;
+
 		window.settings_filters_page = this;
 		this.el = el;
 		var self = this;
@@ -22,6 +19,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Filters = new Orb.Class({
 		this.el.on('click', '.delete-filter', function() {
 			var row = $(this).closest('tr');
 			var url = $(this).data('delete-url');
+			var filterId = $(this).data('filter-id');
 
 			DeskPRO_Window.showConfirm('Are you sure you want to permanantly delete this filter?', function() {
 				$.ajax({
@@ -29,6 +27,10 @@ DeskPRO.Agent.PageFragment.SettingsPage.Filters = new Orb.Class({
 					success: function() {
 						row.fadeOut(function() {
 							row.remove();
+
+							if (ticketsSection) {
+								ticketsSection.removeCustomFilter(filterId);
+							}
 						});
 					}
 				});
@@ -39,5 +41,10 @@ DeskPRO.Agent.PageFragment.SettingsPage.Filters = new Orb.Class({
 		if (activateView) {
 			this.activateView(activateView);
 		}
+	},
+
+	initializeProperties: function() {
+		this.parent();
+		this.TYPENAME = 'settings_filters';
 	}
 });

@@ -148,7 +148,7 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 			this._cleanupTimer = window.setTimeout(this._cleanupOld.bind(this), 180000); // three minutes
 
 			if (this.reloadInterface) {
-				window.location = window.location;
+				DeskPRO_Window.util.reloadInterface();
 			}
 		}
 	}

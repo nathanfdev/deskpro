@@ -13,6 +13,8 @@ DeskPRO.Agent.PageFragment.SettingsPage.FilterEdit = new Orb.Class({
 		var self = this;
 		this.el = el;
 
+		var ticketsSection = DeskPRO_Window.sections.tickets_section;
+
 		var critTpl = this.getEl('criteria_tpl');
 		var critList = this.getEl('criteria_list');
 
@@ -66,7 +68,16 @@ DeskPRO.Agent.PageFragment.SettingsPage.FilterEdit = new Orb.Class({
 				type: 'POST',
 				data: postData,
 				dataType: 'json',
-				success: function() {
+				success: function(data) {
+
+					if (ticketsSection) {
+						if (data.is_new) {
+							ticketsSection.addCustomFilter(data.filter_id, data.filter_title);
+						} else {
+							ticketsSection.updateCustomFilterTitle(data.filter_id, data.filter_title);
+						}
+					}
+
 					$('#settingswin').trigger('dp_settings_filtersupdated');
 					self.fragmentOverlay.close();
 				}
