@@ -29,36 +29,9 @@ define('DP_WEB_ROOT', dirname(__FILE__));
 define('DP_START_TIME', microtime(true));
 
 if (isset($_GET['_sys'])) {
-	if (!file_exists(DP_CONFIG_FILE)) exit;
-
-	$is_authed = false;
-	if (isset($_GET['_'])) {
-		$is_authed = (md5_file(DP_CONFIG_FILE) == $_GET['_']);
-	}
-
-	switch ($_GET['_sys']) {
-		case 'memtest':
-			if (!$is_authed) exit;
-			require DP_ROOT . '/sys/scripts/memtest.php';
-			exit;
-
-		case 'check':
-			require DP_ROOT . '/sys/scripts/check.php';
-			exit;
-
-		case 'checkurl':
-			require DP_ROOT . '/sys/scripts/checkurl.php';
-			exit;
-
-		case 'dev_run_migrations':
-			if (!$is_authed) exit;
-			require DP_ROOT . '/sys/scripts/dev_run_migrations.php';
-			exit;
-	}
-
-	unset($is_authed);
+	require_once DP_ROOT.'/sys/boot_scripts.php';
+	exit;
 }
-
 
 require DP_ROOT . '/sys/preboot.php';
 
