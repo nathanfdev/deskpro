@@ -128,6 +128,10 @@ class TemplatingExtension extends \Twig_Extension
 			'crc32' => new \Twig_Filter_Method($this, 'crc32'),
 			'url_domain' => new \Twig_Filter_Method($this, 'getUrlDomain'),
 			'truncate' => new \Twig_Filter_Method($this, 'strTruncate'),
+
+			// Override for custom UTF-8 handling
+			'upper' => new \Twig_Filter_Method($this, 'strUpper'),
+			'lower' => new \Twig_Filter_Method($this, 'strLower'),
         );
     }
 
@@ -650,6 +654,16 @@ class TemplatingExtension extends \Twig_Extension
 	public function rawUrlEncode($str)
 	{
 		return rawurlencode($str);
+	}
+
+	public function strUpper($str)
+	{
+		return Strings::utf8_strtoupper($str);
+	}
+
+	public function strLower($str)
+	{
+		return Strings::utf8_strtolower($str);
 	}
 
     /**
