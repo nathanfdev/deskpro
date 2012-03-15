@@ -3,7 +3,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Filters';
 </script>
 
 <div style="text-align: right">
-	<a class="clean-white" data-route="poppage:{{ path('agent_settings_ticketfilters_new') }}">Create Filter</a>
+	<a class="clean-white" data-route="poppage:{{ path('agent_settings_ticketfilters_new') }}" data-zindex="32050">Create Filter</a>
 </div>
 
 <br />
@@ -23,7 +23,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Filters';
 					<td class="prop" style="text-align: center;">
 						<ul class="controls">
 							<li class="delete delete-filter" data-delete-url="{{ path('agent_settings_ticketfilters_del', { 'filter_id': filter.id }) }}"></li>
-							<li class="edit" data-route="poppage:{{ path('agent_settings_ticketfilters_edit', { 'filter_id': filter.id }) }}"></li>
+							<li class="edit" data-route="poppage:{{ path('agent_settings_ticketfilters_edit', { 'filter_id': filter.id }) }}" data-zindex="32050"></li>
 						</ul>
 					</td>
 				</tr>

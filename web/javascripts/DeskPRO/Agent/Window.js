@@ -1080,17 +1080,23 @@ DeskPRO.Agent.Window = new Orb.Class({
 	loadRouteOverlay: function(routeData) {
 
 		var positionAbove = null;
+		var zindex = 0;
 		var trigger = routeData.routeTriggerEl;
 		if (trigger) {
-			var parent = trigger.parentsUntil('body').last();
-			if (parent.length && parent.parent().is('body')) {
-				positionAbove = parent;
+			if (trigger.data('zindex')) {
+				zindex = trigger.data('zindex');
+			} else {
+				var parent = trigger.parentsUntil('body').last();
+				if (parent.length && parent.parent().is('body')) {
+					positionAbove = parent;
+				}
 			}
 		}
 
 		var fragmentOverlay = new DeskPRO.Agent.PageHelper.FragmentOverlay({
 			routeData: routeData,
-			positionAbove: positionAbove
+			positionAbove: positionAbove,
+			zIndex: zindex
 		});
 	},
 
