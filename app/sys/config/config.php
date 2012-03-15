@@ -34,6 +34,7 @@ $container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%../doctrin
 $container->setParameter('twig.options', array('cache' => '%kernel.cache_dir%../twig-compiled', 'charset' => 'UTF-8', 'debug' => '%kernel.debug%', 'auto_reload' => '%kernel.debug%'));
 $container->setParameter('doctrine_migrations.dir_name', '%kernel.root_dir%/Resources/DoctrineMigrations');
 $container->setParameter('doctrine_migrations.table_name', 'dev_migration_versions');
+$container->setParameter('twig.extension.form.class', 'Application\\DeskPRO\\Twig\\Extension\\FormExtension');
 
 ############################################################################
 # Services
@@ -141,6 +142,18 @@ $container->loadFromExtension('framework', array(
 	'form' => array('enabled' => true)
 ));
 
+
+############################################################################
+# Twig Configuration
+############################################################################
+
+$container->loadFromExtension('twig', array(
+	'form' => array(
+		'resources' => array(
+			'DeskPRO:Form:form_div_layout.html.twig'
+		)
+	)
+));
 
 ############################################################################
 # Doctrine Configuration
