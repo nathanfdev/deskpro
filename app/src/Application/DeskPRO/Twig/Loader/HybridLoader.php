@@ -88,9 +88,9 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 		$str_name = $this->_getStringName($name);
 		if (isset($this->style_template_info[$str_name])) {
 			return md5($this->style['id'] . '_' . $str_name);
+		} else {
+			return md5($str_name);
 		}
-
-		return parent::getCacheKey($name);
     }
 
 	public function getSource($name)
