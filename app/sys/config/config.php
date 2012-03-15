@@ -35,6 +35,7 @@ $container->setParameter('twig.options', array('cache' => '%kernel.cache_dir%../
 $container->setParameter('doctrine_migrations.dir_name', '%kernel.root_dir%/Resources/DoctrineMigrations');
 $container->setParameter('doctrine_migrations.table_name', 'dev_migration_versions');
 $container->setParameter('twig.extension.form.class', 'Application\\DeskPRO\\Twig\\Extension\\FormExtension');
+$container->setParameter('doctrine.orm.entity_manager.class', 'Application\\DeskPRO\\ORM\\EntityManager');
 
 ############################################################################
 # Services
