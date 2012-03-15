@@ -324,6 +324,120 @@ class TechsStep extends AbstractDeskpro3Step
 						'app' => 'chat',
 					));
 				}
+
+				#------------------------------
+				# Enable notifications
+				#------------------------------
+
+				$subs = array(
+					1 => array(),
+					2 => array(),
+					3 => array(),
+					4 => array(),
+					5 => array(),
+				);
+
+				$f_my = 1;
+				$f_team = 2;
+				$f_follow = 3;
+				$f_noone = 4;
+				$f_all = 5;
+
+				if ($tech['email_assigned']) {
+					$subs[$f_my][] = 'email_new';
+					$subs[$f_my][] = 'alert_new';
+				}
+
+				if ($tech['email_add_participant']) {
+					$subs[$f_follow][] = 'email_new';
+					$subs[$f_follow][] = 'alert_new';
+				}
+
+				if ($tech['email_new_email']) {
+					$subs[$f_all][] = 'email_new';
+					$subs[$f_all][] = 'alert_new';
+					$subs[$f_noone][] = 'email_new';
+					$subs[$f_noone][] = 'alert_new';
+				}
+				if ($tech['email_reply_email']) {
+					$subs[$f_all][] = 'email_user_activity';
+					$subs[$f_all][] = 'alert_user_activity';
+					$subs[$f_noone][] = 'email_user_activity';
+					$subs[$f_noone][] = 'alert_user_activity';
+
+					if ($tech['email_tech_reply'] || $tech['email_note']) {
+						$subs[$f_all][] = 'email_agent_activity';
+						$subs[$f_all][] = 'alert_agent_activity';
+						$subs[$f_noone][] = 'email_agent_activity';
+						$subs[$f_noone][] = 'alert_agent_activity';
+					}
+				}
+
+				if ($tech['email_own_email']) {
+					$subs[$f_my][] = 'email_user_activity';
+					$subs[$f_my][] = 'alert_user_activity';
+
+					if ($tech['email_tech_reply'] or $tech['email_note']) {
+						$subs[$f_my][] = 'email_agent_activity';
+						$subs[$f_my][] = 'alert_agent_activity';
+					}
+				}
+
+				if ($tech['email_reply_participant']) {
+					$subs[$f_follow][] = 'email_user_activity';
+					$subs[$f_follow][] = 'alert_user_activity';
+
+					if ($tech['email_tech_reply'] or $tech['email_note']) {
+						$subs[$f_follow][] = 'email_agent_activity';
+						$subs[$f_follow][] = 'alert_agent_activity';
+					}
+				}
+
+				$subs[$f_team][] = 'email_new';
+				$subs[$f_team][] = 'alert_new';
+				$subs[$f_team][] = 'email_user_activity';
+				$subs[$f_team][] = 'email_agent_activity';
+
+				$subs = \Orb\Util\Arrays::removeFalsey($subs);
+
+				foreach ($subs as $filter_id => $opts) {
+					$opts['person_id'] = $agent->id;
+					$opts['filter_id'] = $filter_id;
+					$this->db->insert('ticket_filter_subscriptions', $opts);
+				}
+
+				// Prefs
+				$prefs = aray();
+				if ($tech['email_pm']) {
+					$prefs['chat_message.email'] = 1;
+				}
+				if ($tech['email_user_registered']) {
+					$prefs['new_user.email'] = 1;
+				}
+				if ($tech['email_user_registered_validation']) {
+					$prefs['new_user_validate.email'] = 1;
+				}
+
+				if ($tech['email_on_login']) {
+					$prefs['login_attempt.email'] = 1;
+				}
+				if ($tech['email_on_failed_login']) {
+					$prefs['login_attempt_fail.email'] = 1;
+				}
+
+				$prefs['new_feedback.email'] = 1;
+				$prefs['new_feedback_validate.email'] = 1;
+				$prefs['new_comment.email'] = 1;
+				$prefs['new_comment_validate.email'] = 1;
+
+				foreach ($prefs as $p => $v) {
+					$this->db->insert('people_prefs', array(
+						'person_id' => $agent->id,
+						'name' => $p,
+						'value_str' => $v,
+						'value_array' => 'N;',
+					));
+				}
 			}
 
 			$this->getEm()->flush();
