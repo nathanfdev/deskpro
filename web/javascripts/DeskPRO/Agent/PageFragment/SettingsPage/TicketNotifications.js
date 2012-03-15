@@ -44,5 +44,16 @@ DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifications = new Orb.Class({
 				$(':checkbox', row).attr('checked', true);
 			}
 		});
+
+		// Toggle "All" box when selecting/unselecting others
+		$('td.prop :checkbox', this.el).on('click', function() {
+			var row = $(this).closest('tr');
+			var checks = row.find(':checkbox').not('.check-all');
+			if (checks.filter(':checked').length == checks.length) {
+				row.find(':checkbox.check-all').attr('checked', true);
+			} else {
+				row.find(':checkbox.check-all').attr('checked', false);
+			}
+		});
 	}
 });
