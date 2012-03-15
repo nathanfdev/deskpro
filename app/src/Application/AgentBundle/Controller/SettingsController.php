@@ -123,7 +123,7 @@ class SettingsController extends AbstractController
 
 	public function otherNotificationsSaveAction()
 	{
-		$prefs = $this->in->getCleanValueArray('notify_prefs', 'bool', 'string');
+		$prefs = $this->in->getCleanValueArray('my_prefs', 'bool', 'string');
 
 		$person_editor = $this->container->getSystemService('person_edit_manager');
 		$person_editor->saveNotificationPreferences($this->person, $prefs);

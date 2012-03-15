@@ -433,7 +433,7 @@ class TechsStep extends AbstractDeskpro3Step
 				foreach ($prefs as $p => $v) {
 					$this->db->insert('people_prefs', array(
 						'person_id' => $agent->id,
-						'name' => $p,
+						'name' => 'agent_notif.' . $p,
 						'value_str' => $v,
 						'value_array' => 'N;',
 					));

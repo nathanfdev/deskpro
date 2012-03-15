@@ -159,6 +159,18 @@ HTML;
 		$return = $this->in->getString('return');
 
 		if (!$result->isValid()) {
+
+			// Send alert
+			$attempt_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
+			if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email')) {
+				$email_body = App::get('templating')->render('DeskPRO:emails_agent:login-alert', array('success' => false, 'session' => App::getSession()->getEntity()));
+				$message = App::getMailer()->createMessage();
+				$message->setTo($attempt_person->getPrimaryEmailAddress(), $attempt_person->getDisplayName());
+				$message->setSubject("Failed Login Attempt");
+				$message->setBody($email_body, 'text/html');
+				App::getMailer()->send($message);
+			}
+
 			$this->session->set('failed_login_name', $this->in->getString('email'));
 			$this->session->save();
 			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
@@ -194,6 +206,16 @@ HTML;
 				'data' => $data,
 				'created_by_client' => $this->session->getEntityId(),
 			));
+
+			// Send alert
+			if ($person->getPref('agent_notif.login_attempt.email')) {
+				$email_body = App::get('templating')->render('DeskPRO:emails_agent:login-alert.html.twig', array('success' => true, 'session' => App::getSession()->getEntity()));
+				$message = App::getMailer()->createMessage();
+				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+				$message->setSubject("Successful Login Alert");
+				$message->setBody($email_body, 'text/html');
+				App::getMailer()->send($message);
+			}
 
 			App::getOrm()->persist($cm);
 			App::getOrm()->flush();
