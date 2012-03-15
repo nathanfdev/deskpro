@@ -1,8 +1,9 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block head %}
-	<meta property="og:url" content="{{ path('user_feedback_view', {'slug': feedback.id}) }}" />
+	<meta property="og:url" content="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}" />
 	<meta property="og:title" content="{{feedback.title}}" />
 	<meta property="og:type" content="article" />
+	<link rel="canonical" href="{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}" />
 {% endblock %}
 {% block breadcrumb %}
 	<li><a href="{{ path('user_feedback') }}">Feedback</a></li>

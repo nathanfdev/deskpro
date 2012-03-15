@@ -154,6 +154,11 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 
 			$this->saveMappedId('feedback_cat', $cat['id'], $new_cat->id);
 
+			$this->db->insert('import_datastore', array(
+				'typename' => 'dp3_ideacatid_' . $cat['id'],
+				'data' => $new_cat->id
+			));
+
 			// Process any subcats
 			$this->processCategories($cat['id']);
 		}

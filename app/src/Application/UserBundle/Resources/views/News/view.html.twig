@@ -3,6 +3,7 @@
 	<meta property="og:url" content="{{ path('user_news_view', {'slug': post.url_slug}) }}" />
 	<meta property="og:title" content="{{post.title}}" />
 	<meta property="og:type" content="blog" />
+	<link rel="canonical" href="{{ url('user_news_view', {'slug': post.url_slug}) }}" />
 {% endblock %}
 {% block breadcrumb %}
 	<li><a href="{{ path('user_news') }}">{{ phrase('user.news.section_name') }}</a></li>

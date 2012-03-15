@@ -192,6 +192,11 @@ class KbStep extends AbstractDeskpro3Step
 
 		$this->saveMappedId('faq_article', $article['id'], $new_article->id);
 
+		$this->db->insert('import_datastore', array(
+			'typename' => 'dp3_kbref_' . $article['ref'],
+			'data' => $new_article->id
+		));
+
 		#------------------------------
 		# Attachments
 		#------------------------------

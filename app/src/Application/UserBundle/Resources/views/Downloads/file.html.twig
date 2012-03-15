@@ -1,4 +1,10 @@
 {% extends 'UserBundle::layout.html.twig' %}
+{% block head %}
+	<meta property="og:url" content="{{ path('user_downloads_file', {'slug': download.url_slug}) }}" />
+	<meta property="og:title" content="{{article.title}}" />
+	<meta property="og:type" content="article" />
+	<link rel="canonical" href="{{ url('user_downloads_file', {'slug': download.url_slug}) }}" />
+{% endblock %}
 {% block breadcrumb %}
 <li><a href="{{ path('user_downloads') }}">{{ phrase('user.downloads.section_title') }}</a></li>
 	{% for cat in category_path %}

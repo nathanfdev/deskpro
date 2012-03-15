@@ -170,6 +170,11 @@ class FeedbackStep extends AbstractDeskpro3Step
 
 		$this->saveMappedId('feedback', $feedback['id'], $new_feedback->id, true);
 
+		$this->db->insert('import_datastore', array(
+			'typename' => 'dp3_ideaid_' . $feedback['id'],
+			'data' => $new_feedback->id
+		));
+
 		#------------------------------
 		# Create the first revision
 		#------------------------------

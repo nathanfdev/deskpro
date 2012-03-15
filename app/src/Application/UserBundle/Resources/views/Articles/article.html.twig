@@ -1,8 +1,9 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block head %}
-	<meta property="og:url" content="{{ path('user_articles_article', {'slug': article.id}) }}" />
+	<meta property="og:url" content="{{ path('user_articles_article', {'slug': article.url_slug}) }}" />
 	<meta property="og:title" content="{{article.title}}" />
 	<meta property="og:type" content="article" />
+	<link rel="canonical" href="{{ url('user_articles_article', {'slug': article.url_slug}) }}" />
 {% endblock %}
 {% block breadcrumb %}
 	<li><a href="{{ path('user_articles') }}">{{ phrase('user.articles.section_name') }}</a></li>

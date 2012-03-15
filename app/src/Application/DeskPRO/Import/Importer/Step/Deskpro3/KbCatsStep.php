@@ -119,6 +119,11 @@ class KbCatsStep extends AbstractDeskpro3Step
 
 			$this->saveMappedId('faq_cat', $cat['id'], $new_cat->id);
 
+			$this->db->insert('import_datastore', array(
+				'typename' => 'dp3_kbcatid_' . $cat['id'],
+				'data' => $new_cat->id
+			));
+
 			$this->processCategories($cat['id']);
 		}
 	}

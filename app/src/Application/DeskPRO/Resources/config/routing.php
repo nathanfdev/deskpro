@@ -82,4 +82,40 @@ $collection->add('sys_log_js_error', new Route(
 	array()
 ));
 
+$collection->add('dp3_redirect_news', new Route(
+	'/news.php',
+	array('_controller' => 'DeskPRO:Deskpro3Redirect:redirectNews'),
+	array(),
+	array()
+));
+
+$collection->add('dp3_redirect_kb_home', new Route(
+	'/kb.php',
+	array('_controller' => 'DeskPRO:Deskpro3Redirect:redirectKbHome'),
+	array(),
+	array()
+));
+
+$collection->add('dp3_redirect_kb', new Route(
+	'/kb_article.php',
+	array('_controller' => 'DeskPRO:Deskpro3Redirect:redirectKb'),
+	array(),
+	array()
+));
+
+$collection->add('dp3_redirect_kbcat', new Route(
+	'/kb_cat.php',
+	array('_controller' => 'DeskPRO:Deskpro3Redirect:redirectKbCat'),
+	array(),
+	array()
+));
+
+$collection->add('dp3_redirect_idea', new Route(
+	'/ideas.php',
+	array('_controller' => 'DeskPRO:Deskpro3Redirect:redirectIdea'),
+	array(),
+	array()
+));
+
+
 return $collection;

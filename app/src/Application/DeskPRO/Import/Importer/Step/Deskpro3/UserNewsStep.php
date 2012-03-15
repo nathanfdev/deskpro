@@ -136,6 +136,11 @@ class UserNewsStep extends AbstractDeskpro3Step
 
 		$this->saveMappedId('news', $news['id'], $new_news->id);
 
+		$this->db->insert('import_datastore', array(
+			'typename' => 'dp3_newsid_' . $news['id'],
+			'data' => $new_news->id
+		));
+
 		#------------------------------
 		# Create the first revision
 		#------------------------------
