@@ -271,14 +271,27 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 	 * @param string $id cache id The id of the cache entry to fetch.
 	 * @return string The cached data or FALSE, if no cache entry exists for the given id.
 	 */
-	function fetch($id)
+	public function fetch($id)
 	{
 		$prefix_id = $this->id_prefix . $id;
 
 		$data = false;
 
+		$is_loaded = false;
+
 		if (array_key_exists($prefix_id, $this->loaded)) {
-			if ($this->loaded[$prefix_id] === null) {
+			$is_loaded = true;
+		} else {
+			foreach ($this->loaded_prefixes as $check_prefix) {
+				if (strpos($prefix_id, $check_prefix) === 0) {
+					$is_loaded = true;
+					break;
+				}
+			}
+		}
+
+		if ($is_loaded) {
+			if (!isset($this->loaded[$prefix_id]) || $this->loaded[$prefix_id] === null) {
 				return false;
 			}
 
@@ -323,7 +336,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 	 * @param string $id cache id The cache id of the entry to check for.
 	 * @return boolean TRUE if a cache entry exists for the given cache id, FALSE otherwise.
 	 */
-	function contains($id)
+	public function contains($id)
 	{
 		$prefix_id = $this->id_prefix . $id;
 
@@ -349,6 +362,8 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 	}
 
 
+
+
 	/**
 	 * Puts data into the cache.
 	 *
@@ -357,7 +372,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 	 * @param int $lifeTime The lifetime. If != 0, sets a specific lifetime for this cache entry (0 => infinite lifeTime).
 	 * @return boolean TRUE if the entry was successfully stored in the cache, FALSE otherwise.
 	 */
-	function save($id, $data, $lifeTime = 0)
+	public function save($id, $data, $lifeTime = 0)
 	{
 		$prefix_id = $this->id_prefix . $id;
 
@@ -392,7 +407,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 	 * @param string $id cache id
 	 * @return boolean TRUE if the cache entry was successfully deleted, FALSE otherwise.
 	 */
-	function delete($id)
+	public function delete($id)
 	{
 		$prefix_id = $this->id_prefix . $id;
 
@@ -440,7 +455,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 	/**
 	 * @return null
 	 */
-	function getStats()
+	public function getStats()
 	{
 		return null;
 	}
