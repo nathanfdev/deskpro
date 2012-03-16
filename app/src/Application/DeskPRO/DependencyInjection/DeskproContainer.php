@@ -107,7 +107,7 @@ class DeskproContainer extends Container
 	public function getSystemService($id)
 	{
 		if (isset($this->system_services[$id])) {
-			$this->system_services[$id] = $id;
+			return $this->system_services[$id];
 		}
 
 		$classname = 'Application\\DeskPRO\\DependencyInjection\\SystemServices\\' . $this->camelize($id) . 'Service';
