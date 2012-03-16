@@ -236,6 +236,10 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 			exit;
 		}
 
+		if (!$this->handler_class) {
+			throw new \InvalidArgumentException("Invalid handler class: {$this->handler_class} on {$this->id}");
+		}
+
 		$classname = $this->handler_class;
 		$this->_handler_instance = new $classname($this);
 

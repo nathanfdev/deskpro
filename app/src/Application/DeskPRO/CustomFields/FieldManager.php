@@ -121,8 +121,6 @@ class FieldManager
 			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
 			foreach ($all_fields as $f) {
 
-				$f->field_manager = $this;
-
 				$this->all_fields[$f->id] = $f;
 
 				if (!$f->getParentId()) {

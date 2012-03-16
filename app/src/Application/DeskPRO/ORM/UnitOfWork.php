@@ -125,6 +125,21 @@ class UnitOfWork extends DoctrineUnitOfWork
 	}
 
 
+	/**
+	 * Check if an entity is set to be preloaded
+	 *
+	 * @param $entityName
+	 * @return bool
+	 */
+	public function isAddedPreloadedEntity($entityName)
+	{
+		$class = $this->_em->getClassMetadata($entityName);
+		$classname = $class->getName();
+
+		return isset($this->loaded_sets[$classname]);
+	}
+
+
 	public function getEntityPersister($entityName)
 	{
 		$class = $this->_em->getClassMetadata($entityName);

@@ -43,15 +43,21 @@ class LookupBasicEntityPersister extends BasicEntityPersister
 	public function load(array $criteria, $entity = null, $assoc = null, array $hints = array(), $lockMode = 0, $limit = null)
 	{
 		// Look for ID-based entities
-		if (count($criteria) == 1 && isset($criteria['id'])) {
+		if (count($criteria) == 1 && isset($criteria['id']) && $criteria['id']) {
+			if ($this->_em->getUnitOfWork()->isAddedPreloadedEntity($this->_class->getName())) {
+				$this->_em->getUnitOfWork()->preloadEntitySet($this->_class->getName());
+			}
+
 			$hit = $this->_em->getUnitOfWork()->tryGetById($criteria['id'], $this->_class->getName());
 			if ($hit) {
-				return $hit;
+				if ($hit->__getPropValue__('id')) {
+					return $hit;
+				}
 			}
 		}
 
 		// Search through the identity map for parent_id
-		if (count($criteria) == 1 && isset($criteria['parent_id'])) {
+		if (count($criteria) == 1 && isset($criteria['parent_id']) && $criteria['parent_id']) {
 			$classname = $this->_class->getName();
 
 			$idmap = $this->_em->getUnitOfWork()->getIdentityMap();
@@ -70,11 +76,10 @@ class LookupBasicEntityPersister extends BasicEntityPersister
 
 	public function loadOneToManyCollection(array $assoc, $sourceEntity, PersistentCollection $coll)
 	{
-		if ($assoc['mappedBy'] == 'parent') {
+		if ($assoc['mappedBy'] == 'parent' && $sourceEntity->getId()) {
 			$persister = $this->_em->getUnitOfWork()->getEntityPersister($assoc['targetEntity']);
 			$classname = $assoc['targetEntity'];
 			if ($persister instanceof LookupBasicEntityPersister) {
-
 				$idmap = $this->_em->getUnitOfWork()->getIdentityMap();
 				if (isset($idmap[$classname])) {
 					foreach ($idmap[$classname] as $ent) {

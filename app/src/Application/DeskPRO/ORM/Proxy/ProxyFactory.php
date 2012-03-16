@@ -92,7 +92,7 @@ class ProxyFactory extends UnprivateProxyFactory
 					$methods .= '            return ' . $cast . '$this->_identifier["' . $identifier . '"];' . "\n";
 					$methods .= '        }' . "\n";
 				}
-				$methods .= '        $this->__load();' . "\n";
+				$methods .= '        if ($this->__isInitialized__ === false) $this->__load();' . "\n";
 				$methods .= '        return parent::' . $method->getName() . '(' . $argumentString . ');';
 				$methods .= "\n" . '    }' . "\n";
 			}

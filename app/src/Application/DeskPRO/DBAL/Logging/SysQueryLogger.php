@@ -329,9 +329,12 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			}
 
 			$write = implode('', $write);
+			$write = trim($write);
 
 			$prefix = '[' . date('Y-m-d H:i:s') . '] ';
 			$write = \Orb\Util\Strings::modifyLines($write, $prefix);
+			$write = trim($write);
+			$write .= "\n";
 
 			file_put_contents(DP_WEB_ROOT.'/data/logs/slow-page-log.log', $write, \FILE_APPEND | \LOCK_EX);
 		}
