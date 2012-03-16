@@ -87,6 +87,10 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			}
 		}
 
+		if (isset($DP_CONFIG['enable_slow_page_log_trace'])) {
+			$this->log_trace = true;
+		}
+
 		register_shutdown_function(array($this, 'writeLog'));
 	}
 
@@ -101,6 +105,11 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			'time_end'       => 0,
 			'time_taken'     => 0
 		);
+
+		if ($this->log_trace) {
+			try { throw new \Exception(); } catch (\Exception $e) { $trace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace()); }
+			$this->last_query['trace'] = $trace;
+		}
 	}
 
 	public function processLast()
@@ -163,12 +172,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
 		if ($do_log) {
 			$explain = '';
-			$trace = '';
 			try {
-				if ($this->log_trace) {
-					try { throw new \Exception(); } catch (\Exception $e) { $trace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace()); }
-				}
-
 				if ($this->log_explain && $queryinfo['query_typename'] == 'SELECT') {
 					try {
 						$explain = App::getDb()->fetchAll("EXPLAIN {$queryinfo['sql']}", $queryinfo['params']);
@@ -185,7 +189,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 						'time'    => sprintf('%.8f', $queryinfo['time_taken']),
 						'sql'     => $queryinfo['sql'],
 						'params'  => $queryinfo['params_string'],
-						'trace'   => $trace,
+						'trace'   => $queryinfo['trace'],
 						'explain' => $explain,
 					))
 				));
@@ -312,20 +316,23 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 				}
 
 				$write[] = sprintf("=> Query %.4f %s$table: %s \t\t Query_Params: %s\n", $q['time_taken'], $name, $sql, implode(', ', $params));
+				if (isset($q['trace'])) {
+					$write[] = \Orb\Util\Strings::modifyLines($q['trace'], "   ", '', true);
+					$write[] = "\n";
+				}
 			}
 
 			foreach ($name_counts as $name => $count) {
 				if ($count > 1) {
-					$write[] = sprintf("=> Repeated_Query %s: %s times    Total_Time: %.4f\n", $name, $count, $name_counts_time[$name]);
+					$write[] = sprintf("\n=> Repeated_Query %s: %s times    Total_Time: %.4f", $name, $count, $name_counts_time[$name]);
 				}
 			}
 
-			$prefix = '[' . date('Y-m-d H:i:s') . '] ';
-			foreach ($write as &$l) {
-				$l = $prefix . $l;
-			}
-
 			$write = implode('', $write);
+
+			$prefix = '[' . date('Y-m-d H:i:s') . '] ';
+			$write = \Orb\Util\Strings::modifyLines($write, $prefix);
+
 			file_put_contents(DP_WEB_ROOT.'/data/logs/slow-page-log.log', $write, \FILE_APPEND | \LOCK_EX);
 		}
 	}
