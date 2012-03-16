@@ -3,7 +3,15 @@
 	{% if title_prop %}
 		{% set title = cat[title_prop] %}
 	{% else %}
-		{% set title = cat.title|default(cat.name|default(cat)) %}
+		{% if cat.title is defined %}
+			{% set title = cat.title %}
+		{% endif %}
+		{% if not title and cat.name is defined %}
+			{% set title = cat.name %}
+		{% endif %}
+		{% if not title %}
+			{% set title = cat %}
+		{% endif %}
 	{% endif %}
 	{% if parent_title %}
 		{% set full_title = parent_title ~ ' > ' ~ title %}

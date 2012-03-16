@@ -29,62 +29,15 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-
-class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
+interface Preloadable
 {
 	/**
-	 * @var \Application\DeskPRO\EntityRepository\Helper\IdentityHelper
+	 * Preloads entities.
 	 */
-	protected $identity_helper;
-
-	/**
-	 * @return \Application\DeskPRO\EntityRepository\Helper\IdentityHelper
-	 */
-	public function getIdentityHelper()
-	{
-		if (!$this->identity_helper) {
-			$this->identity_helper = new Helper\IdentityHelper($this->getEntityManager(), $this);
-		}
-
-		return $this->identity_helper;
-	}
-
-
-	/**
-	 * Get a collection of entities by ID
-	 *
-	 * @param bool $keep_order True to order the resulting array in the same order that ids are provided in $ids
-	 * @return array
-	 */
-	public function getByIds(array $ids, $keep_order = false)
-	{
-		if (!$ids) return array();
-		$results = $this->getIdentityHelper()->findByIds($ids, $keep_order);
-		return $results;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getTableName()
-	{
-		return $this->getClassMetadata()->getTableName();
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return $this->getClassMetadata()->getName();
-	}
+	public function preload();
 }

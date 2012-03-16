@@ -42,13 +42,15 @@ class LookupBasicEntityPersister extends BasicEntityPersister
 {
 	public function load(array $criteria, $entity = null, $assoc = null, array $hints = array(), $lockMode = 0, $limit = null)
 	{
+		$uof = $this->_em->getUnitOfWork();
+		$classname = $this->_class->getName();
+
 		// Look for ID-based entities
 		if (count($criteria) == 1 && isset($criteria['id']) && $criteria['id']) {
-			if ($this->_em->getUnitOfWork()->isAddedPreloadedEntity($this->_class->getName())) {
-				$this->_em->getUnitOfWork()->preloadEntitySet($this->_class->getName());
+			if ($uof->isAddedPreloadedEntity($classname)) {
+				$uof->preloadEntitySet($classname);
 			}
-
-			$hit = $this->_em->getUnitOfWork()->tryGetById($criteria['id'], $this->_class->getName());
+			$hit = $uof->tryGetById($criteria['id'], $classname);
 			if ($hit) {
 				if ($hit->__getPropValue__('id')) {
 					return $hit;
@@ -58,9 +60,11 @@ class LookupBasicEntityPersister extends BasicEntityPersister
 
 		// Search through the identity map for parent_id
 		if (count($criteria) == 1 && isset($criteria['parent_id']) && $criteria['parent_id']) {
-			$classname = $this->_class->getName();
+			if ($uof->isAddedPreloadedEntity($classname)) {
+				$uof->preloadEntitySet($classname);
+			}
 
-			$idmap = $this->_em->getUnitOfWork()->getIdentityMap();
+			$idmap = $uof->getIdentityMap();
 			if (isset($idmap[$classname])) {
 				foreach ($idmap[$classname] as $ent) {
 					if ($ent->getId() == $criteria['parent_id']) {
@@ -76,11 +80,18 @@ class LookupBasicEntityPersister extends BasicEntityPersister
 
 	public function loadOneToManyCollection(array $assoc, $sourceEntity, PersistentCollection $coll)
 	{
+		$uof = $this->_em->getUnitOfWork();
+		$classname = $this->_class->getName();
+
 		if ($assoc['mappedBy'] == 'parent' && $sourceEntity->getId()) {
-			$persister = $this->_em->getUnitOfWork()->getEntityPersister($assoc['targetEntity']);
+			if ($uof->isAddedPreloadedEntity($classname)) {
+				$uof->preloadEntitySet($classname);
+			}
+
+			$persister = $uof->getEntityPersister($assoc['targetEntity']);
 			$classname = $assoc['targetEntity'];
 			if ($persister instanceof LookupBasicEntityPersister) {
-				$idmap = $this->_em->getUnitOfWork()->getIdentityMap();
+				$idmap = $uof->getIdentityMap();
 				if (isset($idmap[$classname])) {
 					foreach ($idmap[$classname] as $ent) {
 						if ($ent->parent && $ent->parent->getId() == $sourceEntity->getId()) {

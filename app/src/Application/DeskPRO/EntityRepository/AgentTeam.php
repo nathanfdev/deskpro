@@ -39,35 +39,44 @@ use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
 
 class AgentTeam extends AbstractEntityRepository
 {
-	protected $_team_names = null;
-
-	protected function _loadTeamNames()
+	public function getTeams()
 	{
-		if ($this->_team_names !== null) return $this->_team_names;
+		if (($teams = $this->getIdentityHelper()->getCollection('all')) === null) {
+			$teams = $this->getEntityManager()->createQuery("
+				SELECT t
+				FROM DeskPRO:AgentTeam t
+				ORDER BY t.name ASC
+			")->execute();
 
-		if (($this->_team_names = App::getCache('common')->load('agent_team_names')) === false) {
-			$db = App::getDb();
-			$this->_team_names = $db->fetchAllKeyValue("
-				SELECT id, name
-				FROM agent_teams
-				ORDER BY name ASC
-			");
-
-			App::getCache('common')->save($this->_team_names, null, array('agent_teams'));
+			$this->getIdentityHelper()->setCollectionFromResults('all', $teams);
 		}
 
-		return $this->_team_names;
+		return $teams;
+	}
+
+	/**
+	 * Get agent names
+	 *
+	 * @param null $for_ids
+	 * @return mixed
+	 */
+	public function getAgentNames($for_ids = null)
+	{
+		$names = array();
+
+		foreach ($this->getAgents() as $agent) {
+			if ($for_ids && !in_array($agent->id, $for_ids)) {
+				continue;
+			}
+			$names[$agent->getId()] = $agent->getDisplayName();
+		}
+
+		return;
 	}
 
 	public function getTeamsFromIds(array $ids)
 	{
-		$ids = implode(',', $ids);
-
-		$this->getEntityManager()->createQuery("
-			SELECT t
-			FROM DeskPRO:AgentTeam t
-			WHERE t.id IN($ids)
-		")->execute();
+		return $this->getIdentityHelper()->findByIds($ids);
 	}
 
 	public function findByName($name)
@@ -87,17 +96,13 @@ class AgentTeam extends AbstractEntityRepository
 
 	public function getTeamNames($for_ids = null)
 	{
-		$this->_loadTeamNames();
-
-		if ($for_ids === null) {
-			return $this->_team_names;
-		}
-
 		$ret = array();
-		foreach ($for_ids as $id) {
-			if (isset($this->_team_names[$id])) {
-				$ret[] = $this->_team_names[$id];
+		foreach ($this->getTeams() as $team) {
+			if ($for_ids and !in_array($team->id, $for_ids)) {
+				continue;
 			}
+
+			$ret[] = $team->getName();
 		}
 
 		return $ret;

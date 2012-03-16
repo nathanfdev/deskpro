@@ -36,6 +36,7 @@ namespace Application\DeskPRO\ORM;
 
 use Doctrine\ORM\UnitOfWork as DoctrineUnitOfWork;
 use Doctrine\ORM\EntityManager as DoctrineEntityManager;
+use Application\DeskPRO\EntityRepository\Preloadable;
 
 class UnitOfWork extends DoctrineUnitOfWork
 {
@@ -75,6 +76,7 @@ class UnitOfWork extends DoctrineUnitOfWork
 		'Application\\DeskPRO\\Entity\\CustomDefPerson'                => 1,
 		'Application\\DeskPRO\\Entity\\CustomDefTicket'                => 1,
 		'Application\\DeskPRO\\Entity\\Languages'                      => 1,
+		'Application\\DeskPRO\\Entity\\AgentTeam'                      => 1,
 	);
 
 	/**
@@ -121,7 +123,13 @@ class UnitOfWork extends DoctrineUnitOfWork
 		// getEntityPersister() which fires this preload etc
 		$this->loaded_sets[$classname] = true;
 
-		$this->_em->getRepository($classname)->findAll();
+		$repos = $this->_em->getRepository($classname);
+
+		if ($repos instanceof Preloadable) {
+			$repos->preload();
+		} else {
+			$repos->findAll();
+		}
 	}
 
 
@@ -144,10 +152,6 @@ class UnitOfWork extends DoctrineUnitOfWork
 	{
 		$class = $this->_em->getClassMetadata($entityName);
 		$classname = $class->getName();
-
-		if (isset($this->enable_preload_set[$classname])) {
-			$this->preloadEntitySet($classname);
-		}
 
 		if (isset($this->_persisters[$classname])) {
 			return $this->_persisters[$classname];

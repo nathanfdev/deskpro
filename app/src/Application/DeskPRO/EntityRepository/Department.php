@@ -39,11 +39,28 @@ use Orb\Util\Arrays;
 use Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 
-class Department extends EntityRepository
+class Department extends AbstractEntityRepository implements Preloadable
 {
-	protected $_department_hierarchy = null;
-	protected $_department_names = null;
-	protected $_department_ids = array();
+	public function preload()
+	{
+		$this->_load();
+	}
+
+	private function _load()
+	{
+		static $has_loaded = false;
+		if (!$has_loaded) {
+			$has_loaded = true;
+			$all = $this->getEntityManager()->createQuery("
+				SELECT d
+				FROM DeskPRO:Department d
+				ORDER BY d.display_order ASC
+			")->execute();
+
+			$this->getIdentityHelper()->setCollectionFromResults('all', $all);
+		}
+	}
+
 
 	public function findByTitle($title)
 	{
@@ -62,57 +79,31 @@ class Department extends EntityRepository
 
 	public function getAll()
 	{
-		$all_deps = $this->getEntityManager()->createQuery("
-			SELECT d
-			FROM DeskPRO:Department d
-			LEFT JOIN d.children c
-			WHERE d.parent IS NULL
-			ORDER BY d.display_order ASC
-		")->execute();
+		$this->_load();
+		if (($top = $this->getIdentityHelper()->getCollection('top')) === null) {
+			$top = array();
+			foreach ($this->getIdentityHelper()->getCollection('all') as $d) {
+				if (!$d->parent) {
+					$top[] = $d;
+				}
+			}
 
-		return $all_deps;
+			$this->getIdentityHelper()->setCollectionFromResults('top', $top);
+		}
+
+		return $top;
 	}
 
 	public function getDepartmentIds()
 	{
-		$this->getDepartmentsInHierarchy();
-
-		return $this->_department_ids;
+		$this->_load();
+		return $this->getIdentityHelper()->getCollectionIds('all');
 	}
 
 	public function getDepartmentsInHierarchy()
 	{
-		if ($this->_department_hierarchy !== null) return $this->_department_hierarchy;
-
-		$dep_info = App::getCache('common')->load('department_info');
-
-		if ($dep_info) {
-			foreach ($dep_info as $k => $v) {
-				$this->$k = $v;
-			}
-		} else {
-			$db = App::getDb();
-			$departments = $db->fetchAllKeyed("
-				SELECT id, parent_id, title
-				FROM departments
-				ORDER BY display_order ASC
-			");
-
-			$this->_department_ids = array_keys($departments);
-
-			$this->_department_names = Arrays::flattenToIndex($departments, 'title');
-
-			$departments = Arrays::intoHierarchy($departments, null);
-			$this->_department_hierarchy = $departments;
-
-			App::getCache('common')->save(array(
-				'_department_hierarchy' => $this->_department_hierarchy,
-				'_department_names' => $this->_department_names,
-				'_department_ids' => $this->_department_ids,
-			), 'department_info', array('departments'));
-		}
-
-		return $this->_department_hierarchy;
+		$this->_load();
+		return $this->getAll();
 	}
 
 
@@ -124,20 +115,19 @@ class Department extends EntityRepository
 	 */
 	public function getDepartmentNames($for_ids = null)
 	{
-		$this->getDepartmentsInHierarchy();
+		$this->_load();
 
-		if ($for_ids === null) {
-			return $this->_department_names;
-		}
+		$names = array();
 
-		$ret = array();
-		foreach ($for_ids as $id) {
-			if (isset($this->_department_names[$id])) {
-				$ret[] = $this->_department_names[$id];
+		foreach ($this->getIdentityHelper()->getCollection('all') as $d) {
+			if ($for_ids && !in_array($d->id, $for_ids)) {
+				continue;
 			}
+
+			$names[$d->id] = $d->getTitle();
 		}
 
-		return $ret;
+		return $names;
 	}
 
 
@@ -150,6 +140,7 @@ class Department extends EntityRepository
 	 */
 	public function getFullDepartmentNames($sep = ' > ', $include_tops = true)
 	{
+		$this->_load();
 		if ($sep === null) {
 			$sep = ' > ';
 		}
@@ -160,7 +151,8 @@ class Department extends EntityRepository
 	{
 		$names = array();
 
-		foreach ($deps as $k => $dep) {
+		foreach ($deps as $dep) {
+			$k = $dep->getId();
 			$name = $basenames;
 			$name[] = $dep['title'];
 
@@ -185,6 +177,7 @@ class Department extends EntityRepository
 	 */
 	public function getIdsInTree($parent_id, $incude_top = true)
 	{
+		$this->_load();
 		if (is_object($parent_id)) {
 			$parent_id = $parent_id->id;
 		} else if (is_array($parent_id)) {
@@ -234,7 +227,8 @@ class Department extends EntityRepository
 	 */
 	public function countAll()
 	{
-		return count($this->getDepartmentIds());
+		$this->_load();
+		return count($this->getIdentityHelper()->getCollectionIds('all'));
 	}
 
 

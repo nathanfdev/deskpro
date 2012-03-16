@@ -42,19 +42,34 @@ use Orb\Util\Numbers;
 
 class Person extends AbstractEntityRepository
 {
-	protected $_agent_names = null;
+	protected $identity_helper;
 
-	protected function _loadAgentNames()
+	/**
+	 * @return \Application\DeskPRO\EntityRepository\Helper\IdentityHelper
+	 */
+	public function getIdentityHelper()
 	{
-		if ($this->_agent_names !== null) return;
+		if (!$this->identity_helper) {
+			$this->identity_helper = new Helper\IdentityHelper($this->getEntityManager(), $this);
+		}
 
-		$db = App::getDb();
-		$this->_agent_names = $db->fetchAllKeyValue("
-			SELECT id, CONCAT_WS(' ', first_name, last_name) AS full_name
-			FROM people
-			WHERE is_agent = 1 AND is_deleted = 0 AND is_vacation_mode = 0
-			ORDER BY full_name ASC
-		");
+		return $this->identity_helper;
+	}
+
+	public function getAgents()
+	{
+		if (($agents = $this->getIdentityHelper()->getCollection('agents')) === null) {
+			$agents = $this->getEntityManager()->createQuery("
+				SELECT p
+				FROM DeskPRO:Person p
+				WHERE p.is_agent = true
+				ORDER BY p.first_name ASC, p.last_name ASC
+			")->execute();
+
+			$this->getIdentityHelper()->setCollectionFromResults('agents', $agents);
+		}
+
+		return $agents;
 	}
 
 	public function findAgentByName($name)
@@ -72,40 +87,25 @@ class Person extends AbstractEntityRepository
 		return $priority;
 	}
 
-	public function getAgentNames($for_ids = null)
-	{
-		$this->_loadAgentNames();
-
-		if ($for_ids === null) {
-			return $this->_agent_names;
-		}
-
-		$ret = array();
-		foreach ((array)$for_ids as $id) {
-			if (isset($this->_agent_names[$id])) {
-				$ret[$id] = $this->_agent_names[$id];
-			}
-		}
-
-		return $ret;
-	}
-
 
 	/**
-	 * Get all agents
+	 * Get agent names
 	 *
-	 * @return array
+	 * @param null $for_ids
+	 * @return mixed
 	 */
-	public function getAgents()
+	public function getAgentNames($for_ids = null)
 	{
-		return $this->getEntityManager()->createQuery("
-			SELECT p
-			FROM DeskPRO:Person p
-			LEFT JOIN p.primary_email email
-			LEFT JOIN p.picture_blob pic
-			WHERE p.is_agent = true AND p.is_deleted = false AND p.is_vacation_mode = false
-			ORDER BY p.name ASC
-		")->execute();
+		$names = array();
+
+		foreach ($this->getAgents() as $agent) {
+			if ($for_ids && !in_array($agent->id, $for_ids)) {
+				continue;
+			}
+			$names[$agent->getId()] = $agent->getDisplayName();
+		}
+
+		return;
 	}
 
 
@@ -147,6 +147,7 @@ class Person extends AbstractEntityRepository
 		return $online_agents;
 	}
 
+
 	/**
 	 * Find a person by their email address.
 	 *
@@ -169,6 +170,7 @@ class Person extends AbstractEntityRepository
 
 		return $person;
 	}
+
 
 	public function searchByEmailStartingWith($email, $limit = null)
 	{
@@ -231,10 +233,12 @@ class Person extends AbstractEntityRepository
 			WHERE p.id IN(?1)
 			ORDER BY p.id ASC
 		")->setParameter(1, $ids)
-		  ->setFetchMode('Application\\DeskPRO\\Entity\\Person', 'emails', \Doctrine\ORM\Mapping\ClassMetadataInfo::FETCH_EAGER)
+		  ->setFetchMode('Application\\DeskPRO\\Entity\\PersonEmail', 'emails', \Doctrine\ORM\Mapping\ClassMetadataInfo::FETCH_EAGER)
 		  ->setFetchMode('Application\\DeskPRO\\Entity\\PersonEmail', 'primary_email', \Doctrine\ORM\Mapping\ClassMetadataInfo::FETCH_EAGER)
 		  ->setFetchMode('Application\\DeskPRO\\Entity\\CustomDataPerson', 'custom_data', \Doctrine\ORM\Mapping\ClassMetadataInfo::FETCH_EAGER)
 		  ->execute();
+
+		foreach ($people as $p) $p->first_name;
 
 		return $people;
 	}
