@@ -1259,6 +1259,40 @@ class Strings
 
 
 	/**
+	 * Trims every line in a string
+	 *
+	 * @param $string
+	 * @return string
+	 */
+	public static function trimLines($string, $chars = ' ', $mode = 'trim')
+	{
+		if ($mode != 'trim' && $mode != 'rtrim' && $mode != 'ltrim') {
+			throw new \InvalidArgumentException("Invalid trim mode. Must be trim, rtrim or ltrim");
+		}
+
+		$string = explode("\n", $string);
+		foreach ($string as &$l) $l = $mode($l, $chars);
+		return implode("\n", $string);
+	}
+
+
+	/**
+	 * Adds a prefix and/or suffix to every line
+	 * @param $string
+	 * @param $prefix
+	 */
+	public static function modifyLines($string, $prefix = '', $suffix = '', $trim = false)
+	{
+		$string = explode("\n", $string);
+		foreach ($string as &$l) {
+			$l = $prefix . ($trim ? trim($l) : $l) . $suffix;
+		}
+
+		return implode("\n", $string);
+	}
+
+
+	/**
 	 * Set the path to the php-utf8 library functions, and thereby enable
 	 * dynamic calling of utf8_xxx calls on this string class.
 	 *
