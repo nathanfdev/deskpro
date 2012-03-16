@@ -476,14 +476,14 @@ class Translate implements PersonContextInterface
 	 */
 	public function getPhraseTextCount($phrase_name, $count, $language = null)
 	{
-		$phrase_text = $this->getPhraseText($phrase_name, $count, $language);
+		$phrase_text = $this->getPhraseText($phrase_name);
 		if (!$phrase_text) {
 			return null;
 		}
 
 		if ($language === null) {
 			$language = $this->_language;
-		} elseif (Numbers::isInteger($language)) {
+		} elseif (Numbers::isInteger($language) && isset($this->_loaded_languages[$language])) {
 			$language = $this->_loaded_languages[$language];
 		}
 
