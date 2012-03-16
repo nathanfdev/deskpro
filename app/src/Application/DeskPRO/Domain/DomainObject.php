@@ -47,44 +47,7 @@ use Orb\Util\Util;
 abstract class DomainObject extends BasicDomainObject
 {
 	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $_em;
-
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	protected $_db;
-
-
-	/**
-	 * @return \Doctrine\ORM\EntityManager
-	 */
-	public function getOrm()
-	{
-		if (!$this->_em) {
-			$this->_em = App::getOrm();
-		}
-
-		return $this->_em;
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\DBAL\Connection
-	 */
-	public function getDb()
-	{
-		if (!$this->_db) {
-			$this->_db = App::getDb();
-		}
-
-		return $this->_db;
-	}
-
-
-	/**
-	 * @return Doctrine\ORM\EntityRepository
+	 * @return \Doctrine\ORM\EntityRepository
 	 */
 	public static function getRepository()
 	{
