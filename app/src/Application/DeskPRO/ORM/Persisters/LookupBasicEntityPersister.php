@@ -32,30 +32,62 @@
  * @subpackage
  */
 
-namespace Application\DeskPRO\ORM;
+namespace Application\DeskPRO\ORM\Persisters;
 
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Configuration;
-use Doctrine\Common\EventManager;
-use Application\DeskPRO\ORM\UnitOfWork;
-use Application\DeskPRO\Orm\Proxy\ProxyFactory;
-use Application\DeskPRO\ORM\Unprivate\UnprivateEntityManager;
+use Doctrine\ORM\Persisters\BasicEntityPersister;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\PersistentCollection;
 
-/**
- * Customized EM to override proxy factory
- */
-class EntityManager extends UnprivateEntityManager
+class LookupBasicEntityPersister extends BasicEntityPersister
 {
-	protected function __construct(Connection $conn, Configuration $config, EventManager $eventManager)
+	public function load(array $criteria, $entity = null, $assoc = null, array $hints = array(), $lockMode = 0, $limit = null)
 	{
-		parent::__construct($conn, $config, $eventManager);
+		// Look for ID-based entities
+		if (count($criteria) == 1 && isset($criteria['id'])) {
+			$hit = $this->_em->getUnitOfWork()->tryGetById($criteria['id'], $this->_class->getName());
+			if ($hit) {
+				return $hit;
+			}
+		}
 
-		$this->unitOfWork = new UnitOfWork($this);
-		$this->proxyFactory = new ProxyFactory(
-			$this,
-			$config->getProxyDir(),
-			$config->getProxyNamespace(),
-			$config->getAutoGenerateProxyClasses()
-		);
+		// Search through the identity map for parent_id
+		if (count($criteria) == 1 && isset($criteria['parent_id'])) {
+			$classname = $this->_class->getName();
+
+			$idmap = $this->_em->getUnitOfWork()->getIdentityMap();
+			if (isset($idmap[$classname])) {
+				foreach ($idmap[$classname] as $ent) {
+					if ($ent->getId() == $criteria['parent_id']) {
+						return $ent;
+					}
+				}
+			}
+		}
+
+		return parent::load($criteria, $entity, $assoc, $hints, $lockMode, $limit);
+	}
+
+
+	public function loadOneToManyCollection(array $assoc, $sourceEntity, PersistentCollection $coll)
+	{
+		if ($assoc['mappedBy'] == 'parent') {
+			$persister = $this->_em->getUnitOfWork()->getEntityPersister($assoc['targetEntity']);
+			$classname = $assoc['targetEntity'];
+			if ($persister instanceof LookupBasicEntityPersister) {
+
+				$idmap = $this->_em->getUnitOfWork()->getIdentityMap();
+				if (isset($idmap[$classname])) {
+					foreach ($idmap[$classname] as $ent) {
+						if ($ent->parent && $ent->parent->getId() == $sourceEntity->getId()) {
+							$coll->hydrateAdd($ent);
+						}
+					}
+				}
+
+				return $coll;
+			}
+		}
+
+		return parent::loadOneToManyCollection($assoc, $sourceEntity, $coll);
 	}
 }

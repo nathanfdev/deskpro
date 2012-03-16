@@ -60,6 +60,27 @@ class AbstractCategoryRepository extends AbstractEntityRepository
 		return $this->_cat_helper;
 	}
 
+	public function findAll()
+	{
+		static $has_done = false;
+		if (!$has_done) {
+			$has_done = true;
+			return parent::findAll();
+		}
+
+		$res = array();
+
+		$idmap = $this->getEntityManager()->getUnitOfWork()->getIdentityMap();
+		$classname = $this->getClassMetadata()->getName();
+		if (isset($idmap[$classname])) {
+			foreach ($idmap[$classname] as $ent) {
+				$res[] = $ent;
+			}
+		}
+
+		return $res;
+	}
+
 	public function getPermissionTableName()
 	{
 		return null;

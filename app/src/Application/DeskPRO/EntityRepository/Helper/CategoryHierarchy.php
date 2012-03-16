@@ -214,12 +214,7 @@ class CategoryHierarchy
 		} else {
 
 			$db = App::getDb();
-			$cats = $db->fetchAllKeyed("
-				SELECT id, parent_id, title
-				FROM {$this->table_name}
-				" . ($this->where_cond ? "WHERE {$this->where_cond}" : '') . "
-				ORDER BY display_order ASC
-			");
+			$cats = $this->repos->findAll();
 
 			foreach ($cats as &$c) {
 				if (empty($c['url_slug'])) {

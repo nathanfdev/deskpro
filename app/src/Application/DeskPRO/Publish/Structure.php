@@ -773,9 +773,7 @@ class Structure implements PersonContextInterface
 				SELECT cat
 				FROM $ent cat INDEX BY cat.id
 				ORDER BY cat.display_order
-			")->setFetchMode($ent, 'children', 'EAGER')
-			  ->setFetchMode($ent, 'parent', 'EAGER')
-			  ->setResultCacheDriver($this->cache)->setResultCacheId('categories.recs.'.$ent)
+			")->setResultCacheDriver($this->cache)->setResultCacheId('categories.recs.'.$ent)
 			  ->execute();
 
 			foreach ($cats as $c) {
