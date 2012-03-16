@@ -189,7 +189,7 @@ class Article extends AbstractEntityRepository
 	 * sort them into an array keyed by the node IDs.
 	 *
 	 * @param  $nodes
-	 * @return void
+	 * @return array
 	 */
 	public function getNewestInNodes($nodes, $num = 5, PersonEntity $person_context = null)
 	{
@@ -209,11 +209,16 @@ class Article extends AbstractEntityRepository
 
 			$cat_ids = $node->getTreeIds(true);
 
+			$params = array();
+			$params['cat_ids'] = $cat_ids;
+			$params['done_aids'] = $done_articles;
+
 			$perm_where = '';
 			if ($person_context && !$person_context->is_agent) {
 				$dis_ids = $person_context->PermissionsManager->ArticleCategories->getDisallowedCategories();
 				if ($dis_ids) {
-					$perm_where = ' AND cat.id NOT IN ('.implode(',', $dis_ids).') ';
+					$perm_where = ' AND cat.id NOT IN (:cat_not_ids) ';
+					$params['cat_not_ids'] = $dis_ids;
 				}
 			}
 
@@ -222,14 +227,14 @@ class Article extends AbstractEntityRepository
 				FROM DeskPRO:Article a INDEX BY a.id
 				LEFT JOIN a.categories cat
 				WHERE
-					cat.id IN (".implode(',',$cat_ids).")
-					AND a.id NOT IN (".implode(',',$done_articles).")
+					cat.id IN (:cat_ids)
+					AND a.id NOT IN (:done_aids)
 					AND a.status = 'published'
 					$perm_where
 				GROUP BY a.id
 				ORDER BY a.id DESC
 			")->setMaxResults($num)
-			  ->execute();
+			  ->execute($params);
 
 			if (count($articles)) {
 				$all_articles[$node['id']] = $articles;
