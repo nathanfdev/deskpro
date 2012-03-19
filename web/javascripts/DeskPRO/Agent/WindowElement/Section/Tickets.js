@@ -16,6 +16,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('ticket-section.list-activated', function (info) {
 			this.highlightNavItem($('.filter-' + info.id, this.getSectionElement()), info.topGroupingOption || null);
 		}, this);
+
+		this.lastArchiveUpdate = new Date();
+		this.archiveUpdateTimer = window.setTimeout(this.updateArchiveIfTime.bind(this), 303000);
 	},
 
 	_initSection: function(data) {
@@ -29,7 +32,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			context: this.sectionEl,
 			triggerElements: $('#tickets_outline_tabstrip li'),
 			onTabSwitch: function(info) {
-
+				if (info.tabContent.attr('id') == 'tickets_outline_archive') {
+					self.updateArchiveIfTime();
+				}
 			}
 		});
 
@@ -208,28 +213,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts, this);
-
-		$('ul#tickets_outline_filters_list').sortable({
-			'axis': 'y',
-			'distance': 8,
-			'update': function() {
-				var data = [];
-
-				$('ul#tickets_outline_filters_list > li').each(function() {
-					var id = parseInt($(this).data('filter-id'));
-					if (id) {
-						data.push({ name: 'prefs[agent.ui.ticket-filters-order][]', value: id });
-					}
-				});
-
-				$.ajax({
-					timeout: 20000,
-					type: 'POST',
-					url: BASE_URL + 'agent/misc/ajax-save-prefs',
-					data: data
-				});
-			}
-		});
 
 		$('#tickets_outline_inbox_list .sub-toggle').on('click', function(ev) {
 			ev.stopPropagation();
@@ -709,6 +692,44 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		var new_flag_count = parseInt($('#ticket_flag_' + info.new_flag + '_count').text());
 		this.updateFlagCountFor(info.new_flag, new_flag_count+1);
 	},
+
+	//#########################################################################
+	// Archive
+	//#########################################################################
+
+	updateArchiveIfTime: function() {
+		var d = new Date();
+
+		// Dont update if it was updated less than a minute ago
+		if (d.getTime() - this.lastArchiveUpdate.getTime() < 60000) {
+			return;
+		}
+
+		this.lastArchiveUpdate = d;
+
+		this.reloadArchiveSection();
+	},
+
+	reloadArchiveSection: function() {
+		$('#tickets_outline_archive').addClass('loading').empty();
+
+		$.ajax({
+			url: BASE_URL + 'agent/ticket-search/get-section-data/reload-archive-section',
+			dataType: 'html',
+			context: this,
+			complete: function() {
+				$('#tickets_outline_archive').removeClass('loading');
+			},
+			success: function(html) {
+				$('#tickets_outline_archive').append(html);
+				this.lastArchiveUpdate = new Date();
+			}
+		});
+	},
+
+	//#########################################################################
+	// Misc
+	//#########################################################################
 
 	/**
 	 * Remove a filter row. This remove doesnt need to be perfect, its used from the settings window

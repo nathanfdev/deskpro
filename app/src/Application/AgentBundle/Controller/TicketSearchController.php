@@ -123,6 +123,15 @@ class TicketSearchController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
+	public function reloadArchiveSectionAction()
+	{
+		$archive_counts = $this->em->getRepository('DeskPRO:Ticket')->getArchiveCounts();
+
+		return $this->render('AgentBundle:TicketSearch:window-section-archive.html.twig', array(
+			'archive_counts' => $archive_counts
+		));
+	}
+
 	public function refreshSectionDataAction($section)
 	{
 		switch ($section) {
