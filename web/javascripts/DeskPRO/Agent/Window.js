@@ -1515,26 +1515,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var is_success = false;
 		if (xhr.status && xhr.status == 200) {
 			is_success = true;
-		} else if (xhr.status == '0' || (xhr.statusText && xhr.statusText == 'abort')) {
-			is_success = true;
+		} else if (xhr.statusText && xhr.statusText == 'abort') {
+			return;
 		}
 
 		// Only polling-type requests really dictate the "network" status
-		if (ajaxOptions && ajaxOptions.dpIsPolling) {
-			if (is_success) {
-				$('#network_status_indicator').addClass('active');
-				$('#network_status_indicator span').html('0');
-				$('#network_status_tip').removeClass('error');
-			} else {
-				$('#network_status_indicator').removeClass('active');
-				var spanEl = $('#network_status_indicator span');
-				var num = parseInt(spanEl.html()) || 0;
-				num++;
-
-				spanEl.html(num);
-
-				$('#network_status_tip').addClass('error');
-			}
+		if (is_success) {
+			$('#network_status_indicator > a').removeClass('on').data('error-count', 0);
+			$('#network_status_tip').removeClass('error');
+		} else {
+			this.incNetworkError();
 		}
 	},
 
@@ -1551,7 +1541,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// This is caused when the user navigates away from a page, any running
 		// ajax requests are aborted by the browser. Without this the user
 		// would see the error popup briefly before the page went away
-		if (force || (xhr.status == '0' || (xhr.statusText && xhr.statusText == 'abort'))) {
+		if (force || (xhr.statusText && xhr.statusText == 'abort')) {
 			return;
 		}
 
@@ -1591,7 +1581,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (ajaxOptions && ajaxOptions.error && !ajaxOptions.noErrorOverride) return;
 
 		// We dont show the error popup if it was just an error with polling
-		if (ajaxOptions && ajaxOptions.dpIsPolling) return;
+		if (ajaxOptions && ajaxOptions.dpIsPolling) {
+			this.incNetworkError();
+			return;
+		};
+
+		if (xhr.status == '0' || (xhr.statusText && xhr.statusText == 'error')) {
+			this.showAlert($('<div><strong>Network Error</strong><br />The server did not respond. You can try your request again. If the problem persists, notify your administrator.</div>'));
+			this.incNetworkError();
+			return;
+		}
 
 		// We dont know if the request was JSON or HTML (eg the sn code might be embedded in html in json),
 		// so we have to sniff the raw responseText to see about any embedded SN code
@@ -1620,6 +1619,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			var status = (xhr.status || '') + ' ' + (errorThrown || '') + ' ' + (xhr.statusText || '');
 			this._showAjaxError('<div class="error-details">Here is the raw output returned from the server error:<textarea class="raw">' + status + "\n\n" + Orb.escapeHtml(xhr.responseText) + '</textarea></div>');
 		}
+	},
+
+	incNetworkError: function() {
+		var a = $('#network_status_indicator > a').addClass('on');
+		a.data('error-count', parseInt(a.data('error-count')) + 1);
+		$('#network_status_tip').addClass('error');
 	},
 
 	_showAjaxError: function(message) {
