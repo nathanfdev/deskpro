@@ -402,10 +402,12 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			refreshBox();
 
 			if ($(this).is('.cancel')) {
-				if (self.getEl('org_searchbox').is('.is-new')) {
+				if (!parseInt(self.meta.org_id)) {
 					$('.org-name', self.getEl('org_edit_wrap')).val('');
+					$('.pos-input', self.getEl('org_edit_wrap')).hide();
 				}
 				self.getEl('org_searchbox').removeClass('is-new').removeClass('is-set');
+				self.toggleOrgEdit('close');
 			}
 		});
 
@@ -476,6 +478,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					orgDisplay.empty();
 					if (data.organization_id) {
 						orgDisplay.html(data.html);
+						self.meta.org_id = data.organization_id;
+					} else {
+						self.meta.org_id = 0;
 					}
 
 					self.getEl('org_searchbox').removeClass('is-new').removeClass('is-set');
@@ -513,16 +518,16 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		}
 	},
 
-	toggleOrgEdit: function() {
+	toggleOrgEdit: function(force) {
 		var orgDisplay = this.getEl('org_display_wrap');
 		var orgEdit    = this.getEl('org_edit_wrap');
 
-		if (orgEdit.is(':visible')) {
+		if ((force && force == 'close') || orgEdit.is(':visible')) {
 			orgEdit.hide();
 			this.getEl('org_searchbox').data('org-search-box').close();
 			orgDisplay.show();
 			this.orgEnableBtn('org-edit-trigger');
-		} else {
+		} else if ((force && force == 'open') || !orgEdit.is(':visible')) {
 			orgDisplay.hide();
 			orgEdit.show();
 			this.orgEnableBtn('cancel');
