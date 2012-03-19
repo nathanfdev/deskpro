@@ -139,23 +139,6 @@ class Download extends ContentAbstract
 		$this->labels->add($label);
 	}
 
-	/**
-	 */
-	public function _updateSearchIndex() { $this->_queueSearchIndexUpdate(); }
-	/**
-	 */
-	public function _deleteSearchIndex() { $this->_queueSearchIndexUpdate('delete'); }
-
-	public function _queueSearchIndexUpdate($op = 'update')
-	{
-		$container = App::getContainer();
-		if ($container instanceof \Application\DeskPRO\DependencyInjection\DeskproContainer) {
-			$container->getSystemService('search_indexer')->update($this, $op);
-		}
-	}
-
-
-
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -166,9 +149,6 @@ class Download extends ContentAbstract
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Download';
 		$metadata->setPrimaryTable(array( 'name' => 'downloads', 'indexes' => array( 'date_published_idx' => array( 'columns' => array( 0 => 'date_published', ), ), ), ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-		$metadata->addLifecycleCallback('_updateSearchIndex', 'postPersist');
-		$metadata->addLifecycleCallback('_updateSearchIndex', 'postUpdate');
-		$metadata->addLifecycleCallback('_deleteSearchIndex', 'postRemove');
 		$metadata->mapField(array( 'fieldName' => 'num_downloads', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_downloads', ));
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'slug', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'slug', ));

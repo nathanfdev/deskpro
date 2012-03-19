@@ -278,23 +278,6 @@ class Feedback extends ContentAbstract
 		return $this->_label_manager;
 	}
 
-	/**
-	 */
-	public function _updateSearchIndex() { $this->_queueSearchIndexUpdate(); }
-	/**
-	 */
-	public function _deleteSearchIndex() { $this->_queueSearchIndexUpdate('delete'); }
-
-	public function _queueSearchIndexUpdate($op = 'update')
-	{
-		$container = App::getContainer();
-		if ($container instanceof \Application\DeskPRO\DependencyInjection\DeskproContainer) {
-			$container->getSystemService('search_indexer')->update($this, $op);
-		}
-	}
-
-
-
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -305,9 +288,6 @@ class Feedback extends ContentAbstract
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Feedback';
 		$metadata->setPrimaryTable(array( 'name' => 'feedback', 'indexes' => array( 'date_published_idx' => array( 'columns' => array( 0 => 'date_published', ), ), ), ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-		$metadata->addLifecycleCallback('_updateSearchIndex', 'postPersist');
-		$metadata->addLifecycleCallback('_updateSearchIndex', 'postUpdate');
-		$metadata->addLifecycleCallback('_deleteSearchIndex', 'postRemove');
 		$metadata->mapField(array( 'fieldName' => 'hidden_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'hidden_status', ));
 		$metadata->mapField(array( 'fieldName' => 'validating', 'type' => 'string', 'length' => 35, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'validating', ));
 		$metadata->mapField(array( 'fieldName' => 'popularity', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'popularity', ));

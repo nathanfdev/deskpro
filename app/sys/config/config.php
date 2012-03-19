@@ -123,6 +123,17 @@ $definition->setArguments(array(
 $definition->addMethodCall('setPrefix', array('dres', new Reference('deskpro.interface_value')));
 $container->setDefinition('default_result_cache', $definition);
 
+// deskpro.search_index.entity_updater_listener
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Entity\\EventListener\\SearchUpdater');
+$definition->setArguments(array(
+	new Reference('service_container')
+));
+$definition->addTag('doctrine.event_subscriber', array(
+	'connection' => 'default',
+));
+$container->setDefinition('deskpro.search_index.entity_updater_listener', $definition);
+
 ############################################################################
 # Framework Configuration
 ############################################################################

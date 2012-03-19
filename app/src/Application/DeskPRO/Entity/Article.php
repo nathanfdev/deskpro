@@ -247,24 +247,6 @@ class Article extends ContentAbstract
 		$attach['article'] = $this;
 	}
 
-	/**
-	 */
-	public function _updateSearchIndex() { $this->_queueSearchIndexUpdate(); }
-	/**
-	 */
-	public function _deleteSearchIndex() { $this->_queueSearchIndexUpdate('delete'); }
-
-	public function _queueSearchIndexUpdate($op = 'update')
-	{
-		return;
-		$container = App::getContainer();
-		if ($container instanceof \Application\DeskPRO\DependencyInjection\DeskproContainer) {
-			$container->getSystemService('search_indexer')->update($this, $op);
-		}
-	}
-
-
-
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -275,9 +257,6 @@ class Article extends ContentAbstract
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Article';
 		$metadata->setPrimaryTable(array( 'name' => 'articles', 'indexes' => array( 'date_published_idx' => array( 'columns' => array( 0 => 'date_published', ), ), ), ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-		$metadata->addLifecycleCallback('_updateSearchIndex', 'postPersist');
-		$metadata->addLifecycleCallback('_updateSearchIndex', 'postUpdate');
-		$metadata->addLifecycleCallback('_deleteSearchIndex', 'postRemove');
 		$metadata->mapField(array( 'fieldName' => 'date_end', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_end', ));
 		$metadata->mapField(array( 'fieldName' => 'end_action', 'type' => 'string', 'length' => 10, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'end_action', ));
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
