@@ -276,9 +276,9 @@ class TermSummary
 
 			case 'ticket_subject':
 				if ($op == self::OP_IS) {
-					$summary = $tr->phrase('agent.x_is_y', array('field' => $tr->phrase('agent.tickets.subject'), 'value' => $choice));
+					$summary = $tr->phrase('agent.x_is_y', array('field' => $tr->phrase('agent.tickets.subject'), 'value' => $choice['subject']));
 				} else {
-					$summary = $tr->phrase('agent.x_is_not_y', array('field' => $tr->phrase('agent.tickets.subject'), 'value' => $choice));
+					$summary = $tr->phrase('agent.x_is_not_y', array('field' => $tr->phrase('agent.tickets.subject'), 'value' => $choice['subject']));
 				}
 				break;
 

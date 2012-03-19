@@ -951,49 +951,49 @@ $collection->add('admin_ticketwidgets_edit', new Route(
 ));
 
 $collection->add('admin_tickettriggers', new Route(
-	'/tickets/business-rules',
+	'/tickets/triggers',
 	array('_controller' => 'AdminBundle:TicketTriggers:list'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_tickettriggers_savebuiltin', new Route(
-	'/tickets/business-rules/save-built-in.json',
+	'/tickets/triggerss/save-built-in.json',
 	array('_controller' => 'AdminBundle:TicketTriggers:saveBuiltIn'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_tickettriggers_new_choosetype', new Route(
-	'/tickets/business-rules/new-trigger',
+	'/tickets/triggerss/new-trigger',
 	array('_controller' => 'AdminBundle:TicketTriggers:newChooseType', 'trigger_type' => 'trigger'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_ticketescalations_new_choosetype', new Route(
-	'/tickets/business-rules/new-escalation',
+	'/tickets/triggerss/new-escalation',
 	array('_controller' => 'AdminBundle:TicketTriggers:newChooseType', 'trigger_type' => 'escalation'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_tickettriggers_edit', new Route(
-	'/tickets/business-rules/{trigger_id}/edit',
+	'/tickets/triggerss/{trigger_id}/edit',
 	array('_controller' => 'AdminBundle:TicketTriggers:edit'),
 	array('trigger_id' => '\\d+'),
 	array()
 ));
 
 $collection->add('admin_tickettriggers_updateorder', new Route(
-	'/tickets/business-rules/update-orders.json',
+	'/tickets/triggerss/update-orders.json',
 	array('_controller' => 'AdminBundle:TicketTriggers:updateOrder'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_tickettriggers_toggle', new Route(
-	'/tickets/business-rules/toggle-enabled.json',
+	'/tickets/triggerss/toggle-enabled.json',
 	array('_controller' => 'AdminBundle:TicketTriggers:toggleEnabled'),
 	array(),
 	array()
