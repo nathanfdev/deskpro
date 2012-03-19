@@ -35,7 +35,18 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		echo App::getSetting('core.default_from_email');
-		echo "\n";
+		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getByIds(array(13206,13162,13120,13106,13081,13057,13013,12986,12978,12965,12890,12789,12652,12545,12522,12446));
+
+		$pids = array();
+		foreach ($tickets as $t) {
+			$pids[] = $t->person->getId();
+		}
+
+		$people = App::getEntityRepository('DeskPRO:Person')->getByIds($pids);
+
+		foreach ($tickets as $t) {
+			echo $t->person->getDisplayName();
+			echo "\n";
+		}
 	}
 }
