@@ -423,6 +423,10 @@ class PeopleSearchController extends AbstractController
 			$vars['page_title'] = $this->in->getString('page_title');
 		}
 
+		if (!$vars['display_fields']) {
+			$vars['display_fields'] = array('name', 'email', 'org', 'org_pos', 'num_tickets');
+		}
+
 		$vars['preselect_terms'] = $result_cache['criteria'];
 		$vars['num_results'] = $result_cache['num_results'];
 

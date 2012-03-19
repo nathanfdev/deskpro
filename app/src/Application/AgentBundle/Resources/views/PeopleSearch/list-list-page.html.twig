@@ -12,23 +12,24 @@
 			<input type="checkbox" value="{{person.id}}" class="person item-select" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/>
 		</td>
 		#}
-		<td class="subject">
-			<a class="subject-link">
-				<a class="name click-through"><span class="person-name-picture" style="background-image: url({{ person.getPictureUrl(15) }})">{{ person.display_name }}</span></a>
-				{% if person.email_address %}<span class="person-email">&lt;{{ person.email_address }}&gt;</span>{% endif %}
-				{% if person.organization %}<span class="person-org" data-route="org:{{ path('agent_org_view', {organization_id: person.organization.id})}}">{% if person.organization_position %}{{ person.organization_position }}, {% endif %}{{ person.organization.name }}{% endif %}</span>
-			</a>
-		</td>
 		{% for field in display_fields %}
-			{% if field == 'email_address' %}
-				<td class="{{field}}">
-					{{ person.primaryEmailAddress }}
-
+			{% if field == 'name' %}
+				<td class="subject">
+					<a class="subject-link">
+						<a class="name click-through"><span class="person-name-picture" style="background-image: url({{ person.getPictureUrl(15) }})">{{ person.display_name }}</span></a>
+					</a>
 				</td>
-			{% elseif field == 'organization' %}
+			{% elseif field == 'email' %}
 				<td class="{{field}}">
-					{% if person.organization_position %}{{ person.organization_position }}, {% endif %}
+					{% if person.email_address %}&lt;{{ person.email_address }}&gt;{% endif %}
+				</td>
+			{% elseif field == 'org' %}
+				<td class="{{field}}">
 					{{ person.organization.name }}
+				</td>
+			{% elseif field == 'org_pos' %}
+				<td class="{{field}}">
+					{{ person.organization_position }}
 				</td>
 			{% elseif field == 'language' %}
 				<td class="{{field}}">
