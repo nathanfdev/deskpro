@@ -636,6 +636,18 @@ $em->persist($j);
 $em->flush();
 
 
+##BEGIN:create_jobs.sitemap_file##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'sitemap_file';
+$j['worker_group'] = 'sitemap_file';
+$j['title'] = 'Generate Sitemap';
+$j['description'] = 'Generates the sitemap.xml file';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\SitemapFile';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\SitemapFile::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
+
 ##BEGIN:create_jobs.cleanup_sessions##
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'cleanup_sessions';

@@ -87,7 +87,7 @@ class Structure implements PersonContextInterface
 	/**
 	 * @param \Doctrine\ORM\EntityManager $em
 	 */
-	public function __construct(Person $person_context, EntityManager $em, PreloadedMysqlCache $cache)
+	public function __construct(Person $person_context, EntityManager $em, \Doctrine\Common\Cache\Cache $cache)
 	{
 		$this->person_context = $person_context;
 
@@ -767,7 +767,9 @@ class Structure implements PersonContextInterface
 		#------------------------------
 
 		if (!isset($this->category_data[$ent])) {
-			$this->cache->preloadPrefix('categories');
+			if ($this->cache instanceof PreloadedMysqlCache) {
+				$this->cache->preloadPrefix('categories');
+			}
 
 			$cats = $this->em->createQuery("
 				SELECT cat

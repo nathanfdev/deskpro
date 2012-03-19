@@ -101,6 +101,10 @@ class FilestorageLoader
 			} elseif (preg_match('#^/res-user/main.css#', $pathinfo, $m)) {
 				$this->userCssAction();
 
+			// sitemap.xml
+			} elseif (preg_match('#^/sitemap.xml#', $pathinfo, $m)) {
+				$this->sitemapXmlAction();
+
 			// A filesystem blob like /123AJKJKHSD1244AXC/filename.zip
 			// That is: /(batch)(authcode)(id)(namehash)/name.zip
 			//0XNSNTQHTNR43DD567
@@ -176,6 +180,29 @@ class FilestorageLoader
 			");
 			$sth->execute(array($blob_id));
 			$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+		}
+
+		$this->showBlob($blob);
+	}
+
+
+	/**
+	 * Serve the sitemap.xml file
+	 */
+	public function sitemapXmlAction()
+	{
+		$sth = $this->getPdo()->prepare("
+			SELECT *
+			FROM blobs
+			WHERE sys_name = 'sitemap_xml'
+		");
+		$sth->execute();
+		$blob = $sth->fetch(\PDO::FETCH_ASSOC);
+
+		if (!$blob) {
+			header("HTTP/1.0 404 Not Found");
+			echo "File not found.";
+			return;
 		}
 
 		$this->showBlob($blob);

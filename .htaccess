@@ -11,5 +11,6 @@
 	RewriteRule ^.*$ - [NC,L]
 	RewriteRule ^web/ - [NC,L]
 	RewriteRule ^__checkurlrewrite$ index.php?_sys=checkurl [NC,L]
+	RewriteRule ^sitemap.xml$ file.php [NC,L]
 	RewriteRule ^.*$ index.php [NC,L]
 </IfModule>
