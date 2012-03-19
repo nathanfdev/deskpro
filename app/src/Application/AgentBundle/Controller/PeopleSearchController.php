@@ -170,6 +170,16 @@ class PeopleSearchController extends AbstractController
 			if (strpos($f, 'person_fields[') === 0) $has_u_fields = true;
 		}
 
+		if ($has_u_fields) {
+			$user_field_manager = $this->container->getSystemService('person_fields_manager');
+
+			foreach ($people as $p) {
+				$user_all_custom_fields[$p->id] = $user_field_manager->getDisplayArrayForObject($p);
+			}
+
+			$vars['user_all_custom_fields'] = $user_all_custom_fields;
+		}
+
 		$result_display = new \Application\DeskPRO\People\PeopleResultsDisplay($people);
 
 		$alphabet = $this->getAlphabet();
@@ -254,6 +264,7 @@ class PeopleSearchController extends AbstractController
 			'display_fields'          => $display_fields,
 			'person_field_defs'       => $person_field_defs,
 			'result_display'          => $result_display,
+			'user_all_custom_fields'  => $user_all_custom_fields,
 		));
 	}
 
