@@ -45,12 +45,34 @@ use Application\DeskPRO\ORM\Unprivate\UnprivateProxyFactory;
  */
 class ProxyFactory extends UnprivateProxyFactory
 {
+	protected static $has_mutated_tpl = false;
+
+	public function generateProxyClasses(array $classes, $toDir = null)
+	{
+		if (!self::$has_mutated_tpl) {
+			self::$has_mutated_tpl = true;
+			self::$_proxyClassTemplate = str_replace(array(
+				'private $_entityPersister',
+				'private $_identifier',
+				'$this->_entityPersister',
+				'$this->_identifier'
+			), array(
+				'protected $__entityPersister__',
+				'protected $__identifier__',
+				'$this->__entityPersister__',
+				'$this->__identifier__'
+			), self::$_proxyClassTemplate);
+		}
+
+		parent::generateProxyClasses($classes, $toDir);
+	}
+
 	protected function _generateMethods(ClassMetadata $class)
 	{
 		$methods = '';
 		$methodNames = array();
 		foreach ($class->reflClass->getMethods() as $method) {
-			if ($method->isConstructor() || in_array(strtolower($method->getName()), array("__sleep", "__clone", "__getpropvalue__", "__setpropvalue__")) || isset($methodNames[$method->getName()])) {
+			if ($method->isConstructor() || in_array(strtolower($method->getName()), array("__sleep", "__clone", "__getpropvalue__", "__setpropvalue__", '__hasrunload__')) || isset($methodNames[$method->getName()])) {
 				continue;
 			}
 			$methodNames[$method->getName()] = true;
@@ -89,7 +111,7 @@ class ProxyFactory extends UnprivateProxyFactory
 					$identifier = lcfirst(substr($method->getName(), 3));
 					$cast = in_array($class->fieldMappings[$identifier]['type'], array('integer', 'smallint')) ? '(int) ' : '';
 					$methods .= '        if ($this->__isInitialized__ === false) {' . "\n";
-					$methods .= '            return ' . $cast . '$this->_identifier["' . $identifier . '"];' . "\n";
+					$methods .= '            return ' . $cast . '$this->__identifier__["' . $identifier . '"];' . "\n";
 					$methods .= '        }' . "\n";
 				}
 				$methods .= '        if ($this->__isInitialized__ === false) $this->__load();' . "\n";
@@ -102,6 +124,7 @@ class ProxyFactory extends UnprivateProxyFactory
 
 	public function __getPropValue__($k) { return $this->$k; }
 	public function __setPropValue__($k, $v) { $this->$k = $v; }
+	public function __hasRunLoad__() { if (isset($this->__entityPersister__)) return false; return true; }
 CODE;
 
 		return $methods;

@@ -1,8 +1,8 @@
 <section class="search-reuslts page-set" data-page="{{page}}">
 {% for ticket in tickets %}
 
-	{% set ticket_person = ticket_display.getPerson(ticket) %}
-	{% set ticket_agent = ticket_display.getAgent(ticket) %}
+{% set ticket_person = ticket.person %}
+{% set ticket_agent = ticket.agent %}
 
 <article class="row-item ticket-{{ ticket.id }} {% if ticket.status == 'awaiting_agent' %}urgency-{{ ticket.urgency }}{% endif %}" data-ticket-id="{{ ticket.id }}" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@selector(a.subject)" data-route-openclass="open">
 	<div class="loading-arrow">loading</div>

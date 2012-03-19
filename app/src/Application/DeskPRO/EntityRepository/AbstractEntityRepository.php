@@ -66,8 +66,15 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 	public function getByIds(array $ids, $keep_order = false)
 	{
 		if (!$ids) return array();
-		$results = $this->getIdentityHelper()->findByIds($ids, $keep_order);
-		return $results;
+
+		$class = $this->getName();
+		$q_res = $this->getEntityManager()->createQuery("
+			SELECT o
+			FROM {$class} o INDEX BY o.id
+			WHERE o.id IN(?0)
+		")->execute(array($ids));
+
+		return $q_res;
 	}
 
 

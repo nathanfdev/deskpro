@@ -201,24 +201,14 @@ class Person extends AbstractEntityRepository
 
 	public function getPeopleFromIds(array $ids)
 	{
-		// Only valid ID's please :)
-		// Do this because Doctrine doesnt have proper IN()
-		// escaping until 2.1
-		$ids = array_filter($ids, function ($val) {
-			if (Numbers::isInteger($val)) {
-				return true;
-			}
-			return false;
-		});
-
 		if (!$ids) return array();
 
 		$people = $this->getEntityManager()->createQuery("
 			SELECT p
 			FROM DeskPRO:Person p INDEX BY p.id
-			WHERE p.id IN(" . implode(',', $ids) . ")
+			WHERE p.id IN(?0)
 			ORDER BY p.id ASC
-		")->execute();
+		")->execute(arrary($ids));
 
 		return $people;
 	}
@@ -230,15 +220,9 @@ class Person extends AbstractEntityRepository
 		$people = $this->getEntityManager()->createQuery("
 			SELECT p
 			FROM DeskPRO:Person p INDEX BY p.id
-			WHERE p.id IN(?1)
+			WHERE p.id IN(?0)
 			ORDER BY p.id ASC
-		")->setParameter(1, $ids)
-		  ->setFetchMode('Application\\DeskPRO\\Entity\\PersonEmail', 'emails', \Doctrine\ORM\Mapping\ClassMetadataInfo::FETCH_EAGER)
-		  ->setFetchMode('Application\\DeskPRO\\Entity\\PersonEmail', 'primary_email', \Doctrine\ORM\Mapping\ClassMetadataInfo::FETCH_EAGER)
-		  ->setFetchMode('Application\\DeskPRO\\Entity\\CustomDataPerson', 'custom_data', \Doctrine\ORM\Mapping\ClassMetadataInfo::FETCH_EAGER)
-		  ->execute();
-
-		foreach ($people as $p) $p->first_name;
+		")->execute(array($ids));
 
 		return $people;
 	}

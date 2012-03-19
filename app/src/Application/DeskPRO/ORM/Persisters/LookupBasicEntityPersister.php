@@ -51,10 +51,8 @@ class LookupBasicEntityPersister extends BasicEntityPersister
 				$uof->preloadEntitySet($classname);
 			}
 			$hit = $uof->tryGetById($criteria['id'], $classname);
-			if ($hit) {
-				if ($hit->__getPropValue__('id')) {
-					return $hit;
-				}
+			if ($hit && $hit->__hasRunLoad__()) {
+				return $hit;
 			}
 		}
 
@@ -67,7 +65,7 @@ class LookupBasicEntityPersister extends BasicEntityPersister
 			$idmap = $uof->getIdentityMap();
 			if (isset($idmap[$classname])) {
 				foreach ($idmap[$classname] as $ent) {
-					if ($ent->getId() == $criteria['parent_id']) {
+					if ($ent->__hasRunLoad__() && $ent->getId() == $criteria['parent_id']) {
 						return $ent;
 					}
 				}
@@ -94,7 +92,7 @@ class LookupBasicEntityPersister extends BasicEntityPersister
 				$idmap = $uof->getIdentityMap();
 				if (isset($idmap[$classname])) {
 					foreach ($idmap[$classname] as $ent) {
-						if ($ent->parent && $ent->parent->getId() == $sourceEntity->getId()) {
+						if ($ent->__hasRunLoad__() && $ent->parent && $ent->parent->getId() == $sourceEntity->getId()) {
 							$coll->hydrateAdd($ent);
 						}
 					}

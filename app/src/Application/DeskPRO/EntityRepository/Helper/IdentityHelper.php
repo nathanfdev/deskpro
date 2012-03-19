@@ -89,7 +89,7 @@ class IdentityHelper
 		} else {
 			foreach ($ids as $id) {
 				$obj = $this->em->getUnitOfWork()->tryGetById($find_id, $this->entity_name);
-				if ($obj) {
+				if ($obj && $obj->__getPropValue__('id')) {
 					$return[$id] = $obj;
 				} else {
 					$missing[] = $id;
@@ -102,7 +102,7 @@ class IdentityHelper
 				SELECT o
 				FROM {$this->entity_name} o INDEX BY o.id
 				WHERE o.id IN(?0)
-			")->execute(array($missing));
+			")->execute(array($ids));
 
 			if ($q_res) {
 				$return = array_merge($return, $q_res);
