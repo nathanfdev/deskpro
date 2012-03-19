@@ -9,7 +9,6 @@
  * file that was distributed with this source code.
  */
 
-
 namespace Symfony\Bundle\TwigBundle;
 
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
@@ -138,3 +137,5 @@ class TwigEngine implements EngineInterface
         }
     }
 }
+
+// --
