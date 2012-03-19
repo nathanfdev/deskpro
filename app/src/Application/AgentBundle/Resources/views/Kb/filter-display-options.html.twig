@@ -10,8 +10,8 @@
 	</div>
 {% endblock %}
 {% block display_elements_list %}
-	<li data-field="author"><input type="checkbox" name="author" {% if 'author' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.author') }}</li>
-	<li data-field="category"><input type="checkbox" name="category" {% if 'category' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.category') }}</li>
-	<li data-field="date_created"><input type="checkbox" name="date_created" {% if 'date_created' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.date_created') }}</li>
-	<li data-field="view_count"><input type="checkbox" name="view_count" {% if 'view_count' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.num_views') }}</li>
+	<li data-field="author"><label><input type="checkbox" name="author" {% if 'author' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.author') }}</label></li>
+	<li data-field="category"><label><input type="checkbox" name="category" {% if 'category' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.categories') }}</label></li>
+	<li data-field="date_created"><label><input type="checkbox" name="date_created" {% if 'date_created' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.date_created') }}</label></li>
+	<li data-field="view_count"><label><input type="checkbox" name="view_count" {% if 'view_count' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.num_views') }}</label></li>
 {% endblock %}
