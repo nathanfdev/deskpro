@@ -1,0 +1,78 @@
+<table class="ticket_list" width="100%" border="1">
+    {% for message in ticket_messages %}
+        <tr>
+            <td>{{message.person.name}} {{message.date_created|date('c')}}</td>
+            <td align="right">#{{ loop.index }}</td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                {{message.message_html|safe_link_urls_html }}
+            </td>
+        </tr>
+        {% if ticket_message_attachments[message.id] %}
+            <tr>
+                <td colspan="2">
+                    <ul class="attachment-list">
+                    {% for attach_id in ticket_message_attachments[message.id] %}
+                    {% set ticket_attach = ticket_attachments[attach_id] %}
+                    <li>
+                        {% if ticket_attach.blob.isImage() %}
+                            <img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 'filename': ticket_attach.blob.filename_safe, 's': 50, 'size-fit': '1'}) }}" class="preview" />
+                        {% endif %}
+                        {{ticket_attach.blob.filename}}
+                        <span class="size">({{ ticket_attach.blob.readable_filesize }})</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                </td>
+            </tr>
+        {%endif%}
+        {% if all_feedback[message.id] %}
+            {% set feedback = all_feedback[message.id] %}
+            <tr>
+                <td colspan="2">
+                    {{ feedback.person.display_name }} found this message
+                    {% if feedback.rating > 0 %}<em class="helpful">helpful</em>{% else %}<em class="unhelpful">unhelpful</em>{% endif %}
+                    {% if feedback.message %}<p>{{ feedback.message }}</p>{% endif %}
+                </td>
+            </tr>
+        {% endif %}
+        {% if ticket_message_logs[message.id] %}
+            {% for log_id in ticket_message_logs[message.id] %}
+                {% set log = ticket_logs[log_id] %}
+                    <tr>
+                        <td colspan="2">
+                            {{ feedback.person.display_name }} found this message
+                            {% if feedback.rating > 0 %}<em class="helpful">helpful</em>{% else %}<em class="unhelpful">unhelpful</em>{% endif %}
+                            {% if feedback.message %}<p>{{ feedback.message }}</p>{% endif %}
+                            <div class="info">
+                                {% if log.person %} {{ log.person.display_name }},{% endif %}
+                                {{ log.date_created|date('c') }}
+                            </div>
+                            <div class="{{ log.action_type }}">
+                                {% include 'AgentBundle:Ticket:ticket-log-actiontext.html.twig' %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+        {% endif %}
+    {% endfor %}
+    {% if ticket_message_logs['after'] %}
+            {% for log_id in ticket_message_logs['after'] %}
+                <tr>
+                    <td colspan="2">
+                        {{ feedback.person.display_name }} found this message
+                        {% if feedback.rating > 0 %}<em class="helpful">helpful</em>{% else %}<em class="unhelpful">unhelpful</em>{% endif %}
+                        {% if feedback.message %}<p>{{ feedback.message }}</p>{% endif %}
+                        <div class="info">
+                            {% if log.person %} {{ log.person.display_name }},{% endif %}
+                            {{ log.date_created|date('c') }}
+                        </div>
+                        <div class="{{ log.action_type }}">
+                            {% include 'AgentBundle:Ticket:ticket-log-actiontext.html.twig' %}
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+    {% endif %}
+</table>

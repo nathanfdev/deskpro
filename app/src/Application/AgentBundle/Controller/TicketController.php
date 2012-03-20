@@ -34,6 +34,8 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
+
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
@@ -62,6 +64,7 @@ class TicketController extends AbstractController
 
 	public function viewAction($ticket_id)
 	{
+        $is_pdf = $this->in->getBool('pdf');
 		$ticket = $this->getTicketOr404($ticket_id);
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
@@ -79,7 +82,7 @@ class TicketController extends AbstractController
 		# Messages
 		#------------------------------
 
-		$ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket, 0, 0, $ticket_attachments);
+		$ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket, 0, 0, $ticket_attachments, $is_pdf);
 		$ticket_messages_block = $ticket_messages_blockcache['ticket_messages_block'];
 		$ticket_attachments = $ticket_messages_blockcache['ticket_attachments'];
 		$counts['messages'] = $ticket_messages_blockcache['message_count'];
@@ -161,38 +164,77 @@ class TicketController extends AbstractController
 		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
-		return $this->render($tpl, array(
-			'agents' => $agents,
-			'agent_teams' => $agent_teams,
+        $vars = array(
+            'agents' => $agents,
+            'agent_teams' => $agent_teams,
 
-			'ticket_perms' => $this->_getTicketPerms($ticket),
-			'ticket' => $ticket,
-			'ticket_attachments' => $ticket_attachments,
+            'ticket_perms' => $this->_getTicketPerms($ticket),
+            'ticket' => $ticket,
+            'ticket_attachments' => $ticket_attachments,
 
-			'draft_text' => $draft_text,
+            'draft_text' => $draft_text,
 
-			'last_message_id' => $ticket_messages_blockcache['last_message_id'],
-			'last_log_id' => $ticket_messages_blockcache['last_log_id'],
+            'last_message_id' => $ticket_messages_blockcache['last_message_id'],
+            'last_log_id' => $ticket_messages_blockcache['last_log_id'],
 
-			'participants' => $participants,
-			'participant_ids' => $participant_ids,
-			'agent_parts' => $agent_parts,
-			'user_parts' => $user_parts,
+            'participants' => $participants,
+            'participant_ids' => $participant_ids,
+            'agent_parts' => $agent_parts,
+            'user_parts' => $user_parts,
 
-			'custom_fields' => $custom_fields,
+            'custom_fields' => $custom_fields,
 
-			'show_related_content' => $show_related_content,
+            'show_related_content' => $show_related_content,
 
-			'ticket_messages_block' => $ticket_messages_block,
+            'ticket_messages_block' => $ticket_messages_block,
 
-			'ticket_deleted' => $ticket_deleted,
-			'hard_delete_time' => $hard_delete_time,
-			'ticket_options' => $ticket_options,
-			'ticket_flagged' => $ticket_flagged,
-			'macros' => $macros,
+            'ticket_deleted' => $ticket_deleted,
+            'hard_delete_time' => $hard_delete_time,
+            'ticket_options' => $ticket_options,
+            'ticket_flagged' => $ticket_flagged,
+            'macros' => $macros,
 
-			'agent_signature' => $this->person->getPref('agent.ticket_signature')
-		));
+            'agent_signature' => $this->person->getPref('agent.ticket_signature')
+        );
+
+        if($is_pdf)
+        {
+            $content_html = $this->renderView('DeskPRO:pdf_agent:view_ticket.html.twig', $vars);
+
+            $mpdf = new \mPDF_mPDF
+            (
+                'utf-8', // Language/Character set
+                'A4', // Size
+                '8', // Default Font Size
+                '', // Default Font
+                20, // Margin Left
+                20, // Margin Right
+                40, // Margin Top
+                40, // Margin Bottom
+                10, // Margin Header
+                10, // Margin Footer
+                'P' // Orientation
+            );
+
+            $mpdf->SetBasePath(realpath(__DIR__.'/../Resources/public'));
+            $mpdf->WriteHTML($content_html);
+
+            $pdf = $mpdf->Output('', 'S');
+
+            $response = new Response();
+
+            if($this->getRequest()->get('html'))
+                $response->setContent($content_html);
+            else
+            {
+                $response->setContent($pdf);
+                $response->headers->set('Content-Type', 'application/pdf');
+            }
+
+            return $response;
+        }
+
+		return $this->render($tpl, $vars);
 	}
 
 	protected function _getTicketPerms($ticket)
@@ -208,7 +250,7 @@ class TicketController extends AbstractController
 		return $ticket_perms;
 	}
 
-	protected function _getMessageBlockInfo($ticket, $since_message_id = 0, $since_log_id = 0, array $ticket_attachments = null)
+	protected function _getMessageBlockInfo($ticket, $since_message_id = 0, $since_log_id = 0, array $ticket_attachments = null, $is_pdf = false)
 	{
 		$message_count = 0;
 		$note_count = 0;
@@ -296,7 +338,13 @@ class TicketController extends AbstractController
 		$all_feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedbackForTicket($ticket);
 
 		if ($ticket_messages) {
-			$ticket_messages_block = $this->renderView('AgentBundle:Ticket:ticket-messages-batch.html.twig', array(
+            if($is_pdf) {
+                $tpl = 'DeskPRO:pdf_agent:ticket-messages-batch.html.twig';
+            }
+            else {
+                $tpl = 'AgentBundle:Ticket:ticket-messages-batch.html.twig';
+            }
+			$ticket_messages_block = $this->renderView($tpl, array(
 				'ticket' => $ticket,
 				'ticket_messages' => $ticket_messages,
 				'ticket_message_attachments' => $ticket_message_attachments,
