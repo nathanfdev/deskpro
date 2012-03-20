@@ -30,7 +30,8 @@ $loader->registerNamespaces(array(
 $loader->registerPrefixes(array(
     'Twig_'       => DP_ROOT.'/vendor/twig/lib',
 	'Pheanstalk'  => DP_ROOT.'/vendor/pheanstalk/classes',
-	'Elastica_'   => DP_ROOT.'/vendor/Elastica/lib'
+	'Elastica_'   => DP_ROOT.'/vendor/Elastica/lib',
+    'mPDF_'       => DP_ROOT.'/vendor/mpdf/lib',
 ));
 
 $loader->registerClassNames(array(
