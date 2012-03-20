@@ -198,7 +198,7 @@ class TriggerExecutor
 		// If the assigned agent is on vacation and the status is now awaiting_agent,
 		// the ticket must be unasssigned
 
-		if ($this->tracker->getTicket()->status == 'awaiting_agent' && $this->tracker->getTicket()->agent && $this->tracker->getTicket()->agent->is_vacation_mode) {
+		if (($this->tracker->getTicket()->status == 'awaiting_agent' || $this->tracker->getTicket()->status == 'awaiting_user') && $this->tracker->getTicket()->agent && $this->tracker->getTicket()->agent->is_deleted) {
 			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
 			$trigger->terms = array();
 			$trigger->actions = array(

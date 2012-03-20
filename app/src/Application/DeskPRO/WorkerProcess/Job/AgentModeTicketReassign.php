@@ -55,38 +55,6 @@ class AgentModeTicketReassign extends AbstractJob
 		$max = 1000;
 
 		#------------------------------
-		# Vacation mode
-		#------------------------------
-
-		$agent_ids = App::getDb()->fetchAllCol("SELECT id FROM people WHERE is_agent = 1 AND is_vacation_mode = 1");
-
-		if ($agent_ids) {
-			$tickets = App::getOrm()->createQuery("
-				SELECT t
-				FROM DeskPRO:Ticket
-				WHERE t.status = 'awaiting_agent' AND t.agent IN (?)
-				ORDER BY t.id DESC
-			", array($agent_ids))->setMaxResults($max)->execute();
-
-			foreach ($tickets as $t) {
-				$t->agent = null;
-
-				App::getDb()->beginTransaction();
-
-				try {
-					App::getOrm()->persist($t);
-					App::getOrm()->flush();
-					App::getDb()->commit();
-				} catch (\Exception $e) {
-					App::getDb()->rollback();
-					throw $e;
-				}
-			}
-
-			$max -= count($tickets);
-		}
-
-		#------------------------------
 		# Deleted
 		#------------------------------
 
@@ -97,7 +65,7 @@ class AgentModeTicketReassign extends AbstractJob
 			$tickets = App::getOrm()->createQuery("
 				SELECT t
 				FROM DeskPRO:Ticket
-				WHERE t.agent IN (?)
+				WHERE t.status IN ('awaiting_agent', 'awaiting_user') AND t.agent IN (?)
 				ORDER BY t.id DESC
 			", array($agent_ids))->setMaxResults($max)->execute();
 
