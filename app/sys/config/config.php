@@ -36,6 +36,7 @@ $container->setParameter('doctrine_migrations.dir_name', '%kernel.root_dir%/Reso
 $container->setParameter('doctrine_migrations.table_name', 'dev_migration_versions');
 $container->setParameter('twig.extension.form.class', 'Application\\DeskPRO\\Twig\\Extension\\FormExtension');
 $container->setParameter('doctrine.orm.entity_manager.class', 'Application\\DeskPRO\\ORM\\EntityManager');
+$container->setParameter('templating.locator.class', 'Application\\DeskPRO\\Templating\\Loader\\TemplateLocator');
 
 ############################################################################
 # Services
