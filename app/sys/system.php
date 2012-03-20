@@ -443,13 +443,13 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		if (isset($GLOBALS['DP_CONFIG']['rewrite_urls']) && $GLOBALS['DP_CONFIG']['rewrite_urls']) {
 			// Force no index.php
 			if (strpos($request->getRequestUri(), '/index.php') !== false) {
-				$response = new RedirectResponse(rtrim($request->getBasePath(), '/') . $path);
+				$response = new RedirectResponse(rtrim($request->getBasePath(), '/') . $path, 301);
 				return $response;
 			}
 		} else {
 			// Force index.php
 			if (strpos($request->getRequestUri(), '/index.php') === false) {
-				$response = new RedirectResponse(rtrim($request->getBasePath(), '/') . '/index.php' . $path);
+				$response = new RedirectResponse(rtrim($request->getBasePath(), '/') . '/index.php' . $path, 301);
 				return $response;
 			}
 		}
@@ -662,7 +662,7 @@ class UserKernel extends AbstractKernel
 
 		if ($do_correction) {
 			$url = App::getSetting('core.deskpro_url') . ltrim($now_path, '/');
-			$response = new RedirectResponse($url);
+			$response = new RedirectResponse($url, 301);
 			return $response;
 		}
 
