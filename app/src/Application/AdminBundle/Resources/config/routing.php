@@ -667,6 +667,52 @@ $collection->add('admin_agents_groups_new', new Route(
 
 
 ################################################################################
+# Templates
+################################################################################
+
+$collection->add('admin_templates_user', new Route(
+	'/templates/portal',
+	array('_controller' => 'AdminBundle:Templates:userList'),
+	array(),
+	array()
+));
+
+$collection->add('admin_templates_email', new Route(
+	'/templates/email',
+	array('_controller' => 'AdminBundle:Templates:emailList'),
+	array(),
+	array()
+));
+
+$collection->add('admin_templates_other', new Route(
+	'/templates/other',
+	array('_controller' => 'AdminBundle:Templates:otherList'),
+	array(),
+	array()
+));
+
+$collection->add('admin_templates_getcode', new Route(
+	'/templates/get-template-code',
+	array('_controller' => 'AdminBundle:Templates:getTemplateCode'),
+	array(),
+	array()
+));
+
+$collection->add('admin_templates_save', new Route(
+	'/templates/save-template.json',
+	array('_controller' => 'AdminBundle:Templates:saveTemplate'),
+	array(),
+	array()
+));
+
+$collection->add('admin_templates_revert', new Route(
+	'/templates/revert-template.json',
+	array('_controller' => 'AdminBundle:Templates:revertTemplate'),
+	array(),
+	array()
+));
+
+################################################################################
 # Styles
 ################################################################################
 

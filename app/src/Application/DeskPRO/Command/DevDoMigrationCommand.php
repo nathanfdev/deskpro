@@ -61,6 +61,13 @@ class DevDoMigrationCommand extends \Symfony\Bundle\DoctrineMigrationsBundle\Com
 
 	public function execute(InputInterface $input, OutputInterface $output)
 	{
+		$version = App::getDb()->fetchColumn("SELECT version FROM dev_migration_versions ORDER BY version DESC LIMIT 1");
+		$setting_version = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_version'");
+
+		if ($setting_version && (!$version || $setting_version > $version)) {
+			App::getDb()->insert('dev_migration_versions', array('version' => $setting_version));
+		}
+
 		parent::execute($input, $output);
 
 		$version = App::getDb()->fetchColumn("SELECT version FROM dev_migration_versions ORDER BY version DESC LIMIT 1");

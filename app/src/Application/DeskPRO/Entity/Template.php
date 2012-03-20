@@ -41,7 +41,6 @@ use Orb\Util\Arrays;
 
 /**
  * Templates used in the system
- *
  */
 class Template extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -61,18 +60,22 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 	protected $style;
 
 	/**
-	 * The path of the template
+	 * The logical name of the template. E.g., UserBundle:Main:resources.html.twig
 	 *
 	 * @var string
 	 */
-	protected $path;
+	protected $name;
 
 	/**
+	 * The raw template
+	 *
 	 * @var string
 	 */
-	protected $template = '';
+	protected $template_code = '';
 
 	/**
+	 * The template compiled to PHP
+	 *
 	 * @var string
 	 */
 	protected $template_compiled = '';
@@ -80,17 +83,17 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \DateTime
 	 */
-	protected $created_at;
+	protected $date_created;
 
 	/**
 	 * @var \DateTime
 	 */
-	protected $updated_at;
+	protected $date_updated;
 
 	public function __construct()
 	{
-		$this->created_at = new \DateTime();
-		$this->updated_at = new \DateTime();
+		$this->date_created = new \DateTime();
+		$this->date_updated = new \DateTime();
 	}
 
 	/**
@@ -101,35 +104,12 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 		return $this->id;
 	}
 
-	public function setTemplate($code)
+	public function setTemplate($code, $compiled)
 	{
-		$this->template = $code;
-
-		// Erase compiled code when we update the tpl,
-		// so it'll be updated when next rendered
-		$this->template_compiled = '';
+		$this['template_code'] = $code;
+		$this['template_compiled'] = $compiled;
+		$this['date_updated'] = new \DateTime();
 	}
-
-	public function setStyleId($style_id)
-	{
-		if ($style_id) {
-			$this->style = App::getEntityRepository('DeskPRO:Style')->find($style_id);
-		} else {
-			$this->style = null;
-		}
-	}
-
-	public function getStyleId()
-	{
-		return $this->style ? $this->style['id'] : 0;
-	}
-
-	public function _incUpdatedAt()
-	{
-		$this->updated_at = new \DateTime();
-	}
-
-
 
 	############################################################################
 	# Doctrine Metadata
@@ -141,13 +121,12 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Template';
 		$metadata->setPrimaryTable(array( 'name' => 'templates', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-		$metadata->addLifecycleCallback('_incUpdatedAt', 'preUpdate');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'path', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'path', ));
-		$metadata->mapField(array( 'fieldName' => 'template', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'template', ));
+		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
+		$metadata->mapField(array( 'fieldName' => 'template_code', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'template_code', ));
 		$metadata->mapField(array( 'fieldName' => 'template_compiled', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'template_compiled', ));
-		$metadata->mapField(array( 'fieldName' => 'created_at', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created_at', ));
-		$metadata->mapField(array( 'fieldName' => 'updated_at', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'updated_at', ));
+		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+		$metadata->mapField(array( 'fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_updated', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'style', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Style', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'style_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 	}

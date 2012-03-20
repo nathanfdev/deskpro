@@ -3388,3 +3388,108 @@ tr.adv-setting {
 		}
 	}
 }
+
+
+.template-dir {
+	thead th {
+		line-height: 18px;
+	}
+	thead .count, thead .count-changed, thead .count-outdated {
+		float: right;
+		font-size: 11px;
+		padding: 0 8px 0 10px;
+		line-height: 15px;
+		display: block;
+		font-weight: normal;
+		font-family: @body-font;
+	}
+
+	thead .count-changed, thead .count-outdated { display: none; }
+
+	thead .count-outdated {
+		background-color: #FFFFFF;
+		border: 1px solid #E46756;
+		.rounded(5px);
+	}
+
+	thead h1 {
+		background: url(../../images/agent/expand.png) no-repeat 0 2px;
+		padding-left: 15px;
+		font-family: @body-font-bold;
+		cursor: pointer;
+
+		&.expanded {
+			background: url(../../images/agent/collapse.png) no-repeat 0 2px;
+		}
+	}
+
+	td {
+		padding: 7px 10px 7px 10px !important;
+	}
+
+	td:hover {
+		background-color: #F8F8F8;
+	}
+
+	td em.edit {
+		float: right;
+		.iconbase(12px, 12px);
+		background: url(../../images/agent/source-title-gear.png);
+		cursor: pointer;
+		margin-top: 2px;
+	}
+
+	td h3 {
+		font-weight: normal;
+		font-size: 12px;
+		font-family: @body-font;
+	}
+
+	td .changed-tag,  td .outdated-tag {
+		float: right;
+		display: block;
+		line-height: 100%;
+		font-size: 10px;
+		padding: 1px 5px 1px 5px;
+		margin-right: 8px;
+		margin-top: 1px;
+
+		background-color: #FBFDB5;
+		border: 1px solid #C9C991;
+		.rounded(4px);
+
+		display: none;
+	}
+
+	td .outdated-tag {
+		background-color: #FFF;
+		border: 1px solid #E46756;
+	}
+
+	.tpl-changed .changed-tag { display:block; }
+	.tpl-outdated .outdated-tag { display:block; }
+	.dir-changed .count-changed { display:block; }
+	.dir-outdated .count-outdated { display:block; }
+}
+
+#edittpl_overlay {
+	position: fixed;
+	top: 35px; right: 35px; bottom: 35px; left: 35px;
+
+	> .deskpro-overlay {
+		position: absolute;
+		top: 0; right: 0; bottom: 0; left: 0;
+	}
+
+	textarea {
+		width: 99%;
+		height: 98%;
+		color: #000;
+		font-family: 'Monaco', 'Courier New', monospace;
+		font-size: 11px;
+	}
+
+	textarea.loading {
+		background: url(../../images/spinners/loading-big-circle.gif) no-repeat 50% 50%;
+	}
+}

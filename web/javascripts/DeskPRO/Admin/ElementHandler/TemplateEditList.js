@@ -1,0 +1,150 @@
+Orb.createNamespace('DeskPRO.Admin.ElementHandler');
+
+DeskPRO.Admin.ElementHandler.TemplateEditList = new Orb.Class({
+	Extends: DeskPRO.ElementHandler,
+
+	init: function() {
+		var self = this;
+
+		this.el.on('click', 'h1.toggle-section', function() {
+			$(this).toggleClass('expanded');
+			var table = $(this).closest('table');
+			var tbody = table.find('> tbody').first();
+
+			if ($(this).hasClass('expanded')) {
+				tbody.show();
+			} else {
+				tbody.hide();
+			}
+		});
+
+		this.el.on('click', '.edit-tpl-trigger', function() {
+			self.openTemplateEditor($(this).closest('tr').data('template-name'));
+		});
+
+		this.overlayEl = null;
+		this.overlayBack = null;
+		this.editingTemplate = null;
+	},
+
+	markReverted: function(template_name) {
+		var row_id = 'row_' + template_name.toLowerCase().replace(/[:\.]/g, '_');
+		var row = $('#' + row_id);
+
+		if (!row.hasClass('tpl-changed')) {
+			return;
+		}
+
+		row.removeClass('tpl-changed tpl-outdated');
+
+		var table = row.closest('table');
+		this.updateTableCounts(table);
+	},
+
+	markUpdated: function(template_name) {
+		var row_id = 'row_' + template_name.toLowerCase().replace(/[:\.]/g, '_');
+		var row = $('#' + row_id);
+
+		row.addClass('tpl-changed').removeClass('tpl-outdated');
+
+		var table = row.closest('table');
+		this.updateTableCounts(table);
+	},
+
+	updateTableCounts: function(table) {
+		var thead = table.find('> thead');
+
+		var changed_count  = table.find('tr.tpl-changed').length;
+		var outdated_count = table.find('tr.tpl-outdated').length;
+
+		thead.find('.count-changed > i').text(changed_count);
+		if (!changed_count) {
+			thead.find('.count-changed').hide();
+		} else {
+			thead.find('.count-changed').show();
+		}
+
+		thead.find('.count-outdated > i').text(outdated_count);
+		if (!outdated_count) {
+			thead.find('.count-outdated').hide();
+		} else {
+			thead.find('.count-outdated').show();
+		}
+	},
+
+	openTemplateEditor: function(template_name) {
+		if (!this.overlayEl) {
+			this.overlayBack = $('<div class="backdrop fade" />').hide().appendTo('body').on('click', this.closeTemplateEditor.bind(this));
+			this.overlayEl = $('#edittpl_overlay').detach().appendTo('body');
+			this.overlayEl.find('.close-overlay').on('click', this.closeTemplateEditor.bind(this));
+			this.overlayEl.find('.save-trigger').on('click', this.saveTemplateEditor.bind(this));
+			this.overlayEl.find('.revert-trigger').on('click', this.revertTemplateEditor.bind(this));
+		}
+
+		this.editingTemplate = template_name;
+		this.overlayEl.find('.template-title').text(template_name);
+		this.overlayEl.find('textarea.template-code').val('Loading template, please wait...').addClass('loading');
+		this.overlayBack.fadeIn('fast');
+		this.overlayEl.fadeIn('fast');
+
+		this.overlayEl.find('.overlay-footer').removeClass('loading');
+
+		$.ajax({
+			url: BASE_URL + 'admin/templates/get-template-code?name=' + template_name,
+			context: this,
+			error: function() {
+				this.closeTemplateEditor();
+			},
+			success: function(val) {
+				this.editingTemplate = template_name;
+				this.overlayEl.find('textarea.template-code').val(val).removeClass('loading');
+			}
+		});
+	},
+
+	revertTemplateEditor: function() {
+		this.overlayEl.find('.overlay-footer').addClass('loading');
+		$.ajax({
+			url: BASE_URL + 'admin/templates/revert-template.json?name=' + this.editingTemplate,
+			context: this,
+			success: function(val) {
+				this.markReverted(this.editingTemplate);
+				this.closeTemplateEditor();
+			}
+		});
+	},
+
+	saveTemplateEditor: function() {
+		this.overlayEl.find('.overlay-footer').addClass('loading');
+
+		var postData = {
+			name: this.editingTemplate,
+			code: this.overlayEl.find('textarea').val()
+		};
+
+		$.ajax({
+			url: BASE_URL + 'admin/templates/save-template.json',
+			context: this,
+			type: 'POST',
+			data: postData,
+			success: function(data) {
+				this.overlayEl.find('.overlay-footer').removeClass('loading');
+
+				if (data.error) {
+					alert(data.error_message + "\n\nLine: " + data.error_line);
+					return;
+				}
+
+				this.markUpdated(this.editingTemplate);
+				this.closeTemplateEditor();
+			}
+		});
+	},
+
+	closeTemplateEditor: function() {
+		if (!this.overlayEl) return;
+		this.overlayEl.fadeOut('fast');
+		this.overlayBack.fadeOut('fast');
+		this.editingTemplate = null;
+	}
+});

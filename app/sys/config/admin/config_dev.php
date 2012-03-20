@@ -29,3 +29,13 @@ $container->loadFromExtension('web_profiler', array(
 $container->loadFromExtension('twig', array(
 	'debug' => true
 ));
+
+// twig.helpers.deskpro_user_templating
+// We ned it in the admin because we need it for compiling when editing templates
+$definition = new Definition();
+$definition->setClass('Application\\UserBundle\\Twig\\Extension\\UserTemplatingExtension');
+$definition->setArguments(array(
+	new Reference('service_container')
+));
+$definition->addTag('twig.extension', array());
+$container->setDefinition('twig.helpers.deskpro_user_templating', $definition);

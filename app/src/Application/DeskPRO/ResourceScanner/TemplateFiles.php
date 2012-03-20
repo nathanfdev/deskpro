@@ -38,93 +38,127 @@ use Application\DeskPRO\App;
 use Orb\Util\Arrays;
 
 /**
- * The style system uses templates from the database first, and falls back onto the filesystem.
- * For us to show the user in an interface which templates can be editted we need a way to get
- * a list of templates in the fs, and be able to map them to files.
+ * Scans the filesystem for an array of all templates
  */
 class TemplateFiles
 {
-	public function getTempaltesInAllBundles()
-	{
-		$all_bundle_info = App::getApplicationBundleInfo();
+	protected $use_map_file = true;
 
-		$templates = array();
-		foreach ($all_bundle_info as $bundle => $bundle_info) {
-			$tpls = $this->getTemplatesInBundle($bundle);
-			if ($tpls) {
-				$templates[$bundle] = $tpls;
-			}
-		}
-
-		return $templates;
-	}
 
 	/**
-	 * Get an array of templates in a given bundle
+	 * @param bool $use_map_file
+	 */
+	public function __construct($use_map_file = true)
+	{
+		$this->use_map_file = $use_map_file;
+	}
+
+
+	/**
+	 * Get the map array
 	 *
-	 * @param  $bundle
 	 * @return array
 	 */
-	public function getTemplatesInBundle($bundle)
+	public function getTemplateMap()
 	{
-		$all_bundle_info = App::getApplicationBundleInfo();
-		if (!isset($all_bundle_info[$bundle])) {
-			return array();
+		$map_file_path = DP_ROOT.'/sys/config/template-map.php';
+
+		if (!$this->use_map_file || !is_file($map_file_path)) {
+			return $this->genTemplateMap();
 		}
 
-		$bundle_info = $all_bundle_info[$bundle];
-
-		$dir = $bundle_info['path'] . '/Resources/views';
-
-		$finder = new \Symfony\Component\Finder\Finder();
-		$finder->files()->name('*.twig')->in($dir);
-
-		$templates = array();
-		foreach ($finder as $filepath) {
-
-			$tplname = str_replace($dir . '/', ':', $filepath);
-			$tplname = str_replace('/', ':', $tplname);
-			if (substr_count($tplname, ':') < 2) {
-				$tplname = ':' . $tplname; // for layouts that are in top dir, MyBundle::layout
-			}
-			$tplname = $bundle . $tplname;
-
-			$templates[] = $tplname;
-		}
-
-		sort($templates, \SORT_STRING);
-
-		return $templates;
+		$map = require $map_file_path;
+		return $map;
 	}
 
 
+	/**
+	 * Scans the filesystem to generate the map on-demand
+	 *
+	 * @return array
+	 */
+	public function genTemplateMap()
+	{
+		$paths = array(
+			'AdminBundle'   => DP_ROOT.'/src/Application/AdminBundle/Resources/views',
+			'AgentBundle'   => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
+			'DeskPRO'       => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
+			'ReportBundle'  => DP_ROOT.'/src/Application/ReportBundle/Resources/views',
+			'UserBundle'    => DP_ROOT.'/src/Application/UserBundle/Resources/views',
+		);
+
+		$tpl_info = array();
+
+		foreach ($paths as $bundle => $dir) {
+			$finder = new \Symfony\Component\Finder\Finder();
+			$finder->files()->name('*.twig')->in($dir);
+
+			foreach ($finder as $file) {
+				/** @var \Symfony\Component\Finder\SplFileinfo $file */
+
+				$filepath = $file->getRealPath();
+
+				$tplname = str_replace($dir . '/', ':', $filepath);
+				$tplname = str_replace('/', ':', $tplname);
+				if (substr_count($tplname, ':') < 2) {
+					$tplname = ':' . $tplname; // for layouts that are in top dir, MyBundle::layout
+				}
+				$tplname = $bundle . $tplname;
+
+				$tpl_info[$tplname] = array(
+					'path' => str_replace(DP_ROOT, '', $file->getRealPath()),
+					'last_updated' => 0,
+				);
+			}
+		}
+
+		return $tpl_info;
+	}
+
 
 	/**
-	 * Get the filepath for a template
-	 *
-	 * @param  $template
-	 * @return null|string
+	 * Templates that should be categorized as "user portal" type templates.
 	 */
-	public function getPathForTemplate($template)
+	public function getUserTemplates()
 	{
-		if (substr_count($template, ':') != 2) {
-			return null;
+		$raw_map = $this->getTemplateMap();
+
+		$map = array();
+
+		foreach ($raw_map as $k => $info) {
+			if (strpos($k, 'UserBundle:') !== false || strpos($k, 'DeskPRO:custom_fields:') !== false) {
+				$map[$k] = $info;
+			}
 		}
 
-		list ($bundle, $section, $name) = explode(':', $template, 3);
+		return $map;
+	}
 
-		$all_bundle_info = App::getApplicationBundleInfo();
-		if (!isset($all_bundle_info[$bundle])) {
-			return null;
+
+	/**
+	 * Group the map into [bundle][dir][tplname]
+	 *
+	 * @param array $map
+	 * @return array
+	 */
+	public function groupPrefixes(array $map)
+	{
+		$grouped = array();
+		foreach ($map as $k => $v) {
+			preg_match('#^(.*?):(.*?):(.*?)$#', $k, $m);
+			$bundle = $m[1];
+			$dir = $m[2];
+			if ($dir) {
+				$dir = 'TOP';
+			}
+
+			if (!isset($grouped[$bundle])) $grouped[$bundle] = array();
+			if (!isset($grouped[$bundle][$dir])) $grouped[$bundle][$dir] = array();
+
+			$grouped[$bundle][$dir][$k] = $v;
+			$grouped[$bundle][$dir][$k]['shortname'] = str_replace('.twig', '', $m[3]);
 		}
-		$bundle_info = $all_bundle_info[$bundle];
 
-		$path = $bundle_info['path'] . '/Resources/views/';
-		if ($section) {
-			$path .= $section . '/';
-		}
-		$path .= $name;
-
-		return $path;
+		return $grouped;
 	}
 }

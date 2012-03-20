@@ -48,13 +48,13 @@ class Template extends EntityRepository
 				$q = $this->getEntityManager()->createQuery("
 					SELECT t
 					FROM DeskPRO:Template t
-					WHERE t.style IS NULL AND t.path = ?1
+					WHERE t.style IS NULL AND t.name = ?1
 				")->setParameters(array(1=>$template_name));
 			} else {
 				$q = $this->getEntityManager()->createQuery("
 					SELECT t
 					FROM DeskPRO:Template t
-					WHERE t.style = ?1 AND t.path = ?2
+					WHERE t.style = ?1 AND t.name = ?2
 				")->setParameters(array(1=>$style, 2=>$template_name));
 			}
 
@@ -68,10 +68,21 @@ class Template extends EntityRepository
 	public function getCustomTemplateNamesInStyle($style)
 	{
 		$names = App::getDb()->fetchColumn("
-			SELECT path
+			SELECT name
 			FROM templates
 			WHERE style_id = ?
 		", array($style['id']));
+
+		return $names;
+	}
+
+	public function getCustomTemplateInfoInStyle($style)
+	{
+		$names = App::getDb()->fetchAllKeyed("
+			SELECT name, date_updated
+			FROM templates
+			WHERE style_id = ?
+		", array($style['id']), 'name');
 
 		return $names;
 	}

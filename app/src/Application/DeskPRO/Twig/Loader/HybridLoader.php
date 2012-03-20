@@ -34,11 +34,9 @@
 
 namespace Application\DeskPRO\Twig\Loader;
 
-use Application\DeskPRO\Entities;
 use Application\DeskPRO\App;
-
-use Orb\Arrays;
-use Orb\Strings;
+use Symfony\Component\Templating\TemplateNameParserInterface;
+use Symfony\Component\Config\FileLocatorInterface;
 
 /**
  * This hybrid loader loads templates from the filesystem first, and then from the
@@ -46,8 +44,32 @@ use Orb\Strings;
  */
 class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 {
+	protected static $inst_count = 0;
+	/**
+	 * @var \Application\DeskPRO\Entity\Style
+	 */
 	protected $style = null;
+
+	/**
+	 * @var array
+	 */
 	protected $style_template_info = null;
+
+	/**
+	 * @var string
+	 */
+	protected $db_path_prefix;
+
+	public function __construct(FileLocatorInterface $locator, TemplateNameParserInterface $parser)
+	{
+		parent::__construct($locator, $parser);
+
+		self::$inst_count++;
+		$stream = 'tpl' . self::$inst_count;
+		$this->db_path_prefix = $stream . '://load';
+
+		stream_wrapper_register($stream, 'Application\\DeskPRO\\Twig\\Loader\\DbStreamWrapper', 0);
+	}
 
 	protected function _initStyle()
 	{
@@ -59,10 +81,10 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 
 			if (App::getConfig('debug.templates.disable_db_templates')) {
 				$this->style_template_info = App::getDb()->fetchAllKeyed("
-					SELECT id, path, UNIX_TIMESTAMP(updated_at) AS updated_at
+					SELECT id, name, UNIX_TIMESTAMP(date_updated) AS date_updated
 					FROM templates
 					WHERE style_id = ?
-				", array($this->style['id']), 'path');
+				", array($this->style['id']), 'name');
 			}
 		} else {
 			$this->style = new \Application\DeskPRO\Entity\Style();
@@ -74,8 +96,11 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 		$this->_initStyle();
 
 		$str_name = $this->_getStringName($name);
+
+		// DB templates are always "fresh" because theyre compiled
+		// as soon as they're saved
 		if (isset($this->style_template_info[$str_name])) {
-			return $this->style_template_info[$str_name]['updated_at'] < $time;
+			return true;
 		}
 
         return parent::isFresh($name, $time);
@@ -100,7 +125,7 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 		$str_name = $this->_getStringName($name);
 		if (isset($this->style_template_info[$str_name])) {
 			return App::getDb()->fetchColumn("
-				SELECT template
+				SELECT template_code
 				FROM templates
 				WHERE id = ?
 			", array($this->style_template_info[$name]['id']));
@@ -108,6 +133,19 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 
 		return parent::getSource($name);
     }
+
+	protected function findTemplate($template)
+	{
+		$this->_initStyle();
+
+		$logicalName = (string)$template;
+
+		if (isset($this->style_template_info[$logicalName])) {
+			return $this->db_path_prefix . '/' . $logicalName;
+		}
+
+		return parent::findTemplate($template);
+	}
 
 	protected function _getStringName($tpl)
 	{

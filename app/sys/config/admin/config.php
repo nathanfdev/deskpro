@@ -12,3 +12,13 @@ $container->loadFromExtension('framework', array(
 		'resource' => DP_ROOT.'/sys/config/admin/routing.php'
 	)
 ));
+
+// twig.helpers.deskpro_user_templating
+// We ned it in the admin because we need it for compiling when editing templates
+$definition = new Definition();
+$definition->setClass('Application\\UserBundle\\Twig\\Extension\\UserTemplatingExtension');
+$definition->setArguments(array(
+	new Reference('service_container')
+));
+$definition->addTag('twig.extension', array());
+$container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
