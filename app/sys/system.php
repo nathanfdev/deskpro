@@ -629,6 +629,45 @@ class UserKernel extends AbstractKernel
 	{
 		$loader->load(DP_ROOT.'/sys/config/user/config_'.$this->getEnvironment().'.php');
 	}
+
+	public function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+	{
+		$response = parent::preResponseHandled($request, $type, $catch);
+		if ($response) {
+			return $response;
+		}
+
+		$redirect_corrections = App::getSetting('core.redirect_correct_url');
+		if (!$redirect_corrections) {
+			return null;
+		}
+
+		$now_path = $request->getPathInfo();
+		if (strpos($request->getRequestUri(), '/index.php/') !== false) {
+			$now_path = '/index.php' . $now_path;
+		}
+
+		$urlinfo        = parse_url(App::getSetting('core.deskpro_url'));
+		$now_host       = strtolower($urlinfo['host']);
+		$now_scheme     = strtolower($urlinfo['scheme']);
+		$correct_host   = strtolower($request->getHttpHost());
+		$correct_scheme = strtolower($request->getScheme());
+
+		$do_correction = false;
+		if ($correct_scheme == 'https' && $now_scheme != 'https') {
+			$do_correction = true;
+		} elseif ($now_host != $correct_host) {
+			$do_correction = true;
+		}
+
+		if ($do_correction) {
+			$url = App::getSetting('core.deskpro_url') . ltrim($now_path, '/');
+			$response = new RedirectResponse($url);
+			return $response;
+		}
+
+		return null;
+	}
 }
 
 

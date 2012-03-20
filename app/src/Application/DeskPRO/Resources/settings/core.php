@@ -67,6 +67,11 @@
 	'core.deskpro_name' => 'DeskPRO',
 
 	/**
+	 * Redirect to correct URL (domain and https)
+	 */
+	'core.redirect_correct_url' => false,
+
+	/**
 	 * The optional tagline or sub-title of the helpdesk
 	 */
 	'core.deskpro_tagline' => '',
@@ -116,16 +121,6 @@
 	 * When the installation took place
 	 */
 	'core.install_time' => 0,
-
-	/**
-	 * True to enable https://
-	 */
-	'core.force_ssl' => false,
-
-	/**
-	 * True to force the access domain to that of deskpro_url
-	 */
-	'core.force_domain' => false,
 
 	/**
 	 * True to use single-language ode

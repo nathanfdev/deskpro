@@ -54,12 +54,8 @@
 				The helpdesk is currently disabled</label>
 		</div>
 		<div class="field_row">
-			<label><input type="checkbox" name="settings[core.force_ssl]" {% if app.getSetting('core.force_ssl') %}checked="checked"{% endif %} />
-				Force users to use https:// by redirecting non-https requests</label>
-		</div>
-		<div class="field_row">
-			<label><input type="checkbox" name="settings[core.force_domain]" {% if app.getSetting('core.force_domain') %}checked="checked"{% endif %} />
-				Force users to use the domain name set in your "Helpdesk URL." For example, this will forward non-www to www.</label>
+			<label><input type="checkbox" name="settings[core.redirect_correct_url]" {% if app.getSetting('core.redirect_correct_url') %}checked="checked"{% endif %} />
+				Always redirect users to the 'Helpdesk URL' if they arrive on a different URL. For example, this will redirect non-www to www, and force https:// if you have that enabled.
 		</div>
 	</div>
 </div>
