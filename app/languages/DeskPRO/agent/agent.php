@@ -349,4 +349,6 @@
 	'agent.triggers_auto_close_resolve_user_reply' => 'Auto-resolve tickets that are awaiting user',
 	'agent.triggers_auto_close_resolve_agent_reply' => 'Auto-resolve tickets that are awaiting user',
 	'agent.triggers_auto_close_close_resolved' => 'Auto-close tickets that are resolved',
+
+    'agent.download_pdf' => 'Download PDF',
 );

@@ -313,6 +313,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			{% endif %}
 			{% endif %}
 			<a class="clean-white" id="{{baseId}}_print_trigger"><span>{{ phrase('agent.print') }}</span></a>
+            <a class="clean-white" target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'pdf': 1}) }}"><span>{{ phrase('agent.download_pdf') }}</span></a>
 		</div>
 	</section>
 </div>

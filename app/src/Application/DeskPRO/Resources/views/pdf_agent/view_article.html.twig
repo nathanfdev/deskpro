@@ -1,0 +1,77 @@
+{% include 'DeskPRO:pdf_common:header.html.twig' %}
+
+<sethtmlpageheader name="deskproHeader" page="ALL" value="on" show-this-page="1" />
+
+{% include 'DeskPRO:pdf_common:footer.html.twig' %}
+
+<sethtmlpagefooter name="deskproFooter" page="ALL" value="on" show-this-page="1" />
+
+{% if article.status_code == "hidden.deleted" %}
+    <div class="delete-notice">
+        {{ phrase('agent.record_deleted') }}
+    </div>
+{% endif %}
+<h1>{{ article.title }}</h1>
+<hr />
+<table width="100%">
+    <tr>
+        <td width="50%">
+            <table>
+                <tr>
+                    <th>Article ID:</th>
+                    <td>{{ article.id }}</td>
+                </tr>
+                <tr>
+                    <th>Status:</th>
+                    <td>{{ phrase('agent.publish.status_' ~ article.status_code|replace({'.':'_'})) }}</td>
+                </tr>
+            </table>
+        </td>
+        <td width="50%" align="right">
+            <table>
+                <tr>
+                    <th>
+                        {{ phrase('agent.label_labels') }}:
+                    </th>
+                    <td>
+                        <ul>
+                            {% for label in article.labels %}
+                                <li>
+                                    {{label.label}}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ phrase('agent.categories') }}:</th>
+                    <td>
+                        {% for cat in article.categories %}
+                            <li>{{ cat.full_title }}</li>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% if app.getSetting('core.use_product') %}
+                    <tr>
+                        <th>{{ phrase('agent.products') }}</th>
+                        <td>
+                            <ul>
+                                {% for prod in article.products %}
+                                <li>
+                                    {{ prod.full_title }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                {% endif %}
+            </table>
+        </td>
+    </tr>
+</table>
+
+<hr />
+
+<table width="100%">
+    <tr><td>{{ content|raw }}</td></tr>
+</table>

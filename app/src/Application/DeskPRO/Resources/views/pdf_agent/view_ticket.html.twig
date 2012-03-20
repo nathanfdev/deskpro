@@ -1,3 +1,11 @@
+{% include 'DeskPRO:pdf_common:header.html.twig' %}
+
+<sethtmlpageheader name="deskproHeader" page="ALL" value="on" show-this-page="1" />
+
+{% include 'DeskPRO:pdf_common:footer.html.twig' %}
+
+<sethtmlpagefooter name="deskproFooter" page="ALL" value="on" show-this-page="1" />
+
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flag %}
 
 {% if ticket.is_locked %}

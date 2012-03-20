@@ -216,15 +216,16 @@ class TicketController extends AbstractController
                 'P' // Orientation
             );
 
-            $mpdf->SetBasePath(realpath(__DIR__.'/../Resources/public'));
+            $mpdf->SetBasePath(realpath(__DIR__.'/../../../../../web/images'));
             $mpdf->WriteHTML($content_html);
 
             $pdf = $mpdf->Output('', 'S');
 
             $response = new Response();
 
-            if($this->getRequest()->get('html'))
+            if($this->in->getBool('html')) {
                 $response->setContent($content_html);
+            }
             else
             {
                 $response->setContent($pdf);

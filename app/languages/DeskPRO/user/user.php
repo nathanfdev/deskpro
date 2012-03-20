@@ -130,4 +130,6 @@
 
 	'user.required' => 'Required',
 	'user.required_not_displayed' => 'Required but never displayed',
+
+    'user.download_pdf' => 'Download PDF',
 );

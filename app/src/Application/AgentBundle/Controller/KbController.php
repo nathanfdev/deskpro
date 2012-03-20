@@ -34,6 +34,8 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
+
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleAttachment;
@@ -68,6 +70,7 @@ class KbController extends AbstractController
 
 	public function viewArticleAction($article_id)
 	{
+        $is_pdf = $this->in->getBool('pdf');
 		$article = App::findEntity('DeskPRO:Article', $article_id);
 		if (!$article) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown article $article_id");
@@ -111,19 +114,60 @@ class KbController extends AbstractController
 
 		$article_categories  = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoryHelper()->getCategoriesInHierarchy();
 
-		return $this->render($tpl, array(
-			'article'              => $article,
-			'custom_fields'        => $custom_fields,
-			'sticky_search_words'  => $sticky_search_words,
-			'rated_searches'       => $rated_searches,
-			'content'              => $content,
-			'article_comments'     => $article_comments,
-			'article_revisions'    => $article_revisions,
-			'related_content'      => $related_content,
-			'state'                => $state,
-			'article_categories'   => $article_categories,
-			'glossary_words'       => $glossary_words,
-		));
+        $vars = array(
+            'article'              => $article,
+            'custom_fields'        => $custom_fields,
+            'sticky_search_words'  => $sticky_search_words,
+            'rated_searches'       => $rated_searches,
+            'content'              => $content,
+            'article_comments'     => $article_comments,
+            'article_revisions'    => $article_revisions,
+            'related_content'      => $related_content,
+            'state'                => $state,
+            'article_categories'   => $article_categories,
+            'glossary_words'       => $glossary_words,
+        );
+
+        if($is_pdf)
+        {
+            $content_html = $this->renderView('DeskPRO:pdf_agent:view_article.html.twig', $vars);
+
+            $mpdf = new \mPDF_mPDF
+            (
+                'utf-8', // Language/Character set
+                'A4', // Size
+                '8', // Default Font Size
+                '', // Default Font
+                20, // Margin Left
+                20, // Margin Right
+                40, // Margin Top
+                40, // Margin Bottom
+                10, // Margin Header
+                10, // Margin Footer
+                'P' // Orientation
+            );
+
+            $mpdf->SetBasePath(realpath(__DIR__.'/../../../../../web/images'));
+
+            $mpdf->WriteHTML($content_html);
+
+            $pdf = $mpdf->Output('', 'S');
+
+            $response = new Response();
+
+            if($this->in->getBool('html')) {
+                $response->setContent($content_html);
+            }
+            else
+            {
+                $response->setContent($pdf);
+                $response->headers->set('Content-Type', 'application/pdf');
+            }
+
+            return $response;
+        }
+
+		return $this->render($tpl, $vars);
 	}
 
 	public function viewRevisionsAction($article_id)
