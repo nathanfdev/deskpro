@@ -1,0 +1,114 @@
+{% include 'DeskPRO:pdf_common:header.html.twig' %}
+
+<sethtmlpageheader name="deskproHeader" page="ALL" value="on" show-this-page="1" />
+
+<style>
+.ticket_attribute {
+    list-style: none;
+    border-style: solid;
+    border-color: #000000;
+    border-width: 1px;
+    margin: 8px;
+    float: left;
+}
+</style>
+
+<h1>{{ ticket.subject }}</h1>
+<hr />
+
+<table class="ticket_attribute">
+    <tr><th>{{ phrase('user.tickets.label_ticket_ref') }}</th></tr>
+    <tr><td>{{ ticket.public_id }}</td></tr>
+</table>
+<table class="ticket_attribute">
+    <tr><th>{{ phrase('user.department') }}</th></tr>
+    <tr><td>{{ phrase_object(ticket.department, 'full') }}</td></tr>
+</table>
+
+{% if ticket.category %}
+    <table class="ticket_attribute">
+        <tr><th>{{ phrase('user.tickets.category') }}</th></tr>
+        <tr><td>{{ phrase_object(ticket.category, 'full') }}</td></tr>
+    </table>
+{% endif %}
+
+{% if ticket.product %}
+    <table class="ticket_attribute">
+        <tr><th>{{ phrase('user.product') }}</th></tr>
+        <tr><td>{{ phrase_object(ticket.product, 'full') }}<td></tr>
+    </table>
+{% endif %}
+
+{% if ticket.priority %}
+    <table class="ticket_attribute">
+        <tr><th>{{ phrase('user.tickets.priority') }}</th></tr>
+        <tr><td>{{ phrase_object(ticket.priority) }}</td></tr>
+    </table>
+{% endif %}
+
+{% if ticket.person.id != app.user.id %}
+    <table class="ticket_attribute">
+        <tr><th>{{ phrase('user.tickets.label_ticket_starter') }}</th></tr>
+        <tr><td>{{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;</td></tr>
+    </table>
+{% endif %}
+
+{% if user_participants|length %}
+    <table class="ticket_attribute">
+        <tr><th>{{ phrase('user.tickets.label_cced') }}</th></tr>
+        <tr>
+            <td>
+                <ul>
+                    {% for part in user_participants %}
+                    <li>
+                        {{ part.person.display_name }} &lt;{{ part.person.email_address }}&gt;
+                    </li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+    </table>
+{% endif %}
+
+{% for f in custom_fields %}
+    {% if ticket.hasCustomField(f.field_def.id) %}
+        <table class="ticket_attribute">
+            <tr><th>{{f.title}}</th></tr>
+            <tr><td>{{ render_custom_field(f) }}</td></tr>
+        </table>
+    {% endif %}
+{% endfor %}
+
+<hr style="clear:both;" />
+
+<table border="1" cellspacing="0">
+    {% for message in ticket.displayable_messages %}
+        <tr>
+            <th>From {{ message.person.display_name }} at {{ message.date_created|date('fulltime') }}</th>
+        </tr>
+    
+        <tr><td>{{ message.message_html|raw }}</td></tr>
+
+
+        {% if message_to_attach[message.id] %}
+            <tr>
+                <td>
+                    <ul class="attachment-list">
+                        {% for attach_id in message_to_attach[message.id] %}
+                        {% set ticket_attach = attachments[attach_id] %}
+                        <li>
+                            {% if ticket_attach.blob.isImage() %}
+                                <a href="{{ ticket_attach.blob.download_url }}" target="_blank">
+                                    <img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 'filename': ticket_attach.blob.filename, 's': 50, 'size-fit': '1'}) }}" />
+                                </a>
+                            {% endif %}
+                                <a href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a>
+                            <span class="size">({{ ticket_attach.blob.readable_filesize }})</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+        {%endif%}
+    {% endfor %}
+</table>

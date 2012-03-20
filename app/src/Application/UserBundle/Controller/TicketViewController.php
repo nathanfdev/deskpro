@@ -34,6 +34,8 @@
 
 namespace Application\UserBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
+
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 
@@ -111,6 +113,8 @@ class TicketViewController extends AbstractController
 	 */
 	public function viewTicket(Ticket $ticket, array $display_data = array())
 	{
+        $is_pdf = $this->in->getBool('pdf');
+
 		if ($this->person->id != $ticket->person->id && !$ticket->hasParticipantPerson($this->person->id)) {
 			return $this->renderStandardError(null, null, 403);
 		}
@@ -124,6 +128,45 @@ class TicketViewController extends AbstractController
 		if ($display_data) {
 			$vars = array_merge($vars, $display_data);
 		}
+
+        if($is_pdf)
+        {
+            $content_html = $this->renderView('DeskPRO:pdf_user:view_ticket.html.twig', $vars);
+
+            $mpdf = new \mPDF_mPDF
+            (
+                'utf-8', // Language/Character set
+                'A4', // Size
+                '8', // Default Font Size
+                '', // Default Font
+                20, // Margin Left
+                20, // Margin Right
+                40, // Margin Top
+                40, // Margin Bottom
+                10, // Margin Header
+                10, // Margin Footer
+                'P' // Orientation
+            );
+
+            $mpdf->SetBasePath(realpath(__DIR__.'/../../../../../web/images'));
+
+            $mpdf->WriteHTML($content_html);
+
+            $pdf = $mpdf->Output('', 'S');
+
+            $response = new Response();
+
+            if($this->in->getBool('html')) {
+                $response->setContent($content_html);
+            }
+            else
+            {
+                $response->setContent($pdf);
+                $response->headers->set('Content-Type', 'application/pdf');
+            }
+
+            return $response;
+        }
 
 		return $this->render('UserBundle:TicketView:view.html.twig', $vars);
 	}
