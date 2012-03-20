@@ -208,7 +208,7 @@ class Person extends AbstractEntityRepository
 			FROM DeskPRO:Person p INDEX BY p.id
 			WHERE p.id IN(?0)
 			ORDER BY p.id ASC
-		")->execute(arrary($ids));
+		")->execute(array($ids));
 
 		return $people;
 	}
