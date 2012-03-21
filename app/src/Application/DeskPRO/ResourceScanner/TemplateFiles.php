@@ -138,6 +138,25 @@ class TemplateFiles
 	/**
 	 * Non-user portal templates
 	 */
+	public function getEmailTemplates()
+	{
+		$raw_map = $this->getTemplateMap();
+
+		$map = array();
+
+		foreach ($raw_map as $k => $info) {
+			if (strpos($k, 'DeskPRO:emails_agent:') !== false || strpos($k, 'DeskPRO:emails_common:') !== false || strpos($k, 'DeskPRO:emails_user:') !== false) {
+				$map[$k] = $info;
+			}
+		}
+
+		return $map;
+	}
+
+
+	/**
+	 * Email templates
+	 */
 	public function getOtherTemplates()
 	{
 		$raw_map = $this->getTemplateMap();

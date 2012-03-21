@@ -1,4 +1,4 @@
-{% macro render_dir(bundle_name, dirname, dirinfo) %}
+{% macro render_dir(bundle_name, dirname, dirinfo, options) %}
 <div class="content-table template-dir">
 	<table width="100%">
 		<thead class="{% if dirinfo.count_outdated %}dir-outdated{% endif %} {% if dirinfo.count_changed %}dir-changed{% endif %}">
@@ -7,11 +7,11 @@
 				<span class="count-outdated"><i>{{ dirinfo.count_outdated }}</i> outdated</span>
 				<span class="count-changed"><i>{{ dirinfo.count_changed }}</i> custom</span>
 				<span class="count">{{ dirinfo.templates|length }} templates</span>
-				<h1 class="toggle-section">{% if dirname != '!top' %}{{ dirname }}{% else %}Layout{% endif %}</h1>
+				<h1 class="toggle-section {% if options.open %}expanded{% endif %}">{% if options.title %}{{ options.title }}{% else %}{% if dirname != '!top' %}{{ dirname }}{% else %}Layout{% endif %}{% endif %}</h1>
 			</th>
 		</tr>
 		</thead>
-		<tbody style="display: none">
+		<tbody {% if not options.open %}style="display: none"{% endif %}>
 		{% for name,info in dirinfo.templates %}
 		{{ _self.render_tpl(name, info) }}
 		{% endfor %}

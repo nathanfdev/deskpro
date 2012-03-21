@@ -29,6 +29,14 @@
 				<a href="{{ path('admin_langs') }}" data-search-keywords="languages translations locale" data-search-name="Settings &rsaquo; Languages">Languages</a>
 				<p>Manage locales and languages.</p>
 			</li>
+			<li>
+				<a href="{{ path('admin_templates_user') }}" data-search-keywords="templates portal" data-search-name="Settings &rsaquo; Email Template">Page Templates</a>
+				<p>Edit the HTML templates for any page</p>
+			</li>
+			<li>
+				<a href="{{ path('admin_templates_email') }}" data-search-keywords="templates emails" data-search-name="Settings &rsaquo; Email Template">Email Templates</a>
+				<p>Edit the emails sent to agents and users</p>
+			</li>
 		</ul>
 	</div>
 
@@ -164,6 +172,10 @@
 			<li class="link-labels">
 				<a href="{{ path('admin_labels', {'label_type': 'tickets'}) }}" data-search-keywords="tickets labels" data-search-name="Tickets &rsaquo; Labels">Labels</a>
 				<p>Define labels that can be applied to tickets to help organize your helpdesk.</p>
+			</li>
+			<li>
+				<a href="{{ path('admin_templates_email') }}" data-search-keywords="templates emails" data-search-name="Settings &rsaquo; Email Template">Email Notification Templates</a>
+				<p>Edit the notification emails</p>
 			</li>
 		</ul>
 	</div>

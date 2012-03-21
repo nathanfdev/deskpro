@@ -106,19 +106,22 @@ class TemplatesController extends AbstractController
 	public function emailListAction()
 	{
 		$tplfiles = new TemplateFiles();
-		$map = $tplfiles->getOtherTemplates();
+		$map = $tplfiles->getEmailTemplates();
 
 		$custom_templates = $this->container->getSystemService('style')->getCustomTemplateInfo();
 
 		$list = $this->groupMap($map, $custom_templates);
 
-		// Put the DeskPRO ones last
-		$tmp = $list['DeskPRO'];
-		unset($list['DeskPRO']);
-		$list['DeskPRO'] = $tmp;
+		$real_list = array(
+			'DeskPRO' => array(
+				'Layout' => $list['DeskPRO']['emails_common'],
+				'User Emails' => $list['DeskPRO']['emails_user'],
+				'Agent Emails' => $list['DeskPRO']['emails_agent'],
+			)
+		);
 
-		return $this->render('AdminBundle:Templates:other-templates.html.twig', array(
-			'list' => $list,
+		return $this->render('AdminBundle:Templates:email-templates.html.twig', array(
+			'list' => $real_list,
 			'custom_templates' => $custom_templates,
 		));
 	}
