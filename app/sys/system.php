@@ -469,6 +469,9 @@ class AdminKernel extends AbstractKernel
 	{
 		$bundles = array(
 			new \Application\AdminBundle\AdminBundle(),
+
+			// Needed for templates etc
+			new \Application\UserBundle\UserBundle(),
 		);
 
 		return $bundles;

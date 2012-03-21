@@ -1,34 +1,8 @@
-/**
- * @bg_color[#fff]
- * @header_bar_bg_color[#EEF1F5]
- * @header_name_color[#000]
- * @header_tagline_color[#CCCCCC]
- * @body_bg_color[#ECF0F4]
- * @content_bg_color[#fff]
- * @content_alt_bg_color[#F4F4F4]
- * @content_block_shadow_color[rgba(120, 120, 120, 0.6)]
- * @content_border_color[#B4B6B8]
- * @content_pill_btn_bg[#E0E4E8]
- * @content_pill_btn_border[#CED2D6]
- * @content_pill_btn_text_color[#616467]
- * @sidebar_block_title_color[#404040]
- * @sidebar_block_border_color[#D9DBDB]
- * @cal_date_bg[#F8F8F8]
- * @cal_date_text[#888]
- * @cal_date_border[#DEDEDE]
- * @cal_date_month_bg[#253F66]
- * @cal_date_month_text[#fff]
- * @link_color[#0069D6]
- * @link_color_hover[#00438a]
- * @foot_copy_color[#707274]
- * @text_color[#444];
- * @meta_text_color[#808080];
- * @button_color[#000]
- * @button_bg_start[#FFF]
- * @button_bg_end[#E6E6E6]
- * @button_text[#333]
- * @comment_backdrop[#DADEE2]
+/*
+ * DeskPRO http://www.deskpro.com/
+ * CSS generated {{ 'now'|date('Y-m-d H:i:s') }}
  */
+{% set stylevar = app.getSettingGroup('user_style') %}
 
 /**********************************************************
 * Reset + Modified bootstrap
@@ -176,21 +150,21 @@ html{
 #deskpro .dp-status-label.notice{background-color:#62cffc;}
 
 #deskpro .btn {
-	background-color:@button_bg_end;
+	background-color:{{ stylevar.button_bg_end }};
 	background-repeat:repeat-x;
-	background-image:-khtml-gradient(linear, left top, left bottom, from(@button_bg_start), to(@button_bg_end));
-	background-image:-moz-linear-gradient(top, @button_bg_start, @button_bg_end);
-	background-image:-ms-linear-gradient(top, @button_bg_start, @button_bg_end);
-	background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%, @button_bg_start), color-stop(100%, @button_bg_end));
-	background-image:-webkit-linear-gradient(top, @button_bg_start, @button_bg_end);
-	background-image:-o-linear-gradient(top, @button_bg_start, @button_bg_end);
-	background-image:linear-gradient(top, @button_bg_start, @button_bg_end);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='@button_bg_start', endColorstr='@button_bg_end', GradientType=0);
-	border: 1px solid @button_bg_end;
+	background-image:-khtml-gradient(linear, left top, left bottom, from({{ stylevar.button_bg_start }}), to({{ stylevar.button_bg_end }}));
+	background-image:-moz-linear-gradient(top, {{ stylevar.button_bg_start }}, {{ stylevar.button_bg_end }});
+	background-image:-ms-linear-gradient(top, {{ stylevar.button_bg_start }}, {{ stylevar.button_bg_end }});
+	background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%, {{ stylevar.button_bg_start }}), color-stop(100%, {{ stylevar.button_bg_end }}));
+	background-image:-webkit-linear-gradient(top, {{ stylevar.button_bg_start }}, {{ stylevar.button_bg_end }});
+	background-image:-o-linear-gradient(top, {{ stylevar.button_bg_start }}, {{ stylevar.button_bg_end }});
+	background-image:linear-gradient(top, {{ stylevar.button_bg_start }}, {{ stylevar.button_bg_end }});
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='{{ stylevar.button_bg_start }}', endColorstr='{{ stylevar.button_bg_end }}', GradientType=0);
+	border: 1px solid {{ stylevar.button_bg_end }};
 
 	cursor:pointer;
 	display:inline-block;
-	color: @button_text;
+	color: {{ stylevar.button_text }};
 	font-size:13px;
 	line-height:normal;
 
@@ -208,7 +182,7 @@ html{
 }
 
 #deskpro .btn:hover{
-	color: @button_text;
+	color: {{ stylevar.button_text }};
 	text-decoration:none;
 }
 
@@ -231,14 +205,14 @@ body.dp-simple-iframe {
 * Layout
 **********************************************************/
 body {
-	background-color: @bg_color !important;
+	background-color: {{ stylevar.bg_color }} !important;
 	margin:0;
 }
 
 html, body { width: 100%; }
 
 html.dp-simple-popup, body.dp-simple-popup {
-	background-color: @body_bg_color;
+	background-color: {{ stylevar.body_bg_color }};
 	margin-bottom: 0;
 }
 
@@ -253,13 +227,13 @@ body.dp-simple-popup .dp-content-block {
 	font-size:13px;
 	font-weight:normal;
 	line-height:18px;
-	color: @text_color;
+	color: {{ stylevar.text_color }};
 }
 
 #deskpro h1, #deskpro h2, #deskpro h3, #deskpro h4, #deskpro h5, #deskpro h6, #deskpro h7, #deskpro h8 {
 	font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
 	line-height: 100%;
-	color: @text_color;
+	color: {{ stylevar.text_color }};
 	font-weight:bold;
 }
 
@@ -271,7 +245,7 @@ body.dp-simple-popup .dp-content-block {
 #deskpro h6{font-size:13px;color:#bfbfbf;text-transform:uppercase;}
 
 #deskpro a {
-	color: @link_color;
+	color: {{ stylevar.link_color }};
 	text-decoration:none;
 	cursor: pointer;
 	font-size: inherit;
@@ -282,7 +256,7 @@ body.dp-simple-popup .dp-content-block {
 #deskpro a:focus{outline:thin dotted;}
 #deskpro a:hover, #deskpro a:active{outline:0;}
 #deskpro a:hover {
-	color: @link_color_hover;
+	color: {{ stylevar.link_color_hover }};
 	text-decoration: underline;
 }
 
@@ -296,7 +270,7 @@ body.dp-simple-popup .dp-content-block {
 	max-width: 940px;
 	margin: 0 auto 0 auto;
 
-	background-color: @body_bg_color;
+	background-color: {{ stylevar.body_bg_color }};
 	border-radius: 6px;
 }
 #deskpro #dp_page:before, #deskpro #dp_page:after{display:table;content:"";zoom:1;*display:inline;}
@@ -363,12 +337,12 @@ body.dp-simple-popup .dp-content-block {
 }
 
 #deskpro #dp_header h1 a {
-	color: @header_name_color;
+	color: {{ stylevar.header_name_color }};
 }
 
 #deskpro #dp_header h2 {
-	border-left: 1px solid @header_tagline_color;
-	color: @header_tagline_color;
+	border-left: 1px solid {{ stylevar.header_tagline_color }};
+	color: {{ stylevar.header_tagline_color }};
 	font-size: 10pt;
 	padding: 0;
 	margin:  0;
@@ -385,11 +359,11 @@ body.dp-simple-popup .dp-content-block {
 	margin-top: 12px;
 	font-size: 11px;
 	padding: 0 0 12px 18px;
-	color: @foot_copy_color;
+	color: {{ stylevar.foot_copy_color }};
 }
 
 #deskpro #dp_footer a {
-	color: @foot_copy_color;
+	color: {{ stylevar.foot_copy_color }};
 	text-decoration: underline;
 }
 
@@ -398,7 +372,7 @@ body.dp-simple-popup .dp-content-block {
 **********************************************************/
 
 #deskpro #dp_header_bar {
-	background-color: @header_bar_bg_color;
+	background-color: {{ stylevar.header_bar_bg_color }};
 	padding: 8px;
 	padding-top: 5px;
 	border-radius: 5px;
@@ -507,7 +481,7 @@ body.dp-simple-popup .dp-content-block {
 
 #deskpro #dp_search_assist .foot {
 	padding: 8px 8px 15px 8px;
-	background-color: @body_bg_color;
+	background-color: {{ stylevar.body_bg_color }};
 	border-radius: 0 0 5px 5px;
 }
 
@@ -553,11 +527,11 @@ body.dp-simple-popup .dp-content-block {
 **********************************************************/
 
 #deskpro .dp-content-block {
-	background-color: @content_bg_color;
+	background-color: {{ stylevar.content_bg_color }};
 	margin: 10px;
-	box-shadow: 3px 1px 7px 0px @content_block_shadow_color;
+	box-shadow: 3px 1px 7px 0px {{ stylevar.content_block_shadow_color }};
 
-	border: 1px solid @content_border_color;
+	border: 1px solid {{ stylevar.content_border_color }};
 }
 
 #deskpro .dp-content-block .dp-box {
@@ -583,7 +557,7 @@ body.dp-simple-popup .dp-content-block {
 }
 
 #deskpro .dp-box-content-meta {
-	border-bottom: 1px solid @content_border_color;
+	border-bottom: 1px solid {{ stylevar.content_border_color }};
 	padding: 10px;
 	padding-top: 0;
 	margin: 10px 0 10px 0;
@@ -597,7 +571,7 @@ body.dp-simple-popup .dp-content-block {
 
 #deskpro .dp-box-section {
 	margin-bottom: 30px;
-	border-bottom: 1px solid @content_border_color;
+	border-bottom: 1px solid {{ stylevar.content_border_color }};
 	padding-bottom: 30px;
 }
 
@@ -633,11 +607,11 @@ body.dp-simple-popup .dp-content-block {
 
 #deskpro .dp-labels li a {
     display: block;
-    background-color: @content_bg_color;
+    background-color: {{ stylevar.content_bg_color }};
     padding: 0px 2px 0px 2px;
     font-size: 11px;
     color: #000;
-    border: 1px solid @content_border_color;
+    border: 1px solid {{ stylevar.content_border_color }};
 }
 
 
@@ -648,7 +622,7 @@ body.dp-simple-popup .dp-content-block {
 
 #deskpro .dp-user-vote {
     text-align: right;
-	background-color: @content_alt_bg_color;
+	background-color: {{ stylevar.content_alt_bg_color }};
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px;
@@ -826,12 +800,12 @@ body.dp-simple-popup .dp-content-block {
 #deskpro ul.dp-browse-list .view-more {
 	display: inline-block;
 	text-decoration: none;
-	background-color: @content_pill_btn_bg;
+	background-color: {{ stylevar.content_pill_btn_bg }};
 	font-size: 10px;
 	line-height: 100%;
 	padding: 2px 4px 1px 4px;
 	border-radius: 8px;
-	color: @content_pill_btn_text;
+	color: {{ stylevar.content_pill_btn_text }};
 	margin-top: 5px;
 }
 
@@ -906,7 +880,7 @@ body.dp-simple-popup .dp-content-block {
 }
 
 #deskpro ul.dp-browse-list-full > li .dp-meta {
-	color: @meta_text_color;
+	color: {{ stylevar.meta_text_color }};
 }
 
 /******************
@@ -947,7 +921,7 @@ body.dp-simple-popup .dp-content-block {
 }
 
 #deskpro ul.dp-news-list .dp-meta {
-	color: @meta_text_color;
+	color: {{ stylevar.meta_text_color }};
 }
 
 #deskpro ul.dp-news-list > li > h3 {
@@ -1269,7 +1243,7 @@ body.dp-simple-popup .dp-content-block {
 }
 
 #deskpro .dp-content-block .dp-box > .dp-box-header {
-	border-bottom: 1px solid @content_border_color;
+	border-bottom: 1px solid {{ stylevar.content_border_color }};
 	padding-bottom: 6px;
 	margin: 0 0 20px 0;
 }
@@ -1291,7 +1265,7 @@ body.dp-simple-popup .dp-content-block {
 }
 
 #deskpro .dp-content-block .dp-box .dp-box-content {
-	background-color: @content_bg_color;
+	background-color: {{ stylevar.content_bg_color }};
 }
 
 #deskpro .dp-nav-block li, #deskpro .dp-contact-block li {
@@ -1306,11 +1280,11 @@ body.dp-simple-popup .dp-content-block {
 	line-height: 100%;
 	margin-bottom: 8px;
 	padding-bottom: 3px;
-	border-bottom: 1px solid @sidebar_block_border_color;
+	border-bottom: 1px solid {{ stylevar.sidebar_block_border_color }};
 }
 
 #deskpro .dp-sidebar-block .dp-box-header h3 a {
-	color: @sidebar_block_title_color;
+	color: {{ stylevar.sidebar_block_title_color }};
 }
 
 #deskpro .dp-sidebar-block.dp-feedback-block li {
@@ -1465,7 +1439,7 @@ body.dp-simple-popup .dp-content-block {
 }
 
 #deskpro .dp-box-comments .login-area .tabs-wrap {
-	background-color: @comment_backdrop;
+	background-color: {{ stylevar.comment_backdrop }};
 	padding: 10px 10px 0 10px;
 	border-radius: 6px 6px 0 0;
 }
@@ -1476,7 +1450,7 @@ body.dp-simple-popup .dp-content-block {
 }
 
 #deskpro .dp-box-comments .login-area .tabs-wrap > div {
-	background-color: @content_bg_color;
+	background-color: {{ stylevar.content_bg_color }};
 	padding: 6px;
 }
 
@@ -1509,10 +1483,10 @@ body.dp-simple-popup .dp-content-block {
 }
 
 #deskpro .dp-cal-date .month {
-    background-color: @cal_date_month_bg;
+    background-color: {{ stylevar.cal_date_month_bg }};
     font-size: 9px;
     font-weight: bold;
-    color: @cal_date_month_text;
+    color: {{ stylevar.cal_date_month_text }};
     text-align: center;
 
     -moz-border-radius-topleft: 4px;
@@ -1524,11 +1498,11 @@ body.dp-simple-popup .dp-content-block {
 }
 
 #deskpro .dp-cal-date .day {
-    background-color: @cal_date_bg;
-    border: 2px solid @cal_date_border;
+    background-color: {{ stylevar.cal_date_bg }};
+    border: 2px solid {{ stylevar.cal_date_border }};
     border-top: none;
     text-align: center;
-    color: @cal_date_text;
+    color: {{ stylevar.cal_date_text }};
     font-family: 'Myriad Pro','Myriad',helvetica,arial,sans-serif;
     font-size: 13px;
     padding-top: 2px;
@@ -1796,12 +1770,12 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	right: 0;
 	bottom: 0;
 	width: 25px;
-	background: -moz-linear-gradient(left, rgba(@HEX_TO_RGB(@body_bg_color),0) 0%, rgba(@HEX_TO_RGB(@body_bg_color),1) 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(@HEX_TO_RGB(@body_bg_color),0)), color-stop(100%,rgba(@HEX_TO_RGB(@body_bg_color),1))); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(left, rgba(@HEX_TO_RGB(@body_bg_color),0) 0%,rgba(@HEX_TO_RGB(@body_bg_color),1) 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(left, rgba(@HEX_TO_RGB(@body_bg_color),0) 0%,rgba(@HEX_TO_RGB(@body_bg_color),1) 100%); /* Opera11.10+ */
-	background: -ms-linear-gradient(left, rgba(@HEX_TO_RGB(@body_bg_color),0) 0%,rgba(@HEX_TO_RGB(@body_bg_color),1) 100%); /* IE10+ */
-	background: linear-gradient(left, rgba(@HEX_TO_RGB(@body_bg_color),0) 0%,rgba(@HEX_TO_RGB(@body_bg_color),1) 100%); /* W3C */
+	background: -moz-linear-gradient(left, rgba({{ stylevar.body_bg_color|hex2rgb }},0) 0%, rgba({{ stylevar.body_bg_color|hex2rgb }},1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba({{ stylevar.body_bg_color|hex2rgb }},0)), color-stop(100%,rgba({{ stylevar.body_bg_color|hex2rgb }},1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, rgba({{ stylevar.body_bg_color|hex2rgb }},0) 0%,rgba({{ stylevar.body_bg_color|hex2rgb }},1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, rgba({{ stylevar.body_bg_color|hex2rgb }},0) 0%,rgba({{ stylevar.body_bg_color|hex2rgb }},1) 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(left, rgba({{ stylevar.body_bg_color|hex2rgb }},0) 0%,rgba({{ stylevar.body_bg_color|hex2rgb }},1) 100%); /* IE10+ */
+	background: linear-gradient(left, rgba({{ stylevar.body_bg_color|hex2rgb }},0) 0%,rgba({{ stylevar.body_bg_color|hex2rgb }},1) 100%); /* W3C */
 	cursor: pointer;
 }
 
@@ -1815,12 +1789,12 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	right: 0;
 	bottom: 0;
 	width: 25px;
-	background: -moz-linear-gradient(left, rgba(@HEX_TO_RGB(@content_bg_color),0) 0%, rgba(@HEX_TO_RGB(@content_bg_color),1) 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(@HEX_TO_RGB(@content_bg_color),0)), color-stop(100%,rgba(@HEX_TO_RGB(@content_bg_color),1))); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(left, rgba(@HEX_TO_RGB(@content_bg_color),0) 0%,rgba(@HEX_TO_RGB(@content_bg_color),1) 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(left, rgba(@HEX_TO_RGB(@content_bg_color),0) 0%,rgba(@HEX_TO_RGB(@content_bg_color),1) 100%); /* Opera11.10+ */
-	background: -ms-linear-gradient(left, rgba(@HEX_TO_RGB(@content_bg_color),0) 0%,rgba(@HEX_TO_RGB(@content_bg_color),1) 100%); /* IE10+ */
-	background: linear-gradient(left, rgba(@HEX_TO_RGB(@content_bg_color),0) 0%,rgba(@HEX_TO_RGB(@content_bg_color),1) 100%); /* W3C */
+	background: -moz-linear-gradient(left, rgba({{ stylevar.content_bg_color|hex2rgb }},0) 0%, rgba({{ stylevar.content_bg_color|hex2rgb }},1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba({{ stylevar.content_bg_color|hex2rgb }},0)), color-stop(100%,rgba({{ stylevar.content_bg_color|hex2rgb }},1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, rgba({{ stylevar.content_bg_color|hex2rgb }},0) 0%,rgba({{ stylevar.content_bg_color|hex2rgb }},1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, rgba({{ stylevar.content_bg_color|hex2rgb }},0) 0%,rgba({{ stylevar.content_bg_color|hex2rgb }},1) 100%); /* Opera11.10+ */
+	background: -ms-linear-gradient(left, rgba({{ stylevar.content_bg_color|hex2rgb }},0) 0%,rgba({{ stylevar.content_bg_color|hex2rgb }},1) 100%); /* IE10+ */
+	background: linear-gradient(left, rgba({{ stylevar.content_bg_color|hex2rgb }},0) 0%,rgba({{ stylevar.content_bg_color|hex2rgb }},1) 100%); /* W3C */
 	cursor: pointer;
 }
 
@@ -2149,7 +2123,7 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 
 #deskpro ul.dp-ticketlist ul.dp-meta li {
 	font-size: 11px;
-	color: @meta_text_color;
+	color: {{ stylevar.meta_text_color }};
 	display: inline;
 	margin-left: 3px;
 	padding-left: 6px;
@@ -2400,7 +2374,7 @@ box-shadow: 2px 2px 3px 0px rgba(50, 50, 50, 0.6);
 	border-top: 1px solid #C5CDD4;
 	margin-top: 10px;
 	padding-top: 10px;
-	background: @content_bg_color;
+	background: {{ stylevar.content_bg_color }};
 }
 
 #deskpro ul.attachment-list li {

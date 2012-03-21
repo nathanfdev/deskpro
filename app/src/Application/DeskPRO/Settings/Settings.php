@@ -136,7 +136,6 @@ class Settings implements \ArrayAccess
 
 			if (!in_array($check_group, $this->_loaded_groups)) {
 				$this->_pending_groups[] = $check_group;
-
 				$this->_loadPendingGroups();
 				if (!isset($this->settings[$name])) {
 					return null;
@@ -148,6 +147,33 @@ class Settings implements \ArrayAccess
 		}
 
 		return $this->settings[$name];
+	}
+
+
+	/**
+	 * Get all settings in a group
+	 *
+	 * @param string $group
+	 * @return array
+	 */
+	public function getGroup($group)
+	{
+		if (!in_array($group, $this->_loaded_groups)) {
+			$this->_pending_groups[] = $group;
+			$this->_loadPendingGroups();
+		}
+
+		$ret = array();
+
+		$off = strlen($group) + 1;
+		foreach ($this->settings as $k => $v) {
+			if (strpos($k, $group) === 0) {
+				$new_k = substr($k, $off);
+				$ret[$new_k] = $v;
+			}
+		}
+
+		return $ret;
 	}
 
 

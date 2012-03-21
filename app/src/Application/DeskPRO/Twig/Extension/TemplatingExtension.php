@@ -129,6 +129,8 @@ class TemplatingExtension extends \Twig_Extension
 			'url_domain' => new \Twig_Filter_Method($this, 'getUrlDomain'),
 			'truncate' => new \Twig_Filter_Method($this, 'strTruncate'),
 
+			'hex2rgb' => new \Twig_Filter_Method($this, 'hex2rgb'),
+
 			// Override for custom UTF-8 handling
 			'upper' => new \Twig_Filter_Method($this, 'strUpper'),
 			'lower' => new \Twig_Filter_Method($this, 'strLower'),
@@ -664,6 +666,26 @@ class TemplatingExtension extends \Twig_Extension
 	public function strLower($str)
 	{
 		return Strings::utf8_strtolower($str);
+	}
+
+	public function hex2rgb($hex)
+	{
+		$hex = preg_replace("/[^0-9A-Fa-f]/", '', $hex);
+		$rgb = array();
+		if (strlen($hex) == 6) {
+			$color_val = hexdec($hex);
+			$rgb['red'] = 0xFF & ($color_val >> 0x10);
+			$rgb['green'] = 0xFF & ($color_val >> 0x8);
+			$rgb['blue'] = 0xFF & $color_val;
+		} elseif (strlen($hex) == 3) {
+			$rgb['red'] = hexdec(str_repeat(substr($hex, 0, 1), 2));
+			$rgb['green'] = hexdec(str_repeat(substr($hex, 1, 1), 2));
+			$rgb['blue'] = hexdec(str_repeat(substr($hex, 2, 1), 2));
+		} else {
+			return false;
+		}
+
+		return $return_string ? implode($return_string, $rgb) : $rgb; // returns the rgb string or the associative array
 	}
 
     /**

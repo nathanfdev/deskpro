@@ -158,13 +158,12 @@ class FilestorageLoader
 		$sth->execute();
 		$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
-		if (isset($_GET['reload']) && filemtime(DP_WEB_ROOT . '/web/stylesheets/user/main.css') > strtotime($blob['date_created'])) {
+		if (isset($_GET['reload']) && filemtime(DP_ROOT . '/src/Application/UserBundle/Resources/views/Css/main.css.twig') > strtotime($blob['date_created'])) {
 			$container = $this->bootFullSystem();
-			$css_source = file_get_contents(DP_WEB_ROOT . '/web/stylesheets/user/main.css');
-			$css = new \Application\DeskPRO\Style\UserStyle($css_source);
+			$css = $container->get('templating')->render('UserBundle:Css:main.css.twig', array());
 
 			$desc = $container->getFilestorage()->createRandomPath();
-			$desc->write($css->compileCss(), array(
+			$desc->write($css, array(
 				'content_type' => 'text/css',
 				'filename' => 'main.css'
 			));
@@ -648,7 +647,7 @@ class FilestorageLoader
 			}
 
 			require DP_ROOT . '/sys/KernelBooter.php';
-			\DeskPRO\Kernel\KernelBooter::bootstrapLib(false);
+			\DeskPRO\Kernel\KernelBooter::bootstrapLib(true);
 
 			// Used in the connection factory for the doctrine connection,
 			// so it doesnt try and connect twice
