@@ -184,15 +184,12 @@ class AgentNotificationAction implements ActionInterface
 		if ($this->tracker->isNewTicket()) {
 			$change_info['notify_type'] = 'newticket';
 			$is_new_ticket = true;
-			$subject_phrase = 'agent.tickets_email.subject_new_ticket';
 		} elseif ($this->tracker->hasNewAgentReply()) {
 			$change_info['notify_type'] = 'newreply';
 			$is_new_agent_reply = true;
-			$subject_phrase = 'agent.tickets_email.subject_new_agent_reply';
 		} elseif ($this->tracker->hasNewUserReply()) {
 			$change_info['notify_type'] = 'newreply';
 			$is_new_user_reply = true;
-			$subject_phrase = 'agent.tickets_email.subject_new_user_reply';
 		}
 
 		$tr = App::getTranslator();
@@ -223,13 +220,9 @@ class AgentNotificationAction implements ActionInterface
 			$vars['tac'] = $tac;
 			$vars['messages'] = $messages;
 
-			$email_subject = $tr->phrase($vars['email_subject']);
-			$email_body = App::get('templating')->render($this->template_name, $vars);
-
 			$message = App::getMailer()->createMessage();
+			$message->setTemplate($this->template_name, $vars);
 			$message->setTo($agent->getPrimaryEmailAddress(), $agent->getDisplayName());
-			$message->setSubject($email_subject);
-			$message->setBody($email_body, 'text/html');
 			$message->getHeaders()->get('Message-ID')->setId($tac->getUniqueEmailMessageId());
 			$message->setFrom($this->getFromAddress());
 

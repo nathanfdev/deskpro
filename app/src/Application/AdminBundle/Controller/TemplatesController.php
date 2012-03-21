@@ -97,6 +97,34 @@ class TemplatesController extends AbstractController
 
 
 	####################################################################################################################
+	# email-list
+	####################################################################################################################
+
+	/**
+	 * Lists agent and admin templates
+	 */
+	public function emailListAction()
+	{
+		$tplfiles = new TemplateFiles();
+		$map = $tplfiles->getOtherTemplates();
+
+		$custom_templates = $this->container->getSystemService('style')->getCustomTemplateInfo();
+
+		$list = $this->groupMap($map, $custom_templates);
+
+		// Put the DeskPRO ones last
+		$tmp = $list['DeskPRO'];
+		unset($list['DeskPRO']);
+		$list['DeskPRO'] = $tmp;
+
+		return $this->render('AdminBundle:Templates:other-templates.html.twig', array(
+			'list' => $list,
+			'custom_templates' => $custom_templates,
+		));
+	}
+
+
+	####################################################################################################################
 	# get-template-code
 	####################################################################################################################
 

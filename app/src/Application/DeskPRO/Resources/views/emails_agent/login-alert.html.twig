@@ -1,5 +1,12 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
-{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
+{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}}
+{% block email_subject %}
+	{% if success %}
+		Successful login alert
+	{% else %}
+		Failed login attempt alert
+	{% endif %}
+{% endblock %}
 {% block content %}
 {% set content %}
 	{% if success %}

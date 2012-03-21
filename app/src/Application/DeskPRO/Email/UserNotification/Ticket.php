@@ -90,21 +90,19 @@ class Ticket
 		$tac = $this->ticket->findAccessCodeForPerson($person);
 
 		$new_message = App::getEntityRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($this->ticket);
-		$email_subject = 'New ticket: ' . $this->ticket['subject'];
-		$email_body = App::get('templating')->render('DeskPRO:emails_user:new-ticket.html.twig', array(
+		$vars = array(
 			'ticket' => $this->ticket,
 			'new_message' => $new_message,
 			'subject' => $email_subject,
 			'person' => $person,
 			'access_code' => $tac['code'],
 			'access_code_full' => $this->ticket['ref'] . '-' . $tac['code']
-		));
+		);
 
 		$message = App::getMailer()->createMessage();
+		$message->setTemplate('DeskPRO:emails_user:new-ticket.html.twig', $vars);
 
 		$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-		$message->setSubject($email_subject);
-		$message->setBody($email_body, 'text/html');
 		$message->getHeaders()->addIdHeader('ticket-' . $this->ticket['ref'] . '-' . Strings::random(10, Strings::CHARS_ALPHA_IU) . '@deskpro');
 		$message->getHeaders()->addTextHeader('In-Reply-To', 'ticket-' . $this->ticket['ref'] . '@deskpro');
 		$message->enableQueueHint();
@@ -113,17 +111,15 @@ class Ticket
 
 		// Send another if the ticket is hidden and needs validation
 		if ($this->ticket['hidden_status'] == Entity\Ticket::HIDDEN_STATUS_VALIDATING) {
-			$email_subject = 'Validate your email address';
-			$email_body = App::get('templating')->render('DeskPRO:emails_user:new-ticket-validate.html.twig', array(
+			$vars = array(
 				'ticket' => $this->ticket,
 				'subject' => $email_subject,
 				'person' => $person
-			));
+			);
 
 			$message = App::getMailer()->createMessage();
+			$message->setTemplate('DeskPRO:emails_user:new-ticket-validate.html.twig', $vars);
 			$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-			$message->setSubject($email_subject);
-			$message->setBody($email_body, 'text/html');
 			$message->enableQueueHint();
 
 			App::getMailer()->send($message);
@@ -135,20 +131,18 @@ class Ticket
 		$tac = $this->ticket->findAccessCodeForPerson($person);
 
 		$new_message = $this->actions['message_created']->getMessage();
-		$email_subject = 'New Reply: ' . $this->ticket['subject'];
-		$email_body = App::get('templating')->render('DeskPRO:emails_agent:new-reply.html.twig', array(
+		$vars = array(
 			'ticket' => $this->ticket,
 			'new_message' => $new_message,
 			'subject' => $email_subject,
 			'person' => $person,
 			'access_code' => $tac['code'],
 			'access_code_full' => $this->ticket['ref'] . '-' . $tac['code']
-		));
+		);
 
 		$message = App::getMailer()->createMessage();
+		$message->setTemplate('DeskPRO:emails_agent:new-reply.html.twig', $vars);
 		$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-		$message->setSubject($email_subject);
-		$message->setBody($email_body, 'text/html');
 		$message->getHeaders()->addIdHeader('ticket-' . $this->ticket['ref'] . '-' . Strings::random(10, Strings::CHARS_ALPHA_IU) . '@deskpro');
 		$message->getHeaders()->addTextHeader('In-Reply-To', 'ticket-' . $this->ticket['ref'] . '@deskpro');
 		$message->enableQueueHint();

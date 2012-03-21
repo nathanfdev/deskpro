@@ -121,10 +121,9 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 		}
 
 		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $tpl_suffix, $only_cc_ids) {
-			$email_subject = $tr->phrase($vars['email_subject']);
-			$email_body = App::get('templating')->render($tpl.$tpl_suffix.'.html.twig', $vars);
-
 			$message = App::getMailer()->createMessage();
+			$message->setTemplate($tpl.$tpl_suffix.'.html.twig');
+
 			if (!empty($vars['validating_email'])) {
 				$message->setTo($vars['validating_email']->getEmail());
 			} else {
@@ -134,8 +133,6 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 			foreach ($parts as $part) {
 				$message->addCc($part['email_address'], $part->person->getDisplayName());
 			}
-			$message->setSubject($email_subject);
-			$message->setBody($email_body, 'text/html');
 			$message->setFrom($from_address);
 			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
 

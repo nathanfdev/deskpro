@@ -64,10 +64,7 @@ class UserNotificationNewTicketAction extends AbstractUserNotificationAction
 			'cced' => array()
 		);
 
-		$vars = array(
-			'email_subject' => new DelegatePhrase('user.emails.subj_ticket_reply', array('ticket_subject' => $ticket['subject'])),
-		);
-
+		$vars = array();
 		$this->doSend('DeskPRO:emails_user:new-ticket', $vars, $ticket, $change_info);
 		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 	}

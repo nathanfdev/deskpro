@@ -163,11 +163,9 @@ HTML;
 			// Send alert
 			$attempt_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
 			if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email')) {
-				$email_body = App::get('templating')->render('DeskPRO:emails_agent:login-alert', array('success' => false, 'session' => App::getSession()->getEntity()));
 				$message = App::getMailer()->createMessage();
+				$message->setTemplate('DeskPRO:emails_agent:login-alert.html.twig', array('success' => false, 'session' => App::getSession()->getEntity()));
 				$message->setTo($attempt_person->getPrimaryEmailAddress(), $attempt_person->getDisplayName());
-				$message->setSubject("Failed Login Attempt");
-				$message->setBody($email_body, 'text/html');
 				App::getMailer()->send($message);
 			}
 
@@ -209,11 +207,9 @@ HTML;
 
 			// Send alert
 			if ($person->getPref('agent_notif.login_attempt.email')) {
-				$email_body = App::get('templating')->render('DeskPRO:emails_agent:login-alert.html.twig', array('success' => true, 'session' => App::getSession()->getEntity()));
 				$message = App::getMailer()->createMessage();
+				$message->setTemplate('DeskPRO:emails_agent:login-alert.html.twig', array('success' => true, 'session' => App::getSession()->getEntity()));
 				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-				$message->setSubject("Successful Login Alert");
-				$message->setBody($email_body, 'text/html');
 				App::getMailer()->send($message);
 			}
 
@@ -456,13 +452,9 @@ HTML;
 			'email' => $email
 		);
 
-		$email_subject = 'Reset Password';
-		$email_body = App::get('templating')->render('DeskPRO:emails_user:reset-password.html.twig', $vars);
-
 		$message = App::getMailer()->createMessage();
+		$message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
 		$message->setTo($email, $person->getDisplayName());
-		$message->setSubject($email_subject);
-		$message->setBody($email_body, 'text/html');
 
 		App::getMailer()->send($message);
 

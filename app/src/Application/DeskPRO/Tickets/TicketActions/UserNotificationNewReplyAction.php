@@ -65,7 +65,7 @@ class UserNotificationNewReplyAction extends AbstractUserNotificationAction
 		);
 
 		$vars = array(
-			'email_subject' => new DelegatePhrase('core_tickets_user_email.subject_new_reply', array('ticket_subject' => $ticket['subject'])),
+			'action' => 'new_user_reply',
 		);
 
 		$this->doSend('DeskPRO:emails_user:new-agent-reply', $vars, $ticket, $change_info);

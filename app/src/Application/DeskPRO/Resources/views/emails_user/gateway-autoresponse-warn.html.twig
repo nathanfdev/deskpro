@@ -1,5 +1,8 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
+{% block email_subject %}
+	Warning: Confirmation emails turned off
+{% endblock %}
 {% block content %}
 {% set content %}
 You recently sent an email to our helpdesk. Our automated system has detected that you have sent many messages in rapid succession.

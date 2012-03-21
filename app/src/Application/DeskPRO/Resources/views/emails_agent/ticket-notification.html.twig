@@ -1,5 +1,11 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
+{% block email_subject %}
+	{% if is_new_ticket %}{{ phrase('agent.tickets_email.subject_new_ticket') }}
+	{% elseif is_new_agent_reply %}{{ phrase('agent.tickets_email.subject_new_agent_reply') }}
+	{% elseif is_new_user_reply %}{{ phrase('agent.tickets_email.subject_new_user_reply') }}
+	{% endif %}
+{% endblock %}
 {% block content %}
 {% set content %}
 	{% if is_new_ticket %}A new ticket has been created

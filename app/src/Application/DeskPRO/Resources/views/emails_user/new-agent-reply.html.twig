@@ -1,5 +1,10 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
+{% block email_subject %}
+	{% if action == 'new_user_reply' %}{{ phrase('core_tickets_user_email.subject_new_reply', {ticket_subject: ticket.subject}) }}
+	{% elseif action == 'new_agent_reply' %}{{ phrase('core_tickets_user_email.subject_new_reply', {ticket_subject: ticket.subject}) }}
+	{% endif %}
+{% endblock %}
 {% block content %}
 {% set content %}
 {{ new_message.person.display_name }} has replied to your ticket.

@@ -124,21 +124,10 @@ class Ticket
 
 		$new_message = $this->actions['message_created']->getMessage();
 		$changes = $this->_getPropertyChanges();
-		$email_subject = 'New Reply: ' . $this->ticket['subject'];
-		$email_body = App::get('templating')->render('DeskPRO:emails_agent:new-reply.html.twig', array(
-			'ticket' => $this->ticket,
-			'new_message' => $new_message,
-			'subject' => $email_subject,
-			'agent' => $person,
-			'ticket_diff' => $this->_getPropertyChanges(),
-			'access_code' => $tac['code'],
-			'access_code_full' => $this->ticket['ref'] . '-' . $tac['code']
-		));
 
 		$message = App::getMailer()->createMessage();
+		$message->setTemplate('DeskPRO:emails_agent:new-reply.html.twig', $vars);
 		$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-		$message->setSubject($email_subject);
-		$message->setBody($email_body, 'text/html');
 		$message->enableQueueHint();
 
 		App::getMailer()->send($message);
@@ -149,20 +138,18 @@ class Ticket
 		$tac = $this->ticket->findAccessCodeForPerson($person);
 
 		$changes = $this->_getPropertyChanges();
-		$email_subject = 'Ticket Changed: ' . $this->ticket['subject'];
-		$email_body = App::get('templating')->render('DeskPRO:emails_agent:new-reply.html.twig', array(
+		$vars = array(
 			'ticket' => $this->ticket,
 			'subject' => $email_subject,
 			'agent' => $person,
 			'ticket_diff' => $this->_getPropertyChanges(),
 			'access_code' => $tac['code'],
 			'access_code_full' => $this->ticket['ref'] . '-' . $tac['code']
-		));
+		);
 
 		$message = App::getMailer()->createMessage();
+		$message->setTemplate('DeskPRO:emails_agent:new-reply.html.twig', $vars);
 		$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-		$message->setSubject($email_subject);
-		$message->setBody($email_body, 'text/html');
 		$message->enableQueueHint();
 
 		App::getMailer()->send($message);

@@ -10,7 +10,7 @@
 
 	{{ layout.section_start(ticket.subject) }}
 		{% for message in messages %}
-			{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {'message': message} %}
+			{{ message.message_html|raw }}
 		{% endfor %}
 	{{ layout.section_end() }}
 {% endblock %}

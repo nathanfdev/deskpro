@@ -68,7 +68,7 @@ class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 		$new_message = \Orb\Util\Arrays::getFirstItem($messages);
 
 		$vars = array(
-			'email_subject' => new DelegatePhrase('user.emails.subj_ticket_reply', array('ticket_subject' => $ticket['subject'])),
+			'action' => 'new_agent_reply',
 			'new_message' => $new_message,
 			'messages' => $messages,
 		);
