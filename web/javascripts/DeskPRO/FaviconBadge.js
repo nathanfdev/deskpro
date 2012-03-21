@@ -113,8 +113,6 @@ DeskPRO.FaviconBadge = new Orb.Class({
 	drawCanvus: function(img, num, alt) {
 		var canvas = document.createElement('canvas');
 		canvas.height = canvas.width = 16;
-
-		G_vmlCanvasManager.initElement(canvas);
 		var canvasContext = canvas.getContext('2d');
 
 		canvasContext.drawImage(img, 0, 0);
