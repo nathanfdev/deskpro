@@ -29,80 +29,93 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Mail
+ * @subpackage
  */
 
 namespace Application\DeskPRO\Mail;
 
-use Application\DeskPRO\App;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
-use Orb\Mail\Message;
-use Orb\Util\Strings;
-use Orb\Util\Util;
-
-require_once(DP_ROOT . '/vendor/swiftmailer/lib/swift_required.php');
-
-/**
- * This transport takes care of initializing any other transports based on settings
- * etc, and also queuing.
- */
-class Mailer extends \Swift_Mailer
+class Message extends \Orb\Mail\Message
 {
 	/**
 	 * @var \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface
 	 */
-	protected $templating;
-
-	public function __construct(\Swift_Transport $transport, \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating)
-	{
-		$this->templating = $templating;
-
-		parent::__construct($transport);
-
-		if (App::getConfig('debug.mail.force_to')) {
-			$this->registerPlugin(new \Orb\Mail\Plugins\ForceToAddress(App::getConfig('debug.mail.force_to')));
-		}
-
-		if (App::getConfig('debug.mail.save_to_file')) {
-			$filepath = App::getConfig('debug.mail.save_to_file');
-			if ($filepath === true) {
-				$filepath = '%log_dir%/emails';
-			}
-
-			$filepath = str_replace('%log_dir%', App::getLogDir(), $filepath);
-			if (!is_dir($filepath)) {
-				@mkdir($filepath, 0777);
-			}
-
-			$this->registerPlugin(new \Orb\Mail\Plugins\DebugToFile($filepath, App::getConfig('debug.mail.disable_send', false)));
-
-		} else if (App::getConfig('debug.mail.disable_send')) {
-			// As an elseif becaue the DebugToFile can also disable send
-			// If CancelSend is registered first, then the DebugToFile wont fire either
-			// and we'll just have nothing
-
-			$this->registerPlugin(new \Orb\Mail\Plugins\CancelSend());
-		}
-
-		$this->registerPlugin(new \Orb\Mail\Plugins\DefaultFromAddress(App::getConfig('mail.default_from')));
-	}
-
-	public static function newInstance(\Swift_Transport $transport, \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating)
-	{
-		return new self($transport, $templating);
-	}
+	protected $template_engine;
 
 	/**
+	 * @var string
+	 */
+	protected $template;
+
+	/**
+	 * @var array
+	 */
+	protected $template_vars;
+
+
+	public function prepare()
+	{
+		parent::prepare();
+
+		if ($this->template) {
+			$content = $this->template_engine->render($this->template, $this->template_vars);
+			if (strpos($content, '___DP___SUBJECT___SEP___') !== false) {
+				list ($subject, $body) = explode('___DP___SUBJECT___SEP___', $content, 2);
+
+				// Try to clean up subject from whitespace
+				$subject = \Orb\Util\Strings::removeEmptyLines($subject);
+				$subject = \Orb\Util\Strings::trimLines($subject);
+				$subject = str_replace(array("\r\n", "\n"), ' ', $subject);
+				$subject = trim($subject);
+
+				$body = trim($body);
+			} else {
+				$subject = '';
+				$body = $content;
+			}
+
+			if ($subject) {
+				$this->setSubject($subject);
+			}
+
+			$this->setBody($body, 'text/html');
+		}
+	}
+
+
+	/**
+	 * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
+	 */
+	public function setTemplateEngine(EngineInterface $template_engine)
+	{
+		$this->template_engine = $template_engine;
+	}
+
+
+	/**
+	 * Set the template we'll use to fetch the subject and body from
+	 *
+	 * @param $name
+	 * @param array $vars
+	 */
+	public function setTemplate($name, array $vars = array())
+	{
+		$this->template = $name;
+		$this->template_vars = $vars;
+	}
+
+
+	/**
+	 * @static
+	 * @param null $subject
+	 * @param null $body
+	 * @param null $contentType
+	 * @param null $charset
 	 * @return \Application\DeskPRO\Mail\Message
 	 */
-	public function createMessage($service = 'message')
+	public static function newInstance($subject = null, $body = null, $contentType = null, $charset = null)
 	{
-		if ($service == 'message') {
-			$message = \Application\DeskPRO\Mail\Message::newInstance();
-			$message->setTemplateEngine($this->templating);
-			return $message;
-		}
-
-		return parent::createMessage($service);
+		return new static($subject, $body, $contentType, $charset);
 	}
 }
