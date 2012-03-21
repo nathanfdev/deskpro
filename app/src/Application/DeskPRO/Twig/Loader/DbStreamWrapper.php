@@ -45,8 +45,68 @@ class DbStreamWrapper
 	protected $name;
 	protected $php_code;
 	protected $size = 0;
-	protected $date_created;
 	protected $date_updated;
+
+	public static function getTemplateInfo($name)
+	{
+		static $templates = array();
+		static $not_set = array();
+
+		// Already loaded the template
+		if (isset($templates[$name])) {
+			if (!isset($templates[$name]['size'])) {
+				$templates[$name]['size'] = strlen($templates[$name]['template_compiled']);
+			}
+			return $templates[$name];
+		} elseif (isset($not_set[$name])) {
+			return null;
+		}
+
+		#------------------------------
+		# Fetch template info, and try to
+		# guess which other templates will be used as well
+		#------------------------------
+
+		$parts = explode(':', $name, 3);
+		$bundle = $parts[0];
+		$subdir = $parts[1];
+
+		$params = array($name);
+		$params[] = 'DeskPRO:%';
+		$params[] = "$bundle:Common:%";
+		$params[] = "$bundle:Main:%";
+
+		if ($bundle == 'UserBundle') {
+			$params[] = 'UserBundle:Portal:%';
+		}
+
+		if ($subdir) {
+			$params[] = "$bundle:$subdir:%";
+		}
+
+		$where = array('name = ?');
+		for ($i = 1, $c = count($params); $i < $c; $i++) {
+			$where[] = "name LIKE ?";
+		}
+		$where = implode(" OR ", $where);
+
+		$results = App::getDb()->fetchAllKeyed("
+			SELECT name, template_compiled, UNIX_TIMESTAMP(date_updated) AS date_updated
+			FROM templates
+			WHERE $where
+		", $params, 'name');
+
+		$templates = array_merge($templates, $results);
+
+		if (!isset($templates[$name])) {
+			$not_set[$name] = true;
+			return null;
+		}
+
+		$templates[$name]['size'] = strlen($templates[$name]['template_compiled']);
+
+		return $templates[$name];
+	}
 
 	public function stream_open($path, $mode, $options, &$opened_path)
 	{
@@ -58,16 +118,14 @@ class DbStreamWrapper
 
 		$this->name = $m[1];
 
-		$info = App::getDb()->fetchAssoc("SELECT template_compiled, UNIX_TIMESTAMP(date_created) AS date_created, UNIX_TIMESTAMP(date_updated) AS date_updated FROM templates WHERE name = ?", array($this->name));
+		$info = self::getTemplateInfo($this->name);
 		if (!$info) {
 			return false;
 		}
 
 		$this->php_code = $info['template_compiled'];
-		$this->date_created = $info['date_created'];
 		$this->date_updated = $info['date_updated'];
-
-		$this->size = strlen($this->size);
+		$this->size = $info['size'];
 
 		return true;
 	}
@@ -134,7 +192,55 @@ class DbStreamWrapper
 		}
 	}
 
-	public function url_stat()
+	public function url_stat($path)
+	{
+		if ($path == 'dptpl://load') {
+			return array(
+				'dev' => 0,
+				'ino' => 0,
+				'mode' => 040777,
+				'nlink' => 0,
+				'uid' => 0,
+				'gid' => 0,
+				'rdev' => 0,
+				'size' => 1,
+				'atime' => time(),
+				'mtime' => time(),
+				'ctime' => time(),
+				'blksize' => 0,
+				'blocks' => -1,
+			);
+		}
+
+		if (!preg_match('#/([^/]+)$#', $path, $m)) {
+			return false;
+		}
+
+		$name = $m[1];
+		$info = self::getTemplateInfo($name);
+
+		if (!$info) {
+			return false;
+		}
+
+		return array(
+			'dev' => 0,
+			'ino' => 0,
+			'mode' => 0100555,
+			'nlink' => 0,
+			'uid' => 0,
+			'gid' => 0,
+			'rdev' => 0,
+			'size' => $info['size'],
+			'atime' => time(),
+			'mtime' => $info['date_updated'],
+			'ctime' => $info['date_updated'],
+			'blksize' => 0,
+			'blocks' => -1,
+		);
+	}
+
+	public function stream_stat()
 	{
 		return array(
 			'dev' => 0,
@@ -144,10 +250,10 @@ class DbStreamWrapper
 			'uid' => 0,
 			'gid' => 0,
 			'rdev' => 0,
-			'size' => 1,
+			'size' => $this->size,
 			'atime' => time(),
-			'mtime' => time(),
-			'ctime' => time(),
+			'mtime' => $this->date_updated,
+			'ctime' => $this->date_updated,
 			'blksize' => 0,
 			'blocks' => -1,
 		);

@@ -70,6 +70,9 @@ class TemplatesController extends AbstractController
 		if (!$code && isset($map[$name])) {
 			$code = file_get_contents($map[$name]['path']);
 		}
+		if (!$code) {
+			$code = '';
+		}
 
 		return $this->createResponse($code);
 	}

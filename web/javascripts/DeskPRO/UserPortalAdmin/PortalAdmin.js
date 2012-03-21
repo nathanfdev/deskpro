@@ -310,17 +310,30 @@ var PortalAdmin_Placeholder = new Orb.Class({
 
 		$('.dp-remove-block', controls).on('click', function() {
 			if (confirm('Are you sure you want to delete the custom HTML you already have set?')) {
-				self.reset();
+				self.clickReset();
 			}
 		});
+	},
+
+	clickReset: function() {
+		PortalAdmin.tellAdmin('reset_placeholder', { controller: this });
+		this.reset();
 	},
 
 	reset: function() {
 		this.el.empty();
 		this.wrap.hide();
 		this.place.show();
+	},
 
-		PortalAdmin.tellAdmin('reset_placeholder', { controller: self });
+	update: function() {
+		$.ajax({
+			url: BASE_URL + 'admin-render-template/' + this.name,
+			context: this,
+			success: function(content) {
+				this.setContent(content);
+			}
+		});
 	},
 
 	setContent: function(content) {

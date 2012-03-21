@@ -45,6 +45,39 @@ class MainController extends AbstractController
         return $this->render('UserBundle:Main:index.html.twig');
     }
 
+
+	/**
+	 * This action is used to render the header/footer in the portal editor when it was updated.
+	 * We need to actually render it like this because they could use twig tags in it, and it could
+	 * depend on the user scope, so we can't render it as part of the admin request that does the saving.
+	 */
+	public function adminRenderTemplateAction($type)
+	{
+		if (!$this->person->can_admin) {
+			throw new $this->createNotFoundException();
+		}
+
+		$res = null;
+		switch ($type) {
+			case 'header':
+				$res = $this->render('UserBundle::custom-header.html.twig');
+				break;
+			case 'footer':
+				$res = $this->render('UserBundle::custom-footer.html.twig');
+				break;
+		}
+
+		if (!$res) {
+			throw new $this->createNotFoundException();
+		}
+
+		$res->setMaxAge(0);
+		$res->setExpires(new \DateTime('-7 days ago'));
+		$res->setLastModified(new \DateTime());
+		return $res;
+	}
+
+
 	public function standardErrorAction($error_message = '', $error_title = '', $code = 200, array $vars = array())
 	{
 		$tpl_standard = 'UserBundle:Main:error-standard.html.twig';

@@ -38,6 +38,8 @@ class Environment extends \Twig_Environment
 {
 	public function __construct(\Twig_LoaderInterface $loader = null, $options = array())
 	{
+		static $has_done = false;
+
 		if (defined('DP_DEBUG') && (empty($options['auto_reload']) || $options['auto_reload'] === null)) {
 			if (DP_DEBUG) {
 				$options['auto_reload'] = true;
@@ -46,6 +48,28 @@ class Environment extends \Twig_Environment
 			}
 		}
 
+		if (!$has_done) {
+			stream_wrapper_register('dptpl', 'Application\\DeskPRO\\Twig\\Loader\\DbStreamWrapper', 0);
+		}
+
 		parent::__construct($loader, $options);
+	}
+
+	public function getCacheFilename($name)
+	{
+		if (!$this->loader->dbHasTemplate($name)) {
+			return parent::getCacheFilename($name);
+		}
+
+		return 'dptpl://load/' . $name;
+	}
+
+	public function isTemplateFresh($name, $time)
+	{
+		if (!$this->loader->dbHasTemplate($name)) {
+			return true;
+		}
+
+		return $this->loader->isFresh($name, $time);
 	}
 }

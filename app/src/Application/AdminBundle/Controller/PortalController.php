@@ -43,7 +43,9 @@ class PortalController extends AbstractController
 
     public function indexAction()
 	{
-		return $this->render('AdminBundle:Portal:index.html.twig');
+		return $this->render('AdminBundle:Portal:index.html.twig', array(
+
+		));
 	}
 
 	public function uploadFaviconAction()

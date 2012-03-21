@@ -2,10 +2,6 @@
 {% set admin_page_class = 'with-top' %}
 {% extends 'AdminBundle:Portal:layout.html.twig' %}
 {% block html_head %}
-	<script src="{{ asset('vendor/codemirror/codemirror.js') }}" type="text/javascript"></script>
-	<link rel="stylesheet" href="{{ asset('vendor/codemirror/codemirror.css') }}" type="text/css" />
-	<link rel="stylesheet" href="{{ asset('vendor/codemirror/default.css') }}" type="text/css" />
-
 	<script src="{{ asset('vendor/colorpicker/js/colorpicker.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('vendor/colorpicker/js/eye.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('vendor/colorpicker/js/utils.js') }}" type="text/javascript"></script>
@@ -55,10 +51,10 @@
 				<section class="dp-html-editor">
 					<div class="overlay-title">
 						<span class="close-overlay close-trigger"></span>
-						<h4>Edit</h4>
+						<h4>Edit HTML</h4>
 					</div>
 					<div class="overlay-content">
-						<textarea></textarea>
+						<textarea style="width: 98%; height: 98%; color: #000; size: 10px; font-family: Monaco, monospace;"></textarea>
 					</div>
 					<div class="overlay-footer">
 						<button class="save-trigger clean-white">Save</button>

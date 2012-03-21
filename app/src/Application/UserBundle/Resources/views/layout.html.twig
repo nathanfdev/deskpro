@@ -29,6 +29,8 @@
 		{{ dp_asset_html('user_portaladmin') }}
 		{{ dp_asset_html('user_portaladmin_css') }}
 	{% endif %}
+
+	{% include 'UserBundle::custom-headinclude.html.twig' %}
 </head>
 <body>
 <script type="text/javascript">document.body.className += " with-js";</script>
@@ -37,15 +39,19 @@
 	<div id="dp_custom_head_wrap" class="dp-portal-block" style="display: none">
 		<div id="dp_custom_head" class="dp-portal-block-content"></div>
 	</div>
-	<div id="dp_custom_head_placeholder" class="dp-portal-placeholder dp-portal-placeholder-header" data-portal-block="head_include" data-portal-for="#dp_custom_head" data-mode="head">
+	<div id="dp_custom_head_placeholder" class="dp-portal-placeholder dp-portal-placeholder-head {% if custom_templates['UserBundle::custom-headinclude.html.twig'] %}dp-portal-placeholder-highlight{% endif %}" data-portal-block="head_include" data-portal-for="#dp_custom_head" data-mode="head">
 		<em>{{ phrase('admin.designer.edit_page_head') }}</em>
 	</div>
-	<div id="dp_custom_header_wrap" class="dp-portal-block" style="display: none">
-		<div id="dp_custom_header" class="dp-portal-block-content"></div>
+	<div id="dp_custom_header_wrap" class="dp-portal-block" {% if not custom_templates['UserBundle::custom-header.html.twig'] %}style="display: none"{% endif %}>
+		<div id="dp_custom_header" class="dp-portal-block-content">
+			{% include 'UserBundle::custom-header.html.twig' %}
+		</div>
 	</div>
-	<div id="dp_custom_header_placeholder" class="dp-portal-placeholder dp-portal-placeholder-header" data-portal-block="header" data-portal-for="#dp_custom_header">
+	<div id="dp_custom_header_placeholder" class="dp-portal-placeholder dp-portal-placeholder-header" data-portal-block="header" data-portal-for="#dp_custom_header" {% if custom_templates['UserBundle::custom-header.html.twig'] %}style="display: none"{% endif %}>
 		<em>{{ phrase('admin.designer.edit_header_section') }}</em>
 	</div>
+{% else %}
+	{% include 'UserBundle::custom-header.html.twig' %}
 {% endif %}
 
 <div id="deskpro" class="deskpro {% block body_class %}{% endblock %}{% if breadcrumb %}dp-with-breadcrumb{% endif %}">
@@ -196,12 +202,16 @@
 </div>
 
 {% if admin_portal_controls %}
-	<div id="dp_custom_footer_wrap" class="dp-portal-block" style="display: none">
-		<div id="dp_custom_footer" class="dp-portal-block-content"></div>
+	<div id="dp_custom_footer_wrap" class="dp-portal-block" {% if not custom_templates['UserBundle::custom-footer.html.twig'] %}style="display: none"{% endif %}>
+		<div id="dp_custom_footer" class="dp-portal-block-content">
+			{% include 'UserBundle::custom-footer.html.twig' %}
+		</div>
 	</div>
-	<div id="dp_custom_footer_placeholder" class="dp-portal-placeholder dp-portal-placeholder-footer" data-portal-block="footer" data-portal-for="#dp_custom_footer">
+	<div id="dp_custom_footer_placeholder" class="dp-portal-placeholder dp-portal-placeholder-footer" data-portal-block="footer" data-portal-for="#dp_custom_footer" {% if custom_templates['UserBundle::custom-footer.html.twig'] %}style="display: none"{% endif %}>
 		<em>{{ phrase('admin.designer.edit_footer_section') }}</em>
 	</div>
+{% else %}
+	{% include 'UserBundle::custom-footer.html.twig' %}
 {% endif %}
 
 {% if admin_portal_controls %}

@@ -12,6 +12,13 @@ $collection->add('user', new Route(
 	array()
 ));
 
+$collection->add('user_admin_rendertpl', new Route(
+	'/admin-render-template/{type}',
+	array('_controller' => 'UserBundle:Main:adminRenderTemplate'),
+	array(),
+	array()
+));
+
 $collection->add('user_test', new Route(
 	'/test',
 	array('_controller' => 'UserBundle:Test:index'),

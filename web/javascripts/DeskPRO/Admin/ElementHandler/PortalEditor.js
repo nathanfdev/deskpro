@@ -82,9 +82,28 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 			case 'open_placeholder_editor':
 				var controller = data.controller;
 
-				this.showHtmlEditor(function(html) {
-					controller.setContent(html);
+				this.showHtmlEditor(controller.name, function(action) {
+					switch (action) {
+						case 'update': controller.update(); break;
+						case 'reset': controller.reset(); break;
+					}
 				});
+				break;
+			case 'reset_placeholder':
+				var controller = data.controller;
+				var template_name;
+				if (controller.name == 'header') {
+					template_name = 'UserBundle::custom-header.html.twig';
+				} else if (controller.name == 'head_include') {
+					template_name = 'UserBundle::custom-headinclude.html.twig';
+				} else {
+					template_name = 'UserBundle::custom-footer.html.twig';
+				}
+
+				$.ajax({
+					url: BASE_URL + 'admin/templates/revert-template.json?name=' + template_name
+				});
+
 				break;
 			case 'update_orders':
 				var ids = data.orderedIds;
@@ -190,23 +209,93 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 	 *
 	 * @param callback
 	 */
-	showHtmlEditor: function(callback) {
+	showHtmlEditor: function(name, callback) {
 		var el = $(DeskPRO_Window.util.getPlainTpl($('#admin_portal_block_html_edit_tpl')));
+
+		var template_name;
+		if (name == 'header') {
+			template_name = 'UserBundle::custom-header.html.twig';
+		} else if (name == 'head_include') {
+			template_name = 'UserBundle::custom-headinclude.html.twig';
+		} else {
+			template_name = 'UserBundle::custom-footer.html.twig';
+		}
 
 		var overlay = new DeskPRO.UI.Overlay({
 			contentElement: el,
 			destroyOnClose: true,
+			fullScreen: true,
 			onBeforeOverlayOpened: function() {
 				if (el.is('.has-init')) return;
 				el.addClass('has-init');
 
-				var cm = CodeMirror.fromTextArea($('textarea', el).get(0), {
-					mode: "text/html"
+				el.find('textarea').val('').addClass('loading');
+
+				$.ajax({
+					url: BASE_URL + 'admin/templates/get-template-code?name=' + template_name,
+					context: this,
+					success: function(val) {
+						el.find('textarea').val(val).removeClass('loading');
+					}
 				});
 
 				$('.save-trigger', el).on('click', function() {
-					callback(cm.getValue());
-					overlay.close();
+
+					el.find('.overlay-footer').addClass('loading');
+
+					var postData = {
+						name: template_name,
+						code: el.find('textarea').val().trim()
+					};
+
+					if (name == 'head_include') {
+						if (!postData.code.length) {
+							$.ajax({
+								url: BASE_URL + 'admin/templates/revert-template.json?name=' + template_name,
+								success: function() {
+									window.location.reload(false);
+								}
+							});
+						} else {
+							$.ajax({
+								url: BASE_URL + 'admin/templates/save-template.json',
+								context: this,
+								type: 'POST',
+								data: postData,
+								success: function(data) {
+									window.location.reload(false);
+								}
+							});
+						}
+						return;
+					}
+
+					if (!postData.code.length) {
+						$.ajax({
+							url: BASE_URL + 'admin/templates/revert-template.json?name=' + template_name
+						});
+
+						callback('reset');
+						overlay.close();
+					} else {
+						$.ajax({
+							url: BASE_URL + 'admin/templates/save-template.json',
+							context: this,
+							type: 'POST',
+							data: postData,
+							success: function(data) {
+								el.find('.overlay-footer').removeClass('loading');
+
+								if (data.error) {
+									alert(data.error_message + "\n\nLine: " + data.error_line);
+									return;
+								}
+
+								callback('update');
+								overlay.close();
+							}
+						});
+					}
 				});
 			}
 		});

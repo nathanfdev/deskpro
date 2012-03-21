@@ -35,7 +35,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			objectGroup: 'default',
 			addClose: true,
 			fullScreen: false,	// Fullscreen overlay, ignores maxHeight, maxWidth options
-			fullScreenMargin: '10px'
+			fullScreenMargin: '35px'
 		};
 
 		this.isThisDestroyed = false;
@@ -122,7 +122,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 
 		this.elements.modal.css({
 			'z-index': zindex,
-			'position': 'absolute',
+			'position': 'fixed',
 			'top': 0,
 			'right': 0,
 			'bottom': 0,

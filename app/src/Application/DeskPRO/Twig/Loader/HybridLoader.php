@@ -44,7 +44,6 @@ use Symfony\Component\Config\FileLocatorInterface;
  */
 class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 {
-	protected static $inst_count = 0;
 	/**
 	 * @var \Application\DeskPRO\Entity\Style
 	 */
@@ -55,20 +54,9 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 	 */
 	protected $style_template_info = null;
 
-	/**
-	 * @var string
-	 */
-	protected $db_path_prefix;
-
 	public function __construct(FileLocatorInterface $locator, TemplateNameParserInterface $parser)
 	{
 		parent::__construct($locator, $parser);
-
-		self::$inst_count++;
-		$stream = 'tpl' . self::$inst_count;
-		$this->db_path_prefix = $stream . '://load';
-
-		stream_wrapper_register($stream, 'Application\\DeskPRO\\Twig\\Loader\\DbStreamWrapper', 0);
 	}
 
 	protected function _initStyle()
@@ -91,11 +79,20 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 		}
 	}
 
+	public function dbHasTemplate($name)
+	{
+		$this->_initStyle();
+		if (isset($this->style_template_info[(string)$name])) {
+			return true;
+		}
+		return false;
+	}
+
 	public function isFresh($name, $time)
     {
 		$this->_initStyle();
 
-		$str_name = $this->_getStringName($name);
+		$str_name = (string)$name;
 
 		// DB templates are always "fresh" because theyre compiled
 		// as soon as they're saved
@@ -109,20 +106,14 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 	public function getCacheKey($name)
     {
 		$this->_initStyle();
-
-		$str_name = $this->_getStringName($name);
-		if (isset($this->style_template_info[$str_name])) {
-			return md5($this->style['id'] . '_' . $str_name);
-		} else {
-			return md5($str_name);
-		}
+		return md5((string)$name);
     }
 
 	public function getSource($name)
     {
 		$this->_initStyle();
 
-		$str_name = $this->_getStringName($name);
+		$str_name = (string)$name;
 		if (isset($this->style_template_info[$str_name])) {
 			return App::getDb()->fetchColumn("
 				SELECT template_code
@@ -141,19 +132,9 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 		$logicalName = (string)$template;
 
 		if (isset($this->style_template_info[$logicalName])) {
-			return $this->db_path_prefix . '/' . $logicalName;
+			return false;
 		}
 
 		return parent::findTemplate($template);
-	}
-
-	protected function _getStringName($tpl)
-	{
-		if (is_string($tpl)) return $tpl;
-
-		$info = $tpl->all();
-
-		$str_name = "{$info['bundle']}:{$info['controller']}:{$info['name']}.{$info['format']}.{$info['engine']}";
-		return $str_name;
 	}
 }
