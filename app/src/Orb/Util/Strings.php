@@ -1264,15 +1264,41 @@ class Strings
 	 * @param $string
 	 * @return string
 	 */
-	public static function trimLines($string, $chars = ' ', $mode = 'trim')
+	public static function trimLines($string, $chars = null, $mode = 'trim')
 	{
 		if ($mode != 'trim' && $mode != 'rtrim' && $mode != 'ltrim') {
 			throw new \InvalidArgumentException("Invalid trim mode. Must be trim, rtrim or ltrim");
 		}
 
 		$string = explode("\n", $string);
-		foreach ($string as &$l) $l = $mode($l, $chars);
+		if ($chars !== null) {
+			foreach ($string as &$l) $l = $mode($l, $chars);
+		} else {
+			foreach ($string as &$l) $l = $mode($l);
+		}
 		return implode("\n", $string);
+	}
+
+
+	/**
+	 * Remove all empty lines in a string
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public static function removeEmptyLines($string)
+	{
+		$string = explode("\n", $string);
+
+		$ret = array();
+		foreach ($string as $l) {
+			if (trim($l) !== '') {
+				$ret[] = $l;
+			}
+		}
+
+		$ret = implode("\n", $ret);
+		return $ret;
 	}
 
 
