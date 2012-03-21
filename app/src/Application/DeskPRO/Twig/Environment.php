@@ -66,7 +66,7 @@ class Environment extends \Twig_Environment
 
 	public function isTemplateFresh($name, $time)
 	{
-		if (!$this->loader->dbHasTemplate($name)) {
+		if ($this->loader->dbHasTemplate($name)) {
 			return true;
 		}
 

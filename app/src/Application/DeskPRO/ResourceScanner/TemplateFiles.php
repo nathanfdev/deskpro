@@ -136,6 +136,25 @@ class TemplateFiles
 
 
 	/**
+	 * Non-user portal templates
+	 */
+	public function getOtherTemplates()
+	{
+		$raw_map = $this->getTemplateMap();
+
+		$map = array();
+
+		foreach ($raw_map as $k => $info) {
+			if (strpos($k, 'AdminBundle:') !== false || strpos($k, 'AgentBundle:') !== false || strpos($k, 'DeskPRO:') !== false) {
+				$map[$k] = $info;
+			}
+		}
+
+		return $map;
+	}
+
+
+	/**
 	 * Group the map into [bundle][dir][tplname]
 	 *
 	 * @param array $map

@@ -40,6 +40,13 @@ use Application\DeskPRO\Entity\Template;
 
 class TemplatesController extends AbstractController
 {
+	####################################################################################################################
+	# user-list
+	####################################################################################################################
+
+	/**
+	 * Lists all user-related templates
+	 */
 	public function userListAction()
 	{
 		$tplfiles = new TemplateFiles();
@@ -60,6 +67,43 @@ class TemplatesController extends AbstractController
 		));
 	}
 
+
+	####################################################################################################################
+	# other-list
+	####################################################################################################################
+
+	/**
+	 * Lists agent and admin templates
+	 */
+	public function otherListAction()
+	{
+		$tplfiles = new TemplateFiles();
+		$map = $tplfiles->getOtherTemplates();
+
+		$custom_templates = $this->container->getSystemService('style')->getCustomTemplateInfo();
+
+		$list = $this->groupMap($map, $custom_templates);
+
+		// Put the DeskPRO ones last
+		$tmp = $list['DeskPRO'];
+		unset($list['DeskPRO']);
+		$list['DeskPRO'] = $tmp;
+
+		return $this->render('AdminBundle:Templates:other-templates.html.twig', array(
+			'list' => $list,
+			'custom_templates' => $custom_templates,
+		));
+	}
+
+
+	####################################################################################################################
+	# get-template-code
+	####################################################################################################################
+
+	/**
+	 * Gets the raw template code for template. This will be either the the current modified template, or the
+	 * pristine template from the filesystem. This is used to populate the textarea in the editor.
+	 */
 	public function getTemplateCodeAction()
 	{
 		$tplfiles = new TemplateFiles();
@@ -77,6 +121,14 @@ class TemplatesController extends AbstractController
 		return $this->createResponse($code);
 	}
 
+
+	####################################################################################################################
+	# revert-template
+	####################################################################################################################
+
+	/**
+	 * Reverts a template back to default by deleting the database copy.
+	 */
 	public function revertTemplateAction()
 	{
 		$name = $this->in->getString('name');
@@ -85,6 +137,14 @@ class TemplatesController extends AbstractController
 		return $this->createJsonResponse(array('success' => true, 'name' => $name));
 	}
 
+
+	####################################################################################################################
+	# save-template
+	####################################################################################################################
+
+	/**
+	 * Saves a template to the database. This involves compiling the template as well.
+	 */
 	public function saveTemplateAction()
 	{
 		$name = $this->in->getString('name');
@@ -130,6 +190,15 @@ class TemplatesController extends AbstractController
 		return $this->createJsonResponse(array('success' => true, 'name' => $name));
 	}
 
+	####################################################################################################################
+
+	/**
+	 * Groups a template map into bundles/dirs for use in a template
+	 *
+	 * @param array $map
+	 * @param array $custom_templates
+	 * @return array
+	 */
 	protected function groupMap(array $map, array $custom_templates)
 	{
 		$grouped = array();
