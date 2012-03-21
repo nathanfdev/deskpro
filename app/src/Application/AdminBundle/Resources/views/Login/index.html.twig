@@ -315,7 +315,10 @@
 <a href="http://www.deskpro.com/" id="dp_logo">DeskPRO</a>
 
 <script type="text/javascript">
-document.getElementById('email').focus();
+var el = document.getElementById('email');
+if (el) {
+	el.focus();
+}
 </script>
 </body>
 </html>

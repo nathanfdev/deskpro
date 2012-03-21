@@ -10,7 +10,7 @@ var DP = {
 	},
 
 	init: function() {
-		if (window.console) {
+		if (typeof window.console != 'undefined') {
 			DP.console = window.console;
 		}
 		['error', 'log', 'warn', 'info', 'debug'].each(function(v) {

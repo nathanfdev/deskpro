@@ -3,7 +3,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Person';
 pageMeta.title = {{ person.display_name|json_encode|raw }};
 pageMeta.person_id = {{person.id}};
 pageMeta.url_fragment  = '{{ url_fragment('agent_people_view', {'person_id': person.id}) }}';
-pageMeta.pageIdentity = 'person1:{{person.id}}';
+pageMeta.pageIdentity = 'person:{{person.id}}';
 pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete', { 'label_type': 'people'}) }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_person_ajax_labels_save', {'person_id': person.id}) }}';
 pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_id': person.id }) }}';
@@ -17,10 +17,11 @@ pageMeta.personGravatarIcon = '{{ person.primary_email.getGravatarUrl() }}&s=13'
 
 pageMeta.perms = {
 	edit: {% if app.user.hasPerm('agent_people.edit') %}true{% else %}false{% endif %},
-	delete: {% if app.user.hasPerm('agent_people.delete') %}true{% else %}false{% endif %},
+	"delete": {% if app.user.hasPerm('agent_people.delete') %}true{% else %}false{% endif %},
 	edit_emails: {% if app.user.hasPerm('agent_people.edit_emails') %}true{% else %}false{% endif %},
 	reset_password: {% if app.user.hasPerm('agent_people.reset_password') %}true{% else %}false{% endif %},
 	org_create: {% if app.user.hasPerm('agent_org.create') %}true{% else %}false{% endif %}
+
 };
 
 {% set baseId = el_uid() %}

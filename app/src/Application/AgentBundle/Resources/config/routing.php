@@ -250,6 +250,13 @@ $collection->add('agent_login_preload_sources', new Route(
 	array()
 ));
 
+$collection->add('agent_browser_requirements', new Route(
+	'/browser-requirements',
+	array('_controller' => 'AgentBundle:Login:browserRequirements'),
+	array(),
+	array()
+));
+
 $collection->add('agent_login', new Route(
 	'/login',
 	array('_controller' => 'AgentBundle:Login:index'),

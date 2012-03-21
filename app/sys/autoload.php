@@ -35,6 +35,7 @@ $loader->registerPrefixes(array(
 ));
 
 $loader->registerClassNames(array(
+	'Browser'                         => DP_ROOT.'/vendor/Browser/Browser.php',
 	'CssMin'                          => DP_ROOT.'/vendor/cssmin/cssmin.php',
 	'LightOpenID'                     => DP_ROOT.'/vendor/lightopenid/openid.php',
 	'Facebook'                        => DP_ROOT.'/vendor/facebook/src/facebook.php',

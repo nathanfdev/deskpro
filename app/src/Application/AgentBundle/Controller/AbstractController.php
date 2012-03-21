@@ -34,6 +34,7 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -61,6 +62,10 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function preAction($action, $arguments = null)
 	{
+		if (!$this->request->isXmlHttpRequest() && !UserAgentRequirementCheck::passAgentInterface()) {
+			return $this->redirectRoute('agent_browser_requirements');
+		}
+
 		if (!$this->person['id']) {
 			if ($this->request->isXmlHttpRequest()) {
 				$data = array(

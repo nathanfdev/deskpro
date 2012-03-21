@@ -103,4 +103,9 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 	{
 		return $this->render('AgentBundle:Login:js-preload.html.twig');
 	}
+
+	public function browserRequirementsAction()
+	{
+		return $this->render('AgentBundle:Login:browser-requirements.html.twig');
+	}
 }

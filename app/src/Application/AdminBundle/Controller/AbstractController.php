@@ -34,12 +34,13 @@
 namespace Application\AdminBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
 	/**
 	 * The currently logged in person.
-	 * @var \Application\DeskPRO\Bundle\DeskPRO\Entity\Person
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	public $person;
 
@@ -57,6 +58,10 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function preAction($action, $arguments = null)
 	{
+		if (!$this->request->isXmlHttpRequest() && !UserAgentRequirementCheck::passAgentInterface()) {
+			return $this->redirect(App::getRequest()->getUriForPath('/agent/browser-requirements'));
+		}
+
 		if (!$this->person['id']) {
 			if ($this->isPostRequest()) {
 				$return = $this->get('router')->generate('admin');

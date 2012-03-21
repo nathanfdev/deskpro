@@ -7,7 +7,10 @@ DeskPRO.FaviconBadge = new Orb.Class({
 	initialize: function(options) {
 		this.supported = false;
 		if (typeof HTMLCanvasElement != undefined) {
-			this.supported = true;
+			var c = document.createElement("canvas");
+			if (c.toDataURL) {
+				this.supported = true;
+			}
 		}
 
 		this.faviconEl = $(options.favicon);
@@ -111,6 +114,7 @@ DeskPRO.FaviconBadge = new Orb.Class({
 		var canvas = document.createElement('canvas');
 		canvas.height = canvas.width = 16;
 
+		G_vmlCanvasManager.initElement(canvas);
 		var canvasContext = canvas.getContext('2d');
 
 		canvasContext.drawImage(img, 0, 0);

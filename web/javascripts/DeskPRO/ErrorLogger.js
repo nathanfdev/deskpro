@@ -67,6 +67,6 @@ jQuery.event.trigger = function() {
 
 	var time = (new Date()).getTime() - begin.getTime();
 	if (time > 150) {
-		DpErrorLog.logError("Event took "+time+"ms: " + jsDump.parse(args) + "\n" + printStackTrace().join("\n"));
+		DpErrorLog.logError("Event took "+time+"ms: " + "\n" + printStackTrace().join("\n"));
 	}
 }
