@@ -72,6 +72,15 @@ $definition->setArguments(array(
 ));
 $container->setDefinition('session.storage', $definition);
 
+// swiftmailer.mailer
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Mail\\Mailer');
+$definition->setArguments(array(
+	new Reference('swiftmailer.transport'),
+	new Reference('templating')
+));
+$container->setDefinition('swiftmailer.mailer', $definition);
+
 // swiftmailer.transport.dp_delegating
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Mail\\Transport\\DelegatingTransport');
