@@ -1,0 +1,5 @@
+{# This template is included a blue box at the bottom of emails #}
+<a href="{{ app.getSetting('core.deskpro_url') }}" style="color:#fff;">{{ app.getSetting('core.deskpro_name') }}</a>
+{% if app.getSetting('core.site_name') %}
+	| <a href="{{ app.getSetting('core.site_url') }}" style="color:#fff;">{{ app.getSetting('core.site_name') }}</a>
+{% endif %}
