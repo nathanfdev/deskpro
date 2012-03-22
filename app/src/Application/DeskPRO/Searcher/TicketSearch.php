@@ -943,6 +943,10 @@ class TicketSearch extends SearcherAbstract
 						case 'input':
 						case 'value':
 
+							if (is_array($choice)) {
+								$choice = array_pop($choice);
+							}
+
 							if ($op == self::OP_IS) {
 								$this->summary[] = $tr->phrase('agent.x_is_y', array('field' => $field['title'], 'value' => $choice));
 							} else {
@@ -1003,9 +1007,9 @@ class TicketSearch extends SearcherAbstract
 								case self::OP_IS:
 									$joins[] = array(
 										'custom_data_ticket',
-										"LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id)"
+										"LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND $field IN ($choices_in))"
 									);
-									$wheres[] = "$field IN ($choices_in)";
+									$wheres[] = "custom_data_ticket_$join_id.id IS NOT NULL";
 									break;
 
 								case self::OP_NOTCONTAINS:
@@ -1014,7 +1018,7 @@ class TicketSearch extends SearcherAbstract
 										'custom_data_ticket',
 										"LEFT JOIN AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.field_id IN ($choices_in)"
 									);
-									$wheres[] = "$field IS NULL";
+									$wheres[] = "custom_data_ticket_$join_id.id IS NULL";
 									break;
 							}
 							break;

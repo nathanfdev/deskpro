@@ -198,7 +198,7 @@ DeskPRO.Agent.ElementHandler.OmniSearchSheet = new Orb.Class({
 	_initFormElements: function(tab) {
 		$('ul.property-list > li.ob', tab).each(function() {
 			var values = $('> .values', this);
-			var select = $('> select', values);
+			var select = $('select', values);
 
 			var ob = new DeskPRO.UI.OptionBoxBuilder({
 				values: select,

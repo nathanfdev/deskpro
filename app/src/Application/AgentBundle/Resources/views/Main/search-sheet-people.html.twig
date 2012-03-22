@@ -48,6 +48,19 @@
 				<input type="text" name="set_term[person_contact_phone]" />
 			</div>
 		</li>
+
+		{% if ticket_options.custom_people_fields %}
+			{% for field in ticket_options.custom_people_fields %}
+			{% if field.field_def.getFilterCapabilities('filter') %}
+			<li {% if 'Choice' in field.field_def.handler_class %}class="ob"{% else %}class="field-input"{% endif %}>
+				<label>{{field.field_def.title}}</label>
+				<div class="values">
+					{{ render_custom_field_form(field, {field_group: 'set_custom_field'}) }}
+				</div>
+			</li>
+			{% endif %}
+			{% endfor %}
+		{% endif %}
 	</ul>
 	<br class="clear" />
 
@@ -61,6 +74,6 @@
 	classname: 'search-builder-tpl',
 	id: 'peoplesearch_criteria_tpl',
 	term_options: term_options,
-	no_show_fields: ['person_organization', 'person_usergroup', 'person_label', 'person_name', 'person_email', 'person_phone'],
+	no_show_fields: ['person_organization', 'person_usergroup', 'person_label', 'person_name', 'person_email', 'person_phone', 'person_field'],
 	search_context: 'filter'
 } %}

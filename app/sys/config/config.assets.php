@@ -66,6 +66,7 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/jquery.cookie.js',
 		'vendor/jquery/jquery.history.js',
 		'vendor/jquery/jquery.form.js',
+		'vendor/jquery/tmpl.min.js',
 
 		'vendor/jquery/jquery.localscroll.js',
 		'vendor/jquery/jquery.mousewheel.js',
@@ -93,6 +94,7 @@ $CONFIG['agent_vendors'] = array(
 
 		'vendor/jquery/colorbox/jquery.colorbox-min.js',
 
+		'vendor/jquery/fileupload/jquery.iframe-transport.js',
 		'vendor/jquery/fileupload/jquery.fileupload.js',
 		'vendor/jquery/fileupload/jquery.fileupload-ui.js',
 

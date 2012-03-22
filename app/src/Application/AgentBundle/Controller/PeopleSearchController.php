@@ -326,6 +326,31 @@ class PeopleSearchController extends AbstractController
 				}
 			}
 
+			$set_custom_fields = $this->container->getIn()->getCleanValueArray('set_custom_field', 'raw', 'string');
+
+			foreach ($set_custom_fields as $field_name => $field_value) {
+				if (is_array($field_value)) {
+					$field_value = Arrays::removeFalsey($field_value);
+				}
+
+				if (!$field_value) {
+					continue;
+				}
+
+				$id = Strings::extractRegexMatch('#field_([0-9]+)#', $field_name, 1);
+				if (!$id) {
+					continue;
+				}
+
+				$new_term = array(
+					'type' => "person_field[$id]",
+					'op' => 'is',
+					'options' => array('value' => $field_value)
+				);
+
+				$terms[] = $new_term;
+			}
+
 			$searcher = new \Application\DeskPRO\Searcher\PersonSearch();
 
 			$selected_letter = $this->applyLetterToSearcher($user_letter, $searcher);
