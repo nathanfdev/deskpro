@@ -237,18 +237,50 @@ DeskPRO.Agent.Window = new Orb.Class({
 					options.url = BASE_URL + 'agent/misc/accept-upload';
 				}
 
-				if (!options.uploadTemplate) {
-					options.uploadTemplate = $('.template-upload', el);
+				if (options.uploadTemplate) {
+					var setel = options.uploadTemplate;
+				} else {
+					var setel = $('.template-upload', el);
 				}
+				if (!setel.attr('id')) {
+					var id = Orb.getUniqueId('up');
+					setel.attr('id', id);
+				} else {
+					var id = setel.attr('id');
+				}
+				delete(options.uploadTemplate);
+				options.uploadTemplateId = id;
 
-				if (!options.downloadTemplate) {
-					options.downloadTemplate = $('.template-download', el);
+				if (options.downloadTemplate) {
+					var setel = options.downloadTemplate;
+				} else {
+					var setel = $('.template-download', el);
+				}
+				if (!setel.attr('id')) {
+					var id = Orb.getUniqueId('up');
+					setel.attr('id', id);
+				} else {
+					var id = setel.attr('id');
+				}
+				delete(options.downloadTemplate);
+				options.downloadTemplateId = id;
+
+				if (!options.filesContainer) {
+					options.filesContainer = $(el).find('.files');
 				}
 
 				options.start = function() {
 					// Dont stack error messes. Once you upload again, the old one disappears
 					$(el).find('.error').remove();
 				};
+
+				$(el).on('click', '.remove-attach-trigger', function(ev) {
+					ev.preventDefault();
+					var el = $(this);
+					el.closest('li').slideUp('fast', function() {
+						el.remove();
+					});
+				});
 
 				return $(el).fileupload(options);
 			},
@@ -289,25 +321,27 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		$('#dp_loading').remove();
 
-		// Prevents default browser action of navigating to a dropped file
-		// if a drop target isnt configured yet (ie no tab open to accept a file)
-		$(document).bind('drop dragover', function (e) {
-			e.preventDefault();
-		});
+		if (!$('html').hasClass('browser-ie')) {
+			// Prevents default browser action of navigating to a dropped file
+			// if a drop target isnt configured yet (ie no tab open to accept a file)
+			$(document).bind('drop dragover', function (e) {
+				e.preventDefault();
+			});
 
-		$(document).bind('dragover', function (e) {
-			var timeout = window.dropZoneTimeout;
-			if (!timeout) {
-				$('body').addClass('file-drag-over');
-			} else {
-				clearTimeout(timeout);
-			}
+			$(document).bind('dragover', function (e) {
+				var timeout = window.dropZoneTimeout;
+				if (!timeout) {
+					$('body').addClass('file-drag-over');
+				} else {
+					clearTimeout(timeout);
+				}
 
-			window.dropZoneTimeout = setTimeout(function () {
-				window.dropZoneTimeout = null;
-				$('body').removeClass('file-drag-over');
-			}, 100);
-		});
+				window.dropZoneTimeout = setTimeout(function () {
+					window.dropZoneTimeout = null;
+					$('body').removeClass('file-drag-over');
+				}, 100);
+			});
+		}
 
 		this._initBasic();
 		this._initSections();

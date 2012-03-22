@@ -1,5 +1,12 @@
 @import "lib.less";
 
+.with-scrollbar .scrollbar:hover .thumb, .with-scrollbar .scrollbar.is-scrolling .thumb {
+	transition: none;
+}
+.with-scrollbar .scrollbar .thumb {
+	background-color: #686D75 !important;
+}
+
 .browser-ie {
 	.with-scrollbar .thumb,
 	.list-listing .row-item .status,
@@ -102,4 +109,11 @@ article.content-message.note-message .content header {
 
 .deskproTabList li .bound-fade {
 	display: none !important;
+}
+
+.snippets-overlay .snippet-sections li .content .fadeaway {
+	background: transparent !important;
+	filter: none !important;
+	-ms-filter: none !important;
+	padding: 8px 0 8px 0 !important;
 }

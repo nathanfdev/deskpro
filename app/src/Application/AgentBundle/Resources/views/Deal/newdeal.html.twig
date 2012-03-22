@@ -231,22 +231,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 				{# Tab Attach #}
 				<div class="tab-attach" style="display: none">
-					<script class="template-upload" type="text/x-jquery-tmpl">
-						<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
-					</script>
-					<script class="template-download" type="text/x-jquery-tmpl">
-						{{ '{{if error}} '}}
-							<li class="error">
-								${error}
-							</li>
-						{{ '{{else}} '}}
-							<li class="uploaded">
-								<input type="checkbox" checked="checked" name="newdeal[attach][]" value="${blob_id}" />
-								<a href="${download_url}" target="_blank">${filename}</a>
-								<span class="size">${filesize_readable}</span>
-							</li>
-						{{ '{{/if}} '}}
-					</script>
+					{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newdeal[attach][]'} %}
 					<h6>Attachments</h6>
 					<div class="file-input">
 						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">Upload</button>

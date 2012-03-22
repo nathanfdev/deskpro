@@ -253,7 +253,7 @@ class MiscController extends AbstractController
 			}
 		}
 
-		return $this->createJsonResponse(array(array(
+		$res = $this->createJsonResponse(array(array(
 			'blob_id'           => $blob['id'],
 			'blob_auth'         => $blob->authcode,
 			'blob_auth_id'      => $blob->id . '-' . $blob->authcode,
@@ -261,6 +261,10 @@ class MiscController extends AbstractController
 			'filename'          => $blob['filename'],
 			'filesize_readable' => $blob->getReadableFilesize()
 		)));
+
+		// Required for iframe transport on IE to prevent 'download' popup
+		$res->headers->set('Content-Type', 'text/plain');
+		return $res;
 	}
 
 	/**

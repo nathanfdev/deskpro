@@ -15,16 +15,9 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 
 		var form = $('form', this.el);
 
-		form.fileupload({
-			url: BASE_URL + 'agent/misc/accept-upload',
-			dropZone: form,
-			autoUpload: true,
-			uploadTemplate: $('.template-upload', form),
-			downloadTemplate: $('.template-download', form)
-		}).bind('fileuploadadd', function() {
+		DeskPRO_Window.util.fileupload(this.el.find('.dp-form-row.new-picture'));
+		this.el.find('.dp-form-row.new-picture').bind('fileuploadadd', function() {
 			$('.files', form).empty();
-		}).bind('fileuploadfail', function(e, data) {
-			DeskPRO_Window._showAjaxError();
 		});
 
 		var startEmail = $('#settings_profile_email').val();
