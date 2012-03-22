@@ -51,7 +51,7 @@ class LookupBasicEntityPersister extends BasicEntityPersister
 				$uof->preloadEntitySet($classname);
 			}
 			$hit = $uof->tryGetById($criteria['id'], $classname);
-			if ($hit && $hit->__hasRunLoad__()) {
+			if ($hit && $hit->__hasRunLoad__() && $hit->getId()) {
 				return $hit;
 			}
 		}
