@@ -234,6 +234,7 @@
 	</tbody>
 </table>
 
+<?php $db_failed = false; ?>
 <?php if ($has_db_checks): ?>
 <h3>Database Checks</h3>
 	<table class="bordered-table zebra-striped">
@@ -243,7 +244,7 @@
 					<?php $failed = false ?>
 					<?php if (!isset($errors['db_connect'])): ?>
 						<span class="label success" style="float:right">OK</span>
-					<?php else: $failed = true; ?>
+					<?php else: $failed = true; $db_failed = true; ?>
 						<span class="label important" style="float:right">FAIL</span>
 					<?php endif ?>
 					Check database connection (<?php echo $db_config['user'] ?>@<?php echo $db_config['host'] ?>/<?php echo $db_config['dbname'] ?>)
@@ -263,7 +264,7 @@
 						<?php $failed = false ?>
 						<?php if (!isset($errors['db_version'])): ?>
 							<span class="label success" style="float:right">OK</span>
-						<?php else: $failed = true; ?>
+						<?php else: $failed = true; $db_failed = true; ?>
 							<span class="label important" style="float:right">FAIL</span>
 						<?php endif ?>
 						Check MySQL version is &gt;= 5.0
@@ -280,7 +281,7 @@
 						<?php $failed = false ?>
 						<?php if (!isset($errors['db_no_innodb'])): ?>
 							<span class="label success" style="float:right">OK</span>
-						<?php else: $failed = true; ?>
+						<?php else: $failed = true; $db_failed = true; ?>
 							<span class="label important" style="float:right">FAIL</span>
 						<?php endif ?>
 						Check for InnoDB Engine
@@ -297,7 +298,7 @@
 						<?php $failed = false ?>
 						<?php if (!isset($errors['db_not_empty'])): ?>
 							<span class="label success" style="float:right">OK</span>
-						<?php else: $failed = true; ?>
+						<?php else: $failed = true; $db_failed = true; ?>
 							<span class="label important" style="float:right">FAIL</span>
 						<?php endif ?>
 						Check for existing tables
@@ -319,6 +320,12 @@
 		<strong>There were errors</strong>, as noted above, that must be fixed before you
 		can install DeskPRO. You cannot continue with the installation until the problems
 		above have been fixed.
+
+		<?php if ($db_failed && $can_write_config): ?>
+			<br /><br />
+			<a href="<?php echo $view['router']->generate('install_configedit') ?>" style="color: #0069D6;">Go back to the config editor</a> and update your database details then try again.
+			<br /><br />
+		<?php endif ?>
 
 		<?php if ($ini_path and $failed_phpini): ?>
 			<br /><br />
