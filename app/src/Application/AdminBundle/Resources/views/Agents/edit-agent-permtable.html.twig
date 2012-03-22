@@ -81,6 +81,24 @@
 				<!-- PERMISSION:agent_tickets.modify_set_resolved_own -->{{ _self.perm_col('Set status to resolved', usergroup_values, 'agent_tickets', 'modify_set_resolved_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
 				<!-- PERMISSION:agent_tickets.delete_own -->{{ _self.perm_col('Delete and spam own and teams tickets', usergroup_values, 'agent_tickets', 'delete_own', 'agent_tickets_use') }}
 			</tbody>
+            <tbody>
+            <!-- PERMISSION:agent_tickets.reply_to_followed -->{{ _self.perm_col('Reply to followed tickets', usergroup_values, 'agent_tickets', 'reply_to_followed', 'agent_tickets_use') }}
+            <!-- PERMISSION:agent_tickets.modify_followed -->{{ _self.perm_col('<i class="expand-toggle" data-expand="subperm-modify_followed"></i>Modify followed tickets', usergroup_values, 'agent_tickets', 'modify_followed', 'agent_tickets_use') }}
+            <!-- PERMISSION:agent_tickets.modify_department_followed -->{{ _self.perm_col('Change department', usergroup_values, 'agent_tickets', 'modify_department_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_fields_followed -->{{ _self.perm_col('Change fields', usergroup_values, 'agent_tickets', 'modify_fields_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_assign_agent_followed -->{{ _self.perm_col('Assign agents', usergroup_values, 'agent_tickets', 'modify_assign_agent_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_assign_team_followed -->{{ _self.perm_col('Assign teams', usergroup_values, 'agent_tickets', 'modify_assign_team_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_assign_self_followed -->{{ _self.perm_col('Assign self', usergroup_values, 'agent_tickets', 'modify_assign_self_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_cc_followed -->{{ _self.perm_col('Edit CCs', usergroup_values, 'agent_tickets', 'modify_cc_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_merge_followed -->{{ _self.perm_col('Merge', usergroup_values, 'agent_tickets', 'modify_merge_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_labels_followed -->{{ _self.perm_col('Edit labels', usergroup_values, 'agent_tickets', 'modify_labels_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_notes_followed -->{{ _self.perm_col('Add notes', usergroup_values, 'agent_tickets', 'modify_notes_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_set_hold_followed -->{{ _self.perm_col('Set on-hold', usergroup_values, 'agent_tickets', 'modify_set_hold_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_set_awaiting_user_followed -->{{ _self.perm_col('Set status to awaiting user', usergroup_values, 'agent_tickets', 'modify_set_awaiting_user_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_set_awaiting_agent_followed -->{{ _self.perm_col('Set status to awaiting agent', usergroup_values, 'agent_tickets', 'modify_set_awaiting_agent_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_set_resolved_followed -->{{ _self.perm_col('Set status to resolved', usergroup_values, 'agent_tickets', 'modify_set_resolved_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.delete_followed -->{{ _self.perm_col('Delete and spam followed tickets', usergroup_values, 'agent_tickets', 'delete_followed', 'agent_tickets_use') }}
+            </tbody>
 			<tbody>
 				<!-- PERMISSION:agent_tickets.view_unassigned -->{{ _self.perm_col('View unassigned tickets', usergroup_values, 'agent_tickets', 'view_unassigned', 'agent_tickets_use') }}
 				<!-- PERMISSION:agent_tickets.reply_unassigned -->{{ _self.perm_col('Reply to own and teams tickets', usergroup_values, 'agent_tickets', 'reply_unassigned', 'agent_tickets_view_unassigned') }}
@@ -98,7 +116,7 @@
 				<!-- PERMISSION:agent_tickets.modify_set_awaiting_user_unassigned -->{{ _self.perm_col('Set status to awaiting user', usergroup_values, 'agent_tickets', 'modify_set_awaiting_user_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
 				<!-- PERMISSION:agent_tickets.modify_set_awaiting_agent_unassigned -->{{ _self.perm_col('Set status to awaiting agent', usergroup_values, 'agent_tickets', 'modify_set_awaiting_agent_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
 				<!-- PERMISSION:agent_tickets.modify_set_resolved_unassigned -->{{ _self.perm_col('Set status to resolved', usergroup_values, 'agent_tickets', 'modify_set_resolved_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
-				<!-- PERMISSION:agent_tickets.delete_unassigned -->{{ _self.perm_col('Delete and spam own and teams tickets', usergroup_values, 'agent_tickets', 'delete_unassigned', 'agent_tickets_view_unassigned') }}
+				<!-- PERMISSION:agent_tickets.delete_unassigned -->{{ _self.perm_col('Delete and spam unassigned tickets', usergroup_values, 'agent_tickets', 'delete_unassigned', 'agent_tickets_view_unassigned') }}
 			</tbody>
 			<tbody>
 				<!-- PERMISSION:agent_tickets.view_others -->{{ _self.perm_col('View others tickets', usergroup_values, 'agent_tickets', 'view_others', 'agent_tickets_use') }}
@@ -117,13 +135,8 @@
 				<!-- PERMISSION:agent_tickets.modify_set_awaiting_user_others -->{{ _self.perm_col('Set status to awaiting user', usergroup_values, 'agent_tickets', 'modify_set_awaiting_user_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
 				<!-- PERMISSION:agent_tickets.modify_set_awaiting_agent_others -->{{ _self.perm_col('Set status to awaiting agent', usergroup_values, 'agent_tickets', 'modify_set_awaiting_agent_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
 				<!-- PERMISSION:agent_tickets.modify_set_resolved_others -->{{ _self.perm_col('Set status to resolved', usergroup_values, 'agent_tickets', 'modify_set_resolved_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
-				<!-- PERMISSION:agent_tickets.delete_others -->{{ _self.perm_col('Delete and spam own and teams tickets', usergroup_values, 'agent_tickets', 'delete_others', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.delete_others -->{{ _self.perm_col('Delete and spam others tickets', usergroup_values, 'agent_tickets', 'delete_others', 'agent_tickets_use') }}
 			</tbody>
-            <tbody>
-            <!-- PERMISSION:agent_tickets.reply_to_followed -->{{ _self.perm_col('Reply to followed tickets', usergroup_values, 'agent_tickets', 'reply_to_followed', 'agent_tickets_use') }}
-            <!-- PERMISSION:agent_tickets.modify_followed -->{{ _self.perm_col('Modify followed tickets', usergroup_values, 'agent_tickets', 'modify_followed', 'agent_tickets_use') }}
-            <!-- PERMISSION:agent_tickets.delete_followed -->{{ _self.perm_col('Delete and spam followed tickets', usergroup_values, 'agent_tickets', 'delete_followed', 'agent_tickets_use') }}
-            </tbody>
 		</table>
 	</div>
 </div>
