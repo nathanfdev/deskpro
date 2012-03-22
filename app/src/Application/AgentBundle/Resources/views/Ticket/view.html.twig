@@ -178,10 +178,26 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 							<script type="text/x-deskpro-plain" class="addrow-tpl">
 								<li class="addrow noedit-hide">
 									<span class="btn-small-remove remove-row-trigger"></span>
-									<input type="text" class="user-part" />
-									<span class="is-not-loading"><button class="clean-white small cc-saverow-trigger">Add</button></span>
-									<span class="is-loading">Saving...</span>
-								</li>
+									<input type="text" class="user-part cc-people-search-trigger" />
+                                    <div class="person-search-box" style="display: none">
+                                        <section>
+                                            <ul class="results-list">
+
+                                            </ul>
+                                        </section>
+                                    </div>
+                                    <span class="is-not-loading"><button class="clean-white small cc-saverow-trigger">Add</button></span>
+                                    <span class="is-loading">Saving...</span>
+                                    <script class="user-row-tpl" type="text/x-deskpro-tmpl">
+                                        <li>
+                                            <a>
+                                                <span class="user-name"></span>
+                                                <address>&lt;<span class="user-email"></span>&gt;</address>
+                                                <div class="bound-fade"></div>
+                                            </a>
+                                        </li>
+                                    </script>
+                                </li>
 							</script>
 						</dd>
 					{% endif %}

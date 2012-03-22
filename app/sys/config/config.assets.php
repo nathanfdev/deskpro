@@ -244,6 +244,7 @@ $CONFIG['agent_element_handlers'] = array(
 		'javascripts/DeskPRO/Agent/ElementHandler/FormSaver.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TicketReplyBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TicketCcManage.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/SimpleAutoComplete.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/TabBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/PersonSearchBox.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/OrgSearchBox.js',

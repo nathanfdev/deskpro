@@ -49,12 +49,49 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			}
 		});
 
-		this.getElById('cc_row').on('click', function() {
-			self.getElById('cc_input').get(0).focus();
-		});
-		this.getElById('cc_input').tokenField();
+        var cc_row = this.getElById('cc_row');
+        var cc_input = this.getElById('cc_input');
+        cc_row.autoCompleteElement = new DeskPRO.Agent.ElementHandler.SimpleAutoComplete(cc_row);
+        this.ccRowTpl = DeskPRO_Window.util.getPlainTpl($('.email-row-tpl', cc_row));
+        var ccRemoveFunction = function() {
+            var my_row = $(this);
+            var email = $('.user-email', my_row).val();
+            var emails = cc_input.val().split(',');
+            var new_value = '';
 
+            for(var i = 0;i < emails.length; i++) {
+                if(email != emails[i]
+                    && emails[i] != '') {
+                    new_value += emails[i] + ',';
+                }
+            }
 
+            cc_input.val(new_value);
+            my_row.parent().remove();
+        };
+        $('.user-rows', cc_row).on('click', '.remove-row-trigger', ccRemoveFunction);
+
+        $('.cc-saverow-trigger', cc_row).on('click', function(ev) {
+                var user_row = $(self.ccRowTpl);
+                var email = $('.user-part', cc_row).val().trim();
+                var parts = email.split('@');
+
+                if(email == ''
+                || parts.length != 2
+                || !parts[0]
+                || !parts[1]
+                || email.indexOf(',') != -1) {
+                    return;
+                }
+
+                cc_input.val(email+','+cc_input.val());
+                $('.user-rows', cc_row).append(user_row);
+                $('.user-email', user_row).text(email);
+                $('.user-part', cc_row).val('');
+                ev.stopPropagation();
+                cc_row.autoCompleteElement.close();
+            }
+        );
 		//------------------------------
 		// Upload handling
 		//------------------------------
@@ -81,7 +118,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					self.getElById('attach_row').slideUp().addClass('is-hidden');
 				}
 			});
-		});
+        });
 
 		//------------------------------
 		// Toggle buttons
