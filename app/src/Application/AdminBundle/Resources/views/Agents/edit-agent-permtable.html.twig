@@ -119,6 +119,11 @@
 				<!-- PERMISSION:agent_tickets.modify_set_resolved_others -->{{ _self.perm_col('Set status to resolved', usergroup_values, 'agent_tickets', 'modify_set_resolved_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
 				<!-- PERMISSION:agent_tickets.delete_others -->{{ _self.perm_col('Delete and spam own and teams tickets', usergroup_values, 'agent_tickets', 'delete_others', 'agent_tickets_use') }}
 			</tbody>
+            <tbody>
+            <!-- PERMISSION:agent_tickets.reply_to_followed -->{{ _self.perm_col('Reply to followed tickets', usergroup_values, 'agent_tickets', 'reply_to_followed', 'agent_tickets_use') }}
+            <!-- PERMISSION:agent_tickets.modify_followed -->{{ _self.perm_col('Modify followed tickets', usergroup_values, 'agent_tickets', 'modify_followed', 'agent_tickets_use') }}
+            <!-- PERMISSION:agent_tickets.delete_followed -->{{ _self.perm_col('Delete and spam followed tickets', usergroup_values, 'agent_tickets', 'delete_followed', 'agent_tickets_use') }}
+            </tbody>
 		</table>
 	</div>
 </div>

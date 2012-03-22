@@ -148,6 +148,16 @@ class TicketChecker extends AbstractChecker
 			return true;
 		}
 
+
+        #------------------------------
+        # Can delete followed
+        #------------------------------
+
+        if ($ticket->hasParticipantPerson($this->person) && $this->person->hasPerm('agent_tickets.delete_followed')) {
+            return true;
+        }
+
+
 		#------------------------------
 		# Cant delete
 		#------------------------------
@@ -195,6 +205,14 @@ class TicketChecker extends AbstractChecker
 		if ($ticket->agent && $this->person->hasPerm('agent_tickets.reply_others')) {
 			return true;
 		}
+
+        #------------------------------
+        # Can reply to followed
+        #------------------------------
+
+        if ($ticket->hasParticipantPerson($this->person) && $this->person->hasPerm('agent_tickets.reply_to_followed')) {
+            return true;
+        }
 
 		#------------------------------
 		# Cant delete
@@ -258,6 +276,15 @@ class TicketChecker extends AbstractChecker
 		if ($this->person->hasPerm($perm_gloabl) || $this->person->hasPerm($perm_specific)) {
 			return true;
 		}
+
+
+        #------------------------------
+        # Can modify followed
+        #------------------------------
+
+        if ($ticket->hasParticipantPerson($this->person) && $this->person->hasPerm('agent_tickets.modify_followed')) {
+            return true;
+        }
 
 		return false;
 	}
