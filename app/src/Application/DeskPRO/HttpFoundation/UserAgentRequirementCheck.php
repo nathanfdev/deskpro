@@ -40,19 +40,22 @@ class UserAgentRequirementCheck
 	{
 		$browser = new \Browser();
 
-		if ($browser->getBrowser() == \Browser::BROWSER_FIREFOX && $browser->getVersion() >= 4) {
-			return true;
-		} elseif ($browser->getBrowser() == \Browser::BROWSER_CHROME && $browser->getVersion() >= 17) {
-			return true;
-		} elseif ($browser->getBrowser() == \Browser::BROWSER_SAFARI && $browser->getVersion() >= 5) {
-			return true;
-		} elseif ($browser->getBrowser() == \Browser::BROWSER_OPERA && $browser->getVersion() >= 11) {
-			return true;
-		} elseif ($browser->getBrowser() == \Browser::BROWSER_IE && $browser->getVersion() >= 8) {
-			return true;
+		// Check for known browsers
+		if ($browser->getBrowser() == \Browser::BROWSER_FIREFOX && $browser->getVersion() < 4) {
+			return false;
+		} elseif ($browser->getBrowser() == \Browser::BROWSER_CHROME && $browser->getVersion() < 17) {
+			return false;
+		} elseif ($browser->getBrowser() == \Browser::BROWSER_SAFARI && $browser->getVersion() < 5) {
+			return false;
+		} elseif ($browser->getBrowser() == \Browser::BROWSER_OPERA && $browser->getVersion() < 11) {
+			return false;
+		} elseif ($browser->getBrowser() == \Browser::BROWSER_IE && $browser->getVersion() < 8) {
+			return false;
 		}
 
-		return false;
+		// Unknown browsers we'll err on the lenient side and assume
+		// they work, or that the users know better
+		return true;
 	}
 
 	public static function passAdminInterface()
