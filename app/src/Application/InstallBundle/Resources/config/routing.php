@@ -18,6 +18,14 @@ $collection->add('install_license', new Route(
 	array(),
 	array()
 ));
+
+$collection->add('install_configedit', new Route(
+	'/config-editor',
+	array('_controller' => 'InstallBundle:Install:configEditor'),
+	array(),
+	array()
+));
+
 $collection->add('install', new Route(
 	'/',
 	array('_controller' => 'InstallBundle:Install:license'),

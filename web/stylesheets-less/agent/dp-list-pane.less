@@ -599,13 +599,20 @@
 	position: relative;
 }
 .list-listing .row-item .status{
-	background: #93C8A8;
-	.border-radius(10px, 10px, 10px, 10px);
-	font-size: 9px;
+	position: relative;
+	top: -4px;
+	.gradient(#8bbe72, #71b058);
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+	.border-radius(3px, 3px, 3px, 3px);
+	border: 1px solid #719A5D;
+
+	font-size: 10px;
 	float: left;
-	padding: 1px 5px;
+	padding: 2px 5px 2px 5px;
 	line-height: 100%;
 	color: #fff;
+	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+	font-family: Verdana, Arial, sans-serif;
 }
 
 .list-listing .row-item .on-hold{
@@ -625,23 +632,22 @@
 }
 
 .list-listing .row-item .status.resolved, .list-listing .row-item .status.closed {
-	background-color: #D9E1F3;
-	color: #9197A4;
+	border-color: #C9CCD4;
+	.gradient(darken(#C9CCD4, 5%), darken(#C9CCD4, 20%));
 }
 
-.list-listing .row-item .status.pending {
-	background-color: #EBEBBD;
-	color: #9197A4;
+.list-listing .row-item .status.awaiting_user {
+	border-color: #C1BE6C;
+	.gradient(darken(#C1BE6C, 5%), darken(#C1BE6C, 10%));
 }
 
 .list-listing .row-item .status.hidden,
 .list-listing .row-item .status.hidden_spam,
 .list-listing .row-item .status.hidden_validating,
 .list-listing .row-item .status.hidden_deleted {
-	background-color: #fff;
-	border: 1px solid #CFD5ED;
-	color: #AAAFC4;
-	padding:  0 4px;
+	border-color: #C9CCD4;
+	.gradient(darken(#C9CCD4, 5%), darken(#C9CCD4, 20%));
+	.opacity(80);
 }
 
 .list-listing .row-item .userinfo {

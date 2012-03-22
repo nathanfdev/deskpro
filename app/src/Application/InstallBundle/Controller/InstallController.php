@@ -88,6 +88,15 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 	public function indexAction()
 	{
+		if (!file_exists(DP_CONFIG_FILE) && is_writable(dirname(DP_CONFIG_FILE))) {
+			return $this->redirect($this->generateUrl('install_configedit'));
+		}
+
+		$can_write_config = false;
+		if (file_exists(DP_CONFIG_FILE) && is_writable(DP_CONFIG_FILE)) {
+			$can_write_config = true;
+		}
+
 		$this->getLogger()->log('Install::index', 'debug');
 
 		$server_check = new \Application\InstallBundle\Install\ServerChecks();
@@ -160,6 +169,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		}
 
 		return $this->render('InstallBundle:Install:index.html.php', array(
+			'can_write_config' => $can_write_config,
 			'errors' => $server_check->getErrors(),
 			'has_config' => $has_config,
 			'is_fatal' => $is_fatal,
@@ -170,6 +180,47 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		));
 	}
 
+	###############################################################################
+	# config-editor
+	###############################################################################
+
+	public function configEditorAction()
+	{
+		if ( (!file_exists(DP_CONFIG_FILE) && !is_writable(dirname(DP_CONFIG_FILE))) || (file_exists(DP_CONFIG_FILE) && !is_writable(DP_CONFIG_FILE))) {
+			return $this->redirect($this->generateUrl('install_checks'));
+		}
+		$exist = array(
+			'DP_DATABASE_HOST'     => '',
+			'DP_DATABASE_USER'     => '',
+			'DP_DATABASE_PASSWORD' => '',
+			'DP_DATABASE_NAME'     => ''
+		);
+
+		if (isset($_REQUEST['process'])) {
+			$file = file_get_contents(DP_WEB_ROOT.'/config.new.php');
+			foreach (array_keys($exist) as $k) {
+				$value = !empty($_REQUEST[$k]) ? $_REQUEST[$k] : '';
+				$file = preg_replace("#^define\('$k'.*?$#m", "define('$k', '" . addslashes($value) . "');", $file);
+			}
+
+			file_put_contents(DP_CONFIG_FILE, $file);
+			return $this->redirect($this->generateUrl('install_checks'));
+		}
+
+		if (file_exists(DP_CONFIG_FILE)) {
+			@include(DP_CONFIG_FILE);
+		}
+
+		foreach ($exist as $k => &$v) {
+			if (defined($k)) {
+				$v = constant($k);
+			}
+		}
+
+		return $this->render('InstallBundle:Install:config-editor.html.php', array(
+			'exist' => $exist
+		));
+	}
 
 	###############################################################################
 	# license
