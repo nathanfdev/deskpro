@@ -508,6 +508,7 @@ class TicketSearchController extends AbstractController
 
 	public function runFilterAction($filter_id)
 	{
+        $view_type = $this->in->getString('view_type');
 		$filter = App::getEntityRepository('DeskPRO:TicketFilter')->find($filter_id);
 
 		$searcher = $filter->getSearcher();
@@ -523,6 +524,10 @@ class TicketSearchController extends AbstractController
 		if ($order_by) {
 			$searcher->setOrderByCode($order_by);
 		}
+
+        if($view_type == 'csv') {
+            $searcher->setLimit(0);
+        }
 
 		$set_group_term = null;
 		$set_group_option = null;
@@ -542,6 +547,7 @@ class TicketSearchController extends AbstractController
 		}
 
 		$results = $searcher->getMatches();
+
 		$results = Arrays::castToType($results, 'integer');
 
 		$helper = new Helper\TicketResults($this);
@@ -595,7 +601,7 @@ class TicketSearchController extends AbstractController
 	protected function _getResponseForTickets($type, $type_id, $results_helper, array $vars = array())
 	{
 		$view_type = $this->in->getString('view_type');
-		if (!$view_type OR !in_array($view_type, array('list', 'simple', 'simple-ext'))) {
+		if (!$view_type OR !in_array($view_type, array('list', 'simple', 'simple-ext', 'csv'))) {
 			$view_type = 'simple-ext';
 		}
 
@@ -735,6 +741,10 @@ class TicketSearchController extends AbstractController
 			'user_all_custom_fields'  => $user_all_custom_fields
 		));
 
+        if($view_type == 'csv') {
+            return $this-> _outputCsv($vars);
+        }
+
 		$html = $this->renderView($tpl, $vars);
 
 		if ($is_partial) {
@@ -747,6 +757,127 @@ class TicketSearchController extends AbstractController
 			return $this->createResponse($html);
 		}
 	}
+
+    protected function _outputCsv($vars) {
+        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response->headers->set('Content-Type', 'text/csv');
+
+        $temp = fopen('php://temp/maxmemory:'.pow(2,24), 'rw');
+        $row = array();
+
+        foreach($vars['display_fields'] as $display_field) {
+            switch($display_field) {
+                case 'Subject': $row[] = 'Subject';break;
+                case 'User': $row[] = 'User';break;
+                case 'deleted_reason': $row[] = 'Deleted Reason';break;
+                case 'person_email': $row[] = 'User Email';break;
+                case 'person_organization': $row[] = 'Organization';break;
+                case 'department': $row[] = 'Department';break;
+                case 'category': $row[] = 'Category';break;
+                case 'product': $row[] = 'Product';break;
+                case 'organization': $row[] = 'Organization';break;
+                case 'agent': $row[] = 'Agent';break;
+                case 'agent_team': $row[] = 'Team';break;
+                case 'labels': $row[] = 'Lables';break;
+                case 'date_user_waiting': $row[] = 'User Waiting';break;
+                case 'date_created': $row[] = 'Date Opened';break;
+
+                default:
+                    foreach($vars['person_field_defs'] as $field) {
+                        if($display_field == "person_fields[{$field['id']}]") {
+                            $row[] = $field['title'];
+                            break 2;
+                        }
+                    }
+
+                    foreach($vars['ticket_field_defs'] as $field) {
+                        if($display_field == "ticket_fields[{$field['id']}]") {
+                            $row[] = $field['title'];
+                            break;
+                        }
+                    }
+
+                    break;
+            }
+        }
+
+        fputcsv($temp, $row);
+
+        foreach($vars['tickets'] as $ticket) {
+            $row = array();
+
+            foreach($vars['display_fields'] as $display_field) {
+                switch($display_field) {
+                    case 'subject': $row[] = $ticket->getSubject();break;
+                    case 'user': $row[] = $ticket->getPerson()->getDisplayName();break;
+                    case 'date_created': $row[] = $ticket->getDateCreated()->format('fulltime');break;
+                    case 'deleted_reason':
+                        if(isset($vars['deleted_tickets'][$ticket->getId()])) {
+                            $row[] = $vars['deleted_tickets'][$ticket->getId()]->getReason();
+                        }
+                        else {
+                            $row[] = '';
+                        }
+                        break;
+                    case 'person': $row[] = $ticket->getPerson()->getDisplayName();break;
+                    case 'department': $row[] = $ticket->getDepartment()->getTitle();break;
+                    case 'category':
+                        if($ticket->getCategory()) {
+                            $row[] = $ticket->getCategory()->getTitle();
+                        }
+                        else {
+                            $row[] = 'None';
+                        }
+                        break;
+                    case 'product': $row[] = $ticket->getProduct()->getTitle();break;
+                    case 'organization':
+                        if($ticket->getOrganization()) {
+                            $row[] = $ticket->getOrganization()->getName();
+                        }
+                        else {
+                            $row[] = 'None';
+                        }
+                        break;
+                    case 'date_user_waiting': $row[] = $ticket->getDateUserWaiting()->format('fulltime');break;
+                    case 'agent':
+                        if($ticket->getAgent()) {
+                            $row[] = $ticket->getAgent()->getDisplayName();
+                        }
+                        else {
+                            $row[] = 'Unassigned';
+                        }
+                        break;
+                    case 'agent_team':
+                        if($ticket->getAgentTeam()) {
+                            $row[] = $ticket->getAgentTeam()->getName();
+                        }
+                        else {
+                            $row[] = 'No Team';
+                        }
+                    case 'labels':
+                        $row[] = implode('|', $vars['ticket_display']->getTicketLabels($ticket));
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            fputcsv($temp, $row);
+        }
+
+        rewind($temp);
+        $content = '';
+
+        while(($line = fgets($temp)) !== false) {
+            $response->setContent($line);
+            $response->sendContent();
+        }
+
+        $response->setContent($content);
+        fclose($temp);
+
+        return $response;
+    }
 
 	public function getSingleTicketRowAction($filter_id)
 	{

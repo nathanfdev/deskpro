@@ -123,6 +123,13 @@ class TicketSearch extends SearcherAbstract
 	 */
 	protected $specific_fields = array();
 
+    /**
+     * Amount to limit results by (unless pageinfo is provided).
+     *
+     * @var string
+     */
+    protected $limit = '1000';
+
 	public $_last_sql = null;
 
 	/**
@@ -157,6 +164,15 @@ class TicketSearch extends SearcherAbstract
 		return $this->is_archive;
 	}
 
+    /**
+     * Set the amount to limit results by (by default).
+     *
+     * @param $limit
+     */
+    public function setLimit($limit)
+    {
+        $this->limit = $limit;
+    }
 
 	/**
 	 * Get the summary of crtiera
@@ -373,7 +389,9 @@ class TicketSearch extends SearcherAbstract
 				$sql .= " LIMIT {$pageinfo['offset']}, {$pageinfo['limit']} ";
 			}
 		} else {
-			$sql .= " LIMIT 1000";
+            if($this->limit) {
+			    $sql .= ' LIMIT '.$this->limit;
+            }
 		}
 
 		$this->_last_sql = $sql;
