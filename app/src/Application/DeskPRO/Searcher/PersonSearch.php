@@ -54,7 +54,7 @@ class PersonSearch extends SearcherAbstract
 	const TERM_EMAIL              = 'person_email';
 	const TERM_EMAIL_DOMAIN       = 'person_email_domain';
 	const TERM_NAME               = 'person_name';
-	const TERM_PERSON_FIELD       = 'person_person_field';
+	const TERM_PERSON_FIELD       = 'person_field';
 	const TERM_LABEL              = 'person_label';
 	const TERM_DATE_CREATED       = 'person_date_created';
 	const TERM_DIRECTORY_NAME     = 'person_directory_name';
@@ -462,6 +462,10 @@ class PersonSearch extends SearcherAbstract
 								"LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.field_id = $term_id)"
 							);
 
+							if (is_array($choice)) {
+								$choice = array_pop($choice);
+							}
+
 							$field = 'custom_data_person_'.$join_id.'.'.$search_type;
 							switch ($op) {
 								case self::OP_IS:
@@ -490,24 +494,29 @@ class PersonSearch extends SearcherAbstract
 							$field = 'custom_data_person_'.$join_id.'.field_id';
 							switch ($op) {
 								case self::OP_CONTAINS:
+								case self::OP_IS:
 									$joins[] = array(
 										'custom_data_person',
-										"LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id)"
+										"LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND $field IN ($choices_in))"
 									);
-									$wheres[] = "$field IN ($choices_in)";
+									$wheres[] = "custom_data_person_$join_id.id IS NOT NULL";
 									break;
 
 								case self::OP_NOTCONTAINS:
+								case self::OP_NOT:
 									$joins[] = array(
 										'custom_data_person',
-										"LEFT JOIN AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.field_id IN ($choices_in)"
+										"LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND $field IN ($choices_in))"
 									);
-									$wheres[] = "$field IS NULL";
+									$wheres[] = "custom_data_person_$join_id.id IS NULL";
 									break;
 							}
 							break;
 					}
 					break; // end TERM_PERSON_FIELD
+
+				default:
+					throw new \InvalidArgumentException("Unknown term: $term");
 			}
 		}
 
