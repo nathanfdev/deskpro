@@ -142,7 +142,7 @@ class Web
 	 *
 	 * @param  string  $name	  The name of the cookie
 	 * @param  string  $value	  The value of the cookie
-	 * @param  midex   $expire	  A timestamp or a string compatible with strtotime, or 'never' for a far far away time
+	 * @param  int     $expire	  A timestamp or a string compatible with strtotime, or 'never' for a far far away time
 	 * @param  bool	   $httponly  Make this a HTTP-only cookie
 	 * @param  string  $path	  The path to set the cookie for
 	 * @param  string  $domain	  The domain to set the cookie for
@@ -347,7 +347,7 @@ class Web
 	public static function getCountryFromIp($ip = null)
 	{
 		if (!$ip) {
-			$ip = Orb_Web::getUserIp();
+			$ip = Web::getUserIp();
 		}
 
 		$country = null;
@@ -409,7 +409,7 @@ class Web
 		$http_response = @fgets($socket, 22);
 
 		$ret = false;
-		if (Orb_String::isIn('200 OK', $http_response)) {
+		if (Strings::isIn('200 OK', $http_response)) {
 			$ret = true;
 		}
 
