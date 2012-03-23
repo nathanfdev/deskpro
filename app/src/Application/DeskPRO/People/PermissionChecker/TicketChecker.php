@@ -266,7 +266,10 @@ class TicketChecker extends AbstractChecker
 			$set_suffix = 'unassigned';
 
 		// Other
-		} else {
+		} else if($ticket->hasParticipantPerson($this->person)) {
+            $set_suffix = 'followed';
+        }
+        else {
 			$set_suffix = 'other';
 		}
 
@@ -276,15 +279,6 @@ class TicketChecker extends AbstractChecker
 		if ($this->person->hasPerm($perm_gloabl) || $this->person->hasPerm($perm_specific)) {
 			return true;
 		}
-
-
-        #------------------------------
-        # Can modify followed
-        #------------------------------
-
-        if ($ticket->hasParticipantPerson($this->person) && $this->person->hasPerm('agent_tickets.modify_followed')) {
-            return true;
-        }
 
 		return false;
 	}
