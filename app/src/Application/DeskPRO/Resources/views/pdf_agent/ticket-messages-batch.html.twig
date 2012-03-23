@@ -1,4 +1,4 @@
-<table class="ticket_list" width="100%" border="1">
+<table class="ticket_list" width="100%" border="1" cellspacing="0" autosize="0">
     {% for message in ticket_messages %}
         <tr>
             <td>{{message.person.name}} {{message.date_created|date('c')}}</td>
