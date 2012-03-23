@@ -507,7 +507,7 @@ class TicketSearch extends SearcherAbstract
 	 *
 	 * @return array
 	 */
-	public function u()
+	public function getSqlParts()
 	{
 		if ($this->sql_parts !== null) return $this->sql_parts;
 
