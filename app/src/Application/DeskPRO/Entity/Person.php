@@ -298,16 +298,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $usersource_assoc;
 
 	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 */
-	protected $twitter_accounts;
-
-	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 */
-	protected $twitter_status_notes;
-
-	/**
 	 * The date the user was inserted into the system
 	 *
 	 * @var \DateTime
@@ -333,12 +323,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $_set_plain_password = null;
-
-	/**
-	 * An array of usergroupids this user belongs to
-	 * @var array
-	 */
-	protected $_twitter_account_ids = null;
 
 	/**
 	 * An array of name=>value for loaded preferences. These are not obejcts.
@@ -441,12 +425,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->contact_data           = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->custom_data            = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->preferences            = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->twitter_accounts       = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->twitter_status_notes   = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
-//                $this->deals      = new \Doctrine\Common\Collections\ArrayCollection();
-                //$this->deal      = new \Doctrine\Common\Collections\ArrayCollection();
-//		$this->assigned_deals                 = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->_initPersonLogger();
 		$this->_person_logger->recordExtra('person_created', true);
@@ -1010,36 +989,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public function getUsergroupIds()
 	{
 		$this->getPermissionsManager()->getUsergroupIds();
-	}
-
-
-
-	/**
-	 * Get an array of twitter account ID's this user belongs to.
-	 *
-	 * @return array
-	 */
-	public function getTwitterAccountIds()
-	{
-		if ($this->_twitter_account_ids !== null) {
-			return $this->_twitter_account_ids;
-		}
-
-		// If we have the usergroups collection, we can just use that
-		if (ORM_Util::isCollectionInitialized($this->twitter_accounts)) {
-			$this->_twitter_account_ids = array();
-			foreach ($this->twitter_accounts as $ta) {
-				$this->_twitter_account_ids[] = $ta->getId();
-			}
-		} else {
-			$this->_twitter_account_ids = App::getDb()->fetchAllCol("
-				SELECT account_id
-				FROM twitter_accounts_person
-				WHERE person_id = {$this->id}
-			");
-		}
-
-		return $this->_twitter_account_ids;
 	}
 
 
@@ -1806,9 +1755,19 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
+		if (get_called_class() == 'Application\\DeskPRO\\Entity\\PersonGuest') {
+			return;
+		}
+
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Person';
-		$metadata->setPrimaryTable(array( 'name' => 'people', 'indexes' => array( 'is_agent_idx' => array( 'columns' => array( 0 => 'is_agent', ), ), ), ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'people',
+			'indexes' => array(
+				'is_agent_idx' => array( 'columns' => array( 0 => 'is_agent', ), ),
+				'is_confirmed_idx' => array( 'columns' => array( 0 => 'is_confirmed', ), ),
+			)
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->addLifecycleCallback('_initPersonLogger', 'postLoad');
 		$metadata->addLifecycleCallback('smartSetName', 'prePersist');
@@ -1857,7 +1816,5 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapManyToMany(array( 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'joinTable' => array( 'name' => 'person2usergroups', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'preferences', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'usersource_assoc', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc', 'mappedBy' => 'person',  ));
-		$metadata->mapManyToMany(array( 'fieldName' => 'twitter_accounts', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'joinTable' => array( ), 'mappedBy' => 'persons', ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'twitter_status_notes', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusNote', 'mappedBy' => 'person',  ));
 	}
 }

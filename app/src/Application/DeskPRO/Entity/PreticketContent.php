@@ -202,7 +202,13 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'pretickets_content', ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'pretickets_content',
+			'indexes' => array(
+				'email_idx' => array('columns' => array('email')),
+				'object_idx' => array('columns' => array('object_type', 'object_id'))
+			)
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address', ));

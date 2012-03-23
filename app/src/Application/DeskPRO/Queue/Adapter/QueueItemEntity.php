@@ -244,7 +244,7 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 					AND i.is_ready = true
 					AND (i.reserved_at IS NULL OR i.timeout_at < ?0)
 					AND (i.delay_until IS NULL OR i.delay_until < ?1)
-				ORDER BY i.priority
+				ORDER BY i.priority DESC, i.id DESC
 			")->setParameters(array($timenow, $timenow))->setMaxResults($maxMessages)->execute();
 
 			foreach ($results as $item) {

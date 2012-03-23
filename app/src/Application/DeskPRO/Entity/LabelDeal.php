@@ -42,7 +42,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * Records labels on deal.
  *
  */
-class LabelDeal extends LabelAssocAbstract
+abstract class LabelDeal extends LabelAssocAbstract
 {
     const LABEL_TYPENAME = 'deal';
 
@@ -57,7 +57,8 @@ class LabelDeal extends LabelAssocAbstract
 	# Doctrine Metadata
 	############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
+
+	public static function x_loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array( 'name' => 'labels_deals', ));

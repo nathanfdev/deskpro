@@ -48,7 +48,7 @@ use Application\DeskPRO\Entity;
  * A Twitter Account contains twitter username and accesstoken
  *
  */
-class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
+abstract class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
@@ -484,7 +484,8 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	# Doctrine Metadata
 	############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
+
+	public static function x_loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccount';

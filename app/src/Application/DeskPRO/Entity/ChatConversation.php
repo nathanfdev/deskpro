@@ -603,7 +603,12 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ChatConversation';
-		$metadata->setPrimaryTable(array( 'name' => 'chat_conversations', ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'chat_conversations',
+			'indexes' => array(
+				'status_idx' => array('columns' => array('status')),
+			),
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->addLifecycleCallback('_queueSearchIndexUpdate', 'postUpdate');
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));

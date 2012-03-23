@@ -269,6 +269,7 @@ SQL;
 
 			// Trigger
 			if (preg_match('#^CREATE TRIGGER#', $s)) {
+
 				$s_ex = var_export($s, true);
 
 				$this->triggers[] = $s;
@@ -282,6 +283,11 @@ SQL;
 
 			// Create
 			} else {
+
+				if (strpos($s, 'CREATE TABLE searchlog') !== false) {
+					$s = str_replace('INDEX query_idx (query)', 'INDEX query_idx (query (20))', $s);
+				}
+
 				$s = str_replace(array("\r\n", "\n"), ' ', $s);
 				$s .= ' DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 

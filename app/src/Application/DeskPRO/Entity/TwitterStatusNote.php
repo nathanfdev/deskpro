@@ -45,7 +45,7 @@ use Application\DeskPRO\Entity;
  * Twitter Status Note
  *
  */
-class TwitterStatusNote extends \Application\DeskPRO\Domain\DomainObject
+abstract class TwitterStatusNote extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
@@ -62,7 +62,7 @@ class TwitterStatusNote extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $person;
 
-        /**
+	/**
 	 * @var \Application\DeskPRO\Entity\Deal
 	 */
 	protected $deal;
@@ -107,8 +107,9 @@ class TwitterStatusNote extends \Application\DeskPRO\Domain\DomainObject
 	# Doctrine Metadata
 	############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
+	public static function x_loadMetadata(ClassMetadata $metadata)
 	{
+
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array( 'name' => 'twitter_statuses_notes', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);

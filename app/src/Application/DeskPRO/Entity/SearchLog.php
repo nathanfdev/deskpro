@@ -149,7 +149,13 @@ class SearchLog extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\SearchLog';
-		$metadata->setPrimaryTable(array( 'name' => 'searchlog', ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'searchlog',
+			'indexes' => array(
+				'query_idx' => array('columns' => array('query'), 'length' => 15),
+				'num_results_idx' => array('columns' => array('num_results')),
+			)
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address', ));

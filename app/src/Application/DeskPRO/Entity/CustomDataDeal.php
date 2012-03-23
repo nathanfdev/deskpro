@@ -40,7 +40,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Custom ticket data
  */
-class CustomDataDeal extends CustomDataAbstract
+abstract class CustomDataDeal extends CustomDataAbstract
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Deal
@@ -63,7 +63,8 @@ class CustomDataDeal extends CustomDataAbstract
 	# Doctrine Metadata
 	############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
+
+	public static function x_loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array( 'name' => 'custom_data_deal', 'indexes' => array( 'obj_id_idx' => array( 'columns' => array( 0 => 'deal_id', ), ), 'field_id_idx' => array( 'columns' => array( 0 => 'field_id', 1 => 'deal_id', ), ), ), ));

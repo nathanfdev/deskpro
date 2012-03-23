@@ -255,7 +255,13 @@ class Article extends ContentAbstract
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Article';
-		$metadata->setPrimaryTable(array( 'name' => 'articles', 'indexes' => array( 'date_published_idx' => array( 'columns' => array( 0 => 'date_published', ), ), ), ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'articles',
+			'indexes' => array(
+				'date_published_idx' => array('columns' => array('date_published')),
+				'status_idx' => array('columns' => array('status')),
+			),
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->mapField(array( 'fieldName' => 'date_end', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_end', ));
 		$metadata->mapField(array( 'fieldName' => 'end_action', 'type' => 'string', 'length' => 10, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'end_action', ));

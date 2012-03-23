@@ -41,7 +41,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * Deal entity definition
  *
  */
-class Currency extends \Application\DeskPRO\Domain\DomainObject
+abstract class Currency extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * The unique ID
@@ -79,7 +79,8 @@ class Currency extends \Application\DeskPRO\Domain\DomainObject
 	# Doctrine Metadata
 	############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
+
+	public static function x_loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Currency';

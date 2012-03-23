@@ -53,7 +53,7 @@ abstract class TaskAssociation extends \Application\DeskPRO\Domain\DomainObject
 	protected $id;
 
 	/**
-	 * @var Application\DeskPRO\Entity\Task
+	 * @var \Application\DeskPRO\Entity\Task
 	 */
 	protected $task;
 
@@ -83,7 +83,7 @@ abstract class TaskAssociation extends \Application\DeskPRO\Domain\DomainObject
 			'person' => 'TaskAssociatedPerson',
 			'ticket' => 'TaskAssociatedTicket',
 			'organization' => 'TaskAssociatedOrganization',
-			'deal' => 'TaskAssociatedDeal',
+			//'deal' => 'TaskAssociatedDeal',
 		));
 		$metadata->setPrimaryTable(array( 'name' => 'task_associations', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);

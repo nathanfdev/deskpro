@@ -209,7 +209,15 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonEmail';
-		$metadata->setPrimaryTable(array( 'name' => 'people_emails', 'indexes' => array( 'email_domain_idx' => array( 'columns' => array( 0 => 'email_domain', ), ), ), 'uniqueConstraints' => array( 'email_idx' => array( 'columns' => array( 0 => 'email', ), ), ), ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'people_emails',
+			'indexes' => array(
+				'email_domain_idx' => array('columns' => array('email_domain')),
+			),
+			'uniqueConstraints' => array(
+				'email_idx' => array('columns' => array('email'))
+			),
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email', ));

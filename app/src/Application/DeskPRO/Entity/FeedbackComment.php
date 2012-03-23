@@ -61,7 +61,12 @@ class FeedbackComment extends CommentAbstract
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackComment';
-		$metadata->setPrimaryTable(array( 'name' => 'feedback_comments', ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'feedback_comments',
+			'indexes' => array(
+				'status_idx' => array('columns' => array('status', 'is_reviewed')),
+			),
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address', ));

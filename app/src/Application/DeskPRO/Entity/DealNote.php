@@ -44,7 +44,7 @@ use Orb\Util\Arrays;
  * A note is a private note added by an agent to a persons account.
  *
  */
-class DealNote extends \Application\DeskPRO\Domain\DomainObject
+abstract class DealNote extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
@@ -102,7 +102,8 @@ class DealNote extends \Application\DeskPRO\Domain\DomainObject
 	# Doctrine Metadata
 	############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
+
+	public static function x_loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DealNote';

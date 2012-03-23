@@ -42,7 +42,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  *
  */
 
-class DealStage extends \Application\DeskPRO\Domain\DomainObject
+abstract class DealStage extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * The unique ID
@@ -83,7 +83,8 @@ class DealStage extends \Application\DeskPRO\Domain\DomainObject
 	# Doctrine Metadata
 	############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
+
+	public static function x_loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DealStage';

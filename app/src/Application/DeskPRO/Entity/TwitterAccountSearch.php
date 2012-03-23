@@ -44,7 +44,7 @@ use Application\DeskPRO\Entity;
 /**
  * Twitter Account Search
  */
-class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
+abstract class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
@@ -91,7 +91,8 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 	# Doctrine Metadata
 	############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
+
+	public static function x_loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array( 'name' => 'twitter_accounts_searches', ));
