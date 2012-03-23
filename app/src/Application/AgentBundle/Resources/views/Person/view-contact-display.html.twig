@@ -17,3 +17,13 @@
 		</li>
 	{% endfor %}
 {% endblock %}
+
+{% block post_extra %}
+    <div class="addresses">
+        <ul>
+            <li class="address">
+                <a target="_blank" href="{{ path('agent_people_view', {'person_id': person.id, 'vcf': 1}) }}">Download vCard</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}

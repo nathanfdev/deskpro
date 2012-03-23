@@ -174,6 +174,77 @@ class PersonController extends AbstractController
 			'org_create'       => $this->person->hasPerm('agent_org.create')
 		);
 
+        $is_vcf = $this->in->getBool('vcf');
+
+        if($is_vcf) {
+            $response = new \Symfony\Component\HttpFoundation\Response();
+            $response->headers->set('Content-Type', 'text/vcf');
+
+            $ec = ";\0\n\\";
+
+            $vcf = "BEGIN:VCARD\n".
+                "VERSION:4.0\n".
+                "N:".addcslashes($person->last_name, $ec).
+                ";".addcslashes($person->first_name, $ec).";;;\n".
+                "FN:".addcslashes($person->name, $ec)."\n".
+                "PHOTO:".addcslashes($person->gravatar_url, $ec)."\n";
+
+            if($person->organization_id) {
+                $organisation = App::findEntity('DeskPRO:Organization', $person->organization_id);
+            }
+            else {
+                $organisation = '';
+            }
+
+            if(!empty($organisation)) {
+                $vcf .= "ORG:".addcslashes($person['organisation']['name'], $ec)."\n";
+            }
+
+            if(!empty($person['organization_position'])) {
+                $vcf .= "TITLE:".addcslashes($person['organization_position'], $ec)."\n";
+            }
+
+            foreach($person->emails as $email) {
+                $vcf .= "EMAIL:".addcslashes($email->email, $ec)."\n";
+            }
+
+            foreach($contact_data as $c_data)
+            {
+                foreach($c_data as $data) {
+                    switch($data['contact_type']) {
+                        case 'phone':
+                            if(empty($data['number']))
+                                break;
+
+                            $vcf .= "TEL:VALUE=uri:tel:";
+
+                            if(!empty($data['country_calling_code']))
+                                $vcf .= "+".addcslashes($data['country_calling_code'], $ec)."-";
+
+
+                            $vcf .= addcslashes($data['number'], $ec)."\n";
+                            break;
+                        case 'website':
+                            $vcf .= "URL:".addcslashes($data['url'], $ec)."\n";
+                            break;
+                        case 'address':
+                            $vcf .= "ADR:;;";
+                            $vcf .= addcslashes($data['address'], $ec).";";
+                            $vcf .= addcslashes($data['city'], $ec).";";
+                            $vcf .= addcslashes($data['state'], $ec).";";
+                            $vcf .= addcslashes($data['zip'], $ec).";";
+                            $vcf .= addcslashes($data['country'], $ec).";";
+                            $vcf .= "\n";
+                            break;
+                    }
+                }
+            }
+
+            $vcf .= "END:VCARD\n";
+            $response->setContent($vcf);
+            return $response;
+        }
+
 		return $this->render('AgentBundle:Person:view.html.twig', array(
 			'with_warn_for_email' => $with_warn_for_email,
 			'person' => $person,
