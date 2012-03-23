@@ -51,6 +51,10 @@
 	'agent.tickets.date_first_agent_reply'            => 'Date of First Agent Reply',
 	'agent.tickets.date_last_user_reply'              => 'Date of Last User Reply',
 	'agent.tickets.date_last_agent_reply'             => 'Date of Last Agent Reply',
+    'agent.tickets.time_created'                      => 'Time Created',
+    'agent.tickets.time_last_agent_reply'             => 'Time of Last User Reply',
+    'agent.tickets.day_created'                       => 'Day Created',
+    'agent.tickets.day_last_agent_reply'              => 'Day of Last User Reply',
 
 	'agent.tickets.modify_ticket'          => 'Modify Ticket',
 	'agent.tickets.manage_participants'    => 'Manage people on this ticket',

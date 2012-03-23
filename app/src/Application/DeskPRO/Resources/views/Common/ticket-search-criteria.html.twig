@@ -407,6 +407,92 @@
 	</div>
 	{% endif %}
 
+    {% if 'time_created' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
+    <div class="type" title="Time created" data-rule-type="time_created">
+        <div class="op">
+            <select name="op" class="op">
+                <option value="before">before</option>
+                <option value="after">after</option>
+            </select>
+        </div>
+        <div class="options">
+            <label>Hour</label>
+            <select name="hour1">
+                {% for hour in range(0,23) %}
+                <option>{{ '%02s'|format(hour) }}</option>
+                {% endfor %}
+            </select>
+            <label>Minute</label>
+            <select name="minute1">
+                {% for minute in range(0,59) %}
+                <option>{{ '%02s'|format(minute) }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if 'time_user_reply' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
+    <div class="type" title="Time of last user reply" data-rule-type="time_user_replied">
+        <div class="op">
+            <select name="op" class="op">
+                <option value="before">before</option>
+                <option value="after">after</option>
+            </select>
+        </div>
+        <div class="options">
+            <label>Hour</label>
+            <select name="hour1">
+                {% for hour in range(0,23) %}
+                <option>{{ '%02s'|format(hour) }}</option>
+                {% endfor %}
+            </select>
+            <label>Minute</label>
+            <select name="minute1">
+                {% for minute in range(0,59) %}
+                <option>{{ '%02s'|format(minute) }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if 'day_created' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
+    <div class="type" title="Day created" data-rule-type="day_created">
+        <div class="op">
+            <select name="op" class="op">
+                <option value="is">is</option>
+                <option value="not">is not</option>
+            </select>
+        </div>
+        <div class="options">
+            {% set days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+            {% for day in days %}
+                <label>{{ day }}</label>
+                <input type="checkbox" value="{{ day }}" name="days[]"/>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if 'day_last_user_reply' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
+    <div class="type" title="Day last user reply" data-rule-type="day_last_user_reply">
+        <div class="op">
+            <select name="op" class="op">
+                <option value="is">is</option>
+                <option value="not">is not</option>
+            </select>
+        </div>
+        <div class="options">
+            {% set days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+            {% for day in days %}
+                <label>{{ day }}</label>
+                <input type="checkbox" value="{{ day }}" name="days[]"/>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
 	{% if 'date_resolved' not in no_show_fields and (not event_trigger or event_trigger == 'time_resolved') %}
 	<div class="type" title="Date resolved" data-rule-type="date_resolved" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="date-resolved">
 		<div class="op">

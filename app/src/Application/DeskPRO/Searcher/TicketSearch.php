@@ -1112,6 +1112,43 @@ class TicketSearch extends SearcherAbstract
 					$wheres[] = "$join_name.id IS NULL";
 					break;
 
+                case 'time_created':
+                case 'time_last_user_reply':
+                    switch($op) {
+                        case 'before':
+                            $operator = '<';
+                        case 'after':
+                            $operator = '>';
+                            break;
+                        default: $operator = '=';
+                    }
+
+                    foreach($choice as $k => $v) {
+                        $choice[$k] = preg_replace('[^0-9]', '', $choice[$k]);
+                    }
+
+                    $column = str_replace('time', 'date', $term);
+                    $wheres[] = "TIME($term) $operator '{$choice['hour1']}:{$choice['minute1']}:00'";
+                    break;
+
+                case 'day_created':
+                    switch($op) {
+                        case 'before':
+                            $operator = 'IN';
+                        case 'after':
+                            $operator = 'NOT IN';
+                            break;
+                    }
+
+                    foreach($choice as $k => $v) {
+                        $choice[$k] = "'".preg_replace('[^A-Za-z]', '', $choice[$k])."'";
+                    }
+
+                    $column = str_replace('time', 'date', $term);
+
+                    $wheres[] = "DATE_FORMAT($column, '%W') $op (".implode(',',$choices).')';
+                    break;
+
 				default:
 					throw new \InvalidArgumentException("Unknown term: $term");
 					break;
@@ -1370,6 +1407,32 @@ class TicketSearch extends SearcherAbstract
 					if (!$ticket['date_last_user_reply']) return false;
 					if (!$this->_testDateMatch($ticket['date_last_user_reply'], $op, $choice)) return false;
 					break;
+                case 'time_created':
+                case 'time_last_user_reply':
+                    $field = str_replace('time', 'date', $term);
+                    $time = clone $ticket[$field];
+                    $time->setTime($choice['hour1'], $choice['minute1']);
+
+                    switch($op) {
+                        case 'before':
+                            return $ticket[$field] < $time;
+                        case 'after':
+                            return $ticket[$field] > $time;
+                    }
+
+                    break;
+                case 'day_created':
+                case 'day_last_user_reply':
+                    $field = str_replace('time', 'date', $term);
+                    $weekday = $ticket[$field]->format('l');
+                    $exists = in_array($weekday, $choice['days']);
+                    switch($op) {
+                        case 'is':
+                            return $exists;
+                        case 'not':
+                            return !$exists;
+                    }
+                    break;
 			}
 		}
 

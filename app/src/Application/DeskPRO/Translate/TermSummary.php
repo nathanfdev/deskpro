@@ -395,6 +395,22 @@ class TermSummary
 			case 'robot_email':
 				$summary = 'Email sent from a robot (such as an auto-reply)';
 				break;
+
+            case 'time_created':
+                $summary = "Time created $op {$choice['hour1']}:{$choice['minute1']}:00";
+                break;
+
+            case 'time_last_user_reply':
+                $summary = "'Time of last user reply $op {$choice['hour1']}:{$choice['minute1']}:00";
+                break;
+
+            case 'day_created':
+                $summary = "Day created $op in ".implode(', ', $choice['days']);
+                break;
+
+            case 'day_last_user_reply':
+                $summary = "Day of last user reply $op in ".implode(', ', $choice['days']);
+                break;
 		}
 
 		return $summary;
