@@ -40,32 +40,22 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * Task-Deal association class.
- *
  */
-class TaskAssociatedDeal extends TaskAssociation
+abstract class TaskAssociatedDeal /*extends TaskAssociation*/
 {
 
-  /**
-   * @var Application\DeskPRO\Entity\Deal
-   */
-  protected $deal;
-
-//  public function setDeal(\Application\DeskPRO\Entity\Deal $deal)
-//  {
-//      $this->deal;
-//  }
-//  public function getDeal()
-//  {
-//      return $this->deal;
-//  }
-
+	/**
+	 * @var \Application\DeskPRO\Entity\Deal
+	 */
+	protected $deal;
 
 
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
+
+	public static function x_loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->mapManyToOne(array( 'fieldName' => 'deal', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Deal', 'mappedBy' => NULL, 'inversedBy' => 'task_associations', 'joinColumns' => array( 0 => array( 'name' => 'deal_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 	}

@@ -1313,6 +1313,7 @@ $collection->add('admin_departments_updateorders', new Route(
 # Twitter
 ################################################################################
 
+/*
 $collection->add('admin_twitter_accounts', new Route(
 	'/twitter/account',
 	array('_controller' => 'AdminBundle:TwitterAccount:list'),
@@ -1340,6 +1341,7 @@ $collection->add('admin_twitter_accounts_edit', new Route(
 	array(),
 	array()
 ));
+*/
 
 ################################################################################
 # Plugins

@@ -42,7 +42,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  *
  */
 
-class DealMapper extends \Application\DeskPRO\Domain\DomainObject
+abstract class DealMapper extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * The unique ID
@@ -79,11 +79,17 @@ class DealMapper extends \Application\DeskPRO\Domain\DomainObject
 	# Doctrine Metadata
 	############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
+
+	public static function x_loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DealStage';
-		$metadata->setPrimaryTable(array( 'name' => 'deals_mapper', ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'deals_mapper',
+			'indexes' => array(
+				'link_idx' => array('columns' => array('linktype', 'typeid')),
+			),
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'linktype', 'type' => 'string', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'type', ));

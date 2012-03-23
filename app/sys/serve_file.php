@@ -158,7 +158,7 @@ class FilestorageLoader
 		$sth->execute();
 		$blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
-		if (isset($_GET['reload']) && filemtime(DP_ROOT . '/src/Application/UserBundle/Resources/views/Css/main.css.twig') > strtotime($blob['date_created'])) {
+		if (!$blob || (isset($_GET['reload']) && filemtime(DP_ROOT . '/src/Application/UserBundle/Resources/views/Css/main.css.twig') > strtotime($blob['date_created']))) {
 			$container = $this->bootFullSystem();
 			$css = $container->get('templating')->render('UserBundle:Css:main.css.twig', array());
 

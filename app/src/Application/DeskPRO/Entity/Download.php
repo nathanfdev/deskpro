@@ -147,7 +147,13 @@ class Download extends ContentAbstract
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Download';
-		$metadata->setPrimaryTable(array( 'name' => 'downloads', 'indexes' => array( 'date_published_idx' => array( 'columns' => array( 0 => 'date_published', ), ), ), ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'downloads',
+			'indexes' => array(
+				'date_published_idx' => array( 'columns' => array( 0 => 'date_published', )),
+				'status_idx' => array('columns' => array('status')),
+			)
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->mapField(array( 'fieldName' => 'num_downloads', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_downloads', ));
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));

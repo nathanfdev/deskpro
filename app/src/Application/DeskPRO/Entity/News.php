@@ -145,7 +145,13 @@ class News extends ContentAbstract
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\News';
-		$metadata->setPrimaryTable(array( 'name' => 'news', 'indexes' => array( 'date_published_idx' => array( 'columns' => array( 0 => 'date_published', ), ), ), ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'news',
+			'indexes' => array(
+				'date_published_idx' => array( 'columns' => array( 0 => 'date_published', ), ),
+				'status_idx' => array('columns' => array('status')),
+			)
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'slug', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'slug', ));

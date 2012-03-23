@@ -286,7 +286,13 @@ class Feedback extends ContentAbstract
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Feedback';
-		$metadata->setPrimaryTable(array( 'name' => 'feedback', 'indexes' => array( 'date_published_idx' => array( 'columns' => array( 0 => 'date_published', ), ), ), ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'feedback',
+			'indexes' => array(
+				'date_published_idx' => array('columns' => array( 0 => 'date_published' )),
+				'status_idx' => array('columns' => array('status')),
+			),
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->mapField(array( 'fieldName' => 'hidden_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'hidden_status', ));
 		$metadata->mapField(array( 'fieldName' => 'validating', 'type' => 'string', 'length' => 35, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'validating', ));

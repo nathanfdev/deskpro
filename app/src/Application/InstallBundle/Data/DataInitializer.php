@@ -61,7 +61,6 @@ class DataInitializer
 
 	public function run()
 	{
-		$this->runStyleInit();
 		$this->runSearchIndex();
 		$this->runInitPerms();
 		$this->runInitAdminNotifications();
@@ -89,25 +88,6 @@ class DataInitializer
 			$this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'usergroup_id' => 1, 'app' => 'tickets'));
 			$this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'usergroup_id' => 1, 'app' => 'chat'));
 		}
-	}
-
-	public function runStyleInit()
-	{
-		$style = $this->container->getEm()->find('DeskPRO:Style', 1);
-
-		$css_source = file_get_contents(DP_WEB_ROOT . '/web/stylesheets/user/main.css');
-		$css = new \Application\DeskPRO\Style\UserStyle($css_source);
-
-		$desc = $this->container->getFilestorage()->createRandomPath();
-		$desc->write($css->compileCss(), array(
-			'content_type' => 'text/css',
-			'filename' => 'main.css'
-		));
-		$blob = $this->container->getEm()->find('DeskPRO:Blob', $desc->getPath());
-		$style->css_blob = $blob;
-
-		$this->container->getEm()->persist($style);
-		$this->container->getEm()->flush();
 	}
 
 	public function runSearchIndex()

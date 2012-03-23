@@ -45,7 +45,7 @@ use Application\DeskPRO\Entity;
  * Twitter Status Tag
  *
  */
-class TwitterStatusTag extends \Application\DeskPRO\Domain\DomainObject
+abstract class TwitterStatusTag extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
@@ -130,7 +130,8 @@ class TwitterStatusTag extends \Application\DeskPRO\Domain\DomainObject
 	# Doctrine Metadata
 	############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
+
+	public static function x_loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array( 'name' => 'twitter_statuses_tags', ));

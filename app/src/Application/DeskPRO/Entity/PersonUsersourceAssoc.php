@@ -117,7 +117,12 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonUsersourceAssoc';
-		$metadata->setPrimaryTable(array( 'name' => 'person_usersource_assoc', ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'person_usersource_assoc',
+			'indexes' => array(
+				'identity_idx' => array('columns' => array('identity'))
+			)
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'identity', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'identity', ));

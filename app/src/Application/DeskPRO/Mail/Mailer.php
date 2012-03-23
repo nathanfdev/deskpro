@@ -87,8 +87,9 @@ class Mailer extends \Swift_Mailer
 		$this->registerPlugin(new \Orb\Mail\Plugins\DefaultFromAddress(App::getConfig('mail.default_from')));
 	}
 
-	public static function newInstance(\Swift_Transport $transport, \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating)
+	public static function newInstance(\Swift_Transport $transport)
 	{
+		$templating = App::get('templating');
 		return new self($transport, $templating);
 	}
 

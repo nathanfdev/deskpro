@@ -1922,7 +1922,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Ticket';
-		$metadata->setPrimaryTable(array( 'name' => 'tickets', 'uniqueConstraints' => array( 'ref_idx' => array( 'columns' => array( 0 => 'ref', ), ), ), ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'tickets',
+			'indexes' => array(
+				'date_created_idx' => array('columns' => array('date_created'))
+			),
+			'uniqueConstraints' => array(
+				'ref_idx' => array('columns' => array('ref'))
+			)
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->addLifecycleCallback('_initTicketLogger', 'postLoad');
 		$metadata->addLifecycleCallback('initHashCode', 'prePersist');

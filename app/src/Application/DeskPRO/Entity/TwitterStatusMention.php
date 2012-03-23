@@ -45,7 +45,7 @@ use Application\DeskPRO\Entity;
  * Twitter Status Mention
  *
  */
-class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
+abstract class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
@@ -148,7 +148,8 @@ class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 	# Doctrine Metadata
 	############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
+
+	public static function x_loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setPrimaryTable(array( 'name' => 'twitter_statuses_mentions', ));

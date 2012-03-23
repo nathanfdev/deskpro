@@ -44,7 +44,7 @@ use Application\DeskPRO\Entity;
 /**
  * Twitter Account following a User
  */
-class TwitterAccountFriend extends \Application\DeskPRO\Domain\DomainObject
+abstract class TwitterAccountFriend extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
@@ -115,7 +115,8 @@ class TwitterAccountFriend extends \Application\DeskPRO\Domain\DomainObject
 	# Doctrine Metadata
 	############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
+
+	public static function x_loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccountFriend';

@@ -144,7 +144,12 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PermissionCache';
-		$metadata->setPrimaryTable(array( 'name' => 'permissions_cache', ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'permissions_cache',
+			'indexes' => array(
+				'usergroup_key_idx' => array('columns' => array('usergroup_key'))
+			)
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'usergroup_key', 'type' => 'string', 'length' => 32, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'usergroup_key', 'id' => true, ));
