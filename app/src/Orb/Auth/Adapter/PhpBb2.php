@@ -29,102 +29,34 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Usersource\Handler;
+namespace Orb\Auth\Adapter;
 
-use Application\DeskPRO\Entity\Usersource;
-
-/**
- * A handler takes a usersource and knows how to facilitate create an adapter.
- */
-abstract class AbstractHandler
+class PhpBb2 extends DbTable
 {
-	/**
-	 * @var Orb\Auth\Adapter\AdapterInterface
-	 */
-	protected $_auth_adapter = null;
+	const OPT_TABLE_PREFIX = 'table_prefix';
 
-	/**
-	 * @var Application\DeskPRO\Entity\Usersource
-	 */
-	protected $_usersource = null;
-
-
-	/**
-	 * Create a new handler based off the usersource.
-	 *
-	 * @param Application\DeskPRO\Entity\Usersource $usersource
-	 */
-	public function __construct(Usersource $usersource)
+	protected function initOptions()
 	{
-		$this->_usersource = $usersource;
-		$this->init();
+		parent::initOptions();
+
+		$this->options[self::OPT_TABLE]           = $this->options->get(self::OPT_TABLE_PREFIX, '') . 'users';
+		$this->options[self::OPT_FIELD_ID]        = 'user_id';
+		$this->options[self::OPT_FIELD_USERNAME]  = 'username';
+		$this->options[self::OPT_FIELD_PASSWORD]  = 'user_password';
+		$this->options[self::OPT_FIELD_EMAIL]     = 'user_email';
 	}
 
-
-
-	/**
-	 * Empty hook method for sub-classes to implement any initialization code.
-	 * @return void
-	 */
-	protected function init()
+	protected function isValidPassword(array $userinfo, $password_input)
 	{
+		$hashed = md5($password_input);
 
-	}
-
-
-	/**
-	 * Gets an array of data we'll use to apply to a person. This basically
-	 * normalizes a raw userinfo data from the adapter into standard array we can use.
-	 *
-	 * Note that some usersources might not have any useful info, but this is used
-	 * anyway.
-	 *
-	 * @param array $raw_userinfo
-	 */
-	public function getPersonData(array $raw_userinfo)
-	{
-		return \Application\DeskPRO\Util::getPersonData($raw_userinfo);
-	}
-
-
-	/**
-	 * Get the adapter.
-	 *
-	 * @return Orb\Auth\Adapter\AdapterInterface
-	 */
-	public function getAuthAdapter()
-	{
-		if ($this->_auth_adapter !== null) {
-			return $this->_auth_adapter;
+		if ($userinfo['user_password'] == $hashed) {
+			return true;
 		}
 
-		$this->_auth_adapter = $this->_createAuthAdapterObject();
-
-		return $this->_auth_adapter;
+		return false;
 	}
-
-
-
-	/**
-	 * Create a new instance of the adapter interface, using the usersource info
-	 * for options etc.
-	 *
-	 * @return Orb\Auth\Adapter\AdapterInterface
-	 */
-	protected function _createAuthAdapterObject()
-	{
-		$classname = $this->getAuthAdapterClass();
-		return new $classname();
-	}
-
-
-
-	/**
-	 * Get the classname of the auth adapter class.
-	 *
-	 * @return string
-	 */
-	abstract public function getAuthAdapterClass();
 }

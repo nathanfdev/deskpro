@@ -29,68 +29,21 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Usersource\Handler;
+namespace Orb\Log;
 
-use Application\DeskPRO\App;
-
-use Application\DeskPRO\Entity\Usersource;
-
-/**
- * Facebook handler
- */
-class Facebook extends AbstractHandler
+interface Loggable
 {
 	/**
-	 * Get an array of person data mapped to raw userinfo we got back from a twitter
-	 * login.
-	 *
-	 * @param array $raw_userinfo
-	 * @return array
+	 * Set the logger
+	 * @param \Orb\Log\Logger $logger
 	 */
-	public function getPersonData(array $raw_userinfo)
-	{
-		$person_data = array(
-			'standard_fields' => array(),
-			'emails' => array(),
-		);
-
-		if (!empty($raw_userinfo['name'])) {
-			$person_data['full_name'] = $raw_userinfo['name'];
-		}
-
-		if (!empty($raw_userinfo['email'])) {
-			$person_data['emails'][] = $raw_userinfo['email'];
-		}
-
-		return $person_data;
-	}
+	public function setLogger(Logger $logger);
 
 	/**
-	 * Create a new instance of the adapter interface, using the usersource info
-	 * for options etc.
-	 *
-	 * @return \Orb\Auth\Adapter\AdapterInterface
+	 * @return \Orb\Log\Logger
 	 */
-	protected function _createAuthAdapterObject()
-	{
-		$classname = $this->getAuthAdapterClass();
-		return new $classname(
-			$this->_usersource['options']['app_id'],
-			$this->_usersource['options']['app_secret']
-		);
-	}
-
-
-
-	/**
-	 * Get the classname of the auth adapter class.
-	 *
-	 * @return string
-	 */
-	public function getAuthAdapterClass()
-	{
-		return 'Orb\\Auth\\Adapter\\Facebook';
-	}
+	public function getLogger();
 }
