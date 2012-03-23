@@ -267,6 +267,40 @@ class MiscController extends AbstractController
 		return $res;
 	}
 
+    public function parseVCardAction()
+    {
+        $file = $this->request->files->get('files');
+
+        $content = file_get_contents($file[0]->getPathName());
+        $lines = explode("\n", $content);
+        $fields = array();
+
+        foreach($lines as $line) {
+            $pair = explode(':', $line, 2);
+
+            if(count($pair) != 2)
+                continue;
+
+            list($key, $value) = $pair;
+
+            switch($key) {
+                case 'EMAIL':
+                    $fields['email'] = stripslashes($value);
+                    break;
+                case 'FN':
+                    $fields['name'] = stripslashes($value);
+                    break;
+            }
+        }
+
+
+        $res = $this->createJsonResponse(array(array('fields' => $fields)));
+
+        // Required for iframe transport on IE to prevent 'download' popup
+        $res->headers->set('Content-Type', 'text/plain');
+        return $res;
+    }
+
 	/**
 	 * @param  $id
 	 * @return void

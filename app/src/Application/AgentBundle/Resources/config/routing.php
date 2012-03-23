@@ -58,6 +58,13 @@ $collection->add('agent_accept_upload', new Route(
 	array()
 ));
 
+$collection->add('agent_parse_vcard', new Route(
+    '/misc/parse-vcard',
+    array('_controller' => 'AgentBundle:Misc:parseVCard'),
+    array(),
+    array()
+));
+
 $collection->add('agent_show_blob', new Route(
 	'/misc/show-blob/{blob_id}',
 	array('_controller' => 'AgentBundle:Misc:showBlob'),

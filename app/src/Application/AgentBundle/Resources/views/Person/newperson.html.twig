@@ -12,7 +12,14 @@ pageMeta.baseId = '{{ baseId }}';
 <a class="tab-anchor" href="#">&nbsp;</a>
 
 <form id="{{baseId}}_newperson" class="keybound-submit">
-
+<div class="drop-file-zone"><h1>Drop your vCard here</h1></div>
+<script class="template-upload" type="text/x-tmpl">
+    {{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
+    <p>{{ '{%=file.name%}' }} ({{ phrase('agent.loading_saving') }})</p>
+    {{ '{% } %}' }}
+</script>
+<script class="template-download" type="text/x-tmpl">
+</script>
 <div class="first section cat-section" id="{{baseId}}_email_section">
 	<div class="step">
 		<span class="num">{{ inc_counter('steps') }}</span>

@@ -37,6 +37,20 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		}).on('orgsearchboxcleared', function() {
 			self.getEl('org_pos').hide();
 		});
+
+        DeskPRO_Window.util.fileupload(el, {
+            uploadTemplate: $('.template-upload', el),
+            downloadTemplate: $('.template-download', el),
+            url: BASE_URL + 'agent/misc/parse-vcard'
+        });
+
+        el.bind('fileuploaddone', function(event, data) {
+            for(name in data.result[0].fields) {
+                $('[name$="['+name+']"]', el).val(data.result[0].fields[name]);
+            }
+        });
+        el.bind('fileuploadstart', function(event, data) {
+        });
 	},
 
 	closeSelf: function() {
