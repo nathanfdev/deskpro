@@ -4,7 +4,7 @@ DeskPRO.ErrorListHandler = new Orb.Class({
 	Implements: [Orb.Util.Options],
 	
 	initialize: function (options) {
-		this.options: {
+		this.options = {
 			errorContainerSelector: '.errors',
 			errorListSelector: 'ul'
 		};

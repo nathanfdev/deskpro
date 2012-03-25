@@ -8,7 +8,7 @@ Orb.Validator.Length = new Class({
 			regex: /.?/,
 			trim: true
 		});
-	}
+	},
 	
 	_checkForErrors: function(value) {
 		

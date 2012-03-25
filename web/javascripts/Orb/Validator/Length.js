@@ -9,7 +9,7 @@ Orb.Validator.Length = new Class({
 			maxLength: null,
 			trim: true
 		});
-	}
+	},
 	
 	_checkForErrors: function(value) {
 		
