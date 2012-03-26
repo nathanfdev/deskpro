@@ -14,7 +14,7 @@
  *
  * @category   Zend
  * @package    Zend_Validate
- * @copyright  Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
@@ -34,7 +34,7 @@ use Traversable,
  * @uses       \Zend\Validator\Validator
  * @category   Zend
  * @package    Zend_Validate
- * @copyright  Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class AbstractValidator implements Validator
@@ -112,7 +112,7 @@ abstract class AbstractValidator implements Validator
         }
 
         if (isset($this->options) && array_key_exists($option, $this->options)) {
-            return $this->options[$options];
+            return $this->options[$option];
         }
 
         throw new InvalidArgumentException("Invalid option '$option'");
