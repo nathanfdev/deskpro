@@ -314,11 +314,11 @@ class UsersStep extends AbstractDeskpro3Step
 							'identity_friendly' => $user_map['username'],
 						);
 						break;
-					case 'ldap':
+					case 'dp3_ldap':
 						$new_map = array(
 							'person_id'         => $insert_person['id'],
 							'usersource_id'     => $new_usersource->id,
-							'identity'          => $user_map['username'],
+							'identity'          => $user_map['remoteid'],
 							'identity_friendly' => $user_map['username'],
 						);
 						break;

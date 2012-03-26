@@ -166,21 +166,21 @@ class UserRulesStep extends AbstractDeskpro3Step
 				break;
 
 			#---
-			# LDAP => Ldap
+			# LDAP => Dp3Ldap
 			#---
 
 			case 'Ldap':
 
-				$new_usersource->source_type = 'ldap';
+				$new_usersource->source_type = 'dp3_ldap';
 				$new_usersource->options = array(
 					'host'                     => $usersource['config']['ldap_host'],
 					'port'                     => $usersource['config']['ldap_port'],
 					'baseDn'                   => $usersource['config']['ldap_base_dn'],
 					'username'                 => $usersource['config']['ldap_service_dn'],
 					'password'                 => $usersource['config']['ldap_service_pass'],
-					'accountDomainName'        => '',
-					'accountDomainNameShort'   => '',
-					'accountFilterFormat'      => ''
+					'field_id'                 => 'dn',
+					'field_username'           => $usersource['config']['ldap_attr_uid'],
+					'field_email'              => $usersource['config']['ldap_attr_mail'],
 				);
 
 				break;
