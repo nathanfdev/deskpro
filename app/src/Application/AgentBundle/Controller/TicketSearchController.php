@@ -640,9 +640,12 @@ class TicketSearchController extends AbstractController
 			// User looking at just a group of results
 			$is_grouping = true;
 			$grouping_option = $this->in->getString('grouping_option');
-			$tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('grouping_option'), $page, $per_page);
-			$vars['ticket_ids'] = $results_helper->getGroupTicketIds($this->in->getString('grouping_option'));
-		}
+			$tickets = $results_helper->getGroupedTicketsForPage($grouping_option, $page, $per_page);
+			$vars['ticket_ids'] = $results_helper->getGroupTicketIds($grouping_option);
+		} else {
+            $grouping_option = $this->in->getString('grouping_option');
+            $is_geouping = true;
+        }
 
 		#------------------------------
 		# Send results
@@ -742,7 +745,7 @@ class TicketSearchController extends AbstractController
 		));
 
         if($view_type == 'csv') {
-            return $this-> _outputCsv($vars, $is_grouping, $results_helper);
+            return $this-> _outputCsv($vars, $results_helper);
         }
 
 		$html = $this->renderView($tpl, $vars);
@@ -758,7 +761,7 @@ class TicketSearchController extends AbstractController
 		}
 	}
 
-    protected function _outputCsv($vars, $is_grouping, $results_helper) {
+    protected function _outputCsv($vars, $results_helper) {
         $response = new \Symfony\Component\HttpFoundation\Response();
         $response->headers->set('Content-Type', 'text/csv');
 
@@ -809,7 +812,7 @@ class TicketSearchController extends AbstractController
         $chunk_size = 4;
         $page = 1;
 
-        if($is_grouping) {
+        if($vars['is_grouped_result']) {
             $tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('grouping_option'), $page++, $chunk_size);
         }
         else {
@@ -885,7 +888,7 @@ class TicketSearchController extends AbstractController
             if(empty($tickets)) {
                 $this->getDoctrine()->getEntityManager()->clear();
 
-                if($is_grouping) {
+                if($vars['is_grouped_result']) {
                     $tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('grouping_option'), $page++, $chunk_size);
                 }
                 else {
