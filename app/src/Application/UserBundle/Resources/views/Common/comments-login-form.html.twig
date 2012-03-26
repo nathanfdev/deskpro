@@ -25,7 +25,7 @@
 			<label>Logged In As</label>
 		</div>
 		<div class="dp-form-input">
-			<span class="loggedin-in-as {{ app.session.get('usersource_type') }}">
+			<span class="logged-in-as {{ app.session.get('auth_usersource_type') }}">
 				{% if app.session.get('usersource_display_link') %}
 					<a href="{{ app.session.get('usersource_display_link') }}">
 						{{ app.session.get('usersource_display_name')|default(app.user.display_name) }}

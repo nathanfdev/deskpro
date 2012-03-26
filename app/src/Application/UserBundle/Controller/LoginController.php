@@ -319,6 +319,7 @@ HTML;
 				$this->session->set('auth_person_id', $person->id);
 				$this->session->set('dp_interface', DP_INTERFACE);
 				$this->session->set('auth_usersource_id', $usersource->id);
+				$this->session->set('auth_usersource_type', $usersource->source_type);
 				$this->session->set('usersource_display_name', $usersource->getAdapter()->getDisplayName($result->getIdentity()->getRawData()));
 				$this->session->set('usersource_display_link', $usersource->getAdapter()->getDisplayLink($result->getIdentity()->getRawData()));
 
@@ -382,6 +383,7 @@ HTML;
 
 				$this->session->set('auth_person_id', $person['id']);
 				$this->session->set('auth_usersource_id', $usersource->id);
+				$this->session->set('auth_usersource_type', $usersource->source_type);
 				$this->session->set('usersource_display_name', $usersource->getAdapter()->getDisplayName($result->getIdentity()->getRawData()));
 				$this->session->set('usersource_display_link', $usersource->getAdapter()->getDisplayLink($result->getIdentity()->getRawData()));
 
@@ -425,6 +427,7 @@ HTML;
 
 			$this->session->set('auth_person_id', $person['id']);
 			$this->session->set('auth_usersource_id', $usersource->id);
+			$this->session->set('auth_usersource_type', $usersource->source_type);
 			$this->session->set('usersource_display_name', $usersource->getAdapter()->getDisplayName($result->getIdentity()->getRawData()));
 			$this->session->set('usersource_display_link', $usersource->getAdapter()->getDisplayLink($result->getIdentity()->getRawData()));
 
