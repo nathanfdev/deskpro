@@ -47,7 +47,6 @@ class Twitter extends AbstractAdapter
 		$info = $identity->getRawData();
 		return array(
 			'name' => $info['fullname'],
-
 		);
 	}
 
@@ -70,7 +69,8 @@ class Twitter extends AbstractAdapter
 	public function getCapabilities()
 	{
 		return array(
-			self::CAPABILITY_VIEW_BUTTON
+			'tpl_login_pull_btn',
+			'tpl_widget_overlay_btn'
 		);
 	}
 

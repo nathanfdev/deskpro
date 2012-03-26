@@ -496,6 +496,20 @@ $collection->add('admin_userreg_facebook_edit', new Route(
 	array()
 ));
 
+$collection->add('admin_userreg_twitter_toggle', new Route(
+	'/settings/user-registration/twitter/toggle',
+	array('_controller' => 'AdminBundle:UserReg:twitterToggle'),
+	array(),
+	array()
+));
+
+$collection->add('admin_userreg_twitter_edit', new Route(
+	'/settings/user-registration/twitter',
+	array('_controller' => 'AdminBundle:UserReg:twitterEdit'),
+	array(),
+	array()
+));
+
 $collection->add('admin_userreg_google_toggle', new Route(
 	'/settings/user-registration/google/toggle',
 	array('_controller' => 'AdminBundle:UserReg:googleToggle'),

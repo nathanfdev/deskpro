@@ -171,6 +171,92 @@ class UserRegController extends AbstractController
 	}
 
 	############################################################################
+	# twitter
+	############################################################################
+
+	public function twitterEditAction()
+	{
+		$twitter = $this->em->getRepository('DeskPRO:Usersource')->getByType('twitter');
+		if (!$twitter) {
+			$twitter = new Usersource();
+			$twitter->is_enabled = false;
+			$twitter->source_type = 'twitter';
+			$twitter->title = 'Twitter';
+			$twitter->lost_password_url = 'https://twitter.com/account/resend_password';
+
+			$this->em->getConnection()->beginTransaction();
+			try {
+				$this->em->persist($twitter);
+				$this->em->flush();
+				$this->em->getConnection()->commit();
+			} catch (\Exception $e) {
+				$this->em->getConnection()->rollback();
+				throw $e;
+			}
+		}
+
+		if ($this->in->getBool('process')) {
+			$this->ensureRequestToken('twitter_setup');
+
+			$twitter->setOptions(array(
+				'consumer_key'    => $this->in->getString('twitter.consumer_key'),
+				'consumer_secret' => $this->in->getString('twitter.consumer_secret'),
+			));
+
+			$twitter->is_enabled = true;
+
+			$this->em->getConnection()->beginTransaction();
+			try {
+				$this->em->persist($twitter);
+				$this->em->flush();
+
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.twitter_source_enabled', (int)$twitter->is_enabled);
+
+				$this->em->getConnection()->commit();
+				return $this->redirectRoute('admin_userreg_options');
+			} catch (\Exception $e) {
+				$this->em->getConnection()->rollback();
+				throw $e;
+			}
+		}
+
+		return $this->render('AdminBundle:UserReg:twitter-edit.html.twig', array(
+			'usersource' => $twitter,
+			'options' => $twitter->options
+		));
+	}
+
+	public function twitterToggleAction()
+	{
+		$twitter = $this->em->getRepository('DeskPRO:Usersource')->getByType('twitter');
+		if (!$twitter || $twitter->hasOption('is_setup')) {
+			return $this->redirectRoute('admin_userreg_twitter_edit');
+		}
+
+		if ($twitter->is_enabled) {
+			$twitter->is_enabled = false;
+		} else {
+			$twitter->is_enabled = true;
+		}
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			$this->em->persist($twitter);
+			$this->em->flush();
+
+			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.twitter_source_enabled', (int)$twitter->is_enabled);
+
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_userreg_options');
+	}
+
+	############################################################################
 	# google
 	############################################################################
 

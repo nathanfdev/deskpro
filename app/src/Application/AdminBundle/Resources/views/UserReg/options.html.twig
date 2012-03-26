@@ -29,6 +29,10 @@
 						Facebook <a href="{{ path('admin_userreg_facebook_edit') }}" class="btn-edit-gear2" style="position: relative; top: 2px;"></a>
 					</li>
 					<li>
+						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_twitter_toggle') }}';" {% if app.getSetting('core.twitter_source_enabled') %}checked="checked"{% endif %} />
+						Twitter <a href="{{ path('admin_userreg_twitter_edit') }}" class="btn-edit-gear2" style="position: relative; top: 2px;"></a>
+					</li>
+					<li>
 						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_google_toggle') }}';" {% if app.getSetting('core.google_source_enabled') %}checked="checked"{% endif %} />
 						Google
 					</li>
