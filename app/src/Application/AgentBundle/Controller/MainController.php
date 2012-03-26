@@ -197,6 +197,8 @@ class MainController extends AbstractController
 
 	public function getCombinedSectionDataAction()
 	{
+		return $this->createResponse("invalid json response");
+
 		$data = array();
 
 		foreach ($this->in->getCleanValueArray('section_ids', 'str_simple', 'discard') as $name) {

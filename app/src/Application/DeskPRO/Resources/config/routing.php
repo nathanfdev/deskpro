@@ -82,6 +82,13 @@ $collection->add('sys_log_js_error', new Route(
 	array()
 ));
 
+$collection->add('sys_report_error', new Route(
+	'/dp/report-error.json',
+	array('_controller' => 'DeskPRO:Data:sendErrorReport'),
+	array(),
+	array()
+));
+
 $collection->add('dp3_redirect_news', new Route(
 	'/news.php',
 	array('_controller' => 'DeskPRO:Deskpro3Redirect:redirectNews'),

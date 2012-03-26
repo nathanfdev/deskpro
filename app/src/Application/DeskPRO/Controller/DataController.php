@@ -77,4 +77,32 @@ class DataController extends AbstractController
 			'logged' => true
 		));
 	}
+
+	public function sendErrorReportAction()
+	{
+		$token = $this->in->getString('token');
+		if (!\Orb\Util\Util::checkStaticSecurityToken($token, 'dp_submit_error_report')) {
+			return $this->createJsonResponse(array('error' => true));
+		}
+
+		$error_text = $this->in->getString('error_text');
+
+		$ip_address = $this->request->getClientIp();
+		$user_agent = empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'];
+		$referrer   = empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER'];
+		$hash       = $this->in->getString('hash');
+
+		$error_text = "IP: $ip_address\nUser agent: $user_agent\nReferrer: $referrer\nFragment: $hash\n\n$error_text";
+
+		$comment = $this->in->getString('comment');
+
+		$client = new \Zend\Http\Client(null, array('timeout' => 10));
+		$client->setMethod(\Zend\Http\Request::METHOD_POST);
+		$client->getRequest()->post()->set('error_text', $error_text);
+		$client->getRequest()->post()->set('comment', $comment);
+		$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/report-error-manual.json');
+		$client->send();
+
+		return $this->createJsonResponse(array('success' => true));
+	}
 }

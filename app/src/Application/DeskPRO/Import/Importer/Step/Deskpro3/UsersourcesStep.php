@@ -36,7 +36,7 @@ namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
 
 use Application\DeskPRO\Entity\Usersource;
 
-class UserRulesStep extends AbstractDeskpro3Step
+class UsersourcesStep extends AbstractDeskpro3Step
 {
 	/**
 	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer

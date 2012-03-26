@@ -166,10 +166,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			// So temporarily disable warnings so we can gracefully handle these events
 
 			$e = error_reporting(E_ALL ^ E_WARNING);
-			if (!$db->connect()) {
-				throw new \PDOException("DB Error", 1);
-			}
-
+			$db->connect();
 			error_reporting($e);
 		} catch (\PDOException $e) {
 			error_reporting($e);
@@ -196,7 +193,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$logger->log('The new database name you have set in config.php does not exist'  . PHP_EOL, Logger::ERR);
 				return 21;
 			} else {
-				$logger->log('There was a problem while trying to connect to your database: ' . $e->getMessage() . ''  . PHP_EOL, Logger::ERR);
+				$logger->log('There was a problem while trying to connect to your database: ' . $e->getCode() . ' ' . $e->getMessage() . ''  . PHP_EOL, Logger::ERR);
 				return 21;
 			}
 		}
@@ -211,9 +208,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				'password' => $DP_CONFIG['import']['db_password'],
 				'dbname'   => $DP_CONFIG['import']['db_name']
 			));
-			if (!$old_db->connect()) {
-				throw new \PDOException("DB Error", 1);
-			}
+			$old_db->connect();
 			error_reporting($e);
 		} catch (\Exception $e) {
 			error_reporting($e);
@@ -416,7 +411,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$sm = $db->getSchemaManager();
 
 		$tables = $sm->listTableNames();
-		if ($tables && (!in_array('agent_notifications', $tables) || !in_array('worker_jobs', $tables))) {
+		if ($tables && (!in_array('agent_team_members', $tables) || !in_array('worker_jobs', $tables))) {
 			$logger->log('Your database contains tables but they do not appear to be DeskPRO v4 tables. DeskPRO requires a new, empty database.' . PHP_EOL, Logger::ERR);
 			$logger->log('Create a new empty database and edit /config.php with the new details, then try again.'  . PHP_EOL, Logger::ERR);
 			return 22;

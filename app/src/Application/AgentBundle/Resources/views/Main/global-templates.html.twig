@@ -3,7 +3,8 @@
 	This file contains global JS templates and menus and other such
 	resources used throughout.
 #}
-<div id="deskpro_window_templates" style="display: none;">
+
+<div id="deskpro_window_templates" style="display: none;" xmlns="http://www.w3.org/1999/html">
 
 {# Agents Selector #}
 <ul id="agent_selector_list">
@@ -482,10 +483,15 @@
 <div id="global_ajax_error" style="display:none;">
 	<div class="ajax-error-overlay mass-actions-overlay">
 		<div class="overlay-title">
-			<h4>{{ phrase('agent.network_error') }}</h4>
+			<button class="clean-white small" id="global_ajax_error_submit" style="position: absolute; right: 40px; top: 8px;">Report this error to DeskPRO</button>
+			<h4>
+				{{ phrase('agent.network_error') }}
+			</h4>
 		</div>
 		<div class="overlay-content">
-			<p>{{ phrase('agent.network_error_explain') }}</p>
+			<p>
+				{{ phrase('agent.network_error_explain') }}.
+			</p>
 			<div id="global_ajax_error_info" style="font-size: 9px; margin-top: 8px;"></div>
 		</div>
 	</div>

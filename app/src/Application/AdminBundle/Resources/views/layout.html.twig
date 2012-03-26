@@ -97,7 +97,7 @@
 				</div>
 				<ul>
 					<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
-					<li class="help"><a>{{ phrase('agent.window.help') }}</a></li>
+					<li class="help"><a href="http://support.deskpro.com/">{{ phrase('agent.window.help') }}</a></li>
 					<li class="logout"><a href="{{ app.request.getBaseUrl() }}/logout/{{ static_security_token('user_logout', 0) }}?to=admin">{{ phrase('agent.window.logout') }}</a></li>
 				</ul>
 			</div>

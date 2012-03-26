@@ -97,7 +97,7 @@ class UsersStep extends AbstractDeskpro3Step
 		$this->fieldmanager = $this->getContainer()->getSystemService('person_fields_manager');
 		$this->fieldmanager->getFields();
 
-		$this->usersources = $this->em->getRepository('DeskPRO:Usersource')->getAllUsersources(false);
+		$this->usersources = $this->getEm()->getRepository('DeskPRO:Usersource')->getAllUsersources(false);
 
 		$sub_start_time = microtime(true);
 		$this->logMessage("-- Processing batch {$page}");
@@ -296,39 +296,41 @@ class UsersStep extends AbstractDeskpro3Step
 		// Re-create the map
 		//---
 
-		if ($user_map['sourceid'] != 1) {
-			$new_usersource = $this->usersources[$this->getMappedNewId('usersource', $user_map['sourceid'])];
-			if ($new_usersource) {
-				$new_map = null;
-				switch ($new_usersource->source_type) {
-					case 'db_table_php_password_check':
-					case 'ez_publish':
-					case 'os_commerce':
-					case 'php_bb_2':
-					case 'php_bb_3':
-					case 'vbulletin':
-						$new_map = array(
-							'person_id'         => $insert_person['id'],
-							'usersource_id'     => $new_usersource->id,
-							'identity'          => $user_map['remoteid'],
-							'identity_friendly' => $user_map['username'],
-						);
-						break;
-					case 'dp3_ldap':
-						$new_map = array(
-							'person_id'         => $insert_person['id'],
-							'usersource_id'     => $new_usersource->id,
-							'identity'          => $user_map['remoteid'],
-							'identity_friendly' => $user_map['username'],
-						);
-						break;
-				}
+		foreach ($user_map as $um) {
+			if ($um['sourceid'] != 1) {
+				$new_usersource = $this->usersources[$this->getMappedNewId('usersource', $um['sourceid'])];
+				if ($new_usersource) {
+					$new_map = null;
+					switch ($new_usersource->source_type) {
+						case 'db_table_php_password_check':
+						case 'ez_publish':
+						case 'os_commerce':
+						case 'php_bb_2':
+						case 'php_bb_3':
+						case 'vbulletin':
+							$new_map = array(
+								'person_id'         => $insert_person['id'],
+								'usersource_id'     => $new_usersource->id,
+								'identity'          => $um['remoteid'],
+								'identity_friendly' => $um['username'],
+							);
+							break;
+						case 'dp3_ldap':
+							$new_map = array(
+								'person_id'         => $insert_person['id'],
+								'usersource_id'     => $new_usersource->id,
+								'identity'          => $um['remoteid'],
+								'identity_friendly' => $um['username'],
+							);
+							break;
+					}
 
-				if ($new_map) {
-					$new_map['data'] = 'a:0:{}';
-					$new_map['created_at'] = date('Y-m-d H:i:s', $user_info['date_registered']);
+					if ($new_map) {
+						$new_map['data'] = 'a:0:{}';
+						$new_map['created_at'] = date('Y-m-d H:i:s', $user_info['date_registered']);
 
-					$this->db->insert('person_usersource_assoc', $new_map);
+						$this->db->insert('person_usersource_assoc', $new_map);
+					}
 				}
 			}
 		}

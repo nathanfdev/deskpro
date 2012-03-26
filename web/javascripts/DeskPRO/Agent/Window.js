@@ -1663,6 +1663,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	_showAjaxError: function(message) {
 
+		var self = this;
 		$('#global_ajax_error_info').empty();
 		if (message) {
 			$('#global_ajax_error_info').html(message).show();
@@ -1676,6 +1677,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 				zIndex: 50000 /* this should be bigger than everything */
 			});
 		}
+
+		$('#global_ajax_error_submit').off('click').on('click', function(ev) {
+			ev.preventDefault();
+			$.ajax({
+				url: BASE_URL + 'dp/report-error.json',
+				data: {
+					error_text: message
+				},
+				type: 'POST'
+			});
+
+			self.ajaxErrorOverlay.close();
+		});
 
 		this.ajaxErrorOverlay.initOverlay(); // needed so we can access wrapperOuter next
 		this.ajaxErrorOverlay.elements.wrapperOuter.addClass('error');
