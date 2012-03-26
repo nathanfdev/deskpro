@@ -66,7 +66,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
 		// Makes the initial login after install cleaner without auto-redirect to license, then back to welcome
 		if ($url) {
-			if (preg_match('#/admin/license#', $url) && !$this->container->getCache('core.setup_initial')) {
+			if (preg_match('#/admin/license#', $url) && !$this->container->getSetting('core.setup_initial')) {
 				$url = $this->generateUrl('admin', array(), true);
 			}
 		}

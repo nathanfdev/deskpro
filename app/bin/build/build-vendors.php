@@ -428,6 +428,7 @@ function deskpro_build_cleanvendors_zend($dir)
 		'Service/Amazon/ListmaniaList.php',
 		'Service/Amazon/EditorialReview.php',
 		'Service/Amazon/CustomerReview.php',
+		'Service/AgileZen',
 		'Service/Audioscrobbler',
 		'Service/Delicious',
 		'Service/DeveloperGarden',
