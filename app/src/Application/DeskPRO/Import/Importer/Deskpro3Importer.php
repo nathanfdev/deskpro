@@ -75,6 +75,7 @@ class Deskpro3Importer extends AbstractImporter
 		'Companies',
 		'PopAccounts',
 		'Techs',
+		'Usersources',
 		'Users',
 		'UserRules',
 		'TechPms',

@@ -51,6 +51,11 @@ class UsersStep extends AbstractDeskpro3Step
 	 */
 	protected $fieldmanager;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\Usersource[]
+	 */
+	protected $usersources;
+
 	public static function getTitle()
 	{
 		return 'Import Users';
@@ -91,6 +96,8 @@ class UsersStep extends AbstractDeskpro3Step
 		$this->custom_field_info = $this->olddb->fetchAll("SELECT * FROM user_def");
 		$this->fieldmanager = $this->getContainer()->getSystemService('person_fields_manager');
 		$this->fieldmanager->getFields();
+
+		$this->usersources = $this->em->getRepository('DeskPRO:Usersource')->getAllUsersources(false);
 
 		$sub_start_time = microtime(true);
 		$this->logMessage("-- Processing batch {$page}");
@@ -230,7 +237,7 @@ class UsersStep extends AbstractDeskpro3Step
 				$insert_person['password'] = sha1($insert_person['salt'] . $user_deskpro['password']);
 			}
 		} else {
-			$insert_person['password'] = sha1($insert_person['salt'] . uniqid() . mt_rand(10000,99999));
+			$insert_person['password'] = null;
 		}
 
 		$this->db->insert('people', $insert_person);
@@ -284,6 +291,48 @@ class UsersStep extends AbstractDeskpro3Step
 		}
 
 		$this->db->update('people', array('primary_email_id' => $default_email_id), array('id' => $insert_person['id']));
+
+		//---
+		// Re-create the map
+		//---
+
+		if ($user_map['sourceid'] != 1) {
+			$new_usersource = $this->usersources[$this->getMappedNewId('usersource', $user_map['sourceid'])];
+			if ($new_usersource) {
+				$new_map = null;
+				switch ($new_usersource->source_type) {
+					case 'db_table_php_password_check':
+					case 'ez_publish':
+					case 'os_commerce':
+					case 'php_bb_2':
+					case 'php_bb_3':
+					case 'vbulletin':
+						$new_map = array(
+							'person_id'         => $insert_person['id'],
+							'usersource_id'     => $new_usersource->id,
+							'identity'          => $user_map['remoteid'],
+							'identity_friendly' => $user_map['username'],
+						);
+						break;
+					case 'ldap':
+						$new_map = array(
+							'person_id'         => $insert_person['id'],
+							'usersource_id'     => $new_usersource->id,
+							'identity'          => $user_map['username'],
+							'identity_friendly' => $user_map['username'],
+						);
+						break;
+				}
+
+				if ($new_map) {
+					$new_map['data'] = 'a:0:{}';
+					$new_map['created_at'] = date('Y-m-d H:i:s', $user_info['date_registered']);
+
+					$this->db->insert('person_usersource_assoc', $new_map);
+				}
+			}
+		}
+
 
 		//---
 		// Custom fields
