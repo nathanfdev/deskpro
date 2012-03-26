@@ -809,7 +809,7 @@ class TicketSearchController extends AbstractController
         $response->setContent(fgets($temp));
         $response->sendContent();
         ftruncate($temp, 0);
-        $chunk_size = 4;
+        $chunk_size = 1024;
         $page = 1;
 
         if($vars['is_grouped_result']) {
