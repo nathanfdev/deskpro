@@ -636,7 +636,7 @@ class TicketSearchController extends AbstractController
 			$is_grouping = false;
 			$grouping_option = 'DP_NOT_SET';
 			$tickets = $results_helper->getTicketsForPage($page, $per_page);
-		} else {
+		} else if(! $view_type == 'csv') {
 			// User looking at just a group of results
 			$is_grouping = true;
 			$grouping_option = $this->in->getString('grouping_option');
@@ -742,7 +742,7 @@ class TicketSearchController extends AbstractController
 		));
 
         if($view_type == 'csv') {
-            return $this-> _outputCsv($vars);
+            return $this-> _outputCsv($vars, $is_grouping, $results_helper);
         }
 
 		$html = $this->renderView($tpl, $vars);
@@ -758,11 +758,11 @@ class TicketSearchController extends AbstractController
 		}
 	}
 
-    protected function _outputCsv($vars) {
+    protected function _outputCsv($vars, $is_grouping, $results_helper) {
         $response = new \Symfony\Component\HttpFoundation\Response();
         $response->headers->set('Content-Type', 'text/csv');
 
-        $temp = fopen('php://temp/maxmemory:'.pow(2,24), 'rw');
+        $temp = fopen('php://memory', 'rw');
         $row = array();
 
         foreach($vars['display_fields'] as $display_field) {
@@ -802,8 +802,22 @@ class TicketSearchController extends AbstractController
         }
 
         fputcsv($temp, $row);
+        rewind($temp);
+        $response->setContent(fgets($temp));
+        $response->sendContent();
+        ftruncate($temp, 0);
+        $chunk_size = 4;
+        $page = 1;
 
-        foreach($vars['tickets'] as $ticket) {
+        if($is_grouping) {
+            $tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('grouping_option'), $page++, $chunk_size);
+        }
+        else {
+            $tickets = $results_helper->getTicketsForPage($page++, $chunk_size);
+        }
+
+        while(!empty($tickets)) {
+            $ticket = array_shift($tickets);
             $row = array();
 
             foreach($vars['display_fields'] as $display_field) {
@@ -863,17 +877,24 @@ class TicketSearchController extends AbstractController
             }
 
             fputcsv($temp, $row);
-        }
-
-        rewind($temp);
-        $content = '';
-
-        while(($line = fgets($temp)) !== false) {
-            $response->setContent($line);
+            rewind($temp);
+            $response->setContent(fgets($temp));
             $response->sendContent();
+            ftruncate($temp, 0);
+
+            if(empty($tickets)) {
+                $this->getDoctrine()->getEntityManager()->clear();
+
+                if($is_grouping) {
+                    $tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('grouping_option'), $page++, $chunk_size);
+                }
+                else {
+                    $tickets = $results_helper->getTicketsForPage($page++, $chunk_size);
+                }
+            }
         }
 
-        $response->setContent($content);
+        $response->setContent('');
         fclose($temp);
 
         return $response;
