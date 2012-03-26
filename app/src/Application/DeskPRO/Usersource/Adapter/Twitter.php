@@ -46,8 +46,20 @@ class Twitter extends AbstractAdapter
 	{
 		$info = $identity->getRawData();
 		return array(
-			'name' => $info['fullname'] ?: $info['screen_name'],
+			'name' => $info['fullname'] ?: $info['identity_friendly'],
 		);
+	}
+
+
+	public function getDisplayName(array $info)
+	{
+		return '@' . $info['identity_friendly'];
+	}
+
+
+	public function getDisplayLink(array $info)
+	{
+		return 'htpt://twitter.com/' . $info['identity_friendly'];
 	}
 
 
@@ -70,7 +82,8 @@ class Twitter extends AbstractAdapter
 	{
 		return array(
 			'tpl_login_pull_btn',
-			'tpl_widget_overlay_btn'
+			'tpl_widget_overlay_btn',
+			'tpl_newcomment_tab',
 		);
 	}
 

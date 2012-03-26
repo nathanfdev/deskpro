@@ -133,6 +133,11 @@ class MainController extends AbstractController
 		)));
 	}
 
+	public function commentFormLoginPartialAction()
+	{
+		return $this->render('UserBundle:Common:comments-login-form.html.twig');
+	}
+
 	public function validateEmailAction($id, $auth)
 	{
 		$validator = EmailValidator::createFromId($id, $auth);
@@ -180,11 +185,27 @@ class MainController extends AbstractController
 				'person_id' => 0
 			);
 		} else {
+
 			$person_data = array(
 				'person_id' => $this->person->id,
 				'person_name' => $this->person->name,
 				'person_email' => $this->person->getPrimaryEmailAddress(),
 			);
+
+			if (App::getSession()->get('auth_usersource_id')) {
+				$usersource = App::getOrm()->getRepository('DeskPRO:Usersource')->getUsersource(App::getSession()->get('auth_usersource_id'));
+				if ($usersource) {
+					$person_data['usersource_type']     = $usersource->source_type;
+					$person_data['usersource_title']    = $usersource->title;
+
+					if (App::getSession()->get('auth_usersource_display_name')) {
+						$person_data['usersource_display_name']  = App::getSession()->get('auth_usersource_display_name');
+					}
+					if (App::getSession()->get('auth_usersource_display_link')) {
+						$person_data['usersource_display_link']  = App::getSession()->get('auth_usersource_display_link');
+					}
+				}
+			}
 
 			if ($usersource_id && $this->person->usersource_assoc[$usersource_id]) {
 				$person_data = array_merge(

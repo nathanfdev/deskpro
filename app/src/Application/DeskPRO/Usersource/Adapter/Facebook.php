@@ -74,7 +74,8 @@ class Facebook extends AbstractAdapter
 	{
 		return array(
 			'tpl_login_pull_btn',
-			'tpl_widget_overlay_btn'
+			'tpl_widget_overlay_btn',
+			'tpl_newcomment_tab',
 		);
 	}
 

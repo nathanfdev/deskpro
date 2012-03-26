@@ -19,6 +19,14 @@ $collection->add('user_admin_rendertpl', new Route(
 	array()
 ));
 
+$collection->add('user_comment_form_login_partial', new Route(
+	'/_misc/comment-form-login-partial',
+	array('_controller' => 'UserBundle:Main:commentFormLoginPartial'),
+	array(),
+	array()
+));
+
+
 $collection->add('user_test', new Route(
 	'/test',
 	array('_controller' => 'UserBundle:Test:index'),

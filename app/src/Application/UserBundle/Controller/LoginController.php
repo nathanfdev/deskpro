@@ -318,6 +318,10 @@ HTML;
 
 				$this->session->set('auth_person_id', $person->id);
 				$this->session->set('dp_interface', DP_INTERFACE);
+				$this->session->set('auth_usersource_id', $usersource->id);
+				$this->session->set('usersource_display_name', $usersource->getAdapter()->getDisplayName($result->getIdentity()->getRawData()));
+				$this->session->set('usersource_display_link', $usersource->getAdapter()->getDisplayLink($result->getIdentity()->getRawData()));
+
 				$this->session->save();
 
 				if ($this->in->getString('js_tell')) {
@@ -377,6 +381,9 @@ HTML;
 				$person = $login_processor->getPerson();
 
 				$this->session->set('auth_person_id', $person['id']);
+				$this->session->set('auth_usersource_id', $usersource->id);
+				$this->session->set('usersource_display_name', $usersource->getAdapter()->getDisplayName($result->getIdentity()->getRawData()));
+				$this->session->set('usersource_display_link', $usersource->getAdapter()->getDisplayLink($result->getIdentity()->getRawData()));
 
 				$return = $this->in->getString('return');
 				if ($return) {
@@ -417,6 +424,10 @@ HTML;
 			$person = $login_processor->getPerson();
 
 			$this->session->set('auth_person_id', $person['id']);
+			$this->session->set('auth_usersource_id', $usersource->id);
+			$this->session->set('usersource_display_name', $usersource->getAdapter()->getDisplayName($result->getIdentity()->getRawData()));
+			$this->session->set('usersource_display_link', $usersource->getAdapter()->getDisplayLink($result->getIdentity()->getRawData()));
+
 			$this->session->save();
 
 			if ($this->session->get('auth_return')) {

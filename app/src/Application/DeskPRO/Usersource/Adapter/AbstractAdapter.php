@@ -79,6 +79,33 @@ abstract class AbstractAdapter implements CapabilityInformerInterface
 
 
 	/**
+	 * @param array $info
+	 * @return string
+	 */
+	public function getDisplayName(array $info)
+	{
+		$order = array('display_name', 'username', 'name', 'email');
+		foreach ($order as $k) {
+			if (!empty($info[$k])) {
+				return $info[$k];
+			}
+		}
+
+		return '';
+	}
+
+
+	/**
+	 * @param array $info
+	 * @return string
+	 */
+	public function getDisplayLink(array $info)
+	{
+		return '';
+	}
+
+
+	/**
 	 * Get the adapter.
 	 *
 	 * @return \Orb\Auth\Adapter\AdapterInterface

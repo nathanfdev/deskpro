@@ -29,71 +29,14 @@
 					<li class="new-comment {% if not app.user.is_guest %}no-nav{% endif %}" id="comments_login_info">
 						<form action="{{ form_action }}" method="post" class="with-form-validator">
 							<div class="login-area">
-								<div class="tabs-wrap">
+								<div class="inner-wrap">
 									<div>
 										<textarea name="new_comment[content]" cols="120" rows="5" placeholder="Add a comment"></textarea>
 									</div>
-									{% if not app.user.is_guest %}
-										<div class="dp-form">
-											<div class="dp-form-row">
-												<div class="dp-form-label">
-													<label>{{ phrase('user.label_name') }} *</label>
-												</div>
-												<div class="dp-form-input">
-													<input
-														type="text"
-														name="new_comment[name]"
-														class="display-name-field"
-														value="{{ app.user.display_name }}"
-														data-field-validators="DeskPRO.Form.LengthValidator"
-														data-min-len="2"
-													/>
-												</div>
-											</div>
-										</div>
-										<div style="padding-top: 0">
-											<button class="btn primary" style="margin-top: 10px;">{{ phrase('user.post_comment_btn') }}</button>
-										</div>
-									{% else %}
-										<div class="tab dp-form">
-											<div class="dp-form-row source-extra" style="display: none">
-												<div class="dp-form-label">
-													<label>{{ phrase('user.label_logged_in_as') }}</label>
-												</div>
-												<div class="dp-form-input">
-													<span class="source-extra-name"></span>
-												</div>
-											</div>
-											<div class="dp-form-row">
-												<div class="dp-form-label">
-													<label>{{ phrase('user.label_name') }}</label>
-													<em class="desc">{{ phrase('user.required') }}</em>
-												</div>
-												<div class="dp-form-input">
-													<input
-														type="text"
-														name="new_comment[name]"
-														class="display-name-field"
-														value=""
-														data-field-validators="DeskPRO.Form.LengthValidator"
-														data-min-len="2"
-													/>
-												</div>
-											</div>
-											<div class="dp-form-row email-address-row">
-												<div class="dp-form-label">
-													<label>{{ phrase('user.label_email_address') }}</label>
-													<em class="desc">{{ phrase('user.required_not_displayed') }}</em>
-												</div>
-												<div class="dp-form-input">
-													<input type="text" name="new_comment[email]" />
-												</div>
-											</div>
-										</div>
-										<div style="padding-top: 0">
-											<button class="btn primary" style="margin-top: 10px;">{{ phrase('user.post_comment_btn') }}</button>
-										</div>
-									{% endif %}
+									<div id="comments_form_login_area" data-element-handler="DeskPRO.User.ElementHandler.CommentFormLogin" class="with-handler">{% include 'UserBundle:Common:comments-login-form.html.twig' %}</div>
+									<div style="padding-top: 0">
+										<button class="btn primary" style="margin-top: 10px;">{{ phrase('user.post_comment_btn') }}</button>
+									</div>
 								</div>
 							</div>
 						</form>

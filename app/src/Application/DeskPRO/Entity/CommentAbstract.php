@@ -94,6 +94,11 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
+	protected $website = null;
+
+	/**
+	 * @var string
+	 */
 	protected $content;
 
 	/**
