@@ -265,10 +265,8 @@ HTML;
 		$usersources = App::getOrm()->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
 		foreach ($usersources as $us) {
 
-			error_log("Trying {$us->id}");
-
 			/** @var $us \Application\DeskPRO\Entity\Usersource */
-			$adapter = $us->getAdapter()->getAuthAdapter();
+			$adapter = $this->_initUserSourceAdapter($us);
 			$adapter->setFormData(array(
 				'username' => $this->in->getString('email'),
 				'password' => $this->in->getString('password')
@@ -353,8 +351,9 @@ HTML;
 						'usersource_id' => $usersource_id
 					), true);
 					$this->session->set('auth_return', $return);
-					$this->session->save();
 				}
+
+				$this->session->save();
 
 				return $this->redirect($result->getRedirectUrl());
 
@@ -396,6 +395,7 @@ HTML;
 
 	public function authenticateCallbackAction($usersource_id)
 	{
+		$return = $this->in->getString('return');
 		$usersource = App::getOrm()->find('DeskPRO:Usersource', $usersource_id);
 
 		$adapter = $this->_initUserSourceAdapter($usersource);
@@ -447,6 +447,10 @@ HTML;
 	{
 		$adapter = $usersource->getAdapter()->getAuthAdapter();
 
+		if (App::getConfig('enable_usersource_log') && $adapter instanceof \Orb\Log\Loggable) {
+			$adapter->setLogger($this->_getAdapterLogger());
+		}
+
 		if ($adapter instanceof \Orb\Auth\Adapter\FormLoginInterface) {
 			$adapter->setFormData($_POST);
 		}
@@ -470,6 +474,18 @@ HTML;
 		}
 
 		return $adapter;
+	}
+
+	protected function _getAdapterLogger()
+	{
+		static $logger = null;
+
+		if ($logger === null) {
+			$logger = new \Orb\Log\Logger();
+			$logger->addWriter(new \Orb\Log\Writer\Stream($this->container->getLogDir() . '/usersource_log.log'));
+		}
+
+		return $logger;
 	}
 
 	############################################################################

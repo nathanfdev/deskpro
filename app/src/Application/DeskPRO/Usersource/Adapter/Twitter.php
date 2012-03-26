@@ -46,7 +46,7 @@ class Twitter extends AbstractAdapter
 	{
 		$info = $identity->getRawData();
 		return array(
-			'name' => $info['fullname'],
+			'name' => $info['fullname'] ?: $info['screen_name'],
 		);
 	}
 

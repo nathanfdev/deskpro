@@ -131,7 +131,7 @@ class LoginProcessor
 			$em->persist($this->person);
 			$em->flush();
 
-			if (!$this->person->findEmailAddress($set_email)) {
+			if ($set_email && !$this->person->findEmailAddress($set_email)) {
 				$email_obj = $this->person->addEmailAddressString($set_email);
 				$em->persist($email_obj);
 				$em->flush();
