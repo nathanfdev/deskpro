@@ -50,6 +50,7 @@ class ActiveDirectoryModel
 	public $accountDomainName;
 	public $accountDomainNameShort;
 	public $accountFilterFormat;
+	public $lost_password_url;
 
 
 	public function __construct(Usersource $usersource = null)
@@ -58,10 +59,11 @@ class ActiveDirectoryModel
 			$this->_usersource = $usersource;
 
 			$this->title = $usersource->title;
+			$this->lost_password_url = $usersource->lost_password_url;
 
 			$fields = array('port', 'host', 'baseDn', 'username', 'password', 'accountDomainName', 'accountDomainNameShort', 'accountFilterFormat');
 			foreach ($fields as $f) {
-				$this->f = $usersource->getOption($f, null);
+				$this->$f = $usersource->getOption($f, null);
 			}
 
 			if ($usersource->getOption('useSsl')) {
@@ -77,6 +79,7 @@ class ActiveDirectoryModel
 	public function save(\Application\DeskPRO\ORM\EntityManager $em)
 	{
 		$this->_usersource->title = $this->title;
+		$this->_usersource->lost_password_url = $this->lost_password_url;
 
 		$options = array(
 			'host'                   => $this->host,

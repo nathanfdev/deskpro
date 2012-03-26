@@ -41,9 +41,6 @@ use Orb\Auth\Identity;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
-use Application\DeskPRO\Entity\PersonFieldData;
-use Application\DeskPRO\Entity\PersonScraper;
-use Application\DeskPRO\Entity\PersonScraperAssoc;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Usersource;
 
@@ -121,6 +118,7 @@ class LoginProcessor
 
 			if (!$this->person) {
 				$this->person = new Person();
+				$this->person->is_user = true;
 				$this->person->creation_system = 'web.usersource';
 			}
 

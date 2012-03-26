@@ -92,6 +92,7 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
 	{
 		return array(
 			'form_login',
+			'get_user_info'
 		);
 	}
 

@@ -53,6 +53,7 @@ class DbTablePhpPasswordCheckModel
 	public $field_last_name;
 	public $field_name;
 	public $password_php;
+	public $lost_password_url;
 
 	public function __construct(Usersource $usersource = null)
 	{
@@ -60,6 +61,7 @@ class DbTablePhpPasswordCheckModel
 			$this->_usersource = $usersource;
 
 			$this->title = $usersource->title;
+			$this->lost_password_url = $usersource->lost_password_url;
 
 			$fields = array(
 				'db_dsn',
@@ -101,6 +103,7 @@ class DbTablePhpPasswordCheckModel
 	public function save(\Application\DeskPRO\ORM\EntityManager $em)
 	{
 		$this->_usersource->title = $this->title;
+		$this->_usersource->lost_password_url = $this->lost_password_url;
 
 		$options = array(
 			'db_dsn'           => $this->db_dsn,

@@ -51,7 +51,7 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 	protected $id;
 
 	/**
-	 * @var Application\DeskPRO\Entity\Person
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	protected $person;
 

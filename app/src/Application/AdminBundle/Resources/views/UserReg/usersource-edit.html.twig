@@ -1,7 +1,7 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
-<ul xmlns="http://www.w3.org/1999/html">
+<ul xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 	<li><a href="{{ path('admin_userreg_options') }}">Registration Options</a></li>
 	{% if not usersource.id %}
 		<li><a href="{{ path('admin_userreg_usersource_choose') }}">New Usersource</a></li>
@@ -22,6 +22,18 @@
 		<div class="dp-form-input">
 			{{ form_widget(form.title) }}
 		</div>
+	</div>
+
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>Lost Password URL</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.lost_password_url) }}
+		</div>
+		<small>
+			When a user has logged-in using this usersource and later clicks the "Forgot Password" link, this is the URL they will be given to reset their password.
+		</small>
 	</div>
 
 	{% include 'AdminBundle:UserReg:usersource-edit-' ~ usersource.source_type ~ '.html.twig' %}

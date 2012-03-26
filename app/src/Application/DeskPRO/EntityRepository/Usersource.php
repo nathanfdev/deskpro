@@ -41,8 +41,17 @@ use Doctrine\ORM\EntityRepository;
 
 class Usersource extends EntityRepository
 {
+	/**
+	 * @var \Application\DeskPRO\Entity\Usersource[]
+	 */
 	protected $usersources = null;
 
+	/**
+	 * Get all defined usersources
+	 *
+	 * @param bool $active
+	 * @return \Application\DeskPRO\Entity\Usersource[]
+	 */
 	public function getAllUsersources($active = true)
 	{
 		if ($active) {
@@ -65,7 +74,11 @@ class Usersource extends EntityRepository
 		}
 	}
 
+
 	/**
+	 * Fetch all usersources that are capable of logging in using locally-accepted form input.
+	 * That is, they can handle a username/password combo and can process that in real-time.
+	 *
 	 * @return \Application\DeskPRO\Entity\Usersource[]
 	 */
 	public function getLocalInputUsersources()
@@ -82,15 +95,52 @@ class Usersource extends EntityRepository
 		return $ret;
 	}
 
-	public function getByType($type)
+	/**
+	 * Fetch all usersources that are capable of fetching userinfo without having to
+	 * authenticate. That is, we can provide a id/username/email and get an array of
+	 * raw data back.
+	 *
+	 * @return \Application\DeskPRO\Entity\Usersource[]
+	 */
+	public function getUserInfoFetchableUsersources()
 	{
-		return $this->getEntityManager()->createQuery("
-			SELECT u
-			FROM DeskPRO:Usersource u
-			WHERE u.source_type = ?1
-		")->setParameter(1, $type)->setMaxResults(1)->getOneOrNullResult();
+		$all = $this->getAllUsersources();
+
+		$ret = array();
+		foreach ($all as $us) {
+			if ($us->getAdapter()->isCapable('form_login')) {
+				$ret[$us->id] = $us;
+			}
+		}
+
+		return $ret;
 	}
 
+
+	/**
+	 * Get a usersource of a specific type
+	 *
+	 * @param string $type
+	 * @return \Application\DeskPRO\Entity\Usersource[]
+	 */
+	public function getByType($type, $multiple = false)
+	{
+		$dql = "SELECT u FROM DeskPRO:Usersource u WHERE u.source_type = ?1";
+
+		if ($multiple) {
+			return $this->getEntityManager()->createQuery($dql)->setParameter(1, $type)->execute();
+		} else {
+			return $this->getEntityManager()->createQuery($dql)->setParameter(1, $type)->setMaxResults(1)->getOneOrNullResult();
+		}
+	}
+
+
+	/**
+	 * Get a usersource by its ID
+	 *
+	 * @param int $id
+	 * @return \Application\DeskPRO\Entity\Usersource
+	 */
 	public function getUsersource($id)
 	{
 		if ($this->usersources === null) $this->getAllUsersources();
@@ -98,6 +148,12 @@ class Usersource extends EntityRepository
 		return $this->usersources[$id];
 	}
 
+
+	/**
+	 * Get an array of all usersource IDs
+	 *
+	 * @return int[]
+	 */
 	public function getUsersourceIds()
 	{
 		if ($this->usersources === null) $this->getAllUsersources();

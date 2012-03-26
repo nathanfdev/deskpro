@@ -96,6 +96,7 @@ class UserRegController extends AbstractController
 			$facebook->is_enabled = false;
 			$facebook->source_type = 'facebook';
 			$facebook->title = 'Facebook';
+			$facebook->lost_password_url = 'https://www.facebook.com/recover.php';
 
 			$this->em->getConnection()->beginTransaction();
 			try {
@@ -181,6 +182,7 @@ class UserRegController extends AbstractController
 			$google->is_enabled = false;
 			$google->source_type = 'google';
 			$google->title = 'Google';
+			$google->lost_password_url = 'https://www.google.com/accounts/recovery';
 		}
 
 		if ($google->is_enabled) {

@@ -32,72 +32,28 @@
  * @subpackage
  */
 
-namespace Application\AdminBundle\Form\Usersource\Model;
+namespace Orb\Auth\Adapter;
 
-use Application\DeskPRO\Entity\Usersource;
-
-class BaseDbTableModel
+/**
+ * Auth adapters that implement this usersource can return raw userinfo given an ID.
+ * For example, DbTable can return a database row which has nothing to do with authenticating.
+ */
+interface UserInfoFetchableInterface
 {
-	protected $_usersource = null;
-
-	public $title;
-	public $db_dsn;
-	public $db_username;
-	public $db_password;
-	public $lost_password_url;
-
-	public function __construct(Usersource $usersource = null)
-	{
-		if ($usersource) {
-			$this->_usersource = $usersource;
-
-			$this->title = $usersource->title;
-			$this->lost_password_url = $usersource->lost_password_url;
-
-			$fields = array(
-				'db_dsn',
-				'db_username',
-				'db_password',
-			);
-
-			foreach ($fields as $f) {
-				$this->$f = $usersource->getOption($f, null);
-			}
-
-			if (!$usersource->id) {
-				if (!$this->db_dsn) {
-					$this->db_dsn = 'mysql:host=localhost;dbname=mydb';
-				}
-				if (!$this->db_username) {
-					$this->db_username = 'root';
-					$this->db_password = 'root';
-				}
-			}
-		}
-
-		$this->init();
-	}
-
-	protected  function init() {}
-
-	public function save(\Application\DeskPRO\ORM\EntityManager $em)
-	{
-		$this->_usersource->title = $this->title;
-		$this->_usersource->lost_password_url = $this->lost_password_url;
-
-		$options = array(
-			'db_dsn'           => $this->db_dsn,
-			'db_username'      => $this->db_username,
-			'db_password'      => $this->db_password,
-		);
-
-		$this->_usersource->options = $options;
-
-		$this->saveApply($em);
-
-		$em->persist($this->_usersource);
-		$em->flush();
-	}
-
-	protected function saveApply(\Application\DeskPRO\ORM\EntityManager $em) { }
+	/**
+	 * Fetch userinfo based on $id. $id must be something unique, but the field itself
+	 * is unknown. It might be a userid, a username or an email address, or something else.
+	 *
+	 * $id_type is used to specify the specific type $id is. If it is null, then the implementation
+	 * must guest or simply return null for no-match.
+	 *
+	 * Standard strings for $id_type are: id, username, email.
+	 *
+	 * This method must return null if no match was found.
+	 *
+	 * @param  mixed $id
+	 * @param  mixed $id_type
+	 * @return mixed
+	 */
+	public function getUserInfoFromIdentity($id, $id_type = null);
 }

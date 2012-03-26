@@ -43,7 +43,7 @@ use Orb\Log\Loggable;
 
 use Doctrine\DBAL\Connection;
 
-class DbTable implements FormLoginInterface, Loggable
+class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggable
 {
 	const OPT_TABLE              = 'table';
 	const OPT_FIELD_ID           = 'field_id';
@@ -261,7 +261,7 @@ class DbTable implements FormLoginInterface, Loggable
 		$field = $this->options[self::OPT_FIELD_USERNAME];
 		$sql = "SELECT * FROM $table WHERE $field = ? LIMIT 1";
 
-		$result = $this->db->fetchAssoc($sql, array($this->set_username));
+		$result = $this->db->fetchAssoc($sql, array($username));
 		if (!$result) {
 			return null;
 		}
@@ -275,7 +275,7 @@ class DbTable implements FormLoginInterface, Loggable
 	 *
 	 * @return array
 	 */
-	protected function getUserInfoForEmail()
+	protected function getUserInfoForEmail($email)
 	{
 		if (!$this->options[self::OPT_FIELD_EMAIL]) {
 			return null;
@@ -285,12 +285,62 @@ class DbTable implements FormLoginInterface, Loggable
 		$field = $this->options[self::OPT_FIELD_EMAIL];
 		$sql = "SELECT * FROM $table WHERE $field = ? LIMIT 1";
 
-		$result = $this->db->fetchAssoc($sql, array($this->set_username));
+		$result = $this->db->fetchAssoc($sql, array($email));
 		if (!$result) {
 			return null;
 		}
 
 		return $result;
+	}
+
+
+	/**
+	 * Get user info from an email address
+	 *
+	 * @return array
+	 */
+	protected function getUserInfoForId($id)
+	{
+		$table = $this->options[self::OPT_TABLE];
+		$field = $this->options[self::OPT_FIELD_ID];
+		$sql = "SELECT * FROM $table WHERE $field = ? LIMIT 1";
+
+		$result = $this->db->fetchAssoc($sql, array($id));
+		if (!$result) {
+			return null;
+		}
+
+		return $result;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getUserInfoFromIdentity($id, $id_type = null)
+	{
+		$try = array();
+		if ($id_type === 'email' || (!$id_type && \Orb\Validator\StringEmail::isValueValid($id))) {
+			$try[] = 'getUserInfoForEmail';
+		}
+
+		if ($id_type == 'username' || !$id_type) {
+			$try[] = 'getUserInfoForUsername';
+		}
+
+		if ($id_type == 'id' || (!$id_type && \Orb\Util\Numbers::isInteger($id))) {
+			$try[] = 'getUserInfoForId';
+		}
+
+		$userinfo = null;
+		foreach ($try as $m) {
+			$userinfo = $this->$m($this->set_username);
+			if ($userinfo) {
+				break;
+			}
+		}
+
+		return $userinfo;
 	}
 
 

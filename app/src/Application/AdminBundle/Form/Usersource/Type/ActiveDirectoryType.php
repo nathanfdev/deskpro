@@ -42,6 +42,7 @@ class ActiveDirectoryType extends AbstractType
 	public function buildForm(FormBuilder $builder, array $options)
 	{
 		$builder->add('title', 'text', array('required' => true));
+		$builder->add('lost_password_url', 'text', array('required' => false));
 		$builder->add('secure', 'choice', array('required' => false, 'choices' => array('useStartTls' => 'TLS', 'useSsl' => 'SSL')));
 		$builder->add('port', 'text', array('required' => true));
 		$builder->add('host', 'text', array('required' => true));

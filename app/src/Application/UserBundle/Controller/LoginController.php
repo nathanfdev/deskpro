@@ -482,11 +482,37 @@ HTML;
 		$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email);
 
 		if (!$person) {
+
+			// If no user was found in our database, then the account might not have
+			// been set up yet. For adapters that support it, we can still see if we
+			// can be helpful and redirect to another source they exist in
+			$usersources = App::getOrm()->getRepository('DeskPRO:Usersource')->getUserInfoFetchableUsersources();
+			foreach ($usersources as $us) {
+				$found = $us->getUserInfoFromIdentity($email, 'email');
+				if ($found && $us->lost_password_url) {
+					return $this->redirect($us->lost_password_url);
+				}
+			}
+
 			if ($this->request->isXmlHttpRequest()) {
 				return $this->createJsonResponse(array('error' => 'invalid_email'));
 			}
 			return $this->resetPasswordAction(true);
 		}
+
+		// If they dont have a password, this either means they're not a user yet,
+		// but could also mean they registered through a usersource which means they might
+		// need to use a different reset URL
+		if (!$person->password) {
+			$associations = App::getOrm()->getRepository('DeskPRO:PersonUsersourceAssoc')->getAssociationsForPerson($person);
+			foreach ($associations as $assoc) {
+				if ($assoc->usersource->lost_password_url) {
+					return $this->redirect($assoc->usersource->lost_password_url);
+				}
+			}
+		}
+
+		// If they're still here, then we just send them through the normal DeskPRO reset procedure
 
 		$code_data = TmpData::create('reset-password', array('person_id' => $person['id']), '+2 days');
 		App::getOrm()->persist($code_data);

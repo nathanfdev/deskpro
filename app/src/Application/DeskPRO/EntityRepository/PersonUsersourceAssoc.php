@@ -59,4 +59,21 @@ class PersonUsersourceAssoc extends EntityRepository
 
 		return $assoc;
 	}
+
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 * @return \Application\DeskPRO\Entity\PersonUsersourceAssoc[]
+	 */
+	public function getAssociationsForPerson(\Application\DeskPRO\Entity\Person $person)
+	{
+		$associations = $this->_em->createQuery("
+			SELECT assoc, us
+			FROM DeskPRO:PersonUsersourceAssoc assoc
+			LEFT JOIN assoc.usersource us
+			WHERE assoc.person = ?0
+		")->execute(array($person));
+
+		return $associations;
+	}
 }
