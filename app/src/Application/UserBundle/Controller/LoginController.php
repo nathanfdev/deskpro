@@ -152,9 +152,7 @@ HTML;
 			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
 		}
 
-		$adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
-		$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
-		$result = $adapter->authenticate();
+		$result = $this->authLocalInput();
 
 		$return = $this->in->getString('return');
 
@@ -241,6 +239,54 @@ HTML;
 		return $this->render('UserBundle:Login:jstell.html.twig', array(
 
 		));
+	}
+
+
+	public function authLocalInput()
+	{
+		#------------------------------
+		# Auth local
+		#------------------------------
+
+		if (App::getSetting('core.deskpro_source_enabled')) {
+			$adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
+			$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
+			$result = $adapter->authenticate();
+
+			if ($result->isValid()) {
+				return $result;
+			}
+		}
+
+		#------------------------------
+		# Auth usersources that accept local input
+		#------------------------------
+
+		$usersources = App::getOrm()->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
+		foreach ($usersources as $us) {
+
+			error_log("Trying {$us->id}");
+
+			/** @var $us \Application\DeskPRO\Entity\Usersource */
+			$adapter = $us->getAdapter()->getAuthAdapter();
+			$adapter->setFormData(array(
+				'username' => $this->in->getString('email'),
+				'password' => $this->in->getString('password')
+			));
+			$result = $adapter->authenticate();
+
+			if ($result->isValid()) {
+				$login_processor = new LoginProcessor($us, $result->getIdentity());
+				$person = $login_processor->getPerson();
+
+				$identity = new \Orb\Auth\Identity($person->id, array('person' => $person));
+				$result = new \Orb\Auth\Result(\Orb\Auth\Result::SUCCESS, $identity);
+
+				return $result;
+			}
+		}
+
+		return new \Orb\Auth\Result(\Orb\Auth\Result::FAILURE_INVALID_CREDS);
 	}
 
 

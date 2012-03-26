@@ -51,7 +51,7 @@ class Usersource extends EntityRepository
 					SELECT u
 					FROM DeskPRO:Usersource u INDEX BY u.id
 					WHERE u.is_enabled = true
-					ORDER BY u.display_order ASC
+					ORDER BY u.display_order ASC, u.title ASC
 				")->execute();
 			}
 
@@ -63,6 +63,23 @@ class Usersource extends EntityRepository
 				ORDER BY u.display_order ASC
 			")->execute();
 		}
+	}
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Usersource[]
+	 */
+	public function getLocalInputUsersources()
+	{
+		$all = $this->getAllUsersources();
+
+		$ret = array();
+		foreach ($all as $us) {
+			if ($us->getAdapter()->isCapable('form_login')) {
+				$ret[$us->id] = $us;
+			}
+		}
+
+		return $ret;
 	}
 
 	public function getByType($type)

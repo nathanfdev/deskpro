@@ -1,0 +1,31 @@
+<div class="dp-form-row">
+	<div class="dp-form-label">
+		<label>Database DSN</label>
+	</div>
+	<div class="dp-form-input">
+		{{ form_widget(form.db_dsn) }}
+		<br />
+		<small>Enter the DSN connection string for the database. Refer to the manual for the string format
+			(<a href="http://www.php.net/manual/en/ref.pdo-mysql.connection.php">MySQL</a>).
+			For example: <var>mysql:host=localhost;dbname=mydb</var>
+		</small>
+	</div>
+</div>
+
+<div class="dp-form-row">
+	<div class="dp-form-label">
+		<label>Database User</label>
+	</div>
+	<div class="dp-form-input">
+		{{ form_widget(form.db_username) }}
+	</div>
+</div>
+
+<div class="dp-form-row">
+	<div class="dp-form-label">
+		<label>Database Password</label>
+	</div>
+	<div class="dp-form-input">
+		{{ form_widget(form.db_password) }}
+	</div>
+</div>

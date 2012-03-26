@@ -210,7 +210,7 @@ class DbTable implements FormLoginInterface, Loggable
 			$userinfo[$info_key] = $userinfo[$field];
 		}
 
-		$identity = new Identity($userinfo[self::OPT_FIELD_ID], $userinfo);
+		$identity = new Identity($userinfo[$this->options[self::OPT_FIELD_ID]], $userinfo);
 
 		return $identity;
 	}
@@ -261,7 +261,7 @@ class DbTable implements FormLoginInterface, Loggable
 		$field = $this->options[self::OPT_FIELD_USERNAME];
 		$sql = "SELECT * FROM $table WHERE $field = ? LIMIT 1";
 
-		$result = $this->db->fetchAssoc($sql, array($username));
+		$result = $this->db->fetchAssoc($sql, array($this->set_username));
 		if (!$result) {
 			return null;
 		}
@@ -285,7 +285,7 @@ class DbTable implements FormLoginInterface, Loggable
 		$field = $this->options[self::OPT_FIELD_EMAIL];
 		$sql = "SELECT * FROM $table WHERE $field = ? LIMIT 1";
 
-		$result = $this->db->fetchAssoc($sql, array($username));
+		$result = $this->db->fetchAssoc($sql, array($this->set_username));
 		if (!$result) {
 			return null;
 		}

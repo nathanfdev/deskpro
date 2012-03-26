@@ -110,12 +110,16 @@ class LoginProcessor
 
 			// If we can trust the email address and there already exists a person
 			// with this email address, then we can just link the accounts now
+			$set_email = false;
 			if ($mapped_fields->has('email') && $mapped_fields->get('email_confirmed')) {
+				$set_email = $mapped_fields->get('email');
 				$email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($mapped_fields->get('email'));
 				if ($email) {
 					$this->person = $email->person;
 				}
-			} else {
+			}
+
+			if (!$this->person) {
 				$this->person = new Person();
 				$this->person->creation_system = 'web.usersource';
 			}
@@ -129,12 +133,18 @@ class LoginProcessor
 			$em->persist($this->person);
 			$em->flush();
 
+			if (!$this->person->findEmailAddress($set_email)) {
+				$email_obj = $this->person->addEmailAddressString($set_email);
+				$em->persist($email_obj);
+				$em->flush();
+			}
+
 			// New assoc
 			$this->assoc = new PersonUsersourceAssoc();
 			$this->assoc['person']            = $this->person;
 			$this->assoc['usersource']        = $this->usersource;
 			$this->assoc['identity']          = $this->identity->getIdentity();
-			$this->assoc['identity_friendly'] = $this->identity->getFriendlyIdentity();
+			$this->assoc['identity_friendly'] = $this->identity->getFriendlyIdentity() ?: $this->identity->getIdentity();
 			$this->assoc['data']              = $this->identity->getRawData();
 			$em->persist($this->assoc);
 			$em->flush();

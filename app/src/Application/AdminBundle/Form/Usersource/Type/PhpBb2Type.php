@@ -45,6 +45,7 @@ class PhpBb2Type extends AbstractType
 		$builder->add('db_dsn', 'text', array('required' => true));
 		$builder->add('db_username', 'text', array('required' => false));
 		$builder->add('db_password', 'text', array('required' => false));
+		$builder->add('table_prefix', 'text', array('required' => false));
 	}
 
 	public function getDefaultOptions(array $options)

@@ -46,9 +46,10 @@ class DbTablePhpPasswordCheckType extends AbstractType
 		$builder->add('db_username', 'text', array('required' => false));
 		$builder->add('db_password', 'text', array('required' => false));
 		$builder->add('table', 'text', array('required' => true));
+		$builder->add('field_id', 'text', array('required' => true));
 		$builder->add('field_username', 'text', array('required' => false));
-		$builder->add('field_email', 'text', array('required' => false));
-		$builder->add('field_password', 'text', array('required' => false));
+		$builder->add('field_email', 'text', array('required' => true));
+		$builder->add('field_password', 'text', array('required' => true));
 		$builder->add('field_first_name', 'text', array('required' => false));
 		$builder->add('field_last_name', 'text', array('required' => false));
 		$builder->add('field_name', 'text', array('required' => false));

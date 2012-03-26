@@ -45,6 +45,7 @@ class DbTablePhpPasswordCheckModel
 	public $db_dsn;
 	public $db_username;
 	public $db_password;
+	public $field_id;
 	public $field_username;
 	public $field_email;
 	public $field_password;
@@ -65,6 +66,7 @@ class DbTablePhpPasswordCheckModel
 				'db_username',
 				'db_password',
 				'table',
+				'field_id',
 				'field_username',
 				'field_email',
 				'field_password',
@@ -105,6 +107,7 @@ class DbTablePhpPasswordCheckModel
 			'db_username'      => $this->db_username,
 			'db_password'      => $this->db_password,
 			'table'            => $this->table,
+			'field_id'         => $this->field_id,
 			'field_username'   => $this->field_username,
 			'field_email'      => $this->field_email,
 			'field_password'   => $this->field_password,
