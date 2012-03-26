@@ -58,45 +58,61 @@
 		</div>
 
 	{% else %}
-		<div
-			class="dp-inline-email-manage with-handler"
-			{% if mode == 'advanced' %}
-			data-element-handler="DeskPRO.User.ElementHandler.InlineEmailManage"
-			data-security-token="{{ security_token('email_manage') }}"
-			{% endif %}
-		>
-			<div class="dp-form-row">
-				<div class="dp-form-label">
-					<label>{{ phrase('user.label_your_email') }}</label>
-					{% if mode == 'advanced' %}
-					<em class="change-email"><a href="{{ path('user_profile') }}">{{ phrase('user.change_email') }}</a></em>
-					<em class="change-email-close" style="display: none"><a>{{ phrase('user.done_changing_email') }}</a></em>
-					{% endif %}
+		{% if app.user.emails|length %}
+			<div
+				class="dp-inline-email-manage with-handler"
+				{% if mode == 'advanced' %}
+				data-element-handler="DeskPRO.User.ElementHandler.InlineEmailManage"
+				data-security-token="{{ security_token('email_manage') }}"
+				{% endif %}
+			>
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>{{ phrase('user.label_your_email') }}</label>
+						{% if mode == 'advanced' %}
+						<em class="change-email"><a href="{{ path('user_profile') }}">{{ phrase('user.change_email') }}</a></em>
+						<em class="change-email-close" style="display: none"><a>{{ phrase('user.done_changing_email') }}</a></em>
+						{% endif %}
+					</div>
+					<div class="dp-form-input">
+						<input type="text" id="dp_inline_login_email" class="dp-email-field" name="{{ email_form_name }}" value="{{ app.user.primary_email_address }}" readonly="readonly" />
+
+					</div>
+				</div>
+				{% if mode == 'advanced' %}
+					<div class="dp-email-manage-controls" style="display: none">
+						<strong>{{ phrase('user.choose_email') }}:</strong><br />
+						<ul>
+							{% for email in app.user.emails %}
+								<li>
+									<label><input type="radio" name="dp_inline_email_choice" value="{{ email.email }}" {% if email.id == app.user.primary_email.id %}checked="checked"{% endif %} /> {{ email.email }}</label>
+								</li>
+							{% endfor %}
+							<li>
+								<label>
+									<input type="radio" name="dp_inline_email_choice" value="NEW" />
+									{{ phrase('user.choose_email_new') }}:
+								</label>
+								<input type="text" class="small dp_inline_email_new" value="" name="dp_inline_email_new" />
+							</li>
+						</ul>
+					</div>
+				{% endif %}
+			</div>
+		{% else %}
+			<div class="dp-form-row {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>{{ phrase('user.label_your_email') }} *</label>
+					</div>
 				</div>
 				<div class="dp-form-input">
-					<input type="text" id="dp_inline_login_email" class="dp-email-field" name="{{ email_form_name }}" value="{{ app.user.primary_email_address }}" readonly="readonly" />
-
+					<input type="text" id="dp_inline_login_email" class="dp-email-field" name="{{ email_form_name }}" value="" />
+					<div class="dp-error-explain">
+						{{ phrase('user.form_fix_email') }}
+					</div>
 				</div>
 			</div>
-			{% if mode == 'advanced' %}
-				<div class="dp-email-manage-controls" style="display: none">
-					<strong>{{ phrase('user.choose_email') }}:</strong><br />
-					<ul>
-						{% for email in app.user.emails %}
-							<li>
-								<label><input type="radio" name="dp_inline_email_choice" value="{{ email.email }}" {% if email.id == app.user.primary_email.id %}checked="checked"{% endif %} /> {{ email.email }}</label>
-							</li>
-						{% endfor %}
-						<li>
-							<label>
-								<input type="radio" name="dp_inline_email_choice" value="NEW" />
-								{{ phrase('user.choose_email_new') }}:
-							</label>
-							<input type="text" class="small dp_inline_email_new" value="" name="dp_inline_email_new" />
-						</li>
-					</ul>
-				</div>
-			{% endif %}
-		</div>
+		{% endif %}
 	{% endif %}
 </div>

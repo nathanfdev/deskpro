@@ -622,6 +622,7 @@ class UserKernel extends AbstractKernel
 	protected function registerAdditionalBundles()
 	{
 		$bundles = array(
+			new \Application\AgentBundle\AgentBundle(), // so templates can work when notiying
 			new \Application\UserBundle\UserBundle(),
 		);
 
@@ -632,6 +633,7 @@ class UserKernel extends AbstractKernel
 	{
 		$loader->load(DP_ROOT.'/sys/config/user/config_'.$this->getEnvironment().'.php');
 	}
+
 
 	public function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 	{

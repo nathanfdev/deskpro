@@ -52,29 +52,18 @@ class UserNotificationNewTicketValidatingAction extends AbstractUserNotification
 	 */
 	public function apply(Ticket $ticket)
 	{
-		if ($ticket->person_email_validating) {
+		$change_info = array(
+			'type' => 'user_notify',
+			'notify_type' => 'newticket_validate',
+			'emailed' => array(),
+			'cced' => array()
+		);
 
-			$vars = array(
-				'email_subject' => new DelegatePhrase('user.emails.subj_newticket_validate', array('ticket_subject' => $ticket['subject'])),
-				'validating_email' => $ticket->person_email_validating,
-				'no_cc' => true
-			);
-
-			$change_info = array(
-				'type' => 'user_notify',
-				'notify_type' => 'newticket_validate',
-				'emailed' => array($ticket->person_email_validating->getEmail()),
-				'cced' => array()
-			);
-
-			$this->doSend('DeskPRO:emails_user:new-ticket-validate', $vars, $ticket, $change_info);
-
-			$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
-
-		} else {
-			// TODO:permissions agent validation?
-			//$this->applyAgentValidating($ticket);
-		}
+		$vars = array(
+			'validating_email' => $ticket->person_email_validating
+		);
+		$this->doSend('DeskPRO:emails_user:new-ticket-validate', $vars, $ticket, $change_info);
+		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 	}
 
 	/**

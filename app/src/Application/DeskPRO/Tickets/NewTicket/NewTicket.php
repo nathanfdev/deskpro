@@ -177,8 +177,26 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 					$email_validating = null;
 				}
+
+			// Logged in user
 			} else {
 				$person = $this->person_context;
+
+				// A new email address.
+				// We know its unique since it passed the validator run before this
+				// New addresses always require validation
+				if (!$person->findEmailAddress($this->person->email)) {
+					// Existing validating address already
+					$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person->email);
+
+					// Or create a new one
+					if (!$email_validating) {
+						$email_validating = new Entity\PersonEmailValidating();
+						$email_validating->email = $this->person->email;
+						$email_validating->person = $person;
+						App::getOrm()->persist($email_validating);
+					}
+				}
 
 				if ($this->person->name) {
 					$person->name = $this->person->name;
@@ -229,7 +247,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			}
 
 			if (!$this->is_html) {
-				$ticket_message['message'] = htmlspecialchars($ticket_message['message']);
+				$ticket_message['message'] = nl2br(htmlspecialchars($ticket_message['message']));
 			}
 
 			$attach = null;

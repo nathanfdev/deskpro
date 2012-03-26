@@ -55,7 +55,7 @@
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content">
 				<ul class="dp-ticketlist">
-					{% for ticket in active_tickets %}
+					{% for ticket in resolved_tickets %}
 						<li>
 							<h4><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id }) }}">{{ ticket.subject }}</a></h4>
 							<ul class="dp-meta">
