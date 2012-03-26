@@ -87,6 +87,6 @@
 	'zend' => array(
 		'into' => DP_ROOT.'/vendor/zend',
 		'repos' => 'git://github.com/zendframework/zf2.git',
-		'version' => 'b3d72e224b74563bc9c29c30cb7d42ffa34efad8',
+		'version' => 'release-2.0.0beta3',
 	)
 );
