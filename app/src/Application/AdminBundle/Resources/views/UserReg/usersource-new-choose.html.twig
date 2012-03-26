@@ -1,0 +1,45 @@
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagebar %}
+<ul>
+	<li><a href="{{ path('admin_userreg_options') }}">Registration Options</a></li>
+	<li>New Usersource</li>
+</ul>
+{% endblock %}
+{% block page %}
+
+<form action="{{ path('admin_userreg_usersource_edit') }}" class="form" method="post">
+	{{ design.block_sections() }}
+
+	{{ design.block_sections_item() }}
+	<header><h3><label><input type="radio" name="usersource[source_type]" value="active_directory" /> Active Directory</label></h3></header>
+	{{ design.block_sections_item_end() }}
+
+	{{ design.block_sections_item() }}
+	<header><h3><label><input type="radio" name="usersource[source_type]" value="db_table_php_password_check" /> Custom Database</label></h3></header>
+	{{ design.block_sections_item_end() }}
+
+	{{ design.block_sections_item() }}
+	<header><h3><label><input type="radio" name="usersource[source_type]" value="vbulletin" /> vBulletin v3.x or v4.x</label></h3></header>
+	{{ design.block_sections_item_end() }}
+
+	{{ design.block_sections_item() }}
+	<header><h3><label><input type="radio" name="usersource[source_type]" value="phpbb2" /> phpBB2</label></h3></header>
+	{{ design.block_sections_item_end() }}
+
+	{{ design.block_sections_item() }}
+	<header><h3><label><input type="radio" name="usersource[source_type]" value="phpbb3" /> phpBB3</label></h3></header>
+	{{ design.block_sections_item_end() }}
+
+	{{ design.block_sections_item() }}
+	<header><h3><label><input type="radio" name="usersource[source_type]" value="ezpublish" /> eZ Publish</label></h3></header>
+	{{ design.block_sections_item_end() }}
+
+	<li class="footer">
+		<button class="clean-white">Continue</button>
+	</li>
+
+	{{ design.block_sections_end() }}
+
+</form>
+{% endblock %}

@@ -29,29 +29,39 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @subpackage AdminBundle
  */
 
-namespace Application\DeskPRO\Usersource\Adapter;
+namespace Application\AdminBundle\Form\Usersource\Type;
 
-use Orb\Auth\Identity;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilder;
 
-class Dp3CustomMysql extends DbTablePhpPasswordCheck
+class ActiveDirectoryType extends AbstractType
 {
-	/**
-	 * @return \Orb\Auth\Adapter\DbTablePhpPasswordCheck
-	 */
-	protected function _createAuthAdapterObject()
+	public function buildForm(FormBuilder $builder, array $options)
 	{
-		$options = $this->usersource->options;
+		$builder->add('title', 'text', array('required' => true));
+		$builder->add('secure', 'choice', array('required' => false, 'choices' => array('useStartTls' => 'TLS', 'useSsl' => 'SSL')));
+		$builder->add('port', 'text', array('required' => true));
+		$builder->add('host', 'text', array('required' => true));
+		$builder->add('baseDn', 'text', array('required' => true));
+		$builder->add('username', 'text', array('required' => true));
+		$builder->add('password', 'text', array('required' => true));
+		$builder->add('accountDomainName', 'text', array('required' => true));
+		$builder->add('accountDomainNameShort', 'text', array('required' => true));
+		$builder->add('accountFilterFormat', 'text', array('required' => false));
+	}
 
-		// Bit of adapter code to convert Dp3 eval code format into the new one
-		$options['password_php'] =  '
-			$password_check = $input = $password_input;
-			'.$options['password_php'].'
-			$pass = ($password_check == $userinfo_password);
-		';
+	public function getDefaultOptions(array $options)
+	{
+		return array(
+			'data_class' => 'Application\\AdminBundle\\Form\\Usersource\\Model\\ActiveDirectoryModel',
+		);
+	}
 
-		return new \Orb\Auth\Adapter\DbTablePhpPasswordCheck($this->getDb(), $options);
+	public function getName()
+	{
+		return 'usersource';
 	}
 }

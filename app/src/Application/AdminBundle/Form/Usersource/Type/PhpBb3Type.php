@@ -29,29 +29,36 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @subpackage AdminBundle
  */
 
-namespace Application\DeskPRO\Usersource\Adapter;
+namespace Application\AdminBundle\Form\Usersource\Type;
 
-use Orb\Auth\Identity;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilder;
 
-class Dp3CustomMysql extends DbTablePhpPasswordCheck
+class PhpBb3Type extends AbstractType
 {
-	/**
-	 * @return \Orb\Auth\Adapter\DbTablePhpPasswordCheck
-	 */
-	protected function _createAuthAdapterObject()
+	public function buildForm(FormBuilder $builder, array $options)
 	{
-		$options = $this->usersource->options;
+		$builder->add('title', 'text', array('required' => true));
+		$builder->add('db_dsn', 'text', array('required' => true));
+		$builder->add('db_username', 'text', array('required' => false));
+		$builder->add('db_password', 'text', array('required' => false));
+		$builder->add('table_prefix', 'text', array('required' => false));
+		$builder->add('check_service_url', 'text', array('required' => true));
+		$builder->add('check_service_key', 'text', array('required' => true));
+	}
 
-		// Bit of adapter code to convert Dp3 eval code format into the new one
-		$options['password_php'] =  '
-			$password_check = $input = $password_input;
-			'.$options['password_php'].'
-			$pass = ($password_check == $userinfo_password);
-		';
+	public function getDefaultOptions(array $options)
+	{
+		return array(
+			'data_class' => 'Application\\AdminBundle\\Form\\Usersource\\Model\\PhpBb3Model',
+		);
+	}
 
-		return new \Orb\Auth\Adapter\DbTablePhpPasswordCheck($this->getDb(), $options);
+	public function getName()
+	{
+		return 'usersource';
 	}
 }

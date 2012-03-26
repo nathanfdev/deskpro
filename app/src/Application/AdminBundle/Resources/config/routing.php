@@ -510,6 +510,34 @@ $collection->add('admin_userreg_deskpro_source_toggle', new Route(
 	array()
 ));
 
+$collection->add('admin_userreg_usersource_choose', new Route(
+	'/settings/usersources/new/choose-type',
+	array('_controller' => 'AdminBundle:UserReg:usersourceNewChoose'),
+	array(),
+	array()
+));
+
+$collection->add('admin_userreg_usersource_edit', new Route(
+	'/settings/usersources/edit/{id}',
+	array('_controller' => 'AdminBundle:UserReg:usersourceEdit', 'id' => '0'),
+	array(),
+	array()
+));
+
+$collection->add('admin_userreg_usersource_toggle', new Route(
+	'/settings/usersources/toggle/{id}',
+	array('_controller' => 'AdminBundle:UserReg:usersourceToggle'),
+	array(),
+	array()
+));
+
+$collection->add('admin_userreg_usersource_delete', new Route(
+	'/settings/usersources/delete/{id}/{security_token}',
+	array('_controller' => 'AdminBundle:UserReg:usersourceDelete'),
+	array(),
+	array()
+));
+
 ################################################################################
 # User : Banning
 ################################################################################
@@ -818,47 +846,6 @@ $collection->add('admin_langs_editphrases_save', new Route(
 	array('language_id' => '\\d+'),
 	array()
 ));
-
-
-################################################################################
-# User sources
-################################################################################
-
-$collection->add('admin_usersources', new Route(
-	'/usersources',
-	array('_controller' => 'AdminBundle:Usersources:index'),
-	array(),
-	array()
-));
-
-$collection->add('admin_usersources_intro', new Route(
-	'/usersources/intro',
-	array('_controller' => 'AdminBundle:Usersources:intro'),
-	array(),
-	array()
-));
-
-$collection->add('admin_usersources_info', new Route(
-	'/usersources/{usersource_id}',
-	array('_controller' => 'AdminBundle:Usersources:info'),
-	array('usersource_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_usersources_edit', new Route(
-	'/usersources/{usersource_id}/edit',
-	array('_controller' => 'AdminBundle:Usersources:edit'),
-	array('usersource_id' => '\\d+'),
-	array()
-));
-
-$collection->add('admin_usersources_new', new Route(
-	'/usersources/new-usersource',
-	array('_controller' => 'AdminBundle:Usersources:edit', 'usersource_id' => 0),
-	array(),
-	array()
-));
-
 
 ################################################################################
 # API

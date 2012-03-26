@@ -50,7 +50,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 	const OPT_BASE_DN            = 'baseDn';
 	const OPT_DOMAIN_NAME        = 'accountDomainName';
 	const OPT_DOMAIN_NAME_SHORT  = 'accountDomainNameShort';
-	const OPT_FILTER_FIELD       = 'dp_filter_field';
+	const OPT_FILTER_FORMAT      = 'accountFilterFormat';
 	const OPT_LOOKUP_USERNAME    = 'username';
 	const OPT_LOOKUP_PASSWORD    = 'password';
 
@@ -76,7 +76,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 		self::OPT_BASE_DN            => '',
 		self::OPT_DOMAIN_NAME        => '',
 		self::OPT_DOMAIN_NAME_SHORT  => '',
-		self::OPT_FILTER_FIELD       => false,
+		self::OPT_FILTER_FORMAT      => false,
 		self::OPT_LOOKUP_USERNAME    => null,
 		self::OPT_LOOKUP_PASSWORD    => null,
 	);
@@ -85,7 +85,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 	{
 		$this->options = array_merge($this->options, $options);
 
-		if (!empty($this->options[self::OPT_FILTER_FIELD])) {
+		if (!empty($this->options[self::OPT_FILTER_FORMAT])) {
 			$this->options['accountFilterFormat'] = '(&(objectClass=user)(' . $this->options['self::OPT_FILTER_FIELD'] . '=%s))';
 		}
 

@@ -35,9 +35,15 @@
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Orb\Auth\Identity;
+use Doctrine\DBAL\Connection;
 
-class ActiveDirecotry extends AbstractAdapter
+class DbTablePhpPasswordCheck extends AbstractAdapter
 {
+	/**
+	 * @var \Doctrine\DBAL\Connection
+	 */
+	protected $db;
+
 	public function getFieldsFromIdentity(Identity $identity)
 	{
 		$info = $identity->getRawData();
@@ -52,11 +58,30 @@ class ActiveDirecotry extends AbstractAdapter
 
 
 	/**
-	 * @return \Orb\Auth\Adapter\Twitter
+	 * @return \Doctrine\DBAL\Connection
+	 */
+	public function getDb()
+	{
+		if ($this->db) return $this->db;
+
+		$pdo = new \PDO(
+			$this->usersource->getOption('db_dsn'),
+			$this->usersource->getOption('db_username'),
+			$this->usersource->getOption('db_password')
+		);
+
+		$this->db = \Doctrine\DBAL\DriverManager::getConnection(array('pdo' => $pdo));
+
+		return $this->db;
+	}
+
+
+	/**
+	 * @return \Orb\Auth\Adapter\DbTablePhpPasswordCheck
 	 */
 	protected function _createAuthAdapterObject()
 	{
-		return new \Orb\Auth\Adapter\DbTablePhpPasswordCheck($this->usersource->options);
+		return new \Orb\Auth\Adapter\DbTablePhpPasswordCheck($this->getDb(), $this->usersource->options);
 	}
 
 

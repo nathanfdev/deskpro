@@ -29,29 +29,41 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @subpackage AdminBundle
  */
 
-namespace Application\DeskPRO\Usersource\Adapter;
+namespace Application\AdminBundle\Form\Usersource\Type;
 
-use Orb\Auth\Identity;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilder;
 
-class Dp3CustomMysql extends DbTablePhpPasswordCheck
+class DbTablePhpPasswordCheckType extends AbstractType
 {
-	/**
-	 * @return \Orb\Auth\Adapter\DbTablePhpPasswordCheck
-	 */
-	protected function _createAuthAdapterObject()
+	public function buildForm(FormBuilder $builder, array $options)
 	{
-		$options = $this->usersource->options;
+		$builder->add('title', 'text', array('required' => true));
+		$builder->add('db_dsn', 'text', array('required' => true));
+		$builder->add('db_username', 'text', array('required' => false));
+		$builder->add('db_password', 'text', array('required' => false));
+		$builder->add('table', 'text', array('required' => true));
+		$builder->add('field_username', 'text', array('required' => false));
+		$builder->add('field_email', 'text', array('required' => false));
+		$builder->add('field_password', 'text', array('required' => false));
+		$builder->add('field_first_name', 'text', array('required' => false));
+		$builder->add('field_last_name', 'text', array('required' => false));
+		$builder->add('field_name', 'text', array('required' => false));
+		$builder->add('password_php', 'textarea', array('required' => true));
+	}
 
-		// Bit of adapter code to convert Dp3 eval code format into the new one
-		$options['password_php'] =  '
-			$password_check = $input = $password_input;
-			'.$options['password_php'].'
-			$pass = ($password_check == $userinfo_password);
-		';
+	public function getDefaultOptions(array $options)
+	{
+		return array(
+			'data_class' => 'Application\\AdminBundle\\Form\\Usersource\\Model\\DbTablePhpPasswordCheckModel',
+		);
+	}
 
-		return new \Orb\Auth\Adapter\DbTablePhpPasswordCheck($this->getDb(), $options);
+	public function getName()
+	{
+		return 'usersource';
 	}
 }

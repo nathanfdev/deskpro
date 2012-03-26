@@ -32,26 +32,69 @@
  * @subpackage
  */
 
-namespace Application\DeskPRO\Usersource\Adapter;
+namespace Application\AdminBundle\Form\Usersource\Model;
 
-use Orb\Auth\Identity;
+use Application\DeskPRO\Entity\Usersource;
 
-class Dp3CustomMysql extends DbTablePhpPasswordCheck
+class BaseDbTableModel
 {
-	/**
-	 * @return \Orb\Auth\Adapter\DbTablePhpPasswordCheck
-	 */
-	protected function _createAuthAdapterObject()
+	protected $_usersource = null;
+
+	public $title;
+	public $db_dsn;
+	public $db_username;
+	public $db_password;
+
+	public function __construct(Usersource $usersource = null)
 	{
-		$options = $this->usersource->options;
+		if ($usersource) {
+			$this->_usersource = $usersource;
 
-		// Bit of adapter code to convert Dp3 eval code format into the new one
-		$options['password_php'] =  '
-			$password_check = $input = $password_input;
-			'.$options['password_php'].'
-			$pass = ($password_check == $userinfo_password);
-		';
+			$this->title = $usersource->title;
 
-		return new \Orb\Auth\Adapter\DbTablePhpPasswordCheck($this->getDb(), $options);
+			$fields = array(
+				'db_dsn',
+				'db_username',
+				'db_password',
+			);
+
+			foreach ($fields as $f) {
+				$this->$f = $usersource->getOption($f, null);
+			}
+
+			if (!$usersource->id) {
+				if (!$this->db_dsn) {
+					$this->db_dsn = 'mysql:host=localhost;dbname=mydb';
+				}
+				if (!$this->db_username) {
+					$this->db_username = 'root';
+					$this->db_password = 'root';
+				}
+			}
+		}
+
+		$this->init();
 	}
+
+	protected  function init() {}
+
+	public function save(\Application\DeskPRO\ORM\EntityManager $em)
+	{
+		$this->_usersource->title = $this->title;
+
+		$options = array(
+			'db_dsn'           => $this->db_dsn,
+			'db_username'      => $this->db_username,
+			'db_password'      => $this->db_password,
+		);
+
+		$this->_usersource->options = $options;
+
+		$this->saveApply($em);
+
+		$em->persist($this->_usersource);
+		$em->flush();
+	}
+
+	protected function saveApply(\Application\DeskPRO\ORM\EntityManager $em) { }
 }

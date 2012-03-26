@@ -34,7 +34,7 @@
 
 namespace Application\AdminBundle\Controller;
 
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -48,7 +48,15 @@ class UserRegController extends AbstractController
 
 	public function optionsAction()
 	{
-		return $this->render('AdminBundle:UserReg:options.html.twig');
+		$usersources = App::getOrm()->createQuery("
+			SELECT us
+			FROM DeskPRO:Usersource us
+			ORDER BY us.display_order ASC, us.title ASC
+		")->execute();
+
+		return $this->render('AdminBundle:UserReg:options.html.twig', array(
+			'usersources' => $usersources,
+		));
 	}
 
 	public function saveOptionsAction()
@@ -84,7 +92,7 @@ class UserRegController extends AbstractController
 	{
 		$facebook = $this->em->getRepository('DeskPRO:Usersource')->getByType('facebook');
 		if (!$facebook) {
-			$facebook = new \Application\DeskPRO\Entity\Usersource();
+			$facebook = new Usersource();
 			$facebook->is_enabled = false;
 			$facebook->source_type = 'facebook';
 			$facebook->title = 'Facebook';
@@ -169,7 +177,7 @@ class UserRegController extends AbstractController
 	{
 		$google = $this->em->getRepository('DeskPRO:Usersource')->getByType('google');
 		if (!$google) {
-			$google = new \Application\DeskPRO\Entity\Usersource();
+			$google = new Usersource();
 			$google->is_enabled = false;
 			$google->source_type = 'google';
 			$google->title = 'Google';
@@ -198,4 +206,119 @@ class UserRegController extends AbstractController
 		return $this->redirectRoute('admin_userreg_options');
 	}
 
+	############################################################################
+	# usersource-new-choose
+	############################################################################
+
+	public function usersourceNewChooseAction()
+	{
+		return $this->render('AdminBundle:UserReg:usersource-new-choose.html.twig');
+	}
+
+
+	############################################################################
+	# usersource-edit
+	############################################################################
+
+	public function usersourceEditAction($id = 0)
+	{
+		if ($id) {
+			$usersource = $this->em->find('DeskPRO:Usersource', $id);
+			if (!$usersource) {
+				return $this->redirectRoute('admin_userreg_options');
+			}
+		} else {
+			$usersource = new Usersource();
+			$usersource->source_type = $this->in->getString('usersource.source_type');
+
+			if (!$usersource->source_type) {
+				return $this->redirectRoute('admin_userreg_usersource_choose');
+			}
+		}
+
+		$typename    = $usersource->getTypeName();
+		$model_class = 'Application\\AdminBundle\\Form\\Usersource\\Model\\' . $typename . 'Model';
+		$type_class  = 'Application\\AdminBundle\\Form\\Usersource\\Type\\' . $typename . 'Type';
+
+		$editfield = new $model_class($usersource);
+		$formtype  = new $type_class();
+		$form      = $this->get('form.factory')->create($formtype, $editfield);
+
+		if ($this->request->isPost() && $this->in->getBool('process')) {
+			$this->em->getConnection()->beginTransaction();
+
+			try {
+				$form->bindRequest($this->get('request'));
+				$editfield->save($this->em);
+				$this->em->getConnection()->commit();
+			} catch (\Exception $e) {
+				$this->em->getConnection()->rollback();
+				throw $e;
+			}
+
+			return $this->redirectRoute('admin_userreg_usersource_edit', array('id' => $usersource->id));
+		}
+
+		$formView = $form->createView();
+
+		return $this->render('AdminBundle:UserReg:usersource-edit.html.twig', array(
+			'usersource' => $usersource,
+			'form'       => $formView
+		));
+	}
+
+	############################################################################
+	# usersource-toggle
+	############################################################################
+
+	public function usersourceToggleAction($id)
+	{
+		$usersource = $this->em->find('DeskPRO:Usersource', $id);
+		if (!$usersource) {
+			return $this->redirectRoute('admin_userreg_options');
+		}
+
+		$usersource->is_enabled = $usersource->is_enabled ? false : true;
+
+		$this->db->beginTransaction();
+		try {
+			$this->em->persist($usersource);
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_userreg_options');
+	}
+
+	############################################################################
+	# usersource-delete
+	############################################################################
+
+	public function usersourceDeleteAction($id, $security_token)
+	{
+		if (!$this->session->getEntity()->checkSecurityToken('delete_usersource', $security_token)) {
+			echo 'invalid security token';
+			exit;
+		}
+
+		$usersource = $this->em->find('DeskPRO:Usersource', $id);
+		if (!$usersource) {
+			return $this->redirectRoute('admin_userreg_options');
+		}
+
+		$this->db->beginTransaction();
+		try {
+			$this->em->remove($usersource);
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_userreg_options');
+	}
 }

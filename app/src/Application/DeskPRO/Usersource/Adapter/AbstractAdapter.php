@@ -53,7 +53,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface
 	 */
 	protected $_auth_adapter;
 
-	final public function __construct(Usersource $usersource)
+	public function __construct(Usersource $usersource)
 	{
 		$this->usersource = $usersource;
 		$this->init();

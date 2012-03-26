@@ -32,26 +32,25 @@
  * @subpackage
  */
 
-namespace Application\DeskPRO\Usersource\Adapter;
+namespace Application\AdminBundle\Form\Usersource\Model;
 
-use Orb\Auth\Identity;
-
-class Dp3CustomMysql extends DbTablePhpPasswordCheck
+class PhpBb3Model extends BaseDbTableModel
 {
-	/**
-	 * @return \Orb\Auth\Adapter\DbTablePhpPasswordCheck
-	 */
-	protected function _createAuthAdapterObject()
+	public $table_prefix;
+	public $check_service_url;
+	public $check_service_key;
+
+	protected function init()
 	{
-		$options = $this->usersource->options;
+		$this->table_prefix = $this->_usersource->getOption('table_prefix', '');
+		$this->check_service_url = $this->_usersource->getOption('check_service_url', '');
+		$this->check_service_key = $this->_usersource->getOption('check_service_key', '');
+	}
 
-		// Bit of adapter code to convert Dp3 eval code format into the new one
-		$options['password_php'] =  '
-			$password_check = $input = $password_input;
-			'.$options['password_php'].'
-			$pass = ($password_check == $userinfo_password);
-		';
-
-		return new \Orb\Auth\Adapter\DbTablePhpPasswordCheck($this->getDb(), $options);
+	protected function saveApply(\Application\DeskPRO\ORM\EntityManager $em)
+	{
+		$this->_usersource->setOption('table_prefix', $this->table_prefix);
+		$this->_usersource->setOption('check_service_url', $this->check_service_url);
+		$this->_usersource->setOption('check_service_key', $this->check_service_key);
 	}
 }

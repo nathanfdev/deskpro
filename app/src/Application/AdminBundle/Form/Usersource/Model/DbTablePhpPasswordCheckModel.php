@@ -29,62 +29,94 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Usersource
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Usersource\Adapter;
+namespace Application\AdminBundle\Form\Usersource\Model;
 
 use Application\DeskPRO\Entity\Usersource;
-use Symfony\Component\Templating\EngineInterface;
 
-use Orb\Util\CapabilityInformerInterface;
-use Orb\Auth\Identity;
-
-class Facebook extends AbstractAdapter
+class DbTablePhpPasswordCheckModel
 {
-	public function getFieldsFromIdentity(Identity $identity)
+	protected $_usersource = null;
+
+	public $title;
+	public $table;
+	public $db_dsn;
+	public $db_username;
+	public $db_password;
+	public $field_username;
+	public $field_email;
+	public $field_password;
+	public $field_first_name;
+	public $field_last_name;
+	public $field_name;
+	public $password_php;
+
+	public function __construct(Usersource $usersource = null)
 	{
-		$info = $identity->getRawData();
-		return array(
-			'name'             => isset($info['name']) ? $info['name'] : '',
-			'first_name'       => isset($info['first_name']) ? $info['first_name'] : '',
-			'last_name'        => isset($info['last_name']) ? $info['last_name'] : '',
-			'email'            => isset($info['email']) ? $info['email'] : '',
-			'email_confirmed'  => isset($info['verified']) ? $info['verified'] : '',
-		);
+		if ($usersource) {
+			$this->_usersource = $usersource;
+
+			$this->title = $usersource->title;
+
+			$fields = array(
+				'db_dsn',
+				'db_username',
+				'db_password',
+				'table',
+				'field_username',
+				'field_email',
+				'field_password',
+				'field_first_name',
+				'field_last_name',
+				'field_name',
+				'password_php'
+			);
+
+			foreach ($fields as $f) {
+				$this->$f = $usersource->getOption($f, null);
+			}
+
+			if (!$usersource->id) {
+				if (!$this->db_dsn) {
+					$this->db_dsn = 'mysql:host=localhost;dbname=mydb';
+				}
+				if (!$this->db_username) {
+					$this->db_username = 'root';
+					$this->db_password = 'root';
+				}
+				if (!$this->table) {
+					$this->table = 'users';
+				}
+				if (!$this->password_php) {
+					$this->password_php = '$pass = ($password_input == $userinfo_password);';
+				}
+			}
+		}
 	}
 
-
-	/**
-	 * @return \Orb\Auth\Adapter\Facebook
-	 */
-	protected function _createAuthAdapterObject()
+	public function save(\Application\DeskPRO\ORM\EntityManager $em)
 	{
-		return new \Orb\Auth\Adapter\Facebook(
-			$this->usersource->getOption('app_key'),
-			$this->usersource->getOption('app_secret')
+		$this->_usersource->title = $this->title;
+
+		$options = array(
+			'db_dsn'           => $this->db_dsn,
+			'db_username'      => $this->db_username,
+			'db_password'      => $this->db_password,
+			'table'            => $this->table,
+			'field_username'   => $this->field_username,
+			'field_email'      => $this->field_email,
+			'field_password'   => $this->field_password,
+			'field_first_name' => $this->field_first_name,
+			'field_last_name'  => $this->field_last_name,
+			'field_name'       => $this->field_name,
+			'password_php'     => $this->password_php
 		);
-	}
 
+		$this->_usersource->options = $options;
 
-	/**
-	 * @return array
-	 */
-	public function getCapabilities()
-	{
-		return array(
-			'tpl_login_pull_btn',
-			'tpl_widget_overlay_btn'
-		);
-	}
-
-
-	/**
-	 * @param  mixed $capability
-	 * @return bool
-	 */
-	public function isCapable($capability)
-	{
-		return in_array($capability, $this->getCapabilities());
+		$em->persist($this->_usersource);
+		$em->flush();
 	}
 }

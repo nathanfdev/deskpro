@@ -32,26 +32,72 @@
  * @subpackage
  */
 
-namespace Application\DeskPRO\Usersource\Adapter;
+namespace Application\AdminBundle\Form\Usersource\Model;
 
-use Orb\Auth\Identity;
+use Application\DeskPRO\Entity\Usersource;
 
-class Dp3CustomMysql extends DbTablePhpPasswordCheck
+class ActiveDirectoryModel
 {
-	/**
-	 * @return \Orb\Auth\Adapter\DbTablePhpPasswordCheck
-	 */
-	protected function _createAuthAdapterObject()
+	protected $_usersource = null;
+
+	public $title;
+	public $secure;
+	public $port;
+	public $host;
+	public $baseDn;
+	public $username;
+	public $password;
+	public $accountDomainName;
+	public $accountDomainNameShort;
+	public $accountFilterFormat;
+
+
+	public function __construct(Usersource $usersource = null)
 	{
-		$options = $this->usersource->options;
+		if ($usersource) {
+			$this->_usersource = $usersource;
 
-		// Bit of adapter code to convert Dp3 eval code format into the new one
-		$options['password_php'] =  '
-			$password_check = $input = $password_input;
-			'.$options['password_php'].'
-			$pass = ($password_check == $userinfo_password);
-		';
+			$this->title = $usersource->title;
 
-		return new \Orb\Auth\Adapter\DbTablePhpPasswordCheck($this->getDb(), $options);
+			$fields = array('port', 'host', 'baseDn', 'username', 'password', 'accountDomainName', 'accountDomainNameShort', 'accountFilterFormat');
+			foreach ($fields as $f) {
+				$this->f = $usersource->getOption($f, null);
+			}
+
+			if ($usersource->getOption('useSsl')) {
+				$this->secure = 'useSsl';
+			} elseif ($usersource->getOption('useStartTls')) {
+				$this->secure = 'useStartTls';
+			} else {
+				$this->secure = false;
+			}
+		}
+	}
+
+	public function save(\Application\DeskPRO\ORM\EntityManager $em)
+	{
+		$this->_usersource->title = $this->title;
+
+		$options = array(
+			'host'                   => $this->host,
+			'port'                   => $this->port,
+			'baseDn'                 => $this->baseDn,
+			'username'               => $this->username,
+			'password'               => $this->password,
+			'accountDomainName'      => $this->accountDomainName,
+			'accountDomainNameShort' => $this->accountDomainNameShort,
+			'accountFilterFormat'    => $this->accountFilterFormat
+		);
+
+		if ($this->secure == 'useSsl') {
+			$options['useSsl'] = true;
+		} elseif ($this->secure == 'useStartTls') {
+			$options['useStartTls'] = true;
+		}
+
+		$this->_usersource->options = $options;
+
+		$em->persist($this->_usersource);
+		$em->flush();
 	}
 }

@@ -34,7 +34,7 @@
 
 namespace Orb\Auth\Adapter;
 
-class vBulletin extends DbTable
+class Vbulletin extends DbTable
 {
 	const OPT_TABLE_PREFIX = 'table_prefix';
 

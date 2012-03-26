@@ -13,7 +13,7 @@
 		<div class="resource-item-list">
 			<header>
 				<div class="controls">
-					<a class="clean-white small" href="{{ '' }}">Add User Source</a>
+					<a class="clean-white small" href="{{ path('admin_userreg_usersource_choose') }}">Add User Source</a>
 				</div>
 				<h4>User Sources</h4>
 			</header>
@@ -32,6 +32,13 @@
 						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_google_toggle') }}';" {% if app.getSetting('core.google_source_enabled') %}checked="checked"{% endif %} />
 						Google
 					</li>
+					{% for usersource in usersources %}{% if usersource.source_type != 'facebook' and usersource.source_type != 'google' %}
+						<li>
+							<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_usersource_toggle', {id: usersource.id}) }}';" {% if usersource.is_enabled %}checked="checked"{% endif %} />
+							{{ usersource.title }}
+							<a href="{{ path('admin_userreg_usersource_edit', {id: usersource.id}) }}" class="btn-edit-gear2" style="position: relative; top: 2px;"></a>
+						</li>
+					{% endif %}{% endfor %}
 				</ul>
 			</article>
 		</div>

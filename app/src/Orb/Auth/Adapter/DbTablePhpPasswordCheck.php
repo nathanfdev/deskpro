@@ -40,7 +40,7 @@ class DbTablePhpPasswordCheck extends DbTable
 
 	protected function isValidPassword(array $userinfo, $password_input)
 	{
-		$userinfo_password = $userinfo[$this->options->get(self::OPT_FIELD_PASSWORD])];
+		$userinfo_password = $userinfo[$this->options->get(self::OPT_FIELD_PASSWORD)];
 
 		$pass = false;
 		eval($this->options->get('password_php'));

@@ -41,7 +41,7 @@ use Orb\Util\Arrays;
 use Orb\Log\Logger;
 use Orb\Log\Loggable;
 
-use Doctrine\DBAL\Connection;;
+use Doctrine\DBAL\Connection;
 
 class DbTable implements FormLoginInterface, Loggable
 {
@@ -57,7 +57,7 @@ class DbTable implements FormLoginInterface, Loggable
 	const OPT_PASSWORD_CHECK_CALLBACK = 'password_check_callback';
 
 	/**
-	 * @var \Doctrine\DBAL\Driver\Connection
+	 * @var \Doctrine\DBAL\Connection
 	 */
 	protected $db;
 

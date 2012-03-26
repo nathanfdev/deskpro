@@ -55,13 +55,6 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * A note or description about the user source (admin eyes)
-	 *
-	 * @var string
-	 */
-	protected $note = '';
-
-	/**
 	 * The title of this usersource
 	 *
 	 * @var string
@@ -119,18 +112,9 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 			return $this->_adapter_instance;
 		}
 
-		switch ($this->source_type) {
-			case 'facebook':
-				$classname = 'Application\\DeskPRO\\Usersource\\Adapter\\Facebook';
-				break;
-
-			case 'google':
-				$classname = 'Application\\DeskPRO\\Usersource\\Adapter\\Google';
-				break;
-
-			default:
-				throw new \RuntimeException("Unknown usersource type `{$this->source_type}`");
-				break;
+		$classname = 'Application\\DeskPRO\\Usersource\\Adapter\\' . $this->getTypeName();
+		if (!class_exists($classname)) {
+			throw new \RuntimeException("Unknow usersource type `$classname`");
 		}
 
 		$this->_adapter_instance = new $classname($this);
@@ -168,6 +152,15 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @return string
+	 */
+	public function getTypeName()
+	{
+		return ucfirst(Strings::underscoreToCamelCase($this->source_type));
+	}
+
+
 
 	############################################################################
 	# Doctrine Metadata
@@ -180,7 +173,6 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setPrimaryTable(array( 'name' => 'usersources', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'note', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'note', ));
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->mapField(array( 'fieldName' => 'source_type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'source_type', ));
 		$metadata->mapField(array( 'fieldName' => 'options', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'options', ));

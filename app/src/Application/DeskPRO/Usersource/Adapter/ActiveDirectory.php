@@ -52,7 +52,7 @@ class ActiveDirecotry extends AbstractAdapter
 
 
 	/**
-	 * @return \Orb\Auth\Adapter\Twitter
+	 * @return \Orb\Auth\Adapter\ActiveDirectory
 	 */
 	protected function _createAuthAdapterObject()
 	{
