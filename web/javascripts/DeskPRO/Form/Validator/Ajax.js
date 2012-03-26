@@ -17,7 +17,7 @@ DeskPRO.Form.Validator.Ajax = new Class({
 		this.errors = [];
 
 		var data = field.getFormInputElements().serializeArray();
-		var options = $merge({
+		var options = $.merge({
 			data: data,
 			success: function (data) {
 				var errors = [];
@@ -28,7 +28,7 @@ DeskPRO.Form.Validator.Ajax = new Class({
 			error: function (XMLHttpRequest, textStatus, errorThrown) {
 				callback([]);
 			}
-		}, this.options['ajax']);)
+		}, this.options['ajax']);
 		
 		$.ajax(options);
 	},

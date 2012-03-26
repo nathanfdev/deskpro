@@ -38,7 +38,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Configuration;
 use Doctrine\Common\EventManager;
 use Application\DeskPRO\ORM\UnitOfWork;
-use Application\DeskPRO\Orm\Proxy\ProxyFactory;
+use Application\DeskPRO\ORM\Proxy\ProxyFactory;
 use Application\DeskPRO\ORM\Unprivate\UnprivateEntityManager;
 
 /**

@@ -31,6 +31,7 @@ abstract class BaseCompressorFilter implements FilterInterface
     {
         $this->jarPath = $jarPath;
         $this->javaPath = $javaPath;
+        $this->setCharset('UTF-8');
     }
 
     public function setCharset($charset)

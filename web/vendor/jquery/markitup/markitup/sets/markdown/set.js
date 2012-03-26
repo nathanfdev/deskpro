@@ -11,8 +11,8 @@
 // Feel free to add more tags
 // -------------------------------------------------------------------
 MARKITUP_MARKDOWN_SETTINGS = {
-	previewParserPath:	'',
-	onShiftEnter:		{keepDefault:false, openWith:'\n\n'},
+	previewParserPath: '',
+	onShiftEnter: {keepDefault:false, openWith:'\n\n'},
 	markupSet: [
 		{name:'First Level Heading', key:'1', placeHolder:'Your title here...', closeWith:function(markItUp) { return miu.markdownTitle(markItUp, '=') } },
 		{name:'Second Level Heading', key:'2', placeHolder:'Your title here...', closeWith:function(markItUp) { return miu.markdownTitle(markItUp, '-') } },
@@ -35,18 +35,18 @@ MARKITUP_MARKDOWN_SETTINGS = {
 		{name:'Quotes', openWith:'> '},
 		{name:'Code Block / Code', openWith:'(!(\t|!|`)!)', closeWith:'(!(`)!)'},
 		{separator:'---------------'},
-		{name:'Media', key:'M', className:'dp-media-trigger'},
+		{name:'Media', key:'M', className:'dp-media-trigger'}
 	]
-}
+};
 
 // mIu nameSpace to avoid conflict.
 miu = {
-	markdownTitle: function(markItUp, char) {
-		heading = '';
+	markdownTitle: function(markItUp, character) {
+		var heading = '';
 		n = $.trim(markItUp.selection||markItUp.placeHolder).length;
 		for(i = 0; i < n; i++) {
-			heading += char;
+			heading += character;
 		}
 		return '\n'+heading;
 	}
-}
+};
