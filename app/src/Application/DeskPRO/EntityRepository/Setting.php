@@ -75,22 +75,4 @@ class Setting extends EntityRepository
 
 		return $setting;
 	}
-
-	/**
-	 * Invalidates caches
-	 */
-	public function invalidateCaches()
-	{
-		App::getCache('common')->clean('matchingTag', array('settings'));
-	}
-
-	/**
-	 * @see \Application\DeskPRO\DBAL\Logging\CacheInvalidor
-	 * @param  $sql
-	 * @return void
-	 */
-	public function invalidateFromQuery($sql)
-	{
-		$this->invalidateCaches();
-	}
 }

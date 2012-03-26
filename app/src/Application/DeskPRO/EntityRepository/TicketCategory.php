@@ -65,22 +65,4 @@ class TicketCategory extends AbstractCategoryRepository
 	{
 		return App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_categories");
 	}
-
-	/**
-	 * Invalidates caches
-	 */
-	public function invalidateCaches()
-	{
-		App::getCache('common')->clean('matchingTag', array('ticket_categories'));
-	}
-
-	/**
-	 * @see \Application\DeskPRO\DBAL\Logging\CacheInvalidor
-	 * @param  $sql
-	 * @return void
-	 */
-	public function invalidateFromQuery($sql)
-	{
-		$this->invalidateCaches();
-	}
 }

@@ -61,17 +61,12 @@ class Organization extends AbstractEntityRepository
 	public function getOrganizationNames($for_ids = null)
 	{
 		if ($this->_organization_names == null) {
-
-			if (($this->_organization_names = App::getCache('common')->load('organization_names')) === false) {
-				$db = App::getDb();
-				$this->_organization_names = $db->fetchAllKeyValue("
-					SELECT id, name
-					FROM organizations
-					ORDER BY name ASC
-				");
-
-				App::getCache('common')->save($this->_organization_names, null, array('organizations'));
-			}
+			$db = App::getDb();
+			$this->_organization_names = $db->fetchAllKeyValue("
+				SELECT id, name
+				FROM organizations
+				ORDER BY name ASC
+			");
         }
 
         if ($for_ids === null) {
@@ -158,24 +153,5 @@ class Organization extends AbstractEntityRepository
 			WHERE
 				o.name = ?1
 		")->setParameter(1, $name)->setMaxResults(1)->getOneOrNullResult();
-	}
-
-
-	/**
-	 * Invalidates caches
-	 */
-	public function invalidateCaches()
-	{
-		App::getCache('common')->clean('matchingTag', array('organizations'));
-	}
-
-	/**
-	 * @see \Application\DeskPRO\DBAL\Logging\CacheInvalidor
-	 * @param  $sql
-	 * @return void
-	 */
-	public function invalidateFromQuery($sql)
-	{
-		$this->invalidateCaches();
 	}
 }

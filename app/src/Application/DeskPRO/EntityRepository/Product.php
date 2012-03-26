@@ -113,23 +113,4 @@ class Product extends AbstractCategoryRepository
 	{
 		return count($this->getProductNames());
 	}
-
-
-	/**
-	 * Invalidates caches
-	 */
-	public function invalidateCaches()
-	{
-		App::getCache('common')->clean('matchingTag', array('products'));
-	}
-
-	/**
-	 * @see \Application\DeskPRO\DBAL\Logging\CacheInvalidor
-	 * @param  $sql
-	 * @return void
-	 */
-	public function invalidateFromQuery($sql)
-	{
-		$this->invalidateCaches();
-	}
 }

@@ -201,11 +201,7 @@ class CategoryHierarchy
 	{
 		if (!$reset && $this->_cat_hierarchy !== null) return $this->_cat_hierarchy;
 
-		if (!$reset) {
-			$cat_info = App::getCache('common')->load($this->table_name . '_category_info');
-		} else {
-			$cat_info = null;
-		}
+		$cat_info = null;
 
 		if ($cat_info) {
 			foreach ($cat_info as $k => $v) {
@@ -238,14 +234,6 @@ class CategoryHierarchy
 			$cats = Arrays::intoHierarchy($cats, null);
 			$this->_cat_hierarchy = $cats;
 			$this->_cat_hierarchy_flat = Arrays::flattenHierarchy($cats);
-
-			App::getCache('common')->save(array(
-				'_cat_hierarchy' => $this->_cat_hierarchy,
-				'_cat_hierarchy_flat' => $this->_cat_hierarchy_flat,
-				'_cat_names' => $this->_cat_names,
-				'_cat_ids' => $this->_cat_ids,
-				'_cat_parent_map' => $this->_cat_parent_map
-			), $this->table_name.'_category_info', array($this->cache_tag));
 		}
 
 		return $this->_cat_hierarchy;

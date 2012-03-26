@@ -119,46 +119,39 @@ class NewsCategory extends AbstractCategoryRepository
 
 	public function getAllCounts(PersonEntity $person_context = null, $cache_name = 'portal')
 	{
-		$cache = App::getCache($cache_name);
-		$cache_id = "counts_news";
+		$counts = array('0' => 0, '0_total' => 0);
 
-		if (($counts = $cache->load($cache_id)) === false) {
-			$counts = array('0' => 0, '0_total' => 0);
+		foreach ($this->children() as $c) {
+			$searcher = new NewsSearch();
+			$searcher->setPersonContext($person_context);
+			$searcher->addTerm(NewsSearch::TERM_CATEGORY_SPECIFIC, 'is', $c['id']);
+			$searcher->addTerm(NewsSearch::TERM_STATUS, 'is', 'published');
 
-			foreach ($this->children() as $c) {
-				$searcher = new NewsSearch();
-				$searcher->setPersonContext($person_context);
-				$searcher->addTerm(NewsSearch::TERM_CATEGORY_SPECIFIC, 'is', $c['id']);
-				$searcher->addTerm(NewsSearch::TERM_STATUS, 'is', 'published');
+			$counts[$c['id']] = $searcher->getCount();
 
-				$counts[$c['id']] = $searcher->getCount();
-
-				$counts['0_total'] += $counts[$c['id']];
-			}
-
-			$repos = $this;
-			$fn_count = function($node) use (&$counts, $repos, &$fn_count) {
-				$total = 0;
-				foreach ($repos->children($node, true) as $c) {
-					// We already have the single count
-					$total += $counts[$c['id']];
-
-					// Now add up all its subs
-					$total += $fn_count($c);
-				}
-
-				if ($node) {
-					$counts[$node['id'] . '_total'] = $total;
-				}
-
-				return $total;
-			};
-
-			$fn_count(null);
-
-			$cache->save($counts, $cache_id);
+			$counts['0_total'] += $counts[$c['id']];
 		}
 
-		return $counts;
+		$repos = $this;
+		$fn_count = function($node) use (&$counts, $repos, &$fn_count) {
+			$total = 0;
+			foreach ($repos->children($node, true) as $c) {
+				// We already have the single count
+				$total += $counts[$c['id']];
+
+				// Now add up all its subs
+				$total += $fn_count($c);
+			}
+
+			if ($node) {
+				$counts[$node['id'] . '_total'] = $total;
+			}
+
+			return $total;
+		};
+
+		$fn_count(null);
+
+		$cache->save($counts, $cache_id);
 	}
 }

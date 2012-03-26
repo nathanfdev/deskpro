@@ -100,17 +100,9 @@ class AgentHelper implements PersonContextInterface
 	 */
 	public function getCategoryCounts($type)
 	{
-		$cache = App::getCache('agent_publish_structure');
-		$cache_id = "counts_$type";
-
-		if (($counts = $cache->load($cache_id)) === false) {
-
-			$entity_name = self::getCatEntityNameFor($type);
-			$repos = App::getEntityRepository($entity_name);
-			$counts = $repos->getAllCounts($this->person_context, null);
-
-			$cache->save($counts, $cache_id);
-		}
+		$entity_name = self::getCatEntityNameFor($type);
+		$repos = App::getEntityRepository($entity_name);
+		$counts = $repos->getAllCounts($this->person_context, null);
 
 		return $counts;
 	}
@@ -152,15 +144,8 @@ class AgentHelper implements PersonContextInterface
 	 */
 	public function getGlossaryWordsIndex()
 	{
-		$cache = App::getCache('agent_publish_structure');
-		$cache_id = "glossary_words";
-
-		if (($glossary_words = $cache->load($cache_id)) === false) {
-			$glossary_words = App::getEntityRepository('DeskPRO:GlossaryWord')->getWords();
-			$glossary_words = Arrays::sortIntoAlphabeticalIndex($glossary_words, null, true, true);
-
-			$cache->save($glossary_words, $cache_id);
-		}
+		$glossary_words = App::getEntityRepository('DeskPRO:GlossaryWord')->getWords();
+		$glossary_words = Arrays::sortIntoAlphabeticalIndex($glossary_words, null, true, true);
 
 		return $glossary_words;
 	}

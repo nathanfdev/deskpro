@@ -116,25 +116,18 @@ class DownloadCategory extends AbstractCategoryRepository
 
 	public function getAllCounts(PersonEntity $person_context = null, $cache_name = 'portal')
 	{
-		$cache = App::getCache($cache_name);
-		$cache_id = "counts_downloads";
+		$counts = array('0' => 0, '0_total' => 0);
 
-		if (($counts = $cache->load($cache_id)) === false) {
-			$counts = array('0' => 0, '0_total' => 0);
+		foreach ($this->getCategoryHelper()->getCategoryIds() as $cid) {
+			$searcher = new DownloadSearch();
+			$searcher->setPersonContext($person_context);
+			$searcher->addTerm(DownloadSearch::TERM_CATEGORY_SPECIFIC, 'is', $cid);
+			$searcher->addTerm(DownloadSearch::TERM_STATUS, 'is', 'published');
 
-			foreach ($this->getCategoryHelper()->getCategoryIds() as $cid) {
-				$searcher = new DownloadSearch();
-				$searcher->setPersonContext($person_context);
-				$searcher->addTerm(DownloadSearch::TERM_CATEGORY_SPECIFIC, 'is', $cid);
-				$searcher->addTerm(DownloadSearch::TERM_STATUS, 'is', 'published');
-
-				$counts[$cid] = $searcher->getCount();
-			}
-
-			$counts = $this->getCategoryHelper()->getTotalCounts($counts);
-
-			$cache->save($counts, $cache_id);
+			$counts[$cid] = $searcher->getCount();
 		}
+
+		$counts = $this->getCategoryHelper()->getTotalCounts($counts);
 
 		return $counts;
 	}

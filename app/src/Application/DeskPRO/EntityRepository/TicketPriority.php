@@ -64,16 +64,13 @@ class TicketPriority extends EntityRepository
 	{
 		if ($this->priority_names !== null && !$for_ids) return $this->priority_names;
 
-		if (!$this->priority_names && ($this->priority_names = App::getCache('common')->load('priority_names')) === false) {
-
+		if ($this->priority_names === null) {
 			$db = App::getDb();
 			$this->priority_names = $db->fetchAllKeyValue("
 				SELECT id, title
 				FROM ticket_priorities
 				ORDER BY priority ASC
 			");
-
-			App::getCache('common')->save($this->priority_names, null, array('ticket_priorities'));
 		}
 
 		if ($for_ids) {
@@ -109,25 +106,5 @@ class TicketPriority extends EntityRepository
 	public function countAll()
 	{
 		return App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_priorities");
-	}
-
-
-
-	/**
-	 * Invalidates caches
-	 */
-	public function invalidateCaches()
-	{
-		App::getCache('common')->clean('matchingTag', array('ticket_priorities'));
-	}
-
-	/**
-	 * @see \Application\DeskPRO\DBAL\Logging\CacheInvalidor
-	 * @param  $sql
-	 * @return void
-	 */
-	public function invalidateFromQuery($sql)
-	{
-		$this->invalidateCaches();
 	}
 }

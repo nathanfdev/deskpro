@@ -387,41 +387,6 @@ class DeskproContainer extends Container
 
 
 	/**
-	 * Get a cache object, or null if no cache exists.
-	 *
-	 * @param string $name                Name of the cache
-	 * @param bool   $deafult_blackhole   If the cache doesnt exist, default to a black hole. If this is false, null is returned on no cache
-	 * @return \Zend\Cache\Frontend\Core
-	 */
-	public function getCache($name, $default_blackhole = true)
-	{
-		$service_name = 'deskpro.cache.' . $name;
-
-		if ($name && self::has($service_name) AND $this->get($service_name)) {
-			return $this->get($service_name);
-		}
-
-		if ($default_blackhole) {
-			if (self::has('deskpro.cache.blackhole')) {
-				return $this->get('deskpro.cache.blackhole');
-			}
-
-			$blackhole = \Zend\Cache\Cache::factory('Core', 'BlackHole', array(
-				'caching' => false,
-				'lifetime' => null,
-				'logging' => false,
-			), array());
-
-			$this->set('deskpro.cache.blackhole', $blackhole);
-
-			return $blackhole;
-		}
-
-		return null;
-	}
-
-
-	/**
 	 * @return \Application\DeskPRO\FileStorage\Filesystem
 	 */
 	public function getFilestorage()

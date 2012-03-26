@@ -54,17 +54,13 @@ class Usergroup extends EntityRepository
 	public function getUsergroupNames($for_ids = null)
 	{
 		if ($this->_usergroup_names === null) {
-			if (($this->_usergroup_names = App::getCache('common')->load('usergroup_names')) === false) {
-				$db = App::getDb();
-				$this->_usergroup_names = $db->fetchAllKeyValue("
-					SELECT id, title
-					FROM usergroups
-					WHERE is_agent_group = 0 AND sys_name IS NULL
-					ORDER BY title ASC
-				");
-
-				App::getCache('common')->save($this->_usergroup_names, null, array('usergroups'));
-			}
+			$db = App::getDb();
+			$this->_usergroup_names = $db->fetchAllKeyValue("
+				SELECT id, title
+				FROM usergroups
+				WHERE is_agent_group = 0 AND sys_name IS NULL
+				ORDER BY title ASC
+			");
         }
 
         if ($for_ids === null) {
@@ -89,18 +85,13 @@ class Usergroup extends EntityRepository
 	public function getAgentUsergroupNames()
 	{
 		if ($this->_agent_usergroup_names !== null) return $this->_agent_usergroup_names;
-
-		if (($this->_agent_usergroup_names = App::getCache('common')->load('agent_usergroup_names')) === false) {
-			$db = App::getDb();
-			$this->_agent_usergroup_names = $db->fetchAllKeyValue("
-				SELECT id, title
-				FROM usergroups
-				WHERE is_agent_group = 0 AND sys_name IS NULL
-				ORDER BY title ASC
-			");
-
-			App::getCache('common')->save($this->_agent_usergroup_names, null, array('usergroups'));
-		}
+		$db = App::getDb();
+		$this->_agent_usergroup_names = $db->fetchAllKeyValue("
+			SELECT id, title
+			FROM usergroups
+			WHERE is_agent_group = 0 AND sys_name IS NULL
+			ORDER BY title ASC
+		");
 
 		return $this->_agent_usergroup_names;
 	}
@@ -179,24 +170,5 @@ class Usergroup extends EntityRepository
 			LEFT JOIN usergroups ON usergroups.id = person2usergroups.usergroup_id
 			WHERE usergroups.is_agent_group = 1
 		", array(), 'usergroup_id', null, 'person_id');
-	}
-
-
-	/**
-	 * Invalidates caches
-	 */
-	public function invalidateCaches()
-	{
-		App::getCache('common')->clean('matchingTag', array('usergroups'));
-	}
-
-	/**
-	 * @see \Application\DeskPRO\DBAL\Logging\CacheInvalidor
-	 * @param  $sql
-	 * @return void
-	 */
-	public function invalidateFromQuery($sql)
-	{
-		$this->invalidateCaches();
 	}
 }

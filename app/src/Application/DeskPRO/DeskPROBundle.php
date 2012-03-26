@@ -50,7 +50,6 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
         parent::build($container);
 
         $container->registerExtension(new \Application\DeskPRO\DependencyInjection\CoreExtension());
-        $container->registerExtension(new \Application\DeskPRO\DependencyInjection\CacheExtension());
         $container->registerExtension(new \Application\DeskPRO\DependencyInjection\SearchExtension());
     }
 

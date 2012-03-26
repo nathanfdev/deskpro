@@ -58,9 +58,6 @@ class CoreExtension extends Extension
 		$definition = new Definition('Symfony\\Component\\HttpFoundation\\Response');
 		$container->setDefinition('response', $definition);
 
-		$definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\CacheInvalidator');
-		$container->setDefinition('deskpro.dbal.logger.cache_invalidator', $definition);
-
 		$definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\SysQueryLogger', array(new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE)));
 		$container->setDefinition('deskpro.dbal.logger.query_logger', $definition);
 
@@ -68,7 +65,6 @@ class CoreExtension extends Extension
 		$container->setDefinition('doctrine.query_logger', $definition);
 
 		$definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\DelegateLogger');
-		$definition->addMethodCall('addLogger', array(new Reference('deskpro.dbal.logger.cache_invalidator'), 'cache_invalidator'));
 		$definition->addMethodCall('addLogger', array(new Reference('deskpro.dbal.logger.query_logger'), 'query_logger'));
 		//$definition->addMethodCall('addLogger', array(new Reference('doctrine.query_logger'), 'doctrine_query_logger'));
 		$container->setDefinition('doctrine.dbal.logger', $definition);

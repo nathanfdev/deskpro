@@ -230,24 +230,4 @@ class Department extends AbstractEntityRepository implements Preloadable
 		$this->_load();
 		return count($this->getIdentityHelper()->getCollectionIds('all'));
 	}
-
-
-
-	/**
-	 * Invalidates caches associated with agent teams
-	 */
-	public function invalidateCaches()
-	{
-		App::getCache('common')->clean('matchingTag', array('departments'));
-	}
-
-	/**
-	 * @see \Application\DeskPRO\DBAL\Logging\CacheInvalidor
-	 * @param  $sql
-	 * @return void
-	 */
-	public function invalidateFromQuery($sql)
-	{
-		$this->invalidateCaches();
-	}
 }

@@ -127,25 +127,18 @@ class ArticleCategory extends AbstractCategoryRepository
 
 	public function getAllCounts(PersonEntity $person_context = null, $cache_name = 'portal', $from_parent = 0)
 	{
-		$cache = App::getCache($cache_name);
-		$cache_id = "counts_articles";
+		$counts = array('0' => 0, '0_total' => 0);
 
-		if (($counts = $cache->load($cache_id)) === false) {
-			$counts = array('0' => 0, '0_total' => 0);
+		foreach ($this->getCategoryHelper()->getCategoryIds() as $cid) {
+			$searcher = new ArticleSearch();
+			$searcher->setPersonContext($person_context);
+			$searcher->addTerm(ArticleSearch::TERM_CATEGORY_SPECIFIC, 'is', $cid);
+			$searcher->addTerm(ArticleSearch::TERM_STATUS, 'is', 'published');
 
-			foreach ($this->getCategoryHelper()->getCategoryIds() as $cid) {
-				$searcher = new ArticleSearch();
-				$searcher->setPersonContext($person_context);
-				$searcher->addTerm(ArticleSearch::TERM_CATEGORY_SPECIFIC, 'is', $cid);
-				$searcher->addTerm(ArticleSearch::TERM_STATUS, 'is', 'published');
-
-				$counts[$cid] = $searcher->getCount();
-			}
-
-			$counts = $this->getCategoryHelper()->getTotalCounts($counts);
-
-			$cache->save($counts, $cache_id, array('article_structure'));
+			$counts[$cid] = $searcher->getCount();
 		}
+
+		$counts = $this->getCategoryHelper()->getTotalCounts($counts);
 
 		return $counts;
 	}

@@ -243,7 +243,7 @@ class AgentTeam extends AbstractEntityRepository
 	 */
 	public function invalidateCaches()
 	{
-		App::getCache('common')->clean('matchingTag', array('agent_teams'));
+
 	}
 
 	/**

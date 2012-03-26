@@ -211,10 +211,5 @@ $container->loadFromExtension('swiftmailer', array(
 # DeskPRO Configuration
 ############################################################################
 
-$container->loadFromExtension('deskpro_cache', array(
-	'common' => array(),
-	'portal' => array()
-));
-
 $container->loadFromExtension('deskpro_core', array());
 $container->loadFromExtension('deskpro_search', array());
