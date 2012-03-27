@@ -80,13 +80,9 @@ class SettingsStep extends AbstractDeskpro3Step
 		$this->getDb()->beginTransaction();
 		try {
 			foreach ($save_settings as $sk => $sv) {
-				list($sg,) = explode('.', $sk, 2);
 				$this->getDb()->replace('settings', array(
 					'name'       => $sk,
-					'groupname'  => $sg,
 					'value'      => $sv,
-					'created_at' => date('Y-m-d H:i:s'),
-					'updated_at' => date('Y-m-d H:i:s')
 				));
 			}
 

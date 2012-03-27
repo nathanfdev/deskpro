@@ -568,47 +568,29 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 			$db->replace('settings', array(
 				'name' => 'core.done_rewrite_urls_check',
-				'groupname' => 'core',
 				'value' => time(),
-				'created_at' => date('Y-m-d H:i:s'),
-				'updated_at' => date('Y-m-d H:i:s'),
 			));
 			$db->replace('settings', array(
 				'name' => 'core.install_timestamp',
-				'groupname' => 'core',
 				'value' => time(),
-				'created_at' => date('Y-m-d H:i:s'),
-				'updated_at' => date('Y-m-d H:i:s'),
 			));
 			$db->replace('settings', array(
 				'name' => 'core.install_key',
-				'groupname' => 'core',
 				'value' => Strings::random(20, Strings::CHARS_KEY),
-				'created_at' => date('Y-m-d H:i:s'),
-				'updated_at' => date('Y-m-d H:i:s'),
 			));
 			$db->replace('settings', array(
 				'name' => 'core.deskpro_build',
-				'groupname' => 'core',
 				'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
-				'created_at' => date('Y-m-d H:i:s'),
-				'updated_at' => date('Y-m-d H:i:s'),
 			));
 			$db->replace('settings', array(
 				'name' => 'core.deskpro_version',
-				'groupname' => 'core',
 				'value' => date('YmdHis'),
-				'created_at' => date('Y-m-d H:i:s'),
-				'updated_at' => date('Y-m-d H:i:s'),
 			));
 
 			if ($rewrite_urls) {
 				$db->replace('settings', array(
 					'name' => 'core.rewrite_urls',
-					'groupname' => 'core',
 					'value' => '1',
-					'created_at' => date('Y-m-d H:i:s'),
-					'updated_at' => date('Y-m-d H:i:s'),
 				));
 			}
 

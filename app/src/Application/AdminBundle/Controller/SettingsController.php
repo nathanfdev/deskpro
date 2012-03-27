@@ -266,10 +266,7 @@ class SettingsController extends AbstractController
 		if (!App::getSetting('core.rewrite_urls') && !App::getSetting('core.done_rewrite_urls_check')) {
 			$this->db->replace('settings', array(
 				'name' => 'core.done_rewrite_urls_check',
-				'groupname' => 'core',
 				'value' => time(),
-				'created_at' => date('Y-m-d H:i:s'),
-				'updated_at' => date('Y-m-d H:i:s'),
 			));
 
 			$url = App::getRequest()->getUriForPath('/__checkurlrewrite');
@@ -282,10 +279,7 @@ class SettingsController extends AbstractController
 			if ($result->isSuccess() && strpos($result->getBody(), 'dp_check_url_ok') !== false) {
 				$this->db->replace('settings', array(
 					'name' => 'core.rewrite_urls',
-					'groupname' => 'core',
 					'value' => '1',
-					'created_at' => date('Y-m-d H:i:s'),
-					'updated_at' => date('Y-m-d H:i:s'),
 				));
 				return $this->redirectRoute('admin_welcome');
 			}
@@ -299,10 +293,7 @@ class SettingsController extends AbstractController
 			$url = str_replace('/index.php/', '/', $url);
 			$this->db->replace('settings', array(
 				'name' => 'core.deskpro_url',
-				'groupname' => 'core',
 				'value' => $url,
-				'created_at' => date('Y-m-d H:i:s'),
-				'updated_at' => date('Y-m-d H:i:s'),
 			));
 
 			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '1');

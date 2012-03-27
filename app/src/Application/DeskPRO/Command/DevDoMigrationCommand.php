@@ -78,10 +78,7 @@ class DevDoMigrationCommand extends \Symfony\Bundle\DoctrineMigrationsBundle\Com
 		// Update version setting
 		App::getDb()->replace('settings', array(
 			'name' => 'core.deskpro_version',
-			'groupname' => 'core',
-			'value' => $version,
-			'created_at' => date('Y-m-d H:i:s'),
-			'updated_at' => date('Y-m-d H:i:s'),
+			'value' => $version
 		));
 	}
 

@@ -536,31 +536,19 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 			App::getDb()->replace('settings', array(
 				'name' => 'core.install_timestamp',
-				'groupname' => 'core',
 				'value' => time(),
-				'created_at' => date('Y-m-d H:i:s'),
-				'updated_at' => date('Y-m-d H:i:s'),
 			));
 			App::getDb()->replace('settings', array(
 				'name' => 'core.deskpro_build',
-				'groupname' => 'core',
 				'value' => DP_BUILD_TIME,
-				'created_at' => date('Y-m-d H:i:s'),
-				'updated_at' => date('Y-m-d H:i:s'),
 			));
 			App::getDb()->replace('settings', array(
 				'name' => 'core.deskpro_version',
-				'groupname' => 'core',
 				'value' => date('YmdHis'),
-				'created_at' => date('Y-m-d H:i:s'),
-				'updated_at' => date('Y-m-d H:i:s'),
 			));
 			App::getDb()->replace('settings', array(
 				'name' => 'core.install_key',
-				'groupname' => 'core',
 				'value' => \Orb\Util\Strings::random(20, \Orb\Util\Strings::CHARS_KEY),
-				'created_at' => date('Y-m-d H:i:s'),
-				'updated_at' => date('Y-m-d H:i:s'),
 			));
 
 			$data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
@@ -574,10 +562,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		if (isset($DP_CONFIG['core.filestorage_method']) && $DP_CONFIG['core.filestorage_method'] == 'fs') {
 			$this->getContainer()->getDb()->replace('settings', array(
 				'name' => 'core.filestorage_method',
-				'groupname' => 'core',
 				'value' => 'fs',
-				'created_at' => date('Y-m-d H:i:s'),
-				'updated_at' => date('Y-m-d H:i:s'),
 			));
 		}
 
@@ -724,10 +709,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			// Mark that we've done this import
 			App::getDb()->replace('settings', array(
 				'name' => 'core.' . strtolower(\Orb\Util\Util::getBaseClassname($importer)),
-				'groupname' => 'core',
 				'value' => '1',
-				'created_at' => date('Y-m-d H:i:s'),
-				'updated_at' => date('Y-m-d H:i:s'),
 			));
 
 			// Clear the map tables

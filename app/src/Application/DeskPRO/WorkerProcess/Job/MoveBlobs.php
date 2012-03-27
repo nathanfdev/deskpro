@@ -83,9 +83,7 @@ class MoveBlobs extends AbstractJob
 		if ($last_id) {
 			App::getDb()->replace('settings', array(
 				'name' => 'core.filesystem_move_from_id',
-				'groupname' => 'core',
 				'value' => $last_id,
-				'created_at' => date('Y-m-d H:i:s')
 			));
 		} else {
 			App::getDb()->delete('settings', array('name' => 'core.filesystem_move_from_id'));

@@ -46,30 +46,11 @@ use Orb\Util\Arrays;
 class Setting extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 *
-	 */
-	protected $id = null;
-
-
-	/**
 	 * The name of the setting
 	 *
 	 * @var string
 	 */
 	protected $name = null;
-
-
-	/**
-	 * Settings can belong to groups. The group is the string
-	 * before the first dot in the name. deskpro.url, the group is 'deskpro'
-	 *
-	 * @var string
-	 */
-	protected $groupname;
-
 
 	/**
 	 * The value of a setting
@@ -77,76 +58,6 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $value;
-
-
-	/**
-	 * The default value set by DeskPRO.
-	 *
-	 * @var string
-	 */
-	protected $default_value = '';
-
-
-	/**
-	 * @var \DateTime
-	 */
-	protected $created_at;
-
-
-	/**
-	 * @var \DateTime
-	 */
-	protected $updated_at;
-
-
-
-	/**
-	 * Get the value of a setting.
-	 *
-	 * @return string
-	 */
-	public function getValue()
-	{
-		if ($this->value === null) {
-			return $this->default_value;
-		}
-
-		return $this->value;
-	}
-
-
-	/**
-	 */
-	public function _resetValueIfDefault()
-	{
-		if ($this->value == $this->default_value) {
-			$this->value = null;
-		}
-	}
-
-	/**
-	 */
-	public function _resetGroupFromName()
-	{
-		$dotpos = strpos($this->name, '.');
-		if ($dotpos) {
-			$this->groupname = substr($this->name, 0, $dotpos);
-		} else {
-			$this->groupname = null;
-		}
-	}
-
-	public function _incCreatedAt()
-	{
-		$this->created_at = $this->updated_at = new \DateTime();
-	}
-
-	public function _incUpdatedAt()
-	{
-		$this->updated_at = new \DateTime();
-	}
-
-
 
 	############################################################################
 	# Doctrine Metadata
@@ -156,21 +67,10 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Setting';
-		$metadata->setPrimaryTable(array( 'name' => 'settings', 'uniqueConstraints' => array( 'name_idx' => array( 'columns' => array( 0 => 'name', ), ), ), ));
+		$metadata->setPrimaryTable(array('name' => 'settings'));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-		$metadata->addLifecycleCallback('_resetValueIfDefault', 'prePersist');
-		$metadata->addLifecycleCallback('_resetGroupFromName', 'prePersist');
-		$metadata->addLifecycleCallback('_incCreatedAt', 'prePersist');
-		$metadata->addLifecycleCallback('_resetValueIfDefault', 'preUpdate');
-		$metadata->addLifecycleCallback('_resetGroupFromName', 'preUpdate');
-		$metadata->addLifecycleCallback('_incUpdatedAt', 'preUpdate');
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name' ));
-		$metadata->mapField(array( 'fieldName' => 'groupname', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'groupname', ));
-		$metadata->mapField(array( 'fieldName' => 'value', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value', ));
-		$metadata->mapField(array( 'fieldName' => 'default_value', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'default_value', ));
-		$metadata->mapField(array( 'fieldName' => 'created_at', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created_at', ));
-		$metadata->mapField(array( 'fieldName' => 'updated_at', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'updated_at', ));
+		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true));
+		$metadata->mapField(array( 'fieldName' => 'value', 'type' => 'dpblob', 'length' => 10000, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }

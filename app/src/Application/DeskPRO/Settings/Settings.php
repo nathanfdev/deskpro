@@ -191,6 +191,36 @@ class Settings implements \ArrayAccess
 	}
 
 
+	/**
+	 * Persist a new value for a setting, and update this as well
+	 *
+	 * @param string $setting
+	 * @param string $value
+	 */
+	public function setSetting($setting, $value)
+	{
+		$this->db->beginTransaction();
+		try {
+
+			$this->db->delete('settings', array('name' => $setting));
+
+			if ($value !== null) {
+				$this->db->insert('settings', array(
+					'name' => $setting,
+					'value' => $value,
+				));
+			}
+
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		$this->settings[$setting] = $value;
+	}
+
+
 
 	/**
 	 * Add a group of settings we want to load.

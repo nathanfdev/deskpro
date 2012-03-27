@@ -211,4 +211,22 @@ class EmailTransportsController extends AbstractController
 
 		return $this->redirectRoute('admin_emailgateways');
 	}
+
+	############################################################################
+	# set-default-from
+	############################################################################
+
+	public function setDefaultFromAction()
+	{
+		$this->ensureRequestToken('admin_update_from');
+
+		$default_from = $this->in->getString('default_from');
+		if (!\Orb\Validator\StringEmail::isValueValid($default_from)) {
+			return $this->redirectRoute('admin_emailtrans_list');
+		}
+
+		$this->settings->setSetting('core.default_from_email', $default_from);
+
+		return $this->redirectRoute('admin_emailtrans_list');
+	}
 }
