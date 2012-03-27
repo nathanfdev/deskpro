@@ -151,7 +151,7 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 	/**
 	 * Add a message to the queue
 	 *
-	 * @param Orb\Mail\Message $message
+	 * @param \Orb\Mail\Message $message
 	 */
 	public function addQueuedMessage(\Orb\Mail\Message $message)
 	{
@@ -190,7 +190,7 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 	/**
 	 * Add a message to the database as sent
 	 *
-	 * @param Orb\Mail\Message $message
+	 * @param \Orb\Mail\Message $message
 	 */
 	public function addLoggedMessage(\Orb\Mail\Message $message)
 	{

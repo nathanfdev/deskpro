@@ -54,10 +54,8 @@ class Message extends \Orb\Mail\Message
 	protected $template_vars;
 
 
-	public function prepare()
+	public function doPrepare()
 	{
-		parent::prepare();
-
 		if ($this->template) {
 			$content = $this->template_engine->render($this->template, $this->template_vars);
 			if (strpos($content, '___DP___SUBJECT___SEP___') !== false) {
@@ -80,6 +78,12 @@ class Message extends \Orb\Mail\Message
 			}
 
 			$this->setBody($body, 'text/html');
+
+			// These need to be unset so the message can be properly serialized
+			// if it needs to be inserted as a queued message
+			$this->template        = null;
+			$this->template_vars   = null;
+			$this->template_engine = null;
 		}
 	}
 
@@ -104,7 +108,6 @@ class Message extends \Orb\Mail\Message
 		$this->template = $name;
 		$this->template_vars = $vars;
 	}
-
 
 	/**
 	 * @static
