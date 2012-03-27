@@ -160,19 +160,11 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
                 'value' => date('YmdHis'),
             ));
 
-<<<<<<< HEAD
+
             $db->replace('settings', array(
                 'name' => 'core.rewrite_urls',
                 'value' => '1',
             ));
-=======
-            if ($rewrite_urls) {
-                $db->replace('settings', array(
-                    'name' => 'core.rewrite_urls',
-                    'value' => '1',
-                ));
-            }
->>>>>>> 4f2a5624be19b982db4d1a1796b8675385ba7f02
 
             $this->getOrm()->getConnection()->commit();
 
