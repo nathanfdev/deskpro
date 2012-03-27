@@ -54,7 +54,7 @@ class EmailGatewayAddress extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * @var Application\DeskPRO\Entity\EmailGateway
+	 * @var \Application\DeskPRO\Entity\EmailGateway
 	 */
 	protected $gateway;
 

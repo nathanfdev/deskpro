@@ -466,7 +466,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$newticket->ticket->department_id = $dep_id;
 
 		App::getOrm()->beginTransaction();
+
 		$ticket = $newticket->save();
+
+		$ticket->email_gateway = $this->gateway;
+		$ticket->email_gateway_address = $this->gateway_address;
 
 		$this->logMessage('[TicketGatewayProcessor] Ticket record ' . $ticket->id);
 

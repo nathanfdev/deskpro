@@ -51,6 +51,42 @@
 	</div>
 	{% endif %}
 
+	{% if 'gateway_address' not in no_show_fields and term_options.gateway_addresses %}
+		<div class="type" title="Ticket Gateway Address" data-rule-type="gateway_address" data-term-type="GenericMenuTerm" data-term-triggers="gateway,address,gateway_address">
+			<div class="op">
+				<select name="op" class="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+				</select>
+			</div>
+			<div class="options">
+				<select name="gateway_address">
+					{% for id,addr in term_options.gateway_addresses %}
+						<option value="{{ id }}">{{ addr }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+
+	{% if 'gateway_account' not in no_show_fields and term_options.gateway_accounts %}
+		<div class="type" title="Ticket Gateway Account" data-rule-type="gateway_account" data-term-type="GenericMenuTerm" data-term-triggers="gateway,account,gateway_account">
+			<div class="op">
+				<select name="op" class="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+				</select>
+			</div>
+			<div class="options">
+				<select name="gateway_address">
+					{% for id,name in term_options.gateway_accounts %}
+					<option value="{{ id }}">{{ name }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+
 	{% if 'subject' not in no_show_fields %}
 	<div class="type" title="Subject" data-rule-type="subject">
 		<div class="op">

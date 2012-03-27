@@ -23,6 +23,11 @@ $paths = array(
 
 $tpl_info = array();
 
+$bogus = false;
+if (in_array('--bogus', $_SERVER['argv'])) {
+	$bogus = true;
+}
+
 foreach ($paths as $bundle => $dir) {
 	$finder = new \Symfony\Component\Finder\Finder();
 	$finder->files()->name('*.twig')->in($dir);
@@ -39,11 +44,16 @@ foreach ($paths as $bundle => $dir) {
 		}
 		$tplname = $bundle . $tplname;
 
-		exec("git log --date=short -s -1 -- {$filepath}", $out);
-		$res = implode("\n", $out);
+		if (!$bogus) {
+			exec("git log --date=short -s -1 -- {$filepath}", $out);
+			$res = implode("\n", $out);
 
-		preg_match('#^Date:\s*([0-9]{4}\-[0-9]{2}\-[0-9]{2})#m', $res, $m);
-		$time = strtotime($m[1]);
+			preg_match('#^Date:\s*([0-9]{4}\-[0-9]{2}\-[0-9]{2})#m', $res, $m);
+			$time = strtotime($m[1]);
+		} else {
+			$time = time();
+		}
+
 
 		$tpl_info[$tplname] = array(
 			'path' => str_replace(DP_ROOT, '', $file->getRealPath()),

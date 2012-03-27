@@ -245,6 +245,7 @@ class TemplatesController extends AbstractController
 			if (!isset($grouped[$bundle])) $grouped[$bundle] = array();
 			if (!isset($grouped[$bundle][$dir])) $grouped[$bundle][$dir] = array('count_changed' => 0, 'count_outdated' => 0, 'templates' => array());
 
+			$v['name'] = $k;
 			$v['shortname'] = str_replace('.twig', '', $m[3]);
 
 			if (isset($custom_templates[$k])) {
@@ -268,5 +269,107 @@ class TemplatesController extends AbstractController
 		}
 
 		return $grouped;
+	}
+
+	####################################################################################################################
+	# create-template
+	####################################################################################################################
+
+	public function createTemplateAction()
+	{
+		$name = $this->in->getString('name');
+
+		if (!preg_match('#^([A-Za-z0-9]+):([A-Za-z0-9_]+):([A-Za-z0-9_\-\.]+)$#', $name)) {
+			return $this->createJsonResponse(array('error' => true, 'error_message' => 'Invalid template name'));
+		}
+
+		$name = $this->in->getString('name');
+		App::getDb()->delete('templates', array('name' => $name));
+
+		$copy_tpl = $this->in->getString('copy_tpl');
+		$code = '';
+		if ($copy_tpl) {
+			$tplfiles = new TemplateFiles();
+			$map = $tplfiles->getTemplateMap();
+
+			$code = App::getDb()->fetchColumn("SELECT template_code FROM templates WHERE name = ?", array($copy_tpl));
+			if (!$code && isset($map[$copy_tpl])) {
+				$code = file_get_contents($map[$copy_tpl]['path']);
+			}
+		}
+		if (!$code) {
+			$code = '';
+		}
+
+		try {
+			/** @var $twig \Application\DeskPRO\Twig\Environment */
+			$twig = $this->container->get('twig');
+			$compiled = $twig->compileSource($code, $name);
+		} catch (\Twig_Error_Syntax $e) {
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'error_syntax' => true,
+				'error_code' => $e->getCode(),
+				'error_message' => $e->getMessage(),
+				'error_line' => $e->getTemplateLine()
+			));
+		} catch (\Twig_Error $e) {
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'error_code' => $e->getCode(),
+				'error_message' => $e->getMessage()
+			));
+		}
+
+		$template = new Template();
+		$template->style = $this->container->getSystemService('style');
+		$template->name = $name;
+		$template->setTemplate($code, $compiled);
+
+		$this->db->beginTransaction();
+		try {
+			$this->em->persist($template);
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array('success' => true, 'name' => $name));
+	}
+
+	####################################################################################################################
+	# mini-manager
+	####################################################################################################################
+
+	public function miniManagerAction($dirname, $prefix)
+	{
+		$tplfiles = new TemplateFiles();
+		$map = $tplfiles->getEmailTemplates();
+
+		$custom_templates = $this->container->getSystemService('style')->getCustomTemplateInfo();
+		$custom_templates = array_filter($custom_templates, function($v) use ($dirname, $prefix) {
+			if (strpos($v['name'], "Custom:$dirname:$prefix") === 0) {
+				return true;
+			}
+			return false;
+		});
+
+		$list = $this->groupMap($map, $custom_templates);
+		$list = $list['DeskPRO'][$dirname];
+		$list = array_filter($list['templates'], function($v) use ($list, $dirname, $prefix) {
+			if (strpos($v['name'], "DeskPRO:$dirname:$prefix") === 0) {
+				return true;
+			}
+			return false;
+		});
+
+		return $this->render('AdminBundle:Templates:mini-manager.html.twig', array(
+			'default_templates' => $list,
+			'custom_templates' => $custom_templates,
+			'tpl_dirname' => $dirname,
+			'tpl_prefix' => $prefix,
+		));
 	}
 }

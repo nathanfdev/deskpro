@@ -89,6 +89,8 @@ class Tickets
 		$options['departments_hierarchy'] = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
 		$options['departments_full'] = App::getOrm()->getRepository('DeskPRO:Department')->getFullDepartmentNames(null, false);
 		$options['departments'] = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentNames(null, false);
+		$options['gateway_addresses'] = App::getOrm()->getRepository('DeskPRO:EmailGatewayAddress')->getOptions();
+		$options['gateway_accounts'] = App::getOrm()->getRepository('DeskPRO:EmailGateway')->getGatewayNames();
 
 		if (App::getSetting('core.use_ticket_category')) {
 			$options['ticket_categories_hierarchy'] = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getCategoriesInHierarchy();

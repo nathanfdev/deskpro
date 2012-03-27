@@ -733,6 +733,13 @@ $collection->add('admin_templates_other', new Route(
 	array()
 ));
 
+$collection->add('admin_templates_createtpl', new Route(
+	'/templates/create-template',
+	array('_controller' => 'AdminBundle:Templates:createTemplate'),
+	array(),
+	array()
+));
+
 $collection->add('admin_templates_getcode', new Route(
 	'/templates/get-template-code',
 	array('_controller' => 'AdminBundle:Templates:getTemplateCode'),
@@ -750,6 +757,13 @@ $collection->add('admin_templates_save', new Route(
 $collection->add('admin_templates_revert', new Route(
 	'/templates/revert-template.json',
 	array('_controller' => 'AdminBundle:Templates:revertTemplate'),
+	array(),
+	array()
+));
+
+$collection->add('admin_templates_minimanager', new Route(
+	'/templates/mini-manager/{dirname}/{prefix}',
+	array('_controller' => 'AdminBundle:Templates:miniManager'),
 	array(),
 	array()
 ));
