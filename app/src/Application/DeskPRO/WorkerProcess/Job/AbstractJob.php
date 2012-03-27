@@ -43,7 +43,10 @@ abstract class AbstractJob
 {
 	const DEFAULT_INTERVAL = 3600;
 
-	protected $options = array();
+	/**
+	 * @var \Orb\Util\OptionsArray
+	 */
+	protected $options;
 
 	/**
 	 * @var \Application\DeskPRO\Log\Logger
@@ -52,19 +55,19 @@ abstract class AbstractJob
 
 	final public function __construct(Logger $logger, array $options = null)
 	{
-		if ($options) {
-			$this->options = $options;
-		}
+		$this->options = new \Orb\Util\OptionsArray($options);
 		$this->logger = $logger;
+		$this->init();
 	}
 
+
+	protected function init() { }
 
 
 	/**
 	 * Run the task
 	 */
 	abstract public function run();
-
 
 
 	/**
@@ -79,7 +82,6 @@ abstract class AbstractJob
 		$details['flag'] = 'status';
 		$this->logger->log($message, Logger::INFO, $details);
 	}
-
 
 
 	/**

@@ -1,36 +1,36 @@
 <?php
-		/**************************************************************************\
-		| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-		| a British company located in London, England.                            |
-		|                                                                          |
-		| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-		|                                                                          |
-		| The license agreement under which this software is released              |
-		| can be found at http://www.deskpro.com/license                           |
-		|                                                                          |
-		| By using this software, you acknowledge having read the license          |
-		| and agree to be bound thereby.                                           |
-		|                                                                          |
-		| Please note that DeskPRO is not free software. We release the full       |
-		| source code for our software because we trust our users to pay us for    |
-		| the huge investment in time and energy that has gone into both creating  |
-		| this software and supporting our customers. By providing the source code |
-		| we preserve our customers' ability to modify, audit and learn from our   |
-		| work. We have been developing DeskPRO since 2001, please help us make it |
-		| another decade.                                                          |
-		|                                                                          |
-		| Like the work you see? Think you could make it better? We are always     |
-		| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-		|                                                                          |
-		| ~ Thanks, Everyone at Team DeskPRO                                       |
-		\**************************************************************************/
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
 
-		/**
-		 * DeskPRO
-		 *
-		 * @package DeskPRO
-		 * @subpackage Tickets
-		 */
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage Tickets
+ */
 
 namespace Application\DeskPRO\Tickets\TicketChangeInspector;
 
@@ -165,7 +165,7 @@ class SearchUpdater
 	{
 		return array(
 			'id', 'language_id', 'department_id', 'category_id', 'priority_id', 'workflow_id', 'product_id', 'person_id', 'agent_id',
-			'agent_team_id', 'organization_id', 'email_gateway_id', 'creation_system', 'status', 'urgency', 'is_hold', 'date_created', 'date_first_agent_reply',
+			'agent_team_id', 'organization_id', 'email_gateway_id', 'creation_system', 'status', 'urgency', 'is_hold', 'date_created', 'date_resolved', 'date_first_agent_reply',
 			'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'total_user_waiting', 'total_to_first_reply',
 		);
 	}

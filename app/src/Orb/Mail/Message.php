@@ -58,6 +58,11 @@ class Message extends \Swift_Message
 	protected $force_transport;
 
 	/**
+	 * @var bool
+	 */
+	protected  $has_prepared = false;
+
+	/**
 	 * Metadata that might be used by the transports or queue processor
 	 * @var array
 	 */
@@ -85,11 +90,21 @@ class Message extends \Swift_Message
 	 */
 	public function prepare()
 	{
+		if ($this->has_prepared) {
+			return;
+		}
+
+		$this->has_prepared = true;
+
 		if ($this->_suppress_autoreply) {
 			// Tell Outlook/Exchange to suppress autoreplies (http://msdn.microsoft.com/en-us/library/ee219609(v=exchg.80).aspx)
 			$this->_setHeaderParameter('X-Auto-Response-Suppress', 'All', null);
 		}
+
+		$this->doPrepare();
 	}
+
+	protected function doPrepare() { }
 
 
 	/**

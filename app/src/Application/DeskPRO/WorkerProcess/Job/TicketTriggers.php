@@ -71,6 +71,8 @@ class TicketTriggers extends AbstractJob
 		$searcher = $trigger->getSearcher();
 		$searcher->addTerm('escalation_eliminator', 'is', $trigger);
 
+		$this->logger->log("Trigger {$trigger->id}: " . $searcher->getSql(), 'DEBUG');
+
 		$ticket_ids = $searcher->getMatches(array('offset' => 0, 'limit' => 1000));
 
 		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids);
@@ -96,6 +98,7 @@ class TicketTriggers extends AbstractJob
 				$actions_collection->apply($ticket, null);
 
 				$d = $ticket[$trigger->getTicketTimeField()];
+
 				$trigger_log = array(
 					'ticket_id'     => $ticket->id,
 					'trigger_id'    => $trigger->id,

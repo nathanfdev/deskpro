@@ -133,7 +133,7 @@ class SettingsController extends AbstractController
 	public function advancedSetAction($name)
 	{
 		$value = $this->in->getValue('value');
-		$setting = App::getEntityRepository('DeskPRO:Setting')->updateSetting($name, $value);
+		App::getEntityRepository('DeskPRO:Setting')->updateSetting($name, $value);
 
 		return $this->createJsonResponse(array('success' => true));
 	}

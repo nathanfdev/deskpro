@@ -43,7 +43,12 @@ use Orb\Util\Util;
 class Setting extends EntityRepository
 {
 	/**
-	 * Update a database setting
+	 * Update a database setting.
+	 *
+	 * This updates the database but not the currently loaded set of settings. If you need
+	 * the value to take affect immediately (this process), then use the Settings service,
+	 *
+	 * <code>$this->container->get('settings')->setSetting($name, $value);</code>
 	 *
 	 * @param  string $name  The name of the setting
 	 * @param  mixed  $value The value to set. Null means any existing value will be unset
@@ -51,28 +56,15 @@ class Setting extends EntityRepository
 	 */
 	public function updateSetting($name, $value)
 	{
+		$this->_em->getConnection()->delete('settings', array('name' => $name));
+
 		if ($value === null) {
-			App::getDb()->delete('settings', array('name' => $name));
 			return null;
 		}
 
-		$setting = $this->findOneBy(array('name' => $name));
-		if (!$setting) {
-			$setting = new Entity\Setting();
-			$setting['name'] = $name;
-		}
-
-		if (!is_array($value)) {
-			$setting['value'] = (string)$value; // needs to be cast to a str or else 0 is ignored
-		} else {
-			$setting['value'] = $value;
-		}
-
-		App::getOrm()->transactional(function ($em) use ($setting) {
-			$em->persist($setting);
-			$em->flush();
-		});
-
-		return $setting;
+		$this->_em->getConnection()->insert('settings', array(
+			'name' => $name,
+			'value' => (string)$value
+		));
 	}
 }

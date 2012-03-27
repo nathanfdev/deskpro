@@ -80,7 +80,7 @@ class SearchIndexer
 			return;
 		}
 
-		$content_type = App::getContainer()->getSearchAdapter()->getContentTypeForObject($object);
+		$content_type = App::getContainer()->getSearchAdapter()->getContentTypeNameForObject($object);
 
 		$this->queue->send(array('entity_type' => $content_type, 'id' => $object->getId(), 'op' => $op));
 	}

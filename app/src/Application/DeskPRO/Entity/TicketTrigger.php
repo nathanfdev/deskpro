@@ -172,25 +172,29 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
 
 		foreach ($this->terms as $term) {
-			$searcher->addTerm($term['term'], $term['is'], $term['options']);
+			$searcher->addTerm($term['type'], $term['op'], $term['options']);
 		}
 
 		switch ($this->event_trigger) {
 			case self::EVENT_TIME_OPEN:
 				$searcher->addTerm('status', 'is', array('awaiting_user', 'awaiting_agent'));
+				$searcher->addRawWhere('tickets.date_user_waiting IS NOT NULL');
 				break;
 
 			case self::EVENT_TIME_USER_WAITING:
 			case self::EVENT_TIME_TOTAL_USER_WAITING:
 				$searcher->addTerm('status', 'is', array('awaiting_user'));
+				$searcher->addRawWhere('tickets.date_user_waiting IS NOT NULL');
 				break;
 
 			case self::EVENT_TIME_AGENT_WAITING:
 				$searcher->addTerm('status', 'is', array('awaiting_agent'));
+				$searcher->addRawWhere('tickets.date_agent_waiting IS NOT NULL');
 				break;
 
 			case self::EVENT_TIME_RESOLVED:
 				$searcher->addTerm('status', 'is', array('resolved'));
+				$searcher->addRawWhere('tickets.date_resolved IS NOT NULL');
 				break;
 		}
 

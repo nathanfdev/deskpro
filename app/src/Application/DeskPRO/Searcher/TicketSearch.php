@@ -130,6 +130,16 @@ class TicketSearch extends SearcherAbstract
      */
     protected $limit = '1000';
 
+	/**
+	 * @var array
+	 */
+	protected $add_raw_wheres = array();
+
+	/**
+	 * @var array
+	 */
+	protected $add_raw_joins = array();
+
 	public $_last_sql = null;
 
 	/**
@@ -365,6 +375,10 @@ class TicketSearch extends SearcherAbstract
 			$sql .= " $order_join ";
 		}
 
+		if ($this->add_raw_joins) {
+			$sql .= implode(' ', $this->add_raw_joins);
+		}
+
 		#------------------------------
 		# Add wheres
 		#------------------------------
@@ -374,6 +388,10 @@ class TicketSearch extends SearcherAbstract
 		}
 		if (!empty($user_parts['wheres'])) {
 			$where .= " AND " . implode(" AND ", $user_parts['wheres']);
+		}
+
+		if ($this->add_raw_wheres) {
+			$where .= " AND " . implode(' AND ', $this->add_raw_wheres);
 		}
 
 		if ($where) {
@@ -1458,5 +1476,21 @@ class TicketSearch extends SearcherAbstract
 			case self::TERM_DATE_CREATED: return 'date_created';
 			default: throw new \InvalidArgumentException("Invalid field: $term_id");
 		}
+	}
+
+	/**
+	 * @param string $join
+	 */
+	public function addRawJoin($join)
+	{
+		$this->add_raw_joins[] = $join;
+	}
+
+	/**
+	 * @param string $where
+	 */
+	public function addRawWhere($where)
+	{
+		$this->add_raw_wheres[] = $where;
 	}
 }
