@@ -416,8 +416,6 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 		echo '</body></html>';
 
-		error_log(sprintf("Took %.5f", microtime(true)-$start));
-
 		return new \Symfony\Component\HttpFoundation\Response();
 	}
 

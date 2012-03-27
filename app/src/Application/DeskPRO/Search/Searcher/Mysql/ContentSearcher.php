@@ -105,8 +105,6 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 			LIMIT $start, $per_page
 		";
 
-		error_log($select_query);
-
 		if ($top) {
 			$total = null;
 		} else {

@@ -128,7 +128,6 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 				$message->setTo($vars['validating_email']->getEmail());
 			} else {
 				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-				error_log($person->getPrimaryEmailAddress());
 			}
 			foreach ($parts as $part) {
 				$message->addCc($part['email_address'], $part->person->getDisplayName());
