@@ -53,46 +53,72 @@ class DeleteSpamTickets extends AbstractJob
 			return;
 		}
 
-		$date_cut = date('Y-m-d H:i:s', time() - $secs);
+		$date_cut = new \DateTime('@' . (time() - $secs));
 
 		#------------------------------
 		# find tickets to proc
 		#------------------------------
 
-		$ticket_ids = App::getDb()->fetchAllCol("
-			SELECT id
-			FROM tickets
-			WHERE tickets.status = 'hidden' AND tickets.hidden_status = 'spam'
-			AND tickets.date_status < ?
-			LIMIT 5000
-		", array($date_cut));
+		$ticket_count = 0;
+		$user_count = 0;
+		$open_trans = false;
 
-		foreach ($ticket_ids as $ticket_id) {
+		$all_tickets = App::getOrm()->createQuery("
+			SELECT ticket, person
+			FROM DeskPRO:Ticket ticket
+			LEFT JOIN ticket.person person
+			WHERE ticket.status = 'hidden' AND ticket.hidden_status = 'spam' AND ticket.date_status < ?0
+		")->setMaxResults(1000)->execute(array($date_cut));
 
-			App::getOrm()->beginTransaction();
+		$this->logger->log(sprintf("[DeleteSpamTickets] %d tickets to delete", count($all_tickets)), 'DEBUG');
+
+		foreach ($all_tickets as $ticket) {
+
+			if (!$open_trans) {
+				$open_trans = true;
+				App::getOrm()->beginTransaction();
+			}
 
 			try {
 
-				// See if the user has more tickets
-				$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM tickets WHERE person_id = ?", array($ticket->person->id));
+				$this->logger->log(sprintf("[DeleteSpamTickets] Deleted ticket %d", $ticket->id), 'DEBUG');
 
-				$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($ticket_id);
+				// See if the user has only this one spam ticket
+				$count = App::getDb()->fetchColumn("
+					SELECT COUNT(*)
+					FROM tickets
+					WHERE person_id = ?
+					LIMIT 2
+				", array($ticket->person->id));
+
 				App::getOrm()->remove($ticket);
 
 				if ($count == 1) {
+					$this->logger->log(sprintf("[DeleteSpamTickets] Deleted person %d", $ticket->person->id), 'DEBUG');
+
+					$user_count++;
 					App::getOrm()->remove($ticket->person);
 				}
 
-				App::getOrm()->flush();
-				App::getOrm()->commit();
+				$ticket_count++;
 			} catch (\Exception $e) {
+				$open_trans = false;
 				App::getOrm()->rollback();
 				throw $e;
 			}
+
+			if ($ticket_count % 250 == 0) {
+				App::getOrm()->commit();
+				$open_trans = false;
+			}
 		}
 
-		if ($ticket_ids) {
-			$this->logStatus("Removed " . count($ticket_id) . " spam tickets");
+		if ($open_trans) {
+			App::getOrm()->commit();
+		}
+
+		if ($ticket_count) {
+			$this->logStatus("Removed " . count($ticket_count) . " spam tickets");
 			if ($user_count) {
 				$this->logStatus("Removed " . count($user_count) . " users who had only one spam ticket");
 			}

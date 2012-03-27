@@ -141,9 +141,12 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 * @param \Application\DeskPRO\Log\Logger $logger
 	 * @return \Application\DeskPRO\WorkerProcess\Job\AbstractJob
 	 */
-	public function createJobObj(Logger $logger)
+	public function createJobObj(Logger $logger, array $options = array())
 	{
 		$classname = $this->job_class;
+
+		$options = array_merge($this->options, $options);
+
 		$job = new $classname($logger, $this->options);
 		return $job;
 	}

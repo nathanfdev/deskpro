@@ -56,11 +56,24 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 			->addOption('group', 'g', InputOption::VALUE_REQUIRED, 'Run only a specific group of jobs')
 			->addOption('ignore-interval', 'f', InputOption::VALUE_NONE, 'Always run job(s) even if the job interval has not ellapsed since last run')
 			->addOption('daemon', null, InputOption::VALUE_NONE, 'Runs forever. Only "checkable" jobs supported. php-exec option is required.')
-			->addOption('php-exec', 'p', InputOption::VALUE_REQUIRED, 'Runs jobs as child processes using this path to PHP.');
+			->addOption('php-exec', 'p', InputOption::VALUE_REQUIRED, 'Runs jobs as child processes using this path to PHP.')
+			->addOption('options', 'o', InputOption::VALUE_REQUIRED, 'Specify a JSON-encoded array of options to pass to worker jobs');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$options = null;
+		if ($input->getOption('options')) {
+			$options = json_decode($input->getOption('options'), true);
+			if (!is_array($options)) {
+				$output->writeln("<error>The options array is malformed</error>");
+				return 1;
+			}
+		}
+		if (!$options) {
+			$options = array();
+		}
+
 		$verbose = $input->getOption('verbose');
 
 		if (App::getSetting('core.helpdesk_disabled')) {
@@ -88,6 +101,8 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		} else {
 			$runner = new \Application\DeskPRO\WorkerProcess\Runner\Standard();
 		}
+
+		$runner->setJobOptions($options);
 
 		if ($verbose) {
 			$runner->setVerbose();
