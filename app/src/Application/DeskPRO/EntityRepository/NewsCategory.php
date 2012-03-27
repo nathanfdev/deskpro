@@ -151,7 +151,5 @@ class NewsCategory extends AbstractCategoryRepository
 		};
 
 		$fn_count(null);
-
-		$cache->save($counts, $cache_id);
 	}
 }
