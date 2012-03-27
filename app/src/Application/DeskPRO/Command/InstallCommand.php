@@ -43,6 +43,8 @@ use Symfony\Component\Console\Output\Output;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
+use Orb\Util\Strings;
+
 /**
  * dpdev:generate-schema-file
  */
@@ -55,12 +57,11 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-
         if (!$this->ensureNotInstalled()) {
             exit;
         }
 
+        $this->createDatabase();
         $this->getLogger()->log('Install::createTables', 'debug');
 
         $db = $this->getDb();
@@ -112,61 +113,57 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         $install_schema->run(false);
         $this->createAdmin();
+        $this->saveSettings();
+    }
+
+    private function createDatabase()
+    {
+        try {
+            App::getDb()->connect();
+        } catch (\PDOException $e) {
+            if ($e->getCode() == '1049') {
+
+                // Attempt to create an empty database
+                try {
+                    global $DP_CONFIG;
+                    $dbh = new \PDO("mysql:host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+                    $dbh->exec("CREATE DATABASE `{$DP_CONFIG['db']['dbname']}`");
+                } catch (\Exception $e) {}
+            }
+        }
     }
 
     private function saveSettings()
     {
-        $rewrite_urls = true;
         $this->getOrm()->getConnection()->beginTransaction();
-
         try {
             $db = $this->getOrm()->getConnection();
 
             $db->replace('settings', array(
                 'name' => 'core.done_rewrite_urls_check',
-                'groupname' => 'core',
                 'value' => time(),
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
             ));
             $db->replace('settings', array(
                 'name' => 'core.install_timestamp',
-                'groupname' => 'core',
                 'value' => time(),
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
             ));
             $db->replace('settings', array(
                 'name' => 'core.install_key',
-                'groupname' => 'core',
                 'value' => Strings::random(20, Strings::CHARS_KEY),
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
             ));
             $db->replace('settings', array(
                 'name' => 'core.deskpro_build',
-                'groupname' => 'core',
                 'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
             ));
             $db->replace('settings', array(
                 'name' => 'core.deskpro_version',
-                'groupname' => 'core',
                 'value' => date('YmdHis'),
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
             ));
 
-            if ($rewrite_urls) {
-                $db->replace('settings', array(
-                    'name' => 'core.rewrite_urls',
-                    'groupname' => 'core',
-                    'value' => '1',
-                    'created_at' => date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s'),
-                ));
-            }
+            $db->replace('settings', array(
+                'name' => 'core.rewrite_urls',
+                'value' => '1',
+            ));
 
             $this->getOrm()->getConnection()->commit();
 
@@ -189,7 +186,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $agent = new \Application\DeskPRO\Entity\Person();
             $agent->first_name = 'Default';
             $agent->last_name = 'Admin';
-            $agent->setEmail('demo_admin@localhost', true);
+            $agent->setEmail('admin@localhost', true);
             $agent->setPassword('deskpro');
             $agent->is_user = true;
             $agent->is_confirmed = true;
