@@ -147,7 +147,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 
 		$options = array_merge($this->options, $options);
 
-		$job = new $classname($logger, $this->options);
+		$job = new $classname($logger, $options);
 		return $job;
 	}
 
