@@ -178,6 +178,8 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         }
     }
 
+
+
     private function createAdmin()
     {
         $this->getOrm()->getConnection()->beginTransaction();
