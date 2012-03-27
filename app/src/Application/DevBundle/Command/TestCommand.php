@@ -35,7 +35,19 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$gen = new \Application\DeskPRO\Portal\SitemapGenerator(App::getSetting('core.deskpro_url'), App::getOrm(), App::get('router'));
-		echo $gen->getXml();
+		/** @var $sm \Doctrine\DBAL\Schema\AbstractSchemaManager */
+		$sm = App::getDb()->getSchemaManager();
+
+		$table = 'searchlog';
+
+		$indexes = $sm->listTableIndexes($table);
+
+		foreach ($indexes as $x) {
+			$p = $sm->getDatabasePlatform()->getCreateIndexSQL($x, $table);
+			echo $p;
+			echo "\n\n";
+		}
+
+		echo "\n";
 	}
 }

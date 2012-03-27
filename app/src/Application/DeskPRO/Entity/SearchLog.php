@@ -152,7 +152,7 @@ class SearchLog extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setPrimaryTable(array(
 			'name' => 'searchlog',
 			'indexes' => array(
-				'query_idx' => array('columns' => array('query'), 'length' => 15),
+				'searchlog_query_idx' => array('columns' => array('query')),
 				'num_results_idx' => array('columns' => array('num_results')),
 			)
 		));
