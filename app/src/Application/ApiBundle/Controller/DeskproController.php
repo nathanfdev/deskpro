@@ -50,12 +50,12 @@ class DeskproController extends AbstractController
 			'fulldate' => date('r')
 		));
 	}
-	
+
 
 
 	/**
 	 * Gets the value of a setting.
-	 * 
+	 *
 	 * @param string $setting_name
 	 */
 	public function settingAction($setting_name)
@@ -69,7 +69,7 @@ class DeskproController extends AbstractController
 		return $this->createApiResponse(array('setting_value' => $value));
 	}
 
-	
+
 
 	/**
 	 * Sets a new value for a setting
@@ -84,15 +84,7 @@ class DeskproController extends AbstractController
 			return $this->createApiErrorResponse('setting_not_found', 'No setting was found with that name', 404);
 		}
 
-		try {
-			$setting =$this->em->findOneBy('DeskPRO:Setting', array('name' => $setting_name));
-		} catch (\Doctrine\ORM\NoResultException $e) {
-			$setting = new \Application\DeskPRO\Entity\Setting();
-		}
-
-		$setting['value'] = isset($_POST['value']) ? $_POST['value'] : '';
-		$this->em->persist($setting);
-		$this->em->flush();
+		$this->settings->setSetting($setting_name, isset($_POST['value']) ? $_POST['value'] : '');
 
 		return $this->createApiResponse(array('success' => 1));
 	}

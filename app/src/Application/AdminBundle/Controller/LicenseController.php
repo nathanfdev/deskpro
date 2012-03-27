@@ -230,16 +230,7 @@ class LicenseController extends AbstractController
 		$this->em->getConnection()->beginTransaction();
 
 		try {
-			$lic_setting = $this->em->getRepository('DeskPRO:Setting')->findOneBy(array('name' => 'core.license'));
-			if (!$lic_setting) {
-				$lic_setting = new \Application\DeskPRO\Entity\Setting();
-				$lic_setting->name = 'core.license';
-			}
-
-			$lic_setting->value = $license_code;
-			$this->em->persist($lic_setting);
-			$this->em->flush();
-
+			$this->settings->setSetting('core.license', $license_code);
 			$this->em->getConnection()->commit();
 		} catch (\Exception $e) {
 			$this->em->getConnection()->rollback();
