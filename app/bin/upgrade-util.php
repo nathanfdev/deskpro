@@ -313,28 +313,36 @@ class Upgrade
 		if (!$this->isInstanceOutdated()) {
 			if (!$is_quiet) {
 				$this->out("You are all up to date!");
-				exit(0);
 			}
+			exit(0);
 		}
 
-		$php_path = $this->getPhpBinaryPath();
-		$mysql_path = $this->getMysqlBinaryPath();
-		$mysql_dump_path = $this->getMysqlBinaryPath();
+		$php_path        = $this->getPhpBinaryPath();
+		$mysql_dump_path = $this->getMysqldumpBinaryPath();
+		$mysql_path      = $this->getMysqlBinaryPath();
 
-		if (!$php_path || !$mysql_path || $mysql_dump_path) {
-			if (!$php_path) $this->outAndLog("Cannot find path to `php` binary");
+		if (!$php_path || !$mysql_path || !$mysql_dump_path) {
+			if (!$php_path)        $this->outAndLog("Cannot find path to `php` binary");
 			if (!$mysql_dump_path) $this->outAndLog("Cannot find path to `mysqldump` binary");
-			if (!$mysql_path) $this->outAndLog("Cannot find path to `mysql` binary");
+			if (!$mysql_path)      $this->outAndLog("Cannot find path to `mysql` binary");
 			exit(10);
 		}
 
 		// Shutdown helpdesk
 		$fileutil = new FilesystemUtil();
+
+		if (!$is_quiet) $this->out("Turning helpdesk off");
 		$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
 
 		try {
+			if (!$is_quiet) $this->out("Doing file backup ...");
 			$this->file_backup = $this->backupFiles();
-			$this->db_backup   = $this->backupDatabase();
+			if (!$is_quiet) $this->out("-> Done");
+
+			if (!$is_quiet) $this->out("Doing database backup ... ");
+			$this->db_backup = $this->backupDatabase();
+			if (!$is_quiet) $this->out("-> Done");
+
 		} catch (\Exception $e) {
 			$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
 			$this->out($e->getCode() . ' ' . $e->getMessage());
@@ -343,7 +351,9 @@ class Upgrade
 		}
 
 		try {
+			if (!$is_quiet) $this->out("Downloading latest source ...");
 			$new_source_zip = $this->downloadLatest();
+			if (!$is_quiet) $this->out("-> Done");
 		} catch (\Exception $e) {
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
@@ -352,7 +362,10 @@ class Upgrade
 
 		try {
 			$this->revert_checkpoint = 'files';
+
+			if (!$is_quiet) $this->out("Installing latest source files ...");
 			$this->installFilesFromZip($new_source_zip, false);
+			if (!$is_quiet) $this->out("-> Done");
 		} catch (\Exception $e) {
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
@@ -365,12 +378,14 @@ class Upgrade
 
 		$this->revert_checkpoint = 'db';
 
+		if (!$is_quiet) $this->out("Performing database upgrades ...");
+
 		chdir(DP_ROOT);
 		if ($is_quiet) {
-			$cmd = "$php_path cmd.php dp:upgrade --dobuildrun=$next_id 2>&1";
+			$cmd = "$php_path cmd.php dp:upgrade 2>&1";
 			exec($cmd, $out, $ret);
 		} else {
-			$cmd = "$php_path cmd.php dp:upgrade --dobuildrun=$next_id 2>&1";
+			$cmd = "$php_path cmd.php dp:upgrade 2>&1";
 			$out = '';
 			passthru($cmd, $ret);
 		}
@@ -391,6 +406,9 @@ class Upgrade
 
 			exit(30);
 		}
+
+		if (!$is_quiet) $this->out("-> Done");
+		$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
 
 		$this->revert_checkpoint = null;
 		$str = sprintf("Upgrade done in %.4f seconds", microtime(true) - $time_start);
