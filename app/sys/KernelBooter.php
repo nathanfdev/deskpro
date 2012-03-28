@@ -275,6 +275,12 @@ class KernelBooter
 	{
 		static::ensureCli();
 		$app = static::getCliApp($env, $debug);
+
+		if (!$app) {
+			echo "Helpdesk offline\n";
+			return;
+		}
+
 		$GLOBALS['DP_IS_IN_CLI'] = true;
 		$app->run();
 		unset($GLOBALS['DP_IS_IN_CLI']);
@@ -291,6 +297,10 @@ class KernelBooter
 	{
 		static::ensureCli();
 		$app = static::getCliApp($env, $debug);
+
+		if (!$app) {
+			return;
+		}
 
 		$argv = $_SERVER['argv'];
 		array_shift($argv); // remove cron.php
@@ -311,7 +321,7 @@ class KernelBooter
 	{
 		static::ensureCli();
 
-		$app = static::getCliApp($env, $debug);
+		$app = static::getCliApp($env, $debug, true);
 
 		$argv = $_SERVER['argv'];
 		array_shift($argv); // remove cron.php
@@ -332,7 +342,7 @@ class KernelBooter
 	{
 		static::ensureCli();
 
-		$app = static::getCliApp($env, $debug);
+		$app = static::getCliApp($env, $debug, true);
 
 		$argv = $_SERVER['argv'];
 		array_shift($argv); // remove upgrade.php
@@ -350,7 +360,7 @@ class KernelBooter
 	 * @param bool $debug
 	 * @return \Symfony\Bundle\FrameworkBundle\Console\Application
 	 */
-	public static function getCliApp($env = 'prod', $debug = false)
+	public static function getCliApp($env = 'prod', $debug = false, $ignore_offline = false)
 	{
 		global $DP_CONFIG;
 
@@ -370,6 +380,10 @@ class KernelBooter
 		}
 
 		$kernel = new \DeskPRO\Kernel\CliKernel($env, $debug);
+
+		if (!$ignore_offline && $kernel->isHelpdeskOffline()) {
+			return null;
+		}
 
 		define('DP_INTERFACE', 'cli');
 

@@ -105,6 +105,23 @@ class Upgrade
 	 */
 	protected $log_fh;
 
+	/**
+	 * @var string
+	 */
+	protected $file_backup;
+
+	/**
+	 * @var string
+	 */
+	protected $db_backup;
+
+	/**
+	 * 'files' to revert files
+	 * 'db' to revert files and db
+	 * @var string
+	 */
+	protected $revert_checkpoint;
+
 	public function run(array $argv)
 	{
 		$this->argv = $argv;
@@ -129,8 +146,8 @@ class Upgrade
 			$this->runAction_restoreFiles();
 		} elseif (in_array('--install-latest-files', $argv)) {
 			$this->runAction_installLatestFiles();
-		} elseif (in_array('--database-upgrade', $argv)) {
-			$this->runAction_upgradeDb();
+		} elseif (in_array('--auto', $argv)) {
+			$this->runAction_auto();
 		} else {
 			$this->out("Use --help for a list of possible actions.");
 		}
@@ -198,6 +215,25 @@ class Upgrade
 	}
 
 
+	/**
+	 * Log an exception
+	 *
+	 * @param \Exception $e
+	 */
+	public function logException(\Exception $e)
+	{
+		$this->log("-> {$e->getCode()} {$e->getMessage()}");
+
+		$lines = $e->getTraceAsString();
+		$lines = str_replace(DP_ROOT, '', $lines);
+		$lines = explode("\n", $lines);
+
+		foreach ($lines as $l) {
+			$this->log("-> $l");
+		}
+	}
+
+
 	####################################################################################################################
 	# help
 	####################################################################################################################
@@ -208,11 +244,15 @@ class Upgrade
 		$this->out('');
 		$this->out("Possible actions:");
 
-		$this->out("\t--auto [--verbose]");
+		$this->out("\t--auto [--quiet] [--error-halt]");
 		$this->out("\t\tAutomatically checks for a newer version, and if one exists, will attempt to ");
 		$this->out("\t\tdownload it, extract it and install it. Backups will be made to the backups directory.");
 		$this->out('');
-		$this->out("\t\tThis command is meant to be done on a schedule task and is quiet by default");
+		$this->out("\t\t--quiet suppresses output. Ideal for automation. The log file will contain any");
+		$this->out("\t\trelevant information.");
+		$this->out('');
+		$this->out("\t\t--error-halt will halt on errors instead of trying to restore the files/database");
+		$this->out("\t\twhen somethign bad happens.");
 		$this->out('');
 
 		$this->out("\t--check-version");
@@ -242,9 +282,9 @@ class Upgrade
 		$this->out("\t\tunless you specify a path with --path.");
 		$this->out('');
 
-		$this->out("\t--upgrade-files [--path <zip-path>] --dry-run");
+		$this->out("\t--install-latest-files [--path <zip-path>] --dry-run");
 		$this->out("\t\tExtracts a ZIP and replaces current files with the ones from the ZIP. This does NOT upgrade");
-		$this->out("\t\tthe database scheme. You still need to run --upgrade-db after this updates the files.");
+		$this->out("\t\tthe database scheme. You still need to run upgrade.php after this to update the database.");
 		$this->out('');
 		$this->out("\t\tIf --path is supplied, the ZIP from --path will be used as the source. Otherwise, the latest");
 		$this->out("\t\tsource is downloaded (same as running --download-latest).");
@@ -257,6 +297,126 @@ class Upgrade
 		$this->out("\t\tNote that files are copied and overwritten, but old files remain. Any custom files you have");
 		$this->out("\t\tuploaded will not be removed.");
 		$this->out('');
+	}
+
+	####################################################################################################################
+	# auto
+	####################################################################################################################
+
+	public function runAction_auto()
+	{
+		$time_start = microtime(true);
+
+		$is_quiet      = in_array('--quiet', $this->argv);
+		$is_error_halt = in_array('--error-halt', $this->argv);
+
+		if (!$this->isInstanceOutdated()) {
+			if (!$is_quiet) {
+				$this->out("You are all up to date!");
+				exit(0);
+			}
+		}
+
+		$php_path = $this->getPhpBinaryPath();
+		$mysql_path = $this->getMysqlBinaryPath();
+		$mysql_dump_path = $this->getMysqlBinaryPath();
+
+		if (!$php_path || !$mysql_path || $mysql_dump_path) {
+			if (!$php_path) $this->outAndLog("Cannot find path to `php` binary");
+			if (!$mysql_dump_path) $this->outAndLog("Cannot find path to `mysqldump` binary");
+			if (!$mysql_path) $this->outAndLog("Cannot find path to `mysql` binary");
+			exit(10);
+		}
+
+		// Shutdown helpdesk
+		$fileutil = new FilesystemUtil();
+		$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
+
+		try {
+			$this->file_backup = $this->backupFiles();
+			$this->db_backup   = $this->backupDatabase();
+		} catch (\Exception $e) {
+			$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
+			$this->out($e->getCode() . ' ' . $e->getMessage());
+			$this->logException($e);
+			exit(15);
+		}
+
+		try {
+			$new_source_zip = $this->downloadLatest();
+		} catch (\Exception $e) {
+			$this->out($e->getCode() . ' ' . $e->getMessage());
+			$this->logException($e);
+			exit(20);
+		}
+
+		try {
+			$this->revert_checkpoint = 'files';
+			$this->installFilesFromZip($new_source_zip, false);
+		} catch (\Exception $e) {
+			$this->out($e->getCode() . ' ' . $e->getMessage());
+			$this->logException($e);
+
+			if (!$is_error_halt) {
+				$this->revertAutoUpgrade();
+			}
+			exit(25);
+		}
+
+		$this->revert_checkpoint = 'db';
+
+		chdir(DP_ROOT);
+		if ($is_quiet) {
+			$cmd = "$php_path cmd.php dp:upgrade --dobuildrun=$next_id 2>&1";
+			exec($cmd, $out, $ret);
+		} else {
+			$cmd = "$php_path cmd.php dp:upgrade --dobuildrun=$next_id 2>&1";
+			$out = '';
+			passthru($cmd, $ret);
+		}
+		chdir(DP_START_DIR);
+
+		if ($ret) {
+			$this->outAndLog("Upgrade returned erorr status $ret");
+			if ($out) {
+				foreach ($out as $l) {
+					$this->outAndLog("-> $l");
+				}
+			}
+
+			if (!$is_error_halt) {
+				$this->revertAutoUpgrade();
+				$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
+			}
+
+			exit(30);
+		}
+
+		$this->revert_checkpoint = null;
+		$str = sprintf("Upgrade done in %.4f seconds", microtime(true) - $time_start);
+
+		if ($is_quiet) {
+			$this->log($str);
+		} else {
+			$this->outAndLog($str);
+		}
+
+		exit(0);
+	}
+
+	public function revertAutoUpgrade()
+	{
+		if ($this->revert_checkpoint == 'files' || $this->revert_checkpoint == 'db') {
+			$this->installFilesFromZip($this->file_backup);
+		}
+
+		if ($this->revert_checkpoint == 'db'){
+			$this->restoreDbFromZip($this->db_backup);
+		}
+
+		$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
+
+		$this->revert_checkpoint = null;
 	}
 
 	####################################################################################################################
@@ -475,8 +635,8 @@ class Upgrade
 
 			if (!empty($DP_CONFIG['mysql_path'])) {
 				$mysql_path = $DP_CONFIG['mysql_path'];
-			} elseif ($this->getMysqlBinaryPath()) {
-				$dir = dirname($this->getMysqlBinaryPath());
+			} elseif ($this->getMysqldumpBinaryPath()) {
+				$dir = dirname($this->getMysqldumpBinaryPath());
 				if (is_file($dir . '/mysql')) {
 					$mysql_path = $dir . '/mysql';
 				} elseif (is_file($dir . '/mysql.exe')) {
@@ -714,7 +874,7 @@ class Upgrade
 
 		$this->log(sprintf("backupFiles: time(%.4f)   file_count(%d)    dir_count(%d)", microtime(true) - $time_start, $count_file, $count_dir));
 
-		$this->compressFile($backup_dir);
+		return $this->compressFile($backup_dir);
 	}
 
 

@@ -293,7 +293,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		}
 
 		// Make sure we arent offline
-		if (App::getSetting('core.helpdesk_disabled')) {
+		if ($this->isHelpdeskOffline()) {
 			$response = new Response();
 			$response->setContent(file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/helpdesk-disabled.html'));
 			return $response;
@@ -402,6 +402,15 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		}
 
 		return $response;
+	}
+
+	public function isHelpdeskOffline()
+	{
+		if (App::getSetting('core.helpdesk_disabled') && !is_file(DP_ROOT.'/helpdesk-offline.trigger')) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public function registerBundles()
