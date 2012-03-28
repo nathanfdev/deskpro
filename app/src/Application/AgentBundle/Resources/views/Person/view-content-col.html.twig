@@ -85,7 +85,7 @@
 									<div class="bound-fade"></div>
 								</div>
 							</td>
-							<td class="status {{ticket.status}}" width="25"><span class="status">{{ phrase('agent.tickets.status_' ~ ticket.status_code) }}</span></td>
+							<td class="status {{ticket.status}}" width="25"><span class="status">{{ phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.':'_'})) }}</span></td>
 						</tr>
 					{% endfor %}
 					{% if person_tickets|length %}
