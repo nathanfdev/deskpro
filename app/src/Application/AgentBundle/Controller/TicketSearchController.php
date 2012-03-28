@@ -662,7 +662,9 @@ class TicketSearchController extends AbstractController
         if($view_type != 'csv') {
 		    $flagged_tickets = App::getEntityRepository('DeskPRO:TicketFlagged')->getFlagsForTickets($tickets, $this->person);
         }
-        else $flagged_tickets = array();
+        else {
+            $flagged_tickets = array();
+        }
 
 		if (empty($vars['display_fields'])) {
 			$vars['display_fields'] = array('date_created', 'department');
@@ -774,41 +776,52 @@ class TicketSearchController extends AbstractController
         $response->headers->set('Content-Disposition', 'attachment; filename=TicketList.csv');
         $response->sendHeaders();
 
+        $display_fields = array(
+            'subject',
+            'user',
+            'date_created',
+            'deleted_reason',
+            'person',
+            'department',
+            'category',
+            'product',
+            'organization',
+            'date_user_waiting',
+            'agent',
+            'agent_team',
+            'labels'
+        );
+
         $temp = fopen('php://memory', 'rw');
         $row = array();
 
-        foreach($vars['display_fields'] as $display_field) {
+        foreach($display_fields as $display_field) {
             switch($display_field) {
-                case 'Subject': $row[] = 'Subject';break;
-                case 'User': $row[] = 'User';break;
+                case 'subject': $row[] = 'Subject';break;
+                case 'user':
+                    $row[] = 'User Id';
+                    $row[] = 'User Name';
+                    $row[] = 'User Email';
+                    break;
                 case 'deleted_reason': $row[] = 'Deleted Reason';break;
-                case 'person_email': $row[] = 'User Email';break;
-                case 'person_organization': $row[] = 'Organization';break;
                 case 'department': $row[] = 'Department';break;
                 case 'category': $row[] = 'Category';break;
                 case 'product': $row[] = 'Product';break;
                 case 'organization': $row[] = 'Organization';break;
-                case 'agent': $row[] = 'Agent';break;
-                case 'agent_team': $row[] = 'Team';break;
+                case 'agent':
+                    $row[] = 'Agent Id';
+                    $row[] = 'Agent Name';
+                    $row[] = 'Agent Email';
+                    break;
+                case 'agent_team':
+                    $row[] = 'Agent Team Id';
+                    $row[] = 'Agent Team Name';
+                    break;
                 case 'labels': $row[] = 'Lables';break;
                 case 'date_user_waiting': $row[] = 'User Waiting';break;
                 case 'date_created': $row[] = 'Date Opened';break;
 
                 default:
-                    foreach($vars['person_field_defs'] as $field) {
-                        if($display_field == "person_fields[{$field['id']}]") {
-                            $row[] = $field['title'];
-                            break 2;
-                        }
-                    }
-
-                    foreach($vars['ticket_field_defs'] as $field) {
-                        if($display_field == "ticket_fields[{$field['id']}]") {
-                            $row[] = $field['title'];
-                            break;
-                        }
-                    }
-
                     break;
             }
         }
@@ -837,11 +850,15 @@ class TicketSearchController extends AbstractController
             $ticket = array_shift($tickets);
             $row = array();
 
-            foreach($vars['display_fields'] as $display_field) {
+            foreach($display_fields as $display_field) {
                 switch($display_field) {
                     case 'subject': $row[] = $ticket->getSubject();break;
-                    case 'user': $row[] = $ticket->getPerson()->getDisplayName();break;
-                    case 'date_created': $row[] = $ticket->getDateCreated()->format('fulltime');break;
+                    case 'user':
+                        $row[] = $ticket->getPerson()->getId();
+                        $row[] = $ticket->getPerson()->getDisplayName();
+                        $row[] = $ticket->getPerson()->getEmailAddress();
+                        break;
+                    case 'date_created': $row[] = $ticket->getDateCreated()->format('c');break;
                     case 'deleted_reason':
                         if(isset($vars['deleted_tickets'][$ticket->getId()])) {
                             $row[] = $vars['deleted_tickets'][$ticket->getId()]->getReason();
@@ -849,6 +866,7 @@ class TicketSearchController extends AbstractController
                         else {
                             $row[] = '';
                         }
+
                         break;
                     case 'person': $row[] = $ticket->getPerson()->getDisplayName();break;
                     case 'department': $row[] = $ticket->getDepartment()->getTitle();break;
@@ -859,8 +877,19 @@ class TicketSearchController extends AbstractController
                         else {
                             $row[] = 'None';
                         }
+
                         break;
-                    case 'product': $row[] = $ticket->getProduct()->getTitle();break;
+                    case 'product':
+                        $product = $ticket->getProduct();
+
+                        if($product) {
+                            $row[] = $product->getTitle();
+                        }
+                        else {
+                            $row[] = '';
+                        }
+
+                        break;
                     case 'organization':
                         if($ticket->getOrganization()) {
                             $row[] = $ticket->getOrganization()->getName();
@@ -869,20 +898,30 @@ class TicketSearchController extends AbstractController
                             $row[] = 'None';
                         }
                         break;
-                    case 'date_user_waiting': $row[] = $ticket->getDateUserWaiting()->format('fulltime');break;
+                    case 'date_user_waiting': $row[] = $ticket->getDateUserWaiting()->format('c');break;
                     case 'agent':
-                        if($ticket->getAgent()) {
-                            $row[] = $ticket->getAgent()->getDisplayName();
+                        $agent = $ticket->getAgent();
+
+                        if($agent) {
+                            $row[] = $agent->getId();
+                            $row[] = $agent->getDisplayName();
+                            $row[] = $agent->getEmailAddress();
                         }
                         else {
+                            $row[] = '';
                             $row[] = 'Unassigned';
+                            $row[] = '';
                         }
                         break;
                     case 'agent_team':
-                        if($ticket->getAgentTeam()) {
-                            $row[] = $ticket->getAgentTeam()->getName();
+                        $agent_team = $ticket->getAgentTeam();
+
+                        if($agent_team) {
+                            $row[] = $agent_team->getId();
+                            $row[] = $agent_team->getName();
                         }
                         else {
+                            $row[] = '';
                             $row[] = 'No Team';
                         }
                     case 'labels':
