@@ -1,0 +1,218 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage
+ */
+
+namespace Application\InstallBundle\Upgrade;
+
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
+
+class Manager
+{
+	/**
+	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	protected $container;
+
+	/**
+	 * @var int
+	 */
+	protected $db_version;
+
+	/**
+	 * @var array
+	 */
+	protected $build_list;
+
+	/**
+	 * @param \Application\DeskPRO\DependencyInjection\DeskproContainer $container
+	 */
+	public function __construct(DeskproContainer $container)
+	{
+		$this->container = $container;
+		$this->reset();
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getCurrentBuild()
+	{
+		return $this->db_version;
+	}
+
+
+	/**
+	 * When build info might've changed outside of this request, this rebuilds internal structures.
+	 */
+	public function reset()
+	{
+		$this->db_version = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
+	}
+
+
+	/**
+	 * Runs the next build script
+	 *
+	 * @return void
+	 */
+	public function runBuild($build_id)
+	{
+		$class = $this->getBuildClass($build_id);
+		$build = new $class($this->container);
+		$build->run();
+
+		if ($build->shouldRerun()) {
+			$current_run = $build->getStatus('runcount', 0);
+			$build->saveStatus('runcount', $current_run+1);
+		} else {
+			$this->db_version = $build_id;
+			$this->container->getDb()->update('settings', array('value' => $build_id), array('name' => 'core.deskpro_build'));
+			$this->container->getDb()->executeUpdate("DELETE FROM import_datastore WHERE typename LIKE ?", array(
+				'up.' . $build->getBuildId() . '.%'
+			));
+		}
+	}
+
+
+	/**
+	 * Is there another build script to run?
+	 *
+	 * @return bool
+	 */
+	public function hasNext()
+	{
+		$next_id = $this->getNextBuildId();
+		return (bool)$next_id;
+	}
+
+
+	/**
+	 * Get the build class for a build ID
+	 *
+	 * @param int $build_id
+	 * @return string
+	 */
+	public function getBuildClass($build_id)
+	{
+		return 'Application\\InstallBundle\\Upgrade\\Build\\Build' . $build_id;
+	}
+
+
+	/**
+	 * Get an array of build IDs that are waiting to be performed.
+	 * The array is ordered.
+	 *
+	 * @return array
+	 */
+	public function getWaitingBuildIds()
+	{
+		$ret = array();
+
+		foreach ($this->getAllBuildIds() as $build_id) {
+			if ($this->db_version < $build_id) {
+				$ret[] = $build_id;
+			}
+		}
+
+		return $ret;
+	}
+
+
+	/**
+	 * Get a list of all upgrade build script available
+	 *
+	 * @return array
+	 */
+	public function getAllBuildIds()
+	{
+		if ($this->build_list !== null) {
+			return $this->build_list;
+		}
+
+		$finder = new \Symfony\Component\Finder\Finder();
+		$finder->in(DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build')->files()->name('/Build(.*?)\.php/');
+
+		$this->build_list = array();
+		foreach ($finder as $f) {
+			$build_id    = Strings::extractRegexMatch('/Build(.*?)\.php/', $f->getFilename(), 1);
+			$this->build_list[] = $build_id;
+		}
+
+		sort($this->build_list, \SORT_NUMERIC);
+
+		return $this->build_list;
+	}
+
+
+	/**
+	 * Gets the next build ID or 0 if the db is up to date
+	 *
+	 * @return int
+	 */
+	public function getNextBuildId()
+	{
+		foreach ($this->getAllBuildIds() as $build_id) {
+			if ($this->db_version < $build_id) {
+				return $build_id;
+			}
+		}
+
+		return 0;
+	}
+
+
+	/**
+	 * Get the latest build id
+	 *
+	 * @return int
+	 */
+	public function getLatestBuildId()
+	{
+		return Arrays::getLastItem($this->getAllBuildIds());
+	}
+
+
+	/**
+	 * Formats a build ID
+	 *
+	 * @param int $build_id
+	 * @return string
+	 */
+	public function formatBuildId($build_id)
+	{
+		return date('Y-m-d H:i:s', $build_id);
+	}
+}

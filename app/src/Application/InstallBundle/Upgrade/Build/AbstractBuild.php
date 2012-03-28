@@ -1,0 +1,168 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage
+ */
+
+namespace Application\InstallBundle\Upgrade\Build;
+
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+
+abstract class AbstractBuild
+{
+	/**
+	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 */
+	protected $container;
+
+	/**
+	 * @var bool
+	 */
+	protected $rerun = false;
+
+	public function __construct(DeskproContainer $container)
+	{
+		$this->container = $container;
+		$this->init();
+	}
+
+
+	/**
+	 * Empty hook into the constructor.
+	 */
+	protected function init() { }
+
+
+	/**
+	 * Run through the upgrade
+	 *
+	 * @return void
+	 */
+	abstract public function run();
+
+
+	/**
+	 * Set this build handler to run again.
+	 * This allows "pages" to run. The "runcount" (fetch with getStatus('runcount')) will be
+	 * incremented automatically.
+	 *
+	 * @param bool $rerun
+	 * @return bool
+	 */
+	public function setRerun($rerun = true)
+	{
+		return $this->rerun = (bool)$rerun;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function shouldRerun()
+	{
+		return $this->rerun;
+	}
+
+
+	/**
+	 * Write to output
+	 *
+	 * @param string $string
+	 * @param bool   $nl
+	 */
+	public function out($string, $nl = true)
+	{
+		echo $string;
+		if ($nl) {
+			echo "\n";
+		}
+	}
+
+
+	/**
+	 * @param $sql
+	 */
+	public function execMutateSql($sql)
+	{
+		echo "\t-> " . $sql;
+		$this->container->getDb()->exec($sql);
+	}
+
+
+	/**
+	 * Save status data (ex. steps completed etc)
+	 *
+	 * @param $key
+	 * @param $val
+	 */
+	public function saveStatus($key, $val)
+	{
+		$this->container->getDb()->replace('import_datastore', array(
+			'typename' => 'up.' . $this->getBuildId() . '.' . $key,
+			'data' => $val
+		));
+	}
+
+
+	/**
+	 * @param $key
+	 */
+	public function getStatus($key, $default = null)
+	{
+		$val = $this->container->getDb()->fetchArray("
+			SELECT data
+			FROM import_datastore
+			WHERE typename = ?
+		", array('up.' . $this->getBuildId() . '.' . $key));
+
+		if (!$val) {
+			return $default;
+		}
+
+		return $val[0];
+	}
+
+
+	/**
+	 * @static
+	 * @return string
+	 */
+	public function getBuildId()
+	{
+		$name = get_class($this);
+		$base = \Orb\Util\Util::getBaseClassname($name);
+
+		// Build1293243423 becomes just 1293243423
+		$build_id = str_replace('Build', '', $base);
+
+		return $build_id;
+	}
+}

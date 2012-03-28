@@ -302,7 +302,7 @@ class KernelBooter
 
 
 	/**
-	 * Boots the CLI runs the upgrade CLI command
+	 * Boots the CLI runs the import CLI command
 	 *
 	 * @param string $env
 	 * @param bool $debug
@@ -316,6 +316,27 @@ class KernelBooter
 		$argv = $_SERVER['argv'];
 		array_shift($argv); // remove cron.php
 		array_unshift($argv, 'import.php', 'dp:import', '--run'); // so we can add the command name in the right spot
+		$input = new \Symfony\Component\Console\Input\ArgvInput($argv);
+
+		$app->run($input);
+	}
+
+
+	/**
+	 * Boots the CLI runs the upgrade CLI command
+	 *
+	 * @param string $env
+	 * @param bool $debug
+	 */
+	public static function bootUpgrade($env = 'prod', $debug = false)
+	{
+		static::ensureCli();
+
+		$app = static::getCliApp($env, $debug);
+
+		$argv = $_SERVER['argv'];
+		array_shift($argv); // remove upgrade.php
+		array_unshift($argv, 'upgrade.php', 'dp:upgrade'); // so we can add the command name in the right spot
 		$input = new \Symfony\Component\Console\Input\ArgvInput($argv);
 
 		$app->run($input);
