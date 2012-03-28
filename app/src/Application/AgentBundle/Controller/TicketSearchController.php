@@ -631,31 +631,38 @@ class TicketSearchController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
+        $tickets = array();
+
 		if (!$this->in->checkIsset('grouping_option') || $this->in->getString('grouping_option') == '-1') {
 			// User looking at all results
 			$is_grouping = false;
 			$grouping_option = 'DP_NOT_SET';
-			$tickets = $results_helper->getTicketsForPage($page, $per_page);
-		} else if(! $view_type == 'csv') {
+            if(! $view_type == 'csv') {
+			    $tickets = $results_helper->getTicketsForPage($page, $per_page);
+            }
+		} else {
 			// User looking at just a group of results
 			$is_grouping = true;
 			$grouping_option = $this->in->getString('grouping_option');
-			$tickets = $results_helper->getGroupedTicketsForPage($grouping_option, $page, $per_page);
-			$vars['ticket_ids'] = $results_helper->getGroupTicketIds($grouping_option);
-		} else {
-            $grouping_option = $this->in->getString('grouping_option');
-            $is_geouping = true;
-        }
+
+            if(! $view_type == 'csv') {
+			    $tickets = $results_helper->getGroupedTicketsForPage($grouping_option, $page, $per_page);
+			    $vars['ticket_ids'] = $results_helper->getGroupTicketIds($grouping_option);
+            }
+		}
 
 		#------------------------------
 		# Send results
 		#------------------------------
 
-		if (!count($tickets) && $is_partial) {
+		if (!count($tickets) && $is_partial && ! $view_type == 'csv') {
 			return $this->createJsonResponse(array('no_more_results' => true));
 		}
 
-		$flagged_tickets = App::getEntityRepository('DeskPRO:TicketFlagged')->getFlagsForTickets($tickets, $this->person);
+        if(! $view_type == 'csv') {
+		    $flagged_tickets = App::getEntityRepository('DeskPRO:TicketFlagged')->getFlagsForTickets($tickets, $this->person);
+        }
+        else $flagged_tickets = array();
 
 		if (empty($vars['display_fields'])) {
 			$vars['display_fields'] = array('date_created', 'department');
@@ -764,6 +771,8 @@ class TicketSearchController extends AbstractController
     protected function _outputCsv($vars, $results_helper) {
         $response = new \Symfony\Component\HttpFoundation\Response();
         $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename=TicketList.csv');
+        $response->sendHeaders();
 
         $temp = fopen('php://memory', 'rw');
         $row = array();
@@ -811,13 +820,18 @@ class TicketSearchController extends AbstractController
         ftruncate($temp, 0);
         $chunk_size = 1024;
         $page = 1;
+        $count = $results_helper->getCount();
 
+        // This behaves unexpectly. If the total number of tickets is less than the page size it will always return all
+        // of the tickets regardless of the page setting.
         if($vars['is_grouped_result']) {
             $tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('grouping_option'), $page++, $chunk_size);
         }
         else {
             $tickets = $results_helper->getTicketsForPage($page++, $chunk_size);
         }
+
+        $got = count($tickets);
 
         while(!empty($tickets)) {
             $ticket = array_shift($tickets);
@@ -885,7 +899,7 @@ class TicketSearchController extends AbstractController
             $response->sendContent();
             ftruncate($temp, 0);
 
-            if(empty($tickets)) {
+            if(empty($tickets) && $got < $count) {
                 $this->getDoctrine()->getEntityManager()->clear();
 
                 if($vars['is_grouped_result']) {
@@ -894,6 +908,8 @@ class TicketSearchController extends AbstractController
                 else {
                     $tickets = $results_helper->getTicketsForPage($page++, $chunk_size);
                 }
+
+                $got += $tickets;
             }
         }
 
