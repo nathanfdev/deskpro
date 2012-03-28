@@ -272,27 +272,24 @@ class MiscController extends AbstractController
         $file = $this->request->files->get('files');
 
         $content = file_get_contents($file[0]->getPathName());
-        $lines = explode("\n", $content);
+        $parse = \File_IMC::parse('vCard');
+        $vcard = $parse->fromText($content);
         $fields = array();
 
-        foreach($lines as $line) {
-            $pair = explode(':', $line, 2);
+        if(isset($vcard['VCARD'])) {
+            foreach($vcard['VCARD'] as $vc) {
 
-            if(count($pair) != 2)
-                continue;
+                if(isset($vc['EMAIL'])
+                && isset($vc['EMAIL'][0]['value'])) {
+                    $fields['email'] = $vc['EMAIL'][0]['value'][0][0];
+                }
 
-            list($key, $value) = $pair;
-
-            switch($key) {
-                case 'EMAIL':
-                    $fields['email'] = stripslashes($value);
-                    break;
-                case 'FN':
-                    $fields['name'] = stripslashes($value);
-                    break;
+                if(isset($vc['FN'])
+                && isset($vc['FN'][0]['value'])) {
+                    $fields['name'] = $vc['FN'][0]['value'][0][0];
+                }
             }
         }
-
 
         $res = $this->createJsonResponse(array(array('fields' => $fields)));
 
