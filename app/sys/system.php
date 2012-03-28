@@ -199,7 +199,7 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			if (isset($DP_CONFIG['dir_backups'])) {
 				$backup_dir = $DP_CONFIG['dir_backups'];
 			} else {
-				$backup_dir = DP_WEB_ROOT . '/dir/backups';
+				$backup_dir = DP_WEB_ROOT . '/data/backups';
 			}
 		}
 
