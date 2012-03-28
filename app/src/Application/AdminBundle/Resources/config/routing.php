@@ -72,6 +72,13 @@ $collection->add('admin_license_input_save', new Route(
 	array()
 ));
 
+$collection->add('admin_license_keyfile', new Route(
+	'/license/download/install.key',
+	array('_controller' => 'AdminBundle:License:keyFile'),
+	array(),
+	array()
+));
+
 
 ################################################################################
 # Tickets

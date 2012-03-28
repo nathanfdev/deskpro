@@ -33,8 +33,16 @@
 	</ul>
 
 	{% if errors.timeout or errors.unknown_request_error %}
-		A connection problem may be temporary, but it may indicate that your web server is behind a firewall that prevents it from communicating with our license server on the internet.
-		If your server is behind a firewall, you can contact support@deskpro.com and one of our agents will generate a license code for you.
+		<p>
+			A connection problem may be temporary, but it may indicate that your web server is behind a firewall that prevents it from communicating with our license server on the internet.
+		</p>
+		<p style="font-size: 120%; color: #000; margin-top: 10px; padding-top: 5px; border-top: #FBC7C6;">
+			<a href="{{ path('admin_license_keyfile', {email_address: email_address|default(app.user.primary_email_address) }) }}" class="install-key-file">install.key</a>
+			<br />
+			If you continue to experience problems, email <a href="mailto:support@deskpro.com" style="color: #000;">support@deskpro.com</a> with the key file linked to the left
+			and we will generate a license code for you.
+		</p>
+		<br class="clear" />
 	{% endif %}
 </div>
 {% endif %}

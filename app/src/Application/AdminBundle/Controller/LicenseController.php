@@ -78,8 +78,8 @@ class LicenseController extends AbstractController
 	public function requestDemoAction()
 	{
 		$errors = array();
+		$email_address = $this->in->getString('email_address');
 		if ($this->in->getBool('process')) {
-			$email_address = $this->in->getString('email_address');
 			if (!$email_address || !\Orb\Validator\StringEmail::isValueValid($email_address)) {
 				$errors['email'] = true;
 			}
@@ -151,13 +151,14 @@ class LicenseController extends AbstractController
 
 		return $this->render('AdminBundle:License:request-demo.html.twig', array(
 			'errors' => $errors,
+			'email_address' => $email_address
 		));
 	}
 
 
 	############################################################################
 	# input
-	###########################################################################
+	############################################################################
 
 	public function inputAction()
 	{
@@ -245,5 +246,32 @@ class LicenseController extends AbstractController
 
 		$this->session->setFlash('saved', "License code");
 		return $this->redirectRoute('admin_license');
+	}
+
+	############################################################################
+	# key-file
+	############################################################################
+
+	public function keyFileAction()
+	{
+		$email_address = $this->in->getString('email_address');
+
+		$install_data = array();
+		$install_data['install_key'] = $this->settings->get('core.install_key');
+		$install_data['email_address'] = $email_address;
+		$install_data['url'] = App::getRequest()->getBaseUrl();
+		$install_data = json_encode($install_data);
+		$install_data = base64_encode($install_data);
+
+		$file = <<<FILE
+Email this file to support@deskpro.com and our agents will generate a license code for you
+==============================DP_INSTALLKEY_START==============================
+$install_data
+==============================DP_INSTALLKEY_END==============================
+FILE;
+
+		$res = $this->createResponse($file);
+		$res->headers->set('Content-Type', 'application/octet-stream; filename=install.key');
+		return $res;
 	}
 }
