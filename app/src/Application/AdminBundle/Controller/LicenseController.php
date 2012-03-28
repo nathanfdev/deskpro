@@ -91,7 +91,7 @@ class LicenseController extends AbstractController
 				$client->setUri(DP_LIC_SERVER . '/license/request-demo.json');
 				$client->getRequest()->post()->set('install_key', $this->settings->get('core.install_key'));
 				$client->getRequest()->post()->set('email_address', $email_address);
-				$client->getRequest()->post()->set('url', App::getRequest()->getBaseUrl());
+				$client->getRequest()->post()->set('url', App::getRequest()->getUriForPath('/'));
 
 				$hostname = gethostname();
 
@@ -255,17 +255,20 @@ class LicenseController extends AbstractController
 	public function keyFileAction()
 	{
 		$email_address = $this->in->getString('email_address');
+		if (!$email_address) {
+			$email_address = $this->person->getPrimaryEmailAddress();
+		}
 
 		$install_data = array();
 		$install_data['install_key'] = $this->settings->get('core.install_key');
 		$install_data['email_address'] = $email_address;
-		$install_data['url'] = App::getRequest()->getBaseUrl();
+		$install_data['url'] = App::getRequest()->getUriForPath('/');
 		$install_data = json_encode($install_data);
 		$install_data = base64_encode($install_data);
 
 		$file = <<<FILE
 Email this file to support@deskpro.com and our agents will generate a license code for you
-==============================DP_INSTALLKEY_START==============================
+==============================DP_INSTALLKEY_BGN==============================
 $install_data
 ==============================DP_INSTALLKEY_END==============================
 FILE;
