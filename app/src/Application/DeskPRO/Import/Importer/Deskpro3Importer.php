@@ -102,7 +102,6 @@ class Deskpro3Importer extends AbstractImporter
 		'TicketDeleteLog',
 		'TicketMerge',
 		'TicketSnippets',
-		'TicketWatch',
 		'SaveLanguage',
 		'BackupTroubles',
 		'SaveDataMisc',
