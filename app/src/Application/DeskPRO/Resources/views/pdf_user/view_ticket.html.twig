@@ -11,6 +11,14 @@
     margin: 8px;
     float: left;
 }
+
+body {
+    font-family: DejaVuSans;
+}
+
+.ticket_list_table {
+    page-break-inside: avoid;
+}
 </style>
 
 <h1>{{ ticket.subject }}</h1>
@@ -60,9 +68,8 @@
             <td>
                 <ul>
                     {% for part in user_participants %}
-                    <li>
                         {{ part.person.display_name }} &lt;{{ part.person.email_address }}&gt;
-                    </li>
+                        {% if not loop.last %}, {% endif%}
                     {% endfor %}
                 </ul>
             </td>
@@ -79,36 +86,38 @@
     {% endif %}
 {% endfor %}
 
-<hr style="clear:both;" />
+<div style="clear:both;"></div>
 
-<table border="1" cellspacing="0">
-    {% for message in ticket.displayable_messages %}
+{% for message in ticket.displayable_messages %}
+<table width="100%" class="ticket_list_table" border="0" cellspacing="0">
+    <tr><td colspan="2"><hr /></td></tr>
+    <tr>
+        <th>From {{ message.person.display_name }} at {{ message.date_created|date('fulltime') }}</th>
+    </tr>
+    <tr><td colspan="2"><hr /></td></tr>
+
+    <tr><td>{{ message.message_html|raw }}</td></tr>
+
+
+    {% if message_to_attach[message.id] %}
         <tr>
-            <th>From {{ message.person.display_name }} at {{ message.date_created|date('fulltime') }}</th>
+            <td>
+                <ul class="attachment-list">
+                    {% for attach_id in message_to_attach[message.id] %}
+                    {% set ticket_attach = attachments[attach_id] %}
+                    <li>
+                        {% if ticket_attach.blob.isImage() %}
+                            <a href="{{ ticket_attach.blob.download_url }}" target="_blank">
+                                <img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 'filename': ticket_attach.blob.filename, 's': 50, 'size-fit': '1'}) }}" />
+                            </a>
+                        {% endif %}
+                            <a href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a>
+                        <span class="size">({{ ticket_attach.blob.readable_filesize }})</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </td>
         </tr>
-    
-        <tr><td>{{ message.message_html|raw }}</td></tr>
-
-
-        {% if message_to_attach[message.id] %}
-            <tr>
-                <td>
-                    <ul class="attachment-list">
-                        {% for attach_id in message_to_attach[message.id] %}
-                        {% set ticket_attach = attachments[attach_id] %}
-                        <li>
-                            {% if ticket_attach.blob.isImage() %}
-                                <a href="{{ ticket_attach.blob.download_url }}" target="_blank">
-                                    <img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 'filename': ticket_attach.blob.filename, 's': 50, 'size-fit': '1'}) }}" />
-                                </a>
-                            {% endif %}
-                                <a href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a>
-                            <span class="size">({{ ticket_attach.blob.readable_filesize }})</span>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </td>
-            </tr>
-        {%endif%}
-    {% endfor %}
+    {%endif%}
 </table>
+{% endfor %}

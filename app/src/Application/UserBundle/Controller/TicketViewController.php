@@ -163,6 +163,7 @@ class TicketViewController extends AbstractController
             {
                 $response->setContent($pdf);
                 $response->headers->set('Content-Type', 'application/pdf');
+                $response->headers->set('Content-Disposition', 'attachment; filename=Ticket-'.$ticket->id.'.pdf');
             }
 
             return $response;
