@@ -10661,10 +10661,13 @@ function _computeLineheight($lh, $fs='') {
 }
 
 
-function SetBasePath($str='') {
+function SetBasePath($str='', $use_host = false) {
   if ( isset($_SERVER['HTTP_HOST']) ) { $host = $_SERVER['HTTP_HOST']; }
   else if ( isset($_SERVER['SERVER_NAME']) ) { $host = $_SERVER['SERVER_NAME']; }
   else { $host = ''; }
+    if(!$use_host) {
+        $host = '';
+    }
   if (!$str) { 
 	if ($_SERVER['SCRIPT_NAME']) { $currentPath = dirname($_SERVER['SCRIPT_NAME']); }
 	else { $currentPath = dirname($_SERVER['PHP_SELF']); }

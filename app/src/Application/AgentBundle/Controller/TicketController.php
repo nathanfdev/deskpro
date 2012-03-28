@@ -217,6 +217,7 @@ class TicketController extends AbstractController
             );
 
             $mpdf->SetBasePath(realpath(__DIR__.'/../../../../../web/images'));
+            $mpdf->shrink_tables_to_fit = 0;
             $mpdf->WriteHTML($content_html);
 
             $pdf = $mpdf->Output('', 'S');
@@ -229,6 +230,7 @@ class TicketController extends AbstractController
             else
             {
                 $response->setContent($pdf);
+                $response->headers->set('Content-Disposition', 'attachment; filename=Ticket_'.$ticket->id.'.pdf');
                 $response->headers->set('Content-Type', 'application/pdf');
             }
 

@@ -162,6 +162,8 @@ class KbController extends AbstractController
             {
                 $response->setContent($pdf);
                 $response->headers->set('Content-Type', 'application/pdf');
+                $response->headers->set('Content-Disposition', 'attachment; filename=KnowledgeBase-'.$article->id.'.pdf');
+                $response->headers->set('Content-Type', 'application/pdf');
             }
 
             return $response;

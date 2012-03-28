@@ -6,68 +6,69 @@
 
 <sethtmlpagefooter name="deskproFooter" page="ALL" value="on" show-this-page="1" />
 
-{% if article.status_code == "hidden.deleted" %}
-    <div class="delete-notice">
-        {{ phrase('agent.record_deleted') }}
-    </div>
-{% endif %}
+<style type="text/css">
+    #article_properties th {
+        text-align: left;
+    }
+
+    body {
+        font-family: DejaVuSans;
+    }
+
+    .ticket_list_table {
+        page-break-inside: avoid;
+    }
+</style>
+
 <h1>{{ article.title }}</h1>
 <hr />
-<table width="100%">
+<table id="article_properties" width="100%">
     <tr>
-        <td width="50%">
-            <table>
-                <tr>
-                    <th>Article ID:</th>
-                    <td>{{ article.id }}</td>
-                </tr>
-                <tr>
-                    <th>Status:</th>
-                    <td>{{ phrase('agent.publish.status_' ~ article.status_code|replace({'.':'_'})) }}</td>
-                </tr>
-            </table>
-        </td>
-        <td width="50%" align="right">
-            <table>
-                <tr>
-                    <th>
-                        {{ phrase('agent.label_labels') }}:
-                    </th>
-                    <td>
-                        <ul>
-                            {% for label in article.labels %}
-                                <li>
-                                    {{label.label}}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </td>
-                </tr>
-                <tr>
-                    <th>{{ phrase('agent.categories') }}:</th>
-                    <td>
-                        {% for cat in article.categories %}
-                            <li>{{ cat.full_title }}</li>
-                        {% endfor %}
-                    </td>
-                </tr>
-                {% if app.getSetting('core.use_product') %}
-                    <tr>
-                        <th>{{ phrase('agent.products') }}</th>
-                        <td>
-                            <ul>
-                                {% for prod in article.products %}
-                                <li>
-                                    {{ prod.full_title }}
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </td>
-                    </tr>
-                {% endif %}
-            </table>
+        <th>Article ID:</th>
+        <td>{{ article.id }}</td>
+    </tr>
+    <tr>
+        <th>Status:</th>
+        <td>{{ phrase('agent.publish.status_' ~ article.status_code|replace({'.':'_'})) }}</td>
+    </tr>
+    {% if labals|length %}
+        <tr>
+            <th>
+                {{ phrase('agent.label_labels') }}:
+            </th>
+            <td>
+                <ul>
+                    {% for label in article.labels %}
+                        <li>
+                            {{label.label}}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+    {% endif %}
+    <tr>
+        <th>{{ phrase('agent.categories') }}:</th>
+        <td>
+            {% for cat in article.categories %}
+                {{ cat.full_title }}
+                {% if not loop.last %}, {% endif%}
+            {% endfor %}
         </td>
     </tr>
+    {% if app.getSetting('core.use_product') %}
+        <tr>
+            <th>{{ phrase('agent.products') }}</th>
+            <td>
+                <ul>
+                    {% for prod in article.products %}
+                        {{ prod.full_title }}
+                        {% if not loop.last %}, {% endif%}
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+    {% endif %}
 </table>
 
 <hr />
