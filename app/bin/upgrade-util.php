@@ -268,7 +268,7 @@ class Upgrade
 	{
 		$zip_path = null;
 		$zip_specified = false;
-		if (($key = array_search('--path', $this->argv)) === false || !isset($this->argv[$key+1])) {
+		if (($key = array_search('--path', $this->argv)) !== false && isset($this->argv[$key+1])) {
 			$zip_path = @realpath($this->argv[$key+1]);
 			if (!file_exists($zip_path)) {
 				$this->out("Invalid --path");
@@ -507,10 +507,8 @@ class Upgrade
 
 	public function runAction_downloadLatest()
 	{
-		$version_info = $this->getLatestVersion();
-
 		$save_path = null;
-		if (($key = array_search('--path', $this->argv)) === false || !isset($this->argv[$key+1])) {
+		if (($key = array_search('--path', $this->argv)) !== false || isset($this->argv[$key+1])) {
 			$save_path = @realpath($this->argv[$key+1]);
 			if (!$save_path) {
 				$this->out("Invalid --path");
@@ -559,7 +557,7 @@ class Upgrade
 		}
 
 		if (file_exists($save_path)) {
-			throw new DownloadException("Save path already exists: " . $save_dir, DownloadException::FILE_EXISTS);
+			throw new DownloadException("Save path already exists: " . $save_path, DownloadException::FILE_EXISTS);
 		}
 
 		$this->log("downloadLatest: Downloading from " . $version_info['download']);
