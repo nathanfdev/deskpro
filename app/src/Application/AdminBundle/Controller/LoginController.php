@@ -71,7 +71,19 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 			}
 		}
 
+		$failed_login_name = false;
+		if ($this->session->has('failed_login_name')) {
+			$failed_login_name = $this->session->get('failed_login_name');
+			$this->session->remove('failed_login_name');
+			$this->session->save();
+		}
+
 		$has_logged_out = $this->in->checkIsset('o');
-		return $this->render('AdminBundle:Login:index.html.twig', array('return' => $url, 'agent_session' => $agent_session, 'has_logged_out' => $has_logged_out));
+		return $this->render('AdminBundle:Login:index.html.twig', array(
+			'return' => $url,
+			'agent_session' => $agent_session,
+			'failed_login_name' => $failed_login_name,
+			'has_logged_out' => $has_logged_out
+		));
 	}
 }
