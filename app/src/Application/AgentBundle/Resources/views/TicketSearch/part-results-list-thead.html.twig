@@ -5,29 +5,29 @@
 		{% endif %}
 		{% set perc = (100 / display_fields|length) %}
 		{% for field in display_fields %}
-			{% if field == 'subject' %}<th width="{{perc}}%">Subject</th>
-			{% elseif field == 'user' %}<th width="{{perc}}%">User</th>
-			{% elseif field == 'deleted_reason' %}<th width="{{perc}}%" data-field="deleted_reason">Deleted Reason</th>
-			{% elseif field == 'person_email' %}<th width="{{perc}}%" data-field="person">User Email</th>
-			{% elseif field == 'person_organization' %}<th width="{{perc}}%" data-field="person_organization">Organization</th>
-			{% elseif field == 'department' %}<th width="{{perc}}%" data-field="department">Department</th>
-			{% elseif field == 'category' %}<th width="{{perc}}%" data-field="category">Category</th>
-			{% elseif field == 'product' %}<th width="{{perc}}%" data-field="product">Product</th>
-			{% elseif field == 'organization' %}<th width="{{perc}}%" data-field="organization">Organization</th>
-			{% elseif field == 'agent' %}<th width="{{perc}}%" data-field="agent">Agent</th>
-			{% elseif field == 'agent_team' %}<th width="{{perc}}%" data-field="agent_team">Team</th>
-			{% elseif field == 'labels' %}<th width="{{perc}}%" data-field="agent_team">Lables</th>
-			{% elseif field == 'date_user_waiting' %}<th width="{{perc}}%" data-field="agent_team">User Waiting</th>
-			{% elseif field == 'date_created' %}<th width="{{perc}}%" data-field="date_created">Date Opened</th>
+			{% if field == 'subject' %}<th>Subject</th>
+			{% elseif field == 'user' %}<th>User</th>
+			{% elseif field == 'deleted_reason' %}<th data-field="deleted_reason">Deleted Reason</th>
+			{% elseif field == 'person_email' %}<th data-field="person">User Email</th>
+			{% elseif field == 'person_organization' %}<th data-field="person_organization">Organization</th>
+			{% elseif field == 'department' %}<th data-field="department">Department</th>
+			{% elseif field == 'category' %}<th data-field="category">Category</th>
+			{% elseif field == 'product' %}<th data-field="product">Product</th>
+			{% elseif field == 'organization' %}<th data-field="organization">Organization</th>
+			{% elseif field == 'agent' %}<th data-field="agent">Agent</th>
+			{% elseif field == 'agent_team' %}<th data-field="agent_team">Team</th>
+			{% elseif field == 'labels' %}<th data-field="agent_team">Lables</th>
+			{% elseif field == 'date_user_waiting' %}<th data-field="agent_team">User Waiting</th>
+			{% elseif field == 'date_created' %}<th data-field="date_created">Date Opened</th>
 			{% else %}
 				{% for f in ticket_field_defs %}
 					{% if field == 'ticket_fields['~f.id~']' %}
-					<th width="{{perc}}%" data-field="ticket_fields[{{f.id}}]">{{f.title}}</th>
+					<th data-field="ticket_fields[{{f.id}}]">{{f.title}}</th>
 					{% endif %}
 				{% endfor %}
 				{% for f in person_field_defs %}
 					{% if field == 'person_fields['~f.id~']' %}
-					<th width="{{perc}}%" data-field="person_fields[{{f.id}}]">{{f.title}}</th>
+					<th data-field="person_fields[{{f.id}}]">{{f.title}}</th>
 					{% endif %}
 				{% endfor %}
 			{% endif %}
