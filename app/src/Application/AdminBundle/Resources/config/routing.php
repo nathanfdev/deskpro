@@ -91,6 +91,13 @@ $collection->add('admin_tickets_fields', new Route(
 	array()
 ));
 
+$collection->add('admin_tickets_editor_form_embed', new Route(
+	'/tickets/editor/{department_id}/website-widget',
+	array('_controller' => 'AdminBundle:TicketProperties:formEmbed'),
+	array(),
+	array()
+));
+
 $collection->add('admin_tickets_editor', new Route(
 	'/tickets/editor/{department_id}/{section}',
 	array('_controller' => 'AdminBundle:TicketProperties:editor', 'department_id' => 0, 'section' => 'create'),
@@ -115,13 +122,6 @@ $collection->add('admin_tickets_editor_dep_init', new Route(
 $collection->add('admin_tickets_editor_dep_revert', new Route(
 	'/tickets/editor/{department_id}/{section}/revert',
 	array('_controller' => 'AdminBundle:TicketProperties:revertEditor', 'section' => 'create'),
-	array(),
-	array()
-));
-
-$collection->add('admin_tickets_editor_form_embed', new Route(
-	'/tickets/editor/{department_id}/website-widget',
-	array('_controller' => 'AdminBundle:TicketProperties:formEmbed'),
 	array(),
 	array()
 ));
