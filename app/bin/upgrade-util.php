@@ -411,8 +411,7 @@ class Upgrade
 		$ret = $this->execCommand($cmd, $this->getBackupDir(), $out);
 
 		if ($ret) {
-			$this->out("### Backup Error ###");
-			$this->out("Command exited with error status: $ret");
+			$this->out("Backup error: Command exited with error status: $ret");
 
 			foreach ($out as $l) {
 				$this->out("-> " . $l);
@@ -421,10 +420,22 @@ class Upgrade
 			throw new MysqlBackupException("Command exited with error status: $ret", MysqlBackupException::DUMP_ERROR);
 		}
 
-		$this->log(sprintf("backupDatabase: time(%.4f)   dump_size(%d)", microtime(true) - $time_start, filesize($f_full)));
-		$this->compressFile($f_full);
+		// Try to verify that the complete dump is there
+		$fh = fopen($f_full, 'r');
+		fseek($fh, -256000, \SEEK_END);
+		$code = fread($fh, filesize($f_full));
 
-		return true;
+		if (strpos($code, 'INSERT INTO `worker_jobs`') === false) {
+			$this->out("Database dump seems invalid.");
+			throw new MysqlBackupException("Database dump seems invalid", MysqlBackupException::DUMP_ERROR);
+		}
+		fclose($fh);
+		unset($code);
+
+		$this->log(sprintf("backupDatabase: time(%.4f)   dump_size(%d)", microtime(true) - $time_start, filesize($f_full)));
+		$f_full = $this->compressFile($f_full);
+
+		return $f_full;
 	}
 
 	public function getMysqldumpBinaryPath()
@@ -464,7 +475,15 @@ class Upgrade
 
 			if (!empty($DP_CONFIG['mysql_path'])) {
 				$mysql_path = $DP_CONFIG['mysql_path'];
+			} elseif ($this->getMysqlBinaryPath()) {
+				$dir = dirname($this->getMysqlBinaryPath());
+				if (is_file($dir . '/mysql')) {
+					$mysql_path = $dir . '/mysql';
+				} elseif (is_file($dir . '/mysql.exe')) {
+					$mysql_path = $dir . '/mysql.exe';
+				}
 			}
+
 			if (!$mysql_path) {
 				$finder = new \Symfony\Component\Process\ExecutableFinder();
 				$finder->addSuffix('');
@@ -481,6 +500,34 @@ class Upgrade
 		}
 
 		return $mysql_path;
+	}
+
+	public function getPhpBinaryPath()
+	{
+		static $php_path = null;
+
+		if ($php_path === null) {
+			global $DP_CONFIG;
+
+			if (!empty($DP_CONFIG['php_path'])) {
+				$php_path = $DP_CONFIG['php_path'];
+			}
+			if (!$php_path) {
+				$finder = new \Symfony\Component\Process\ExecutableFinder();
+				$finder->addSuffix('');
+				$finder->addSuffix('.exe');
+				$finder->addSuffix('.bat');
+				$finder->addSuffix('.cmd');
+				$finder->addSuffix('.com');
+				$php_path = $finder->find('php');
+			}
+
+			if (!$php_path) {
+				$php_path = false;
+			}
+		}
+
+		return $php_path;
 	}
 
 	####################################################################################################################
@@ -604,7 +651,7 @@ class Upgrade
 			throw new UpgradeFilesException("Error importing database backup", MysqlRestoreException::RESTORE_ERROR);
 		}
 
-		$this->log(sprintf("backupDatabase: time(%.4f)", microtime(true) - $time_start);
+		$this->log(sprintf("backupDatabase: time(%.4f)", microtime(true) - $time_start));
 	}
 
 	####################################################################################################################
@@ -880,6 +927,8 @@ class Upgrade
 
 			$this->log(sprintf("compressFile: time(%.4f)   file_size(%d)", microtime(true) - $time_start, filesize($out_filepath)));
 		}
+
+		return $out_filename;
 	}
 
 

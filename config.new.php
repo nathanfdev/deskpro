@@ -51,11 +51,21 @@ $DP_CONFIG = array();
 #                                                    #
 # On Linux PHP is often located at:                  #
 #    /usr/bin/mysqldump or /usr/local/bin/mysqldump  #
-# On Windows a typical path may be                   #
-#	 C:\wamp\bin\php\php5.3.8\php.exe                #
 ######################################################
 
 // $DP_CONFIG['mysqldump_path'] = '';
+
+######################################################
+# Location of mysql                                  #
+#                                                    #
+# You need to specify this path if the system        #
+# cannot detect it automatically.                    #
+#                                                    #
+# On Linux PHP is often located at:                  #
+#    /usr/bin/mysql or /usr/local/bin/mysql          #
+######################################################
+
+// $DP_CONFIG['mysql_path'] = '';
 
 ######################################################
 # OPTIONAL : DeskPRO Import                          #
