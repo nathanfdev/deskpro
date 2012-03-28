@@ -406,7 +406,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 
 	public function isHelpdeskOffline()
 	{
-		if (App::getSetting('core.helpdesk_disabled') && !is_file(DP_ROOT.'/helpdesk-offline.trigger')) {
+		if (App::getSetting('core.helpdesk_disabled') || is_file(DP_ROOT.'/helpdesk-offline.trigger')) {
 			return true;
 		}
 
