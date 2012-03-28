@@ -44,7 +44,7 @@
 		{% endif %}
 
 		{% for i in pagination.pages %}
-			<li><a href="{{ path('admin_server_error_logs', {'p': i}) }}" {% if i == pagination.curpage %}class="cur_page"{% endif %}>{{i}}</a></li>
+			<li {% if i == pagination.curpage %}class="cur_page"{% endif %}><a href="{{ path('admin_server_error_logs', {'p': i}) }}">{{i}}</a></li>
 		{% endfor %}
 
 		{% if pagination.curpage != pagination.last %}
