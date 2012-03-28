@@ -46,8 +46,8 @@ if (php_sapi_name() != 'cli') {
 
 define('DP_START_DIR', getcwd());
 
-define('DP_ROOT', realpath(__DIR__ . '/../../'));
-define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
+define('DP_ROOT', realpath(__DIR__ . '/../'));
+define('DP_WEB_ROOT', realpath(__DIR__ . '/../../'));
 
 @ini_set('memory_limit', -1);
 @ini_set('memory_limit', 268435456);
@@ -136,7 +136,7 @@ class Upgrade
 
 		$this->checkEnv();
 
-		register_shutdown_function('Upgrade_Shutdown_Function');
+		register_shutdown_function('DeskPRO\\Tools\\Upgrade_Shutdown_Function');
 
 		if (in_array('--help', $argv)) {
 			$this->runAction_help();
@@ -204,6 +204,8 @@ class Upgrade
 			if (!$this->log_fh) {
 				throw new \Exception("Could not open log file: " . $this->getLogDir() . '/upgrade.log');
 			}
+
+			$this->registerCleanupParam('close_log_fh', $this->log_fh);
 
 			$this->log("(Command: " . implode(' ', $this->argv) . ")");
 		}
@@ -933,6 +935,9 @@ function Upgrade_Shutdown_Function()
 		return;
 	}
 
+	if (isset($UPGRADE_CLEANUP['close_log_fh'])) {
+		fclose($UPGRADE_CLEANUP['close_log_fh']);
+	}
 	if (isset($UPGRADE_CLEANUP['unlink_zip_path'])) {
 		unlink($UPGRADE_CLEANUP['unlink_zip_path']);
 	}
