@@ -296,6 +296,10 @@ br.clear {
 #lost_message_view {
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
+
+{% if app.usersourceManager.getWithCapability('form_login') %}
+#dp_login dt { width: 120px; }
+{% endif %}
 </style>
 {% block head %}{% endblock %}
 </head>

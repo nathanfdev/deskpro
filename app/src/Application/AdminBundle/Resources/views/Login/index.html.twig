@@ -116,7 +116,7 @@
 		font-weight: bold;
 
 		float: left;
-		width: 100px;
+		width: 120px;
 		line-height: 33px;
 		text-align: right;
 	}
@@ -271,6 +271,10 @@
 		width: 1px;
 		overflow: hidden;
 	}
+
+	{% if app.usersourceManager.getWithCapability('form_login') %}
+	#dp_login dt { width: 120px; }
+	{% endif %}
 	</style>
 </head>
 <body>
@@ -286,7 +290,10 @@
 				{% if failed_login_name %}<p class="error">{{ phrase('agent.login.login_failed') }}</p>{% endif %}
 				{% if has_logged_out %}<p class="okay">{{ phrase('agent.login.has_logged_out') }}</p>{% endif %}
 				<dl>
-					<dt>Email</dt>
+					<dt>
+						Email
+						{% if app.usersourceManager.getWithCapability('form_login') %}/ Username{% endif %}
+					</dt>
 					{% if agent_session %}
 						<dd>
 							<cite style="background-image: url('{{ agent_session.person.getPictureUrl(30) }}')">{{ agent_session.person.getPrimaryEmailAddress() }}</cite>

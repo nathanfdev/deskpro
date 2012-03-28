@@ -301,7 +301,7 @@
 						<?php else: $failed = true; $db_failed = true; ?>
 							<span class="label important" style="float:right">FAIL</span>
 						<?php endif ?>
-						Check for existing tables
+						Ensuring empty database
 						<?php if ($failed): ?>
 							<div class="alert-message block-message error">
 								Existing tables were detected in your database. DeskPRO should be installed
