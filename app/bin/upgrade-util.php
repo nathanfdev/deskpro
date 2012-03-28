@@ -73,6 +73,18 @@ if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
 }
 
 require DP_ROOT.'/vendor/symfony/src/Symfony/Component/HttpKernel/Util/Filesystem.php';
+require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Process/ExecutableFinder.php';
+require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Finder.php';
+require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Glob.php';
+require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/SplFileInfo.php';
+require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/RecursiveDirectoryIterator.php';
+require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/ExcludeDirectoryFilterIterator.php';
+require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/FileTypeFilterIterator.php';
+require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/FilenameFilterIterator.php';
+
+if (!defined('DP_LIC_SERVER')) {
+	define('DP_LIC_SERVER', 'http://dev.deskprodev.com/lic/index.php');
+}
 
 class Upgrade
 {
@@ -109,10 +121,16 @@ class Upgrade
 			$this->runAction_downloadLatest();
 		} elseif (in_array('--backup-db', $argv)) {
 			$this->runAction_backupDatabase();
+		} elseif (in_array('--restore-db', $argv)) {
+			$this->runAction_restoreDatabase();
 		} elseif (in_array('--backup-files', $argv)) {
 			$this->runAction_backupFiles();
-		} elseif (in_array('--upgrade-files', $argv)) {
-			$this->runAction_upgradeFiles();
+		} elseif (in_array('--restore-files', $argv)) {
+			$this->runAction_restoreFiles();
+		} elseif (in_array('--install-latest-files', $argv)) {
+			$this->runAction_installLatestFiles();
+		} elseif (in_array('--database-upgrade', $argv)) {
+			$this->runAction_upgradeDb();
 		} else {
 			$this->out("Use --help for a list of possible actions.");
 		}
@@ -205,8 +223,18 @@ class Upgrade
 		$this->out("\t\tExecutes a mysqldump of your database into the data/backups directory");
 		$this->out('');
 
+		$this->out("\t--restore-db --path <zip-file>");
+		$this->out("\t\tRestores the database from a backup. zip-file should be a full path, or the filename");
+		$this->out("\t\tof a backup in the data/backups directory.");
+		$this->out('');
+
 		$this->out("\t--backup-files");
 		$this->out("\t\tBacks up all DeskPRO files. Note: This will NOT back up the data/backups directory.");
+		$this->out('');
+
+		$this->out("\t--restore-files --path <zip-file>");
+		$this->out("\t\tRestores files from a backup file. zip-file should be a full path, or the filename");
+		$this->out("\t\tof a backup in the data/backups directory.");
 		$this->out('');
 
 		$this->out("\t--download-latest [--path <path>]");
@@ -214,14 +242,20 @@ class Upgrade
 		$this->out("\t\tunless you specify a path with --path.");
 		$this->out('');
 
-		$this->out("\t--upgrade-files [--path <zip-path>]");
+		$this->out("\t--upgrade-files [--path <zip-path>] --dry-run");
 		$this->out("\t\tExtracts a ZIP and replaces current files with the ones from the ZIP. This does NOT upgrade");
 		$this->out("\t\tthe database scheme. You still need to run --upgrade-db after this updates the files.");
 		$this->out('');
 		$this->out("\t\tIf --path is supplied, the ZIP from --path will be used as the source. Otherwise, the latest");
 		$this->out("\t\tsource is downloaded (same as running --download-latest).");
 		$this->out('');
+		$this->out("\t\tIf --dry-run is specified, no actual files will be overwritten or created. Your console will");
+		$this->out("\t\tfill up with a log of files that will be copied.");
+		$this->out('');
 		$this->out("\t\tIt is recommended to run --backup-files before running this.");
+		$this->out('');
+		$this->out("\t\tNote that files are copied and overwritten, but old files remain. Any custom files you have");
+		$this->out("\t\tuploaded will not be removed.");
 		$this->out('');
 	}
 
@@ -229,7 +263,7 @@ class Upgrade
 	# upgrade-files
 	####################################################################################################################
 
-	public function runAction_upgradeFiles()
+	public function runAction_installLatestFiles()
 	{
 		$zip_path = null;
 		$zip_specified = false;
@@ -251,8 +285,10 @@ class Upgrade
 			$this->registerCleanupParam('unlink_zip_path', $zip_path);
 		}
 
+		$dry_run = in_array('--dry-run', $this->argv);
+
 		$this->out("Installing files ... ");
-		$this->upgradeFiles($zip_path);
+		$this->installFilesFromZip($zip_path, $dry_run);
 		$this->out("-> Done");
 
 		if (!$zip_specified) {
@@ -269,7 +305,7 @@ class Upgrade
 	 *
 	 * @param string $zip_path
 	 */
-	public function upgradeFiles($zip_path)
+	public function installFilesFromZip($zip_path, $dry_run = false)
 	{
 		if (!is_file($zip_path)) {
 			throw new UpgradeFilesException("Zip path does not exist: $zip_path", UpgradeFilesException::BAD_ZIP);
@@ -317,6 +353,9 @@ class Upgrade
 		#------------------------------
 
 		$fileutil = new FilesystemUtil();
+		if ($dry_run) {
+			$fileutil->enableDryRun();
+		}
 
 		// Delete old cache dir
 		$fileutil->remove(DP_ROOT.'/sys/cache');
@@ -329,7 +368,7 @@ class Upgrade
 
 		$this->registerCleanupParam('unlink_scratch_dir', null);
 
-		$this->log('upgradeFiles: time(%.4f)', microtime(true) - $time_start);
+		$this->log(sprintf('installFilesFromZip: time(%.4f)', microtime(true) - $time_start));
 	}
 
 	####################################################################################################################
@@ -383,7 +422,7 @@ class Upgrade
 		}
 
 		$this->log(sprintf("backupDatabase: time(%.4f)   dump_size(%d)", microtime(true) - $time_start, filesize($f_full)));
-		$this->attemptCompress($f_full);
+		$this->compressFile($f_full);
 
 		return true;
 	}
@@ -414,6 +453,158 @@ class Upgrade
 		}
 
 		return $mysql_dump_path;
+	}
+
+	public function getMysqlBinaryPath()
+	{
+		static $mysql_path = null;
+
+		if ($mysql_path === null) {
+			global $DP_CONFIG;
+
+			if (!empty($DP_CONFIG['mysql_path'])) {
+				$mysql_path = $DP_CONFIG['mysql_path'];
+			}
+			if (!$mysql_path) {
+				$finder = new \Symfony\Component\Process\ExecutableFinder();
+				$finder->addSuffix('');
+				$finder->addSuffix('.exe');
+				$finder->addSuffix('.bat');
+				$finder->addSuffix('.cmd');
+				$finder->addSuffix('.com');
+				$mysql_path = $finder->find('mysql');
+			}
+
+			if (!$mysql_path) {
+				$mysql_path = false;
+			}
+		}
+
+		return $mysql_path;
+	}
+
+	####################################################################################################################
+	# restore-db
+	####################################################################################################################
+
+	public function runAction_restoreDatabase()
+	{
+		$fileutil = new FilesystemUtil();
+
+		$zip_path = false;
+		if (($key = array_search('--path', $this->argv)) !== false && isset($this->argv[$key+1])) {
+			if ($fileutil->isAbsolutePath($this->argv[$key+1])) {
+				$zip_path = @realpath($this->argv[$key+1]);
+			} else {
+				$zip_path = $this->getBackupDir() . '/' . $this->argv[$key+1];
+			}
+		}
+
+		if (!$zip_path || !file_exists($zip_path)) {
+			$this->out("Invalid --path. File does not exist: " . $zip_path);
+			exit(1);
+		}
+
+		$this->out("Restoreing datbase ... ");
+		$this->restoreDbFromZip($zip_path);
+		$this->out("-> Done");
+	}
+
+	/**
+	 * Drops everything from the current database, then installs dump
+	 *
+	 * @param string $zip_path
+	 */
+	public function restoreDbFromZip($zip_path)
+	{
+		if (!is_file($zip_path)) {
+			throw new MysqlRestoreException("Zip path does not exist: $zip_path", MysqlRestoreException::BAD_ZIP);
+		}
+
+		$mysql_path = $this->getMysqlBinaryPath();
+		if (!$mysql_path) {
+			throw new MysqlBackupException("Could not find path to `mysql` command", MysqlRestoreException::NO_MYSQL);
+		}
+
+		$time_start = microtime(true);
+
+		// Eg: xxxx.sql.zip
+		$zip_name = basename($zip_path);
+
+		#------------------------------
+		# Create a tmp dir to extract new source to
+		#------------------------------
+
+		$tmp_dir = sys_get_temp_dir();
+		if (!$tmp_dir || !is_writable($tmp_dir)) {
+			$tmp_dir = $this->getBackupDir();
+		}
+
+		$tmp_dir .= uniqid('dpsource');
+		if (!mkdir($tmp_dir, 0777, true)) {
+			throw new UpgradeFilesException("Failed to create temp extract dir: $tmp_dir", MysqlRestoreException::EXTRACT_ERROR);
+		}
+		$this->registerCleanupParam('unlink_scratch_dir', $tmp_dir);
+
+		if (!copy($zip_path, $tmp_dir.'/'.$zip_name)) {
+			throw new UpgradeFilesException("Failed to copy zip to tmp dir: $tmp_dir", MysqlRestoreException::EXTRACT_ERROR);
+		}
+
+		#------------------------------
+		# Extract the zip into the dir
+		#------------------------------
+
+		$ret = $this->execCommand("unzip -q $zip_name", $tmp_dir, $out);
+
+		if ($ret) {
+			throw new UpgradeFilesException("Failed to extract zip", MysqlRestoreException::EXTRACT_ERROR);
+		}
+
+		// Delete the zip from the dir so its not copied
+		unlink($tmp_dir . '/' . $zip_name);
+
+		// Find the SQL file
+		$finder = new \Symfony\Component\Finder\Finder();
+		$finder->in($tmp_dir)->files()->name('*.sql');
+
+		$file = null;
+		foreach ($finder as $file) break;
+
+		if ($file === null) {
+			throw new UpgradeFilesException("No sql file in the zip", MysqlRestoreException::EXTRACT_ERROR);
+		}
+
+		$sql_filename = $file->getFilename();
+
+		#------------------------------
+		# Drop everything from the database first
+		#------------------------------
+
+		global $DP_CONFIG;
+
+		// Empty the db first
+		$pdo = new \PDO("mysql:host={$DP_CONFIG['db']['host']};dbname={$DP_CONFIG['db']['dbname']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+		$tables = $pdo->query("SHOW TABLES")->fetchAll(\PDO::FETCH_NUM);
+
+		$pdo->exec("SET foreign_key_checks = 0");
+		foreach ($tables as $t) {
+			$t = $t[0];
+			$pdo->exec("DROP TABLE `$t`");
+		}
+		$pdo->exec("SET foreign_key_checks = 1");
+
+		#------------------------------
+		# Restore dump
+		#------------------------------
+
+		$cmd = "$mysql_path -h{$DP_CONFIG['db']['host']} -u{$DP_CONFIG['db']['user']} -p{$DP_CONFIG['db']['password']} {$DP_CONFIG['db']['dbname']} < $sql_filename";
+
+		$ret = $this->execCommand($cmd, $tmp_dir);
+		if ($ret) {
+			throw new UpgradeFilesException("Error importing database backup", MysqlRestoreException::RESTORE_ERROR);
+		}
+
+		$this->log(sprintf("backupDatabase: time(%.4f)", microtime(true) - $time_start);
 	}
 
 	####################################################################################################################
@@ -476,7 +667,37 @@ class Upgrade
 
 		$this->log(sprintf("backupFiles: time(%.4f)   file_count(%d)    dir_count(%d)", microtime(true) - $time_start, $count_file, $count_dir));
 
-		$this->attemptCompress($backup_dir);
+		$this->compressFile($backup_dir);
+	}
+
+
+	####################################################################################################################
+	# restore-files
+	####################################################################################################################
+
+	public function runAction_restoreFiles()
+	{
+		$fileutil = new FilesystemUtil();
+
+		$zip_path = false;
+		if (($key = array_search('--path', $this->argv)) !== false && isset($this->argv[$key+1])) {
+			if ($fileutil->isAbsolutePath($this->argv[$key+1])) {
+				$zip_path = @realpath($this->argv[$key+1]);
+			} else {
+				$zip_path = $this->getBackupDir() . '/' . $this->argv[$key+1];
+			}
+		}
+
+		if (!$zip_path || !file_exists($zip_path)) {
+			$this->out("Invalid --path. File does not exist: " . $zip_path);
+			exit(1);
+		}
+
+		$dry_run = in_array('--dry-run', $this->argv);
+
+		$this->out("Restoreing files ... ");
+		$this->installFilesFromZip($zip_path, $dry_run);
+		$this->out("-> Done");
 	}
 
 
@@ -614,7 +835,12 @@ class Upgrade
 
 	####################################################################################################################
 
-	public function attemptCompress($path)
+	/**
+	 * Compress a file or directory with ZIP.
+	 *
+	 * @param $path
+	 */
+	public function compressFile($path)
 	{
 		$time_start = microtime(true);
 
@@ -622,49 +848,19 @@ class Upgrade
 		$filename = basename($path);
 
 		if (is_dir($path)) {
-			$strat = $this->getCompressDirStrategy();
+			$out_filename = $filename . '.zip';
+			$cmd = "zip -r -q $dir/$out_filename * .htaccess";
+
+			$ret = $this->execCommand($cmd, $path);
 		} else {
-			$strat = $this->getCompressFileStrategy();
+			$out_filename = $filename . '.zip';
+			$cmd = "zip -r -q $out_filename $filename";
+
+			$ret = $this->execCommand($cmd, $dir);
 		}
 
-		if ($strat == 'none') {
-			return;
-		}
-
-		$success = false;
-		switch ($strat) {
-			case 'gzip':
-				$out_filename = $filename . '.gz';
-				$cmd = "gzip -c $filename > $out_filename";
-
-				$ret = $this->execCommand($cmd, $dir);
-				if (!$ret) {
-					$success = true;
-				}
-
-				break;
-
-			case 'tar':
-				$out_filename = $filename . '.tgz';
-				$cmd = "tar -zc $filename > $out_filename";
-
-				$ret = $this->execCommand($cmd, $dir);
-				if (!$ret) {
-					$success = true;
-				}
-
-				break;
-
-			case 'zip':
-				$out_filename = $filename . '.zip';
-				$cmd = "zip -r $out_filename $filename";
-
-				$ret = $this->execCommand($cmd, $dir);
-				if (!$ret) {
-					$success = true;
-				}
-
-				break;
+		if (!$ret) {
+			$success = true;
 		}
 
 		$out_filepath = $dir . '/' . $out_filename;
@@ -672,7 +868,7 @@ class Upgrade
 		// Double check the out file too
 		if ($success) {
 			if (!file_exists($out_filepath) || filesize($out_filepath) < 10) {
-				$this->log("attemptCompress: reported success but file looks bad: $out_filepath");
+				$this->log("compressFile: reported success but file looks bad: $out_filepath");
 				$success = false;
 			}
 		}
@@ -682,70 +878,8 @@ class Upgrade
 			$fileutil = new FilesystemUtil();
 			$fileutil->remove($path);
 
-			$this->log("attemptCompress: time(%.4f)   file_size(%d)", microtime(true) - $time_start, filesize($out_filepath));
+			$this->log(sprintf("compressFile: time(%.4f)   file_size(%d)", microtime(true) - $time_start, filesize($out_filepath)));
 		}
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getCompressDirStrategy()
-	{
-		static $compress_strategy = null;
-
-		if ($compress_strategy === null) {
-			$res = $this->execCommand('tar --help');
-			if (!$res) {
-				$compress_strategy = 'tar';
-			}
-
-			if ($compress_strategy === null) {
-				$res = $this->execCommand('zip --help');
-				if (!$res) {
-					$compress_strategy = 'zip';
-				}
-			}
-
-			if ($compress_strategy === null) {
-				$compress_strategy = 'none';
-			}
-
-			$this->log('Directory compression strategy: ' . $compress_strategy);
-		}
-
-		return $compress_strategy;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getCompressFileStrategy()
-	{
-		static $compress_strategy = null;
-
-		if ($compress_strategy === null) {
-			$res = $this->execCommand('gzip --help');
-			if (!$res) {
-				$compress_strategy = 'gzip';
-			}
-
-			if ($compress_strategy === null) {
-				$res = $this->execCommand('zip --help');
-				if (!$res) {
-					$compress_strategy = 'zip';
-				}
-			}
-
-			if ($compress_strategy === null) {
-				$compress_strategy = 'none';
-			}
-
-			$this->log('File compression strategy: ' . $compress_strategy);
-		}
-
-		return $compress_strategy;
 	}
 
 
@@ -849,7 +983,7 @@ class Upgrade
 	 */
 	public function callService($endpoint, array $post_data = array())
 	{
-		$url = \DeskPRO\Kernel\License::getLicServer() . '/' . ltrim($endpoint, '/');
+		$url = DP_LIC_SERVER . '/' . ltrim($endpoint, '/');
 		return $this->fetchServiceResult($url, $post_data);
 	}
 
@@ -945,7 +1079,7 @@ function Upgrade_Shutdown_Function()
 
 class FilesystemUtil extends \Symfony\Component\HttpKernel\Util\Filesystem
 {
-	protected $dry_run = true;
+	protected $dry_run = false;
 
 	public function enableDryRun()
 	{
@@ -1095,6 +1229,33 @@ class MysqlBackupException extends \Exception
 	 * mysqldump exited with an error status
 	 */
 	const DUMP_ERROR   = 300;
+}
+
+
+/**
+ * Exception thrown when trying to perform a MySQL backup
+ */
+class MysqlRestoreException extends \Exception
+{
+	/**
+	 * We dont know where mysql is
+	 */
+	const NO_MYSQL = 100;
+
+	/**
+	 * The dump file doesnt exist
+	 */
+	const BAD_ZIP = 200;
+
+	/**
+	 * mysqldump exited with an error status
+	 */
+	const RESTORE_ERROR   = 300;
+
+	/**
+	 * There was a problem trying to extract the zip
+	 */
+	const EXTRACT_ERROR = 400;
 }
 
 
