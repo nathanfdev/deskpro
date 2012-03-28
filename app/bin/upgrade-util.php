@@ -72,44 +72,7 @@ if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
 	exit(1);
 }
 
-require DP_ROOT . '/bin/build/inc.php';
-require DP_ROOT . '/sys/system.php';
-
-########################################################################################################################
-
-class ServiceCallException extends \Exception
-{
-	const NO_RESPONSE      = 100;
-	const INVALID_RESPONSE = 200;
-}
-
-class MysqlBackupException extends \Exception
-{
-	const NO_MYSQLDUMP = 100;
-	const FILE_EXISTS  = 200;
-	const DUMP_ERROR   = 300;
-}
-
-class FileBackupException extends \Exception
-{
-	const FILE_EXISTS = 100;
-	const PERM_ERROR  = 200;
-}
-
-class DownloadException extends \Exception
-{
-	const FILE_EXISTS = 100;
-	const NO_DIR      = 200;
-	const PERM_ERROR  = 300;
-	const BAD_FILE    = 400;
-}
-
-class UpgradeFilesException extends \Exception
-{
-	const BAD_ZIP       = 100;
-	const EXTRACT_ERROR = 200;
-	const COPY_ERROR    = 300;
-}
+require DP_ROOT.'/vendor/symfony/src/Symfony/Component/HttpKernel/Util/Filesystem.php';
 
 class Upgrade
 {
@@ -148,6 +111,8 @@ class Upgrade
 			$this->runAction_backupDatabase();
 		} elseif (in_array('--backup-files', $argv)) {
 			$this->runAction_backupFiles();
+		} elseif (in_array('--upgrade-files', $argv)) {
+			$this->runAction_upgradeFiles();
 		} else {
 			$this->out("Use --help for a list of possible actions.");
 		}
@@ -279,9 +244,16 @@ class Upgrade
 		}
 
 		if (!$zip_path) {
+			$this->out("Downloading latest source ... ");
 			$zip_path = $this->downloadLatest();
+			$this->out("-> Done");
+
 			$this->registerCleanupParam('unlink_zip_path', $zip_path);
 		}
+
+		$this->out("Installing files ... ");
+		$this->upgradeFiles($zip_path);
+		$this->out("-> Done");
 
 		if (!$zip_specified) {
 			unlink($zip_path);
@@ -303,6 +275,8 @@ class Upgrade
 			throw new UpgradeFilesException("Zip path does not exist: $zip_path", UpgradeFilesException::BAD_ZIP);
 		}
 
+		$time_start = microtime(true);
+
 		// Eg: DeskPRO.2012-01-01.zip
 		$zip_name = basename($zip_path);
 
@@ -321,7 +295,7 @@ class Upgrade
 		}
 		$this->registerCleanupParam('unlink_scratch_dir', $tmp_dir);
 
-		if (!copy($zip_path, $tmp_dir)) {
+		if (!copy($zip_path, $tmp_dir.'/'.$zip_name)) {
 			throw new UpgradeFilesException("Failed to copy ZIP to tmp dir: $tmp_dir", UpgradeFilesException::EXTRACT_ERROR);
 		}
 
@@ -329,17 +303,20 @@ class Upgrade
 		# Extract the zip into the dir
 		#------------------------------
 
-		$ret = $this->execCommand("unzip $zip_name", $tmp_dir, $out);
+		$ret = $this->execCommand("unzip -q $zip_name", $tmp_dir, $out);
 
-		if (!$ret) {
+		if ($ret) {
 			throw new UpgradeFilesException("Failed to extract zip", UpgradeFilesException::EXTRACT_ERROR);
 		}
+
+		// Delete the zip from the dir so its not copied
+		unlink($tmp_dir . '/' . $zip_name);
 
 		#------------------------------
 		# Now copy everything over
 		#------------------------------
 
-		$fileutil = new \Symfony\Component\HttpKernel\Util\Filesystem();
+		$fileutil = new FilesystemUtil();
 
 		// Delete old cache dir
 		$fileutil->remove(DP_ROOT.'/sys/cache');
@@ -351,6 +328,8 @@ class Upgrade
 		));
 
 		$this->registerCleanupParam('unlink_scratch_dir', null);
+
+		$this->log('upgradeFiles: time(%.4f)', microtime(true) - $time_start);
 	}
 
 	####################################################################################################################
@@ -556,8 +535,9 @@ class Upgrade
 			throw new DownloadException("Save directory is not writable: " . $save_dir, DownloadException::PERM_ERROR);
 		}
 
+		// It already exists, just return it
 		if (file_exists($save_path)) {
-			throw new DownloadException("Save path already exists: " . $save_path, DownloadException::FILE_EXISTS);
+			return $save_path;
 		}
 
 		$this->log("downloadLatest: Downloading from " . $version_info['download']);
@@ -699,7 +679,7 @@ class Upgrade
 
 		// If we're a success, then we can remove the original
 		if ($success) {
-			$fileutil = new \Symfony\Component\HttpKernel\Util\Filesystem();
+			$fileutil = new FilesystemUtil();
 			$fileutil->remove($path);
 
 			$this->log("attemptCompress: time(%.4f)   file_size(%d)", microtime(true) - $time_start, filesize($out_filepath));
@@ -926,6 +906,13 @@ class Upgrade
 	}
 }
 
+########################################################################################################################
+# Shutdown handler
+########################################################################################################################
+
+/**
+ * When things quit unexpectedly, try to clean up anything that might be left over.
+ */
 function Upgrade_Shutdown_Function()
 {
 	global $UPGRADE_CLEANUP;
@@ -933,22 +920,254 @@ function Upgrade_Shutdown_Function()
 		return;
 	}
 
+	$fileutil = new FilesystemUtil();
+
 	if (isset($UPGRADE_CLEANUP['close_log_fh'])) {
-		fclose($UPGRADE_CLEANUP['close_log_fh']);
+		@fclose($UPGRADE_CLEANUP['close_log_fh']);
 	}
 	if (isset($UPGRADE_CLEANUP['unlink_zip_path'])) {
-		unlink($UPGRADE_CLEANUP['unlink_zip_path']);
+		try {
+			$fileutil->remove($UPGRADE_CLEANUP['unlink_zip_path']);
+		} catch (\Exception $e) {}
 	}
 	if (isset($UPGRADE_CLEANUP['unlink_scratch_dir'])) {
-		if (is_dir($UPGRADE_CLEANUP['unlink_scratch_dir'])) {
-			chdir($UPGRADE_CLEANUP['unlink_scratch_dir']);
-			exec('rm -rf ' . dirname($UPGRADE_CLEANUP['unlink_scratch_dir']));
-			chdir(DP_START_DIR);
-		}
+		try {
+			$fileutil->remove($UPGRADE_CLEANUP['unlink_scratch_dir']);
+		} catch (\Exception $e) {}
 	}
 
 	$UPGRADE_CLEANUP = null;
 }
+
+########################################################################################################################
+# Custom filesystem util class
+########################################################################################################################
+
+class FilesystemUtil extends \Symfony\Component\HttpKernel\Util\Filesystem
+{
+	protected $dry_run = true;
+
+	public function enableDryRun()
+	{
+		$this->dry_run = true;
+	}
+
+	public function copy($originFile, $targetFile, $override = false)
+	{
+		if ($this->dry_run) {
+			echo "[copy] $originFile => $targetFile\n";
+			return;
+		}
+
+		parent::copy($originFile, $targetFile, $override);
+	}
+
+	public function mkdir($dirs, $mode = 0777)
+	{
+		if ($this->dry_run) {
+			foreach ($this->toIterator($dirs) as $dir) {
+				if (is_dir($dir)) {
+					continue;
+				}
+
+				echo "[mkdir] $dir\n";
+			}
+
+			return true;
+		}
+
+		return parent::mkdir($dirs, $mode);
+	}
+
+	public function touch($files)
+	{
+		if ($this->dry_run) {
+			foreach ($this->toIterator($files) as $file) {
+				echo "[touch] $file\n";
+			}
+			return;
+		}
+
+		parent::touch($files);
+	}
+
+	public function remove($files)
+	{
+		if ($this->dry_run) {
+			$files = iterator_to_array($this->toIterator($files));
+			$files = array_reverse($files);
+			foreach ($files as $file) {
+				if (!file_exists($file)) {
+					continue;
+				}
+
+				if (is_dir($file) && !is_link($file)) {
+					echo "[rmdir] $file\n";
+				} else {
+					echo "[rm] $file\n";
+				}
+			}
+			return;
+		}
+
+		parent::remove($files);
+	}
+
+	public function chmod($files, $mode, $umask = 0000)
+	{
+		if ($this->dry_run) {
+			foreach ($this->toIterator($files) as $file) {
+				printf("[chmod] %o %s\n", $file, $mode);
+			}
+			return;
+		}
+
+		parent::chmod($files, $mode, $umask);
+	}
+
+	public function rename($origin, $target)
+	{
+		if ($this->dry_run) {
+			echo "[rename] $origin => $target\n";
+			return;
+		}
+
+		parent::rename($origin, $target);
+	}
+
+	public function symlink($originDir, $targetDir, $copyOnWindows = false)
+	{
+		if ($this->dry_run) {
+			echo "[symlink] $originDir => $targetDir\n";
+			return;
+		}
+
+		parent::symlink($originDir, $targetDir);
+	}
+
+	private function toIterator($files)
+	{
+		if (!$files instanceof \Traversable) {
+			$files = new \ArrayObject(is_array($files) ? $files : array($files));
+		}
+
+		return $files;
+	}
+}
+
+########################################################################################################################
+# Exception Classes
+########################################################################################################################
+
+/**
+ * Exception thrown when trying to request a DeskPRO service
+ */
+class ServiceCallException extends \Exception
+{
+	/**
+	 * An empty response from the server
+	 */
+	const NO_RESPONSE      = 100;
+
+	/**
+	 * An invalid response from the server (invalid JSON).
+	 */
+	const INVALID_RESPONSE = 200;
+}
+
+
+/**
+ * Exception thrown when trying to perform a MySQL backup
+ */
+class MysqlBackupException extends \Exception
+{
+	/**
+	 * We dont know where mysqldump is
+	 */
+	const NO_MYSQLDUMP = 100;
+
+	/**
+	 * The dump target file already exists
+	 */
+	const FILE_EXISTS  = 200;
+
+	/**
+	 * mysqldump exited with an error status
+	 */
+	const DUMP_ERROR   = 300;
+}
+
+
+/**
+ * Exception thrown when trying to perform a file backup
+ */
+class FileBackupException extends \Exception
+{
+	/**
+	 * The target backup dir exists
+	 */
+	const FILE_EXISTS = 100;
+
+	/**
+	 * There was an error to do with permissions
+	 */
+	const PERM_ERROR  = 200;
+}
+
+
+/**
+ * Exception thrown when trying to download latest distro
+ */
+class DownloadException extends \Exception
+{
+	/**
+	 * The target file already exists
+	 */
+	const FILE_EXISTS = 100;
+
+	/**
+	 * The target directory to put the distro into doesnt exist
+	 */
+	const NO_DIR      = 200;
+
+	/**
+	 * Couldnt write the distro to the target
+	 */
+	const PERM_ERROR  = 300;
+
+	/**
+	 * The distro appears to be corrupted
+	 */
+	const BAD_FILE    = 400;
+}
+
+
+/**
+ * Exception thrown when trying to upgrade files on the filesystem from a zip
+ */
+class UpgradeFilesException extends \Exception
+{
+	/**
+	 * The zip doesnt exist or appears to be invalid
+	 */
+	const BAD_ZIP       = 100;
+
+	/**
+	 * There was a problem trying to extract the zip
+	 */
+	const EXTRACT_ERROR = 200;
+
+	/**
+	 * There was a probelm while trying to put the new files in place.
+	 * This is a bad error because it means there might be a half-upgraded filesystem.
+	 */
+	const COPY_ERROR    = 300;
+}
+
+
+########################################################################################################################
+# RUN
+########################################################################################################################
 
 $upgrade = new Upgrade();
 $upgrade->run($_SERVER['argv']);
