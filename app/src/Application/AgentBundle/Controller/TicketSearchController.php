@@ -637,7 +637,7 @@ class TicketSearchController extends AbstractController
 			// User looking at all results
 			$is_grouping = false;
 			$grouping_option = 'DP_NOT_SET';
-            if(! $view_type == 'csv') {
+            if($view_type != 'csv') {
 			    $tickets = $results_helper->getTicketsForPage($page, $per_page);
             }
 		} else {
@@ -645,7 +645,7 @@ class TicketSearchController extends AbstractController
 			$is_grouping = true;
 			$grouping_option = $this->in->getString('grouping_option');
 
-            if(! $view_type == 'csv') {
+            if($view_type != 'csv') {
 			    $tickets = $results_helper->getGroupedTicketsForPage($grouping_option, $page, $per_page);
 			    $vars['ticket_ids'] = $results_helper->getGroupTicketIds($grouping_option);
             }
@@ -655,11 +655,11 @@ class TicketSearchController extends AbstractController
 		# Send results
 		#------------------------------
 
-		if (!count($tickets) && $is_partial && ! $view_type == 'csv') {
+		if (!count($tickets) && $is_partial && $view_type != 'csv') {
 			return $this->createJsonResponse(array('no_more_results' => true));
 		}
 
-        if(! $view_type == 'csv') {
+        if($view_type != 'csv') {
 		    $flagged_tickets = App::getEntityRepository('DeskPRO:TicketFlagged')->getFlagsForTickets($tickets, $this->person);
         }
         else $flagged_tickets = array();
