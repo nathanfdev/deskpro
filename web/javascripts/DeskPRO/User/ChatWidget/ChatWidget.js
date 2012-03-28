@@ -137,12 +137,18 @@ var DpChatWidget = new (function() {
 			url += '&amp;is_window=1';
 		}
 
-		$('<script type="text/javascript" async="true" src="' + url + '"></script>').appendTo('body');
+		DpConsole.log('DpChatWidget.initSession: adding script: ' + url);
+
+		var script_tag = document.createElement('script');
+		script_tag.setAttribute("type", "text/javascript");
+		script_tag.setAttribute("src", url);
+		script_tag.setAttribute("async", 'true');
+		(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
 	};
 
 	function initJquery() {
 		function jquery_loaded() {
-			DpConsole.log('DpDpChatWidget.init: jquery loaded');
+			DpConsole.log('DpChatWidget.init: jquery loaded');
 			$ = window.jQuery.noConflict(true);
 
 			initSession();

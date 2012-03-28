@@ -217,6 +217,7 @@ class ChatController extends AbstractController
 			$response = $this->render('UserBundle:Chat:chat-session-unavailable.js.php');
 			$response->setLastModified(date_create('-1 day'));
 			$response->setExpires(date_create("-1 day"));
+			$response->headers->set('Content-Type', 'text/javascript');
 			return $response;
 		}
 
@@ -241,6 +242,7 @@ class ChatController extends AbstractController
 
 		$response->setLastModified(date_create('-1 day'));
 		$response->setExpires(date_create("-1 day"));
+		$response->headers->set('Content-Type', 'text/javascript');
 		return $response;
 	}
 
