@@ -685,7 +685,7 @@ class TemplatingExtension extends \Twig_Extension
 			return false;
 		}
 
-		return $return_string ? implode($return_string, $rgb) : $rgb; // returns the rgb string or the associative array
+		return $rgb;
 	}
 
     /**
