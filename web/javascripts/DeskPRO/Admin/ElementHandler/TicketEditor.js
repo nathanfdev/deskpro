@@ -125,10 +125,10 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 					$('.dp-block-controls li', formItem).not('.dp-move, .dp-edit-fields').remove();
 				}
 				if (draggingSidebarEl.data('edit-title')) {
-					$('.dp-block-controls li.dp-edit-fields > span', formItem).text(draggingSidebarEl.data('edit-title')).on('click', function(ev) {
+					$('.dp-block-controls li.dp-edit-fields > span', formItem).text(draggingSidebarEl.data('edit-title')).data('edit-url', draggingSidebarEl.data('edit-url')).on('click', function(ev) {
 						ev.preventDefault();
 						ev.stopPropagation();
-						window.location = draggingSidebarEl.data('edit-url');
+						window.location = $(this).data('edit-url');
 					});
 				} else {
 					$('.dp-block-controls li.dp-edit-fields', formItem).remove();
