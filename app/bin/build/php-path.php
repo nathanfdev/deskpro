@@ -11,7 +11,8 @@ $php_path = null;
 
 
 if (!$php_path) {
-	if (isset($_SERVER['_']) && is_executable($_SERVER['_'])) {
+	if (isset($_SERVER['_']) && is_executable($_SERVER['_'])
+	&& basename($_SERVER['SCRIPT_FILENAME']) != basename($_SERVER['_'])) {
 		$php_path = $_SERVER['_'];
 	} else {
 		foreach (array('/usr/bin/php', '/usr/local/bin/php', '/usr/bin/php5', '/usr/local/bin/php5', 'C:\\php\\php.exe', 'C:\\php5\\php.exe') as $try) {
