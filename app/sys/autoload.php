@@ -4,6 +4,8 @@ set_include_path(
 	.PATH_SEPARATOR.
 	DP_ROOT.'/vendor/ezcomponents'
 	.PATH_SEPARATOR.
+    DP_ROOT.'/vendor/pear/lib'
+    .PATH_SEPARATOR.
 	get_include_path()
 );
 
@@ -32,6 +34,8 @@ $loader->registerPrefixes(array(
 	'Pheanstalk'  => DP_ROOT.'/vendor/pheanstalk/classes',
 	'Elastica_'   => DP_ROOT.'/vendor/Elastica/lib',
     'mPDF_'       => DP_ROOT.'/vendor/mpdf/lib',
+    'File_'       => DP_ROOT.'/vendor/pear/lib',
+    'PEAR_'       => DP_ROOT.'/vendor/pear/lib',
 ));
 
 $loader->registerClassNames(array(
