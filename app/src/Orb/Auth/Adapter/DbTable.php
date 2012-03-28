@@ -158,6 +158,10 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 				}
 			}
 
+			if (!$userinfo) {
+				return new Result(Result::FAILURE_INVALID_CREDS);
+			}
+
 		} catch (\Exception $e) {
 			if ($this->logger) {
 				$this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR);
