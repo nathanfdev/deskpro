@@ -356,6 +356,8 @@ class TicketsStep extends AbstractDeskpro3Step
 				continue;
 			}
 
+			$message_info['message'] = trim($message_info['message']);
+
 			$insert_message = array();
 			$insert_message['message_hash'] = sha1(microtime(true) . mt_rand(1000,99999)); // bogus hash
 			$insert_message['message'] = nl2br(htmlspecialchars($message_info['message'], \ENT_QUOTES));
