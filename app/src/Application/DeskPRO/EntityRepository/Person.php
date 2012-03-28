@@ -105,7 +105,7 @@ class Person extends AbstractEntityRepository
 			$names[$agent->getId()] = $agent->getDisplayName();
 		}
 
-		return;
+		return $names;
 	}
 
 
