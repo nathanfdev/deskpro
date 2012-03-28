@@ -179,15 +179,12 @@ class PersonController extends AbstractController
         if($is_vcf) {
             $response = new \Symfony\Component\HttpFoundation\Response();
             $response->headers->set('Content-Type', 'text/vcf');
+            $vcard = \File_IMC::build('vCard');
 
-            $ec = ";\0\n\\";
+            $vcard->setFormattedName($person->name);
+            $vcard->setName($person->last_name, $person->first_name, '', '', '');
+            //$vcard->setPhoto($person->gravatar_url);
 
-            $vcf = "BEGIN:VCARD\n".
-                "VERSION:4.0\n".
-                "N:".addcslashes($person->last_name, $ec).
-                ";".addcslashes($person->first_name, $ec).";;;\n".
-                "FN:".addcslashes($person->name, $ec)."\n".
-                "PHOTO:".addcslashes($person->gravatar_url, $ec)."\n";
 
             if($person->organization_id) {
                 $organisation = App::findEntity('DeskPRO:Organization', $person->organization_id);
@@ -197,15 +194,16 @@ class PersonController extends AbstractController
             }
 
             if(!empty($organisation)) {
-                $vcf .= "ORG:".addcslashes($person['organisation']['name'], $ec)."\n";
+                $vcard->addOrganization($person['organisation']['name']);
             }
 
             if(!empty($person['organization_position'])) {
-                $vcf .= "TITLE:".addcslashes($person['organization_position'], $ec)."\n";
+
+                $vcard->setTitle($person['organization_position']);
             }
 
             foreach($person->emails as $email) {
-                $vcf .= "EMAIL:".addcslashes($email->email, $ec)."\n";
+                $vcard->addEmail($email->email);
             }
 
             foreach($contact_data as $c_data)
@@ -216,32 +214,35 @@ class PersonController extends AbstractController
                             if(empty($data['number']))
                                 break;
 
-                            $vcf .= "TEL:VALUE=uri:tel:";
+                            $tel = '';
 
                             if(!empty($data['country_calling_code']))
-                                $vcf .= "+".addcslashes($data['country_calling_code'], $ec)."-";
+                                $tel .= '+'.$data['country_calling_code'].'-';
 
 
-                            $vcf .= addcslashes($data['number'], $ec)."\n";
+                            $tel .= $data['number'];
+
+                            $vcard->addTelephone($tel);
                             break;
                         case 'website':
-                            $vcf .= "URL:".addcslashes($data['url'], $ec)."\n";
+                            $vcard->setURL($data['url']);
                             break;
                         case 'address':
-                            $vcf .= "ADR:;;";
-                            $vcf .= addcslashes($data['address'], $ec).";";
-                            $vcf .= addcslashes($data['city'], $ec).";";
-                            $vcf .= addcslashes($data['state'], $ec).";";
-                            $vcf .= addcslashes($data['zip'], $ec).";";
-                            $vcf .= addcslashes($data['country'], $ec).";";
-                            $vcf .= "\n";
+                            $vcard->addAddress(
+                                '',
+                                '',
+                                $data['address'],
+                                $data['city'],
+                                $data['state'],
+                                $data['zip'],
+                                $data['country']
+                            );
                             break;
                     }
                 }
             }
 
-            $vcf .= "END:VCARD\n";
-            $response->setContent($vcf);
+            $response->setContent($vcard->fetch());
             return $response;
         }
 
