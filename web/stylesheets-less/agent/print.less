@@ -8,13 +8,22 @@ body {
 	border: none !important;
 }
 
+#dp_content_info {
+	display: none !important;
+}
+
+#dp_content_wrap .tabViewDetailContent {
+	position: absolute;
+	top: 0; right: 0; bottom: 0; left: 0;
+}
+
 #dp_nav, #dp_header, #dp_source, #dp_list, #dp_devbar, #tabNavigationPane {
 	display: none !important;
 }
 
 .clear {
 	clear: both !important;
-	width: auto !important;
+	width: 1px !important;
 	height: 1px !important;
 	overflow: hidden !important;
 	margin: 0 !important;
@@ -131,6 +140,8 @@ article.content-message .content header .message-counter.with-gear {
 	font-size: 14px !important;
 	color: #000;
 	text-transform: none !important;
+	padding: 0 !important;
+	margin: 0 !important;
 }
 
 section.description-area .info-list {
@@ -234,3 +245,13 @@ body.print-overlay {
 		top: 0; left: 0; width: 1px; height: 1px;
 	}
 }
+
+
+.page-ticket header { height: 100px !important; overflow: hidden; }
+
+.scroll-content > table {
+	width: 95% !important;
+	margin: 0 !important;
+}
+
+.scroll-content > table > td { margin: 0; padding: 0; }
