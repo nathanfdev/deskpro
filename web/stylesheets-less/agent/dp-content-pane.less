@@ -1400,28 +1400,12 @@ table.tickets-simple td .line {
 }
 
 table.tickets-simple td.status .status {
-	display: block;
-	white-space: nowrap;
-	background-color: #93C8A8;
-	color: #fff;
-	.border-radius(6px, 6px, 6px, 6px);
-	text-shadow: none;
-	line-height: 100%;
-	padding: 1px 3px 1px 3px;
 	float: right;
-}
-
-table.tickets-simple td.status.closed .status,
-table.tickets-simple td.status.resolved .status {
-	background-color: #C2CCDE;
-}
-
-table.tickets-simple td.status.pending .status {
-	background-color: #EBEBBD;
-}
-table.tickets-simple td.status.hidden .status {
-	background-color: #fff;
-	color: #aaa;
+	position: relative;
+	top: 1px;
+	margin-bottom: 2px;
+	line-height: 100%;
+	display: block;
 }
 
 table.tickets-simple tr.add-new-member td {

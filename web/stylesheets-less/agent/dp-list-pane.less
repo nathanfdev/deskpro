@@ -598,7 +598,8 @@
 	text-shadow: none;
 	position: relative;
 }
-.list-listing .row-item .status{
+.list-listing .row-item .status, table.tickets-simple td.status .status
+{
 	position: relative;
 	top: -4px;
 	.gradient(#8bbe72, #71b058);
@@ -631,17 +632,19 @@
 	line-height: 15px;
 }
 
-.list-listing .row-item .status.resolved, .list-listing .row-item .status.closed {
+.list-listing .row-item .status.resolved, .list-listing .row-item .status.closed,
+table.tickets-simple td.status.resolved .status, table.tickets-simple td.status.closed .status {
 	border-color: #C9CCD4;
 	.gradient(darken(#C9CCD4, 5%), darken(#C9CCD4, 20%));
 }
 
-.list-listing .row-item .status.awaiting_user {
+.list-listing .row-item .status.awaiting_user, table.tickets-simple td.status.awaiting_user .status {
 	border-color: #C1BE6C;
 	.gradient(darken(#C1BE6C, 5%), darken(#C1BE6C, 10%));
 }
 
 .list-listing .row-item .status.hidden,
+table.tickets-simple td.status.hidden .status,
 .list-listing .row-item .status.hidden_spam,
 .list-listing .row-item .status.hidden_validating,
 .list-listing .row-item .status.hidden_deleted {
