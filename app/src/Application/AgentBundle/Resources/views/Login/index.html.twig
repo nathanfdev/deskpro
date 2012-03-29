@@ -77,7 +77,10 @@
 
 	<div id="normal_view">
 		<dl>
-			{% if app.usersourceManager.getWithCapability('form_login') %}/ Username{% endif %}
+			<dt>
+				Email
+				{% if app.usersourceManager.getWithCapability('form_login') %}/ Username{% endif %}
+			</dt>
 			<dd><input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" tabindex="1" /></dd>
 		</dl>
 
