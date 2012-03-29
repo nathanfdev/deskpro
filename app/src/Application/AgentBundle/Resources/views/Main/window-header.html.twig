@@ -1,5 +1,5 @@
 <!-- BEGIN HEADER BAR -->
-<div id="dp_header">
+<div id="dp_header" xmlns="http://www.w3.org/1999/html">
 	<div id="dp_logo_wrap">
 		<div class="button-wrap">
 			<h1>
@@ -22,20 +22,24 @@
 	<!-- BEGIN NOTIFICATION SECTION -->
 	<div id="DP-NotificationSection">
 		<div id="notificationWrap" class="left">
-			<div class="notifications" id="dp_notif_bed" style="display: none;">
-				<div class="notifMail notif-item notif-tickets" style="display: none;"><span class="counter">0</span></div>
-				<div class="notifChat notif-item notif-chat" style="display: none;"><span class="counter">0</span></div>
+			<div class="notifications" id="dp_notif_bed">
+				<div class="notifMail notif-item notif-tickets"><span class="counter">0</span></div>
+				<div class="notifChat notif-item notif-chat"><span class="counter">0</span></div>
 			</div>
 		</div>
 	</div>
 	<div id="notificationDropdown" style="display:none;">
 		<div class="notifDropdown">
 			<div class="notifHead">
-				<div class="notifMail notif-item notif-tickets" style="display: none;"><span class="counter">0</span></div>
-				<div class="notifChat notif-item notif-chat" style="display: none;"><span class="counter">0</span></div>
+				<div class="notifMail notif-item notif-tickets"><span class="counter">0</span></div>
+				<div class="notifChat notif-item notif-chat"><span class="counter">0</span></div>
 			</div>
 			<ul id="dp_notify_list">
-				<li class="dismissAll" id="dp_notify_list_dismiss">
+				<li id="dp_notify_list_none">
+					<article><em>Notifications about new tickets and chats will appear here.</em></article>
+					<a>Change your notification settings</a>
+				</li>
+				<li class="dismissAll" id="dp_notify_list_dismiss" style="display: none">
 					<a>{{ phrase('agent.window.dismiss_notifications') }}</a>
 				</li>
 			</ul>

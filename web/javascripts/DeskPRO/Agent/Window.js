@@ -1768,6 +1768,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('#dp_logo_expand_wrap').hide();
 		});
 
+		$('#dp_notify_list_none').find('a').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			DeskPRO_Window.notifications.close();
+			$('#settingswin').trigger('dp_open', 'ticket-notify');
+		});
+
 		// Settings is a window
 		$('#user_settings_link').on('click', function() {
 			$('#settingswin').trigger('dp_open');

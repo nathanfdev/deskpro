@@ -10,10 +10,11 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			self.open();
+			self.toggle();
 		});
 
 		this.fireEvent('init');
+		this._isOpen = false;
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.tickets', function(info) {
 			DP.console.log(info);
@@ -81,27 +82,22 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			$('.counter', el2).text(newcount || 0);
 		}
 
+		// <3 because the dismiss button and the help note are li's
+		if ($('#dp_notify_list').find('> li').length < 2) {
+			$('#dp_notify_list_none').show();
+			$('#dp_notify_list_dismiss').hide();
+		} else {
+			$('#dp_notify_list_none').hide();
+			$('#dp_notify_list_dismiss').show();
+		}
+
 		if (newcount < 1) {
-			el.hide();
-			el2.hide();
-			if (!$('#dp_notif_bed .notif-item:visible').length) {
-				$('#dp_notif_bed').hide();
-				this.close();
-			}
-
-			this.updatePositions();
-
 			this.fireEvent('typeHide', [type, el]);
 		} else {
-			el.closest('.notif-item').show();
-			el2.closest('.notif-item').show();
-			$('#dp_notif_bed').show();
-
-			this.updatePositions();
-
 			this.fireEvent('typeShow', [type, el]);
 		}
 
+		this.updatePositions();
 		this.fireEvent('modCount', ev);
 	},
 
@@ -149,6 +145,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 	},
 
 	open: function() {
+		if (this._isOpen) return;
+		this._isOpen = true;
 		this._lazyInitMenu();
 		this.menu.show();
 		this.backdrop.show();
@@ -160,22 +158,27 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		var pos = $('#dp_notif_bed').offset();
 		this.menu.css({
-			left: pos.left - $('#dp_notif_bed').width() + 28
+			left: pos.left - $('#dp_notif_bed').width() + 56
 		});
 	},
 
 	isOpen: function() {
-		if (this._hasInitMenu && this.menu.is(':visible')) {
-			return true;
-		}
-
-		return false;
+		return this._isOpen;
 	},
 
 	close: function() {
-		if (!this.isOpen()) return;
+		if (!this._isOpen) return;
+		this._isOpen = false;
 		this.menu.hide();
 		this.backdrop.hide();
+	},
+
+	toggle: function() {
+		if (this._isOpen) {
+			this.close();
+		} else {
+			this.open();
+		}
 	},
 
 	destroy: function() {
