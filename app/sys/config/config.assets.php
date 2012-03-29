@@ -106,6 +106,7 @@ $CONFIG['agent_vendors'] = array(
 
 		'vendor/mootools/mootools-core.min.js',
 		'vendor/modernizr.min.js',
+		'vendor/notificon/notificon.min.js',
 	)
 );
 
