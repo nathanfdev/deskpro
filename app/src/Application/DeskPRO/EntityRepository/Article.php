@@ -210,15 +210,15 @@ class Article extends AbstractEntityRepository
 			$cat_ids = $node->getTreeIds(true);
 
 			$params = array();
-			$params['cat_ids'] = $cat_ids;
-			$params['done_aids'] = $done_articles;
+			$params['cat_ids'] = array_values($cat_ids);
+			$params['done_aids'] = array_values($done_articles);
 
 			$perm_where = '';
 			if ($person_context && !$person_context->is_agent) {
 				$dis_ids = $person_context->PermissionsManager->ArticleCategories->getDisallowedCategories();
 				if ($dis_ids) {
 					$perm_where = ' AND cat.id NOT IN (:cat_not_ids) ';
-					$params['cat_not_ids'] = $dis_ids;
+					$params['cat_not_ids'] = array_values($dis_ids);
 				}
 			}
 
@@ -233,8 +233,7 @@ class Article extends AbstractEntityRepository
 					$perm_where
 				GROUP BY a.id
 				ORDER BY a.id DESC
-			")->setMaxResults($num)
-			  ->execute($params);
+			")->setMaxResults($num)->execute($params);
 
 			if (count($articles)) {
 				$all_articles[$node['id']] = $articles;
