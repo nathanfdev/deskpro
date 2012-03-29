@@ -915,11 +915,11 @@ class TicketsStep extends AbstractDeskpro3Step
 					break;
 
 				case 'reply_tech':
-					$id_before = isset($message_map[$tlog['id_before']]) ? isset($message_map[$tlog['id_before']]) : null;
+					$id_before = isset($message_map[$tlog['id_before']]) ? $message_map[$tlog['id_before']] : null;
 
 					$insert_tlog['id_after'] = $id_before;
 					$insert_tlog['details']['message_id'] = $id_before ?: 0;
-					$insert_tlog['details']['creation_system'] = $tlog['agent'] == 'gateway' ? Ticket::CREATED_GATEWAY_PERSON : Ticket::CREATED_WEB_AGENT;
+					$insert_tlog['details']['creation_system'] = $tlog['agent'] == 'gateway' ? Ticket::CREATED_GATEWAY_AGENT : Ticket::CREATED_WEB_AGENT;
 					$insert_tlog['details']['is_agent_note'] = 0;
 					$insert_tlog['details']['is_agent_message'] = 1;
 
@@ -927,7 +927,7 @@ class TicketsStep extends AbstractDeskpro3Step
 					break;
 
 				case 'reply_user':
-					$id_before = isset($message_map[$tlog['id_before']]) ? isset($message_map[$tlog['id_before']]) : null;
+					$id_before = isset($message_map[$tlog['id_before']]) ? $message_map[$tlog['id_before']] : null;
 
 					$insert_tlog['id_after'] = $id_before;
 					$insert_tlog['details']['message_id'] = $id_before ?: 0;

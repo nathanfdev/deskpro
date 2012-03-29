@@ -36,7 +36,7 @@
 	<span class="type">Ticket triggers</span> applied:
 	<span class="new-val">{{ log.details.trigger_ids }}</span>
 {% elseif log.action_type == 'message_created' %}
-	<span class="type">New message</span> <span class="new-val">#{{log.details.message_id}}</span>
+	<span class="type">New message</span> {% if log.details.message_id %}<span class="new-val">#{{log.details.message_id}}</span>{% endif %}
 	{% if log.details.ip_address %}
 	from web ({{ log.details.ip_address }})
 	{% endif %}
