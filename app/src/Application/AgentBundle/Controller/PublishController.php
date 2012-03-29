@@ -768,10 +768,18 @@ class PublishController extends AbstractController
 	public function addCategoryAction($type)
 	{
 		$cat = PublishCategoryEdit::addCategory($type, $this->in->getString('title'));
+
+		switch ($type) {
+			case 'articles':   $url = $this->generateUrl('agent_kb_list', array('category_id' => $cat->id)); break;
+			case 'downloads':  $url = $this->generateUrl('agent_downloads_list', array('category_id' => $cat->id)); break;
+			case 'news':       $url = $this->generateUrl('agent_news_list', array('category_id' => $cat->id)); break;
+			case 'feedback':   $url = $this->generateUrl('agent_feedback_category', array('category_id' => $cat->id)); break;
+		}
+
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'id' => $cat['id'],
-			'url' => ''
+			'url' => $url
 		));
 	}
 

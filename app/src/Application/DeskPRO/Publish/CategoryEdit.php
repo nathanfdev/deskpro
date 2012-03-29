@@ -270,7 +270,7 @@ class CategoryEdit
 		$cat = $repos->find($category_id);
 
 		if (!$cat) {
-			throw new \InvalidArgumentException("Unknown category `$category_id`");
+			throw new \InvalidArgumentException("Unknown category `$category_id` for `$entity`");
 		}
 
 		$counts = $repos->getAllCounts(App::getCurrentPerson(), null);
@@ -281,8 +281,10 @@ class CategoryEdit
 		App::getOrm()->beginTransaction();
 
 		$fn = function($delcat) use (&$fn) {
-			foreach ($delcat->children as $subcat) {
-				$fn($subcat);
+			if ($delcat->children) {
+				foreach ($delcat->children as $subcat) {
+					$fn($subcat);
+				}
 			}
 
 			App::getOrm()->remove($delcat);

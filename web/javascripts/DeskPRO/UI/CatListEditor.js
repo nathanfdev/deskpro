@@ -44,7 +44,12 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 			/**
 			 * The basename for the editor elements
 			 */
-			editorBaseId: ''
+			editorBaseId: '',
+
+			/**
+			 * The data-route to add to newly created cats
+			 */
+			newCatRoute: ''
 		};
 
 		this.setOptions(options);

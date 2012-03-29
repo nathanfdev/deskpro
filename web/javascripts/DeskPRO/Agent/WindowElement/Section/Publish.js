@@ -152,8 +152,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 					});
 				},
 				onNewAdded: function(li, input) {
-					// Saving having on blur, which might have happened by clicking
-					// trashcan
+					// Saving having on blur, which might have happened by clicking trashcan
 					if (li.is('.being-deleted')) {
 						return;
 					}
@@ -165,7 +164,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 						dataType: 'json',
 						success: function(info) {
 							li.data('category-id', info.id);
-							$('a', li).data('route', 'listpane:' + info.url);
+							$('.is-nav-item', li).data('route', 'listpane:' + info.url).attr('data-route', 'listpane:' + info.url);;
 							$('.list-counter', li).attr('id', type + '_cat_count_' + info.id);
 						}
 					});
