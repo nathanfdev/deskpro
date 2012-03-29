@@ -382,8 +382,10 @@ class KernelBooter
 		$kernel = new \DeskPRO\Kernel\CliKernel($env, $debug);
 		$kernel->boot();
 
-		if (!$ignore_offline && $kernel->isHelpdeskOffline()) {
-			return null;
+		if (!$ignore_offline) {
+			if ($kernel->isHelpdeskOffline()) {
+				return null;
+			}
 		}
 
 		define('DP_INTERFACE', 'cli');
