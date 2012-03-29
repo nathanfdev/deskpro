@@ -88,19 +88,19 @@ pageMeta.baseId = '{{ baseId }}';
                                             <span class="email"><b class="pemail-{{convo.person.id}}" data-hide="@parent">{{ convo.person.email_address }}</b></span>
                                         </span>
                                     </a>
-                                    <div class="clear"></div>
                                 {% else %}
-                                    <a
-                                            class="as-popover"
-                                            data-route="person:{{ path('agent_people_viewsession', {'session_id': convo.session.id}) }}"
-                                            >
-                                        {% if convo.person_name or convo.person_email %}
-                                        {{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %}
-                                        {% else %}
-                                        {{ phrase('agent.anonymous') }}
-                                        {% endif %}
+                                    <a class="user-link clean-white as-popover preload" data-route="person:{{ path('agent_people_viewsession', {'session_id': convo.session.id}) }}">
+                                            <span>
+                                                {% if convo.person_name %}
+                                                {{ convo.person_name }}
+                                                {% else %}
+                                                {{ phrase('agent.anonymous') }}
+                                                {% endif %}
+                                                <span class="email"><b data-hide="@parent">{% if convo.person_email %}{{ convo.person_email }}{% else %}&nbsp;{% endif %}</b></span>
+                                            </span>
                                     </a>
                                 {% endif %}
+                                    <div class="clear"></div>
                             </dd>
                         </dl>
                     </article>
@@ -117,11 +117,13 @@ pageMeta.baseId = '{{ baseId }}';
                         <dl>
                             <dt class="agent-row"></dt>
                             <dd class="agent-row">
-                                <span class="agent-link agent-icon prop-agent-id {% if convo.agent.id == app.user.id %}me{% elseif convo.agent.id %}no-agent{% endif %}"
-                                      data-none-label="{{ phrase('agent.no_agent_assigned') }}" data-agent-id="{{ convo.agent.id }}"
-                                      style="background-image: url('{{ convo.agent.getPictureUrl(20) }}');">
-                                    {{ convo.agent.display_name|default(phrase('agent.no_agent_assigned')) }}
-                                </span>
+                                <a class="user-link clean-white as-popover preload" data-route="people:{{ path('agent_people_view', {'person_id': convo.agent.id}) }}">
+                                        <span style="background-image: url('{{ convo.agent.getPictureUrl(20) }}');">
+                                            {{ convo.agent.display_name }}
+                                            <span class="email"><b class="pemail-{{convo.agent.id}}" data-hide="@parent">{{ convo.agent.email_address }}</b></span>
+                                        </span>
+                                </a>
+                                <div class="clear"></div>
                             </dd>
                         </dl>
                     </article>
