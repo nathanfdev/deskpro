@@ -65,10 +65,7 @@ class TicketWorkflowsStep extends AbstractDeskpro3Step
 			if ($workflows) {
 				$this->getDb()->replace('settings', array(
 					'name' => 'core.use_ticket_workflow',
-					'groupname' => 'core',
 					'value' => 1,
-					'created_at' => date('Y-m-d H:i:s'),
-					'updated_at' => date('Y-m-d H:i:s'),
 				));
 			}
 
