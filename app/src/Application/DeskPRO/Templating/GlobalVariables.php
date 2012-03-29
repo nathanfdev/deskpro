@@ -98,6 +98,11 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::getSystemService('UsersourceManager');
 	}
 
+	public function getBrowserSniffer()
+	{
+		return App::get('browser_sniffer');
+	}
+
 	public function __get($name)
 	{
 		if (isset($this->variables[$name])) {

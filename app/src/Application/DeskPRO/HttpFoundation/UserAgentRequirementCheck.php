@@ -34,11 +34,15 @@
 
 namespace Application\DeskPRO\HttpFoundation;
 
+use \Browser;
+
 class UserAgentRequirementCheck
 {
-	public static function passAgentInterface()
+	public static function passAgentInterface(Browser $browser = null)
 	{
-		$browser = new \Browser();
+		if (!$browser) {
+			$browser = new \Browser();
+		}
 
 		// Check for known browsers
 		if ($browser->getBrowser() == \Browser::BROWSER_FIREFOX && $browser->getVersion() < 4) {

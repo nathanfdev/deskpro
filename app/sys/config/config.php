@@ -144,6 +144,11 @@ $definition->addTag('doctrine.event_subscriber', array(
 ));
 $container->setDefinition('deskpro.search_index.entity_updater_listener', $definition);
 
+// browser_sniffer
+$definition = new Definition();
+$definition->setClass('Browser');
+$container->setDefinition('browser_sniffer', $definition);
+
 ############################################################################
 # Framework Configuration
 ############################################################################

@@ -26,16 +26,16 @@ var Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}'
 	{{ dp_asset_html('agent_pages_lists') }}
 	{{ dp_asset_html('agent_element_handlers') }}
 
+	{% if app.getBrowserSniffer().getBrowser() == 'Internet Explorer' %}{{ dp_asset_html('agent_interface_ie_css') }}{% endif %}
+
 	<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
 {% else %}
 	{{ dp_asset_html('agent') }}
 	{{ dp_asset_html('agent_css') }}
 	{{ dp_asset_html('agent_interface_print_css', {'media':'print'}) }}
-{% endif %}
 
-<!--[if IE]>
-{{ dp_asset_html('agent_interface_ie_css') }}
-<![endif]-->
+	<!--[if IE]>{{ dp_asset_html('agent_interface_ie_css') }}<![endif]-->
+{% endif %}
 
 {% if not no_interface_data %}
 <script src="{{ path('agent_interface_data_js') }}"></script>

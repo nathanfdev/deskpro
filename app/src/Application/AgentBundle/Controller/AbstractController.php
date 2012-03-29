@@ -62,7 +62,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function preAction($action, $arguments = null)
 	{
-		if (!$this->request->isXmlHttpRequest() && !UserAgentRequirementCheck::passAgentInterface()) {
+		if (!$this->request->isXmlHttpRequest() && !UserAgentRequirementCheck::passAgentInterface($this->container->get('browser_sniffer'))) {
 			return $this->redirectRoute('agent_browser_requirements');
 		}
 
