@@ -829,49 +829,24 @@ class TicketSearchController extends AbstractController
         foreach($display_fields as $display_field) {
             switch($display_field) {
                 case 'language_id':
-                    $row[] = 'language_id';
-                    break;
                 case 'department_id':
-                    $row[] = 'department_id';
-                    break;
-                case 'category_id':
-                    $row[] = 'category_id';
-                    break;
                 case 'priority_id':
-                    $row[] = 'priority_id';
-                    break;
+                case 'category_id':
                 case 'workflow_id':
-                    $row[] = 'workflow_id';
-                    break;
                 case 'product_id':
-                    $row[] = 'product_id';
-                    break;
-                case 'person_id':
-                    $row[] = 'person_id';
+                case 'email_gateway_id':
+                    $row[] = $display_field;
+                    $row[] = preg_replace('/id$/' , 'title', $display_field);
                     break;
                 case 'person_email_id':
-                    $row[] = 'person_email_id';
-                    break;
                 case 'person_email_validating_id':
-                    $row[] = 'person_email_validating_id';
-                    break;
+                    $row[] = preg_replace('/id$/' , 'email', $display_field);
+                case 'person_id':
                 case 'agent_id':
-                    $row[] = 'agent_id';
-                    break;
                 case 'agent_team_id':
-                    $row[] = 'agent_team_id';
-                    break;
                 case 'organization_id':
-                    $row[] = 'organization_id';
-                    break;
-                case 'linked_chat_id':
-                    $row[] = 'linked_chat_id';
-                    break;
-                case 'email_gateway_id':
-                    $row[] = 'email_gateway_id';
-                    break;
-                case 'email_gateway_address_id':
-                    $row[] = 'email_gateway_address_id';
+                    $row[] = $display_field;
+                    $row[] = preg_replace('/id$/' , 'name', $display_field);
                     break;
                 default:
                     $row[] = $display_field;
@@ -905,6 +880,52 @@ class TicketSearchController extends AbstractController
 
             foreach($display_fields as $display_field) {
                 switch($display_field) {
+                    case 'language_id':
+                    case 'department_id':
+                    case 'priority_id':
+                    case 'category_id':
+                    case 'workflow_id':
+                    case 'product_id':
+                    case 'email_gateway_id':
+                        preg_match('/^(.*)_id$/', $display_field, $matches);
+                        list(, $name) = $matches;
+                        $entity = $ticket->{$name};
+
+                        if($entity) {
+                            $row[] = $entity->id;
+                            $row[] = $entity->title;
+                        }
+                        else {
+                            $row[] = $row[] = '';
+                        }
+                        break;
+                    case 'person_id':
+                    case 'agent_id':
+                    case 'agent_team_id':
+                    case 'organization_id':
+                        $entity = $ticket->person;
+
+                        if($entity) {
+                            $row[] = $entity->id;
+                            $row[] = $entity->name;
+                        }
+                        else {
+                            $row[] = $row[] = $row[] = '';
+                        }
+                        break;
+                    case 'person_email_id':
+                    case 'person_email_validating_id':
+                        preg_match('/^(.*)_id$/', $display_field, $matches);
+                        list(, $name) = $matches;
+                        $entity = $ticket->{$name};
+
+                        if($entity) {
+                            $row[] = $entity->email;
+                        }
+                        else {
+                            $row[] = '';
+                        }
+                        break;
                     case 'labels':
                         $row[] = implode('|', $vars['ticket_display']->getTicketLabels($ticket));
                         break;
