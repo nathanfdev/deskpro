@@ -92,8 +92,12 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		}
 
 		if (newcount < 1) {
+			el.removeClass('with-count');
+			el2.removeClass('with-count');
 			this.fireEvent('typeHide', [type, el]);
 		} else {
+			el.addClass('with-count');
+			el2.addClass('with-count');
 			this.fireEvent('typeShow', [type, el]);
 		}
 
