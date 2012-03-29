@@ -34,17 +34,12 @@
 
 namespace Application\DeskPRO\ORM;
 
-use Doctrine\ORM\UnitOfWork as DoctrineUnitOfWork;
+use Application\DeskPRO\ORM\Unprivate\UnprivateUnitOfWork as DoctrineUnitOfWork;
 use Doctrine\ORM\EntityManager as DoctrineEntityManager;
 use Application\DeskPRO\EntityRepository\Preloadable;
 
 class UnitOfWork extends DoctrineUnitOfWork
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $_em;
-
 	/**
 	 * @var \Application\DeskPRO\ORM\Persisters\LookupBasicEntityPersister[]
 	 */
@@ -80,24 +75,13 @@ class UnitOfWork extends DoctrineUnitOfWork
 	);
 
 	/**
-	 *
-	 * @param \Doctrine\ORM\EntityManager $em
-	 */
-	public function __construct(DoctrineEntityManager $em)
-	{
-		parent::__construct($em);
-		$this->_em = $em;
-	}
-
-
-	/**
 	 * Add a type of entity that sholud be pre-fetched
 	 *
 	 * @param $entity_class
 	 */
 	public function addPreloadedEntity($entityName)
 	{
-		$class = $this->_em->getClassMetadata($entityName);
+		$class = $this->em->getClassMetadata($entityName);
 		$classname = $class->getName();
 
 		$this->enable_preload_set[$classname] = 1;
@@ -111,7 +95,7 @@ class UnitOfWork extends DoctrineUnitOfWork
 	 */
 	public function preloadEntitySet($entityName)
 	{
-		$class = $this->_em->getClassMetadata($entityName);
+		$class = $this->em->getClassMetadata($entityName);
 		$classname = $class->getName();
 
 		if (isset($this->loaded_sets[$classname])) {
@@ -123,7 +107,7 @@ class UnitOfWork extends DoctrineUnitOfWork
 		// getEntityPersister() which fires this preload etc
 		$this->loaded_sets[$classname] = true;
 
-		$repos = $this->_em->getRepository($classname);
+		$repos = $this->em->getRepository($classname);
 
 		if ($repos instanceof Preloadable) {
 			$repos->preload();
@@ -141,7 +125,7 @@ class UnitOfWork extends DoctrineUnitOfWork
 	 */
 	public function isAddedPreloadedEntity($entityName)
 	{
-		$class = $this->_em->getClassMetadata($entityName);
+		$class = $this->em->getClassMetadata($entityName);
 		$classname = $class->getName();
 
 		return isset($this->loaded_sets[$classname]);
@@ -150,7 +134,7 @@ class UnitOfWork extends DoctrineUnitOfWork
 
 	public function getEntityPersister($entityName)
 	{
-		$class = $this->_em->getClassMetadata($entityName);
+		$class = $this->em->getClassMetadata($entityName);
 		$classname = $class->getName();
 
 		if (isset($this->_persisters[$classname])) {
@@ -158,11 +142,64 @@ class UnitOfWork extends DoctrineUnitOfWork
 		}
 
 		if ($class->isInheritanceTypeNone()) {
-			$persister = new Persisters\LookupBasicEntityPersister($this->_em, $class);
+			$persister = new Persisters\LookupBasicEntityPersister($this->em, $class);
 			$this->_persisters[$classname] = $persister;
 			return $persister;
 		}
 
 		return parent::getEntityPersister($entityName);
+	}
+
+	/**
+	 * Copy of default executeUpdates except for two places to check for existence of array key, see documented
+	 * lines below.
+	 *
+	 * See: https://github.com/doctrine/doctrine2/pull/126
+	 */
+	protected  function executeUpdates($class)
+	{
+		$className = $class->name;
+		$persister = $this->getEntityPersister($className);
+
+		$hasPreUpdateLifecycleCallbacks = isset($class->lifecycleCallbacks[\Doctrine\ORM\Events::preUpdate]);
+		$hasPreUpdateListeners          = $this->evm->hasListeners(\Doctrine\ORM\Events::preUpdate);
+
+		$hasPostUpdateLifecycleCallbacks = isset($class->lifecycleCallbacks[\Doctrine\ORM\Events::postUpdate]);
+		$hasPostUpdateListeners          = $this->evm->hasListeners(\Doctrine\ORM\Events::postUpdate);
+
+		foreach ($this->entityUpdates as $oid => $entity) {
+			if ( ! (get_class($entity) === $className || $entity instanceof \Doctrine\ORM\Proxy\Proxy && get_parent_class($entity) === $className)) {
+				continue;
+			}
+
+			if ($hasPreUpdateLifecycleCallbacks) {
+				$class->invokeLifecycleCallbacks(\Doctrine\ORM\Events::preUpdate, $entity);
+
+				$this->recomputeSingleEntityChangeSet($class, $entity);
+			}
+
+			// DESKPRO CHANGE: added empty check \/
+			if ($hasPreUpdateListeners && !empty($this->entityChangeSets[$oid])) {
+				$this->evm->dispatchEvent(
+					\Doctrine\ORM\Events::preUpdate,
+					new \Doctrine\ORM\Event\PreUpdateEventArgs($entity, $this->em, $this->entityChangeSets[$oid])
+				);
+			}
+
+			// DESKPRO CHANGE: added isset check \/
+			if (isset($this->entityChangeSets[$oid]) && $this->entityChangeSets[$oid]) {
+				$persister->update($entity);
+			}
+
+			unset($this->entityUpdates[$oid]);
+
+			if ($hasPostUpdateLifecycleCallbacks) {
+				$class->invokeLifecycleCallbacks(\Doctrine\ORM\Events::postUpdate, $entity);
+			}
+
+			if ($hasPostUpdateListeners) {
+				$this->evm->dispatchEvent(\Doctrine\ORM\Events::postUpdate, new \Doctrine\ORM\Event\LifecycleEventArgs($entity, $this->em));
+			}
+		}
 	}
 }
