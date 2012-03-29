@@ -777,18 +777,49 @@ class TicketSearchController extends AbstractController
         $response->sendHeaders();
 
         $display_fields = array(
-            'subject',
-            'user',
+            'id',
+            'language_id',
+            'department_id',
+            'category_id',
+            'priority_id',
+            'workflow_id',
+            'product_id',
+            'person_id',
+            'person_email_id',
+            'person_email_validating_id',
+            'agent_id',
+            'agent_team_id',
+            'organization_id',
+            'linked_chat_id',
+            'email_gateway_id',
+            'email_gateway_address_id',
+            'locked_by_agent',
+            'ref',
+            'auth',
+            'notify_template',
+            'creation_system',
+            'notify_email',
+            'ticket_hash',
+            'status',
+            'hidden_status',
+            'validating',
+            'is_hold',
+            'urgency',
             'date_created',
-            'deleted_reason',
-            'person',
-            'department',
-            'category',
-            'product',
-            'organization',
+            'date_resolved',
+            'date_closed',
+            'date_first_agent_assign',
+            'date_first_agent_reply',
+            'date_last_agent_reply',
+            'date_last_user_reply',
+            'date_agent_waiting',
             'date_user_waiting',
-            'agent',
-            'agent_team',
+            'date_status',
+            'total_user_waiting',
+            'total_to_first_reply',
+            'date_locked',
+            'has_attachments',
+            'subject',
             'labels'
         );
 
@@ -797,31 +828,53 @@ class TicketSearchController extends AbstractController
 
         foreach($display_fields as $display_field) {
             switch($display_field) {
-                case 'subject': $row[] = 'Subject';break;
-                case 'user':
-                    $row[] = 'User Id';
-                    $row[] = 'User Name';
-                    $row[] = 'User Email';
+                case 'language_id':
+                    $row[] = 'language_id';
                     break;
-                case 'deleted_reason': $row[] = 'Deleted Reason';break;
-                case 'department': $row[] = 'Department';break;
-                case 'category': $row[] = 'Category';break;
-                case 'product': $row[] = 'Product';break;
-                case 'organization': $row[] = 'Organization';break;
-                case 'agent':
-                    $row[] = 'Agent Id';
-                    $row[] = 'Agent Name';
-                    $row[] = 'Agent Email';
+                case 'department_id':
+                    $row[] = 'department_id';
                     break;
-                case 'agent_team':
-                    $row[] = 'Agent Team Id';
-                    $row[] = 'Agent Team Name';
+                case 'category_id':
+                    $row[] = 'category_id';
                     break;
-                case 'labels': $row[] = 'Lables';break;
-                case 'date_user_waiting': $row[] = 'User Waiting';break;
-                case 'date_created': $row[] = 'Date Opened';break;
-
+                case 'priority_id':
+                    $row[] = 'priority_id';
+                    break;
+                case 'workflow_id':
+                    $row[] = 'workflow_id';
+                    break;
+                case 'product_id':
+                    $row[] = 'product_id';
+                    break;
+                case 'person_id':
+                    $row[] = 'person_id';
+                    break;
+                case 'person_email_id':
+                    $row[] = 'person_email_id';
+                    break;
+                case 'person_email_validating_id':
+                    $row[] = 'person_email_validating_id';
+                    break;
+                case 'agent_id':
+                    $row[] = 'agent_id';
+                    break;
+                case 'agent_team_id':
+                    $row[] = 'agent_team_id';
+                    break;
+                case 'organization_id':
+                    $row[] = 'organization_id';
+                    break;
+                case 'linked_chat_id':
+                    $row[] = 'linked_chat_id';
+                    break;
+                case 'email_gateway_id':
+                    $row[] = 'email_gateway_id';
+                    break;
+                case 'email_gateway_address_id':
+                    $row[] = 'email_gateway_address_id';
+                    break;
                 default:
+                    $row[] = $display_field;
                     break;
             }
         }
@@ -852,82 +905,31 @@ class TicketSearchController extends AbstractController
 
             foreach($display_fields as $display_field) {
                 switch($display_field) {
-                    case 'subject': $row[] = $ticket->getSubject();break;
-                    case 'user':
-                        $row[] = $ticket->getPerson()->getId();
-                        $row[] = $ticket->getPerson()->getDisplayName();
-                        $row[] = $ticket->getPerson()->getEmailAddress();
-                        break;
-                    case 'date_created': $row[] = $ticket->getDateCreated()->format('c');break;
-                    case 'deleted_reason':
-                        if(isset($vars['deleted_tickets'][$ticket->getId()])) {
-                            $row[] = $vars['deleted_tickets'][$ticket->getId()]->getReason();
-                        }
-                        else {
-                            $row[] = '';
-                        }
-
-                        break;
-                    case 'person': $row[] = $ticket->getPerson()->getDisplayName();break;
-                    case 'department': $row[] = $ticket->getDepartment()->getTitle();break;
-                    case 'category':
-                        if($ticket->getCategory()) {
-                            $row[] = $ticket->getCategory()->getTitle();
-                        }
-                        else {
-                            $row[] = 'None';
-                        }
-
-                        break;
-                    case 'product':
-                        $product = $ticket->getProduct();
-
-                        if($product) {
-                            $row[] = $product->getTitle();
-                        }
-                        else {
-                            $row[] = '';
-                        }
-
-                        break;
-                    case 'organization':
-                        if($ticket->getOrganization()) {
-                            $row[] = $ticket->getOrganization()->getName();
-                        }
-                        else {
-                            $row[] = 'None';
-                        }
-                        break;
-                    case 'date_user_waiting': $row[] = $ticket->getDateUserWaiting()->format('c');break;
-                    case 'agent':
-                        $agent = $ticket->getAgent();
-
-                        if($agent) {
-                            $row[] = $agent->getId();
-                            $row[] = $agent->getDisplayName();
-                            $row[] = $agent->getEmailAddress();
-                        }
-                        else {
-                            $row[] = '';
-                            $row[] = 'Unassigned';
-                            $row[] = '';
-                        }
-                        break;
-                    case 'agent_team':
-                        $agent_team = $ticket->getAgentTeam();
-
-                        if($agent_team) {
-                            $row[] = $agent_team->getId();
-                            $row[] = $agent_team->getName();
-                        }
-                        else {
-                            $row[] = '';
-                            $row[] = 'No Team';
-                        }
                     case 'labels':
                         $row[] = implode('|', $vars['ticket_display']->getTicketLabels($ticket));
                         break;
                     default:
+                        if(preg_match('/^(.*)_id$/', $display_field, $matches)) {
+                            list(, $name) = $matches;
+                            $entity = $ticket->{$name};
+
+                            if($entity) {
+                                $row[] = $entity->id;
+                            }
+
+                            $row[] = '';
+                        }
+                        else {
+                            $value = $ticket->{$display_field};
+
+                            if(is_scalar($value)) {
+                                $row[] = $value;
+                            } elseif(is_object($value)) {
+                                if($value instanceof \DateTime) {
+                                    $row[] = $value->format('c');
+                                }
+                            }
+                        }
                         break;
                 }
             }
