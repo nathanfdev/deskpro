@@ -79,6 +79,10 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 	public function boot()
 	{
+		static $has_booted = false;
+		if ($has_booted) return;
+		$has_booted = true;
+
 		parent::boot();
 		App::setContainer($this->container, 'default');
 		$this->container->kernel = $this;
