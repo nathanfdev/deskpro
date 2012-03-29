@@ -46,9 +46,16 @@
 			iMouse['start'] = oThumb.obj.offset()[sDirection];
 		});
 		oWrapper.on('goscrollbottom', function() {
+
+			// No scrolling, there is no bottom
+			if (oScrollbar.obj.hasClass('disable')) {
+				return;
+			}
+
 			iScroll = 100000;
 			iScroll = Math.min((oContent[options.axis] - oViewport[options.axis]), Math.max(0, iScroll));
 			iScroll + 10;
+
 			oThumb.obj.css(sDirection, iScroll / oScrollbar.ratio);
 			oContent.obj.css(sDirection, -iScroll);
 		});

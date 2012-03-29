@@ -102,9 +102,9 @@
 
 	<div class="expand-set set-emailed" style="display: none">
 		<ul>
-			{% if not info.person_name or info.person_name == info.person_email %}
+			{% for info in log.details.who_emailed %}
 				<li>
-					{% if info.person_name == info.person_email %}
+					{% if not info.person_name or info.person_name == info.person_email %}
 						{{ info.person_email }}
 					{% else %}
 						{{ info.person_name }} &lt;{{ info.person_email }}&gt;
