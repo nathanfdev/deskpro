@@ -44,6 +44,7 @@ use Doctrine\Common\EventSubscriber;
 class SearchUpdater implements EventSubscriber
 {
 	protected $container;
+	protected $is_running = false;
 
 	public function __construct(\Symfony\Component\DependencyInjection\Container $container)
 	{
@@ -61,6 +62,9 @@ class SearchUpdater implements EventSubscriber
 
 	public function postPersist(LifecycleEventArgs $eventArgs)
 	{
+		if ($this->is_running) return;
+		$this->is_running = true;
+
 		$entity = $eventArgs->getEntity();
 		if (
 			$entity instanceof \Application\DeskPRO\Entity\Article ||
@@ -70,10 +74,15 @@ class SearchUpdater implements EventSubscriber
 		) {
 			$this->container->getSystemService('search_indexer')->update($entity, 'update');
 		}
+
+		$this->is_running = false;
 	}
 
 	public function postUpdate(LifecycleEventArgs $eventArgs)
 	{
+		if ($this->is_running) return;
+		$this->is_running = true;
+
 		$entity = $eventArgs->getEntity();
 		if (
 			$entity instanceof \Application\DeskPRO\Entity\Article ||
@@ -83,10 +92,15 @@ class SearchUpdater implements EventSubscriber
 		) {
 			$this->container->getSystemService('search_indexer')->update($entity, 'update');
 		}
+
+		$this->is_running = false;
 	}
 
 	public function postRemove(LifecycleEventArgs $eventArgs)
 	{
+		if ($this->is_running) return;
+		$this->is_running = true;
+
 		$entity = $eventArgs->getEntity();
 		if (
 			$entity instanceof \Application\DeskPRO\Entity\Article ||
@@ -96,5 +110,7 @@ class SearchUpdater implements EventSubscriber
 		) {
 			$this->container->getSystemService('search_indexer')->update($entity, 'delete');
 		}
+
+		$this->is_running = false;
 	}
 }
