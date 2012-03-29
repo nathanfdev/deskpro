@@ -1149,11 +1149,11 @@ class TicketsStep extends AbstractDeskpro3Step
 					}
 					$p = $this->getPersonInfo($id);
 
-					$insert_tlog['details']['who_emailed'] = array(
+					$insert_tlog['details']['who_emailed'] = array(array(
 						'person_id'    => $p['id'],
 						'person_name'  => $p['display_name'],
 						'person_email' => $p['primary_email_address']
-					);
+					));
 					$insert_tlog['details']['who_cced'] = array();
 
 					if (strpos($tlog['detail_before'], 'reply') !== false) {
