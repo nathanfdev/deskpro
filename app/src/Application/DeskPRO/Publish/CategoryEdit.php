@@ -165,6 +165,7 @@ class CategoryEdit
 
 			App::getContainer()->getSystemService('publish_structure_cache')->flush();
 			App::getOrm()->persist($cat);
+			App::getOrm()->flush();
 			App::getOrm()->commit();
 
 		} catch (\Exception $e) {
