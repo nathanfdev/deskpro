@@ -78,7 +78,13 @@
 	<div class="expand-set" style="display: none">
 		<ul>
 			{% for info in log.details.who_emailed %}
-				<li>{{ info.display_name }} ({{ info.person_email }})</li>
+				<li>
+					{% if not info.person_name or info.person_name == info.person_email %}
+						{{ info.person_email }}
+					{% else %}
+						{{ info.person_name }} &lt;{{ info.person_email }}&gt;
+					{% endif %}
+				</li>
 			{% endfor %}
 		</ul>
 	</div>
@@ -96,15 +102,27 @@
 
 	<div class="expand-set set-emailed" style="display: none">
 		<ul>
-			{% for info in log.details.who_emailed %}
-				<li>{{ info.display_name }} ({{ info.person_email }})</li>
+			{% if not info.person_name or info.person_name == info.person_email %}
+				<li>
+					{% if info.person_name == info.person_email %}
+						{{ info.person_email }}
+					{% else %}
+						{{ info.person_name }} &lt;{{ info.person_email }}&gt;
+					{% endif %}
+				</li>
 			{% endfor %}
 		</ul>
 	</div>
 	<div class="expand-set set-cced" style="display: none">
 		<ul>
 			{% for info in log.details.who_cced %}
-				<li>{{ info.display_name }} ({{ info.person_email }})</li>
+				<li>
+					{% if not info.person_name or info.person_name == info.person_email %}
+						{{ info.person_email }}
+					{% else %}
+						{{ info.person_name }} &lt;{{ info.person_email }}&gt;
+					{% endif %}
+				</li>
 			{% endfor %}
 		</ul>
 	</div>
