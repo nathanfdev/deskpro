@@ -47,6 +47,16 @@ class VendorMutate
 				),
 				'callback' => array($this, '_doctrineEmFixCreate'),
 			),
+			array(
+				'class_file' => DP_ROOT.'/vendor/doctrine/lib/Doctrine/ORM/UnitOfWork.php',
+				'target_file' => DP_ROOT.'/src/Application/DeskPRO/ORM/Unprivate/UnprivateUnitOfWork.php',
+				'target_namespace' => 'Application\\DeskPRO\\ORM\\Unprivate',
+				'target_classname' => 'UnprivateUnitOfWork',
+				'custom_pre' => array(
+					'use Doctrine\ORM\Configuration, Doctrine\ORM\Persisters, Doctrine\ORM\EntityManager, Doctrine\ORM\Events, Doctrine\ORM\Event, Doctrine\ORM\Query, Doctrine\ORM\Internal, Doctrine\ORM\NativeQuery, Doctrine\ORM\QueryBuilder, Doctrine\ORM\PersistentCollection, Doctrine\ORM\ORMInvalidArgumentException, Doctrine\ORM\ORMException, Doctrine\ORM\OptimisticLockException, Doctrine\ORM\TransactionRequiredException, Doctrine\ORM\EntityNotFoundException;'
+				),
+				'callback' => array($this, '_doctrineEmFixCreate'),
+			),
 		);
 
 		foreach ($do_unprivate_classes as $unprivate_class) {
