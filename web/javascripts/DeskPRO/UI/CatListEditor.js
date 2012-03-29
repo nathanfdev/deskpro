@@ -73,7 +73,7 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 
 		lis.addClass('dp-cat-li')
 			.wrapInner('<div class="item-wrap dp-cat-item" />')
-			.prepend('<div class="dp-cat-dropzone" />');
+			.prepend('<div class="dp-cat-dropzone between" />');
 
 		// Move existing subgroups back out of dp-cat-item
 		$('.dp-cat-item ' + this.options.subListSelector, lis).each(function() {
