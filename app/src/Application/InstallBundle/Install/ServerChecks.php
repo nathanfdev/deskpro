@@ -197,7 +197,7 @@ class ServerChecks
 
 		if ($type == 'php_version' || $type == 'all') {
 			$this->getLogger()->log("[CHECK] Checking PHP version >= 5.3.2", Logger::DEBUG);
-			if (deskpro_install_check_version()) {
+			if (!deskpro_install_check_version()) {
 				$this->getLogger()->log("[OK] PHP version of " . phpversion() . " is OK", Logger::DEBUG);
 			} else {
 				$msg = "[FATAL] Install PHP 5.3.2 or newer. You currently have " . phpversion();

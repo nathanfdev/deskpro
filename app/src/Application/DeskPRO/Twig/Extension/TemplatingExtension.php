@@ -102,6 +102,8 @@ class TemplatingExtension extends \Twig_Extension
 			'inc_counter' => new \Twig_Function_Method($this, 'incCounter'),
 			'form_token' => new \Twig_Function_Method($this, 'formToken', array('is_safe' => array('html'))),
 			'relative_time' => new \Twig_Function_Method($this, 'relativeTime', array('is_safe' => array('html'))),
+			'get_service_url' => new \Twig_Function_Method($this, 'getServiceUrl', array('is_safe' => array('html'))),
+			'get_service_url_raw' => new \Twig_Function_Method($this, 'getServiceUrlRaw', array('is_safe' => array('html'))),
         );
     }
 
@@ -136,6 +138,23 @@ class TemplatingExtension extends \Twig_Extension
 			'lower' => new \Twig_Filter_Method($this, 'strLower'),
         );
     }
+
+	public function getServiceUrl($name, $params = null, $named_params = null, $html = true)
+	{
+		if (!$params || !is_array($params)) {
+			$params = null;
+		}
+		if (!$named_params || !is_array($named_params)) {
+			$params = null;
+		}
+
+		return $this->container->get('deskpro.service_urls')->get($name, $params, $named_params, $html);
+	}
+
+	public function getServiceUrlRaw($name, $params = null, $named_params = null)
+	{
+		return $this->getServiceUrl($name, $params, $named_params, false);
+	}
 
 	public function relativeTime($secs, $detail = 2)
 	{

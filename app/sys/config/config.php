@@ -149,6 +149,12 @@ $definition = new Definition();
 $definition->setClass('Browser');
 $container->setDefinition('browser_sniffer', $definition);
 
+// deskpro.service_urls
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Settings\\ServiceUrls');
+$definition->addMethodCall('loadPack', array('%kernel.root_dir%/config/service-urls.php'));
+$container->setDefinition('deskpro.service_urls', $definition);
+
 ############################################################################
 # Framework Configuration
 ############################################################################

@@ -50,6 +50,12 @@ $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Profiler\\RequestMatcher');
 $container->setDefinition('deskpro.profiler.request_matcher', $definition);
 
+// deskpro.service_urls
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Settings\\ServiceUrls');
+$definition->addMethodCall('loadPack', array('%kernel.root_dir%/config/service-urls.php'));
+$container->setDefinition('deskpro.service_urls', $definition);
+
 ############################################################################
 # Framework Configuration
 ############################################################################
