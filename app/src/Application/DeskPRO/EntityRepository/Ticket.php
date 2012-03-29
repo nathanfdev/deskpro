@@ -128,13 +128,23 @@ class Ticket extends AbstractEntityRepository
 	 */
 	public function getPersonTickets(Entity\Person $person, $limit = null)
 	{
-		$tickets = $this->getEntityManager()->createQuery("
-			SELECT t
-			FROM DeskPRO:Ticket t INDEX BY t.id
-			LEFT JOIN t.participants p
-			WHERE t.person = ?1 OR p.person = ?2
-			ORDER BY t.id DESC
-		")->setParameters(array(1=>$person, 2=>$person))->setMaxResults($limit)->execute();
+		if ($person->is_agent) {
+			// Agents we dont consider participant "their" ticket
+			$tickets = $this->getEntityManager()->createQuery("
+				SELECT t
+				FROM DeskPRO:Ticket t INDEX BY t.id
+				WHERE t.person = ?1
+				ORDER BY t.id DESC
+			")->setParameters(array(1=>$person))->setMaxResults($limit)->execute();
+		} else {
+			$tickets = $this->getEntityManager()->createQuery("
+				SELECT t
+				FROM DeskPRO:Ticket t INDEX BY t.id
+				LEFT JOIN t.participants p
+				WHERE t.person = ?1 OR p.person = ?2
+				ORDER BY t.id DESC
+			")->setParameters(array(1=>$person, 2=>$person))->setMaxResults($limit)->execute();
+		}
 
 		return $tickets;
 	}
@@ -194,12 +204,20 @@ class Ticket extends AbstractEntityRepository
 			$status = implode(',', $status);
 		}
 
-		$count = App::getDb()->fetchColumn("
-			SELECT COUNT(*)
-			FROM tickets
-			LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
-			WHERE tickets.person_id = ? OR tickets_participants.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
-		", array($person->id, $person->id));
+		if ($person->is_agent) {
+			$count = App::getDb()->fetchColumn("
+				SELECT COUNT(*)
+				FROM tickets
+				WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+			", array($person->id));
+		} else {
+			$count = App::getDb()->fetchColumn("
+				SELECT COUNT(*)
+				FROM tickets
+				LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
+				WHERE tickets.person_id = ? OR tickets_participants.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+			", array($person->id, $person->id));
+		}
 
 		return $count;
 	}

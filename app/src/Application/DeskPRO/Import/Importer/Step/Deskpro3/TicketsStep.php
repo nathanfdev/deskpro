@@ -542,8 +542,10 @@ class TicketsStep extends AbstractDeskpro3Step
 		$ticket_parts = $all_ticket_info['ticket_participant'];
 		foreach ($ticket_parts as $part_info) {
 			if ($part_info['user_type'] == 'tech') {
+				$is_agent = true;
 				$pid = $this->getMappedNewId('tech', $part_info['user']);
 			} else {
+				$is_agent = false;
 				$pid = $this->getMappedNewId('user', $part_info['user']);
 			}
 
@@ -562,6 +564,7 @@ class TicketsStep extends AbstractDeskpro3Step
 			$insert_part['person_id'] = $pid;
 			$insert_part['ticket_id'] = $insert_ticket['id'];
 			$insert_part['access_code_id'] = $insert_tac['id'];
+			$insert_part['is_agent'] = $is_agent;
 			$this->db->insert('tickets_participants', $insert_part);
 		}
 
