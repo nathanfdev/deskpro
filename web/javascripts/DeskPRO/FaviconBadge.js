@@ -5,133 +5,73 @@ DeskPRO.FaviconBadge = new Orb.Class({
 	Implements: [Orb.Util.Options],
 
 	initialize: function(options) {
-		this.supported = false;
-		if (typeof HTMLCanvasElement != undefined) {
-			var c = document.createElement("canvas");
-			if (c.toDataURL) {
-				this.supported = true;
-			}
+		this.options = {};
+
+		this.options.strokeColor = 'rgba(252,219,117,0.85)';
+		this.options.color = '#000000';
+
+		this.options.strokeColorAlt = 'rgba(255,255,255,0.85)';
+		this.options.colorAlt = '#000000';
+
+		this.setOptions(options);
+
+		this.animateTimeout = null;
+		this.animateCount = 0;
+	},
+
+	clearAnimate: function() {
+		if (this.animateTimeout) {
+			window.clearTimeout(this.animateTimeout)
+			this.animateTimeout = null;
+			this.animateTimeoutCount = 0;
 		}
 
-		this.faviconEl = $(options.favicon);
-		if (!this.faviconEl.length) {
-			this.supported = false;
-		}
-		this.badgeEl = null;
-
-		this.updateBadge(0, false);
+		$(document).unbind('windowshow.faviconbadge');
+		$(window).unbind('mousemove.faviconbadge');
+		$(window).unbind('keypress.faviconbadge');
 	},
 
 	updateBadge: function(num, do_animate) {
-		if (!this.supported) return;
-
-		var img = document.createElement('img');
 		var self = this;
 
+		this.clearAnimate();
+
 		// We have only two digits to play with
+		var num = parseInt(num);
 		if (num > 99) {
 			num = 99;
 		}
 
-		if (self.currentCancel) self.currentCancel();
-
-		// With zero we put the old one back
-		if (num == 0 && self.badgeEl) {
-			do_animate = false;
-			self.badgeEl.remove();
-		}
-
-		img.src = this.faviconEl.attr('href');
-		img.onload = function() {
-			function badge1() {
-				if (self.badgeEl) {
-					self.badgeEl.remove();
-				}
-				var canvas = self.drawCanvus(img, num);
-				self.badgeEl = self.faviconEl.clone();
-				self.badgeEl.data('num', num);
-				self.badgeEl.get(0).href = canvas.toDataURL('image/png');
-				$('body').append(self.badgeEl);
-			}
-			function badge2() {
-				if (self.badgeEl) {
-					self.badgeEl.remove();
-				}
-				var canvas = self.drawCanvus(img, num, true);
-				self.badgeEl = self.faviconEl.clone();
-				self.badgeEl.data('num', num).addClass('alt');
-				self.badgeEl.get(0).href = canvas.toDataURL('image/png');
-				$('body').append(self.badgeEl);
-			};
-
-			function alternate() {
-
-				if (runs++ > 10) {
-					//cancelAnimation();
-					//return;
-				}
-
-				if (!self.badgeEl) {
-					badge1();
-				} else {
-					if (self.badgeEl.is('.alt')) {
-						badge1();
-					} else {
-						badge2();
-					}
-				}
-
-				timeout = window.setTimeout(function() { alternate() }, 1000);
-			};
-
-			function cancelAnimation() {
-				if (timeout) window.clearTimeout(timeout);
-				badge1();
-
-				$(document).unbind('windowshow', cancelAnimation);
-				$(window).unbind('mousemove', cancelAnimation);
-
-				self.currentCancel = null;
-			};
-
-			self.currentCancel = cancelAnimation;
-
-			if (do_animate) {
-
-				var timeout = null;
-				var runs = 0;
-				alternate();
-
-				$(document).bind('windowshow', cancelAnimation);
-				$(window).bind('mousemove', cancelAnimation);
-			} else {
-				badge1();
-			}
-		};
-	},
-
-	drawCanvus: function(img, num, alt) {
-		var canvas = document.createElement('canvas');
-		canvas.height = canvas.width = 16;
-		var canvasContext = canvas.getContext('2d');
-
-		canvasContext.drawImage(img, 0, 0);
-
+		// 0 means no number
 		if (!num) {
-			return canvas;
+			Notificon();
+			return;
 		}
-		canvasContext.font = '11px "helvetica", sans-serif';
 
-		if (alt) {
-			canvasContext.fillStyle = 'rgba(255, 255, 255, 1)';
-		} else {
-			canvasContext.fillStyle = 'rgba(255, 255, 255, 0.75)';
+		Notificon(num+'', {
+			color: this.options.color,
+			stroke: this.options.strokeColor
+		});
+
+		if (do_animate) {
+			this.animateTimeout = window.setInterval(function() {
+				self.animateCount++;
+				if (self.animateCount % 2 == 0) {
+					Notificon(num+'', {
+						color: self.options.color,
+						stroke: self.options.strokeColor
+					});
+				} else {
+					Notificon(num+'', {
+						color: self.options.colorAlt,
+						stroke: self.options.strokeColorAlt
+					});
+				}
+			}, 800);
+
+			$(document).bind('windowshow.faviconbadge', this.clearAnimate.bind(this));
+			$(window).bind('mousemove.faviconbadge', this.clearAnimate.bind(this));
+			$(window).bind('keypress.faviconbadge', this.clearAnimate.bind(this));
 		}
-		canvasContext.fillRect(3, 6, 12, 10);
-
-		canvasContext.fillStyle = '#000';
-		canvasContext.fillText(num, 4, 16);
-
-		return canvas;
 	}
 });
