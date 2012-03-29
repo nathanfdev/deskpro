@@ -130,8 +130,8 @@ class ChatConversationSearch extends SearcherAbstract
 			$parts['wheres'][] = 'agent_id IS NOT NULL';
 		}
 
-		if($this->person->getDisallowedDepartments('chat')) {
-			$parts['wheres'][] = 'department_id NOT IN('.implode(',',$this->person->getDisallowedDepartments('chat')).')';
+		if($this->person->getAgentPermissions()->getDisallowedDepartments('chat')) {
+			$parts['wheres'][] = 'department_id NOT IN('.implode(',',$this->person->getAgentPermissions()->getDisallowedDepartments('chat')).')';
 		}
 
 		if (!$this->person->hasPerm('agent_tickets.view_others')) {
@@ -143,19 +143,22 @@ class ChatConversationSearch extends SearcherAbstract
 			$sql .= implode(" AND ", $parts['wheres']);
 		}
 
-		if($this->groupBy)
+		if($this->groupBy) {
 			$sql .= ' GROUP BY ' . $this->groupBy;
+		}
 
 		$sql .= $order_by;
 
 		$start = $this->limit['start'];
 		$limit = $this->limit['limit'];
 
-		if($limit !== null)
+		if($limit !== null) {
 			$sql .= " LIMIT $limit";
+		}
 
-		if($start !== null)
+		if($start !== null) {
 			$sql .= " OFFSET $start";
+		}
 
 		return $sql;
 	}
@@ -222,21 +225,40 @@ class ChatConversationSearch extends SearcherAbstract
 
 			switch ($term) {
 				case self::TERM_ID:
+					$wheres[] = $this->_choiceMatch('chat_conversations.id', $op, $children, true);
+					break;
 				case self::TERM_AGENT_ID:
+
+					$info = $this->_normalizeAgentChoice($choice);
+					$unassigned = $info['unassigned'];
+					$agent_ids = $info['agent_ids'];
+					$not_id = $info['not_id'];
+
+					if ($unassigned) {
+						$wheres[] = "chat_conversations.agent_id IS NULL";
+					} else {
+						if ($agent_ids) {
+							$wheres[] = $this->_choiceMatch("chat_conversations.agent_id", $op, $agent_ids, true);
+						}
+
+						if ($not_id) {
+							$wheres[] = "chat_conversations.agent_id != " . $not_id;
+						}
+					}
+					break;
 				case self::TERM_DEPARTMENT_ID:
 					$children[] = $choice;
 					$children = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
-
-					$wheres[] = $this->_choiceMatch($org_table . '.' . $term, $op, $children, true);
+					$wheres[] = $this->_choiceMatch('chat_conversations.department_id', $op, $children, true);
 					break;
 
 				case self::TERM_DATE_CREATED:
 					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.tickets.date_created'), $op, $choice);
-					$wheres[] = $this->_dateMatch($org_table . '.' . $term, $op, $choice);
+					$wheres[] = $this->_dateMatch('chat_conversations.date_created', $op, $choice);
 					break;
 
 				case self::TERM_STATUS:
-					$wheres[] = $this->_stringMatch($org_table . '.' . $term, $op, $choice);
+					$wheres[] = $this->_stringMatch('chat_conversations.status', $op, $choice);
 					break;
 			}
 		}

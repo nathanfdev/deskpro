@@ -503,7 +503,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $this->getHelperManager()->getHelper($name);
 	}
 
-
 	protected function _onNotCallable($name, $arguments)
 	{
 		if ($this->_helper_manager) {

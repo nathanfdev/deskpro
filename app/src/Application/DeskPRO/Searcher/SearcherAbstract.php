@@ -702,6 +702,90 @@ abstract class SearcherAbstract implements PersonContextInterface
 	}
 
 
+	protected function _normalizeAgentChoice($choice)
+	{
+		$choice = (array)$choice;
+
+		$agent_ids = array();
+		$not_id = null;
+		$unassigned = false;
+
+		foreach ($choice as $c) {
+			$c = (int)$c;
+			if ($c === 0) {
+				$unassigned = true;
+				break;
+			} elseif ($c == -1) {
+				if ($this->getPersonContext()) {
+					$agent_ids[] = $this->getPersonContext()->getId();
+				} else {
+					$agent_ids[] = -1;
+				}
+			} elseif ($c == -2) {
+				if ($this->getPersonContext()) {
+					$not_id = $this->getPersonContext()->getId();
+				} else {
+					$not_id = -1;
+				}
+			} else {
+				$agent_ids = $c;
+			}
+		}
+
+		return array(
+			'agent_ids' => $agent_ids,
+			'not_id' => $not_id,
+			'unassigned' => $unassigned
+		);
+	}
+
+	protected function _normalizeAgentTeamChoice($choice)
+	{
+		$choice = (array)$choice;
+
+		$team_ids = array();
+		$not_ids = null;
+		$no_team = false;
+
+		if ($this->getPersonContext()) {
+			$agent = $this->getPersonContext();
+			$agent->loadHelper('AgentTeam');
+		} else {
+			$agent = null;
+		}
+
+		foreach ($choice as $c) {
+			$c = (int)$c;
+			if ($c === 0) {
+				$no_team = true;
+				break;
+			} elseif ($c == -1) {
+				if ($agent) {
+					$team_ids = Arrays::removeFalsey($agent->getAgentTeamIds());
+				} else {
+					$team_ids = array();
+				}
+				$team_ids[] = -1;
+			} elseif ($c == -2) {
+				if ($agent) {
+					$not_ids = Arrays::removeFalsey($agent->getAgentTeamIds());
+				} else {
+					$not_ids = array();
+				}
+				$not_ids[] = -1;
+			} else {
+				$team_ids = $c;
+			}
+		}
+
+		return array(
+			'team_ids' => $team_ids,
+			'not_ids' => $not_ids,
+			'no_team' => $no_team
+		);
+	}
+
+
 	###################################################################
 	# test methods test terms statically against some value
 	###################################################################

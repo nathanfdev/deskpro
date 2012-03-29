@@ -44,7 +44,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 {
 	protected $person;
 
-	protected $_allowed_ids = array();
+	protected $_allowed_ids = null;
 	protected $_disallowed_ids = array();
 
 	public function __construct(Entity\Person $person)
@@ -98,6 +98,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 		}
 
 		$all_ids = App::getEntityRepository('DeskPRO:Department')->getDepartmentIds();
+
 		$allowed_ids = $this->getAllowedDepartments($context);
 
 		$disallowed_ids = array_diff($all_ids, $allowed_ids);
@@ -116,15 +117,31 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 	 */
 	public function getAllowedDepartments($context = 'tickets')
 	{
-		if (isset($this->_allowed_ids[$context])) {
+		if ($this->_allowed_ids !== null) {
+			if (!isset($this->_allowed_ids[$context])) {
+				return array();
+			}
+
 			return $this->_allowed_ids[$context];
 		}
 
-		$this->_allowed_ids[$context] = App::getDb()->fetchAllCol("
-			SELECT department_id
+		$raw = App::getDb()->fetchAll("
+			SELECT app, department_id
 			FROM department_permissions
-			WHERE person_id = ? AND app = ?
-		", array($this->person->id, $context));
+			WHERE person_id = ?
+		", array($this->person->id));
+
+		$this->_allowed_ids = array();
+		foreach ($raw as $r) {
+			if (!isset($this->_allowed_ids[$r['app']])) {
+				$this->_allowed_ids[$r['app']] = array();
+			}
+			$this->_allowed_ids[$r['app']][] = $r['department_id'];
+		}
+
+		if (!isset($this->_allowed_ids[$context])) {
+			return array();
+		}
 
 		return $this->_allowed_ids[$context];
 	}
