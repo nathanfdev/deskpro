@@ -98,6 +98,7 @@ class Deskpro3Importer extends AbstractImporter
 		'ChatSnippets',
 		'Tasks',
 		'TechNews',
+		'TicketLayout',
 		'Tickets',
 		'TicketDeleteLog',
 		'TicketMerge',
