@@ -44,7 +44,7 @@ DeskPRO.FaviconBadge = new Orb.Class({
 
 		// 0 means no number
 		if (!num) {
-			Notificon();
+			Notificon('');
 			return;
 		}
 
