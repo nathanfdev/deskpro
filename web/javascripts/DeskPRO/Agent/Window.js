@@ -1756,6 +1756,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.notifications = new DeskPRO.Agent.Notifications();
 
+		// DeskPRO logo menu
+		$('#dp_logo_wrap .button-wrap').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			$('#dp_logo_expand_wrap').show();
+		});
+		$('#dp_logo_expand_wrap').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			$('#dp_logo_expand_wrap').hide();
+		});
+
 		// Settings is a window
 		$('#user_settings_link').on('click', function() {
 			$('#settingswin').trigger('dp_open');
