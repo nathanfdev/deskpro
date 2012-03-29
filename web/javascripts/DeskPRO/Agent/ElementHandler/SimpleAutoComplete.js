@@ -44,11 +44,13 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
         // Touch the timer so we will search in a few seconds,
         // or handle arrow and enter keys to select values in the list
         this.termInput.on('keypress', function(ev) {
-            if (ev.keyCode == 13 /* enter key */) {
+            if (ev.keyCode == 27) {
+                self.close.bind(self);
+            } else if (ev.keyCode == 13 /* enter key */) {
 
                 ev.preventDefault();
 
-                var current = $('li.on', this.resultsList);
+                var current = $('li.on', self.resultsList);
                 console.log(self.resultsList);
                 console.log(current);
                 if (current.length) {
@@ -56,12 +58,12 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
                     var name  = $('.user-name', current).text().trim();
                     var email = $('.user-email', current).text().trim();
 
-                    this.termInput.val(email);
+                    self.termInput.val(email);
 
-                    this.el.trigger('personsearchboxclick', [personId, name, email, self]);
+                    self.el.trigger('personsearchboxclick', [personId, name, email, self]);
                 } else {
                     var term = self.getTerm();
-                    this.el.trigger('personsearchboxclicknew', [term, self]);
+                    self.el.trigger('personsearchboxclicknew', [term, self]);
                 }
 
             } else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
@@ -70,7 +72,7 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
 
                 var dir = ev.keyCode == 40 ? 'down' : 'up';
 
-                var current = $('li.on', this.resultsList);
+                var current = $('li.on', self.resultsList);
                 $('li', self.resultsList).removeClass('on');
 
                 if (!current.length) {
