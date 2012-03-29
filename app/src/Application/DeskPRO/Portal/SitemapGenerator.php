@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Portal;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Application\DeskPRO\Publish\Structure as PublishStructure;
-use Application\DeskPRO\Entity\PersonGuest;
+use Application\DeskPRO\People\PersonGuest;
 
 class SitemapGenerator
 {

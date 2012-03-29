@@ -32,12 +32,10 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\Entity;
-
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -68,10 +66,5 @@ class PersonGuest extends Person
 	public function noPersist()
 	{
 		throw new \BadMethodCallException('A PersonGuest cannot be persisted');
-	}
-
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-
 	}
 }

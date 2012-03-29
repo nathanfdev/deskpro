@@ -1754,10 +1754,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		if (get_called_class() == 'Application\\DeskPRO\\Entity\\PersonGuest') {
-			return;
-		}
-
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Person';
 		$metadata->setPrimaryTable(array(

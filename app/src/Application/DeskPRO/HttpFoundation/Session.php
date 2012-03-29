@@ -151,7 +151,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 	/**
 	 * Get the logged in Person
 	 *
-	 * @return Application\DeskPRO\Entity\Person
+	 * @return \Application\DeskPRO\Entity\Person
 	 */
 	public function getPerson()
 	{
@@ -165,7 +165,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		}
 
 		if (!$person) {
-			$person = new \Application\DeskPRO\Entity\PersonGuest();
+			$person = new \Application\DeskPRO\People\PersonGuest();
 		}
 
 		App::setCurrentPerson($person);
