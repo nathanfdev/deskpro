@@ -167,6 +167,7 @@ class AgentNotificationAction implements ActionInterface
 	 */
 	public function apply(Ticket $ticket)
 	{
+		return;
 		if (!$this->notify_agents) {
 			return;
 		}

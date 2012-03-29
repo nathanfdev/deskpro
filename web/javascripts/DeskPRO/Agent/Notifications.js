@@ -6,7 +6,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 	initialize: function() {
 		var self = this;
 
-		$('#dp_notif_bed').on('click', function(ev) {
+		$('#dp_notif_bed, #notificationDropdown .notifHead').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -17,9 +17,16 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		this._isOpen = false;
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.tickets', function(info) {
-			DP.console.log(info);
 			this.addRow(info.row);
 		}, this);
+
+		$('#dp_notify_list').on('click', 'li[data-route]', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			self.removeRow($(this));
+			self.close();
+			DeskPRO_Window.runPageRouteFromElement($(this));
+		});
 	},
 
 	addRow: function(html_or_el) {
@@ -83,12 +90,12 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		}
 
 		// <3 because the dismiss button and the help note are li's
-		if ($('#dp_notify_list').find('> li').length < 2) {
-			$('#dp_notify_list_none').show();
-			$('#dp_notify_list_dismiss').hide();
-		} else {
+		if ($('#dp_notify_list').find('> li').length < 3) {
 			$('#dp_notify_list_none').hide();
 			$('#dp_notify_list_dismiss').show();
+		} else {
+			$('#dp_notify_list_none').show();
+			$('#dp_notify_list_dismiss').hide();
 		}
 
 		if (newcount < 1) {

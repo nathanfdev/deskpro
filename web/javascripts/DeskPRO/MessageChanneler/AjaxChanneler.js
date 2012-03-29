@@ -41,9 +41,10 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 	},
 
 	handleMessageAjax: function(data) {
-		if (data.messages) {
+		if (data.messages && data.messages.length) {
 			Array.each(data.messages, function(d) {
 				if (d[0] <= this.lastMessageId && (!d[3] || !d[3]['offline_messsage'])) {
+					console.debug("%o Dropping message older than lastMessageId %d", d, this.lastMessageId);
 					return;
 				}
 

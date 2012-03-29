@@ -53,6 +53,10 @@ class ClientMessagesController extends \Application\DeskPRO\HttpKernel\Controlle
 			$cm = new ClientMessage();
 			$cm->fromArray($arr);
 
+			if (!empty($_POST['client_message']['for_person_id']) AND $_POST['client_message']['for_person_id']) {
+				$cm->for_person = App::getOrm()->find('DeskPRO:Person', $_POST['client_message']['for_person_id']);
+			}
+
 			App::getOrm()->persist($cm);
 			App::getOrm()->flush();
 		}

@@ -242,70 +242,72 @@ class TriggerExecutor
 		# Flood checks / autoreply checks
 		#------------------------------
 
-		$is_autoreply = false;
+		if (!DP_DEBUG) {
+			$is_autoreply = false;
 
-		if (in_array('new_ticket', $this->event_types)) {
-			$timesnip = date('Y-m-d H:i:s', time() - App::getSetting('core_email.antiflood_newtickets_time'));
-			$new_ticket_count = App::getDb()->fetchColumn("
-				SELECT COUNT(*)
-				FROM tickets
-				WHERE person_id = ? AND date_created > ?
-			", array($this->tracker->getTicket()->person->id, $timesnip));
+			if (in_array('new_ticket', $this->event_types)) {
+				$timesnip = date('Y-m-d H:i:s', time() - App::getSetting('core_email.antiflood_newtickets_time'));
+				$new_ticket_count = App::getDb()->fetchColumn("
+					SELECT COUNT(*)
+					FROM tickets
+					WHERE person_id = ? AND date_created > ?
+				", array($this->tracker->getTicket()->person->id, $timesnip));
 
-			// If ticket is over antiflood, require validation
-			if ($new_ticket_count > App::getSetting('core_email.antiflood_newtickets')) {
-				$actions_collection->add($factory->create('delete', array()));
+				// If ticket is over antiflood, require validation
+				if ($new_ticket_count > App::getSetting('core_email.antiflood_newtickets')) {
+					$actions_collection->add($factory->create('delete', array()));
 
-			// Lower threshold for turning off notificaiton
-			} elseif ($new_ticket_count >= App::getSetting('core_email.antiflood_newtickets_warn')) {
+				// Lower threshold for turning off notificaiton
+				} elseif ($new_ticket_count >= App::getSetting('core_email.antiflood_newtickets_warn')) {
 
-				$actions_collection->add($factory->create('disable_user_notifications', array()));
+					$actions_collection->add($factory->create('disable_user_notifications', array()));
 
-				// If it is exactly the count, then send the warning email
-				if ($new_ticket_count == App::getSetting('core_email.antiflood_newtickets_warn')) {
-					$actions_collection->add($factory->create('warn_newticket_flood', array()));
+					// If it is exactly the count, then send the warning email
+					if ($new_ticket_count == App::getSetting('core_email.antiflood_newtickets_warn')) {
+						$actions_collection->add($factory->create('warn_newticket_flood', array()));
+					}
 				}
-			}
 
-			// Always disable user notificatiosn if message advertises itself as autoreply
-			if ($this->ticket->email_reader && $this->ticket->email_reader->isFromRobot()) {
-				$is_autoreply = true;
-			}
-
-		} elseif (in_array('new_reply', $this->event_types) && $this->tracker->hasNewUserReply()) {
-
-			$timesnip = date('Y-m-d H:i:s', time() - App::getSetting('core_email.antiflood_newtickets_time'));
-			$new_ticket_count = App::getDb()->fetchColumn("
-				SELECT COUNT(*)
-				FROM tickets_messages
-				WHERE person_id = ? AND date_created > ?
-			", array($this->tracker->getTicket()->person->id, $timesnip));
-
-			// Dont send notifications to anyone now
-			if ($new_ticket_count > App::getSetting('core_email.antiflood_newreplies')) {
-				$actions_collection->add($factory->create('disable_notifications', array()));
-
-			// Lower threshold for turning off user notificaiton to prevent loops
-			} elseif ($new_ticket_count >= App::getSetting('core_email.antiflood_newreplies_warn')) {
-
-				$actions_collection->add($factory->create('disable_user_notifications', array()));
-
-				// If it is exactly the count, then send the warning email
-				if ($new_ticket_count == App::getSetting('core_email.antiflood_newreplies_warn')) {
-					$actions_collection->add($factory->create('warn_newticket_flood', array()));
-				}
-			}
-
-			$messages = $this->getChangedProperty('messages');
-			foreach ($messages as $m) {
-				if ($m->email_reader && $m->email_reader->isFromRobot()) {
+				// Always disable user notificatiosn if message advertises itself as autoreply
+				if ($this->ticket->email_reader && $this->ticket->email_reader->isFromRobot()) {
 					$is_autoreply = true;
 				}
-			}
-		}
 
-		if ($is_autoreply) {
-			$actions_collection->add($factory->create('disable_user_notifications', array()));
+			} elseif (in_array('new_reply', $this->event_types) && $this->tracker->hasNewUserReply()) {
+
+				$timesnip = date('Y-m-d H:i:s', time() - App::getSetting('core_email.antiflood_newtickets_time'));
+				$new_ticket_count = App::getDb()->fetchColumn("
+					SELECT COUNT(*)
+					FROM tickets_messages
+					WHERE person_id = ? AND date_created > ?
+				", array($this->tracker->getTicket()->person->id, $timesnip));
+
+				// Dont send notifications to anyone now
+				if ($new_ticket_count > App::getSetting('core_email.antiflood_newreplies')) {
+					$actions_collection->add($factory->create('disable_notifications', array()));
+
+				// Lower threshold for turning off user notificaiton to prevent loops
+				} elseif ($new_ticket_count >= App::getSetting('core_email.antiflood_newreplies_warn')) {
+
+					$actions_collection->add($factory->create('disable_user_notifications', array()));
+
+					// If it is exactly the count, then send the warning email
+					if ($new_ticket_count == App::getSetting('core_email.antiflood_newreplies_warn')) {
+						$actions_collection->add($factory->create('warn_newticket_flood', array()));
+					}
+				}
+
+				$messages = $this->getChangedProperty('messages');
+				foreach ($messages as $m) {
+					if ($m->email_reader && $m->email_reader->isFromRobot()) {
+						$is_autoreply = true;
+					}
+				}
+			}
+
+			if ($is_autoreply) {
+				$actions_collection->add($factory->create('disable_user_notifications', array()));
+			}
 		}
 
 		#------------------------------

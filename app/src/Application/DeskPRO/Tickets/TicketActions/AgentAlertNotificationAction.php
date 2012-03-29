@@ -137,16 +137,21 @@ class AgentAlertNotificationAction implements ActionInterface
 	public function apply(Ticket $ticket)
 	{
 		if (!$this->notify_agents) {
+			$this->tracker->logMessage("[AgentAlertNotificationAction] No agents");
 			return;
 		}
 
 		$online_agents = App::getEntityRepository('DeskPRO:Person')->getActiveAgents(true);
 
+		$this->tracker->logMessage("[AgentAlertNotificationAction] Matching agents: " . implode(', ', $this->notify_agents));
+		$this->tracker->logMessage("[AgentAlertNotificationAction] Online agents: " . implode(', ', $online_agents));
+
 		$notify_list = array_filter($this->notify_agents, function($agent_id) use ($online_agents) {
-			return in_array($agent_id, $online_agents);
+			return isset($online_agents[$agent_id]);
 		});
 
 		if (!$notify_list) {
+			$this->tracker->logMessage("[AgentAlertNotificationAction] Matching agents, but they arent online to get browser notifications");
 			return;
 		}
 
@@ -170,6 +175,7 @@ class AgentAlertNotificationAction implements ActionInterface
 		$em->beginTransaction();
 		try {
 			foreach ($notify_list as $agent_id) {
+				$this->tracker->logMessage("[AgentAlertNotificationAction] Sent to $agent_id");
 				$agent = App::getEntityRepository('DeskPRO:Person')->find($agent_id);
 
 				$vars = array(

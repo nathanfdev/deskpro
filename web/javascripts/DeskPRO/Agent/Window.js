@@ -1772,7 +1772,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 			DeskPRO_Window.notifications.close();
-			$('#settingswin').trigger('dp_open', 'ticket-notify');
+			$('#settingswin').trigger('dp_open', 'notify');
 		});
 
 		// Settings is a window

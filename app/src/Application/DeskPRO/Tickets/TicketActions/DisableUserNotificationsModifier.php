@@ -36,6 +36,11 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 
 class DisableUserNotificationsModifier implements CollectionModifierInterface
 {
+	public function __construct()
+	{
+
+	}
+
 	public function modifyCollection(ActionsCollection $collection)
 	{
 		$notify_types = array();
