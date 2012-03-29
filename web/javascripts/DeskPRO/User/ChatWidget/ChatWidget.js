@@ -170,7 +170,9 @@ var DpChatWidget = new (function() {
 		(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
 	};
 
-	this.setNotAvailable = function() {},
+	this.setNotAvailable = function() {
+		$('body').addClass('dp-chat-disabled');
+	},
 
 	/**
 	 * initWidget() is called when we know we've got jQuery
@@ -234,7 +236,6 @@ var DpChatWidget = new (function() {
 		css.push('display: none');
 		css = css.join(';');
 
-		openBtn = $();
 		openBtn = $('<div id="dpchat_btn" class="dp-hide-print" style="'+css+'"><div id="dpchat_btn_label"><span class="start-chat">Click here to chat with us</span><span class="open-chat" style="display: none">Open your chat</span></div></div>');
 		openBtn.appendTo('body');
 
@@ -249,6 +250,12 @@ var DpChatWidget = new (function() {
 		} else {
 			openBtn.show();
 		}
+
+		$('body').addClass('dp-chat-enabled');
+		$('.dp-chat-trigger').on('click', function(ev) {
+			ev.preventDefault();
+			DpChatWidget.open();
+		});
 	};
 
 	var confirmGoingAway = function() {
