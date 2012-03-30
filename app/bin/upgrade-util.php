@@ -553,7 +553,10 @@ class Upgrade
 		}
 
 		// Delete old cache dir
-		$fileutil->remove(DP_ROOT.'/sys/cache');
+		$fileutil->remove(DP_ROOT.'/sys/cache/dev');
+		$fileutil->remove(DP_ROOT.'/sys/cache/prod');
+		$fileutil->remove(DP_ROOT.'/sys/cache/doctrine-proxies');
+		$fileutil->remove(DP_ROOT.'/sys/cache/twig-compiled');
 
 		// Copy all files over
 		$fileutil->mirror($tmp_dir, DP_WEB_ROOT, null, array(
@@ -600,8 +603,8 @@ class Upgrade
 
 		$cmd = $mysql_dump_path . " --opt -Q -h{$DP_CONFIG['db']['host']} -u{$DP_CONFIG['db']['user']} -p{$DP_CONFIG['db']['password']} {$DP_CONFIG['db']['dbname']} > $f";
 
-		$this->out("Backup directory:  {$this->getBackupDir()}");
-		$this->out("Backup command:    $cmd");
+		$this->log("Backup directory:  {$this->getBackupDir()}");
+		$this->log("Backup command:    $cmd");
 
 		$ret = $this->execCommand($cmd, $this->getBackupDir(), $out);
 
@@ -618,10 +621,10 @@ class Upgrade
 		// Try to verify that the complete dump is there
 		$fh = fopen($f_full, 'r');
 		fseek($fh, -256000, \SEEK_END);
-		$code = fread($fh, filesize($f_full));
+		$code = fread($fh, 256000);
 
 		if (strpos($code, 'INSERT INTO `worker_jobs`') === false) {
-			$this->out("Database dump seems invalid.");
+			$this->log("Database dump seems invalid.");
 			throw new MysqlBackupException("Database dump seems invalid", MysqlBackupException::DUMP_ERROR);
 		}
 		fclose($fh);
@@ -1011,7 +1014,7 @@ class Upgrade
 		$this->log(sprintf("downloadLatest: time(%.4f)  file_size(%d)", microtime(true) - $time_start, filesize($save_path)));
 
 		if (filesize($save_path) < 15728640) {
-			throw new DownloadException(sprintf("Saved file seems too small: $save_path is %d bytes", filesize($save_path)), DownloadException::BAD_FILE);
+			//throw new DownloadException(sprintf("Saved file seems too small: $save_path is %d bytes", filesize($save_path)), DownloadException::BAD_FILE);
 		}
 
 		return $save_path;
@@ -1477,6 +1480,17 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 	{
 		$this->upgrade = $upgrade;
 
+		$php_path        = $this->upgrade->getPhpBinaryPath();
+		$mysql_dump_path = $this->upgrade->getMysqldumpBinaryPath();
+		$mysql_path      = $this->upgrade->getMysqlBinaryPath();
+
+		if (!$php_path || !$mysql_path || !$mysql_dump_path) {
+			if (!$php_path)        $this->upgrade->outAndLog("Cannot find path to `php` binary");
+			if (!$mysql_dump_path) $this->upgrade->outAndLog("Cannot find path to `mysqldump` binary");
+			if (!$mysql_path)      $this->upgrade->outAndLog("Cannot find path to `mysql` binary");
+			exit(10);
+		}
+
 		#------------------------------
 		# Load the required Symfony libs
 		#------------------------------
@@ -1548,7 +1562,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 				$ret = $this->dialogHelper->askConfirmation($this, false);
 				if ($ret) {
-					$this->runAction_downloadChoice();
+					$this->runAction_downloadAndInstallChoice();
 				} else {
 					$this->runAction_checkAndUpgrade();
 				}
@@ -1646,6 +1660,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		#------------------------------
 
 		$this->outHeader("Installing Updates");
+		$this->out();
 
 		if ($this->answer_backup_files) {
 			$this->out(sprintf("%-40s", "<info>[*] Backing up files ...</info>"), false);
@@ -1700,6 +1715,8 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$this->out(sprintf("%-40s", "<info>[*] Installing database updates</info>"));
 
+		$php_path = $this->upgrade->getPhpBinaryPath();
+
 		chdir(DP_ROOT);
 		$cmd = "$php_path cmd.php dp:upgrade 2>&1";
 		passthru($cmd, $ret);
@@ -1710,8 +1727,10 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			$this->errorExit("There was a problem installing the database updates");
 		}
 
+		$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
 
 		$this->outHeader("DONE");
+		$this->out();
 
 		$this->out("<info>DeskPRO has been upgraded successfully!</info>");
 		$this->out();
@@ -1828,6 +1847,10 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$this->out('Bye!');
 	}
 
+
+	/**
+	 * @param string $message
+	 */
 	public function errorExit($message = '')
 	{
 		if ($message) {
@@ -1835,11 +1858,24 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			$this->out();
 		}
 
+		if ($this->file_backup && $this->revert_checkpoint == 'files' || $this->revert_checkpoint == 'db') {
+			$this->out(sprintf("%-40s", "<info>[*] Restoring files from backup ...</info>"), false);
+			$this->upgrade->installFilesFromZip($this->file_backup);
+			$this->out("<info>Done</info>");
+		}
+
+		if ($this->revert_checkpoint == 'db'){
+			$this->out(sprintf("%-40s", "<info>[*] Restoring database from backup ...</info>"), false);
+			$this->restoreDbFromZip($this->db_backup);
+			$this->out("<info>Done</info>");
+		}
+
 		$fileutil = new FilesystemUtil();
 		$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
 
 		exit(1);
 	}
+
 
 	/**
 	 * Infinite spinner
