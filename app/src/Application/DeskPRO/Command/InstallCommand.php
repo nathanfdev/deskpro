@@ -45,9 +45,6 @@ use Application\DeskPRO\Entity;
 
 use Orb\Util\Strings;
 
-/**
- * dpdev:generate-schema-file
- */
 class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
     protected function configure()

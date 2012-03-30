@@ -92,9 +92,9 @@ pageMeta.baseId = '{{ baseId }}';
                                     <a class="user-link clean-white as-popover preload" data-route="person:{{ path('agent_people_viewsession', {'session_id': convo.session.id}) }}">
                                             <span>
                                                 {% if convo.person_name %}
-                                                {{ convo.person_name }}
+                                                	{{ convo.person_name }}
                                                 {% else %}
-                                                {{ phrase('agent.anonymous') }}
+                                                	{{ phrase('agent.anonymous') }}
                                                 {% endif %}
                                                 <span class="email"><b data-hide="@parent">{% if convo.person_email %}{{ convo.person_email }}{% else %}&nbsp;{% endif %}</b></span>
                                             </span>

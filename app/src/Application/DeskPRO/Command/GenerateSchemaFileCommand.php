@@ -42,10 +42,6 @@ use Symfony\Component\Console\Output\Output;
 
 use Application\DeskPRO\App;
 
-
-/**
- * dpdev:generate-schema-file
- */
 class GenerateSchemaFileCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	protected function configure()
