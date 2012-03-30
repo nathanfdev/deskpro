@@ -70,7 +70,7 @@ class ReportErrors extends \Orb\Log\Writer\AbstractWriter
 				$log['data'] = print_r($info, true);
 			}
 
-			$log['build'] = App::getBuildTime();
+			$log['build'] = App::getBuildTime() . ' (' . date('Y-m-d H:i:s', App::getBuildTime()) . ')';
 
 			$client = new \Zend\Http\Client(null, array('timeout' => 10));
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
