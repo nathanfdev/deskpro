@@ -41,7 +41,7 @@ $DP_CONFIG = array();
 #	 C:\wamp\bin\php\php5.3.8\php.exe                #
 ######################################################
 
-// $DP_CONFIG['php_path'] = '';
+$DP_CONFIG['php_path'] = '';
 
 ######################################################
 # Location of mysqldump                              #
@@ -53,7 +53,7 @@ $DP_CONFIG = array();
 #    /usr/bin/mysqldump or /usr/local/bin/mysqldump  #
 ######################################################
 
-// $DP_CONFIG['mysqldump_path'] = '';
+$DP_CONFIG['mysqldump_path'] = '';
 
 ######################################################
 # Location of mysql                                  #
@@ -65,7 +65,7 @@ $DP_CONFIG = array();
 #    /usr/bin/mysql or /usr/local/bin/mysql          #
 ######################################################
 
-// $DP_CONFIG['mysql_path'] = '';
+$DP_CONFIG['mysql_path'] = '';
 
 ######################################################
 # OPTIONAL : DeskPRO Import                          #
@@ -78,8 +78,6 @@ $DP_CONFIG = array();
 # to true for store_attachment_files
 ######################################################
 
-/* delete this line to enable deskpro import
-
 $DP_CONFIG['import'] = array(
   'db_host' => 'localhost',
   'db_user' => 'root',
@@ -89,8 +87,6 @@ $DP_CONFIG['import'] = array(
   'existing_attachment_files' => ''
 );
 
-delete this line to enable deskpro import */
-
 ######################################################
 # OPTIONAL : Location of Directories                 #
 #                                                    #
@@ -99,9 +95,9 @@ delete this line to enable deskpro import */
 # you must update the paths below.                   #
 ######################################################
 
-// $DP_CONFIG['dir_files'] = '';
-// $DP_CONFIG['dir_backups'] = '';
-// $DP_CONFIG['dir_logs'] = '';
+$DP_CONFIG['dir_files'] = '';
+$DP_CONFIG['dir_backups'] = '';
+$DP_CONFIG['dir_logs'] = '';
 
 ######################################################
 # OPTIONAL : Memcached                               #
@@ -110,8 +106,6 @@ delete this line to enable deskpro import */
 # drastically reduce the load on both your webserver #
 # and your database                                  #
 ######################################################
-
-/* delete this line to enable memcached support
 
 $DP_CONFIG['memcached'] = array(
 	'enabled' = false,
@@ -122,8 +116,6 @@ $DP_CONFIG['memcached'] = array(
 	)
 );
 
-delete this line to enable memcached support */
-
 ######################################################
 # OPTIONAL : Enable debug call trace                 #
 #                                                    #
@@ -132,6 +124,6 @@ delete this line to enable memcached support */
 # track down the cause of a problem.                 #
 ######################################################
 
-// $DP_CONFIG['enable_debug_trace'] = true;
+$DP_CONFIG['enable_debug_trace'] = false;
 // $DP_CONFIG['enable_slow_page_log'] = 1.1;
 // $DP_CONFIG['enable_slow_page_log_minquerytime'] = 0.8;
