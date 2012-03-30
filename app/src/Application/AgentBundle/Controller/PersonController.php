@@ -180,22 +180,22 @@ class PersonController extends AbstractController
             $response = new \Symfony\Component\HttpFoundation\Response();
             $response->headers->set('Content-Type', 'text/vcf');
 
-            if($person->name) {
-                $filename = $person->name;
+            if($person->getName()) {
+                $filename = $person->getName();
             }
             else {
                 $filename = $person->getEmailAddress();
             }
 
             $filename = str_replace(' ', '_', $filename);
-            $filename = preg_replace('[^[:alnum:]_.@-]' , '', $filename);
+            $filename = preg_replace('[^a-zA-Z0-9_.@-]' , '', $filename);
 
             if(strlen($filename) == 0) {
                 $filename = 'Unknown_'.$person->id;
             }
 
             if(strlen($filename) > 128) {
-                $filename = substr($filename 0, 128);
+                $filename = substr($filename, 0, 128);
             }
 
             $response->headers->set('Content-Disposition', 'attachment; filename='.$filename.'.vcf');
