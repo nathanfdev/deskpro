@@ -106,7 +106,7 @@ class TemplateFiles
 				$tplname = $bundle . $tplname;
 
 				$tpl_info[$tplname] = array(
-					'path' => str_replace(DP_ROOT, '', $file->getRealPath()),
+					'path' => $file->getRealPath(),
 					'last_updated' => 0,
 				);
 			}
