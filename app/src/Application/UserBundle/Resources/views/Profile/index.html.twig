@@ -7,13 +7,13 @@
 <div class="dp-content-block dp-profile-page">
 	<div class="dp-box">
 		<div class="dp-box-header">
-			<h1>Profile</h1>
+			<h1>{{ phrase('user.profile.profile') }}</h1>
 		</div>
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content dp-form">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>First Name</label>
+						<label>{{ phrase('user.profile.first_name') }}</label>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(form.first_name) }}
@@ -21,7 +21,7 @@
 				</div>
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Last Name</label>
+						<label>{{ phrase('user.profile.last_name') }}</label>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(form.last_name) }}
@@ -29,14 +29,14 @@
 				</div>
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Timezone</label>
+						<label>{{ phrase('user.profile.timezone') }}</label>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(form.timezone) }}
 					</div>
 				</div>
 
-				<button class="btn primary">Save</button>
+				<button class="btn primary">{{ phrase('user.profile.btn_save') }}</button>
 			</div>
 		</div>
 	</div>
@@ -45,29 +45,28 @@
 <div class="dp-content-block dp-profile-page">
 	<div class="dp-box">
 		<div class="dp-box-header">
-			<h1>Email Addresses</h1>
+			<h1>{{ phrase('user.profile.email_addresses') }}</h1>
 		</div>
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content">
 				{% if app.session.hasFlash('resent_validation_email') %}
 					<div class="alert-message info">
-						Validation email was resent to {{ app.session.flash('resent_validation_email') }}
+						{{ phrase('user.profile.validation_resent_to', {'email':app.session.flash('resent_validation_email')) }}
 					</div>
 				{% endif %}
 				{% if app.session.hasFlash('removed_email') %}
 					<div class="alert-message info">
-						Email {{ app.session.flash('removed_email') }} was removed
+						{{ phrase('user.profile.email_was_removed', {'email':app.session.flash('removed_email')}) }}
 					</div>
 				{% endif %}
 				{% if app.session.hasFlash('new_email') %}
 					<div class="alert-message info">
-						Email {{ app.session.flash('removed_email') }} was added
+						{{ phrase('user.profile.email_was_added', {'email':app.session.flash('removed_email')}) }}
 					</div>
 				{% endif %}
 				{% if app.session.hasFlash('new_email_validating') %}
 					<div class="alert-message info">
-						Email {{ app.session.flash('removed_email') }} was added. To start using this email address, you must validate it
-						by clicking on the link we just sent you.
+						{{ phrase('user.profile.email_was_added_validate_it', {'email':app.session.flash('removed_email')}) }}
 					</div>
 				{% endif %}
 
@@ -76,11 +75,11 @@
 					<li>
 						<div class="dp-controls">
 							{% if email.id == app.user.primary_email.id %}
-								Primary address
+								{{ phrase('user.profile.primary_address') }}
 							{% else %}
-								<a href="{{ path('user_profile_emails_setdefault', {'email_id': email.id}) }}">Set as primary address</a>
+								<a href="{{ path('user_profile_emails_setdefault', {'email_id': email.id}) }}">{{ phrase('user.profile.set_as_primary_address') }}</a>
 								&bull;
-								<a class="remove" title="Remove email address" href="{{ path('user_profile_emails_remove', {'email_id': email.id}) }}">Delete</a>
+								<a class="remove" title="Remove email address" href="{{ path('user_profile_emails_remove', {'email_id': email.id}) }}">{{ phrase('user.profile.delete') }}</a>
 							{% endif %}
 						</div>
 						{{ email.email }}
@@ -89,16 +88,16 @@
 					{% for email in validating_emails %}
 						<li class="validating">
 							<div class="dp-controls">
-								<a href="{{ path('user_profile_emails_validate_sendlink', {'email_id': email.id}) }}">Resend Validation Email</a>
+								<a href="{{ path('user_profile_emails_validate_sendlink', {'email_id': email.id}) }}">{{ phrase('user.profile.resend_validation_email') }}</a>
 								&bull;
-								<a class="remove" title="Remove email address" href="{{ path('user_profile_emails_validate_remove', {'email_id': email.id}) }}">Delete</a>
+								<a class="remove" title="Remove email address" href="{{ path('user_profile_emails_validate_remove', {'email_id': email.id}) }}">{{ phrase('user.profile.delete') }}</a>
 							</div>
-							{{ email.email }} <em>(awaiting validation)</em>
+							{{ email.email }} <em>{{ phrase('user.profile.awaiting_validation') }}</em>
 						</li>
 					{% endfor %}
 					<li class="dp-new-email">
 						<form action="{{ path('user_profile_emails_new') }}" method="post">
-							<label>Add an email address to your account:</label><br />
+							<label>{{ phrase('user.profile.add_an_email_address_to_account') }}:</label><br />
 							<input type="text" name="new_email" value="" size="30" /> <button class="btn small"></button>
 						</form>
 					</li>
@@ -111,14 +110,14 @@
 <div class="dp-content-block dp-profile-page">
 	<div class="dp-box">
 		<div class="dp-box-header">
-			<h1>Change Password</h1>
+			<h1>{{ phrase('user.profile.change_password') }}</h1>
 		</div>
 		<div class="dp-box-content-wrapper">
 			<form action="{{ path('user_profile_changepassword') }}" method="post">
 				<div class="dp-box-content dp-form">
 					<div class="dp-form-row">
 						<div class="dp-form-label">
-							<label>Current Password</label>
+							<label>{{ phrase('user.profile.current_password') }}</label>
 						</div>
 						<div class="dp-form-input">
 							<input type="password" name="current_password" value="" />
@@ -126,7 +125,7 @@
 					</div>
 					<div class="dp-form-row">
 						<div class="dp-form-label">
-							<label>New Password</label>
+							<label>{{ phrase('user.profile.new_password') }}</label>
 						</div>
 						<div class="dp-form-input">
 							<input type="password" name="password" value="" />
@@ -134,14 +133,14 @@
 					</div>
 					<div class="dp-form-row">
 						<div class="dp-form-label">
-							<label>Repeat Password</label>
+							<label>{{ phrase('user.profile.repeat_password') }}</label>
 						</div>
 						<div class="dp-form-input">
 							<input type="password" name="password2" value="" />
 						</div>
 					</div>
 
-					<button class="btn primary">Change Password</button>
+					<button class="btn primary">{{ phrase('user.profile.change_password') }}</button>
 				</div>
 			</form>
 		</div>

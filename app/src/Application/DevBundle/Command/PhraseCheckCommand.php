@@ -82,7 +82,7 @@ class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         }
 
         // we now have all the phrases defined in templates that should exist
-        $matches = preg_match_all('/{{ phrase\\(\'([_a-zA-|.]*)\'\\)/', $templates_content, $results);
+        $matches = preg_match_all('/{{\s+phrase\\(\'([_a-zA-|.]*)\'/', $templates_content, $results);
         $template_phrases = $results[1];
 
         // now let's get all the phrases defined in language files

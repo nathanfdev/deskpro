@@ -131,5 +131,4 @@
 	'user.tickets.please_choose_category' => 'Please choose a category',
 	'user.tickets.please_choose_priority' => 'Please choose a priority',
 	'user.tickets.please_choose_subject_at_least' => 'Please enter a subject of at least 5 characters',
-	'user.tickets.' => '',
 );

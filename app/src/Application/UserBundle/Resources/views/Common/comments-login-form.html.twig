@@ -16,13 +16,13 @@
 						data-min-len="2"
 						/>
 				<div class="dp-error-explain">
-					Please enter your name
+					{{ phrase('user.register_please_enter_name') }}
 				</div>
 			</div>
 		</div>
 	</td><td valign="top" width="50%" style="padding-left: 10px;">
 		<div class="dp-form-label">
-			<label>Logged In As</label>
+			<label>{{ phrase('user.comments_logged_in_as') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<span class="logged-in-as {{ app.session.get('auth_usersource_type') }}">
@@ -56,7 +56,7 @@
 							data-min-len="2"
 							/>
 					<div class="dp-error-explain">
-						Please enter your name
+						{{ phrase('user.register_please_enter_name') }}
 					</div>
 				</div>
 			</div>
@@ -77,14 +77,14 @@
 							/>
 					{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 					<div class="connect-with">
-						Or connect with
+						{{ phrase('user.comments_or_connect_with') }}
 						{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 						{{ render_usersource(usersource, 'widget_overlay_btn') }}
 						{% endfor %}
 					</div>
 					{% endif %}
 					<div class="dp-error-explain">
-						Please enter your email address
+						{{ phrase('user.comments_please_enter_email') }}
 					</div>
 				</div>
 			</div>

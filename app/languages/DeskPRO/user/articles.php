@@ -18,4 +18,15 @@
 
 	'user.articles.created_by_on' => 'Created by {{name}} on {{date}}',
 
+	'user.articles.find' => 'Find',
+	'user.articles.category' => 'Category',
+	'user.articles.product' => 'Product',
+	'user.articles.all' => 'All',
+	'user.articles.sorted_by' => 'Sorted by',
+	'user.articles.populatity' => 'Popularity',
+	'user.articles.previous' => 'Previous',
+	'user.articles.next' => 'Next',
+	'user.articles.go' => 'Go',
+	'user.articles.number_of_articles' => '{{count}} articles',
+	'user.articles.date' => 'Date',
 );

@@ -220,6 +220,8 @@
 
 	'user.upload_remove' => 'remove',
 	'user.upload_a_file' => 'Upload a file',
-	'user.comments_' => '',
-	'user.comments_' => '',
+
+	'user.comments_logged_in_as' => 'Logged In As',
+	'user.comments_please_enter_email' => 'Please enter your email address',
+	'user.comments_or_connect_with' => 'Or connect with',
 );
