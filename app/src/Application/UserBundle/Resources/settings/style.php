@@ -23,7 +23,6 @@
 	'user_style.foot_copy_color'                 => '#707274',
 	'user_style.text_color'                      => '#444',
 	'user_style.meta_text_color'                 => '#808080',
-	'user_style.button_color'                    => '#000',
 	'user_style.button_bg_start'                 => '#FFF',
 	'user_style.button_bg_end'                   => '#E6E6E6',
 	'user_style.button_text'                     => '#333',

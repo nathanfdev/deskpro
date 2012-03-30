@@ -43,8 +43,10 @@ class PortalController extends AbstractController
 
     public function indexAction()
 	{
-		return $this->render('AdminBundle:Portal:index.html.twig', array(
+		$default_portal_style = $this->container->get('deskpro.core.settings')->getDefaultGroup('user_style');
 
+		return $this->render('AdminBundle:Portal:index.html.twig', array(
+			'default_portal_style' => $default_portal_style
 		));
 	}
 

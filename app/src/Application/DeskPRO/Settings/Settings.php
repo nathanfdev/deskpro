@@ -50,6 +50,11 @@ class Settings implements \ArrayAccess
 	 */
 	protected $settings_paths = array();
 
+	/**
+	 * Array of array(group => array(settings)) for default settings read in with getDefault()
+	 * @var array
+	 */
+	protected $default_settings = array();
 
 	/**
 	 * Plain database connection for raw queries
@@ -151,6 +156,47 @@ class Settings implements \ArrayAccess
 
 
 	/**
+	 * This loads the default for a value as defined in the setting file
+	 *
+	 * @param $name
+	 */
+	public function getDefault($name)
+	{
+		$group = $this->getGroupFromName($name);
+		$this->getDefaultGroup($group);
+
+		if (isset($this->default_settingsp[$group][$name])) {
+			return $this->default_settings[$group][$name];
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * Get the default values for an entire group
+	 *
+	 * @param $group
+	 */
+	public function getDefaultGroup($group)
+	{
+		if (!isset($this->default_settings[$group])) {
+			$group_file = $this->getGroupFile($group);
+
+			if ($group_file) {
+				$group_settings = require($group_file);
+			} else {
+				$group_settings = array();
+			}
+
+			$this->default_settings[$group] = (array)$group_settings;
+		}
+
+		return $this->default_settings[$group];
+	}
+
+
+	/**
 	 * Get all settings in a group
 	 *
 	 * @param string $group
@@ -239,6 +285,33 @@ class Settings implements \ArrayAccess
 
 
 	/**
+	 * Get the file a setting group is in
+	 *
+	 * @param $group
+	 * @return string
+	 */
+	public function getGroupFile($group)
+	{
+		if (strpos($group, '_') !== false) {
+			list($key, $name) = Strings::rexplode('_', $group, 2);
+		} else {
+			$key = $group;
+			$name = $group;
+		}
+
+		// We dont know about these settings?
+		if (!isset($this->settings_paths[$key])) {
+			trigger_error("Unknown settings group `$group`", \E_USER_WARNING);
+			return null;
+		}
+
+		$path = $this->settings_paths[$key] . '/' . $name . '.php';
+
+		return $path;
+	}
+
+
+	/**
 	 * When an unknown setting is encountered in a group we haven't loaded yet,
 	 * we'll load all pending groups.
 	 */
@@ -256,20 +329,8 @@ class Settings implements \ArrayAccess
 		#------------------------------
 
 		foreach ($this->_pending_groups as $group) {
-			if (strpos($group, '_') !== false) {
-				list($key, $name) = Strings::rexplode('_', $group, 2);
-			} else {
-				$key = $group;
-				$name = $group;
-			}
-
-			// We dont know about these settings?
-			if (!isset($this->settings_paths[$key])) {
-				trigger_error("Unknown settings group `$group`", \E_USER_WARNING);
-				continue;
-			}
-
-			$path = $this->settings_paths[$key] . '/' . $name . '.php';
+			$path = $this->getGroupFile($group);
+			if (!$path) continue;
 
 			$group_settings = require($path);
 			$this->settings = array_merge($group_settings, $this->settings);

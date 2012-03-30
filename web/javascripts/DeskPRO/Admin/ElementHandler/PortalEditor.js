@@ -408,8 +408,26 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 				onChange: function (hsb, hex, rgb) {
 					$('div', swatchEl).css('backgroundColor', '#' + hex);
 					swatchEl.data('color', '#' + hex);
+
+					swatchEl.closest('.style-row').find('.color-reset').addClass('enabled');
 				}
 			});
+		});
+
+		var colorResets = $('.color-reset', panel);
+		colorResets.on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var swatchEl = $(this).closest('.style-row').find('.color-swatch');
+			var setColor = $(this).data('color').replace('#', '');
+
+			console.log('Setting %s on %e', setColor, swatchEl);
+			swatchEl.ColorPickerSetColor(setColor);
+			swatchEl.data('color', '#' + setColor);
+			$('div', swatchEl).css('backgroundColor', '#' + setColor);
+
+			$(this).removeClass('enabled');
 		});
 
 		$('button.apply-trigger', panel).on('click', function() {

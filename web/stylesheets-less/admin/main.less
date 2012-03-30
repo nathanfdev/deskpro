@@ -2082,6 +2082,36 @@ section#portal_colors .style-row {
 	margin-bottom: 1px;
 }
 
+section#portal_colors .style-row .color-reset {
+	display: none;
+	font-size: 10px;
+	float: right;
+	margin: 5px 5px 0 0;
+	background-color: #E1E7F0;
+	.rounded(2px);
+	padding: 2px 4px 2px 4px;
+	line-height: 12px;
+	border: 1px solid #B7BCC5;
+
+	i {
+		float: left;
+		display: block;
+		width: 10px;
+		height: 10px;
+		margin-right: 6px;
+		border: 1px solid #888;
+	}
+}
+
+section#portal_colors .style-row .color-reset.enabled {
+	display: block;
+}
+
+section#portal_colors .style-row .color-reset:hover {
+	cursor: pointer;
+	border: 1px solid #888D94;
+}
+
 section#portal_colors > footer {
 	background-color: #CBD1D7;
 	padding: 2px 0 2px 0;
