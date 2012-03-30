@@ -41,7 +41,12 @@ use PDO;
  */
 class Connection extends \Doctrine\DBAL\Connection
 {
+	const EVENT_POST_COMMIT   = 'onPostCommit';
+	const EVENT_POST_ROLLBACK = 'onPostRollback';
+
 	protected $_max_packet_size = null;
+
+	protected $running_trans_event = false;
 
 	public function __construct(array $params, \Doctrine\DBAL\Driver $driver, \Doctrine\DBAL\Configuration $config = null, \Doctrine\Common\EventManager $eventManager = null)
 	{
@@ -239,5 +244,30 @@ class Connection extends \Doctrine\DBAL\Connection
                . ' VALUES (' . implode(', ', $placeholders) . ')';
 
         return $this->executeUpdate($query, array_values($data), $types);
+	}
+
+
+	public function commit()
+	{
+		parent::commit();
+
+		if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_COMMIT)) {
+			$this->running_trans_event = true;
+			$eventArgs = new Event\PostCommit($this);
+			$this->_eventManager->dispatchEvent(self::EVENT_POST_COMMIT, $eventArgs);
+			$this->running_trans_event = false;
+		}
+	}
+
+	public function rollback()
+	{
+		parent::rollback();
+
+		if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_ROLLBACK)) {
+			$this->running_trans_event = true;
+			$eventArgs = new Event\PostCommit($this);
+			$this->_eventManager->dispatchEvent(self::EVENT_POST_ROLLBACK, $eventArgs);
+			$this->running_trans_event = false;
+		}
 	}
 }

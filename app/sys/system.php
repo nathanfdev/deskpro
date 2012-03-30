@@ -706,7 +706,7 @@ class KernelErrorHandler
 		}
 
 		$errinfo = self::getErrorInfo($errno, $errstr, $errfile, $errline);
-		self::logToFile($errinfo);
+		self::logErrorInfo($errinfo);
 
 		if ($errinfo['display']) {
 			echo $errinfo['summary'];
@@ -725,6 +725,7 @@ class KernelErrorHandler
 		} catch (\Exception $e) {}
 
 		if ($errinfo['die']) {
+			self::tryCleanup();
 			exit(1);
 		}
 	}
@@ -732,7 +733,7 @@ class KernelErrorHandler
 	public static function handleException(\Exception $exception)
 	{
 		$errinfo = self::getExceptionInfo($exception);
-		self::logToFile($errinfo);
+		self::logErrorInfo($errinfo);
 
 		if ($errinfo['display']) {
 			echo $errinfo['summary'];
@@ -751,10 +752,25 @@ class KernelErrorHandler
 		} catch (\Exception $e) {}
 
 		if ($errinfo['die']) {
+
+			self::tryCleanup();
+
 			$code = (int)$errinfo['exception']->getCode();
 			if ($code > 255) $code = 255;
 			if ($code == 0) $code = 1;
 			exit($code);
+		}
+	}
+
+	public static function tryCleanup()
+	{
+		if (class_exists('Application\DeskPRO\App')) {
+			try {
+				$db = App::getDb();
+				if ($db->isTransactionActive()) {
+					$db->rollback();
+				}
+			} catch (\Exception $e) {}
 		}
 	}
 

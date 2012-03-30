@@ -73,7 +73,7 @@ class Logger
 
 	/**
 	 * Main filter chain that will apply to all writers
-	 * @var Orb\Log\Writer\ChainWriter
+	 * @var \Orb\Log\Writer\WriterChain
 	 */
 	protected $_writer_chain = null;
 
@@ -110,7 +110,7 @@ class Logger
 		$name = strtoupper($name);
 
 		if (isset($this->_priorities[$priority])) {
-			throw new Exception\InvalidArgumentException('Priority already exists');
+			throw new \InvalidArgumentException('Priority already exists');
 		}
 
 		$this->_priorities[$priority] = $name;

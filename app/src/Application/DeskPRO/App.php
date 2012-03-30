@@ -823,7 +823,11 @@ class App
 	 */
 	public static function createNewLogger($log_name, $session_name)
 	{
-		$logger = new \Application\DeskPRO\Log\Logger();
+		if ($log_name == 'error_log') {
+			$logger = new \Application\DeskPRO\Log\DbErrorLogger();
+		} else {
+			$logger = new \Application\DeskPRO\Log\Logger();
+		}
 		$logger->setLogName($log_name);
 		$logger->setSessionName($session_name);
 

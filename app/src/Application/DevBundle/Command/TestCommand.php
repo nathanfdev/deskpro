@@ -35,18 +35,11 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		/** @var $sm \Doctrine\DBAL\Schema\AbstractSchemaManager */
-		$sm = App::getDb()->getSchemaManager();
+		$db = App::getDb();
 
-		$table = 'searchlog';
+		$db->beginTransaction();
 
-		$indexes = $sm->listTableIndexes($table);
-
-		foreach ($indexes as $x) {
-			$p = $sm->getDatabasePlatform()->getCreateIndexSQL($x, $table);
-			echo $p;
-			echo "\n\n";
-		}
+		throw new \Exception("test");
 
 		echo "\n";
 	}
