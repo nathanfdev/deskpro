@@ -941,3 +941,25 @@ $AGENTGROUP_ALL['note'] = 'Agent has full permissions';
 $AGENTGROUP_ALL['is_agent_group'] = true;
 $em->persist($AGENTGROUP_ALL);
 $em->flush();
+
+
+################################################################################
+# Default base stats
+################################################################################
+
+##BEGIN:stats.base_stats##
+$em->getConnection()->exec("
+	INSERT INTO `stat` (`author_id`, `parent_stat_id`, `title`, `grouping_ref`, `stat_concept_class`, `starred`, `disabled`, `generate_stats`, `run_frequency`, `variation`, `criteria`, `last_run`, `date_created`)
+	VALUES
+		(NULL, NULL, 'Tickets Awaiting Agent', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsAwaitingAgent', 1, 0, 1, 'daily', 'bad', 'a:1:{i:0;a:3:{s:4:\"type\";s:10:\"agent_team\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:10:\"agent_team\";s:2:\"-1\";}}}', NULL, '2011-11-11 11:07:19'),
+		(NULL, NULL, 'Tickets Opened', 'tickets.date_created', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsOpened', 1, 0, 1, 'daily', 'bad', 'a:1:{i:0;a:3:{s:4:\"type\";s:10:\"agent_team\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:10:\"agent_team\";s:2:\"-1\";}}}', NULL, '2011-11-11 11:07:19'),
+		(NULL, NULL, 'Rate of Tickets Processed (Opened/Closed)', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\RateOfTicketsProcessed', 1, 0, 1, 'daily', 'bad', 'a:1:{i:0;a:3:{s:4:\"type\";s:10:\"agent_team\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:10:\"agent_team\";s:2:\"-1\";}}}', NULL, '2011-11-11 11:07:19'),
+		(NULL, NULL, 'Total Ticket Messages', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalTicketMessages', 1, 0, 1, 'daily', 'bad', 'a:1:{i:0;a:3:{s:4:\"type\";s:10:\"agent_team\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:10:\"agent_team\";s:2:\"-1\";}}}', NULL, '2011-11-11 11:07:19'),
+		(NULL, NULL, 'Reopened Tickets', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\ReopenedTickets', 1, 0, 0, 'daily', 'bad', 'a:1:{i:0;a:3:{s:4:\"type\";s:10:\"agent_team\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:10:\"agent_team\";s:2:\"-1\";}}}', NULL, '2011-11-11 11:07:19'),
+		(NULL, NULL, 'First Resolution Rate test', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\FirstResolutionRate', 1, 0, 0, 'daily', 'bad', 'a:1:{i:0;a:3:{s:4:\"type\";s:10:\"agent_team\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:10:\"agent_team\";s:2:\"-1\";}}}', NULL, '2011-11-11 11:07:19'),
+		(NULL, NULL, 'Tickets Agent Participated In', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsAgentParticipate', 1, 0, 0, 'daily', 'bad', 'a:1:{i:0;a:3:{s:4:\"type\";s:10:\"agent_team\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:10:\"agent_team\";s:2:\"-1\";}}}', NULL, '2011-11-11 11:07:19'),
+		(NULL, NULL, 'Total Ticket Resolve Time', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalTicketResolveTime', 1, 0, 1, 'daily', 'bad', 'a:1:{i:0;a:3:{s:4:\"type\";s:10:\"agent_team\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:10:\"agent_team\";s:2:\"-1\";}}}', NULL, '2011-11-11 11:07:19'),
+		(NULL, NULL, 'Total User Waiting Ticket Resolve Time', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalUserWaitingTicketResolvedTime', 1, 0, 1, 'daily', 'bad', 'a:1:{i:0;a:3:{s:4:\"type\";s:10:\"agent_team\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:10:\"agent_team\";s:2:\"-1\";}}}', NULL, '2011-11-11 11:07:19'),
+		(NULL, NULL, 'Total Agent Waiting Ticket Resolve Time', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalAgentWaitingTicketResolvedTime', 0, 0, 1, 'daily', 'good', 'a:1:{i:0;a:3:{s:4:\"type\";s:10:\"agent_team\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:10:\"agent_team\";s:2:\"-1\";}}}', NULL, '2011-11-11 11:07:19'),
+		(NULL, NULL, 'Total First Response Time', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketFirstResponseTime', 1, 0, 1, 'daily', 'bad', 'a:1:{i:0;a:3:{s:4:\"type\";s:10:\"agent_team\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:10:\"agent_team\";s:2:\"-1\";}}}', NULL, '2011-11-11 11:07:19')
+");
