@@ -1,3 +1,3 @@
 <?php
 define('DP_BOOT_MODE', 'upgrade');
-require './index.php';
+require __DIR__ . '/index.php';
