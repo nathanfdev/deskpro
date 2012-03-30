@@ -12,7 +12,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.UserChat';
 {% endif %}
 pageMeta.url_fragment  = '{{ url_fragment('agent_userchat_view', {'conversation_id': convo.id}) }}';
 pageMeta.conversation_id = {{convo.id}};
-pageMeta.youName         = {{ app.user.display_name|json_encode|raw }};
+pageMeta.youName         = {{ app.uassign_ob_triggerser.display_name|json_encode|raw }};
 pageMeta.tabIdClass      = 'user_chat_tab_{{convo.id}}';
 pageMeta.status = '{{ convo.status }}';
 pageMeta.isEnded = {% if convo.status == 'ended' %}true{% else %}false{% endif %};
@@ -96,7 +96,7 @@ pageMeta.baseId = '{{ baseId }}';
                                                 {% else %}
                                                 	{{ phrase('agent.anonymous') }}
                                                 {% endif %}
-                                                <span class="email"><b data-hide="@parent">{% if convo.person_email %}{{ convo.person_email }}{% else %}&nbsp;{% endif %}</b></span>
+                                                <span class="email"><b data-hide="@parent">{% if convo.person_email %}{{ convo.person_email }}{% else %}No Email{% endif %}</b></span>
                                             </span>
                                     </a>
                                 {% endif %}
@@ -108,52 +108,45 @@ pageMeta.baseId = '{{ baseId }}';
             </div>
         </td>
         <td width="50%" valign="top">
-            <div class="profile-box-container people-box second">
-                <header>
-                    <h4>Agent</h4>
-                </header>
-                <section id="{{baseId}}_people_box_agent">
-                    <article>
-                        <dl>
-                            <dt class="agent-row"></dt>
-                            <dd class="agent-row">
-                                <a class="user-link clean-white as-popover preload" data-route="people:{{ path('agent_people_view', {'person_id': convo.agent.id}) }}">
-                                        <span style="background-image: url('{{ convo.agent.getPictureUrl(20) }}');">
-                                            {{ convo.agent.display_name }}
-                                            <span class="email"><b class="pemail-{{convo.agent.id}}" data-hide="@parent">{{ convo.agent.email_address }}</b></span>
-                                        </span>
-                                </a>
-                                <div class="clear"></div>
-                            </dd>
-                        </dl>
-                    </article>
-                </section>
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <div class="profile-box-container people-box ">
-                <header>
-                    <h4>Other Agents</h4>
-                </header>
-                <section id="{{baseId}}_people_box_assignments">
-                    <article>
-                            <ul class="agent-parts-link" id="{{baseId}}_agent_parts">
-                            {% for part in convo.participants %}
-                                {% if not part.id == convo.id %}
-                                    {{ part.display_name }},
-                                {% endif %}
-                            {% endfor %}
-                            <span id="{{ baseId }}_agent_parts_btn">Invite an agent: <em class="invite-button">{{ phrase('agent.chat.invite_another_agent') }}</em></span>
-                    </article>
-                </section>
-            </div>
+			<div class="profile-box-container people-box second">
+				<header>
+					<div class="controls">
+						<span class="edit-gear" id="{{baseId}}_assign_ob_trigger"></span>
+					</div>
+					<h4>{{ phrase('agent.assignments') }}</h4>
+				</header>
+				<section id="{{baseId}}_people_box_agent">
+					<article>
+						<dl>
+							<dt class="agent-row">Assigned Agent</dt>
+							<dd class="agent-row">
+								<a class="agent-link prop-agent-id" id="{{baseId}}_assign_btn" data-agent-id="{{ convo.agent.id|default(0) }}" style="background-image: url('{{ convo.agent.getPictureUrl(20) }}');">{{ convo.agent.display_name|default('Unassigned') }}</a>
+							</dd>
+
+							<dt class="followers-row" {% if not agent_parts|length %}style="display:none"{% endif %}>Other Agents</dt>
+							<dd class="followers-row" {% if not agent_parts|length %}style="display:none"{% endif %}>
+								<ul id="{{baseId}}_followers_list" class="comma-list">
+									{% set has_others = false %}
+									{% for part in convo.participants %}
+										{% if not part.id == convo.id %}
+											{% set has_others = true %}
+											<li><span class="agent-link" data-agent-id="{{ part.id }}">{{ part.display_name }}</span></li>
+										{% endif %}
+									{% endfor %}
+									{% if not has_others %}
+										<li>No others</li>
+									{% endif %}
+								</ul>
+							</dd>
+						</dl>
+					</article>
+				</section>
+			</div>
         </td>
     </tr>
 </table>
 
-<div class="profile-box-container">
+<div class="profile-box-container" id="{{ baseId }}_chat_view">
 	<header>
 		<h4>{{ phrase('agent.chat.title_chat') }}</h4>
 	</header>
@@ -255,56 +248,69 @@ pageMeta.baseId = '{{ baseId }}';
 
 {% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'attach[]'} %}
 
-<div class="optionbox" id="{{baseId}}_agent_selector">
-	<section data-section-name="agents">
-		<header>
-			<h3>{{ phrase('agent.assign_agent') }}</h3>
-			<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
-		</header>
-		<ul class="with-agents-online">
-			<li class="agent-row agent-0">
-				<input type="radio" name="{{baseId}}_agent" value="0" style="display: none" />
-				<label><span class="agent-pic agent-label-0">{{ phrase('agent.unassigned') }}</span></label>
-			</li>
+<div class="optionbox reply-agent-team-ob with-footer" id="{{baseId}}_agent_assign_ob" data-assigned="{{ convo.agent.id|default('0') }}">
+	<header>
+		<h4>{{ phrase('agent.assignments') }}</h4>
+		<span class="close close-trigger"></span>
+	</header>
+	<div class="col">
+		<section data-section-name="agents">
+			<header>
+				<h3>Assign To</h3>
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
+			</header>
+			<ul>
+				<li class="me last-me {% if convo.agent.id == app.user.id %}on{% endif %}">
+					<input type="radio" name="{{baseId}}_agent" value="{{ app.user.id }}" {% if convo.agent.id == app.user.id %}checked="checked"{% endif %} />
+					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.me') }}</span></label>
+				</li>
 
-			<li class="me last-me agent-row agent-{{ app.user.id }} {% if convo.agent.id == app.user.id %}on{% endif %}">
-				<input type="radio" name="{{baseId}}_agent" value="{{ app.user.id }}" {% if convo.agent.id == app.user.id or not convo.agent %}checked="checked"{% endif %} style="display: none" />
-				<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
-			</li>
+				<li>
+					<input type="radio" name="{{baseId}}_agent" value="0" {% if not convo.agent %}checked="checked"{% endif %}  />
+					<label><span class="agent-pic agent-label-0">{{ phrase('agent.unassigned') }}</span></label>
+				</li>
 
-			{% for agent in agents %}
+				{% for agent in agents %}
 				{% if agent.id != app.user.id %}
-					<li class="agent-row agent-{{ agent.id }} {% if convo.agent.id == agent.id %}on{% endif %}" data-agent-id="{{ agent.id }}">
-						<input type="radio" name="{{baseId}}_agent" value="{{ agent.id }}" {% if convo.agent.id == agent.id %}checked="checked"{% endif %} />
-						<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
-						<div class="bound-fade"></div>
-					</li>
+				<li {% if convo.agent.id == agent.id %}class="on"{% endif %}>
+					<input type="radio" name="{{baseId}}_agent" value="{{ agent.id }}" {% if convo.agent.id == agent.id %}checked="checked"{% endif %} />
+					<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+					<div class="bound-fade"></div>
+				</li>
 				{% endif %}
-			{% endfor %}
-		</ul>
-	</section>
-</div>
-<div class="optionbox" id="{{baseId}}_agentpart_selector">
-	<section data-section-name="agents">
-		<header>
-			<h3>{{ phrase('agent.chat.invite_agent') }}</h3>
-			<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
-		</header>
-		<ul class="with-agents-online">
-			{% for agent in agents %}
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+
+	<div class="col">
+		<section data-section-name="followers">
+			<header>
+				<h3>Invite Others</h3>
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
+			</header>
+			<ul>
+				<li class="me last-me">
+					<input type="checkbox" name="{{bsaeId}}_part" value="{{ app.user.id }}" {% if app.user.id in participant_ids and convo.agent.id != app.user.id %}checked="checked"{% endif %} />
+					<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.me') }}</span></label>
+				</li>
+
+				{% for agent in agents %}
 				{% if agent.id != app.user.id %}
-					<li class="agent-row agent-{{ agent.id }}" data-agent-id="{{ agent.id }}">
-						<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
-						<button class="clean-white small invite-trigger">Invite</button>
-						<div class="bound-fade"></div>
-					</li>
+				<li {% if convo.participants[agent.id] and convo.agent.id != agent.id %}class="on"{% endif %}>
+					<input type="checkbox" name="{{bsaeId}}_part" value="{{ agent.id }}" {% if convo.participants[agent.id] and convo.agent.id != agent.id %}checked="checked"{% endif %} />
+					<label><span class="agent-pic agent-part-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+					<div class="bound-fade"></div>
+				</li>
 				{% endif %}
-			{% endfor %}
-			<li id="{{baseId}}_agentpart_sel_none">
-				{{ phrase('agent.chat.invite_no_agents') }}
-			</li>
-		</ul>
-	</section>
+				{% endfor %}
+			</ul>
+		</section>
+	</div>
+	<br class="clear" />
+	<footer>
+		<button class="save-trigger">{{ phrase('agent.apply') }}</button>
+	</footer>
 </div>
 
 <div id="{{baseId}}_closetab_prompt" style="display:none;">

@@ -274,6 +274,76 @@ class UserChatController extends AbstractController
 
 
 	/**
+	 * @param $conversation_id
+	 */
+	public function syncPartsAction($conversation_id)
+	{
+		$convo = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+
+		if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$have = array();
+		foreach ($convo->participants as $part) {
+			if ($convo->agent && $convo->agent->id == $part->id) {
+				continue;
+			}
+
+			$have[] = $part->id;
+		}
+
+		$target = $this->container->getIn()->getCleanValueArray('agent_ids', 'uint', 'discard');
+
+		$add = array_diff($have, $target);
+		$rem = array_diff($target, $have);
+
+		$client_messages = array();
+		if ($add) {
+			foreach ($add as $pid) {
+				$agent = $this->em->getRepository('DeskPRO:Person')->find($pid);
+				if (!$agent || !$agent->is_agent) {
+					continue;
+				}
+
+				$convo->addParticipant($agent);
+
+				foreach ($convo->getCreatedMessages() as $msg) {
+					$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewMessageMessages(App::getSession()->getEntityId(), $msg));
+				}
+
+				$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewAddedPartMessage(
+					App::getSession()->getEntityId(),
+					$convo,
+					$agent
+				));
+
+				$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createPartisipatedUpdatedMessages(
+					App::getSession()->getEntityId(),
+					$convo
+				));
+			}
+
+			App::getOrm()->transactional(function ($em) use ($convo, $client_messages) {
+				$em->persist($convo);
+
+				if ($client_messages) {
+					foreach ($client_messages as $cm) {
+						$em->persist($cm);
+					}
+				}
+
+				$em->flush();
+			});
+		}
+
+		return $this->createJsonCmResponse(array(
+			'client_messages' => $client_messages
+		));
+	}
+
+
+	/**
 	 * End a chat
 	 *
 	 * @param  $conversation_id

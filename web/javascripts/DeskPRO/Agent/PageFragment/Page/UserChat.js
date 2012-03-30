@@ -196,6 +196,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			this.getEl('agent_parts_none').show();
 		}
 
+		this.getEl('agent_assign_ob').data('assigned', agent_id);
 		btnEl.css('background-image', pic);
 		btnEl.text(agentInfo.name);
 		btnEl.data('agent-id', agent_id);
@@ -325,6 +326,20 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 	addPart: function(agent_id) {
 		$.ajax({
 			url: BASE_URL + 'agent/chat/add-part/' + this.meta.conversation_id + '/' + agent_id,
+			context: this,
+			contentType: 'json'
+		});
+	},
+
+	syncPars: function(agent_ids) {
+		var postData = [];
+		Array.each(agent_ids, function(id) {
+			postData.push({ name: 'agent_ids[]', value: id });
+		});
+		$.ajax({
+			url: BASE_URL + 'agent/chat/sync-parts/' + this.meta.conversation_id,
+			data: postData,
+			type: 'POST',
 			context: this,
 			contentType: 'json'
 		});
@@ -467,85 +482,74 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 	//#################################################################
 
 	_initAssignControl: function() {
+
 		var self = this;
-		var btnEl = this.getEl('assign_btn');
+		var followersList = this.getEl('followers_list');
+		var el = this.getEl('agent_assign_ob');
+		this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
+			element: el,
+			trigger: this.getEl('assign_ob_trigger'),
+			onSave: function(ob) {
+				var selections = ob.getAllSelected();
 
-		//assign_btn
-		this.assignOptionBox = new DeskPRO.UI.OptionBox({
-			element: this.getEl('agent_selector'),
-			trigger: this.getEl('assign_btn'),
-			onOpen: function(ob) {
-				var wrap = ob.getElement();
+				var agent_id = parseInt(selections.agents || 0);
 
-				var any = false;
-				$('.agent-row', wrap).each(function() {
-					if ($(this).is('.agent-0, .me')) return;
+				followersList.empty();
+				var selections = ob.getAllSelected();
 
-					var aid = $(this).data('agent-id');
-					var check = $('#agent_online_list .agent-' + aid);
-					if (!check.length) {
-						$(this).hide();
-					} else {
-						$(this).show();
-						any = true;
-					}
+				var part_ids = [];
+				Array.each(selections.followers, function(part_id) {
+					var label = $('.agent-part-label-' + part_id, ob.getElement()).first().text().trim();
+
+					var li = $('<li />');
+					var span = $('<span />');
+					span.addClass('agent-link');
+					span.data('agent-id', part_id);
+					span.attr('data-agent-id', part_id);
+					span.text(label);
+					span.appendTo(li);
+
+					followersList.append(li);
+
+					part_ids.push(part_id);
 				});
 
-				$('input:checked', wrap).each(function() {
-					$(this).closest('li').addClass('on');
-				});
-			},
-			onClose: function(ob) {
-				var agentId = parseInt(ob.getSelected('agents')) || 0;
-				var currentValue = parseInt(btnEl.data('agent-id'));
-
-				if (agentId == currentValue) {
-					return;
+				if (part_ids.length) {
+					self.syncPars(part_ids);
 				}
 
-				self.reassignConvo(agentId);
-			}
-		})
+				if (!selections.followers.length) {
+					followersList.append('<li>No followers</li>');
+				}
 
-		// Participants
-		this.partOptionBox = new DeskPRO.UI.OptionBox({
-			element: this.getEl('agentpart_selector'),
-			trigger: this.getEl('agent_parts_btn'),
-			onOpen: function(ob) {
-				var wrap = ob.getElement();
-
-				var any = false;
-				$('.agent-row', wrap).each(function() {
-					if ($(this).is('.agent-0, .me')) return;
-
-					var aid = $(this).data('agent-id');
-					var check = $('#agent_online_list .agent-' + aid);
-					var check2 = $('li.agent-' + aid, self.getEl('agent_parts'));
-
-					if (!check.length && !check2.length) {
-						$(this).hide();
-					} else {
-						$(this).show();
-						any = true;
-					}
-				});
-
-				if (!any) {
-					self.getEl('agentpart_sel_none').show();
-				} else {
-					self.getEl('agentpart_sel_none').hide();
+				var current_agent = parseInt(el.data('assigned'));
+				if (current_agent != agent_id) {
+					self.reassignConvo(agent_id);
 				}
 			}
-		})
-
-		this.getEl('agentpart_selector').on('click', '.invite-trigger', function(ev) {
-			ev.preventDefault();
-			self.partOptionBox.close();
-
-			var row = $(this).closest('li');
-			var agentId = row.data('agent-id');
-			self.sendInvite(agentId);
 		});
+
+		var box1 = self.getEl('people_box_person');
+		var box2 = self.getEl('people_box_agent');
+		var box1_in = $('> article', box1);
+		var box2_in = $('> article', box2);
+
+		var chatView = this.getEl('chat_view');
+		var syncSizes = function() {
+			var h1 = box1_in.height();
+			var h2 = box2_in.height();
+
+			var h = (h1 > h2) ? h1 : h2;
+
+			box2.css('min-height', h);
+			box1.css('min-height', h);
+
+			chatView.css('top', h + 125);
+		};
+
+		box1_in.on('resize', syncSizes);
+		box2_in.on('resize', syncSizes);
+		syncSizes();
 	},
 
 	//#################################################################

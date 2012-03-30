@@ -2218,6 +2218,13 @@ $collection->add('agent_userchat_assign', new Route(
 	array()
 ));
 
+$collection->add('agent_userchat_syncpart', new Route(
+	'/chat/sync-parts/{conversation_id}',
+	array('_controller' => 'AgentBundle:UserChat:syncParts'),
+	array(),
+	array()
+));
+
 $collection->add('agent_userchat_addpart', new Route(
 	'/chat/add-part/{conversation_id}/{agent_id}',
 	array('_controller' => 'AgentBundle:UserChat:addPart'),
