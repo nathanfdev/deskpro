@@ -1,14 +1,14 @@
 <div id="omni_search" class="with-handler portal_omni_search" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
 	<div class="nav">
 		<ul style="float:right">
-			<li><a href="{{ path('user_register') }}">Register for free</a></li>
-			<li><a href="{{ path('user_login') }}" id="omni_login_button">Log In</a></li>
+			<li><a href="{{ path('user_register') }}">{{ phrase('user.portal.register_for_free') }}</a></li>
+			<li><a href="{{ path('user_login') }}" id="omni_login_button">{{ phrase('user.portal.login') }}</a></li>
 		</ul>
 		<ul>
-			<li><a href="{{ path('user_articles') }}">Knowledgebase</a></li>
-			<li><a href="{{ path('user_news') }}">News</a></li>
-			<li><a href="{{ path('user_downloads') }}">Downloads</a></li>
-			<li><a href="{{ path('user_feedback') }}">Feedback</a></li>
+			<li><a href="{{ path('user_articles') }}">{{ phrase('user.portal.knowledgebase') }}</a></li>
+			<li><a href="{{ path('user_news') }}">{{ phrase('user.portal.news') }}</a></li>
+			<li><a href="{{ path('user_downloads') }}">{{ phrase('user.portal.downloads') }}</a></li>
+			<li><a href="{{ path('user_feedback') }}">{{ phrase('user.portal.feedback') }}</a></li>
 		</ul>
 		<br class="clear" />
 		
@@ -17,16 +17,16 @@
 				<form action="{{ path('user_login_authenticate_local') }}" method="post">
 				<table cellspacing="0" cellpadding="0" width="100%"><tr>
 					<td width="50%">
-						<small>Email Address:</small><br />
+						<small>{{ phrase('user.portal.email_address') }}:</small><br />
 						<input type="text" name="email" value="" />
 					</td>
 					<td width="50%">
-						<small>Password:</small><br />
+						<small>{{ phrase('user.portal.password') }}:</small><br />
 						<input type="password" name="password" value="" />
 					</td>
 				</tr><tr><td colspan="2" style="text-align: right;">
-					<a style="" href="{{ path('user_login_resetpass') }}">Lost your login?</a>
-					<button class="dp-button x-small">Log In</button>
+					<a style="" href="{{ path('user_login_resetpass') }}">{{ phrase('user.portal.lost_login') }}</a>
+					<button class="dp-button x-small">{{ phrase('user.portal.login') }}</button>
 				</td></tr></table>
 				</form>
 
@@ -35,13 +35,21 @@
 	</div>
 	<div class="searchbar">
 		<form action="{{ path('user_search') }}" method="GET">
-			<input type="text" name="query" id="omni_search_txt" value="{{ query }}" placeholder="Ask a question, suggest an feedback or search the helpdesk here" />
-			<button class="dp-button">Search</button>
+			<input type="text" name="query" id="omni_search_txt" value="{{ query }}" placeholder="{{ phrase('user.portal.ask_or_feedback_here') }}" />
+			<button class="dp-button">{{ phrase('user.portal.search') }}</button>
 		</form>
 		<div class="example">
-			Example: "<a href="" class="example-query">Pricing</a>",
-			"<a href="" class="example-query">How do I add an account?</a>" or
-			"<a href="" class="example-query">Latest version download</a>"
+			{{ phrase('user.portal.example') }}: 
+			{% set phrase_link1 %}
+			<a href="" class="example-query">{{ phrase('user.portal.pricing') }}</a>
+			{% endset %}
+			{% set phrase_link2 %}
+			<a href="" class="example-query">{{ phrase('user.portal.how_do_i_add_account') }}</a>
+			{% endset %}
+			{% set phrase_link3 %}
+			<a href="" class="example-query">{{ phrase('user.portal.latest_version_download') }}</a>
+			{% endset %}
+			{{ phrase('user.portal.example_or_example', {'link1':phrase_link1,'link2':phrase_link2,'link3':phrase_link3}) }}
 		</div>
 
 		<div id="omni_search_menu_wrap">
@@ -51,11 +59,11 @@
 				</div>
 
 				<div class="create">
-					<p>None of these results what you were looking for?</p>
+					<p>{{ phrase('user.portal.not_what_you_are_looking_for') }}</p>
 					<ul class="links">
-						<li class="ticket"><a href="{{ path('user_tickets_new') }}"><span>Subimt a new ticket</span></a></li>
-						<li class="feedback"><a href="{{ path('user_feedback_newfeedback') }}"><span>Subimt an feedback</span></a></li>
-						<li class="chat"><a href="#" class="dp-chat-trigger"><span>Chat with an agent</span></a></li>
+						<li class="ticket"><a href="{{ path('user_tickets_new') }}"><span>{{ phrase('user.portal.submit_new_ticket') }}</span></a></li>
+						<li class="feedback"><a href="{{ path('user_feedback_newfeedback') }}"><span>{{ phrase('user.portal.submit_feedback') }}</span></a></li>
+						<li class="chat"><a href="#" class="dp-chat-trigger"><span>{{ phrase('user.portal.chat_with_agent') }}</span></a></li>
 					</ul>
 					<br class="clear" />
 				</div>

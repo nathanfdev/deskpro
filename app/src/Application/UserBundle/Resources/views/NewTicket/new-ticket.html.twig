@@ -55,10 +55,10 @@ var ticketReader = {
 {% block page_title %}New Ticket{% endblock %}
 {% block breadcrumb %}
 	{% if is_user_loggedin() %}
-		<li><a href="{{ path('user_tickets') }}">Your Tickets</a></li>
-		<li><a href="{{ path('user_tickets_new') }}">New Ticket</a></li>
+		<li><a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.your_tickets') }}</a></li>
+		<li><a href="{{ path('user_tickets_new') }}">{{ phrase('user.tickets.new_ticket') }}</a></li>
 	{% else %}
-		<li><a href="{{ path('user_tickets_new') }}">New Ticket</a></li>
+		<li><a href="{{ path('user_tickets_new') }}">{{ phrase('user.tickets.new_ticket') }}</a></li>
 	{% endif %}
 {% endblock %}
 {% block content %}
@@ -72,13 +72,13 @@ var ticketReader = {
 >
 	<div class="dp-box">
 		<div class="dp-box-header">
-			<h1>Contact Us</h1>
+			<h1>{{ phrase('user.tickets.contact_us') }}</h1>
 		</div>
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content dp-form">
 				{% if errors|length %}
 					<div class="alert-message error">
-						Oops! There are mistakes with your form. Correct the highlighted feels and then try again.
+						{{ phrase('user.tickets.oops_form_mistakes') }}
 						<!--
 						{{ debug_var(error_fields) }}
 						{{ debug_var(errors) }}
@@ -101,7 +101,7 @@ var ticketReader = {
 				 ###############}
 				<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %}">
 					<div class="dp-form-label">
-						<label>Your Name *</label>
+						<label>{{ phrase('user.tickets.your_name') }} *</label>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(form.person.name, {
@@ -111,7 +111,7 @@ var ticketReader = {
 							}
 						}) }}
 						<div class="dp-error-explain">
-							Please enter your name
+							{{ phrase('user.tickets.please_enter_name') }}
 						</div>
 					</div>
 				</div>
@@ -127,17 +127,20 @@ var ticketReader = {
 				{#--- FIELDS CONTAINER ---#}
 
 				<div class="dp-related-search" id="dp_newticket_related_container" style="display: none">
-					<h4>We found the following content that may answer your question</h4>
-					<div class="subline">Don't worry, you can click a title and you will remain on this page.</div>
+					<h4>{{ phrase('user.tickets.we_found_helpful_content') }}</h4>
+					<div class="subline">{{ phrase('user.tickets.safe_to_click') }}</div>
 					<div class="dp-list results">
 					</div>
 					<div class="more-link" style="display: none;">
-						<a>View <span class="count">0</span> more results</a>
+						{% set phrase_part %}
+						<span class="count">0</span>
+						{% endset %}
+						<a>{{ phrase('user.tickets.view_more_results', {'part':phrase_part}) }}</a>
 					</div>
 				</div>
 
 				<div class="dp-footer">
-					<input class="btn primary" type="submit" value="Submit" />
+					<input class="btn primary" type="submit" value="{{ phrase('user.tickets.submit') }}" />
 				</div>
 
 				</form>
@@ -149,21 +152,21 @@ var ticketReader = {
 		<div class="dp-overlay-outer dp-post-overlay">
 		<div class="dp-overlay">
 			<div class="dp-overlay-inner">
-				<span class="dp-close-btn">close</span>
+				<span class="dp-close-btn">{{ phrase('user.tickets.close') }}</span>
 				<div class="dp-content">
-					<span class="dp-open-full"><a>Open full page</a></span>
+					<span class="dp-open-full"><a>{{ phrase('user.tickets.open_full_page') }}</a></span>
 					<div class="dp-content-holder">
-						<div class="dp-loading-msg">Loading</div>
+						<div class="dp-loading-msg">{{ phrase('user.tickets.loading') }}</div>
 					</div>
 					<div class="dp-controls">
 						<div class="dp-default dp-control-section">
-							<button class="btn small dp-section-toggle primary dp-set-answered" data-toggle-section=".dp-confirm-answered">This answered my question</button>
-							<button class="btn small dp-not-answered">This did not answer my question</button>
+							<button class="btn small dp-section-toggle primary dp-set-answered" data-toggle-section=".dp-confirm-answered">{{ phrase('user.tickets.this_is_an_answer') }}</button>
+							<button class="btn small dp-not-answered">{{ phrase('user.tickets.this_is_no_answer') }}</button>
 						</div>
 						<div class="dp-confirm-answered dp-control-section" style="display:none">
-							<p>We are happy we were able to answer your question. Do you still want to email us?</p>
-							<button class="btn small primary dp-answererd" data-type="close">I do not need to contact you anymore</button>
-							<button class="btn small dp-answererd" data-type="ticket">I still want to submit a question</button>
+							<p>{{ phrase('user.tickets.we_are_happy_but_email_us_anyway') }}</p>
+							<button class="btn small primary dp-answererd" data-type="close">{{ phrase('user.tickets.no_longer_need_to_contact_you') }}</button>
+							<button class="btn small dp-answererd" data-type="ticket">{{ phrase('user.tickets.still_want_to_contact_you') }}</button>
 						</div>
 					</div>
 				</div>

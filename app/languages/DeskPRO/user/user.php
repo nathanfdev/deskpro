@@ -18,6 +18,7 @@
 	'user.all' => 'All',
 
 	'user.content_articles' => 'Articles',
+	'user.content_help_articles' => 'Help Articles', {# Just use above name instead? #}
 	'user.content_feedback' => 'Feedback',
 	'user.content_downloads' => 'Downloads',
 	'user.content_news' => 'News',
@@ -164,4 +165,7 @@
 	'user.register_you' => 'You',
 	'user.register_drop_here_to_attach' => 'Drop your file here to attach it to your message',
 	'user.register_send_message' => 'Send Message',
+
+	'user.view_more_news' => 'View more news &rarr;',
+	'user.title_resources' => 'Resources',
 );

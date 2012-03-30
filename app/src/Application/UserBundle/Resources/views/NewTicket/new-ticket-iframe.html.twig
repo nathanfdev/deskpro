@@ -87,7 +87,7 @@ var ticketReader = {
 
 {% if errors|length %}
 	<div class="alert-message error">
-		Oops! There are mistakes with your form. Correct the highlighted feels and then try again.
+		{{ phrase('user.tickets.oops_form_mistakes') }}
 		<!--
 		{{ debug_var(error_fields) }}
 		{{ debug_var(errors) }}
@@ -122,7 +122,7 @@ var ticketReader = {
  ###############}
 <div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %}">
 	<div class="dp-form-label">
-		<label>Your Name *</label>
+		<label>{{ phrase('user.register_your_name') }} *</label>
 	</div>
 	<div class="dp-form-input">
 		{{ form_widget(form.person.name, {
@@ -132,7 +132,7 @@ var ticketReader = {
 			}
 		}) }}
 		<div class="dp-error-explain">
-			Please enter your name
+			{{ phrase('user.register_please_enter_name') }}
 		</div>
 	</div>
 </div>
@@ -148,7 +148,7 @@ var ticketReader = {
 {#--- FIELDS CONTAINER ---#}
 
 <div class="dp-footer">
-	<input class="btn primary" type="submit" value="Submit" />
+	<input class="btn primary" type="submit" value="{{ phrase('user.tickets.submit') }}" />
 </div>
 
 </form>
