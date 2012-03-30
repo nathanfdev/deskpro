@@ -39,4 +39,9 @@
 	'user.feedback.simialr_same_confirm_no' => 'I still want to submit my feedback',
 
 	'user.feedback.votes_available' => 'You have up to {{part}} votes to cast on this feedback. How many do you want to use?',
+
+	'user.feedback.new' => 'New',
+	'user.feedback.accepted' => 'Accepted',
+	'user.feedback.declined' => 'Declined',
+	'user.feedback.completed' => 'Completed',
 );

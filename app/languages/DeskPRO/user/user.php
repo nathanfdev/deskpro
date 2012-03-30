@@ -168,4 +168,25 @@
 
 	'user.view_more_news' => 'View more news &rarr;',
 	'user.title_resources' => 'Resources',
+
+	'user.subject' => 'Subject',
+	'user.department' => 'Department',
+	'user.save' => 'Save',
+
+	'user.login_with_openid' => 'Log in using your OpenID provider.',
+	'user.openid_url' => 'OpenID URL',
+	'user.login_using_facebook' => 'Log in using your Facebook account.',
+	'user.login_with_facebook' => 'Log in with Facebook',
+
+	'user.title_deskpro' => 'DeskPRO', // I doubt we will translate this, but wont hurt to have it here.
+	'user.tags' => 'Tags',
+
+	'user.widget_open_in_new_window' => 'Open this in a new window',
+	'user.widget_this_is_what_i_needed' => 'This is what I needed',
+	'user.widget_this_is_not_what_i_needed' => 'This is not what I was looking for',
+
+	'user.more' => 'mode...',
+	'user.js_error_no_dp_login' => 'No DP_LOGIN_NOTIFY in parent window ready to accept my message',
+	'user.' => '',
+	'user.' => '',
 );

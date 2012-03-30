@@ -15,7 +15,7 @@
 	<ul>
 		{% for part in ticket.user_participants %}
 		<li>
-			<small>(<a href="{{ path('user_tickets_participants_remove', {'ticket_ref': ticket.ref, 'person_id': part.person.id}) }}">remove</a>)</small> &nbsp;
+			<small>(<a href="{{ path('user_tickets_participants_remove', {'ticket_ref': ticket.ref, 'person_id': part.person.id}) }}">{{ phrase('user.remove_participant') }}</a>)</small> &nbsp;
 			{% if part.person.display_name != part.person.primary_email_address %}
 				{{ part.person.display_name }} ({{ part.person.primary_email_address }})
 			{% else %}
@@ -27,12 +27,12 @@
 {% endif %}
 
 <form action="{{ path('user_tickets_participants_add', {'ticket_ref':ticket.ref}) }}" method="post">
-	Add a new person by entering their name and email:<br />
-	First Name: {{ form_widget(newpart_form.first_name) }} &nbsp;&nbsp;
-	Last Name: {{ form_widget(newpart_form.last_name) }}
+	{{ phrase('user.add_using_name_and_email') }}:<br />
+	{{ phrase('user.first_name') }}: {{ form_widget(newpart_form.first_name) }} &nbsp;&nbsp;
+	{{ phrase('user.last_name') }}: {{ form_widget(newpart_form.last_name) }}
 	<br />
-	Email: {{ form_widget(newpart_form.email) }}
-	<input type="submit" value="Add" />
+	{{ phrase('user.form_email') }}: {{ form_widget(newpart_form.email) }}
+	<input type="submit" value="{{ phrase('user.btn_add') }}" />
 	{{ form_rest(newpart_form) }}
 </form>
 

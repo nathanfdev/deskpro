@@ -1,5 +1,5 @@
-Log in using your OpenID provider.<br /><br />
+{{ phrase('user.login_with_openid') }}<br /><br />
 <form action="{{ path('user_login_authenticate', {'usersource_id': usersource.id}) }}" method="post">
-	OpenID URL: <input type="text" name="openid_identity" value="" size=40" />
-	<input type="submit" value="Log In" />
+	{{ phrase('user.openid_url') }}: <input type="text" name="openid_identity" value="" size=40" />
+	<input type="submit" value="{{ phrase('user.login_link') }}" />
 </form>

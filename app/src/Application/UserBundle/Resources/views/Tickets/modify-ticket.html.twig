@@ -16,7 +16,7 @@
 <table cellspacing="5" cellpadding="0" border="0" width="100%">
 	<tr>
 		<td width="150">
-			Subject
+			{{ phrase('user.subject') }}
 		</td>
 		<td>
 			{{ form_widget(form.ticket.subject) }}
@@ -24,7 +24,7 @@
 	</tr>
 	<tr>
 		<td>
-			Department
+			{{ phrase('user.department') }}
 		</td>
 		<td>
 			{{ property_fields.form_department_select('editticket[ticket][department_id]', ticket_options.departments_hierarchy, ticket.department_id, 'department_id') }}
@@ -71,7 +71,7 @@
 	{% endfor %}
 </table>
 
-<center><input type="submit" value="Save" /></center>
+<center><input type="submit" value="{{ phrase('user.save') }}" /></center>
 
 </form>
 

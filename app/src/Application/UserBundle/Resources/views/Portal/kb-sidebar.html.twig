@@ -1,6 +1,6 @@
 <div class="sidebar-item dp-kb-page">
 	<div class="heading">
-		<h2>{{ title|default('News') }}</h2>
+		<h2>{{ title|default(phrase('user.content_news')) }}</h2>
 	</div>
 
 	<div class="content-list">
@@ -12,6 +12,6 @@
 	</div>
 
 	<div class="more-link">
-		<a href="{{ path('user_articles') }}">more...</a>
+		<a href="{{ path('user_articles') }}">{{ phrase('user.more') }}</a>
 	</div>
 </div>

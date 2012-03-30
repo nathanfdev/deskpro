@@ -33,8 +33,9 @@
 	'user.portal.submit_new_ticket' => 'Submit a new ticket',
 	'user.portal.submit_feedback' => 'Submit feedback',
 	'user.portal.chat_with_agent' => 'Chat with an agent',
-	'user.portal.' => '',
-	'user.portal.' => '',
+
+	'user.portal.login_using_twitter' => 'Log in using your Twitter account.',
+	'user.portal.login_with_twitter' => 'Log in with Twitter',
 	'user.portal.' => '',
 	'user.portal.' => '',
 	'user.portal.' => '',
