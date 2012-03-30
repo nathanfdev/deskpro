@@ -11,7 +11,28 @@
 Done!
 
 ######################################################
-# Quick Guide to Upgrading from DeskPRO v3/v2/v1     #
+# Quick Guide to Keeping DeskPRO v4 up to Date       #
+######################################################
+
+The following process will download the latest files, backup your database and old files and
+upgrade your database.
+
+USING LINUX?
+  | - 1. Use SSH to connect to your server, or if you are using a desktop computer, open a new terminal window.
+  | - 2. Change to the DeskPRO v4 directory. For example: cd /var/www/DeskPRO
+  | - 3. Execute the command: /usr/local/bin/php upgrade.php
+        (The location of PHP will depend upon where you have PHP installed; update appropriately)
+
+USING WINDOWS?
+  | - 1. From the Start menu choose "Run" and enter "cmd.exe"
+  | - 2. Change to the DeskPRO v4 directory. For example: cd C:\wamp\DeskPRO
+  | - 3. Execute the command: c:\wamp\bin\php\php5.3.0\php.exe upgrade.php
+       (The location of PHP will depend upon where you have PHP installed; update appropriately)
+
+Done!
+
+######################################################
+# Quick Guide to Importing from DeskPRO v3/v2/v1     #
 ######################################################
 
 1. Create a new MySQL database. (DeskPRO imports data leaving your existing database untouched *)
