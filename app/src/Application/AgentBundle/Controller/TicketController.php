@@ -85,6 +85,7 @@ class TicketController extends AbstractController
 		$ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket, 0, 0, $ticket_attachments, $is_pdf);
 		$ticket_messages_block = $ticket_messages_blockcache['ticket_messages_block'];
 		$ticket_attachments = $ticket_messages_blockcache['ticket_attachments'];
+		$ticket_message_attachments = $ticket_messages_blockcache['ticket_message_attachments'];
 		$counts['messages'] = $ticket_messages_blockcache['message_count'];
 
 		$ticket_flagged = $this->em->getRepository('DeskPRO:TicketFlagged')->getFlagForTicket($ticket, $this->person);
@@ -171,6 +172,7 @@ class TicketController extends AbstractController
             'ticket_perms' => $this->_getTicketPerms($ticket),
             'ticket' => $ticket,
             'ticket_attachments' => $ticket_attachments,
+			'ticket_message_attachments' => $ticket_message_attachments,
 
             'draft_text' => $draft_text,
 
@@ -271,11 +273,12 @@ class TicketController extends AbstractController
 		// Group attachments into messages so we can place them into each message
 		$ticket_message_attachments = array();
 		foreach ($ticket_attachments as $attach) {
+			if (!$attach['message']) continue;
 			if (!isset($ticket_message_attachments[$attach['message']['id']])) {
-				$ticket_message_attachments[$attach['message']['id']] = array();
+				$ticket_message_attachments[$attach['message']->getId()] = array();
 			}
 
-			$ticket_message_attachments[$attach['message']['id']][] = $attach['id'];
+			$ticket_message_attachments[$attach['message']->getId()][] = $attach->getId();
 		}
 
 		$ticket_logs = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForTicket(

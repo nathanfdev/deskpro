@@ -518,7 +518,7 @@ class TicketsStep extends AbstractDeskpro3Step
 			$insert_attach['message_id'] = null;
 
 			if ($attach_info['messageid']) {
-				$insert_attach['message_id'] = $this->getMappedNewId('ticket_message', $attach_info['messageid']);
+				$insert_attach['message_id'] = isset($message_map[$attach_info['messageid']]) ? $message_map[$attach_info['messageid']] : null;
 			}
 
 			if (!$insert_attach['message_id']) {
