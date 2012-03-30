@@ -150,12 +150,15 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 					onContentSet: function(ev) {
 						var wrapper = ev.wrapperEl;
 
+						var idbase = 'ed_' + Orb.uuidRand();
+						$('.template-upload', wrapper).attr('id', idbase + 'up')
+						$('.template-download', wrapper).attr('id', idbase + 'down')
 						wrapper.fileupload({
 							url: BASE_URL + 'admin/misc/accept-upload',
 							dropZone: wrapper,
 							autoUpload: true,
-							uploadTemplate: $('.template-upload', wrapper),
-							downloadTemplate: $('.template-download', wrapper)
+							uploadTemplateId: idbase + 'up',
+							downloadTemplateId: idbase + 'down'
 						}).bind('fileuploadstart', function() {
 							$('p.explain', wrapper).hide();
 						}).bind('fileuploadadd', function() {

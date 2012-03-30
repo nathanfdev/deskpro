@@ -89,6 +89,16 @@ Orb.uuid = function() {
 };
 Orb.uuid_num = 0;
 
+/**
+ * Like uuid but has a random and a time component as well. Usefil when you need an actual unique id
+ * on a page.
+ */
+Orb.uuidRand = function() {
+	var time = (new Date()).getTime();
+	var rand = Number.random(1, 999);
+	return 'uuid_' + (++Orb.uuid_num) + '_' + time + '_' + rand;
+};
+
 
 
 /**

@@ -10,14 +10,15 @@
 			<input type="file" name="file-upload" />
 			<div class="files"></div>
 
-			<script class="template-upload" type="text/x-jquery-tmpl">
-				<p>Upliading ${name}...</p>
+			<script class="template-upload" type="text/text/x-tmpl">
+				<p>Upliading ...</p>
 			</script>
-			<script class="template-download" type="text/x-jquery-tmpl">
+			<script class="template-download" type="text/x-tmpl">
+				{{ '{% var file=o.files[0]; %}' }}
 				<div>
-					<input type="hidden" class="new_blob_auth_id" value="${blob_auth_id}" />
-					<input type="hidden" class="new_logo_url" value="${download_url}" />
-					<img src="${download_url}" class="pic-new" />
+					<input type="hidden" class="new_blob_auth_id" value="{{ '{%=file.blob_auth_id%}' }}" />
+					<input type="hidden" class="new_logo_url" value="{{ '{%=file.download_url%}' }}" />
+					<img src="{{ '{%=file.download_url%}' }}" class="pic-new" />
 				</div>
 			</script>
 
