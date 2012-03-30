@@ -70,19 +70,26 @@ $DP_CONFIG = array();
 ######################################################
 # OPTIONAL : DeskPRO Import                          #
 #                                                    #
-# If you are importing                               #
+# Enter the database details of your current deskpro #
+# database to import the data to DeskPRO v4          #
+#                                                    #
+# If you would like to move attachments to the file  #
+# system (recommended) change the value from false   #
+# to true for store_attachment_files
 ######################################################
 
-/*
+/* delete this line to enable deskpro import
+
 $DP_CONFIG['import'] = array(
   'db_host' => 'localhost',
   'db_user' => 'root',
   'db_password' => '',
-  'db_name' => 'deskpro_v3',
+  'db_name' => 'deskpro',
   'store_attachment_files' => false,
   'existing_attachment_files' => ''
 );
-*/
+
+delete this line to enable deskpro import */
 
 ######################################################
 # OPTIONAL : Location of Directories                 #
@@ -104,12 +111,18 @@ $DP_CONFIG['import'] = array(
 # and your database                                  #
 ######################################################
 
-// $DP_CONFIG['memcached'] = array();
-// $DP_CONFIG['memcached']['enabled'] = false;
+/* delete this line to enable memcached support
 
-// $DP_CONFIG['memcached']['servers'][0] = array(
-//   'host' => ''
-// );
+$DP_CONFIG['memcached'] = array(
+	'enabled' = false,
+	'servers' = array(
+		array(
+			'host' => ''
+		)
+	)
+);
+
+delete this line to enable memcached support */
 
 ######################################################
 # OPTIONAL : Enable debug call trace                 #
