@@ -1,7 +1,7 @@
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTicket';
-pageMeta.title = 'New Ticket';
+pageMeta.title = '{{ phrase('agent.tickets.newticket') }}';
 pageMeta.ticket_id = 0;
 
 pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'ticket'}) }}';
@@ -22,36 +22,37 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="pending-info comment" style="display: none;">
 	<i class="reset"></i>
-	<h3>Creating ticket for <span id="{{baseId}}_comment_title"></span></h3>
+	<h3>{{ phrase('agent.tickets.creating_ticket_for_title') }} <span id="{{baseId}}_comment_title"></span></h3>
 	<div class="pending-item pending-ticket">
-		<div class="about">Commented on: <a data-route="" class="with-route ticket-link" id="{{baseId}}_comment_object_link"></a></div>
+		<div class="about">{{ phrase('agent.tickets.commented_on') }}: <a data-route="" class="with-route ticket-link" id="{{baseId}}_comment_object_link"></a></div>
 		<div class="post-action">
 			<select name="comment_action" id="{{baseId}}_comment_action">
-				<option value="delete">Delete</option>
-				<option value="approve">Validate</option>
+				<option value="delete">{{ phrase('agent.tickets.delete') }}</option>
+				<option value="approve">{{ phrase('agent.tickets.delete') }}</option>
 			</select>
-			comment after ticket is created
+			{{ phrase('agent.tickets.coment_after_ticket_created') }}
 		</div>
 	</div>
 </div>
 
 <div class="pending-info chat" style="display: none;">
 	<i class="reset"></i>
-	<h3>Creating ticket for chat: <span id="{{baseId}}_chat_title"></span></h3>
+	<h3>{{ phrase('agent.tickets.creating_ticket_for_chat') }}: <span id="{{baseId}}_chat_title"></span></h3>
 </div>
 
 <div class="pending-info person" style="display: none;">
 	<i class="reset"></i>
-	<h3>Creating ticket for <span id="{{baseId}}_person_title"></span></h3>
+	{% set phrase_part %}<span id="{{baseId}}_person_title"></span>{% endset %}
+	<h3>{{ phrase('agent.tickets.creating_ticket_for_title', {'title':phrase_part}) }}</h3>
 </div>
 
 <div class="section user-section first" id="{{baseId}}_user_section">
 	<div class="step">
 		<span class="num">1</span>
-		<span class="check">Done</span>
+		<span class="check">{{ phrase('agent.tickets.done') }}</span>
 	</div>
 	<div class="content">
-		<button class="clean-white small switch-user" id="{{baseId}}_switch_user" style="display: none">Change User</button>
+		<button class="clean-white small switch-user" id="{{baseId}}_switch_user" style="display: none">{{ phrase('agent.tickets.change_user') }}</button>
 		<div id="{{baseId}}_choose_user">
 			<div
 				id="{{baseId}}_user_searchbox"
@@ -62,7 +63,7 @@ pageMeta.baseId = '{{ baseId }}';
 				data-search-param="term"
 				data-position-bound="#{{baseId}}_userselect"
 			>
-				<input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="Choose a person to create this ticket for" />
+				<input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.tickets.choose_a_person') }}" />
 				<input type="hidden" name="newticket[person][id]" value="{{ person.id }}" class="person-id" id="{{baseId}}_person_id" />
 
 				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
@@ -79,7 +80,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 						</ul>
 						<footer>
-							<span class="create-user">Create a new person</span>
+							<span class="create-user">{{ phrase('agent.tickets.create_a_new_person') }}</span>
 						</footer>
 					</section>
 				</div>
@@ -88,8 +89,8 @@ pageMeta.baseId = '{{ baseId }}';
 		<div id="{{baseId}}_user_choice">
 
 		</div>
-		<div class="error-message person_id person_no_user">Please choose or create a user</div>
-		<div class="error-message person_email_address">Please enter a a valid email address</div>
+		<div class="error-message person_id person_no_user">{{ phrase('agent.tickets.please_choose_or_create_user') }}</div>
+		<div class="error-message person_email_address">{{ phrase('agent.tickets.please_enter_valid_email') }}</div>
 		<br class="clear" />
 	</div>
 </div>
@@ -97,11 +98,11 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section department-section" id="{{baseId}}_dep_section">
 	<div class="step">
 		<span class="num">2</span>
-		<span class="check">Done</span>
+		<span class="check">{{ phrase('agent.tickets.done') }}</span>
 	</div>
 	<div class="content">
 		<div class="col">
-			<h4>Department</h4>
+			<h4>{{ phrase('agent.tickets.department') }}</h4>
 			{% include 'AgentBundle:Common:select-department.html.twig' with {
 				'name': "newticket[department_id]",
 				'id': baseId ~ '_dep',
@@ -109,25 +110,25 @@ pageMeta.baseId = '{{ baseId }}';
 			} %}
 		</div>
 		<div class="col">
-			<h4>Status</h4>
+			<h4>{{ phrase('agent.tickets.status') }}</h4>
 			<select name="newticket[status]" id="{{baseId}}_status">
-				<option value="awaiting_agent" selected="selected">Awaiting agent</option>
-				<option value="awaiting_user">Awaiting user</option>
-				<option value="resolved">Resolved</option>
+				<option value="awaiting_agent" selected="selected">{{ phrase('agent.tickets.awaiting_agent') }}</option>
+				<option value="awaiting_user">{{ phrase('agent.tickets.awaiting_user') }}</option>
+				<option value="resolved">{{ phrase('agent.tickets.resolved') }}</option>
 			</select>
 		</div>
 		<div class="col">
-			<h4>Assignment</h4>
+			<h4>{{ phrase('agent.tickets.assignment') }}</h4>
 			<input type="hidden" name="newticket[agent_id]" value="0" id="{{baseId}}_agent_id" />
 			<input type="hidden" name="newticket[agent_team_id]" value="0" id="{{baseId}}_agent_team_id" />
 			<span id="{{baseId}}_assign_btn" class="menu-trigger">
-				<span id="{{baseId}}_agent_label">Me</span>
-				{% if app.getSetting('core.use_agent_team') %}and <span id="{{baseId}}_agent_team_label">No Team</span>{% endif %}
+				<span id="{{baseId}}_agent_label">{{ phrase('agent.tickets.me') }}</span>
+				{% if app.getSetting('core.use_agent_team') %}and <span id="{{baseId}}_agent_team_label">{{ phrase('agent.tickets.no_team') }}</span>{% endif %}
 			</span>
 		</div>
 		{% if app.getSetting('core.use_ticket_category') %}
 			<div class="col fieldprop ticket_category">
-				<h4>Category</h4>
+				<h4>{{ phrase('agent.tickets.category') }}</h4>
 				{% include 'AgentBundle:Common:select-category.html.twig' with {
 					'name': "newticket[category_id]",
 					'id': baseId ~ '_cat',
@@ -139,7 +140,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 		{% if app.getSetting('core.use_ticket_priority') %}
 			<div class="col fieldprop ticket_priority">
-				<h4>Priority</h4>
+				<h4>{{ phrase('agent.tickets.priority') }}</h4>
 					{% include 'AgentBundle:Common:select-priority.html.twig' with {
 						'name': "newticket[priority_id]",
 						'id': baseId ~ '_pri',
@@ -152,7 +153,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 		{% if app.getSetting('core.use_ticket_workflow') %}
 			<div class="col fieldprop ticket_workflow">
-				<h4>Workflow</h4>
+				<h4>{{ phrase('agent.tickets.workflow') }}</h4>
 					{% include 'AgentBundle:Common:select-workflow.html.twig' with {
 						'name': "newticket[workflow_id]",
 						'id': baseId ~ '_work',
@@ -165,7 +166,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 		{% if app.getSetting('core.use_product') %}
 			<div class="col fieldprop ticket_product">
-				<h4>Product</h4>
+				<h4>{{ phrase('agent.tickets.product') }}</h4>
 					{% include 'AgentBundle:Common:select-product.html.twig' with {
 						'name': "newticket[product_id]",
 						'id': baseId ~ '_prod',
@@ -193,40 +194,40 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section subject-section" id="{{baseId}}_subject_section">
 	<div class="step">
 		<span class="num">3</span>
-		<span class="check">Done</span>
+		<span class="check">{{ phrase('agent.tickets.done') }}</span>
 	</div>
 	<div class="content">
 		<h4>Subject</h4>
 		<input type="text" name="newticket[subject]" class="subject" id="{{baseId}}_subject" value="" />
-		<div class="error-message subject">Please enter a subject</div>
+		<div class="error-message subject">{{ phrase('agent.tickets.please_enter_subject') }}</div>
 	</div>
 </div>
 
 <div class="section message-section" id="{{baseId}}_message_section">
 	<div class="step">
 		<span class="num">4</span>
-		<span class="check">Done</span>
+		<span class="check">{{ phrase('agent.tickets.done') }}</span>
 	</div>
 	<div class="content">
-		<h4>Message</h4>
+		<h4>{{ phrase('agent.tickets.message') }}</h4>
 		<textarea name="newticket[message]" class="ticket-message" id="{{baseId}}_message"></textarea>
-		<div class="error-message message">Please enter a message</div>
+		<div class="error-message message">{{ phrase('agent.tickets.please_enter_a_message') }}</div>
 	</div>
 </div>
 
 <div class="section other-section" id="{{baseId}}_other_section">
 	<div class="step">
 		<span class="num">5</span>
-		<span class="check">Done</span>
+		<span class="check">{{ phrase('agent.tickets.done') }}</span>
 	</div>
 	<div class="content">
 		{# Tab Container #}
 		<div class="tab-container">
 			<nav id="{{baseId}}_other_props_tabs_wrap">
 				<ul id="{{baseId}}_other_props_tabs">
-					<li data-tab-for="> .tab-properties">Properties</li>
-					<li data-tab-for="> .tab-cc">CC's</li>
-					<li data-tab-for="> .tab-attach">Attachments</li>
+					<li data-tab-for="> .tab-properties">{{ phrase('agent.tickets.properties') }}</li>
+					<li data-tab-for="> .tab-cc">{{ phrase('agent.tickets.ccs') }}</li>
+					<li data-tab-for="> .tab-attach">{{ phrase('agent.tickets.attachments') }}</li>
 				</ul>
 			</nav>
 			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
@@ -255,7 +256,7 @@ pageMeta.baseId = '{{ baseId }}';
 							data-search-param="term"
 							data-position-bound="#{{baseId}}_userccselect"
 						>
-							<input type="text" id="{{baseId}}_userccselect" class="cc-user term" placeholder="Search for people to add, or enter their email addresses to create them" />
+							<input type="text" id="{{baseId}}_userccselect" class="cc-user term" placeholder="{{ phrase('agent.tickets.search_for_people_to_add') }}" />
 
 							<script type="text/x-deskpro-tmpl" class="user-row-tpl">
 								<li>
@@ -271,7 +272,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 									</ul>
 									<footer>
-										<span class="create-user">Create a new person</span>
+										<span class="create-user">{{ phrase('agent.tickets.create_a_new_person') }}</span>
 									</footer>
 								</section>
 							</div>
@@ -286,7 +287,7 @@ pageMeta.baseId = '{{ baseId }}';
 					{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newticket[attach][]'} %}
 					<h6>Attachments</h6>
 					<div class="file-input">
-						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">Upload</button>
+						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.tickets.upload') }}</button>
 					</div>
 					<ul class="files file-list"></ul>
 				</div>
@@ -302,17 +303,17 @@ pageMeta.baseId = '{{ baseId }}';
 		<section data-section-name="agents">
 			<header>
 				<h3>Agents</h3>
-				<input type="text" class="filter-box" placeholder="Filter..." />
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.tickets.filter') }}" />
 			</header>
 			<ul>
 				<li class="me last-me {% if ticket.agent.id == app.user.id or not ticket.agent %}on{% endif %}">
 					<input type="radio" name="{{baseId}}_agent" value="{{ app.user.id }}" {% if ticket.agent.id == app.user.id or not ticket.agent %}checked="checked"{% endif %} />
-					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
+					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.tickets.me') }}</span></label>
 				</li>
 
 				<li>
 					<input type="radio" name="{{baseId}}_agent" value="0" />
-					<label><span class="agent-pic agent-label-0">Unassigned</span></label>
+					<label><span class="agent-pic agent-label-0">{{ phrase('agent.tickets.unassigned') }}</span></label>
 				</li>
 
 				{% for agent in agents %}
@@ -331,8 +332,8 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="col">
 			<section data-section-name="teams">
 				<header>
-					<h3>Teams</h3>
-					<input type="text" class="filter-box" placeholder="Filter..." />
+					<h3>{{ phrase('agent.tickets.teams') }}</h3>
+					<input type="text" class="filter-box" placeholder="{{ phrase('agent.tickets.filter') }}" />
 				</header>
 				<ul>
 					{% for team in app.user.getAgent().getTeams() %}
@@ -345,7 +346,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 					<li class="{% if not ticket.agent_team %}on{% endif %}">
 						<input type="radio" name="{{baseId}}_agent_team" value="0" {% if not ticket.agent_team %}checked="checked"{% endif %} />
-						<label><span class="agent-team-label-0">No Team</span></label>
+						<label><span class="agent-team-label-0">{{ phrase('agent.tickets.no_team') }}</span></label>
 					</li>
 
 					{% for team in agent_teams %}
@@ -366,7 +367,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">Create Ticket <kbd>(alt+c)</kbd></button>
+		<button class="submit-trigger clean-white">{{ phrase('agent.tickets.create_ticket') }} <kbd>{{ phrase('agent.tickets.altc') }}</kbd></button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />

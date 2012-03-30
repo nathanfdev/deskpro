@@ -7,8 +7,8 @@
 		{% if depends_on %}data-depends-on="{{ depends_on }}"{% endif %}
 	>
 		<td width="37" class="prop effective highlight no-border" id="effective_lbl_{{ perm_fname_flat }}">
-			<span class="on">ON</span>
-			<span class="off">OFF</span>
+			<span class="on">{{ phrase('agent.perm_on') }}{#>>ON#}</span>
+			<span class="off">{{ phrase('agent.perm_off') }}{#>>OFF#}</span>
 		</td>
 		<td class="title">{{ title|raw }}</td>
 		<td class="prop">
@@ -40,10 +40,10 @@
 
 <nav class="check-grid-tabs">
 	<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
-		<li class="on" data-tab-for="#permgroup_tickets"><span>Tickets</span></li>
-		<li data-tab-for="#permgroup_people"><span>People and Organizations</span></li>
-		<li data-tab-for="#permgroup_chat"><span>Chat</span></li>
-		<li data-tab-for="#permgroup_publish"><span>Publish</span></li>
+		<li class="on" data-tab-for="#permgroup_tickets"><span>{{ phrase('agent.tickets') }}{#>>Tickets#}</span></li>
+		<li data-tab-for="#permgroup_people"><span>{{ phrase('agent.people_and_orgs') }}{#>>People and Organizations#}</span></li>
+		<li data-tab-for="#permgroup_chat"><span>{{ phrase('agent.chat') }}{#>>Chat#}</span></li>
+		<li data-tab-for="#permgroup_publish"><span>{{ phrase('agent.publish') }}{#>>Publish#}</span></li>
 	</ul>
 </nav>
 
@@ -53,15 +53,15 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th colspan="2" style="text-align: left">Description</th>
-					<th width="60">Overrides</th>
+					<th colspan="2" style="text-align: left">{{ phrase('agent.description') }}{#>>Description#}</th>
+					<th width="60">{{ phrase('agent.overrides') }}{#>>Overrides#}</th>
 				</tr>
 			</thead>
 			<tbody>
 				<!-- PERMISSION:agent_tickets.use -->{{ _self.perm_col('User ticket application', usergroup_values, 'agent_tickets', 'use') }}
 				<!-- PERMISSION:agent_tickets.create -->{{ _self.perm_col('Create tickets', usergroup_values, 'agent_tickets', 'create', 'agent_tickets_use') }}
-				<!-- PERMISSION:agent_tickets.reply_mass -->{{ _self.perm_col('Can use mass actions to reply <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="When this is enabled, the agent will be able to use mass ticket actions to send replies. Note that the agent will still be bound by the &quot;Can Reply&quot; permissions defined below. For example, if they are not allowed to reply to unassigned tickets, they will not be able to mass reply to them either."></span>', usergroup_values, 'agent_tickets', 'reply_mass', 'agent_tickets_use') }}
-				<!-- PERMISSION:agent_tickets.modify_set_closed -->{{ _self.perm_col('Can close and unclose tickets <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="If an agent is able to resolve a ticket he can also close it, and if he can un-resolve a ticket he can also unclose it."></span>', usergroup_values, 'agent_tickets', 'modify_set_closed', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.reply_mass -->{{ _self.perm_col('Can use mass actions to reply <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.notice_when_enabled_agent_can_use_mass_ticket_actions') }}{#>>When this is enabled, the agent will be able to use mass ticket actions to send replies. Note that the agent will still be bound by the &quot;Can Reply&quot; permissions defined below. For example, if they are not allowed to reply to unassigned tickets, they will not be able to mass reply to them either.#}"></span>', usergroup_values, 'agent_tickets', 'reply_mass', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.modify_set_closed -->{{ _self.perm_col('Can close and unclose tickets <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.notice_if_agent_can_resolve_ticket') }}{#>>If an agent is able to resolve a ticket he can also close it, and if he can un-resolve a ticket he can also unclose it.#}"></span>', usergroup_values, 'agent_tickets', 'modify_set_closed', 'agent_tickets_use') }}
 			</tbody>
 			<tbody>
 				<!-- PERMISSION:agent_tickets.reply_own -->{{ _self.perm_col('Reply to own and teams tickets', usergroup_values, 'agent_tickets', 'reply_own', 'agent_tickets_use') }}
@@ -148,8 +148,8 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th colspan="2" style="text-align: left">Description</th>
-					<th width="60">Overrides</th>
+					<th colspan="2" style="text-align: left">{{ phrase('agent.description') }}{#>>Description#}</th>
+					<th width="60">{{ phrase('agent.overrides') }}{#>>Overrides#}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -178,8 +178,8 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th colspan="2" style="text-align: left">Description</th>
-					<th width="60">Overrides</th>
+					<th colspan="2" style="text-align: left">{{ phrase('agent.description') }}{#>>Description#}</th>
+					<th width="60">{{ phrase('agent.overrides') }}{#>>Overrides#}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -199,15 +199,15 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th colspan="2" style="text-align: left">Description</th>
-					<th width="60">Overrides</th>
+					<th colspan="2" style="text-align: left">{{ phrase('agent.description') }}{#>>Description#}</th>
+					<th width="60">{{ phrase('agent.overrides') }}{#>>Overrides#}</th>
 				</tr>
 			</thead>
 			<tbody>
 				<!-- PERMISSION:agent_publish.create -->{{ _self.perm_col('Create content', usergroup_values, 'agent_publish', 'create') }}
 				<!-- PERMISSION:agent_publish.delete -->{{ _self.perm_col('Delete content', usergroup_values, 'agent_publish', 'delete') }}
 				<!-- PERMISSION:agent_publish.edit -->{{ _self.perm_col('Edit others content', usergroup_values, 'agent_publish', 'edit') }}
-				<!-- PERMISSION:agent_publish.validate -->{{ _self.perm_col('Validate content and comments (including own) <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="If an agent does not have this permission, then any new content they create or edits they make will be held in a validation queue before they appear live on the site."></span>', usergroup_values, 'agent_publish', 'validate') }}
+				<!-- PERMISSION:agent_publish.validate -->{{ _self.perm_col('Validate content and comments (including own) <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.notice_if_agent_cant_validate_content') }}{#>>If an agent does not have this permission, then any new content they create or edits they make will be held in a validation queue before they appear live on the site.#}"></span>', usergroup_values, 'agent_publish', 'validate') }}
 			</tbody>
 		</table>
 	</div>

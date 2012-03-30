@@ -2,8 +2,8 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_agents') }}">Agents</a></li>
-		<li>Deleted Agents</li>
+		<li><a href="{{ path('admin_agents') }}">{{ phrase('agent.agents') }}{#>>Agents#}</a></li>
+		<li>{{ phrase('agent.deleted_agents') }}{#>>Deleted Agents#}</li>
 	</ul>
 {% endblock %}
 {% block content %}
@@ -15,7 +15,7 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th class="single-title">Agent</th>
+					<th class="single-title">{{ phrase('agent.agent') }}{#>>Agent#}</th>
 					<th class="r-col" width="30">&nbsp;</th>
 				</tr>
 			</thead>
@@ -30,7 +30,7 @@
 						<td class="prop r-col">
 							<form action="{{ path('admin_agents_setdeleted', {person_id: person.id, set_to: '0'}) }}" method="post">
 								{{ form_token() }}
-								<button class="clean-white">Restore</button>
+								<button class="clean-white">{{ phrase('agent.restore') }}{#>>Restore#}</button>
 							</form>
 						</td>
 					</tr>

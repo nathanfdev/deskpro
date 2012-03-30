@@ -62,6 +62,8 @@ class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
                     }
                 }
             }
+
+			closedir($handle);
         }
 
         $templates = array();
@@ -83,7 +85,8 @@ class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
         // we now have all the phrases defined in templates that should exist
         $matches = preg_match_all('/{{\s+phrase\\(\'([_a-zA-|.]*)\'/', $templates_content, $results);
-        $template_phrases = $results[1];
+
+        $template_phrases = array_merge($this->getPhrasesFromPHPFiles(), $results[1]);
 
         // now let's get all the phrases defined in language files
         $directories = array(
@@ -132,5 +135,53 @@ class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         echo "\n\nThere are " . count($missing_language_phrases) . " phrases defined in templates but not found in language files\n\n";
         print_r($missing_language_phrases);
 
+    }
+
+    private function getPhrasesFromPHPFiles()
+    {
+        // Recursively scan directories.
+        function scan_dir($dir, &$files)
+        {
+            if ($handle = opendir($dir)) {
+                while (false !== ($filename = readdir($handle))) {
+                    if (is_dir($dir.'/'.$filename)) {
+                        if ($filename == "." || $filename == "..")
+                                continue;
+
+                        scan_dir($dir.'/'.$filename, $files);
+                    }
+                    else {
+                        if(preg_match('/\.php$/i' , $filename)) {
+                            $files[] = $dir.'/'.$filename;
+                        }
+                    }
+                }
+
+                closedir($handle);
+            }
+        }
+
+        $files = array();
+        // Create a large list containing all php files.
+        scan_dir(DP_ROOT . '/src/', $files);
+        $phrases = array();
+
+        foreach($files as $file) {
+            // Do this later.
+            /*$tokens = token_get_all(file_get_contents($file));
+            $state = '';
+
+            foreach($tokens as $token) {
+                if(is_array($token) && $token[1] == 'phrase')
+            }*/
+
+            $matches = preg_match_all('/->phrase\(\'([_a-zA-|.]*)\'/', file_get_contents($file), $results);
+
+            if($matches) {
+                $phrases = array_merge($phrases, $results[1]);
+            }
+        }
+
+        return $phrases;
     }
 }

@@ -1,15 +1,18 @@
 <div id="vacation_overlay" style="width: 400px; height: 200px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
-		<h4>Vacation Mode</h4>
+		<h4>{ phrase('agent.vacation_mode') }}{#>>Vacation Mode#}</h4>
 	</div>
 	<div class="overlay-content">
-		<p>When an agent is in vacation mode they cannot log in or use DeskPRO until it is turned off again. Other agents will not be able to assign tickets to them, and any currently assigned tickets will be unassigned if they are or become awaiting user.</p>
+		<p>{{ phrase('agent.explain_agent_in_vacation_cannot_login') }}{#>>When an agent is in vacation mode they cannot log in or use DeskPRO until it is turned off again. Other agents will not be able to assign tickets to them, and any currently assigned tickets will be unassigned if they are or become awaiting user.#}</p>
 	</div>
 	<div class="overlay-footer">
 		<form action="{{ path('admin_agents_setvacation', {person_id: agent.id|default('00000'), set_to: '1'}) }}" method="post">
 			{{ form_token() }}
-			<button class="clean-white">Enable vacation mode for <span class="agent-name">{{ agent.display_name }}</span></button>
+			<button class="clean-white">
+				{% set phrase_part %}<span class="agent-name">{{ agent.display_name }}</span>{% endset %}
+				{{ phrase('agent.enable_vacation_mode', {'name: phrase_part}) }}{#>>Enable vacation mode for {name}#}
+			</button>
 		</form>
 	</div>
 </div>
@@ -17,15 +20,18 @@
 <div id="delete_overlay" style="width: 400px; height: 150px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
-		<h4>Delete Agent</h4>
+		<h4>{{ phrase('agent.delete_agent') }}{#>>Delete Agent#}</h4>
 	</div>
 	<div class="overlay-content">
-		<p>When an agent is deleted, their login and all access is revoked. Any assigned tickets are unassigned.</p>
+		<p>{{ phrase('agent.explain_when_agent_deleted_all_access_revoked') }}{#>>When an agent is deleted, their login and all access is revoked. Any assigned tickets are unassigned.#}</p>
 	</div>
 	<div class="overlay-footer">
 		<form action="{{ path('admin_agents_setdeleted', {person_id: agent.id|default('00000'), set_to: '1'}) }}" method="post">
 			{{ form_token() }}
-			<button class="clean-white">Delete <span class="agent-name">{{ agent.display_name }}</span></button>
+			<button class="clean-white">
+				{% set phrase_part %}<span class="agent-name">{{ agent.display_name }}</span>{% endset %}
+				{{ phrase('agent.delete_name', {'name':phrase_part}) }}{#>>Delete {name}#}
+			</button>
 		</form>
 	</div>
 </div>
