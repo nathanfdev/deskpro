@@ -66,7 +66,7 @@ var PortalAdmin = {
 		var contentBlocks = $(blockSelector, wrapper);
 
 		contentBlocks.each(function() {
-			var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span class="lbloff">OFF</span><span class="lblon">ON</span></li><li class="dp-edit"><span>edit</span></li></div>');
+			var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span class="lbloff">OFF</span><span class="lblon">ON</span></li></div>');
 			$(this).prepend(controls);
 			$(this).append('<div class="dp-drag-overlay" />');
 
