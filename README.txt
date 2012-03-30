@@ -2,11 +2,13 @@
 # Quick Guide to Installing DeskPRO v4               #
 ######################################################
 
-1. Create a new MySQL database.
-2. Copy /config.new.php to /config.php
-3. Edit /config.php with a text editor and insert your database details near the top.
-4. Open DeskPRO in your web browser and the install wizard will start.
-5. Schedule a cron tasks (linux) or a scheduled task (windows) to run cron.php every minute
+1. Extract the DeskPRO files to your web server
+2. Make sure the /data folder is writable by the server
+3. Create a new MySQL database.
+4. Copy /config.new.php to /config.php
+5. Edit /config.php with a text editor and insert your database details near the top.
+6. Open DeskPRO in your web browser and the install wizard will start.
+7. Schedule a cron tasks (linux) or a scheduled task (windows) to run cron.php every minute
 
 Done!
 
@@ -35,26 +37,28 @@ Done!
 # Quick Guide to Importing from DeskPRO v3/v2/v1     #
 ######################################################
 
-1. Create a new MySQL database. (DeskPRO imports data leaving your existing database untouched *)
-2. Copy /config.new.php to /config.php
-3. Edit /config.php with a text editor and insert your *NEW* database details near the top.
-4. Further down the file, find the section titled "DeskPRO Import", enter your *OLD database details
+1. Extract the DeskPRO files to your web server
+2. Make sure the /data folder is writable by the server
+3. Create a new MySQL database. (DeskPRO imports data leaving your existing database untouched *)
+4. Copy /config.new.php to /config.php
+5. Edit /config.php with a text editor and insert your *NEW* database details near the top.
+6. Further down the file, find the section titled "DeskPRO Import", enter your *OLD database details
 
 USING LINUX?
-  | - 5. Use SSH to connect to your server, or if you are using a desktop computer, open a new terminal window.
-  | - 6. Change to the DeskPRO v4 directory. For example: cd /var/www/DeskPRO
-  | - 7. Execute the command: /usr/local/bin/php import.php
+  | - 7. Use SSH to connect to your server, or if you are using a desktop computer, open a new terminal window.
+  | - 8. Change to the DeskPRO v4 directory. For example: cd /var/www/DeskPRO
+  | - 9. Execute the command: /usr/local/bin/php import.php
         (The location of PHP will depend upon where you have PHP installed; update appropriately)
 
 USING WINDOWS?
-  | - 5. From the Start menu choose "Run" and enter "cmd.exe"
-  | - 6. Change to the DeskPRO v4 directory. For example: cd C:\wamp\DeskPRO
-  | - 7. Execute the command: c:\wamp\bin\php\php5.3.0\php.exe import.php
+  | - 7. From the Start menu choose "Run" and enter "cmd.exe"
+  | - 8. Change to the DeskPRO v4 directory. For example: cd C:\wamp\DeskPRO
+  | - 9. Execute the command: c:\wamp\bin\php\php5.3.0\php.exe import.php
        (The location of PHP will depend upon where you have PHP installed; update appropriately)
 
-8. Follow the on-screen instructions.
-9. Log into DeskPRO using your browser
-10. Schedule a cron tasks (linux) or a scheduled task (windows) to run cron.php every minute
+10. Follow the on-screen instructions.
+11. Log into DeskPRO using your browser
+12. Schedule a cron tasks (linux) or a scheduled task (windows) to run cron.php every minute
 
 Done!
 
