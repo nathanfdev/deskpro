@@ -125,5 +125,5 @@ $DP_CONFIG['memcached'] = array(
 ######################################################
 
 $DP_CONFIG['enable_debug_trace'] = false;
-// $DP_CONFIG['enable_slow_page_log'] = 1.1;
-// $DP_CONFIG['enable_slow_page_log_minquerytime'] = 0.8;
+$DP_CONFIG['enable_slow_page_log'] = false;
+$DP_CONFIG['enable_slow_page_log_minquerytime'] = false;
