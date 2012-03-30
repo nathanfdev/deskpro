@@ -1,7 +1,7 @@
 <div class="dp-sidebar-block dp-twitter-block">
 	<div class="dp-box-header">
 		<h3>
-			<a href="http://twitter.com/{{ twitter_name }}">@{{ twitter_name }} on twitter</a>
+			<a href="http://twitter.com/{{ twitter_name }}">{{ phrase('user.portal.twitter_user_link', {'name':twitter_name}) }}</a>
 		</h3>
 	</div>
 	<div class="dp-twitter-list">
@@ -13,7 +13,7 @@
 			{% endfor %}
 		</ul>
 		<div class="dp-more">
-			<a href="http://twitter.com/{{ twitter_name }}">View more from @{{ twitter_name }} &rarr;</a>
+			<a href="http://twitter.com/{{ twitter_name }}">{{ phrase('user.portal.twitter_view_more', {'name':twitter_name}) }}</a>
 		</div>
 	</div>
 </div>

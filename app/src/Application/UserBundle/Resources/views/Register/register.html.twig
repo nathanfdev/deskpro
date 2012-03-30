@@ -1,6 +1,6 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_register') }}">Register</a></li>
+	<li><a href="{{ path('user_register') }}">{{ phrase('user.register') }}</a></li>
 {% endblock %}
 {% block content %}
 <div
@@ -22,7 +22,7 @@
 						<div class="dp-form-input">
 							{{ form_widget(form.name) }}
 							<div class="dp-error-explain">
-								Please enter your name
+								{{ phrase('user.register_please_enter_name') }}
 							</div>
 						</div>
 					</div>
@@ -33,8 +33,8 @@
 						</div>
 						<div class="dp-form-input">
 							{{ form_widget(form.email) }}
-							{% if errors['email.invalid'] %}<div class="dp-error-explain">Please enter a valid email address</div>{% endif %}
-							{% if errors['email.in_use'] %}<div class="dp-error-explain">This email address already belongs to a registered user.</div>{% endif %}
+							{% if errors['email.invalid'] %}<div class="dp-error-explain">{{ phrase('user.register_please_enter_valid_email') }}</div>{% endif %}
+							{% if errors['email.in_use'] %}<div class="dp-error-explain">{{ phrase('user.register_email_address_exists_already') }}</div>{% endif %}
 						</div>
 					</div>
 
@@ -45,8 +45,8 @@
 						<div class="dp-form-input">
 							{{ form_widget(form.password) }}
 						</div>
-						{% if errors['password.short'] %}<div class="dp-error-explain">Please enter a password of at least 5 characters.</div>{% endif %}
-						{% if errors['password.mismatch'] %}<div class="dp-error-explain">The two password fields did not match.</div>{% endif %}
+						{% if errors['password.short'] %}<div class="dp-error-explain">{{ phrase('user.register_password_must_be_at_least') }}</div>{% endif %}
+						{% if errors['password.mismatch'] %}<div class="dp-error-explain">{{ phrase('user.register_password_mismatch') }}</div>{% endif %}
 					</div>
 
 					<div class="dp-form-row">
