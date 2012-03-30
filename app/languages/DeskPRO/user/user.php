@@ -18,7 +18,7 @@
 	'user.all' => 'All',
 
 	'user.content_articles' => 'Articles',
-	'user.content_help_articles' => 'Help Articles', {# Just use above name instead? #}
+	'user.content_help_articles' => 'Help Articles', # Just use above name instead? #
 	'user.content_feedback' => 'Feedback',
 	'user.content_downloads' => 'Downloads',
 	'user.content_news' => 'News',
