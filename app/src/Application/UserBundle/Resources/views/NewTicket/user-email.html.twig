@@ -2,13 +2,21 @@
 	{% if app.user.is_guest %}
 		{% if login_error %}
 		<div class="alert-message error dp-newticket-login-err">
-			The email address or password you entered is invalid. Please try again or <a href="{{ path('user_login_resetpass') }}">click here</a> if you have lost your password.
+			{% set phrase_link %}
+				<a href="{{ path('user_login_resetpass') }}">{{ phrase('user.tickets.click_here') }}</a>
+			{% endset %}
+			{{ phrase('user.tickets.invalid_email', {'phrase_link':phrase_link}) }}
 		</div>
 		{% endif %}
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Your Email Address *</label> <em class="desc">If you are a registered user, please <a href="{{ path('user_login') }}" class="dp-newticket-login-open">log in</a>. <a href="{{ path('user_login_resetpass') }}">Lost password</a>?</em>
+				<label>{{ phrase('user.tickets.label_your_email_star') }}</label> <em class="desc">
+				{% set phrase_link %}
+					<a href="{{ path('user_login') }}" class="dp-newticket-login-open">{{ phrase('user.tickets.link_login') }}</a>
+				{% endset %}
+				{{ phrase('user.tickets.login_if_registered', {'link':phrase_link}) }}
+				<a href="{{ path('user_login_resetpass') }}">{{ phrase('user.tickets.lost_password_link') }}</a></em>
 			</div>
 			<div class="dp-form-input">
 				<input type="text" id="dp_newticket_email" name="newticket[person][email]" value="" />
@@ -17,23 +25,28 @@
 
 		<div class="dp-form-row dp-newticket-login-pass">
 			<div class="dp-form-label">
-				<label>Password</label>
+				<label>{{ phrase('user.tickets.lbl_password') }}</label>
 			</div>
 			<div class="dp-form-input">
 				<input type="password" id="dp_newticket_login_pass" />
 				<div class="dp-loading">
-					Logging in...
+					{{ phrase('user.tickets.logging_in') }}
 				</div>
 				<div class="dp-btn-row">
-					<button class="btn primary dp-login-in-trigger">Log In</button>
-					or <a class="dp-newticket-login-open">close</a>
+					{% set phrase_link1 %}
+					<button class="btn primary dp-login-in-trigger">{{ phrase('user.tickets.login') }}</button>
+					{% endset %}
+					{% set phrase_link2 %}
+					<a class="dp-newticket-login-open">{{ phrase('user.tickets.close') }}</a>
+					{% endset %}
+					{{ phrase('user.tickets.login_or_close', {'link1':phrase_link1, 'link2':phrase_link2}) }}
 				</div>
 			</div>
 		</div>
 	{% else %}
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Your Email Address</label></em>
+				<label>{{ phrase('user.tickets.lbl_your_email') }}</label></em>
 			</div>
 			<div class="dp-form-input">
 				{{ app.user.primary_email_address }}

@@ -6,7 +6,8 @@
 			<div class="dp-box-content-wrapper">
 				<div class="dp-box-content">
 					<p>
-						Thank you for validating your email address. {% if ticket_ids|length %}Our agents will now read and reply to all of your messages.{% endif %}
+						{{ phrase('user.thank_you_for_validating') }}
+						{% if ticket_ids|length %}{{ phrase('user.agents_will_get_back_to_you') }}{% endif %}
 					</p>
 				</div>
 			</div>

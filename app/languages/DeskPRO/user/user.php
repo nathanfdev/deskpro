@@ -1,6 +1,6 @@
 <?php return array(
 
-	'user.portal_enabled' => true,
+	'user.portal_enabled' => true, // ?
 	'user.loading' => 'Loading',
 	'user.loading_saving' => 'Saving',
 	'user.loading_wait' => 'Please Wait',
@@ -131,5 +131,13 @@
 	'user.required' => 'Required',
 	'user.required_not_displayed' => 'Required but never displayed',
 
-    'user.download_pdf' => 'Download PDF',
+	'user.download_pdf' => 'Download PDF',
+
+	'user.thank_you_for_validating' => 'Thank you for validating your email address.',
+	'user.agents_will_get_back_to_you' => 'Our agents will now read and reply to all of your messages.',
+
+	'user.title_validate_address' => 'Validate {{email}}',
+	'user.enter_validate_code' => 'If you already have a validation code from your email, enter it here:',
+	'user.title_resend_validate_email' => 'Resend Validation Email',
+	'user.resend_validate_you_will_receive_an_email' => 'You should have recieved a validation email with a special link in it. If you never got this email, click the button below to request another one.',
 );

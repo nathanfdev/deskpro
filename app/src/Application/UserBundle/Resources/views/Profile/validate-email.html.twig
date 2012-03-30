@@ -1,18 +1,17 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block content %}
-	<h3>Validate {{email.email}}</h3>
+	<h3>{{ phrase('user.title_validate_address', {email: email.email}) }}</h3>
 	<p>
-		If you already have a validation code from your email, enter it here:
+		{{ phrase('user.enter_validate_code') }}
 		<form action="{{ path('user_profile_emails_validate', {'email_id': email.id}) }}" method="post">
 			<input type="input" name="code" value="" />
 			<input type="submit" value="Validate" />
 		</form>
 	</p>
 
-	<h3>Resend Validation Email</h3>
+	<h3>{{ phrase('user.title_resend_validate_email') }}</h3>
 	<p>
-		You should have recieved a validation email with a special link in it. If you never got this email,
-		click the button below to request another one.
+		{{ phrase('user.resend_validate_you_will_receive_an_email') }}
 		<br /><br />
 		<form action="{{ path('user_profile_emails_validate_sendlink', {'email_id': email.id}) }}">
 			<input type="submit" value="Send validation email" />

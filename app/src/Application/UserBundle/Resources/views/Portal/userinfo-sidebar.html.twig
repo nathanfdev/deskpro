@@ -1,42 +1,44 @@
 <div class="sidebar-item portal_userinfo">
 	{% if app.user.id %}
 		<div class="heading">
-			<h2>Welcome, {{ app.user.first_name|default(app.user.display_name) }}</h2>
+			<h2>{{ phrase('user.portal.welcome_name', {'name': app.user.first_name|default(app.user.display_name)}) }} </h2>
 		</div>
 		<ul class="sidebar-nav">
-			<li class="profile"><a href="{{ path('user_profile') }}"><span>Your Profile</span></a></li>
-			<li class="ticket">{% if ticket_count %}<div class="count">{{ ticket_count }}</div>{% endif %}<a href="{{ path('user_tickets') }}"><span>Your Tickets</span></a></li>
-			<li class="logout"><a href="{{ path('user_logout', {'auth': static_security_token('user_logout', 0) }) }}"><span>Log Out</span></a></li>
+			<li class="profile"><a href="{{ path('user_profile') }}"><span>{{ phrase('user.portal.your_profile') }}</span></a></li>
+			<li class="ticket">{% if ticket_count %}<div class="count">{{ ticket_count }}</div>{% endif %}<a href="{{ path('user_tickets') }}"><span>{{ phrase('user.tickets.your_tickets') }}</span></a></li>
+			<li class="logout"><a href="{{ path('user_logout', {'auth': static_security_token('user_logout', 0) }) }}"><span>{{ phrase('user.logout_link') }}</span></a></li>
 		</ul>
 	{% else %}
 		<div class="heading">
-			<h2>Welcome, Guest</h2>
+			<h2>{{ phrase('user.portal.welcome_guest') }}</h2>
 		</div>
 		<div class="content-item">
 			<div class="content-list">
 				<div class="item login-form">
-					<a style="float: right; font-size: 11px;" href="{{ path('user_login_resetpass') }}">Lost your login?</a>
-					<h3>Log In</h3>
+					<a style="float: right; font-size: 11px;" href="{{ path('user_login_resetpass') }}">{[ phrase('user.portal.lost_your_login') }}</a>
+					<h3>{{ phrase('user.portal.btn_login') }}</h3>
 
 					<form action="{{ path('user_login_authenticate_local') }}" method="post">
 					<table cellspacing="0" cellpadding="0" width="100%"><tr>
 						<td width="50%">
-							<small>Email Address:</small><br />
+							<small>{{ phrase('user.portal.label_email') }}</small><br />
 							<input type="text" name="email" value="" />
 						</td>
 						<td width="50%">
-							<small>Password:</small><br />
+							<small>{{ phrase('user.portal.label_password') }}</small><br />
 							<input type="password" name="password" value="" />
 						</td>
 					</tr><tr><td colspan="2" style="text-align: right;">
-						<button class="dp-button xx-small">Log In</button>
+						<button class="dp-button xx-small">{{ phrase('user.portal.btn_login') }}</button>
 					</td></tr></table>
 					</form>
 
 				</div>
 				<div class="item register">
-					Don't have an account? <a href="{{ path('user_register') }}">Register now</a> so you can view
-					your ticket history and manage your profile.
+					{% set phrase_link %}
+						<a href="{{ path('user_register') }}">{{ phrase('user.portal.register_now') }}</a>
+					{% endset %}
+					{{ phrase('user.portal.if_not_registered', {'link':phrase_link}) }}
 				</div>
 			</div>
 		</div>

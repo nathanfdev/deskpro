@@ -33,8 +33,8 @@ ul.attachment-list > li img.preview {
 {% block content %}
 
 <div style="background-color: #FFF9DE; border: 2px solid #C4BEA3; margin-bottom: 15px; padding: 8px;">
-	<strong><a href="{{ path('user_register_finish') }}">Register a free account with {{ limited_person.primary_email_address }}</a></strong>
-	to interact with this ticket easier, and gain more site features.
+	<strong><a href="{{ path('user_register_finish') }}">{{ phrase('user.tickets.register_free', {'email':limited_person.primary_email_address}) }}</a></strong>
+
 </div>
 
 <h1 style="border-bottom: 2px solid #ddd; margin-bottom: 10px; padding-bottom: 3px;">{{ ticket.subject }}</h1>

@@ -64,9 +64,7 @@ $(document).ready(function() {
 			<div class="dp-box-content">
 				{% if ticket.hidden_status == 'validating' %}
 					<div style="background-color: #FFF9DE; border: 2px solid #C4BEA3; margin-bottom: 15px; padding: 8px;">
-						<strong style="color:#B31010">Important</strong>! You still need to validate your
-						email address ({{ticket.person_email.email}}) before your ticket will be read by our agents.
-						Check your email now and click on the link.
+						{{ phrase('user.tickets.must_validate_email', {email: {{ticket.person_email.email}}}) }}
 					</div>
 				{% endif %}
 
