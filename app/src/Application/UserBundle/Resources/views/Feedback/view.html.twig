@@ -6,7 +6,7 @@
 	<link rel="canonical" href="{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}" />
 {% endblock %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_feedback') }}">Feedback</a></li>
+	<li><a href="{{ path('user_feedback') }}">{{ phrase('user.feedback.section_name') }}</a></li>
 	{% for cat in category_path %}
 		<li><a href="{{ path('user_feedback', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}

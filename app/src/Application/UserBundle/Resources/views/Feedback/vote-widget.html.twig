@@ -1,7 +1,10 @@
 <div class="feedback_vote_menu_wrap" style="display: none">
 	<div class="feedback_vote_menu">
 		<span class="close-trigger">x</span>
-		You have up to <span class="votes-allowed"></span> votes to cast on this feedback. How many do you want to use?
+		{% set phrase_part %}
+		<span class="votes-allowed"></span>
+		{% endset %}
+		{{ phrase('user.feedback.votes_available', {'part':phrase_part}) }}
 		<br />
 		<ul>
 			<li class="num-0 on" data-num="0">&nbsp;None&nbsp;</li>

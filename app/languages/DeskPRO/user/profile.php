@@ -31,4 +31,11 @@
 
 	'user.profile.email_validate_sent' => 'Validation email sent to {{email}}',
 	'user.profile.email_validate_sent_explain' => 'We\'ve just sent you a new validation email. Click the link in the email to validate your email address.',
+
+	'user.profile.section_title' => 'Profile',
+	'user.profile.subscriptions' => 'Subscriptions',
+	'user.profile.article_subscriptions' => 'Article Subscriptions',
+	'user.profile.news_subscriptions' => 'News Subscriptions',
+	'user.profile.feedback_subscriptions' => 'Feedback Subscriptions',
+	'user.profile.download_subscriptions' => 'Download Subscriptions',
 );

@@ -84,4 +84,11 @@
 	'user.tickets.login_or_close' => '{{link1}} or {{link2}}',
 	'user.tickets.close' => 'close',
 	'user.tickets.lbl_your_email' => 'Your Email Address',
+
+	'user.tickets.your_tickets' => 'Your Tickets',
+
+	'user.tickets.thank_you' => 'Thank you',
+	'user.tickets.thank_you_please_wait' => 'Thank you for submitting your ticket! You should get a confirmation email shortly.',
+	'user.tickets.validate_to_be_seen' => '<strong>Important!</strong> Before your ticket will be read by our agents, you need to validate your email address. Check your email for our confirmation link.',
+	'user.tickets.check_your_email' => '<strong>Important</strong>! Before your ticket will be read by our agents, you need to validate your email address. Check your email ({{email}}) for our confirmation link.',
 );

@@ -19,7 +19,7 @@
 {% block page_title %}
 	{{ article.title }}
 	-
-	Knowledgebase
+	{[ phrase('user.articles.section_name') }}
 	{% for categories in all_categories %}
 		{% if loop.index0 == 0 %}
 			{% for c in categories %}
@@ -38,7 +38,7 @@
 			<div class="dp-box-content-meta">
 				<div class="by-line">
 					<img src="{{ article.person.getPictureUrl(40) }}" />
-					Created by {{ article.person.display_name }} on {{ article.date_created|date('M d Y') }}
+					{{ phrase('user.articles.created_by_on', {'name':article.person.display_name, 'date':article.date_created|date('M d Y')}) }}
 					<br class="dp-clear" style="clear:left" />
 				</div>
 			</div>

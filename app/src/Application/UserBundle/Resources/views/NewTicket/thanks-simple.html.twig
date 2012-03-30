@@ -29,15 +29,14 @@ $(document).ready(function() {
 {% endblock %}
 {% block content %}
 
-		<h1 style="font-size: 18px">Thank you</h1>
+		<h1 style="font-size: 18px">{{ phrase('user.tickets.thank_you') }}</h1>
 		<p>
-			Thank you for submitting your ticket! You should get a confirmation email shortly.
+			{{ phrase('user.tickets.thank_you_please_wait') }}
 		</p>
 
 		{% if ticket.hidden_status == 'validating' %}
 			<p>
-				<strong style="color:#B31010">Important</strong>! Before your ticket will be read by
-				our agents, you need to validate your email address. Check your email for our confirmation link.
+				{{ phrase('user.tickets.validate_to_be_seen') }}
 			</p>
 		{% endif %}
 {% endblock %}

@@ -3,8 +3,8 @@
 	<script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/SubscriptionManager.js') }}"></script>
 {% endblock %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_profile') }}">Profile</a></li>
-	<li><a href="{{ path('user_profile_subs') }}">Subscriptions</a></li>
+	<li><a href="{{ path('user_profile') }}">{{ phrase('user.profile.section_title') }}</a></li>
+	<li><a href="{{ path('user_profile_subs') }}">{{ phrase('user.profile.subscriptions') }}</a></li>
 {% endblock %}
 {% block content %}
 <div class="content-item with-handler" data-element-handler="DeskPRO.User.ElementHandler.SubscriptionManager">
@@ -13,7 +13,7 @@
 	</div>
 	{% if subscriptions.article %}
 	<div class="content-list subscription-list">
-		<h3>Article Subscriptions</h3>
+		<h3>{{ phrase('user.profile.article_subscriptions') }}</h3>
 		<ul>
 			{% for sub in subscriptions.article %}
 				{% set article = sub.article %}
@@ -27,7 +27,7 @@
 	{% endif %}
 	{% if subscriptions.news %}
 	<div class="content-list subscription-list">
-		<h3>News Subscriptions</h3>
+		<h3>{{ phrase('user.profile.news_subscriptions') }}</h3>
 		<ul>
 			{% for sub in subscriptions.news %}
 				{% set news = sub.news %}
@@ -41,7 +41,7 @@
 	{% endif %}
 	{% if subscriptions.feedback %}
 	<div class="content-list subscription-list">
-		<h3>Feedback Subscriptions</h3>
+		<h3>{{ phrase('user.profile.feedback_subscriptions') }}</h3>
 		<ul>
 			{% for sub in subscriptions.feedback %}
 				{% set feedback = sub.feedback %}
@@ -58,7 +58,7 @@
 	{% endif %}
 	{% if subscriptions.download %}
 	<div class="content-list subscription-list">
-		<h3>Download Subscriptions</h3>
+		<h3>{{ phrase('user.profile.download_subscriptions') }}</h3>
 		<ul>
 			{% for sub in subscriptions.download %}
 				{% set download = sub.download %}

@@ -15,4 +15,9 @@
 
 	'user.articles.popular_section_name' => 'Popular Articles',
 	'user.articles.recent_section_name' => 'Recent Articles',
+
+	'user.articles.created_by_on' => 'Created by {{name}} on {{date}}',
+	'user.articles.' => ''
+	'user.articles.' => ''
+	'user.articles.' => ''
 );
