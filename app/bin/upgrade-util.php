@@ -46,8 +46,13 @@ if (php_sapi_name() != 'cli') {
 
 define('DP_START_DIR', getcwd());
 
-define('DP_ROOT', realpath(__DIR__ . '/../'));
-define('DP_WEB_ROOT', realpath(__DIR__ . '/../../'));
+if (!defined('DP_ROOT')) {
+	define('DP_ROOT', realpath(__DIR__ . '/../'));
+}
+
+if (!defined('DP_WEB_ROOT')) {
+	define('DP_WEB_ROOT', realpath(__DIR__ . '/../../'));
+}
 
 @ini_set('memory_limit', -1);
 @ini_set('memory_limit', 268435456);
@@ -81,6 +86,8 @@ require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/Recursive
 require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/ExcludeDirectoryFilterIterator.php';
 require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/FileTypeFilterIterator.php';
 require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/FilenameFilterIterator.php';
+require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Output/OutputInterface.php';
+require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterInterface.php';
 
 if (!defined('DP_LIC_SERVER')) {
 	define('DP_LIC_SERVER', 'http://dev.deskprodev.com/lic/index.php');
@@ -149,7 +156,7 @@ class Upgrade
 		} elseif (in_array('--auto', $argv)) {
 			$this->runAction_auto();
 		} else {
-			$this->out("Use --help for a list of possible actions.");
+			$this->runAction_interactive();
 		}
 	}
 
@@ -298,6 +305,16 @@ class Upgrade
 		$this->out("\t\tuploaded will not be removed.");
 		$this->out('');
 	}
+
+	####################################################################################################################
+	# interactive
+	####################################################################################################################
+
+	public function runAction_interactive()
+	{
+		$interactive = new UpgradeInteractive($this);
+	}
+
 
 	####################################################################################################################
 	# auto
@@ -1413,6 +1430,573 @@ class FilesystemUtil extends \Symfony\Component\HttpKernel\Util\Filesystem
 		}
 
 		return $files;
+	}
+}
+
+########################################################################################################################
+# Interactive Upgrader
+########################################################################################################################
+
+class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInterface
+{
+	/**
+	 * @var \DeskPRO\Tools\Upgrade
+	 */
+	protected $upgrade;
+
+	/**
+	 * @var \Symfony\Component\Console\Formatter\OutputFormatter
+	 */
+	protected $outputFormatter;
+
+	/**
+	 * @var \Symfony\Component\Console\Helper\DialogHelper
+	 */
+	protected $dialogHelper;
+
+	/**
+	 * @var int
+	 */
+	protected $spinner_state = 0;
+
+	/**
+	 * @var string
+	 */
+	protected $dl_distro = null;
+	protected $file_backup = null;
+	protected $db_backup = null;
+	protected $revert_checkpoint = null;
+
+	protected $answer_backup_files = null;
+	protected $answer_backup_db = null;
+
+	/**
+	 * @param \DeskPRO\Tools\Upgrade $upgrade
+	 */
+	public function __construct(Upgrade $upgrade)
+	{
+		$this->upgrade = $upgrade;
+
+		#------------------------------
+		# Load the required Symfony libs
+		#------------------------------
+
+		require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterStyleInterface.php';
+		require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterStyle.php';
+		require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatter.php';
+		require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/HelperInterface.php';
+		require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/Helper.php';
+		require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/DialogHelper.php';
+		require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/FormatterHelper.php';
+
+		#------------------------------
+		# Create helpers
+		#------------------------------
+
+		$this->outputFormatter = new \Symfony\Component\Console\Formatter\OutputFormatter(true, array(
+			'title' => new \Symfony\Component\Console\Formatter\OutputFormatterStyle('white', 'blue', array('bold')),
+			'note' => new \Symfony\Component\Console\Formatter\OutputFormatterStyle('yellow', null),
+			'prompt' => new \Symfony\Component\Console\Formatter\OutputFormatterStyle('cyan', 'black')
+		));
+
+		$this->dialogHelper    = new \Symfony\Component\Console\Helper\DialogHelper();
+
+		#------------------------------
+		# GO
+		#------------------------------
+
+		$this->outHeader('DeskPRO Upgrader', true);
+		$this->out();
+		$this->out();
+
+		$this->out(
+			"<info>Welcome to the DeskPRO interactive upgrader. This tool will help you check for updates, backup your"
+			." installation and then install updates. If you require assistance at any time, visit our support"
+			." portal at http://support.deskpro.com/ or email support@deskpro.com.</info>"
+		);
+
+		$this->out();
+
+		$this->outNote(
+			"Note: You can execute many of these commands by themselves manually by using command-line"
+			." switches. For a list, try running this command: php upgrade.php --help"
+		);
+
+		$this->out();
+		$this->out();
+
+		#------------------------------
+		# Menu
+		#------------------------------
+
+		$version_info = $this->upgrade->getLatestVersion();
+
+		#-----
+		# We have version info
+		#-----
+
+		if ($version_info) {
+			$this->out(sprintf("Your build:      %s (%s)", DP_BUILD_TIME, $this->upgrade->formatBuild(DP_BUILD_TIME)));
+			$this->out(sprintf("Latest build:    %s (%s)", $version_info['build'], $this->upgrade->formatBuild($version_info['build'])));
+			$this->upgrade->log(sprintf("runCheckVersion: current(%s)   latest(%s)", DP_BUILD_TIME, $version_info['build']));
+
+			$this->out();
+
+			if ($this->upgrade->isInstanceOutdated()) {
+				$this->out("<prompt>Your current instance is outdated. Would you like to download updates now?</prompt>");
+				$this->out("[Y/n]> ", '', true);
+
+				$ret = $this->dialogHelper->askConfirmation($this, false);
+				if ($ret) {
+					$this->runAction_downloadChoice();
+				} else {
+					$this->runAction_checkAndUpgrade();
+				}
+			} else {
+				$this->runAction_checkAndUpgrade();
+			}
+
+		#-----
+		# We don't know about the version
+		#-----
+
+		} else {
+
+			$this->out(
+				"<error>We could not fetch version information from our web server. There are a number of possible causes:\n"
+				."    - Your server is behind a firewall\n"
+				."    - There is a network problem between your server and ours\n"
+				."    - Our version server may be having difficulties. Check http://www.deskpro.com/status/\n"
+				."\n"
+				."You can try again but if you continue to experience trouble, you can contact us at support@deskpro.com</error>"
+			);
+			$this->out();
+
+			$this->out(
+				"<prompt>Would you like to continue? If you have manually updated DeskPRO files, or if you wish to"
+				." check the version of your database, you can still run this tools.</prompt>"
+			);
+			$this->out("Continue? [y/N]> ", false);
+			$ret = $this->dialogHelper->askConfirmation($this, '', false);
+
+			if (!$ret) {
+				$this->out("\nBye!");
+				exit(0);
+			}
+
+			$this->runAction_checkAndUpgrade();
+		}
+	}
+
+	/**
+	 * Download and install updates
+	 */
+	public function	runAction_downloadAndInstallChoice()
+	{
+		$this->out();
+
+		#------------------------------
+		# Download
+		#------------------------------
+
+		$this->spinner("Downloading latest version ...");
+
+		try {
+			$this->dl_distro = $this->upgrade->downloadLatest();
+		} catch (DownloadException $e) {
+			$this->clearSpinner();
+			$this->upgrade->outAndLog($e->getMessage());
+			$this->errorExit("There was a problem trying to download the latest version. Try again later.");
+		}
+
+		$this->clearSpinner();
+
+		$this->out("<info>Download was successful. Pacakge saved to:\n{$this->dl_distro}\n</info>");
+		$this->out();
+
+		$this->out("<prompt>Before we install the updates, you should generate back up first. You can back up both your files and your database.</prompt>");
+
+		while(true) {
+			$this->out("Do you want to back up your current source files? [Y/n]> ", false);
+			$this->answer_backup_files = $this->dialogHelper->askConfirmation($this, '', true);
+
+			$this->out("Do you want to back up your database? [Y/n]> ", false);
+			$this->answer_backup_db = $this->dialogHelper->askConfirmation($this, '', true);
+
+			$this->out();
+			$this->out("<comment>Backup files:" . ($this->answer_backup_files ? "YES" : "NO") . "</comment>");
+			$this->out("<comment>Backup database: " . ($this->answer_backup_files ? "YES" : "NO") . "</comment>");
+
+			$this->out();
+			$this->out("<prompt>Are you ready to continue? Answer 'n' to re-input backup options.</prompt>");
+			$this->out("Continue with the upgrade? [Y/n]> ", false);
+
+			$ret = $this->dialogHelper->askConfirmation($this, '', true);
+			if ($ret) {
+				break;
+			}
+			$this->out();
+		}
+
+		$fileutil = new FilesystemUtil();
+		$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
+
+		#------------------------------
+		# Backup files
+		#------------------------------
+
+		$this->outHeader("Installing Updates");
+
+		if ($this->answer_backup_files) {
+			$this->out(sprintf("%-40s", "<info>[*] Backing up files ...</info>"), false);
+
+			try {
+				$this->file_backup = $this->upgrade->backupFiles();
+			} catch (\Exception $e) {
+				$this->upgrade->outAndLog($e->getMessage());
+				$this->errorExit("There was a problem backing up your files.");
+			}
+
+			$this->revert_checkpoint = 'files';
+			$this->out("<info>DONE</info>");
+		}
+
+		#------------------------------
+		# Install files
+		#------------------------------
+
+		$this->out(sprintf("%-40s", "<info>[*] Installing files ...</info>"), false);
+
+		try {
+			$this->upgrade->installFilesFromZip($this->dl_distro, false);
+		} catch (\Exception $e) {
+			$this->upgrade->outAndLog($e->getMessage());
+			$this->errorExit("There was a problem installing the new files.");
+		}
+
+		$this->out("<info>DONE</info>");
+
+		#------------------------------
+		# Backup database
+		#------------------------------
+
+		if ($this->answer_backup_files) {
+			$this->out(sprintf("%-40s", "<info>[*] Backing up database ...</info>"), false);
+
+			try {
+				$this->file_backup = $this->upgrade->backupDatabase();
+			} catch (\Exception $e) {
+				$this->upgrade->outAndLog($e->getMessage());
+				$this->errorExit("There was a problem backing up your database.");
+			}
+
+			$this->revert_checkpoint = 'db';
+			$this->out("<info>DONE</info>");
+		}
+
+		#------------------------------
+		# Run upgrader
+		#------------------------------
+
+		$this->out(sprintf("%-40s", "<info>[*] Installing database updates</info>"));
+
+		chdir(DP_ROOT);
+		$cmd = "$php_path cmd.php dp:upgrade 2>&1";
+		passthru($cmd, $ret);
+		chdir(DP_START_DIR);
+
+		if ($ret) {
+			$this->outAndLog("Upgrade returned erorr status $ret");
+			$this->errorExit("There was a problem installing the database updates");
+		}
+
+
+		$this->outHeader("DONE");
+
+		$this->out("<info>DeskPRO has been upgraded successfully!</info>");
+		$this->out();
+		$this->out('Bye!');
+	}
+
+
+	/**
+	 * Running just the upgrade against currently file sources
+	 */
+	public function runAction_checkAndUpgrade()
+	{
+		global $DP_CONFIG;
+
+		#------------------------------
+		# Check versions
+		#------------------------------
+
+		$pdo = new \PDO("mysql:host={$DP_CONFIG['db']['host']};dbname={$DP_CONFIG['db']['dbname']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+		$version = $pdo->query("SELECT value FROM settings WHERE name = 'core.deskpro_build'")->fetch(\PDO::FETCH_NUM);
+
+		if (!$version) {
+			$this->errorExit("We could not find your currently installed version.");
+		}
+
+		$version = $version[0];
+
+		$this->out(sprintf("File build version:      %s (%s)", DP_BUILD_TIME, $this->upgrade->formatBuild(DP_BUILD_TIME)));
+		$this->out(sprintf("Database build version:  %s (%s)", $version, $this->upgrade->formatBuild($version)));
+
+		if ($version >= DP_BUILD_TIME) {
+			$this->out("<info>Your database and source file builds correspond. No database upgrades need to be run.</info>");
+			$this->out();
+			$this->out("Bye!");
+			exit(0);
+		}
+
+		#------------------------------
+		# Gather input
+		#------------------------------
+
+		$this->out("<info>Your database is out of date. Would you like to perform an upgrade now?</info>");
+		$this->out("Upgrade now? [Y/n]> ", false);
+
+		$ret = $this->dialogHelper->askConfirmation($this, '', true);
+		if (!$ret) {
+			$this->out();
+			$this->out("Bye!");
+			exit(0);
+		}
+
+		$this->out("<prompt>Before we install the updates, you should generate back up first.</prompt>");
+
+		while(true) {
+			$this->out("Do you want to back up your database? [Y/n]> ", false);
+			$this->answer_backup_db = $this->dialogHelper->askConfirmation($this, '', true);
+
+			$this->out();
+			$this->out("<comment>Backup database: " . ($this->answer_backup_files ? "YES" : "NO") . "</comment>");
+
+			$this->out();
+			$this->out("<prompt>Are you ready to continue? Answer 'n' to re-input backup options.</prompt>");
+			$this->out("Continue with the upgrade? [Y/n]> ", false);
+
+			$ret = $this->dialogHelper->askConfirmation($this, '', true);
+			if ($ret) {
+				break;
+			}
+			$this->out();
+		}
+
+		$fileutil = new FilesystemUtil();
+		$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
+
+		#------------------------------
+		# Backup database
+		#------------------------------
+
+		if ($this->answer_backup_files) {
+			$this->out(sprintf("%-40s", "<info>[*] Backing up database ...</info>"), false);
+
+			try {
+				$this->file_backup = $this->upgrade->backupDatabase();
+			} catch (\Exception $e) {
+				$this->upgrade->outAndLog($e->getMessage());
+				$this->errorExit("There was a problem backing up your database.");
+			}
+
+			$this->revert_checkpoint = 'db';
+			$this->out("<info>DONE</info>");
+		}
+
+		#------------------------------
+		# Run upgrader
+		#------------------------------
+
+		$this->out(sprintf("%-40s", "<info>[*] Installing database updates</info>"));
+
+		chdir(DP_ROOT);
+		$cmd = "$php_path cmd.php dp:upgrade 2>&1";
+		passthru($cmd, $ret);
+		chdir(DP_START_DIR);
+
+		if ($ret) {
+			$this->outAndLog("Upgrade returned erorr status $ret");
+			$this->errorExit("There was a problem installing the database updates");
+		}
+
+
+		$this->outHeader("DONE");
+
+		$this->out("<info>DeskPRO has been upgraded successfully!</info>");
+		$this->out();
+		$this->out('Bye!');
+	}
+
+	public function errorExit($message = '')
+	{
+		if ($message) {
+			$this->out("<error>$message</error>");
+			$this->out();
+		}
+
+		$fileutil = new FilesystemUtil();
+		$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
+
+		exit(1);
+	}
+
+	/**
+	 * Infinite spinner
+	 */
+	public function spinner($message = '')
+	{
+		echo "\r";
+		echo str_repeat(' ', 70);
+		echo "\r";
+
+		echo "(";
+		switch ($this->spinner_state) {
+			case 0:
+				echo "-";
+				break;
+
+			case 1:
+				echo "\\";
+				break;
+
+			case 2:
+				echo "|";
+				break;
+
+			case 3:
+				echo "/";
+				break;
+		}
+
+		$this->spinner_state++;
+		if ($this->spinner_state > 3) {
+			$this->spinner_state = 0;
+		}
+
+		echo ")";
+		if ($message) {
+			echo " $message";
+		}
+	}
+
+
+	/**
+	 * Clear the spinner form the line
+	 */
+	public function clearSpinner()
+	{
+		$this->spinner_state = 0;
+		echo "\r";
+		echo str_repeat(' ', 72);
+		echo "\r";
+	}
+
+
+	/**
+	 * @param string $string
+	 * @param bool $nl
+	 */
+	public function out($string = '', $nl = true)
+	{
+		$tagged = null;
+		if (preg_match('#^<(.*?)>(.*?)</$1>$#', $string, $m)) {
+			$tagged = $m[1];
+			$string = $m[2];
+		}
+
+		$string = wordwrap($string, 72, "\n", true);
+
+		if ($tagged) {
+			$string = "<$tagged>$string</$tagged>";
+		}
+
+		$string = $this->outputFormatter->format($string);
+		$this->upgrade->out($string, $nl);
+	}
+
+
+	/**
+	 * @param string $title
+	 * @param bool $big
+	 */
+	public function outHeader($title, $big = false)
+	{
+		$string = '';
+		if ($big) {
+			$string .= str_repeat(' ', 72) . "\n";
+		}
+
+		$len = strlen($title);
+		$remain = 72-$len;
+		$left  = floor($remain/2);
+		$right = 72 - $len - $left;
+
+		$string .= str_repeat(' ', $left) . $title . str_repeat(' ', $right);
+
+		if ($big) {
+			$string .= "\n" . str_repeat(' ', 72);
+		}
+
+		$string = $this->outputFormatter->format("<title>$string</title>");
+
+		echo $string;
+	}
+
+	/**
+	 * @param $note
+	 */
+	public function outNote($note)
+	{
+		$note = wordwrap($note, 65, "\n", true);
+
+		$lines = explode("\n", $note);
+		foreach ($lines as &$l) $l = '    > ' . $l;
+		$note = implode("\n", $lines);
+
+		$string = $this->outputFormatter->format("<note>$note</note>");
+
+		echo $string;
+	}
+
+	function write($messages, $newline = false, $type = 0)
+	{
+		$this->out($messages, $newline);
+	}
+
+	function writeln($messages, $type = 0)
+	{
+		$this->out($messages, true);
+	}
+
+	function setVerbosity($level)
+	{
+
+	}
+
+	function getVerbosity()
+	{
+		return 1;
+	}
+
+	function setDecorated($decorated)
+	{
+
+	}
+
+	function isDecorated()
+	{
+		return true;
+	}
+
+	function setFormatter(\Symfony\Component\Console\Formatter\OutputFormatterInterface $formatter)
+	{
+
+	}
+
+	function getFormatter()
+	{
+		return $this->outputFormatter;
 	}
 }
 

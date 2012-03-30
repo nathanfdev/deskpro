@@ -1,4 +1,2 @@
 <?php if (!defined('DP_ROOT')) exit('No access');
-require DP_ROOT . '/sys/KernelBooter.php';
-\DeskPRO\Kernel\KernelBooter::bootUpgrade('prod', false);
-\DeskPRO\Kernel\KernelBooter::DeskPRO_Done();
+require DP_ROOT . '/bin/upgrade-util.php';
