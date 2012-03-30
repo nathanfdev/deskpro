@@ -1,6 +1,6 @@
 {% extends 'UserBundle:Articles:layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_articles') }}">Knowledgebase</a></li>
+	<li><a href="{{ path('user_articles') }}">{{ phrase('user.breadcrumb_kb') }}</a></li>
 	{% for cat in category_path %}
 		<li><a href="{{ path('user_articles', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}

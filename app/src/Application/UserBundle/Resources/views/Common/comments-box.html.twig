@@ -22,8 +22,13 @@
 				{% if not no_comment_form %}
 					{% if not app.user.id and app.getSetting('core.interact_require_login') %}
 						<li class="new-comment no-nav">
-							<a href="{{ path('user_register') }}">Register</a> or
-							<a href="{{ path('user_login') }}">Login</a> to submit comments.
+							{% set phrase_link1 %}
+							<a href="{{ path('user_register') }}">{{ phrase('user.comments_register') }}</a>
+							{% endset %}
+							{% set phrase_link2 %}
+							<a href="{{ path('user_login') }}">{{ phrase('user.comments_login') }}</a>
+							{% endset %}
+							{{ phrase('user.comments_phold_add_a_comment', {'link1':phrase_link1,'link2':phrase_link2}) }}
 						</li>
 					{% elseif app.user.hasPerm(check_perm) %}
 					<li class="new-comment {% if not app.user.is_guest %}no-nav{% endif %}" id="comments_login_info">
@@ -31,7 +36,7 @@
 							<div class="login-area">
 								<div class="inner-wrap">
 									<div>
-										<textarea name="new_comment[content]" cols="120" rows="5" placeholder="Add a comment"></textarea>
+										<textarea name="new_comment[content]" cols="120" rows="5" placeholder="{{ phrase('user.comments_phold_add_a_comment') }}"></textarea>
 									</div>
 									<div id="comments_form_login_area" data-element-handler="DeskPRO.User.ElementHandler.CommentFormLogin" class="with-handler">{% include 'UserBundle:Common:comments-login-form.html.twig' %}</div>
 									<div style="padding-top: 0">

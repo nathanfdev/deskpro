@@ -15,9 +15,9 @@
 
 				<div class="wrap-dropdown user-drop">
 					<ul>
-						<li class="ticket-noti"><a id="user_settings_link">Settings</a></li>
-						<li class="ticket-noti"><a href="">Set status: away</a></li>
-						<li class="ticket-noti"><a href="{{ path('agent_logout') }}">Log Out</a></li>
+						<li class="ticket-noti"><a id="user_settings_link">{{ phrase('user.agent_bar_settings') }}</a></li>
+						<li class="ticket-noti"><a href="">{{ phrase('user.agent_bar_set_away') }}</a></li>
+						<li class="ticket-noti"><a href="{{ path('agent_logout') }}">{{ phrase('user.agent_bar_logout') }}</a></li>
 					</ul>
 				</div>
 			</div>
@@ -25,8 +25,8 @@
 			{# notifications start #}
 			<div class="left box-header notifications" id="notifications_wrap" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.Notifications" style="display:none">
 				<ul class="noti-menu">
-					<li style="display:none"><div class="counter"><span class="counter" id="tickets_counter">0</span></div><span class="icn-bar tickets">Tickets</span></li>
-					<li style="display:none"><div class="counter"><span class="counter" id="chats_counter">0</span></div><span class="icn-bar chat">Chat</span></li>
+					<li style="display:none"><div class="counter"><span class="counter" id="tickets_counter">0</span></div><span class="icn-bar tickets">{{ phrase('user.agent_bar_tickets') }}</span></li>
+					<li style="display:none"><div class="counter"><span class="counter" id="chats_counter">0</span></div><span class="icn-bar chat">{{ phrase('user.agent_bar_chat') }}</span></li>
 				</ul>
 				<span class="white-drop"></span>
 
@@ -34,7 +34,7 @@
 					<ul id="notifications_list">
 					</ul>
 					<div class="bot-noti">
-						<a class="mark-all-read">Mark all as read</a>
+						<a class="mark-all-read">{{ phrase('user.agent_bar_mark_all_read') }}</a>
 					</div>
 				</div>
 			</div>
@@ -43,10 +43,10 @@
 			<div class="right box-header admin-actions">
 				<div class="wrapper-top-bar">
 					<ul>
-						<li class="admin"><a href="{{ path('admin') }}" target="_blank">Admin</a></li>
-						<li class="agent"><a href="{{ path('agent') }}" target="_blank">Admin</a></li>
-						<li class="billing"><a href="">Billing</a></li>
-						<li class="reports"><a href="">Reports</a></li>
+						<li class="admin"><a href="{{ path('admin') }}" target="_blank">{{ phrase('user.agent_bar_admin') }}</a></li>
+						<li class="agent"><a href="{{ path('agent') }}" target="_blank">{{ phrase('user.agent_bar_admin') }}</a></li>
+						<li class="billing"><a href="">{{ phrase('user.agent_bar_billing') }}</a></li>
+						<li class="reports"><a href="">{{ phrase('user.agent_bar_reports') }}</a></li>
 					</ul>
 				</div>
 			</div>

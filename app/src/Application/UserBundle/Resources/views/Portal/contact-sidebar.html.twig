@@ -1,13 +1,13 @@
 {% if app.user.hasPerm('tickets.use') or app.user.hasPerm('feedback.submit') or app.user.hasPerm('chat.use') %}
 <div class="dp-sidebar-block dp-contact-block">
 	<div class="dp-box-header">
-		<h3>Contact Us</h3>
+		<h3>{{ phrase('user.portal.contact_us') }}</h3>
 	</div>
 
 	<ul class="dp-primary">
-		{% if app.user.hasPerm('tickets.use') %}<li><a href="{{ path('user_tickets_new') }}" class="dp-email-us">Email us</a></li>{% endif %}
-		{% if app.user.hasPerm('feedback.submit') %}<li><a href="{{ path('user_feedback_newfeedback') }}" class="dp-submit-feedback">Submit a suggestion</a></li>{% endif %}
-		{% if app.user.hasPerm('chat.use') %}<li><a href="#" class="dp-chat-live dp-chat-trigger">Chat live</a></li>{% endif %}
+		{% if app.user.hasPerm('tickets.use') %}<li><a href="{{ path('user_tickets_new') }}" class="dp-email-us">{{ phrase('user.portal.email_us') }}</a></li>{% endif %}
+		{% if app.user.hasPerm('feedback.submit') %}<li><a href="{{ path('user_feedback_newfeedback') }}" class="dp-submit-feedback">{{ phrase('user.portal.submit_suggestion') }}</a></li>{% endif %}
+		{% if app.user.hasPerm('chat.use') %}<li><a href="#" class="dp-chat-live dp-chat-trigger">{{ phrase('user.portal.chat_live') }}</a></li>{% endif %}
 	</ul>
 </div>
 {% endif %}

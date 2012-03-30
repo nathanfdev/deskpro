@@ -36,8 +36,12 @@
 
 	'user.portal.login_using_twitter' => 'Log in using your Twitter account.',
 	'user.portal.login_with_twitter' => 'Log in with Twitter',
-	'user.portal.' => '',
-	'user.portal.' => '',
-	'user.portal.' => '',
+	'user.portal.contact_us' => 'Contact Us',
+	'user.portal.email_us' => 'Email us',
+	'user.portal.submit_suggestion' => 'Submit a suggestion',
+	'user.portal.chat_live' => 'Chat live',
+	'user.portal.view_more_downloads' => 'View more downloads &rarr;',
+	'user.portal.view_more_feedback' => 'View more feedback &rarr;',
+	'user.portal.title_newest_feedback' => 'Newest Feedback',
 	'user.portal.' => '',
 );

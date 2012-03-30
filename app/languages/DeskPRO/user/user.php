@@ -187,6 +187,39 @@
 
 	'user.more' => 'mode...',
 	'user.js_error_no_dp_login' => 'No DP_LOGIN_NOTIFY in parent window ready to accept my message',
-	'user.' => '',
-	'user.' => '',
+
+	'user.agent_bar_settings' => 'Settings',
+	'user.agent_bar_set_away' => 'Set status: away',
+	'user.agent_bar_logout' => 'Log Out',
+	'user.agent_bar_tickets' => 'Tickets',
+	'user.agent_bar_chat' => 'Chat',
+	'user.agent_bar_mark_all_read' => 'Mark all as read',
+	'user.agent_bar_admin' => 'Admin',
+	'user.agent_bar_billing' => 'Billing',
+	'user.agent_bar_reports' => 'Reports',
+
+	'user.enable_js_to_view_comments' => 'Please enable JavaScript to view comments.',
+
+	'user.comments_register' => 'Register',
+	'user.comments_reg_or_login_to_comment' => '{link1} or {link2} to submit comments.',
+	'user.comments_login' => 'Login',
+	'user.comments_phold_add_a_comment' => 'Add a comment',
+
+	'user.comments_enter_question_topic_or_keyword' => 'Enter a question, keyword or topic..',
+	'user.comments_' => 'Search',
+
+	'user.register_here_are_extra_benefits' => 'Here are some other benifits',
+	'user.register__never_validate_again' => 'Never have to validate your tickets again',
+	'user.register_view_tickets_easily' => 'Easily view all your submitted tickets, and create new ones',
+	'user.register_manage_profile' => 'Manage your profile, like adding multiple email addresses',
+	'user.register_can_set_a_password' => 'Optionally set a password',
+	'user.register_reuse_account' => 'Create an account now so you can log in later to easier interact with our helpdesk',
+	'user.register_set_a_password' => 'Set a password',
+	'user.register_repeat_password' => 'Repeat',
+	'user.register_btn_register_account' => 'Register my account',
+
+	'user.upload_remove' => 'remove',
+	'user.upload_a_file' => 'Upload a file',
+	'user.comments_' => '',
+	'user.comments_' => '',
 );

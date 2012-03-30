@@ -146,9 +146,9 @@
 		<div id="dp_search_bar" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
 			<form action="{{ path('user_search') }}" method="GET">
 				<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td width="100%" style="padding-right: 16px;">
-					<input type="text" name="q" id="deskpro_search" {% if app.search_query %}value="{{ app.search_query }}"{% endif %} placeholder="Enter a question, keyword or topic..." autocomplete="off" />
+					<input type="text" name="q" id="deskpro_search" {% if app.search_query %}value="{{ app.search_query }}"{% endif %} placeholder="{{ phrase('user.comments_enter_question_topic_or_keyword') }}" autocomplete="off" />
 				</td><td width="50">
-					<button class="btn primary">Search</button>
+					<button class="btn primary">{{ phrase('user.register_search') }}</button>
 				</td></tr></table>
 			</form>
 		</div>

@@ -50,9 +50,9 @@
 <div id="dp_chat_wrap">
 
 <div id="dp_chat_end_confirm" style="display: none">
-	Are you sure you want to end your chat?
-	<button id="dp_chat_end_no">Cancel</button>
-	<button id="dp_chat_end_yes">End Chat</button>
+	{{ phrase('user.chat.confirm_end_chat') }}
+	<button id="dp_chat_end_no">{{ phrase('user.chat.cancel') }}</button>
+	<button id="dp_chat_end_yes">{{ phrase('user.chat.end_chat') }}</button>
 </div>
 
 <i id="dp_chatwin_min"></i>
@@ -61,18 +61,18 @@
 <div id="dp_chat_start">
 	{% if app.user.id %}
 		{% if not app.user.name %}
-			<input type="text" name="name" placeholder="Your name" /><br />
+			<input type="text" name="name" placeholder="{{ phrase('user.chat.your_name') }}" /><br />
 		{% else %}
 			{{ app.user.name }}
 		{% endif %}
 		{% if not app.user.email_address %}
-			<input type="text" name="email" placeholder="Your email address" />
+			<input type="text" name="email" placeholder="{{ phrase('user.chat.your_email') }}" />
 		{% else %}
 			{{ app.user.email_address }}
 		{% endif %}
 	{% else %}
-		<input type="text" name="name" placeholder="Your name" /><br />
-		<input type="text" name="email" placeholder="Your email address" />
+		<input type="text" name="name" placeholder="{{ phrase('user.chat.your_name') }}" /><br />
+		<input type="text" name="email" placeholder="{{ phrase('user.chat.your_email') }}" />
 		{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 			<div class="connect-with">
 				Or connect with
@@ -84,7 +84,7 @@
 	{% endif %}
 	<br />
 	<select name="department_id">
-		<option value="0">Choose a department</option>
+		<option value="0">{{ phrase('user.chat.choose_department') }}</option>
 		{% for dep in departments %}
 			{% if dep.children|length %}
 				<optgroup label="{{ dep.title }}">
@@ -97,19 +97,19 @@
 			{% endif %}
 		{% endfor %}
 	</select><br />
-	<button id="dp_chat_start_go">Start Chatting</button>
+	<button id="dp_chat_start_go">{{ phrase('user.chat.start_chat') }}</button>
 </div>
 
 <div id="dp_chat_finding_agent" style="display: none">
-	<p>Please wait while we find an agent to take your chat</p>
+	<p>{{ phrase('user.chat.please_wait_for_agent_for_chat') }}</p>
 </div>
 
 <div id="dp_chat_active" style="display: none">
-	<div id="dp_chat_filedrag">Drop your file here to upload it</div>
+	<div id="dp_chat_filedrag">{{ phrase('user.chat.drop_file_here') }}</div>
 	<div id="dp_chat_header_pane">
 		<div id="dpchat_with_agent" style="display: none"></div>
 		<div id="dpchat_without_agent">
-			Please wait while we find an agent for you
+			{{ phrase('user.chat.please_wait_for_agent') }}
 		</div>
 	</div>
 	<div id="dp_chat_messages_pane">
@@ -119,9 +119,9 @@
 	</div>
 	<div id="dp_chat_input_pane">
 		<textarea id="dp_chat_message_input"></textarea>
-		<button id="dp_chat_message_send" class="btn primary">Send</button>
+		<button id="dp_chat_message_send" class="btn primary">{{ phrase('user.chat.send') }}</button>
 		<div id="dp_chat_message_upload">
-			<a id="dp_chat_upload_link">Send a file from your computer</a>
+			<a id="dp_chat_upload_link">{{ phrase('user.chat.send_a_file') }}</a>
 			<input type="file" name="attach" id="dp_chat_message_upload_file" />
 		</div>
 	</div>
@@ -130,11 +130,14 @@
 <div id="dp_chat_done" style="display: none">
 	{# Field is hidden if the user entered an email addy, its sent automatically when chat ended #}
 	<div class="form-row email-field">
-		Send a transcript of this chat to <input type="text" name="email" value="" placeholder="enter your email address" />
+		{% set phrase_part %}
+		<input type="text" name="email" value="" placeholder="{{ phrase('user.chat.your_email') }}" />
+		{% endset %}
+		Send a transcript of this chat to 
 	</div>
 
 	<div class="form-row">
-		Rate our response time
+		{{ phrase('user.chat.rate_response_time') }}
 		<select name="rating_response_time">
 			<option value="0"></option>
 			<option value="1">1</option>
@@ -146,7 +149,7 @@
 	</div>
 
 	<div class="form-row">
-		Rate your overall satisfaction
+		{{ phrase('user.chat.rate_satisfaction') }}
 		<select name="rating_overall">
 			<option value="0"></option>
 			<option value="1">1</option>
@@ -158,11 +161,11 @@
 	</div>
 
 	<div class="form-row">
-		Comments?
+		{{ phrase('user.chat.comments') }}
 		<textarea name="comments"></textarea>
 	</div>
 
-	<button id="dp_chat_end_real">Send and close this window</button>
+	<button id="dp_chat_end_real">{{ phrase('user.chat.send_and_close') }}</button>
 </div>
 
 </div>
@@ -170,13 +173,13 @@
 <script type="text/x-deskpro-plain" id="dp_chat_tpl_agent_header">
 	<div class="avatar"><img src="%avatar_url%" /></div>
 	<div class="info">
-		<em>You're chatting with</em>
+		<em>{{ phrase('user.chat.you_are_chatting_with') }}</em>
 		<h1>%name%</h1>
 	</div>
 </script>
 <script type="text/x-deskpro-plain" id="dp_chat_tpl_user_message">
 	<div class="row message user">
-		<div class="author">You</div>
+		<div class="author">{{ phrase('user.chat.you') }}</div>
 		<div class="message">%message%</div>
 	</div>
 </script>
@@ -212,7 +215,7 @@
 			<input type="hidden" name="{{ blob_field_name }}" value="${blob_auth_id}" />
 			<a href="${download_url}" target="_blank">${filename}</a>
 			<span class="size">${filesize_readable}</span>
-			<span class="remove">remove</span>
+			<span class="remove">{{ phrase('user.chat.remove') }}</span>
 		</li>
 	{{ '{{/if}} '}}
 </script>

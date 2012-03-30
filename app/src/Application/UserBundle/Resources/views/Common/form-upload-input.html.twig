@@ -27,14 +27,14 @@
 					<input type="hidden" name="{{ blob_field_name }}" value="${blob_auth_id}" />
 					<a href="${download_url}" target="_blank">${filename}</a>
 					<span class="size">${filesize_readable}</span>
-					<span class="remove">remove</span>
+					<span class="remove">{{ phrase('user.remove') }}</span>
 				</li>
 			{{ '{{/if}} '}}
 		</script>
 		<div class="file-input">
 			{% if showAsLink %}
 				<div class="hidden-file-upload">
-					<span class="link">Upload a file</span>
+					<span class="link">{{ phrase('user.upload_a_file') }}</span>
 					<input type="file" name="{{ good_field_name }}" multiple="multiple" />
 				</div>
 			{% else %}

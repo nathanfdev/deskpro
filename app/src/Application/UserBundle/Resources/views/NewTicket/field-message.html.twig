@@ -1,6 +1,6 @@
 <div class="dp-form-row {% if error_fields['ticket.message'] %}dp-error{% endif %} dp-form-row-ticket_message">
 	<div class="dp-form-label">
-		<label>What is your question?</label>
+		<label>{{ phrase('user.tickets.lbl_what_is_your_question') }}</label>
 	</div>
 	<div class="dp-form-input">
 		{{ form_widget(form.ticket.message, {
@@ -13,7 +13,7 @@
 			}
 		}) }}
 		<div class="dp-error-explain">
-			Please enter at least 10 characters
+			{{ phrase('user.tickets.please_enter_at_least') }}
 		</div>
 	</div>
 </div>

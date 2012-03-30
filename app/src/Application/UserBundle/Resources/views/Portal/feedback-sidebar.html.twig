@@ -1,7 +1,7 @@
 {% if feedback|length %}
 	<div class="dp-sidebar-block dp-feedback-block">
 		<div class="dp-box-header">
-			<h3><a href="{{ path('user_feedback', {'status': 'new'}) }}">Newest Feedback</a></h3>
+			<h3><a href="{{ path('user_feedback', {'status': 'new'}) }}">{{ phrase('user.portal.title_newest_feedback') }}</a></h3>
 		</div>
 		<ul class="dp-content-list">
 			{% for feedback in feedback %}
@@ -15,7 +15,7 @@
 			{% endfor %}
 		</ul>
 		<div class="dp-more" style="clear:left">
-			<a href="{{ path('user_feedback', {'status': 'new'}) }}">View more feedback &rarr;</a>
+			<a href="{{ path('user_feedback', {'status': 'new'}) }}">{{ phrase('user.portal.view_more_feedback') }}</a>
 		</div>
 	</div>
 {% endif %}

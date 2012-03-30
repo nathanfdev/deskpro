@@ -5,22 +5,22 @@
 {% block finish_pre %}{% endblock %}
 
 <div style="width: 220px; float:right; margin-left: 10px; background-color: #eee;">
-	Here are some other benifits:
+	{{ phrase('user.register_here_are_extra_benefits') }}:
 	<ul>
-		<li>Never have to validate your tickets again</li>
-		<li>Easily view all your submitted tickets, and create new ones</li>
-		<li>Manage your profile, like adding multiple email addresses</li>
+		<li>{{ phrase('user.register__never_validate_again') }}n</li>
+		<li>{{ phrase('user.register_view_tickets_easily') }}</li>
+		<li>{{ phrase('user.register_manage_profile') }}</li>
 	</ul>
 </div>
-<h2 style="font-size: 15px;">Optionally set a password</h2>
+<h2 style="font-size: 15px;">{{ phrase('user.register_can_set_a_password') }}</h2>
 <p>
-	Create an account now so you can log in later to easier interact with our helpdesk:
+	{{ phrase('user.register_reuse_account') }}:
 </p>
 <form action="{{ path('user_register_finish') }}" method="post">
 	<input type="hidden" name="process" value="1" />
-	Set a password: <input type="password" name="password" value="" /><br />
-	Repeat: <input type="password" name="password2" value="" /><br />
-	<input type="submit" value="Register my account" />
+	{{ phrase('user.register_set_a_password') }}: <input type="password" name="password" value="" /><br />
+	{{ phrase('user.register_repeat_password') }}: <input type="password" name="password2" value="" /><br />
+	<input type="submit" value="{{ phrase('user.register_btn_register_account') }}" />
 </form>
 
 <br style="clear:both;" />

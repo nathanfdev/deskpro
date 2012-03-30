@@ -1,11 +1,11 @@
 <div class="dp-form-row">
 	<div class="dp-form-label">
-		<label>Please prove you are human!</label>
+		<label>{{ phrase('user.tickets.prove_you_are_human') }}</label>
 	</div>
 	<div class="dp-form-input">
 		{{ captcha_html|raw }}
 		<div class="dp-error-explain">
-			The code you entered is incorrect.
+			{{ phrase('user.tickets.captcha_incorrect') }}
 		</div>
 	</div>
 </div>
