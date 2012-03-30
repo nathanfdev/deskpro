@@ -30,7 +30,7 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 	protected function configure()
 	{
 		$this->setDefinition(array(
-		))->setName('dpdev:testx');
+		))->setName('dpdev:test');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
