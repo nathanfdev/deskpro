@@ -49,7 +49,7 @@ $DP_CONFIG['php_path'] = '';
 # You need to specify this path if the system        #
 # cannot detect it automatically.                    #
 #                                                    #
-# On Linux PHP is often located at:                  #
+# On Linux mysqlump is often located at:             #
 #    /usr/bin/mysqldump or /usr/local/bin/mysqldump  #
 ######################################################
 
@@ -61,7 +61,7 @@ $DP_CONFIG['mysqldump_path'] = '';
 # You need to specify this path if the system        #
 # cannot detect it automatically.                    #
 #                                                    #
-# On Linux PHP is often located at:                  #
+# On Linux mysql is often located at:                #
 #    /usr/bin/mysql or /usr/local/bin/mysql          #
 ######################################################
 

@@ -1158,7 +1158,7 @@ class Upgrade
 
 		if ($backup_dir === null) {
 			global $DP_CONFIG;
-			if (isset($DP_CONFIG['dir_backups'])) {
+			if (isset($DP_CONFIG['dir_backups']) && $DP_CONFIG['dir_backups']) {
 				$backup_dir = $DP_CONFIG['dir_backups'];
 			} else {
 				$backup_dir = DP_WEB_ROOT . '/data/backups';
@@ -1178,7 +1178,7 @@ class Upgrade
 
 		if ($log_dir === null) {
 			global $DP_CONFIG;
-			if (isset($DP_CONFIG['dir_logs'])) {
+			if (isset($DP_CONFIG['dir_logs']) && $DP_CONFIG['dir_logs']) {
 				$log_dir = $DP_CONFIG['dir_logs'];
 			} else {
 				$log_dir = DP_WEB_ROOT . '/data/logs';
