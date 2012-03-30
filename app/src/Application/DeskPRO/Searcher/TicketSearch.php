@@ -140,6 +140,11 @@ class TicketSearch extends SearcherAbstract
 	 */
 	protected $add_raw_joins = array();
 
+	/**
+	 * @var array
+	 */
+	protected $add_raw_selects = array();
+
 	public $_last_sql = null;
 
 	/**
@@ -297,7 +302,11 @@ class TicketSearch extends SearcherAbstract
 			$table = 'tickets_search_active';
 		}
 
-		$sql = "SELECT tickets.id FROM $table AS tickets ";
+		$select = '';
+		if ($this->add_raw_selects) {
+			$select = ', ' . implode(', ', $this->add_raw_selects);
+		}
+		$sql = "SELECT tickets.id $select FROM $table AS tickets ";
 
 		#------------------------------
 		# Standard for permissions
@@ -567,6 +576,7 @@ class TicketSearch extends SearcherAbstract
 
 			switch ($term) {
 				case self::TERM_ID:
+					$this->enableArchiveSearch();
 					if ($op == self::OP_IS) {
 						$wheres[] = "$tickets_table.id IN (" . implode(',', (array)$choice) . ")";
 					} else {
@@ -1062,8 +1072,9 @@ class TicketSearch extends SearcherAbstract
 					break; // end break TERM_TICKET_FIELD
 
 				case self::TERM_USER_WAITING:
+					$this->enableArchiveSearch();
 					$this->affected_fields[] = 'ticket.date_user_waiting';
-					$wheres[] = $this->_dateMatch("$tickets_table.date_user_waiting", $op, $choice);
+					$wheres[] = $this->_dateMatch("tickets.date_user_waiting", $op, $choice);
 					break;
 
 				case self::TERM_AGENT_WAITING:

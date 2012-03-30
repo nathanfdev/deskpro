@@ -315,14 +315,8 @@ class GroupingCounter
 	public function makeTimeFieldSelect($field, $select_name)
 	{
 		$times = array_keys($this->getTimeTitles());
-
-		// For comparing dates, we need to reverse the time table so
-		// the CASE below properly matches the correct ranges
-		if ($field != TicketSearch::TERM_TOTAL_USER_WAITING) {
-			$times = array_reverse($times);
-		}
-
 		$fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($field);
+		$times = array_reverse($times);
 
 		$now = time();
 
@@ -331,10 +325,11 @@ class GroupingCounter
 		$parts = array();
 		foreach ($times as $t) {
 
+
 			if ($field == TicketSearch::TERM_TOTAL_USER_WAITING) {
 				// total time is stored in seconds, so we're not doing a date compare
 				$date = $t;
-				$parts[] = " WHEN (tickets.$fieldname + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting), $now))) <= '$date' THEN $t ";
+				$parts[] = " WHEN (tickets.$fieldname + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting)))) >= $date THEN $t ";
 			} else {
 				// Get a real time so we dont have mysql doing calculations,
 				// and we dont need to do a subquery etc
@@ -343,7 +338,7 @@ class GroupingCounter
 			}
 		}
 
-		$sql .= implode('', $parts) . " ELSE 1 END AS $select_name";
+		$sql .= implode('', $parts) . " ELSE 9000000000 END AS $select_name";
 
 		return $sql;
 	}
@@ -583,31 +578,31 @@ class GroupingCounter
 	public static function getTimeTitles()
 	{
 		$times = array(
-			1 => '< 5 minutes',
-			300 => '5 - 15 minutes',	// TIMEMINUTE * 5
-			900 => '15 - 30 minutes',	// TIMEMINUTE * 15
-			1800 => '30 - 60 minutes',	// TIMEMINUTE * 30
-			3600 => '1 - 2 hours',		// TIMEHOUR
-			7200 => '2 - 3 hours',		// TIMEHOUR * 2
-			10800 => '3 - 4 hours',		// TIMEHOUR * 3
-			14400 => '4 - 6 hours',		// TIMEHOUR * 4
-			21600 => '6 - 12 hours',	// TIMEHOUR * 6
-			43200 => '12 - 24 hours',	// TIMEHOUR * 12
-			86400 => '1 - 2 days',		// TIMEDAY
-			172800 => '2 - 3 days',		// TIMEDAY * 2
-			259200 => '3 - 4 days',		// TIMEDAY * 3
-			345600 => '4 - 5 days',		// TIMEDAY * 4
-			432000 => '5 - 6 days',		// TIMEDAY * 5
-			518400 => '6 - 7 days',		// TIMEDAY * 6
-			604800 => '1 - 2 weeks',	// TIMEWEEK
-			1209600 => '2 - 3 weeks',	// TIMEWEEK * 2
-			1814400 => '3 - 4 weeks',	// TIMEWEEK * 3
-			5259487 => '1 - 2 months',
-			7889231 => '2 - 3 months',
-			10518975 => '3 - 4 months',
-			13148719 => '4 - 5 months',
-			15778463 => '5 - 6 months',
-			900000000 => '> 6 months'
+			300        => '< 5 minutes',
+			900        => '5 - 15 minutes',
+			1800       => '15 - 30 minutes',
+			3600       => '30 - 60 minutes',
+			7200       => '1 - 2 hours',
+			10800      => '2 - 3 hours',
+			14400      => '3 - 4 hours',
+			21600      => '4 - 6 hours',
+			43200      => '6 - 12 hours',
+			86400      => '12 - 24 hours',
+			172800     => '1 - 2 days',
+			259200     => '2 - 3 days',
+			345600     => '3 - 4 days',
+			432000     => '4 - 5 days',
+			518400     => '5 - 6 days',
+			604800     => '6 - 7 days',
+			1209600    => '1 - 2 weeks',
+			1814400    => '2 - 3 weeks',
+			2419200    => '3 - 4 weeks',
+			4838400    => '1 - 2 months',
+			7257600    => '2 - 3 months',
+			9676800    => '3 - 4 months',
+			12096000   => '4 - 5 months',
+			14515200   => '5 - 6 months',
+			9000000000 => '> 6 months'
 		);
 
 		return $times;
@@ -673,7 +668,7 @@ class GroupingCounter
 					return array('type' => $groupvar, 'op' => 'gte', 'options' => array('date1' => $date));
 				} else {
 					$date1 = new \DateTime('-' . $times[$key] . ' seconds');
-					$date2 = new \DateTime('-' . $times[$key-1] . ' seconds');
+					$date2 = new \DateTime('-' . $times[$key+1] . ' seconds');
 
 					return array('type' => $groupvar, 'op' => 'between', 'options' => array('date1' => $date1, 'date2' => $date2));
 				}
@@ -683,23 +678,16 @@ class GroupingCounter
 			case TicketSearch::TERM_TOTAL_USER_WAITING:
 
 				$times = array_keys(self::getTimeTitles());
+				$key = array_search($groupchoice, $times);
 
-				$prev = 0;
-				$found = $times[1];
-				foreach ($times as $t) {
-					if ($groupchoice <= $t) {
-						$found = $t;
-						break;
-					} else {
-						$prev = $t;
-					}
+				if ($key == 0) {
+					$term = array('type' => $groupvar, 'op' => 'lte', 'options' => 300);
+				} elseif ($key == (count($times) - 1)) {
+					$term = array('type' => $groupvar, 'op' => 'gte', 'options' => 14515200);
+				} else {
+					$term = array('type' => $groupvar, 'op' => 'lte', 'options' => array($times[$key], $times[$key+1]));
 				}
 
-				if ($found == 1) {
-					$found = 299;
-				}
-
-				$term = array('type' => $groupvar, 'op' => 'is', 'options' => array($prev, $found));
 				return $term;
 
 			default;

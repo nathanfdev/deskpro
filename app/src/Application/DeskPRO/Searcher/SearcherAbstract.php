@@ -295,6 +295,11 @@ abstract class SearcherAbstract implements PersonContextInterface
 		}
 
 		if ($op == self::OP_BETWEEN) {
+			if ($date1 > $date2) {
+				$tmp = $date2;
+				$date2 = $date1;
+				$date1 = $tmp;
+			}
 			$where = "$field BETWEEN '" . $date1->format('Y-m-d H:i:s') . "' AND '" . $date2->format('Y-m-d H:i:s') . "'";
 		} elseif ($op == self::OP_GTE) {
 			$date = Util::coalesce($date1, $date2);
