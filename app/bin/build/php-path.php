@@ -11,14 +11,32 @@ $php_path = null;
 
 
 if (!$php_path) {
+	$php_paths = array('/usr/bin/php', '/usr/local/bin/php', '/usr/bin/php5', '/usr/local/bin/php5', 'C:\\php\\php.exe', 'C:\\php5\\php.exe');
+
+	$paths = explode(PATH_SEPARATOR, getenv('PATH'));
+
+	foreach ($paths as $path) {
+		$php_executable = $path . DIRECTORY_SEPARATOR . "php";
+
+		if (file_exists($php_executable) && is_file($php_executable)) {
+			$php_paths = array($php_executable);
+		}
+
+		$php_executable = $path . DIRECTORY_SEPARATOR . "php.exe";
+
+		if (file_exists($php_executable) && is_file($php_executable)) {
+			$php_paths = array($php_executable);
+		}
+	}
+
 	if (isset($_SERVER['_']) && is_executable($_SERVER['_'])
 	&& basename($_SERVER['SCRIPT_FILENAME']) != basename($_SERVER['_'])) {
-		$php_path = $_SERVER['_'];
-	} else {
-		foreach (array('/usr/bin/php', '/usr/local/bin/php', '/usr/bin/php5', '/usr/local/bin/php5', 'C:\\php\\php.exe', 'C:\\php5\\php.exe') as $try) {
-			if (is_executable($try)) {
-				$php_path = $try;
-			}
+		$try[] = $_SERVER['_'];
+	}
+
+	foreach ($php_paths as $try) {
+		if (is_executable($try)) {
+			$php_path = $try;
 		}
 	}
 
