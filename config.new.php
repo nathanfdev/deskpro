@@ -1,11 +1,13 @@
 <?php
 
 ######################################################
+#                Welcome to DeskPRO!                 #
+#             http://support.deskpro.com             #
+######################################################
+
+
+######################################################
 # REQUIRED : Your mySQL Database Configuration       #
-#                                                    #
-# You will need to contact your server administrator #
-# for this information. For further help please      #
-# contact support@deskpro.com                        #
 ######################################################
 
 // The database server, often localhost
@@ -20,11 +22,9 @@ define('DP_DATABASE_PASSWORD', '');
 // The name of the database
 define('DP_DATABASE_NAME', 'deskpro');
 
-#########################################################################################################
-#########################################################################################################
-##################################   ALL SETTINGS BELOW ARE OPTIONAL   ##################################
-#########################################################################################################
-#########################################################################################################
+######################################################
+# OPTIONAL : ALL SETTINGS BELOW ARE OPTIONAL         #
+######################################################
 
 // leave this
 $DP_CONFIG = array();
@@ -75,7 +75,7 @@ $DP_CONFIG['mysql_path'] = '';
 #                                                    #
 # If you would like to move attachments to the file  #
 # system (recommended) change the value from false   #
-# to true for store_attachment_files
+# to true for store_attachment_files                 #
 ######################################################
 
 $DP_CONFIG['import'] = array(
@@ -100,30 +100,20 @@ $DP_CONFIG['dir_backups'] = '';
 $DP_CONFIG['dir_logs'] = '';
 
 ######################################################
-# OPTIONAL : Memcached                               #
-#                                                    #
-# Memcached is a server used for cacheing. This can  #
-# drastically reduce the load on both your webserver #
-# and your database                                  #
-######################################################
-
-$DP_CONFIG['memcached'] = array(
-	'enabled' = false,
-	'servers' = array(
-		array(
-			'host' => ''
-		)
-	)
-);
-
-######################################################
 # OPTIONAL : Enable debug call trace                 #
 #                                                    #
 # Sometimes a support agent may ask you to enable    #
-# these options to generate a report that may help   #
-# track down the cause of a problem.                 #
+# this option to help debug a problem                #
 ######################################################
 
 $DP_CONFIG['enable_debug_trace'] = false;
+
+######################################################
+# OPTIONAL : Slow Page Logs                          #
+#                                                    #
+# Sometimes a support agent may ask you to enable    #
+# these options to help debug a problem              #
+######################################################
+
 $DP_CONFIG['enable_slow_page_log'] = false;
 $DP_CONFIG['enable_slow_page_log_minquerytime'] = false;
