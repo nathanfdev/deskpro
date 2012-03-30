@@ -695,6 +695,10 @@ class UserKernel extends AbstractKernel
 
 class KernelErrorHandler
 {
+	public static $is_logging = false;
+	public static $wrote_log_file = false;
+	public static $wrote_php_log = false;
+
 	public static function handleError($errno, $errstr, $errfile, $errline)
 	{
 		if (!(error_reporting() & $errno)) {
@@ -706,9 +710,10 @@ class KernelErrorHandler
 
 		if ($errinfo['display']) {
 			echo $errinfo['summary'];
-			if (empty($GLOBALS['DP_ERR_NOSHOWTRACE'])) {
-				echo "\n";
-				echo $errinfo['trace'];
+
+			if (isset($GLOBALS['DP_IS_IN_CLI'])) {
+				if (self::$wrote_log_file) echo "\n(Refer to " . self::$wrote_log_file . " for details)\n";
+				if (self::$wrote_php_log) echo "\n(Refer to the PHP erorr log for details)\n";
 			}
 		}
 
@@ -716,9 +721,6 @@ class KernelErrorHandler
 			if (!empty($GLOBALS['DP_ERR_LOGGER'])) {
 				$logger = $GLOBALS['DP_ERR_LOGGER'];
 				$logger->log($errinfo['summary'] . "\n" . $errinfo['trace'], 'ERR', array('errinfo' => $errinfo));
-			} elseif (App::has('deskpro.exception_logger')) {
-				$ex_logger = App::get('deskpro.exception_logger');
-				$ex_logger->handleError($errno, $errstr, $errfile, $errline);
 			}
 		} catch (\Exception $e) {}
 
@@ -734,9 +736,10 @@ class KernelErrorHandler
 
 		if ($errinfo['display']) {
 			echo $errinfo['summary'];
-			if (empty($GLOBALS['DP_ERR_NOSHOWTRACE'])) {
-				echo "\n";
-				echo $errinfo['trace'];
+
+			if (isset($GLOBALS['DP_IS_IN_CLI'])) {
+				if (self::$wrote_log_file) echo "\n(Refer to " . self::$wrote_log_file . " for details)\n";
+				if (self::$wrote_php_log) echo "\n(Refer to the PHP erorr log for details)\n";
 			}
 		}
 
@@ -744,28 +747,32 @@ class KernelErrorHandler
 			if (!empty($GLOBALS['DP_ERR_LOGGER'])) {
 				$logger = $GLOBALS['DP_ERR_LOGGER'];
 				$logger->log($errinfo['summary'] . "\n" . $errinfo['trace'], 'ERR', array('errinfo' => $errinfo));
-			} elseif (App::has('deskpro.exception_logger')) {
-				$ex_logger = App::get('deskpro.exception_logger');
-				$ex_logger->handleException($exception);
 			}
 		} catch (\Exception $e) {}
 
 		if ($errinfo['die']) {
-			exit(1);
+			$code = (int)$errinfo['exception']->getCode();
+			if ($code > 255) $code = 255;
+			if ($code == 0) $code = 1;
+			exit($code);
 		}
 	}
 
 	public static function logErrorInfo(array $errinfo)
 	{
+		if (self::$is_logging) return;;
+		self::$is_logging = true;
+
 		if (!class_exists('Application\DeskPRO\App')) {
 			return null;
 		}
 
+		self::logToFile($errinfo);
 		unset($errinfo['exception']);
 
 		try {
 			$logger = App::createNewLogger('error_log', null);
-			$logger->log($summary, $errinfo['pri'], $errinfo);
+			$logger->log($errinfo['summary'], $errinfo['pri'], $errinfo);
 		} catch (\Exception $e) {}
 
 		try {
@@ -777,11 +784,54 @@ class KernelErrorHandler
 				App::getMailer()->send($message);
 			}
 		} catch (\Exception $e) {}
+
+		self::$is_logging = false;
 	}
 
 	public static function logToFile(array $errinfo)
 	{
-		@error_log($errinfo['summary'] . "\n" . $errinfo['trace'], 0);
+		self::$wrote_log_file = false;
+		self::$wrote_php_log = false;
+
+		$str = array();
+		if ($errinfo['type'] == 'exception') {
+			$e = $errinfo['exception'];
+			$str[] = sprintf("[%s] Exception %s %s\n", date('Y-m-d H:i:s'), $e->getCode(), $e->getMessage());
+			$str[] = sprintf("\t-> Type: %s\n", $errinfo['exception_type']);
+			$str[] = sprintf("\t-> Line %d on file %s\n", $errinfo['errline'], $errinfo['errfile']);
+		} else {
+			$str[] = sprintf("[%s] Error %s\n", date('Y-m-d H:i:s'), $errinfo['errstr']);
+			$str[] = sprintf("\t-> Type: %s\n", $errinfo['errname']);
+			$str[] = sprintf("\t-> Line %d on file %s\n", $errinfo['errline'], $errinfo['errfile']);
+		}
+
+		$errinfo['trace'] = trim($errinfo['trace']);
+		if ($errinfo['trace']) {
+			$lines = explode("\n", $errinfo['trace']);
+			foreach ($lines as $l) {
+				$str[] = sprintf("\t-> %s\n", trim($l));
+			}
+		}
+
+		$str = implode('', $str);
+
+		$written = false;
+		if (class_exists('Application\DeskPRO\App') && App::getLogDir() && ($fh = @fopen(App::getLogDir() . '/error.log', 'a')) !== false) {
+			$written = @fwrite($fh, $str);
+			@fclose($fh);
+
+			if ($written) {
+				self::$wrote_log_file = App::getLogDir() . '/error.log';
+			}
+		}
+
+		// Try to write to php error log instead
+		if (!$written) {
+			@ini_set('log_errors_max_len', strlen($str));
+			@error_log($str, 0);
+
+			self::$wrote_php_log = true;
+		}
 	}
 
 	public static function getExceptionInfo(\Exception $exception)
@@ -795,7 +845,8 @@ class KernelErrorHandler
 		$trace = self::formatBacktrace($backtrace);
 		$trace = self::stripPathPrefix($trace);
 
-		$summary = "[EXCEPTION:$errno] $errstr ($errfile:$errline)";
+		$type = get_class($exception);
+		$summary = "[EXCEPTION] $type:$errno $errstr ($errfile:$errline)";
 
 		$display = true;
 		if (!(error_reporting() & E_ERROR)) {
@@ -803,19 +854,20 @@ class KernelErrorHandler
 		}
 
 		return array(
-			'type'         => 'exception',
-			'session_name' => isset($exception->_dp_sn) ? $exception->_dp_sn : null,
-			'exception'    => $exception,
-			'die'          => true,
-			'pri'          => 'ERR',
-			'trace'        => $trace,
-			'summary'      => $summary,
-			'errstr'       => $errstr,
-			'errname'      => $errfile,
-			'errno'        => $errno,
-			'errfile'      => $errfile,
-			'errline'      => $errline,
-			'display'      => $display,
+			'type'           => 'exception',
+			'session_name'   => isset($exception->_dp_sn) ? $exception->_dp_sn : null,
+			'exception'      => $exception,
+			'exception_type' => get_class($exception),
+			'die'            => true,
+			'pri'            => 'ERR',
+			'trace'          => $trace,
+			'summary'        => $summary,
+			'errstr'         => $errstr,
+			'errname'        => 'EXCEPTION',
+			'errno'          => $errno,
+			'errfile'        => $errfile,
+			'errline'        => $errline,
+			'display'        => $display,
 		);
 	}
 
@@ -879,7 +931,7 @@ class KernelErrorHandler
 			'trace'        => $trace,
 			'summary'      => $summary,
 			'errstr'       => $errstr,
-			'errname'      => $errfile,
+			'errname'      => $errname,
 			'errno'        => $errno,
 			'errfile'      => $errfile,
 			'errline'      => $errline,
@@ -891,15 +943,27 @@ class KernelErrorHandler
 	{
 		$prefix = DP_ROOT . '/';
 		$content = str_replace($prefix, '', $content);
+
+		$prefix = DP_WEB_ROOT . '/';
+		$content = str_replace($prefix, '', $content);
+
 		return $content;
 	}
 
 	public static function formatBacktrace(array $backtrace)
 	{
 		$trace = '';
+
+		$longest = 100;
+
 		foreach($backtrace as $k=>$v){
 
-			$line = "#$k ";
+			$prefix = "#$k ";
+			$line = '';
+
+			if (!empty($v['file'])) {
+				$prefix .= "[{$v['file']}:{$v['line']}] ";
+			}
 
 			if (isset($v['object'])) {
 				$line .= get_class($v['object']) . "::";
@@ -915,16 +979,10 @@ class KernelErrorHandler
 
 			$line .= ")";
 
-			if (!empty($v['file'])) {
-				$line .= " called at [{$v['file']}:{$v['line']}]";
-			}
-
-			$line .= "\n";
-
-			$trace .= $line;
+			$trace .= $prefix . ' ' . trim($line) . "\n";
 		}
 
-		return $trace;
+		return trim($trace);
 	}
 
 	public static function varToString($var, $_depth = 0)

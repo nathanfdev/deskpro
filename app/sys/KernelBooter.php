@@ -302,7 +302,9 @@ class KernelBooter
 		array_unshift($argv, 'cron.php', 'dp:worker-job'); // so we can add the command name in the right spot
 		$input = new \Symfony\Component\Console\Input\ArgvInput($argv);
 
+		$GLOBALS['DP_IS_IN_CLI'] = true;
 		$app->run($input);
+		$GLOBALS['DP_IS_IN_CLI'] = false;
 	}
 
 
@@ -323,7 +325,9 @@ class KernelBooter
 		array_unshift($argv, 'import.php', 'dp:import', '--run'); // so we can add the command name in the right spot
 		$input = new \Symfony\Component\Console\Input\ArgvInput($argv);
 
+		$GLOBALS['DP_IS_IN_CLI'] = true;
 		$app->run($input);
+		$GLOBALS['DP_IS_IN_CLI'] = false;
 	}
 
 
@@ -344,7 +348,9 @@ class KernelBooter
 		array_unshift($argv, 'upgrade.php', 'dp:upgrade'); // so we can add the command name in the right spot
 		$input = new \Symfony\Component\Console\Input\ArgvInput($argv);
 
+		$GLOBALS['DP_IS_IN_CLI'] = true;
 		$app->run($input);
+		$GLOBALS['DP_IS_IN_CLI'] = false;
 	}
 
 

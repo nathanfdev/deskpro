@@ -688,6 +688,7 @@ class App
 	 */
 	public static function getLogDir()
 	{
+		if (!self::$_kernel) return '';
 		return self::$_kernel->getLogDir();
 	}
 
