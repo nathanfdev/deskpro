@@ -154,6 +154,18 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 					var el = $(html);
 					el.hide();
 
+					var ticketRow = el.find('article.row-item');
+					var ticketId = ticketRow.data('ticket-id');
+					if (ticketId) {
+						var tabs = DeskPRO_Window.tabWatcher.findTabType('ticket');
+						Array.each(tabs, function(t) {
+							if (t.page.meta.ticket_id == ticketId) {
+								ticketRow.addClass('open');
+								return false;
+							}
+						});
+					}
+
 					$('.timeago', el).timeago();
 
 					self.getEl('results_wrap').prepend(el);
