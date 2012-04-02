@@ -97,6 +97,7 @@ class TemplateFiles
 				/** @var \Symfony\Component\Finder\SplFileinfo $file */
 
 				$filepath = $file->getRealPath();
+				$filepath = str_replace('\\', '/', $filepath);
 
 				$tplname = str_replace($dir . '/', ':', $filepath);
 				$tplname = str_replace('/', ':', $tplname);
