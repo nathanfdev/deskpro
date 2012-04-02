@@ -534,8 +534,6 @@ ul#dp_notify_list li#dp_notify_list_none {
 	float: left;
 	height: 41px;
 	width: 467px;
-	border-right: 1px solid #3A4A59;
-	box-shadow: 2px 0 4px 0 rgba(0, 0, 0, 0.2);
 	position: relative;
 	cursor:	text;
 	overflow: hidden;
@@ -684,6 +682,9 @@ ul#dp_notify_list li#dp_notify_list_none {
 #DP-CreateSection{
 	position: relative;
 	float: left;
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	background-image: url("../../images/agent/header/header-divider.png") /** sprite-ref: ui-v; sprite-alignment: left */;
 }
 
 #DP-InterfaceSwitcher{
@@ -787,7 +788,7 @@ ul#dp_notify_list li#dp_notify_list_none {
 .DP-createTicket{
 	overflow: hidden;
 	font-family: @toolbar-font;
-	padding: 8px 10px;
+	padding: 8px 11px;
 }
 .DP-createTicket #createContentTrigger{
 	.header-btn();
