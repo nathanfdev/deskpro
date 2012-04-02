@@ -6,6 +6,6 @@
 {% endfor %}
 {% if people_list|length %}
 	<li>
-		<a data-route="person:{{ path('agent_peoplesearch_findpane') }}">View all results</a>
+		<a data-route="person:{{ path('agent_peoplesearch_findpane') }}">{{ phrase('agent.peoplesearch.view_all_results') }}</a>
 	</li>
 {% endif %}

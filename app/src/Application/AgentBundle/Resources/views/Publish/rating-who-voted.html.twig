@@ -2,11 +2,11 @@
 	<table class="list" cellspacing="0" width="100%">
 		<thead class="display-options-trigger dbl-click-trigger nosel">
 			<tr>
-				<td>Who</td>
+				<td>{{ phrase('agent.publish.who') }}</td>
 				{% if object_type != 'feedback' %}
-					<td>Rating</td>
+					<td>{{ phrase('agent.publish.rating') }}</td>
 				{% endif %}
-				<td>When</td>
+				<td>{{ phrase('agent.publish.when') }}</td>
 			</tr>
 		</thead>
 		<tbody>

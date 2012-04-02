@@ -37,7 +37,7 @@
 <input type="hidden" id="{{replyBaseId}}_exist_agent_team_id" value="{{ ticket.agent_team.id|default(0) }}" />
 
 <div class="profile-box-container reply-box-wrap" style="position: relative">
-	<div class="drop-file-zone"><h1>Drop your file here to attach it to your reply</h1></div>
+	<div class="drop-file-zone"><h1>{{ phrase('agent.ticket.drop_your_file_here_to_attach_it_to') }}</h1></div>
 	<header>
 		<nav>
 			<ul>
@@ -88,7 +88,7 @@
 					</li>
 					{% if ticket_perms.modify_cc or user_parts|length %}
 						<li id="{{replyBaseId}}_cc_row" class="cc-row hide-note {% if not user_parts|length %}is-hidden{% endif %}" {% if not user_parts|length %}style="display: none;"{% endif %}>
-							<label>CC:</label>
+							<label>{{ phrase('agent.ticket.cc') }}:</label>
 							<div>
 								<input
 									type="text"
@@ -121,7 +121,7 @@
                                             </ul>
                                         </section>
                                     </div>
-                                    <button class="clean-white small cc-saverow-trigger">Add</button>
+                                    <button class="clean-white small cc-saverow-trigger">{{ phrase('agent.ticket.add') }}</button>
                                     <script class="user-row-tpl" type="text/x-deskpro-tmpl">
                                         <li>
                                             <a>
@@ -203,7 +203,7 @@
 							<a id="{{replyBaseId}}_assign_followers_btn" class="with-menu-click-position">
 							<span id="{{replyBaseId}}_assign_followers_detail">
 								<span class="no-followers" {% if agent_parts|length %}style="display: none"{% endif %}>
-									No followers
+									{{ phrase('agent.ticket.no_followers') }}
 								</span>
 								<span class="is-followers" {% if not agent_parts|length %}style="display: none"{% endif %}>
 									| <span class="count">{{ agent_parts|length }}</span> Followers

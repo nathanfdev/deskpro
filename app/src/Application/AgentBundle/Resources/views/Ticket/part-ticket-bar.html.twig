@@ -3,13 +3,13 @@
 	<div class="tab-bottom-open">
 		<div class="tab-bottom-tabs">
 			<ul>
-				<li class="tab-trigger reply-reply on" data-tab-for=".tab-content.reply-reply"><a>Message</a></li>
-				<li class="tab-trigger reply-cc" data-tab-for=".tab-content.reply-cc"><a>CC</a></li>
-				<li class="tab-trigger reply-attach" data-tab-for=".tab-content.reply-attach"><a>Attachment</a></li>
+				<li class="tab-trigger reply-reply on" data-tab-for=".tab-content.reply-reply"><a>{{ phrase('agent.ticket.message') }}</a></li>
+				<li class="tab-trigger reply-cc" data-tab-for=".tab-content.reply-cc"><a>{{ phrase('agent.ticket.cc') }}</a></li>
+				<li class="tab-trigger reply-attach" data-tab-for=".tab-content.reply-attach"><a>{{ phrase('agent.ticket.attachment') }}</a></li>
 			</ul>
-			<span class="bottom-tabs-button macros">Macros</span>
-			<span class="bottom-tabs-button macros-apply" style="display: none;">Apply</span>
-			<span class="bottom-tabs-button macros-cancel" style="display: none;">Cancel</span>
+			<span class="bottom-tabs-button macros">{{ phrase('agent.ticket.macros') }}</span>
+			<span class="bottom-tabs-button macros-apply" style="display: none;">{{ phrase('agent.ticket.apply') }}</span>
+			<span class="bottom-tabs-button macros-cancel" style="display: none;">{{ phrase('agent.ticket.cancel') }}</span>
 		</div>
 
 		<div class="tab-bottom-contents" style="height:154px;">
@@ -23,7 +23,7 @@
 					<input type="hidden" name="options[status]" value="awaiting_user" />
 
 					<div class="send-reply" style="float:right; margin-right: 8px; margin-top: 4px;">
-						<button class="dp-button">Add Reply</button>
+						<button class="dp-button">{{ phrase('agent.ticket.add_reply') }}</button>
 						<div class="spinner"></div>
 					</div>
 
@@ -36,7 +36,7 @@
 								<label for="foot_assign_check_{{ticket.id}}">Assign ticket to</label>
 								<span class="prop-val trigger agent_id">Me</span>
 								<label for="foot_assign_check_{{ticket.id}}">and</label>
-								<span class="prop-val trigger agent_team_id">My Team</span>
+								<span class="prop-val trigger agent_team_id">{{ phrase('agent.ticket.my_team') }}</span>
 							</td>
 							<td width="5" valign="middle" style="vertical-align:middle; padding-right:5px;">
 								<input id="foot_status_check_{{ticket.id}}" class="small" type="checkbox" name="options[do_status]" checked="checked" />
@@ -57,7 +57,7 @@
 								<input id="foot_kb_pending_{{ticket.id}}" class="small" type="checkbox" name="options[kb_pending]" />
 							</td>
 							<td valign="middle" style="vertical-align:middle">
-								<label for="foot_kb_pending_{{ticket.id}}">Mark as pending KB article</label>
+								<label for="foot_kb_pending_{{ticket.id}}">{{ phrase('agent.ticket.mark_as_pending_kb_article') }}</label>
 							</td>
 						</tr>
 					</table>
@@ -70,16 +70,16 @@
 					{% endfor %}
 				</ul>
 				<ul class="reply-agent_team_id-menu" style="display:none">
-					<li data-option-id="standard" data-option-name="agent_team_id" data-option-value="{{app.user.getAgentTeamIds[0]}}">My Team</li>
+					<li data-option-id="standard" data-option-name="agent_team_id" data-option-value="{{app.user.getAgentTeamIds[0]}}">{{ phrase('agent.ticket.my_team') }}</li>
 					<li class="sep">-</li>
 					{% for id,title in ticket_options.agent_teams %}
 						<li data-option-id="standard" data-option-name="agent_team_id" data-option-value="{{id}}">{{title}}</li>
 					{% endfor %}
 				</ul>
 				<ul class="reply-status-menu" style="display:none">
-					<li data-option-id="standard" data-option-name="status" data-option-value="awaiting_agent">Awaiting Agent</li>
-					<li data-option-id="standard" data-option-name="status" data-option-value="awaiting_user">Awaiting User</li>
-					<li data-option-id="standard" data-option-name="status" data-option-value="resolved">Resolved</li>
+					<li data-option-id="standard" data-option-name="status" data-option-value="awaiting_agent">{{ phrase('agent.ticket.awaiting_agent') }}</li>
+					<li data-option-id="standard" data-option-name="status" data-option-value="awaiting_user">{{ phrase('agent.ticket.awaiting_user') }}</li>
+					<li data-option-id="standard" data-option-name="status" data-option-value="resolved">{{ phrase('agent.ticket.resolved') }}</li>
 				</ul>
 			</div>
 			{# /Reply Area #}
@@ -102,10 +102,10 @@
 		<input type="text" class="placeholder" value="Start typing a reply..." />
 		<div class="bar-actions">
 			<ul>
-				<li class="macro-on macros-apply" style="display:none"><a>Apply</a></li>
-				<li class="macro-on macros-cancel" style="display:none"><a>Cancel</a></li>
+				<li class="macro-on macros-apply" style="display:none"><a>{{ phrase('agent.ticket.apply') }}</a></li>
+				<li class="macro-on macros-cancel" style="display:none"><a>{{ phrase('agent.ticket.cancel') }}</a></li>
 				<li class="send-reply" style="display:none"><div class="spinner" style="float:left;display:none;"></div><a>Send Reply</a><a class="loading-msg">Sending</a></li>
-				<li class="macros"><a>Macros</a></li>
+				<li class="macros"><a>{{ phrase('agent.ticket.macros') }}</a></li>
 				<li class="actions"><a>Actions</a></li>
 			</ul>
 		</div>

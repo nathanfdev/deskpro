@@ -1,8 +1,8 @@
 <table class="list" cellspacing="0" width="100%">
 	<thead>
 		<tr>
-			<th>Name</th>
-			<th>Email</th>
+			<th>{{ phrase('agent.peoplesearch.name') }}</th>
+			<th>{{ phrase('agent.peoplesearch.email') }}</th>
 			<th>Labels</th>
 		</tr>
 	</thead>
@@ -14,7 +14,7 @@
 				<td>Labels...</td>
 			</tr>
 		{% else %}
-			<tr><td colspan="3">No people match your criteria</td></tr>
+			<tr><td colspan="3">{{ phrase('agent.peoplesearch.no_people_match_your_criteria') }}</td></tr>
 		{% endfor %}
 	</tbody>
 </table>

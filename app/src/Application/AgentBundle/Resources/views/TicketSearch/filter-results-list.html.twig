@@ -41,7 +41,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<header>
 		<div class="controls">
 			<a class="order-by-menu-trigger clean-white arrow menu-fitted">{{ phrase('agent.ordered_by') }} <span class="label">{{ order_by_summary }}</span><em></em></a>
-			<a class="group-by-menu-trigger clean-white arrow menu-fitted">{{ phrase('agent.grouped_by') }} <span class="label">{{ grouping_summary|default('None') }}</span><em></em></a>
+			<a class="group-by-menu-trigger clean-white arrow menu-fitted">{{ phrase('agent.grouped_by') }} <span class="label">{{ grouping_summary|default(phrase('agent.ticketsearch.none')) }}</span><em></em></a>
 			<a class="display-options-trigger clean-white">{{ phrase('agent.display_options') }}</a>
 		</div>
 
@@ -51,7 +51,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<li data-order-by="priority">{{ phrase('agent.priority') }}</li>
 		</ul>
 		<ul style="display: none" class="group-by-menu">
-			<li data-group-by="">None</li>
+			<li data-group-by="">{{ phrase('agent.ticketsearch.none') }}</li>
 			<li data-group-by="department">{{ phrase('agent.department') }}</li>
 			{% if app.getSetting('core.use_ticket_category') %}<li data-group-by="category">{{ phrase('agent.category') }}</li>{% endif %}
 			{% if app.getSetting('core.use_ticket_category') %}<li data-group-by="priority">{{ phrase('agent.priority') }}</li>{% endif %}
@@ -82,7 +82,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 	</article>
 	<div class="full-loading" style="display: none">
-		<em>Loading</em>
+		<em>{{ phrase('agent.ticketsearch.loading') }}</em>
 	</div>
 	<footer class="is-ticket-list bottom-action-bar">
 			<div class="check-count selection-bar">
@@ -97,7 +97,7 @@ pageMeta.baseId = '{{ baseId }}';
                     <a target="_blank"
                        href="{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?view_type=csv&set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_name={{ view_name }}">
                         <button class="clean-white">
-                            <span>Export to CSV</span>
+                            <span>{{ phrase('agent.ticketsearch.export_to_csv') }}</span>
                         </button>
                     </a>
 					Showing results

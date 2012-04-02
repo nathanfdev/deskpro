@@ -1,8 +1,8 @@
 <header class="list-control-bar">
 	<ul>
-		<li>Sort by </li>
-		<li><a class="button {% if group_by == 'date' %}on{% endif %}" data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_categoty': search_categoty, 'group_by': 'date'}) }}">Date</a></li>
-		<li><a class="button {% if group_by == 'assigned' %}on{% endif %}" data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_categoty': search_categoty, 'group_by': 'assigned'}) }}">Assigned</a></li>
-		<li><a class="button {% if group_by == 'creator' %}on{% endif %}" data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_categoty': search_categoty, 'group_by': 'creator'}) }}">Creator</a></li>
+		<li>{{ phrase('agent.task.sort_by') }} </li>
+		<li><a class="button {% if group_by == 'date' %}on{% endif %}" data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_categoty': search_categoty, 'group_by': 'date'}) }}">{{ phrase('agent.task.date') }}</a></li>
+		<li><a class="button {% if group_by == 'assigned' %}on{% endif %}" data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_categoty': search_categoty, 'group_by': 'assigned'}) }}">{{ phrase('agent.task.assigned') }}</a></li>
+		<li><a class="button {% if group_by == 'creator' %}on{% endif %}" data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_categoty': search_categoty, 'group_by': 'creator'}) }}">{{ phrase('agent.task.creator') }}</a></li>
 	</ul>
 </header>

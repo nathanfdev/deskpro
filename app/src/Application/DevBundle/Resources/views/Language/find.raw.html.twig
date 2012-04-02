@@ -1,11 +1,29 @@
 <a href="{{ path('dev_lang_index') }}">Back</a>
 
-<table cellspacing="0" cellpadding="2" border="1" width="90%">
-<tr><th>File</th><th>String</th></tr>
-
-    {% for file,strings in untranslated %}
-        {% for string in strings %}
-            <tr><td>{{file}}</td><td>{{string}}</td></tr>
-        {% endfor %}
+{% if langfiles|length %}
+    {% for file,conf in langfiles %}
+        <h3>{{file}}</h3>
+<pre>
+{{conf}}
+</pre>
     {% endfor %}
-</table>
+{% endif %}
+
+<form method="post">
+    <table cellspacing="0" cellpadding="2" border="1" width="90%">
+    <tr><th>File</th><th>String</th><th>Auto Id</th><th>Replace?</th></tr>
+
+        {% for file,strings in untranslated %}
+            {% for string in strings %}
+                <tr>
+                    <td>{{file}}</td>
+                    <td>{{string.text}}</td>
+                    <td>{{string.id}}</td>
+                    <td><input type="checkbox" name="replace[]" value="{{file}}?{{string.text}}" /></td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+    </table>
+    Dry run: <input type="checkbox" name="dryrun" value="1" /><br />
+    <input type="submit" value="Replace Strings!" />
+</form>

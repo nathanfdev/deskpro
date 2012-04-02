@@ -19,13 +19,13 @@
 <div class="optionbox" id="agent_optionbox_check">
 	<section data-section-name="followers">
 		<header>
-			<h3>Agents</h3>
+			<h3>{{ phrase('agent.main.agents') }}</h3>
 			<input type="text" class="filter-box" placeholder="Filter..." />
 		</header>
 		<ul>
 			<li class="me last-me {% if app.user.id in participant_ids %}on{% endif %}">
 				<input type="checkbox" name="agent_optionbox_check" value="{{ app.user.id }}" {% if app.user.id in participant_ids %}checked="checked"{% endif %} />
-				<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
+				<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.main.me') }}</span></label>
 			</li>
 
 			{% for agent in agents %}
@@ -224,11 +224,11 @@
 
 {# Ticket Status #}
 <ul id="ticket_status_menu">
-	<li class="section-title">Status</li>
-	<li data-status="awaiting_agent">Awaiting Agent</li>
-	<li data-status="awaiting_user">Awaiting User</li>
-	<li data-status="resolved">Resolved</li>
-	<li data-status="closed">Closed</li>
+	<li class="section-title">{{ phrase('agent.main.status') }}</li>
+	<li data-status="awaiting_agent">{{ phrase('agent.main.awaiting_agent') }}</li>
+	<li data-status="awaiting_user">{{ phrase('agent.main.awaiting_user') }}</li>
+	<li data-status="resolved">{{ phrase('agent.main.resolved') }}</li>
+	<li data-status="closed">{{ phrase('agent.main.closed') }}</li>
 </ul>
 
 {# Comment Menu #}
@@ -441,9 +441,9 @@
 				<option value="is">is</option>
 				<option value="not">is not</option>
 				{% if with_change_terms %}
-					<option value="changed">Changed</option>
-					<option value="changed_to">Changed to include</option>
-					<option value="changed_from">Changed to remove</option>
+					<option value="changed">{{ phrase('agent.main.changed') }}</option>
+					<option value="changed_to">{{ phrase('agent.main.changed_to_include') }}</option>
+					<option value="changed_from">{{ phrase('agent.main.changed_to_remove') }}</option>
 				{% endif %}
 			</select>
 		</div>

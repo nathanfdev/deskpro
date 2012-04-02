@@ -1,7 +1,7 @@
 <div class="add-new-user-container">
 
 <div class="col">
-	<h4>Email Address</h4>
+	<h4>{{ phrase('agent.deal.email_address') }}</h4>
 	{% if person.id %}
 		{{ person.primary_email_address }}
 	{% else %}
@@ -10,7 +10,7 @@
 </div>
 
 <div class="col">
-	<h4>Name</h4>
+	<h4>{{ phrase('agent.deal.name') }}</h4>
 	{% if person.id %}
 		{{ person.name }}
 	{% else %}
@@ -24,7 +24,7 @@
 </div>
 <br class="clear" />
 <footer>
-   <button class="save-trigger clean-white small">Add user</button>
-   <button class="cancel-trigger clean-white small">Cancel</button>
+   <button class="save-trigger clean-white small">{{ phrase('agent.deal.add_user') }}</button>
+   <button class="cancel-trigger clean-white small">{{ phrase('agent.deal.cancel') }}</button>
 </footer>
 </div>

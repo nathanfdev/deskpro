@@ -73,14 +73,14 @@ pageMeta.baseId = '{{ baseId }}';
     <div class="titlewrap">
         <div class="isLeft">
             <dl class="table-list">
-                <dt class="type-labels select-deal" id="{{baseId}}_deal_type" data-deal-id="{{ deal.id }}">Type</dt>
+                <dt class="type-labels select-deal" id="{{baseId}}_deal_type" data-deal-id="{{ deal.id }}">{{ phrase('agent.deal.type') }}</dt>
                 <dd>
                     {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
                                 'name': 'actions[dealtype]',
                                 'id': baseId~'_select_deal_type',
                                 'with_blank': true,
                                 'with_blank2': true,
-                                'blank_title': 'Set Deal Type',
+                                'blank_title': '{{ phrase('agent.deal.set_deal_type') }}',
                                 'options': deal_types,
                                 'selected': deal.deal_type.id,
                                 'add_classname': 'select-deal-type'
@@ -91,14 +91,14 @@ pageMeta.baseId = '{{ baseId }}';
 
         <div class="isLeft">
             <dl class="table-list">
-                <dt class="type-labels">Stage</dt>
+                <dt class="type-labels">{{ phrase('agent.deal.stage') }}</dt>
                 <dd class="set-deal-stage">
                     {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
                                 'name': 'actions[dealstage]',
                                 'id': baseId~'_select_deal_stage',
                                 'with_blank': true,
                                 'with_blank2': true,
-                                'blank_title': 'Set Deal Stage',
+                                'blank_title': '{{ phrase('agent.deal.set_deal_stage') }}',
                                 'options': deal_stage,
                                 'selected': deal.deal_stage.id,
                                 'add_classname': 'select-deal-stage'
@@ -115,9 +115,9 @@ pageMeta.baseId = '{{ baseId }}';
             <div class="isLeft category the-visibility deal-visibility" id="{{baseId}}_visibility_trigger">
                 <span id="{{baseId}}_visibility_label">
                         {% if deal.visibility == 0 %}
-                                Private
+                                {{ phrase('agent.deal.private') }}
                         {% elseif deal.visibility == 1 %}
-                                Public
+                                {{ phrase('agent.deal.public') }}
                         {% endif %}
                 </span>
             </div>
@@ -177,13 +177,13 @@ pageMeta.baseId = '{{ baseId }}';
 
 {{ optionbox.start('Visibility', {'id': baseId ~ '_visibility_ob'}) }}
 	{{ optionbox.section_start('', 'visibility') }}
-		<li class="top parent-option item-private" data-item-id="0" data-full-title="Private">
+		<li class="top parent-option item-private" data-item-id="0" data-full-title="{{ phrase('agent.deal.private') }}">
 			<input type="radio" name="visibility" value="o" />
-			<label>Private</label>
+			<label>{{ phrase('agent.deal.private') }}</label>
 		</li>
-		<li class="top parent-option item-public" data-item-id="1" data-full-title="Public">
+		<li class="top parent-option item-public" data-item-id="1" data-full-title="{{ phrase('agent.deal.public') }}">
 			<input type="radio" name="visibility" value="1" />
-			<label>Public</label>
+			<label>{{ phrase('agent.deal.public') }}</label>
 		</li>
 	{{ optionbox.section_end() }}
 {{ optionbox.end('Set Visibility') }}

@@ -41,8 +41,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 </script>
 <div class="macro-controls">
-	<button class="save" id="macro_apply_btn">Apply Macro</button>
-	<button class="cancel" id="macro_cancel_btn">Cancel</button>
+	<button class="save" id="macro_apply_btn">{{ phrase('agent.ticket.apply_macro') }}</button>
+	<button class="cancel" id="macro_cancel_btn">{{ phrase('agent.ticket.cancel') }}</button>
 </div>
 
 <div class="layout-content with-scrollbar page-ticket {% if ticket.is_locked %}locked{% endif %} {% if ticket.hidden_status == 'deleted' %}deleted{% endif %} {{ ticket.status_code|replace({'.': '_'}) }}">
@@ -76,7 +76,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		{% if ticket.hidden_status == 'deleted' %}
 			{{ phrase('agent.tickets.deleted_by') }} {{ ticket_deleted.by_person.display_name }} (<time class="timeago" title="{{ ticket_deleted.date_created|date('c') }}">{{ ticket_deleted.date_created|date('day') }}</time>).
 			{% if ticket_deleted.reason %}
-				<br />Reason: {{ ticket_deleted.reason }}
+				<br />{{ phrase('agent.ticket.reason') }}: {{ ticket_deleted.reason }}
 			{% endif %}
 
 			{% if ticket_perms.delete %}
@@ -89,7 +89,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				{{ phrase('agent.tickets.perm_delete_note', {'time': hard_delete_time}) }}
 			{% endif %}
 		{% elseif ticket.hidden_status == 'spam' %}
-			This ticket has been marked as spam.<br />
+			{{ phrase('agent.ticket.this_ticket_has_been_marked_as_spam') }}<br />
 
 			{% if ticket_perms.delete %}
 				<div style="padding: 5px">
@@ -116,18 +116,17 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<div class="meta-line">
 		<div class="status set-status awaiting_agent" {% if ticket.status_code != 'awaiting_agent' %}style="display: none"{% endif %}>
 			<span class="marker-urgency-data" data-urgency="{{ ticket.urgency }}">
-				<label>Awaiting Agent</label>
+				<label>{{ phrase('agent.ticket.awaiting_agent') }}</label>
 				<i class="ticket-urgency" id="{{baseId}}_urgency" data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</i>
 			</span>
 		</div>
-		<div class="status set-status awaiting_user" {% if ticket.status_code != 'awaiting_user' %}style="display: none"{% endif %}><span>Awaiting User</span></div>
-		<div class="status set-status closed" {% if ticket.status_code != 'closed' %}style="display: none"{% endif %}><span>Closed</span></div>
-		<div class="status set-status resolved" {% if ticket.status_code != 'resolved' %}style="display: none"{% endif %}><span>Resolved</span></div>
-		<div class="status set-status hidden hidden_spam" {% if ticket.status_code != 'hidden.spam' %}style="display: none"{% endif %}><span>Spam</span></div>
-		<div class="status set-status hidden hidden_validating" {% if ticket.status_code != 'hidden.validating' %}style="display: none"{% endif %}><span>Validating</span></div>
-		<div class="status set-status hidden hidden_deleted" {% if ticket.status_code != 'hidden.deleted' %}style="display: none"{% endif %}><span>Deleted</span></div>
-
-		<div class="category set-department"><span>Department: <span class="label-department-id">{{ ticket.department.full_title }}</span></span></div>
+		<div class="status set-status awaiting_user" {% if ticket.status_code != 'awaiting_user' %}style="display: none"{% endif %}><span>{{ phrase('agent.ticket.awaiting_user') }}</span></div>
+		<div class="status set-status closed" {% if ticket.status_code != 'closed' %}style="display: none"{% endif %}><span>{{ phrase('agent.ticket.closed') }}</span></div>
+		<div class="status set-status resolved" {% if ticket.status_code != 'resolved' %}style="display: none"{% endif %}><span>{{ phrase('agent.ticket.resolved') }}</span></div>
+		<div class="status set-status hidden hidden_spam" {% if ticket.status_code != 'hidden.spam' %}style="display: none"{% endif %}><span>{{ phrase('agent.ticket.spam') }}</span></div>
+		<div class="status set-status hidden hidden_validating" {% if ticket.status_code != 'hidden.validating' %}style="display: none"{% endif %}><span>{{ phrase('agent.ticket.validating') }}</span></div>
+		<div class="status set-status hidden hidden_deleted" {% if ticket.status_code != 'hidden.deleted' %}style="display: none"{% endif %}><span>{{ phrase('agent.ticket.deleted') }}</span></div>
+		<div class="category set-department"><span>{{ phrase('agent.ticket.department') }}: <span class="label-department-id">{{ ticket.department.full_title }}</span></span></div>
 
 		{% if ticket_perms.modify_set_hold %}
 			<div class="set-hold hold noedit-hide" {% if ticket.is_hold %}style="display: none"{% endif %}><span>{{ phrase('agent.tickets.set_hold') }}</span></div>
@@ -163,7 +162,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 					{% if ticket_perms.modify_cc or user_parts|length %}
 						<dt>
-							CC
+							{{ phrase('agent.ticket.cc') }}
 							{% if ticket_perms.modify_cc %}<span id="{{baseId}}_new_cc_user" class="btn-small-add"></span>{% endif %}
 						</dt>
 						<dd
@@ -238,7 +237,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 							{% for part in agent_parts %}
 								<li><span class="agent-link" data-agent-id="{{ part.person.id }}">{{ part.person.display_name }}</span></li>
 							{% else %}
-								<li>No Followers</li>
+								<li>{{ phrase('agent.ticket.no_followers') }}</li>
 							{% endfor %}
 						</ul>
 					</dd>
@@ -340,7 +339,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 <div class="profile-box-container ticket-messages">
 	<header>
-		<h4>Messages</h4>
+		<h4>{{ phrase('agent.ticket.messages') }}</h4>
 		<ul class="tickets-msg-controls">
 			<li id="{{baseId}}_msgcheck_message"><label><input type="checkbox" class="dp-checkbox show-messages" checked="checked" />{{ phrase('agent.messages') }}</label></li>
 			<li id="{{baseId}}_msgcheck_attach"><label><input type="checkbox" class="dp-checkbox show-attach" checked="checked" />{{ phrase('agent.attachments') }}</label></li>

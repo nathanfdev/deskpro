@@ -17,4 +17,21 @@
 	'agent.feedback.feedback_to_validate' => 'Feedback to Validate',
 
 	'agent.feedback.no_labels_explain' => 'You have not labelled any feedback yet. View a feedback submission to add labels to it.',
+
+
+	'agent.feedback.comparing_revisions' => 'Comparing Revisions',
+	'agent.feedback.all' => 'All',
+	'agent.feedback.showing_results' => 'Showing results',
+	'agent.feedback.newest_ontop' => 'Newest on	top',
+	'agent.feedback.oldest_on_top' => 'Oldest on top',
+	'agent.feedback.any_status' => 'Any Status',
+	'agent.feedback.any_category' => 'Any Category',
+	'agent.feedback.popular_feedbackonly' => 'Popular feedback only',
+	'agent.feedback.update_filter' => 'Update Filter',
+	'agent.feedback.unsaved_changes_wererestored' => 'Unsaved changes wererestored.',
+	'agent.feedback.revision' => 'Revision',
+	'agent.feedback.compare' => 'Compare',
+	'agent.feedback.new_comment' => 'New Comment',
+	'agent.feedback.active' => 'Active',
+	'agent.feedback.pending' => 'Pending',
 );

@@ -2,25 +2,25 @@
 	<header class="overlay-title">
 		<nav class="mode-buttons">
 			<ul>
-				<li class="simple on"><a>Simple</a></li>
-				<li class="advanced"><a>Advanced</a></li>
+				<li class="simple on"><a>{{ phrase('agent.peoplesearch.simple') }}</a></li>
+				<li class="advanced"><a>{{ phrase('agent.peoplesearch.advanced') }}</a></li>
 			</ul>
 		</nav>
-		<h4>Find Person</h4>
+		<h4>{{ phrase('agent.peoplesearch.find_person') }}</h4>
 	</header>
 	<div class="overlay-content no-footer">
 		<section class="search-area">
 			<form class="simple">
-				<button class="simple-search-trigger dp-button x-small" style="float:right">Find</button>
+				<button class="simple-search-trigger dp-button x-small" style="float:right">{{ phrase('agent.peoplesearch.find') }}</button>
 
 				<input type="hidden" name="terms[0][type]" value="person_name" />
 				<input type="hidden" name="terms[0][op]" value="contains" />
 				<input type="hidden" name="terms[1][type]" value="person_email" />
 				<input type="hidden" name="terms[1][op]" value="contains" />
 
-				Name: <input type="text" name="terms[0][name]" value="" />
+				{{ phrase('agent.peoplesearch.name') }}: <input type="text" name="terms[0][name]" value="" />
 				&nbsp;&nbsp;&nbsp;
-				Email: <input type="text" name="terms[1][email]" value="" />
+				{{ phrase('agent.peoplesearch.email') }}: <input type="text" name="terms[1][email]" value="" />
 			</form>
 			<form class="advanced" style="display: none;">
 				<div class="row" style="margin-top: 0;">
@@ -29,7 +29,7 @@
 						<div class="term"><span class="add-term">+</span> Add a new term</div>
 					</div>
 				</div>
-				<center><button class="advanced-search-trigger dp-button x-small">Find</button></center>
+				<center><button class="advanced-search-trigger dp-button x-small">{{ phrase('agent.peoplesearch.find') }}</button></center>
 			</form>
 		</section>
 		<section class="deskpro-results-list" style="display:none">
@@ -38,8 +38,8 @@
 			<img src="{{ asset('images/loading-big-circle.gif') }}" alt="" />
 		</section>
 		<section class="no-results-info" style="padding: 10px;">
-			<div class="no-search"><center>Find a person by entering criteria above.</center></div>
-			<div class="no-results" style="display: none;"><center>No results were found</center></div>
+			<div class="no-search"><center>{{ phrase('agent.peoplesearch.find_by_above_criteria') }}</center></div>
+			<div class="no-results" style="display: none;"><center>{{ phrase('agent.peoplesearch.no_results_were_found') }}</center></div>
 		</section>
 		{% include 'DeskPRO:Common:people-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'term_options': people_term_options } %}
 	</div>

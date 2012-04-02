@@ -90,6 +90,46 @@ class LanguageController extends Controller
 
     public function findRawStringsAction($bundle)
     {
+        set_time_limit(0);
+        $langfile = array();
+
+        if(isset($_POST['replace'])) {
+            foreach($_POST['replace'] as $replace) {
+                list($file, $string) = explode('?', $replace, 2);
+                $id = $this->stringToId($string);
+                $prefix = strtolower(str_replace('Bundle', '', $bundle).'.'.basename(dirname($file)));
+                $conf_dir = DP_ROOT.'/languages/DeskPRO/'.strtolower(str_replace('Bundle', '', $bundle));
+
+                if(!is_dir($conf_dir)) {
+                    mkdir($conf_dir , 0755, true);
+                }
+
+                $conf_file = $conf_dir.'/'.strtolower(basename(dirname($file))).'.php';
+
+                if(!file_exists($conf_file)) {
+                    file_put_contents($conf_file, '<?php return ;');
+                }
+
+                if(!isset($langfile[$conf_file])) {
+                    $langfile[$conf_file] = array();
+                }
+
+                $id = $prefix.'.'.$id;
+                $langfile[$conf_file][$id] = $string;
+
+                $data = file_get_contents($file);
+                $new_data = str_replace($string, '{{ phrase(\''.$id.'\') }}', $data);
+
+                if($data != $new_data) {
+                    $langfile[$conf_file][$id] = $string;
+
+                    if(!isset($_POST['dry_run'])) {
+                        file_put_contents($file, $new_data);
+                    }
+                }
+            }
+        }
+
         $twig_options = array();
         $lexer = $this->getTwigLexer($twig_options);
         $templates = $this->getTwigFileList($bundle);
@@ -174,15 +214,26 @@ class LanguageController extends Controller
 
             $strings = array();
             get_strings($element, $strings);
+            $strings_ids = array();
+
+            foreach($strings as $string) {
+                $strings_ids[] = array('text' => $string, 'id' => $this->stringToId($string));
+            }
 
             if(count($strings)) {
-                $untranslated[$file] = $strings;
+                $untranslated[$file] = $strings_ids;
             }
 
             unset($strings);
         }
 
-        $vars = array('untranslated' => $untranslated);
+        $lang_conf = array();
+
+        foreach($langfile as $file => $strings) {
+            $lang_conf[$file] = var_export($strings, true);
+        }
+
+        $vars = array('untranslated' => $untranslated, 'langfiles' => $lang_conf);
 
         return $this->render('DevBundle:Language:find.raw.html.twig', $vars);
     }
@@ -478,7 +529,7 @@ class LanguageController extends Controller
         $rootdir = DP_ROOT.'/languages/DeskPRO';
         $dh1 = opendir($rootdir);
         $files = array();
-        
+
         while(false !== ($dirname = readdir($dh1))) {
             if($dirname == '.' || $dirname == '..')
                 continue;
@@ -662,5 +713,16 @@ class LanguageController extends Controller
     public function getTwigLexer($options)
     {
         return new \Twig_Lexer($this->container->get('twig'), $options);
+    }
+
+    public function stringToId($string)
+    {
+        $string = strtolower($string);
+        $string = preg_replace('/[^a-zA-Z0-9_ ]/', '', $string);
+        $string = preg_replace('/ +/', ' ', $string);
+        $parts = explode(' ', $string);
+        $parts = array_slice($parts, 0, 8);
+        $string = implode('_', $parts);
+        return $string;
     }
 }

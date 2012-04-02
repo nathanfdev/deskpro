@@ -1,9 +1,9 @@
-Types:
-<label>All <input type="checkbox" name="types[]" value="all" /></label>
-<label>Tickets <input type="checkbox" name="types[]" value="tickets" /></label>
-<label>Articles <input type="checkbox" name="types[]" value="kb" /></label>
+{{ phrase('agent.mediabrowser.types') }}:
+<label>{{ phrase('agent.mediabrowser.all') }} <input type="checkbox" name="types[]" value="all" /></label>
+<label>{{ phrase('agent.mediabrowser.tickets') }} <input type="checkbox" name="types[]" value="tickets" /></label>
+<label>{{ phrase('agent.mediabrowser.articles') }} <input type="checkbox" name="types[]" value="kb" /></label>
 
-Labels: <input type="text" name="labels" value="{{ labels }}" />
+{{ phrase('agent.mediabrowser.labels') }}: <input type="text" name="labels" value="{{ labels }}" />
 
 {% if blob_objects|length %}
 <table width="100%" cellpadding="0" cellspacing="0">
@@ -14,7 +14,7 @@ Labels: <input type="text" name="labels" value="{{ labels }}" />
 				{% if blob_object.object_type == 'ticket' %}
 					ticket <a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': blob_object.object.id}) }}">{{ blob_object.object.subject }}</a>
 				{% elseif blob_object.object_type == 'kb' %}
-					article <a class="with-route" data-route="{{ path('agent_kb_view', {'article_id': blob_object.object.id}) }}">{{ blob_object.object.title }}</a>
+					{{ phrase('agent.mediabrowser.article') }} <a class="with-route" data-route="{{ path('agent_kb_view', {'{{ phrase('agent.mediabrowser.article') }}_id': blob_object.object.id}) }}">{{ blob_object.object.title }}</a>
 				{% endif %}
 			</td>
 			<td>

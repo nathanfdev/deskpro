@@ -41,5 +41,9 @@
 
 	'agent.settings.edit_macro' => 'Edit Macro',
 	'agent.settings.new_macro' => 'New Macro',
-	'agent.settings.no_macros' => 'You have not defiend any custom macros.'
+	'agent.settings.no_macros' => 'You have not defiend any custom macros.',
+
+  'agent.settings.saved' => 'Saved',
+  'agent.settings.create_filter' => 'Create Filter',
+  'agent.settings.create_macro' => 'Create Macro',
 );

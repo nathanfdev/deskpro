@@ -4,7 +4,7 @@
 			<img class="thumbnail" src="{{ blob.thumbnail_url }}" />
 		{% endif %}
 		<label>
-			Title:
+			{{ phrase('agent.mediabrowser.title') }}:
 			<input type="text" name="title" class="file-title" value="{{ blob.title|default(blob.filename) }}" />
 		</label>
 	</div>
@@ -13,20 +13,20 @@
 			<input type="text" value="{% for label in blob.labels %}{{label.label}},{% endfor %}" />
 		</div>
 		<ul>
-			<li><a href="{{ blob.download_url }}">Download file</a></li>
-			<li>File name: {{ blob.filename }}</li>
-			<li>File size: {{ blob.readable_filesize }}</li>
+			<li><a href="{{ blob.download_url }}">{{ phrase('agent.mediabrowser.download_file') }}</a></li>
+			<li>{{ phrase('agent.mediabrowser.file_name') }}: {{ blob.filename }}</li>
+			<li>{{ phrase('agent.mediabrowser.file_size') }}: {{ blob.readable_filesize }}</li>
 			{% if blob.dim_w %}
 				<li>Dimentions: {{ blob.dim_w }}x{{ blob.dim_h }}</li>
 			{% endif %}
 		</ul>
 	</div>
 	<div class="footer">
-		<button class="dp-button x-small remove-trigger" style="float: right">Remove</button>
+		<button class="dp-button x-small remove-trigger" style="float: right">{{ phrase('agent.mediabrowser.remove') }}</button>
 
-		<button class="dp-button x-small link-trigger" data-code="[attach:{{ blob.id }} label:{{ blob.display_title }}]">Insert link to file</button>
+		<button class="dp-button x-small link-trigger" data-code="[attach:{{ blob.id }} label:{{ blob.display_title }}]">{{ phrase('agent.mediabrowser.insert_link_to_file') }}</button>
 		{% if blob.isImage() %}
-			<button class="dp-button x-small image-trigger" data-code="[attach:{{ blob.id }} image]">Insert image</button>
+			<button class="dp-button x-small image-trigger" data-code="[attach:{{ blob.id }} image]">{{ phrase('agent.mediabrowser.insert_image') }}</button>
 			<button class="dp-button x-small image-edit-trigger">Insert edited image</button>
 		{% endif %}
 	</div>

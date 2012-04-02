@@ -8,10 +8,10 @@
 		<tr class="{% if loop.index % 2 == 0 %}white{% endif %} ticket-{{ticket.id}} line-2">
 			<td>
 				<time class="timeago" style="float:right" title="{{ deleted_tickets[ticket.id].date_created|date('c') }}">{{ deleted_tickets[ticket.id].date_created|date('day') }}</time>
-				Deleted by {{ deleted_tickets[ticket.id].by_person.display_name }}
+				{{ phrase('agent.recyclebin.deleted_by', {'name':deleted_tickets[ticket.id].by_person.display_name}) }}
 				{% if deleted_tickets[ticket.id].reason %}
 					<br />
-					Reason: {{ deleted_tickets[ticket.id].reason }}
+					{{ phrase('agent.recyclebin.reason') }}: {{ deleted_tickets[ticket.id].reason }}
 				{% endif %}
 			</td>
 		</tr>

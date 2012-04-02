@@ -6,17 +6,17 @@
 	<div class="overlay-content">
 		<input type="hidden" name="category_id" value="{{ category.id }}" />
 		<dl class="generic-form-list">
-			<dt>Title:</dt>
+			<dt>{{ phrase('agent.ticket.title') }}:</dt>
 			<dd><input type="text" name="title" value="{{ category.title }}" /></dd>
 
-			<dt>Permissions:</dt>
+			<dt>{{ phrase('agent.ticket.permissions') }}:</dt>
 			<dd>
-				<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if category.getPermType() == 'me' %}checked="checked"{% endif %} /> Just me</label><br />
-				{% if app.getSetting('core.use_agent_team') %}<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if category.getPermType() == 'team' %}checked="checked"{% endif %} /> My Team</label><br />{% endif %}
-				<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if category.getPermType() == 'global' %}checked="checked"{% endif %} /> Everyone</label><br />
+				<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if category.getPermType() == 'me' %}checked="checked"{% endif %} /> {{ phrase('agent.ticket.just_me') }}</label><br />
+				{% if app.getSetting('core.use_agent_team') %}<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if category.getPermType() == 'team' %}checked="checked"{% endif %} /> {{ phrase('agent.ticket.my_team') }}</label><br />{% endif %}
+				<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if category.getPermType() == 'global' %}checked="checked"{% endif %} /> {{ phrase('agent.ticket.everyone') }}</label><br />
 			</dd>
 
-			<dt class="perm-teams" style="display: none">Teams:</dt>
+			<dt class="perm-teams" style="display: none">{{ phrase('agent.ticket.teams') }}:</dt>
 			<dd class="perm-teams" style="display: none">
 				<select name="teams[]" multiple="multiple" size="6">
 					{% for team in agent_teams %}

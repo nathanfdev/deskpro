@@ -1,17 +1,17 @@
 {% extends 'AgentBundle:Login:layout.html.twig' %}
 {% block content %}
-	<h1>Browser Requirements</h1>
+	<h1>{{ phrase('agent.login.browser_requirements') }}</h1>
 	<div style="text-align: left">
 		<p>The admin and agent interfaces require a modern browser. We have detected that your browser is too outdated to
 		use DeskPRO. Upgrade your browser to the latest version, or try downloading an alternative browser.</p>
 
-		<p>The following browsers are supported:</p>
+		<p>{{ phrase('agent.login.the_following_browsers_are_supported') }}:</p>
 		<ul>
-			<li><a href="http://www.getfirefox.com">Mozilla Firefox</a> v4 or later</li>
-			<li><a href="http://www.google.com/chrome">Google Chrome</a> v17 or later</li>
-			<li><a href="http://www.apple.com/safari/">Apple Safari</a> v5 or later</li>
-			<li><a href="http://www.opera.com/">Opera</a> v11 or later</li>
-			<li><a href="http://www.microsoft.com/windows/internet-explorer/">Internet Explorer</a> v8 or later</li>
+			<li><a href="http://www.getfirefox.com">{{ phrase('agent.login.mozilla_firefox') }}</a> v4 or later</li>
+			<li><a href="http://www.google.com/chrome">{{ phrase('agent.login.google_chrome') }}</a> v17 or later</li>
+			<li><a href="http://www.apple.com/safari/">{{ phrase('agent.login.apple_safari') }}</a> v5 or later</li>
+			<li><a href="http://www.opera.com/">{{ phrase('agent.login.opera') }}</a> {{ phrase('agent.login.v11_or_later') }}</li>
+			<li><a href="http://www.microsoft.com/windows/internet-explorer/">Internet Explorer</a> {{ phrase('agent.login.v8_or_later') }}</li>
 		</ul>
 	</div>
 {% endblock %}

@@ -6,7 +6,7 @@
 			<span class="menu-trigger category_id label">{{ phrase('agent.category') }}:</span>
 		</div>
 		<div class="content">
-			<span class="prop-val menu-trigger category_id">{{ticket.category.full_title|default('None')}}</span>
+			<span class="prop-val menu-trigger category_id">{{ticket.category.full_title|default(phrase('agent.ticket.none'))}}</span>
 		</div>
 	</div>
 	{% endif %}
@@ -16,7 +16,7 @@
 			<span class="menu-trigger product_id label">{{ phrase('agent.product') }}:</span>
 		</div>
 		<div class="content">
-			<span class="prop-val menu-trigger product_id">{{ticket.product.full_title|default('None')}}</span>
+			<span class="prop-val menu-trigger product_id">{{ticket.product.full_title|default(phrase('agent.ticket.none'))}}</span>
 		</div>
 	</div>
 	{% endif %}
@@ -26,7 +26,7 @@
 			<span class="menu-trigger priority_id label">{{ phrase('agent.priority') }}:</span>
 		</div>
 		<div class="content">
-			<span class="prop-val menu-trigger priority_id">{{ticket.priority.title|default('None')}}</span>
+			<span class="prop-val menu-trigger priority_id">{{ticket.priority.title|default(phrase('agent.ticket.none'))}}</span>
 		</div>
 	</div>
 	{% endif %}
@@ -36,7 +36,7 @@
 			<span class="menu-trigger workflow_id label">{{ phrase('agent.workflow') }}:</span>
 		</div>
 		<div class="content">
-			<span class="prop-val menu-trigger workflow_id">{{ticket.workflow.title|default('None')}}</span>
+			<span class="prop-val menu-trigger workflow_id">{{ticket.workflow.title|default(phrase('agent.ticket.none'))}}</span>
 		</div>
 	</div>
 	{% endif %}
@@ -61,7 +61,7 @@
 		<div class="title">{{ phrase('agent.category') }}:</div>
 		<div class="content">
 			<select name="ticket[category_id]" data-prop-id="category_id" class="prop-input-category_id">
-				<option value="0">None</option>
+				<option value="0">{{ phrase('agent.ticket.none') }}</option>
 				{% for cat in ticket_options.ticket_categories_hierarchy %}
 					<option {% if ticket.category.id == cat.id %}selected="selected"{% endif %} value="{{ cat.id }}">{{ "--"|repeat(cat.depth) }} {{ cat.title }}</option>
 				{% endfor %}
@@ -74,7 +74,7 @@
 		<div class="title">{{ phrase('agent.product') }}:</div>
 		<div class="content">
 			<select name="ticket[product]_id" data-prop-id="product_id" class="prop-input-product_id">
-				<option value="0">None</option>
+				<option value="0">{{ phrase('agent.ticket.none') }}</option>
 				{% for prod in ticket_options.products_hierarchy %}
 					<option {% if ticket.product.id == prod.id %}selected="selected"{% endif %} value="{{ prod.id }}">{{ "--"|repeat(prod.depth) }} {{ prod.title }}</option>
 				{% endfor %}
@@ -87,7 +87,7 @@
 		<div class="title">{{ phrase('agent.priority') }}:</div>
 		<div class="content">
 			<select name="ticket[priority_id]" data-prop-id="priority_id" class="prop-input-priority_id">
-				<option value="0">None</option>
+				<option value="0">{{ phrase('agent.ticket.none') }}</option>
 				{% for id,pri in ticket_options.priorities %}
 					<option {% if ticket.priority.id == id %}selected="selected"{% endif %} value="{{ id }}">{{ pri }}</option>
 				{% endfor %}
@@ -100,7 +100,7 @@
 		<div class="title">{{ phrase('agent.workflow') }}:</div>
 		<div class="content">
 			<select name="ticket[workflow_id]" data-prop-id="workflow_id" class="prop-input-workflow_id">
-				<option value="0">None</option>
+				<option value="0">{{ phrase('agent.ticket.none') }}</option>
 				{% for id,work in ticket_options.ticket_workflows %}
 					<option {% if ticket.workflow.id == id %}selected="selected"{% endif %} value="{{ id }}">{{ work }}</option>
 				{% endfor %}

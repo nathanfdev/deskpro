@@ -6,7 +6,7 @@
 				<span class="add-new-cat tipped" id="publish_outline_newscat_addcat" title="{{ phrase('agent.create_new_category') }}"></span>
 				<span class="add-new-article tipped" id="publish_outline_news_add" title="{{ phrase('agent.create_news') }}" data-newloader-name="newNewsLoader"></span>
 			{% endif %}
-			<span class="all-route title" data-route="listpane:{{ path('agent_news_list') }}">{{ news_cats_counts['0_total']|default(0) }} Posts</span>
+			<span class="all-route title" data-route="listpane:{{ path('agent_news_list') }}">{{ news_cats_counts['0_total']|default(0) }} {{ phrase('agent.publish.posts') }}</span>
 		</li>
 		{% include 'AgentBundle:Publish:news-cat-list.html.twig' with {'cats': news_cats, 'counts': news_cats_counts, 'depth': 0 } %}
 	</ul>

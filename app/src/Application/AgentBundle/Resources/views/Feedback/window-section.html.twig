@@ -1,7 +1,7 @@
 {% if app.user.hasPerm('agent_publish.validate') %}
 <section class="source-section">
 	<header>
-		<h1>Pending</h1>
+		<h1>{{ phrase('agent.feedback.pending') }}</h1>
 	</header>
 	<ul class="source-list">
 		<li class="is-nav-item auto-load-route" data-route="listpane:{{ path('agent_public_validatingcontent', {'specific_type': 'feedback'}) }}">

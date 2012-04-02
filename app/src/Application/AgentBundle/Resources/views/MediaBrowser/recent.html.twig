@@ -6,7 +6,7 @@
 				{% if blob_object.object_type == 'ticket' %}
 					ticket <a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': blob_object.object.id}) }}">{{ blob_object.object.subject }}</a>
 				{% elseif blob_object.object_type == 'kb' %}
-					article <a class="with-route" data-route="{{ path('agent_kb_view', {'article_id': blob_object.object.id}) }}">{{ blob_object.object.title }}</a>
+					{{ phrase('agent.mediabrowser.article') }} <a class="with-route" data-route="{{ path('agent_kb_view', {'{{ phrase('agent.mediabrowser.article') }}_id': blob_object.object.id}) }}">{{ blob_object.object.title }}</a>
 				{% endif %}
 			</td>
 			<td>

@@ -1,31 +1,31 @@
 <section class="source-section sys-filters-section">
 	<header>
-		<h1>Tasks</h1>
+		<h1>{{ phrase('agent.task.tasks') }}</h1>
 	</header>
 	<article>
 		<ul class="source-list">
 			<li class="sub-expanded">
 				<h3 class="title is-nav-item auto-load-route" data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'total'}) }}">
 					<span class="list-counter count-in-badge" id="tasks_counter_own_total">{{ counts.person.total|default(0) }}</span>
-					My Tasks
+					My {{ phrase('agent.task.tasks') }}
 				</h3>
 				<ul class="sub-group">
 					<li class="is-nav-item">
 						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'overdue'}) }}">
 							<span class="list-counter" id="tasks_counter_own_overdue">{{ counts.person.overdue }}</span>
-							Overdue
+							{{ phrase('agent.task.overdue') }}
 						</span>
 					</li>
 					<li class="is-nav-item">
 						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'today'}) }}">
 							<span class="list-counter" id="tasks_counter_own_today">{{ counts.person.due_today }}</span>
-							Due Today
+							{{ phrase('agent.task.due_today') }}
 						</span>
 					</li>
 					<li class="is-nav-item">
 						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'future'}) }}">
 							<span class="list-counter" id="tasks_counter_own_future">{{ counts.person.due_future }}</span>
-							Due In Future
+							{{ phrase('agent.task.due_in_future') }}
 						</span>
 					</li>
 				</ul>
@@ -35,25 +35,25 @@
 			<li class="sub-expanded">
 				<h3 class="title is-nav-item" data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'total'}) }}">
 					<span class="list-counter" id="tasks_counter_team_total">{{ counts.teams.total|default(0) }}</span>
-					My Teams' Tasks
+					My Teams' {{ phrase('agent.task.tasks') }}
 				</h3>
 				<ul class="sub-group">
 					<li class="is-nav-item">
 						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'overdue'}) }}">
 							<span class="list-counter" id="tasks_counter_team_overdue">{{ counts.teams.overdue }}</span>
-							Overdue
+							{{ phrase('agent.task.overdue') }}
 						</span>
 					</li>
 					<li class="is-nav-item">
 						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'today'}) }}">
 							<span class="list-counter" id="tasks_counter_team_today">{{ counts.teams.due_today }}</span>
-							Due Today
+							{{ phrase('agent.task.due_today') }}
 						</span>
 					</li>
 					<li class="is-nav-item">
 						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'future'}) }}">
 							<span class="list-counter" id="tasks_counter_team_future">{{ counts.teams.due_future }}</span>
-							Due In Future
+							{{ phrase('agent.task.due_in_future') }}
 						</span>
 					</li>
 				</ul>
@@ -63,25 +63,25 @@
 			<li class="sub-expanded">
 				<h3 class="title is-nav-item" data-route="listpane:{{ path('agent_task_list',{'search_type': 'delegate', 'search_categoty': 'total'}) }}">
 					<span class="list-counter" id="tasks_counter_delegated_total">{{ counts.delegated.total|default(0) }}</span>
-					Tasks I Delegated
+					{{ phrase('agent.task.tasks_i_delegated') }}
 				</h3>
 				<ul class="sub-group">
 					<li class="is-nav-item">
 						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'delegate', 'search_categoty': 'overdue'}) }}">
 							<span class="list-counter" id="tasks_counter_delegated_overdue">{{ counts.delegated.overdue }}</span>
-							Overdue
+							{{ phrase('agent.task.overdue') }}
 						</span>
 					</li>
 					<li class="is-nav-item">
 						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'delegate', 'search_categoty': 'today'}) }}">
 							<span class="list-counter" id="tasks_counter_delegated_today">{{ counts.delegated.due_today }}</span>
-							Due Today
+							{{ phrase('agent.task.due_today') }}
 						</span>
 					</li>
 					<li class="is-nav-item">
 						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'delegate', 'search_categoty': 'future'}) }}">
 							<span class="list-counter" id="tasks_counter_delegated_future">{{ counts.delegated.due_future }}</span>
-							Due In Future
+							{{ phrase('agent.task.due_in_future') }}
 						</span>
 					</li>
 				</ul>
@@ -90,25 +90,25 @@
 			<li class="sub-expanded">
 				<h3 class="title is-nav-item" data-route="listpane:{{ path('agent_task_list',{'search_type': 'all', 'search_categoty': 'total'}) }}">
 					<span class="list-counter" id="tasks_counter_all_total">{{ counts.all.total|default(0) }}</span>
-					All Tasks
+					{{ phrase('agent.task.all_tasks') }}
 				</h3>
 				<ul class="sub-group">
 					<li class="is-nav-item">
 						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'all', 'search_categoty': 'overdue'}) }}">
 							<span class="list-counter" id="tasks_counter_all_overdue">{{ counts.all.overdue }}</span>
-							Overdue
+							{{ phrase('agent.task.overdue') }}
 						</span>
 					</li>
 					<li class="is-nav-item">
 						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'all', 'search_categoty': 'today'}) }}">
 							<span class="list-counter" id="tasks_counter_all_today">{{ counts.all.due_today }}</span>
-							Due Today
+							{{ phrase('agent.task.due_today') }}
 						</span>
 					</li>
 					<li class="is-nav-item">
 						<span class="title" data-route="listpane:{{ path('agent_task_list',{'search_type': 'all', 'search_categoty': 'future'}) }}">
 							<span class="list-counter" id="tasks_counter_all_future">{{ counts.all.due_future }}</span>
-							Due In Future
+							{{ phrase('agent.task.due_in_future') }}
 						</span>
 					</li>
 				</ul>

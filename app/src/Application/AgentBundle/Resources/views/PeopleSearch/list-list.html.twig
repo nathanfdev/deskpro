@@ -27,13 +27,13 @@ pageMeta.baseId = '{{ baseId }}';
 	<header>
 		<div class="controls">
 			<button class="order-by-menu-trigger clean-white arrow menu-fitted">{{ phrase('agent.ordered_by') }}: <span class="label">{% if 'name' in cache.criteria.order_by %}
-						Name
+						{{ phrase('agent.peoplesearch.name') }}
 					{% elseif 'date_last_login' in cache.criteria.order_by %}
-						Last Login Time
+						{{ phrase('agent.peoplesearch.last_login_time') }}
 					{% elseif 'organization' in cache.criteria.order_by %}
-						Last Login Time
+						{{ phrase('agent.peoplesearch.last_login_time') }}
 					{% elseif 'num_tickets' in cache.criteria.order_by %}
-						Number of Tickets
+						{{ phrase('agent.peoplesearch.number_of_tickets') }}
 					{% else %}
 						{{ phrase('agent.date_created') }}
 					{% endif %}
@@ -43,11 +43,11 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 
 		<ul style="display: none" class="order-by-menu">
-			<li data-order-by="people_name">Name</li>
+			<li data-order-by="people_name">{{ phrase('agent.peoplesearch.name') }}</li>
 			<li data-order-by="date_created">{{ phrase('agent.date_created') }}</li>
-			<li data-order-by="last_login">Last Login Time</li>
-			<li data-order-by="org">Organization</li>
-			<li data-order-by="num_tickets">Number of Tickets</li>
+			<li data-order-by="last_login">{{ phrase('agent.peoplesearch.last_login_time') }}</li>
+			<li data-order-by="org">{{ phrase('agent.peoplesearch.organization') }}</li>
+			<li data-order-by="num_tickets">{{ phrase('agent.peoplesearch.number_of_tickets') }}</li>
 		</ul>
 
 		<span class="close close-trigger"></span>
@@ -63,7 +63,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 	</article>
 	<div class="full-loading" style="display: none">
-		<em>Loading</em>
+		<em>{{ phrase('agent.peoplesearch.loading') }}</em>
 	</div>
 	<footer class="is-ticket-list bottom-action-bar">
 			{#

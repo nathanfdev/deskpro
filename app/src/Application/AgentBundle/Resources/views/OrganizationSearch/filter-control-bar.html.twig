@@ -8,16 +8,16 @@
 		<li class="order-by-menu-trigger menu-fitted" data-menu-button=".button"><a class="button">
 			<span class="label">
 				{% if 'num_members' in cache.criteria.order_by %}
-					Number of Members
+					{{ phrase('agent.organizationsearch.number_of_members') }}
 				{% else %}
-					Name
+					{{ phrase('agent.organizationsearch.name') }}
 				{% endif %}
 			</span><em></em></a>
 		</li>
 		<li><span class="sep"></span></li>
 	</ul>
 	<ul style="display: none" class="order-by-menu">
-		<li data-order-by="num_members">Number of Members</li>
-		<li data-order-by="name-asc">Name</li>
+		<li data-order-by="num_members">{{ phrase('agent.organizationsearch.number_of_members') }}</li>
+		<li data-order-by="name-asc">{{ phrase('agent.organizationsearch.name') }}</li>
 	</ul>
 </header>

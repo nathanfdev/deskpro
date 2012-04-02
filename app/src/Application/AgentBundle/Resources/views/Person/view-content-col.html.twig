@@ -148,7 +148,7 @@
 	<header>
 		<nav>
 			<ul>
-				{% if notes|length or app.user.hasPerm('agent_people.notes') %}<li data-tab-for="#{{baseId}}_notes_tab" class="on">Notes <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>{% endif %}
+				{% if notes|length or app.user.hasPerm('agent_people.notes') %}<li data-tab-for="#{{baseId}}_notes_tab" class="on">{{ phrase('agent.person.notes') }} <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>{% endif %}
 				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">{{ phrase('agent.activity_stream') }}</li>{% endif %}
 				<li data-tab-for="#{{baseId}}_tracking_tab">{{ phrase('agent.detail') }}</li>
 			</ul>
@@ -227,14 +227,14 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="label" width="80">Created</td>
+					<td class="label" width="80">{{ phrase('agent.person.created') }}</td>
 					<td class="value">
 						<time>{{person.date_created|date('fulltime')}}</time>
 						(<time class="timeago" datetime="{{person.date_created|date('c')}}"></time>)
 					</td>
 				</tr>
 				<tr>
-					<td class="label">Creation By</td>
+					<td class="label">{{ phrase('agent.person.creation_by') }}</td>
 					<td class="value">
 						{% if person.creation_system == 'web.person' %}
 							{{ phrase('agent.people.reg_website') }}

@@ -52,7 +52,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<span id="{{baseId}}_showname">{{ person.name|default('Double-click to set Name') }}</span>
 			<span id="{{baseId}}_editname" style="display: none"><input type="text" size="20" name="name" value="{{ person.name }}" /></span>
 			{% if app.user.hasPerm('agent_people.edit') %}<span id="{{baseId}}_editname_start" class="edit-name-gear"></span>{% endif %}
-			<a id="{{baseId}}_editname_end" class="edit-name-save clean-white small" style="display: none">Done</a>
+			<a id="{{baseId}}_editname_end" class="edit-name-save clean-white small" style="display: none">{{ phrase('agent.person.done') }}</a>
 		</h1>
 		<div class="meta-line">
 			<div class="org"><span>

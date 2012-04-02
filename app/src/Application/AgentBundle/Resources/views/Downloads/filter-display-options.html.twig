@@ -1,7 +1,7 @@
 {% extends 'AgentBundle:Common:display-options-layout.html.twig' %}
 {% block other_options %}
 	<div style="display: none">
-		Order By: <select name="order_by" class="sel-order-by">
+		{{ phrase('agent.downloads.order_by') }}: <select name="order_by" class="sel-order-by">
 		<option class="date_created" value="downloads.date_created:desc">Date Created (Newest-Oldest)</option>
 		<option value="downloads.date_created:asc">Date Created (Oldest-Newest)</option>
 		<option class="num_downloads" value="downloads.num_downloads:desc">Number of Downloads (Highest-Lowest)</option>

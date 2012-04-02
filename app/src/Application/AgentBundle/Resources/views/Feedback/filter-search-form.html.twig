@@ -4,7 +4,7 @@
 			<select name="order_by">
 				<optgroup label="{{ phrase('core.order_by')}}">
 					<option {% if filter_form.order_by == 'date.desc' %}selected="selected"{% endif %} value="date.desc">Newest on top</option>
-					<option {% if filter_form.order_by == 'date.asc' %}selected="selected"{% endif %} value="date.asc">Oldest on top</option>
+					<option {% if filter_form.order_by == 'date.asc' %}selected="selected"{% endif %} value="date.asc">{{ phrase('agent.feedback.oldest_on_top') }}</option>
 					<option {% if filter_form.order_by == 'votes.desc' %}selected="selected"{% endif %} value="votes.desc">Top voted on top</option>
 					<option {% if filter_form.order_by == 'votes.asc' %}selected="selected"{% endif %} value="votes.asc">Least voted on top</option>
 				</optgroup>
@@ -14,7 +14,7 @@
 		<input type="hidden" name="terms[status][type]" value="status" />
 		<input type="hidden" name="terms[status][op]" value="is" />
 		<select name="terms[status][status]">
-			<option value="visible">Any Status</option>
+			<option value="visible">{{ phrase('agent.feedback.any_status') }}</option>
 			<option {% if filter_form.status.status == 'new' %}selected="selected"{% endif %} value="new">{{ phrase('core_feedback.status_new') }}</option>
 			<option {% if filter_form.status.status == 'active' %}selected="selected"{% endif %} value="active">{{ phrase('core_feedback.status_active') }}</option>
 			{% for cat in active_status_cats %}
@@ -36,7 +36,7 @@
 		<input type="hidden" name="terms[category][type]" value="category" />
 		<input type="hidden" name="terms[category][op]" value="is" />
 		<select name="terms[category][category]">
-			<option value="DP_DISCARD_TERM">Any Category</option>
+			<option value="DP_DISCARD_TERM">{{ phrase('agent.feedback.any_category') }}</option>
 			{% for cat in feedback_cats %}
 				<option {% if filter_form.category.category == cat.id %}selected="selected"{% endif %} value="{{cat.id}}">{% if cat.depth %}{% for x in 1..cat.depth%}--{% endfor %} {% endif %}{{ cat.title }}</option>
 			{% endfor %}
@@ -52,7 +52,7 @@
 		</div>
 
 		<div class="submit-row" style="display:none">
-			<button class="submit-trigger dp-button x-small">Update Filter</button>
+			<button class="submit-trigger dp-button x-small">{{ phrase('agent.feedback.update_filter') }}</button>
 		</div>
 	</form>
 </section>

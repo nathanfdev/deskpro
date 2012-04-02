@@ -3,5 +3,5 @@
 		{% include 'AgentBundle:MediaBrowser:file-row.html.twig' with {'blob': blob} %}
 	{% endfor %}
 {% else %}
-	You have no selected any files to attach.
+	{{ phrase('agent.mediabrowser.you_have_no_selected_any_files_to_attach') }}
 {% endif %}

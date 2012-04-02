@@ -5,9 +5,9 @@
 	<span class="old-val">{{log.details.old_agent_name|default(phrase('agent.unassigned'))}}</span>
 	to <span class="new-val">{{log.details.new_agent_name|default(phrase('agent.unassigned'))}}</span>
 {% elseif log.action_type == 'participant_added' %}
-	<span class="type">Participant added</span>: <span class="new-val">{{log.details.name}}</span>
+	<span class="type">{{ phrase('agent.ticket.participant_added') }}</span>: <span class="new-val">{{log.details.name}}</span>
 {% elseif log.action_type == 'participant_removed' %}
-	<span class="type">Participant removed</span>: <span class="old-val">{{log.details.name}}</span>
+	<span class="type">{{ phrase('agent.ticket.participant_removed') }}</span>: <span class="old-val">{{log.details.name}}</span>
 {% elseif log.action_type == 'ticket_created' %}
 	Ticket <span class="new-val">#{{log.details.ticket_id}}</span> created
 {% elseif log.action_type == 'subject' %}

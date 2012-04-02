@@ -7,8 +7,8 @@
 		{% for field in display_fields %}
 			{% if field == 'subject' %}<th>Subject</th>
 			{% elseif field == 'user' %}<th>User</th>
-			{% elseif field == 'deleted_reason' %}<th data-field="deleted_reason">Deleted Reason</th>
-			{% elseif field == 'person_email' %}<th data-field="person">User Email</th>
+			{% elseif field == 'deleted_reason' %}<th data-field="deleted_reason">{{ phrase('agent.ticketsearch.deleted_reason') }}</th>
+			{% elseif field == 'person_email' %}<th data-field="person">{{ phrase('agent.ticketsearch.user_email') }}</th>
 			{% elseif field == 'person_organization' %}<th data-field="person_organization">Organization</th>
 			{% elseif field == 'department' %}<th data-field="department">Department</th>
 			{% elseif field == 'category' %}<th data-field="category">Category</th>

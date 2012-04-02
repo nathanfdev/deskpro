@@ -96,7 +96,7 @@
 						{% include 'AgentBundle:Organization:view-members-row.html.twig' %}
 					{% else %}
 						{% if not app.user.hasPerm('agent_people.edit') %}
-							<tr><td colspan="2">This organization has no members.</td></tr>
+							<tr><td colspan="2">{{ phrase('agent.organization.this_organization_has_no_members') }}</td></tr>
 						{% endif %}
 					{% endfor %}
 				</tbody>
@@ -147,13 +147,13 @@
 	<header>
 		<nav>
 			<ul>
-				{% if notes|length or app.user.hasPerm('agent_org.notes') %}<li data-tab-for="#{{baseId}}_notes_tab" class="on">Notes <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>{% endif %}
+				{% if notes|length or app.user.hasPerm('agent_org.notes') %}<li data-tab-for="#{{baseId}}_notes_tab" class="on">{{ phrase('agent.organization.notes') }} <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>{% endif %}
 				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">{{ phrase('agent.activity_stream') }}</li>{% endif %}
 			</ul>
 		</nav>
 	</header>
 	<section>
-		{# Notes Tab #}
+		{# {{ phrase('agent.organization.notes') }} Tab #}
 		{% if notes|length or app.user.hasPerm('agent_org.notes') %}
 			<article id="{{baseId}}_notes_tab" class="on">
 				<div class="notes-wrap">
@@ -182,7 +182,7 @@
 				</div>
 			</article>
 		{% endif %}
-		{# /Notes Tab #}
+		{# /{{ phrase('agent.organization.notes') }} Tab #}
 
 		{# Activity Tab #}
 		{% if activity_stream|length %}

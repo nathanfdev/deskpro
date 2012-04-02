@@ -69,10 +69,10 @@
 	<input type="hidden" name="agent_login" value="1" />
 	{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
 
-	<h1 id="login_title">Log In</h1>
-	<h1 id="lost_password_title" style="display: none;">Lost Password</h1>
+	<h1 id="login_title">{{ phrase('agent.login.log_in') }}</h1>
+	<h1 id="lost_password_title" style="display: none;">Lost {{ phrase('agent.login.password') }}</h1>
 	{% if failed_login_name %}<p class="error">{{ phrase('agent.login.login_failed') }}</p>{% endif %}
-	{% if has_done_reset %}<p class="okay">Your password has been reset successfully.</p>{% endif %}
+	{% if has_done_reset %}<p class="okay">{{ phrase('agent.login.your_password_has_been_reset_successfully') }}</p>{% endif %}
 	{% if has_logged_out %}<p class="okay">{{ phrase('agent.login.has_logged_out') }}</p>{% endif %}
 
 	<div id="normal_view">
@@ -86,7 +86,7 @@
 
 		<div id="login_fields">
 			<dl>
-				<dt>Password</dt>
+				<dt>{{ phrase('agent.login.password') }}</dt>
 				<dd class="password">
 					<a href="{{ path('user_login_resetpass') }}" id="lost_link">{{ phrase('agent.login.lost_link') }}</a>
 					<input type="password" class="text" value="" name="password" id="password" size="40"  tabindex="2" />
@@ -95,7 +95,7 @@
 
 			<dl>
 				<dt></dt>
-				<dd class="btn"><button>Log In</button></dd>
+				<dd class="btn"><button>{{ phrase('agent.login.log_in') }}</button></dd>
 			</dl>
 		</div>
 
@@ -121,7 +121,7 @@
 		We sent insutrctions on how to reset your password to the email address you provided.
 	</div>
 	<div id="loading_view" style="display: none">
-		<i>Loading</i>
+		<i>{{ phrase('agent.login.loading') }}</i>
 	</div>
 
 </form>

@@ -1,6 +1,6 @@
 {% if app.user.hasPerm('agent_publish.validate') %}
 <section class="group-section first open">
-	<header><h2>Pending</h2></header>
+	<header><h2>{{ phrase('agent.publish.pending') }}</h2></header>
 	<article>
 		<section class="source-section sys-filters-section">
 			<ul class="source-list">
@@ -42,14 +42,14 @@
 {% endif %}
 
 <section class="group-section open">
-	<header><h2>Knowledgebase</h2></header>
+	<header><h2>{{ phrase('agent.publish.knowledgebase') }}</h2></header>
 	<article>
 		{% include 'AgentBundle:Publish:kb-tab.html.twig' %}
 	</article>
 </section>
 
 <section class="group-section">
-	<header><h2>News</h2></header>
+	<header><h2>{{ phrase('agent.publish.news') }}</h2></header>
 	<article style="display: none">
 		{% include 'AgentBundle:Publish:news-tab.html.twig' %}
 	</article>
@@ -77,7 +77,7 @@
 			<section>
 				<ul class="source-list with-tree">
 					<li class="is-nav-item" data-route="listpane:{{ path('agent_publish_searchlog') }}">
-						<h3 class="title">Recent and Popular Searches</h3>
+						<h3 class="title">{{ phrase('agent.publish.recent_and_popular_searches') }}</h3>
 					</li>
 				</ul>
 			</section>

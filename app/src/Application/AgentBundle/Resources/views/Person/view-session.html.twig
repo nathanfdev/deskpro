@@ -41,8 +41,8 @@ pageMeta.baseId = '{{ baseId }}';
 	<header>
 		<nav>
 			<ul id="{{baseId}}_chats_tab_triggers">
-				{% if person_chats_count %}<li data-tab-for="#{{baseId}}_chats_tab">Chats <span class="count">{{ person_chats_count }}</span></li>{% endif %}
-				{% if person_tickets_count %}<li data-tab-for="#{{baseId}}_session_tab">Detail</li>{% endif %}
+				{% if person_chats_count %}<li data-tab-for="#{{baseId}}_chats_tab">{{ phrase('agent.person.chats') }} <span class="count">{{ person_chats_count }}</span></li>{% endif %}
+				{% if person_tickets_count %}<li data-tab-for="#{{baseId}}_session_tab">{{ phrase('agent.person.detail') }}</li>{% endif %}
 			</ul>
 		</nav>
 	</header>
@@ -71,7 +71,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<article id="{{baseId}}_session_tab">
 			<table class="info-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
 				<tr>
-					<td class="label">Online Now</td>
+					<td class="label">{{ phrase('agent.person.online_now') }}</td>
 					<td class="value">
 						Since
 						<time>{{session.date_created|date('fulltime')}}</time>
@@ -79,14 +79,14 @@ pageMeta.baseId = '{{ baseId }}';
 					</td>
 				</tr>
 				<tr>
-					<td class="label">Last Activity</td>
+					<td class="label">{{ phrase('agent.person.last_activity') }}</td>
 					<td class="value">
 						<time>{{session.date_last|date('fulltime')}}</time>
 						(<time class="timeago" datetime="{{session.date_last|date('c')}}"></time>)
 						on page <em class="tipped" title="{{ session.visitor.last_page }}">...</em>
 				</tr>
 				<tr>
-					<td class="label">Landing Page</td>
+					<td class="label">{{ phrase('agent.person.landing_page') }}</td>
 					<td class="value">
 						User landed on page
 						<em class="tipped" title="{{ session.visitor.landing_page }}">...</em>
@@ -97,13 +97,13 @@ pageMeta.baseId = '{{ baseId }}';
 					</td>
 				</tr>
 				<tr>
-					<td class="label">IP Address</td>
+					<td class="label">{{ phrase('agent.person.ip_address') }}</td>
 					<td class="value">
 						{{ session.visitor.ip_address }}
 					</td>
 				</tr>
 				<tr>
-					<td class="label">User Agent</td>
+					<td class="label">{{ phrase('agent.person.user_agent') }}</td>
 					<td class="value">
 						{{ session.visitor.user_agent }}
 					</td>

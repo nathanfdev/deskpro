@@ -24,7 +24,7 @@
 					<label>
 						{% if task.assigned_agent and task.assigned_agent.id != app.user.id %}{{ task.assigned_agent.display_name }}
 						{% elseif task.assigned_agent_team %}{{ task.assigned_agent_team.name }}
-						{% else %}Me{% endif %}
+						{% else %}{{ phrase('agent.task.me') }}{% endif %}
 					</label><span class="drop-icon"></span></li>
 					<li class="noval opt-trigger date_due"><label>{% if not task.date_due %}No due date{% else %}{{ task.date_due|date('day') }}{% endif %}</label><span class="drop-icon"></span></li>
 					<li class="comment-btn">
@@ -36,7 +36,7 @@
 			<div class="task-linked">
 				{% for assoc in task.task_associations %}
 					<span class="assoc">
-						{% if assoc['ticket'] is defined %}Linked Ticket: <a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': assoc.ticket.id}) }}">{{ assoc.ticket.subject }}</a>{% endif %}
+						{% if assoc['ticket'] is defined %}{{ phrase('agent.task.linked_ticket') }}: <a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': assoc.ticket.id}) }}">{{ assoc.ticket.subject }}</a>{% endif %}
 					</span>
 					<span class="assoc">
 						{% if assoc['deal'] is defined %}Linked Deal: <a data-route="ticket:{{ path('agent_deal_view', {'deal_id': assoc.deal.id}) }}">{{ assoc.deal.title }}</a>{% endif %}

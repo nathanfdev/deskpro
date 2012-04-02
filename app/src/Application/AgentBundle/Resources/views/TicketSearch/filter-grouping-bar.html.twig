@@ -17,7 +17,7 @@
 		{% if grouped_info.counts[-1].total > 0 %}
 			<li data-grouping-option="-1" {% if grouping_option == 'DP_NOT_SET' or grouping_option == '-1' %}class="on" id="{{baseId}}_total_grouped_count"{% endif %}>
 				<a data-route="{{ grouping_url ~ '-1' }}">
-					All
+					{{ phrase('agent.ticketsearch.all') }}
 					<span>{{ grouped_info.counts[-1].total }}</span>
 				</a>
 			</li>
@@ -25,7 +25,7 @@
 		{% if grouped_info.counts[0].total > 0 and grouped_info.group1_structure[0].id != 0 %}
 			<li data-grouping-option="0" {% if grouping_option == '0' %}class="on" id="{{baseId}}_total_grouped_count"{% endif %}>
 				<a data-route="{{ grouping_url ~ '0' }}">
-					None
+					{{ phrase('agent.ticketsearch.none') }}
 					<span>{{ grouped_info.counts[0].total }}</span>
 				</a>
 			</li>

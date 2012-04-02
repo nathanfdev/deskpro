@@ -3,7 +3,7 @@
 	<div id="dp_logo_wrap">
 		<div class="button-wrap">
 			<h1>
-				DeskPRO
+				{{ phrase('agent.main.deskpro') }}
 				<span class="drop"></span>
 			</h1>
 		</div>
@@ -11,12 +11,12 @@
 	<div id="dp_logo_expand_wrap">
 		<div class="dropdown-header">
 			<h1>
-				DeskPRO
+				{{ phrase('agent.main.deskpro') }}
 				<span class="drop"></span>
 			</h1>
 		</div>
 		<div class="dropdown-content">
-			<a href="http://www.deskpro.com/" target="_blank">Powered by <span>www.deskpro.com</span></a>
+			<a href="http://www.deskpro.com/" target="_blank">{{ phrase('agent.main.powered_by') }} <span>www.deskpro.com</span></a>
 		</div>
 	</div>
 	<!-- BEGIN NOTIFICATION SECTION -->
@@ -53,11 +53,11 @@
 				<div class="type-icon">
 					<span class="icon"></span>
 				</div>
-				<input type="input" id="dp_omniinput" size="4" placeholder="Search" data-element-handler="DeskPRO.Agent.ElementHandler.OmniQuickSearch" />
+				<input type="input" id="dp_omniinput" size="4" placeholder="{{ phrase('agent.main.search') }}" data-element-handler="DeskPRO.Agent.ElementHandler.OmniQuickSearch" />
 			</div>
 		</div>
 		<div id="dp_omnibox_adv">
-			<a><span class="plusIcon">Advanced</span></a>
+			<a><span class="plusIcon">{{ phrase('agent.main.advanced') }}</span></a>
 		</div>
 	<!-- END SEARCH SECTION -->
 	</div>
@@ -204,15 +204,15 @@
 
 {% include 'AgentBundle:Main:keyboard-shortcuts-sheet.html.twig' %}
 
-<div id="dp_searchsheet" data-element-handler="DeskPRO.Agent.ElementHandler.OmniSearchSheet">
+<div id="dp_searchsheet" data-element-handler="{{ DeskPRO.Agent.ElementHandler.OmniSearchSheet">
 	<header>
-		<span id="omnisearch_reset">Reset Form</span>
+		<span id="omnisearch_reset">{{ phrase('agent.main.reset_form') }}</span>
 		<span class="close close-search-sheet"></span>
-		<em>Search:</em>
+		<em>{{ phrase('agent.main.search') }}:</em>
 		<ul>
-			<li data-tab-for="#dp_searchsheet_tickets">Tickets</li>
-			<li data-tab-for="#dp_searchsheet_people">People</li>
-			<li data-tab-for="#dp_searchsheet_orgs">Organizations</li>
+			<li data-tab-for="#dp_searchsheet_tickets">{{ phrase('agent.main.tickets') }}</li>
+			<li data-tab-for="#dp_searchsheet_people">{{ phrase('agent.main.people') }}</li>
+			<li data-tab-for="#dp_searchsheet_orgs">{{ phrase('agent.main.organizations') }}</li>
 			<li data-tab-for="#dp_searchsheet_content">Publish and Feedback</li>
 		</ul>
 	</header>
@@ -242,6 +242,6 @@
 	{# /Content Search Form #}
 
 	<footer>
-		<button id="omnisearch_submit">Search</button>
+		<button id="omnisearch_submit">{{ phrase('agent.main.search') }}</button>
 	</footer>
 </div>

@@ -1,17 +1,17 @@
 <form action="{{ path('agent_publish_search') }}">
 	<ul class="property-list">
 		<li class="search-input">
-			<label>Search</label>
+			<label>{{ phrase('agent.main.search') }}</label>
 			<div class="values">
 				<input type="text" name="query" />
 				<br />
-				Search in types:
+				{{ phrase('agent.main.search') }} in types:
 				<select name="types">
-					<option value="">All</option>
-					<option value="article">Articles</option>
-					<option value="download">Downloads</option>
-					<option value="feedback">Feedback</option>
-					<option value="news">News</option>
+					<option value="">{{ phrase('agent.main.all') }}</option>
+					<option value="article">{{ phrase('agent.main.articles') }}</option>
+					<option value="download">{{ phrase('agent.main.downloads') }}</option>
+					<option value="feedback">{{ phrase('agent.main.feedback') }}</option>
+					<option value="news">{{ phrase('agent.main.news') }}</option>
 				</select>
 			</div>
 		</li>

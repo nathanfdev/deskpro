@@ -3,7 +3,7 @@
 	<div style="display: none"><select name="order_by" class="sel-order-by">
 		<option class="name-asc" value="organization.name:asc">Name (A-Z)</option>
 		<option class="name-desc" value="organization.name:desc">Name (Z-A)</option>
-		<option class="num_members" value="organization.num_members:desc">Number of Members</option>
+		<option class="num_members" value="organization.num_members:desc">{{ phrase('agent.organizationsearch.number_of_members') }}</option>
 	</select></div>
 {% endblock %}
 {% block display_elements_list %}

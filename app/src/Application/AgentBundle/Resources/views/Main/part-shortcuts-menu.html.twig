@@ -1,22 +1,22 @@
 <li class="keyboard with-menu">
-	<a href="" class="tipped" data-tipped="keyboard_shortcuts_tip" data-tipped-options="inline: true, hook: 'bottommiddle'">Keyboard</a>
+	<a href="" class="tipped" data-tipped="keyboard_shortcuts_tip" data-tipped-options="inline: true, hook: 'bottommiddle'">{{ phrase('agent.main.keyboard') }}</a>
 	<div id="keyboard_shortcuts_tip" style="display: none">
 		<table cellspacing="0" cellpadding="0" width="100%">
 			<tr>
 				<td>
 					<h5>{{ phrase('agent.window.window_navigation') }}</h5>
 					<div class="row">
-						<kbd>ctrl+left</kbd> {{ phrase('agent.window.key_left_tab') }}
+						<kbd>{{ phrase('agent.main.ctrlleft') }}</kbd> {{ phrase('agent.window.key_left_tab') }}
 					</div>
 					<div class="row">
-						<kbd>ctrl+right</kbd> {{ phrase('agent.window.key_right_tab') }}
+						<kbd>{{ phrase('agent.main.ctrlright') }}</kbd> {{ phrase('agent.window.key_right_tab') }}
 					</div>
 					<div class="row">
-						<kbd>ctrl+shift+c</kbd> {{ phrase('agent.window.key_close_tab') }}
+						<kbd>{{ phrase('agent.main.ctrlshiftc') }}</kbd> {{ phrase('agent.window.key_close_tab') }}
 					</div>
 				</td>
 				<td>
-					<h5>Create Content</h5>
+					<h5>{{ phrase('agent.main.create_content') }}</h5>
 					<div class="row">
 						<kbd>t</kbd> {{ phrase('agent.window.new_ticket') }}
 					</div>
@@ -43,19 +43,19 @@
 						<kbd>shit+r</kbd> {{ phrase('agent.window.focus_reply_box') }}
 					</div>
 					<div class="row">
-						<kbd>shift+c</kbd> {{ phrase('agent.window.set_ticket_resolved') }}
+						<kbd>{{ phrase('agent.main.shiftc') }}</kbd> {{ phrase('agent.window.set_ticket_resolved') }}
 					</div>
 					<div class="row">
-						<kbd>shift+a</kbd> {{ phrase('agent.window.assign_to_self') }}
+						<kbd>{{ phrase('agent.main.shifta') }}</kbd> {{ phrase('agent.window.assign_to_self') }}
 					</div>
 				</td>
 				<td>
-					<h5>People</h5>
+					<h5>{{ phrase('agent.main.people') }}</h5>
 					<div class="row">
-						<kbd>shift+r</kbd> {{ phrase('agent.window.focus_notes_box') }}
+						<kbd>{{ phrase('agent.main.shiftr') }}</kbd> {{ phrase('agent.window.focus_notes_box') }}
 					</div>
 					<div class="row">
-						<kbd>shift+t</kbd> {{ phrase('agent.window.create_ticket_person') }}
+						<kbd>{{ phrase('agent.main.shiftt') }}</kbd> {{ phrase('agent.window.create_ticket_person') }}
 					</div>
 				</td>
 			</tr>

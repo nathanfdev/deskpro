@@ -48,7 +48,7 @@ pageMeta.resultIds = {{ result_ids|json_encode|raw }};
 	{% if feedback|length %}
 		<footer class="results-nav">
 			<div class="cursor">
-				Showing results
+				{{ phrase('agent.feedback.showing_results') }}
 				<span class="results-showing-count" id="{{baseId}}_showing_count"></span>
 				of
 				<span class="results-total-count" id="{{baseId}}_total_count">{{ result_ids|length }}</span>

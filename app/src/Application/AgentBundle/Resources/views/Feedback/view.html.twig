@@ -159,7 +159,7 @@ pageMeta.baseId = '{{ baseId }}';
 							</div>
 							<div class="content">
 								<header>
-									<h4>New Comment</h4>
+									<h4>{{ phrase('agent.feedback.new_comment') }}</h4>
 								</header>
 								<div class="body-text">
 									<textarea style="width:99%; height: 80px;"></textarea>
@@ -232,7 +232,7 @@ pageMeta.baseId = '{{ baseId }}';
 		class="section-title status-active"
 		data-status-type="active"
 		data-option-value="active"
-	>Active</li>
+	>{{ phrase('agent.feedback.active') }}</li>
 	{% for cat in active_status_cats %}
 		<li
 			class="status-{{cat.id}}"
@@ -260,12 +260,12 @@ pageMeta.baseId = '{{ baseId }}';
 			<input type="radio" name="status" value="new" />
 			<label>{{ phrase('agent.feedback.status_new') }}</label>
 		</li>
-		<li class="top parent-option item-active" data-item-id="active" data-full-title="Active">
+		<li class="top parent-option item-active" data-item-id="active" data-full-title="{{ phrase('agent.feedback.active') }}">
 			<input type="radio" name="status" value="active" />
 			<label>{{ phrase('agent.feedback.status_active') }}</label>
 		</li>
 		{% for cat in active_status_cats %}
-			<li class="child item-active-{{cat.id}}" data-item-id="active.{{cat.id}}" data-full-title="Active: {{ cat.title }}">
+			<li class="child item-active-{{cat.id}}" data-item-id="active.{{cat.id}}" data-full-title="{{ phrase('agent.feedback.active') }}: {{ cat.title }}">
 				<span class="elbow-end"></span>
 				<input type="radio" name="category_id" value="active.{{cat.id}}" />
 				<label>{{ cat.title }}</label>
