@@ -5,6 +5,7 @@
   'agent.common.insert_thumbnail' => 'Insert Thumbnail',
   'agent.common.url' => 'URL',
   'agent.common.inserturl' => 'Insert URL',
+  'agent.common.insert_image' => 'Insert Image',
   'agent.common.this_will_insert_a_plaintext_url_to_the' => 'This will insert a plain-text URL to the file.',
   'agent.common.link' => 'Link',
   'agent.common.label' => 'Label',

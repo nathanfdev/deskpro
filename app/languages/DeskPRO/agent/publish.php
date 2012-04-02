@@ -90,4 +90,6 @@
   'agent.publish.knowledgebase' => 'Knowledgebase',
   'agent.publish.news' => 'News',
   'agent.publish.recent_and_popular_searches' => 'Recent and Popular Searches',
+
+  'agent.publish.create_category' => 'create category',
 );

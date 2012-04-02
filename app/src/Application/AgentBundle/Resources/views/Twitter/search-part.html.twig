@@ -18,9 +18,9 @@
                 <div class="user-meta">
                     {% if result.from_user_id_str is not sameas(account.user.id) %}
                         {% if result.from_user_id_str in account.friend_ids %}
-                            <button class="clean-white small unfollow"><a>Unfollow</a></button>
+                            <button class="clean-white small unfollow"><a>{{ phrase('agent.twitter.unfollow') }}</a></button>
                         {% else %}
-                            <button class="clean-white small follow"><a>Follow</a></button>
+                            <button class="clean-white small follow"><a>{{ phrase('agent.twitter.follow') }}</a></button>
                         {% endif %}
                     {% endif %}
                 </div>

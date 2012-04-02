@@ -2,10 +2,10 @@
 {% block other_options %}
 	<div style="display: none">
 		<select name="order_by" class="sel-order-by">
-			<option class="date" value="article.date_created:desc">Date Created (Newest-Oldest)</option>
-			<option value="article.date_created:asc">Date Created (Oldest-Newest)</option>
-			<option class="views" value="article.view_count:desc">View Count (Highest-Lowest)</option>
-			<option value="article.view_count:asc">View Count (Lowest-Highest)</option>
+			<option class="date" value="article.date_created:desc">{{ phrase('agent.kb.date_created_newestoldest') }}</option>
+			<option value="article.date_created:asc">{{ phrase('agent.kb.date_created_oldestnewest') }}</option>
+			<option class="views" value="article.view_count:desc">{{ phrase('agent.kb.view_count_highestlowest') }}</option>
+			<option value="article.view_count:asc">{{ phrase('agent.kb.view_count_lowesthighest') }}</option>
 		</select>
 	</div>
 {% endblock %}

@@ -4,20 +4,20 @@
 		<li class="auto-load-route" data-route="listpane:{{ path('agent_twitter_starred_tweets_list') }}">
 			<h3 class="title">
 				<span class="list-counter" id="twitter_starred_statuses_count">{{ statuses.starred|default(0) }}</span>
-				Starred Tweets
+				{{ phrase('agent.twitter.starred_tweets') }}
 			</h3>
 		</li>
 		<li data-route="listpane:{{ path('agent_twitter_my_tweets_list') }}">
 			<h3 class="title">
 				<span class="list-counter" id="twitter_my_statuses_count">{{ statuses.account|default(0) }}</span>
-				My Tweets
+				{{ phrase('agent.twitter.my_tweets') }}
 			</h3>
 		</li>
 		{% if app.getSetting('core.use_agent_team') %}
 		<li data-route="listpane:{{ path('agent_twitter_team_tweets_list') }}">
 			<h3 class="title">
 				<span class="list-counter" id="twitter_team_statuses_count">{{ statuses.team|default(0) }}</span>
-				Team Tweets
+				{{ phrase('agent.twitter.team_tweets') }}
 			</h3>
 		</li>
 		{% endif %}
@@ -37,7 +37,7 @@
 
 				<span class="title" data-route="listpane:{{ path('agent_twitter_statuses_list', {'account_id': account.id}) }}">
 					<span class="list-counter" id="twitter_{{ account.id }}_inbox_count" data-count="{{ account.countTimeline() }}">{{ account.countTimeline() }}</span>
-					<span>INBOX</span>
+					<span>{{ phrase('agent.twitter.inbox') }}</span>
 				</span>
 			</div>
 			<ul class="sub-group">
@@ -45,7 +45,7 @@
 					<div class="item-wrap dp-cat-item">
 						<span class="title" data-route="listpane:{{ path('agent_twitter_messages_list', {'account_id': account.id}) }}">
 							<span class="list-counter" id="twitter_{{ account.id }}_direct_count" data-count="{{ account.countMessages() }}">{{ account.countMessages() }}</span>
-							<span>Direct</span>
+							<span>{{ phrase('agent.twitter.direct') }}</span>
 						</span>
 					</div>
 				</li>
@@ -69,7 +69,7 @@
 					<div class="item-wrap dp-cat-item">
 						<span class="title" data-route="listpane:{{ path('agent_twitter_retweets_list', {'account_id': account.id}) }}">
 							<span class="list-counter" id="twitter_{{ account.id }}_retweets_count" data-count="{{ account.countRetweets() }}">{{ account.countRetweets() }}</span>
-							<span>ReTweets</span>
+							<span>{{ phrase('agent.twitter.retweets') }}</span>
 						</span>
 					</div>
 				</li>
@@ -82,7 +82,7 @@
 
 				<span class="title" data-route="listpane:{{ path('agent_twitter_followers_list', {'account_id': account.id}) }}">
 					<span class="list-counter" id="twitter_{{ account.id }}_new_followers_count" data-count="{{ account.countNewFollowers() }}">{{ account.countNewFollowers() }}</span>
-					<span>New Followers</span>
+					<span>{{ phrase('agent.twitter.new_followers') }}</span>
 				</span>
 			</div>
 			<ul class="sub-group">
@@ -106,7 +106,7 @@
 
 				<span class="title" data-route="listpane:listpane:page:{{ path('agent_twitter_list_searches', {'account_id': account.id}) }}">
 					<span class="list-counter" id="twitter_{{ account.id }}_searches_count" data-count="{{ account.searches.count|default(0) }}">{{ account.searches.count|default(0) }}</span>
-					<span>SEARCHES</span>
+					<span>{{ phrase('agent.twitter.searches') }}</span>
 				</span>
 			</div>
 			<ul class="sub-group">
@@ -126,7 +126,7 @@
 			<div class="item-wrap dp-cat-item">
 				<span class="title" data-route="listpane:{{ path('agent_twitter_followers_list', {'account_id': account.id}) }}">
 					<span class="list-counter" id="twitter_{{ account.id }}_followers_count" data-count="{{ account.followers.count|default(0) }}">{{ account.followers.count|default(0) }}</span>
-					<span>FOLLOWERS</span>
+					<span>{{ phrase('agent.twitter.followers') }}</span>
 				</span>
 			</div>
 		</li>
@@ -135,7 +135,7 @@
 			<div class="item-wrap dp-cat-item">
 				<span class="title" data-route="listpane:{{ path('agent_twitter_outgoing_list', {'account_id': account.id}) }}">
 					<span class="list-counter" id="twitter_{{ account.id }}_sent_count" data-count="{{ account.countOutgoing() }}">{{ account.countOutgoing() }}</span>
-					<span>SENT</span>
+					<span>{{ phrase('agent.twitter.sent') }}</span>
 				</span>
 			</div>
 		</li>

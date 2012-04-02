@@ -20,7 +20,7 @@
 		<h1>{{ phrase('agent.chat.title_open') }}</h1>
 	</header>
 	<article>
-		<p id="userchat_no_chats" {% if not dep_counts['0_total'] and not counts['total'] %}{% else %}style="display: none"{% endif %} class="source-list-no-results">There are currently no open chats.</p>
+		<p id="userchat_no_chats" {% if not dep_counts['0_total'] and not counts['total'] %}{% else %}style="display: none"{% endif %} class="source-list-no-results">{{ phrase('agent.userchat.there_are_currently_no_open_chats') }}</p>
 		<ul class="source-list">
 			{# New Chats #}
 			<li id="userchat_deplist_all" {% if not dep_counts['0_total'] %}style="display: none"{% endif %}>

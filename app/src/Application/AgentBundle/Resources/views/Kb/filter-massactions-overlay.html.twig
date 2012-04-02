@@ -20,13 +20,13 @@
 							<div class="dp-input-group">
 								<label>
 									<input type="radio" class="option-trigger" name="action" value="draft" />
-									Set as Draft
+									{{ phrase('agent.kb.set_as_draft') }}
 								</label>
 
 								<div class="dp-group-options" style="display: none">
-									<span>Are you sure you would like to set the selected items as drafts?</span>
+									<span>{{ phrase('agent.kb.are_you_sure_you_would_like_to_set') }}</span>
 									<div class="execute-row">
-										<a class="apply-actions">Apply Action</a>
+										<a class="apply-actions">{{ phrase('agent.kb.apply_action') }}</a>
 									</div>
 								</div>
 							</div>
@@ -39,7 +39,7 @@
 								<div class="dp-group-options" style="display: none">
 									<span>Are you sure you would like to delete the selected items?</span>
 									<div class="execute-row">
-										<a class="apply-actions">Apply Action</a>
+										<a class="apply-actions">{{ phrase('agent.kb.apply_action') }}</a>
 									</div>
 								</div>
 							</div>
@@ -47,11 +47,11 @@
 							<div class="dp-input-group">
 								<label>
 									<input type="radio" class="option-trigger" name="action" value="move" />
-									Change Category
+									{{ phrase('agent.kb.change_category') }}
 								</label>
 								<div class="dp-group-options" style="display: none">
 									<label>
-										Move to: 
+										{{ phrase('agent.kb.move_to') }}: 
 										{% include 'AgentBundle:Common:select-standard.html.twig' with {
 											'name': 'to_category',
 											'id': baseId ~ '_cat',
@@ -65,7 +65,7 @@
 									</label>
 
 									<div class="execute-row">
-										<a class="apply-actions">Apply Action</a>
+										<a class="apply-actions">{{ phrase('agent.kb.apply_action') }}</a>
 									</div>
 								</div>
 							</div>

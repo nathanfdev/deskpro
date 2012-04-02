@@ -1,0 +1,17 @@
+<?php return array (
+  'agent.twitter.direct' => 'Direct',
+  'agent.twitter.replies' => 'Replies',
+  'agent.twitter.mentions' => 'Mentions',
+  'agent.twitter.retweets' => 'ReTweets',
+  'agent.twitter.new_followers' => 'New Followers',
+  'agent.twitter.searches' => 'SEARCHES',
+  'agent.twitter.sent' => 'SENT',
+  'agent.twitter.starred_tweets' => 'Starred Tweets',
+  'agent.twitter.my_tweets' => 'My Tweets',
+  'agent.twitter.team_tweets' => 'Team Tweets',
+  'agent.twitter.new_search' => 'New Search',
+  'agent.twitter.unfollow' => 'Unfollow',
+  'agent.twitter.follow' => 'Follow',
+  'agent.twitter.inbox' => 'INBOX',
+  'agent.twitter.followers' => 'FOLLOWERS',
+);

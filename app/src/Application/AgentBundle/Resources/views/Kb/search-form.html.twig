@@ -14,7 +14,7 @@
 			<div class="row" style="margin-top: 0;">
 				<div class="search-form" id="criteria_list">
 					<div class="search-terms"></div>
-					<div class="term"><span class="add-term">+</span> Add a new term</div>
+					<div class="term"><span class="add-term">+</span> {{ phrase('agent.kb.add_a_new_term') }}</div>
 				</div>
 				{% include 'DeskPRO:Common:kb-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'term_options': article_options } %}
 			</div>

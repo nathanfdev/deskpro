@@ -137,7 +137,7 @@
 {% include 'AgentBundle:Settings:settings-window.html.twig' %}
 {% if js_debug.devbar %}
 	<div id="dp_devbar">
-		<a class="reload-active-tab">Reload active tab</a>
+		<a class="reload-active-tab">{{ phrase('agent.main.reload_active_tab') }}</a>
 	</div>
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Agent/devbar.js') }}"></script>
 {% endif %}

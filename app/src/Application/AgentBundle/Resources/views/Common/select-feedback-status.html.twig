@@ -11,6 +11,6 @@
 		{% endfor %}
 	</optgroup>
 	{% if constant('DP_DEBUG') %}
-		<option value="hidden.validating" selected="selected">DEV: Validating</option>
+		<option value="hidden.validating" selected="selected">{{ phrase('agent.common.dev_validating') }}</option>
 	{% endif %}
 </select>

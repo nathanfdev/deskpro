@@ -23,4 +23,12 @@
   'agent.peoplesearch.view_all_results' => 'View all results',
   'agent.peoplesearch.no_people_match_your_criteria' => 'No people match your criteria',
   'agent.peoplesearch.you_havent_labeled_any_tickets_load_a_ticket' => 'You haven\'t labeled any tickets. Load a ticket to label it.',
+
+  'agent.peoplesearch.date_craeted_newestoldest' => 'Date Craeted (Newest-Oldest)',
+  'agent.peoplesearch.date_craeted_oldestnewest' => 'Date Craeted (Oldest-Newest)',
+  'agent.peoplesearch.last_login_time' => 'Last Login Time',
+  'agent.peoplesearch.email_address' => 'Email Address',
+  'agent.peoplesearch.add_a_new_term' => 'Add a new term',
+  'agent.peoplesearch.labels' => 'Labels',
+  'agent.peoplesearch.you_havent_labeled_any_tickets_load_a_ticket' => 'You haven\'t labeled any tickets. Load a ticket to label it.',
 );

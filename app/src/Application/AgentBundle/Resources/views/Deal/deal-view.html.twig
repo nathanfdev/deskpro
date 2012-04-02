@@ -22,7 +22,7 @@ pageMeta.baseId = '{{ baseId }}';
 <header class="page-header">
     <nav class="actions" id="{{baseId}}_action_buttons">
         <span class="editable" data-editable-for="#{{baseId}}_editprobablility">{{deal.probability}}</span>
-        <span class="edit-name-gear" style="display: none">edit name</span>
+        <span class="edit-name-gear" style="display: none">{{ phrase('agent.deal.edit_name') }}</span>
                 <div id="{{baseId}}_editprobablility" style="display: none">
                         <input type="hidden" name="action" value="change_probability" />
                         <input type="text" size="20" name="probability" value="{{ deal.probability }}" />
@@ -47,7 +47,7 @@ pageMeta.baseId = '{{ baseId }}';
         
 
         <span class="editable" data-editable-for="#{{baseId}}_editdeal_value">{{deal.deal_value}} </span>
-        <span class="edit-name-gear" style="display: none">edit name</span>
+        <span class="edit-name-gear" style="display: none">{{ phrase('agent.deal.edit_name') }}</span>
                 <div id="{{baseId}}_editdeal_value" style="display: none">
                         <input type="hidden" name="action" value="change_deal_value" />
                         <input type="text" size="20" name="deal_value" value="{{ deal.deal_value }}" />
@@ -59,7 +59,7 @@ pageMeta.baseId = '{{ baseId }}';
 
             <h1>
                 <span class="editable" data-editable-for="#{{baseId}}_editname">{{ deal.title|default('Double-click to set Title') }}</span>
-                <span class="edit-name-gear">edit name</span>
+                <span class="edit-name-gear">{{ phrase('agent.deal.edit_name') }}</span>
                 <div id="{{baseId}}_editname" style="display: none">
                         <input type="hidden" name="action" value="change_title" />
                         <input type="text" size="20" name="title" value="{{ deal.title }}" />
@@ -125,11 +125,11 @@ pageMeta.baseId = '{{ baseId }}';
             <div class="isLeft hasMargineLeft-10px status the-status deal-status" id="{{baseId}}_status_trigger">
                 <span id="{{baseId}}_status_label">
                         {% if deal.status == 0 %}
-                                Open
+                                {{ phrase('agent.deal.open') }}
                         {% elseif deal.status == 1 %}
-                                Won
+                                {{ phrase('agent.deal.won') }}
                         {% elseif deal.status == 2 %}
-                                Lost
+                                {{ phrase('agent.deal.lost') }}
                         {% endif %}
                 </span>
             </div>
@@ -158,18 +158,18 @@ pageMeta.baseId = '{{ baseId }}';
 
 {{ optionbox.start('Status', {'id': baseId ~ '_status_ob'}) }}
 	{{ optionbox.section_start('', 'status') }}
-		<li class="top parent-option item-open" data-item-id="0" data-full-title="Open">
+		<li class="top parent-option item-open" data-item-id="0" data-full-title="{{ phrase('agent.deal.open') }}">
 			<input type="radio" name="status" value="o" />
-			<label>Open</label>
+			<label>{{ phrase('agent.deal.open') }}</label>
 		</li>
-		<li class="top parent-option item-won" data-item-id="1" data-full-title="Won">
+		<li class="top parent-option item-won" data-item-id="1" data-full-title="{{ phrase('agent.deal.won') }}">
 			<input type="radio" name="status" value="1" />
-			<label>Won</label>
+			<label>{{ phrase('agent.deal.won') }}</label>
 		</li>
 
-		<li class="top parent-option item-lost" data-item-id="2" data-full-title="Lost">
+		<li class="top parent-option item-lost" data-item-id="2" data-full-title="{{ phrase('agent.deal.lost') }}">
 			<input type="radio" name="status" value="2" />
-			<label>Lost</label>
+			<label>{{ phrase('agent.deal.lost') }}</label>
 		</li>
 	{{ optionbox.section_end() }}
 {{ optionbox.end('Set Status') }}

@@ -1,9 +1,9 @@
 <header class="header">
     <div class="list-control-bar">
     	<ul class="order-by-menu" >
-            <li>Sort by</li>
-            <li><a class="button {% if sortByDate == 'asc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'asc' }) }}">Oldest First</a></li>
-    		<li><a class="button {% if sortByDate == 'desc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'desc' }) }}">Newest First</a></li>
+            <li>{{ phrase('agent.twitterstatus.sort_by') }}</li>
+            <li><a class="button {% if sortByDate == 'asc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'asc' }) }}">{{ phrase('agent.twitterstatus.oldest_first') }}</a></li>
+    		<li><a class="button {% if sortByDate == 'desc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'desc' }) }}">{{ phrase('agent.twitterstatus.newest_first') }}</a></li>
         </ul>
 
         <span>
@@ -12,7 +12,7 @@
         </span>
         <span>
             <input name="archived" type="checkbox" />
-            <label data-for="archived">Show archived tweets</label>
+            <label data-for="archived">{{ phrase('agent.twitterstatus.show_archived_tweets') }}</label>
         </span>
     </div>
 </header>

@@ -70,7 +70,7 @@
 	{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
 
 	<h1 id="login_title">{{ phrase('agent.login.log_in') }}</h1>
-	<h1 id="lost_password_title" style="display: none;">Lost {{ phrase('agent.login.password') }}</h1>
+	<h1 id="lost_password_title" style="display: none;">{{ phrase('agent.login.lost') }} {{ phrase('agent.login.password') }}</h1>
 	{% if failed_login_name %}<p class="error">{{ phrase('agent.login.login_failed') }}</p>{% endif %}
 	{% if has_done_reset %}<p class="okay">{{ phrase('agent.login.your_password_has_been_reset_successfully') }}</p>{% endif %}
 	{% if has_logged_out %}<p class="okay">{{ phrase('agent.login.has_logged_out') }}</p>{% endif %}
@@ -111,14 +111,14 @@
 			<dl>
 				<dt></dt>
 				<dd class="btn lost">
-					<button id="do_send_lost">Email Instructions</button>
+					<button id="do_send_lost">{{ phrase('agent.login.email_instructions') }}</button>
 					<a href="{{ path('agent_login') }}" id="login_link">or go back to login form</a>
 				</dd>
 			</dl>
 		</div>
 	</div>
 	<div id="lost_message_view" style="display: none">
-		We sent insutrctions on how to reset your password to the email address you provided.
+		{{ phrase('agent.login.we_sent_insutrctions_on_how_to_reset_your') }}
 	</div>
 	<div id="loading_view" style="display: none">
 		<i>{{ phrase('agent.login.loading') }}</i>

@@ -33,4 +33,13 @@
   'agent.login.new_password' => 'New Password',
   'agent.login.repeat' => 'Repeat',
   'agent.login.resetpassword' => 'Reset Password',
+
+  'agent.login.v4_or_later' => 'v4 or later',
+  'agent.login.v17_or_later' => 'v17 or later',
+  'agent.login.v5_or_later' => 'v5 or later',
+  'agent.login.internet_explorer' => 'Internet Explorer',
+  'agent.login.lost' => 'Lost',
+  'agent.login.email_instructions' => 'Email Instructions',
+  'agent.login.we_sent_insutrctions_on_how_to_reset_your' => 'We sent insutrctions on how to reset your password to the email address you provided.',
+  'agent.login.reset_password' => 'Reset Password',
 );

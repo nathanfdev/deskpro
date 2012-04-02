@@ -20,12 +20,12 @@ pageMeta.baseId = '{{ baseId }}';
 		<ul>
 			{% if user.id is not sameas(account.user.id) %}
 				{% if user.id in account.friend_ids %}
-					<li class="create-ticket"><button class="clean-white large">Unfollow</button></li>
+					<li class="create-ticket"><button class="clean-white large">{{ phrase('agent.twitteruser.unfollow') }}</button></li>
 				{% else %}
-					<li class="create-ticket"><button class="clean-white large">Follow</button></li>
+					<li class="create-ticket"><button class="clean-white large">{{ phrase('agent.twitteruser.follow') }}</button></li>
 				{% endif %}
 			{% endif %}
-			<li class="create-ticket"><button class="clean-white large">Message</button></li>
+			<li class="create-ticket"><button class="clean-white large">{{ phrase('agent.twitteruser.message') }}</button></li>
 		</ul>
 	</nav>
 	<div class="person-picture-box">
@@ -61,9 +61,9 @@ pageMeta.baseId = '{{ baseId }}';
 				<header>
 					<nav>
 						<ul>
-							<li data-tab-for="#{{baseId}}_statuses_tab" class="on">Statuses</li>
-							<li data-tab-for="#{{baseId}}_messages_tab">Messages</li>
-							<li data-tab-for="#{{baseId}}_mentions_tab">Mentions</li>
+							<li data-tab-for="#{{baseId}}_statuses_tab" class="on">{{ phrase('agent.twitteruser.statuses') }}</li>
+							<li data-tab-for="#{{baseId}}_messages_tab">{{ phrase('agent.twitteruser.messages') }}</li>
+							<li data-tab-for="#{{baseId}}_mentions_tab">{{ phrase('agent.twitteruser.mentions') }}</li>
 						</ul>
 					</nav>
 				</header>
@@ -105,7 +105,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<table class="table-content contact-list contact-list-wrapper" id="{{baseId}}_contact_display" width="100%">
 							<tr class="row-table-cotent">
 								<td class="col-table-content title-col">
-									<span>Language</span>
+									<span>{{ phrase('agent.twitteruser.language') }}</span>
 								</td>
 								<td width="70%"  class="col-table-content prop-val">
 									{{ user.language }}
@@ -113,7 +113,7 @@ pageMeta.baseId = '{{ baseId }}';
 							</tr>
 							<tr class="row-table-cotent dark">
 								<td class="col-table-content title-col">
-									<span>Location</span>
+									<span>{{ phrase('agent.twitteruser.location') }}</span>
 								</div>
 								<td width="70%"  class="col-table-content prop-val">
 									{% if user.location is none %}unknown{% else %}{{ user.location }}{% endif %}
@@ -121,7 +121,7 @@ pageMeta.baseId = '{{ baseId }}';
 							</tr>
 							<tr class="row-table-cotent">
 								<td class="col-table-content title-col">
-									<span>Protected</span>
+									<span>{{ phrase('agent.twitteruser.protected') }}</span>
 								</td>
 								<td width="70%"  class="col-table-content prop-val">
 									{% if user.is_protected %}yes{% else %}no{% endif %}
@@ -129,7 +129,7 @@ pageMeta.baseId = '{{ baseId }}';
 							</tr>
 							<tr class="row-table-cotent dark">
 								<td class="col-table-content title-col">
-									<span>Verified</span>
+									<span>{{ phrase('agent.twitteruser.verified') }}</span>
 								</td>
 								<td width="70%"  class="col-table-content prop-val">
 									{% if user.is_verified %}yes{% else %}no{% endif %}
@@ -137,7 +137,7 @@ pageMeta.baseId = '{{ baseId }}';
 							</tr>
 							<tr class="row-table-cotent">
 								<td class="col-table-content title-col">
-									<span>GEO</span>
+									<span>{{ phrase('agent.twitteruser.geo') }}</span>
 								</td>
 								<td width="70%" class="col-table-content prop-val">
 									{% if user.is_geo_enabled %}yes{% else %}no{% endif %}

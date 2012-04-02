@@ -8,9 +8,9 @@
 		<div class="insert-controls">
 			<label>
 				<input type="blob_append[]" value="{{ blob.id }}" checked="checked" />
-				List as an attachment to the article
+				{{ phrase('agent.common.list_as_an_attachment_to_the_article') }}
 			</label>
-			and/or <a href="" class="insert-link" data-blob-id="{{ blob.id }}">link to the file from within the article</a>
+			and/or <a href="" class="insert-link" data-blob-id="{{ blob.id }}">{{ phrase('agent.common.link_to_the_file_from_within_the_article') }}</a>
 			<div class="insert-controls-overlay">
 				<div class="overlay-title" style="padding:  6px;">
 					{{ phrase('agent.common.insert_title', {'title':blob.display_title}) }}
@@ -27,24 +27,24 @@
 					<strong>{{ phrase('agent.common.link') }}</strong><br />
 					<input type="hidden" class="insert-link-code" value="![attach:{{ blob.id }} link:{{ '{{label}}' }}]" />
 					{{ phrase('agent.common.label') }}: <input type="text" class="link-label" value="{{ blob.display_title }}" /> <button class="dp-button">{{ phrase('agent.common.insert_link') }}</button><br />
-					This will insert a link to the file with the label as the clickable link text.
+					{{ phrase('agent.common.this_will_insert_a_link_to_the_file') }}
 
 					{% if blob.isImage() %}
 						<hr />
 
 						<strong>{{ phrase('agent.common.full_image') }}</strong>
 						<input type="hidden" class="insert-image-code" value="![attach:{{ blob.id }} image]" />
-						<button class="dp-button">{{ phrase('agent.common.insert') }} Image</button><br />
+						<button class="dp-button">{{ phrase('agent.common.insert_image') }}</button><br />
 						{{ phrase('agent.common.this_will_insert_the_fullsized_image') }}
 
 						<hr />
 
-						<strong>{{ phrase('agent.common.link') }}ed Thumbnail</strong>
+						<strong>{{ phrase('agent.common.linked_thumbnail') }}</strong>
 						<input type="hidden" class="insert-thumb-code" value="![attach:{{ blob.id }} thumb:{{ '{{width}},{{height}}' }}]" />
 						{{ phrase('agent.common.width') }}: <input type="text" class="thumb-width" value="50" />
 						{{ phrase('agent.common.height') }}: <input type="text" class="thumb-height" value="50" />
 						<button class="dp-button">{{ phrase('agent.common.insert_thumbnail') }}</button><br />
-						This will insert a thumbnail image that links to the full-sized image.
+						{{ phrase('agent.common.this_will_insert_a_thumbnail_image_that_links') }}
 					{% endif %}
 				</div>
 			</div>

@@ -21,22 +21,22 @@
 {% elseif log.action_type == 'merged_attach' %}
 	Attachment <span class="old-val">#{{log.id_object}}</span> into this from ticket #{{log.id_before}}
 {% elseif log.action_type == 'changed_category' %}
-	<span class="type">Category</span> changed from
+	<span class="type">{{ phrase('agent.ticket.category') }}</span> changed from
 	<span class="old-val">{{log.details.old_category_title|default('None')}}</span> to <span class="new-val">{{log.details.new_category_title|default('None')}}</span>
 {% elseif log.action_type == 'changed_department' %}
-	<span class="type">Department</span> changed from
+	<span class="type">{{ phrase('agent.ticket.department') }}</span> changed from
 	<span class="old-val">{{log.details.old_department_title|default('None')}}</span> to <span class="new-val">{{log.details.new_department_title|default('None')}}</span>
 {% elseif log.action_type == 'changed_organization' %}
-	<span class="type">Organization</span> changed from
+	<span class="type">{{ phrase('agent.ticket.organization') }}</span> changed from
 	<span class="old-val">{{log.details.old_org_name|default('None')}}</span> to <span class="new-val">{{log.details.new_org_name|default('None')}}</span>
 {% elseif log.action_type == 'changed_person' %}
-	<span class="type">User owner</span> changed from
+	<span class="type">{{ phrase('agent.ticket.user_owner') }}</span> changed from
 	<span class="old-val">#{{log.details.old_person_id}} {{old_person_name}}</span> to <span class="new-val">#{{log.details.new_person_id}} {{new_person_name}}</span>
 {% elseif log.action_type == 'changed_person' %}
-	<span class="type">Ticket triggers</span> applied:
+	<span class="type">{{ phrase('agent.ticket.ticket_triggers') }}</span> applied:
 	<span class="new-val">{{ log.details.trigger_ids }}</span>
 {% elseif log.action_type == 'message_created' %}
-	<span class="type">New message</span> {% if log.details.message_id %}<span class="new-val">#{{log.details.message_id}}</span>{% endif %}
+	<span class="type">{{ phrase('agent.ticket.new_message') }}</span> {% if log.details.message_id %}<span class="new-val">#{{log.details.message_id}}</span>{% endif %}
 	{% if log.details.ip_address %}
 	from web ({{ log.details.ip_address }})
 	{% endif %}
@@ -44,25 +44,25 @@
 	from email ({{ log.details.email }})
 	{% endif %}
 {% elseif log.action_type == 'message_removed' %}
-	<span class="type">Message deleted</span> <span class="old-val">#{{log.id_before}}</span>
+	<span class="type">{{ phrase('agent.ticket.message_deleted') }}</span> <span class="old-val">#{{log.id_before}}</span>
 {% elseif log.action_type == 'changed_priority' %}
-	<span class="type">Priority</span> changed from
+	<span class="type">{{ phrase('agent.ticket.priority') }}</span> changed from
 	<span class="old-val">{{log.details.old_priority_title|default('None')}}</span> to <span class="new-val">{{log.details.new_priority_title|default('None')}}</span>
 {% elseif log.action_type == 'changed_workflow' %}
-	<span class="type">Workflow</span> changed from
+	<span class="type">{{ phrase('agent.ticket.workflow') }}</span> changed from
 	<span class="old-val">{{log.details.old_workflow_title|default('None')}}</span> to <span class="new-val">{{log.details.new_workflow_title|default('None')}}</span>
 {% elseif log.action_type == 'changed_urgency' %}
-	<span class="type">Urgency</span> changed from
+	<span class="type">{{ phrase('agent.ticket.urgency') }}</span> changed from
 	<span class="old-val">{{log.details.old_urgency}}</span> to <span class="new-val">{{log.details.new_urgency}}</span>
 {% elseif log.action_type == 'changed_product' %}
-	<span class="type">Product</span> changed from
+	<span class="type">{{ phrase('agent.ticket.product') }}</span> changed from
 	<span class="old-val">{{log.details.old_product_title|default('None')}}</span> to <span class="new-val">{{log.details.new_product_title|default('None')}}</span>
 {% elseif log.action_type == 'attach_added' %}
-	<span class="type">New attachment</span> <span class="new-val">#{{log.details.attach_id}} {{ log.details.filename }}</span>
+	<span class="type">{{ phrase('agent.ticket.new_attachment') }}</span> <span class="new-val">#{{log.details.attach_id}} {{ log.details.filename }}</span>
 {% elseif log.action_type == 'attach_removed' %}
-	<span class="type">Attachment deleted</span> <span class="old-val">#{{log.details.old_attach_id}} {{ log.details.filename }}</span>
+	<span class="type">{{ phrase('agent.ticket.attachment_deleted') }}</span> <span class="old-val">#{{log.details.old_attach_id}} {{ log.details.filename }}</span>
 {% elseif log.action_type == 'changed_status' %}
-	<span class="type">Status</span> changed from
+	<span class="type">{{ phrase('agent.ticket.status') }}</span> changed from
 	<span class="old-val">{{ phrase( 'agent.tickets.status_' ~ log.details.old_status) }}</span> to <span class="new-val">{{ phrase( 'agent.tickets.status_' ~ log.details.new_status) }}</span>
 {% elseif log.action_type == 'changed_custom_field' %}
 	<span class="type">{{ log.details.field_name }}</span> changed from

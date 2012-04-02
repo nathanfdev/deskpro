@@ -1,0 +1,14 @@
+<?php return array (
+  'agent.twitteruser.there_are_no_followers_for_this_account' => 'There are no followers for this account',
+  'agent.twitteruser.unfollow' => 'Unfollow',
+  'agent.twitteruser.follow' => 'Follow',
+  'agent.twitteruser.message' => 'Message',
+  'agent.twitteruser.statuses' => 'Statuses',
+  'agent.twitteruser.messages' => 'Messages',
+  'agent.twitteruser.mentions' => 'Mentions',
+  'agent.twitteruser.language' => 'Language',
+  'agent.twitteruser.location' => 'Location',
+  'agent.twitteruser.protected' => 'Protected',
+  'agent.twitteruser.verified' => 'Verified',
+  'agent.twitteruser.geo' => 'GEO',
+);

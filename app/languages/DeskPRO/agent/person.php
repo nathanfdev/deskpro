@@ -17,4 +17,8 @@
   'agent.person.usergroup' => 'Usergroup',
   'agent.person.date_created' => 'Date Created',
   'agent.person.done' => 'Done',
+
+  'agent.person.add_an_email_address' => 'Add an email address',
+  'agent.person.download_vcard' => 'Download vCard',
+  'agent.person.id' => 'ID',
 );

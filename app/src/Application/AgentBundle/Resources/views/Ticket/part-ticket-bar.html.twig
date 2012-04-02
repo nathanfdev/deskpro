@@ -34,7 +34,7 @@
 							</td>
 							<td style="padding-right: 15px; vertical-align:middle;" valign="middle">
 								<label for="foot_assign_check_{{ticket.id}}">Assign ticket to</label>
-								<span class="prop-val trigger agent_id">Me</span>
+								<span class="prop-val trigger agent_id">{{ phrase('agent.ticket.me') }}</span>
 								<label for="foot_assign_check_{{ticket.id}}">and</label>
 								<span class="prop-val trigger agent_team_id">{{ phrase('agent.ticket.my_team') }}</span>
 							</td>
@@ -51,7 +51,7 @@
 								<input id="foot_close_tab_{{ticket.id}}" class="small" type="checkbox" name="options[close_tab]" value="1" checked="checked" />
 							</td>
 							<td style="padding-right: 15px; vertical-align:middle;" valign="middle">
-								<label for="foot_close_tab_{{ticket.id}}">Close tab after reply</label>
+								<label for="foot_close_tab_{{ticket.id}}">{{ phrase('agent.ticket.close_tab_after_reply') }}</label>
 							</td>
 							<td width="5" valign="middle" style="vertical-align:middle; padding-right:5px;">
 								<input id="foot_kb_pending_{{ticket.id}}" class="small" type="checkbox" name="options[kb_pending]" />
@@ -63,7 +63,7 @@
 					</table>
 				</div>
 				<ul class="reply-agent_id-menu" style="display:none">
-					<li data-option-id="standard" data-option-name="agent_id" data-option-value="{{app.user.id}}">Me</li>
+					<li data-option-id="standard" data-option-name="agent_id" data-option-value="{{app.user.id}}">{{ phrase('agent.ticket.me') }}</li>
 					<li class="sep">-</li>
 					{% for id,title in ticket_options.agents %}
 						<li data-option-id="standard" data-option-name="agent_id" data-option-value="{{id}}">{{title}}</li>

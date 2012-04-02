@@ -3,7 +3,7 @@
 		{% for label,css_class in people_tag_cloud %}
 			<li id="people_label_cloud_{{label|slugify}}" class="{{css_class}} nav-label-{{label|slugify}} is-nav-item" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}"><span>{{label}}</span></li>
 		{% else %}
-			<li>You haven't labeled any tickets. Load a ticket to label it.</li>
+			<li>{{ phrase('agent.peoplesearch.you_havent_labeled_any_tickets_load_a_ticket') }}</li>
 		{% endfor %}
 	</ul>
 	<br class="clear"/>

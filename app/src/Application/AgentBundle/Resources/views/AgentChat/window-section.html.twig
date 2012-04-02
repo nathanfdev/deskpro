@@ -7,7 +7,7 @@
 		<li>
 			<h3 class="title is-nav-item agent-0" data-route="listpane:{{ path('agent_agentchat_history', {'agent_id': '0'}) }}">
 				<span class="list-counter">{{ chatted_counts[0]|default(0) }}</span>
-				Agent Chats
+				{{ phrase('agent.agentchat.agent_chats') }}
 			</h3>
 			<ul class="sub-group show">
 				{% for agent in agent_chatted %}

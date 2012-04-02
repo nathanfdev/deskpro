@@ -19,7 +19,7 @@
 
 
 	{% if person.id %}
-		<a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">view profile</a>
+		<a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">{{ phrase('agent.deal.view_profile') }}</a>
 	{% endif %}
 </div>
 <br class="clear" />

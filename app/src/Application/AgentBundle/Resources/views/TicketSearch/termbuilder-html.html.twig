@@ -4,7 +4,7 @@
 	</div>
 	<div class="options">
 		<input type="hidden" name="archive_search" value="1" />
-		<span>Search all tickets, including tickets that are resolved or closed</span>
+		<span>{{ phrase('agent.ticketsearch.search_all_tickets_including_tickets_that_are_resolved') }}</span>
 	</div>
 </div>
 <div class="type" title="Subject" data-rule-type="subject">
@@ -40,8 +40,8 @@
 	</div>
 	<div class="options">
 		<select name="agent">
-			<option value="0">Unassigned</option>
-			<option value="-1">Me</option>
+			<option value="0">{{ phrase('agent.ticketsearch.unassigned') }}</option>
+			<option value="-1">{{ phrase('agent.ticketsearch.me') }}</option>
 			{% for id,label in term_options.agents %}
 				<option value="{{id}}">{{label}}</option>
 			{% endfor %}
@@ -57,7 +57,7 @@
 	</div>
 	<div class="options">
 		<select name="agent">
-			<option value="-1">Me</option>
+			<option value="-1">{{ phrase('agent.ticketsearch.me') }}</option>
 			{% for id,label in term_options.agents %}
 				<option value="{{id}}">{{label}}</option>
 			{% endfor %}
@@ -74,8 +74,8 @@
 				</select>
 			</div>
 			<select name="agent_team">
-				<option value="0">No team</option>
-				<option value="-1">Any of my teams</option>
+				<option value="0">{{ phrase('agent.ticketsearch.no_team') }}</option>
+				<option value="-1">{{ phrase('agent.ticketsearch.any_of_my_teams') }}</option>
 				{% for id,title in term_options.agent_teams %}
 					<option value="{{id}}">{{title}}</option>
 				{% endfor %}
@@ -92,11 +92,11 @@
 	</div>
 	<div class="options">
 		<select name="status" multiple="multiple" size="6">
-			<option value="awaiting_agent">Awaiting Agent</option>
-			<option value="awaiting_user">Awaiting User</option>
-			<option value="resolved">Resolved</option>
-			<option value="closed">Closed</option>
-			<option value="hidden">Hidden (awaiting validating, spam)</option>
+			<option value="awaiting_agent">{{ phrase('agent.ticketsearch.awaiting_agent') }}</option>
+			<option value="awaiting_user">{{ phrase('agent.ticketsearch.awaiting_user') }}</option>
+			<option value="resolved">{{ phrase('agent.ticketsearch.resolved') }}</option>
+			<option value="closed">{{ phrase('agent.ticketsearch.closed') }}</option>
+			<option value="hidden">{{ phrase('agent.ticketsearch.hidden_awaiting_validating_spam') }}</option>
 		</select>
 	</div>
 </div>
@@ -180,9 +180,9 @@
 	<div class="options">
 		<select name="creation_system">
 			<option value="web">Web interface</option>
-			<option value="web.person">-- By user</option>
-			<option value="web.agent">-- By agent on behalf of user</option>
-			<option value="gateway">Email</option>
+			<option value="web.person">{{ phrase('agent.ticketsearch._by_user') }}</option>
+			<option value="web.agent">{{ phrase('agent.ticketsearch._by_agent_on_behalf_of_user') }}</option>
+			<option value="gateway">{{ phrase('agent.ticketsearch.email') }}</option>
 		</select>
 	</div>
 </div>

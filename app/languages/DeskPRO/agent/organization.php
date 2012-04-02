@@ -5,4 +5,7 @@
   'agent.organization.cancel' => 'Cancel',
   'agent.organization.this_organization_has_no_members' => 'This organization has no members.',
   'agent.organization.notes' => 'Notes',
+
+  'agent.organizationsearch.name_az' => 'Name (A-Z)',
+  'agent.organizationsearch.name_za' => 'Name (Z-A)',
 );

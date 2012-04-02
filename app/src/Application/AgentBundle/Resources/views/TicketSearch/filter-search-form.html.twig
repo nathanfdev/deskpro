@@ -17,17 +17,17 @@
 					<div class="term"><span class="add-term">+</span> Add a new term</div>
 				</div>
 				<div class="term">
-					Order by
+					{{ phrase('agent.ticketsearch.order_by') }}
 					<select name="order_by">
-						<option value="ticket.date_created:desc">Date Opened (Newer-Older)</option>
-						<option value="ticket.date_created:asc">Date Opened (Older-Newer)</option>
-						<option value="ticket.priority:desc">Priority (Highest-Lowest)</option>
-						<option value="ticket.priority:asc">Priority (Lowest-Highest)</option>
+						<option value="ticket.date_created:desc">{{ phrase('agent.ticketsearch.date_opened_newerolder') }}</option>
+						<option value="ticket.date_created:asc">{{ phrase('agent.ticketsearch.date_opened_oldernewer') }}</option>
+						<option value="ticket.priority:desc">{{ phrase('agent.ticketsearch.priority_highestlowest') }}</option>
+						<option value="ticket.priority:asc">{{ phrase('agent.ticketsearch.priority_lowesthighest') }}</option>
 					</select>
 				</div>
 				{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'term_options': ticket_options } %}
 			</div>
-			<div style="text-align: center;"><button class="dp-button x-small">Search</button></div>
+			<div style="text-align: center;"><button class="dp-button x-small">{{ phrase('agent.ticketsearch.search') }}</button></div>
 		</form>
 	</div>
 	

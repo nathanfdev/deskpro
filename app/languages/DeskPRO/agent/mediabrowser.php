@@ -22,4 +22,7 @@
   'agent.mediabrowser.choose_files' => 'Choose Files',
   'agent.mediabrowser.recent_uploads' => 'Recent Uploads',
   'agent.mediabrowser.library' => 'Library',
+
+  'agent.mediabrowser.insert_edited_image' => 'Insert edited image',
+  'agent.mediabrowser.choose_files_from_your_computer' => 'Choose files from your computer', 
 );

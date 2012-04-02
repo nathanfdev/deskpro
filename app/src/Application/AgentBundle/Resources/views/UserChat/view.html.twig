@@ -64,7 +64,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</h1>
     <div class="clear"></div>
     <div class="meta-line">
-        <div class="category set-department" id="{{baseId}}_dep_btn" data-department-id="{{ convo.department.id|default(0) }}"><span>Department: <span class="label-department-id">{{ convo.department.full_title|default('No Department') }}</span></span></div>
+        <div class="category set-department" id="{{baseId}}_dep_btn" data-department-id="{{ convo.department.id|default(0) }}"><span>{{ phrase('agent.userchat.department') }}: <span class="label-department-id">{{ convo.department.full_title|default('No {{ phrase('agent.userchat.department') }}') }}</span></span></div>
         <div class="clear"></div>
     </div>
 </header>
@@ -96,7 +96,7 @@ pageMeta.baseId = '{{ baseId }}';
                                                 {% else %}
                                                 	{{ phrase('agent.anonymous') }}
                                                 {% endif %}
-                                                <span class="email"><b data-hide="@parent">{% if convo.person_email %}{{ convo.person_email }}{% else %}No Email{% endif %}</b></span>
+                                                <span class="email"><b data-hide="@parent">{% if convo.person_email %}{{ convo.person_email }}{% else %}{{ phrase('agent.userchat.no_email') }}{% endif %}</b></span>
                                             </span>
                                     </a>
                                 {% endif %}
@@ -118,12 +118,12 @@ pageMeta.baseId = '{{ baseId }}';
 				<section id="{{baseId}}_people_box_agent">
 					<article>
 						<dl>
-							<dt class="agent-row">Assigned Agent</dt>
+							<dt class="agent-row">{{ phrase('agent.userchat.assigned_agent') }}</dt>
 							<dd class="agent-row">
 								<a class="agent-link prop-agent-id" id="{{baseId}}_assign_btn" data-agent-id="{{ convo.agent.id|default(0) }}" style="background-image: url('{{ convo.agent.getPictureUrl(20) }}');">{{ convo.agent.display_name|default('Unassigned') }}</a>
 							</dd>
 
-							<dt class="followers-row" {% if not agent_parts|length %}style="display:none"{% endif %}>Other Agents</dt>
+							<dt class="followers-row" {% if not agent_parts|length %}style="display:none"{% endif %}>{{ phrase('agent.userchat.other_agents') }}</dt>
 							<dd class="followers-row" {% if not agent_parts|length %}style="display:none"{% endif %}>
 								<ul id="{{baseId}}_followers_list" class="comma-list">
 									{% set has_others = false %}
@@ -134,7 +134,7 @@ pageMeta.baseId = '{{ baseId }}';
 										{% endif %}
 									{% endfor %}
 									{% if not has_others %}
-										<li>No others</li>
+										<li>{{ phrase('agent.userchat.no_others') }}</li>
 									{% endif %}
 								</ul>
 							</dd>
@@ -214,13 +214,13 @@ pageMeta.baseId = '{{ baseId }}';
 				</div>
 			</div>
 			<div class="chatreply" id="{{baseId}}_replybox" style="{% if convo.status != 'open' %}display: none{% endif %};">
-				<div class="drop-file-zone"><h1>Drop your file here to attach it to your reply</h1></div>
+				<div class="drop-file-zone"><h1>{{ phrase('agent.userchat.drop_your_file_here_to_attach_it_to') }}</h1></div>
 				{% if convo.person and convo.person.id != session.person.id %}
 					<div class="impersonation-warning" id="{{baseId}}_imposter">
-						<strong>Warning</strong>
+						<strong>{{ phrase('agent.userchat.warning') }}</strong>
 						<p>The user entered an email address that matches an existing account in the system, but the user
 						is not currently logged in. Be careful not to expose sensitive information in case the user is an imposter.</p>
-						<button class="clean-white small dismiss">Dismiss</button>
+						<button class="clean-white small dismiss">{{ phrase('agent.userchat.dismiss') }}</button>
 					</div>
 				{% endif %}
 				<nav>
@@ -256,7 +256,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="col">
 		<section data-section-name="agents">
 			<header>
-				<h3>Assign To</h3>
+				<h3>{{ phrase('agent.userchat.assign_to') }}</h3>
 				<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
 			</header>
 			<ul>
@@ -286,7 +286,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="col">
 		<section data-section-name="followers">
 			<header>
-				<h3>Invite Others</h3>
+				<h3>{{ phrase('agent.userchat.invite_others') }}</h3>
 				<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
 			</header>
 			<ul>

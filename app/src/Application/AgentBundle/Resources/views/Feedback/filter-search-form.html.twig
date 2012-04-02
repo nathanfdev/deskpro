@@ -3,10 +3,10 @@
 		<div style="float:right">
 			<select name="order_by">
 				<optgroup label="{{ phrase('core.order_by')}}">
-					<option {% if filter_form.order_by == 'date.desc' %}selected="selected"{% endif %} value="date.desc">Newest on top</option>
+					<option {% if filter_form.order_by == 'date.desc' %}selected="selected"{% endif %} value="date.desc">{{ phrase('agent.feedback.newest_on_top') }}</option>
 					<option {% if filter_form.order_by == 'date.asc' %}selected="selected"{% endif %} value="date.asc">{{ phrase('agent.feedback.oldest_on_top') }}</option>
-					<option {% if filter_form.order_by == 'votes.desc' %}selected="selected"{% endif %} value="votes.desc">Top voted on top</option>
-					<option {% if filter_form.order_by == 'votes.asc' %}selected="selected"{% endif %} value="votes.asc">Least voted on top</option>
+					<option {% if filter_form.order_by == 'votes.desc' %}selected="selected"{% endif %} value="votes.desc">{{ phrase('agent.feedback.top_voted_on_top') }}</option>
+					<option {% if filter_form.order_by == 'votes.asc' %}selected="selected"{% endif %} value="votes.asc">{{ phrase('agent.feedback.least_voted_on_top') }}</option>
 				</optgroup>
 			</select>
 		</div>
@@ -47,7 +47,7 @@
 			<input type="hidden" name="terms[popular][op]" value="is" />
 			<label>
 				<input type="checkbox" name="terms[popular][popular]" value="1" {% if filter_form.popular.popular %}checked="checked"{% endif %} style="width: 10px" />
-				Popular feedback only
+				{{ phrase('agent.feedback.popular_feedback_only') }}
 			</label>
 		</div>
 

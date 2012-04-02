@@ -1,0 +1,18 @@
+<?php return array (
+  'agent.twitterstatus.sort_by' => 'Sort by',
+  'agent.twitterstatus.oldest_first' => 'Oldest First',
+  'agent.twitterstatus.newest_first' => 'Newest First',
+  'agent.twitterstatus.show_archived_tweets' => 'Show archived tweets',
+  'agent.twitterstatus.selected' => 'selected',
+  'agent.twitterstatus.perform_action' => 'Perform Action',
+  'agent.twitterstatus.archive' => 'Archive',
+  'agent.twitterstatus.reply' => 'Reply',
+  'agent.twitterstatus.assign' => 'Assign',
+  'agent.twitterstatus.add_note' => 'Add Note',
+  'agent.twitterstatus.add_reply' => 'Add Reply',
+  'agent.twitterstatus.public' => 'Public',
+  'agent.twitterstatus.private' => 'Private',
+  'agent.twitterstatus.from_account' => 'From Account',
+  'agent.twitterstatus.unfollow' => 'Unfollow',
+  'agent.twitterstatus.follow' => 'Follow',
+  'agent.twitterstatus.there_are_no_results' => 'There are no results',;

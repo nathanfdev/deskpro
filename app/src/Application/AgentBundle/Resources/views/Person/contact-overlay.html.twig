@@ -24,7 +24,7 @@
 			</ul>
 			{% if app.user.hasPerm('agent_people.edit_emails') %}
 			<a class="add-trigger">
-				<em class="with-none">Add an email address</em>
+				<em class="with-none">{{ phrase('agent.person.add_an_email_address') }}</em>
 				<em class="with-some">{{ phrase('agent.person.add_another') }}</em>
 			</a>
 			{% endif %}

@@ -10,13 +10,13 @@
 {% block other_options %}
 	<div style="display: none">
 		{{ phrase('agent.ticketsearch.order_by') }}: <select name="order_by" class="sel-order-by">
-			<option class="urgency" value="ticket.urgency:desc">Urgency (Highest-Lowest)</option>
-			<option value="ticket.urgency:asc">Urgency (Lowest-Highest)</option>
-			<option class="date_created" value="ticket.date_created:desc">Date Opened (Newer-Older)</option>
-			<option value="ticket.date_created:asc">Date Opened (Older-Newer)</option>
+			<option class="urgency" value="ticket.urgency:desc">{{ phrase('agent.ticketsearch.urgency_highestlowest') }}</option>
+			<option value="ticket.urgency:asc">{{ phrase('agent.ticketsearch.urgency_lowesthighest') }}</option>
+			<option class="date_created" value="ticket.date_created:desc">{{ phrase('agent.ticketsearch.date_opened_newerolder') }}</option>
+			<option value="ticket.date_created:asc">{{ phrase('agent.ticketsearch.date_opened_oldernewer') }}</option>
 			{% if app.getSetting('core.use_ticket_priority') %}
-				<option class="priority" value="ticket.priority:desc">Priority (Highest-Lowest)</option>
-				<option value="ticket.priority:asc">Priority (Lowest-Highest)</option>
+				<option class="priority" value="ticket.priority:desc">{{ phrase('agent.ticketsearch.priority_highestlowest') }}</option>
+				<option value="ticket.priority:asc">{{ phrase('agent.ticketsearch.priority_lowesthighest') }}</option>
 			{% endif %}
 		</select>
 	</div>

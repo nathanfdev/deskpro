@@ -6,7 +6,7 @@
 		<div class="feedback-editor">
 			{% if state.feedback.content %}
 				<div class="revert-message-notice">
-					Unsaved changes were restored. <button class="revert-default">{{ phrase('agent.publish.discard_unsaved_changes') }}</button>
+					{{ phrase('agent.feedback.unsaved_changes_were_restored') }} <button class="revert-default">{{ phrase('agent.publish.discard_unsaved_changes') }}</button>
 					<br />
 					<textarea class="edit-content-field-default" style="display: none;">{{feedback.content}}</textarea>
 				</div>

@@ -16,7 +16,7 @@
 			<div class="values">
 				<select name="set_term[status][]" multiple="multiple">
 					<option data-start="1" class="start" value="awaiting_agent">{{ phrase('agent.main.awaiting_agent') }}</option>
-					<option data-start="1" class="start" value="awaiting_user">Awaiting User</option>
+					<option data-start="1" class="start" value="awaiting_user">{{ phrase('agent.main.awaiting_user') }}</option>
 					<option value="resolved">{{ phrase('agent.main.resolved') }}</option>
 					<option value="closed">{{ phrase('agent.main.closed') }}</option>
 					<option value="hidden.validated">{{ phrase('agent.main.awaiting_validation') }}</option>
@@ -38,7 +38,7 @@
 		</li>
 		{% if app.getSetting('core.use_agent_team') %}
 			<li class="ob">
-				<label>{{ phrase('agent.main.agent') }} Team</label>
+				<label>{{ phrase('agent.main.agent') }} {{ phrase('agent.main.team') }}</label>
 				<div class="values">
 					{% include 'AgentBundle:Common:select-agent-team.html.twig' with {
 						'name': 'set_term[agent_team][]',
@@ -128,7 +128,7 @@
 
 		{% if ticket_options.languages %}
 			<li class="ob">
-				<label>Language</label>
+				<label>{{ phrase('agent.main.language') }}</label>
 				<div class="values">
 					<select name="language">
 						{% for id,title in term_options.languages %}

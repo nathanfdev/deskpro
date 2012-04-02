@@ -11,4 +11,8 @@
   'agent.news.revision' => 'Revision',
   'agent.news.compare' => 'Compare',
   'agent.news.new_comment' => 'New Comment',
+
+  'agent.news.date_created_newestoldest' => 'Date Created (Newest-Oldest)',
+  'agent.news.date_created_oldestnewest' => 'Date Created (Oldest-Newest)',
+  'agent.news.add_a_new_term' => 'Add a new term',
 );

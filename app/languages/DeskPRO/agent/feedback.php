@@ -34,4 +34,17 @@
 	'agent.feedback.new_comment' => 'New Comment',
 	'agent.feedback.active' => 'Active',
 	'agent.feedback.pending' => 'Pending',
+
+  'agent.feedback.order_by' => 'Order By',
+  'agent.feedback.date_created_newestoldest' => 'Date Created (Newest-Oldest)',
+  'agent.feedback.date_created_oldestnewest' => 'Date Created (Oldest-Newest)',
+  'agent.feedback.popularity_mostleast' => 'Popularity (Most-Least)',
+  'agent.feedback.popularity_leastmost' => 'Popularity (Least-Most)',
+  'agent.feedback.votes_mostleast' => 'Votes (Most-Least)',
+  'agent.feedback.votes_leastmost' => 'Votes (Least-Most)',
+  'agent.feedback.newest_on_top' => 'Newest on top',
+  'agent.feedback.top_voted_on_top' => 'Top voted on top',
+  'agent.feedback.least_voted_on_top' => 'Least voted on top',
+  'agent.feedback.popular_feedback_only' => 'Popular feedback only',
+  'agent.feedback.unsaved_changes_were_restored' => 'Unsaved changes were restored.',
 );

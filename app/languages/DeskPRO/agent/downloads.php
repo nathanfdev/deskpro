@@ -10,4 +10,9 @@
   'agent.downloads.delete' => 'Delete',
   'agent.downloads.copy_permalink' => 'Copy Permalink',
   'agent.downloads.new_comment' => 'New Comment',
+
+  'agent.downloads.date_created_newestoldest' => 'Date Created (Newest-Oldest)',
+  'agent.downloads.date_created_oldestnewest' => 'Date Created (Oldest-Newest)',
+  'agent.downloads.number_of_downloads_highestlowest' => 'Number of Downloads (Highest-Lowest)',
+  'agent.downloads.number_of_downloads_lowesthighest' => 'Number of Downloads (Lowest-Highest)',
 );

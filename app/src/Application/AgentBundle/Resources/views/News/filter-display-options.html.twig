@@ -1,8 +1,8 @@
 {% extends 'AgentBundle:Common:display-options-layout.html.twig' %}
 {% block other_options %}
 	<div style="display:none">{{ phrase('agent.news.order_by') }}: <select name="order_by">
-		<option value="news.date_created:desc">Date Created (Newest-Oldest)</option>
-		<option value="news.date_created:asc">Date Created (Oldest-Newest)</option>
+		<option value="news.date_created:desc">{{ phrase('agent.news.date_created_newestoldest') }}</option>
+		<option value="news.date_created:asc">{{ phrase('agent.news.date_created_oldestnewest') }}</option>
 	</select></div>
 {% endblock %}
 {% block display_elements_list %}

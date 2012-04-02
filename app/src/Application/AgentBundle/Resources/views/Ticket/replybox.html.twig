@@ -63,7 +63,7 @@
 					<input type="checkbox" name="options[do_kbpending]"/>
 				</li>
 				<li class="tipped closetab toggle hide-note" title="{{ phrase('agent.tickets.close_tab_after_reply') }}">
-					<span>Close Tab<em class="check"></em></span>
+					<span>{{ phrase('agent.ticket.close_tab') }}<em class="check"></em></span>
 					<input type="checkbox" name="options[close_tab]" />
 				</li>
 				<li class="send" id="{{replyBaseId}}_send_btn"><span class="hide-note">{{ phrase('agent.send') }}</span><span class="hide-reply">{{ phrase('agent.add') }}</span></li>
@@ -153,9 +153,9 @@
 							<span id="{{replyBaseId}}_assign_detail_agent" class="{% if ticket.agent.id != app.user.id %}changed{% endif %}">
 								<span class="prop-change">
 									{% if ticket.agent %}
-										Change agent from {{ tools.name_or_me(ticket.agent) }} to <span class="new-val-label">Me</span> {% if app.getSetting('core.use_agent_team') %} | {% endif %}
+										Change agent from {{ tools.name_or_me(ticket.agent) }} to <span class="new-val-label">{{ phrase('agent.ticket.me') }}</span> {% if app.getSetting('core.use_agent_team') %} | {% endif %}
 									{% else %}
-										Assign ticket to <span class="new-val-label">Me</span> {% if app.getSetting('core.use_agent_team') %} | {% endif %}
+										Assign ticket to <span class="new-val-label">{{ phrase('agent.ticket.me') }}</span> {% if app.getSetting('core.use_agent_team') %} | {% endif %}
 									{% endif %}
 								</span>
 								<span class="prop-no-change">
@@ -299,7 +299,7 @@
 
 				<li class="{% if not ticket.agent_team %}on{% endif %}">
 					<input type="radio" name="{{replyBaseId}}_agent_team" value="0" {% if not ticket.agent_team %}checked="checked"{% endif %} />
-					<label><span class="agent-team-label-0">No Team</span></label>
+					<label><span class="agent-team-label-0">{{ phrase('agent.ticket.no_team') }}</span></label>
 				</li>
 
 				{% for team in agent_teams %}

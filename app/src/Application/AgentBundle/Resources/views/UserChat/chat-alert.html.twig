@@ -6,32 +6,32 @@
 			{% if person %}
 				<a data-route="person:{{ path('agent_people_view', {person_id: person.id}) }}">{{ person.display_name }} &lt;{{ person.email_address }}&gt;</a>
 			{% else %}
-				Chat by anonymouse
+				{{ phrase('agent.userchat.chat_by_anonymouse') }}
 			{% endif %}
 		</div>
 
 		{% if convo.department %}
 			<div class="row department">
-				<label>Department</label>
+				<label>{{ phrase('agent.userchat.department') }}</label>
 				{{ convo.department.full_title }}
 			</div>
 		{% endif %}
 
 		<div class="row waiting">
-			<label>User Waiting</label>
+			<label>{{ phrase('agent.userchat.user_waiting') }}</label>
 			<span class="wait-timer" data-time="{{ waiting_secs }}">{{ waiting_secs }} seconds</span>
 		</div>
 
 		{% if url %}
 			<div class="row url">
-				<label>User is viewing</label>
+				<label>{{ phrase('agent.userchat.user_is_viewing') }}</label>
 				<a href="{{ url }}" title="{{ url }}">{{ url|truncate(50) }}</a>
 			</div>
 		{% endif %}
 
 		{% if tickets|length %}
 			<div class="row tickets">
-				<label>Open Tickets</label>
+				<label>{{ phrase('agent.userchat.open_tickets') }}</label>
 				<ul>
 					{% for ticket in tickets %}
 						<li>
@@ -44,7 +44,7 @@
 
 		{% if visitor %}
 			<div class="row ip">
-				<label>IP Address</label>
+				<label>{{ phrase('agent.userchat.ip_address') }}</label>
 				{{ visitor.ip_address }}
 			</div>
 		{% endif %}

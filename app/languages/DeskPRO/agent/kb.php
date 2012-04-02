@@ -26,4 +26,16 @@
   'agent.kb.click_to_set_date' => '(click to set date)',
   'agent.kb.set_an_automatic_publish_date' => 'Set an automatic publish date',
   'agent.kb.new_comment' => 'New Comment',
+
+  'agent.kb.date_created_newestoldest' => 'Date Created (Newest-Oldest)',
+  'agent.kb.date_created_oldestnewest' => 'Date Created (Oldest-Newest)',
+  'agent.kb.view_count_highestlowest' => 'View Count (Highest-Lowest)',
+  'agent.kb.view_count_lowesthighest' => 'View Count (Lowest-Highest)',
+  'agent.kb.set_as_draft' => 'Set as Draft',
+  'agent.kb.are_you_sure_you_would_like_to_set' => 'Are you sure you would like to set the selected items as drafts?',
+  'agent.kb.apply_action' => 'Apply Action',
+  'agent.kb.change_category' => 'Change Category',
+  'agent.kb.move_to' => 'Move to',
+  'agent.kb.add_a_new_term' => 'Add a new term',
+  'agent.kb.set_an_automatic_unpublish_date' => 'Set an automatic unpublish date',
 );

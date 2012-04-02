@@ -116,15 +116,13 @@ class LanguageController extends Controller
 
                 $id = $prefix.'.'.$id;
                 $langfile[$conf_file][$id] = $string;
+                $data = file_get_contents($file);
                 $lines = file($file);
-                $data = '';
+                $new_data = '';
 
                 foreach($lines as $line) {
-                    if(preg_match('/(^|"\'>)[^a-zA-Z]*'.preg_quote($string, '/').'[^a-zA-Z]*([<"\']|$)/', $line)) {
-                        $line = str_replace($string, '{{ phrase(\''.$id.'\') }}', $line);
-                    }
-
-                    $data .= $line;
+                    $line = $this->replaceInLine($line, $string, $id);
+                    $new_data .= $line;
                 }
 
                 //$new_data = str_replace($string, '{{ phrase(\''.$id.'\') }}', $data);
@@ -143,6 +141,7 @@ class LanguageController extends Controller
         $lexer = $this->getTwigLexer($twig_options);
         $templates = $this->getTwigFileList($bundle);
         $untranslated = array();
+        $filenames = array();
 
         function get_strings($element, &$strings)
         {
@@ -229,22 +228,24 @@ class LanguageController extends Controller
 
             foreach($strings as $string) {
                 $context = array();
+                $id = $this->stringToId($string);
 
                 foreach($lines as $line) {
                     $pos = strpos($line, $string);
 
-                    if(preg_match('/.{0,8}'.preg_quote($string, '/').'.{0,8}/', $line, $match)) {
-                        $context[] = $match[0];
+                    if(preg_match('/.{0,32}'.preg_quote($string, '/').'.{0,32}/', $line, $match)) {
+                        $context[] = array('in' => $match[0], 'out' => $this->replaceInLine($line, $string, $id));
                     }
                 }
 
                 if(count($context)) {
-                    $strings_ids[] = array('text' => $string, 'id' => $this->stringToId($string), 'context' => $context);
+                    $strings_ids[] = array('text' => $string, 'id' => $id, 'context' => $context);
                 }
             }
 
             if(count($strings)) {
                 $untranslated[$file] = $strings_ids;
+                $filenames[$file] = basename(dirname($file)).'/'.basename($file);
             }
 
             unset($strings);
@@ -256,7 +257,7 @@ class LanguageController extends Controller
             $lang_conf[$file] = var_export($strings, true);
         }
 
-        $vars = array('untranslated' => $untranslated, 'langfiles' => $lang_conf);
+        $vars = array('untranslated' => $untranslated, 'langfiles' => $lang_conf, 'filenames' => $filenames);
 
         return $this->render('DevBundle:Language:find.raw.html.twig', $vars);
     }
@@ -747,5 +748,17 @@ class LanguageController extends Controller
         $parts = array_slice($parts, 0, 8);
         $string = implode('_', $parts);
         return $string;
+    }
+
+    public function replaceInLine($line, $string, $id)
+    {
+        // Reduce mistakes.
+        if(preg_match('/default(\''.preg_quote($string, '/').'\')/', $line)) {
+            $line = str_replace("default('{$string}'", "default(phrase('{$id}'))", $line);
+        } elseif(preg_match('/(^|["\'>}])[^a-zA-Z]*'.preg_quote($string, '/').'[^a-zA-Z]*([{<"\']|$)/', $line)) {
+            $line = str_replace($string, '{{ phrase(\''.$id.'\') }}', $line);
+        }
+
+        return $line;
     }
 }

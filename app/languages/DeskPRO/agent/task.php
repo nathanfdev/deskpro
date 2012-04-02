@@ -22,4 +22,8 @@
   'agent.task.due_in_future' => 'Due In Future',
   'agent.task.my_teamstasks' => 'My Teams\'s Tasks',
   'agent.task.all_tasks' => 'All Tasks',
+
+  'agent.task.no_due_date' => 'No due date',
+  'agent.task.linked_deal' => 'Linked Deal',
+  'agent.task.my_teams' => 'My Teams\'',
 );

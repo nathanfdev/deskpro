@@ -51,7 +51,7 @@
 					{% if ticket.category %}
 						{{ticket.category.title}}
 					{% else %}
-						None
+						{{ phrase('agent.ticketsearch.none') }}
 					{% endif %}
 					</span>
 				</td>
@@ -61,7 +61,7 @@
 					{% if ticket.product %}
 						{{ticket.product.title}}
 					{% else %}
-						None
+						{{ phrase('agent.ticketsearch.none') }}
 					{% endif %}
 					</span>
 				</td>
@@ -71,7 +71,7 @@
 					{% if ticket.organization %}
 						<a data-route="page:{{ path('agent_org_view', {'organization_id': ticket.organization.id}) }}" data-route-title="@text">{{ticket.organization.name}}</a>
 					{% else %}
-						None
+						{{ phrase('agent.ticketsearch.none') }}
 					{% endif %}
 					</span>
 				</td>
@@ -80,7 +80,7 @@
 					{% if ticket.real_total_user_waiting %}
 						<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting ~ " seconds")|date('c') }}"></time>
 					{% else %}
-						N/A
+						{{ phrase('agent.ticketsearch.na') }}
 					{% endif %}
 				</td>
 			{% elseif field == 'agent' %}
@@ -89,7 +89,7 @@
 					{% if ticket.agent %}
 						{{ticket.agent.display_name}}
 					{% else %}
-						Unassigned
+						{{ phrase('agent.ticketsearch.unassigned') }}
 					{% endif %}
 					</span>
 				</td>
@@ -99,7 +99,7 @@
 					{% if ticket.agent %}
 						{{ticket.agent_team.name}}
 					{% else %}
-						No Team
+						{{ phrase('agent.ticketsearch.no_team') }}
 					{% endif %}
 					</span>
 				</td>

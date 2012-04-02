@@ -73,4 +73,18 @@
   'agent.main.reset_form' => 'Reset Form',
   'agent.main.organizations' => 'Organizations',
   'agent.main.publish_andfeedback' => 'Publish and Feedback',
+
+  'agent.main.report_this_error_to_deskpro' => 'Report this error to DeskPRO',
+  'agent.main.reload_active_tab' => 'Reload active tab',
+  'agent.main.keyboard_shortcuts' => 'Keyboard Shortcuts',
+  'agent.main.creation' => 'Creation',
+  'agent.main.awaiting_user' => 'Awaiting User',
+  'agent.main.team' => 'Team',
+  'agent.main.language' => 'Language',
+  'agent.main.tickets_users_organizations_articles_news_downloads_and_feedback' => 'Tickets, Users, Organizations, Articles, News, Downloads and Feedback open here.',
+  'agent.main.notifications_about_new_tickets_and_chats_will_appear' => 'Notifications about new tickets and chats will appear here.',
+  'agent.main.change_your_notification_settings' => 'Change your notification settings',
+  'agent.main.agent_interface' => 'Agent Interface',
+  'agent.main.publish_and_feedback' => 'Publish and Feedback',
+  'agent.main.dev' => 'DEV',
 );

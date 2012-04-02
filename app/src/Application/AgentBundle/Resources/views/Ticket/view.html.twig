@@ -116,13 +116,13 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<div class="meta-line">
 		<div class="status set-status awaiting_agent" {% if ticket.status_code != 'awaiting_agent' %}style="display: none"{% endif %}>
 			<span class="marker-urgency-data urgency-{{ ticket.urgency }}">
-				<label>Awaiting Agent</label>
+				<label>{{ phrase('agent.ticket.awaiting_agent') }}</label>
 				<i class="ticket-urgency" id="{{baseId}}_urgency" data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</i>
 			</span>
 		</div>
-		<div class="status set-status awaiting_user" {% if ticket.status_code != 'awaiting_user' %}style="display: none"{% endif %}><span><label>Awaiting User</label></span></div>
+		<div class="status set-status awaiting_user" {% if ticket.status_code != 'awaiting_user' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.ticket.awaiting_user') }}</label></span></div>
 		<div class="status set-status closed" {% if ticket.status_code != 'closed' %}style="display: none"{% endif %}><span><label>Closed</label></span></div>
-		<div class="status set-status resolved" {% if ticket.status_code != 'resolved' %}style="display: none"{% endif %}><span><label>Resolved</label></span></div>
+		<div class="status set-status resolved" {% if ticket.status_code != 'resolved' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.ticket.resolved') }}</label></span></div>
 		<div class="status set-status hidden hidden_spam" {% if ticket.status_code != 'hidden.spam' %}style="display: none"{% endif %}><span><label>Spam</label></span></div>
 		<div class="status set-status hidden hidden_validating" {% if ticket.status_code != 'hidden.validating' %}style="display: none"{% endif %}><span><label>Validating</label></span></div>
 		<div class="status set-status hidden hidden_deleted" {% if ticket.status_code != 'hidden.deleted' %}style="display: none"{% endif %}><span><label>Deleted</label></span></div>
@@ -479,7 +479,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				{% if ticket_perms.modify_assign_team or not ticket.agent_team %}
 					<li class="{% if not ticket.agent_team %}on{% endif %}">
 						<input type="radio" name="{{baseId}}_agent_team" value="0" {% if not ticket.agent_team %}checked="checked"{% endif %} />
-						<label><span class="agent-team-label-0">No Team</span></label>
+						<label><span class="agent-team-label-0">{{ phrase('agent.ticket.no_team') }}</span></label>
 					</li>
 				{% endif %}
 

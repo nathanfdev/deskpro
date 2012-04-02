@@ -5,30 +5,30 @@
 
 <div class="form-reply" style="display: none">
 	<form>
-		<h5>Add Reply</h5>
+		<h5>{{ phrase('agent.twitterstatus.add_reply') }}</h5>
 		<div class="type" style="float: left">
 			<div style="float: left">
 				<img src="{{ asset('images/agent/icons/twitter_public.png') }}" /><br />
-				<span>Public</span>
+				<span>{{ phrase('agent.twitterstatus.public') }}</span>
 			</div>
 			<div style="float: left">
 				<img src="{{ asset('images/agent/icons/twitter_private.png') }}" /><br />
-				<span>Private</span>
+				<span>{{ phrase('agent.twitterstatus.private') }}</span>
 			</div>
 
 			<ul style="display: none">
 				<li>
 					<input type="radio" name="type" value="private" />
-					<label for="private">Private</label>
+					<label for="private">{{ phrase('agent.twitterstatus.private') }}</label>
 				</li>
 				<li>
 					<input type="radio" name="type" value="public" checked="checked" />
-					<label for="public">Public</label>
+					<label for="public">{{ phrase('agent.twitterstatus.public') }}</label>
 				</li>
 			</ul>
 		</div>
 		<div class="accounts" style="float: left">
-			From Account:<select name="account" id="twitter-reply-account-{{ account.id }}"><br />
+			{{ phrase('agent.twitterstatus.from_account') }}:<select name="account" id="twitter-reply-account-{{ account.id }}"><br />
 			{% for person_account in person.twitter_accounts %}
 				<option value="{{ person_account.id }}" {% if person_account.id == account.id %}selected="selected"{% endif %}>
 					{{ person_account.user.screen_name }}

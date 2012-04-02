@@ -9,16 +9,16 @@
 			{% elseif field == 'user' %}<th>User</th>
 			{% elseif field == 'deleted_reason' %}<th data-field="deleted_reason">{{ phrase('agent.ticketsearch.deleted_reason') }}</th>
 			{% elseif field == 'person_email' %}<th data-field="person">{{ phrase('agent.ticketsearch.user_email') }}</th>
-			{% elseif field == 'person_organization' %}<th data-field="person_organization">Organization</th>
-			{% elseif field == 'department' %}<th data-field="department">Department</th>
-			{% elseif field == 'category' %}<th data-field="category">Category</th>
-			{% elseif field == 'product' %}<th data-field="product">Product</th>
-			{% elseif field == 'organization' %}<th data-field="organization">Organization</th>
-			{% elseif field == 'agent' %}<th data-field="agent">Agent</th>
-			{% elseif field == 'agent_team' %}<th data-field="agent_team">Team</th>
-			{% elseif field == 'labels' %}<th data-field="agent_team">Lables</th>
-			{% elseif field == 'date_user_waiting' %}<th data-field="agent_team">User Waiting</th>
-			{% elseif field == 'date_created' %}<th data-field="date_created">Date Opened</th>
+			{% elseif field == 'person_organization' %}<th data-field="person_organization">{{ phrase('agent.ticketsearch.organization') }}</th>
+			{% elseif field == 'department' %}<th data-field="department">{{ phrase('agent.ticketsearch.department') }}</th>
+			{% elseif field == 'category' %}<th data-field="category">{{ phrase('agent.ticketsearch.category') }}</th>
+			{% elseif field == 'product' %}<th data-field="product">{{ phrase('agent.ticketsearch.product') }}</th>
+			{% elseif field == 'organization' %}<th data-field="organization">{{ phrase('agent.ticketsearch.organization') }}</th>
+			{% elseif field == 'agent' %}<th data-field="agent">{{ phrase('agent.ticketsearch.agent') }}</th>
+			{% elseif field == 'agent_team' %}<th data-field="agent_team">{{ phrase('agent.ticketsearch.team') }}</th>
+			{% elseif field == 'labels' %}<th data-field="agent_team">{{ phrase('agent.ticketsearch.lables') }}</th>
+			{% elseif field == 'date_user_waiting' %}<th data-field="agent_team">{{ phrase('agent.ticketsearch.user_waiting') }}</th>
+			{% elseif field == 'date_created' %}<th data-field="date_created">{{ phrase('agent.ticketsearch.date_opened') }}</th>
 			{% else %}
 				{% for f in ticket_field_defs %}
 					{% if field == 'ticket_fields['~f.id~']' %}

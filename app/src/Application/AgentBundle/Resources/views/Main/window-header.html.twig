@@ -67,8 +67,8 @@
 			</div>
 			<ul id="dp_notify_list">
 				<li id="dp_notify_list_none">
-					<article><em>Notifications about new tickets and chats will appear here.</em></article>
-					<a>Change your notification settings</a>
+					<article><em>{{ phrase('agent.main.notifications_about_new_tickets_and_chats_will_appear') }}</em></article>
+					<a>{{ phrase('agent.main.change_your_notification_settings') }}</a>
 				</li>
 				<li class="dismissAll" id="dp_notify_list_dismiss" style="display: none">
 					<a>{{ phrase('agent.window.dismiss_notifications') }}</a>
@@ -133,7 +133,7 @@
 	<div id="DP-InterfaceSwitcher">
 		<div class="DP-adminSwitch">
 			<div class="adminSwitcher">
-				<a class="agent">Agent Interface<span class="dropdownIcon"></span></a>
+				<a class="agent">{{ phrase('agent.main.agent_interface') }}<span class="dropdownIcon"></span></a>
 			</div>
 		</div>
 		<!-- Header - Switch Button Interfaces- Dropdown -->
@@ -215,7 +215,7 @@
 			<li data-tab-for="#dp_searchsheet_tickets">{{ phrase('agent.main.tickets') }}</li>
 			<li data-tab-for="#dp_searchsheet_people">{{ phrase('agent.main.people') }}</li>
 			<li data-tab-for="#dp_searchsheet_orgs">{{ phrase('agent.main.organizations') }}</li>
-			<li data-tab-for="#dp_searchsheet_content">Publish and Feedback</li>
+			<li data-tab-for="#dp_searchsheet_content">{{ phrase('agent.main.publish_and_feedback') }}</li>
 		</ul>
 	</header>
 

@@ -44,7 +44,7 @@ pageMeta.title = '@{{ account.user.screen_name|escape }} followers';
                     </table>
                 </article>
             {% else %}
-                <p class="twitter-no-results">There are no followers for this account</p>
+                <p class="twitter-no-results">{{ phrase('agent.twitteruser.there_are_no_followers_for_this_account') }}</p>
             {% endfor %}
         </section>
     </div>

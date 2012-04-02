@@ -14,7 +14,7 @@
 			<form action="{{ path('agent_mediabrowser_acceptupload') }}" method="POST" enctype="multipart/form-data" class="upload-form">
 				<input type="hidden" name="protocol" value="http" />
 				<label class="fileinput-button">
-					<span>Choose files from your computer</span>
+					<span>{{ phrase('agent.mediabrowser.choose_files_from_your_computer') }}</span>
 					<input type="file" name="files[]" multiple="multiple" />
 				</label>
 				or drag and drop files onto this window

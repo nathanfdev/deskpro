@@ -1,20 +1,20 @@
 <header class="list-selection-bar">
-    <input type="checkbox" class="selection-control" /> <span class="selected-count">0</span> selected
+    <input type="checkbox" class="selection-control" /> <span class="{{ phrase('agent.twitterstatus.selected') }}-count">0</span> {{ phrase('agent.twitterstatus.selected') }}
     <a class="perform-action perform-actions-trigger disabled">
-        <span>Perform Action</span>
+        <span>{{ phrase('agent.twitterstatus.perform_action') }}</span>
     </a>
 
     <ul class="actions-menu" style="display: none" data-menu-type="twitter-status-actions-menu">
         <li data-action="archive">
-            Archive
+            {{ phrase('agent.twitterstatus.archive') }}
         </li>
         <li class="sep">-</li>
         <li data-action="reply">
-            Reply
+            {{ phrase('agent.twitterstatus.reply') }}
         </li>
         <li class="sep">-</li>
         <li data-action="assign">
-            Assign
+            {{ phrase('agent.twitterstatus.assign') }}
         </li>
     </ul>
 </header>

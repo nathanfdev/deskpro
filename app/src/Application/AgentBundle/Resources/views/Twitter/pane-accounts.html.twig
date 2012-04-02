@@ -13,27 +13,27 @@
 							<ol>
 								<li class="" data-route="listpane:{{ path('agent_twitter_messages_list', {'account_id': account.id}) }}">
 									<span class="list-counter" id="twitter_{{ account.id }}_direct_count">{{ account.timeline.count }}</span>
-									Direct
+									{{ phrase('agent.twitter.direct') }}
 								</li>
 								<li class="" data-route="listpane:{{ path('agent_twitter_replies_list', {'account_id': account.id}) }}">
 									<span class="list-counter" id="twitter_{{ account.id }}_replies_count">{{ account.user.replies.count }}</span>
-									Replies
+									{{ phrase('agent.twitter.replies') }}
 								</li>
 								<li class="" data-route="listpane:{{ path('agent_twitter_mentions_list', {'account_id': account.id}) }}">
 									<span class="list-counter" id="twitter_{{ account.id }}_mentions_count">{{ account.user.mentions.count }}</span>
-									Mentions
+									{{ phrase('agent.twitter.mentions') }}
 								</li>
 								<li class="" data-route="listpane:{{ path('agent_twitter_retweets_list', {'account_id': account.id}) }}">
 									<span class="list-counter" id="twitter_{{ account.id }}_retweets_count">0</span>
-									ReTweets
+									{{ phrase('agent.twitter.retweets') }}
 								</li>
 								<li class="" data-route="">
 									<span class="list-counter" id="twitter_{{ account.id }}_new_followers_count">0</span>
-									New Followers
+									{{ phrase('agent.twitter.new_followers') }}
 								</li>
 								<li class="" data-route="">
 									<span class="list-counter" id="twitter_{{ account.id }}_searches_count">{{ account.searches.count }}</span>
-									Searches
+									{{ phrase('agent.twitter.searches') }}
 								</li>
 								<li class="" data-route="">
 									<span class="list-counter" id="twitter_{{ account.id }}_followers_count">{{ account.followers.count }}</span>
@@ -41,7 +41,7 @@
 								</li>
 								<li class="" data-route="listpane:{{ path('agent_twitter_outgoing_list', {'account_id': account.id}) }}">
 									<span class="list-counter" id="twitter_{{ account.id }}_sent_count">{{ account.user.statuses.count }}</span>
-									Sent
+									{{ phrase('agent.twitter.sent') }}
 								</li>
 							</ol>
 						</div></div>

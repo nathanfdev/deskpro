@@ -27,7 +27,7 @@
 				</span>
 				{% if grouping_var == 'urgency' %}
 					<span class="status-pill urgency-{{ cat.title }} awaiting_agent">
-						<label>Awaiting Agent</label>
+						<label>{{ phrase('agent.ticketsearch.awaiting_agent') }}</label>
 						<i>{{ cat.title }}</i>
 					</span>
 				{% else %}

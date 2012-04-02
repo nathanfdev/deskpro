@@ -27,7 +27,7 @@
 		<button class="dp-button x-small link-trigger" data-code="[attach:{{ blob.id }} label:{{ blob.display_title }}]">{{ phrase('agent.mediabrowser.insert_link_to_file') }}</button>
 		{% if blob.isImage() %}
 			<button class="dp-button x-small image-trigger" data-code="[attach:{{ blob.id }} image]">{{ phrase('agent.mediabrowser.insert_image') }}</button>
-			<button class="dp-button x-small image-edit-trigger">Insert edited image</button>
+			<button class="dp-button x-small image-edit-trigger">{{ phrase('agent.mediabrowser.insert_edited_image') }}</button>
 		{% endif %}
 	</div>
 </div>

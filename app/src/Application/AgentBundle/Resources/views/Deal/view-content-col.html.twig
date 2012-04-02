@@ -15,7 +15,7 @@
                 <dd class="assignments">
                     <ul id="{{baseId}}_assign_btn">
                             <li class="no-changes"><em>{{ phrase('agent.deal.set_assignments') }}</em></li>
-                            <li style="display:none" class="assign-agent"><em>Assign agent</em>: <span class="label"></span></li>
+                            <li style="display:none" class="assign-agent"><em>{{ phrase('agent.deal.assign_agent') }}</em>: <span class="label"></span></li>
 
                     </ul>
                 </dd>
@@ -217,7 +217,7 @@
 
                 <div class="meta-line">
                     <dl class="table-list">
-                        <dt class="type-labels">Created</dt>
+                        <dt class="type-labels">{{ phrase('agent.deal.created') }}</dt>
                         <dd>
                             <span>by {{deal.person.first_name}},
                             <time class="timeago" title="{{deal.date_created|date('c')}}">{{deal.date_created|date('day')}}</time>
@@ -242,7 +242,7 @@
                                     <button class="clean-white save-fields-trigger"><span>{{ phrase('agent.deal.save') }}</span></button>
                             </div>
                         <div class="showing-rendered-fields" id="{{baseId}}_action_buttons">
-                                    <button class="clean-white edit-fields-trigger"><span>Edit Custome Fields</span></button>
+                                    <button class="clean-white edit-fields-trigger"><span>{{ phrase('agent.deal.edit_custome_fields') }}</span></button>
                         </div>
                     </div>
                 {% endif %}
