@@ -601,7 +601,7 @@
 	{% endif %}
 
 	{% if 'ticket_field' not in no_show_fields and term_options.custom_ticket_fields %}
-		{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'contains', 'notcontains': '{{ phrase('deskpro.common.does_not_contain') }}', 'gt': '{{ phrase('deskpro.common.is_greater_than') }}', 'lt': '{{ phrase('deskpro.common.is_less_than') }}'} %}
+		{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'contains', 'notcontains': phrase('deskpro.common.does_not_contain'), 'gt': phrase('deskpro.common.is_greater_than'), 'lt': phrase('deskpro.common.is_less_than') } %}
 		{% for field in term_options.custom_ticket_fields %}
 			{% if field.field_def.getFilterCapabilities(search_context) %}
 			<div class="type" title="{{field.field_def.title}}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">

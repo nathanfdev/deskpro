@@ -117,7 +117,7 @@
 
 {% if 'org_field' not in no_show_fields %}
 {% if term_options.custom_org_fields %}
-	{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'contains', 'notcontains': '{{ phrase('deskpro.common.does_not_contain') }}', 'gt': 'is greater than', 'lt': 'is less than'} %}
+	{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'contains', 'notcontains': phrase('deskpro.common.does_not_contain'), 'gt': 'is greater than', 'lt': 'is less than'} %}
 	{% for field in term_options.custom_org_fields %}
 	{% if field.field_def.getFilterCapabilities(search_context) %}
 	<div class="type" title="{{field.field_def.title}}" data-rule-group="Organization Fields" data-rule-type="org_field[{{field.field_def.id}}]">
