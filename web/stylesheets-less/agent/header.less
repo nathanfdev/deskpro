@@ -2,11 +2,12 @@
 
 #dp_logo_wrap {
 	background-repeat: no-repeat;
-	background-position: 100% 0;
-	background-image: url("../../images/agent/header/header-divider.png") /** sprite-ref: ui-v; sprite-alignment: right */;
-	float: left;
-	width: 56px;
+	background-position: 0 0;
+	background-image: url("../../images/agent/header/header-divider.png") /** sprite-ref: ui-v; sprite-alignment: left */;
+	float: right;
+	width: 54px;
 	height: 41px;
+	padding-left: 10px;
 	overflow: hidden;
 }
 
@@ -59,7 +60,7 @@
 		.border-radius(4px, 4px, 0, 0);
 		position: absolute;
 		top: 3px;
-		left: 2px;
+		right: 2px;
 		width: 47px;
 		height: 37px;
 
@@ -94,7 +95,7 @@
 		border-bottom: 1px solid #B6BABF;
 
 		position: absolute;
-		left: 3px;
+		right: 3px;
 		top: 41px;
 		padding: 10px;
 
@@ -153,16 +154,28 @@
 	display: block;
 	line-height: 100%;
 	padding: 0;
-	text-indent: -500px;
-	background-repeat: no-repeat;
-	background-position: 0 0;
 	height: 24px;
 	width: 24px;
 	overflow: hidden;
 	margin: 4px 0 0 5px;
-	.rounded(3px);
-}
 
+	cite {
+		display: block;
+		background-repeat: no-repeat;
+		background-position: 0 0;
+		.rounded(3px);
+		height: 24px;
+		width: 24px;
+		overflow: hidden;
+	}
+}
+#dp_header_user .button-wrap .drop {
+	.iconbase(6px, 5px);
+	background-image: url(../../images/agent/dropdown-white.png);
+	position: absolute;
+	top: 14px;
+	right: 5px;
+}
 
 
 
@@ -1491,11 +1504,10 @@ ul#dp_notify_list li#dp_notify_list_none {
 	border-right: 1px solid #314559;
 	.border-radius(4px, 4px, 0, 0);
     position: absolute;
-    right: 4px;
-	top: -36px;
+    left: -2px;
+	top: -38px;
 	width: 47px;
-	height: 35px;
-	margin-right: 3px;
+	height: 37px;
 }
 .userProfileDropdownHeader a{
 	padding: 2px 3px 0 3px;
@@ -1504,8 +1516,8 @@ ul#dp_notify_list li#dp_notify_list_none {
 }
 .userProfileDropdownHeader a em {
     display: inline-block;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     background-color: #fff;
     background-position: 50% 50%;
     background-repeat: no-repeat;
@@ -1522,7 +1534,7 @@ ul#dp_notify_list li#dp_notify_list_none {
 }
 
 #userSetting{
-	right: 3px;
+	left: 3px;
     position: absolute;
 	top: 41px;
 	z-index: 40000;

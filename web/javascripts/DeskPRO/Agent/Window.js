@@ -2021,7 +2021,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			list.hide().detach().appendTo('body');
 			list.css({
 				top: 41,
-				right: 3
+				left: 4
 			});
 			list.show();
 
