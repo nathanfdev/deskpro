@@ -85,7 +85,7 @@ class TicketController extends AbstractController
 		$ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket, 0, 0, $ticket_attachments, $is_pdf);
 		$ticket_messages_block = $ticket_messages_blockcache['ticket_messages_block'];
 		$ticket_attachments = $ticket_messages_blockcache['ticket_attachments'];
-		$ticket_message_attachments = $ticket_messages_blockcache['ticket_message_attachments'];
+		$ticket_message_attachments = isset($ticket_messages_blockcache['ticket_message_attachments']) ? $ticket_messages_blockcache['ticket_message_attachments'] : array();
 		$counts['messages'] = $ticket_messages_blockcache['message_count'];
 
 		$ticket_flagged = $this->em->getRepository('DeskPRO:TicketFlagged')->getFlagForTicket($ticket, $this->person);
@@ -364,7 +364,9 @@ class TicketController extends AbstractController
 
 		$ticket_messages_blockcache = array(
 			'ticket_messages_block' => $ticket_messages_block,
+			'ticket_messages' => $ticket_messages,
 			'ticket_attachments' => $ticket_attachments,
+			'ticket_message_attachments' => $ticket_message_attachments,
 			'message_count' => $message_count,
 			'note_count' => $note_count,
 			'last_message_id' => $last_message_id,
