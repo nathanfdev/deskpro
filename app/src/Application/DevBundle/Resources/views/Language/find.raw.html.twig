@@ -1,0 +1,11 @@
+<a href="{{ path('dev_lang_index') }}">Back</a>
+
+<table cellspacing="0" cellpadding="2" border="1" width="90%">
+<tr><th>File</th><th>String</th></tr>
+
+    {% for file,strings in untranslated %}
+        {% for string in strings %}
+            <tr><td>{{file}}</td><td>{{string}}</td></tr>
+        {% endfor %}
+    {% endfor %}
+</table>

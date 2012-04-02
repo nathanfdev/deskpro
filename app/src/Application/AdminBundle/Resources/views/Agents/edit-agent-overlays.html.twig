@@ -11,7 +11,7 @@
 			{{ form_token() }}
 			<button class="clean-white">
 				{% set phrase_part %}<span class="agent-name">{{ agent.display_name }}</span>{% endset %}
-				{{ phrase('agent.enable_vacation_mode', {'name: phrase_part}) }}{#>>Enable vacation mode for {name}#}
+				{{ phrase('agent.enable_vacation_mode', {name: phrase_part}) }}{#>>Enable vacation mode for {name}#}
 			</button>
 		</form>
 	</div>
@@ -30,7 +30,7 @@
 			{{ form_token() }}
 			<button class="clean-white">
 				{% set phrase_part %}<span class="agent-name">{{ agent.display_name }}</span>{% endset %}
-				{{ phrase('agent.delete_name', {'name':phrase_part}) }}{#>>Delete {name}#}
+				{{ phrase('agent.delete_name', {name: phrase_part}) }}{#>>Delete {name}#}
 			</button>
 		</form>
 	</div>

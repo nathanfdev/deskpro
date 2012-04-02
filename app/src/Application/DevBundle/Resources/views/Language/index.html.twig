@@ -1,0 +1,14 @@
+<ul>
+    <li><a href="{{ path('dev_lang_list_langfiles') }}">List language files</a></li>
+    <li><a href="{{ path('dev_lang_list_twigfiles') }}">List twig files</a></li>
+    <li><a href="{{ path('dev_lang_list_phpfiles') }}">List php files</a></li>
+    <li><a href="{{ path('dev_lang_find_phrases_php') }}">Find phrases in php files</a></li>
+    <li><a href="{{ path('dev_lang_find_phrases_twig') }}">Find phrases in twig files</a></li>
+    <li><a href="{{ path('dev_lang_check_langfiles') }}">Check language files</a></li>
+    <li><a href="{{ path('dev_lang_test_lexer') }}">Test Preserving Lexer</a></li>
+
+    {% set bundles = ['AgentBundle', 'AdminBundle', 'InstallBundle', 'UserBundle', 'ReportBundle', 'BillingBundle', 'DeskPRO'] %}
+    {% for bundle in bundles %}
+    <li><a href="{{ path('dev_lang_find_raw_strings', {'bundle': bundle}) }}">Find raw strings in {{bundle}} </a></li>
+    {% endfor %}
+</ul>

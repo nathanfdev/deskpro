@@ -1,0 +1,8 @@
+<a href="{{ path('dev_lang_index') }}">Back</a>
+
+<table cellspacing="0" cellpadding="0" border="1">
+    <tr><th>File</th><th>Diff</th></tr>
+    {% for mismatch in mismatches %}
+        <tr><td>{{mismatch.filename}}</td><td><pre>{{mismatch.diff}}</pre></td></tr>
+    {% endfor %}
+</table>

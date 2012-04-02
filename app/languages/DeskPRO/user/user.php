@@ -1,6 +1,6 @@
 <?php return array(
 
-	'user.portal_enabled' => true, // ?
+	'user.portal_enabled' => 'true', // ?
 	'user.loading' => 'Loading',
 	'user.loading_saving' => 'Saving',
 	'user.loading_wait' => 'Please Wait',

@@ -1,0 +1,24 @@
+<a href="{{ path('dev_lang_index') }}">Back</a>
+
+<h2>Ids in files</h2>
+
+{% for file, data in instances.file %}
+<h3>Instances for {{file}}</h3>
+<table cellspacing="0" cellpadding="2" border="1" width="90%">
+    <tr><th>Id</th><th>Line</th></tr>
+
+    {% for row in data %}
+        <tr><td>{{row.id}}</td><td>{{row.line}}</td></tr>
+    {% endfor %}
+
+{% endfor %}
+<h2>Missing Ids</h2>
+<table cellspacing="0" cellpadding="2" border="1" width="90%">
+<tr><th>Id</th><th>File</th><th>Line</th></tr>
+
+    {% for id in missing %}
+        {% for row in instances.id[id] %}
+            <tr><td>{{id}}</td><td>{{row.filename}}</td><td>{{row.line}}</td></tr>
+        {% endfor %}
+    {% endfor %}
+</table>

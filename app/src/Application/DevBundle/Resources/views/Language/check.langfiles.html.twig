@@ -1,0 +1,14 @@
+<a href="{{ path('dev_lang_index') }}">Back</a>
+<h2>Duplicates by id</h2>
+
+{% for id in dupes.id %}
+<h3>Duplicates for {{id}}</h3>
+<table cellspacing="0" cellpadding="2" border="1" width="90%">
+    <tr><th>File</th><th>Line</th><th>Content</th></tr>
+
+    {% for row in by_id[id] %}
+        <tr><td>{{row.filename}}</td><td>{{row.line}}</td><td>{{row.content}}</td></tr>
+    {% endfor %}
+
+</table>
+{% endfor %}

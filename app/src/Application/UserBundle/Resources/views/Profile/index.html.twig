@@ -1,6 +1,6 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_profile') }}">Profile</a></li>
+	<li><a href="{{ path('user_profile') }}">{{ phrase('user.profile.profile') }}</a></li>
 {% endblock %}
 {% block page_title %}Your Profile{% endblock %}
 {% block content %}
@@ -51,7 +51,7 @@
 			<div class="dp-box-content">
 				{% if app.session.hasFlash('resent_validation_email') %}
 					<div class="alert-message info">
-						{{ phrase('user.profile.validation_resent_to', {'email':app.session.flash('resent_validation_email')) }}
+						{{ phrase('user.profile.validation_resent_to', {'email':app.session.flash('resent_validation_email')}) }}
 					</div>
 				{% endif %}
 				{% if app.session.hasFlash('removed_email') %}

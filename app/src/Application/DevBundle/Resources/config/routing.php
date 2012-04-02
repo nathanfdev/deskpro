@@ -75,6 +75,7 @@ $collection->add('dev_phptest', new Route(
 	array()
 ));
 
+
 $collection->add('dev_phptest_run', new Route(
 	'/php-test/run',
 	array('_controller' => 'DevBundle:Main:phpTestRun'),
@@ -89,5 +90,67 @@ $collection->add('dev_cm', new Route(
 	array()
 ));
 
+$collection->add('dev_lang_index', new Route(
+	'/lang/index',
+	array('_controller' => 'DevBundle:Language:index'),
+	array(),
+	array()
+));
+
+$collection->add('dev_lang_list_langfiles', new Route(
+	'/lang/list/langfiles',
+	array('_controller' => 'DevBundle:Language:listLanguageFiles'),
+	array(),
+	array()
+));
+
+$collection->add('dev_lang_list_phpfiles', new Route(
+	'/lang/list/phpfiles',
+	array('_controller' => 'DevBundle:Language:listPhpFiles'),
+	array(),
+	array()
+));
+
+$collection->add('dev_lang_list_twigfiles', new Route(
+	'/lang/list/twigfiles',
+	array('_controller' => 'DevBundle:Language:listTwigFiles'),
+	array(),
+	array()
+));
+
+$collection->add('dev_lang_check_langfiles', new Route(
+	'/lang/check/langfiles',
+	array('_controller' => 'DevBundle:Language:checkLanguageFiles'),
+	array(),
+	array()
+));
+
+$collection->add('dev_lang_find_phrases_php', new Route(
+	'/lang/find/phrases/php',
+	array('_controller' => 'DevBundle:Language:findPhrasesInPHPFiles'),
+	array(),
+	array()
+));
+
+$collection->add('dev_lang_find_phrases_twig', new Route(
+	'/lang/find/phrases/twig',
+	array('_controller' => 'DevBundle:Language:findPhrasesInTwigFiles'),
+	array(),
+	array()
+));
+
+$collection->add('dev_lang_find_raw_strings', new Route(
+	'/lang/find/raw/strings/{bundle}',
+	array('_controller' => 'DevBundle:Language:findRawStrings'),
+	array(),
+	array()
+));
+
+$collection->add('dev_lang_test_lexer', new Route(
+	'/lang/test/lexer',
+	array('_controller' => 'DevBundle:Language:testLexer'),
+	array(),
+	array()
+));
 
 return $collection;
