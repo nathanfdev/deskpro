@@ -32,7 +32,7 @@
 {% elseif log.action_type == 'changed_person' %}
 	<span class="type">{{ phrase('agent.ticket.user_owner') }}</span> changed from
 	<span class="old-val">#{{log.details.old_person_id}} {{old_person_name}}</span> to <span class="new-val">#{{log.details.new_person_id}} {{new_person_name}}</span>
-{% elseif log.action_type == 'changed_person' %}
+{% elseif log.action_type == 'executed_triggers' %}
 	<span class="type">{{ phrase('agent.ticket.ticket_triggers') }}</span> applied:
 	<span class="new-val">{{ log.details.trigger_ids }}</span>
 {% elseif log.action_type == 'message_created' %}

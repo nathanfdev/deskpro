@@ -55,8 +55,15 @@ class TicketTriggers implements LogActionInterface
 	{
 		$tr = array();
 		foreach ($this->triggers as $t) {
-			$tr[] = $t->id;
+			if ($t->d) {
+				$tr[] = $t->id;
+			}
 		}
+
+		if (!$tr) {
+			return array();
+		}
+
 		return array(
 			'trigger_ids' => implode(', ', $tr)
 		);
