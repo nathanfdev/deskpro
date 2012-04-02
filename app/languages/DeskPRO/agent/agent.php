@@ -21,7 +21,6 @@
 	'agent.update' => 'Update',
 	'agent.delete' => 'Delete',
 	'agent.spam' => 'Spam',
-	'agent.unspam' => 'Unspam',
 	'agent.insert' => 'Insert',
 	'agent.add' => 'Add',
 	'agent.send' => 'Send',
@@ -39,7 +38,6 @@
 	'agent.uploading' => 'Uploading:',
 	'agent.upload_explain' => 'Click the upload button or drop a file onto this area.',
 	'agent.create' => 'Create',
-	'agent.search' => 'Search',
 	'agent.by_x' => 'By {{name}}',
 	'agent.record_deleted' => 'This record has been deleted.',
 	'agent.record_marked_spam' => 'This record has been marked as spam.',
@@ -137,7 +135,6 @@
 	'agent.add_as_agent_comment' => 'Add as an agent-only comment',
 
 	'agent.view_in_user_interface' => 'View in user interface',
-	'agent.print' => 'Print',
 	'agent.view_all_x_tickets' => 'View 1 ticket|View all {{count}} tickets',
 
 	'agent.members' => 'Members',
@@ -206,7 +203,6 @@
 	'agent.unassigned'    => 'Unassigned',
 	'agent.department'    => 'Department',
 	'agent.product'       => 'Product',
-	'agent.agent'         => 'Agent',
 	'agent.agent'         => 'Agent',
 	'agent.agents'        => 'Agents',
 	'agent.agent_team'    => 'Agent Team',
@@ -323,10 +319,8 @@
 
 	'agent.change_property' => 'Change Property',
 	'agent.change_status' => 'Change Status',
-	'agent.assignments' => 'Assignments',
 	'agent.no_agent_assigned' => 'No agent assigned',
 	'agent.assign_team' => 'Assign Team',
-	'agent.assign_agent' => 'Assign Agent',
 	'agent.add_followers' => 'Add Followers',
 	'agent.reply' => 'Reply',
 	'agent.note' => 'Note',

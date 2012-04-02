@@ -62,5 +62,4 @@
 	'user.profile.repeat_password' => 'Repeat Password',
 
   'user.profile.your_profile' => 'Your Profile',
-  'user.profile.subscriptions' => 'Subscriptions',
 );

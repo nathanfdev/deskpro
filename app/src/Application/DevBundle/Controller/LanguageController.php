@@ -208,8 +208,10 @@ class LanguageController extends Controller
             $tidy->cleanRepair();
 
             try {
+                $tidy = str_replace('&nbsp;', '&#xA0;', $tidy);
                 $document = new \DOMDocument();
                 @$document->loadXML($tidy);
+
                 $element = $document->documentElement;
 
                 if(!$element) {
@@ -470,7 +472,7 @@ class LanguageController extends Controller
 
             foreach($tokens as $token) {
                 // This is a very minimal parser and may break if the pec changes for lang file definitions.
-                if(!is_array($token) && $token[0] != T_WHITESPACE)
+                if(!is_array($token) || $token[0] != T_WHITESPACE)
                     switch($state) {
                         case 0:
                             if(is_array($token) && $token[0] == T_CONSTANT_ENCAPSED_STRING) {
@@ -509,7 +511,7 @@ class LanguageController extends Controller
 
                                 $by_content[$content][] = array(
                                     'filename' => $file,
-                                    'content' => $id,
+                                    'id' => $id,
                                     'line' => $token[2]
                                 );
                             }
@@ -756,11 +758,14 @@ class LanguageController extends Controller
 
     public function replaceInLine($line, $string, $id)
     {
+        $left = '/((?:^|["\'>}])[^a-zA-Z]*)';
+        $right = '([^a-zA-Z]*(?:[{<"\']|$))/';
+
         // Reduce mistakes.
         if(preg_match('/default(\''.preg_quote($string, '/').'\')/', $line)) {
             $line = str_replace("default('{$string}'", "default(phrase('{$id}'))", $line);
-        } elseif(preg_match('/(^|["\'>}])[^a-zA-Z]*'.preg_quote($string, '/').'[^a-zA-Z]*([{<"\']|$)/', $line)) {
-            $line = str_replace($string, '{{ phrase(\''.$id.'\') }}', $line);
+        } elseif(preg_match($left.preg_quote($string, '/').$right, $line)) {
+            $line = preg_replace($left.preg_quote($string, '/').$right, '\1{{ phrase(\''.$id.'\') }}\2', $line);
         }
 
         return $line;

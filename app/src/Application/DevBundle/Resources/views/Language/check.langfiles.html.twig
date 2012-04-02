@@ -12,3 +12,18 @@
 
 </table>
 {% endfor %}
+
+<h2>Duplicates by content</h2>
+
+{% for content in dupes.content %}
+<h3>Duplicates for:</h3>
+<pre>{{content}}</pre>
+<table cellspacing="0" cellpadding="2" border="1" width="90%">
+    <tr><th>File</th><th>Line</th><th>id</th></tr>
+
+    {% for row in by_content[content] %}
+    <tr><td>{{row.filename}}</td><td>{{row.line}}</td><td>{{row.id}}</td></tr>
+    {% endfor %}
+
+</table>
+{% endfor %}

@@ -5,7 +5,6 @@
 	'agent.kb.status_archived'   => 'Archived',
 
 	'agent.kb.hidden_status_unpublished'   => 'Unpublished',
-	'agent.kb.hidden_status_unpublished'   => 'Unpublished',
 	'agent.kb.hidden_status_deleted'       => 'Deleted',
 	'agent.kb.hidden_status_draft'         => 'Draft',
 

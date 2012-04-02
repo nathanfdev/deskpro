@@ -26,7 +26,6 @@
 	'user.overlay_open_full' => 'Open full page',
 
 	'user.none' => 'None',
-	'user.department' => 'Department',
 	'user.product'    => 'Product',
 
 	'user.breadcrumb_helpdesk' => 'Helpdesk',

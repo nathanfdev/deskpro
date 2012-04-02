@@ -24,8 +24,6 @@
 	'user.chat.transcript_email_sent' => 'Your chat transcript has been sent.',
 	'user.chat.send_transcript_btn' => 'Send me the transcript',
 
-	'user.chat.end_chat' => 'End Chat',
-	'user.chat.please_wait_for_agent' => 'Please wait while we find an agent to take your chat',
 	'user.chat.confirm_end_chat' => 'Are you sure you want to end your chat?',
 	'user.chat.cancel' => 'Cancel',
 	'user.chat.end_chat' => 'End Chat',

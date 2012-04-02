@@ -3,7 +3,6 @@
   'agent.main.me' => 'Me',
   'agent.main.status' => 'Status',
   'agent.main.awaiting_agent' => 'Awaiting Agent',
-  'agent.main.awaiting_user' => 'Awaiting User',
   'agent.main.resolved' => 'Resolved',
   'agent.main.closed' => 'Closed',
   'agent.main.changed' => 'Changed',

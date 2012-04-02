@@ -12,7 +12,6 @@
   'agent.ticket.my_team' => 'My Team',
   'agent.ticket.mark_as_pending_kb_article' => 'Mark as pending KB article',
   'agent.ticket.awaiting_agent' => 'Awaiting Agent',
-  'agent.ticket.awaiting_user' => 'Awaiting User',
   'agent.ticket.resolved' => 'Resolved',
   'agent.ticket.drop_your_file_here_to_attach_it_to' => 'Drop your file here to attach it to your reply',
   'agent.ticket.closetab' => 'Close Tab',
@@ -35,7 +34,6 @@
   'agent.ticket.spam' => 'Spam',
   'agent.ticket.validating' => 'Validating',
   'agent.ticket.deleted' => 'Deleted',
-  'agent.ticket.department' => 'Department',
   'agent.ticket.messages' => 'Messages',
   'agent.ticket.noteam' => 'No Team',
 
@@ -59,8 +57,5 @@
   'agent.ticket.status' => 'Status',
   'agent.ticket.edit_snippet_category' => 'Edit Snippet Category',
   'agent.ticket.delete_snippet' => 'Delete Snippet',
-  'agent.ticket.everyone' => 'Everyone',
-  'agent.ticket.awaiting_agent' => 'Awaiting Agent',
   'agent.ticket.awaiting_user' => 'Awaiting User',
-  'agent.ticket.resolved' => 'Resolved',
 );

@@ -85,8 +85,6 @@
 	'user.tickets.close' => 'close',
 	'user.tickets.lbl_your_email' => 'Your Email Address',
 
-	'user.tickets.your_tickets' => 'Your Tickets',
-
 	'user.tickets.thank_you' => 'Thank you',
 	'user.tickets.thank_you_please_wait' => 'Thank you for submitting your ticket! You should get a confirmation email shortly.',
 	'user.tickets.validate_to_be_seen' => '<strong>Important!</strong> Before your ticket will be read by our agents, you need to validate your email address. Check your email for our confirmation link.',
@@ -103,8 +101,6 @@
 	'user.tickets.we_found_helpful_content' => 'We found the following content that may answer your question',
 	'user.tickets.safe_to_click' => 'Don\'t worry, you can click a title and you will remain on this page.',
 	'user.tickets.view_more_results' => 'View {{part}} more results',
-	'user.tickets.submit' => 'Submit',
-	'user.tickets.close' => 'close',
 	'user.tickets.open_full_page' => 'Open full page',
 	'user.tickets.loading' => 'Loading',
 	'user.tickets.this_is_an_answer' => 'This answered my question',
@@ -133,7 +129,6 @@
 	'user.tickets.please_choose_subject_at_least' => 'Please enter a subject of at least 5 characters',
 
   'user.tickets.tickets' => 'Tickets',
-  'user.tickets.your_tickets' => 'Your Tickets',
   'user.tickets.ticket_participants' => 'Ticket participants',
   'user.tickets.you' => 'You',
   'user.tickets.new_reply' => 'New Reply',

@@ -95,7 +95,7 @@
 </div>
 
 {% if app.user.is_guest %}
-<div id="dp_login_box_title"><a href="{{ path('user_login') }}">Log In</a></div>
+<div id="dp_login_box_title"><a href="{{ path('user_login') }}">{{ phrase('user.views.log_in') }}</a></div>
 <div id="dp_login_box" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.LoginBox">
 	<form action="{{ path('user_login_authenticate_local') }}" class="form login" method="post">
 		<div class="dp-login-box-inner">
@@ -113,7 +113,7 @@
 						{{ render_usersource(usersource, 'login_pull_btn') }}
 					{% endfor %}
 				</div>
-				<input class="btn" type="submit" value="Log In" />
+				<input class="btn" type="submit" value="{{ phrase('user.views.log_in') }}" />
 			</div>
 			<div class="dp-reset-section" style="display: none">
 				<div class="dp-reset-desc">
