@@ -64,7 +64,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</h1>
     <div class="clear"></div>
     <div class="meta-line">
-        <div class="category set-department" id="{{baseId}}_dep_btn" data-department-id="{{ convo.department.id|default(0) }}"><span>{{ phrase('agent.userchat.department') }}: <span class="label-department-id">{{ convo.department.full_title|default('No {{ phrase('agent.userchat.department') }}') }}</span></span></div>
+        <div class="category set-department" id="{{baseId}}_dep_btn" data-department-id="{{ convo.department.id|default(0) }}"><span>{{ phrase('agent.userchat.department') }}: <span class="label-department-id">{{ convo.department.full_title|default(phrase('agent.userchat.no_department')) }}</span></span></div>
         <div class="clear"></div>
     </div>
 </header>

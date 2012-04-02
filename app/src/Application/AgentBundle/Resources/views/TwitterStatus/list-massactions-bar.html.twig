@@ -1,5 +1,5 @@
 <header class="list-selection-bar">
-    <input type="checkbox" class="selection-control" /> <span class="{{ phrase('agent.twitterstatus.selected') }}-count">0</span> {{ phrase('agent.twitterstatus.selected') }}
+    <input type="checkbox" class="selection-control" /> {% set phrase_part %}<span class="{{ phrase('agent.twitterstatus.selected') }}-count">0</span>{% endset %}{{ phrase('agent.twitterstatus.selected', {'count':phrase_part}) }}
     <a class="perform-action perform-actions-trigger disabled">
         <span>{{ phrase('agent.twitterstatus.perform_action') }}</span>
     </a>

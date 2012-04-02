@@ -70,7 +70,7 @@
 	{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
 
 	<h1 id="login_title">{{ phrase('agent.login.log_in') }}</h1>
-	<h1 id="lost_password_title" style="display: none;">{{ phrase('agent.login.lost') }} {{ phrase('agent.login.password') }}</h1>
+	<h1 id="lost_password_title" style="display: none;">{{ phrase('agent.login.lost_password') }}</h1>
 	{% if failed_login_name %}<p class="error">{{ phrase('agent.login.login_failed') }}</p>{% endif %}
 	{% if has_done_reset %}<p class="okay">{{ phrase('agent.login.your_password_has_been_reset_successfully') }}</p>{% endif %}
 	{% if has_logged_out %}<p class="okay">{{ phrase('agent.login.has_logged_out') }}</p>{% endif %}

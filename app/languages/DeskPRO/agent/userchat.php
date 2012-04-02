@@ -1,6 +1,7 @@
 <?php return array (
   'agent.userchat.chat_by_anonymouse' => 'Chat by anonymouse',
   'agent.userchat.department' => 'Department',
+  'agent.userchat.no_department' => 'No Department',
   'agent.userchat.user_waiting' => 'User Waiting',
   'agent.userchat.user_is_viewing' => 'User is viewing',
   'agent.userchat.open_tickets' => 'Open Tickets',

@@ -39,6 +39,7 @@
   'agent.login.v5_or_later' => 'v5 or later',
   'agent.login.internet_explorer' => 'Internet Explorer',
   'agent.login.lost' => 'Lost',
+  'agent.login.lost_password' => 'Lost Password',
   'agent.login.email_instructions' => 'Email Instructions',
   'agent.login.we_sent_insutrctions_on_how_to_reset_your' => 'We sent insutrctions on how to reset your password to the email address you provided.',
   'agent.login.reset_password' => 'Reset Password',
