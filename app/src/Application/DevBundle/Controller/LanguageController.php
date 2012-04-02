@@ -116,9 +116,18 @@ class LanguageController extends Controller
 
                 $id = $prefix.'.'.$id;
                 $langfile[$conf_file][$id] = $string;
+                $lines = file($file);
+                $data = '';
 
-                $data = file_get_contents($file);
-                $new_data = str_replace($string, '{{ phrase(\''.$id.'\') }}', $data);
+                foreach($lines as $line) {
+                    if(preg_match('/(^|"\'>)[^a-zA-Z]*'.preg_quote($string, '/').'[^a-zA-Z]*([<"\']|$)/', $line)) {
+                        $line = str_replace($string, '{{ phrase(\''.$id.'\') }}', $line);
+                    }
+
+                    $data .= $line;
+                }
+
+                //$new_data = str_replace($string, '{{ phrase(\''.$id.'\') }}', $data);
 
                 if($data != $new_data) {
                     $langfile[$conf_file][$id] = $string;
@@ -159,6 +168,7 @@ class LanguageController extends Controller
                     $string = preg_replace('/\s*$/', '', $string);
                     $string = preg_replace('/:$/', '', $string);
                     $string = preg_replace('/ \*$/', '', $string);
+                    $string = str_replace("\n", ' ', $string);
 
                     if($string == '' || strlen($string) == 1) {
                         continue;
@@ -215,9 +225,22 @@ class LanguageController extends Controller
             $strings = array();
             get_strings($element, $strings);
             $strings_ids = array();
+            $lines = explode("\n", $raw_twig);
 
             foreach($strings as $string) {
-                $strings_ids[] = array('text' => $string, 'id' => $this->stringToId($string));
+                $context = array();
+
+                foreach($lines as $line) {
+                    $pos = strpos($line, $string);
+
+                    if(preg_match('/.{0,8}'.preg_quote($string, '/').'.{0,8}/', $line, $match)) {
+                        $context[] = $match[0];
+                    }
+                }
+
+                if(count($context)) {
+                    $strings_ids[] = array('text' => $string, 'id' => $this->stringToId($string), 'context' => $context);
+                }
             }
 
             if(count($strings)) {

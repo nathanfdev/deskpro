@@ -11,7 +11,7 @@
 
 <form method="post">
     <table cellspacing="0" cellpadding="2" border="1" width="90%">
-    <tr><th>File</th><th>String</th><th>Auto Id</th><th>Replace?</th></tr>
+    <tr><th>File</th><th>String</th><th>Auto Id</th><th>Replace?</th><th>Context</th></tr>
 
         {% for file,strings in untranslated %}
             {% for string in strings %}
@@ -20,6 +20,11 @@
                     <td>{{string.text}}</td>
                     <td>{{string.id}}</td>
                     <td><input type="checkbox" name="replace[]" value="{{file}}?{{string.text}}" /></td>
+                    <td>
+                        {% for line in string.context %}
+                            {{line}}<br />
+                        {% endfor %}
+                    </td>
                 </tr>
             {% endfor %}
         {% endfor %}
