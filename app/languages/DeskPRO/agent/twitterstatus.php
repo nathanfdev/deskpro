@@ -15,4 +15,5 @@
   'agent.twitterstatus.from_account' => 'From Account',
   'agent.twitterstatus.unfollow' => 'Unfollow',
   'agent.twitterstatus.follow' => 'Follow',
-  'agent.twitterstatus.there_are_no_results' => 'There are no results',;
+  'agent.twitterstatus.there_are_no_results' => 'There are no results'
+);
