@@ -11,4 +11,5 @@
   'admin.ticketworkflows.edit_workflow_title' => 'Edit Workflow Title',
   'admin.ticketworkflows.new_workflow' => 'New Workflow',
   'admin.ticketworkflows.add' => 'Add',
+  'admin.ticketworkflows.delete' => 'delete',
 );

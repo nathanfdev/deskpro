@@ -76,4 +76,6 @@
   'admin.settings.warning_settings_listed_in_advanced_settings_are_undocumented' => 'Warning: Settings listed in "Advanced Settings" are undocumented and changing them can have unexpected consequences.',
   'admin.settings.only_make_changes_if_you_know_what_you' => 'Only make changes if you know what you are doing or have been instructed by a support agent.',
   'admin.settings.continuet_to_advanced_settings' => 'Continuet to Advanced Settings',
+
+  'admin.settings.advanced_settings' => 'Advanced Settings',
 );

@@ -43,7 +43,7 @@
 
 {% if usersource.id %}
 <div class="delete-link-wrap">
-	<a href="{{ path('admin_userreg_usersource_delete', {id: usersource.id, security_token: security_token('delete_usersource') }) }}" onclick="return confirm('Are you sure you want to delete this usersource? Users will not be able to log in with these credentials anymore.');">delete</a>
+	<a href="{{ path('admin_userreg_usersource_delete', {id: usersource.id, security_token: security_token('delete_usersource') }) }}" onclick="return confirm('Are you sure you want to delete this usersource? Users will not be able to log in with these credentials anymore.');">{{ phrase('admin.userreg.delete') }}</a>
 </div>
 {% endif %}
 

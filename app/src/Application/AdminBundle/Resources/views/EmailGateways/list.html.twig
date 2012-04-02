@@ -30,7 +30,7 @@
 								</ul>
 							</div>
 
-							From:
+							{{ phrase('admin.emailgateways.from') }}:
 							<a href="{{ path('admin_emailtrans_editaccount', { 'id': transport.id }) }}">
 							{% if transport.match_type == 'exact' %}{{ transport.match_pattern }}
 							{% elseif transport.match_type == 'domain' %}*@{{ transport.match_pattern }}

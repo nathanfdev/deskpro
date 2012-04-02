@@ -80,4 +80,5 @@
   'admin.userreg.phpbb3' => 'phpBB3',
   'admin.userreg.ez_publish' => 'eZ Publish',
   'admin.userreg.continue' => 'Continue',
+  'admin.userreg.delete' => 'delete',
 );

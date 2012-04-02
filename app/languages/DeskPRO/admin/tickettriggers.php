@@ -31,4 +31,8 @@
   'admin.tickettriggers.triggers_based_on_the_total_time_a_user' => 'Triggers based on the total time a user has been waiting in a ticket',
   'admin.tickettriggers.triggers_based_on_the_time_an_agent_has' => 'Triggers based on the time an agent has been waiting for a user reply',
   'admin.tickettriggers.triggers_based_on_the_time_a_ticket_was' => 'Triggers based on the time a ticket was resolved',
+
+  'admin.tickettriggers.if' => 'if',
+  'admin.tickettriggers.and' => 'and',
+  'admin.tickettriggers.then' => 'then',
 );

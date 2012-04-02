@@ -40,4 +40,6 @@
   'admin.portal.show_google_1_button' => 'Show Google +1 button',
   'admin.portal.show_addthis_widget' => 'Show AddThis widget',
   'admin.portal.save_settings' => 'Save Settings',
+
+  'admin.portal.revert' => 'revert',
 );

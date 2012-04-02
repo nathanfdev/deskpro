@@ -9,4 +9,5 @@
   'admin.twitteraccount.secret' => 'Secret',
   'admin.twitteraccount.create_new_account' => 'Create New Account',
   'admin.twitteraccount.you_have_no_accounts_defined' => 'You have no accounts defined.',
+  'admin.twitteraccount.edit' => 'edit',
 );

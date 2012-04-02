@@ -11,4 +11,5 @@
   'admin.userrules.add_to_organization' => 'Add to organization',
   'admin.userrules.you_havent_created_any_user_rules_yet' => 'You haven\'t created any user rules yet.',
   'admin.userrules.domains' => 'Domains',
+  'admin.userrules.delete' => 'delete',
 );

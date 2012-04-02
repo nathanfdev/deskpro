@@ -44,7 +44,7 @@
 
 {% if rule.id %}
 	<div class="delete-link-wrap">
-		<a href="{{ path('admin_userrules_delete', {'rule_id': rule.id, _dp_security_token: security_token('delete_userrule') }) }}">delete</a>
+		<a href="{{ path('admin_userrules_delete', {'rule_id': rule.id, _dp_security_token: security_token('delete_userrule') }) }}">{{ phrase('admin.userrules.delete') }}</a>
 	</div>
 {% endif %}
 {% endblock %}

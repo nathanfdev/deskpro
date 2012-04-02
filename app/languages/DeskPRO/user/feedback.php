@@ -48,5 +48,5 @@
 	'user.feedback.feedback' => 'Feedback',
 	'user.feedback.please_enter_your_name' => 'Please enter your name',
 
-	'user.feedback.count_votes' => 'No votes|1 vote|{count} votes',
+	'user.feedback.count_votes' => '{0} No votes|{1} {count} vote|]2,Unf]{count} votes',
 );

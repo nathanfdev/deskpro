@@ -35,6 +35,6 @@
 </form>
 
 <div class="delete-link-wrap">
-	<a href="{{ path('admin_ticketpris_del', {'priority_id': priority.id}) }}">delete</a>
+	<a href="{{ path('admin_ticketpris_del', {'priority_id': priority.id}) }}">{{ phrase('admin.ticketpriorities.delete') }}</a>
 </div>
 {% endblock %}

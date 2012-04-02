@@ -46,7 +46,7 @@
 					{% for adr in gateway.addresses %}
 						{% if loop.index != 1 %}
 						<li data-address-id="{{ adr.id }}">
-							<div class="controls"><ul><li class="remove"><a>remove</a></li></ul></div>
+							<div class="controls"><ul><li class="remove"><a>{{ phrase('admin.emailgateways.remove') }}</a></li></ul></div>
 							<div class="label">{{ adr.title }}</div>
 						</li>
 						{% endif %}
@@ -54,7 +54,7 @@
 				</ul>
 				<script type="text/x-deskpro-plain" class="row-tpl">
 					<li class="item new" data-choice-id="new">
-						<div class="controls"><ul><li class="remove"><a>remove</a></li></ul></div>
+						<div class="controls"><ul><li class="remove"><a>{{ phrase('admin.emailgateways.remove') }}</a></li></ul></div>
 						<div class="label"></div>
 						<input type="hidden" name="new_address[%id%][match_pattern]" class="row-value" value="" />
 					</li>
@@ -405,7 +405,7 @@
 
 {% if gateway.id %}
 	<div class="delete-link-wrap">
-		<a href="{{ path('admin_emailgateways_del', {id: gateway.id, security_token: security_token('delete_gateway') }) }}" onclick="return confirm('Are you sure you want to delete this gateway? Email sent to this inbox will no longer be processed.');">delete</a>
+		<a href="{{ path('admin_emailgateways_del', {id: gateway.id, security_token: security_token('delete_gateway') }) }}" onclick="return confirm('Are you sure you want to delete this gateway? Email sent to this inbox will no longer be processed.');">{{ phrase('admin.emailgateways.delete') }}</a>
 	</div>
 {% endif %}
 {% endblock %}

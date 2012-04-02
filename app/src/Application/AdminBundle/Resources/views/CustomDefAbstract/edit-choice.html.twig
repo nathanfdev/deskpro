@@ -2,7 +2,7 @@
 {% block form_extra %}
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>How to display the options</label>
+			<label>{{ phrase('admin.customdefabstract.how_to_display_the_options') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.field_type) }}
@@ -11,19 +11,19 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Options</label>
+			<label>{{ phrase('admin.customdefabstract.options') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<div class="choices-builder" data-element-handler="DeskPRO.Admin.ElementHandler.ChoiceBuilder">
 				<header>
-					<input type="text" class="new-choice" value="" /> <button class="clean-white add-trigger">Add</button>
+					<input type="text" class="new-choice" value="" /> <button class="clean-white add-trigger">{{ phrase('admin.customdefabstract.add') }}</button>
 				</header>
 				<div style="display: none" id="choice_extra_fields"></div>
 				<ul class="list">
 					{% for id,choice in editfield.choices %}
 					<li class="item" data-choice-id="{{ id }}">
-						<div class="controls"><ul><li class="remove"><a>remove</a></li></ul></div>
-						<div class="controls right"><ul><li class="drag"><a>drag</a></li></ul></div>
+						<div class="controls"><ul><li class="remove"><a>{{ phrase('admin.customdefabstract.remove') }}</a></li></ul></div>
+						<div class="controls right"><ul><li class="drag"><a>{{ phrase('admin.customdefabstract.drag') }}</a></li></ul></div>
 						<div class="label">{{ choice }}</div>
 						<input type="hidden" name="fielddef[choices][]" class="row-value" value="exist.{{ loop.index0 }}:{{ id }}:{{ choice }}" />
 					</li>
@@ -31,8 +31,8 @@
 				</ul>
 				<script type="text/x-deskpro-plain" class="row-tpl">
 					<li class="item new" data-choice-id="new">
-						<div class="controls"><ul><li class="remove"><a>remove</a></li></ul></div>
-						<div class="controls right"><ul><li class="drag"><a>drag</a></li></ul></div>
+						<div class="controls"><ul><li class="remove"><a>{{ phrase('admin.customdefabstract.remove') }}</a></li></ul></div>
+						<div class="controls right"><ul><li class="drag"><a>{{ phrase('admin.customdefabstract.drag') }}</a></li></ul></div>
 						<div class="label"></div>
 						<input type="hidden" name="fielddef[choices][]" class="row-value" value="" />
 					</li>
@@ -59,20 +59,20 @@
 	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>User Validation</label>
+				<label>{{ phrase('admin.customdefabstract.user_validation') }}</label>
 			</div>
 			<div class="dp-form-input">
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="fielddef[validation_type]" value="" {% if not editfield.validation_type %}checked="checked"{% endif %} />
-						No validation
+						{{ phrase('admin.customdefabstract.no_validation') }}
 					</label>
 				</div>
 
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="fielddef[validation_type]" value="required" {% if editfield.validation_type == 'required' %}checked="checked"{% endif %} />
-						Require user to input a value for this field
+						{{ phrase('admin.customdefabstract.require_user_to_input_a_value_for_this') }}
 					</label>
 					<div id="required_group" class="dp-group-options" style="display: none">
 						Min selections: {{ form_widget(form.min_length, { 'attr': { 'class': 'small', 'size': '5', 'style': 'width:60px' }}) }}
@@ -87,20 +87,20 @@
 	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Agent Validation</label>
+				<label>{{ phrase('admin.customdefabstract.agent_validation') }}</label>
 			</div>
 			<div class="dp-form-input">
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="fielddef[agent_validation_type]" value="" {% if not editfield.agent_validation_type %}checked="checked"{% endif %} />
-						No validation
+						{{ phrase('admin.customdefabstract.no_validation') }}
 					</label>
 				</div>
 
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="fielddef[agent_validation_type]" value="required" {% if editfield.agent_validation_type == 'required' %}checked="checked"{% endif %} />
-						Require user to input a value for this field
+						{{ phrase('admin.customdefabstract.require_user_to_input_a_value_for_this') }}
 					</label>
 					<div id="required_group" class="dp-group-options" style="display: none">
 						Min selections: {{ form_widget(form.agent_min_length, { 'attr': { 'class': 'small', 'size': '5', 'style': 'width:60px' }}) }}

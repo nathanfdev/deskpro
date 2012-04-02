@@ -20,4 +20,18 @@
   'admin.customdefabstract.save' => 'Save',
   'admin.customdefabstract.field_type' => 'Field type',
   'admin.customdefabstract.you_have_not_created_any_fields_yet' => 'You have not created any fields yet.',
+
+  'admin.customdefabstract.how_to_display_the_options' => 'How to display the options',
+  'admin.customdefabstract.options' => 'Options',
+  'admin.customdefabstract.add' => 'Add',
+  'admin.customdefabstract.remove' => 'remove',
+  'admin.customdefabstract.drag' => 'drag',
+  'admin.customdefabstract.user_validation' => 'User Validation',
+  'admin.customdefabstract.no_validation' => 'No validation',
+  'admin.customdefabstract.require_user_to_input_a_value_for_this' => 'Require user to input a value for this field',
+  'admin.customdefabstract.agent_validation' => 'Agent Validation',
+  'admin.customdefabstract.textarea' => 'Textarea',
+  'admin.customdefabstract.choice' => 'Choice',
+  'admin.customdefabstract.this_is_a_set_of_predefined_options_presented' => 'This is a set of predefined options presented as a drop-down select menu, radio buttons or checkboxes.',
+  'admin.customdefabstract.display' => 'Display',
 );

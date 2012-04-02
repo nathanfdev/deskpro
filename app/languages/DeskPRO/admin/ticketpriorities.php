@@ -10,4 +10,7 @@
   'admin.ticketpriorities.edit_priority' => 'Edit Priority',
   'admin.ticketpriorities.new_priority' => 'New Priority',
   'admin.ticketpriorities.add' => 'Add',
+
+  'admin.ticketpriorities.delete' => 'delete',
+  'admin.ticketpriorities.ticket_priorities' => 'Ticket Priorities',
 );

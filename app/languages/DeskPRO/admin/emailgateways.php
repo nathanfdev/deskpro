@@ -43,4 +43,8 @@
   'admin.emailgateways.new' => 'New',
   'admin.emailgateways.outgoing_email_accounts' => 'Outgoing Email Accounts',
   'admin.emailgateways.send_through' => 'Send through',
+
+  'admin.emailgateways.remove' => 'remove',
+  'admin.emailgateways.delete' => 'delete',
+  'admin.emailgateways.from' => 'From',
 );

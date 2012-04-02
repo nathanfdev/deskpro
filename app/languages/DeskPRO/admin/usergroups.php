@@ -33,4 +33,6 @@
   'admin.usergroups.save_usergroup' => 'Save Usergroup',
   'admin.usergroups.add_usergroup' => 'Add Usergroup',
   'admin.usergroups.everyone' => 'Everyone',
+  'admin.usergroups.browse' => 'browse',
+  'admin.usergroups.delete' => 'delete',
 );

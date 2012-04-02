@@ -239,6 +239,8 @@ class LanguageController extends Controller
                         $out = $this->replaceInLine($line, $string, $id);
 
                         if($out != $line) {
+                            $out = $this->replaceInLine($line, $string, $id, true);
+                            $line = str_replace($string, "<span style=\"color:red\">$string</span>", htmlspecialchars($line));
                             $context[] = array('in' => $line, 'out' => $out);
                         }
                     }
@@ -756,17 +758,51 @@ class LanguageController extends Controller
         return $string;
     }
 
-    public function replaceInLine($line, $string, $id)
+    public function replaceInLine($line, $string, $id, $color = false)
     {
-        $left = '/((?:^|["\'>}])[^a-zA-Z]*)';
-        $right = '([^a-zA-Z]*(?:[{<"\']|$))/';
+        // I think I need too check my regex book. This can't be good!
+        $left = '/((?:^|[\'>}])[^a-zA-Z]*)';
+        $right = '([^a-zA-Z]*(?:[{<\']|$))/';
+        $def_left = '/default\(\'';
+        $def_right = '\'\)/';
+        $attr_left = '/((?:placeholder|(?:type="submit"[^<>]*value)|alt|title)="\s*)';
+        $attr_right = '(\s*")/';
 
         // Reduce mistakes.
-        if(preg_match('/default(\''.preg_quote($string, '/').'\')/', $line)) {
-            $line = str_replace("default('{$string}'", "default(phrase('{$id}'))", $line);
-        } elseif(preg_match($left.preg_quote($string, '/').$right, $line)) {
-            $line = preg_replace($left.preg_quote($string, '/').$right, '\1{{ phrase(\''.$id.'\') }}\2', $line);
+        if(preg_match($def_left.preg_quote($string, '/').$def_right, $line)) {
+            if($color) {
+                $line = htmlspecialchars($line, ENT_NOQUOTES);
+                $line = str_replace("default('{$string}'", "default(<span style=\"color:green;\">phrase('{$id}')</span>)", $line);
+            }
+            else {
+                $line = str_replace("default('{$string}'", "default(phrase('{$id}'))", $line);
+            }
+        } elseif(preg_match($left.preg_quote($string, '/').$right, $line, $matches)) {
+            if(!preg_match('/(\{[%#{])(?!([#%}]\})*)/', $matches[1])) {
+                if($color) {
+                    $line = preg_replace($left.preg_quote($string, '/').$right, '\1__CSPAN__{{ phrase(\''.$id.'\') }}__ENDCSPAN__\2', $line);
+                    $line = htmlspecialchars($line);
+                    $line = str_replace('__ENDCSPAN__', '</span>', $line);
+                    $line = str_replace('__CSPAN__', '<span style="color:red;">', $line);
+                }
+                else {
+                    $line = preg_replace($left.preg_quote($string, '/').$right, '\1{{ phrase(\''.$id.'\') }}\2', $line);
+                }
+            }
         }
+
+        if(preg_match($attr_left.preg_quote($string, '/').$attr_right, $line)) {
+            if($color) {
+                $line = preg_replace($attr_left.preg_quote($string, '/').$attr_right, '\1__CSPAN__{{ phrase(\''.$id.'\') }}__ENDCSPAN__\2', $line);
+                $line = htmlspecialchars($line);
+                $line = str_replace('__ENDCSPAN__', '</span>', $line);
+                $line = str_replace('__CSPAN__', '<span style="color:blue;">', $line);
+            }
+            else {
+                $line = preg_replace($attr_left.preg_quote($string, '/').$attr_right, '\1{{ phrase(\''.$id.'\') }}\2', $line);
+            }
+        }
+
 
         return $line;
     }

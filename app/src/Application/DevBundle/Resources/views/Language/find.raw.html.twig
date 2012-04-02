@@ -24,8 +24,8 @@
                 <tr>
                     <td colspan="4">
                         {% for line in string.context %}
-                        IN: {{line.in}}<br />
-                        OUT: {{line.out}}
+                        OLD: {{line.in|raw}}<br />
+                        NEW: {{line.out|raw}}
                         {% if not loop.last %}
                         <hr />
                         {% endif %}

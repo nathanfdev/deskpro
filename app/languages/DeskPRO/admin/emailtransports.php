@@ -37,4 +37,6 @@
   'admin.emailtransports.account' => 'Account',
   'admin.emailtransports.backup_account' => 'Backup Account',
   'admin.emailtransports.default_from_email_address' => 'Default "From" email address',
+
+  'admin.emailtransports.outgoing_email' => 'Outgoing Email',
 );

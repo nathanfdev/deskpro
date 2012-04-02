@@ -27,6 +27,6 @@
 </form>
 
 <div class="delete-link-wrap">
-	<a href="{{ path('admin_ticketworks_del', {'workflow_id': workflow.id}) }}">delete</a>
+	<a href="{{ path('admin_ticketworks_del', {'workflow_id': workflow.id}) }}">{{ phrase('admin.ticketworkflows.delete') }}</a>
 </div>
 {% endblock %}

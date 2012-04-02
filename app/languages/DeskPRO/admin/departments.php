@@ -20,4 +20,9 @@
   'admin.departments.parent' => 'Parent',
   'admin.departments.no_parent' => 'No Parent',
   'admin.departments.add' => 'Add',
+
+  'admin.departments.please_choose_a_subdepartment_to_move_them_into' => 'Please choose a sub-department to move them into',
+  'admin.departments.is' => 'is',
+  'admin.departments.is_not' => 'is not',
+  'admin.departments.is_greater_than' => 'is greater than',
 );

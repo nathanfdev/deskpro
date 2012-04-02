@@ -6,7 +6,7 @@
 {% endblock %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_emailtrans_list') }}">Outgoing Email</a></li>
+		<li><a href="{{ path('admin_emailtrans_list') }}">{{ phrase('admin.emailtransports.outgoing_email') }}</a></li>
 		{% if is_setup %}
 			<li>{{ phrase('admin.emailtransports.setup_default_mail_server') }}</li>
 		{% else %}

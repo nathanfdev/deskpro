@@ -16,4 +16,6 @@
   'admin.templates.none_blank_template' => 'None (blank template)',
   'admin.templates.create' => 'Create',
   'admin.templates.edit_agent_and_admin_templates' => 'Edit Agent and Admin Templates',
+
+  'admin.templates.agent_and_admin_templates' => 'Agent and Admin Templates',
 );

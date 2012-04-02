@@ -29,7 +29,7 @@
 		using this department.</p>
 
 	<p>
-		Please choose a sub-department to move them into:
+		{{ phrase('admin.departments.please_choose_a_subdepartment_to_move_them_into') }}:
 		<select name="move_to_department">
 			{% for d in departments %}
 				{% if d.id != department.id %}

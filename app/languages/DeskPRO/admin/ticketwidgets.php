@@ -11,4 +11,5 @@
   'admin.ticketwidgets.html_content' => 'HTML Content',
   'admin.ticketwidgets.save' => 'Save',
   'admin.ticketwidgets.create_new_widget' => 'Create New Widget',
+  'admin.ticketwidgets.edit' => 'edit',
 );

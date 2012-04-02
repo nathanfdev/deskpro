@@ -11,13 +11,13 @@
 	{{ design.block_sections_item_end() }}
 
 	{{ design.block_sections_item() }}
-		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Textarea" /> Textarea</label></h3></header>
+		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Textarea" /> {{ phrase('admin.customdefabstract.textarea') }}</label></h3></header>
 		<p>{{ phrase('admin.customdefabstract.this_is_a_multiline_text_box_that_can') }}</p>
 	{{ design.block_sections_item_end() }}
 
 	{{ design.block_sections_item() }}
-		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Choice" /> Choice</label></h3></header>
-		<p>This is a set of predefined options presented as a drop-down select menu, radio buttons or checkboxes.</p>
+		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Choice" /> {{ phrase('admin.customdefabstract.choice') }}</label></h3></header>
+		<p>{{ phrase('admin.customdefabstract.this_is_a_set_of_predefined_options_presented') }}</p>
 	{{ design.block_sections_item_end() }}
 
 	{#
@@ -28,7 +28,7 @@
 	#}
 
 	{{ design.block_sections_item() }}
-		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Display" /> Display</label></h3></header>
+		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Display" /> {{ phrase('admin.customdefabstract.display') }}</label></h3></header>
 		<p>{{ phrase('admin.customdefabstract.this_is_a_widget_field_that_lets_you') }}</p>
 	{{ design.block_sections_item_end() }}
 
