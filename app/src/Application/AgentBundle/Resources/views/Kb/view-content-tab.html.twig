@@ -13,6 +13,19 @@
 				</div>
 			{% endif %}
 			<textarea class="edit-content-field" name="article[content]" rows="5" cols="50">{{ state.article.content|default(article.content) }}</textarea>
+			{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newarticle[attach][]'} %}
+			<h6>Attachments</h6>
+			<div class="file-input">
+				<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">Upload</button>
+			</div>
+			<ul class="files file-list">
+				{% for attach in article.attachments %}
+				<li>
+					<em class="remove-attach-trigger delete" data-blob-id="{{ attach.blob.id }}"></em>
+					<label><a href="{{ attach.blob.download_url }}" target="_blank">{{ attach.blob.download_url }}</a><span>{{ attach.blob.readable_filesize }}</span></label>
+				</li>
+				{% endfor %}
+			</ul>
 		</div>
 	</div>
 </div>

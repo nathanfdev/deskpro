@@ -215,6 +215,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			fileupload: function(el, options) {
 
+				var setel;
 				if (!options) options = {};
 
 				if (options.page) {
@@ -275,6 +276,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 				};
 
 				$(el).on('click', '.remove-attach-trigger', function(ev) {
+					// Ignore .delete as they may be items rendered with the page,
+					// eg. the list handles delete of existing attachments on its own
+					if ($(this).hasClass('delete')) {
+						return;
+					}
 					ev.preventDefault();
 					var el = $(this);
 					el.closest('li').slideUp('fast', function() {

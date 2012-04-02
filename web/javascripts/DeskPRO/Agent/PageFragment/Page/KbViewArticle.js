@@ -213,7 +213,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		$('.permalink', actions).on('click', function() {
 			var html = [];
 			html.push('<div>');
-			html.push('The permalink to this download on the website is:<br />');
+			html.push('The permalink to this article on the website is:<br />');
 			html.push('<input type="text" style="width:95%;" />');
 			html.push('</div>');
 
@@ -228,14 +228,17 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 
 		// Attachments
-		var list = $('.file-list', this.getEl('attachtab'));
+		var list = $('.file-list', this.wrapper);
 
 		DeskPRO_Window.util.fileupload(this.wrapper, {
 			url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=article&object_id=' + this.meta.article_id,
 			page: this
 		});
 
-		list.on('click', '.delete', function() {
+		list.on('click', '.delete', function(ev) {
+			ev.preventDefault();
+			ev.stopImmediatePropagation();
+
 			var blob_id = $(this).data('blob-id');
 			$.ajax({
 				url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',

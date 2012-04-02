@@ -88,7 +88,7 @@ Orb.Util.TimeAgo = {
 				var isTime = el.get(0).tagName.toLowerCase() == 'time';
 				var iso8601 = isTime && el.attr('datetime') ? el.attr('datetime') : el.attr('title');
 
-				if (!iso8601) {
+				if (!iso8601 || typeof iso8601 != 'string') {
 					return;
 				}
 
