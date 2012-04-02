@@ -7,7 +7,7 @@
 	float: right;
 	width: 54px;
 	height: 41px;
-	padding-left: 10px;
+	padding-left: 7px;
 	overflow: hidden;
 }
 
@@ -143,7 +143,7 @@
 	border: 1px solid #314559;
 	.border-radius(3px, 3px, 3px, 3px);
 	box-shadow: 0 1px 0 #386DA1, 0 1px 0 #75B3DA inset, 0 0 1px #5283AF inset;
-	width: 46px;
+	width: 45px;
 	height: 31px;
 	overflow: hidden;
 	cursor: pointer;
@@ -157,7 +157,7 @@
 	height: 24px;
 	width: 24px;
 	overflow: hidden;
-	margin: 4px 0 0 5px;
+	margin: 4px 0 0 4px;
 
 	cite {
 		display: block;
@@ -173,8 +173,8 @@
 	.iconbase(6px, 5px);
 	background-image: url(../../images/agent/dropdown-white.png);
 	position: absolute;
-	top: 14px;
-	right: 5px;
+	top: 15px;
+	right: 6px;
 }
 
 
@@ -190,25 +190,19 @@
 #notificationWrap{
 	float: left;
 	height: 34px;
-	padding: 7px 19px 0 0;
+	padding: 8px 19px 0 0;
 	position: relative;
-	width: 198px;
+	width: 203px;
 }
 
 .notifications{
-	.gradient(#529dcd, #3567b2);
-	border: 1px solid #314559;
-	box-shadow: 0 1px 0 #356599, 0 1px 0 #68BEEC inset, inset 0 0 0px 1px rgba(255, 255, 255, 0.1);
-	.border-radius(3px, 3px, 3px, 3px);
+	.header-btn();
  	float: right;
-    height: 23px;
-    padding: 0;
     position: relative;
 	cursor: pointer;
 }
 .notifications:hover{
-	.gradient(#57a7d9, #396fbf);
-	position: relative;
+	.header-btn-over();
 }
 
 .notifMenuWrap{
@@ -423,17 +417,17 @@ ul#dp_notify_list li .info {
 .notifMail{
 	background-position: 7px 7px;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabs/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 7px; */;
+    background-image: url(../../images/agent/tabs/tabtype-ticket-white.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 6px; */;
 }
 .notifDropdown .notifMail{
-	background-position: 4px 6px;
+	background-position: 4px 4px;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabs/tabtype-ticket.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 6px; */;
+    background-image: url(../../images/agent/tabs/tabtype-ticket.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 4px; sprite-margin-top: 3px; */;
 }
 .notifDropdown .notifChat{
-	background-position: 5px 4px;
+	background-position: 5px 3px;
 	background-repeat: no-repeat;
-	background-image: url(../../images/agent/tabs/tabtype-chat.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 4px; */;
+	background-image: url(../../images/agent/tabs/tabtype-chat.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 2px; */;
 }
 .notifDropdown .notif-item {
 	width: 24px;
@@ -441,7 +435,7 @@ ul#dp_notify_list li .info {
 .notifChat{
 	background-position: 6px 6px;
     background-repeat: no-repeat;
-    background-image: url(../../images/agent/tabs/tabtype-chat-white.png) /** sprite-ref: ui-v; sprite-alignment: left sprite-margin-left: 6px; sprite-margin-top: 6px; */;
+    background-image: url(../../images/agent/tabs/tabtype-chat-white.png) /** sprite-ref: ui-v; sprite-alignment: left sprite-margin-left: 6px; sprite-margin-top: 5px; */;
 }
 .notifMail .counter{
 	left: 18px;
@@ -565,8 +559,8 @@ ul#dp_notify_list li#dp_notify_list_none {
 	font-size: 12px;
 	padding: 0;
 	margin: 0;
-	height: 21px;
-	line-height: 21px;
+	height: 24px;
+	line-height: 24px;
 
 	&.loading {
 		background-image: url(../../images/spinners/loading-small.gif);
@@ -588,7 +582,7 @@ ul#dp_notify_list li#dp_notify_list_none {
 
 #dp_omnibox .type-icon .icon {
     position: absolute;
-	top: 4px;
+	top: 6px;
 	left: 5px;
 	width: 13px;
 	height: 13px;
@@ -732,9 +726,9 @@ ul#dp_notify_list li#dp_notify_list_none {
 }
 
 #dp_omnibox{
-	height: 22px;
-	min-height: 22px;
-	margin: 7px 7px 0 6px;
+	height: 23px;
+	min-height: 23px;
+	margin: 8px 7px 0 7px;
 	position: absolute;
 	top: 0; left: 0; right: 120px;
 	font-size: 10px;
@@ -749,25 +743,13 @@ ul#dp_notify_list li#dp_notify_list_none {
 }
 
 #dp_omnibox_adv {
-	.gradient(#529dcd, #3567b2);
-	box-shadow: 0 1px 0 #386da1, 0 1px 0 #95caec inset, 0 0 1px 1px rgba(255,255,255,0.2) inset;
-	border: 1px solid #314559;
-	.border-radius(3px, 3px, 3px, 3px);
-	color: #f2f9ff;
-	cursor: pointer;
-	font-size: 11px;
-	font-weight: normal;
-	height: 19px;
-	line-height: 18px;
-	padding: 1px 10px 0 0;
-	text-align: center;
-	text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+	.header-btn();
 	position: absolute;
 	right: 10px;
 	top: 8px;
 
 	&:hover {
-		.gradient(#75a8cd, #5688c9);
+		.header-btn-over();
 	}
 
 	a {
@@ -776,10 +758,10 @@ ul#dp_notify_list li#dp_notify_list_none {
 
 	span {
 		background-repeat: no-repeat;
-		background-position: 7px 5px;
-		background-image: url(../../images/agent/header/header-plus.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
+		background-position: 5px 4px;
+		background-image: url(../../images/agent/header/gear-light.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 5px; sprite-margin-top: 4px; sprite-margin-bottom: 10px; */;
 		float: left;
-		padding: 0 0 0 20px;
+		padding: 0 0 0 25px;
 		display: block;
 		height: 25px;
 	}
@@ -805,45 +787,27 @@ ul#dp_notify_list li#dp_notify_list_none {
 .DP-createTicket{
 	overflow: hidden;
 	font-family: @toolbar-font;
-	margin-left: 20px;
-	margin-top: 7px;
+	padding: 8px 10px;
 }
 .DP-createTicket #createContentTrigger{
-	padding-top: 2px;
+	.header-btn();
+	float: left;
+	padding-right: 9px;
 }
 
 .DP-createTicket #createContentTrigger a{
-	.gradient(#529dcd, #3567b2);
-	box-shadow: 0 1px 0 #386da1, 0 1px 0 #95caec inset, 0 0 1px 1px rgba(255,255,255,0.2) inset;
-	border: 1px solid #314559;
-	.border-radius(3px, 3px, 3px, 3px);
-	color: #f2f9ff;
-	cursor: pointer;
+	.header-btn-label();
 	float: left;
-	font-size: 11px;
-	font-weight: normal;
-	height: 19px;
-	line-height: 18px;
-	padding: 1px 10px 0 0;
-	text-align: center;
-	text-shadow: 0 1px 1px rgba(0,0,0,0.5);
-	position: relative;
-}
-.ie .DP-createTicket #createContentTrigger a{
-	position: relative;
-}
-.DP-createTicket #createContentTrigger:hover a{
-	.gradient(#75a8cd, #5688c9);
-	position: relative;
 }
 .DP-createTicket #createContentTrigger a span{
 	background-repeat: no-repeat;
-	background-position: 7px 5px;
+	background-position: 7px 6px;
     background-image: url(../../images/agent/header/header-plus.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
 	float: left;
 	padding: 0 0 0 20px;
 	display: block;
-	height: 25px;
+	line-height: 20px;
+	height: 20px;
 }
 /* DP Create Ticket Dropdown */
 #createTicketToggle{
@@ -1049,6 +1013,7 @@ ul#dp_notify_list li#dp_notify_list_none {
 }
 
 .createHeader, .switcherHeader{
+	font-family: @toolbar-font;
 	.gradient(#f2f2f2, #f2f2f2);
 	box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
 	.border-radius(3px, 3px, 0, 0);
@@ -1058,15 +1023,15 @@ ul#dp_notify_list li#dp_notify_list_none {
 	.border-radius(4px, 4px, 0, 0);
 	color: #737980;
 	height: 26px;
-	padding: 5px 0 1px 7px;
+	padding: 2px 0 0px 7px;
 	position: relative;
 	text-shadow: 0 1px 0 #FFFFFF;
-	width: 62px;
+	width: 55px;
 }
 .createHeader a, .switcherHeader a{
 	background-repeat: no-repeat;
-	background-position: 0px 5px;
-    background-image: url(../../images/agent/toolbar-plus.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 0px; sprite-margin-top: 5px; sprite-margin-bottom: 10px; */;
+	background-position: 0px 3px;
+    background-image: url(../../images/agent/toolbar-plus.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 0px; sprite-margin-top: 3px; sprite-margin-bottom: 10px; */;
 	color: #737980;
 	cursor: pointer;
 	font-size: 11px;
@@ -1082,22 +1047,22 @@ ul#dp_notify_list li#dp_notify_list_none {
 	background-repeat: no-repeat;
 	background-position: 0 100%;
 	background-image: url("../../images/agent/header/header-divider.png") /** sprite-ref: ui-v; sprite-alignment: right; */;
-	width: 180px;
 	position: relative;
 	float: right;
 	height: 41px;
 }
 .DP-adminSwitch{
-	padding: 8px 14px;
+	padding: 7px 9px 8px 9px;
 	float: left;
+
 }
+
 .adminSwitcher{
 	.gradient(#5a90b8, #3c6094);
 	border: 1px solid #314559;
 	.border-radius(3px, 3px, 3px, 3px);
-	box-shadow: 0 1px 0 #386DA1, 0 1px 0 #75B3DA inset, 0 0 1px #5283AF inset;
+	box-shadow: 0 1px 0 #386DA1, 0 1px 0 #6DA6CD inset, 0 0 1px #5283AF inset;
 	float: left;
-	height: 20px;
     padding: 0 9px 2px;
 	cursor: pointer;
 	float: left;
@@ -1106,6 +1071,8 @@ ul#dp_notify_list li#dp_notify_list_none {
 }
 
 .adminSwitcher a{
+	position: relative;
+	top: 1px;
 	background-repeat: no-repeat;
 	color: #F2F9FF;
 	font-size: 11px;
@@ -1264,7 +1231,7 @@ ul#dp_notify_list li#dp_notify_list_none {
 }
 .DP-adminStatus{
 	height: 31px;
-    padding: 9px 10px 5px 15px;
+    padding: 10px 7px 5px 10px;
 	position: relative;
 }
 .DP-adminStatus ul{
@@ -1459,7 +1426,7 @@ ul#dp_notify_list li#dp_notify_list_none {
 	.gradient(#5a90b8, #3c6094);
 	border: 1px solid #314559;
 	.border-radius(3px, 3px, 3px, 3px);
-	box-shadow: 0 1px 0 #386DA1, 0 1px 0 #75B3DA inset, 0 0 1px #5283AF inset;
+	box-shadow: 0 1px 0 #386DA1, 0 1px 0 #6DA6CD inset, 0 0 1px #5283AF inset;
 	float: left;
 	position: relative;
 	margin-right: 4px;
@@ -1901,4 +1868,31 @@ ul#dp_notify_list li#dp_notify_list_none {
 		position: relative;
 		top: -1px;
 	}
+}
+
+
+.header-btn {
+	.gradient(#5a90b8, #3c6094);
+	border: 1px solid #354A61;
+	.border-radius(3px, 3px, 3px, 3px);
+	box-shadow: 0 1px 0 #386DA1, 0 1px 0 #6DA6CD inset, 0 0 1px #598FBE inset;
+	height: 23px;
+	cursor: pointer;
+	position: relative;
+}
+
+.header-btn-over {
+	.gradient(#5c93ba, #4670aa);
+}
+
+.header-btn-label {
+	display: block;
+	color: #F2F9FF;
+	font-size: 11px;
+	font-weight: normal;
+	line-height: 22px;
+	height: 22px;
+	text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+	position: relative;
+	top: 1px;
 }
