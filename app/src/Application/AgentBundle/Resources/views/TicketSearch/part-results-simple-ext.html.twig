@@ -18,7 +18,10 @@
 		<div class="top-row-right">
 			<div class="bound-fade"></div>
 			{% if ticlet.status == 'awaiting_agent' %}<div class="urgency"><a>{{ ticket.urgency }}</a></div>{% endif %}
-			<div class="status {{ ticket.status_code|replace({'.': '_'}) }}">{{ phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.': '_'})) }}</div>
+			<div class="status {{ ticket.status_code|replace({'.': '_'}) }}">
+				{{ phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.': '_'})) }}
+				<i class="ticket-urgency" data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</i>
+			</div>
 			{% if ticket.is_hold %}<div class="on-hold">{{ phrase('agent.tickets.on_hold') }}</div>{% endif %}
 			<br class="clear" />
 		</div>

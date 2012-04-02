@@ -112,10 +112,14 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 <header class="page-header">
 	<h4 class="id-number">#{{ ticket.id }}</h4>
 	<h1>{{ ticket.subject }}</h1>
-	<div class="ticket-urgency" id="{{baseId}}_urgency" data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</div>
 	<br class="clear" />
 	<div class="meta-line">
-		<div class="status set-status awaiting_agent" {% if ticket.status_code != 'awaiting_agent' %}style="display: none"{% endif %}><span>Awaiting Agent</span></div>
+		<div class="status set-status awaiting_agent" {% if ticket.status_code != 'awaiting_agent' %}style="display: none"{% endif %}>
+			<span class="marker-urgency-data" data-urgency="{{ ticket.urgency }}">
+				<label>Awaiting Agent</label>
+				<i class="ticket-urgency" id="{{baseId}}_urgency" data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</i>
+			</span>
+		</div>
 		<div class="status set-status awaiting_user" {% if ticket.status_code != 'awaiting_user' %}style="display: none"{% endif %}><span>Awaiting User</span></div>
 		<div class="status set-status closed" {% if ticket.status_code != 'closed' %}style="display: none"{% endif %}><span>Closed</span></div>
 		<div class="status set-status resolved" {% if ticket.status_code != 'resolved' %}style="display: none"{% endif %}><span>Resolved</span></div>
