@@ -263,6 +263,8 @@ class TicketTerms
 				if (!$this->_testChoiceMatch($ticket['agent_id'], $op, $choice)) return false;
 				break;
 			case TicketSearch::TERM_URGENCY:
+				$choice = (array)$choice;
+				$choice = array_pop($choice);
 				switch ($op) {
 					case self::OP_BETWEEN:
 						if (!\Orb\Util\Numbers::inRange($ticket['urgency'], $choice['min'], $choice['max'])) return false;
@@ -320,6 +322,8 @@ class TicketTerms
 				}
 				break;
 			case TicketSearch::TERM_SUBJECT:
+				$choice = (array)$choice;
+				$choice = array_pop($choice);
 				switch ($op) {
 					case self::OP_IS:
 						if ($ticket['subject'] != $choice) return false;
