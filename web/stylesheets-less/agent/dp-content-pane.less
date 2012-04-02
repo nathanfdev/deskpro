@@ -455,6 +455,9 @@ span.gear{
     background-repeat: no-repeat;
     background-image: url(../../images/agent/tabs/tab-close.png) /** sprite-ref: ui-v; sprite-alignment: right */;
 }
+.deskproTabList li:hover span.close:hover {
+	background-image: url(../../images/agent/tabs/tab-close-on.png) /** sprite-ref: ui-v; sprite-alignment: right */;
+}
 .deskproTabList li.activeTabList a.open {
 	background-position: 0 -1046px !important;
 	padding: 5px 10px 5px 18px;
@@ -483,7 +486,6 @@ ul#dp_tabstrip_menu > li a.close {
 ul#dp_tabstrip_menu > li:hover a.close {
 	display: block;
 }
-
 ul#dp_tabstrip_menu li {
 	max-width: 200px;
 	overflow: hidden;
