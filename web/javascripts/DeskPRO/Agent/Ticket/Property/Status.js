@@ -31,6 +31,13 @@ DeskPRO.Agent.Ticket.Property.Status = new Class({
 
 		$('input.status:first', this.ticketPage.valueForm).val(value);
 		$('input.hidden_status:first', this.ticketPage.valueForm).val(hidden_status);
+
+		// Hold is automatically taken off on PHP side when not awaiting user,
+		// so need to reshow the 'set hold' button now incase user toggles status back to awaiting agent
+		if (value != 'awaiting_agent') {
+			$('.set-hold.unhold', this.ticketPage.wrapper).hide();
+			$('.set-hold.hold', this.ticketPage.wrapper).css('display', '');
+		}
 	},
 
 	getValue: function() {

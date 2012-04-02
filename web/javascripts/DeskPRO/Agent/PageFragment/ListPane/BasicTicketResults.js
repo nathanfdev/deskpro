@@ -168,6 +168,11 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 					$('.timeago', el).timeago();
 
+					var exist = self.getEl('results_wrap').find('article.ticket-' + ticketId);
+					if (exist[0]) {
+						exist.remove();
+					}
+
 					self.getEl('results_wrap').prepend(el);
 					el.slideDown();
 
