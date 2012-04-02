@@ -2,16 +2,16 @@
 {% block content %}
 
 <div class="table-list-wrap">
-	<a class="create-link" href="{{ path('admin_logs_errors_clear') }}">Clear all errors</a>
+	<a class="create-link" href="{{ path('admin_logs_errors_clear') }}">{{ phrase('admin.logs.clear_all_errors') }}</a>
 	<h2>Error Logs ({{ logs_count }})</h2>
 	<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
 		<thead>
 			<tr>
-				<th width="50">ID</th>
-				<th width="50">Pri</th>
-				<th>Message</th>
-				<th width="180">Date</th>
-				<th>Details</th>
+				<th width="50">{{ phrase('admin.logs.id') }}</th>
+				<th width="50">{{ phrase('admin.logs.pri') }}</th>
+				<th>{{ phrase('admin.logs.message') }}</th>
+				<th width="180">{{ phrase('admin.logs.date') }}</th>
+				<th>{{ phrase('admin.logs.details') }}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -31,8 +31,8 @@
 <div class="page_nav">
 	<ul>
 		{% if pagination.curpage != pagination.first %}
-			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.first}) }}">First</a></li>
-			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.prev}) }}">Prev</a></li>
+			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.first}) }}">{{ phrase('admin.logs.first') }}</a></li>
+			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.prev}) }}">{{ phrase('admin.logs.prev') }}</a></li>
 		{% endif %}
 
 		{% for i in pagination.pages %}
@@ -40,8 +40,8 @@
 		{% endfor %}
 
 		{% if pagination.curpage != pagination.last %}
-			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.next}) }}">Next</a></li>
-			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.last}) }}">Last</a></li>
+			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.next}) }}">{{ phrase('admin.logs.next') }}</a></li>
+			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.last}) }}">{{ phrase('admin.logs.last') }}</a></li>
 		{% endif %}
 	</ul>
 </div>

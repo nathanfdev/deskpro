@@ -2,7 +2,7 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 	<ul>
-		<li>Settings</li>
+		<li>{{ phrase('admin.settings.settings') }}</li>
 	</ul>
 {% endblock %}
 {% block html_head %}
@@ -11,23 +11,23 @@
 {% block page %}
 
 <div class="setting_section_head">
-	<a href="#" id="adv_settings_btn">Advanced settings view</a>
+	<a href="#" id="adv_settings_btn">{{ phrase('admin.settings.advanced_settings_view') }}</a>
 </div>
 
 <form action="{{ path('admin_settings') }}" method="POST" id="settings_form">
 <input type="hidden" name="process" value="1" />
 
 <div class="setting_field_row">
-	<h4>Basics</h4>
+	<h4>{{ phrase('admin.settings.basics') }}</h4>
 	<div class="setting_fields">
 		<div class="field_row">
 			<table cellspacing="0" cellpadding="0"><tr>
 				<td style="padding-right: 10px;">
-					<label>Your helpdesk name</label>
+					<label>{{ phrase('admin.settings.your_helpdesk_name') }}</label>
 					<input type="text" name="settings[core.deskpro_name]" value="{{app.getSetting('core.deskpro_name')}}" size="40" />
 				</td>
 				<td>
-					<label>Your helpdesk URL</label>
+					<label>{{ phrase('admin.settings.your_helpdesk_url') }}</label>
 					<input type="text" name="settings[core.deskpro_url]" value="{{app.getSetting('core.deskpro_url')}}" size="40" />
 				</td>
 			</tr></table>
@@ -35,11 +35,11 @@
 		<div class="field_row">
 			<table cellspacing="0" cellpadding="0"><tr>
 				<td style="padding-right: 10px;">
-					<label>Your website name</label>
+					<label>{{ phrase('admin.settings.your_website_name') }}</label>
 					<input type="text" name="settings[core.site_name]" value="{{app.getSetting('core.site_name')}}" size="40" />
 				</td>
 				<td>
-					<label>Your website URL</label>
+					<label>{{ phrase('admin.settings.your_website_url') }}</label>
 					<input type="text" name="settings[core.site_url]" value="{{app.getSetting('core.site_url')}}" size="40" />
 				</td>
 			</tr></table>
@@ -47,55 +47,55 @@
 	</div>
 </div>
 <div class="setting_field_row">
-	<h4>Helpdesk</h4>
+	<h4>{{ phrase('admin.settings.helpdesk') }}</h4>
 	<div class="setting_fields">
 		<div class="field_row">
 			<label><input type="checkbox" name="settings[core.helpdesk_disabled]" {% if app.getSetting('core.helpdesk_disabled') %}checked="checked"{% endif %} />
-				The helpdesk is currently disabled</label>
+				{{ phrase('admin.settings.the_helpdesk_is_currently_disabled') }}</label>
 		</div>
 		<div class="field_row">
 			<label><input type="checkbox" name="settings[core.redirect_correct_url]" {% if app.getSetting('core.redirect_correct_url') %}checked="checked"{% endif %} />
-				Always redirect users to the 'Helpdesk URL' if they arrive on a different URL. For example, this will redirect non-www to www, and force https:// if you have that enabled.
+				{{ phrase('admin.settings.always_redirect_users_to_the_helpdesk_url_if') }}
 		</div>
 	</div>
 </div>
 <div class="setting_field_row">
-	<h4>Attachments</h4>
+	<h4>{{ phrase('admin.settings.attachments') }}</h4>
 	<div class="setting_fields">
 		<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" style="padding-right: 15px" width="50%">
-			<h6>Users</h6>
+			<h6>{{ phrase('admin.settings.users') }}</h6>
 
 			<div class="field_row">
 				<input type="hidden" id="user_attach_maxsize" name="settings[core.attach_user_maxsize]" value="{{ app.getSetting('core.attach_user_maxsize') }}" />
-				Max upload size: <span id="user_attach_maxsize_label"></span> MB
+				{{ phrase('admin.settings.max_upload_size') }}: <span id="user_attach_maxsize_label"></span> {{ phrase('admin.settings.mb') }}
 				<div id="user_attach_maxsize_slider"></div>
 				<div id="user_attach_maxsize_notice" data-maxsize="{{ max_uploadsize }}" style="display: none">
-					The max file size your server supports is {{ max_uploadsize_readable }}. <a>Learn why you are bound by this limit.</a>
+					The max file size your server supports is {{ max_uploadsize_readable }}. <a>{{ phrase('admin.settings.learn_why_you_are_bound_by_this_limit') }}</a>
 				</div>
 			</div>
 
 			<div class="field_row">
-				<label style="display: inline;"><input type="radio" id="user_attach_limit_type_b" name="user_attach_limit_type" value="blacklist" {% if app.getSetting('core.attach_user_not_exts') %}checked="checked"{% endif %}> Disallow these file types</label>
-				<label style="display: inline;"><input type="radio" id="user_attach_limit_type_w" name="user_attach_limit_type" value="whitelist" {% if not app.getSetting('core.attach_user_not_exts') %}checked="checked"{% endif %}> Only allow these file types</label>
+				<label style="display: inline;"><input type="radio" id="user_attach_limit_type_b" name="user_attach_limit_type" value="blacklist" {% if app.getSetting('core.attach_user_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.disallow_these_file_types') }}</label>
+				<label style="display: inline;"><input type="radio" id="user_attach_limit_type_w" name="user_attach_limit_type" value="whitelist" {% if not app.getSetting('core.attach_user_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.only_allow_these_file_types') }}</label>
 				<input type="hidden" id="user_attach_limit_list_whitelist" name="settings[core.attach_user_must_exts]" value="{{ app.getSetting('core.attach_user_must_exts') }}" />
 				<input type="hidden" id="user_attach_limit_list_blacklist" name="settings[core.attach_user_not_exts]" value="{{ app.getSetting('core.attach_user_not_exts') }}" />
 				<input type="text" id="user_attach_limit_input" style="width: 300px; height: 22px;" />
 			</div>
 		</td><td valign="top" style="padding-left: 15px" width="50%">
-			<h6>Agents</h6>
+			<h6>{{ phrase('admin.settings.agents') }}</h6>
 
 			<div class="field_row">
 				<input type="hidden" id="agent_attach_maxsize" name="settings[core.attach_agent_maxsize]" value="{{ app.getSetting('core.attach_agent_maxsize') }}" />
-				Max upload size: <span id="agent_attach_maxsize_label"></span> MB
+				{{ phrase('admin.settings.max_upload_size') }}: <span id="agent_attach_maxsize_label"></span> {{ phrase('admin.settings.mb') }}
 				<div id="agent_attach_maxsize_slider"></div>
 				<div id="agent_attach_maxsize_notice" data-maxsize="{{ max_uploadsize }}" style="display: none">
-					The max file size your server supports is {{ max_uploadsize_readable }}. <a>Learn why you are bound by this limit.</a>
+					The max file size your server supports is {{ max_uploadsize_readable }}. <a>{{ phrase('admin.settings.learn_why_you_are_bound_by_this_limit') }}</a>
 				</div>
 			</div>
 
 			<div class="field_row">
-				<label style="display:inline"><input type="radio" id="agent_attach_limit_type_b" name="agent_attach_limit_type" value="blacklist" {% if app.getSetting('core.attach_agent_not_exts') %}checked="checked"{% endif %}> Disallow these file types</label>
-				<label style="display:inline"><input type="radio" id="agent_attach_limit_type_w" name="agent_attach_limit_type" value="whitelist" {% if not app.getSetting('core.attach_agent_not_exts') %}checked="checked"{% endif %}> Only allow these file types</label>
+				<label style="display:inline"><input type="radio" id="agent_attach_limit_type_b" name="agent_attach_limit_type" value="blacklist" {% if app.getSetting('core.attach_agent_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.disallow_these_file_types') }}</label>
+				<label style="display:inline"><input type="radio" id="agent_attach_limit_type_w" name="agent_attach_limit_type" value="whitelist" {% if not app.getSetting('core.attach_agent_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.only_allow_these_file_types') }}</label>
 				<input type="hidden" id="agent_attach_limit_list_whitelist" name="settings[core.attach_agent_must_exts]" value="{{ app.getSetting('core.attach_agent_must_exts') }}" />
 				<input type="hidden" id="agent_attach_limit_list_blacklist" name="settings[core.attach_agent_not_exts]" value="{{ app.getSetting('core.attach_agent_not_exts') }}" />
 				<input type="text" id="agent_attach_limit_input" style="width: 300px; height: 22px;" />
@@ -104,14 +104,14 @@
 	</div>
 </div>
 <div class="setting_field_row">
-	<h4>Gravatar</h4>
+	<h4>{{ phrase('admin.settings.gravatar') }}</h4>
 	<div class="setting_fields">
 		<div class="field_row">
 			<table cellspacing="0" cellpadding="0"><tr>
 				<td style="padding-right: 10px;">
 					<label>
 						<input type="checkbox" name="settings[core.use_gravatar]" {% if app.getSetting('core.use_gravatar') %}checked="checked"{% endif %} />
-						Use Gravatar profile pictures by default until a custom picture is uploaded
+						{{ phrase('admin.settings.use_gravatar_profile_pictures_by_default_until_a') }}
 					</label>
 				</td>
 			</tr></table>
@@ -119,16 +119,16 @@
 	</div>
 </div>
 <div class="setting_field_row">
-	<h4>Advanced</h4>
+	<h4>{{ phrase('admin.settings.advanced') }}</h4>
 	<div class="setting_fields">
 		<div class="field_row">
 			<table cellspacing="0" cellpadding="0"><tr>
 				<td style="padding-right: 10px;">
-					<label>Cookie Path</label>
+					<label>{{ phrase('admin.settings.cookie_path') }}</label>
 					<input type="text" name="settings[core.cookie_path]" value="{{app.getSetting('core.cookie_path')}}" size="40" />
 				</td>
 				<td>
-					<label>Cookie Domain</label>
+					<label>{{ phrase('admin.settings.cookie_domain') }}</label>
 					<input type="text" name="settings[core.cookie_domain]" value="{{app.getSetting('core.cookie_domain')}}" size="40" />
 				</td>
 			</tr></table>
@@ -137,7 +137,7 @@
 </div>
 
 <div class="setting_field_row" style="text-align: center">
-	<button class="clean-white">Save Settings</button>
+	<button class="clean-white">{{ phrase('admin.settings.save_settings') }}</button>
 </div>
 
 </form>
@@ -148,12 +148,12 @@
 		<h4>Advanced Settings</h4>
 	</div>
 	<div class="overlay-content">
-		<p>Warning: Settings listed in "Advanced Settings" are undocumented and changing them can have unexpected consequences.</p>
+		<p>{{ phrase('admin.settings.warning_settings_listed_in_advanced_settings_are_undocumented') }}</p>
 		<br />
-		<p>Only make changes if you know what you are doing or have been instructed by a support agent.</p>
+		<p>{{ phrase('admin.settings.only_make_changes_if_you_know_what_you') }}</p>
 	</div>
 	<div class="overlay-footer">
-		<a href="{{ path('admin_settings_adv') }}" class="clean-white">Continuet to Advanced Settings</a>
+		<a href="{{ path('admin_settings_adv') }}" class="clean-white">{{ phrase('admin.settings.continuet_to_advanced_settings') }}</a>
 	</div>
 </div>
 

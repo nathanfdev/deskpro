@@ -1,6 +1,6 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagetitle %}
-	<h1>Delete Workflow</h1>
+	<h1>{{ phrase('admin.ticketworkflows.delete_workflow') }}</h1>
 	<nav>
 		<a class="clean-white" href="{{ path('admin_ticketworks') }}">&larr; Back to workflows</a>
 	</nav>
@@ -9,8 +9,8 @@
 
 <p>Are you sure you want to delete the workflow "<strong>{{ workflow.title }}</strong>"?</p>
 
-<p>Any tickets that use this workflow will have it unset, and have no workflow associated with them.</p>
+<p>{{ phrase('admin.ticketworkflows.any_tickets_that_use_this_workflow_will_have') }}</p>
 
-<a class="btn" href="{{ path('admin_ticketworks_dodel', {'workflow_id': workflow.id, 'security_token': security_token('delete_workflow')}) }}">Yes, I am sure I want to delete</a>
+<a class="btn" href="{{ path('admin_ticketworks_dodel', {'workflow_id': workflow.id, 'security_token': security_token('delete_workflow')}) }}">{{ phrase('admin.ticketworkflows.yes_i_am_sure_i_want_to_delete') }}</a>
 
 {% endblock %}

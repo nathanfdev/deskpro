@@ -9,15 +9,15 @@
 		</ul>
 	</nav>
 	<ul id="tools_menu" style="display: none">
-		<li id="delete_overlay_trigger">{{ phrase('agent.delete_team') }}{#>>Delete Team#}</li>
+		<li id="delete_overlay_trigger">{{ phrase('admin.agents.delete_team') }}</li>
 	</ul>
 	{% endif %}
 	<ul>
-		<li><a href="{{ path('admin_agents') }}">{{ phrase('agent.agents') }}{#>>Agents#}</a></li>
+		<li><a href="{{ path('admin_agents') }}">{{ phrase('admin.agents.agents') }}</a></li>
 		{% if team.id %}
-			<li>{{ phrase('agent.edit_team') }}{#>>Edit Team#}</li>
+			<li>{{ phrase('admin.agents.edit_team') }}</li>
 		{% else %}
-			<li>{{ phrase('agent.new_team') }}{#>>New Team#}</li>
+			<li>{{ phrase('admin.agents.new_team') }}</li>
 		{% endif %}
 	</ul>
 {% endblock %}
@@ -32,7 +32,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.title') }}{#>>Title#}</label>
+			<label>{{ phrase('admin.agents.title') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<input type="text" name="team[name]" value="{{team.name}}" />
@@ -40,7 +40,7 @@
 	</div>
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.members') }}{#>>Members#}</label>
+			<label>{{ phrase('admin.agents.members') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<div class="checkbox-rows">
@@ -59,23 +59,23 @@
 	</div>
 </div>
 
-<button class="btn primary save-trigger">{{ phrase('agent.save') }}{#>>Save#}</button>
+<button class="btn primary save-trigger">{{ phrase('admin.agents.save') }}</button>
 </form>
 
 {% if team.id %}
 <div id="delete_overlay" style="width: 400px; height: 150px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
-		<h4>{{ phrase('agent.delete_agent') }}{#>>Delete Agent#}</h4>
+		<h4>{{ phrase('admin.agents.delete_agent') }}</h4>
 	</div>
 	<div class="overlay-content">
-		<p>{{ phrase('agent.notice_deleting_this_team_will_unassign_tickets') }}{#>>Deleting this team will also cause any tickets assigned to the team to be unassigned.#}</p>
+		<p>{{ phrase('admin.agents.deleting_this_team_will_also_cause_any_tickets') }}</p>
 	</div>
 	<div class="overlay-footer">
 		<form action="{{ path('admin_agents_teams_del', {'team_id': team.id, 'security_token': security_token('delete_team')}) }}" method="get">
 			<button class="clean-white">
 			{% set phrase_part %}<span class="agent-name">{{ team.name }}</span></button>{% endset %}
-			{{ phrase('agent.delete_name', {'name':phrase_part}) }}{#>>Delete {name}#}
+			Delete {name}
 		</form>
 	</div>
 </div>

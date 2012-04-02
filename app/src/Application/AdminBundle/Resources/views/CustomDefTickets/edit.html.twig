@@ -2,11 +2,11 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
      <ul>
-		<li><a href="{{ path('admin_tickets_fields') }}">Ticket Fields</a></li>
+		<li><a href="{{ path('admin_tickets_fields') }}">{{ phrase('admin.customdeftickets.ticket_fields') }}</a></li>
 		{% if field.id %}
-			<li>Edit Field</li>
+			<li>{{ phrase('admin.customdeftickets.edit_field') }}</li>
 		{% else %}
-			<li>New Field</li>
+			<li>{{ phrase('admin.customdeftickets.new_field') }}</li>
 		{% endif %}
      </ul>
 {% endblock %}

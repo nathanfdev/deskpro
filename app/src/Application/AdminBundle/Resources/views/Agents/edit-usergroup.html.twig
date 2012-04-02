@@ -9,16 +9,16 @@
 		</ul>
 	</nav>
 	<ul id="tools_menu" style="display: none">
-		<li id="delete_overlay_trigger">{{ phrase('agent.delete_permission_group') }}{#>>Delete Permission Group#}</li>
+		<li id="delete_overlay_trigger">{{ phrase('admin.agents.delete_permission_group') }}</li>
 	</ul>
 	{% endif %}
 
 	<ul>
-		<li><a href="{{ path('admin_agents') }}">{{ phrase('agent.link_agents') }}{#>>Agents#}</a></li>
+		<li><a href="{{ path('admin_agents') }}">{{ phrase('admin.agents.agents') }}</a></li>
 		{% if usergroup.id %}
-			<li>{{ phrase('agent.edit_permissions_group') }}{#>>Edit Permission Group#}</li>
+			<li>{{ phrase('admin.agents.edit_permission_group') }}</li>
 		{% else %}
-			<li>{{ phrase('agent.new_permission_group') }}{#>>New Permission Group#}</li>
+			<li>{{ phrase('admin.agents.new_permission_group') }}</li>
 		{% endif %}
 	</ul>
 {% endblock %}
@@ -33,7 +33,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.usergroup_title') }}{#>>Title#}</label>
+			<label>{{ phrase('admin.agents.title') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<input type="text" name="usergroup[title]" value="{{usergroup.title}}" />
@@ -41,7 +41,7 @@
 	</div>
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.members') }}{#>>Members#}</label>
+			<label>{{ phrase('admin.agents.members') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<div class="checkbox-rows">
@@ -64,7 +64,7 @@
 	 ##############################}
 	<div class="dp-form-row">
 		<div class="dp-form-label" id="permgroups">
-			<label>{{ phrase('agent.label_permissions') }}{#>>Permissions#}</label>
+			<label>{{ phrase('admin.agents.permissions') }}</label>
 
 			{% macro perm_col(usergroup_values, permgroup, name) %}
 				<td class="prop"><input
@@ -78,12 +78,12 @@
 			{% endmacro %}
 
 			<nav class="check-grid-tabs">
-				<button class="clean-white small" style="float:right; position: relative; top: -4px;" id="load_agent_perms_btn">{{ phrase('agent.load_perms_from_agent') }}{#>>Load Permissions From Agent#}</button>
+				<button class="clean-white small" style="float:right; position: relative; top: -4px;" id="load_agent_perms_btn">{{ phrase('admin.agents.load_permissions_from_agent') }}</button>
 				<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
-					<li class="on" data-tab-for="#permgroup_tickets"><span>{{ phrase('agent.tickets') }}{#>>Tickets#}</span></li>
-					<li data-tab-for="#permgroup_people"><span>{{ phrase('agent.people_and_orgs') }}{#>>People and Organizations#}</span></li>
-					<li data-tab-for="#permgroup_chat"><span>{{ phrase('agent.chat') }}{#>>Chat#}</span></li>
-					<li data-tab-for="#permgroup_publish"><span>{{ phrase('agent.publish') }}{#>>Publish#}</span></li>
+					<li class="on" data-tab-for="#permgroup_tickets"><span>{{ phrase('admin.agents.tickets') }}</span></li>
+					<li data-tab-for="#permgroup_people"><span>{{ phrase('admin.agents.people_and_organizations') }}</span></li>
+					<li data-tab-for="#permgroup_chat"><span>{{ phrase('admin.agents.chat') }}</span></li>
+					<li data-tab-for="#permgroup_publish"><span>{{ phrase('admin.agents.publish') }}</span></li>
 				</ul>
 			</nav>
 
@@ -93,71 +93,71 @@
 					<table width="100%">
 						<thead>
 							<tr>
-								<th>{{ phrase('agent.permission') }}{#>>Permission#}</th>
-								<th width="60">{{ phrase('agent.on_off') }}{#>>On/Off#}</th>
+								<th>{{ phrase('admin.agents.permission') }}</th>
+								<th width="60">{{ phrase('admin.agents.onoff') }}</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_use_ticket_system') }}{#>>Use ticket system#}</td>
+								<td class="title">{{ phrase('admin.agents.use_ticket_system') }}</td>
 								{{ _self.perm_col(usergroup_values, 'tickets', 'use') }}
 							</tr>
 							<tr>
-								<td class="title">{{ phrase('agent.perm_create_tickets') }}{#>>Create tickets#}</td>
+								<td class="title">{{ phrase('admin.agents.create_tickets') }}</td>
 								{{ _self.perm_col(usergroup_values, 'tickets', 'create') }}
 							</tr>
 						</tbody>
 						<tbody>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_view_own_team_tickets') }}{#>>View own and teams tickets#}</td>
+								<td class="title">{{ phrase('admin.agents.view_own_and_teams_tickets') }}</td>
 								{{ _self.perm_col(usergroup_values, 'tickets', 'view_own') }}
 							</tr>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_modify_own_and_team_tickets') }}{#>>Modify own and teams tickets#}</td>
+								<td class="title">{{ phrase('admin.agents.modify_own_and_teams_tickets') }}</td>
 								{{ _self.perm_col(usergroup_values, 'tickets', 'modify_own') }}
 							</tr>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_delete_own_and_team_tickets') }}{#>>Delete own and teams tickets#}</td>
+								<td class="title">{{ phrase('admin.agents.delete_own_and_teams_tickets') }}</td>
 								{{ _self.perm_col(usergroup_values, 'tickets', 'delete_own') }}
 							</tr>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_resolve_own_team_tickets') }}{#>>Resolve own and teams tickets#}</td>
+								<td class="title">{{ phrase('admin.agents.resolve_own_and_teams_tickets') }}</td>
 								{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_own') }}
 							</tr>
 						</tbody>
 						<tbody>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_view_unassigned_tickets') }}{#>>View unassigned tickets#}</td>
+								<td class="title">{{ phrase('admin.agents.view_unassigned_tickets') }}</td>
 								{{ _self.perm_col(usergroup_values, 'tickets', 'view_unassigned') }}
 							</tr>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_modify_unassigned_tickets') }}{#>>Modify unassigned tickets#}</td>
+								<td class="title">{{ phrase('admin.agents.modify_unassigned_tickets') }}</td>
 								{{ _self.perm_col(usergroup_values, 'tickets', 'modify_unassigned') }}
 							</tr>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_delete_unassigned_tickets') }}{#>>Delete unassigned tickets#}</td>
+								<td class="title">{{ phrase('admin.agents.delete_unassigned_tickets') }}</td>
 								{{ _self.perm_col(usergroup_values, 'tickets', 'delete_unassigned') }}
 							</tr>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_resolve_unsassigned_tickets') }}{#>>Resolve unassigned tickets#}</td>
+								<td class="title">{{ phrase('admin.agents.resolve_unassigned_tickets') }}</td>
 								{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_unassigned') }}
 							</tr>
 						</tbody>
 						<tbody>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_view_other_tickets') }}{#>>View others tickets#}</td>
+								<td class="title">{{ phrase('admin.agents.view_others_tickets') }}</td>
 								{{ _self.perm_col(usergroup_values, 'tickets', 'view_others') }}
 							</tr>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_modify_others_tickets') }}{#>>Modify others tickets#}</td>
+								<td class="title">{{ phrase('admin.agents.modify_others_tickets') }}</td>
 								{{ _self.perm_col(usergroup_values, 'tickets', 'modify_others') }}
 							</tr>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_delete_others_tickets') }}{#>>Delete others tickets#}</td>
+								<td class="title">{{ phrase('admin.agents.delete_others_tickets') }}</td>
 								{{ _self.perm_col(usergroup_values, 'tickets', 'delete_others') }}
 							</tr>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.resolve_others_tickets') }}{#>>Resolve others tickets#}</td>
+								<td class="title">{{ phrase('admin.agents.resolve_others_tickets') }}</td>
 								{{ _self.perm_col(usergroup_values, 'tickets', 'resolve_others') }}
 							</tr>
 						</tbody>
@@ -172,57 +172,57 @@
 					<table width="100%">
 						<thead>
 							<tr>
-								<th>{{ phrase('agent.permissions') }}{#>>Permission#}</th>
-								<th width="60">{{ phrase('agent.on_off') }}{#>>On/Off#}</th>
+								<th>{{ phrase('admin.agents.permission') }}</th>
+								<th width="60">{{ phrase('admin.agents.onoff') }}</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_create_people') }}{#>>Create people#}</td>
+								<td class="title">{{ phrase('admin.agents.create_people') }}</td>
 								{{ _self.perm_col(usergroup_values, 'people', 'create') }}
 							</tr>
 							<tr class="permrow">
 								<td class="title">
-									{{ phrase('agent.perm_edit_people') }}{#>>Edit people#}
+									{{ phrase('admin.agents.edit_people') }}
 								</td>
 								{{ _self.perm_col(usergroup_values, 'people', 'edit') }}
 							</tr>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_delete_people') }}{#>>Delete people#}</td>
+								<td class="title">{{ phrase('admin.agents.delete_people') }}</td>
 								{{ _self.perm_col(usergroup_values, 'people', 'delete') }}
 							</tr>
 							<tr class="permrow">
 								<td class="title">
-									{{ phrase('agent.perm_validate_users_and_emails') }}{#>>Validate users and user email addresses#}
+									{{ phrase('admin.agents.validate_users_and_user_email_addresses') }}
 								</td>
 								{{ _self.perm_col(usergroup_values, 'people', 'validate') }}
 							</tr>
 							<tr>
 								<td class="title">
-									{{ phrase('agent.perm_edit_email_addresses') }}{#>>Edit email addresses#}
-									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.notice_when_you_allow_email_manage') }}{#>>Be careful who you allow to manage email addresses. Since an agent can add any email address, including ones they might have control over, it means they could use that to gain access to the account if they really wanted to.#}"></span>
+									{{ phrase('admin.agents.edit_email_addresses') }}
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Be careful who you allow to manage email addresses. Since an agent can add any email address, including ones they might have control over, it means they could use that to gain access to the account if they really wanted to."></span>
 								</td>
 								{{ _self.perm_col(usergroup_values, 'people', 'manage_emails') }}
 							</tr>
 							<tr>
 								<td class="title">
-									{{ phrase('agent.perm_reset_passwords') }}{#>>Reset passwords#}
-									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.notice_when_you_allow_password_reset') }}{#>>Be careful who you allow to reset user passwords. Since an agent can reset the password to anything they want, it means they can gain access to the account if they really wanted to.#}"></span>
+									{{ phrase('admin.agents.reset_passwords') }}
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Be careful who you allow to reset user passwords. Since an agent can reset the password to anything they want, it means they can gain access to the account if they really wanted to."></span>
 								</td>
 								{{ _self.perm_col(usergroup_values, 'people', 'reset_password') }}
 							</tr>
 						</tbody>
 						<tbody>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_create_orgs') }}{#>>Create organizations#}</td>
+								<td class="title">{{ phrase('admin.agents.create_organizations') }}</td>
 								{{ _self.perm_col(usergroup_values, 'org', 'create') }}
 							</tr>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.edit_orgs') }}{#>>Edit organizations#}</td>
+								<td class="title">{{ phrase('admin.agents.edit_organizations') }}</td>
 								{{ _self.perm_col(usergroup_values, 'org', 'edit') }}
 							</tr>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.delete_orgs') }}{#>>Delete organizations#}</td>
+								<td class="title">{{ phrase('admin.agents.delete_organizations') }}</td>
 								{{ _self.perm_col(usergroup_values, 'org', 'delete') }}
 							</tr>
 						</tbody>
@@ -237,25 +237,25 @@
 					<table width="100%">
 						<thead>
 							<tr>
-								<th>Permission</th>
-								<th width="60">{{ phrase('agent.on_off') }}{#>>On/Off#}</th>
+								<th>{{ phrase('admin.agents.permission') }}</th>
+								<th width="60">{{ phrase('admin.agents.onoff') }}</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_use_chat_system') }}{#>>Use chat system#}</td>
+								<td class="title">{{ phrase('admin.agents.use_chat_system') }}</td>
 								{{ _self.perm_col(usergroup_values, 'chat', 'use') }}
 							</tr>
 							<tr>
-								<td class="title">{{ phrase('agent.perm_can_view_unassigned_chats') }}{#>>Can see new unassigned chats#}</td>
+								<td class="title">{{ phrase('admin.agents.can_see_new_unassigned_chats') }}</td>
 								{{ _self.perm_col(usergroup_values, 'chat', 'view_unassigned') }}
 							</tr>
 							<tr>
-								<td class="title">{{ phrase('agent.perm_can_see_others_chats') }}{#>>Can see chats assigned to others#}</td>
+								<td class="title">{{ phrase('admin.agents.can_see_chats_assigned_to_others') }}</td>
 								{{ _self.perm_col(usergroup_values, 'chat', 'view_others') }}
 							</tr>
 							<tr>
-								<td class="title">{{ phrase('agent.can_delete_chat_transcripts') }}{#>>Can delete chat transcripts#}</td>
+								<td class="title">{{ phrase('admin.agents.can_delete_chat_transcripts') }}</td>
 								{{ _self.perm_col(usergroup_values, 'chat', 'delete') }}
 							</tr>
 						</tbody>
@@ -270,27 +270,27 @@
 					<table width="100%">
 						<thead>
 							<tr>
-								<th>{{ phrase('agent.permission') }}{#>>Permission#}</th>
-								<th width="60">{{ phrase('agent.on_off') }}{#>>On/Off#}</th>
+								<th>{{ phrase('admin.agents.permission') }}</th>
+								<th width="60">{{ phrase('admin.agents.onoff') }}</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_create_content') }}{#>>Create content#}</td>
+								<td class="title">{{ phrase('admin.agents.create_content') }}</td>
 								{{ _self.perm_col(usergroup_values, 'publish', 'create') }}
 							</tr>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_delete_content') }}{#>>Delete content#}</td>
+								<td class="title">{{ phrase('admin.agents.delete_content') }}</td>
 								{{ _self.perm_col(usergroup_values, 'publish', 'delete') }}
 							</tr>
 							<tr class="permrow">
-								<td class="title">{{ phrase('agent.perm_edit_others_comments') }}{#>>Edit other's content#}</td>
+								<td class="title">{{ phrase('admin.agents.edit_others_content') }}</td>
 								{{ _self.perm_col(usergroup_values, 'publish', 'edit') }}
 							</tr>
 							<tr class="permrow">
 								<td class="title">
-									{{ phrase('agent.validate_content_comments') }}{#>>Validate content and comments (including own)#}
-									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.notice_if_agent_cannot_validate_content') }}{#>>If an agent does not have this permission, then any new content they create or edits they make will be held in a validation queue before they appear live on the site.#}"></span>
+									{{ phrase('admin.agents.validate_content_and_comments_including_own') }}
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="If an agent does not have this permission, then any new content they create or edits they make will be held in a validation queue before they appear live on the site."></span>
 								</td>
 								{{ _self.perm_col(usergroup_values, 'publish', 'validate') }}
 							</tr>
@@ -303,23 +303,23 @@
 	</div>
 </div>
 
-<button class="btn primary save-trigger">{{ phrase('agent.save') }}{#>>Save#}</button>
+<button class="btn primary save-trigger">{{ phrase('admin.agents.save') }}</button>
 </form>
 
 {% if usergroup.id %}
 <div id="delete_overlay" style="width: 400px; height: 150px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
-		<h4>{{ phrase('agent.delete_agent') }}{#>>Delete Agent#}</h4>
+		<h4>{{ phrase('admin.agents.delete_agent') }}</h4>
 	</div>
 	<div class="overlay-content">
-		<p>{{ phrase('agent.notice_deleting_this_group_will_remove_all_perms') }}{#>>Deleting this permission group will remove all the permissions from agents that belong to it.#}</p>
+		<p>{{ phrase('admin.agents.deleting_this_permission_group_will_remove_all_the') }}</p>
 	</div>
 	<div class="overlay-footer">
 		<form action="{{ path('admin_agents_groups_del', {'usergroup_id': usergroup.id, 'security_token': security_token('delete_group')}) }}" method="get">
 			<button class="clean-white">
 				{% set phrase_part %}<span class="agent-name">{{ usergroup.title }}</span>{% endset %}
-				{{ phrase('agent.delete_title', {'title':phrase_part}) }}{#>>Delete {title}#}
+				Delete {title}
 			</button>
 		</form>
 	</div>

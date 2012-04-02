@@ -2,11 +2,11 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
      <ul>
-         <li><a href="{{ path('admin_usergroups') }}">Usergroups</a></li>
+         <li><a href="{{ path('admin_usergroups') }}">{{ phrase('admin.usergroups.usergroups') }}</a></li>
 		 {% if usergroup.id %}
-		 	<li>Edit Usergroup</li>
+		 	<li>{{ phrase('admin.usergroups.edit_usergroup') }}</li>
 		 {% else %}
-		 	<li>New Usergroup</li>
+		 	<li>{{ phrase('admin.usergroups.new_usergroup') }}</li>
 		 {% endif %}
      </ul>
 {% endblock %}
@@ -21,7 +21,7 @@
 	<div class="dp-form-section">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Title</label>
+				<label>{{ phrase('admin.usergroups.title') }}</label>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.title) }}
@@ -30,7 +30,7 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Note / Description</label>
+				<label>{{ phrase('admin.usergroups.note_description') }}</label>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.note, {'attr': {'style': 'height: 50px'}}) }}
@@ -39,7 +39,7 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Number of members</label>
+				<label>{{ phrase('admin.usergroups.number_of_members') }}</label>
 			</div>
 			<div class="dp-form-input">
 				{{ member_count|default('0') }} (<a href="{{ path('admin_usergroups_browse', {'id': usergroup.id})}}">browse</a>)
@@ -49,7 +49,7 @@
 
 	<div class="dp-form-section">
 		<div class="dp-form-label">
-			<label>Permissions</label>
+			<label>{{ phrase('admin.usergroups.permissions') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{% include 'AdminBundle:Usergroups:edit-permtable.html.twig' %}
@@ -59,7 +59,7 @@
 
 <footer class="controls">
 	<div class="is-not-loading">
-		<button class="clean-white">Save Usergroup</button>
+		<button class="clean-white">{{ phrase('admin.usergroups.save_usergroup') }}</button>
 	</div>
 	<div class="is-loading">
 		<div class="loading-icon-flat">&nbsp;</div>

@@ -7,7 +7,7 @@
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li class="add"><a id="newcat_open">Add New Priority</a></li>
+			<li class="add"><a id="newcat_open">{{ phrase('admin.ticketpriorities.add_new_priority') }}</a></li>
 		</ul>
 	</nav>
 	<ul>
@@ -25,10 +25,10 @@
 		{{ design.dpgrid({class: 'dep-list pri-list'}) }}
 			{{ design.dpgrid_headerrow() }}
 				{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 810px;"}) }}
-					<h1>Title</h1>
+					<h1>{{ phrase('admin.ticketpriorities.title') }}</h1>
 				{{ design.dpgrid_headercol_end() }}
 				{{ design.dpgrid_headercol({ class: 'l r tl tr l-margin r-margin', style: "width: 80px"}) }}
-					<h1>Priority</h1>
+					<h1>{{ phrase('admin.ticketpriorities.priority') }}</h1>
 				{{ design.dpgrid_headercol_end() }}
 			{{ design.dpgrid_headerrow_end() }}
 
@@ -38,7 +38,7 @@
 		{{ design.dpgrid_end() }}
 	{% else %}
 		<div class="note-box new-arrow">
-			You have not created any ticket priorities yet. Click the "Add New Priority" button to create one now.
+			You have not created any ticket priorities yet. Click the "{{ phrase('admin.ticketpriorities.add_new_priority') }}" button to create one now.
 		</div>
 
 	{% endif %}
@@ -46,13 +46,13 @@
 	<div id="editcat_overlay" style="width: 400px; height: 250px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
-			<h4>Edit Priority</h4>
+			<h4>{{ phrase('admin.ticketpriorities.edit_priority') }}</h4>
 		</div>
 		<div class="overlay-content">
 			<form class="dp-form" method="POST" action="{{ path('admin_ticketpris_savetitle') }}">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Title</label>
+						<label>{{ phrase('admin.ticketpriorities.title') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="hidden" name="priority_id" id="editcat_catid" value="" />
@@ -61,7 +61,7 @@
 				</div>
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Priority</label>
+						<label>{{ phrase('admin.ticketpriorities.priority') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="text" name="priority" id="editcat_pri" value="" style="width:30px" />
@@ -70,20 +70,20 @@
 			</form>
 		</div>
 		<div class="overlay-footer">
-			<button class="clean-white" id="editcat_savebtn">Save</button>
+			<button class="clean-white" id="editcat_savebtn">{{ phrase('admin.ticketpriorities.save') }}</button>
 		</div>
 	</div>
 
 	<div id="newcat_overlay" style="width: 400px; height: 250px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
-			<h4>New Priority</h4>
+			<h4>{{ phrase('admin.ticketpriorities.new_priority') }}</h4>
 		</div>
 		<div class="overlay-content">
 			<form class="dp-form" method="POST" action="{{ path('admin_ticketpris_savenew') }}">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Title</label>
+						<label>{{ phrase('admin.ticketpriorities.title') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="text" name="title" id="newcat_title" value="" />
@@ -92,7 +92,7 @@
 
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Priority</label>
+						<label>{{ phrase('admin.ticketpriorities.priority') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="text" name="priority" id="newcat_pri" value="" style="width:30px" />
@@ -101,7 +101,7 @@
 			</form>
 		</div>
 		<div class="overlay-footer">
-			<button class="clean-white" id="newcat_savebtn">Add</button>
+			<button class="clean-white" id="newcat_savebtn">{{ phrase('admin.ticketpriorities.add') }}</button>
 		</div>
 	</div>
 

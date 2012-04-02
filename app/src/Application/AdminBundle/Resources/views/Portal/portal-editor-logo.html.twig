@@ -1,12 +1,12 @@
 <section class="dp-portal-simpleheader-editor">
 	<div class="overlay-title">
 		<span class="close-overlay close-trigger"></span>
-		<h4>Edit Logo</h4>
+		<h4>{{ phrase('admin.portal.edit_logo') }}</h4>
 	</div>
 	<div class="overlay-content">
 		<div class="image">
 
-			<h3>Upload a new logo</h3>
+			<h3>{{ phrase('admin.portal.upload_a_new_logo') }}</h3>
 			<input type="file" name="file-upload" />
 			<div class="files"></div>
 
@@ -23,16 +23,16 @@
 			</script>
 
 			<div class="save-btn-wrap">
-				<button class="clean-white save-logo-trigger">Save logo</button>
+				<button class="clean-white save-logo-trigger">{{ phrase('admin.portal.save_logo') }}</button>
 			</div>
 		</div>
 		<div class="text">
-			<h3>... or just enter a title and a tagline</h3>
+			<h3>{{ phrase('admin.portal._or_just_enter_a_title_and_a') }}</h3>
 			<div class="input-title"><input type="text" class="title" name="title" value="{{ app.getSetting('core.deskpro_name') }}" placeholder="Title" /></div>
 			<div class="input-tagline"><input type="text" class="tagline" name="tagline" value="{{ app.getSetting('core.deskpro_tagline') }}" placeholder="Tagline" /></div>
 
 			<div class="save-btn-wrap">
-				<button class="clean-white save-text-trigger">Save title and tagline</button>
+				<button class="clean-white save-text-trigger">{{ phrase('admin.portal.save_title_and_tagline') }}</button>
 			</div>
 		</div>
 	</div>

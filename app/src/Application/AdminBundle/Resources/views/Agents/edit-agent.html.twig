@@ -9,16 +9,16 @@
 	</nav>
 	<ul id="tools_menu" style="display: none">
 		{#{% if not agent.is_vacation_mode %}<li id="vacation_overlay_trigger">Vacation Mode</li>{% endif %}#}
-		<li id="delete_overlay_trigger">Delete Agent</li>
+		<li id="delete_overlay_trigger">{{ phrase('admin.agents.delete_agent') }}</li>
 	</ul>
 	{% endif %}
 
 	<ul>
-		<li><a href="{{ path('admin_agents') }}">Agents</a></li>
+		<li><a href="{{ path('admin_agents') }}">{{ phrase('admin.agents.agents') }}</a></li>
 		{% if agent.id %}
-			<li>Edit Agent</li>
+			<li>{{ phrase('admin.agents.edit_agent') }}</li>
 		{% else %}
-			<li>New Agent</li>
+			<li>{{ phrase('admin.agents.new_agent') }}</li>
 		{% endif %}
 	</ul>
 {% endblock %}
@@ -50,7 +50,7 @@
 	<div class="dp-form-section">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Name</label>
+				<label>{{ phrase('admin.agents.name') }}</label>
 			</div>
 			<div class="dp-form-input">
 				<input style="width:200px;" type="text" name="agent[first_name]" value="{{ agent.first_name }}" />
@@ -60,7 +60,7 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Email</label>
+				<label>{{ phrase('admin.agents.email') }}</label>
 			</div>
 			<div class="dp-form-input">
 				<input style="width:422px;" type="text" name="agent[email]" value="{{ agent.primary_email_address }}" />
@@ -70,7 +70,7 @@
 		{% if not agent.id %}
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>Initial Password</label>
+					<label>{{ phrase('admin.agents.initial_password') }}</label>
 				</div>
 				<div class="dp-form-input">
 					<input style="width:422px;" type="text" name="agent[password]" value="{{ random_password }}" />
@@ -81,7 +81,7 @@
 		{% if all_teams %}
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>Teams</label>
+					<label>{{ phrase('admin.agents.teams') }}</label>
 				</div>
 				<div class="dp-form-input">
 					<div class="checkbox-rows"  style="width:417px;">
@@ -106,24 +106,24 @@
 			<td width="35%" style="padding-right: 10px">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Zone Access</label>
+						<label>{{ phrase('admin.agents.zone_access') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="hidden" name="agent[can_agent]" value="1" />
 
 						<label style="line-height: 24px">
 							<input type="checkbox" name="agent[can_admin]" value="1" {% if agent.can_admin %}checked="checked"{% endif %} />
-							<span class="with-icon zone-admin">Can access admin</span>
+							<span class="with-icon zone-admin">{{ phrase('admin.agents.can_access_admin') }}</span>
 						</label><br />
 
 						<label style="line-height: 24px">
 							<input type="checkbox" name="agent[can_reports]" value="1" {% if agent.can_reports %}checked="checked"{% endif %} />
-							<span class="with-icon zone-reports">Can access reports</span>
+							<span class="with-icon zone-reports">{{ phrase('admin.agents.can_access_reports') }}</span>
 						</label><br />
 
 						<label style="line-height: 24px">
 							<input type="checkbox" name="agent[can_billing]" value="1" {% if agent.can_billing %}checked="checked"{% endif %} />
-							<span class="with-icon zone-billing">Can access billing</span>
+							<span class="with-icon zone-billing">{{ phrase('admin.agents.can_access_billing') }}</span>
 						</label><br />
 					</div>
 				</div>
@@ -131,16 +131,16 @@
 			<td width="65%" style="padding-left: 10px">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Department Access Permissions</label>
+						<label>{{ phrase('admin.agents.department_access_permissions') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<div class="check-grid" style="max-height: 200px; overflow: auto;">
 							<table width="100%">
 								<thead>
 									<tr>
-										<th style="text-align: left;">Department</th>
-										<th width="60">Tickets</th>
-										<th width="60">Chat</th>
+										<th style="text-align: left;">{{ phrase('admin.agents.department') }}</th>
+										<th width="60">{{ phrase('admin.agents.tickets') }}</th>
+										<th width="60">{{ phrase('admin.agents.chat') }}</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -184,7 +184,7 @@
 				{% if all_usergroups %}
 					<div class="dp-form-row">
 						<div class="dp-form-label">
-							<label>Permission Groups</label>
+							<label>{{ phrase('admin.agents.permission_groups') }}</label>
 						</div>
 						<div class="dp-form-input">
 							<div class="checkbox-rows" id="usergroup_checks">
@@ -207,7 +207,7 @@
 			<td width="65%" style="padding-left: 10px">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Permissions</label>
+						<label>{{ phrase('admin.agents.permissions') }}</label>
 					</div>
 					<div class="dp-form-input" id="permgroup_table">
 						{% include 'AdminBundle:Agents:edit-agent-permtable.html.twig' %}
@@ -220,7 +220,7 @@
 
 <footer class="controls">
 	<div class="is-not-loading">
-		<button class="clean-white">Save Agent</button>
+		<button class="clean-white">{{ phrase('admin.agents.save_agent') }}</button>
 	</div>
 	<div class="is-loading">
 		<div class="loading-icon-flat">&nbsp;</div>

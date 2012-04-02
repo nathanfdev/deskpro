@@ -13,26 +13,26 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 	<section class="top">
 		{% if is_default and not (not department and section == 'create') %}<div class="disable-overlay"></div>{% endif %}
 		<header>
-			<h4>Ticket Elements</h4>
+			<h4>{{ phrase('admin.ticketproperties.ticket_elements') }}</h4>
 		</header>
 		<article id="ticket_elements">
 			<ul>
 				<li class="draggable irremovable" data-item-id="ticket_department" data-edit-title="Edit Departments" data-edit-url="{{ path('admin_departments') }}"><label>Department</label></li>
 				{% if section == 'create' %}
-					<li class="draggable irremovable" data-item-id="message"><label>Ticket Message</label></li>
-					<li class="draggable irremovable" data-item-id="ticket_subject"><label>Ticket Subject</label></li>
-					<li class="draggable" data-item-id="attachments"><label>Attachments</label></li>
+					<li class="draggable irremovable" data-item-id="message"><label>{{ phrase('admin.ticketproperties.ticket_message') }}</label></li>
+					<li class="draggable irremovable" data-item-id="ticket_subject"><label>{{ phrase('admin.ticketproperties.ticket_subject') }}</label></li>
+					<li class="draggable" data-item-id="attachments"><label>{{ phrase('admin.ticketproperties.attachments') }}</label></li>
 				{% endif %}
-				<li class="draggable" data-item-id="ticket_category" data-edit-title="Edit Categories" data-edit-url="{{ path('admin_ticketcats') }}"><label>Category</label></li>
+				<li class="draggable" data-item-id="ticket_category" data-edit-title="Edit Categories" data-edit-url="{{ path('admin_ticketcats') }}"><label>{{ phrase('admin.ticketproperties.category') }}</label></li>
 				<li class="draggable" data-item-id="ticket_product" data-edit-title="Edit Products" data-edit-url="{{ path('admin_products') }}"><label>Product</label></li>
-				<li class="draggable" data-item-id="ticket_priority" data-edit-title="Edit Priorities" data-edit-url="{{ path('admin_ticketpris') }}"><label>Priority</label></li>
+				<li class="draggable" data-item-id="ticket_priority" data-edit-title="Edit Priorities" data-edit-url="{{ path('admin_ticketpris') }}"><label>{{ phrase('admin.ticketproperties.priority') }}</label></li>
 				{% for field in custom_ticket_fields %}
 				<li class="draggable" data-item-id="ticket_field[{{field.field_def.id}}]" data-edit-title="Edit Field" data-edit-url="{{ path('admin_customdeftickets_edit', {field_id: field.field_def.id}) }}">
 				<label>{{field.title}}</label>
 					</li>
 				{% endfor %}
 				{% if section == 'create' %}
-					<li class="draggable" data-item-id="captcha"><label>CAPTCHA</label></li>
+					<li class="draggable" data-item-id="captcha"><label>{{ phrase('admin.ticketproperties.captcha') }}</label></li>
 				{% endif %}
 			</ul>
 		</article>
@@ -42,10 +42,10 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 	<div class="inner-shadow"></div>
 	<section class="top">
 		<header>
-			<h4>Embed into your website</h4>
+			<h4>{{ phrase('admin.ticketproperties.embed_into_your_website') }}</h4>
 		</header>
 		<article class="with-single-button">
-			<button class="clean-white small" id="embed_form_overlay_trigger" data-load-url="{{ path('admin_tickets_editor_form_embed', {department_id: department.id|default(0)}) }}">Integration Options</button>
+			<button class="clean-white small" id="embed_form_overlay_trigger" data-load-url="{{ path('admin_tickets_editor_form_embed', {department_id: department.id|default(0)}) }}">{{ phrase('admin.ticketproperties.integration_options') }}</button>
 		</article>
 	</section>
 </div>
@@ -67,10 +67,10 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 </div>
 
 <div class="pagetop-option">
-	<input type="checkbox" class="onoff-slider" id="per_department_check" data-update-url="{{ path('admin_tickets_editor_toggleper') }}" {% if app.getSetting('core_tickets.per_department_form') %}checked="checked"{% endif %}/> Enable custom layouts for each department
+	<input type="checkbox" class="onoff-slider" id="per_department_check" data-update-url="{{ path('admin_tickets_editor_toggleper') }}" {% if app.getSetting('core_tickets.per_department_form') %}checked="checked"{% endif %}/> {{ phrase('admin.ticketproperties.enable_custom_layouts_for_each_department') }}
 	{% if app.getSetting('core_tickets.per_department_form') %}
 		<div class="sub">
-			Edit the <a class="switcher" href="{{ path('admin_tickets_editor_dep', {'department_id': '0', 'section': section}) }}">Default Layout</a>
+			Edit the <a class="switcher" href="{{ path('admin_tickets_editor_dep', {'department_id': '0', 'section': section}) }}">{{ phrase('admin.ticketproperties.default_layout') }}</a>
 			or select a specific <span id="department_switcher" class="switcher"><span>Department</span></span>
 		</div>
 	{% endif %}
@@ -78,16 +78,16 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 
 <div class="content-tabs">
 	<nav>
-		<span class="saving-text" id="saving_text" style="display: none">Saving</span>
+		<span class="saving-text" id="saving_text" style="display: none">{{ phrase('admin.ticketproperties.saving') }}</span>
 		<ul>
 			<li {% if section == 'create' %}class="on"{% endif %}>
-				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0')}) }}">New Ticket Form</a>
+				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0')}) }}">{{ phrase('admin.ticketproperties.new_ticket_form') }}</a>
 			</li>
 			<li {% if section == 'view' %}class="on"{% endif %}>
-				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0'), 'section': 'view'}) }}">View Ticket Page</a>
+				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0'), 'section': 'view'}) }}">{{ phrase('admin.ticketproperties.view_ticket_page') }}</a>
 			</li>
 			<li class="{% if section == 'modify' %}on{% endif %}">
-				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0'), 'section': 'modify'}) }}">Modify Ticket Form</a>
+				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0'), 'section': 'modify'}) }}">{{ phrase('admin.ticketproperties.modify_ticket_form') }}</a>
 			</li>
 		</ul>
 		<br />
@@ -103,7 +103,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			data-disable="{{ path('admin_tickets_editor_dep_revert', {department_id: department.id|default(0), section: section}) }}"
 			{% if not is_default %}checked="checked"{% endif %}
 		/>
-		Enable alternative layout for {% if section == 'view' %}View Ticket Page{% elseif section == 'create' %}New Ticket Form{% else %}Modify Ticket Form{% endif %}
+		Enable alternative layout for {% if section == 'view' %}{{ phrase('admin.ticketproperties.view_ticket_page') }}{% elseif section == 'create' %}{{ phrase('admin.ticketproperties.new_ticket_form') }}{% else %}{{ phrase('admin.ticketproperties.modify_ticket_form') }}{% endif %}
 	</div>
 	{% endif %}
 
@@ -120,7 +120,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 
 		<ul id="admin_ticket_editor_items" class="dp-form">
 			<li class="no-items-notice">
-				Drag and drop fields from the left onto this area to start designing your form.
+				{{ phrase('admin.ticketproperties.drag_and_drop_fields_from_the_left_onto') }}
 			</li>
 		</ul>
 		</form>
@@ -321,7 +321,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</div>
 	{% endif %}
 	{% if term_options.ticket_categories_full %}
-		<div class="type" title="Category" data-rule-type="category">
+		<div class="type" title="{{ phrase('admin.ticketproperties.category') }}" data-rule-type="category">
 			<div class="op">
 				<select name="op">
 					<option value="is">is</option>
@@ -338,7 +338,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</div>
 	{% endif %}
 	{% if term_options.priorities %}
-		<div class="type" title="Priority" data-rule-type="priority">
+		<div class="type" title="{{ phrase('admin.ticketproperties.priority') }}" data-rule-type="priority">
 			<div class="op">
 				<select name="op">
 					<option value="is">is</option>
@@ -391,7 +391,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 						{% if not department %}checked="checked"{% endif %}
 						data-refresh-url="{{ path('admin_tickets_editor_dep', {'department_id': '0', 'section': section}) }}"
 					/>
-					<label>Default Layout</label>
+					<label>{{ phrase('admin.ticketproperties.default_layout') }}</label>
 				</li>
 			{% endif %}
 			{% for dep in department_hierarchy %}
@@ -439,7 +439,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 <div id="embed_form_overlay" style="width: 785px; height: 555px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
-		<h4>Embed into your website</h4>
+		<h4>{{ phrase('admin.ticketproperties.embed_into_your_website') }}</h4>
 	</div>
 	<div class="overlay-content">
 		<div class="loading-icon-big" style="padding-top: 20px;"></div>

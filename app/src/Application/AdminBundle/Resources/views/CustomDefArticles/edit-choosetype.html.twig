@@ -4,7 +4,7 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
      <ul>
-		<li><a href="{{ path('admin_customdefarticles') }}">Article Fields</a></li>
-		<li>Choose Field Type</li>
+		<li><a href="{{ path('admin_customdefarticles') }}">{{ phrase('admin.customdefarticles.article_fields') }}</a></li>
+		<li>{{ phrase('admin.customdefarticles.choose_field_type') }}</li>
      </ul>
 {% endblock %}

@@ -6,13 +6,13 @@
 {{ design.block_sections() }}
 
 	{{ design.block_sections_item() }}
-		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Text" checked="checked" /> Text</label></h3></header>
-		<p>This is a simple one-line text box.</p>
+		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\{{ phrase('admin.customdefabstract.text') }}" checked="checked" /> {{ phrase('admin.customdefabstract.text') }}</label></h3></header>
+		<p>{{ phrase('admin.customdefabstract.this_is_a_simple_oneline_text_box') }}</p>
 	{{ design.block_sections_item_end() }}
 
 	{{ design.block_sections_item() }}
 		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Textarea" /> Textarea</label></h3></header>
-		<p>This is a multi-line text box that can be used for longer entries like descriptions or notes.</p>
+		<p>{{ phrase('admin.customdefabstract.this_is_a_multiline_text_box_that_can') }}</p>
 	{{ design.block_sections_item_end() }}
 
 	{{ design.block_sections_item() }}
@@ -29,11 +29,11 @@
 
 	{{ design.block_sections_item() }}
 		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Display" /> Display</label></h3></header>
-		<p>This is a widget field that lets you enter any kind of HTML for display purposes. It does not take any input.</p>
+		<p>{{ phrase('admin.customdefabstract.this_is_a_widget_field_that_lets_you') }}</p>
 	{{ design.block_sections_item_end() }}
 
 	<li class="footer">
-		<button class="clean-white">Continue</button>
+		<button class="clean-white">{{ phrase('admin.customdefabstract.continue') }}</button>
 	</li>
 
 {{ design.block_sections_end() }}

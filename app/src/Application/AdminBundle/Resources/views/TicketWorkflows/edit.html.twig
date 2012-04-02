@@ -13,7 +13,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Title</label>
+			<label>{{ phrase('admin.ticketworkflows.title') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.title) }}
@@ -23,7 +23,7 @@
 
 {{ form_rest(form) }}
 
-<button class="btn primary save-trigger">Save</button>
+<button class="btn primary save-trigger">{{ phrase('admin.ticketworkflows.save') }}</button>
 </form>
 
 <div class="delete-link-wrap">

@@ -1,7 +1,7 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 	<ul>
-		<li>Save License Code</li>
+		<li>{{ phrase('admin.license.save_license_code') }}</li>
 	</ul>
 {% endblock %}
 {% block sidebar_right %}
@@ -9,11 +9,11 @@
 <div class="dp-page-box" style="padding-top: 15px;">
 	<div class="resource-item-list icon-group">
 		<header>
-			<h4>Don't have a license code?</h4>
+			<h4>{{ phrase('admin.license.dont_have_a_license_code') }}</h4>
 		</header>
 		<article>
-			If you'd have a license code yet,
-			<a href="{{ path('admin_license_reqdemo') }}">click here generate a demo license</a>.
+			{{ phrase('admin.license.if_youd_have_a_license_code_yet') }}
+			<a href="{{ path('admin_license_reqdemo') }}">{{ phrase('admin.license.click_here_generate_a_demo_license') }}</a>.
 		</article>
 	</div>
 </div>
@@ -32,7 +32,7 @@
 
 {% if invalid %}
 <div class="alert-message block-message error">
-	<strong>We encountered a problem:</strong>
+	<strong>{{ phrase('admin.license.we_encountered_a_problem') }}:</strong>
 	<ul>
 		{% if invalid %}<li>The license code you entered appears to be invalid. If you think this is a mistake, please email support@deskpro.com. (Code: {{ invalid }})</li>{% endif %}
 	</ul>
@@ -42,7 +42,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Your license code</label>
+			<label>{{ phrase('admin.license.your_license_code') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<textarea name="license_code" style="height: 150px"></textarea>
@@ -50,7 +50,7 @@
 	</div>
 </div>
 
-	<button class="clean-white">Save License</button>
+	<button class="clean-white">{{ phrase('admin.license.save_license') }}</button>
 </form>
 
 {% endblock %}

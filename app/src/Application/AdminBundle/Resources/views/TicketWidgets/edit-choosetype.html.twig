@@ -10,7 +10,7 @@ function _page_exec() {
 </script>
 {% endblock %}
 {% block header %}
-	<h1>Choose Widget Type</h1>
+	<h1>{{ phrase('admin.ticketwidgets.choose_widget_type') }}</h1>
 {% endblock %}
 {% block content %}
 
@@ -18,21 +18,21 @@ function _page_exec() {
 
 <input type="hidden" name="widget[template_name]" value="DeskPRO:Widgets:deskpro_content.html.twig" />
 
-<strong>Widget Location</strong>
+<strong>{{ phrase('admin.ticketwidgets.widget_location') }}</strong>
 <ul class="item-list">
 	<li>
-		<input type="radio" name="widget[section]" value="agent.ticket.display" checked="checked" /> Display field in agent interface<br />
-		<input type="radio" name="widget[section]" value="agent.ticket.tabs" /> Tab in agent interface<br />
-		<input type="radio" name="widget[section]" value="user.ticket.display" /> Display field in user interface<br />
+		<input type="radio" name="widget[section]" value="agent.ticket.display" checked="checked" /> {{ phrase('admin.ticketwidgets.display_field_in_agent_interface') }}<br />
+		<input type="radio" name="widget[section]" value="agent.ticket.tabs" /> {{ phrase('admin.ticketwidgets.tab_in_agent_interface') }}<br />
+		<input type="radio" name="widget[section]" value="user.ticket.display" /> {{ phrase('admin.ticketwidgets.display_field_in_user_interface') }}<br />
 	</li>
 </ul>
 
 <br />
 
-<strong>Widget Type</strong>
+<strong>{{ phrase('admin.ticketwidgets.widget_type') }}</strong>
 <ul class="item-list">
 	<li>
-		<input type="radio" name="widget[name_id]" value="deskpro_content" checked="checked" /> Simple HTML content
+		<input type="radio" name="widget[name_id]" value="deskpro_content" checked="checked" /> {{ phrase('admin.ticketwidgets.simple_html_content') }}
 	</li>
 </ul>
 
@@ -40,6 +40,6 @@ function _page_exec() {
 
 {% endblock %}
 {% block footer %}
-	<button class="dp-button green save-trigger">Continue</button>
+	<button class="dp-button green save-trigger">{{ phrase('admin.ticketwidgets.continue') }}</button>
 
 {% endblock %}

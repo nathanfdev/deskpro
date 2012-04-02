@@ -5,10 +5,10 @@
 {% block pagebar %}
      <nav>
           <ul>
-               <li class="add"><a href="{{ path(route_basename~'new_choosetype') }}">Add Field</a></li>
+               <li class="add"><a href="{{ path(route_basename~'new_choosetype') }}">{{ phrase('admin.customdefarticles.add_field') }}</a></li>
           </ul>
      </nav>
      <ul>
-          <li>Article Fields</li>
+          <li>{{ phrase('admin.customdefarticles.article_fields') }}</li>
      </ul>
 {% endblock %}

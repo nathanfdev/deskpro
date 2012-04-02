@@ -3,11 +3,11 @@
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li class="add"><a id="newdep_open">Add New Department</a></li>
+			<li class="add"><a id="newdep_open">{{ phrase('admin.departments.add_new_department') }}</a></li>
 		</ul>
 	</nav>
 	<ul>
-		<li>Departments</li>
+		<li>{{ phrase('admin.departments.departments') }}</li>
 	</ul>
 {% endblock %}
 {% block content %}
@@ -15,19 +15,19 @@
 <div class="page-content" data-element-handler="DeskPRO.Admin.Departments.AjaxSave" data-reorder-url="{{ path('admin_departments_updateorders') }}">
 
 	{{ design.helpbox() }}
-	    <p>The department field is the primary grouping field for tickets and chats. For many helpdesks, this will be the only field configured. A typical set of departments would include "Sales", "Support" and "Billing".</p>
+	    <p>{{ phrase('admin.departments.the_department_field_is_the_primary_grouping_field') }}</p>
 	{{ design.helpbox_end() }}
 
 	{{ design.dpgrid({class: 'dep-list'}) }}
 		{{ design.dpgrid_headerrow() }}
 			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 580px;"}) }}
-				<h1>Department</h1>
+				<h1>{{ phrase('admin.departments.department') }}</h1>
 			{{ design.dpgrid_headercol_end() }}
 			{{ design.dpgrid_headercol({ class: 'l r tl tr l-margin r-margin', style: "width: 140px"}) }}
-				<h1>Tickets</h1>
+				<h1>{{ phrase('admin.departments.tickets') }}</h1>
 			{{ design.dpgrid_headercol_end() }}
 			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 140px"}) }}
-				<h1>Chat</h1>
+				<h1>{{ phrase('admin.departments.chat') }}</h1>
 			{{ design.dpgrid_headercol_end() }}
 		{{ design.dpgrid_headerrow_end() }}
 
@@ -39,13 +39,13 @@
 <div id="editdep_overlay" style="width: 400px; height: 180px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
-		<h4>Edit Department Title</h4>
+		<h4>{{ phrase('admin.departments.edit_department_title') }}</h4>
 	</div>
 	<div class="overlay-content">
 		<form class="dp-form" method="POST" action="{{ path('admin_departments_savetitle') }}">
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>Title</label>
+					<label>{{ phrase('admin.departments.title') }}</label>
 				</div>
 				<div class="dp-form-input">
 					<input type="hidden" name="department_id" id="editdep_depid" value="" />
@@ -55,20 +55,20 @@
 		</form>
 	</div>
 	<div class="overlay-footer">
-		<button class="clean-white" id="editdep_savebtn">Save</button>
+		<button class="clean-white" id="editdep_savebtn">{{ phrase('admin.departments.save') }}</button>
 	</div>
 </div>
 
 <div id="newdep_overlay" style="width: 400px; height: 230px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
-		<h4>New Department</h4>
+		<h4>{{ phrase('admin.departments.new_department') }}</h4>
 	</div>
 	<div class="overlay-content">
 		<form class="dp-form" method="POST" action="{{ path('admin_departments_savenew') }}">
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>Title</label>
+					<label>{{ phrase('admin.departments.title') }}</label>
 				</div>
 				<div class="dp-form-input">
 					<input type="text" name="title" id="newdep_title" value="" />
@@ -77,11 +77,11 @@
 
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>Parent</label>
+					<label>{{ phrase('admin.departments.parent') }}</label>
 				</div>
 				<div class="dp-form-input">
 					<select name="parent_id" id="newdep_parent_id">
-						<option value="0">No Parent</option>
+						<option value="0">{{ phrase('admin.departments.no_parent') }}</option>
 						{% for department in all_departments %}
 							<option value="{{ department.id }}">{{ department.title }}</option>
 						{% endfor %}
@@ -91,7 +91,7 @@
 		</form>
 	</div>
 	<div class="overlay-footer">
-		<button class="clean-white" id="newdep_savebtn">Add</button>
+		<button class="clean-white" id="newdep_savebtn">{{ phrase('admin.departments.add') }}</button>
 	</div>
 </div>
 

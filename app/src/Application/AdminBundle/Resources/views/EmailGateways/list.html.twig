@@ -3,11 +3,11 @@
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li class="add"><a href="{{ path('admin_emailgateways_new') }}">Add Email Gateway</a></li>
+			<li class="add"><a href="{{ path('admin_emailgateways_new') }}">{{ phrase('admin.emailgateways.add_email_gateway') }}</a></li>
 		</ul>
 	</nav>
 	<ul>
-		<li><a href="{{ path('admin_emailgateways') }}">Email Gateways</a></li>
+		<li><a href="{{ path('admin_emailgateways') }}">{{ phrase('admin.emailgateways.email_gateways') }}</a></li>
 	</ul>
 {% endblock %}
 {% block sidebar_right %}
@@ -15,9 +15,9 @@
 	<div class="resource-item-list">
 		<header>
 			<div class="controls">
-				<a class="clean-white small" href="{{ path('admin_emailtrans_newaccount') }}">New</a>
+				<a class="clean-white small" href="{{ path('admin_emailtrans_newaccount') }}">{{ phrase('admin.emailgateways.new') }}</a>
 			</div>
-			<h4>Outgoing Email Accounts</h4>
+			<h4>{{ phrase('admin.emailgateways.outgoing_email_accounts') }}</h4>
 		</header>
 		<article>
 			{% if all_transports|length > 1 %}{# > 1 because 1 is always the 'all' transport #}
@@ -38,7 +38,7 @@
 							{% endif %}
 							</a>
 							<br />
-							Send through:<br />
+							{{ phrase('admin.emailgateways.send_through') }}:<br />
 							&nbsp;&nbsp;&nbsp;<span title="{{ transport.title }}">{{ transport.title|truncate(45) }}</span>
 						</li>
 					{% endif %}{% endfor %}

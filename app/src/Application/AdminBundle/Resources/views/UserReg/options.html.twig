@@ -5,7 +5,7 @@
 {% endblock %}
 {% block pagebar %}
      <ul>
-         <li>Registration Settings</li>
+         <li>{{ phrase('admin.userreg.registration_settings') }}</li>
      </ul>
 {% endblock %}
 {% block sidebar_right %}
@@ -13,28 +13,28 @@
 		<div class="resource-item-list">
 			<header>
 				<div class="controls">
-					<a class="clean-white small" href="{{ path('admin_userreg_usersource_choose') }}">Add User Source</a>
+					<a class="clean-white small" href="{{ path('admin_userreg_usersource_choose') }}">{{ phrase('admin.userreg.add_user_source') }}</a>
 				</div>
-				<h4>User Sources</h4>
+				<h4>{{ phrase('admin.userreg.user_sources') }}</h4>
 			</header>
 			<article>
-				<article class="box-hint">A user source is any database that DeskPRO will use to authenticate users when they want to log in.</article>
+				<article class="box-hint">{{ phrase('admin.userreg.a_user_source_is_any_database_that_deskpro') }}</article>
 				<ul>
 					<li>
 						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_deskpro_source_toggle') }}';" {% if app.getSetting('core.deskpro_source_enabled') %}checked="checked"{% endif %} />
-						DeskPRO
+						{{ phrase('admin.userreg.deskpro') }}
 					</li>
 					<li>
 						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_facebook_toggle') }}';" {% if app.getSetting('core.facebook_source_enabled') %}checked="checked"{% endif %} />
-						Facebook <a href="{{ path('admin_userreg_facebook_edit') }}" class="btn-edit-gear2" style="position: relative; top: 2px;"></a>
+						{{ phrase('admin.userreg.facebook') }} <a href="{{ path('admin_userreg_facebook_edit') }}" class="btn-edit-gear2" style="position: relative; top: 2px;"></a>
 					</li>
 					<li>
 						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_twitter_toggle') }}';" {% if app.getSetting('core.twitter_source_enabled') %}checked="checked"{% endif %} />
-						Twitter <a href="{{ path('admin_userreg_twitter_edit') }}" class="btn-edit-gear2" style="position: relative; top: 2px;"></a>
+						{{ phrase('admin.userreg.twitter') }} <a href="{{ path('admin_userreg_twitter_edit') }}" class="btn-edit-gear2" style="position: relative; top: 2px;"></a>
 					</li>
 					<li>
 						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_google_toggle') }}';" {% if app.getSetting('core.google_source_enabled') %}checked="checked"{% endif %} />
-						Google
+						{{ phrase('admin.userreg.google') }}
 					</li>
 					{% for usersource in usersources %}{% if usersource.source_type != 'facebook' and usersource.source_type != 'google' %}
 						<li>
@@ -56,7 +56,7 @@
 		<tr>
 			<td width="10"><input type="checkbox" name="email_validation" value="1" {% if app.getSetting('core.email_validation') %}checked="checked"{% endif %} /></td>
 			<td>
-				<h3>Force email validation</h3>
+				<h3>{{ phrase('admin.userreg.force_email_validation') }}</h3>
 				Force users to validate their email address when they first register. Until a user validates, any submitted content on their account will
 				be invisible.
 			</td>
@@ -64,7 +64,7 @@
 		<tr>
 			<td width="10"><input type="checkbox" name="existing_account_login" value="1" {% if app.getSetting('core.existing_account_login') %}checked="checked"{% endif %} /></td>
 			<td>
-				<h3>Force login for existing users</h3>
+				<h3>{{ phrase('admin.userreg.force_login_for_existing_users') }}</h3>
 				If a user tries to submit a new ticket, submit new feedback, start a new chat or add a comment using an email address that belongs to an existing
 				account, they will be prompted to login before the submission is accepted.
 			</td>
@@ -76,16 +76,16 @@
 <div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Registration Mode</label>
+			<label>{{ phrase('admin.userreg.registration_mode') }}</label>
 		</div>
 		<div class="dp-form-input" style="width: 95%;">
 			<div class="dp-input-group">
 				<label>
 					<input class="option-trigger" type="radio" name="mode" value="open" {% if not app.getSetting('core.user_mode') or app.getSetting('core.user_mode') == 'open' %}checked="checked"{% endif %}>
-					Open Helpdesk
+					{{ phrase('admin.userreg.open_helpdesk') }}
 				</label>
 				<div class="dp-group-options" style="display: none">
-					<p>With an open helpdesk, anyone can use the helpdesk and anyone can register and log in.</p>
+					<p>{{ phrase('admin.userreg.with_an_open_helpdesk_anyone_can_use_the') }}</p>
 					{{ _self.options_table() }}
 				</div>
 			</div>
@@ -93,10 +93,10 @@
 			<div class="dp-input-group">
 				<label>
 					<input class="option-trigger" type="radio" name="mode" value="require_reg" {% if app.getSetting('core.user_mode') == 'require_reg' %}checked="checked"{% endif %}>
-					Require Registration
+					{{ phrase('admin.userreg.require_registration') }}
 				</label>
 				<div class="dp-group-options" style="display: none">
-					<p>With this mode, the helpdesk is readable by everyone but users must log in to submit content such as new tickets, new feedback, or new comments.</p>
+					<p>{{ phrase('admin.userreg.with_this_mode_the_helpdesk_is_readable_by') }}</p>
 					{{ _self.options_table() }}
 				</div>
 			</div>
@@ -104,10 +104,10 @@
 			<div class="dp-input-group">
 				<label>
 					<input class="option-trigger" type="radio" name="mode" value="require_reg_agent_validation" {% if app.getSetting('core.user_mode') == 'require_reg_agent_validation' %}checked="checked"{% endif %}>
-					Require Registration with Agent Validation
+					{{ phrase('admin.userreg.require_registration_with_agent_validation') }}
 				</label>
 				<div class="dp-group-options" style="display: none">
-					<p>This is the same as "Request Registration" except that users must be manually validated by agents before they are able interact with the helpdesk.</p>
+					<p>{{ phrase('admin.userreg.this_is_the_same_as_request_registration_except') }}</p>
 					{{ _self.options_table() }}
 				</div>
 			</div>
@@ -115,7 +115,7 @@
 			<div class="dp-input-group">
 				<label>
 					<input class="option-trigger" type="radio" name="mode" value="closed" {% if app.getSetting('core.user_mode') == 'closed' %}checked="checked"{% endif %}>
-					Closed
+					{{ phrase('admin.userreg.closed') }}
 				</label>
 				<div class="dp-group-options" style="display: none">
 					<p>With a closed helpdesk, registration is closed so users must already exist in an external user-source or their accounts must be created
@@ -129,7 +129,7 @@
 
 	<footer class="controls">
 		<div class="is-not-loading">
-			<button class="clean-white">Save Registration Settings</button>
+			<button class="clean-white">{{ phrase('admin.userreg.save_registration_settings') }}</button>
 		</div>
 		<div class="is-loading">
 			<div class="loading-icon-flat">&nbsp;</div>

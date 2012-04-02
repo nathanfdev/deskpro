@@ -4,11 +4,11 @@
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li class="add"><a href="{{ path('admin_tickets_filters_new') }}">Add New Filter</a></li>
+			<li class="add"><a href="{{ path('admin_tickets_filters_new') }}">{{ phrase('admin.ticketfilters.add_new_filter') }}</a></li>
 		</ul>
 	</nav>
 	<ul>
-		<li>Ticket Filters</li>
+		<li>{{ phrase('admin.ticketfilters.ticket_filters') }}</li>
 	</ul>
 {% endblock %}
 {% block page %}
@@ -22,7 +22,7 @@
 				{% if filter.is_global or filter.agent_team %}
 					{% set is_use_by = false %}
 					{% set use_by_list %}
-						<h4>Used by:</h4>
+						<h4>{{ phrase('admin.ticketfilters.used_by') }}:</h4>
 						<ul>
 							{% for agent in agents %}
 								{% if not access_tester.isIgnored(agent, filter) and access_tester.canUse(agent, filter) %}
@@ -34,7 +34,7 @@
 					{% endset %}
 					{% set is_ignored_by = false %}
 					{% set ignored_by_list %}
-						<h4>Disabled by:</h4>
+						<h4>{{ phrase('admin.ticketfilters.disabled_by') }}:</h4>
 						<ul>
 							{% for agent in agents %}
 								{% if access_tester.isIgnored(agent, filter) and access_tester.canUse(agent, filter) %}
@@ -68,7 +68,7 @@
 				{% for term in filter.getSummaryParts() %}
 					<li>{{ term }}</li>
 				{% else %}
-					<li>No terms. All tickets match.</li>
+					<li>{{ phrase('admin.ticketfilters.no_terms_all_tickets_match') }}</li>
 				{% endfor %}
 			</ul>
 			<br class="clear" />
@@ -77,14 +77,14 @@
 {% endmacro %}
 
 {############################
-# Global Filters
+# {{ phrase('admin.ticketfilters.global_filters') }}
 #############################}
 
 {% if global_filters %}
 	{{ design.dpgrid() }}
 		{{ design.dpgrid_headerrow() }}
 			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 935px;"}) }}
-				<h1>Global Filters</h1>
+				<h1>{{ phrase('admin.ticketfilters.global_filters') }}</h1>
 			{{ design.dpgrid_headercol_end() }}
 		{{ design.dpgrid_headerrow_end() }}
 
@@ -97,14 +97,14 @@
 {% endif %}
 
 {############################
-# Team Filters
+# {{ phrase('admin.ticketfilters.team_filters') }}
 #############################}
 
 {% if team_filters %}
 	{{ design.dpgrid() }}
 		{{ design.dpgrid_headerrow() }}
 			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 935px;"}) }}
-				<h1>Team Filters</h1>
+				<h1>{{ phrase('admin.ticketfilters.team_filters') }}</h1>
 			{{ design.dpgrid_headercol_end() }}
 		{{ design.dpgrid_headerrow_end() }}
 
@@ -122,14 +122,14 @@
 {% endif %}
 
 {############################
-# Agent Filters
+# {{ phrase('admin.ticketfilters.agent_filters') }}
 #############################}
 
 {% if agent_filters %}
 	{{ design.dpgrid() }}
 		{{ design.dpgrid_headerrow() }}
 			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 935px;"}) }}
-				<h1>Agent Filters</h1>
+				<h1>{{ phrase('admin.ticketfilters.agent_filters') }}</h1>
 			{{ design.dpgrid_headercol_end() }}
 		{{ design.dpgrid_headerrow_end() }}
 

@@ -1,21 +1,21 @@
 <nav class="check-grid-tabs">
 	<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
-		<li class="on" data-tab-for="#permgroup_tickets"><span>Tickets</span></li>
-		<li data-tab-for="#permgroup_chat"><span>Chat</span></li>
-		<li data-tab-for="#permgroup_feedback"><span>Feedback</span></li>
-		<li data-tab-for="#permgroup_articles"><span>Articles</span></li>
-		<li data-tab-for="#permgroup_downloads"><span>Downloads</span></li>
-		<li data-tab-for="#permgroup_news"><span>News</span></li>
+		<li class="on" data-tab-for="#permgroup_tickets"><span>{{ phrase('admin.usergroups.tickets') }}</span></li>
+		<li data-tab-for="#permgroup_chat"><span>{{ phrase('admin.usergroups.chat') }}</span></li>
+		<li data-tab-for="#permgroup_feedback"><span>{{ phrase('admin.usergroups.feedback') }}</span></li>
+		<li data-tab-for="#permgroup_articles"><span>{{ phrase('admin.usergroups.articles') }}</span></li>
+		<li data-tab-for="#permgroup_downloads"><span>{{ phrase('admin.usergroups.downloads') }}</span></li>
+		<li data-tab-for="#permgroup_news"><span>{{ phrase('admin.usergroups.news') }}</span></li>
 	</ul>
 </nav>
 
 <div id="permgroup_tickets" style="display: none" class="dp-form-box">
-	<!-- PERMISSION:tickets.use --><input class="onoff-slider" type="checkbox" {% if permissions['tickets.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[tickets.use]" value="1" /> Can use tickets
+	<!-- PERMISSION:tickets.use --><input class="onoff-slider" type="checkbox" {% if permissions['tickets.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[tickets.use]" value="1" /> {{ phrase('admin.usergroups.can_use_tickets') }}
 	<div class="check-grid" style="max-height: 200px; overflow: auto;">
 		<table width="100%">
 			<thead>
 				<tr>
-					<th style="text-align: left;">Departments</th>
+					<th style="text-align: left;">{{ phrase('admin.usergroups.departments') }}</th>
 					<th width="60">&nbsp;</th>
 				</tr>
 			</thead>
@@ -45,12 +45,12 @@
 </div>
 
 <div id="permgroup_chat" style="display: none" class="dp-form-box">
-	<!-- PERMISSION:chat.use --><input class="onoff-slider" type="checkbox" {% if permissions['chat.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[chat.use]" value="1" /> Can use chat
+	<!-- PERMISSION:chat.use --><input class="onoff-slider" type="checkbox" {% if permissions['chat.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[chat.use]" value="1" /> {{ phrase('admin.usergroups.can_use_chat') }}
 	<div class="check-grid" style="max-height: 200px; overflow: auto;">
 		<table width="100%">
 			<thead>
 				<tr>
-					<th style="text-align: left;">Departments</th>
+					<th style="text-align: left;">{{ phrase('admin.usergroups.departments') }}</th>
 					<th width="60">&nbsp;</th>
 				</tr>
 			</thead>
@@ -80,18 +80,18 @@
 </div>
 
 <div id="permgroup_feedback" style="display: none" class="dp-form-box">
-	<!-- PERMISSION:feedback.use --><input class="onoff-slider" type="checkbox" {% if permissions['feedback.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[feedback.use]" value="1" /> Can use feedback
+	<!-- PERMISSION:feedback.use --><input class="onoff-slider" type="checkbox" {% if permissions['feedback.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[feedback.use]" value="1" /> {{ phrase('admin.usergroups.can_use_feedback') }}
 	<div class="check-grid" style="max-height: 200px; overflow: auto;">
 		<table width="100%">
 			<thead>
 				<tr>
-					<th style="text-align: left;">Permission</th>
+					<th style="text-align: left;">{{ phrase('admin.usergroups.permission') }}</th>
 					<th width="60">&nbsp;</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td class="title">Can submit new feedback</td>
+					<td class="title">{{ phrase('admin.usergroups.can_submit_new_feedback') }}</td>
 					<!-- PERMISSION:feedback.submit --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['feedback.submit'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[feedback.submit]" value="1" /></td>
 				</tr>
 				<tr>
@@ -99,11 +99,11 @@
 					<!-- PERMISSION:feedback.submit_validate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['feedback.submit_validate'] %}checked="checked"{% endif %} name="permissions[feedback.submit_validate]" value="1" /></td>
 				</tr>
 				<tr>
-					<td class="title">Can vote on feedback</td>
+					<td class="title">{{ phrase('admin.usergroups.can_vote_on_feedback') }}</td>
 					<!-- PERMISSION:feedback.rate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['feedback.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[feedback.rate]" value="1" /></td>
 				</tr>
 				<tr>
-					<td class="title">Submit comments on feedback</td>
+					<td class="title">{{ phrase('admin.usergroups.submit_comments_on_feedback') }}</td>
 					<!-- PERMISSION:feedback.comment --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['feedback.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[feedback.comment]" value="1" /></td>
 				</tr>
 				<tr>
@@ -116,22 +116,22 @@
 </div>
 
 <div id="permgroup_articles" style="display: none" class="dp-form-box">
-	<!-- PERMISSION:articles.use --><input class="onoff-slider" type="checkbox" {% if permissions['articles.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[articles.use]" value="1" /> Can use knowledgebase
+	<!-- PERMISSION:articles.use --><input class="onoff-slider" type="checkbox" {% if permissions['articles.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[articles.use]" value="1" /> {{ phrase('admin.usergroups.can_use_knowledgebase') }}
 	<div class="check-grid" style="max-height: 200px; overflow: auto;">
 		<table width="100%">
 			<thead>
 				<tr>
-					<th style="text-align: left;">Permission</th>
+					<th style="text-align: left;">{{ phrase('admin.usergroups.permission') }}</th>
 					<th width="60">&nbsp;</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td class="title">Can rate articles</td>
+					<td class="title">{{ phrase('admin.usergroups.can_rate_articles') }}</td>
 					<!-- PERMISSION:articles.rate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['articles.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[articles.rate]" value="1" /></td>
 				</tr>
 				<tr>
-					<td class="title">Submit comments on articles</td>
+					<td class="title">{{ phrase('admin.usergroups.submit_comments_on_articles') }}</td>
 					<!-- PERMISSION:articles.comment --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['articles.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[articles.comment]" value="1" /></td>
 				</tr>
 				<tr>
@@ -145,22 +145,22 @@
 
 <div id="permgroup_downloads" style="display: none" class="dp-form-box">
 	<!-- PERMISSION:downloads.use --><input class="onoff-slider" type="checkbox" {% if permissions['downloads.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[downloads.use]" value="1" />
-	Can use downloads
+	{{ phrase('admin.usergroups.can_use_downloads') }}
 	<div class="check-grid" style="max-height: 200px; overflow: auto;">
 		<table width="100%">
 			<thead>
 				<tr>
-					<th style="text-align: left;">Permission</th>
+					<th style="text-align: left;">{{ phrase('admin.usergroups.permission') }}</th>
 					<th width="60">&nbsp;</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td class="title">Can rate downloads</td>
+					<td class="title">{{ phrase('admin.usergroups.can_rate_downloads') }}</td>
 					<!-- PERMISSION:downloads.rate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['downloads.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[downloads.rate]" value="1" /></td>
 				</tr>
 				<tr>
-					<td class="title">Submit comments on downloads</td>
+					<td class="title">{{ phrase('admin.usergroups.submit_comments_on_downloads') }}</td>
 					<!-- PERMISSION:downloads.comment --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['downloads.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[downloads.comment]" value="1" /></td>
 				</tr>
 				<tr>
@@ -174,22 +174,22 @@
 
 <div id="permgroup_news" style="display: none" class="dp-form-box">
 	<!-- PERMISSION:news.use --><input class="onoff-slider" type="checkbox" {% if permissions['news.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.use]" value="1" />
-	News
+	{{ phrase('admin.usergroups.news') }}
 	<div class="check-grid" style="max-height: 200px; overflow: auto;">
 		<table width="100%">
 			<thead>
 				<tr>
-					<th style="text-align: left;">Permission</th>
+					<th style="text-align: left;">{{ phrase('admin.usergroups.permission') }}</th>
 					<th width="60">&nbsp;</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td class="title">Can rate news posts</td>
+					<td class="title">{{ phrase('admin.usergroups.can_rate_news_posts') }}</td>
 					<!-- PERMISSION:news.rate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['news.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.rate]" value="1" /></td>
 				</tr>
 				<tr>
-					<td class="title">Submit comments on news posts</td>
+					<td class="title">{{ phrase('admin.usergroups.submit_comments_on_news_posts') }}</td>
 					<!-- PERMISSION:news.comment --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['news.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.comment]" value="1" /></td>
 				</tr>
 				<tr>

@@ -1,7 +1,7 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagetitle %}
-	<h1>Test Page</h1>
+	<h1>{{ phrase('admin.test.test_page') }}</h1>
 {% endblock %}
 {% block page %}
 
@@ -36,13 +36,13 @@
 <div id="overlay_wrapper" style="width: 400px; height: 400px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
-		<h4>Overlay Title</h4>
+		<h4>{{ phrase('admin.test.overlay_title') }}</h4>
 	</div>
 	<div class="overlay-content">
-		<p>Overlay Content</p>
+		<p>{{ phrase('admin.test.overlay_content') }}</p>
 	</div>
 	<div class="overlay-footer">
-		<button class="clean-white">Overlay Footer</button>
+		<button class="clean-white">{{ phrase('admin.test.overlay_footer') }}</button>
 	</div>
 </div>
 

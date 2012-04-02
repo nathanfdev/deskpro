@@ -1,46 +1,46 @@
 {% set this_page = 'portal_settings' %}
 {% extends 'AdminBundle:Portal:layout.html.twig' %}
 {% block pagetitle %}
-	<h1>Portal Settings</h1>
+	<h1>{{ phrase('admin.portal.portal_settings') }}</h1>
 {% endblock %}
 {% block page %}
 <div class="setting_field_row">
-	<h4>Commenting</h4>
+	<h4>{{ phrase('admin.portal.commenting') }}</h4>
 	<div class="setting_fields">
 		<div class="field_row">
 			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
-				Allow users to submit comments</label>
+				{{ phrase('admin.portal.allow_users_to_submit_comments') }}</label>
 			<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
-				Require users to log in or register before they can comment</label>
+				{{ phrase('admin.portal.require_users_to_log_in_or_register_before') }}</label>
 			<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
-				Require users to validate their email addresses before a comment is visible</label>
+				{{ phrase('admin.portal.require_users_to_validate_their_email_addresses_before') }}</label>
 			<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
-				Require all comments to be manually validated by agents</label>
+				{{ phrase('admin.portal.require_all_comments_to_be_manually_validated_by') }}</label>
 			<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
-				Show a CAPTCHA on comment forms</label>
+				{{ phrase('admin.portal.show_a_captcha_on_comment_forms') }}</label>
 		</div>
 		<div class="field_row">
 			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
-				Allow users to rate content</label>
+				{{ phrase('admin.portal.allow_users_to_rate_content') }}</label>
 			<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
-			Show ratings publicly</label>
+			{{ phrase('admin.portal.show_ratings_publicly') }}</label>
 		</div>
 	</div>
 </div>
 
 <div class="setting_field_row">
-	<h4>Integrations</h4>
+	<h4>{{ phrase('admin.portal.integrations') }}</h4>
 	<div class="setting_fields">
 		<div class="field_row">
-			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} /> Show Facebook Like button</label>
-			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} /> Show Google +1 button</label>
-			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} /> Show AddThis widget</label>
+			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} /> {{ phrase('admin.portal.show_facebook_like_button') }}</label>
+			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} /> {{ phrase('admin.portal.show_google_1_button') }}</label>
+			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} /> {{ phrase('admin.portal.show_addthis_widget') }}</label>
 		</div>
 	</div>
 </div>
 
 <footer class="setting_field_row" style="text-align: center">
-	<button class="clean-white">Save Settings</button>
+	<button class="clean-white">{{ phrase('admin.portal.save_settings') }}</button>
 </footer>
 
 {% endblock %}

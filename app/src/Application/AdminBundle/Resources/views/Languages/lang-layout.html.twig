@@ -3,11 +3,11 @@
 <div data-element-handler="DeskPRO.Admin.ElementHandler.PortalNav" id="portal_nav">
 	<section class="top">
 		<header>
-			<h4>Language</h4>
+			<h4>{{ phrase('admin.languages.language') }}</h4>
 		</header>
 		<article>
 			<ul>
-				<li class="{% if this_page == 'edit_lang' %}on{% endif %}"><a href="{{ path('admin_langs_editlang', {'language_id': language.id}) }}">Edit Details</a></li>
+				<li class="{% if this_page == 'edit_lang' %}on{% endif %}"><a href="{{ path('admin_langs_editlang', {'language_id': language.id}) }}">{{ phrase('admin.languages.edit_details') }}</a></li>
 			</ul>
 		</article>
 	</section>

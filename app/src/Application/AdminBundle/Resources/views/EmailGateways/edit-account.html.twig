@@ -7,11 +7,11 @@
 {% endblock %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_emailgateways') }}">Email Gateways</a></li>
+		<li><a href="{{ path('admin_emailgateways') }}">{{ phrase('admin.emailgateways.email_gateways') }}</a></li>
 		{% if gateway.id %}
-			<li>Edit Gateway</li>
+			<li>{{ phrase('admin.emailgateways.edit_gateway') }}</li>
 		{% else %}
-			<li>New Gateway</li>
+			<li>{{ phrase('admin.emailgateways.new_gateway') }}</li>
 		{% endif %}
 	</ul>
 {% endblock %}
@@ -29,17 +29,17 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Email Address</label> <em class="desc">The address that this gateway account is for</em>
+			<label>{{ phrase('admin.emailgateways.email_address') }}</label> <em class="desc">{{ phrase('admin.emailgateways.the_address_that_this_gateway_account_is_for') }}</em>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.address, {attr: {id: "gateway_address"}}) }}<br />
 			<div id="add_addr_link" style="padding-top: 4px; width: 70%; text-align: right; {% if gateway.addresses|length > 1 %}display: none;{% endif %}">
-				Will this account recieve mail for more than one address? <button class="clean-white small">Click here to add more.</button>
+				{{ phrase('admin.emailgateways.will_this_account_recieve_mail_for_more_than') }} <button class="clean-white small">{{ phrase('admin.emailgateways.click_here_to_add_more') }}</button>
 			</div>
 
 			<div class="choices-builder" id="gateway_addresses" style="margin-top:5px; {% if gateway.addresses|length < 2 %}display: none;{% endif %}">
 				<header>
-					<input type="text" class="new-choice" value="" style="width: 280px !important" /> <button class="clean-white add-trigger">Add</button>
+					<input type="text" class="new-choice" value="" style="width: 280px !important" /> <button class="clean-white add-trigger">{{ phrase('admin.emailgateways.add') }}</button>
 				</header>
 				<div style="display: none" id="choice_extra_fields"></div>
 				<ul class="list">
@@ -66,41 +66,41 @@
 	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Account Information</label>
+				<label>{{ phrase('admin.emailgateways.account_information') }}</label>
 			</div>
 			<div class="dp-form-input">
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="gateway[connection_type]" value="pop3" {% if not gateway.connection_type or gateway.connection_type == 'pop3' %}checked="checked"{% endif %} id="pop3_btn" />
-						POP3 Account
+						{{ phrase('admin.emailgateways.pop3_account') }}
 					</label>
 					<div class="dp-group-options" style="display: none">
 						<table cellspacing="0" cellpadding="0" width="100%">
 							<tr>
-								<td width="100">Host:</td>
+								<td width="100">{{ phrase('admin.emailgateways.host') }}:</td>
 								<td>
 									{{ form_widget(form.pop3_options.host, {'attr': {'class': 'small'}}) }}<br />
 								</td>
 							</tr>
 							<tr>
-								<td>Secure:</td>
+								<td>{{ phrase('admin.emailgateways.secure') }}:</td>
 								<td>{{ form_widget(form.pop3_options.secure, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr>
-								<td>Port:</td>
+								<td>{{ phrase('admin.emailgateways.port') }}:</td>
 								<td>{{ form_widget(form.pop3_options.port, {'attr': {'class': 'small', 'style': 'width: 100px'}}) }}</td>
 							</tr>
 							<tr>
-								<td>Username:</td>
+								<td>{{ phrase('admin.emailgateways.username') }}:</td>
 								<td>{{ form_widget(form.pop3_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr>
-								<td>Password:</td>
+								<td>{{ phrase('admin.emailgateways.password') }}:</td>
 								<td>{{ form_widget(form.pop3_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
 						<div class="test-row">
-							<span class="test-button test-gateway-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+							<span class="test-button test-gateway-account-settings primary"><span class="lightning-small-icon"></span> {{ phrase('admin.emailgateways.test_settings') }}</span>
 						</div>
 					</div>
 				</div>
@@ -108,21 +108,21 @@
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="gateway[connection_type]" value="gmail" {% if gateway.connection_type == 'gmail' %}checked="checked"{% endif %} id="gapps_btn" />
-						Google Apps
+						{{ phrase('admin.emailgateways.google_apps') }}
 					</label>
 					<div class="dp-group-options" style="display: none">
 						<table cellspacing="0" cellpadding="0" width="100%">
 							<tr>
-								<td width="120">Full Email Address:</td>
+								<td width="120">{{ phrase('admin.emailgateways.full_email_address') }}:</td>
 								<td>{{ form_widget(form.gmail_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr>
-								<td>Password:</td>
+								<td>{{ phrase('admin.emailgateways.password') }}:</td>
 								<td>{{ form_widget(form.gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
 						<div class="test-row">
-							<span class="test-button test-gateway-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+							<span class="test-button test-gateway-account-settings primary"><span class="lightning-small-icon"></span> {{ phrase('admin.emailgateways.test_settings') }}</span>
 						</div>
 					</div>
 				</div>
@@ -133,12 +133,12 @@
 	<div id="smtp_options_default" {% if editgateway.define_transport %}style="display: none"{% endif %}>
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Outgoing Mail Account</label>
+				<label>{{ phrase('admin.emailgateways.outgoing_mail_account') }}</label>
 			</div>
 			<div class="dp-form-input">
 				<span class="show-non-gapps" {% if gateway.connection_type == 'gmail' %}style="display: none"{% endif %}>Using the <a href="{{ path('admin_emailtrans_setup') }}">default outgoing account</a>.</span>
-				<span class="show-gapps" {% if gateway.connection_type !='gmail' %}style="display: none"{% endif %}>Use the Google Apps account defined above for outgoing mail</span>
-				<button class="clean-white small toggle-custom-smtp">Use a different outgoing account</button>
+				<span class="show-gapps" {% if gateway.connection_type !='gmail' %}style="display: none"{% endif %}>{{ phrase('admin.emailgateways.use_the_google_apps_account_defined_above_for') }}</span>
+				<button class="clean-white small toggle-custom-smtp">{{ phrase('admin.emailgateways.use_a_different_outgoing_account') }}</button>
 			</div>
 		</div>
 	</div>
@@ -147,18 +147,18 @@
 		<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>Outgoing Mail Account</label> <button class="clean-white small toggle-custom-smtp">Go back to using the default outgoing account</button>
+					<label>{{ phrase('admin.emailgateways.outgoing_mail_account') }}</label> <button class="clean-white small toggle-custom-smtp">{{ phrase('admin.emailgateways.go_back_to_using_the_default_outgoing_account') }}</button>
 				</div>
 				<div class="dp-form-input">
 					<div class="dp-input-group">
 						<label>
 							<input type="radio" class="option-trigger" name="transport[transport_type]" value="mail" {% if transport.transport_type == 'mail' %}checked="checked"{% endif %} />
-							PHP mail()
+							{{ phrase('admin.emailgateways.php_mail') }}
 						</label>
 
 						<div class="dp-group-options" style="display: none">
 							<div class="test-row">
-								<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+								<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> {{ phrase('admin.emailgateways.test_settings') }}</span>
 							</div>
 						</div>
 					</div>
@@ -166,47 +166,47 @@
 					<div class="dp-input-group">
 						<label>
 							<input type="radio" class="option-trigger" name="transport[transport_type]" value="smtp" {% if not transport.transport_type or transport.transport_type == 'smtp' %}checked="checked"{% endif %} />
-							SMTP Account
+							{{ phrase('admin.emailgateways.smtp_account') }}
 						</label>
 						<div class="dp-group-options" style="display: none">
 							<table cellspacing="0" cellpadding="0" width="100%">
 								<tr>
-									<td class="title" width="120">Host:</td>
+									<td class="title" width="120">{{ phrase('admin.emailgateways.host') }}:</td>
 									<td>
 										{{ form_widget(trans_form.smtp_options.host, {'attr': {'class': 'small'}}) }}<br />
 									</td>
 								</tr>
 								<tr>
-									<td class="title">Secure:</td>
+									<td class="title">{{ phrase('admin.emailgateways.secure') }}:</td>
 									<td>{{ form_widget(trans_form.smtp_options.secure, {'attr': {'class': 'small'}}) }}</td>
 								</tr>
 								<tr>
-									<td class="title">Port:</td>
+									<td class="title">{{ phrase('admin.emailgateways.port') }}:</td>
 									<td>{{ form_widget(trans_form.smtp_options.port, {'attr': {'class': 'small', 'style': 'width: 100px'}}) }}</td>
 								</tr>
 								<tr>
-									<td class="title">Requires Auth:</td>
+									<td class="title">{{ phrase('admin.emailgateways.requires_auth') }}:</td>
 									<td>
 										<input
 											type="checkbox"
 											{% if edittrans.smtp_options.username or edittrans.smtp_options.password %}checked="checked"{% endif %}
 											data-element-handler="DeskPRO.ElementHandler.CheckboxToggle"
 											data-targets="#smtp_auth_username, #smtp_auth_password"
-										/> Yes
+										/> {{ phrase('admin.emailgateways.yes') }}
 									</td>
 								</tr>
 								<tr id="smtp_auth_username">
-									<td class="title">Username:</td>
+									<td class="title">{{ phrase('admin.emailgateways.username') }}:</td>
 									<td>{{ form_widget(trans_form.smtp_options.username, {'attr': {'class': 'small'}}) }}</td>
 								</tr>
 								<tr id="smtp_auth_password">
-									<td class="title">Password:</td>
+									<td class="title">{{ phrase('admin.emailgateways.password') }}:</td>
 									<td>{{ form_widget(trans_form.smtp_options.password, {'attr': {'class': 'small'}}) }}</td>
 								</tr>
 							</table>
 
 							<div class="test-row">
-								<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+								<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> {{ phrase('admin.emailgateways.test_settings') }}</span>
 							</div>
 						</div>
 					</div>
@@ -214,21 +214,21 @@
 					<div class="dp-input-group">
 						<label>
 							<input type="radio" class="option-trigger" name="transport[transport_type]" value="gmail" {% if transport.transport_type == 'gmail' %}checked="checked"{% endif %} />
-							Google Apps
+							{{ phrase('admin.emailgateways.google_apps') }}
 						</label>
 						<div class="dp-group-options" style="display: none">
 							<table cellspacing="0" cellpadding="0" width="100%">
 								<tr>
-									<td class="title" width="120">Full Email Address:</td>
+									<td class="title" width="120">{{ phrase('admin.emailgateways.full_email_address') }}:</td>
 									<td>{{ form_widget(trans_form.gmail_options.username, {'attr': {'class': 'small'}}) }}</td>
 								</tr>
 								<tr>
-									<td class="title">Password:</td>
+									<td class="title">{{ phrase('admin.emailgateways.password') }}:</td>
 									<td>{{ form_widget(trans_form.gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
 								</tr>
 							</table>
 							<div class="test-row">
-								<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+								<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> {{ phrase('admin.emailgateways.test_settings') }}</span>
 							</div>
 						</div>
 					</div>
@@ -241,18 +241,18 @@
 						<input type="radio" id="backup_form_none_radio" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="NONE" {% if not transport.backup_transport_type %}checked="checked"{% endif %} style="display:none" />
 						<label>
 							<input type="checkbox" id="backup_toggle" class="onoff-slider" {% if transport.backup_transport_type %}checked="checked"{% endif %} />
-							Backup Outgoing Mail Account
+							{{ phrase('admin.emailgateways.backup_outgoing_mail_account') }}
 						</label>
 					</div>
 					<div class="dp-form-input" id="backup_form" {% if not transport.backup_transport_type %}style="display: none"{% endif %}>
 						<div class="dp-input-group">
 							<label>
 								<input type="radio" id="backup_form_php" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="mail" {% if transport.backup_transport_type == 'mail' %}checked="checked"{% endif %} />
-								PHP mail()
+								{{ phrase('admin.emailgateways.php_mail') }}
 							</label>
 							<div class="dp-group-options" style="display: none">
 								<div class="test-row">
-									<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> Test Settings</span>
+									<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> {{ phrase('admin.emailgateways.test_settings') }}</span>
 								</div>
 							</div>
 						</div>
@@ -260,47 +260,47 @@
 						<div class="dp-input-group">
 							<label>
 								<input type="radio" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="smtp" {% if transport.backup_transport_type == 'smtp' %}checked="checked"{% endif %} />
-								SMTP Account
+								{{ phrase('admin.emailgateways.smtp_account') }}
 							</label>
 							<div class="dp-group-options" style="display: none">
 								<table cellspacing="0" cellpadding="0" width="100%">
 									<tr>
-										<td  class="title" width="120">Host:</td>
+										<td  class="title" width="120">{{ phrase('admin.emailgateways.host') }}:</td>
 										<td>
 											{{ form_widget(trans_form.backup_smtp_options.host, {'attr': {'class': 'small'}}) }}<br />
 										</td>
 									</tr>
 									<tr>
-										<td class="title">Secure:</td>
+										<td class="title">{{ phrase('admin.emailgateways.secure') }}:</td>
 										<td>{{ form_widget(trans_form.backup_smtp_options.secure, {'attr': {'class': 'small'}}) }}</td>
 									</tr>
 									<tr>
-										<td class="title">Port:</td>
+										<td class="title">{{ phrase('admin.emailgateways.port') }}:</td>
 										<td>{{ form_widget(trans_form.backup_smtp_options.port, {'attr': {'class': 'small', 'style': 'width: 100px'}}) }}</td>
 									</tr>
 									<tr>
-										<td class="title">Requires Auth:</td>
+										<td class="title">{{ phrase('admin.emailgateways.requires_auth') }}:</td>
 										<td>
 											<input
 												type="checkbox"
 												{% if edittrans.backup_smtp_options.username or edittrans.backup_smtp_options.password %}checked="checked"{% endif %}
 												data-element-handler="DeskPRO.ElementHandler.CheckboxToggle"
 												data-targets="#backup_smtp_auth_username, #backup_smtp_auth_password"
-											/> Yes
+											/> {{ phrase('admin.emailgateways.yes') }}
 										</td>
 									</tr>
 									<tr id="backup_smtp_auth_username">
-										<td class="title">Username:</td>
+										<td class="title">{{ phrase('admin.emailgateways.username') }}:</td>
 										<td>{{ form_widget(trans_form.backup_smtp_options.username, {'attr': {'class': 'small'}}) }}</td>
 									</tr>
 									<tr id="backup_smtp_auth_password">
-										<td class="title">Password:</td>
+										<td class="title">{{ phrase('admin.emailgateways.password') }}:</td>
 										<td>{{ form_widget(trans_form.backup_smtp_options.password, {'attr': {'class': 'small'}}) }}</td>
 									</tr>
 								</table>
 
 								<div class="test-row">
-									<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> Test Settings</span>
+									<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> {{ phrase('admin.emailgateways.test_settings') }}</span>
 								</div>
 							</div>
 						</div>
@@ -308,21 +308,21 @@
 						<div class="dp-input-group">
 							<label>
 								<input type="radio" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="gmail" {% if transport.backup_transport_type == 'gmail' %}checked="checked"{% endif %} />
-								Google Apps
+								{{ phrase('admin.emailgateways.google_apps') }}
 							</label>
 							<div class="dp-group-options" style="display: none">
 								<table cellspacing="0" cellpadding="0" width="100%">
 									<tr>
-										<td class="title" width="120">Full Email Address:</td>
+										<td class="title" width="120">{{ phrase('admin.emailgateways.full_email_address') }}:</td>
 										<td>{{ form_widget(trans_form.backup_gmail_options.username, {'attr': {'class': 'small'}}) }}</td>
 									</tr>
 									<tr>
-										<td class="title">Password:</td>
+										<td class="title">{{ phrase('admin.emailgateways.password') }}:</td>
 										<td>{{ form_widget(trans_form.backup_gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
 									</tr>
 								</table>
 								<div class="test-row">
-									<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> Test Settings</span>
+									<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> {{ phrase('admin.emailgateways.test_settings') }}</span>
 								</div>
 							</div>
 						</div>
@@ -334,35 +334,35 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Enabled</label>
+			<label>{{ phrase('admin.emailgateways.enabled') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<label>
 				{{ form_widget(form.is_enabled) }}
-				Yes, process email from this account
+				{{ phrase('admin.emailgateways.yes_process_email_from_this_account') }}
 			</label>
 		</div>
 	</div>
 </div>
 
-<button class="clean-white">Save</button>
+<button class="clean-white">{{ phrase('admin.emailgateways.save') }}</button>
 </form>
 
 <div id="test_gateway_settings_overlay" style="width: 400px; height: 200px; overflow:auto; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay close-trigger"></span>
-		<h4>Test Incoming Email Account</h4>
+		<h4>{{ phrase('admin.emailgateways.test_incoming_email_account') }}</h4>
 	</div>
 	<div class="overlay-content">
-		This will test the connection to your email account.
+		{{ phrase('admin.emailgateways.this_will_test_the_connection_to_your_email') }}
 		<div class="result">
 			<div class="is-loading loading-icon-big"><br /><br /></div>
 			<div class="is-not-loading">
 				<div class="success">
-					No errors were reported.
+					{{ phrase('admin.emailgateways.no_errors_were_reported') }}
 				</div>
 				<div class="error">
-					There was an error while trying to connect to your email account: <span class="error-msg"></span>
+					{{ phrase('admin.emailgateways.there_was_an_error_while_trying_to_connect') }}: <span class="error-msg"></span>
 				</div>
 			</div>
 		</div>
@@ -371,26 +371,26 @@
 		<button
 			class="clean-white test-trigger"
 			data-url="{{ path('admin_emailgateways_testaccount') }}"
-		>Test Now</button>
+		>{{ phrase('admin.emailgateways.test_now') }}</button>
 	</div>
 </div>
 
 <div id="test_settings_overlay" style="width: 400px; height: 200px; overflow:auto; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay close-trigger"></span>
-		<h4>Test Outgoing Email</h4>
+		<h4>{{ phrase('admin.emailgateways.test_outgoing_email') }}</h4>
 	</div>
 	<div class="overlay-content">
-		<div style="margin-bottom: 3px;">Send a test email to: <input type="text" class="small" name="send_to" value="{{ app.user.primaryEmailAddress() }}" /></div>
-		From email address: <input type="text" class="small" name="send_from" id="test_send_from" value="" />
+		<div style="margin-bottom: 3px;">{{ phrase('admin.emailgateways.send_a_test_email_to') }}: <input type="text" class="small" name="send_to" value="{{ app.user.primaryEmailAddress() }}" /></div>
+		{{ phrase('admin.emailgateways.from_email_address') }}: <input type="text" class="small" name="send_from" id="test_send_from" value="" />
 		<div class="result">
 			<div class="is-loading loading-icon-big"><br /><br /></div>
 			<div class="is-not-loading">
 				<div class="success">
-					No errors were reported, but you should confirm that you recieved the test email.
+					{{ phrase('admin.emailgateways.no_errors_were_reported_but_you_should_confirm') }}
 				</div>
 				<div class="error">
-					There was an error while trying to send the test email: <span class="error-msg"></span>
+					{{ phrase('admin.emailgateways.there_was_an_error_while_trying_to_send') }}: <span class="error-msg"></span>
 				</div>
 			</div>
 		</div>
@@ -399,7 +399,7 @@
 		<button
 			class="clean-white test-trigger"
 			data-url="{{ path('admin_emailtrans_testaccount') }}"
-		>Test Now</button>
+		>{{ phrase('admin.emailgateways.test_now') }}</button>
 	</div>
 </div>
 

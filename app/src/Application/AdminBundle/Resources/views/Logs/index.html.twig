@@ -2,12 +2,12 @@
 {% block content %}
 
 <div class="table-list-wrap">
-	<h2>Logs</h2>
+	<h2>{{ phrase('admin.logs.logs') }}</h2>
 	<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
 		<tbody>
 			<tr>
 				<td width="200">
-					<strong><a href="{{ path('admin_logs_errors') }}">Error Logs</a></strong>
+					<strong><a href="{{ path('admin_logs_errors') }}">{{ phrase('admin.logs.error_logs') }}</a></strong>
 				</td>
 				<td>
 					Error logs contain recorded information about errors and exceptions on your helpdesk.
@@ -17,12 +17,12 @@
 
 			<tr>
 				<td>
-					<strong>Look up SN</strong>
+					<strong>{{ phrase('admin.logs.look_up_sn') }}</strong>
 				</td>
 				<td>
-					If you have a SN code for a specific error, you can look it up here.
+					{{ phrase('admin.logs.if_you_have_a_sn_code_for_a') }}
 					<hr />
-					SN Code: <input type="text" id="sn_code" /> <button class="dp-button x-small" onclick="window.location=BASE_URL+'admin/logs/sn/' + $('#sn_code').val()">View</button>
+					{{ phrase('admin.logs.sn_code') }}: <input type="text" id="sn_code" /> <button class="dp-button x-small" onclick="window.location=BASE_URL+'admin/logs/sn/' + $('#sn_code').val()">{{ phrase('admin.logs.view') }}</button>
 				</td>
 			</tr>
 		</tbody>

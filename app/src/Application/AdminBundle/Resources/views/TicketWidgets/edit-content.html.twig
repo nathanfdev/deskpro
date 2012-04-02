@@ -25,11 +25,11 @@ function _page_exec() {
 
 <div class="form-panel">
 	<div class="row">
-		<label>Admin name/note</label>
+		<label>{{ phrase('admin.ticketwidgets.admin_namenote') }}</label>
 		{{ form_widget(form.note) }}
 	</div>
 	<div class="row">
-		<label>HTML Content</label>
+		<label>{{ phrase('admin.ticketwidgets.html_content') }}</label>
 		{{ form_widget(form.data.content, {'cols': 80, 'rows': 10}) }}
 	</div>
 </div>
@@ -38,6 +38,6 @@ function _page_exec() {
 </form>
 {% endblock %}
 {% block footer %}
-	<button class="dp-button small save-trigger">Save</button>
+	<button class="dp-button small save-trigger">{{ phrase('admin.ticketwidgets.save') }}</button>
 
 {% endblock %}

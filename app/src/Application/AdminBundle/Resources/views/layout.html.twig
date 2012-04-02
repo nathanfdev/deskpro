@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-	<title>DeskPRO Admin Interface</title>
+	<title>{{ phrase('admin.views.deskpro_admin_interface') }}</title>
 	<meta charset="utf-8" />
 	<meta name="robots" content="noindex,nofollow" />
 	<meta http-equiv="X-UA-Compatible" content="IE=100" />
@@ -109,20 +109,20 @@
 	<div id="DP-InterfaceSwitcher">
 		<div class="DP-adminSwitch">
 			<div class="adminSwitcher">
-				<a class="admin">Admin Interface<span class="dropdownIcon"></span></a>
+				<a class="admin">{{ phrase('admin.views.admin_interface') }}<span class="dropdownIcon"></span></a>
 			</div>
 		</div>
 		<!-- Header - Switch Button Interfaces- Dropdown -->
 		<div id="interfacesToggle" style="display:none;">
 		<div class="dropdownSwitcherWrap">
 			<div class="switcherHeader">
-				<a class="admin"><span>Admin Interface</span></a>
+				<a class="admin"><span>{{ phrase('admin.views.admin_interface') }}</span></a>
 			</div>
 			<ul>
-				{% if app.user.can_agent %}<li><a class="agent" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">Agent Interface</span></a></li>{% endif %}
-				{% if app.user.can_billing %}<li><a class="billing" href="{{ app.request.getBaseUrl() }}/billing"><span class="check">Billing Interface</span></a></li>{% endif %}
-				{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">Report Interface</span></a></li>{% endif %}
-				{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span class="check">User Interface</span></a></li>{% endif %}
+				{% if app.user.can_agent %}<li><a class="agent" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">{{ phrase('admin.views.agent_interface') }}</span></a></li>{% endif %}
+				{% if app.user.can_billing %}<li><a class="billing" href="{{ app.request.getBaseUrl() }}/billing"><span class="check">{{ phrase('admin.views.billing_interface') }}</span></a></li>{% endif %}
+				{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">{{ phrase('admin.views.report_interface') }}</span></a></li>{% endif %}
+				{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span class="check">{{ phrase('admin.views.user_interface') }}</span></a></li>{% endif %}
 			</ul>
 		</div>
 		</div>
@@ -138,28 +138,28 @@
 
 		<ul>
 			<li>
-				<a href="{{ path('admin') }}"><span class="home">Home</span></a>
+				<a href="{{ path('admin') }}"><span class="home">{{ phrase('admin.views.home') }}</span></a>
 			</li>
 		</ul>
 		<div class="sep">-</div>
 		<ul>
 			<li data-menu="#setup_menu">
-				<a><span class="setup">Setup</span></a>
+				<a><span class="setup">{{ phrase('admin.views.setup') }}</span></a>
 			</li>
 			<li>
-				<a href="{{ path('admin_agents') }}"><span class="agents">Agents</span></a>
+				<a href="{{ path('admin_agents') }}"><span class="agents">{{ phrase('admin.views.agents') }}</span></a>
 			</li>
 			<li data-menu="#users_menu">
-				<a><span class="users">Users</span></a>
+				<a><span class="users">{{ phrase('admin.views.users') }}</span></a>
 			</li>
 		</ul>
 		<div class="sep">-</div>
 		<ul>
 			<li>
-				<a href="{{ path('admin_portal') }}"><span class="publish">Portal</span></a>
+				<a href="{{ path('admin_portal') }}"><span class="publish">{{ phrase('admin.views.portal') }}</span></a>
 			</li>
 			<li data-menu="#chat_menu">
-				<a><span class="chat">Chat</span></a>
+				<a><span class="chat">{{ phrase('admin.views.chat') }}</span></a>
 			</li>
 			{# <li>
 				<a href="{{ path('admin_twitter_accounts') }}"><span class="twitter">Twitter</span></a>
@@ -168,12 +168,12 @@
 				<a><span class="deals">Deals</span></a>
 			</li> #}
 			<li data-menu="#tickets_menu">
-				<a><span class="tickets">Tickets</span></a>
+				<a><span class="tickets">{{ phrase('admin.views.tickets') }}</span></a>
 			</li>
 		</ul>
 		<div class="sep">-</div>
 		<ul>
-			<li data-menu="#server_menu"><a><span class="server">Server</span></a></li>
+			<li data-menu="#server_menu"><a><span class="server">{{ phrase('admin.views.server') }}</span></a></li>
 		</ul>
 	</div>
 </div>

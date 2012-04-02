@@ -7,7 +7,7 @@
 {% endblock %}
 {% block pagebar %}
 	<ul>
-		<li>Welcome to DeskPRO</li>
+		<li>{{ phrase('admin.settings.welcome_to_deskpro') }}</li>
 	</ul>
 {% endblock %}
 {% block page %}
@@ -19,37 +19,37 @@
 	<div class="dp-form-section">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Default Email "From" Address</label> <em class="desc">Enter the email address DeskPRO should use by default when sending emails</em>
+				<label>{{ phrase('admin.settings.default_email_from_address') }}</label> <em class="desc">{{ phrase('admin.settings.enter_the_email_address_deskpro_should_use_by') }}</em>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.default_from_email) }}
-				{% if errors.invalid_default_from_email %}<div class="dp-error">Please enter a valid email address</div>{% endif %}
+				{% if errors.invalid_default_from_email %}<div class="dp-error">{{ phrase('admin.settings.please_enter_a_valid_email_address') }}</div>{% endif %}
 			</div>
 		</div>
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>DeskPRO URL</label> <em class="desc">This is the URL to DeskPRO itself with a trailing slash</em>
+				<label>{{ phrase('admin.settings.deskpro_url') }}</label> <em class="desc">{{ phrase('admin.settings.this_is_the_url_to_deskpro_itself_with') }}</em>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.deskpro_url) }}
-				{% if errors.default_from_email %}<div class="dp-error">Please enter a valid URL</div>{% endif %}
+				{% if errors.default_from_email %}<div class="dp-error">{{ phrase('admin.settings.please_enter_a_valid_url') }}</div>{% endif %}
 			</div>
 		</div>
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>DeskPRO Name</label> <em class="desc">The name of your helpdesk</em>
+				<label>{{ phrase('admin.settings.deskpro_name') }}</label> <em class="desc">{{ phrase('admin.settings.the_name_of_your_helpdesk') }}</em>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.deskpro_name) }}
-				{% if errors.default_from_email %}<div class="dp-error">Please enter a name for the helpdesk</div>{% endif %}
+				{% if errors.default_from_email %}<div class="dp-error">{{ phrase('admin.settings.please_enter_a_name_for_the_helpdesk') }}</div>{% endif %}
 			</div>
 		</div>
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Your Site Name</label> <em class="desc">Your main website name</em>
+				<label>{{ phrase('admin.settings.your_site_name') }}</label> <em class="desc">{{ phrase('admin.settings.your_main_website_name') }}</em>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.site_name) }}
@@ -58,7 +58,7 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Your Site URL</label> <em class="desc">Your main website URL</em>
+				<label>{{ phrase('admin.settings.your_site_url') }}</label> <em class="desc">{{ phrase('admin.settings.your_main_website_url') }}</em>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.site_url) }}
@@ -67,11 +67,11 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Default Timezone</label> <em class="desc">The default timezone used when expressing dates to users who do not have a preference set</em>
+				<label>{{ phrase('admin.settings.default_timezone') }}</label> <em class="desc">{{ phrase('admin.settings.the_default_timezone_used_when_expressing_dates_to') }}</em>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.timezone) }}
-				{% if errors.default_from_email %}<div class="dp-error">Please select a timezone</div>{% endif %}
+				{% if errors.default_from_email %}<div class="dp-error">{{ phrase('admin.settings.please_select_a_timezone') }}</div>{% endif %}
 			</div>
 		</div>
 	</div>
@@ -79,7 +79,7 @@
 	<div class="dp-form-section">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ form_widget(form.portal_enabled) }} Enable Portal</label><br />
+				<label>{{ form_widget(form.portal_enabled) }} {{ phrase('admin.settings.enable_portal') }}</label><br />
 			</div>
 			<div class="dp-form-input">
 				<p>
@@ -91,7 +91,7 @@
 	</div>
 
 	<footer class="controls">
-		<button class="clean-white">Continue</button>
+		<button class="clean-white">{{ phrase('admin.settings.continue') }}</button>
 	</footeR>
 </form>
 

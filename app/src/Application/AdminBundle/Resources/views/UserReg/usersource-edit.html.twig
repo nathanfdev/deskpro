@@ -2,9 +2,9 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 <ul xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
-	<li><a href="{{ path('admin_userreg_options') }}">Registration Options</a></li>
+	<li><a href="{{ path('admin_userreg_options') }}">{{ phrase('admin.userreg.registration_options') }}</a></li>
 	{% if not usersource.id %}
-		<li><a href="{{ path('admin_userreg_usersource_choose') }}">New Usersource</a></li>
+		<li><a href="{{ path('admin_userreg_usersource_choose') }}">{{ phrase('admin.userreg.new_usersource') }}</a></li>
 	{% else %}
 		<li>{{ usersource.title }}</li>
 	{% endif %}
@@ -17,7 +17,7 @@
 	<input type="hidden" name="usersource[source_type]" value="{{ usersource.source_type }}" />
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Title</label>
+			<label>{{ phrase('admin.userreg.title') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.title) }}
@@ -26,19 +26,19 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Lost Password URL</label>
+			<label>{{ phrase('admin.userreg.lost_password_url') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.lost_password_url) }}
 		</div>
 		<small>
-			When a user has logged-in using this usersource and later clicks the "Forgot Password" link, this is the URL they will be given to reset their password.
+			{{ phrase('admin.userreg.when_a_user_has_loggedin_using_this_usersource') }}
 		</small>
 	</div>
 
 	{% include 'AdminBundle:UserReg:usersource-edit-' ~ usersource.source_type ~ '.html.twig' %}
 
-	<button class="btn primary save-trigger">Save</button>
+	<button class="btn primary save-trigger">{{ phrase('admin.userreg.save') }}</button>
 </form>
 
 {% if usersource.id %}

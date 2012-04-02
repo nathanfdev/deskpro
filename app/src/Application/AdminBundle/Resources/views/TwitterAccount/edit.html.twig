@@ -27,11 +27,11 @@ function _page_exec() {
 	<input type="hidden" name="process" value="1" />
 	<div class="form-panel">
 		<div class="row">
-			<label>OAuth Token</label>
+			<label>{{ phrase('admin.twitteraccount.oauth_token') }}</label>
 			{{ form_widget(form.oauth_token) }}
 		</div>
 		<div class="row">
-			<label>OAuth Token Secret</label>
+			<label>{{ phrase('admin.twitteraccount.oauth_token_secret') }}</label>
 			{{ form_widget(form.oauth_token_secret) }}
 		</div>
 	</div>
@@ -41,5 +41,5 @@ function _page_exec() {
 {% endblock %}
 
 {% block footer %}
-	<button class="dp-button small save-trigger">Save</button>
+	<button class="dp-button small save-trigger">{{ phrase('admin.twitteraccount.save') }}</button>
 {% endblock %}

@@ -6,11 +6,11 @@
 {% block pagebar %}
      <nav>
           <ul>
-               <li class="add"><a href="{{ path('admin_langs_newlang') }}">Add Language</a></li>
+               <li class="add"><a href="{{ path('admin_langs_newlang') }}">{{ phrase('admin.languages.add_language') }}</a></li>
           </ul>
      </nav>
      <ul>
-          <li>Languages</li>
+          <li>{{ phrase('admin.languages.languages') }}</li>
      </ul>
 {% endblock %}
 {% block sidebar_right %}
@@ -22,12 +22,12 @@
 	<div class="resource-item-list">
 		<header>
 			<div class="controls">
-				<button class="clean-white small save-trigger" style="display: none" id="save_lang_settings">Save Changes</button>
+				<button class="clean-white small save-trigger" style="display: none" id="save_lang_settings">{{ phrase('admin.languages.save_changes') }}</button>
 			</div>
-			<h4>Default Language</h4>
+			<h4>{{ phrase('admin.languages.default_language') }}</h4>
 		</header>
 		<article>
-			The default language used for users and submitted content (such as tickets):<br />
+			{{ phrase('admin.languages.the_default_language_used_for_users_and_submitted') }}:<br />
 			<select id="default_lang_setting">
 				{% for lang in languages %}
 					<option value="{{lang.id}}" {% if app.getSetting('core.default_language_id') == lang.id %}selected="selected"{% endif %}>{{lang.title}}</option>
@@ -38,7 +38,7 @@
 </div>
 {% endblock %}
 {% block page %}
-<h1>Languages</h1>
+<h1>{{ phrase('admin.languages.languages') }}</h1>
 <ul class="item-list">
 	{% for lang in languages %}
 		<li>

@@ -1,11 +1,11 @@
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Host</label>
+			<label>{{ phrase('admin.userreg.host') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.host) }}<br />
 			<div style="padding-top: 4px">
-				<small>If you're using a non-standard port (389, or 636 for secure connections), enter it here:</small>
+				<small>{{ phrase('admin.userreg.if_youre_using_a_nonstandard_port_389_or') }}:</small>
 				{{ form_widget(form.port, {attr: {style: 'width: 50px'}}) }}
 			</div>
 		</div>
@@ -13,7 +13,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Use Secure Connection</label>
+			<label>{{ phrase('admin.userreg.use_secure_connection') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.secure) }}
@@ -22,7 +22,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Base DN</label>
+			<label>{{ phrase('admin.userreg.base_dn') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.baseDn) }}
@@ -31,39 +31,39 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Domain Name</label>
+			<label>{{ phrase('admin.userreg.domain_name') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.accountDomainName) }}
 			<br />
-			<small>The FQDN name for users in this directory. For example, a user alice@acme.com would have a domain of acme.com. This option is not required, but if it is not supplied, usernames in principal name form (e.g., alice@acme.com) are not supported.</small>
+			<small>{{ phrase('admin.userreg.the_fqdn_name_for_users_in_this_directory') }}</small>
 		</div>
 	</div>
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Short Domain Name (Slash)</label>
+			<label>{{ phrase('admin.userreg.short_domain_name_slash') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.accountDomainNameShort) }}
 			<br />
-			<small>The "short" domain name for users in this directory, "ACME". Note that there is a 1:1 mapping between this short name and the domain name above. This option should be used to specify the NetBIOS domain name for Windows networks. This option is not required but if it is not supplied, usernames in backslash form (e.g., ACME\alice) are not supported.</small>
+			<small>{{ phrase('admin.userreg.the_short_domain_name_for_users_in_this') }}</small>
 		</div>
 	</div>
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Service Account</label>
+			<label>{{ phrase('admin.userreg.service_account') }}</label>
 		</div>
 		<div class="dp-form-input">
-			<div>Username: {{ form_widget(form.username, {attr:{style:"width: 250px"}}) }}</div>
-			<div style="padding-top: 4px;">Password: {{ form_widget(form.password, {attr:{style:"width: 250px"}}) }}</div>
+			<div>{{ phrase('admin.userreg.username') }}: {{ form_widget(form.username, {attr:{style:"width: 250px"}}) }}</div>
+			<div style="padding-top: 4px;">{{ phrase('admin.userreg.password') }}: {{ form_widget(form.password, {attr:{style:"width: 250px"}}) }}</div>
 		</div>
 	</div>
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Custom Filter</label>
+			<label>{{ phrase('admin.userreg.custom_filter') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.accountFilterFormat) }}

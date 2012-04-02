@@ -2,11 +2,11 @@
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li><a href="{{ path('admin_license_input') }}">Change License Code</a></li>
+			<li><a href="{{ path('admin_license_input') }}">{{ phrase('admin.license.change_license_code') }}</a></li>
 		</ul>
 	</nav>
 	<ul>
-		<li>Your License</li>
+		<li>{{ phrase('admin.license.your_license') }}</li>
 	</ul>
 {% endblock %}
 {% block page %}
@@ -14,7 +14,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>License ID</label>
+			<label>{{ phrase('admin.license.license_id') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ lic.getLicenseId() }}
@@ -23,15 +23,15 @@
 	{% if lic.isDemo() %}
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Demo</label>
+				<label>{{ phrase('admin.license.demo') }}</label>
 			</div>
 			<div class="dp-form-input">
-				This is a fully-functional demo license with no limitations on the number of agents.
+				{{ phrase('admin.license.this_is_a_fullyfunctional_demo_license_with_no') }}
 			</div>
 		</div>
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Demo Expiry</label>
+				<label>{{ phrase('admin.license.demo_expiry') }}</label>
 			</div>
 			<div class="dp-form-input">
 				This demo will expire on {{ lic.getExpireDate()|date('M j, Y') }}. Contact <a href="mailto:support@deskpro.com">support@deskpro.com</a> if you need more time.
@@ -40,11 +40,11 @@
 	{% else %}
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Agents</label>
+				<label>{{ phrase('admin.license.agents') }}</label>
 			</div>
 			<div class="dp-form-input">
 				{% if not lic.getMaxAgents() %}
-					Unlimited
+					{{ phrase('admin.license.unlimited') }}
 				{% else %}
 					{{ lic.getMaxAgents() }}
 				{% endif %}

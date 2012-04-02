@@ -7,11 +7,11 @@
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li class="add"><a id="newcat_open">Add New Category</a></li>
+			<li class="add"><a id="newcat_open">{{ phrase('admin.ticketcategories.add_new_category') }}</a></li>
 		</ul>
 	</nav>
 	<ul>
-		<li>Ticket Categories</li>
+		<li>{{ phrase('admin.ticketcategories.ticket_categories') }}</li>
 	</ul>
 {% endblock %}
 {% block content %}
@@ -26,7 +26,7 @@
 		{{ design.dpgrid({class: 'dep-list'}) }}
 			{{ design.dpgrid_headerrow() }}
 				{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 890px;"}) }}
-					<h1>Category</h1>
+					<h1>{{ phrase('admin.ticketcategories.category') }}</h1>
 				{{ design.dpgrid_headercol_end() }}
 			{{ design.dpgrid_headerrow_end() }}
 
@@ -36,20 +36,20 @@
 		{{ design.dpgrid_end() }}
 	{% else %}
 		<div class="note-box new-arrow">
-			You have not created any ticket categories yet. Click the "Add New Category" button to create one now.
+			You have not created any ticket categories yet. Click the "{{ phrase('admin.ticketcategories.add_new_category') }}" button to create one now.
 		</div>
 	{% endif %}
 
 	<div id="editcat_overlay" style="width: 400px; height: 180px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
-			<h4>Edit Category Title</h4>
+			<h4>{{ phrase('admin.ticketcategories.edit_category_title') }}</h4>
 		</div>
 		<div class="overlay-content">
 			<form class="dp-form" method="POST" action="{{ path('admin_ticketcats_savetitle') }}">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Title</label>
+						<label>{{ phrase('admin.ticketcategories.title') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="hidden" name="category_id" id="editcat_catid" value="" />
@@ -59,20 +59,20 @@
 			</form>
 		</div>
 		<div class="overlay-footer">
-			<button class="clean-white" id="editcat_savebtn">Save</button>
+			<button class="clean-white" id="editcat_savebtn">{{ phrase('admin.ticketcategories.save') }}</button>
 		</div>
 	</div>
 
 	<div id="newcat_overlay" style="width: 400px; height: 230px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
-			<h4>New Category</h4>
+			<h4>{{ phrase('admin.ticketcategories.new_category') }}</h4>
 		</div>
 		<div class="overlay-content">
 			<form class="dp-form" method="POST" action="{{ path('admin_ticketcats_savenew') }}">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Title</label>
+						<label>{{ phrase('admin.ticketcategories.title') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="text" name="title" id="newcat_title" value="" />
@@ -81,11 +81,11 @@
 
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Parent</label>
+						<label>{{ phrase('admin.ticketcategories.parent') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<select name="parent_id" id="newcat_parent_id">
-							<option value="0">No Parent</option>
+							<option value="0">{{ phrase('admin.ticketcategories.no_parent') }}</option>
 							{% for category in all_categories %}
 								<option value="{{ category.id }}">{{ category.title }}</option>
 							{% endfor %}
@@ -95,7 +95,7 @@
 			</form>
 		</div>
 		<div class="overlay-footer">
-			<button class="clean-white" id="newcat_savebtn">Add</button>
+			<button class="clean-white" id="newcat_savebtn">{{ phrase('admin.ticketcategories.add') }}</button>
 		</div>
 	</div>
 

@@ -2,16 +2,16 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
      <ul>
-         <li><a href="{{ path('admin_userreg_options') }}">Registration Settings</a></li>
-		 <li>Twitter Setup</li>
+         <li><a href="{{ path('admin_userreg_options') }}">{{ phrase('admin.userreg.registration_settings') }}</a></li>
+		 <li>{{ phrase('admin.userreg.twitter_setup') }}</li>
      </ul>
 {% endblock %}
 {% block prepage %}
 	<div style="padding: 10px 10px 0 10px;">
 		{{ design.helpbox() }}
 			<p>
-				To enable Twitter integration, you must register with Twitterto get your own key and secret.
-				<a href="https://dev.twitter.com/apps/new">Click here here to sign up now</a>.
+				{{ phrase('admin.userreg.to_enable_twitter_integration_you_must_register_with') }}
+				<a href="https://dev.twitter.com/apps/new">{{ phrase('admin.userreg.click_here_here_to_sign_up_now') }}</a>.
 			</p>
 		{{ design.helpbox_end() }}
 	</div>
@@ -24,7 +24,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Consumer Key</label>
+			<label>{{ phrase('admin.userreg.consumer_key') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<input type="text" name="twitter[consumer_key]" value="{{ options.consumer_key }}" placeholder="Enter your Twitter consumer key" />
@@ -33,7 +33,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Consumer Secret</label>
+			<label>{{ phrase('admin.userreg.consumer_secret') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<input type="text" name="twitter[consumer_secret]" value="{{ options.consumer_secret }}" placeholder="Enter your Twitter consumer secret" />
@@ -42,7 +42,7 @@
 
 	<footer class="controls">
 	<div class="is-not-loading">
-		<button class="clean-white">Save</button>
+		<button class="clean-white">{{ phrase('admin.userreg.save') }}</button>
 	</div>
 	<div class="is-loading">
 		<div class="loading-icon-flat">&nbsp;</div>

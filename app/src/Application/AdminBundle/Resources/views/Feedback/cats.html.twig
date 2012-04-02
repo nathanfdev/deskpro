@@ -3,9 +3,9 @@
 {% import 'AdminBundle:Common:admin-macros.html.twig' as admin %}
 {% extends 'AdminBundle:Portal:layout.html.twig' %}
 {% block pagetitle %}
-	<h1>Feedback Categories</h1>
+	<h1>{{ phrase('admin.feedback.feedback_categories') }}</h1>
 	<nav>
-		<a class="clean-white" href="{{ path('admin_feedback_cats_edit', {'category_id': '0'}) }}">Create New Category</a>
+		<a class="clean-white" href="{{ path('admin_feedback_cats_edit', {'category_id': '0'}) }}">{{ phrase('admin.feedback.create_new_category') }}</a>
 	</nav>
 {% endblock %}
 {% block content %}

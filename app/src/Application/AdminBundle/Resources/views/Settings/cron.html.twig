@@ -1,7 +1,7 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 	<ul>
-		<li>Configure Scheduled Tasks</li>
+		<li>{{ phrase('admin.settings.configure_scheduled_tasks') }}</li>
 	</ul>
 {% endblock %}
 {% block page %}
@@ -9,13 +9,13 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Configuring Scheduled Tasks</label>
+			<label>{{ phrase('admin.settings.configuring_scheduled_tasks') }}</label>
 		</div>
 		<div class="dp-form-input">
-			How you configure scheduled tasks depends on your server set up. Here are guides for common servers:
+			{{ phrase('admin.settings.how_you_configure_scheduled_tasks_depends_on_your') }}:
 			<ul>
-				<li><a href="">Linux</a></li>
-				<li><a href="">Windows</a></li>
+				<li><a href="">{{ phrase('admin.settings.linux') }}</a></li>
+				<li><a href="">{{ phrase('admin.settings.windows') }}</a></li>
 			</ul>
 		</div>
 	</div>
@@ -23,10 +23,10 @@
 	<div class="dp-form">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Command to run every minute</label>
+				<label>{{ phrase('admin.settings.command_to_run_every_minute') }}</label>
 			</div>
 			<div class="dp-form-input">
-				Configure this command to be executed every minute:
+				{{ phrase('admin.settings.configure_this_command_to_be_executed_every_minute') }}:
 <pre class="codebox">
 {{ php_path }} -q {{ path }}/cron.php
 </pre>
@@ -37,7 +37,7 @@
 
 {% if show_complete_form %}
 	<footer class="controls">
-		<a class="clean-white" href="{{ path('admin_settings_cron', {complete: '1'}) }}">I have configured scheduled tasks</a>
+		<a class="clean-white" href="{{ path('admin_settings_cron', {complete: '1'}) }}">{{ phrase('admin.settings.i_have_configured_scheduled_tasks') }}</a>
 	</footer>
 {% endif %}
 

@@ -2,7 +2,7 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
      <ul>
-		<li><a href="{{ path('admin_tickets_fields') }}">Ticket Fields</a></li>
-		<li>Choose Field Type</li>
+		<li><a href="{{ path('admin_tickets_fields') }}">{{ phrase('admin.customdeftickets.ticket_fields') }}</a></li>
+		<li>{{ phrase('admin.customdeftickets.choose_field_type') }}</li>
      </ul>
 {% endblock %}

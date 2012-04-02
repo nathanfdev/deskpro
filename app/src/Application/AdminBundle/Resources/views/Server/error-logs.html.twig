@@ -2,11 +2,11 @@
 {% block pagebar %}
 	<nav>
           <ul>
-               <li><a href="{{ path('admin_server_error_logs_clear', {x: security_token('clear_error_logs') }) }}">Clear Logs</a></li>
+               <li><a href="{{ path('admin_server_error_logs_clear', {x: security_token('clear_error_logs') }) }}">{{ phrase('admin.server.clear_logs') }}</a></li>
           </ul>
      </nav>
 	<ul>
-		<li>Error Logs</li>
+		<li>{{ phrase('admin.server.error_logs') }}</li>
 	</ul>
 {% endblock %}
 {% block page %}
@@ -14,10 +14,10 @@
 	<table width="100%">
 		<thead>
 			<tr>
-				<th width="50">ID</th>
-				<th width="50">Pri</th>
-				<th>Message</th>
-				<th width="180">Date</th>
+				<th width="50">{{ phrase('admin.server.id') }}</th>
+				<th width="50">{{ phrase('admin.server.pri') }}</th>
+				<th>{{ phrase('admin.server.message') }}</th>
+				<th width="180">{{ phrase('admin.server.date') }}</th>
 				<th>Details&nbsp;</th>
 			</tr>
 		</thead>
@@ -39,8 +39,8 @@
 <div class="page_nav">
 	<ul>
 		{% if pagination.curpage != pagination.first %}
-			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.first}) }}">First</a></li>
-			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.prev}) }}">Prev</a></li>
+			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.first}) }}">{{ phrase('admin.server.first') }}</a></li>
+			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.prev}) }}">{{ phrase('admin.server.prev') }}</a></li>
 		{% endif %}
 
 		{% for i in pagination.pages %}
@@ -48,8 +48,8 @@
 		{% endfor %}
 
 		{% if pagination.curpage != pagination.last %}
-			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.next}) }}">Next</a></li>
-			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.last}) }}">Last</a></li>
+			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.next}) }}">{{ phrase('admin.server.next') }}</a></li>
+			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.last}) }}">{{ phrase('admin.server.last') }}</a></li>
 		{% endif %}
 	</ul>
 </div>

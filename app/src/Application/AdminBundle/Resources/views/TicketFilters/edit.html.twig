@@ -25,7 +25,7 @@ $(document).ready(function() {
 {% endblock %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_tickets_filters') }}">Ticket Filters</a></li>
+		<li><a href="{{ path('admin_tickets_filters') }}">{{ phrase('admin.ticketfilters.ticket_filters') }}</a></li>
 		<li>{% if filter.id %}Edit Filter{% else %}New Filter{% endif %}</li>
 	</ul>
 {% endblock %}
@@ -36,7 +36,7 @@ $(document).ready(function() {
 
 <div class="dp-form-row">
 	<div class="dp-form-label">
-		<label>Type</label>
+		<label>{{ phrase('admin.ticketfilters.type') }}</label>
 	</div>
 	<div class="dp-form-input">
 		{% if filter.is_global %}
@@ -50,7 +50,7 @@ $(document).ready(function() {
 </div>
 <div class="dp-form-row">
 	<div class="dp-form-label">
-		<label>Title</label>
+		<label>{{ phrase('admin.ticketfilters.title') }}</label>
 	</div>
 	<div class="dp-form-input">
 		<input type="text" name="filter[title]" value="{{filter.title}}" />
@@ -64,13 +64,13 @@ $(document).ready(function() {
 </div>
 <div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Criteria</label>
+			<label>{{ phrase('admin.ticketfilters.criteria') }}</label>
 		</div>
 
 	<div class="dp-form-input">
 		<div class="criteria-form search-form">
 			<div class="search-terms"></div>
-			<div class="term"><span class="add-term">+</span> Add a new criteria</div>
+			<div class="term"><span class="add-term">+</span> {{ phrase('admin.ticketfilters.add_a_new_criteria') }}</div>
 		</div>
 	</div>
 </div>
@@ -82,7 +82,7 @@ $(document).ready(function() {
 				<div class="dp-form-row">
 					<div class="dp-form-label">
 						<label>
-							In use by:
+							{{ phrase('admin.ticketfilters.in_use_by') }}:
 						</label>
 					</div>
 
@@ -106,7 +106,7 @@ $(document).ready(function() {
 				<div class="dp-form-row">
 					<div class="dp-form-label">
 						<label>
-							Disabled by:
+							{{ phrase('admin.ticketfilters.disabled_by') }}:
 						</label>
 					</div>
 
@@ -144,7 +144,7 @@ $(document).ready(function() {
 	{% endif %}
 {% endif %}
 
-<button class="clean-white save-trigger">Save</button>
+<button class="clean-white save-trigger">{{ phrase('admin.ticketfilters.save') }}</button>
 
 </form>
 

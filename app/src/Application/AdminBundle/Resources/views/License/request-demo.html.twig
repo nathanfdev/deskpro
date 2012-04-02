@@ -1,14 +1,14 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 	<ul>
-		<li>Request Demo License</li>
+		<li>{{ phrase('admin.license.request_demo_license') }}</li>
 	</ul>
 {% endblock %}
 {% block sidebar_right %}
 <div class="dp-page-box" style="padding-top: 15px;">
 	<div class="resource-item-list icon-group">
 		<header>
-			<h4>Already have a license code?</h4>
+			<h4>{{ phrase('admin.license.already_have_a_license_code') }}</h4>
 		</header>
 		<article>
 			If you already have a license code, <a href="{{ path('admin_license_input') }}">click here to enter it</a>.
@@ -23,18 +23,18 @@
 
 {% if errors|length %}
 <div class="alert-message block-message error">
-	<strong>We encountered a problem:</strong>
+	<strong>{{ phrase('admin.license.we_encountered_a_problem') }}:</strong>
 	<ul>
-		{% if errors.email %}<li>Please enter a valid email address</li>{% endif %}
-		{% if errors.timeout %}<li>Your server timed-out while trying to contact our licesing server to generate your license code.</li>{% endif %}
-		{% if errors.server_error %}<li>Our licensing server is having technical difficulties. You can try again, or email support@deskpro.com and one of our agents will generate a license code for you</li>{% endif %}
+		{% if errors.email %}<li>{{ phrase('admin.license.please_enter_a_valid_email_address') }}</li>{% endif %}
+		{% if errors.timeout %}<li>{{ phrase('admin.license.your_server_timedout_while_trying_to_contact_our') }}</li>{% endif %}
+		{% if errors.server_error %}<li>{{ phrase('admin.license.our_licensing_server_is_having_technical_difficulties_you') }}</li>{% endif %}
 		{% if errors.request_error %}<li>Our licensing server responded with the error code "{{ errors.request_error }}". You should contact support@deskpro.com if the problem persists.</li>{% endif %}
-		{% if errors.unknown_request_error %}<li>There was an unknown problem while trying to connect to our licensing server.</li>{% endif %}
+		{% if errors.unknown_request_error %}<li>{{ phrase('admin.license.there_was_an_unknown_problem_while_trying_to') }}</li>{% endif %}
 	</ul>
 
 	{% if errors.timeout or errors.unknown_request_error %}
 		<p>
-			A connection problem may be temporary, but it may indicate that your web server is behind a firewall that prevents it from communicating with our license server on the internet.
+			{{ phrase('admin.license.a_connection_problem_may_be_temporary_but_it') }}
 		</p>
 		<p style="font-size: 120%; color: #000; margin-top: 10px; padding-top: 5px; border-top: #FBC7C6;">
 			<a href="{{ path('admin_license_keyfile', {email_address: email_address|default(app.user.primary_email_address) }) }}" class="install-key-file">install.key</a>
@@ -50,11 +50,11 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Your Email Address</label>
+			<label>{{ phrase('admin.license.your_email_address') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<input type="text" name="email_address" value="{{ app.user.primary_email_address }}" /><br />
-			<small>Your personal demo license code will be sent to this address</small>
+			<small>{{ phrase('admin.license.your_personal_demo_license_code_will_be_sent') }}</small>
 		</div>
 	</div>
 </div>

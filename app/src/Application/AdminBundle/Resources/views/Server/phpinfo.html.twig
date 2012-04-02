@@ -1,18 +1,18 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 	<ul>
-		<li>PHP Info</li>
+		<li>{{ phrase('admin.server.php_info') }}</li>
 	</ul>
 {% endblock %}
 {% block page %}
 
-<h1>Important Configuration Values</h1>
+<h1>{{ phrase('admin.server.important_configuration_values') }}</h1>
 <div class="check-grid item-list">
 	<table width="100%">
 		<thead>
 			<tr>
 				<th style="text-align:left">&nbsp; Setting</th>
-				<th style="text-align:left">Value</th>
+				<th style="text-align:left">{{ phrase('admin.server.value') }}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -22,7 +22,7 @@
 			</tr>
 			<tr>
 				<td>memory_limit</td>
-				<td>{{ php_config.memory_limit }} (<a href="{{ app.request.getBaseUrl() }}?_sys=memtest&amp;_={{ config_hash }}">test this value</a>)</td>
+				<td>{{ php_config.memory_limit }} (<a href="{{ app.request.getBaseUrl() }}?_sys=memtest&amp;_={{ config_hash }}">{{ phrase('admin.server.test_this_value') }}</a>)</td>
 			</tr>
 			<tr>
 				<td>error_log</td>

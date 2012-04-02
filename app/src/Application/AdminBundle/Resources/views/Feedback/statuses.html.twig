@@ -7,16 +7,16 @@
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/FeedbackStatusListPage.js') }}"></script>
 {% endblock %}
 {% block pagetitle %}
-	<h1>Feedback Statuses</h1>
+	<h1>{{ phrase('admin.feedback.feedback_statuses') }}</h1>
 	<nav>
-		<button id="create_status_btn" class="clean-white">Create New Status</button>
+		<button id="create_status_btn" class="clean-white">{{ phrase('admin.feedback.create_new_status') }}</button>
 	</nav>
 {% endblock %}
 {% block page %}
 	{{ design.structure_table({ 'id': 'active_statuses_table', 'save_order_url': path('admin_feedback_status_updateorders') }) }}
 		<thead>
 			<th colspan="10" class="only">
-				Active Statuses
+				{{ phrase('admin.feedback.active_statuses') }}
 				<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="An active status is a status assigned to feedback that have been reviewed, but haven't been implemented or haven't been decided on."></span>
 			</th>
 		</thead>
@@ -30,7 +30,7 @@
 	{{ design.structure_table({ 'id': 'closed_statuses_table', 'save_order_url': path('admin_feedback_status_updateorders') }) }}
 		<thead>
 			<th colspan="10" class="only">
-				Closed Statuses
+				{{ phrase('admin.feedback.closed_statuses') }}
 				<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="A closed status is a status assigned to feedback that are finished. Users cannot vote or comment on closed feedback."></span>
 			</th>
 		</thead>
@@ -43,25 +43,25 @@
 	<div id="create_status_overlay" style="width: 400px; height: 250px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay close-trigger"></span>
-			<h4>Create Stauts</h4>
+			<h4>{{ phrase('admin.feedback.create_stauts') }}</h4>
 		</div>
 		<div class="overlay-content">
 			<div class="dp-form">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Type</label>
+						<label>{{ phrase('admin.feedback.type') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<select name="cat[status_type]">
-							<option value="active">Active Status</option>
-							<option value="closed">Closed Status</option>
+							<option value="active">{{ phrase('admin.feedback.active_status') }}</option>
+							<option value="closed">{{ phrase('admin.feedback.closed_status') }}</option>
 						</select>
 					</div>
 				</div>
 
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Title</label>
+						<label>{{ phrase('admin.feedback.title') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="text" name="cat[title]" value="" />
@@ -74,7 +74,7 @@
 				id="create_status_save_btn"
 				class="clean-white"
 				data-save-url="{{ path('admin_feedback_statuses_ajaxadd') }}"
-			>Create Status</button>
+			>{{ phrase('admin.feedback.create_status') }}</button>
 		</div>
 	</div>
 {% endblock %}

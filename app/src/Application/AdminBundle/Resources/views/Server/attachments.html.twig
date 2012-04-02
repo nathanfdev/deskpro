@@ -1,7 +1,7 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 	<ul>
-		<li>File Uploads</li>
+		<li>{{ phrase('admin.server.file_uploads') }}</li>
 	</ul>
 {% endblock %}
 {% block page %}
@@ -10,37 +10,37 @@
 	<table width="100%">
 		<thead>
 			<tr>
-				<th colspan="4">File Storage Mechanism</th>
+				<th colspan="4">{{ phrase('admin.server.file_storage_mechanism') }}</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% if use_fs %}
 				<tr>
-					<td width="200">Storage Mechanism</td>
+					<td width="200">{{ phrase('admin.server.storage_mechanism') }}</td>
 					<td>
-						File Storage
+						{{ phrase('admin.server.file_storage') }}
 						<div style="font-size: 11px">
 							You are currently using the most efficient storage mechanism. {% if not moving_id %}While not recommended, you can <a class="switch-trigger">switch back to using database storage</a>.{% endif %}
 						</div>
 					</td>
 				</tr>
 				<tr>
-					<td>Storage Path</td>
+					<td>{{ phrase('admin.server.storage_path') }}</td>
 					<td>{{ filestorage_path }}</td>
 				</tr>
 			{% else %}
 				<tr>
-					<td>Storage Mechanism</td>
+					<td>{{ phrase('admin.server.storage_mechanism') }}</td>
 					<td>
-						Database Storage
+						{{ phrase('admin.server.database_storage') }}
 						<div style="font-size: 11px">
 							Databases are not designed to store files.{% if not moving_id %} We recommend <a class="switch-trigger">switching to filesystem storage</a> where files are store as files in a directory on your server.{% endif %}
 						</div>
 					</td>
 				</tr>
 				<tr>
-					<td>Storage Table</td>
-					<td>blobs_storage</td>
+					<td>{{ phrase('admin.server.storage_table') }}</td>
+					<td>{{ phrase('admin.server.blobs_storage') }}</td>
 				</tr>
 			{% endif %}
 			{% if moving_id %}
@@ -59,15 +59,15 @@
 	<table width="100%">
 		<thead>
 			<tr>
-				<th >Setting</th>
-				<th width="200">Value</th>
+				<th >{{ phrase('admin.server.setting') }}</th>
+				<th width="200">{{ phrase('admin.server.value') }}</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
 				<td>
 					<h3>file_uploads</h3>
-					<p>This setting must be enabled for PHP to accept file uploads at all.</p>
+					<p>{{ phrase('admin.server.this_setting_must_be_enabled_for_php_to') }}</p>
 				</td>
 				<td>{{ php_vars.file_uploads }}
 			</tr>
@@ -75,15 +75,15 @@
 			<tr>
 				<td>
 					<h3>upload_tmp_dir</h3>
-					<p>This is where PHP saves files to temporarily before they are processed by DeskPRO. This path must be writable by the web server for file uploads to work.</p>
+					<p>{{ phrase('admin.server.this_is_where_php_saves_files_to_temporarily') }}</p>
 				</td>
 				<td>{{ php_vars.upload_tmp_dir }}
 			</tr>
 
 			<tr>
 				<td>
-					<h3>upload_max_filesize</h3>
-					<p>This is the maximum size for any single file that PHP will accept from a client upload. The max size is also affected by post_max_size. The effective maximum is essentially the smallest of upload_max_filesize and post_max_size.</p>
+					<h3>{{ phrase('admin.server.upload_max_filesize') }}</h3>
+					<p>{{ phrase('admin.server.this_is_the_maximum_size_for_any_single') }}</p>
 				</td>
 				<td>{{ php_vars.upload_max_filesize }}
 			</tr>
@@ -91,7 +91,7 @@
 			<tr>
 				<td>
 					<h3>post_max_size</h3>
-					<p>This is the max size of any POST request that PHP will accept. That is, the size of any file uploads comboned with the size of actual form data cannot exceed this value. This setting and upload_max_filesize are generally about the same.</p>
+					<p>{{ phrase('admin.server.this_is_the_max_size_of_any_post') }}</p>
 				</td>
 				<td>{{ php_vars.post_max_size }}
 			</tr>
@@ -103,17 +103,17 @@
 	<table width="100%">
 		<thead>
 			<tr>
-				<th colspan="10">Test a file upload</th>
+				<th colspan="10">{{ phrase('admin.server.test_a_file_upload') }}</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% if has_uploaded %}
 				<tr>
 					<td>
-						{% if failed %}<h3>Failed</h3><br />{{ failed }}
+						{% if failed %}<h3>{{ phrase('admin.server.failed') }}</h3><br />{{ failed }}
 						{% else %}
-							<h3>Success</h3>
-							Download attachment: <a href="{{ attach.getDownloadUrl() }}">{{ attach.getDownloadUrl() }}</a><br />
+							<h3>{{ phrase('admin.server.success') }}</h3>
+							{{ phrase('admin.server.download_attachment') }}: <a href="{{ attach.getDownloadUrl() }}">{{ attach.getDownloadUrl() }}</a><br />
 						{% endif %}
 					</td>
 				</tr>
@@ -121,7 +121,7 @@
 				<tr>
 					<td>
 						<form action="{{ path('admin_server_attach', {test: 1}) }}" method="post" enctype="multipart/form-data">
-							<input type="file" name="file" /> <button>Test Upload</button>
+							<input type="file" name="file" /> <button>{{ phrase('admin.server.test_upload') }}</button>
 						</form>
 					</td>
 				</tr>
@@ -134,7 +134,7 @@
 <div id="switch_confirm" style="display: none; width: 500px; height: 300px">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
-		<h4>Change Storage Mechanism</h4>
+		<h4>{{ phrase('admin.server.change_storage_mechanism') }}</h4>
 	</div>
 	<div class="overlay-content">
 		{% if use_fs %}

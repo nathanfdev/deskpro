@@ -1,7 +1,7 @@
 <div style="width: 500px; height: 400px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
-		<h4>Edit Templates</h4>
+		<h4>{{ phrase('admin.templates.edit_templates') }}</h4>
 	</div>
 	<div class="overlay-content">
 
@@ -11,7 +11,7 @@
 				<thead>
 				<tr>
 					<th class="single-title" colspan="10">
-						<h1 class="noexpand">Built-in Templates</h1>
+						<h1 class="noexpand">{{ phrase('admin.templates.builtin_templates') }}</h1>
 					</th>
 				</tr>
 				</thead>
@@ -35,7 +35,7 @@
 				<thead>
 				<tr>
 					<th class="single-title" colspan="10">
-						<h1>Custom Templates</h1>
+						<h1>{{ phrase('admin.templates.custom_templates') }}</h1>
 					</th>
 				</tr>
 				</thead>
@@ -51,7 +51,7 @@
 				{% endfor %}
 				<tr class="custom-template-make-row">
 					<td style="text-align: center;">
-						<button class="clean-white small create-new-tpl-trigger">Create New Custom Template</button>
+						<button class="clean-white small create-new-tpl-trigger">{{ phrase('admin.templates.create_new_custom_template') }}</button>
 					</td>
 				</tr>
 				</tbody>
@@ -61,7 +61,7 @@
 
 	</div>
 	<div class="overlay-footer">
-		<button class="clean-white">Use Selected Template</button>
+		<button class="clean-white">{{ phrase('admin.templates.use_selected_template') }}</button>
 	</div>
 
 	<div class="deskpro-overlay-outer dp-tpl-edit-overlay" style="display: none; position:absolute; top: 35px; right: 35px; bottom: 35px; left: 35px;">
@@ -75,7 +75,7 @@
 			</div>
 			<div class="overlay-footer">
 				<div class="is-not-loading">
-					<button class="clean-white save-trigger">Save Changes</button>
+					<button class="clean-white save-trigger">{{ phrase('admin.templates.save_changes') }}</button>
 				</div>
 				<div class="is-loading">
 					<div class="loading-icon-flat"></div>
@@ -98,13 +98,13 @@
 		<div class="deskpro-overlay" style="width: 400px; height: 250px;">
 			<div class="overlay-title">
 				<span class="close-overlay"></span>
-				<h4 class="template-title">Create Custom Template</h4>
+				<h4 class="template-title">{{ phrase('admin.templates.create_custom_template') }}</h4>
 			</div>
 			<div class="overlay-content">
 				<div class="dp-form">
 					<div class="dp-form-row">
 						<div class="dp-form-label">
-							<label>Template Name</label> <em>(only A-Z, numbers and underscores)</em>
+							<label>{{ phrase('admin.templates.template_name') }}</label> <em>{{ phrase('admin.templates.only_az_numbers_and_underscores') }}</em>
 						</div>
 						<div class="dp-form-input">
 							<input type="text" name="name" class="name" data-tpl-name-prefix="Custom:{{ tpl_dirname }}:{{ tpl_prefix }}-" />
@@ -112,11 +112,11 @@
 					</div>
 					<div class="dp-form-row">
 						<div class="dp-form-label">
-							<label>Base this new template off of ...</label>
+							<label>{{ phrase('admin.templates.base_this_new_template_off_of_') }}</label>
 						</div>
 						<div class="dp-form-input">
 							<select name="copy_tpl" class="copy_tpl">
-								<option value="">None (blank template)</option>
+								<option value="">{{ phrase('admin.templates.none_blank_template') }}</option>
 							</select>
 						</div>
 					</div>
@@ -124,7 +124,7 @@
 			</div>
 			<div class="overlay-footer">
 				<div class="is-not-loading">
-					<button class="clean-white save-trigger">Create</button>
+					<button class="clean-white save-trigger">{{ phrase('admin.templates.create') }}</button>
 				</div>
 				<div class="is-loading">
 					<div class="loading-icon-flat"></div>

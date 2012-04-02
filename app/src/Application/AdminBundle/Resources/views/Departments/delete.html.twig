@@ -2,8 +2,8 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_departments') }}">Departments</a></li>
-		<li>Delete Department</li>
+		<li><a href="{{ path('admin_departments') }}">{{ phrase('admin.departments.departments') }}</a></li>
+		<li>{{ phrase('admin.departments.delete_department') }}</li>
 	</ul>
 {% endblock %}
 {% block page %}
@@ -51,9 +51,9 @@
 {% endif %}
 
 {% if department.children|length %}
-	<button class="btn">Yes, delete this department and all sub-departments</button>
+	<button class="btn">{{ phrase('admin.departments.yes_delete_this_department_and_all_subdepartments') }}</button>
 {% else %}
-	<button class="btn">Yes, delete this department</button>
+	<button class="btn">{{ phrase('admin.departments.yes_delete_this_department') }}</button>
 {% endif %}
 
 </form>

@@ -4,8 +4,8 @@
 	<input type="text" id="settings_filter" value="" placeholder="Filter" style="width: 200px;" />
 </div>
 <ul>
-	<li><a href="{{ path('admin_settings') }}">Settings</a></li>
-	<li>Advanced</li>
+	<li><a href="{{ path('admin_settings') }}">{{ phrase('admin.settings.settings') }}</a></li>
+	<li>{{ phrase('admin.settings.advanced') }}</li>
 </ul>
 {% endblock %}
 {% block html_head %}
@@ -50,16 +50,16 @@ function _page_exec() {
 {% block page %}
 
 <div style="text-align: right; padding-bottom: 5px;">
-	<a href="#" id="revert_all_btn">Revert All Settings</a>
+	<a href="#" id="revert_all_btn">{{ phrase('admin.settings.revert_all_settings') }}</a>
 </div>
 
 <div class="content-table">
 	<table cellspacing="0" cellpadding="0" width="100%">
 		<thead>
 			<tr>
-				<th style="text-align:left" width="200">Name</th>
-				<th style="text-align:left">Default Value</th>
-				<th style="text-align:left">Set Value</th>
+				<th style="text-align:left" width="200">{{ phrase('admin.settings.name') }}</th>
+				<th style="text-align:left">{{ phrase('admin.settings.default_value') }}</th>
+				<th style="text-align:left">{{ phrase('admin.settings.set_value') }}</th>
 			</tr>
 		</thead>
 		<tbody id="settings_rows">
@@ -80,13 +80,13 @@ function _page_exec() {
 <div id="revert_all_warn" style="width: 400px; height: 150px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
-		<h4>Revert Settings</h4>
+		<h4>{{ phrase('admin.settings.revert_settings') }}</h4>
 	</div>
 	<div class="overlay-content">
-		Are you sure you want to revert ALL settings on this page to their default values? There is no way to undo this action.
+		{{ phrase('admin.settings.are_you_sure_you_want_to_revert_all') }}
 	</div>
 	<div class="overlay-footer">
-		<a href="{{ path('admin_settings_adv', {revert_all: security_token('revert_all')}) }}" class="clean-white">Revert ALL Settings</a>
+		<a href="{{ path('admin_settings_adv', {revert_all: security_token('revert_all')}) }}" class="clean-white">{{ phrase('admin.settings.revert_all_settings') }}</a>
 	</div>
 </div>
 

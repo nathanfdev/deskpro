@@ -21,7 +21,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 {% endblock %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_tickettriggers') }}">Triggers</a></li>
+		<li><a href="{{ path('admin_tickettriggers') }}">{{ phrase('admin.tickettriggers.triggers') }}</a></li>
 		<li>{% if trigger.id %}Edit Trigger{% else %}New Trigger{% endif %}</li>
 	</ul>
 {% endblock %}
@@ -33,7 +33,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Event</label>
+			<label>{{ phrase('admin.tickettriggers.event') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<input type="hidden" name="trigger[event_trigger]" value="{{ trigger.event_trigger }}" />
@@ -59,7 +59,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Description</label> <em>Optionally enter a description to help you remember what this trigger was created for</em>
+			<label>{{ phrase('admin.tickettriggers.description') }}</label> <em>{{ phrase('admin.tickettriggers.optionally_enter_a_description_to_help_you_remember') }}</em>
 		</div>
 		<div class="dp-form-input">
 			{% if trigger.sys_name %}
@@ -73,30 +73,30 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Criteria</label>
+			<label>{{ phrase('admin.tickettriggers.criteria') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<div class="criteria-form search-form">
 				<div class="search-terms"></div>
-				<div class="term"><span class="add-term">+</span> Add a new criteria</div>
+				<div class="term"><span class="add-term">+</span> {{ phrase('admin.tickettriggers.add_a_new_criteria') }}</div>
 			</div>
 		</div>
 	</div>
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Actions</label>
+			<label>{{ phrase('admin.tickettriggers.actions') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<div class="actions-form search-form">
 				<div class="search-terms"></div>
-				<div class="term"><span class="add-term">+</span> Add a new action</div>
+				<div class="term"><span class="add-term">+</span> {{ phrase('admin.tickettriggers.add_a_new_action') }}</div>
 			</div>
 		</div>
 	</div>
 </div>
 
-<button class="clean-white save-trigger">Save</button>
+<button class="clean-white save-trigger">{{ phrase('admin.tickettriggers.save') }}</button>
 
 {{ form_rest(form) }}
 </form>

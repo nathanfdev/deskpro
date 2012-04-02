@@ -7,35 +7,35 @@
 		<ul>
 			<li class="link-settings">
 				<a href="{{ path('admin_settings') }}" data-search-keywords="settings options" data-search-name="Settings">Settings</a>
-				<p>Change your helpdesk settings, like your website URL</p>
+				<p>{{ phrase('admin.main.change_your_helpdesk_settings_like_your_website_url') }}</p>
 			</li>
 			<li class="link-email">
 				<a href="{{ path('admin_emailtrans_setup') }}" data-search-keywords="email smtp mail outgoing" data-search-name="Settings &rsaquo; Outgoing Email Accounts">Outgoing Email Account</a>
-				<p>Set up how DeskPRO sends emails</p>
+				<p>{{ phrase('admin.main.set_up_how_deskpro_sends_emails') }}</p>
 			</li>
 			<li class="link-departments">
 				<a href="{{ path('admin_departments') }}" data-search-keywords="departments" data-search-name="Settings &rsaquo; Departments">Departments</a>
-				<p>Manage your departments</p>
+				<p>{{ phrase('admin.main.manage_your_departments') }}</p>
 			</li>
 			<li class="link-portal">
 				<a href="{{ path('admin_portal') }}" data-search-keywords="portal website" data-search-name="Settings &rsaquo; Portal">Portal &amp; Site Integration</a>
-				<p>Change the appearance of your helpdesk homepage and integrate it into your website</p>
+				<p>{{ phrase('admin.main.change_the_appearance_of_your_helpdesk_homepage_and') }}</p>
 			</li>
 			<li class="link-products">
 				<a href="{{ path('admin_products') }}" data-search-keywords="products" data-search-name="Settings &rsaquo; Products">Products</a>
-				<p>Manage your products</p>
+				<p>{{ phrase('admin.main.manage_your_products') }}</p>
 			</li>
 			<li class="link-languages">
 				<a href="{{ path('admin_langs') }}" data-search-keywords="languages translations locale" data-search-name="Settings &rsaquo; Languages">Languages</a>
-				<p>Manage locales and languages.</p>
+				<p>{{ phrase('admin.main.manage_locales_and_languages') }}</p>
 			</li>
 			<li>
 				<a href="{{ path('admin_templates_user') }}" data-search-keywords="templates portal" data-search-name="Settings &rsaquo; Email Template">Page Templates</a>
-				<p>Edit the HTML templates for any page</p>
+				<p>{{ phrase('admin.main.edit_the_html_templates_for_any_page') }}</p>
 			</li>
 			<li>
 				<a href="{{ path('admin_templates_email') }}" data-search-keywords="templates emails" data-search-name="Settings &rsaquo; Email Template">Email Templates</a>
-				<p>Edit the emails sent to agents and users</p>
+				<p>{{ phrase('admin.main.edit_the_emails_sent_to_agents_and_users') }}</p>
 			</li>
 		</ul>
 	</div>
@@ -49,27 +49,27 @@
 		<ul>
 			<li class="link-logs">
 				<a href="{{ path('admin_server_attach') }}" data-search-keywords="attachments uploads files" data-search-name="Server &rsaquo; File Uploads">File Uploads</a>
-				<p>Test file uploading and change storage mechanism</p>
+				<p>{{ phrase('admin.main.test_file_uploading_and_change_storage_mechanism') }}</p>
 			</li>
 			<li class="link-scheduled-task">
 				<a href="{{ path('admin_server_cron') }}" data-search-keywords="server scheduled tasks cron" data-search-name="Server &rsaquo; Scheduled Tasks">Scheduled Tasks</a>
-				<p>View and manage scheduled tasks like email collection and cleanup</p>
+				<p>{{ phrase('admin.main.view_and_manage_scheduled_tasks_like_email_collection') }}</p>
 			</li>
 			<li class="link-database-tools">
 				<a href="{{ path('admin_server_phpinfo') }}" data-search-keywords="server php phpinfo" data-search-name="Server &rsaquo; PHP Info">PHP Info</a>
-				<p>View information about your PHP installation</p>
+				<p>{{ phrase('admin.main.view_information_about_your_php_installation') }}</p>
 			</li>
 			<li class="link-server-info">
 				<a href="{{ path('admin_server_mysqlinfo') }}" data-search-keywords="server mysql" data-search-name="Server &rsaquo; MySQL Info">MySQL Info</a>
-				<p>View information about your MySQL installation</p>
+				<p>{{ phrase('admin.main.view_information_about_your_mysql_installation') }}</p>
 			</li>
 			<li class="link-logs">
 				<a href="{{ path('admin_server_mysqlstatus') }}" data-search-keywords="server mysql" data-search-name="Server &rsaquo; Logs">MySQL Status</a>
-				<p>View information about the status of your MySQL installation</p>
+				<p>{{ phrase('admin.main.view_information_about_the_status_of_your_mysql') }}</p>
 			</li>
 			<li class="link-logs">
 				<a href="{{ path('admin_server_error_logs') }}" data-search-keywords="logs errors" data-search-name="Server &rsaquo; Error Logs">Error Logs</a>
-				<p>View logged errors</p>
+				<p>{{ phrase('admin.main.view_logged_errors') }}</p>
 			</li>
 		</ul>
 	</div>
@@ -83,35 +83,35 @@
 		<ul>
 			<li class="link-settings">
 				<a href="{{ path('admin_userreg_options') }}" data-search-keywords="settings registration" data-search-name="Settings &rsaquo; Registration">Registration</a>
-				<p>Change how the helpdesk should handle user registration</p>
+				<p>{{ phrase('admin.main.change_how_the_helpdesk_should_handle_user_registration') }}</p>
 			</li>
 			<li class="link-fields">
 				<a href="{{ path('admin_usergroups') }}" data-search-keywords="groups usergroups" data-search-name="Users &rsaquo; User Groups">User Groups</a>
-				<p>Create user groups to easily manage similar users, and to manage permissions on them.</p>
+				<p>{{ phrase('admin.main.create_user_groups_to_easily_manage_similar_users') }}</p>
 			</li>
 			<li class="link-fields">
 				<a href="{{ path('admin_customdefpeople') }}" data-search-keywords="fields users userfields customfields custom" data-search-name="Users &rsaquo; Fields">Fields</a>
-				<p>Create custom fields that can be added to users.</p>
+				<p>{{ phrase('admin.main.create_custom_fields_that_can_be_added_to') }}</p>
 			</li>
 			<li class="link-labels">
 				<a href="{{ path('admin_labels', {'label_type': 'people'}) }}" data-search-keywords="labels users" data-search-name="Users &rsaquo; Labels">Labels</a>
-				<p>Define labels that can be applied to users.</p>
+				<p>{{ phrase('admin.main.define_labels_that_can_be_applied_to_users') }}</p>
 			</li>
 			<li class="link-fields">
 				<a href="{{ path('admin_customdeforganizations') }}" data-search-keywords="organizations fields orgfields custom" data-search-name="Users &rsaquo; Organization Fields">Organization Fields</a>
-				<p>Create custom fields that can be added to organizations.</p>
+				<p>{{ phrase('admin.main.create_custom_fields_that_can_be_added_to') }}</p>
 			</li>
 			<li class="link-labels">
 				<a href="{{ path('admin_labels', {'label_type': 'organizations'}) }}" data-search-keywords="organizations labels" data-search-name="Users &rsaquo; Organization Labels">Organization Labels</a>
-				<p>Define labels that can be applied to organizations.</p>
+				<p>{{ phrase('admin.main.define_labels_that_can_be_applied_to_organizations') }}</p>
 			</li>
 			<li class="link-fields">
 				<a href="{{ path('admin_userrules') }}" data-search-keywords="user rules" data-search-name="Users &rsaquo; Rules">Rules</a>
-				<p>Set up patterns of email addresses to automatically add users to usergroups and organizations</p>
+				<p>{{ phrase('admin.main.set_up_patterns_of_email_addresses_to_automatically') }}</p>
 			</li>
 			<li class="link-fields">
 				<a href="{{ path('admin_banning_emails') }}" data-search-keywords="banning" data-search-name="Users &rsaquo; Banning">Banning</a>
-				<p>Ban IP ranges and email addresses</p>
+				<p>{{ phrase('admin.main.ban_ip_ranges_and_email_addresses') }}</p>
 			</li>
 		</ul>
 	</div>
@@ -125,11 +125,11 @@
 		<ul>
 			<li class="link-plugins">
 				<a href="{{ path('admin_plugins') }}" data-search-keywords="plugins" data-search-name="Integrate &rsaquo; Plugins">Plugins</a>
-				<p>Manage or install plugins.</p>
+				<p>{{ phrase('admin.main.manage_or_install_plugins') }}</p>
 			</li>
 			<li class="link-api">
 				<a href="{{ path('admin_api_keylist') }}" data-search-keywords="api" data-search-name="Integrate &rsaquo; API">API</a>
-				<p>Manage your API keys and usage.</p>
+				<p>{{ phrase('admin.main.manage_your_api_keys_and_usage') }}</p>
 			</li>
 		</ul>
 	</div>
@@ -143,39 +143,39 @@
 		<ul>
 			<li class="link-fields">
 				<a href="{{ path('admin_tickets_fields') }}" data-search-keywords="fields properties categories priorities workflows widgets" data-search-name="Tickets &rsaquo; Fields">Fields</a>
-				<p>Manage ticket fields like categories, priorities, workflows and your own defined fields.</p>
+				<p>{{ phrase('admin.main.manage_ticket_fields_like_categories_priorities_workflows_and') }}</p>
 			</li>
 			<li class="link-fields">
 				<a href="{{ path('admin_tickets_editor') }}" data-search-keywords="fields properties categories priorities workflows editor" data-search-name="Tickets &rsaquo; Editor">Editor</a>
-				<p>Design the layout of your new ticket forms and agent ticket interface.</p>
+				<p>{{ phrase('admin.main.design_the_layout_of_your_new_ticket_forms') }}</p>
 			</li>
 			<li class="link-ticket-filters">
 				<a href="{{ path('admin_tickets_filters') }}" data-search-keywords="filters" data-search-name="Tickets &rsaquo; Filters">Filters</a>
-				<p>Create filters that will appear in agent interface to help your team find tickets faster.</p>
+				<p>{{ phrase('admin.main.create_filters_that_will_appear_in_agent_interface') }}</p>
 			</li>
 			<li class="link-ticket-triggers">
 				<a href="{{ path('admin_tickettriggers') }}" data-search-keywords="triggers escalations rules notifications business rules" data-search-name="Tickets &rsaquo; Triggers">Triggers</a>
-				<p>Define triggers to that change or escalate tickets, send notifications, set urgency and auto-close tickets.</p>
+				<p>{{ phrase('admin.main.define_triggers_to_that_change_or_escalate_tickets') }}</p>
 			</li>
 			<li class="link-email">
 				<a href="{{ path('admin_emailgateways') }}" data-search-keywords="email gateway incoming" data-search-name="Tickets &rsaquo; Email Gateways">Email Gateways</a>
-				<p>Manage POP3 and IMAP accounts that DeskPRO will read email from as tickets</p>
+				<p>{{ phrase('admin.main.manage_pop3_and_imap_accounts_that_deskpro_will') }}</p>
 			</li>
 			<li class="link-ticket-macros">
 				<a href="" data-search-keywords="macros" data-search-name="Tickets &rsaquo; Macros">Macros</a>
-				<p>Create groups of actions that can be performed on tickets with a single click.</p>
+				<p>{{ phrase('admin.main.create_groups_of_actions_that_can_be_performed') }}</p>
 			</li>
 			<li class="link-ticket-macros">
 				<a href="{{ path('admin_features') }}" data-search-keywords="settings features" data-search-name="Tickets &rsaquo; Settings &amp; Features">Settings &amp; Features</a>
-				<p>Set other ticket features like feedback options.</p>
+				<p>{{ phrase('admin.main.set_other_ticket_features_like_feedback_options') }}</p>
 			</li>
 			<li class="link-labels">
 				<a href="{{ path('admin_labels', {'label_type': 'tickets'}) }}" data-search-keywords="tickets labels" data-search-name="Tickets &rsaquo; Labels">Labels</a>
-				<p>Define labels that can be applied to tickets to help organize your helpdesk.</p>
+				<p>{{ phrase('admin.main.define_labels_that_can_be_applied_to_tickets') }}</p>
 			</li>
 			<li>
 				<a href="{{ path('admin_templates_email') }}" data-search-keywords="templates emails" data-search-name="Settings &rsaquo; Email Template">Email Notification Templates</a>
-				<p>Edit the notification emails</p>
+				<p>{{ phrase('admin.main.edit_the_notification_emails') }}</p>
 			</li>
 		</ul>
 	</div>

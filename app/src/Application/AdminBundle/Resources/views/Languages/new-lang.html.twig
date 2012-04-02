@@ -1,7 +1,7 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagetitle %}
-	<h1>New Language</h1>
+	<h1>{{ phrase('admin.languages.new_language') }}</h1>
 {% endblock %}
 {% block page %}
 
@@ -11,10 +11,10 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Language Pack</label>
+			<label>{{ phrase('admin.languages.language_pack') }}</label>
 		</div>
 		<div class="dp-form-input">
-			Create a new language using one of these available language packs:<br />
+			{{ phrase('admin.languages.create_a_new_language_using_one_of_these') }}:<br />
 			<select name="language_package">
 				{% for package,title in packs %}
 					<option value="{{ package }}">{{ title }}</option>
@@ -24,7 +24,7 @@
 	</div>
 </div>
 
-<button class="clean-white">Create New Language</button>
+<button class="clean-white">{{ phrase('admin.languages.create_new_language') }}</button>
 
 </form>
 

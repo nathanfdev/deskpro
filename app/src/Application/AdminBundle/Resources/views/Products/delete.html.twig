@@ -1,6 +1,6 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagetitle %}
-	<h1>Delete Product</h1>
+	<h1>{{ phrase('admin.products.delete_product') }}</h1>
 	<nav>
 		<a class="clean-white" href="{{ path('admin_products') }}">&larr; Back to products</a>
 	</nav>
@@ -16,13 +16,13 @@
 		{% endfor %}
 	</ul>
 
-	<p>Any tickets that use any of these products will have it removed, resulting in the ticket having no product set on it.</p>
+	<p>{{ phrase('admin.products.any_tickets_that_use_any_of_these_products') }}</p>
 {% else %}
 	<p>Are you sure you want to delete the product "<strong>{{ product.title }}</strong>"?</p>
 
-	<p>Any tickets that use this product will have it removed, resulting in the ticket having no product set on it.</p>
+	<p>{{ phrase('admin.products.any_tickets_that_use_this_product_will_have') }}</p>
 {% endif %}
 
-<a class="btn" href="{{ path('admin_products_dodel', {'product_id': product.id, 'security_token': security_token('delete_product')}) }}">Yes, I am sure I want to delete</a>
+<a class="btn" href="{{ path('admin_products_dodel', {'product_id': product.id, 'security_token': security_token('delete_product')}) }}">{{ phrase('admin.products.yes_i_am_sure_i_want_to_delete') }}</a>
 
 {% endblock %}

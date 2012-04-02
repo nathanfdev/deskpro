@@ -10,21 +10,21 @@
 {% block page_nav_portal %}
 	{% if app.getSetting('user.portal_enabled') %}
 	<div style="text-align: center; padding-top: 4px;">
-		<button class="clean-white" id="portal_colors_trigger"><span>Color Editor</span></button>
+		<button class="clean-white" id="portal_colors_trigger"><span>{{ phrase('admin.portal.color_editor') }}</span></button>
 	</div>
 	{% endif %}
 {% endblock %}
 {% block pagebar %}
 	<ul>
-		<li>Portal</li>
+		<li>{{ phrase('admin.portal.portal') }}</li>
 	</ul>
 {% endblock %}
 {% block pagebar_after %}
 	<div class="portal-toggle">
 		{% if app.getSetting('user.portal_enabled') %}
-			<a class="toggle-btn" href="{{ path('admin_portal_toggle', {enable: '0'}) }}"><em>Click to disable</em></a>
+			<a class="toggle-btn" href="{{ path('admin_portal_toggle', {enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
 		{% else %}
-		<a class="toggle-btn disabled" href="{{ path('admin_portal_toggle', {enable: '1'}) }}"><em>Click to enable</em></a>
+		<a class="toggle-btn disabled" href="{{ path('admin_portal_toggle', {enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
 		{% endif %}
 		<p>If you do not want a public facing website you can disable the portal. You will still be able to accept tickets from the email gateways,
 		and use HTML widgets on your website, but the user portal will be disabled and traces of the public website such as links in emails
@@ -44,7 +44,7 @@
 			data-url-update-orders="{{ path('admin_portal_updateblockorder') }}"
 			data-url-block-toggle="{{ path('admin_portal_blocktoggle', {pid: '_PID_'}) }}"
 		>
-			<div id="portal_iframe_loading"><h1>Loading Editor</h1></div>
+			<div id="portal_iframe_loading"><h1>{{ phrase('admin.portal.loading_editor') }}</h1></div>
 			<iframe id="portal_iframe" frameborder="0" marginheight="0" marginwidth="0" scrolling="no" style="border:0;margin:0;padding:0;"></iframe>
 
 			<script type="text/x-deskpro-tmpl" id="admin_portal_block_html_edit_tpl">

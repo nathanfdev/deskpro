@@ -1,29 +1,29 @@
 <div>
 	<div class="overlay-section">
-		<h3>Direct Link</h3>
-		Link directly to the new ticket form:
+		<h3>{{ phrase('admin.ticketproperties.direct_link') }}</h3>
+		{{ phrase('admin.ticketproperties.link_directly_to_the_new_ticket_form') }}:
 		<br />
 		<input type="text" value="{{ app.request.getUriForPath('') }}/new-ticket{% if department %}/{{ department.id }}{% endif %}" style="width: 80%;" />
 	</div>
 
 	<div class="overlay-section">
-		<h3>Popup Window</h3>
-		Add a link to your website that opens the form in a popup window.
+		<h3>{{ phrase('admin.ticketproperties.popup_window') }}</h3>
+		{{ phrase('admin.ticketproperties.add_a_link_to_your_website_that_opens') }}
 		<br />
 {% set code %}
 <a
 	href="{{ app.request.getUriForPath('') }}/tickets/new-simple/{{ department.id|default('0') }}"
 	onclick="window.open(this.href, null, 'height=600, width=710, toolbar=0, location=0, status=1, scrollbars=1, resizable=1'); return false"
 	class="dp-newticket-link"
->Contact us</a>
+>{{ phrase('admin.ticketproperties.contact_us') }}</a>
 {% endset %}
 		<textarea style="height: 80px; width: 80%;">{{ code|e }}</textarea>
 	</div>
 
 
 	<div class="overlay-section">
-		<h3>Website Widget</h3>
-		Embed the new ticket form directly into any webpage. Copy and paste the code into the spot you want the form to appear:
+		<h3>{{ phrase('admin.ticketproperties.website_widget') }}</h3>
+		{{ phrase('admin.ticketproperties.embed_the_new_ticket_form_directly_into_any') }}:
 		<br />
 {% set code %}
 <!-- DeskPRO New Ticket -->

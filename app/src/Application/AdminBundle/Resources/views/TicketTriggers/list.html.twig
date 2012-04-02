@@ -9,11 +9,11 @@
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li class="add"><a href="{{ path('admin_tickettriggers_new_choosetype') }}">Add Trigger</a></li>
+			<li class="add"><a href="{{ path('admin_tickettriggers_new_choosetype') }}">{{ phrase('admin.tickettriggers.add_trigger') }}</a></li>
 		</ul>
 	</nav>
 	<ul>
-		<li>Triggers</li>
+		<li>{{ phrase('admin.tickettriggers.triggers') }}</li>
 	</ul>
 {% endblock %}
 {% block page %}
@@ -24,7 +24,7 @@
 			<ul>
 				<li class="dp-edit"><a href="{{ path('admin_tickettriggers_edit', {'trigger_id': trigger.id}) }}" class="popout-trigger"><span></span></a></li>
 				<li class="dp-move"><span></span></li>
-				<li class="dp-on-off trigger-toggle"><span class="off" {% if trigger.is_enabled %}style="display: none"{% endif %}>OFF</span><span class="on" {% if not trigger.is_enabled %}style="display: none"{% endif %}>ON</span></li>
+				<li class="dp-on-off trigger-toggle"><span class="off" {% if trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.tickettriggers.off') }}</span><span class="on" {% if not trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.tickettriggers.on') }}</span></li>
 			</ul>
 		</div>
 		{% if trigger.sys_name %}
@@ -56,12 +56,12 @@
 
 {% if not triggers %}
 <p>
-	You haven't created any triggers yet. <a href="{{ path('admin_tickettriggers_new_choosetype') }}">Click here to create one now</a>.
+	{{ phrase('admin.tickettriggers.you_havent_created_any_triggers_yet') }} <a href="{{ path('admin_tickettriggers_new_choosetype') }}">{{ phrase('admin.tickettriggers.click_here_to_create_one_now') }}</a>.
 </p>
 {% endif %}
 
 {% if triggers.new_ticket %}
-<h2>New Ticket Triggers</h2>
+<h2>{{ phrase('admin.tickettriggers.new_ticket_triggers') }}</h2>
 <ul class="item-list trigger-set">
 	{% for trigger in triggers.new_ticket %}
 		{{ _self.trigger_row(trigger) }}
@@ -71,7 +71,7 @@
 {% endif %}
 
 {% if triggers.new_reply %}
-<h2>New Reply Triggers</h2>
+<h2>{{ phrase('admin.tickettriggers.new_reply_triggers') }}</h2>
 <ul class="item-list trigger-set">
 	{% for trigger in triggers.new_reply %}
 		{{ _self.trigger_row(trigger) }}
@@ -81,7 +81,7 @@
 {% endif %}
 
 {% if triggers.new_reply %}
-<h2>Ticket Update Triggers</h2>
+<h2>{{ phrase('admin.tickettriggers.ticket_update_triggers') }}</h2>
 <ul class="item-list trigger-set">
 	{% for trigger in triggers.property_change %}
 		{{ _self.trigger_row(trigger) }}
@@ -91,7 +91,7 @@
 {% endif %}
 
 {% if triggers.time_open %}
-<h2>Triggers based on the time a ticket has been open</h2>
+<h2>{{ phrase('admin.tickettriggers.triggers_based_on_the_time_a_ticket_has') }}</h2>
 <ul class="item-list">
 	{% for trigger in triggers.time_open %}
 		{{ _self.trigger_row(trigger, 'Ticket has been open') }}
@@ -101,7 +101,7 @@
 {% endif %}
 
 {% if triggers.time_user_waiting %}
-<h2>Triggers based on the time a user has been waiting for a reply</h2>
+<h2>{{ phrase('admin.tickettriggers.triggers_based_on_the_time_a_user_has') }}</h2>
 <ul class="item-list">
 	{% for trigger in triggers.time_user_waiting %}
 		{{ _self.trigger_row(trigger, 'Ticket has been awaiting agent for') }}
@@ -111,7 +111,7 @@
 {% endif %}
 
 {% if triggers.time_total_user_waiting %}
-<h2>Triggers based on the total time a user has been waiting in a ticket</h2>
+<h2>{{ phrase('admin.tickettriggers.triggers_based_on_the_total_time_a_user') }}</h2>
 <ul class="item-list">
 	{% for trigger in triggers.time_total_user_waiting %}
 		{{ _self.trigger_row(trigger, 'Total user waiting time is ') }}
@@ -121,7 +121,7 @@
 {% endif %}
 
 {% if triggers.time_agent_waiting %}
-<h2>Triggers based on the time an agent has been waiting for a user reply</h2>
+<h2>{{ phrase('admin.tickettriggers.triggers_based_on_the_time_an_agent_has') }}</h2>
 <ul class="item-list">
 	{% for trigger in triggers.time_agent_waiting %}
 		{{ _self.trigger_row(trigger, 'Ticket has been awaiting user for') }}
@@ -131,7 +131,7 @@
 {% endif %}
 
 {% if triggers.time_agent_waiting %}
-<h2>Triggers based on the time a ticket was resolved</h2>
+<h2>{{ phrase('admin.tickettriggers.triggers_based_on_the_time_a_ticket_was') }}</h2>
 <ul class="item-list">
 	{% for trigger in triggers.time_agent_waiting %}
 		{{ _self.trigger_row(trigger, 'Ticket has been resolved for') }}

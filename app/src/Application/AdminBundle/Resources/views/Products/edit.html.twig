@@ -2,11 +2,11 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_products') }}">Products</a></li>
+		<li><a href="{{ path('admin_products') }}">{{ phrase('admin.products.products') }}</a></li>
 		{% if product.id %}
-			<li>Edit Product</li>
+			<li>{{ phrase('admin.products.edit_product') }}</li>
 		{% else %}
-			<li>New Product</li>
+			<li>{{ phrase('admin.products.new_product') }}</li>
 		{% endif %}
 	</ul>
 {% endblock %}
@@ -18,7 +18,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Title</label>
+			<label>{{ phrase('admin.products.title') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.title) }}
@@ -28,7 +28,7 @@
 	{% if form.parent %}
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Parent Product</label>
+				<label>{{ phrase('admin.products.parent_product') }}</label>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.parent) }}
@@ -39,12 +39,12 @@
 
 {{ form_rest(form) }}
 
-<button class="btn primary save-trigger">Save</button>
+<button class="btn primary save-trigger">{{ phrase('admin.products.save') }}</button>
 </form>
 
 {% if product.id %}
 <div class="delete-link-wrap">
-	<a href="{{ path('admin_products_del', {'product_id': product.id}) }}">delete</a>
+	<a href="{{ path('admin_products_del', {'product_id': product.id}) }}">{{ phrase('admin.products.delete') }}</a>
 </div>
 {% endif %}
 {% endblock %}

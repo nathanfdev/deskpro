@@ -7,18 +7,18 @@
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li class="add"><a href="{{ path('admin_agents_new') }}">Add Agent</a></li>
+			<li class="add"><a href="{{ path('admin_agents_new') }}">{{ phrase('admin.agents.add_agent') }}</a></li>
 		</ul>
 	</nav>
 	<ul>
-		<li>Agents</li>
+		<li>{{ phrase('admin.agents.agents') }}</li>
 	</ul>
 {% endblock %}
 {% block prepage %}
 	<div style="padding: 10px 10px 0 10px;">
 		{{ design.helpbox() }}
-			<p>Agents are anybody with access to the agent or admin interface of your helpdesk and will often include individuals with a range of roles within your organisation.</p>
-			<p>Agent teams are for helpdesks that want to assign tickets to a group of agents instead of or as well as to an individual agent. A typical use is to have Tier 1 or Tier 2 support agents. The agent team concept is to enable group ticket assignment; you should use agent permission groups to manage group permissions.</p>
+			<p>{{ phrase('admin.agents.agents_are_anybody_with_access_to_the_agent') }}</p>
+			<p>{{ phrase('admin.agents.agent_teams_are_for_helpdesks_that_want_to') }}</p>
 		{{ design.helpbox_end() }}
 	</div>
 {% endblock %}
@@ -27,12 +27,12 @@
 		<div class="resource-item-list">
 			<header>
 				<div class="controls">
-					<a class="clean-white small" href="{{ path('admin_agents_groups_new') }}">New</a>
+					<a class="clean-white small" href="{{ path('admin_agents_groups_new') }}">{{ phrase('admin.agents.new') }}</a>
 				</div>
-				<h4>Permission Groups</h4>
+				<h4>{{ phrase('admin.agents.permission_groups') }}</h4>
 			</header>
 			<article>
-				<article class="box-hint">A permission group is a set of system permissions that you can easily re-use by adding agents to the group.</article>
+				<article class="box-hint">{{ phrase('admin.agents.a_permission_group_is_a_set_of_system') }}</article>
 				<ul>
 					{% for usergroup in all_usergroups %}
 						<li class="usergroup usergroup-{{usergroup.id}}" data-usergroup-id="{{usergroup.id}}">
@@ -48,7 +48,7 @@
 							</div>
 						</li>
 					{% else %}
-						You have not created any permission groups. <a href="{{ path('admin_agents_groups_new') }}">Click here</a> to create one now.
+						{{ phrase('admin.agents.you_have_not_created_any_permission_groups') }} <a href="{{ path('admin_agents_groups_new') }}">{{ phrase('admin.agents.click_here') }}</a> {{ phrase('admin.agents.to_create_one_now') }}
 					{% endfor %}
 				</ul>
 			</article>
@@ -59,12 +59,12 @@
 		<div class="resource-item-list icon-group">
 			<header>
 				<div class="controls">
-					<a class="clean-white small" href="{{ path('admin_agents_teams_new') }}">New</a>
+					<a class="clean-white small" href="{{ path('admin_agents_teams_new') }}">{{ phrase('admin.agents.new') }}</a>
 				</div>
-				<h4>Teams</h4>
+				<h4>{{ phrase('admin.agents.teams') }}</h4>
 			</header>
 			<article>
-				<article class="box-hint">Teams are an a way to organize agents into work groups.</article>
+				<article class="box-hint">{{ phrase('admin.agents.teams_are_an_a_way_to_organize_agents') }}</article>
 				<ul>
 					{% for team in all_teams %}
 						<li class="agent-team team-{{team.id}}" data-team-id="{{team.id}}">
@@ -81,7 +81,7 @@
 						</li>
 					{% else %}
 						<li>
-							You have not created any teams. <a href="{{ path('admin_agents_teams_new') }}">Click here</a> to create one now.
+							{{ phrase('admin.agents.you_have_not_created_any_teams') }} <a href="{{ path('admin_agents_teams_new') }}">{{ phrase('admin.agents.click_here') }}</a> {{ phrase('admin.agents.to_create_one_now') }}
 						</li>
 					{% endfor %}
 				</ul>
@@ -99,7 +99,7 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th class="single-title">Agent</th>
+					<th class="single-title">{{ phrase('admin.agents.agent') }}</th>
 					<th class="r-col" width="16"><img title="Can access the admin interface" src="{{ asset('images/admin/icons/zone-admin.png') }}" /></th>
 					<th class="r-col" width="16"><img title="Can access the reporting interface" src="{{ asset('images/admin/icons/zone-reports.png') }}" /></th>
 					<th class="r-col" width="16"><img title="Can access the billing interface" src="{{ asset('images/admin/icons/zone-billing.png') }}" /></th>
@@ -145,7 +145,7 @@
 
 <ul id="agent_tools_menu" style="display: none">
 	{#<li class="vacation">Vacation Mode</li>#}
-	<li class="delete">Delete Agent</li>
+	<li class="delete">{{ phrase('admin.agents.delete_agent') }}</li>
 </ul>
 {% include 'AdminBundle:Agents:edit-agent-overlays.html.twig' %}
 

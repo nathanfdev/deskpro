@@ -2,11 +2,11 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
      <ul>
-         <li><a href="{{ path('admin_usergroups') }}">Usergroups</a></li>
+         <li><a href="{{ path('admin_usergroups') }}">{{ phrase('admin.usergroups.usergroups') }}</a></li>
 		 {% if usergroup.id %}
          	<li><a href="{{ path('admin_usergroups_edit', {'id': usergroup.id}) }}">{{ usergroup.title }}</a></li>
 		 {% endif %}
-         <li>Browse Members</li>
+         <li>{{ phrase('admin.usergroups.browse_members') }}</li>
      </ul>
 {% endblock %}
 {% block page %}
@@ -51,7 +51,7 @@
 
 {% else %}
 	<p>
-		There are no users to show.
+		{{ phrase('admin.usergroups.there_are_no_users_to_show') }}
 	</p>
 {% endif %}
 

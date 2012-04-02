@@ -1,6 +1,6 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagetitle %}
-	<h1>Delete Ticket Category</h1>
+	<h1>{{ phrase('admin.ticketcategories.delete_ticket_category') }}</h1>
 	<nav>
 		<a class="clean-white" href="{{ path('admin_ticketcats') }}">&larr; Back to ticket categories</a>
 	</nav>
@@ -16,13 +16,13 @@
 		{% endfor %}
 	</ul>
 
-	<p>Any tickets that belong to any of these categories will have it removed, resulting in the tickets having no category.</p>
+	<p>{{ phrase('admin.ticketcategories.any_tickets_that_belong_to_any_of_these') }}</p>
 {% else %}
 	<p>Are you sure you want to delete the category "<strong>{{ category.title }}</strong>"?</p>
 
-	<p>Any tickets that belong this category will have it removed, resulting in the tickets having no category.</p>
+	<p>{{ phrase('admin.ticketcategories.any_tickets_that_belong_this_category_will_have') }}</p>
 {% endif %}
 
-<a class="btn" href="{{ path('admin_ticketcats_dodel', {'category_id': category.id, 'security_token': security_token('delete_ticket_category')}) }}">Yes, I am sure I want to delete</a>
+<a class="btn" href="{{ path('admin_ticketcats_dodel', {'category_id': category.id, 'security_token': security_token('delete_ticket_category')}) }}">{{ phrase('admin.ticketcategories.yes_i_am_sure_i_want_to_delete') }}</a>
 
 {% endblock %}

@@ -13,7 +13,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Title</label>
+			<label>{{ phrase('admin.ticketpriorities.title') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.title) }}
@@ -21,7 +21,7 @@
 	</div>
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Priority</label>
+			<label>{{ phrase('admin.ticketpriorities.priority') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.priority, {'attr': {'size': 4} }) }}
@@ -31,7 +31,7 @@
 
 {{ form_rest(form) }}
 
-<button class="btn primary save-trigger">Save</button>
+<button class="btn primary save-trigger">{{ phrase('admin.ticketpriorities.save') }}</button>
 </form>
 
 <div class="delete-link-wrap">

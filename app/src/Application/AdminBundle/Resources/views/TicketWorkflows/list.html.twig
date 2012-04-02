@@ -7,11 +7,11 @@
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li class="add"><a id="newcat_open">Add New Workflow</a></li>
+			<li class="add"><a id="newcat_open">{{ phrase('admin.ticketworkflows.add_new_workflow') }}</a></li>
 		</ul>
 	</nav>
 	<ul>
-		<li>Ticket Workflows</li>
+		<li>{{ phrase('admin.ticketworkflows.ticket_workflows') }}</li>
 	</ul>
 {% endblock %}
 {% block content %}
@@ -25,7 +25,7 @@
 		{{ design.dpgrid({class: 'dep-list'}) }}
 			{{ design.dpgrid_headerrow() }}
 				{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 890px;"}) }}
-					<h1>Workflow</h1>
+					<h1>{{ phrase('admin.ticketworkflows.workflow') }}</h1>
 				{{ design.dpgrid_headercol_end() }}
 			{{ design.dpgrid_headerrow_end() }}
 
@@ -35,20 +35,20 @@
 		{{ design.dpgrid_end() }}
 	{% else %}
 		<div class="note-box new-arrow">
-			You have not created any ticket workflows yet. Click the "Add New Workflow" button to create one now.
+			You have not created any ticket workflows yet. Click the "{{ phrase('admin.ticketworkflows.add_new_workflow') }}" button to create one now.
 		</div>
 	{% endif %}
 
 	<div id="editcat_overlay" style="width: 400px; height: 180px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
-			<h4>Edit Workflow Title</h4>
+			<h4>{{ phrase('admin.ticketworkflows.edit_workflow_title') }}</h4>
 		</div>
 		<div class="overlay-content">
 			<form class="dp-form" method="POST" action="{{ path('admin_ticketworks_savetitle') }}">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Title</label>
+						<label>{{ phrase('admin.ticketworkflows.title') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="hidden" name="workflow_id" id="editcat_catid" value="" />
@@ -58,20 +58,20 @@
 			</form>
 		</div>
 		<div class="overlay-footer">
-			<button class="clean-white" id="editcat_savebtn">Save</button>
+			<button class="clean-white" id="editcat_savebtn">{{ phrase('admin.ticketworkflows.save') }}</button>
 		</div>
 	</div>
 
 	<div id="newcat_overlay" style="width: 400px; height: 180px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
-			<h4>New Workflow</h4>
+			<h4>{{ phrase('admin.ticketworkflows.new_workflow') }}</h4>
 		</div>
 		<div class="overlay-content">
 			<form class="dp-form" method="POST" action="{{ path('admin_ticketworks_savenew') }}">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Title</label>
+						<label>{{ phrase('admin.ticketworkflows.title') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="text" name="title" id="newcat_title" value="" />
@@ -80,7 +80,7 @@
 			</form>
 		</div>
 		<div class="overlay-footer">
-			<button class="clean-white" id="newcat_savebtn">Add</button>
+			<button class="clean-white" id="newcat_savebtn">{{ phrase('admin.ticketworkflows.add') }}</button>
 		</div>
 	</div>
 

@@ -7,8 +7,8 @@
 		{% if depends_on %}data-depends-on="{{ depends_on }}"{% endif %}
 	>
 		<td width="37" class="prop effective highlight no-border" id="effective_lbl_{{ perm_fname_flat }}">
-			<span class="on">{{ phrase('agent.perm_on') }}{#>>ON#}</span>
-			<span class="off">{{ phrase('agent.perm_off') }}{#>>OFF#}</span>
+			<span class="on">{{ phrase('admin.agents.on') }}</span>
+			<span class="off">{{ phrase('admin.agents.off') }}</span>
 		</td>
 		<td class="title">{{ title|raw }}</td>
 		<td class="prop">
@@ -40,10 +40,10 @@
 
 <nav class="check-grid-tabs">
 	<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
-		<li class="on" data-tab-for="#permgroup_tickets"><span>{{ phrase('agent.tickets') }}{#>>Tickets#}</span></li>
-		<li data-tab-for="#permgroup_people"><span>{{ phrase('agent.people_and_orgs') }}{#>>People and Organizations#}</span></li>
-		<li data-tab-for="#permgroup_chat"><span>{{ phrase('agent.chat') }}{#>>Chat#}</span></li>
-		<li data-tab-for="#permgroup_publish"><span>{{ phrase('agent.publish') }}{#>>Publish#}</span></li>
+		<li class="on" data-tab-for="#permgroup_tickets"><span>{{ phrase('admin.agents.tickets') }}</span></li>
+		<li data-tab-for="#permgroup_people"><span>{{ phrase('admin.agents.people_and_organizations') }}</span></li>
+		<li data-tab-for="#permgroup_chat"><span>{{ phrase('admin.agents.chat') }}</span></li>
+		<li data-tab-for="#permgroup_publish"><span>{{ phrase('admin.agents.publish') }}</span></li>
 	</ul>
 </nav>
 
@@ -53,8 +53,8 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th colspan="2" style="text-align: left">{{ phrase('agent.description') }}{#>>Description#}</th>
-					<th width="60">{{ phrase('agent.overrides') }}{#>>Overrides#}</th>
+					<th colspan="2" style="text-align: left">{{ phrase('admin.agents.description') }}</th>
+					<th width="60">{{ phrase('admin.agents.overrides') }}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -148,8 +148,8 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th colspan="2" style="text-align: left">{{ phrase('agent.description') }}{#>>Description#}</th>
-					<th width="60">{{ phrase('agent.overrides') }}{#>>Overrides#}</th>
+					<th colspan="2" style="text-align: left">{{ phrase('admin.agents.description') }}</th>
+					<th width="60">{{ phrase('admin.agents.overrides') }}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -178,8 +178,8 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th colspan="2" style="text-align: left">{{ phrase('agent.description') }}{#>>Description#}</th>
-					<th width="60">{{ phrase('agent.overrides') }}{#>>Overrides#}</th>
+					<th colspan="2" style="text-align: left">{{ phrase('admin.agents.description') }}</th>
+					<th width="60">{{ phrase('admin.agents.overrides') }}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -199,8 +199,8 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th colspan="2" style="text-align: left">{{ phrase('agent.description') }}{#>>Description#}</th>
-					<th width="60">{{ phrase('agent.overrides') }}{#>>Overrides#}</th>
+					<th colspan="2" style="text-align: left">{{ phrase('admin.agents.description') }}</th>
+					<th width="60">{{ phrase('admin.agents.overrides') }}</th>
 				</tr>
 			</thead>
 			<tbody>

@@ -1,0 +1,14 @@
+<?php return array (
+  'admin.ticketwidgets.choose_widget_type' => 'Choose Widget Type',
+  'admin.ticketwidgets.widget_location' => 'Widget Location',
+  'admin.ticketwidgets.display_field_in_agent_interface' => 'Display field in agent interface',
+  'admin.ticketwidgets.tab_in_agent_interface' => 'Tab in agent interface',
+  'admin.ticketwidgets.display_field_in_user_interface' => 'Display field in user interface',
+  'admin.ticketwidgets.widget_type' => 'Widget Type',
+  'admin.ticketwidgets.simple_html_content' => 'Simple HTML content',
+  'admin.ticketwidgets.continue' => 'Continue',
+  'admin.ticketwidgets.admin_namenote' => 'Admin name/note',
+  'admin.ticketwidgets.html_content' => 'HTML Content',
+  'admin.ticketwidgets.save' => 'Save',
+  'admin.ticketwidgets.create_new_widget' => 'Create New Widget',
+);

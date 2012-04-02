@@ -7,7 +7,7 @@
 				<span class="count-outdated"><i>{{ dirinfo.count_outdated }}</i> outdated</span>
 				<span class="count-changed"><i>{{ dirinfo.count_changed }}</i> custom</span>
 				<span class="count">{{ dirinfo.templates|length }} templates</span>
-				<h1 class="toggle-section {% if options.open %}expanded{% endif %}">{% if options.title %}{{ options.title }}{% else %}{% if dirname != '!top' %}{{ dirname }}{% else %}Layout{% endif %}{% endif %}</h1>
+				<h1 class="toggle-section {% if options.open %}expanded{% endif %}">{% if options.title %}{{ options.title }}{% else %}{% if dirname != '!top' %}{{ dirname }}{% else %}{{ phrase('admin.templates.layout') }}{% endif %}{% endif %}</h1>
 			</th>
 		</tr>
 		</thead>
@@ -44,8 +44,8 @@
 			</div>
 			<div class="overlay-footer">
 				<div class="is-not-loading">
-					<button class="clean-white save-trigger">Save Changes</button>
-					&nbsp;&nbsp; <button class="clean-white revert-trigger">Revert To Default</button>
+					<button class="clean-white save-trigger">{{ phrase('admin.templates.save_changes') }}</button>
+					&nbsp;&nbsp; <button class="clean-white revert-trigger">{{ phrase('admin.templates.revert_to_default') }}</button>
 				</div>
 				<div class="is-loading">
 					<div class="loading-icon-flat"></div>

@@ -3,7 +3,7 @@
 {% block email_transports_form_top %}
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Default "From" email address</label>
+			<label>{{ phrase('admin.emailtransports.default_from_email_address') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<input type="text" name="default_from_email" id="default_from_email" value="{{ app.getSetting('core.default_from_email') }}" /><br />

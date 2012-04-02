@@ -12,35 +12,35 @@ function _page_exec() {
 {% block page_id "plugins" %}
 {% block content %}
 
-<h2 style="font-size: 15px; padding-top: 6px;">Installed Plugins</h2>
+<h2 style="font-size: 15px; padding-top: 6px;">{{ phrase('admin.plugins.installed_plugins') }}</h2>
 <ul class="item-list">
 	{% for plugin in installed_plugins %}
 		<li>
 			<div style="float:right">
-				<a class="dp-button" href="{# {{ path('admin_plugins_install', {'plugin_id': plugin_info.name}) }} #}">Uninstall</a>
+				<a class="dp-button" href="{# {{ path('admin_plugins_install', {'plugin_id': plugin_info.name}) }} #}">{{ phrase('admin.plugins.uninstall') }}</a>
 			</div>
 			<strong>{{plugin.title}}</strong>
 			<div style="font-size: 90%">{{plugin.description|raw}}</div>
 		</li>
 	{% else %}
-		<li>You have no plugins installed.</li>
+		<li>{{ phrase('admin.plugins.you_have_no_plugins_installed') }}</li>
 	{% endfor %}
 </ul>
 
 <br />
 
-<h2 style="font-size: 15px; padding-top: 6px;">Available Plugins</h2>
+<h2 style="font-size: 15px; padding-top: 6px;">{{ phrase('admin.plugins.available_plugins') }}</h2>
 <ul class="item-list">
 	{% for plugin_info in available_plguins %}
 		<li>
 			<div style="float:right">
-				<a class="dp-button" href="{{ path('admin_plugins_install', {'plugin_id': plugin_info.name}) }}">Install</a>
+				<a class="dp-button" href="{{ path('admin_plugins_install', {'plugin_id': plugin_info.name}) }}">{{ phrase('admin.plugins.install') }}</a>
 			</div>
 			<strong>{{plugin_info.title}}</strong>
 			<div style="font-size: 90%">{{plugin_info.description|raw}}</div>
 		</li>
 	{% else %}
-		<li>You have no plugins available for installation</li>
+		<li>{{ phrase('admin.plugins.you_have_no_plugins_available_for_installation') }}</li>
 	{% endfor %}
 </ul>
 

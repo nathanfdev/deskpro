@@ -1,11 +1,11 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_usergroups_new') }}">User Rules</a></li>
+		<li><a href="{{ path('admin_usergroups_new') }}">{{ phrase('admin.userrules.user_rules') }}</a></li>
 		{% if rule.id %}
-			<li>New Rule</li>
+			<li>{{ phrase('admin.userrules.new_rule') }}</li>
 		{% else %}
-			<li>Edit Rule</li>
+			<li>{{ phrase('admin.userrules.edit_rule') }}</li>
 		{% endif %}
 	</ul>
 {% endblock %}
@@ -18,7 +18,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Email Address Pattern</label>
+			<label>{{ phrase('admin.userrules.email_address_pattern') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<textarea name="rule[patterns_string]" placeholder="Enter a pattern, one per line. Example: *@example.com" rows="6" style="height: 115px">{{ rule.patterns_string }}</textarea>
@@ -27,7 +27,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>When matching, add user to usergroup</label>
+			<label>{{ phrase('admin.userrules.when_matching_add_user_to_usergroup') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<select name="rule[add_usergroup]">
@@ -39,7 +39,7 @@
 	</div>
 </div>
 
-<button class="btn primary save-trigger">Save</button>
+<button class="btn primary save-trigger">{{ phrase('admin.userrules.save') }}</button>
 </form>
 
 {% if rule.id %}

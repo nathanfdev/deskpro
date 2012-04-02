@@ -8,12 +8,12 @@
 	<ul>
 		<li><a href="{{ path('admin_emailtrans_list') }}">Outgoing Email</a></li>
 		{% if is_setup %}
-			<li>Setup Default Mail Server</li>
+			<li>{{ phrase('admin.emailtransports.setup_default_mail_server') }}</li>
 		{% else %}
 			{% if transport.id %}
-				<li>Edit Server</li>
+				<li>{{ phrase('admin.emailtransports.edit_server') }}</li>
 			{% else %}
-				<li>New Server</li>
+				<li>{{ phrase('admin.emailtransports.new_server') }}</li>
 			{% endif %}
 		{% endif %}
 	</ul>
@@ -50,23 +50,23 @@
 		<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>When should this account be used?</label>
+					<label>{{ phrase('admin.emailtransports.when_should_this_account_be_used') }}</label>
 				</div>
 				<div class="dp-form-input">
 					<div class="dp-input-group">
 						<label>
 							<input type="radio" class="option-trigger email-address-type" name="transport[match_type]" value="exact" {% if not edittrans.match_type or edittrans.match_type == 'exact' %}checked="checked"{% endif %} />
-							Exact address
+							{{ phrase('admin.emailtransports.exact_address') }}
 						</label>
 						<div class="dp-group-options" style="display: none">
-							Email address: {{ form_widget(form.match_email, { 'attr': { 'class': 'small email-address-pattern', 'style': 'width:400px' }}) }}
+							{{ phrase('admin.emailtransports.email_address') }}: {{ form_widget(form.match_email, { 'attr': { 'class': 'small email-address-pattern', 'style': 'width:400px' }}) }}
 						</div>
 					</div>
 
 					<div class="dp-input-group">
 						<label>
 							<input type="radio" class="option-trigger email-address-type" name="transport[match_type]" value="domain" {% if edittrans.match_type == 'domain' %}checked="checked"{% endif %} />
-							Every address at a domain
+							{{ phrase('admin.emailtransports.every_address_at_a_domain') }}
 						</label>
 						<div class="dp-group-options" style="display: none">
 							Domain: *@{{ form_widget(form.match_domain, { 'attr': { 'class': 'small email-domain-pattern', 'style': 'width:400px' }}) }}
@@ -76,10 +76,10 @@
 					<div class="dp-input-group">
 						<label>
 							<input type="radio" class="option-trigger" name="transport[match_type]" value="regex" {% if edittrans.match_type == 'regex' %}checked="checked"{% endif %} />
-							Addresses that match a regular expression
+							{{ phrase('admin.emailtransports.addresses_that_match_a_regular_expression') }}
 						</label>
 						<div class="dp-group-options" style="display: none">
-							Pattern: {{ form_widget(form.match_regex, { 'attr': { 'class': 'small', 'style': 'width:400px' }}) }}
+							{{ phrase('admin.emailtransports.pattern') }}: {{ form_widget(form.match_regex, { 'attr': { 'class': 'small', 'style': 'width:400px' }}) }}
 						</div>
 					</div>
 				</div>
@@ -90,18 +90,18 @@
 	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Mail Server</label>
+				<label>{{ phrase('admin.emailtransports.mail_server') }}</label>
 			</div>
 			<div class="dp-form-input">
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="transport[transport_type]" value="mail" {% if transport.transport_type == 'mail' %}checked="checked"{% endif %} />
-						PHP mail()
+						{{ phrase('admin.emailtransports.php_mail') }}
 					</label>
 
 					<div class="dp-group-options" style="display: none">
 						<div class="test-row">
-							<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+							<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> {{ phrase('admin.emailtransports.test_settings') }}</span>
 						</div>
 					</div>
 				</div>
@@ -109,47 +109,47 @@
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="transport[transport_type]" value="smtp" {% if not transport.transport_type or transport.transport_type == 'smtp' %}checked="checked"{% endif %} />
-						SMTP Account
+						{{ phrase('admin.emailtransports.smtp_account') }}
 					</label>
 					<div class="dp-group-options" style="display: none">
 						<table cellspacing="0" cellpadding="0" width="100%">
 							<tr>
-								<td class="title" width="120">Host:</td>
+								<td class="title" width="120">{{ phrase('admin.emailtransports.host') }}:</td>
 								<td>
 									{{ form_widget(form.smtp_options.host, {'attr': {'class': 'small'}}) }}<br />
 								</td>
 							</tr>
 							<tr>
-								<td class="title">Secure:</td>
+								<td class="title">{{ phrase('admin.emailtransports.secure') }}:</td>
 								<td>{{ form_widget(form.smtp_options.secure, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr>
-								<td class="title">Port:</td>
+								<td class="title">{{ phrase('admin.emailtransports.port') }}:</td>
 								<td>{{ form_widget(form.smtp_options.port, {'attr': {'class': 'small', 'style': 'width: 100px'}}) }}</td>
 							</tr>
 							<tr>
-								<td class="title">Requires Auth:</td>
+								<td class="title">{{ phrase('admin.emailtransports.requires_auth') }}:</td>
 								<td>
 									<input
 										type="checkbox"
 										{% if edittrans.smtp_options.username or edittrans.smtp_options.password %}checked="checked"{% endif %}
 										data-element-handler="DeskPRO.ElementHandler.CheckboxToggle"
 										data-targets="#smtp_auth_username, #smtp_auth_password"
-									/> Yes
+									/> {{ phrase('admin.emailtransports.yes') }}
 								</td>
 							</tr>
 							<tr id="smtp_auth_username">
-								<td class="title">Username:</td>
+								<td class="title">{{ phrase('admin.emailtransports.username') }}:</td>
 								<td>{{ form_widget(form.smtp_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr id="smtp_auth_password">
-								<td class="title">Password:</td>
+								<td class="title">{{ phrase('admin.emailtransports.password') }}:</td>
 								<td>{{ form_widget(form.smtp_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
 
 						<div class="test-row">
-							<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+							<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> {{ phrase('admin.emailtransports.test_settings') }}</span>
 						</div>
 					</div>
 				</div>
@@ -157,21 +157,21 @@
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="transport[transport_type]" value="gmail" {% if transport.transport_type == 'gmail' %}checked="checked"{% endif %} />
-						Google Apps
+						{{ phrase('admin.emailtransports.google_apps') }}
 					</label>
 					<div class="dp-group-options" style="display: none">
 						<table cellspacing="0" cellpadding="0" width="100%">
 							<tr>
-								<td class="title" width="120">Full Email Address:</td>
+								<td class="title" width="120">{{ phrase('admin.emailtransports.full_email_address') }}:</td>
 								<td>{{ form_widget(form.gmail_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr>
-								<td class="title">Password:</td>
+								<td class="title">{{ phrase('admin.emailtransports.password') }}:</td>
 								<td>{{ form_widget(form.gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
 						<div class="test-row">
-							<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> Test Settings</span>
+							<span class="test-button test-account-settings primary"><span class="lightning-small-icon"></span> {{ phrase('admin.emailtransports.test_settings') }}</span>
 						</div>
 					</div>
 				</div>
@@ -185,18 +185,18 @@
 				<input type="radio" id="backup_form_none_radio" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="NONE" {% if not transport.backup_transport_type %}checked="checked"{% endif %} style="display:none" />
 				<label>
 					<input type="checkbox" id="backup_toggle" class="onoff-slider" {% if transport.backup_transport_type %}checked="checked"{% endif %} />
-					Backup Mail Server
+					{{ phrase('admin.emailtransports.backup_mail_server') }}
 				</label>
 			</div>
 			<div class="dp-form-input" id="backup_form" {% if not transport.backup_transport_type %}style="display: none"{% endif %}>
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" id="backup_form_php" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="mail" {% if transport.backup_transport_type == 'mail' %}checked="checked"{% endif %} />
-						PHP mail()
+						{{ phrase('admin.emailtransports.php_mail') }}
 					</label>
 					<div class="dp-group-options" style="display: none">
 						<div class="test-row">
-							<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> Test Settings</span>
+							<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> {{ phrase('admin.emailtransports.test_settings') }}</span>
 						</div>
 					</div>
 				</div>
@@ -204,47 +204,47 @@
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="smtp" {% if transport.backup_transport_type == 'smtp' %}checked="checked"{% endif %} />
-						SMTP Account
+						{{ phrase('admin.emailtransports.smtp_account') }}
 					</label>
 					<div class="dp-group-options" style="display: none">
 						<table cellspacing="0" cellpadding="0" width="100%">
 							<tr>
-								<td  class="title" width="120">Host:</td>
+								<td  class="title" width="120">{{ phrase('admin.emailtransports.host') }}:</td>
 								<td>
 									{{ form_widget(form.backup_smtp_options.host, {'attr': {'class': 'small'}}) }}<br />
 								</td>
 							</tr>
 							<tr>
-								<td class="title">Secure:</td>
+								<td class="title">{{ phrase('admin.emailtransports.secure') }}:</td>
 								<td>{{ form_widget(form.backup_smtp_options.secure, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr>
-								<td class="title">Port:</td>
+								<td class="title">{{ phrase('admin.emailtransports.port') }}:</td>
 								<td>{{ form_widget(form.backup_smtp_options.port, {'attr': {'class': 'small', 'style': 'width: 100px'}}) }}</td>
 							</tr>
 							<tr>
-								<td class="title">Requires Auth:</td>
+								<td class="title">{{ phrase('admin.emailtransports.requires_auth') }}:</td>
 								<td>
 									<input
 										type="checkbox"
 										{% if edittrans.backup_smtp_options.username or edittrans.backup_smtp_options.password %}checked="checked"{% endif %}
 										data-element-handler="DeskPRO.ElementHandler.CheckboxToggle"
 										data-targets="#backup_smtp_auth_username, #backup_smtp_auth_password"
-									/> Yes
+									/> {{ phrase('admin.emailtransports.yes') }}
 								</td>
 							</tr>
 							<tr id="backup_smtp_auth_username">
-								<td class="title">Username:</td>
+								<td class="title">{{ phrase('admin.emailtransports.username') }}:</td>
 								<td>{{ form_widget(form.backup_smtp_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr id="backup_smtp_auth_password">
-								<td class="title">Password:</td>
+								<td class="title">{{ phrase('admin.emailtransports.password') }}:</td>
 								<td>{{ form_widget(form.backup_smtp_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
 
 						<div class="test-row">
-							<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> Test Settings</span>
+							<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> {{ phrase('admin.emailtransports.test_settings') }}</span>
 						</div>
 					</div>
 				</div>
@@ -252,21 +252,21 @@
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="gmail" {% if transport.backup_transport_type == 'gmail' %}checked="checked"{% endif %} />
-						Google Apps
+						{{ phrase('admin.emailtransports.google_apps') }}
 					</label>
 					<div class="dp-group-options" style="display: none">
 						<table cellspacing="0" cellpadding="0" width="100%">
 							<tr>
-								<td class="title" width="120">Full Email Address:</td>
+								<td class="title" width="120">{{ phrase('admin.emailtransports.full_email_address') }}:</td>
 								<td>{{ form_widget(form.backup_gmail_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr>
-								<td class="title">Password:</td>
+								<td class="title">{{ phrase('admin.emailtransports.password') }}:</td>
 								<td>{{ form_widget(form.backup_gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
 						<div class="test-row">
-							<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> Test Settings</span>
+							<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> {{ phrase('admin.emailtransports.test_settings') }}</span>
 						</div>
 					</div>
 				</div>
@@ -275,25 +275,25 @@
 	</div>
 </div>
 
-<button class="clean-white">Save</button>
+<button class="clean-white">{{ phrase('admin.emailtransports.save') }}</button>
 </form>
 
 <div id="test_settings_overlay" style="width: 400px; height: 230px; overflow:auto; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay close-trigger"></span>
-		<h4>Test Outgoing Email</h4>
+		<h4>{{ phrase('admin.emailtransports.test_outgoing_email') }}</h4>
 	</div>
 	<div class="overlay-content">
-		<div style="margin-bottom: 3px;">Send a test email to: <input type="text" class="small" name="send_to" value="{{ app.user.primaryEmailAddress() }}" /></div>
-		From email address: <input type="text" class="small" name="send_from" id="test_send_from" value="" />
+		<div style="margin-bottom: 3px;">{{ phrase('admin.emailtransports.send_a_test_email_to') }}: <input type="text" class="small" name="send_to" value="{{ app.user.primaryEmailAddress() }}" /></div>
+		{{ phrase('admin.emailtransports.from_email_address') }}: <input type="text" class="small" name="send_from" id="test_send_from" value="" />
 		<div class="result">
 			<div class="is-loading loading-icon-big"><br /><br /></div>
 			<div class="is-not-loading">
 				<div class="success">
-					No errors were reported, but you should confirm that you recieved the test email.
+					{{ phrase('admin.emailtransports.no_errors_were_reported_but_you_should_confirm') }}
 				</div>
 				<div class="error">
-					There was an error while trying to send the test email: <span class="error-msg"></span>
+					{{ phrase('admin.emailtransports.there_was_an_error_while_trying_to_send') }}: <span class="error-msg"></span>
 				</div>
 			</div>
 		</div>
@@ -302,7 +302,7 @@
 		<button
 			class="clean-white test-trigger"
 			data-url="{{ path('admin_emailtrans_testaccount') }}"
-		>Test Now</button>
+		>{{ phrase('admin.emailtransports.test_now') }}</button>
 	</div>
 </div>
 

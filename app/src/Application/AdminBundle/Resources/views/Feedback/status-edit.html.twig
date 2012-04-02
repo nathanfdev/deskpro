@@ -7,7 +7,7 @@
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/FeedbackStatusEditPage.js') }}"></script>
 {% endblock %}
 {% block pagetitle %}
-	<h1>Edit Status</h1>
+	<h1>{{ phrase('admin.feedback.edit_status') }}</h1>
 	<nav>
 		<a class="clean-white" href="{{ path('admin_feedback_statuses') }}">&larr; Back To List</a>
 	</nav>
@@ -19,7 +19,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Status Type</label>
+			<label>{{ phrase('admin.feedback.status_type') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{% if cat.status_type == 'active' %}
@@ -32,7 +32,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>Title</label>
+			<label>{{ phrase('admin.feedback.title') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<input type="text" name="cat[title]" value="{{ cat.title }}" />
@@ -40,11 +40,11 @@
 	</div>
 </div>
 
-	<button class="clean-white">Save</button>
+	<button class="clean-white">{{ phrase('admin.feedback.save') }}</button>
 </form>
 
 <div class="delete-link-wrap">
-	<a href="#" id="delete_btn">delete status</a>
+	<a href="#" id="delete_btn">{{ phrase('admin.feedback.delete_status') }}</a>
 </div>
 
 {% if not other_cats|length %}
@@ -52,10 +52,10 @@
 		<form action="{{ path('admin_feedback_statuses_del', {'category_id': cat.id}) }}" method="post">
 			<div class="overlay-title">
 				<span class="close-overlay close-trigger"></span>
-				<h4>Delete Status</h4>
+				<h4>{{ phrase('admin.feedback.delete_status') }}</h4>
 			</div>
 			<div class="overlay-content">
-				<p>You cannot delete the last status.</p>
+				<p>{{ phrase('admin.feedback.you_cannot_delete_the_last_status') }}</p>
 			</div>
 		</form>
 	</div>
@@ -64,7 +64,7 @@
 		<form action="{{ path('admin_feedback_statuses_del', {'category_id': cat.id}) }}" method="post">
 			<div class="overlay-title">
 				<span class="close-overlay close-trigger"></span>
-				<h4>Delete Status</h4>
+				<h4>{{ phrase('admin.feedback.delete_status') }}</h4>
 			</div>
 			<div class="overlay-content">
 				{% if count_existing %}
@@ -83,7 +83,7 @@
 						</div>
 					</div>
 				{% else %}
-					<p>Are you sure you want to delete this status?</p>
+					<p>{{ phrase('admin.feedback.are_you_sure_you_want_to_delete_this') }}</p>
 				{% endif %}
 			</div>
 			<div class="overlay-footer">
@@ -91,7 +91,7 @@
 					id="create_status_save_btn"
 					class="clean-white"
 					data-save-url="{{ path('admin_feedback_statuses_ajaxadd') }}"
-				>Delete Status</button>
+				>{{ phrase('admin.feedback.delete_status') }}</button>
 			</div>
 		</form>
 	</div>

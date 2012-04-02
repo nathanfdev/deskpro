@@ -4,7 +4,7 @@
 {% block content %}
 
 <div style="text-align: right">
-	<a class="dp-button green" href="{{ path('admin_api_newkey') }}">Create API Key</a>
+	<a class="dp-button green" href="{{ path('admin_api_newkey') }}">{{ phrase('admin.api.create_api_key') }}</a>
 	<br /><br />
 </div>
 
@@ -13,17 +13,17 @@
 		<li>
 			<div style="float:right">
 				<ul class="controls">
-					<li class="edit"><a href="{{ path('admin_api_editkey', {'id': apikey.id}) }}">view/edit</a></li>
+					<li class="edit"><a href="{{ path('admin_api_editkey', {'id': apikey.id}) }}">{{ phrase('admin.api.viewedit') }}</a></li>
 					<li class="delete"><a href="{{ path('admin_api_delkey', {'id': apikey.id}) }}" onclick="return confirm('Are you sure?');">delete</a></li>
 				</ul>
 			</div>
 			<strong>{{apikey.person.display_name}}</strong>
 			{% if apikey.note %}<p>{{apikey.note}}</p>{% endif %}
 
-			<p>HTTP Basic Auth: <input type="text" class="flat" value="{{apikey.id}}:{{apikey.code}}" style="width: 200px;" /></p>
+			<p>{{ phrase('admin.api.http_basic_auth') }}: <input type="text" class="flat" value="{{apikey.id}}:{{apikey.code}}" style="width: 200px;" /></p>
 		</li>
 	{% else %}
-		You have created no API keys.
+		{{ phrase('admin.api.you_have_created_no_api_keys') }}
 	{% endfor %}
 </ul>
 

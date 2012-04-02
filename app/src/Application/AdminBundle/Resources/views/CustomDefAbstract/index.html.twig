@@ -18,13 +18,13 @@
 				<br class="clear" />
 			</header>
 			<p>
-				Field type: {{ phrase(field.getHandlerClassPhrase()) }}
+				{{ phrase('admin.customdefabstract.field_type') }}: {{ phrase(field.getHandlerClassPhrase()) }}
 			</p>
 		</li>
 	{% else %}
 		<li>
 			<p>
-				You have not created any fields yet.
+				{{ phrase('admin.customdefabstract.you_have_not_created_any_fields_yet') }}
 			</p>
 		</li>
 	{% endfor %}
