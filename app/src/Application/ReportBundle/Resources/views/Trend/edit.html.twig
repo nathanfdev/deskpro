@@ -4,7 +4,7 @@
 	<div class="dp-form">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Title</label>
+				<label>{{ phrase('report.trend.title') }}</label>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.title) }}
@@ -13,8 +13,8 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Difference</label>
-				<span>Is a positive number good, bad or neutral?</span>
+				<label>{{ phrase('report.trend.difference') }}</label>
+				<span>{{ phrase('report.trend.is_a_positive_number_good_bad_or_neutral') }}</span>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.variation) }}
@@ -23,21 +23,21 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Star the statistic?</label>
-				<span>Starred statistic display at the top of the trend list</span>
+				<label>{{ phrase('report.trend.star_the_statistic') }}</label>
+				<span>{{ phrase('report.trend.starred_statistic_display_at_the_top_of_the') }}</span>
 			</div>
 			<div class="dp-form-input">
-				<label>{{ form_widget(form.starred) }} Starred</label>
+				<label>{{ form_widget(form.starred) }} {{ phrase('report.trend.starred') }}</label>
 			</div>
 		</div>
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Disable the statistic?</label>
-				<span>Disabling the statistic will cause future data to be unavailable</span>
+				<label>{{ phrase('report.trend.disable_the_statistic') }}</label>
+				<span>{{ phrase('report.trend.disabling_the_statistic_will_cause_future_data_to') }}</span>
 			</div>
 			<div class="dp-form-input">
-				<label>{{ form_widget(form.disabled) }} Disable</label>
+				<label>{{ form_widget(form.disabled) }} {{ phrase('report.trend.disable') }}</label>
 			</div>
 		</div>
 
@@ -45,7 +45,7 @@
 
 	{{ form_rest(form) }}
 
-	<button class="btn primary save-trigger" id="edit_trend_save">Save</button>
+	<button class="btn primary save-trigger" id="edit_trend_save">{{ phrase('report.trend.save') }}</button>
 </form>
 
 <script type="text/javascript">

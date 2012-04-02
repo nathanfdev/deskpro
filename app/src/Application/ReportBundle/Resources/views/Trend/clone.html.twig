@@ -4,7 +4,7 @@
 	<div class="dp-form">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Title</label>
+				<label>{{ phrase('report.trend.title') }}</label>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.title) }}
@@ -13,8 +13,8 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Group By</label>
-				<span>Select the field to group the results by.</span>
+				<label>{{ phrase('report.trend.group_by') }}</label>
+				<span>{{ phrase('report.trend.select_the_field_to_group_the_results_by') }}</span>
 			</div>
 			<div class="dp-form-input group-by">
 				{{ form_widget(form.grouping_ref) }}
@@ -22,11 +22,11 @@
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>Criteria</label></div>
+			<div class="dp-form-label"><label>{{ phrase('report.trend.criteria') }}</label></div>
 			<div class="dp-form-input">
 				<div class="search-form" id="_criteria_list">
 					<div class="search-terms"></div>
-					<div class="term"><span class="add-term">+</span> Add a new term</div>
+					<div class="term"><span class="add-term">+</span> {{ phrase('report.trend.add_a_new_term') }}</div>
 				</div>
 				{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'id': baseId ~ '_criteria_tpl', 'term_options': term_options, 'search_context': 'filter' } %}
 			</div>
@@ -34,8 +34,8 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Difference</label>
-				<span>Is a positive number good, bad or neutral?</span>
+				<label>{{ phrase('report.trend.difference') }}</label>
+				<span>{{ phrase('report.trend.is_a_positive_number_good_bad_or_neutral') }}</span>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.variation) }}
@@ -44,8 +44,8 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Frequency</label>
-				<span>How often does this statistic need to run?</span>
+				<label>{{ phrase('report.trend.frequency') }}</label>
+				<span>{{ phrase('report.trend.how_often_does_this_statistic_need_to_run') }}</span>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.run_frequency) }}
@@ -54,18 +54,18 @@
 
         <div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Star the statistic?</label>
-				<span>Starred statistic display at the top of the trend list</span>
+				<label>{{ phrase('report.trend.star_the_statistic') }}</label>
+				<span>{{ phrase('report.trend.starred_statistic_display_at_the_top_of_the') }}</span>
 			</div>
 			<div class="dp-form-input">
-				<label>{{ form_widget(form.starred) }} Starred</label>
+				<label>{{ form_widget(form.starred) }} {{ phrase('report.trend.starred') }}</label>
 			</div>
 		</div>
 	</div>
 
 	{{ form_rest(form) }}
 
-	<button class="btn primary save-trigger" id="clone_trend_save">Clone</button>
+	<button class="btn primary save-trigger" id="clone_trend_save">{{ phrase('report.trend.clone') }}</button>
 </form>
 
 <script type="text/javascript">

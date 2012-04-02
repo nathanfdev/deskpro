@@ -6,11 +6,11 @@
 			<thead>
 				<tr>
 					<th class="name">{{ chart.getDataLabel }}</th>
-					<th class="trend">Trend</th>
+					<th class="trend">{{ phrase('report.deskpro.trend') }}</th>
 					{% for series in chart.getEndSeries(3) %}
 						<th class="prev-value">{{ series }}</th>
 					{% endfor %}
-					<th class="diff">Diff %</th>
+					<th class="diff">{{ phrase('report.deskpro.diff_') }}</th>
 				</tr>
 			</thead>
 			<tbody>

@@ -1,0 +1,14 @@
+<?php return array (
+  'report.dashboard.title' => 'Title',
+  'report.dashboard.save' => 'Save',
+  'report.dashboard.chart_type' => 'Chart Type',
+  'report.dashboard.show_legend' => 'Show Legend?',
+  'report.dashboard.select_yes_to_display_the_chart_legend_works' => 'Select yes to display the chart legend (works best with bigger charts)',
+  'report.dashboard.display_grouping_data' => 'Display Grouping Data?',
+  'report.dashboard.data_range' => 'Data Range',
+  'report.dashboard.edit' => 'Edit',
+  'report.dashboard.number_columns' => 'Number Columns',
+  'report.dashboard.delete' => 'Delete',
+  'report.dashboard.add_dashboard_chart' => 'Add Dashboard Chart',
+  'report.dashboard.view_chart' => 'View Chart',
+);

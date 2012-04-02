@@ -4,7 +4,7 @@
 	<div class="dp-form">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Title</label>
+				<label>{{ phrase('report.dashboard.title') }}</label>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.title, { 'placeholder': 'test' }) }}
@@ -13,7 +13,7 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Chart Type</label>
+				<label>{{ phrase('report.dashboard.chart_type') }}</label>
 			</div>
 			<div class="dp-form-input chart-type-select">
 				{{ form_widget(form.chart_type) }}
@@ -22,8 +22,8 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Show Legend?</label>
-				<span>Select yes to display the chart legend (works best with bigger charts)</span>
+				<label>{{ phrase('report.dashboard.show_legend') }}</label>
+				<span>{{ phrase('report.dashboard.select_yes_to_display_the_chart_legend_works') }}</span>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.show_legend) }}
@@ -32,7 +32,7 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Display Grouping Data?</label>
+				<label>{{ phrase('report.dashboard.display_grouping_data') }}</label>
 				<span>Select yes to display the data grouped by {{ stat.getGroupingName }}</span>
 			</div>
 			<div class="dp-form-input">
@@ -42,7 +42,7 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>Data Range</label>
+				<label>{{ phrase('report.dashboard.data_range') }}</label>
 				<span>How many {{ stat.getRunPeriodLength() }} worth of data do you want to display?</span>
 			</div>
 			<div class="dp-form-input">
@@ -53,5 +53,5 @@
 
 	{{ form_rest(form) }}
 
-	<button class="btn primary save-trigger">Save</button>
+	<button class="btn primary save-trigger">{{ phrase('report.dashboard.save') }}</button>
 </form>

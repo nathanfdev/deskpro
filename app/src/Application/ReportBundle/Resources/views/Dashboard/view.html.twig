@@ -22,7 +22,7 @@ function _page_exec() {
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li id="report-dashboard-set-editable" class="edit"><a href="#">Edit</a></li>
+			<li id="report-dashboard-set-editable" class="edit"><a href="#">{{ phrase('report.dashboard.edit') }}</a></li>
 		</ul>
 	</nav>
 	<ul>
@@ -37,7 +37,7 @@ function _page_exec() {
 			<div class="dp-form">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Title</label>
+						<label>{{ phrase('report.dashboard.title') }}</label>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(form.title) }}
@@ -46,7 +46,7 @@ function _page_exec() {
 
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>Number Columns</label>
+						<label>{{ phrase('report.dashboard.number_columns') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<div id="report-dashboard-options-num-columns-slider"></div>
@@ -54,8 +54,8 @@ function _page_exec() {
 				</div>
 			</div>
 
-			<a id="report-dashboard-delete" href="{{ path('report_trend_dashboard_delete', {'dashboard_id': dashboard.id}) }}" class="btn secondary">Delete</a>
-			<a id="report-dashboard-set-viewable" href="#" class="btn primary">Save</a>
+			<a id="report-dashboard-delete" href="{{ path('report_trend_dashboard_delete', {'dashboard_id': dashboard.id}) }}" class="btn secondary">{{ phrase('report.dashboard.delete') }}</a>
+			<a id="report-dashboard-set-viewable" href="#" class="btn primary">{{ phrase('report.dashboard.save') }}</a>
 		</form>
 	</div>
 
@@ -66,7 +66,7 @@ function _page_exec() {
 	<div id="overlay_wrapper" style="width: 950px; height: 600px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
-			<h4>Add Dashboard Chart</h4>
+			<h4>{{ phrase('report.dashboard.add_dashboard_chart') }}</h4>
 		</div>
 		<div class="overlay-content">
 
@@ -82,7 +82,7 @@ function _page_exec() {
 	<div id="fullscreen_overlay_wrapper" style="display: none; height: 200px; width: 100%;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
-			<h4>View Chart</h4>
+			<h4>{{ phrase('report.dashboard.view_chart') }}</h4>
 		</div>
 		<div class="overlay-content"  style="padding: 0">
 			<div id="fullscreen_overlay_wrapper_content"></div>
@@ -102,7 +102,7 @@ function _page_exec() {
 			<thead>
 				<tr>
 					<th width="16"></th>
-					<th>Title</th>
+					<th>{{ phrase('report.dashboard.title') }}</th>
 					<th width="100">Group By</th>
 					<th width="100">Updates</th>
 					<th width="100">Author</th>
