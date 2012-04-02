@@ -42,6 +42,9 @@ class WordCountCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             array('admin', 'Admin Interface')
         );
 
+		$t_wordcount = 0;
+		$t_keycount = 0;
+
         foreach ($directories AS $interface) {
 
             $keycount = 0;
@@ -64,7 +67,14 @@ class WordCountCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                 closedir($handle);
 
                 echo $interface['1'] . " :: $wordcount words in $keycount phrases\n";
+				$t_wordcount += $wordcount;
+				$t_keycount += $keycount;
+
             }
         }
+
+		
+		echo "\n\nTotal :: $t_wordcount words in $t_keycount phrases\n";
+
 	}
 }
