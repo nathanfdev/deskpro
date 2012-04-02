@@ -310,7 +310,7 @@ class AgentsController extends AbstractController
 				$errors[] = 'The email address you entered is invalid';
 			} else {
 				$exist_check = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($set_email);
-				if ($exist_check && $exist_check->person->id != $agent->id) {
+				if ($exist_check && $exist_check->id != $agent->id) {
 					$errors[] = 'The new email address you entered already belongs to a different user.';
 				}
 			}
