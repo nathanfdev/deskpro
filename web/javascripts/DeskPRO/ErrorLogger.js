@@ -23,6 +23,10 @@ var DpErrorLog = {
 
 	logError: function(message) {
 
+		if (!this.saveUrl) {
+			return;
+		}
+
 		if (ASSETS_BASE_URL) {
 			var r = new RegExp(ASSETS_BASE_URL.escapeRegExp(), 'g');
 			message = message.replace(r, '');
@@ -57,16 +61,17 @@ var DpErrorLog = {
 	}
 };
 
+if (DP_DEBUG) {
+	var oldTrigger = jQuery.event.trigger;
+	jQuery.event.trigger = function() {
+		var begin = new Date();
 
-var oldTrigger = jQuery.event.trigger;
-jQuery.event.trigger = function() {
-	var begin = new Date();
+		var args = Array.prototype.slice.call(arguments);
+		oldTrigger.apply(jQuery.event, args);
 
-	var args = Array.prototype.slice.call(arguments);
-	oldTrigger.apply(jQuery.event, args);
-
-	var time = (new Date()).getTime() - begin.getTime();
-	if (time > 150) {
-		DpErrorLog.logError("Event took "+time+"ms: " + "\n" + printStackTrace().join("\n"));
+		var time = (new Date()).getTime() - begin.getTime();
+		if (time > 150) {
+			DpErrorLog.logError("Event took "+time+"ms: " + "\n" + printStackTrace().join("\n"));
+		}
 	}
 }
