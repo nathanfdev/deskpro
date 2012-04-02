@@ -504,7 +504,8 @@ class GroupingCounter
 
 			case TicketSearch::TERM_URGENCY:
 				$this->grouping_summary = "Urgency";
-				$titles = range(1, 10);
+				$x = range(1, 10);
+				$titles = array_combine($x, $x);
 				break;
 
 			case TicketSearch::TERM_CATEGORY:
