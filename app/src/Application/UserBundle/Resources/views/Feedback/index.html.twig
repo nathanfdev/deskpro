@@ -14,7 +14,7 @@
 			<a href="{{ path('user_feedback_status', {'status': 'declined'}) }} ">{{ phrase('user.declined') }}</a> |
 			<a href="{{ path('user_feedback_status', {'status': 'completed'}) }} ">{{ phrase('user.completed') }}</a>
 		{% else %}
-			<a href="{{ path('user_feedback_cat', {'slug': category.url_slug}) }} ">{{ phrase('user.new') }}New</a> |
+			<a href="{{ path('user_feedback_cat', {'slug': category.url_slug}) }} ">{{ phrase('user.new') }}</a> |
 			<a href="{{ path('user_feedback_cat_status', {'slug': category.url_slug, 'status': 'accepted'}) }} ">{{ phrase('user.accepted') }}</a> |
 			<a href="{{ path('user_feedback_cat_status', {'slug': category.url_slug, 'status': 'declined'}) }} ">{{ phrase('user.declined') }}</a> |
 			<a href="{{ path('user_feedback_cat_status', {'slug': category.url_slug, 'status': 'completed'}) }} ">{{ phrase('user.completed') }}</a>

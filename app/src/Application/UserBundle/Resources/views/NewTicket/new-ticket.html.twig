@@ -52,7 +52,7 @@ var ticketReader = {
 </script>
 <script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/NewTicket.js') }}"></script>
 {% endblock %}
-{% block page_title %}New Ticket{% endblock %}
+{% block page_title %}{{ phrase('user.newticket.new_ticket') }}{% endblock %}
 {% block breadcrumb %}
 	{% if is_user_loggedin() %}
 		<li><a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.your_tickets') }}</a></li>

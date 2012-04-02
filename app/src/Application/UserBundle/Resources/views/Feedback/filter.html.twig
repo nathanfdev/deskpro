@@ -12,7 +12,7 @@
 	</li>
 {% endmacro %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_feedback') }}">Feedback</a></li>
+	<li><a href="{{ path('user_feedback') }}">{{ phrase('user.feedback.feedback') }}</a></li>
 	<li>
 		<a href="{{ path('user_feedback', {'status': parent_status, 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_' ~ parent_status) }}</a>
 	</li>
@@ -35,7 +35,7 @@
 	{% endif %}
 {% endblock %}
 {% block page_title %}
-	Feedback
+	{{ phrase('user.feedback.feedback') }}
 	/ {{ phrase('user.feedback.status_' ~ parent_status) }}
 	{% if parent_status != status %}
 		/

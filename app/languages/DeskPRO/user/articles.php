@@ -29,4 +29,6 @@
 	'user.articles.go' => 'Go',
 	'user.articles.number_of_articles' => '{{count}} articles',
 	'user.articles.date' => 'Date',
+	'user.articles.page_page' => 'Page',
+	'user.articles.page_of' => 'of',
 );

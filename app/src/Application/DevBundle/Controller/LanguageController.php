@@ -233,8 +233,12 @@ class LanguageController extends Controller
                 foreach($lines as $line) {
                     $pos = strpos($line, $string);
 
-                    if(preg_match('/.{0,32}'.preg_quote($string, '/').'.{0,32}/', $line, $match)) {
-                        $context[] = array('in' => $match[0], 'out' => $this->replaceInLine($line, $string, $id));
+                    if(preg_match('/.{0,64}'.preg_quote($string, '/').'.{0,64}/', $line, $match)) {
+                        $out = $this->replaceInLine($line, $string, $id);
+
+                        if($out != $line) {
+                            $context[] = array('in' => $line, 'out' => $out);
+                        }
                     }
                 }
 

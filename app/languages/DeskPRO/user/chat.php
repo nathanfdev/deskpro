@@ -47,4 +47,5 @@
 	'user.chat.you' => 'You',
 	'user.chat.remove' => 'remove',
 	'user.chat.choose_department' => 'Choose a department',
+	'user.chat.chat' => 'Chat',
 );

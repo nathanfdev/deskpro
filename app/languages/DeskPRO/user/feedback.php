@@ -44,4 +44,7 @@
 	'user.feedback.accepted' => 'Accepted',
 	'user.feedback.declined' => 'Declined',
 	'user.feedback.completed' => 'Completed',
+
+	'user.feedback.feedback' => 'Feedback',
+	'user.feedback.please_enter_your_name' => 'Please enter your name',
 );

@@ -131,4 +131,12 @@
 	'user.tickets.please_choose_category' => 'Please choose a category',
 	'user.tickets.please_choose_priority' => 'Please choose a priority',
 	'user.tickets.please_choose_subject_at_least' => 'Please enter a subject of at least 5 characters',
+
+  'user.tickets.tickets' => 'Tickets',
+  'user.tickets.your_tickets' => 'Your Tickets',
+  'user.tickets.ticket_participants' => 'Ticket participants',
+  'user.tickets.you' => 'You',
+  'user.tickets.new_reply' => 'New Reply',
+  'user.tickets.attach_a_file' => 'Attach a file',
+  'user.tickets._your_tickets' => '- Your Tickets',
 );

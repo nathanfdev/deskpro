@@ -66,12 +66,12 @@
 							{% if pageinfo.prev %}
 								<a href="{{ path('user_articles_filter', search_options|merge({'page': pageinfo.prev})) }}" class="page-link page-left">{{ phrase('user.articles.previous') }}</a>
 							{% endif %}
-							Page <select class="page" name="page" onchange="$('#kb_find_form_btm').submit();">
+							{{ phrase('user.articles.page_page') }}<select class="page" name="page" onchange="$('#kb_find_form_btm').submit();">
 								{% for i in 1..pageinfo.last %}
 									<option value="{{i}}" {% if i == pageinfo.curpage %}selected="selected"{% endif %}>{{i}}</option>
 								{% endfor %}
 							</select>
-							of {{ pageinfo.last }} <button class="dp-button x-small">{{ phrase('user.articles.go') }}</button>
+							{{ phrase('user.articles.page_of') }} {{ pageinfo.last }} <button class="dp-button x-small">{{ phrase('user.articles.go') }}</button>
 							{% if pageinfo.next %}
 								<a href="{{ path('user_articles_filter', search_options|merge({'page': pageinfo.next})) }}" class="page-link page-right">{{ phrase('user.articles.next') }}</a>
 							{% endif %}

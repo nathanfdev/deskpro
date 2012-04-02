@@ -6,4 +6,8 @@
 
 	'user.news.view_rest_of_article_link' => 'Read the rest of this news article',
 	'user.news.count_words_remaining' => '({{count}} more words)',
+
+	'user.news._comments' => '| Comments',
+	'user.news.category' => 'Category',
+	'user.news.more' => 'More',
 );

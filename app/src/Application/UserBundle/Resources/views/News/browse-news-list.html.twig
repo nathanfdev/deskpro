@@ -14,7 +14,7 @@
 				{% if news.category %}
 					| Category: <a href="{{ path('user_news_list', {'slug': news.category.url_slug })}}">{{ news.category.title }}</a>
 				{% endif %}
-				{% if comment_counts[news.id] %}| Comments: {{ comment_counts[news.id] }}{% endif %}
+				{% if comment_counts[news.id] %}{{ phrase('user.news._comments') }}: {{ comment_counts[news.id] }}{% endif %}
 			</div>
 		</div>
 	</li>

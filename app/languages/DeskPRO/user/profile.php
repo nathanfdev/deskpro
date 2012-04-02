@@ -60,4 +60,7 @@
 	'user.profile.current_password' => 'Current Password',
 	'user.profile.new_password' => 'New Password',
 	'user.profile.repeat_password' => 'Repeat Password',
+
+  'user.profile.your_profile' => 'Your Profile',
+  'user.profile.subscriptions' => 'Subscriptions',
 );

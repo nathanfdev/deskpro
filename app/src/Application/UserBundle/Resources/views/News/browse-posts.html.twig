@@ -11,7 +11,7 @@
 		data-load-url="{{ path('user_news', {'page': '00000', 'per_page': per_page})|replace({'00000': '{page}'}) }}"
 	>
 	<div class="content-filters">
-		Category:
+		{{ phrase('user.news.category') }}:
 		<select name="category_id" class="category_id" onchange="window.location = $(this).val();">
 			<option value="{{ path('user_news') }}">All ({{ category_counts[0] }})</option>
 			{% for cat in news_cats %}
@@ -27,7 +27,7 @@
 	{% if show_more %}
 	<div class="content-more">
 		<div class="is-not-loading">
-			<button>More</button>
+			<button>{{ phrase('user.news.more') }}</button>
 		</div>
 		<div class="is-loading">
 			<center><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></center>
