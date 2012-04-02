@@ -60,8 +60,8 @@
 			<tbody>
 				<!-- PERMISSION:agent_tickets.use -->{{ _self.perm_col('User ticket application', usergroup_values, 'agent_tickets', 'use') }}
 				<!-- PERMISSION:agent_tickets.create -->{{ _self.perm_col('Create tickets', usergroup_values, 'agent_tickets', 'create', 'agent_tickets_use') }}
-				<!-- PERMISSION:agent_tickets.reply_mass -->{{ _self.perm_col('Can use mass actions to reply <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.notice_when_enabled_agent_can_use_mass_ticket_actions') }}{#>>When this is enabled, the agent will be able to use mass ticket actions to send replies. Note that the agent will still be bound by the &quot;Can Reply&quot; permissions defined below. For example, if they are not allowed to reply to unassigned tickets, they will not be able to mass reply to them either.#}"></span>', usergroup_values, 'agent_tickets', 'reply_mass', 'agent_tickets_use') }}
-				<!-- PERMISSION:agent_tickets.modify_set_closed -->{{ _self.perm_col('Can close and unclose tickets <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.notice_if_agent_can_resolve_ticket') }}{#>>If an agent is able to resolve a ticket he can also close it, and if he can un-resolve a ticket he can also unclose it.#}"></span>', usergroup_values, 'agent_tickets', 'modify_set_closed', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.reply_mass -->{{ _self.perm_col('Can use mass actions to reply <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="'~phrase('agent.notice_when_enabled_agent_can_use_mass_ticket_actions')~'"></span>', usergroup_values, 'agent_tickets', 'reply_mass', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.modify_set_closed -->{{ _self.perm_col('Can close and unclose tickets <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="'~phrase('agent.notice_if_agent_can_resolve_ticket')~'"></span>', usergroup_values, 'agent_tickets', 'modify_set_closed', 'agent_tickets_use') }}
 			</tbody>
 			<tbody>
 				<!-- PERMISSION:agent_tickets.reply_own -->{{ _self.perm_col('Reply to own and teams tickets', usergroup_values, 'agent_tickets', 'reply_own', 'agent_tickets_use') }}
@@ -207,7 +207,7 @@
 				<!-- PERMISSION:agent_publish.create -->{{ _self.perm_col('Create content', usergroup_values, 'agent_publish', 'create') }}
 				<!-- PERMISSION:agent_publish.delete -->{{ _self.perm_col('Delete content', usergroup_values, 'agent_publish', 'delete') }}
 				<!-- PERMISSION:agent_publish.edit -->{{ _self.perm_col('Edit others content', usergroup_values, 'agent_publish', 'edit') }}
-				<!-- PERMISSION:agent_publish.validate -->{{ _self.perm_col('Validate content and comments (including own) <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.notice_if_agent_cant_validate_content') }}{#>>If an agent does not have this permission, then any new content they create or edits they make will be held in a validation queue before they appear live on the site.#}"></span>', usergroup_values, 'agent_publish', 'validate') }}
+				<!-- PERMISSION:agent_publish.validate -->{{ _self.perm_col('Validate content and comments (including own) <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="'~phrase('agent.notice_if_agent_cant_validate_content')~'"></span>', usergroup_values, 'agent_publish', 'validate') }}
 			</tbody>
 		</table>
 	</div>

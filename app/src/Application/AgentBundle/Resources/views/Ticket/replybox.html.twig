@@ -42,7 +42,7 @@
 		<nav>
 			<ul>
 				{% if ticket_perms.reply %}<li id="{{replyBaseId}}_replybox_replytab_btn" class="on">{{ phrase('agent.reply') }}</li>{% endif %}
-				{% if ticket_perms.modify_note %}<li id="{{replyBaseId}}_replybox_notetab_btn" class="note-type {% if not ticket_perms.reply %}on{% endif %}">{{ phrase('agent.note') }}</li>{% endif %}
+				{% if ticket_perms.modify_notes %}<li id="{{replyBaseId}}_replybox_notetab_btn" class="note-type {% if not ticket_perms.reply %}on{% endif %}">{{ phrase('agent.note') }}</li>{% endif %}
 			</ul>
 		</nav>
 	</header>
