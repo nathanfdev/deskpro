@@ -366,3 +366,21 @@
 @urgency10_color: #F92851;
 @urgency10_borderColor: #A12230;
 @urgency10_textColor: #FFF;
+
+.status.urgency-10, .marker-urgency-data.urgency-10 {
+	.opacity(100);
+	-webkit-transition: opacity 0.5s linear;
+	-moz-transition: opacity 0.5s linear;
+	-o-transition: opacity 0.5s linear;
+	-ms-transition: opacity 0.5s linear;
+	transition: opacity 0.5s linear;
+}
+
+body.timer-mark .status.urgency-10, body.timer-mark .marker-urgency-data.urgency-10 {
+	.opacity(60);
+	-webkit-transition: opacity 0.5s linear;
+	-moz-transition: opacity 0.5s linear;
+	-o-transition: opacity 0.5s linear;
+	-ms-transition: opacity 0.5s linear;
+	transition: opacity 0.5s linear;
+}

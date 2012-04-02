@@ -2230,6 +2230,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	_initLayout: function() {
 
+		window.setInterval(function() {
+			$('body').toggleClass('timer-mark');
+		}, 1000);
+
 		this.layout = new DeskPRO.Agent.Layout.DeskproWindow();
 		this.layout.doResize();
 
