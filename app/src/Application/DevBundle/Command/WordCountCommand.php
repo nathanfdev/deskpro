@@ -42,7 +42,7 @@ class WordCountCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             array('admin', 'Admin Interface'),
 			array('billing', 'Billing System'),
 			array('deskpro', 'DeskPRO'),
-			array('reports', 'Reports')
+			array('report', 'Reports')
         );
 
 		$t_wordcount = 0;
