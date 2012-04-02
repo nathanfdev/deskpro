@@ -18,10 +18,10 @@ DeskPRO.Agent.WindowElement.TabBarOverflow = new Orb.Class({
 
 		// Padding to the left side when theres the nav control
 		// This is room so you see the control and it doesnt overlap the tab
-		this.padLeftCtrl = 24;
+		this.padLeftCtrl = 10;
 
 		this.padRight = 0;
-		this.padRightCtrl = 24; // More than left because theres the down btn too
+		this.padRightCtrl = 10;
 
 		this.goLeft.on('click', function(ev) {
 			ev.preventDefault();
@@ -70,8 +70,7 @@ DeskPRO.Agent.WindowElement.TabBarOverflow = new Orb.Class({
 	 * Enable the overflow controls
 	 */
 	enableOverflow: function() {
-		this.tabPane.addClass('with-overflow');
-
+		this.tabPane.addClass('with-overflow with-rightbar');
 		this.maxScroll = this.tabList.width() - this.tabPane.width();
 		this.maxScroll += 9 + this.padLeft + this.padRightCtrl;
 
@@ -102,9 +101,19 @@ DeskPRO.Agent.WindowElement.TabBarOverflow = new Orb.Class({
 	 * @param {Integer} [amount]
 	 */
 	scrollLeft: function(amount) {
+		var self = this;
 		if (!amount) amount = 200;
 
-		this.scrollable.animate({scrollLeft: '-=' + amount }, 200);
+		self.tabPane.addClass('with-rightbar');
+
+		this.scrollable.animate({scrollLeft: '-=' + amount }, { duration: 200, complete: function() {
+			var scrollPos = self.scrollable.scrollLeft();
+			if (scrollPos <= 0) {
+				self.tabPane.removeClass('with-leftbar');
+			} else {
+				self.tabPane.addClass('with-leftbar');
+			}
+		} });
 	},
 
 
@@ -114,6 +123,7 @@ DeskPRO.Agent.WindowElement.TabBarOverflow = new Orb.Class({
 	 * @param {Integer} [amount]
 	 */
 	scrollRight: function(amount) {
+		var self = this;
 		if (!amount) amount = 200;
 
 		var current = this.scrollable.scrollLeft();
@@ -121,6 +131,15 @@ DeskPRO.Agent.WindowElement.TabBarOverflow = new Orb.Class({
 			amount = this.maxScroll - current;
 		}
 
-		this.scrollable.animate({scrollLeft: '+=' + amount }, 200);
+		self.tabPane.addClass('with-leftbar');
+
+		this.scrollable.animate({scrollLeft: '+=' + amount }, { duration: 200, complete: function() {
+			var scrollPos = self.scrollable.scrollLeft();
+			if (scrollPos >= self.maxScroll) {
+				self.tabPane.removeClass('with-rightbar');
+			} else {
+				self.tabPane.addClass('with-rightbar');
+			}
+		} });
 	}
 });
