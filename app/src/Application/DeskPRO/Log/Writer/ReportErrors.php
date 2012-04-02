@@ -72,6 +72,12 @@ class ReportErrors extends \Orb\Log\Writer\AbstractWriter
 
 			$log['build'] = App::getBuildTime() . ' (' . date('Y-m-d H:i:s', App::getBuildTime()) . ')';
 
+			if (isset($log['data']['errfile'])) {
+				$log['subject'] = $log['data']['errfile'] . ':' . $log['data']['errline'];
+				$log['subject'] = str_replace('\\', '/', $log['subject']);
+				$log['subject'] = str_replace(DP_WEB_ROOT, '', $log['subject']);
+			}
+
 			$client = new \Zend\Http\Client(null, array('timeout' => 10));
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 			$client->getRequest()->post()->set('log', $log);

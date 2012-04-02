@@ -21,7 +21,7 @@ var DpErrorLog = {
 		}
 	},
 
-	logError: function(message) {
+	logError: function(message, subject) {
 
 		if (!this.saveUrl) {
 			return;
@@ -35,6 +35,7 @@ var DpErrorLog = {
 		$.ajax({
 			url: this.saveUrl,
 			data: {
+				subject: subject,
 				message: message,
 				hash: (window.location && window.location.hash) ? window.location.hash : ''
 			},
@@ -50,7 +51,7 @@ var DpErrorLog = {
 			return false;
 		}
 
-		DpErrorLog.logError(message + ' (' + script + ' on line ' + line + ')');
+		DpErrorLog.logError(message + ' (' + script + ' on line ' + line + ')', script + ':' + line);
 
 		if (this._origHandler) {
 			var args = Array.prototype.slice.call(arguments);

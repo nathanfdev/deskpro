@@ -66,6 +66,7 @@ class DataController extends AbstractController
 
 		$logger = App::createNewLogger('error_log.js', null);
 		$logger->log($message, 'WARN', array(
+			'subject'    => $this->in->getString('subject'),
 			'message'    => $this->in->getString('message'), // full message as the summary string is limited to 1000 chars
 			'hash'       => $hash,
 			'ip_address' => $ip_address,
