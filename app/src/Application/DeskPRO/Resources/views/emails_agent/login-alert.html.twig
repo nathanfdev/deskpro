@@ -12,14 +12,14 @@
 		{% if success %}
 			Your account was used to successfully log in.<br />
 		{% else %}
-			Someone tried to log in using your account.<br />
+			{{ phrase('deskpro.emails_agent.someone_tried_to_log_in_using_your_account') }}<br />
 		{% endif %}
 
-		User IP: {{ session.visitor.ip_address }}<br />
-		User Agent: {{ session.visitor.user_agent }}<br />
-		Referring Page: {{ session.visitor.ref_page|default('n/a') }}<br />
-		Landing Page: {{ session.visitor.landing_page|default('n/a') }}<br />
-		First Seen: {{ session.visitor.date_created|date('fulltime') }}<br />
+		{{ phrase('deskpro.emails_agent.user_ip') }}: {{ session.visitor.ip_address }}<br />
+		{{ phrase('deskpro.emails_agent.user_agent') }}: {{ session.visitor.user_agent }}<br />
+		{{ phrase('deskpro.emails_agent.referring_page') }}: {{ session.visitor.ref_page|default('n/a') }}<br />
+		{{ phrase('deskpro.emails_agent.landing_page') }}: {{ session.visitor.landing_page|default('n/a') }}<br />
+		{{ phrase('deskpro.emails_agent.first_seen') }}: {{ session.visitor.date_created|date('fulltime') }}<br />
 	{% endset %}
 	{% if success %}
 		{{ layout.section('Successful Login Alert', content) }}

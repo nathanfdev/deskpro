@@ -25,8 +25,8 @@
 			</div>
 			<div class="options">
 				<select name="action_performer">
-					<option value="agent">Agent</option>
-					<option value="user">User</option>
+					<option value="agent">{{ phrase('deskpro.common.agent') }}</option>
+					<option value="user">{{ phrase('deskpro.common.user') }}</option>
 				</select>
 			</div>
 		</div>
@@ -42,10 +42,10 @@
 		</div>
 		<div class="options">
 			<select name="creation_system">
-				<option value="web">Web interface</option>
-				<option value="web.person">-- By user</option>
-				<option value="web.agent">-- By agent on behalf of user</option>
-				<option value="gateway">Email</option>
+				<option value="web">{{ phrase('deskpro.common.web_interface') }}</option>
+				<option value="web.person">{{ phrase('deskpro.common._by_user') }}</option>
+				<option value="web.agent">{{ phrase('deskpro.common._by_agent_on_behalf_of_user') }}</option>
+				<option value="gateway">{{ phrase('deskpro.common.email') }}</option>
 			</select>
 		</div>
 	</div>
@@ -92,7 +92,7 @@
 		<div class="op">
 			<select name="op" class="op">
 				<option value="contains">contains</option>
-				<option value="not_contains">does not contain</option>
+				<option value="not_contains">{{ phrase('deskpro.common.does_not_contain') }}</option>
 				<option value="is">is</option>
 				<option value="not">is not</option>
 			</select>
@@ -110,11 +110,11 @@
 					<option value="is">is</option>
 					<option value="not">is not</option>
 					{% if with_change_terms %}
-						<option value="changed">Changed</option>
-						<option value="changed_to">Changed to</option>
-						<option value="changed_from">Changed from</option>
-						<option value="not_changed_to">Not changed to</option>
-						<option value="not_changed_from">Not changed from</option>
+						<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
+						<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
+						<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
+						<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
+						<option value="not_changed_from">{{ phrase('deskpro.common.not_changed_from') }}</option>
 					{% endif %}
 				</select>
 			</div>
@@ -140,18 +140,18 @@
 				<option value="is">is</option>
 				<option value="not">is not</option>
 				{% if with_change_terms %}
-					<option value="changed">Changed</option>
-					<option value="changed_to">Changed to</option>
-					<option value="changed_from">Changed from</option>
-					<option value="not_changed_to">Not changed to</option>
-					<option value="not_changed_from">Not changed from</option>
+					<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
+					<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
+					<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
+					<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
+					<option value="not_changed_from">{{ phrase('deskpro.common.not_changed_from') }}</option>
 				{% endif %}
 			</select>
 		</div>
 		<div class="options">
 			<select name="agent">
-				<option value="0">Unassigned</option>
-				<option value="-1">Current Agent</option>
+				<option value="0">{{ phrase('deskpro.common.unassigned') }}</option>
+				<option value="-1">{{ phrase('deskpro.common.current_agent') }}</option>
 				{% for id,label in term_options.agents %}
 					<option value="{{id}}">{{label}}</option>
 				{% endfor %}
@@ -167,18 +167,18 @@
 					<option value="is">is</option>
 					<option value="not">is not</option>
 					{% if with_change_terms %}
-						<option value="changed">Changed</option>
-						<option value="changed_to">Changed to</option>
-						<option value="changed_from">Changed from</option>
-						<option value="not_changed_to">Not changed to</option>
-						<option value="not_changed_from">Not changed from</option>
+						<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
+						<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
+						<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
+						<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
+						<option value="not_changed_from">{{ phrase('deskpro.common.not_changed_from') }}</option>
 					{% endif %}
 				</select>
 			</div>
 			<div class="options">
 				<select name="agent_team">
-					<option value="0">No team</option>
-					<option value="-1">Any of current agents teams</option>
+					<option value="0">{{ phrase('deskpro.common.no_team') }}</option>
+					<option value="-1">{{ phrase('deskpro.common.any_of_current_agents_teams') }}</option>
 					{% for id,title in term_options.agent_teams %}
 						<option value="{{id}}">{{title}}</option>
 					{% endfor %}
@@ -194,15 +194,15 @@
 				<option value="is">include</option>
 				<option value="not">does not include</option>
 				{% if with_change_terms %}
-					<option value="changed">Changed</option>
-					<option value="changed_to">Changed to include</option>
-					<option value="changed_from">Changed to remove</option>
+					<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
+					<option value="changed_to">{{ phrase('deskpro.common.changed_to_include') }}</option>
+					<option value="changed_from">{{ phrase('deskpro.common.changed_to_remove') }}</option>
 				{% endif %}
 			</select>
 		</div>
 		<div class="options">
 			<select name="agent">
-				<option value="-1">Current Agent</option>
+				<option value="-1">{{ phrase('deskpro.common.current_agent') }}</option>
 				{% for id,label in term_options.agents %}
 					<option value="{{id}}">{{label}}</option>
 				{% endfor %}
@@ -218,9 +218,9 @@
 				<option value="is">is</option>
 				<option value="not">is not</option>
 				{% if with_change_terms %}
-					<option value="changed">Changed</option>
-					<option value="changed_to">Changed to include</option>
-					<option value="changed_from">Changed to remove</option>
+					<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
+					<option value="changed_to">{{ phrase('deskpro.common.changed_to_include') }}</option>
+					<option value="changed_from">{{ phrase('deskpro.common.changed_to_remove') }}</option>
 				{% endif %}
 			</select>
 		</div>
@@ -237,21 +237,21 @@
 				<option value="is">is</option>
 				<option value="not">is not</option>
 				{% if with_change_terms %}
-					<option value="changed">Changed</option>
-					<option value="changed_to">Changed to</option>
-					<option value="changed_from">Changed from</option>
-					<option value="not_changed_to">Not changed to</option>
-					<option value="not_changed_from">Not changed from</option>
+					<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
+					<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
+					<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
+					<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
+					<option value="not_changed_from">{{ phrase('deskpro.common.not_changed_from') }}</option>
 				{% endif %}
 			</select>
 		</div>
 		<div class="options">
 			<select name="status">
-				<option value="awaiting_agent">Awaiting Agent</option>
-				<option value="awaiting_user">Awaiting User</option>
-				<option value="resolved">Resolved</option>
-				<option value="closed">Closed</option>
-				<option value="hidden">Hidden (awaiting validating, spam)</option>
+				<option value="awaiting_agent">{{ phrase('deskpro.common.awaiting_agent') }}</option>
+				<option value="awaiting_user">{{ phrase('deskpro.common.awaiting_user') }}</option>
+				<option value="resolved">{{ phrase('deskpro.common.resolved') }}</option>
+				<option value="closed">{{ phrase('deskpro.common.closed') }}</option>
+				<option value="hidden">{{ phrase('deskpro.common.hidden_awaiting_validating_spam') }}</option>
 			</select>
 		</div>
 	</div>
@@ -282,11 +282,11 @@
 					<option value="is">is</option>
 					<option value="not">is not</option>
 					{% if with_change_terms %}
-						<option value="changed">Changed</option>
-						<option value="changed_to">Changed to</option>
-						<option value="changed_from">Changed from</option>
-						<option value="not_changed_to">Not changed to</option>
-						<option value="not_changed_from">Not changed from</option>
+						<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
+						<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
+						<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
+						<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
+						<option value="not_changed_from">{{ phrase('deskpro.common.not_changed_from') }}</option>
 					{% endif %}
 				</select>
 			</div>
@@ -307,11 +307,11 @@
 					<option value="is">is</option>
 					<option value="not">is not</option>
 					{% if with_change_terms %}
-						<option value="changed">Changed</option>
-						<option value="changed_to">Changed to</option>
-						<option value="changed_from">Changed from</option>
-						<option value="not_changed_to">Not changed to</option>
-						<option value="not_changed_from">Not changed from</option>
+						<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
+						<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
+						<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
+						<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
+						<option value="not_changed_from">{{ phrase('deskpro.common.not_changed_from') }}</option>
 					{% endif %}
 				</select>
 			</div>
@@ -334,12 +334,12 @@
 				<option value="lte">&lt;=</option>
 				<option value="gte">&gt;=</option>
 				{% if with_change_terms %}
-					<optgroup label="Changed">
-						<option value="changed">Changed</option>
-						<option value="changed_to">Changed to</option>
-						<option value="changed_from">Changed from</option>
-						<option value="not_changed_to">Not changed to</option>
-						<option value="not_changed_from">Not changed from</option>
+					<optgroup label="{{ phrase('deskpro.common.changed') }}">
+						<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
+						<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
+						<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
+						<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
+						<option value="not_changed_from">{{ phrase('deskpro.common.not_changed_from') }}</option>
 					</optgroup>
 					<optgroup label="Changed (ranged)">
 						<option value="changed_to_gte">Changed to &gt;=</option>
@@ -364,14 +364,14 @@
 				<select name="op" class="op">
 					<option value="is">is</option>
 					<option value="not">is not</option>
-					<option value="lte">is less than</option>
-					<option value="gte">is greater than</option>
+					<option value="lte">{{ phrase('deskpro.common.is_less_than') }}</option>
+					<option value="gte">{{ phrase('deskpro.common.is_greater_than') }}</option>
 					{% if with_change_terms %}
-						<option value="changed">Changed</option>
-						<option value="changed_to">Changed to</option>
-						<option value="changed_from">Changed from</option>
-						<option value="not_changed_to">Not changed to</option>
-						<option value="not_changed_from">Not changed from</option>
+						<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
+						<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
+						<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
+						<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
+						<option value="not_changed_from">{{ phrase('deskpro.common.not_changed_from') }}</option>
 					{% endif %}
 				</select>
 			</div>
@@ -392,11 +392,11 @@
 					<option value="is">is</option>
 					<option value="not">is not</option>
 					{% if with_change_terms %}
-						<option value="changed">Changed</option>
-						<option value="changed_to">Changed to</option>
-						<option value="changed_from">Changed from</option>
-						<option value="not_changed_to">Not changed to</option>
-						<option value="not_changed_from">Not changed from</option>
+						<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
+						<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
+						<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
+						<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
+						<option value="not_changed_from">{{ phrase('deskpro.common.not_changed_from') }}</option>
 					{% endif %}
 				</select>
 			</div>
@@ -601,7 +601,7 @@
 	{% endif %}
 
 	{% if 'ticket_field' not in no_show_fields and term_options.custom_ticket_fields %}
-		{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'contains', 'notcontains': 'does not contain', 'gt': 'is greater than', 'lt': 'is less than'} %}
+		{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'contains', 'notcontains': '{{ phrase('deskpro.common.does_not_contain') }}', 'gt': '{{ phrase('deskpro.common.is_greater_than') }}', 'lt': '{{ phrase('deskpro.common.is_less_than') }}'} %}
 		{% for field in term_options.custom_ticket_fields %}
 			{% if field.field_def.getFilterCapabilities(search_context) %}
 			<div class="type" title="{{field.field_def.title}}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">

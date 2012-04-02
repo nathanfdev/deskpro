@@ -5,7 +5,7 @@
 {% endblock %}
 {% block content %}
 	{% set content %}
-		Your ticket has been recieved and our agents will reply to you as soon as they can.
+		{{ phrase('deskpro.emails_user.your_ticket_has_been_recieved_and_our_agents') }}
 		<br /><br />
 		You can view your ticket online at any time	by visiting:
 		<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}">

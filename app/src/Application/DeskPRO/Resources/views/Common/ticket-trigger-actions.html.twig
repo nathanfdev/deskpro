@@ -42,9 +42,9 @@
 	<div class="type" title="Set Status" data-rule-type="status">
 		<div class="options">
 			<select name="status">
-				<option value="awaiting_agent">Awaiting Agent</option>
-				<option value="awaiting_user">Awaiting User</option>
-				<option value="resolved">Resolved</option>
+				<option value="awaiting_agent">{{ phrase('deskpro.common.awaiting_agent') }}</option>
+				<option value="awaiting_user">{{ phrase('deskpro.common.awaiting_user') }}</option>
+				<option value="resolved">{{ phrase('deskpro.common.resolved') }}</option>
 			</select>
 		</div>
 	</div>
@@ -119,19 +119,19 @@
 	<div class="type" title="Set Flag" data-rule-type="flag">
 		<div class="options">
 			<select name="flag">
-				<option value="blue">Blue</option>
-				<option value="green">Green</option>
-				<option value="orange">Orange</option>
-				<option value="pink">Pink</option>
-				<option value="purple">Purple</option>
-				<option value="red">Red</option>
-				<option value="yellow">Yellow</option>
+				<option value="blue">{{ phrase('deskpro.common.blue') }}</option>
+				<option value="green">{{ phrase('deskpro.common.green') }}</option>
+				<option value="orange">{{ phrase('deskpro.common.orange') }}</option>
+				<option value="pink">{{ phrase('deskpro.common.pink') }}</option>
+				<option value="purple">{{ phrase('deskpro.common.purple') }}</option>
+				<option value="red">{{ phrase('deskpro.common.red') }}</option>
+				<option value="yellow">{{ phrase('deskpro.common.yellow') }}</option>
 			</select>
 		</div>
 	</div>
 	<div class="type" title="Increase/Decrease Urgency" data-rule-type="urgency">
 		<div class="options">
-			<input type="text" name="num" /><small>(Enter a negative number to have urgency decreased)</small>
+			<input type="text" name="num" /><small>{{ phrase('deskpro.common.enter_a_negative_number_to_have_urgency_decreased') }}</small>
 		</div>
 	</div>
 	<div class="type" title="Set Urgency" data-rule-type="urgency_set">
@@ -139,8 +139,8 @@
 			<input type="text" name="num" style="width: 50px" />
 			{% if event_trigger != 'new_ticket' %}
 			<select name="allow_lower">
-				<option value="0">Only set when urgency is lower</option>
-				<option value="1">Always set this urgency</option>
+				<option value="0">{{ phrase('deskpro.common.only_set_when_urgency_is_lower') }}</option>
+				<option value="1">{{ phrase('deskpro.common.always_set_this_urgency') }}</option>
 			</select>
 			{% endif %}
 		</div>
@@ -169,13 +169,13 @@
 		<div class="options" style="display:block">
 			<select name="codes[]" multiple="multiple" style="display: block">
 				<optgroup label="Agents">
-					<option value="assigned_agent">Assigned agent</option>
+					<option value="assigned_agent">{{ phrase('deskpro.common.assigned_agent') }}</option>
 					{% for k,v in term_options.agents %}
 						<option value="agent.{{k}}">{{v}}</option>
 					{% endfor %}
 				</optgroup>
 				<optgroup label="Teams">
-					<option value="assigned_agent_team">Assigned team</option>
+					<option value="assigned_agent_team">{{ phrase('deskpro.common.assigned_team') }}</option>
 					{% for k,v in term_options.agent_teams %}
 						<option value="agent_team.{{k}}">{{v}}</option>
 					{% endfor %}

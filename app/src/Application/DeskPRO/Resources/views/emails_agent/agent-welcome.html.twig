@@ -5,8 +5,8 @@
 		{{ app.user.getDisplayName() }} &lt;{{ app.user.primary_email_address }}&gt; has created an agent account for you on <a href="{{ app.getSetting('core.deskpro_url') }}">{{ app.getSetting('core.deskpro_url') }}</a>
 		<br /><br />>
 
-		<strong>Login URL:</strong> <a href="{{ app.getSetting('core.deskpro_url') }}/agent/">{{ app.getSetting('core.deskpro_url') }}/agent/</a><br />
-		<strong>Your email address:</strong> {{ agent.primary_email_address }}<br />
-		<strong>Your initial password:</strong> {{ agent.getPlaintextPassword() }}
+		<strong>{{ phrase('deskpro.emails_agent.login_url') }}:</strong> <a href="{{ app.getSetting('core.deskpro_url') }}/agent/">{{ app.getSetting('core.deskpro_url') }}/agent/</a><br />
+		<strong>{{ phrase('deskpro.emails_agent.your_email_address') }}:</strong> {{ agent.primary_email_address }}<br />
+		<strong>{{ phrase('deskpro.emails_agent.your_initial_password') }}:</strong> {{ agent.getPlaintextPassword() }}
 	{{ layout.section_end() }}
 {% endblock %}

@@ -29,7 +29,7 @@
 <table id="ticket_properties">
     <tr>
         <th>
-            Ticket ID:
+            {{ phrase('deskpro.pdf_agent.ticket_id') }}:
         </th>
         <td>
             {{ ticket.id }}
@@ -37,7 +37,7 @@
     </tr>
     <tr>
         <th>
-            Urgency:
+            {{ phrase('deskpro.pdf_agent.urgency') }}:
         </th>
         <td>
             {{ ticket.urgency }}
@@ -45,7 +45,7 @@
     </tr>
     <tr>
         <th>
-            Status:
+            {{ phrase('deskpro.pdf_agent.status') }}:
         </th>
         <td>
             {% set status_strings = {
@@ -73,7 +73,7 @@
     {% endif %}
     {% if ticket.linked_chat %}
     <tr>
-        <th>Linked Chat:</th>
+        <th>{{ phrase('deskpro.pdf_agent.linked_chat') }}:</th>
         <td>{{ ticket.linked_chat.getSubjectLine() }}</td>
     </tr>
     {% endif %}

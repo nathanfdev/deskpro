@@ -48,8 +48,8 @@
 <div class="type" title="Labels" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_label" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
 	<div class="op">
 		<select name="op">
-			<option value="is">includes label</option>
-			<option value="not">does not include label</option>
+			<option value="is">{{ phrase('deskpro.common.includes_label') }}</option>
+			<option value="not">{{ phrase('deskpro.common.does_not_include_label') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -64,7 +64,7 @@
 		<select name="op">
 			<option value="is">is</option>
 			<option value="contains">contains</option>
-			<option value="notcontains">does not contain</option>
+			<option value="notcontains">{{ phrase('deskpro.common.does_not_contain') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -117,7 +117,7 @@
 
 {% if 'org_field' not in no_show_fields %}
 {% if term_options.custom_org_fields %}
-	{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'contains', 'notcontains': 'does not contain', 'gt': 'is greater than', 'lt': 'is less than'} %}
+	{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'contains', 'notcontains': '{{ phrase('deskpro.common.does_not_contain') }}', 'gt': 'is greater than', 'lt': 'is less than'} %}
 	{% for field in term_options.custom_org_fields %}
 	{% if field.field_def.getFilterCapabilities(search_context) %}
 	<div class="type" title="{{field.field_def.title}}" data-rule-group="Organization Fields" data-rule-type="org_field[{{field.field_def.id}}]">

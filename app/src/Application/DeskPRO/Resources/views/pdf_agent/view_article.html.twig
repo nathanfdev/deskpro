@@ -24,11 +24,11 @@
 <hr />
 <table id="article_properties" width="100%">
     <tr>
-        <th>Article ID:</th>
+        <th>{{ phrase('deskpro.pdf_agent.article_id') }}:</th>
         <td>{{ article.id }}</td>
     </tr>
     <tr>
-        <th>Status:</th>
+        <th>{{ phrase('deskpro.pdf_agent.status') }}:</th>
         <td>{{ phrase('agent.publish.status_' ~ article.status_code|replace({'.':'_'})) }}</td>
     </tr>
     {% if labals|length %}

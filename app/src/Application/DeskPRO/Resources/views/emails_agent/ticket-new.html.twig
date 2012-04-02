@@ -2,37 +2,37 @@
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_subject %}{{ phrase('agent.tickets_email.subject_new_ticket') }}{% endblock %}
 {% block content %}
-{% set content %}A new ticket has been created{% endset %}
+{% set content %}{{ phrase('deskpro.emails_agent.a_new_ticket_has_been_created') }}{% endset %}
 {{ layout.section('', content) }}
 
 {% set content %}
 <table cellspacing="0" cellpadding="3" width="100%">
 	<tr>
-		<td width="130">Agent</td>
+		<td width="130">{{ phrase('deskpro.emails_agent.agent') }}</td>
 		<td>{{ticket.agent.display_name|default('None')}}</td>
 	</tr>
 	<tr>
-		<td width="130">Team</td>
+		<td width="130">{{ phrase('deskpro.emails_agent.team') }}</td>
 		<td>{{ticket.agent_team.name|default('None')}}</td>
 	</tr>
 	<tr>
-		<td width="130">Category</td>
+		<td width="130">{{ phrase('deskpro.emails_agent.category') }}</td>
 		<td>{{ticket.category.full_title|default('None')}}</td>
 	</tr>
 	<tr>
-		<td width="130">Product</td>
+		<td width="130">{{ phrase('deskpro.emails_agent.product') }}</td>
 		<td>{{ticket.product.title|default('None')}}</td>
 	</tr>
 	<tr>
-		<td width="130">Priority</td>
+		<td width="130">{{ phrase('deskpro.emails_agent.priority') }}</td>
 		<td>{{ticket.priority.title|default('None')}}</td>
 	</tr>
 	<tr>
-		<td width="130">Workflow</td>
+		<td width="130">{{ phrase('deskpro.emails_agent.workflow') }}</td>
 		<td>{{ticket.workflow.title|default('None')}}</td>
 	</tr>
 	<tr>
-		<td width="130">Status</td>
+		<td width="130">{{ phrase('deskpro.emails_agent.status') }}</td>
 		<td>
 			{% if not ticket.status or ticket.status == 'awaiting_agent' %}
 			Open
