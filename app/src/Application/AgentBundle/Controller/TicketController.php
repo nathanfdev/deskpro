@@ -249,7 +249,7 @@ class TicketController extends AbstractController
 		$ticket_perms['reply'] = $this->person->PermissionsManager->TicketChecker->canReply($ticket);
 		$ticket_perms['modify_set_closed'] = $this->person->PermissionsManager->TicketChecker->canSetClosed($ticket);
 
-		foreach (array('department', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaitng_user', 'set_resolved') as $p) {
+		foreach (array('department', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaiting_user', 'set_resolved') as $p) {
 			$ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
 		}
 

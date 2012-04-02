@@ -30,6 +30,7 @@
 @link-text-color-hover: saturate(lighten(@link-text-color, 15%), 40%);
 
 // Get around a bug in less, always have this rule or else compiler error
+// because there are no CSS rules in here, just less stuff
 .less-rule { color: #000; }
 
 .size(@width: 5px, @height: 5px) {
@@ -304,3 +305,64 @@
 	background-repeat: no-repeat;
 	background-position: 0 0;
 }
+
+
+//-----------------------------------------------
+// Urgency Colors
+//-----------------------------------------------
+
+@urgency_user_color: #AAF9AC;
+@urgency_user_borderColor: #639564;
+@urgency_user_textColor: #385739;
+
+@urgency_resolved_color: #90D591;
+@urgency_resolved_borderColor: #669966;
+@urgency_resolved_textColor: #385739;
+
+@urgency_closed_color: #75AF76;
+@urgency_closed_borderColor: #4F7950;
+@urgency_closed_textColor: #1B2E1C;
+
+@urgency_hidden_color: #F92851;
+@urgency_hidden_borderColor: #A12230;
+@urgency_hidden_textColor: #FFF;
+
+@urgency1_color: #F4F4A9;
+@urgency1_borderColor: #E2DE9C;
+@urgency1_textColor: #4D4938;
+
+@urgency2_color: #FFE491;
+@urgency2_borderColor: #B9A567;
+@urgency2_textColor: #4D4938;
+
+@urgency3_color: #FFCB81;
+@urgency3_borderColor: #B6905A;
+@urgency3_textColor: #3D2E19;
+
+@urgency4_color: #FFB171;
+@urgency4_borderColor: #BF8452;
+@urgency4_textColor: #3D2E19;
+
+@urgency5_color: #FF9962;
+@urgency5_borderColor: #B66B43;
+@urgency5_textColor: #3D2E19;
+
+@urgency6_color: #FF8052;
+@urgency6_borderColor: #C05E3A;
+@urgency6_textColor: #311207;
+
+@urgency7_color: #FF6851;
+@urgency7_borderColor: #A54031;
+@urgency7_textColor: #311207;
+
+@urgency8_color: #FF5351;
+@urgency8_borderColor: #9C2F2D;
+@urgency8_textColor: #311207;
+
+@urgency9_color: #FD3C51;
+@urgency9_borderColor: #A12230;
+@urgency9_textColor: #FFF;
+
+@urgency10_color: #F92851;
+@urgency10_borderColor: #A12230;
+@urgency10_textColor: #FFF;

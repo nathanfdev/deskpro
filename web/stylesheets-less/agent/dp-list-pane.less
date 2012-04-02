@@ -599,7 +599,7 @@
 	text-shadow: none;
 	position: relative;
 }
-.list-listing .row-item .status, table.tickets-simple td.status .status
+table.tickets-simple td.status .status
 {
 	position: relative;
 	top: -4px;
@@ -615,24 +615,6 @@
 	color: #fff;
 	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
 	font-family: Verdana, Arial, sans-serif;
-
-	&.awaiting_agent {
-		padding-right: 18px;
-	}
-
-	i {
-		font-style: normal;
-		display: block;
-		line-height: 13px;
-
-		position: absolute;
-		top: 0;
-		right: 0;
-		bottom:0;
-		width: 12px;
-		text-align: center;
-		border-left: 1px solid rgba(150, 150, 150, 0.6);
-	}
 }
 
 .list-listing .row-item .on-hold{
@@ -649,27 +631,6 @@
 
 .list-listing .row-item .top-row-right {
 	line-height: 15px;
-}
-
-.list-listing .row-item .status.resolved, .list-listing .row-item .status.closed,
-table.tickets-simple td.status.resolved .status, table.tickets-simple td.status.closed .status {
-	border-color: #C9CCD4;
-	.gradient(darken(#C9CCD4, 5%), darken(#C9CCD4, 20%));
-}
-
-.list-listing .row-item .status.awaiting_user, table.tickets-simple td.status.awaiting_user .status {
-	border-color: #C1BE6C;
-	.gradient(darken(#C1BE6C, 5%), darken(#C1BE6C, 10%));
-}
-
-.list-listing .row-item .status.hidden,
-table.tickets-simple td.status.hidden .status,
-.list-listing .row-item .status.hidden_spam,
-.list-listing .row-item .status.hidden_validating,
-.list-listing .row-item .status.hidden_deleted {
-	border-color: #C9CCD4;
-	.gradient(darken(#C9CCD4, 5%), darken(#C9CCD4, 20%));
-	.opacity(80);
 }
 
 .list-listing .row-item .userinfo {

@@ -115,18 +115,19 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<br class="clear" />
 	<div class="meta-line">
 		<div class="status set-status awaiting_agent" {% if ticket.status_code != 'awaiting_agent' %}style="display: none"{% endif %}>
-			<span class="marker-urgency-data" data-urgency="{{ ticket.urgency }}">
-				<label>{{ phrase('agent.ticket.awaiting_agent') }}</label>
+			<span class="marker-urgency-data urgency-{{ ticket.urgency }}">
+				<label>Awaiting Agent</label>
 				<i class="ticket-urgency" id="{{baseId}}_urgency" data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</i>
 			</span>
 		</div>
-		<div class="status set-status awaiting_user" {% if ticket.status_code != 'awaiting_user' %}style="display: none"{% endif %}><span>{{ phrase('agent.ticket.awaiting_user') }}</span></div>
-		<div class="status set-status closed" {% if ticket.status_code != 'closed' %}style="display: none"{% endif %}><span>{{ phrase('agent.ticket.closed') }}</span></div>
-		<div class="status set-status resolved" {% if ticket.status_code != 'resolved' %}style="display: none"{% endif %}><span>{{ phrase('agent.ticket.resolved') }}</span></div>
-		<div class="status set-status hidden hidden_spam" {% if ticket.status_code != 'hidden.spam' %}style="display: none"{% endif %}><span>{{ phrase('agent.ticket.spam') }}</span></div>
-		<div class="status set-status hidden hidden_validating" {% if ticket.status_code != 'hidden.validating' %}style="display: none"{% endif %}><span>{{ phrase('agent.ticket.validating') }}</span></div>
-		<div class="status set-status hidden hidden_deleted" {% if ticket.status_code != 'hidden.deleted' %}style="display: none"{% endif %}><span>{{ phrase('agent.ticket.deleted') }}</span></div>
-		<div class="category set-department"><span>{{ phrase('agent.ticket.department') }}: <span class="label-department-id">{{ ticket.department.full_title }}</span></span></div>
+		<div class="status set-status awaiting_user" {% if ticket.status_code != 'awaiting_user' %}style="display: none"{% endif %}><span><label>Awaiting User</label></span></div>
+		<div class="status set-status closed" {% if ticket.status_code != 'closed' %}style="display: none"{% endif %}><span><label>Closed</label></span></div>
+		<div class="status set-status resolved" {% if ticket.status_code != 'resolved' %}style="display: none"{% endif %}><span><label>Resolved</label></span></div>
+		<div class="status set-status hidden hidden_spam" {% if ticket.status_code != 'hidden.spam' %}style="display: none"{% endif %}><span><label>Spam</label></span></div>
+		<div class="status set-status hidden hidden_validating" {% if ticket.status_code != 'hidden.validating' %}style="display: none"{% endif %}><span><label>Validating</label></span></div>
+		<div class="status set-status hidden hidden_deleted" {% if ticket.status_code != 'hidden.deleted' %}style="display: none"{% endif %}><span><label>Deleted</label></span></div>
+
+		<div class="category set-department"><span>Department: <span class="label-department-id">{{ ticket.department.full_title }}</span></span></div>
 
 		{% if ticket_perms.modify_set_hold %}
 			<div class="set-hold hold noedit-hide" {% if ticket.is_hold %}style="display: none"{% endif %}><span>{{ phrase('agent.tickets.set_hold') }}</span></div>

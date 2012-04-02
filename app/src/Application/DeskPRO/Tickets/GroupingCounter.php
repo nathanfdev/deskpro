@@ -504,7 +504,7 @@ class GroupingCounter
 
 			case TicketSearch::TERM_URGENCY:
 				$this->grouping_summary = "Urgency";
-				$titles = range(1, 2);
+				$titles = range(1, 10);
 				break;
 
 			case TicketSearch::TERM_CATEGORY:

@@ -25,7 +25,14 @@
 						{{ count|default('0') }}
 					{% endif %}
 				</span>
-				{{ cat.title }}
+				{% if grouping_var == 'urgency' %}
+					<span class="status-pill urgency-{{ cat.title }} awaiting_agent">
+						<label>Awaiting Agent</label>
+						<i>{{ cat.title }}</i>
+					</span>
+				{% else %}
+					{{ cat.title }}
+				{% endif %}
 			</span>
 		</li>
 		{% if cat.children %}
