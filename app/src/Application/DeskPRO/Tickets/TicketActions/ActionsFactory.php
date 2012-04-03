@@ -153,6 +153,14 @@ class ActionsFactory
 			case 'set_from_address':
 				$options['email_address'] = $value['email_address'];
 				break;
+
+			default:
+				if (strpos($name, 'set_email_template_') !== false) {
+					$options = array(
+						'tpl' => $value['tpl'],
+						'tpl_type' => isset($value['tpl_type']) ? $value['tpl_type'] : ''
+					);
+				}
 		}
 
 		return $this->create($name, $options);

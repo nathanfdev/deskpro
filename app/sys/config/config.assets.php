@@ -406,6 +406,8 @@ $CONFIG['admin_admin_ui'] = array(
 		'javascripts/DeskPRO/Form/RuleBuilder.js',
 		'javascripts/DeskPRO/Agent/RuleBuilder/TermAbstract.js',
 		'javascripts/DeskPRO/Admin/RuleBuilder/TemplateEdit.js',
+		'javascripts/DeskPRO/Agent/RuleBuilder/DateTerm.js',
+		'javascripts/DeskPRO/Agent/RuleBuilder/LabelsTerm.js',
 	)
 );
 

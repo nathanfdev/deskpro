@@ -239,8 +239,11 @@ DeskPRO.Form.RuleBuilder = new Class({
 
 		var op = $('> .op:first', rule_tpl).children().clone();
 
-		var choice = $('> .options:first', rule_tpl).clone();
-		choice.css('display', 'inline');
+		var rule_options_tpl = $('> .options:first', rule_tpl);
+		var choice = rule_options_tpl.clone();
+		if (!rule_options_tpl.hasClass('newline')) {
+			choice.css('display', 'inline');
+		}
 
 		$('.op:first', row).empty().append(op);
 		$('.options:first', row).empty().append(choice);

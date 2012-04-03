@@ -4,14 +4,22 @@ DeskPRO.Admin.RuleBuilder.TemplateEdit = new Orb.Class({
 	Extends: DeskPRO.Agent.RuleBuilder.TermAbstract,
 
 	initRow: function() {
+		var self = this;
 		this.overlay = null;
 
-		this.currentValue = $('.status-value', this.rowEl);
-		this.currentValue.text('(click to change)');
+		this.tplInput = this.rowEl.find('input.tpl-name');
+
+		this.currentValue = this.rowEl.find('.status-value');
+
+		if (this.tplInput.val()) {
+			this.currentValue.text(this.tplInput.val());
+		} else {
+			this.currentValue.text('(click to change)');
+		}
 		this.currentValue.on('click', this.show.bind(this));
 
 		this.tplDir    = this.currentValue.data('tpldir');
-		this.tplPrefix = this.currentValue.data('tplprefix');
+		this.tplPrefix = this.currentValue.data('tplprefix')
 	},
 
 	hide: function() {
@@ -88,6 +96,22 @@ DeskPRO.Admin.RuleBuilder.TemplateEdit = new Orb.Class({
 
 			self.openNewOverlay();
 		});
+
+		el.find('button.apply-trigger').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var val = el.find(':radio:checked').val().trim();
+			if (val) {
+				self.tplInput.val(val);
+				self.currentValue.text(val);
+			} else {
+				self.tplInput.val('');
+				self.currentValue.text('(click to change)');
+			}
+
+			self.overlay.close();
+		});
 	},
 
 	openNewOverlay: function() {
@@ -125,7 +149,8 @@ DeskPRO.Admin.RuleBuilder.TemplateEdit = new Orb.Class({
 						var tpl = self.wrapperEl.find('.template-row-tpl').get(0).innerHTML;
 						var row = $(tpl);
 						row.data('template-name', data.name);
-						row.find('h3').text(data.name);
+						row.find('.place-title').text(data.name);
+						row.find(':radio').val(data.name);
 
 						row.insertBefore(self.wrapperEl.find('.custom-template-make-row'));
 

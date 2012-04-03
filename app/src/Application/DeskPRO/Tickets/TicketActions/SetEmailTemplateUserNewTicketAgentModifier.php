@@ -34,35 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-class SetEmailTemplateModifier implements CollectionModifierInterface
+class SetEmailTemplateUserNewTicketAgentModifier extends SetEmailTemplateModifier
 {
-	protected $tpl;
-	protected $tpl_type = '';
 
-	public function __construct($tpl, $tpl_type)
-	{
-		$this->tpl  = $tpl;
-		$this->tpl_type = $tpl_type;
-	}
-
-	public function modifyCollection(ActionsCollection $collection)
-	{
-		$notify_types = array();
-		$notify_types[] = 'NewTicket';
-
-		foreach ($notify_types as $type) {
-			if ($collection->hasActionType($type)) {
-				$action = $collection->getActionType($type);
-				$action->setEmailTemplate($this->tpl, $this->tpl_type);
-			}
-		}
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
-		return "Use email template: {$this->tpl}";
-	}
 }
