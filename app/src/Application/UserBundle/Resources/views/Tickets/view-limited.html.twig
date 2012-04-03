@@ -33,7 +33,7 @@ ul.attachment-list > li img.preview {
 {% block content %}
 
 <div style="background-color: #FFF9DE; border: 2px solid #C4BEA3; margin-bottom: 15px; padding: 8px;">
-	<strong><a href="{{ path('user_register_finish') }}">{{ phrase('user.tickets.register_free', {{'email':limited_person.primary_email_address}}) }}</a></strong>
+	<strong><a href="{{ path('user_register_finish') }}">{{ phrase('user.tickets.register_free', {'email':limited_person.primary_email_address}) }}</a></strong>
 
 </div>
 

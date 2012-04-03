@@ -20,7 +20,7 @@
 		<div class="dp-box">
 			<div class="dp-box-header">
 				{% if category %}
-					<h1>{{ phrase('user.articles.there_are_x_subcats', {{'count': category_children|length}}) }}</h1>
+					<h1>{{ phrase('user.articles.there_are_x_subcats', {'count': category_children|length}) }}</h1>
 				{% else %}
 					<h1>{{ phrase('user.articles.section_name') }}</h1>
 				{% endif %}
@@ -41,7 +41,7 @@
 	<div class="dp-box">
 		<div class="dp-box-header">
 			{% if category %}
-				<h1>{{ phrase('user.articles.there_are_x_articles', {{'count': articles|length}}) }}</h1>
+				<h1>{{ phrase('user.articles.there_are_x_articles', {'count': articles|length}) }}</h1>
 			{% endif %}
 		</div>
 
@@ -52,9 +52,9 @@
 					<li>
 						<h4><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></h4>
 						<div class="dp-meta">
-							{{ phrase('user.articles.meta_author', {{'author': article.person.display_name}}) }}
+							{{ phrase('user.articles.meta_author', {'author': article.person.display_name}) }}
 							&middot;
-							{{ phrase('user.articles.meta_comments', {{'count': comment_counts[article.id]|default(0)}}) }}
+							{{ phrase('user.articles.meta_comments', {'count': comment_counts[article.id]|default(0)}) }}
 						</div>
 					</li>
 					{% endfor %}

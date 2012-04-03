@@ -8,7 +8,7 @@
 
 		<div class="dp-form-row {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
 			<div class="dp-form-label">
-				<label>{{ phrase('user.label_your_email') }} *</label> <em class="desc">{{ phrase('user.login_if_already_reg_note', {{'url': path('user_login')}}) }}</em>
+				<label>{{ phrase('user.label_your_email') }} *</label> <em class="desc">{{ phrase('user.login_if_already_reg_note', {'url': path('user_login')}) }}</em>
 			</div>
 			<div class="dp-form-input">
 				<input type="text" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ initial_value }}" data-field-validators="DeskPRO.Form.EmailValidator" />

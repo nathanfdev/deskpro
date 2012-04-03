@@ -36,7 +36,7 @@
 		{% if all_feedback[message.id] %}
 			{% set feedback = all_feedback[message.id] %}
 			<div class="feedback">
-                {{ phrase('agent.ticket.name_found_this_message_x', {{'name':feedback.person.display_name}}) }}
+                {{ phrase('agent.ticket.name_found_this_message_x', {'name':feedback.person.display_name}) }}
 				{% if feedback.rating > 0 %}<em class="helpful">{{ phrase('agent.ticket.helpful') }}</em>{% else %}<em class="unhelpful">{{ phrase('agent.ticket.unhelpful') }}</em>{% endif %}
 				{% if feedback.message %}<p>{{ feedback.message }}</p>{% endif %}
 			</div>

@@ -1,7 +1,7 @@
 <?php return array (
   'agent.common.list_as_an_attachment_to_thearticle' => 'List as an attachment to the article',
   'agent.common.insert' => 'Insert',
-  'agent.common.insert_title' => 'Insert {title}',
+  'agent.common.insert_title' => 'Insert {{title}}',
   'agent.common.url' => 'URL',
   'agent.common.inserturl' => 'Insert URL',
   'agent.common.this_will_insert_a_plaintext_url_to_the' => 'This will insert a plain-text URL to the file.',

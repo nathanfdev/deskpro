@@ -27,6 +27,6 @@
   'agent.mediabrowser.insert_edited_image' => 'Insert edited image',
   'agent.mediabrowser.choose_files_from_your_computer' => 'Choose files from your computer', 
 
-  'agent.mediabrowser.file_attached_to_thing' => '{filename} attached to {subphrase} {link}',
+  'agent.mediabrowser.file_attached_to_thing' => '{{filename}} attached to {{subphrase}} {{link}}',
   'agent.mediabrowser.or_drag_and_drop_files_onto_this_window' => 'or drag and drop files onto this window',
 );

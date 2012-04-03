@@ -51,22 +51,22 @@
 			<div class="dp-box-content">
 				{% if app.session.hasFlash('resent_validation_email') %}
 					<div class="alert-message info">
-						{{ phrase('user.profile.validation_resent_to', {{'email':app.session.flash('resent_validation_email')}}) }}
+						{{ phrase('user.profile.validation_resent_to', {'email':app.session.flash('resent_validation_email')}) }}
 					</div>
 				{% endif %}
 				{% if app.session.hasFlash('removed_email') %}
 					<div class="alert-message info">
-						{{ phrase('user.profile.email_was_removed', {{'email':app.session.flash('removed_email')}}) }}
+						{{ phrase('user.profile.email_was_removed', {'email':app.session.flash('removed_email')}) }}
 					</div>
 				{% endif %}
 				{% if app.session.hasFlash('new_email') %}
 					<div class="alert-message info">
-						{{ phrase('user.profile.email_was_added', {{'email':app.session.flash('removed_email')}}) }}
+						{{ phrase('user.profile.email_was_added', {'email':app.session.flash('removed_email')}) }}
 					</div>
 				{% endif %}
 				{% if app.session.hasFlash('new_email_validating') %}
 					<div class="alert-message info">
-						{{ phrase('user.profile.email_was_added_validate_it', {{'email':app.session.flash('removed_email')}}) }}
+						{{ phrase('user.profile.email_was_added_validate_it', {'email':app.session.flash('removed_email')}) }}
 					</div>
 				{% endif %}
 

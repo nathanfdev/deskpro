@@ -1,6 +1,6 @@
 <div class="email-assoc-overlay mass-actions-overlay" data-overlay-apply-class="email-assoc-overlay">
 	<div class="overlay-title">
-		<h4>{{ phrase('agent.org.email_domain_assoc_title', {{'name': org.name}}) }}</h4>
+		<h4>{{ phrase('agent.org.email_domain_assoc_title', {'name': org.name}) }}</h4>
 	</div>
 	<div class="overlay-content">
 
@@ -20,10 +20,10 @@
 								<div class="controls-box move-controls">
 									<ul>
 										{% if org_count_domain_nonmembers[domain] %}
-											<li class="move-users">{{ phrase('agent.org.email_domain_assoc_move', {{'count':org_count_domain_nonmembers[domain]}}) }}</li>
+											<li class="move-users">{{ phrase('agent.org.email_domain_assoc_move', {'count':org_count_domain_nonmembers[domain]}) }}</li>
 										{% endif %}
 										{% if org_count_domain_takenmembers[domain] %}
-											<li class="move-all-users">{{ phrase('agent.org.email_domain_assoc_move_all', {{'count': org_count_domain_takenmembers[domain]}}) }}</li>
+											<li class="move-all-users">{{ phrase('agent.org.email_domain_assoc_move_all', {'count': org_count_domain_takenmembers[domain]}) }}</li>
 										{% endif %}
 									</ul>
 								</div>
@@ -32,7 +32,7 @@
 								<ul>
 									<li class="remove-email">{{ phrase('agent.org.email_domain_assoc_remove') }}</li>
 									{% if org_count_domain_members[domain] %}<li class="remove-email-users">
-										{{ phrase('agent.org.email_domain_assoc_remove_users', {{'count': org_count_domain_members[domain]}}) }}
+										{{ phrase('agent.org.email_domain_assoc_remove_users', {'count': org_count_domain_members[domain]}) }}
 									</li>{% endif %}
 								</ul>
 							</div>

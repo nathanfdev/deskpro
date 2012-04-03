@@ -28,12 +28,12 @@
 {% block page %}
 {% if agent.is_vacation_mode %}
 	<div class="alert-message block-message info">
-		<h1>{{ phrase('admin.agents.name_in_vacation', {{'name':agent.display_name}}) }}</h1>
+		<h1>{{ phrase('admin.agents.name_in_vacation', {'name':agent.display_name}) }}</h1>
 		<form action="{{ path('admin_agents_setvacation', {person_id: agent.id, set_to: '0'}) }}" method="post">
 			{{ form_token() }}
 			<p>
 				{{ phrase('admin.agents.while_in_vacation_cannot_login') }}
-                {{ phrase('admin.agents.if_name_is_back', {{'name':agent.display_name}}) }} <button class="clean-white small">{{ phrase('admin.agents.turn_off_vacation_mode') }}</button>
+                {{ phrase('admin.agents.if_name_is_back', {'name':agent.display_name}) }} <button class="clean-white small">{{ phrase('admin.agents.turn_off_vacation_mode') }}</button>
 			</p>
 		</form>
 	</div>

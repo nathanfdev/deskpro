@@ -75,7 +75,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
             <span id="department_switcher" class="switcher"><span>{{ phrase('admin.ticketproperties.department') }}</span></span>
             {% set phrase_link2 %}
             {% endset %}
-            {{ phrase('admin.ticketproperties.edit_default_layout_or_select_another', {{'link1':phrase_link1,'link2':phrase_link2}}) }}
+            {{ phrase('admin.ticketproperties.edit_default_layout_or_select_another', {'link1':phrase_link1,'link2':phrase_link2}) }}
 		</div>
 	{% endif %}
 </div>
@@ -114,7 +114,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
         {% else %}
         {% set phrase_part = phrase('admin.ticketproperties.modify_ticket_form') %}
         {% endif %}
-        {{ phrase('admin.ticketproperties.enable_alternative_for_x', {{'subphrase':phrase_part}}) }}
+        {{ phrase('admin.ticketproperties.enable_alternative_for_x', {'subphrase':phrase_part}) }}
 	</div>
 	{% endif %}
 
@@ -173,7 +173,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
                                     <option value="any">{{ phrase('admin.ticketproperties.any') }}</option>
                                 </select>
                                 {% endset %}
-                                {{ phrase('admin.ticketproperties.only_show_field_when_choice', {{'choice':phrase_part}}) }}
+                                {{ phrase('admin.ticketproperties.only_show_field_when_choice', {'choice':phrase_part}) }}
                             </label>
 						</div>
 						<div class="dp-form-input">

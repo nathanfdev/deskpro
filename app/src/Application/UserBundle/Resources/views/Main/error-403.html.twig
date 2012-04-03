@@ -23,7 +23,7 @@
 
 					{% if app.user.is_guest %}
 						<p>
-							{{ phrase('user.error_not_allowed_help', {{'login_url': path('user_login')}}) }}
+							{{ phrase('user.error_not_allowed_help', {'login_url': path('user_login')}) }}
 						</p>
 					{% endif %}
 				</div>

@@ -140,7 +140,7 @@
                     {% set phrase_link %}
                         <a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.emailgateways.default_outgoing_account') }}</a>.
                     {% endset %}
-                    {{ phrase('admin.emailgateways.using_the', {{'link':phrase_link}}) }}
+                    {{ phrase('admin.emailgateways.using_the', {'link':phrase_link}) }}
                 </span>
 				<span class="show-gapps" {% if gateway.connection_type !='gmail' %}style="display: none"{% endif %}>{{ phrase('admin.emailgateways.use_the_google_apps_account_defined_above_for') }}</span>
 				<button class="clean-white small toggle-custom-smtp">{{ phrase('admin.emailgateways.use_a_different_outgoing_account') }}</button>

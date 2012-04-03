@@ -18,8 +18,8 @@
   'admin.products.no_parent' => 'No Parent',
   'admin.products.add' => 'Add',
   'admin.products.back_to_products' => 'Back to products',
-  'admin.products.are_you_sure_delete_product' => 'Are you sure you want to delete the product "<strong>{title}</strong>"?',
-  'admin.products.are_you_sure_delete_product_top_level' => 'Are you sure you want to delete the product "<strong>{title}</strong>"? Since this is a top-level product, <strong>all of these child-products will be deleted too</strong>',
+  'admin.products.are_you_sure_delete_product' => 'Are you sure you want to delete the product "<strong>{{title}}</strong>"?',
+  'admin.products.are_you_sure_delete_product_top_level' => 'Are you sure you want to delete the product "<strong>{{title}}</strong>"? Since this is a top-level product, <strong>all of these child-products will be deleted too</strong>',
   
   
 );

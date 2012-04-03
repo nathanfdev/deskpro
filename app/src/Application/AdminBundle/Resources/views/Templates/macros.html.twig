@@ -4,9 +4,9 @@
 		<thead class="{% if dirinfo.count_outdated %}dir-outdated{% endif %} {% if dirinfo.count_changed %}dir-changed{% endif %}">
 		<tr>
 			<th class="single-title" colspan="10">
-				<span class="count-outdated">{{ phrase('admin.templates.count_outdated', {{'count':dirinfo.count_outdated}}) }}</span>
-				<span class="count-changed">{{ phrase('admin.templates.count_custom', {{'count':dirinfo.count_changed}}) }}</span>
-				<span class="count">{{ phrase('admin.templates.count_template', {{'count':dirinfo.templates|length}}) }}</span>
+				<span class="count-outdated">{{ phrase('admin.templates.count_outdated', {'count':dirinfo.count_outdated}) }}</span>
+				<span class="count-changed">{{ phrase('admin.templates.count_custom', {'count':dirinfo.count_changed}) }}</span>
+				<span class="count">{{ phrase('admin.templates.count_template', {'count':dirinfo.templates|length}) }}</span>
 				<h1 class="toggle-section {% if options.open %}expanded{% endif %}">{% if options.title %}{{ options.title }}{% else %}{% if dirname != '!top' %}{{ dirname }}{% else %}{{ phrase('admin.templates.layout') }}{% endif %}{% endif %}</h1>
 			</th>
 		</tr>

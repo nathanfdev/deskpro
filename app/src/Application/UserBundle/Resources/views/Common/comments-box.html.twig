@@ -1,5 +1,5 @@
 <div class="dp-box-comments">
-	<h4>{{ phrase('user.comments_count', {{'count': comments|length}}) }}</h4>
+	<h4>{{ phrase('user.comments_count', {'count': comments|length}) }}</h4>
 	<div class="dp-box-comments-content">
 		{% if comments_widget %}
 			{{comments_widget|raw}}
@@ -28,7 +28,7 @@
 							{% set phrase_link2 %}
 							<a href="{{ path('user_login') }}">{{ phrase('user.comments_login') }}</a>
 							{% endset %}
-							{{ phrase('user.comments_phold_add_a_comment', {{'link1':phrase_link1,'link2':phrase_link2}}) }}
+							{{ phrase('user.comments_phold_add_a_comment', {'link1':phrase_link1,'link2':phrase_link2}) }}
 						</li>
 					{% elseif app.user.hasPerm(check_perm) %}
 					<li class="new-comment {% if not app.user.is_guest %}no-nav{% endif %}" id="comments_login_info">

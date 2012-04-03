@@ -22,7 +22,7 @@
 	{% if is_partial_request() %}
 		{% if num_results > news_entries|length %}
 			<div class="dp-footer">
-				<a href="{{ path('user_news') }}" class="btn">{{ phrase('user.news.view_all_x_news', {{'count': num_results}}) }}</a>
+				<a href="{{ path('user_news') }}" class="btn">{{ phrase('user.news.view_all_x_news', {'count': num_results}) }}</a>
 			</div>
 		{% endif %}
 	{% else %}

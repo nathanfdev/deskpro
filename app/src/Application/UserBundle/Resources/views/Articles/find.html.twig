@@ -49,7 +49,7 @@
 				</li>
 				{% endfor %}
 				<li class="pagenav">
-					<div class="count">{{ phrase('user.articles.number_of_articles', {{'count':num_results}}) }}</div>
+					<div class="count">{{ phrase('user.articles.number_of_articles', {'count':num_results}) }}</div>
 					<form action="{{ path('user_articles_filter') }}" method="get" id="kb_find_form_btm">
 					<input type="hidden" name="category_id" value="{{ search_options.category_id }}" />
 					<input type="hidden" name="product_id" value="{{ search_options.product_id }}" />

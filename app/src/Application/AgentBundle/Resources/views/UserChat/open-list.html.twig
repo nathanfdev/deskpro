@@ -20,7 +20,7 @@ pageMeta.agent_id = {{ agent.id|default(0)}};
     				</div>
     			</div>
     			<div class="userinfo general">
-                    {{ phrase('agent.userchat.by_name', {{'name':convo.person}}) }}
+                    {{ phrase('agent.userchat.by_name', {'name':convo.person}) }}
 						<a
 							class="user-link as-popover"
 							data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}"

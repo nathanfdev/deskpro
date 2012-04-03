@@ -57,10 +57,10 @@
   'agent.kb.create_article' => 'Create Article',
   'agent.kb.altc' => '(alt+c)',
   'agent.kb.remove' => 'remove',
-  'agent.kb.percent_helpful_n_votes' => '{percent}% helpful ({subphrase})',
-  'agent.kb.n_votes' => '{count} vote|{count} votes',
-  'agent.kb.n_helpful_n_unhelpful' => '{up_votes} found this the article helpful, {down_votes} found the article unhelpful',
-  'agent.kb.event_time_ago_by_who_at_when' => '{ago} by {name} at {date}',
-  'agent.kb.event_time_ago_at_when' => '{ago} at {date}',
+  'agent.kb.percent_helpful_n_votes' => '{{percent}}% helpful ({{subphrase}})',
+  'agent.kb.n_votes' => '{{count}} vote|{{count}} votes',
+  'agent.kb.n_helpful_n_unhelpful' => '{{up_votes}} found this the article helpful, {{down_votes}} found the article unhelpful',
+  'agent.kb.event_time_ago_by_who_at_when' => '{{ago}} by {{name}} at {{date}}',
+  'agent.kb.event_time_ago_at_when' => '{{ago}} at {{date}}',
   
 );

@@ -45,6 +45,6 @@
 
   'admin.portal.revert' => 'revert',
   'admin.portal.ticket_editor' => 'ticket editor',
-  'admin.portal.click_button_to_reenable_or_use_widgets' => 'Click the button above to re-enable the portal. Or use HTML widgets from the <a href="{path}">ticket editor</a> to embed DeskPRO into your own site.',
-  'admin.portal.portal_is_disabled' => 'The portal is currently disabled. This means you have turned off your public facing website at {url}.',
+  'admin.portal.click_button_to_reenable_or_use_widgets' => 'Click the button above to re-enable the portal. Or use HTML widgets from the <a href="{{path}}">ticket editor</a> to embed DeskPRO into your own site.',
+  'admin.portal.portal_is_disabled' => 'The portal is currently disabled. This means you have turned off your public facing website at {{url}}.',
 );

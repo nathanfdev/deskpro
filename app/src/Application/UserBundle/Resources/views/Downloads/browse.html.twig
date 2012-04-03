@@ -41,7 +41,7 @@
 		{% if is_partial_request() %}
 			{% if num_results > downloads|length %}
 				<div class="dp-footer">
-					<a class="btn" href="{{ path('user_downloads') }}">{{ phrase('user.downloads.view_all_x', {{'count': num_results}})}}</a>
+					<a class="btn" href="{{ path('user_downloads') }}">{{ phrase('user.downloads.view_all_x', {'count': num_results})}}</a>
 				</div>
 			{% endif %}
 		{% else %}

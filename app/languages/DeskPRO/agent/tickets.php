@@ -106,11 +106,11 @@
 	'agent.tickets.user_waiting_total_x' => 'User has been waiting a total of <time>{{total}}</time> since the ticket started.',
 	'agent.tickets.ticket_log' => 'Ticket Log',
 
-    'agent.tickets.creating_a_ticket_for' => 'Creating ticket for {name}',
+    'agent.tickets.creating_a_ticket_for' => 'Creating ticket for {{name}}',
     'agent.tickets.awaiting_agent' => 'Awaiting agent',
     'agent.tickets.please_enter_valid_email' => 'Please enter a valid email address',
     'agent.tickets.please_choose_or_create_user' => 'Please choose or create a user',
-    'agent.tickets.creating_ticket_for_title' => 'Creating ticket for {title}',
+    'agent.tickets.creating_ticket_for_title' => 'Creating ticket for {{title}}',
     'agent.tickets.creating_ticket_for_chat' => 'Creating ticket for chat',
     'agent.tickets.coment_after_ticket_created' => 'comment after ticket is created',
     'agent.tickets.delete' => 'Delete',

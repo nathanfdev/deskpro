@@ -1,7 +1,7 @@
 <div class="sidebar-item portal_userinfo">
 	{% if app.user.id %}
 		<div class="heading">
-			<h2>{{ phrase('user.portal.welcome_name', {{'name': app.user.first_name|default(app.user.display_name)}}) }} </h2>
+			<h2>{{ phrase('user.portal.welcome_name', {'name': app.user.first_name|default(app.user.display_name)}) }} </h2>
 		</div>
 		<ul class="sidebar-nav">
 			<li class="profile"><a href="{{ path('user_profile') }}"><span>{{ phrase('user.portal.your_profile') }}</span></a></li>
@@ -38,7 +38,7 @@
 					{% set phrase_link %}
 						<a href="{{ path('user_register') }}">{{ phrase('user.portal.register_now') }}</a>
 					{% endset %}
-					{{ phrase('user.portal.if_not_registered', {{'link':phrase_link}}) }}
+					{{ phrase('user.portal.if_not_registered', {'link':phrase_link}) }}
 				</div>
 			</div>
 		</div>

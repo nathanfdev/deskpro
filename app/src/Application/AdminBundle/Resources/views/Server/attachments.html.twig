@@ -25,7 +25,7 @@
                             {% set phrase_link %}
                             <a class="switch-trigger">{{ phrase('admin.server.switch_back_to_database_storage') }}</a>
                             {% endset %}
-                            {% if not moving_id %}{{ phrase('admin.server.while_not_recommended_you_can', {{'link':phrase_link}}) }}{% endif %}
+                            {% if not moving_id %}{{ phrase('admin.server.while_not_recommended_you_can', {'link':phrase_link}) }}{% endif %}
 						</div>
 					</td>
 				</tr>
@@ -43,7 +43,7 @@
                             {% set phrase_link %}
                             <a class="switch-trigger">{{ phrase('admin.server.switching_to_fs_storage') }}</a>
                             {% endset %}
-                            {% if not moving_id %}{{ phrase('admin.server.we_recommend_fs_storage', {{'link':phrase_link}}) }}{% endif %}
+                            {% if not moving_id %}{{ phrase('admin.server.we_recommend_fs_storage', {'link':phrase_link}) }}{% endif %}
 						</div>
 					</td>
 				</tr>
@@ -60,8 +60,8 @@
                         {% else %}
                             {% set phrase_part = phrase('admin.server.fs_to_db') %}
                         {% endif %}
-                        {{ phrase('admin.server.currently_transferring', {{'subphrase':phrase_part}}) }}
-                        {{ phrase('admin.server.files_have_been_processed', {{'count_done':count_done, 'count_todo':count_todo, 'percent':count_perc}}) }}
+                        {{ phrase('admin.server.currently_transferring', {'subphrase':phrase_part}) }}
+                        {{ phrase('admin.server.files_have_been_processed', {'count_done':count_done, 'count_todo':count_todo, 'percent':count_perc}) }}
 					</td>
 				</tr>
 			{% endif %}
@@ -152,13 +152,13 @@
 	</div>
 	<div class="overlay-content">
 		{% if use_fs %}
-			<p style="margin-bottom: 10px;">{{ phrase('admin.server.you_are_using_fs_want_to_switch', {{'path':filestorage_path}}) }}</p>
+			<p style="margin-bottom: 10px;">{{ phrase('admin.server.you_are_using_fs_want_to_switch', {'path':filestorage_path}) }}</p>
 		{% else %}
-			<p style="margin-bottom: 10px;">{{ phrase('admin.server.you_are_using_db_want_to_switch', {{'path':filestorage_path}}) }}</p>
+			<p style="margin-bottom: 10px;">{{ phrase('admin.server.you_are_using_db_want_to_switch', {'path':filestorage_path}) }}</p>
 		{% endif %}
 
 		<p style="margin: 10px; background-color: #F5F5F5; padding: 10px;">
-            {{ phrase('admin.server.count_files_will_be_used', {{'count':count_todo, 'size':total_size_readable}}) }}
+            {{ phrase('admin.server.count_files_will_be_used', {'count':count_todo, 'size':total_size_readable}) }}
 			<br /><br />
 			{{ phrase('admin.server.notice_transfer_is_gradually_done') }}
 		</p>
@@ -167,7 +167,7 @@
 		<form action="{{ path('admin_server_attach_switch') }}">
 			{{ form_token() }}
             {% if use_fs %}{% set phrase_part = phrase('admin.server.db') %}{% else %}{% set phrase_part = phrase('admin.server.fs') %}{% endif %}
-			<button class="clean-white">{{ phrase('admin.server.btn_confirm_switch', {{'subphrase':phrase_part}}) }}</button>
+			<button class="clean-white">{{ phrase('admin.server.btn_confirm_switch', {'subphrase':phrase_part}) }}</button>
 		</form>
 	</div>
 </div>

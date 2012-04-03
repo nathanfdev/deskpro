@@ -8,7 +8,7 @@
 {% block page %}
 
 {% if category.children|length %}
-	<p>{{ phrase('admin.ticketcategories.are_you_sure_delete_top_level', {{'title':category.title}}) }}:</p>
+	<p>{{ phrase('admin.ticketcategories.are_you_sure_delete_top_level', {'title':category.title}) }}:</p>
 
 	<ul class="bullet-list">
 		{% for c in category.children %}
@@ -18,7 +18,7 @@
 
 	<p>{{ phrase('admin.ticketcategories.any_tickets_that_belong_to_any_of_these') }}</p>
 {% else %}
-	<p>{{ phrase('admin.ticketcategories.are_you_sure_delete', {{'title':category.title}}) }}</p>
+	<p>{{ phrase('admin.ticketcategories.are_you_sure_delete', {'title':category.title}) }}</p>
 
 	<p>{{ phrase('admin.ticketcategories.any_tickets_that_belong_this_category_will_have') }}</p>
 {% endif %}

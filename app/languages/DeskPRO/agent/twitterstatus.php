@@ -4,7 +4,7 @@
   'agent.twitterstatus.newest_first' => 'Newest First',
   'agent.twitterstatus.show_archived_tweets' => 'Show archived tweets',
   'agent.twitterstatus.selected' => 'selected',
-  'agent.twitterstatus.count_selected' => '{count} selected',
+  'agent.twitterstatus.count_selected' => '{{count}} selected',
   'agent.twitterstatus.perform_action' => 'Perform Action',
   'agent.twitterstatus.archive' => 'Archive',
   'agent.twitterstatus.reply' => 'Reply',

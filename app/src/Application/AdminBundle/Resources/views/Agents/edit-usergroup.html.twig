@@ -319,7 +319,7 @@
 		<form action="{{ path('admin_agents_groups_del', {'usergroup_id': usergroup.id, 'security_token': security_token('delete_group')}) }}" method="get">
 			<button class="clean-white">
 				{% set phrase_part %}<span class="agent-name">{{ usergroup.title }}</span>{% endset %}
-                {{ phrase('admin.agents.delete_name', {{'name':phrase_part}}) }}
+                {{ phrase('admin.agents.delete_name', {'name':phrase_part}) }}
 			</button>
 		</form>
 	</div>

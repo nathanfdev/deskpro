@@ -1,7 +1,7 @@
 <header class="list-selection-bar">
 	<input type="checkbox" class="selection-control" />
     {% set phrase_part %}<span class="selected-count">0</span>{% endset %}
-    {{ phrase('agent.feedback.count_selected', {{'display_count':phrase_part}}) }}
+    {{ phrase('agent.feedback.count_selected', {'display_count':phrase_part}) }}
 	<a class="perform-action perform-actions-trigger disabled">
 		<span>{{ phrase('agent.perform_actions') }}</span>
 	</a>

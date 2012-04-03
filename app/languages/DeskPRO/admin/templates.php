@@ -18,9 +18,9 @@
   'admin.templates.edit_agent_and_admin_templates' => 'Edit Agent and Admin Templates',
 
   'admin.templates.agent_and_admin_templates' => 'Agent and Admin Templates',
-  'admin.templates.count_outdated' => '<i>{count}</i> outdated|<i>{count}</i> outdated',
-  'admin.templates.count_custom' => '<i>{count}</i> custom|<i>{count}</i> custom',
-  'admin.templates.count_template' => '<i>{count}</i> template|<i>{count}</i> templates',
+  'admin.templates.count_outdated' => '<i>{{count}}</i> outdated|<i>{{count}}</i> outdated',
+  'admin.templates.count_custom' => '<i>{{count}}</i> custom|<i>{{count}}</i> custom',
+  'admin.templates.count_template' => '<i>{{count}}</i> template|<i>{{count}}</i> templates',
   'admin.templates.custom' => 'custom',
   'admin.templates.outdated' => 'outdated',
 );

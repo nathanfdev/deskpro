@@ -81,7 +81,7 @@
   'admin.userreg.continue' => 'Continue',
   'admin.userreg.delete' => 'delete',
   'admin.userreg.for_example' => 'For example',
-  'admin.userreg.enter_the_dsn' => 'Enter the DSN connection string for the database. Refer to the manual for the string format ({links}). For example, for a MySQL database: <var>mysql:host=localhost;dbname=mydb</var>',
+  'admin.userreg.enter_the_dsn' => 'Enter the DSN connection string for the database. Refer to the manual for the string format ({{links}}). For example, for a MySQL database: <var>mysql:host=localhost;dbname=mydb</var>',
   'admin.userreg.by_default_placeholder_is_use_this_instead' => 'By default, the filter performed when looking up users is <var>(&(objectClass=user)(sAMAccountName=%s))</var>. Use <var>%s</var> as the input placeholder.',
   
   'admin.userreg.enter_raw_php_code' => 'Enter the raw PHP code to use when checking the validity of an inputted password against

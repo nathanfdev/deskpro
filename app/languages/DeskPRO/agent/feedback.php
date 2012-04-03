@@ -51,6 +51,6 @@
 
   'agent.feedback.create_feedback' => 'Create Feedback',
   'agent.feedback.of' => 'of',
-  'agent.feedback.count_selected' => '{display_count} selected',
-  'agent.feedback.count_votes' => '{display_count} vote|{display_count} votes',
+  'agent.feedback.count_selected' => '{{display_count}} selected',
+  'agent.feedback.count_votes' => '{{display_count}} vote|{{display_count}} votes',
 );

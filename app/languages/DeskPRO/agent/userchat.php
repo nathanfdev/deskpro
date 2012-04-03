@@ -18,6 +18,6 @@
   'agent.userchat.there_are_currently_no_open_chats' => 'There are currently no open chats.',
   'agent.userchat.chat_started_by' => 'Chat started by',
   'agent.userchat.person' => 'Person',
-  'agent.userchat.by_name' => 'By {name}',
-  'agent.userchat.count_seconds' => '{count} second|{count} seconds',
+  'agent.userchat.by_name' => 'By {{name}}',
+  'agent.userchat.count_seconds' => '{{count}} second|{{count}} seconds',
 );

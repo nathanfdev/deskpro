@@ -16,7 +16,7 @@
   'deskpro.emails_agent.workflow' => 'Workflow',
   'deskpro.emails_agent.status' => 'Status',
   'deskpro.emails_agent.a_new_ticket_has_been_created' => 'A new ticket has been created',
-  'deskpro.emails_agent.by_name' => 'By <b>{name}</b>',
+  'deskpro.emails_agent.by_name' => 'By <b>{{name}}</b>',
   'deskpro.emails_agent.open' => 'Open',
   'deskpro.emails_agent.pending' => 'Pending',
   'deskpro.emails_agent.resolved' => 'Resolved',

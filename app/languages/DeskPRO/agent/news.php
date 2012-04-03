@@ -34,7 +34,7 @@
   'agent.news.altc' => '(alt+c)',
   'agent.news.drop_your_file_here_to_add_it_to' => 'Drop your file here to add it to this post',
 
-  'agent.news.percent_helpful_n_votes' => '{percent}% helpful ({subphrase})',
-  'agent.news.n_votes' => '{count} vote|{count} votes',
-  'agent.news.n_helpful_n_unhelpful' => '{up_votes} found this the article helpful, {down_votes} found the article unhelpful',
+  'agent.news.percent_helpful_n_votes' => '{{percent}}% helpful ({{subphrase}})',
+  'agent.news.n_votes' => '{{count}} vote|{{count}} votes',
+  'agent.news.n_helpful_n_unhelpful' => '{{up_votes}} found this the article helpful, {{down_votes}} found the article unhelpful',
 );

@@ -139,7 +139,7 @@
 
 {% if count_deleted %}
 	<div class="deleted-text">
-        <a href="{{ path('admin_agents_deleted') }}">{{ phrase('admin.agents.there_are_deleted_agents', {{'count':count_deleted}}) }}</a>.
+        <a href="{{ path('admin_agents_deleted') }}">{{ phrase('admin.agents.there_are_deleted_agents', {'count':count_deleted}) }}</a>.
 	</div>
 {% endif %}
 

@@ -11,7 +11,7 @@
 			<h4>{{ phrase('admin.license.already_have_a_license_code') }}</h4>
 		</header>
 		<article>
-            {{ phrase('admin.license.if_you_already_have_a_license', {{'path':path('admin_license_input')}}) }}
+            {{ phrase('admin.license.if_you_already_have_a_license', {'path':path('admin_license_input')}) }}
 		</article>
 	</div>
 </div>
@@ -28,7 +28,7 @@
 		{% if errors.email %}<li>{{ phrase('admin.license.please_enter_a_valid_email_address') }}</li>{% endif %}
 		{% if errors.timeout %}<li>{{ phrase('admin.license.your_server_timedout_while_trying_to_contact_our') }}</li>{% endif %}
 		{% if errors.server_error %}<li>{{ phrase('admin.license.our_licensing_server_is_having_technical_difficulties_you') }}</li>{% endif %}
-		{% if errors.request_error %}<li>{{ phrase('admin.license.license_server_detected_error', {{'error':errors.request_error}}) }}</li>{% endif %}
+		{% if errors.request_error %}<li>{{ phrase('admin.license.license_server_detected_error', {'error':errors.request_error}) }}</li>{% endif %}
 		{% if errors.unknown_request_error %}<li>{{ phrase('admin.license.there_was_an_unknown_problem_while_trying_to') }}</li>{% endif %}
 	</ul>
 
@@ -42,7 +42,7 @@
             {% set phrase_link %}
                 <a href="mailto:support@deskpro.com" style="color: #000;">{{ phrase('admin.license.supportdeskprocom') }}</a>
             {% endset %}
-            {{ phrase('admin.license.if_you_have_problems_with_license', {{'link':phrase_link}}) }}
+            {{ phrase('admin.license.if_you_have_problems_with_license', {'link':phrase_link}) }}
 		</p>
 		<br class="clear" />
 	{% endif %}

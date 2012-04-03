@@ -179,10 +179,10 @@
 								<p>{{ phrase('user.tickets.created_successfully') }}</p>
 								{% if app.session.hasFlash('new_ticket_validating_email') %}
 									<p>
-										{{ phrase('user.tickets.new_validating_notice', {{'email': app.session.flash('new_ticket_validating_email')}}) }}
+										{{ phrase('user.tickets.new_validating_notice', {'email': app.session.flash('new_ticket_validating_email')}) }}
 									 </p>
 								{% elseif app.session.hasFlash('new_ticket_email') %}
-									{{ phrase('user.tickets.new_ticket_notice', {{'email': app.session.flash('new_ticket_email')}}) }}
+									{{ phrase('user.tickets.new_ticket_notice', {'email': app.session.flash('new_ticket_email')}) }}
 								{% endif %}
 							</div>
 						</div>

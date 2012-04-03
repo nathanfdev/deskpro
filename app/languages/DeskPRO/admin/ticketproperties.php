@@ -43,7 +43,7 @@
   'admin.ticketproperties.customize_choices_to_display' => 'Customize choices to display',
   'admin.ticketproperties.add_a_new_criteria' => 'Add a new criteria',
   'admin.ticketproperties.field_options' => 'Field Options',
-  'admin.ticketproperties.only_show_field_when_choice' => 'Only show this field when {choice} of these terms match',
+  'admin.ticketproperties.only_show_field_when_choice' => 'Only show this field when {{choice}} of these terms match',
   'admin.ticketproperties.product' => 'Product',
   'admin.ticketproperties.any' => 'any',
   'admin.ticketproperties.all' => 'all',
@@ -52,8 +52,8 @@
   'admin.ticketproperties.is_less_than' => 'is less than',
   'admin.ticketproperties.is_greater_than' => 'is greater than',
   'admin.ticketproperties.switch_to_department' => 'Switch to department',
-  'admin.ticketproperties.enable_alternative_for_x' => 'Enable alternative layout for {subphrase}',
-  'admin.ticketproperties.edit_default_layout_or_select_another' => 'Edit the {link_a} or select a specific {link2}',
+  'admin.ticketproperties.enable_alternative_for_x' => 'Enable alternative layout for {{subphrase}}',
+  'admin.ticketproperties.edit_default_layout_or_select_another' => 'Edit the {{link_a}} or select a specific {link2}',
   'admin.ticketproperties.notice_you_can_edit_the_form' => 'You can edit the form a user sees when they go to submit a ticket. Just drag options from the left into the area below to enable more fields.',
 
   'admin.ticketproperties.explain_departments' => 'Departments organize your helpdesk into separate compartments that handle different things. For example, Sales and Support.',
@@ -62,10 +62,10 @@
   'admin.ticketproperties.explain_priorities' => 'Priorities rate how important a ticket is.',
   'admin.ticketproperties.explain_workflows' => 'Workflows can be used to record where in the lifetime a ticket currently is.',
 
-  'admin.ticketproperties.you_have_count_departments' => 'You have 1 department.|You have {count} departments.',
-  'admin.ticketproperties.you_have_count_products' => 'You have 1 products.|You have {count} products.',
-  'admin.ticketproperties.you_have_count_categories' => 'You have 1 categories.|You have {count} categories.',
-  'admin.ticketproperties.you_have_count_priorities' => 'You have 1 priorities.|You have {count} priorities.',
-  'admin.ticketproperties.you_have_count_workflows' => 'You have 1 workflows.|You have {count} workflows.',
+  'admin.ticketproperties.you_have_count_departments' => 'You have 1 department.|You have {{count}} departments.',
+  'admin.ticketproperties.you_have_count_products' => 'You have 1 products.|You have {{count}} products.',
+  'admin.ticketproperties.you_have_count_categories' => 'You have 1 categories.|You have {{count}} categories.',
+  'admin.ticketproperties.you_have_count_priorities' => 'You have 1 priorities.|You have {{count}} priorities.',
+  'admin.ticketproperties.you_have_count_workflows' => 'You have 1 workflows.|You have {{count}} workflows.',
   
 );

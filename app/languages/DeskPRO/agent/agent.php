@@ -252,7 +252,7 @@
 	'agent.title_grouped_by_xy' => 'Grouped: {{fieldname}} and {{fieldname2}}',
 
 	'agent.test' => 'Test {1} and {2}',
-	'agent.another_test' => 'Test {1} and {2} and {three}',
+	'agent.another_test' => 'Test {1} and {2} and {{three}}',
 
 	'agent.flag_blue'   => 'Blue',
 	'agent.flag_green'  => 'Green',

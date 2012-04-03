@@ -8,7 +8,7 @@
 					<span class="add-new-article tipped" id="publish_outline_articles_add" title="{{ phrase('agent.create_article') }}" data-newloader-name="newArticleLoader"></span>
 				{% endif %}
 				<span class="all-route title" data-route="listpane:{{ path('agent_kb_list') }}">
-					{{ phrase('agent.publish.count_articles', {{'count': kb_cats_counts['0_total']|default(0)}}) }}
+					{{ phrase('agent.publish.count_articles', {'count': kb_cats_counts['0_total']|default(0)}) }}
 				</span>
 			</li>
 			{% include 'AgentBundle:Publish:kb-cat-list.html.twig' with {'cats': kb_cats, 'counts': kb_cats_counts, 'depth': 0 } %}

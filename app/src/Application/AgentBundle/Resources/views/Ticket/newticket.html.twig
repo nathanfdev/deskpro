@@ -43,7 +43,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="pending-info person" style="display: none;">
 	<i class="reset"></i>
 	{% set phrase_part %}<span id="{{baseId}}_person_title"></span>{% endset %}
-	<h3>{{ phrase('agent.tickets.creating_ticket_for_title', {{'title':phrase_part}}) }}</h3>
+	<h3>{{ phrase('agent.tickets.creating_ticket_for_title', {'title':phrase_part}) }}</h3>
 </div>
 
 <div class="section user-section first" id="{{baseId}}_user_section">
