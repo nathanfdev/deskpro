@@ -372,9 +372,17 @@ class TermSummary
 				break;
 
 			case 'ticket_creation_system':
+				$vals = array();
+
+				foreach ((array)$choice as $c) {
+					$vals[] = $tr->phrase('agent.tickets.creation_system_' . str_replace('.', '_', $c));
+				}
+
+				$vals = implode(', ', $vals);
+
 				$summary = $tr->phrase('agent.x_is_y', array(
 					'field' => $tr->phrase('agent.tickets.creation_system'),
-					'value' => $tr->phrase('agent.tickets.creation_system_' . str_replace('.', '_', $choice))
+					'value' => $vals
 				));
 				break;
 
@@ -411,6 +419,14 @@ class TermSummary
             case 'day_last_user_reply':
                 $summary = "Day of last user reply $op in ".implode(', ', $choice['days']);
                 break;
+
+			case 'is_new_user':
+				$summary = "Is a new user";
+				break;
+
+			case 'is_not_new_user':
+				$summary = "Is not a new user";
+				break;
 		}
 
 		return $summary;

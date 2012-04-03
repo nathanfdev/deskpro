@@ -19,6 +19,15 @@
 			<input type="hidden" name="stop_actions" value="1" />
 		</div>
 	</div>
+
+	{% if 'new_ticket' in event_group %}
+	<div class="type" title="Force email validation" data-rule-type="force_email_validation">
+		<div class="options">
+			<input type="hidden" name="force_email_validation" value="1" />
+		</div>
+	</div>
+	{% endif %}
+
 	<div class="type" title="Set Agent" data-rule-type="agent">
 		<div class="options">
 			<select name="agent">

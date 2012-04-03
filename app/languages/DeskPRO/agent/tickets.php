@@ -20,6 +20,9 @@
 	'agent.tickets.creation_system_web_person' => 'Web interface by user',
 	'agent.tickets.creation_system_web_agent'  => 'Web interface by agent',
 	'agent.tickets.creation_system_gateway'    => 'Email',
+	'agent.tickets.creation_system_gateway_person'    => 'Email by user',
+	'agent.tickets.creation_system_gateway_agent'     => 'Email by agent',
+	'agent.tickets.creation_system_widget'     => 'Website Widget',
 
 	// Names of ticket fields
 	'agent.tickets.urgency'                => 'Urgency',

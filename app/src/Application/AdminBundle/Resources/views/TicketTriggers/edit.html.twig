@@ -47,7 +47,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 			{% endmacro %}
 			{% if trigger.getTriggerGroup() == 'new_ticket.web_person' %}New Ticket via Web Interface
 			{% elseif trigger.getTriggerGroup() == 'new_ticket.gateway_person' %}New Ticket via Email
-			{% elseif trigger.getTriggerGroup() == 'new_ticket.widget_person' %}New Ticket via Website Widget
+			{% elseif trigger.getTriggerGroup() == 'new_ticket.widget' %}New Ticket via Website Widget
 			{% elseif trigger.getTriggerGroup() == 'new_reply.web_person' %}New Reply via Web Interface
 			{% elseif trigger.getTriggerGroup() == 'new_reply.gateway_person' %}New Reply via Email
 			{% elseif trigger.getTriggerGroup() == 'new_reply.agent' %}New Reply by an Agent
@@ -109,7 +109,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 	<input type="hidden" name="terms[static_{{ static_key }}][type]" value="{{ info.type }}" />
 	<input type="hidden" name="terms[static_{{ static_key }}][op]" value="{{ info.op }}" />
 	{% for k,v in info.options %}
-		<input type="hidden" name="terms[static_{{ static_key }}][options][{{ k }}]" value="{{ v }}" />
+		<input type="hidden" name="terms[static_{{ static_key }}][{{ k }}]" value="{{ v }}" />
 	{% endfor %}
 {% endfor %}
 
@@ -137,5 +137,4 @@ function TicketTriggerEditPage_initTerms(handler) {
 	'event_trigger': trigger.event_trigger,
 	'event_group': trigger.getTriggerGroup()
 } %}
-
 {% endblock %}

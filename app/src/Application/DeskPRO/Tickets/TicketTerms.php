@@ -218,9 +218,8 @@ class TicketTerms
 	 */
 	public function testChangedTerm(Entity\Ticket $ticket, $term, $op, $choice)
 	{
-		if (!$tracker) return false;
-
 		$tracker = $this->tracker;
+		if (!$tracker) return false;
 
 		if (!$tracker->isPropertyChanged($term)) {
 			return false;
@@ -271,7 +270,17 @@ class TicketTerms
 	 */
 	public function testTerm(Entity\Ticket $ticket, $term, $op, $choice)
 	{
+		$tracker = $this->tracker;
+
 		switch ($term) {
+
+			case 'is_new_user':
+				return $ticket->person->isNewPerson();
+				break;
+
+			case 'is_not_new_user':
+				return !$ticket->person->isNewPerson();
+				break;
 
 			case 'creation_system':
 				$choice = (array)$choice;

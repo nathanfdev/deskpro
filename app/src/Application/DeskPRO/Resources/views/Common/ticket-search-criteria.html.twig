@@ -32,6 +32,25 @@
 		</div>
 	{% endif %}
 
+	{% if 'is_new_user' not in no_show_fields and 'new_ticket' in event_group %}
+	<div class="type" title="Is a new user" data-rule-type="is_new_user">
+		<div class="op">
+			<input type="hidden" name="op" value="is" />
+		</div>
+		<div class="options">
+			<input type="hidden" name="is_new_user" value="1" />
+		</div>
+	</div>
+	<div class="type" title="Is not a new user" data-rule-type="is_not_new_user">
+		<div class="op">
+			<input type="hidden" name="op" value="is" />
+		</div>
+		<div class="options">
+			<input type="hidden" name="is_not_new_user" value="1" />
+		</div>
+	</div>
+	{% endif %}
+
 	{% if 'creation_system' not in no_show_fields and 'new_ticket' not in event_group %}
 	<div class="type" title="Originated interface" data-rule-type="creation_system" data-term-type="GenericMenuTerm" data-term-triggers="interface,orig-interface,original-interface">
 		<div class="op">

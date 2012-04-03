@@ -466,7 +466,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 					case 'gateway.person':
 						return 'new_ticket.gateway_person';
 					case 'widget':
-						return 'new_ticket.widget_person';
+						return 'new_ticket.widget';
 					case 'gateway.agent':
 					case 'web.agent':
 						return 'new_ticket.agent';
@@ -558,6 +558,15 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		return $ret;
 	}
 
+
+	/**
+	 * @param array $terms
+	 */
+	public function setTerms(array $terms)
+	{
+		$this->setModelField('terms', $terms);
+		$this->_ticket_terms = null;
+	}
 
 	############################################################################
 	# Doctrine Metadata

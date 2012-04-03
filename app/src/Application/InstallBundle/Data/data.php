@@ -411,10 +411,93 @@ $em->flush();
 # Triggers
 ################################################################################
 
+##BEGIN:create_trigger.email_validation_web##
+$q = new \Application\DeskPRO\Entity\TicketTrigger();
+$q->title = 'Enable email validation for new users';
+$q->sys_name = 'email_validation.web';
+$q->event_trigger = 'new_ticket';
+$q->is_enabled = 0;
+$q->terms = array(
+	array(
+		'type' => 'is_new_user',
+		'op' => 'is',
+		'options' => array('is_new_user' => '1'),
+	),
+	array(
+		'type' => 'creation_system',
+		'op' => 'is',
+		'options' => array('creation_system' => 'web.person'),
+	),
+);
+$q->actions = array(
+	array (
+		'type' => 'force_email_validation',
+		'options' => array('force_email_validation' => '1'),
+	)
+);
+
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_trigger.email_validation_email##
+$q = new \Application\DeskPRO\Entity\TicketTrigger();
+$q->title = 'Enable email validation for new users';
+$q->sys_name = 'email_validation.email';
+$q->event_trigger = 'new_ticket';
+$q->is_enabled = 0;
+$q->terms = array(
+	array(
+		'type' => 'is_new_user',
+		'op' => 'is',
+		'options' => array('is_new_user' => '1'),
+	),
+	array(
+		'type' => 'creation_system',
+		'op' => 'is',
+		'options' => array('creation_system' => 'web.gateway'),
+	),
+);
+$q->actions = array(
+	array (
+		'type' => 'force_email_validation',
+		'options' => array('force_email_validation' => '1'),
+	)
+);
+
+$em->persist($q);
+$em->flush();
+
+##BEGIN:create_trigger.email_validation_widget##
+$q = new \Application\DeskPRO\Entity\TicketTrigger();
+$q->title = 'Enable email validation for new users';
+$q->sys_name = 'email_validation.widget';
+$q->event_trigger = 'new_ticket';
+$q->is_enabled = 0;
+$q->terms = array(
+	array(
+		'type' => 'is_new_user',
+		'op' => 'is',
+		'options' => array('is_new_user' => '1'),
+	),
+	array(
+		'type' => 'creation_system',
+		'op' => 'is',
+		'options' => array('creation_system' => 'widget'),
+	),
+);
+$q->actions = array(
+	array (
+		'type' => 'force_email_validation',
+		'options' => array('force_email_validation' => '1'),
+	)
+);
+
+$em->persist($q);
+$em->flush();
+
 ##BEGIN:create_trigger.urgency_base##
 $q = new \Application\DeskPRO\Entity\TicketTrigger();
-$q->title = 'urgency.base';
-$q->sys_name = 'urgency.base';
+$q->title = 'Initial urgency';
 $q->event_trigger = 'new_ticket';
 $q->is_enabled = 1;
 $q->terms = array();
@@ -435,7 +518,7 @@ $q = new \Application\DeskPRO\Entity\TicketTrigger();
 $q->title = '';
 $q->event_trigger = 'time_user_waiting';
 $q->event_trigger_option = '86400'; // 1 day
-$q->is_enabled = 1;
+$q->is_enabled = 0;
 $q->terms = array();
 $q->actions = array(
 	array(

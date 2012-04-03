@@ -93,9 +93,9 @@ class TicketTriggersController extends AbstractController
 					$trigger['event_trigger'] = 'new_ticket';
 					$trigger->terms = array(array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'gateway.person')));
 					break;
-				case 'new_ticket.widget_person':
+				case 'new_ticket.widget':
 					$trigger['event_trigger'] = 'new_ticket';
-					$trigger->terms = array(array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'widget.person')));
+					$trigger->terms = array(array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'widget')));
 					break;
 				case 'new_ticket.agent':
 					$trigger['event_trigger'] = 'new_ticket';

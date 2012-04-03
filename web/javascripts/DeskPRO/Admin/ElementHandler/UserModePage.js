@@ -50,5 +50,26 @@ DeskPRO.Admin.ElementHandler.UserModePage = new Orb.Class({
 		reg_urls.on('change', function() {
 			reg_urls.val($(this).val());
 		});
+
+		var triggerToggles = $('.trigger-toggle');
+		var ischanging = false;
+		triggerToggles.on('change', function() {
+			if (ischanging) return;
+			ischanging = true;
+
+			var id = $(this).val();
+			var onoff = $(this).is(':checked') ? 1 : 0;
+
+			triggerToggles.filter('[value="' + id + '"]').prop('checked', onoff ? true : false);
+
+			$.ajax({
+				url: BASE_URL + 'admin/tickets/triggers/toggle-enabled.json',
+				type: 'POST',
+				dataType: 'json',
+				data: { trigger_id: id, onoff: onoff }
+			});
+
+			ischanging = false;
+		});
 	}
 });

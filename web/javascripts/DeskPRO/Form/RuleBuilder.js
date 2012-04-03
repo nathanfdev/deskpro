@@ -130,6 +130,11 @@ DeskPRO.Form.RuleBuilder = new Class({
 	 * @return {jQuery} The newly added row
 	 */
 	addNewRow: function(addToEl, formBaseName, existing) {
+
+		if (existing && !this.types[existing.type]) {
+			return null;
+		}
+
 		var rowId = Orb.uuid();
 
 		var new_row = $('> .row', this.ruleTpl).children().clone();
@@ -155,7 +160,8 @@ DeskPRO.Form.RuleBuilder = new Class({
 		}
 
 		var opt = false;
-		if (existing) {
+		if (existing && this.types[existing.type]) {
+
 			select.val(existing.type).change();
 
 			var label = $('.type:first .current-value', new_row);
@@ -196,6 +202,8 @@ DeskPRO.Form.RuleBuilder = new Class({
 			if (ruleHandler) {
 				ruleHandler.initValues();
 			}
+		} else {
+			existing = null;
 		}
 
 		// Handle when its type is changed

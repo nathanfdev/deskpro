@@ -54,8 +54,11 @@ class UserRegController extends AbstractController
 			ORDER BY us.display_order ASC, us.title ASC
 		")->execute();
 
+		$reg_triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getSystemTriggers('email_validation');
+
 		return $this->render('AdminBundle:UserReg:options.html.twig', array(
-			'usersources' => $usersources,
+			'usersources'  => $usersources,
+			'reg_triggers' => $reg_triggers,
 		));
 	}
 
