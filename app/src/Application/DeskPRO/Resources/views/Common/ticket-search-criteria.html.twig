@@ -19,7 +19,7 @@
 		<div class="type" title="Performer" data-rule-type="action_performer">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">is</option>
+					<option value="is">{{ phrase('deskpro.common.is') }}</option>
 					<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 				</select>
 			</div>
@@ -36,7 +36,7 @@
 	<div class="type" title="Originated interface" data-rule-type="creation_system" data-term-type="GenericMenuTerm" data-term-triggers="interface,orig-interface,original-interface">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">is</option>
+				<option value="is">{{ phrase('deskpro.common.is') }}</option>
 				<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 			</select>
 		</div>
@@ -56,7 +56,7 @@
 		<div class="type" title="Ticket Gateway Address" data-rule-type="gateway_address" data-term-type="GenericMenuTerm" data-term-triggers="gateway,address,gateway_address">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">is</option>
+					<option value="is">{{ phrase('deskpro.common.is') }}</option>
 					<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 				</select>
 			</div>
@@ -74,7 +74,7 @@
 		<div class="type" title="Ticket Gateway Account" data-rule-type="gateway_account" data-term-type="GenericMenuTerm" data-term-triggers="gateway,account,gateway_account">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">is</option>
+					<option value="is">{{ phrase('deskpro.common.is') }}</option>
 					<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 				</select>
 			</div>
@@ -92,9 +92,9 @@
 	<div class="type" title="Subject" data-rule-type="subject">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="contains">contains</option>
+				<option value="contains">{{ phrase('deskpro.common.contains') }}</option>
 				<option value="not_contains">{{ phrase('deskpro.common.does_not_contain') }}</option>
-				<option value="is">is</option>
+				<option value="is">{{ phrase('deskpro.common.is') }}</option>
 				<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 			</select>
 		</div>
@@ -108,7 +108,7 @@
 		<div class="type" title="Department" data-rule-type="department" data-term-type="GenericMenuTerm" data-term-triggers="dep,department">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">is</option>
+					<option value="is">{{ phrase('deskpro.common.is') }}</option>
 					<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 					{% if with_change_terms %}
 						<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
@@ -138,7 +138,7 @@
 	<div class="type" title="Assigned Agent" data-rule-type="agent" data-term-type="GenericMenuTerm" data-term-triggers="agent">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">is</option>
+				<option value="is">{{ phrase('deskpro.common.is') }}</option>
 				<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 				{% if with_change_terms %}
 					<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
@@ -165,7 +165,7 @@
 		<div class="type" title="Agent Team" data-rule-type="agent_team" data-term-type="GenericMenuTerm" data-term-triggers="team,agent-team">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">is</option>
+					<option value="is">{{ phrase('deskpro.common.is') }}</option>
 					<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 					{% if with_change_terms %}
 						<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
@@ -192,7 +192,7 @@
 	<div class="type" title="Followers" data-rule-type="participant" data-term-type="GenericMenuTerm" data-term-triggers="followers">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">include</option>
+				<option value="is">{{ phrase('deskpro.common.include') }}</option>
 				<option value="not">{{ phrase('deskpro.common.does_not_include') }}</option>
 				{% if with_change_terms %}
 					<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
@@ -216,7 +216,7 @@
 	<div class="type" title="Labels" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="tickets" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">is</option>
+				<option value="is">{{ phrase('deskpro.common.is') }}</option>
 				<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 				{% if with_change_terms %}
 					<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
@@ -235,7 +235,7 @@
 	<div class="type" title="Status" data-rule-type="status" data-term-type="GenericMenuTerm" data-term-triggers="status">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">is</option>
+				<option value="is">{{ phrase('deskpro.common.is') }}</option>
 				<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 				{% if with_change_terms %}
 					<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
@@ -262,7 +262,7 @@
 	<div class="type" title="Organization" data-term-type="GenericMenuTerm" data-term-triggers="org,organization,company" data-rule-type="organization">
 		<div class="op">
 			<select name="op">
-				<option value="is">is</option>
+				<option value="is">{{ phrase('deskpro.common.is') }}</option>
 				<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 			</select>
 		</div>
@@ -280,7 +280,7 @@
 		<div class="type" title="Product" data-rule-type="product" data-term-type="GenericMenuTerm" data-term-triggers="prod,product">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">is</option>
+					<option value="is">{{ phrase('deskpro.common.is') }}</option>
 					<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 					{% if with_change_terms %}
 						<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
@@ -305,7 +305,7 @@
 		<div class="type" title="Category" data-rule-type="category" data-term-type="GenericMenuTerm" data-term-triggers="cat,category">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">is</option>
+					<option value="is">{{ phrase('deskpro.common.is') }}</option>
 					<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 					{% if with_change_terms %}
 						<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
@@ -330,7 +330,7 @@
 	<div class="type" title="Urgency" data-rule-type="urgency" data-term-type="GenericInputTerm" data-term-triggers="urgency">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">is</option>
+				<option value="is">{{ phrase('deskpro.common.is') }}</option>
 				<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 				<option value="lte">&lt;=</option>
 				<option value="gte">&gt;=</option>
@@ -363,7 +363,7 @@
 		<div class="type" title="Priority" data-rule-type="priority" data-term-type="GenericMenuTerm" data-term-triggers="pri,priority">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">is</option>
+					<option value="is">{{ phrase('deskpro.common.is') }}</option>
 					<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 					<option value="lte">{{ phrase('deskpro.common.is_less_than') }}</option>
 					<option value="gte">{{ phrase('deskpro.common.is_greater_than') }}</option>
@@ -390,7 +390,7 @@
 		<div class="type" title="Workflow" data-rule-type="workflow" data-term-type="GenericMenuTerm" data-term-triggers="work,workflow">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">is</option>
+					<option value="is">{{ phrase('deskpro.common.is') }}</option>
 					<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 					{% if with_change_terms %}
 						<option value="changed">{{ phrase('deskpro.common.changed') }}</option>
@@ -415,7 +415,7 @@
 	<div class="type" title="Language" data-term-type="GenericMenuTerm" data-rule-type="language" data-term-triggers="lang,language">
 		<div class="op">
 			<select name="op">
-				<option value="is">is</option>
+				<option value="is">{{ phrase('deskpro.common.is') }}</option>
 				<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 			</select>
 		</div>
@@ -498,7 +498,7 @@
     <div class="type" title="Day created" data-rule-type="day_created">
         <div class="op">
             <select name="op" class="op">
-                <option value="is">is</option>
+                <option value="is">{{ phrase('deskpro.common.is') }}</option>
                 <option value="not">{{ phrase('deskpro.common.is_not') }}</option>
             </select>
         </div>
@@ -516,7 +516,7 @@
     <div class="type" title="Day last user reply" data-rule-type="day_last_user_reply">
         <div class="op">
             <select name="op" class="op">
-                <option value="is">is</option>
+                <option value="is">{{ phrase('deskpro.common.is') }}</option>
                 <option value="not">{{ phrase('deskpro.common.is_not') }}</option>
             </select>
         </div>
@@ -602,7 +602,7 @@
 	{% endif %}
 
 	{% if 'ticket_field' not in no_show_fields and term_options.custom_ticket_fields %}
-		{% set op_lang = {'is': 'is', 'not': phrase('deskpro.common.is_not'), 'contains': 'contains', 'notcontains': phrase('deskpro.common.does_not_contain'), 'gt': phrase('deskpro.common.is_greater_than'), 'lt': phrase('deskpro.common.is_less_than') } %}
+		{% set op_lang = {'is': phrase('deskpro.common.is'), 'not': phrase('deskpro.common.is_not'), 'contains': phrase('deskpro.common.contains'), 'notcontains': phrase('deskpro.common.does_not_contain'), 'gt': phrase('deskpro.common.is_greater_than'), 'lt': phrase('deskpro.common.is_less_than') } %}
 		{% for field in term_options.custom_ticket_fields %}
 			{% if field.field_def.getFilterCapabilities(search_context) %}
 			<div class="type" title="{{field.field_def.title}}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">

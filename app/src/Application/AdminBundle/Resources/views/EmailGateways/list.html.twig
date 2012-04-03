@@ -44,16 +44,23 @@
 					{% endif %}{% endfor %}
 				</ul>
 				<p>
-					When none of the above rules match, email will be sent through the <a href="{{ path('admin_emailtrans_setup') }}">default outgoing account</a>.
+                    {% set phrase_link %}
+                        <a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.emailgateways.default_outgoing_account') }}</a>
+                    {% endset %}
+                    {{ phrase('admin.emailgateways.when_no_rules_match', {'link':phrase_link}) }}
 				</p>
 			{% else %}
 				<p>
-					All email is currently being sent through the <a href="{{ path('admin_emailtrans_setup') }}">default outgoing account</a>.
+                    {% set phrase_link %}
+                    <a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.emailgateways.default_outgoing_account') }}</a>
+                    {% endset %}
+                    {{ phrase('admin.emailgateways.all_email_is_being_sent_via', {'link':phrase_link}) }}
 				</p>
 				<p>
-					You may <a href="{{ path('admin_emailtrans_newaccount') }}">add a new account</a> to send emails using different servers. For example,
-					if your SMTP server requires authentication for each specific "From" address, you will need to create multiple outgoing accounts
-					for each "From" address you plan to support.
+                    {% set phrase_link %}
+                    <a href="{{ path('admin_emailtrans_newaccount') }}">{{ phrase('admin.emailgateways.add_new_account') }}</a>
+                    {% endset %}
+                    {{ phrase('admin.emailgateways.explain_different_servers', {'link':phrase_link}) }}
 				</p>
 			{% endif %}
 		</article>
@@ -63,17 +70,14 @@
 {% block page %}
 
 {{ design.helpbox() }}
-	<p>
-		An email gateway reads email from an email account you control and converts those emails into tickets in DeskPRO for your
-		agents to read and respond to. This allows you to communicate seamlessly with users via normal email.
-	</p>
+	<p>{{ phrase('admin.emailgateways.explain_email_gateway') }}</p>
 {{ design.helpbox_end() }}
 
 <div class="check-grid item-list">
 	<table width="100%">
 		<thead>
 			<tr>
-				<th style="text-align:left">&nbsp; Account</th>
+				<th style="text-align:left">&nbsp; {{ phrase('admin.emailgateways.account') }}</th>
 				<th style="text-align:left" width="10">&nbsp;</th>
 			</tr>
 		</thead>

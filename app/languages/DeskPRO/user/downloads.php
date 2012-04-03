@@ -11,4 +11,5 @@
 
 	'user.downloads.popular_section_name' => 'Popular Downloads',
 	'user.downloads.recent_section_name' => 'Recent Downloads',
+	'user.downloads.all' => 'All',
 );

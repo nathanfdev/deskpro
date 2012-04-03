@@ -10,4 +10,13 @@
   'deskpro.emails_user.simply_click_on_the_following_link_to_validate' => 'Simply click on the following link to validate to your email address',
   'deskpro.emails_user.your_ticket_has_been_recieved_and_our_agents' => 'Your ticket has been recieved and our agents will reply to you as soon as they can.',
   'deskpro.emails_user.to_validate_your_email_address_click_on_the' => 'To validate your email address, click on the link below',
+
+  'deskpro.emails_user.view_your_feedback_online_at' => 'View your feedback online at',
+  'deskpro.emails_user.thank_you_for_for_comment' => 'Thank you for your comment on {link}.',
+  'deskpro.emails_user.your_comment_has_ban_published' => 'Your comment has been published.',
+  'deskpro.emails_user.name_has_replied_to_your_ticket' => '{name} has replied to your ticket.',
+  'deskpro.emails_user.you_can_view_ticket_by_visiting' => 'You can view your ticket online at any time by visiting:',
+  'deskpro.emails_user.your_comment_improved_the_page' => 'Your comment was used to improve the page.',
+  'deskpro.emails_user.validate_by_blicking_link' => 'Please validate your email address online by clicking the following link:',
+  'deskpro.emails_user.validate_before_comment_accepted' => 'Before your comment will be displayed publicly you must validate your email address by clicking on the following link:',
 );

@@ -763,10 +763,12 @@ class LanguageController extends Controller
     public function replaceInLine($line, $string, $id, $color = false)
     {
         // I think I need too check my regex book. This can't be good!
-        $left = '/((?:^|[\'>}])[^a-zA-Z]*)';
+        $left = '/(.*(?:^|[\'>}])[^a-zA-Z]*)';
         $right = '([^a-zA-Z]*(?:[{<\']|$))/';
         $def_left = '/default\(\'';
         $def_right = '\'\)/';
+        $ol_left = '/(op_lang[^}]+:\s*)\'';
+        $ol_right = '\'/';
         $attr_left = '/((?:placeholder|(?:type="submit"[^<>]*value)|alt|title)="\s*)';
         $attr_right = '(\s*")/';
 
@@ -779,8 +781,16 @@ class LanguageController extends Controller
             else {
                 $line = str_replace("default('{$string}'", "default(phrase('{$id}')", $line);
             }
+        } elseif(preg_match($ol_left.preg_quote($string, '/').$ol_right, $line)) {
+            if($color) {
+                $line = htmlspecialchars($line, ENT_NOQUOTES);
+                $line = preg_replace($ol_left.preg_quote($string, '/').$ol_right, "\\1<span style=\"color:green;\">phrase('{$id}')</span>", $line);
+            }
+            else {
+                $line = preg_replace($ol_left.preg_quote($string, '/').$ol_right, '\1phrase(\''.$id.'\')', $line);
+            }
         } elseif(preg_match($left.preg_quote($string, '/').$right, $line, $matches)) {
-            if(!preg_match('/(\{[%#{])(?!([#%}]\})*)/', $matches[1])) {
+            if(!preg_match('/\{(\%|\{|\#)[^}]*$/', $matches[1])) {
                 if($color) {
                     $line = preg_replace($left.preg_quote($string, '/').$right, '\1__CSPAN__{{ phrase(\''.$id.'\') }}__ENDCSPAN__\2', $line);
                     $line = htmlspecialchars($line);

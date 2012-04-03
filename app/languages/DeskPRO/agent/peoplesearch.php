@@ -34,5 +34,5 @@
   'agent.peoplesearch.includes_label' => 'includes label',
   'agent.peoplesearch.does_not_include_label' => 'does not include label',
 
-
+  'agent.peoplesearch.is' => 'is',
 );

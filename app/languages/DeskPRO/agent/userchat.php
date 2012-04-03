@@ -17,4 +17,5 @@
   'agent.userchat.invite_others' => 'Invite Others',
   'agent.userchat.there_are_currently_no_open_chats' => 'There are currently no open chats.',
   'agent.userchat.chat_started_by' => 'Chat started by',
+  'agent.userchat.person' => 'Person',
 );

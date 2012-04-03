@@ -2,7 +2,7 @@
 <table cellspacing="0" cellpadding="0" width="100%">
 	<tr>
 		<td width="50%">
-			By <b>{{ticket.person.display_name}}</b>
+			{{ phrase('deskpro.emails_agent.by_name', {'name':ticket.person.display_name}) }}
 			<br>({{ticket.person.primary_email.email}})
 		</td>
 		<td width="50%">
@@ -35,11 +35,11 @@
 					<td width="130">{{ phrase('deskpro.emails_agent.status') }}</td>
 					<td>
 						{% if not ticket.status or ticket.status == 'awaiting_agent' %}
-							Open
+							{{ phrase('deskpro.emails_agent.open') }}
 						{% elseif ticket.status == 'awaiting_user' %}
-							Pending
+                            {{ phrase('deskpro.emails_agent.pending') }}
 						{% elseif ticket.status == 'resolved' %}
-							Resolved
+                            {{ phrase('deskpro.emails_agent.resolved') }}
 						{% endif %}
 					</td>
 				</tr>

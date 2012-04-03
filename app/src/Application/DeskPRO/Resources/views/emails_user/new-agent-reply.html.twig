@@ -7,9 +7,9 @@
 {% endblock %}
 {% block content %}
 {% set content %}
-{{ new_message.person.display_name }} has replied to your ticket.
+{{ phrase('deskpro.emails_user.name_has_replied_to_your_ticket', {'name':new_message.person.display_name}) }}
 <br /><br />
-You can view your ticket online at any time	by visiting:
+{{ phrase('deskpro.emails_user.you_can_view_ticket_by_visiting') }}
 <a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}">
 	{{ url_display('user_tickets_view', {'ticket_ref': ticket.access_code}) }}
 </a>

@@ -9,7 +9,7 @@
 {% block page %}
 
 {% if department.children|length %}
-	<p>Are you sure you want to delete the department "<strong>{{ department.title }}</strong>"? Since this is a top-level department, <strong>all of these sub-departments will be deleted too</strong>:</p>
+    <p>{{ phrase('admin.agents.are_you_sure_delete_dept_top_level', {'title':department.title}) }}</p>
 
 	<ul class="bullet-list">
 		{% for c in department.children %}
@@ -17,17 +17,15 @@
 		{% endfor %}
 	</ul>
 {% else %}
-	<p>Are you sure you want to delete the department "<strong>{{ department.title }}</strong>"?</p>
+	<p>{{ phrase('admin.agents.are_you_sure_delete_dept', {'title':department.title}) }}</p>
 {% endif %}
 
 <form action="{{ path('admin_departments_dodel', {'department_id': department.id, 'security_token': security_token('delete_department')}) }}" method="post">
 
 {% if ticket_count > 0 %}
 	<p>
-		There are <strong>{% if ticket_count > 1000 %}over 1000{% else %}{{ ticket_count }}{% endif %}</strong> tickets
-		{% if chat_count > 0 %}and <strong>{% if chat_count > 1000 %}over 1000{% else %}{{ chat_count }}{% endif %}</strong> chats{% endif %}
-		using this department.</p>
-
+        {% set phrase_params = {'tickets':phrase('admin.departments.count_tickets', {'count':ticket_count}), 'chats':phrase(''admin.departments.count_chats'', {'count':chat_count})} %}
+        {{ phrase('admin.departments.there_are_tickets_and_chats', phrase_params) }}
 	<p>
 		{{ phrase('admin.departments.please_choose_a_subdepartment_to_move_them_into') }}:
 		<select name="move_to_department">

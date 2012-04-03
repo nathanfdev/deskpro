@@ -34,7 +34,7 @@
 <div class="type" title="Email Domains" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_email_domain" data-term-type="GenericInputTerm" data-term-triggers="emaildomain">
 	<div class="op">
 		<select name="op">
-			<option value="is">is</option>
+			<option value="is">{{ phrase('deskpro.common.is') }}</option>
 			<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
@@ -62,7 +62,7 @@
 <div class="type" title="Name" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_name" data-term-type="GenericInputTerm" data-term-triggers="name">
 	<div class="op">
 		<select name="op">
-			<option value="is">is</option>
+			<option value="is">{{ phrase('deskpro.common.is') }}</option>
 			<option value="contains">{{ phrase('deskpro.common.contains') }}</option>
 			<option value="notcontains">{{ phrase('deskpro.common.does_not_contain') }}</option>
 		</select>
@@ -77,7 +77,7 @@
 <div class="type" title="Contact Phone" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_phone" data-term-type="GenericInputTerm" data-term-triggers="phone">
 	<div class="op">
 		<select name="op">
-			<option value="contains">is</option>
+			<option value="contains">{{ phrase('deskpro.common.is') }}</option>
 			<option value="notcontains">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
@@ -91,7 +91,7 @@
 <div class="type" title="Contact Address" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_address" data-term-type="GenericInputTerm" data-term-triggers="address">
 	<div class="op">
 		<select name="op">
-			<option value="contains">is</option>
+			<option value="contains">{{ phrase('deskpro.common.is') }}</option>
 			<option value="notcontains">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
@@ -105,7 +105,7 @@
 <div class="type" title="Contact Instant Messaging" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_im" data-term-type="GenericInputTerm" data-term-triggers="messenger">
 	<div class="op">
 		<select name="op">
-			<option value="contains">is</option>
+			<option value="contains">{{ phrase('deskpro.common.is') }}</option>
 			<option value="notcontains">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>

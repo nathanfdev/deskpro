@@ -17,7 +17,7 @@
 		<ul>
 			<li class="dp-title">{{ phrase('user.downloads.category') }}:</li>
 			<li class="all {% if not category %}on{% endif %}">
-				<a href="{{ path('user_downloads') }}"><span>All <em>({{ category_counts['0_total']|default(0) }})</em></span></a>
+				<a href="{{ path('user_downloads') }}"><span>{{ phrase('user.downloads.all') }} <em>({{ category_counts['0_total']|default(0) }})</em></span></a>
 			</li>
 			{% include 'UserBundle:Downloads:browse-cat-list.html.twig' with {'categories': categories } %}
 		</ul>

@@ -11,4 +11,6 @@
   'report.dashboard.delete' => 'Delete',
   'report.dashboard.add_dashboard_chart' => 'Add Dashboard Chart',
   'report.dashboard.view_chart' => 'View Chart',
+  'report.dashboard.select_yes_to_display_data_grouped' => 'Select yes to display the data grouped by {{group_by}}',
+  'report.dashboard.how_many_time_units_to_display' => 'How many {period_type} worth of data do you want to display?',
 );

@@ -69,4 +69,8 @@
   'deskpro.common.years' => 'years',
   'deskpro.common.hour' => 'Hour',
   'deskpro.common.minute' => 'Minute',
+
+  'deskpro.common.include' => 'include',
+  'deskpro.common.is' => 'is',
+  'deskpro.common.contains' => 'contains',
 );

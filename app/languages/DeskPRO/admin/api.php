@@ -10,4 +10,5 @@
   'admin.api.create_api_key' => 'Create API Key',
   'admin.api.viewedit' => 'view/edit',
   'admin.api.you_have_created_no_api_keys' => 'You have created no API keys.',
+  'admin.api.delete' => 'delete',
 );

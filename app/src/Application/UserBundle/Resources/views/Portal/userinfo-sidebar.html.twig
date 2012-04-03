@@ -15,7 +15,7 @@
 		<div class="content-item">
 			<div class="content-list">
 				<div class="item login-form">
-					<a style="float: right; font-size: 11px;" href="{{ path('user_login_resetpass') }}">{[ phrase('user.portal.lost_your_login') }}</a>
+					<a style="float: right; font-size: 11px;" href="{{ path('user_login_resetpass') }}">{{ phrase('user.portal.lost_your_login') }}</a>
 					<h3>{{ phrase('user.portal.btn_login') }}</h3>
 
 					<form action="{{ path('user_login_authenticate_local') }}" method="post">

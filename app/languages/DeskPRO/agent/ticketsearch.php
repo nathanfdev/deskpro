@@ -73,4 +73,6 @@
   'agent.ticketsearch.is_less_than' => 'is less than',
   'agent.ticketsearch.is_greater_than' => 'is greater than',
   'agent.ticketsearch.web_interface' => 'Web interface',
+  'agent.ticketsearch.is' => 'is',
+  'agent.ticketsearch.none' => 'none',
 );

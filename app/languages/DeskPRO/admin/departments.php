@@ -25,4 +25,9 @@
   'admin.departments.is' => 'is',
   'admin.departments.is_not' => 'is not',
   'admin.departments.is_greater_than' => 'is greater than',
+  'admin.departments.is_less_than' => 'is less than',
+
+  'admin.departments.there_are_tickets_and_chats' => 'There {tickets} and {chats} using this department.',
+  'admin.departments.count_tickets' => '{0} are 0 tickets|{1} is 1 ticket|]1,1000] are {count} tickets|[1001,Inf] are over 1000 tickets',
+  'admin.departments.count_chats' => '{0} 0 chats|{1} 1 chat|]1,1000] {count} chats|[1001,Inf] over 1000 chats',
 );

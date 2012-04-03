@@ -75,7 +75,7 @@
 		<input type="text" name="email" placeholder="{{ phrase('user.chat.your_email') }}" />
 		{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 			<div class="connect-with">
-				Or connect with
+				{{ phrase('user.widget.or_connect_with') }}
 				{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 					{{ render_usersource(usersource, 'widget_overlay_btn') }}
 				{% endfor %}
@@ -133,7 +133,7 @@
 		{% set phrase_part %}
 		<input type="text" name="email" value="" placeholder="{{ phrase('user.chat.your_email') }}" />
 		{% endset %}
-		Send a transcript of this chat to 
+		{{ phrase('user.widget.send_a_transcript_of_this_chat_to') }} 
 	</div>
 
 	<div class="form-row">

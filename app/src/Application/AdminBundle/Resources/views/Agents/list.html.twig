@@ -111,7 +111,7 @@
 					<tr class="vacation-mode" data-agent-id="{{ person.id }}">
 						<td class="title" colspan="4">
 							<div class="vacation-mode-desc">
-								vacation mode
+								{{ phrase('admin.agents.vacation_mode') }}
 							</div>
 							<img src="{{ person.getPictureUrl(28) }}" align="left" style="margin-right: 6px;" />
 							<h4><a href="{{ path('admin_agents_edit', {'person_id': person.id} )}}">{{person.display_name}}</a></h4>
@@ -139,7 +139,7 @@
 
 {% if count_deleted %}
 	<div class="deleted-text">
-		There are <a href="{{ path('admin_agents_deleted') }}">{{ count_deleted }} deleted agents</a>.
+        <a href="{{ path('admin_agents_deleted') }}">{{ phrase('admin.agents.there_are_deleted_agents', {'count':count_deleted}) }}</a>.
 	</div>
 {% endif %}
 

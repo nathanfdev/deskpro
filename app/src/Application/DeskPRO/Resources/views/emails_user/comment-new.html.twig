@@ -2,12 +2,13 @@
 {% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
 {% block content %}
 	{{ layout.section_start() }}
-		<p>Thank you for submitting your comment on "<a href="{{ comment.object.permalink }}">{{ comment.object.title }}</a>"</p>
+        {% set phrase_link %}<a href="{{ comment.object.permalink }}">{{ comment.object.title }}</a>{% endset %}
+		<p>{{ phrase('deskpro.emails_user.thank_you_for_for_comment', {'link':phrase_link}) }}</p>
 		{% if validating %}
 			{% if feedback.status == 'visible' %}
-				Please validate your email address online by clicking the following link:
+				{{ phrase('deskpro.emails_user.validate_by_blicking_link') }}
 			{% else %}
-				Before your comment will be displayed publicly you must validate your email address by clicking on the following link:
+				{{ phrase('deskpro.emails_user.validate_before_comment_accepted') }}
 			{% endif %}
 			{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
 		{% endif %}

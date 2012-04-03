@@ -19,7 +19,7 @@
 <div class="type" title="Organization" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-term-type="GenericMenuTerm" data-term-triggers="org,organization,company" data-rule-type="person_organization">
 	<div class="op">
 		<select name="op">
-			<option value="is">is</option>
+			<option value="is">{{ phrase('deskpro.common.is') }}</option>
 			<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
@@ -37,7 +37,7 @@
 <div class="type" title="Usergroup" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-term-type="GenericMenuTerm" data-rule-type="person_usergroup" data-term-triggers="usergroup,group">
 	<div class="op">
 		<select name="op">
-			<option value="is">is</option>
+			<option value="is">{{ phrase('deskpro.common.is') }}</option>
 			<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
@@ -55,7 +55,7 @@
 <div class="type" title="Language" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-term-type="GenericMenuTerm" data-rule-type="person_language" data-term-triggers="lang,language">
 	<div class="op">
 		<select name="op">
-			<option value="is">is</option>
+			<option value="is">{{ phrase('deskpro.common.is') }}</option>
 			<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
@@ -88,7 +88,7 @@
 <div class="type" title="Email Address" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_email" data-term-type="GenericInputTerm" data-term-triggers="email,emailaddress">
 	<div class="op">
 		<select name="op">
-			<option value="contains">contains</option>
+			<option value="contains">{{ phrase('deskpro.common.contains') }}</option>
 			<option value="notcontains">{{ phrase('deskpro.common.does_not_contain') }}</option>
 			<option value="is">{{ phrase('deskpro.common.is_exactly') }}</option>
 		</select>
@@ -103,7 +103,7 @@
 <div class="type" title="Email Domain" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_email_domain" data-term-type="GenericInputTerm" data-term-triggers="emaildomain">
 	<div class="op">
 		<select name="op">
-			<option value="is">is</option>
+			<option value="is">{{ phrase('deskpro.common.is') }}</option>
 			<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
@@ -131,8 +131,8 @@
 <div class="type" title="Name" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_name" data-term-type="GenericInputTerm" data-term-triggers="name">
 	<div class="op">
 		<select name="op">
-			<option value="is">is</option>
-			<option value="contains">contains</option>
+			<option value="is">{{ phrase('deskpro.common.is') }}</option>
+			<option value="contains">{{ phrase('deskpro.common.contains') }}</option>
 			<option value="notcontains">{{ phrase('deskpro.common.does_not_contain') }}</option>
 		</select>
 	</div>
@@ -146,7 +146,7 @@
 <div class="type" title="Contact Phone" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_contact_phone" data-term-type="GenericInputTerm" data-term-triggers="phone">
 	<div class="op">
 		<select name="op">
-			<option value="contains">is</option>
+			<option value="contains">{{ phrase('deskpro.common.is') }}</option>
 			<option value="notcontains">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
@@ -160,7 +160,7 @@
 <div class="type" title="Contact Address" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_contact_address" data-term-type="GenericInputTerm" data-term-triggers="address">
 	<div class="op">
 		<select name="op">
-			<option value="contains">is</option>
+			<option value="contains">{{ phrase('deskpro.common.is') }}</option>
 			<option value="notcontains">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
@@ -174,7 +174,7 @@
 <div class="type" title="Contact Instant Messaging" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_contact_im" data-term-type="GenericInputTerm" data-term-triggers="messenger">
 	<div class="op">
 		<select name="op">
-			<option value="contains">is</option>
+			<option value="contains">{{ phrase('deskpro.common.is') }}</option>
 			<option value="notcontains">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
@@ -185,7 +185,7 @@
 {% endif %}
 
 {% if 'person_field' not in no_show_fields and term_options.custom_people_fields %}
-	{% set op_lang = {'is': 'is', 'not': phrase('deskpro.common.is_not'), 'contains': 'contains', 'notcontains': phrase('deskpro.common.does_not_contain'), 'gt': 'is greater than', 'lt': 'is less than'} %}
+	{% set op_lang = {'is': phrase('deskpro.common.is'), 'not': phrase('deskpro.common.is_not'), 'contains': phrase('deskpro.common.contains'), 'notcontains': phrase('deskpro.common.does_not_contain'), 'gt': 'is greater than', 'lt': 'is less than'} %}
 	{% for field in term_options.custom_people_fields %}
 	{% if field.field_def.getFilterCapabilities(search_context) %}
 	<div class="type" title="Field: {{field.field_def.title}}" data-rule-group="Person Fields" data-rule-type="person_field[{{field.field_def.id}}]">

@@ -14,7 +14,7 @@
 			<div style="float:right">
 				<ul class="controls">
 					<li class="edit"><a href="{{ path('admin_api_editkey', {'id': apikey.id}) }}">{{ phrase('admin.api.viewedit') }}</a></li>
-					<li class="delete"><a href="{{ path('admin_api_delkey', {'id': apikey.id}) }}" onclick="return confirm('Are you sure?');">delete</a></li>
+					<li class="delete"><a href="{{ path('admin_api_delkey', {'id': apikey.id}) }}" onclick="return confirm('Are you sure?');">{{ phrase('admin.api.delete') }}</a></li>
 				</ul>
 			</div>
 			<strong>{{apikey.person.display_name}}</strong>
