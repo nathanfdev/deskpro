@@ -197,7 +197,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<span class="check">{{ phrase('agent.tickets.done') }}</span>
 	</div>
 	<div class="content">
-		<h4>Subject</h4>
+		<h4>{{ phrase('agent.ticket.subject') }}</h4>
 		<input type="text" name="newticket[subject]" class="subject" id="{{baseId}}_subject" value="" />
 		<div class="error-message subject">{{ phrase('agent.tickets.please_enter_subject') }}</div>
 	</div>
@@ -285,7 +285,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{# Tab Attach #}
 				<div class="tab-attach" style="display: none">
 					{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newticket[attach][]'} %}
-					<h6>Attachments</h6>
+					<h6>{{ phrase('agent.ticket.attachments') }}</h6>
 					<div class="file-input">
 						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.tickets.upload') }}</button>
 					</div>
@@ -302,7 +302,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="col">
 		<section data-section-name="agents">
 			<header>
-				<h3>Agents</h3>
+				<h3>{{ phrase('agent.ticket.agents') }}</h3>
 				<input type="text" class="filter-box" placeholder="{{ phrase('agent.tickets.filter') }}" />
 			</header>
 			<ul>

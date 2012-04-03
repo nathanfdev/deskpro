@@ -47,4 +47,5 @@
   'agent.feedback.least_voted_on_top' => 'Least voted on top',
   'agent.feedback.popular_feedback_only' => 'Popular feedback only',
   'agent.feedback.unsaved_changes_were_restored' => 'Unsaved changes were restored.',
+  'agent.feedback.altc' => '(alt+c)',
 );

@@ -66,4 +66,5 @@
   'admin.main.triggers' => 'Triggers',
   'admin.main.email_gateways' => 'Email Gateways',
   'admin.main.email_notification_templates' => 'Email Notification Templates',
+  'admin.main.macros' => 'Macros',
 );

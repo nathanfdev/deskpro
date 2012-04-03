@@ -20,7 +20,7 @@
 	<div class="op">
 		<select name="op">
 			<option value="is">is</option>
-			<option value="not">is not</option>
+			<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -38,7 +38,7 @@
 	<div class="op">
 		<select name="op">
 			<option value="is">is</option>
-			<option value="not">is not</option>
+			<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -56,7 +56,7 @@
 	<div class="op">
 		<select name="op">
 			<option value="is">is</option>
-			<option value="not">is not</option>
+			<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -73,9 +73,9 @@
 <div class="type" title="Date created" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="created">
 	<div class="op">
 		<select name="op" class="op">
-			<option value="lte">before</option>
-			<option value="gte">after</option>
-			<option value="between">between</option>
+			<option value="lte">{{ phrase('deskpro.common.before') }}</option>
+			<option value="gte">{{ phrase('deskpro.common.after') }}</option>
+			<option value="between">{{ phrase('deskpro.common.between') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -89,7 +89,7 @@
 	<div class="op">
 		<select name="op">
 			<option value="contains">contains</option>
-			<option value="notcontains">does not contain</option>
+			<option value="notcontains">{{ phrase('deskpro.common.does_not_contain') }}</option>
 			<option value="is">{{ phrase('deskpro.common.is_exactly') }}</option>
 		</select>
 	</div>
@@ -104,7 +104,7 @@
 	<div class="op">
 		<select name="op">
 			<option value="is">is</option>
-			<option value="not">is not</option>
+			<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -117,8 +117,8 @@
 <div class="type" title="Labels" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-term-triggers="label,labelled,labels">
 	<div class="op">
 		<select name="op">
-			<option value="is">includes label</option>
-			<option value="not">does not include label</option>
+			<option value="is">{{ phrase('deskpro.common.includes_label') }}</option>
+			<option value="not">{{ phrase('deskpro.common.does_not_include_label') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -133,7 +133,7 @@
 		<select name="op">
 			<option value="is">is</option>
 			<option value="contains">contains</option>
-			<option value="notcontains">does not contain</option>
+			<option value="notcontains">{{ phrase('deskpro.common.does_not_contain') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -147,7 +147,7 @@
 	<div class="op">
 		<select name="op">
 			<option value="contains">is</option>
-			<option value="notcontains">is not</option>
+			<option value="notcontains">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -161,7 +161,7 @@
 	<div class="op">
 		<select name="op">
 			<option value="contains">is</option>
-			<option value="notcontains">is not</option>
+			<option value="notcontains">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -175,7 +175,7 @@
 	<div class="op">
 		<select name="op">
 			<option value="contains">is</option>
-			<option value="notcontains">is not</option>
+			<option value="notcontains">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -185,7 +185,7 @@
 {% endif %}
 
 {% if 'person_field' not in no_show_fields and term_options.custom_people_fields %}
-	{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'contains', 'notcontains': 'does not contain', 'gt': 'is greater than', 'lt': 'is less than'} %}
+	{% set op_lang = {'is': 'is', 'not': phrase('deskpro.common.is_not'), 'contains': 'contains', 'notcontains': phrase('deskpro.common.does_not_contain'), 'gt': 'is greater than', 'lt': 'is less than'} %}
 	{% for field in term_options.custom_people_fields %}
 	{% if field.field_def.getFilterCapabilities(search_context) %}
 	<div class="type" title="Field: {{field.field_def.title}}" data-rule-group="Person Fields" data-rule-type="person_field[{{field.field_def.id}}]">

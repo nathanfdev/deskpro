@@ -11,9 +11,9 @@
 	<div class="op">
 		<select name="op">
 			<option value="is">is</option>
-			<option value="not">is not</option>
-			<option value="contains">contains</option>
-			<option value="not_contains">does not contain</option>
+			<option value="not">{{ phrase('agent.ticketsearch.is_not') }}</option>
+			<option value="contains">{{ phrase('agent.ticketsearch.contains') }}</option>
+			<option value="not_contains">{{ phrase('agent.ticketsearch.does_not_contain') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -23,8 +23,8 @@
 <div class="type" title="Labels" data-rule-type="label">
 	<div class="op">
 		<select name="op">
-			<option value="is">includes label</option>
-			<option value="not">does not include label</option>
+			<option value="is">{{ phrase('agent.ticketsearch.includes_label') }}</option>
+			<option value="not">{{ phrase('agent.ticketsearch.does_not_include_label') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -35,7 +35,7 @@
 	<div class="op">
 		<select name="op">
 			<option value="is">is</option>
-			<option value="not">is not</option>
+			<option value="not">{{ phrase('agent.ticketsearch.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -51,8 +51,8 @@
 <div class="type" title="Participants" data-rule-type="participant">
 	<div class="op">
 		<select name="op">
-			<option value="is">include</option>
-			<option value="not">does not include</option>
+			<option value="is">{{ phrase('agent.ticketsearch.include') }}</option>
+			<option value="not">{{ phrase('agent.ticketsearch.does_not_include') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -70,7 +70,7 @@
 			<div class="op">
 				<select name="op">
 					<option value="is">is</option>
-					<option value="not">is not</option>
+					<option value="not">{{ phrase('agent.ticketsearch.is_not') }}</option>
 				</select>
 			</div>
 			<select name="agent_team">
@@ -87,7 +87,7 @@
 	<div class="op">
 		<select name="op">
 			<option value="is">is</option>
-			<option value="not">is not</option>
+			<option value="not">{{ phrase('agent.ticketsearch.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -105,7 +105,7 @@
 		<div class="op">
 			<select name="op">
 				<option value="is">is</option>
-				<option value="not">is not</option>
+				<option value="not">{{ phrase('agent.ticketsearch.is_not') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -122,7 +122,7 @@
 		<div class="op">
 			<select name="op">
 				<option value="is">is</option>
-				<option value="not">is not</option>
+				<option value="not">{{ phrase('agent.ticketsearch.is_not') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -139,7 +139,7 @@
 		<div class="op">
 			<select name="op">
 				<option value="is">is</option>
-				<option value="not">is not</option>
+				<option value="not">{{ phrase('agent.ticketsearch.is_not') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -156,9 +156,9 @@
 		<div class="op">
 			<select name="op">
 				<option value="is">is</option>
-				<option value="not">is not</option>
-				<option value="lt">is less than</option>
-				<option value="gt">is greater than</option>
+				<option value="not">{{ phrase('agent.ticketsearch.is_not') }}</option>
+				<option value="lt">{{ phrase('agent.ticketsearch.is_less_than') }}</option>
+				<option value="gt">{{ phrase('agent.ticketsearch.is_greater_than') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -174,12 +174,12 @@
 	<div class="op">
 		<select name="op">
 			<option value="is">is</option>
-			<option value="not">is not</option>
+			<option value="not">{{ phrase('agent.ticketsearch.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
 		<select name="creation_system">
-			<option value="web">Web interface</option>
+			<option value="web">{{ phrase('agent.ticketsearch.web_interface') }}</option>
 			<option value="web.person">{{ phrase('agent.ticketsearch._by_user') }}</option>
 			<option value="web.agent">{{ phrase('agent.ticketsearch._by_agent_on_behalf_of_user') }}</option>
 			<option value="gateway">{{ phrase('agent.ticketsearch.email') }}</option>
@@ -191,7 +191,7 @@
 	<div class="op">
 		<select name="op">
 			<option value="is">is</option>
-			<option value="not">is not</option>
+			<option value="not">{{ phrase('agent.ticketsearch.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -208,7 +208,7 @@
 		<div class="op">
 			<select name="op">
 				<option value="is">is</option>
-				<option value="not">is not</option>
+				<option value="not">{{ phrase('agent.ticketsearch.is_not') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -221,7 +221,7 @@
 	</div>
 {% endif %}
 {% if term_options.custom_ticket_fields %}
-	{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'has', 'notcontains': 'does not have', 'gt': 'is greater than', 'lt': 'is less than'} %}
+	{% set op_lang = {'is': 'is', 'not': phrase('agent.ticketsearch.is_not'), 'contains': 'has', 'notcontains': 'does not have', 'gt': phrase('agent.ticketsearch.is_greater_than'), 'lt': phrase('agent.ticketsearch.is_less_than')} %}
 	{% for field in term_options.custom_ticket_fields %}
 		<div class="type" title="Ticket Field: {{field.field_def.title}}" data-rule-type="ticket_field[{{field.field_def.id}}]">
 			<div class="op">

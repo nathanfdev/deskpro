@@ -15,4 +15,8 @@
   'agent.downloads.date_created_oldestnewest' => 'Date Created (Oldest-Newest)',
   'agent.downloads.number_of_downloads_highestlowest' => 'Number of Downloads (Highest-Lowest)',
   'agent.downloads.number_of_downloads_lowesthighest' => 'Number of Downloads (Lowest-Highest)',
+  'agent.downloads.category' => 'Category',
+  'agent.downloads.dev_validating' => 'DEV: Validating',
+  'agent.downloads.create_download' => 'Create Download',
+  'agent.downloads.altc' => '(alt+c)',
 );

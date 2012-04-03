@@ -18,11 +18,11 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="first section cat-section" id="{{baseId}}_cat_section">
 	<div class="step">
 		<span class="num">1</span>
-		<span class="check">Done</span>
+		<span class="check">{{ phrase('agent.news.done') }}</span>
 	</div>
 	<div class="content">
 		<div class="col">
-			<h4>Category</h4>
+			<h4>{{ phrase('agent.news.category') }}</h4>
 			{% include 'AgentBundle:Common:select-standard.html.twig' with {
 				'name': 'newnews[category_id]',
 				'id': baseId ~ '_cat',
@@ -35,13 +35,13 @@ pageMeta.baseId = '{{ baseId }}';
 			} %}
 		</div>
 		<div class="col">
-			<h4 class="light">Status</h4>
+			<h4 class="light">{{ phrase('agent.news.status') }}</h4>
 			<select name="newnews[status]">
-				<option value="published">Published</option>
-				<option value="hidden.unpublished">Unpublished</option>
-				<option value="hidden.draft">Draft</option>
+				<option value="published">{{ phrase('agent.news.published') }}</option>
+				<option value="hidden.unpublished">{{ phrase('agent.news.unpublished') }}</option>
+				<option value="hidden.draft">{{ phrase('agent.news.draft') }}</option>
 				{% if constant('DP_DEBUG') %}
-					<option value="hidden.validating" selected="selected">DEV: Validating</option>
+					<option value="hidden.validating" selected="selected">{{ phrase('agent.news.dev_validating') }}</option>
 				{% endif %}
 			</select>
 		</div>
@@ -52,10 +52,10 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section title-section" id="{{baseId}}_title_section">
 	<div class="step">
 		<span class="num">2</span>
-		<span class="check">Done</span>
+		<span class="check">{{ phrase('agent.news.done') }}</span>
 	</div>
 	<div class="content">
-		<h4>Title</h4>
+		<h4>{{ phrase('agent.news.title') }}</h4>
 		<input type="title" name="newnews[title]" id="{{baseId}}_title" value="{{ state.newnews.title }}" />
 	</div>
 </div>
@@ -63,10 +63,10 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section article-section" id="{{baseId}}_content_section">
 	<div class="step">
 		<span class="num">3</span>
-		<span class="check">Done</span>
+		<span class="check">{{ phrase('agent.news.done') }}</span>
 	</div>
 	<div class="content">
-		<h4>Post</h4>
+		<h4>{{ phrase('agent.news.post') }}</h4>
 		<textarea type="text" name="newnews[content]" id="{{baseId}}_content">{{ state.newnews.content }}</textarea>
 	</div>
 </div>
@@ -75,27 +75,27 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section other-section" id="{{baseId}}_other_section">
 	<div class="step">
 		<span class="num">5</span>
-		<span class="check">Done</span>
+		<span class="check">{{ phrase('agent.news.done') }}</span>
 	</div>
 	<div class="content">
 		{# Tab Container #}
 		<div class="tab-container">
 			<nav id="{{baseId}}_other_props_tabs_wrap">
 				<ul id="{{baseId}}_other_props_tabs">
-					<li data-tab-for="> .tab-properties">Properties</li>
-					<li data-tab-for="> .tab-attach">Attachments</li>
+					<li data-tab-for="> .tab-properties">{{ phrase('agent.news.properties') }}</li>
+					<li data-tab-for="> .tab-attach">{{ phrase('agent.news.attachments') }}</li>
 				</ul>
 			</nav>
 			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
 				{# Tab Properties #}
 				<div class="tab-properties" style="display: none">
 					<dl>
-						<dt class="prop">URL Slug</dt>
+						<dt class="prop">{{ phrase('agent.news.url_slug') }}</dt>
 						<dd class="prop">
 							<input type="input" name="newnews[slug]" id="{{baseId}}_slug" value="{{ state.newnews.slug }}" />
 						</dd>
 
-						<dt class="prop">Labels</dt>
+						<dt class="prop">{{ phrase('agent.news.labels') }}</dt>
 						<dd class="prop">
 							<div class="tags-wrap article-tags">
 								<input type="text" value="{% for label in state.newnews.labels %}{{label}},{% endfor %}" />
@@ -108,9 +108,9 @@ pageMeta.baseId = '{{ baseId }}';
 				{# Tab Attach #}
 				<div class="tab-attach" style="display: none">
 					{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newnews[attach][]'} %}
-					<h6>Attachments</h6>
+					<h6>{{ phrase('agent.news.attachments') }}</h6>
 					<div class="file-input">
-						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">Upload</button>
+						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.news.upload') }}</button>
 					</div>
 					<ul class="files file-list"></ul>
 				</div>
@@ -123,7 +123,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">Create News Post <kbd>(alt+c)</kbd></button>
+		<button class="submit-trigger clean-white">{{ phrase('agent.news.create_news_post') }} <kbd>{{ phrase('agent.news.altc') }}</kbd></button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

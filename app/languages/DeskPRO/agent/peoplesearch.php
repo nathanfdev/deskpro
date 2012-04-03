@@ -27,4 +27,12 @@
   'agent.peoplesearch.add_a_new_term' => 'Add a new term',
   'agent.peoplesearch.labels' => 'Labels',
   'agent.peoplesearch.you_havent_labeled_any_tickets_load_a_ticket' => 'You haven\'t labeled any tickets. Load a ticket to label it.',
+
+  'agent.peoplesearch.is_not' => 'is not',
+  'agent.peoplesearch.is_greater_than' => 'is greater than',
+  'agent.peoplesearch.is_less_than' => 'is less than',
+  'agent.peoplesearch.includes_label' => 'includes label',
+  'agent.peoplesearch.does_not_include_label' => 'does not include label',
+
+
 );

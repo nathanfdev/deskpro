@@ -11,4 +11,6 @@
   'agent.twitteruser.protected' => 'Protected',
   'agent.twitteruser.verified' => 'Verified',
   'agent.twitteruser.geo' => 'GEO',
+  'agent.twitteruser.profile' => 'Profile',
+  'agent.twitteruser.unknown' => 'unknown',
 );

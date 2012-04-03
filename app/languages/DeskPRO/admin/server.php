@@ -40,4 +40,11 @@
   'admin.server.php_info' => 'PHP Info',
   'admin.server.important_configuration_values' => 'Important Configuration Values',
   'admin.server.test_this_value' => 'test this value',
+  'admin.server.file_uploads' => 'file_uploads',
+  'admin.server.upload_tmp_dir' => 'upload_tmp_dir',
+  'admin.server.post_max_size' => 'post_max_size',
+  'admin.server.view' => 'view',
+  'admin.server.php_version' => 'php_version',
+  'admin.server.memory_limit' => 'memory_limit',
+  'admin.server.error_log' => 'error_log',
 );

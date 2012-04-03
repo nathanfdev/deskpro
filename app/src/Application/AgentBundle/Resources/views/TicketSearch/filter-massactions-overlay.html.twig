@@ -57,7 +57,7 @@
 				<dt>{{ phrase('agent.assignments') }}</dt>
 				<dd class="assignments">
 					<ul id="{{baseId}}_assign_btn">
-						<li class="no-changes"><em>Set assignments</em></li>
+						<li class="no-changes"><em>{{ phrase('agent.ticketsearch.set_assignments') }}</em></li>
 						<li style="display:none" class="assign-agent"><em>{{ phrase('agent.assign_agent') }}</em>: <span class="label"></span></li>
 						{% if app.getSetting('core.use_agent_team') %}<li style="display:none" class="assign-team"><em>{{ phrase('agent.assign_agent') }}</em>: <span class="label"></span></li>{% endif %}
 						<li style="display:none" class="add-followers"><em>{{ phrase('agent.add_followers') }}</em>: <span class="label"></span></li>
@@ -252,7 +252,7 @@
 
     				<li class="on">
     					<input type="radio" name="{{baseId}}_agent_team" value="0" />
-    					<label><span class="agent-team-label-0">No Team</span></label>
+    					<label><span class="agent-team-label-0">{{ phrase('agent.ticketsearch.no_team') }}</span></label>
     				</li>
 
     				{% for team in agent_teams %}
@@ -276,7 +276,7 @@
     			<ul>
     				<li class="me last-me">
     					<input type="checkbox" name="{{baseId}}_part" value="{{ app.user.id }}" />
-    					<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">Me</span></label>
+    					<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.ticketsearch.me') }}</span></label>
     				</li>
 
     				{% for agent in agents %}

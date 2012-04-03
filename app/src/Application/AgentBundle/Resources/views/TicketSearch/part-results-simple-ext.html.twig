@@ -5,7 +5,7 @@
 {% set ticket_agent = ticket.agent %}
 
 <article class="row-item ticket-{{ ticket.id }} {% if ticket.status == 'awaiting_agent' %}urgency-{{ ticket.urgency }}{% endif %}" data-ticket-id="{{ ticket.id }}" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@selector(a.subject)" data-route-openclass="open">
-	<div class="loading-arrow">loading</div>
+	<div class="loading-arrow">{{ phrase('agent.ticketsearch.loading') }}</div>
 	<input type="checkbox" class="item-select" value="{{ ticket.id }}"/>
 	<div class="top-row">
 		<div class="top-row-left">
@@ -97,7 +97,7 @@
 				</li>
 			{% elseif field == 'agent' and (ticket_agent or changed_fields[ticket.id].agent) %}
 				<li class="{{field}} {% if changed_fields[ticket.id].agent %}changed{% endif %}">
-					<span class="prop-title">Agent:</span>
+					<span class="prop-title">{{ phrase('agent.ticketsearch.agent') }}:</span>
 					<span class="prop-val" data-prop-value="{{ticket_agent.id}}">
 					{% if ticket_agent %}
 						{{ ticket_agent.display_name }}

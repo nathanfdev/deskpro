@@ -7,7 +7,7 @@
 <header class="list-control-bar">
 	<ul>
 		<li>{{ phrase('agent.deal.ordered_by') }} </li>
-		<li class="order-by-menu-trigger"><a class="button"><span class="label">{{ order_by|default('Date Created') }}</span><em></em></a></li>
+		<li class="order-by-menu-trigger"><a class="button"><span class="label">{{ order_by|default(phrase('agent.deal.date_created')) }}</span><em></em></a></li>
 		<li><span class="sep"></span></li>
 		<li>{{ phrase('agent.deal.and_grouped_by') }} </li>
 		<li class="group-by-menu-trigger"><a class="button"><span class="label">{{ group_by|default(phrase('agent.deal.none')) }}</span><em></em></a></li>
@@ -15,7 +15,7 @@
 	</ul>
 
 	<ul style="display: none" class="order-by-menu">
-		<li data-order-by="date_created" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'order_by': 'date_created' }) }}">Date Created</li>
+		<li data-order-by="date_created" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'order_by': 'date_created' }) }}">{{ phrase('agent.deal.date_created') }}</li>
 		<li data-order-by="title" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'order_by': 'title' }) }}">{{ phrase('agent.deal.title') }}</li>
 		<li data-order-by="deal_size" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'order_by': 'deal_size' }) }}">{{ phrase('agent.deal.deal_size') }}</li>
                 <li data-order-by="deal_type" data-route="listpane:{{ path('agent_deal_list', {'owner_type': owner_type, 'deal_status': deal_status, 'deal_type_id': deal_type_id, 'order_by': 'deal_type' }) }}">{{ phrase('agent.deal.deal_type') }}</li>

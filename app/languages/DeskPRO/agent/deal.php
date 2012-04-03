@@ -83,4 +83,5 @@
   'agent.deal.assign_agent' => 'Assign agent',
   'agent.deal.created' => 'Created',
   'agent.deal.edit_custome_fields' => 'Edit Custome Fields',
+  'agent.deal.date_created' => 'Date Created',
 );

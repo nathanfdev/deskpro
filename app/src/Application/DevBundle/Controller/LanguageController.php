@@ -177,7 +177,9 @@ class LanguageController extends Controller
                         continue;
                     }
 
-                    $strings[] = $string;
+                    if(!in_array($string, $strings)) {
+                        $strings[] = $string;
+                    }
                 }
                 else if($child->nodeType == XML_ELEMENT_NODE) {
                     get_strings($child, $strings);
@@ -775,7 +777,7 @@ class LanguageController extends Controller
                 $line = str_replace("default('{$string}'", "default(<span style=\"color:green;\">phrase('{$id}')</span>)", $line);
             }
             else {
-                $line = str_replace("default('{$string}'", "default(phrase('{$id}'))", $line);
+                $line = str_replace("default('{$string}'", "default(phrase('{$id}')", $line);
             }
         } elseif(preg_match($left.preg_quote($string, '/').$right, $line, $matches)) {
             if(!preg_match('/(\{[%#{])(?!([#%}]\})*)/', $matches[1])) {

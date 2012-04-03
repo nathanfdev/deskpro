@@ -170,9 +170,9 @@
 								<span id="{{replyBaseId}}_assign_detail_agent_team">
 									<span class="prop-change">
 										{% if ticket.agent_team %}
-											Change team from {{ tools.team_name_or_me(ticket.agent_team) }} to <span class="new-val-label">me</span>
+											Change team from {{ tools.team_name_or_me(ticket.agent_team) }} to <span class="new-val-label">{{ phrase('agent.ticket.me') }}</span>
 										{% else %}
-											Remain assigned to <span class="new-val-label"></span>
+											{{ phrase('agent.ticket.remain_assigned_to') }} <span class="new-val-label"></span>
 										{% endif %}
 									</span>
 									<span class="prop-no-change">

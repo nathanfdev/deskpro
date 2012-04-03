@@ -8,4 +8,6 @@
 
   'agent.organizationsearch.name_az' => 'Name (A-Z)',
   'agent.organizationsearch.name_za' => 'Name (Z-A)',
+  'agent.organization.close' => 'close',
+  'agent.organization.altc' => '(alt+c)',
 );

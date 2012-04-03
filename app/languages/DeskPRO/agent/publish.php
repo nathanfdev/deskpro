@@ -91,4 +91,9 @@
   'agent.publish.recent_and_popular_searches' => 'Recent and Popular Searches',
 
   'agent.publish.create_category' => 'create category',
+
+  'agent.publish.edit' => 'edit',
+  'agent.publish.expand' => 'expand',
+  'agent.publish.delete' => 'delete',
+  'agent.publish.downloads' => 'Downloads',
 );

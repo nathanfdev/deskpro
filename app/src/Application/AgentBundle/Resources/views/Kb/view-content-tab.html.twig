@@ -14,9 +14,9 @@
 			{% endif %}
 			<textarea class="edit-content-field" name="article[content]" rows="5" cols="50">{{ state.article.content|default(article.content) }}</textarea>
 			{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newarticle[attach][]'} %}
-			<h6>Attachments</h6>
+			<h6>{{ phrase('agent.kb.attachments') }}</h6>
 			<div class="file-input">
-				<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">Upload</button>
+				<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.kb.upload') }}</button>
 			</div>
 			<ul class="files file-list">
 				{% for attach in article.attachments %}

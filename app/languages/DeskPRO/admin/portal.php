@@ -42,4 +42,5 @@
   'admin.portal.save_settings' => 'Save Settings',
 
   'admin.portal.revert' => 'revert',
+  'admin.portal.ticket_editor' => 'ticket editor',
 );

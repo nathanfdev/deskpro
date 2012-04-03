@@ -17,4 +17,7 @@
   'agent.twitterstatus.unfollow' => 'Unfollow',
   'agent.twitterstatus.follow' => 'Follow',
   'agent.twitterstatus.there_are_no_results' => 'There are no results',
+  'agent.twitterstatus.in_reply_to' => 'In reply to',
+  'agent.twitterstatus.retweet_of' => 'Retweet of',
+  'agent.twitterstatus.retweet' => 'Retweet',
  );

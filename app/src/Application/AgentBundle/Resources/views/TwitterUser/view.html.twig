@@ -99,7 +99,7 @@ pageMeta.baseId = '{{ baseId }}';
 			{# Box Profile #}
 				<div class="profile-box-container summary">
 					<header>
-						<h4>Profile</h4>
+						<h4>{{ phrase('agent.twitteruser.profile') }}</h4>
 					</header>
 					<section>
 						<table class="table-content contact-list contact-list-wrapper" id="{{baseId}}_contact_display" width="100%">
@@ -116,7 +116,7 @@ pageMeta.baseId = '{{ baseId }}';
 									<span>{{ phrase('agent.twitteruser.location') }}</span>
 								</div>
 								<td width="70%"  class="col-table-content prop-val">
-									{% if user.location is none %}unknown{% else %}{{ user.location }}{% endif %}
+									{% if user.location is none %}{{ phrase('agent.twitteruser.unknown') }}{% else %}{{ user.location }}{% endif %}
 								</td>
 							</tr>
 							<tr class="row-table-cotent">

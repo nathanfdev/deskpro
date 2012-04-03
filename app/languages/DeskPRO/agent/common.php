@@ -36,4 +36,5 @@
   'agent.common.this_will_insert_a_link_to_the_file' => 'This will insert a link to the file with the label as the clickable link text.',
   'agent.common.this_will_insert_a_thumbnail_image_that_links' => 'This will insert a thumbnail image that links to the full-sized image.',
   'agent.common.dev_validating' => 'DEV: Validating',
+  'agent.common.close' => 'close',
 );

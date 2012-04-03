@@ -17,8 +17,8 @@
 <div class="type" title="Category" data-rule-type="category">
 	<div class="op">
 		<select name="op" class="op">
-			<option value="is">is</option>
-			<option value="not">is not</option>
+			<option value="is">{{ phrase('deskpro.common.is') }}</option>
+			<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -32,8 +32,8 @@
 <div class="type" title="Status" data-rule-type="status">
 	<div class="op">
 		<select name="op" class="op">
-			<option value="is">is</option>
-			<option value="not">is not</option>
+			<option value="is">{{ phrase('deskpro.common.is') }}</option>
+			<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -50,9 +50,9 @@
 <div class="type" title="Date created" data-rule-type="date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
 	<div class="op">
 		<select name="op" class="op">
-			<option value="lte">before</option>
-			<option value="gte">after</option>
-			<option value="between">between</option>
+			<option value="lte">{{ phrase('deskpro.common.before') }}</option>
+			<option value="gte">{{ phrase('deskpro.common.after') }}</option>
+			<option value="between">{{ phrase('deskpro.common.between') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -63,7 +63,7 @@
 	<div class="op">
 		<select name="op" class="op">
 			<option value="is">include</option>
-			<option value="not">does not include</option>
+			<option value="not">{{ phrase('deskpro.common.does_not_include') }}</option>
 		</select>
 	</div>
 	<div class="options">

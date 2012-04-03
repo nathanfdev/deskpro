@@ -67,7 +67,7 @@ function _page_exec() {
 				<tr class="adv-setting {% if info.default != info.set %}changed{% endif %}">
 					<td>
 						{{set_name}}
-						<span class="revert tipped" title="Revert setting back to default">revert</span>
+						<span class="revert tipped" title="Revert setting back to default">{{ phrase('admin.settings.revert') }}</span>
 					</td>
 					<td><input class="setting-input dp-set-default" value="{{ info.default }}" /></td>
 					<td><input  value="{{ info.set }}" class="setting-input dp-set-value" data-setting-name="{{set_name}}" /></td>

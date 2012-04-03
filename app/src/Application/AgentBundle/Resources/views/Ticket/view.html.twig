@@ -121,13 +121,13 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			</span>
 		</div>
 		<div class="status set-status awaiting_user" {% if ticket.status_code != 'awaiting_user' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.ticket.awaiting_user') }}</label></span></div>
-		<div class="status set-status closed" {% if ticket.status_code != 'closed' %}style="display: none"{% endif %}><span><label>Closed</label></span></div>
+		<div class="status set-status closed" {% if ticket.status_code != 'closed' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.ticket.closed') }}</label></span></div>
 		<div class="status set-status resolved" {% if ticket.status_code != 'resolved' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.ticket.resolved') }}</label></span></div>
-		<div class="status set-status hidden hidden_spam" {% if ticket.status_code != 'hidden.spam' %}style="display: none"{% endif %}><span><label>Spam</label></span></div>
-		<div class="status set-status hidden hidden_validating" {% if ticket.status_code != 'hidden.validating' %}style="display: none"{% endif %}><span><label>Validating</label></span></div>
-		<div class="status set-status hidden hidden_deleted" {% if ticket.status_code != 'hidden.deleted' %}style="display: none"{% endif %}><span><label>Deleted</label></span></div>
+		<div class="status set-status hidden hidden_spam" {% if ticket.status_code != 'hidden.spam' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.ticket.spam') }}</label></span></div>
+		<div class="status set-status hidden hidden_validating" {% if ticket.status_code != 'hidden.validating' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.ticket.validating') }}</label></span></div>
+		<div class="status set-status hidden hidden_deleted" {% if ticket.status_code != 'hidden.deleted' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.ticket.deleted') }}</label></span></div>
 
-		<div class="category set-department"><span>Department: <span class="label-department-id">{{ ticket.department.full_title }}</span></span></div>
+		<div class="category set-department"><span>{{ phrase('agent.ticket.department') }}: <span class="label-department-id">{{ ticket.department.full_title }}</span></span></div>
 
 		{% if ticket_perms.modify_set_hold %}
 			<div class="set-hold hold noedit-hide" {% if ticket.is_hold %}style="display: none"{% endif %}><span>{{ phrase('agent.tickets.set_hold') }}</span></div>
@@ -273,7 +273,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<table class="prop-table noedit-hide" cellpadding="0" cellspacing="0" width="100%">
 			{% if ticket.linked_chat %}
 			<tr>
-				<th>Linked Chat:</th>
+				<th>{{ phrase('agent.ticket.linked_chat') }}:</th>
 				<td>
 					<a data-route="page:{{ path('agent_userchat_view', { conversation_id: ticket.linked_chat.id }) }}">{{ ticket.linked_chat.getSubjectLine() }}</a>
 				</td>

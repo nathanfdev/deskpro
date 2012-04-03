@@ -33,17 +33,17 @@
 								<input id="foot_assign_check_{{ticket.id}}" class="small" type="checkbox" name="options[do_assign]" value="1" checked="checked" />
 							</td>
 							<td style="padding-right: 15px; vertical-align:middle;" valign="middle">
-								<label for="foot_assign_check_{{ticket.id}}">Assign ticket to</label>
+								<label for="foot_assign_check_{{ticket.id}}">{{ phrase('agent.ticket.assign_ticket_to') }}</label>
 								<span class="prop-val trigger agent_id">{{ phrase('agent.ticket.me') }}</span>
-								<label for="foot_assign_check_{{ticket.id}}">and</label>
+								<label for="foot_assign_check_{{ticket.id}}">{{ phrase('agent.ticket.and') }}</label>
 								<span class="prop-val trigger agent_team_id">{{ phrase('agent.ticket.my_team') }}</span>
 							</td>
 							<td width="5" valign="middle" style="vertical-align:middle; padding-right:5px;">
 								<input id="foot_status_check_{{ticket.id}}" class="small" type="checkbox" name="options[do_status]" checked="checked" />
 							</td>
 							<td valign="middle" style="vertical-align:middle">
-								<label for="foot_status_check_{{ticket.id}}">Change status to</label>
-								<span class="prop-val status trigger">Pending</span>
+								<label for="foot_status_check_{{ticket.id}}">{{ phrase('agent.ticket.change_status_to') }}</label>
+								<span class="prop-val status trigger">{{ phrase('agent.ticket.pending') }}</span>
 							</td>
 						</tr>
 						<tr>
@@ -86,7 +86,7 @@
 
 			<div class="content-tab-bottom content-tab-bottom reply-attach tab-content" data-tab-trigger=".tab-trigger.reply-attach">
 				<div class="file-input">
-					Drag and drop files onto this area or choose a file:
+					{{ phrase('agent.ticket.drag_and_drop_files_onto_this_area_or') }}:
 					<input type="file" name="file-upload" multiple="multiple" />
 				</div>
 				<ul class="files file-list"></ul>

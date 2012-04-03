@@ -438,8 +438,8 @@
 	<div class="type" title="Labels" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="everything" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">is</option>
-				<option value="not">is not</option>
+				<option value="is">{{ phrase('agent.main.is') }}</option>
+				<option value="not">{{ phrase('agent.main.is_not') }}</option>
 				{% if with_change_terms %}
 					<option value="changed">{{ phrase('agent.main.changed') }}</option>
 					<option value="changed_to">{{ phrase('agent.main.changed_to_include') }}</option>

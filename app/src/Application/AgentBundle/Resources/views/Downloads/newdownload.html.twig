@@ -22,7 +22,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<div class="content">
 		<div class="col">
-			<h4>Category</h4>
+			<h4>{{ phrase('agent.downloads.category') }}</h4>
 			{% include 'AgentBundle:Common:select-standard.html.twig' with {
 				'name': 'newdownload[category_id]',
 				'id': baseId ~ '_cat',
@@ -41,7 +41,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<option value="hidden.unpublished">{{ phrase('agent.unpublished') }}</option>
 				<option value="hidden.draft">{{ phrase('agent.draft') }}</option>
 				{% if constant('DP_DEBUG') %}
-					<option value="hidden.validating" selected="selected">DEV: Validating</option>
+					<option value="hidden.validating" selected="selected">{{ phrase('agent.downloads.dev_validating') }}</option>
 				{% endif %}
 			</select>
 		</div>
@@ -124,7 +124,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">Create Download <kbd>(alt+c)</kbd></button>
+		<button class="submit-trigger clean-white">{{ phrase('agent.downloads.create_download') }} <kbd>{{ phrase('agent.downloads.altc') }}</kbd></button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

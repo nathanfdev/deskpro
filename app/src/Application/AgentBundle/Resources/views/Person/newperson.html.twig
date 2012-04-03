@@ -12,7 +12,7 @@ pageMeta.baseId = '{{ baseId }}';
 <a class="tab-anchor" href="#">&nbsp;</a>
 
 <form id="{{baseId}}_newperson" class="keybound-submit">
-<div class="drop-file-zone"><h1>Drop your vCard here</h1></div>
+<div class="drop-file-zone"><h1>{{ phrase('agent.person.drop_your_vcard_here') }}</h1></div>
 <script class="template-upload" type="text/x-tmpl">
     {{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
     <p>{{ '{%=file.name%}' }} ({{ phrase('agent.loading_saving') }})</p>
@@ -82,7 +82,7 @@ pageMeta.baseId = '{{ baseId }}';
 			</div>
 
 			<div id="{{baseId}}_org_pos" style="display: none; margin-top: 10px">
-				<h4>Position</h4>
+				<h4>{{ phrase('agent.person.position') }}</h4>
 				<input type="text" name="newperson[organization_position]" value="" size="40" />
 			</div>
 		</div>
@@ -164,7 +164,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">Create Person <kbd>(alt+c)</kbd></button>
+		<button class="submit-trigger clean-white">{{ phrase('agent.person.create_person') }} <kbd>{{ phrase('agent.person.altc') }}</kbd></button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

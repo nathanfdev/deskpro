@@ -9,7 +9,7 @@ pageMeta.actions = {{macro.actions|json_encode|raw}};
 pageMeta.baseId = '{{ baseId }}';
 </script>
 <header>
-	<span class="close close-trigger">close</span>
+	<span class="close close-trigger">{{ phrase('agent.settings.close') }}</span>
 	<h1>{% if macro.id %}{{ phrase('agent.settings.edit_macro') }}{% else %}{{ phrase('agent.settings.new_macro') }}{% endif %}</h1>
 </header>
 <article class="padded" data-width="600" data-height="400">

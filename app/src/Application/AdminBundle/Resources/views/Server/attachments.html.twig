@@ -66,7 +66,7 @@
 		<tbody>
 			<tr>
 				<td>
-					<h3>file_uploads</h3>
+					<h3>{{ phrase('admin.server.file_uploads') }}</h3>
 					<p>{{ phrase('admin.server.this_setting_must_be_enabled_for_php_to') }}</p>
 				</td>
 				<td>{{ php_vars.file_uploads }}
@@ -74,7 +74,7 @@
 
 			<tr>
 				<td>
-					<h3>upload_tmp_dir</h3>
+					<h3>{{ phrase('admin.server.upload_tmp_dir') }}</h3>
 					<p>{{ phrase('admin.server.this_is_where_php_saves_files_to_temporarily') }}</p>
 				</td>
 				<td>{{ php_vars.upload_tmp_dir }}
@@ -90,7 +90,7 @@
 
 			<tr>
 				<td>
-					<h3>post_max_size</h3>
+					<h3>{{ phrase('admin.server.post_max_size') }}</h3>
 					<p>{{ phrase('admin.server.this_is_the_max_size_of_any_post') }}</p>
 				</td>
 				<td>{{ php_vars.post_max_size }}

@@ -27,7 +27,7 @@
 					<div class="op">
 						<select name="op">
 							<option value="is">is</option>
-							<option value="not">is not</option>
+							<option value="not">{{ phrase('agent.peoplesearch.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
@@ -42,7 +42,7 @@
 					<div class="op">
 						<select name="op">
 							<option value="is">is</option>
-							<option value="not">is not</option>
+							<option value="not">{{ phrase('agent.peoplesearch.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
@@ -56,8 +56,8 @@
 				<div class="type" title="Person ID" data-rule-type="id">
 					<div class="op">
 						<select name="op">
-							<option value="gte">is greater than</option>
-							<option value="lte">is less than</option>
+							<option value="gte">{{ phrase('agent.peoplesearch.is_greater_than') }}</option>
+							<option value="lte">{{ phrase('agent.peoplesearch.is_less_than') }}</option>
 						</select>
 					</div>
 					<div class="options">
@@ -68,7 +68,7 @@
 					<div class="op">
 						<select name="op">
 							<option value="is">is</option>
-							<option value="not">is not</option>
+							<option value="not">{{ phrase('agent.peoplesearch.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
@@ -84,7 +84,7 @@
 					<div class="op">
 						<select name="op">
 							<option value="is">is</option>
-							<option value="not">is not</option>
+							<option value="not">{{ phrase('agent.peoplesearch.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
@@ -95,7 +95,7 @@
 					<div class="op">
 						<select name="op">
 							<option value="is">is</option>
-							<option value="not">is not</option>
+							<option value="not">{{ phrase('agent.peoplesearch.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
@@ -105,8 +105,8 @@
 				<div class="type" title="Labels" data-rule-type="label">
 					<div class="op">
 						<select name="op">
-							<option value="is">includes label</option>
-							<option value="not">does not include label</option>
+							<option value="is">{{ phrase('agent.peoplesearch.includes_label') }}</option>
+							<option value="not">{{ phrase('agent.peoplesearch.does_not_include_label') }}</option>
 						</select>
 					</div>
 					<div class="options">
@@ -117,7 +117,7 @@
 					<div class="op">
 						<select name="op">
 							<option value="contains">is</option>
-							<option value="notcontains">is not</option>
+							<option value="notcontains">{{ phrase('agent.peoplesearch.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
@@ -128,7 +128,7 @@
 					<div class="op">
 						<select name="op">
 							<option value="contains">is</option>
-							<option value="notcontains">is not</option>
+							<option value="notcontains">{{ phrase('agent.peoplesearch.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
@@ -139,7 +139,7 @@
 					<div class="op">
 						<select name="op">
 							<option value="contains">is</option>
-							<option value="notcontains">is not</option>
+							<option value="notcontains">{{ phrase('agent.peoplesearch.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
@@ -150,7 +150,7 @@
 					<div class="op">
 						<select name="op">
 							<option value="contains">is</option>
-							<option value="notcontains">is not</option>
+							<option value="notcontains">{{ phrase('agent.peoplesearch.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
@@ -158,7 +158,7 @@
 					</div>
 				</div>
 				{% if people_fields %}
-					{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'has', 'notcontains': 'does not have', 'gt': 'is greater than', 'lt': 'is less than'} %}
+					{% set op_lang = {'is': 'is', 'not':phrase('agent.peoplesearch.is_not'), 'contains': 'has', 'notcontains': 'does not have', 'gt': phrase('agent.peoplesearch.is_greater_than'), 'lt': phrase('agent.peoplesearch.is_less_than')} %}
 					{% for field in people_fields %}
 						<div class="type" title="Field: {{field.field_def.title}}" data-rule-type="person_field[{{field.field_def.id}}]">
 							<div class="op">

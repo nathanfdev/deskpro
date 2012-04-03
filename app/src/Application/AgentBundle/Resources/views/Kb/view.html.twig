@@ -60,7 +60,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<ul id="{{baseId}}_categories" class="add-remove-list">
 					{% for cat in article.categories %}
 						<li>
-							<span class="remove noedit-hide">remove</span>
+							<span class="remove noedit-hide">{{ phrase('agent.kb.remove') }}</span>
 							{{ cat.full_title }}
 							<input type="hidden" name="category_ids[]" value="{{ cat.id }}" />
 						</li>
@@ -78,7 +78,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<ul id="{{baseId}}_products" class="add-remove-list">
 						{% for prod in article.products %}
 							<li>
-								<span class="remove">remove</span>
+								<span class="remove">{{ phrase('agent.kb.remove') }}</span>
 								{{ prod.full_title }}
 								<input type="hidden" name="product_ids[]" value="{{ prod.id }}" />
 							</li>
@@ -123,7 +123,7 @@ pageMeta.baseId = '{{ baseId }}';
 					on <span class="end-date opt" {% if article.date_end %}data-val="{{ article.date_end|date('U') }}"{% endif %}>
 						{% if article.date_end %}{{ article.date_end|date('day') }}{% else %}{{ phrase('agent.kb.click_to_set_date') }}{% endif %}</span>
 					<input type="text" class="end-date-input" value="{{ article.date_end|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
-					(<span class="remove-auto-unpublish options-text">remove</span>)
+					(<span class="remove-auto-unpublish options-text">{{ phrase('agent.kb.remove') }}</span>)
 				</span>
 				<span class="options-text auto-unpublish-set" {% if article.date_end %}style="display: none"{% endif %}>
 					{{ phrase('agent.kb.set_an_automatic_unpublish_date') }}
@@ -142,7 +142,7 @@ pageMeta.baseId = '{{ baseId }}';
 					on <span class="pub-date opt" {% if article.date_published %}data-val="{{ article.date_published|date('U') }}"{% endif %}>
 						{% if article.date_published %}{{ article.date_published|date('day') }}{% else %}{{ phrase('agent.kb.click_to_set_date') }}{% endif %}</span>
 					<input type="text" class="pub-date-input" value="{{ article.date_published|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
-					(<span class="remove-auto-publish options-text">remove</span>)
+					(<span class="remove-auto-publish options-text">{{ phrase('agent.kb.remove') }}</span>)
 				</span>
 				<span class="options-text auto-publish-set" {% if article.date_published %}style="display: none"{% endif %}>
 					{{ phrase('agent.kb.set_an_automatic_publish_date') }}

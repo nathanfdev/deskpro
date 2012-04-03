@@ -1,6 +1,6 @@
 <div class="change-picture-overlay {% if org.picture_blob %}with-existing{% endif %} mass-actions-overlay">
 	<div class="overlay-title">
-		<span class="close close-trigger">close</span>
+		<span class="close close-trigger">{{ phrase('agent.organization.close') }}</span>
 		<h4>{{ phrase('agent.misc.change_pic_for', {'name': org.name}) }}</h4>
 	</div>
 	<div class="overlay-content">

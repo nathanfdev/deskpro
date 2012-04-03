@@ -2,7 +2,7 @@
 	<header><h3>{{ phrase('agent.chat.new_chat') }}</h3></header>
 	<div class="messages">
 		<div class="row name">
-			<label>Chat started by</label>
+			<label>{{ phrase('agent.userchat.chat_started_by') }}</label>
 			{% if person %}
 				<a data-route="person:{{ path('agent_people_view', {person_id: person.id}) }}">{{ person.display_name }} &lt;{{ person.email_address }}&gt;</a>
 			{% else %}

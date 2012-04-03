@@ -19,9 +19,9 @@
 <div class="type" title="Date created" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="created">
 	<div class="op">
 		<select name="op" class="op">
-			<option value="lte">before</option>
-			<option value="gte">after</option>
-			<option value="between">between</option>
+			<option value="lte">{{ phrase('deskpro.common.before') }}</option>
+			<option value="gte">{{ phrase('deskpro.common.after') }}</option>
+			<option value="between">{{ phrase('deskpro.common.between') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -35,7 +35,7 @@
 	<div class="op">
 		<select name="op">
 			<option value="is">is</option>
-			<option value="not">is not</option>
+			<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -63,7 +63,7 @@
 	<div class="op">
 		<select name="op">
 			<option value="is">is</option>
-			<option value="contains">contains</option>
+			<option value="contains">{{ phrase('deskpro.common.contains') }}</option>
 			<option value="notcontains">{{ phrase('deskpro.common.does_not_contain') }}</option>
 		</select>
 	</div>
@@ -78,7 +78,7 @@
 	<div class="op">
 		<select name="op">
 			<option value="contains">is</option>
-			<option value="notcontains">is not</option>
+			<option value="notcontains">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -92,7 +92,7 @@
 	<div class="op">
 		<select name="op">
 			<option value="contains">is</option>
-			<option value="notcontains">is not</option>
+			<option value="notcontains">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -106,7 +106,7 @@
 	<div class="op">
 		<select name="op">
 			<option value="contains">is</option>
-			<option value="notcontains">is not</option>
+			<option value="notcontains">{{ phrase('deskpro.common.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -117,7 +117,7 @@
 
 {% if 'org_field' not in no_show_fields %}
 {% if term_options.custom_org_fields %}
-	{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'contains', 'notcontains': phrase('deskpro.common.does_not_contain'), 'gt': 'is greater than', 'lt': 'is less than'} %}
+	{% set op_lang = {'is': phrase('deskpro.common.is'), 'not': phrase('deskpro.common.is_not'), 'contains': phrase('deskpro.common.contains'), 'notcontains': phrase('deskpro.common.does_not_contain'), 'gt': 'is greater than', 'lt': 'is less than'} %}
 	{% for field in term_options.custom_org_fields %}
 	{% if field.field_def.getFilterCapabilities(search_context) %}
 	<div class="type" title="{{field.field_def.title}}" data-rule-group="Organization Fields" data-rule-type="org_field[{{field.field_def.id}}]">

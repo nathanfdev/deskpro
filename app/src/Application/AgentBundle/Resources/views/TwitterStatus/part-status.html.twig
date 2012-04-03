@@ -43,13 +43,13 @@
 								{% if status.in_reply_to_status %}
 									{% set reply = status.in_reply_to_status %}
 									<div class="reply">
-										In reply to <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': reply.user.id}) }}"><strong>@{{ reply.user.screen_name }}</strong></span>
+										{{ phrase('agent.twitterstatus.in_reply_to') }} <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': reply.user.id}) }}"><strong>@{{ reply.user.screen_name }}</strong></span>
 										"{{ reply.getClippedParsedText(2)|raw }}..."
 									</div>
 								{% endif %}
 								{% if retweet %}
 									<div class="retweet">
-										Retweet of <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}"><strong>@{{ retweet.user.screen_name }}</strong></span>
+										{{ phrase('agent.twitterstatus.retweet_of') }} <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}"><strong>@{{ retweet.user.screen_name }}</strong></span>
 										"{{ retweet.getClippedParsedText(2)|raw }}..."
 									</div>
 								{% endif %}
@@ -107,7 +107,7 @@
 									<button class="clean-white small status-archive"><a>{% if status.is_archived %}Archived{% else %}Archive{% endif %}</a></button>
 									<button class="clean-white small status-reply"><a>{{ phrase('agent.twitterstatus.reply') }}</a></button>
 									{% if status.isMessage is sameas(false) %}
-										<button class="clean-white small status-retweet"><a>Retweet</a></button>
+										<button class="clean-white small status-retweet"><a>{{ phrase('agent.twitterstatus.retweet') }}</a></button>
 									{% endif %}
 									<button class="clean-white small status-assign"><a>{{ phrase('agent.twitterstatus.assign') }}</a></button>
 									<button class="clean-white small status-note"><a>{{ phrase('agent.twitterstatus.add_note') }}</a></button>

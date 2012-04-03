@@ -78,4 +78,5 @@
   'admin.settings.continuet_to_advanced_settings' => 'Continuet to Advanced Settings',
 
   'admin.settings.advanced_settings' => 'Advanced Settings',
+  'admin.settings.revert' => 'revert',
 );

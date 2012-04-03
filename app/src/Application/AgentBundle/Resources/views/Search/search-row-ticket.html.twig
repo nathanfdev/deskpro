@@ -1,5 +1,5 @@
 <article class="row-item ticket-{{ ticket.id }}" data-ticket-id="{{ ticket.id }}" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@selector(a.subject)" data-route-openclass="open">
-	<div class="loading-arrow">loading</div>
+	<div class="loading-arrow">{{ phrase('agent.search.loading') }}</div>
 	<input type="checkbox" class="item-select" value="{{ ticket.id }}" style="visibility: hidden" />
 	<div class="top-row">
 		<div class="top-row-left">

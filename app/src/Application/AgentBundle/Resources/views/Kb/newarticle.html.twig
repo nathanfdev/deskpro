@@ -8,7 +8,7 @@ pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-{% set dropzonehtml %}<div class="drop-file-zone"><h1>Drop your file here to add it to this download</h1></div>{% endset %}
+{% set dropzonehtml %}<div class="drop-file-zone"><h1>{{ phrase('agent.kb.drop_your_file_here_to_add_it_to') }}</h1></div>{% endset %}
 {{ agentui.scroll_containers('page-new-article page-new-content', dropzonehtml) }}
 
 <a class="tab-anchor" href="#">&nbsp;</a>
@@ -19,7 +19,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="pending-info" style="display: none;">
 	<h3>Creating pending article (added by <span class="person-name"></span>)</h3>
 	<div class="pending-ticket" style="display: none">
-		 For Ticket:
+		 {{ phrase('agent.kb.for_ticket') }}:
 		<a data-route="" class="with-route ticket-link"></a>
 	</div>
 	<div class="pending-reason" style="display: none"></div>
@@ -32,7 +32,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<div class="content">
 		<div class="col">
-			<h4>Category</h4>
+			<h4>{{ phrase('agent.kb.category') }}</h4>
 			{% include 'AgentBundle:Common:select-standard.html.twig' with {
 				'name': 'newarticle[category_id]',
 				'id': baseId ~ '_cat',
@@ -45,13 +45,13 @@ pageMeta.baseId = '{{ baseId }}';
 			} %}
 		</div>
 		<div class="col">
-			<h4 class="light">Status</h4>
+			<h4 class="light">{{ phrase('agent.kb.status') }}</h4>
 			<select name="newarticle[status]">
-				<option value="published">Published</option>
-				<option value="hidden.unpublished">Unpublished</option>
-				<option value="hidden.draft">Draft</option>
+				<option value="published">{{ phrase('agent.kb.published') }}</option>
+				<option value="hidden.unpublished">{{ phrase('agent.kb.unpublished') }}</option>
+				<option value="hidden.draft">{{ phrase('agent.kb.draft') }}</option>
 				{% if constant('DP_DEBUG') %}
-					<option value="hidden.validating" selected="selected">DEV: Validating</option>
+					<option value="hidden.validating" selected="selected">{{ phrase('agent.kb.dev_validating') }}</option>
 				{% endif %}
 			</select>
 		</div>
@@ -65,7 +65,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<span class="check">{{ phrase('agent.done') }}</span>
 	</div>
 	<div class="content">
-		<h4>Title</h4>
+		<h4>{{ phrase('agent.kb.title') }}</h4>
 		<input type="title" name="newarticle[title]" id="{{baseId}}_title" value="{{ state.newarticle.title }}" />
 	</div>
 </div>
@@ -76,7 +76,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<span class="check">{{ phrase('agent.done') }}</span>
 	</div>
 	<div class="content">
-		<h4>Article</h4>
+		<h4>{{ phrase('agent.kb.article') }}</h4>
 		<textarea type="text" name="newarticle[content]" id="{{baseId}}_content">{{ state.newarticle.content }}</textarea>
 	</div>
 </div>
@@ -92,20 +92,20 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="tab-container">
 			<nav id="{{baseId}}_other_props_tabs_wrap">
 				<ul id="{{baseId}}_other_props_tabs">
-					<li data-tab-for="> .tab-properties">Properties</li>
-					<li data-tab-for="> .tab-attach">Attachments</li>
+					<li data-tab-for="> .tab-properties">{{ phrase('agent.kb.properties') }}</li>
+					<li data-tab-for="> .tab-attach">{{ phrase('agent.kb.attachments') }}</li>
 				</ul>
 			</nav>
 			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
 				{# Tab Properties #}
 				<div class="tab-properties" style="display: none">
 					<dl>
-						<dt class="prop">URL Slug</dt>
+						<dt class="prop">{{ phrase('agent.kb.url_slug') }}</dt>
 						<dd class="prop">
 							<input type="input" name="newarticle[slug]" id="{{baseId}}_slug" value="{{ state.newarticle.slug }}" />
 						</dd>
 
-						<dt class="prop">Labels</dt>
+						<dt class="prop">{{ phrase('agent.kb.labels') }}</dt>
 						<dd class="prop">
 							<div class="tags-wrap article-tags">
 								<input type="text" value="{% for label in state.newarticle.labels %}{{label}},{% endfor %}" />
@@ -118,9 +118,9 @@ pageMeta.baseId = '{{ baseId }}';
 				{# Tab Attach #}
 				<div class="tab-attach" style="display: none">
 					{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newarticle[attach][]'} %}
-					<h6>Attachments</h6>
+					<h6>{{ phrase('agent.kb.attachments') }}</h6>
 					<div class="file-input">
-						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">Upload</button>
+						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.kb.upload') }}</button>
 					</div>
 					<ul class="files file-list"></ul>
 				</div>
@@ -134,7 +134,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">Create Article <kbd>(alt+c)</kbd></button>
+		<button class="submit-trigger clean-white">{{ phrase('agent.kb.create_article') }} <kbd>{{ phrase('agent.kb.altc') }}</kbd></button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

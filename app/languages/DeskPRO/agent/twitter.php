@@ -14,4 +14,8 @@
   'agent.twitter.follow' => 'Follow',
   'agent.twitter.inbox' => 'INBOX',
   'agent.twitter.followers' => 'FOLLOWERS',
+  'agent.twitter.followers' => 'Followers',
+  'agent.twitter.expand' => 'expand',
+  'agent.twitter.replies' => 'Replies',
+  'agent.twitter.mentions' => 'Mentions',
 );

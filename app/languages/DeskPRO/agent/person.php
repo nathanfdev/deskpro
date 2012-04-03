@@ -21,4 +21,9 @@
   'agent.person.add_an_email_address' => 'Add an email address',
   'agent.person.download_vcard' => 'Download vCard',
   'agent.person.id' => 'ID',
+  'agent.person.close' => 'close',
+  'agent.person.drop_your_vcard_here' => 'Drop your vCard here',
+  'agent.person.position' => 'Position',
+  'agent.person.create_person' => 'Create Person',
+  'agent.person.altc' => '(alt+c)',
 );

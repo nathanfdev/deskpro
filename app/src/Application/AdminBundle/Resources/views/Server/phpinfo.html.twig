@@ -17,15 +17,15 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td>php_version</td>
+				<td>{{ phrase('admin.server.php_version') }}</td>
 				<td>{{ php_config.version }}</td>
 			</tr>
 			<tr>
-				<td>memory_limit</td>
+				<td>{{ phrase('admin.server.memory_limit') }}</td>
 				<td>{{ php_config.memory_limit }} (<a href="{{ app.request.getBaseUrl() }}?_sys=memtest&amp;_={{ config_hash }}">{{ phrase('admin.server.test_this_value') }}</a>)</td>
 			</tr>
 			<tr>
-				<td>error_log</td>
+				<td>{{ phrase('admin.server.error_log') }}</td>
 				<td>{{ php_config.error_log }}</td>
 			</tr>
 		</tbody>

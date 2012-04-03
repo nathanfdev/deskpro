@@ -86,4 +86,12 @@
   'agent.main.agent_interface' => 'Agent Interface',
   'agent.main.publish_and_feedback' => 'Publish and Feedback',
   'agent.main.dev' => 'DEV',
+
+  'agent.main.is' => 'is',
+  'agent.main.is_not' => 'is not',
+  'agent.main.when_in_a_filter_listing_moves_selected_row' => 'When in a filter listing, moves selected row cursor',
+  'agent.main.enter' => 'enter',
+  'agent.main.when_in_a_filter_listing_opens_the_selected' => 'When in a filter listing, opens the selected row',
+  'agent.main.space' => 'space',
+  'agent.main.when_in_a_filter_listing_checks_the_checkbox' => 'When in a filter listing, checks the checkbox on the select row',
 );
