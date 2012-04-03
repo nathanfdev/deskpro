@@ -8,18 +8,19 @@ DeskPRO.Admin.RuleBuilder.TemplateEdit = new Orb.Class({
 		this.overlay = null;
 
 		this.tplInput = this.rowEl.find('input.tpl-name');
-
 		this.currentValue = this.rowEl.find('.status-value');
+		this.currentValue.on('click', this.show.bind(this));
 
+		this.tplDir    = this.currentValue.data('tpldir');
+		this.tplPrefix = this.currentValue.data('tplprefix')
+	},
+
+	initValues: function() {
 		if (this.tplInput.val()) {
 			this.currentValue.text(this.tplInput.val());
 		} else {
 			this.currentValue.text('(click to change)');
 		}
-		this.currentValue.on('click', this.show.bind(this));
-
-		this.tplDir    = this.currentValue.data('tpldir');
-		this.tplPrefix = this.currentValue.data('tplprefix')
 	},
 
 	hide: function() {
