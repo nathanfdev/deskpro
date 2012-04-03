@@ -156,7 +156,7 @@ class TriggerExecutor
 				$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
 				$trigger->terms = array();
 				$trigger->actions = array(
-					array('type' => 'user_notification_new_ticket', 'options' => array())
+					array('type' => 'new_ticket', 'options' => array())
 				);
 
 				array_unshift($all_triggers, $trigger);

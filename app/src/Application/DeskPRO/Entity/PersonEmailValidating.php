@@ -93,10 +93,21 @@ class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $validating_content = array();
 
+	/**
+	 * @var bool
+	 */
+	protected $_is_new = false;
+
 	public function __construct()
 	{
+		$this->_is_new = true;
 		$this->date_created = new \DateTime();
 		$this->auth = Strings::random(8, Strings::CHARS_KEY);
+	}
+
+	public function isNewEntity()
+	{
+		return $this->_is_new;
 	}
 
 	/**

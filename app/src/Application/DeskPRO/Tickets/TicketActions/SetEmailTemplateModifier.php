@@ -34,39 +34,28 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
-
-use Application\DeskPRO\Tickets\TicketChangeTracker;
-use Application\DeskPRO\Translate\DelegatePhrase;
-use Application\DeskPRO\App;
-
-class UserNotificationNewTicketAction extends AbstractUserNotificationAction
+class SetEmailTemplateModifier implements CollectionModifierInterface
 {
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
+	protected $tpl;
+	protected $type = '';
+
+	public function __construct($tpl, $type = '')
 	{
-		// Person has confirmation notifications disabled
-		if ($ticket->person->disable_autoresponses) {
-			return;
+		$this->tpl  = $tpl;
+		$this->type = $type;
+	}
+
+	public function modifyCollection(ActionsCollection $collection)
+	{
+		$notify_types = array();
+		$notify_types[] = 'NewTicket';
+
+		foreach ($notify_types as $type) {
+			if ($collection->hasActionType($type)) {
+				$action = $collection->getActionType($type);
+				$action->setEmailTemplate($tpl, $type);
+			}
 		}
-
-		$change_info = array(
-			'type' => 'user_notify',
-			'notify_type' => 'newticket',
-			'emailed' => array(),
-			'cced' => array()
-		);
-
-		$vars = array();
-		$this->doSend('DeskPRO:emails_user:new-ticket', $vars, $ticket, $change_info);
-		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 	}
 
 	/**
@@ -74,6 +63,6 @@ class UserNotificationNewTicketAction extends AbstractUserNotificationAction
 	 */
 	public function getDescription($as_html = true)
 	{
-		return '';
+		return "Use email template: {$this->tpl}";
 	}
 }

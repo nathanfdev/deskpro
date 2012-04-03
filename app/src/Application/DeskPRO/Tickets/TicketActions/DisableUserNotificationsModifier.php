@@ -44,8 +44,6 @@ class DisableUserNotificationsModifier implements CollectionModifierInterface
 	public function modifyCollection(ActionsCollection $collection)
 	{
 		$notify_types = array();
-		$notify_types[] = 'UserNotificationNewTicket';
-		$notify_types[] = 'UserNotificationNewTicketValidating';
 		$notify_types[] = 'UserNotificationNewReply';
 		$notify_types[] = 'UserNotificationNewReplyAgent';
 
@@ -53,6 +51,10 @@ class DisableUserNotificationsModifier implements CollectionModifierInterface
 			if ($collection->hasActionType($type)) {
 				$collection->removeActionType($type);
 			}
+		}
+
+		if ($collection->hasActionType('NewTicket')) {
+			$collection->getActionType('NewTicket')->disableNotifications();
 		}
 	}
 

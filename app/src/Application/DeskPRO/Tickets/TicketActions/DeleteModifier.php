@@ -49,10 +49,9 @@ class DeleteModifier implements CollectionModifierInterface
 		$notify_types = array();
 		$notify_types[] = 'AgentNotification';
 		$notify_types[] = 'AgentAlertNotification';
-		$notify_types[] = 'UserNotificationNewTicket';
-		$notify_types[] = 'UserNotificationNewTicketValidating';
 		$notify_types[] = 'UserNotificationNewReply';
 		$notify_types[] = 'UserNotificationNewReplyAgent';
+		$notify_types[] = 'NewTicket';
 
 		foreach ($notify_types as $type) {
 			if ($collection->hasActionType($type)) {

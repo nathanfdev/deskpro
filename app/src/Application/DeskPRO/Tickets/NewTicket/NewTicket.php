@@ -39,6 +39,9 @@ use Application\DeskPRO\Entity;
 
 /**
  * New ticket acts as the processor and domain object for a newticket form
+ *
+ * NOTE: New users are always created with 'validating' email addresses. If validation is disabled
+ * then the ticket trigger will automatically convert the validating address into a real address.
  */
 class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 {
@@ -144,38 +147,23 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 					$email_validating = null;
 
 				// Email doesnt exist,
-				// Might already be validating, or we might require validation based on the setting
-				} elseif ($email_validating || App::getSetting('core.email_validation')) {
+				// Might already be validating
+				} elseif ($email_validating) {
 					$validating = 'new';
-					if (!$email_validating) {
-						$person = Entity\Person::newContactPerson();
-						$person->name = $this->person->name;
-						App::getOrm()->persist($person);
+					$person = $email_validating->person;
 
-						$email_validating = new Entity\PersonEmailValidating();
-						$email_validating->email = $this->person->email;
-						$email_validating->person = $person;
-						App::getOrm()->persist($email_validating);
-
-					} else {
-						$person = $email_validating->person;
-					}
-
-				// If we get here, then its a new user and we dont require validation
-				// Note a user isnt a "user" at this point, they cant log in etc,
-				// no validation just means they dont need to validate to get their ticket reads
+				// If we get here, then its a new user. We add the email address
+				// as a validation email address. The trigger NewTicketAction will turn it into
+				// a real email address if validation isn't required
 				} else {
 					$person = Entity\Person::newContactPerson();
 					$person->name = $this->person->name;
 					App::getOrm()->persist($person);
 
-					$email = new Entity\PersonEmail();
-					$email->email = $this->person->email;
-					$email->person = $person;
-					$person->addEmailAddress($email);
-					App::getOrm()->persist($email);
-
-					$email_validating = null;
+					$email_validating = new Entity\PersonEmailValidating();
+					$email_validating->email = $this->person->email;
+					$email_validating->person = $person;
+					App::getOrm()->persist($email_validating);
 				}
 
 			// Logged in user

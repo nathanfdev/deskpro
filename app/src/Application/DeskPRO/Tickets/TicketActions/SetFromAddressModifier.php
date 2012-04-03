@@ -45,20 +45,6 @@ class SetFromAddressModifier implements CollectionModifierInterface
 
 	public function modifyCollection(ActionsCollection $collection)
 	{
-		$notify_types = array();
-		$notify_types[] = 'AgentNotificationAction';
-		$notify_types[] = 'UserNotificationNewReplyAction';
-		$notify_types[] = 'UserNotificationNewTicketAction';
-		$notify_types[] = 'UserNotificationNewTicketValidatingAction';
-		$notify_types[] = 'UserNotificationParticipantAction';
-
-		foreach ($notify_types as $type) {
-			if ($collection->hasActionType($type)) {
-				$action = $collection->getActionType($type);
-				$action->setFromAddress($this->email_address);
-			}
-		}
-
 		if ($collection->hasActionType('SetTicketEmail')) {
 			$collection->getActionType('SetTicketEmail')->setEmail($this->email_address);
 		} else {

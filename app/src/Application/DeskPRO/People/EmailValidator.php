@@ -114,11 +114,6 @@ class EmailValidator
 	{
 		$this->em->getConnection()->beginTransaction();
 
-		$exist_email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($this->validating_email->email);
-		if ($exist_email && $exist_email->person && $this->validating_email->person && $exist_email->person->id != $this->validating_email->person->id) {
-			throw new \OutOfBoundsException("Email already exists", 100);
-		}
-
 		try {
 			if (!$exist_email) {
 				$email = new PersonEmail();

@@ -20,6 +20,69 @@
 		</div>
 	</div>
 
+	{% if event_group in ['new_ticket.web_person', 'new_ticket.gateway_person', 'new_ticket.widget'] %}
+		<div class="type" title="Email: User auto-response notification about new ticket" data-rule-type="set_email_template" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="options" style="display: block">
+				<input type="hidden" value="type" value="user_new_ticket" />
+				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-ticket"></span>
+			</div>
+		</div>
+		<div class="type" title="Email: User validation alert" data-rule-type="set_email_template" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="options" style="display: block">
+				<input type="hidden" value="type" value="user_new_ticket_validate" />
+				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-ticket-validate"></span>
+			</div>
+		</div>
+		<div class="type" title="Email: Agent notification about new ticket" data-rule-type="set_email_template" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="options" style="display: block">
+				<input type="hidden" value="type" value="agent_new_ticket" />
+				<span class="status-value menu-trigger" data-tpldir="emails_agent" data-tplprefix="new-ticket"></span>
+			</div>
+		</div>
+	{% endif %}
+	{% if event_group in ['new_ticket.agent'] %}
+		<div class="type" title="Email: User notification of new ticket" data-rule-type="set_email_template" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="options" style="display: block">
+				<input type="hidden" value="type" value="user_new_ticket_agent" />
+				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-ticket-agent"></span>
+			</div>
+		</div>
+		<div class="type" title="Email: Agent notification about new ticket" data-rule-type="set_email_template" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="options" style="display: block">
+				<input type="hidden" value="type" value="agent_new_ticket" />
+				<span class="status-value menu-trigger" data-tpldir="emails_agent" data-tplprefix="new-ticket"></span>
+			</div>
+		</div>
+	{% endif %}
+	{% if event_group in ['new_reply.web_person', 'new_reply.gateway_person'] %}
+		<div class="type" title="Email: User auto-response notification about new reply" data-rule-type="set_email_template" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="options" style="display: block">
+				<input type="hidden" value="type" value="user_new_reply_user" />
+				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-reply-user"></span>
+			</div>
+		</div>
+		<div class="type" title="Email: Agent notification about new reply" data-rule-type="set_email_template" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="options" style="display: block">
+				<input type="hidden" value="type" value="agent_new_reply_user" />
+				<span class="status-value menu-trigger" data-tpldir="emails_agent" data-tplprefix="new-reply-user"></span>
+			</div>
+		</div>
+	{% endif %}
+	{% if event_group in ['new_reply.agent'] %}
+		<div class="type" title="Email: User notification of new agent reply" data-rule-type="set_email_template" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="options" style="display: block">
+				<input type="hidden" value="type" value="user_new_reply_agent" />
+				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-reply-agent"></span>
+			</div>
+		</div>
+		<div class="type" title="Email: Agent notification of new agent reply" data-rule-type="set_email_template" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+			<div class="options" style="display: block">
+				<input type="hidden" value="type" value="agent_new_reply_agent" />
+				<span class="status-value menu-trigger" data-tpldir="email_agent" data-tplprefix="new-reply-agent"></span>
+			</div>
+		</div>
+	{% endif %}
+
 	{% if 'new_ticket' in event_group %}
 	<div class="type" title="Force email validation" data-rule-type="force_email_validation">
 		<div class="options">
@@ -192,52 +255,6 @@
 			</select>
 		</div>
 	</div>
-
-	{% if event_trigger == 'new_ticket' %}
-		<div class="type" title="Agent Notification: new-ticket" data-rule-group="Email Templates" data-rule-type="agent_notify_newticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="options" style="display: block">
-				<span class="status-value menu-trigger" data-tpldir="emails_agent" data-tplprefix="ticket-new"></span>
-			</div>
-		</div>
-
-		<div class="type" title="User Notification: new-ticket-autoreply" data-rule-group="Email Templates" data-rule-type="user_notify_newticket_autoreply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="options" style="display: block">
-				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-ticket-autoreply"></span>
-			</div>
-		</div>
-
-		<div class="type" title="User Notification: new-ticket-validate" data-rule-group="Email Templates" data-rule-type="user_notify_newticket_validate" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
-			<div class="options" style="display: block">
-				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-ticket-validate"></span>
-			</div>
-		</div>
-	{% endif %}
-
-	{% if event_trigger == 'new_reply' %}
-		<div class="type" title="Agent Notification: new-reply" data-rule-group="Email Templates" data-rule-type="agent_notify_newreply">
-			<div class="options" style="display: block">
-				<select name="template">
-					<option value="DeskPRO:emails_agent:new-reply.html.twig">DeskPRO:emails_agent:new-reply.html.twig</option>
-				</select>
-			</div>
-		</div>
-
-		<div class="type" title="User Notification: new-reply-autoreply" data-rule-group="Email Templates" data-rule-type="user_notify_newreply_autoreply">
-			<div class="options" style="display: block">
-				<select name="template">
-					<option value="DeskPRO:emails_user:new-reply-autoreply.html.twig">DeskPRO:emails_user:new-reply-autoreply.html.twig</option>
-				</select>
-			</div>
-		</div>
-
-		<div class="type" title="User Notification: new-reply" data-rule-group="Email Templates" data-rule-type="user_notify_newreply">
-			<div class="options" style="display: block">
-				<select name="template">
-					<option value="DeskPRO:emails_user:new-reply.html.twig">DeskPRO:emails_user:new-reply.html.twig</option>
-				</select>
-			</div>
-		</div>
-	{% endif %}
 
 	{% if term_options.custom_ticket_fields %}
 		{% for field in term_options.custom_ticket_fields %}
