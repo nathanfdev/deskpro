@@ -564,7 +564,6 @@ class TicketsStep extends AbstractDeskpro3Step
 			$insert_part['person_id'] = $pid;
 			$insert_part['ticket_id'] = $insert_ticket['id'];
 			$insert_part['access_code_id'] = $insert_tac['id'];
-			$insert_part['is_agent'] = $is_agent;
 			$this->db->insert('tickets_participants', $insert_part);
 		}
 
