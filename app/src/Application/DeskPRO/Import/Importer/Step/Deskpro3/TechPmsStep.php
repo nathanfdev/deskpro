@@ -72,6 +72,7 @@ class TechPmsStep extends AbstractDeskpro3Step
 			SELECT *
 			FROM tech_pms
 			WHERE fromid = ?
+			ORDER BY id ASC
 		", array($tech_id));
 
 		if (!$messages) {
@@ -94,6 +95,7 @@ class TechPmsStep extends AbstractDeskpro3Step
 			if (!$convo || !$convo->is_agent) {
 				$convo = new \Application\DeskPRO\Entity\ChatConversation();
 				$convo->is_agent = true;
+				$convo->date_created = new \DateTime('@' . $message['timestamp']);
 				$convo->addParticipant($agent);
 				$convo->addParticipant($other_agent);
 				$this->getEm()->persist($convo);
@@ -104,6 +106,7 @@ class TechPmsStep extends AbstractDeskpro3Step
 				html_entity_decode(strip_tags($message['message']), \ENT_QUOTES),
 				$agent
 			);
+			$chat_message['date_created'] = new \DateTime('@' . $message['timestamp']);
 
 			$this->getEm()->persist($chat_message);
 			$this->getEm()->flush();
