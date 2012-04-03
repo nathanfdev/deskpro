@@ -129,6 +129,11 @@ class Upgrade
 	 */
 	protected $revert_checkpoint;
 
+	/**
+	 * @var ZipStrategy
+	 */
+	protected $zip;
+
 	public function run(array $argv)
 	{
 		$this->argv = $argv;
@@ -173,6 +178,8 @@ class Upgrade
 				exit(1);
 			}
 		} catch (\Exception $e) {} // to catch error about log
+
+		$this->zip = new ZipStrategy($this);
 	}
 
 
@@ -534,7 +541,8 @@ class Upgrade
 		# Extract the zip into the dir
 		#------------------------------
 
-		$ret = $this->execCommand("unzip -q $zip_name", $tmp_dir, $out);
+
+		$ret = $this->zip($zip_name, $tmp_dir);
 
 		if ($ret) {
 			throw new UpgradeFilesException("Failed to extract zip", UpgradeFilesException::EXTRACT_ERROR);
@@ -1089,26 +1097,7 @@ class Upgrade
 	{
 		$time_start = microtime(true);
 
-		$dir      = dirname($path);
-		$filename = basename($path);
-
-		if (is_dir($path)) {
-			$out_filename = $filename . '.zip';
-			$cmd = "zip -r -q $dir/$out_filename * .htaccess";
-
-			$ret = $this->execCommand($cmd, $path);
-		} else {
-			$out_filename = $filename . '.zip';
-			$cmd = "zip -r -q $out_filename $filename";
-
-			$ret = $this->execCommand($cmd, $dir);
-		}
-
-		if (!$ret) {
-			$success = true;
-		}
-
-		$out_filepath = $dir . '/' . $out_filename;
+		$this->zip->compressFile($path);
 
 		// Double check the out file too
 		if ($success) {
@@ -2037,6 +2026,200 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 }
 
 ########################################################################################################################
+# ZIP Classes
+########################################################################################################################
+
+class ZipStrategy implements DpZip
+{
+	protected $zip;
+
+	public function __construct(Upgrade $upgrade)
+	{
+		if (strpos(strtoupper(PHP_OS), 'WIN') === false) {
+			exec("zip --help", $out, $ret);
+			if ((int)$ret === 0) {
+				$this->zip = new Zip_Command($upgrade);
+			}
+		}
+
+		if (!$this->zip) {
+			if (extension_loaded('Zip')) {
+				$this->zip = new Zip_PHP();
+			} elseif (extension_loaded('zlib')) {
+				$this->zip = new Zip_PclZip();
+			} else {
+				throw new ZipException("Zip and zlib extensions not installed, no way to zip");
+			}
+		}
+	}
+
+	public function compressFile($path)
+	{
+		return $this->zip->compressFile($path);
+	}
+
+	public function decompressZip($path, $to)
+	{
+		return $this->zip->decompressZip($path, $to);
+	}
+}
+
+interface DpZip
+{
+	/**
+	 * Compress a file or directory of files.
+	 * If a directory, the ZIP should be created at the root. E.g., extracting
+	 * should extract into the cwd.
+	 *
+	 * @param string $path
+	 * @return string
+	 */
+	public function compressFile($path);
+
+	/**
+	 * Decompress a zip file
+	 *
+	 * @param string $path
+	 * @return string
+	 */
+	public function decompressZip($path, $to);
+}
+
+class Zip_Command implements DpZip
+{
+	protected $upgrade;
+
+	public function __construct(Upgrade $upgrade)
+	{
+		$this->upgrade = $upgrade;
+	}
+
+	public function compressFile($path)
+	{
+		$dir      = dirname($path);
+		$filename = basename($path);
+
+		if (is_dir($path)) {
+			$out_filename = $filename . '.zip';
+			$cmd = "zip -r -q $dir/$out_filename * .htaccess";
+
+			$ret = $this->execCommand($cmd, $path);
+		} else {
+			$out_filename = $filename . '.zip';
+			$cmd = "zip -r -q $out_filename $filename";
+
+			$ret = $this->upgrade->execCommand($cmd, $dir);
+		}
+
+		$out_filepath = $dir . '/' . $out_filename;
+
+		if (!$ret) {
+			return false;
+		}
+
+		return $out_filepath;
+	}
+
+	public function decompressZip($path, $to)
+	{
+		$cmd = "unzip -q $path";
+		$ret = $this->execCommand($cmd, $to);
+
+		if (!$ret) {
+			return false;
+		}
+
+		return true;
+	}
+}
+
+class Zip_PHP implements DpZip
+{
+	public function compressFile($path)
+	{
+		$path = str_replace('\\', '/', $path);
+
+		$dir          = dirname($path);
+		$filename     = basename($path);
+		$out_filename = $filename . '.zip';
+		$out_filepath = $dir . '/' . $out_filename;
+
+		$zip = new \ZipArchive();
+		if (!$zip->open($out_filepath, \ZIPARCHIVE::CREATE)) {
+			return false;
+		}
+
+		if (is_dir($path)) {
+			$files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir), \RecursiveIteratorIterator::SELF_FIRST);
+			foreach ($files as $file) {
+				$file = str_replace('\\', '/', realpath($file));
+
+				if (is_dir($file) === true) {
+					$zip->addEmptyDir(str_replace($path. '/', '', $file . '/'));
+				} elseif (is_file($file) === true && realpath($file) != $out_filepath) {
+					$zip->addFile(str_replace($path . '/', '', $file), realpath($file));
+				}
+			}
+		} else {
+			$zip->addFile($filename, $path);
+		}
+
+		if (!$zip->close()) {
+			return false;
+		}
+
+		return $out_filepath;
+	}
+
+	public function decompressZip($path, $to)
+	{
+		$zip = new \ZipArchive();
+		if (!$zip->open($out_filepath)) {
+			return false;
+		}
+
+		if (!$zip->extractTo($to)) {
+			return false;
+		}
+
+		return true;
+	}
+}
+
+class Zip_PclZip implements DpZip
+{
+	public function __construct()
+	{
+		require_once(DP_ROOT . '/vendor/pclzip/pclzip.lib.php');
+	}
+
+	public function compressFile($path)
+	{
+		$path = str_replace('\\', '/', $path);
+
+		$dir          = dirname($path);
+		$filename     = basename($path);
+		$out_filename = $filename . '.zip';
+		$out_filepath = $dir . '/' . $out_filename;
+
+		$zip = new \PclZip($out_filepath);
+		$zip->add($path, \PCLZIP_OPT_REMOVE_PATH, $dir);
+
+		return true;
+	}
+
+	public function decompressZip($path, $to)
+	{
+		$zip = new \PclZip($path);
+		if ($zip->extract(\PCLZIP_OPT_PATH, $to) !== 0) {
+			return false;
+		}
+
+		return true;
+	}
+}
+
+########################################################################################################################
 # Exception Classes
 ########################################################################################################################
 
@@ -2172,6 +2355,16 @@ class UpgradeFilesException extends \Exception
 	const COPY_ERROR    = 300;
 }
 
+/**
+ * Exception thrown when trying to upgrade files on the filesystem from a zip
+ */
+class ZipException extends \Exception
+{
+	/**
+	 * No way to create zips
+	 */
+	const NO_STRATEGY       = 100;
+}
 
 ########################################################################################################################
 # RUN
