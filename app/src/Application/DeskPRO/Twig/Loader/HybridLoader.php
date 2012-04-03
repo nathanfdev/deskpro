@@ -66,14 +66,11 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 
 		if (!defined('DP_BUILDING')) {
 			$this->style = App::getSystemService('style');
-
-			if (!App::getConfig('debug.templates.disable_db_templates')) {
-				$this->style_template_info = App::getDb()->fetchAllKeyed("
-					SELECT id, name, UNIX_TIMESTAMP(date_updated) AS date_updated
-					FROM templates
-					WHERE style_id = ?
-				", array($this->style['id']), 'name');
-			}
+			$this->style_template_info = App::getDb()->fetchAllKeyed("
+				SELECT id, name, UNIX_TIMESTAMP(date_updated) AS date_updated
+				FROM templates
+				WHERE style_id = ?
+			", array($this->style['id']), 'name');
 		} else {
 			$this->style = new \Application\DeskPRO\Entity\Style();
 		}

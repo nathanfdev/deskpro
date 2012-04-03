@@ -145,7 +145,8 @@ class NewTicketAction implements BreakableAction, ActionInterface
 	 */
 	public function setEmailTemplate($tpl, $type = '')
 	{
-		switch ($tpl) {
+		$this->tracker->logMessage("set template $tpl $type");
+		switch ($type) {
 			case 'user_new_ticket':
 				$this->newticket_email_tpl = $tpl;
 				break;

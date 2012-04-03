@@ -350,7 +350,7 @@ class TemplatesController extends AbstractController
 
 		$custom_templates = $this->container->getSystemService('style')->getCustomTemplateInfo();
 		$custom_templates = array_filter($custom_templates, function($v) use ($dirname, $prefix) {
-			if (strpos($v['name'], "Custom:$dirname:$prefix") === 0) {
+			if (strpos($v['name'], "DeskPRO:custom_$dirname:$prefix") === 0) {
 				return true;
 			}
 			return false;

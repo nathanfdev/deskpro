@@ -48,7 +48,10 @@ class SetEmailTemplateModifier implements CollectionModifierInterface
 	public function modifyCollection(ActionsCollection $collection)
 	{
 		$notify_types = array();
-		$notify_types[] = 'NewTicket';
+		$notify_types[] = 'NewTicketAction';
+		$notify_types[] = 'UserNotificationNewReplyAction';
+		$notify_types[] = 'UserNotificationNewAgentAction';
+		$notify_types[] = 'AgentNotificationAction';
 
 		foreach ($notify_types as $type) {
 			if ($collection->hasActionType($type)) {

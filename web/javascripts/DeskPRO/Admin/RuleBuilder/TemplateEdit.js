@@ -136,7 +136,7 @@ DeskPRO.Admin.RuleBuilder.TemplateEdit = new Orb.Class({
 				el.find('.overlay-footer').addClass('loading');
 
 				var postData = {
-					name: el.find('input.name').data('tpl-name-prefix') + el.find('input.name').val() + '.twig.html',
+					name: el.find('input.name').data('tpl-name-prefix') + el.find('input.name').val() + '.html.twig',
 					copy_tpl: el.find('select.copy_tpl').val()
 				};
 
