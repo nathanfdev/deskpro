@@ -100,7 +100,7 @@ class PopAccountsStep extends AbstractDeskpro3Step
 			'secure' => $account['usessl'] ? true : false
 		);
 		$new_gateway->gateway_type = 'tickets';
-		$new_gateway->is_enabled = $account['active'] ? true : false;
+		$new_gateway->is_enabled = false;
 
 		$this->getEm()->persist($new_gateway);
 		$this->getEm()->flush();
