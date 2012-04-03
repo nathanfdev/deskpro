@@ -102,6 +102,11 @@ class TechPmsStep extends AbstractDeskpro3Step
 				$this->getEm()->flush();
 			}
 
+			$new_msg = \Orb\Util\Strings::convertToUtf8($message_info['message'], 'ISO-8895-1');
+			if ($new_msg) {
+				$message['message'] = $new_msg;
+			}
+
 			$chat_message = $convo->addNewMessage(
 				html_entity_decode(strip_tags($message['message']), \ENT_QUOTES),
 				$agent

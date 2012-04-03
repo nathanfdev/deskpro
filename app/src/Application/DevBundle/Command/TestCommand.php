@@ -35,6 +35,13 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$message = App::getOrm()->find('DeskPRO:ChatMessage', 1);
+
+		$message['content'] = iconv('ISO-8859-1', 'UTF-8', $message['content']);
+		App::getOrm()->persist($message);
+		App::getOrm()->flush();
+
+
 		echo "\n";
 	}
 }
