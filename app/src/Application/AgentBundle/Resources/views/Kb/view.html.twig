@@ -94,10 +94,10 @@ pageMeta.baseId = '{{ baseId }}';
 			<dt>{{ phrase('agent.label_rating') }}</dt>
 			<dd>
                 {% set phrase_part %}
-                <span class="link-look who-voted-trigger">{{ phrase('agent.kb.n_votes', {'count':article.num_ratings}) }}</span>
+                <span class="link-look who-voted-trigger">{{ phrase('agent.kb.n_votes', {{'count':article.num_ratings}}) }}</span>
                 {% endset %}
-                {{ phrase('agent.kb.percent_helpful_n_votes', {'percent':article.rating_percent,'subphrase':phrase_part}) }}<br />
-				<small>{{ phrase('agent.kb.n_helpful_n_unhelpful', {'up_votes':article.up_votes,'down_votes':article.down_votes}) }}</small>
+                {{ phrase('agent.kb.percent_helpful_n_votes', {{'percent':article.rating_percent,'subphrase':phrase_part}}) }}<br />
+				<small>{{ phrase('agent.kb.n_helpful_n_unhelpful', {{'up_votes':article.up_votes,'down_votes':article.down_votes}}) }}</small>
 			</dd>
 
 			{% if article.date_created == article.date_published %}
@@ -109,7 +109,7 @@ pageMeta.baseId = '{{ baseId }}';
                     {% set phrase_part2 %}
                         <time>{{article.date_created|date('fulltime')}}</time>
                     {% endset %}
-                    {{ phrase('agent.kb.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name,'date':phrase_part2}) }}
+                    {{ phrase('agent.kb.event_time_ago_by_who_at_when', {{'ago':phrase_part1,'name':article.person.display_name,'date':phrase_part2}}) }}
 				</dd>
 			{% else %}
 				<dt>{{ phrase('agent.date_created') }}:</dt>
@@ -120,7 +120,7 @@ pageMeta.baseId = '{{ baseId }}';
                     {% set phrase_part2 %}
                     <time>{{article.date_created|date('fulltime')}}</time>
                     {% endset %}
-                    {{ phrase('agent.kb.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name,'date':phrase_part2}) }}
+                    {{ phrase('agent.kb.event_time_ago_by_who_at_when', {{'ago':phrase_part1,'name':article.person.display_name,'date':phrase_part2}}) }}
 				</dd>
 
 				{# Makes sure its not a future date, which means auto-publish sometime in the future #}
@@ -133,7 +133,7 @@ pageMeta.baseId = '{{ baseId }}';
                         {% set phrase_part2 %}
                         <time>{{article.date_created|date('fulltime')}}</time>
                         {% endset %}
-                        {{ phrase('agent.kb.event_time_ago_at_when', {'ago':phrase_part1,'date':phrase_part2}) }}
+                        {{ phrase('agent.kb.event_time_ago_at_when', {{'ago':phrase_part1,'date':phrase_part2}}) }}
 					</dd>
 				{% endif %}
 			{% endif %}

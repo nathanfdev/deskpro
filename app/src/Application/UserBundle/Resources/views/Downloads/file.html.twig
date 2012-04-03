@@ -30,7 +30,7 @@
 			<div class="dp-box-content-meta">
 				<div class="by-line">
 					<img src="{{ download.person.getPictureUrl(40) }}" />
-					{{ phrase('user.created_by_x_on_y', {'name': download.person.display_name, 'date': article.date_created|date('M d Y')}) }}
+					{{ phrase('user.created_by_x_on_y', {{'name': download.person.display_name, 'date': article.date_created|date('M d Y')}}) }}
 					<br class="dp-clear" style="clear:left" />
 				</div>
 			</div>

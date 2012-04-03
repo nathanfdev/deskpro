@@ -1,7 +1,7 @@
 <div class="change-picture-overlay {% if person.picture_blob %}with-existing{% endif %} mass-actions-overlay">
 	<div class="overlay-title">
 		<span class="close close-trigger">{{ phrase('agent.person.close') }}</span>
-		<h4>{{ phrase('agent.misc.change_pic_for', {'name': person.display_name}) }}</h4>
+		<h4>{{ phrase('agent.misc.change_pic_for', {{'name': person.display_name}}) }}</h4>
 	</div>
 	<div class="overlay-content">
 		<div class="drop-file-zone"><h1>{{ phrase('agent.person.drop_your_file_here_to_upload_a_new') }}</h1></div>

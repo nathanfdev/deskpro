@@ -86,7 +86,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				</div>
 			{% endif %}
 			{% if hard_delete_time %}
-				{{ phrase('agent.tickets.perm_delete_note', {'time': hard_delete_time}) }}
+				{{ phrase('agent.tickets.perm_delete_note', {{'time': hard_delete_time}}) }}
 			{% endif %}
 		{% elseif ticket.hidden_status == 'spam' %}
 			{{ phrase('agent.ticket.this_ticket_has_been_marked_as_spam') }}<br />
@@ -98,7 +98,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			{% endif %}
 
 			{% if hard_delete_time %}
-				{{ phrase('agent.tickets.perm_delete_note', {'time': hard_delete_time}) }}
+				{{ phrase('agent.tickets.perm_delete_note', {{'time': hard_delete_time}}) }}
 			{% endif %}
 		{% else %}
 			{{ phrase('agent.tickets.hidden_because') }}
@@ -307,9 +307,9 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					{% set waiting %}
 					<time class="timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c') }}"></time>
 					{% endset %}
-					{{ phrase('agent.tickets.user_waiting_x_and_total_y', {'waiting': waiting, 'total': waiting_total}) }}
+					{{ phrase('agent.tickets.user_waiting_x_and_total_y', {{'waiting': waiting, 'total': waiting_total}}) }}
 					{% else %}
-					{{ phrase('agent.tickets.user_waiting_total_x', {'total': waiting_total}) }}
+					{{ phrase('agent.tickets.user_waiting_total_x', {{'total': waiting_total}}) }}
 					{% endif %}
 				</td>
 			</tr>

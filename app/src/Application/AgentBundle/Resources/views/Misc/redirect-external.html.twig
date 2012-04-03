@@ -37,10 +37,10 @@
 		<div class="page-content">
 			<h1>{{ phrase('agent.misc.redirect_title') }}</h1>
 			<p>
-				{{ phrase('agent.misc.redirect_explain', {'host': urlinfo.host|e}) }}
+				{{ phrase('agent.misc.redirect_explain', {{'host': urlinfo.host|e}}) }}
 			</p>
 			<div class="url-go">
-				<a class="clean-white" href="{{ url }}">{{ phrase('agent.misc.redirect_continue', {'url': url|e}) }}</a>
+				<a class="clean-white" href="{{ url }}">{{ phrase('agent.misc.redirect_continue', {{'url': url|e}}) }}</a>
 			</div>
 			<div id="url_info" class="url-info" style="display: none"></div>
 		</div>

@@ -57,7 +57,7 @@
 					{% endif %}
 					{% if not is_use_by and not is_ignored_by %}
 						<div class="namelistbox">
-                            {{ phrase('admin.ticketfilters.title_has_no_members', {'title':filter.agent_team.name}) }}
+                            {{ phrase('admin.ticketfilters.title_has_no_members', {{'title':filter.agent_team.name}}) }}
 						</div>
 					{% endif %}
 				{% endif %}

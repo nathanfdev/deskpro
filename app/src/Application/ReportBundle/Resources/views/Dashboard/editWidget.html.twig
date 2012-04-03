@@ -33,7 +33,7 @@
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>{{ phrase('report.dashboard.display_grouping_data') }}</label>
-				<span>{{ phrase('report.dashboard.display_grouping_data', {'group_by': stat.getGroupingName }) }}</span>
+				<span>{{ phrase('report.dashboard.display_grouping_data', {{'group_by': stat.getGroupingName }}) }}</span>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.display_grouping) }}
@@ -43,7 +43,7 @@
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>{{ phrase('report.dashboard.data_range') }}</label>
-				<span>{{ phrase('report.dashboard.how_many_time_units_to_display', {'period_type': stat.getRunPeriodLength() }) }}</span>
+				<span>{{ phrase('report.dashboard.how_many_time_units_to_display', {{'period_type': stat.getRunPeriodLength() }}) }}</span>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.number_data_points) }}

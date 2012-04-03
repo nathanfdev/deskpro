@@ -1,6 +1,6 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block content %}
-	<h3>{{ phrase('user.title_validate_address', {email: email.email}) }}</h3>
+	<h3>{{ phrase('user.title_validate_address', {{email: email.email}}) }}</h3>
 	<p>
 		{{ phrase('user.enter_validate_code') }}
 		<form action="{{ path('user_profile_emails_validate', {'email_id': email.id}) }}" method="post">

@@ -2,7 +2,7 @@
 {% block pagebar %}
 	<ul>
 		<li><a href="{{ path('admin_server_error_logs') }}">{{ phrase('admin.server.error_logs') }}</a></li>
-		<li>{{ phrase('admin.server.error_log_number', {'id':log.id}) }}</li>
+		<li>{{ phrase('admin.server.error_log_number', {{'id':log.id}}) }}</li>
 	</ul>
 {% endblock %}
 {% block page %}

@@ -31,7 +31,7 @@ pageMeta.orgResultIds = {{ org_ids|json_encode|raw }};
             {% set phrase_part2 %}
 			<span class="results-total-count" id="{{baseId}}_total_count">{{ org_ids|length }}</span>
             {% endset %}
-            {{ phrase('agent.organization.showing_results_of_size', {'count':org_ids|length,'display_count':phrase_part1,'size':phrase_part2}) }}
+            {{ phrase('agent.organization.showing_results_of_size', {{'count':org_ids|length,'display_count':phrase_part1,'size':phrase_part2}}) }}
 		</div>
 		{% if org_ids|length > per_page %}
 			<ul class="pagenav no-prev">

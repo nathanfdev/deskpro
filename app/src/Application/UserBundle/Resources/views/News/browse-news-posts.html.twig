@@ -15,6 +15,6 @@
 		<div class="message">
 			{{ news.excerpt_html|raw }}
 		</div>
-		<div class="more-link"><a href="">{{ phrase('user.news.view_rest_of_article_link') }} {% if news.count_words_after_excerpt > 0 %}{{ phrase('user.news.count_words_remaining', {'count':news.count_words_after_excerpt}) }}{% endif %} &rarr;</a></div>
+		<div class="more-link"><a href="">{{ phrase('user.news.view_rest_of_article_link') }} {% if news.count_words_after_excerpt > 0 %}{{ phrase('user.news.count_words_remaining', {{'count':news.count_words_after_excerpt}}) }}{% endif %} &rarr;</a></div>
 	</li>
 {% endfor %}

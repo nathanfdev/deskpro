@@ -96,7 +96,7 @@ pageMeta.baseId = '{{ baseId }}';
 {% if with_warn_for_email %}
 <div class="full-tab-warn">
 	<div class="message">
-		{{ phrase('agent.people.warn_email_address', {'email': with_warn_for_email}) }}
+		{{ phrase('agent.people.warn_email_address', {{'email': with_warn_for_email}}) }}
 		<div class="controls">
 			<button class="clean-white dismiss-trigger">{{ phrase('agent.okay') }}</button>
 		</div>

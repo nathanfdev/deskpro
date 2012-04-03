@@ -66,10 +66,10 @@
 		<div class="dp-page-box">
 			<div class="editor-disabled">
 				<p>
-                    {{ phrase('admin.portal.portal_is_disabled', {'url':app.getSetting('core.deskpro_url')}) }}
+                    {{ phrase('admin.portal.portal_is_disabled', {{'url':app.getSetting('core.deskpro_url')}}) }}
 				</p>
 				<p>
-                    {{ phrase('admin.portal.click_button_to_reenable_or_use_widgets', {'path':path('admin_tickets_editor')}) }}
+                    {{ phrase('admin.portal.click_button_to_reenable_or_use_widgets', {{'path':path('admin_tickets_editor')}}) }}
 				</p>
 			</div>
 		</div>

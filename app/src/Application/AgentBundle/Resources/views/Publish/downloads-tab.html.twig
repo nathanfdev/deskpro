@@ -6,7 +6,7 @@
 				<span class="add-new-cat tipped" id="publish_outline_downloadscat_addcat" title="{{ phrase('agent.create_new_category') }}">{{ phrase('agent.publish.create_category') }}</span>
 				<span class="add-new-article tipped" id="publish_outline_downloads_add" title="{{ phrase('agent.create_download') }}" data-newloader-name="newDownloadLoader"></span>
 			{% endif %}
-			<span class="all-route title" data-route="listpane:{{ path('agent_downloads_list') }}">{{ phrase('agent.publish.files', {'count':download_cats_counts['0_total']|default(0)}) }}</span>
+			<span class="all-route title" data-route="listpane:{{ path('agent_downloads_list') }}">{{ phrase('agent.publish.files', {{'count':download_cats_counts['0_total']|default(0)}}) }}</span>
 		</li>
 		{% include 'AgentBundle:Publish:downloads-cat-list.html.twig' with {'cats': download_cats, 'counts': download_cats_counts, 'depth': 0 } %}
 	</ul>

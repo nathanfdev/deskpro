@@ -38,7 +38,7 @@
 			<div class="dp-box-content-meta">
 				<div class="by-line">
 					<img src="{{ article.person.getPictureUrl(40) }}" />
-					{{ phrase('user.articles.created_by_on', {'name':article.person.display_name, 'date':article.date_created|date('M d Y')}) }}
+					{{ phrase('user.articles.created_by_on', {{'name':article.person.display_name, 'date':article.date_created|date('M d Y')}}) }}
 					<br class="dp-clear" style="clear:left" />
 				</div>
 			</div>

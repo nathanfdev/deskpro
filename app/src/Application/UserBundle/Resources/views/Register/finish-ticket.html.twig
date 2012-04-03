@@ -14,7 +14,7 @@
 
 		{% if ticket.hidden_status == 'validating' %}
 			<p>
-				{{ phrase('user.tickets.finish_validating', {'email': ticket.person_email.email}) }}
+				{{ phrase('user.tickets.finish_validating', {{'email': ticket.person_email.email}}) }}
 			</p>
 		{% endif %}
 	</div>

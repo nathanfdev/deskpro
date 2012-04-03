@@ -47,20 +47,20 @@
                     {% set phrase_link %}
                         <a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.emailgateways.default_outgoing_account') }}</a>
                     {% endset %}
-                    {{ phrase('admin.emailgateways.when_no_rules_match', {'link':phrase_link}) }}
+                    {{ phrase('admin.emailgateways.when_no_rules_match', {{'link':phrase_link}}) }}
 				</p>
 			{% else %}
 				<p>
                     {% set phrase_link %}
                     <a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.emailgateways.default_outgoing_account') }}</a>
                     {% endset %}
-                    {{ phrase('admin.emailgateways.all_email_is_being_sent_via', {'link':phrase_link}) }}
+                    {{ phrase('admin.emailgateways.all_email_is_being_sent_via', {{'link':phrase_link}}) }}
 				</p>
 				<p>
                     {% set phrase_link %}
                     <a href="{{ path('admin_emailtrans_newaccount') }}">{{ phrase('admin.emailgateways.add_new_account') }}</a>
                     {% endset %}
-                    {{ phrase('admin.emailgateways.explain_different_servers', {'link':phrase_link}) }}
+                    {{ phrase('admin.emailgateways.explain_different_servers', {{'link':phrase_link}}) }}
 				</p>
 			{% endif %}
 		</article>

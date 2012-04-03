@@ -58,19 +58,19 @@ pageMeta.baseId = '{{ baseId }}';
 				<dt>{{ phrase('agent.label_rating') }}</dt>
 				<dd>
                     {% set phrase_part %}
-                    <span class="link-look who-voted-trigger">{{ phrase('agent.downloads.n_votes', {'count':download.num_ratings}) }}</span>
+                    <span class="link-look who-voted-trigger">{{ phrase('agent.downloads.n_votes', {{'count':download.num_ratings}}) }}</span>
                     {% endset %}
-                    {{ phrase('agent.downloads.percent_helpful_n_votes', {'subphrase':phrase_part,'percent':download.rating_percent}) }}
-					<small>{{ phrase('agent.downloads.n_helpful_n_unhelpful', {'up_votes':download.up_votes, 'down_votes':download.down_votes}) }}</small>
+                    {{ phrase('agent.downloads.percent_helpful_n_votes', {{'subphrase':phrase_part,'percent':download.rating_percent}}) }}
+					<small>{{ phrase('agent.downloads.n_helpful_n_unhelpful', {{'up_votes':download.up_votes, 'down_votes':download.down_votes}}) }}</small>
 				</dd>
 
 				<dt></dt>
 				<dd>
-					{{ phrase('agent.created_timeago_by_x_on_y', {
+					{{ phrase('agent.created_timeago_by_x_on_y', {{
 					'timeago': '<time class="timeago" datetime="' ~ download.date_created|date('c') ~'"></time>',
 					'name': download.person.display_name,
 					'date': '<time>' ~ download.date_created|date('fulltime') ~ '</time>'
-				}) }}
+				}}) }}
 				</dd>
 			</dl>
 

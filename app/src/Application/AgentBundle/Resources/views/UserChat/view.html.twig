@@ -8,7 +8,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.UserChat';
 	{% if convo.person_email %}t.push({{ '<' ~ convo.person_email ~ '>'|json_encode|raw }});{% endif %}
 	pageMeta.title = t.join(' ');
 {% else %}
-	pageMeta.title = '{{ phrase('agent.chat.title_chat_id', {'chat_id': convo.id}) }}';
+	pageMeta.title = '{{ phrase('agent.chat.title_chat_id', {{'chat_id': convo.id}}) }}';
 {% endif %}
 pageMeta.url_fragment  = '{{ url_fragment('agent_userchat_view', {'conversation_id': convo.id}) }}';
 pageMeta.conversation_id = {{convo.id}};
@@ -60,7 +60,7 @@ pageMeta.baseId = '{{ baseId }}';
 				</a>
 			{% endif %}
 		{% endset %}
-		{{ phrase('agent.chat.chat_with_x', {'name': chat_person_name}) }}
+		{{ phrase('agent.chat.chat_with_x', {{'name': chat_person_name}}) }}
 	</h1>
     <div class="clear"></div>
     <div class="meta-line">

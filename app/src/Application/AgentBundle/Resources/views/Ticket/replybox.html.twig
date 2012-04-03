@@ -142,10 +142,10 @@
                                 {% set phrase_part %}
                                 <span class="new-val-label">{{ phrase('agent.tickets.status_awaiting_user') }}</span>
                                 {% endset %}
-                                {{ phrase('agent.ticket.change_status', {'old':phrase('agent.tickets.status_' ~ ticket.status), 'new':phrase_part}) }}
+                                {{ phrase('agent.ticket.change_status', {{'old':phrase('agent.tickets.status_' ~ ticket.status), 'new':phrase_part}}) }}
 							</a>
 							<a class="status-trigger prop-no-change with-menu-click-position">
-                                {{ phrase('agent.ticket.keep_status_set', {'old':phrase('agent.tickets.status_' ~ ticket.status)}) }}
+                                {{ phrase('agent.ticket.keep_status_set', {{'old':phrase('agent.tickets.status_' ~ ticket.status)}}) }}
 							</a>
 						</div>
 					</li>

@@ -1,7 +1,7 @@
 <div class="dp-user-vote dp-hide-print">
 	{% if app.getSetting('user.show_ratings') and content_object.num_ratings >= app.getSetting('user.show_ratings') %}
 		<div style="float:left; margin-top: 2px;">
-			{{ phrase('user.rating_x_of_y_found_helpful', {'percent': content_object.rating_percent, 'vote_count': content_object.num_ratings}) }}
+			{{ phrase('user.rating_x_of_y_found_helpful', {{'percent': content_object.rating_percent, 'vote_count': content_object.num_ratings}}) }}
 		</div>
 	{% endif %}
 	<form action="{{ path('user_saverating', { 'object_type': content_object.content_type, 'object_id': content_object.id}) }}" method="post">
