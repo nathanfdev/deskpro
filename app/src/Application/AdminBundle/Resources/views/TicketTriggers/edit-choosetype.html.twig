@@ -20,18 +20,25 @@
 {% if with_urgency %}<input type="hidden" name="with-urgency" value="1" />{% endif %}
 
 <ul class="item-list">
-	<li>
-		<input type="radio" name="trigger[event_trigger]" value="new_ticket" /> {{ phrase('admin.tickettriggers.new_ticket') }}
-	</li>
-	<li>
-		<input type="radio" name="trigger[event_trigger]" value="new_reply" /> {{ phrase('admin.tickettriggers.new_reply') }}
-	</li>
-	<li>
-		<input type="radio" name="trigger[event_trigger]" value="property_change" /> {{ phrase('admin.tickettriggers.ticket_updated') }}
-	</li>
+	{% set types = {
+		'new_ticket.web_person': "New Ticket via Web Interface",
+		'new_ticket.gateway_person': "New Ticket via Email",
+		'new_ticket.widget_person': "New Ticket via Website Widget",
+		'new_ticket.agent': "New Ticket created by an Agent",
+		'new_reply.web_person': "New Reply via Web Interface",
+		'new_reply.gateway_person': "New Reply via Email",
+		'new_reply.agent': 'New Rely by an Agent',
+		'property_change.user': "Ticket Updated by a User",
+		'property_change.agent': "Ticket Updated by an Agent",
+	} %}
+	{% for type,title in types %}
+		<li>
+			<input type="radio" name="trigger_group" value="{{ type }}" /> {{ title }}
+		</li>
+	{% endfor %}
 
 	<li>
-		<input type="radio" name="trigger[event_trigger]" value="time_open" />
+		<input type="radio" name="trigger_group" value="time_open" />
 		{{ phrase('admin.tickettriggers.ticket_has_been_open_for') }}
 		<span class="show-off">...</span>
 		<span class="show-on">
@@ -45,7 +52,7 @@
 	</li>
 
 	<li>
-		<input type="radio" name="trigger[event_trigger]" value="time_user_waiting" /> {{ phrase('admin.tickettriggers.the_user_has_been_waiting_for_an_agent') }}
+		<input type="radio" name="trigger_group" value="time_user_waiting" /> {{ phrase('admin.tickettriggers.the_user_has_been_waiting_for_an_agent') }}
 		<span class="show-off">...</span>
 		<span class="show-on">
 			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />
@@ -58,7 +65,7 @@
 	</li>
 
 	<li>
-		<input type="radio" name="trigger[event_trigger]" value="time_total_user_waiting" /> {{ phrase('admin.tickettriggers.the_user_has_been_waiting_for_a_total') }}
+		<input type="radio" name="trigger_group" value="time_total_user_waiting" /> {{ phrase('admin.tickettriggers.the_user_has_been_waiting_for_a_total') }}
 		<span class="show-off">...</span>
 		<span class="show-on">
 			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />
@@ -72,7 +79,7 @@
 
 
 	<li>
-		<input type="radio" name="trigger[event_trigger]" value="time_agent_waiting" /> {{ phrase('admin.tickettriggers.the_agent_has_been_waiting_for_the_user') }}
+		<input type="radio" name="trigger_group" value="time_agent_waiting" /> {{ phrase('admin.tickettriggers.the_agent_has_been_waiting_for_the_user') }}
 		<span class="show-off">...</span>
 		<span class="show-on">
 			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />
@@ -85,7 +92,7 @@
 	</li>
 
 	<li>
-		<input type="radio" name="trigger[event_trigger]" value="time_resolved" /> {{ phrase('admin.tickettriggers.the_ticket_has_been_resolved_for') }}
+		<input type="radio" name="trigger_group" value="time_resolved" /> {{ phrase('admin.tickettriggers.the_ticket_has_been_resolved_for') }}
 		<span class="show-off">...</span>
 		<span class="show-on">
 			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />

@@ -5,6 +5,21 @@ DeskPRO.Admin.ElementHandler.TicketTriggersPage = new Orb.Class({
 
 	init: function() {
 		var self = this;
+		var uls = $('ul.trigger-set');		
+		
+		var updateRunOrderDisplay = function() {
+			uls.each(function() {
+				var x = 0;
+				$(this).find('li.is-trigger').each(function() {
+					if (!$(this).hasClass('off')) {
+						x++;
+						$(this).find('.run-order label').text(x + '');
+					} else {
+						$(this).find('.run-order label').text('-');
+					}
+				});
+			});
+		};
 
 		$('.trigger-toggle').on('click', function() {
 			var row = $(this).closest('.trigger-row');
@@ -21,9 +36,11 @@ DeskPRO.Admin.ElementHandler.TicketTriggersPage = new Orb.Class({
 				var mode = 1;
 			}
 
+			updateRunOrderDisplay();
+
 			var tid = row.data('trigger-id');
 			$.ajax({
-				url: BASE_URL + 'admin/tickets/business-rules/toggle-enabled.json',
+				url: BASE_URL + 'admin/tickets/triggers/toggle-enabled.json',
 				type: 'POST',
 				dataType: 'json',
 				data: {
@@ -33,66 +50,30 @@ DeskPRO.Admin.ElementHandler.TicketTriggersPage = new Orb.Class({
 			});
 		});
 
-		$('li.trigger-val').each(function() {
-			var li = $(this);
-			var name = $(this).data('trigger-name');
+		uls.each(function() {
+			var el = $(this);
+			$(this).sortable({
+				items: '> li:not(.trigger-val)',
+				update: function() {
+					var postData = [];
+					
+					$('li.is-trigger').each(function(i) {
+						var id = $(this).data('trigger-id');
+						if (id) {
+							postData.push({name: 'trigger_ids[]', value: id});
+						}
+					});
+					
+					updateRunOrderDisplay();
 
-			var fnUpdate = function() {
-				var postData = [];
-				postData.push({name: 'name', value: name});
-
-				if (name == 'base_urgency') {
-					postData.push({ name: 'num', value: $('input[name="base_urgency"]', li).val() });
-				} else {
-					postData.push({ name: 'time', value: $('input[name="time"]', li).val() });
-					postData.push({ name: 'scale', value: $('select[name="scale"]', li).val() });
-				}
-
-				$('.loading-icon-small-inline', li).show();
-				$.ajax({
-					url: BASE_URL + 'admin/tickets/business-rules/save-built-in.json',
-					type: 'post',
-					dataType: 'json',
-					data: postData,
-					complete: function() {
-						$('.loading-icon-small-inline', li).hide();
-					},
-					success: function() {
-						DeskPRO_Window.util.showSavePuff($('input', li).first());
-					}
-				});
-			}
-
-			$('select', li).on('change', fnUpdate);
-			$('input', li).on('change', fnUpdate);
-			$('input', li).on('keypress', function(ev) {
-				// Enter
-				if (ev.keyCode == 13) {
-					ev.preventDefault();
-					fnUpdate();
+					$.ajax({
+						url: UPDATE_ORDER_URL,
+						type: 'POST',
+						dataType: 'json',
+						data: postData
+					});
 				}
 			});
-		});
-
-		$('ul.trigger-set').sortable({
-			items: '> li:not(.trigger-val)',
-			containment: 'parent',
-			update: function() {
-				var postData = [];
-				$('li.is-trigger').each(function() {
-					var id = $(this).data('trigger-id');
-					if (id) {
-						postData.push({name: 'trigger_ids[]', value: id});
-					}
-				});
-
-				$.ajax({
-					url: UPDATE_ORDER_URL,
-					type: 'POST',
-					dataType: 'json',
-					data: postData
-				});
-			}
 		});
 	}
 });

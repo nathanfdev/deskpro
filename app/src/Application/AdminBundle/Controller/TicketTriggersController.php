@@ -83,7 +83,54 @@ class TicketTriggersController extends AbstractController
 	{
 		if (!$trigger_id) {
 			$trigger = new Entity\TicketTrigger();
-			$trigger['event_trigger'] = $this->in->getString('trigger.event_trigger');
+
+			switch ($this->in->getString('trigger_group')) {
+				case 'new_ticket.web_person':
+					$trigger['event_trigger'] = 'new_ticket';
+					$trigger->terms = array(array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'web.person')));
+					break;
+				case 'new_ticket.gateway_person':
+					$trigger['event_trigger'] = 'new_ticket';
+					$trigger->terms = array(array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'gateway.person')));
+					break;
+				case 'new_ticket.widget_person':
+					$trigger['event_trigger'] = 'new_ticket';
+					$trigger->terms = array(array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'widget.person')));
+					break;
+				case 'new_ticket.agent':
+					$trigger['event_trigger'] = 'new_ticket';
+					$trigger->terms = array(array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'web.agent')));
+					break;
+				case 'new_reply.agent':
+					$trigger['event_trigger'] = 'new_reply';
+					$trigger->terms = array(array('type' => 'action_performer', 'op' => 'is', 'options' => array('action_performer' => 'agent')));
+					break;
+				case 'new_reply.web_person':
+					$trigger['event_trigger'] = 'new_reply';
+					$trigger->terms = array(
+						array('type' => 'action_performer', 'op' => 'is', 'options' => array('action_performer' => 'user')),
+						array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'web'))
+					);
+					break;
+				case 'new_reply.gateway_person':
+					$trigger['event_trigger'] = 'new_reply';
+					$trigger->terms = array(
+						array('type' => 'action_performer', 'op' => 'is', 'options' => array('action_performer' => 'user')),
+						array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'gateway'))
+					);
+					break;
+				case 'property_change.agent':
+					$trigger['event_trigger'] = 'property_change';
+					$trigger->terms = array(array('type' => 'action_performer', 'op' => 'is', 'options' => array('action_performer' => 'agent')));
+					break;
+				case 'property_change.user':
+					$trigger['event_trigger'] = 'property_change';
+					$trigger->terms = array(array('type' => 'action_performer', 'op' => 'is', 'options' => array('action_performer' => 'user')));
+					break;
+				default:
+					$trigger['event_trigger'] = $this->in->getString('trigger_group');
+					break;
+			}
 
 			if ($this->in->getUint('event_trigger_time')) {
 				$trigger->event_trigger_option = $this->in->getUint('event_trigger_time') . ' ' . $this->in->getString('event_trigger_scale');
@@ -96,7 +143,7 @@ class TicketTriggersController extends AbstractController
 			}
 		}
 
-		if (!$trigger['event_trigger']) {
+		if ($trigger->getTriggerGroup() == 'other') {
 			return $this->redirectRoute('admin_tickettriggers_new_choosetype');
 		}
 
@@ -178,41 +225,6 @@ class TicketTriggersController extends AbstractController
 	}
 
 	############################################################################
-	# save-built-in
-	############################################################################
-
-	public function saveBuiltInAction()
-	{
-		$name = $this->in->getString('name');
-
-		$trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('sys_name' => $name));
-
-		if (!$trigger) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-		}
-
-		switch ($name) {
-			case 'base_urgency':
-				$actions = $trigger->actions;
-				$actions[0]['options']['num'] = $this->in->getInt('num');
-				$trigger->actions = $actions;
-				break;
-
-			default:
-				$trigger->event_trigger_option = $this->in->getUint('time') . ' ' . $this->in->getString('scale');
-				break;
-		}
-
-		$this->em->transactional(function($em) use ($trigger) {
-			$em->persist($trigger);
-			$em->flush();
-		});
-
-		return $this->createJsonResponse(array('success' => 1));
-	}
-
-
-	############################################################################
 	# update-order
 	############################################################################
 
@@ -253,5 +265,30 @@ class TicketTriggersController extends AbstractController
 		}
 
 		return $this->createJsonResponse(array('success' => true));
+	}
+
+	############################################################################
+	# delete
+	############################################################################
+
+	public function deleteAction($id, $auth)
+	{
+		$this->ensureAuthToken('delete_trigger', $auth);
+
+		$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
+
+		if ($trigger) {
+			$this->db->beginTransaction();
+			try {
+				$this->em->remove($trigger);
+				$this->em->flush();
+				$this->db->commit();
+			} catch (\Exception $e) {
+				$this->db->rollback();
+				throw $e;
+			}
+		}
+
+		return $this->redirectRoute('admin_tickettriggers');
 	}
 }

@@ -448,6 +448,115 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		return $secs;
 	}
 
+	/**
+	 * Gets the logical trigger group based on the event type and the criteria.
+	 * For example, there is one "new ticket" type but depending on who and how the ticket created,
+	 * it might be new_ticket.user_web, new_ticket.user_email or new_ticket.agent.
+	 */
+	public function getTriggerGroup()
+	{
+		switch ($this->event_trigger) {
+			case self::EVENT_NEW_TICKET:
+				$type = $this->getTicketTerms()->getTicketTerm('creation_system');
+				$type = isset($type['options']['creation_system']) ? $type['options']['creation_system'] : 'web.person';
+
+				switch ($type) {
+					case 'web.person':
+						return 'new_ticket.web_person';
+					case 'gateway.person':
+						return 'new_ticket.gateway_person';
+					case 'widget':
+						return 'new_ticket.widget_person';
+					case 'gateway.agent':
+					case 'web.agent':
+						return 'new_ticket.agent';
+				}
+				break;
+
+			case self::EVENT_NEW_REPLY:
+				$type = $this->getTicketTerms()->getTicketTerm('creation_system');
+				$type = isset($type['options']['creation_system']) ? $type['options']['creation_system'] : 'web.person';
+
+				$who_type = $this->getTicketTerms()->getTicketTerm('action_performer');
+				$who_type = isset($who_type['options']['action_performer']) ? $who_type['options']['action_performer'] : 'user';
+
+				if ($who_type == 'agent') {
+					return 'new_reply.agent';
+				}
+
+				if ($type == 'web') {
+					if ($who_type == 'user') {
+						return 'new_reply.web_person';
+					}
+				} elseif ($type == 'gateway') {
+					if ($who_type == 'user') {
+						return 'new_reply.gateway_person';
+					}
+				}
+
+				break;
+
+			case self::EVENT_PROPERTY_CHANGE:
+
+				$who_type = $this->getTicketTerms()->getTicketTerm('action_performer');
+				$who_type = isset($who_type['options']['action_performer']) ? $who_type['options']['action_performer'] : 'user';
+
+				if ($who_type == 'user') {
+					return 'property_change.user';
+				} else {
+					return 'property_change.agent';
+				}
+
+				break;
+
+			default:
+				return $this->event_trigger;
+		}
+
+		return 'other';
+	}
+
+
+	/**
+	 * Get an array of special term types for the trigger.
+	 * For example, a 'new_ticket.web_gateway' always has the creation_system term. It's not changable.
+	 *
+	 * @return array
+	 */
+	public function getStaticTermTypes()
+	{
+		switch ($this->event_trigger) {
+			case 'new_ticket': return array('creation_system');
+			case 'new_reply': return array('creation_system', 'action_performer');
+			case 'property_change': return array('action_performer');
+		}
+
+		return array();
+	}
+
+
+	/**
+	 * Get the actual set terms of the static types
+	 *
+	 * @return array
+	 */
+	public function getStaticTerms()
+	{
+		$types = $this->getStaticTermTypes();
+		if (!$types) {
+			return array();
+		}
+
+		$ret = array();
+
+		foreach ($this->terms as $term_info) {
+			if (in_array($term_info['type'], $types)) {
+				$ret[] = $term_info;
+			}
+		}
+
+		return $ret;
+	}
 
 
 	############################################################################

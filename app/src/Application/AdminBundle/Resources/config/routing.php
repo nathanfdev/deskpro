@@ -1025,45 +1025,38 @@ $collection->add('admin_tickettriggers', new Route(
 	array()
 ));
 
-$collection->add('admin_tickettriggers_savebuiltin', new Route(
-	'/tickets/triggerss/save-built-in.json',
-	array('_controller' => 'AdminBundle:TicketTriggers:saveBuiltIn'),
-	array(),
-	array()
-));
-
 $collection->add('admin_tickettriggers_new_choosetype', new Route(
-	'/tickets/triggerss/new-trigger',
+	'/tickets/triggers/new-trigger',
 	array('_controller' => 'AdminBundle:TicketTriggers:newChooseType', 'trigger_type' => 'trigger'),
 	array(),
 	array()
 ));
 
-$collection->add('admin_ticketescalations_new_choosetype', new Route(
-	'/tickets/triggerss/new-escalation',
-	array('_controller' => 'AdminBundle:TicketTriggers:newChooseType', 'trigger_type' => 'escalation'),
-	array(),
-	array()
-));
-
 $collection->add('admin_tickettriggers_edit', new Route(
-	'/tickets/triggerss/{trigger_id}/edit',
+	'/tickets/triggers/{trigger_id}/edit',
 	array('_controller' => 'AdminBundle:TicketTriggers:edit'),
 	array('trigger_id' => '\\d+'),
 	array()
 ));
 
 $collection->add('admin_tickettriggers_updateorder', new Route(
-	'/tickets/triggerss/update-orders.json',
+	'/tickets/triggers/update-orders.json',
 	array('_controller' => 'AdminBundle:TicketTriggers:updateOrder'),
 	array(),
 	array()
 ));
 
 $collection->add('admin_tickettriggers_toggle', new Route(
-	'/tickets/triggerss/toggle-enabled.json',
+	'/tickets/triggers/toggle-enabled.json',
 	array('_controller' => 'AdminBundle:TicketTriggers:toggleEnabled'),
 	array(),
+	array()
+));
+
+$collection->add('admin_tickettriggers_delete', new Route(
+	'/tickets/triggers/delete/{id}/{auth}',
+	array('_controller' => 'AdminBundle:TicketTriggers:delete'),
+	array('id' => '[0-9]+'),
 	array()
 ));
 

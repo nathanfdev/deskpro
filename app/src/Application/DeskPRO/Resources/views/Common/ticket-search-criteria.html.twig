@@ -15,7 +15,7 @@
 	</div>
 {% endif %}
 
-	{% if 'action_performer' not in no_show_fields and event_trigger == 'new_reply' or event_trigger == 'property_change'  %}
+	{% if 'action_performer' not in no_show_fields and 0 %}
 		<div class="type" title="Performer" data-rule-type="action_performer">
 			<div class="op">
 				<select name="op" class="op">
@@ -26,13 +26,13 @@
 			<div class="options">
 				<select name="action_performer">
 					<option value="agent">{{ phrase('deskpro.common.agent') }}</option>
-					<option value="user">{{ phrase('deskpro.common.user') }}</option>
+					<option value="person">{{ phrase('deskpro.common.user') }}</option>
 				</select>
 			</div>
 		</div>
 	{% endif %}
 
-	{% if 'creation_system' not in no_show_fields %}
+	{% if 'creation_system' not in no_show_fields and 'new_ticket' not in event_group %}
 	<div class="type" title="Originated interface" data-rule-type="creation_system" data-term-type="GenericMenuTerm" data-term-triggers="interface,orig-interface,original-interface">
 		<div class="op">
 			<select name="op" class="op">
@@ -44,8 +44,9 @@
 			<select name="creation_system">
 				<option value="web">{{ phrase('deskpro.common.web_interface') }}</option>
 				<option value="web.person">{{ phrase('deskpro.common._by_user') }}</option>
+				<option value="widget.person">Website Widget</option>
 				<option value="web.agent">{{ phrase('deskpro.common._by_agent_on_behalf_of_user') }}</option>
-				<option value="gateway">{{ phrase('deskpro.common.email') }}</option>
+				<option value="gateway.person">{{ phrase('deskpro.common.email') }}</option>
 			</select>
 		</div>
 	</div>

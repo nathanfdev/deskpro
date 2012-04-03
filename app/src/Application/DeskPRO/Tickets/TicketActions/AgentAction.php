@@ -141,7 +141,7 @@ class AgentAction implements ActionInterface, PersonContextInterface
 		} elseif ($this->agent_id == 0) {
 			return 'Unassign agent';
 		} else {
-			$name = App::getEntityRepository('DeskPRO:Person')->getAgentNames($this->agent_id);
+			$name = App::getEntityRepository('DeskPRO:Person')->getAgentNames(array($this->agent_id));
 			if (!isset($name[$this->agent_id])) return '';
 
 			return 'Assign agent to ' . $name[$this->agent_id];

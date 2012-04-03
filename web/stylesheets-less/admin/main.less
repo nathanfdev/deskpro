@@ -3324,9 +3324,45 @@ THE SOFTWARE.
 	border: 1px solid #ddd;
 }
 
-.trigger-row.off {
-	.opacity(80);
-	background-color: #EDEDED;
+.trigger-row {
+	
+	&.off {
+		background-color: #fff;
+		border: 1px solid #D0D5D8;
+		color: #6C6E70;
+		em.op.ctrl, em.op.ctrl {
+			background-color: #ccc !important;
+		}
+		.run-order {
+
+		}
+	}
+	
+	.run-order {
+		float: left;
+		width: 20px;
+		text-align: center;
+		font-size: 13pt;
+		font-weight: bold;
+		font-family: @heading-font-alt;
+	}
+	.contents {
+		margin-left: 25px;
+		
+		h2 {
+			font-weight: normal;
+		}
+	}
+	
+	td {
+		background-color: transparent !important;
+	}
+}
+
+.trigger-dir {
+	> table {
+		tbody td { padding: 0 !important; }
+	}
 }
 
 .check-grid i.expand-toggle {
@@ -3421,93 +3457,100 @@ tr.adv-setting {
 
 
 .template-dir {
-	thead th {
-		line-height: 18px;
-	}
-	thead .count, thead .count-changed, thead .count-outdated {
-		float: right;
-		font-size: 11px;
-		padding: 0 8px 0 10px;
-		line-height: 15px;
-		display: block;
-		font-weight: normal;
-		font-family: @body-font;
-	}
-
-	thead .count-changed, thead .count-outdated { display: none; }
-
-	thead .count-outdated {
-		background-color: #FFFFFF;
-		border: 1px solid #E46756;
-		.rounded(5px);
-	}
-
-	thead h1 {
-		background: url(../../images/agent/expand.png) no-repeat 0 2px;
-		padding-left: 15px;
-		font-family: @body-font-bold;
-		cursor: pointer;
-
-		&.expanded {
-			background: url(../../images/agent/collapse.png) no-repeat 0 2px;
+	
+	> table {
+		thead th {
+			line-height: 18px;
 		}
-	}
+		thead .count, thead .count-changed, thead .count-outdated {
+			float: right;
+			font-size: 11px;
+			padding: 0 8px 0 10px;
+			line-height: 15px;
+			display: block;
+			font-weight: normal;
+			font-family: @body-font;
+		}
 
-	thead h1.noexpand {
-		background: transparent;
-		padding-left: 0;
-	}
+		thead .count-changed, thead .count-outdated { display: none; }
 
-	td {
-		padding: 7px 10px 7px 10px !important;
-	}
+		thead .count-outdated {
+			background-color: #FFFFFF;
+			border: 1px solid #E46756;
+			.rounded(5px);
+		}
 
-	td:hover {
-		background-color: #F8F8F8;
-	}
+		thead h1 {
+			background: url(../../images/agent/expand.png) no-repeat 0 2px;
+			padding-left: 15px;
+			font-family: @body-font-bold;
+			cursor: pointer;
 
-	td em.edit {
-		float: right;
-		.iconbase(12px, 12px);
-		background: url(../../images/agent/source-title-gear.png);
-		cursor: pointer;
-		margin-top: 2px;
-	}
+			&.expanded {
+				background: url(../../images/agent/collapse.png) no-repeat 0 2px;
+			}
+		}
 
-	td em.delete {
-		float: right;
-		.iconbase(8px, 9px);
-		background: url(../../images/agent/icons/small-x.png);
-		cursor: pointer;
-		margin-top: 5px;
-		margin-right: 5px;
-	}
+		thead h1.noexpand {
+			background: transparent;
+			padding-left: 0;
+		}
 
-	td h3 {
-		font-weight: normal;
-		font-size: 12px;
-		font-family: @body-font;
-	}
+		td {
+			padding: 7px 10px 7px 10px !important;
+		}
 
-	td .changed-tag,  td .outdated-tag {
-		float: right;
-		display: block;
-		line-height: 100%;
-		font-size: 10px;
-		padding: 1px 5px 1px 5px;
-		margin-right: 8px;
-		margin-top: 1px;
+		td:hover {
+			background-color: #F8F8F8;
+		}
+	
+		&.simple {
+			td:hover { background-color: #fff; }
+		}
 
-		background-color: #FBFDB5;
-		border: 1px solid #C9C991;
-		.rounded(4px);
+		td em.edit {
+			float: right;
+			.iconbase(12px, 12px);
+			background: url(../../images/agent/source-title-gear.png);
+			cursor: pointer;
+			margin-top: 2px;
+		}
 
-		display: none;
-	}
+		td em.delete {
+			float: right;
+			.iconbase(8px, 9px);
+			background: url(../../images/agent/icons/small-x.png);
+			cursor: pointer;
+			margin-top: 5px;
+			margin-right: 5px;
+		}
 
-	td .outdated-tag {
-		background-color: #FFF;
-		border: 1px solid #E46756;
+		td h3 {
+			font-weight: normal;
+			font-size: 12px;
+			font-family: @body-font;
+		}
+
+		td .changed-tag,  td .outdated-tag {
+			float: right;
+			display: block;
+			line-height: 100%;
+			font-size: 10px;
+			padding: 1px 5px 1px 5px;
+			margin-right: 8px;
+			margin-top: 1px;
+
+			background-color: #FBFDB5;
+			border: 1px solid #C9C991;
+			.rounded(4px);
+
+			display: none;
+		}
+
+		td .outdated-tag {
+			background-color: #FFF;
+			border: 1px solid #E46756;
+		}
 	}
 
 	.tpl-changed .changed-tag { display:block; }

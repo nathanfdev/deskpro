@@ -14,7 +14,7 @@ DeskPRO.Admin.ElementHandler.TicketTriggersNewChoosePage = new Orb.Class({
 			quitit = true;
 
 			var li = $(this);
-			var radio = $('input[name="trigger[event_trigger]"]', li).click();
+			var radio = $('input[name="trigger_group"]', li).click();
 			$('li', form).removeClass('on');
 			li.addClass('on');
 

@@ -7,51 +7,58 @@
 </script>
 {% endblock %}
 {% block pagebar %}
-	<nav>
-		<ul>
-			<li class="add"><a href="{{ path('admin_tickettriggers_new_choosetype') }}">{{ phrase('admin.tickettriggers.add_trigger') }}</a></li>
-		</ul>
-	</nav>
+<nav>
 	<ul>
-		<li>{{ phrase('admin.tickettriggers.triggers') }}</li>
+		<li class="add"><a href="{{ path('admin_tickettriggers_new_choosetype') }}">{{ phrase('admin.tickettriggers.add_trigger') }}</a></li>
 	</ul>
+</nav>
+<ul>
+	<li>{{ phrase('admin.tickettriggers.triggers') }}</li>
+</ul>
 {% endblock %}
 {% block page %}
 
-{% macro trigger_row(trigger, time_explain_prefix) %}
-	<li class="item-row trigger-row is-trigger {% if trigger.is_enabled %}{% else %}off{% endif %}" id="trigger_{{ trigger.id }}" data-trigger-id="{{ trigger.id }}">
-		<div class="dp-block-controls">
-			<ul>
-				<li class="dp-edit"><a href="{{ path('admin_tickettriggers_edit', {'trigger_id': trigger.id}) }}" class="popout-trigger"><span></span></a></li>
-				<li class="dp-move"><span></span></li>
-				<li class="dp-on-off trigger-toggle"><span class="off" {% if trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.tickettriggers.off') }}</span><span class="on" {% if not trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.tickettriggers.on') }}</span></li>
-			</ul>
-		</div>
+{% macro trigger_row(index, trigger, time_explain_prefix) %}
+<li class="item-row trigger-row is-trigger {% if trigger.is_enabled %}{% else %}off{% endif %}" id="trigger_{{ trigger.id }}" data-trigger-id="{{ trigger.id }}">
+	<div class="dp-block-controls">
+		<ul>
+			<li class="dp-edit"><a href="{{ path('admin_tickettriggers_edit', {'trigger_id': trigger.id}) }}" class="popout-trigger"><span></span></a></li>
+			<li class="dp-move"><span></span></li>
+			<li class="dp-on-off trigger-toggle"><span class="off" {% if trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.tickettriggers.off') }}</span><span class="on" {% if not trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.tickettriggers.on') }}</span></li>
+		</ul>
+	</div>
+	<div class="run-order"><label>{{ index }}</label></div>
+	<div class="contents">
 		{% if trigger.sys_name %}
-			<lable><h2>{{ phrase('agent.triggers_' ~ trigger.sys_name|replace({'.': '_'})) }}</h2></lable>
+		<lable><h2>{{ phrase('agent.triggers_' ~ trigger.sys_name|replace({'.': '_'})) }}</h2></lable>
 		{% elseif trigger.title %}
-			<lable><h2>{{ trigger.title }}</h2></lable>
+		<lable><h2>{{ trigger.title }}</h2></lable>
 		{% endif %}
 		<div class="trigger-desc">
-			<div class="terms">
-				<em class="op ctrl">{{ phrase('admin.tickettriggers.if') }}</em>
-				{% if trigger.event_trigger_option %}
-					{{ time_explain_prefix }} {{ relative_time(trigger.event_trigger_option, 1) }} <em class="op">{{ phrase('admin.tickettriggers.and') }}</em>
-				{% endif %}
-				{% for desc in trigger.getTermDescriptions() %}
+			<table cellspacing="0" cellpadding="0"><tr><td valign="top" width="350">
+				<div class="terms">
+					<em class="op ctrl">if</em>
+					{% if trigger.event_trigger_option %}
+					{{ time_explain_prefix }} {{ relative_time(trigger.event_trigger_option, 1) }} <br /><em class="op">and</em>
+					{% endif %}
+					{% for desc in trigger.getTermDescriptions() %}
 					<span class="term">{{ desc }}</span>
-					{% if not loop.last %}<em class="op">{{ phrase('admin.tickettriggers.and') }}</em>{% endif %}
-				{% endfor %}
-			</div>
-			<div class="actions">
-				<em class="op ctrl">{{ phrase('admin.tickettriggers.then') }}</em>
-				{% for desc in trigger.getActionDescriptions() %}
+					{% if not loop.last %}<br /><em class="op">and</em>{% endif %}
+					{% endfor %}
+				</div>
+			</td><td valign="top" width="50%" style="padding-left: 15px;">
+				<div class="actions">
+					<em class="op ctrl">then</em>
+					{% for desc in trigger.getActionDescriptions() %}
 					<span class="term">{{ desc|raw }}</span>
-					{% if not loop.last %}<em class="op">{{ phrase('admin.tickettriggers.and') }}</em>{% endif %}
-				{% endfor %}
-			</div>
+					{% if not loop.last %}<br /><em class="op">and</em>{% endif %}
+					{% endfor %}
+				</div>
+			</td></tr></table>
 		</div>
-	</li>
+	</div>
+	<br class="clear" />
+</li>
 {% endmacro %}
 
 {% if not triggers %}
@@ -60,83 +67,52 @@
 </p>
 {% endif %}
 
-{% if triggers.new_ticket %}
-<h2>{{ phrase('admin.tickettriggers.new_ticket_triggers') }}</h2>
-<ul class="item-list trigger-set">
-	{% for trigger in triggers.new_ticket %}
-		{{ _self.trigger_row(trigger) }}
-	{% endfor %}
-</ul>
+{% set types = {
+	'new_ticket.web_person': "New Ticket via Web Interface",
+	'new_ticket.gateway_person': "New Ticket via Email",
+	'new_ticket.widget_person': "New Ticket via Website Widget",
+	'new_ticket.agent': "New Ticket created by an Agent",
+	'new_reply.web_person': "New Reply via Web Interface",
+	'new_reply.gateway_person': "New Reply via Email",
+	'new_reply.agent': 'New Rely by an Agent',
+	'property_change.user': "Ticket Updated by a User",
+	'property_change.agent': "Ticket Updated by an Agent",
+	'time_open': 'Time a ticket has been open',
+	'time_user_waiting': 'Time a user has been waiting for a reply',
+	'time_total_user_waiting': 'Total time a user has been waiting in a ticket',
+	'time_agent_waiting': 'Time an agent has been waiting for a user reply',
+	'time_resolved': 'Time a ticket has been resolved for',
+	'other': 'Other',
+} %}
+
+{% for type,title in types %}
+{% if triggers[type] %}
+<div class="content-table template-dir trigger-dir">
+	<table width="100%" class="simple">
+		<thead>
+		<tr>
+			<th class="single-title" colspan="10">
+				<h1 class="noexpand">
+					{{ title }}
+				</h1>
+			</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td>
+				<ul class="item-list trigger-set">
+					{% for trigger in triggers[type] %}
+					{{ _self.trigger_row(loop.index, trigger) }}
+					{% endfor %}
+				</ul>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
 <br />
 {% endif %}
-
-{% if triggers.new_reply %}
-<h2>{{ phrase('admin.tickettriggers.new_reply_triggers') }}</h2>
-<ul class="item-list trigger-set">
-	{% for trigger in triggers.new_reply %}
-		{{ _self.trigger_row(trigger) }}
-	{% endfor %}
-</ul>
-<br />
-{% endif %}
-
-{% if triggers.new_reply %}
-<h2>{{ phrase('admin.tickettriggers.ticket_update_triggers') }}</h2>
-<ul class="item-list trigger-set">
-	{% for trigger in triggers.property_change %}
-		{{ _self.trigger_row(trigger) }}
-	{% endfor %}
-</ul>
-<br />
-{% endif %}
-
-{% if triggers.time_open %}
-<h2>{{ phrase('admin.tickettriggers.triggers_based_on_the_time_a_ticket_has') }}</h2>
-<ul class="item-list">
-	{% for trigger in triggers.time_open %}
-		{{ _self.trigger_row(trigger, 'Ticket has been open') }}
-	{% endfor %}
-</ul>
-<br />
-{% endif %}
-
-{% if triggers.time_user_waiting %}
-<h2>{{ phrase('admin.tickettriggers.triggers_based_on_the_time_a_user_has') }}</h2>
-<ul class="item-list">
-	{% for trigger in triggers.time_user_waiting %}
-		{{ _self.trigger_row(trigger, 'Ticket has been awaiting agent for') }}
-	{% endfor %}
-</ul>
-<br />
-{% endif %}
-
-{% if triggers.time_total_user_waiting %}
-<h2>{{ phrase('admin.tickettriggers.triggers_based_on_the_total_time_a_user') }}</h2>
-<ul class="item-list">
-	{% for trigger in triggers.time_total_user_waiting %}
-		{{ _self.trigger_row(trigger, 'Total user waiting time is ') }}
-	{% endfor %}
-</ul>
-<br />
-{% endif %}
-
-{% if triggers.time_agent_waiting %}
-<h2>{{ phrase('admin.tickettriggers.triggers_based_on_the_time_an_agent_has') }}</h2>
-<ul class="item-list">
-	{% for trigger in triggers.time_agent_waiting %}
-		{{ _self.trigger_row(trigger, 'Ticket has been awaiting user for') }}
-	{% endfor %}
-</ul>
-<br />
-{% endif %}
-
-{% if triggers.time_agent_waiting %}
-<h2>{{ phrase('admin.tickettriggers.triggers_based_on_the_time_a_ticket_was') }}</h2>
-<ul class="item-list">
-	{% for trigger in triggers.time_agent_waiting %}
-		{{ _self.trigger_row(trigger, 'Ticket has been resolved for') }}
-	{% endfor %}
-</ul>
-{% endif %}
+{% endfor %}
 
 {% endblock %}

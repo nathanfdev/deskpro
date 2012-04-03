@@ -72,15 +72,74 @@ class TicketTerms
 	const OP_NOT_CHANGED_FROM_GTE   = 'not_changed_from_gte';
 	const OP_NOT_CHANGED_FROM_LTE   = 'not_changed_from_lte';
 
+	/**
+	 * @var array
+	 */
 	protected $terms = array();
 
+	/**
+	 * @var array
+	 */
+	protected $term_ids_map = array();
+
+	/**
+	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
+	 */
 	protected $tracker = null;
 
+
+	/**
+	 * @param array $terms
+	 */
 	public function __construct(array $terms)
 	{
 		$this->terms = $terms;
+
+		foreach ($terms as $info) {
+			if (isset($info['type'])) {
+				if (!isset($this->term_ids[$info['type']])) {
+					$this->term_ids_map[$info['type']] = array();
+				}
+				$this->term_ids_map[$info['type']][] = $info;
+			}
+		}
 	}
 
+
+	/**
+	 * Check if there is a certain term in this collection
+	 *
+	 * @param string $type
+	 * @return bool
+	 */
+	public function hasTicketTerm($type)
+	{
+		return isset($this->term_ids_map[$type]);
+	}
+
+
+	/**
+	 * @param string $type
+	 * @param bool $first
+	 * @return array
+	 */
+	public function getTicketTerm($type, $first = true)
+	{
+		if (!isset($this->term_ids_map[$type])) {
+			return array();
+		}
+
+		if (!$first) {
+			return $this->term_ids_map[$type];
+		}
+
+		return Arrays::getFirstItem($this->term_ids_map[$type]);
+	}
+
+
+	/**
+	 * @param $tracker
+	 */
 	public function setChangeTracker($tracker)
 	{
 		$this->tracker = $tracker;
@@ -90,7 +149,7 @@ class TicketTerms
 	/**
 	 * Check a specific ticket against these terms to see if it matches.
 	 *
-	 * @param Ticket $ticket
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
 	 * @return bool
 	 */
 	public function doesTicketMatch(Entity\Ticket $ticket)
@@ -125,6 +184,12 @@ class TicketTerms
 		return true;
 	}
 
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 * @param TicketChangeTracker|null $tracker
+	 * @return bool
+	 */
 	public function doesTicketMatchAny(Entity\Ticket $ticket, TicketChangeTracker $tracker = null)
 	{
 		foreach ($this->terms as $term => $info) {
@@ -143,6 +208,14 @@ class TicketTerms
 		return false;
 	}
 
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 * @param string $term
+	 * @param string $op
+	 * @param mixed $choice
+	 * @return bool
+	 */
 	public function testChangedTerm(Entity\Ticket $ticket, $term, $op, $choice)
 	{
 		if (!$tracker) return false;
@@ -188,6 +261,14 @@ class TicketTerms
 		return $pass;
 	}
 
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 * @param string $term
+	 * @param string $op
+	 * @param mixed $choice
+	 * @return bool
+	 */
 	public function testTerm(Entity\Ticket $ticket, $term, $op, $choice)
 	{
 		switch ($term) {
@@ -344,6 +425,13 @@ class TicketTerms
 		return true;
 	}
 
+
+	/**
+	 * @param mixed $value
+	 * @param string $op
+	 * @param mixed $choice
+	 * @return bool
+	 */
 	protected function _testChoiceMatch($value, $op, $choice)
 	{
 		if (is_array($choice)) {
@@ -359,7 +447,10 @@ class TicketTerms
 				return $value != $choice;
 			}
 		}
+
+		return false;
 	}
+
 
 	/**
 	 * Compiles these sets of terms into a number of JS tests on a 'ticket' variable.
@@ -445,6 +536,13 @@ class TicketTerms
 		return $js;
 	}
 
+
+	/**
+	 * @param mixed $value
+	 * @param string $op
+	 * @param string $choice
+	 * @return string
+	 */
 	protected function _compileJsChoiceTermCondition($value, $op, $choice)
 	{
 		if (is_array($choice) AND count($choice) == 1) {
@@ -510,6 +608,15 @@ class TicketTerms
 		return $descs;
 	}
 
+
+	/**
+	 * Compiles a term into an english phrase to describe the test
+	 *
+	 * @param string $term
+	 * @param string $op
+	 * @param mixed $choice
+	 * @return string
+	 */
 	public function getTermDescription($term, $op, $choice)
 	{
 		$term_summary = new \Application\DeskPRO\Translate\TermSummary();

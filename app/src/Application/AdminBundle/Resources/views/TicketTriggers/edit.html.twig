@@ -45,13 +45,18 @@ function TicketTriggerEditPage_initTerms(handler) {
 					{% endfor %}
 				</select>
 			{% endmacro %}
-			{% if trigger.event_trigger == 'new_ticket' %}New Ticket
-			{% elseif trigger.event_trigger == 'new_reply' %}New Reply
-			{% elseif trigger.event_trigger == 'property_change' %}Ticket Edited
-			{% elseif trigger.event_trigger == 'time_open' %}Ticket is open for {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
-			{% elseif trigger.event_trigger == 'time_user_waiting' %}User waiting for a reply for {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
-			{% elseif trigger.event_trigger == 'time_agent_waiting' %}Agent waiting for a reply for {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
-			{% elseif trigger.event_trigger == 'time_total_user_waiting' %}Total user waiting time exceeds {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
+			{% if trigger.getTriggerGroup() == 'new_ticket.web_person' %}New Ticket via Web Interface
+			{% elseif trigger.getTriggerGroup() == 'new_ticket.gateway_person' %}New Ticket via Email
+			{% elseif trigger.getTriggerGroup() == 'new_ticket.widget_person' %}New Ticket via Website Widget
+			{% elseif trigger.getTriggerGroup() == 'new_reply.web_person' %}New Reply via Web Interface
+			{% elseif trigger.getTriggerGroup() == 'new_reply.gateway_person' %}New Reply via Email
+			{% elseif trigger.getTriggerGroup() == 'new_reply.agent' %}New Reply by an Agent
+			{% elseif trigger.getTriggerGroup() == 'property_change.user' %}Ticket Edited by a User
+			{% elseif trigger.getTriggerGroup() == 'property_change.agent' %}Ticket Edited by an Agent
+			{% elseif trigger.getTriggerGroup() == 'time_open' %}Ticket is open for {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
+			{% elseif trigger.getTriggerGroup() == 'time_user_waiting' %}User waiting for a reply for {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
+			{% elseif trigger.getTriggerGroup() == 'time_agent_waiting' %}Agent waiting for a reply for {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
+			{% elseif trigger.getTriggerGroup() == 'time_total_user_waiting' %}Total user waiting time exceeds {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
 			{% else %}{{trigger.event_trigger}}
 			{% endif %}
 		</div>
@@ -98,20 +103,39 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 <button class="clean-white save-trigger">{{ phrase('admin.tickettriggers.save') }}</button>
 
+<!-- These never change -->
+{% for info in trigger.getStaticTerms() %}
+	{% set static_key = 'static_' ~ loop.index %}
+	<input type="hidden" name="terms[static_{{ static_key }}][type]" value="{{ info.type }}" />
+	<input type="hidden" name="terms[static_{{ static_key }}][op]" value="{{ info.op }}" />
+	{% for k,v in info.options %}
+		<input type="hidden" name="terms[static_{{ static_key }}][options][{{ k }}]" value="{{ v }}" />
+	{% endfor %}
+{% endfor %}
+
 {{ form_rest(form) }}
 </form>
+
+{% if trigger.id %}
+	<div class="delete-link-wrap">
+		<a href="{{ path('admin_tickettriggers_delete', {id: trigger.id, auth: security_token('delete_trigger') }) }}" class="confirm-delete-trigger" data-prompt="Are you sure you want to delete this trigger?">{{ phrase('admin.ticketcategories.delete') }}</a>
+	</div>
+{% endif %}
 
 {% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with {
 	'classname': 'criteria-tpl',
 	'term_options': term_options,
 	'people_term_options': term_options.people_term_options,
 	'with_change_terms': true,
-	'event_trigger': trigger.event_trigger
+	'event_trigger': trigger.event_trigger,
+	'event_group': trigger.getTriggerGroup()
 } %}
 {% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with {
 	'classname': 'actions-tpl',
 	'term_options': term_options,
 	'trigger': trigger,
-	'event_trigger': trigger.event_trigger
+	'event_trigger': trigger.event_trigger,
+	'event_group': trigger.getTriggerGroup()
 } %}
+
 {% endblock %}

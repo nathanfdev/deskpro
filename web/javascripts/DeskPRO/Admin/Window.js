@@ -214,6 +214,17 @@ DeskPRO.Admin.Window = new Orb.Class({
 				ev.stopPropagation();
 			});
 		});
+
+		$('.confirm-delete-trigger').on('click', function(ev) {
+			var message = $(this).data('prompt');
+			if (!message) {
+				message = 'Are you sure you want to delete this?';
+			}
+
+			if (!confirm(message)) {
+				ev.preventDefault();
+			}
+		});
 	},
 
 	updatePageNavPos: function() {

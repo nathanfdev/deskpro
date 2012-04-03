@@ -106,4 +106,32 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 			exit;
 		}
 	}
+
+
+	/**
+	 * Checks a request token $token
+	 *
+	 * @param string $name
+	 * @param string $token
+	 * @return bool
+	 */
+	public function checkAuthToken($name, $token)
+	{
+		return $this->session->getEntity()->checkSecurityToken($name, $token);
+	}
+
+
+	/**
+	 * Just like checkAuthToken but this shows an error for you if its bad
+	 *
+	 * @param string $name
+	 * @param string $field_name
+	 */
+	public function ensureAuthToken($name, $token)
+	{
+		if (!$this->checkAuthToken($name, $token)) {
+			echo 'invalid security token';
+			exit;
+		}
+	}
 }
