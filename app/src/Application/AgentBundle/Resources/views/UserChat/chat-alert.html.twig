@@ -19,7 +19,7 @@
 
 		<div class="row waiting">
 			<label>{{ phrase('agent.userchat.user_waiting') }}</label>
-			<span class="wait-timer" data-time="{{ waiting_secs }}">{{ waiting_secs }} seconds</span>
+			<span class="wait-timer" data-time="{{ waiting_secs }}">{{ phrase('agent.userchat.count_seconds', {'count':waiting_secs}) }}</span>
 		</div>
 
 		{% if url %}

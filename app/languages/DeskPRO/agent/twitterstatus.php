@@ -20,4 +20,5 @@
   'agent.twitterstatus.in_reply_to' => 'In reply to',
   'agent.twitterstatus.retweet_of' => 'Retweet of',
   'agent.twitterstatus.retweet' => 'Retweet',
+  'agent.twitterstatus.characters' => 'characters',
  );

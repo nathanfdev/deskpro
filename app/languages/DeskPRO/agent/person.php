@@ -26,4 +26,7 @@
   'agent.person.position' => 'Position',
   'agent.person.create_person' => 'Create Person',
   'agent.person.altc' => '(alt+c)',
+
+  'agent.person.user_landed_on_page' => 'User landed on page',
+  'agent.person.and_came_from' => 'and came from',
 );

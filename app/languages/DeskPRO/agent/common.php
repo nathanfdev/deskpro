@@ -37,4 +37,5 @@
   'agent.common.this_will_insert_a_thumbnail_image_that_links' => 'This will insert a thumbnail image that links to the full-sized image.',
   'agent.common.dev_validating' => 'DEV: Validating',
   'agent.common.close' => 'close',
+  'agent.common.andor' => 'and/or',
 );

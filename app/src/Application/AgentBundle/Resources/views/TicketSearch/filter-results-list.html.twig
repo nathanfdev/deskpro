@@ -100,10 +100,13 @@ pageMeta.baseId = '{{ baseId }}';
                             <span>{{ phrase('agent.ticketsearch.export_to_csv') }}</span>
                         </button>
                     </a>
-					Showing results
-					<span class="results-showing-count" id="{{baseId}}_showing_count"></span>
-					of
-					<span class="results-total-count" id="{{baseId}}_total_count">{{ ticket_ids|length }}</span>
+                    {% set phrase_part1 %}
+                    <span class="results-showing-count" id="{{baseId}}_showing_count"></span>
+                    {% endset %}
+                    {% set phrase_part2 %}
+                    <span class="results-total-count" id="{{baseId}}_total_count">{{ ticket_ids|length }}</span>
+                    {% endset %}
+                    {{ phrase('agent.organization.showing_results_of_size', {'count':ticket_ids|length,'display_count':phrase_part1,'size':phrase_part2}) }}
 				</div>
 				{% if ticket_ids|length > per_page %}
 					<ul class="pagenav no-prev">

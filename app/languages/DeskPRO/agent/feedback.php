@@ -48,4 +48,9 @@
   'agent.feedback.popular_feedback_only' => 'Popular feedback only',
   'agent.feedback.unsaved_changes_were_restored' => 'Unsaved changes were restored.',
   'agent.feedback.altc' => '(alt+c)',
+
+  'agent.feedback.create_feedback' => 'Create Feedback',
+  'agent.feedback.of' => 'of',
+  'agent.feedback.count_selected' => '{display_count} selected',
+  'agent.feedback.count_votes' => '{display_count} vote|{display_count} votes',
 );

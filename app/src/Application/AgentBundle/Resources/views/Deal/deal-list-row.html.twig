@@ -36,7 +36,7 @@
                     {{ person.display_name }}
                 </a>
                 {% if loop.index >= 1 and loop.index != loop.last%}
-                    and
+                    {{ phrase('agent.deal.and') }}
                 {%endif%}
 
              {% endfor%}
@@ -46,7 +46,7 @@
             {% for organization in deal.organizations%}
                 <a class="with-route" data-route="person:{{ path('agent_org_view', {'organization_id': organization.id}) }}">{{organization.name}}</a>
                 {% if loop.index >= 1 and loop.index != loop.last%}
-                    and
+                    {{ phrase('agent.deal.and') }}
                 {%endif%}
             {% endfor%}
             </li>

@@ -50,7 +50,7 @@ pageMeta.resultIds = {{ result_ids|json_encode|raw }};
 			<div class="cursor">
 				{{ phrase('agent.feedback.showing_results') }}
 				<span class="results-showing-count" id="{{baseId}}_showing_count"></span>
-				of
+				{{ phrase('agent.feedback.of') }}
 				<span class="results-total-count" id="{{baseId}}_total_count">{{ result_ids|length }}</span>
 			</div>
 			{% if result_ids|length > per_page %}

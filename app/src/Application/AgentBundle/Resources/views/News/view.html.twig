@@ -56,8 +56,11 @@ pageMeta.baseId = '{{ baseId }}';
 
 				<dt>{{ phrase('agent.label_rating') }}</dt>
 				<dd>
-					{{ news.rating_percent }}% helpful (<span class="link-look who-voted-trigger">{{ news.num_ratings }} votes</span>)<br />
-					<small>{{ news.up_votes }} found the post helpful, {{ news.down_votes }} found the post unhelpful</small>
+                    {% set phrase_part %}
+                    <span class="link-look who-voted-trigger">{{ phrase('agent.news.n_votes', {'count': news.num_ratings}) }}</span>
+                    {% endset %}
+                    {{ phrase('agent.news.percent_helpful_n_votes', {'percent':news.rating_percent,'subphrase':phrase_part}) }}<br />
+                    <small>{{ phrase('agent.news.n_helpful_n_unhelpful', {'up_votes':news.up_votes,'down_votes':news.down_votes}) }}</small>
 				</dd>
 
 				<dt></dt>

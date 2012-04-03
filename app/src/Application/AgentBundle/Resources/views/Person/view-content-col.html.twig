@@ -276,10 +276,10 @@
 					<tr>
 						<td class="label">{{ phrase('agent.landing_page') }}</td>
 						<td class="value">
-							User landed on page
+							{{ phrase('agent.person.user_landed_on_page') }}
 							<em class="short-url-prev tipped" title="{{ session.visitor.landing_page }}">{{ session.visitor.landing_page|url_domain }}</em>
 							{% if session.visitor.ref_page %}
-								and came from
+								{{ phrase('agent.person.and_came_from') }}
 								<em class="short-url-prev tipped" title="{{ session.visitor.ref_page }}">{{ session.visitor.ref_page|url_domain }}</em>
 							{% endif %}
 						</td>
@@ -307,10 +307,10 @@
 					<tr>
 						<td class="label">{{ phrase('agent.landing_page') }}</td>
 						<td class="value">
-							User landed on page
+							{{ phrase('agent.person.user_landed_on_page') }}
 							<em class="tipped" title="{{ visitor.landing_page }}">...</em>
 							{% if visitor.ref_page %}
-								and came from
+								{{ phrase('agent.person.and_came_from') }}
 								<em class="tipped" title="{{ visitor.ref_page }}">...</em>
 							{% endif %}
 						</td>

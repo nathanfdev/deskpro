@@ -27,7 +27,10 @@ pageMeta.baseId = '{{ baseId }}';
 	{% if results|length %}
 		<footer class="results-nav">
 			<div class="cursor">
-				{{ phrase('agent.downloads.showing') }} <span class="results-total-count" id="{{baseId}}_total_count">{{ results|length }}</span> downloads
+                {% set phrase_part %}
+                <span class="results-total-count" id="{{baseId}}_total_count">{{ results|length }}</span>
+                {% endset %}
+                {{ phrase('agent.downloads.showing_count_downloads', {'count':results|length,'display_count':phrase_part}) }}
 			</div>
 		</footer>
 	{% endif %}

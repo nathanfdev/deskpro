@@ -8,7 +8,7 @@ pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-{% set dropzonehtml %}<div class="drop-file-zone"><h1>Drop your file here to add it to this post</h1></div>{% endset %}
+{% set dropzonehtml %}<div class="drop-file-zone"><h1>{{ phrase('agent.news.drop_your_file_here_to_add_it_to') }}</h1></div>{% endset %}
 {{ agentui.scroll_containers('page-new-news page-new-content', dropzonehtml) }}
 
 <a class="tab-anchor" href="#">&nbsp;</a>

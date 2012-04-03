@@ -88,10 +88,10 @@ pageMeta.baseId = '{{ baseId }}';
 				<tr>
 					<td class="label">{{ phrase('agent.person.landing_page') }}</td>
 					<td class="value">
-						User landed on page
+						{{ phrase('agent.person.user_landed_on_page') }}
 						<em class="tipped" title="{{ session.visitor.landing_page }}">...</em>
 						{% if session.visitor.ref_page %}
-							and came from
+							{{ phrase('agent.person.and_came_from') }}
 							<em class="tipped" title="{{ session.visitor.ref_page }}">...</em>
 						{% endif %}
 					</td>

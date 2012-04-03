@@ -35,4 +35,6 @@
   'agent.peoplesearch.does_not_include_label' => 'does not include label',
 
   'agent.peoplesearch.is' => 'is',
+  'agent.peoplesearch.name_az' => 'Name (A-Z)',
+  'agent.peoplesearch.name_za' => 'Name (Z-A)',
 );

@@ -18,10 +18,13 @@ pageMeta.resultIds = {{ chat_ids|json_encode|raw }};
 
 	<footer class="results-nav">
 		<div class="cursor">
-			Showing results
-			<span class="results-showing-count" id="{{baseId}}_showing_count">{{ (page-1) * 50 + 1 }} - {{ (page - 1) * 50 + chat_ids|length }}</span>
-			of
-			<span class="results-total-count" id="{{baseId}}_total_count">{{ total }}</span>
+            {% set phrase_part1 %}
+            <span class="results-showing-count" id="{{baseId}}_showing_count">{{ (page-1) * 50 + 1 }} - {{ (page - 1) * 50 + chat_ids|length }}</span>
+            {% endset %}
+            {% set phrase_part2 %}
+            <span class="results-total-count" id="{{baseId}}_total_count">{{ total }}</span>
+            {% endset %}
+            {{ phrase('agent.organization.showing_results_of_size', {'count':total,'display_count':phrase_part1,'size':phrase_part2}) }}
 		</div>
 		{% if max_page != 1 %}
 		<ul class="pagenav {% if page == 1%}no-prev{% endif %} {% if page == max_page %}no-next{% endif %}">

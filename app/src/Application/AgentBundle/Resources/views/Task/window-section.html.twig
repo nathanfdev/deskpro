@@ -7,7 +7,7 @@
 			<li class="sub-expanded">
 				<h3 class="title is-nav-item auto-load-route" data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'total'}) }}">
 					<span class="list-counter count-in-badge" id="tasks_counter_own_total">{{ counts.person.total|default(0) }}</span>
-					My {{ phrase('agent.task.tasks') }}
+					{{ phrase('agent.task.my_tasks') }}
 				</h3>
 				<ul class="sub-group">
 					<li class="is-nav-item">

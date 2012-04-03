@@ -139,10 +139,13 @@
 						<label>{{ phrase('agent.status') }}:</label>
 						<div id="{{replyBaseId}}_status_detail" class="{% if ticket.status_code == 'awaiting_agent' %}changed{% endif %}">
 							<a class="status-trigger prop-change with-menu-click-position">
-								Change status from {{ phrase('agent.tickets.status_' ~ ticket.status) }} to <span class="new-val-label">{{ phrase('agent.tickets.status_awaiting_user') }}</span>
+                                {% set phrase_part %}
+                                <span class="new-val-label">{{ phrase('agent.tickets.status_awaiting_user') }}</span>
+                                {% endset %}
+                                {{ phrase('agent.ticket.change_status', {'old':phrase('agent.tickets.status_' ~ ticket.status), 'new':phrase_part}) }}
 							</a>
 							<a class="status-trigger prop-no-change with-menu-click-position">
-								Keep status set to {{ phrase('agent.tickets.status_' ~ ticket.status) }}
+                                {{ phrase('agent.ticket.keep_status_set', {'old':phrase('agent.tickets.status_' ~ ticket.status)}) }}
 							</a>
 						</div>
 					</li>

@@ -10,4 +10,6 @@
   'agent.organizationsearch.name_za' => 'Name (Z-A)',
   'agent.organization.close' => 'close',
   'agent.organization.altc' => '(alt+c)',
+
+  'agent.organization.showing_results_of_size' => 'Showing result 1 of 1|Showing results {display_count} of {size}',
 );

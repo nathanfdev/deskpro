@@ -12,7 +12,7 @@
 		</div>
 	</div>
 	<div class="userinfo general">
-		By {% if convo.person %}
+		{{ phrase('agent.search.by') }} {% if convo.person %}
 			<a
 				class="user-link as-popover"
 				data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}"

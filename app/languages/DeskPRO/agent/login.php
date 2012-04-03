@@ -43,4 +43,5 @@
   'agent.login.email_instructions' => 'Email Instructions',
   'agent.login.we_sent_insutrctions_on_how_to_reset_your' => 'We sent insutrctions on how to reset your password to the email address you provided.',
   'agent.login.reset_password' => 'Reset Password',
+  'agent.login.or_go_back_to_login_form' => 'or go back to login form',
 );

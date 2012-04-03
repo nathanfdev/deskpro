@@ -57,8 +57,11 @@ pageMeta.baseId = '{{ baseId }}';
 
 				<dt>{{ phrase('agent.label_rating') }}</dt>
 				<dd>
-					{{ download.rating_percent }}% helpful (<span class="link-look who-voted-trigger">{{ download.num_ratings }} votes</span>)<br />
-					<small>{{ download.up_votes }} found this download helpful, {{ download.down_votes }} found this download unhelpful</small>
+                    {% set phrase_part %}
+                    <span class="link-look who-voted-trigger">{{ phrase('agent.downloads.n_votes', {'count':download.num_ratings}) }}</span>
+                    {% endset %}
+                    {{ phrase('agent.downloads.percent_helpful_n_votes', {'subphrase':phrase_part,'percent':download.rating_percent}) }}
+					<small>{{ phrase('agent.downloads.n_helpful_n_unhelpful', {'up_votes':download.up_votes, 'down_votes':download.down_votes}) }}</small>
 				</dd>
 
 				<dt></dt>
@@ -212,7 +215,7 @@ pageMeta.baseId = '{{ baseId }}';
 	{% endif %}
 </ul>
 
-{{ optionbox.category_ob(download_categories, '{{ phrase('agent.downloads.download_category') }}', 'Apply', {'id': baseId ~ '_cat_ob'}) }}
+{{ optionbox.category_ob(download_categories, phrase('agent.downloads.download_category'), 'Apply', {'id': baseId ~ '_cat_ob'}) }}
 
 </div></div> {# scrollbar divs #}
 </div> {# main layout div #}

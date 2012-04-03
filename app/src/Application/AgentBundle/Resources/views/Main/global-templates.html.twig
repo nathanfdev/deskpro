@@ -88,7 +88,7 @@
 			<li data-department-id="{{dep.id}}" data-full-title="{{ dep.title }}" class="section-title">{{dep.title}}</li>
 			{% for subdep in dep.children %}
 				<li data-department-id="{{subdep.id}}" data-full-title="{{ dep.title }}">{{subdep.title}}</li>
-			{% endfor %}workflow
+			{% endfor %}
 			{% set last_with_child = true %}
 		{% else %}
 			<li data-department-id="{{dep.id}}" data-full-title="{{ dep.title }}">{{dep.title}}</li>

@@ -84,4 +84,6 @@
   'agent.deal.created' => 'Created',
   'agent.deal.edit_custome_fields' => 'Edit Custome Fields',
   'agent.deal.date_created' => 'Date Created',
+  'agent.deal.and' => 'and',
+  'agent.deal.percent_of' => '% of',
 );

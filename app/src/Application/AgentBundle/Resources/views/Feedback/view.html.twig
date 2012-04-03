@@ -68,7 +68,12 @@ pageMeta.baseId = '{{ baseId }}';
 
 			<dt>{{ phrase('agent.label_votes') }}:</dt>
 			<dd>
-				<span class="link-look who-voted-trigger"><span id="{{baseId}}_num_votes">{{ feedback.num_ratings }}</span> votes</span>
+				<span class="link-look who-voted-trigger">
+                    {% set phrase_part %}}
+                    <span id="{{baseId}}_num_votes">{{ feedback.num_ratings }}</span>
+                    {% endset %}
+                    {{ phrase('agent.feedback.count_votes', {'display_count':phrase_part,'count':feedback.num_ratings}) }}
+                </span>
 				<button class="clean-gray xxx-small tipped {% if my_vote %}radio-on{% endif %}" title="Vote for this feedback" id="{{baseId}}_my_vote">+1</button>
 			</dd>
 

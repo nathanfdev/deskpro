@@ -19,4 +19,11 @@
   'agent.downloads.dev_validating' => 'DEV: Validating',
   'agent.downloads.create_download' => 'Create Download',
   'agent.downloads.altc' => '(alt+c)',
+
+  'agent.downloads.date_created' => 'Date Created',
+  'agent.downloads.download_count' => 'Download Count',
+  'agent.downloads.showing_count_downloads' => 'Showing {display_count} download|Showing {display_count} downloads',
+  'agent.downloads.percent_helpful_n_votes' => '{percent}% helpful ({subphrase})',
+  'agent.downloads.n_votes' => '{count} vote|{count} votes',
+  'agent.downloads.n_helpful_n_unhelpful' => '{up_votes} found this download helpful, {down_votes} found this download unhelpful',
 );
