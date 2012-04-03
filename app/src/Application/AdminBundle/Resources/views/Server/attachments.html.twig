@@ -20,7 +20,12 @@
 					<td>
 						{{ phrase('admin.server.file_storage') }}
 						<div style="font-size: 11px">
-							You are currently using the most efficient storage mechanism. {% if not moving_id %}While not recommended, you can <a class="switch-trigger">switch back to using database storage</a>.{% endif %}
+
+							{{ phrase('admin.server.notice_using_most_efficient_storage') }}
+                            {% set phrase_link %}
+                            <a class="switch-trigger">{{ phrase('admin.server.switch_back_to_database_storage') }}</a>
+                            {% endset %}
+                            {% if not moving_id %}{{ phrase('admin.server.while_not_recommended_you_can', {'link':phrase_link}) }}{% endif %}
 						</div>
 					</td>
 				</tr>
@@ -34,7 +39,11 @@
 					<td>
 						{{ phrase('admin.server.database_storage') }}
 						<div style="font-size: 11px">
-							Databases are not designed to store files.{% if not moving_id %} We recommend <a class="switch-trigger">switching to filesystem storage</a> where files are store as files in a directory on your server.{% endif %}
+							{{ phrase('admin.server.databases_suboptimal_for_files') }}
+                            {% set phrase_link %}
+                            <a class="switch-trigger">{{ phrase('admin.server.switching_to_fs_storage') }}</a>
+                            {% endset %}
+                            {% if not moving_id %}{{ phrase('admin.server.we_recommend_fs_storage', {'link':phrase_link}) }}{% endif %}
 						</div>
 					</td>
 				</tr>
@@ -46,8 +55,13 @@
 			{% if moving_id %}
 				<tr>
 					<td colspan="4">
-						Currently transferring files from {% if use_fs %}the database to the filesystem{% else %}the filesystem to the database{% endif %}.
-						{{ count_done }} of {{ count_todo }} ({{ count_perc }}%) files have been processed.
+                        {% if use_fs %}
+                            {% set phrase_part = phrase('admin.server.db_to_fs') %}
+                        {% else %}
+                            {% set phrase_part = phrase('admin.server.fs_to_db') %}
+                        {% endif %}
+                        {{ phrase('admin.server.currently_transferring', {'subphrase':phrase_part}) }}
+                        {{ phrase('admin.server.files_have_been_processed', {'count_done':count_done, 'count_todo':count_todo, 'percent':count_perc}) }}
 					</td>
 				</tr>
 			{% endif %}
@@ -138,25 +152,22 @@
 	</div>
 	<div class="overlay-content">
 		{% if use_fs %}
-			<p style="margin-bottom: 10px;">You are currently storing files in the filesystem at {{ filestorage_path }}.<br /><br />Are you sure you want to switch back to using the database
-			storage mechanism?</p>
+			<p style="margin-bottom: 10px;">{{ phrase('admin.server.you_are_using_fs_want_to_switch', {'path':filestorage_path}) }}</p>
 		{% else %}
-			<p style="margin-bottom: 10px;">You are currently storing files in the database. Do you want to switch to the filesystem storage mechanism? Files will be stored
-			on your server at {{ filestorage_path }}</p>
+			<p style="margin-bottom: 10px;">{{ phrase('admin.server.you_are_using_db_want_to_switch', {'path':filestorage_path}) }}</p>
 		{% endif %}
 
 		<p style="margin: 10px; background-color: #F5F5F5; padding: 10px;">
-			{{ count_todo }} files with a total size of {{ total_size_readable }} will be moved.
+            {{ phrase('admin.server.count_files_will_be_used', {'count':count_todo, 'size':total_size_readable}) }}
 			<br /><br />
-			The transfer is done gradually via a scheduled task.
-			It may take some time before all of your files are completely transferred. All normal attachment functions like uploading and downloading
-			will continue to work.
+			{{ phrase('admin.server.notice_transfer_is_gradually_done') }}
 		</p>
 	</div>
 	<div class="overlay-footer">
 		<form action="{{ path('admin_server_attach_switch') }}">
 			{{ form_token() }}
-			<button class="clean-white">Confirm: Switch to the {% if use_fs %}database{% else %}filesystem{% endif %} storage mechanism</button>
+            {% if use_fs %}{% set phrase_part = phrase('admin.server.db') %}{% else %}{% set phrase_part = phrase('admin.server.fs') %}{% endif %}
+			<button class="clean-white">{{ phrase('admin.server.btn_confirm_switch', {'subphrase':phrase_part}) }}</button>
 		</form>
 	</div>
 </div>

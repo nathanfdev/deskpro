@@ -28,7 +28,8 @@
 			<br class="clear" />
 		</header>
 		<p>
-			Departments organize your helpdesk into separate compartments that handle different things. For example, Sales and Support. You have {{counts.department}} departments.
+            {{ phrase('admin.ticketproperties.explain_departments') }}
+            {{ phrase('admin.ticketproperties.you_have_count_departments', {'count':counts.department}) }}
 		</p>
 	</li>
 
@@ -41,8 +42,8 @@
 			<br class="clear" />
 		</header>
 		<p>
-			Products are usually a real product or service your company offers. You can use it categorize all kinds of content
-			like tickets, feedback and articles. You have {{counts.product}} products.
+            {{ phrase('admin.ticketproperties.explain_products') }}
+            {{ phrase('admin.ticketproperties.you_have_count_products', {'count':counts.product}) }}
 		</p>
 	</li>
 
@@ -55,7 +56,8 @@
 			<br class="clear" />
 		</header>
 		<p>
-			Categories are a general organization field usually used to handle grouping tickets within a department. You have {{counts.ticket_category}} categories.
+            {{ phrase('admin.ticketproperties.explain_categories') }}
+            {{ phrase('admin.ticketproperties.you_have_count_categories', {'count':counts.ticket_category}) }}
 		</p>
 	</li>
 
@@ -68,7 +70,8 @@
 			<br class="clear" />
 		</header>
 		<p>
-			Priorities rate how important a ticket is. You have {{counts.ticket_priority}} priorities.
+            {{ phrase('admin.ticketproperties.explain_priorities') }}
+            {{ phrase('admin.ticketproperties.you_have_count_priorities', {'count':counts.ticket_priority}) }}
 		</p>
 	</li>
 
@@ -81,7 +84,8 @@
 			<br class="clear" />
 		</header>
 		<p>
-			Workflows can be used to record where in the lifetime a ticket currently is. You have {{counts.ticket_workflow}} workflows.
+            {{ phrase('admin.ticketproperties.explain_workflows') }}
+            {{ phrase('admin.ticketproperties.you_have_count_workflows', {'count':counts.ticket_workflow}) }}
 		</p>
 	</li>
 

@@ -73,4 +73,5 @@
   'deskpro.common.include' => 'include',
   'deskpro.common.is' => 'is',
   'deskpro.common.contains' => 'contains',
+  'deskpro.common.website_widget' => 'Website Widget',
 );

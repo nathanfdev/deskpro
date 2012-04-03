@@ -61,7 +61,6 @@
   'admin.userreg.last_name_field' => '"Last Name" field',
   'admin.userreg.full_name_field' => '"Full Name" field',
   'admin.userreg.php_code_to_verify_inputted_password' => 'PHP code to verify inputted password',
-  'admin.userreg.heres_some_example_code_to_check_a_salted' => 'Here\'s some example code to check a salted password',
   'admin.userreg.table_prefix' => 'Table Prefix',
   'admin.userreg.if_your_installation_is_using_a_table_prefix' => 'If your installation is using a table prefix, enter it here.',
   'admin.userreg.url_to_password_check_service' => 'URL to password check service',
@@ -81,4 +80,20 @@
   'admin.userreg.ez_publish' => 'eZ Publish',
   'admin.userreg.continue' => 'Continue',
   'admin.userreg.delete' => 'delete',
+  'admin.userreg.for_example' => 'For example',
+  'admin.userreg.enter_the_dsn' => 'Enter the DSN connection string for the database. Refer to the manual for the string format ({links}). For example, for a MySQL database: <var>mysql:host=localhost;dbname=mydb</var>',
+  'admin.userreg.by_default_placeholder_is_use_this_instead' => 'By default, the filter performed when looking up users is <var>(&(objectClass=user)(sAMAccountName=%s))</var>. Use <var>%s</var> as the input placeholder.',
+  
+  'admin.userreg.enter_raw_php_code' => 'Enter the raw PHP code to use when checking the validity of an inputted password against
+				a found user record. The following variables are available for use:
+				<ul>
+					<li>&middot; $userinfo is the full row from your table</li>
+					<li>&middot; $userinfo_password is the password field from the row. This is the same as $userinfo[\'yourpasswordfield\']</li>
+					<li>&middot; $password_input is the password inputted by the user. This is what you need to check against $userinfo_password.</li>
+					<li>&middot; $pass is a boolean value. If the password is correct, set this variable to true. If it\'s invalid, set it to false.</li>
+				</ul>
+                Here\'s some example code to check a salted password:<br />
+				<code>$pass = (md5($password_input . $userinfo[\'salt\']) == $userinfo_password);</code>',
+  'admin.userreg.enter_dsn_mysql' => 'Enter the DSN connection string for the database. Refer to the manual for the string format (<a href="http://www.php.net/manual/en/ref.pdo-mysql.connection.php">MySQL</a>). For example: <var>mysql:host=localhost;dbname=mydb</var>',
+  
 );

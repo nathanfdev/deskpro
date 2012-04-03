@@ -37,21 +37,21 @@
 		<div class="trigger-desc">
 			<table cellspacing="0" cellpadding="0"><tr><td valign="top" width="350">
 				<div class="terms">
-					<em class="op ctrl">if</em>
+					<em class="op ctrl">{{ phrase('admin.tickettriggers.if') }}</em>
 					{% if trigger.event_trigger_option %}
-					{{ time_explain_prefix }} {{ relative_time(trigger.event_trigger_option, 1) }} <br /><em class="op">and</em>
+					{{ time_explain_prefix }} {{ relative_time(trigger.event_trigger_option, 1) }} <br /><em class="op">{{ phrase('admin.tickettriggers.and') }}</em>
 					{% endif %}
 					{% for desc in trigger.getTermDescriptions() %}
 					<span class="term">{{ desc }}</span>
-					{% if not loop.last %}<br /><em class="op">and</em>{% endif %}
+					{% if not loop.last %}<br /><em class="op">{{ phrase('admin.tickettriggers.and') }}</em>{% endif %}
 					{% endfor %}
 				</div>
 			</td><td valign="top" width="50%" style="padding-left: 15px;">
 				<div class="actions">
-					<em class="op ctrl">then</em>
+					<em class="op ctrl">{{ phrase('admin.tickettriggers.then') }}</em>
 					{% for desc in trigger.getActionDescriptions() %}
 					<span class="term">{{ desc|raw }}</span>
-					{% if not loop.last %}<br /><em class="op">and</em>{% endif %}
+					{% if not loop.last %}<br /><em class="op">{{ phrase('admin.tickettriggers.and') }}</em>{% endif %}
 					{% endfor %}
 				</div>
 			</td></tr></table>

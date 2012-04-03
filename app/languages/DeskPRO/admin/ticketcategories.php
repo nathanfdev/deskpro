@@ -16,4 +16,7 @@
   'admin.ticketcategories.parent' => 'Parent',
   'admin.ticketcategories.no_parent' => 'No Parent',
   'admin.ticketcategories.add' => 'Add',
+  'admin.ticketcategories.back_to_ticket_categories' => 'Back to ticket categories',
+  'admin.ticketcategories.are_you_sure_delete_top_level' => 'Are you sure you want to delete the category "<strong>{title}</strong>"? Since this is a top-level category, <strong>all of these child-products will be deleted too</strong>',
+  'admin.ticketcategories.are_you_sure_delete' => 'Are you sure you want to delete the category "<strong>{title}</strong>"?',
 );

@@ -51,13 +51,13 @@
 				<section class="dp-html-editor">
 					<div class="overlay-title">
 						<span class="close-overlay close-trigger"></span>
-						<h4>Edit HTML</h4>
+						<h4>{{ phrase('admin.portal.edit_html') }}</h4>
 					</div>
 					<div class="overlay-content">
 						<textarea style="width: 98%; height: 98%; color: #000; size: 10px; font-family: Monaco, monospace;"></textarea>
 					</div>
 					<div class="overlay-footer">
-						<button class="save-trigger clean-white">Save</button>
+						<button class="save-trigger clean-white">{{ phrase('admin.portal.save') }}</button>
 					</div>
 				</section>
 			</script>
@@ -66,12 +66,10 @@
 		<div class="dp-page-box">
 			<div class="editor-disabled">
 				<p>
-					The portal is currently disabled. This means you have turned off your public facing website
-					at {{ app.getSetting('core.deskpro_url') }}.
+                    {{ phrase('admin.portal.portal_is_disabled', {'url':app.getSetting('core.deskpro_url')}) }}
 				</p>
 				<p>
-					Click the button above to re-enable the portal. Or use HTML widgets from the <a href="{{ path('admin_tickets_editor') }}">{{ phrase('admin.portal.ticket_editor') }}</a>
-					to embed DeskPRO into your own site.
+                    {{ phrase('admin.portal.click_button_to_reenable_or_use_widgets', {'path':path('admin_tickets_editor')}) }}
 				</p>
 			</div>
 		</div>

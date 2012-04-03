@@ -167,18 +167,24 @@ class LanguageController extends Controller
                     $string = preg_replace('/\s*$/', '', $string);
                     $string = preg_replace('/:$/', '', $string);
                     $string = preg_replace('/ \*$/', '', $string);
-                    $string = str_replace("\n", ' ', $string);
+                    $string_multi = explode("\n", $string);
+                    $string_multi[] = str_replace("\n", ' ', $string);
 
-                    if($string == '' || strlen($string) == 1) {
-                        continue;
-                    }
+                    foreach($string_multi as $string) {
+                        $string = preg_replace('/^\s*/', '', $string);
+                        $string = preg_replace('/\s*$/', '', $string);
 
-                    if(!preg_match('/[a-zA-Z]/', $string)) {
-                        continue;
-                    }
+                        if($string == '' || strlen($string) == 1) {
+                            continue;
+                        }
 
-                    if(!in_array($string, $strings)) {
-                        $strings[] = $string;
+                        if(!preg_match('/[a-zA-Z]/', $string)) {
+                            continue;
+                        }
+
+                        if(!in_array($string, $strings)) {
+                            $strings[] = $string;
+                        }
                     }
                 }
                 else if($child->nodeType == XML_ELEMENT_NODE) {
@@ -758,6 +764,20 @@ class LanguageController extends Controller
         $parts = array_slice($parts, 0, 8);
         $string = implode('_', $parts);
         return $string;
+    }
+
+    public function replaceInFile($text, $string, $id, $color = false)
+    {
+        if(strpos($text, $string) !== false) {
+            if($color) {
+                return str_replace($string, "<span style=\"color:red\">{{ phrase('{$id}') }}</span>", htmlspecialchars($text, ENT_NOQUOTES));
+            }
+            else {
+                return str_replace($string, "{{ phrase('{$id}') }}", $text);
+            }
+        }
+
+        return $text;
     }
 
     public function replaceInLine($line, $string, $id, $color = false)

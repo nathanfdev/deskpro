@@ -5,10 +5,7 @@
 	<div class="dp-form-input">
 		{{ form_widget(form.db_dsn) }}
 		<br />
-		<small>Enter the DSN connection string for the database. Refer to the manual for the string format
-			(<a href="http://www.php.net/manual/en/ref.pdo-mysql.connection.php">{{ phrase('admin.userreg.mysql') }}</a>).
-			For example: <var>mysql:host=localhost;dbname=mydb</var>
-		</small>
+		<small>{{ phrase('admin.userreg.enter_dsn_mysql') }}</small>
 	</div>
 </div>
 

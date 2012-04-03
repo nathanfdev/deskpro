@@ -2,13 +2,13 @@
 {% block pagetitle %}
 	<h1>{{ phrase('admin.ticketcategories.delete_ticket_category') }}</h1>
 	<nav>
-		<a class="clean-white" href="{{ path('admin_ticketcats') }}">&larr; Back to ticket categories</a>
+		<a class="clean-white" href="{{ path('admin_ticketcats') }}">&larr; {{ phrase('admin.ticketcategories.back_to_ticket_categories') }}</a>
 	</nav>
 {% endblock %}
 {% block page %}
 
 {% if category.children|length %}
-	<p>Are you sure you want to delete the category "<strong>{{ category.title }}</strong>"? Since this is a top-level category, <strong>all of these child-products will be deleted too</strong>:</p>
+	<p>{{ phrase('admin.ticketcategories.are_you_sure_delete_top_level', {'title':category.title}) }}:</p>
 
 	<ul class="bullet-list">
 		{% for c in category.children %}
@@ -18,7 +18,7 @@
 
 	<p>{{ phrase('admin.ticketcategories.any_tickets_that_belong_to_any_of_these') }}</p>
 {% else %}
-	<p>Are you sure you want to delete the category "<strong>{{ category.title }}</strong>"?</p>
+	<p>{{ phrase('admin.ticketcategories.are_you_sure_delete', {'title':category.title}) }}</p>
 
 	<p>{{ phrase('admin.ticketcategories.any_tickets_that_belong_this_category_will_have') }}</p>
 {% endif %}

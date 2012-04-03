@@ -34,7 +34,10 @@
 				<label>{{ phrase('admin.license.demo_expiry') }}</label>
 			</div>
 			<div class="dp-form-input">
-				This demo will expire on {{ lic.getExpireDate()|date('M j, Y') }}. Contact <a href="mailto:support@deskpro.com">support@deskpro.com</a> if you need more time.
+                {% set phrase_link %}
+                    <a href="mailto:support@deskpro.com">{{ phrase('admin.license.supportdeskprocom') }}</a>
+                {% endset %}
+                {{ phrase('admin.license.license_will_expire_on', {'date':lic.getExpireDate()|date('M j, Y'),'link':phrase_link}) }}
 			</div>
 		</div>
 	{% else %}

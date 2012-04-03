@@ -60,8 +60,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 <div style="padding: 10px 10px 0 10px">
 {{ design.helpbox() }}
 	<p>
-		You can edit the form a user sees when they go to submit a ticket. Just drag options from the left into the area below
-		to enable more fields.
+        {{ phrase('admin.ticketproperties.notice_you_can_edit_the_form') }}
 	</p>
 {{ design.helpbox_end() }}
 </div>
@@ -70,8 +69,13 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 	<input type="checkbox" class="onoff-slider" id="per_department_check" data-update-url="{{ path('admin_tickets_editor_toggleper') }}" {% if app.getSetting('core_tickets.per_department_form') %}checked="checked"{% endif %}/> {{ phrase('admin.ticketproperties.enable_custom_layouts_for_each_department') }}
 	{% if app.getSetting('core_tickets.per_department_form') %}
 		<div class="sub">
-			Edit the <a class="switcher" href="{{ path('admin_tickets_editor_dep', {'department_id': '0', 'section': section}) }}">{{ phrase('admin.ticketproperties.default_layout') }}</a>
-			or select a specific <span id="department_switcher" class="switcher"><span>{{ phrase('admin.ticketproperties.department') }}</span></span>
+            {% set phrase_link1 %}
+            <a class="switcher" href="{{ path('admin_tickets_editor_dep', {'department_id': '0', 'section': section}) }}">{{ phrase('admin.ticketproperties.default_layout') }}</a>
+            {% endset %}
+            <span id="department_switcher" class="switcher"><span>{{ phrase('admin.ticketproperties.department') }}</span></span>
+            {% set phrase_link2 %}
+            {% endset %}
+            {{ phrase('admin.ticketproperties.edit_default_layout_or_select_another', {'link1':phrase_link1,'link2':phrase_link2}) }}
 		</div>
 	{% endif %}
 </div>
@@ -103,7 +107,14 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			data-disable="{{ path('admin_tickets_editor_dep_revert', {department_id: department.id|default(0), section: section}) }}"
 			{% if not is_default %}checked="checked"{% endif %}
 		/>
-		Enable alternative layout for {% if section == 'view' %}{{ phrase('admin.ticketproperties.view_ticket_page') }}{% elseif section == 'create' %}{{ phrase('admin.ticketproperties.new_ticket_form') }}{% else %}{{ phrase('admin.ticketproperties.modify_ticket_form') }}{% endif %}
+        {% if section == 'view' %}
+        {% set phrase_part = phrase('admin.ticketproperties.view_ticket_page') %}
+        {% elseif section == 'create' %}
+        {% set phrase_part = phrase('admin.ticketproperties.new_ticket_form') %}
+        {% else %}
+        {% set phrase_part = phrase('admin.ticketproperties.modify_ticket_form') %}
+        {% endif %}
+        {{ phrase('admin.ticketproperties.enable_alternative_for_x', {'subphrase':phrase_part}) }}
 	</div>
 	{% endif %}
 
@@ -148,7 +159,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		<div class="field-options-overlay" style="width: 550px; height: 260px; display: none;">
 			<div class="overlay-title">
 				<span class="close-trigger close-overlay"></span>
-				<h4>Field Options</h4>
+				<h4>{{ phrase('admin.ticketproperties.field_options') }}</h4>
 			</div>
 			<div class="overlay-content">
 				<div class="dp-form">
@@ -156,18 +167,19 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 					<div class="dp-form-row">
 						<div class="dp-form-label">
 							<label>
-								Only show this field when
+                                {% set phrase_part %}
 								<select name="term_match_type">
-									<option value="all">all</option>
-									<option value="any">any</option>
-								</select>
-								of these terms match
-							</label>
+                                    <option value="all">{{ phrase('admin.ticketproperties.all') }}</option>
+                                    <option value="any">{{ phrase('admin.ticketproperties.any') }}</option>
+                                </select>
+                                {% endset %}
+                                {{ phrase('admin.ticketproperties.only_show_field_when_choice', {'choice':phrase_part}) }}
+                            </label>
 						</div>
 						<div class="dp-form-input">
 							<div class="criteria-form search-form">
 								<div class="search-terms"></div>
-								<div class="term"><span class="add-term">+</span> Add a new criteria</div>
+								<div class="term"><span class="add-term">+</span> {{ phrase('admin.ticketproperties.add_a_new_criteria') }}</div>
 							</div>
 						</div>
 					</div>
@@ -184,7 +196,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 	<div class="dp-form-row">
 		<div class="dp-form-label">
 			<label>
-				<input type="checkbox" class="custom_options" name="custom_options" value="1" /> Customize choices to display
+				<input type="checkbox" class="custom_options" name="custom_options" value="1" /> {{ phrase('admin.ticketproperties.customize_choices_to_display') }}
 			</label>
 		</div>
 		<div class="dp-form-input custom-options" style="display:none"></div>
@@ -223,7 +235,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
  ############################}
 <script type="text/x-deskpro-plain" id="rendered_field_attachments">
 	<div class="attachments">
-		<input type="file" /> <button class="clean-white small">Upload</button>
+		<input type="file" /> <button class="clean-white small">{{ phrase('admin.ticketproperties.upload') }}</button>
 	</div>
 </script>
 
@@ -233,7 +245,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 <script type="text/x-deskpro-plain" id="rendered_field_ticket_category">
 	<div class="ticket-category">
 		<select class="ticket-category-input field-value">
-			<option>Choose a category...</option>
+			<option>{{ phrase('admin.ticketproperties.choose_a_category') }}</option>
 			{% for id,label in term_options.ticket_categories_full %}
 				<option value="{{id}}">{{label}}</option>
 			{% endfor %}
@@ -247,7 +259,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 <script type="text/x-deskpro-plain" id="rendered_field_ticket_product">
 	<div class="ticket-product">
 		<select class="ticket-product-input field-value">
-			<option>Choose a product...</option>
+			<option>{{ phrase('admin.ticketproperties.choose_a_product') }}</option>
 			{% for id,label in term_options.products %}
 				<option value="{{id}}">{{label}}</option>
 			{% endfor %}
@@ -261,7 +273,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 <script type="text/x-deskpro-plain" id="rendered_field_ticket_priority">
 	<div class="ticket-priority">
 		<select class="ticket-priority-input field-value">
-			<option>Choose a priority...</option>
+			<option>{{ phrase('admin.ticketproperties.choose_a_priority') }}</option>
 			{% for id,label in term_options.priorities %}
 				<option value="{{id}}">{{label}}</option>
 			{% endfor %}

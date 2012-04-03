@@ -4,9 +4,9 @@
 		<thead class="{% if dirinfo.count_outdated %}dir-outdated{% endif %} {% if dirinfo.count_changed %}dir-changed{% endif %}">
 		<tr>
 			<th class="single-title" colspan="10">
-				<span class="count-outdated"><i>{{ dirinfo.count_outdated }}</i> outdated</span>
-				<span class="count-changed"><i>{{ dirinfo.count_changed }}</i> custom</span>
-				<span class="count">{{ dirinfo.templates|length }} templates</span>
+				<span class="count-outdated">{{ phrase('admin.templates.count_outdated', {'count':dirinfo.count_outdated}) }}</span>
+				<span class="count-changed">{{ phrase('admin.templates.count_custom', {'count':dirinfo.count_changed}) }}</span>
+				<span class="count">{{ phrase('admin.templates.count_template', {'count':dirinfo.templates|length}) }}</span>
 				<h1 class="toggle-section {% if options.open %}expanded{% endif %}">{% if options.title %}{{ options.title }}{% else %}{% if dirname != '!top' %}{{ dirname }}{% else %}{{ phrase('admin.templates.layout') }}{% endif %}{% endif %}</h1>
 			</th>
 		</tr>
@@ -25,8 +25,8 @@
 <tr id="row_{{ name|lower|replace({':': '_', '.': '_'}) }}" class="template-row {% if info.is_custom %}tpl-changed{% endif %} {% if info.is_outdated %}tpl-outdated{% endif %}" data-template-name="{{ name }}">
 	<td>
 		<em class="edit edit-tpl-trigger"></em>
-		<span class="changed-tag">custom</span>
-		<span class="outdated-tag">outdated</span>
+		<span class="changed-tag">{{ phrase('admin.templates.custom') }}</span>
+		<span class="outdated-tag">{{ phrase('admin.templates.outdated') }}</span>
 		<h3>{{ info.shortname }}</h3>
 	</td>
 </tr>

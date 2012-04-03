@@ -23,4 +23,5 @@
   'admin.feedback.create_status' => 'Create Status',
   'admin.feedback.active_statuses' => 'Active Statuses',
   'admin.feedback.closed_statuses' => 'Closed Statuses',
+  'admin.feedback.count_feedback' => '{count} feedback|{count} feedback',
 );

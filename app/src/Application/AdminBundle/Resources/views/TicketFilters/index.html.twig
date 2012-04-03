@@ -57,7 +57,7 @@
 					{% endif %}
 					{% if not is_use_by and not is_ignored_by %}
 						<div class="namelistbox">
-							{{ filter.agent_team.name }} has no members. No one uses this filter.
+                            {{ phrase('admin.ticketfilters.title_has_no_members', {'title':filter.agent_team.name}) }}
 						</div>
 					{% endif %}
 				{% endif %}

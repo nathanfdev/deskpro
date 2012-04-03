@@ -21,7 +21,7 @@
 					<td>{{log.priority_name}}</td>
 					<td>{{log.message}}</td>
 					<td>{{log.date_created|date('Y-m-d H:m:s')}}</td>
-					<td><a href="{{ path('admin_logs_view', {'log_id': log.id}) }}">view</a></td>
+					<td><a href="{{ path('admin_logs_view', {'log_id': log.id}) }}">{{ phrase('admin.logs.view') }}</a></td>
 				</tr>
 			{% endfor %}
 		</tbody>

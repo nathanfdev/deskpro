@@ -20,4 +20,5 @@
   'admin.logs.priority' => 'Priority',
   'admin.logs.sn' => 'SN',
   'admin.logs.additional_data' => 'Additional Data',
+  'admin.logs.error_log_number' => 'Error Log #{id}',
 );
