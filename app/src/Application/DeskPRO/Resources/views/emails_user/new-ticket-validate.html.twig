@@ -1,13 +1,13 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
-{% block email_subjects %}Validate your email address (RE: {{ ticket.subject }}){% endblock %}
+{% block email_subject %}Validate your email address (RE: {{ ticket.subject }}){% endblock %}
 {% block content %}
 	{% set content %}
 	Thank you for contacting us. Before our agents will read and reply to your message, you must validate your email address.
 	<br /><br />
 	{{ phrase('deskpro.emails_user.simply_click_on_the_following_link_to_validate') }}:<br />
-	<a href="{{ url('user_profile_emails_validate_code', {'id': person_email_validating.id, 'code': person_email_validating.auth}) }}">
-		{{ url('user_profile_emails_validate_code', {'id': validaperson_email_validatingting_email.id, 'code': person_email_validating.auth}) }}
+	<a href="{{ url('user_validate_email', {'id': ticket.person_email_validating.id, 'auth': ticket.person_email_validating.auth}) }}">
+		{{ url('user_validate_email', {'id': ticket.person_email_validating.id, 'auth': ticket.person_email_validating.auth}) }}
 	</a>
 	{% endset %}
 	{{ layout.section('', content) }}

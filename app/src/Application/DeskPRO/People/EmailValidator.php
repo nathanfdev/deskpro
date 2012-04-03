@@ -114,6 +114,8 @@ class EmailValidator
 	{
 		$this->em->getConnection()->beginTransaction();
 
+		$exist_email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($this->validating_email->email);
+
 		try {
 			if (!$exist_email) {
 				$email = new PersonEmail();

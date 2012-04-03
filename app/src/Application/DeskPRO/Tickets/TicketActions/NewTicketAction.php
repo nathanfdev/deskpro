@@ -118,6 +118,7 @@ class NewTicketAction implements BreakableAction, ActionInterface
 	 */
 	public function enableValidation()
 	{
+		$this->tracker->logMessage("[NewTicketAction] enabling email validation");
 		$this->enable_validation = true;
 	}
 
@@ -306,7 +307,8 @@ class NewTicketAction implements BreakableAction, ActionInterface
 		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person) {
 			$message = App::getMailer()->createMessage();
 			$message->setTemplate($tpl, $vars);
-			$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+
+			$message->setTo($ticket->person_email_validating->email, $person->getDisplayName());
 			$message->setFrom($from_address);
 			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
 

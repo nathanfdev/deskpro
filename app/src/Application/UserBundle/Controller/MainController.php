@@ -143,7 +143,7 @@ class MainController extends AbstractController
 		$validator = EmailValidator::createFromId($id, $auth);
 
 		if (!$validator) {
-			$this->renderStandardError('@user.profile.error_invalid_email_code', '', 404);
+			return $this->renderStandardError('@user.profile.error_invalid_email_code', '', 404);
 		}
 
 		$valdating_email = $validator->getValidatingEmail();
