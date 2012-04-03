@@ -187,6 +187,13 @@ class AgentNotificationAction implements ActionInterface
 	 */
 	public function apply(Ticket $ticket)
 	{
+		if (!$this->notify_agents) {
+			$this->tracker->logMessage("[AgentNotificationAction] No agents");
+			return;
+		}
+
+		$this->tracker->logMessage("[AgentNotificationAction] Agents: " . implode(', ', $this->notify_agents));
+
 		$change_info = array(
 			'type' => 'agent_notify',
 			'notify_type' => 'ticketnofity',
@@ -224,6 +231,7 @@ class AgentNotificationAction implements ActionInterface
 			$agent = App::getEntityRepository('DeskPRO:Person')->find($agent_id);
 
 			if (!$agent || !$agent->getPrimaryEmailAddress()) {
+				$this->tracker->logMessage("[AgentNotificationAction] Bad agent: " . $agent_id);
 				continue;
 			}
 

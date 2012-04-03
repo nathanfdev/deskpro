@@ -1812,7 +1812,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function unsetTicketLogger()
 	{
-		unset($this->_ticket_logger);
+		$this->_ticket_logger = null;
 	}
 
 	/**

@@ -48,7 +48,7 @@ use Application\DeskPRO\App;
  * This action handles toggling email validation features,
  * and handles sending auto-response to users
  */
-class NewTicketAction extends AbstractUserNotificationAction implements BreakableAction
+class NewTicketAction implements BreakableAction, ActionInterface
 {
 	/**
 	 * True to enable email validation on accounts that have not been validated yet.
@@ -81,6 +81,20 @@ class NewTicketAction extends AbstractUserNotificationAction implements Breakabl
 	 * @var bool
 	 */
 	protected $do_break = false;
+
+	protected $op_mode = 'run';
+
+	/**
+	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
+	 */
+	protected $tracker;
+	protected $person_context;
+
+	public function __construct(TicketChangeTracker $tracker, $mode = 'run')
+	{
+		$this->tracker = $tracker;
+		$this->op_mode = $mode;
+	}
 
 	/**
 	 * Enable email notifications (auto-reply)
@@ -168,6 +182,23 @@ class NewTicketAction extends AbstractUserNotificationAction implements Breakabl
 			}
 		}
 
+		$this->tracker->logMessage("[NewTicketAction] Mode: " . $this->op_mode);
+
+		$this->tracker->logMessage("[NewTicketAction] Validating: " . ($validating ? 'yes' : 'no'));
+
+		if ($this->op_mode == 'pre') {
+			$this->op_mode = 'run';
+			if ($validating) {
+				$ticket->setStatus('hidden.validating');
+			} else {
+				$ticket->setStatus('awaiting_agent');
+			}
+
+			App::getOrm()->persist($ticket);
+			App::getOrm()->flush();
+			return;
+		}
+
 		if ($validating) {
 			$this->applyValidating($ticket);
 			return;
@@ -177,10 +208,6 @@ class NewTicketAction extends AbstractUserNotificationAction implements Breakabl
 		#------------------------------
 		# Convert a validating email address into a real one
 		#------------------------------
-
-		$ticket->setStatus('awaiting_agent');
-		App::getOrm()->persist($ticket);
-		App::getOrm()->flush();
 
 		// If we got here with a validating email address it means the
 		// address is new, but we dont require validation.
@@ -217,6 +244,8 @@ class NewTicketAction extends AbstractUserNotificationAction implements Breakabl
 				$tpl = $this->newticket_email_tpl;
 			}
 
+			$this->tracker->logMessage("[NewTicketAction] Sending email " . $tpl);
+
 			$person       = $ticket->person;
 			$from_address = $this->getFromAddress($ticket);
 
@@ -241,6 +270,8 @@ class NewTicketAction extends AbstractUserNotificationAction implements Breakabl
 
 				App::getMailer()->send($message);
 			});
+		} else {
+			$this->tracker->logMessage("[NewTicketAction] No notification");
 		}
 	}
 
@@ -253,11 +284,11 @@ class NewTicketAction extends AbstractUserNotificationAction implements Breakabl
 		// Signal to stop processing triggers
 		$this->do_break = true;
 
-		$ticket->setStatus('hidden.validating');
-
 		$tpl          = $this->validating_email_tpl;
 		$person       = $ticket->person;
 		$from_address = $this->getFromAddress($ticket);
+
+		$this->tracker->logMessage("[NewTicketAction] Sending $tpl " . $tpl);
 
 		$vars = array(
 			'ticket' => $ticket,
@@ -306,5 +337,10 @@ class NewTicketAction extends AbstractUserNotificationAction implements Breakabl
 	public function getDescription($as_html = true)
 	{
 		return '';
+	}
+
+	public function merge(ActionInterface $other_action)
+	{
+		return null;
 	}
 }

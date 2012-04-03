@@ -154,6 +154,10 @@ class ActionsFactory
 				$options['email_address'] = $value['email_address'];
 				break;
 
+			case 'new_ticket':
+				$options = array('mode' => isset($value['mode']) ? $value['mode'] : 'run');
+				break;
+
 			default:
 				if (strpos($name, 'set_email_template_') !== false) {
 					$options = array(

@@ -61,6 +61,7 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	protected $notify_list_builder;
 
 	protected $has_non_ignored = false;
+	protected $running = false;
 
 	/**
 	 * Fields that shouldnt trigger the full logger and filter inspections
@@ -413,11 +414,18 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	 */
 	public function done()
 	{
+		if ($this->running) {
+			return;
+		}
 		if (!$this->has_non_ignored) {
 			return;
 		}
 
+		$this->running = true;
+
 		$this->logMessage('[TicketChangeTracker] done');
+
+		$this->ticket->unsetTicketLogger();
 
 		$this->getTriggerExecutorInspector()->runPre();
 		$this->getListUpdater()->run();
@@ -431,5 +439,7 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 		$this->logMessage("[TicketChangeTracker] END TICKET {$this->ticket['id']} : Took " . $total_time . " seconds");
 
 		$this->getSearchUpdater()->run();
+
+		$this->running = false;
 	}
 }

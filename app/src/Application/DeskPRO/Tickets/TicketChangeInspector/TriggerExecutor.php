@@ -59,6 +59,7 @@ class TriggerExecutor
 	 */
 	protected $event_types = array();
 
+	protected $all_triggers = array();
 	protected $is_performing = false;
 	protected $is_cancelled = false;
 
@@ -86,25 +87,24 @@ class TriggerExecutor
 
 	public function runPre()
 	{
+		if (!$this->tracker->isExtraSet('ticket_created')) {
+			return;
+		}
+
 		if ($this->is_performing) return;
 		$this->is_performing = true;
 
+		$this->tracker->logMessage("[TriggerExecutor] pre");
+
 		$ticket_created_trigger = null;
-		if ($this->tracker->isExtraSet('ticket_created')) {
-			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
-			$trigger->terms = array();
-			$trigger->actions = array(
-				array('type' => 'new_ticket', 'options' => array())
-			);
+		$ticket_created_trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+		$ticket_created_trigger->terms = array();
+		$ticket_created_trigger->actions = array(
+			array('type' => 'new_ticket', 'options' => array('mode' => 'pre'))
+		);
 
-			$ticket_created_trigger = $trigger;
-		}
-
-		$all_triggers = array();
-
-		if ($ticket_created_trigger) {
-			array_unshift($all_triggers, $ticket_created_trigger);
-		}
+		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getTriggersForEvents(array('new_ticket'));
+		array_unshift($all_triggers, $ticket_created_trigger);
 
 		$factory = new \Application\DeskPRO\Tickets\TicketActions\ActionsFactory();
 		$factory->addGlobalOption('tracker', $this->tracker);
@@ -118,7 +118,12 @@ class TriggerExecutor
 
 				foreach ($trigger['actions'] as $action_info) {
 					$action = $factory->createFromInfo($action_info);
-					if ($action) {
+
+					// Custom triggers only specify modifiers so
+					// this pre action can be modified to force email validation
+					// Actual actions will be run next with the usual run()
+
+					if ($action && (!$trigger->id || $action instanceof \Application\DeskPRO\Tickets\TicketActions\CollectionModifierInterface)) {
 						$actions_collection->add($action);
 						$this->tracker->recordExtraMulti('trigger', $trigger);
 					}
@@ -198,8 +203,15 @@ class TriggerExecutor
 		# Notify the user of course
 		#------------------------------
 
+		$ticket_created_trigger = null;
 		if ($this->tracker->isExtraSet('ticket_created')) {
-			// Handled in preRun
+			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+			$trigger->terms = array();
+			$trigger->actions = array(
+				array('type' => 'new_ticket', 'options' => array('mode' => 'run'))
+			);
+
+			$ticket_created_trigger = $trigger;
 		} elseif ($this->tracker->hasNewAgentReply()) {
 			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
 			$trigger->terms = array();
@@ -258,6 +270,10 @@ class TriggerExecutor
 		#------------------------------
 		# Execute triggers
 		#------------------------------
+
+		if ($ticket_created_trigger) {
+			array_unshift($all_triggers, $ticket_created_trigger);
+		}
 
 		$factory = new \Application\DeskPRO\Tickets\TicketActions\ActionsFactory();
 		$factory->addGlobalOption('tracker', $this->tracker);
