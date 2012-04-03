@@ -60,6 +60,7 @@ class TriggerExecutor
 	protected $event_types = array();
 
 	protected $is_performing = false;
+	protected $is_cancelled = false;
 
 	public function __construct(TicketChangeTracker $tracker)
 	{
@@ -83,9 +84,68 @@ class TriggerExecutor
 		return $this->event_types;
 	}
 
-	public function run()
+	public function runPre()
 	{
 		if ($this->is_performing) return;
+		$this->is_performing = true;
+
+		$ticket_created_trigger = null;
+		if ($this->tracker->isExtraSet('ticket_created')) {
+			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+			$trigger->terms = array();
+			$trigger->actions = array(
+				array('type' => 'new_ticket', 'options' => array())
+			);
+
+			$ticket_created_trigger = $trigger;
+		}
+
+		$all_triggers = array();
+
+		if ($ticket_created_trigger) {
+			array_unshift($all_triggers, $ticket_created_trigger);
+		}
+
+		$factory = new \Application\DeskPRO\Tickets\TicketActions\ActionsFactory();
+		$factory->addGlobalOption('tracker', $this->tracker);
+		$factory->addGlobalOption('ticket', $this->tracker->getTicket());
+
+		$actions_collection = new ActionsCollection();
+
+		foreach ($all_triggers as $trigger) {
+			if ($trigger->isTriggerMatch($this->tracker->getTicket(), $this->tracker)) {
+				$this->tracker->logMessage("[TriggerExecutor] Executing trigger {$trigger->id} {$trigger->event_trigger} " . print_r($trigger->terms,true) . " " . print_r($trigger->actions, true));
+
+				foreach ($trigger['actions'] as $action_info) {
+					$action = $factory->createFromInfo($action_info);
+					if ($action) {
+						$actions_collection->add($action);
+						$this->tracker->recordExtraMulti('trigger', $trigger);
+					}
+				}
+			}
+
+			if ($actions_collection->hasModifierType('StopActions')) {
+				break;
+			}
+		}
+
+		$person = App::getCurrentPerson();
+		if (!$person) {
+			$person = $this->tracker->getTicket()->person;
+		}
+		$actions_collection->apply($this->tracker->getTicket(), $person);
+
+		if ($actions_collection->isBroken()) {
+			$this->is_cancelled = true;
+		}
+
+		$this->is_performing = false;
+	}
+
+	public function run()
+	{
+		if ($this->is_performing || $this->is_cancelled) return;
 
 		$this->tracker->logMessage('[TriggerExecutor] run');
 
@@ -112,92 +172,71 @@ class TriggerExecutor
 		# Handle built-in events
 		#------------------------------
 
-		if ($this->tracker->isExtraSet('ticket_created_validating')) {
-
-			$this->tracker->logMessage('[TriggerExecutor] Normal events not being executed because ticket is validating');
-
-			// Validating means we dont run anything, except this hard-coded one that
-			// sends the notify email :-)
-			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
-			$trigger->terms = array();
-			$trigger->actions = array(
-				array('type' => 'user_notification_new_ticket_validating', 'options' => array())
-			);
-
-			$all_triggers = array($trigger);
+		if ($this->tracker->isExtraSet('ticket_created')) {
+			$this->event_types[] = 'new_ticket';
 		} else {
-			if ($this->tracker->isExtraSet('ticket_created')) {
-				$this->event_types[] = 'new_ticket';
-			} else {
-				$this->event_types[] = 'property_change';
+			$this->event_types[] = 'property_change';
 
-				if ($this->tracker->isPropertyChanged('messages')) {
-					$this->event_types[] = 'new_reply';
-				}
+			if ($this->tracker->isPropertyChanged('messages')) {
+				$this->event_types[] = 'new_reply';
 			}
+		}
 
-			$this->tracker->logMessage('[TriggerExecutor] Events: ' . implode(', ', $this->event_types));
+		$this->tracker->logMessage('[TriggerExecutor] Events: ' . implode(', ', $this->event_types));
 
-			$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getTriggersForEvents($this->event_types);
+		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getTriggersForEvents($this->event_types);
 
-			// Note that the "built in" triggers below for notifications,
-			// its important that they're array_unshift'ed onto the BEGINNING
-			// of the $all_triggers array
-			// This is because they can be modified like any other trigger,
-			// so we dont want them added at the end after modifiers
-			// are already run. For example: Template overrides, disabling notifications,
-			// adding more users to notifications, etc.
+		// Note that the "built in" triggers below for notifications,
+		// its important that they're array_unshift'ed onto the BEGINNING
+		// of the $all_triggers array
+		// This is because they can be modified like any other trigger,
+		// so we dont want them added at the end after modifiers
+		// are already run. For example: Template overrides, disabling notifications,
+		// adding more users to notifications, etc.
 
-			#------------------------------
-			# Notify the user of course
-			#------------------------------
+		#------------------------------
+		# Notify the user of course
+		#------------------------------
 
-			if ($this->tracker->isExtraSet('ticket_created')) {
-				$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
-				$trigger->terms = array();
-				$trigger->actions = array(
-					array('type' => 'new_ticket', 'options' => array())
-				);
-
-				array_unshift($all_triggers, $trigger);
-			} elseif ($this->tracker->hasNewAgentReply()) {
-				$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
-				$trigger->terms = array();
-				$trigger->actions = array(
-					array('type' => 'user_notification_new_reply_agent', 'options' => array())
-				);
-
-				array_unshift($all_triggers, $trigger);
-			} elseif ($this->tracker->hasNewUserReply()) {
-				$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
-				$trigger->terms = array();
-				$trigger->actions = array(
-					array('type' => 'user_notification_new_reply_user', 'options' => array())
-				);
-
-				array_unshift($all_triggers, $trigger);
-			}
-
-			#------------------------------
-			# Add built-in agent notifications based off prefs
-			#------------------------------
-
+		if ($this->tracker->isExtraSet('ticket_created')) {
+			// Handled in preRun
+		} elseif ($this->tracker->hasNewAgentReply()) {
 			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
 			$trigger->terms = array();
 			$trigger->actions = array(
-				array('type' => 'agent_alert_notification', 'options' => array())
+				array('type' => 'user_notification_new_reply_agent', 'options' => array())
 			);
 
 			array_unshift($all_triggers, $trigger);
-
+		} elseif ($this->tracker->hasNewUserReply()) {
 			$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
 			$trigger->terms = array();
 			$trigger->actions = array(
-				array('type' => 'agent_notification', 'options' => array())
+				array('type' => 'user_notification_new_reply_user', 'options' => array())
 			);
 
 			array_unshift($all_triggers, $trigger);
 		}
+
+		#------------------------------
+		# Add built-in agent notifications based off prefs
+		#------------------------------
+
+		$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+		$trigger->terms = array();
+		$trigger->actions = array(
+			array('type' => 'agent_alert_notification', 'options' => array())
+		);
+
+		array_unshift($all_triggers, $trigger);
+
+		$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
+		$trigger->terms = array();
+		$trigger->actions = array(
+			array('type' => 'agent_notification', 'options' => array())
+		);
+
+		array_unshift($all_triggers, $trigger);
 
 		#------------------------------
 		# Handle vacation mode agent

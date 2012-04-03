@@ -1,6 +1,6 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
-{% block email_subjects %}Validate your email address{% endblock %}
+{% block email_subjects %}Validate your email address (RE: {{ ticket.subject }}){% endblock %}
 {% block content %}
 	{% set content %}
 	Thank you for contacting us. Before our agents will read and reply to your message, you must validate your email address.

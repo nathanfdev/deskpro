@@ -102,7 +102,7 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 
 		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $only_cc_ids) {
 			$message = App::getMailer()->createMessage();
-			$message->setTemplate($tpl);
+			$message->setTemplate($tpl, $vars);
 
 			if (!empty($vars['validating_email'])) {
 				$message->setTo($vars['validating_email']->getEmail());

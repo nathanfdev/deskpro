@@ -63,6 +63,21 @@ class ActionsCollection
 	 */
 	protected $applied_modifier_types = array();
 
+	/**
+	 * @var bool
+	 */
+	protected $was_stopped = false;
+
+	/**
+	 * True when actions broke the chain early
+	 *
+	 * @return bool
+	 */
+	public function isBroken()
+	{
+		return $this->was_stopped;
+	}
+
 	public function add($action_or_modifier)
 	{
 		if ($action_or_modifier instanceof ActionInterface) {
@@ -211,12 +226,21 @@ class ActionsCollection
 	 */
 	public function apply(Ticket $ticket, Person $person_context = null)
 	{
+		$this->was_stopped = false;
+
 		foreach ($this->actions as $action) {
 			if ($person_context && $action instanceof PersonContextInterface) {
 				$action->setPersonContext($person_context);
 			}
 
 			$action->apply($ticket);
+
+			if ($action instanceof BreakableAction) {
+				if ($action->shouldBreakAction()) {
+					$this->was_stopped = true;
+					break;
+				}
+			}
 		}
 	}
 

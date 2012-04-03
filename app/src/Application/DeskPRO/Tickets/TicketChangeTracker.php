@@ -419,6 +419,7 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 
 		$this->logMessage('[TicketChangeTracker] done');
 
+		$this->getTriggerExecutorInspector()->runPre();
 		$this->getListUpdater()->run();
 		$this->getTriggerExecutorInspector()->run();
 		$this->getLogInspector()->run();

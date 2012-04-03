@@ -29,48 +29,17 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Tickets
+ * @subpackage Tickets
  */
 
-namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
+namespace Application\DeskPRO\Tickets\TicketActions;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
-class TicketTriggers implements LogActionInterface
+interface BreakableAction
 {
-	protected $triggers;
-
-	public function __construct(array $triggers)
-	{
-		$this->triggers = $triggers;
-	}
-
-	public function getLogName()
-	{
-		return 'executed_triggers';
-	}
-
-	public function getLogDetails()
-	{
-		$tr = array();
-		foreach ($this->triggers as $t) {
-			if ($t->id) {
-				$tr[] = $t->id;
-			}
-		}
-
-		if (!$tr) {
-			return array();
-		}
-
-		return array(
-			'trigger_ids' => implode(', ', $tr)
-		);
-	}
-
-	public function getEventType()
-	{
-		return 'property';
-	}
+	/**
+	 * True to stop processing actions after this one
+	 *
+	 * @return bool
+	 */
+	public function shouldBreakAction();
 }

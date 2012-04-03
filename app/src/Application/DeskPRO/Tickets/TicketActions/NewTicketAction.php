@@ -48,7 +48,7 @@ use Application\DeskPRO\App;
  * This action handles toggling email validation features,
  * and handles sending auto-response to users
  */
-class NewTicketAction extends AbstractUserNotificationAction
+class NewTicketAction extends AbstractUserNotificationAction implements BreakableAction
 {
 	/**
 	 * True to enable email validation on accounts that have not been validated yet.
@@ -75,7 +75,12 @@ class NewTicketAction extends AbstractUserNotificationAction
 	/**
 	 * @var bool
 	 */
-	protected $enable_notify = false;
+	protected $enable_notify = true;
+
+	/**
+	 * @var bool
+	 */
+	protected $do_break = false;
 
 	/**
 	 * Enable email notifications (auto-reply)
@@ -173,7 +178,9 @@ class NewTicketAction extends AbstractUserNotificationAction
 		# Convert a validating email address into a real one
 		#------------------------------
 
-		$ticket->status = 'awaiting_agent';
+		$ticket->setStatus('awaiting_agent');
+		App::getOrm()->persist($ticket);
+		App::getOrm()->flush();
 
 		// If we got here with a validating email address it means the
 		// address is new, but we dont require validation.
@@ -184,7 +191,7 @@ class NewTicketAction extends AbstractUserNotificationAction
 			$email->email = $ticket->person_email_validating->email;
 			$email->date_created = $ticket->person_email_validating->date_created;
 			$email->date_validated = new \DateTime();
-			$email->person = $this->person;
+			$email->person = $ticket->person;
 
 			$ticket->person->addEmailAddress($email);
 
@@ -193,8 +200,8 @@ class NewTicketAction extends AbstractUserNotificationAction
 			$ticket->person_email_validating = null;
 			$ticket->person_email = $email;
 
-			$this->em->persist($ticket);
-			$this->em->flush();
+			App::getOrm()->persist($ticket);
+			App::getOrm()->flush();
 		}
 
 		#------------------------------
@@ -218,9 +225,16 @@ class NewTicketAction extends AbstractUserNotificationAction
 				'person' => $person,
 			);
 
+			$messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket,array(
+				'limit' => 25,
+				'order' => 'DESC',
+				'with_notes' => false
+			));
+			$vars['messages'] = $messages;
+
 			App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person) {
 				$message = App::getMailer()->createMessage();
-				$message->setTemplate($tpl);
+				$message->setTemplate($tpl, $vars);
 				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 				$message->setFrom($from_address);
 				$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
@@ -236,6 +250,9 @@ class NewTicketAction extends AbstractUserNotificationAction
 	 */
 	public function applyValidating(Ticket $ticket)
 	{
+		// Signal to stop processing triggers
+		$this->do_break = true;
+
 		$ticket->setStatus('hidden.validating');
 
 		$tpl          = $this->validating_email_tpl;
@@ -247,9 +264,16 @@ class NewTicketAction extends AbstractUserNotificationAction
 			'person' => $person,
 		);
 
+		$messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket,array(
+			'limit' => 25,
+			'order' => 'DESC',
+			'with_notes' => false
+		));
+		$vars['messages'] = $messages;
+
 		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person) {
 			$message = App::getMailer()->createMessage();
-			$message->setTemplate($tpl);
+			$message->setTemplate($tpl, $vars);
 			$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 			$message->setFrom($from_address);
 			$message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
@@ -258,6 +282,10 @@ class NewTicketAction extends AbstractUserNotificationAction
 		});
 	}
 
+	public function shouldBreakAction()
+	{
+		return $this->do_break;
+	}
 
 	/**
 	 * @return string
