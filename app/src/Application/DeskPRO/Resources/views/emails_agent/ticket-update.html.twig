@@ -1,0 +1,56 @@
+{% extends 'DeskPRO:emails_common:layout.html.twig' %}
+{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
+{% block email_subject %}{{ phrase('agent.tickets_email.subject_new_ticket') }}{% endblock %}
+{% block content %}
+{% set content %}{{ phrase('deskpro.emails_agent.a_new_ticket_has_been_created') }}{% endset %}
+{{ layout.section('', content) }}
+
+"{{ ticket.subject }}" has been updated.
+
+{% set content %}
+<table cellspacing="0" cellpadding="3" width="100%">
+	<tr>
+		<td width="130">{{ phrase('deskpro.emails_agent.agent') }}</td>
+		<td>{{ticket.agent.display_name|default('None')}}</td>
+	</tr>
+	<tr>
+		<td width="130">{{ phrase('deskpro.emails_agent.team') }}</td>
+		<td>{{ticket.agent_team.name|default('None')}}</td>
+	</tr>
+	<tr>
+		<td width="130">{{ phrase('deskpro.emails_agent.category') }}</td>
+		<td>{{ticket.category.full_title|default('None')}}</td>
+	</tr>
+	<tr>
+		<td width="130">{{ phrase('deskpro.emails_agent.product') }}</td>
+		<td>{{ticket.product.title|default('None')}}</td>
+	</tr>
+	<tr>
+		<td width="130">{{ phrase('deskpro.emails_agent.priority') }}</td>
+		<td>{{ticket.priority.title|default('None')}}</td>
+	</tr>
+	<tr>
+		<td width="130">{{ phrase('deskpro.emails_agent.workflow') }}</td>
+		<td>{{ticket.workflow.title|default('None')}}</td>
+	</tr>
+	<tr>
+		<td width="130">{{ phrase('deskpro.emails_agent.status') }}</td>
+		<td>
+			{% if not ticket.status or ticket.status == 'awaiting_agent' %}
+			Open
+			{% elseif ticket.status == 'awaiting_user' %}
+			Pending
+			{% elseif ticket.status == 'resolved' %}
+			Resolved
+			{% endif %}
+		</td>
+	</tr>
+</table>
+{% endset %}
+{{ layout.section('Ticket Properties', content) }}
+
+{{ layout.render_ticket_messages(messages, 'Messages') }}
+
+<br/><br/>
+{{ layout.replycode(tac.access_code) }}
+{% endblock %}

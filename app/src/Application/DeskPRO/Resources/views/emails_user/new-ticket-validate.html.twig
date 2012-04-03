@@ -2,18 +2,18 @@
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_subjects %}Validate your email address{% endblock %}
 {% block content %}
-{% set content %}
-Thank you for contacting us. Before our agents will read and reply to your email, you must validate your email address.
-<br /><br />
-{{ phrase('deskpro.emails_user.simply_click_on_the_following_link_to_validate') }}:<br />
-<a href="{{ url('user_profile_emails_validate_code', {'id': validating_email.id, 'code': validating_email.auth}) }}">
-	{{ url('user_profile_emails_validate_code', {'id': validating_email.id, 'code': validating_email.auth}) }}
-</a>
-{% endset %}
-{{ layout.section('', content) }}
+	{% set content %}
+	Thank you for contacting us. Before our agents will read and reply to your message, you must validate your email address.
+	<br /><br />
+	{{ phrase('deskpro.emails_user.simply_click_on_the_following_link_to_validate') }}:<br />
+	<a href="{{ url('user_profile_emails_validate_code', {'id': person_email_validating.id, 'code': person_email_validating.auth}) }}">
+		{{ url('user_profile_emails_validate_code', {'id': validaperson_email_validatingting_email.id, 'code': person_email_validating.auth}) }}
+	</a>
+	{% endset %}
+	{{ layout.section('', content) }}
 
-{{ layout.render_ticket_messages(messages) }}
+	{{ layout.render_ticket_messages(messages) }}
 
-<br/><br/>
-{{ layout.replycode(ticket.access_code) }}
+	<br/><br/>
+	{{ layout.replycode(ticket.access_code) }}
 {% endblock %}

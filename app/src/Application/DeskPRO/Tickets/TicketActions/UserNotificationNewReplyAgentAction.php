@@ -46,6 +46,23 @@ use Application\DeskPRO\App;
 class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 {
 	/**
+	 * @var string
+	 */
+	protected $newreply_agent_email_tpl = 'DeskPRO:emails_agent:new-reply-agent.html.twig';
+
+	/**
+	 * @param string $tpl
+	 */
+	public function setEmailTemplate($tpl, $type = '')
+	{
+		switch ($tpl) {
+			case 'user_new_reply_agent':
+				$this->newreply_agent_email_tpl = $tpl;
+				break;
+		}
+	}
+
+	/**
 	 * Apply the property to the ticket
 	 *
 	 * @param \Application\DeskPRO\Entity\Ticket $ticket
@@ -71,9 +88,10 @@ class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 			'action' => 'new_agent_reply',
 			'new_message' => $new_message,
 			'messages' => $messages,
+			'ticket' => $ticket
 		);
 
-		$this->doSend('DeskPRO:emails_user:new-agent-reply', $vars, $ticket, $change_info);
+		$this->doSend($this->newreply_agent_email_tpl, $vars, $ticket, $change_info);
 		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 	}
 

@@ -1,6 +1,0 @@
-{% for message in messages %}
-	{# only ever one message in blank emails, no history #}
-	{% if loop.index == 1 %}
-		{{ message.message_html|raw }}
-	{% endif %}
-{% endfor %}

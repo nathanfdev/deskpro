@@ -52,35 +52,19 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 	 */
 	protected $tracker;
 	protected $person_context;
-	protected $template_suffix = '';
-	protected $from_address = null;
 
-	public function __construct(TicketChangeTracker $tracker, $template_suffix = '')
+	public function __construct(TicketChangeTracker $tracker)
 	{
 		$this->tracker = $tracker;
 	}
 
-	public function setTemplateSuffix($template_suffix)
+	public function getFromAddress(Ticket $ticket)
 	{
-		$this->template_suffix = $template_suffix;
-	}
-
-	public function getTemplateSuffix()
-	{
-		return $this->template_suffix;
-	}
-
-	public function setFromAddress($from_address)
-	{
-		$this->from_address = $from_address;
-	}
-
-	public function getFromAddress()
-	{
-		if (!$this->from_address) {
-			return App::getSetting('core.default_from_email');
+		if ($ticket->notify_email) {
+			return $ticket->notify_email;
 		}
-		return $this->from_address;
+
+		return App::getSetting('core.default_from_email');
 	}
 
 	protected function doSend($tpl, $vars, Ticket $ticket, &$change_info = array())
@@ -114,15 +98,11 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 			$tpl_suffix .= '-' . $ticket['notify_template'];
 		}
 
-		if ($ticket->notify_email) {
-			$from_address = $ticket->notify_email;
-		} else {
-			$from_address = $this->getFromAddress();
-		}
+		$from_address = $this->getFromAddress($ticket);
 
-		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $tpl_suffix, $only_cc_ids) {
+		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $only_cc_ids) {
 			$message = App::getMailer()->createMessage();
-			$message->setTemplate($tpl.$tpl_suffix.'.html.twig');
+			$message->setTemplate($tpl);
 
 			if (!empty($vars['validating_email'])) {
 				$message->setTo($vars['validating_email']->getEmail());
@@ -145,11 +125,6 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 	 */
 	public function merge(ActionInterface $other_action)
 	{
-		$template_suffix = $other_action->getTemplateSuffix();
-		if (!$template_suffix) {
-			$template_suffix = $this->getTemplateSuffix();
-		}
-
-		return new self($this->tracker, $other_action->getFromAddress(), $template_suffix);
+		return new self($this->tracker);
 	}
 }

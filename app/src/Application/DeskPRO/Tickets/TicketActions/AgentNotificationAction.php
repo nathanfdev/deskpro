@@ -71,7 +71,22 @@ class AgentNotificationAction implements ActionInterface
 	/**
 	 * @var string
 	 */
-	protected $template_name = 'DeskPRO:emails_agent:ticket-notification.html.twig';
+	protected $newticket_email_tpl = 'DeskPRO:emails_agent:new-ticket.html.twig';
+
+	/**
+	 * @var string
+	 */
+	protected $newreply_user_email_tpl = 'DeskPRO:emails_agent:new-reply-user.html.twig';
+
+	/**
+	 * @var string
+	 */
+	protected $newreply_agent_email_tpl = 'DeskPRO:emails_agent:new-reply-agent.html.twig';
+
+	/**
+	 * @var string
+	 */
+	protected $ticket_update_email_tpl = 'DeskPRO:emails_agent:ticket-update.html.twig';
 
 	/**
 	 * @var string
@@ -96,28 +111,33 @@ class AgentNotificationAction implements ActionInterface
 				$this->notify_info[$agent_id] = array('filters' => $filters);
 			}
 		}
-
-		$this->from_address = App::getSetting('core.default_from_email');
 	}
 
-	public function setFromAddress($from_address)
+	public function getFromAddress(Ticket $ticket)
 	{
-		$this->from_address = $from_address;
-	}
+		if ($ticket->notify_email) {
+			return $ticket->notify_email;
+		}
 
-	public function getFromAddress()
-	{
-		return $this->from_address;
+		return App::getSetting('core.default_from_email');
 	}
 
 	/**
-	 * Set the template name to use
-	 *
 	 * @param string $tpl
 	 */
-	public function setTemplateName($tpl)
+	public function setEmailTemplate($tpl, $type = '')
 	{
-		$this->template_name = $tpl;
+		switch ($tpl) {
+			case 'agent_new_ticket':
+				$this->newticket_email_tpl = $tpl;
+				break;
+			case 'agent_new_reply_agent':
+				$this->newreply_agent_email_tpl = $tpl;
+				break;
+			case 'agent_new_reply_user':
+				$this->newreply_user_email_tpl = $tpl;
+				break;
+		}
 	}
 
 	/**
@@ -167,11 +187,6 @@ class AgentNotificationAction implements ActionInterface
 	 */
 	public function apply(Ticket $ticket)
 	{
-		return;
-		if (!$this->notify_agents) {
-			return;
-		}
-
 		$change_info = array(
 			'type' => 'agent_notify',
 			'notify_type' => 'ticketnofity',
@@ -179,17 +194,21 @@ class AgentNotificationAction implements ActionInterface
 		);
 
 		$subject_phrase = 'agent.tickets_email.subject_ticket_updated';
+		$tpl = $this->ticket_update_email_tpl;
 		$is_new_ticket = false;
 		$is_new_agent_reply = false;
 		$is_new_user_reply = false;
 		if ($this->tracker->isNewTicket()) {
 			$change_info['notify_type'] = 'newticket';
+			$tpl = $this->newticket_email_tpl;
 			$is_new_ticket = true;
 		} elseif ($this->tracker->hasNewAgentReply()) {
 			$change_info['notify_type'] = 'newreply';
+			$tpl = $this->newreply_agent_email_tpl;
 			$is_new_agent_reply = true;
 		} elseif ($this->tracker->hasNewUserReply()) {
 			$change_info['notify_type'] = 'newreply';
+			$tpl = $this->newreply_user_email_tpl;
 			$is_new_user_reply = true;
 		}
 
@@ -203,6 +222,10 @@ class AgentNotificationAction implements ActionInterface
 
 		foreach ($this->notify_agents as $agent_id) {
 			$agent = App::getEntityRepository('DeskPRO:Person')->find($agent_id);
+
+			if (!$agent || !$agent->getPrimaryEmailAddress()) {
+				continue;
+			}
 
 			$vars = array(
 				'email_subject' => new DelegatePhrase($subject_phrase, array('ticket_subject' => $ticket['subject'])),
@@ -222,10 +245,10 @@ class AgentNotificationAction implements ActionInterface
 			$vars['messages'] = $messages;
 
 			$message = App::getMailer()->createMessage();
-			$message->setTemplate($this->template_name, $vars);
+			$message->setTemplate($tpl, $vars);
 			$message->setTo($agent->getPrimaryEmailAddress(), $agent->getDisplayName());
 			$message->getHeaders()->get('Message-ID')->setId($tac->getUniqueEmailMessageId());
-			$message->setFrom($this->getFromAddress());
+			$message->setFrom($this->getFromAddress($ticket));
 
 			App::getMailer()->send($message);
 
