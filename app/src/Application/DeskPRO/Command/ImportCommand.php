@@ -172,7 +172,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			error_reporting($e);
 			if ($e->getCode() == '1049') {
 
-				$logger->log("We have detected that the database {$DP_CONFIG['db']['dbname']} does not exist. We will try to create it now ...\n", Logger::DEBUG);
+				$logger->log("We have detected that the database {$DP_CONFIG['db']['dbname']} does not exist. We will try to create it now.\n", Logger::DEBUG);
 
 				// Attempt to create an empty database
 				try {
@@ -418,7 +418,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 
 		if (!$tables) {
-			$logger->log('The database you specified is empty. We will now install the DeskPRO v4 tables. This may take a minute.'  . PHP_EOL, Logger::INFO, array('ignore_pri_filter' => true));
+			$logger->log('\nWelcome to the DeskPRO importer. Our first step is to install the DeskPRO v4 tables in your new database. This may take a minute.'  . PHP_EOL, Logger::INFO, array('ignore_pri_filter' => true));
 
 			$db->exec("
 				CREATE TABLE IF NOT EXISTS `install_data` (
@@ -450,7 +450,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			}
 			$install_schema = new \Application\InstallBundle\Install\InstallSchema($db, $schema, DP_BUILD_TIME);
 
-			$logger->log("Installing schema ...", Logger::DEBUG);
+			$logger->log("Installing schema.", Logger::DEBUG);
 			$time_start = microtime(true);
 
 			$errors = array();
@@ -487,8 +487,6 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$IMPORT_INSTALL = true;
 
 			$this->getContainer()->getEm()->beginTransaction();
-
-			echo "\n";
 
 			try {
 				$install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
@@ -556,7 +554,8 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$data_init->run();
 
 			echo "\n";
-			echo "Proceeding with the import...\n\n";
+			echo "Proceeding with the import.";
+			echo "\n";
 		}
 
 		if (isset($DP_CONFIG['core.filestorage_method']) && $DP_CONFIG['core.filestorage_method'] == 'fs') {
