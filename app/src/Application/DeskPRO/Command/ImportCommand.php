@@ -418,7 +418,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 
 		if (!$tables) {
-			$logger->log('\nWelcome to the DeskPRO importer. Our first step is to install the DeskPRO v4 tables in your new database. This may take a minute.'  . PHP_EOL, Logger::INFO, array('ignore_pri_filter' => true));
+			$logger->log(PHP_EOL . 'Welcome to the DeskPRO importer. Our first step is to install the DeskPRO v4 tables in your new database. This may take a minute.'  . PHP_EOL, Logger::INFO, array('ignore_pri_filter' => true));
 
 			$db->exec("
 				CREATE TABLE IF NOT EXISTS `install_data` (
