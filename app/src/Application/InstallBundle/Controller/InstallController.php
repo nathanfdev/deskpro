@@ -47,7 +47,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 	/**
 	 * @return \Orb\Log\Logger
 	 */
-	public function getLogger()
+	public function getLogger($reset = false)
 	{
 		static $logger = null;
 
@@ -55,7 +55,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$logger = new \Orb\Log\Logger();
 
 			try {
-				$wr = new \Orb\Log\Writer\Stream($this->container->getLogDir() . '/install.log');
+				$wr = new \Orb\Log\Writer\Stream($this->container->getLogDir() . '/install.log', $reset ? 'w' : 'a');
 				$logger->addWriter($wr);
 			} catch (\Exception $e) {}
 
@@ -97,7 +97,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$can_write_config = true;
 		}
 
-		$this->getLogger()->log('Install::index', 'debug');
+		$this->getLogger(true)->log('Install::index', 'debug');
 
 		$server_check = new \Application\InstallBundle\Install\ServerChecks();
 		$server_check->setLogger($this->getLogger());
