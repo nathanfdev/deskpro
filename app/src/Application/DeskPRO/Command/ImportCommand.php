@@ -111,7 +111,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$log_file_path = $this->getContainer()->getKernel()->getUserLogDir() . '/import.log';
 		try {
 			if (!(isset($DP_CONFIG['import']['nolog']) && $DP_CONFIG['import']['nolog'])) {
-				$wr = new \Orb\Log\Writer\Stream($log_file_path, 'w');
+				$wr = new \Orb\Log\Writer\Stream($log_file_path, $mode == 'run' ? 'w' : 'a');
 			} else {
 				$logger->disabled = true;
 			}
