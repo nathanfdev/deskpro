@@ -8,7 +8,7 @@
 
 		<div class="dp-form-row {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
 			<div class="dp-form-label">
-				<label>{{ phrase('user.label_your_email') }} *</label> <em class="desc">{{ phrase('user.login_if_already_reg_note', {'url': path('user_login')}) }}</em>
+				<label>{{ phrase('global.your_email_address') }} *</label> <em class="desc">{{ phrase('user.login_if_already_reg_note', {'url': path('user_login')}) }}</em>
 			</div>
 			<div class="dp-form-input">
 				<input type="text" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ initial_value }}" data-field-validators="DeskPRO.Form.EmailValidator" />
@@ -22,7 +22,7 @@
 			<div class="dp-login-section">
 				<div class="dp-form-label">
 					<label>{{ phrase('global.password') }}</label>
-					<a class="forgot" href="{{ path('user_login_resetpass') }}">{{ phrase('user.lost_password_link') }}</a>
+					<a class="forgot" href="{{ path('user_login_resetpass') }}">{{ phrase('global.lost_qm') }}</a>
 				</div>
 				<div class="dp-form-input">
 					<input type="password" id="dp_inline_login_pass" />
@@ -68,7 +68,7 @@
 			>
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.label_your_email') }}</label>
+						<label>{{ phrase('global.your_email_address') }}</label>
 						{% if mode == 'advanced' %}
 						<em class="change-email"><a href="{{ path('user_profile') }}">{{ phrase('user.change_email') }}</a></em>
 						<em class="change-email-close" style="display: none"><a>{{ phrase('user.done_changing_email') }}</a></em>
@@ -103,7 +103,7 @@
 			<div class="dp-form-row {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.label_your_email') }} *</label>
+						<label>{{ phrase('global.your_email_address') }} *</label>
 					</div>
 				</div>
 				<div class="dp-form-input">

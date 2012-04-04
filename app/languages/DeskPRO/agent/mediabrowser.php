@@ -4,7 +4,7 @@
   'agent.mediabrowser.download_file' => 'Download file',
   'agent.mediabrowser.file_name' => 'File name',
   'agent.mediabrowser.file_size' => 'File size',
-  'agent.mediabrowser.remove' => 'Remove',
+
   'agent.mediabrowser.insert_link_to_file' => 'Insert link to file',
   'agent.mediabrowser.insert_image' => 'Insert image',
   'agent.mediabrowser.crop_and_scale' => 'Crop and Scale',

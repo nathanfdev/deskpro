@@ -32,7 +32,7 @@ pageMeta.baseId = '{{ baseId }}';
 					id="{{baseId}}_delete_btn"
 					class="clean-white delete-trigger"
 					data-delete-url="{{ path('agent_org_delete', {'organization_id': org.id, 'security_token': security_token('delete_org') }) }}"
-				>{{ phrase('agent.organization.delete') }}</button>
+				>{{ phrase('global.ucfirst_delete') }}</button>
 				{% endif %}
 			</li>
 		</ul>

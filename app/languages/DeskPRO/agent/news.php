@@ -5,7 +5,7 @@
 
 
   'agent.news.news_posts' => 'news posts',
-  'agent.news.edit' => 'Edit',
+
 
 
 

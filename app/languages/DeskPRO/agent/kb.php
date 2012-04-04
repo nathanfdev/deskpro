@@ -11,12 +11,12 @@
 	'agent.kb.add_pending' => 'Add a new pending article',
 
 
-  'agent.kb.delete' => 'Delete',
+
 
 
   'agent.kb.articles' => 'articles',
 
-  'agent.kb.edit' => 'Edit',
+
 
 
 

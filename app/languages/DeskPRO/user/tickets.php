@@ -61,7 +61,7 @@
 
 	'user.tickets.feedback_message_title' => 'Rate message by {{name}}',
 	'user.tickets.feedback_message_leave_comment' => 'Optionally leave a comment',
-	'user.tickets.feedback_message_submit_btn' => 'Submit Feedback',
+
 
 
 	'user.tickets.list_closed' => 'Closed Tickets',
@@ -82,7 +82,7 @@
 	'user.tickets.logging_in' => 'Logging in...',
 
 	'user.tickets.login_or_close' => '{{link1}} or {{link2}}',
-	'user.tickets.close' => 'close',
+
 
 
 

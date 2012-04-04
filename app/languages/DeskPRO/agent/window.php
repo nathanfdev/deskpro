@@ -49,7 +49,7 @@
 
 	'agent.window.sound_explain' => 'Change or mute sound notifications',
 
-	'agent.window.nav_tickets' => 'Tickets',
+
 
 
 

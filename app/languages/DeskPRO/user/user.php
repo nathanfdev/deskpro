@@ -87,8 +87,8 @@
 	'user.created_by_x' => 'Created by {{name}}',
 
 
-	'user.label_your_name' => 'Your name',
-	'user.label_your_email' => 'Your email address',
+
+
 
 	'user.change_email' => 'Change email address',
 	'user.done_changing_email' => 'Done changing email address',
@@ -97,7 +97,7 @@
 
 
 
-	'user.lost_password_link' => 'lost?',
+
 
 	'user.lost_password_explain' => 'Forgot your password? Fill in your email address above, and then click the button below.',
 	'user.lost_password_sent_explain' => 'If we have an account with this email address, then we have sent you instructions on how to reset your password.',

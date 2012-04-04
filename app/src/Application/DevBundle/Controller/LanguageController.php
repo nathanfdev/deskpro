@@ -566,10 +566,13 @@ class LanguageController extends Controller
         list($by_id, $by_content) = $this->parseLangFiles();
         $rootdir = DP_ROOT.'/languages/DeskPRO';
         $global = require($rootdir.'/global/global.php');
-        $global[$id] = $content;
-        $data = '<?php return '.var_export($global, true).';';
-        echo "Would put ".htmlspecialchars($data)."<br>";
-        file_put_contents($rootdir.'/global/global.php', $data);
+
+        if(!isset($global[$id])) {
+            $global[$id] = $content;
+            $data = '<?php return '.var_export($global, true).';';
+            echo "Would put ".htmlspecialchars($data)."<br>";
+            file_put_contents($rootdir.'/global/global.php', $data);
+        }
 
         $files = $by_content[$content];
 

@@ -61,18 +61,18 @@
 <div id="dp_chat_start">
 	{% if app.user.id %}
 		{% if not app.user.name %}
-			<input type="text" name="name" placeholder="{{ phrase('user.chat.your_name') }}" /><br />
+			<input type="text" name="name" placeholder="{{ phrase('global.your_name') }}" /><br />
 		{% else %}
 			{{ app.user.name }}
 		{% endif %}
 		{% if not app.user.email_address %}
-			<input type="text" name="email" placeholder="{{ phrase('user.chat.your_email') }}" />
+			<input type="text" name="email" placeholder="{{ phrase('global.your_email_address') }}" />
 		{% else %}
 			{{ app.user.email_address }}
 		{% endif %}
 	{% else %}
-		<input type="text" name="name" placeholder="{{ phrase('user.chat.your_name') }}" /><br />
-		<input type="text" name="email" placeholder="{{ phrase('user.chat.your_email') }}" />
+		<input type="text" name="name" placeholder="{{ phrase('global.your_name') }}" /><br />
+		<input type="text" name="email" placeholder="{{ phrase('global.your_email_address') }}" />
 		{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 			<div class="connect-with">
 				{{ phrase('global.or_connect_with') }}
@@ -131,7 +131,7 @@
 	{# Field is hidden if the user entered an email addy, its sent automatically when chat ended #}
 	<div class="form-row email-field">
 		{% set phrase_part %}
-		<input type="text" name="email" value="" placeholder="{{ phrase('user.chat.your_email') }}" />
+		<input type="text" name="email" value="" placeholder="{{ phrase('global.your_email_address') }}" />
 		{% endset %}
 		{{ phrase('user.widget.send_a_transcript_of_this_chat_to') }} 
 	</div>

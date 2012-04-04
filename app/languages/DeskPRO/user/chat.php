@@ -27,8 +27,8 @@
 	'user.chat.confirm_end_chat' => 'Are you sure you want to end your chat?',
 
 
-	'user.chat.your_name' => 'Your name',
-	'user.chat.your_email' => 'Your email address',
+
+
 	'user.chat.start_chat' => 'Start Chatting',
 	'user.chat.please_wait_for_agent_for_chat' => 'Please wait while we find an agent to take your chat',
 	'user.chat.drop_file_here' => 'Drop your file here to upload it',

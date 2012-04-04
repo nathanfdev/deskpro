@@ -14,11 +14,29 @@
 {% endfor %}
 
 <h2>Duplicates by content</h2>
-<form method="post">
+
 {% for content in dupes.content %}
 <h3>Duplicates for:</h3>
 <pre>{{content.data}}</pre>
-{#<form method="post">#}
+<form method="post">
+<table cellspacing="0" cellpadding="2" border="1" width="90%">
+    <tr><th>File</th><th>Line</th><th>id</th></tr>
+
+    {% for row in by_content[content.data] %}
+    <tr><td>{{row.filename}}</td><td>{{row.line}}</td><td>{{row.id}}</td></tr>
+    {% endfor %}
+
+</table>
+    Id: <input type="text" name="id" value="{{content.id}}" />
+    <input type="hidden" name="content" value="{{content.data}}">
+    <input type="submit" value="Globalise">
+ </form>
+{% endfor %}
+
+<form method="post">
+    {% for content in dupes.content %}
+    <h3>Batch Action Duplicates for:</h3>
+    <pre>{{content.data}}</pre>
 <table cellspacing="0" cellpadding="2" border="1" width="90%">
     <tr><th>File</th><th>Line</th><th>id</th></tr>
 
@@ -28,11 +46,7 @@
 
 </table>
     Id: {{content.id}}
-{#    Id: <input type="text" name="id" value="global.{{content.id}}" />#}
-{#    <input type="hidden" name="content" value="{{content.data}}">#}
-{#    <input type="submit" value="Globalise">#}
-{# </form> #}
     <input type="checkbox" name="batch[]" value="{{content.data}}" {% if not content.exists %}checked="checked"{% endif %}/> Batch
-{% endfor %}
+    {% endfor %}
     <input type="submit" value="Batch Globalise">
 </form>

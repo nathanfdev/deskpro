@@ -186,7 +186,7 @@ pageMeta.baseId = '{{ baseId }}';
 			</div>
 			<div class="showing-rendered-fields">
 				{% if custom_fields|length %}<button class="clean-white edit-fields-trigger noedit-hide"><span>{{ phrase('agent.edit_properties') }}</span></button>{% endif %}
-				<button class="clean-white delete nodelete-hide" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.delete') }}</button>
+				<button class="clean-white delete nodelete-hide" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('global.ucfirst_delete') }}</button>
 				<button class="clean-white permalink">{{ phrase('agent.copy_permalink') }}</button>
 				<button class="clean-white view-user-interface">{{ phrase('agent.view_in_user_interface') }}</button>
                 <a target="_blank" href="{{ path('agent_kb_article', {'article_id': article.id,'pdf': 1}) }}"><button class="clean-white">{{ phrase('global.download_pdf') }}</button></a>
@@ -216,7 +216,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<div class="deskpro-tab-item kb-content on" style="display: block">
 				<nav class="sub-box-nav noedit-hide">
 					<ul class="option-buttons right" id="{{baseId}}_content_edit_btns">
-						<li class="kb-editor-edit edit" id="{{baseId}}_edit_btn"><span>{{ phrase('agent.edit') }}</span></li>
+						<li class="kb-editor-edit edit" id="{{baseId}}_edit_btn"><span>{{ phrase('global.ucfirst_edit') }}</span></li>
 						<li class="editor-save-trigger save" id="{{baseId}}_save_btn"><span>{{ phrase('global.save') }}</span></li>
 						<li class="editor-cancel-trigger cancel" id="{{baseId}}_cancel_btn"><span>{{ phrase('global.cancel') }}</span></li>
 					</ul>

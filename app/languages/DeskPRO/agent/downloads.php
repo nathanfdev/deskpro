@@ -2,12 +2,12 @@
 
 
 
-  'agent.downloads.edit' => 'Edit',
+
 
 
 
   'agent.downloads.download_category' => 'Download Category',
-  'agent.downloads.delete' => 'Delete',
+
   'agent.downloads.copy_permalink' => 'Copy Permalink',
 
 

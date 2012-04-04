@@ -48,5 +48,5 @@
 	'agent.settings.create_macro' => 'Create Macro',
 
 
-  'agent.settings.close' => 'close',
+
 );

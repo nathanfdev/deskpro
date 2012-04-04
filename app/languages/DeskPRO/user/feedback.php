@@ -13,8 +13,8 @@
 
 	'user.feedback.all_feedback' => 'All Feedback',
 
-	'user.feedback.newfeedback_section_name' => 'Submit Feedback',
-	'user.feedback.submit_new_feedback' => 'Submit Feedback',
+
+
 
 
 	'user.feedback.label_summary_explain' => 'A title or a brief summary of what your feedback is about',

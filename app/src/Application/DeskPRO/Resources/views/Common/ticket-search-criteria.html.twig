@@ -154,7 +154,7 @@
 	{% endif %}
 
 	{% if 'agent' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
-	<div class="type" title="{{ phrase('deskpro.common.assigned_agent') }}" data-rule-type="agent" data-term-type="GenericMenuTerm" data-term-triggers="agent">
+	<div class="type" title="{{ phrase('global.assigned_agent') }}" data-rule-type="agent" data-term-type="GenericMenuTerm" data-term-triggers="agent">
 		<div class="op">
 			<select name="op" class="op">
 				<option value="is">{{ phrase('global.is') }}</option>

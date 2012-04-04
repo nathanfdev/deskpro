@@ -4,7 +4,7 @@
 {% endblock %}
 {% block breadcrumb %}
 	<li><a href="{{ path('user_feedback') }}">{{ phrase('global.feedback') }}</a></li>
-	<li><a href="{{ path('user_feedback_newfeedback') }}">{{ phrase('user.feedback.newfeedback_section_name') }}</a></li>
+	<li><a href="{{ path('user_feedback_newfeedback') }}">{{ phrase('global.submit_feedback') }}</a></li>
 {% endblock %}
 {% block content %}
 
@@ -15,7 +15,7 @@
 >
 	<div class="dp-box">
 		<div class="dp-box-header">
-			<h1>{{ phrase('user.feedback.newfeedback_section_name') }}</h1>
+			<h1>{{ phrase('global.submit_feedback') }}</h1>
 		</div>
 
 		<div class="dp-box-content-wrapper">
@@ -44,7 +44,7 @@
 					 ###############}
 					<div class="dp-form-row {% if error_fields['person_name'] %}dp-error{% endif %}"">
 						<div class="dp-form-label">
-							<label>{{ phrase('user.label_your_name') }} *</label>
+							<label>{{ phrase('global.your_name') }} *</label>
 						</div>
 						<div class="dp-form-input">
 							{{ form_widget(form.person_name, {

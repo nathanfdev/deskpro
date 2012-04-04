@@ -4,7 +4,7 @@
 	'agent.login.login_failed' => 'Invalid login. Please try again.',
 
 
-	'agent.login.lost_link' => 'lost?',
+
 	'agent.login.enter_password' => 'Enter your password',
 	'agent.login.has_logged_out' => 'You have been logged out successfully.',
 

@@ -328,7 +328,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			{% endif %}
 			{% if ticket_perms.delete %}
 			{% if not (ticket.hidden_status in ['deleted', 'spam'] )%}
-				<a class="clean-white nodelete-hide" id="{{baseId}}_delete_trigger"><span>{{ phrase('agent.delete') }}</span></a>
+				<a class="clean-white nodelete-hide" id="{{baseId}}_delete_trigger"><span>{{ phrase('global.ucfirst_delete') }}</span></a>
 				<a class="clean-white noedit-hide" id="{{baseId}}_spam_trigger"><span>{{ phrase('global.spam') }}</span></a>
 			{% endif %}
 			{% endif %}

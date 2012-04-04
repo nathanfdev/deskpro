@@ -19,7 +19,7 @@
 
 
 
-	'agent.delete' => 'Delete',
+
 
 
 
@@ -33,7 +33,7 @@
 
 
 
-	'agent.remove' => 'Remove',
+
 
 
 	'agent.upload_explain' => 'Click the upload button or drop a file onto this area.',
@@ -43,7 +43,7 @@
 	'agent.record_marked_spam' => 'This record has been marked as spam.',
 	'agent.unspam' => 'Unspam',
 	'agent.undelete' => 'Undelete',
-	'agent.edit' => 'Edit',
+
 	'agent.add_comment' => 'Add Comment',
 	'agent.created_timeago_by_x_on_y' => 'Created {{timeago}} by {{name}} on {{date}}',
 
@@ -262,7 +262,7 @@
 
 
 
-	'agent.tab_loading' => 'Loading...',
+
 
 	'agent.recycle_bin' => 'Recycle Bin',
 

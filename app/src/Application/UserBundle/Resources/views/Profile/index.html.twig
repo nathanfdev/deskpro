@@ -79,7 +79,7 @@
 							{% else %}
 								<a href="{{ path('user_profile_emails_setdefault', {'email_id': email.id}) }}">{{ phrase('user.profile.set_as_primary_address') }}</a>
 								&bull;
-								<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_remove', {'email_id': email.id}) }}">{{ phrase('user.profile.delete') }}</a>
+								<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_remove', {'email_id': email.id}) }}">{{ phrase('global.ucfirst_delete') }}</a>
 							{% endif %}
 						</div>
 						{{ email.email }}
@@ -90,7 +90,7 @@
 							<div class="dp-controls">
 								<a href="{{ path('user_profile_emails_validate_sendlink', {'email_id': email.id}) }}">{{ phrase('global.resend_validation_email') }}</a>
 								&bull;
-								<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_validate_remove', {'email_id': email.id}) }}">{{ phrase('user.profile.delete') }}</a>
+								<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_validate_remove', {'email_id': email.id}) }}">{{ phrase('global.ucfirst_delete') }}</a>
 							</div>
 							{{ email.email }} <em>{{ phrase('user.profile.awaiting_validation') }}</em>
 						</li>

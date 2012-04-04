@@ -106,7 +106,7 @@ var ticketReader = {
 
 <div class="dp-form-row {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
 	<div class="dp-form-label">
-		<label>{{ phrase('user.label_your_email') }} *</label>
+		<label>{{ phrase('global.your_email_address') }} *</label>
 	</div>
 	<div class="dp-form-input">
 		<input type="text" name="newticket[person][email]" value="{{ newticket.person.email }}" data-field-validators="DeskPRO.Form.EmailValidator" />

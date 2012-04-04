@@ -1,7 +1,7 @@
 <section class="list-top-area news">
 	{% if not hide_terms_summary %}
 	<div class="summary">
-		<span class="edit" title="{{ phrase('agent.news.edit') }} search terms">{{ phrase('agent.news.edit') }}</span>
+		<span class="edit" title="{{ phrase('global.ucfirst_edit') }} search terms">{{ phrase('global.ucfirst_edit') }}</span>
 		{% for line in terms_summary %}
 			{{line}}{% if not loop.last %},{% endif %}
 		{% else %}

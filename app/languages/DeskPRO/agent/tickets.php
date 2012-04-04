@@ -113,7 +113,7 @@
     'agent.tickets.creating_ticket_for_title' => 'Creating ticket for {{title}}',
     'agent.tickets.creating_ticket_for_chat' => 'Creating ticket for chat',
     'agent.tickets.coment_after_ticket_created' => 'comment after ticket is created',
-    'agent.tickets.delete' => 'Delete',
+
     'agent.tickets.commented_on' => 'Commented on',
 	'agent.tickets.awaiting_user' => 'Awaiting user',
 

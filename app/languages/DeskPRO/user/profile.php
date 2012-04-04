@@ -50,7 +50,7 @@
 	'user.profile.email_was_added' => 'Email {{email}} was added',
 	'user.profile.email_was_added_validate_it' => 'Email {{email}} was added. To start using this email address, you must validate it by clicking on the link we just sent you.',
 	'user.profile.set_as_primary_address' => 'Set as primary address',
-	'user.profile.delete' => 'Delete',
+
 	'user.profile.primary_address' => 'Primary Address',
 
 	'user.profile.awaiting_validation' => '(awaiting validation)',

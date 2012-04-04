@@ -1,6 +1,6 @@
 <?php return array (
   'deskpro.emails_agent.login_url' => 'Login URL',
-  'deskpro.emails_agent.your_email_address' => 'Your email address',
+
   'deskpro.emails_agent.your_initial_password' => 'Your initial password',
   'deskpro.emails_agent.someone_tried_to_log_in_using_your_account' => 'Someone tried to log in using your account.',
   'deskpro.emails_agent.user_ip' => 'User IP',

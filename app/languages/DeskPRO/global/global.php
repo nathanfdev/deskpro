@@ -416,4 +416,10 @@
   'global.please_enter_your_name' => 'Please enter your name',
   'global.contact_us' => 'Contact Us',
   'global.your_profile' => 'Your Profile',
+  'global.ucfirst_delete' => 'Delete',
+  'global.ucfirst_remove' => 'Remove',
+  'global.ucfirst_edit' => 'Edit',
+  'global.loading_dot' => 'Loading...',
+  'global.close_lc' => 'close',
+  'global.lost_qm' => 'lost?',
 );

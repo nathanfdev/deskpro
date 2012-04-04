@@ -68,7 +68,7 @@
 
   'agent.ticket.drag_and_drop_files_onto_this_area_or' => 'Drag and drop files onto this area or choose a file',
   'agent.ticket.remain_assigned_to' => 'Remain assigned to',
-  'agent.ticket.assigned_agent' => 'Assigned agent',
+
 
   'agent.ticket.applied' => 'applied',
 

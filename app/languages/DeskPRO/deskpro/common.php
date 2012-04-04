@@ -45,7 +45,7 @@
   'deskpro.common.enter_a_negative_number_to_have_urgency_decreased' => '(Enter a negative number to have urgency decreased)',
   'deskpro.common.only_set_when_urgency_is_lower' => 'Only set when urgency is lower',
   'deskpro.common.always_set_this_urgency' => 'Always set this urgency',
-  'deskpro.common.assigned_agent' => 'Assigned agent',
+
   'deskpro.common.assigned_team' => 'Assigned team',
 
 
