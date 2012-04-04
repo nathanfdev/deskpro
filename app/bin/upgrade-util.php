@@ -179,7 +179,12 @@ class Upgrade
 			}
 		} catch (\Exception $e) {} // to catch error about log
 
-		$this->zip = new ZipStrategy($this);
+		try {
+			$this->zip = new ZipStrategy($this);
+		} catch (\Exception $e) {
+			$this->outAndLog("To use this tool, the zlib or Zip PHP extensions must be enabled.");
+			exit(1);
+		}
 	}
 
 
@@ -515,41 +520,15 @@ class Upgrade
 
 		$time_start = microtime(true);
 
-		// Eg: DeskPRO.2012-01-01.zip
-		$zip_name = basename($zip_path);
-
-		#------------------------------
-		# Create a tmp dir to extract new source to
-		#------------------------------
-
-		$tmp_dir = sys_get_temp_dir();
-		if (!$tmp_dir || !is_writable($tmp_dir)) {
-			$tmp_dir = $this->getBackupDir();
-		}
-
-		$tmp_dir .= uniqid('dpsource');
-		if (!mkdir($tmp_dir, 0777, true)) {
-			throw new UpgradeFilesException("Failed to create temp extract dir: $tmp_dir", UpgradeFilesException::EXTRACT_ERROR);
-		}
-		$this->registerCleanupParam('unlink_scratch_dir', $tmp_dir);
-
-		if (!copy($zip_path, $tmp_dir.'/'.$zip_name)) {
-			throw new UpgradeFilesException("Failed to copy ZIP to tmp dir: $tmp_dir", UpgradeFilesException::EXTRACT_ERROR);
-		}
-
 		#------------------------------
 		# Extract the zip into the dir
 		#------------------------------
 
-
-		$ret = $this->zip($zip_name, $tmp_dir);
+		$tmp_dir = $this->zip->decompressZip($zip_name);
 
 		if ($ret) {
 			throw new UpgradeFilesException("Failed to extract zip", UpgradeFilesException::EXTRACT_ERROR);
 		}
-
-		// Delete the zip from the dir so its not copied
-		unlink($tmp_dir . '/' . $zip_name);
 
 		#------------------------------
 		# Now copy everything over
@@ -641,7 +620,14 @@ class Upgrade
 		$this->log(sprintf("backupDatabase: time(%.4f)   dump_size(%d)", microtime(true) - $time_start, filesize($f_full)));
 		$f_full = $this->compressFile($f_full);
 
-		return $f_full;
+		if (!$f_full) {
+			return false;
+		}
+
+		$backup_path = $this->getBackupDir() . '/' . $f . '.zip';
+		rename($f_full, $backup_path);
+
+		return $backup_path;
 	}
 
 	public function getMysqldumpBinaryPath()
@@ -781,40 +767,15 @@ class Upgrade
 
 		$time_start = microtime(true);
 
-		// Eg: xxxx.sql.zip
-		$zip_name = basename($zip_path);
-
-		#------------------------------
-		# Create a tmp dir to extract new source to
-		#------------------------------
-
-		$tmp_dir = sys_get_temp_dir();
-		if (!$tmp_dir || !is_writable($tmp_dir)) {
-			$tmp_dir = $this->getBackupDir();
-		}
-
-		$tmp_dir .= uniqid('dpsource');
-		if (!mkdir($tmp_dir, 0777, true)) {
-			throw new UpgradeFilesException("Failed to create temp extract dir: $tmp_dir", MysqlRestoreException::EXTRACT_ERROR);
-		}
-		$this->registerCleanupParam('unlink_scratch_dir', $tmp_dir);
-
-		if (!copy($zip_path, $tmp_dir.'/'.$zip_name)) {
-			throw new UpgradeFilesException("Failed to copy zip to tmp dir: $tmp_dir", MysqlRestoreException::EXTRACT_ERROR);
-		}
-
 		#------------------------------
 		# Extract the zip into the dir
 		#------------------------------
 
-		$ret = $this->execCommand("unzip -q $zip_name", $tmp_dir, $out);
+		$tmp_dir = $this->zip->decompressZip($zip_path);
 
 		if ($ret) {
 			throw new UpgradeFilesException("Failed to extract zip", MysqlRestoreException::EXTRACT_ERROR);
 		}
-
-		// Delete the zip from the dir so its not copied
-		unlink($tmp_dir . '/' . $zip_name);
 
 		// Find the SQL file
 		$finder = new \Symfony\Component\Finder\Finder();
@@ -878,7 +839,8 @@ class Upgrade
 	{
 		$time_start = microtime(true);
 
-		$backup_dir = $this->getBackupDir() . '/files-' . date('Y-m-d-H-i-s');
+		$f = '/files-' . date('Y-m-d-H-i-s');
+		$backup_dir = $this->getBackupDir() . $f;
 		if (is_dir($backup_dir)) {
 			throw new FileBackupException("Backup directory already exists: $backup_dir", FileBackupException::FILE_EXISTS);
 		}
@@ -920,7 +882,16 @@ class Upgrade
 
 		$this->log(sprintf("backupFiles: time(%.4f)   file_count(%d)    dir_count(%d)", microtime(true) - $time_start, $count_file, $count_dir));
 
-		return $this->compressFile($backup_dir);
+		$f_path = $this->compressFile($backup_dir);
+
+		if (!$f_path) {
+			return false;
+		}
+
+		$backup_file = $this->getBackupDir() . '/' . $f . '.zip';
+		rename($f_path, $backup_file);
+
+		return $backup_file;
 	}
 
 
@@ -1097,10 +1068,14 @@ class Upgrade
 	{
 		$time_start = microtime(true);
 
-		$this->zip->compressFile($path);
+		$out_filepath = $this->zip->compressFile($path);
+		if (!$out_filepath) {
+			return false;
+		}
 
 		// Double check the out file too
-		if ($success) {
+		$success = true;
+		if ($out_filepath) {
 			if (!file_exists($out_filepath) || filesize($out_filepath) < 10) {
 				$this->log("compressFile: reported success but file looks bad: $out_filepath");
 				$success = false;
@@ -1111,11 +1086,11 @@ class Upgrade
 		if ($success) {
 			$fileutil = new FilesystemUtil();
 			$fileutil->remove($path);
-
-			$this->log(sprintf("compressFile: time(%.4f)   file_size(%d)", microtime(true) - $time_start, filesize($out_filepath)));
 		}
 
-		return $out_filename;
+		$this->log(sprintf("compressFile: time(%.4f)   file_size(%d)", microtime(true) - $time_start, filesize($out_filepath)));
+
+		return $out_filepath;
 	}
 
 
@@ -2033,23 +2008,23 @@ class ZipStrategy implements DpZip
 {
 	protected $zip;
 
-	public function __construct(Upgrade $upgrade)
+	public function __construct(Upgrade $upgrade, $force_strategy = null)
 	{
-		if (strpos(strtoupper(PHP_OS), 'WIN') === false) {
-			exec("zip --help", $out, $ret);
-			if ((int)$ret === 0) {
-				$this->zip = new Zip_Command($upgrade);
+		if ($force_strategy !== null) {
+			switch ($force_strategy) {
+				case 'Zip_PHP':     $this->zip = new Zip_PHP($upgrade);     return;
+				case 'Zip_PclZip':  $this->zip = new Zip_PclZip($upgrade);  return;
 			}
 		}
 
-		if (!$this->zip) {
-			if (extension_loaded('Zip')) {
-				$this->zip = new Zip_PHP();
-			} elseif (extension_loaded('zlib')) {
-				$this->zip = new Zip_PclZip();
-			} else {
-				throw new ZipException("Zip and zlib extensions not installed, no way to zip");
-			}
+		if (extension_loaded('Zip')) {
+			$upgrade->log("ZipStrategy: Zip_PHP");
+			$this->zip = new Zip_PHP();
+		} elseif (extension_loaded('zlib')) {
+			$upgrade->log("ZipStrategy: Zip_PclZip");
+			$this->zip = new Zip_PclZip();
+		} else {
+			throw new ZipException("Zip and zlib extensions not installed, no way to zip");
 		}
 	}
 
@@ -2058,7 +2033,7 @@ class ZipStrategy implements DpZip
 		return $this->zip->compressFile($path);
 	}
 
-	public function decompressZip($path, $to)
+	public function decompressZip($path, $to = null)
 	{
 		return $this->zip->decompressZip($path, $to);
 	}
@@ -2082,55 +2057,7 @@ interface DpZip
 	 * @param string $path
 	 * @return string
 	 */
-	public function decompressZip($path, $to);
-}
-
-class Zip_Command implements DpZip
-{
-	protected $upgrade;
-
-	public function __construct(Upgrade $upgrade)
-	{
-		$this->upgrade = $upgrade;
-	}
-
-	public function compressFile($path)
-	{
-		$dir      = dirname($path);
-		$filename = basename($path);
-
-		if (is_dir($path)) {
-			$out_filename = $filename . '.zip';
-			$cmd = "zip -r -q $dir/$out_filename * .htaccess";
-
-			$ret = $this->execCommand($cmd, $path);
-		} else {
-			$out_filename = $filename . '.zip';
-			$cmd = "zip -r -q $out_filename $filename";
-
-			$ret = $this->upgrade->execCommand($cmd, $dir);
-		}
-
-		$out_filepath = $dir . '/' . $out_filename;
-
-		if (!$ret) {
-			return false;
-		}
-
-		return $out_filepath;
-	}
-
-	public function decompressZip($path, $to)
-	{
-		$cmd = "unzip -q $path";
-		$ret = $this->execCommand($cmd, $to);
-
-		if (!$ret) {
-			return false;
-		}
-
-		return true;
-	}
+	public function decompressZip($path, $to = null);
 }
 
 class Zip_PHP implements DpZip
@@ -2138,30 +2065,35 @@ class Zip_PHP implements DpZip
 	public function compressFile($path)
 	{
 		$path = str_replace('\\', '/', $path);
+		$path = rtrim($path, '/');
 
 		$dir          = dirname($path);
 		$filename     = basename($path);
-		$out_filename = $filename . '.zip';
-		$out_filepath = $dir . '/' . $out_filename;
+		$out_filename = $filename . '-' . time() . '-' . mt_rand(1000,9999) . '.zip';
+		$out_filepath = sys_get_temp_dir() . '/' . $out_filename;
 
 		$zip = new \ZipArchive();
-		if (!$zip->open($out_filepath, \ZIPARCHIVE::CREATE)) {
+		if (!$zip->open($out_filepath, \ZipArchive::CREATE)) {
 			return false;
 		}
 
 		if (is_dir($path)) {
-			$files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir), \RecursiveIteratorIterator::SELF_FIRST);
+			$basedir = "/dp_zip";
+
+			$files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
 			foreach ($files as $file) {
 				$file = str_replace('\\', '/', realpath($file));
 
 				if (is_dir($file) === true) {
-					$zip->addEmptyDir(str_replace($path. '/', '', $file . '/'));
+					$local = $basedir . str_replace($path. '/', '', '/' . $file . '/');
+					$zip->addEmptyDir($local);
 				} elseif (is_file($file) === true && realpath($file) != $out_filepath) {
-					$zip->addFile(str_replace($path . '/', '', $file), realpath($file));
+					$local = $basedir . str_replace($path . '/', '', '/' . $file);
+					$zip->addFile(realpath($file), $local);
 				}
 			}
 		} else {
-			$zip->addFile($filename, $path);
+			$zip->addFile($path, '/dp/' . $filename);
 		}
 
 		if (!$zip->close()) {
@@ -2171,18 +2103,28 @@ class Zip_PHP implements DpZip
 		return $out_filepath;
 	}
 
-	public function decompressZip($path, $to)
+	public function decompressZip($path, $to = null)
 	{
 		$zip = new \ZipArchive();
-		if (!$zip->open($out_filepath)) {
+		if (!$zip->open($path)) {
 			return false;
 		}
 
-		if (!$zip->extractTo($to)) {
+		$tmpdir = sys_get_temp_dir() . '/' . time() . '-' . mt_rand(1000,9999);
+		mkdir($tmpdir);
+
+		if (!$zip->extractTo($tmpdir)) {
 			return false;
 		}
 
-		return true;
+		if ($to) {
+			$fileutil = new FilesystemUtil();
+			$fileutil->mirror($tmpdir . '/dp_zip', $to, null, array('override' => true));
+			$fileutil->remove($tmpdir);
+			return $to;
+		}
+
+		return $tmpdir.'/dp_zip';
 	}
 }
 
@@ -2199,23 +2141,38 @@ class Zip_PclZip implements DpZip
 
 		$dir          = dirname($path);
 		$filename     = basename($path);
-		$out_filename = $filename . '.zip';
-		$out_filepath = $dir . '/' . $out_filename;
+		$out_filename = $filename . '-' . time() . '-' . mt_rand(1000,9999) . '.zip';
+		$out_filepath = sys_get_temp_dir() . '/' . $out_filename;
 
 		$zip = new \PclZip($out_filepath);
-		$zip->add($path, \PCLZIP_OPT_REMOVE_PATH, $dir);
+		$zip->add(
+			$path,
+			\PCLZIP_OPT_REMOVE_PATH, $path,
+			\PCLZIP_OPT_ADD_PATH, 'dp_zip'
+		);
 
-		return true;
+		return $out_filepath;
 	}
 
-	public function decompressZip($path, $to)
+	public function decompressZip($path, $to = null)
 	{
 		$zip = new \PclZip($path);
-		if ($zip->extract(\PCLZIP_OPT_PATH, $to) !== 0) {
+
+		$tmpdir = sys_get_temp_dir() . '/' . time() . '-' . mt_rand(1000,9999);
+		mkdir($tmpdir);
+
+		if (!is_array($zip->extract(\PCLZIP_OPT_PATH, $tmpdir))) {
 			return false;
 		}
 
-		return true;
+		if ($to) {
+			$fileutil = new FilesystemUtil();
+			$fileutil->mirror($tmpdir . '/dp_zip', $to, null, array('override' => true));
+			$fileutil->remove($tmpdir);
+			return $to;
+		}
+
+		return $tmpdir.'/dp_zip';
 	}
 }
 
