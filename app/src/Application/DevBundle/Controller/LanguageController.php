@@ -561,97 +561,105 @@ class LanguageController extends Controller
         return array($by_id, $by_content);
     }
 
-    public function checkLanguageFilesAction()
+    public function globaliseString($content, $id, $twig_phrases, $php_phrases)
     {
+        list($by_id, $by_content) = $this->parseLangFiles();
+        $rootdir = DP_ROOT.'/languages/DeskPRO';
+        $global = require($rootdir.'/global/global.php');
+        $global[$id] = $content;
+        $data = '<?php return '.var_export($global, true).';';
+        echo "Would put ".htmlspecialchars($data)."<br>";
+        file_put_contents($rootdir.'/global/global.php', $data);
 
+        $files = $by_content[$twig_phrases];
 
-        if(isset($_POST['content'])) {
-            list($by_id, $by_content) = $this->parseLangFiles();
-            $content = $_POST['content'];
-            $id = $_POST['id'];
-            $rootdir = DP_ROOT.'/languages/DeskPRO';
-            $global = require($rootdir.'/global/global.php');
-            $global[$id] = $content;
-            $data = '<?php return '.var_export($global, true).';';
-            echo "Would put ".htmlspecialchars($data)."<br>";
-            file_put_contents($rootdir.'/global/global.php', $data);
+        foreach($files as $file) {
+            $lines = file($file['filename']);
+            $data = '';
 
-            $files = $by_content[$content];
+            foreach($lines as $i => $line) {
+                if($i+1 == $file['line']) {
+                    echo "Dropping line $line<br />";
+                    $data .= "\n";
+                }
+                else {
+                    $data .= $line;
+                }
+            }
 
-            foreach($files as $file) {
-                $lines = file($file['filename']);
+            file_put_contents($file['filename'], $data);
+        }
+
+        ob_start();
+        list($by_id, ) = $twig_phrases;
+        ob_end_clean();
+
+        foreach($files as $file) {
+            if(!isset($by_id[$file['id']]))
+                continue;
+
+            $twig_files = $by_id[$file['id']];
+
+            foreach($twig_files as $tfile) {
+                $lines = file($tfile['filename']);
                 $data = '';
 
-                foreach($lines as $i => $line) {
-                    if($i+1 == $file['line']) {
-                        echo "Dropping line $line<br />";
-                        $data .= "\n";
+                foreach($lines as $i=>$line) {
+                    if(preg_match('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', $line)) {
+                        $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', '\1'.$id.'\2', $line);
+                        //echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br />";
+                        $data .= $new_line;
                     }
                     else {
                         $data .= $line;
                     }
                 }
 
-                file_put_contents($file['filename'], $data);
+                file_put_contents($tfile['filename'], $data);
             }
+        }
 
-            ob_start();
-            list($by_id, ) = $this->getPhrasesFromTwigFiles();
-            ob_end_clean();
+        ob_start();
+        list($by_id, ) = $php_phrases;
+        ob_end_clean();
 
-            foreach($files as $file) {
-                if(!isset($by_id[$file['id']]))
-                    continue;
+        foreach($files as $file) {
+            if(!isset($by_id[$file['id']]))
+                continue;
 
-                $twig_files = $by_id[$file['id']];
+            $twig_files = $by_id[$file['id']];
 
-                foreach($twig_files as $tfile) {
-                    $lines = file($tfile['filename']);
-                    $data = '';
+            foreach($twig_files as $tfile) {
+                $lines = file($tfile['filename']);
+                $data = '';
 
-                    foreach($lines as $i=>$line) {
-                        if(preg_match('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', $line)) {
-                            $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', '\1'.$id.'\2', $line);
-                            //echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br />";
-                            $data .= $new_line;
-                        }
-                        else {
-                            $data .= $line;
-                        }
+                foreach($lines as $i=>$line) {
+                    if(preg_match('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', $line)) {
+                        $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', '\1'.$id.'\2', $line);
+                        echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br />";
+                        $data .= $new_line;
                     }
-
-                    file_put_contents($tfile['filename'], $data);
-                }
-            }
-
-            ob_start();
-            list($by_id, ) = $this->getPhrasesFromPHPFiles();
-            ob_end_clean();
-
-            foreach($files as $file) {
-                if(!isset($by_id[$file['id']]))
-                    continue;
-
-                $twig_files = $by_id[$file['id']];
-
-                foreach($twig_files as $tfile) {
-                    $lines = file($tfile['filename']);
-                    $data = '';
-
-                    foreach($lines as $i=>$line) {
-                        if(preg_match('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', $line)) {
-                            $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', '\1'.$id.'\2', $line);
-                            echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br />";
-                            $data .= $new_line;
-                        }
-                        else {
-                            $data .= $line;
-                        }
+                    else {
+                        $data .= $line;
                     }
-
-                    file_put_contents($tfile['filename'], $data);
                 }
+
+                file_put_contents($tfile['filename'], $data);
             }
+        }
+    }
+
+    public function checkLanguageFilesAction()
+    {
+        if(isset($_POST['batch'])) {
+            $twig_phrases = $this->getPhrasesFromTwigFiles();
+            $php_phrases = $this->getPhrasesFromPHPFiles();
+
+            foreach($_POST['batch'] as $content) {
+                $this->globaliseString($content,'global.'.$this->stringToId($content), $twig_phrases, $php_phrases);
+            }
+        } else if(isset($_POST['content'])) {
+            $this->globaliseString($_POST['content'], $_POST['id'], $this->getPhrasesFromTwigFiles(), $this->getPhrasesFromPHPFiles());
         }
 
         $vars = array(
