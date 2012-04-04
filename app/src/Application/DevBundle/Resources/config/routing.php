@@ -160,6 +160,13 @@ $collection->add('dev_lang_test_lexer', new Route(
 	array()
 ));
 
+$collection->add('dev_lang_test_tokenizer', new Route(
+	'/lang/test/tokenizer',
+	array('_controller' => 'DevBundle:Language:testTokenizer'),
+	array(),
+	array()
+));
+
 $collection->add('dev_lang_find_foreign', new Route(
     '/lang/find/foreign',
     array('_controller' => 'DevBundle:Language:findForeignIds'),

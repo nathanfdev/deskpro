@@ -66,6 +66,32 @@ class LanguageController extends Controller
 		return $this->render('DevBundle:Language:simplelist.html.twig', array('list'=>$this->getTwigFileList()));
     }
 
+    public function testTokenizerAction()
+    {
+        $templates = $this->getPHPFileList();
+        $mismatches = array();
+
+        foreach($templates as $file) {
+
+            $raw_php = file_get_contents($file);
+            $tokens = token_get_all($raw_php);
+            $new_raw_php = $this->phpTokensToString($tokens);
+
+            if($raw_php != $new_raw_php) {
+                file_put_contents('./tmp', $new_raw_php);
+                $output = shell_exec('diff -w '.escapeshellarg($file).' ./tmp');;
+                unlink('./tmp');
+                $mismatches[] = array('filename' => $file, 'diff' => $output);
+            }
+
+            if(count($mismatches)>10)
+                break;
+        }
+
+        $vars = array('mismatches' => $mismatches);
+        return $this->render('DevBundle:Language:test.lexer.html.twig', $vars);
+    }
+
     public function testLexerAction()
     {
         $lexer = $this->getTwigPreservingLexer(array());
@@ -1008,6 +1034,22 @@ class LanguageController extends Controller
         while(!$tokens->isEOF()) {
             $token = $tokens->next();
             $html .= $token->getValue();
+        }
+
+        return $html;
+    }
+
+    public function phpTokensToString($tokens)
+    {
+        $html = '';
+
+        foreach($tokens as $token) {
+            if(is_array($token)) {
+                $html .= $token[1];
+            }
+            else {
+                $html .= $token;
+            }
         }
 
         return $html;
