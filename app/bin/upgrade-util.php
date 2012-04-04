@@ -1622,7 +1622,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			$this->answer_backup_db = $this->dialogHelper->askConfirmation($this, '', true);
 
 			$this->out();
-			$this->out("<comment>Backup files:" . ($this->answer_backup_files ? "YES" : "NO") . "</comment>");
+			$this->out("<comment>Backup files:" . ($this->answer_backup_db ? "YES" : "NO") . "</comment>");
 			$this->out("<comment>Backup database: " . ($this->answer_backup_files ? "YES" : "NO") . "</comment>");
 
 			$this->out();
@@ -1679,11 +1679,11 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		# Backup database
 		#------------------------------
 
-		if ($this->answer_backup_files) {
+		if ($this->answer_backup_db) {
 			$this->out(sprintf("%-40s", "<info>[*] Backing up database ...</info>"), false);
 
 			try {
-				$this->file_backup = $this->upgrade->backupDatabase();
+				$this->db_backup = $this->upgrade->backupDatabase();
 			} catch (\Exception $e) {
 				$this->upgrade->outAndLog($e->getMessage());
 				$this->errorExit("There was a problem backing up your database.");
@@ -1775,7 +1775,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			$this->answer_backup_db = $this->dialogHelper->askConfirmation($this, '', true);
 
 			$this->out();
-			$this->out("<comment>Backup database: " . ($this->answer_backup_files ? "YES" : "NO") . "</comment>");
+			$this->out("<comment>Backup database: " . ($this->answer_backup_db ? "YES" : "NO") . "</comment>");
 
 			$this->out();
 			$this->out("<prompt>Are you ready to continue? Answer 'n' to re-input backup options.</prompt>");
@@ -1795,11 +1795,11 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		# Backup database
 		#------------------------------
 
-		if ($this->answer_backup_files) {
+		if ($this->answer_backup_db) {
 			$this->out(sprintf("%-40s", "<info>[*] Backing up database ...</info>"), false);
 
 			try {
-				$this->file_backup = $this->upgrade->backupDatabase();
+				$this->db_backup = $this->upgrade->backupDatabase();
 			} catch (\Exception $e) {
 				$this->upgrade->outAndLog($e->getMessage());
 				$this->errorExit("There was a problem backing up your database.");
@@ -1814,6 +1814,8 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		#------------------------------
 
 		$this->out(sprintf("%-40s", "<info>[*] Installing database updates</info>"));
+
+		$php_path = $this->upgrade->getPhpBinaryPath();
 
 		chdir(DP_ROOT);
 		$cmd = "$php_path cmd.php dp:upgrade 2>&1";
