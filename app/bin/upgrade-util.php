@@ -1510,22 +1510,12 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$this->outHeader('DeskPRO Upgrader', true);
 		$this->out();
-		$this->out();
 
 		$this->out(
-			"<info>Welcome to the DeskPRO interactive upgrader. This tool will help you check for updates, backup your"
-			." installation and then install updates. If you require assistance at any time, visit our support"
-			." portal at http://support.deskpro.com/ or email support@deskpro.com.</info>"
+			"<info>Welcome to the DeskPRO interactive upgrader."
+			."For help please visit http://support.deskpro.com</info>"
 		);
 
-		$this->out();
-
-		$this->outNote(
-			"Note: You can execute many of these commands by themselves manually by using command-line"
-			." switches. For a list, try running this command: php upgrade.php --help"
-		);
-
-		$this->out();
 		$this->out();
 
 		#------------------------------
@@ -1754,6 +1744,8 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$this->out(sprintf("File build version:      %s (%s)", DP_BUILD_TIME, $this->upgrade->formatBuild(DP_BUILD_TIME)));
 		$this->out(sprintf("Database build version:  %s (%s)", $version, $this->upgrade->formatBuild($version)));
+
+		$this->out();
 
 		if ($version >= DP_BUILD_TIME) {
 			$this->out("<info>Your database and source file builds correspond. No database upgrades need to be run.</info>");
