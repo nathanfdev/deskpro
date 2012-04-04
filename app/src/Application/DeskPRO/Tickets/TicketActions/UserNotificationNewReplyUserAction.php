@@ -43,7 +43,7 @@ use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Application\DeskPRO\Translate\DelegatePhrase;
 use Application\DeskPRO\App;
 
-class UserNotificationNewReplyAction extends AbstractUserNotificationAction
+class UserNotificationNewReplyUserAction extends AbstractUserNotificationAction
 {
 	/**
 	 * Apply the property to the ticket
