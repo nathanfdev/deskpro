@@ -574,7 +574,7 @@ class LanguageController extends Controller
             $global[$id] = $content;
             $data = '<?php return '.var_export($global, true).';';
             echo "Would put ".htmlspecialchars($data)."<br>";
-            //file_put_content($rootdir.'/global/global.php', $data);
+            file_put_content($rootdir.'/global/global.php', $data);
 
             $files = $by_content[$content];
 
@@ -591,7 +591,7 @@ class LanguageController extends Controller
                     }
                 }
 
-                //file_put_contents($file['filename'], $data);
+                file_put_contents($file['filename'], $data);
             }
 
             ob_start();
@@ -617,7 +617,7 @@ class LanguageController extends Controller
                         }
                     }
 
-                    //file_put_contents($file['filename'], $data);
+                    file_put_contents($tfile['filename'], $data);
                 }
             }
 
@@ -644,7 +644,7 @@ class LanguageController extends Controller
                         }
                     }
 
-                    //file_put_contents($file['filename'], $data);
+                    file_put_contents($tfile['filename'], $data);
                 }
             }
         }
