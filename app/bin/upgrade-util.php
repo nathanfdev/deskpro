@@ -1444,17 +1444,6 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 	{
 		$this->upgrade = $upgrade;
 
-		$php_path        = $this->upgrade->getPhpBinaryPath();
-		$mysql_dump_path = $this->upgrade->getMysqldumpBinaryPath();
-		$mysql_path      = $this->upgrade->getMysqlBinaryPath();
-
-		if (!$php_path || !$mysql_path || !$mysql_dump_path) {
-			if (!$php_path)        $this->upgrade->outAndLog("Cannot find path to `php` binary");
-			if (!$mysql_dump_path) $this->upgrade->outAndLog("Cannot find path to `mysqldump` binary");
-			if (!$mysql_path)      $this->upgrade->outAndLog("Cannot find path to `mysql` binary");
-			exit(10);
-		}
-
 		#------------------------------
 		# Load the required Symfony libs
 		#------------------------------
@@ -1471,13 +1460,49 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		# Create helpers
 		#------------------------------
 
-		$this->outputFormatter = new \Symfony\Component\Console\Formatter\OutputFormatter(true, array(
+		$decorated = true;
+		if (strpos(strtoupper(PHP_OS), 'WIN') === 0) {
+			$decorated = false;
+		}
+		$this->outputFormatter = new \Symfony\Component\Console\Formatter\OutputFormatter($decorated, array(
 			'title' => new \Symfony\Component\Console\Formatter\OutputFormatterStyle('white', 'blue', array('bold')),
 			'note' => new \Symfony\Component\Console\Formatter\OutputFormatterStyle('yellow', null),
 			'prompt' => new \Symfony\Component\Console\Formatter\OutputFormatterStyle('cyan', 'black')
 		));
 
 		$this->dialogHelper    = new \Symfony\Component\Console\Helper\DialogHelper();
+
+		#------------------------------
+		# Check requirements
+		#------------------------------
+
+		$php_path        = $this->upgrade->getPhpBinaryPath();
+		$mysql_dump_path = $this->upgrade->getMysqldumpBinaryPath();
+		$mysql_path      = $this->upgrade->getMysqlBinaryPath();
+
+		if (!$php_path || !$mysql_path || !$mysql_dump_path) {
+
+			$this->out("<error>Error: We could not find the path to an important utility</error>");
+
+			$this->out("The upgrader could not locate the paths to the following utilitie(s):");
+			if (!$php_path) {
+				$this->upgrade->log("Cannot find path to `php` binary");
+				$this->out("\t- Could not find the path to php");
+			}
+			if (!$mysql_dump_path) {
+				$this->upgrade->log("Cannot find path to `mysqldump` binary");
+				$this->out("\t- Could not find the path to mysqldump");
+			}
+			if (!$mysql_path) {
+				$this->upgrade->log("Cannot find path to `mysql` binary");
+				$this->out("\t- Could not find the path to mysql");
+			}
+
+			$this->out();
+			$this->out("Edit your config.php file to learn more about locating these utilities and setting their paths.");
+
+			exit(10);
+		}
 
 		#------------------------------
 		# GO
@@ -1507,7 +1532,12 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		# Menu
 		#------------------------------
 
-		$version_info = $this->upgrade->getLatestVersion();
+		try {
+			$version_info = $this->upgrade->getLatestVersion();
+		} catch (\Exception $e) {
+			$this->upgrade->log("getLatestVersion error: {$e->getMessage()}");
+			$version_info = null;
+		}
 
 		#-----
 		# We have version info
