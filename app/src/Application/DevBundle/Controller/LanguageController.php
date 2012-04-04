@@ -43,6 +43,7 @@ use Orb\Util\Arrays;
 class LanguageController extends Controller
 {
     private $files_temp;
+    private $bundles = array('AgentBundle', 'AdminBundle', 'InstallBundle', 'UserBundle', 'ReportBundle', 'BillingBundle', 'DeskPRO');
 
     public function indexAction()
     {
@@ -89,6 +90,83 @@ class LanguageController extends Controller
         $vars = array('mismatches' => $mismatches);
         return $this->render('DevBundle:Language:test.lexer.html.twig', $vars);
     }
+
+    public function replacePhrasesInFiles($files, $from, $to, $prefix = false)
+    {
+        foreach($files as $file) {
+            $lines = file($file['filename']);
+            $data = '';
+
+            foreach($lines as $i=>$line) {
+                if($prefix) {
+                    if(preg_match('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'([^\']+\'\s*[,)])/', $line)) {
+                        $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($from, '/').'([^\']+\'\s*[,)])/', '\1'.$to.'\2', $line);
+                        echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br />";
+                        $data .= $new_line;
+                    }
+                    else {
+                        $data .= $line;
+                    }
+                }
+                else {
+                    if(preg_match('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', $line)) {
+                        $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($from, '/').'(\'\s*[,)])/', '\1'.$to.'\2', $line);
+                        echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br />";
+                        $data .= $new_line;
+                    }
+                    else {
+                        $data .= $line;
+                    }
+                }
+            }
+
+            //file_put_contents($file['filename'], $data);
+        }
+    }
+
+    public function flatFileListToNonFlat($flat_files)
+    {
+        $files = array();
+
+        foreach($flat_files as $file) {
+            $files[] = array('filename' => $files);
+        }
+
+        return $files;
+    }
+
+    public function replacePhraseIdsAction()
+    {
+        $bundles = $this->bundles;
+        $vars = array('bundles' => $bundles);
+
+        if(isset($_POST['replace'])) {
+            $from = $_POST['from'];
+            $to = $_POST['to'];
+            $in = $_POST['bundles'];
+            $prefix = $_POST['prefix'];
+            $files = array();
+
+            foreach($in as $bundle) {
+                $files = array_merge($this->flatFileListToNonFlat($this->getPhpFileList($bundle)), $files);
+                $files = array_merge($this->flatFileListToNonFlat($this->getTwigFileList($bundle)), $files);
+            }
+
+            $this->replacePhrasesInFiles($files, $from, $to, $prefix);
+        }
+
+        return $this->render('DevBundle:Language:replace.phrases.html.twig', $vars);
+    }
+
+    public function findForeignIdsAction()
+    {
+        $vars = array();
+
+
+
+        return $this->render('DevBundle:Language:find.foreign.html.twig', $vars);
+    }
+
 
     public function findRawStringsAction($bundle)
     {
@@ -247,6 +325,8 @@ class LanguageController extends Controller
                     }
                 }
             }
+
+            $stripped = strip_tags($html);
 
             foreach($strings as $string) {
                 $context = array();
@@ -601,25 +681,7 @@ class LanguageController extends Controller
             if(!isset($by_id[$file['id']]))
                 continue;
 
-            $twig_files = $by_id[$file['id']];
-
-            foreach($twig_files as $tfile) {
-                $lines = file($tfile['filename']);
-                $data = '';
-
-                foreach($lines as $i=>$line) {
-                    if(preg_match('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', $line)) {
-                        $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', '\1'.$id.'\2', $line);
-                        //echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br />";
-                        $data .= $new_line;
-                    }
-                    else {
-                        $data .= $line;
-                    }
-                }
-
-                file_put_contents($tfile['filename'], $data);
-            }
+            $this->replacePhrasesInFiles($by_id[$file['id']], $file['id'], $id);
         }
 
         ob_start();
@@ -630,25 +692,7 @@ class LanguageController extends Controller
             if(!isset($by_id[$file['id']]))
                 continue;
 
-            $twig_files = $by_id[$file['id']];
-
-            foreach($twig_files as $tfile) {
-                $lines = file($tfile['filename']);
-                $data = '';
-
-                foreach($lines as $i=>$line) {
-                    if(preg_match('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', $line)) {
-                        $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', '\1'.$id.'\2', $line);
-                        echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br />";
-                        $data .= $new_line;
-                    }
-                    else {
-                        $data .= $line;
-                    }
-                }
-
-                file_put_contents($tfile['filename'], $data);
-            }
+            $this->replacePhrasesInFiles($by_id[$file['id']], $file['id'], $id);
         }
     }
 
@@ -745,39 +789,22 @@ class LanguageController extends Controller
         return $files;
     }
 
-    public function getPhpFileList()
+    public function getPhpFileList($bundle = null)
     {
-        // The use of references is generally discouraged in PHP, but this is a dev tool, so we can let it slide :).
-        // Same goes for inline function.
-        function scan_dir_php($dir, &$files)
-        {
-            if ($handle = opendir($dir)) {
-                while (false !== ($filename = readdir($handle))) {
-                    if (is_dir($dir.'/'.$filename)) {
-                        if ($filename == "." || $filename == "..")
-                                continue;
+        if($bundle)
+            $bundles = array($bundle);
+        else
+            $bundles = $this->bundles;
 
-                        scan_dir_php($dir.'/'.$filename, $files);
-                    }
-                    else {
-                        if(preg_match('/\.php$/i' , $filename)) {
-                            $files[] = $dir.'/'.$filename;
-                        }
-                    }
-                }
+        $this->files_temp = array();
 
-                closedir($handle);
-            }
-        }
+        foreach($bundles as $bundle)
+            $this->scanDir(DP_ROOT . '/src/Application/'.$bundle, '.php');
 
-        $files = array();
-        // Create a large list containing all php files.
-        scan_dir_php(DP_ROOT . '/src', $files);
-
-        return $files;
+        return $this->files_temp;
     }
 
-    function scanDirTwig($dir)
+    function scanDir($dir, $suffix)
     {
         if ($handle = opendir($dir)) {
             while (false !== ($filename = readdir($handle))) {
@@ -785,10 +812,10 @@ class LanguageController extends Controller
                     if ($filename == "." || $filename == "..")
                         continue;
 
-                    $this->scanDirTwig($dir.'/'.$filename);
+                    $this->scanDir($dir.'/'.$filename, $suffix);
                 }
                 else {
-                    if(preg_match('/\.html.twig$/i' , $filename)) {
+                    if(preg_match('/'.preg_quote($suffix, '/').'$/i' , $filename)) {
                         $this->files_temp[] = $dir.'/'.$filename;
                     }
                 }
@@ -800,15 +827,15 @@ class LanguageController extends Controller
 
     public function getTwigFileList($bundle = null)
     {
-        $bundles = array('AgentBundle', 'AdminBundle', 'InstallBundle', 'UserBundle', 'ReportBundle', 'BillingBundle', 'DeskPRO');
-
         if($bundle)
             $bundles = array($bundle);
+        else
+            $bundles = $this->bundles;
 
         $this->files_temp = array();
 
         foreach($bundles as $bundle)
-            $this->scanDirTwig(DP_ROOT . '/src/Application/'.$bundle);
+            $this->scanDir(DP_ROOT . '/src/Application/'.$bundle, '.html.twig');
 
         return $this->files_temp;
     }

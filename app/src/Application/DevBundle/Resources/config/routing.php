@@ -146,11 +146,25 @@ $collection->add('dev_lang_find_raw_strings', new Route(
 	array()
 ));
 
+$collection->add('dev_lang_replace_phrases', new Route(
+    '/lang/replace/phrases',
+    array('_controller' => 'DevBundle:Language:replacePhraseIds'),
+    array(),
+    array()
+));
+
 $collection->add('dev_lang_test_lexer', new Route(
 	'/lang/test/lexer',
 	array('_controller' => 'DevBundle:Language:testLexer'),
 	array(),
 	array()
+));
+
+$collection->add('dev_lang_find_foreign', new Route(
+    '/lang/find/foreign',
+    array('_controller' => 'DevBundle:Language:findForeignIds'),
+    array(),
+    array()
 ));
 
 return $collection;
