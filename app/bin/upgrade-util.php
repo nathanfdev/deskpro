@@ -524,9 +524,9 @@ class Upgrade
 		# Extract the zip into the dir
 		#------------------------------
 
-		$tmp_dir = $this->zip->decompressZip($zip_name);
+		$tmp_dir = $this->zip->decompressZip($zip_path);
 
-		if ($ret) {
+		if (!$tmp_dir) {
 			throw new UpgradeFilesException("Failed to extract zip", UpgradeFilesException::EXTRACT_ERROR);
 		}
 
@@ -2117,14 +2117,19 @@ class Zip_PHP implements DpZip
 			return false;
 		}
 
+		$realpath = $tmpdir;
+		if (is_dir($tmpdir . '/dp_zip')) {
+			$realpath = $tmpdir . '/dp_zip';
+		}
+
 		if ($to) {
 			$fileutil = new FilesystemUtil();
-			$fileutil->mirror($tmpdir . '/dp_zip', $to, null, array('override' => true));
+			$fileutil->mirror($realpath, $to, null, array('override' => true));
 			$fileutil->remove($tmpdir);
 			return $to;
 		}
 
-		return $tmpdir.'/dp_zip';
+		return $realpath;
 	}
 }
 
@@ -2165,14 +2170,20 @@ class Zip_PclZip implements DpZip
 			return false;
 		}
 
+		// Ones we make have dp_zip as the container folder
+		$realpath = $tmpdir;
+		if (is_dir($tmpdir . '/dp_zip')) {
+			$realpath = $tmpdir . '/dp_zip';
+		}
+
 		if ($to) {
 			$fileutil = new FilesystemUtil();
-			$fileutil->mirror($tmpdir . '/dp_zip', $to, null, array('override' => true));
+			$fileutil->mirror($realpath, $to, null, array('override' => true));
 			$fileutil->remove($tmpdir);
 			return $to;
 		}
 
-		return $tmpdir.'/dp_zip';
+		return $realpath;
 	}
 }
 
