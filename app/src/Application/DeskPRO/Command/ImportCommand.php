@@ -73,6 +73,26 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$GLOBALS['DP_ERR_NOSHOWTRACE'] = true;
 
 		#----------------------------------------
+		# Figure out our run mode
+		#----------------------------------------
+
+		$mode = null;
+		if ($input->getOption('exec-step') !== null) $mode = 'exec-step';
+		elseif ($input->getOption('info')) $mode = 'info';
+		elseif ($input->getOption('run')) $mode = 'run';
+
+		$page = 0;
+		if ($input->getOption('exec-step-page') !== null) $page = (int)$input->getOption('exec-step-page');
+		if (!$page) {
+			$page = 1;
+		}
+
+		if (!$mode) {
+			echo "Choose one of the run modes: --info, --run, --step or --exec-step\n";
+			return 1;
+		}
+
+		#----------------------------------------
 		# Set environment
 		#----------------------------------------
 
@@ -130,26 +150,6 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		if (!isset($DP_CONFIG['import']['db_host'])) {
 			$logger->log('You need to fill in the "import" section of config.php before running this tool.', Logger::ERR);
-			return 1;
-		}
-
-		#----------------------------------------
-		# Figure out our run mode
-		#----------------------------------------
-
-		$mode = null;
-		if ($input->getOption('exec-step') !== null) $mode = 'exec-step';
-		elseif ($input->getOption('info')) $mode = 'info';
-		elseif ($input->getOption('run')) $mode = 'run';
-
-		$page = 0;
-		if ($input->getOption('exec-step-page') !== null) $page = (int)$input->getOption('exec-step-page');
-		if (!$page) {
-			$page = 1;
-		}
-
-		if (!$mode) {
-			$logger->log("Choose one of the run modes: --info, --run, --step or --exec-step\n", Logger::INFO);
 			return 1;
 		}
 
