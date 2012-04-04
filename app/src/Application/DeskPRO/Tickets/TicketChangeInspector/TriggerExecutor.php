@@ -360,7 +360,7 @@ class TriggerExecutor
 					}
 				}
 
-				$messages = $this->getChangedProperty('messages');
+				$messages = $this->tracker->getChangedProperty('messages');
 				foreach ($messages as $m) {
 					if ($m->email_reader && $m->email_reader->isFromRobot()) {
 						$is_autoreply = true;
