@@ -372,4 +372,38 @@ class TemplatesController extends AbstractController
 			'tpl_prefix' => $prefix,
 		));
 	}
+
+	####################################################################################################################
+	# preview-email-template
+	####################################################################################################################
+
+	public function previewEmailTemplateAction($tpl)
+	{
+		$vars = array();
+
+		$ticket = App::getOrm()->createQuery("SELECT t FROM DeskPRO:Ticket t WHERE t.status != 'hidden' ORDER BY t.id DESC")->setMaxResults(1)->getSingleResult();
+		$vars['ticket']      = $ticket;
+		$vars['person']      = $this->person;
+		$vars['access_code'] = $ticket->getAccessCode();
+
+		$messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket,array(
+			'limit' => 25,
+			'order' => 'DESC',
+			'with_notes' => true
+		));
+		$vars['messages'] = $messages;
+
+		$html = $this->container->getTemplating()->render($tpl, $vars);
+
+		$subject = '';
+		if (strpos($html, '___DP___SUBJECT___SEP___') !== false) {
+			list ($subject, $html) = explode('___DP___SUBJECT___SEP___', $html, 2);
+			$subject = trim($subject);
+			$html = trim($html);
+		}
+
+		$body = '<html><body>' . ($subject ? 'Subject: ' . htmlspecialchars($subject) . '<hr />' : '') . $html . '</body></html>';
+
+		return $this->createResponse($body);
+	}
 }

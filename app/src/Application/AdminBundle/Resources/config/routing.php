@@ -775,6 +775,13 @@ $collection->add('admin_templates_minimanager', new Route(
 	array()
 ));
 
+$collection->add('admin_templates_previewemail', new Route(
+	'/templates/preview-email-template/{tpl}',
+	array('_controller' => 'AdminBundle:Templates:previewEmailTemplate'),
+	array(),
+	array('tpl' => '[A-Za-z:\-_\.]+')
+));
+
 ################################################################################
 # Styles
 ################################################################################

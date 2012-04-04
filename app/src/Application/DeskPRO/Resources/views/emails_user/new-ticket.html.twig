@@ -5,17 +5,23 @@
 {% endblock %}
 {% block content %}
 	{% set content %}
+		{{ layout.greeting(person) }}
 		{{ phrase('deskpro.emails_user.your_ticket_has_been_recieved_and_our_agents') }}
-		<br /><br />
-        {{ phrase('deskpro.emails_user.you_can_view_your_ticket_at') }}
-		<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}">
-			{{ url_display('user_tickets_view', {'ticket_ref': ticket.access_code}) }}
-		</a>
 	{% endset %}
 	{{ layout.section('', content) }}
 
 	{{ layout.render_ticket_messages(messages) }}
 
+
+	{% set content %}
+		View and manage this ticket online:
+		<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}" style="{{ layout.link_style() }}">
+			{{ url_display('user_tickets_view', {'ticket_ref': ticket.access_code}) }}
+		</a>
+	{% endset %}
+	{{ layout.info_section(content, {center: 1}) }}
+{% endblock %}
+{% block email_end %}
 	<br/><br/>
 	{{ layout.replycode(ticket.access_code) }}
 {% endblock %}

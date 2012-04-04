@@ -17,6 +17,20 @@
 	</table>
 {% endmacro %}
 
+{% macro link_style() %}color: #0065A3;text-decoration: none;{% endmacro %}
+
+{% macro info_section(content, options) %}
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:8px;">
+		{% if content %}
+			<tr>
+				<td style="font-size:11px; line-height:125%; padding:8px; background-color: #E3ECF7; {% if options.center %}text-align: center;{% endif %}">
+					{{ content }}
+				</td>
+			</tr>
+		{% endif %}
+	</table>
+{% endmacro %}
+
 {% macro messages_section(title, content, options) %}
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:15px;margin-bottom:15px;">
 	{% if title %}
@@ -28,7 +42,7 @@
 	{% endif %}
 	{% if content %}
 	<tr>
-		<td style="font-size:12px; line-height:125%; border:1px solid #CCCCCC;border-bottom: none;">
+		<td style="font-size:12px; line-height:125%;">
 			{{ content }}
 		</td>
 	</tr>
@@ -36,19 +50,26 @@
 </table>
 {% endmacro %}
 
-{% macro message(author, time, message) %}
-	<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td style="font-size:12px; line-height:125%; border-bottom:1px solid #CCCCCC;padding: 10px;">
-		{% if author %}<span style="font-family:Arial, Helvetica, sans-serif; color:#388D34; font-size:12px; font-weight:bold;">{{ author|raw }}</span>{% endif %}
-		{% if time %}<span style="font-family:Arial, Helvetica, sans-serif; color:#868686; font-size:11px;">{{ time|raw }}</span>{% endif %}
-		<br />
-		{{ message|raw }}
+{% macro message(author, time, message, options) %}
+	<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td style="font-size:12px; line-height:125%; {% if not options.highlight %}border-bottom:1px solid #CCCCCC;padding: 5px;{% endif %}">
+		<div style="padding: 7px; {% if options.highlight %}border: 1px solid #C6CBD3;{% endif %}">
+			{% if author %}<span style="font-family:Arial, Helvetica, sans-serif; color:#388D34; font-size:12px; font-weight:bold;">{{ author|raw }}</span>{% endif %}
+			{% if time %}<span style="font-family:Arial, Helvetica, sans-serif; color:#868686; font-size:11px;">{{ time|raw }}</span>{% endif %}
+		</div>
+		<div style="padding: 7px; {% if options.highlight %}margin-bottom: 35px; background-color: #EAEFF9; border: 1px solid #C6CBD3; border-top: none;{% endif %}">
+			{{ message|raw }}
+		</div>
 	</td></tr></table>
 {% endmacro %}
 
-{% macro render_ticket_messages(messages, title) %}
+{% macro render_ticket_messages(messages, title, options) %}
 	{% set section_content %}
 		{% for message in messages %}
-			{{ _self.message(message.person.display_contact, message.date_created|date('full'), message.message_html) }}
+			{% if options.highlight_top and loop.first %}
+				{{ _self.message(message.person.display_contact, message.date_created|date('full'), message.message_html, {highlight: 1}) }}
+			{% else %}
+				{{ _self.message(message.person.display_contact, message.date_created|date('full'), message.message_html) }}
+			{% endif %}
 		{% endfor %}
 	{% endset %}
 	{{ _self.messages_section(title, section_content) }}
@@ -56,4 +77,8 @@
 
 {% macro replycode(code) %}
 	<span style="color:#ffffff;text-size:8px;">(#{{ code }})</span>
+{% endmacro %}
+
+{% macro greeting(person) %}
+	Dear {{ person.display_name }},<br /><br />
 {% endmacro %}
