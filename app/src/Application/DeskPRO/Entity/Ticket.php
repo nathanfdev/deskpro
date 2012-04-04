@@ -766,7 +766,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		$now = new \DateTime();
 		if ($message->person['is_agent']) {
-			if (!($this->date_last_agent_reply || $this->date_last_agent_reply < $now)) {
+			if (!$this->date_last_agent_reply || $this->date_last_agent_reply < $now) {
 				$this['date_last_agent_reply'] = $now;
 			}
 
@@ -774,7 +774,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 				$this['date_first_agent_reply'] = $now;
 			}
 		} else {
-			if (!($this->date_last_user_reply || $this->date_last_user_reply < $now)) {
+			if (!$this->date_last_user_reply || $this->date_last_user_reply < $now) {
 				$this['date_last_user_reply'] = $now;
 			}
 

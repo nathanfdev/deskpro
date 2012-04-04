@@ -68,7 +68,8 @@ class UserNotificationNewReplyAction extends AbstractUserNotificationAction
 			'action' => 'new_user_reply',
 		);
 
-		$this->doSend('DeskPRO:emails_user:new-agent-reply', $vars, $ticket, $change_info);
+		$tpl = $this->getTemplate('user_new_reply_user', 'DeskPRO:emails_user:new-reply-user.html.twig');
+		$this->doSend($tpl, $vars, $ticket, $change_info);
 
 		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 	}
