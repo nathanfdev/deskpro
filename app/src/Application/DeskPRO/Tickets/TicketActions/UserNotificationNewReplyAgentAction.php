@@ -52,30 +52,25 @@ class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 	 */
 	public function apply(Ticket $ticket)
 	{
+		// Person has confirmation notifications disabled
+		if ($ticket->person->disable_autoresponses) {
+			return;
+		}
+
 		$change_info = array(
 			'type' => 'user_notify',
-			'notify_type' => 'agent_reply',
+			'notify_type' => 'newreply',
 			'emailed' => array(),
 			'cced' => array()
 		);
 
-		$messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket,array(
-			'limit' => 20,
-			'order' => 'DESC',
-			'with_notes' => false
-		));
-
-		$new_message = \Orb\Util\Arrays::getFirstItem($messages);
-
 		$vars = array(
-			'action' => 'new_agent_reply',
-			'new_message' => $new_message,
-			'messages' => $messages,
-			'ticket' => $ticket
+			'action' => 'new_user_reply',
 		);
 
-		$tpl = $this->getTemplate('user_new_reply_agent', 'DeskPRO:emails_user:new-reply-agent.html.twig');
+		$tpl = $this->getTemplate('user_new_reply_user', 'DeskPRO:emails_user:new-reply-agent.html.twig');
 		$this->doSend($tpl, $vars, $ticket, $change_info);
+
 		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 	}
 
