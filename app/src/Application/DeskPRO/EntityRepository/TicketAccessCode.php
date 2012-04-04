@@ -62,6 +62,26 @@ class TicketAccessCode extends EntityRepository
 		return $rec;
 	}
 
+	public function getTacArrayFromAccessCode($access_code)
+	{
+		$info = Entity\TicketAccessCode::decodeAccessCode($access_code);
+		if (!$info) {
+			return null;
+		}
+
+		$tac = App::getDb()->fetchAssoc("
+			SELECT *
+			FROM ticket_access_codes
+			WHERE id = ? AND auth = ?
+		", array($info['access_code_id'], $info['auth']));
+
+		if (!$tac) {
+			return null;
+		}
+
+		return $tac;
+	}
+
 	public function findByTicketAndPerson($ticket, $person)
 	{
 		if (!$person->id) {

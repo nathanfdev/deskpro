@@ -415,9 +415,11 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	public function done()
 	{
 		if ($this->running) {
+			$this->logMessage('[TicketChangeTracker] (running)');
 			return;
 		}
-		if (!$this->has_non_ignored) {
+		if (!$this->has_non_ignored && !$this->isExtraSet('always_run_tracker')) {
+			$this->logMessage('[TicketChangeTracker] (trivial change set)');
 			return;
 		}
 

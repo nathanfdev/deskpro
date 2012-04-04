@@ -62,7 +62,6 @@ class CodeTicketDetector implements TicketDetectorInterface
 	 */
 	public function findExistingTicket(AbstractReader $reader)
 	{
-		$this->_found_tac = null;
 		$this->_found_person = null;
 
 		$search_text = array();
@@ -78,12 +77,13 @@ class CodeTicketDetector implements TicketDetectorInterface
 		$matches = null;
 		if (preg_match_all('/\(#([A-Z0-9]{6,11})\)/', $search_text, $matches, PREG_SET_ORDER)) {
 			foreach ($matches as $m) {
-				$tac = App::getEntityRepository('DeskPRO:TicketAccessCode')->findByAccessCode($m[1]);
+
+				$tac = App::getEntityRepository('DeskPRO:TicketAccessCode')->getTacArrayFromAccessCode($m[1]);
 				if (!$tac) continue;
 
-				$ticket = $tac->ticket;
+				$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($tac['ticket_id']);
+				$this->_found_person = App::getEntityRepository('DeskPRO:Person')->find($tac['person_id']);
 
-				$this->_found_tac = $tac;
 				return $ticket;
 			}
 		}
@@ -114,9 +114,6 @@ class CodeTicketDetector implements TicketDetectorInterface
 	 */
 	public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
 	{
-		if ($this->_found_tac) {
-			return $this->_found_tac->person;
-		}
 		if ($this->_found_person) {
 			return $this->_found_person;
 		}

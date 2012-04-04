@@ -281,6 +281,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$this->event_dispatcher->dispatch(self::EVENT_BEFORE_NEWREPLY, $ev);
 
 		if ($ev->cancel) {
+			$this->logMessage('[TicketGatewayProcessor] doNewReply cancel');
 			return null;
 		}
 
@@ -313,26 +314,34 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		if ($person['is_agent']) {
+			$this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_user');
 			$ticket['status'] = Entity\Ticket::STATUS_AWAITING_USER;
 		} else {
+			$this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_agent');
 			$ticket['status'] = Entity\Ticket::STATUS_AWAITING_AGENT;
 		}
 
 		$charset_error = $this->charset_error;
-		App::getOrm()->transactional(function($em) use ($ticket, $message, $person, $charset_error, $email_info) {
-			$em->persist($ticket);
-			$em->persist($message);
-			$em->persist($person);
-			$em->flush();
+		App::getDb()->beginTransaction();
+
+		try {
+			App::getOrm()->persist($ticket);
+			App::getOrm()->persist($person);
+			App::getOrm()->persist($message);
+			App::getOrm()->flush();
 
 			if ($charset_error) {
-				$em->getConnection()->insert('tickets_messages_raw', array(
+				App::getOrm()->getConnection()->insert('tickets_messages_raw', array(
 					'message_id' => $message['id'],
 					'raw'        => $email_info['body'],
 					'charset'    => $charset_error,
 				));
 			}
-		});
+			App::getDb()->commit();
+		} catch (\Exception $e) {
+			App::getDb()->rollback();
+			throw $e;
+		}
 
 		$ev = $this->createGatewayEvent(array(
 			'ticket' => $ticket,
@@ -471,6 +480,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$ticket->email_gateway = $this->gateway;
 		$ticket->email_gateway_address = $this->gateway_address;
+
+		if ($this->gateway_address->match_type == 'match_type') {
+			$ticket->notify_email = $this->gateway_address->match_pattern;
+		}
 
 		$this->logMessage('[TicketGatewayProcessor] Ticket record ' . $ticket->id);
 

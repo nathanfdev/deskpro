@@ -184,11 +184,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $email_gateway_address = null;
 
 	/**
-	 * @var string
-	 */
-	protected $notify_template = '';
-
-	/**
 	 * The "from" address to send from
 	 * @var string
 	 */
@@ -1430,19 +1425,19 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$old_status  = $this->status;
 
 		if ($status == 'awaiting_user' && $old_status == 'awaiting_agent' && $this->date_user_waiting) {
-			$this->total_user_waiting += time() - $this->date_user_waiting->getTimestamp();
-			$this->date_user_waiting = null;
+			$this->setModelField('total_user_waiting', $this->total_user_waiting + time() - $this->date_user_waiting->getTimestamp());
+			$this->setModelField('date_user_waiting', null);
 		} else if ($status == 'closed' && $old_status == 'awaiting_user' && $this->date_user_waiting) {
-			$this->total_user_waiting += time() - $this->date_user_waiting->getTimestamp();
-			$this->date_user_waiting = null;
+			$this->setModelField('total_user_waiting', $this->total_user_waiting + time() - $this->date_user_waiting->getTimestamp());
+			$this->setModelField('date_user_waiting', null);
 		} else if ($status == 'awaiting_agent') {
-			$this->date_user_waiting = new \DateTime();
+			$this->setModelField('date_user_waiting', new \DateTime());
 		} else if ($status == 'closed') {
-			$this->date_closed = new \DateTime();
+			$this->setModelField('date_closed', new \DateTime());
 		}
 
 		if ($status != 'closed' && $this->date_closed) {
-			$this->date_closed = null;
+			$this->setModelField('date_closed', null);
 		}
 
 		$old_hstatus = $this->hidden_status;
@@ -1943,7 +1938,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'ref', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ref', ));
 		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
-		$metadata->mapField(array( 'fieldName' => 'notify_template', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'notify_template', ));
 		$metadata->mapField(array( 'fieldName' => 'notify_email', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'notify_email', ));
 		$metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system', ));
 		$metadata->mapField(array( 'fieldName' => 'ticket_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ticket_hash', ));
