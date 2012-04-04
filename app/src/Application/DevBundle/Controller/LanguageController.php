@@ -42,6 +42,8 @@ use Orb\Util\Arrays;
 
 class LanguageController extends Controller
 {
+    private $files_temp;
+
     public function indexAction()
     {
 		return $this->render('DevBundle:Language:index.html.twig');
@@ -329,7 +331,7 @@ class LanguageController extends Controller
                             $id = $value;
 
                             if(!isset($by_id[$id])) {
-                                $by_id = array();
+                                $by_id[$id] = array();
                             }
 
                             $by_id[$id][] = array(
@@ -338,7 +340,7 @@ class LanguageController extends Controller
                             );
 
                             if(!isset($by_file[$file])) {
-                                $by_file = array();
+                                $by_file[$file] = array();
                             }
 
                             $by_file[$file][] = array(
@@ -750,6 +752,27 @@ class LanguageController extends Controller
         return $files;
     }
 
+    function scanDirTwig($dir)
+    {
+        if ($handle = opendir($dir)) {
+            while (false !== ($filename = readdir($handle))) {
+                if (is_dir($dir.'/'.$filename)) {
+                    if ($filename == "." || $filename == "..")
+                        continue;
+
+                    $this->scanDirTwig($dir.'/'.$filename);
+                }
+                else {
+                    if(preg_match('/\.html.twig$/i' , $filename)) {
+                        $this->files_temp[] = $dir.'/'.$filename;
+                    }
+                }
+            }
+
+            closedir($handle);
+        }
+    }
+
     public function getTwigFileList($bundle = null)
     {
         $bundles = array('AgentBundle', 'AdminBundle', 'InstallBundle', 'UserBundle', 'ReportBundle', 'BillingBundle', 'DeskPRO');
@@ -757,33 +780,12 @@ class LanguageController extends Controller
         if($bundle)
             $bundles = array($bundle);
 
-        function scan_dir_twig($dir, &$files)
-        {
-            if ($handle = opendir($dir)) {
-                while (false !== ($filename = readdir($handle))) {
-                    if (is_dir($dir.'/'.$filename)) {
-                        if ($filename == "." || $filename == "..")
-                                continue;
-
-                        scan_dir_twig($dir.'/'.$filename, $files);
-                    }
-                    else {
-                        if(preg_match('/\.html.twig$/i' , $filename)) {
-                            $files[] = $dir.'/'.$filename;
-                        }
-                    }
-                }
-
-                closedir($handle);
-            }
-        }
-
-        $files = array();
+        $this->files_temp = array();
 
         foreach($bundles as $bundle)
-            scan_dir_twig(DP_ROOT . '/src/Application/'.$bundle, $files);
+            $this->scanDirTwig(DP_ROOT . '/src/Application/'.$bundle);
 
-        return $files;
+        return $this->files_temp;
     }
 
     public function dumpTokensPHP($tokens)
