@@ -248,14 +248,16 @@ class LanguageController extends Controller
 
         foreach($globals as $prefix=>$ids) {
             $export = array();
+            $replace_files = array();
 
             foreach($ids as $id=>$files) {
+                $replace_files = array_merge($files, $replace_files);
                 $export[$prefix.'.'.$id] = $real_global[$id];
             }
 
             $globals[$prefix] = '<?php return '.var_export($export, true).';';
 
-            $this->replacePhrasesInFiles($files, 'global.', $prefix.'.global.', true);
+            $this->replacePhrasesInFiles($replace_files, 'global.', $prefix.'.global.', true);
             file_put_contents($rootdir.'/'.$prefix.'/global.php', $globals[$prefix]);
         }
 
