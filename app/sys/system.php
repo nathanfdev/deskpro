@@ -284,6 +284,11 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			$this->boot();
 		}
 
+		if (!deskpro_install_check_pdo_mysql()) {
+			$response = new RedirectResponse($request->getBasePath() . '/index.php/install/');
+			return $response;
+		}
+
 		try {
 			App::getSetting('core.license');
 		} catch (\PDOException $e) {
