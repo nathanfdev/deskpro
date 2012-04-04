@@ -35,7 +35,6 @@ class Twig_Token
     const PUNCTUATION_TYPE          = 9;
     const INTERPOLATION_START_TYPE  = 10;
     const INTERPOLATION_END_TYPE    = 11;
-    const WHITESPACE_TYPE           = 12;
 
     /**
      * Constructor.
@@ -169,9 +168,6 @@ class Twig_Token
             case self::INTERPOLATION_END_TYPE:
                 $name = 'INTERPOLATION_END_TYPE';
                 break;
-            case self::WHITESPACE_TYPE:
-                $name = 'WHITESPACE_TYPE';
-                break;
             default:
                 throw new Twig_Error_Syntax(sprintf('Token of type "%s" does not exist.', $type), $line);
         }
@@ -216,8 +212,6 @@ class Twig_Token
                 return 'begin of string interpolation';
             case self::INTERPOLATION_END_TYPE:
                 return 'end of string interpolation';
-            case self::WHITESPACE_TYPE:
-                return 'twig whitespace';
             default:
                 throw new Twig_Error_Syntax(sprintf('Token of type "%s" does not exist.', $type), $line);
         }
