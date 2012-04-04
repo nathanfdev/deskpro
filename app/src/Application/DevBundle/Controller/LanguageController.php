@@ -234,35 +234,36 @@ class LanguageController extends Controller
             }
         }
 
-        foreach($foreign as $bundle=>$f) {
-            foreach($f as $id=>$files) {
-                list($firstpart, ) = explode('.', $id, 2);
+        if(isset($_POST['globals'])) {
+            foreach($foreign as $bundle=>$f) {
+                foreach($f as $id=>$files) {
+                    list($firstpart, ) = explode('.', $id, 2);
 
-                if($firstpart == 'global') {
-                    if(!in_array($id, $globals[$bundle_map[$bundle]])) {
-                        $globals[$bundle_map[$bundle]][$id] = $files;
+                    if($firstpart == 'global') {
+                        if(!in_array($id, $globals[$bundle_map[$bundle]])) {
+                            $globals[$bundle_map[$bundle]][$id] = $files;
+                        }
                     }
                 }
             }
-        }
 
-        foreach($globals as $prefix=>$ids) {
-            $export = array();
-            $replace_files = array();
+            foreach($globals as $prefix=>$ids) {
+                $export = array();
+                $replace_files = array();
 
-            foreach($ids as $id=>$files) {
-                $replace_files = array_merge($files, $replace_files);
-                $export[$prefix.'.'.$id] = $real_global[$id];
+                foreach($ids as $id=>$files) {
+                    $replace_files = array_merge($files, $replace_files);
+                    $export[$prefix.'.'.$id] = $real_global[$id];
+                }
+
+                $globals[$prefix] = '<?php return '.var_export($export, true).';';
+
+                $this->replacePhrasesInFiles($replace_files, 'global.', $prefix.'.global.', true);
+                file_put_contents($rootdir.'/'.$prefix.'/global.php', $globals[$prefix]);
             }
-
-            $globals[$prefix] = '<?php return '.var_export($export, true).';';
-
-            $this->replacePhrasesInFiles($replace_files, 'global.', $prefix.'.global.', true);
-            file_put_contents($rootdir.'/'.$prefix.'/global.php', $globals[$prefix]);
         }
 
         $vars['foreign'] = $foreign;
-        $vars['global'] = $globals;
         return $this->render('DevBundle:Language:find.foreign.html.twig', $vars);
     }
 

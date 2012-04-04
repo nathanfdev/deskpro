@@ -13,6 +13,14 @@ Export global.php file for {{folder}}:<br />
     <tr><th>Id</th><th>Occurances</th></tr>
     {% for id, files in ids %}
         <tr><td>{{id}}</td><td>{{files|length}}</td></tr>
+        <tr><td colspan="2">
+            {% for file in files %}
+            {{file.filename}}:{{file.line}}<br />
+            {% endfor %}
+        </td></tr>
     {% endfor %}
 </table>
 {% endfor %}
+<form method="post">
+    <input type="submit" name="globals" value="Separate globals">
+</form>
