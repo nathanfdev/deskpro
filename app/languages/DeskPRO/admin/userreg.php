@@ -103,7 +103,7 @@
 
    'admin.userreg.notice_forces_users_to_validate_email' => 'Force users to validate their email address when they first register.
 
-This applies to everything except new tickets. You can enable email validation on tickets by enabling it in <a href="{{path}}">ticket triggers</a>.'
+This applies to everything except new tickets. You can enable email validation on tickets by enabling it in <a href="{{path}}">ticket triggers</a>.',
 
   'admin.userreg.enter_your_facebook_api_application_key' => 'Enter your Facebook API application key',
   'admin.userreg.enter_your_facebook_api_application_secret' => 'Enter your Facebook API application secret',

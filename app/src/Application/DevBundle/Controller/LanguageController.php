@@ -34,7 +34,7 @@
 namespace Application\DevBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
+use Application\DeskPRO\Translate;
 use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
@@ -288,24 +288,17 @@ class LanguageController extends Controller
         return $this->render('DevBundle:Language:find.raw.html.twig', $vars);
     }
 
-    public function findPhrasesInTwigFilesAction()
+    public function getPhrasesFromTwigFiles()
     {
         $twig = $this->container->get('twig');
         $templates = $this->getTwigFileList();
-        $vars = array(
-            'instances' => array
-            (
-                'id' => array(),
-                'file' => array()
-            ),
-            'missing' => array()
-        );
+        $by_id = array();
+        $by_file = array();
 
         foreach($templates as $file) {
             $raw_twig = file_get_contents($file);
             $tokens = $twig->tokenize($raw_twig);
             $state = 0;
-            $line = 0;
 
             while(!$tokens->isEOF()) {
                 $token = $tokens->next();
@@ -335,20 +328,20 @@ class LanguageController extends Controller
                             $state++;
                             $id = $value;
 
-                            if(!isset($vars['instances']['id'][$id])) {
-                                $vars['instances']['id'][$id] = array();
+                            if(!isset($by_id[$id])) {
+                                $by_id = array();
                             }
 
-                            $vars['instances']['id'][$id][] = array(
+                            $by_id[$id][] = array(
                                 'filename' => $file,
                                 'line' => $line
                             );
 
-                            if(!isset($vars['instances']['file'][$file])) {
-                                $vars['instances']['file'][$file] = array();
+                            if(!isset($by_file[$file])) {
+                                $by_file = array();
                             }
 
-                            $vars['instances']['file'][$file][] = array(
+                            $by_file[$file][] = array(
                                 'id' => $id,
                                 'line' => $line
                             );
@@ -371,14 +364,11 @@ class LanguageController extends Controller
             }
         }
 
-        $vars['missing'] = $this->getMissing(array_keys($vars['instances']['id']));
-
-        return $this->render('DevBundle:Language:find.phrases.twig.html.twig', $vars);
+        return array($by_id, $by_file);
     }
 
-    public function findPhrasesInPHPFilesAction()
+    public function findPhrasesInTwigFilesAction()
     {
-        $files = $this->getPhpFileList();
         $vars = array(
             'instances' => array
             (
@@ -387,6 +377,18 @@ class LanguageController extends Controller
             ),
             'missing' => array()
         );
+
+        list($vars['instances']['id'], $vars['instances']['file']) = $this->getPhrasesFromTwigFiles();
+        $vars['missing'] = $this->getMissing(array_keys($vars['instances']['id']));
+
+        return $this->render('DevBundle:Language:find.phrases.twig.html.twig', $vars);
+    }
+
+    public function getPhrasesFromPHPFiles()
+    {
+        $files = $this->getPhpFileList();
+        $by_id = array();
+        $by_file = array();
 
         foreach($files as $file) {
             $rawphp = file_get_contents($file);
@@ -431,20 +433,20 @@ class LanguageController extends Controller
                                 $id = eval('return '.$token[1].';');
                                 $state++;
 
-                                if(!isset($vars['instances']['id'][$id])) {
-                                    $vars['instances']['id'][$id] = array();
+                                if(!isset($by_id[$id])) {
+                                    $by_id[$id] = array();
                                 }
 
-                                $vars['instances']['id'][$id][] = array(
+                                $by_id[$id][] = array(
                                     'filename' => $file,
                                     'line' => $line
                                 );
 
-                                if(!isset($vars['instances']['file'][$file])) {
-                                    $vars['instances']['file'][$file] = array();
+                                if(!isset($by_file[$file])) {
+                                    $by_file[$file] = array();
                                 }
 
-                                $vars['instances']['file'][$file][] = array(
+                                $by_file[$file][] = array(
                                     'id' => $id,
                                     'line' => $line
                                 );
@@ -467,23 +469,33 @@ class LanguageController extends Controller
             }
         }
 
+        return array($by_id, $by_file);
+    }
+
+    public function findPhrasesInPHPFilesAction()
+    {
+        $vars = array(
+            'instances' => array
+            (
+                'id' => array(),
+                'file' => array()
+            ),
+            'missing' => array()
+        );
+
+        list($vars['instances']['id'], $vars['instances']['file']) = $this->getPhrasesFromPHPFiles();
+
+
         $vars['missing'] = $this->getMissing(array_keys($vars['instances']['id']));
 
         return $this->render('DevBundle:Language:find.phrases.php.html.twig', $vars);
     }
 
-    public function checkLanguageFilesAction()
+    public function parseLangFiles()
     {
         $files = $this->getLanguageFileList();
         $by_id = array();
         $by_content = array();
-        $vars = array(
-            'dupes' => array
-            (
-                'id' => array(),
-                'content' => array()
-            )
-        );
 
         foreach($files as $file) {
             $rawphp = file_get_contents($file);
@@ -544,6 +556,107 @@ class LanguageController extends Controller
             }
         }
 
+        return array($by_id, $by_content);
+    }
+
+    public function checkLanguageFilesAction()
+    {
+
+
+        if(isset($_POST['content'])) {
+            list($by_id, $by_content) = $this->parseLangFiles();
+            $content = $_POST['content'];
+            $id = $_POST['id'];
+            $rootdir = DP_ROOT.'/languages/DeskPRO';
+            $global = require($rootdir.'/global/global.php');
+            $global[$id] = $content;
+            $data = '<?php return '.var_export($global, true).';';
+            echo "Would put ".htmlspecialchars($data)."<br>";
+            //file_put_content($rootdir.'/global/global.php', $data);
+
+            $files = $by_content[$content];
+
+            foreach($files as $file) {
+                $lines = file($file['filename']);
+                $data = '';
+
+                foreach($lines as $i => $line) {
+                    if($i+1 == $file['line']) {
+                        echo "Dropping line $line<br />";
+                    }
+                    else {
+                        $data .= $line;
+                    }
+                }
+
+                //file_put_contents($file['filename'], $data);
+            }
+
+            ob_start();
+            list($by_id, ) = $this->getPhrasesFromTwigFiles();
+            ob_end_clean();
+
+            foreach($files as $file) {
+                if(!isset($by_id[$file['id']]))
+                    continue;
+
+                $twig_files = $by_id[$file['id']];
+
+                foreach($twig_files as $tfile) {
+                    $lines = file($tfile['filename']);
+
+                    foreach($lines as $i=>$line) {
+                        if(preg_match('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', $line)) {
+                            $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', '\1'.$id.'\2', $line);
+                            echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br />";
+                        }
+                        else {
+                            $data .= $line;
+                        }
+                    }
+
+                    //file_put_contents($file['filename'], $data);
+                }
+            }
+
+            ob_start();
+            list($by_id, ) = $this->getPhrasesFromPHPFiles();
+            ob_end_clean();
+
+            foreach($files as $file) {
+                if(!isset($by_id[$file['id']]))
+                    continue;
+
+                $twig_files = $by_id[$file['id']];
+
+                foreach($twig_files as $tfile) {
+                    $lines = file($tfile['filename']);
+
+                    foreach($lines as $i=>$line) {
+                        if(preg_match('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', $line)) {
+                            $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', '\1'.$id.'\2', $line);
+                            echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br />";
+                        }
+                        else {
+                            $data .= $line;
+                        }
+                    }
+
+                    //file_put_contents($file['filename'], $data);
+                }
+            }
+        }
+
+        $vars = array(
+            'dupes' => array
+            (
+                'id' => array(),
+                'content' => array()
+            )
+        );
+
+        list($by_id, $by_content) = $this->parseLangFiles();
+
         foreach($by_id as $k=>$v) {
             if(count($v) > 1) {
                 $vars['dupes']['id'][] = $k;
@@ -552,7 +665,7 @@ class LanguageController extends Controller
 
         foreach($by_content as $k=>$v) {
             if(count($v) > 1) {
-                $vars['dupes']['content'][] = $k;
+                $vars['dupes']['content'][] = array('data' => $k, 'id' => $this->stringToId($k));
             }
         }
 
@@ -609,7 +722,7 @@ class LanguageController extends Controller
     {
         // The use of references is generally discouraged in PHP, but this is a dev tool, so we can let it slide :).
         // Same goes for inline function.
-        function scan_dir($dir, &$files)
+        function scan_dir_php($dir, &$files)
         {
             if ($handle = opendir($dir)) {
                 while (false !== ($filename = readdir($handle))) {
@@ -617,7 +730,7 @@ class LanguageController extends Controller
                         if ($filename == "." || $filename == "..")
                                 continue;
 
-                        scan_dir($dir.'/'.$filename, $files);
+                        scan_dir_php($dir.'/'.$filename, $files);
                     }
                     else {
                         if(preg_match('/\.php$/i' , $filename)) {
@@ -632,7 +745,7 @@ class LanguageController extends Controller
 
         $files = array();
         // Create a large list containing all php files.
-        scan_dir(DP_ROOT . '/src', $files);
+        scan_dir_php(DP_ROOT . '/src', $files);
 
         return $files;
     }
@@ -644,7 +757,7 @@ class LanguageController extends Controller
         if($bundle)
             $bundles = array($bundle);
 
-        function scan_dir($dir, &$files)
+        function scan_dir_twig($dir, &$files)
         {
             if ($handle = opendir($dir)) {
                 while (false !== ($filename = readdir($handle))) {
@@ -652,7 +765,7 @@ class LanguageController extends Controller
                         if ($filename == "." || $filename == "..")
                                 continue;
 
-                        scan_dir($dir.'/'.$filename, $files);
+                        scan_dir_twig($dir.'/'.$filename, $files);
                     }
                     else {
                         if(preg_match('/\.html.twig$/i' , $filename)) {
@@ -668,7 +781,7 @@ class LanguageController extends Controller
         $files = array();
 
         foreach($bundles as $bundle)
-            scan_dir(DP_ROOT . '/src/Application/'.$bundle, $files);
+            scan_dir_twig(DP_ROOT . '/src/Application/'.$bundle, $files);
 
         return $files;
     }

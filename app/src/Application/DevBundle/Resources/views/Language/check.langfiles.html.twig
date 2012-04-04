@@ -17,13 +17,18 @@
 
 {% for content in dupes.content %}
 <h3>Duplicates for:</h3>
-<pre>{{content}}</pre>
+<pre>{{content.data}}</pre>
+<form method="post">
 <table cellspacing="0" cellpadding="2" border="1" width="90%">
     <tr><th>File</th><th>Line</th><th>id</th></tr>
 
-    {% for row in by_content[content] %}
+    {% for row in by_content[content.data] %}
     <tr><td>{{row.filename}}</td><td>{{row.line}}</td><td>{{row.id}}</td></tr>
     {% endfor %}
 
 </table>
+    Id: <input type="text" name="id" value="global.{{content.id}}" />
+    <input type="hidden" name="content" value="{{content.data}}">
+    <input type="submit" value="Globalise">
+</form>
 {% endfor %}
