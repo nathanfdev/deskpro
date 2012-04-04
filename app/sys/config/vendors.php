@@ -67,7 +67,7 @@
 	'swiftmailer' => array(
 		'into' => DP_ROOT.'/vendor/swiftmailer',
 		'repos' => 'git://github.com/swiftmailer/swiftmailer.git',
-		'version' => 'v4.1.5',
+		'version' => 'v4.1.6',
 	),
 	'symfony' => array(
 		'into' => DP_ROOT.'/vendor/symfony',
