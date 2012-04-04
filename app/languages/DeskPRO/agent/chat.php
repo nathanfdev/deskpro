@@ -38,7 +38,7 @@
 	'agent.chat.title_active_chats' => 'Active Chats',
 
 	'agent.chat.title_send_file' => 'Send File',
-	'agent.chat.title_chat' => 'Chat',
+
 	'agent.chat.title_leave_chat_prompt' => 'Leave Chat?',
 	'agent.chat.leave_chat_confirm' => 'Are you sure you want to leave this chat?',
 	'agent.chat.leave_unassign' => 'Unassign myself and leave',

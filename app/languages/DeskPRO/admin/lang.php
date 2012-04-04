@@ -5,7 +5,7 @@
 
 	'admin.lang.phrasegroup_agent' => 'Agent Interface Phrases',
 	'admin.lang.phrasegroup_agent_agent' => 'General',
-	'admin.lang.phrasegroup_agent_chat' => 'Chat',
+
 	'admin.lang.phrasegroup_agent_feedback' => 'Feedback',
 	'admin.lang.phrasegroup_agent_kb' => 'Knowledgebase',
 	'admin.lang.phrasegroup_agent_tickets' => 'Tickets: General',
@@ -14,13 +14,12 @@
 
 	'admin.lang.phrasegroup_user' => 'User Interface Phrases',
 	'admin.lang.phrasegroup_user_articles' => 'Knowledgebase',
-	'admin.lang.phrasegroup_user_chat' => 'Chat',
+
 	'admin.lang.phrasegroup_user_downloads' => 'Downloads',
 	'admin.lang.phrasegroup_user_emails' => 'Emails',
 	'admin.lang.phrasegroup_user_feedback' => 'Feedback',
 	'admin.lang.phrasegroup_user_news' => 'News',
 	'admin.lang.phrasegroup_user_profile' => 'Profile',
-	'admin.lang.phrasegroup_user_tickets' => 'Tickets',
 	'admin.lang.phrasegroup_user_user' => 'General',
 
 );

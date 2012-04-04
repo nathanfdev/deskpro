@@ -65,7 +65,7 @@
 
 	'user.tickets.list_open' => 'Open Tickets',
 	'user.tickets.list_closed' => 'Closed Tickets',
-	'user.tickets.list_label_department' => 'Department',
+
 	'user.tickets.list_last_activity_by_x' => 'Last activity by {{name}}',
 	'user.tickets.list_last_activity_by_you' => 'Last activity by you',
 	'user.tickets.list_close_ticket' => 'Close ticket',
@@ -113,7 +113,7 @@
 	'user.tickets.add_using_name_and_email' => 'Add a new person by entering their name and email',
 	'user.tickets.first_name' => 'First Name',
 	'user.tickets.last_name' => 'Last Name',
-	'user.tickets.form_email' => 'Email',
+
 	'user.tickets.btn_add' => 'Add',
 	'user.tickets.attachments' => 'Attachments',
 	'user.tickets.attachments_max_size' => 'You may upload an attachment less than 5 MB',
@@ -128,7 +128,6 @@
 	'user.tickets.please_choose_priority' => 'Please choose a priority',
 	'user.tickets.please_choose_subject_at_least' => 'Please enter a subject of at least 5 characters',
 
-  'user.tickets.tickets' => 'Tickets',
   'user.tickets.ticket_participants' => 'Ticket participants',
   'user.tickets.you' => 'You',
   'user.tickets.new_reply' => 'New Reply',

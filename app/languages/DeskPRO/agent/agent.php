@@ -17,7 +17,7 @@
 	'agent.me' => 'Me',
 	'agent.my_team' => 'My team',
 	'agent.apply' => 'Apply',
-	'agent.save' => 'Save',
+
 	'agent.update' => 'Update',
 	'agent.delete' => 'Delete',
 	'agent.spam' => 'Spam',
@@ -104,19 +104,19 @@
 	'agent.ordered_by' => 'Ordered by',
 	'agent.display_elements' => 'Display Elements',
 
-	'agent.label_title' => 'Title',
+
 	'agent.label_criteria' => 'Criteria',
 	'agent.label_actions' => 'Actions',
-	'agent.label_name' => 'Name',
-	'agent.label_email' => 'Email',
+
+
 	'agent.label_timezone' => 'Timezone',
 	'agent.label_picture' => 'Picture',
 	'agent.label_perms' => 'Permissions',
 	'agent.label_perms_just_me' => 'Just me',
-	'agent.label_teams' => 'Teams',
+
 	'agent.label_everyone' => 'Everyone',
 	'agent.label_file' => 'Everyone',
-	'agent.label_description' => 'Description',
+
 	'agent.label_properties' => 'Properties',
 	'agent.label_url_slug' => 'URL Slug',
 	'agent.label_labels' => 'Labels',
@@ -138,7 +138,6 @@
 	'agent.view_all_x_tickets' => 'View 1 ticket|View all {{count}} tickets',
 
 	'agent.members' => 'Members',
-	'agent.tickets' => 'Tickets',
 	'agent.chats' => 'Chats',
 	'agent.detail' => 'Detail',
 	'agent.quote' => 'Quote',
@@ -196,19 +195,19 @@
 
 	'agent.move_to_tab' => 'Move To Tab',
 	'agent.unpublish' => 'Unpublish',
-	'agent.publish' => 'Publish',
+
 	'agent.action_archive' => 'Archive',
 
 	'agent.status'        => 'Status',
 	'agent.unassigned'    => 'Unassigned',
-	'agent.department'    => 'Department',
+
 	'agent.product'       => 'Product',
 	'agent.agent'         => 'Agent',
-	'agent.agents'        => 'Agents',
+
 	'agent.agent_team'    => 'Agent Team',
 	'agent.agent_teams'   => 'Agent Teams',
 	'agent.team' => 'Team',
-	'agent.teams' => 'Teams',
+
 	'agent.followers'     => 'Followers',
 	'agent.label'         => 'Label',
 	'agent.labels'        => 'Labels',
@@ -218,7 +217,7 @@
 	'agent.organization'  => 'Organization',
 	'agent.usergroup'     => 'Usergroup',
 	'agent.usergroups'     => 'Usergroups',
-	'agent.email'         => 'Email',
+
 	'agent.author'        => 'Author',
 	'agent.category'      => 'Category',
 	'agent.urgency'       => 'Urgency',

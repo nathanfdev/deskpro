@@ -1,2 +1,15 @@
 <?php return array (
+  'global.tickets' => 'Tickets',
+  'global.chat' => 'Chat',
+  'global.publish' => 'Publish',
+  'global.email' => 'Email',
+  'global.title' => 'Title',
+  'global.or_connect_with' => 'Or connect with',
+  'global.agents' => 'Agents',
+  'global.teams' => 'Teams',
+  'global.description' => 'Description',
+  'global.department' => 'Department',
+  'global.save' => 'Save',
+  'global.required' => 'Required',
+  'global.name' => 'Name',
 );

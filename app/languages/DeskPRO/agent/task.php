@@ -3,11 +3,11 @@
   'agent.task.add_another_task' => 'Add another task',
   'agent.task.private' => 'Private',
   'agent.task.public' => 'Public',
-  'agent.task.agents' => 'Agents',
+
   'agent.task.me' => 'Me',
-  'agent.task.teams' => 'Teams',
+
   'agent.task.tasks_i_delegated' => 'Tasks I Delegated',
-  'agent.task.save' => 'Save',
+
   'agent.task.sort_by' => 'Sort by',
   'agent.task.date' => 'Date',
   'agent.task.assigned' => 'Assigned',

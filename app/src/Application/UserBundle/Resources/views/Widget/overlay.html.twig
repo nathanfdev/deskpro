@@ -113,7 +113,7 @@
 									<input type="text" class="email-field" id="dp_newticket_email" name="newticket[person][email]" value="" placeholder="{{ phrase('user.register_your_email') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 									{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 										<div class="connect-with">
-											{{ phrase('user.widget.or_connect_with') }}
+											{{ phrase('global.or_connect_with') }}
 											{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 												{{ render_usersource(usersource, 'widget_overlay_btn') }}
 											{% endfor %}
@@ -207,7 +207,7 @@
 								<input type="text" class="email-field" id="dp_newfeedback_email" name="feedback[person_email]" value="" placeholder="{{ phrase('user.register_your_email') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 								{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 									<div class="connect-with">
-										{{ phrase('user.widget.or_connect_with') }}
+										{{ phrase('global.or_connect_with') }}
 										{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 											{{ render_usersource(usersource, 'widget_overlay_btn') }}
 										{% endfor %}
@@ -273,7 +273,7 @@
 
 				<div class="dp-form-row {% if error_fields['content'] %}dp-error{% endif %}">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.feedback.label_desc') }} *</label> <em class="note">{{ phrase('user.feedback.label_desc_explain') }}</em>
+						<label>{{ phrase('global.description') }} *</label> <em class="note">{{ phrase('user.feedback.label_desc_explain') }}</em>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(feedbackform.content, {
@@ -333,7 +333,7 @@
 							</div>
 							{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 								<div class="connect-with">
-									{{ phrase('user.widget.or_connect_with') }}
+									{{ phrase('global.or_connect_with') }}
 									{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 										{{ render_usersource(usersource, 'widget_overlay_btn') }}
 									{% endfor %}
@@ -352,7 +352,7 @@
 
 				<div class="dp-form-row {% if error_fields['department_id'] %}dp-error{% endif %}">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.department') }} *</label>
+						<label>{{ phrase('global.department') }} *</label>
 					</div>
 					<div class="department_id_wrapper with-sub-options dp-form-input" data-field-validators="DeskPRO.Form.TwoLevelSelectValidator">
 						<div class="dp-select-wrapper">

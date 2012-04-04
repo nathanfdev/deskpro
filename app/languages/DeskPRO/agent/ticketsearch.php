@@ -15,7 +15,7 @@
   'agent.ticketsearch.priority_lowesthighest' => 'Priority (Lowest-Highest)',
   'agent.ticketsearch.search' => 'Search',
   'agent.ticketsearch.organization' => 'Organization',
-  'agent.ticketsearch.department' => 'Department',
+
   'agent.ticketsearch.category' => 'Category',
   'agent.ticketsearch.product' => 'Product',
   'agent.ticketsearch.agent' => 'Agent',
@@ -39,7 +39,7 @@
   'agent.ticketsearch.hidden_awaiting_validating_spam' => 'Hidden (awaiting validating, spam)',
   'agent.ticketsearch._by_user' => '-- By user',
   'agent.ticketsearch._by_agent_on_behalf_of_user' => '-- By agent on behalf of user',
-  'agent.ticketsearch.email' => 'Email',
+
   'agent.ticketsearch.flags_let_you_create_personal_collections_of_tickets' => 'Flags let you create personal collections of tickets. Double-click on a flag to change its title.',
   'agent.ticketsearch.no_criteria' => 'No criteria',
   'agent.ticketsearch.no_recent_searches' => 'No recent searches',

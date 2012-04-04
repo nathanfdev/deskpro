@@ -4,7 +4,7 @@
   'admin.userrules.edit_rule' => 'Edit Rule',
   'admin.userrules.email_address_pattern' => 'Email Address Pattern',
   'admin.userrules.when_matching_add_user_to_usergroup' => 'When matching, add user to usergroup',
-  'admin.userrules.save' => 'Save',
+
   'admin.userrules.add_new_rule' => 'Add New Rule',
   'admin.userrules.actions' => 'Actions',
   'admin.userrules.add_to_usergroup' => 'Add to usergroup',

@@ -1,12 +1,12 @@
 <?php return array (
   'admin.ticketfilters.ticket_filters' => 'Ticket Filters',
   'admin.ticketfilters.type' => 'Type',
-  'admin.ticketfilters.title' => 'Title',
+
   'admin.ticketfilters.criteria' => 'Criteria',
   'admin.ticketfilters.add_a_new_criteria' => 'Add a new criteria',
   'admin.ticketfilters.in_use_by' => 'In use by',
   'admin.ticketfilters.disabled_by' => 'Disabled by',
-  'admin.ticketfilters.save' => 'Save',
+
   'admin.ticketfilters.add_new_filter' => 'Add New Filter',
   'admin.ticketfilters.used_by' => 'Used by',
   'admin.ticketfilters.no_terms_all_tickets_match' => 'No terms. All tickets match.',

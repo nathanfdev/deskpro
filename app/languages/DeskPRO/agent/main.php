@@ -1,5 +1,5 @@
 <?php return array (
-  'agent.main.agents' => 'Agents',
+
   'agent.main.me' => 'Me',
   'agent.main.status' => 'Status',
   'agent.main.awaiting_agent' => 'Awaiting Agent',
@@ -30,7 +30,6 @@
   'agent.main.when_in_a_filter_listingmoves_selected_row_cursor' => 'When in a filter listing, moves selected row cursor',
   'agent.main.when_in_a_filter_listing_opensthe_selected_row' => 'When in a filter listing, opens the selected row',
   'agent.main.when_in_a_filter_listing_checksthe_checkbox_on' => 'When in a filter listing, checks the checkbox on the select row',
-  'agent.main.tickets' => 'Tickets',
   'agent.main.focus_reply_box' => 'Focus reply box',
   'agent.main.keyboard' => 'Keyboard',
   'agent.main.create_content' => 'Create Content',
@@ -46,14 +45,14 @@
   'agent.main.downloads' => 'Downloads',
   'agent.main.feedback' => 'Feedback',
   'agent.main.news' => 'News',
-  'agent.main.name' => 'Name',
+
   'agent.main.label' => 'Label',
   'agent.main.email_domain' => 'Email Domain',
   'agent.main.phone' => 'Phone',
   'agent.main.organization' => 'Organization',
   'agent.main.usergroup' => 'Usergroup',
   'agent.main.email_address' => 'Email Address',
-  'agent.main.department' => 'Department',
+
   'agent.main.awaiting_validation' => 'Awaiting Validation',
   'agent.main.spam' => 'Spam',
   'agent.main.deleted' => 'Deleted',

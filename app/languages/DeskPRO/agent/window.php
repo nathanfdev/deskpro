@@ -18,7 +18,6 @@
 	'agent.window.new_task' => 'New Task',
 	'agent.window.new_deal' => 'New Deal',
 
-	'agent.window.tickets' => 'Tickets',
 
 	'agent.window.focus_reply_box' => 'Focus reply box',
 	'agent.window.set_ticket_resolved' => 'Set ticket resolved',
@@ -51,11 +50,10 @@
 	'agent.window.sound_explain' => 'Change or mute sound notifications',
 
 	'agent.window.nav_tickets' => 'Tickets',
-	'agent.window.nav_chat' => 'Chat',
 	'agent.window.nav_twitter' => 'Twitter',
 	'agent.window.nav_people' => 'People',
 	'agent.window.nav_feedback' => 'Feedback',
-	'agent.window.nav_publish' => 'Publish',
+
 	'agent.window.nav_tasks' => 'Tasks',
 	'agent.window.nav_deals' => 'Deals',
 

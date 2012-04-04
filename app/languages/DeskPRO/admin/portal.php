@@ -21,7 +21,7 @@
   'admin.portal.news' => 'News',
   'admin.portal.manage_news' => 'Manage News',
   'admin.portal.apply' => 'Apply',
-  'admin.portal.save' => 'Save',
+
   'admin.portal.edit_logo' => 'Edit Logo',
   'admin.portal.edit_html' => 'Edit HTML',
   'admin.portal.upload_a_new_logo' => 'Upload a new logo',
@@ -48,6 +48,6 @@
   'admin.portal.click_button_to_reenable_or_use_widgets' => 'Click the button above to re-enable the portal. Or use HTML widgets from the <a href="{{path}}">ticket editor</a> to embed DeskPRO into your own site.',
   'admin.portal.portal_is_disabled' => 'The portal is currently disabled. This means you have turned off your public facing website at {{url}}.',
 
-  'admin.portal.title' => 'Title',
+
   'admin.portal.tagline' => 'Tagline',
 );

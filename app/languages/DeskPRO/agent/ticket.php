@@ -1,6 +1,6 @@
 <?php return array (
   'agent.ticket.email_address' => 'Email Address',
-  'agent.ticket.name' => 'Name',
+
   'agent.ticket.none' => 'None',
   'agent.ticket.message' => 'Message',
   'agent.ticket.cc' => 'CC',
@@ -20,11 +20,11 @@
   'agent.ticket.participant_added' => 'Participant added',
   'agent.ticket.participant_removed' => 'Participant removed',
   'agent.ticket.tickettriggers' => 'Ticket triggers',
-  'agent.ticket.title' => 'Title',
+
   'agent.ticket.permissions' => 'Permissions',
   'agent.ticket.just_me' => 'Just me',
   'agent.ticket.everyone' => 'Everyone',
-  'agent.ticket.teams' => 'Teams',
+
   'agent.ticket.deletesnippet' => 'Delete Snippet',
   'agent.ticket.new_snippet_category' => 'New Snippet Category',
   'agent.ticket.apply_macro' => 'Apply Macro',
@@ -42,7 +42,7 @@
   'agent.ticket.close_tab' => 'Close Tab',
   'agent.ticket.no_team' => 'No Team',
   'agent.ticket.category' => 'Category',
-  'agent.ticket.department' => 'Department',
+
   'agent.ticket.organization' => 'Organization',
   'agent.ticket.user_owner' => 'User owner',
   'agent.ticket.ticket_triggers' => 'Ticket triggers',
@@ -61,7 +61,7 @@
   'agent.ticket.view_profile' => 'view profile',
   'agent.ticket.subject' => 'Subject',
   'agent.ticket.attachments' => 'Attachments',
-  'agent.ticket.agents' => 'Agents',
+
   'agent.ticket.assign_ticket_to' => 'Assign ticket to',
   'agent.ticket.and' => 'and',
   'agent.ticket.change_status_to' => 'Change status to',

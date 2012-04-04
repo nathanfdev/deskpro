@@ -1,9 +1,9 @@
 <?php return array (
-  'agent.deal.name' => 'Name',
+
   'agent.deal.cancel' => 'Cancel',
   'agent.deal.email_address' => 'Email Address',
   'agent.deal.add_user' => 'Add User',
-  'agent.deal.title' => 'Title',
+
   'agent.deal.deal_size' => 'Deal Size',
   'agent.deal.deal_type' => 'Deal Type',
   'agent.deal.set_deal_type' => 'Set Deal Type',
@@ -37,7 +37,7 @@
   'agent.deal.upload' => 'Upload',
   'agent.deal.createdeal' => 'Create Deal',
   'agent.deal.assignments' => 'Assignments',
-  'agent.deal.agents' => 'Agents',
+
   'agent.deal.unassigned' => 'Unassigned',
   'agent.deal.apply' => 'Apply',
   'agent.deal.organizations' => 'Organizations',
@@ -50,7 +50,7 @@
   'agent.deal.tasks' => 'Tasks',
   'agent.deal.files' => 'Files',
   'agent.deal.labels' => 'Labels',
-  'agent.deal.save' => 'Save',
+
   'agent.deal.edit_customfields' => 'Edit Custom Fields',
   'agent.deal.custom_field_a' => 'Custom Field A',
   'agent.deal.value_x' => 'Value X',

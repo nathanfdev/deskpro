@@ -5,7 +5,7 @@
   'admin.userreg.click_here_here_to_sign_up_now' => 'Click here here to sign up now',
   'admin.userreg.application_key' => 'Application Key',
   'admin.userreg.application_secret' => 'Application Secret',
-  'admin.userreg.save' => 'Save',
+
   'admin.userreg.add_user_source' => 'Add User Source',
   'admin.userreg.user_sources' => 'User Sources',
   'admin.userreg.a_user_source_is_any_database_that_deskpro' => 'A user source is any database that DeskPRO will use to authenticate users when they want to log in.',
@@ -69,7 +69,7 @@
   'admin.userreg.the_secret_key_inside_the_password_check_service' => 'The secret key inside the password check service file you uploaded',
   'admin.userreg.registration_options' => 'Registration Options',
   'admin.userreg.new_usersource' => 'New Usersource',
-  'admin.userreg.title' => 'Title',
+
   'admin.userreg.lost_password_url' => 'Lost Password URL',
   'admin.userreg.when_a_user_has_loggedin_using_this_usersource' => 'When a user has logged-in using this usersource and later clicks the "Forgot Password" link, this is the URL they will be given to reset their password.',
   'admin.userreg.active_directory' => 'Active Directory',

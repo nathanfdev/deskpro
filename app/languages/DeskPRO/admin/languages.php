@@ -6,10 +6,10 @@
   'admin.languages.the_default_language_used_for_users_and_submitted' => 'The default language used for users and submitted content (such as tickets)',
   'admin.languages.edit_language' => 'Edit Language',
   'admin.languages.new_language' => 'New Language',
-  'admin.languages.title' => 'Title',
+
   'admin.languages.locale' => 'Locale',
   'admin.languages.language_pack' => 'Language Pack',
-  'admin.languages.save' => 'Save',
+
   'admin.languages.delete_language' => 'Delete Language',
   'admin.languages.language' => 'Language',
   'admin.languages.edit_details' => 'Edit Details',

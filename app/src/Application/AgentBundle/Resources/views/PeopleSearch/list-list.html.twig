@@ -27,7 +27,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<header>
 		<div class="controls">
 			<button class="order-by-menu-trigger clean-white arrow menu-fitted">{{ phrase('agent.ordered_by') }}: <span class="label">{% if 'name' in cache.criteria.order_by %}
-						{{ phrase('agent.peoplesearch.name') }}
+						{{ phrase('global.name') }}
 					{% elseif 'date_last_login' in cache.criteria.order_by %}
 						{{ phrase('agent.peoplesearch.last_login_time') }}
 					{% elseif 'organization' in cache.criteria.order_by %}
@@ -43,7 +43,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 
 		<ul style="display: none" class="order-by-menu">
-			<li data-order-by="people_name">{{ phrase('agent.peoplesearch.name') }}</li>
+			<li data-order-by="people_name">{{ phrase('global.name') }}</li>
 			<li data-order-by="date_created">{{ phrase('agent.date_created') }}</li>
 			<li data-order-by="last_login">{{ phrase('agent.peoplesearch.last_login_time') }}</li>
 			<li data-order-by="org">{{ phrase('agent.peoplesearch.organization') }}</li>

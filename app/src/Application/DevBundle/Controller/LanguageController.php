@@ -574,7 +574,7 @@ class LanguageController extends Controller
             $global[$id] = $content;
             $data = '<?php return '.var_export($global, true).';';
             echo "Would put ".htmlspecialchars($data)."<br>";
-            file_put_content($rootdir.'/global/global.php', $data);
+            file_put_contents($rootdir.'/global/global.php', $data);
 
             $files = $by_content[$content];
 
@@ -585,6 +585,7 @@ class LanguageController extends Controller
                 foreach($lines as $i => $line) {
                     if($i+1 == $file['line']) {
                         echo "Dropping line $line<br />";
+                        $data .= "\n";
                     }
                     else {
                         $data .= $line;
@@ -606,11 +607,13 @@ class LanguageController extends Controller
 
                 foreach($twig_files as $tfile) {
                     $lines = file($tfile['filename']);
+                    $data = '';
 
                     foreach($lines as $i=>$line) {
                         if(preg_match('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', $line)) {
                             $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', '\1'.$id.'\2', $line);
-                            echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br />";
+                            //echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br />";
+                            $data .= $new_line;
                         }
                         else {
                             $data .= $line;
@@ -633,11 +636,13 @@ class LanguageController extends Controller
 
                 foreach($twig_files as $tfile) {
                     $lines = file($tfile['filename']);
+                    $data = '';
 
                     foreach($lines as $i=>$line) {
                         if(preg_match('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', $line)) {
                             $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', '\1'.$id.'\2', $line);
                             echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br />";
+                            $data .= $new_line;
                         }
                         else {
                             $data .= $line;

@@ -7,15 +7,14 @@
   'admin.departments.new_custom_field' => 'New custom field',
   'admin.departments.widgets' => 'Widgets',
   'admin.departments.new_widget' => 'New widget',
-  'admin.departments.save' => 'Save',
-  'admin.departments.agents' => 'Agents',
+
+
   'admin.departments.add_new_department' => 'Add New Department',
   'admin.departments.the_department_field_is_the_primary_grouping_field' => 'The department field is the primary grouping field for tickets and chats. For many helpdesks, this will be the only field configured. A typical set of departments would include "Sales", "Support" and "Billing".',
-  'admin.departments.department' => 'Department',
-  'admin.departments.tickets' => 'Tickets',
-  'admin.departments.chat' => 'Chat',
+
+
   'admin.departments.edit_department_title' => 'Edit Department Title',
-  'admin.departments.title' => 'Title',
+
   'admin.departments.new_department' => 'New Department',
   'admin.departments.parent' => 'Parent',
   'admin.departments.no_parent' => 'No Parent',

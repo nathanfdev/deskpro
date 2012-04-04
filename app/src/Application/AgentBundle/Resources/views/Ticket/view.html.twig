@@ -127,7 +127,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<div class="status set-status hidden hidden_validating" {% if ticket.status_code != 'hidden.validating' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.ticket.validating') }}</label></span></div>
 		<div class="status set-status hidden hidden_deleted" {% if ticket.status_code != 'hidden.deleted' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.ticket.deleted') }}</label></span></div>
 
-		<div class="category set-department"><span>{{ phrase('agent.ticket.department') }}: <span class="label-department-id">{{ ticket.department.full_title }}</span></span></div>
+		<div class="category set-department"><span>{{ phrase('global.department') }}: <span class="label-department-id">{{ ticket.department.full_title }}</span></span></div>
 
 		{% if ticket_perms.modify_set_hold %}
 			<div class="set-hold hold noedit-hide" {% if ticket.is_hold %}style="display: none"{% endif %}><span>{{ phrase('agent.tickets.set_hold') }}</span></div>
@@ -373,7 +373,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<div class="fields-edit-rows"></div>
 		<div class="controls">
 			<div class="is-not-loading">
-				<button class="clean-white save-trigger">{{ phrase('agent.save') }}</button>
+				<button class="clean-white save-trigger">{{ phrase('global.save') }}</button>
 				<button class="clean-white close-trigger">{{ phrase('agent.cancel') }}</button>
 			</div>
 			<div class="is-loading">
@@ -427,7 +427,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<div class="col">
 		<section data-section-name="agents">
 			<header>
-				<h3>{{ phrase('agent.agents') }}</h3>
+				<h3>{{ phrase('global.agents') }}</h3>
 				<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
 			</header>
 			<ul>
@@ -462,7 +462,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<div class="col">
 		<section data-section-name="teams">
 			<header>
-				<h3>{{ phrase('agent.teams') }}</h3>
+				<h3>{{ phrase('global.teams') }}</h3>
 				<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
 			</header>
 			<ul>

@@ -1,6 +1,6 @@
 <?php return array (
-  'report.dashboard.title' => 'Title',
-  'report.dashboard.save' => 'Save',
+
+
   'report.dashboard.chart_type' => 'Chart Type',
   'report.dashboard.show_legend' => 'Show Legend?',
   'report.dashboard.select_yes_to_display_the_chart_legend_works' => 'Select yes to display the chart legend (works best with bigger charts)',

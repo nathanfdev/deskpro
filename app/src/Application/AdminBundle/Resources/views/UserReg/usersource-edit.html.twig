@@ -17,7 +17,7 @@
 	<input type="hidden" name="usersource[source_type]" value="{{ usersource.source_type }}" />
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.userreg.title') }}</label>
+			<label>{{ phrase('global.title') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.title) }}
@@ -38,7 +38,7 @@
 
 	{% include 'AdminBundle:UserReg:usersource-edit-' ~ usersource.source_type ~ '.html.twig' %}
 
-	<button class="btn primary save-trigger">{{ phrase('admin.userreg.save') }}</button>
+	<button class="btn primary save-trigger">{{ phrase('global.save') }}</button>
 </form>
 
 {% if usersource.id %}

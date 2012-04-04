@@ -28,7 +28,7 @@
   'admin.emailgateways.backup_outgoing_mail_account' => 'Backup Outgoing Mail Account',
   'admin.emailgateways.enabled' => 'Enabled',
   'admin.emailgateways.yes_process_email_from_this_account' => 'Yes, process email from this account',
-  'admin.emailgateways.save' => 'Save',
+
   'admin.emailgateways.test_incoming_email_account' => 'Test Incoming Email Account',
   'admin.emailgateways.this_will_test_the_connection_to_your_email' => 'This will test the connection to your email account.',
   'admin.emailgateways.no_errors_were_reported' => 'No errors were reported.',

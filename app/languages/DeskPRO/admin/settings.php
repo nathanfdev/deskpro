@@ -2,7 +2,7 @@
   'admin.settings.settings' => 'Settings',
   'admin.settings.advanced' => 'Advanced',
   'admin.settings.revert_all_settings' => 'Revert ALL Settings',
-  'admin.settings.name' => 'Name',
+
   'admin.settings.default_value' => 'Default Value',
   'admin.settings.set_value' => 'Set Value',
   'admin.settings.revert_settings' => 'Revert Settings',
@@ -26,7 +26,6 @@
   'admin.settings.organizations' => 'Organizations',
   'admin.settings.people' => 'People',
   'admin.settings.tasks' => 'Tasks',
-  'admin.settings.tickets' => 'Tickets',
   'admin.settings.sort' => 'Sort',
   'admin.settings.alphabetical' => 'Alphabetical',
   'admin.settings.usage_count' => 'Usage Count',
@@ -67,7 +66,7 @@
   'admin.settings.learn_why_you_are_bound_by_this_limit' => 'Learn why you are bound by this limit.',
   'admin.settings.disallow_these_file_types' => 'Disallow these file types',
   'admin.settings.only_allow_these_file_types' => 'Only allow these file types',
-  'admin.settings.agents' => 'Agents',
+
   'admin.settings.gravatar' => 'Gravatar',
   'admin.settings.use_gravatar_profile_pictures_by_default_until_a' => 'Use Gravatar profile pictures by default until a custom picture is uploaded',
   'admin.settings.cookie_path' => 'Cookie Path',

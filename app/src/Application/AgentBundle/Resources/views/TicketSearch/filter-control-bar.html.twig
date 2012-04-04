@@ -21,7 +21,7 @@
 	<ul style="display: none" class="group-by-menu">
 		<li data-group-by="">{{ phrase('agent.none') }}</li>
 		<li class="sep">-</li>
-		<li data-group-by="department">{{ phrase('agent.department') }}</li>
+		<li data-group-by="department">{{ phrase('global.department') }}</li>
 		{% if app.getSetting('core.use_ticket_category') %}<li data-group-by="category">{{ phrase('agent.category') }}</li>{% endif %}
 		{% if app.getSetting('core.use_ticket_priority') %}<li data-group-by="priority">{{ phrase('agent.priority') }}</li>{% endif %}
 		{% if app.getSetting('core.use_product') %}<li data-group-by="product">{{ phrase('agent.product') }}</li>{% endif %}

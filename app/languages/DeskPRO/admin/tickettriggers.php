@@ -11,13 +11,13 @@
   'admin.tickettriggers.the_agent_has_been_waiting_for_the_user' => 'The agent has been waiting for the user to reply for',
   'admin.tickettriggers.the_ticket_has_been_resolved_for' => 'The ticket has been resolved for',
   'admin.tickettriggers.event' => 'Event',
-  'admin.tickettriggers.description' => 'Description',
+
   'admin.tickettriggers.optionally_enter_a_description_to_help_you_remember' => 'Optionally enter a description to help you remember what this trigger was created for',
   'admin.tickettriggers.criteria' => 'Criteria',
   'admin.tickettriggers.add_a_new_criteria' => 'Add a new criteria',
   'admin.tickettriggers.actions' => 'Actions',
   'admin.tickettriggers.add_a_new_action' => 'Add a new action',
-  'admin.tickettriggers.save' => 'Save',
+
   'admin.tickettriggers.add_trigger' => 'Add Trigger',
   'admin.tickettriggers.off' => 'OFF',
   'admin.tickettriggers.on' => 'ON',

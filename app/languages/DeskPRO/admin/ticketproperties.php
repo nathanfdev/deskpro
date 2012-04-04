@@ -31,7 +31,7 @@
   'admin.ticketproperties.ticket_priorities' => 'Ticket Priorities',
   'admin.ticketproperties.ticket_workflows' => 'Ticket Workflows',
 
-  'admin.ticketproperties.department' => 'Department',
+
   'admin.ticketproperties.choose_a_category' => 'Choose a category...',
   'admin.ticketproperties.choose_a_product' => 'Choose a product...',
   'admin.ticketproperties.choose_a_priority' => 'Choose a priority...',

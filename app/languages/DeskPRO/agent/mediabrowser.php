@@ -1,6 +1,6 @@
 <?php return array (
   'agent.mediabrowser.you_have_no_selected_any_files_to_attach' => 'You have no selected any files to attach.',
-  'agent.mediabrowser.title' => 'Title',
+
   'agent.mediabrowser.download_file' => 'Download file',
   'agent.mediabrowser.file_name' => 'File name',
   'agent.mediabrowser.file_size' => 'File size',
@@ -9,12 +9,11 @@
   'agent.mediabrowser.insert_image' => 'Insert image',
   'agent.mediabrowser.crop_and_scale' => 'Crop and Scale',
   'agent.mediabrowser.scale' => 'Scale',
-  'agent.mediabrowser.save' => 'Save',
+
   'agent.mediabrowser.category' => 'Category',
   'agent.mediabrowser.labels' => 'Labels',
   'agent.mediabrowser.types' => 'Types',
   'agent.mediabrowser.all' => 'All',
-  'agent.mediabrowser.tickets' => 'Tickets',
   'agent.mediabrowser.articles' => 'Articles',
   'agent.mediabrowser.attached_to_ticket' => 'attached to ticket',
   'agent.mediabrowser.article' => 'article',

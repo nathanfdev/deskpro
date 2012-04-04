@@ -12,7 +12,7 @@
   'admin.license.demo' => 'Demo',
   'admin.license.this_is_a_fullyfunctional_demo_license_with_no' => 'This is a fully-functional demo license with no limitations on the number of agents.',
   'admin.license.demo_expiry' => 'Demo Expiry',
-  'admin.license.agents' => 'Agents',
+
   'admin.license.unlimited' => 'Unlimited',
   'admin.license.request_demo_license' => 'Request Demo License',
   'admin.license.already_have_a_license_code' => 'Already have a license code?',

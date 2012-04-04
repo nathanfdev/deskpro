@@ -102,7 +102,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<div class="content">
 		<div class="col">
-			<h4>{{ phrase('agent.tickets.department') }}</h4>
+			<h4>{{ phrase('global.department') }}</h4>
 			{% include 'AgentBundle:Common:select-department.html.twig' with {
 				'name': "newticket[department_id]",
 				'id': baseId ~ '_dep',
@@ -302,7 +302,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="col">
 		<section data-section-name="agents">
 			<header>
-				<h3>{{ phrase('agent.ticket.agents') }}</h3>
+				<h3>{{ phrase('global.agents') }}</h3>
 				<input type="text" class="filter-box" placeholder="{{ phrase('agent.tickets.filter') }}" />
 			</header>
 			<ul>
@@ -332,7 +332,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="col">
 			<section data-section-name="teams">
 				<header>
-					<h3>{{ phrase('agent.tickets.teams') }}</h3>
+					<h3>{{ phrase('global.teams') }}</h3>
 					<input type="text" class="filter-box" placeholder="{{ phrase('agent.tickets.filter') }}" />
 				</header>
 				<ul>

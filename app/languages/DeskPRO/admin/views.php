@@ -7,10 +7,9 @@
   'admin.views.user_interface' => 'User Interface',
   'admin.views.home' => 'Home',
   'admin.views.setup' => 'Setup',
-  'admin.views.agents' => 'Agents',
+
   'admin.views.users' => 'Users',
   'admin.views.portal' => 'Portal',
-  'admin.views.chat' => 'Chat',
-  'admin.views.tickets' => 'Tickets',
+
   'admin.views.server' => 'Server',
 );

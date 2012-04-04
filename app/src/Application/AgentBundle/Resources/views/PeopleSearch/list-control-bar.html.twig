@@ -10,7 +10,7 @@
 		<li class="order-by-menu-trigger menu-fitted" data-menu-button=".button"><a class="button">
 			<span class="label">
 				{% if 'name' in cache.criteria.order_by %}
-					{{ phrase('agent.peoplesearch.name') }}
+					{{ phrase('global.name') }}
 				{% elseif 'date_last_login' in cache.criteria.order_by %}
 					{{ phrase('agent.peoplesearch.last_login_time') }}
 				{% elseif 'organization' in cache.criteria.order_by %}
@@ -27,7 +27,7 @@
 	</ul>
 
 	<ul class="order-by-menu" style="display: none">
-		<li data-order-by="people_name">{{ phrase('agent.peoplesearch.name') }}</li>
+		<li data-order-by="people_name">{{ phrase('global.name') }}</li>
 		<li data-order-by="date_created">{{ phrase('agent.date_created') }}</li>
 		<li data-order-by="last_login">{{ phrase('agent.peoplesearch.last_login_time') }}</li>
 		<li data-order-by="org">{{ phrase('agent.peoplesearch.organization') }}</li>

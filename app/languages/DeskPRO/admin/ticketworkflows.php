@@ -2,8 +2,8 @@
   'admin.ticketworkflows.delete_workflow' => 'Delete Workflow',
   'admin.ticketworkflows.any_tickets_that_use_this_workflow_will_have' => 'Any tickets that use this workflow will have it unset, and have no workflow associated with them.',
   'admin.ticketworkflows.yes_i_am_sure_i_want_to_delete' => 'Yes, I am sure I want to delete',
-  'admin.ticketworkflows.title' => 'Title',
-  'admin.ticketworkflows.save' => 'Save',
+
+
   'admin.ticketworkflows.add_new_workflow' => 'Add New Workflow',
   'admin.ticketworkflows.ticket_workflows' => 'Ticket Workflows',
   'admin.ticketworkflows.workflow' => 'Workflow',

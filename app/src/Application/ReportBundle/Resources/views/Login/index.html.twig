@@ -277,7 +277,7 @@
 				{% if failed_login_name %}<p class="error">{{ phrase('agent.login.login_failed') }}</p>{% endif %}
 				{% if has_logged_out %}<p class="okay">{{ phrase('agent.login.has_logged_out') }}</p>{% endif %}
 				<dl>
-					<dt>{{ phrase('report.login.email') }}</dt>
+					<dt>{{ phrase('global.email') }}</dt>
 					<dd><input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" tabindex="1" /></dd>
 
 					<dt>{{ phrase('report.login.password') }}</dt>

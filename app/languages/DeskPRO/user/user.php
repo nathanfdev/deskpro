@@ -31,7 +31,7 @@
 	'user.breadcrumb_helpdesk' => 'Helpdesk',
 	'user.breadcrumb_kb' => 'Knowledgebase',
 
-	'user.field_required' => 'Required',
+
 
 	'user.unassigned' => 'Unassigned',
 
@@ -39,7 +39,7 @@
 	'user.name_anon' => 'Anonymous',
 	'user.post_comment_btn' => 'Post Comment',
 	'user.label_logged_in_as' => 'Logged in as',
-	'user.label_name' => 'Name',
+
 	'user.label_email_address' => 'Email Address',
 
 	'user.rating_x_of_y_found_helpful' => '{{percent}}% of {{vote_count}} found this page helpful',
@@ -95,7 +95,7 @@
 	'user.choose_email' => 'Choose the email address you want to use',
 	'user.choose_email_new' => 'New email address',
 
-	'user.label_login_email' => 'Email',
+
 	'user.label_login_password' => 'Password',
 	'user.lost_password_link' => 'lost?',
 
@@ -128,7 +128,7 @@
 	'user.attach_error_not_in_allowed_exts' => 'Only the following file types can be uploaded: {{error_detail}}',
 	'user.attach_error_not_allowed_exts' => 'The type of file you uploaded is not allowed.',
 
-	'user.required' => 'Required',
+
 	'user.required_not_displayed' => 'Required but never displayed',
 
 	'user.download_pdf' => 'Download PDF',
@@ -169,8 +169,8 @@
 	'user.title_resources' => 'Resources',
 
 	'user.subject' => 'Subject',
-	'user.department' => 'Department',
-	'user.save' => 'Save',
+
+
 
 	'user.login_with_openid' => 'Log in using your OpenID provider.',
 	'user.openid_url' => 'OpenID URL',
@@ -190,8 +190,7 @@
 	'user.agent_bar_settings' => 'Settings',
 	'user.agent_bar_set_away' => 'Set status: away',
 	'user.agent_bar_logout' => 'Log Out',
-	'user.agent_bar_tickets' => 'Tickets',
-	'user.agent_bar_chat' => 'Chat',
+
 	'user.agent_bar_mark_all_read' => 'Mark all as read',
 	'user.agent_bar_admin' => 'Admin',
 	'user.agent_bar_billing' => 'Billing',
@@ -222,7 +221,7 @@
 
 	'user.comments_logged_in_as' => 'Logged In As',
 	'user.comments_please_enter_email' => 'Please enter your email address',
-	'user.comments_or_connect_with' => 'Or connect with',
+
 
 	'user.posted_date' => 'Posted: {{date}}'
 );

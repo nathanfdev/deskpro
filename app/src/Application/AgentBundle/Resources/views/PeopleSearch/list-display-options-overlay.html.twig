@@ -13,7 +13,7 @@
 	</div>
 {% endblock %}
 {% block display_elements_list %}
-	<li data-field="subject" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="name" {% if not show_all or 'name' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.peoplesearch.name') }}</label></li>
+	<li data-field="subject" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="name" {% if not show_all or 'name' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.name') }}</label></li>
 	<li data-field="email" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="email" {% if not show_all or 'email' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.peoplesearch.email_address') }}</label></li>
 	<li data-field="org" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="org" {% if not show_all or 'org' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.peoplesearch.organization') }}</label></li>
 	<li data-field="org_pos" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="org_pos" {% if not show_all or 'org_pos' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.peoplesearch.position') }}</label></li>

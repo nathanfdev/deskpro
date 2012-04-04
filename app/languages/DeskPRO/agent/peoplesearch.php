@@ -1,5 +1,5 @@
 <?php return array (
-  'agent.peoplesearch.name' => 'Name',
+
   'agent.peoplesearch.last_login_time' => 'Last Login Time',
   'agent.peoplesearch.organization' => 'Organization',
   'agent.peoplesearch.number_of_tickets' => 'Number of Tickets',
@@ -9,9 +9,8 @@
   'agent.peoplesearch.position' => 'Position',
   'agent.peoplesearch.email_address' => 'Email Address',
   'agent.peoplesearch.language' => 'Language',
-  'agent.peoplesearch.tickets' => 'Tickets',
   'agent.peoplesearch.loading' => 'Loading',
-  'agent.peoplesearch.email' => 'Email',
+
   'agent.peoplesearch.select' => 'Select',
   'agent.peoplesearch.simple' => 'Simple',
   'agent.peoplesearch.advanced' => 'Advanced',

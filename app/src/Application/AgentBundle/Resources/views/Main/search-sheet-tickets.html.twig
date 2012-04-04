@@ -1,11 +1,11 @@
 <form action="{{ path('agent_ticketsearch_runcustomfilter') }}">
 	<ul class="property-list">
 		<li class="ob">
-			<label>{{ phrase('agent.main.department') }}</label>
+			<label>{{ phrase('global.department') }}</label>
 			<div class="values">
 				{% include 'AgentBundle:Common:select-department.html.twig' with {
 					'name': 'set_term[department][]',
-					'blank_title': phrase('agent.department'),
+					'blank_title': phrase('global.department'),
 					'departments': ticket_options.departments_hierarchy,
 					'add_attr': 'multiple="multiple"'
 				} %}

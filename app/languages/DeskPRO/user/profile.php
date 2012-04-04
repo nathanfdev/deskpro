@@ -43,7 +43,7 @@
 	'user.profile.first_name' => 'First Name',
 	'user.profile.last_name' => 'Last Name',
 	'user.profile.timezone' => 'Timezone',
-	'user.profile.btn_save' => 'Save',
+
 	'user.profile.email_addresses' => 'Email Addresses',
 	'user.profile.validation_resent_to' => 'Validation email was resent to {{email}}',
 	'user.profile.email_was_removed' => 'Email {{email}} was removed',

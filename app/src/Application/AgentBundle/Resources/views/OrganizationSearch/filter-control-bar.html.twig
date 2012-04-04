@@ -10,7 +10,7 @@
 				{% if 'num_members' in cache.criteria.order_by %}
 					{{ phrase('agent.organizationsearch.number_of_members') }}
 				{% else %}
-					{{ phrase('agent.organizationsearch.name') }}
+					{{ phrase('global.name') }}
 				{% endif %}
 			</span><em></em></a>
 		</li>
@@ -18,6 +18,6 @@
 	</ul>
 	<ul style="display: none" class="order-by-menu">
 		<li data-order-by="num_members">{{ phrase('agent.organizationsearch.number_of_members') }}</li>
-		<li data-order-by="name-asc">{{ phrase('agent.organizationsearch.name') }}</li>
+		<li data-order-by="name-asc">{{ phrase('global.name') }}</li>
 	</ul>
 </header>

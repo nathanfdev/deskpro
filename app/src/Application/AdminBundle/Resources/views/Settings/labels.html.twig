@@ -51,7 +51,7 @@
 				</li>
 				<li class="{% if label_type == 'tickets' %}on{% endif %}">
 					<span class="count" id="labels_count_tickets">{{ def_counts.tickets|default(0) }}</span>
-					<a href="{{ path('admin_labels', {'label_type': 'tickets'}) }}">{{ phrase('admin.settings.tickets') }}</a>
+					<a href="{{ path('admin_labels', {'label_type': 'tickets'}) }}">{{ phrase('global.tickets') }}</a>
 				</li>
 			</ul>
 		</article>
@@ -91,7 +91,7 @@
 			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'organizations' %}checked="checked"{% endif %} value="organizations" /> {{ phrase('admin.settings.organizations') }}</label>
 			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'people' %}checked="checked"{% endif %} value="people" /> {{ phrase('admin.settings.people') }}</label>
 			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'tasks' %}checked="checked"{% endif %} value="tasks" /> {{ phrase('admin.settings.tasks') }}</label>
-			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'tickets' %}checked="checked"{% endif %} value="tickets" /> {{ phrase('admin.settings.tickets') }}</label>
+			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'tickets' %}checked="checked"{% endif %} value="tickets" /> {{ phrase('global.tickets') }}</label>
 		</div>
 	</form>
 </div>

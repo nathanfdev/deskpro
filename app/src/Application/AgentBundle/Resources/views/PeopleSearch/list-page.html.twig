@@ -42,7 +42,7 @@
 								</li>
 							{% elseif field == 'num_tickets' %}
 								{% set has_set = true %}
-								<li><span class="prop-val num_tickets">{{ phrase('agent.peoplesearch.tickets') }}: {{ result_display.getPersonTicketCount(person) }}</span></li>
+								<li><span class="prop-val num_tickets">{{ phrase('global.tickets') }}: {{ result_display.getPersonTicketCount(person) }}</span></li>
 							{% else %}
 								{% set custom_fields = result_display.getCustomFields(person) %}
 								{% for f in custom_fields %}

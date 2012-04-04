@@ -2,8 +2,7 @@
   'admin.usergroups.usergroups' => 'Usergroups',
   'admin.usergroups.browse_members' => 'Browse Members',
   'admin.usergroups.there_are_no_users_to_show' => 'There are no users to show.',
-  'admin.usergroups.tickets' => 'Tickets',
-  'admin.usergroups.chat' => 'Chat',
+
   'admin.usergroups.feedback' => 'Feedback',
   'admin.usergroups.articles' => 'Articles',
   'admin.usergroups.downloads' => 'Downloads',
@@ -26,7 +25,7 @@
   'admin.usergroups.submit_comments_on_news_posts' => 'Submit comments on news posts',
   'admin.usergroups.edit_usergroup' => 'Edit Usergroup',
   'admin.usergroups.new_usergroup' => 'New Usergroup',
-  'admin.usergroups.title' => 'Title',
+
   'admin.usergroups.note_description' => 'Note / Description',
   'admin.usergroups.number_of_members' => 'Number of members',
   'admin.usergroups.permissions' => 'Permissions',

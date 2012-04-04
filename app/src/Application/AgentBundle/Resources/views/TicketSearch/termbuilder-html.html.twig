@@ -118,7 +118,7 @@
 	</div>
 {% endif %}
 {% if term_options.departments %}
-	<div class="type" title="{{ phrase('agent.ticketsearch.department') }}" data-rule-type="department">
+	<div class="type" title="{{ phrase('global.department') }}" data-rule-type="department">
 		<div class="op">
 			<select name="op">
 				<option value="is">{{ phrase('agent.ticketsearch.is') }}</option>
@@ -182,7 +182,7 @@
 			<option value="web">{{ phrase('agent.ticketsearch.web_interface') }}</option>
 			<option value="web.person">{{ phrase('agent.ticketsearch._by_user') }}</option>
 			<option value="web.agent">{{ phrase('agent.ticketsearch._by_agent_on_behalf_of_user') }}</option>
-			<option value="gateway">{{ phrase('agent.ticketsearch.email') }}</option>
+			<option value="gateway">{{ phrase('global.email') }}</option>
 		</select>
 	</div>
 </div>

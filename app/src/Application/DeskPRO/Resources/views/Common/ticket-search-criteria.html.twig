@@ -65,7 +65,7 @@
 				<option value="web.person">{{ phrase('deskpro.common._by_user') }}</option>
 				<option value="widget.person">{{ phrase('deskpro.common.website_widget') }}</option>
 				<option value="web.agent">{{ phrase('deskpro.common._by_agent_on_behalf_of_user') }}</option>
-				<option value="gateway.person">{{ phrase('deskpro.common.email') }}</option>
+				<option value="gateway.person">{{ phrase('global.email') }}</option>
 			</select>
 		</div>
 	</div>
@@ -124,7 +124,7 @@
 	{% endif %}
 
 	{% if 'department' not in no_show_fields and term_options.departments_hierarchy %}
-		<div class="type" title="{{ phrase('deskpro.common.department') }}" data-rule-type="department" data-term-type="GenericMenuTerm" data-term-triggers="dep,department">
+		<div class="type" title="{{ phrase('global.department') }}" data-rule-type="department" data-term-type="GenericMenuTerm" data-term-triggers="dep,department">
 			<div class="op">
 				<select name="op" class="op">
 					<option value="is">{{ phrase('deskpro.common.is') }}</option>

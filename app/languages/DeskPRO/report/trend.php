@@ -1,5 +1,5 @@
 <?php return array (
-  'report.trend.title' => 'Title',
+
   'report.trend.group_by' => 'Group By',
   'report.trend.select_the_field_to_group_the_results_by' => 'Select the field to group the results by.',
   'report.trend.criteria' => 'Criteria',
@@ -15,7 +15,7 @@
   'report.trend.disable_the_statistic' => 'Disable the statistic?',
   'report.trend.disabling_the_statistic_will_cause_future_data_to' => 'Disabling the statistic will cause future data to be unavailable',
   'report.trend.disable' => 'Disable',
-  'report.trend.save' => 'Save',
+
   'report.trend.trends' => 'Trends',
   'report.trend.updates' => 'Updates',
   'report.trend.author' => 'Author',

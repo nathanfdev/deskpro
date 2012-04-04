@@ -75,7 +75,7 @@
 		<input type="text" name="email" placeholder="{{ phrase('user.chat.your_email') }}" />
 		{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 			<div class="connect-with">
-				{{ phrase('user.widget.or_connect_with') }}
+				{{ phrase('global.or_connect_with') }}
 				{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 					{{ render_usersource(usersource, 'widget_overlay_btn') }}
 				{% endfor %}

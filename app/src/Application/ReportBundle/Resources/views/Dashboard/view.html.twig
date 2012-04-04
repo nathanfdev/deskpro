@@ -37,7 +37,7 @@ function _page_exec() {
 			<div class="dp-form">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('report.dashboard.title') }}</label>
+						<label>{{ phrase('global.title') }}</label>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(form.title) }}
@@ -55,7 +55,7 @@ function _page_exec() {
 			</div>
 
 			<a id="report-dashboard-delete" href="{{ path('report_trend_dashboard_delete', {'dashboard_id': dashboard.id}) }}" class="btn secondary">{{ phrase('report.dashboard.delete') }}</a>
-			<a id="report-dashboard-set-viewable" href="#" class="btn primary">{{ phrase('report.dashboard.save') }}</a>
+			<a id="report-dashboard-set-viewable" href="#" class="btn primary">{{ phrase('global.save') }}</a>
 		</form>
 	</div>
 
@@ -102,7 +102,7 @@ function _page_exec() {
 			<thead>
 				<tr>
 					<th width="16"></th>
-					<th>{{ phrase('report.dashboard.title') }}</th>
+					<th>{{ phrase('global.title') }}</th>
 					<th width="100">Group By</th>
 					<th width="100">Updates</th>
 					<th width="100">Author</th>

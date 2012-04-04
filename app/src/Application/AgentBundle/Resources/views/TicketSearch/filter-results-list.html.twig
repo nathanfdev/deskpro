@@ -52,7 +52,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</ul>
 		<ul style="display: none" class="group-by-menu">
 			<li data-group-by="">{{ phrase('agent.ticketsearch.none') }}</li>
-			<li data-group-by="department">{{ phrase('agent.department') }}</li>
+			<li data-group-by="department">{{ phrase('global.department') }}</li>
 			{% if app.getSetting('core.use_ticket_category') %}<li data-group-by="category">{{ phrase('agent.category') }}</li>{% endif %}
 			{% if app.getSetting('core.use_ticket_category') %}<li data-group-by="priority">{{ phrase('agent.priority') }}</li>{% endif %}
 			{% if app.getSetting('core.use_ticket_workflow') %}<li data-group-by="workflow">{{ phrase('agent.workflow') }}</li>{% endif %}
@@ -68,7 +68,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</ul>
 
 		<span class="close close-trigger"></span>
-		<h1>{{ phrase('agent.tickets') }}</h1>
+		<h1>{{ phrase('global.tickets') }}</h1>
 	</header>
 	<article>
 		{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' with {show_all: 1 } %}

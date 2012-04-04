@@ -6,9 +6,9 @@
   'admin.products.products' => 'Products',
   'admin.products.edit_product' => 'Edit Product',
   'admin.products.new_product' => 'New Product',
-  'admin.products.title' => 'Title',
+
   'admin.products.parent_product' => 'Parent Product',
-  'admin.products.save' => 'Save',
+
   'admin.products.delete' => 'delete',
   'admin.products.add_new_product' => 'Add New Product',
   'admin.products.product' => 'Product',

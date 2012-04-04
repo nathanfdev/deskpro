@@ -14,7 +14,7 @@
 {% endfor %}
 
 <h2>Duplicates by content</h2>
-
+<form method="post">
 {% for content in dupes.content %}
 <h3>Duplicates for:</h3>
 <pre>{{content.data}}</pre>
@@ -31,4 +31,7 @@
     <input type="hidden" name="content" value="{{content.data}}">
     <input type="submit" value="Globalise">
 </form>
+    <input type="checkbox" name="batch[]" value="{{content.data}}" /> Batch
 {% endfor %}
+    <input type="submit" value="Batch Globalise">
+</form>

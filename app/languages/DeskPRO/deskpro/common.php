@@ -16,7 +16,7 @@
   'deskpro.common.web_interface' => 'Web interface',
   'deskpro.common._by_user' => '-- By user',
   'deskpro.common._by_agent_on_behalf_of_user' => '-- By agent on behalf of user',
-  'deskpro.common.email' => 'Email',
+
   'deskpro.common.changed' => 'Changed',
   'deskpro.common.changed_to' => 'Changed to',
   'deskpro.common.changed_from' => 'Changed from',
@@ -81,7 +81,7 @@
   'deskpro.common.is_published' => 'Is Published',
   'deskpro.common.is_not_published' => 'Is Not Published',
   'deskpro.common.email_domains' => 'Email Domains',
-  'deskpro.common.name' => 'Name',
+
   'deskpro.common.contact_phone' => 'Contact Phone',
   'deskpro.common.contact_address' => 'Contact Address',
   'deskpro.common.contact_instant_messaging' => 'Contact Instant Messaging',
@@ -97,7 +97,7 @@
   'deskpro.common.ticket_gateway_address' => 'Ticket Gateway Address',
   'deskpro.common.ticket_gateway_account' => 'Ticket Gateway Account',
   'deskpro.common.subject' => 'Subject',
-  'deskpro.common.department' => 'Department',
+
   'deskpro.common.agent_team' => 'Agent Team',
   'deskpro.common.followers' => 'Followers',
   'deskpro.common.product' => 'Product',

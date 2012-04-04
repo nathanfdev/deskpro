@@ -59,7 +59,7 @@
 {% endif %}
 
 {% if 'org_name' not in no_show_fields %}
-<div class="type" title="{{ phrase('deskpro.common.name') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_name" data-term-type="GenericInputTerm" data-term-triggers="name">
+<div class="type" title="{{ phrase('global.name') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_name" data-term-type="GenericInputTerm" data-term-triggers="name">
 	<div class="op">
 		<select name="op">
 			<option value="is">{{ phrase('deskpro.common.is') }}</option>

@@ -47,7 +47,7 @@
   'agent.kb.unpublished' => 'Unpublished',
   'agent.kb.draft' => 'Draft',
   'agent.kb.dev_validating' => 'DEV: Validating',
-  'agent.kb.title' => 'Title',
+
   'agent.kb.article' => 'Article',
   'agent.kb.properties' => 'Properties',
   'agent.kb.attachments' => 'Attachments',

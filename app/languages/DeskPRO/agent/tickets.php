@@ -19,7 +19,7 @@
 	'agent.tickets.creation_system_web'        => 'Web interface',
 	'agent.tickets.creation_system_web_person' => 'Web interface by user',
 	'agent.tickets.creation_system_web_agent'  => 'Web interface by agent',
-	'agent.tickets.creation_system_gateway'    => 'Email',
+
 	'agent.tickets.creation_system_gateway_person'    => 'Email by user',
 	'agent.tickets.creation_system_gateway_agent'     => 'Email by agent',
 	'agent.tickets.creation_system_widget'     => 'Website Widget',
@@ -32,7 +32,7 @@
 	'agent.tickets.hidden_status'          => 'Hidden Status',
 	'agent.tickets.agent'                  => 'Agent',
 	'agent.tickets.agent_team'             => 'Agent Team',
-	'agent.tickets.department'             => 'Department',
+
 	'agent.tickets.product'                => 'Product',
 	'agent.tickets.workflow'               => 'Workflow',
 	'agent.tickets.priority'               => 'Priority',
@@ -129,12 +129,12 @@
 	'agent.tickets.create_a_new_person' => 'Create a new person',
 	'agent.tickets.upload' => 'Upload',
 	'agent.tickets.attachments' => 'Attachments',
-	'agent.tickets.agents' => 'Agents',
+
 	'agent.tickets.filter' => 'Filter...',
 	'agent.tickets.unassigned' => 'Unassigned',
 	'agent.tickets.assignment' => 'Assignment',
 	'agent.tickets.create_ticket' => 'Create Ticket',
-	'agent.tickets.teams' => 'Teams',
+
 	'agent.tickets.key_altc' => '(alt+c)',
 	'agent.tickets.change_user' => 'Change User',
 	'agent.tickets.choose_a_person' => 'Choose a person to create this ticket for',

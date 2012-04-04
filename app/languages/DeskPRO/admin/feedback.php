@@ -1,9 +1,9 @@
 <?php return array (
-  'admin.feedback.title' => 'Title',
+
   'admin.feedback.parent_category' => 'Parent Category',
   'admin.feedback.note_the_parent_category_selected_is_currently_a' => 'Note: The parent category selected is currently a top-level category. By creating this child-category, any existing feedback will be moved over.',
   'admin.feedback.feedback_using_this_category' => 'Feedback using this category',
-  'admin.feedback.save' => 'Save',
+
   'admin.feedback.delete_category' => 'Delete Category',
   'admin.feedback.you_cannot_delete_the_last_category' => 'You cannot delete the last category.',
   'admin.feedback.this_category_has_children_delete_the_child_categories' => 'This category has children. Delete the child categories first, and then you can delete this one.',

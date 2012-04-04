@@ -36,7 +36,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.TextSnippetViewer';
 	<div class="new-snippet-category field-overlay" style="display: none">
 		<span class="close">{{ phrase('agent.common.close') }}</span>
 		<dl>
-			<dt>{{ phrase('agent.label_title') }}:</dt>
+			<dt>{{ phrase('global.title') }}:</dt>
 			<dd>
 				<input type="text" name="title" value="New Category" />
 				<input type="hidden" name="typename" value="{{ typename }}" />
@@ -45,11 +45,11 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.TextSnippetViewer';
 			<dt>{{ phrase('agent.label_perms') }}:</dt>
 			<dd>
 				<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if perm_type == 'me' %}checked="checked"{% endif %} /> {{ phrase('agent.label_perms_just_me') }}</label><br />
-				<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if perm_type == 'team' %}checked="checked"{% endif %} /> {{ phrase('agent.label_teams') }}</label><br />
+				<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if perm_type == 'team' %}checked="checked"{% endif %} /> {{ phrase('global.teams') }}</label><br />
 				<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if perm_type == 'global' %}checked="checked"{% endif %} /> {{ phrase('agent.label_everyone') }}</label><br />
 			</dd>
 
-			<dt class="perm-teams" style="display: none">{{ phrase('agent.label_teams') }}:</dt>
+			<dt class="perm-teams" style="display: none">{{ phrase('global.teams') }}:</dt>
 			<dd class="perm-teams" style="display: none">
 				<select name="teams[]" multiple="multiple" size="6">
 					{% for team in agent_teams %}

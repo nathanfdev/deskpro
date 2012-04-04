@@ -22,7 +22,7 @@
   'admin.emailtransports.google_apps' => 'Google Apps',
   'admin.emailtransports.full_email_address' => 'Full Email Address',
   'admin.emailtransports.backup_mail_server' => 'Backup Mail Server',
-  'admin.emailtransports.save' => 'Save',
+
   'admin.emailtransports.test_outgoing_email' => 'Test Outgoing Email',
   'admin.emailtransports.send_a_test_email_to' => 'Send a test email to',
   'admin.emailtransports.from_email_address' => 'From email address',

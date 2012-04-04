@@ -20,7 +20,7 @@
 	'user.feedback.label_summary_explain' => 'A title or a brief summary of what your feedback is about',
 	'user.feedback.summary_error' => 'Please enter a summary of at laest 5 characters',
 
-	'user.feedback.label_desc' => 'Description',
+
 	'user.feedback.label_desc_explain' => 'Explain your feedback',
 	'user.feedback.desc_error' => 'Please enter a description of at least 5 characters',
 

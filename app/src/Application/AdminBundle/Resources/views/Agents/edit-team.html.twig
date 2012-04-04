@@ -13,7 +13,7 @@
 	</ul>
 	{% endif %}
 	<ul>
-		<li><a href="{{ path('admin_agents') }}">{{ phrase('admin.agents.agents') }}</a></li>
+		<li><a href="{{ path('admin_agents') }}">{{ phrase('global.agents') }}</a></li>
 		{% if team.id %}
 			<li>{{ phrase('admin.agents.edit_team') }}</li>
 		{% else %}
@@ -32,7 +32,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.agents.title') }}</label>
+			<label>{{ phrase('global.title') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<input type="text" name="team[name]" value="{{team.name}}" />
@@ -59,7 +59,7 @@
 	</div>
 </div>
 
-<button class="btn primary save-trigger">{{ phrase('admin.agents.save') }}</button>
+<button class="btn primary save-trigger">{{ phrase('global.save') }}</button>
 </form>
 
 {% if team.id %}

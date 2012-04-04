@@ -18,7 +18,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.products.title') }}</label>
+			<label>{{ phrase('global.title') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.title) }}
@@ -39,7 +39,7 @@
 
 {{ form_rest(form) }}
 
-<button class="btn primary save-trigger">{{ phrase('admin.products.save') }}</button>
+<button class="btn primary save-trigger">{{ phrase('global.save') }}</button>
 </form>
 
 {% if product.id %}

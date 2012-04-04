@@ -4,14 +4,14 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 <form action="{{ path('agent_settings_profile_save') }}" method="post">
 	<div class="dp-form">
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>{{ phrase('agent.label_name') }}</label></div>
+			<div class="dp-form-label"><label>{{ phrase('global.name') }}</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.name) }}
 			</div>
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>{{ phrase('agent.label_email') }}</label></div>
+			<div class="dp-form-label"><label>{{ phrase('global.email') }}</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.email, {'attr': {'id': 'settings_profile_email'}}) }}
 			</div>
@@ -75,5 +75,5 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		</div>
 	</div>
 
-	<button type="submit" class="clean-white submit-trigger">{{ phrase('agent.save') }}</button>
+	<button type="submit" class="clean-white submit-trigger">{{ phrase('global.save') }}</button>
 </form>

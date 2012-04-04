@@ -24,7 +24,7 @@
 	<span class="type">{{ phrase('agent.ticket.category') }}</span> {{ phrase('agent.ticket.changed_from') }}
 	<span class="old-val">{{log.details.old_category_title|default('None')}}</span> {{ phrase('agent.ticket.changed_from') }} <span class="new-val">{{log.details.new_category_title|default('None')}}</span>
 {% elseif log.action_type == 'changed_department' %}
-	<span class="type">{{ phrase('agent.ticket.department') }}</span> {{ phrase('agent.ticket.changed_from') }}
+	<span class="type">{{ phrase('global.department') }}</span> {{ phrase('agent.ticket.changed_from') }}
 	<span class="old-val">{{log.details.old_department_title|default('None')}}</span> {{ phrase('agent.ticket.changed_from') }} <span class="new-val">{{log.details.new_department_title|default('None')}}</span>
 {% elseif log.action_type == 'changed_organization' %}
 	<span class="type">{{ phrase('agent.ticket.organization') }}</span> {{ phrase('agent.ticket.changed_from') }}

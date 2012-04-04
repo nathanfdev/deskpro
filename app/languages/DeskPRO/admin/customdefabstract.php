@@ -12,10 +12,10 @@
   'admin.customdefabstract.max_characters' => 'Max characters',
   'admin.customdefabstract.match_regular_expression' => 'Match regular expression',
   'admin.customdefabstract.pattern' => 'Pattern',
-  'admin.customdefabstract.title' => 'Title',
+
   'admin.customdefabstract.custom_styling' => 'Custom Styling',
   'admin.customdefabstract.custom_css_class' => 'Custom CSS class',
-  'admin.customdefabstract.save' => 'Save',
+
   'admin.customdefabstract.field_type' => 'Field type',
   'admin.customdefabstract.you_have_not_created_any_fields_yet' => 'You have not created any fields yet.',
 

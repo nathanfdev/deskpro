@@ -17,7 +17,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</header>
 		<article id="ticket_elements">
 			<ul>
-				<li class="draggable irremovable" data-item-id="ticket_department" data-edit-title="{{ phrase('admin.ticketproperties.edit_departments') }}" data-edit-url="{{ path('admin_departments') }}"><label>{{ phrase('admin.ticketproperties.department') }}</label></li>
+				<li class="draggable irremovable" data-item-id="ticket_department" data-edit-title="{{ phrase('admin.ticketproperties.edit_departments') }}" data-edit-url="{{ path('admin_departments') }}"><label>{{ phrase('global.department') }}</label></li>
 				{% if section == 'create' %}
 					<li class="draggable irremovable" data-item-id="message"><label>{{ phrase('admin.ticketproperties.ticket_message') }}</label></li>
 					<li class="draggable irremovable" data-item-id="ticket_subject"><label>{{ phrase('admin.ticketproperties.ticket_subject') }}</label></li>
@@ -72,7 +72,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
             {% set phrase_link1 %}
             <a class="switcher" href="{{ path('admin_tickets_editor_dep', {'department_id': '0', 'section': section}) }}">{{ phrase('admin.ticketproperties.default_layout') }}</a>
             {% endset %}
-            <span id="department_switcher" class="switcher"><span>{{ phrase('admin.ticketproperties.department') }}</span></span>
+            <span id="department_switcher" class="switcher"><span>{{ phrase('global.department') }}</span></span>
             {% set phrase_link2 %}
             {% endset %}
             {{ phrase('admin.ticketproperties.edit_default_layout_or_select_another', {'link1':phrase_link1,'link2':phrase_link2}) }}
@@ -213,7 +213,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 </script>
 
 {############################
- # {{ phrase('admin.ticketproperties.department') }}
+ # {{ phrase('global.department') }}
  ############################}
 <script type="text/x-deskpro-plain" id="rendered_field_ticket_department">
 	<div class="subject">

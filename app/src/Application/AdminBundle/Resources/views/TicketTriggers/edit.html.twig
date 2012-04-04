@@ -64,7 +64,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.tickettriggers.description') }}</label> <em>{{ phrase('admin.tickettriggers.optionally_enter_a_description_to_help_you_remember') }}</em>
+			<label>{{ phrase('global.description') }}</label> <em>{{ phrase('admin.tickettriggers.optionally_enter_a_description_to_help_you_remember') }}</em>
 		</div>
 		<div class="dp-form-input">
 			{% if trigger.sys_name %}
@@ -101,7 +101,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 	</div>
 </div>
 
-<button class="clean-white save-trigger">{{ phrase('admin.tickettriggers.save') }}</button>
+<button class="clean-white save-trigger">{{ phrase('global.save') }}</button>
 
 <!-- These never change -->
 {% for info in trigger.getStaticTerms() %}

@@ -239,7 +239,7 @@
 
                     <div class="controls" id="{{baseId}}_properties_controls">
                             <div class="showing-editing-fields" style="display: none">
-                                    <button class="clean-white save-fields-trigger"><span>{{ phrase('agent.deal.save') }}</span></button>
+                                    <button class="clean-white save-fields-trigger"><span>{{ phrase('global.save') }}</span></button>
                             </div>
                         <div class="showing-rendered-fields" id="{{baseId}}_action_buttons">
                                     <button class="clean-white edit-fields-trigger"><span>{{ phrase('agent.deal.edit_custome_fields') }}</span></button>
@@ -299,7 +299,7 @@
 				    {% endfor %}
 
                                     <li class="new-note"
-						data-element-handler="DeskPRO.{{ phrase('agent.deal.agent') }}.ElementHandler.Form{{ phrase('agent.deal.save') }}r"
+						data-element-handler="DeskPRO.{{ phrase('agent.deal.agent') }}.ElementHandler.Form{{ phrase('global.save') }}r"
 						data-form-list-selector="ul"
 						data-form-result-html-key="note_li_html"
 						data-form-save-url="{{ path('agent_deal_ajaxsave_note', {'deal_id': deal.id}) }}"
@@ -308,8 +308,8 @@
 						<header>
 							<div class="controls">
 								<div class="is-loading">{{ phrase('agent.deal.saving') }}</div>
-								<div class="saved" style="display: none">{{ phrase('agent.deal.save') }}d</div>
-								<div class="save" style="display: none">{{ phrase('agent.deal.save') }}</div>
+								<div class="saved" style="display: none">{{ phrase('global.save') }}d</div>
+								<div class="save" style="display: none">{{ phrase('global.save') }}</div>
 							</div>
 							<h3>{{ phrase('agent.deal.new_note') }}</h3>
 						</header>

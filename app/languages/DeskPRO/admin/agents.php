@@ -3,36 +3,35 @@
   'admin.agents.when_an_agent_is_in_vacation_mode_they' => 'When an agent is in vacation mode they cannot log in or use DeskPRO until it is turned off again. Other agents will not be able to assign tickets to them, and any currently assigned tickets will be unassigned if they are or become awaiting user.',
   'admin.agents.delete_agent' => 'Delete Agent',
   'admin.agents.when_an_agent_is_deleted_their_login_and' => 'When an agent is deleted, their login and all access is revoked. Any assigned tickets are unassigned.',
-  'admin.agents.tickets' => 'Tickets',
   'admin.agents.people_and_organizations' => 'People and Organizations',
-  'admin.agents.chat' => 'Chat',
-  'admin.agents.publish' => 'Publish',
+
+
   'admin.agents.on' => 'ON',
   'admin.agents.off' => 'OFF',
-  'admin.agents.description' => 'Description',
+
   'admin.agents.overrides' => 'Overrides',
-  'admin.agents.agents' => 'Agents',
+
   'admin.agents.edit_agent' => 'Edit Agent',
   'admin.agents.new_agent' => 'New Agent',
-  'admin.agents.name' => 'Name',
-  'admin.agents.email' => 'Email',
+
+
   'admin.agents.initial_password' => 'Initial Password',
-  'admin.agents.teams' => 'Teams',
+
   'admin.agents.zone_access' => 'Zone Access',
   'admin.agents.can_access_admin' => 'Can access admin',
   'admin.agents.can_access_reports' => 'Can access reports',
   'admin.agents.can_access_billing' => 'Can access billing',
   'admin.agents.department_access_permissions' => 'Department Access Permissions',
-  'admin.agents.department' => 'Department',
+
   'admin.agents.permission_groups' => 'Permission Groups',
   'admin.agents.permissions' => 'Permissions',
   'admin.agents.save_agent' => 'Save Agent',
   'admin.agents.delete_team' => 'Delete Team',
   'admin.agents.edit_team' => 'Edit Team',
   'admin.agents.new_team' => 'New Team',
-  'admin.agents.title' => 'Title',
+
   'admin.agents.members' => 'Members',
-  'admin.agents.save' => 'Save',
+
   'admin.agents.deleting_this_team_will_also_cause_any_tickets' => 'Deleting this team will also cause any tickets assigned to the team to be unassigned.',
   'admin.agents.delete_permission_group' => 'Delete Permission Group',
   'admin.agents.edit_permission_group' => 'Edit Permission Group',

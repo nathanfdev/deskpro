@@ -6,7 +6,7 @@
   'admin.api.example_curl' => 'Example cURL',
   'admin.api.note_or_description' => 'Note or Description',
   'admin.api.user_owner' => 'User Owner',
-  'admin.api.save' => 'Save',
+
   'admin.api.create_api_key' => 'Create API Key',
   'admin.api.viewedit' => 'view/edit',
   'admin.api.you_have_created_no_api_keys' => 'You have created no API keys.',

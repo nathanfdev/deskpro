@@ -3,9 +3,9 @@
   'admin.ticketcategories.any_tickets_that_belong_to_any_of_these' => 'Any tickets that belong to any of these categories will have it removed, resulting in the tickets having no category.',
   'admin.ticketcategories.any_tickets_that_belong_this_category_will_have' => 'Any tickets that belong this category will have it removed, resulting in the tickets having no category.',
   'admin.ticketcategories.yes_i_am_sure_i_want_to_delete' => 'Yes, I am sure I want to delete',
-  'admin.ticketcategories.title' => 'Title',
+
   'admin.ticketcategories.parent_category' => 'Parent Category',
-  'admin.ticketcategories.save' => 'Save',
+
   'admin.ticketcategories.delete' => 'delete',
   'admin.ticketcategories.add_new_category' => 'Add New Category',
   'admin.ticketcategories.ticket_categories' => 'Ticket Categories',

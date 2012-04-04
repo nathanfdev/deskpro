@@ -607,7 +607,7 @@ class TicketSearch extends SearcherAbstract
 					break;
 				case self::TERM_DEPARTMENT:
 					$this->affected_fields[] = 'ticket.department_id';
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.department'), $op, $choice, function($choice) {
+					$this->summary[] = $this->_choiceSummary($tr->phrase('global.department'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:Department')->getDepartmentNames((array)$choice);
 						return $titles;
 					});

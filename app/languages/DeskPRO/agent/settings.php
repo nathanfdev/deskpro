@@ -47,6 +47,6 @@
 	'agent.settings.create_filter' => 'Create Filter',
 	'agent.settings.create_macro' => 'Create Macro',
 
-  'agent.settings.save' => 'Save',
+
   'agent.settings.close' => 'close',
 );

@@ -53,7 +53,7 @@
 				</li>
 			{% elseif field == 'department' and (ticket.department or changed_fields[ticket.id].department) %}
 				<li class="{{field}} {% if changed_fields[ticket.id].department %}changed{% endif %}">
-					<span class="prop-title">{{ phrase('agent.ticketsearch.department') }}:</span>
+					<span class="prop-title">{{ phrase('global.department') }}:</span>
 					<span class="prop-val department_id" data-prop-value="{{ticket.department.id}}">
 					{% if ticket.department %}
 						{{ ticket_display.getDepartmentName(ticket) }}

@@ -9,7 +9,7 @@
 				<div class="controls">
 					<div class="is-loading">{{ phrase('agent.loading_saving') }}</div>
 					<div class="saved" style="display: none">{{ phrase('agent.saved') }}</div>
-					<div class="save" style="display: none">{{ phrase('agent.save') }}</div>
+					<div class="save" style="display: none">{{ phrase('global.save') }}</div>
 				</div>
 			{% endif %}
 			<h4>{{ phrase('agent.summary') }}</h4>
@@ -30,7 +30,7 @@
 				<span class="edit-gear prop-edit-trigger"></span>
 				<div class="is-loading">{{ phrase('agent.loading_saving') }}</div>
 				<button class="cancel" style="display: none">{{ phrase('agent.cancel') }}</button>
-				<button class="save" style="display: none">{{ phrase('agent.save') }}</button>
+				<button class="save" style="display: none">{{ phrase('global.save') }}</button>
 			</div>
 		{% endif %}
 		<h4>{{ phrase('agent.label_properties') }}</h4>
@@ -64,7 +64,7 @@
 	<header>
 		<nav>
 			<ul>
-				{% if person_tickets_count %}<li data-tab-for="#{{baseId}}_tickets_tab" class="on">{{ phrase('agent.tickets') }} <span class="count">{{ person_tickets_count }}</span></li>{% endif %}
+				{% if person_tickets_count %}<li data-tab-for="#{{baseId}}_tickets_tab" class="on">{{ phrase('global.tickets') }} <span class="count">{{ person_tickets_count }}</span></li>{% endif %}
 				{% if person_chats_count %}<li data-tab-for="#{{baseId}}_chats_tab">{{ phrase('agent.chats') }} <span class="count">{{ person_chats_count }}</span></li>{% endif %}
 			</ul>
 		</nav>
@@ -175,7 +175,7 @@
 									<div class="controls">
 										<div class="is-loading">{{ phrase('agent.loading_saving') }}</div>
 										<div class="saved" style="display: none">{{ phrase('agent.saved') }}</div>
-										<div class="save" style="display: none">{{ phrase('agent.save') }}</div>
+										<div class="save" style="display: none">{{ phrase('global.save') }}</div>
 									</div>
 									<h3>{{ phrase('agent.new_note') }}</h3>
 								</header>

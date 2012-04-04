@@ -95,7 +95,7 @@ class TermSummary
 				break;
 
 			case 'department':
-				$summary = $this->_choiceSummary($tr->phrase('agent.department'), $op, $choice, function($choice) {
+				$summary = $this->_choiceSummary($tr->phrase('global.department'), $op, $choice, function($choice) {
 					$titles = App::getEntityRepository('DeskPRO:Department')->getDepartmentNames((array)$choice);
 					return $titles;
 				});

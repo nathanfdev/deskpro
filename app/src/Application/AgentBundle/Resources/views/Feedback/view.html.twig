@@ -95,7 +95,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 		<div class="controls" id="{{baseId}}_properties_controls">
 			<div class="showing-editing-fields" style="display: none">
-				<button class="clean-white save-fields-trigger"><span>{{ phrase('agent.save') }}</span></button>
+				<button class="clean-white save-fields-trigger"><span>{{ phrase('global.save') }}</span></button>
 			</div>
 			<div class="showing-rendered-fields" id="{{baseId}}_action_buttons">
 				{% if custom_fields|length %}
@@ -115,7 +115,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<header>
 		<nav id="{{baseId}}_bodytabs">
 			<ul>
-				<li class="tab-trigger" data-tab-for="#{{baseId}}_content_tab">{{ phrase('agent.label_description') }}</li>
+				<li class="tab-trigger" data-tab-for="#{{baseId}}_content_tab">{{ phrase('global.description') }}</li>
 				<li class="tab-trigger" data-tab-for="#{{baseId}}_comments_tab">{{ phrase('agent.label_comments') }} (<span id="{{baseId}}_count_comments">{{feedback_comments|length|default(0)}}</span>)</li>
 				<li class="tab-trigger" data-tab-for="#{{baseId}}_revs">{{ phrase('agent.label_revisions') }} (<span id="{{baseId}}_count_revs">{{feedback.revisions|length|default(0)}}</span>)</li>
 				<li class="tab-trigger" data-tab-for="#{{baseId}}_related_content">{{ phrase('agent.label_related_content') }} (<span id="{{baseId}}_count_related">0</span>)</li>
@@ -132,7 +132,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<nav class="sub-box-nav noedit-hide">
 					<ul class="option-buttons right" id="{{baseId}}_content_edit_btns">
 						<li class="kb-editor-edit edit" id="{{baseId}}_edit_btn"><span>{{ phrase('agent.edit') }}</span></li>
-						<li class="editor-save-trigger save" id="{{baseId}}_save_btn"><span>{{ phrase('agent.save') }}</span></li>
+						<li class="editor-save-trigger save" id="{{baseId}}_save_btn"><span>{{ phrase('global.save') }}</span></li>
 						<li class="editor-cancel-trigger cancel" id="{{baseId}}_cancel_btn"><span>{{ phrase('agent.cancel') }}</span></li>
 					</ul>
 				</nav>

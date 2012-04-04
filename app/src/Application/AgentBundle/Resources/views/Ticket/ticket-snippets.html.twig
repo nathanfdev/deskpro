@@ -45,7 +45,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 		<div class="overlay-content">
 			<dl class="generic-form-list">
-				<dt>{{ phrase('agent.ticket.title') }}:</dt>
+				<dt>{{ phrase('global.title') }}:</dt>
 				<dd><input type="text" name="title" value="New Category" /></dd>
 
 				<dt>{{ phrase('agent.ticket.permissions') }}:</dt>
@@ -55,7 +55,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" /> {{ phrase('agent.ticket.everyone') }}</label><br />
 				</dd>
 
-				<dt class="perm-teams" style="display: none">{{ phrase('agent.ticket.teams') }}:</dt>
+				<dt class="perm-teams" style="display: none">{{ phrase('global.teams') }}:</dt>
 				<dd class="perm-teams" style="display: none">
 					<select name="teams[]" multiple="multiple" size="6">
 						{% for team in agent_teams %}

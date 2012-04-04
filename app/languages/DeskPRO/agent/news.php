@@ -21,7 +21,7 @@
   'agent.news.unpublished' => 'Unpublished',
   'agent.news.draft' => 'Draft',
   'agent.news.dev_validating' => 'DEV: Validating',
-  'agent.news.title' => 'Title',
+
   'agent.news.post' => 'Post',
   'agent.news.properties' => 'Properties',
   'agent.news.attachments' => 'Attachments',

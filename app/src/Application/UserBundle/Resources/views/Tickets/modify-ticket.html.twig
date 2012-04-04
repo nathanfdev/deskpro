@@ -24,7 +24,7 @@
 	</tr>
 	<tr>
 		<td>
-			{{ phrase('user.department') }}
+			{{ phrase('global.department') }}
 		</td>
 		<td>
 			{{ property_fields.form_department_select('editticket[ticket][department_id]', ticket_options.departments_hierarchy, ticket.department_id, 'department_id') }}
@@ -71,7 +71,7 @@
 	{% endfor %}
 </table>
 
-<center><input type="submit" value="{{ phrase('user.save') }}" /></center>
+<center><input type="submit" value="{{ phrase('global.save') }}" /></center>
 
 </form>
 
