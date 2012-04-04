@@ -7,12 +7,53 @@
 	class="dp-content-block dp-register-page with-handler"
 >
 	<div class="dp-box">
+		{% if from_ticket.id %}
+		<div class="alert-message block-message info">
+			<strong>"{{ from_ticket.subject }}" can be viewed online</strong><br />
+			<p>
+				To view and manage your ticket online, register for an account or log in.
+			<p>
+		</div>
+		{% endif %}
+
 		<div class="dp-box-header">
-			<h1>{{ phrase('global.register') }}</h1>
+			<div style="float:right">
+				{% for usersource in app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
+				{{ render_usersource(usersource, 'login_pull_btn') }}
+				{% endfor %}
+			</div>
+			<h1>Existing Users</h1>
 		</div>
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content dp-form">
-				<form action="" method="post">
+				<form action="{{ path('user_login_authenticate_local') }}" class="form login" method="post">
+					<table cellspacing="0" cellpadding="0" width="100%">
+						<tr>
+							<td>
+								{{ phrase('global.email_address') }}<br />
+								<input type="text" value="" name="email" size="20" />
+							</td>
+							<td>
+								{{ phrase('global.password') }} (<em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('global.lost_qm') }}</a></em>)<br />
+								<input type="password" value="" name="password" size="20" />
+							</td>
+							<td style="text-align: right; vertical-align: bottom;" valign="bottom">
+									<input class="btn" type="submit" value="{{ phrase('global.log_in') }}" />
+							</td>
+						</tr>
+					</table>
+				</form>
+			</div>
+			<br />
+			<br />
+		</div>
+
+		<div class="dp-box-header">
+			<h1>New Users</h1>
+		</div>
+		<div class="dp-box-content-wrapper">
+			<div class="dp-box-content dp-form">
+				<form action="{{ path('user_register') }}" method="post">
 				<input type="hidden" name="process" value="1" />
 
 					<div class="dp-form-row {% if error_fields['name'] %}dp-error{% endif %}">

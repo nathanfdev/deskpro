@@ -51,6 +51,13 @@ class RegisterController extends AbstractController
 
 		$register = new \Application\UserBundle\Form\Model\Register();
 		$reg_formtype = new RegisterType();
+
+		$from_ticket = false;
+		if ($this->session->get('ticket_from_ptac_register')) {
+			$from_ticket = $this->em->find('DeskPRO:Ticket', $this->session->get('ticket_from_ptac_register'));
+			$register->from_ticket = $from_ticket;
+		}
+
 		$form = $this->get('form.factory')->create($reg_formtype, $register);
 
 		$error_fields = null;
@@ -59,13 +66,41 @@ class RegisterController extends AbstractController
 			$form->bindRequest($this->get('request'));
 
 			$validator = new \Application\UserBundle\Validator\RegisterValidator();
-			if ($validator->isValid($register)) {
+
+			$is_valid = $validator->isValid($register);
+
+			// If there is only one user on the ticket (no parts), then the access code on the ticket
+			// proves the user is who they say they are and we can set their password etc
+			// without a problem. if there are parts, then we cant be sure who they are,
+			// so they'll just have to "forgot password" their account.
+			if (
+				$from_ticket
+				&& !$from_ticket->person->is_user
+				&& !$from_ticket->getUserParticipants()
+				&& (!$is_valid && count($validator->getErrors()) == 1 && $validator->hasError('email.in_use'))
+				&& $from_ticket->person->findEmailAddress($register->email)
+			) {
+				$is_valid = true;
+				$register->no_validation = true;
+			}
+
+			if ($is_valid) {
 				$person = $register->save();
 
+				// User not validating if they have an added email address already
 				if ($person->primary_email) {
 					$this->session->set('auth_person_id', $person->id);
 					$this->session->set('dp_interface', DP_INTERFACE);
+
+					if ($from_ticket) {
+						$this->session->remove('ticket_from_ptac_register');
+					}
+
 					$this->session->save();
+
+					if ($from_ticket) {
+						return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $from_ticket->id));
+					}
 				}
 
 				return $this->redirectRoute('user');
@@ -79,6 +114,7 @@ class RegisterController extends AbstractController
 			'form' => $form->createView(),
 			'errors' => $errors,
 			'error_fields' => $error_fields,
+			'from_ticket' => $from_ticket,
 		));
 	}
 

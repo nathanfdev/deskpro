@@ -45,6 +45,8 @@ class Register
 	public $password;
 	public $password2;
 
+	public $no_validation;
+
 	/**
 	 * @var \Doctrine\ORM\EntityManager
 	 */
@@ -56,22 +58,33 @@ class Register
 		$this->em->getConnection()->beginTransaction();
 
 		try {
-			$person = Person::newRegularPerson();
+
+			// Depending on how we got here,
+			// the person might already exist based on an email
+			// address (eg theyre fully registrering from some validation linke)
+			$person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->email);
+
+			if (!$person) {
+				$person = Person::newRegularPerson();
+			}
 
 			$email_validating = null;
-			if (App::getSetting('core.email_validation')) {
-				$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->email);
-				if (!$email_validating) {
-					$email_validating = new PersonEmailValidating();
-					$email_validating->email = $this->person->email;
-					$email_validating->person = $person;
-				}
+			if (!$person->findEmailAddress($this->email)) {
+				if (!$this->no_validation && App::getSetting('core.email_validation')) {
+					$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->email);
+					if (!$email_validating) {
+						$email_validating = new PersonEmailValidating();
+						$email_validating->email = $this->person->email;
+						$email_validating->person = $person;
+					}
 
-				$person->is_user = false;
-			} else {
-				$person->addEmailAddressString($this->email);
-				$person->is_user = true;
+					$person->is_user = false;
+				} else {
+					$person->addEmailAddressString($this->email);
+					$person->is_user = true;
+				}
 			}
+
 			$person->name = $this->name;
 			$person->setPassword($this->password);
 			$this->em->persist($person);
@@ -85,9 +98,6 @@ class Register
 			$this->em->getConnection()->commit();
 
 			if ($email_validating) {
-
-
-
 				$email_body = App::get('templating')->render('DeskPRO:emails_user:register-validate.html.twig', array(
 					'vemail' => $email_validating
 				));

@@ -91,9 +91,26 @@ class TicketViewController extends AbstractController
 					break;
 
 				case 'ptac':
+
 					$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($ticket_ref);
+
+					// If they arent a user they can register now
+					if ($ticket && $this->person->isGuest()) {
+						$this->session->set('ticket_from_ptac_register', $ticket->id);
+						$this->session->save();
+						return $this->redirectRoute('user_register');
+					}
+
+					// If they came here through the access code but arent on the ticket,
+					// then we need to add them so they can see it
+					if (!$ticket->hasParticipantPerson($this->person)) {
+						$ticket->addParticipantPerson($this->person);
+						App::getOrm()->persist($ticket);
+						App::getOrm()->flush();
+					}
+
 					if ($ticket) {
-						return $this->viewGuestTicket($ticket, $display_data);
+						return $this->viewTicket($ticket, $display_data);
 					}
 					break;
 			}
@@ -170,23 +187,5 @@ class TicketViewController extends AbstractController
         }
 
 		return $this->render('UserBundle:TicketView:view.html.twig', $vars);
-	}
-
-
-	###########################################################################
-	# viewGuestTicket
-	###########################################################################
-
-	/**
-	 * View a ticket without a user session
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function viewGuestTicket(Ticket $ticket)
-	{
-		$ticket_display = new TicketDisplay($ticket, $this->person);
-		$vars = $ticket_display->getDisplayArray();
-
-		return $this->render('UserBundle:TicketView:view-guest.html.twig', $vars);
 	}
 }
