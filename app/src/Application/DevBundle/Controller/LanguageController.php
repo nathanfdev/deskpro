@@ -37,7 +37,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Application\DeskPRO\Translate;
 use Application\DeskPRO\App;
 use Symfony\Component\HttpFoundation\Response;
-
+use Application\DevBundle\Twig\PreservingLexer;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
@@ -68,11 +68,12 @@ class LanguageController extends Controller
 
     public function testLexerAction()
     {
-        $lexer = $this->getTwigLexer(array());
+        $lexer = $this->getTwigPreservingLexer(array());
         $templates = $this->getTwigFileList();
         $mismatches = array();
 
         foreach($templates as $file) {
+
             $raw_twig = file_get_contents($file);
             $tokens = $lexer->tokenize($raw_twig);
             $new_raw_twig = $this->twigTokensToString($tokens);
@@ -209,27 +210,17 @@ class LanguageController extends Controller
             list($by_id_twig, ) = $this->getPhrasesFromTwigFiles($bundle);
             ob_end_clean();
 
-            foreach($by_id_php as $id=>$files) {
-                list($folder, $remaining) = explode('.', $id, 2);
+            foreach(array($by_id_php, $by_id_twig) as $by_id) {
+                foreach($by_id as $id=>$files) {
+                    list($folder, $remaining) = explode('.', $id, 2);
 
-                if($lang != $folder) {
-                    if(!isset($foreign[$bundle][$id])) {
-                        $foreign[$bundle][$id] = array();
+                    if($lang != $folder) {
+                        if(!isset($foreign[$bundle][$id])) {
+                            $foreign[$bundle][$id] = array();
+                        }
+
+                        $foreign[$bundle][$id] = array_merge($files, $foreign[$bundle][$id]);
                     }
-
-                    $foreign[$bundle][$id] = array_merge($files, $foreign[$bundle][$id]);
-                }
-            }
-
-            foreach($by_id_twig as $id=>$files) {
-                list($folder, ) = explode('.', $id, 2);
-
-                if($lang != $folder) {
-                    if(!isset($foreign[$bundle][$id])) {
-                        $foreign[$bundle][$id] = array();
-                    }
-
-                    $foreign[$bundle][$id] = array_merge($files, $foreign[$bundle][$id]);
                 }
             }
         }
@@ -777,9 +768,7 @@ class LanguageController extends Controller
             file_put_contents($file['filename'], $data);
         }
 
-        ob_start();
         list($by_id, ) = $twig_phrases;
-        ob_end_clean();
 
         foreach($files as $file) {
             if(!isset($by_id[$file['id']]))
@@ -788,9 +777,7 @@ class LanguageController extends Controller
             $this->replacePhrasesInFiles($by_id[$file['id']], $file['id'], $id);
         }
 
-        ob_start();
         list($by_id, ) = $php_phrases;
-        ob_end_clean();
 
         foreach($files as $file) {
             if(!isset($by_id[$file['id']]))
@@ -1028,7 +1015,7 @@ class LanguageController extends Controller
 
     public function getTwigPreservingLexer($options)
     {
-        return new \Twig_PreservingLexer($this->container->get('twig'), $options);
+        return new PreservingLexer($this->container->get('twig'), $options);
     }
 
     public function getTwigLexer($options)
