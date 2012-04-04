@@ -610,6 +610,12 @@ class FilestorageLoader
 		$desc = $container->getSystemService('filestorage')->getFileDescriptor($blob['id']);
 		$file = $desc->get();
 
+		if (!is_file($file)) {
+			header("HTTP/1.0 404 Not Found");
+			echo "File not found. (no_exist)";
+			exit;
+		}
+
 		$image = $container->getImagine()->load($file);
 		$image->resize(new \Imagine\Image\Box($size, $size));
 		$file = $image->get($blob->getImageType());
