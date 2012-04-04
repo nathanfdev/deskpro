@@ -2,22 +2,22 @@
   'agent.userchat.chat_by_anonymouse' => 'Chat by anonymouse',
 
   'agent.userchat.no_department' => 'No Department',
-  'agent.userchat.user_waiting' => 'User Waiting',
+
   'agent.userchat.user_is_viewing' => 'User is viewing',
-  'agent.userchat.open_tickets' => 'Open Tickets',
-  'agent.userchat.ip_address' => 'IP Address',
+
+
   'agent.userchat.no_email' => 'No Email',
-  'agent.userchat.assigned_agent' => 'Assigned Agent',
+
   'agent.userchat.other_agents' => 'Other Agents',
   'agent.userchat.no_others' => 'No others',
-  'agent.userchat.drop_your_file_here_to_attach_it_to' => 'Drop your file here to attach it to your reply',
+
   'agent.userchat.warning' => 'Warning',
-  'agent.userchat.dismiss' => 'Dismiss',
+
   'agent.userchat.assign_to' => 'Assign To',
   'agent.userchat.invite_others' => 'Invite Others',
   'agent.userchat.there_are_currently_no_open_chats' => 'There are currently no open chats.',
   'agent.userchat.chat_started_by' => 'Chat started by',
-  'agent.userchat.person' => 'Person',
-  'agent.userchat.by_name' => 'By {{name}}',
+
+
   'agent.userchat.count_seconds' => '{{count}} second|{{count}} seconds',
 );

@@ -1,24 +1,24 @@
 <?php return array (
   'admin.logs.clear_all_errors' => 'Clear all errors',
-  'admin.logs.id' => 'ID',
-  'admin.logs.pri' => 'Pri',
-  'admin.logs.message' => 'Message',
-  'admin.logs.date' => 'Date',
+
+
+
+
   'admin.logs.details' => 'Details',
-  'admin.logs.first' => 'First',
-  'admin.logs.prev' => 'Prev',
-  'admin.logs.next' => 'Next',
-  'admin.logs.last' => 'Last',
-  'admin.logs.logs' => 'Logs',
-  'admin.logs.error_logs' => 'Error Logs',
+
+
+
+
+
+
   'admin.logs.look_up_sn' => 'Look up SN',
   'admin.logs.if_you_have_a_sn_code_for_a' => 'If you have a SN code for a specific error, you can look it up here.',
-  'admin.logs.sn_code' => 'SN Code',
+
   'admin.logs.view' => 'View',
-  'admin.logs.log_name' => 'Log Name',
-  'admin.logs.flag' => 'Flag',
-  'admin.logs.priority' => 'Priority',
+
+
+
   'admin.logs.sn' => 'SN',
-  'admin.logs.additional_data' => 'Additional Data',
-  'admin.logs.error_log_number' => 'Error Log #{{id}}',
+
+
 );

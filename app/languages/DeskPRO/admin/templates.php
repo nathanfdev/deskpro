@@ -1,8 +1,8 @@
 <?php return array (
-  'admin.templates.templates' => 'Templates',
-  'admin.templates.email_templates' => 'Email Templates',
+
+
   'admin.templates.layout' => 'Layout',
-  'admin.templates.save_changes' => 'Save Changes',
+
   'admin.templates.revert_to_default' => 'Revert To Default',
   'admin.templates.edit_templates' => 'Edit Templates',
   'admin.templates.builtin_templates' => 'Built-in Templates',
@@ -14,7 +14,7 @@
   'admin.templates.only_az_numbers_and_underscores' => '(only A-Z, numbers and underscores)',
   'admin.templates.base_this_new_template_off_of_' => 'Base this new template off of ...',
   'admin.templates.none_blank_template' => 'None (blank template)',
-  'admin.templates.create' => 'Create',
+
   'admin.templates.edit_agent_and_admin_templates' => 'Edit Agent and Admin Templates',
 
   'admin.templates.agent_and_admin_templates' => 'Agent and Admin Templates',

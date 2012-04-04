@@ -5,7 +5,7 @@
 {% set ticket_agent = ticket.agent %}
 
 <article class="row-item ticket-{{ ticket.id }} {% if ticket.status == 'awaiting_agent' %}urgency-{{ ticket.urgency }}{% endif %}" data-ticket-id="{{ ticket.id }}" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@selector(a.subject)" data-route-openclass="open">
-	<div class="loading-arrow">{{ phrase('agent.ticketsearch.loading') }}</div>
+	<div class="loading-arrow">{{ phrase('global.loading') }}</div>
 	<input type="checkbox" class="item-select" value="{{ ticket.id }}"/>
 	<div class="top-row">
 		<div class="top-row-left">
@@ -58,79 +58,79 @@
 					{% if ticket.department %}
 						{{ ticket_display.getDepartmentName(ticket) }}
 					{% else %}
-						{{ phrase('agent.ticketsearch.none') }}
+						{{ phrase('global.none') }}
 					{% endif %}
 					</span>
 				</li>
 			{% elseif field == 'category' and (ticket.category or changed_fields[ticket.id].category) %}
 				<li class="{{field}} {% if changed_fields[ticket.id].category %}changed{% endif %}">
-					<span class="prop-title">{{ phrase('agent.ticketsearch.category') }}:</span>
+					<span class="prop-title">{{ phrase('global.category') }}:</span>
 					<span class="prop-val category_id" data-prop-value="{{ticket.category.id}}">
 					{% if ticket.category %}
 						{{ticket.category.title}}
 					{% else %}
-						{{ phrase('agent.ticketsearch.none') }}
+						{{ phrase('global.none') }}
 					{% endif %}
 					</span>
 				</li>
 			{% elseif field == 'priority' and (ticket.priority or changed_fields[ticket.id].priority) %}
 				<li class="{{field}} {% if changed_fields[ticket.id].priority %}changed{% endif %}">
-					<span class="prop-title">{{ phrase('agent.ticketsearch.priority') }}:</span>
+					<span class="prop-title">{{ phrase('global.priority') }}:</span>
 					<span class="prop-val priority_id" data-prop-value="{{ticket.priority.id}}">
 					{% if ticket.priority %}
 						{{ticket.priority.title}}
 					{% else %}
-						{{ phrase('agent.ticketsearch.none') }}
+						{{ phrase('global.none') }}
 					{% endif %}
 					</span>
 				</li>
 			{% elseif field == 'workflow' and (ticket.workflow or changed_fields[ticket.id].workflow) %}
 				<li class="{{field}} {% if changed_fields[ticket.id].workflow %}changed{% endif %}">
-					<span class="prop-title">{{ phrase('agent.ticketsearch.workflow') }}:</span>
+					<span class="prop-title">{{ phrase('global.workflow') }}:</span>
 					<span class="prop-val workflow_id" data-prop-value="{{ticket.workflow.id}}">
 					{% if ticket.workflow %}
 						{{ticket.workflow.title}}
 					{% else %}
-						{{ phrase('agent.ticketsearch.none') }}
+						{{ phrase('global.none') }}
 					{% endif %}
 					</span>
 				</li>
 			{% elseif field == 'agent' and (ticket_agent or changed_fields[ticket.id].agent) %}
 				<li class="{{field}} {% if changed_fields[ticket.id].agent %}changed{% endif %}">
-					<span class="prop-title">{{ phrase('agent.ticketsearch.agent') }}:</span>
+					<span class="prop-title">{{ phrase('global.agent') }}:</span>
 					<span class="prop-val" data-prop-value="{{ticket_agent.id}}">
 					{% if ticket_agent %}
 						{{ ticket_agent.display_name }}
 					{% else %}
-						{{ phrase('agent.ticketsearch.unassigned') }}
+						{{ phrase('global.unassigned') }}
 					{% endif %}
 					</span>
 				</li>
 			{% elseif field == 'agent_team' and (ticket_agent_team or changed_fields[ticket.id].agent_team) %}
 				<li class="{{field}} {% if changed_fields[ticket.id].agent_team %}changed{% endif %}">
-					<span class="prop-title">{{ phrase('agent.ticketsearch.agent_team') }}:</span>
+					<span class="prop-title">{{ phrase('global.agent_team') }}:</span>
 					<span class="prop-val agent_team_id" data-prop-value="{{ticket_agent_team.id}}">
 					{% if ticket_agent_team %}
 						<span class="agent-team agent-team-{{ ticket_agent_team.id }}" title="{{ ticket_agent_team.name }}">{{ ticket_agent_team.name }}</span>
 					{% else %}
-						{{ phrase('agent.ticketsearch.no_team') }}
+						{{ phrase('global.no_team') }}
 					{% endif %}
 					</span>
 				</li>
 			{% elseif field == 'product' and (ticket.product or changed_fields[ticket.id].product) %}
 				<li class="{{field}} {% if changed_fields[ticket.id].product %}changed{% endif %}">
-					<span class="prop-title">{{ phrase('agent.ticketsearch.product') }}:</span>
+					<span class="prop-title">{{ phrase('global.product') }}:</span>
 					<span class="prop-val product_id" data-prop-value="{{ticket.product.id}}">
 					{% if ticket.product %}
 						{{ticket.product.title}}
 					{% else %}
-						{{ phrase('agent.ticketsearch.none') }}
+						{{ phrase('global.none') }}
 					{% endif %}
 					</span>
 				</li>
 			{% elseif field == 'labels' and (ticket_display.hasTicketLabels(ticket) or changed_fields[ticket.id].labels) %}
 				<li class="{{field}} {% if changed_fields[ticket.id].product %}changed{% endif %}">
-					<span class="prop-title">{{ phrase('agent.ticketsearch.labels') }}:</span>
+					<span class="prop-title">{{ phrase('global.labels') }}:</span>
 					<span class="prop-val labels">
 						{% for label in ticket_display.getTicketLabels(ticket) %}
 							<span class="listing-tag">{{ label }}</span>
@@ -139,7 +139,7 @@
 				</li>
 			{% elseif field == 'date_user_waiting' %}
 				<li class="{{field}}">
-					<span class="prop-title">{{ phrase('agent.ticketsearch.user_waiting') }}:</span>
+					<span class="prop-title">{{ phrase('global.user_waiting') }}:</span>
 					<span class="prop-val">
 						{% if ticket.real_total_user_waiting %}
 							<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting ~ " seconds")|date('c') }}"></time>
@@ -150,12 +150,12 @@
 				</li>
 			{% elseif field == 'organization' and ticket.organization %}
 				<li class="{{field}}">
-					<span class="prop-title">{{ phrase('agent.ticketsearch.organization') }}:</span>
+					<span class="prop-title">{{ phrase('global.organization') }}:</span>
 					<span class="prop-val organization_id" data-prop-value="{{ticket.organization.id}}">
 					{% if ticket.organization %}
 						<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.organization.id}) }}" data-route-title="@text">{{ticket.organization.name}}</a>
 					{% else %}
-						{{ phrase('agent.ticketsearch.none') }}
+						{{ phrase('global.none') }}
 					{% endif %}
 					</span>
 				</li>

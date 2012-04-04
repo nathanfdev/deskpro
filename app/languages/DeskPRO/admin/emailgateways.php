@@ -1,30 +1,30 @@
 <?php return array (
-  'admin.emailgateways.email_gateways' => 'Email Gateways',
+
   'admin.emailgateways.edit_gateway' => 'Edit Gateway',
   'admin.emailgateways.new_gateway' => 'New Gateway',
-  'admin.emailgateways.email_address' => 'Email Address',
+
   'admin.emailgateways.the_address_that_this_gateway_account_is_for' => 'The address that this gateway account is for',
   'admin.emailgateways.will_this_account_recieve_mail_for_more_than' => 'Will this account recieve mail for more than one address?',
   'admin.emailgateways.click_here_to_add_more' => 'Click here to add more.',
-  'admin.emailgateways.add' => 'Add',
+
   'admin.emailgateways.account_information' => 'Account Information',
   'admin.emailgateways.pop3_account' => 'POP3 Account',
-  'admin.emailgateways.host' => 'Host',
-  'admin.emailgateways.secure' => 'Secure',
-  'admin.emailgateways.port' => 'Port',
-  'admin.emailgateways.username' => 'Username',
-  'admin.emailgateways.password' => 'Password',
-  'admin.emailgateways.test_settings' => 'Test Settings',
-  'admin.emailgateways.google_apps' => 'Google Apps',
-  'admin.emailgateways.full_email_address' => 'Full Email Address',
+
+
+
+
+
+
+
+
   'admin.emailgateways.outgoing_mail_account' => 'Outgoing Mail Account',
   'admin.emailgateways.use_the_google_apps_account_defined_above_for' => 'Use the Google Apps account defined above for outgoing mail',
   'admin.emailgateways.use_a_different_outgoing_account' => 'Use a different outgoing account',
   'admin.emailgateways.go_back_to_using_the_default_outgoing_account' => 'Go back to using the default outgoing account',
-  'admin.emailgateways.php_mail' => 'PHP mail()',
-  'admin.emailgateways.smtp_account' => 'SMTP Account',
-  'admin.emailgateways.requires_auth' => 'Requires Auth',
-  'admin.emailgateways.yes' => 'Yes',
+
+
+
+
   'admin.emailgateways.backup_outgoing_mail_account' => 'Backup Outgoing Mail Account',
   'admin.emailgateways.enabled' => 'Enabled',
   'admin.emailgateways.yes_process_email_from_this_account' => 'Yes, process email from this account',
@@ -33,25 +33,25 @@
   'admin.emailgateways.this_will_test_the_connection_to_your_email' => 'This will test the connection to your email account.',
   'admin.emailgateways.no_errors_were_reported' => 'No errors were reported.',
   'admin.emailgateways.there_was_an_error_while_trying_to_connect' => 'There was an error while trying to connect to your email account',
-  'admin.emailgateways.test_now' => 'Test Now',
-  'admin.emailgateways.test_outgoing_email' => 'Test Outgoing Email',
-  'admin.emailgateways.send_a_test_email_to' => 'Send a test email to',
-  'admin.emailgateways.from_email_address' => 'From email address',
-  'admin.emailgateways.no_errors_were_reported_but_you_should_confirm' => 'No errors were reported, but you should confirm that you recieved the test email.',
-  'admin.emailgateways.there_was_an_error_while_trying_to_send' => 'There was an error while trying to send the test email',
+
+
+
+
+
+
   'admin.emailgateways.add_email_gateway' => 'Add Email Gateway',
-  'admin.emailgateways.new' => 'New',
-  'admin.emailgateways.outgoing_email_accounts' => 'Outgoing Email Accounts',
+
+
   'admin.emailgateways.send_through' => 'Send through',
 
-  'admin.emailgateways.remove' => 'remove',
-  'admin.emailgateways.delete' => 'delete',
+
+
   'admin.emailgateways.from' => 'From',
 
   'admin.emailgateways.default_outgoing_account' => 'default outgoing account',
   'admin.emailgateways.add_new_account' => 'add a new account',
   'admin.emailgateways.using_the' => 'Using the {{link}}',
-  'admin.emailgateways.account' => 'Account',
+
   'admin.emailgateways.domain' => 'Domain',
   'admin.emailgateways.when_no_rules_match' => 'When none of the above rules match, email will be sent through the {{link}}.',
   'admin.emailgateways.all_email_is_being_sent_via' => 'All email is currently being sent through the {{link}}.',

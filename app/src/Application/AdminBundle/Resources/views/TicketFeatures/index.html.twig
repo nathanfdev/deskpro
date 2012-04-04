@@ -73,7 +73,7 @@ function _page_exec() {
 <input type="hidden" name="process" value="1" />
 
 <div class="setting_field_row">
-	<h4>{{ phrase('admin.ticketfeatures.feedback') }}</h4>
+	<h4>{{ phrase('global.feedback') }}</h4>
 	<div class="setting_fields">
 		<div class="field_row">
 			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
@@ -86,7 +86,7 @@ function _page_exec() {
 	</div>
 </div>
 <div class="setting_field_row" style="text-align: center">
-	<button class="dp-button">{{ phrase('admin.ticketfeatures.save_settings') }}</button>
+	<button class="dp-button">{{ phrase('global.save_settings') }}</button>
 </div>
 
 {% endblock %}

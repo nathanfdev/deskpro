@@ -1,7 +1,7 @@
 {% if news_entries|length %}
 	<div class="dp-sidebar-block dp-news-block">
 		<div class="dp-box-header">
-			<h3><a href="{{ path('user_news') }}">{{ phrase('user.content_news') }}</a></h3>
+			<h3><a href="{{ path('user_news') }}">{{ phrase('global.news') }}</a></h3>
 		</div>
 		<ul class="dp-content-list">
 			{% for news in news_entries %}

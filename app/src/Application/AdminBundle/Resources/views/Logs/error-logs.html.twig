@@ -7,10 +7,10 @@
 	<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
 		<thead>
 			<tr>
-				<th width="50">{{ phrase('admin.logs.id') }}</th>
-				<th width="50">{{ phrase('admin.logs.pri') }}</th>
-				<th>{{ phrase('admin.logs.message') }}</th>
-				<th width="180">{{ phrase('admin.logs.date') }}</th>
+				<th width="50">{{ phrase('global.id') }}</th>
+				<th width="50">{{ phrase('global.pri') }}</th>
+				<th>{{ phrase('global.message') }}</th>
+				<th width="180">{{ phrase('global.date') }}</th>
 				<th>{{ phrase('admin.logs.details') }}</th>
 			</tr>
 		</thead>
@@ -31,8 +31,8 @@
 <div class="page_nav">
 	<ul>
 		{% if pagination.curpage != pagination.first %}
-			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.first}) }}">{{ phrase('admin.logs.first') }}</a></li>
-			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.prev}) }}">{{ phrase('admin.logs.prev') }}</a></li>
+			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.first}) }}">{{ phrase('global.first') }}</a></li>
+			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.prev}) }}">{{ phrase('global.prev') }}</a></li>
 		{% endif %}
 
 		{% for i in pagination.pages %}
@@ -40,8 +40,8 @@
 		{% endfor %}
 
 		{% if pagination.curpage != pagination.last %}
-			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.next}) }}">{{ phrase('admin.logs.next') }}</a></li>
-			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.last}) }}">{{ phrase('admin.logs.last') }}</a></li>
+			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.next}) }}">{{ phrase('global.next') }}</a></li>
+			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.last}) }}">{{ phrase('global.last') }}</a></li>
 		{% endif %}
 	</ul>
 </div>

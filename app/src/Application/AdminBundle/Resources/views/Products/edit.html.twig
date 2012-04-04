@@ -2,7 +2,7 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_products') }}">{{ phrase('admin.products.products') }}</a></li>
+		<li><a href="{{ path('admin_products') }}">{{ phrase('global.products') }}</a></li>
 		{% if product.id %}
 			<li>{{ phrase('admin.products.edit_product') }}</li>
 		{% else %}
@@ -44,7 +44,7 @@
 
 {% if product.id %}
 <div class="delete-link-wrap">
-	<a href="{{ path('admin_products_del', {'product_id': product.id}) }}">{{ phrase('admin.products.delete') }}</a>
+	<a href="{{ path('admin_products_del', {'product_id': product.id}) }}">{{ phrase('global.delete') }}</a>
 </div>
 {% endif %}
 {% endblock %}

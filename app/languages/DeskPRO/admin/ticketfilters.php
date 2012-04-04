@@ -1,9 +1,9 @@
 <?php return array (
   'admin.ticketfilters.ticket_filters' => 'Ticket Filters',
-  'admin.ticketfilters.type' => 'Type',
 
-  'admin.ticketfilters.criteria' => 'Criteria',
-  'admin.ticketfilters.add_a_new_criteria' => 'Add a new criteria',
+
+
+
   'admin.ticketfilters.in_use_by' => 'In use by',
   'admin.ticketfilters.disabled_by' => 'Disabled by',
 
@@ -13,13 +13,13 @@
   'admin.ticketfilters.global_filters' => 'Global Filters',
   'admin.ticketfilters.team_filters' => 'Team Filters',
   'admin.ticketfilters.agent_filters' => 'Agent Filters',
-  'admin.ticketfilters.new_filter' => 'New Filter',
+
   'admin.ticketfilters.agent_access' => 'Agent Access',
   'admin.ticketfilters.global_filter_that_can_be_used_by_everyone' => 'Global filter that can be used by everyone',
   'admin.ticketfilters.only_allow_a_specific_team_to_use_this' => 'Only allow a specific team to use this filter',
   'admin.ticketfilters.select_the_team_that_can_use_this_filter' => 'Select the team that can use this filter',
   'admin.ticketfilters.only_allow_a_specific_agent_to_use_this' => 'Only allow a specific agent to use this filter',
   'admin.ticketfilters.select_the_agent_that_can_use_this_filter' => 'Select the agent that can use this filter',
-  'admin.ticketfilters.continue' => 'Continue',
+
   'admin.ticketfilters.title_has_no_members' => '{{title}} has no members. No one uses this filter.',
 );

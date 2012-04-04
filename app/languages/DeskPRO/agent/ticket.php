@@ -1,77 +1,77 @@
 <?php return array (
-  'agent.ticket.email_address' => 'Email Address',
 
-  'agent.ticket.none' => 'None',
-  'agent.ticket.message' => 'Message',
+
+
+
   'agent.ticket.cc' => 'CC',
   'agent.ticket.attachment' => 'Attachment',
-  'agent.ticket.macros' => 'Macros',
-  'agent.ticket.apply' => 'Apply',
-  'agent.ticket.cancel' => 'Cancel',
-  'agent.ticket.add_reply' => 'Add Reply',
+
+
+
+
   'agent.ticket.my_team' => 'My Team',
   'agent.ticket.mark_as_pending_kb_article' => 'Mark as pending KB article',
-  'agent.ticket.awaiting_agent' => 'Awaiting Agent',
-  'agent.ticket.resolved' => 'Resolved',
-  'agent.ticket.drop_your_file_here_to_attach_it_to' => 'Drop your file here to attach it to your reply',
-  'agent.ticket.closetab' => 'Close Tab',
-  'agent.ticket.add' => 'Add',
+
+
+
+
+
   'agent.ticket.no_followers' => 'No Followers',
   'agent.ticket.participant_added' => 'Participant added',
   'agent.ticket.participant_removed' => 'Participant removed',
-  'agent.ticket.tickettriggers' => 'Ticket triggers',
 
-  'agent.ticket.permissions' => 'Permissions',
-  'agent.ticket.just_me' => 'Just me',
-  'agent.ticket.everyone' => 'Everyone',
 
-  'agent.ticket.deletesnippet' => 'Delete Snippet',
+
+
+
+
+
   'agent.ticket.new_snippet_category' => 'New Snippet Category',
   'agent.ticket.apply_macro' => 'Apply Macro',
-  'agent.ticket.reason' => 'Reason',
+
   'agent.ticket.this_ticket_has_been_marked_as_spam' => 'This ticket has been marked as spam.',
-  'agent.ticket.closed' => 'Closed',
-  'agent.ticket.spam' => 'Spam',
-  'agent.ticket.validating' => 'Validating',
-  'agent.ticket.deleted' => 'Deleted',
-  'agent.ticket.messages' => 'Messages',
-  'agent.ticket.noteam' => 'No Team',
 
-  'agent.ticket.me' => 'Me',
+
+
+
+
+
+
+
   'agent.ticket.close_tab_after_reply' => 'Close tab after reply',
-  'agent.ticket.close_tab' => 'Close Tab',
-  'agent.ticket.no_team' => 'No Team',
-  'agent.ticket.category' => 'Category',
 
-  'agent.ticket.organization' => 'Organization',
+
+
+
+
   'agent.ticket.user_owner' => 'User owner',
-  'agent.ticket.ticket_triggers' => 'Ticket triggers',
+
   'agent.ticket.new_message' => 'New message',
   'agent.ticket.message_deleted' => 'Message deleted',
-  'agent.ticket.priority' => 'Priority',
-  'agent.ticket.workflow' => 'Workflow',
-  'agent.ticket.urgency' => 'Urgency',
-  'agent.ticket.product' => 'Product',
+
+
+
+
   'agent.ticket.new_attachment' => 'New attachment',
   'agent.ticket.attachment_deleted' => 'Attachment deleted',
-  'agent.ticket.status' => 'Status',
+
   'agent.ticket.edit_snippet_category' => 'Edit Snippet Category',
-  'agent.ticket.delete_snippet' => 'Delete Snippet',
-  'agent.ticket.awaiting_user' => 'Awaiting User',
-  'agent.ticket.view_profile' => 'view profile',
-  'agent.ticket.subject' => 'Subject',
-  'agent.ticket.attachments' => 'Attachments',
+
+
+
+
+
 
   'agent.ticket.assign_ticket_to' => 'Assign ticket to',
-  'agent.ticket.and' => 'and',
+
   'agent.ticket.change_status_to' => 'Change status to',
-  'agent.ticket.pending' => 'Pending',
+
   'agent.ticket.drag_and_drop_files_onto_this_area_or' => 'Drag and drop files onto this area or choose a file',
   'agent.ticket.remain_assigned_to' => 'Remain assigned to',
   'agent.ticket.assigned_agent' => 'Assigned agent',
-  'agent.ticket.ticket' => 'Ticket',
+
   'agent.ticket.applied' => 'applied',
-  'agent.ticket.linked_chat' => 'Linked Chat',
+
 
   'agent.ticket.changed_from' => 'changed from',
   'agent.ticket.subject_changed_from' => 'Subject changed from',

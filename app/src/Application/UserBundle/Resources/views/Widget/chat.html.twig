@@ -51,8 +51,8 @@
 
 <div id="dp_chat_end_confirm" style="display: none">
 	{{ phrase('user.chat.confirm_end_chat') }}
-	<button id="dp_chat_end_no">{{ phrase('user.chat.cancel') }}</button>
-	<button id="dp_chat_end_yes">{{ phrase('user.chat.end_chat') }}</button>
+	<button id="dp_chat_end_no">{{ phrase('global.cancel') }}</button>
+	<button id="dp_chat_end_yes">{{ phrase('global.end_chat') }}</button>
 </div>
 
 <i id="dp_chatwin_min"></i>
@@ -119,7 +119,7 @@
 	</div>
 	<div id="dp_chat_input_pane">
 		<textarea id="dp_chat_message_input"></textarea>
-		<button id="dp_chat_message_send" class="btn primary">{{ phrase('user.chat.send') }}</button>
+		<button id="dp_chat_message_send" class="btn primary">{{ phrase('global.send') }}</button>
 		<div id="dp_chat_message_upload">
 			<a id="dp_chat_upload_link">{{ phrase('user.chat.send_a_file') }}</a>
 			<input type="file" name="attach" id="dp_chat_message_upload_file" />
@@ -179,7 +179,7 @@
 </script>
 <script type="text/x-deskpro-plain" id="dp_chat_tpl_user_message">
 	<div class="row message user">
-		<div class="author">{{ phrase('user.chat.you') }}</div>
+		<div class="author">{{ phrase('global.you') }}</div>
 		<div class="message">%message%</div>
 	</div>
 </script>
@@ -203,7 +203,7 @@
 </script>
 
 <script class="dptpl-attach-upload" type="text/x-jquery-tmpl">
-	<li class="uploading">{{ phrase('user.label_file_uploading') }}: ${name} <span class="cancel">{{ phrase('user.cancel') }}</span></li>
+	<li class="uploading">{{ phrase('global.uploading') }}: ${name} <span class="cancel">{{ phrase('global.cancel') }}</span></li>
 </script>
 <script class="dptpl-attach-download" type="text/x-jquery-tmpl">
 	{{ '{{if error}} '}}
@@ -215,7 +215,7 @@
 			<input type="hidden" name="{{ blob_field_name }}" value="${blob_auth_id}" />
 			<a href="${download_url}" target="_blank">${filename}</a>
 			<span class="size">${filesize_readable}</span>
-			<span class="remove">{{ phrase('user.chat.remove') }}</span>
+			<span class="remove">{{ phrase('global.remove') }}</span>
 		</li>
 	{{ '{{/if}} '}}
 </script>

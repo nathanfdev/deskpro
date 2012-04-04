@@ -2,16 +2,16 @@
   'admin.ticketproperties.ticket_elements' => 'Ticket Elements',
   'admin.ticketproperties.ticket_message' => 'Ticket Message',
   'admin.ticketproperties.ticket_subject' => 'Ticket Subject',
-  'admin.ticketproperties.attachments' => 'Attachments',
-  'admin.ticketproperties.category' => 'Category',
-  'admin.ticketproperties.priority' => 'Priority',
-  'admin.ticketproperties.upload' => 'Upload',
+
+
+
+
   'admin.ticketproperties.captcha' => 'CAPTCHA',
   'admin.ticketproperties.embed_into_your_website' => 'Embed into your website',
   'admin.ticketproperties.integration_options' => 'Integration Options',
   'admin.ticketproperties.enable_custom_layouts_for_each_department' => 'Enable custom layouts for each department',
   'admin.ticketproperties.default_layout' => 'Default Layout',
-  'admin.ticketproperties.saving' => 'Saving',
+
   'admin.ticketproperties.new_ticket_form' => 'New Ticket Form',
   'admin.ticketproperties.view_ticket_page' => 'View Ticket Page',
   'admin.ticketproperties.modify_ticket_form' => 'Modify Ticket Form',
@@ -21,31 +21,31 @@
   'admin.ticketproperties.popup_window' => 'Popup Window',
   'admin.ticketproperties.add_a_link_to_your_website_that_opens' => 'Add a link to your website that opens the form in a popup window.',
   'admin.ticketproperties.contact_us' => 'Contact us',
-  'admin.ticketproperties.website_widget' => 'Website Widget',
+
   'admin.ticketproperties.embed_the_new_ticket_form_directly_into_any' => 'Embed the new ticket form directly into any webpage. Copy and paste the code into the spot you want the form to appear',
   'admin.ticketproperties.add_new_field' => 'Add New Field',
-  'admin.ticketproperties.ticket_fields' => 'Ticket Fields',
-  'admin.ticketproperties.departments' => 'Departments',
-  'admin.ticketproperties.products' => 'Products',
-  'admin.ticketproperties.ticket_categories' => 'Ticket Categories',
-  'admin.ticketproperties.ticket_priorities' => 'Ticket Priorities',
-  'admin.ticketproperties.ticket_workflows' => 'Ticket Workflows',
+
+
+
+
+
+
 
 
   'admin.ticketproperties.choose_a_category' => 'Choose a category...',
   'admin.ticketproperties.choose_a_product' => 'Choose a product...',
   'admin.ticketproperties.choose_a_priority' => 'Choose a priority...',
   'admin.ticketproperties.customize_choices_to_display' => 'Customize choices to display',
-  'admin.ticketproperties.add_a_new_criteria' => 'Add a new criteria',
+
   'admin.ticketproperties.field_options' => 'Field Options',
   'admin.ticketproperties.only_show_field_when_choice' => 'Only show this field when {{choice}} of these terms match',
-  'admin.ticketproperties.product' => 'Product',
+
   'admin.ticketproperties.any' => 'any',
   'admin.ticketproperties.all' => 'all',
-  'admin.ticketproperties.is' => 'is',
-  'admin.ticketproperties.is_not' => 'is not',
-  'admin.ticketproperties.is_less_than' => 'is less than',
-  'admin.ticketproperties.is_greater_than' => 'is greater than',
+
+
+
+
   'admin.ticketproperties.switch_to_department' => 'Switch to department',
   'admin.ticketproperties.enable_alternative_for_x' => 'Enable alternative layout for {{subphrase}}',
   'admin.ticketproperties.edit_default_layout_or_select_another' => 'Edit the {{link_a}} or select a specific {link2}',
@@ -64,10 +64,10 @@
   'admin.ticketproperties.you_have_count_workflows' => 'You have 1 workflows.|You have {{count}} workflows.',
 
   'admin.ticketproperties.edit_departments' => 'Edit Departments',
-  'admin.ticketproperties.edit_categories' => 'Edit Categories',
+
   'admin.ticketproperties.edit_products' => 'Edit Products',
   'admin.ticketproperties.edit_priorities' => 'Edit Priorities',
-  'admin.ticketproperties.edit_field' => 'Edit Field',
-  'admin.ticketproperties.workflow' => 'Workflow',
-  'admin.ticketproperties.filter' => 'Filter...',
+
+
+
 );

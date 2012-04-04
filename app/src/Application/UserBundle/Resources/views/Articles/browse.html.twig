@@ -1,6 +1,6 @@
 {% extends 'UserBundle:Articles:layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_articles') }}">{{ phrase('user.breadcrumb_kb') }}</a></li>
+	<li><a href="{{ path('user_articles') }}">{{ phrase('global.knowledgebase') }}</a></li>
 	{% for cat in category_path %}
 		<li><a href="{{ path('user_articles', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
@@ -22,7 +22,7 @@
 				{% if category %}
 					<h1>{{ phrase('user.articles.there_are_x_subcats', {'count': category_children|length}) }}</h1>
 				{% else %}
-					<h1>{{ phrase('user.articles.section_name') }}</h1>
+					<h1>{{ phrase('global.knowledgebase') }}</h1>
 				{% endif %}
 			</div>
 
@@ -54,7 +54,7 @@
 						<div class="dp-meta">
 							{{ phrase('user.articles.meta_author', {'author': article.person.display_name}) }}
 							&middot;
-							{{ phrase('user.articles.meta_comments', {'count': comment_counts[article.id]|default(0)}) }}
+							{{ phrase('global.1_commentcount_comments', {'count': comment_counts[article.id]|default(0)}) }}
 						</div>
 					</li>
 					{% endfor %}

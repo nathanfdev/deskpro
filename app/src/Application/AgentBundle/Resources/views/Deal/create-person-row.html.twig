@@ -1,7 +1,7 @@
 <div class="add-new-user-container">
 
 <div class="col">
-	<h4>{{ phrase('agent.deal.email_address') }}</h4>
+	<h4>{{ phrase('global.email_address') }}</h4>
 	{% if person.id %}
 		{{ person.primary_email_address }}
 	{% else %}
@@ -19,12 +19,12 @@
 
 
 	{% if person.id %}
-		<a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">{{ phrase('agent.deal.view_profile') }}</a>
+		<a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">{{ phrase('global.view_profile') }}</a>
 	{% endif %}
 </div>
 <br class="clear" />
 <footer>
    <button class="save-trigger clean-white small">{{ phrase('agent.deal.add_user') }}</button>
-   <button class="cancel-trigger clean-white small">{{ phrase('agent.deal.cancel') }}</button>
+   <button class="cancel-trigger clean-white small">{{ phrase('global.cancel') }}</button>
 </footer>
 </div>

@@ -6,7 +6,7 @@
 		</ul>
 	</nav>
 	<ul>
-		<li>{{ phrase('admin.cron.scheduled_tasks') }}</li>
+		<li>{{ phrase('global.scheduled_tasks') }}</li>
 	</ul>
 {% endblock %}
 {% block page %}
@@ -26,7 +26,7 @@
 					<td>{{ job.title }}</td>
 					<td style="text-align:center">{{ job.interval_readable }}</td>
 					<td style="text-align:center">
-						{% if job.last_run_date %}{{ job.last_run_date|date('Y-m-d H:i:s') }}{% else %}{{ phrase('admin.cron.never') }}{% endif %}
+						{% if job.last_run_date %}{{ job.last_run_date|date('Y-m-d H:i:s') }}{% else %}{{ phrase('global.never') }}{% endif %}
 					</td>
 					<td style="text-align:center">
 						{{ job.next_run_date|date('Y-m-d H:i:s') }}

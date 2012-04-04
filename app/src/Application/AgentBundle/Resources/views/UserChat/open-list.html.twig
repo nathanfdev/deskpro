@@ -20,7 +20,7 @@ pageMeta.agent_id = {{ agent.id|default(0)}};
     				</div>
     			</div>
     			<div class="userinfo general">
-                    {{ phrase('agent.userchat.by_name', {'name':convo.person}) }}
+                    {{ phrase('global.by_name', {'name':convo.person}) }}
 						<a
 							class="user-link as-popover"
 							data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}"
@@ -28,7 +28,7 @@ pageMeta.agent_id = {{ agent.id|default(0)}};
 					{% elseif convo.person_name or convo.person_email %}
 						{{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %}
 					{% else %}
-						{{ phrase('agent.anonymous') }}
+						{{ phrase('global.anonymous') }}
 					{% endif %}
     				, <time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('day_short') }}</time>
     			</div>

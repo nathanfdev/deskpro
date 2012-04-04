@@ -1,6 +1,6 @@
 {% macro style_row(id, default_portal_style) %}
 	<div class="style-row color">
-		<div class="color-reset {% if app.getSetting('user_style.' ~ id) != default_portal_style['user_style.' ~ id] %}enabled{% endif %}" data-color-id="bg_color" data-color="{{ default_portal_style['user_style.' ~ id] }}">{{ phrase('admin.portal.revert') }} <i style="background-color: {{ default_portal_style['user_style.' ~ id] }}"></i></div>
+		<div class="color-reset {% if app.getSetting('user_style.' ~ id) != default_portal_style['user_style.' ~ id] %}enabled{% endif %}" data-color-id="bg_color" data-color="{{ default_portal_style['user_style.' ~ id] }}">{{ phrase('global.revert') }} <i style="background-color: {{ default_portal_style['user_style.' ~ id] }}"></i></div>
 		<div class="color-swatch color-swatch-icon" data-color-id="{{ id }}" data-color="{{ app.getSetting('user_style.' ~ id) }}">
 			<div style="background-color: {{ app.getSetting('user_style.' ~ id) }}"></div>
 		</div>
@@ -12,7 +12,7 @@
 <section id="portal_colors" style="display: none">
 	<article>
 		<div class="style-section">
-			<h4>{{ phrase('admin.portalcolors.section_general') }}</h4>
+			<h4>{{ phrase('global.general') }}</h4>
 		</div>
 		{% for id in [
 			'bg_color', 'body_bg_color', 'text_color', 'meta_text_color',
@@ -63,6 +63,6 @@
 		{% endfor %}
 	</article>
 	<footer>
-		<button class="clean-white apply-trigger">{{ phrase('admin.portal.apply') }}</button>
+		<button class="clean-white apply-trigger">{{ phrase('global.apply') }}</button>
 	</footer>
 </section>

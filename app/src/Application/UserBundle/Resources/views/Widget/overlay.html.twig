@@ -46,7 +46,7 @@
 	<div class="search-area">
 		<input id="search_box" type="text" placeholder="{{ phrase('user.register_search_for_something') }}Search for something..." />
 		<span id="search_box_clear" style="display: none">x</span>
-		<button id="search_box_go">{{ phrase('user.register_search') }}</button>
+		<button id="search_box_go">{{ phrase('global.search') }}</button>
 	</div>
 	<div class="list-area">
 		<ul id="new_content_list">
@@ -61,7 +61,7 @@
 	<div class="head-area with-handler">
 		<ul id="dp_overlay_navtabs">
 			<li data-tab-for="#newticket" class="on">{{ phrase('user.register_contact_our_agents') }}</li>
-			<li data-tab-for="#newfeedback">{{ phrase('user.register_submit_feedback') }}</li>
+			<li data-tab-for="#newfeedback">{{ phrase('global.submit_feedback') }}</li>
 			<li data-tab-for="#newchat">{{ phrase('user.register_chat_with_us') }}</li>
 		</ul>
 	</div>
@@ -77,7 +77,7 @@
 				{% if app.user.id %}
 					<div class="form-row">
 						<div class="dp-form-row">
-							<div class="dp-form-label"><label>{{ phrase('user.register_you') }}</label></div>
+							<div class="dp-form-label"><label>{{ phrase('global.you') }}</label></div>
 							<div class="dp-form-input">
 								{{ app.user.display_name }} ({{ app.user.email_address }})
 							</div>
@@ -88,14 +88,14 @@
 						<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="50%" style="padding-right: 10px;">
 							<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %} dp-form-row-person_name">
 								<div class="dp-form-label">
-									<label>{{ phrase('user.register_your_name') }} *</label>
+									<label>{{ phrase('global.your_name') }} *</label>
 								</div>
 								<div class="dp-form-input">
 									{{ form_widget(ticketform.person.name, {
 										'attr': {
 											'data-field-validators': 'DeskPRO.Form.LengthValidator',
 											'data-min-len': 2,
-											'placeholder': '{{ phrase('user.register_your_name') }}',
+											'placeholder': '{{ phrase('global.your_name') }}',
 											'class': 'name-field'
 										}
 									}) }}
@@ -107,10 +107,10 @@
 						</td><td valign="top" width="50%" style="padding-left: 10px;">
 							<div class="dp-form-row dp-form-row-person_email">
 								<div class="dp-form-label">
-									<label>{{ phrase('user.register_your_email') }} *</label>
+									<label>{{ phrase('global.your_email_address') }} *</label>
 								</div>
 								<div class="dp-form-input">
-									<input type="text" class="email-field" id="dp_newticket_email" name="newticket[person][email]" value="" placeholder="{{ phrase('user.register_your_email') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+									<input type="text" class="email-field" id="dp_newticket_email" name="newticket[person][email]" value="" placeholder="{{ phrase('global.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 									{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 										<div class="connect-with">
 											{{ phrase('global.or_connect_with') }}
@@ -155,7 +155,7 @@
 				</div>
 			</form>
 			<div class="thank-you" id="dp_newticket_done" style="display: none">
-				<h2>{{ phrase('user.register_thank_you') }}</h2>
+				<h2>{{ phrase('global.thank_you') }}</h2>
 				<p>{{ phrase('user.register_thank_you_for_ticket') }}</p>
 			</div>
 		</div>
@@ -171,7 +171,7 @@
 				{% if app.user.id %}
 					<div class="form-row">
 						<div class="dp-form-row">
-							<div class="dp-form-label"><label>{{ phrase('user.register_you') }}</label></div>
+							<div class="dp-form-label"><label>{{ phrase('global.you') }}</label></div>
 							<div class="dp-form-input">
 								{{ app.user.display_name }} ({{ app.user.email_address }})
 							</div>
@@ -182,14 +182,14 @@
 					<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="50%" style="padding-right: 10px;">
 						<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %} dp-form-row-person_name">
 							<div class="dp-form-label">
-								<label>{{ phrase('user.register_your_name') }} *</label>
+								<label>{{ phrase('global.your_name') }} *</label>
 							</div>
 							<div class="dp-form-input">
 								{{ form_widget(feedbackform.person_name, {
 									'attr': {
 										'data-field-validators': 'DeskPRO.Form.LengthValidator',
 										'data-min-len': 2,
-										'placeholder': '{{ phrase('user.register_your_name') }}',
+										'placeholder': '{{ phrase('global.your_name') }}',
 										'class': 'name-field'
 									}
 								}) }}
@@ -201,10 +201,10 @@
 					</td><td width="50%" style="padding-left: 10px;">
 						<div class="dp-form-row dp-form-row-person_email">
 							<div class="dp-form-label">
-								<label>{{ phrase('user.register_your_email') }} *</label>
+								<label>{{ phrase('global.your_email_address') }} *</label>
 							</div>
 							<div class="dp-form-input">
-								<input type="text" class="email-field" id="dp_newfeedback_email" name="feedback[person_email]" value="" placeholder="{{ phrase('user.register_your_email') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+								<input type="text" class="email-field" id="dp_newfeedback_email" name="feedback[person_email]" value="" placeholder="{{ phrase('global.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 								{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 									<div class="connect-with">
 										{{ phrase('global.or_connect_with') }}
@@ -224,7 +224,7 @@
 
 				<div class="dp-form-row {% if error_fields['category_id'] %}dp-error{% endif %}">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.label_category') }} *</label>
+						<label>{{ phrase('global.category') }} *</label>
 					</div>
 					<div class="dp-form-input with-sub-options feedbackCat_id_wrapper" data-field-validators="DeskPRO.Form.TwoLevelSelectValidator">
 						<div class="dp-select-wrapper" style="width: 70%;">
@@ -248,14 +248,14 @@
 							{% endfor %}
 						</div>
 						<div class="dp-error-explain">
-							{{ phrase('user.label_category_error') }}
+							{{ phrase('global.please_choose_a_category') }}
 						</div>
 					</div>
 				</div>
 
 				<div class="dp-form-row {% if error_fields['title'] %}dp-error{% endif %}">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.feedback.label_summary') }} *</label> <em class="note">{{ phrase('user.feedback.label_summary_explain') }}</em>
+						<label>{{ phrase('global.summary') }} *</label> <em class="note">{{ phrase('user.feedback.label_summary_explain') }}</em>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(feedbackform.title, {
@@ -292,7 +292,7 @@
 				<input class="btn primary" type="submit" value="Submit Feedback" />
 			</form>
 			<div class="thank-you" id="dp_newfeedback_done" style="display: none">
-				<h2>{{ phrase('user.register_thank_you') }}</h2>
+				<h2>{{ phrase('global.thank_you') }}</h2>
 				<p>{{ phrase('user.register_thank_you_for_feedback') }}</p>
 			</div>
 		</div>
@@ -306,7 +306,7 @@
 				{% if app.user.id %}
 					<div class="form-row">
 						<div class="dp-form-row">
-							<div class="dp-form-label"><label>{{ phrase('user.register_you') }}</label></div>
+							<div class="dp-form-label"><label>{{ phrase('global.you') }}</label></div>
 							<div class="dp-form-input">
 								{{ app.user.display_name }} ({{ app.user.email_address }})
 							</div>
@@ -317,10 +317,10 @@
 					<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="50%" style="padding-right: 10px;">
 						<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %} dp-form-row-person_name">
 							<div class="dp-form-label">
-								<label>{{ phrase('user.register_your_name') }} *</label>
+								<label>{{ phrase('global.your_name') }} *</label>
 							</div>
 							<div class="dp-form-input">
-								<input type="text" class="name-field" id="dp_newchat_name" name="name" value="" placeholder="{{ phrase('user.register_your_name') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+								<input type="text" class="name-field" id="dp_newchat_name" name="name" value="" placeholder="{{ phrase('global.your_name') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 								<div class="dp-error-explain">
 									{{ phrase('user.register_please_enter_name') }}
 								</div>
@@ -329,7 +329,7 @@
 					</td><td width="50%" style="padding-left: 10px;">
 						<div class="dp-form-row dp-form-row-person_email">
 							<div class="dp-form-label">
-								<label>{{ phrase('user.register_your_email') }} *</label>
+								<label>{{ phrase('global.your_email_address') }} *</label>
 							</div>
 							{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 								<div class="connect-with">
@@ -340,7 +340,7 @@
 								</div>
 							{% endif %}
 							<div class="dp-form-input">
-								<input type="text" class="email-field" id="dp_newchat_email" name="email" value="" placeholder="{{ phrase('user.register_your_email') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+								<input type="text" class="email-field" id="dp_newchat_email" name="email" value="" placeholder="{{ phrase('global.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 								<div class="dp-error-explain">
 									{{ phrase('user.register_please_enter_name') }}
 								</div>

@@ -1,6 +1,6 @@
 <div class="dp-form-row  {% if error_fields['ticket.category_id'] %}dp-error{% endif %}">
 	<div class="dp-form-label">
-		<label>{{ phrase('user.tickets.category') }}</label>
+		<label>{{ phrase('global.category') }}</label>
 	</div>
 	<div class="dp-form-input with-sub-options">
 		<select name="newticket[ticket][category_id]" class="parent-option category_id">
@@ -22,7 +22,7 @@
 			{% endif %}
 		{% endfor %}
 		<div class="dp-error-explain">
-			{{ phrase('user.tickets.please_choose_category') }}
+			{{ phrase('global.please_choose_a_category') }}
 		</div>
 	</div>
 </div>

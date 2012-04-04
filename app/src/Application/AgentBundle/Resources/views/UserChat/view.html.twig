@@ -29,7 +29,7 @@ pageMeta.person_id = 0;
 {% if convo.person %}
 	pageMeta.chatTitle = '{{ convo.person.display_name }} ({{ convo.person.primary_email_address }})';
 {% else %}
-	pageMeta.chatTitle = '{{ phrase('agent.anonymous') }}';
+	pageMeta.chatTitle = '{{ phrase('global.anonymous') }}';
 {% endif %}
 
 {% set baseId = el_uid() %}
@@ -55,7 +55,7 @@ pageMeta.baseId = '{{ baseId }}';
 					{% if convo.person_name or convo.person_email %}
 						{{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %}
 					{% else %}
-						{{ phrase('agent.anonymous') }}
+						{{ phrase('global.anonymous') }}
 					{% endif %}
 				</a>
 			{% endif %}
@@ -74,7 +74,7 @@ pageMeta.baseId = '{{ baseId }}';
         <td width="50%" valign="top">
             <div class="profile-box-container people-box first">
                 <header>
-                    <h4>{{ phrase('agent.userchat.person') }}</h4>
+                    <h4>{{ phrase('global.person') }}</h4>
                 </header>
                 <section id="{{baseId}}_people_box_person">
                     <article>
@@ -94,7 +94,7 @@ pageMeta.baseId = '{{ baseId }}';
                                                 {% if convo.person_name %}
                                                 	{{ convo.person_name }}
                                                 {% else %}
-                                                	{{ phrase('agent.anonymous') }}
+                                                	{{ phrase('global.anonymous') }}
                                                 {% endif %}
                                                 <span class="email"><b data-hide="@parent">{% if convo.person_email %}{{ convo.person_email }}{% else %}{{ phrase('agent.userchat.no_email') }}{% endif %}</b></span>
                                             </span>
@@ -113,12 +113,12 @@ pageMeta.baseId = '{{ baseId }}';
 					<div class="controls">
 						<span class="edit-gear" id="{{baseId}}_assign_ob_trigger"></span>
 					</div>
-					<h4>{{ phrase('agent.assignments') }}</h4>
+					<h4>{{ phrase('global.assignments') }}</h4>
 				</header>
 				<section id="{{baseId}}_people_box_agent">
 					<article>
 						<dl>
-							<dt class="agent-row">{{ phrase('agent.userchat.assigned_agent') }}</dt>
+							<dt class="agent-row">{{ phrase('global.assigned_agent') }}</dt>
 							<dd class="agent-row">
 								<a class="agent-link prop-agent-id" id="{{baseId}}_assign_btn" data-agent-id="{{ convo.agent.id|default(0) }}" style="background-image: url('{{ convo.agent.getPictureUrl(20) }}');">{{ convo.agent.display_name|default('Unassigned') }}</a>
 							</dd>
@@ -214,28 +214,28 @@ pageMeta.baseId = '{{ baseId }}';
 				</div>
 			</div>
 			<div class="chatreply" id="{{baseId}}_replybox" style="{% if convo.status != 'open' %}display: none{% endif %};">
-				<div class="drop-file-zone"><h1>{{ phrase('agent.userchat.drop_your_file_here_to_attach_it_to') }}</h1></div>
+				<div class="drop-file-zone"><h1>{{ phrase('global.drop_your_file_here_to_attach_it_to') }}</h1></div>
 				{% if convo.person and convo.person.id != session.person.id %}
 					<div class="impersonation-warning" id="{{baseId}}_imposter">
 						<strong>{{ phrase('agent.userchat.warning') }}</strong>
 						<p>The user entered an email address that matches an existing account in the system, but the user
 						is not currently logged in. Be careful not to expose sensitive information in case the user is an imposter.</p>
-						<button class="clean-white small dismiss">{{ phrase('agent.userchat.dismiss') }}</button>
+						<button class="clean-white small dismiss">{{ phrase('global.dismiss') }}</button>
 					</div>
 				{% endif %}
 				<nav>
 					<ul class="option-buttons">
-						<li class="tipped attach" title="{{ phrase('agent.attachments') }}">
+						<li class="tipped attach" title="{{ phrase('global.attachments') }}">
 							<input type="file" class="file" name="file-upload" />
 							<span></span>
 						</li>
 						<li class="tipped snippets" id="{{baseId}}_quick_replies" title="{{ phrase('agent.chat.quick_replies') }}"><span></span></li>
-						<li class="tipped ticket" id="{{baseId}}_create_ticket_btn" title="{{ phrase('agent.chat.create_ticket') }}"><span></span></li>
+						<li class="tipped ticket" id="{{baseId}}_create_ticket_btn" title="{{ phrase('global.create_ticket') }}"><span></span></li>
 					</ul>
 
 					<ul class="option-buttons right">
-						<li class="closetab tipped" id="{{baseId}}_end_btn" title="{{ phrase('agent.userchat.end_chat') }}"><span>{{ phrase('agent.chat.end_chat') }}</span></li>
-						<li class="send" id="{{baseId}}_send_btn"><span>{{ phrase('agent.chat.send_message') }}</span></li>
+						<li class="closetab tipped" id="{{baseId}}_end_btn" title="{{ phrase('agent.userchat.end_chat') }}"><span>{{ phrase('global.end_chat') }}</span></li>
+						<li class="send" id="{{baseId}}_send_btn"><span>{{ phrase('global.send') }}</span></li>
 					</ul>
 				</nav>
 				<div class="input-wrap">
@@ -250,24 +250,24 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="optionbox reply-agent-team-ob with-footer" id="{{baseId}}_agent_assign_ob" data-assigned="{{ convo.agent.id|default('0') }}">
 	<header>
-		<h4>{{ phrase('agent.assignments') }}</h4>
+		<h4>{{ phrase('global.assignments') }}</h4>
 		<span class="close close-trigger"></span>
 	</header>
 	<div class="col">
 		<section data-section-name="agents">
 			<header>
 				<h3>{{ phrase('agent.userchat.assign_to') }}</h3>
-				<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
+				<input type="text" class="filter-box" placeholder="{{ phrase('global.filter') }}" />
 			</header>
 			<ul>
 				<li class="me last-me {% if convo.agent.id == app.user.id %}on{% endif %}">
 					<input type="radio" name="{{baseId}}_agent" value="{{ app.user.id }}" {% if convo.agent.id == app.user.id %}checked="checked"{% endif %} />
-					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.me') }}</span></label>
+					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('global.me') }}</span></label>
 				</li>
 
 				<li>
 					<input type="radio" name="{{baseId}}_agent" value="0" {% if not convo.agent %}checked="checked"{% endif %}  />
-					<label><span class="agent-pic agent-label-0">{{ phrase('agent.unassigned') }}</span></label>
+					<label><span class="agent-pic agent-label-0">{{ phrase('global.unassigned') }}</span></label>
 				</li>
 
 				{% for agent in agents %}
@@ -287,12 +287,12 @@ pageMeta.baseId = '{{ baseId }}';
 		<section data-section-name="followers">
 			<header>
 				<h3>{{ phrase('agent.userchat.invite_others') }}</h3>
-				<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
+				<input type="text" class="filter-box" placeholder="{{ phrase('global.filter') }}" />
 			</header>
 			<ul>
 				<li class="me last-me">
 					<input type="checkbox" name="{{bsaeId}}_part" value="{{ app.user.id }}" {% if app.user.id in participant_ids and convo.agent.id != app.user.id %}checked="checked"{% endif %} />
-					<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.me') }}</span></label>
+					<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('global.me') }}</span></label>
 				</li>
 
 				{% for agent in agents %}
@@ -309,7 +309,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<br class="clear" />
 	<footer>
-		<button class="save-trigger">{{ phrase('agent.apply') }}</button>
+		<button class="save-trigger">{{ phrase('global.apply') }}</button>
 	</footer>
 </div>
 

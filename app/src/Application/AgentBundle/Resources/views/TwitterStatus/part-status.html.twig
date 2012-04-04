@@ -68,9 +68,9 @@
 							<div class="user-meta">
 								{% if status.user.id is not sameas(account.user.id) %}
 									{% if status.user.id in account.friend_ids %}
-										<button class="clean-white small unfollow"><a>{{ phrase('agent.twitterstatus.unfollow') }}</a></button>
+										<button class="clean-white small unfollow"><a>{{ phrase('global.unfollow') }}</a></button>
 									{% else %}
-										<button class="clean-white small follow"><a>{{ phrase('agent.twitterstatus.follow') }}</a></button>
+										<button class="clean-white small follow"><a>{{ phrase('global.follow') }}</a></button>
 									{% endif %}
 								{% endif %}
 							</div>
@@ -105,11 +105,11 @@
 								<div class="bound-faded"></div>
 								<span class="controls">
 									<button class="clean-white small status-archive"><a>{% if status.is_archived %}Archived{% else %}Archive{% endif %}</a></button>
-									<button class="clean-white small status-reply"><a>{{ phrase('agent.twitterstatus.reply') }}</a></button>
+									<button class="clean-white small status-reply"><a>{{ phrase('global.reply') }}</a></button>
 									{% if status.isMessage is sameas(false) %}
 										<button class="clean-white small status-retweet"><a>{{ phrase('agent.twitterstatus.retweet') }}</a></button>
 									{% endif %}
-									<button class="clean-white small status-assign"><a>{{ phrase('agent.twitterstatus.assign') }}</a></button>
+									<button class="clean-white small status-assign"><a>{{ phrase('global.assign') }}</a></button>
 									<button class="clean-white small status-note"><a>{{ phrase('agent.twitterstatus.add_note') }}</a></button>
 								</span>
 								<div class="forms">
@@ -122,6 +122,6 @@
 	</table>
 </article>
 {% else %}
-    <p class="twitter-no-results">{{ phrase('agent.twitterstatus.there_are_no_results') }}</p>
+    <p class="twitter-no-results">{{ phrase('global.there_are_no_results') }}</p>
 {% endfor %}
 </section>

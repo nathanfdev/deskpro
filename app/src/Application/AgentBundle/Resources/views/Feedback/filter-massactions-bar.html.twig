@@ -1,16 +1,16 @@
 <header class="list-selection-bar">
 	<input type="checkbox" class="selection-control" />
     {% set phrase_part %}<span class="selected-count">0</span>{% endset %}
-    {{ phrase('agent.feedback.count_selected', {'display_count':phrase_part}) }}
+    {{ phrase('global.display_count_selected', {'display_count':phrase_part}) }}
 	<a class="perform-action perform-actions-trigger disabled">
 		<span>{{ phrase('agent.perform_actions') }}</span>
 	</a>
 	<ul class="actions-menu" data-menu-type="feedback-massactions-menu" style="display: none">
 		<li data-submenu-selector="#feedback_status_menu">
-			{{ phrase('agent.set_status') }}
+			{{ phrase('global.set_status') }}
 		</li>
 		<li data-submenu-selector="#feedback_category_menu">
-			{{ phrase('agent.set_category') }}
+			{{ phrase('global.set_category') }}
 		</li>
 		<li class="sep">-</li>
 		<li data-action="delete">{{ phrase('agent.delete') }}</li>

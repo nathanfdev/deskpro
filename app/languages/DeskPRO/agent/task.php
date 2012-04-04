@@ -1,20 +1,20 @@
 <?php return array (
   'agent.task.count' => 'Count',
   'agent.task.add_another_task' => 'Add another task',
-  'agent.task.private' => 'Private',
-  'agent.task.public' => 'Public',
 
-  'agent.task.me' => 'Me',
+
+
+
 
   'agent.task.tasks_i_delegated' => 'Tasks I Delegated',
 
-  'agent.task.sort_by' => 'Sort by',
-  'agent.task.date' => 'Date',
-  'agent.task.assigned' => 'Assigned',
+
+
+
   'agent.task.creator' => 'Creator',
   'agent.task.linked_ticket' => 'Linked Ticket',
   'agent.task.completed_tasks' => 'Completed Tasks',
-  'agent.task.tasks' => 'Tasks',
+
   'agent.task.my_tasks' => 'My Tasks',
   'agent.task.overdue' => 'Overdue',
   'agent.task.due_today' => 'Due Today',
@@ -27,6 +27,6 @@
   'agent.task.my_teams' => 'My Teams\'',
   'agent.task.or' => 'or',
   'agent.task.task_description' => 'Task Description...',
-  'agent.task.filter' => 'Filter...',
+
   'agent.task.enter_your_comment' => 'Enter your comment...',  
 );

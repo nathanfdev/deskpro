@@ -2,7 +2,7 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 	<ul>
-		<li>{{ phrase('admin.settings.settings') }}</li>
+		<li>{{ phrase('global.settings') }}</li>
 	</ul>
 {% endblock %}
 {% block html_head %}
@@ -47,7 +47,7 @@
 	</div>
 </div>
 <div class="setting_field_row">
-	<h4>{{ phrase('admin.settings.helpdesk') }}</h4>
+	<h4>{{ phrase('global.helpdesk') }}</h4>
 	<div class="setting_fields">
 		<div class="field_row">
 			<label><input type="checkbox" name="settings[core.helpdesk_disabled]" {% if app.getSetting('core.helpdesk_disabled') %}checked="checked"{% endif %} />
@@ -60,10 +60,10 @@
 	</div>
 </div>
 <div class="setting_field_row">
-	<h4>{{ phrase('admin.settings.attachments') }}</h4>
+	<h4>{{ phrase('global.attachments') }}</h4>
 	<div class="setting_fields">
 		<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" style="padding-right: 15px" width="50%">
-			<h6>{{ phrase('admin.settings.users') }}</h6>
+			<h6>{{ phrase('global.users') }}</h6>
 
 			<div class="field_row">
 				<input type="hidden" id="user_attach_maxsize" name="settings[core.attach_user_maxsize]" value="{{ app.getSetting('core.attach_user_maxsize') }}" />
@@ -119,7 +119,7 @@
 	</div>
 </div>
 <div class="setting_field_row">
-	<h4>{{ phrase('admin.settings.advanced') }}</h4>
+	<h4>{{ phrase('global.advanced') }}</h4>
 	<div class="setting_fields">
 		<div class="field_row">
 			<table cellspacing="0" cellpadding="0"><tr>
@@ -137,7 +137,7 @@
 </div>
 
 <div class="setting_field_row" style="text-align: center">
-	<button class="clean-white">{{ phrase('admin.settings.save_settings') }}</button>
+	<button class="clean-white">{{ phrase('global.save_settings') }}</button>
 </div>
 
 </form>

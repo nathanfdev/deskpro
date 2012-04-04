@@ -8,7 +8,7 @@
 >
 	<div class="dp-box">
 		<div class="dp-box-header">
-			<h1>{{ phrase('user.profile.register') }}</h1>
+			<h1>{{ phrase('global.register') }}</h1>
 		</div>
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content dp-form">
@@ -40,7 +40,7 @@
 
 					<div class="dp-form-row {% if error_fields['password'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
-							<label>{{ phrase('user.profile.label_password') }} *</label>
+							<label>{{ phrase('global.password') }} *</label>
 						</div>
 						<div class="dp-form-input">
 							{{ form_widget(form.password) }}
@@ -68,7 +68,7 @@
 					</div>
 
 					<div class="dp-footer">
-						<input class="btn primary" type="submit" value="{{ phrase('user.profile.register_btn') }}" />
+						<input class="btn primary" type="submit" value="{{ phrase('global.register') }}" />
 					</div>
 				</form>
 			</div>

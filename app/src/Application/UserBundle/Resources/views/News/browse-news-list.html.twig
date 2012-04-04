@@ -12,7 +12,7 @@
 			<div class="dp-meta">
                 {{ phrase('user.news.author_name', {'name':news.person.display_name}) }}
 				{% if news.category %}
-					| {{ phrase('user.news.category') }} <a href="{{ path('user_news_list', {'slug': news.category.url_slug })}}">{{ news.category.title }}</a>
+					| {{ phrase('global.category') }} <a href="{{ path('user_news_list', {'slug': news.category.url_slug })}}">{{ news.category.title }}</a>
 				{% endif %}
 				{% if comment_counts[news.id] %}{{ phrase('user.news._comments') }}: {{ comment_counts[news.id] }}{% endif %}
 			</div>

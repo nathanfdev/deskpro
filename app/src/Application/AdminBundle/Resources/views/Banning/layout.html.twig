@@ -2,13 +2,13 @@
 {% block page_nav %}
 	<section>
 		<header>
-			<h4>{{ phrase('admin.banning.banning') }}</h4>
+			<h4>{{ phrase('global.banning') }}</h4>
 		</header>
 		<article>
 			<ul>
 				<li class="{% if this_page == 'ban_emails' %}on{% endif %}">
 					<span class="count" id="ban_count_emails">{{ counts.emails|default(0) }}</span>
-					<a href="{{ path('admin_banning_emails') }}">{{ phrase('admin.banning.email_addresses') }}</a>
+					<a href="{{ path('admin_banning_emails') }}">{{ phrase('global.email_addresses') }}</a>
 				</li>
 				<li class="{% if this_page == 'ban_ips' %}on{% endif %}">
 					<span class="count" id="ban_count_ips">{{ counts.ips|default(0) }}</span>

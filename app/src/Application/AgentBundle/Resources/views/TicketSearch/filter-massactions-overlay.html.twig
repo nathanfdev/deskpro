@@ -17,7 +17,7 @@
 			{% if macros|length %}
 				<div class="macro-load">
 					<select class="macro is-not-loading">
-						<option value="">{{ phrase('agent.macros') }}</option>
+						<option value="">{{ phrase('global.macros') }}</option>
 						<option value="">------------</option>
 						{% for macro in macros %}
 							<option value="{{ macro.id }}">{{ macro.title }}</option>
@@ -54,10 +54,10 @@
 					</label>
 				</dd>
 
-				<dt>{{ phrase('agent.assignments') }}</dt>
+				<dt>{{ phrase('global.assignments') }}</dt>
 				<dd class="assignments">
 					<ul id="{{baseId}}_assign_btn">
-						<li class="no-changes"><em>{{ phrase('agent.ticketsearch.set_assignments') }}</em></li>
+						<li class="no-changes"><em>{{ phrase('global.set_assignments') }}</em></li>
 						<li style="display:none" class="assign-agent"><em>{{ phrase('agent.assign_agent') }}</em>: <span class="label"></span></li>
 						{% if app.getSetting('core.use_agent_team') %}<li style="display:none" class="assign-team"><em>{{ phrase('agent.assign_agent') }}</em>: <span class="label"></span></li>{% endif %}
 						<li style="display:none" class="add-followers"><em>{{ phrase('agent.add_followers') }}</em>: <span class="label"></span></li>
@@ -79,7 +79,7 @@
 							'name': 'actions[category]',
 							'with_blank': true,
 							'with_blank2': true,
-							'blank_title': phrase('agent.category'),
+							'blank_title': phrase('global.category'),
 							'categories': ticket_options.ticket_categories_hierarchy
 						} %}
 					{% endif %}
@@ -89,7 +89,7 @@
 							'name': 'actions[product]',
 							'with_blank': true,
 							'with_blank2': true,
-							'blank_title': phrase('agent.product'),
+							'blank_title': phrase('global.product'),
 							'products': ticket_options.products_hierarchy
 						} %}
 					{% endif %}
@@ -99,7 +99,7 @@
 							'name': 'actions[priority]',
 							'with_blank': true,
 							'with_blank2': true,
-							'blank_title': phrase('agent.priority'),
+							'blank_title': phrase('global.priority'),
 							'priorities': ticket_options.ticket_priorities
 						} %}
 					{% endif %}
@@ -109,7 +109,7 @@
 							'name': 'actions[workflow]',
 							'with_blank': true,
 							'with_blank2': true,
-							'blank_title': phrase('agent.workflow'),
+							'blank_title': phrase('global.workflow'),
 							'workflows': ticket_options.ticket_workflows
 						} %}
 					{% endif %}
@@ -119,7 +119,7 @@
 			<div class="profile-box-container reply-box-wrap">
 				<header>
 					<nav>
-						<ul><li>{{ phrase('agent.reply') }}</li></ul>
+						<ul><li>{{ phrase('global.reply') }}</li></ul>
 					</nav>
 				</header>
 				<section class="ticketreply">
@@ -127,7 +127,7 @@
 						<ul class="option-buttons">
 							<li class="tipped attach hide-note" title="{{ phrase('agent.ticketsearch.add_attachments') }}">
 								<input type="file" class="file" name="file-upload" />
-								<span>{{ phrase('agent.attachments') }}</span>
+								<span>{{ phrase('global.attachments') }}</span>
 							</li>
 							<li class="tipped snippets hide-note" id="{{baseId}}_text_snippets_btn" title="{{ phrase('agent.ticketsearch.insert_text_snippets') }}"><span>{{ phrase('agent.snippets') }}</span></li>
 						</ul>
@@ -136,7 +136,7 @@
 						<section>
 							<ul id="{{baseId}}_attach_row" style="display: none">
 								<li class="attach-row">
-									<label><span>{{ phrase('agent.attachments') }}</span></label>
+									<label><span>{{ phrase('global.attachments') }}</span></label>
 									<div>
 										<ul class="files"></ul>
 										<br class="clear"/>
@@ -172,7 +172,7 @@
 			</dl>
 		</article>
 		<footer>
-			<div class="is-not-loading"><button class="apply-actions">{{ phrase('agent.apply') }}</button></div>
+			<div class="is-not-loading"><button class="apply-actions">{{ phrase('global.apply') }}</button></div>
 			<div class="is-loading">
 				<div class="loading-icon" style="margin-top: 5px;">&nbsp;</div>
 			</div>
@@ -194,14 +194,14 @@
 
     <div class="optionbox reply-agent-team-ob" id="{{baseId}}_agent_selector">
     	<header>
-			<h4>{{ phrase('agent.assignments') }}</h4>
+			<h4>{{ phrase('global.assignments') }}</h4>
 			<span class="close close-trigger"></span>
 		</header>
     	<div class="col">
     		<section data-section-name="agents">
     			<header>
     				<h3>{{ phrase('global.agents') }}</h3>
-						<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
+						<input type="text" class="filter-box" placeholder="{{ phrase('global.filter') }}" />
     			</header>
     			<ul>
     				<li class="on">
@@ -211,12 +211,12 @@
 
     				<li class="me last-me">
     					<input type="radio" name="{{baseId}}_agent" class="agent agent-{{app.user.id}}" value="{{ app.user.id }}" />
-    					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.me') }}</span></label>
+    					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('global.me') }}</span></label>
     				</li>
 
     				<li>
     					<input type="radio" class="agent agent-0" name="{{baseId}}_agent" value="0" />
-    					<label><span class="agent-pic agent-label-0">{{ phrase('agent.unassigned') }}</span></label>
+    					<label><span class="agent-pic agent-label-0">{{ phrase('global.unassigned') }}</span></label>
     				</li>
 
     				{% for agent in agents %}
@@ -235,7 +235,7 @@
     		<section data-section-name="teams">
     			<header>
     				<h3>{{ phrase('global.teams') }}</h3>
-    				<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
+    				<input type="text" class="filter-box" placeholder="{{ phrase('global.filter') }}" />
     			</header>
     			<ul>
     				<li class="on">
@@ -252,7 +252,7 @@
 
     				<li class="on">
     					<input type="radio" name="{{baseId}}_agent_team" value="0" />
-    					<label><span class="agent-team-label-0">{{ phrase('agent.ticketsearch.no_team') }}</span></label>
+    					<label><span class="agent-team-label-0">{{ phrase('global.no_team') }}</span></label>
     				</li>
 
     				{% for team in agent_teams %}
@@ -270,13 +270,13 @@
     	<div class="col">
     		<section data-section-name="followers">
     			<header>
-    				<h3>{{ phrase('agent.followers') }}</h3>
-    				<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter_placeholder') }}" />
+    				<h3>{{ phrase('global.followers') }}</h3>
+    				<input type="text" class="filter-box" placeholder="{{ phrase('global.filter') }}" />
     			</header>
     			<ul>
     				<li class="me last-me">
     					<input type="checkbox" name="{{baseId}}_part" value="{{ app.user.id }}" />
-    					<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.ticketsearch.me') }}</span></label>
+    					<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('global.me') }}</span></label>
     				</li>
 
     				{% for agent in agents %}
@@ -293,7 +293,7 @@
     	</div>
     	<br class="clear" />
     	<footer>
-			<button class="save-trigger">{{ phrase('agent.apply') }}</button>
+			<button class="save-trigger">{{ phrase('global.apply') }}</button>
 		</footer>
     </div>
 </div>

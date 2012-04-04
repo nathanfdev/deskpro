@@ -1,5 +1,5 @@
 <ul class="ticket-message-edit-menu" style="display:none">
-	<li data-option-id="view-details">{{ phrase('agent.detail') }}</li>
+	<li data-option-id="view-details">{{ phrase('global.detail') }}</li>
 	<li data-option-id="quote">{{ phrase('agent.quote') }}</li>
 	{#<li data-option-id="split">{{ phrase('agent.tickets.split_from_here') }}</li>#}
 </ul>
@@ -15,7 +15,7 @@
 	</div>
 
 	<div class="overlay-content">
-		{{ phrase('agent.deleted_reason') }}: <input type="text" value="" class="delete-reason" style="width: 200px;" />
+		{{ phrase('global.deleted_reason') }}: <input type="text" value="" class="delete-reason" style="width: 200px;" />
 	</div>
 
 	<div class="overlay-footer">
@@ -23,7 +23,7 @@
 			<button class="save-trigger clean-white">{{ phrase('agent.delete') }}</button>
 		</div>
 		<div class="loading-on" style="display:none">
-			<span>{{ phrase('agent.loading_saving') }}</span>
+			<span>{{ phrase('global.saving') }}</span>
 		</div>
 	</div>
 </div>

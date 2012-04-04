@@ -5,20 +5,20 @@
 		{% endif %}
 		{% set perc = (100 / display_fields|length) %}
 		{% for field in display_fields %}
-			{% if field == 'subject' %}<th>{{ phrase('agent.ticketsearch.subject') }}</th>
-			{% elseif field == 'user' %}<th>{{ phrase('agent.ticketsearch.user') }}</th>
-			{% elseif field == 'deleted_reason' %}<th data-field="deleted_reason">{{ phrase('agent.ticketsearch.deleted_reason') }}</th>
+			{% if field == 'subject' %}<th>{{ phrase('global.subject') }}</th>
+			{% elseif field == 'user' %}<th>{{ phrase('global.user') }}</th>
+			{% elseif field == 'deleted_reason' %}<th data-field="deleted_reason">{{ phrase('global.deleted_reason') }}</th>
 			{% elseif field == 'person_email' %}<th data-field="person">{{ phrase('agent.ticketsearch.user_email') }}</th>
-			{% elseif field == 'person_organization' %}<th data-field="person_organization">{{ phrase('agent.ticketsearch.organization') }}</th>
+			{% elseif field == 'person_organization' %}<th data-field="person_organization">{{ phrase('global.organization') }}</th>
 			{% elseif field == 'department' %}<th data-field="department">{{ phrase('global.department') }}</th>
-			{% elseif field == 'category' %}<th data-field="category">{{ phrase('agent.ticketsearch.category') }}</th>
-			{% elseif field == 'product' %}<th data-field="product">{{ phrase('agent.ticketsearch.product') }}</th>
-			{% elseif field == 'organization' %}<th data-field="organization">{{ phrase('agent.ticketsearch.organization') }}</th>
-			{% elseif field == 'agent' %}<th data-field="agent">{{ phrase('agent.ticketsearch.agent') }}</th>
-			{% elseif field == 'agent_team' %}<th data-field="agent_team">{{ phrase('agent.ticketsearch.team') }}</th>
+			{% elseif field == 'category' %}<th data-field="category">{{ phrase('global.category') }}</th>
+			{% elseif field == 'product' %}<th data-field="product">{{ phrase('global.product') }}</th>
+			{% elseif field == 'organization' %}<th data-field="organization">{{ phrase('global.organization') }}</th>
+			{% elseif field == 'agent' %}<th data-field="agent">{{ phrase('global.agent') }}</th>
+			{% elseif field == 'agent_team' %}<th data-field="agent_team">{{ phrase('global.team') }}</th>
 			{% elseif field == 'labels' %}<th data-field="agent_team">{{ phrase('agent.ticketsearch.lables') }}</th>
-			{% elseif field == 'date_user_waiting' %}<th data-field="agent_team">{{ phrase('agent.ticketsearch.user_waiting') }}</th>
-			{% elseif field == 'date_created' %}<th data-field="date_created">{{ phrase('agent.ticketsearch.date_opened') }}</th>
+			{% elseif field == 'date_user_waiting' %}<th data-field="agent_team">{{ phrase('global.user_waiting') }}</th>
+			{% elseif field == 'date_created' %}<th data-field="date_created">{{ phrase('global.date_opened') }}</th>
 			{% else %}
 				{% for f in ticket_field_defs %}
 					{% if field == 'ticket_fields['~f.id~']' %}

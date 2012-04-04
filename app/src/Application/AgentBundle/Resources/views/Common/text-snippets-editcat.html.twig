@@ -5,11 +5,11 @@
 		<dt>{{ phrase('global.title') }}:</dt>
 		<dd><input type="text" name="title" value="{{ category.title }}" /></dd>
 
-		<dt>{{ phrase('agent.label_perms') }}:</dt>
+		<dt>{{ phrase('global.permissions') }}:</dt>
 		<dd>
-			<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if perm_type == 'me' %}checked="checked"{% endif %} /> {{ phrase('agent.label_perms_just_me') }}</label><br />
+			<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if perm_type == 'me' %}checked="checked"{% endif %} /> {{ phrase('global.just_me') }}</label><br />
 			<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if perm_type == 'team' %}checked="checked"{% endif %} /> {{ phrase('global.teams') }}</label><br />
-			<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if perm_type == 'global' %}checked="checked"{% endif %} /> {{ phrase('agent.label_everyone') }}</label><br />
+			<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if perm_type == 'global' %}checked="checked"{% endif %} /> {{ phrase('global.everyone') }}</label><br />
 		</dd>
 
 		<dt class="perm-teams" style="display: none">{{ phrase('global.teams') }}:</dt>

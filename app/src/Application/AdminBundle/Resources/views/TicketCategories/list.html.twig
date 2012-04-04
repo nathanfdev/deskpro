@@ -11,7 +11,7 @@
 		</ul>
 	</nav>
 	<ul>
-		<li>{{ phrase('admin.ticketcategories.ticket_categories') }}</li>
+		<li>{{ phrase('global.ticket_categories') }}</li>
 	</ul>
 {% endblock %}
 {% block content %}
@@ -26,7 +26,7 @@
 		{{ design.dpgrid({class: 'dep-list'}) }}
 			{{ design.dpgrid_headerrow() }}
 				{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 890px;"}) }}
-					<h1>{{ phrase('admin.ticketcategories.category') }}</h1>
+					<h1>{{ phrase('global.category') }}</h1>
 				{{ design.dpgrid_headercol_end() }}
 			{{ design.dpgrid_headerrow_end() }}
 
@@ -81,11 +81,11 @@
 
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('admin.ticketcategories.parent') }}</label>
+						<label>{{ phrase('global.parent') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<select name="parent_id" id="newcat_parent_id">
-							<option value="0">{{ phrase('admin.ticketcategories.no_parent') }}</option>
+							<option value="0">{{ phrase('global.no_parent') }}</option>
 							{% for category in all_categories %}
 								<option value="{{ category.id }}">{{ category.title }}</option>
 							{% endfor %}
@@ -95,7 +95,7 @@
 			</form>
 		</div>
 		<div class="overlay-footer">
-			<button class="clean-white" id="newcat_savebtn">{{ phrase('admin.ticketcategories.add') }}</button>
+			<button class="clean-white" id="newcat_savebtn">{{ phrase('global.add') }}</button>
 		</div>
 	</div>
 

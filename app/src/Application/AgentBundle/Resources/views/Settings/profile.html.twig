@@ -18,7 +18,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>{{ phrase('agent.label_timezone') }}</label></div>
+			<div class="dp-form-label"><label>{{ phrase('global.timezone') }}</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.timezone) }}
 			</div>
@@ -37,7 +37,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			</div>
 			<script class="template-upload" type="text/x-tmpl">
 				{{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
-				<p>{{ '{%=file.name%}' }} ({{ phrase('agent.loading_saving') }})</p>
+				<p>{{ '{%=file.name%}' }} ({{ phrase('global.saving') }})</p>
 				{{ '{% } %}' }}
 			</script>
 			<script class="template-download" type="text/x-tmpl">
@@ -58,10 +58,10 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>{{ phrase('agent.settings.change_password') }}</label></div>
+			<div class="dp-form-label"><label>{{ phrase('global.change_password') }}</label></div>
 			<div class="dp-form-input double-password">
-				{{ form_widget(form.password, {'attr': { 'placeholder': phrase('agent.settings.label_new_password'), 'class': 'password1' }}) }}
-				{{ form_widget(form.password2, {'attr': { 'placeholder': phrase('agent.settings.label_new_password2'), 'class': 'password2' }}) }}
+				{{ form_widget(form.password, {'attr': { 'placeholder': phrase('global.new_password'), 'class': 'password1' }}) }}
+				{{ form_widget(form.password2, {'attr': { 'placeholder': phrase('global.repeat_password'), 'class': 'password2' }}) }}
 				<br /><em class="desc">{{ phrase('agent.settings.leave_password_blank') }}</em>
 			</div>
 		</div>

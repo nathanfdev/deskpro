@@ -1,17 +1,17 @@
 <?php return array (
-  'admin.usergroups.usergroups' => 'Usergroups',
+
   'admin.usergroups.browse_members' => 'Browse Members',
   'admin.usergroups.there_are_no_users_to_show' => 'There are no users to show.',
 
-  'admin.usergroups.feedback' => 'Feedback',
-  'admin.usergroups.articles' => 'Articles',
-  'admin.usergroups.downloads' => 'Downloads',
-  'admin.usergroups.news' => 'News',
+
+
+
+
   'admin.usergroups.can_use_tickets' => 'Can use tickets',
-  'admin.usergroups.departments' => 'Departments',
+
   'admin.usergroups.can_use_chat' => 'Can use chat',
   'admin.usergroups.can_use_feedback' => 'Can use feedback',
-  'admin.usergroups.permission' => 'Permission',
+
   'admin.usergroups.can_submit_new_feedback' => 'Can submit new feedback',
   'admin.usergroups.can_vote_on_feedback' => 'Can vote on feedback',
   'admin.usergroups.submit_comments_on_feedback' => 'Submit comments on feedback',
@@ -27,11 +27,11 @@
   'admin.usergroups.new_usergroup' => 'New Usergroup',
 
   'admin.usergroups.note_description' => 'Note / Description',
-  'admin.usergroups.number_of_members' => 'Number of members',
-  'admin.usergroups.permissions' => 'Permissions',
+
+
   'admin.usergroups.save_usergroup' => 'Save Usergroup',
   'admin.usergroups.add_usergroup' => 'Add Usergroup',
-  'admin.usergroups.everyone' => 'Everyone',
+
   'admin.usergroups.browse' => 'browse',
-  'admin.usergroups.delete' => 'delete',
+
 );

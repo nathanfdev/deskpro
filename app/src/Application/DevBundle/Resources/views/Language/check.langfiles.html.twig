@@ -32,7 +32,7 @@
 {#    <input type="hidden" name="content" value="{{content.data}}">#}
 {#    <input type="submit" value="Globalise">#}
 {# </form> #}
-    <input type="checkbox" name="batch[]" value="{{content.data}}" /> Batch
+    <input type="checkbox" name="batch[]" value="{{content.data}}" {% if not content.exists %}checked="checked"{% endif %}/> Batch
 {% endfor %}
     <input type="submit" value="Batch Globalise">
 </form>

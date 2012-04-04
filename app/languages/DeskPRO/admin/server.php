@@ -1,5 +1,5 @@
 <?php return array (
-  'admin.server.file_uploads' => 'File Uploads',
+
   'admin.server.storage_mechanism' => 'Storage Mechanism',
   'admin.server.file_storage' => 'File Storage',
   'admin.server.storage_path' => 'Storage Path',
@@ -7,7 +7,7 @@
   'admin.server.storage_table' => 'Storage Table',
   'admin.server.blobs_storage' => 'blobs_storage',
   'admin.server.setting' => 'Setting',
-  'admin.server.value' => 'Value',
+
   'admin.server.this_setting_must_be_enabled_for_php_to' => 'This setting must be enabled for PHP to accept file uploads at all.',
   'admin.server.this_is_where_php_saves_files_to_temporarily' => 'This is where PHP saves files to temporarily before they are processed by DeskPRO. This path must be writable by the web server for file uploads to work.',
   'admin.server.upload_max_filesize' => 'upload_max_filesize',
@@ -19,24 +19,24 @@
   'admin.server.download_attachment' => 'Download attachment',
   'admin.server.test_upload' => 'Test Upload',
   'admin.server.change_storage_mechanism' => 'Change Storage Mechanism',
-  'admin.server.clear_logs' => 'Clear Logs',
-  'admin.server.error_logs' => 'Error Logs',
-  'admin.server.id' => 'ID',
-  'admin.server.pri' => 'Pri',
-  'admin.server.message' => 'Message',
-  'admin.server.date' => 'Date',
-  'admin.server.first' => 'First',
-  'admin.server.prev' => 'Prev',
-  'admin.server.next' => 'Next',
-  'admin.server.last' => 'Last',
-  'admin.server.log_name' => 'Log Name',
-  'admin.server.sn_code' => 'SN Code',
-  'admin.server.priority' => 'Priority',
-  'admin.server.flag' => 'Flag',
-  'admin.server.additional_data' => 'Additional Data',
-  'admin.server.mysql_info' => 'MySQL Info',
-  'admin.server.mysql_status' => 'MySQL Status',
-  'admin.server.php_info' => 'PHP Info',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   'admin.server.important_configuration_values' => 'Important Configuration Values',
   'admin.server.test_this_value' => 'test this value',
   'admin.server.php_file_uploads' => 'file_uploads',
@@ -46,7 +46,7 @@
   'admin.server.php_version' => 'php_version',
   'admin.server.memory_limit' => 'memory_limit',
   'admin.server.error_log' => 'error_log',
-  'admin.server.error_log_number' => 'Error Log #{{id}}',
+
   'admin.server.fs' => 'filesystem',
   'admin.server.db' => 'database',
   'admin.server.btn_confirm_switch' => 'Confirm: Switch to the {{subphrase}} storage mechanism',

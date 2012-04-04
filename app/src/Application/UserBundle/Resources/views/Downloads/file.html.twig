@@ -6,7 +6,7 @@
 	<link rel="canonical" href="{{ url('user_downloads_file', {'slug': download.url_slug}) }}" />
 {% endblock %}
 {% block breadcrumb %}
-<li><a href="{{ path('user_downloads') }}">{{ phrase('user.downloads.section_title') }}</a></li>
+<li><a href="{{ path('user_downloads') }}">{{ phrase('global.downloads') }}</a></li>
 	{% for cat in category_path %}
 		<li><a href="{{ path('user_downloads', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
@@ -30,7 +30,7 @@
 			<div class="dp-box-content-meta">
 				<div class="by-line">
 					<img src="{{ download.person.getPictureUrl(40) }}" />
-					{{ phrase('user.created_by_x_on_y', {'name': download.person.display_name, 'date': article.date_created|date('M d Y')}) }}
+					{{ phrase('global.created_by_name_on_date', {'name': download.person.display_name, 'date': article.date_created|date('M d Y')}) }}
 					<br class="dp-clear" style="clear:left" />
 				</div>
 			</div>

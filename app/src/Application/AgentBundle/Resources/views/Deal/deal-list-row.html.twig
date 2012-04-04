@@ -21,8 +21,8 @@
         <div class="top-row-right visible-related-content-controls">
             <span>{{deal.deal_stage.name}}</span><span> {{deal.deal_currency.symbol|default('$')}}{{deal.deal_value}}</span>
                 <div class="bound-faded"></div>
-                <button class="clean-gray xxx-small related-link clean-white small">{{ phrase('agent.deal.add_as_related') }}</button>
-                <button class="clean-gray xxx-small related-unlink clean-white small">{{ phrase('agent.deal.remove_as_related') }}</button>
+                <button class="clean-gray xxx-small related-link clean-white small">{{ phrase('global.add_as_related') }}</button>
+                <button class="clean-gray xxx-small related-unlink clean-white small">{{ phrase('global.remove_as_related') }}</button>
         </div>
 
 
@@ -30,23 +30,23 @@
     <hr class="clear-top">
     <div style="margin-left: 22px;">
         <ul class="controls">
-            <li>{{ phrase('agent.deal.user') }}:
+            <li>{{ phrase('global.user') }}:
             {% for person in deal.peoples%}
                 <a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': person.id|default('0')}) }}">
                     {{ person.display_name }}
                 </a>
                 {% if loop.index >= 1 and loop.index != loop.last%}
-                    {{ phrase('agent.deal.and') }}
+                    {{ phrase('global.and') }}
                 {%endif%}
 
              {% endfor%}
             </li>
             <li>|</li>
-            <li>{{ phrase('agent.deal.organization') }}:
+            <li>{{ phrase('global.organization') }}:
             {% for organization in deal.organizations%}
                 <a class="with-route" data-route="person:{{ path('agent_org_view', {'organization_id': organization.id}) }}">{{organization.name}}</a>
                 {% if loop.index >= 1 and loop.index != loop.last%}
-                    {{ phrase('agent.deal.and') }}
+                    {{ phrase('global.and') }}
                 {%endif%}
             {% endfor%}
             </li>
@@ -64,14 +64,14 @@
 
             {% if deal.assigned_agent.id and 'assigned_agent' in display_fields%}
             <li>
-                <span class="prop-title">{{ phrase('agent.deal.agent') }}:</span>
+                <span class="prop-title">{{ phrase('global.agent') }}:</span>
                 <span class="prop-val">{{deal.assigned_agent.name}}</span>
             </li>
             {% endif %}
 
             {% if 'date_created' in display_fields %}
             <li>
-                <span class="prop-title">{{ phrase('agent.deal.date_created') }}:</span>
+                <span class="prop-title">{{ phrase('global.date_created') }}:</span>
                 <span class="prop-val">{{deal.date_created|date('day')}}</span>
             </li>
             {% endif %}

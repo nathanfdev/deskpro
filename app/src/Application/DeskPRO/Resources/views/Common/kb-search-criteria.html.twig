@@ -14,11 +14,11 @@
 	<div class="type" title="{{ phrase('deskpro.common.choose_criteria') }}" data-rule-type="">
 	</div>
 {% endif %}
-<div class="type" title="{{ phrase('deskpro.common.category') }}" data-rule-type="category">
+<div class="type" title="{{ phrase('global.category') }}" data-rule-type="category">
 	<div class="op">
 		<select name="op" class="op">
-			<option value="is">{{ phrase('deskpro.common.is') }}</option>
-			<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
+			<option value="is">{{ phrase('global.is') }}</option>
+			<option value="not">{{ phrase('global.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -29,18 +29,18 @@
 		</select>
 	</div>
 </div>
-<div class="type" title="{{ phrase('deskpro.common.status') }}" data-rule-type="status">
+<div class="type" title="{{ phrase('global.status') }}" data-rule-type="status">
 	<div class="op">
 		<select name="op" class="op">
-			<option value="is">{{ phrase('deskpro.common.is') }}</option>
-			<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
+			<option value="is">{{ phrase('global.is') }}</option>
+			<option value="not">{{ phrase('global.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
 		<select name="status">
-			<option value="published">{{ phrase('deskpro.common.published') }}</option>
-			<option value="archived">{{ phrase('deskpro.common.archived') }}</option>
-			<option value="hidden">{{ phrase('deskpro.common.hidden') }}</option>
+			<option value="published">{{ phrase('global.published') }}</option>
+			<option value="archived">{{ phrase('global.archived') }}</option>
+			<option value="hidden">{{ phrase('global.hidden') }}</option>
 			<option value="hidden.unpublished">{{ phrase('deskpro.common.hidden_unpublished') }}</option>
 			<option value="hidden.validating">{{ phrase('deskpro.common.hidden_validating') }}</option>
 			<option value="hidden.deleted">{{ phrase('deskpro.common.hidden_deleted') }}</option>
@@ -59,11 +59,11 @@
 		{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
 	</div>
 </div>
-<div class="type" title="{{ phrase('deskpro.common.labels') }}" data-rule-type="label">
+<div class="type" title="{{ phrase('global.labels') }}" data-rule-type="label">
 	<div class="op">
 		<select name="op" class="op">
-			<option value="is">{{ phrase('deskpro.common.include') }}</option>
-			<option value="not">{{ phrase('deskpro.common.does_not_include') }}</option>
+			<option value="is">{{ phrase('global.include') }}</option>
+			<option value="not">{{ phrase('global.does_not_include') }}</option>
 		</select>
 	</div>
 	<div class="options">

@@ -45,22 +45,22 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="profile-box-container-outer">
 	<div class="profile-box-container">
 		<header>
-			<h4>{{ phrase('agent.label_properties') }}</h4>
+			<h4>{{ phrase('global.properties') }}</h4>
 		</header>
 		<section class="description-area">
 			<dl class="info-list">
-				<dt class="type-labels">{{ phrase('agent.label_labels') }}:</dt>
+				<dt class="type-labels">{{ phrase('global.labels') }}:</dt>
 				<dd class="kb-tags tags-wrap noedit-tags">
 					<input type="text" id="{{baseId}}_labels_input" value="{% for label in news.labels %}{{label.label}},{% endfor %}" />
 				</dd>
 
-				<dt>{{ phrase('agent.label_rating') }}</dt>
+				<dt>{{ phrase('global.rating') }}</dt>
 				<dd>
                     {% set phrase_part %}
-                    <span class="link-look who-voted-trigger">{{ phrase('agent.news.n_votes', {'count': news.num_ratings}) }}</span>
+                    <span class="link-look who-voted-trigger">{{ phrase('global.count_votecount_votes', {'count': news.num_ratings}) }}</span>
                     {% endset %}
-                    {{ phrase('agent.news.percent_helpful_n_votes', {'percent':news.rating_percent,'subphrase':phrase_part}) }}<br />
-                    <small>{{ phrase('agent.news.n_helpful_n_unhelpful', {'up_votes':news.up_votes,'down_votes':news.down_votes}) }}</small>
+                    {{ phrase('global.percent_helpful_subphrase', {'percent':news.rating_percent,'subphrase':phrase_part}) }}<br />
+                    <small>{{ phrase('global.up_votes_found_this_the_article_helpful_down_votes_found', {'up_votes':news.up_votes,'down_votes':news.down_votes}) }}</small>
 				</dd>
 
 				<dt></dt>
@@ -87,11 +87,11 @@ pageMeta.baseId = '{{ baseId }}';
 	<header>
 		<nav  id="{{baseId}}_bodytabs">
 			<ul>
-				<li class="on" data-tab-for="#{{baseId}}_tab_contents .news-content"><span>{{ phrase('agent.label_page') }}</span></li>
-				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.label_comments') }} (<span id="{{baseId}}_count_comments">{{news_comments|length|default(0)}}</span>)</span></li>
+				<li class="on" data-tab-for="#{{baseId}}_tab_contents .news-content"><span>{{ phrase('global.page') }}</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('global.comments') }} (<span id="{{baseId}}_count_comments">{{news_comments|length|default(0)}}</span>)</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.label_revisions') }} (<span id="{{baseId}}_count_revs">{{news.revisions|length|default(0)}}</span>)</span></li>
-				<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.label_related_content') }} (<span id="{{baseId}}_count_related">0</span>)</span></li>
-				<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('agent.label_search') }}</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('global.related_content') }} (<span id="{{baseId}}_count_related">0</span>)</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('global.search') }}</span></li>
 			</ul>
 		</nav>
 	</header>
@@ -106,7 +106,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<ul class="option-buttons right" id="{{baseId}}_content_edit_btns">
 						<li class="kb-editor-edit edit" id="{{baseId}}_edit_btn"><span>{{ phrase('agent.edit') }}</span></li>
 						<li class="editor-save-trigger save" id="{{baseId}}_save_btn"><span>{{ phrase('global.save') }}</span></li>
-						<li class="editor-cancel-trigger cancel" id="{{baseId}}_cancel_btn"><span>{{ phrase('agent.cancel') }}</span></li>
+						<li class="editor-cancel-trigger cancel" id="{{baseId}}_cancel_btn"><span>{{ phrase('global.cancel') }}</span></li>
 					</ul>
 				</nav>
 				<div id="{{baseId}}_content_ed" class="news-content content-tab-item">
@@ -137,7 +137,7 @@ pageMeta.baseId = '{{ baseId }}';
 							</div>
 							<div class="content">
 								<header>
-									<h4>{{ phrase('agent.news.new_comment') }}</h4>
+									<h4>{{ phrase('global.new_comment') }}</h4>
 								</header>
 								<div class="body-text">
 									<textarea style="width:99%; height: 80px;"></textarea>
@@ -147,7 +147,7 @@ pageMeta.baseId = '{{ baseId }}';
 										<button class="clean-white">{{ phrase('agent.add_comment') }}</button>
 									</div>
 									<div class="loading-on" style="display:none">
-										{{ phrase('agent.loading_saving') }}
+										{{ phrase('global.saving') }}
 									</div>
 								</div>
 							</div>
@@ -201,11 +201,11 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <ul class="status-menu" data-option-name="status" style="display:none">
-	<li data-option-value="published">{{ phrase('agent.kb.status_published') }}</li>
-	<li data-option-value="hidden.unpublished">{{ phrase('agent.kb.hidden_status_unpublished') }}</li>
-	<li data-option-value="archived">{{ phrase('agent.kb.status_archived') }}</li>
+	<li data-option-value="published">{{ phrase('global.published') }}</li>
+	<li data-option-value="hidden.unpublished">{{ phrase('global.unpublished') }}</li>
+	<li data-option-value="archived">{{ phrase('global.archived') }}</li>
 	{% if news.person.id == app.user.id %}
-		<li data-option-value="hidden.draft">{{ phrase('agent.kb.hidden_status_draft') }}</li>
+		<li data-option-value="hidden.draft">{{ phrase('global.draft') }}</li>
 	{% endif %}
 </ul>
 

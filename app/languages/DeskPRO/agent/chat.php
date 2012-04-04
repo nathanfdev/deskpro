@@ -2,10 +2,10 @@
 	'agent.chat.chat_transcript' => 'Chat Transcript',
 	'agent.chat.chat_history' => 'Chat History',
 	'agent.chat.new_chat' => 'New Chat',
-	'agent.chat.by_x' => 'By {{name}}',
+
 	'agent.chat.by_anon' => 'Chat {{chat_id}} by Anonymous',
 	'agent.chat.in_department' => 'in {{name}}',
-	'agent.chat.dismiss_chat' => 'Dismiss',
+
 	'agent.chat.take_chat' => 'Take Chat',
 	'agent.chat.join_chat' => 'Join Chat',
 	'agent.chat.open_chat' => 'Open Chat',
@@ -27,29 +27,29 @@
 	'agent.chat.invite_no_agents' => 'There are no other agents you can invite.',
 	'agent.chat.user_typing' => 'Typing',
 
-	'agent.chat.send_file' => 'Send File',
-	'agent.chat.quick_replies' => 'Quick Replies',
-	'agent.chat.create_ticket' => 'Create Ticket',
-	'agent.chat.end_chat' => 'End Chat',
-	'agent.chat.send_message' => 'Send',
 
-	'agent.chat.title_chats' => 'Chats',
+	'agent.chat.quick_replies' => 'Quick Replies',
+
+
+
+
+
 	'agent.chat.title_new_chats' => 'New Chats',
 	'agent.chat.title_active_chats' => 'Active Chats',
 
-	'agent.chat.title_send_file' => 'Send File',
+
 
 	'agent.chat.title_leave_chat_prompt' => 'Leave Chat?',
 	'agent.chat.leave_chat_confirm' => 'Are you sure you want to leave this chat?',
 	'agent.chat.leave_unassign' => 'Unassign myself and leave',
 	'agent.chat.leave_end' => 'End chat and leave',
 
-	'agent.chat.msg_ended'             => 'Chat ended',
+
 	'agent.chat.msg_assigned_agent'    => 'Chat assigned to {{agent_name}}',
 	'agent.chat.msg_unassigned_agent'  => '{{agent_name}} was unassigned',
 
 	'agent.chat.msg_agent_timeout'     => '{{agent_name}} has timed out',
-	'agent.chat.msg_user_timeout'     => 'User has timed out',
+
 
 	'agent.chat.msg_part_joined'       => '{{person_name}} has joined',
 	'agent.chat.msg_part_left'       => '{{person_name}} has left',

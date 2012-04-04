@@ -1,6 +1,6 @@
 {% extends 'UserBundle:News:layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_news') }}">{{ phrase('user.news.section_name') }}</a></li>
+	<li><a href="{{ path('user_news') }}">{{ phrase('global.news') }}</a></li>
 	{% for cat in category_path %}
 		<li><a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}

@@ -7,7 +7,7 @@ pageMeta.title = '{{ phrase('agent.publish.glossary') }}';
 		{{ phrase('agent.publish.add_new_glossary') }}: <input type="text" class="word" value="" style="width: 150px;" /><br />
 		<textarea class="content" rows="2" cols="50" style="width: 98%;"></textarea><br />
 		<div style="text-align: right">
-			<button class="dp-button x-small save-trigger">{{ phrase('agent.add') }}</button>
+			<button class="dp-button x-small save-trigger">{{ phrase('global.add') }}</button>
 		</div>
 	</div>
 
@@ -20,7 +20,7 @@ pageMeta.title = '{{ phrase('agent.publish.glossary') }}';
 				<button class="dp-button x-small save-trigger">{{ phrase('global.save') }}</button>
 			</div>
 		</div>
-		<div class="loading">{{ phrase('agent.loading') }}</div>
+		<div class="loading">{{ phrase('global.loading') }}</div>
 	</div>
 
 	<div class="inner-box-tab-content top-box">
@@ -30,7 +30,7 @@ pageMeta.title = '{{ phrase('agent.publish.glossary') }}';
 				<span class="counter counter-words">{{word_count|default('0')}}</span>
 			</li>
 			<li class="total on">
-				<label class="new-word-trigger" style="cursor: pointer">{{ phrase('agent.add') }}</label>
+				<label class="new-word-trigger" style="cursor: pointer">{{ phrase('global.add') }}</label>
 			</li>
 		</ul>
 	</div>

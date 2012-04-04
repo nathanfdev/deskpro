@@ -31,7 +31,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 		<div class="task-info">
 			<ul>
-				<li class="noval opt-trigger assigned_agent"><label>{{ phrase('agent.task.me') }}</label><span class="drop-icon"></span></li>
+				<li class="noval opt-trigger assigned_agent"><label>{{ phrase('global.me') }}</label><span class="drop-icon"></span></li>
 				<li class="noval opt-trigger date_due"><label>No due date</label><span class="drop-icon"></span></li>
 			</ul>
 			<div class="linked-container" style="display:none">
@@ -50,8 +50,8 @@ pageMeta.baseId = '{{ baseId }}';
 </script>
 
 <ul id="{{baseId}}_menu_vis" style="display: none">
-	<li data-vis="0">{{ phrase('agent.task.private') }}</li>
-	<li data-vis="1">{{ phrase('agent.task.public') }}</li>
+	<li data-vis="0">{{ phrase('global.private') }}</li>
+	<li data-vis="1">{{ phrase('global.public') }}</li>
 </ul>
 
 <div class="optionbox reply-agent-team-ob single-option-type" id="{{baseId}}_assign_ob" style="display: none">
@@ -59,12 +59,12 @@ pageMeta.baseId = '{{ baseId }}';
 		<section data-section-name="agents">
 			<header>
 				<h3>{{ phrase('global.agents') }}</h3>
-				<input type="text" class="filter-box" placeholder="{{ phrase('agent.task.filter') }}" />
+				<input type="text" class="filter-box" placeholder="{{ phrase('global.filter') }}" />
 			</header>
 			<ul>
 				<li class="me last-me">
 					<input type="radio" name="{{baseId}}_asignedto" value="{{ app.user.id }}" />
-					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.task.me') }}</span></label>
+					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('global.me') }}</span></label>
 				</li>
 
 				{% for agent in agents %}
@@ -84,7 +84,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<section data-section-name="teams">
 			<header>
 				<h3>{{ phrase('global.teams') }}</h3>
-				<input type="text" class="filter-box" placeholder="{{ phrase('agent.task.filter') }}" />
+				<input type="text" class="filter-box" placeholder="{{ phrase('global.filter') }}" />
 			</header>
 			<ul>
 				{% for team in app.user.getAgent().getTeams() %}

@@ -12,25 +12,25 @@
 			</div>
 		</li>
 		<li class="ob">
-			<label>{{ phrase('agent.main.status') }}</label>
+			<label>{{ phrase('global.status') }}</label>
 			<div class="values">
 				<select name="set_term[status][]" multiple="multiple">
-					<option data-start="1" class="start" value="awaiting_agent">{{ phrase('agent.main.awaiting_agent') }}</option>
-					<option data-start="1" class="start" value="awaiting_user">{{ phrase('agent.main.awaiting_user') }}</option>
-					<option value="resolved">{{ phrase('agent.main.resolved') }}</option>
-					<option value="closed">{{ phrase('agent.main.closed') }}</option>
-					<option value="hidden.validated">{{ phrase('agent.main.awaiting_validation') }}</option>
-					<option value="hidden.spam">{{ phrase('agent.main.spam') }}</option>
-					<option value="hidden.deleted">{{ phrase('agent.main.deleted') }}</option>
+					<option data-start="1" class="start" value="awaiting_agent">{{ phrase('global.awaiting_agent') }}</option>
+					<option data-start="1" class="start" value="awaiting_user">{{ phrase('global.awaiting_user') }}</option>
+					<option value="resolved">{{ phrase('global.resolved') }}</option>
+					<option value="closed">{{ phrase('global.closed') }}</option>
+					<option value="hidden.validated">{{ phrase('global.awaiting_validation') }}</option>
+					<option value="hidden.spam">{{ phrase('global.spam') }}</option>
+					<option value="hidden.deleted">{{ phrase('global.deleted') }}</option>
 				</select>
 			</div>
 		</li>
 		<li class="ob">
-			<label>{{ phrase('agent.main.agent') }}</label>
+			<label>{{ phrase('global.agent') }}</label>
 			<div class="values">
 				{% include 'AgentBundle:Common:select-agent.html.twig' with {
 					'name': 'set_term[agent][]',
-					'blank_title': phrase('agent.agent'),
+					'blank_title': phrase('global.agent'),
 					'departments': ticket_options.agents,
 					'add_attr': 'multiple="multiple"'
 				} %}
@@ -38,11 +38,11 @@
 		</li>
 		{% if app.getSetting('core.use_agent_team') %}
 			<li class="ob">
-				<label>{{ phrase('agent.main.agent') }} {{ phrase('agent.main.team') }}</label>
+				<label>{{ phrase('global.agent') }} {{ phrase('global.team') }}</label>
 				<div class="values">
 					{% include 'AgentBundle:Common:select-agent-team.html.twig' with {
 						'name': 'set_term[agent_team][]',
-						'blank_title': phrase('agent.agent_team'),
+						'blank_title': phrase('global.agent_team'),
 						'departments': ticket_options.agent_teams,
 						'add_attr': 'multiple="multiple"'
 					} %}
@@ -50,11 +50,11 @@
 			</li>
 		{% endif %}
 		<li class="ob">
-			<label>{{ phrase('agent.main.followers') }}</label>
+			<label>{{ phrase('global.followers') }}</label>
 			<div class="values">
 				{% include 'AgentBundle:Common:select-agent.html.twig' with {
 					'name': 'set_term[participant][]',
-					'blank_title': phrase('agent.agent'),
+					'blank_title': phrase('global.agent'),
 					'departments': ticket_options.agents,
 					'add_attr': 'multiple="multiple"'
 				} %}
@@ -62,11 +62,11 @@
 		</li>
 		{% if app.getSetting('core.use_ticket_category') %}
 		<li class="ob">
-			<label>{{ phrase('agent.main.category') }}</label>
+			<label>{{ phrase('global.category') }}</label>
 			<div class="values">
 				{% include 'AgentBundle:Common:select-category.html.twig' with {
 					'name': 'set_term[category][]',
-					'blank_title': phrase('agent.category'),
+					'blank_title': phrase('global.category'),
 					'categories': ticket_options.ticket_categories_hierarchy,
 					'add_attr': 'multiple="multiple"'
 				} %}
@@ -75,11 +75,11 @@
 		{% endif %}
 		{% if app.getSetting('core.use_product') %}
 		<li class="ob">
-			<label>{{ phrase('agent.main.product') }}</label>
+			<label>{{ phrase('global.product') }}</label>
 			<div class="values">
 				{% include 'AgentBundle:Common:select-product.html.twig' with {
 					'name': 'set_term[product][]',
-					'blank_title': phrase('agent.product'),
+					'blank_title': phrase('global.product'),
 					'products': ticket_options.products_hierarchy,
 					'add_attr': 'multiple="multiple"'
 				} %}
@@ -88,11 +88,11 @@
 		{% endif %}
 		{% if app.getSetting('core.use_ticket_priority') %}
 		<li class="ob">
-			<label>{{ phrase('agent.main.priority') }}</label>
+			<label>{{ phrase('global.priority') }}</label>
 			<div class="values">
 				{% include 'AgentBundle:Common:select-priority.html.twig' with {
 					'name': 'set_term[priority][]',
-					'blank_title': phrase('agent.priority'),
+					'blank_title': phrase('global.priority'),
 					'priorities': ticket_options.ticket_priorities,
 					'add_attr': 'multiple="multiple"'
 				} %}
@@ -101,11 +101,11 @@
 		{% endif %}
 		{% if app.getSetting('core.use_ticket_workflow') %}
 		<li class="ob">
-			<label>{{ phrase('agent.main.workflow') }}</label>
+			<label>{{ phrase('global.workflow') }}</label>
 			<div class="values">
 				{% include 'AgentBundle:Common:select-workflow.html.twig' with {
 					'name': 'set_term[workflow][]',
-					'blank_title': phrase('agent.workflow'),
+					'blank_title': phrase('global.workflow'),
 					'workflows': ticket_options.ticket_workflows,
 					'add_attr': 'multiple="multiple"'
 				} %}
@@ -115,7 +115,7 @@
 
 		{% if ticket_options.people_organizations %}
 		<li class="ob">
-			<label>{{ phrase('agent.main.organization') }}</label>
+			<label>{{ phrase('global.organization') }}</label>
 			<div class="values">
 				<select name="set_term[organization][]" multiple="multiple">
 					{% for id,title in ticket_options.people_organizations %}
@@ -128,7 +128,7 @@
 
 		{% if ticket_options.languages %}
 			<li class="ob">
-				<label>{{ phrase('agent.main.language') }}</label>
+				<label>{{ phrase('global.language') }}</label>
 				<div class="values">
 					<select name="language">
 						{% for id,title in term_options.languages %}

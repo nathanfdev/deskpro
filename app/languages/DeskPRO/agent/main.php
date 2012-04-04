@@ -1,16 +1,16 @@
 <?php return array (
 
-  'agent.main.me' => 'Me',
-  'agent.main.status' => 'Status',
-  'agent.main.awaiting_agent' => 'Awaiting Agent',
-  'agent.main.resolved' => 'Resolved',
-  'agent.main.closed' => 'Closed',
-  'agent.main.changed' => 'Changed',
-  'agent.main.changed_to_include' => 'Changed to include',
-  'agent.main.changed_to_remove' => 'Changed to remove',
+
+
+
+
+
+
+
+
   'agent.main.deskpro_agent_interface' => 'DeskPRO Agent Interface',
-  'agent.main.reload_activetab' => 'Reload active tab',
-  'agent.main.please_wait' => 'Please Wait',
+
+
   'agent.main.open_new_ticket_form' => 'Open new ticket form',
   'agent.main.open_new_person_form' => 'Open new person form',
   'agent.main.open_new_organization_form' => 'Open new organization form',
@@ -19,7 +19,7 @@
   'agent.main.open_new_feedback_form' => 'Open new feedback form',
   'agent.main.open_new_news_form' => 'Open new news form',
   'agent.main.open_new_download_form' => 'Open new download form',
-  'agent.main.window_navigation' => 'Window Navigation',
+
   'agent.main.ctrlleft' => 'ctrl+left',
   'agent.main.go_to_previous_tab' => 'Go to previous tab',
   'agent.main.ctrlright' => 'ctrl+right',
@@ -27,77 +27,77 @@
   'agent.main.ctrlshiftc' => 'ctrl+shift+c',
   'agent.main.close_current_tab' => 'Close current tab',
   'agent.main.up_or_down' => 'up or down',
-  'agent.main.when_in_a_filter_listingmoves_selected_row_cursor' => 'When in a filter listing, moves selected row cursor',
-  'agent.main.when_in_a_filter_listing_opensthe_selected_row' => 'When in a filter listing, opens the selected row',
-  'agent.main.when_in_a_filter_listing_checksthe_checkbox_on' => 'When in a filter listing, checks the checkbox on the select row',
-  'agent.main.focus_reply_box' => 'Focus reply box',
+
+
+
+
   'agent.main.keyboard' => 'Keyboard',
-  'agent.main.create_content' => 'Create Content',
+
   'agent.main.shiftc' => 'shift+c',
   'agent.main.shifta' => 'shift+a',
-  'agent.main.people' => 'People',
+
   'agent.main.shiftr' => 'shift+r',
   'agent.main.shiftt' => 'shift+t',
-  'agent.main.search' => 'Search',
+
   'agent.main.search_in_types' => 'Search in types',
-  'agent.main.all' => 'All',
-  'agent.main.articles' => 'Articles',
-  'agent.main.downloads' => 'Downloads',
-  'agent.main.feedback' => 'Feedback',
-  'agent.main.news' => 'News',
 
-  'agent.main.label' => 'Label',
-  'agent.main.email_domain' => 'Email Domain',
-  'agent.main.phone' => 'Phone',
-  'agent.main.organization' => 'Organization',
-  'agent.main.usergroup' => 'Usergroup',
-  'agent.main.email_address' => 'Email Address',
 
-  'agent.main.awaiting_validation' => 'Awaiting Validation',
-  'agent.main.spam' => 'Spam',
-  'agent.main.deleted' => 'Deleted',
-  'agent.main.agent' => 'Agent',
-  'agent.main.agent_team' => 'Agent Team',
-  'agent.main.followers' => 'Followers',
-  'agent.main.category' => 'Category',
-  'agent.main.product' => 'Product',
-  'agent.main.priority' => 'Priority',
-  'agent.main.workflow' => 'Workflow',
-  'agent.main.deskpro' => 'DeskPRO',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   'agent.main.powered_by' => 'Powered by',
-  'agent.main.change_your_notificationsettings' => 'Change your notification settings',
-  'agent.main.advanced' => 'Advanced',
-  'agent.main.agentinterface' => 'Agent Interface',
+
+
+
   'agent.main.reset_form' => 'Reset Form',
-  'agent.main.organizations' => 'Organizations',
-  'agent.main.publish_andfeedback' => 'Publish and Feedback',
+
+
 
   'agent.main.report_this_error_to_deskpro' => 'Report this error to DeskPRO',
-  'agent.main.reload_active_tab' => 'Reload active tab',
+
   'agent.main.keyboard_shortcuts' => 'Keyboard Shortcuts',
   'agent.main.creation' => 'Creation',
-  'agent.main.awaiting_user' => 'Awaiting User',
-  'agent.main.team' => 'Team',
-  'agent.main.language' => 'Language',
+
+
+
   'agent.main.tickets_users_organizations_articles_news_downloads_and_feedback' => 'Tickets, Users, Organizations, Articles, News, Downloads and Feedback open here.',
   'agent.main.notifications_about_new_tickets_and_chats_will_appear' => 'Notifications about new tickets and chats will appear here.',
-  'agent.main.change_your_notification_settings' => 'Change your notification settings',
-  'agent.main.agent_interface' => 'Agent Interface',
-  'agent.main.publish_and_feedback' => 'Publish and Feedback',
+
+
+
   'agent.main.dev' => 'DEV',
 
-  'agent.main.is' => 'is',
-  'agent.main.is_not' => 'is not',
-  'agent.main.when_in_a_filter_listing_moves_selected_row' => 'When in a filter listing, moves selected row cursor',
+
+
+
   'agent.main.enter' => 'enter',
-  'agent.main.when_in_a_filter_listing_opens_the_selected' => 'When in a filter listing, opens the selected row',
+
   'agent.main.space' => 'space',
-  'agent.main.when_in_a_filter_listing_checks_the_checkbox' => 'When in a filter listing, checks the checkbox on the select row',
+
 
   'agent.main.wwwdeskprocom' => 'www.deskpro.com',
 
-  'agent.main.filter' => 'Filter...',
-  'agent.main.labels' => 'Labels',
+
+
   'agent.main.toggle_mute' => 'Toggle mute',
   'agent.main.search_for_text_or_a_phrase' => 'Search for text or a phrase',
 );

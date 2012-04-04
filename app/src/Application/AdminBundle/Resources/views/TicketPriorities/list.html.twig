@@ -11,7 +11,7 @@
 		</ul>
 	</nav>
 	<ul>
-		<li>{{ phrase('admin.ticketpriorities.ticket_priorities') }}</li>
+		<li>{{ phrase('global.ticket_priorities') }}</li>
 	</ul>
 {% endblock %}
 {% block content %}
@@ -28,7 +28,7 @@
 					<h1>{{ phrase('global.title') }}</h1>
 				{{ design.dpgrid_headercol_end() }}
 				{{ design.dpgrid_headercol({ class: 'l r tl tr l-margin r-margin', style: "width: 80px"}) }}
-					<h1>{{ phrase('admin.ticketpriorities.priority') }}</h1>
+					<h1>{{ phrase('global.priority') }}</h1>
 				{{ design.dpgrid_headercol_end() }}
 			{{ design.dpgrid_headerrow_end() }}
 
@@ -61,7 +61,7 @@
 				</div>
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('admin.ticketpriorities.priority') }}</label>
+						<label>{{ phrase('global.priority') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="text" name="priority" id="editcat_pri" value="" style="width:30px" />
@@ -92,7 +92,7 @@
 
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('admin.ticketpriorities.priority') }}</label>
+						<label>{{ phrase('global.priority') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="text" name="priority" id="newcat_pri" value="" style="width:30px" />
@@ -101,7 +101,7 @@
 			</form>
 		</div>
 		<div class="overlay-footer">
-			<button class="clean-white" id="newcat_savebtn">{{ phrase('admin.ticketpriorities.add') }}</button>
+			<button class="clean-white" id="newcat_savebtn">{{ phrase('global.add') }}</button>
 		</div>
 	</div>
 

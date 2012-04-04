@@ -10,11 +10,11 @@
   'agent.mediabrowser.crop_and_scale' => 'Crop and Scale',
   'agent.mediabrowser.scale' => 'Scale',
 
-  'agent.mediabrowser.category' => 'Category',
-  'agent.mediabrowser.labels' => 'Labels',
-  'agent.mediabrowser.types' => 'Types',
-  'agent.mediabrowser.all' => 'All',
-  'agent.mediabrowser.articles' => 'Articles',
+
+
+
+
+
   'agent.mediabrowser.attached_to_ticket' => 'attached to ticket',
   'agent.mediabrowser.article' => 'article',
   'agent.mediabrowser.ticket' => 'ticket',

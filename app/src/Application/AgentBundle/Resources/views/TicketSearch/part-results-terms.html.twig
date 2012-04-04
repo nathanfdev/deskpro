@@ -1,9 +1,9 @@
 <div class="search-form">
 	<form action="{{ path('agent_ticketsearch_runcustomfilter') }}" method="post" id="tickets_search_form">
 		<div class="search-terms"></div>
-		<div class="term"><span class="add-term">+</span> {{ phrase('agent.ticketsearch.add_a_new_criteria') }}</div>
+		<div class="term"><span class="add-term">+</span> {{ phrase('global.add_a_new_criteria') }}</div>
 		<div class="term">
-			{{ phrase('agent.ticketsearch.order_by') }}
+			{{ phrase('global.order_by') }}
 			<select name="filter[order_by]">
 				<option value="ticket.date_created:desc">{{ phrase('agent.ticketsearch.date_opened_newerolder') }}</option>
 				<option value="ticket.date_created:asc">{{ phrase('agent.ticketsearch.date_opened_oldernewer') }}</option>

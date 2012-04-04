@@ -7,7 +7,7 @@
 
 	'agent.misc.redirect_title' => 'You are about to leave the helpdesk',
 	'agent.misc.redirect_page_title' => 'Page title',
-	'agent.misc.redirect_page' => 'Page',
+
 	'agent.misc.redirect_page_makeup' => '(made up of {{num_images}} images and {{num_scripts}} scripts)',
 	'agent.misc.redirect_server_ip' => 'Server IP',
 	'agent.misc.redirect_server_host' => 'Server Hostname',

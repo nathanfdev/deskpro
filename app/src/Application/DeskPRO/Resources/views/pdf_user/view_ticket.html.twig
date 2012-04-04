@@ -25,7 +25,7 @@ body {
 <hr />
 
 <table class="ticket_attribute">
-    <tr><th>{{ phrase('user.tickets.label_ticket_ref') }}</th></tr>
+    <tr><th>{{ phrase('global.ticket_ref') }}</th></tr>
     <tr><td>{{ ticket.public_id }}</td></tr>
 </table>
 <table class="ticket_attribute">
@@ -35,28 +35,28 @@ body {
 
 {% if ticket.category %}
     <table class="ticket_attribute">
-        <tr><th>{{ phrase('user.tickets.category') }}</th></tr>
+        <tr><th>{{ phrase('global.category') }}</th></tr>
         <tr><td>{{ phrase_object(ticket.category, 'full') }}</td></tr>
     </table>
 {% endif %}
 
 {% if ticket.product %}
     <table class="ticket_attribute">
-        <tr><th>{{ phrase('user.product') }}</th></tr>
+        <tr><th>{{ phrase('global.product') }}</th></tr>
         <tr><td>{{ phrase_object(ticket.product, 'full') }}<td></tr>
     </table>
 {% endif %}
 
 {% if ticket.priority %}
     <table class="ticket_attribute">
-        <tr><th>{{ phrase('user.tickets.priority') }}</th></tr>
+        <tr><th>{{ phrase('global.priority') }}</th></tr>
         <tr><td>{{ phrase_object(ticket.priority) }}</td></tr>
     </table>
 {% endif %}
 
 {% if ticket.person.id != app.user.id %}
     <table class="ticket_attribute">
-        <tr><th>{{ phrase('user.tickets.label_ticket_starter') }}</th></tr>
+        <tr><th>{{ phrase('global.ticket_starter') }}</th></tr>
         <tr><td>{{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;</td></tr>
     </table>
 {% endif %}

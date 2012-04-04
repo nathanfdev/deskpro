@@ -4,15 +4,15 @@
 		<li class="right"><span class="sep"></span></li>
 	</ul>
 	<ul>
-		<li>{{ phrase('agent.ordered_by') }}  </li>
+		<li>{{ phrase('global.ordered_by') }}  </li>
 		<li class="order-by-menu-trigger menu-fitted" data-menu-button=".button"><a class="button">
 			<span class="label">
 				{% if 'popularity' in cache.criteria.order_by %}
-					{{ phrase('agent.feedback.popularity') }}
+					{{ phrase('global.popularity') }}
 				{% elseif 'num_ratings' in cache.criteria.order_by %}
-					{{ phrase('agent.publish.votes') }}
+					{{ phrase('global.votes') }}
 				{% else %}
-					{{ phrase('agent.date_created') }}
+					{{ phrase('global.date_created') }}
 				{% endif %}
 			</span>
 			<em></em>
@@ -20,8 +20,8 @@
 		<li ><span class="sep"></span></li>
 	</ul>
 	<ul class="order-by-menu" style="display: none">
-		<li data-order-by="popularity">{{ phrase('agent.feedback.popularity') }}</li>
-		<li data-order-by="votes">{{ phrase('agent.publish.votes') }}</li>
-		<li data-order-by="date">{{ phrase('agent.date_created') }}</li>
+		<li data-order-by="popularity">{{ phrase('global.popularity') }}</li>
+		<li data-order-by="votes">{{ phrase('global.votes') }}</li>
+		<li data-order-by="date">{{ phrase('global.date_created') }}</li>
 	</ul>
 </header>

@@ -1,8 +1,8 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_subject %}
-	{% if is_new_agent_reply %}{{ phrase('agent.tickets_email.subject_new_agent_reply', { ticket_subject: ticket.subject }) }}
-	{% else %}{{ phrase('agent.tickets_email.subject_new_user_reply', { ticket_subject: ticket.subject }) }}
+	{% if is_new_agent_reply %}{{ phrase('global.new_reply_ticket_subject', { ticket_subject: ticket.subject }) }}
+	{% else %}{{ phrase('global.new_reply_ticket_subject', { ticket_subject: ticket.subject }) }}
 	{% endif %}
 {% endblock %}
 {% block content %}
@@ -16,31 +16,31 @@
 {% set content %}
 <table cellspacing="0" cellpadding="3" width="100%">
 	<tr>
-		<td width="130">{{ phrase('deskpro.emails_agent.agent') }}</td>
+		<td width="130">{{ phrase('global.agent') }}</td>
 		<td>{{ticket.agent.display_name|default('None')}}</td>
 	</tr>
 	<tr>
-		<td width="130">{{ phrase('deskpro.emails_agent.team') }}</td>
+		<td width="130">{{ phrase('global.team') }}</td>
 		<td>{{ticket.agent_team.name|default('None')}}</td>
 	</tr>
 	<tr>
-		<td width="130">{{ phrase('deskpro.emails_agent.category') }}</td>
+		<td width="130">{{ phrase('global.category') }}</td>
 		<td>{{ticket.category.full_title|default('None')}}</td>
 	</tr>
 	<tr>
-		<td width="130">{{ phrase('deskpro.emails_agent.product') }}</td>
+		<td width="130">{{ phrase('global.product') }}</td>
 		<td>{{ticket.product.title|default('None')}}</td>
 	</tr>
 	<tr>
-		<td width="130">{{ phrase('deskpro.emails_agent.priority') }}</td>
+		<td width="130">{{ phrase('global.priority') }}</td>
 		<td>{{ticket.priority.title|default('None')}}</td>
 	</tr>
 	<tr>
-		<td width="130">{{ phrase('deskpro.emails_agent.workflow') }}</td>
+		<td width="130">{{ phrase('global.workflow') }}</td>
 		<td>{{ticket.workflow.title|default('None')}}</td>
 	</tr>
 	<tr>
-		<td width="130">{{ phrase('deskpro.emails_agent.status') }}</td>
+		<td width="130">{{ phrase('global.status') }}</td>
 		<td>
 			{% if not ticket.status or ticket.status == 'awaiting_agent' %}
 			Open

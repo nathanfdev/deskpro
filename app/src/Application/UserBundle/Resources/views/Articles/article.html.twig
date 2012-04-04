@@ -6,7 +6,7 @@
 	<link rel="canonical" href="{{ url('user_articles_article', {'slug': article.url_slug}) }}" />
 {% endblock %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_articles') }}">{{ phrase('user.articles.section_name') }}</a></li>
+	<li><a href="{{ path('user_articles') }}">{{ phrase('global.knowledgebase') }}</a></li>
 	{% for categories in all_categories %}
 		{% if loop.index0 == 0 %}
 			{% for c in categories %}
@@ -19,7 +19,7 @@
 {% block page_title %}
 	{{ article.title }}
 	-
-	{[ phrase('user.articles.section_name') }}
+	{[ phrase('global.knowledgebase') }}
 	{% for categories in all_categories %}
 		{% if loop.index0 == 0 %}
 			{% for c in categories %}
@@ -38,7 +38,7 @@
 			<div class="dp-box-content-meta">
 				<div class="by-line">
 					<img src="{{ article.person.getPictureUrl(40) }}" />
-					{{ phrase('user.articles.created_by_on', {'name':article.person.display_name, 'date':article.date_created|date('M d Y')}) }}
+					{{ phrase('global.created_by_name_on_date', {'name':article.person.display_name, 'date':article.date_created|date('M d Y')}) }}
 					<br class="dp-clear" style="clear:left" />
 				</div>
 			</div>

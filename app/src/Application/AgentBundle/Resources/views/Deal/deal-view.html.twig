@@ -73,7 +73,7 @@ pageMeta.baseId = '{{ baseId }}';
     <div class="titlewrap">
         <div class="isLeft">
             <dl class="table-list">
-                <dt class="type-labels select-deal" id="{{baseId}}_deal_type" data-deal-id="{{ deal.id }}">{{ phrase('agent.deal.type') }}</dt>
+                <dt class="type-labels select-deal" id="{{baseId}}_deal_type" data-deal-id="{{ deal.id }}">{{ phrase('global.type') }}</dt>
                 <dd>
                     {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
                                 'name': 'actions[dealtype]',
@@ -115,9 +115,9 @@ pageMeta.baseId = '{{ baseId }}';
             <div class="isLeft category the-visibility deal-visibility" id="{{baseId}}_visibility_trigger">
                 <span id="{{baseId}}_visibility_label">
                         {% if deal.visibility == 0 %}
-                                {{ phrase('agent.deal.private') }}
+                                {{ phrase('global.private') }}
                         {% elseif deal.visibility == 1 %}
-                                {{ phrase('agent.deal.public') }}
+                                {{ phrase('global.public') }}
                         {% endif %}
                 </span>
             </div>
@@ -125,11 +125,11 @@ pageMeta.baseId = '{{ baseId }}';
             <div class="isLeft hasMargineLeft-10px status the-status deal-status" id="{{baseId}}_status_trigger">
                 <span id="{{baseId}}_status_label">
                         {% if deal.status == 0 %}
-                                {{ phrase('agent.deal.open') }}
+                                {{ phrase('global.open') }}
                         {% elseif deal.status == 1 %}
                                 {{ phrase('agent.deal.won') }}
                         {% elseif deal.status == 2 %}
-                                {{ phrase('agent.deal.lost') }}
+                                {{ phrase('global.lost') }}
                         {% endif %}
                 </span>
             </div>
@@ -158,18 +158,18 @@ pageMeta.baseId = '{{ baseId }}';
 
 {{ optionbox.start('Status', {'id': baseId ~ '_status_ob'}) }}
 	{{ optionbox.section_start('', 'status') }}
-		<li class="top parent-option item-open" data-item-id="0" data-full-title="{{ phrase('agent.deal.open') }}">
+		<li class="top parent-option item-open" data-item-id="0" data-full-title="{{ phrase('global.open') }}">
 			<input type="radio" name="status" value="o" />
-			<label>{{ phrase('agent.deal.open') }}</label>
+			<label>{{ phrase('global.open') }}</label>
 		</li>
 		<li class="top parent-option item-won" data-item-id="1" data-full-title="{{ phrase('agent.deal.won') }}">
 			<input type="radio" name="status" value="1" />
 			<label>{{ phrase('agent.deal.won') }}</label>
 		</li>
 
-		<li class="top parent-option item-lost" data-item-id="2" data-full-title="{{ phrase('agent.deal.lost') }}">
+		<li class="top parent-option item-lost" data-item-id="2" data-full-title="{{ phrase('global.lost') }}">
 			<input type="radio" name="status" value="2" />
-			<label>{{ phrase('agent.deal.lost') }}</label>
+			<label>{{ phrase('global.lost') }}</label>
 		</li>
 	{{ optionbox.section_end() }}
 {{ optionbox.end('Set Status') }}
@@ -177,13 +177,13 @@ pageMeta.baseId = '{{ baseId }}';
 
 {{ optionbox.start('Visibility', {'id': baseId ~ '_visibility_ob'}) }}
 	{{ optionbox.section_start('', 'visibility') }}
-		<li class="top parent-option item-private" data-item-id="0" data-full-title="{{ phrase('agent.deal.private') }}">
+		<li class="top parent-option item-private" data-item-id="0" data-full-title="{{ phrase('global.private') }}">
 			<input type="radio" name="visibility" value="o" />
-			<label>{{ phrase('agent.deal.private') }}</label>
+			<label>{{ phrase('global.private') }}</label>
 		</li>
-		<li class="top parent-option item-public" data-item-id="1" data-full-title="{{ phrase('agent.deal.public') }}">
+		<li class="top parent-option item-public" data-item-id="1" data-full-title="{{ phrase('global.public') }}">
 			<input type="radio" name="visibility" value="1" />
-			<label>{{ phrase('agent.deal.public') }}</label>
+			<label>{{ phrase('global.public') }}</label>
 		</li>
 	{{ optionbox.section_end() }}
 {{ optionbox.end('Set Visibility') }}

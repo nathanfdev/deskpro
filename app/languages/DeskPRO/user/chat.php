@@ -1,6 +1,6 @@
 <?php return array(
 
-	'user.chat.ended'                => 'Chat ended',
+
 	'user.chat.ended_user'           => 'Chat ended by user',
 	'user.chat.ended_by'             => 'Chat ended by {{name}}',
 	'user.chat.ended_by_reason'      => 'Chat ended by {{name}}: {{reason}}',
@@ -16,7 +16,7 @@
 
 	'user.chat.msg_started'             => 'Chat started',
 	'user.chat.msg_agent_timeout'       => '{{name}} is not responding. This ticket will be reassigned to another agnet.',
-	'user.chat.msg_user_timeout'        => 'User has timed out',
+
 	'user.chat.msg_new_user_track'      => 'User is viewing: {{label}}',
 
 	'user.chat.request_transcript_title' => 'Request A Transcript',
@@ -25,15 +25,15 @@
 	'user.chat.send_transcript_btn' => 'Send me the transcript',
 
 	'user.chat.confirm_end_chat' => 'Are you sure you want to end your chat?',
-	'user.chat.cancel' => 'Cancel',
-	'user.chat.end_chat' => 'End Chat',
+
+
 	'user.chat.your_name' => 'Your name',
 	'user.chat.your_email' => 'Your email address',
 	'user.chat.start_chat' => 'Start Chatting',
 	'user.chat.please_wait_for_agent_for_chat' => 'Please wait while we find an agent to take your chat',
 	'user.chat.drop_file_here' => 'Drop your file here to upload it',
 	'user.chat.please_wait_for_agent' => 'Please wait while we find an agent for you',
-	'user.chat.send' => 'Send',
+
 	'user.chat.send_a_file' => 'Send a file from your computer',
 	'user.chat.sent_chat_to' => 'Send a transcript of this chat to {{part}}',
 	'user.chat.enter_email_address' => 'enter your email address',
@@ -42,8 +42,8 @@
 	'user.chat.comments' => 'Comments?',
 	'user.chat.send_and_close' => 'Send and close this window',
 	'user.chat.you_are_chatting_with' => 'You\'re chatting with',
-	'user.chat.you' => 'You',
-	'user.chat.remove' => 'remove',
+
+
 	'user.chat.choose_department' => 'Choose a department',
 
 );

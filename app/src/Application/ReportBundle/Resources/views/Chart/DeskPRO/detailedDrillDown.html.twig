@@ -6,7 +6,7 @@
 			<thead>
 				<tr>
 					<th class="name">{{ chart.getDataLabel }}</th>
-					<th class="trend">{{ phrase('report.deskpro.trend') }}</th>
+					<th class="trend">{{ phrase('global.trend') }}</th>
 					{% for series in chart.getEndSeries(3) %}
 						<th class="prev-value">{{ series }}</th>
 					{% endfor %}

@@ -34,8 +34,8 @@
 <div class="type" title="{{ phrase('deskpro.common.email_domains') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_email_domain" data-term-type="GenericInputTerm" data-term-triggers="emaildomain">
 	<div class="op">
 		<select name="op">
-			<option value="is">{{ phrase('deskpro.common.is') }}</option>
-			<option value="not">{{ phrase('deskpro.common.is_not') }}</option>
+			<option value="is">{{ phrase('global.is') }}</option>
+			<option value="not">{{ phrase('global.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -45,11 +45,11 @@
 {% endif %}
 
 {% if 'org_label' not in no_show_fields %}
-<div class="type" title="{{ phrase('deskpro.common.labels') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_label" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
+<div class="type" title="{{ phrase('global.labels') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_label" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
 	<div class="op">
 		<select name="op">
-			<option value="is">{{ phrase('deskpro.common.includes_label') }}</option>
-			<option value="not">{{ phrase('deskpro.common.does_not_include_label') }}</option>
+			<option value="is">{{ phrase('global.includes_label') }}</option>
+			<option value="not">{{ phrase('global.does_not_include_label') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -62,9 +62,9 @@
 <div class="type" title="{{ phrase('global.name') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_name" data-term-type="GenericInputTerm" data-term-triggers="name">
 	<div class="op">
 		<select name="op">
-			<option value="is">{{ phrase('deskpro.common.is') }}</option>
-			<option value="contains">{{ phrase('deskpro.common.contains') }}</option>
-			<option value="notcontains">{{ phrase('deskpro.common.does_not_contain') }}</option>
+			<option value="is">{{ phrase('global.is') }}</option>
+			<option value="contains">{{ phrase('global.contains') }}</option>
+			<option value="notcontains">{{ phrase('global.does_not_contain') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -74,11 +74,11 @@
 {% endif %}
 
 {% if 'org_contact_phone' not in no_show_fields %}
-<div class="type" title="{{ phrase('deskpro.common.contact_phone') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_phone" data-term-type="GenericInputTerm" data-term-triggers="phone">
+<div class="type" title="{{ phrase('global.contact_phone') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_phone" data-term-type="GenericInputTerm" data-term-triggers="phone">
 	<div class="op">
 		<select name="op">
-			<option value="contains">{{ phrase('deskpro.common.is') }}</option>
-			<option value="notcontains">{{ phrase('deskpro.common.is_not') }}</option>
+			<option value="contains">{{ phrase('global.is') }}</option>
+			<option value="notcontains">{{ phrase('global.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -88,11 +88,11 @@
 {% endif %}
 
 {% if 'org_contact_address' not in no_show_fields %}
-<div class="type" title="{{ phrase('deskpro.common.contact_address') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_address" data-term-type="GenericInputTerm" data-term-triggers="address">
+<div class="type" title="{{ phrase('global.contact_address') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_address" data-term-type="GenericInputTerm" data-term-triggers="address">
 	<div class="op">
 		<select name="op">
-			<option value="contains">{{ phrase('deskpro.common.is') }}</option>
-			<option value="notcontains">{{ phrase('deskpro.common.is_not') }}</option>
+			<option value="contains">{{ phrase('global.is') }}</option>
+			<option value="notcontains">{{ phrase('global.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -102,11 +102,11 @@
 {% endif %}
 
 {% if 'org_contact_im' not in no_show_fields %}
-<div class="type" title="{{ phrase('deskpro.common.contact_instant_messaging') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_im" data-term-type="GenericInputTerm" data-term-triggers="messenger">
+<div class="type" title="{{ phrase('global.contact_instant_messaging') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_im" data-term-type="GenericInputTerm" data-term-triggers="messenger">
 	<div class="op">
 		<select name="op">
-			<option value="contains">{{ phrase('deskpro.common.is') }}</option>
-			<option value="notcontains">{{ phrase('deskpro.common.is_not') }}</option>
+			<option value="contains">{{ phrase('global.is') }}</option>
+			<option value="notcontains">{{ phrase('global.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -117,7 +117,7 @@
 
 {% if 'org_field' not in no_show_fields %}
 {% if term_options.custom_org_fields %}
-	{% set op_lang = {'is': phrase('deskpro.common.is'), 'not': phrase('deskpro.common.is_not'), 'contains': phrase('deskpro.common.contains'), 'notcontains': phrase('deskpro.common.does_not_contain'), 'gt': 'is greater than', 'lt': 'is less than'} %}
+	{% set op_lang = {'is': phrase('global.is'), 'not': phrase('global.is_not'), 'contains': phrase('global.contains'), 'notcontains': phrase('global.does_not_contain'), 'gt': 'is greater than', 'lt': 'is less than'} %}
 	{% for field in term_options.custom_org_fields %}
 	{% if field.field_def.getFilterCapabilities(search_context) %}
 	<div class="type" title="{{field.field_def.title}}" data-rule-group="Organization Fields" data-rule-type="org_field[{{field.field_def.id}}]">

@@ -4,20 +4,20 @@
   'deskpro.emails_agent.your_initial_password' => 'Your initial password',
   'deskpro.emails_agent.someone_tried_to_log_in_using_your_account' => 'Someone tried to log in using your account.',
   'deskpro.emails_agent.user_ip' => 'User IP',
-  'deskpro.emails_agent.user_agent' => 'User Agent',
+
   'deskpro.emails_agent.referring_page' => 'Referring Page',
-  'deskpro.emails_agent.landing_page' => 'Landing Page',
+
   'deskpro.emails_agent.first_seen' => 'First Seen',
-  'deskpro.emails_agent.agent' => 'Agent',
-  'deskpro.emails_agent.team' => 'Team',
-  'deskpro.emails_agent.category' => 'Category',
-  'deskpro.emails_agent.product' => 'Product',
-  'deskpro.emails_agent.priority' => 'Priority',
-  'deskpro.emails_agent.workflow' => 'Workflow',
-  'deskpro.emails_agent.status' => 'Status',
+
+
+
+
+
+
+
   'deskpro.emails_agent.a_new_ticket_has_been_created' => 'A new ticket has been created',
   'deskpro.emails_agent.by_name' => 'By <b>{{name}}</b>',
-  'deskpro.emails_agent.open' => 'Open',
-  'deskpro.emails_agent.pending' => 'Pending',
-  'deskpro.emails_agent.resolved' => 'Resolved',
+
+
+
 );

@@ -2,8 +2,8 @@
 	<li class="file {% if show_more and loop.last %}has-more{% endif %}">
 		<div class="info-line" style="float:right">
 			<ul>
-				<li class="comments" title="{{ phrase('user.downloads.comments') }}"><span>{{ 0 }}</span></li>
-				<li class="views" title="{{ phrase('user.downloads.downloads') }}"><span>{{ download.num_downloads }}</span></li>
+				<li class="comments" title="{{ phrase('global.comments') }}"><span>{{ 0 }}</span></li>
+				<li class="views" title="{{ phrase('global.downloads') }}"><span>{{ download.num_downloads }}</span></li>
 			</ul>
 		</div>
 		<h4><a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}"><span class="icon-file icon-{{ download.blob.extension }}">{{ download.title }}</span></a></h4>
@@ -15,6 +15,6 @@
 	{% if page == 1 %}
 		<li>{{ phrase('user.downloads.no_downloads') }}</li>
 	{% else %}
-		<li>{{ phrase('user.no_more_results') }}</li>
+		<li>{{ phrase('global.there_are_no_more_results') }}</li>
 	{% endif %}
 {% endfor %}

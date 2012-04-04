@@ -1,5 +1,5 @@
 <?php return array(
-	'admin.portalcolors.section_general'                              => 'General',
+
 	'admin.portalcolors.section_header'                               => 'Header',
 	'admin.portalcolors.section_main_content'                         => 'Main Content',
 	'admin.portalcolors.section_sidebar'                              => 'Sidebar',
@@ -12,7 +12,7 @@
 	'admin.portalcolors.header_bar_bg_color_desc'                     => 'The background color of the header bar where the searchbox is',
 	'admin.portalcolors.header_name_color_title'                      => 'Site Name',
 	'admin.portalcolors.header_name_color_desc'                       => 'The color of the site name text at the top of the page',
-	'admin.portalcolors.header_tagline_color_title'                   => 'Tagline',
+
 	'admin.portalcolors.header_tagline_color_desc'                    => 'The color of the tagline text at the top of the page',
 	'admin.portalcolors.body_bg_color_title'                          => 'Body Background Color',
 	'admin.portalcolors.body_bg_color_desc'                           => 'The background color of the main DeskPRO page',

@@ -1,93 +1,93 @@
 <?php return array (
 
-  'agent.deal.cancel' => 'Cancel',
-  'agent.deal.email_address' => 'Email Address',
+
+
   'agent.deal.add_user' => 'Add User',
 
   'agent.deal.deal_size' => 'Deal Size',
   'agent.deal.deal_type' => 'Deal Type',
   'agent.deal.set_deal_type' => 'Set Deal Type',
-  'agent.deal.none' => 'None',
-  'agent.deal.dealstage' => 'Deal Stage',
-  'agent.deal.set_deal_stage' => 'Set Deal Stage',
-  'agent.deal.assignedagent' => 'Assigned Agent',
-  'agent.deal.user' => 'User',
-  'agent.deal.organization' => 'Organization',
-  'agent.deal.agent' => 'Agent',
-  'agent.deal.date_created' => 'Date Created',
-  'agent.deal.visibility' => 'Visibility',
-  'agent.deal.type' => 'Type',
-  'agent.deal.stage' => 'Stage',
-  'agent.deal.private' => 'Private',
-  'agent.deal.public' => 'Public',
-  'agent.deal.all' => 'All',
-  'agent.deal.done' => 'Done',
-  'agent.deal.change_user' => 'Change User',
-  'agent.deal.person' => 'Person',
-  'agent.deal.create_a_new_person' => 'Create a new person',
-  'agent.deal.change_organization' => 'Change Organization',
-  'agent.deal.create_a_new_organization' => 'Create a new organization',
-  'agent.deal.position' => 'Position',
-  'agent.deal.assignment' => 'Assignment',
-  'agent.deal.me' => 'Me',
-  'agent.deal.value' => 'Value',
-  'agent.deal.probability' => 'Probability',
-  'agent.deal.properties' => 'Properties',
-  'agent.deal.attachments' => 'Attachments',
-  'agent.deal.upload' => 'Upload',
-  'agent.deal.createdeal' => 'Create Deal',
-  'agent.deal.assignments' => 'Assignments',
 
-  'agent.deal.unassigned' => 'Unassigned',
-  'agent.deal.apply' => 'Apply',
-  'agent.deal.organizations' => 'Organizations',
+
+  'agent.deal.set_deal_stage' => 'Set Deal Stage',
+
+
+
+
+
+  'agent.deal.visibility' => 'Visibility',
+
+  'agent.deal.stage' => 'Stage',
+
+
+
+
+
+
+
+  'agent.deal.change_organization' => 'Change Organization',
+
+
+
+
+
+  'agent.deal.probability' => 'Probability',
+
+
+
+
+
+
+
+
+
   'agent.deal.persons' => 'Persons',
-  'agent.deal.people' => 'People',
-  'agent.deal.set_assignments' => 'Set assignments',
-  'agent.deal.assignagent' => 'Assign agent',
-  'agent.deal.users' => 'Users',
+
+
+
+
   'agent.deal.add_organization' => 'Add Organization',
-  'agent.deal.tasks' => 'Tasks',
-  'agent.deal.files' => 'Files',
-  'agent.deal.labels' => 'Labels',
+
+
+
 
   'agent.deal.edit_customfields' => 'Edit Custom Fields',
   'agent.deal.custom_field_a' => 'Custom Field A',
   'agent.deal.value_x' => 'Value X',
-  'agent.deal.notes' => 'Notes',
-  'agent.deal.saving' => 'Saving',
-  'agent.deal.saved' => 'Saved',
-  'agent.deal.new_note' => 'New Note',
-  'agent.deal.related_content' => 'Related Content',
+
+
+
+
+
   'agent.deal.open_deals' => 'Open Deals',
   'agent.deal.my_deals' => 'My Deals',
   'agent.deal.others_deals' => 'Others Deals',
   'agent.deal.closed_deals' => 'Closed Deals',
-  'agent.deal.lost' => 'Lost',
 
-  'agent.deal.view_profile' => 'view profile',
-  'agent.deal.ordered_by' => 'Ordered by',
+
+
+
   'agent.deal.and_grouped_by' => 'and Grouped by',
   'agent.deal.display_options' => 'Display options',
-  'agent.deal.deal_stage' => 'Deal Stage',
-  'agent.deal.assigned_agent' => 'Assigned Agent',
-  'agent.deal.add_as_related' => 'Add as related',
-  'agent.deal.remove_as_related' => 'Remove as related',
+
+
+
+
   'agent.deal.created_by' => 'Created By',
   'agent.deal.edit_name' => 'edit name',
-  'agent.deal.open' => 'Open',
+
   'agent.deal.won' => 'Won',
-  'agent.deal.create_deal' => 'Create Deal',
+
   'agent.deal.assigned_to' => 'Assigned To',
   'agent.deal.new_taskk' => 'New Task(k)',
-  'agent.deal.assign_agent' => 'Assign agent',
-  'agent.deal.created' => 'Created',
+
+
   'agent.deal.edit_custome_fields' => 'Edit Custome Fields',
-  'agent.deal.and' => 'and',
+
   'agent.deal.percent_of' => '% of',
-  'agent.deal.choose_a_person_to_create_this_ticket_for' => 'Choose a person to create this ticket for',
-  'agent.deal.enter_an_organization_name' => 'Enter an organization name...',
-  'agent.deal.set_a_position' => 'Set a position...',
-  'agent.deal.filter' => 'Filter...',
+
+
+
+
   'agent.deal.enter_note_' => 'Enter note ...',
 );

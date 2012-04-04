@@ -1,6 +1,6 @@
 <div class="display-terms overlay">
 	<div class="overlay-title">
-		<h4>{{ phrase('agent.label_search') }}</h4>
+		<h4>{{ phrase('global.search') }}</h4>
 	</div>
 	<div class="overlay-content">
 		<div style="margin-right: 250px;">
@@ -23,11 +23,11 @@
 						<div class="remove">-</div>
 					</div>
 				</div>
-				<div class="type" title="{{ phrase('agent.peoplesearch.organization') }}" data-rule-type="organization">
+				<div class="type" title="{{ phrase('global.organization') }}" data-rule-type="organization">
 					<div class="op">
 						<select name="op">
-							<option value="is">{{ phrase('agent.peoplesearch.is') }}</option>
-							<option value="not">{{ phrase('agent.peoplesearch.is_not') }}</option>
+							<option value="is">{{ phrase('global.is') }}</option>
+							<option value="not">{{ phrase('global.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
@@ -38,11 +38,11 @@
 						</select>
 					</div>
 				</div>
-				<div class="type" title="{{ phrase('agent.peoplesearch.usergroup') }}" data-rule-type="usergroup">
+				<div class="type" title="{{ phrase('global.usergroup') }}" data-rule-type="usergroup">
 					<div class="op">
 						<select name="op">
-							<option value="is">{{ phrase('agent.peoplesearch.is') }}</option>
-							<option value="not">{{ phrase('agent.peoplesearch.is_not') }}</option>
+							<option value="is">{{ phrase('global.is') }}</option>
+							<option value="not">{{ phrase('global.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
@@ -56,19 +56,19 @@
 				<div class="type" title="{{ phrase('agent.peoplesearch.person_id') }}" data-rule-type="id">
 					<div class="op">
 						<select name="op">
-							<option value="gte">{{ phrase('agent.peoplesearch.is_greater_than') }}</option>
-							<option value="lte">{{ phrase('agent.peoplesearch.is_less_than') }}</option>
+							<option value="gte">{{ phrase('global.is_greater_than') }}</option>
+							<option value="lte">{{ phrase('global.is_less_than') }}</option>
 						</select>
 					</div>
 					<div class="options">
 						<input type="text" name="id" value="" />
 					</div>
 				</div>
-				<div class="type" title="{{ phrase('agent.peoplesearch.language') }}" data-rule-type="language">
+				<div class="type" title="{{ phrase('global.language') }}" data-rule-type="language">
 					<div class="op">
 						<select name="op">
-							<option value="is">{{ phrase('agent.peoplesearch.is') }}</option>
-							<option value="not">{{ phrase('agent.peoplesearch.is_not') }}</option>
+							<option value="is">{{ phrase('global.is') }}</option>
+							<option value="not">{{ phrase('global.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
@@ -80,33 +80,33 @@
 					</div>
 				</div>
 
-				<div class="type" title="{{ phrase('agent.peoplesearch.email_domain') }}" data-rule-type="email_domain">
+				<div class="type" title="{{ phrase('global.email_domain') }}" data-rule-type="email_domain">
 					<div class="op">
 						<select name="op">
-							<option value="is">{{ phrase('agent.peoplesearch.is') }}</option>
-							<option value="not">{{ phrase('agent.peoplesearch.is_not') }}</option>
+							<option value="is">{{ phrase('global.is') }}</option>
+							<option value="not">{{ phrase('global.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
 						<input type="text" name="email_domain" value="" />
 					</div>
 				</div>
-				<div class="type" title="{{ phrase('agent.peoplesearch.email_domain') }}" data-rule-type="email_domain">
+				<div class="type" title="{{ phrase('global.email_domain') }}" data-rule-type="email_domain">
 					<div class="op">
 						<select name="op">
-							<option value="is">{{ phrase('agent.peoplesearch.is') }}</option>
-							<option value="not">{{ phrase('agent.peoplesearch.is_not') }}</option>
+							<option value="is">{{ phrase('global.is') }}</option>
+							<option value="not">{{ phrase('global.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
 						<input type="text" name="email_domain" value="" />
 					</div>
 				</div>
-				<div class="type" title="{{ phrase('agent.peoplesearch.labels') }}" data-rule-type="label">
+				<div class="type" title="{{ phrase('global.labels') }}" data-rule-type="label">
 					<div class="op">
 						<select name="op">
-							<option value="is">{{ phrase('agent.peoplesearch.includes_label') }}</option>
-							<option value="not">{{ phrase('agent.peoplesearch.does_not_include_label') }}</option>
+							<option value="is">{{ phrase('global.includes_label') }}</option>
+							<option value="not">{{ phrase('global.does_not_include_label') }}</option>
 						</select>
 					</div>
 					<div class="options">
@@ -116,41 +116,41 @@
 				<div class="type" title="{{ phrase('global.name') }}" data-rule-type="name">
 					<div class="op">
 						<select name="op">
-							<option value="contains">{{ phrase('agent.peoplesearch.is') }}</option>
-							<option value="notcontains">{{ phrase('agent.peoplesearch.is_not') }}</option>
+							<option value="contains">{{ phrase('global.is') }}</option>
+							<option value="notcontains">{{ phrase('global.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
 						<input type="text" name="name" value="" />
 					</div>
 				</div>
-				<div class="type" title="{{ phrase('agent.peoplesearch.contact_phone') }}" data-rule-type="contact_phone">
+				<div class="type" title="{{ phrase('global.contact_phone') }}" data-rule-type="contact_phone">
 					<div class="op">
 						<select name="op">
-							<option value="contains">{{ phrase('agent.peoplesearch.is') }}</option>
-							<option value="notcontains">{{ phrase('agent.peoplesearch.is_not') }}</option>
+							<option value="contains">{{ phrase('global.is') }}</option>
+							<option value="notcontains">{{ phrase('global.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
 						<input type="text" name="phone" value="" />
 					</div>
 				</div>
-				<div class="type" title="{{ phrase('agent.peoplesearch.contact_address') }}" data-rule-type="contact_address">
+				<div class="type" title="{{ phrase('global.contact_address') }}" data-rule-type="contact_address">
 					<div class="op">
 						<select name="op">
-							<option value="contains">{{ phrase('agent.peoplesearch.is') }}</option>
-							<option value="notcontains">{{ phrase('agent.peoplesearch.is_not') }}</option>
+							<option value="contains">{{ phrase('global.is') }}</option>
+							<option value="notcontains">{{ phrase('global.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
 						<input type="text" name="address" value="" />
 					</div>
 				</div>
-				<div class="type" title="{{ phrase('agent.peoplesearch.contact_instant_messaging') }}" data-rule-type="contact_im">
+				<div class="type" title="{{ phrase('global.contact_instant_messaging') }}" data-rule-type="contact_im">
 					<div class="op">
 						<select name="op">
-							<option value="contains">{{ phrase('agent.peoplesearch.is') }}</option>
-							<option value="notcontains">{{ phrase('agent.peoplesearch.is_not') }}</option>
+							<option value="contains">{{ phrase('global.is') }}</option>
+							<option value="notcontains">{{ phrase('global.is_not') }}</option>
 						</select>
 					</div>
 					<div class="options">
@@ -158,7 +158,7 @@
 					</div>
 				</div>
 				{% if people_fields %}
-					{% set op_lang = {'is': phrase('agent.peoplesearch.is'), 'not':phrase('agent.peoplesearch.is_not'), 'contains': 'has', 'notcontains': 'does not have', 'gt': phrase('agent.peoplesearch.is_greater_than'), 'lt': phrase('agent.peoplesearch.is_less_than')} %}
+					{% set op_lang = {'is': phrase('global.is'), 'not':phrase('global.is_not'), 'contains': 'has', 'notcontains': 'does not have', 'gt': phrase('global.is_greater_than'), 'lt': phrase('global.is_less_than')} %}
 					{% for field in people_fields %}
 						<div class="type" title="Field: {{field.field_def.title}}" data-rule-type="person_field[{{field.field_def.id}}]">
 							<div class="op">
@@ -179,10 +179,10 @@
 	</div>
 	<div class="overlay-actions">
 		<div class="loading-off">
-			<button class="save-trigger dp-button small">{{ phrase('agent.search') }}</button>
+			<button class="save-trigger dp-button small">{{ phrase('global.search') }}</button>
 		</div>
 		<div class="loading-on" style="display:none">
-			<span>{{ phrase('agent.loading_saving') }}</span>
+			<span>{{ phrase('global.saving') }}</span>
 		</div>
 	</div>
 </div>

@@ -6,7 +6,7 @@
 			{{if author_name || author_email}}
 				<div class="meta">
 					{{if author_name || author_email}}
-						{% endraw %}{{ phrase('agent.chat.by_x', {'name': '<em>${author_name} {{if author_email}}&lt;${author_email}&gt;</em>{{/if}}'}) }}{% raw %}
+						{% endraw %}{{ phrase('global.by_name', {'name': '<em>${author_name} {{if author_email}}&lt;${author_email}&gt;</em>{{/if}}'}) }}{% raw %}
 					{{/if}}
 					{{if department_id}}
 						{% endraw %}{{ phrase('agent.chat.in_department', {'name': '<em>${department_name}</em>'}) }}{% raw %}
@@ -23,7 +23,7 @@
 			{{if subject_line}}<p>${subject_line}</p>{{/if}}
 		</div>
 		<footer>
-			<button class="clean-white small dismiss-trigger">{% endraw %}{{ phrase('agent.chat.dismiss_chat') }}{% raw %}</button>
+			<button class="clean-white small dismiss-trigger">{% endraw %}{{ phrase('global.dismiss') }}{% raw %}</button>
 			<button class="clean-white small accept-trigger">{% endraw %}{{ phrase('agent.chat.join_chat') }}{% raw %}</button>
 		</footer>
 	</section>
@@ -34,7 +34,7 @@
 		<header><h3>{% endraw %}{{ phrase('agent.chat.added_as_participant') }}{% raw %}</h3></header>
 		<div class="messages"></div>
 		<footer>
-			<button class="clean-white small dismiss-trigger">{% endraw %}{{ phrase('agent.chat.dismiss_chat') }}{% raw %}</button>
+			<button class="clean-white small dismiss-trigger">{% endraw %}{{ phrase('global.dismiss') }}{% raw %}</button>
 			<button class="clean-white small accept-trigger">{% endraw %}{{ phrase('agent.chat.open_chat') }}{% raw %}</button>
 		</footer>
 	</section>

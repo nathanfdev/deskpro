@@ -4,14 +4,14 @@
 
 <section class="source-section sys-filters-section">
 	<header>
-		<h1>{{ phrase('agent.people') }}</h1>
+		<h1>{{ phrase('global.people') }}</h1>
 	</header>
 	<article>
 		<ul class="source-list" id="people_outline_people_list">
 			<li class="people nav-people is-nav-item" id="people_nav_all">
 				<h3 class="title auto-load-route " data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}">
 					<span class="list-counter">{{ people_count }}</span>
-					{{ phrase('agent.people') }}
+					{{ phrase('global.people') }}
 				</h3>
 			</li>
 
@@ -32,7 +32,7 @@
 
 		<section class="source-tabs" style="margin-top: 8px;">
 			<ul>
-				<li class="labels" ><span>{{ phrase('agent.labels') }}</span></li>
+				<li class="labels" ><span>{{ phrase('global.labels') }}</span></li>
 			</ul>
 		</section>
 
@@ -59,14 +59,14 @@
 
 <section class="source-section sys-filters-section">
 	<header>
-		<h1>{{ phrase('agent.organizations') }}</h1>
+		<h1>{{ phrase('global.organizations') }}</h1>
 	</header>
 	<article>
 		<ul class="source-list" id="people_outline_org_list">
 			<li id="org_nav_all" class="people nav-people is-nav-item">
 				<h3 class="title" data-route="listpane:{{ path('agent_orgsearch_customfilter') }}">
 					<span class="list-counter">{{ org_count|default('0') }}</span>
-					{{ phrase('agent.organizations') }}
+					{{ phrase('global.organizations') }}
 				</h3>
 			</li>
 
@@ -88,7 +88,7 @@
 
 		<section class="source-tabs" style="margin-top: 8px;">
 			<ul>
-				<li class="labels" ><span>{{ phrase('agent.labels') }}</span></li>
+				<li class="labels" ><span>{{ phrase('global.labels') }}</span></li>
 			</ul>
 		</section>
 

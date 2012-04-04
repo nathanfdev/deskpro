@@ -1,45 +1,45 @@
 <?php return array (
 
-  'agent.peoplesearch.last_login_time' => 'Last Login Time',
-  'agent.peoplesearch.organization' => 'Organization',
+
+
   'agent.peoplesearch.number_of_tickets' => 'Number of Tickets',
-  'agent.peoplesearch.order_by' => 'Order By',
-  'agent.peoplesearch.lastlogin_time' => 'Last Login Time',
+
+
   'agent.peoplesearch.numberof_tickets' => 'Number of tickets',
-  'agent.peoplesearch.position' => 'Position',
-  'agent.peoplesearch.email_address' => 'Email Address',
-  'agent.peoplesearch.language' => 'Language',
-  'agent.peoplesearch.loading' => 'Loading',
+
+
+
+
 
   'agent.peoplesearch.select' => 'Select',
   'agent.peoplesearch.simple' => 'Simple',
-  'agent.peoplesearch.advanced' => 'Advanced',
+
   'agent.peoplesearch.find_person' => 'Find Person',
-  'agent.peoplesearch.find' => 'Find a person by entering criteria above.',
-  'agent.peoplesearch.find_a_person_by_entering_criteria_above' => 'Find a person by entering criteria above.',
+
+
   'agent.peoplesearch.no_results_were_found' => 'No results were found',
   'agent.peoplesearch.view_all_results' => 'View all results',
   'agent.peoplesearch.no_people_match_your_criteria' => 'No people match your criteria',
 
   'agent.peoplesearch.date_craeted_newestoldest' => 'Date Craeted (Newest-Oldest)',
   'agent.peoplesearch.date_craeted_oldestnewest' => 'Date Craeted (Oldest-Newest)',
-  'agent.peoplesearch.add_a_new_term' => 'Add a new term',
-  'agent.peoplesearch.labels' => 'Labels',
+
+
   'agent.peoplesearch.you_havent_labeled_any_tickets_load_a_ticket' => 'You haven\'t labeled any tickets. Load a ticket to label it.',
 
-  'agent.peoplesearch.is_not' => 'is not',
-  'agent.peoplesearch.is_greater_than' => 'is greater than',
-  'agent.peoplesearch.is_less_than' => 'is less than',
-  'agent.peoplesearch.includes_label' => 'includes label',
-  'agent.peoplesearch.does_not_include_label' => 'does not include label',
 
-  'agent.peoplesearch.is' => 'is',
-  'agent.peoplesearch.name_az' => 'Name (A-Z)',
-  'agent.peoplesearch.name_za' => 'Name (Z-A)',
-  'agent.peoplesearch.usergroup' => 'Usergroup',
+
+
+
+
+
+
+
+
+
   'agent.peoplesearch.person_id' => 'Person ID',
-  'agent.peoplesearch.email_domain' => 'Email Domain',
-  'agent.peoplesearch.contact_phone' => 'Contact Phone',
-  'agent.peoplesearch.contact_address' => 'Contact Address',
-  'agent.peoplesearch.contact_instant_messaging' => 'Contact Instant Messaging',
+
+
+
+
 );

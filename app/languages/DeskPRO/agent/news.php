@@ -1,38 +1,38 @@
 <?php return array (
-  'agent.news.comparing_revisions' => 'Comparing Revisions',
-  'agent.news.order_by' => 'Order By',
-  'agent.news.author' => 'Author',
-  'agent.news.date_created' => 'Date Created',
-  'agent.news.showing' => 'Showing',
+
+
+
+
+
   'agent.news.news_posts' => 'news posts',
   'agent.news.edit' => 'Edit',
-  'agent.news.search' => 'Search',
-  'agent.news.revision' => 'Revision',
-  'agent.news.compare' => 'Compare',
-  'agent.news.new_comment' => 'New Comment',
 
-  'agent.news.date_created_newestoldest' => 'Date Created (Newest-Oldest)',
-  'agent.news.date_created_oldestnewest' => 'Date Created (Oldest-Newest)',
-  'agent.news.add_a_new_term' => 'Add a new term',
 
-  'agent.news.done' => 'Done',
-  'agent.news.status' => 'Status',
-  'agent.news.published' => 'Published',
-  'agent.news.unpublished' => 'Unpublished',
-  'agent.news.draft' => 'Draft',
-  'agent.news.dev_validating' => 'DEV: Validating',
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   'agent.news.post' => 'Post',
-  'agent.news.properties' => 'Properties',
-  'agent.news.attachments' => 'Attachments',
-  'agent.news.url_slug' => 'URL Slug',
-  'agent.news.labels' => 'Labels',
-  'agent.news.upload' => 'Upload',
+
+
+
+
+
   'agent.news.create_news_post' => 'Create News Post',
-  'agent.news.altc' => '(alt+c)',
+
   'agent.news.drop_your_file_here_to_add_it_to' => 'Drop your file here to add it to this post',
 
-  'agent.news.percent_helpful_n_votes' => '{{percent}}% helpful ({{subphrase}})',
-  'agent.news.n_votes' => '{{count}} vote|{{count}} votes',
-  'agent.news.n_helpful_n_unhelpful' => '{{up_votes}} found this the article helpful, {{down_votes}} found the article unhelpful',
+
+
+
 );

@@ -13,7 +13,7 @@
 	</ul>
 </nav>
 <ul>
-	<li>{{ phrase('admin.tickettriggers.triggers') }}</li>
+	<li>{{ phrase('global.triggers') }}</li>
 </ul>
 {% endblock %}
 {% block page %}
@@ -24,7 +24,7 @@
 		<ul>
 			<li class="dp-edit"><a href="{{ path('admin_tickettriggers_edit', {'trigger_id': trigger.id}) }}" class="popout-trigger"><span></span></a></li>
 			<li class="dp-move"><span></span></li>
-			<li class="dp-on-off trigger-toggle"><span class="off" {% if trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.tickettriggers.off') }}</span><span class="on" {% if not trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.tickettriggers.on') }}</span></li>
+			<li class="dp-on-off trigger-toggle"><span class="off" {% if trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('global.off') }}</span><span class="on" {% if not trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('global.on') }}</span></li>
 		</ul>
 	</div>
 	<div class="run-order"><label>{{ index }}</label></div>
@@ -39,11 +39,11 @@
 				<div class="terms">
 					<em class="op ctrl">{{ phrase('admin.tickettriggers.if') }}</em>
 					{% if trigger.event_trigger_option %}
-					{{ time_explain_prefix }} {{ relative_time(trigger.event_trigger_option, 1) }} <br /><em class="op">{{ phrase('admin.tickettriggers.and') }}</em>
+					{{ time_explain_prefix }} {{ relative_time(trigger.event_trigger_option, 1) }} <br /><em class="op">{{ phrase('global.and') }}</em>
 					{% endif %}
 					{% for desc in trigger.getTermDescriptions() %}
 					<span class="term">{{ desc }}</span>
-					{% if not loop.last %}<br /><em class="op">{{ phrase('admin.tickettriggers.and') }}</em>{% endif %}
+					{% if not loop.last %}<br /><em class="op">{{ phrase('global.and') }}</em>{% endif %}
 					{% endfor %}
 				</div>
 			</td><td valign="top" width="50%" style="padding-left: 15px;">
@@ -51,7 +51,7 @@
 					<em class="op ctrl">{{ phrase('admin.tickettriggers.then') }}</em>
 					{% for desc in trigger.getActionDescriptions() %}
 					<span class="term">{{ desc|raw }}</span>
-					{% if not loop.last %}<br /><em class="op">{{ phrase('admin.tickettriggers.and') }}</em>{% endif %}
+					{% if not loop.last %}<br /><em class="op">{{ phrase('global.and') }}</em>{% endif %}
 					{% endfor %}
 				</div>
 			</td></tr></table>

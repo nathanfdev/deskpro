@@ -19,7 +19,7 @@
 <form action="{{ path('user_register_finish') }}" method="post">
 	<input type="hidden" name="process" value="1" />
 	{{ phrase('user.register_set_a_password') }}: <input type="password" name="password" value="" /><br />
-	{{ phrase('user.register_repeat_password') }}: <input type="password" name="password2" value="" /><br />
+	{{ phrase('global.repeat') }}: <input type="password" name="password2" value="" /><br />
 	<input type="submit" value="{{ phrase('user.register_btn_register_account') }}" />
 </form>
 

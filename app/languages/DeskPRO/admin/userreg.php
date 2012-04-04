@@ -9,11 +9,11 @@
   'admin.userreg.add_user_source' => 'Add User Source',
   'admin.userreg.user_sources' => 'User Sources',
   'admin.userreg.a_user_source_is_any_database_that_deskpro' => 'A user source is any database that DeskPRO will use to authenticate users when they want to log in.',
-  'admin.userreg.deskpro' => 'DeskPRO',
-  'admin.userreg.facebook' => 'Facebook',
-  'admin.userreg.twitter' => 'Twitter',
+
+
+
   'admin.userreg.google' => 'Google',
-  'admin.userreg.force_email_validation' => 'Force email validation',
+
   'admin.userreg.force_login_for_existing_users' => 'Force login for existing users',
   'admin.userreg.registration_mode' => 'Registration Mode',
   'admin.userreg.open_helpdesk' => 'Open Helpdesk',
@@ -22,13 +22,13 @@
   'admin.userreg.with_this_mode_the_helpdesk_is_readable_by' => 'With this mode, the helpdesk is readable by everyone but users must register or log in to submit content such as new tickets, new feedback, or new comments.',
   'admin.userreg.require_registration_with_agent_validation' => 'Require Registration with Agent Validation',
   'admin.userreg.this_is_the_same_as_request_registration_except' => 'This is the same as "Request Registration" except that users must be manually validated by agents before they are able interact with the helpdesk.',
-  'admin.userreg.closed' => 'Closed',
+
   'admin.userreg.save_registration_settings' => 'Save Registration Settings',
   'admin.userreg.twitter_setup' => 'Twitter Setup',
   'admin.userreg.to_enable_twitter_integration_you_must_register_with' => 'To enable Twitter integration, you must register with Twitterto get your own key and secret.',
   'admin.userreg.consumer_key' => 'Consumer Key',
   'admin.userreg.consumer_secret' => 'Consumer Secret',
-  'admin.userreg.host' => 'Host',
+
   'admin.userreg.if_youre_using_a_nonstandard_port_389_or' => 'If you\'re using a non-standard port (389, or 636 for secure connections), enter it here',
   'admin.userreg.use_secure_connection' => 'Use Secure Connection',
   'admin.userreg.base_dn' => 'Base DN',
@@ -37,8 +37,8 @@
   'admin.userreg.short_domain_name_slash' => 'Short Domain Name (Slash)',
   'admin.userreg.the_short_domain_name_for_users_in_this' => 'The "short" domain name for users in this directory, "ACME". Note that there is a 1:1 mapping between this short name and the domain name above. This option should be used to specify the NetBIOS domain name for Windows networks. This option is not required but if it is not supplied, usernames in backslash form (e.g., ACME\\alice) are not supported.',
   'admin.userreg.service_account' => 'Service Account',
-  'admin.userreg.username' => 'Username',
-  'admin.userreg.password' => 'Password',
+
+
   'admin.userreg.custom_filter' => 'Custom Filter',
   'admin.userreg.database_dsn' => 'Database DSN',
   'admin.userreg.mysql' => 'MySQL',
@@ -78,8 +78,8 @@
   'admin.userreg.phpbb2' => 'phpBB2',
   'admin.userreg.phpbb3' => 'phpBB3',
   'admin.userreg.ez_publish' => 'eZ Publish',
-  'admin.userreg.continue' => 'Continue',
-  'admin.userreg.delete' => 'delete',
+
+
   'admin.userreg.for_example' => 'For example',
   'admin.userreg.enter_the_dsn' => 'Enter the DSN connection string for the database. Refer to the manual for the string format ({{links}}). For example, for a MySQL database: <var>mysql:host=localhost;dbname=mydb</var>',
   'admin.userreg.by_default_placeholder_is_use_this_instead' => 'By default, the filter performed when looking up users is <var>(&(objectClass=user)(sAMAccountName=%s))</var>. Use <var>%s</var> as the input placeholder.',

@@ -37,14 +37,14 @@ pageMeta.baseId = '{{ baseId }}';
 	<nav class="actions" id="{{baseId}}_action_buttons">
 		<ul>
 			{% if app.user.hasPerm('agent_tickets.create') %}
-				<li class="create-ticket"><a class="clean-white large">{{ phrase('agent.create_ticket') }}</a></li>
+				<li class="create-ticket"><a class="clean-white large">{{ phrase('global.create_ticket') }}</a></li>
 			{% endif %}
 			{% if app.user.hasPerm('agent_people.reset_password') or app.user.hasPerm('agent_people.delete') %}
-				<li class="more menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.more') }} <em></em></a></li>
+				<li class="more menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('global.more') }} <em></em></a></li>
 			{% endif %}
 		</ul>
 	</nav>
-	<div class="person-picture-box tipped" title="{{ phrase('agent.person.click_to_upload_a_new_picture') }}" id="{{baseId}}_change_user_picture">
+	<div class="person-picture-box tipped" title="{{ phrase('global.click_to_upload_a_new_picture') }}" id="{{baseId}}_change_user_picture">
 		<img src="{{ person.getPictureUrl(60) }}" id="{{baseId}}_picture_display" />
 	</div>
 	<div class="titlewrap">
@@ -52,13 +52,13 @@ pageMeta.baseId = '{{ baseId }}';
 			<span id="{{baseId}}_showname">{{ person.name|default('Double-click to set Name') }}</span>
 			<span id="{{baseId}}_editname" style="display: none"><input type="text" size="20" name="name" value="{{ person.name }}" /></span>
 			{% if app.user.hasPerm('agent_people.edit') %}<span id="{{baseId}}_editname_start" class="edit-name-gear"></span>{% endif %}
-			<a id="{{baseId}}_editname_end" class="edit-name-save clean-white small" style="display: none">{{ phrase('agent.person.done') }}</a>
+			<a id="{{baseId}}_editname_end" class="edit-name-save clean-white small" style="display: none">{{ phrase('global.done') }}</a>
 		</h1>
 		<div class="meta-line">
 			<div class="org"><span>
 				{% if person.organization %}
 					<span id="{{baseId}}_showorgpos" class="org-pos" {% if not person.organization_position %}style="display: none"{% endif %}><span class="org-pos-display">{{ person.organization_position }}</span>, </span>
-					<span id="{{baseId}}_editorgpos" style="display: none"><input type="text" name="organization_position" value="{{ person.organization_position }}" placeholder="{{ phrase('agent.person.position') }}" /></span>
+					<span id="{{baseId}}_editorgpos" style="display: none"><input type="text" name="organization_position" value="{{ person.organization_position }}" placeholder="{{ phrase('global.position') }}" /></span>
 					<span class="org-title-display"><a data-route="page:{{ path('agent_org_view', {'organization_id': person.organization.id}) }}" class="as-popover">{{ person.organization.name }}</a></span>
 				{% else %}
 					&nbsp;
@@ -68,7 +68,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 
 	<ul id="{{baseId}}_more_actions_menu" style="display: none;">
-		{% if app.user.hasPerm('agent_people.reset_password') %}<li data-action="reset-password" class="reset-password">{{ phrase('agent.people.reset_password') }}</li>{% endif %}
+		{% if app.user.hasPerm('agent_people.reset_password') %}<li data-action="reset-password" class="reset-password">{{ phrase('global.reset_password') }}</li>{% endif %}
 		{% if app.user.hasPerm('agent_people.delete') %}
 			<li
 				data-action="delete"

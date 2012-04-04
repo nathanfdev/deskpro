@@ -4,8 +4,8 @@
 	<input type="text" id="settings_filter" value="" placeholder="{{ phrase('admin.settings.filter') }}" style="width: 200px;" />
 </div>
 <ul>
-	<li><a href="{{ path('admin_settings') }}">{{ phrase('admin.settings.settings') }}</a></li>
-	<li>{{ phrase('admin.settings.advanced') }}</li>
+	<li><a href="{{ path('admin_settings') }}">{{ phrase('global.settings') }}</a></li>
+	<li>{{ phrase('global.advanced') }}</li>
 </ul>
 {% endblock %}
 {% block html_head %}
@@ -58,7 +58,7 @@ function _page_exec() {
 		<thead>
 			<tr>
 				<th style="text-align:left" width="200">{{ phrase('global.name') }}</th>
-				<th style="text-align:left">{{ phrase('admin.settings.default_value') }}</th>
+				<th style="text-align:left">{{ phrase('global.default_value') }}</th>
 				<th style="text-align:left">{{ phrase('admin.settings.set_value') }}</th>
 			</tr>
 		</thead>
@@ -67,7 +67,7 @@ function _page_exec() {
 				<tr class="adv-setting {% if info.default != info.set %}changed{% endif %}">
 					<td>
 						{{set_name}}
-						<span class="revert tipped" title="{{ phrase('admin.settings.revert_setting_back_to_default') }}">{{ phrase('admin.settings.revert') }}</span>
+						<span class="revert tipped" title="{{ phrase('admin.settings.revert_setting_back_to_default') }}">{{ phrase('global.revert') }}</span>
 					</td>
 					<td><input class="setting-input dp-set-default" value="{{ info.default }}" /></td>
 					<td><input  value="{{ info.set }}" class="setting-input dp-set-value" data-setting-name="{{set_name}}" /></td>

@@ -4,7 +4,7 @@
 		<h4>{{ phrase('agent.misc.change_pic_for', {'name': person.display_name}) }}</h4>
 	</div>
 	<div class="overlay-content">
-		<div class="drop-file-zone"><h1>{{ phrase('agent.person.drop_your_file_here_to_upload_a_new') }}</h1></div>
+		<div class="drop-file-zone"><h1>{{ phrase('global.drop_your_file_here_to_upload_a_new') }}</h1></div>
 		{% if person.picture_blob %}
 		<div class="existing-picture">
 			<header><h3>{{ phrase('agent.misc.existing_pic') }}</h3></header>
@@ -17,7 +17,7 @@
 			<header>
 				<div class="upload-control">
 					<input type="file" name="file-upload" />
-					<button class="clean-white small">{{ phrase('agent.upload') }}</button>
+					<button class="clean-white small">{{ phrase('global.upload') }}</button>
 				</div>
 				<h3>{{ phrase('agent.misc.new_pic') }}</h3>
 			</header>
@@ -30,7 +30,7 @@
 
 				<script class="template-upload" type="text/x-tmpl">
 					{{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
-					<p>{{ '{%=file.name%}' }} ({{ phrase('agent.loading_saving') }})</p>
+					<p>{{ '{%=file.name%}' }} ({{ phrase('global.saving') }})</p>
 					{{ '{% } %}' }}
 				</script>
 				<script class="template-download" type="text/x-tmpl">

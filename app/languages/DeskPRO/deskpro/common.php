@@ -1,62 +1,62 @@
 <?php return array (
-  'deskpro.common.published' => 'Published',
-  'deskpro.common.archived' => 'Archived',
-  'deskpro.common.hidden' => 'Hidden',
+
+
+
   'deskpro.common.hidden_unpublished' => 'Hidden: Unpublished',
   'deskpro.common.hidden_validating' => 'Hidden: Validating',
   'deskpro.common.hidden_deleted' => 'Hidden: Deleted',
-  'deskpro.common.includes_label' => 'includes label',
-  'deskpro.common.does_not_include_label' => 'does not include label',
+
+
   'deskpro.common.is_exactly' => 'is exactly',
   'deskpro.common.relative_time' => 'Relative time',
   'deskpro.common.ago' => 'ago',
   'deskpro.common.calendar' => 'Calendar',
-  'deskpro.common.agent' => 'Agent',
-  'deskpro.common.user' => 'User',
-  'deskpro.common.web_interface' => 'Web interface',
-  'deskpro.common._by_user' => '-- By user',
-  'deskpro.common._by_agent_on_behalf_of_user' => '-- By agent on behalf of user',
 
-  'deskpro.common.changed' => 'Changed',
+
+
+
+
+
+
   'deskpro.common.changed_to' => 'Changed to',
   'deskpro.common.changed_from' => 'Changed from',
   'deskpro.common.not_changed_to' => 'Not changed to',
   'deskpro.common.not_changed_from' => 'Not changed from',
-  'deskpro.common.unassigned' => 'Unassigned',
+
   'deskpro.common.current_agent' => 'Current Agent',
   'deskpro.common.no_team' => 'No team',
   'deskpro.common.any_of_current_agents_teams' => 'Any of current agents teams',
-  'deskpro.common.changed_to_include' => 'Changed to include',
-  'deskpro.common.changed_to_remove' => 'Changed to remove',
-  'deskpro.common.awaiting_agent' => 'Awaiting Agent',
-  'deskpro.common.awaiting_user' => 'Awaiting User',
-  'deskpro.common.resolved' => 'Resolved',
-  'deskpro.common.closed' => 'Closed',
-  'deskpro.common.hidden_awaiting_validating_spam' => 'Hidden (awaiting validating, spam)',
-  'deskpro.common.is_less_than' => 'is less than',
-  'deskpro.common.is_greater_than' => 'is greater than',
-  'deskpro.common.blue' => 'Blue',
-  'deskpro.common.green' => 'Green',
-  'deskpro.common.orange' => 'Orange',
-  'deskpro.common.pink' => 'Pink',
-  'deskpro.common.purple' => 'Purple',
-  'deskpro.common.red' => 'Red',
-  'deskpro.common.yellow' => 'Yellow',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   'deskpro.common.enter_a_negative_number_to_have_urgency_decreased' => '(Enter a negative number to have urgency decreased)',
   'deskpro.common.only_set_when_urgency_is_lower' => 'Only set when urgency is lower',
   'deskpro.common.always_set_this_urgency' => 'Always set this urgency',
   'deskpro.common.assigned_agent' => 'Assigned agent',
   'deskpro.common.assigned_team' => 'Assigned team',
 
-  'deskpro.common.is_not' => 'is not',
+
   'deskpro.common.less_than' => 'less than',
   'deskpro.common.greater_than' => 'greater than',
   'deskpro.common.before' => 'before',
   'deskpro.common.after' => 'after',
   'deskpro.common.between' => 'between',
-  'deskpro.common.does_not_include' => 'does not include',
-  'deskpro.common.contains' => 'contains',
-  'deskpro.common.does_not_contain' => 'does not contain',
+
+
+
   'deskpro.common.minutes' => 'minutes',
   'deskpro.common.hours' => 'hours',
   'deskpro.common.days' => 'days',
@@ -66,44 +66,44 @@
   'deskpro.common.hour' => 'Hour',
   'deskpro.common.minute' => 'Minute',
 
-  'deskpro.common.include' => 'include',
-  'deskpro.common.is' => 'is',
-  'deskpro.common.website_widget' => 'Website Widget',
+
+
+
   'deskpro.common.field_name' => 'Field: {{field}}',
   'deskpro.common.set_field_name' => 'Set: {{field}}',
   'deskpro.common.set_user_field_name' => 'Set User Field: {{field}}',
   'deskpro.common.choose_criteria' => 'Choose criteria...',
-  'deskpro.common.category' => 'Category',
+
   'deskpro.common.number_of_downloads' => 'Number of downloads',
   'deskpro.common.date_created' => 'Date created',
-  'deskpro.common.labels' => 'Labels',
-  'deskpro.common.status' => 'Status',
+
+
   'deskpro.common.is_published' => 'Is Published',
   'deskpro.common.is_not_published' => 'Is Not Published',
   'deskpro.common.email_domains' => 'Email Domains',
 
-  'deskpro.common.contact_phone' => 'Contact Phone',
-  'deskpro.common.contact_address' => 'Contact Address',
-  'deskpro.common.contact_instant_messaging' => 'Contact Instant Messaging',
-  'deskpro.common.organization' => 'Organization',
-  'deskpro.common.usergroup' => 'Usergroup',
-  'deskpro.common.language' => 'Language',
-  'deskpro.common.email_address' => 'Email Address',
-  'deskpro.common.email_domain' => 'Email Domain',
+
+
+
+
+
+
+
+
   'deskpro.common.performer' => 'Performer',
   'deskpro.common.is_a_new_user' => 'Is a new user',
   'deskpro.common.is_not_a_new_user' => 'Is not a new user',
-  'deskpro.common.originated_interface' => 'Originated interface',
+
   'deskpro.common.ticket_gateway_address' => 'Ticket Gateway Address',
   'deskpro.common.ticket_gateway_account' => 'Ticket Gateway Account',
-  'deskpro.common.subject' => 'Subject',
 
-  'deskpro.common.agent_team' => 'Agent Team',
-  'deskpro.common.followers' => 'Followers',
-  'deskpro.common.product' => 'Product',
-  'deskpro.common.urgency' => 'Urgency',
-  'deskpro.common.priority' => 'Priority',
-  'deskpro.common.workflow' => 'Workflow',
+
+
+
+
+
+
+
   'deskpro.common.time_created' => 'Time created',
   'deskpro.common.time_of_last_user_reply' => 'Time of last user reply',
   'deskpro.common.day_created' => 'Day created',
@@ -123,13 +123,13 @@
   'deskpro.common.email_agent_notification_about_new_reply' => 'Email: Agent notification about new reply',
   'deskpro.common.email_user_notification_of_new_agent_reply' => 'Email: User notification of new agent reply',
   'deskpro.common.email_agent_notification_of_new_agent_reply' => 'Email: Agent notification of new agent reply',
-  'deskpro.common.force_email_validation' => 'Force email validation',
+
   'deskpro.common.set_agent' => 'Set Agent',
   'deskpro.common.set_agent_team' => 'Set Agent Team',
-  'deskpro.common.set_status' => 'Set Status',
+
   'deskpro.common.delete_ticket' => 'Delete Ticket',
   'deskpro.common.set_department' => 'Set Department',
-  'deskpro.common.set_category' => 'Set Category',
+
   'deskpro.common.set_product' => 'Set Product',
   'deskpro.common.set_priority' => 'Set Priority',
   'deskpro.common.set_workflow' => 'Set Workflow',

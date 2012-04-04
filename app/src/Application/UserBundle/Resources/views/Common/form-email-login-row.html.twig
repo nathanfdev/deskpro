@@ -21,17 +21,17 @@
 		<div class="dp-form-row dp-inline-login-pass" style="display: none">
 			<div class="dp-login-section">
 				<div class="dp-form-label">
-					<label>{{ phrase('user.label_login_password') }}</label>
+					<label>{{ phrase('global.password') }}</label>
 					<a class="forgot" href="{{ path('user_login_resetpass') }}">{{ phrase('user.lost_password_link') }}</a>
 				</div>
 				<div class="dp-form-input">
 					<input type="password" id="dp_inline_login_pass" />
 					<div class="dp-loading">
-						{{ phrase('user.loading') }}
+						{{ phrase('global.loading') }}
 					</div>
 					<div class="dp-btn-row">
-						<button class="btn primary dp-login-trigger {% if mode == 'advanced' %}mode-advanced{% endif %}">{{ phrase('user.log_in_btn') }}</button>
-						<button class="btn dp-inline-login-open">{{ phrase('user.cancel') }}</button>
+						<button class="btn primary dp-login-trigger {% if mode == 'advanced' %}mode-advanced{% endif %}">{{ phrase('global.log_in') }}</button>
+						<button class="btn dp-inline-login-open">{{ phrase('global.cancel') }}</button>
 					</div>
 				</div>
 			</div>
@@ -43,10 +43,10 @@
 					<div class="dp-btn-row">
 						<div class="not-loading">
 							<button class="btn small dp-do-send">{{ phrase('user.lost_password_send_btn') }}</button>
-							<a class="back">{{ phrase('user.lost_password_cancel_btn') }}</a>
+							<a class="back">{{ phrase('global.cancel') }}</a>
 						</div>
 						<div class="is-loading">
-							{{ phrase('user.loading_wait') }}
+							{{ phrase('global.please_wait') }}
 						</div>
 					</div>
 				</div>

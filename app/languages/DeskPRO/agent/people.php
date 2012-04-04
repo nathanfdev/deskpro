@@ -3,7 +3,7 @@
 	'agent.people.contact_info_for_x' => 'Contact Information For {{name}}',
 	'agent.people.contact_info' => 'Contact Information',
 	'agent.people.contact_add_another' => 'Add Another',
-	'agent.people.contact_add_label' => 'Add a label',
+
 
 	'agent.people.results_num_summary' => 'Showing {{current}} of {{count}} people|Showing {{current}} of {{count}} people',
 
@@ -18,12 +18,12 @@
 
 	'agent.people.auto_responder' => 'Auto-responder?',
 	'agent.people.auto_responder_yes' => 'Yes, this user auto-responds to emails',
-	'agent.people.reset_password' => 'Reset Password',
+
 	'agent.people.delete_user' => 'Delete User',
 
 	'agent.people.warn_email_address' => 'The email address {{email}} matches this profile. But	because the user has not logged in to the helpdesk, we cannot verify their identity. Be careful not to release any sensitive information.',
 
-	'agent.people.phone' => 'Phone',
+
 	'agent.people.add_phone' => 'Add a phone number',
 	'agent.people.phone_country_placeholder' => 'Country',
 	'agent.people.phone_number_placeholder' => 'Phone Number',
@@ -40,7 +40,7 @@
 	'agent.people.add_linkedin_profile' => 'Add a LinkedIn profile',
 	'agent.people.add_facebook_profile' => 'Add a Facebook profile',
 
-	'agent.people.address' => 'Address',
+
 	'agent.people.address_city' => 'City',
 	'agent.people.address_state' => 'State',
 	'agent.people.address_postal' => 'Post Code',

@@ -1,9 +1,9 @@
 <?php return array (
-  'admin.departments.departments' => 'Departments',
+
   'admin.departments.delete_department' => 'Delete Department',
   'admin.departments.yes_delete_this_department_and_all_subdepartments' => 'Yes, delete this department and all sub-departments',
   'admin.departments.yes_delete_this_department' => 'Yes, delete this department',
-  'admin.departments.ticket_fields' => 'Ticket Fields',
+
   'admin.departments.new_custom_field' => 'New custom field',
   'admin.departments.widgets' => 'Widgets',
   'admin.departments.new_widget' => 'New widget',
@@ -16,23 +16,23 @@
   'admin.departments.edit_department_title' => 'Edit Department Title',
 
   'admin.departments.new_department' => 'New Department',
-  'admin.departments.parent' => 'Parent',
-  'admin.departments.no_parent' => 'No Parent',
-  'admin.departments.add' => 'Add',
+
+
+
 
   'admin.departments.please_choose_a_subdepartment_to_move_them_into' => 'Please choose a sub-department to move them into',
-  'admin.departments.is' => 'is',
-  'admin.departments.is_not' => 'is not',
-  'admin.departments.is_greater_than' => 'is greater than',
-  'admin.departments.is_less_than' => 'is less than',
+
+
+
+
 
   'admin.departments.there_are_tickets_and_chats' => 'There {{tickets}} and {{chats}} using this department.',
   'admin.departments.count_tickets' => '{0} are 0 tickets|{1} is 1 ticket|]1,1000] are {{count}} tickets|[1001,Inf] are over 1000 tickets',
   'admin.departments.count_chats' => '{0} 0 chats|{1} 1 chat|]1,1000] {{count}} chats|[1001,Inf] over 1000 chats',
 
-  'admin.departments.product' => 'Product',
-  'admin.departments.category' => 'Category',
-  'admin.departments.priority' => 'Priority',
-  'admin.departments.workflow' => 'Workflow',
-  'admin.departments.filter' => 'Filter...',
+
+
+
+
+
 );

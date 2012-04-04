@@ -6,10 +6,10 @@
   'admin.ticketwidgets.display_field_in_user_interface' => 'Display field in user interface',
   'admin.ticketwidgets.widget_type' => 'Widget Type',
   'admin.ticketwidgets.simple_html_content' => 'Simple HTML content',
-  'admin.ticketwidgets.continue' => 'Continue',
+
   'admin.ticketwidgets.admin_namenote' => 'Admin name/note',
   'admin.ticketwidgets.html_content' => 'HTML Content',
 
   'admin.ticketwidgets.create_new_widget' => 'Create New Widget',
-  'admin.ticketwidgets.edit' => 'edit',
+
 );

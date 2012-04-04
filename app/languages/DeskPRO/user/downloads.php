@@ -1,6 +1,6 @@
 <?php return array(
 
-	'user.downloads.section_title' => 'Downloads',
+
 	'user.downloads.error_not_found' => 'The file you\'re looking for could not be found. It may have been deleted.',
 	'user.downloads.category' => 'Folder',
 	'user.downloads.view_all_x' => 'View downloads|View all {{count}} downloads',
@@ -11,7 +11,7 @@
 
 	'user.downloads.popular_section_name' => 'Popular Downloads',
 	'user.downloads.recent_section_name' => 'Recent Downloads',
-	'user.downloads.all' => 'All',
-  'user.downloads.comments' => 'Comments',
-  'user.downloads.downloads' => 'Downloads',
+
+
+
 );

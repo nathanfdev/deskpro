@@ -1,29 +1,29 @@
 <?php return array (
-  'agent.downloads.comparing_revisions' => 'Comparing Revisions',
-  'agent.downloads.order_by' => 'Order By',
-  'agent.downloads.showing' => 'Showing',
+
+
+
   'agent.downloads.edit' => 'Edit',
-  'agent.downloads.revision' => 'Revision',
-  'agent.downloads.compare' => 'Compare',
-  'agent.downloads.category' => 'Category',
+
+
+
   'agent.downloads.download_category' => 'Download Category',
   'agent.downloads.delete' => 'Delete',
   'agent.downloads.copy_permalink' => 'Copy Permalink',
-  'agent.downloads.new_comment' => 'New Comment',
 
-  'agent.downloads.date_created_newestoldest' => 'Date Created (Newest-Oldest)',
-  'agent.downloads.date_created_oldestnewest' => 'Date Created (Oldest-Newest)',
+
+
+
   'agent.downloads.number_of_downloads_highestlowest' => 'Number of Downloads (Highest-Lowest)',
   'agent.downloads.number_of_downloads_lowesthighest' => 'Number of Downloads (Lowest-Highest)',
-  'agent.downloads.dev_validating' => 'DEV: Validating',
-  'agent.downloads.create_download' => 'Create Download',
-  'agent.downloads.altc' => '(alt+c)',
 
-  'agent.downloads.date_created' => 'Date Created',
+  'agent.downloads.create_download' => 'Create Download',
+
+
+
   'agent.downloads.download_count' => 'Download Count',
   'agent.downloads.showing_count_downloads' => 'Showing {{display_count}} download|Showing {{display_count}} downloads',
-  'agent.downloads.percent_helpful_n_votes' => '{{percent}}% helpful ({{subphrase}})',
-  'agent.downloads.n_votes' => '{{count}} vote|{{count}} votes',
+
+
   'agent.downloads.n_helpful_n_unhelpful' => '{{up_votes}} found this download helpful, {{down_votes}} found this download unhelpful',
-  'agent.downloads.edit_search_terms' => 'Edit search terms',
+
 );

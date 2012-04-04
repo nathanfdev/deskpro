@@ -1,13 +1,13 @@
 <div class="optionbox reply-agent-team-ob" id="{{baseId}}_org_assign_ob">
     	<header>
-			<h4>{{ phrase('agent.deal.assignments') }}</h4>
+			<h4>{{ phrase('global.assignments') }}</h4>
 			<span class="close close-trigger"></span>
 		</header>
     	<div class="col">
 		<section data-section-name="agents">
 			<header>
-				<h3>{{ phrase('agent.deal.organizations') }}</h3>
-				<input type="text" class="filter-box" placeholder="{{ phrase('agent.deal.filter') }}" />
+				<h3>{{ phrase('global.organizations') }}</h3>
+				<input type="text" class="filter-box" placeholder="{{ phrase('global.filter') }}" />
 			</header>
 			<ul>
 				{% for org in organizations %}
@@ -23,6 +23,6 @@
 
     	<br class="clear" />
     	<footer>
-           <button class="save-trigger">{{ phrase('agent.deal.apply') }}</button>
+           <button class="save-trigger">{{ phrase('global.apply') }}</button>
         </footer>
 </div>

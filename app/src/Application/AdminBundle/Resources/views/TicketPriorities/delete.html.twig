@@ -11,6 +11,6 @@
 
 <p>{{ phrase('admin.ticketpriorities.any_tickets_that_use_this_priority_will_have') }}</p>
 
-<a class="btn" href="{{ path('admin_ticketpris_dodel', {'priority_id': priority.id, 'security_token': security_token('delete_ticket_priority')}) }}">{{ phrase('admin.ticketpriorities.yes_i_am_sure_i_want_to_delete') }}</a>
+<a class="btn" href="{{ path('admin_ticketpris_dodel', {'priority_id': priority.id, 'security_token': security_token('delete_ticket_priority')}) }}">{{ phrase('global.yes_i_am_sure_i_want_to_delete') }}</a>
 
 {% endblock %}

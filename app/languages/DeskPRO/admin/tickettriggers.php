@@ -1,9 +1,9 @@
 <?php return array (
-  'admin.tickettriggers.triggers' => 'Triggers',
+
   'admin.tickettriggers.choose_type' => 'Choose Type',
   'admin.tickettriggers.choose_the_event_that_should_initiate_the_trigger' => 'Choose the event that should initiate the trigger',
-  'admin.tickettriggers.new_ticket' => 'New Ticket',
-  'admin.tickettriggers.new_reply' => 'New Reply',
+
+
   'admin.tickettriggers.ticket_updated' => 'Ticket Updated',
   'admin.tickettriggers.ticket_has_been_open_for' => 'Ticket has been open for',
   'admin.tickettriggers.the_user_has_been_waiting_for_an_agent' => 'The user has been waiting for an agent to reply for',
@@ -13,14 +13,14 @@
   'admin.tickettriggers.event' => 'Event',
 
   'admin.tickettriggers.optionally_enter_a_description_to_help_you_remember' => 'Optionally enter a description to help you remember what this trigger was created for',
-  'admin.tickettriggers.criteria' => 'Criteria',
-  'admin.tickettriggers.add_a_new_criteria' => 'Add a new criteria',
-  'admin.tickettriggers.actions' => 'Actions',
+
+
+
   'admin.tickettriggers.add_a_new_action' => 'Add a new action',
 
   'admin.tickettriggers.add_trigger' => 'Add Trigger',
-  'admin.tickettriggers.off' => 'OFF',
-  'admin.tickettriggers.on' => 'ON',
+
+
   'admin.tickettriggers.you_havent_created_any_triggers_yet' => 'You haven\'t created any triggers yet.',
   'admin.tickettriggers.click_here_to_create_one_now' => 'Click here to create one now',
   'admin.tickettriggers.new_ticket_triggers' => 'New Ticket Triggers',
@@ -33,6 +33,6 @@
   'admin.tickettriggers.triggers_based_on_the_time_a_ticket_was' => 'Triggers based on the time a ticket was resolved',
 
   'admin.tickettriggers.if' => 'if',
-  'admin.tickettriggers.and' => 'and',
+
   'admin.tickettriggers.then' => 'then',
 );

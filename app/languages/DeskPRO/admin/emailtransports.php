@@ -7,33 +7,33 @@
   'admin.emailtransports.email_address' => 'Email address',
   'admin.emailtransports.every_address_at_a_domain' => 'Every address at a domain',
   'admin.emailtransports.addresses_that_match_a_regular_expression' => 'Addresses that match a regular expression',
-  'admin.emailtransports.pattern' => 'Pattern',
+
   'admin.emailtransports.mail_server' => 'Mail Server',
-  'admin.emailtransports.php_mail' => 'PHP mail()',
-  'admin.emailtransports.test_settings' => 'Test Settings',
-  'admin.emailtransports.smtp_account' => 'SMTP Account',
-  'admin.emailtransports.host' => 'Host',
-  'admin.emailtransports.secure' => 'Secure',
-  'admin.emailtransports.port' => 'Port',
-  'admin.emailtransports.requires_auth' => 'Requires Auth',
-  'admin.emailtransports.yes' => 'Yes',
-  'admin.emailtransports.username' => 'Username',
-  'admin.emailtransports.password' => 'Password',
-  'admin.emailtransports.google_apps' => 'Google Apps',
-  'admin.emailtransports.full_email_address' => 'Full Email Address',
+
+
+
+
+
+
+
+
+
+
+
+
   'admin.emailtransports.backup_mail_server' => 'Backup Mail Server',
 
-  'admin.emailtransports.test_outgoing_email' => 'Test Outgoing Email',
-  'admin.emailtransports.send_a_test_email_to' => 'Send a test email to',
-  'admin.emailtransports.from_email_address' => 'From email address',
-  'admin.emailtransports.no_errors_were_reported_but_you_should_confirm' => 'No errors were reported, but you should confirm that you recieved the test email.',
-  'admin.emailtransports.there_was_an_error_while_trying_to_send' => 'There was an error while trying to send the test email',
-  'admin.emailtransports.test_now' => 'Test Now',
+
+
+
+
+
+
   'admin.emailtransports.add_account' => 'Add Account',
   'admin.emailtransports.default_from_address' => 'Default "From" Address',
-  'admin.emailtransports.update' => 'Update',
-  'admin.emailtransports.outgoing_email_accounts' => 'Outgoing Email Accounts',
-  'admin.emailtransports.account' => 'Account',
+
+
+
   'admin.emailtransports.backup_account' => 'Backup Account',
   'admin.emailtransports.default_from_email_address' => 'Default "From" email address',
 

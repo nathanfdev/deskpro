@@ -3,23 +3,23 @@
 	'user.tickets.your_tickets' => 'Your Tickets',
 
 	// Names of ticket fields
-	'user.tickets.subject'                => 'Subject',
-	'user.tickets.category'               => 'Category',
-	'user.tickets.status'                 => 'Status',
-	'user.tickets.agent'                  => 'Agent',
-	'user.tickets.workflow'               => 'Workflow',
-	'user.tickets.priority'               => 'Priority',
-	'user.tickets.id'                     => 'ID',
 
-	'user.tickets.label_ticket_ref'       => 'Ticket Ref',
 
-	'user.tickets.status_open'             => 'Open',
-	'user.tickets.status_resolved'         => 'Resolved',
-	'user.tickets.status_closed'           => 'Closed',
+
+
+
+
+
+
+
+
+
+
+
 
 	'user.tickets.click_to_close' => 'Click to close this ticket',
 
-	'user.tickets.label_ticket_starter' => 'Ticket Starter',
+
 	'user.tickets.label_cced' => 'CCed',
 
 	'user.tickets.created_successfully' => 'Your ticket has been created successfully.',
@@ -33,7 +33,7 @@
 	'user.tickets.rate_unhelpful' => 'Not Helpful',
 
 	'user.tickets.message_error' => 'Please enter at least 5 characters',
-	'user.tickets.add_reply_title' => 'Add Reply',
+
 	'user.ticekts.add_reply_btn' => 'Submit Reply',
 
 	'user.tickets.new_validating_notice' => 'Since this is your first time submitting a ticket from {{email}}, you must validate your email address before our agents will respond. Check your email now and click the validation link we sent you.',
@@ -63,7 +63,7 @@
 	'user.tickets.feedback_message_leave_comment' => 'Optionally leave a comment',
 	'user.tickets.feedback_message_submit_btn' => 'Submit Feedback',
 
-	'user.tickets.list_open' => 'Open Tickets',
+
 	'user.tickets.list_closed' => 'Closed Tickets',
 
 	'user.tickets.list_last_activity_by_x' => 'Last activity by {{name}}',
@@ -78,14 +78,14 @@
 	'user.tickets.link_login' => 'log in',
 	'user.tickets.login_if_registered' => 'If you are a registered user, please {{link}}.',
 	'user.tickets.lost_password_link' => 'Lost password?',
-	'user.tickets.lbl_password' => 'Password',
+
 	'user.tickets.logging_in' => 'Logging in...',
-	'user.tickets.login' => 'Log In',
+
 	'user.tickets.login_or_close' => '{{link1}} or {{link2}}',
 	'user.tickets.close' => 'close',
-	'user.tickets.lbl_your_email' => 'Your Email Address',
 
-	'user.tickets.thank_you' => 'Thank you',
+
+
 	'user.tickets.thank_you_please_wait' => 'Thank you for submitting your ticket! You should get a confirmation email shortly.',
 	'user.tickets.validate_to_be_seen' => '<strong>Important!</strong> Before your ticket will be read by our agents, you need to validate your email address. Check your email for our confirmation link.',
 	'user.tickets.check_your_email' => '<strong>Important</strong>! Before your ticket will be read by our agents, you need to validate your email address. Check your email ({{email}}) for our confirmation link.',
@@ -95,42 +95,42 @@
 	'user.tickets.submit' => 'Submit',
 	'user.tickets.oops_form_mistakes' => 'Oops! There are mistakes with your form. Correct the highlighted feels and then try again.',
 
-	'user.tickets.new_ticket' => 'New Ticket',
-	'user.tickets.your_name' => 'Your Name',
-	'user.tickets.please_enter_name' => 'Please enter your name',
+
+
+
 	'user.tickets.we_found_helpful_content' => 'We found the following content that may answer your question',
-	'user.tickets.safe_to_click' => 'Don\'t worry, you can click a title and you will remain on this page.',
+
 	'user.tickets.view_more_results' => 'View {{part}} more results',
-	'user.tickets.open_full_page' => 'Open full page',
-	'user.tickets.loading' => 'Loading',
+
+
 	'user.tickets.this_is_an_answer' => 'This answered my question',
 	'user.tickets.this_is_no_answer' => 'This did not answer my question',
 	'user.tickets.we_are_happy_but_email_us_anyway' => 'We are happy we were able to answer your question. Do you still want to email us?',
 	'user.tickets.no_longer_need_to_contact_you' => 'I do not need to contact you anymore',
 	'user.tickets.still_want_to_contact_you' => 'I still want to submit a question<',
-	'user.tickets.contact_us' => 'Contact Us',
-	'user.tickets.remove_participant' => 'remove',
-	'user.tickets.add_using_name_and_email' => 'Add a new person by entering their name and email',
-	'user.tickets.first_name' => 'First Name',
-	'user.tickets.last_name' => 'Last Name',
 
-	'user.tickets.btn_add' => 'Add',
-	'user.tickets.attachments' => 'Attachments',
+
+	'user.tickets.add_using_name_and_email' => 'Add a new person by entering their name and email',
+
+
+
+
+
 	'user.tickets.attachments_max_size' => 'You may upload an attachment less than 5 MB',
 	'user.tickets.prove_you_are_human' => 'Please prove you are human!',
 	'user.tickets.captcha_incorrect' => 'The code you entered is incorrect.',
-	'user.tickets.please_choose_department' => 'Please choose a department',
+
 
 	'user.tickets.lbl_what_is_your_question' => 'What is your question?',
 	'user.tickets.please_enter_at_least' => 'Please enter at least 10 characters',
 	'user.tickets.please_choose_product' => 'Please choose a product',
-	'user.tickets.please_choose_category' => 'Please choose a category',
+
 	'user.tickets.please_choose_priority' => 'Please choose a priority',
 	'user.tickets.please_choose_subject_at_least' => 'Please enter a subject of at least 5 characters',
 
-  'user.tickets.ticket_participants' => 'Ticket participants',
-  'user.tickets.you' => 'You',
-  'user.tickets.new_reply' => 'New Reply',
+
+
+
   'user.tickets.attach_a_file' => 'Attach a file',
   'user.tickets._your_tickets' => '- Your Tickets',
 );

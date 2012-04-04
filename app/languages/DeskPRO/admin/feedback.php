@@ -1,6 +1,6 @@
 <?php return array (
 
-  'admin.feedback.parent_category' => 'Parent Category',
+
   'admin.feedback.note_the_parent_category_selected_is_currently_a' => 'Note: The parent category selected is currently a top-level category. By creating this child-category, any existing feedback will be moved over.',
   'admin.feedback.feedback_using_this_category' => 'Feedback using this category',
 
@@ -17,7 +17,7 @@
   'admin.feedback.feedback_statuses' => 'Feedback Statuses',
   'admin.feedback.create_new_status' => 'Create New Status',
   'admin.feedback.create_stauts' => 'Create Stauts',
-  'admin.feedback.type' => 'Type',
+
   'admin.feedback.active_status' => 'Active Status',
   'admin.feedback.closed_status' => 'Closed Status',
   'admin.feedback.create_status' => 'Create Status',

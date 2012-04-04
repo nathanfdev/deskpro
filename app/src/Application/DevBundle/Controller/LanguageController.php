@@ -571,7 +571,7 @@ class LanguageController extends Controller
         echo "Would put ".htmlspecialchars($data)."<br>";
         file_put_contents($rootdir.'/global/global.php', $data);
 
-        $files = $by_content[$twig_phrases];
+        $files = $by_content[$content];
 
         foreach($files as $file) {
             $lines = file($file['filename']);
@@ -651,6 +651,7 @@ class LanguageController extends Controller
 
     public function checkLanguageFilesAction()
     {
+        set_time_limit(0);
         if(isset($_POST['batch'])) {
             $twig_phrases = $this->getPhrasesFromTwigFiles();
             $php_phrases = $this->getPhrasesFromPHPFiles();
@@ -678,9 +679,17 @@ class LanguageController extends Controller
             }
         }
 
+        $id_track = array();
+        $rootdir = DP_ROOT.'/languages/DeskPRO';
+        $global = require($rootdir.'/global/global.php');
+
         foreach($by_content as $k=>$v) {
             if(count($v) > 1) {
-                $vars['dupes']['content'][] = array('data' => $k, 'id' => $this->stringToId($k));
+                $id = 'global.'.$this->stringToId($k);
+                $id_exists = isset($global[$id]) || isset($id_track[$id]);
+
+                $vars['dupes']['content'][] = array('data' => $k, 'id' => $id, 'exists' => $id_exists);
+                $id_track[$id] = 1;
             }
         }
 

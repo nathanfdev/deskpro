@@ -1,9 +1,9 @@
-{{ phrase('agent.mediabrowser.types') }}:
-<label>{{ phrase('agent.mediabrowser.all') }} <input type="checkbox" name="types[]" value="all" /></label>
+{{ phrase('global.types') }}:
+<label>{{ phrase('global.all') }} <input type="checkbox" name="types[]" value="all" /></label>
 <label>{{ phrase('global.tickets') }} <input type="checkbox" name="types[]" value="tickets" /></label>
-<label>{{ phrase('agent.mediabrowser.articles') }} <input type="checkbox" name="types[]" value="kb" /></label>
+<label>{{ phrase('global.articles') }} <input type="checkbox" name="types[]" value="kb" /></label>
 
-{{ phrase('agent.mediabrowser.labels') }}: <input type="text" name="labels" value="{{ labels }}" />
+{{ phrase('global.labels') }}: <input type="text" name="labels" value="{{ labels }}" />
 
 {% if blob_objects|length %}
 <table width="100%" cellpadding="0" cellspacing="0">

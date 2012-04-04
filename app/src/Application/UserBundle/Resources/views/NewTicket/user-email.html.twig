@@ -25,7 +25,7 @@
 
 		<div class="dp-form-row dp-newticket-login-pass">
 			<div class="dp-form-label">
-				<label>{{ phrase('user.tickets.lbl_password') }}</label>
+				<label>{{ phrase('global.password') }}</label>
 			</div>
 			<div class="dp-form-input">
 				<input type="password" id="dp_newticket_login_pass" />
@@ -34,7 +34,7 @@
 				</div>
 				<div class="dp-btn-row">
 					{% set phrase_link1 %}
-					<button class="btn primary dp-login-in-trigger">{{ phrase('user.tickets.login') }}</button>
+					<button class="btn primary dp-login-in-trigger">{{ phrase('global.log_in') }}</button>
 					{% endset %}
 					{% set phrase_link2 %}
 					<a class="dp-newticket-login-open">{{ phrase('user.tickets.close') }}</a>
@@ -46,7 +46,7 @@
 	{% else %}
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('user.tickets.lbl_your_email') }}</label></em>
+				<label>{{ phrase('global.your_email_address') }}</label></em>
 			</div>
 			<div class="dp-form-input">
 				{{ app.user.primary_email_address }}

@@ -68,11 +68,11 @@ ul.attachment-list > li img.preview {
 </tr></table>
 
 <table cellspacing="5" cellpadding="0" border="0" width="100%"><tr><td>
-	<strong>{{ phrase('user.ticketview.ticket_starter') }}</strong>: {{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;
+	<strong>{{ phrase('global.ticket_starter') }}</strong>: {{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;
 
 	{% if user_participants|length %}
 	<br /><br />
-	<strong>{{ phrase('user.ticketview.ticket_participants') }}</strong><br />
+	<strong>{{ phrase('global.ticket_participants') }}</strong><br />
 	<ul>
 		{% for part in user_participants %}
 			<li>

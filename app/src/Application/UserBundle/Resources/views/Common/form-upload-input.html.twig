@@ -15,7 +15,7 @@
 	</div>
 	<div class="dp-good-upload" style="display: none">
 		<script class="dptpl-attach-upload" type="text/x-jquery-tmpl">
-			<li class="uploading">{{ phrase('user.label_file_uploading') }}: ${name} <span class="cancel">{{ phrase('user.cancel') }}</span></li>
+			<li class="uploading">{{ phrase('global.uploading') }}: ${name} <span class="cancel">{{ phrase('global.cancel') }}</span></li>
 		</script>
 		<script class="dptpl-attach-download" type="text/x-jquery-tmpl">
 			{{ '{{if error}} '}}
@@ -38,7 +38,7 @@
 					<input type="file" name="{{ good_field_name }}" multiple="multiple" />
 				</div>
 			{% else %}
-				<input type="file" name="{{ good_field_name }}" multiple="multiple" /> <button class="btn small">{{ phrase('user.upload_btn') }}</button>
+				<input type="file" name="{{ good_field_name }}" multiple="multiple" /> <button class="btn small">{{ phrase('global.upload') }}</button>
 			{% endif %}
 		</div>
 

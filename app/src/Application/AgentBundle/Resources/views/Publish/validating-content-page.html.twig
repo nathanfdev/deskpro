@@ -22,7 +22,7 @@
 					<li>{{ get_type(content) }}</li>
 					{% if info.revision_id %}
 						<li>
-                            {{ phrase('agent.publish.by_name', {'name':content.revisions[info.revision_id].person.display_name}) }}
+                            {{ phrase('global.by_name', {'name':content.revisions[info.revision_id].person.display_name}) }}
 						</li>
 					{% else %}
 						<li>

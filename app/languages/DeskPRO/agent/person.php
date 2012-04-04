@@ -1,37 +1,37 @@
 <?php return array (
-  'agent.person.drop_your_file_here_to_upload_a_new' => 'Drop your file here to upload a new picture',
-  'agent.person.email_address' => 'Email Address',
+
+
   'agent.person.add_another' => 'Add another',
-  'agent.person.notes' => 'Notes',
-  'agent.person.created' => 'Created',
+
+
   'agent.person.creation_by' => 'Creation By',
-  'agent.person.timezone' => 'Timezone',
-  'agent.person.chats' => 'Chats',
-  'agent.person.detail' => 'Detail',
+
+
+
   'agent.person.online_now' => 'Online Now',
-  'agent.person.last_activity' => 'Last Activity',
-  'agent.person.landing_page' => 'Landing Page',
-  'agent.person.ip_address' => 'IP Address',
-  'agent.person.user_agent' => 'User Agent',
-  'agent.person.organization' => 'Organization',
-  'agent.person.usergroup' => 'Usergroup',
-  'agent.person.date_created' => 'Date Created',
-  'agent.person.done' => 'Done',
+
+
+
+
+
+
+
+
 
   'agent.person.add_an_email_address' => 'Add an email address',
   'agent.person.download_vcard' => 'Download vCard',
-  'agent.person.id' => 'ID',
+
   'agent.person.close' => 'close',
   'agent.person.drop_your_vcard_here' => 'Drop your vCard here',
-  'agent.person.position' => 'Position',
+
   'agent.person.create_person' => 'Create Person',
-  'agent.person.altc' => '(alt+c)',
+
 
   'agent.person.user_landed_on_page' => 'User landed on page',
   'agent.person.and_came_from' => 'and came from',
   'agent.person.count_members' => '{{count}} member|{{count}} members',
 
-  'agent.person.add_a_label' => 'Add a label',
-  'agent.person.enter_an_organization_name' => 'Enter an organization name...',  
-  'agent.person.click_to_upload_a_new_picture' => 'Click to upload a new picture',
+
+
+
 );

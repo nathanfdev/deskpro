@@ -1,15 +1,15 @@
 <?php return array (
   'admin.views.deskpro_admin_interface' => 'DeskPRO Admin Interface',
-  'admin.views.admin_interface' => 'Admin Interface',
-  'admin.views.agent_interface' => 'Agent Interface',
-  'admin.views.billing_interface' => 'Billing Interface',
-  'admin.views.report_interface' => 'Report Interface',
-  'admin.views.user_interface' => 'User Interface',
+
+
+
+
+
   'admin.views.home' => 'Home',
   'admin.views.setup' => 'Setup',
 
-  'admin.views.users' => 'Users',
-  'admin.views.portal' => 'Portal',
+
+
 
   'admin.views.server' => 'Server',
 );

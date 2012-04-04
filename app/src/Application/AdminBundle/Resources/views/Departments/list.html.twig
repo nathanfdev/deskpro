@@ -7,7 +7,7 @@
 		</ul>
 	</nav>
 	<ul>
-		<li>{{ phrase('admin.departments.departments') }}</li>
+		<li>{{ phrase('global.departments') }}</li>
 	</ul>
 {% endblock %}
 {% block content %}
@@ -77,11 +77,11 @@
 
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>{{ phrase('admin.departments.parent') }}</label>
+					<label>{{ phrase('global.parent') }}</label>
 				</div>
 				<div class="dp-form-input">
 					<select name="parent_id" id="newdep_parent_id">
-						<option value="0">{{ phrase('admin.departments.no_parent') }}</option>
+						<option value="0">{{ phrase('global.no_parent') }}</option>
 						{% for department in all_departments %}
 							<option value="{{ department.id }}">{{ department.title }}</option>
 						{% endfor %}
@@ -91,7 +91,7 @@
 		</form>
 	</div>
 	<div class="overlay-footer">
-		<button class="clean-white" id="newdep_savebtn">{{ phrase('admin.departments.add') }}</button>
+		<button class="clean-white" id="newdep_savebtn">{{ phrase('global.add') }}</button>
 	</div>
 </div>
 

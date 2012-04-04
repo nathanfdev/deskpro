@@ -28,13 +28,13 @@
         <td>{{ article.id }}</td>
     </tr>
     <tr>
-        <th>{{ phrase('deskpro.pdf_agent.status') }}:</th>
+        <th>{{ phrase('global.status') }}:</th>
         <td>{{ phrase('agent.publish.status_' ~ article.status_code|replace({'.':'_'})) }}</td>
     </tr>
     {% if labals|length %}
         <tr>
             <th>
-                {{ phrase('agent.label_labels') }}:
+                {{ phrase('global.labels') }}:
             </th>
             <td>
                 <ul>
@@ -48,7 +48,7 @@
         </tr>
     {% endif %}
     <tr>
-        <th>{{ phrase('agent.categories') }}:</th>
+        <th>{{ phrase('global.categories') }}:</th>
         <td>
             {% for cat in article.categories %}
                 {{ cat.full_title }}
@@ -58,7 +58,7 @@
     </tr>
     {% if app.getSetting('core.use_product') %}
         <tr>
-            <th>{{ phrase('agent.products') }}</th>
+            <th>{{ phrase('global.products') }}</th>
             <td>
                 <ul>
                     {% for prod in article.products %}

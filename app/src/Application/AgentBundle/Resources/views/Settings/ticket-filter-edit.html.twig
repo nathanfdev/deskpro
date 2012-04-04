@@ -10,7 +10,7 @@ pageMeta.baseId = '{{ baseId }}';
 </script>
 <header>
 	<span class="close close-trigger">{{ phrase('agent.settings.close') }}</span>
-	<h1>{% if filter.id %}{{ phrase('agent.settings.edit_filter') }}{% else %}{{ phrase('agent.settings.new_filter') }}{% endif %}</h1>
+	<h1>{% if filter.id %}{{ phrase('agent.settings.edit_filter') }}{% else %}{{ phrase('global.new_filter') }}{% endif %}</h1>
 </header>
 <article class="padded" data-width="600" data-height="400">
 	<form id="{{baseId}}_form" action="{{ path('agent_settings_ticketfilters_edit_save', { 'filter_id': filter.id|default(0) }) }}" method="post" accept-charset="utf-8">
@@ -24,7 +24,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>{{ phrase('agent.label_criteria') }}</label></div>
+			<div class="dp-form-label"><label>{{ phrase('global.criteria') }}</label></div>
 			<div class="dp-form-input">
 				<div class="search-form" id="{{baseId}}_criteria_list">
 					<div class="search-terms"></div>

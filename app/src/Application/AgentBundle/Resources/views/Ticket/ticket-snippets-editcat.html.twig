@@ -9,11 +9,11 @@
 			<dt>{{ phrase('global.title') }}:</dt>
 			<dd><input type="text" name="title" value="{{ category.title }}" /></dd>
 
-			<dt>{{ phrase('agent.ticket.permissions') }}:</dt>
+			<dt>{{ phrase('global.permissions') }}:</dt>
 			<dd>
-				<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if category.getPermType() == 'me' %}checked="checked"{% endif %} /> {{ phrase('agent.ticket.just_me') }}</label><br />
+				<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if category.getPermType() == 'me' %}checked="checked"{% endif %} /> {{ phrase('global.just_me') }}</label><br />
 				{% if app.getSetting('core.use_agent_team') %}<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if category.getPermType() == 'team' %}checked="checked"{% endif %} /> {{ phrase('agent.ticket.my_team') }}</label><br />{% endif %}
-				<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if category.getPermType() == 'global' %}checked="checked"{% endif %} /> {{ phrase('agent.ticket.everyone') }}</label><br />
+				<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if category.getPermType() == 'global' %}checked="checked"{% endif %} /> {{ phrase('global.everyone') }}</label><br />
 			</dd>
 
 			<dt class="perm-teams" style="display: none">{{ phrase('global.teams') }}:</dt>

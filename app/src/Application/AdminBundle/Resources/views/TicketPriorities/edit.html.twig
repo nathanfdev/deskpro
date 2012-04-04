@@ -21,7 +21,7 @@
 	</div>
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.ticketpriorities.priority') }}</label>
+			<label>{{ phrase('global.priority') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.priority, {'attr': {'size': 4} }) }}
@@ -35,6 +35,6 @@
 </form>
 
 <div class="delete-link-wrap">
-	<a href="{{ path('admin_ticketpris_del', {'priority_id': priority.id}) }}">{{ phrase('admin.ticketpriorities.delete') }}</a>
+	<a href="{{ path('admin_ticketpris_del', {'priority_id': priority.id}) }}">{{ phrase('global.delete') }}</a>
 </div>
 {% endblock %}

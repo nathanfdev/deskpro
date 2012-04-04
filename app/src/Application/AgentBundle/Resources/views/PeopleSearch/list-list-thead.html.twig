@@ -8,12 +8,12 @@
 		{% set perc = (100 / display_fields|length) %}
 		{% for field in display_fields %}
 			{% if field == 'name' %}<th width="{{perc}}%" data-field="email_address">{{ phrase('global.name') }}</th>
-			{% elseif field == 'email' %}<th width="{{perc}}%" data-field="email_address">{{ phrase('agent.peoplesearch.email_address') }}</th>
-			{% elseif field == 'org' %}<th width="{{perc}}%" data-field="email_address">{{ phrase('agent.peoplesearch.organization') }}</th>
-			{% elseif field == 'org_pos' %}<th width="{{perc}}%" data-field="email_address">{{ phrase('agent.peoplesearch.position') }}</th>
-			{% elseif field == 'organization' %}<th width="{{perc}}%" data-field="organization">{{ phrase('agent.peoplesearch.organization') }}</th>
-			{% elseif field == 'language' %}<th width="{{perc}}%" data-field="language">{{ phrase('agent.peoplesearch.language') }}</th>
-			{% elseif field == 'labels' %}<th width="{{perc}}%" data-field="labels">{{ phrase('agent.peoplesearch.labels') }}</th>
+			{% elseif field == 'email' %}<th width="{{perc}}%" data-field="email_address">{{ phrase('global.email_address') }}</th>
+			{% elseif field == 'org' %}<th width="{{perc}}%" data-field="email_address">{{ phrase('global.organization') }}</th>
+			{% elseif field == 'org_pos' %}<th width="{{perc}}%" data-field="email_address">{{ phrase('global.position') }}</th>
+			{% elseif field == 'organization' %}<th width="{{perc}}%" data-field="organization">{{ phrase('global.organization') }}</th>
+			{% elseif field == 'language' %}<th width="{{perc}}%" data-field="language">{{ phrase('global.language') }}</th>
+			{% elseif field == 'labels' %}<th width="{{perc}}%" data-field="labels">{{ phrase('global.labels') }}</th>
 			{% elseif field == 'num_tickets' %}<th width="{{perc}}%" data-field="num_tickets">{{ phrase('global.tickets') }}</th>
 			{% else %}
 				{% for f in person_field_defs %}

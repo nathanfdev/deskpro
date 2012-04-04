@@ -5,25 +5,25 @@
 
 <div class="form-reply" style="display: none">
 	<form>
-		<h5>{{ phrase('agent.twitterstatus.add_reply') }}</h5>
+		<h5>{{ phrase('global.add_reply') }}</h5>
 		<div class="type" style="float: left">
 			<div style="float: left">
 				<img src="{{ asset('images/agent/icons/twitter_public.png') }}" /><br />
-				<span>{{ phrase('agent.twitterstatus.public') }}</span>
+				<span>{{ phrase('global.public') }}</span>
 			</div>
 			<div style="float: left">
 				<img src="{{ asset('images/agent/icons/twitter_private.png') }}" /><br />
-				<span>{{ phrase('agent.twitterstatus.private') }}</span>
+				<span>{{ phrase('global.private') }}</span>
 			</div>
 
 			<ul style="display: none">
 				<li>
 					<input type="radio" name="type" value="private" />
-					<label for="private">{{ phrase('agent.twitterstatus.private') }}</label>
+					<label for="private">{{ phrase('global.private') }}</label>
 				</li>
 				<li>
 					<input type="radio" name="type" value="public" checked="checked" />
-					<label for="public">{{ phrase('agent.twitterstatus.public') }}</label>
+					<label for="public">{{ phrase('global.public') }}</label>
 				</li>
 			</ul>
 		</div>

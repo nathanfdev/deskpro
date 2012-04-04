@@ -16,13 +16,13 @@
 		<div class="dp-form-input">
 			<div class="choices-builder" data-element-handler="DeskPRO.Admin.ElementHandler.ChoiceBuilder">
 				<header>
-					<input type="text" class="new-choice" value="" /> <button class="clean-white add-trigger">{{ phrase('admin.customdefabstract.add') }}</button>
+					<input type="text" class="new-choice" value="" /> <button class="clean-white add-trigger">{{ phrase('global.add') }}</button>
 				</header>
 				<div style="display: none" id="choice_extra_fields"></div>
 				<ul class="list">
 					{% for id,choice in editfield.choices %}
 					<li class="item" data-choice-id="{{ id }}">
-						<div class="controls"><ul><li class="remove"><a>{{ phrase('admin.customdefabstract.remove') }}</a></li></ul></div>
+						<div class="controls"><ul><li class="remove"><a>{{ phrase('global.remove') }}</a></li></ul></div>
 						<div class="controls right"><ul><li class="drag"><a>{{ phrase('admin.customdefabstract.drag') }}</a></li></ul></div>
 						<div class="label">{{ choice }}</div>
 						<input type="hidden" name="fielddef[choices][]" class="row-value" value="exist.{{ loop.index0 }}:{{ id }}:{{ choice }}" />
@@ -31,7 +31,7 @@
 				</ul>
 				<script type="text/x-deskpro-plain" class="row-tpl">
 					<li class="item new" data-choice-id="new">
-						<div class="controls"><ul><li class="remove"><a>{{ phrase('admin.customdefabstract.remove') }}</a></li></ul></div>
+						<div class="controls"><ul><li class="remove"><a>{{ phrase('global.remove') }}</a></li></ul></div>
 						<div class="controls right"><ul><li class="drag"><a>{{ phrase('admin.customdefabstract.drag') }}</a></li></ul></div>
 						<div class="label"></div>
 						<input type="hidden" name="fielddef[choices][]" class="row-value" value="" />

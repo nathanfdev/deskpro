@@ -38,33 +38,33 @@
   'admin.main.next_step' => 'Next step',
   'admin.main.or_skip' => 'or skip',
 
-  'admin.main.settings' => 'Settings',
+
   'admin.main.outgoing_email_account' => 'Outgoing Email Account',
-  'admin.main.departments' => 'Departments',
-  'admin.main.products' => 'Products',
-  'admin.main.languages' => 'Languages',
+
+
+
   'admin.main.page_templates' => 'Page Templates',
-  'admin.main.email_templates' => 'Email Templates',
-  'admin.main.file_uploads' => 'File Uploads',
-  'admin.main.scheduled_tasks' => 'Scheduled Tasks',
-  'admin.main.php_info' => 'PHP Info',
-  'admin.main.mysql_info' => 'MySQL Info',
-  'admin.main.mysql_status' => 'MySQL Status',
-  'admin.main.error_logs' => 'Error Logs',
+
+
+
+
+
+
+
   'admin.main.registration' => 'Registration',
   'admin.main.user_groups' => 'User Groups',
   'admin.main.fields' => 'Fields',
-  'admin.main.labels' => 'Labels',
-  'admin.main.organization_fields' => 'Organization Fields',
+
+
   'admin.main.organization_labels' => 'Organization Labels',
   'admin.main.rules' => 'Rules',
-  'admin.main.banning' => 'Banning',
+
   'admin.main.plugins' => 'Plugins',
   'admin.main.api' => 'API',
   'admin.main.editor' => 'Editor',
-  'admin.main.filters' => 'Filters',
-  'admin.main.triggers' => 'Triggers',
-  'admin.main.email_gateways' => 'Email Gateways',
+
+
+
   'admin.main.email_notification_templates' => 'Email Notification Templates',
-  'admin.main.macros' => 'Macros',
+
 );

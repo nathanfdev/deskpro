@@ -2,7 +2,7 @@
 	<ul class="property-list">
 		{% if people_options.organizations %}
 		<li class="ob">
-			<label>{{ phrase('agent.main.organization') }}</label>
+			<label>{{ phrase('global.organization') }}</label>
 			<div class="values">
 				<select name="set_term[person_organization]" multiple="multiple">
 					{% for id,title in people_options.organizations %}
@@ -14,7 +14,7 @@
 		{% endif %}
 		{% if people_options.usergroups %}
 		<li class="ob">
-			<label>{{ phrase('agent.main.usergroup') }}</label>
+			<label>{{ phrase('global.usergroup') }}</label>
 			<div class="values">
 				<select name="set_term[person_usergroup]" multiple="multiple">
 					{% for id,title in people_options.usergroups %}
@@ -25,7 +25,7 @@
 		</li>
 		{% endif %}
 		<li class="field-input">
-			<label>{{ phrase('agent.main.label') }}</label>
+			<label>{{ phrase('global.label') }}</label>
 			<div class="values">
 				<input class="form-label-input" type="text" name="set_term[person_label]" />
 			</div>
@@ -37,13 +37,13 @@
 			</div>
 		</li>
 		<li class="field-input">
-			<label>{{ phrase('agent.main.email_address') }}</label>
+			<label>{{ phrase('global.email_address') }}</label>
 			<div class="values">
 				<input type="text" name="set_term[person_email]" />
 			</div>
 		</li>
 		<li class="field-input">
-			<label>{{ phrase('agent.main.phone') }}</label>
+			<label>{{ phrase('global.phone') }}</label>
 			<div class="values">
 				<input type="text" name="set_term[person_contact_phone]" />
 			</div>

@@ -23,7 +23,7 @@
 	{% if form.parent %}
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('admin.ticketcategories.parent_category') }}</label>
+				<label>{{ phrase('global.parent_category') }}</label>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.parent) }}
@@ -38,6 +38,6 @@
 </form>
 
 <div class="delete-link-wrap">
-	<a href="{{ path('admin_ticketcats_del', {'category_id': category.id}) }}">{{ phrase('admin.ticketcategories.delete') }}</a>
+	<a href="{{ path('admin_ticketcats_del', {'category_id': category.id}) }}">{{ phrase('global.delete') }}</a>
 </div>
 {% endblock %}

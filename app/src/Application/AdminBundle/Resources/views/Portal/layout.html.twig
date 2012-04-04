@@ -3,15 +3,15 @@
 <div data-element-handler="DeskPRO.Admin.ElementHandler.PortalNav" id="portal_nav">
 	<section class="top">
 		<header>
-			<h4>{{ phrase('admin.portal.portal') }}</h4>
+			<h4>{{ phrase('global.portal') }}</h4>
 		</header>
 		<article>
 			<ul>
 				<li class="{% if this_page == 'portal_editor' %}on{% endif %}"><a href="{{ path('admin_portal') }}">{{ phrase('admin.portal.portal_editor') }}</a></li>
 				<li class="{% if this_page == 'website_widgets' %}on{% endif %}"><a>{{ phrase('admin.portal.website_widgets') }}</a></li>
-				<li class="{% if this_page == 'labels' %}on{% endif %}"><a>{{ phrase('admin.portal.labels') }}</a></li>
+				<li class="{% if this_page == 'labels' %}on{% endif %}"><a>{{ phrase('global.labels') }}</a></li>
 				<li class="{% if this_page == 'portal_settings' %}on{% endif %}"><a href="{{ path('admin_portal_settings') }}">{{ phrase('admin.portal.global_settings') }}</a></li>
-				<li class="{% if this_page == 'portal_templates' %}on{% endif %}"><a href="{{ path('admin_templates_user') }}">{{ phrase('admin.portal.templates') }}</a></li>
+				<li class="{% if this_page == 'portal_templates' %}on{% endif %}"><a href="{{ path('admin_templates_user') }}">{{ phrase('global.templates') }}</a></li>
 			</ul>
 		</article>
 
@@ -23,7 +23,7 @@
 			<div class="onoff">
 				<input type="checkbox" name="kb" value="1" checked="checked" class="onoff-slider section-toggle" />
 			</div>
-			<h4>{{ phrase('admin.portal.knowledgebase') }}</h4>
+			<h4>{{ phrase('global.knowledgebase') }}</h4>
 		</header>
 		<article>
 			<ul>
@@ -39,13 +39,13 @@
 			<div class="onoff">
 				<input type="checkbox" name="feedback" value="1" checked="checked" class="onoff-slider section-toggle" />
 			</div>
-			<h4>{{ phrase('admin.portal.feedback') }}</h4>
+			<h4>{{ phrase('global.feedback') }}</h4>
 		</header>
 		<article>
 			<ul>
 				{#<li class="{% if this_page == 'feedback_settings' %}on{% endif %}"><a href="{{ path('admin_feedback_settings' ) }}">Settings</a></li>#}
-				<li class="{% if this_page == 'feedback_statuses' %}on{% endif %}"><a href="{{ path('admin_feedback_statuses') }}">{{ phrase('admin.portal.statuses') }}</a></li>
-				<li class="{% if this_page == 'feedback_cats' %}on{% endif %}"><a href="{{ path('admin_feedback_cats') }}">{{ phrase('admin.portal.categories') }}</a></li>
+				<li class="{% if this_page == 'feedback_statuses' %}on{% endif %}"><a href="{{ path('admin_feedback_statuses') }}">{{ phrase('global.statuses') }}</a></li>
+				<li class="{% if this_page == 'feedback_cats' %}on{% endif %}"><a href="{{ path('admin_feedback_cats') }}">{{ phrase('global.categories') }}</a></li>
 				<li class="{% if this_page == 'feedback_fields' %}on{% endif %}"><a href="{{ path('admin_customdeffeedback') }}">{{ phrase('admin.portal.custom_fields') }}</a></li>
 				<li><a href="{{ app.request.getBaseUrl() }}/agent/#app.feedback" target="_blank">{{ phrase('admin.portal.manage_feedback') }}</a></li>
 			</ul>
@@ -57,7 +57,7 @@
 			<div class="onoff">
 				<input type="checkbox" name="downloads" value="1" checked="checked" class="onoff-slider section-toggle" />
 			</div>
-			<h4>{{ phrase('admin.portal.downloads') }}</h4>
+			<h4>{{ phrase('global.downloads') }}</h4>
 		</header>
 		<article>
 			<ul>
@@ -73,7 +73,7 @@
 				<div class="onoff">
 					<input type="checkbox" name="news" value="1" checked="checked" class="onoff-slider section-toggle" />
 				</div>
-				<h4>{{ phrase('admin.portal.news') }}</h4>
+				<h4>{{ phrase('global.news') }}</h4>
 			</header>
 			<article>
 				<ul>

@@ -33,7 +33,7 @@
 								<li><span class="prop-val email_address">{{person.language.title}}</span></li>
 							{% elseif field == 'labels' and result_display.hasPersonLabels(person) %}
 								<li>
-									<span class="prop-title">{{ phrase('agent.peoplesearch.labels') }}:</span>
+									<span class="prop-title">{{ phrase('global.labels') }}:</span>
 									<span class="prop-val labels">
 										{% for label in result_display.getPersonLabels(person) %}
 											<span class="listing-tag">{{ label }}</span>

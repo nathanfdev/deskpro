@@ -1,10 +1,10 @@
-{{ phrase('agent.mediabrowser.category') }}: <select name="category_id">
+{{ phrase('global.category') }}: <select name="category_id">
 	{% for cat in category_hierarchy %}
 		<option value="{{cat.id}}">{% for i in 0..cat.depth %}--{% endfor %} {{cat.title}}</option>
 	{% endfor %}
 </select>
 
-{{ phrase('agent.mediabrowser.labels') }}: <input type="text" name="labels" value="{{ labels }}" />
+{{ phrase('global.labels') }}: <input type="text" name="labels" value="{{ labels }}" />
 
 {% if blob_objects|length %}
 <table width="100%" cellpadding="0" cellspacing="0">

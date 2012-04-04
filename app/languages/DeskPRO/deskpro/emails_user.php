@@ -1,8 +1,8 @@
 <?php return array (
   'deskpro.emails_user.an_agent_has_reset_your_account_password_you' => 'An agent has reset your account password. You can log in with these credentials',
-  'deskpro.emails_user.url' => 'URL',
-  'deskpro.emails_user.email_address' => 'Email Address',
-  'deskpro.emails_user.password' => 'Password',
+
+
+
   'deskpro.emails_user.view_your_ticket_online_at' => 'View your ticket online at',
   'deskpro.emails_user.thank_you_for_chatting_with_us_here_is' => 'Thank you for chatting with us. Here is your chat transcript.',
   'deskpro.emails_user.view_your_feedback_online_at' => 'View your feedback online at',

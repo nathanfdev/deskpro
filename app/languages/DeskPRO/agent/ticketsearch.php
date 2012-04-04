@@ -1,10 +1,10 @@
 <?php return array (
   'agent.ticketsearch.display_options_for_results' => 'Display Options For Results',
-  'agent.ticketsearch.order_by' => 'Order By',
-  'agent.ticketsearch.all' => 'All',
-  'agent.ticketsearch.loading' => 'Loading',
+
+
+
   'agent.ticketsearch.export_to_csv' => 'Export to CSV',
-  'agent.ticketsearch.deleted_reason' => 'Deleted Reason',
+
   'agent.ticketsearch.user_email' => 'User Email',
 
   'agent.ticketsearch.urgency_highestlowest' => 'Urgency (Highest-Lowest)',
@@ -13,32 +13,32 @@
   'agent.ticketsearch.date_opened_oldernewer' => 'Date Opened (Older-Newer)',
   'agent.ticketsearch.priority_highestlowest' => 'Priority (Highest-Lowest)',
   'agent.ticketsearch.priority_lowesthighest' => 'Priority (Lowest-Highest)',
-  'agent.ticketsearch.search' => 'Search',
-  'agent.ticketsearch.organization' => 'Organization',
 
-  'agent.ticketsearch.category' => 'Category',
-  'agent.ticketsearch.product' => 'Product',
-  'agent.ticketsearch.agent' => 'Agent',
-  'agent.ticketsearch.team' => 'Team',
+
+
+
+
+
+
   'agent.ticketsearch.lables' => 'Lables',
-  'agent.ticketsearch.user_waiting' => 'User Waiting',
-  'agent.ticketsearch.date_opened' => 'Date Opened',
-  'agent.ticketsearch.none' => 'None',
+
+
+
   'agent.ticketsearch.na' => 'N/A',
-  'agent.ticketsearch.unassigned' => 'Unassigned',
-  'agent.ticketsearch.workflow' => 'Workflow',
-  'agent.ticketsearch.add_a_new_criteria' => 'Add a new criteria',
+
+
+
   'agent.ticketsearch.group_by' => 'Group by',
   'agent.ticketsearch.no_grouping' => '(No grouping)',
   'agent.ticketsearch.search_all_tickets_including_tickets_that_are_resolved' => 'Search all tickets, including tickets that are resolved or closed',
   'agent.ticketsearch.any_of_my_teams' => 'Any of my teams',
-  'agent.ticketsearch.awaiting_agent' => 'Awaiting Agent',
-  'agent.ticketsearch.awaiting_user' => 'Awaiting User',
-  'agent.ticketsearch.resolved' => 'Resolved',
-  'agent.ticketsearch.closed' => 'Closed',
-  'agent.ticketsearch.hidden_awaiting_validating_spam' => 'Hidden (awaiting validating, spam)',
-  'agent.ticketsearch._by_user' => '-- By user',
-  'agent.ticketsearch._by_agent_on_behalf_of_user' => '-- By agent on behalf of user',
+
+
+
+
+
+
+
 
   'agent.ticketsearch.flags_let_you_create_personal_collections_of_tickets' => 'Flags let you create personal collections of tickets. Double-click on a flag to change its title.',
   'agent.ticketsearch.no_criteria' => 'No criteria',
@@ -48,37 +48,37 @@
   'agent.ticketsearch.your_teams_tickets' => 'Your teams tickets',
   'agent.ticketsearch.unassigned_tickets' => 'Unassigned tickets',
   'agent.ticketsearch.all_tickets' => 'All tickets',
-  'agent.ticketsearch.set_assignments' => 'Set assignments',
-  'agent.ticketsearch.no_team' => 'No Team',
-  'agent.ticketsearch.me' => 'Me',
+
+
+
   'agent.ticketsearch.edit' => 'Edit',
-  'agent.ticketsearch.add_a_new_term' => 'Add a new term',
-  'agent.ticketsearch.user' => 'User',
-  'agent.ticketsearch.is_not' => 'is not',
-  'agent.ticketsearch.contains' => 'contains',
-  'agent.ticketsearch.does_not_contain' => 'does not contain',
-  'agent.ticketsearch.includes_label' => 'includes label',
-  'agent.ticketsearch.does_not_include_label' => 'does not include label',
-  'agent.ticketsearch.include' => 'include',
-  'agent.ticketsearch.does_not_include' => 'does not include',
-  'agent.ticketsearch.is_less_than' => 'is less than',
-  'agent.ticketsearch.is_greater_than' => 'is greater than',
-  'agent.ticketsearch.web_interface' => 'Web interface',
-  'agent.ticketsearch.is' => 'is',
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   'agent.ticketsearch.add_attachments' => 'Add attachments',
   'agent.ticketsearch.insert_text_snippets' => 'Insert text snippets',
   'agent.ticketsearch.enter_a_mass_reply' => 'Enter a mass reply',
-  'agent.ticketsearch.edit_search_terms' => 'Edit search terms',
+
   'agent.ticketsearch.search_all_tickets' => 'Search all tickets',
-  'agent.ticketsearch.subject' => 'Subject',
-  'agent.ticketsearch.labels' => 'Labels',
-  'agent.ticketsearch.assigned_agent' => 'Assigned Agent',
+
+
+
   'agent.ticketsearch.participants' => 'Participants',
-  'agent.ticketsearch.agent_team' => 'Agent Team',
-  'agent.ticketsearch.status' => 'Status',
-  'agent.ticketsearch.priority' => 'Priority',
-  'agent.ticketsearch.originated_interface' => 'Originated interface',
+
+
+
+
   'agent.ticketsearch.receiving_gateway_account' => 'Receiving gateway account',
 
   'agent.ticketsearch.ticket_field_name' => 'Ticket Field: {{field}}',

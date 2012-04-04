@@ -1,7 +1,7 @@
 <section class="list-top-area news">
 	{% if not hide_terms_summary %}
 	<div class="summary">
-		<span class="edit" title="{{ phrase('agent.downloads.edit_search_terms') }}">{{ phrase('agent.downloads.edit') }}</span>
+		<span class="edit" title="{{ phrase('global.edit_search_terms') }}">{{ phrase('agent.downloads.edit') }}</span>
 		{% for line in terms_summary %}
 			{{line}}{% if not loop.last %},{% endif %}
 		{% else %}
@@ -18,7 +18,7 @@
 				</div>
 				{% include 'DeskPRO:Common:download-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'term_options': download_options } %}
 			</div>
-			<div style="text-align: center;"><button class="dp-button x-small">{{ phrase('agent.search') }}</button></div>
+			<div style="text-align: center;"><button class="dp-button x-small">{{ phrase('global.search') }}</button></div>
 		</form>
 	</div>
 

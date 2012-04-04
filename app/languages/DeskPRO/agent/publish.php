@@ -1,9 +1,9 @@
 <?php return array(
 
 	'agent.publish.no_related_explain' => 'No other articles, downloads or news posts have been linked to this. Browse the listings and click "Add as related" to add related content.',
-	'agent.publish.related_articles' => 'Related Articles',
-	'agent.publish.related_downloads' => 'Related Downloads',
-	'agent.publish.related_news' => 'Related News',
+
+
+
 
 	'agent.publish.comments_to_validate' => 'Comments to review',
 
@@ -18,13 +18,13 @@
 	'agent.publish.changes_in_content' => 'Changes in content',
 	'agent.publish.no_changes' => 'No changes detected between these two revisions',
 
-	'agent.publish.downloads' => 'Downloads',
-	'agent.publish.new_download' => 'New Download',
 
-	'agent.publish.feedback' => 'Feedback',
-	'agent.publish.new_feedback' => 'New Feedback',
 
-	'agent.publish.restored_unsaved_changes' => 'Unsaved changes were restored.',
+
+
+
+
+
 	'agent.publish.discard_unsaved_changes' => 'Discard and revert to default',
 
 	'agent.publish.download_replace_file' => 'Upload a new file to replace the old one',
@@ -38,7 +38,7 @@
 	'agent.publish.word_title' => 'Word title',
 	'agent.publish.word_def' => 'Word defintion',
 
-	'agent.publish.votes' => 'Votes',
+
 
 	'agent.publish.comments_awaiting_validation' => 'Comments Awaiting Validation',
 
@@ -48,7 +48,7 @@
 	'agent.publish.who_voted_none' => 'No one has voted yet',
 
 	'agent.publish.draft_revision' => 'Change',
-	'agent.publish.draft_new' => 'New',
+
 
 	'agent.publish.searches_helpful' => 'Searches where this was rated helpful',
 	'agent.publish.searches_unhelpful' => 'Searches where this was rated unhelpful',
@@ -65,37 +65,37 @@
 	'agent.publish.search_logs' => 'Search Logs',
 	'agent.publish.all_draft_content' => 'All Drafts',
 
-	'agent.publish.status_published' => 'Published',
-	'agent.publish.status_archived' => 'Archived',
-	'agent.publish.status_hidden_deleted' => 'Deleted',
-	'agent.publish.status_hidden_draft' => 'Draft',
-	'agent.publish.status_hidden_unpublished' => 'Unpublished',
-	'agent.publish.status_hidden_validating' => 'Validating',
-	'agent.publish.status_hidden_user_validating' => 'User Validating',
-	'agent.publish.status_hidden_spam' => 'Spam',
 
-  'agent.publish.files' => 'Files',
+
+
+
+
+
+	'agent.publish.status_hidden_user_validating' => 'User Validating',
+
+
+
   'agent.publish.count_files' => '1 File|{{count}} Files',
-  'agent.publish.words' => '1 Word|{{count}} Words',
-  'agent.publish.count_words' => '1 Word|{{count}} Words',
-  'agent.publish.articles' => 'Articles',
+
+
+
   'agent.publish.count_articles' => '1 Article|{{count}} Articles',
   'agent.publish.posts' => 'Posts',
   'agent.publish.who' => 'Who',
-  'agent.publish.rating' => 'Rating',
+
   'agent.publish.when' => 'When',
-  'agent.publish.search_terms' => 'Search Terms',
-  'agent.publish.pending' => 'Pending',
-  'agent.publish.knowledgebase' => 'Knowledgebase',
-  'agent.publish.news' => 'News',
+
+
+
+
   'agent.publish.recent_and_popular_searches' => 'Recent and Popular Searches',
 
   'agent.publish.create_category' => 'create category',
 
-  'agent.publish.edit' => 'edit',
-  'agent.publish.expand' => 'expand',
-  'agent.publish.delete' => 'delete',
-  'agent.publish.by_name' => 'By {{name}}',
+
+
+
+
   'agent.publish.revision_by' => 'Revision by {{name}}',
-  'agent.publish.count_selected' => '{{display_count}} selected',
+
 );

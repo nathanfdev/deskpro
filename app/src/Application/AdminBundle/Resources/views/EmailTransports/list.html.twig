@@ -24,17 +24,17 @@
 	<h3>{{ phrase('admin.emailtransports.default_from_address') }}</h3>
 	<form action="{{ path('admin_emailtrans_set_default_from') }}" method="post">
 		{{ form_token('admin_update_from') }}
-		<input type="text" name="default_from" value="{{ app.getSetting('core.default_from_email') }}" /> <button class="clean-white">{{ phrase('admin.emailtransports.update') }}</button>
+		<input type="text" name="default_from" value="{{ app.getSetting('core.default_from_email') }}" /> <button class="clean-white">{{ phrase('global.update') }}</button>
 	</form>
 </div>
 
-<h1 style="font-size: 13px">{{ phrase('admin.emailtransports.outgoing_email_accounts') }}</h1>
+<h1 style="font-size: 13px">{{ phrase('global.outgoing_email_accounts') }}</h1>
 <div class="check-grid item-list">
 	<table width="100%">
 		<thead>
 			<tr>
 				<th style="text-align:left">&nbsp; Use Criteria</th>
-				<th style="text-align:left">{{ phrase('admin.emailtransports.account') }}</th>
+				<th style="text-align:left">{{ phrase('global.account') }}</th>
 				<th style="text-align:left">{{ phrase('admin.emailtransports.backup_account') }}</th>
 				<th style="text-align:left" width="10">&nbsp;</th>
 			</tr>

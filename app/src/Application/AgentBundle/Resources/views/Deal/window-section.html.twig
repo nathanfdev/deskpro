@@ -42,7 +42,7 @@
                      <li>
                         <span class="title" data-route="listpane:{{ path('agent_deal_list',{'owner_type': 'my', 'deal_status': 'lost'}) }}">
                                 <span class="list-counter" id="mydeal_lost">{{my_lost_deals|default(0)}}</span>
-                                {{ phrase('agent.deal.lost') }}
+                                {{ phrase('global.lost') }}
                         </span>
                      </li>
                 </ul>
@@ -63,7 +63,7 @@
                      <li>
                         <span class="title" data-route="listpane:{{ path('agent_deal_list',{'owner_type': 'other', 'deal_status': 'lost'}) }}">
                                 <span class="list-counter" id="mydeal_lost">{{other_lost_deals|default(0)}}</span>
-                                {{ phrase('agent.deal.lost') }}
+                                {{ phrase('global.lost') }}
                         </span>
                      </li>
                 </ul>

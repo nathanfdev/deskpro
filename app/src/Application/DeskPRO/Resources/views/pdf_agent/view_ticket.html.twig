@@ -29,7 +29,7 @@
 <table id="ticket_properties">
     <tr>
         <th>
-            {{ phrase('deskpro.pdf_agent.ticket_id') }}:
+            {{ phrase('global.ticket_id') }}:
         </th>
         <td>
             {{ ticket.id }}
@@ -37,7 +37,7 @@
     </tr>
     <tr>
         <th>
-            {{ phrase('deskpro.pdf_agent.urgency') }}:
+            {{ phrase('global.urgency') }}:
         </th>
         <td>
             {{ ticket.urgency }}
@@ -45,7 +45,7 @@
     </tr>
     <tr>
         <th>
-            {{ phrase('deskpro.pdf_agent.status') }}:
+            {{ phrase('global.status') }}:
         </th>
         <td>
             {% set status_strings = {
@@ -63,7 +63,7 @@
     </tr>
     {% if ticket_flagged %}
         <tr>
-            <th>{{ phrase('agent.flag') }}:</th>
+            <th>{{ phrase('global.flag') }}:</th>
             <td>
                 {% for color in ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'yellow'] %}
                     {% if ticket_flagged == color %}{{ flag.flag_name(color) }}{% endif %}
@@ -73,13 +73,13 @@
     {% endif %}
     {% if ticket.linked_chat %}
     <tr>
-        <th>{{ phrase('deskpro.pdf_agent.linked_chat') }}:</th>
+        <th>{{ phrase('global.linked_chat') }}:</th>
         <td>{{ ticket.linked_chat.getSubjectLine() }}</td>
     </tr>
     {% endif %}
     {% if ticket.labels|length %}
     <tr>
-        <th class="type-labels">{{ phrase('agent.label_labels') }}:</th>
+        <th class="type-labels">{{ phrase('global.labels') }}:</th>
         <td class="ticket-tags tags-wrap">
             <ul>
                 {% for label in ticket.labels %}
@@ -91,7 +91,7 @@
     {% endif %}
 
     <tr>
-        <th>{{ phrase('agent.created') }}:</th>
+        <th>{{ phrase('global.created') }}:</th>
         <td>
             {{ ticket.date_created|date('M j Y H:ia') }}
         </td>
@@ -112,20 +112,20 @@
             </dl>
         </td>
     <tr>
-        <th>{{ phrase('agent.assignments') }}:</th>
+        <th>{{ phrase('global.assignments') }}:</th>
         <td>
             {{ ticket.agent.display_name|default(phrase('agent.no_agent_assigned')) }}
         </td>
     </tr>
     {% if ticket.agent_team %}
         <tr>
-            <th>{{ phrase('agent.team') }}:</th>
+            <th>{{ phrase('global.team') }}:</th>
             <td>{{ ticket.agent_team.name|default('None') }}</td>
         </tr>
     {% endif %}
     {% if agent_parts|length %}
         <tr>
-            <th>{{ phrase('agent.followers') }}:</th>
+            <th>{{ phrase('global.followers') }}:</th>
             <td>
                 {% for part in agent_parts %}
                     {{ part.person.display_name }}

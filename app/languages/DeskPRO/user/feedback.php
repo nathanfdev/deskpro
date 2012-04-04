@@ -1,22 +1,22 @@
 <?php return array(
 
-	'user.feedback.section_name' => 'Feedback',
+
 	'user.feedback.error_not_found' => 'The feedback you\'re looking for could not be found. It may have been deleted.',
-	'user.feedback.status_all' => 'All',
-	'user.feedback.status_new' => 'New',
-	'user.feedback.status_active' => 'Active',
-	'user.feedback.status_closed' => 'Closed',
+
+
+
+
 	'user.feedback.status_popular' => 'Popular',
 
-	'user.feedback.label_status' => 'Status',
-	'user.feedback.label_votes' => 'Votes',
+
+
 
 	'user.feedback.all_feedback' => 'All Feedback',
 
 	'user.feedback.newfeedback_section_name' => 'Submit Feedback',
 	'user.feedback.submit_new_feedback' => 'Submit Feedback',
 
-	'user.feedback.label_summary' => 'Summary',
+
 	'user.feedback.label_summary_explain' => 'A title or a brief summary of what your feedback is about',
 	'user.feedback.summary_error' => 'Please enter a summary of at laest 5 characters',
 
@@ -25,7 +25,7 @@
 	'user.feedback.desc_error' => 'Please enter a description of at least 5 characters',
 
 	'user.feedback.similar_title' => 'We found the following feedback submissions that may be similar to yours',
-	'user.feedback.similar_note' => 'Don\'t worry, you can click a title and you will remain on this page.',
+
 	'user.feedback.similar_count' => 'View {{count_place}} more results',
 
 	'user.feedback.no_feedback_spec' => 'There are no feedback submissions with those specificiations',
@@ -40,13 +40,13 @@
 
 	'user.feedback.votes_available' => 'You have up to {{part}} votes to cast on this feedback. How many do you want to use?',
 
-	'user.feedback.new' => 'New',
+
 	'user.feedback.accepted' => 'Accepted',
 	'user.feedback.declined' => 'Declined',
 	'user.feedback.completed' => 'Completed',
 
-	'user.feedback.feedback' => 'Feedback',
-	'user.feedback.please_enter_your_name' => 'Please enter your name',
+
+
 
 	'user.feedback.count_votes' => '{0} No votes|{1} {{count}} vote|]2,Unf]{{count}} votes',
 );

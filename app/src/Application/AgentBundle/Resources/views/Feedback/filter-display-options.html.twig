@@ -1,9 +1,9 @@
 {% extends 'AgentBundle:Common:display-options-layout.html.twig' %}
 {% block other_options %}
 	<div style="display: none">
-		{{ phrase('agent.feedback.order_by') }}: <select name="order_by" class="sel-order-by">
-			<option class="date" value="date_created:desc">{{ phrase('agent.feedback.date_created_newestoldest') }}</option>
-			<option value="date_created:desc">{{ phrase('agent.feedback.date_created_oldestnewest') }}</option>
+		{{ phrase('global.order_by') }}: <select name="order_by" class="sel-order-by">
+			<option class="date" value="date_created:desc">{{ phrase('global.date_created_newestoldest') }}</option>
+			<option value="date_created:desc">{{ phrase('global.date_created_oldestnewest') }}</option>
 			<option class="popularity" value="popularity:desc">{{ phrase('agent.feedback.popularity_mostleast') }}</option>
 			<option value="popularity:desc">{{ phrase('agent.feedback.popularity_leastmost') }}</option>
 			<option class="votes" value="num_ratings:desc">{{ phrase('agent.feedback.votes_mostleast') }}</option>
@@ -12,7 +12,7 @@
 	</div>
 {% endblock %}
 {% block display_elements_list %}
-	<li data-field="author"><input type="checkbox" name="author" {% if 'author' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.author') }}</li>
-	<li data-field="category"><input type="checkbox" name="category" {% if 'category' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.category') }}</li>
-	<li data-field="date_created"><input type="checkbox" name="date_created" {% if 'date_created' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.date_created') }}</li>
+	<li data-field="author"><input type="checkbox" name="author" {% if 'author' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.author') }}</li>
+	<li data-field="category"><input type="checkbox" name="category" {% if 'category' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.category') }}</li>
+	<li data-field="date_created"><input type="checkbox" name="date_created" {% if 'date_created' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.date_created') }}</li>
 {% endblock %}
