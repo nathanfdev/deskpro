@@ -165,6 +165,7 @@ class LanguageController extends Controller
 
     public function exportAllToPOAction()
     {
+        set_time_limit(0);
         $files = $this->getLanguageFileList();
         $strings = array();
 
@@ -172,14 +173,20 @@ class LanguageController extends Controller
             $strings = array_merge(require($file), $strings);
         }
 
-        $vars = array(
-            'meta' => array(
+        $fs = fopen(DP_ROOT.'/tmp.csv', 'w');
+        fputcsv($fs, array('location', 'source', 'target'));
 
-            ),
-            'strings' => $strings
-        );
+        foreach($strings as $source => $target) {
+            fputcsv($fs, array('', $source, $target));
+        }
+
+        fclose($fs);
+        shell_exec('csv2po '.DP_ROOT.'/tmp.csv '.DP_ROOT.'/tmp.po');
         $response = new Response();
-        $response->headers->set('Content-Type','text/html');
+        $response->headers->set('Content-Type','text/po');
+        $response->setContent(file_get_contents(DP_ROOT.'/tmp.po'));
+        unlink(DP_ROOT.'/tmp.csv');
+        unlink(DP_ROOT.'/tmp.po');
 
         return $response;
     }
