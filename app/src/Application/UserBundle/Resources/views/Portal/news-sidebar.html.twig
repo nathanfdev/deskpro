@@ -6,7 +6,7 @@
 		<ul class="dp-content-list">
 			{% for news in news_entries %}
 				<li>
-					<div class="dp-cal-date small" title="Posted: {{ news.date_created|date('M d Y @ H:i:s') }}">
+					<div class="dp-cal-date small" title="{{ phrase('user.posted_date', {'date':news.date_created|date('M d Y @ H:i:s')}) }}">
 						<div class="month">{{ news.date_created|date('M')|upper }}</div>
 						<div class="day">{{ news.date_created|date('d') }}</div>
 					</div>

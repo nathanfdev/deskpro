@@ -11,12 +11,12 @@
 			</div>
 		</div>
 	</div>
-	<div class="type" title="Choose criteria..." data-rule-type="">
+	<div class="type" title="{{ phrase('deskpro.common.choose_criteria') }}" data-rule-type="">
 	</div>
 {% endif %}
 
 {% if 'org_date_created' not in no_show_fields %}
-<div class="type" title="Date created" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="created">
+<div class="type" title="{{ phrase('deskpro.common.date_created') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="created">
 	<div class="op">
 		<select name="op" class="op">
 			<option value="lte">{{ phrase('deskpro.common.before') }}</option>
@@ -31,7 +31,7 @@
 {% endif %}
 
 {% if 'org_email_domain' not in no_show_fields %}
-<div class="type" title="Email Domains" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_email_domain" data-term-type="GenericInputTerm" data-term-triggers="emaildomain">
+<div class="type" title="{{ phrase('deskpro.common.email_domains') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_email_domain" data-term-type="GenericInputTerm" data-term-triggers="emaildomain">
 	<div class="op">
 		<select name="op">
 			<option value="is">{{ phrase('deskpro.common.is') }}</option>
@@ -45,7 +45,7 @@
 {% endif %}
 
 {% if 'org_label' not in no_show_fields %}
-<div class="type" title="Labels" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_label" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
+<div class="type" title="{{ phrase('deskpro.common.labels') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_label" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
 	<div class="op">
 		<select name="op">
 			<option value="is">{{ phrase('deskpro.common.includes_label') }}</option>
@@ -59,7 +59,7 @@
 {% endif %}
 
 {% if 'org_name' not in no_show_fields %}
-<div class="type" title="Name" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_name" data-term-type="GenericInputTerm" data-term-triggers="name">
+<div class="type" title="{{ phrase('deskpro.common.name') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_name" data-term-type="GenericInputTerm" data-term-triggers="name">
 	<div class="op">
 		<select name="op">
 			<option value="is">{{ phrase('deskpro.common.is') }}</option>
@@ -74,7 +74,7 @@
 {% endif %}
 
 {% if 'org_contact_phone' not in no_show_fields %}
-<div class="type" title="Contact Phone" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_phone" data-term-type="GenericInputTerm" data-term-triggers="phone">
+<div class="type" title="{{ phrase('deskpro.common.contact_phone') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_phone" data-term-type="GenericInputTerm" data-term-triggers="phone">
 	<div class="op">
 		<select name="op">
 			<option value="contains">{{ phrase('deskpro.common.is') }}</option>
@@ -88,7 +88,7 @@
 {% endif %}
 
 {% if 'org_contact_address' not in no_show_fields %}
-<div class="type" title="Contact Address" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_address" data-term-type="GenericInputTerm" data-term-triggers="address">
+<div class="type" title="{{ phrase('deskpro.common.contact_address') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_address" data-term-type="GenericInputTerm" data-term-triggers="address">
 	<div class="op">
 		<select name="op">
 			<option value="contains">{{ phrase('deskpro.common.is') }}</option>
@@ -102,7 +102,7 @@
 {% endif %}
 
 {% if 'org_contact_im' not in no_show_fields %}
-<div class="type" title="Contact Instant Messaging" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_im" data-term-type="GenericInputTerm" data-term-triggers="messenger">
+<div class="type" title="{{ phrase('deskpro.common.contact_instant_messaging') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_contact_im" data-term-type="GenericInputTerm" data-term-triggers="messenger">
 	<div class="op">
 		<select name="op">
 			<option value="contains">{{ phrase('deskpro.common.is') }}</option>

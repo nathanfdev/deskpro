@@ -10,4 +10,6 @@
 	'user.news._comments' => '| Comments',
 	'user.news.category' => 'Category',
 	'user.news.more' => 'More',
+  'user.news.comments' => 'Comments',
+  'user.news.author_name' => 'Author: {{name}}',
 );

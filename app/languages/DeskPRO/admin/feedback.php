@@ -24,4 +24,7 @@
   'admin.feedback.active_statuses' => 'Active Statuses',
   'admin.feedback.closed_statuses' => 'Closed Statuses',
   'admin.feedback.count_feedback' => '{{count}} feedback|{{count}} feedback',
+
+  'admin.feedback.an_active_status_is_a_status_assigned_to' => 'An active status is a status assigned to feedback that have been reviewed, but haven\'t been implemented or haven\'t been decided on.',
+  'admin.feedback.a_closed_status_is_a_status_assigned_to' => 'A closed status is a status assigned to feedback that are finished. Users cannot vote or comment on closed feedback.',
 );

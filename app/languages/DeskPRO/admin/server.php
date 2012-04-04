@@ -1,6 +1,5 @@
 <?php return array (
   'admin.server.file_uploads' => 'File Uploads',
-  'admin.server.file_storage_mechanism' => 'File Storage Mechanism',
   'admin.server.storage_mechanism' => 'Storage Mechanism',
   'admin.server.file_storage' => 'File Storage',
   'admin.server.storage_path' => 'Storage Path',
@@ -40,7 +39,7 @@
   'admin.server.php_info' => 'PHP Info',
   'admin.server.important_configuration_values' => 'Important Configuration Values',
   'admin.server.test_this_value' => 'test this value',
-  'admin.server.file_uploads' => 'file_uploads',
+  'admin.server.php_file_uploads' => 'file_uploads',
   'admin.server.upload_tmp_dir' => 'upload_tmp_dir',
   'admin.server.post_max_size' => 'post_max_size',
   'admin.server.view' => 'view',

@@ -95,7 +95,10 @@
   'agent.main.space' => 'space',
   'agent.main.when_in_a_filter_listing_checks_the_checkbox' => 'When in a filter listing, checks the checkbox on the select row',
 
-  'agent.main.shiftr' => 'shift+r',
   'agent.main.wwwdeskprocom' => 'www.deskpro.com',
-  'agent.main.search_in_types' => 'Search in types:',
+
+  'agent.main.filter' => 'Filter...',
+  'agent.main.labels' => 'Labels',
+  'agent.main.toggle_mute' => 'Toggle mute',
+  'agent.main.search_for_text_or_a_phrase' => 'Search for text or a phrase',
 );

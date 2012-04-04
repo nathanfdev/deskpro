@@ -25,4 +25,7 @@
   'report.trend.difference_' => 'Difference %',
   'report.trend.edit_trend' => 'Edit Trend',
   'report.trend.clone_trend' => 'Clone Trend',
+  'report.trend.edit_bracket' => '[Edit]',
+  'report.trend.clone_bracket' => '[Clone]',
+  'report.trend.loading' => 'Loading...',
 );

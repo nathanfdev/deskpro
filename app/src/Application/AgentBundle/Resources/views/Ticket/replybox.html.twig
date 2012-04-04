@@ -92,7 +92,7 @@
 							<div>
 								<input
 									type="text"
-									placeholder="Enter an email address..."
+									placeholder="{{ phrase('agent.ticket.enter_an_email_address') }}"
 									name="user_parts"
 									value="{% for p in user_parts %}{{ p.person_email.email }}{% if not loop.last %},{% endif %}{% endfor %}"
 									id="{{replyBaseId}}_cc_input"
@@ -156,16 +156,23 @@
 							<span id="{{replyBaseId}}_assign_detail_agent" class="{% if ticket.agent.id != app.user.id %}changed{% endif %}">
 								<span class="prop-change">
 									{% if ticket.agent %}
-										Change agent from {{ tools.name_or_me(ticket.agent) }} to <span class="new-val-label">{{ phrase('agent.ticket.me') }}</span> {% if app.getSetting('core.use_agent_team') %} | {% endif %}
+                                        {% set phrase_part %}
+                                            <span class="new-val-label">{{ phrase('agent.ticket.me') }}</span>
+                                        {% endset %}
+                                        {{ phrase('agent.ticket.change_agent', {'old':tools.name_or_me(ticket.agent),'new':phrase_part}) }}
+										{% if app.getSetting('core.use_agent_team') %} | {% endif %}
 									{% else %}
-										Assign ticket to <span class="new-val-label">{{ phrase('agent.ticket.me') }}</span> {% if app.getSetting('core.use_agent_team') %} | {% endif %}
+                                        {% set phrase_part %}
+                                            <span class="new-val-label">{{ phrase('agent.ticket.me') }}</span>
+                                        {% endset %}
+										{{ phrase('agent.ticket.remain_assigned_to_agent', {'agent':phrase_part}) }}  {% if app.getSetting('core.use_agent_team') %} | {% endif %}
 									{% endif %}
 								</span>
 								<span class="prop-no-change">
 									{% if ticket.agent %}
-										Remain assigned to agent: {{ tools.name_or_me(ticket.agent) }} {% if app.getSetting('core.use_agent_team') %} | {% endif %}
+										{{ phrase('agent.ticket.remain_unassigned_agent', {'agent':tools.name_or_me(ticket.agent)}) }} {% if app.getSetting('core.use_agent_team') %} | {% endif %}
 									{% else %}
-										Remain unassigned {% if app.getSetting('core.use_agent_team') %} | {% endif %}
+										{{ phrase('agent.ticket.remain_unassigned') }} {% if app.getSetting('core.use_agent_team') %} | {% endif %}
 									{% endif %}
 								</span>
 							</span>
@@ -173,23 +180,27 @@
 								<span id="{{replyBaseId}}_assign_detail_agent_team">
 									<span class="prop-change">
 										{% if ticket.agent_team %}
-											Change team from {{ tools.team_name_or_me(ticket.agent_team) }} to <span class="new-val-label">{{ phrase('agent.ticket.me') }}</span>
+											{% set phrase_part %}
+                                                <span class="new-val-label">{{ phrase('agent.ticket.me') }}</span>
+                                            {% endset %}
+                                            {{ phrase('agent.ticket.change_team', {'old':tools.team_name_or_me(ticket.agent_team),'new':phrase_part}) }}
 										{% else %}
 											{{ phrase('agent.ticket.remain_assigned_to') }} <span class="new-val-label"></span>
 										{% endif %}
 									</span>
 									<span class="prop-no-change">
 										{% if ticket.agent_team %}
-											Remain assigned to team: {{ tools.team_name_or_me(ticket.agent_team) }}
+                                            {{ phrase('agent.ticket.remain_unassigned_team_with_name', {'name':tools.team_name_or_me(ticket.agent_team)}) }}
 										{% else %}
-											Remain unassigned team
+											{{ phrase('agent.ticket.remain_unassigned_team') }}
 										{% endif %}
 									</span>
 								</span>
 							{% endif %}
 							<span id="{{replyBaseId}}_assign_detail_followers">
 								<span class="is-followers" {% if not agent_parts|length %}style="display: none"{% endif %}>
-									| <span class="count">{{ agent_parts|length }}</span> Followers
+									| {% set phrase_part %}<span class="count">{{ agent_parts|length }}</span>{% endset %}
+                                    {{ phrase('agent.ticket.count_followers', {'display_count':phrase_part, 'count':agent_parts|length}) }}
 									<div class="inputs" style="display: none">
 										{% for p in agent_parts %}
 											<input type="hidden" name="agent_parts[]" value="{{ p.person.id }}" />
@@ -209,7 +220,8 @@
 									{{ phrase('agent.ticket.no_followers') }}
 								</span>
 								<span class="is-followers" {% if not agent_parts|length %}style="display: none"{% endif %}>
-									| <span class="count">{{ agent_parts|length }}</span> Followers
+									| {% set phrase_part %}<span class="count">{{ agent_parts|length }}</span>{% endset %}
+                                    {{ phrase('agent.ticket.count_followers', {'display_count':phrase_part, 'count':agent_parts|length}) }}
 									<div class="inputs" style="display: none">
 										{% for p in agent_parts %}
 											<input type="hidden" name="agent_parts[]" value="{{ p.person.id }}" />

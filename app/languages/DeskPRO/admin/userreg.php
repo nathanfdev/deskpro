@@ -95,5 +95,18 @@
                 Here\'s some example code to check a salted password:<br />
 				<code>$pass = (md5($password_input . $userinfo[\'salt\']) == $userinfo_password);</code>',
   'admin.userreg.enter_dsn_mysql' => 'Enter the DSN connection string for the database. Refer to the manual for the string format (<a href="http://www.php.net/manual/en/ref.pdo-mysql.connection.php">MySQL</a>). For example: <var>mysql:host=localhost;dbname=mydb</var>',
-  
+  'admin.userreg.enable_validation_for_web_submitted_tickets' => 'Enable validation for web submitted tickets',
+  'admin.userreg.enable_validation_for_email_submitted_tickets' => 'Enable validation for email submitted tickets',
+  'admin.userreg.enable_validation_for_widget_submitted_tickets' => 'Enable validation for widget submitted tickets',
+
+  'admin.userreg.notice_closed_helpdesk_closes_registration' => 'With a closed helpdesk, registration is closed so users must already exist in an external user-source or their accounts must be created manually by an agent.',
+
+   'admin.userreg.notice_forces_users_to_validate_email' => 'Force users to validate their email address when they first register.
+
+This applies to everything except new tickets. You can enable email validation on tickets by enabling it in <a href="{{path}}">ticket triggers</a>.'
+
+  'admin.userreg.enter_your_facebook_api_application_key' => 'Enter your Facebook API application key',
+  'admin.userreg.enter_your_facebook_api_application_secret' => 'Enter your Facebook API application secret',
+  'admin.userreg.enter_your_twitter_consumer_key' => 'Enter your Twitter consumer key',
+  'admin.userreg.enter_your_twitter_consumer_secret' => 'Enter your Twitter consumer secret',
 );

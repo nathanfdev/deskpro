@@ -62,4 +62,6 @@
 	'user.profile.repeat_password' => 'Repeat Password',
 
   'user.profile.your_profile' => 'Your Profile',
+  'user.profile.remove_email_address' => 'Remove email address',
+  'user.profile.votes_in_favor_of_this_feedback' => 'Votes in favor of this feedback',
 );

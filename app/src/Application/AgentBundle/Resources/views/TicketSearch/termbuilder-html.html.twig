@@ -1,4 +1,4 @@
-<div class="type" title="Search all tickets" data-rule-type="archive_search">
+<div class="type" title="{{ phrase('agent.ticketsearch.search_all_tickets') }}" data-rule-type="archive_search">
 	<div class="op">
 		<input type="hidden" name="op" value="is" />
 	</div>
@@ -7,7 +7,7 @@
 		<span>{{ phrase('agent.ticketsearch.search_all_tickets_including_tickets_that_are_resolved') }}</span>
 	</div>
 </div>
-<div class="type" title="Subject" data-rule-type="subject">
+<div class="type" title="{{ phrase('agent.ticketsearch.subject') }}" data-rule-type="subject">
 	<div class="op">
 		<select name="op">
 			<option value="is">{{ phrase('agent.ticketsearch.is') }}</option>
@@ -20,7 +20,7 @@
 		<input type="text" name="subject" value="" />
 	</div>
 </div>
-<div class="type" title="Labels" data-rule-type="label">
+<div class="type" title="{{ phrase('agent.ticketsearch.labels') }}" data-rule-type="label">
 	<div class="op">
 		<select name="op">
 			<option value="is">{{ phrase('agent.ticketsearch.includes_label') }}</option>
@@ -31,7 +31,7 @@
 		<input type="text" name="label" value="" />
 	</div>
 </div>
-<div class="type" title="Assigned Agent" data-rule-type="agent">
+<div class="type" title="{{ phrase('agent.ticketsearch.assigned_agent') }}" data-rule-type="agent">
 	<div class="op">
 		<select name="op">
 			<option value="is">{{ phrase('agent.ticketsearch.is') }}</option>
@@ -48,7 +48,7 @@
 		</select>
 	</div>
 </div>
-<div class="type" title="Participants" data-rule-type="participant">
+<div class="type" title="{{ phrase('agent.ticketsearch.participants') }}" data-rule-type="participant">
 	<div class="op">
 		<select name="op">
 			<option value="is">{{ phrase('agent.ticketsearch.include') }}</option>
@@ -65,7 +65,7 @@
 	</div>
 </div>
 {% if term_options.agent_teams %}
-	<div class="type" title="Agent Team" data-rule-type="agent_team">
+	<div class="type" title="{{ phrase('agent.ticketsearch.agent_team') }}" data-rule-type="agent_team">
 		<div class="options">
 			<div class="op">
 				<select name="op">
@@ -83,7 +83,7 @@
 		</div>
 	</div>
 {% endif %}
-<div class="type" title="Status" data-rule-type="status">
+<div class="type" title="{{ phrase('agent.ticketsearch.status') }}" data-rule-type="status">
 	<div class="op">
 		<select name="op">
 			<option value="is">{{ phrase('agent.ticketsearch.is') }}</option>
@@ -101,7 +101,7 @@
 	</div>
 </div>
 {% if term_options.products %}
-	<div class="type" title="Product" data-rule-type="product">
+	<div class="type" title="{{ phrase('agent.ticketsearch.product') }}" data-rule-type="product">
 		<div class="op">
 			<select name="op">
 				<option value="is">{{ phrase('agent.ticketsearch.is') }}</option>
@@ -118,7 +118,7 @@
 	</div>
 {% endif %}
 {% if term_options.departments %}
-	<div class="type" title="Department" data-rule-type="department">
+	<div class="type" title="{{ phrase('agent.ticketsearch.department') }}" data-rule-type="department">
 		<div class="op">
 			<select name="op">
 				<option value="is">{{ phrase('agent.ticketsearch.is') }}</option>
@@ -135,7 +135,7 @@
 	</div>
 {% endif %}
 {% if term_options.categories %}
-	<div class="type" title="Category" data-rule-type="category">
+	<div class="type" title="{{ phrase('agent.ticketsearch.category') }}" data-rule-type="category">
 		<div class="op">
 			<select name="op">
 				<option value="is">{{ phrase('agent.ticketsearch.is') }}</option>
@@ -152,7 +152,7 @@
 	</div>
 {% endif %}
 {% if term_options.priorities %}
-	<div class="type" title="Priority" data-rule-type="priority">
+	<div class="type" title="{{ phrase('agent.ticketsearch.priority') }}" data-rule-type="priority">
 		<div class="op">
 			<select name="op">
 				<option value="is">{{ phrase('agent.ticketsearch.is') }}</option>
@@ -170,7 +170,7 @@
 		</div>
 	</div>
 {% endif %}
-<div class="type" title="Originated interface" data-rule-type="creation_system">
+<div class="type" title="{{ phrase('agent.ticketsearch.originated_interface') }}" data-rule-type="creation_system">
 	<div class="op">
 		<select name="op">
 			<option value="is">{{ phrase('agent.ticketsearch.is') }}</option>
@@ -187,7 +187,7 @@
 	</div>
 </div>
 {% if term_options.gateway_names %}
-<div class="type" title="Receiving gateway account" data-rule-type="receiving_gateway">
+<div class="type" title="{{ phrase('agent.ticketsearch.receiving_gateway_account') }}" data-rule-type="receiving_gateway">
 	<div class="op">
 		<select name="op">
 			<option value="is">{{ phrase('agent.ticketsearch.is') }}</option>
@@ -204,7 +204,7 @@
 </div>
 {% endif %}
 {% if term_options.ticket_workflows %}
-	<div class="type" title="Workflow" data-rule-type="workflow">
+	<div class="type" title="{{ phrase('agent.ticketsearch.workflow') }}" data-rule-type="workflow">
 		<div class="op">
 			<select name="op">
 				<option value="is">{{ phrase('agent.ticketsearch.is') }}</option>
@@ -223,7 +223,7 @@
 {% if term_options.custom_ticket_fields %}
 	{% set op_lang = {'is': phrase('agent.ticketsearch.is'), 'not': phrase('agent.ticketsearch.is_not'), 'contains': 'has', 'notcontains': 'does not have', 'gt': phrase('agent.ticketsearch.is_greater_than'), 'lt': phrase('agent.ticketsearch.is_less_than')} %}
 	{% for field in term_options.custom_ticket_fields %}
-		<div class="type" title="Ticket Field: {{field.field_def.title}}" data-rule-type="ticket_field[{{field.field_def.id}}]">
+		<div class="type" title="{{ phrase('agent.ticketsearch.ticket_field_name', {'field':field.field_def.title}) }}" data-rule-type="ticket_field[{{field.field_def.id}}]">
 			<div class="op">
 				<select name="op">
 					{% for op in field.field_def.search_capabilities %}

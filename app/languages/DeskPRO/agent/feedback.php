@@ -53,4 +53,7 @@
   'agent.feedback.of' => 'of',
   'agent.feedback.count_selected' => '{{display_count}} selected',
   'agent.feedback.count_votes' => '{{display_count}} vote|{{display_count}} votes',
+  'agent.feedback.vote_for_this_feedback' => 'Vote for this feedback',
+  'agent.feedback.new' => 'New',
+  'agent.feedback.closed_category' => 'Closed: {{cat}}',
 );

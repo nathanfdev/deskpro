@@ -12,4 +12,5 @@
   'admin.banning.ban_ip_address' => 'Ban IP Address',
   'admin.banning.ip_address_pattern' => 'IP address pattern',
   'admin.banning.examples_19216811_or_192168' => 'Examples: 192.168.1.1 or 192.168.*',
+  'admin.banning.filter_list_' => 'Filter list ...',
 );

@@ -5,4 +5,4 @@ pageMeta.title = "[{{ page_count|default(rand(1,100)) }}] Tab Test Tab Test Tab 
 
 This is a test tab.
 
-<a data-route="page:{{ path('agent_ticket_view', {ticket_id: rand(1,2000)}) }}">New Tab</a>
+<a data-route="page:{{ path('agent_ticket_view', {ticket_id: rand(1,2000)}) }}">{{ phrase('agent.test.new_tab') }}</a>

@@ -53,10 +53,10 @@
 		</div>
 		<div class="new-comment" style="display: none">
 			<div class="comment-input">
-				<textarea placeholder="Enter your comment..."></textarea>
+				<textarea placeholder="{{ phrase('agent.task.enter_your_comment') }}"></textarea>
 				<div class="is-not-loading">
 					<button class="clean-white small save-comment-trigger">{{ phrase('agent.add_comment') }}</button>
-					or <span class="cancel-comment-trigger">{{ phrase('agent.cancel') }}</span>
+					{{ phrase('agent.task.or') }} <span class="cancel-comment-trigger">{{ phrase('agent.cancel') }}</span>
 				</div>
 				<div class="is-loading">
 					{{ phrase('agent.loading_saving') }}

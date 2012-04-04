@@ -131,7 +131,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 		{% if ticket_perms.modify_set_hold %}
 			<div class="set-hold hold noedit-hide" {% if ticket.is_hold %}style="display: none"{% endif %}><span>{{ phrase('agent.tickets.set_hold') }}</span></div>
-			<div class="set-hold unhold noedit-hide" {% if not ticket.is_hold %}style="display: none"{% endif %}><span class="tipped" title="Click to release hold">{{ phrase('agent.tickets.on_hold') }}</span></div>
+			<div class="set-hold unhold noedit-hide" {% if not ticket.is_hold %}style="display: none"{% endif %}><span class="tipped" title="{{ phrase('agent.ticket.click_to_release_hold') }}">{{ phrase('agent.tickets.on_hold') }}</span></div>
 		{% endif %}
 	</div>
 	<br class="clear" />
@@ -262,7 +262,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					data-element-handler="DeskPRO.ElementHandler.ListRadio"
 				>
 					<ul>
-						<li class="flag-none tipped {% if not ticket_flagged %}{{ phrase('agent.ticket.on') }}{% endif %}" data-value="none" title="No flag"><span></span></li>
+						<li class="flag-none tipped {% if not ticket_flagged %}{{ phrase('agent.ticket.on') }}{% endif %}" data-value="none" title="{{ phrase('agent.ticket.no_flag') }}"><span></span></li>
 						{% for color in ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'yellow'] %}
 						<li class="flag-{{color}} tipped {% if ticket_flagged == color %}on last-on{% endif %}" data-value="{{ color }}" title="{{ flag.flag_name(color) }}"><span>{{ flag.flag_name(color) }}</span></li>
 						{% endfor %}

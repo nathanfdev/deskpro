@@ -194,7 +194,7 @@ function _page_exec() {
 		</div>
 	</div>
 	{% if term_options.products %}
-		<div class="type" title="Product" data-rule-type="product">
+		<div class="type" title="{{ phrase('admin.departments.product') }}" data-rule-type="product">
 			<div class="op">
 				<select name="op">
 					<option value="is">{{ phrase('admin.departments.is') }}</option>
@@ -211,7 +211,7 @@ function _page_exec() {
 		</div>
 	{% endif %}
 	{% if term_options.ticket_categories_full %}
-		<div class="type" title="Category" data-rule-type="category">
+		<div class="type" title="{{ phrase('admin.departments.category') }}" data-rule-type="category">
 			<div class="op">
 				<select name="op">
 					<option value="is">{{ phrase('admin.departments.is') }}</option>
@@ -228,7 +228,7 @@ function _page_exec() {
 		</div>
 	{% endif %}
 	{% if term_options.priorities %}
-		<div class="type" title="Priority" data-rule-type="priority">
+		<div class="type" title="{{ phrase('admin.departments.priority') }}" data-rule-type="priority">
 			<div class="op">
 				<select name="op">
 					<option value="is">{{ phrase('admin.departments.is') }}</option>
@@ -247,7 +247,7 @@ function _page_exec() {
 		</div>
 	{% endif %}
 	{% if term_options.ticket_workflows %}
-		<div class="type" title="Workflow" data-rule-type="workflow">
+		<div class="type" title="{{ phrase('admin.departments.workflow') }}" data-rule-type="workflow">
 			<div class="op">
 				<select name="op">
 					<option value="is">{{ phrase('admin.departments.is') }}</option>

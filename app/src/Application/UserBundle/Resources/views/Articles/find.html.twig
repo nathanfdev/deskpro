@@ -41,8 +41,8 @@
 				<li class="article">
 					<div class="info-line" style="float:right">
 						<ul>
-							<li class="comments" title="Comments"><span>{{ 0 }}</span></li>
-							<li class="views" title="Views"><span>{{ article.view_count }}</span></li>
+							<li class="comments" title="{{ phrase('user.articles.comments') }}"><span>{{ 0 }}</span></li>
+							<li class="views" title="{{ phrase('user.articles.views') }}"><span>{{ article.view_count }}</span></li>
 						</ul>
 					</div>
 					<h4><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></h4>

@@ -62,5 +62,6 @@
   'agent.kb.n_helpful_n_unhelpful' => '{{up_votes}} found this the article helpful, {{down_votes}} found the article unhelpful',
   'agent.kb.event_time_ago_by_who_at_when' => '{{ago}} by {{name}} at {{date}}',
   'agent.kb.event_time_ago_at_when' => '{{ago}} at {{date}}',
+  'agent.kb.edit_search_terms' => 'Edit search terms',
   
 );

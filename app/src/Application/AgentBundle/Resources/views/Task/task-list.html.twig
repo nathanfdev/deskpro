@@ -55,7 +55,7 @@
 		<section data-section-name="agents">
 			<header>
 				<h3>{{ phrase('agent.task.agents') }}</h3>
-				<input type="text" class="filter-box" placeholder="Filter..." />
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.task.filter') }}" />
 			</header>
 			<ul>
 				<li class="me last-me">
@@ -80,7 +80,7 @@
 		<section data-section-name="teams">
 			<header>
 				<h3>{{ phrase('agent.task.teams') }}</h3>
-				<input type="text" class="filter-box" placeholder="Filter..." />
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.task.filter') }}" />
 			</header>
 			<ul>
 				{% for team in app.user.getAgent().getTeams() %}

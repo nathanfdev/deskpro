@@ -6,11 +6,6 @@
   'admin.ticketproperties.category' => 'Category',
   'admin.ticketproperties.priority' => 'Priority',
   'admin.ticketproperties.upload' => 'Upload',
-  'admin.ticketproperties.edit_priorities' => 'Edit Priorities',
-  'admin.ticketproperties.edit_products' => 'Edit Products',
-  'admin.ticketproperties.edit_departments' => 'Edit Departments',
-  'admin.ticketproperties.edit_categories' => 'Edit Categories',
-  'admin.ticketproperties.edit_field' => 'Edit Field',
   'admin.ticketproperties.captcha' => 'CAPTCHA',
   'admin.ticketproperties.embed_into_your_website' => 'Embed into your website',
   'admin.ticketproperties.integration_options' => 'Integration Options',
@@ -67,5 +62,12 @@
   'admin.ticketproperties.you_have_count_categories' => 'You have 1 categories.|You have {{count}} categories.',
   'admin.ticketproperties.you_have_count_priorities' => 'You have 1 priorities.|You have {{count}} priorities.',
   'admin.ticketproperties.you_have_count_workflows' => 'You have 1 workflows.|You have {{count}} workflows.',
-  
+
+  'admin.ticketproperties.edit_departments' => 'Edit Departments',
+  'admin.ticketproperties.edit_categories' => 'Edit Categories',
+  'admin.ticketproperties.edit_products' => 'Edit Products',
+  'admin.ticketproperties.edit_priorities' => 'Edit Priorities',
+  'admin.ticketproperties.edit_field' => 'Edit Field',
+  'admin.ticketproperties.workflow' => 'Workflow',
+  'admin.ticketproperties.filter' => 'Filter...',
 );

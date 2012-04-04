@@ -83,7 +83,11 @@
   'agent.deal.assign_agent' => 'Assign agent',
   'agent.deal.created' => 'Created',
   'agent.deal.edit_custome_fields' => 'Edit Custome Fields',
-  'agent.deal.date_created' => 'Date Created',
   'agent.deal.and' => 'and',
   'agent.deal.percent_of' => '% of',
+  'agent.deal.choose_a_person_to_create_this_ticket_for' => 'Choose a person to create this ticket for',
+  'agent.deal.enter_an_organization_name' => 'Enter an organization name...',
+  'agent.deal.set_a_position' => 'Set a position...',
+  'agent.deal.filter' => 'Filter...',
+  'agent.deal.enter_note_' => 'Enter note ...',
 );

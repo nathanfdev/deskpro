@@ -37,4 +37,10 @@
   'agent.peoplesearch.is' => 'is',
   'agent.peoplesearch.name_az' => 'Name (A-Z)',
   'agent.peoplesearch.name_za' => 'Name (Z-A)',
+  'agent.peoplesearch.usergroup' => 'Usergroup',
+  'agent.peoplesearch.person_id' => 'Person ID',
+  'agent.peoplesearch.email_domain' => 'Email Domain',
+  'agent.peoplesearch.contact_phone' => 'Contact Phone',
+  'agent.peoplesearch.contact_address' => 'Contact Address',
+  'agent.peoplesearch.contact_instant_messaging' => 'Contact Instant Messaging',
 );

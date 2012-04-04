@@ -1,5 +1,9 @@
 <header class="list-selection-bar">
-	<input type="checkbox" class="selection-control" /> <span class="selected-count">0</span> selected
+	<input type="checkbox" class="selection-control" />
+    {% set phrase_part %}
+        <span class="selected-count">0</span>
+    {% endset %}
+    {{ phrase('agent.publish.count_selected', {'display_count':phrase_part}) }}
 	<a class="perform-action perform-actions-trigger disabled menu-fitted">
 		<span>{{ phrase('agent.perform_actions') }}</span>
 	</a>

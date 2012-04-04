@@ -12,4 +12,6 @@
   'admin.userrules.you_havent_created_any_user_rules_yet' => 'You haven\'t created any user rules yet.',
   'admin.userrules.domains' => 'Domains',
   'admin.userrules.delete' => 'delete',
+
+  'admin.userrules.enter_a_pattern_one_per_line_example_examplecom' => 'Enter a pattern, one per line. Example: *@example.com',
 );

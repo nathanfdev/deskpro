@@ -92,8 +92,14 @@
   'admin.agents.if_name_is_back' => 'If {{name}} is back:',
   'admin.agents.turn_off_vacation_mode' => 'Turn off vacation mode.',
   'admin.agents.while_in_vacation_cannot_login' => 'While in vacation mode, agents cannot log in or use the system at all.',
-  'admin.agents.vacation_mode' => 'vacation mode',
   'admin.agents.there_are_deleted_agents' => 'There is 1 deleted agent|There are {{count}} deleted agents',
   'admin.agents.are_you_sure_delete_dept' => 'Are you sure you want to delete the department "<strong>{{title}}</strong>"?',
   'admin.agents.are_you_sure_delete_dept_top_level' => 'Are you sure you want to delete the department "<strong>{{title}}</strong>"? Since this is a top-level department, <strong>all of these sub-departments will be deleted too</strong>:',
+
+  'admin.agents.be_careful_who_you_allow_to_manage_email' => 'Be careful who you allow to manage email addresses. Since an agent can add any email address, including ones they might have control over, it means they could use that to gain access to the account if they really wanted to.',
+  'admin.agents.be_careful_who_you_allow_to_reset_user' => 'Be careful who you allow to reset user passwords. Since an agent can reset the password to anything they want, it means they can gain access to the account if they really wanted to.',
+  'admin.agents.if_an_agent_does_not_have_this_permission' => 'If an agent does not have this permission, then any new content they create or edits they make will be held in a validation queue before they appear live on the site.',
+  'admin.agents.can_access_the_admin_interface' => 'Can access the admin interface',
+  'admin.agents.can_access_the_reporting_interface' => 'Can access the reporting interface',
+  'admin.agents.can_access_the_billing_interface' => 'Can access the billing interface',
 );

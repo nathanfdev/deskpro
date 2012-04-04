@@ -15,7 +15,6 @@
   'agent.downloads.date_created_oldestnewest' => 'Date Created (Oldest-Newest)',
   'agent.downloads.number_of_downloads_highestlowest' => 'Number of Downloads (Highest-Lowest)',
   'agent.downloads.number_of_downloads_lowesthighest' => 'Number of Downloads (Lowest-Highest)',
-  'agent.downloads.category' => 'Category',
   'agent.downloads.dev_validating' => 'DEV: Validating',
   'agent.downloads.create_download' => 'Create Download',
   'agent.downloads.altc' => '(alt+c)',
@@ -26,4 +25,5 @@
   'agent.downloads.percent_helpful_n_votes' => '{{percent}}% helpful ({{subphrase}})',
   'agent.downloads.n_votes' => '{{count}} vote|{{count}} votes',
   'agent.downloads.n_helpful_n_unhelpful' => '{{up_votes}} found this download helpful, {{down_votes}} found this download unhelpful',
+  'agent.downloads.edit_search_terms' => 'Edit search terms',
 );

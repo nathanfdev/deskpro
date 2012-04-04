@@ -223,4 +223,6 @@
 	'user.comments_logged_in_as' => 'Logged In As',
 	'user.comments_please_enter_email' => 'Please enter your email address',
 	'user.comments_or_connect_with' => 'Or connect with',
+
+	'user.posted_date' => 'Posted: {{date}}'
 );

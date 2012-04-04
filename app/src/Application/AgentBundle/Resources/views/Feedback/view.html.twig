@@ -74,7 +74,7 @@ pageMeta.baseId = '{{ baseId }}';
                     {% endset %}
                     {{ phrase('agent.feedback.count_votes', {'display_count':phrase_part,'count':feedback.num_ratings}) }}
                 </span>
-				<button class="clean-gray xxx-small tipped {% if my_vote %}radio-on{% endif %}" title="Vote for this feedback" id="{{baseId}}_my_vote">+1</button>
+				<button class="clean-gray xxx-small tipped {% if my_vote %}radio-on{% endif %}" title="{{ phrase('agent.feedback.vote_for_this_feedback') }}" id="{{baseId}}_my_vote">+1</button>
 			</dd>
 
 			<dt>{{ phrase('agent.author') }}:</dt>
@@ -261,7 +261,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 {{ optionbox.start('Status', {'id': baseId ~ '_status_ob'}) }}
 	{{ optionbox.section_start('', 'status') }}
-		<li class="top parent-option item-new" data-item-id="new" data-full-title="New">
+		<li class="top parent-option item-new" data-item-id="new" data-full-title="{{ phrase('agent.feedback.new') }}">
 			<input type="radio" name="status" value="new" />
 			<label>{{ phrase('agent.feedback.status_new') }}</label>
 		</li>
@@ -276,12 +276,12 @@ pageMeta.baseId = '{{ baseId }}';
 				<label>{{ cat.title }}</label>
 			</li>
 		{% endfor %}
-		<li class="top parent-option item-closed" data-item-id="closed" data-full-title="Closed">
+		<li class="top parent-option item-closed" data-item-id="closed" data-full-title="{{ phrase('agent.feedback.closed') }}">
 			<input type="radio" name="status" value="closed" />
 			<label>{{ phrase('agent.feedback.status_closed') }}</label>
 		</li>
 		{% for cat in closed_status_cats %}
-			<li class="child item-closed-{{cat.id}}" data-item-id="closed.{{cat.id}}" data-full-title="Closed: {{ cat.title }}">
+			<li class="child item-closed-{{cat.id}}" data-item-id="closed.{{cat.id}}" data-full-title="{{ phrase('agent.feedback.closed_category', {'cat':cat.title }) }}">
 				<span class="elbow-end"></span>
 				<input type="radio" name="category_id" value="closed.{{cat.id}}" />
 				<label>{{ cat.title }}</label>

@@ -200,14 +200,14 @@
 							<tr>
 								<td class="title">
 									{{ phrase('admin.agents.edit_email_addresses') }}
-									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Be careful who you allow to manage email addresses. Since an agent can add any email address, including ones they might have control over, it means they could use that to gain access to the account if they really wanted to."></span>
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.be_careful_who_you_allow_to_manage_email') }}"></span>
 								</td>
 								{{ _self.perm_col(usergroup_values, 'people', 'manage_emails') }}
 							</tr>
 							<tr>
 								<td class="title">
 									{{ phrase('admin.agents.reset_passwords') }}
-									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="Be careful who you allow to reset user passwords. Since an agent can reset the password to anything they want, it means they can gain access to the account if they really wanted to."></span>
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.be_careful_who_you_allow_to_reset_user') }}"></span>
 								</td>
 								{{ _self.perm_col(usergroup_values, 'people', 'reset_password') }}
 							</tr>
@@ -290,7 +290,7 @@
 							<tr class="permrow">
 								<td class="title">
 									{{ phrase('admin.agents.validate_content_and_comments_including_own') }}
-									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="If an agent does not have this permission, then any new content they create or edits they make will be held in a validation queue before they appear live on the site."></span>
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.if_an_agent_does_not_have_this_permission') }}"></span>
 								</td>
 								{{ _self.perm_col(usergroup_values, 'publish', 'validate') }}
 							</tr>

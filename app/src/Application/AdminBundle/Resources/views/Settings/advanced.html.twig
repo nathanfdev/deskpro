@@ -1,7 +1,7 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 <div style="float:right; padding: 6px 6px 0 0">
-	<input type="text" id="settings_filter" value="" placeholder="Filter" style="width: 200px;" />
+	<input type="text" id="settings_filter" value="" placeholder="{{ phrase('admin.settings.filter') }}" style="width: 200px;" />
 </div>
 <ul>
 	<li><a href="{{ path('admin_settings') }}">{{ phrase('admin.settings.settings') }}</a></li>
@@ -67,7 +67,7 @@ function _page_exec() {
 				<tr class="adv-setting {% if info.default != info.set %}changed{% endif %}">
 					<td>
 						{{set_name}}
-						<span class="revert tipped" title="Revert setting back to default">{{ phrase('admin.settings.revert') }}</span>
+						<span class="revert tipped" title="{{ phrase('admin.settings.revert_setting_back_to_default') }}">{{ phrase('admin.settings.revert') }}</span>
 					</td>
 					<td><input class="setting-input dp-set-default" value="{{ info.default }}" /></td>
 					<td><input  value="{{ info.set }}" class="setting-input dp-set-value" data-setting-name="{{set_name}}" /></td>

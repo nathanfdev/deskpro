@@ -79,4 +79,7 @@
 
   'admin.settings.advanced_settings' => 'Advanced Settings',
   'admin.settings.revert' => 'revert',
+  'admin.settings.filter' => 'Filter',
+  'admin.settings.revert_setting_back_to_default' => 'Revert setting back to default',
+  'admin.settings.new_label' => 'new label',
 );

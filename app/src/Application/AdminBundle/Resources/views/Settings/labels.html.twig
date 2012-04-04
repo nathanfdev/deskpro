@@ -80,7 +80,7 @@
 <div class="new-label">
 	<form action="{{ path('admin_labels_new') }}" method="POST" id="new_label_form">
 		<input type="hidden" name="display_type" value="{{ label_type }}" />
-		<input type="text" placeholder="new label" value="" name="label" /> <button class="clean-white small">{{ phrase('admin.settings.add_label') }}</button><br />
+		<input type="text" placeholder="{{ phrase('admin.settings.new_label') }}" value="" name="label" /> <button class="clean-white small">{{ phrase('admin.settings.add_label') }}</button><br />
 		<div class="types">
 			{{ phrase('admin.settings.types') }}:
 			<label><input type="checkbox" name="types[]" {% if label_type == 'all' or label_type == 'articles' %}checked="checked"{% endif %} value="articles" /> {{ phrase('admin.settings.articles') }}</label>

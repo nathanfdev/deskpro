@@ -236,6 +236,16 @@ class LanguageController extends Controller
             $strings_ids = array();
             $lines = explode("\n", $raw_twig);
 
+            preg_match_all('/(?:placeholder|alt|title)="([^$@"{\'][^"]+)"/', $raw_twig, $matches);
+
+            if(!empty($matches[1])) {
+                foreach($matches[1] as $match) {
+                    if(!in_array($match, $strings)) {
+                        $strings[] = $match;
+                    }
+                }
+            }
+
             foreach($strings as $string) {
                 $context = array();
                 $id = $this->stringToId($string);

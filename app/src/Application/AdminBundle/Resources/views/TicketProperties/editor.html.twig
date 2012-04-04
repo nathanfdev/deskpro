@@ -17,17 +17,17 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</header>
 		<article id="ticket_elements">
 			<ul>
-				<li class="draggable irremovable" data-item-id="ticket_department" data-edit-title="Edit Departments" data-edit-url="{{ path('admin_departments') }}"><label>{{ phrase('admin.ticketproperties.department') }}</label></li>
+				<li class="draggable irremovable" data-item-id="ticket_department" data-edit-title="{{ phrase('admin.ticketproperties.edit_departments') }}" data-edit-url="{{ path('admin_departments') }}"><label>{{ phrase('admin.ticketproperties.department') }}</label></li>
 				{% if section == 'create' %}
 					<li class="draggable irremovable" data-item-id="message"><label>{{ phrase('admin.ticketproperties.ticket_message') }}</label></li>
 					<li class="draggable irremovable" data-item-id="ticket_subject"><label>{{ phrase('admin.ticketproperties.ticket_subject') }}</label></li>
 					<li class="draggable" data-item-id="attachments"><label>{{ phrase('admin.ticketproperties.attachments') }}</label></li>
 				{% endif %}
-				<li class="draggable" data-item-id="ticket_category" data-edit-title="Edit Categories" data-edit-url="{{ path('admin_ticketcats') }}"><label>{{ phrase('admin.ticketproperties.category') }}</label></li>
-				<li class="draggable" data-item-id="ticket_product" data-edit-title="Edit Products" data-edit-url="{{ path('admin_products') }}"><label>{{ phrase('admin.ticketproperties.product') }}</label></li>
-				<li class="draggable" data-item-id="ticket_priority" data-edit-title="Edit Priorities" data-edit-url="{{ path('admin_ticketpris') }}"><label>{{ phrase('admin.ticketproperties.priority') }}</label></li>
+				<li class="draggable" data-item-id="ticket_category" data-edit-title="{{ phrase('admin.ticketproperties.edit_categories') }}" data-edit-url="{{ path('admin_ticketcats') }}"><label>{{ phrase('admin.ticketproperties.category') }}</label></li>
+				<li class="draggable" data-item-id="ticket_product" data-edit-title="{{ phrase('admin.ticketproperties.edit_products') }}" data-edit-url="{{ path('admin_products') }}"><label>{{ phrase('admin.ticketproperties.product') }}</label></li>
+				<li class="draggable" data-item-id="ticket_priority" data-edit-title="{{ phrase('admin.ticketproperties.edit_priorities') }}" data-edit-url="{{ path('admin_ticketpris') }}"><label>{{ phrase('admin.ticketproperties.priority') }}</label></li>
 				{% for field in custom_ticket_fields %}
-				<li class="draggable" data-item-id="ticket_field[{{field.field_def.id}}]" data-edit-title="Edit Field" data-edit-url="{{ path('admin_customdeftickets_edit', {field_id: field.field_def.id}) }}">
+				<li class="draggable" data-item-id="ticket_field[{{field.field_def.id}}]" data-edit-title="{{ phrase('admin.ticketproperties.edit_field') }}" data-edit-url="{{ path('admin_customdeftickets_edit', {field_id: field.field_def.id}) }}">
 				<label>{{field.title}}</label>
 					</li>
 				{% endfor %}
@@ -369,7 +369,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</div>
 	{% endif %}
 	{% if term_options.ticket_workflows %}
-		<div class="type" title="Workflow" data-rule-type="workflow">
+		<div class="type" title="{{ phrase('admin.ticketproperties.workflow') }}" data-rule-type="workflow">
 			<div class="op">
 				<select name="op">
 					<option value="is">{{ phrase('admin.ticketproperties.is') }}</option>
@@ -391,7 +391,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 	<section data-section-name="department">
 		<header>
 			<h3>{{ phrase('admin.ticketproperties.switch_to_department') }}</h3>
-			<input type="text" class="filter-box" placeholder="Filter..." />
+			<input type="text" class="filter-box" placeholder="{{ phrase('admin.ticketproperties.filter') }}" />
 		</header>
 		<ul>
 			{% if department.id %}

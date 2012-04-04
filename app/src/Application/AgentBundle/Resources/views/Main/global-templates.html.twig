@@ -20,7 +20,7 @@
 	<section data-section-name="followers">
 		<header>
 			<h3>{{ phrase('agent.main.agents') }}</h3>
-			<input type="text" class="filter-box" placeholder="Filter..." />
+			<input type="text" class="filter-box" placeholder="{{ phrase('agent.main.filter') }}" />
 		</header>
 		<ul>
 			<li class="me last-me {% if app.user.id in participant_ids %}on{% endif %}">
@@ -45,7 +45,7 @@
 	<section data-section-name="agents">
 		<header>
 			<h3>{{ phrase('agent.agents') }}</h3>
-			<input type="text" class="filter-box" placeholder="Filter..." />
+			<input type="text" class="filter-box" placeholder="{{ phrase('agent.main.filter') }}" />
 		</header>
 		<ul>
 			{% for agent in agents %}
@@ -102,7 +102,7 @@
 		<section data-section-name="department">
 			<header>
 				<h3>{{ phrase('agent.department') }}</h3>
-				<input type="text" class="filter-box" placeholder="Filter..." />
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.main.filter') }}" />
 			</header>
 			<ul>
 				{% for dep in ticket_options.departments_hierarchy %}
@@ -435,7 +435,7 @@
 
 {# Everything Menus #}
 <div id="everything_search_terms_global">
-	<div class="type" title="Labels" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="everything" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
+	<div class="type" title="{{ phrase('agent.main.labels') }}" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="everything" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
 		<div class="op">
 			<select name="op" class="op">
 				<option value="is">{{ phrase('agent.main.is') }}</option>

@@ -29,4 +29,9 @@
 
   'agent.person.user_landed_on_page' => 'User landed on page',
   'agent.person.and_came_from' => 'and came from',
+  'agent.person.count_members' => '{{count}} member|{{count}} members',
+
+  'agent.person.add_a_label' => 'Add a label',
+  'agent.person.enter_an_organization_name' => 'Enter an organization name...',  
+  'agent.person.click_to_upload_a_new_picture' => 'Click to upload a new picture',
 );

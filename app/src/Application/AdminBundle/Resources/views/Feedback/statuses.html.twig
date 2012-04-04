@@ -17,7 +17,7 @@
 		<thead>
 			<th colspan="10" class="only">
 				{{ phrase('admin.feedback.active_statuses') }}
-				<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="An active status is a status assigned to feedback that have been reviewed, but haven't been implemented or haven't been decided on."></span>
+				<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.feedback.an_active_status_is_a_status_assigned_to') }}"></span>
 			</th>
 		</thead>
 		{% for cat in active_cats %}
@@ -31,7 +31,7 @@
 		<thead>
 			<th colspan="10" class="only">
 				{{ phrase('admin.feedback.closed_statuses') }}
-				<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="A closed status is a status assigned to feedback that are finished. Users cannot vote or comment on closed feedback."></span>
+				<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.feedback.a_closed_status_is_a_status_assigned_to') }}"></span>
 			</th>
 		</thead>
 		{% for cat in closed_cats %}

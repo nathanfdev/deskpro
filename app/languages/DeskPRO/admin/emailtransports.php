@@ -30,7 +30,6 @@
   'admin.emailtransports.there_was_an_error_while_trying_to_send' => 'There was an error while trying to send the test email',
   'admin.emailtransports.test_now' => 'Test Now',
   'admin.emailtransports.add_account' => 'Add Account',
-  'admin.emailtransports.outgoing_email' => 'Outgoing Email',
   'admin.emailtransports.default_from_address' => 'Default "From" Address',
   'admin.emailtransports.update' => 'Update',
   'admin.emailtransports.outgoing_email_accounts' => 'Outgoing Email Accounts',

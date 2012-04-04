@@ -2,7 +2,6 @@
   'agent.news.comparing_revisions' => 'Comparing Revisions',
   'agent.news.order_by' => 'Order By',
   'agent.news.author' => 'Author',
-  'agent.news.category' => 'Category',
   'agent.news.date_created' => 'Date Created',
   'agent.news.showing' => 'Showing',
   'agent.news.news_posts' => 'news posts',
@@ -17,7 +16,6 @@
   'agent.news.add_a_new_term' => 'Add a new term',
 
   'agent.news.done' => 'Done',
-  'agent.news.category' => 'Category',
   'agent.news.status' => 'Status',
   'agent.news.published' => 'Published',
   'agent.news.unpublished' => 'Unpublished',

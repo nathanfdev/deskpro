@@ -13,4 +13,9 @@
   'report.dashboard.view_chart' => 'View Chart',
   'report.dashboard.select_yes_to_display_data_grouped' => 'Select yes to display the data grouped by {{group_by}}',
   'report.dashboard.how_many_time_units_to_display' => 'How many {{period_type}} worth of data do you want to display?',
+  'report.dashboard.loading' => 'Loading...',
+  'report.dashboard.add_chart' => 'Add Chart',
+  'report.dashboard.add' => '[Add]',
+  'report.dashboard.e' => '[E]',
+  'report.dashboard.x' => '[x]',
 );

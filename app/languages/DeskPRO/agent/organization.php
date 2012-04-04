@@ -12,4 +12,6 @@
   'agent.organization.altc' => '(alt+c)',
 
   'agent.organization.showing_results_of_size' => 'Showing result 1 of 1|Showing results {{display_count}} of {{size}}',
+  'agent.organization.enter_position' => 'Enter position',
+  'agent.organization.click_to_upload_a_new_picture' => 'Click to upload a new picture',
 );

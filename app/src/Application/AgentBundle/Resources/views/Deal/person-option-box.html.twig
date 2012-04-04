@@ -7,7 +7,7 @@
 		<section data-section-name="agents">
 			<header>
 				<h3>{{ phrase('agent.deal.persons') }}</h3>
-				<input type="text" class="filter-box" placeholder="Filter..." />
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.deal.filter') }}" />
 			</header>
 			<ul>
 				<li class="me last-me {% if person.id in participant_person_ids %}on{% endif %}">

@@ -31,4 +31,7 @@
 	'user.articles.date' => 'Date',
 	'user.articles.page_page' => 'Page',
 	'user.articles.page_of' => 'of',
+
+  'user.articles.comments' => 'Comments',
+  'user.articles.views' => 'Views',
 );

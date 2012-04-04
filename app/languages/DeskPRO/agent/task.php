@@ -25,4 +25,8 @@
   'agent.task.no_due_date' => 'No due date',
   'agent.task.linked_deal' => 'Linked Deal',
   'agent.task.my_teams' => 'My Teams\'',
+  'agent.task.or' => 'or',
+  'agent.task.task_description' => 'Task Description...',
+  'agent.task.filter' => 'Filter...',
+  'agent.task.enter_your_comment' => 'Enter your comment...',  
 );

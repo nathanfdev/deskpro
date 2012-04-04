@@ -22,7 +22,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="task-row">
 		<span class="btn-remove remove-row-trigger"></span>
 		<div class="task-input">
-			<input type="text"   class="input-title" name="newtask[%baseId%][title]" value="" class="task-title" placeholder="Task Description..." />
+			<input type="text"   class="input-title" name="newtask[%baseId%][title]" value="" class="task-title" placeholder="{{ phrase('agent.task.task_description') }}" />
 			<input type="hidden" class="input-date-due" name="newtask[%baseId%][date_due]" value="" />
 			<input type="hidden" class="input-agent" name="newtask[%baseId%][assigned_agent]" value="" />
 			<input type="hidden" class="input-vis" name="newtask[%baseId%][visibility]" value="0" />
@@ -59,7 +59,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<section data-section-name="agents">
 			<header>
 				<h3>{{ phrase('agent.task.agents') }}</h3>
-				<input type="text" class="filter-box" placeholder="Filter..." />
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.task.filter') }}" />
 			</header>
 			<ul>
 				<li class="me last-me">
@@ -84,7 +84,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<section data-section-name="teams">
 			<header>
 				<h3>{{ phrase('agent.task.teams') }}</h3>
-				<input type="text" class="filter-box" placeholder="Filter..." />
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.task.filter') }}" />
 			</header>
 			<ul>
 				{% for team in app.user.getAgent().getTeams() %}

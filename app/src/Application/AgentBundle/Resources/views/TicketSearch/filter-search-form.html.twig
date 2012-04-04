@@ -1,7 +1,7 @@
 <section class="list-top-area ticket">
 	{% if not hide_terms_summary %}
 	<div class="summary">
-		<span class="edit" title="Edit search terms">{{ phrase('agent.ticketsearch.edit') }}</span>
+		<span class="edit" title="{{ phrase('agent.ticketsearch.edit_search_terms') }}">{{ phrase('agent.ticketsearch.edit') }}</span>
 		{% for line in terms_summary %}
 			{{line}}{% if not loop.last %},{% endif %}
 		{% else %}

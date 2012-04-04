@@ -47,7 +47,7 @@ pageMeta.baseId = '{{ baseId }}';
 				data-position-bound="#{{baseId}}_userselect"
 			>
                                 {{ phrase('agent.deal.person') }}:
-				<input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="Choose a person to create this ticket for" />
+				<input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.deal.choose_a_person_to_create_this_ticket_for') }}" />
 				<input type="hidden" name="newdeal[person][id]" value="{{ deal.person.id }}" class="person-id" id="{{baseId}}_person_id" />
 
 				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
@@ -90,7 +90,7 @@ pageMeta.baseId = '{{ baseId }}';
 				data-position-bound="@parent(.org-input)"
 			>
 				{{ phrase('agent.deal.organization') }}:
-				<input type="text" class="org-name" placeholder="Enter an organization name..." value="{{ person.organization.name }}" />
+				<input type="text" class="org-name" placeholder="{{ phrase('agent.deal.enter_an_organization_name') }}" value="{{ person.organization.name }}" />
 				<input type="hidden" class="org-id" name="newdeal[organizations][id]" value="{{ person.organization.id|default(0) }}" />
 				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
 					<li>
@@ -112,7 +112,7 @@ pageMeta.baseId = '{{ baseId }}';
 			</div>
 			<div class="pos-input" {% if not deal.person.organization %}style="display: none"{% endif %}>
 				<label>{{ phrase('agent.deal.position') }}:</label>
-				<input type="text" class="org-pos-set" placeholder="Set a position..." value="{{ deal.person.organization_position }}" />
+				<input type="text" class="org-pos-set" placeholder="{{ phrase('agent.deal.set_a_position') }}" value="{{ deal.person.organization_position }}" />
 			</div>
 		</div>
 
@@ -261,7 +261,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<section data-section-name="agents">
 			<header>
 				<h3>{{ phrase('agent.deal.agents') }}</h3>
-				<input type="text" class="filter-box" placeholder="Filter..." />
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.deal.filter') }}" />
 			</header>
 			<ul>
 				<li class="me last-me {% if deal.assigned_agent.id == deal.person.id or not deal.assigned_agent %}on{% endif %}">

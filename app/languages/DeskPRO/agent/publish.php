@@ -95,7 +95,7 @@
   'agent.publish.edit' => 'edit',
   'agent.publish.expand' => 'expand',
   'agent.publish.delete' => 'delete',
-  'agent.publish.downloads' => 'Downloads',
   'agent.publish.by_name' => 'By {{name}}',
   'agent.publish.revision_by' => 'Revision by {{name}}',
+  'agent.publish.count_selected' => '{{display_count}} selected',
 );

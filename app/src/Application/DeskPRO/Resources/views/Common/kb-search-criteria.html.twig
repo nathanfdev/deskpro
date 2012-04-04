@@ -11,10 +11,10 @@
 			</div>
 		</div>
 	</div>
-	<div class="type" title="Choose criteria..." data-rule-type="">
+	<div class="type" title="{{ phrase('deskpro.common.choose_criteria') }}" data-rule-type="">
 	</div>
 {% endif %}
-<div class="type" title="Category" data-rule-type="category">
+<div class="type" title="{{ phrase('deskpro.common.category') }}" data-rule-type="category">
 	<div class="op">
 		<select name="op" class="op">
 			<option value="is">{{ phrase('deskpro.common.is') }}</option>
@@ -29,7 +29,7 @@
 		</select>
 	</div>
 </div>
-<div class="type" title="Status" data-rule-type="status">
+<div class="type" title="{{ phrase('deskpro.common.status') }}" data-rule-type="status">
 	<div class="op">
 		<select name="op" class="op">
 			<option value="is">{{ phrase('deskpro.common.is') }}</option>
@@ -47,7 +47,7 @@
 		</select>
 	</div>
 </div>
-<div class="type" title="Date created" data-rule-type="date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
+<div class="type" title="{{ phrase('deskpro.common.date_created') }}" data-rule-type="date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
 	<div class="op">
 		<select name="op" class="op">
 			<option value="lte">{{ phrase('deskpro.common.before') }}</option>
@@ -59,7 +59,7 @@
 		{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
 	</div>
 </div>
-<div class="type" title="Labels" data-rule-type="label">
+<div class="type" title="{{ phrase('deskpro.common.labels') }}" data-rule-type="label">
 	<div class="op">
 		<select name="op" class="op">
 			<option value="is">{{ phrase('deskpro.common.include') }}</option>

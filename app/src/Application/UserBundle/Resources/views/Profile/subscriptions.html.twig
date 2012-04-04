@@ -47,7 +47,7 @@
 				{% set feedback = sub.feedback %}
 				<li class="feedback-item">
 					<a href="{{ path('user_profile_subdel', {'type': 'feedback', 'id': feedback.id, 'return_sub': 1}) }}" class="sub-delete">x</a>
-					<div class="feedback-votes" title="Votes in favor of this feedback">
+					<div class="feedback-votes" title="{{ phrase('user.profile.votes_in_favor_of_this_feedback') }}">
 						<div class="votes"><span>{{ rand(1,80) }}</span></div>
 					</div>
 					<h4><a href="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}">{{feedback.title}}</a></h4>

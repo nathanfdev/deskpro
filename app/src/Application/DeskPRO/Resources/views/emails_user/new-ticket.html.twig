@@ -1,13 +1,13 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_subject %}
-	RE: {{ ticket.subject }}
+    {{ phrase('deskpro.emails_user.re_subject', {'subject':ticket.subject}) }}
 {% endblock %}
 {% block content %}
 	{% set content %}
 		{{ phrase('deskpro.emails_user.your_ticket_has_been_recieved_and_our_agents') }}
 		<br /><br />
-		You can view your ticket online at any time	by visiting:
+        {{ phrase('deskpro.emails_user.you_can_view_your_ticket_at') }}
 		<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}">
 			{{ url_display('user_tickets_view', {'ticket_ref': ticket.access_code}) }}
 		</a>

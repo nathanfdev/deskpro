@@ -59,11 +59,11 @@ function _page_exec() {
 					<td></td>
 					<td class="icon">
 						{% if stat.isEditable %}
-							<a href="{{ path('report_trend_edit', { 'stat_id': stat.id }) }}" class="edit-trend" title="{{ phrase('report.trend.edit_trend') }}"><img src="{{ asset('images/report/icons/edit.png') }}" alt="[Edit]"/></a></td>
+							<a href="{{ path('report_trend_edit', { 'stat_id': stat.id }) }}" class="edit-trend" title="{{ phrase('report.trend.edit_trend') }}"><img src="{{ asset('images/report/icons/edit.png') }}" alt="{{ phrase('report.trend.edit_bracket') }}"/></a></td>
 						{% endif %}
 					<td class="icon">
 						{% if stat.isClonable %}
-							<a href="{{ path('report_trend_clone', { 'stat_id': stat.id }) }}" class="clone-trend" title="{{ phrase('report.trend.clone_trend') }}"><img src="{{ asset('images/report/icons/clone.png') }}" alt="[Clone]"/></a>
+							<a href="{{ path('report_trend_clone', { 'stat_id': stat.id }) }}" class="clone-trend" title="{{ phrase('report.trend.clone_trend') }}"><img src="{{ asset('images/report/icons/clone.png') }}" alt="{{ phrase('report.trend.clone_bracket') }}"/></a>
 						{% endif %}
 					</td>
 				</tr>
@@ -80,7 +80,7 @@ function _page_exec() {
 	<div class="overlay-content">
 	</div>
 	<div class="overlay-loader">
-		<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" alt="Loading..." />
+		<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" alt="{{ phrase('report.trend.loading') }}" />
 	</div>
 	<div class="overlay-footer">
 
@@ -96,7 +96,7 @@ function _page_exec() {
 
 	</div>
 	<div class="overlay-loader">
-		<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" alt="Loading..." />
+		<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" alt="{{ phrase('report.trend.loading') }}" />
 	</div>
 	<div class="overlay-footer">
 

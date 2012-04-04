@@ -30,4 +30,10 @@
   'admin.departments.there_are_tickets_and_chats' => 'There {{tickets}} and {{chats}} using this department.',
   'admin.departments.count_tickets' => '{0} are 0 tickets|{1} is 1 ticket|]1,1000] are {{count}} tickets|[1001,Inf] are over 1000 tickets',
   'admin.departments.count_chats' => '{0} 0 chats|{1} 1 chat|]1,1000] {{count}} chats|[1001,Inf] over 1000 chats',
+
+  'admin.departments.product' => 'Product',
+  'admin.departments.category' => 'Category',
+  'admin.departments.priority' => 'Priority',
+  'admin.departments.workflow' => 'Workflow',
+  'admin.departments.filter' => 'Filter...',
 );
