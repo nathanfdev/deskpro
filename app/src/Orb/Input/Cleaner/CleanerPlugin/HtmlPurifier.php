@@ -70,6 +70,7 @@ class HtmlPurifier implements CleanerPlugin
 		$config = $this->getConfigForType($type);
 
 		$value = $purifier->purify($value, $config);
+		$value = Strings::trimHtml($value);
 
 		return $value;
 	}
@@ -85,12 +86,12 @@ class HtmlPurifier implements CleanerPlugin
 
 		switch ($type) {
 			case 'html':
-				$config->set('HTML.Allowed', 'div,em,strong,span,h1,h2,h3,h4,h5,h6,table,thead,tbody,tfoot,tr,td,th,a[href],ul,li,dd,dt,dl,ol,p,pre,code');
+				$config->set('HTML.Allowed', 'br,div,em,strong,span,h1,h2,h3,h4,h5,h6,table,thead,tbody,tfoot,tr,td,th,a[href],ul,li,dd,dt,dl,ol,p,pre,code');
 				$config->set('URI.DisableExternalResources', true);
 				break;
 
 			case 'html_simple':
-				$config->set('HTML.Allowed', 'em,strong,a[href],ul,li,dd,dt,dl,ol,p,span');
+				$config->set('HTML.Allowed', 'em,strong,a[href],ul,li,dd,dt,dl,ol,p,span,br');
 				$config->set('AutoFormat.AutoParagraph', true);
 				$config->set('AutoFormat.Linkify', true);
 				$config->set('URI.DisableExternalResources', true);
@@ -100,7 +101,7 @@ class HtmlPurifier implements CleanerPlugin
 				break;
 
 			case 'html_email':
-				$config->set('HTML.Allowed', 'em,strong,a[href],ul,li,dd,dt,dl,ol,p,span');
+				$config->set('HTML.Allowed', 'em,strong,a[href],ul,li,dd,dt,dl,ol,p,span,br');
 				$config->set('AutoFormat.Linkify', true);
 				$config->set('URI.DisableExternalResources', true);
 				$config->set('AutoFormat.RemoveEmpty', true);
