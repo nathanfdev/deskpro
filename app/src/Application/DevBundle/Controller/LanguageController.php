@@ -36,6 +36,7 @@ namespace Application\DevBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Application\DeskPRO\Translate;
 use Application\DeskPRO\App;
+use Symfony\Component\HttpFoundation\Response;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -99,7 +100,7 @@ class LanguageController extends Controller
 
             foreach($lines as $i=>$line) {
                 if($prefix) {
-                    if(preg_match('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'([^\']+\'\s*[,)])/', $line)) {
+                    if(preg_match('/(phrase\(\s*\')'.preg_quote($from, '/').'([^\']+\'\s*[,)])/', $line)) {
                         $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($from, '/').'([^\']+\'\s*[,)])/', '\1'.$to.'\2', $line);
                         echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br />";
                         $data .= $new_line;
@@ -109,7 +110,7 @@ class LanguageController extends Controller
                     }
                 }
                 else {
-                    if(preg_match('/(phrase\(\s*\')'.preg_quote($file['id'], '/').'(\'\s*[,)])/', $line)) {
+                    if(preg_match('/(phrase\(\s*\')'.preg_quote($from, '/').'(\'\s*[,)])/', $line)) {
                         $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($from, '/').'(\'\s*[,)])/', '\1'.$to.'\2', $line);
                         echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br />";
                         $data .= $new_line;
@@ -120,7 +121,7 @@ class LanguageController extends Controller
                 }
             }
 
-            //file_put_contents($file['filename'], $data);
+            file_put_contents($file['filename'], $data);
         }
     }
 
@@ -129,22 +130,44 @@ class LanguageController extends Controller
         $files = array();
 
         foreach($flat_files as $file) {
-            $files[] = array('filename' => $files);
+            $files[] = array('filename' => $file);
         }
 
         return $files;
+    }
+
+    public function exportAllToPOAction()
+    {
+        $files = $this->getLanguageFileList();
+        $strings = array();
+
+        foreach($files as $file) {
+            $strings = array_merge(require($file), $strings);
+        }
+
+        $vars = array(
+            'meta' => array(
+
+            ),
+            'strings' => $strings
+        );
+        $response = new Response();
+        $response->headers->set('Content-Type','text/html');
+
+        return $response;
     }
 
     public function replacePhraseIdsAction()
     {
         $bundles = $this->bundles;
         $vars = array('bundles' => $bundles);
+        set_time_limit(0);
 
-        if(isset($_POST['replace'])) {
+        if(isset($_POST['from'])) {
             $from = $_POST['from'];
             $to = $_POST['to'];
             $in = $_POST['bundles'];
-            $prefix = $_POST['prefix'];
+            $prefix = isset($_POST['prefix']) && $_POST['prefix'];
             $files = array();
 
             foreach($in as $bundle) {
@@ -160,10 +183,84 @@ class LanguageController extends Controller
 
     public function findForeignIdsAction()
     {
+        set_time_limit(0);
         $vars = array();
 
+        $bundle_map = array(
+            'AgentBundle' => 'agent',
+            'ReportBundle' => 'agent',
+            'AdminBundle' => 'admin',
+            'BillingBundle' => 'admin',
+            'UserBundle' => 'user'
+        );
+        $foreign = array();
 
+        foreach(array_keys($bundle_map) as $bundle) {
+            $foreign[$bundle] = array();
+        }
 
+        $globals = array('agent' => array(), 'admin' => array(), 'user' => array());
+        $rootdir = DP_ROOT.'/languages/DeskPRO';
+        $real_global = require($rootdir.'/global/global.php');
+
+        foreach($bundle_map as $bundle=>$lang) {
+            ob_start();
+            list($by_id_php, ) = $this->getPhrasesFromPHPFiles($bundle);
+            list($by_id_twig, ) = $this->getPhrasesFromTwigFiles($bundle);
+            ob_end_clean();
+
+            foreach($by_id_php as $id=>$files) {
+                list($folder, $remaining) = explode('.', $id, 2);
+
+                if($lang != $folder) {
+                    if(!isset($foreign[$bundle][$id])) {
+                        $foreign[$bundle][$id] = array();
+                    }
+
+                    $foreign[$bundle][$id] = array_merge($files, $foreign[$bundle][$id]);
+                }
+            }
+
+            foreach($by_id_twig as $id=>$files) {
+                list($folder, ) = explode('.', $id, 2);
+
+                if($lang != $folder) {
+                    if(!isset($foreign[$bundle][$id])) {
+                        $foreign[$bundle][$id] = array();
+                    }
+
+                    $foreign[$bundle][$id] = array_merge($files, $foreign[$bundle][$id]);
+                }
+            }
+        }
+
+        foreach($foreign as $bundle=>$f) {
+            foreach($f as $id=>$files) {
+                list($firstpart, ) = explode('.', $id, 2);
+
+                if($firstpart == 'global') {
+                    if(!in_array($id, $globals[$bundle_map[$bundle]])) {
+                        $globals[$bundle_map[$bundle]][$id] = $files;
+                    }
+                }
+            }
+        }
+
+        foreach($globals as $prefix=>$ids) {
+            $export = array();
+
+            foreach($ids as $id=>$files) {
+                $export[$prefix.'.'.$id] = $real_global[$id];
+            }
+
+            $globals[$prefix] = '<?php return '.var_export($export, true).';';
+
+            $this->replacePhrasesInFiles($files, 'global.', $prefix.'.global.', true);
+            file_put_contents($rootdir.'/'.$prefix.'/global.php', $globals[$prefix]);
+        }
+
+        $vars['foreign'] = $foreign;
+        $vars['global'] = $globals;
         return $this->render('DevBundle:Language:find.foreign.html.twig', $vars);
     }
 
@@ -370,10 +467,10 @@ class LanguageController extends Controller
         return $this->render('DevBundle:Language:find.raw.html.twig', $vars);
     }
 
-    public function getPhrasesFromTwigFiles()
+    public function getPhrasesFromTwigFiles($bundle = null)
     {
         $twig = $this->container->get('twig');
-        $templates = $this->getTwigFileList();
+        $templates = $this->getTwigFileList($bundle);
         $by_id = array();
         $by_file = array();
 
@@ -409,7 +506,19 @@ class LanguageController extends Controller
                         if($type == \Twig_Token::STRING_TYPE) {
                             $state++;
                             $id = $value;
+                        }
+                        else {
+                            $state = 0;
+                            $this->tokenWarningTwig('Unexpected token', $token, $file, $line);
+                        }
 
+                        break;
+                    case 3:
+                        if($type != \Twig_Token::PUNCTUATION_TYPE || ($value != ')' && $value != ',')) {
+                            $this->tokenWarningTwig('Unexpected token', $token, $file, $line);
+                        }
+                        else
+                        {
                             if(!isset($by_id[$id])) {
                                 $by_id[$id] = array();
                             }
@@ -427,16 +536,6 @@ class LanguageController extends Controller
                                 'id' => $id,
                                 'line' => $line
                             );
-                        }
-                        else {
-                            $state = 0;
-                            $this->tokenWarningTwig('Unexpected token', $token, $file, $line);
-                        }
-
-                        break;
-                    case 3:
-                        if($type != \Twig_Token::PUNCTUATION_TYPE || ($value != ')' && $value != ',')) {
-                            $this->tokenWarningTwig('Unexpected token', $token, $file, $line);
                         }
 
                         $state = 0;
@@ -514,7 +613,19 @@ class LanguageController extends Controller
                             if(is_array($token) && $token[0] == T_CONSTANT_ENCAPSED_STRING) {
                                 $id = eval('return '.$token[1].';');
                                 $state++;
+                            }
+                            else {
+                                $state = 0;
+                                $this->tokenWarningPhp('Unexpected Token', $token, $file, $line);
+                            }
 
+                            break;
+                        case 4:
+                            if($token != ')' && $token != ',') {
+                                $this->tokenWarningPhp('Unexpected Token', $token, $file, $line);
+                            }
+                            else
+                            {
                                 if(!isset($by_id[$id])) {
                                     $by_id[$id] = array();
                                 }
@@ -532,16 +643,6 @@ class LanguageController extends Controller
                                     'id' => $id,
                                     'line' => $line
                                 );
-                            }
-                            else {
-                                $state = 0;
-                                $this->tokenWarningPhp('Unexpected Token', $token, $file, $line);
-                            }
-
-                            break;
-                        case 4:
-                            if($token != ')' && $token != ',') {
-                                $this->tokenWarningPhp('Unexpected Token', $token, $file, $line);
                             }
 
                             $state = 0;

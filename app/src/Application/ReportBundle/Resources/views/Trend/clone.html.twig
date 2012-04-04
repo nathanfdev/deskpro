@@ -14,7 +14,7 @@
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>{{ phrase('global.group_by') }}</label>
-				<span>{{ phrase('report.trend.select_the_field_to_group_the_results_by') }}</span>
+				<span>{{ phrase('agent.report.trend.select_the_field_to_group_the_results_by') }}</span>
 			</div>
 			<div class="dp-form-input group-by">
 				{{ form_widget(form.grouping_ref) }}
@@ -34,8 +34,8 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('report.trend.difference') }}</label>
-				<span>{{ phrase('report.trend.is_a_positive_number_good_bad_or_neutral') }}</span>
+				<label>{{ phrase('agent.report.trend.difference') }}</label>
+				<span>{{ phrase('agent.report.trend.is_a_positive_number_good_bad_or_neutral') }}</span>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.variation) }}
@@ -45,7 +45,7 @@
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>{{ phrase('global.frequency') }}</label>
-				<span>{{ phrase('report.trend.how_often_does_this_statistic_need_to_run') }}</span>
+				<span>{{ phrase('agent.report.trend.how_often_does_this_statistic_need_to_run') }}</span>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.run_frequency) }}
@@ -54,18 +54,18 @@
 
         <div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('report.trend.star_the_statistic') }}</label>
-				<span>{{ phrase('report.trend.starred_statistic_display_at_the_top_of_the') }}</span>
+				<label>{{ phrase('agent.report.trend.star_the_statistic') }}</label>
+				<span>{{ phrase('agent.report.trend.starred_statistic_display_at_the_top_of_the') }}</span>
 			</div>
 			<div class="dp-form-input">
-				<label>{{ form_widget(form.starred) }} {{ phrase('report.trend.starred') }}</label>
+				<label>{{ form_widget(form.starred) }} {{ phrase('agent.report.trend.starred') }}</label>
 			</div>
 		</div>
 	</div>
 
 	{{ form_rest(form) }}
 
-	<button class="btn primary save-trigger" id="clone_trend_save">{{ phrase('report.trend.clone') }}</button>
+	<button class="btn primary save-trigger" id="clone_trend_save">{{ phrase('agent.report.trend.clone') }}</button>
 </form>
 
 <script type="text/javascript">

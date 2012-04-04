@@ -32,12 +32,12 @@ function _page_exec() {
 				<th width="20"></th>
 				<th>{{ phrase('global.title') }}</th>
 				<th width="100">{{ phrase('global.group_by') }}</th>
-				<th width="100">{{ phrase('report.trend.updates') }}</th>
+				<th width="100">{{ phrase('agent.report.trend.updates') }}</th>
 				<th width="200">{{ phrase('global.author') }}</th>
 				<th width="200">{{ phrase('global.trend') }}</th>
 				<th width="60" class="center">{{ phrase('global.prev') }}</th>
-				<th width="60" class="center">{{ phrase('report.trend.current') }}</th>
-				<th width="90" class="center">{{ phrase('report.trend.difference_') }}</th>
+				<th width="60" class="center">{{ phrase('agent.report.trend.current') }}</th>
+				<th width="90" class="center">{{ phrase('agent.report.trend.difference_') }}</th>
 				<th width="10"></th>
 				<th width="16" class="icon"></th>
 				<th width="16" class="icon"></th>
@@ -59,11 +59,11 @@ function _page_exec() {
 					<td></td>
 					<td class="icon">
 						{% if stat.isEditable %}
-							<a href="{{ path('report_trend_edit', { 'stat_id': stat.id }) }}" class="edit-trend" title="{{ phrase('report.trend.edit_trend') }}"><img src="{{ asset('images/report/icons/edit.png') }}" alt="{{ phrase('report.trend.edit_bracket') }}"/></a></td>
+							<a href="{{ path('report_trend_edit', { 'stat_id': stat.id }) }}" class="edit-trend" title="{{ phrase('agent.report.trend.edit_trend') }}"><img src="{{ asset('images/report/icons/edit.png') }}" alt="{{ phrase('agent.report.trend.edit_bracket') }}"/></a></td>
 						{% endif %}
 					<td class="icon">
 						{% if stat.isClonable %}
-							<a href="{{ path('report_trend_clone', { 'stat_id': stat.id }) }}" class="clone-trend" title="{{ phrase('report.trend.clone_trend') }}"><img src="{{ asset('images/report/icons/clone.png') }}" alt="{{ phrase('report.trend.clone_bracket') }}"/></a>
+							<a href="{{ path('report_trend_clone', { 'stat_id': stat.id }) }}" class="clone-trend" title="{{ phrase('agent.report.trend.clone_trend') }}"><img src="{{ asset('images/report/icons/clone.png') }}" alt="{{ phrase('agent.report.trend.clone_bracket') }}"/></a>
 						{% endif %}
 					</td>
 				</tr>
@@ -75,7 +75,7 @@ function _page_exec() {
 <div id="edit_overlay_wrapper" style="width: 700px; height: 450px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
-		<h4>{{ phrase('report.trend.edit_trend') }}</h4>
+		<h4>{{ phrase('agent.report.trend.edit_trend') }}</h4>
 	</div>
 	<div class="overlay-content">
 	</div>
@@ -90,7 +90,7 @@ function _page_exec() {
 <div id="clone_overlay_wrapper" style="width: 700px; height: 650px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
-		<h4>{{ phrase('report.trend.clone_trend') }}</h4>
+		<h4>{{ phrase('agent.report.trend.clone_trend') }}</h4>
 	</div>
 	<div class="overlay-content">
 

@@ -46,7 +46,7 @@ function _page_exec() {
 
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('report.dashboard.number_columns') }}</label>
+						<label>{{ phrase('agent.report.dashboard.number_columns') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<div id="report-dashboard-options-num-columns-slider"></div>
@@ -66,7 +66,7 @@ function _page_exec() {
 	<div id="overlay_wrapper" style="width: 950px; height: 600px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
-			<h4>{{ phrase('report.dashboard.add_dashboard_chart') }}</h4>
+			<h4>{{ phrase('agent.report.dashboard.add_dashboard_chart') }}</h4>
 		</div>
 		<div class="overlay-content">
 
@@ -82,7 +82,7 @@ function _page_exec() {
 	<div id="fullscreen_overlay_wrapper" style="display: none; height: 200px; width: 100%;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
-			<h4>{{ phrase('report.dashboard.view_chart') }}</h4>
+			<h4>{{ phrase('agent.report.dashboard.view_chart') }}</h4>
 		</div>
 		<div class="overlay-content"  style="padding: 0">
 			<div id="fullscreen_overlay_wrapper_content"></div>
@@ -117,7 +117,7 @@ function _page_exec() {
 						<td>{{ stat.getGroupingName }} </td>
 						<td class="period">{{ stat.period }}</td>
 						<td>{{stat.authorName}}</td>
-						<td class="icon"><a href="{{ path('report_trend_dashboard_stat_new', { 'dashboard_id': dashboard.id, 'stat_id': stat.id }) }} " title="{{ phrase('report.dashboard.add_chart') }}" class="add-chart"><img src="{{ asset('images/report/icons/add.png') }}" alt="{{ phrase('report.dashboard.add') }}"/></a></td>
+						<td class="icon"><a href="{{ path('report_trend_dashboard_stat_new', { 'dashboard_id': dashboard.id, 'stat_id': stat.id }) }} " title="{{ phrase('agent.report.dashboard.add_chart') }}" class="add-chart"><img src="{{ asset('images/report/icons/add.png') }}" alt="{{ phrase('agent.report.dashboard.add') }}"/></a></td>
 					</tr>
 				{% endfor %}
 			</tbody>

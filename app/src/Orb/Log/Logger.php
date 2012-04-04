@@ -54,6 +54,7 @@ class Logger
     const NOTICE  = 5;
     const INFO    = 6;
     const DEBUG   = 7;
+    const STRICT   = 8;
 	/**@#-*/
 
 	/**
@@ -68,7 +69,8 @@ class Logger
 		self::WARN     => 'WARN',
 		self::NOTICE   => 'NOTICE',
 		self::INFO     => 'INFO',
-		self::DEBUG    => 'DEBUG'
+		self::DEBUG    => 'DEBUG',
+		self::STRICT    => 'STRICT'
 	);
 
 	/**

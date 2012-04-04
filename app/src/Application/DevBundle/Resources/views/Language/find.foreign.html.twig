@@ -1,1 +1,18 @@
 <a href="{{ path('dev_lang_index') }}">Back</a>
+<br />
+{% for folder,export in global %}
+Export global.php file for {{folder}}:<br />
+<pre>
+{{export}}
+</pre>
+{% endfor %}
+
+{% for bundle, ids in foreign %}
+<h1>Foreign phrase identities in {{bundle}}</h1>
+<table border="1" cellspacing="0" cellpadding="2">
+    <tr><th>Id</th><th>Occurances</th></tr>
+    {% for id, files in ids %}
+        <tr><td>{{id}}</td><td>{{files|length}}</td></tr>
+    {% endfor %}
+</table>
+{% endfor %}

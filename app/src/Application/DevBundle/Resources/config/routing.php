@@ -167,4 +167,12 @@ $collection->add('dev_lang_find_foreign', new Route(
     array()
 ));
 
+$collection->add('dev_lang_export_all_po', new Route(
+    '/lang/export/all/po',
+    array('_controller' => 'DevBundle:Language:exportAllToPO'),
+    array(),
+    array()
+));
+
+
 return $collection;
