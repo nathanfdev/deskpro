@@ -9,6 +9,7 @@
 
 {% if is_new_agent_reply %}An agent has replied to "{{ ticket.subject }}"
 {% elseif is_new_user_reply %}A user has replied to "{{ ticket.subject }}"
+{% endif %}
 
 {{ layout.section('', content) }}
 
