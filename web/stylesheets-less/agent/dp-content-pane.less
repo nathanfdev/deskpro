@@ -665,7 +665,8 @@ header.page-header .meta-line .status.closed span                    { .ticket_u
 .status-pill.awaiting_agent.urgency-10 { .ticket_urgency_style_pill(@urgency10_color, @urgency10_borderColor, @urgency10_textColor); }
 .status-pill.awaiting_user             { .ticket_urgency_style_pill(@urgency_user_color, @urgency_user_borderColor, @urgency_user_textColor); }
 .status-pill.resolved                  { .ticket_urgency_style_pill(@urgency_resolved_color, @urgency_resolved_borderColor, @urgency_resolved_textColor); }
-.status-pill.hidden                    { .ticket_urgency_style_pill(@urgency_hidden_color, @urgency_hidden_borderColor, @urgency_hidden_textColor); }
+.status-pill.hidden, .status-pill.hidden_deleted, .status-pill.hidden_spam, .status-pill.hidden_validating
+{ .ticket_urgency_style_pill(@urgency_hidden_color, @urgency_hidden_borderColor, @urgency_hidden_textColor); }
 .status-pill.closed                    { .ticket_urgency_style_pill(@urgency_closed_color, @urgency_closed_borderColor, @urgency_closed_textColor); }
 
 header.page-header .meta-line .status span {
