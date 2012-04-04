@@ -1069,8 +1069,11 @@ class Strings
 	 */
 	public static function trimHtml($string)
 	{
-		$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)*#im', '', $string);
-		$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)*$#im', '', $string);
+		do {
+			$old_string = $string;
+			$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#im', '', $string);
+			$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#im', '', $string);
+		} while ($string != $old_string);
 
 		return $string;
 	}
