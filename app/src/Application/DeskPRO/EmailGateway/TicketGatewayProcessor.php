@@ -111,7 +111,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		// If we imported form DP3, run the old codes
-		if (App::getSetting('core.deskpro3importer')) {
+		if (!$ticket && App::getSetting('core.deskpro3importer')) {
 			$detector = new Dp3Detector();
 			$ticket = $detector->findExistingTicket($this->reader);
 			$this->logMessage('[TicketGatewayProcessor] Dp3Detector detected: ' . ($ticket ? $ticket['id'] : 'nothing'));
