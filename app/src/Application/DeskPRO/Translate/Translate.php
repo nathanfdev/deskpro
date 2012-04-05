@@ -128,8 +128,10 @@ class Translate implements PersonContextInterface
 	 * @var \Symfony\Component\EventDispatcher\EventDispatcher
 	 */
 	protected $_event_dispatcher = null;
-    /*
-
+    /**
+     * @var array
+     */
+    protected static $_missing_phrases = array();
 
 
 	/**
@@ -140,6 +142,10 @@ class Translate implements PersonContextInterface
 	{
 		$this->setLanguage(SystemLanguage::getInstance(), false);
 		$this->loader = $loader;
+
+        if(App::getConfig('debug.language_report_missing')) {
+            register_shutdown_function(array($this, 'reportMissingPhrases'));
+        }
 
 		$this->_event_dispatcher = $event_dispatcher;
 	}
@@ -438,6 +444,23 @@ class Translate implements PersonContextInterface
 		return $this->_phrases[$language_id][$phrase_name];
 	}
 
+    public static function reportMissingPhrases() {
+        if(count(self::$_missing_phrases)) {
+            $logger = App::createNewLogger('missing_phrase_logger', null);
+            $writer = new \Application\DeskPRO\Log\Writer\ReportErrors();
+            $logger->addWriter($writer);
+            $message = "'The following phrases are missing:\n";
+
+            foreach(self::$_missing_phrases as $phrase) {
+                $message .= "{$phrase}";
+            }
+
+            $logger->log('', 'WARN', array(
+                'subject'    => '[DeskPro Missing Phrases]',
+                'message'    => $message
+            ));
+        }
+    }
 
 	/**
 	 * Called when there is no such phrase name. By default this simply
@@ -450,6 +473,10 @@ class Translate implements PersonContextInterface
 	protected function _noPhrase($phrase_name, $language)
 	{
 		$phrase = null;
+
+        if(!isset(self::$_missing_phrases[$phrase_name])) {
+            self::$_missing_phrases[$phrase_name] = $phrase_name;var_dump(self::$_missing_phrases);
+        }
 
 		if ($this->_event_dispatcher) {
 			$evdata = new DataEvent(array(

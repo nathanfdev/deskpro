@@ -29,4 +29,11 @@
 'agent.feedback.status_spam' => 'Spam',
 'agent.feedback.status_validating' => 'Validating',
   'agent.feedback.closed' => 'Closed',
+	'agent.feedback.status_new'        => 'New',
+	'agent.feedback.status_active'     => 'Active',
+	'agent.feedback.status_closed'     => 'Closed',
+	'agent.feedback.status_hidden'     => 'Hidden',
+	'agent.feedback.status_deleted'    => 'Deleted',
+	'agent.feedback.status_spam'       => 'Spam',
+	'agent.feedback.status_validating' => 'Validating',
 );

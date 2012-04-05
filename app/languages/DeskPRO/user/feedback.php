@@ -1,52 +1,29 @@
 <?php return array(
-
-
 	'user.feedback.error_not_found' => 'The feedback you\'re looking for could not be found. It may have been deleted.',
-
-
-
-
+	'user.feedback.section_name' => 'Feedback',
+	'user.feedback.error_not_found' => 'The feedback you\'re looking for could not be found. It may have been deleted.',
+	'user.feedback.status_all' => 'All',
+	'user.feedback.status_new' => 'New',
+	'user.feedback.status_active' => 'Active',
+	'user.feedback.status_closed' => 'Closed',
 	'user.feedback.status_popular' => 'Popular',
-
-
-
-
 	'user.feedback.all_feedback' => 'All Feedback',
-
-
-
-
-
 	'user.feedback.label_summary_explain' => 'A title or a brief summary of what your feedback is about',
 	'user.feedback.summary_error' => 'Please enter a summary of at laest 5 characters',
-
-
 	'user.feedback.label_desc_explain' => 'Explain your feedback',
 	'user.feedback.desc_error' => 'Please enter a description of at least 5 characters',
-
 	'user.feedback.similar_title' => 'We found the following feedback submissions that may be similar to yours',
-
 	'user.feedback.similar_count' => 'View {{count_place}} more results',
-
 	'user.feedback.no_feedback_spec' => 'There are no feedback submissions with those specificiations',
-
 	'user.feedback.view_all_x_feedback' => 'View 1 feedback submission|View all {{count}} feedback submissions',
-
 	'user.feedback.similar_same_as' => 'This is the same as my submission',
 	'user.feedback.similar_not_same_as' => 'This isn\'t the same as my submission',
 	'user.feedback.similar_same_confirm' => 'Looks like you have found someone who had the same idea as you did. Does that mean you do not need to create a new one?',
 	'user.feedback.simialr_same_confirm_yes' => 'I do not want to submit a new submission',
 	'user.feedback.simialr_same_confirm_no' => 'I still want to submit my feedback',
-
 	'user.feedback.votes_available' => 'You have up to {{part}} votes to cast on this feedback. How many do you want to use?',
-
-
 	'user.feedback.accepted' => 'Accepted',
 	'user.feedback.declined' => 'Declined',
 	'user.feedback.completed' => 'Completed',
-
-
-
-
 	'user.feedback.count_votes' => '{0} No votes|{1} {{count}} vote|]2,Unf]{{count}} votes',
 );

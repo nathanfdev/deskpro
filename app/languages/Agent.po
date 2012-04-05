@@ -1,0 +1,3708 @@
+
+msgid "agent.window.dismiss_notifications"
+msgstr "Dismiss All Notifications"
+
+msgid "agent.window.key_left_tab"
+msgstr "Select left tab"
+
+msgid "agent.window.key_right_tab"
+msgstr "Select right tab"
+
+msgid "agent.window.key_close_tab"
+msgstr "Close tab"
+
+msgid "agent.window.new_person"
+msgstr "New Person"
+
+msgid "agent.window.new_organization"
+msgstr "New Organization"
+
+msgid "agent.window.new_article"
+msgstr "New Article"
+
+msgid "agent.window.new_news"
+msgstr "New News Post"
+
+msgid "agent.window.new_task"
+msgstr "New Task"
+
+msgid "agent.window.new_deal"
+msgstr "New Deal"
+
+msgid "agent.window.set_ticket_resolved"
+msgstr "Set ticket resolved"
+
+msgid "agent.window.assign_to_self"
+msgstr "Assign to me"
+
+msgid "agent.window.focus_notes_box"
+msgstr "Focus notes box"
+
+msgid "agent.window.create_ticket_person"
+msgstr "Create ticket for the person"
+
+msgid "agent.window.available"
+msgstr "Available"
+
+msgid "agent.window.do_not_disturb"
+msgstr "Do Not Disturb"
+
+msgid "agent.window.do_not_disturb_short"
+msgstr "DND"
+
+msgid "agent.window.toggle_away_status"
+msgstr "Toggle your away status"
+
+msgid "agent.window.network_status"
+msgstr "Network Status"
+
+msgid "agent.window.network_status_okay"
+msgstr "Everything seems okay"
+
+msgid "agent.window.network_status_bad"
+msgstr "Network problems, you may have been disconnected"
+
+msgid "agent.window.sound_explain"
+msgstr "Change or mute sound notifications"
+
+msgid "agent.window.click_icon_to_show_filters"
+msgstr "Click <span class="gear-icon"></span> to show filters"
+
+msgid "agent.window.click_icon_to_add_filter"
+msgstr "Click <span class="add-icon"></span> to create a new filter"
+
+msgid "agent.widgets.announce_this_ticket_in_campfire"
+msgstr "Announce this ticket in Campfire"
+
+msgid "agent.userchat.chat_by_anonymouse"
+msgstr "Chat by anonymouse"
+
+msgid "agent.userchat.no_department"
+msgstr "No Department"
+
+msgid "agent.userchat.user_is_viewing"
+msgstr "User is viewing"
+
+msgid "agent.userchat.no_email"
+msgstr "No Email"
+
+msgid "agent.userchat.other_agents"
+msgstr "Other Agents"
+
+msgid "agent.userchat.no_others"
+msgstr "No others"
+
+msgid "agent.userchat.warning"
+msgstr "Warning"
+
+msgid "agent.userchat.assign_to"
+msgstr "Assign To"
+
+msgid "agent.userchat.invite_others"
+msgstr "Invite Others"
+
+msgid "agent.userchat.there_are_currently_no_open_chats"
+msgstr "There are currently no open chats."
+
+msgid "agent.userchat.chat_started_by"
+msgstr "Chat started by"
+
+msgid "agent.userchat.count_seconds"
+msgstr "{{count}} second|{{count}} seconds"
+
+msgid "agent.userchat.end_chat"
+msgstr "[agent.userchat.end_chat]"
+
+msgid "agent.twitteruser.there_are_no_followers_for_this_account"
+msgstr "There are no followers for this account"
+
+msgid "agent.twitteruser.location"
+msgstr "Location"
+
+msgid "agent.twitteruser.protected"
+msgstr "Protected"
+
+msgid "agent.twitteruser.geo"
+msgstr "GEO"
+
+msgid "agent.twitteruser.unknown"
+msgstr "unknown"
+
+msgid "agent.twitterstatus.oldest_first"
+msgstr "Oldest First"
+
+msgid "agent.twitterstatus.newest_first"
+msgstr "Newest First"
+
+msgid "agent.twitterstatus.show_archived_tweets"
+msgstr "Show archived tweets"
+
+msgid "agent.twitterstatus.selected"
+msgstr "selected"
+
+msgid "agent.twitterstatus.count_selected"
+msgstr "{{count}} selected"
+
+msgid "agent.twitterstatus.perform_action"
+msgstr "Perform Action"
+
+msgid "agent.twitterstatus.add_note"
+msgstr "Add Note"
+
+msgid "agent.twitterstatus.from_account"
+msgstr "From Account"
+
+msgid "agent.twitterstatus.in_reply_to"
+msgstr "In reply to"
+
+msgid "agent.twitterstatus.retweet_of"
+msgstr "Retweet of"
+
+msgid "agent.twitterstatus.retweet"
+msgstr "Retweet"
+
+msgid "agent.twitterstatus.characters"
+msgstr "characters"
+
+msgid "agent.twitter.direct"
+msgstr "Direct"
+
+msgid "agent.twitter.replies"
+msgstr "Replies"
+
+msgid "agent.twitter.retweets"
+msgstr "ReTweets"
+
+msgid "agent.twitter.new_followers"
+msgstr "New Followers"
+
+msgid "agent.twitter.searches"
+msgstr "Searches"
+
+msgid "agent.twitter.sent"
+msgstr "Sent"
+
+msgid "agent.twitter.starred_tweets"
+msgstr "Starred Tweets"
+
+msgid "agent.twitter.my_tweets"
+msgstr "My Tweets"
+
+msgid "agent.twitter.team_tweets"
+msgstr "Team Tweets"
+
+msgid "agent.twitter.new_search"
+msgstr "New Search"
+
+msgid "agent.twitter.example"
+msgstr "#example"
+
+msgid "agent.tickets_user_email.subject_new_ticket_participant"
+msgstr "{{ticket_subject}}"
+
+msgid "agent.tickets_email.subject_new_ticket"
+msgstr "New Ticket: {{ticket_subject}}"
+
+msgid "agent.tickets_email.subject_ticket_updated"
+msgstr "Ticket Updated: {{ticket_subject}}"
+
+msgid "agent.ticketsearch.display_options_for_results"
+msgstr "Display Options For Results"
+
+msgid "agent.ticketsearch.export_to_csv"
+msgstr "Export to CSV"
+
+msgid "agent.ticketsearch.user_email"
+msgstr "User Email"
+
+msgid "agent.ticketsearch.urgency_highestlowest"
+msgstr "Urgency (Highest-Lowest)"
+
+msgid "agent.ticketsearch.urgency_lowesthighest"
+msgstr "Urgency (Lowest-Highest)"
+
+msgid "agent.ticketsearch.date_opened_newerolder"
+msgstr "Date Opened (Newer-Older)"
+
+msgid "agent.ticketsearch.date_opened_oldernewer"
+msgstr "Date Opened (Older-Newer)"
+
+msgid "agent.ticketsearch.priority_highestlowest"
+msgstr "Priority (Highest-Lowest)"
+
+msgid "agent.ticketsearch.priority_lowesthighest"
+msgstr "Priority (Lowest-Highest)"
+
+msgid "agent.ticketsearch.lables"
+msgstr "Lables"
+
+msgid "agent.ticketsearch.na"
+msgstr "N/A"
+
+msgid "agent.ticketsearch.group_by"
+msgstr "Group by"
+
+msgid "agent.ticketsearch.no_grouping"
+msgstr "(No grouping)"
+
+msgid "agent.ticketsearch.search_all_tickets_including_tickets_that_are_resolved"
+msgstr "Search all tickets, including tickets that are resolved or closed"
+
+msgid "agent.ticketsearch.any_of_my_teams"
+msgstr "Any of my teams"
+
+msgid "agent.ticketsearch.flags_let_you_create_personal_collections_of_tickets"
+msgstr "Flags let you create personal collections of tickets. Double-click on a flag to change its title."
+
+msgid "agent.ticketsearch.no_criteria"
+msgstr "No criteria"
+
+msgid "agent.ticketsearch.no_recent_searches"
+msgstr "No recent searches"
+
+msgid "agent.ticketsearch.your_tickets"
+msgstr "Your tickets"
+
+msgid "agent.ticketsearch.subscribed_tickets"
+msgstr "Subscribed tickets"
+
+msgid "agent.ticketsearch.your_teams_tickets"
+msgstr "Your teams tickets"
+
+msgid "agent.ticketsearch.unassigned_tickets"
+msgstr "Unassigned tickets"
+
+msgid "agent.ticketsearch.all_tickets"
+msgstr "All tickets"
+
+msgid "agent.ticketsearch.add_attachments"
+msgstr "Add attachments"
+
+msgid "agent.ticketsearch.insert_text_snippets"
+msgstr "Insert text snippets"
+
+msgid "agent.ticketsearch.enter_a_mass_reply"
+msgstr "Enter a mass reply"
+
+msgid "agent.ticketsearch.search_all_tickets"
+msgstr "Search all tickets"
+
+msgid "agent.ticketsearch.participants"
+msgstr "Participants"
+
+msgid "agent.ticketsearch.receiving_gateway_account"
+msgstr "Receiving gateway account"
+
+msgid "agent.ticketsearch.ticket_field_name"
+msgstr "Ticket Field: {{field}}"
+
+msgid "agent.tickets.status_hidden_validating"
+msgstr "Awaiting Validating"
+
+msgid "agent.tickets.creation_system_web_person"
+msgstr "Web interface by user"
+
+msgid "agent.tickets.creation_system_web_agent"
+msgstr "Web interface by agent"
+
+msgid "agent.tickets.creation_system_gateway_person"
+msgstr "Email by user"
+
+msgid "agent.tickets.creation_system_gateway_agent"
+msgstr "Email by agent"
+
+msgid "agent.tickets.hidden_status"
+msgstr "Hidden Status"
+
+msgid "agent.tickets.creation_system"
+msgstr "Creation system"
+
+msgid "agent.tickets.receiving_gateway"
+msgstr "Receiving gateway"
+
+msgid "agent.tickets.sent_to_gateway_address"
+msgstr "Sent to gateway address"
+
+msgid "agent.tickets.ticket_is_deleted"
+msgstr "Ticket is deleted"
+
+msgid "agent.tickets.date_closed"
+msgstr "Date Closed"
+
+msgid "agent.tickets.date_resolved"
+msgstr "Date Resolved"
+
+msgid "agent.tickets.date_first_agent_reply"
+msgstr "Date of First Agent Reply"
+
+msgid "agent.tickets.date_last_user_reply"
+msgstr "Date of Last User Reply"
+
+msgid "agent.tickets.date_last_agent_reply"
+msgstr "Date of Last Agent Reply"
+
+msgid "agent.tickets.time_created"
+msgstr "Time Created"
+
+msgid "agent.tickets.time_last_agent_reply"
+msgstr "Time of Last User Reply"
+
+msgid "agent.tickets.day_created"
+msgstr "Day Created"
+
+msgid "agent.tickets.day_last_agent_reply"
+msgstr "Day of Last User Reply"
+
+msgid "agent.tickets.modify_ticket"
+msgstr "Modify Ticket"
+
+msgid "agent.tickets.manage_participants"
+msgstr "Manage people on this ticket"
+
+msgid "agent.tickets.filter_agent"
+msgstr "My Tickets"
+
+msgid "agent.tickets.filter_agent_team"
+msgstr "My Team's Tickets"
+
+msgid "agent.tickets.filter_agent_teams"
+msgstr "My Teams' Tickets"
+
+msgid "agent.tickets.filter_participant"
+msgstr "Tickets I Follow"
+
+msgid "agent.tickets.filter_unassigned"
+msgstr "Unassigned Tickets"
+
+msgid "agent.tickets.filter_all"
+msgstr "All Tickets"
+
+msgid "agent.tickets.results_num_summary"
+msgstr "Showing {{current}} of {{count}} ticket|Showing {{current}} of {{count}} tickets"
+
+msgid "agent.tickets.set_awaiting_user"
+msgstr "Set awaiting user"
+
+msgid "agent.tickets.set_awaiting_agent"
+msgstr "Set awaiting agent"
+
+msgid "agent.tickets.set_resolved"
+msgstr "Set resolved"
+
+msgid "agent.tickets.set_spam"
+msgstr "Mark As Spam"
+
+msgid "agent.tickets.set_delete"
+msgstr "Mark For Deletion"
+
+msgid "agent.tickets.tickets_on_hold"
+msgstr "Tickets on hold"
+
+msgid "agent.tickets.other_open_tickets"
+msgstr "Tickets you currently have open"
+
+msgid "agent.tickets.ticket_by_user"
+msgstr "Tickets by the same user"
+
+msgid "agent.tickets.merge_none"
+msgstr "The user has no other tickets, and you don't have any other ticket tabs open. To merge this ticket into another one, try finding it and opening it in a tab first."
+
+msgid "agent.tickets.message_id"
+msgstr "Message ID"
+
+msgid "agent.tickets.gateway_source_id"
+msgstr "Gateway Source ID"
+
+msgid "agent.tickets.sent_from_address"
+msgstr "Send From Address"
+
+msgid "agent.tickets.split_from_here"
+msgstr "Split ticket from here"
+
+msgid "agent.tickets.close_tab_after_reply"
+msgstr "Close this ticket tab after reply"
+
+msgid "agent.tickets.keep_current_status"
+msgstr "Keep current status"
+
+msgid "agent.tickets.in_use_by"
+msgstr "This ticket is in use by: "
+
+msgid "agent.tickets.deleted_by"
+msgstr "This ticket was deleted by: "
+
+msgid "agent.tickets.perm_delete_note"
+msgstr "This ticket will be permanantly purged from the system in {{time}}"
+
+msgid "agent.tickets.hidden_because"
+msgstr "This ticket is currently hidden because: "
+
+msgid "agent.tickets.hidden_explain"
+msgstr "This means it won't show up in most search results and it will not generate agent notifications."
+
+msgid "agent.tickets.set_hold"
+msgstr "Set on hold"
+
+msgid "agent.tickets.on_hold"
+msgstr "On hold"
+
+msgid "agent.tickets.user_waiting_x_and_total_y"
+msgstr "User has been waiting <time>{{waiting}}</time> for a reply and a total of <time>{{total}}</time> since the ticket started."
+
+msgid "agent.tickets.user_waiting_total_x"
+msgstr "User has been waiting a total of <time>{{total}}</time> since the ticket started."
+
+msgid "agent.tickets.ticket_log"
+msgstr "Ticket Log"
+
+msgid "agent.tickets.creating_a_ticket_for"
+msgstr "Creating ticket for {{name}}"
+
+msgid "agent.tickets.awaiting_agent"
+msgstr "Awaiting agent"
+
+msgid "agent.tickets.please_choose_or_create_user"
+msgstr "Please choose or create a user"
+
+msgid "agent.tickets.creating_ticket_for_title"
+msgstr "Creating ticket for {{title}}"
+
+msgid "agent.tickets.creating_ticket_for_chat"
+msgstr "Creating ticket for chat"
+
+msgid "agent.tickets.coment_after_ticket_created"
+msgstr "comment after ticket is created"
+
+msgid "agent.tickets.commented_on"
+msgstr "Commented on"
+
+msgid "agent.tickets.awaiting_user"
+msgstr "Awaiting user"
+
+msgid "agent.tickets.please_enter_subject"
+msgstr "Please enter a subject"
+
+msgid "agent.tickets.please_enter_a_message"
+msgstr "Please enter a message"
+
+msgid "agent.tickets.ccs"
+msgstr "CC's"
+
+msgid "agent.tickets.search_for_people_to_add"
+msgstr "Search for people to add, or enter their email addresses to create them"
+
+msgid "agent.tickets.status_awaiting_agent"
+msgstr "Awaiting Agent"
+
+msgid "agent.tickets.status_awaiting_user"
+msgstr "Awaiting User"
+
+msgid "agent.tickets.status_hidden"
+msgstr "Hidden"
+
+msgid "agent.tickets.status_resolved"
+msgstr "Resolved"
+
+msgid "agent.tickets.status_closed"
+msgstr "Closed"
+
+msgid "agent.tickets.hidden_status_deleted"
+msgstr "Deleted"
+
+msgid "agent.tickets.hidden_status_spam"
+msgstr "Spam"
+
+msgid "agent.tickets.hidden_status_validating"
+msgstr "Validating"
+
+msgid "agent.tickets.category"
+msgstr "Category"
+
+msgid "agent.tickets.priority"
+msgstr "Priority"
+
+msgid "agent.tickets.agent"
+msgstr "Agent"
+
+msgid "agent.tickets.workflow"
+msgstr "Workflow"
+
+msgid "agent.tickets.newticket"
+msgstr "New Ticket"
+
+msgid "agent.tickets.altc"
+msgstr "altc"
+
+msgid "agent.ticket.cc"
+msgstr "CC"
+
+msgid "agent.ticket.attachment"
+msgstr "Attachment"
+
+msgid "agent.ticket.my_team"
+msgstr "My Team"
+
+msgid "agent.ticket.mark_as_pending_kb_article"
+msgstr "Mark as pending KB article"
+
+msgid "agent.ticket.no_followers"
+msgstr "No Followers"
+
+msgid "agent.ticket.participant_added"
+msgstr "Participant added"
+
+msgid "agent.ticket.participant_removed"
+msgstr "Participant removed"
+
+msgid "agent.ticket.new_snippet_category"
+msgstr "New Snippet Category"
+
+msgid "agent.ticket.apply_macro"
+msgstr "Apply Macro"
+
+msgid "agent.ticket.this_ticket_has_been_marked_as_spam"
+msgstr "This ticket has been marked as spam."
+
+msgid "agent.ticket.close_tab_after_reply"
+msgstr "Close tab after reply"
+
+msgid "agent.ticket.user_owner"
+msgstr "User owner"
+
+msgid "agent.ticket.new_message"
+msgstr "New message"
+
+msgid "agent.ticket.message_deleted"
+msgstr "Message deleted"
+
+msgid "agent.ticket.new_attachment"
+msgstr "New attachment"
+
+msgid "agent.ticket.attachment_deleted"
+msgstr "Attachment deleted"
+
+msgid "agent.ticket.edit_snippet_category"
+msgstr "Edit Snippet Category"
+
+msgid "agent.ticket.assign_ticket_to"
+msgstr "Assign ticket to"
+
+msgid "agent.ticket.change_status_to"
+msgstr "Change status to"
+
+msgid "agent.ticket.drag_and_drop_files_onto_this_area_or"
+msgstr "Drag and drop files onto this area or choose a file"
+
+msgid "agent.ticket.remain_assigned_to"
+msgstr "Remain assigned to"
+
+msgid "agent.ticket.applied"
+msgstr "applied"
+
+msgid "agent.ticket.changed_from"
+msgstr "changed from"
+
+msgid "agent.ticket.subject_changed_from"
+msgstr "Subject changed from"
+
+msgid "agent.ticket.changed_to"
+msgstr "to"
+
+msgid "agent.ticket.lc_new_ticket"
+msgstr "new ticket"
+
+msgid "agent.ticket.lc_created"
+msgstr "created"
+
+msgid "agent.ticket.merged_into_this"
+msgstr "merged into this"
+
+msgid "agent.ticket.into_this_from_ticket"
+msgstr "into this from ticket #{{id}}"
+
+msgid "agent.ticket.lc_new_reply"
+msgstr "new reply"
+
+msgid "agent.ticket.from_web"
+msgstr "from web {{address}}"
+
+msgid "agent.ticket.from_email"
+msgstr "from email (address)"
+
+msgid "agent.ticket.count_users"
+msgstr "{{count}} user|{{count}} users"
+
+msgid "agent.ticket.and_count_were_cced"
+msgstr "(and {{display_count}} was CC'ed)|(and {{display_count}} were CC'ed)"
+
+msgid "agent.ticket.ticket_split_form"
+msgstr "Ticket split from"
+
+msgid "agent.ticket.on"
+msgstr "on"
+
+msgid "agent.ticket.count_agents"
+msgstr "1 agent|{{count}} agents"
+
+msgid "agent.ticket.notified_of"
+msgstr "notified of"
+
+msgid "agent.ticket.helpful"
+msgstr "helpful"
+
+msgid "agent.ticket.unhelpful"
+msgstr "unhelpful"
+
+msgid "agent.ticket.name_found_this_message_x"
+msgstr "{{name}} found this message"
+
+msgid "agent.ticket.change_status"
+msgstr "Change status from {{old}} to {{new}}"
+
+msgid "agent.ticket.change_team"
+msgstr "Change team from {{old}} to {{new}}"
+
+msgid "agent.ticket.change_agent"
+msgstr "Change agent from {{old}} to {{new}}"
+
+msgid "agent.ticket.keep_status_set"
+msgstr "Keep status set to {{old}}"
+
+msgid "agent.ticket.remain_assigned_to_agent"
+msgstr "Remain assigned to agent {{agent}}"
+
+msgid "agent.ticket.assign_ticket_to_self"
+msgstr "Assign ticket to {{agent}}"
+
+msgid "agent.ticket.remain_unassigned"
+msgstr "Remain unassigned"
+
+msgid "agent.ticket.remain_unassigned_team"
+msgstr "Remain unassigned team"
+
+msgid "agent.ticket.remain_unassigned_team_with_name"
+msgstr "Remain unassigned team {{team}}"
+
+msgid "agent.ticket.remain_unassigned_agent"
+msgstr "Remain unassigned to agent: {{agent}}"
+
+msgid "agent.ticket.count_followers"
+msgstr "{{display_count}} Follower|{{display_count}} Followers"
+
+msgid "agent.ticket.enter_an_email_address"
+msgstr "Enter an email address..."
+
+msgid "agent.ticket.click_to_release_hold"
+msgstr "Click to release hold"
+
+msgid "agent.ticket.no_flag"
+msgstr "No flag"
+
+msgid "agent.ticket.percent_of"
+msgstr "% of"
+
+msgid "agent.ticket.to"
+msgstr "To"
+
+msgid "agent.ticket.created"
+msgstr "Created"
+
+msgid "agent.test.new_tab"
+msgstr "New Tab"
+
+msgid "agent.task.count"
+msgstr "Count"
+
+msgid "agent.task.add_another_task"
+msgstr "Add another task"
+
+msgid "agent.task.tasks_i_delegated"
+msgstr "Tasks I Delegated"
+
+msgid "agent.task.creator"
+msgstr "Creator"
+
+msgid "agent.task.linked_ticket"
+msgstr "Linked Ticket"
+
+msgid "agent.task.completed_tasks"
+msgstr "Completed Tasks"
+
+msgid "agent.task.my_tasks"
+msgstr "My Tasks"
+
+msgid "agent.task.overdue"
+msgstr "Overdue"
+
+msgid "agent.task.due_today"
+msgstr "Due Today"
+
+msgid "agent.task.due_in_future"
+msgstr "Due In Future"
+
+msgid "agent.task.my_teamstasks"
+msgstr "My Teams's Tasks"
+
+msgid "agent.task.all_tasks"
+msgstr "All Tasks"
+
+msgid "agent.task.no_due_date"
+msgstr "No due date"
+
+msgid "agent.task.linked_deal"
+msgstr "Linked Deal"
+
+msgid "agent.task.my_teams"
+msgstr "My Teams'"
+
+msgid "agent.task.or"
+msgstr "or"
+
+msgid "agent.task.task_description"
+msgstr "Task Description..."
+
+msgid "agent.task.enter_your_comment"
+msgstr "Enter your comment..."
+
+msgid "agent.settings.title_ticket_notifs"
+msgstr "Ticket Notifications"
+
+msgid "agent.settings.title_other_notifs"
+msgstr "Notifications"
+
+msgid "agent.settings.email_notifications"
+msgstr "Email Notifications"
+
+msgid "agent.settings.browser_notifications"
+msgstr "Browser Notifications"
+
+msgid "agent.settings.notif_chat_message"
+msgstr "Someone sends me a chat message while I am offline"
+
+msgid "agent.settings.notif_new_feedback"
+msgstr "New feedback submission"
+
+msgid "agent.settings.notif_new_feedback_validate"
+msgstr "New feedback is submitted that requires validation"
+
+msgid "agent.settings.notif_new_comment"
+msgstr "A new comment is submitted"
+
+msgid "agent.settings.notif_new_comment_validate"
+msgstr "A new comment is submitted that requires validation"
+
+msgid "agent.settings.notif_new_user"
+msgstr "A new user registered"
+
+msgid "agent.settings.notif_new_user_validate"
+msgstr "A new user registered and requires validation"
+
+msgid "agent.settings.notif_login_attempt"
+msgstr "Whenever my account is used to log in"
+
+msgid "agent.settings.notif_login_attempt_fail"
+msgstr "Whenever my account is used to log in and the credentials are incorrect"
+
+msgid "agent.settings.ticket_notif_user_messages"
+msgstr "User Messages"
+
+msgid "agent.settings.ticket_notif_agent_messages"
+msgstr "Agent Messages"
+
+msgid "agent.settings.your_current_picture"
+msgstr "Your current picture"
+
+msgid "agent.settings.leave_password_blank"
+msgstr "Leave this field blank to keep your password the same"
+
+msgid "agent.settings.ticket_signature"
+msgstr "Ticket Signature"
+
+msgid "agent.settings.ticket_signature_desc"
+msgstr "This signature will be appended automatically when you send ticket replies"
+
+msgid "agent.settings.edit_filter"
+msgstr "Edit Filter"
+
+msgid "agent.settings.no_filters"
+msgstr "You have not defiend any filters."
+
+msgid "agent.settings.edit_macro"
+msgstr "Edit Macro"
+
+msgid "agent.settings.new_macro"
+msgstr "New Macro"
+
+msgid "agent.settings.no_macros"
+msgstr "You have not defiend any custom macros."
+
+msgid "agent.settings.create_filter"
+msgstr "Create Filter"
+
+msgid "agent.settings.create_macro"
+msgstr "Create Macro"
+
+msgid "agent.search.loading"
+msgstr "loading"
+
+msgid "agent.search.by"
+msgstr "By"
+
+msgid "agent.report.views.new_dashboard"
+msgstr "New Dashboard"
+
+msgid "agent.report.trend.select_the_field_to_group_the_results_by"
+msgstr "Select the field to group the results by."
+
+msgid "agent.report.trend.difference"
+msgstr "Difference"
+
+msgid "agent.report.trend.is_a_positive_number_good_bad_or_neutral"
+msgstr "Is a positive number good, bad or neutral?"
+
+msgid "agent.report.trend.how_often_does_this_statistic_need_to_run"
+msgstr "How often does this statistic need to run?"
+
+msgid "agent.report.trend.star_the_statistic"
+msgstr "Star the statistic?"
+
+msgid "agent.report.trend.starred_statistic_display_at_the_top_of_the"
+msgstr "Starred statistic display at the top of the trend list"
+
+msgid "agent.report.trend.starred"
+msgstr "Starred"
+
+msgid "agent.report.trend.clone"
+msgstr "Clone"
+
+msgid "agent.report.trend.disable_the_statistic"
+msgstr "Disable the statistic?"
+
+msgid "agent.report.trend.disabling_the_statistic_will_cause_future_data_to"
+msgstr "Disabling the statistic will cause future data to be unavailable"
+
+msgid "agent.report.trend.disable"
+msgstr "Disable"
+
+msgid "agent.report.trend.updates"
+msgstr "Updates"
+
+msgid "agent.report.trend.current"
+msgstr "Current"
+
+msgid "agent.report.trend.difference_"
+msgstr "Difference %"
+
+msgid "agent.report.trend.edit_trend"
+msgstr "Edit Trend"
+
+msgid "agent.report.trend.clone_trend"
+msgstr "Clone Trend"
+
+msgid "agent.report.trend.edit_bracket"
+msgstr "[Edit]"
+
+msgid "agent.report.trend.clone_bracket"
+msgstr "[Clone]"
+
+msgid "agent.report.live.live_reports"
+msgstr "Live Reports"
+
+msgid "agent.report.deskpro.diff_"
+msgstr "Diff %"
+
+msgid "agent.report.dashboard.chart_type"
+msgstr "Chart Type"
+
+msgid "agent.report.dashboard.show_legend"
+msgstr "Show Legend?"
+
+msgid "agent.report.dashboard.select_yes_to_display_the_chart_legend_works"
+msgstr "Select yes to display the chart legend (works best with bigger charts)"
+
+msgid "agent.report.dashboard.display_grouping_data"
+msgstr "Display Grouping Data?"
+
+msgid "agent.report.dashboard.data_range"
+msgstr "Data Range"
+
+msgid "agent.report.dashboard.number_columns"
+msgstr "Number Columns"
+
+msgid "agent.report.dashboard.add_dashboard_chart"
+msgstr "Add Dashboard Chart"
+
+msgid "agent.report.dashboard.view_chart"
+msgstr "View Chart"
+
+msgid "agent.report.dashboard.select_yes_to_display_data_grouped"
+msgstr "Select yes to display the data grouped by {{group_by}}"
+
+msgid "agent.report.dashboard.how_many_time_units_to_display"
+msgstr "How many {{period_type}} worth of data do you want to display?"
+
+msgid "agent.report.dashboard.add_chart"
+msgstr "Add Chart"
+
+msgid "agent.report.dashboard.add"
+msgstr "[Add]"
+
+msgid "agent.report.dashboard.e"
+msgstr "[E]"
+
+msgid "agent.report.dashboard.x"
+msgstr "[x]"
+
+msgid "agent.recyclebin.deleted_by"
+msgstr "Deleted by {{name}}"
+
+msgid "agent.recyclebin.load_more"
+msgstr "Load More"
+
+msgid "agent.publish.no_related_explain"
+msgstr "No other articles, downloads or news posts have been linked to this. Browse the listings and click "Add as related" to add related content."
+
+msgid "agent.publish.comments_to_validate"
+msgstr "Comments to review"
+
+msgid "agent.publish.compare_selected"
+msgstr "Compare Selected"
+
+msgid "agent.publish.compare_older_title"
+msgstr "Older"
+
+msgid "agent.publish.compare_newer_title"
+msgstr "Newer"
+
+msgid "agent.publsih.file_changed"
+msgstr "File changed"
+
+msgid "agent.publish.label_old_file"
+msgstr "Old File"
+
+msgid "agent.publish.label_new_file"
+msgstr "New File"
+
+msgid "agent.publish.changes_in_title"
+msgstr "Changes in title"
+
+msgid "agent.publish.changes_in_post"
+msgstr "Changes in post"
+
+msgid "agent.publish.changes_in_content"
+msgstr "Changes in content"
+
+msgid "agent.publish.no_changes"
+msgstr "No changes detected between these two revisions"
+
+msgid "agent.publish.discard_unsaved_changes"
+msgstr "Discard and revert to default"
+
+msgid "agent.publish.download_replace_file"
+msgstr "Upload a new file to replace the old one"
+
+msgid "agent.publish.sticky_words_title"
+msgstr "Search Words"
+
+msgid "agent.publish.search_sticky_words_explain"
+msgstr "When a user searches for any of these words, this page will always be listed in their top results."
+
+msgid "agent.publish.glossary"
+msgstr "Glossary"
+
+msgid "agent.publish.add_new_glossary"
+msgstr "Add new glossary word"
+
+msgid "agent.publish.edit_new_glossary"
+msgstr "Edit new glossary word"
+
+msgid "agent.publish.word_title"
+msgstr "Word title"
+
+msgid "agent.publish.word_def"
+msgstr "Word defintion"
+
+msgid "agent.publish.comments_awaiting_validation"
+msgstr "Comments Awaiting Validation"
+
+msgid "agent.publish.who_voted"
+msgstr "Who Voted"
+
+msgid "agent.publish.who_voted_show_people"
+msgstr "Show people and contacts"
+
+msgid "agent.publish.who_voted_show_guests"
+msgstr "Show guests"
+
+msgid "agent.publish.who_voted_none"
+msgstr "No one has voted yet"
+
+msgid "agent.publish.draft_revision"
+msgstr "Change"
+
+msgid "agent.publish.searches_helpful"
+msgstr "Searches where this was rated helpful"
+
+msgid "agent.publish.searches_unhelpful"
+msgstr "Searches where this was rated unhelpful"
+
+msgid "agent.publish.searches_recent"
+msgstr "Recent Searches"
+
+msgid "agent.publish.searches_popular"
+msgstr "Popular Searches"
+
+msgid "agent.publish.searches_popular_low"
+msgstr "Popular Searches With Low Results"
+
+msgid "agent.publish.searches_last_100"
+msgstr "100 most recent searches"
+
+msgid "agent.publish.searches_most_popular_terms"
+msgstr "The most popular search terms"
+
+msgid "agent.publish.searches_most_popular_low"
+msgstr "The most popular search terms that returned the least results"
+
+msgid "agent.publish.content_to_validate"
+msgstr "Content to Validate"
+
+msgid "agent.publish.pending_articles"
+msgstr "Pending Articles"
+
+msgid "agent.publish.draft_content"
+msgstr "My Drafts"
+
+msgid "agent.publish.search_logs"
+msgstr "Search Logs"
+
+msgid "agent.publish.all_draft_content"
+msgstr "All Drafts"
+
+msgid "agent.publish.status_hidden_user_validating"
+msgstr "User Validating"
+
+msgid "agent.publish.count_files"
+msgstr "1 File|{{count}} Files"
+
+msgid "agent.publish.count_articles"
+msgstr "1 Article|{{count}} Articles"
+
+msgid "agent.publish.posts"
+msgstr "Posts"
+
+msgid "agent.publish.who"
+msgstr "Who"
+
+msgid "agent.publish.when"
+msgstr "When"
+
+msgid "agent.publish.recent_and_popular_searches"
+msgstr "Recent and Popular Searches"
+
+msgid "agent.publish.create_category"
+msgstr "create category"
+
+msgid "agent.publish.revision_by"
+msgstr "Revision by {{name}}"
+
+msgid "agent.person.add_another"
+msgstr "Add another"
+
+msgid "agent.person.creation_by"
+msgstr "Creation By"
+
+msgid "agent.person.online_now"
+msgstr "Online Now"
+
+msgid "agent.person.add_an_email_address"
+msgstr "Add an email address"
+
+msgid "agent.person.download_vcard"
+msgstr "Download vCard"
+
+msgid "agent.person.drop_your_vcard_here"
+msgstr "Drop your vCard here"
+
+msgid "agent.person.create_person"
+msgstr "Create Person"
+
+msgid "agent.person.user_landed_on_page"
+msgstr "User landed on page"
+
+msgid "agent.person.and_came_from"
+msgstr "and came from"
+
+msgid "agent.person.count_members"
+msgstr "{{count}} member|{{count}} members"
+
+msgid "agent.peoplesearch.number_of_tickets"
+msgstr "Number of Tickets"
+
+msgid "agent.peoplesearch.numberof_tickets"
+msgstr "Number of tickets"
+
+msgid "agent.peoplesearch.select"
+msgstr "Select"
+
+msgid "agent.peoplesearch.simple"
+msgstr "Simple"
+
+msgid "agent.peoplesearch.find_person"
+msgstr "Find Person"
+
+msgid "agent.peoplesearch.no_results_were_found"
+msgstr "No results were found"
+
+msgid "agent.peoplesearch.view_all_results"
+msgstr "View all results"
+
+msgid "agent.peoplesearch.no_people_match_your_criteria"
+msgstr "No people match your criteria"
+
+msgid "agent.peoplesearch.date_craeted_newestoldest"
+msgstr "Date Craeted (Newest-Oldest)"
+
+msgid "agent.peoplesearch.date_craeted_oldestnewest"
+msgstr "Date Craeted (Oldest-Newest)"
+
+msgid "agent.peoplesearch.you_havent_labeled_any_tickets_load_a_ticket"
+msgstr "You haven't labeled any tickets. Load a ticket to label it."
+
+msgid "agent.peoplesearch.person_id"
+msgstr "Person ID"
+
+msgid "agent.peoplesearch.find_by_above_criteria"
+msgstr "[agent.peoplesearch.find_by_above_criteria]"
+
+msgid "agent.people.contact_info_for_x"
+msgstr "Contact Information For {{name}}"
+
+msgid "agent.people.contact_info"
+msgstr "Contact Information"
+
+msgid "agent.people.contact_add_another"
+msgstr "Add Another"
+
+msgid "agent.people.results_num_summary"
+msgstr "Showing {{current}} of {{count}} people|Showing {{current}} of {{count}} people"
+
+msgid "agent.people.pos_at_org"
+msgstr "Position at organization"
+
+msgid "agent.people.make_primary_email"
+msgstr "make primary"
+
+msgid "agent.people.primary_email"
+msgstr "primary"
+
+msgid "agent.people.reg_website"
+msgstr "User registered using the website"
+
+msgid "agent.people.reg_agent"
+msgstr "User created by an agent"
+
+msgid "agent.people.reg_gateway"
+msgstr "User was created by submitting an email to the helpdesk"
+
+msgid "agent.people.auto_responder"
+msgstr "Auto-responder?"
+
+msgid "agent.people.auto_responder_yes"
+msgstr "Yes, this user auto-responds to emails"
+
+msgid "agent.people.delete_user"
+msgstr "Delete User"
+
+msgid "agent.people.warn_email_address"
+msgstr "The email address {{email}} matches this profile. But	because the user has not logged in to the helpdesk, we cannot verify their identity. Be careful not to release any sensitive information."
+
+msgid "agent.people.add_phone"
+msgstr "Add a phone number"
+
+msgid "agent.people.phone_country_placeholder"
+msgstr "Country"
+
+msgid "agent.people.phone_number_placeholder"
+msgstr "Phone Number"
+
+msgid "agent.people.website"
+msgstr "Website"
+
+msgid "agent.people.add_website"
+msgstr "Add a website URL"
+
+msgid "agent.people.website_url_placeholder"
+msgstr "Website URL"
+
+msgid "agent.people.im"
+msgstr "IM"
+
+msgid "agent.people.add_im"
+msgstr "Add an instant messaging account"
+
+msgid "agent.people.im_account_placeholder"
+msgstr "Account username"
+
+msgid "agent.people.add_twitter_profile"
+msgstr "Add a twitter profile"
+
+msgid "agent.people.add_linkedin_profile"
+msgstr "Add a LinkedIn profile"
+
+msgid "agent.people.add_facebook_profile"
+msgstr "Add a Facebook profile"
+
+msgid "agent.people.address_city"
+msgstr "City"
+
+msgid "agent.people.address_state"
+msgstr "State"
+
+msgid "agent.people.address_postal"
+msgstr "Post Code"
+
+msgid "agent.people.add_address"
+msgstr "Add an address"
+
+msgid "agent.people.act_reg"
+msgstr "Registered an account"
+
+msgid "agent.people.act_submitted_ticket"
+msgstr "Submitted a ticket: "
+
+msgid "agent.people.act_replied_ticket"
+msgstr "Replied to a ticket: "
+
+msgid "agent.pdf_agent.message_"
+msgstr "Message #"
+
+msgid "agent.pdf_agent.article_id"
+msgstr "Article ID"
+
+msgid "agent.organizationsearch.number_of_members"
+msgstr "Number of Members"
+
+msgid "agent.organization.create_organization"
+msgstr "Create Organization"
+
+msgid "agent.organization.this_organization_has_no_members"
+msgstr "This organization has no members."
+
+msgid "agent.organization.showing_results_of_size"
+msgstr "Showing result 1 of 1|Showing results {{display_count}} of {{size}}"
+
+msgid "agent.organization.enter_position"
+msgstr "Enter position"
+
+msgid "agent.org.email_domain_assoc"
+msgstr "Email Domain Associations"
+
+msgid "agent.org.email_domain_assoc_none"
+msgstr "Set an email domain to auto-associate users with this organization."
+
+msgid "agent.org.email_domain_assoc_explain"
+msgstr "Users with emails at these domains will be automatically associated with this organization."
+
+msgid "agent.org.email_domain_assoc_title"
+msgstr "Email Domain Associations for {{name}}"
+
+msgid "agent.org.email_domain_assoc_add"
+msgstr "Add New Domain"
+
+msgid "agent.org.email_domain_assoc_move"
+msgstr "Assoicate 1 user|Associate {{count}} users"
+
+msgid "agent.org.email_domain_assoc_move_all"
+msgstr "Assoicate 1 user that already belongs to a different organization|Associate {{count}} users that already belong to different organizations"
+
+msgid "agent.org.email_domain_assoc_remove"
+msgstr "Remove email domain"
+
+msgid "agent.org.email_domain_assoc_remove_users"
+msgstr "Remove email domain and unassign 1 user from this organization|Remove email domain and unassign {{count}} users from this organization"
+
+msgid "agent.org.add_person"
+msgstr "Add a person to this organization"
+
+msgid "agent.news.news_posts"
+msgstr "news posts"
+
+msgid "agent.news.post"
+msgstr "Post"
+
+msgid "agent.news.create_news_post"
+msgstr "Create News Post"
+
+msgid "agent.news.drop_your_file_here_to_add_it_to"
+msgstr "Drop your file here to add it to this post"
+
+msgid "agent.news.category"
+msgstr "Category"
+
+msgid "agent.misc.change_pic_for"
+msgstr "Change picture for for {{name}}"
+
+msgid "agent.misc.existing_pic"
+msgstr "Existing Picture"
+
+msgid "agent.misc.new_pic"
+msgstr "New Picture"
+
+msgid "agent.misc.set_new_pic"
+msgstr "Set as new picture"
+
+msgid "agent.misc.redirect_title"
+msgstr "You are about to leave the helpdesk"
+
+msgid "agent.misc.redirect_page_title"
+msgstr "Page title"
+
+msgid "agent.misc.redirect_page_makeup"
+msgstr "(made up of {{num_images}} images and {{num_scripts}} scripts)"
+
+msgid "agent.misc.redirect_server_ip"
+msgstr "Server IP"
+
+msgid "agent.misc.redirect_server_host"
+msgstr "Server Hostname"
+
+msgid "agent.misc.redirect_explain"
+msgstr "The link you clicked is for an external site on {{host}}. Are you sure you want to continue?"
+
+msgid "agent.misc.redirect_continue"
+msgstr "Continue to {{url}}"
+
+msgid "agent.misc.redirect_server-Host"
+msgstr "Host"
+
+msgid "agent.misc.people.existing_pic"
+msgstr "Existing Picture"
+
+msgid "agent.mediabrowser.you_have_no_selected_any_files_to_attach"
+msgstr "You have no selected any files to attach."
+
+msgid "agent.mediabrowser.download_file"
+msgstr "Download file"
+
+msgid "agent.mediabrowser.file_name"
+msgstr "File name"
+
+msgid "agent.mediabrowser.file_size"
+msgstr "File size"
+
+msgid "agent.mediabrowser.insert_link_to_file"
+msgstr "Insert link to file"
+
+msgid "agent.mediabrowser.insert_image"
+msgstr "Insert image"
+
+msgid "agent.mediabrowser.crop_and_scale"
+msgstr "Crop and Scale"
+
+msgid "agent.mediabrowser.scale"
+msgstr "Scale"
+
+msgid "agent.mediabrowser.attached_to_ticket"
+msgstr "attached to ticket"
+
+msgid "agent.mediabrowser.article"
+msgstr "article"
+
+msgid "agent.mediabrowser.ticket"
+msgstr "ticket"
+
+msgid "agent.mediabrowser.media"
+msgstr "Media"
+
+msgid "agent.mediabrowser.choose_files"
+msgstr "Choose Files"
+
+msgid "agent.mediabrowser.recent_uploads"
+msgstr "Recent Uploads"
+
+msgid "agent.mediabrowser.library"
+msgstr "Library"
+
+msgid "agent.mediabrowser.insert_edited_image"
+msgstr "Insert edited image"
+
+msgid "agent.mediabrowser.choose_files_from_your_computer"
+msgstr "Choose files from your computer"
+
+msgid "agent.mediabrowser.file_attached_to_thing"
+msgstr "{{filename}} attached to {{subphrase}} {{link}}"
+
+msgid "agent.mediabrowser.or_drag_and_drop_files_onto_this_window"
+msgstr "or drag and drop files onto this window"
+
+msgid "agent.main.deskpro_agent_interface"
+msgstr "DeskPRO Agent Interface"
+
+msgid "agent.main.open_new_ticket_form"
+msgstr "Open new ticket form"
+
+msgid "agent.main.open_new_person_form"
+msgstr "Open new person form"
+
+msgid "agent.main.open_new_organization_form"
+msgstr "Open new organization form"
+
+msgid "agent.main.open_new_task_form"
+msgstr "Open new task form"
+
+msgid "agent.main.open_new_article_form"
+msgstr "Open new article form"
+
+msgid "agent.main.open_new_feedback_form"
+msgstr "Open new feedback form"
+
+msgid "agent.main.open_new_news_form"
+msgstr "Open new news form"
+
+msgid "agent.main.open_new_download_form"
+msgstr "Open new download form"
+
+msgid "agent.main.ctrlleft"
+msgstr "ctrl+left"
+
+msgid "agent.main.go_to_previous_tab"
+msgstr "Go to previous tab"
+
+msgid "agent.main.ctrlright"
+msgstr "ctrl+right"
+
+msgid "agent.main.go_to_next_tab"
+msgstr "Go to next tab"
+
+msgid "agent.main.ctrlshiftc"
+msgstr "ctrl+shift+c"
+
+msgid "agent.main.close_current_tab"
+msgstr "Close current tab"
+
+msgid "agent.main.up_or_down"
+msgstr "up or down"
+
+msgid "agent.main.keyboard"
+msgstr "Keyboard"
+
+msgid "agent.main.shiftc"
+msgstr "shift+c"
+
+msgid "agent.main.shifta"
+msgstr "shift+a"
+
+msgid "agent.main.shiftr"
+msgstr "shift+r"
+
+msgid "agent.main.shiftt"
+msgstr "shift+t"
+
+msgid "agent.main.search_in_types"
+msgstr "Search in types"
+
+msgid "agent.main.powered_by"
+msgstr "Powered by"
+
+msgid "agent.main.reset_form"
+msgstr "Reset Form"
+
+msgid "agent.main.report_this_error_to_deskpro"
+msgstr "Report this error to DeskPRO"
+
+msgid "agent.main.keyboard_shortcuts"
+msgstr "Keyboard Shortcuts"
+
+msgid "agent.main.creation"
+msgstr "Creation"
+
+msgid "agent.main.tickets_users_organizations_articles_news_downloads_and_feedback"
+msgstr "Tickets, Users, Organizations, Articles, News, Downloads and Feedback open here."
+
+msgid "agent.main.notifications_about_new_tickets_and_chats_will_appear"
+msgstr "Notifications about new tickets and chats will appear here."
+
+msgid "agent.main.dev"
+msgstr "DEV"
+
+msgid "agent.main.enter"
+msgstr "enter"
+
+msgid "agent.main.space"
+msgstr "space"
+
+msgid "agent.main.wwwdeskprocom"
+msgstr "www.deskpro.com"
+
+msgid "agent.main.toggle_mute"
+msgstr "Toggle mute"
+
+msgid "agent.main.search_for_text_or_a_phrase"
+msgstr "Search for text or a phrase"
+
+msgid "agent.login.email"
+msgstr "Email"
+
+msgid "agent.login.login_failed"
+msgstr "Invalid login. Please try again."
+
+msgid "agent.login.enter_password"
+msgstr "Enter your password"
+
+msgid "agent.login.has_logged_out"
+msgstr "You have been logged out successfully."
+
+msgid "agent.login.browser_requirements"
+msgstr "Browser Requirements"
+
+msgid "agent.login.the_admin_and_agent_interfaces_require_a_modern"
+msgstr "The admin and agent interfaces require a modern browser. We have detected that your browser is too outdated to use DeskPRO. Upgrade your browser to the latest version, or try downloading an alternative browser."
+
+msgid "agent.login.the_following_browsers_are_supported"
+msgstr "The following browsers are supported"
+
+msgid "agent.login.mozilla_firefox"
+msgstr "Mozilla Firefox"
+
+msgid "agent.login.google_chrome"
+msgstr "Google Chrome"
+
+msgid "agent.login.apple_safari"
+msgstr "Apple Safari"
+
+msgid "agent.login.opera"
+msgstr "Opera"
+
+msgid "agent.login.v11_or_later"
+msgstr "v11 or later"
+
+msgid "agent.login.v8_or_later"
+msgstr "v8 or later"
+
+msgid "agent.login.your_password_has_been_reset_successfully"
+msgstr "Your password has been reset successfully."
+
+msgid "agent.login.email_username"
+msgstr "Email / Username"
+
+msgid "agent.login.we_sent_instructions_on_how_to_reset_your_password"
+msgstr "We sent insutructions on how to reset your password to the email address you provided."
+
+msgid "agent.login.enter_new_password"
+msgstr "Enter New Password"
+
+msgid "agent.login.email_instructions"
+msgstr "Email Instructions"
+
+msgid "agent.login.we_sent_insutrctions_on_how_to_reset_your"
+msgstr "We sent insutrctions on how to reset your password to the email address you provided."
+
+msgid "agent.login.or_go_back_to_login_form"
+msgstr "or go back to login form"
+
+msgid "agent.kb.add_pending"
+msgstr "Add a new pending article"
+
+msgid "agent.kb.articles"
+msgstr "articles"
+
+msgid "agent.kb.automatically_on"
+msgstr "Automatically on"
+
+msgid "agent.kb.automatically_publish_on"
+msgstr "Automatically publish on"
+
+msgid "agent.kb.click_to_set_date"
+msgstr "(click to set date)"
+
+msgid "agent.kb.set_an_automatic_publish_date"
+msgstr "Set an automatic publish date"
+
+msgid "agent.kb.view_count_highestlowest"
+msgstr "View Count (Highest-Lowest)"
+
+msgid "agent.kb.view_count_lowesthighest"
+msgstr "View Count (Lowest-Highest)"
+
+msgid "agent.kb.set_as_draft"
+msgstr "Set as Draft"
+
+msgid "agent.kb.are_you_sure_you_would_like_to_set"
+msgstr "Are you sure you would like to set the selected items as drafts?"
+
+msgid "agent.kb.apply_action"
+msgstr "Apply Action"
+
+msgid "agent.kb.change_category"
+msgstr "Change Category"
+
+msgid "agent.kb.move_to"
+msgstr "Move to"
+
+msgid "agent.kb.set_an_automatic_unpublish_date"
+msgstr "Set an automatic unpublish date"
+
+msgid "agent.kb.drop_your_file_here_to_add_it_to"
+msgstr "Drop your file here to add it to this download"
+
+msgid "agent.kb.for_ticket"
+msgstr "For Ticket"
+
+msgid "agent.kb.create_article"
+msgstr "Create Article"
+
+msgid "agent.kb.event_time_ago_by_who_at_when"
+msgstr "{{ago}} by {{name}} at {{date}}"
+
+msgid "agent.kb.event_time_ago_at_when"
+msgstr "{{ago}} at {{date}}"
+
+msgid "agent.glossary.words"
+msgstr "Words"
+
+msgid "agent.global.title"
+msgstr "Title"
+
+msgid "agent.global.save"
+msgstr "Save"
+
+msgid "agent.global.group_by"
+msgstr "Group By"
+
+msgid "agent.global.criteria"
+msgstr "Criteria"
+
+msgid "agent.global.add_a_new_term"
+msgstr "Add a new term"
+
+msgid "agent.global.frequency"
+msgstr "Frequency"
+
+msgid "agent.global.trends"
+msgstr "Trends"
+
+msgid "agent.global.author"
+msgstr "Author"
+
+msgid "agent.global.trend"
+msgstr "Trend"
+
+msgid "agent.global.prev"
+msgstr "Prev"
+
+msgid "agent.global.loading_dot"
+msgstr "Loading..."
+
+msgid "agent.global.value"
+msgstr "Value"
+
+msgid "agent.global.log_in"
+msgstr "Log In"
+
+msgid "agent.global.email"
+msgstr "Email"
+
+msgid "agent.global.password"
+msgstr "Password"
+
+msgid "agent.global.deskpro"
+msgstr "DeskPRO"
+
+msgid "agent.global.logged_in_as"
+msgstr "Logged in as"
+
+msgid "agent.global.settings"
+msgstr "Settings"
+
+msgid "agent.global.help"
+msgstr "Help"
+
+msgid "agent.global.log_out"
+msgstr "Log Out"
+
+msgid "agent.global.reports_interface"
+msgstr "Reports Interface"
+
+msgid "agent.global.admin_interface"
+msgstr "Admin Interface"
+
+msgid "agent.global.agent_interface"
+msgstr "Agent Interface"
+
+msgid "agent.global.billing_interface"
+msgstr "Billing Interface"
+
+msgid "agent.global.report_interface"
+msgstr "Report Interface"
+
+msgid "agent.global.user_interface"
+msgstr "User Interface"
+
+msgid "agent.global.ucfirst_edit"
+msgstr "Edit"
+
+msgid "agent.global.ucfirst_delete"
+msgstr "Delete"
+
+msgid "agent.global.types"
+msgstr "Types"
+
+msgid "agent.global.all"
+msgstr "All"
+
+msgid "agent.global.tickets"
+msgstr "Tickets"
+
+msgid "agent.global.articles"
+msgstr "Articles"
+
+msgid "agent.global.labels"
+msgstr "Labels"
+
+msgid "agent.global.ucfirst_remove"
+msgstr "Remove"
+
+msgid "agent.global.category"
+msgstr "Category"
+
+msgid "agent.global.done"
+msgstr "Done"
+
+msgid "agent.global.status"
+msgstr "Status"
+
+msgid "agent.global.published"
+msgstr "Published"
+
+msgid "agent.global.unpublished"
+msgstr "Unpublished"
+
+msgid "agent.global.draft"
+msgstr "Draft"
+
+msgid "agent.global.dev_validating"
+msgstr "DEV: Validating"
+
+msgid "agent.global.properties"
+msgstr "Properties"
+
+msgid "agent.global.attachments"
+msgstr "Attachments"
+
+msgid "agent.global.url_slug"
+msgstr "URL Slug"
+
+msgid "agent.global.upload"
+msgstr "Upload"
+
+msgid "agent.global.altc"
+msgstr "(alt+c)"
+
+msgid "agent.global.add_as_related"
+msgstr "Add as related"
+
+msgid "agent.global.remove_as_related"
+msgstr "Remove as related"
+
+msgid "agent.global.date_created"
+msgstr "Date Created"
+
+msgid "agent.global.unsaved_changes_were_restored"
+msgstr "Unsaved changes were restored."
+
+msgid "agent.global.rating"
+msgstr "Rating"
+
+msgid "agent.global.count_votecount_votes"
+msgstr "{{count}} vote|{{count}} votes"
+
+msgid "agent.global.percent_helpful_subphrase"
+msgstr "{{percent}}% helpful ({{subphrase}})"
+
+msgid "agent.global.up_votes_found_this_the_article_helpful_down_votes_found"
+msgstr "{{up_votes}} found this the article helpful, {{down_votes}} found the article unhelpful"
+
+msgid "agent.global.page"
+msgstr "Page"
+
+msgid "agent.global.comments"
+msgstr "Comments"
+
+msgid "agent.global.related_content"
+msgstr "Related Content"
+
+msgid "agent.global.search"
+msgstr "Search"
+
+msgid "agent.global.cancel"
+msgstr "Cancel"
+
+msgid "agent.global.new_comment"
+msgstr "New Comment"
+
+msgid "agent.global.saving"
+msgstr "Saving"
+
+msgid "agent.global.archived"
+msgstr "Archived"
+
+msgid "agent.global.order_by"
+msgstr "Order By"
+
+msgid "agent.global.date_created_newestoldest"
+msgstr "Date Created (Newest-Oldest)"
+
+msgid "agent.global.date_created_oldestnewest"
+msgstr "Date Created (Oldest-Newest)"
+
+msgid "agent.global.comparing_revisions"
+msgstr "Comparing Revisions"
+
+msgid "agent.global.there_are_no_results"
+msgstr "There are no results"
+
+msgid "agent.global.showing"
+msgstr "Showing"
+
+msgid "agent.global.revision"
+msgstr "Revision"
+
+msgid "agent.global.compare"
+msgstr "Compare"
+
+msgid "agent.global.by_name"
+msgstr "By {{name}}"
+
+msgid "agent.global.add"
+msgstr "Add"
+
+msgid "agent.global.loading"
+msgstr "Loading"
+
+msgid "agent.global.unfollow"
+msgstr "Unfollow"
+
+msgid "agent.global.follow"
+msgstr "Follow"
+
+msgid "agent.global.expand"
+msgstr "expand"
+
+msgid "agent.global.inbox"
+msgstr "Inbox"
+
+msgid "agent.global.mentions"
+msgstr "Mentions"
+
+msgid "agent.global.followers"
+msgstr "Followers"
+
+msgid "agent.global.new"
+msgstr "New"
+
+msgid "agent.global.search_terms"
+msgstr "Search Terms"
+
+msgid "agent.global.pending"
+msgstr "Pending"
+
+msgid "agent.global.knowledgebase"
+msgstr "Knowledgebase"
+
+msgid "agent.global.news"
+msgstr "News"
+
+msgid "agent.global.downloads"
+msgstr "Downloads"
+
+msgid "agent.global.usergroups"
+msgstr "Usergroups"
+
+msgid "agent.global.edit_categories"
+msgstr "Edit Categories"
+
+msgid "agent.global.files"
+msgstr "Files"
+
+msgid "agent.global.create_ticket"
+msgstr "Create Ticket"
+
+msgid "agent.global.1_wordcount_words"
+msgstr "1 Word|{{count}} Words"
+
+msgid "agent.global.display_count_selected"
+msgstr "{{display_count}} selected"
+
+msgid "agent.global.publish"
+msgstr "Publish"
+
+msgid "agent.global.edit"
+msgstr "edit"
+
+msgid "agent.global.delete"
+msgstr "delete"
+
+msgid "agent.global.message"
+msgstr "Message"
+
+msgid "agent.global.statuses"
+msgstr "Statuses"
+
+msgid "agent.global.messages"
+msgstr "Messages"
+
+msgid "agent.global.profile"
+msgstr "Profile"
+
+msgid "agent.global.language"
+msgstr "Language"
+
+msgid "agent.global.verified"
+msgstr "Verified"
+
+msgid "agent.global.name"
+msgstr "Name"
+
+msgid "agent.global.click_to_upload_a_new_picture"
+msgstr "Click to upload a new picture"
+
+msgid "agent.global.close_lc"
+msgstr "close"
+
+msgid "agent.global.drop_your_file_here_to_upload_a_new"
+msgstr "Drop your file here to upload a new picture"
+
+msgid "agent.global.saved"
+msgstr "Saved"
+
+msgid "agent.global.summary"
+msgstr "Summary"
+
+msgid "agent.global.members"
+msgstr "Members"
+
+msgid "agent.global.create_a_new_person"
+msgstr "Create a new person"
+
+msgid "agent.global.notes"
+msgstr "Notes"
+
+msgid "agent.global.new_note"
+msgstr "New Note"
+
+msgid "agent.global.anonymous"
+msgstr "Anonymous"
+
+msgid "agent.global.reason"
+msgstr "Reason"
+
+msgid "agent.global.chats"
+msgstr "Chats"
+
+msgid "agent.global.detail"
+msgstr "Detail"
+
+msgid "agent.global.last_activity"
+msgstr "Last Activity"
+
+msgid "agent.global.landing_page"
+msgstr "Landing Page"
+
+msgid "agent.global.ip_address"
+msgstr "IP Address"
+
+msgid "agent.global.user_agent"
+msgstr "User Agent"
+
+msgid "agent.global.organization"
+msgstr "Organization"
+
+msgid "agent.global.enter_an_organization_name"
+msgstr "Enter an organization name..."
+
+msgid "agent.global.create_a_new_organization"
+msgstr "Create a new organization"
+
+msgid "agent.global.position"
+msgstr "Position"
+
+msgid "agent.global.timezone"
+msgstr "Timezone"
+
+msgid "agent.global.more"
+msgstr "More"
+
+msgid "agent.global.reset_password"
+msgstr "Reset Password"
+
+msgid "agent.global.usergroup"
+msgstr "Usergroup"
+
+msgid "agent.global.email_address"
+msgstr "Email Address"
+
+msgid "agent.global.add_a_label"
+msgstr "Add a label"
+
+msgid "agent.global.set_a_position"
+msgstr "Set a position..."
+
+msgid "agent.global.id"
+msgstr "ID"
+
+msgid "agent.global.created"
+msgstr "Created"
+
+msgid "agent.global.never"
+msgstr "Never"
+
+msgid "agent.global.none"
+msgstr "None"
+
+msgid "agent.global.awaiting_agent"
+msgstr "Awaiting Agent"
+
+msgid "agent.global.filters"
+msgstr "Filters"
+
+msgid "agent.global.archive"
+msgstr "Archive"
+
+msgid "agent.global.department"
+msgstr "Department"
+
+msgid "agent.global.priority"
+msgstr "Priority"
+
+msgid "agent.global.product"
+msgstr "Product"
+
+msgid "agent.global.workflow"
+msgstr "Workflow"
+
+msgid "agent.global.urgency"
+msgstr "Urgency"
+
+msgid "agent.global.agent"
+msgstr "Agent"
+
+msgid "agent.global.agent_team"
+msgstr "Agent Team"
+
+msgid "agent.global.date_opened"
+msgstr "Date Opened"
+
+msgid "agent.global.unassigned"
+msgstr "Unassigned"
+
+msgid "agent.global.no_team"
+msgstr "No Team"
+
+msgid "agent.global.user_waiting"
+msgstr "User Waiting"
+
+msgid "agent.global.macros"
+msgstr "Macros"
+
+msgid "agent.global.assignments"
+msgstr "Assignments"
+
+msgid "agent.global.set_assignments"
+msgstr "Set assignments"
+
+msgid "agent.global.reply"
+msgstr "Reply"
+
+msgid "agent.global.apply"
+msgstr "Apply"
+
+msgid "agent.global.agents"
+msgstr "Agents"
+
+msgid "agent.global.filter"
+msgstr "Filter..."
+
+msgid "agent.global.me"
+msgstr "Me"
+
+msgid "agent.global.teams"
+msgstr "Teams"
+
+msgid "agent.global.subject"
+msgstr "Subject"
+
+msgid "agent.global.user"
+msgstr "User"
+
+msgid "agent.global.deleted_reason"
+msgstr "Deleted Reason"
+
+msgid "agent.global.team"
+msgstr "Team"
+
+msgid "agent.global.ordered_by"
+msgstr "Ordered by"
+
+msgid "agent.global.is"
+msgstr "is"
+
+msgid "agent.global.is_not"
+msgstr "is not"
+
+msgid "agent.global.contains"
+msgstr "contains"
+
+msgid "agent.global.does_not_contain"
+msgstr "does not contain"
+
+msgid "agent.global.includes_label"
+msgstr "includes label"
+
+msgid "agent.global.does_not_include_label"
+msgstr "does not include label"
+
+msgid "agent.global.assigned_agent"
+msgstr "Assigned Agent"
+
+msgid "agent.global.include"
+msgstr "include"
+
+msgid "agent.global.does_not_include"
+msgstr "does not include"
+
+msgid "agent.global.awaiting_user"
+msgstr "Awaiting User"
+
+msgid "agent.global.resolved"
+msgstr "Resolved"
+
+msgid "agent.global.closed"
+msgstr "Closed"
+
+msgid "agent.global.hidden_awaiting_validating_spam"
+msgstr "Hidden (awaiting validating, spam)"
+
+msgid "agent.global.is_less_than"
+msgstr "is less than"
+
+msgid "agent.global.is_greater_than"
+msgstr "is greater than"
+
+msgid "agent.global.originated_interface"
+msgstr "Originated interface"
+
+msgid "agent.global.web_interface"
+msgstr "Web interface"
+
+msgid "agent.global._by_user"
+msgstr "-- By user"
+
+msgid "agent.global._by_agent_on_behalf_of_user"
+msgstr "-- By agent on behalf of user"
+
+msgid "agent.global.add_a_new_criteria"
+msgstr "Add a new criteria"
+
+msgid "agent.global.edit_search_terms"
+msgstr "Edit search terms"
+
+msgid "agent.global.awaiting_validation"
+msgstr "Awaiting Validation"
+
+msgid "agent.global.spam"
+msgstr "Spam"
+
+msgid "agent.global.person"
+msgstr "Person"
+
+msgid "agent.global.chat"
+msgstr "Chat"
+
+msgid "agent.global.drop_your_file_here_to_attach_it_to"
+msgstr "Drop your file here to attach it to your reply"
+
+msgid "agent.global.dismiss"
+msgstr "Dismiss"
+
+msgid "agent.global.end_chat"
+msgstr "End Chat"
+
+msgid "agent.global.send"
+msgstr "Send"
+
+msgid "agent.global.open_tickets"
+msgstr "Open Tickets"
+
+msgid "agent.global.advanced"
+msgstr "Advanced"
+
+msgid "agent.global.find_a_person_by_entering_criteria_above"
+msgstr "Find a person by entering criteria above."
+
+msgid "agent.global.name_az"
+msgstr "Name (A-Z)"
+
+msgid "agent.global.name_za"
+msgstr "Name (Z-A)"
+
+msgid "agent.global.last_login_time"
+msgstr "Last Login Time"
+
+msgid "agent.global.people"
+msgstr "People"
+
+msgid "agent.global.organizations"
+msgstr "Organizations"
+
+msgid "agent.global.email_domain"
+msgstr "Email Domain"
+
+msgid "agent.global.contact_phone"
+msgstr "Contact Phone"
+
+msgid "agent.global.contact_address"
+msgstr "Contact Address"
+
+msgid "agent.global.contact_instant_messaging"
+msgstr "Contact Instant Messaging"
+
+msgid "agent.global.number_of_members"
+msgstr "Number of members"
+
+msgid "agent.global.change_password"
+msgstr "Change Password"
+
+msgid "agent.global.new_password"
+msgstr "New Password"
+
+msgid "agent.global.repeat_password"
+msgstr "Repeat Password"
+
+msgid "agent.global.actions"
+msgstr "Actions"
+
+msgid "agent.global.new_filter"
+msgstr "New Filter"
+
+msgid "agent.global.change_user"
+msgstr "Change User"
+
+msgid "agent.global.choose_a_person_to_create_this_ticket_for"
+msgstr "Choose a person to create this ticket for"
+
+msgid "agent.global.please_enter_a_valid_email_address"
+msgstr "Please enter a valid email address"
+
+msgid "agent.global.assignment"
+msgstr "Assignment"
+
+msgid "agent.global.and"
+msgstr "and"
+
+msgid "agent.global.ticket"
+msgstr "Ticket"
+
+msgid "agent.global.ticket_triggers"
+msgstr "Ticket triggers"
+
+msgid "agent.global.close_tab"
+msgstr "Close Tab"
+
+msgid "agent.global.assign"
+msgstr "Assign"
+
+msgid "agent.global.view_profile"
+msgstr "view profile"
+
+msgid "agent.global.validating"
+msgstr "Validating"
+
+msgid "agent.global.deleted"
+msgstr "Deleted"
+
+msgid "agent.global.flag"
+msgstr "Flag"
+
+msgid "agent.global.linked_chat"
+msgstr "Linked Chat"
+
+msgid "agent.global.download_pdf"
+msgstr "Download PDF"
+
+msgid "agent.global.ticket_id"
+msgstr "Ticket ID"
+
+msgid "agent.global.permissions"
+msgstr "Permissions"
+
+msgid "agent.global.just_me"
+msgstr "Just me"
+
+msgid "agent.global.everyone"
+msgstr "Everyone"
+
+msgid "agent.global.categories"
+msgstr "Categories"
+
+msgid "agent.global.add_reply"
+msgstr "Add Reply"
+
+msgid "agent.global.insert"
+msgstr "Insert"
+
+msgid "agent.global.update"
+msgstr "Update"
+
+msgid "agent.global.delete_snippet"
+msgstr "Delete Snippet"
+
+msgid "agent.global.label"
+msgstr "Label"
+
+msgid "agent.global.phone"
+msgstr "Phone"
+
+msgid "agent.global.window_navigation"
+msgstr "Window Navigation"
+
+msgid "agent.global.create_content"
+msgstr "Create Content"
+
+msgid "agent.global.new_ticket"
+msgstr "New Ticket"
+
+msgid "agent.global.new_download"
+msgstr "New Download"
+
+msgid "agent.global.new_feedback"
+msgstr "New Feedback"
+
+msgid "agent.global.focus_reply_box"
+msgstr "Focus reply box"
+
+msgid "agent.global.active"
+msgstr "Active"
+
+msgid "agent.global.changed"
+msgstr "Changed"
+
+msgid "agent.global.changed_to_include"
+msgstr "Changed to include"
+
+msgid "agent.global.changed_to_remove"
+msgstr "Changed to remove"
+
+msgid "agent.global.continue"
+msgstr "Continue"
+
+msgid "agent.global.feedback"
+msgstr "Feedback"
+
+msgid "agent.global.reload_active_tab"
+msgstr "Reload active tab"
+
+msgid "agent.global.please_wait"
+msgstr "Please Wait"
+
+msgid "agent.global.when_in_a_filter_listing_moves_selected_row"
+msgstr "When in a filter listing, moves selected row cursor"
+
+msgid "agent.global.when_in_a_filter_listing_opens_the_selected"
+msgstr "When in a filter listing, opens the selected row"
+
+msgid "agent.global.when_in_a_filter_listing_checks_the_checkbox"
+msgstr "When in a filter listing, checks the checkbox on the select row"
+
+msgid "agent.global.change_your_notification_settings"
+msgstr "Change your notification settings"
+
+msgid "agent.global.create"
+msgstr "Create"
+
+msgid "agent.global.away"
+msgstr "Away"
+
+msgid "agent.global.publish_and_feedback"
+msgstr "Publish and Feedback"
+
+msgid "agent.global.tasks"
+msgstr "Tasks"
+
+msgid "agent.global.repeat"
+msgstr "Repeat"
+
+msgid "agent.global.lost_password"
+msgstr "Lost Password"
+
+msgid "agent.global.lost_qm"
+msgstr "lost?"
+
+msgid "agent.global.v4_or_later"
+msgstr "v4 or later"
+
+msgid "agent.global.v17_or_later"
+msgstr "v17 or later"
+
+msgid "agent.global.v5_or_later"
+msgstr "v5 or later"
+
+msgid "agent.global.internet_explorer"
+msgstr "Internet Explorer"
+
+msgid "agent.global.public"
+msgstr "Public"
+
+msgid "agent.global.private"
+msgstr "Private"
+
+msgid "agent.global.sort_by"
+msgstr "Sort by"
+
+msgid "agent.global.there_are_no_more_results"
+msgstr "There are no more results"
+
+msgid "agent.global.hidden"
+msgstr "Hidden"
+
+msgid "agent.global.votes"
+msgstr "Votes"
+
+msgid "agent.global.description"
+msgstr "Description"
+
+msgid "agent.global.set_status"
+msgstr "Set Status"
+
+msgid "agent.global.popularity"
+msgstr "Popularity"
+
+msgid "agent.global.set_category"
+msgstr "Set Category"
+
+msgid "agent.global.create_feedback"
+msgstr "Create Feedback"
+
+msgid "agent.global.date"
+msgstr "Date"
+
+msgid "agent.global.popular_feedback_only"
+msgstr "Popular feedback only"
+
+msgid "agent.global.of"
+msgstr "of"
+
+msgid "agent.global.article"
+msgstr "Article"
+
+msgid "agent.global.are_you_sure_you_would_like_to_delete"
+msgstr "Are you sure you would like to delete the selected items?"
+
+msgid "agent.global.remove"
+msgstr "remove"
+
+msgid "agent.global.products"
+msgstr "Products"
+
+msgid "agent.global.assigned"
+msgstr "Assigned"
+
+msgid "agent.global.twitter"
+msgstr "Twitter"
+
+msgid "agent.global.facebook"
+msgstr "Facebook"
+
+msgid "agent.global.address"
+msgstr "Address"
+
+msgid "agent.global.related_articles"
+msgstr "Related Articles"
+
+msgid "agent.global.related_downloads"
+msgstr "Related Downloads"
+
+msgid "agent.global.related_news"
+msgstr "Related News"
+
+msgid "agent.global.related_feedback"
+msgstr "Related Feedback"
+
+msgid "agent.global.list_as_an_attachment_to_the_article"
+msgstr "List as an attachment to the article"
+
+msgid "agent.global.url"
+msgstr "URL"
+
+msgid "agent.global.my_team"
+msgstr "My team"
+
+msgid "agent.global.lost"
+msgstr "Lost"
+
+msgid "agent.global.type"
+msgstr "Type"
+
+msgid "agent.global.create_deal"
+msgstr "Create Deal"
+
+msgid "agent.global.open"
+msgstr "Open"
+
+msgid "agent.global.deal_stage"
+msgstr "Deal Stage"
+
+msgid "agent.global.assign_agent"
+msgstr "Assign agent"
+
+msgid "agent.global.users"
+msgstr "Users"
+
+msgid "agent.global.chat_ended"
+msgstr "Chat ended"
+
+msgid "agent.global.display_name"
+msgstr "Display name"
+
+msgid "agent.global.website_widget"
+msgstr "Website Widget"
+
+msgid "agent.global.force_email_validation"
+msgstr "Force email validation"
+
+msgid "agent.global.blue"
+msgstr "Blue"
+
+msgid "agent.global.green"
+msgstr "Green"
+
+msgid "agent.global.orange"
+msgstr "Orange"
+
+msgid "agent.global.pink"
+msgstr "Pink"
+
+msgid "agent.global.purple"
+msgstr "Purple"
+
+msgid "agent.global.red"
+msgstr "Red"
+
+msgid "agent.global.yellow"
+msgstr "Yellow"
+
+msgid "agent.global.your_email_address"
+msgstr "Your Email Address"
+
+msgid "agent.global.new_reply_ticket_subject"
+msgstr "New Reply: {{ticket_subject}}"
+
+msgid "agent.global.ticket_ref"
+msgstr "Ticket Ref"
+
+msgid "agent.global.ticket_starter"
+msgstr "Ticket Starter"
+
+msgid "agent.feedback.articles_awaiting_validation"
+msgstr "[agent.feedback.articles_awaiting_validation]"
+
+msgid "agent.feedback.merge_explain"
+msgstr "Merge this feedback into one of the open ones below. This description will be added as a new comment and any existing comments on this submission will be appended. Afterwards, this feedback will be deleted."
+
+msgid "agent.feedback.merge_none_open"
+msgstr "You have no other feedback submissions open. Find a submission you want to merge with and open it in a new tab, then click on the merge button again."
+
+msgid "agent.feedback.feedback_to_validate"
+msgstr "Feedback to Validate"
+
+msgid "agent.feedback.no_labels_explain"
+msgstr "You have not labelled any feedback yet. View a feedback submission to add labels to it."
+
+msgid "agent.feedback.showing_results"
+msgstr "Showing results"
+
+msgid "agent.feedback.newest_ontop"
+msgstr "Newest on	top"
+
+msgid "agent.feedback.oldest_on_top"
+msgstr "Oldest on top"
+
+msgid "agent.feedback.any_status"
+msgstr "Any Status"
+
+msgid "agent.feedback.any_category"
+msgstr "Any Category"
+
+msgid "agent.feedback.update_filter"
+msgstr "Update Filter"
+
+msgid "agent.feedback.unsaved_changes_wererestored"
+msgstr "Unsaved changes wererestored."
+
+msgid "agent.feedback.popularity_mostleast"
+msgstr "Popularity (Most-Least)"
+
+msgid "agent.feedback.popularity_leastmost"
+msgstr "Popularity (Least-Most)"
+
+msgid "agent.feedback.votes_mostleast"
+msgstr "Votes (Most-Least)"
+
+msgid "agent.feedback.votes_leastmost"
+msgstr "Votes (Least-Most)"
+
+msgid "agent.feedback.newest_on_top"
+msgstr "Newest on top"
+
+msgid "agent.feedback.top_voted_on_top"
+msgstr "Top voted on top"
+
+msgid "agent.feedback.least_voted_on_top"
+msgstr "Least voted on top"
+
+msgid "agent.feedback.count_votes"
+msgstr "{{display_count}} vote|{{display_count}} votes"
+
+msgid "agent.feedback.vote_for_this_feedback"
+msgstr "Vote for this feedback"
+
+msgid "agent.feedback.closed_category"
+msgstr "Closed: {{cat}}"
+
+msgid "agent.feedback.status_new"
+msgstr "New"
+
+msgid "agent.feedback.status_active"
+msgstr "Active"
+
+msgid "agent.feedback.status_closed"
+msgstr "Closed"
+
+msgid "agent.feedback.status_hidden"
+msgstr "Hidden"
+
+msgid "agent.feedback.status_deleted"
+msgstr "Deleted"
+
+msgid "agent.feedback.status_spam"
+msgstr "Spam"
+
+msgid "agent.feedback.status_validating"
+msgstr "Validating"
+
+msgid "agent.feedback.closed"
+msgstr "Closed"
+
+msgid "agent.emails_agent.login_url"
+msgstr "Login URL"
+
+msgid "agent.emails_agent.your_initial_password"
+msgstr "Your initial password"
+
+msgid "agent.emails_agent.someone_tried_to_log_in_using_your_account"
+msgstr "Someone tried to log in using your account."
+
+msgid "agent.emails_agent.user_ip"
+msgstr "User IP"
+
+msgid "agent.emails_agent.referring_page"
+msgstr "Referring Page"
+
+msgid "agent.emails_agent.first_seen"
+msgstr "First Seen"
+
+msgid "agent.emails_agent.a_new_ticket_has_been_created"
+msgstr "A new ticket has been created"
+
+msgid "agent.downloads.download_category"
+msgstr "Download Category"
+
+msgid "agent.downloads.copy_permalink"
+msgstr "Copy Permalink"
+
+msgid "agent.downloads.number_of_downloads_highestlowest"
+msgstr "Number of Downloads (Highest-Lowest)"
+
+msgid "agent.downloads.number_of_downloads_lowesthighest"
+msgstr "Number of Downloads (Lowest-Highest)"
+
+msgid "agent.downloads.create_download"
+msgstr "Create Download"
+
+msgid "agent.downloads.download_count"
+msgstr "Download Count"
+
+msgid "agent.downloads.showing_count_downloads"
+msgstr "Showing {{display_count}} download|Showing {{display_count}} downloads"
+
+msgid "agent.downloads.n_helpful_n_unhelpful"
+msgstr "{{up_votes}} found this download helpful, {{down_votes}} found this download unhelpful"
+
+msgid "agent.deal.add_user"
+msgstr "Add User"
+
+msgid "agent.deal.deal_size"
+msgstr "Deal Size"
+
+msgid "agent.deal.deal_type"
+msgstr "Deal Type"
+
+msgid "agent.deal.set_deal_type"
+msgstr "Set Deal Type"
+
+msgid "agent.deal.set_deal_stage"
+msgstr "Set Deal Stage"
+
+msgid "agent.deal.visibility"
+msgstr "Visibility"
+
+msgid "agent.deal.stage"
+msgstr "Stage"
+
+msgid "agent.deal.change_organization"
+msgstr "Change Organization"
+
+msgid "agent.deal.probability"
+msgstr "Probability"
+
+msgid "agent.deal.persons"
+msgstr "Persons"
+
+msgid "agent.deal.add_organization"
+msgstr "Add Organization"
+
+msgid "agent.deal.edit_customfields"
+msgstr "Edit Custom Fields"
+
+msgid "agent.deal.custom_field_a"
+msgstr "Custom Field A"
+
+msgid "agent.deal.value_x"
+msgstr "Value X"
+
+msgid "agent.deal.open_deals"
+msgstr "Open Deals"
+
+msgid "agent.deal.my_deals"
+msgstr "My Deals"
+
+msgid "agent.deal.others_deals"
+msgstr "Others Deals"
+
+msgid "agent.deal.closed_deals"
+msgstr "Closed Deals"
+
+msgid "agent.deal.and_grouped_by"
+msgstr "and Grouped by"
+
+msgid "agent.deal.display_options"
+msgstr "Display options"
+
+msgid "agent.deal.created_by"
+msgstr "Created By"
+
+msgid "agent.deal.edit_name"
+msgstr "edit name"
+
+msgid "agent.deal.won"
+msgstr "Won"
+
+msgid "agent.deal.assigned_to"
+msgstr "Assigned To"
+
+msgid "agent.deal.new_taskk"
+msgstr "New Task(k)"
+
+msgid "agent.deal.edit_custome_fields"
+msgstr "Edit Custome Fields"
+
+msgid "agent.deal.percent_of"
+msgstr "% of"
+
+msgid "agent.deal.enter_note_"
+msgstr "Enter note ..."
+
+msgid "agent.common.insert_title"
+msgstr "Insert {{title}}"
+
+msgid "agent.common.inserturl"
+msgstr "Insert URL"
+
+msgid "agent.common.this_will_insert_a_plaintext_url_to_the"
+msgstr "This will insert a plain-text URL to the file."
+
+msgid "agent.common.link"
+msgstr "Link"
+
+msgid "agent.common.insert_link"
+msgstr "Insert Link"
+
+msgid "agent.common.full_image"
+msgstr "Full Image"
+
+msgid "agent.common.insert_image"
+msgstr "Insert Image"
+
+msgid "agent.common.this_will_insert_the_fullsized_image"
+msgstr "This will insert the full-sized image."
+
+msgid "agent.common.linked_thumbnail"
+msgstr "Linked Thumbnail"
+
+msgid "agent.common.width"
+msgstr "Width"
+
+msgid "agent.common.height"
+msgstr "Height"
+
+msgid "agent.common.insert_thumbnail"
+msgstr "Insert Thumbnail"
+
+msgid "agent.common.aim"
+msgstr "AIM"
+
+msgid "agent.common.msn"
+msgstr "MSN"
+
+msgid "agent.common.yim"
+msgstr "YIM"
+
+msgid "agent.common.icq"
+msgstr "ICQ"
+
+msgid "agent.common.skype"
+msgstr "Skype"
+
+msgid "agent.common.gtalk"
+msgstr "GTalk"
+
+msgid "agent.common.other"
+msgstr "Other"
+
+msgid "agent.common.twitter_username"
+msgstr "Twitter username"
+
+msgid "agent.common.linkedin"
+msgstr "LinkedIn"
+
+msgid "agent.common.linkedin_url"
+msgstr "LinkedIn URL"
+
+msgid "agent.common.link_to_the_file_from_within_the_article"
+msgstr "link to the file from within the article"
+
+msgid "agent.common.this_will_insert_a_link_to_the_file"
+msgstr "This will insert a link to the file with the label as the clickable link text."
+
+msgid "agent.common.this_will_insert_a_thumbnail_image_that_links"
+msgstr "This will insert a thumbnail image that links to the full-sized image."
+
+msgid "agent.common.andor"
+msgstr "and/or"
+
+msgid "agent.common.choose_criteria"
+msgstr "Choose criteria..."
+
+msgid "agent.common.number_of_downloads"
+msgstr "Number of downloads"
+
+msgid "agent.common.less_than"
+msgstr "less than"
+
+msgid "agent.common.greater_than"
+msgstr "greater than"
+
+msgid "agent.common.date_created"
+msgstr "Date created"
+
+msgid "agent.common.before"
+msgstr "before"
+
+msgid "agent.common.after"
+msgstr "after"
+
+msgid "agent.common.between"
+msgstr "between"
+
+msgid "agent.common.hidden_unpublished"
+msgstr "Hidden: Unpublished"
+
+msgid "agent.common.hidden_validating"
+msgstr "Hidden: Validating"
+
+msgid "agent.common.hidden_deleted"
+msgstr "Hidden: Deleted"
+
+msgid "agent.common.is_published"
+msgstr "Is Published"
+
+msgid "agent.common.is_not_published"
+msgstr "Is Not Published"
+
+msgid "agent.common.email_domains"
+msgstr "Email Domains"
+
+msgid "agent.common.is_exactly"
+msgstr "is exactly"
+
+msgid "agent.common.field_name"
+msgstr "Field: {{field}}"
+
+msgid "agent.common.relative_time"
+msgstr "Relative time"
+
+msgid "agent.common.calendar"
+msgstr "Calendar"
+
+msgid "agent.common.minutes"
+msgstr "minutes"
+
+msgid "agent.common.hours"
+msgstr "hours"
+
+msgid "agent.common.days"
+msgstr "days"
+
+msgid "agent.common.weeks"
+msgstr "weeks"
+
+msgid "agent.common.months"
+msgstr "months"
+
+msgid "agent.common.years"
+msgstr "years"
+
+msgid "agent.common.ago"
+msgstr "ago"
+
+msgid "agent.common.performer"
+msgstr "Performer"
+
+msgid "agent.common.is_a_new_user"
+msgstr "Is a new user"
+
+msgid "agent.common.is_not_a_new_user"
+msgstr "Is not a new user"
+
+msgid "agent.common.ticket_gateway_address"
+msgstr "Ticket Gateway Address"
+
+msgid "agent.common.ticket_gateway_account"
+msgstr "Ticket Gateway Account"
+
+msgid "agent.common.changed_to"
+msgstr "Changed to"
+
+msgid "agent.common.changed_from"
+msgstr "Changed from"
+
+msgid "agent.common.not_changed_to"
+msgstr "Not changed to"
+
+msgid "agent.common.not_changed_from"
+msgstr "Not changed from"
+
+msgid "agent.common.current_agent"
+msgstr "Current Agent"
+
+msgid "agent.common.no_team"
+msgstr "No team"
+
+msgid "agent.common.any_of_current_agents_teams"
+msgstr "Any of current agents teams"
+
+msgid "agent.common.time_created"
+msgstr "Time created"
+
+msgid "agent.common.hour"
+msgstr "Hour"
+
+msgid "agent.common.minute"
+msgstr "Minute"
+
+msgid "agent.common.time_of_last_user_reply"
+msgstr "Time of last user reply"
+
+msgid "agent.common.day_created"
+msgstr "Day created"
+
+msgid "agent.common.day_last_user_reply"
+msgstr "Day last user reply"
+
+msgid "agent.common.date_resolved"
+msgstr "Date resolved"
+
+msgid "agent.common.date_closed"
+msgstr "Date closed"
+
+msgid "agent.common.date_of_last_agent_reply"
+msgstr "Date of last agent reply"
+
+msgid "agent.common.date_of_last_user_reply"
+msgstr "Date of last user reply"
+
+msgid "agent.common.email_is_sent_from_a_robot"
+msgstr "Email is sent from a robot"
+
+msgid "agent.common.set_quotfromquot_address_on_email_notifications"
+msgstr "Set &quot;From&quot; address on email notifications"
+
+msgid "agent.common.stop_processing_other_triggers"
+msgstr "Stop processing other triggers"
+
+msgid "agent.common.email_user_autoresponse_notification_about_new_ticket"
+msgstr "Email: User auto-response notification about new ticket"
+
+msgid "agent.common.email_user_validation_alert"
+msgstr "Email: User validation alert"
+
+msgid "agent.common.email_agent_notification_about_new_ticket"
+msgstr "Email: Agent notification about new ticket"
+
+msgid "agent.common.email_user_notification_of_new_ticket"
+msgstr "Email: User notification of new ticket"
+
+msgid "agent.common.email_user_autoresponse_notification_about_new_reply"
+msgstr "Email: User auto-response notification about new reply"
+
+msgid "agent.common.email_agent_notification_about_new_reply"
+msgstr "Email: Agent notification about new reply"
+
+msgid "agent.common.email_user_notification_of_new_agent_reply"
+msgstr "Email: User notification of new agent reply"
+
+msgid "agent.common.email_agent_notification_of_new_agent_reply"
+msgstr "Email: Agent notification of new agent reply"
+
+msgid "agent.common.set_agent"
+msgstr "Set Agent"
+
+msgid "agent.common.set_agent_team"
+msgstr "Set Agent Team"
+
+msgid "agent.common.delete_ticket"
+msgstr "Delete Ticket"
+
+msgid "agent.common.set_department"
+msgstr "Set Department"
+
+msgid "agent.common.set_product"
+msgstr "Set Product"
+
+msgid "agent.common.set_priority"
+msgstr "Set Priority"
+
+msgid "agent.common.set_workflow"
+msgstr "Set Workflow"
+
+msgid "agent.common.add_labels"
+msgstr "Add Labels"
+
+msgid "agent.common.remove_labels"
+msgstr "Remove Labels"
+
+msgid "agent.common.set_flag"
+msgstr "Set Flag"
+
+msgid "agent.common.increasedecrease_urgency"
+msgstr "Increase/Decrease Urgency"
+
+msgid "agent.common.enter_a_negative_number_to_have_urgency_decreased"
+msgstr "(Enter a negative number to have urgency decreased)"
+
+msgid "agent.common.set_urgency"
+msgstr "Set Urgency"
+
+msgid "agent.common.only_set_when_urgency_is_lower"
+msgstr "Only set when urgency is lower"
+
+msgid "agent.common.always_set_this_urgency"
+msgstr "Always set this urgency"
+
+msgid "agent.common.add_ticket_reply"
+msgstr "Add Ticket Reply"
+
+msgid "agent.common.disable_all_notifications"
+msgstr "Disable all notifications"
+
+msgid "agent.common.disable_user_notifications"
+msgstr "Disable user notifications"
+
+msgid "agent.common.disable_agent_notifications"
+msgstr "Disable agent notifications"
+
+msgid "agent.common.always_notify_agents"
+msgstr "Always notify agents"
+
+msgid "agent.common.assigned_team"
+msgstr "Assigned team"
+
+msgid "agent.common.set_field_name"
+msgstr "Set: {{field}}"
+
+msgid "agent.common.set_user_field_name"
+msgstr "Set User Field: {{field}}"
+
+msgid "agent.chat.chat_transcript"
+msgstr "Chat Transcript"
+
+msgid "agent.chat.chat_history"
+msgstr "Chat History"
+
+msgid "agent.chat.new_chat"
+msgstr "New Chat"
+
+msgid "agent.chat.by_anon"
+msgstr "Chat {{chat_id}} by Anonymous"
+
+msgid "agent.chat.in_department"
+msgstr "in {{name}}"
+
+msgid "agent.chat.take_chat"
+msgstr "Take Chat"
+
+msgid "agent.chat.join_chat"
+msgstr "Join Chat"
+
+msgid "agent.chat.open_chat"
+msgstr "Open Chat"
+
+msgid "agent.chat.you_have_been_invited"
+msgstr "You have been invited to join a chat"
+
+msgid "agent.chat.added_as_participant"
+msgstr "Added as a participant"
+
+msgid "agent.chat.no_open_chats"
+msgstr "There are no open chats."
+
+msgid "agent.chat.title_chat_id"
+msgstr "Chat {{chat_id}}"
+
+msgid "agent.chat.chat_with_x"
+msgstr "Chat with {{name}}"
+
+msgid "agent.chat.online"
+msgstr "Online"
+
+msgid "agent.chat.offline"
+msgstr "Offline"
+
+msgid "agent.chat.show_offline"
+msgstr "Show Offline"
+
+msgid "agent.chat.no_online_agents"
+msgstr "There are no other agents online"
+
+msgid "agent.chat.label_assigned_to"
+msgstr "Assigned to"
+
+msgid "agent.chat.label_assigned_others"
+msgstr "Other agents in this chat"
+
+msgid "agent.chat.invite_another_agent"
+msgstr "Invite another agent"
+
+msgid "agent.chat.invite_agent"
+msgstr "Invite Agent"
+
+msgid "agent.chat.invite_no_agents"
+msgstr "There are no other agents you can invite."
+
+msgid "agent.chat.user_typing"
+msgstr "Typing"
+
+msgid "agent.chat.quick_replies"
+msgstr "Quick Replies"
+
+msgid "agent.chat.title_new_chats"
+msgstr "New Chats"
+
+msgid "agent.chat.title_active_chats"
+msgstr "Active Chats"
+
+msgid "agent.chat.title_leave_chat_prompt"
+msgstr "Leave Chat?"
+
+msgid "agent.chat.leave_chat_confirm"
+msgstr "Are you sure you want to leave this chat?"
+
+msgid "agent.chat.leave_unassign"
+msgstr "Unassign myself and leave"
+
+msgid "agent.chat.leave_end"
+msgstr "End chat and leave"
+
+msgid "agent.chat.msg_assigned_agent"
+msgstr "Chat assigned to {{agent_name}}"
+
+msgid "agent.chat.msg_unassigned_agent"
+msgstr "{{agent_name}} was unassigned"
+
+msgid "agent.chat.msg_agent_timeout"
+msgstr "{{agent_name}} has timed out"
+
+msgid "agent.chat.msg_part_joined"
+msgstr "{{person_name}} has joined"
+
+msgid "agent.chat.msg_part_left"
+msgstr "{{person_name}} has left"
+
+msgid "agent.chat.title_ended"
+msgstr "Ended Chats"
+
+msgid "agent.chat.title_open"
+msgstr "Open Chats"
+
+msgid "agent.chat.filter_title_all"
+msgstr "All Chats"
+
+msgid "agent.chat.filter_title_mine"
+msgstr "My Chats"
+
+msgid "agent.agentchat.team_chats"
+msgstr "Team Chats"
+
+msgid "agent.agentchat.agent_chats"
+msgstr "Agent Chats"
+
+msgid "agent.loading_interface"
+msgstr "Loading Interface"
+
+msgid "agent.show"
+msgstr "Show"
+
+msgid "agent.perform_actions"
+msgstr "Perform Actions"
+
+msgid "agent.x_selected"
+msgstr "{{num_placeholder}} selected"
+
+msgid "agent.insert_link"
+msgstr "Insert a link to this page into your reply"
+
+msgid "agent.add_attachment"
+msgstr "Add Attachment"
+
+msgid "agent.insert_content"
+msgstr "Insert the entire contents of this page into your reply"
+
+msgid "agent.upload_explain"
+msgstr "Click the upload button or drop a file onto this area."
+
+msgid "agent.record_deleted"
+msgstr "This record has been deleted."
+
+msgid "agent.record_marked_spam"
+msgstr "This record has been marked as spam."
+
+msgid "agent.unspam"
+msgstr "Unspam"
+
+msgid "agent.undelete"
+msgstr "Undelete"
+
+msgid "agent.add_comment"
+msgstr "Add Comment"
+
+msgid "agent.created_timeago_by_x_on_y"
+msgstr "Created {{timeago}} by {{name}} on {{date}}"
+
+msgid "agent.alert"
+msgstr "Alert"
+
+msgid "agent.prompt"
+msgstr "Prompt"
+
+msgid "agent.confirm"
+msgstr "Confirm"
+
+msgid "agent.okay"
+msgstr "Okay"
+
+msgid "agent.merge"
+msgstr "Merge"
+
+msgid "agent.approve"
+msgstr "Approve"
+
+msgid "agent.disapprove"
+msgstr "Disapprove"
+
+msgid "agent.edit_properties"
+msgstr "Edit Properties"
+
+msgid "agent.macro_actions_loaded"
+msgstr "Macro Actions Loaded"
+
+msgid "agent.macro_actions_loaded_explain"
+msgstr "The following actions were loaded into the mass-actions editor:"
+
+msgid "agent.print"
+msgstr "Print"
+
+msgid "agent.other_properties"
+msgstr "Other Properties"
+
+msgid "agent.no"
+msgstr "No"
+
+msgid "agent.disapprove_input"
+msgstr "Reason or comment to send to the author"
+
+msgid "agent.to"
+msgstr "To"
+
+msgid "agent.mark_spam"
+msgstr "Mark as spam"
+
+msgid "agent.copy_permalink"
+msgstr "Copy permalink"
+
+msgid "agent.add_search_term"
+msgstr "Add search term"
+
+msgid "agent.add_criteria_term"
+msgstr "Add criteria"
+
+msgid "agent.add_action_term"
+msgstr "Add action"
+
+msgid "agent.add_category"
+msgstr "Add Category"
+
+msgid "agent.add_product"
+msgstr "Add Product"
+
+msgid "agent.display_elements"
+msgstr "Display Elements"
+
+msgid "agent.label_picture"
+msgstr "Picture"
+
+msgid "agent.created_and_published"
+msgstr "Created and Published"
+
+msgid "agent.label_revisions"
+msgstr "Revisions"
+
+msgid "agent.add_as_agent_comment"
+msgstr "Add as an agent-only comment"
+
+msgid "agent.view_in_user_interface"
+msgstr "View in user interface"
+
+msgid "agent.view_all_x_tickets"
+msgstr "View 1 ticket|View all {{count}} tickets"
+
+msgid "agent.quote"
+msgstr "Quote"
+
+msgid "agent.view_unformatted"
+msgstr "View Unformatted"
+
+msgid "agent.view_email_source"
+msgstr "View Email Source"
+
+msgid "agent.all_teams"
+msgstr "All Teams"
+
+msgid "agent.my_teams"
+msgstr "My Teams"
+
+msgid "agent.activity_stream"
+msgstr "Activity Stream"
+
+msgid "agent.error_page_not_found"
+msgstr "The page you are looking for could not be found"
+
+msgid "agent.assign_agent"
+msgstr "Assign Agent"
+
+msgid "agent.is_x"
+msgstr "is {{field}}"
+
+msgid "agent.is_not_x"
+msgstr "is not {{field}}"
+
+msgid "agent.x_is_y"
+msgstr "{{field}} is {{value}}"
+
+msgid "agent.x_is_not_y"
+msgstr "{{field}} is not {{value}}"
+
+msgid "agent.x_include_y"
+msgstr "{{field}} includes {{value}}"
+
+msgid "agent.x_not_include_ y"
+msgstr "{{field}} do not include {{value}}"
+
+msgid "agent.x_is_between_y_and_z"
+msgstr "{{field}} is between {{value1}} and {{value2}}"
+
+msgid "agent.x_is_greater_than_y"
+msgstr "{{field}} is great than {{value}}"
+
+msgid "agent.x_is_less_than_y"
+msgstr "{{field}} is less than {{value}}"
+
+msgid "agent.x_after_y"
+msgstr "{{field}} after {{value}}"
+
+msgid "agent.x_before_y"
+msgstr "{{field}} before {{value}}"
+
+msgid "agent.grouped_by"
+msgstr "Grouped By"
+
+msgid "agent.and_grouped_by"
+msgstr "and Grouped By"
+
+msgid "agent.agent_is_me"
+msgstr "Agent is me"
+
+msgid "agent.agent_is_not_me"
+msgstr "Agent is not me"
+
+msgid "agent.not_my_agent_team"
+msgstr "Not my team"
+
+msgid "agent.edit_comment"
+msgstr "Edit Comment"
+
+msgid "agent.delete_comment"
+msgstr "Delete Comment"
+
+msgid "agent.validate_comment"
+msgstr "Validate Comment"
+
+msgid "agent.create_new_category"
+msgstr "Create Category"
+
+msgid "agent.create_download"
+msgstr "Create download"
+
+msgid "agent.create_article"
+msgstr "Create article"
+
+msgid "agent.create_news"
+msgstr "Create news post"
+
+msgid "agent.move_to_tab"
+msgstr "Move To Tab"
+
+msgid "agent.unpublish"
+msgstr "Unpublish"
+
+msgid "agent.agent_teams"
+msgstr "Agent Teams"
+
+msgid "agent.flagged"
+msgstr "Flagged"
+
+msgid "agent.time_waiting"
+msgstr "Time Waiting"
+
+msgid "agent.total_time_waiting"
+msgstr "Total Time Waiting"
+
+msgid "agent.date_published"
+msgstr "Date Published"
+
+msgid "agent.num_downloads"
+msgstr "Number of Downloads"
+
+msgid "agent.num_views"
+msgstr "Number of Views"
+
+msgid "agent.merge_x_into"
+msgstr "Merge "{{name}}" into..."
+
+msgid "agent.network_error"
+msgstr "Network Error"
+
+msgid "agent.network_error_explain"
+msgstr "A network exception occurred and your last request did not complete. Please try again."
+
+msgid "agent.label_x"
+msgstr "Label: {{label}}"
+
+msgid "agent.field_type_text"
+msgstr "Text box"
+
+msgid "agent.field_type_textarea"
+msgstr "Multi-line text area box"
+
+msgid "agent.field_type_choice"
+msgstr "Pre-defined choices"
+
+msgid "agent.field_type_textemail"
+msgstr "Email text box"
+
+msgid "agent.field_type_texturl"
+msgstr "URL text box"
+
+msgid "agent.field_type_display"
+msgstr "HTML Display"
+
+msgid "agent.title_grouped_by_x"
+msgstr "Grouped: {{fieldname}}"
+
+msgid "agent.title_grouped_by_xy"
+msgstr "Grouped: {{fieldname}} and {{fieldname2}}"
+
+msgid "agent.test"
+msgstr "Test {1} and {2}"
+
+msgid "agent.another_test"
+msgstr "Test {1} and {2} and {{three}}"
+
+msgid "agent.recycle_bin"
+msgstr "Recycle Bin"
+
+msgid "agent.upctrl_drag_note"
+msgstr "(or drag a file onto this window)"
+
+msgid "agent.display_options"
+msgstr "Display Options"
+
+msgid "agent.snippets"
+msgstr "Snippets"
+
+msgid "agent.add_new_snippet"
+msgstr "Add new snippet"
+
+msgid "agent.snippet_text_placeholder"
+msgstr "Snippet text"
+
+msgid "agent.snippets_none_explain"
+msgstr "You have not defined any snippets yet. Start by adding a category to the left."
+
+msgid "agent.local_time"
+msgstr "Local Time"
+
+msgid "agent.current_page"
+msgstr "Current Page"
+
+msgid "agent.referrer"
+msgstr "Referrer"
+
+msgid "agent.initial_visit"
+msgstr "Initial Visit"
+
+msgid "agent.session_started"
+msgstr "Session Started"
+
+msgid "agent.visitor_id"
+msgstr "Visitor ID"
+
+msgid "agent.browser_agent"
+msgstr "Browser Agent"
+
+msgid "agent.last_login"
+msgstr "Last Login"
+
+msgid "agent.online_now"
+msgstr "Onlne Now"
+
+msgid "agent.matches"
+msgstr "Matches"
+
+msgid "agent.recycle_bin_none"
+msgstr "There are no items in the recycle bin."
+
+msgid "agent.no_org_labels"
+msgstr "You haven't labeled any organizations. View an organization to label it."
+
+msgid "agent.no_people_labels"
+msgstr "You haven't labeled any people. View a person to label them."
+
+msgid "agent.no_ticket_labels"
+msgstr "You haven't labeled any tickets. View a ticket to label it."
+
+msgid "agent.labels_cloud"
+msgstr "Cloud"
+
+msgid "agent.labels_list"
+msgstr "List"
+
+msgid "agent.ticket_field"
+msgstr "Ticket Field"
+
+msgid "agent.user_field"
+msgstr "User Field"
+
+msgid "agent.change_property"
+msgstr "Change Property"
+
+msgid "agent.change_status"
+msgstr "Change Status"
+
+msgid "agent.no_agent_assigned"
+msgstr "No agent assigned"
+
+msgid "agent.assign_team"
+msgstr "Assign Team"
+
+msgid "agent.add_followers"
+msgstr "Add Followers"
+
+msgid "agent.note"
+msgstr "Note"
+
+msgid "agent.dont_change_agent"
+msgstr "Do not change agent"
+
+msgid "agent.dont_change_team"
+msgstr "Do not change team"
+
+msgid "agent.apply_to_x_selections"
+msgstr "Apply actions to {{placeholder}} selections"
+
+msgid "agent.load_macro"
+msgstr "Load macro"
+
+msgid "agent.mark_as_pending_kb"
+msgstr "Mark as a pending KB article"
+
+msgid "agent.owner"
+msgstr "Owner"
+
+msgid "agent.triggers_urgency_base"
+msgstr "Default urgency for new tickets"
+
+msgid "agent.triggers_auto_close_close_resolved"
+msgstr "Auto-close tickets that are resolved"
+
+msgid "agent.msg_user_timeout"
+msgstr "User timed out"
+
+msgid "agent.msg_agent_timeout"
+msgstr "Agent timed out"
+
+msgid "agent.id"
+msgstr "Id"
+
+msgid "agent.label"
+msgstr "Label"
+
+msgid "agent.person_id"
+msgstr "User Id"
+
+msgid "agent.assigned_agent_id"
+msgstr "Agent Id"
+
+msgid "agent.order_by"
+msgstr "Order By"
+
+msgid "agent.none"
+msgstr "None"
+
+msgid "agent.department"
+msgstr "Department"
+
+msgid "agent.product"
+msgstr "Product"
+
+msgid "agent.votes"
+msgstr "Votes"

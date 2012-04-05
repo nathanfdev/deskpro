@@ -78,4 +78,9 @@
 'agent.tickets.workflow' => 'Workflow',
   'agent.tickets.newticket' => 'New Ticket',
   'agent.tickets.altc' => 'altc',
+	'agent.tickets.status_awaiting_agent' => 'Awaiting Agent',
+	'agent.tickets.status_awaiting_user'  => 'Awaiting User',
+	'agent.tickets.status_hidden'         => 'Hidden',
+	'agent.tickets.status_resolved'       => 'Resolved',
+	'agent.tickets.status_closed'         => 'Closed',
 );

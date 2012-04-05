@@ -571,10 +571,14 @@ class LanguageController extends Controller
            'indent'         => false,
            'output-xhtml'   => true);
 
-
-            $tidy = new \tidy;
-            $tidy->parseString($html, $config, 'utf8');
-            $tidy->cleanRepair();
+            if(class_exists('\tidy')) {
+                $tidy = new \tidy;
+                $tidy->parseString($html, $config, 'utf8');
+                $tidy->cleanRepair();
+            }
+            else {
+                $tidy = $html;
+            }
 
             try {
                 $tidy = str_replace('&nbsp;', '&#xA0;', $tidy);
@@ -711,7 +715,7 @@ class LanguageController extends Controller
                         break;
                     case 3:
                         if($type != \Twig_Token::PUNCTUATION_TYPE || ($value != ')' && $value != ',')) {
-                            $this->tokenWarningTwig('Unexpected token', $token, $file, $line);
+                            $this->tokenWarningTwig('Unexpected token after '.$id, $token, $file, $line);
                         }
                         else
                         {
@@ -855,7 +859,7 @@ class LanguageController extends Controller
                             break;
                         case 4:
                             if($token != ')' && $token != ',') {
-                                $this->tokenWarningPhp('Unexpected Token', $token, $file, $line);
+                                $this->tokenWarningPhp('Unexpected Token after '.$id, $token, $file, $line);
                             }
                             else
                             {
