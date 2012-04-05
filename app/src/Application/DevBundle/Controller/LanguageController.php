@@ -229,9 +229,7 @@ class LanguageController extends Controller
         $vars = array();
         $foreign = array();
 
-        foreach(array_keys($bundle_map) as $bundle) {
-            $foreign[$bundle] = array();
-        }
+        $foreign = array();
 
         $globals = array('agent' => array(), 'admin' => array(), 'user' => array());
         $rootdir = DP_ROOT.'/languages/DeskPRO';
@@ -249,27 +247,25 @@ class LanguageController extends Controller
                 list($folder, $remaining) = explode('.', $id, 2);
 
                 if($lang != $folder) {
-                    if(!isset($foreign[$bundle][$id])) {
-                        $foreign[$bundle][$id] = array();
+                    if(!isset($foreign[$id])) {
+                        $foreign[$id] = array();
                     }
 
-                    $foreign[$bundle][$id] = array_merge($files, $foreign[$bundle][$id]);
+                    $foreign[$id] = array_merge($files, $foreign[$id]);
                 }
             }
         }
 
         if(isset($_POST['globals'])) {
-            foreach($foreign as $bundle=>$f) {
-                foreach($f as $id=>$files) {
-                    list($firstpart, ) = explode('.', $id, 2);
+            foreach($foreign as $id=>$files) {
+                list($firstpart, ) = explode('.', $id, 2);
 
-                    if($firstpart == 'global') {
-                        if(!isset($globals[$bundle_map[$bundle]][$id])) {
-                            $globals[$bundle_map[$bundle]][$id] = array();
-                        }
-
-                        $globals[$bundle_map[$bundle]][$id] = array_merge($files, $globals[$bundle_map[$bundle]][$id]);
+                if($firstpart == 'global') {
+                    if(!isset($globals[$bundle_map[$bundle]][$id])) {
+                        $globals[$bundle_map[$bundle]][$id] = array();
                     }
+
+                    $globals[$bundle_map[$bundle]][$id] = array_merge($files, $globals[$bundle_map[$bundle]][$id]);
                 }
             }
 
@@ -452,10 +448,10 @@ class LanguageController extends Controller
                 }
             }
 
-            $stripped = strip_tags($html);
-            $stripped = explode("\n", $stripped);
+            $stripped = preg_replace('/<[^>]*>/sm', '@@@', $html);
+            $stripped = explode("@@@", $stripped);
 
-            foreach($stripped as $line) {
+            foreach($stripped as $string) {
                 $string = preg_replace('/^\s*/', '', $string);
                 $string = preg_replace('/\s*$/', '', $string);
 

@@ -20,7 +20,7 @@
     {% endfor %}
     <hr />
 
-    {% for bundle, lang in bundles_lang %}
+    {% for bundle, lang in bundle_map %}
     <li><a href="{{ path('dev_lang_find_foreign', {'bundle': bundle}) }}">Find foreign phrases in {{bundle}} </a></li>
     {% endfor %}
 </ul>

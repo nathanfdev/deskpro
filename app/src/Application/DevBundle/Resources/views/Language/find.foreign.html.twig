@@ -7,11 +7,9 @@ Export global.php file for {{folder}}:<br />
 </pre>
 {% endfor %}
 
-{% for bundle, ids in foreign %}
-<h1>Foreign phrase identities in {{bundle}}</h1>
 <table border="1" cellspacing="0" cellpadding="2">
     <tr><th>Id</th><th>Occurances</th></tr>
-    {% for id, files in ids %}
+    {% for id, files in foreign %}
         <tr><td>{{id}}</td><td>{{files|length}}</td></tr>
         <tr><td colspan="2">
             {% for file in files %}
@@ -20,7 +18,6 @@ Export global.php file for {{folder}}:<br />
         </td></tr>
     {% endfor %}
 </table>
-{% endfor %}
 <form method="post">
     <input type="submit" name="globals" value="Separate globals">
 </form>
