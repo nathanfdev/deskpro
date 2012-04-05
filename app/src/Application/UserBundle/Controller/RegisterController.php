@@ -77,11 +77,15 @@ class RegisterController extends AbstractController
 				$from_ticket
 				&& !$from_ticket->person->is_user
 				&& !$from_ticket->getUserParticipants()
-				&& (!$is_valid && count($validator->getErrors()) == 1 && $validator->hasError('email.in_use'))
+				&& (!$is_valid && $validator->hasError('email.in_use'))
 				&& $from_ticket->person->findEmailAddress($register->email)
 			) {
-				$is_valid = true;
+				$validator->removeError('email.in_use');
 				$register->no_validation = true;
+
+				if (!count($validator->getErrors())) {
+					$is_valid = true;
+				}
 			}
 
 			if ($is_valid) {
