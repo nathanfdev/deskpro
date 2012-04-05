@@ -475,7 +475,7 @@ class Translate implements PersonContextInterface
 		$phrase = null;
 
         if(!isset(self::$_missing_phrases[$phrase_name])) {
-            self::$_missing_phrases[$phrase_name] = $phrase_name;var_dump(self::$_missing_phrases);
+            self::$_missing_phrases[$phrase_name] = $phrase_name;
         }
 
 		if ($this->_event_dispatcher) {
