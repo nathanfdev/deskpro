@@ -154,6 +154,29 @@ class TicketsStep extends AbstractDeskpro3Step
 		$ticket_id = $ticket_info['id'];
 
 		#------------------------------
+		# Dont import old spam tickets that are removed on cron anyway
+		#------------------------------
+
+		if ($ticket_info['nodisplay'] == 'spam' && (time() - $ticket_info['timestamp_opened']) > 1296000 /* 15 days */) {
+			// Null row just to get a mapped auto-inc ID so the whole mapping system works for the delete log
+			$this->db->executeUpdate("INSERT INTO tickets SET department_id = NULL");
+			$new_ticket_id = $this->db->lastInsertId();
+			$this->db->delete('tickets', array('id' => $new_ticket_id));
+
+			$this->saveMappedId('ticket', $ticket_id, $new_ticket_id, true);
+
+			$this->db->insert('tickets_deleted', array(
+				'ticket_id'     => $new_ticket_id,
+				'new_ticket_id' => null,
+				'date_created'  => null,
+				'by_person_id'  => null,
+				'reason'        => 'Marked as spam'
+			));
+
+			return;
+		}
+
+		#------------------------------
 		# Make sure we havent already done it
 		#------------------------------
 
@@ -246,13 +269,27 @@ class TicketsStep extends AbstractDeskpro3Step
 			$insert_ticket['date_user_waiting'] = date('Y-m-d H:i:s', $ticket_info['timestamp_user_waiting']);
 		}
 
+		if ($ticket_info['timestamp_lastreply']) {
+			$insert_ticket['date_status'] = date('Y-m-d H:i:s', $ticket_info['timestamp_lastreply']);
+		} else {
+			$insert_ticket['date_status'] = date('Y-m-d H:i:s', $ticket_info['timestamp_opened']);
+		}
+
 		switch ($ticket_info['status']) {
 			case 'awaiting_tech':
 				$insert_ticket['status'] = Ticket::STATUS_AWAITING_AGENT;
+
+				if ($ticket_info['timestamp_user_waiting']) {
+					$insert_ticket['date_status'] = date('Y-m-d H:i:s', $ticket_info['timestamp_user_waiting']);
+				}
 				break;
 
 			case 'awaiting_user':
 				$insert_ticket['status'] = Ticket::STATUS_AWAITING_USER;
+
+				if ($ticket_info['timestamp_tech_waiting']) {
+					$insert_ticket['date_status'] = date('Y-m-d H:i:s', $ticket_info['timestamp_tech_waiting']);
+				}
 				break;
 
 			case 'closed':
