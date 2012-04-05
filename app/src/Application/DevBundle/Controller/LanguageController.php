@@ -258,7 +258,6 @@ class LanguageController extends Controller
         $foreign = array();
 
         $rootdir = DP_ROOT.'/languages/DeskPRO';
-        $real_global = require($rootdir.'/global/global.php');
 
         $lang = $this->bundle_map[$bundle];
 
@@ -282,6 +281,7 @@ class LanguageController extends Controller
         }
 
         if(isset($_POST['globals'])) {
+            $real_global = require($rootdir.'/global/global.php');
             $globals = array();
 
             foreach($foreign as $id=>$files) {
