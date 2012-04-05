@@ -87,6 +87,7 @@
   'agent.global.usergroups' => 'Usergroups',
   'agent.global.edit_categories' => 'Edit Categories',
   'agent.global.files' => 'Files',
+  'agent.global.count_files' => '1 file|{{count}} files',
   'agent.global.create_ticket' => 'Create Ticket',
   'agent.global.1_wordcount_words' => '1 Word|{{count}} Words',
   'agent.global.display_count_selected' => '{{display_count}} selected',

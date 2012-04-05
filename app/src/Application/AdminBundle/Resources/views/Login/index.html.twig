@@ -291,7 +291,7 @@
 				{% if has_logged_out %}<p class="okay">{{ phrase('agent.login.has_logged_out') }}</p>{% endif %}
 				<dl>
 					<dt>
-						{{ phrase('admin.login.email') }}
+						{{ phrase('agent.login.email') }}
 						{% if app.usersourceManager.getWithCapability('form_login') %}/ Username{% endif %}
 					</dt>
 					{% if agent_session %}

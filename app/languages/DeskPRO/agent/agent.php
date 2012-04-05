@@ -137,6 +137,7 @@
   'agent.triggers_auto_close_close_resolved' => 'Auto-close tickets that are resolved',
 'agent.msg_user_timeout' => 'User timed out',
 'agent.msg_agent_timeout' => 'Agent timed out',
+'agent.usergroup_everyone' => 'Everyone',
 'agent.id' => 'Id',
 'agent.label' => 'Label',
 'agent.person_id' => 'User Id',
@@ -146,6 +147,9 @@
 'agent.department' => 'Department',
 'agent.product' => 'Product',
   'agent.votes' => 'Votes',
+  'agent.agent' => 'Agent',
+  'agent.date_created' => 'Date Created',
+  
 	'agent.flag_blue'   => 'Blue',
 	'agent.flag_green'  => 'Green',
 	'agent.flag_orange' => 'Orange',

@@ -452,10 +452,10 @@ class Translate implements PersonContextInterface
             $message = "'The following phrases are missing:\n";
 
             foreach(self::$_missing_phrases as $phrase) {
-                $message .= "{$phrase}";
+                $message .= "{$phrase}\n";
             }
 
-            $logger->log('', 'WARN', array(
+            $logger->log($message, 'WARN', array(
                 'subject'    => '[DeskPro Missing Phrases]',
                 'message'    => $message
             ));
