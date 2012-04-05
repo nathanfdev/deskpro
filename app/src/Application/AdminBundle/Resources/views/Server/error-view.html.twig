@@ -40,7 +40,7 @@
 			<label>{{ phrase('admin.global.sn_code') }}</label>
 		</div>
 		<div class="dp-form-input">
-			{{ log.session_name|default('None') }}
+			{{ log.session_name|default(phrase('agent.global.none')) }}
 		</div>
 	</div>
 
@@ -58,7 +58,7 @@
 			<label>{{ phrase('agent.global.flag') }}</label>
 		</div>
 		<div class="dp-form-input">
-			{{ log.flag|default('None') }}
+			{{ log.flag|default(phrase('agent.global.none')) }}
 		</div>
 	</div>
 

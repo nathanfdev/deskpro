@@ -21,4 +21,5 @@
   'admin.usergroups.save_usergroup' => 'Save Usergroup',
   'admin.usergroups.add_usergroup' => 'Add Usergroup',
   'admin.usergroups.browse' => 'browse',
+  'admin.usergroups.are_you_sure_delete_usergroup' => 'Are you sure you want to delete this usergroup?',
 );

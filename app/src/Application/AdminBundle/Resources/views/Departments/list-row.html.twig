@@ -43,9 +43,9 @@
 			<input type="checkbox" name="tickets" value="1" class="set-tickets-state onoff-slider" {% if department.is_tickets_enabled %}checked="checked"{% endif %} />
 			<button class="clean-white small label-tickets-perms" data-element-handler="DeskPRO.Admin.Departments.AgentSelector" data-app="tickets" data-register-handler="true" data-department-id="{{ department.id }}" {% if not department.is_tickets_enabled %}style="display: none"{% endif %}>
 				{% if not current_options_tickets[department.id] %}
-					No agents
+                {{ phrase('admin.departments.no_agents') }}
 				{% else %}
-					{{ current_options_tickets[department.id]|length }} agents
+                    {{ phrase('admin.departments.count_agents', {'count':current_options_tickets[department.id]|length}) }}
 				{% endif %}
 			</button>
 			{{ _self.agentteam_selector(department.id, 'tickets', current_options_tickets[department.id], agents) }}
@@ -59,9 +59,9 @@
 			<input type="checkbox" name="chat" value="1" class="set-chat-state onoff-slider" {% if department.is_chat_enabled %}checked="checked"{% endif %} />
 			<button class="clean-white small label-chat-perms" data-element-handler="DeskPRO.Admin.Departments.AgentSelector" data-app="chat" data-register-handler="true" data-department-id="{{ department.id }}" {% if not department.is_chat_enabled %}style="display: none"{% endif %}>
 				{% if not current_options_chat[department.id] %}
-					No agents
+					{{ phrase('admin.departments.no_agents') }}
 				{% else %}
-					{{ current_options_chat[department.id]|length }} agents
+                    {{ phrase('admin.departments.count_agents', {'count':current_options_chat[department.id]|length}) }}
 				{% endif %}
 			</button>
 			{{ _self.agentteam_selector(department.id, 'chat', current_options_chat[department.id], agents) }}

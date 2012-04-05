@@ -55,6 +55,7 @@
 
 
   'agent.kb.create_article' => 'Create Article',
+  'agent.kb.new_article' => 'New Article',
 
 
 

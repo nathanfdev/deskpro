@@ -23,13 +23,11 @@
 {% if is_setup %}
 	{{ design.helpbox() }}
 		<p>
-			This account is used by default when the system needs to email user. For example, registration confirmations and reset password links.
-			You might also have email gateways and rules set up to send notifications from different email addresses.
+            {{ phrase('admin.emailtransports.notice_1') }}
 		</p>
 
 		<p>
-			If you have not set up other SMTP accounts to handle other email addresses, DeskPRO will attemp to use this account with a different "From" address. Depending on
-			the service you are using, this might not work. For example, Gmail only allows the "From" address to be that of the account.
+            {{ phrase('admin.emailtransports.notice_2') }}
 		</p>
 	{{ design.helpbox_end() }}
 {% endif %}
@@ -308,7 +306,7 @@
 
 {% if transport.id and transport.match_type != 'all' %}
 	<div class="delete-link-wrap">
-		<a href="{{ path('admin_emailtrans_del', {id: transport.id, security_token: security_token('delete_transport') }) }}" onclick="return confirm('Are you sure you want to delete this SMTP account? If email is still being sent by the system From any of the affected addresses, users may fail to recieve them without this account.');">{{ phrase('admin.emailtransports.delete') }}</a>
+		<a href="{{ path('admin_emailtrans_del', {id: transport.id, security_token: security_token('delete_transport') }) }}" onclick="return confirm('{{ phrase('admin.emailtransports.are_you_sure_delete_transport') }}');">{{ phrase('admin.emailtransports.delete') }}</a>
 	</div>
 {% endif %}
 

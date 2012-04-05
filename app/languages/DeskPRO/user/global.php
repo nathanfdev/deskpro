@@ -64,6 +64,7 @@
   'user.global.please_wait' => 'Please Wait',
   'user.global.helpdesk' => 'Helpdesk',
   'user.global.repeat' => 'Repeat',
+  'user.global.none' => 'None',
   'user.global.register' => 'Register',
   'user.global.please_enter_your_name' => 'Please enter your name',
   'user.global.dont_worry_you_can_click_a_title_and' => 'Don\'t worry, you can click a title and you will remain on this page.',

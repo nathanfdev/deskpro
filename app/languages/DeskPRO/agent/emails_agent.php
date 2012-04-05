@@ -6,4 +6,7 @@
   'agent.emails_agent.referring_page' => 'Referring Page',
   'agent.emails_agent.first_seen' => 'First Seen',
   'agent.emails_agent.a_new_ticket_has_been_created' => 'A new ticket has been created',
+  'agent.emails_agent.an_agent_has_replied' => 'An agent has replied to "{{subject}}"',
+  'agent.emails_agent.a_user_has_replied' => 'A user has replied to "{{subject}}"',
+  
 );

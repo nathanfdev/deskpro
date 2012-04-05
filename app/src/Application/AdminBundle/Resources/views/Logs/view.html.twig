@@ -22,7 +22,7 @@
 
 			<tr>
 				<td><strong>{{ phrase('agent.global.flag') }}</strong></td>
-				<td>{{log.flag|default('None')}}</td>
+				<td>{{log.flag|default(phrase('agent.global.none'))}}</td>
 			</tr>
 
 			<tr>
@@ -32,7 +32,7 @@
 
 			<tr>
 				<td><strong>{{ phrase('admin.logs.sn') }}</strong></td>
-				<td>{{log.session_name|default('None')}}</td>
+				<td>{{log.session_name|default(phrase('agent.global.none'))}}</td>
 			</tr>
 
 			<tr>

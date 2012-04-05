@@ -28,4 +28,5 @@
   'admin.emailgateways.all_email_is_being_sent_via' => 'All email is currently being sent through the {{link}}.',
   'admin.emailgateways.explain_different_servers' => 'You may {{link}} to send emails using different servers. For example, if your SMTP server requires authentication for each specific "From" address, you will need to create multiple outgoing accounts for each "From" address you plan to support.',
   'admin.emailgateways.explain_email_gateway' => 'An email gateway reads email from an email account you control and converts those emails into tickets in DeskPRO for your agents to read and respond to. This allows you to communicate seamlessly with users via normal email.',
+  'admin.emailgateways.are_you_sure_delete_gateway' => 'Are you sure you want to delete this gateway? Email sent to this inbox will no longer be processed.',
 );

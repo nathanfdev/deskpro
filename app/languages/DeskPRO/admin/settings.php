@@ -56,4 +56,5 @@
   'admin.settings.filter' => 'Filter',
   'admin.settings.revert_setting_back_to_default' => 'Revert setting back to default',
   'admin.settings.new_label' => 'new label',
+  'admin.settings.max_filesize_your_server_supports' => 'The max file size your server supports is {{filesize}}',
 );

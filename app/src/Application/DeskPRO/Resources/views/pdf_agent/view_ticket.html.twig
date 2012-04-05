@@ -120,7 +120,7 @@
     {% if ticket.agent_team %}
         <tr>
             <th>{{ phrase('agent.global.team') }}:</th>
-            <td>{{ ticket.agent_team.name|default('None') }}</td>
+            <td>{{ ticket.agent_team.name|default(phrase('agent.global.none')) }}</td>
         </tr>
     {% endif %}
     {% if agent_parts|length %}

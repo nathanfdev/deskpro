@@ -23,4 +23,5 @@
   'admin.tickettriggers.triggers_based_on_the_time_a_ticket_was' => 'Triggers based on the time a ticket was resolved',
   'admin.tickettriggers.if' => 'if',
   'admin.tickettriggers.then' => 'then',
+  'admin.tickettriggers.are_you_sure_delete_trigger' => 'Are you sure you want to delete this trigger?',
 );

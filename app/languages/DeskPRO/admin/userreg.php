@@ -94,4 +94,5 @@ This applies to everything except new tickets. You can enable email validation o
   'admin.userreg.enter_your_twitter_consumer_key' => 'Enter your Twitter consumer key',
   'admin.userreg.enter_your_twitter_consumer_secret' => 'Enter your Twitter consumer secret',
   'admin.userreg.table_containing_user_info' => 'Person Details',
+  'admin.userreg.are_you_sure_delete_usersource' => 'Are you sure you want to delete this usersource? Users will not be able to log in with these credentials anymore.',
 );

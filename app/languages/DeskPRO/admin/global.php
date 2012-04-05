@@ -70,4 +70,8 @@
   'admin.global.locale' => 'Locale',
   'admin.global.save_changes' => 'Save Changes',
   'admin.global.email_addresses' => 'Email Addresses',
+  'admin.global.variable_name' => 'Variable Name',
+  'admin.global.value' => 'Value',
+  'admin.global.setting' => 'Setting',
+  'admin.global.default' => 'Default',
 );

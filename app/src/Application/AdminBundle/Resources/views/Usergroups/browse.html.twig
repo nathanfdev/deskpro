@@ -30,7 +30,7 @@
 						{% if person.organization %}
 						{% if person.organization_position %}{{ person.organization_position }}, {% endif %}{{ person.organization.name }}
 						{% else %}
-							None
+                            {{ phrase('agent.global.none') }}
 						{% endif %}
 					</td>
 					<td>{{ person.primary_email_address }}</td>

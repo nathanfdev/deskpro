@@ -410,7 +410,7 @@
 
 {% if gateway.id %}
 	<div class="delete-link-wrap">
-		<a href="{{ path('admin_emailgateways_del', {id: gateway.id, security_token: security_token('delete_gateway') }) }}" onclick="return confirm('Are you sure you want to delete this gateway? Email sent to this inbox will no longer be processed.');">{{ phrase('agent.global.delete') }}</a>
+		<a href="{{ path('admin_emailgateways_del', {id: gateway.id, security_token: security_token('delete_gateway') }) }}" onclick="return confirm('{{ phrase('admin.emailgateways.are_you_sure_delete_gateway') }}');">{{ phrase('agent.global.delete') }}</a>
 	</div>
 {% endif %}
 {% endblock %}

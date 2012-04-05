@@ -4,4 +4,5 @@
   'admin.cron.last_run' => 'Last Run',
   'admin.cron.next_run' => 'Next Run',
   'admin.cron.log' => 'Log',
+  'admin.cron.task' => 'Task',
 );

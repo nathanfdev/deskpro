@@ -1,7 +1,7 @@
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewPerson';
-pageMeta.title = 'New Person';
+pageMeta.title = '{{ phrase('agent.person.new_person') }}';
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';

@@ -9,4 +9,5 @@
   'admin.languages.edit_details' => 'Edit Details',
   'admin.languages.create_a_new_language_using_one_of_these' => 'Create a new language using one of these available language packs',
   'admin.languages.create_new_language' => 'Create New Language',
+  'admin.languages.are_you_sure_delete_languages' => 'Are you sure you want to delete this language? Custom phrases will be removed, and things (e.g., tickets) classified using this language will have their language unset.',
 );

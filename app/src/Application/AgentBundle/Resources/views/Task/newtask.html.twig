@@ -1,7 +1,7 @@
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTask';
-pageMeta.title = 'New Task';
+pageMeta.title = '{{ phrase('agent.task.new_task') }}';
 pageMeta.noMoveToTab = false;
 
 {% set baseId = el_uid() %}
@@ -32,17 +32,19 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="task-info">
 			<ul>
 				<li class="noval opt-trigger assigned_agent"><label>{{ phrase('agent.global.me') }}</label><span class="drop-icon"></span></li>
-				<li class="noval opt-trigger date_due"><label>No due date</label><span class="drop-icon"></span></li>
+				<li class="noval opt-trigger date_due"><label>{{ phrase('agent.task.no_due_date') }}</label><span class="drop-icon"></span></li>
 			</ul>
 			<div class="linked-container" style="display:none">
 				<span class="linked-ticket" style="display:none">
 					<span class="btn-small-delete remove-link-trigger"></span>
-					Task linked to: Ticket "<label></label>"
+                    {% set phrase_part %}<label></label>{% endset %}
+                    {{ phrase('agent.task.task_linked_to_ticket_label', {'label':phrase_part}) }}
 				</span>
 
 				 <span class="linked-deal" style="display:none">
 					<span class="btn-small-delete remove-link-trigger"></span>
-					Task linked to: Deal "<label></label>"
+                     {% set phrase_part %}<label></label>{% endset %}
+                    {{ phrase('agent.task.task_linked_to_deal_label', {'label':phrase_part}) }}
 				</span>
 			</div>
 		</div>

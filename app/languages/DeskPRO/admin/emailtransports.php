@@ -15,4 +15,9 @@
   'admin.emailtransports.default_from_email_address' => 'Default "From" email address',
   'admin.emailtransports.outgoing_email' => 'Outgoing Email',
   'admin.emailtransports.delete' => 'Delete Email Transport',
+  'admin.emailtransports.notice_1' => 'This account is used by default when the system needs to email user. For example, registration confirmations and reset password links.
+You might also have email gateways and rules set up to send notifications from different email addresses.',
+  'admin.emailtransports.notice_2' => 'If you have not set up other SMTP accounts to handle other email addresses, DeskPRO will attemp to use this account with a different "From" address. Depending on
+the service you are using, this might not work. For example, Gmail only allows the "From" address to be that of the account.',
+  'admin.emailtransports.are_you_sure_delete_transport' => 'Are you sure you want to delete this SMTP account? If email is still being sent by the system From any of the affected addresses, users may fail to recieve them without this account.',
 );

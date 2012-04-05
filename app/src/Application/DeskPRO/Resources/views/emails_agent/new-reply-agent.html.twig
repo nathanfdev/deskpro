@@ -7,8 +7,8 @@
 {% endblock %}
 {% block content %}
 
-{% if is_new_agent_reply %}An agent has replied to "{{ ticket.subject }}"
-{% elseif is_new_user_reply %}A user has replied to "{{ ticket.subject }}"
+{% if is_new_agent_reply %}{{ phrase('agent.emails_agent.an_agent_has_replied', {'subject':ticket.subject}) }}
+{% elseif is_new_user_reply %}{{ phrase('agent.emails_agent.a_user_has_replied', {'subject':ticket.subject}) }}
 {% endif %}
 
 {{ layout.section('', content) }}
@@ -17,37 +17,37 @@
 <table cellspacing="0" cellpadding="3" width="100%">
 	<tr>
 		<td width="130">{{ phrase('agent.global.agent') }}</td>
-		<td>{{ticket.agent.display_name|default('None')}}</td>
+		<td>{{ticket.agent.display_name|default(phrase('agent.global.none'))}}</td>
 	</tr>
 	<tr>
 		<td width="130">{{ phrase('agent.global.team') }}</td>
-		<td>{{ticket.agent_team.name|default('None')}}</td>
+		<td>{{ticket.agent_team.name|default(phrase('agent.global.none'))}}</td>
 	</tr>
 	<tr>
 		<td width="130">{{ phrase('agent.global.category') }}</td>
-		<td>{{ticket.category.full_title|default('None')}}</td>
+		<td>{{ticket.category.full_title|default(phrase('agent.global.none'))}}</td>
 	</tr>
 	<tr>
 		<td width="130">{{ phrase('agent.global.product') }}</td>
-		<td>{{ticket.product.title|default('None')}}</td>
+		<td>{{ticket.product.title|default(phrase('agent.global.none'))}}</td>
 	</tr>
 	<tr>
 		<td width="130">{{ phrase('agent.global.priority') }}</td>
-		<td>{{ticket.priority.title|default('None')}}</td>
+		<td>{{ticket.priority.title|default(phrase('agent.global.none'))}}</td>
 	</tr>
 	<tr>
 		<td width="130">{{ phrase('agent.global.workflow') }}</td>
-		<td>{{ticket.workflow.title|default('None')}}</td>
+		<td>{{ticket.workflow.title|default(phrase('agent.global.none'))}}</td>
 	</tr>
 	<tr>
 		<td width="130">{{ phrase('agent.global.status') }}</td>
 		<td>
 			{% if not ticket.status or ticket.status == 'awaiting_agent' %}
-			Open
+            {{ phrase('agent.global.open') }}
 			{% elseif ticket.status == 'awaiting_user' %}
-			Pending
+            {{ phrase('agent.global.pending') }}
 			{% elseif ticket.status == 'resolved' %}
-			Resolved
+            {{ phrase('agent.global.resolved') }}
 			{% endif %}
 		</td>
 	</tr>
