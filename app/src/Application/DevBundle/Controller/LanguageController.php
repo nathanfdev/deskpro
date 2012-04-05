@@ -880,7 +880,7 @@ class LanguageController extends Controller
         $missing = $this->getMissing(array_keys($vars['instances']['id']));
 
         if(isset($_POST['missing'])) {
-            $this->fixMissing();
+            $this->fixMissing($missing);
         }
 
         $vars['missing'] = $missing;
