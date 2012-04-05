@@ -89,10 +89,26 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	 * The current status of the message:
 	 * - inserted: Only inserted
 	 * - complete: Fully processed
+	 * - error: Tried to process but there was some kind of error (see error_code)
 	 *
 	 * @var string
 	 */
 	protected $status = 'inserted';
+
+	/**
+	 * When status is error, this is the code that describes the error.
+	 *
+	 * @var string
+	 */
+	protected $error_code = null;
+
+	/**
+	 * A string of other info/debug info about the source. For example, if there is an error then additional
+	 * information might be placed here.
+	 *
+	 * @var string
+	 */
+	protected $source_info = null;
 
 	/**
 	 * @var \DateTime
@@ -162,6 +178,8 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', ));
 		$metadata->mapField(array( 'fieldName' => 'headers', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'headers', ));
 		$metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
+		$metadata->mapField(array( 'fieldName' => 'error_code', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'error_code', ));
+		$metadata->mapField(array( 'fieldName' => 'source_info', 'type' => 'string', 'length' => 10000, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'source_info', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
