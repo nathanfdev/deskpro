@@ -113,6 +113,7 @@ class Pop3 extends AbstractFetcher
 		try {
 			$this->getStorage()->removeMessage($id);
 		} catch (\Zend\Mail\Protocol\Exception $e) {
+			$this->logger->log("-- Result: {$e->getCode()} {$e->getMessage()}", 'debug');
 			/* usually reading a pop message marks it for deletion, which
 			 throws an -ERR. So we'll ignore it
 			 */

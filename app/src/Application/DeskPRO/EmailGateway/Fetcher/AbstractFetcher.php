@@ -48,7 +48,7 @@ abstract class AbstractFetcher
 	protected $gateway;
 
 	/**
-	 * @var \Zend\Mail\AbstractStorage
+	 * @var \Zend\Mail\Storage\AbstractStorage
 	 */
 	protected $storage;
 
@@ -64,7 +64,7 @@ abstract class AbstractFetcher
 	}
 
 	/**
-	 * @return \Zend\Mail\AbstractStorage
+	 * @return \Zend\Mail\Storage\AbstractStorage
 	 */
 	public function getStorage()
 	{
@@ -85,7 +85,7 @@ abstract class AbstractFetcher
 
 	/**
 	 * Initiates the connection
-	 * @return \Zend\Mail\AbstractStorage
+	 * @return \Zend\Mail\Storage\AbstractStorage
 	 */
 	abstract protected function _initConnection();
 
