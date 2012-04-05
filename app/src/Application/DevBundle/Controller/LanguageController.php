@@ -190,7 +190,7 @@ class LanguageController extends Controller
         }*/
 
         fclose($fs);
-        echo shell_exec('csv2po '.DP_ROOT.DIRECTORY_SEPARATOR.'tmp.csv '.DP_ROOT.DIRECTORY_SEPARATOR.'tmp.po');
+        //echo shell_exec('csv2po '.DP_ROOT.DIRECTORY_SEPARATOR.'tmp.csv '.DP_ROOT.DIRECTORY_SEPARATOR.'tmp.po');
 
         $fs = fopen(DP_ROOT.'/tmp.po', 'a');
 
