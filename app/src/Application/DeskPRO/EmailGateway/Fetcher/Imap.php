@@ -33,7 +33,6 @@
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
-use Zend\Mail\Storage\Imap;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
