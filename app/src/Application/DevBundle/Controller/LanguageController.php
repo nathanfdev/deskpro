@@ -222,11 +222,11 @@ class LanguageController extends Controller
         $vars = array();
 
         $bundle_map = array(
-            //'AgentBundle' => 'agent',
+            'AgentBundle' => 'agent',
             'ReportBundle' => 'agent',
-            /*'AdminBundle' => 'admin',
+            'AdminBundle' => 'admin',
             'BillingBundle' => 'admin',
-            'UserBundle' => 'user'*/
+            'UserBundle' => 'user'
         );
         $foreign = array();
 
@@ -595,9 +595,9 @@ class LanguageController extends Controller
         return $this->render('DevBundle:Language:find.phrases.twig.html.twig', $vars);
     }
 
-    public function getPhrasesFromPHPFiles()
+    public function getPhrasesFromPHPFiles($bundle)
     {
-        $files = $this->getPhpFileList();
+        $files = $this->getPhpFileList($bundle);
         $by_id = array();
         $by_file = array();
 
