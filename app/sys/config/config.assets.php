@@ -561,6 +561,8 @@ $CONFIG['user_vendors'] = array(
 		'vendor/jquery/jquery.sizes.min.js',
 		'vendor/jquery/jquery.ajax-retry.js',
 
+		'vendor/jquery/jquery.uniform.min.js',
+
 		'vendor/jquery/fileupload/jquery.fileupload.js',
 		'vendor/jquery/fileupload/jquery.fileupload-ui.js',
 
@@ -570,6 +572,7 @@ $CONFIG['user_vendors'] = array(
 
 		'vendor/mootools/mootools-core.min.js',
 		'vendor/modernizr.min.js',
+		'vendor/PIE/PIE.js',
 	)
 );
 

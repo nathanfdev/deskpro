@@ -10,6 +10,12 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 	initPage: function() {
 		var self = this;
 
+		$(".widget-descpro select,.file").uniform();
+
+		$('.widget-descpro .btn-activity, .widget-descpro .textarea, .widget-descpro,.widget-descpro .widget-container,.widget-descpro .btn,.widget-descpro .txt').each(function() {
+			//PIE.attach(this);
+		});
+
 		$('.with-handler[data-element-handler]').each(function() {
 			var el = $(this);
 			var className = el.data('element-handler');
@@ -30,7 +36,7 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 		this.activeTabBody = null;
 
 		this.winNav = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('#dp_overlay_navtabs').find('> li'),
+			triggerElements: $('#dp_overlay_navtabs').find('> a'),
 			onTabSwitch: function(ev) {
 				self.activeTabBody = ev.tabContent;
 			}
@@ -281,15 +287,6 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 		this.newTicketForm = $('#dp_newticket_form');
 		this.newTicketForm.find('[required]').prop('required', false);
 
-		this.depSelect = this.newTicketForm.find('select.department_id');
-		this.departmentId = 0;
-
-		var self = this;
-		this.depSelect.on('change', function() {
-			self.handleDepChange();
-		});
-		this.depSelect.data('original-name', this.depSelect.attr('name'));
-
 		this.newTicketForm.on('submit', function(ev) {
 			ev.preventDefault();
 			var data = self.newTicketForm.find('select, input, textarea').serializeArray();
@@ -301,10 +298,11 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 				dataType: 'json',
 				success: function(data) {
 					if (data.is_error) {
+						self.newTicketForm.find('.error').removeClass('error');
 						Object.each(data.errors, function(v,k) {
 							var find = '.dp-form-row-' + k.replace(/\./g, '_');
 							console.log(find);
-							self.newTicketForm.find(find).addClass('dp-error');
+							self.newTicketForm.find(find).addClass('error');
 						});
 
 						return;
@@ -315,28 +313,6 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 				}
 			});
 		});
-
-		this.handleDepChange();
-	},
-
-	handleDepChange: function() {
-		var wrapper = this.newTicketForm.find('.department_id_wrapper');
-
-		var allSubs = $('.dp-sub-options', wrapper).hide();
-		$('select', allSubs).attr('name', '');
-
-		var depId = this.depSelect.val();
-		var sub = $('.sub-options-' + depId, wrapper);
-
-		if (!sub.length) {
-			this.depSelect.attr('name', this.depSelect.data('original-name'));
-			return;
-		} else {
-			this.depSelect.attr('name', '');
-			$('select', sub).attr('name', this.depSelect.data('original-name'));
-		}
-
-		sub.show();
 	},
 
 

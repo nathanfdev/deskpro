@@ -1,0 +1,107 @@
+<div id="newticket" class="tab" style="display: none;">
+	<form id="dp_newticket_form" action="{{ path('user_widget_newticket') }}" method="POST" id="dp_newticket_form" class="with-form-validator" enctype="multipart/form-data">
+
+		{{ form_token('newticket_widget') }}
+		{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+			<div class="socials">
+				<div>
+					<span>Or connet with</span>
+					<ul>
+						{{ phrase('user.global.or_connect_with') }}
+						{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+							<li>{{ render_usersource(usersource, 'widget_overlay_btn') }}</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		{% endif %}
+
+		<div class="fields-row">
+			<div class="txt dp-form-row-person_name">
+				{{ form_widget(ticketform.person.name, {
+					'attr': {
+						'data-field-validators': 'DeskPRO.Form.LengthValidator',
+						'data-min-len': 2,
+						'placeholder': phrase('user.global.your_name'),
+						'class': 'name-field'
+					}
+				}) }}
+				<span class="tooltip-error">
+					<span>{{ phrase('user.register_please_enter_name') }}</span>
+				</span>
+			</div>
+			<div class="txt alignright dp-form-row-person_email">
+				<input type="text" class="email-field" id="dp_newticket_email" name="newticket[person][email]" value="" placeholder="{{ phrase('user.global.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+				<span class="tooltip-error">
+					<span>{{ phrase('user.register_please_enter_email') }}
+				</span>
+			</div>
+		</div>
+		<div class="fields-row">
+			<div class="txt txt-wide dp-form-row-ticket_subject">
+				{{ form_widget(ticketform.ticket.subject, {
+					'attr': {
+						'data-field-validators': 'DeskPRO.Form.LengthValidator',
+						'data-min-len': 5,
+						'placeholder': 'Subject',
+						'class': addclass
+					}
+				}) }}
+				<span class="tooltip-error">
+					<span>{{ phrase('user.tickets.please_choose_subject_at_least') }}</span>
+				</span>
+			</div>
+		</div>
+		<div class="fields-row dp-form-row-ticket_department_id">
+			<select name="newticket[ticket][department_id]">
+				<option value=""></option>
+				{% for id,info in ticket_options.departments_hierarchy %}
+					{% if info.children %}
+						<optgroup label="{{ info.title }}">
+							{% for subid,subinfo in info.children %}
+								<option value="{{subinfo.id}}">{{subinfo.title}}</option>
+							{% endfor %}
+						</optgroup>
+					{% else %}
+						<option value="{{info.id}}">{{info.title}}</option>
+					{% endif %}
+				{% endfor %}
+			</select>
+			<span class="tooltip-error">
+				<span>{{ phrase('user.global.please_choose_a_department') }}</span>
+			</span>
+		</div>
+		<div class="fields-row message dp-form-row-ticket_message">
+			<table cellspacing="0" cellpadding="0" width="100%"><tr><td><div style="position: relative">
+				<div class="dp-drop-file-zone"><h1>{{ phrase('user.register_drop_here_to_attach') }}</h1></div>
+				<div class="textarea">
+					{{ form_widget(ticketform.ticket.message, {
+						'attr': {
+							'class': 'dp-message',
+							'data-field-validators': 'DeskPRO.Form.LengthValidator',
+							'data-min-len': 10,
+							'placeholder': 'Message',
+							'class': addclass
+						}
+					}) }}
+				</div>
+				<span class="tooltip-error">
+					<span>{{ phrase('user.tickets.please_enter_at_least') }}</span>
+				</span>
+			</div></td></tr></table>
+		</div>
+		<div class="fields-row file-row">
+			{% include 'UserBundle:Common:form-upload-input.html.twig'  with { showAsLink: true } %}
+		</div>
+		<div class="btn-holder clearfix">
+			<button class="btn-activity">{{ phrase('user.register_send_message') }}</button>
+		</div>
+		<div class="thank-you" id="dp_newticket_done" style="display: none">
+			<h2>{{ phrase('user.global.thank_you') }}</h2>
+			<p>{{ phrase('user.register_thank_you_for_ticket') }}</p>
+		</div>
+	</form>
+	<div id="dp_newticket_done" style="display: none">
+		Thank you for submitting your ticket. Our agents will get back to you as soon as they can.
+	</div>
+</div>

@@ -1,0 +1,21 @@
+<div class="aside">
+	<div class="head">
+		<form action="#">
+			<div class="search-form clearfix">
+				<div class="txt">
+					<i class="icon-search">icon-search</i>
+					<input type="text" id="search_box" value="Search for something" />
+				</div>
+				<button class="btn" id="search_box_go">Search</button>
+			</div>
+		</form>
+	</div>
+	<div class="area clearfix">
+		<ul id="new_content_list" class="files-list">
+			{% for content in newest_content %}
+				{% include 'UserBundle:Common:searchlist-simplerow.html.twig' with { type: content.type, item: content.item } %}
+			{% endfor %}
+		</ul>
+		<ul id="search_content_list" class="files-list" style="display: none"></ul>
+	</div>
+</div>
