@@ -93,5 +93,5 @@ This applies to everything except new tickets. You can enable email validation o
   'admin.userreg.enter_your_facebook_api_application_secret' => 'Enter your Facebook API application secret',
   'admin.userreg.enter_your_twitter_consumer_key' => 'Enter your Twitter consumer key',
   'admin.userreg.enter_your_twitter_consumer_secret' => 'Enter your Twitter consumer secret',
-  'admin.userreg.table_containing_user_info' => '[admin.userreg.table_containing_user_info]',
+  'admin.userreg.table_containing_user_info' => 'Person Details',
 );

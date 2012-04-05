@@ -1,4 +1,4 @@
 <?php return array (
-  'user.twitter.twitter_message' => '[user.twitter.twitter_message]',
-  'user.twitter.twitter_message_description' => '[user.twitter.twitter_message_description]',
+  'user.twitter.twitter_message' => 'Message',
+  'user.twitter.twitter_message_description' => 'Description',
 );

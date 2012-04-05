@@ -14,5 +14,5 @@
   'admin.emailtransports.backup_account' => 'Backup Account',
   'admin.emailtransports.default_from_email_address' => 'Default "From" email address',
   'admin.emailtransports.outgoing_email' => 'Outgoing Email',
-  'admin.emailtransports.delete' => '[admin.emailtransports.delete]',
+  'admin.emailtransports.delete' => 'Delete Email Transport',
 );

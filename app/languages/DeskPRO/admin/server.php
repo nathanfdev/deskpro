@@ -43,5 +43,5 @@
   'admin.server.we_recommend_fs_storage' => 'We recommend {{link}} where files are stored as files in a directory on your server.',
   'admin.server.while_not_recommended_you_can' => 'While not recommended, you can {{link}}.',
   'admin.server.notice_using_most_efficient_storage' => 'You are currently using the most efficient storage mechanism.',
-  'admin.server.file_storage_mechanism' => '[admin.server.file_storage_mechanism]',
+  'admin.server.file_storage_mechanism' => 'File Storage Mechanism',
 );

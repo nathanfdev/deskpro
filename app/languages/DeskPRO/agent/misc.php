@@ -10,6 +10,6 @@
   'agent.misc.redirect_server_host' => 'Server Hostname',
   'agent.misc.redirect_explain' => 'The link you clicked is for an external site on {{host}}. Are you sure you want to continue?',
   'agent.misc.redirect_continue' => 'Continue to {{url}}',
-  'agent.misc.redirect_server-Host' => '[agent.misc.redirect_server-Host]',
-  'agent.misc.people.existing_pic' => '[agent.misc.people.existing_pic]',
+  'agent.misc.redirect_server-Host' => 'Host',
+  'agent.misc.people.existing_pic' => 'Existing Picture',
 );

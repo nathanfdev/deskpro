@@ -54,7 +54,7 @@
   'agent.ticket.enter_an_email_address' => 'Enter an email address...',
   'agent.ticket.click_to_release_hold' => 'Click to release hold',
   'agent.ticket.no_flag' => 'No flag',
-  'agent.ticket.percent_of' => '[agent.ticket.percent_of]',
-  'agent.ticket.to' => '[agent.ticket.to]',
-  'agent.ticket.created' => '[agent.ticket.created]',
+  'agent.ticket.percent_of' => '% of',
+  'agent.ticket.to' => 'To',
+  'agent.ticket.created' => 'Created',
 );
