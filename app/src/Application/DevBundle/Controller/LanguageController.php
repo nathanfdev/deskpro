@@ -45,11 +45,18 @@ class LanguageController extends Controller
 {
     private $files_temp;
     private $bundles = array('AgentBundle', 'AdminBundle', 'InstallBundle', 'UserBundle', 'ReportBundle', 'BillingBundle', 'DeskPRO');
+    private $bundle_map = array(
+                'AgentBundle' => 'agent',
+                'ReportBundle' => 'agent',
+                'AdminBundle' => 'admin',
+                'BillingBundle' => 'admin',
+                'UserBundle' => 'user'
+            );
     private $filecache = array();
 
     public function indexAction()
     {
-		return $this->render('DevBundle:Language:index.html.twig');
+		return $this->render('DevBundle:Language:index.html.twig', array('bundles' => $this->bundles, 'bundle_map' => $this->bundle_map));
     }
 
     public function listLanguageFilesAction()
@@ -216,18 +223,10 @@ class LanguageController extends Controller
         return $this->render('DevBundle:Language:replace.phrases.html.twig', $vars);
     }
 
-    public function findForeignIdsAction()
+    public function findForeignIdsAction($bundle)
     {
         set_time_limit(0);
         $vars = array();
-
-        $bundle_map = array(
-            'AgentBundle' => 'agent',
-            'ReportBundle' => 'agent',
-            'AdminBundle' => 'admin',
-            'BillingBundle' => 'admin',
-            'UserBundle' => 'user'
-        );
         $foreign = array();
 
         foreach(array_keys($bundle_map) as $bundle) {
@@ -238,23 +237,23 @@ class LanguageController extends Controller
         $rootdir = DP_ROOT.'/languages/DeskPRO';
         $real_global = require($rootdir.'/global/global.php');
 
-        foreach($bundle_map as $bundle=>$lang) {
-            ob_start();
-            list($by_id_php, ) = $this->getPhrasesFromPHPFiles($bundle);
-            list($by_id_twig, ) = $this->getPhrasesFromTwigFiles($bundle);
-            ob_end_clean();
+        $lang = $this->bundle_map[$bundle];
 
-            foreach(array($by_id_php, $by_id_twig) as $by_id) {
-                foreach($by_id as $id=>$files) {
-                    list($folder, $remaining) = explode('.', $id, 2);
+        ob_start();
+        list($by_id_php, ) = $this->getPhrasesFromPHPFiles($bundle);
+        list($by_id_twig, ) = $this->getPhrasesFromTwigFiles($bundle);
+        ob_end_clean();
 
-                    if($lang != $folder) {
-                        if(!isset($foreign[$bundle][$id])) {
-                            $foreign[$bundle][$id] = array();
-                        }
+        foreach(array($by_id_php, $by_id_twig) as $by_id) {
+            foreach($by_id as $id=>$files) {
+                list($folder, $remaining) = explode('.', $id, 2);
 
-                        $foreign[$bundle][$id] = array_merge($files, $foreign[$bundle][$id]);
+                if($lang != $folder) {
+                    if(!isset($foreign[$bundle][$id])) {
+                        $foreign[$bundle][$id] = array();
                     }
+
+                    $foreign[$bundle][$id] = array_merge($files, $foreign[$bundle][$id]);
                 }
             }
         }
@@ -454,6 +453,18 @@ class LanguageController extends Controller
             }
 
             $stripped = strip_tags($html);
+            $stripped = explode("\n", $stripped);
+
+            foreach($stripped as $line) {
+                $string = preg_replace('/^\s*/', '', $string);
+                $string = preg_replace('/\s*$/', '', $string);
+
+                if(!empty($string)) {
+                    if(!in_array($string, $strings)) {
+                        $strings[] = $string;
+                    }
+                }
+            }
 
             foreach($strings as $string) {
                 $context = array();

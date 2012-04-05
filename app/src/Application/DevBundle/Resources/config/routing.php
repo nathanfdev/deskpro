@@ -168,7 +168,7 @@ $collection->add('dev_lang_test_tokenizer', new Route(
 ));
 
 $collection->add('dev_lang_find_foreign', new Route(
-    '/lang/find/foreign',
+    '/lang/find/foreign/{bundle}',
     array('_controller' => 'DevBundle:Language:findForeignIds'),
     array(),
     array()
