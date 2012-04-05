@@ -295,7 +295,7 @@ class LanguageController extends Controller
             file_put_contents($rootdir.'/'.$lang.'/global.php', $globals);
         }
 
-        if(isset($_POST['forgeign'])) {
+        if(isset($_POST['foreign'])) {
             $foreigners = array();
 
             foreach($foreign as $id=>$files) {
@@ -306,7 +306,7 @@ class LanguageController extends Controller
                 }
             }
 
-            foreach($globals as $id=>$files) {
+            foreach($foreigners as $id=>$files) {
                 foreach($files as $file) {
                     $package = $lang;
 
@@ -316,9 +316,13 @@ class LanguageController extends Controller
                         }
                     }
 
-                    $last_parts = $parts = explode($id, '.', 3);
-                    array_shift($last_parts);
+                    $last_parts = $parts = explode('.', $id, 3);
+                    $firstpart = array_shift($last_parts);
                     array_unshift($last_parts, $package);
+
+                    if($bundle == 'DeskPRO' && $firstpart == 'user') {
+                        continue;
+                    }
 
                     $dst_file = $rootdir.'/'.$package.'/';
 
@@ -329,17 +333,23 @@ class LanguageController extends Controller
                         $dst_file .= $package.'.php';
                     }
 
-                    $src_file = $rootdir.'/'.$package.'/';
+                    $src_file = $rootdir.'/'.$firstpart.'/';
 
                     if(count($parts) == 3) {
                         $src_file .= $parts[1].'.php';
                     }
                     else {
-                        $src_file .= $package.'.php';
+                        $src_file .= $firstpart.'.php';
                     }
 
                     $source = require($src_file);
-                    $content = $source[$id];
+
+                    if(isset($source[$id])) {
+                        $content = $source[$id];
+                    }
+                    else {
+                        $content = '';
+                    }
 
                     if(file_exists($dst_file)) {
                         $target = require($dst_file);
@@ -348,7 +358,7 @@ class LanguageController extends Controller
                         $target = array();
                     }
 
-                    $new_id = $package.'.'.implode('.',$last_parts);
+                    $new_id = implode('.',$last_parts);
 
                     $target[$new_id] = $content;
                     file_put_contents($dst_file, '<?php return '.var_export($target, true).';');
