@@ -215,7 +215,7 @@ class OrganizationSearch extends SearcherAbstract
 			switch ($term) {
                 case self::TERM_ID:
 					$wheres[] = $this->_rangeMatch("$org_table.id", $op, $choice, true);
-					$this->summary[] = $this->_rangeSummary($tr->phrase('core.id'), $op, $choice);
+					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.id'), $op, $choice);
 					break;
 
 				case self::TERM_NAME:

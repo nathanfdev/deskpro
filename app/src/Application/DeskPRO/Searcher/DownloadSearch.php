@@ -304,7 +304,7 @@ class DownloadSearch extends SearcherAbstract
 			switch ($term) {
                 case self::TERM_ID:
 					$wheres[] = $this->_rangeMatch("downloads.id", $op, $choice, true);
-					$this->summary[] = $this->_rangeSummary($tr->phrase('core.id'), $op, $choice);
+					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.id'), $op, $choice);
 					break;
 
 				case self::TERM_STATUS:
@@ -406,7 +406,7 @@ class DownloadSearch extends SearcherAbstract
 						$choices_in = implode(',', $choices_in);
 					}
 
-					$this->summary[] = $this->_choiceSummary($tr->phrase('core.label'), $op, $choice);
+					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.label'), $op, $choice);
 
 					switch ($op) {
 						case self::OP_IS:

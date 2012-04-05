@@ -371,7 +371,7 @@ class LanguageController extends Controller
             foreach($foreign as $id=>$files) {
                 list($firstpart, ) = explode('.', $id, 2);
 
-                if($firstpart == 'core' || $firstpart == 'core_chat') {
+                if(preg_match('/^core', $firstpart)) {
                     $foreigners[$id] = $files;
                 }
             }
@@ -379,8 +379,16 @@ class LanguageController extends Controller
             foreach($foreigners as $id=>$files) {
                 foreach($files as $file) {
                     $package = $lang;
-                    $last_parts = $parts = explode('.', $id, 3);
-                    $firstpart = array_shift($last_parts);
+                    $parts = explode('.', $id, 3);
+                    $core_parts = explode('_', $parts[0]);
+                    array_shift($parts);
+
+                    foreach(array_reverse($core_parts) as $core_part) {
+                        array_unshift($core_parts, $core_part);
+                    }
+
+                    $last_parts = $parts;
+                    array_shift($last_parts);
                     array_unshift($last_parts, $package);
 
                     $dst_file = $rootdir.'/'.$package.'/';
