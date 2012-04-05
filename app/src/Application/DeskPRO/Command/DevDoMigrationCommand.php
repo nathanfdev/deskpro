@@ -61,11 +61,31 @@ class DevDoMigrationCommand extends \Symfony\Bundle\DoctrineMigrationsBundle\Com
 
 	public function execute(InputInterface $input, OutputInterface $output)
 	{
+		$check = App::getDb()->fetchColumn("SHOW TABLES LIKE 'dev_migration_versions'");
+		if (!$check) {
+			App::getDb()->exec("
+				CREATE TABLE `dev_migration_versions` (
+				  `version` varchar(255) NOT NULL,
+				  PRIMARY KEY (`version`)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+			");
+		}
+
 		$version = App::getDb()->fetchColumn("SELECT version FROM dev_migration_versions ORDER BY version DESC LIMIT 1");
 		$setting_version = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_version'");
 
 		if ($setting_version && (!$version || $setting_version > $version)) {
-			App::getDb()->insert('dev_migration_versions', array('version' => $setting_version));
+			$finder = new \Symfony\Component\Finder\Finder();
+			$finder->files()->name('Version*.php')->in(DP_ROOT.'/sys/Resources/DoctrineMigrations');
+			foreach ($finder as $f) {
+				$version = \Orb\Util\Strings::extractRegexMatch('#Version([0-9]+)\.php#', $f->getFilename(), 1);
+				if ($version) {
+					$version = (int)$version;
+					if ($version <= $setting_version) {
+						App::getDb()->replace('dev_migration_versions', array('version' => $version));
+					}
+				}
+			}
 		}
 
 		parent::execute($input, $output);
