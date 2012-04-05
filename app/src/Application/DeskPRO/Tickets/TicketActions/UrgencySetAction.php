@@ -111,6 +111,10 @@ class UrgencySetAction implements ActionInterface
 	 */
 	public function getDescription($as_html = true)
 	{
-		return 'Set urgency to ' . $this->num;
+		if ($this->allow_lower) {
+			return 'Set urgency to ' . $this->num;
+		} else {
+			return 'Set urgency to ' . $this->num . ' when it is not already higher';
+		}
 	}
 }
