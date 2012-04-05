@@ -11,17 +11,17 @@
 			</div>
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('deskpro.common.choose_criteria') }}" data-rule-type="">
+	<div class="type" title="{{ phrase('agent.common.choose_criteria') }}" data-rule-type="">
 	</div>
 {% endif %}
 
 {% if 'org_date_created' not in no_show_fields %}
-<div class="type" title="{{ phrase('deskpro.common.date_created') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="created">
+<div class="type" title="{{ phrase('agent.common.date_created') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="created">
 	<div class="op">
 		<select name="op" class="op">
-			<option value="lte">{{ phrase('deskpro.common.before') }}</option>
-			<option value="gte">{{ phrase('deskpro.common.after') }}</option>
-			<option value="between">{{ phrase('deskpro.common.between') }}</option>
+			<option value="lte">{{ phrase('agent.common.before') }}</option>
+			<option value="gte">{{ phrase('agent.common.after') }}</option>
+			<option value="between">{{ phrase('agent.common.between') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -31,7 +31,7 @@
 {% endif %}
 
 {% if 'org_email_domain' not in no_show_fields %}
-<div class="type" title="{{ phrase('deskpro.common.email_domains') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_email_domain" data-term-type="GenericInputTerm" data-term-triggers="emaildomain">
+<div class="type" title="{{ phrase('agent.common.email_domains') }}" {% if with_rule_group %}data-rule-group="Organization"{% endif %} data-rule-type="org_email_domain" data-term-type="GenericInputTerm" data-term-triggers="emaildomain">
 	<div class="op">
 		<select name="op">
 			<option value="is">{{ phrase('agent.global.is') }}</option>

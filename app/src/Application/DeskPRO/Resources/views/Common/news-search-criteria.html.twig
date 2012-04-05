@@ -11,7 +11,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('deskpro.common.choose_criteria') }}" data-rule-type="">
+	<div class="type" title="{{ phrase('agent.common.choose_criteria') }}" data-rule-type="">
 	</div>
 {% endif %}
 <div class="type" title="{{ phrase('agent.global.category') }}" data-rule-type="category">
@@ -29,7 +29,7 @@
 		</select>
 	</div>
 </div>
-<div class="type" title="{{ phrase('deskpro.common.is_published') }}" data-rule-type="is_published">
+<div class="type" title="{{ phrase('agent.common.is_published') }}" data-rule-type="is_published">
 	<div class="op">
 		<input type="hidden" name="op" value="is" />
 	</div>
@@ -37,7 +37,7 @@
 		<input type="hidden" name="is_published" value="1" />
 	</div>
 </div>
-<div class="type" title="{{ phrase('deskpro.common.is_not_published') }}" data-rule-type="is_not_published">
+<div class="type" title="{{ phrase('agent.common.is_not_published') }}" data-rule-type="is_not_published">
 	<div class="op">
 		<input type="hidden" name="op" value="is" />
 	</div>
@@ -45,12 +45,12 @@
 		<input type="hidden" name="is_not_published" value="1" />
 	</div>
 </div>
-<div class="type" title="{{ phrase('deskpro.common.date_created') }}" data-rule-type="date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
+<div class="type" title="{{ phrase('agent.common.date_created') }}" data-rule-type="date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
 	<div class="op">
 		<select name="op" class="op">
-			<option value="lte">{{ phrase('deskpro.common.before') }}</option>
-			<option value="gte">{{ phrase('deskpro.common.after') }}</option>
-			<option value="between">{{ phrase('deskpro.common.between') }}</option>
+			<option value="lte">{{ phrase('agent.common.before') }}</option>
+			<option value="gte">{{ phrase('agent.common.after') }}</option>
+			<option value="between">{{ phrase('agent.common.between') }}</option>
 		</select>
 	</div>
 	<div class="options">

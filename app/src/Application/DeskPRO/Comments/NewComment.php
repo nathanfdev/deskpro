@@ -186,10 +186,10 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 
 					if ($validating == 'existing') {
 						$email_to       = $email->email;
-						$email_subject  = $tr->phrase('user_emails.subj_newcomment_validate');
+						$email_subject  = $tr->phrase('user.emails.subj_newcomment_validate');
 					} elseif ($validating == 'new') {
 						$email_to       = $email_validating->email;
-						$email_subject  = $tr->phrase('user_emails.subj_newcomment_validate');
+						$email_subject  = $tr->phrase('user.emails.subj_newcomment_validate');
 					}
 
 					$vars = array(

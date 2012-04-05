@@ -2,7 +2,7 @@
 {% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
 {% block content %}
 	{{ layout.section_start() }}
-		{{ phrase('deskpro.emails_user.to_validate_your_email_address_click_on_the') }}:<br />
+		{{ phrase('user.emails_user.to_validate_your_email_address_click_on_the') }}:<br />
 		<a href="{{ url('user_profile_emails_validate_code', {'email_id': email.id, 'code': code}) }}">
 	{{ layout.section_end() }}
 {% endblock %}

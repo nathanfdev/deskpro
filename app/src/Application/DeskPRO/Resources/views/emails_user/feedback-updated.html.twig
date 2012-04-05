@@ -1,7 +1,7 @@
 {% extends 'DeskPRO:emails_user:layout.html.twig' %}
 {% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
 {% block email_teaser_link %}
-	{{ phrase('deskpro.emails_user.view_your_feedback_online_at') }}:<br />
+	{{ phrase('user.emails_user.view_your_feedback_online_at') }}:<br />
 	<a href="{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}">
 		{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}
 	</a>

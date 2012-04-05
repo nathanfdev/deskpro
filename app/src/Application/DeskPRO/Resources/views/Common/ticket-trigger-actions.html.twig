@@ -9,33 +9,33 @@
 		</div>
 	</div>
 
-	<div class="type" title="{{ phrase('deskpro.common.set_quotfromquot_address_on_email_notifications') }}" data-rule-type="set_from_address">
+	<div class="type" title="{{ phrase('agent.common.set_quotfromquot_address_on_email_notifications') }}" data-rule-type="set_from_address">
 		<div class="options">
 			<input type="text" name="email_address" />
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('deskpro.common.stop_processing_other_triggers') }}" data-rule-type="stop_actions">
+	<div class="type" title="{{ phrase('agent.common.stop_processing_other_triggers') }}" data-rule-type="stop_actions">
 		<div class="options">
 			<input type="hidden" name="stop_actions" value="1" />
 		</div>
 	</div>
 
 	{% if event_group in ['new_ticket.web_person', 'new_ticket.gateway_person', 'new_ticket.widget'] %}
-		<div class="type" title="{{ phrase('deskpro.common.email_user_autoresponse_notification_about_new_ticket') }}" data-rule-type="set_email_template_user_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+		<div class="type" title="{{ phrase('agent.common.email_user_autoresponse_notification_about_new_ticket') }}" data-rule-type="set_email_template_user_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
 			<div class="options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_ticket" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
 				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-ticket"></span>
 			</div>
 		</div>
-		<div class="type" title="{{ phrase('deskpro.common.email_user_validation_alert') }}" data-rule-type="set_email_template_user_new_ticket_validate" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+		<div class="type" title="{{ phrase('agent.common.email_user_validation_alert') }}" data-rule-type="set_email_template_user_new_ticket_validate" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
 			<div class="options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_ticket_validate" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
 				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-ticket-validate"></span>
 			</div>
 		</div>
-		<div class="type" title="{{ phrase('deskpro.common.email_agent_notification_about_new_ticket') }}" data-rule-type="set_email_template_agent_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+		<div class="type" title="{{ phrase('agent.common.email_agent_notification_about_new_ticket') }}" data-rule-type="set_email_template_agent_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
 			<div class="options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="agent_new_ticket" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
@@ -44,14 +44,14 @@
 		</div>
 	{% endif %}
 	{% if event_group in ['new_ticket.agent'] %}
-		<div class="type" title="{{ phrase('deskpro.common.email_user_notification_of_new_ticket') }}" data-rule-type="set_email_template_user_new_ticket_agent" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+		<div class="type" title="{{ phrase('agent.common.email_user_notification_of_new_ticket') }}" data-rule-type="set_email_template_user_new_ticket_agent" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
 			<div class="options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_ticket_agent" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
 				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-ticket-agent"></span>
 			</div>
 		</div>
-		<div class="type" title="{{ phrase('deskpro.common.email_agent_notification_about_new_ticket') }}" data-rule-type="set_email_template_agent_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+		<div class="type" title="{{ phrase('agent.common.email_agent_notification_about_new_ticket') }}" data-rule-type="set_email_template_agent_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
 			<div class="options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="agent_new_ticket" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
@@ -60,14 +60,14 @@
 		</div>
 	{% endif %}
 	{% if event_group in ['new_reply.web_person', 'new_reply.gateway_person'] %}
-		<div class="type" title="{{ phrase('deskpro.common.email_user_autoresponse_notification_about_new_reply') }}" data-rule-type="set_email_template_user_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+		<div class="type" title="{{ phrase('agent.common.email_user_autoresponse_notification_about_new_reply') }}" data-rule-type="set_email_template_user_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
 			<div class="options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_reply_user" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
 				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-reply-user"></span>
 			</div>
 		</div>
-		<div class="type" title="{{ phrase('deskpro.common.email_agent_notification_about_new_reply') }}" data-rule-type="set_email_template_agent_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+		<div class="type" title="{{ phrase('agent.common.email_agent_notification_about_new_reply') }}" data-rule-type="set_email_template_agent_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
 			<div class="options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="agent_new_reply_user" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
@@ -76,14 +76,14 @@
 		</div>
 	{% endif %}
 	{% if event_group in ['new_reply.agent'] %}
-		<div class="type" title="{{ phrase('deskpro.common.email_user_notification_of_new_agent_reply') }}" data-rule-type="set_email_template_user_new_reply_agent" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+		<div class="type" title="{{ phrase('agent.common.email_user_notification_of_new_agent_reply') }}" data-rule-type="set_email_template_user_new_reply_agent" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
 			<div class="options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_reply_agent" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
 				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-reply-agent"></span>
 			</div>
 		</div>
-		<div class="type" title="{{ phrase('deskpro.common.email_agent_notification_of_new_agent_reply') }}" data-rule-type="set_email_template_agent_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+		<div class="type" title="{{ phrase('agent.common.email_agent_notification_of_new_agent_reply') }}" data-rule-type="set_email_template_agent_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
 			<div class="options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="agent_new_reply_agent" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
@@ -100,7 +100,7 @@
 	</div>
 	{% endif %}
 
-	<div class="type" title="{{ phrase('deskpro.common.set_agent') }}" data-rule-type="agent">
+	<div class="type" title="{{ phrase('agent.common.set_agent') }}" data-rule-type="agent">
 		<div class="options">
 			<select name="agent">
 				{% for id,title in term_options.agents %}
@@ -110,7 +110,7 @@
 		</div>
 	</div>
 	{% if term_options.agent_teams %}
-	<div class="type" title="{{ phrase('deskpro.common.set_agent_team') }}" data-rule-type="agent_team">
+	<div class="type" title="{{ phrase('agent.common.set_agent_team') }}" data-rule-type="agent_team">
 		<div class="options">
 			<select name="agent_team">
 				{% for id,title in term_options.agent_teams %}
@@ -129,12 +129,12 @@
 			</select>
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('deskpro.common.delete_ticket') }}" data-rule-type="delete">
+	<div class="type" title="{{ phrase('agent.common.delete_ticket') }}" data-rule-type="delete">
 		<div class="options">
 			<input type="hidden" name="delete_ticket" value="1" />
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('deskpro.common.set_department') }}" data-rule-type="department">
+	<div class="type" title="{{ phrase('agent.common.set_department') }}" data-rule-type="department">
 		<div class="options">
 			<select name="department">
 				{% for id,title in term_options.departments %}
@@ -155,7 +155,7 @@
 		</div>
 	{% endif %}
 	{% if term_options.products %}
-	<div class="type" title="{{ phrase('deskpro.common.set_product') }}" data-rule-type="product">
+	<div class="type" title="{{ phrase('agent.common.set_product') }}" data-rule-type="product">
 		<div class="options">
 			<select name="product">
 				{% for id,title in term_options.products %}
@@ -166,7 +166,7 @@
 	</div>
 	{% endif %}
 	{% if term_options.priorities %}
-	<div class="type" title="{{ phrase('deskpro.common.set_priority') }}" data-rule-type="priority">
+	<div class="type" title="{{ phrase('agent.common.set_priority') }}" data-rule-type="priority">
 		<div class="options">
 			<select name="priority">
 				{% for id,title in term_options.priorities %}
@@ -177,7 +177,7 @@
 	</div>
 	{% endif %}
 	{% if term_options.ticket_workflows%}
-	<div class="type" title="{{ phrase('deskpro.common.set_workflow') }}" data-rule-type="workflow">
+	<div class="type" title="{{ phrase('agent.common.set_workflow') }}" data-rule-type="workflow">
 		<div class="options">
 			<select name="workflow">
 				{% for id,title in term_options.ticket_workflows %}
@@ -187,17 +187,17 @@
 		</div>
 	</div>
 	{% endif %}
-	<div class="type" title="{{ phrase('deskpro.common.add_labels') }}" data-rule-type="add_labels" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm">
+	<div class="type" title="{{ phrase('agent.common.add_labels') }}" data-rule-type="add_labels" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm">
 		<div class="options">
 			{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('deskpro.common.remove_labels') }}" data-rule-type="remove_labels" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm">
+	<div class="type" title="{{ phrase('agent.common.remove_labels') }}" data-rule-type="remove_labels" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm">
 		<div class="options">
 			{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('deskpro.common.set_flag') }}" data-rule-type="flag">
+	<div class="type" title="{{ phrase('agent.common.set_flag') }}" data-rule-type="flag">
 		<div class="options">
 			<select name="flag">
 				<option value="blue">{{ phrase('agent.global.blue') }}</option>
@@ -210,43 +210,43 @@
 			</select>
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('deskpro.common.increasedecrease_urgency') }}" data-rule-type="urgency">
+	<div class="type" title="{{ phrase('agent.common.increasedecrease_urgency') }}" data-rule-type="urgency">
 		<div class="options">
-			<input type="text" name="num" /><small>{{ phrase('deskpro.common.enter_a_negative_number_to_have_urgency_decreased') }}</small>
+			<input type="text" name="num" /><small>{{ phrase('agent.common.enter_a_negative_number_to_have_urgency_decreased') }}</small>
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('deskpro.common.set_urgency') }}" data-rule-type="urgency_set">
+	<div class="type" title="{{ phrase('agent.common.set_urgency') }}" data-rule-type="urgency_set">
 		<div class="options">
 			<input type="text" name="num" style="width: 50px" />
 			{% if event_trigger != 'new_ticket' %}
 			<select name="allow_lower">
-				<option value="0">{{ phrase('deskpro.common.only_set_when_urgency_is_lower') }}</option>
-				<option value="1">{{ phrase('deskpro.common.always_set_this_urgency') }}</option>
+				<option value="0">{{ phrase('agent.common.only_set_when_urgency_is_lower') }}</option>
+				<option value="1">{{ phrase('agent.common.always_set_this_urgency') }}</option>
 			</select>
 			{% endif %}
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('deskpro.common.add_ticket_reply') }}" data-rule-type="reply">
+	<div class="type" title="{{ phrase('agent.common.add_ticket_reply') }}" data-rule-type="reply">
 		<div class="options" style="display:block">
 			<textarea name="reply_text" cols="80" rows="4"></textarea>
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('deskpro.common.disable_all_notifications') }}" data-rule-type="disable_notifications">
+	<div class="type" title="{{ phrase('agent.common.disable_all_notifications') }}" data-rule-type="disable_notifications">
 		<div class="options" style="display:block">
 			<input type="hidden" name="disable_notifications" value="1" />
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('deskpro.common.disable_user_notifications') }}" data-rule-type="disable_user_notifications">
+	<div class="type" title="{{ phrase('agent.common.disable_user_notifications') }}" data-rule-type="disable_user_notifications">
 		<div class="options" style="display:block">
 			<input type="hidden" name="disable_user_notifications" value="1" />
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('deskpro.common.disable_agent_notifications') }}" data-rule-type="disable_agent_notifications">
+	<div class="type" title="{{ phrase('agent.common.disable_agent_notifications') }}" data-rule-type="disable_agent_notifications">
 		<div class="options" style="display:block">
 			<input type="hidden" name="disable_agent_notifications" value="1" />
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('deskpro.common.always_notify_agents') }}" data-rule-type="add_agent_notify">
+	<div class="type" title="{{ phrase('agent.common.always_notify_agents') }}" data-rule-type="add_agent_notify">
 		<div class="options" style="display:block">
 			<select name="codes[]" multiple="multiple" style="display: block">
 				<optgroup label="Agents">
@@ -256,7 +256,7 @@
 					{% endfor %}
 				</optgroup>
 				<optgroup label="Teams">
-					<option value="assigned_agent_team">{{ phrase('deskpro.common.assigned_team') }}</option>
+					<option value="assigned_agent_team">{{ phrase('agent.common.assigned_team') }}</option>
 					{% for k,v in term_options.agent_teams %}
 						<option value="agent_team.{{k}}">{{v}}</option>
 					{% endfor %}
@@ -268,7 +268,7 @@
 	{% if term_options.custom_ticket_fields %}
 		{% for field in term_options.custom_ticket_fields %}
 			{% if field.field_def.isFormField() %}
-			<div class="type" title="{{ phrase('deskpro.common.set_field_name', {'field':field.field_def.title}) }}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">
+			<div class="type" title="{{ phrase('agent.common.set_field_name', {'field':field.field_def.title}) }}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">
 				<div class="options">
 					{{ form_widget(field.formView) }}
 				</div>
@@ -279,7 +279,7 @@
 	{% if term_options.custom_people_fields %}
 		{% for field in term_options.custom_people_fields %}
 			{% if field.field_def.isFormField() %}
-			<div class="type" title="{{ phrase('deskpro.common.set_user_field_name', {'field':field.field_def.title}) }}" data-rule-group="User Fields"  data-rule-type="people_field[{{field.field_def.id}}]">
+			<div class="type" title="{{ phrase('agent.common.set_user_field_name', {'field':field.field_def.title}) }}" data-rule-group="User Fields"  data-rule-type="people_field[{{field.field_def.id}}]">
 				<div class="options">
 					{{ form_widget(field.formView) }}
 				</div>

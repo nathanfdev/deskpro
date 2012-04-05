@@ -301,7 +301,8 @@ class LanguageController extends Controller
             foreach($foreign as $id=>$files) {
                 list($firstpart, ) = explode('.', $id, 2);
 
-                if(in_array($firstpart, $this->packages)) {
+                if(in_array($firstpart, $this->packages)
+                && !($firstpart == 'user' && $bundle == 'DeskPRO')) {
                     $foreigners[$id] = $files;
                 }
             }
@@ -319,10 +320,6 @@ class LanguageController extends Controller
                     $last_parts = $parts = explode('.', $id, 3);
                     $firstpart = array_shift($last_parts);
                     array_unshift($last_parts, $package);
-
-                    if($bundle == 'DeskPRO' && $firstpart == 'user') {
-                        continue;
-                    }
 
                     $dst_file = $rootdir.'/'.$package.'/';
 
@@ -362,10 +359,6 @@ class LanguageController extends Controller
 
                     $target[$new_id] = $content;
                     file_put_contents($dst_file, '<?php return '.var_export($target, true).';');
-
-                    foreach($files as $file) {
-                        $replace_files[$file['filename']] = $file;
-                    }
 
                     $this->replacePhrasesInFiles(array($file), $id, $new_id, false);
                 }

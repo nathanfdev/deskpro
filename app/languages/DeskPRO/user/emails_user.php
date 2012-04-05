@@ -1,0 +1,15 @@
+<?php return array (
+  'user.emails_user.an_agent_has_reset_your_account_password_you' => 'An agent has reset your account password. You can log in with these credentials',
+  'user.emails_user.thank_you_for_chatting_with_us_here_is' => 'Thank you for chatting with us. Here is your chat transcript.',
+  'user.emails_user.thank_you_for_for_comment' => 'Thank you for your comment on {{link}}.',
+  'user.emails_user.your_comment_has_ban_published' => 'Your comment has been published.',
+  'user.emails_user.your_comment_improved_the_page' => 'Your comment was used to improve the page.',
+  'user.emails_user.validate_by_blicking_link' => 'Please validate your email address online by clicking the following link:',
+  'user.emails_user.validate_before_comment_accepted' => 'Before your comment will be displayed publicly you must validate your email address by clicking on the following link:',
+  'user.emails_user.view_your_feedback_online_at' => 'View your feedback online at',
+  'user.emails_user.to_finish_adding_this_secondonary_email_address_to' => 'To finish adding this secondonary email address to your account, simply click on the following validation link',
+  'user.emails_user.simply_click_on_the_following_link_to_validate' => 'Simply click on the following link to validate to your email address',
+  'user.emails_user.re_subject' => 'RE: {{subject}}',
+  'user.emails_user.your_ticket_has_been_recieved_and_our_agents' => 'Your ticket has been recieved and our agents will reply to you as soon as they can.',
+  'user.emails_user.to_validate_your_email_address_click_on_the' => 'To validate your email address, click on the link below',
+);

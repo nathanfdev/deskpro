@@ -3,12 +3,12 @@
 {% block content %}
 	{{ layout.section_start() }}
         {% set phrase_link %}<a href="{{ comment.object.permalink }}">{{ comment.object.title }}</a>{% endset %}
-		<p>{{ phrase('deskpro.emails_user.thank_you_for_for_comment', {'link':phrase_link}) }}</p>
+		<p>{{ phrase('user.emails_user.thank_you_for_for_comment', {'link':phrase_link}) }}</p>
 		{% if validating %}
 			{% if feedback.status == 'visible' %}
-				{{ phrase('deskpro.emails_user.validate_by_blicking_link') }}
+				{{ phrase('user.emails_user.validate_by_blicking_link') }}
 			{% else %}
-				{{ phrase('deskpro.emails_user.validate_before_comment_accepted') }}
+				{{ phrase('user.emails_user.validate_before_comment_accepted') }}
 			{% endif %}
 			{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
 		{% endif %}

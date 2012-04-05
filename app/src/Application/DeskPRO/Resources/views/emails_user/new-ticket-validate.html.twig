@@ -5,7 +5,7 @@
 	{% set content %}
 	Thank you for contacting us. Before our agents will read and reply to your message, you must validate your email address.
 	<br /><br />
-	{{ phrase('deskpro.emails_user.simply_click_on_the_following_link_to_validate') }}:<br />
+	{{ phrase('user.emails_user.simply_click_on_the_following_link_to_validate') }}:<br />
 	<a href="{{ url('user_validate_email', {'id': ticket.person_email_validating.id, 'auth': ticket.person_email_validating.auth}) }}">
 		{{ url('user_validate_email', {'id': ticket.person_email_validating.id, 'auth': ticket.person_email_validating.auth}) }}
 	</a>

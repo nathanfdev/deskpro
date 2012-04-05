@@ -221,13 +221,13 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 
 				if ($validating == 'existing') {
 					$email_to       = $email->email;
-					$email_subject  = $tr->phrase('user_emails.subj_newfeedback_validate');
+					$email_subject  = $tr->phrase('user.emails.subj_newfeedback_validate');
 				} elseif ($validating == 'new') {
 					$email_to       = $email_validating->email;
-					$email_subject  = $tr->phrase('user_emails.subj_newfeedback_validate');
+					$email_subject  = $tr->phrase('user.emails.subj_newfeedback_validate');
 				} else {
 					$email_to       = $person->primary_email_address;
-					$email_subject  = $tr->phrase('user_emails.subj_newfeedback');
+					$email_subject  = $tr->phrase('user.emails.subj_newfeedback');
 				}
 
 				$vars = array(

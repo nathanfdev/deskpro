@@ -2,7 +2,7 @@
 {% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
 {% block content %}
 	{{ layout.section_start('Validation required', 2) }}
-		{{ phrase('deskpro.emails_user.to_finish_adding_this_secondonary_email_address_to') }}:<br />
+		{{ phrase('user.emails_user.to_finish_adding_this_secondonary_email_address_to') }}:<br />
 		<a href="{{ url('user_validate_email', {'id': validating_email.id, 'auth': validating_email.auth}) }}">
 			{{ url('user_validate_email', {'id': validating_email.id, 'auth': validating_email.auth}) }}
 		</a>
