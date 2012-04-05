@@ -633,7 +633,15 @@ class Translate implements PersonContextInterface
 		} else if ($debug == 'half_length') {
 			$length = strlen($phrase_text);
 			return substr($phrase_text, round($length / 2));
-		}
+		} else if($debug == 'package') {
+            if(!is_string($phrase_name)) {
+                return '!'.strtoupper(typeof($phrase_name)).'!';
+            }
+            else {
+                $parts = explode('.', $phrase_name);
+                return '!'.strtoupper($parts[0]).'!';
+            }
+        }
 
 		return $phrase_text;
 	}
