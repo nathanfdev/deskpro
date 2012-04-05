@@ -237,8 +237,6 @@ class LanguageController extends Controller
         $vars = array();
         $foreign = array();
 
-        $foreign = array();
-
         $rootdir = DP_ROOT.'/languages/DeskPRO';
         $real_global = require($rootdir.'/global/global.php');
 
@@ -723,6 +721,38 @@ class LanguageController extends Controller
         return array($by_id, $by_file);
     }
 
+    public function fixMissing($missing) {
+        $rootdir = DP_ROOT.'/languages/DeskPRO';
+
+        foreach($missing as $id=>$files) {
+            unset($files);
+
+            $parts = explode('.', $id, 3);
+            $package = array_shift($last_parts);
+
+            $dst_file = $rootdir.'/'.$package.'/';
+
+            if(count($parts) == 3) {
+                $dst_file .= $parts[1].'.php';
+            }
+            else {
+                $dst_file .= $package.'.php';
+            }
+
+            if(file_exists($dst_file)) {
+                $target = require($dst_file);
+            }
+            else {
+                $target = array();
+            }
+
+            if(!isset($target[$id])) {
+                $target[$id] = '';
+                file_put_contents($dst_file, '<?php return '.var_export($target, true).';');
+            }
+        }
+    }
+
     public function findPhrasesInTwigFilesAction()
     {
         $vars = array(
@@ -736,6 +766,10 @@ class LanguageController extends Controller
 
         list($vars['instances']['id'], $vars['instances']['file']) = $this->getPhrasesFromTwigFiles();
         $vars['missing'] = $this->getMissing(array_keys($vars['instances']['id']));
+
+        if(isset($_POST['missing'])) {
+            $this->fixMissing();
+        }
 
         return $this->render('DevBundle:Language:find.phrases.twig.html.twig', $vars);
     }
@@ -843,6 +877,9 @@ class LanguageController extends Controller
 
         list($vars['instances']['id'], $vars['instances']['file']) = $this->getPhrasesFromPHPFiles();
 
+        if(isset($_POST['missing'])) {
+            $this->fixMissing();
+        }
 
         $vars['missing'] = $this->getMissing(array_keys($vars['instances']['id']));
 
