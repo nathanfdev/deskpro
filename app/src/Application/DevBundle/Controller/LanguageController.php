@@ -765,16 +765,18 @@ class LanguageController extends Controller
         );
 
         list($vars['instances']['id'], $vars['instances']['file']) = $this->getPhrasesFromTwigFiles();
-        $vars['missing'] = $this->getMissing(array_keys($vars['instances']['id']));
+        $missing = $this->getMissing(array_keys($vars['instances']['id']));
 
         if(isset($_POST['missing'])) {
-            $this->fixMissing();
+            $this->fixMissing($missing);
         }
+
+        $vars['missing'] = $missing;
 
         return $this->render('DevBundle:Language:find.phrases.twig.html.twig', $vars);
     }
 
-    public function getPhrasesFromPHPFiles($bundle)
+    public function getPhrasesFromPHPFiles($bundle = null)
     {
         $files = $this->getPhpFileList($bundle);
         $by_id = array();
@@ -877,11 +879,13 @@ class LanguageController extends Controller
 
         list($vars['instances']['id'], $vars['instances']['file']) = $this->getPhrasesFromPHPFiles();
 
+        $missing = $this->getMissing(array_keys($vars['instances']['id']));
+
         if(isset($_POST['missing'])) {
             $this->fixMissing();
         }
 
-        $vars['missing'] = $this->getMissing(array_keys($vars['instances']['id']));
+        $vars['missing'] = $missing;
 
         return $this->render('DevBundle:Language:find.phrases.php.html.twig', $vars);
     }
