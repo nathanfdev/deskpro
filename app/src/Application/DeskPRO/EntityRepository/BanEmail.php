@@ -53,4 +53,52 @@ class BanEmail extends EntityRepository
 
 		return $list;
 	}
+
+	public function getPatterns($reload = false)
+	{
+		static $list;
+
+		if ($reload || !$list) {
+			$list = App::getDb()->fetchAllCol("
+				SELECT banned_email
+				FROM ban_emails
+				WHERE is_pattern = 1
+				ORDER BY banned_email ASC
+			");
+		}
+
+		return $list;
+	}
+
+	/**
+	 * Check if an email address is banned
+	 *
+	 * @param $email
+	 * @return bool
+	 */
+	public function isEmailBanned($email, &$match = null)
+	{
+		$email = strtolower(trim($email));
+
+		$banned_email = App::getDb()->fetchColumn("
+			SELECT banned_email
+			FROM ban_emails
+			WHERE banned_email = ?
+		", array($email));
+
+		if ($banned_email) {
+			$match = $banned_email;
+			return true;
+		}
+
+		$patterns = $this->getPatterns();
+		foreach ($patterns as $pattern) {
+			if (\Orb\Util\Strings::isStarMatch($pattern, $email)) {
+				$match = $pattern;
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
