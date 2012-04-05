@@ -2,8 +2,7 @@
 {% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
 {% block content %}
 	{{ layout.section_start() }}
-		Thank you for registering an account. Before you will be able to use your account, you must
-		click on the following link to validate your email address:<br />
+    {{ phrase('user.emails_user.thank_you_for_registering_please_validate_with_the_following_link') }}<br />
 		<a href="{{ url('user_validate_email', {'id': vemail.id, 'auth': vemail.auth}) }}">
 	{{ layout.section_end() }}
 {% endblock %}

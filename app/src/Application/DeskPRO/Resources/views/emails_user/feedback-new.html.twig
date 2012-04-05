@@ -10,12 +10,12 @@
 {% endblock %}
 {% block content %}
 	{{ layout.section_start() }}
-		<p>Thank you for submitting your feedback "{{ feedback.title }}"</p>
+		<p>{{ phrase('user.emails_user.', {'title':feedback.title}) }}</p>
 		{% if validating %}
 			{% if feedback.status == 'visible' %}
-				Please validate your email address online by clicking the following link:
+                {{ phrase('user.emails_user.please_validate_your_email_address') }}
 			{% else %}
-				Before your feedback will be displayed publicly you must validate your email address by clicking on the following link:
+                {{ phrase('user.emails_user.before_your_feedback_will_be_displayed_you_must_validate') }}
 			{% endif %}
 			{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
 		{% endif %}

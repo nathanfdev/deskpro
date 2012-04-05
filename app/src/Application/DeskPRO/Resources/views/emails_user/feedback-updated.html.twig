@@ -9,17 +9,16 @@
 {% block content %}
 	{{ layout.section_start() }}
 		{% if show == 'validated' %}
-			Your submitted feedback "{{ feedback.title }}" has been validated and will now appear on our website.
+        {{ phrase('user.emails_user.your_feedback_had_been_validated_and_will_be_made_public', {'title':feedback.title}) }}
 		{% elseif show == 'closed' %}
-        	Your submitted feedback "{{ feedback.title }}" was closed: {{ feedback.status_category.title }}
+            {{ phrase('user.emails_user.your_feedback_was_closed', {'title':feedback.title, 'status':feedback.status_category.title}) }}
         {% elseif show == 'closed' %}
-        	Your submitted feedback "{{ feedback.title }}" has been updated. It is now
-        	filed under the new status "{{ feedback.status_category.title }}"
+            {{ phrase('user.emails_user.your_feedback_has_been_updated', {'title': feedback.title, 'status':feedback.statuscategory.title}) }}
         {% endif %}
 	{{ layout.section_end() }}
 
 	{{ layout.section_start() }}
-		Your feedback currently has <strong>{{ feedback.votes }}</strong> votes. View your feedback online at:<br />
+        {{ phrase('user.emails_user.', {'count': feedback.votes}) }}
 		<a href="{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}">
 			{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}
 		</a>

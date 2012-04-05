@@ -1,19 +1,19 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_subject %}
-RE: {{ ticket.subject }}
+{{ phrase('user.emails_user.re_subject', {'subject':ticket.subject}) }}
 {% endblock %}
 {% block content %}
 	{% set content %}
 		{{ layout.greeting(person) }}
-		An agent has responded to your message.
+        {{ phrase('user.emails_user.an_agent_has_responded_to_you_message') }}
 	{% endset %}
 	{{ layout.section('', content) }}
 
 	{{ layout.render_ticket_messages(messages, '', { highlight_top: 1}) }}
 
 	{% set content %}
-		View and manage this ticket online:
+        {{ phrase('user.emails_user.view_and_manage_this_ticket_online') }}
 		<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}" style="{{ layout.link_style() }}">
 			{{ url_display('user_tickets_view', {'ticket_ref': ticket.access_code}) }}
 		</a>

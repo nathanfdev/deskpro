@@ -6,14 +6,14 @@
 {% block content %}
 	{% set content %}
 		{{ layout.greeting(person) }}
-		An agent has created a ticket for you.
+        {{ phrase('user.emails_user.an_agent_has_created_a_ticket_for_you') }}
 	{% endset %}
 	{{ layout.section('', content) }}
 
 	{{ layout.render_ticket_messages(messages) }}
 
 	{% set content %}
-		View and manage this ticket online:
+        {{ phrase('user.emails_user.view_and_manage_ticket_online') }}
 		<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}" style="{{ layout.link_style() }}">
 			{{ url_display('user_tickets_view', {'ticket_ref': ticket.access_code}) }}
 		</a>

@@ -3,13 +3,11 @@
 {% block content %}
 	{{ layout.section_start('Validation required', 2) }}
 		<p>
-			You recently tried to add this email address, {{ validating_email.email }}, as a secondary address on the
-		account whose primary email address is {{ person.primary_email_address }}.
+            {{ phrase('user.emails_user.you_recently_tried_to_add_email_a_as_secondary_email_for_email_b', {'validating_email': validating_email.email, 'primary_email':person.primary_email_address}) }}
 		</p>
 
 		<p>
-			However, {{ validating_email.email }} is already attached to a different account. If you'd like to merge these
-			two accounts together, please reply to this email and one of our agents will be happy to help.
+            {{ phrase('user.emails_user.the_email_is_already_attached', {'validating_email':validating_email.email}) }}
 		</p>
 	{{ layout.section_end() }}
 {% endblock %}

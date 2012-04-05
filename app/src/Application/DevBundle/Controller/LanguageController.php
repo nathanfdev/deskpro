@@ -216,7 +216,7 @@ class LanguageController extends Controller
         $response->headers->set('Content-Type','text/po');
         $response->headers->set('Content-Disposition', ' attachment; filename=languages_'.$package.'.po');
         $response->setContent(file_get_contents(DP_ROOT.DIRECTORY_SEPARATOR.'tmp.po'));
-        //unlink(DP_ROOT.DIRECTORY_SEPARATOR.'tmp.csv');
+        unlink(DP_ROOT.DIRECTORY_SEPARATOR.'tmp.csv');
         unlink(DP_ROOT.DIRECTORY_SEPARATOR.'tmp.po');
 
         return $response;
@@ -529,7 +529,6 @@ class LanguageController extends Controller
                     $string = preg_replace('/\s*$/', '', $string);
                     $string = preg_replace('/:$/', '', $string);
                     $string = preg_replace('/ \*$/', '', $string);
-                    $string_multi = explode("\n", $string);
                     $string_multi[] = str_replace("\n", ' ', $string);
 
                     foreach($string_multi as $string) {

@@ -1,10 +1,9 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_subject %}
-	Warning: Confirmation emails turned off
+	{{ phrase('user.emails_user.warning_confirmation_emails_off') }}
 {% endblock %}
 {% block content %}
 {% set content %}
-You recently sent an email to our helpdesk. Our automated system has detected that you have sent many messages in rapid succession.
-To protect against an auto-responder loop our helpdesk will not send to you any more automatic notification emails. You will continue to receive replies by our staff and you can continue in replying to them, you will simply not receive automatic confirmations of any replies you make.
+    {{ phrase('user.emails_user.warning_uoi_recently_sent_an_email_to_out_helpdesk_too_quickly') }}
 {% endblock %}

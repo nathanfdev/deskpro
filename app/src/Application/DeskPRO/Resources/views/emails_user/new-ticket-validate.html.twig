@@ -3,7 +3,8 @@
 {% block email_subject %}Validate your email address (RE: {{ ticket.subject }}){% endblock %}
 {% block content %}
 	{% set content %}
-	Thank you for contacting us. Before our agents will read and reply to your message, you must validate your email address.
+    {{ phrase('user.emails_user.') }}
+    {{ phrase('user.emails_user.thank_you_for_contacting_us_but_validate_first') }}
 	<br /><br />
 	{{ phrase('user.emails_user.simply_click_on_the_following_link_to_validate') }}:<br />
 	<a href="{{ url('user_validate_email', {'id': ticket.person_email_validating.id, 'auth': ticket.person_email_validating.auth}) }}">
