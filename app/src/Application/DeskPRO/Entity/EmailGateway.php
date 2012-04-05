@@ -101,7 +101,7 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	protected $date_last_check = null;
 
 	/**
-	 * @var Application\DeskPRO\Entity\EmailTransport
+	 * @var \Application\DeskPRO\Entity\EmailTransport
 	 */
 	protected $linked_transport;
 

@@ -139,11 +139,30 @@ class Runner
 			App::getOrm()->beginTransaction();
 
 			try {
-				/** @var $proc \Application\DeskPRO\EmailGateway\AbstractGatewayProcessor */
-				$proc = $gateway->getNewProcessor($reader, array('logger' => $this->logger));
-				$created_obj = $proc->run();
 
-				$source['status'] = 'complete';
+				$pre_processor = new PreProcessor($gateway, $reader, array('logger' => $this->logger));
+				$pre_processor->run();
+
+				$created_obj = null;
+				if ($pre_processor->isValid()) {
+					/** @var $proc \Application\DeskPRO\EmailGateway\AbstractGatewayProcessor */
+					$proc = $gateway->getNewProcessor($reader, array('logger' => $this->logger));
+					$created_obj = $proc->run();
+
+					if ($proc->isValid()) {
+						$source['status'] = 'complete';
+					} else {
+						$source['status'] = 'error';
+						$source['error_code'] = $proc->getErrorCode();
+					}
+
+					$source['source_info'] = $proc->getSourceInfo();
+				} else {
+					$source['status'] = 'error';
+					$source['error_code'] = $pre_processor->getErrorCode();
+					$source['source_info'] = $pre_processor->getSourceInfo();
+				}
+
 				if ($created_obj) {
 					$source['object_type'] = strtolower(\Orb\Util\Util::getBaseClassname($created_obj));
 					$source['object_id'] = $created_obj->id;

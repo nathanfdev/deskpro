@@ -224,4 +224,19 @@ abstract class AbstractGatewayProcessor
 	{
 		return $this->event_dispatcher;
 	}
+
+	public function isValid()
+	{
+		return $this->getErrorCode() === null;
+	}
+
+	public function getErrorCode()
+	{
+		return false;
+	}
+
+	public function getSourceInfo()
+	{
+		return null;
+	}
 }

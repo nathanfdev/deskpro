@@ -72,6 +72,20 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	 */
 	protected $charset_error = false;
 
+	protected $error;
+	protected $source_info;
+
+	public function logMessage($message, $pri = 'debug')
+	{
+		parent::logMessage($message, $pri);
+
+		if (!$this->source_info) {
+			$this->source_info = array();
+		}
+
+		$this->source_info[] = sprintf("[%s %s] %s", date('Y-m-d H:i:s'), $message, $pri);
+	}
+
 	protected function init()
 	{
 		$this->cutterDef = CutterDefFactory::getDef($this->reader);
@@ -648,5 +662,22 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		return $ticket;
+	}
+
+	public function getErrorCode()
+	{
+		return $this->error;
+	}
+
+	public function getSourceInfo()
+	{
+		if (!$this->source_info) {
+			return null;
+		}
+
+		if (is_array($this->source_info)) {
+			return implode("\n", $this->source_info);
+		}
+		return $this->source_info;
 	}
 }

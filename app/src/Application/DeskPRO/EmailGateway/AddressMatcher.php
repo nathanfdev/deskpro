@@ -109,7 +109,7 @@ class AddressMatcher
 	 * @param \Application\DeskPRO\Entity\EmailGateway $gateway  The gateway the message was found in. The default address will be used if none matching.
 	 * @return \Application\DeskPRO\Entity\EmailGatewayAddress
 	 */
-	public function getMatchingAddress($address, Emailgateway $gateway = null)
+	public function getMatchingAddress($address, EmailGateway $gateway = null, &$match_address_id = null)
 	{
 		$this->getPatterns();
 
@@ -141,8 +141,6 @@ class AddressMatcher
 					}
 			}
 		}
-
-
 
 		if (!$match_address_id) {
 			if ($gateway && $gateway->default_address) {

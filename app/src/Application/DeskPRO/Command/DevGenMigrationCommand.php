@@ -198,10 +198,6 @@ class Version<version> extends AbstractMigration
 			shell_exec($editorCmd . ' ' . escapeshellarg($path));
 		}
 
-		// Touch version file
-		$version_path = DP_ROOT.'/sys/VERSION';
-		file_put_contents($version_path, $version);
-
 		return $path;
 	}
 }
