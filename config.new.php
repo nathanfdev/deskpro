@@ -22,6 +22,10 @@ define('DP_DATABASE_PASSWORD', '');
 // The name of the database
 define('DP_DATABASE_NAME', 'deskpro');
 
+// A regularly monitoreed email address where technical
+// issues, such as server errors, will be reported to
+define('DP_TECHNICAL_EMAIL', '');
+
 ######################################################
 # OPTIONAL : ALL SETTINGS BELOW ARE OPTIONAL         #
 ######################################################

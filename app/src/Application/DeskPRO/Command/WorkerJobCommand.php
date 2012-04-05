@@ -62,6 +62,61 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$cron_id = 'dp-cron';
+		if ($input->getOption('job')) {
+			$cron_id .= '-' . $input->getOption('job');
+		} elseif ($input->getOption('group')) {
+			$cron_id .= '-g-' . $input->getOption('group');
+		}
+
+		if (!$input->getOption('ignore-interval')) {
+			$check = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.croncheck.' . $cron_id));
+			if ($check) {
+				$date = new \DateTime('@'.$check);
+				$date_cut = new \DateTime('-15 minutes');
+				$date_cut = new \DateTime('-1 minutes');
+				$diff = \Orb\Util\Dates::secsToReadable(time() - $date->getTimestamp(), 5);
+
+				if ($date_cut < $date) {
+					if ($input->getOption('verbose')) { $output->writeln("$cron_id is still active. Running for {$diff} (since " . $date->format('Y-m-d H:i:s') . ")"); }
+					return 0;
+				} else {
+					$title = "WARNING: Cron ($cron_id) has been active for {$diff}";
+					if (App::getConfig('technical_email')) {
+						$text = "Cron ($cron_id) has been marked as active for {$diff} (since " . $date->format('Y-m-d H:i:s') . ").\n\n"
+							  . "This is most likely caused by a fatal error that prevented the runner from resetting the timer.\n\n"
+							  . "Cron will now resume, but this is a problem you should investigate. Refer to the error log files and contact support@deskpro.com.";
+
+						$message = App::getMailer()->createMessage();
+						$message->setSubject($title);
+						$message->setBody($text, 'text/plain');
+						$message->setTo(App::getConfig('technical_email'));
+						App::getMailer()->send($message);
+					}
+
+					$output->writeln($title);
+					$output->writeln($text);
+				}
+			}
+		}
+
+		App::getDb()->replace('settings', array(
+			'name'  => 'core.croncheck.' . $cron_id,
+			'value' => time()
+		));
+
+		try {
+			$ret = $this->doExecute($input, $output);
+			App::getDb()->delete('settings', array('name' => 'core.croncheck.' . $cron_id));
+			return $ret;
+		} catch (\Exception $e) {
+			App::getDb()->delete('settings', array('name' => 'core.croncheck.' . $cron_id));
+			throw $e;
+		}
+	}
+
+	protected function doExecute(InputInterface $input, OutputInterface $output)
+	{
 		$options = null;
 		if ($input->getOption('options')) {
 			$options = json_decode($input->getOption('options'), true);
