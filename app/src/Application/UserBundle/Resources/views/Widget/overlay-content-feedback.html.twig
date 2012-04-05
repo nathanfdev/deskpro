@@ -1,43 +1,109 @@
 <div id="newfeedback" class="tab" style="display: none;">
-	<div class="fields-row">
-		<div class="txt txt-wide">
-			<input type="text" value="Summary" />
+	<form action="{{ path('user_widget_newfeedback') }}" method="POST" id="dp_newfeedback_form" class="with-form-validator">
+		{{ form_token('newfeedback_widget') }}
+
+		{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+		<div class="socials">
+			<div>
+				<span>Or connet with</span>
+				<ul>
+					{{ phrase('user.global.or_connect_with') }}
+					{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+					<li>{{ render_usersource(usersource, 'widget_overlay_btn') }}</li>
+					{% endfor %}
+				</ul>
+			</div>
 		</div>
-	</div>
-	<div class="fields-row">
-		<select>
-			<option>Category</option>
-			<option>Option</option>
-			<option>Option</option>
-			<option>Option</option>
-			<option>Option</option>
-			<option>Option</option>
-			<option>Option</option>
-		</select>
-	</div>
-	<div class="fields-row">
-		<div class="textarea">
-			<textarea cols="30" rows="10">Message</textarea>
+		{% endif %}
+
+		<div class="fields-row">
+			<div class="txt dp-form-row-person_name">
+				{{ form_widget(feedbackform.person_name, {
+					'attr': {
+						'data-field-validators': 'DeskPRO.Form.LengthValidator',
+						'data-min-len': 2,
+						'placeholder': phrase('user.global.your_name'),
+						'class': 'name-field'
+					}
+				}) }}
+				<span class="tooltip-error">
+					<span>{{ phrase('user.register_please_enter_name') }}</span>
+				</span>
+			</div>
+			<div class="txt alignright dp-form-row-person_email">
+				<input type="text" class="email-field" id="dp_newticket_email" name="feedback[person_email]" value="" placeholder="{{ phrase('user.global.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+				<span class="tooltip-error">
+					<span>{{ phrase('user.register_please_enter_email') }}</span>
+				</span>
+			</div>
 		</div>
-	</div>
-	<div class="socials">
-		<div>
-			<span>Or connet with</span>
-			<ul>
-				<li><a href="#" class="facebook-link">facebook</a></li>
-				<li><a href="#" class="google-link">google</a></li>
-			</ul>
+		<div class="fields-row">
+			<div class="dp-form-row-category_id with-sub-options feedbackCat_id_wrapper" data-field-validators="DeskPRO.Form.TwoLevelSelectValidator">
+				<div class="dp-select-wrapper" style="width: 70%;">
+					<select name="feedback[category_id]" class="parent-option category_id">
+						<option value=""></option>
+						{% for cat in feedback_categories %}
+						<option value="{{cat.id}}">{{cat.title}}</option>
+						{% endfor %}
+					</select>
+					{% for parent_cat in feedback_categories %}
+					{% if parent_cat.children|length %}
+					<div class="dp-sub-options sub-options-category_id sub-options-{{parent_cat.id}}" style="display: none">
+						<select class="sub_category_id">
+							<option value=""></option>
+							{% for cat in parent_cat.children %}
+							<option value="{{cat.id}}">{{cat.title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+					{% endif %}
+					{% endfor %}
+				</div>
+				<span class="tooltip-error">
+					<span>{{ phrase('user.global.please_choose_a_category') }}</span>
+				</span>
+			</div>
 		</div>
-	</div>
-	<div class="fields-row">
-		<div class="txt">
-			<input type="text" value="Your Name" />
+		<div class="fields-row">
+			<div class="txt txt-wide dp-form-row-title">
+				{{ form_widget(feedbackform.title, {
+					'attr': {
+						'data-field-validators': 'DeskPRO.Form.LengthValidator',
+						'data-min-len': 5,
+						'class': 'search-collect',
+						'placeholder': 'Enter a short summary'
+					}
+				}) }}
+				<span class="tooltip-error">
+					<span>{{ phrase('user.feedback.summary_error') }}</span>
+				</span>
+			</div>
 		</div>
-		<div class="txt alignright">
-			<input type="text" value="Your Email Address" />
+		<div class="fields-row message dp-form-row-content">
+			<table cellspacing="0" cellpadding="0" width="100%"><tr><td><div style="position: relative">
+				<div class="textarea">
+					{{ form_widget(feedbackform.content, {
+						'attr': {
+							'class': 'dp-message',
+							'data-field-validators': 'DeskPRO.Form.LengthValidator',
+							'data-min-len': 10,
+							'placeholder': 'Message',
+							'class': addclass
+						}
+					}) }}
+				</div>
+				<span class="tooltip-error">
+					<span>{{ phrase('user.feedback.desc_error') }}</span>
+				</span>
+			</div></td></tr></table>
 		</div>
-	</div>
-	<div class="btn-holder clearfix">
-		<button class="btn-activity">Submit Feedback</button>
+		<div class="btn-holder clearfix">
+			<button class="btn-activity">{{ phrase('user.register_send_message') }}</button>
+		</div>
+	</form>
+
+	<div class="thank-you" id="dp_newfeedback_done" style="display: none">
+		<h2>{{ phrase('user.global.thank_you') }}</h2>
+		<p>{{ phrase('user.register_thank_you_for_feedback') }}</p>
 	</div>
 </div>

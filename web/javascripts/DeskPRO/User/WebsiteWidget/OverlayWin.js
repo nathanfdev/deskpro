@@ -37,6 +37,7 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 
 		this.winNav = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('#dp_overlay_navtabs').find('> a'),
+			activeClassname: 'active',
 			onTabSwitch: function(ev) {
 				self.activeTabBody = ev.tabContent;
 			}
@@ -63,22 +64,16 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 
 		this.tellParent('ready');
 
-		var bodyTabHeight, lastBodyTabHeight;
-		bodyTabHeight = lastBodyTabHeight = this.activeTabBody.height();
+		var lastHeight, currentHeight;
+		lastHeight = $('#widget_deskpro').height();
+		self.tellParent('requestHeight', { height: lastHeight+20 });
 
 		window.setInterval(function() {
-			lastBodyTabHeight = bodyTabHeight;
-			bodyTabHeight = self.activeTabBody.height();
-
-			if (lastBodyTabHeight != bodyTabHeight) {
-				var fullHeight = self.activeTabBody.offset().top + bodyTabHeight;
-				var gotHeight = self.tellParent('requestHeight', { height: fullHeight });
-				if (gotHeight < fullHeight) {
-					$('#right_pane_body').css('overflow', 'auto');
-				} else {
-					$('#right_pane_body').css('overflow', 'hidden');
-				}
+			currentHeight = $('#widget_deskpro').height();
+			if (lastHeight != currentHeight) {
+				self.tellParent('requestHeight', { height: currentHeight+20 });
 			}
+			lastHeight = currentHeight;
 		}, 80);
 
 		// Sync name and email fields, and save them to cookies for next time too
@@ -345,10 +340,11 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 				dataType: 'json',
 				success: function(data) {
 					if (data.is_error) {
+						self.newTicketForm.find('.error').removeClass('error');
 						Object.each(data.errors, function(v,k) {
 							var find = '.dp-form-row-' + k.replace(/\./g, '_');
 							console.log(find);
-							self.newFeedbackForm.find(find).addClass('dp-error');
+							self.newFeedbackForm.find(find).addClass('error');
 						});
 
 						return;
@@ -392,15 +388,6 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 		this.newChatForm = $('#dp_newchat_form');
 		this.newChatForm.find('[required]').prop('required', false);
 
-		this.depSelect = this.newChatForm.find('select.department_id');
-		this.departmentId = 0;
-
-		var self = this;
-		this.depSelect.on('change', function() {
-			self.handleChatDepChange();
-		});
-		this.depSelect.data('original-name', this.depSelect.attr('name'));
-
 		this.newChatForm.on('submit', function(ev) {
 			ev.preventDefault();
 			var data = {
@@ -414,27 +401,5 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			$('#dp_newchat_form').hide();
 			$('#dp_newchat_done').show();
 		});
-
-		this.handleChatDepChange();
-	},
-
-	handleChatDepChange: function() {
-		var wrapper = this.newChatForm.find('.department_id_wrapper');
-
-		var allSubs = $('.dp-sub-options', wrapper).hide();
-		$('select', allSubs).attr('name', '');
-
-		var depId = this.depSelect.val();
-		var sub = $('.sub-options-' + depId, wrapper);
-
-		if (!sub.length) {
-			this.depSelect.attr('name', this.depSelect.data('original-name'));
-			return;
-		} else {
-			this.depSelect.attr('name', '');
-			$('select', sub).attr('name', this.depSelect.data('original-name'));
-		}
-
-		sub.show();
 	}
 });

@@ -1,42 +1,60 @@
 <div id="newchat" class="tab" style="display: none;">
-	<div class="socials">
-		<div>
-			<span>Or connet with</span>
-			<ul>
-				<li><a href="#" class="facebook-link">facebook</a></li>
-				<li><a href="#" class="google-link">google</a></li>
-			</ul>
+	<form method="POST" id="dp_newchat_form" class="with-form-validator">
+		{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+		<div class="socials">
+			<div>
+				<span>Or connet with</span>
+				<ul>
+					{{ phrase('user.global.or_connect_with') }}
+					{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+					<li>{{ render_usersource(usersource, 'widget_overlay_btn') }}</li>
+					{% endfor %}
+				</ul>
+			</div>
 		</div>
-	</div>
-	<div class="fields-row">
-		<div class="txt correct">
-			<input type="text" value="Your Name" />
+		{% endif %}
+
+		<div class="fields-row">
+			<div class="txt dp-form-row-person_name">
+				<input type="text" class="name-field" id="dp_newchat_name" name="name" value="" placeholder="{{ phrase('user.global.your_name') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+				<span class="tooltip-error">
+					<span>{{ phrase('user.register_please_enter_name') }}</span>
+				</span>
+			</div>
+			<div class="txt alignright dp-form-row-person_email">
+				<input type="text" class="email-field" id="dp_newchat_email" name="email" value="" placeholder="{{ phrase('user.global.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+				<span class="tooltip-error">
+					<span>{{ phrase('user.register_please_enter_email') }}</span>
+				</span>
+			</div>
 		</div>
-		<div class="txt error alignright">
-			<input type="text" value="Your Email Address" />
-								<span class="tooltip-error">
-									<span>ENTERED EMAIL IS INVALID</span>
-								</span>
+		<div class="fields-row dp-form-row-ticket_department_id">
+			<select name="newticket[ticket][department_id]">
+				<option value=""></option>
+				{% for id,info in ticket_options.departments_hierarchy %}
+				{% if info.children %}
+				<optgroup label="{{ info.title }}">
+					{% for subid,subinfo in info.children %}
+					<option value="{{subinfo.id}}">{{subinfo.title}}</option>
+					{% endfor %}
+				</optgroup>
+				{% else %}
+				<option value="{{info.id}}">{{info.title}}</option>
+				{% endif %}
+				{% endfor %}
+			</select>
+			<span class="tooltip-error">
+				<span>{{ phrase('user.global.please_choose_a_department') }}</span>
+			</span>
 		</div>
-	</div>
-	<div class="fields-row">
-		<select>
-			<option>Department</option>
-			<option>Option</option>
-			<option>Option</option>
-			<option>Option</option>
-			<option>Option</option>
-			<option>Option</option>
-			<option>Option</option>
-		</select>
-	</div>
-	<div class="fields-row">
-		<div class="textarea">
-			<textarea cols="30" rows="10">Message</textarea>
+
+		<div class="btn-holder clearfix">
+			<button class="btn-activity">{{ phrase('user.register_send_message') }}</button>
 		</div>
-		<span class="notification">Please enter at least 10 characters</span>
-	</div>
-	<div class="btn-holder clearfix">
-		<button class="btn-activity">Chat Now</button>
+	</form>
+
+	<div class="thank-you" id="dp_newchat_done" style="display: none">
+		<h2>{{ phrase('user.register_please_wait') }}</h2>
+		<p>{{ phrase('user.register_please_wait_while') }}</p>
 	</div>
 </div>

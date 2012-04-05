@@ -205,7 +205,7 @@ body.dp-simple-iframe {
 * Layout
 **********************************************************/
 body {
-	background-color: {{ stylevar.bg_color }} !important;
+	background-color: {{ stylevar.bg_color }};
 	margin:0;
 }
 
@@ -3128,9 +3128,6 @@ body.file-drag-over .dp-drop-file-zone {
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
-	box-shadow:0 0 9px #e7e7e7;
-	-webkit-box-shadow: 0 0 9px #e7e7e7;
-	-moz-box-shadow: 0 0 9px #e7e7e7;
 	width:942px;
 	position:relative;
 	background-color:#fbfcff;
@@ -3311,14 +3308,15 @@ body.file-drag-over .dp-drop-file-zone {
 	height:20px;
 	background:url(../../web/images/user/widget/bg-tooltip.png) no-repeat;
 }
-.widget-descpro .dp-form-row-ticket_message .tooltip-error {
+.widget-descpro .dp-form-row-ticket_message .tooltip-error,
+.widget-descpro .dp-form-row-content .tooltip-error {
 	bottom: -23px;
 	top: auto;
 }
-.widget-descpro .dp-form-row-ticket_department_id {
+.widget-descpro .dp-form-row-ticket_department_id, .widget-descpro .dp-form-row-category_id {
 	position: relative;
 }
-.widget-descpro .dp-form-row-ticket_department_id .tooltip-error {
+.widget-descpro .dp-form-row-ticket_department_id .tooltip-error, .widget-descpro .dp-form-row-category_id .tooltip-error {
 	right: auto;
 	left: 10px;
 }

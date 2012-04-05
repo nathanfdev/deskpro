@@ -271,9 +271,8 @@ var DpOverlayWidget = new (function() {
 			css = [];
 			css.push('position: relative');
 			css.push('text-align: left');
-			css.push('border: 2px solid #000000');
-			css.push('background: #ffffff url(' + options.staticUrl + 'images/spinners/loading-big-circle.gif) no-repeat 50% 50%');
-			css.push('width: 880px');
+			css.push('background: transparent url(' + options.staticUrl + 'images/spinners/loading-big-circle.gif) no-repeat 50% 50%');
+			css.push('width: 960px');
 			css.push('height: 500px');
 			css.push('margin: auto');
 			css.push('padding: 0');
@@ -283,15 +282,15 @@ var DpOverlayWidget = new (function() {
 
 			css = [];
 			css.push('border: none');
-			css.push('width: 18px');
-			css.push('height: 18px');
+			css.push('width: 28px');
+			css.push('height: 28px');
 			css.push('margin: 0');
 			css.push('padding: 0');
 			css.push('cursor: pointer');
 			css.push('box-shadow: none');
 			css.push('overflow: hidden');
 			css.push('position: absolute');
-			css.push('background: url(' + options.staticUrl + 'images/user/close-btn.png)');
+			css.push('background: url(' + options.staticUrl + 'images/user/widget/btn-close.png)');
 			css.push('top: -10px');
 			css.push('right: -10px');
 			css = css.join(';');
@@ -301,32 +300,13 @@ var DpOverlayWidget = new (function() {
 				ev.preventDefault();
 				self.close();
 			});
-
-			css = [];
-			css.push('border: none');
-			css.push('width: 152px');
-			css.push('height: 45px');
-			css.push('margin: 0');
-			css.push('padding: 0');
-			css.push('cursor: pointer');
-			css.push('box-shadow: none');
-			css.push('overflow: hidden');
-			css.push('position: absolute');
-			css.push('background: url(' + options.staticUrl + 'images/user/widgetlogo.png)');
-			css.push('right: 10px');
-			css.push('bottom: -55px');
-			css = css.join(';');
-
-			$('<a href="http://www.deskpro.com/" style="' + css + '"></a>')
-				.appendTo(overlayWrapInner)
-				.on('mouseover', function() { $(this).css('background', 'url(' + options.staticUrl + 'images/user/widgetlogo-on.png)') })
-				.on('mouseout', function() { $(this).css('background', 'url(' + options.staticUrl + 'images/user/widgetlogo.png)') });
 		}
 
 		isOpen = true;
 
 		css = [];
-		css.push('width: 880px');
+		css.push('background: transparent');
+		css.push('width: 964px');
 		css.push('height: 500px');
 		css.push('margin: 0');
 		css.push('padding: 0');
@@ -335,7 +315,7 @@ var DpOverlayWidget = new (function() {
 		css = css.join(';');
 
 		var src = options.deskproUrl + 'widget/overlay.html';
-		overlayIframe = $('<iframe id="dp_overlay_iframe" name="dp_overlay_iframe" src="' + src + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(overlayWrapInner);
+		overlayIframe = $('<iframe id="dp_overlay_iframe" name="dp_overlay_iframe" allowtransparency="true" src="' + src + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(overlayWrapInner);
 
 		setHeight(500);
 
