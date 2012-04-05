@@ -1656,7 +1656,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			var status = (xhr.status || '') + ' ' + (errorThrown || '') + ' ' + (xhr.statusText || '');
 			var url    = ajaxOptions.url;
 			var method = ajaxOptions.type;
-			this._showAjaxError('<div class="error-details">Here is the raw output returned from the server error:<textarea class="raw">' + Orb.escapeHtml(method) + ' ' + Orb.escapeHtml(url) + '<br />' + Orb.escapeHtml(status) + "<br /><br />" + Orb.escapeHtml(xhr.responseText) + '</textarea></div>');
+			this._showAjaxError('<div class="error-details">Here is the raw output returned from the server error:<textarea class="raw">' + Orb.escapeHtml(method) + ' ' + Orb.escapeHtml(url) + "\n" + Orb.escapeHtml(status) + "\n\n" + Orb.escapeHtml(xhr.responseText) + '</textarea></div>');
 		}
 	},
 
@@ -1671,9 +1671,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var self = this;
 		$('#global_ajax_error_info').empty();
 		if (message) {
-			$('#global_ajax_error_info').html(message).show();
+			$('#global_ajax_error_info').html(message);
 		} else {
-			$('#global_ajax_error_info').hide();
+			$('#global_ajax_error_info').empty();
 		}
 
 		if (!this.ajaxErrorOverlay) {
@@ -1685,19 +1685,22 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		$('#global_ajax_error_submit').off('click').on('click', function(ev) {
 			ev.preventDefault();
+			$('#global_ajax_error').removeClass('switch-success').addClass('switch-loading');
 			$.ajax({
 				url: BASE_URL + 'dp/report-error.json',
 				data: {
 					error_text: message
 				},
-				type: 'POST'
+				type: 'POST',
+				success: function() {
+					$('#global_ajax_error').removeClass('switch-loading').addClass('switch-success');
+				}
 			});
-
-			self.ajaxErrorOverlay.close();
 		});
 
 		this.ajaxErrorOverlay.initOverlay(); // needed so we can access wrapperOuter next
 		this.ajaxErrorOverlay.elements.wrapperOuter.addClass('error');
+		$('#global_ajax_error').removeClass('switch-success switch-loading');
 
 		this.ajaxErrorOverlay.openOverlay();
 	},

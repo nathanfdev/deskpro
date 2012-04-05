@@ -465,6 +465,34 @@ input.tab-focus {
 	outline: none;
 }
 
+#global_ajax_error {
+	.success-on {
+		display: none;
+		p {
+			margin-bottom: 10px;
+		}
+	}
+	.loading-on {
+		display: none;
+		background: url(../../images/spinners/loading-big-circle.gif) no-repeat 50% 0;
+		padding-top: 35px;
+		text-align: center;
+	}
+
+	&.switch-success {
+		#global_ajax_error_submit { display: none; }
+		#global_ajax_error_info { display: none; }
+		.error-desc { display: none; }
+		.success-on { display: block; }
+	}
+	&.switch-loading {
+		#global_ajax_error_submit { display: none; }
+		#global_ajax_error_info { display: none; }
+		.error-desc { display: none; }
+		.loading-on { display: block; }
+	}
+}
+
 .agent-pic {
 	background-repeat: no-repeat;
 	padding-left: 25px;
