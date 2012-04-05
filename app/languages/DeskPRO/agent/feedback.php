@@ -28,4 +28,5 @@
   'agent.feedback.status_deleted' => '',
   'agent.feedback.status_spam' => '',
   'agent.feedback.status_validating' => '',
+  'agent.feedback.closed' => '[agent.feedback.closed]',
 );

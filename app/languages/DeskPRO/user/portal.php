@@ -1,46 +1,30 @@
-<?php return array(
-
-	'user.portal.welcome_name' => 'Welcome, {{ name }}',
-	'user.portal.welcome_guest' => 'Welcome, Guest',
-
-	'user.portal.label_email' => 'Email Address:',
-	'user.portal.label_password' => 'Password:',
-
-	'user.portal.register_now' => 'Register now',
-	'user.portal.if_not_registered' => 'Don\'t have an account? {{link}} so you can view your ticket history and manage your profile.',
-	'user.portal.we_are_here_to_help' => 'Our friendly support staff are here to help.',
-
-	'user.portal.twitter_user_link' => '@{{name}} on twitter',
-	'user.portal.twitter_view_more' => 'View more from @{{name}} &rarr;',
-
-	'user.portal.register_for_free' => 'Register for free',
-
-
-
-
-
-
-
-
-	'user.portal.ask_or_feedback_here' => 'Ask a question, suggest an feedback or search the helpdesk here',
-
-	'user.portal.example' => 'Example',
-	'user.portal.pricing' => 'Pricing',
-	'user.portal.how_do_i_add_account' => 'How do I add an account?',
-	'user.portal.example_or_example' => '"{{link1}}", "{{link2}}" or "{{link3}}"',
-	'user.portal.latest_version_download' => 'Latest version download',
-	'user.portal.not_what_you_are_looking_for' => 'None of these results what you were looking for?',
-	'user.portal.submit_new_ticket' => 'Submit a new ticket',
-
-	'user.portal.chat_with_agent' => 'Chat with an agent',
-
-	'user.portal.login_using_twitter' => 'Log in using your Twitter account.',
-	'user.portal.login_with_twitter' => 'Log in with Twitter',
-
-	'user.portal.email_us' => 'Email us',
-	'user.portal.submit_suggestion' => 'Submit a suggestion',
-	'user.portal.chat_live' => 'Chat live',
-	'user.portal.view_more_downloads' => 'View more downloads &rarr;',
-	'user.portal.view_more_feedback' => 'View more feedback &rarr;',
-	'user.portal.title_newest_feedback' => 'Newest Feedback',
+<?php return array (
+  'user.portal.welcome_name' => 'Welcome, {{ name }}',
+  'user.portal.welcome_guest' => 'Welcome, Guest',
+  'user.portal.label_email' => 'Email Address:',
+  'user.portal.label_password' => 'Password:',
+  'user.portal.register_now' => 'Register now',
+  'user.portal.if_not_registered' => 'Don\'t have an account? {{link}} so you can view your ticket history and manage your profile.',
+  'user.portal.we_are_here_to_help' => 'Our friendly support staff are here to help.',
+  'user.portal.twitter_user_link' => '@{{name}} on twitter',
+  'user.portal.twitter_view_more' => 'View more from @{{name}} &rarr;',
+  'user.portal.register_for_free' => 'Register for free',
+  'user.portal.ask_or_feedback_here' => 'Ask a question, suggest an feedback or search the helpdesk here',
+  'user.portal.example' => 'Example',
+  'user.portal.pricing' => 'Pricing',
+  'user.portal.how_do_i_add_account' => 'How do I add an account?',
+  'user.portal.example_or_example' => '"{{link1}}", "{{link2}}" or "{{link3}}"',
+  'user.portal.latest_version_download' => 'Latest version download',
+  'user.portal.not_what_you_are_looking_for' => 'None of these results what you were looking for?',
+  'user.portal.submit_new_ticket' => 'Submit a new ticket',
+  'user.portal.chat_with_agent' => 'Chat with an agent',
+  'user.portal.login_using_twitter' => 'Log in using your Twitter account.',
+  'user.portal.login_with_twitter' => 'Log in with Twitter',
+  'user.portal.email_us' => 'Email us',
+  'user.portal.submit_suggestion' => 'Submit a suggestion',
+  'user.portal.chat_live' => 'Chat live',
+  'user.portal.view_more_downloads' => 'View more downloads &rarr;',
+  'user.portal.view_more_feedback' => 'View more feedback &rarr;',
+  'user.portal.title_newest_feedback' => 'Newest Feedback',
+  'user.portal.news' => '[user.portal.news]',
 );

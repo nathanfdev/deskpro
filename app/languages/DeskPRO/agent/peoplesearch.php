@@ -1,45 +1,15 @@
 <?php return array (
-
-
-
   'agent.peoplesearch.number_of_tickets' => 'Number of Tickets',
-
-
   'agent.peoplesearch.numberof_tickets' => 'Number of tickets',
-
-
-
-
-
   'agent.peoplesearch.select' => 'Select',
   'agent.peoplesearch.simple' => 'Simple',
-
   'agent.peoplesearch.find_person' => 'Find Person',
-
-
   'agent.peoplesearch.no_results_were_found' => 'No results were found',
   'agent.peoplesearch.view_all_results' => 'View all results',
   'agent.peoplesearch.no_people_match_your_criteria' => 'No people match your criteria',
-
   'agent.peoplesearch.date_craeted_newestoldest' => 'Date Craeted (Newest-Oldest)',
   'agent.peoplesearch.date_craeted_oldestnewest' => 'Date Craeted (Oldest-Newest)',
-
-
   'agent.peoplesearch.you_havent_labeled_any_tickets_load_a_ticket' => 'You haven\'t labeled any tickets. Load a ticket to label it.',
-
-
-
-
-
-
-
-
-
-
-
   'agent.peoplesearch.person_id' => 'Person ID',
-
-
-
-
+  'agent.peoplesearch.find_by_above_criteria' => '[agent.peoplesearch.find_by_above_criteria]',
 );

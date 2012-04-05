@@ -76,4 +76,6 @@
   'user.tickets.product' => '',
   'user.tickets.status' => '',
   'user.tickets.agent' => '',
+  'user.tickets.attachment_max_size' => '[user.tickets.attachment_max_size]',
+  'user.tickets.check_you_email' => '[user.tickets.check_you_email]',
 );

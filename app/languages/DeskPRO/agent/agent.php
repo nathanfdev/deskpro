@@ -145,4 +145,5 @@
   'agent.none' => '',
   'agent.department' => '',
   'agent.product' => '',
+  'agent.votes' => '[agent.votes]',
 );

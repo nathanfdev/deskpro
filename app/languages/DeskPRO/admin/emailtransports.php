@@ -7,35 +7,12 @@
   'admin.emailtransports.email_address' => 'Email address',
   'admin.emailtransports.every_address_at_a_domain' => 'Every address at a domain',
   'admin.emailtransports.addresses_that_match_a_regular_expression' => 'Addresses that match a regular expression',
-
   'admin.emailtransports.mail_server' => 'Mail Server',
-
-
-
-
-
-
-
-
-
-
-
-
   'admin.emailtransports.backup_mail_server' => 'Backup Mail Server',
-
-
-
-
-
-
-
   'admin.emailtransports.add_account' => 'Add Account',
   'admin.emailtransports.default_from_address' => 'Default "From" Address',
-
-
-
   'admin.emailtransports.backup_account' => 'Backup Account',
   'admin.emailtransports.default_from_email_address' => 'Default "From" email address',
-
   'admin.emailtransports.outgoing_email' => 'Outgoing Email',
+  'admin.emailtransports.delete' => '[admin.emailtransports.delete]',
 );

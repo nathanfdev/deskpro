@@ -723,17 +723,16 @@ class LanguageController extends Controller
 
     public function fixMissing($missing) {
         $rootdir = DP_ROOT.'/languages/DeskPRO';
+        $missing = array_unique($missing);
 
-        foreach($missing as $id=>$files) {
-            unset($files);
-
+        foreach($missing as $id) {
             $parts = explode('.', $id, 3);
-            $package = array_shift($last_parts);
+            $package = array_shift($parts);
 
             $dst_file = $rootdir.'/'.$package.'/';
 
-            if(count($parts) == 3) {
-                $dst_file .= $parts[1].'.php';
+            if(count($parts) == 2) {
+                $dst_file .= $parts[0].'.php';
             }
             else {
                 $dst_file .= $package.'.php';
@@ -747,7 +746,7 @@ class LanguageController extends Controller
             }
 
             if(!isset($target[$id])) {
-                $target[$id] = '';
+                $target[$id] = '['.$id.']';
                 file_put_contents($dst_file, '<?php return '.var_export($target, true).';');
             }
         }
@@ -878,7 +877,6 @@ class LanguageController extends Controller
         );
 
         list($vars['instances']['id'], $vars['instances']['file']) = $this->getPhrasesFromPHPFiles();
-
         $missing = $this->getMissing(array_keys($vars['instances']['id']));
 
         if(isset($_POST['missing'])) {

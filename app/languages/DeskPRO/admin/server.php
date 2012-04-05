@@ -1,5 +1,4 @@
 <?php return array (
-
   'admin.server.storage_mechanism' => 'Storage Mechanism',
   'admin.server.file_storage' => 'File Storage',
   'admin.server.storage_path' => 'Storage Path',
@@ -7,7 +6,6 @@
   'admin.server.storage_table' => 'Storage Table',
   'admin.server.blobs_storage' => 'blobs_storage',
   'admin.server.setting' => 'Setting',
-
   'admin.server.this_setting_must_be_enabled_for_php_to' => 'This setting must be enabled for PHP to accept file uploads at all.',
   'admin.server.this_is_where_php_saves_files_to_temporarily' => 'This is where PHP saves files to temporarily before they are processed by DeskPRO. This path must be writable by the web server for file uploads to work.',
   'admin.server.upload_max_filesize' => 'upload_max_filesize',
@@ -19,24 +17,6 @@
   'admin.server.download_attachment' => 'Download attachment',
   'admin.server.test_upload' => 'Test Upload',
   'admin.server.change_storage_mechanism' => 'Change Storage Mechanism',
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   'admin.server.important_configuration_values' => 'Important Configuration Values',
   'admin.server.test_this_value' => 'test this value',
   'admin.server.php_file_uploads' => 'file_uploads',
@@ -46,7 +26,6 @@
   'admin.server.php_version' => 'php_version',
   'admin.server.memory_limit' => 'memory_limit',
   'admin.server.error_log' => 'error_log',
-
   'admin.server.fs' => 'filesystem',
   'admin.server.db' => 'database',
   'admin.server.btn_confirm_switch' => 'Confirm: Switch to the {{subphrase}} storage mechanism',
@@ -64,4 +43,5 @@
   'admin.server.we_recommend_fs_storage' => 'We recommend {{link}} where files are stored as files in a directory on your server.',
   'admin.server.while_not_recommended_you_can' => 'While not recommended, you can {{link}}.',
   'admin.server.notice_using_most_efficient_storage' => 'You are currently using the most efficient storage mechanism.',
+  'admin.server.file_storage_mechanism' => '[admin.server.file_storage_mechanism]',
 );

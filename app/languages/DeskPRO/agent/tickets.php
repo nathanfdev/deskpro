@@ -76,4 +76,6 @@
   'agent.tickets.priority' => '',
   'agent.tickets.agent' => '',
   'agent.tickets.workflow' => '',
+  'agent.tickets.newticket' => '[agent.tickets.newticket]',
+  'agent.tickets.altc' => '[agent.tickets.altc]',
 );
