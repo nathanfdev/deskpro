@@ -365,6 +365,56 @@ class LanguageController extends Controller
             }
         }
 
+        if(isset($_POST['core'])) {
+            $cores = array();
+
+            foreach($foreign as $id=>$files) {
+                list($firstpart, ) = explode('.', $id, 2);
+
+                if($firstpart == 'core' || $firstpart == 'core_chat') {
+                    $foreigners[$id] = $files;
+                }
+            }
+
+            foreach($foreigners as $id=>$files) {
+                foreach($files as $file) {
+                    $package = $lang;
+                    $last_parts = $parts = explode('.', $id, 3);
+                    $firstpart = array_shift($last_parts);
+                    array_unshift($last_parts, $package);
+
+                    $dst_file = $rootdir.'/'.$package.'/';
+
+                    if(count($parts) == 3) {
+                        $dst_file .= $parts[1].'.php';
+                    }
+                    else {
+                        $dst_file .= $package.'.php';
+                    }
+
+                    if(file_exists($dst_file)) {
+                        $target = require($dst_file);
+                    }
+                    else {
+                        $target = array();
+                    }
+
+                    if(isset($target[$id])) {
+                        $content = $target[$id];
+                    }
+                    else {
+                        $content = '';
+                    }
+
+                    $new_id = implode('.',$last_parts);
+
+                    $target[$new_id] = $content;
+                    file_put_contents($dst_file, '<?php return '.var_export($target, true).';');
+                    $this->replacePhrasesInFiles(array($file), $id, $new_id, false);
+                }
+            }
+        }
+
         $vars['foreign'] = $foreign;
         return $this->render('DevBundle:Language:find.foreign.html.twig', $vars);
     }
