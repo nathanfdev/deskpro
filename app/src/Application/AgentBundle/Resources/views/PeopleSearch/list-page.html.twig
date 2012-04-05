@@ -33,7 +33,7 @@
 								<li><span class="prop-val email_address">{{person.language.title}}</span></li>
 							{% elseif field == 'labels' and result_display.hasPersonLabels(person) %}
 								<li>
-									<span class="prop-title">{{ phrase('global.labels') }}:</span>
+									<span class="prop-title">{{ phrase('agent.global.labels') }}:</span>
 									<span class="prop-val labels">
 										{% for label in result_display.getPersonLabels(person) %}
 											<span class="listing-tag">{{ label }}</span>
@@ -42,7 +42,7 @@
 								</li>
 							{% elseif field == 'num_tickets' %}
 								{% set has_set = true %}
-								<li><span class="prop-val num_tickets">{{ phrase('global.tickets') }}: {{ result_display.getPersonTicketCount(person) }}</span></li>
+								<li><span class="prop-val num_tickets">{{ phrase('agent.global.tickets') }}: {{ result_display.getPersonTicketCount(person) }}</span></li>
 							{% else %}
 								{% set custom_fields = result_display.getCustomFields(person) %}
 								{% for f in custom_fields %}

@@ -1,8 +1,8 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_server_error_logs') }}">{{ phrase('global.error_logs') }}</a></li>
-		<li>{{ phrase('global.error_log_id', {'id':log.id}) }}</li>
+		<li><a href="{{ path('admin_server_error_logs') }}">{{ phrase('admin.global.error_logs') }}</a></li>
+		<li>{{ phrase('admin.global.error_log_id', {'id':log.id}) }}</li>
 	</ul>
 {% endblock %}
 {% block page %}
@@ -10,7 +10,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('global.id') }}</label>
+			<label>{{ phrase('admin.global.id') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ log.id }}
@@ -19,7 +19,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('global.date') }}</label>
+			<label>{{ phrase('admin.global.date') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ log.date_created|date('Y-m-d H:m:s') }}
@@ -28,7 +28,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('global.log_name') }}</label>
+			<label>{{ phrase('admin.global.log_name') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ log.log_name }}
@@ -37,7 +37,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('global.sn_code') }}</label>
+			<label>{{ phrase('admin.global.sn_code') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ log.session_name|default('None') }}
@@ -46,7 +46,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('global.priority') }}</label>
+			<label>{{ phrase('admin.global.priority') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{log.priority}} {{log.priority_name}}
@@ -55,7 +55,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('global.flag') }}</label>
+			<label>{{ phrase('admin.global.flag') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ log.flag|default('None') }}
@@ -64,7 +64,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('global.message') }}</label>
+			<label>{{ phrase('admin.global.message') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<textarea style="width:99%; height:200px; font-family:Monaco, 'Courier New', courier, monospace;">{{log.message}}</textarea>
@@ -73,7 +73,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('global.additional_data') }}</label>
+			<label>{{ phrase('admin.global.additional_data') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<textarea style="width:99%; height:200px; font-family:Monaco, 'Courier New', courier, monospace;">{{data_structure}}</textarea>

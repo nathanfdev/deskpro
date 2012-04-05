@@ -231,7 +231,7 @@ class LanguageController extends Controller
 
         $foreign = array();
 
-        $globals = array('agent' => array(), 'admin' => array(), 'user' => array());
+        $globals = array();
         $rootdir = DP_ROOT.'/languages/DeskPRO';
         $real_global = require($rootdir.'/global/global.php');
 
@@ -261,28 +261,29 @@ class LanguageController extends Controller
                 list($firstpart, ) = explode('.', $id, 2);
 
                 if($firstpart == 'global') {
-                    if(!isset($globals[$bundle_map[$bundle]][$id])) {
-                        $globals[$bundle_map[$bundle]][$id] = array();
-                    }
-
-                    $globals[$bundle_map[$bundle]][$id] = array_merge($files, $globals[$bundle_map[$bundle]][$id]);
+                    $globals[$id] = $files;
                 }
             }
 
-            foreach($globals as $prefix=>$ids) {
-                $export = array();
-                $replace_files = array();
+            $export = array();
 
-                foreach($ids as $id=>$files) {
-                    $replace_files = array_merge($files, $replace_files);
-                    $export[$prefix.'.'.$id] = $real_global[$id];
+            if(file_exists($rootdir.'/'.$lang.'/global.php')) {
+                $export = require($rootdir.'/'.$lang.'/global.php');
+            }
+
+            $replace_files = array();
+
+            foreach($globals as $id=>$files) {
+                foreach($files as $file) {
+                    $replace_files[$file['filename']] = $file;
                 }
 
-                $globals[$prefix] = '<?php return '.var_export($export, true).';';
-
-                $this->replacePhrasesInFiles($replace_files, 'global.', $prefix.'.global.', true);
-                file_put_contents($rootdir.'/'.$prefix.'/global.php', $globals[$prefix]);
+                $export[$lang.'.'.$id] = $real_global[$id];
             }
+
+            $globals = '<?php return '.var_export($export, true).';';
+            $this->replacePhrasesInFiles($replace_files, 'global.', $lang.'.global.', true);
+            file_put_contents($rootdir.'/'.$lang.'/global.php', $globals);
         }
 
         $vars['foreign'] = $foreign;

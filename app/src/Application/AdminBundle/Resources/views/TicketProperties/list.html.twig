@@ -7,7 +7,7 @@
 		</ul>
 	</nav>
 	<ul>
-		<li>{{ phrase('global.ticket_fields') }}</li>
+		<li>{{ phrase('admin.global.ticket_fields') }}</li>
 	</ul>
 {% endblock %}
 {% block content %}
@@ -21,7 +21,7 @@
 <ul class="field-dual-list">
 	<li>
 		<header>
-			<h3><a href="{{ path('admin_departments') }}">{{ phrase('global.departments') }}</a></h3>
+			<h3><a href="{{ path('admin_departments') }}">{{ phrase('admin.global.departments') }}</a></h3>
 			{#<div class="check-control">
 				<input type="checkbox" {% if app.getSetting('core.enable_departments') %}checked="checked"{% endif %} class="onoff-slider" data-setting-name="core.enable_departments" />
 			</div>#}
@@ -35,7 +35,7 @@
 
 	<li>
 		<header>
-			<h3><a href="{{ path('admin_products') }}">{{ phrase('global.products') }}</a></h3>
+			<h3><a href="{{ path('admin_products') }}">{{ phrase('admin.global.products') }}</a></h3>
 			<div class="check-control">
 				<input type="checkbox" {% if app.getSetting('core.use_product') %}checked="checked"{% endif %} class="onoff-slider" data-enable-url="{{ path('admin_products_toggle', {enable: '1'}) }}" data-disable-url="{{ path('admin_products_toggle', {enable: '0'}) }}" />
 			</div>
@@ -49,7 +49,7 @@
 
 	<li>
 		<header>
-			<h3><a href="{{ path('admin_ticketcats') }}">{{ phrase('global.ticket_categories') }}</a></h3>
+			<h3><a href="{{ path('admin_ticketcats') }}">{{ phrase('admin.global.ticket_categories') }}</a></h3>
 			<div class="check-control">
 				<input type="checkbox" {% if app.getSetting('core.use_ticket_category') %}checked="checked"{% endif %} class="onoff-slider" data-enable-url="{{ path('admin_ticketcats_toggle', {enable: '1'}) }}" data-disable-url="{{ path('admin_ticketcats_toggle', {enable: '0'}) }}" />
 			</div>
@@ -63,7 +63,7 @@
 
 	<li>
 		<header>
-			<h3><a href="{{ path('admin_ticketpris') }}">{{ phrase('global.ticket_priorities') }}</a></h3>
+			<h3><a href="{{ path('admin_ticketpris') }}">{{ phrase('admin.global.ticket_priorities') }}</a></h3>
 			<div class="check-control">
 				<input type="checkbox" {% if app.getSetting('core.use_ticket_priority') %}checked="checked"{% endif %} class="onoff-slider" data-enable-url="{{ path('admin_ticketpris_toggle', {enable: '1'}) }}" data-disable-url="{{ path('admin_ticketpris_toggle', {enable: '0'}) }}" />
 			</div>
@@ -77,7 +77,7 @@
 
 	<li>
 		<header>
-			<h3><a href="{{ path('admin_ticketworks') }}">{{ phrase('global.ticket_workflows') }}</a></h3>
+			<h3><a href="{{ path('admin_ticketworks') }}">{{ phrase('admin.global.ticket_workflows') }}</a></h3>
 			<div class="check-control">
 				<input type="checkbox" {% if app.getSetting('core.use_ticket_workflow') %}checked="checked"{% endif %} class="onoff-slider" data-enable-url="{{ path('admin_ticketworks_toggle', {enable: '1'}) }}" data-disable-url="{{ path('admin_ticketworks_toggle', {enable: '0'}) }}" />
 			</div>

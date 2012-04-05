@@ -9,7 +9,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 	<header class="list-control-bar">
 		<button class="clean-white small add-new-trigger" style="margin:  3px 0 0 3px;">
-			<span>{{ phrase('global.add') }}</span>
+			<span>{{ phrase('agent.global.add') }}</span>
 		</button>
 	</header>
 
@@ -22,7 +22,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<textarea class="add-new-comment"></textarea>
 			</div>
 			<div class="overlay-footer">
-				<button class="save-new-trigger clean-white">{{ phrase('global.add') }}</button>
+				<button class="save-new-trigger clean-white">{{ phrase('agent.global.add') }}</button>
 			</div>
 		</div>
 	</div>
@@ -36,7 +36,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 	{% if not pending_articles|length %}
 		<section class="list-listing no-results">
-			<p>{{ phrase('global.there_are_no_results') }}</p>
+			<p>{{ phrase('agent.global.there_are_no_results') }}</p>
 		</section>
 	{% endif %}
 </div>

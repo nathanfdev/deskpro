@@ -30,15 +30,15 @@
 					<table cellspacing="0" cellpadding="0" width="100%">
 						<tr>
 							<td>
-								{{ phrase('global.email_address') }}<br />
+								{{ phrase('user.global.email_address') }}<br />
 								<input type="text" value="" name="email" size="20" />
 							</td>
 							<td>
-								{{ phrase('global.password') }} (<em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('global.lost_qm') }}</a></em>)<br />
+								{{ phrase('user.global.password') }} (<em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.global.lost_qm') }}</a></em>)<br />
 								<input type="password" value="" name="password" size="20" />
 							</td>
 							<td style="text-align: right; vertical-align: bottom;" valign="bottom">
-									<input class="btn" type="submit" value="{{ phrase('global.log_in') }}" />
+									<input class="btn" type="submit" value="{{ phrase('user.global.log_in') }}" />
 							</td>
 						</tr>
 					</table>
@@ -58,7 +58,7 @@
 
 					<div class="dp-form-row {% if error_fields['name'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
-							<label>{{ phrase('global.your_name') }} *</label>
+							<label>{{ phrase('user.global.your_name') }} *</label>
 						</div>
 						<div class="dp-form-input">
 							{{ form_widget(form.name) }}
@@ -70,7 +70,7 @@
 
 					<div class="dp-form-row {% if error_fields['email'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
-							<label>{{ phrase('global.your_email_address') }} *</label>
+							<label>{{ phrase('user.global.your_email_address') }} *</label>
 						</div>
 						<div class="dp-form-input">
 							{{ form_widget(form.email) }}
@@ -81,7 +81,7 @@
 
 					<div class="dp-form-row {% if error_fields['password'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
-							<label>{{ phrase('global.password') }} *</label>
+							<label>{{ phrase('user.global.password') }} *</label>
 						</div>
 						<div class="dp-form-input">
 							{{ form_widget(form.password) }}
@@ -109,7 +109,7 @@
 					</div>
 
 					<div class="dp-footer">
-						<input class="btn primary" type="submit" value="{{ phrase('global.register') }}" />
+						<input class="btn primary" type="submit" value="{{ phrase('user.global.register') }}" />
 					</div>
 				</form>
 			</div>

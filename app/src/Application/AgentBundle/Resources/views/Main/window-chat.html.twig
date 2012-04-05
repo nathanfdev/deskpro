@@ -2,8 +2,8 @@
 	<header>
 		<div>
 			<ul id="agent_chat_panel_listviews">
-				<li data-tab-for="#agent_chat_panel .agents-list" class="active agents"><a><span class="user-icon">{{ phrase('global.agents') }}</span></a></li>
-				{% if app.getSetting('core.use_agent_team') %}{% if agent_teams|length %}<li data-tab-for="#agent_chat_panel .teams-list" class="teams"><a><span class="team-icon">{{ phrase('global.teams') }}</span></a></li>{% endif %}{% endif %}
+				<li data-tab-for="#agent_chat_panel .agents-list" class="active agents"><a><span class="user-icon">{{ phrase('agent.global.agents') }}</span></a></li>
+				{% if app.getSetting('core.use_agent_team') %}{% if agent_teams|length %}<li data-tab-for="#agent_chat_panel .teams-list" class="teams"><a><span class="team-icon">{{ phrase('agent.global.teams') }}</span></a></li>{% endif %}{% endif %}
 			</ul>
 		</div>
 		<span class="close-btn close-trigger"></span>

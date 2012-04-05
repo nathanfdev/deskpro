@@ -2,7 +2,7 @@
 	<ul class="source-list with-tree" id="publish_outline_newscat_list">
 		<li class="all">
 			{% if app.user.hasPerm('agent_publish.create') %}
-				<span class="edit-mode tipped" id="publish_outline_newscat_editmode" title="{{ phrase('global.edit_categories') }}"></span>
+				<span class="edit-mode tipped" id="publish_outline_newscat_editmode" title="{{ phrase('agent.global.edit_categories') }}"></span>
 				<span class="add-new-cat tipped" id="publish_outline_newscat_addcat" title="{{ phrase('agent.create_new_category') }}"></span>
 				<span class="add-new-article tipped" id="publish_outline_news_add" title="{{ phrase('agent.create_news') }}" data-newloader-name="newNewsLoader"></span>
 			{% endif %}

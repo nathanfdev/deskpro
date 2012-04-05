@@ -14,7 +14,7 @@
 	{% endif %}
 
 	<ul>
-		<li><a href="{{ path('admin_agents') }}">{{ phrase('global.agents') }}</a></li>
+		<li><a href="{{ path('admin_agents') }}">{{ phrase('admin.global.agents') }}</a></li>
 		{% if usergroup.id %}
 			<li>{{ phrase('admin.agents.edit_permission_group') }}</li>
 		{% else %}
@@ -33,7 +33,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('global.title') }}</label>
+			<label>{{ phrase('admin.global.title') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<input type="text" name="usergroup[title]" value="{{usergroup.title}}" />
@@ -41,7 +41,7 @@
 	</div>
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('global.members') }}</label>
+			<label>{{ phrase('admin.global.members') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<div class="checkbox-rows">
@@ -64,7 +64,7 @@
 	 ##############################}
 	<div class="dp-form-row">
 		<div class="dp-form-label" id="permgroups">
-			<label>{{ phrase('global.permissions') }}</label>
+			<label>{{ phrase('admin.global.permissions') }}</label>
 
 			{% macro perm_col(usergroup_values, permgroup, name) %}
 				<td class="prop"><input
@@ -80,10 +80,10 @@
 			<nav class="check-grid-tabs">
 				<button class="clean-white small" style="float:right; position: relative; top: -4px;" id="load_agent_perms_btn">{{ phrase('admin.agents.load_permissions_from_agent') }}</button>
 				<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
-					<li class="on" data-tab-for="#permgroup_tickets"><span>{{ phrase('global.tickets') }}</span></li>
+					<li class="on" data-tab-for="#permgroup_tickets"><span>{{ phrase('admin.global.tickets') }}</span></li>
 					<li data-tab-for="#permgroup_people"><span>{{ phrase('admin.agents.people_and_organizations') }}</span></li>
-					<li data-tab-for="#permgroup_chat"><span>{{ phrase('global.chat') }}</span></li>
-					<li data-tab-for="#permgroup_publish"><span>{{ phrase('global.publish') }}</span></li>
+					<li data-tab-for="#permgroup_chat"><span>{{ phrase('admin.global.chat') }}</span></li>
+					<li data-tab-for="#permgroup_publish"><span>{{ phrase('admin.global.publish') }}</span></li>
 				</ul>
 			</nav>
 
@@ -93,7 +93,7 @@
 					<table width="100%">
 						<thead>
 							<tr>
-								<th>{{ phrase('global.permission') }}</th>
+								<th>{{ phrase('admin.global.permission') }}</th>
 								<th width="60">{{ phrase('admin.agents.onoff') }}</th>
 							</tr>
 						</thead>
@@ -172,7 +172,7 @@
 					<table width="100%">
 						<thead>
 							<tr>
-								<th>{{ phrase('global.permission') }}</th>
+								<th>{{ phrase('admin.global.permission') }}</th>
 								<th width="60">{{ phrase('admin.agents.onoff') }}</th>
 							</tr>
 						</thead>
@@ -237,7 +237,7 @@
 					<table width="100%">
 						<thead>
 							<tr>
-								<th>{{ phrase('global.permission') }}</th>
+								<th>{{ phrase('admin.global.permission') }}</th>
 								<th width="60">{{ phrase('admin.agents.onoff') }}</th>
 							</tr>
 						</thead>
@@ -270,7 +270,7 @@
 					<table width="100%">
 						<thead>
 							<tr>
-								<th>{{ phrase('global.permission') }}</th>
+								<th>{{ phrase('admin.global.permission') }}</th>
 								<th width="60">{{ phrase('admin.agents.onoff') }}</th>
 							</tr>
 						</thead>
@@ -303,7 +303,7 @@
 	</div>
 </div>
 
-<button class="btn primary save-trigger">{{ phrase('global.save') }}</button>
+<button class="btn primary save-trigger">{{ phrase('admin.global.save') }}</button>
 </form>
 
 {% if usergroup.id %}

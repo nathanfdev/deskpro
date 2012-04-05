@@ -2,7 +2,7 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
      <ul>
-         <li><a href="{{ path('admin_usergroups') }}">{{ phrase('global.usergroups') }}</a></li>
+         <li><a href="{{ path('admin_usergroups') }}">{{ phrase('admin.global.usergroups') }}</a></li>
 		 {% if usergroup.id %}
          	<li><a href="{{ path('admin_usergroups_edit', {'id': usergroup.id}) }}">{{ usergroup.title }}</a></li>
 		 {% endif %}

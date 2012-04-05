@@ -20,14 +20,14 @@ pageMeta.baseId = '{{ baseId }}';
 
 	{% if not results|length %}
 		<section class="list-listing no-results">
-			<p>{{ phrase('global.there_are_no_results') }}</p>
+			<p>{{ phrase('agent.global.there_are_no_results') }}</p>
 		</section>
 	{% endif %}
 
 	{% if results|length %}
 		<footer class="results-nav">
 			<div class="cursor">
-				{{ phrase('global.showing') }} <span class="results-total-count" id="{{baseId}}_total_count">{{ results|length }}</span> {{ phrase('agent.news.news_posts') }}
+				{{ phrase('agent.global.showing') }} <span class="results-total-count" id="{{baseId}}_total_count">{{ results|length }}</span> {{ phrase('agent.news.news_posts') }}
 			</div>
 		</footer>
 	{% endif %}

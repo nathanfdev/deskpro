@@ -24,7 +24,7 @@
 					<label>
 						{% if task.assigned_agent and task.assigned_agent.id != app.user.id %}{{ task.assigned_agent.display_name }}
 						{% elseif task.assigned_agent_team %}{{ task.assigned_agent_team.name }}
-						{% else %}{{ phrase('global.me') }}{% endif %}
+						{% else %}{{ phrase('agent.global.me') }}{% endif %}
 					</label><span class="drop-icon"></span></li>
 					<li class="noval opt-trigger date_due"><label>{% if not task.date_due %}{{ phrase('agent.task.no_due_date') }}{% else %}{{ task.date_due|date('day') }}{% endif %}</label><span class="drop-icon"></span></li>
 					<li class="comment-btn">
@@ -56,10 +56,10 @@
 				<textarea placeholder="{{ phrase('agent.task.enter_your_comment') }}"></textarea>
 				<div class="is-not-loading">
 					<button class="clean-white small save-comment-trigger">{{ phrase('agent.add_comment') }}</button>
-					{{ phrase('agent.task.or') }} <span class="cancel-comment-trigger">{{ phrase('global.cancel') }}</span>
+					{{ phrase('agent.task.or') }} <span class="cancel-comment-trigger">{{ phrase('agent.global.cancel') }}</span>
 				</div>
 				<div class="is-loading">
-					{{ phrase('global.saving') }}
+					{{ phrase('agent.global.saving') }}
 				</div>
 			</div>
 		</div>

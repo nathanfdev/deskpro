@@ -39,12 +39,12 @@
 	</div>
 </div>
 
-<button class="btn primary save-trigger">{{ phrase('global.save') }}</button>
+<button class="btn primary save-trigger">{{ phrase('admin.global.save') }}</button>
 </form>
 
 {% if rule.id %}
 	<div class="delete-link-wrap">
-		<a href="{{ path('admin_userrules_delete', {'rule_id': rule.id, _dp_security_token: security_token('delete_userrule') }) }}">{{ phrase('global.delete') }}</a>
+		<a href="{{ path('admin_userrules_delete', {'rule_id': rule.id, _dp_security_token: security_token('delete_userrule') }) }}">{{ phrase('admin.global.delete') }}</a>
 	</div>
 {% endif %}
 {% endblock %}

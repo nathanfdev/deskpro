@@ -20,7 +20,7 @@
 		<div class="download-editor">
 			{% if state.download.content %}
 				<div class="revert-message-notice">
-					{{ phrase('global.unsaved_changes_were_restored') }}
+					{{ phrase('agent.global.unsaved_changes_were_restored') }}
 					<button class="revert-default">{{ phrase('agent.publish.discard_unsaved_changes') }}</button>
 					<br />
 					<textarea class="edit-content-field-default" style="display: none;">{{download.content}}</textarea>
@@ -31,7 +31,7 @@
 			<br />
 
 			{{ phrase('agent.publish.download_replace_file') }}:
-			<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('global.upload') }}</button>
+			<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.global.upload') }}</button>
 			{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'download[attach]', noremove: true} %}
 			<ul class="files file-list"></ul>
 		</div>

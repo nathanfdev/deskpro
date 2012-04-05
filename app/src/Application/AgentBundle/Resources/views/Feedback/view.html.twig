@@ -41,32 +41,32 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="meta-line">
 		<div class="status the-status feedback-status" id="{{baseId}}_status_trigger"><span id="{{baseId}}_status_label">
 			{% if feedback.status == 'new' %}
-				{{ phrase('global.active') }}
+				{{ phrase('agent.global.active') }}
 			{% elseif feedback.status == 'active' %}
-				{{ phrase('global.active') }}: {{ feedback.status_category.title }}
+				{{ phrase('agent.global.active') }}: {{ feedback.status_category.title }}
 			{% elseif feedback.status == 'closed' %}
-				{{ phrase('global.closed') }}: {{ feedback.status_category.title }}
+				{{ phrase('agent.global.closed') }}: {{ feedback.status_category.title }}
 			{% else %}
-				{{ phrase('global.hidden') }}
+				{{ phrase('agent.global.hidden') }}
 			{% endif %}
 		</span></div>
-		<div class="category" id="{{baseId}}_cat_trigger"><span>{{ phrase('global.category') }}: <span id="{{baseId}}_cat_label">{{ feedback.category.full_title }}</span></span></div>
+		<div class="category" id="{{baseId}}_cat_trigger"><span>{{ phrase('agent.global.category') }}: <span id="{{baseId}}_cat_label">{{ feedback.category.full_title }}</span></span></div>
 	</div>
 	<br class="clear" />
 </header>
 
 <div class="profile-box-container">
 	<header>
-		<h4>{{ phrase('global.properties') }}</h4>
+		<h4>{{ phrase('agent.global.properties') }}</h4>
 	</header>
 	<section class="description-area">
 		<dl class="info-list">
-			<dt class="type-labels">{{ phrase('global.labels') }}:</dt>
+			<dt class="type-labels">{{ phrase('agent.global.labels') }}:</dt>
 			<dd class="feedback-tags tags-wrap noedit-tags">
 				<input type="text" id="{{baseId}}_labels_input" value="{% for label in feedback.labels %}{{label.label}},{% endfor %}" />
 			</dd>
 
-			<dt>{{ phrase('global.votes') }}:</dt>
+			<dt>{{ phrase('agent.global.votes') }}:</dt>
 			<dd>
 				<span class="link-look who-voted-trigger">
                     {% set phrase_part %}}
@@ -77,7 +77,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<button class="clean-gray xxx-small tipped {% if my_vote %}radio-on{% endif %}" title="{{ phrase('agent.feedback.vote_for_this_feedback') }}" id="{{baseId}}_my_vote">+1</button>
 			</dd>
 
-			<dt>{{ phrase('global.author') }}:</dt>
+			<dt>{{ phrase('agent.global.author') }}:</dt>
 			<dd>
 				By {% for author in feedback.authors %}<cite class="person-popover preload" data-person-id="{{ author.id }}">{{ author.display_name }}</cite>{% if not loop.last %}, {% endif %}{% endfor %}
 				on {{ feedback.date_created|date('day') }}
@@ -95,13 +95,13 @@ pageMeta.baseId = '{{ baseId }}';
 
 		<div class="controls" id="{{baseId}}_properties_controls">
 			<div class="showing-editing-fields" style="display: none">
-				<button class="clean-white save-fields-trigger"><span>{{ phrase('global.save') }}</span></button>
+				<button class="clean-white save-fields-trigger"><span>{{ phrase('agent.global.save') }}</span></button>
 			</div>
 			<div class="showing-rendered-fields" id="{{baseId}}_action_buttons">
 				{% if custom_fields|length %}
 					<button class="clean-white edit-fields-trigger noedit-hide"><span>{{ phrase('agent.edit_properties') }}</span></button>
 				{% endif %}
-				<button class="clean-white delete delete-type nodelete-hide" {% if feedback.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('global.ucfirst_delete') }}</button>
+				<button class="clean-white delete delete-type nodelete-hide" {% if feedback.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.global.ucfirst_delete') }}</button>
 				<button class="clean-white spam delete-type noedit-hide" {% if feedback.status_code == "hidden.spam" %}style="display:none"{% endif %}>{{ phrase('agent.mark_spam') }}</button>
 				<button class="clean-white merge noedit-hide">{{ phrase('agent.merge') }}</button>
 				<button class="clean-white permalink">{{ phrase('agent.copy_permalink') }}</button>
@@ -115,11 +115,11 @@ pageMeta.baseId = '{{ baseId }}';
 	<header>
 		<nav id="{{baseId}}_bodytabs">
 			<ul>
-				<li class="tab-trigger" data-tab-for="#{{baseId}}_content_tab">{{ phrase('global.description') }}</li>
-				<li class="tab-trigger" data-tab-for="#{{baseId}}_comments_tab">{{ phrase('global.comments') }} (<span id="{{baseId}}_count_comments">{{feedback_comments|length|default(0)}}</span>)</li>
+				<li class="tab-trigger" data-tab-for="#{{baseId}}_content_tab">{{ phrase('agent.global.description') }}</li>
+				<li class="tab-trigger" data-tab-for="#{{baseId}}_comments_tab">{{ phrase('agent.global.comments') }} (<span id="{{baseId}}_count_comments">{{feedback_comments|length|default(0)}}</span>)</li>
 				<li class="tab-trigger" data-tab-for="#{{baseId}}_revs">{{ phrase('agent.label_revisions') }} (<span id="{{baseId}}_count_revs">{{feedback.revisions|length|default(0)}}</span>)</li>
-				<li class="tab-trigger" data-tab-for="#{{baseId}}_related_content">{{ phrase('global.related_content') }} (<span id="{{baseId}}_count_related">0</span>)</li>
-				<li class="tab-trigger" data-tab-for="#{{baseId}}_searchtab">{{ phrase('global.search') }}</li>
+				<li class="tab-trigger" data-tab-for="#{{baseId}}_related_content">{{ phrase('agent.global.related_content') }} (<span id="{{baseId}}_count_related">0</span>)</li>
+				<li class="tab-trigger" data-tab-for="#{{baseId}}_searchtab">{{ phrase('agent.global.search') }}</li>
 			</ul>
 		</nav>
 	</header>
@@ -131,9 +131,9 @@ pageMeta.baseId = '{{ baseId }}';
 			<div id="{{baseId}}_content_tab" class="deskpro-tab-item content-tab on" style="display: block">
 				<nav class="sub-box-nav noedit-hide">
 					<ul class="option-buttons right" id="{{baseId}}_content_edit_btns">
-						<li class="kb-editor-edit edit" id="{{baseId}}_edit_btn"><span>{{ phrase('global.ucfirst_edit') }}</span></li>
-						<li class="editor-save-trigger save" id="{{baseId}}_save_btn"><span>{{ phrase('global.save') }}</span></li>
-						<li class="editor-cancel-trigger cancel" id="{{baseId}}_cancel_btn"><span>{{ phrase('global.cancel') }}</span></li>
+						<li class="kb-editor-edit edit" id="{{baseId}}_edit_btn"><span>{{ phrase('agent.global.ucfirst_edit') }}</span></li>
+						<li class="editor-save-trigger save" id="{{baseId}}_save_btn"><span>{{ phrase('agent.global.save') }}</span></li>
+						<li class="editor-cancel-trigger cancel" id="{{baseId}}_cancel_btn"><span>{{ phrase('agent.global.cancel') }}</span></li>
 					</ul>
 				</nav>
 				<div id="{{baseId}}_content_ed" class="content-tab-item">
@@ -164,7 +164,7 @@ pageMeta.baseId = '{{ baseId }}';
 							</div>
 							<div class="content">
 								<header>
-									<h4>{{ phrase('global.new_comment') }}</h4>
+									<h4>{{ phrase('agent.global.new_comment') }}</h4>
 								</header>
 								<div class="body-text">
 									<textarea style="width:99%; height: 80px;"></textarea>
@@ -174,7 +174,7 @@ pageMeta.baseId = '{{ baseId }}';
 										<button class="clean-white">{{ phrase('agent.add_comment') }}</button>
 									</div>
 									<div class="loading-on" style="display:none">
-										{{ phrase('global.saving') }}
+										{{ phrase('agent.global.saving') }}
 									</div>
 								</div>
 							</div>
@@ -232,12 +232,12 @@ pageMeta.baseId = '{{ baseId }}';
 		class="status-new"
 		data-status-type="new"
 		data-option-value="new"
-	>{{ phrase('global.new') }}</li>
+	>{{ phrase('agent.global.new') }}</li>
 	<li
 		class="section-title status-active"
 		data-status-type="active"
 		data-option-value="active"
-	>{{ phrase('global.active') }}</li>
+	>{{ phrase('agent.global.active') }}</li>
 	{% for cat in active_status_cats %}
 		<li
 			class="status-{{cat.id}}"
@@ -249,7 +249,7 @@ pageMeta.baseId = '{{ baseId }}';
 		class="section-title status-closed"
 		data-status-type="closed"
 		data-option-value="closed"
-	>{{ phrase('global.closed') }}</li>
+	>{{ phrase('agent.global.closed') }}</li>
 	{% for cat in closed_status_cats %}
 		<li
 			class="status-{{cat.id}}"
@@ -261,16 +261,16 @@ pageMeta.baseId = '{{ baseId }}';
 
 {{ optionbox.start('Status', {'id': baseId ~ '_status_ob'}) }}
 	{{ optionbox.section_start('', 'status') }}
-		<li class="top parent-option item-new" data-item-id="new" data-full-title="{{ phrase('global.new') }}">
+		<li class="top parent-option item-new" data-item-id="new" data-full-title="{{ phrase('agent.global.new') }}">
 			<input type="radio" name="status" value="new" />
-			<label>{{ phrase('global.new') }}</label>
+			<label>{{ phrase('agent.global.new') }}</label>
 		</li>
-		<li class="top parent-option item-active" data-item-id="active" data-full-title="{{ phrase('global.active') }}">
+		<li class="top parent-option item-active" data-item-id="active" data-full-title="{{ phrase('agent.global.active') }}">
 			<input type="radio" name="status" value="active" />
-			<label>{{ phrase('global.active') }}</label>
+			<label>{{ phrase('agent.global.active') }}</label>
 		</li>
 		{% for cat in active_status_cats %}
-			<li class="child item-active-{{cat.id}}" data-item-id="active.{{cat.id}}" data-full-title="{{ phrase('global.active') }}: {{ cat.title }}">
+			<li class="child item-active-{{cat.id}}" data-item-id="active.{{cat.id}}" data-full-title="{{ phrase('agent.global.active') }}: {{ cat.title }}">
 				<span class="elbow-end"></span>
 				<input type="radio" name="category_id" value="active.{{cat.id}}" />
 				<label>{{ cat.title }}</label>
@@ -278,7 +278,7 @@ pageMeta.baseId = '{{ baseId }}';
 		{% endfor %}
 		<li class="top parent-option item-closed" data-item-id="closed" data-full-title="{{ phrase('agent.feedback.closed') }}">
 			<input type="radio" name="status" value="closed" />
-			<label>{{ phrase('global.closed') }}</label>
+			<label>{{ phrase('agent.global.closed') }}</label>
 		</li>
 		{% for cat in closed_status_cats %}
 			<li class="child item-closed-{{cat.id}}" data-item-id="closed.{{cat.id}}" data-full-title="{{ phrase('agent.feedback.closed_category', {'cat':cat.title }) }}">
@@ -288,9 +288,9 @@ pageMeta.baseId = '{{ baseId }}';
 			</li>
 		{% endfor %}
 	{{ optionbox.section_end() }}
-{{ optionbox.end(phrase('global.set_status')) }}
+{{ optionbox.end(phrase('agent.global.set_status')) }}
 
-{{ optionbox.category_ob(feedback_categories, 'Feedback Category', phrase('global.apply'), {'id': baseId ~ '_cat_ob'}) }}
+{{ optionbox.category_ob(feedback_categories, 'Feedback Category', phrase('agent.global.apply'), {'id': baseId ~ '_cat_ob'}) }}
 
 {# scroll containers #}
 </div></div></div></div>

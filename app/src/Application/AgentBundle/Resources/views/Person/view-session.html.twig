@@ -41,8 +41,8 @@ pageMeta.baseId = '{{ baseId }}';
 	<header>
 		<nav>
 			<ul id="{{baseId}}_chats_tab_triggers">
-				{% if person_chats_count %}<li data-tab-for="#{{baseId}}_chats_tab">{{ phrase('global.chats') }} <span class="count">{{ person_chats_count }}</span></li>{% endif %}
-				{% if person_tickets_count %}<li data-tab-for="#{{baseId}}_session_tab">{{ phrase('global.detail') }}</li>{% endif %}
+				{% if person_chats_count %}<li data-tab-for="#{{baseId}}_chats_tab">{{ phrase('agent.global.chats') }} <span class="count">{{ person_chats_count }}</span></li>{% endif %}
+				{% if person_tickets_count %}<li data-tab-for="#{{baseId}}_session_tab">{{ phrase('agent.global.detail') }}</li>{% endif %}
 			</ul>
 		</nav>
 	</header>
@@ -79,14 +79,14 @@ pageMeta.baseId = '{{ baseId }}';
 					</td>
 				</tr>
 				<tr>
-					<td class="label">{{ phrase('global.last_activity') }}</td>
+					<td class="label">{{ phrase('agent.global.last_activity') }}</td>
 					<td class="value">
 						<time>{{session.date_last|date('fulltime')}}</time>
 						(<time class="timeago" datetime="{{session.date_last|date('c')}}"></time>)
 						on page <em class="tipped" title="{{ session.visitor.last_page }}">...</em>
 				</tr>
 				<tr>
-					<td class="label">{{ phrase('global.landing_page') }}</td>
+					<td class="label">{{ phrase('agent.global.landing_page') }}</td>
 					<td class="value">
 						{{ phrase('agent.person.user_landed_on_page') }}
 						<em class="tipped" title="{{ session.visitor.landing_page }}">...</em>
@@ -97,13 +97,13 @@ pageMeta.baseId = '{{ baseId }}';
 					</td>
 				</tr>
 				<tr>
-					<td class="label">{{ phrase('global.ip_address') }}</td>
+					<td class="label">{{ phrase('agent.global.ip_address') }}</td>
 					<td class="value">
 						{{ session.visitor.ip_address }}
 					</td>
 				</tr>
 				<tr>
-					<td class="label">{{ phrase('global.user_agent') }}</td>
+					<td class="label">{{ phrase('agent.global.user_agent') }}</td>
 					<td class="value">
 						{{ session.visitor.user_agent }}
 					</td>

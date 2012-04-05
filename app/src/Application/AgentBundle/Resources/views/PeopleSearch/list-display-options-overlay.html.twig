@@ -1,24 +1,24 @@
 {% extends 'AgentBundle:Common:display-options-layout.html.twig' %}
 {% block other_options %}
 	<div style="display: none">
-		{{ phrase('global.order_by') }}: <select name="order_by" class="sel-order-by">
+		{{ phrase('agent.global.order_by') }}: <select name="order_by" class="sel-order-by">
 			<option value="person.id:desc" class="date_created">{{ phrase('agent.peoplesearch.date_craeted_newestoldest') }}</option>
 			<option value="person.id:asc">{{ phrase('agent.peoplesearch.date_craeted_oldestnewest') }}</option>
-			<option value="person.name:asc" class="people_name">{{ phrase('global.name_az') }}</option>
-			<option value="person.name:desc">{{ phrase('global.name_za') }}</option>
-			<option value="people.date_last_login:desc" class="last_login">{{ phrase('global.last_login_time') }}</option>
-			<option value="people.organization:asc" class="org">{{ phrase('global.organization') }}</option>
+			<option value="person.name:asc" class="people_name">{{ phrase('agent.global.name_az') }}</option>
+			<option value="person.name:desc">{{ phrase('agent.global.name_za') }}</option>
+			<option value="people.date_last_login:desc" class="last_login">{{ phrase('agent.global.last_login_time') }}</option>
+			<option value="people.organization:asc" class="org">{{ phrase('agent.global.organization') }}</option>
 			<option value="people.num_tickets:desc" class="num_tickets">{{ phrase('agent.peoplesearch.number_of_tickets') }}</option>
 		</select>
 	</div>
 {% endblock %}
 {% block display_elements_list %}
-	<li data-field="subject" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="name" {% if not show_all or 'name' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.name') }}</label></li>
-	<li data-field="email" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="email" {% if not show_all or 'email' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.email_address') }}</label></li>
-	<li data-field="org" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="org" {% if not show_all or 'org' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.organization') }}</label></li>
-	<li data-field="org_pos" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="org_pos" {% if not show_all or 'org_pos' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.position') }}</label></li>
-	<li data-field="language"><input type="checkbox" name="language" {% if 'language' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.language') }}</li>
-	<li data-field="labels"><input type="checkbox" name="labels" {% if 'labels' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.labels') }}</li>
+	<li data-field="subject" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="name" {% if not show_all or 'name' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.name') }}</label></li>
+	<li data-field="email" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="email" {% if not show_all or 'email' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.email_address') }}</label></li>
+	<li data-field="org" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="org" {% if not show_all or 'org' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.organization') }}</label></li>
+	<li data-field="org_pos" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="org_pos" {% if not show_all or 'org_pos' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.position') }}</label></li>
+	<li data-field="language"><input type="checkbox" name="language" {% if 'language' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.language') }}</li>
+	<li data-field="labels"><input type="checkbox" name="labels" {% if 'labels' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.labels') }}</li>
 	<li data-field="num_tickets"><input type="checkbox" name="num_tickets" {% if 'num_tickets' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.peoplesearch.number_of_tickets') }}</li>
 	{% for f in person_field_defs %}
 		<li data-field="person_fields[{{f.id}}]"><input type="checkbox" name="person_fields[{{f.id}}]" {% if "person_fields[#{f.id}]" in display_fields %}checked="checked"{% endif %} /> {{f.title}}</li>

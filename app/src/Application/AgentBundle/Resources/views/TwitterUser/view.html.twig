@@ -20,12 +20,12 @@ pageMeta.baseId = '{{ baseId }}';
 		<ul>
 			{% if user.id is not sameas(account.user.id) %}
 				{% if user.id in account.friend_ids %}
-					<li class="create-ticket"><button class="clean-white large">{{ phrase('global.unfollow') }}</button></li>
+					<li class="create-ticket"><button class="clean-white large">{{ phrase('agent.global.unfollow') }}</button></li>
 				{% else %}
-					<li class="create-ticket"><button class="clean-white large">{{ phrase('global.follow') }}</button></li>
+					<li class="create-ticket"><button class="clean-white large">{{ phrase('agent.global.follow') }}</button></li>
 				{% endif %}
 			{% endif %}
-			<li class="create-ticket"><button class="clean-white large">{{ phrase('global.message') }}</button></li>
+			<li class="create-ticket"><button class="clean-white large">{{ phrase('agent.global.message') }}</button></li>
 		</ul>
 	</nav>
 	<div class="person-picture-box">
@@ -61,9 +61,9 @@ pageMeta.baseId = '{{ baseId }}';
 				<header>
 					<nav>
 						<ul>
-							<li data-tab-for="#{{baseId}}_statuses_tab" class="on">{{ phrase('global.statuses') }}</li>
-							<li data-tab-for="#{{baseId}}_messages_tab">{{ phrase('global.messages') }}</li>
-							<li data-tab-for="#{{baseId}}_mentions_tab">{{ phrase('global.mentions') }}</li>
+							<li data-tab-for="#{{baseId}}_statuses_tab" class="on">{{ phrase('agent.global.statuses') }}</li>
+							<li data-tab-for="#{{baseId}}_messages_tab">{{ phrase('agent.global.messages') }}</li>
+							<li data-tab-for="#{{baseId}}_mentions_tab">{{ phrase('agent.global.mentions') }}</li>
 						</ul>
 					</nav>
 				</header>
@@ -99,13 +99,13 @@ pageMeta.baseId = '{{ baseId }}';
 			{# Box Profile #}
 				<div class="profile-box-container summary">
 					<header>
-						<h4>{{ phrase('global.profile') }}</h4>
+						<h4>{{ phrase('agent.global.profile') }}</h4>
 					</header>
 					<section>
 						<table class="table-content contact-list contact-list-wrapper" id="{{baseId}}_contact_display" width="100%">
 							<tr class="row-table-cotent">
 								<td class="col-table-content title-col">
-									<span>{{ phrase('global.language') }}</span>
+									<span>{{ phrase('agent.global.language') }}</span>
 								</td>
 								<td width="70%"  class="col-table-content prop-val">
 									{{ user.language }}
@@ -129,7 +129,7 @@ pageMeta.baseId = '{{ baseId }}';
 							</tr>
 							<tr class="row-table-cotent dark">
 								<td class="col-table-content title-col">
-									<span>{{ phrase('global.verified') }}</span>
+									<span>{{ phrase('agent.global.verified') }}</span>
 								</td>
 								<td width="70%"  class="col-table-content prop-val">
 									{% if user.is_verified %}yes{% else %}no{% endif %}

@@ -17,7 +17,7 @@
 	<input type="hidden" name="usersource[source_type]" value="{{ usersource.source_type }}" />
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('global.title') }}</label>
+			<label>{{ phrase('admin.global.title') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.title) }}
@@ -38,12 +38,12 @@
 
 	{% include 'AdminBundle:UserReg:usersource-edit-' ~ usersource.source_type ~ '.html.twig' %}
 
-	<button class="btn primary save-trigger">{{ phrase('global.save') }}</button>
+	<button class="btn primary save-trigger">{{ phrase('admin.global.save') }}</button>
 </form>
 
 {% if usersource.id %}
 <div class="delete-link-wrap">
-	<a href="{{ path('admin_userreg_usersource_delete', {id: usersource.id, security_token: security_token('delete_usersource') }) }}" onclick="return confirm('Are you sure you want to delete this usersource? Users will not be able to log in with these credentials anymore.');">{{ phrase('global.delete') }}</a>
+	<a href="{{ path('admin_userreg_usersource_delete', {id: usersource.id, security_token: security_token('delete_usersource') }) }}" onclick="return confirm('Are you sure you want to delete this usersource? Users will not be able to log in with these credentials anymore.');">{{ phrase('admin.global.delete') }}</a>
 </div>
 {% endif %}
 

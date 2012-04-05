@@ -2,7 +2,7 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_products') }}">{{ phrase('global.products') }}</a></li>
+		<li><a href="{{ path('admin_products') }}">{{ phrase('admin.global.products') }}</a></li>
 		{% if product.id %}
 			<li>{{ phrase('admin.products.edit_product') }}</li>
 		{% else %}
@@ -18,7 +18,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('global.title') }}</label>
+			<label>{{ phrase('admin.global.title') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.title) }}
@@ -39,12 +39,12 @@
 
 {{ form_rest(form) }}
 
-<button class="btn primary save-trigger">{{ phrase('global.save') }}</button>
+<button class="btn primary save-trigger">{{ phrase('admin.global.save') }}</button>
 </form>
 
 {% if product.id %}
 <div class="delete-link-wrap">
-	<a href="{{ path('admin_products_del', {'product_id': product.id}) }}">{{ phrase('global.delete') }}</a>
+	<a href="{{ path('admin_products_del', {'product_id': product.id}) }}">{{ phrase('admin.global.delete') }}</a>
 </div>
 {% endif %}
 {% endblock %}

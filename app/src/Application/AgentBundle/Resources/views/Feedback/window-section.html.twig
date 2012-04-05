@@ -1,7 +1,7 @@
 {% if app.user.hasPerm('agent_publish.validate') %}
 <section class="source-section">
 	<header>
-		<h1>{{ phrase('global.pending') }}</h1>
+		<h1>{{ phrase('agent.global.pending') }}</h1>
 	</header>
 	<ul class="source-list">
 		<li class="is-nav-item auto-load-route" data-route="listpane:{{ path('agent_public_validatingcontent', {'specific_type': 'feedback'}) }}">
@@ -22,9 +22,9 @@
 
 <section class="source-tabs" id="feedback_outline_tabstrip">
 	<ul>
-		<li data-tab-for="#feedback_outline_status"><span>{{ phrase('global.status') }}</span></li>
-		{% if not feedback_cats|length or feedback_cats|length == 1 %}<li data-tab-for="#feedback_outline_category"><span>{{ phrase('global.category') }}</span></li>{% endif %}
-		<li data-tab-for="#feedback_outline_labels"><span>{{ phrase('global.labels') }}</span></li>
+		<li data-tab-for="#feedback_outline_status"><span>{{ phrase('agent.global.status') }}</span></li>
+		{% if not feedback_cats|length or feedback_cats|length == 1 %}<li data-tab-for="#feedback_outline_category"><span>{{ phrase('agent.global.category') }}</span></li>{% endif %}
+		<li data-tab-for="#feedback_outline_labels"><span>{{ phrase('agent.global.labels') }}</span></li>
 	</ul>
 </section>
 
@@ -33,13 +33,13 @@
 		<li class="is-nav-item">
 			<span class="title is-nav-item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'new'}) }}">
 				<span class="list-counter" id="feedback_status_new_count">{{ status_counts.new|default(0) }}</span>
-				{{ phrase('global.new') }}
+				{{ phrase('agent.global.new') }}
 			</span>
 		</li>
 		<li>
 			<span class="title is-nav-item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'active'}) }}">
 				<span class="list-counter is-nav-item" id="feedback_status_active_0_count">{{ status_counts.active[0]|default(0) }}</span>
-				{{ phrase('global.active') }}
+				{{ phrase('agent.global.active') }}
 			</span>
 			<ul class="sub-group indented-list">
 				{% for cat in active_status_cats %}
@@ -55,7 +55,7 @@
 		<li>
 			<span class="title is-nav-item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'closed'}) }}">
 				<span class="list-counter is-nav-item" id="feedback_status_closed_0_count">{{ status_counts.closed[0]|default(0) }}</span>
-				{{ phrase('global.closed') }}
+				{{ phrase('agent.global.closed') }}
 			</span>
 			<ul class="sub-group indented-list">
 				{% for cat in closed_status_cats %}
@@ -71,19 +71,19 @@
 		<li>
 			<span class="title is-nav-item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'hidden'}) }}">
 				<span class="list-counter" id="feedback_status_hidden_hidden_count">{{ status_counts.hidden.hidden|default(0) }}</span>
-				{{ phrase('global.hidden') }}
+				{{ phrase('agent.global.hidden') }}
 			</span>
 			<ul class="sub-group indented-list">
 				<li class="indent is-nav-item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'hidden.deleted'}) }}">
 					<span class="title">
 						<span class="list-counter" id="feedback_status_hidden_deleted_count">{{ status_counts.hidden.deleted|default(0) }}</span>
-						{{ phrase('global.deleted') }}
+						{{ phrase('agent.global.deleted') }}
 					</span>
 				</li>
 				<li class="indent is-nav-item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'hidden.spam' }) }}">
 					<span class="title">
 						<span class="list-counter" id="feedback_status_hidden_spam_count">{{ status_counts.hidden.spam|default(0) }}</span>
-						{{ phrase('global.spam') }}
+						{{ phrase('agent.global.spam') }}
 					</span>
 				</li>
 			</ul>

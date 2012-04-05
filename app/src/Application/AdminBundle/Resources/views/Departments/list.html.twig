@@ -7,7 +7,7 @@
 		</ul>
 	</nav>
 	<ul>
-		<li>{{ phrase('global.departments') }}</li>
+		<li>{{ phrase('admin.global.departments') }}</li>
 	</ul>
 {% endblock %}
 {% block content %}
@@ -21,13 +21,13 @@
 	{{ design.dpgrid({class: 'dep-list'}) }}
 		{{ design.dpgrid_headerrow() }}
 			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 580px;"}) }}
-				<h1>{{ phrase('global.department') }}</h1>
+				<h1>{{ phrase('admin.global.department') }}</h1>
 			{{ design.dpgrid_headercol_end() }}
 			{{ design.dpgrid_headercol({ class: 'l r tl tr l-margin r-margin', style: "width: 140px"}) }}
-				<h1>{{ phrase('global.tickets') }}</h1>
+				<h1>{{ phrase('admin.global.tickets') }}</h1>
 			{{ design.dpgrid_headercol_end() }}
 			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 140px"}) }}
-				<h1>{{ phrase('global.chat') }}</h1>
+				<h1>{{ phrase('admin.global.chat') }}</h1>
 			{{ design.dpgrid_headercol_end() }}
 		{{ design.dpgrid_headerrow_end() }}
 
@@ -45,7 +45,7 @@
 		<form class="dp-form" method="POST" action="{{ path('admin_departments_savetitle') }}">
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>{{ phrase('global.title') }}</label>
+					<label>{{ phrase('admin.global.title') }}</label>
 				</div>
 				<div class="dp-form-input">
 					<input type="hidden" name="department_id" id="editdep_depid" value="" />
@@ -55,7 +55,7 @@
 		</form>
 	</div>
 	<div class="overlay-footer">
-		<button class="clean-white" id="editdep_savebtn">{{ phrase('global.save') }}</button>
+		<button class="clean-white" id="editdep_savebtn">{{ phrase('admin.global.save') }}</button>
 	</div>
 </div>
 
@@ -68,7 +68,7 @@
 		<form class="dp-form" method="POST" action="{{ path('admin_departments_savenew') }}">
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>{{ phrase('global.title') }}</label>
+					<label>{{ phrase('admin.global.title') }}</label>
 				</div>
 				<div class="dp-form-input">
 					<input type="text" name="title" id="newdep_title" value="" />
@@ -77,11 +77,11 @@
 
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>{{ phrase('global.parent') }}</label>
+					<label>{{ phrase('admin.global.parent') }}</label>
 				</div>
 				<div class="dp-form-input">
 					<select name="parent_id" id="newdep_parent_id">
-						<option value="0">{{ phrase('global.no_parent') }}</option>
+						<option value="0">{{ phrase('admin.global.no_parent') }}</option>
 						{% for department in all_departments %}
 							<option value="{{ department.id }}">{{ department.title }}</option>
 						{% endfor %}
@@ -91,7 +91,7 @@
 		</form>
 	</div>
 	<div class="overlay-footer">
-		<button class="clean-white" id="newdep_savebtn">{{ phrase('global.add') }}</button>
+		<button class="clean-white" id="newdep_savebtn">{{ phrase('admin.global.add') }}</button>
 	</div>
 </div>
 

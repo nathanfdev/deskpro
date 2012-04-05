@@ -1,5 +1,5 @@
 <ul class="ticket-message-edit-menu" style="display:none">
-	<li data-option-id="view-details">{{ phrase('global.detail') }}</li>
+	<li data-option-id="view-details">{{ phrase('agent.global.detail') }}</li>
 	<li data-option-id="quote">{{ phrase('agent.quote') }}</li>
 	{#<li data-option-id="split">{{ phrase('agent.tickets.split_from_here') }}</li>#}
 </ul>
@@ -11,19 +11,19 @@
 
 <div class="delete-ticket-overlay overlay" style="display:none">
 	<div class="overlay-title">
-		<h4>{{ phrase('global.ucfirst_delete') }}</h4>
+		<h4>{{ phrase('agent.global.ucfirst_delete') }}</h4>
 	</div>
 
 	<div class="overlay-content">
-		{{ phrase('global.deleted_reason') }}: <input type="text" value="" class="delete-reason" style="width: 200px;" />
+		{{ phrase('agent.global.deleted_reason') }}: <input type="text" value="" class="delete-reason" style="width: 200px;" />
 	</div>
 
 	<div class="overlay-footer">
 		<div class="loading-off">
-			<button class="save-trigger clean-white">{{ phrase('global.ucfirst_delete') }}</button>
+			<button class="save-trigger clean-white">{{ phrase('agent.global.ucfirst_delete') }}</button>
 		</div>
 		<div class="loading-on" style="display:none">
-			<span>{{ phrase('global.saving') }}</span>
+			<span>{{ phrase('agent.global.saving') }}</span>
 		</div>
 	</div>
 </div>

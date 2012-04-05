@@ -47,20 +47,20 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="profile-box-container-outer">
 <div class="profile-box-container">
 	<header>
-		<h4>{{ phrase('global.properties') }}</h4>
+		<h4>{{ phrase('agent.global.properties') }}</h4>
 	</header>
 	<section class="description-area">
 		<dl class="info-list">
-			<dt class="type-labels">{{ phrase('global.labels') }}:</dt>
+			<dt class="type-labels">{{ phrase('agent.global.labels') }}:</dt>
 			<dd class="kb-tags tags-wrap noedit-tags">
 				<input type="text" id="{{baseId}}_labels_input" value="{% for label in article.labels %}{{label.label}},{% endfor %}" />
 			</dd>
-			<dt class="">{{ phrase('global.categories') }}</dt>
+			<dt class="">{{ phrase('agent.global.categories') }}</dt>
 			<dd>
 				<ul id="{{baseId}}_categories" class="add-remove-list">
 					{% for cat in article.categories %}
 						<li>
-							<span class="remove noedit-hide">{{ phrase('global.remove') }}</span>
+							<span class="remove noedit-hide">{{ phrase('agent.global.remove') }}</span>
 							{{ cat.full_title }}
 							<input type="hidden" name="category_ids[]" value="{{ cat.id }}" />
 						</li>
@@ -73,12 +73,12 @@ pageMeta.baseId = '{{ baseId }}';
 			</dd>
 
 			{% if app.getSetting('core.use_product') %}
-				<dt class="">{{ phrase('global.products') }}</dt>
+				<dt class="">{{ phrase('agent.global.products') }}</dt>
 				<dd>
 					<ul id="{{baseId}}_products" class="add-remove-list">
 						{% for prod in article.products %}
 							<li>
-								<span class="remove">{{ phrase('global.remove') }}</span>
+								<span class="remove">{{ phrase('agent.global.remove') }}</span>
 								{{ prod.full_title }}
 								<input type="hidden" name="product_ids[]" value="{{ prod.id }}" />
 							</li>
@@ -91,13 +91,13 @@ pageMeta.baseId = '{{ baseId }}';
 				</dd>
 			{% endif %}
 
-			<dt>{{ phrase('global.rating') }}</dt>
+			<dt>{{ phrase('agent.global.rating') }}</dt>
 			<dd>
                 {% set phrase_part %}
-                <span class="link-look who-voted-trigger">{{ phrase('global.count_votecount_votes', {'count':article.num_ratings}) }}</span>
+                <span class="link-look who-voted-trigger">{{ phrase('agent.global.count_votecount_votes', {'count':article.num_ratings}) }}</span>
                 {% endset %}
-                {{ phrase('global.percent_helpful_subphrase', {'percent':article.rating_percent,'subphrase':phrase_part}) }}<br />
-				<small>{{ phrase('global.up_votes_found_this_the_article_helpful_down_votes_found', {'up_votes':article.up_votes,'down_votes':article.down_votes}) }}</small>
+                {{ phrase('agent.global.percent_helpful_subphrase', {'percent':article.rating_percent,'subphrase':phrase_part}) }}<br />
+				<small>{{ phrase('agent.global.up_votes_found_this_the_article_helpful_down_votes_found', {'up_votes':article.up_votes,'down_votes':article.down_votes}) }}</small>
 			</dd>
 
 			{% if article.date_created == article.date_published %}
@@ -112,7 +112,7 @@ pageMeta.baseId = '{{ baseId }}';
                     {{ phrase('agent.kb.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name,'date':phrase_part2}) }}
 				</dd>
 			{% else %}
-				<dt>{{ phrase('global.date_created') }}:</dt>
+				<dt>{{ phrase('agent.global.date_created') }}:</dt>
 				<dd>
                     {% set phrase_part1 %}
                     <time class="timeago" datetime="{{article.date_created|date('c')}}"></time>
@@ -144,7 +144,7 @@ pageMeta.baseId = '{{ baseId }}';
 					on <span class="end-date opt" {% if article.date_end %}data-val="{{ article.date_end|date('U') }}"{% endif %}>
 						{% if article.date_end %}{{ article.date_end|date('day') }}{% else %}{{ phrase('agent.kb.click_to_set_date') }}{% endif %}</span>
 					<input type="text" class="end-date-input" value="{{ article.date_end|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
-					(<span class="remove-auto-unpublish options-text">{{ phrase('global.remove') }}</span>)
+					(<span class="remove-auto-unpublish options-text">{{ phrase('agent.global.remove') }}</span>)
 				</span>
 				<span class="options-text auto-unpublish-set" {% if article.date_end %}style="display: none"{% endif %}>
 					{{ phrase('agent.kb.set_an_automatic_unpublish_date') }}
@@ -153,7 +153,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 				<ul class="end-action-menu" style="display: none">
 					<li data-action="unpublish">{{ phrase('agent.unpublish') }}</li>
-					<li data-action="archive">{{ phrase('global.archive') }}</li>
+					<li data-action="archive">{{ phrase('agent.global.archive') }}</li>
 				</ul>
 			</dd>
 
@@ -163,7 +163,7 @@ pageMeta.baseId = '{{ baseId }}';
 					on <span class="pub-date opt" {% if article.date_published %}data-val="{{ article.date_published|date('U') }}"{% endif %}>
 						{% if article.date_published %}{{ article.date_published|date('day') }}{% else %}{{ phrase('agent.kb.click_to_set_date') }}{% endif %}</span>
 					<input type="text" class="pub-date-input" value="{{ article.date_published|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
-					(<span class="remove-auto-publish options-text">{{ phrase('global.remove') }}</span>)
+					(<span class="remove-auto-publish options-text">{{ phrase('agent.global.remove') }}</span>)
 				</span>
 				<span class="options-text auto-publish-set" {% if article.date_published %}style="display: none"{% endif %}>
 					{{ phrase('agent.kb.set_an_automatic_publish_date') }}
@@ -182,14 +182,14 @@ pageMeta.baseId = '{{ baseId }}';
 
 		<div class="controls" id="{{baseId}}_action_buttons">
 			<div class="showing-editing-fields" style="display: none">
-				<button class="clean-white save-fields-trigger"><span>{{ phrase('global.save') }}</span></button>
+				<button class="clean-white save-fields-trigger"><span>{{ phrase('agent.global.save') }}</span></button>
 			</div>
 			<div class="showing-rendered-fields">
 				{% if custom_fields|length %}<button class="clean-white edit-fields-trigger noedit-hide"><span>{{ phrase('agent.edit_properties') }}</span></button>{% endif %}
-				<button class="clean-white delete nodelete-hide" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('global.ucfirst_delete') }}</button>
+				<button class="clean-white delete nodelete-hide" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.global.ucfirst_delete') }}</button>
 				<button class="clean-white permalink">{{ phrase('agent.copy_permalink') }}</button>
 				<button class="clean-white view-user-interface">{{ phrase('agent.view_in_user_interface') }}</button>
-                <a target="_blank" href="{{ path('agent_kb_article', {'article_id': article.id,'pdf': 1}) }}"><button class="clean-white">{{ phrase('global.download_pdf') }}</button></a>
+                <a target="_blank" href="{{ path('agent_kb_article', {'article_id': article.id,'pdf': 1}) }}"><button class="clean-white">{{ phrase('agent.global.download_pdf') }}</button></a>
 			</div>
 		</div>
 	</section>
@@ -200,11 +200,11 @@ pageMeta.baseId = '{{ baseId }}';
 	<header>
 		<nav  id="{{baseId}}_bodytabs">
 			<ul>
-				<li class="on" data-tab-for="#{{baseId}}_tab_contents .kb-content"><span>{{ phrase('global.article') }}</span></li>
-				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('global.comments') }} (<span id="{{baseId}}_count_comments">{{article_comments|length|default(0)}}</span>)</span></li>
+				<li class="on" data-tab-for="#{{baseId}}_tab_contents .kb-content"><span>{{ phrase('agent.global.article') }}</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.global.comments') }} (<span id="{{baseId}}_count_comments">{{article_comments|length|default(0)}}</span>)</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.label_revisions') }} (<span id="{{baseId}}_count_revs">{{article.revisions|length|default(0)}}</span>)</span></li>
-				<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('global.related_content') }} (<span id="{{baseId}}_count_related">0</span>)</span></li>
-				<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('global.search') }}</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.global.related_content') }} (<span id="{{baseId}}_count_related">0</span>)</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('agent.global.search') }}</span></li>
 			</ul>
 		</nav>
 	</header>
@@ -216,9 +216,9 @@ pageMeta.baseId = '{{ baseId }}';
 			<div class="deskpro-tab-item kb-content on" style="display: block">
 				<nav class="sub-box-nav noedit-hide">
 					<ul class="option-buttons right" id="{{baseId}}_content_edit_btns">
-						<li class="kb-editor-edit edit" id="{{baseId}}_edit_btn"><span>{{ phrase('global.ucfirst_edit') }}</span></li>
-						<li class="editor-save-trigger save" id="{{baseId}}_save_btn"><span>{{ phrase('global.save') }}</span></li>
-						<li class="editor-cancel-trigger cancel" id="{{baseId}}_cancel_btn"><span>{{ phrase('global.cancel') }}</span></li>
+						<li class="kb-editor-edit edit" id="{{baseId}}_edit_btn"><span>{{ phrase('agent.global.ucfirst_edit') }}</span></li>
+						<li class="editor-save-trigger save" id="{{baseId}}_save_btn"><span>{{ phrase('agent.global.save') }}</span></li>
+						<li class="editor-cancel-trigger cancel" id="{{baseId}}_cancel_btn"><span>{{ phrase('agent.global.cancel') }}</span></li>
 					</ul>
 				</nav>
 				<div id="{{baseId}}_content_ed" class="content-tab-item">
@@ -247,7 +247,7 @@ pageMeta.baseId = '{{ baseId }}';
 								</div>
 								<div class="content">
 									<header>
-										<h4>{{ phrase('global.new_comment') }}</h4>
+										<h4>{{ phrase('agent.global.new_comment') }}</h4>
 									</header>
 									<div class="body-text">
 										<textarea style="width:99%; height: 80px;"></textarea>
@@ -257,7 +257,7 @@ pageMeta.baseId = '{{ baseId }}';
 											<button class="clean-white">{{ phrase('agent.add_comment') }}</button>
 										</div>
 										<div class="loading-on" style="display:none">
-											{{ phrase('global.saving') }}
+											{{ phrase('agent.global.saving') }}
 										</div>
 									</div>
 								</div>
@@ -313,11 +313,11 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <ul class="status-menu" data-option-name="status" style="display:none">
-	<li data-option-value="published">{{ phrase('global.published') }}</li>
-	<li data-option-value="hidden.unpublished">{{ phrase('global.unpublished') }}</li>
-	<li data-option-value="archived">{{ phrase('global.archived') }}</li>
+	<li data-option-value="published">{{ phrase('agent.global.published') }}</li>
+	<li data-option-value="hidden.unpublished">{{ phrase('agent.global.unpublished') }}</li>
+	<li data-option-value="archived">{{ phrase('agent.global.archived') }}</li>
 	{% if article.person.id == app.user.id %}
-		<li data-option-value="hidden.draft">{{ phrase('global.draft') }}</li>
+		<li data-option-value="hidden.draft">{{ phrase('agent.global.draft') }}</li>
 	{% endif %}
 </ul>
 

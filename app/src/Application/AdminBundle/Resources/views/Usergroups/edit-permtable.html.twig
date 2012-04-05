@@ -1,11 +1,11 @@
 <nav class="check-grid-tabs">
 	<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
-		<li class="on" data-tab-for="#permgroup_tickets"><span>{{ phrase('global.tickets') }}</span></li>
-		<li data-tab-for="#permgroup_chat"><span>{{ phrase('global.chat') }}</span></li>
-		<li data-tab-for="#permgroup_feedback"><span>{{ phrase('global.feedback') }}</span></li>
-		<li data-tab-for="#permgroup_articles"><span>{{ phrase('global.articles') }}</span></li>
-		<li data-tab-for="#permgroup_downloads"><span>{{ phrase('global.downloads') }}</span></li>
-		<li data-tab-for="#permgroup_news"><span>{{ phrase('global.news') }}</span></li>
+		<li class="on" data-tab-for="#permgroup_tickets"><span>{{ phrase('admin.global.tickets') }}</span></li>
+		<li data-tab-for="#permgroup_chat"><span>{{ phrase('admin.global.chat') }}</span></li>
+		<li data-tab-for="#permgroup_feedback"><span>{{ phrase('admin.global.feedback') }}</span></li>
+		<li data-tab-for="#permgroup_articles"><span>{{ phrase('admin.global.articles') }}</span></li>
+		<li data-tab-for="#permgroup_downloads"><span>{{ phrase('admin.global.downloads') }}</span></li>
+		<li data-tab-for="#permgroup_news"><span>{{ phrase('admin.global.news') }}</span></li>
 	</ul>
 </nav>
 
@@ -15,7 +15,7 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th style="text-align: left;">{{ phrase('global.departments') }}</th>
+					<th style="text-align: left;">{{ phrase('admin.global.departments') }}</th>
 					<th width="60">&nbsp;</th>
 				</tr>
 			</thead>
@@ -50,7 +50,7 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th style="text-align: left;">{{ phrase('global.departments') }}</th>
+					<th style="text-align: left;">{{ phrase('admin.global.departments') }}</th>
 					<th width="60">&nbsp;</th>
 				</tr>
 			</thead>
@@ -85,7 +85,7 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th style="text-align: left;">{{ phrase('global.permission') }}</th>
+					<th style="text-align: left;">{{ phrase('admin.global.permission') }}</th>
 					<th width="60">&nbsp;</th>
 				</tr>
 			</thead>
@@ -121,7 +121,7 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th style="text-align: left;">{{ phrase('global.permission') }}</th>
+					<th style="text-align: left;">{{ phrase('admin.global.permission') }}</th>
 					<th width="60">&nbsp;</th>
 				</tr>
 			</thead>
@@ -150,7 +150,7 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th style="text-align: left;">{{ phrase('global.permission') }}</th>
+					<th style="text-align: left;">{{ phrase('admin.global.permission') }}</th>
 					<th width="60">&nbsp;</th>
 				</tr>
 			</thead>
@@ -174,12 +174,12 @@
 
 <div id="permgroup_news" style="display: none" class="dp-form-box">
 	<!-- PERMISSION:news.use --><input class="onoff-slider" type="checkbox" {% if permissions['news.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.use]" value="1" />
-	{{ phrase('global.news') }}
+	{{ phrase('admin.global.news') }}
 	<div class="check-grid" style="max-height: 200px; overflow: auto;">
 		<table width="100%">
 			<thead>
 				<tr>
-					<th style="text-align: left;">{{ phrase('global.permission') }}</th>
+					<th style="text-align: left;">{{ phrase('admin.global.permission') }}</th>
 					<th width="60">&nbsp;</th>
 				</tr>
 			</thead>

@@ -2,7 +2,7 @@
 	<li data-grouping-option="0" class="grouping-0">
 		<span class="title is-nav-item">
 			<span class="list-counter">{{ grouped_info.counts[0].total }}</span>
-			{{ phrase('global.none') }}
+			{{ phrase('agent.global.none') }}
 		</span>
 	</li>
 {% endif %}
@@ -27,7 +27,7 @@
 				</span>
 				{% if grouping_var == 'urgency' %}
 					<span class="status-pill urgency-{{ cat.title }} awaiting_agent">
-						<label>{{ phrase('global.awaiting_agent') }}</label>
+						<label>{{ phrase('agent.global.awaiting_agent') }}</label>
 						<i>{{ cat.title }}</i>
 					</span>
 				{% else %}

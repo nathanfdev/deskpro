@@ -1,6 +1,6 @@
 {% extends 'UserBundle:News:layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_news') }}">{{ phrase('global.news') }}</a></li>
+	<li><a href="{{ path('user_news') }}">{{ phrase('user.global.news') }}</a></li>
 	{% for cat in category_path %}
 		<li><a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
@@ -11,7 +11,7 @@
 		data-load-url="{{ path('user_news', {'page': '00000', 'per_page': per_page})|replace({'00000': '{page}'}) }}"
 	>
 	<div class="content-filters">
-		{{ phrase('global.category') }}:
+		{{ phrase('user.global.category') }}:
 		<select name="category_id" class="category_id" onchange="window.location = $(this).val();">
 			<option value="{{ path('user_news') }}">All ({{ category_counts[0] }})</option>
 			{% for cat in news_cats %}
@@ -27,7 +27,7 @@
 	{% if show_more %}
 	<div class="content-more">
 		<div class="is-not-loading">
-			<button>{{ phrase('global.more') }}</button>
+			<button>{{ phrase('user.global.more') }}</button>
 		</div>
 		<div class="is-loading">
 			<center><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></center>

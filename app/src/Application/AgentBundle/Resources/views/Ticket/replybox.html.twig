@@ -37,11 +37,11 @@
 <input type="hidden" id="{{replyBaseId}}_exist_agent_team_id" value="{{ ticket.agent_team.id|default(0) }}" />
 
 <div class="profile-box-container reply-box-wrap" style="position: relative">
-	<div class="drop-file-zone"><h1>{{ phrase('global.drop_your_file_here_to_attach_it_to') }}</h1></div>
+	<div class="drop-file-zone"><h1>{{ phrase('agent.global.drop_your_file_here_to_attach_it_to') }}</h1></div>
 	<header>
 		<nav>
 			<ul>
-				{% if ticket_perms.reply %}<li id="{{replyBaseId}}_replybox_replytab_btn" class="on">{{ phrase('global.reply') }}</li>{% endif %}
+				{% if ticket_perms.reply %}<li id="{{replyBaseId}}_replybox_replytab_btn" class="on">{{ phrase('agent.global.reply') }}</li>{% endif %}
 				{% if ticket_perms.modify_notes %}<li id="{{replyBaseId}}_replybox_notetab_btn" class="note-type {% if not ticket_perms.reply %}on{% endif %}">{{ phrase('agent.note') }}</li>{% endif %}
 			</ul>
 		</nav>
@@ -50,7 +50,7 @@
 
 		<nav id="{{replyBaseId}}_header_rows">
 			<ul class="option-buttons">
-				<li class="tipped attach" title="{{ phrase('global.attachments') }}">
+				<li class="tipped attach" title="{{ phrase('agent.global.attachments') }}">
 					<input type="file" class="file" name="file-upload" />
 					<span></span>
 				</li>
@@ -63,10 +63,10 @@
 					<input type="checkbox" name="options[do_kbpending]"/>
 				</li>
 				<li class="tipped closetab toggle hide-note" title="{{ phrase('agent.tickets.close_tab_after_reply') }}">
-					<span>{{ phrase('global.close_tab') }}<em class="check"></em></span>
+					<span>{{ phrase('agent.global.close_tab') }}<em class="check"></em></span>
 					<input type="checkbox" name="options[close_tab]" />
 				</li>
-				<li class="send" id="{{replyBaseId}}_send_btn"><span class="hide-note">{{ phrase('global.send') }}</span><span class="hide-reply">{{ phrase('global.add') }}</span></li>
+				<li class="send" id="{{replyBaseId}}_send_btn"><span class="hide-note">{{ phrase('agent.global.send') }}</span><span class="hide-reply">{{ phrase('agent.global.add') }}</span></li>
 			</ul>
 		</nav>
 		<article>
@@ -121,7 +121,7 @@
                                             </ul>
                                         </section>
                                     </div>
-                                    <button class="clean-white small cc-saverow-trigger">{{ phrase('global.add') }}</button>
+                                    <button class="clean-white small cc-saverow-trigger">{{ phrase('agent.global.add') }}</button>
                                     <script class="user-row-tpl" type="text/x-deskpro-tmpl">
                                         <li>
                                             <a>
@@ -136,11 +136,11 @@
 						</li>
 					{% endif %}
 					<li class="hide-note">
-						<label>{{ phrase('global.status') }}:</label>
+						<label>{{ phrase('agent.global.status') }}:</label>
 						<div id="{{replyBaseId}}_status_detail" class="{% if ticket.status_code == 'awaiting_agent' %}changed{% endif %}">
 							<a class="status-trigger prop-change with-menu-click-position">
                                 {% set phrase_part %}
-                                <span class="new-val-label">{{ phrase('global.awaiting_user') }}</span>
+                                <span class="new-val-label">{{ phrase('agent.global.awaiting_user') }}</span>
                                 {% endset %}
                                 {{ phrase('agent.ticket.change_status', {'old':phrase('agent.tickets.status_' ~ ticket.status), 'new':phrase_part}) }}
 							</a>
@@ -150,20 +150,20 @@
 						</div>
 					</li>
 					<li class="hide-note">
-						<label>{{ phrase('global.assign') }}:</label>
+						<label>{{ phrase('agent.global.assign') }}:</label>
 						<div id="{{replyBaseId}}_assign_detail">
 							<a id="{{replyBaseId}}_assign_btn" class="with-menu-click-position">
 							<span id="{{replyBaseId}}_assign_detail_agent" class="{% if ticket.agent.id != app.user.id %}changed{% endif %}">
 								<span class="prop-change">
 									{% if ticket.agent %}
                                         {% set phrase_part %}
-                                            <span class="new-val-label">{{ phrase('global.me') }}</span>
+                                            <span class="new-val-label">{{ phrase('agent.global.me') }}</span>
                                         {% endset %}
                                         {{ phrase('agent.ticket.change_agent', {'old':tools.name_or_me(ticket.agent),'new':phrase_part}) }}
 										{% if app.getSetting('core.use_agent_team') %} | {% endif %}
 									{% else %}
                                         {% set phrase_part %}
-                                            <span class="new-val-label">{{ phrase('global.me') }}</span>
+                                            <span class="new-val-label">{{ phrase('agent.global.me') }}</span>
                                         {% endset %}
 										{{ phrase('agent.ticket.remain_assigned_to_agent', {'agent':phrase_part}) }}  {% if app.getSetting('core.use_agent_team') %} | {% endif %}
 									{% endif %}
@@ -181,7 +181,7 @@
 									<span class="prop-change">
 										{% if ticket.agent_team %}
 											{% set phrase_part %}
-                                                <span class="new-val-label">{{ phrase('global.me') }}</span>
+                                                <span class="new-val-label">{{ phrase('agent.global.me') }}</span>
                                             {% endset %}
                                             {{ phrase('agent.ticket.change_team', {'old':tools.team_name_or_me(ticket.agent_team),'new':phrase_part}) }}
 										{% else %}
@@ -212,7 +212,7 @@
 						</div>
 					</li>
 					<li class="hide-reply" style="display: none">
-						<label>{{ phrase('global.followers') }}:</label>
+						<label>{{ phrase('agent.global.followers') }}:</label>
 						<div id="{{replyBaseId}}_assign_followers">
 							<a id="{{replyBaseId}}_assign_followers_btn" class="with-menu-click-position">
 							<span id="{{replyBaseId}}_assign_followers_detail">
@@ -233,7 +233,7 @@
 						</div>
 					</li>
 					<li id="{{replyBaseId}}_attach_row" class="attach-row is-hidden" style="display: none">
-						<label><span>{{ phrase('global.attachments') }}</span></label>
+						<label><span>{{ phrase('agent.global.attachments') }}</span></label>
 						<div>
 							<ul class="files"></ul>
 							<br class="clear"/>
@@ -258,30 +258,30 @@
 
 <ul style="display: none" id="{{replyBaseId}}_status_menu">
 	<li data-status="no-change">{{ phrase('agent.tickets.keep_current_status') }}: {{ phrase('agent.tickets.status_' ~ ticket.status) }}</li>
-	{% if ticket.status != 'awaiting_agent' %}<li data-status="awaiting_agent">{{ phrase('global.awaiting_agent') }}</li>{% endif %}
-	{% if ticket.status != 'awaiting_user' %}<li data-status="awaiting_user">{{ phrase('global.awaiting_user') }}</li>{% endif %}
+	{% if ticket.status != 'awaiting_agent' %}<li data-status="awaiting_agent">{{ phrase('agent.global.awaiting_agent') }}</li>{% endif %}
+	{% if ticket.status != 'awaiting_user' %}<li data-status="awaiting_user">{{ phrase('agent.global.awaiting_user') }}</li>{% endif %}
 </ul>
 
 <div class="optionbox reply-agent-team-ob" id="{{replyBaseId}}_agent_selector">
 	<header>
-		<h4>{{ phrase('global.assignments') }}</h4>
+		<h4>{{ phrase('agent.global.assignments') }}</h4>
 		<span class="close close-trigger"></span>
 	</header>
 	<div class="col">
 		<section data-section-name="agents">
 			<header>
-				<h3>{{ phrase('global.agents') }}</h3>
-				<input type="text" class="filter-box" placeholder="{{ phrase('global.filter') }}" />
+				<h3>{{ phrase('agent.global.agents') }}</h3>
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.global.filter') }}" />
 			</header>
 			<ul>
 				<li class="me last-me {% if ticket.agent.id == app.user.id or not ticket.agent %}on{% endif %}">
 					<input type="radio" name="{{replyBaseId}}_agent" value="{{ app.user.id }}" {% if ticket.agent.id == app.user.id or not ticket.agent %}checked="checked"{% endif %} />
-					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('global.me') }}</span></label>
+					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.global.me') }}</span></label>
 				</li>
 
 				<li>
 					<input type="radio" name="{{replyBaseId}}_agent" value="0" />
-					<label><span class="agent-pic agent-label-0">{{ phrase('global.unassigned') }}</span></label>
+					<label><span class="agent-pic agent-label-0">{{ phrase('agent.global.unassigned') }}</span></label>
 				</li>
 
 				{% for agent in agents %}
@@ -300,8 +300,8 @@
 	<div class="col">
 		<section data-section-name="teams">
 			<header>
-				<h3>{{ phrase('global.teams') }}</h3>
-				<input type="text" class="filter-box" placeholder="{{ phrase('global.filter') }}" />
+				<h3>{{ phrase('agent.global.teams') }}</h3>
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.global.filter') }}" />
 			</header>
 			<ul>
 				{% for team in app.user.getAgent().getTeams() %}
@@ -314,7 +314,7 @@
 
 				<li class="{% if not ticket.agent_team %}on{% endif %}">
 					<input type="radio" name="{{replyBaseId}}_agent_team" value="0" {% if not ticket.agent_team %}checked="checked"{% endif %} />
-					<label><span class="agent-team-label-0">{{ phrase('global.no_team') }}</span></label>
+					<label><span class="agent-team-label-0">{{ phrase('agent.global.no_team') }}</span></label>
 				</li>
 
 				{% for team in agent_teams %}
@@ -333,13 +333,13 @@
 	<div class="col">
 		<section data-section-name="followers">
 			<header>
-				<h3>{{ phrase('global.followers') }}</h3>
-				<input type="text" class="filter-box" placeholder="{{ phrase('global.filter') }}" />
+				<h3>{{ phrase('agent.global.followers') }}</h3>
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.global.filter') }}" />
 			</header>
 			<ul>
 				<li class="me last-me {% if app.user.id in participant_ids %}on{% endif %}">
 					<input type="checkbox" name="{{replyBaseId}}_part" value="{{ app.user.id }}" {% if app.user.id in participant_ids %}checked="checked"{% endif %} />
-					<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('global.me') }}</span></label>
+					<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.global.me') }}</span></label>
 				</li>
 
 				{% for agent in agents %}
@@ -356,24 +356,24 @@
 	</div>
 	<br class="clear" />
 	<footer>
-		<button class="save-trigger">{{ phrase('global.apply') }}</button>
+		<button class="save-trigger">{{ phrase('agent.global.apply') }}</button>
 	</footer>
 </div>
 
 <div class="optionbox reply-agent-team-ob" id="{{replyBaseId}}_agent_followers_selector">
 	<header>
-		<h4>{{ phrase('global.followers') }}</h4>
+		<h4>{{ phrase('agent.global.followers') }}</h4>
 		<span class="close close-trigger"></span>
 	</header>
 	<section data-section-name="followers">
 		<header>
-			<h3>{{ phrase('global.followers') }}</h3>
-			<input type="text" class="filter-box" placeholder="{{ phrase('global.filter') }}" />
+			<h3>{{ phrase('agent.global.followers') }}</h3>
+			<input type="text" class="filter-box" placeholder="{{ phrase('agent.global.filter') }}" />
 		</header>
 		<ul>
 			<li class="me last-me {% if app.user.id in participant_ids %}on{% endif %}">
 				<input type="checkbox" name="{{replyBaseId}}_notepart" value="{{ app.user.id }}" {% if app.user.id in participant_ids %}checked="checked"{% endif %} />
-				<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('global.me') }}</span></label>
+				<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.global.me') }}</span></label>
 			</li>
 
 			{% for agent in agents %}
@@ -388,7 +388,7 @@
 		</ul>
 	</section>
 	<footer>
-		<button class="save-trigger">{{ phrase('global.apply') }}</button>
+		<button class="save-trigger">{{ phrase('agent.global.apply') }}</button>
 	</footer>
 </div>
 

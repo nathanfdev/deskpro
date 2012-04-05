@@ -14,7 +14,7 @@
 				</div>
 			</div>
 			<div class="userinfo general">
-                {{ phrase('global.by_name', {'name':convo.person}) }}
+                {{ phrase('agent.global.by_name', {'name':convo.person}) }}
 					<a class="name click-through"
 					 data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id|default('0')}) }}" data-route-title="@selector(.person-tip)">
 					<span class="person-name-picture" style="background-image: url({{ convo.person.getPictureUrl(15) }})">{{ convo.person.display_name }}</span></a>
@@ -22,7 +22,7 @@
 				{% elseif convo.person_name or convo.person_email %}
 					{{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %},
 				{% else %}
-					{{ phrase('global.anonymous') }},
+					{{ phrase('agent.global.anonymous') }},
 				{% endif %}
 				<time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('day_short') }}</time>
 			</div>

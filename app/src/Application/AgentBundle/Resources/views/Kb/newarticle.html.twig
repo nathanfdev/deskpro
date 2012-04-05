@@ -28,11 +28,11 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="first section cat-section" id="{{baseId}}_cat_section">
 	<div class="step">
 		<span class="num">1</span>
-		<span class="check">{{ phrase('global.done') }}</span>
+		<span class="check">{{ phrase('agent.global.done') }}</span>
 	</div>
 	<div class="content">
 		<div class="col">
-			<h4>{{ phrase('global.category') }}</h4>
+			<h4>{{ phrase('agent.global.category') }}</h4>
 			{% include 'AgentBundle:Common:select-standard.html.twig' with {
 				'name': 'newarticle[category_id]',
 				'id': baseId ~ '_cat',
@@ -45,13 +45,13 @@ pageMeta.baseId = '{{ baseId }}';
 			} %}
 		</div>
 		<div class="col">
-			<h4 class="light">{{ phrase('global.status') }}</h4>
+			<h4 class="light">{{ phrase('agent.global.status') }}</h4>
 			<select name="newarticle[status]">
-				<option value="published">{{ phrase('global.published') }}</option>
-				<option value="hidden.unpublished">{{ phrase('global.unpublished') }}</option>
-				<option value="hidden.draft">{{ phrase('global.draft') }}</option>
+				<option value="published">{{ phrase('agent.global.published') }}</option>
+				<option value="hidden.unpublished">{{ phrase('agent.global.unpublished') }}</option>
+				<option value="hidden.draft">{{ phrase('agent.global.draft') }}</option>
 				{% if constant('DP_DEBUG') %}
-					<option value="hidden.validating" selected="selected">{{ phrase('global.dev_validating') }}</option>
+					<option value="hidden.validating" selected="selected">{{ phrase('agent.global.dev_validating') }}</option>
 				{% endif %}
 			</select>
 		</div>
@@ -62,10 +62,10 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section title-section" id="{{baseId}}_title_section">
 	<div class="step">
 		<span class="num">2</span>
-		<span class="check">{{ phrase('global.done') }}</span>
+		<span class="check">{{ phrase('agent.global.done') }}</span>
 	</div>
 	<div class="content">
-		<h4>{{ phrase('global.title') }}</h4>
+		<h4>{{ phrase('agent.global.title') }}</h4>
 		<input type="title" name="newarticle[title]" id="{{baseId}}_title" value="{{ state.newarticle.title }}" />
 	</div>
 </div>
@@ -73,10 +73,10 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section article-section" id="{{baseId}}_news_section">
 	<div class="step">
 		<span class="num">3</span>
-		<span class="check">{{ phrase('global.done') }}</span>
+		<span class="check">{{ phrase('agent.global.done') }}</span>
 	</div>
 	<div class="content">
-		<h4>{{ phrase('global.article') }}</h4>
+		<h4>{{ phrase('agent.global.article') }}</h4>
 		<textarea type="text" name="newarticle[content]" id="{{baseId}}_content">{{ state.newarticle.content }}</textarea>
 	</div>
 </div>
@@ -85,27 +85,27 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section other-section" id="{{baseId}}_other_section">
 	<div class="step">
 		<span class="num">5</span>
-		<span class="check">{{ phrase('global.done') }}</span>
+		<span class="check">{{ phrase('agent.global.done') }}</span>
 	</div>
 	<div class="content">
 		{# Tab Container #}
 		<div class="tab-container">
 			<nav id="{{baseId}}_other_props_tabs_wrap">
 				<ul id="{{baseId}}_other_props_tabs">
-					<li data-tab-for="> .tab-properties">{{ phrase('global.properties') }}</li>
-					<li data-tab-for="> .tab-attach">{{ phrase('global.attachments') }}</li>
+					<li data-tab-for="> .tab-properties">{{ phrase('agent.global.properties') }}</li>
+					<li data-tab-for="> .tab-attach">{{ phrase('agent.global.attachments') }}</li>
 				</ul>
 			</nav>
 			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
 				{# Tab Properties #}
 				<div class="tab-properties" style="display: none">
 					<dl>
-						<dt class="prop">{{ phrase('global.url_slug') }}</dt>
+						<dt class="prop">{{ phrase('agent.global.url_slug') }}</dt>
 						<dd class="prop">
 							<input type="input" name="newarticle[slug]" id="{{baseId}}_slug" value="{{ state.newarticle.slug }}" />
 						</dd>
 
-						<dt class="prop">{{ phrase('global.labels') }}</dt>
+						<dt class="prop">{{ phrase('agent.global.labels') }}</dt>
 						<dd class="prop">
 							<div class="tags-wrap article-tags">
 								<input type="text" value="{% for label in state.newarticle.labels %}{{label}},{% endfor %}" />
@@ -118,9 +118,9 @@ pageMeta.baseId = '{{ baseId }}';
 				{# Tab Attach #}
 				<div class="tab-attach" style="display: none">
 					{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newarticle[attach][]'} %}
-					<h6>{{ phrase('global.attachments') }}</h6>
+					<h6>{{ phrase('agent.global.attachments') }}</h6>
 					<div class="file-input">
-						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('global.upload') }}</button>
+						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.global.upload') }}</button>
 					</div>
 					<ul class="files file-list"></ul>
 				</div>
@@ -134,7 +134,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">{{ phrase('agent.kb.create_article') }} <kbd>{{ phrase('global.altc') }}</kbd></button>
+		<button class="submit-trigger clean-white">{{ phrase('agent.kb.create_article') }} <kbd>{{ phrase('agent.global.altc') }}</kbd></button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

@@ -3,12 +3,12 @@
     {% set phrase_part %}
         <span class="selected-count">0</span>
     {% endset %}
-    {{ phrase('global.display_count_selected', {'display_count':phrase_part}) }}
+    {{ phrase('agent.global.display_count_selected', {'display_count':phrase_part}) }}
 	<a class="perform-action perform-actions-trigger disabled menu-fitted">
 		<span>{{ phrase('agent.perform_actions') }}</span>
 	</a>
 	<ul class="actions-menu" style="display: none">
 		<li data-action="approve">{{ phrase('agent.approve') }}</li>
-		<li data-action="delete">{{ phrase('global.ucfirst_delete') }}</li>
+		<li data-action="delete">{{ phrase('agent.global.ucfirst_delete') }}</li>
 	</ul>
 </header>

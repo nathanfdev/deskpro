@@ -116,7 +116,7 @@ function _page_exec() {
 
 <div style="float:left; width: 200px">
 	<div class="available-display-items">
-		<h4>{{ phrase('global.ticket_fields') }}</h4>
+		<h4>{{ phrase('admin.global.ticket_fields') }}</h4>
 		<ul class="field-list">
 			{% for field in custom_fields %}
 				{% include 'AdminBundle:Departments:designer-field-choicerow.html.twig' %}
@@ -149,7 +149,7 @@ function _page_exec() {
 </div>
 
 <div style="margin-top: 10px; text-align: center">
-	<button class="dp-button green" type="submit">{{ phrase('global.save') }}</button>
+	<button class="dp-button green" type="submit">{{ phrase('admin.global.save') }}</button>
 </div>
 
 </form>
@@ -194,11 +194,11 @@ function _page_exec() {
 		</div>
 	</div>
 	{% if term_options.products %}
-		<div class="type" title="{{ phrase('global.product') }}" data-rule-type="product">
+		<div class="type" title="{{ phrase('admin.global.product') }}" data-rule-type="product">
 			<div class="op">
 				<select name="op">
-					<option value="is">{{ phrase('global.is') }}</option>
-					<option value="not">{{ phrase('global.is_not') }}</option>
+					<option value="is">{{ phrase('admin.global.is') }}</option>
+					<option value="not">{{ phrase('admin.global.is_not') }}</option>
 				</select>
 			</div>
 			<div class="options">
@@ -211,11 +211,11 @@ function _page_exec() {
 		</div>
 	{% endif %}
 	{% if term_options.ticket_categories_full %}
-		<div class="type" title="{{ phrase('global.category') }}" data-rule-type="category">
+		<div class="type" title="{{ phrase('admin.global.category') }}" data-rule-type="category">
 			<div class="op">
 				<select name="op">
-					<option value="is">{{ phrase('global.is') }}</option>
-					<option value="not">{{ phrase('global.is_not') }}</option>
+					<option value="is">{{ phrase('admin.global.is') }}</option>
+					<option value="not">{{ phrase('admin.global.is_not') }}</option>
 				</select>
 			</div>
 			<div class="options">
@@ -228,13 +228,13 @@ function _page_exec() {
 		</div>
 	{% endif %}
 	{% if term_options.priorities %}
-		<div class="type" title="{{ phrase('global.priority') }}" data-rule-type="priority">
+		<div class="type" title="{{ phrase('admin.global.priority') }}" data-rule-type="priority">
 			<div class="op">
 				<select name="op">
-					<option value="is">{{ phrase('global.is') }}</option>
-					<option value="not">{{ phrase('global.is_not') }}</option>
-					<option value="lt">{{ phrase('global.is_less_than') }}</option>
-					<option value="gt">{{ phrase('global.is_greater_than') }}</option>
+					<option value="is">{{ phrase('admin.global.is') }}</option>
+					<option value="not">{{ phrase('admin.global.is_not') }}</option>
+					<option value="lt">{{ phrase('admin.global.is_less_than') }}</option>
+					<option value="gt">{{ phrase('admin.global.is_greater_than') }}</option>
 				</select>
 			</div>
 			<div class="options">
@@ -247,11 +247,11 @@ function _page_exec() {
 		</div>
 	{% endif %}
 	{% if term_options.ticket_workflows %}
-		<div class="type" title="{{ phrase('global.workflow') }}" data-rule-type="workflow">
+		<div class="type" title="{{ phrase('admin.global.workflow') }}" data-rule-type="workflow">
 			<div class="op">
 				<select name="op">
-					<option value="is">{{ phrase('global.is') }}</option>
-					<option value="not">{{ phrase('global.is_not') }}</option>
+					<option value="is">{{ phrase('admin.global.is') }}</option>
+					<option value="not">{{ phrase('admin.global.is_not') }}</option>
 				</select>
 			</div>
 			<div class="options">

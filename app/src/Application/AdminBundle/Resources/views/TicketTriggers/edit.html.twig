@@ -21,7 +21,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 {% endblock %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_tickettriggers') }}">{{ phrase('global.triggers') }}</a></li>
+		<li><a href="{{ path('admin_tickettriggers') }}">{{ phrase('admin.global.triggers') }}</a></li>
 		<li>{% if trigger.id %}Edit Trigger{% else %}New Trigger{% endif %}</li>
 	</ul>
 {% endblock %}
@@ -64,7 +64,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('global.description') }}</label> <em>{{ phrase('admin.tickettriggers.optionally_enter_a_description_to_help_you_remember') }}</em>
+			<label>{{ phrase('admin.global.description') }}</label> <em>{{ phrase('admin.tickettriggers.optionally_enter_a_description_to_help_you_remember') }}</em>
 		</div>
 		<div class="dp-form-input">
 			{% if trigger.sys_name %}
@@ -78,19 +78,19 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('global.criteria') }}</label>
+			<label>{{ phrase('admin.global.criteria') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<div class="criteria-form search-form">
 				<div class="search-terms"></div>
-				<div class="term"><span class="add-term">+</span> {{ phrase('global.add_a_new_criteria') }}</div>
+				<div class="term"><span class="add-term">+</span> {{ phrase('admin.global.add_a_new_criteria') }}</div>
 			</div>
 		</div>
 	</div>
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('global.actions') }}</label>
+			<label>{{ phrase('admin.global.actions') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<div class="actions-form search-form">
@@ -101,7 +101,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 	</div>
 </div>
 
-<button class="clean-white save-trigger">{{ phrase('global.save') }}</button>
+<button class="clean-white save-trigger">{{ phrase('admin.global.save') }}</button>
 
 <!-- These never change -->
 {% for info in trigger.getStaticTerms() %}
@@ -118,7 +118,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 {% if trigger.id %}
 	<div class="delete-link-wrap">
-		<a href="{{ path('admin_tickettriggers_delete', {id: trigger.id, auth: security_token('delete_trigger') }) }}" class="confirm-delete-trigger" data-prompt="Are you sure you want to delete this trigger?">{{ phrase('global.delete') }}</a>
+		<a href="{{ path('admin_tickettriggers_delete', {id: trigger.id, auth: security_token('delete_trigger') }) }}" class="confirm-delete-trigger" data-prompt="Are you sure you want to delete this trigger?">{{ phrase('admin.global.delete') }}</a>
 	</div>
 {% endif %}
 

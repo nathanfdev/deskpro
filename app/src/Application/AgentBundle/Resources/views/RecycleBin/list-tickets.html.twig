@@ -11,7 +11,7 @@
 				{{ phrase('agent.recyclebin.deleted_by', {'name':deleted_tickets[ticket.id].by_person.display_name}) }}
 				{% if deleted_tickets[ticket.id].reason %}
 					<br />
-					{{ phrase('global.reason') }}: {{ deleted_tickets[ticket.id].reason }}
+					{{ phrase('agent.global.reason') }}: {{ deleted_tickets[ticket.id].reason }}
 				{% endif %}
 			</td>
 		</tr>

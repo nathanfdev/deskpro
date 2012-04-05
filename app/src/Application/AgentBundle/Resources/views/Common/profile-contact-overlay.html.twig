@@ -11,7 +11,7 @@
 		 ############################################}
 
 		<div class="row-type phone {% if contact_data.phone|length %}with-values{% endif %}">
-			<h4>{{ phrase('global.phone') }}</h4>
+			<h4>{{ phrase('agent.global.phone') }}</h4>
 			<div class="contact-info">
 				<ul>
 					{% for contact in contact_data.phone %}
@@ -32,7 +32,7 @@
 								<input type="text" size="4" class="phone-number" name="contact_data[{{ contact.id }}][number]" value="{{ contact.rec.field_2 }}" placeholder="{{ phrase('agent.people.phone_number_placeholder') }}" />
 							</div>
 							<div class="label">
-								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('global.add_a_label') }}" />
+								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('agent.global.add_a_label') }}" />
 							</div>
 						<br class="clear" /></li>
 					{% endfor %}
@@ -60,7 +60,7 @@
 						<input type="text" size="4" class="phone-number" name="new_contact_data[phone][%id%][number]" placeholder="{{ phrase('agent.people.phone_number_placeholder') }}" />
 					</div>
 					<div class="label">
-						<input type="text" size="8" name="new_contact_data[phone][%id%][comment]" value="" placeholder="{{ phrase('global.add_a_label') }}" />
+						<input type="text" size="8" name="new_contact_data[phone][%id%][comment]" value="" placeholder="{{ phrase('agent.global.add_a_label') }}" />
 					</div>
 				<br class="clear" /></li>
 			</script>
@@ -83,7 +83,7 @@
 								<input type="text" size="15" class="single-input" name="contact_data[{{ contact.id }}][url]" value="{{ contact.url }}" placeholder="{{ phrase('agent.people.website_url_placeholder') }}" />
 							</div>
 							<div class="label">
-								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('global.add_a_label') }}" />
+								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('agent.global.add_a_label') }}" />
 							</div>
 						<br class="clear" /></li>
 					{% endfor %}
@@ -102,7 +102,7 @@
 						<input type="text" size="4" class="single-input" name="new_contact_data[website][%id%][url]" placeholder="{{ phrase('agent.people.website_url_placeholder') }}" />
 					</div>
 					<div class="label">
-						<input type="text" size="8" name="new_contact_data[website][%id%][comment]" value="" placeholder="{{ phrase('global.add_a_label') }}" />
+						<input type="text" size="8" name="new_contact_data[website][%id%][comment]" value="" placeholder="{{ phrase('agent.global.add_a_label') }}" />
 					</div>
 				<br class="clear" /></li>
 			</script>
@@ -134,7 +134,7 @@
 								<input type="text" size="15" class="single-input" name="contact_data[{{ contact.id }}][username]" value="{{ contact.url }}" placeholder="{{ phrase('agent.people.im_account_placeholder') }}" />
 							</div>
 							<div class="label">
-								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('global.add_a_label') }}" />
+								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('agent.global.add_a_label') }}" />
 							</div>
 						<br class="clear" /></li>
 					{% endfor %}
@@ -162,7 +162,7 @@
 						<input type="text" size="15" class="single-input" name="new_contact_data[instant_message][%id%][username]" value="" placeholder="{{ phrase('agent.people.im_account_placeholder') }}" />
 					</div>
 					<div class="label">
-						<input type="text" size="8" name="new_contact_data[phone][%id%][instant_message]" value="" placeholder="{{ phrase('global.add_a_label') }}" />
+						<input type="text" size="8" name="new_contact_data[phone][%id%][instant_message]" value="" placeholder="{{ phrase('agent.global.add_a_label') }}" />
 					</div>
 				<br class="clear" /></li>
 			</script>
@@ -173,7 +173,7 @@
 		 ############################################}
 
 		 <div class="row-type twitter {% if contact_data.twitter|length %}with-values{% endif %}">
-			<h4>{{ phrase('global.twitter') }}</h4>
+			<h4>{{ phrase('agent.global.twitter') }}</h4>
 			<div class="contact-info">
 				<ul>
 					{% for contact in contact_data.twitter %}
@@ -186,7 +186,7 @@
 								<input type="hidden" name="contact_data[{{ contact.id }}][display_feed]" value="1" />
 							</div>
 							<div class="label">
-								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('global.add_a_label') }}" />
+								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('agent.global.add_a_label') }}" />
 							</div>
 						<br class="clear" /></li>
 					{% endfor %}
@@ -206,7 +206,7 @@
 						<input type="hidden" name="new_contact_data[twitter][%id%][display_feed]" />
 					</div>
 					<div class="label">
-						<input type="text" size="8" name="new_contact_data[phone][%id%][twitter]" value="" placeholder="{{ phrase('global.add_a_label') }}" />
+						<input type="text" size="8" name="new_contact_data[phone][%id%][twitter]" value="" placeholder="{{ phrase('agent.global.add_a_label') }}" />
 					</div>
 				<br class="clear" /></li>
 			</script>
@@ -229,7 +229,7 @@
 								<input type="text" size="15" name="contact_data[{{ contact.id }}][profile_url]" value="{{ contact.url }}" placeholder="{{ phrase('agent.common.linkedin_url') }}" />
 							</div>
 							<div class="label">
-								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('global.add_a_label') }}" />
+								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('agent.global.add_a_label') }}" />
 							</div>
 						<br class="clear" /></li>
 					{% endfor %}
@@ -248,7 +248,7 @@
 						<input type="text" size="15" class="single-input" name="new_contact_data[linkedin][%id%][profile_url]" value="{{ contact.url }}" placeholder="{{ phrase('agent.common.linkedin_url') }}" />
 					</div>
 					<div class="label">
-						<input type="text" size="8" name="new_contact_data[linkedin][%id%][comment]" value="" placeholder="{{ phrase('global.add_a_label') }}" />
+						<input type="text" size="8" name="new_contact_data[linkedin][%id%][comment]" value="" placeholder="{{ phrase('agent.global.add_a_label') }}" />
 					</div>
 				<br class="clear" /></li>
 			</script>
@@ -259,7 +259,7 @@
 		 ############################################}
 
 		 <div class="row-type facebook {% if contact_data.facebook|length %}with-values{% endif %}">
-			<h4>{{ phrase('global.facebook') }}</h4>
+			<h4>{{ phrase('agent.global.facebook') }}</h4>
 			<div class="contact-info">
 				<ul>
 					{% for contact in contact_data.facebook %}
@@ -268,10 +268,10 @@
 								<span class="remove">x</span>
 							</div>
 							<div class="input">
-								<input type="text" size="15" class="single-input" name="contact_data[{{ contact.id }}][profile_url]" value="{{ contact.url }}" placeholder="{{ phrase('global.facebook') }} URL" />
+								<input type="text" size="15" class="single-input" name="contact_data[{{ contact.id }}][profile_url]" value="{{ contact.url }}" placeholder="{{ phrase('agent.global.facebook') }} URL" />
 							</div>
 							<div class="label">
-								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('global.add_a_label') }}" />
+								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('agent.global.add_a_label') }}" />
 							</div>
 						<br class="clear" /></li>
 					{% endfor %}
@@ -287,10 +287,10 @@
 						<span class="remove">x</span>
 					</div>
 					<div class="input">
-						<input type="text" size="15" class="single-input" name="new_contact_data[facebook][%id%][profile_url]" value="{{ contact.url }}" placeholder="{{ phrase('global.facebook') }} URL" />
+						<input type="text" size="15" class="single-input" name="new_contact_data[facebook][%id%][profile_url]" value="{{ contact.url }}" placeholder="{{ phrase('agent.global.facebook') }} URL" />
 					</div>
 					<div class="label">
-						<input type="text" size="8" name="new_contact_data[facebook][%id%][comment]" value="" placeholder="{{ phrase('global.add_a_label') }}" />
+						<input type="text" size="8" name="new_contact_data[facebook][%id%][comment]" value="" placeholder="{{ phrase('agent.global.add_a_label') }}" />
 					</div>
 				<br class="clear" /></li>
 			</script>
@@ -301,7 +301,7 @@
 		 ############################################}
 
 		 <div class="row-type address {% if contact_data.address|length %}with-values{% endif %}">
-			<h4>{{ phrase('global.address') }}</h4>
+			<h4>{{ phrase('agent.global.address') }}</h4>
 			<div class="contact-info">
 				<ul>
 					{% for contact in contact_data.address %}
@@ -311,7 +311,7 @@
 							</div>
 							<div class="input">
 								<div class="line-1">
-									<textarea class="address" name="contact_data[{{ contact.id }}][address]" placeholder="{{ phrase('global.address') }}">{{ contact.address }}</textarea>
+									<textarea class="address" name="contact_data[{{ contact.id }}][address]" placeholder="{{ phrase('agent.global.address') }}">{{ contact.address }}</textarea>
 								</div>
 								<div class="line-2">
 									<input type="text" size="10" name="contact_data[{{ contact.id }}][city]" value="{{ contact.city }}" placeholder="{{ phrase('agent.people.address_city') }}" />
@@ -327,7 +327,7 @@
 								</div>
 							</div>
 							<div class="label">
-								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('global.add_a_label') }}" />
+								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('agent.global.add_a_label') }}" />
 							</div>
 						<br class="clear" /></li>
 					{% endfor %}
@@ -344,7 +344,7 @@
 					</div>
 					<div class="input">
 						<div class="line-1">
-							<textarea class="address" name="new_contact_data[address][%id%][address]" placeholder="{{ phrase('global.address') }}">{{ contact.address }}</textarea>
+							<textarea class="address" name="new_contact_data[address][%id%][address]" placeholder="{{ phrase('agent.global.address') }}">{{ contact.address }}</textarea>
 						</div>
 						<div class="line-2">
 							<input type="text" size="10" name="new_contact_data[address][%id%][city]" value="{{ contact.city }}" placeholder="{{ phrase('agent.people.address_city') }}" />
@@ -361,7 +361,7 @@
 						</div>
 					</div>
 					<div class="label">
-						<input type="text" size="8" name="new_contact_data[address][%id%][comment]" value="" placeholder="{{ phrase('global.add_a_label') }}" />
+						<input type="text" size="8" name="new_contact_data[address][%id%][comment]" value="" placeholder="{{ phrase('agent.global.add_a_label') }}" />
 					</div>
 				<br class="clear" /></li>
 			</script>
@@ -370,7 +370,7 @@
 	</div>
 	<div class="overlay-footer">
 		<div class="is-not-loading">
-			<button class="save-trigger clean-white">{{ phrase('global.save') }}</button>
+			<button class="save-trigger clean-white">{{ phrase('agent.global.save') }}</button>
 		</div>
 		<div class="is-loading">
 			<div class="loading-icon"></div>

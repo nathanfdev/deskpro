@@ -1,5 +1,5 @@
 {{ phrase('user.login_with_openid') }}<br /><br />
 <form action="{{ path('user_login_authenticate', {'usersource_id': usersource.id}) }}" method="post">
 	{{ phrase('user.openid_url') }}: <input type="text" name="openid_identity" value="" size=40" />
-	<input type="submit" value="{{ phrase('global.log_in') }}" />
+	<input type="submit" value="{{ phrase('user.global.log_in') }}" />
 </form>

@@ -7,12 +7,12 @@
 		<header>
 			{% if app.user.hasPerm('agent_people.edit') %}
 				<div class="controls">
-					<div class="is-loading">{{ phrase('global.saving') }}</div>
-					<div class="saved" style="display: none">{{ phrase('global.saved') }}</div>
-					<div class="save" style="display: none">{{ phrase('global.save') }}</div>
+					<div class="is-loading">{{ phrase('agent.global.saving') }}</div>
+					<div class="saved" style="display: none">{{ phrase('agent.global.saved') }}</div>
+					<div class="save" style="display: none">{{ phrase('agent.global.save') }}</div>
 				</div>
 			{% endif %}
-			<h4>{{ phrase('global.summary') }}</h4>
+			<h4>{{ phrase('agent.global.summary') }}</h4>
 		</header>
 		<section>
 			<input type="hidden" name="action" value="set-summary" />
@@ -28,18 +28,18 @@
 		{% if app.user.hasPerm('agent_people.edit') %}
 			<div class="controls">
 				<span class="edit-gear prop-edit-trigger"></span>
-				<div class="is-loading">{{ phrase('global.saving') }}</div>
-				<button class="cancel" style="display: none">{{ phrase('global.cancel') }}</button>
-				<button class="save" style="display: none">{{ phrase('global.save') }}</button>
+				<div class="is-loading">{{ phrase('agent.global.saving') }}</div>
+				<button class="cancel" style="display: none">{{ phrase('agent.global.cancel') }}</button>
+				<button class="save" style="display: none">{{ phrase('agent.global.save') }}</button>
 			</div>
 		{% endif %}
-		<h4>{{ phrase('global.properties') }}</h4>
+		<h4>{{ phrase('agent.global.properties') }}</h4>
 	</header>
 	<section>
 		{% if person.labels|length or app.user.hasPerm('agent_people.edit') %}
 		<table class="prop-table" cellpadding="0" cellspacing="0" width="100%">
 			<tr>
-				<th>{{ phrase('global.labels') }}</th>
+				<th>{{ phrase('agent.global.labels') }}</th>
 				<td class="people-tags tags-wrap"><input id="{{baseId}}_label_input" type="text" value="{% for label in person.labels %}{{label.label}},{% endfor %}" /></td>
 			</tr>
 		</table>
@@ -64,8 +64,8 @@
 	<header>
 		<nav>
 			<ul>
-				{% if person_tickets_count %}<li data-tab-for="#{{baseId}}_tickets_tab" class="on">{{ phrase('global.tickets') }} <span class="count">{{ person_tickets_count }}</span></li>{% endif %}
-				{% if person_chats_count %}<li data-tab-for="#{{baseId}}_chats_tab">{{ phrase('global.chats') }} <span class="count">{{ person_chats_count }}</span></li>{% endif %}
+				{% if person_tickets_count %}<li data-tab-for="#{{baseId}}_tickets_tab" class="on">{{ phrase('agent.global.tickets') }} <span class="count">{{ person_tickets_count }}</span></li>{% endif %}
+				{% if person_chats_count %}<li data-tab-for="#{{baseId}}_chats_tab">{{ phrase('agent.global.chats') }} <span class="count">{{ person_chats_count }}</span></li>{% endif %}
 			</ul>
 		</nav>
 	</header>
@@ -148,9 +148,9 @@
 	<header>
 		<nav>
 			<ul>
-				{% if notes|length or app.user.hasPerm('agent_people.notes') %}<li data-tab-for="#{{baseId}}_notes_tab" class="on">{{ phrase('global.notes') }} <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>{% endif %}
+				{% if notes|length or app.user.hasPerm('agent_people.notes') %}<li data-tab-for="#{{baseId}}_notes_tab" class="on">{{ phrase('agent.global.notes') }} <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>{% endif %}
 				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">{{ phrase('agent.activity_stream') }}</li>{% endif %}
-				<li data-tab-for="#{{baseId}}_tracking_tab">{{ phrase('global.detail') }}</li>
+				<li data-tab-for="#{{baseId}}_tracking_tab">{{ phrase('agent.global.detail') }}</li>
 			</ul>
 		</nav>
 	</header>
@@ -173,11 +173,11 @@
 							>
 								<header>
 									<div class="controls">
-										<div class="is-loading">{{ phrase('global.saving') }}</div>
-										<div class="saved" style="display: none">{{ phrase('global.saved') }}</div>
-										<div class="save" style="display: none">{{ phrase('global.save') }}</div>
+										<div class="is-loading">{{ phrase('agent.global.saving') }}</div>
+										<div class="saved" style="display: none">{{ phrase('agent.global.saved') }}</div>
+										<div class="save" style="display: none">{{ phrase('agent.global.save') }}</div>
 									</div>
-									<h3>{{ phrase('global.new_note') }}</h3>
+									<h3>{{ phrase('agent.global.new_note') }}</h3>
 								</header>
 								<div class="textarea-section"><textarea class="integrated" name="note" placeholder="" data-not-blank="1"></textarea></div>
 							</li>
@@ -221,13 +221,13 @@
 		<article id="{{baseId}}_tracking_tab">
 			<table class="info-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
 				<tr>
-					<td class="label" width="80">{{ phrase('global.id') }}</td>
+					<td class="label" width="80">{{ phrase('agent.global.id') }}</td>
 					<td class="value">
 						{{ person.id }}
 					</td>
 				</tr>
 				<tr>
-					<td class="label" width="80">{{ phrase('global.created') }}</td>
+					<td class="label" width="80">{{ phrase('agent.global.created') }}</td>
 					<td class="value">
 						<time>{{person.date_created|date('fulltime')}}</time>
 						(<time class="timeago" datetime="{{person.date_created|date('c')}}"></time>)
@@ -254,7 +254,7 @@
 							<time>{{person.date_last_login|date('fulltime')}}</time>
 							(<time class="timeago" datetime="{{person.date_last_login|date('c')}}"></time>)
 						{% else %}
-							{{ phrase('global.never') }}
+							{{ phrase('agent.global.never') }}
 						{% endif %}
 					</td>
 				</tr>
@@ -267,14 +267,14 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="label">{{ phrase('global.last_activity') }}</td>
+						<td class="label">{{ phrase('agent.global.last_activity') }}</td>
 						<td class="value">
 							<time>{{session.date_last|date('fulltime')}}</time>
 							(<time class="timeago" datetime="{{session.date_last|date('c')}}"></time>)
 							on page <em class="short-url-prev tipped" title="{{ session.visitor.last_page }}">{{ session.visitor.last_page|url_domain }}</em>
 					</tr>
 					<tr>
-						<td class="label">{{ phrase('global.landing_page') }}</td>
+						<td class="label">{{ phrase('agent.global.landing_page') }}</td>
 						<td class="value">
 							{{ phrase('agent.person.user_landed_on_page') }}
 							<em class="short-url-prev tipped" title="{{ session.visitor.landing_page }}">{{ session.visitor.landing_page|url_domain }}</em>
@@ -285,7 +285,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="label">{{ phrase('global.ip_address') }}</td>
+						<td class="label">{{ phrase('agent.global.ip_address') }}</td>
 						<td class="value">
 							{{ session.visitor.ip_address }}
 						</td>
@@ -298,14 +298,14 @@
 					</tr>
 				{% elseif visitor %}
 					<tr>
-						<td class="label">{{ phrase('global.last_activity') }}</td>
+						<td class="label">{{ phrase('agent.global.last_activity') }}</td>
 						<td class="value">
 							<time>{{visitor.date_last|date('fulltime')}}</time>
 							(<time class="timeago" datetime="{{visitor.date_last|date('c')}}"></time>)
 							on page <em class="tipped" title="{{ visitor.last_page }}">...</em>
 					</tr>
 					<tr>
-						<td class="label">{{ phrase('global.landing_page') }}</td>
+						<td class="label">{{ phrase('agent.global.landing_page') }}</td>
 						<td class="value">
 							{{ phrase('agent.person.user_landed_on_page') }}
 							<em class="tipped" title="{{ visitor.landing_page }}">...</em>
@@ -316,7 +316,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="label">{{ phrase('global.ip_address') }}</td>
+						<td class="label">{{ phrase('agent.global.ip_address') }}</td>
 						<td class="value">
 							{{ visitor.ip_address }}
 						</td>

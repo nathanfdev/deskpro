@@ -8,7 +8,7 @@
 {{ layout.page_box('dp-search-page dp-labels-page') }}
 	{{ layout.page_content() }}
 	<strong>{{ phrase('user.search.find_tagged_with') }}:</strong><br />
-	<input type="text" name="label" id="search_label" value="{{ label }}" /> <button class="btn small" onclick="var url = $(this).data('url').replace(/_LABEL_/, $('#search_label').val().trim()); window.location = url;" data-url="{{ path('user_search_labels', {'label': '_LABEL_'}) }}">{{ phrase('global.find') }}</button>
+	<input type="text" name="label" id="search_label" value="{{ label }}" /> <button class="btn small" onclick="var url = $(this).data('url').replace(/_LABEL_/, $('#search_label').val().trim()); window.location = url;" data-url="{{ path('user_search_labels', {'label': '_LABEL_'}) }}">{{ phrase('user.global.find') }}</button>
 
 	<div class="dp-tag-cloud">
 		<ul>
@@ -24,7 +24,7 @@
 {% if results.articles.results|length %}
 	{{ layout.page_box() }}
 		{{ layout.page_title() }}
-			<h1><a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'articles'}) }}">{{ phrase('global.articles') }}</a></h1>
+			<h1><a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'articles'}) }}">{{ phrase('user.global.articles') }}</a></h1>
 		{{ layout.page_title_end() }}
 
 		{{ layout.page_content() }}
@@ -40,7 +40,7 @@
 				{% if results.articles.show_more %}
 				<div class="content-more">
 					<div class="is-not-loading">
-						<a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'articles', 'page': page+1}) }}">{{ phrase('global.more') }}</a>
+						<a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'articles', 'page': page+1}) }}">{{ phrase('user.global.more') }}</a>
 					</div>
 					<div class="is-loading">
 						<center><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></center>
@@ -55,7 +55,7 @@
 {% if results.articles.results|length %}
 	{{ layout.page_box() }}
 		{{ layout.page_title() }}
-			<h1><a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'downloads'}) }}">{{ phrase('global.downloads') }}</a></h1>
+			<h1><a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'downloads'}) }}">{{ phrase('user.global.downloads') }}</a></h1>
 		{{ layout.page_title_end() }}
 
 		{{ layout.page_content() }}
@@ -71,7 +71,7 @@
 				{% if results.downloads.show_more %}
 				<div class="content-more">
 					<div class="is-not-loading">
-						<a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'downloads', 'page': page+1}) }}">{{ phrase('global.more') }}</a>
+						<a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'downloads', 'page': page+1}) }}">{{ phrase('user.global.more') }}</a>
 					</div>
 					<div class="is-loading">
 						<center><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></center>
@@ -86,7 +86,7 @@
 {% if results.articles.results|length %}
 	{{ layout.page_box() }}
 		{{ layout.page_title() }}
-			<h1><a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'feedback'}) }}">{{ phrase('global.feedback') }}</a></h1>
+			<h1><a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'feedback'}) }}">{{ phrase('user.global.feedback') }}</a></h1>
 		{{ layout.page_title_end() }}
 
 		{{ layout.page_content() }}
@@ -102,7 +102,7 @@
 				{% if results.feedback.show_more %}
 				<div class="content-more">
 					<div class="is-not-loading">
-						<a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'feedback', 'page': page+1}) }}">{{ phrase('global.more') }}</a>
+						<a class="button" href="{{ path('user_search_labels', {'label': label, 'type': 'feedback', 'page': page+1}) }}">{{ phrase('user.global.more') }}</a>
 					</div>
 					<div class="is-loading">
 						<center><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></center>

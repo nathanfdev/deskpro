@@ -1,12 +1,12 @@
 {% extends 'AgentBundle:Common:display-options-layout.html.twig' %}
 {% block other_options %}
-	<div style="display:none">{{ phrase('global.order_by') }}: <select name="order_by">
-		<option value="news.date_created:desc">{{ phrase('global.date_created_newestoldest') }}</option>
-		<option value="news.date_created:asc">{{ phrase('global.date_created_oldestnewest') }}</option>
+	<div style="display:none">{{ phrase('agent.global.order_by') }}: <select name="order_by">
+		<option value="news.date_created:desc">{{ phrase('agent.global.date_created_newestoldest') }}</option>
+		<option value="news.date_created:asc">{{ phrase('agent.global.date_created_oldestnewest') }}</option>
 	</select></div>
 {% endblock %}
 {% block display_elements_list %}
-	<li data-field="author"><input type="checkbox" name="author" {% if 'author' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.author') }}</li>
+	<li data-field="author"><input type="checkbox" name="author" {% if 'author' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.author') }}</li>
 	<li data-field="category"><input type="checkbox" name="category" {% if 'category' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.news.category') }}</li>
-	<li data-field="date_created"><input type="checkbox" name="date_created" {% if 'date_created' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.date_created') }}</li>
+	<li data-field="date_created"><input type="checkbox" name="date_created" {% if 'date_created' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.date_created') }}</li>
 {% endblock %}

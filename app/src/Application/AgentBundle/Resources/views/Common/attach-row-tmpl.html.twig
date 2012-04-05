@@ -1,6 +1,6 @@
 <script {% if upload_id %}id="{{ upload_id }}"{% endif %} class="template-upload" type="text/x-tmpl">
 	{{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
-	<li class="uploading">{{ '{%=file.name%}' }} ({{ phrase('global.saving') }})</li>
+	<li class="uploading">{{ '{%=file.name%}' }} ({{ phrase('agent.global.saving') }})</li>
 	{{ '{% } %}' }}
 </script>
 <script {% if download_id %}id="{{ download_id }}"{% endif %} class="template-download" type="text/x-tmpl">

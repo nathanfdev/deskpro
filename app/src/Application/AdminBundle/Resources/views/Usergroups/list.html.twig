@@ -7,7 +7,7 @@
           </ul>
      </nav>
      <ul>
-          <li>{{ phrase('global.usergroups') }}</li>
+          <li>{{ phrase('admin.global.usergroups') }}</li>
      </ul>
 {% endblock %}
 
@@ -18,13 +18,13 @@
 		<thead>
 			<tr>
 				<th style="text-align:left">&nbsp; Usergroup</th>
-				<th style="text-align:center" width="180">{{ phrase('global.number_of_members') }}</th>
+				<th style="text-align:center" width="180">{{ phrase('admin.global.number_of_members') }}</th>
 				<th style="text-align:left" width="50">&nbsp;</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
-				<td>{{ phrase('global.everyone') }}</td>
+				<td>{{ phrase('admin.global.everyone') }}</td>
 				<td style="text-align:center">
 					<a href="{{ path('admin_usergroups_browse', {'id': '1'})}}">{{ member_counts[0]|default('0') }}</a>
 				</td>

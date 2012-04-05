@@ -3,12 +3,12 @@
 		class="status-new"
 		data-status-type="new"
 		data-option-value="new"
-	>{{ phrase('global.new') }}</li>
+	>{{ phrase('agent.global.new') }}</li>
 	<li
 		class="section-title status-active"
 		data-status-type="active"
 		data-option-value="active"
-	>{{ phrase('global.active') }}</li>
+	>{{ phrase('agent.global.active') }}</li>
 	{% for cat in active_status_cats %}
 		<li
 			class="status-{{cat.id}}"
@@ -20,7 +20,7 @@
 		class="section-title status-closed"
 		data-status-type="closed"
 		data-option-value="closed"
-	>{{ phrase('global.closed') }}</li>
+	>{{ phrase('agent.global.closed') }}</li>
 	{% for cat in closed_status_cats %}
 		<li
 			class="status-{{cat.id}}"

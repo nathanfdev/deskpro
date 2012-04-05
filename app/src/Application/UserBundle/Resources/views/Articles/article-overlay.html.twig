@@ -8,13 +8,13 @@
 		{% if comments|length %}
 			<div class="dp-box-comments dp-mini">
 				<div class="dp-comments-placeholder dp-toggle-sel" data-toggle-sel=".dp-box-comments-content">
-					<span>{{ phrase('global.1_commentcount_comments', {'count': comments|length}) }}</span>
+					<span>{{ phrase('user.global.1_commentcount_comments', {'count': comments|length}) }}</span>
 				</div>
 				<div class="dp-box-comments-content" style="display: none">
 					<ul>
 						{% for comment in comments %}
 							<li>
-								<cite>{{ comment.user_name|default(phrase('global.anonymous')) }}:</cite>
+								<cite>{{ comment.user_name|default(phrase('user.global.anonymous')) }}:</cite>
 								<div class="post">
 									{{ comment.content_html|raw }}
 								</div>

@@ -19,13 +19,13 @@
 <div class="optionbox" id="agent_optionbox_check">
 	<section data-section-name="followers">
 		<header>
-			<h3>{{ phrase('global.agents') }}</h3>
-			<input type="text" class="filter-box" placeholder="{{ phrase('global.filter') }}" />
+			<h3>{{ phrase('agent.global.agents') }}</h3>
+			<input type="text" class="filter-box" placeholder="{{ phrase('agent.global.filter') }}" />
 		</header>
 		<ul>
 			<li class="me last-me {% if app.user.id in participant_ids %}on{% endif %}">
 				<input type="checkbox" name="agent_optionbox_check" value="{{ app.user.id }}" {% if app.user.id in participant_ids %}checked="checked"{% endif %} />
-				<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('global.me') }}</span></label>
+				<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.global.me') }}</span></label>
 			</li>
 
 			{% for agent in agents %}
@@ -44,8 +44,8 @@
 <div class="optionbox" id="agent_optionbox_radio">
 	<section data-section-name="agents">
 		<header>
-			<h3>{{ phrase('global.agents') }}</h3>
-			<input type="text" class="filter-box" placeholder="{{ phrase('global.filter') }}" />
+			<h3>{{ phrase('agent.global.agents') }}</h3>
+			<input type="text" class="filter-box" placeholder="{{ phrase('agent.global.filter') }}" />
 		</header>
 		<ul>
 			{% for agent in agents %}
@@ -61,7 +61,7 @@
 	<section data-section-name="teams">
 		<header>
 			<h3>{{ phrase('agent.agent_teams') }}</h3>
-			<input type="text" class="filter-box" placeholder="{{ phrase('global.filter') }}" />
+			<input type="text" class="filter-box" placeholder="{{ phrase('agent.global.filter') }}" />
 		</header>
 		<ul>
 			{% if app.getSetting('core.use_agent_team') %}
@@ -101,8 +101,8 @@
 	<div class="optionbox">
 		<section data-section-name="department">
 			<header>
-				<h3>{{ phrase('global.department') }}</h3>
-				<input type="text" class="filter-box" placeholder="{{ phrase('global.filter') }}" />
+				<h3>{{ phrase('agent.global.department') }}</h3>
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.global.filter') }}" />
 			</header>
 			<ul>
 				{% for dep in ticket_options.departments_hierarchy %}
@@ -224,18 +224,18 @@
 
 {# Ticket Status #}
 <ul id="ticket_status_menu">
-	<li class="section-title">{{ phrase('global.status') }}</li>
-	<li data-status="awaiting_agent">{{ phrase('global.awaiting_agent') }}</li>
-	<li data-status="awaiting_user">{{ phrase('global.awaiting_user') }}</li>
-	<li data-status="resolved">{{ phrase('global.resolved') }}</li>
-	<li data-status="closed">{{ phrase('global.closed') }}</li>
+	<li class="section-title">{{ phrase('agent.global.status') }}</li>
+	<li data-status="awaiting_agent">{{ phrase('agent.global.awaiting_agent') }}</li>
+	<li data-status="awaiting_user">{{ phrase('agent.global.awaiting_user') }}</li>
+	<li data-status="resolved">{{ phrase('agent.global.resolved') }}</li>
+	<li data-status="closed">{{ phrase('agent.global.closed') }}</li>
 </ul>
 
 {# Comment Menu #}
 <ul id="comment_tools_menu" data-menu-flag="copy-menu">
 	<li data-action="edit">{{ phrase('agent.edit_comment') }}</li>
 	<li data-action="delete">{{ phrase('agent.delete_comment') }}</li>
-	<li data-action="create-ticket">{{ phrase('global.create_ticket') }}</li>
+	<li data-action="create-ticket">{{ phrase('agent.global.create_ticket') }}</li>
 </ul>
 
 {# Comment Validation Menu #}
@@ -272,13 +272,13 @@
 
 {# Usergroups #}
 <ul id="usergroups_menu">
-	<li data-usergroup-id="1">{{ phrase('global.everyone') }}</li>
+	<li data-usergroup-id="1">{{ phrase('agent.global.everyone') }}</li>
 </ul>
 
 <script type="text/x-deskpro-plain" id="comment_edit_tpl">
 	<div class="comment-edit">
 		<textarea class="comment"></textarea><br />
-		<button class="dp-button xx-small save-trigger">{{ phrase('global.save') }}</button>
+		<button class="dp-button xx-small save-trigger">{{ phrase('agent.global.save') }}</button>
 	</div>
 </script>
 
@@ -365,12 +365,12 @@
 		class="status-new"
 		data-status-type="new"
 		data-option-value="new"
-	>{{ phrase('global.new') }}</li>
+	>{{ phrase('agent.global.new') }}</li>
 	<li
 		class="section-title status-active"
 		data-status-type="active"
 		data-option-value="active"
-	>{{ phrase('global.active') }}</li>
+	>{{ phrase('agent.global.active') }}</li>
 	{% for cat in feedback_active_status_cats %}
 		<li
 			class="status-{{cat.id}}"
@@ -382,7 +382,7 @@
 		class="section-title status-closed"
 		data-status-type="closed"
 		data-option-value="closed"
-	>{{ phrase('global.closed') }}</li>
+	>{{ phrase('agent.global.closed') }}</li>
 	{% for cat in feedback_closed_status_cats %}
 		<li
 			class="status-{{cat.id}}"
@@ -435,15 +435,15 @@
 
 {# Everything Menus #}
 <div id="everything_search_terms_global">
-	<div class="type" title="{{ phrase('global.labels') }}" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="everything" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
+	<div class="type" title="{{ phrase('agent.global.labels') }}" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="everything" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">{{ phrase('global.is') }}</option>
-				<option value="not">{{ phrase('global.is_not') }}</option>
+				<option value="is">{{ phrase('agent.global.is') }}</option>
+				<option value="not">{{ phrase('agent.global.is_not') }}</option>
 				{% if with_change_terms %}
-					<option value="changed">{{ phrase('global.changed') }}</option>
-					<option value="changed_to">{{ phrase('global.changed_to_include') }}</option>
-					<option value="changed_from">{{ phrase('global.changed_to_remove') }}</option>
+					<option value="changed">{{ phrase('agent.global.changed') }}</option>
+					<option value="changed_to">{{ phrase('agent.global.changed_to_include') }}</option>
+					<option value="changed_from">{{ phrase('agent.global.changed_to_remove') }}</option>
 				{% endif %}
 			</select>
 		</div>
@@ -474,7 +474,7 @@
 #}
 <script type="text/x-deskpro-tmpl" id="tab_loading_template">
 	%startScript%
-	pageMeta.title = '{{ phrase('global.loading') }}';
+	pageMeta.title = '{{ phrase('agent.global.loading') }}';
 	%endScript%
 
 	<div class="tab-loading"></div>
@@ -499,7 +499,7 @@
 <div id="alert_overlay" style="display:none;">
 	<div class="alert-overlay mass-actions-overlay">
 		<div class="overlay-title">
-			<span class="close-trigger">{{ phrase('global.dismiss') }}</span>
+			<span class="close-trigger">{{ phrase('agent.global.dismiss') }}</span>
 			<h4>{{ phrase('agent.alert') }}</h4>
 		</div>
 		<div class="overlay-content">
@@ -518,7 +518,7 @@
 	</div>
 	<div class="overlay-footer">
 		<button class="okay-trigger clean-white">{{ phrase('agent.okay') }}</button>
-		<button class="cancel-trigger clean-white">{{ phrase('global.cancel') }}</button>
+		<button class="cancel-trigger clean-white">{{ phrase('agent.global.cancel') }}</button>
 	</div>
 </div>
 
@@ -533,7 +533,7 @@
 		</div>
 		<div class="overlay-footer">
 			<button class="okay-trigger clean-white">{{ phrase('agent.okay') }}</button>
-			<button class="cancel-trigger clean-white">{{ phrase('global.cancel') }}</button>
+			<button class="cancel-trigger clean-white">{{ phrase('agent.global.cancel') }}</button>
 		</div>
 	</div>
 </div>
@@ -551,7 +551,7 @@
 		</div>
 	</article>
 	<footer>
-		<button class="continue-trigger clean-white">{{ phrase('global.continue') }}</button>
+		<button class="continue-trigger clean-white">{{ phrase('agent.global.continue') }}</button>
 	</footer>
 </section>
 

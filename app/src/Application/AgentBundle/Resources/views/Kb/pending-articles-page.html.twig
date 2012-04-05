@@ -13,13 +13,13 @@
 				<div class="top-row">
 					<div class="top-row-left">
 						<h3>
-							{{ phrase('global.ticket') }} <a class="with-route" data-route="page:{{ object_path_agent(pending_article.ticket) }}">{{ pending_article.ticket.subject }}</a>
+							{{ phrase('agent.global.ticket') }} <a class="with-route" data-route="page:{{ object_path_agent(pending_article.ticket) }}">{{ pending_article.ticket.subject }}</a>
 						</h3>
 					</div>
 					<div class="top-row-right buttons">
 						<div class="bound-faded"></div>
-						<button class="clean-white small pending-create">{{ phrase('global.create') }}</button>
-						<button class="clean-white small pending-delete">{{ phrase('global.ucfirst_delete') }}</button>
+						<button class="clean-white small pending-create">{{ phrase('agent.global.create') }}</button>
+						<button class="clean-white small pending-delete">{{ phrase('agent.global.ucfirst_delete') }}</button>
 					</div>
 				</div>
 			{% else %}
@@ -31,8 +31,8 @@
 					</div>
 					<div class="top-row-right buttons">
 						<div class="bound-faded"></div>
-						<button class="clean-white small pending-create">{{ phrase('global.create') }}</button>
-						<button class="clean-white small pending-delete">{{ phrase('global.ucfirst_delete') }}</button>
+						<button class="clean-white small pending-create">{{ phrase('agent.global.create') }}</button>
+						<button class="clean-white small pending-delete">{{ phrase('agent.global.ucfirst_delete') }}</button>
 					</div>
 				</div>
 			{% endif %}

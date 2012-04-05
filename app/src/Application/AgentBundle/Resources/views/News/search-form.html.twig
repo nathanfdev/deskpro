@@ -1,7 +1,7 @@
 <section class="list-top-area news">
 	{% if not hide_terms_summary %}
 	<div class="summary">
-		<span class="edit" title="{{ phrase('global.ucfirst_edit') }} search terms">{{ phrase('global.ucfirst_edit') }}</span>
+		<span class="edit" title="{{ phrase('agent.global.ucfirst_edit') }} search terms">{{ phrase('agent.global.ucfirst_edit') }}</span>
 		{% for line in terms_summary %}
 			{{line}}{% if not loop.last %},{% endif %}
 		{% else %}
@@ -14,11 +14,11 @@
 			<div class="row" style="margin-top: 0;">
 				<div class="search-form" id="criteria_list">
 					<div class="search-terms"></div>
-					<div class="term"><span class="add-term">+</span> {{ phrase('global.add_a_new_term') }}</div>
+					<div class="term"><span class="add-term">+</span> {{ phrase('agent.global.add_a_new_term') }}</div>
 				</div>
 				{% include 'DeskPRO:Common:news-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'term_options': news_options } %}
 			</div>
-			<div style="text-align: center;"><button class="dp-button x-small">{{ phrase('global.search') }}</button></div>
+			<div style="text-align: center;"><button class="dp-button x-small">{{ phrase('agent.global.search') }}</button></div>
 		</form>
 	</div>
 

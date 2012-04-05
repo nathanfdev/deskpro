@@ -4,13 +4,13 @@
 		<li class="right"><span class="sep"></span></li>
 	</ul>
 	<ul>
-		<li>{{ phrase('global.ordered_by') }} </li>
+		<li>{{ phrase('agent.global.ordered_by') }} </li>
 		<li class="order-by-menu-trigger menu-fitted" data-menu-button=".button"><a class="button">
 			<span class="label">
 				{% if 'num_members' in cache.criteria.order_by %}
 					{{ phrase('agent.organizationsearch.number_of_members') }}
 				{% else %}
-					{{ phrase('global.name') }}
+					{{ phrase('agent.global.name') }}
 				{% endif %}
 			</span><em></em></a>
 		</li>
@@ -18,6 +18,6 @@
 	</ul>
 	<ul style="display: none" class="order-by-menu">
 		<li data-order-by="num_members">{{ phrase('agent.organizationsearch.number_of_members') }}</li>
-		<li data-order-by="name-asc">{{ phrase('global.name') }}</li>
+		<li data-order-by="name-asc">{{ phrase('agent.global.name') }}</li>
 	</ul>
 </header>

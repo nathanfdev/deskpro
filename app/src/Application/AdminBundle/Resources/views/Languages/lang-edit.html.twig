@@ -1,7 +1,7 @@
 {% extends 'AdminBundle:Languages:lang-layout.html.twig' %}
 {% block pagebar %}
      <ul>
-		<li><a href="{{ path('admin_langs') }}">{{ phrase('global.languages') }}</a></li>
+		<li><a href="{{ path('admin_langs') }}">{{ phrase('admin.global.languages') }}</a></li>
 		{% if language.id %}
 			<li>{{ phrase('admin.languages.edit_language') }}</li>
 		{% else %}
@@ -17,7 +17,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('global.title') }}</label>
+			<label>{{ phrase('admin.global.title') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.title) }}
@@ -25,7 +25,7 @@
 	</div>
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('global.locale') }}</label>
+			<label>{{ phrase('admin.global.locale') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.locale) }}
@@ -41,7 +41,7 @@
 	</div>
 </div>
 
-<button class="clean-white">{{ phrase('global.save') }}</button>
+<button class="clean-white">{{ phrase('admin.global.save') }}</button>
 
 </form>
 

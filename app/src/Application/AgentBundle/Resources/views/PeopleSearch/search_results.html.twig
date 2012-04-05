@@ -1,9 +1,9 @@
 <table class="list" cellspacing="0" width="100%">
 	<thead>
 		<tr>
-			<th>{{ phrase('global.name') }}</th>
-			<th>{{ phrase('global.email') }}</th>
-			<th>{{ phrase('global.labels') }}</th>
+			<th>{{ phrase('agent.global.name') }}</th>
+			<th>{{ phrase('agent.global.email') }}</th>
+			<th>{{ phrase('agent.global.labels') }}</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -11,7 +11,7 @@
 			<tr data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">
 				<td>{{person.display_name}}</td>
 				<td>{{person.primary_email.email|default('No email')}}</td>
-				<td>{{ phrase('global.labels') }}...</td>
+				<td>{{ phrase('agent.global.labels') }}...</td>
 			</tr>
 		{% else %}
 			<tr><td colspan="3">{{ phrase('agent.peoplesearch.no_people_match_your_criteria') }}</td></tr>

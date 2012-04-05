@@ -22,14 +22,14 @@
 						{% for field in display_fields %}
 							{% if field == 'members_count' %}
 								<li>
-									<span class="prop-title">{{ phrase('global.members') }}</span>
+									<span class="prop-title">{{ phrase('agent.global.members') }}</span>
 									<span class="prop-val"><a class="with-route" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][type]=person_organization&amp;terms[0][op]=is&amp;terms[0][organization]={{org.id}}">
 											{{ result_display.getOrgMemberCount(org) }}
 									</a></span>
 								</li>
 							{% elseif field == 'labels' and result_display.hasOrgLabels(org) %}
 								<li class="{{field}}">
-									<span class="prop-title">{{ phrase('global.labels') }}:</span>
+									<span class="prop-title">{{ phrase('agent.global.labels') }}:</span>
 									<span class="prop-val labels">
 										{% for label in result_display.getOrgLabels(org) %}
 											<span class="listing-tag">{{ label }}</span>

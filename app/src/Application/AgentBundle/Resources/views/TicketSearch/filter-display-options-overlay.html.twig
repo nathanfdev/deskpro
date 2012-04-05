@@ -9,7 +9,7 @@
 {% endblock %}
 {% block other_options %}
 	<div style="display: none">
-		{{ phrase('global.order_by') }}: <select name="order_by" class="sel-order-by">
+		{{ phrase('agent.global.order_by') }}: <select name="order_by" class="sel-order-by">
 			<option class="urgency" value="ticket.urgency:desc">{{ phrase('agent.ticketsearch.urgency_highestlowest') }}</option>
 			<option value="ticket.urgency:asc">{{ phrase('agent.ticketsearch.urgency_lowesthighest') }}</option>
 			<option class="date_created" value="ticket.date_created:desc">{{ phrase('agent.ticketsearch.date_opened_newerolder') }}</option>
@@ -22,18 +22,18 @@
 	</div>
 {% endblock %}
 {% block display_elements_list %}
-	<li data-field="subject" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="subject" {% if not show_all or 'subject' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.subject') }}</label></li>
-	<li data-field="user" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="user" {% if not show_all or 'user' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.user') }}</label></li>
-	<li data-field="department"><label><input type="checkbox" name="department" {% if 'department' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.department') }}</label></li>
-	<li data-field="agent"><label><input type="checkbox" name="agent" {% if 'agent' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.agent') }}</label></li>
-	{% if app.getSetting('core.use_agent_team') %}<li data-field="agent_team"><label><input type="checkbox" name="agent_team" {% if 'agent_team' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.agent_team') }}</label></li>{% endif %}
-	{% if app.getSetting('core.use_ticket_category') %}<li data-field="category"><label><input type="checkbox" name="category" {% if 'category' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.category') }}</label></li>{% endif %}
-	{% if app.getSetting('core.use_ticket_priority') %}<li data-field="priority"><label><input type="checkbox" name="priority" {% if 'priority' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.priority') }}</label></li>{% endif %}
-	{% if app.getSetting('core.use_ticket_workflow') %}<li data-field="workflow"><label><input type="checkbox" name="workflow" {% if 'workflow' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.workflow') }}</label></li>{% endif %}
-	{% if app.getSetting('core.use_product') %}<li data-field="product"><label><input type="checkbox" name="product" {% if 'product' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.product') }}</label></li>{% endif %}
-	<li data-field="organization"><label><input type="checkbox" name="organization" {% if 'organization' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.organization') }}</label></li>
-	<li data-field="labels"><label><input type="checkbox" name="labels" {% if 'labels' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.labels') }}</label></li>
-	<li data-field="date_user_waiting"><label><input type="checkbox" name="date_user_waiting" {% if 'date_user_waiting' in display_fields %}checked="checked"{% endif %} /> {{ phrase('global.user_waiting') }}</label></li>
+	<li data-field="subject" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="subject" {% if not show_all or 'subject' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.subject') }}</label></li>
+	<li data-field="user" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="user" {% if not show_all or 'user' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.user') }}</label></li>
+	<li data-field="department"><label><input type="checkbox" name="department" {% if 'department' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.department') }}</label></li>
+	<li data-field="agent"><label><input type="checkbox" name="agent" {% if 'agent' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.agent') }}</label></li>
+	{% if app.getSetting('core.use_agent_team') %}<li data-field="agent_team"><label><input type="checkbox" name="agent_team" {% if 'agent_team' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.agent_team') }}</label></li>{% endif %}
+	{% if app.getSetting('core.use_ticket_category') %}<li data-field="category"><label><input type="checkbox" name="category" {% if 'category' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.category') }}</label></li>{% endif %}
+	{% if app.getSetting('core.use_ticket_priority') %}<li data-field="priority"><label><input type="checkbox" name="priority" {% if 'priority' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.priority') }}</label></li>{% endif %}
+	{% if app.getSetting('core.use_ticket_workflow') %}<li data-field="workflow"><label><input type="checkbox" name="workflow" {% if 'workflow' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.workflow') }}</label></li>{% endif %}
+	{% if app.getSetting('core.use_product') %}<li data-field="product"><label><input type="checkbox" name="product" {% if 'product' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.product') }}</label></li>{% endif %}
+	<li data-field="organization"><label><input type="checkbox" name="organization" {% if 'organization' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.organization') }}</label></li>
+	<li data-field="labels"><label><input type="checkbox" name="labels" {% if 'labels' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.labels') }}</label></li>
+	<li data-field="date_user_waiting"><label><input type="checkbox" name="date_user_waiting" {% if 'date_user_waiting' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.user_waiting') }}</label></li>
 	{% for t in types %}
 		<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.' ~ t) }}</label></li>
 	{% endfor %}

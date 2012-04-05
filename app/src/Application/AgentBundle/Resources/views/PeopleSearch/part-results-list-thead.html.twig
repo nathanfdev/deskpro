@@ -2,9 +2,9 @@
 	<tr>
 		<th></th>
 		{% for field in display_fields %}
-			{% if field == 'email_address' %}<th data-field="email_address">{{ phrase('global.email') }}</th>
-			{% elseif field == 'organization' %}<th data-field="organization">{{ phrase('global.organization') }}</th>
-			{% elseif field == 'language' %}<th data-field="Language">{{ phrase('global.language') }}</th>
+			{% if field == 'email_address' %}<th data-field="email_address">{{ phrase('agent.global.email') }}</th>
+			{% elseif field == 'organization' %}<th data-field="organization">{{ phrase('agent.global.organization') }}</th>
+			{% elseif field == 'language' %}<th data-field="Language">{{ phrase('agent.global.language') }}</th>
 			{% else %}
 				{% for f in person_field_defs %}
 					{% if field == 'person_fields['~f.id~']' %}

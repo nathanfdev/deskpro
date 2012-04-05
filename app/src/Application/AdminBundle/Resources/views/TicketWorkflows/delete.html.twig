@@ -11,6 +11,6 @@
 
 <p>{{ phrase('admin.ticketworkflows.any_tickets_that_use_this_workflow_will_have') }}</p>
 
-<a class="btn" href="{{ path('admin_ticketworks_dodel', {'workflow_id': workflow.id, 'security_token': security_token('delete_workflow')}) }}">{{ phrase('global.yes_i_am_sure_i_want_to_delete') }}</a>
+<a class="btn" href="{{ path('admin_ticketworks_dodel', {'workflow_id': workflow.id, 'security_token': security_token('delete_workflow')}) }}">{{ phrase('admin.global.yes_i_am_sure_i_want_to_delete') }}</a>
 
 {% endblock %}
