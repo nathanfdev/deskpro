@@ -230,28 +230,27 @@ class Dates
 		}
 
 		if ($limit < $detail) {
-			++$limit;
+			if ($limit) ++$limit;
 			if ($parts['days']) {
 				$str_parts[] = sprintf($lang['days'], $parts['days']);
 			}
 		}
 
 		if ($limit < $detail) {
-			++$limit;
+			if ($limit) ++$limit;
 			if ($parts['hours']) {
 				$str_parts[] = sprintf($lang['hours'], $parts['hours']);
 			}
 		}
 
 		if ($limit < $detail) {
-			++$limit;
+			if ($limit) ++$limit;
 			if ($parts['minutes']) {
 				$str_parts[] = sprintf($lang['minutes'], $parts['minutes']);
 			}
 		}
 
 		if ($limit < $detail) {
-			++$limit;
 			if ($parts['seconds']) {
 				$str_parts[] = sprintf($lang['seconds'], $parts['seconds']);
 			}

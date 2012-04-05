@@ -175,26 +175,49 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 			$searcher->addTerm($term['type'], $term['op'], $term['options']);
 		}
 
+		$time_secs = $this->getOptionSeconds();
+
 		switch ($this->event_trigger) {
 			case self::EVENT_TIME_OPEN:
 				$searcher->addTerm('status', 'is', array('awaiting_user', 'awaiting_agent'));
 				$searcher->addRawWhere('tickets.date_user_waiting IS NOT NULL');
+
+				$date_cut = new \DateTime('-' . $time_secs . ' seconds');
+				$searcher->addTerm('date_created', 'lte', array('date1' => $date_cut));
+
 				break;
 
 			case self::EVENT_TIME_USER_WAITING:
-			case self::EVENT_TIME_TOTAL_USER_WAITING:
-				$searcher->addTerm('status', 'is', array('awaiting_user'));
+				$searcher->addTerm('status', 'is', array('awaiting_agent'));
 				$searcher->addRawWhere('tickets.date_user_waiting IS NOT NULL');
+
+				$date_cut = new \DateTime('-' . $time_secs . ' seconds');
+				$searcher->addTerm('user_waiting', 'lte', array('date1' => $date_cut));
+
+				break;
+
+			case self::EVENT_TIME_TOTAL_USER_WAITING:
+				$searcher->addTerm('status', 'is', array('awaiting_agent'));
+				$searcher->addRawWhere('tickets.date_user_waiting IS NOT NULL');
+				$searcher->addTerm('total_user_waiting', 'between', array($time_secs, $time_secs));
 				break;
 
 			case self::EVENT_TIME_AGENT_WAITING:
-				$searcher->addTerm('status', 'is', array('awaiting_agent'));
+				$searcher->addTerm('status', 'is', array('awaiting_user'));
 				$searcher->addRawWhere('tickets.date_agent_waiting IS NOT NULL');
+
+				$date_cut = new \DateTime('-' . $time_secs . ' seconds');
+				$searcher->addTerm('agent_waiting', 'lte', array('date1' => $date_cut));
+
 				break;
 
 			case self::EVENT_TIME_RESOLVED:
 				$searcher->addTerm('status', 'is', array('resolved'));
 				$searcher->addRawWhere('tickets.date_resolved IS NOT NULL');
+
+				$date_cut = new \DateTime('-' . $time_secs . ' seconds');
+				$searcher->addTerm('date_resolved', 'lte', array('date1' => $date_cut));
+
 				break;
 		}
 
@@ -403,12 +426,8 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getOptionScale()
 	{
-		if (!$this->event_trigger_option) {
-			return 0;
-		}
-
-		if (strpos($this->event_trigger_option, ' ') === false) {
-			return 'secs';
+		if (!$this->event_trigger_option || strpos($this->event_trigger_option, ' ') === false) {
+			return 'seconds';
 		}
 
 		list (, $scale) = explode(' ', $this->event_trigger_option);
@@ -423,6 +442,10 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		$secs = 0;
 
 		switch ($scale) {
+
+			case 'minutes':
+				$secs = $time * Dates::SECS_MIN;
+				break;
 
 			case 'hours':
 				$secs = $time * Dates::SECS_HOUR;

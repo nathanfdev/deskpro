@@ -72,7 +72,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_ARCHIVE_SEARCH            = 'archive_search';
 	const TERM_DELETED                   = 'deleted';
 	const TERM_CREATION_SYSTEM           = 'creation_system';
-	const TERM_RECEIVING_GATEWAY         = 'receiving_gateway';
+	const TERM_RECEIVING_GATEWAY         = 'gateway_account';
 	const TERM_GATEWAY_ADDRESS           = 'email_gateway_address';
 	const TERM_HOLD                      = 'is_hold';
 	const TERM_FLAGGED                   = 'flagged';
@@ -1122,7 +1122,7 @@ class TicketSearch extends SearcherAbstract
 						$this->specific_fields[] = self::TERM_RECEIVING_GATEWAY;
 					}
 
-					$wheres[] = $this->_choiceMatch("$tickets_table.email_gateway_id", $op, $choice. true);
+					$wheres[] = $this->_choiceMatch("$tickets_table.email_gateway_id", $op, $choice, true);
 					break;
 
 				case 'escalation_eliminator':

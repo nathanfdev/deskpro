@@ -427,6 +427,11 @@ class TermSummary
 			case 'is_not_new_user':
 				$summary = "Is not a new user";
 				break;
+
+			case 'gateway_account':
+				$names = App::getOrm()->getRepository('DeskPRO:EmailGateway')->getGatewayNames((array)$choice['gateway_address']);
+				$summary = "Gateway account is " . implode($names, ' or ');
+				break;
 		}
 
 		return $summary;

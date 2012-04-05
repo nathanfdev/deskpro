@@ -39,7 +39,7 @@
 				<div class="terms">
 					<em class="op ctrl">{{ phrase('admin.tickettriggers.if') }}</em>
 					{% if trigger.event_trigger_option %}
-					{{ time_explain_prefix }} {{ relative_time(trigger.event_trigger_option, 1) }} <br /><em class="op">{{ phrase('admin.global.and') }}</em>
+					{{ time_explain_prefix }} {% if trigger.getOptionScale() == 'seconds' %}{{ relative_time(trigger.getOptionSeconds()) }}{% else %}{{ trigger.event_trigger_option }}{% endif %} <br /><em class="op">{{ phrase('admin.global.and') }}</em>
 					{% endif %}
 					{% for desc in trigger.getTermDescriptions() %}
 					<span class="term">{{ desc }}</span>

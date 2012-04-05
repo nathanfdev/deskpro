@@ -73,7 +73,14 @@ class SearchIndexUpdate extends AbstractJob
 			foreach ($batch as $info) {
 				$op = isset($info->op) ? $info->op : 'update';
 
-				if (!$this->em->getClassMetadata($info->entity_type)) {
+				$exists = false;
+				try {
+					if (@$this->em->getClassMetadata($info->entity_type)) {
+						$exists = true;
+					}
+				} catch (\Exception $e) {}
+
+				if (!$exists) {
 					$this->queue->deleteMessage($info);
 					continue;
 				}
