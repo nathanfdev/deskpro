@@ -61,6 +61,9 @@ if ($proc_kernel === null) {
 
 	exit(0);
 } else {
+
+	@ini_set('memory_limit', '524288000');
+
 	$class = $kernel_classes[$proc_kernel];
 	$kernel = new $class('prod', false);
 
