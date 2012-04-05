@@ -141,4 +141,8 @@
   'agent.label' => '',
   'agent.person_id' => '',
   'agent.assigned_agent_id' => '',
+  'agent.order_by' => '',
+  'agent.none' => '',
+  'agent.department' => '',
+  'agent.product' => '',
 );

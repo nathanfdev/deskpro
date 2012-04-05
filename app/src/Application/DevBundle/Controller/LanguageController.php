@@ -371,7 +371,7 @@ class LanguageController extends Controller
             foreach($foreign as $id=>$files) {
                 list($firstpart, ) = explode('.', $id, 2);
 
-                if(preg_match('/^core', $firstpart)) {
+                if(preg_match('/^core/', $firstpart)) {
                     $foreigners[$id] = $files;
                 }
             }
@@ -384,7 +384,7 @@ class LanguageController extends Controller
                     array_shift($parts);
 
                     foreach(array_reverse($core_parts) as $core_part) {
-                        array_unshift($core_parts, $core_part);
+                        array_unshift($parts, $core_part);
                     }
 
                     $last_parts = $parts;

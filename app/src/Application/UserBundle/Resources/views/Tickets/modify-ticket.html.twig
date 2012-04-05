@@ -9,7 +9,7 @@
 {% endblock %}
 {% block content %}
 
-<h1 style="border-bottom: 2px solid #ddd; margin-bottom: 10px; padding-bottom: 3px;">{{ phrase('core_ticket.modify_ticket') }}</h1>
+<h1 style="border-bottom: 2px solid #ddd; margin-bottom: 10px; padding-bottom: 3px;">{{ phrase('user.ticket.modify_ticket') }}</h1>
 
 <form action="{{ path('user_tickets_modify', {'ticket_ref':ticket.ref}) }}" method="post">
 
@@ -32,7 +32,7 @@
 	</tr>
 	<tr>
 		<td id="category_select_wrap">
-			{{ phrase('core_tickets.category') }}
+			{{ phrase('user.tickets.category') }}
 		</td>
 		<td>
 			{{ property_fields.form_category_select('editticket[ticket][category_id]', ticket_options.ticket_categories_hierarchy, ticket.category_id, 'category_id') }}
@@ -41,7 +41,7 @@
 	{% if form.ticket.product_id %}
 		<tr>
 			<td>
-				{{ phrase('core.product') }}
+				{{ phrase('user.product') }}
 			</td>
 			<td>
 				{{ form_widget(form.ticket.product_id, {'attr': {'class': 'product_id'}}) }}
@@ -51,7 +51,7 @@
 	{% if form.ticket.priority_id %}
 		<tr>
 			<td>
-				{{ phrase('core_tickets.priority') }}
+				{{ phrase('user.tickets.priority') }}
 			</td>
 			<td>
 				{{ form_widget(form.ticket.priority_id, {'attr': {'class': 'priority_id'}}) }}

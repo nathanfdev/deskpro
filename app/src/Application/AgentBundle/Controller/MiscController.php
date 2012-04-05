@@ -83,16 +83,16 @@ class MiscController extends AbstractController
 		}
 
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.status = ' . json_encode(array(
-			'awaiting_agent' => App::getTranslator()->phrase('core_tickets.status_awaiting_agent'),
-			'awaiting_user' => App::getTranslator()->phrase('core_tickets.status_awaiting_user'),
-			'hidden' => App::getTranslator()->phrase('core_tickets.status_hidden'),
-			'resolved' => App::getTranslator()->phrase('core_tickets.status_resolved'),
-			'closed' => App::getTranslator()->phrase('core_tickets.status_closed'),
+			'awaiting_agent' => App::getTranslator()->phrase('agent.tickets.status_awaiting_agent'),
+			'awaiting_user' => App::getTranslator()->phrase('agent.tickets.status_awaiting_user'),
+			'hidden' => App::getTranslator()->phrase('agent.tickets.status_hidden'),
+			'resolved' => App::getTranslator()->phrase('agent.tickets.status_resolved'),
+			'closed' => App::getTranslator()->phrase('agent.tickets.status_closed'),
 		)) . ';';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.hidden_status = ' . json_encode(array(
-			'deleted' => App::getTranslator()->phrase('core_tickets.hidden_status_deleted'),
-			'spam' => App::getTranslator()->phrase('core_tickets.hidden_status_spam'),
-			'validating' => App::getTranslator()->phrase('core_tickets.hidden_status_validating'),
+			'deleted' => App::getTranslator()->phrase('agent.tickets.hidden_status_deleted'),
+			'spam' => App::getTranslator()->phrase('agent.tickets.hidden_status_spam'),
+			'validating' => App::getTranslator()->phrase('agent.tickets.hidden_status_validating'),
 		)) . ';';
 
 		// Common URLs
