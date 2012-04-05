@@ -50,9 +50,10 @@ class LanguageController extends Controller
                 'ReportBundle' => 'agent',
                 'AdminBundle' => 'admin',
                 'BillingBundle' => 'admin',
-                'UserBundle' => 'user'
+                'UserBundle' => 'user',
+                'DeskPRO' => 'agent'
             );
-    private $packages = array('agent', 'user', 'admin');
+    private $packages = array('agent', 'user', 'admin', 'deskpro');
     private $filecache = array();
 
     public function indexAction()
@@ -190,13 +191,13 @@ class LanguageController extends Controller
         }
 
         fclose($fs);
-        shell_exec('csv2po '.DP_ROOT.'/tmp.csv '.DP_ROOT.'/tmp.po');
+        echo shell_exec('csv2po '.DP_ROOT.DIRECTORY_SEPARATOR.'tmp.csv '.DP_ROOT.DIRECTORY_SEPARATOR.'tmp.po');
         $response = new Response();
         $response->headers->set('Content-Type','text/po');
         $response->headers->set('Content-Disposition', ' attachment; filename=languages_'.$package.'.po');
-        $response->setContent(file_get_contents(DP_ROOT.'/tmp.po'));
-        unlink(DP_ROOT.'/tmp.csv');
-        unlink(DP_ROOT.'/tmp.po');
+        $response->setContent(file_get_contents(DP_ROOT.DIRECTORY_SEPARATOR.'tmp.po'));
+        unlink(DP_ROOT.DIRECTORY_SEPARATOR.'tmp.csv');
+        unlink(DP_ROOT.DIRECTORY_SEPARATOR.'tmp.po');
 
         return $response;
     }
@@ -238,7 +239,6 @@ class LanguageController extends Controller
 
         $foreign = array();
 
-        $globals = array();
         $rootdir = DP_ROOT.'/languages/DeskPRO';
         $real_global = require($rootdir.'/global/global.php');
 
@@ -264,6 +264,8 @@ class LanguageController extends Controller
         }
 
         if(isset($_POST['globals'])) {
+            $globals = array();
+
             foreach($foreign as $id=>$files) {
                 list($firstpart, ) = explode('.', $id, 2);
 
@@ -291,6 +293,73 @@ class LanguageController extends Controller
             $globals = '<?php return '.var_export($export, true).';';
             $this->replacePhrasesInFiles($replace_files, 'global.', $lang.'.global.', true);
             file_put_contents($rootdir.'/'.$lang.'/global.php', $globals);
+        }
+
+        if(isset($_POST['forgeign'])) {
+            $foreigners = array();
+
+            foreach($foreign as $id=>$files) {
+                list($firstpart, ) = explode('.', $id, 2);
+
+                if(in_array($firstpart, $this->packages)) {
+                    $foreigners[$id] = $files;
+                }
+            }
+
+            foreach($globals as $id=>$files) {
+                foreach($files as $file) {
+                    $package = $lang;
+
+                    if($bundle == 'DeskPRO') {
+                        if(preg_match('#/[^/]*user[^/]*/[^/]*.html.twig$#', $file['filename'])) {
+                            $package = 'user';
+                        }
+                    }
+
+                    $last_parts = $parts = explode($id, '.', 3);
+                    array_shift($last_parts);
+                    array_unshift($last_parts, $package);
+
+                    $dst_file = $rootdir.'/'.$package.'/';
+
+                    if(count($parts) == 3) {
+                        $dst_file .= $parts[1].'.php';
+                    }
+                    else {
+                        $dst_file .= $package.'.php';
+                    }
+
+                    $src_file = $rootdir.'/'.$package.'/';
+
+                    if(count($parts) == 3) {
+                        $src_file .= $parts[1].'.php';
+                    }
+                    else {
+                        $src_file .= $package.'.php';
+                    }
+
+                    $source = require($src_file);
+                    $content = $source[$id];
+
+                    if(file_exists($dst_file)) {
+                        $target = require($dst_file);
+                    }
+                    else {
+                        $target = array();
+                    }
+
+                    $new_id = $package.'.'.implode('.',$last_parts);
+
+                    $target[$new_id] = $content;
+                    file_put_contents($dst_file, '<?php return '.var_export($target, true).';');
+
+                    foreach($files as $file) {
+                        $replace_files[$file['filename']] = $file;
+                    }
+
+                    $this->replacePhrasesInFiles(array($file), $id, $new_id, false);
+                }
+            }
         }
 
         $vars['foreign'] = $foreign;
@@ -719,9 +788,9 @@ class LanguageController extends Controller
         return $this->render('DevBundle:Language:find.phrases.php.html.twig', $vars);
     }
 
-    public function parseLangFiles()
+    public function parseLangFiles($package = '')
     {
-        $files = $this->getLanguageFileList();
+        $files = $this->getLanguageFileList($package);
         $by_id = array();
         $by_content = array();
 
