@@ -45,6 +45,7 @@ class LanguageController extends Controller
 {
     private $files_temp;
     private $bundles = array('AgentBundle', 'AdminBundle', 'InstallBundle', 'UserBundle', 'ReportBundle', 'BillingBundle', 'DeskPRO');
+    private $filecache = array();
 
     public function indexAction()
     {
@@ -221,11 +222,11 @@ class LanguageController extends Controller
         $vars = array();
 
         $bundle_map = array(
-            'AgentBundle' => 'agent',
+            //'AgentBundle' => 'agent',
             'ReportBundle' => 'agent',
-            'AdminBundle' => 'admin',
+            /*'AdminBundle' => 'admin',
             'BillingBundle' => 'admin',
-            'UserBundle' => 'user'
+            'UserBundle' => 'user'*/
         );
         $foreign = array();
 
@@ -264,9 +265,11 @@ class LanguageController extends Controller
                     list($firstpart, ) = explode('.', $id, 2);
 
                     if($firstpart == 'global') {
-                        if(!in_array($id, $globals[$bundle_map[$bundle]])) {
-                            $globals[$bundle_map[$bundle]][$id] = $files;
+                        if(!isset($globals[$bundle_map[$bundle]][$id])) {
+                            $globals[$bundle_map[$bundle]][$id] = array();
                         }
+
+                        $globals[$bundle_map[$bundle]][$id] = array_merge($files, $globals[$bundle_map[$bundle]][$id]);
                     }
                 }
             }
