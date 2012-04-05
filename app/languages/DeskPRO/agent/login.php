@@ -1,5 +1,5 @@
 <?php return array(
-
+	'agent.login.email' => 'Email',
 
 	'agent.login.login_failed' => 'Invalid login. Please try again.',
 

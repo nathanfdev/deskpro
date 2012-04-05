@@ -188,4 +188,11 @@ $collection->add('dev_lang_export_po', new Route(
     array()
 ));
 
+$collection->add('dev_lang_admin_to_agent', new Route(
+    '/lang/admin/to/agent',
+    array('_controller' => 'DevBundle:Language:adminToAgent'),
+    array(),
+    array()
+));
+
 return $collection;

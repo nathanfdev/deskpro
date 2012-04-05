@@ -54,7 +54,6 @@ class LanguageController extends Controller
                 'DeskPRO' => 'agent'
             );
     private $packages = array('agent', 'user', 'admin', 'deskpro');
-    private $filecache = array();
 
     public function indexAction()
     {
@@ -186,17 +185,38 @@ class LanguageController extends Controller
         $fs = fopen(DP_ROOT.'/tmp.csv', 'w');
         fputcsv($fs, array('location', 'source', 'target'));
 
-        foreach($strings as $source => $target) {
-            fputcsv($fs, array('', $source, $target));
-        }
+        /*foreach($strings as $source => $target) {
+            fputcsv($fs, array('', $source, str_replace("\n",'\n', $target)));
+        }*/
 
         fclose($fs);
         echo shell_exec('csv2po '.DP_ROOT.DIRECTORY_SEPARATOR.'tmp.csv '.DP_ROOT.DIRECTORY_SEPARATOR.'tmp.po');
+
+        $fs = fopen(DP_ROOT.'/tmp.po', 'a');
+
+        foreach($strings as $source => $target) {
+            fwrite($fs, "\nmsgid \"{$source}\"\n");
+            fwrite($fs, "msgstr ");
+            $parts = explode("\n", $target);
+
+            foreach($parts as $i=>$part) {
+                fwrite($fs, '"'.$part);
+
+                if($i != count($parts) -1) {
+                    fwrite($fs, '\n');
+                }
+
+                fwrite($fs, "\"\n");
+            }
+        }
+
+        fclose($fs);
+
         $response = new Response();
         $response->headers->set('Content-Type','text/po');
         $response->headers->set('Content-Disposition', ' attachment; filename=languages_'.$package.'.po');
         $response->setContent(file_get_contents(DP_ROOT.DIRECTORY_SEPARATOR.'tmp.po'));
-        unlink(DP_ROOT.DIRECTORY_SEPARATOR.'tmp.csv');
+        //unlink(DP_ROOT.DIRECTORY_SEPARATOR.'tmp.csv');
         unlink(DP_ROOT.DIRECTORY_SEPARATOR.'tmp.po');
 
         return $response;
@@ -425,6 +445,10 @@ class LanguageController extends Controller
         return $this->render('DevBundle:Language:find.foreign.html.twig', $vars);
     }
 
+    public function manualReplaceRawString()
+    {
+        return $this->render('DevBundle:Language:find.raw.html.twig', $vars);
+    }
 
     public function findRawStringsAction($bundle)
     {
@@ -1007,6 +1031,39 @@ class LanguageController extends Controller
         }
     }
 
+    public function adminToAgentAction()
+    {
+        $agent_files = $this->getLanguageFileList('agent');
+        $admin_files = $this->getLanguageFileList('admin');
+        $by_content = array();
+
+        foreach($agent_files as $agent_file) {
+            $phrases = require($agent_file);
+
+            foreach($phrases as $id=>$content) {
+                $by_content[$content] = $id;
+            }
+        }
+
+        $files_twig = $this->getTwigFileList('AdminBundle');
+        $files_php = $this->getPhpFileList('AdminBundle');
+
+        foreach($admin_files as $admin_file) {
+            $phrases = require($admin_file);
+
+            foreach($phrases as $id=>$content) {
+                if(isset($by_content[$content])) {
+                    unset($phrases[$id]);
+
+                    $this->replacePhrasesInFiles($files_twig, $id, $by_content[$id], false);
+                    $this->replacePhrasesInFiles($files_php, $id, $by_content[$id], false);
+                }
+            }
+
+            file_put_contents($admin_file, '<?php return '.var_export($phrases).';');
+        }
+    }
+
     public function checkLanguageFilesAction()
     {
         set_time_limit(0);
@@ -1069,25 +1126,25 @@ class LanguageController extends Controller
         return $data;
     }
 
+    public function readLangDir($path, &$files)
+    {
+        $dh = opendir($path);
+
+        while(false !== ($filename = readdir($dh))) {
+            $filepath = $path.'/'.$filename;
+
+            if(is_file($filepath) && substr($filepath, -3 == 'php')) {
+                $files[] = $filepath;
+            }
+        }
+
+        closedir($dh);
+    }
+
     public function getLanguageFileList($package = '')
     {
         $rootdir = DP_ROOT.'/languages/DeskPRO'.'/'.$package;
         $files = array();
-
-        function read_lang_dir($path, &$files)
-        {
-            $dh = opendir($path);
-
-            while(false !== ($filename = readdir($dh))) {
-                $filepath = $path.'/'.$filename;
-
-                if(is_file($filepath) && substr($filepath, -3 == 'php')) {
-                    $files[] = $filepath;
-                }
-            }
-
-            closedir($dh);
-        }
 
         if(empty($package)) {
             $dh1 = opendir($rootdir);
@@ -1099,14 +1156,14 @@ class LanguageController extends Controller
                 $path = $rootdir.'/'.$dirname;
 
                 if(is_dir($path)) {
-                    read_lang_dir($path, $files);
+                    $this->readLangDir($path, $files);
                 }
             }
 
             closedir($dh1);
         }
         else {
-            read_lang_dir($rootdir, $files);
+            $this->readLangDir($rootdir, $files);
         }
         
         return $files;
