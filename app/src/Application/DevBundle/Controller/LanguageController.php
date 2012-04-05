@@ -52,11 +52,12 @@ class LanguageController extends Controller
                 'BillingBundle' => 'admin',
                 'UserBundle' => 'user'
             );
+    private $packages = array('agent', 'user', 'admin');
     private $filecache = array();
 
     public function indexAction()
     {
-		return $this->render('DevBundle:Language:index.html.twig', array('bundles' => $this->bundles, 'bundle_map' => $this->bundle_map));
+		return $this->render('DevBundle:Language:index.html.twig', array('bundles' => $this->bundles, 'bundle_map' => $this->bundle_map, 'packages' => $this->packages));
     }
 
     public function listLanguageFilesAction()
@@ -171,10 +172,10 @@ class LanguageController extends Controller
         return $files;
     }
 
-    public function exportAllToPOAction()
+    public function exportToPOAction($package)
     {
         set_time_limit(0);
-        $files = $this->getLanguageFileList();
+        $files = $this->getLanguageFileList($package);
         $strings = array();
 
         foreach($files as $file) {
@@ -192,11 +193,17 @@ class LanguageController extends Controller
         shell_exec('csv2po '.DP_ROOT.'/tmp.csv '.DP_ROOT.'/tmp.po');
         $response = new Response();
         $response->headers->set('Content-Type','text/po');
+        $response->headers->set('Content-Disposition', ' attachment; filename=languages_'.$package.'.po');
         $response->setContent(file_get_contents(DP_ROOT.'/tmp.po'));
         unlink(DP_ROOT.'/tmp.csv');
         unlink(DP_ROOT.'/tmp.po');
 
         return $response;
+    }
+
+    public function exportAllToPOAction()
+    {
+        return $this->exportToPOAction('');
     }
 
     public function replacePhraseIdsAction()
@@ -893,34 +900,46 @@ class LanguageController extends Controller
         return $data;
     }
 
-    public function getLanguageFileList()
+    public function getLanguageFileList($package = '')
     {
-        $rootdir = DP_ROOT.'/languages/DeskPRO';
-        $dh1 = opendir($rootdir);
+        $rootdir = DP_ROOT.'/languages/DeskPRO'.'/'.$package;
         $files = array();
 
-        while(false !== ($dirname = readdir($dh1))) {
-            if($dirname == '.' || $dirname == '..')
-                continue;
+        function read_lang_dir($path, &$files)
+        {
+            $dh = opendir($path);
 
-            $path = $rootdir.'/'.$dirname;
+            while(false !== ($filename = readdir($dh))) {
+                $filepath = $path.'/'.$filename;
 
-            if(is_dir($path)) {
-                $dh2 = opendir($path);
-
-                while(false !== ($filename = readdir($dh2))) {
-                    $filepath = $path.'/'.$filename;
-
-                    if(is_file($filepath) && substr($filepath, -3 == 'php')) {
-                        $files[] = $filepath;
-                    }
+                if(is_file($filepath) && substr($filepath, -3 == 'php')) {
+                    $files[] = $filepath;
                 }
-
-                closedir($dh2);
             }
+
+            closedir($dh);
+        }
+
+        if(empty($package)) {
+            $dh1 = opendir($rootdir);
+
+            while(false !== ($dirname = readdir($dh1))) {
+                if($dirname == '.' || $dirname == '..')
+                    continue;
+
+                $path = $rootdir.'/'.$dirname;
+
+                if(is_dir($path)) {
+                    read_lang_dir($path, $files);
+                }
+            }
+
+            closedir($dh1);
+        }
+        else {
+            read_lang_dir($rootdir, $files);
         }
         
-        closedir($dh1);
         return $files;
     }
 

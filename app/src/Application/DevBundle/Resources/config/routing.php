@@ -181,5 +181,11 @@ $collection->add('dev_lang_export_all_po', new Route(
     array()
 ));
 
+$collection->add('dev_lang_export_po', new Route(
+    '/lang/export/po/{package}',
+    array('_controller' => 'DevBundle:Language:exportToPO'),
+    array(),
+    array()
+));
 
 return $collection;

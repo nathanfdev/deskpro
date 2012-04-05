@@ -13,6 +13,9 @@
     <li><a href="{{ path('dev_lang_test_tokenizer') }}">Test PHP Tokenizer</a></li>
     <hr />
     <li><a href="{{ path('dev_lang_export_all_po') }}" target="_blank">Export all to PO</a></li>
+    {% for package in packages %}
+    <li><a href="{{ path('dev_lang_export_po', {'package':package}) }}" target="_blank">Export {{package}} to PO</a></li>
+    {% endfor %}
     <hr />
 
     {% for bundle in bundles %}
