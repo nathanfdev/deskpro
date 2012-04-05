@@ -55,7 +55,11 @@ class ReportErrors extends \Orb\Log\Writer\AbstractWriter
 			$log['date_created']   = $log_item->getDatetime()->format('Y-m-d H:i:s');
 
 			if (App::has(App::SERVICE_REQUEST)) {
-				$log['url'] = App::getRequest()->getUri();
+				try {
+					$log['url'] = App::getRequest()->getUri();
+				} catch (\Exception $e) {
+					$log['url'] = 'Command: ' . print_r($_SERVER['argv']);
+				}
 				$log['ref_url'] = empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER'];
 				$log['user_agent'] = empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'];
 				$log['request_data'] = print_r($_REQUEST, 1);
@@ -84,7 +88,7 @@ class ReportErrors extends \Orb\Log\Writer\AbstractWriter
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 			$client->getRequest()->post()->set('log', $log);
 			$client->setUri(DP_LIC_SERVER . '/report-error.json');
-			$client->send();
+			$res = $client->send();
 		} catch (\Exception $e) {}
 	}
 }
