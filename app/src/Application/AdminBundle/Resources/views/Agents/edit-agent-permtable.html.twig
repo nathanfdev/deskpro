@@ -40,10 +40,10 @@
 
 <nav class="check-grid-tabs">
 	<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
-		<li class="on" data-tab-for="#permgroup_tickets"><span>{{ phrase('admin.global.tickets') }}</span></li>
+		<li class="on" data-tab-for="#permgroup_tickets"><span>{{ phrase('agent.global.tickets') }}</span></li>
 		<li data-tab-for="#permgroup_people"><span>{{ phrase('admin.agents.people_and_organizations') }}</span></li>
-		<li data-tab-for="#permgroup_chat"><span>{{ phrase('admin.global.chat') }}</span></li>
-		<li data-tab-for="#permgroup_publish"><span>{{ phrase('admin.global.publish') }}</span></li>
+		<li data-tab-for="#permgroup_chat"><span>{{ phrase('agent.global.chat') }}</span></li>
+		<li data-tab-for="#permgroup_publish"><span>{{ phrase('agent.global.publish') }}</span></li>
 	</ul>
 </nav>
 
@@ -53,15 +53,15 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th colspan="2" style="text-align: left">{{ phrase('admin.global.description') }}</th>
+					<th colspan="2" style="text-align: left">{{ phrase('agent.global.description') }}</th>
 					<th width="60">{{ phrase('admin.agents.overrides') }}</th>
 				</tr>
 			</thead>
 			<tbody>
 				<!-- PERMISSION:agent_tickets.use -->{{ _self.perm_col('User ticket application', usergroup_values, 'agent_tickets', 'use') }}
 				<!-- PERMISSION:agent_tickets.create -->{{ _self.perm_col('Create tickets', usergroup_values, 'agent_tickets', 'create', 'agent_tickets_use') }}
-				<!-- PERMISSION:agent_tickets.reply_mass -->{{ _self.perm_col('Can use mass actions to reply <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="'~phrase('admin.notice_when_enabled_agent_can_use_mass_ticket_actions')~'"></span>', usergroup_values, 'agent_tickets', 'reply_mass', 'agent_tickets_use') }}
-				<!-- PERMISSION:agent_tickets.modify_set_closed -->{{ _self.perm_col('Can close and unclose tickets <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="'~phrase('admin.notice_if_agent_can_resolve_ticket')~'"></span>', usergroup_values, 'agent_tickets', 'modify_set_closed', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.reply_mass -->{{ _self.perm_col('Can use mass actions to reply <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="'~phrase('agent.tickets.workflow')~'"></span>', usergroup_values, 'agent_tickets', 'reply_mass', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.modify_set_closed -->{{ _self.perm_col('Can close and unclose tickets <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="'~phrase('agent.tickets.workflow')~'"></span>', usergroup_values, 'agent_tickets', 'modify_set_closed', 'agent_tickets_use') }}
 			</tbody>
 			<tbody>
 				<!-- PERMISSION:agent_tickets.reply_own -->{{ _self.perm_col('Reply to own and teams tickets', usergroup_values, 'agent_tickets', 'reply_own', 'agent_tickets_use') }}
@@ -148,7 +148,7 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th colspan="2" style="text-align: left">{{ phrase('admin.global.description') }}</th>
+					<th colspan="2" style="text-align: left">{{ phrase('agent.global.description') }}</th>
 					<th width="60">{{ phrase('admin.agents.overrides') }}</th>
 				</tr>
 			</thead>
@@ -178,7 +178,7 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th colspan="2" style="text-align: left">{{ phrase('admin.global.description') }}</th>
+					<th colspan="2" style="text-align: left">{{ phrase('agent.global.description') }}</th>
 					<th width="60">{{ phrase('admin.agents.overrides') }}</th>
 				</tr>
 			</thead>
@@ -199,7 +199,7 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th colspan="2" style="text-align: left">{{ phrase('admin.global.description') }}</th>
+					<th colspan="2" style="text-align: left">{{ phrase('agent.global.description') }}</th>
 					<th width="60">{{ phrase('admin.agents.overrides') }}</th>
 				</tr>
 			</thead>
@@ -207,7 +207,7 @@
 				<!-- PERMISSION:agent_publish.create -->{{ _self.perm_col('Create content', usergroup_values, 'agent_publish', 'create') }}
 				<!-- PERMISSION:agent_publish.delete -->{{ _self.perm_col('Delete content', usergroup_values, 'agent_publish', 'delete') }}
 				<!-- PERMISSION:agent_publish.edit -->{{ _self.perm_col('Edit others content', usergroup_values, 'agent_publish', 'edit') }}
-				<!-- PERMISSION:agent_publish.validate -->{{ _self.perm_col('Validate content and comments (including own) <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="'~phrase('admin.notice_if_agent_cant_validate_content')~'"></span>', usergroup_values, 'agent_publish', 'validate') }}
+				<!-- PERMISSION:agent_publish.validate -->{{ _self.perm_col('Validate content and comments (including own) <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="'~phrase('agent.tickets.workflow')~'"></span>', usergroup_values, 'agent_publish', 'validate') }}
 			</tbody>
 		</table>
 	</div>

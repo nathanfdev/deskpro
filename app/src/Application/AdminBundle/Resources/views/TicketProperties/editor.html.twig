@@ -17,15 +17,15 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</header>
 		<article id="ticket_elements">
 			<ul>
-				<li class="draggable irremovable" data-item-id="ticket_department" data-edit-title="{{ phrase('admin.ticketproperties.edit_departments') }}" data-edit-url="{{ path('admin_departments') }}"><label>{{ phrase('admin.global.department') }}</label></li>
+				<li class="draggable irremovable" data-item-id="ticket_department" data-edit-title="{{ phrase('admin.ticketproperties.edit_departments') }}" data-edit-url="{{ path('admin_departments') }}"><label>{{ phrase('agent.global.department') }}</label></li>
 				{% if section == 'create' %}
 					<li class="draggable irremovable" data-item-id="message"><label>{{ phrase('admin.ticketproperties.ticket_message') }}</label></li>
 					<li class="draggable irremovable" data-item-id="ticket_subject"><label>{{ phrase('admin.ticketproperties.ticket_subject') }}</label></li>
-					<li class="draggable" data-item-id="attachments"><label>{{ phrase('admin.global.attachments') }}</label></li>
+					<li class="draggable" data-item-id="attachments"><label>{{ phrase('agent.global.attachments') }}</label></li>
 				{% endif %}
-				<li class="draggable" data-item-id="ticket_category" data-edit-title="{{ phrase('admin.global.edit_categories') }}" data-edit-url="{{ path('admin_ticketcats') }}"><label>{{ phrase('admin.global.category') }}</label></li>
-				<li class="draggable" data-item-id="ticket_product" data-edit-title="{{ phrase('admin.ticketproperties.edit_products') }}" data-edit-url="{{ path('admin_products') }}"><label>{{ phrase('admin.global.product') }}</label></li>
-				<li class="draggable" data-item-id="ticket_priority" data-edit-title="{{ phrase('admin.ticketproperties.edit_priorities') }}" data-edit-url="{{ path('admin_ticketpris') }}"><label>{{ phrase('admin.global.priority') }}</label></li>
+				<li class="draggable" data-item-id="ticket_category" data-edit-title="{{ phrase('agent.global.edit_categories') }}" data-edit-url="{{ path('admin_ticketcats') }}"><label>{{ phrase('agent.global.category') }}</label></li>
+				<li class="draggable" data-item-id="ticket_product" data-edit-title="{{ phrase('admin.ticketproperties.edit_products') }}" data-edit-url="{{ path('admin_products') }}"><label>{{ phrase('agent.global.product') }}</label></li>
+				<li class="draggable" data-item-id="ticket_priority" data-edit-title="{{ phrase('admin.ticketproperties.edit_priorities') }}" data-edit-url="{{ path('admin_ticketpris') }}"><label>{{ phrase('agent.global.priority') }}</label></li>
 				{% for field in custom_ticket_fields %}
 				<li class="draggable" data-item-id="ticket_field[{{field.field_def.id}}]" data-edit-title="{{ phrase('admin.global.edit_field') }}" data-edit-url="{{ path('admin_customdeftickets_edit', {field_id: field.field_def.id}) }}">
 				<label>{{field.title}}</label>
@@ -72,7 +72,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
             {% set phrase_link1 %}
             <a class="switcher" href="{{ path('admin_tickets_editor_dep', {'department_id': '0', 'section': section}) }}">{{ phrase('admin.ticketproperties.default_layout') }}</a>
             {% endset %}
-            <span id="department_switcher" class="switcher"><span>{{ phrase('admin.global.department') }}</span></span>
+            <span id="department_switcher" class="switcher"><span>{{ phrase('agent.global.department') }}</span></span>
             {% set phrase_link2 %}
             {% endset %}
             {{ phrase('admin.ticketproperties.edit_default_layout_or_select_another', {'link1':phrase_link1,'link2':phrase_link2}) }}
@@ -82,7 +82,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 
 <div class="content-tabs">
 	<nav>
-		<span class="saving-text" id="saving_text" style="display: none">{{ phrase('admin.global.saving') }}</span>
+		<span class="saving-text" id="saving_text" style="display: none">{{ phrase('agent.global.saving') }}</span>
 		<ul>
 			<li {% if section == 'create' %}class="on"{% endif %}>
 				<a href="{{ path('admin_tickets_editor_dep', {'department_id': department.id|default('0')}) }}">{{ phrase('admin.ticketproperties.new_ticket_form') }}</a>
@@ -179,7 +179,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 						<div class="dp-form-input">
 							<div class="criteria-form search-form">
 								<div class="search-terms"></div>
-								<div class="term"><span class="add-term">+</span> {{ phrase('admin.global.add_a_new_criteria') }}</div>
+								<div class="term"><span class="add-term">+</span> {{ phrase('agent.global.add_a_new_criteria') }}</div>
 							</div>
 						</div>
 					</div>
@@ -213,7 +213,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 </script>
 
 {############################
- # {{ phrase('admin.global.department') }}
+ # {{ phrase('agent.global.department') }}
  ############################}
 <script type="text/x-deskpro-plain" id="rendered_field_ticket_department">
 	<div class="subject">
@@ -235,7 +235,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
  ############################}
 <script type="text/x-deskpro-plain" id="rendered_field_attachments">
 	<div class="attachments">
-		<input type="file" /> <button class="clean-white small">{{ phrase('admin.global.upload') }}</button>
+		<input type="file" /> <button class="clean-white small">{{ phrase('agent.global.upload') }}</button>
 	</div>
 </script>
 
@@ -316,11 +316,11 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</div>
 	</div>
 	{% if term_options.products %}
-		<div class="type" title="{{ phrase('admin.global.product') }}" data-rule-type="product">
+		<div class="type" title="{{ phrase('agent.global.product') }}" data-rule-type="product">
 			<div class="op">
 				<select name="op">
-					<option value="is">{{ phrase('admin.global.is') }}</option>
-					<option value="not">{{ phrase('admin.global.is_not') }}</option>
+					<option value="is">{{ phrase('agent.global.is') }}</option>
+					<option value="not">{{ phrase('agent.global.is_not') }}</option>
 				</select>
 			</div>
 			<div class="options">
@@ -333,11 +333,11 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</div>
 	{% endif %}
 	{% if term_options.ticket_categories_full %}
-		<div class="type" title="{{ phrase('admin.global.category') }}" data-rule-type="category">
+		<div class="type" title="{{ phrase('agent.global.category') }}" data-rule-type="category">
 			<div class="op">
 				<select name="op">
-					<option value="is">{{ phrase('admin.global.is') }}</option>
-					<option value="not">{{ phrase('admin.global.is_not') }}</option>
+					<option value="is">{{ phrase('agent.global.is') }}</option>
+					<option value="not">{{ phrase('agent.global.is_not') }}</option>
 				</select>
 			</div>
 			<div class="options">
@@ -350,13 +350,13 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</div>
 	{% endif %}
 	{% if term_options.priorities %}
-		<div class="type" title="{{ phrase('admin.global.priority') }}" data-rule-type="priority">
+		<div class="type" title="{{ phrase('agent.global.priority') }}" data-rule-type="priority">
 			<div class="op">
 				<select name="op">
-					<option value="is">{{ phrase('admin.global.is') }}</option>
-					<option value="not">{{ phrase('admin.global.is_not') }}</option>
-					<option value="lt">{{ phrase('admin.global.is_less_than') }}</option>
-					<option value="gt">{{ phrase('admin.global.is_greater_than') }}</option>
+					<option value="is">{{ phrase('agent.global.is') }}</option>
+					<option value="not">{{ phrase('agent.global.is_not') }}</option>
+					<option value="lt">{{ phrase('agent.global.is_less_than') }}</option>
+					<option value="gt">{{ phrase('agent.global.is_greater_than') }}</option>
 				</select>
 			</div>
 			<div class="options">
@@ -369,11 +369,11 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</div>
 	{% endif %}
 	{% if term_options.ticket_workflows %}
-		<div class="type" title="{{ phrase('admin.global.workflow') }}" data-rule-type="workflow">
+		<div class="type" title="{{ phrase('agent.global.workflow') }}" data-rule-type="workflow">
 			<div class="op">
 				<select name="op">
-					<option value="is">{{ phrase('admin.global.is') }}</option>
-					<option value="not">{{ phrase('admin.global.is_not') }}</option>
+					<option value="is">{{ phrase('agent.global.is') }}</option>
+					<option value="not">{{ phrase('agent.global.is_not') }}</option>
 				</select>
 			</div>
 			<div class="options">
@@ -391,7 +391,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 	<section data-section-name="department">
 		<header>
 			<h3>{{ phrase('admin.ticketproperties.switch_to_department') }}</h3>
-			<input type="text" class="filter-box" placeholder="{{ phrase('admin.global.filter') }}" />
+			<input type="text" class="filter-box" placeholder="{{ phrase('agent.global.filter') }}" />
 		</header>
 		<ul>
 			{% if department.id %}

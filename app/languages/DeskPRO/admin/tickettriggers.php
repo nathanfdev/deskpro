@@ -1,9 +1,6 @@
 <?php return array (
-
   'admin.tickettriggers.choose_type' => 'Choose Type',
   'admin.tickettriggers.choose_the_event_that_should_initiate_the_trigger' => 'Choose the event that should initiate the trigger',
-
-
   'admin.tickettriggers.ticket_updated' => 'Ticket Updated',
   'admin.tickettriggers.ticket_has_been_open_for' => 'Ticket has been open for',
   'admin.tickettriggers.the_user_has_been_waiting_for_an_agent' => 'The user has been waiting for an agent to reply for',
@@ -11,16 +8,9 @@
   'admin.tickettriggers.the_agent_has_been_waiting_for_the_user' => 'The agent has been waiting for the user to reply for',
   'admin.tickettriggers.the_ticket_has_been_resolved_for' => 'The ticket has been resolved for',
   'admin.tickettriggers.event' => 'Event',
-
   'admin.tickettriggers.optionally_enter_a_description_to_help_you_remember' => 'Optionally enter a description to help you remember what this trigger was created for',
-
-
-
   'admin.tickettriggers.add_a_new_action' => 'Add a new action',
-
   'admin.tickettriggers.add_trigger' => 'Add Trigger',
-
-
   'admin.tickettriggers.you_havent_created_any_triggers_yet' => 'You haven\'t created any triggers yet.',
   'admin.tickettriggers.click_here_to_create_one_now' => 'Click here to create one now',
   'admin.tickettriggers.new_ticket_triggers' => 'New Ticket Triggers',
@@ -31,8 +21,6 @@
   'admin.tickettriggers.triggers_based_on_the_total_time_a_user' => 'Triggers based on the total time a user has been waiting in a ticket',
   'admin.tickettriggers.triggers_based_on_the_time_an_agent_has' => 'Triggers based on the time an agent has been waiting for a user reply',
   'admin.tickettriggers.triggers_based_on_the_time_a_ticket_was' => 'Triggers based on the time a ticket was resolved',
-
   'admin.tickettriggers.if' => 'if',
-
   'admin.tickettriggers.then' => 'then',
 );

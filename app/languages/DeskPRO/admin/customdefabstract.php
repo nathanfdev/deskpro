@@ -3,26 +3,18 @@
   'admin.customdefabstract.this_is_a_simple_oneline_text_box' => 'This is a simple one-line text box.',
   'admin.customdefabstract.this_is_a_multiline_text_box_that_can' => 'This is a multi-line text box that can be used for longer entries like descriptions or notes.',
   'admin.customdefabstract.this_is_a_widget_field_that_lets_you' => 'This is a widget field that lets you enter any kind of HTML for display purposes. It does not take any input.',
-
   'admin.customdefabstract.html_to_display' => 'HTML to display',
-
   'admin.customdefabstract.user_validation' => 'User Validation',
   'admin.customdefabstract.no_validation' => 'No validation',
   'admin.customdefabstract.min_characters' => 'Min characters',
   'admin.customdefabstract.max_characters' => 'Max characters',
   'admin.customdefabstract.match_regular_expression' => 'Match regular expression',
-
-
   'admin.customdefabstract.custom_styling' => 'Custom Styling',
   'admin.customdefabstract.custom_css_class' => 'Custom CSS class',
-
   'admin.customdefabstract.field_type' => 'Field type',
   'admin.customdefabstract.you_have_not_created_any_fields_yet' => 'You have not created any fields yet.',
-
   'admin.customdefabstract.how_to_display_the_options' => 'How to display the options',
   'admin.customdefabstract.options' => 'Options',
-
-
   'admin.customdefabstract.drag' => 'drag',
   'admin.customdefabstract.require_user_to_input_a_value_for_this' => 'Require user to input a value for this field',
   'admin.customdefabstract.agent_validation' => 'Agent Validation',

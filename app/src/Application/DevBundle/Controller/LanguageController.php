@@ -1033,6 +1033,7 @@ class LanguageController extends Controller
 
     public function adminToAgentAction()
     {
+        set_time_limit(0);
         $agent_files = $this->getLanguageFileList('agent');
         $admin_files = $this->getLanguageFileList('admin');
         $by_content = array();
@@ -1047,6 +1048,7 @@ class LanguageController extends Controller
 
         $files_twig = $this->getTwigFileList('AdminBundle');
         $files_php = $this->getPhpFileList('AdminBundle');
+        $files = $this->flatFileListToNonFlat(array_merge($files_php, $files_twig));
 
         foreach($admin_files as $admin_file) {
             $phrases = require($admin_file);
@@ -1055,13 +1057,14 @@ class LanguageController extends Controller
                 if(isset($by_content[$content])) {
                     unset($phrases[$id]);
 
-                    $this->replacePhrasesInFiles($files_twig, $id, $by_content[$id], false);
-                    $this->replacePhrasesInFiles($files_php, $id, $by_content[$id], false);
+                    $this->replacePhrasesInFiles($files, $id, $by_content[$content], false);
                 }
             }
 
-            file_put_contents($admin_file, '<?php return '.var_export($phrases).';');
+            file_put_contents($admin_file, '<?php return '.var_export($phrases, true).';');
         }
+
+        return new Response();
     }
 
     public function checkLanguageFilesAction()

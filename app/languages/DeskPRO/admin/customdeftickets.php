@@ -1,7 +1,2 @@
 <?php return array (
-
-
-
-
-
 );

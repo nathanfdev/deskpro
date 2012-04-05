@@ -37,34 +37,15 @@
   'admin.main.edit_the_notification_emails' => 'Edit the notification emails',
   'admin.main.next_step' => 'Next step',
   'admin.main.or_skip' => 'or skip',
-
-
   'admin.main.outgoing_email_account' => 'Outgoing Email Account',
-
-
-
   'admin.main.page_templates' => 'Page Templates',
-
-
-
-
-
-
-
   'admin.main.registration' => 'Registration',
   'admin.main.user_groups' => 'User Groups',
   'admin.main.fields' => 'Fields',
-
-
   'admin.main.organization_labels' => 'Organization Labels',
   'admin.main.rules' => 'Rules',
-
   'admin.main.plugins' => 'Plugins',
   'admin.main.api' => 'API',
   'admin.main.editor' => 'Editor',
-
-
-
   'admin.main.email_notification_templates' => 'Email Notification Templates',
-
 );

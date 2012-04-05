@@ -13,7 +13,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.global.title') }}</label>
+			<label>{{ phrase('agent.global.title') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.title) }}
@@ -23,10 +23,10 @@
 
 {{ form_rest(form) }}
 
-<button class="btn primary save-trigger">{{ phrase('admin.global.save') }}</button>
+<button class="btn primary save-trigger">{{ phrase('agent.global.save') }}</button>
 </form>
 
 <div class="delete-link-wrap">
-	<a href="{{ path('admin_ticketworks_del', {'workflow_id': workflow.id}) }}">{{ phrase('admin.global.delete') }}</a>
+	<a href="{{ path('admin_ticketworks_del', {'workflow_id': workflow.id}) }}">{{ phrase('agent.global.delete') }}</a>
 </div>
 {% endblock %}

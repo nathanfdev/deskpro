@@ -4,8 +4,8 @@
 	<input type="text" id="settings_filter" value="" placeholder="{{ phrase('admin.settings.filter') }}" style="width: 200px;" />
 </div>
 <ul>
-	<li><a href="{{ path('admin_settings') }}">{{ phrase('admin.global.settings') }}</a></li>
-	<li>{{ phrase('admin.global.advanced') }}</li>
+	<li><a href="{{ path('admin_settings') }}">{{ phrase('agent.global.settings') }}</a></li>
+	<li>{{ phrase('agent.global.advanced') }}</li>
 </ul>
 {% endblock %}
 {% block html_head %}
@@ -57,7 +57,7 @@ function _page_exec() {
 	<table cellspacing="0" cellpadding="0" width="100%">
 		<thead>
 			<tr>
-				<th style="text-align:left" width="200">{{ phrase('admin.global.name') }}</th>
+				<th style="text-align:left" width="200">{{ phrase('agent.global.name') }}</th>
 				<th style="text-align:left">{{ phrase('admin.global.default_value') }}</th>
 				<th style="text-align:left">{{ phrase('admin.settings.set_value') }}</th>
 			</tr>

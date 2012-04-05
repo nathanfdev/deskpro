@@ -12,7 +12,7 @@
 			<label>{{ phrase('admin.api.key_information') }}</label>
 		</td>
 		<td>
-			{{ phrase('admin.global.id') }}: {{apikey.id}}<br />
+			{{ phrase('agent.global.id') }}: {{apikey.id}}<br />
 			{{ phrase('admin.api.key') }}: {{apikey.code}}
 			<hr />
 			{{ phrase('admin.api.http_basic_auth') }}: <input type="text" class="flat" value="{{apikey.id}}:{{apikey.code}}" style="width: 200px;" /><br />
@@ -43,7 +43,7 @@
 </table>
 
 <div style="text-align:center">
-	<button class="dp-button" type="submit">{{ phrase('admin.global.save') }}</button>
+	<button class="dp-button" type="submit">{{ phrase('agent.global.save') }}</button>
 </div>
 
 </form>

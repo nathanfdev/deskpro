@@ -10,7 +10,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.global.id') }}</label>
+			<label>{{ phrase('agent.global.id') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ log.id }}
@@ -19,7 +19,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.global.date') }}</label>
+			<label>{{ phrase('agent.global.date') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ log.date_created|date('Y-m-d H:m:s') }}
@@ -46,7 +46,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.global.priority') }}</label>
+			<label>{{ phrase('agent.global.priority') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{log.priority}} {{log.priority_name}}
@@ -55,7 +55,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.global.flag') }}</label>
+			<label>{{ phrase('agent.global.flag') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ log.flag|default('None') }}
@@ -64,7 +64,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.global.message') }}</label>
+			<label>{{ phrase('agent.global.message') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<textarea style="width:99%; height:200px; font-family:Monaco, 'Courier New', courier, monospace;">{{log.message}}</textarea>

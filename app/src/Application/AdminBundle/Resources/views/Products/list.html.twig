@@ -11,7 +11,7 @@
 		</ul>
 	</nav>
 	<ul>
-		<li>{{ phrase('admin.global.products') }}</li>
+		<li>{{ phrase('agent.global.products') }}</li>
 	</ul>
 {% endblock %}
 {% block content %}
@@ -32,7 +32,7 @@
 		{{ design.dpgrid({class: 'dep-list'}) }}
 			{{ design.dpgrid_headerrow() }}
 				{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 890px;"}) }}
-					<h1>{{ phrase('admin.global.product') }}</h1>
+					<h1>{{ phrase('agent.global.product') }}</h1>
 				{{ design.dpgrid_headercol_end() }}
 			{{ design.dpgrid_headerrow_end() }}
 
@@ -56,7 +56,7 @@
 			<form class="dp-form" method="POST" action="{{ path('admin_products_savetitle') }}">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('admin.global.title') }}</label>
+						<label>{{ phrase('agent.global.title') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="hidden" name="product_id" id="editcat_catid" value="" />
@@ -66,7 +66,7 @@
 			</form>
 		</div>
 		<div class="overlay-footer">
-			<button class="clean-white" id="editcat_savebtn">{{ phrase('admin.global.save') }}</button>
+			<button class="clean-white" id="editcat_savebtn">{{ phrase('agent.global.save') }}</button>
 		</div>
 	</div>
 
@@ -79,7 +79,7 @@
 			<form class="dp-form" method="POST" action="{{ path('admin_products_savenew') }}">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('admin.global.title') }}</label>
+						<label>{{ phrase('agent.global.title') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="text" name="title" id="newcat_title" value="" />
@@ -102,7 +102,7 @@
 			</form>
 		</div>
 		<div class="overlay-footer">
-			<button class="clean-white" id="newcat_savebtn">{{ phrase('admin.global.add') }}</button>
+			<button class="clean-white" id="newcat_savebtn">{{ phrase('agent.global.add') }}</button>
 		</div>
 	</div>
 

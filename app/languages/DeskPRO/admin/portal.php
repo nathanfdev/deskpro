@@ -1,27 +1,16 @@
 <?php return array (
   'admin.portal.color_editor' => 'Color Editor',
-
   'admin.portal.click_to_disable' => 'Click to disable',
   'admin.portal.click_to_enable' => 'Click to enable',
   'admin.portal.loading_editor' => 'Loading Editor',
   'admin.portal.portal_editor' => 'Portal Editor',
   'admin.portal.website_widgets' => 'Website Widgets',
-
   'admin.portal.global_settings' => 'Global Settings',
-
-
   'admin.portal.custom_fields' => 'Custom Fields',
   'admin.portal.manage_articles' => 'Manage Articles',
-
-
-
   'admin.portal.manage_feedback' => 'Manage Feedback',
-
   'admin.portal.manage_downloads' => 'Manage Downloads',
-
   'admin.portal.manage_news' => 'Manage News',
-
-
   'admin.portal.edit_logo' => 'Edit Logo',
   'admin.portal.edit_html' => 'Edit HTML',
   'admin.portal.upload_a_new_logo' => 'Upload a new logo',
@@ -41,13 +30,7 @@
   'admin.portal.show_facebook_like_button' => 'Show Facebook Like button',
   'admin.portal.show_google_1_button' => 'Show Google +1 button',
   'admin.portal.show_addthis_widget' => 'Show AddThis widget',
-
-
-
   'admin.portal.ticket_editor' => 'ticket editor',
   'admin.portal.click_button_to_reenable_or_use_widgets' => 'Click the button above to re-enable the portal. Or use HTML widgets from the <a href="{{path}}">ticket editor</a> to embed DeskPRO into your own site.',
   'admin.portal.portal_is_disabled' => 'The portal is currently disabled. This means you have turned off your public facing website at {{url}}.',
-
-
-
 );

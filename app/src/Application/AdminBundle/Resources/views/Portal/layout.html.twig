@@ -9,7 +9,7 @@
 			<ul>
 				<li class="{% if this_page == 'portal_editor' %}on{% endif %}"><a href="{{ path('admin_portal') }}">{{ phrase('admin.portal.portal_editor') }}</a></li>
 				<li class="{% if this_page == 'website_widgets' %}on{% endif %}"><a>{{ phrase('admin.portal.website_widgets') }}</a></li>
-				<li class="{% if this_page == 'labels' %}on{% endif %}"><a>{{ phrase('admin.global.labels') }}</a></li>
+				<li class="{% if this_page == 'labels' %}on{% endif %}"><a>{{ phrase('agent.global.labels') }}</a></li>
 				<li class="{% if this_page == 'portal_settings' %}on{% endif %}"><a href="{{ path('admin_portal_settings') }}">{{ phrase('admin.portal.global_settings') }}</a></li>
 				<li class="{% if this_page == 'portal_templates' %}on{% endif %}"><a href="{{ path('admin_templates_user') }}">{{ phrase('admin.global.templates') }}</a></li>
 			</ul>
@@ -23,7 +23,7 @@
 			<div class="onoff">
 				<input type="checkbox" name="kb" value="1" checked="checked" class="onoff-slider section-toggle" />
 			</div>
-			<h4>{{ phrase('admin.global.knowledgebase') }}</h4>
+			<h4>{{ phrase('agent.global.knowledgebase') }}</h4>
 		</header>
 		<article>
 			<ul>
@@ -39,13 +39,13 @@
 			<div class="onoff">
 				<input type="checkbox" name="feedback" value="1" checked="checked" class="onoff-slider section-toggle" />
 			</div>
-			<h4>{{ phrase('admin.global.feedback') }}</h4>
+			<h4>{{ phrase('agent.global.feedback') }}</h4>
 		</header>
 		<article>
 			<ul>
 				{#<li class="{% if this_page == 'feedback_settings' %}on{% endif %}"><a href="{{ path('admin_feedback_settings' ) }}">Settings</a></li>#}
-				<li class="{% if this_page == 'feedback_statuses' %}on{% endif %}"><a href="{{ path('admin_feedback_statuses') }}">{{ phrase('admin.global.statuses') }}</a></li>
-				<li class="{% if this_page == 'feedback_cats' %}on{% endif %}"><a href="{{ path('admin_feedback_cats') }}">{{ phrase('admin.global.categories') }}</a></li>
+				<li class="{% if this_page == 'feedback_statuses' %}on{% endif %}"><a href="{{ path('admin_feedback_statuses') }}">{{ phrase('agent.global.statuses') }}</a></li>
+				<li class="{% if this_page == 'feedback_cats' %}on{% endif %}"><a href="{{ path('admin_feedback_cats') }}">{{ phrase('agent.global.categories') }}</a></li>
 				<li class="{% if this_page == 'feedback_fields' %}on{% endif %}"><a href="{{ path('admin_customdeffeedback') }}">{{ phrase('admin.portal.custom_fields') }}</a></li>
 				<li><a href="{{ app.request.getBaseUrl() }}/agent/#app.feedback" target="_blank">{{ phrase('admin.portal.manage_feedback') }}</a></li>
 			</ul>
@@ -57,7 +57,7 @@
 			<div class="onoff">
 				<input type="checkbox" name="downloads" value="1" checked="checked" class="onoff-slider section-toggle" />
 			</div>
-			<h4>{{ phrase('admin.global.downloads') }}</h4>
+			<h4>{{ phrase('agent.global.downloads') }}</h4>
 		</header>
 		<article>
 			<ul>
@@ -73,7 +73,7 @@
 				<div class="onoff">
 					<input type="checkbox" name="news" value="1" checked="checked" class="onoff-slider section-toggle" />
 				</div>
-				<h4>{{ phrase('admin.global.news') }}</h4>
+				<h4>{{ phrase('agent.global.news') }}</h4>
 			</header>
 			<article>
 				<ul>

@@ -25,7 +25,7 @@
 <div class="alert-message block-message error">
 	<strong>{{ phrase('admin.license.we_encountered_a_problem') }}:</strong>
 	<ul>
-		{% if errors.email %}<li>{{ phrase('admin.global.please_enter_a_valid_email_address') }}</li>{% endif %}
+		{% if errors.email %}<li>{{ phrase('agent.global.please_enter_a_valid_email_address') }}</li>{% endif %}
 		{% if errors.timeout %}<li>{{ phrase('admin.license.your_server_timedout_while_trying_to_contact_our') }}</li>{% endif %}
 		{% if errors.server_error %}<li>{{ phrase('admin.license.our_licensing_server_is_having_technical_difficulties_you') }}</li>{% endif %}
 		{% if errors.request_error %}<li>{{ phrase('admin.license.license_server_detected_error', {'error':errors.request_error}) }}</li>{% endif %}
@@ -52,7 +52,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.global.your_email_address') }}</label>
+			<label>{{ phrase('agent.global.your_email_address') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<input type="text" name="email_address" value="{{ app.user.primary_email_address }}" /><br />

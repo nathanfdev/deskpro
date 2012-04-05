@@ -12,16 +12,13 @@
   'admin.license.demo' => 'Demo',
   'admin.license.this_is_a_fullyfunctional_demo_license_with_no' => 'This is a fully-functional demo license with no limitations on the number of agents.',
   'admin.license.demo_expiry' => 'Demo Expiry',
-
   'admin.license.unlimited' => 'Unlimited',
   'admin.license.request_demo_license' => 'Request Demo License',
   'admin.license.already_have_a_license_code' => 'Already have a license code?',
-
   'admin.license.your_server_timedout_while_trying_to_contact_our' => 'Your server timed-out while trying to contact our licesing server to generate your license code.',
   'admin.license.our_licensing_server_is_having_technical_difficulties_you' => 'Our licensing server is having technical difficulties. You can try again, or email support@deskpro.com and one of our agents will generate a license code for you',
   'admin.license.there_was_an_unknown_problem_while_trying_to' => 'There was an unknown problem while trying to connect to our licensing server.',
   'admin.license.a_connection_problem_may_be_temporary_but_it' => 'A connection problem may be temporary, but it may indicate that your web server is behind a firewall that prevents it from communicating with our license server on the internet.',
-
   'admin.license.your_personal_demo_license_code_will_be_sent' => 'Your personal demo license code will be sent to this address',
   'admin.license.license_will_expire_on' => 'This demo will expire on {{date}}. Contact {{link}} if you need more time.',
   'admin.license.if_you_already_have_a_license' => 'If you already have a license code, <a href="{{path}}">click here to enter it</a>.',

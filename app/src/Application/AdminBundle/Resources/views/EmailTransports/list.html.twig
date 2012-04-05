@@ -24,7 +24,7 @@
 	<h3>{{ phrase('admin.emailtransports.default_from_address') }}</h3>
 	<form action="{{ path('admin_emailtrans_set_default_from') }}" method="post">
 		{{ form_token('admin_update_from') }}
-		<input type="text" name="default_from" value="{{ app.getSetting('core.default_from_email') }}" /> <button class="clean-white">{{ phrase('admin.global.update') }}</button>
+		<input type="text" name="default_from" value="{{ app.getSetting('core.default_from_email') }}" /> <button class="clean-white">{{ phrase('agent.global.update') }}</button>
 	</form>
 </div>
 

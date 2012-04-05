@@ -97,8 +97,8 @@
 				</div>
 				<ul>
 					<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
-					<li class="help"><a href="http://support.deskpro.com/">{{ phrase('admin.global.help') }}</a></li>
-					<li class="logout"><a href="{{ app.request.getBaseUrl() }}/logout/{{ static_security_token('user_logout', 0) }}?to=admin">{{ phrase('admin.global.log_out') }}</a></li>
+					<li class="help"><a href="http://support.deskpro.com/">{{ phrase('agent.global.help') }}</a></li>
+					<li class="logout"><a href="{{ app.request.getBaseUrl() }}/logout/{{ static_security_token('user_logout', 0) }}?to=admin">{{ phrase('agent.global.log_out') }}</a></li>
 				</ul>
 			</div>
 		</div>
@@ -109,20 +109,20 @@
 	<div id="DP-InterfaceSwitcher">
 		<div class="DP-adminSwitch">
 			<div class="adminSwitcher">
-				<a class="admin">{{ phrase('admin.global.admin_interface') }}<span class="dropdownIcon"></span></a>
+				<a class="admin">{{ phrase('agent.global.admin_interface') }}<span class="dropdownIcon"></span></a>
 			</div>
 		</div>
 		<!-- Header - Switch Button Interfaces- Dropdown -->
 		<div id="interfacesToggle" style="display:none;">
 		<div class="dropdownSwitcherWrap">
 			<div class="switcherHeader">
-				<a class="admin"><span>{{ phrase('admin.global.admin_interface') }}</span></a>
+				<a class="admin"><span>{{ phrase('agent.global.admin_interface') }}</span></a>
 			</div>
 			<ul>
-				{% if app.user.can_agent %}<li><a class="agent" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">{{ phrase('admin.global.agent_interface') }}</span></a></li>{% endif %}
-				{% if app.user.can_billing %}<li><a class="billing" href="{{ app.request.getBaseUrl() }}/billing"><span class="check">{{ phrase('admin.global.billing_interface') }}</span></a></li>{% endif %}
-				{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">{{ phrase('admin.global.report_interface') }}</span></a></li>{% endif %}
-				{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span class="check">{{ phrase('admin.global.user_interface') }}</span></a></li>{% endif %}
+				{% if app.user.can_agent %}<li><a class="agent" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">{{ phrase('agent.global.agent_interface') }}</span></a></li>{% endif %}
+				{% if app.user.can_billing %}<li><a class="billing" href="{{ app.request.getBaseUrl() }}/billing"><span class="check">{{ phrase('agent.global.billing_interface') }}</span></a></li>{% endif %}
+				{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">{{ phrase('agent.global.report_interface') }}</span></a></li>{% endif %}
+				{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span class="check">{{ phrase('agent.global.user_interface') }}</span></a></li>{% endif %}
 			</ul>
 		</div>
 		</div>
@@ -147,10 +147,10 @@
 				<a><span class="setup">{{ phrase('admin.views.setup') }}</span></a>
 			</li>
 			<li>
-				<a href="{{ path('admin_agents') }}"><span class="agents">{{ phrase('admin.global.agents') }}</span></a>
+				<a href="{{ path('admin_agents') }}"><span class="agents">{{ phrase('agent.global.agents') }}</span></a>
 			</li>
 			<li data-menu="#users_menu">
-				<a><span class="users">{{ phrase('admin.global.users') }}</span></a>
+				<a><span class="users">{{ phrase('agent.global.users') }}</span></a>
 			</li>
 		</ul>
 		<div class="sep">-</div>
@@ -159,7 +159,7 @@
 				<a href="{{ path('admin_portal') }}"><span class="publish">{{ phrase('admin.global.portal') }}</span></a>
 			</li>
 			<li data-menu="#chat_menu">
-				<a><span class="chat">{{ phrase('admin.global.chat') }}</span></a>
+				<a><span class="chat">{{ phrase('agent.global.chat') }}</span></a>
 			</li>
 			{# <li>
 				<a href="{{ path('admin_twitter_accounts') }}"><span class="twitter">Twitter</span></a>
@@ -168,7 +168,7 @@
 				<a><span class="deals">Deals</span></a>
 			</li> #}
 			<li data-menu="#tickets_menu">
-				<a><span class="tickets">{{ phrase('admin.global.tickets') }}</span></a>
+				<a><span class="tickets">{{ phrase('agent.global.tickets') }}</span></a>
 			</li>
 		</ul>
 		<div class="sep">-</div>

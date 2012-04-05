@@ -4,40 +4,25 @@
   'admin.agents.delete_agent' => 'Delete Agent',
   'admin.agents.when_an_agent_is_deleted_their_login_and' => 'When an agent is deleted, their login and all access is revoked. Any assigned tickets are unassigned.',
   'admin.agents.people_and_organizations' => 'People and Organizations',
-
-
-
-
-
   'admin.agents.overrides' => 'Overrides',
-
   'admin.agents.edit_agent' => 'Edit Agent',
   'admin.agents.new_agent' => 'New Agent',
-
-
   'admin.agents.initial_password' => 'Initial Password',
-
   'admin.agents.zone_access' => 'Zone Access',
   'admin.agents.can_access_admin' => 'Can access admin',
   'admin.agents.can_access_reports' => 'Can access reports',
   'admin.agents.can_access_billing' => 'Can access billing',
   'admin.agents.department_access_permissions' => 'Department Access Permissions',
-
   'admin.agents.permission_groups' => 'Permission Groups',
-
   'admin.agents.save_agent' => 'Save Agent',
   'admin.agents.delete_team' => 'Delete Team',
   'admin.agents.edit_team' => 'Edit Team',
   'admin.agents.new_team' => 'New Team',
-
-
-
   'admin.agents.deleting_this_team_will_also_cause_any_tickets' => 'Deleting this team will also cause any tickets assigned to the team to be unassigned.',
   'admin.agents.delete_permission_group' => 'Delete Permission Group',
   'admin.agents.edit_permission_group' => 'Edit Permission Group',
   'admin.agents.new_permission_group' => 'New Permission Group',
   'admin.agents.load_permissions_from_agent' => 'Load Permissions From Agent',
-
   'admin.agents.onoff' => 'On/Off',
   'admin.agents.use_ticket_system' => 'Use ticket system',
   'admin.agents.create_tickets' => 'Create tickets',
@@ -72,19 +57,16 @@
   'admin.agents.validate_content_and_comments_including_own' => 'Validate content and comments (including own)',
   'admin.agents.deleting_this_permission_group_will_remove_all_the' => 'Deleting this permission group will remove all the permissions from agents that belong to it.',
   'admin.agents.deleted_agents' => 'Deleted Agents',
-
   'admin.agents.restore' => 'Restore',
   'admin.agents.add_agent' => 'Add Agent',
   'admin.agents.agents_are_anybody_with_access_to_the_agent' => 'Agents are anybody with access to the agent or admin interface of your helpdesk and will often include individuals with a range of roles within your organisation.',
   'admin.agents.agent_teams_are_for_helpdesks_that_want_to' => 'Agent teams are for helpdesks that want to assign tickets to a group of agents instead of or as well as to an individual agent. A typical use is to have Tier 1 or Tier 2 support agents. The agent team concept is to enable group ticket assignment; you should use agent permission groups to manage group permissions.',
-
   'admin.agents.a_permission_group_is_a_set_of_system' => 'A permission group is a set of system permissions that you can easily re-use by adding agents to the group.',
   'admin.agents.you_have_not_created_any_permission_groups' => 'You have not created any permission groups.',
   'admin.agents.click_here' => 'Click here',
   'admin.agents.to_create_one_now' => 'to create one now.',
   'admin.agents.teams_are_an_a_way_to_organize_agents' => 'Teams are an a way to organize agents into work groups.',
   'admin.agents.you_have_not_created_any_teams' => 'You have not created any teams.',
-
   'admin.agents.enable_vacation_mode_for_name' => 'Enable vacation mode for {{name}}',
   'admin.agents.delete_name' => 'Delete {{name}}',
   'admin.agents.name_in_vacation' => '{{name}} is currently in vacation mod',
@@ -94,7 +76,6 @@
   'admin.agents.there_are_deleted_agents' => 'There is 1 deleted agent|There are {{count}} deleted agents',
   'admin.agents.are_you_sure_delete_dept' => 'Are you sure you want to delete the department "<strong>{{title}}</strong>"?',
   'admin.agents.are_you_sure_delete_dept_top_level' => 'Are you sure you want to delete the department "<strong>{{title}}</strong>"? Since this is a top-level department, <strong>all of these sub-departments will be deleted too</strong>:',
-
   'admin.agents.be_careful_who_you_allow_to_manage_email' => 'Be careful who you allow to manage email addresses. Since an agent can add any email address, including ones they might have control over, it means they could use that to gain access to the account if they really wanted to.',
   'admin.agents.be_careful_who_you_allow_to_reset_user' => 'Be careful who you allow to reset user passwords. Since an agent can reset the password to anything they want, it means they can gain access to the account if they really wanted to.',
   'admin.agents.if_an_agent_does_not_have_this_permission' => 'If an agent does not have this permission, then any new content they create or edits they make will be held in a validation queue before they appear live on the site.',

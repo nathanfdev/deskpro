@@ -25,10 +25,10 @@
 		{{ design.dpgrid({class: 'dep-list pri-list'}) }}
 			{{ design.dpgrid_headerrow() }}
 				{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 810px;"}) }}
-					<h1>{{ phrase('admin.global.title') }}</h1>
+					<h1>{{ phrase('agent.global.title') }}</h1>
 				{{ design.dpgrid_headercol_end() }}
 				{{ design.dpgrid_headercol({ class: 'l r tl tr l-margin r-margin', style: "width: 80px"}) }}
-					<h1>{{ phrase('admin.global.priority') }}</h1>
+					<h1>{{ phrase('agent.global.priority') }}</h1>
 				{{ design.dpgrid_headercol_end() }}
 			{{ design.dpgrid_headerrow_end() }}
 
@@ -52,7 +52,7 @@
 			<form class="dp-form" method="POST" action="{{ path('admin_ticketpris_savetitle') }}">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('admin.global.title') }}</label>
+						<label>{{ phrase('agent.global.title') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="hidden" name="priority_id" id="editcat_catid" value="" />
@@ -61,7 +61,7 @@
 				</div>
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('admin.global.priority') }}</label>
+						<label>{{ phrase('agent.global.priority') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="text" name="priority" id="editcat_pri" value="" style="width:30px" />
@@ -70,7 +70,7 @@
 			</form>
 		</div>
 		<div class="overlay-footer">
-			<button class="clean-white" id="editcat_savebtn">{{ phrase('admin.global.save') }}</button>
+			<button class="clean-white" id="editcat_savebtn">{{ phrase('agent.global.save') }}</button>
 		</div>
 	</div>
 
@@ -83,7 +83,7 @@
 			<form class="dp-form" method="POST" action="{{ path('admin_ticketpris_savenew') }}">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('admin.global.title') }}</label>
+						<label>{{ phrase('agent.global.title') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="text" name="title" id="newcat_title" value="" />
@@ -92,7 +92,7 @@
 
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('admin.global.priority') }}</label>
+						<label>{{ phrase('agent.global.priority') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="text" name="priority" id="newcat_pri" value="" style="width:30px" />
@@ -101,7 +101,7 @@
 			</form>
 		</div>
 		<div class="overlay-footer">
-			<button class="clean-white" id="newcat_savebtn">{{ phrase('admin.global.add') }}</button>
+			<button class="clean-white" id="newcat_savebtn">{{ phrase('agent.global.add') }}</button>
 		</div>
 	</div>
 

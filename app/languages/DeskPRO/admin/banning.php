@@ -1,6 +1,4 @@
 <?php return array (
-
-
   'admin.banning.ip_addresses' => 'IP Addresses',
   'admin.banning.add_email_ban' => 'Add Email Ban',
   'admin.banning.banning_ip_addresses' => 'Banning IP Addresses',

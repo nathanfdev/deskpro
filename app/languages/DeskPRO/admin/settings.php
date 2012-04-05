@@ -1,9 +1,5 @@
 <?php return array (
-
-
   'admin.settings.revert_all_settings' => 'Revert ALL Settings',
-
-
   'admin.settings.set_value' => 'Set Value',
   'admin.settings.revert_settings' => 'Revert Settings',
   'admin.settings.are_you_sure_you_want_to_revert_all' => 'Are you sure you want to revert ALL settings on this page to their default values? There is no way to undo this action.',
@@ -15,26 +11,13 @@
   'admin.settings.command_to_run_every_minute' => 'Command to run every minute',
   'admin.settings.configure_this_command_to_be_executed_every_minute' => 'Configure this command to be executed every minute',
   'admin.settings.i_have_configured_scheduled_tasks' => 'I have configured scheduled tasks',
-
   'admin.settings.label_types' => 'Label Types',
-
-
-
-
-
-
-
-
-
   'admin.settings.sort' => 'Sort',
-
   'admin.settings.usage_count' => 'Usage Count',
   'admin.settings.add_label' => 'Add Label',
-
   'admin.settings.welcome_to_deskpro' => 'Welcome to DeskPRO',
   'admin.settings.default_email_from_address' => 'Default Email "From" Address',
   'admin.settings.enter_the_email_address_deskpro_should_use_by' => 'Enter the email address DeskPRO should use by default when sending emails',
-
   'admin.settings.deskpro_url' => 'DeskPRO URL',
   'admin.settings.this_is_the_url_to_deskpro_itself_with' => 'This is the URL to DeskPRO itself with a trailing slash',
   'admin.settings.please_enter_a_valid_url' => 'Please enter a valid URL',
@@ -49,35 +32,27 @@
   'admin.settings.the_default_timezone_used_when_expressing_dates_to' => 'The default timezone used when expressing dates to users who do not have a preference set',
   'admin.settings.please_select_a_timezone' => 'Please select a timezone',
   'admin.settings.enable_portal' => 'Enable Portal',
-
   'admin.settings.advanced_settings_view' => 'Advanced settings view',
   'admin.settings.basics' => 'Basics',
   'admin.settings.your_helpdesk_name' => 'Your helpdesk name',
   'admin.settings.your_helpdesk_url' => 'Your helpdesk URL',
   'admin.settings.your_website_name' => 'Your website name',
   'admin.settings.your_website_url' => 'Your website URL',
-
   'admin.settings.the_helpdesk_is_currently_disabled' => 'The helpdesk is currently disabled',
   'admin.settings.always_redirect_users_to_the_helpdesk_url_if' => 'Always redirect users to the \'Helpdesk URL\' if they arrive on a different URL. For example, this will redirect non-www to www, and force https:// if you have that enabled.',
-
-
   'admin.settings.max_upload_size' => 'Max upload size',
   'admin.settings.mb' => 'MB',
   'admin.settings.learn_why_you_are_bound_by_this_limit' => 'Learn why you are bound by this limit.',
   'admin.settings.disallow_these_file_types' => 'Disallow these file types',
   'admin.settings.only_allow_these_file_types' => 'Only allow these file types',
-
   'admin.settings.gravatar' => 'Gravatar',
   'admin.settings.use_gravatar_profile_pictures_by_default_until_a' => 'Use Gravatar profile pictures by default until a custom picture is uploaded',
   'admin.settings.cookie_path' => 'Cookie Path',
   'admin.settings.cookie_domain' => 'Cookie Domain',
-
   'admin.settings.warning_settings_listed_in_advanced_settings_are_undocumented' => 'Warning: Settings listed in "Advanced Settings" are undocumented and changing them can have unexpected consequences.',
   'admin.settings.only_make_changes_if_you_know_what_you' => 'Only make changes if you know what you are doing or have been instructed by a support agent.',
   'admin.settings.continuet_to_advanced_settings' => 'Continuet to Advanced Settings',
-
   'admin.settings.advanced_settings' => 'Advanced Settings',
-
   'admin.settings.filter' => 'Filter',
   'admin.settings.revert_setting_back_to_default' => 'Revert setting back to default',
   'admin.settings.new_label' => 'new label',
