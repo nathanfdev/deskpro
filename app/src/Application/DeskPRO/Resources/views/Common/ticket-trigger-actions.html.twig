@@ -93,7 +93,7 @@
 	{% endif %}
 
 	{% if 'new_ticket' in event_group %}
-	<div class="type" title="{{ phrase('global.force_email_validation') }}" data-rule-type="force_email_validation">
+	<div class="type" title="{{ phrase('agent.global.force_email_validation') }}" data-rule-type="force_email_validation">
 		<div class="options">
 			<input type="hidden" name="force_email_validation" value="1" />
 		</div>
@@ -120,12 +120,12 @@
 		</div>
 	</div>
 	{% endif %}
-	<div class="type" title="{{ phrase('global.set_status') }}" data-rule-type="status">
+	<div class="type" title="{{ phrase('agent.global.set_status') }}" data-rule-type="status">
 		<div class="options">
 			<select name="status">
-				<option value="awaiting_agent">{{ phrase('global.awaiting_agent') }}</option>
-				<option value="awaiting_user">{{ phrase('global.awaiting_user') }}</option>
-				<option value="resolved">{{ phrase('global.resolved') }}</option>
+				<option value="awaiting_agent">{{ phrase('agent.global.awaiting_agent') }}</option>
+				<option value="awaiting_user">{{ phrase('agent.global.awaiting_user') }}</option>
+				<option value="resolved">{{ phrase('agent.global.resolved') }}</option>
 			</select>
 		</div>
 	</div>
@@ -144,7 +144,7 @@
 		</div>
 	</div>
 	{% if term_options.categories %}
-		<div class="type" title="{{ phrase('global.set_category') }}" data-rule-type="category">
+		<div class="type" title="{{ phrase('agent.global.set_category') }}" data-rule-type="category">
 			<div class="options">
 				<select name="category">
 					{% for id,label in term_options.categories %}
@@ -200,13 +200,13 @@
 	<div class="type" title="{{ phrase('deskpro.common.set_flag') }}" data-rule-type="flag">
 		<div class="options">
 			<select name="flag">
-				<option value="blue">{{ phrase('global.blue') }}</option>
-				<option value="green">{{ phrase('global.green') }}</option>
-				<option value="orange">{{ phrase('global.orange') }}</option>
-				<option value="pink">{{ phrase('global.pink') }}</option>
-				<option value="purple">{{ phrase('global.purple') }}</option>
-				<option value="red">{{ phrase('global.red') }}</option>
-				<option value="yellow">{{ phrase('global.yellow') }}</option>
+				<option value="blue">{{ phrase('agent.global.blue') }}</option>
+				<option value="green">{{ phrase('agent.global.green') }}</option>
+				<option value="orange">{{ phrase('agent.global.orange') }}</option>
+				<option value="pink">{{ phrase('agent.global.pink') }}</option>
+				<option value="purple">{{ phrase('agent.global.purple') }}</option>
+				<option value="red">{{ phrase('agent.global.red') }}</option>
+				<option value="yellow">{{ phrase('agent.global.yellow') }}</option>
 			</select>
 		</div>
 	</div>
@@ -250,7 +250,7 @@
 		<div class="options" style="display:block">
 			<select name="codes[]" multiple="multiple" style="display: block">
 				<optgroup label="Agents">
-					<option value="assigned_agent">{{ phrase('global.assigned_agent') }}</option>
+					<option value="assigned_agent">{{ phrase('agent.global.assigned_agent') }}</option>
 					{% for k,v in term_options.agents %}
 						<option value="agent.{{k}}">{{v}}</option>
 					{% endfor %}

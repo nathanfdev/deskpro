@@ -19,14 +19,14 @@
 		<div class="type" title="{{ phrase('deskpro.common.performer') }}" data-rule-type="action_performer">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('global.is') }}</option>
-					<option value="not">{{ phrase('global.is_not') }}</option>
+					<option value="is">{{ phrase('agent.global.is') }}</option>
+					<option value="not">{{ phrase('agent.global.is_not') }}</option>
 				</select>
 			</div>
 			<div class="options">
 				<select name="action_performer">
-					<option value="agent">{{ phrase('global.agent') }}</option>
-					<option value="person">{{ phrase('global.user') }}</option>
+					<option value="agent">{{ phrase('agent.global.agent') }}</option>
+					<option value="person">{{ phrase('agent.global.user') }}</option>
 				</select>
 			</div>
 		</div>
@@ -52,20 +52,20 @@
 	{% endif %}
 
 	{% if 'creation_system' not in no_show_fields and 'new_ticket' not in event_group %}
-	<div class="type" title="{{ phrase('global.originated_interface') }}" data-rule-type="creation_system" data-term-type="GenericMenuTerm" data-term-triggers="interface,orig-interface,original-interface">
+	<div class="type" title="{{ phrase('agent.global.originated_interface') }}" data-rule-type="creation_system" data-term-type="GenericMenuTerm" data-term-triggers="interface,orig-interface,original-interface">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">{{ phrase('global.is') }}</option>
-				<option value="not">{{ phrase('global.is_not') }}</option>
+				<option value="is">{{ phrase('agent.global.is') }}</option>
+				<option value="not">{{ phrase('agent.global.is_not') }}</option>
 			</select>
 		</div>
 		<div class="options">
 			<select name="creation_system">
-				<option value="web">{{ phrase('global.web_interface') }}</option>
-				<option value="web.person">{{ phrase('global._by_user') }}</option>
-				<option value="widget.person">{{ phrase('global.website_widget') }}</option>
-				<option value="web.agent">{{ phrase('global._by_agent_on_behalf_of_user') }}</option>
-				<option value="gateway.person">{{ phrase('global.email') }}</option>
+				<option value="web">{{ phrase('agent.global.web_interface') }}</option>
+				<option value="web.person">{{ phrase('agent.global._by_user') }}</option>
+				<option value="widget.person">{{ phrase('agent.global.website_widget') }}</option>
+				<option value="web.agent">{{ phrase('agent.global._by_agent_on_behalf_of_user') }}</option>
+				<option value="gateway.person">{{ phrase('agent.global.email') }}</option>
 			</select>
 		</div>
 	</div>
@@ -75,8 +75,8 @@
 		<div class="type" title="{{ phrase('deskpro.common.ticket_gateway_address') }}" data-rule-type="gateway_address" data-term-type="GenericMenuTerm" data-term-triggers="gateway,address,gateway_address">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('global.is') }}</option>
-					<option value="not">{{ phrase('global.is_not') }}</option>
+					<option value="is">{{ phrase('agent.global.is') }}</option>
+					<option value="not">{{ phrase('agent.global.is_not') }}</option>
 				</select>
 			</div>
 			<div class="options">
@@ -93,8 +93,8 @@
 		<div class="type" title="{{ phrase('deskpro.common.ticket_gateway_account') }}" data-rule-type="gateway_account" data-term-type="GenericMenuTerm" data-term-triggers="gateway,account,gateway_account">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('global.is') }}</option>
-					<option value="not">{{ phrase('global.is_not') }}</option>
+					<option value="is">{{ phrase('agent.global.is') }}</option>
+					<option value="not">{{ phrase('agent.global.is_not') }}</option>
 				</select>
 			</div>
 			<div class="options">
@@ -108,13 +108,13 @@
 	{% endif %}
 
 	{% if 'subject' not in no_show_fields %}
-	<div class="type" title="{{ phrase('global.subject') }}" data-rule-type="subject">
+	<div class="type" title="{{ phrase('agent.global.subject') }}" data-rule-type="subject">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="contains">{{ phrase('global.contains') }}</option>
-				<option value="not_contains">{{ phrase('global.does_not_contain') }}</option>
-				<option value="is">{{ phrase('global.is') }}</option>
-				<option value="not">{{ phrase('global.is_not') }}</option>
+				<option value="contains">{{ phrase('agent.global.contains') }}</option>
+				<option value="not_contains">{{ phrase('agent.global.does_not_contain') }}</option>
+				<option value="is">{{ phrase('agent.global.is') }}</option>
+				<option value="not">{{ phrase('agent.global.is_not') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -124,13 +124,13 @@
 	{% endif %}
 
 	{% if 'department' not in no_show_fields and term_options.departments_hierarchy %}
-		<div class="type" title="{{ phrase('global.department') }}" data-rule-type="department" data-term-type="GenericMenuTerm" data-term-triggers="dep,department">
+		<div class="type" title="{{ phrase('agent.global.department') }}" data-rule-type="department" data-term-type="GenericMenuTerm" data-term-triggers="dep,department">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('global.is') }}</option>
-					<option value="not">{{ phrase('global.is_not') }}</option>
+					<option value="is">{{ phrase('agent.global.is') }}</option>
+					<option value="not">{{ phrase('agent.global.is_not') }}</option>
 					{% if with_change_terms %}
-						<option value="changed">{{ phrase('global.changed') }}</option>
+						<option value="changed">{{ phrase('agent.global.changed') }}</option>
 						<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
 						<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
 						<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
@@ -154,13 +154,13 @@
 	{% endif %}
 
 	{% if 'agent' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
-	<div class="type" title="{{ phrase('global.assigned_agent') }}" data-rule-type="agent" data-term-type="GenericMenuTerm" data-term-triggers="agent">
+	<div class="type" title="{{ phrase('agent.global.assigned_agent') }}" data-rule-type="agent" data-term-type="GenericMenuTerm" data-term-triggers="agent">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">{{ phrase('global.is') }}</option>
-				<option value="not">{{ phrase('global.is_not') }}</option>
+				<option value="is">{{ phrase('agent.global.is') }}</option>
+				<option value="not">{{ phrase('agent.global.is_not') }}</option>
 				{% if with_change_terms %}
-					<option value="changed">{{ phrase('global.changed') }}</option>
+					<option value="changed">{{ phrase('agent.global.changed') }}</option>
 					<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
 					<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
 					<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
@@ -170,7 +170,7 @@
 		</div>
 		<div class="options">
 			<select name="agent">
-				<option value="0">{{ phrase('global.unassigned') }}</option>
+				<option value="0">{{ phrase('agent.global.unassigned') }}</option>
 				<option value="-1">{{ phrase('deskpro.common.current_agent') }}</option>
 				{% for id,label in term_options.agents %}
 					<option value="{{id}}">{{label}}</option>
@@ -181,13 +181,13 @@
 	{% endif %}
 
 	{% if options.agent_teams and 'agent_team' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
-		<div class="type" title="{{ phrase('global.agent_team') }}" data-rule-type="agent_team" data-term-type="GenericMenuTerm" data-term-triggers="team,agent-team">
+		<div class="type" title="{{ phrase('agent.global.agent_team') }}" data-rule-type="agent_team" data-term-type="GenericMenuTerm" data-term-triggers="team,agent-team">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('global.is') }}</option>
-					<option value="not">{{ phrase('global.is_not') }}</option>
+					<option value="is">{{ phrase('agent.global.is') }}</option>
+					<option value="not">{{ phrase('agent.global.is_not') }}</option>
 					{% if with_change_terms %}
-						<option value="changed">{{ phrase('global.changed') }}</option>
+						<option value="changed">{{ phrase('agent.global.changed') }}</option>
 						<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
 						<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
 						<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
@@ -208,15 +208,15 @@
 	{% endif %}
 
 	{% if 'participant' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
-	<div class="type" title="{{ phrase('global.followers') }}" data-rule-type="participant" data-term-type="GenericMenuTerm" data-term-triggers="followers">
+	<div class="type" title="{{ phrase('agent.global.followers') }}" data-rule-type="participant" data-term-type="GenericMenuTerm" data-term-triggers="followers">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">{{ phrase('global.include') }}</option>
-				<option value="not">{{ phrase('global.does_not_include') }}</option>
+				<option value="is">{{ phrase('agent.global.include') }}</option>
+				<option value="not">{{ phrase('agent.global.does_not_include') }}</option>
 				{% if with_change_terms %}
-					<option value="changed">{{ phrase('global.changed') }}</option>
-					<option value="changed_to">{{ phrase('global.changed_to_include') }}</option>
-					<option value="changed_from">{{ phrase('global.changed_to_remove') }}</option>
+					<option value="changed">{{ phrase('agent.global.changed') }}</option>
+					<option value="changed_to">{{ phrase('agent.global.changed_to_include') }}</option>
+					<option value="changed_from">{{ phrase('agent.global.changed_to_remove') }}</option>
 				{% endif %}
 			</select>
 		</div>
@@ -232,15 +232,15 @@
 	{% endif %}
 
 	{% if 'label' not in no_show_fields and not event_trigger or event_trigger != 'new_ticket' %}
-	<div class="type" title="{{ phrase('global.labels') }}" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="tickets" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
+	<div class="type" title="{{ phrase('agent.global.labels') }}" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="tickets" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">{{ phrase('global.is') }}</option>
-				<option value="not">{{ phrase('global.is_not') }}</option>
+				<option value="is">{{ phrase('agent.global.is') }}</option>
+				<option value="not">{{ phrase('agent.global.is_not') }}</option>
 				{% if with_change_terms %}
-					<option value="changed">{{ phrase('global.changed') }}</option>
-					<option value="changed_to">{{ phrase('global.changed_to_include') }}</option>
-					<option value="changed_from">{{ phrase('global.changed_to_remove') }}</option>
+					<option value="changed">{{ phrase('agent.global.changed') }}</option>
+					<option value="changed_to">{{ phrase('agent.global.changed_to_include') }}</option>
+					<option value="changed_from">{{ phrase('agent.global.changed_to_remove') }}</option>
 				{% endif %}
 			</select>
 		</div>
@@ -251,13 +251,13 @@
 	{% endif  %}
 
 	{% if 'status' not in no_show_fields %}
-	<div class="type" title="{{ phrase('global.status') }}" data-rule-type="status" data-term-type="GenericMenuTerm" data-term-triggers="status">
+	<div class="type" title="{{ phrase('agent.global.status') }}" data-rule-type="status" data-term-type="GenericMenuTerm" data-term-triggers="status">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">{{ phrase('global.is') }}</option>
-				<option value="not">{{ phrase('global.is_not') }}</option>
+				<option value="is">{{ phrase('agent.global.is') }}</option>
+				<option value="not">{{ phrase('agent.global.is_not') }}</option>
 				{% if with_change_terms %}
-					<option value="changed">{{ phrase('global.changed') }}</option>
+					<option value="changed">{{ phrase('agent.global.changed') }}</option>
 					<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
 					<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
 					<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
@@ -267,22 +267,22 @@
 		</div>
 		<div class="options">
 			<select name="status">
-				<option value="awaiting_agent">{{ phrase('global.awaiting_agent') }}</option>
-				<option value="awaiting_user">{{ phrase('global.awaiting_user') }}</option>
-				<option value="resolved">{{ phrase('global.resolved') }}</option>
-				<option value="closed">{{ phrase('global.closed') }}</option>
-				<option value="hidden">{{ phrase('global.hidden_awaiting_validating_spam') }}</option>
+				<option value="awaiting_agent">{{ phrase('agent.global.awaiting_agent') }}</option>
+				<option value="awaiting_user">{{ phrase('agent.global.awaiting_user') }}</option>
+				<option value="resolved">{{ phrase('agent.global.resolved') }}</option>
+				<option value="closed">{{ phrase('agent.global.closed') }}</option>
+				<option value="hidden">{{ phrase('agent.global.hidden_awaiting_validating_spam') }}</option>
 			</select>
 		</div>
 	</div>
 	{% endif %}
 
 	{% if 'organization' not in no_show_fields and term_options.organizations %}
-	<div class="type" title="{{ phrase('global.organization') }}" data-term-type="GenericMenuTerm" data-term-triggers="org,organization,company" data-rule-type="organization">
+	<div class="type" title="{{ phrase('agent.global.organization') }}" data-term-type="GenericMenuTerm" data-term-triggers="org,organization,company" data-rule-type="organization">
 		<div class="op">
 			<select name="op">
-				<option value="is">{{ phrase('global.is') }}</option>
-				<option value="not">{{ phrase('global.is_not') }}</option>
+				<option value="is">{{ phrase('agent.global.is') }}</option>
+				<option value="not">{{ phrase('agent.global.is_not') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -296,13 +296,13 @@
 	{% endif %}
 
 	{% if 'product' not in no_show_fields and term_options.products %}
-		<div class="type" title="{{ phrase('global.product') }}" data-rule-type="product" data-term-type="GenericMenuTerm" data-term-triggers="prod,product">
+		<div class="type" title="{{ phrase('agent.global.product') }}" data-rule-type="product" data-term-type="GenericMenuTerm" data-term-triggers="prod,product">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('global.is') }}</option>
-					<option value="not">{{ phrase('global.is_not') }}</option>
+					<option value="is">{{ phrase('agent.global.is') }}</option>
+					<option value="not">{{ phrase('agent.global.is_not') }}</option>
 					{% if with_change_terms %}
-						<option value="changed">{{ phrase('global.changed') }}</option>
+						<option value="changed">{{ phrase('agent.global.changed') }}</option>
 						<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
 						<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
 						<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
@@ -321,13 +321,13 @@
 	{% endif %}
 
 	{% if 'category' not in no_show_fields and term_options.categories %}
-		<div class="type" title="{{ phrase('global.category') }}" data-rule-type="category" data-term-type="GenericMenuTerm" data-term-triggers="cat,category">
+		<div class="type" title="{{ phrase('agent.global.category') }}" data-rule-type="category" data-term-type="GenericMenuTerm" data-term-triggers="cat,category">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('global.is') }}</option>
-					<option value="not">{{ phrase('global.is_not') }}</option>
+					<option value="is">{{ phrase('agent.global.is') }}</option>
+					<option value="not">{{ phrase('agent.global.is_not') }}</option>
 					{% if with_change_terms %}
-						<option value="changed">{{ phrase('global.changed') }}</option>
+						<option value="changed">{{ phrase('agent.global.changed') }}</option>
 						<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
 						<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
 						<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
@@ -346,16 +346,16 @@
 	{% endif %}
 
 	{% if 'urgency' not in no_show_fields %}
-	<div class="type" title="{{ phrase('global.urgency') }}" data-rule-type="urgency" data-term-type="GenericInputTerm" data-term-triggers="urgency">
+	<div class="type" title="{{ phrase('agent.global.urgency') }}" data-rule-type="urgency" data-term-type="GenericInputTerm" data-term-triggers="urgency">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">{{ phrase('global.is') }}</option>
-				<option value="not">{{ phrase('global.is_not') }}</option>
+				<option value="is">{{ phrase('agent.global.is') }}</option>
+				<option value="not">{{ phrase('agent.global.is_not') }}</option>
 				<option value="lte">&lt;=</option>
 				<option value="gte">&gt;=</option>
 				{% if with_change_terms %}
-					<optgroup label="{{ phrase('global.changed') }}">
-						<option value="changed">{{ phrase('global.changed') }}</option>
+					<optgroup label="{{ phrase('agent.global.changed') }}">
+						<option value="changed">{{ phrase('agent.global.changed') }}</option>
 						<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
 						<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
 						<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
@@ -379,15 +379,15 @@
 	{% endif %}
 
 	{% if 'priority' not in no_show_fields and term_options.priorities %}
-		<div class="type" title="{{ phrase('global.priority') }}" data-rule-type="priority" data-term-type="GenericMenuTerm" data-term-triggers="pri,priority">
+		<div class="type" title="{{ phrase('agent.global.priority') }}" data-rule-type="priority" data-term-type="GenericMenuTerm" data-term-triggers="pri,priority">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('global.is') }}</option>
-					<option value="not">{{ phrase('global.is_not') }}</option>
-					<option value="lte">{{ phrase('global.is_less_than') }}</option>
-					<option value="gte">{{ phrase('global.is_greater_than') }}</option>
+					<option value="is">{{ phrase('agent.global.is') }}</option>
+					<option value="not">{{ phrase('agent.global.is_not') }}</option>
+					<option value="lte">{{ phrase('agent.global.is_less_than') }}</option>
+					<option value="gte">{{ phrase('agent.global.is_greater_than') }}</option>
 					{% if with_change_terms %}
-						<option value="changed">{{ phrase('global.changed') }}</option>
+						<option value="changed">{{ phrase('agent.global.changed') }}</option>
 						<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
 						<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
 						<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
@@ -406,13 +406,13 @@
 	{% endif %}
 
 	{% if 'workflow' not in no_show_fields and term_options.ticket_workflows %}
-		<div class="type" title="{{ phrase('global.workflow') }}" data-rule-type="workflow" data-term-type="GenericMenuTerm" data-term-triggers="work,workflow">
+		<div class="type" title="{{ phrase('agent.global.workflow') }}" data-rule-type="workflow" data-term-type="GenericMenuTerm" data-term-triggers="work,workflow">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('global.is') }}</option>
-					<option value="not">{{ phrase('global.is_not') }}</option>
+					<option value="is">{{ phrase('agent.global.is') }}</option>
+					<option value="not">{{ phrase('agent.global.is_not') }}</option>
 					{% if with_change_terms %}
-						<option value="changed">{{ phrase('global.changed') }}</option>
+						<option value="changed">{{ phrase('agent.global.changed') }}</option>
 						<option value="changed_to">{{ phrase('deskpro.common.changed_to') }}</option>
 						<option value="changed_from">{{ phrase('deskpro.common.changed_from') }}</option>
 						<option value="not_changed_to">{{ phrase('deskpro.common.not_changed_to') }}</option>
@@ -431,11 +431,11 @@
 	{% endif %}
 
 	{% if 'language' not in no_show_fields and term_options.languages %}
-	<div class="type" title="{{ phrase('global.language') }}" data-term-type="GenericMenuTerm" data-rule-type="language" data-term-triggers="lang,language">
+	<div class="type" title="{{ phrase('agent.global.language') }}" data-term-type="GenericMenuTerm" data-rule-type="language" data-term-triggers="lang,language">
 		<div class="op">
 			<select name="op">
-				<option value="is">{{ phrase('global.is') }}</option>
-				<option value="not">{{ phrase('global.is_not') }}</option>
+				<option value="is">{{ phrase('agent.global.is') }}</option>
+				<option value="not">{{ phrase('agent.global.is_not') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -517,8 +517,8 @@
     <div class="type" title="{{ phrase('deskpro.common.day_created') }}" data-rule-type="day_created">
         <div class="op">
             <select name="op" class="op">
-                <option value="is">{{ phrase('global.is') }}</option>
-                <option value="not">{{ phrase('global.is_not') }}</option>
+                <option value="is">{{ phrase('agent.global.is') }}</option>
+                <option value="not">{{ phrase('agent.global.is_not') }}</option>
             </select>
         </div>
         <div class="options">
@@ -535,8 +535,8 @@
     <div class="type" title="{{ phrase('deskpro.common.day_last_user_reply') }}" data-rule-type="day_last_user_reply">
         <div class="op">
             <select name="op" class="op">
-                <option value="is">{{ phrase('global.is') }}</option>
-                <option value="not">{{ phrase('global.is_not') }}</option>
+                <option value="is">{{ phrase('agent.global.is') }}</option>
+                <option value="not">{{ phrase('agent.global.is_not') }}</option>
             </select>
         </div>
         <div class="options">
@@ -621,7 +621,7 @@
 	{% endif %}
 
 	{% if 'ticket_field' not in no_show_fields and term_options.custom_ticket_fields %}
-		{% set op_lang = {'is': phrase('global.is'), 'not': phrase('global.is_not'), 'contains': phrase('global.contains'), 'notcontains': phrase('global.does_not_contain'), 'gt': phrase('global.is_greater_than'), 'lt': phrase('global.is_less_than') } %}
+		{% set op_lang = {'is': phrase('agent.global.is'), 'not': phrase('agent.global.is_not'), 'contains': phrase('agent.global.contains'), 'notcontains': phrase('agent.global.does_not_contain'), 'gt': phrase('agent.global.is_greater_than'), 'lt': phrase('agent.global.is_less_than') } %}
 		{% for field in term_options.custom_ticket_fields %}
 			{% if field.field_def.getFilterCapabilities(search_context) %}
 			<div class="type" title="{{field.field_def.title}}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">

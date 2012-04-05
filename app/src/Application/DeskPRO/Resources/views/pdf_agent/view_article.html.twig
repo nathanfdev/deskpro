@@ -28,13 +28,13 @@
         <td>{{ article.id }}</td>
     </tr>
     <tr>
-        <th>{{ phrase('global.status') }}:</th>
+        <th>{{ phrase('agent.global.status') }}:</th>
         <td>{{ phrase('agent.publish.status_' ~ article.status_code|replace({'.':'_'})) }}</td>
     </tr>
     {% if labals|length %}
         <tr>
             <th>
-                {{ phrase('global.labels') }}:
+                {{ phrase('agent.global.labels') }}:
             </th>
             <td>
                 <ul>
@@ -48,7 +48,7 @@
         </tr>
     {% endif %}
     <tr>
-        <th>{{ phrase('global.categories') }}:</th>
+        <th>{{ phrase('agent.global.categories') }}:</th>
         <td>
             {% for cat in article.categories %}
                 {{ cat.full_title }}
@@ -58,7 +58,7 @@
     </tr>
     {% if app.getSetting('core.use_product') %}
         <tr>
-            <th>{{ phrase('global.products') }}</th>
+            <th>{{ phrase('agent.global.products') }}</th>
             <td>
                 <ul>
                     {% for prod in article.products %}

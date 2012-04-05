@@ -487,19 +487,19 @@ class GroupingCounter
 			case TicketSearch::TERM_DEPARTMENT:
 				$this->grouping_summary = "Department";
 				$titles = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentNames();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('global.none'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.global.none'));
 				break;
 
 			case TicketSearch::TERM_AGENT:
 				$this->grouping_summary = "Agent";
 				$titles = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('global.unassigned'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.global.unassigned'));
 				break;
 
 			case TicketSearch::TERM_AGENT_TEAM:
 				$this->grouping_summary = "Agent Team";
 				$titles = App::getOrm()->getRepository('DeskPRO:AgentTeam')->getTeamNames();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('global.unassigned'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.global.unassigned'));
 				break;
 
 			case TicketSearch::TERM_URGENCY:
@@ -511,37 +511,37 @@ class GroupingCounter
 			case TicketSearch::TERM_CATEGORY:
 				$this->grouping_summary = "Category";
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getCategoryNames();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('global.none'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.global.none'));
 				break;
 
 			case TicketSearch::TERM_PRIORITY:
 				$this->grouping_summary = "Priority";
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('global.none'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.global.none'));
 				break;
 
 			case TicketSearch::TERM_PRODUCT:
 				$this->grouping_summary = "Product";
 				$titles = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('global.none'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.global.none'));
 				break;
 
 			case TicketSearch::TERM_WORKFLOW:
 				$this->grouping_summary = "Workflow";
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketWorkflow')->getWorkflowNames();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('global.none'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.global.none'));
 				break;
 
 			case TicketSearch::TERM_ORGANIZATION:
 				$this->grouping_summary = "Organization";
 				$titles = App::getOrm()->getRepository('DeskPRO:Organization')->getOrganizationNames($ids);
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('global.none'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.global.none'));
 				break;
 
 			case TicketSearch::TERM_LANGUAGE:
 				$this->grouping_summary = "Language";
 				$titles = App::getOrm()->getRepository('DeskPRO:Language')->getTitles();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('global.none'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.global.none'));
 				break;
 
 			case TicketSearch::TERM_USER_WAITING:

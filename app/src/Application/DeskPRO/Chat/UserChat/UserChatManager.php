@@ -334,7 +334,7 @@ class UserChatManager
 			if ($dep) {
 				$dep_name = $dep->full_title;
 			} else {
-				$dep_name = $this->tr->phrase('global.none');
+				$dep_name = $this->tr->phrase('agent.global.none');
 			}
 			$this->addSystemMessage(
 				$convo,
