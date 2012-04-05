@@ -58,7 +58,7 @@ class ReportErrors extends \Orb\Log\Writer\AbstractWriter
 				try {
 					$log['url'] = App::getRequest()->getUri();
 				} catch (\Exception $e) {
-					$log['url'] = 'Command: ' . print_r($_SERVER['argv']);
+					$log['url'] = 'Command: ' . print_r(isset($_SERVER['argv'])?$_SERVER['argv']:'', true);
 				}
 				$log['ref_url'] = empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER'];
 				$log['user_agent'] = empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'];
