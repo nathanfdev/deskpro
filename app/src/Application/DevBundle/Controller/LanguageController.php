@@ -37,42 +37,33 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Application\DeskPRO\Translate;
 use Application\DeskPRO\App;
 use Symfony\Component\HttpFoundation\Response;
+
 use Application\DevBundle\Twig\PreservingLexer;
+use Application\DevBundle\Language\Language;
+
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 class LanguageController extends Controller
 {
-    private $files_temp;
-    private $bundles = array('AgentBundle', 'AdminBundle', 'InstallBundle', 'UserBundle', 'ReportBundle', 'BillingBundle', 'DeskPRO');
-    private $bundle_map = array(
-                'AgentBundle' => 'agent',
-                'ReportBundle' => 'agent',
-                'AdminBundle' => 'admin',
-                'BillingBundle' => 'admin',
-                'UserBundle' => 'user',
-                'DeskPRO' => 'agent'
-            );
-    private $packages = array('agent', 'user', 'admin', 'deskpro');
-
     public function indexAction()
     {
-		return $this->render('DevBundle:Language:index.html.twig', array('bundles' => $this->bundles, 'bundle_map' => $this->bundle_map, 'packages' => $this->packages));
+		return $this->render('DevBundle:Language:index.html.twig', array('bundles' => Language::$BUNDLES, 'bundle_map' => Language::$BUNDLES_MAP, 'packages' => Language::$PACKAGES));
     }
 
     public function listLanguageFilesAction()
     {
-		return $this->render('DevBundle:Language:simplelist.html.twig', array('list'=>$this->getLanguageFileList()));
+		return $this->render('DevBundle:Language:simplelist.html.twig', array('list'=>Language::GetFileFinder()->getLanguageFileList()));
     }
 
     public function listPhpFilesAction()
     {
-		return $this->render('DevBundle:Language:simplelist.html.twig', array('list'=>$this->getPhpFileList()));
+		return $this->render('DevBundle:Language:simplelist.html.twig', array('list'=>Language::GetFileFinder()->getPhpFileList()));
     }
 
     public function listTwigFilesAction()
     {
-		return $this->render('DevBundle:Language:simplelist.html.twig', array('list'=>$this->getTwigFileList()));
+		return $this->render('DevBundle:Language:simplelist.html.twig', array('list'=>Language::GetFileFinder()->getTwigFileList()));
     }
 
     public function testTokenizerAction()
@@ -104,7 +95,7 @@ class LanguageController extends Controller
     public function testLexerAction()
     {
         $lexer = $this->getTwigPreservingLexer(array());
-        $templates = $this->getTwigFileList();
+        $templates = Language::GetFileFinder()->getTwigFileList();
         $mismatches = array();
 
         foreach($templates as $file) {
@@ -161,21 +152,10 @@ class LanguageController extends Controller
         }
     }
 
-    public function flatFileListToNonFlat($flat_files)
-    {
-        $files = array();
-
-        foreach($flat_files as $file) {
-            $files[] = array('filename' => $file);
-        }
-
-        return $files;
-    }
-
     public function exportToPOAction($package)
     {
         set_time_limit(0);
-        $files = $this->getLanguageFileList($package);
+        $files = Language::GetFileFinder()->getLanguageFileList($package);
         $strings = array();
 
         foreach($files as $file) {
@@ -229,7 +209,7 @@ class LanguageController extends Controller
 
     public function replacePhraseIdsAction()
     {
-        $bundles = $this->bundles;
+        $bundles = Language::$BUNDLES;
         $vars = array('bundles' => $bundles);
         set_time_limit(0);
 
@@ -241,8 +221,8 @@ class LanguageController extends Controller
             $files = array();
 
             foreach($in as $bundle) {
-                $files = array_merge($this->flatFileListToNonFlat($this->getPhpFileList($bundle)), $files);
-                $files = array_merge($this->flatFileListToNonFlat($this->getTwigFileList($bundle)), $files);
+                $files = array_merge(Language::GetFileFinder()->flatFileListToNonFlat(Language::GetFileFinder()->getPhpFileList($bundle)), $files);
+                $files = array_merge(Language::GetFileFinder()->flatFileListToNonFlat(Language::GetFileFinder()->getTwigFileList($bundle)), $files);
             }
 
             $this->replacePhrasesInFiles($files, $from, $to, $prefix);
@@ -259,11 +239,11 @@ class LanguageController extends Controller
 
         $rootdir = DP_ROOT.'/languages/DeskPRO';
 
-        $lang = $this->bundle_map[$bundle];
+        $lang = Language::$BUNDLES_MAP[$bundle];
 
         ob_start();
-        list($by_id_php, ) = $this->getPhrasesFromPHPFiles($bundle);
-        list($by_id_twig, ) = $this->getPhrasesFromTwigFiles($bundle);
+        list($by_id_php, ) = Language::getPhraseFinder($this->container)->getPhrasesFromPHPFiles($bundle);
+        list($by_id_twig, ) = Language::getPhraseFinder($this->container)->getPhrasesFromTwigFiles($bundle);
         ob_end_clean();
 
         foreach(array($by_id_php, $by_id_twig) as $by_id) {
@@ -319,7 +299,7 @@ class LanguageController extends Controller
             foreach($foreign as $id=>$files) {
                 list($firstpart, ) = explode('.', $id, 2);
 
-                if(in_array($firstpart, $this->packages)
+                if(in_array($firstpart, Language::$PACKAGES)
                 && !($firstpart == 'user' && $bundle == 'DeskPRO')) {
                     $foreigners[$id] = $files;
                 }
@@ -501,7 +481,7 @@ class LanguageController extends Controller
 
         $twig_options = array();
         $lexer = $this->getTwigLexer($twig_options);
-        $templates = $this->getTwigFileList($bundle);
+        $templates = Language::GetFileFinder()->getTwigFileList($bundle);
         $untranslated = array();
         $filenames = array();
 
@@ -667,87 +647,6 @@ class LanguageController extends Controller
         return $this->render('DevBundle:Language:find.raw.html.twig', $vars);
     }
 
-    public function getPhrasesFromTwigFiles($bundle = null)
-    {
-        $twig = $this->container->get('twig');
-        $templates = $this->getTwigFileList($bundle);
-        $by_id = array();
-        $by_file = array();
-
-        foreach($templates as $file) {
-            $raw_twig = file_get_contents($file);
-            $tokens = $twig->tokenize($raw_twig);
-            $state = 0;
-
-            while(!$tokens->isEOF()) {
-                $token = $tokens->next();
-                $type = $token->getType();
-                $value = $token->getValue();
-                $line = $token->getLine();
-
-                switch($state) {
-                    case 0:
-                        if($type == \Twig_Token::NAME_TYPE && $value == 'phrase') {
-                            $state++;
-                        }
-
-                        break;
-                    case 1:
-                        if($type == \Twig_Token::PUNCTUATION_TYPE && $value == '(') {
-                            $state++;
-                        }
-                        else {
-                            $state = 0;
-                            $this->tokenWarningTwig('Unexpected token', $token, $file, $line);
-                        }
-
-                        break;
-                    case 2:
-                        if($type == \Twig_Token::STRING_TYPE) {
-                            $state++;
-                            $id = $value;
-                        }
-                        else {
-                            $state = 0;
-                            $this->tokenWarningTwig('Unexpected token', $token, $file, $line);
-                        }
-
-                        break;
-                    case 3:
-                        if($type != \Twig_Token::PUNCTUATION_TYPE || ($value != ')' && $value != ',')) {
-                            $this->tokenWarningTwig('Unexpected token after '.$id, $token, $file, $line);
-                        }
-                        else
-                        {
-                            if(!isset($by_id[$id])) {
-                                $by_id[$id] = array();
-                            }
-
-                            $by_id[$id][] = array(
-                                'filename' => $file,
-                                'line' => $line
-                            );
-
-                            if(!isset($by_file[$file])) {
-                                $by_file[$file] = array();
-                            }
-
-                            $by_file[$file][] = array(
-                                'id' => $id,
-                                'line' => $line
-                            );
-                        }
-
-                        $state = 0;
-
-                        break;
-                }
-            }
-        }
-
-        return array($by_id, $by_file);
-    }
-
     public function fixMissing($missing) {
         $rootdir = DP_ROOT.'/languages/DeskPRO';
         $missing = array_unique($missing);
@@ -785,12 +684,13 @@ class LanguageController extends Controller
             'instances' => array
             (
                 'id' => array(),
-                'file' => array()
+                'file' => array(),
+                'prefixes' => array()
             ),
             'missing' => array()
         );
 
-        list($vars['instances']['id'], $vars['instances']['file']) = $this->getPhrasesFromTwigFiles();
+        list($vars['instances']['id'], $vars['instances']['file'], $vars['instances']['prefixes']) = Language::getPhraseFinder($this->container)->getPhrasesFromTwigFiles();
         $missing = $this->getMissing(array_keys($vars['instances']['id']));
 
         if(isset($_POST['missing'])) {
@@ -799,97 +699,7 @@ class LanguageController extends Controller
 
         $vars['missing'] = $missing;
 
-        return $this->render('DevBundle:Language:find.phrases.twig.html.twig', $vars);
-    }
-
-    public function getPhrasesFromPHPFiles($bundle = null)
-    {
-        $files = $this->getPhpFileList($bundle);
-        $by_id = array();
-        $by_file = array();
-
-        foreach($files as $file) {
-            $rawphp = file_get_contents($file);
-            $tokens = token_get_all($rawphp);
-            $state = 0;
-            $line = 0;
-
-            foreach($tokens as $token) {
-                if(is_array($token)) {
-                    $line = $token[2];
-                }
-
-                if(!is_array($token) || $token[0] != T_WHITESPACE)
-                    switch($state) {
-                        case 0:
-                            if(is_array($token) && ($token[0] == T_OBJECT_OPERATOR || $token[0] == T_DOUBLE_COLON)) {
-                                $state++;
-                            }
-
-                            break;
-                        case 1:
-                            if(is_array($token) && $token[0] == T_STRING && $token[1] == 'phrase') {
-                                $state++;
-                            }
-                            else {
-                                $state = 0;
-                            }
-
-                            break;
-                        case 2:
-                            if($token == '(') {
-                                $state++;
-                            }
-                            else {
-                                $state = 0;
-                                $this->tokenWarningPhp('Unexpected Token', $token, $file, $line);
-                            }
-
-                            break;
-                        case 3:
-                            if(is_array($token) && $token[0] == T_CONSTANT_ENCAPSED_STRING) {
-                                $id = eval('return '.$token[1].';');
-                                $state++;
-                            }
-                            else {
-                                $state = 0;
-                                $this->tokenWarningPhp('Unexpected Token', $token, $file, $line);
-                            }
-
-                            break;
-                        case 4:
-                            if($token != ')' && $token != ',') {
-                                $this->tokenWarningPhp('Unexpected Token after '.$id, $token, $file, $line);
-                            }
-                            else
-                            {
-                                if(!isset($by_id[$id])) {
-                                    $by_id[$id] = array();
-                                }
-
-                                $by_id[$id][] = array(
-                                    'filename' => $file,
-                                    'line' => $line
-                                );
-
-                                if(!isset($by_file[$file])) {
-                                    $by_file[$file] = array();
-                                }
-
-                                $by_file[$file][] = array(
-                                    'id' => $id,
-                                    'line' => $line
-                                );
-                            }
-
-                            $state = 0;
-
-                            break;
-                    }
-            }
-        }
-
-        return array($by_id, $by_file);
+        return $this->render('DevBundle:Language:find.phrases.html.twig', $vars);
     }
 
     public function findPhrasesInPHPFilesAction()
@@ -898,12 +708,13 @@ class LanguageController extends Controller
             'instances' => array
             (
                 'id' => array(),
-                'file' => array()
+                'file' => array(),
+                'prefixes' => array()
             ),
             'missing' => array()
         );
 
-        list($vars['instances']['id'], $vars['instances']['file']) = $this->getPhrasesFromPHPFiles();
+        list($vars['instances']['id'], $vars['instances']['file'], $vars['instances']['prefixes']) = Language::getPhraseFinder($this->container)->getPhrasesFromPHPFiles();
         $missing = $this->getMissing(array_keys($vars['instances']['id']));
 
         if(isset($_POST['missing'])) {
@@ -912,12 +723,12 @@ class LanguageController extends Controller
 
         $vars['missing'] = $missing;
 
-        return $this->render('DevBundle:Language:find.phrases.php.html.twig', $vars);
+        return $this->render('DevBundle:Language:find.phrases.html.twig', $vars);
     }
 
     public function parseLangFiles($package = '')
     {
-        $files = $this->getLanguageFileList($package);
+        $files = Language::GetFileFinder()->getLanguageFileList($package);
         $by_id = array();
         $by_content = array();
 
@@ -1034,54 +845,18 @@ class LanguageController extends Controller
         }
     }
 
-    public function adminToAgentAction()
-    {
-        set_time_limit(0);
-        $agent_files = $this->getLanguageFileList('agent');
-        $admin_files = $this->getLanguageFileList('admin');
-        $by_content = array();
-
-        foreach($agent_files as $agent_file) {
-            $phrases = require($agent_file);
-
-            foreach($phrases as $id=>$content) {
-                $by_content[$content] = $id;
-            }
-        }
-
-        $files_twig = $this->getTwigFileList('AdminBundle');
-        $files_php = $this->getPhpFileList('AdminBundle');
-        $files = $this->flatFileListToNonFlat(array_merge($files_php, $files_twig));
-
-        foreach($admin_files as $admin_file) {
-            $phrases = require($admin_file);
-
-            foreach($phrases as $id=>$content) {
-                if(isset($by_content[$content])) {
-                    unset($phrases[$id]);
-
-                    $this->replacePhrasesInFiles($files, $id, $by_content[$content], false);
-                }
-            }
-
-            file_put_contents($admin_file, '<?php return '.var_export($phrases, true).';');
-        }
-
-        return new Response();
-    }
-
     public function checkLanguageFilesAction()
     {
         set_time_limit(0);
         if(isset($_POST['batch'])) {
-            $twig_phrases = $this->getPhrasesFromTwigFiles();
-            $php_phrases = $this->getPhrasesFromPHPFiles();
+            $twig_phrases = Language::getPhraseFinder($this->container)->getPhrasesFromTwigFiles();
+            $php_phrases = Language::getPhraseFinder($this->container)->getPhrasesFromPHPFiles();
 
             foreach($_POST['batch'] as $content) {
                 $this->globaliseString($content,'global.'.$this->stringToId($content), $twig_phrases, $php_phrases);
             }
         } else if(isset($_POST['content'])) {
-            $this->globaliseString($_POST['content'], $_POST['id'], $this->getPhrasesFromTwigFiles(), $this->getPhrasesFromPHPFiles());
+            $this->globaliseString($_POST['content'], $_POST['id'], Language::getPhraseFinder($this->container)->getPhrasesFromTwigFiles(), Language::getPhraseFinder($this->container)->getPhrasesFromPHPFiles());
         }
 
         $vars = array(
@@ -1122,7 +897,7 @@ class LanguageController extends Controller
 
     public function getLanguageData()
     {
-        $files = $this->getLanguageFileList();
+        $files = Language::GetFileFinder()->getLanguageFileList();
         $data = array();
 
         foreach($files as $file) {
@@ -1130,141 +905,6 @@ class LanguageController extends Controller
         }
 
         return $data;
-    }
-
-    public function readLangDir($path, &$files)
-    {
-        $dh = opendir($path);
-
-        while(false !== ($filename = readdir($dh))) {
-            $filepath = $path.'/'.$filename;
-
-            if(is_file($filepath) && substr($filepath, -3 == 'php')) {
-                $files[] = $filepath;
-            }
-        }
-
-        closedir($dh);
-    }
-
-    public function getLanguageFileList($package = '')
-    {
-        $rootdir = DP_ROOT.'/languages/DeskPRO'.'/'.$package;
-        $files = array();
-
-        if(empty($package)) {
-            $dh1 = opendir($rootdir);
-
-            while(false !== ($dirname = readdir($dh1))) {
-                if($dirname == '.' || $dirname == '..')
-                    continue;
-
-                $path = $rootdir.'/'.$dirname;
-
-                if(is_dir($path)) {
-                    $this->readLangDir($path, $files);
-                }
-            }
-
-            closedir($dh1);
-        }
-        else {
-            $this->readLangDir($rootdir, $files);
-        }
-        
-        return $files;
-    }
-
-    public function getPhpFileList($bundle = null)
-    {
-        if($bundle)
-            $bundles = array($bundle);
-        else
-            $bundles = $this->bundles;
-
-        $this->files_temp = array();
-
-        foreach($bundles as $bundle)
-            $this->scanDir(DP_ROOT . '/src/Application/'.$bundle, '.php');
-
-        return $this->files_temp;
-    }
-
-    function scanDir($dir, $suffix)
-    {
-        if ($handle = opendir($dir)) {
-            while (false !== ($filename = readdir($handle))) {
-                if (is_dir($dir.'/'.$filename)) {
-                    if ($filename == "." || $filename == "..")
-                        continue;
-
-                    $this->scanDir($dir.'/'.$filename, $suffix);
-                }
-                else {
-                    if(preg_match('/'.preg_quote($suffix, '/').'$/i' , $filename)) {
-                        $this->files_temp[] = $dir.'/'.$filename;
-                    }
-                }
-            }
-
-            closedir($handle);
-        }
-    }
-
-    public function getTwigFileList($bundle = null)
-    {
-        if($bundle)
-            $bundles = array($bundle);
-        else
-            $bundles = $this->bundles;
-
-        $this->files_temp = array();
-
-        foreach($bundles as $bundle)
-            $this->scanDir(DP_ROOT . '/src/Application/'.$bundle, '.html.twig');
-
-        return $this->files_temp;
-    }
-
-    public function dumpTokensPHP($tokens)
-    {
-        foreach($tokens as $i=>$token) {
-            if(is_array($token)) {
-                $tokens[$i][] = token_name($token[0]);
-            }
-        }
-
-        print_r($tokens);
-    }
-
-    public function dumpTokensTwig($tokens)
-    {
-        $basic_tokens = array();
-
-        while(!$tokens->isEOF()) {
-            $token = $tokens->next();
-            $basic_tokens[] = array(
-                'type' => \Twig_Token::TypeToString($token->getType(), true),
-                'value' => $token->getValue(),
-            );
-        }
-
-        print_r($basic_tokens);
-    }
-
-    public function tokenWarningPhp($message, $token, $file, $line)
-    {
-        if(is_array($token))
-            $token = token_name($token[0]) .':'. $token[1];
-
-        echo "Warning: {$message} ($token) in {$file}:{$line}<br />";
-    }
-
-    public function tokenWarningTwig($message, $token, $file, $line)
-    {
-        $token = \Twig_Token::TypeToString($token->getType(), true) .':'.$token->getValue();
-
-        echo "Warning: {$message} ($token) in {$file}:{$line}<br />";
     }
 
     public function getMissing($ids)
@@ -1322,16 +962,6 @@ class LanguageController extends Controller
         }
 
         return $html;
-    }
-
-    public function getTwigPreservingLexer($options)
-    {
-        return new PreservingLexer($this->container->get('twig'), $options);
-    }
-
-    public function getTwigLexer($options)
-    {
-        return new \Twig_Lexer($this->container->get('twig'), $options);
     }
 
     public function stringToId($string)

@@ -10,7 +10,7 @@
 {% endblock %}
 {% block content %}
 	{{ layout.section_start() }}
-		<p>{{ phrase('user.emails_user.', {'title':feedback.title}) }}</p>
+		<p>{{ phrase('user.emails_user.thank_you_for_feedback', {'title':feedback.title}) }}</p>
 		{% if validating %}
 			{% if feedback.status == 'visible' %}
                 {{ phrase('user.emails_user.please_validate_your_email_address') }}

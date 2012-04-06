@@ -112,4 +112,5 @@
   'user.form_email' => 'Email',
   'user.btn_add' => 'Add',
   'user.please_enter_department' => 'Please enter department',
+  'user.register_please_enter_email' => 'Please enter email address',
 );

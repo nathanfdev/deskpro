@@ -3,7 +3,6 @@
 {% block email_subject %}Validate your email address (RE: {{ ticket.subject }}){% endblock %}
 {% block content %}
 	{% set content %}
-    {{ phrase('user.emails_user.') }}
     {{ phrase('user.emails_user.thank_you_for_contacting_us_but_validate_first') }}
 	<br /><br />
 	{{ phrase('user.emails_user.simply_click_on_the_following_link_to_validate') }}:<br />

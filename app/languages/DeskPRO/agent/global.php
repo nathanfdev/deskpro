@@ -314,4 +314,5 @@
   'agent.global.new_reply_ticket_subject' => 'New Reply: {{ticket_subject}}',
   'agent.global.ticket_ref' => 'Ticket Ref',
   'agent.global.ticket_starter' => 'Ticket Starter',
+  'agent.global.default' => 'Default',
 );

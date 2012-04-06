@@ -18,7 +18,7 @@
 	{{ layout.section_end() }}
 
 	{{ layout.section_start() }}
-        {{ phrase('user.emails_user.', {'count': feedback.votes}) }}
+        {{ phrase('user.emails_user.your_feedback_has_count_votes', {'count': feedback.votes}) }}
 		<a href="{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}">
 			{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}
 		</a>

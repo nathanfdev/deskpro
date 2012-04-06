@@ -10,4 +10,5 @@
   'agent.person.and_came_from' => 'and came from',
   'agent.person.new_person' => 'New Person',
   'agent.person.count_members' => '{{count}} member|{{count}} members',
+  'agent.person.confirm_remove_email' => 'Are you sure you want to remove this email address?',
 );

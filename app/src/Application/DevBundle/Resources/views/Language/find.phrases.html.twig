@@ -23,6 +23,14 @@
         {% endfor %}
     {% endfor %}
 </table>
+<h2>Prefixes</h2>
+<table cellspacing="0" cellpadding="2" border="1" width="90%">
+<tr><th>Id</th><th>File</th><th>Line</th></tr>
+
+    {% for prefix in prefixes %}
+        <tr><td>{{prefix.id}}</td><td>{{prefix.filename}}</td><td>{{prefix.line}}</td></tr>
+    {% endfor %}
+</table>
 <form method="post">
     <input type="submit" name="missing" value="Fix Missing">
 </form>
