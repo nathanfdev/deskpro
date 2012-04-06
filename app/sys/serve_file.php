@@ -151,8 +151,7 @@ class FilestorageLoader
 			SELECT blobs.*
 			FROM styles
 			LEFT JOIN blobs ON blobs.id = styles.css_blob_id
-			LEFT JOIN settings ON (settings.name = 'core.default_style_id' AND settings.value = styles.id)
-			WHERE settings.id IS NOT NULL OR styles.id = 1
+			WHERE styles.id = 1
 			LIMIT 1
 		");
 		$sth->execute();
@@ -169,7 +168,7 @@ class FilestorageLoader
 			));
 			$blob_id = $desc->getPath();
 
-			$container->getDb()->update('styles', array('css_blob_id' => $blob_id), array('css_blob_id' => $blob['id']));
+			$container->getDb()->update('styles', array('css_blob_id' => $blob_id), array('id' => 1));
 
 			$sth = $this->getPdo()->prepare("
 				SELECT blobs.*
