@@ -4,7 +4,7 @@
 	{% if filter %}
 		{{ filter.title }}
 	{% else %}
-		Results
+		{{ phrase('agent.ticketsearch.results') }}
 	{% endif %}
 {% endblock %}
 {% block other_options %}

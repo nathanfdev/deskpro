@@ -79,6 +79,7 @@
   'agent.global.mentions' => 'Mentions',
   'agent.global.followers' => 'Followers',
   'agent.global.new' => 'New',
+  'agent.global.reference' => 'Ref',
   'agent.global.search_terms' => 'Search Terms',
   'agent.global.pending' => 'Pending',
   'agent.global.knowledgebase' => 'Knowledgebase',
@@ -315,4 +316,5 @@
   'agent.global.ticket_ref' => 'Ticket Ref',
   'agent.global.ticket_starter' => 'Ticket Starter',
   'agent.global.default' => 'Default',
+  'agent.global.widget_add' => '+',
 );

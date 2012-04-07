@@ -30,7 +30,7 @@ pageMeta.baseId = '{{ baseId }}';
 					&lt;{{ visitor.email }}&gt;
 				{% endif %}
 			{% else %}
-				Anonymous User {{ visitor.id }}
+                {{ phrase('agent.person.anonymous_user', {'id':visitor.id}) }}
 			{%endif %}
 		</h1>
 	</div>
@@ -73,7 +73,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<tr>
 					<td class="label">{{ phrase('agent.person.online_now') }}</td>
 					<td class="value">
-						Since
+						{{ phrase('agent.person.since') }}
 						<time>{{session.date_created|date('fulltime')}}</time>
 						(<time class="timeago" datetime="{{session.date_created|date('c')}}"></time>)
 					</td>
@@ -83,7 +83,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<td class="value">
 						<time>{{session.date_last|date('fulltime')}}</time>
 						(<time class="timeago" datetime="{{session.date_last|date('c')}}"></time>)
-						on page <em class="tipped" title="{{ session.visitor.last_page }}">...</em>
+						{{ phrase('agent.person.on_page') }} <em class="tipped" title="{{ session.visitor.last_page }}">...</em>
 				</tr>
 				<tr>
 					<td class="label">{{ phrase('agent.global.landing_page') }}</td>

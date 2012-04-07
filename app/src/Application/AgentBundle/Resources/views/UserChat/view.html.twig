@@ -218,8 +218,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% if convo.person and convo.person.id != session.person.id %}
 					<div class="impersonation-warning" id="{{baseId}}_imposter">
 						<strong>{{ phrase('agent.userchat.warning') }}</strong>
-						<p>The user entered an email address that matches an existing account in the system, but the user
-						is not currently logged in. Be careful not to expose sensitive information in case the user is an imposter.</p>
+						<p>{{ phrase('agent.userchat.warning_email_address_not_unique') }}</p>
 						<button class="clean-white small dismiss">{{ phrase('agent.global.dismiss') }}</button>
 					</div>
 				{% endif %}

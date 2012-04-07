@@ -8,9 +8,9 @@
 		<li class="order-by-menu-trigger menu-fitted" data-menu-button=".button"><a class="button">
 			<span class="label">
 				{% if 'date_created' in cache.criteria.order_by %}
-					Date Created
+					{{ phrase('agent.global.date_created') }}
 				{% elseif 'view_count' in cache.criteria.order_by %}
-					View Cont
+					{{ phrase('agent.kb.view_count') }}
 				{% endif %}
 			</span>
 			<em></em>

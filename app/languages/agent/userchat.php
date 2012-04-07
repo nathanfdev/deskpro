@@ -11,5 +11,10 @@
   'agent.userchat.there_are_currently_no_open_chats' => 'There are currently no open chats.',
   'agent.userchat.chat_started_by' => 'Chat started by',
   'agent.userchat.count_seconds' => '{{count}} second|{{count}} seconds',
-  'agent.userchat.end_chat' => '[agent.userchat.end_chat]',
+  'agent.userchat.new_ticket_by' => 'New ticket by {{name}} ({{email}})',
+  'agent.userchat.new_agent_reply_by' => 'New agent reply by {{name}}',
+  'agent.userchat.new_user_reply_by' => 'New user reply by {{name}}',
+  'agent.userchat.end_chat' => 'End Chat',
+  'agent.userchat.warning_email_address_not_unique' => 'The user entered an email address that matches an existing account in the system, but the user is not currently logged in. Be careful not to expose sensitive information in case the user is an imposter.',
+  
 );

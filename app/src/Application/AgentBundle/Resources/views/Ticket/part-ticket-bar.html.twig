@@ -99,14 +99,14 @@
 
 	{#
 	<div class="tab-bottom">
-		<input type="text" class="placeholder" value="Start typing a reply..." />
+		<input type="text" class="placeholder" value="{{ phrase('agent.ticket.placeholder_type_a_result') }}" />
 		<div class="bar-actions">
 			<ul>
 				<li class="macro-on macros-apply" style="display:none"><a>{{ phrase('agent.global.apply') }}</a></li>
 				<li class="macro-on macros-cancel" style="display:none"><a>{{ phrase('agent.global.cancel') }}</a></li>
-				<li class="send-reply" style="display:none"><div class="spinner" style="float:left;display:none;"></div><a>Send Reply</a><a class="loading-msg">Sending</a></li>
+				<li class="send-reply" style="display:none"><div class="spinner" style="float:left;display:none;"></div><a>{{ phrase('agent.ticket.send_reply') }}</a><a class="loading-msg">{{ phrase('agent.ticket.sending') }}</a></li>
 				<li class="macros"><a>{{ phrase('agent.global.macros') }}</a></li>
-				<li class="actions"><a>Actions</a></li>
+				<li class="actions"><a>{{ phrase('agent.global.actions') }}</a></li>
 			</ul>
 		</div>
 	</div>

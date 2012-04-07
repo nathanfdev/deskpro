@@ -4,11 +4,11 @@
 	<a>{{ ticket.subject }}</a>
 	<div class="info">
 		{% if is_new_ticket %}
-			New ticket by {{ performer.name }} ({{ performer.primary_email_address }})
+            {{ phrase('agent.userchat.new_ticket_by', {'name':performer.name,'email':performer.primary_email_address}) }}
 		{% elseif is_new_agent_reply %}
-			New agent reply by {{ performer.name }}
+            {{ phrase('agent.userchat.new_agent_reply_by', {'name':performer.name}) }}
 		{% elseif is_new_user_reply %}
-			New agent reply by {{ performer.name }}
+            {{ phrase('agent.userchat.new_user_reply_by', {'name':performer.name}) }}
 		{% else %}
 			{% for log in log_items %}
 				{% include 'AgentBundle:Ticket:ticket-log-actiontext.html.twig' %}

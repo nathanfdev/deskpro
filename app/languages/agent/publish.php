@@ -1,12 +1,6 @@
 <?php return array(
-
 	'agent.publish.no_related_explain' => 'No other articles, downloads or news posts have been linked to this. Browse the listings and click "Add as related" to add related content.',
-
-
-
-
 	'agent.publish.comments_to_validate' => 'Comments to review',
-
 	'agent.publish.compare_selected' => 'Compare Selected',
 	'agent.publish.compare_older_title' => 'Older',
 	'agent.publish.compare_newer_title' => 'Newer',
@@ -17,39 +11,21 @@
 	'agent.publish.changes_in_post' => 'Changes in post',
 	'agent.publish.changes_in_content' => 'Changes in content',
 	'agent.publish.no_changes' => 'No changes detected between these two revisions',
-
-
-
-
-
-
-
-
 	'agent.publish.discard_unsaved_changes' => 'Discard and revert to default',
-
 	'agent.publish.download_replace_file' => 'Upload a new file to replace the old one',
-
 	'agent.publish.sticky_words_title' => 'Search Words',
 	'agent.publish.search_sticky_words_explain' => 'When a user searches for any of these words, this page will always be listed in their top results.',
-
 	'agent.publish.glossary' => 'Glossary',
 	'agent.publish.add_new_glossary' => 'Add new glossary word',
 	'agent.publish.edit_new_glossary' => 'Edit new glossary word',
 	'agent.publish.word_title' => 'Word title',
 	'agent.publish.word_def' => 'Word defintion',
-
-
-
 	'agent.publish.comments_awaiting_validation' => 'Comments Awaiting Validation',
-
 	'agent.publish.who_voted' => 'Who Voted',
 	'agent.publish.who_voted_show_people' => 'Show people and contacts',
 	'agent.publish.who_voted_show_guests' => 'Show guests',
 	'agent.publish.who_voted_none' => 'No one has voted yet',
-
 	'agent.publish.draft_revision' => 'Change',
-
-
 	'agent.publish.searches_helpful' => 'Searches where this was rated helpful',
 	'agent.publish.searches_unhelpful' => 'Searches where this was rated unhelpful',
 	'agent.publish.searches_recent' => 'Recent Searches',
@@ -58,44 +34,20 @@
 	'agent.publish.searches_last_100' => '100 most recent searches',
 	'agent.publish.searches_most_popular_terms' => 'The most popular search terms',
 	'agent.publish.searches_most_popular_low' => 'The most popular search terms that returned the least results',
-
 	'agent.publish.content_to_validate' => 'Content to Validate',
 	'agent.publish.pending_articles' => 'Pending Articles',
 	'agent.publish.draft_content' => 'My Drafts',
 	'agent.publish.search_logs' => 'Search Logs',
 	'agent.publish.all_draft_content' => 'All Drafts',
-
-
-
-
-
-
-
 	'agent.publish.status_hidden_user_validating' => 'User Validating',
-
-
-
-  'agent.publish.count_files' => '1 File|{{count}} Files',
-
-
-
+    'agent.publish.count_files' => '1 File|{{count}} Files',
   'agent.publish.count_articles' => '1 Article|{{count}} Articles',
   'agent.publish.posts' => 'Posts',
   'agent.publish.who' => 'Who',
-
   'agent.publish.when' => 'When',
-
-
-
-
   'agent.publish.recent_and_popular_searches' => 'Recent and Popular Searches',
-
   'agent.publish.create_category' => 'create category',
-
-
-
-
-
   'agent.publish.revision_by' => 'Revision by {{name}}',
-
+  'agent.publish.helpful' => 'Helpful',
+  'agent.publish.not_helpful' => 'Not Helpful',
 );

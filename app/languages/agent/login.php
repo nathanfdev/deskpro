@@ -1,47 +1,25 @@
 <?php return array(
 	'agent.login.email' => 'Email',
-
 	'agent.login.login_failed' => 'Invalid login. Please try again.',
-
-
-
 	'agent.login.enter_password' => 'Enter your password',
 	'agent.login.has_logged_out' => 'You have been logged out successfully.',
-
   'agent.login.browser_requirements' => 'Browser Requirements',
   'agent.login.the_admin_and_agent_interfaces_require_a_modern' => 'The admin and agent interfaces require a modern browser. We have detected that your browser is too outdated to use DeskPRO. Upgrade your browser to the latest version, or try downloading an alternative browser.',
   'agent.login.the_following_browsers_are_supported' => 'The following browsers are supported',
   'agent.login.mozilla_firefox' => 'Mozilla Firefox',
-
   'agent.login.google_chrome' => 'Google Chrome',
-
   'agent.login.apple_safari' => 'Apple Safari',
-
   'agent.login.opera' => 'Opera',
   'agent.login.v11_or_later' => 'v11 or later',
-
   'agent.login.v8_or_later' => 'v8 or later',
-
-
   'agent.login.your_password_has_been_reset_successfully' => 'Your password has been reset successfully.',
   'agent.login.email_username' => 'Email / Username',
-
   'agent.login.we_sent_instructions_on_how_to_reset_your_password' => 'We sent insutructions on how to reset your password to the email address you provided.',
-
-
   'agent.login.enter_new_password' => 'Enter New Password',
-
-
-
-
-
-
-
-
-
-
   'agent.login.email_instructions' => 'Email Instructions',
   'agent.login.we_sent_insutrctions_on_how_to_reset_your' => 'We sent insutrctions on how to reset your password to the email address you provided.',
-
   'agent.login.or_go_back_to_login_form' => 'or go back to login form',
+  'agent.login.alert_too_short' => 'Please enter a password of at least 4 characters.',
+  'agent.login.alert_fields_must_match' => 'The two password fields do not match.',
+  'agent.login.notice_outdated_browser' => 'The admin and agent interfaces require a modern browser. We have detected that your browser is too outdated to use DeskPRO. Upgrade your browser to the latest version, or try downloading an alternative browser.',
 );

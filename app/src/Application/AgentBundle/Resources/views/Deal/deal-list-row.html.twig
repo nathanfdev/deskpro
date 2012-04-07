@@ -78,7 +78,7 @@
             {% if 'visibility' in display_fields %}
             <li>
                 <span class="prop-title">{{ phrase('agent.deal.visibility') }}:</span>
-                <span class="prop-val">{% if deal.visibility == 0%} Private {% else%} Public{% endif %}</span>
+                <span class="prop-val">{% if deal.visibility == 0%} {{ phrase('agent.global.private') }} {% else%} {{ phrase('agent.global.public') }}{% endif %}</span>
             </li>
             {% endif %}
 

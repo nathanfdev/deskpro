@@ -36,4 +36,5 @@
 	'agent.feedback.status_deleted'    => 'Deleted',
 	'agent.feedback.status_spam'       => 'Spam',
 	'agent.feedback.status_validating' => 'Validating',
+	'agent.feedback.by_people_on_date' => 'By {{people}} on {{date}}',
 );

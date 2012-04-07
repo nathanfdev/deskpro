@@ -57,4 +57,7 @@
   'agent.ticket.percent_of' => '% of',
   'agent.ticket.to' => 'To',
   'agent.ticket.created' => 'Created',
+  'agent.ticket.sending' => 'Sending',
+  'agent.ticket.send_reply' => 'Send Reply',
+  'agent.ticket.placeholder_type_a_result' => 'Start typing a reply...',
 );

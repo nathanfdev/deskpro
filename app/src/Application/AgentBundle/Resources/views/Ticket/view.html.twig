@@ -190,8 +190,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
                                             </ul>
                                         </section>
                                     </div>
-                                    <span class="is-not-loading"><button class="clean-white small cc-saverow-trigger">Add</button></span>
-                                    <span class="is-loading">Saving...</span>
+                                    <span class="is-not-loading"><button class="clean-white small cc-saverow-trigger">{{ phrase('agent.global.add') }}</button></span>
+                                    <span class="is-loading">{{ phrase('agent.global.saving') }}</span>
                                     <script class="user-row-tpl" type="text/x-deskpro-tmpl">
                                         <li>
                                             <a>
@@ -229,7 +229,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 					<dt class="team-row" {% if not ticket.agent_team %}style="display: none"{% endif %}>{{ phrase('agent.global.team') }}</dt>
 					<dd class="team-row" {% if not ticket.agent_team %}style="display: none"{% endif %}>
-						<span class="prop-agent-team-id">{{ ticket.agent_team.name|default('None') }}</span>
+						<span class="prop-agent-team-id">{{ ticket.agent_team.name|default(phrase('agent.global.none')) }}</span>
 					</dd>
 
 					<dt class="followers-row" {% if not agent_parts|length %}style="display:none"{% endif %}>{{ phrase('agent.global.followers') }}</dt>

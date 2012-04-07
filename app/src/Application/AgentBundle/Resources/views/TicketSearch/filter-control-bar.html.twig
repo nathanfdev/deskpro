@@ -9,7 +9,7 @@
 		<li>{{ phrase('agent.global.ordered_by') }} </li>
 		<li class="order-by-menu-trigger menu-fitted" data-menu-button=".button"><a class="button"><span class="label">{{ order_by_summary }}</span><em></em></a></li>
 		<li>{{ phrase('agent.and_grouped_by') }} </li>
-		<li class="group-by-menu-trigger menu-fitted" data-menu-button=".button"><a class="button"><span class="label">{{ grouping_summary|default('None') }}</span><em></em></a></li>
+		<li class="group-by-menu-trigger menu-fitted" data-menu-button=".button"><a class="button"><span class="label">{{ grouping_summary|default(phrase('agent.global.none')) }}</span><em></em></a></li>
 		<li><span class="sep"></span></li>
 	</ul>
 

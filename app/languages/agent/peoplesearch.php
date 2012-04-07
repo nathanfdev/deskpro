@@ -11,5 +11,7 @@
   'agent.peoplesearch.date_craeted_oldestnewest' => 'Date Craeted (Oldest-Newest)',
   'agent.peoplesearch.you_havent_labeled_any_tickets_load_a_ticket' => 'You haven\'t labeled any tickets. Load a ticket to label it.',
   'agent.peoplesearch.person_id' => 'Person ID',
-  'agent.peoplesearch.find_by_above_criteria' => '[agent.peoplesearch.find_by_above_criteria]',
+  'agent.peoplesearch.find_by_above_criteria' => 'Find by the above criteria',
+  'agent.peoplesearch.no_email' => 'No email',
+  'agent.peoplesearch.showing_x_of_y_people' => 'Showing {{display_count}} of {{count}} people|Showing {{display_count}} of {{count}} people',
 );

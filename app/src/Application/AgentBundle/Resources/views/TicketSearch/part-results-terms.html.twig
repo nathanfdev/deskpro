@@ -1,7 +1,7 @@
 <div class="search-form">
 	<form action="{{ path('agent_ticketsearch_runcustomfilter') }}" method="post" id="tickets_search_form">
 		<div class="search-terms"></div>
-		<div class="term"><span class="add-term">+</span> {{ phrase('agent.global.add_a_new_criteria') }}</div>
+		<div class="term"><span class="add-term">{{ phrase('agent.ticketsearch.add_term_widget') }}</span> {{ phrase('agent.global.add_a_new_criteria') }}</div>
 		<div class="term">
 			{{ phrase('agent.global.order_by') }}
 			<select name="filter[order_by]">
@@ -15,12 +15,12 @@
 			{{ phrase('agent.ticketsearch.group_by') }}
 			<select name="filter[group_by]">
 				<option value="">{{ phrase('agent.ticketsearch.no_grouping') }}</option>
-				{% for id,name in {'priority_id':'Priority', 'status': 'Status', 'department_id': 'Department', 'category_id': 'Category', 'product_id': 'Product', 'agent_id': 'Agent', 'agent_team_id': 'Agent Team'} %}
+				{% for id,name in {'priority_id':phrase('agent.ticketsearch.priority'), 'status':phrase('agent.ticketsearch.status'), 'department_id':phrase('agent.ticketsearch.department'), 'category_id':phrase('agent.ticketsearch.category'), 'product_id':phrase('agent.ticketsearch.product'), 'agent_id':phrase('agent.ticketsearch.agent'), 'agent_team_id':phrase('agent.ticketsearch.agent_team')} %}
 					<option value="{{id}}" {%if filter.group_by == id %}selected="selected"{%endif%}>{{name}}</option>
 				{% endfor %}
 			</select>
 		</div>
-		<center><input type="submit" value="search" /></center>
+		<center><input type="submit" value="{{ phrase('agent.ticketsearch.search') }}" /></center>
 	</form>
 </div>
 

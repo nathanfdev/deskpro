@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace DeskproLanguages\DeskPRO;
+namespace DeskproLanguages;
 
 use Orb\Util\Util;
 

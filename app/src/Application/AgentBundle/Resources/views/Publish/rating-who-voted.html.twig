@@ -22,7 +22,7 @@
 						{% if rating.name %}
 							{{ rating.name }}
 						{% else %}
-							Anonymouse
+							{{ phrase('agent.global.anonymous') }}
 						{% endif %}
 						{% if rating.email %}
 							&lt;{{ rating.email }}&gt;
@@ -33,9 +33,9 @@
 				{% if object_type != 'feedback' %}
 					<td>
 						{% if rating.rating >= 1 %}
-							Helpful
+							{{ phrase('agent.publish.helpful') }}
 						{% else %}
-							Not Helpful
+							{{ phrase('agent.publish.not_helpful') }}
 						{% endif %}
 					</td>
 				{% endif %}

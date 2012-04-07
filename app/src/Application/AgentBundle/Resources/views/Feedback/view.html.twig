@@ -79,8 +79,13 @@ pageMeta.baseId = '{{ baseId }}';
 
 			<dt>{{ phrase('agent.global.author') }}:</dt>
 			<dd>
-				By {% for author in feedback.authors %}<cite class="person-popover preload" data-person-id="{{ author.id }}">{{ author.display_name }}</cite>{% if not loop.last %}, {% endif %}{% endfor %}
-				on {{ feedback.date_created|date('day') }}
+                {% set phrase_part %}
+                    {% for author in feedback.authors %}
+                        <cite class="person-popover preload" data-person-id="{{ author.id }}">{{ author.display_name }}</cite>
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                {% endset %}
+                {{ phrase('agent.feedback.by_people_on_date', {'people':phrase_part,'date':feedback.date_created|date('day')}) }}
 			</dd>
 		</dl>
 

@@ -493,14 +493,14 @@
 				{{ phrase('agent.network_error_explain') }}.
 			</p>
 			<div id="global_ajax_error_info" style="font-size: 9px; margin-top: 8px;"></div>
-			<div class="loading-on">Submitting error report ...</div>
+			<div class="loading-on">{{ phrase('agent.main.error_report_submitting') }}</div>
 			<div class="success-on">
-				<p>Thank you for submitting your error report.</p>
+				<p>{{ phrase('agent.main.error_report_thank_you') }}</p>
 				<p>
-					Please note that we do not
-					respond to all error reports. If you have a question or require
-					a response in regards to this error, contact us at
-					<a href="mailto:support@deskpro.com">support@deskpro.com</a>
+                    {% set phrase_part %}
+                        <a href="mailto:support@deskpro.com">{{ phrase('agent.main.support_email') }}</a>
+                    {% endset %}
+                    {{ phrase('agent.main.error_report_disclaimer', {'email':phrase_part}) }}
 				</p>
 			</div>
 		</div>
@@ -571,7 +571,7 @@
 			<div class="search-form actions-list">
 				<div class="search-terms">
 				</div>
-				<div class="term add-term-row" style="display:none"><span class="add-term">+</span> {{ phrase('agent.add_action_term') }}</div>
+				<div class="term add-term-row" style="display:none"><span class="add-term">{{ phrase('agent.global.widget_add') }}</span> {{ phrase('agent.add_action_term') }}</div>
 			</div>
 			{% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with { 'classname': 'actions-builder-tpl', 'term_options': ticket_options } %}
 		</div>

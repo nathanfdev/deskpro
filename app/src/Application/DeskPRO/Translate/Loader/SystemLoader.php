@@ -56,7 +56,7 @@ class SystemLoader implements LoaderInterface
 		$lang_packs = array();
 
 		// Always read from the default because it has the core phrases
-		$lang_packs[] = 'DeskproLanguages\\DeskPRO\\LangPackage';
+		$lang_packs[] = 'DeskproLanguages\\LangPackage';
 
 		if ($language) {
 			$lang_packs[] = $language->getLanguagePackage();
@@ -70,12 +70,15 @@ class SystemLoader implements LoaderInterface
 		foreach ($lang_packs as $pack_class) {
 
 			$ns_parts = explode('\\', $pack_class);
-			if (!isset($ns_parts[1])) {
-				// invalid name
-				continue;
-			}
 
-			$file = DP_ROOT . '/languages/' . $ns_parts[1] . '/LangPackage.php';
+            if(count($ns_parts) == 3) {
+                $file = DP_ROOT . '/languages/' . $ns_parts[1] . '/LangPackage.php';
+			}
+            else {
+                $file = DP_ROOT . '/languages/LangPackage.php';
+            }
+
+			
 			if (!file_exists($file)) {
 				continue;
 			}

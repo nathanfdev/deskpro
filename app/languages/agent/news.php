@@ -5,4 +5,6 @@
   'agent.news.drop_your_file_here_to_add_it_to' => 'Drop your file here to add it to this post',
   'agent.news.category' => 'Category',
   'agent.news.new_post' => 'New Post',
+  'agent.news.all_news' => 'All News',
+  'agent.news.news_categories' => 'News Categories',
 );
