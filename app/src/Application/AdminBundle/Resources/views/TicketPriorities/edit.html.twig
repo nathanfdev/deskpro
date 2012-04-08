@@ -2,7 +2,7 @@
 {% block pagetitle %}
 	<h1>{% if priority.id %}Edit Priority{% else %}New Priority{% endif %}</h1>
 	<nav>
-		<a class="clean-white" href="{{ path('admin_ticketpris') }}">&larr; Back to ticket priorities</a>
+		<a class="clean-white" href="{{ path('admin_ticketpris') }}">&larr; {{ phrase('admin.ticketproperties.back_to_ticket_properties') }}</a>
 	</nav>
 {% endblock %}
 {% block page %}

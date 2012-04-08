@@ -130,14 +130,14 @@ $(document).ready(function() {
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>
-					Only {{ filter.person.name }} has access to this filter
+					{{ phrase('admin.ticketfilters.only_name_has_filter_access', {'name':filter.person.name}) }}
 				</label>
 			</div>
 			<div class="dp-form-input">
 				{% if not filter_users %}
-					{{ filter.person.name }} currently has this filter disabled in their settings
+                    {{ phrase('admin.ticketfilters.name_has_filter_disabled', {'name':filter.person.name}) }}
 				{% else %}
-					{{ filter.person.name }} currently has this filter enabled in their settings
+					{{ phrase('admin.ticketfilters.name_has_filter_enabled', {'name':filter.person.name}) }}
 				{% endif %}
 			</div>
 		</div>

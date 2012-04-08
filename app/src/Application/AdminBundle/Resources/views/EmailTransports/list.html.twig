@@ -13,11 +13,7 @@
 {% block page %}
 
 {{ design.helpbox() }}
-	<p>
-		You need to define a mail server for every address DeskPRO might send email "From." Sometimes a single mail server
-		might let you send email from any "From" address, but sometimes (such as with Google Apps), the server will
-		only let you send email from a single address.
-	</p>
+	<p>{{ phrase('admin.emailtransports.notice_each_from_needs_mail_server') }}</p>
 {{ design.helpbox_end() }}
 
 <div class="top-option">
@@ -33,7 +29,7 @@
 	<table width="100%">
 		<thead>
 			<tr>
-				<th style="text-align:left">&nbsp; Use Criteria</th>
+				<th style="text-align:left">&nbsp; {{ phrase('admin.emailtransports.use_criteria') }}</th>
 				<th style="text-align:left">{{ phrase('admin.global.account') }}</th>
 				<th style="text-align:left">{{ phrase('admin.emailtransports.backup_account') }}</th>
 				<th style="text-align:left" width="10">&nbsp;</th>
@@ -43,17 +39,17 @@
 			{% for transport in transports %}
 				<tr {% if transport.match_type == 'all' %}class="highlight"{% endif %}>
 					<td>
-						{% if transport.match_type == 'exact' %}From {{ transport.match_pattern }}
-						{% elseif transport.match_type == 'domain' %}From *@{{ transport.match_pattern }}
-						{% elseif transport.match_type == 'regex' %}From {{ transport.match_pattern }}
-						{% elseif transport.match_type == 'all' %}Default{% endif %}
+						{% if transport.match_type == 'exact' %}{{ phrase('admin.emailtransports.from_pattern', {'pattern':transport.match_pattern}) }}
+						{% elseif transport.match_type == 'domain' %}{{ phrase('admin.emailtransports.from_domain', {'pattern':transport.match_pattern}) }}
+						{% elseif transport.match_type == 'regex' %}{{ phrase('admin.emailtransports.from_pattern', {'pattern':transport.match_pattern}) }}
+						{% elseif transport.match_type == 'all' %}{{ phrase('agent.global.default') }}{% endif %}
 					</td>
 					<td>{{ transport.title }}</td>
 					<td>
 						{% if transport.backup_transport_type %}
 							{% if transport.backup_transport_type == 'smtp' %}{{ transport.backup_transport_options.host }}:{{ transport.backup_transport_options.username }}
-							{% elseif transport.backup_transport_type == 'gmail' %}Google Apps: {{ transport.backup_transport_options.username }}
-							{% elseif transport.backup_transport_type == 'mail' %}PHP mail()
+							{% elseif transport.backup_transport_type == 'gmail' %}{{ phrase('admin.emailtransports.from_google', {'pattern':transport.backup_transport_options.username}) }}
+							{% elseif transport.backup_transport_type == 'mail' %}{{ phrase('admin.emailtransports.php_mail') }}
 							{% else %}{{ transport.backup_transport_type }}
 							{% endif %}
 						{% else %}

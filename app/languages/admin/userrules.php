@@ -9,5 +9,7 @@
   'admin.userrules.add_to_organization' => 'Add to organization',
   'admin.userrules.you_havent_created_any_user_rules_yet' => 'You haven\'t created any user rules yet.',
   'admin.userrules.domains' => 'Domains',
+  'admin.userrules.match' => 'Match',
   'admin.userrules.enter_a_pattern_one_per_line_example_examplecom' => 'Enter a pattern, one per line. Example: *@example.com',
+  'admin.userrules.notice_organisation_domains' => 'These organizations have domain name associations. Users that register with an email address that match any of these domains will be added to the appropriate organization. You can add or modify these domain associations by editing the organization from the agent interface.',
 );

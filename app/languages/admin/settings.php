@@ -57,4 +57,5 @@
   'admin.settings.revert_setting_back_to_default' => 'Revert setting back to default',
   'admin.settings.new_label' => 'new label',
   'admin.settings.max_filesize_your_server_supports' => 'The max file size your server supports is {{filesize}}',
+  'admin.settings.notice_deskpro_includes_user_frontend' => 'DeskPRO includes a user front-end where your users can submit tickets and feedback and read knowledgebase articles and news, and download files. You can configure all the options later. If you don\'t want a portal and you are using DeskPRO just to manage email, you can turn this off.',
 );

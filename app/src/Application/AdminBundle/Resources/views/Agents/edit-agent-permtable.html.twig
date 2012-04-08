@@ -58,84 +58,90 @@
 				</tr>
 			</thead>
 			<tbody>
-				<!-- PERMISSION:agent_tickets.use -->{{ _self.perm_col('User ticket application', usergroup_values, 'agent_tickets', 'use') }}
-				<!-- PERMISSION:agent_tickets.create -->{{ _self.perm_col('Create tickets', usergroup_values, 'agent_tickets', 'create', 'agent_tickets_use') }}
-				<!-- PERMISSION:agent_tickets.reply_mass -->{{ _self.perm_col('Can use mass actions to reply <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="'~phrase('agent.tickets.workflow')~'"></span>', usergroup_values, 'agent_tickets', 'reply_mass', 'agent_tickets_use') }}
-				<!-- PERMISSION:agent_tickets.modify_set_closed -->{{ _self.perm_col('Can close and unclose tickets <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="'~phrase('agent.tickets.workflow')~'"></span>', usergroup_values, 'agent_tickets', 'modify_set_closed', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.use -->{{ _self.perm_col(phrase('agent.agents.perm_use_tickets'), usergroup_values, 'agent_tickets', 'use') }}
+				<!-- PERMISSION:agent_tickets.create -->{{ _self.perm_col(phrase('agent.agents.perm_create_ticket'), usergroup_values, 'agent_tickets', 'create', 'agent_tickets_use') }}
+                {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.workflow') }}"></span>{% endset %}
+				<!-- PERMISSION:agent_tickets.reply_mass -->{{ _self.perm_col({{ phrase('agent.agents.perm_use_mass_actions_to_reply', {'subphrase':phrase_part}) }}, usergroup_values, 'agent_tickets', 'reply_mass', 'agent_tickets_use') }}
+                {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.workflow') }}"></span>{% endset %}
+				<!-- PERMISSION:agent_tickets.modify_set_closed -->{{ _self.perm_col({{ phrase('agent.agents.perm_close_unclose_tickets', {'subphrase':phrase_part}) }}, usergroup_values, 'agent_tickets', 'modify_set_closed', 'agent_tickets_use') }}
 			</tbody>
 			<tbody>
-				<!-- PERMISSION:agent_tickets.reply_own -->{{ _self.perm_col('Reply to own and teams tickets', usergroup_values, 'agent_tickets', 'reply_own', 'agent_tickets_use') }}
-				<!-- PERMISSION:agent_tickets.modify_own -->{{ _self.perm_col('<i class="expand-toggle" data-expand="subperm-modify_own"></i> Modify own and teams tickets', usergroup_values, 'agent_tickets', 'modify_own', 'agent_tickets_use', 'parentperm') }}
-				<!-- PERMISSION:agent_tickets.modify_department_own -->{{ _self.perm_col('Change department', usergroup_values, 'agent_tickets', 'modify_department_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
-				<!-- PERMISSION:agent_tickets.modify_fields_own -->{{ _self.perm_col('Change fields', usergroup_values, 'agent_tickets', 'modify_fields_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
-				<!-- PERMISSION:agent_tickets.modify_assign_agent_own -->{{ _self.perm_col('Assign agents', usergroup_values, 'agent_tickets', 'modify_assign_agent_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
-				<!-- PERMISSION:agent_tickets.modify_assign_team_own -->{{ _self.perm_col('Assign teams', usergroup_values, 'agent_tickets', 'modify_assign_team_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
-				<!-- PERMISSION:agent_tickets.modify_assign_self_own -->{{ _self.perm_col('Assign self', usergroup_values, 'agent_tickets', 'modify_assign_self_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
-				<!-- PERMISSION:agent_tickets.modify_cc_own -->{{ _self.perm_col('Edit CCs', usergroup_values, 'agent_tickets', 'modify_cc_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
-				<!-- PERMISSION:agent_tickets.modify_merge_own -->{{ _self.perm_col('Merge', usergroup_values, 'agent_tickets', 'modify_merge_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
-				<!-- PERMISSION:agent_tickets.modify_labels_own -->{{ _self.perm_col('Edit labels', usergroup_values, 'agent_tickets', 'modify_labels_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
-				<!-- PERMISSION:agent_tickets.modify_notes_own -->{{ _self.perm_col('Add notes', usergroup_values, 'agent_tickets', 'modify_notes_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
-				<!-- PERMISSION:agent_tickets.modify_set_hold_own -->{{ _self.perm_col('Set on-hold', usergroup_values, 'agent_tickets', 'modify_set_hold_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
-				<!-- PERMISSION:agent_tickets.modify_set_awaiting_user_own -->{{ _self.perm_col('Set status to awaiting user', usergroup_values, 'agent_tickets', 'modify_set_awaiting_user_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
-				<!-- PERMISSION:agent_tickets.modify_set_awaiting_agent_own -->{{ _self.perm_col('Set status to awaiting agent', usergroup_values, 'agent_tickets', 'modify_set_awaiting_agent_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
-				<!-- PERMISSION:agent_tickets.modify_set_resolved_own -->{{ _self.perm_col('Set status to resolved', usergroup_values, 'agent_tickets', 'modify_set_resolved_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
-				<!-- PERMISSION:agent_tickets.delete_own -->{{ _self.perm_col('Delete and spam own and teams tickets', usergroup_values, 'agent_tickets', 'delete_own', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.reply_own -->{{ _self.perm_col(phrase('agent.agents.perm_reply_to_own_and_team_tickets'), usergroup_values, 'agent_tickets', 'reply_own', 'agent_tickets_use') }}
+                {% set phrase_part %}<i class="expand-toggle" data-expand="subperm-modify_own"></i>{% endset %}
+				<!-- PERMISSION:agent_tickets.modify_own -->{{ _self.perm_col({{ phrase('agent.agents.perm_modify_own_tickets', {'subphrase':phrase_part}) }}, usergroup_values, 'agent_tickets', 'modify_own', 'agent_tickets_use', 'parentperm') }}
+				<!-- PERMISSION:agent_tickets.modify_department_own -->{{ _self.perm_col(phrase('agent.agents.perm_change_department'), usergroup_values, 'agent_tickets', 'modify_department_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
+				<!-- PERMISSION:agent_tickets.modify_fields_own -->{{ _self.perm_col(phrase('agent.agents.perm_change_fields'), usergroup_values, 'agent_tickets', 'modify_fields_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
+				<!-- PERMISSION:agent_tickets.modify_assign_agent_own -->{{ _self.perm_col(phrase('agent.agents.perm_assign_agents'), usergroup_values, 'agent_tickets', 'modify_assign_agent_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
+				<!-- PERMISSION:agent_tickets.modify_assign_team_own -->{{ _self.perm_col(phrase('agent.agents.perm_assign_teams'), usergroup_values, 'agent_tickets', 'modify_assign_team_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
+				<!-- PERMISSION:agent_tickets.modify_assign_self_own -->{{ _self.perm_col(phrase('agent.agents.perm_assign_self'), usergroup_values, 'agent_tickets', 'modify_assign_self_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
+				<!-- PERMISSION:agent_tickets.modify_cc_own -->{{ _self.perm_col(phrase('agent.agents.perm_edit_cc'), usergroup_values, 'agent_tickets', 'modify_cc_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
+				<!-- PERMISSION:agent_tickets.modify_merge_own -->{{ _self.perm_col(phrase('agent.agents.perm_merge'), usergroup_values, 'agent_tickets', 'modify_merge_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
+				<!-- PERMISSION:agent_tickets.modify_labels_own -->{{ _self.perm_col(phrase('agent.agents.perm_edit_labels'), usergroup_values, 'agent_tickets', 'modify_labels_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
+				<!-- PERMISSION:agent_tickets.modify_notes_own -->{{ _self.perm_col(phrase('agent.agents.perm_add_notes'), usergroup_values, 'agent_tickets', 'modify_notes_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
+				<!-- PERMISSION:agent_tickets.modify_set_hold_own -->{{ _self.perm_col(phrase('agent.agents.perm_set_onhold'), usergroup_values, 'agent_tickets', 'modify_set_hold_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
+				<!-- PERMISSION:agent_tickets.modify_set_awaiting_user_own -->{{ _self.perm_col(phrase('agent.agents.perm_set_status_awaiting_user'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_user_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
+				<!-- PERMISSION:agent_tickets.modify_set_awaiting_agent_own -->{{ _self.perm_col(phrase('agent.agents.perm_set_status_awaiting_agent'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_agent_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
+				<!-- PERMISSION:agent_tickets.modify_set_resolved_own -->{{ _self.perm_col(phrase('agent.agents.perm_set_status_resolved'), usergroup_values, 'agent_tickets', 'modify_set_resolved_own', 'agent_tickets_use', 'subperm subperm-modify_own') }}
+				<!-- PERMISSION:agent_tickets.delete_own -->{{ _self.perm_col(phrase('agent.agents.perm_delete_own_and_team_tickets'), usergroup_values, 'agent_tickets', 'delete_own', 'agent_tickets_use') }}
 			</tbody>
             <tbody>
-            <!-- PERMISSION:agent_tickets.reply_to_followed -->{{ _self.perm_col('Reply to followed tickets', usergroup_values, 'agent_tickets', 'reply_to_followed', 'agent_tickets_use') }}
-            <!-- PERMISSION:agent_tickets.modify_followed -->{{ _self.perm_col('<i class="expand-toggle" data-expand="subperm-modify_followed"></i>Modify followed tickets', usergroup_values, 'agent_tickets', 'modify_followed', 'agent_tickets_use') }}
-            <!-- PERMISSION:agent_tickets.modify_department_followed -->{{ _self.perm_col('Change department', usergroup_values, 'agent_tickets', 'modify_department_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
-            <!-- PERMISSION:agent_tickets.modify_fields_followed -->{{ _self.perm_col('Change fields', usergroup_values, 'agent_tickets', 'modify_fields_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
-            <!-- PERMISSION:agent_tickets.modify_assign_agent_followed -->{{ _self.perm_col('Assign agents', usergroup_values, 'agent_tickets', 'modify_assign_agent_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
-            <!-- PERMISSION:agent_tickets.modify_assign_team_followed -->{{ _self.perm_col('Assign teams', usergroup_values, 'agent_tickets', 'modify_assign_team_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
-            <!-- PERMISSION:agent_tickets.modify_assign_self_followed -->{{ _self.perm_col('Assign self', usergroup_values, 'agent_tickets', 'modify_assign_self_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
-            <!-- PERMISSION:agent_tickets.modify_cc_followed -->{{ _self.perm_col('Edit CCs', usergroup_values, 'agent_tickets', 'modify_cc_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
-            <!-- PERMISSION:agent_tickets.modify_merge_followed -->{{ _self.perm_col('Merge', usergroup_values, 'agent_tickets', 'modify_merge_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
-            <!-- PERMISSION:agent_tickets.modify_labels_followed -->{{ _self.perm_col('Edit labels', usergroup_values, 'agent_tickets', 'modify_labels_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
-            <!-- PERMISSION:agent_tickets.modify_notes_followed -->{{ _self.perm_col('Add notes', usergroup_values, 'agent_tickets', 'modify_notes_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
-            <!-- PERMISSION:agent_tickets.modify_set_hold_followed -->{{ _self.perm_col('Set on-hold', usergroup_values, 'agent_tickets', 'modify_set_hold_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
-            <!-- PERMISSION:agent_tickets.modify_set_awaiting_user_followed -->{{ _self.perm_col('Set status to awaiting user', usergroup_values, 'agent_tickets', 'modify_set_awaiting_user_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
-            <!-- PERMISSION:agent_tickets.modify_set_awaiting_agent_followed -->{{ _self.perm_col('Set status to awaiting agent', usergroup_values, 'agent_tickets', 'modify_set_awaiting_agent_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
-            <!-- PERMISSION:agent_tickets.modify_set_resolved_followed -->{{ _self.perm_col('Set status to resolved', usergroup_values, 'agent_tickets', 'modify_set_resolved_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
-            <!-- PERMISSION:agent_tickets.delete_followed -->{{ _self.perm_col('Delete and spam followed tickets', usergroup_values, 'agent_tickets', 'delete_followed', 'agent_tickets_use') }}
+            <!-- PERMISSION:agent_tickets.reply_to_followed -->{{ _self.perm_col(phrase('agent.agents.perm_reply_to_followed_tickets'), usergroup_values, 'agent_tickets', 'reply_to_followed', 'agent_tickets_use') }}
+            {% set phrase_part %}<i class="expand-toggle" data-expand="subperm-modify_followed"></i>{% endset %}
+            <!-- PERMISSION:agent_tickets.modify_followed -->{{ _self.perm_col({{ phrase('agent.agents.perm_modify_followed_tickets', {'subphrase':phrase_part}) }}, usergroup_values, 'agent_tickets', 'modify_followed', 'agent_tickets_use') }}
+            <!-- PERMISSION:agent_tickets.modify_department_followed -->{{ _self.perm_col(phrase('agent.agents.perm_change_department'), usergroup_values, 'agent_tickets', 'modify_department_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_fields_followed -->{{ _self.perm_col(phrase('agent.agents.perm_change_fields'), usergroup_values, 'agent_tickets', 'modify_fields_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_assign_agent_followed -->{{ _self.perm_col(phrase('agent.agents.perm_assign_agents'), usergroup_values, 'agent_tickets', 'modify_assign_agent_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_assign_team_followed -->{{ _self.perm_col(phrase('agent.agents.perm_assign_teams'), usergroup_values, 'agent_tickets', 'modify_assign_team_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_assign_self_followed -->{{ _self.perm_col(phrase('agent.agents.perm_assign_self'), usergroup_values, 'agent_tickets', 'modify_assign_self_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_cc_followed -->{{ _self.perm_col(phrase('agent.agents.perm_edit_cc'), usergroup_values, 'agent_tickets', 'modify_cc_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_merge_followed -->{{ _self.perm_col(phrase('agent.agents.perm_merge'), usergroup_values, 'agent_tickets', 'modify_merge_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_labels_followed -->{{ _self.perm_col(phrase('agent.agents.perm_edit_labels'), usergroup_values, 'agent_tickets', 'modify_labels_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_notes_followed -->{{ _self.perm_col(phrase('agent.agents.perm_add_notes'), usergroup_values, 'agent_tickets', 'modify_notes_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_set_hold_followed -->{{ _self.perm_col(phrase('agent.agents.perm_set_onhold'), usergroup_values, 'agent_tickets', 'modify_set_hold_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_set_awaiting_user_followed -->{{ _self.perm_col(phrase('agent.agents.perm_set_status_awaiting_user'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_user_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_set_awaiting_agent_followed -->{{ _self.perm_col(phrase('agent.agents.perm_set_status_awaiting_agent'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_agent_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.modify_set_resolved_followed -->{{ _self.perm_col(phrase('agent.agents.perm_set_status_resolved'), usergroup_values, 'agent_tickets', 'modify_set_resolved_followed', 'agent_tickets_use', 'subperm subperm-modify_followed') }}
+            <!-- PERMISSION:agent_tickets.delete_followed -->{{ _self.perm_col(phrase('agent.agents.perm_delete_followed_tickets'), usergroup_values, 'agent_tickets', 'delete_followed', 'agent_tickets_use') }}
             </tbody>
 			<tbody>
-				<!-- PERMISSION:agent_tickets.view_unassigned -->{{ _self.perm_col('View unassigned tickets', usergroup_values, 'agent_tickets', 'view_unassigned', 'agent_tickets_use') }}
-				<!-- PERMISSION:agent_tickets.reply_unassigned -->{{ _self.perm_col('Reply to own and teams tickets', usergroup_values, 'agent_tickets', 'reply_unassigned', 'agent_tickets_view_unassigned') }}
-				<!-- PERMISSION:agent_tickets.modify_unassigned -->{{ _self.perm_col('<i class="expand-toggle" data-expand="subperm-modify_unassigned"></i> Modify unassigned tickets', usergroup_values, 'agent_tickets', 'modify_unassigned', 'agent_tickets_view_unassigned', 'parentperm') }}
-				<!-- PERMISSION:agent_tickets.modify_department_unassigned -->{{ _self.perm_col('Change department', usergroup_values, 'agent_tickets', 'modify_department_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
-				<!-- PERMISSION:agent_tickets.modify_fields_unassigned -->{{ _self.perm_col('Change fields', usergroup_values, 'agent_tickets', 'modify_fields_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
-				<!-- PERMISSION:agent_tickets.modify_assign_agent_unassigned -->{{ _self.perm_col('Assign agents', usergroup_values, 'agent_tickets', 'modify_assign_agent_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
-				<!-- PERMISSION:agent_tickets.modify_assign_team_unassigned -->{{ _self.perm_col('Assign teams', usergroup_values, 'agent_tickets', 'modify_assign_team_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
-				<!-- PERMISSION:agent_tickets.modify_assign_self_unassigned -->{{ _self.perm_col('Assign self', usergroup_values, 'agent_tickets', 'modify_assign_self_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
-				<!-- PERMISSION:agent_tickets.modify_cc_unassigned -->{{ _self.perm_col('Edit CCs', usergroup_values, 'agent_tickets', 'modify_cc_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_own') }}
-				<!-- PERMISSION:agent_tickets.modify_merge_unassigned -->{{ _self.perm_col('Merge', usergroup_values, 'agent_tickets', 'modify_merge_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
-				<!-- PERMISSION:agent_tickets.modify_labels_unassigned -->{{ _self.perm_col('Edit labels', usergroup_values, 'agent_tickets', 'modify_labels_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
-				<!-- PERMISSION:agent_tickets.modify_notes_unassigned -->{{ _self.perm_col('Add notes', usergroup_values, 'agent_tickets', 'modify_notes_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
-				<!-- PERMISSION:agent_tickets.modify_set_hold_unassigned -->{{ _self.perm_col('Set on-hold', usergroup_values, 'agent_tickets', 'modify_set_hold_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
-				<!-- PERMISSION:agent_tickets.modify_set_awaiting_user_unassigned -->{{ _self.perm_col('Set status to awaiting user', usergroup_values, 'agent_tickets', 'modify_set_awaiting_user_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
-				<!-- PERMISSION:agent_tickets.modify_set_awaiting_agent_unassigned -->{{ _self.perm_col('Set status to awaiting agent', usergroup_values, 'agent_tickets', 'modify_set_awaiting_agent_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
-				<!-- PERMISSION:agent_tickets.modify_set_resolved_unassigned -->{{ _self.perm_col('Set status to resolved', usergroup_values, 'agent_tickets', 'modify_set_resolved_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
-				<!-- PERMISSION:agent_tickets.delete_unassigned -->{{ _self.perm_col('Delete and spam unassigned tickets', usergroup_values, 'agent_tickets', 'delete_unassigned', 'agent_tickets_view_unassigned') }}
+				<!-- PERMISSION:agent_tickets.view_unassigned -->{{ _self.perm_col(phrase('agent.agents.perm_view_unassigned_tickets'), usergroup_values, 'agent_tickets', 'view_unassigned', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.reply_unassigned -->{{ _self.perm_col(phrase('agent.agents.perm_reply_to_unassigned_tickets'), usergroup_values, 'agent_tickets', 'reply_unassigned', 'agent_tickets_view_unassigned') }}
+                {% set phrase_part %}<i class="expand-toggle" data-expand="subperm-modify_unassigned"></i>{% endset %}
+				<!-- PERMISSION:agent_tickets.modify_unassigned -->{{ _self.perm_col({{ phrase('agent.agents.perm_modify_unassigned_tickets', {'subphrase':phrase_part}) }}, usergroup_values, 'agent_tickets', 'modify_unassigned', 'agent_tickets_view_unassigned', 'parentperm') }}
+				<!-- PERMISSION:agent_tickets.modify_department_unassigned -->{{ _self.perm_col(phrase('agent.agents.perm_change_department'), usergroup_values, 'agent_tickets', 'modify_department_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
+				<!-- PERMISSION:agent_tickets.modify_fields_unassigned -->{{ _self.perm_col(phrase('agent.agents.perm_change_fields'), usergroup_values, 'agent_tickets', 'modify_fields_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
+				<!-- PERMISSION:agent_tickets.modify_assign_agent_unassigned -->{{ _self.perm_col(phrase('agent.agents.perm_assign_agents'), usergroup_values, 'agent_tickets', 'modify_assign_agent_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
+				<!-- PERMISSION:agent_tickets.modify_assign_team_unassigned -->{{ _self.perm_col(phrase('agent.agents.perm_assign_teams'), usergroup_values, 'agent_tickets', 'modify_assign_team_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
+				<!-- PERMISSION:agent_tickets.modify_assign_self_unassigned -->{{ _self.perm_col(phrase('agent.agents.perm_assign_self'), usergroup_values, 'agent_tickets', 'modify_assign_self_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
+				<!-- PERMISSION:agent_tickets.modify_cc_unassigned -->{{ _self.perm_col(phrase('agent.agents.perm_edit_cc'), usergroup_values, 'agent_tickets', 'modify_cc_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_own') }}
+				<!-- PERMISSION:agent_tickets.modify_merge_unassigned -->{{ _self.perm_col(phrase('agent.agents.perm_merge'), usergroup_values, 'agent_tickets', 'modify_merge_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
+				<!-- PERMISSION:agent_tickets.modify_labels_unassigned -->{{ _self.perm_col(phrase('agent.agents.perm_edit_labels'), usergroup_values, 'agent_tickets', 'modify_labels_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
+				<!-- PERMISSION:agent_tickets.modify_notes_unassigned -->{{ _self.perm_col(phrase('agent.agents.perm_add_notes'), usergroup_values, 'agent_tickets', 'modify_notes_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
+				<!-- PERMISSION:agent_tickets.modify_set_hold_unassigned -->{{ _self.perm_col(phrase('agent.agents.perm_set_onhold'), usergroup_values, 'agent_tickets', 'modify_set_hold_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
+				<!-- PERMISSION:agent_tickets.modify_set_awaiting_user_unassigned -->{{ _self.perm_col(phrase('agent.agents.perm_set_status_awaiting_user'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_user_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
+				<!-- PERMISSION:agent_tickets.modify_set_awaiting_agent_unassigned -->{{ _self.perm_col(phrase('agent.agents.perm_set_status_awaiting_agent'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_agent_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
+				<!-- PERMISSION:agent_tickets.modify_set_resolved_unassigned -->{{ _self.perm_col(phrase('agent.agents.perm_set_status_resolved'), usergroup_values, 'agent_tickets', 'modify_set_resolved_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
+				<!-- PERMISSION:agent_tickets.delete_unassigned -->{{ _self.perm_col(phrase('agent.agents.perm_delete_unassigned_tickets'), usergroup_values, 'agent_tickets', 'delete_unassigned', 'agent_tickets_view_unassigned') }}
 			</tbody>
 			<tbody>
-				<!-- PERMISSION:agent_tickets.view_others -->{{ _self.perm_col('View others tickets', usergroup_values, 'agent_tickets', 'view_others', 'agent_tickets_use') }}
-				<!-- PERMISSION:agent_tickets.reply_others -->{{ _self.perm_col('Reply to own and teams tickets', usergroup_values, 'agent_tickets', 'reply_others', 'agent_tickets_use') }}
-				<!-- PERMISSION:agent_tickets.modify_others -->{{ _self.perm_col('<i class="expand-toggle" data-expand="subperm-modify_others"></i> Modify others tickets', usergroup_values, 'agent_tickets', 'modify_others', 'agent_tickets_use', 'parentperm') }}
-				<!-- PERMISSION:agent_tickets.modify_department_others -->{{ _self.perm_col('Change department', usergroup_values, 'agent_tickets', 'modify_department_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
-				<!-- PERMISSION:agent_tickets.modify_fields_others -->{{ _self.perm_col('Change fields', usergroup_values, 'agent_tickets', 'modify_fields_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
-				<!-- PERMISSION:agent_tickets.modify_assign_agent_others -->{{ _self.perm_col('Assign agents', usergroup_values, 'agent_tickets', 'modify_assign_agent_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
-				<!-- PERMISSION:agent_tickets.modify_assign_team_others -->{{ _self.perm_col('Assign teams', usergroup_values, 'agent_tickets', 'modify_assign_team_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
-				<!-- PERMISSION:agent_tickets.modify_assign_self_others -->{{ _self.perm_col('Assign self', usergroup_values, 'agent_tickets', 'modify_assign_self_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
-				<!-- PERMISSION:agent_tickets.modify_cc_others -->{{ _self.perm_col('Edit CCs', usergroup_values, 'agent_tickets', 'modify_cc_others', 'agent_tickets_view_others', 'subperm subperm-modify_own') }}
-				<!-- PERMISSION:agent_tickets.modify_merge_others -->{{ _self.perm_col('Merge', usergroup_values, 'agent_tickets', 'modify_merge_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
-				<!-- PERMISSION:agent_tickets.modify_labels_others -->{{ _self.perm_col('Edit labels', usergroup_values, 'agent_tickets', 'modify_labels_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
-				<!-- PERMISSION:agent_tickets.modify_notes_others -->{{ _self.perm_col('Add notes', usergroup_values, 'agent_tickets', 'modify_notes_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
-				<!-- PERMISSION:agent_tickets.modify_set_hold_others -->{{ _self.perm_col('Set on-hold', usergroup_values, 'agent_tickets', 'modify_set_hold_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
-				<!-- PERMISSION:agent_tickets.modify_set_awaiting_user_others -->{{ _self.perm_col('Set status to awaiting user', usergroup_values, 'agent_tickets', 'modify_set_awaiting_user_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
-				<!-- PERMISSION:agent_tickets.modify_set_awaiting_agent_others -->{{ _self.perm_col('Set status to awaiting agent', usergroup_values, 'agent_tickets', 'modify_set_awaiting_agent_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
-				<!-- PERMISSION:agent_tickets.modify_set_resolved_others -->{{ _self.perm_col('Set status to resolved', usergroup_values, 'agent_tickets', 'modify_set_resolved_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
-				<!-- PERMISSION:agent_tickets.delete_others -->{{ _self.perm_col('Delete and spam others tickets', usergroup_values, 'agent_tickets', 'delete_others', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.view_others -->{{ _self.perm_col(phrase('agent.agents.perm_view_others_tickets'), usergroup_values, 'agent_tickets', 'view_others', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.reply_others -->{{ _self.perm_col(phrase('agent.agents.perm_reply_to_others_tickets'), usergroup_values, 'agent_tickets', 'reply_others', 'agent_tickets_use') }}
+                {% set phrase_part %}<i class="expand-toggle" data-expand="subperm-modify_others"></i>{% endset %}
+				<!-- PERMISSION:agent_tickets.modify_others -->{{ _self.perm_col({{ phrase('agent.agents.perm_modify_others_tickets', {'subphrase':phrase_part}) }}, usergroup_values, 'agent_tickets', 'modify_others', 'agent_tickets_use', 'parentperm') }}
+				<!-- PERMISSION:agent_tickets.modify_department_others -->{{ _self.perm_col(phrase('agent.agents.perm_change_department'), usergroup_values, 'agent_tickets', 'modify_department_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
+				<!-- PERMISSION:agent_tickets.modify_fields_others -->{{ _self.perm_col(phrase('agent.agents.perm_change_fields'), usergroup_values, 'agent_tickets', 'modify_fields_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
+				<!-- PERMISSION:agent_tickets.modify_assign_agent_others -->{{ _self.perm_col(phrase('agent.agents.perm_assign_agents'), usergroup_values, 'agent_tickets', 'modify_assign_agent_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
+				<!-- PERMISSION:agent_tickets.modify_assign_team_others -->{{ _self.perm_col(phrase('agent.agents.perm_assign_teams'), usergroup_values, 'agent_tickets', 'modify_assign_team_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
+				<!-- PERMISSION:agent_tickets.modify_assign_self_others -->{{ _self.perm_col(phrase('agent.agents.perm_assign_self'), usergroup_values, 'agent_tickets', 'modify_assign_self_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
+				<!-- PERMISSION:agent_tickets.modify_cc_others -->{{ _self.perm_col(phrase('agent.agents.perm_edit_cc'), usergroup_values, 'agent_tickets', 'modify_cc_others', 'agent_tickets_view_others', 'subperm subperm-modify_own') }}
+				<!-- PERMISSION:agent_tickets.modify_merge_others -->{{ _self.perm_col(phrase('agent.agents.perm_merge'), usergroup_values, 'agent_tickets', 'modify_merge_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
+				<!-- PERMISSION:agent_tickets.modify_labels_others -->{{ _self.perm_col(phrase('agent.agents.perm_edit_labels'), usergroup_values, 'agent_tickets', 'modify_labels_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
+				<!-- PERMISSION:agent_tickets.modify_notes_others -->{{ _self.perm_col(phrase('agent.agents.perm_add_notes'), usergroup_values, 'agent_tickets', 'modify_notes_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
+				<!-- PERMISSION:agent_tickets.modify_set_hold_others -->{{ _self.perm_col(phrase('agent.agents.perm_set_onhold'), usergroup_values, 'agent_tickets', 'modify_set_hold_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
+				<!-- PERMISSION:agent_tickets.modify_set_awaiting_user_others -->{{ _self.perm_col(phrase('agent.agents.perm_set_status_awaiting_user'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_user_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
+				<!-- PERMISSION:agent_tickets.modify_set_awaiting_agent_others -->{{ _self.perm_col(phrase('agent.agents.perm_set_status_awaiting_agent'), usergroup_values, 'agent_tickets', 'modify_set_awaiting_agent_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
+				<!-- PERMISSION:agent_tickets.modify_set_resolved_others -->{{ _self.perm_col(phrase('agent.agents.perm_set_status_resolved'), usergroup_values, 'agent_tickets', 'modify_set_resolved_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
+				<!-- PERMISSION:agent_tickets.delete_others -->{{ _self.perm_col(phrase('agent.agents.perm_delete_others_tickets'), usergroup_values, 'agent_tickets', 'delete_others', 'agent_tickets_use') }}
 			</tbody>
 		</table>
 	</div>
@@ -153,19 +159,21 @@
 				</tr>
 			</thead>
 			<tbody>
-				<!-- PERMISSION:agent_people.create -->{{ _self.perm_col('Create people', usergroup_values, 'agent_people', 'create') }}
-				<!-- PERMISSION:agent_people.edit -->{{ _self.perm_col('Edit people', usergroup_values, 'agent_people', 'edit') }}
-				<!-- PERMISSION:agent_people.validate -->{{ _self.perm_col('Validate users and user email addresses', usergroup_values, 'agent_people', 'validate', 'agent_people_edit') }}
-				<!-- PERMISSION:agent_people.manage_emails -->{{ _self.perm_col('Edit users email addresses <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="'~phrase('admin.agents.be_careful_who_you_allow_to_manage_email')~'"></span>', usergroup_values, 'agent_people', 'manage_emails', 'agent_people_edit') }}
-				<!-- PERMISSION:agent_people.reset_password -->{{ _self.perm_col('Reset user passwords <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="'~phrase('admin.agents.be_careful_who_you_allow_to_reset_user')~'"></span>', usergroup_values, 'agent_people', 'reset_password', 'agent_people_edit') }}
-				<!-- PERMISSION:agent_people.notes -->{{ _self.perm_col('Add notes', usergroup_values, 'agent_people', 'notes') }}
-				<!-- PERMISSION:agent_people.delete -->{{ _self.perm_col('Delete people', usergroup_values, 'agent_people', 'delete') }}
+				<!-- PERMISSION:agent_people.create -->{{ _self.perm_col(phrase('agent.agents.perm_create_people'), usergroup_values, 'agent_people', 'create') }}
+				<!-- PERMISSION:agent_people.edit -->{{ _self.perm_col(phrase('agent.agents.perm_edit_people'), usergroup_values, 'agent_people', 'edit') }}
+				<!-- PERMISSION:agent_people.validate -->{{ _self.perm_col(phrase('agent.agents.perm_validate_users_and_emails'), usergroup_values, 'agent_people', 'validate', 'agent_people_edit') }}
+                {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.be_careful_who_you_allow_to_manage_email') }}"></span>{% endset %}
+				<!-- PERMISSION:agent_people.manage_emails -->{{ _self.perm_col({{ phrase('agent.agents.perm_edit_email_addresses', {'subphrase':phrase_part}) }}, usergroup_values, 'agent_people', 'manage_emails', 'agent_people_edit') }}
+                {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.be_careful_who_you_allow_to_reset_user') }}"></span>{% endset %}
+				<!-- PERMISSION:agent_people.reset_password -->{{ _self.perm_col({{ phrase('agent.agents.perm_reset_passwords', {'subphrase':phrase_part}) }}, usergroup_values, 'agent_people', 'reset_password', 'agent_people_edit') }}
+				<!-- PERMISSION:agent_people.notes -->{{ _self.perm_col(phrase('agent.agents.perm_add_notes'), usergroup_values, 'agent_people', 'notes') }}
+				<!-- PERMISSION:agent_people.delete -->{{ _self.perm_col(phrase('agent.agents.perm_delete_people'), usergroup_values, 'agent_people', 'delete') }}
 			</tbody>
 			<tbody>
-				<!-- PERMISSION:agent_org.create -->{{ _self.perm_col('Create organizations', usergroup_values, 'agent_org', 'create') }}
-				<!-- PERMISSION:agent_org.edit -->{{ _self.perm_col('Edit organizations', usergroup_values, 'agent_org', 'edit') }}
-				<!-- PERMISSION:agent_org.notes -->{{ _self.perm_col('Add notes to organizations', usergroup_values, 'agent_org', 'edit') }}
-				<!-- PERMISSION:agent_org.delete -->{{ _self.perm_col('Delete organizations', usergroup_values, 'agent_org', 'delete') }}
+				<!-- PERMISSION:agent_org.create -->{{ _self.perm_col(phrase('agent.agents.perm_create_organization'), usergroup_values, 'agent_org', 'create') }}
+				<!-- PERMISSION:agent_org.edit -->{{ _self.perm_col(phrase('agent.agents.perm_edit_organization'), usergroup_values, 'agent_org', 'edit') }}
+				<!-- PERMISSION:agent_org.notes -->{{ _self.perm_col(phrase('agent.agents.perm_add_notes_organization'), usergroup_values, 'agent_org', 'edit') }}
+				<!-- PERMISSION:agent_org.delete -->{{ _self.perm_col(phrase('agent.agents.perm_delete_organization'), usergroup_values, 'agent_org', 'delete') }}
 			</tbody>
 		</table>
 	</div>
@@ -183,10 +191,10 @@
 				</tr>
 			</thead>
 			<tbody>
-				<!-- PERMISSION:agent_chat.use -->{{ _self.perm_col('Use chat system', usergroup_values, 'agent_chat', 'use') }}
-				<!-- PERMISSION:agent_chat.view_unassigned -->{{ _self.perm_col('Can see new unassigned chats', usergroup_values, 'agent_chat', 'view_unassigned') }}
-				<!-- PERMISSION:agent_chat.view_others -->{{ _self.perm_col('Can see chats assigned to others', usergroup_values, 'agent_chat', 'view_others') }}
-				<!-- PERMISSION:agent_chat.delete -->{{ _self.perm_col('Can delete chat transcripts', usergroup_values, 'agent_chat', 'delete') }}
+				<!-- PERMISSION:agent_chat.use -->{{ _self.perm_col(phrase('agent.agents.perm_use_chat'), usergroup_values, 'agent_chat', 'use') }}
+				<!-- PERMISSION:agent_chat.view_unassigned -->{{ _self.perm_col(phrase('agent.agents.perm_view_new_unassigned_chats'), usergroup_values, 'agent_chat', 'view_unassigned') }}
+				<!-- PERMISSION:agent_chat.view_others -->{{ _self.perm_col(phrase('agent.agents.perm_view_others_chats'), usergroup_values, 'agent_chat', 'view_others') }}
+				<!-- PERMISSION:agent_chat.delete -->{{ _self.perm_col(phrase('agent.agents.perm_delete_chat_transcripts'), usergroup_values, 'agent_chat', 'delete') }}
 			</tbody>
 		</table>
 	</div>
@@ -204,10 +212,11 @@
 				</tr>
 			</thead>
 			<tbody>
-				<!-- PERMISSION:agent_publish.create -->{{ _self.perm_col('Create content', usergroup_values, 'agent_publish', 'create') }}
-				<!-- PERMISSION:agent_publish.delete -->{{ _self.perm_col('Delete content', usergroup_values, 'agent_publish', 'delete') }}
-				<!-- PERMISSION:agent_publish.edit -->{{ _self.perm_col('Edit others content', usergroup_values, 'agent_publish', 'edit') }}
-				<!-- PERMISSION:agent_publish.validate -->{{ _self.perm_col('Validate content and comments (including own) <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="'~phrase('agent.tickets.workflow')~'"></span>', usergroup_values, 'agent_publish', 'validate') }}
+				<!-- PERMISSION:agent_publish.create -->{{ _self.perm_col(phrase('agent.agents.perm_create_content'), usergroup_values, 'agent_publish', 'create') }}
+				<!-- PERMISSION:agent_publish.delete -->{{ _self.perm_col(phrase('agent.agents.perm_delete_content'), usergroup_values, 'agent_publish', 'delete') }}
+				<!-- PERMISSION:agent_publish.edit -->{{ _self.perm_col(phrase('agent.agents.perm_edit_content'), usergroup_values, 'agent_publish', 'edit') }}
+                {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.workflow') }}"></span>{% endset %}
+				<!-- PERMISSION:agent_publish.validate -->{{ _self.perm_col({{ phrase('agent.agents.perm_validate_content_and_comments', {'subphrase':phrase_part}) }}, usergroup_values, 'agent_publish', 'validate') }}
 			</tbody>
 		</table>
 	</div>

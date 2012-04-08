@@ -141,10 +141,7 @@ function _page_exec() {
 
 <div style="margin-left: 220px">
 	<ul class="item-list" id="display_item_list">
-		<li id="no_elements_message">
-			You have not enabled any display elements for this department.
-			To add items, drag and drop elements from the right onto	this area.
-		</li>
+		<li id="no_elements_message">{{ phrase('admin.designer.notice_no_display_elements') }}</li>
 	</ul>
 </div>
 
@@ -165,20 +162,28 @@ function _page_exec() {
 		<input type="hidden" name="display_items[]" value="${itemId}" />
 
 		<div class="rules-wrap" id="rule_builder_${idClass}" data-id-class="${idClass}" style="display:none; min-width: 500px; height: 230px; overflow: auto; margin-bottom: 11px;">
-			Initially <select name="initial_display[${itemId}]"><option value="hidden">hidden</option><option value="visible">visible</option></select>,
-			and then toggle when <span class="ruletype">all</span> of these rules match:
+            {% set phrase_part1 %}
+                <select name="initial_display[${itemId}]"><option value="hidden">{{ phrase('agent.global.hidden') }}</option><option value="visible">{{ phrase('agent.global.visible') }}</option></select>
+            {% endset %}
+            {% set phrase_part2 %}
+                <span class="ruletype">{{ phrase('agent.global.all') }}</span>
+            {% endset %}
+            {{ phrase('admin.designer.initial_status', {'option':phrase_part1,'all':phrase_part2)) }}
 			<div class="septop">
-				<input type="checkbox" name="agent_only[${itemId}]" value="1" /> Only show this for agents
+				<input type="checkbox" name="agent_only[${itemId}]" value="1" /> {{ phrase('admin.designer.only_show_for_agents') }}
 			</div>
 			<div class="search-form ruletype-all">
 				<div class="rule-list"></div>
-				<div class="term"><span class="add-term">+</span> Add a new rule</div>
+				<div class="term"><span class="add-term">+</span> {{ phrase('admin.designer.add_new_rule') }}</div>
 			</div>
 			<br /><br />
-			and when <span class="ruletype">any</span> of these rules match:
+            {{ set phrase_part }}
+                <span class="ruletype">{{ phrase('agent.global.any') }}</span>
+            {{ endset }}
+			{{ phrase('admin.designer.and_when_any_match', {'any':phrase_part}) }}
 			<div class="search-form ruletype-any">
 				<div class="rule-list"></div>
-				<div class="term"><span class="add-term">+</span> Add a new rule</div>
+				<div class="term"><span class="add-term">+</span> {{ phrase('admin.designer.add_new_rule') }}</div>
 			</div>
 		</div>
 	</li>

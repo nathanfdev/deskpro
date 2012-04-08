@@ -22,8 +22,8 @@
 
 	{#
 	{{ design.block_sections_item() }}
-		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Date" /> Date</label></h3></header>
-		<p>Thie date field lets you select a date using a calendar widget.</p>
+		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Date" /> {{ phrase('agent.global.date') }}</label></h3></header>
+		<p>{{ phrase('admin.customdefabstract.this_field_lets_you_select_a_date') }}</p>
 	{{ design.block_sections_item_end() }}
 	#}
 

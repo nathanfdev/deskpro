@@ -15,4 +15,7 @@
   'admin.ticketfilters.only_allow_a_specific_agent_to_use_this' => 'Only allow a specific agent to use this filter',
   'admin.ticketfilters.select_the_agent_that_can_use_this_filter' => 'Select the agent that can use this filter',
   'admin.ticketfilters.title_has_no_members' => '{{title}} has no members. No one uses this filter.',
+  'admin.ticketfilters.name_has_filter_enabled' => '{{name}} currently has this filter enabled in their settings',
+  'admin.ticketfilters.name_has_filter_disabled' => '{{name}} currently has this filter disabled in their settings',
+  'admin.ticketfilters.only_name_has_filter_access' => 'Only {{name}} has access to this filter',
 );

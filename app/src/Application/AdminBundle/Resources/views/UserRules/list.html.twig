@@ -19,7 +19,7 @@
 	<table width="100%">
 		<thead>
 			<tr>
-				<th style="text-align:left">&nbsp; Match</th>
+				<th style="text-align:left">&nbsp; {{ phrase('admin.userrules.match') }}</th>
 				<th style="text-align:center" width="180">{{ phrase('agent.global.actions') }}</th>
 				<th style="text-align:left" width="50">&nbsp;</th>
 			</tr>
@@ -52,15 +52,12 @@
 </div><br /><br />
 
 {% if org_domains|length %}
-	<p>
-		These organizations have domain name associations. Users that register with an email address that match any of these domains will
-		be added to the appropriate organization. You can add or modify these domain associations by editing the organization from the agent interface.
-	</p>
+	<p>{{ phrase('admin.userrules.notice_organisation_domains') }}</p>
 	<div class="check-grid item-list">
 	<table width="100%">
 		<thead>
 			<tr>
-				<th style="text-align:left">&nbsp; Organization</th>
+				<th style="text-align:left">&nbsp; {{ phrase('agent.global.organization') }}</th>
 				<th style="text-align:left">{{ phrase('admin.userrules.domains') }}</th>
 			</tr>
 		</thead>

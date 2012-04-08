@@ -43,4 +43,6 @@
   'admin.ticketproperties.edit_departments' => 'Edit Departments',
   'admin.ticketproperties.edit_products' => 'Edit Products',
   'admin.ticketproperties.edit_priorities' => 'Edit Priorities',
+  'admin.ticketproperties.ticket_layout_editor' => 'Ticket Layout Editor:',
+  'admin.ticketproperties.back_to_ticket_properties' => 'Back to ticket properties',
 );

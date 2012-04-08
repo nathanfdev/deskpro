@@ -44,4 +44,10 @@
   'admin.server.while_not_recommended_you_can' => 'While not recommended, you can {{link}}.',
   'admin.server.notice_using_most_efficient_storage' => 'You are currently using the most efficient storage mechanism.',
   'admin.server.file_storage_mechanism' => 'File Storage Mechanism',
+  'admin.server.mysql_col_id' => 'ID',
+  'admin.server.mysql_col_user' => 'User',
+  'admin.server.mysql_col_command' => 'Command',
+  'admin.server.mysql_col_time' => 'Time',
+  'admin.server.mysql_col_state' => 'State',
+  'admin.server.mysql_col_info' => 'Info',
 );

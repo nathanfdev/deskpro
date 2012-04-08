@@ -12,9 +12,9 @@
 	{% endif %}
 {% endblock %}
 {% block pagetitle %}
-	<h1>{% if category.id %}Edit Category{% else %}New Category{% endif %}</h1>
+	<h1>{% if category.id %}{{ phrase('admin.feedback.edit_category') }}{% else %}{{ phrase('admin.feedback.new_category') }}{% endif %}</h1>
 	<nav>
-		<a class="clean-white" href="{{ path('admin_feedback_cats') }}">&larr; Back to categories</a>
+		<a class="clean-white" href="{{ path('admin_feedback_cats') }}">{{ phrase('admin.feedback.back_to_categories') }}</a>
 	</nav>
 {% endblock %}
 {% block page %}

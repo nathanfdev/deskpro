@@ -15,9 +15,13 @@
   'admin.emailtransports.default_from_email_address' => 'Default "From" email address',
   'admin.emailtransports.outgoing_email' => 'Outgoing Email',
   'admin.emailtransports.delete' => 'Delete Email Transport',
-  'admin.emailtransports.notice_1' => 'This account is used by default when the system needs to email user. For example, registration confirmations and reset password links.
-You might also have email gateways and rules set up to send notifications from different email addresses.',
-  'admin.emailtransports.notice_2' => 'If you have not set up other SMTP accounts to handle other email addresses, DeskPRO will attemp to use this account with a different "From" address. Depending on
-the service you are using, this might not work. For example, Gmail only allows the "From" address to be that of the account.',
+  'admin.emailtransports.notice_1' => 'This account is used by default when the system needs to email user. For example, registration confirmations and reset password links. You might also have email gateways and rules set up to send notifications from different email addresses.',
+  'admin.emailtransports.notice_2' => 'If you have not set up other SMTP accounts to handle other email addresses, DeskPRO will attempt to use this account with a different "From" address. Depending on the service you are using, this might not work. For example, Gmail only allows the "From" address to be that of the account.',
   'admin.emailtransports.are_you_sure_delete_transport' => 'Are you sure you want to delete this SMTP account? If email is still being sent by the system From any of the affected addresses, users may fail to recieve them without this account.',
+  'admin.emailtransports.notice_each_from_needs_mail_server' => 'You need to define a mail server for every address DeskPRO might send email "From." Sometimes a single mail server might let you send email from any "From" address, but sometimes (such as with Google Apps), the server will only let you send email from a single address.',
+  'admin.emailtransports.use_criteria' => 'Use Criteria',
+  'admin.emailtransports.from_pattern' => 'From {{pattern}}',
+  'admin.emailtransports.from_domain' => 'From *@{{pattern}}',
+  'admin.emailtransports.from_google' => 'Google Apps: {{username}}',
+  'admin.emailtransports.php_mail' => 'PHP mail()',
 );

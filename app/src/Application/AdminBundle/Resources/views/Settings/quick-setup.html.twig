@@ -82,17 +82,14 @@
 				<label>{{ form_widget(form.portal_enabled) }} {{ phrase('admin.settings.enable_portal') }}</label><br />
 			</div>
 			<div class="dp-form-input">
-				<p>
-					DeskPRO includes a user front-end where your users can submit tickets and feedback and read knowledgebase articles and news, and download files.
-					You can configure all the options later. If you don't want a portal and you are using DeskPRO just to manage email, you can turn this off.
-				</p>
+				<p>{{ phrase('admin.settings.notice_deskpro_includes_user_frontend') }}</p>
 			</div>
 		</div>
 	</div>
 
 	<footer class="controls">
 		<button class="clean-white">{{ phrase('agent.global.continue') }}</button>
-	</footeR>
+	</footer>
 </form>
 
 {% endblock %}

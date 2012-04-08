@@ -5,4 +5,6 @@
   'admin.logs.if_you_have_a_sn_code_for_a' => 'If you have a SN code for a specific error, you can look it up here.',
   'admin.logs.view' => 'View',
   'admin.logs.sn' => 'SN',
+  'admin.logs.error_logs_count' => 'Error Logs ({{count}})|Error Logs ({{count}})',
+  'admin.logs.notice_error_logs' => 'Error logs contain recorded information about errors and exceptions on your helpdesk. Errors should generally not happen, so any logged information here is worth investigating.',
 );

@@ -2,12 +2,12 @@
 {% block pagetitle %}
 	<h1>{{ phrase('admin.ticketworkflows.delete_workflow') }}</h1>
 	<nav>
-		<a class="clean-white" href="{{ path('admin_ticketworks') }}">&larr; Back to workflows</a>
+		<a class="clean-white" href="{{ path('admin_ticketworks') }}">&larr; {{ phrase('admin.ticketworkflows.back_to_workflows') }}</a>
 	</nav>
 {% endblock %}
 {% block page %}
 
-<p>Are you sure you want to delete the workflow "<strong>{{ workflow.title }}</strong>"?</p>
+<p>{{ phrase('admin.ticketworkflows.confirm_delete_workflow', {'title':workflow.title}) }}</p>
 
 <p>{{ phrase('admin.ticketworkflows.any_tickets_that_use_this_workflow_will_have') }}</p>
 

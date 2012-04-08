@@ -23,8 +23,7 @@
 
 {% if from_demo %}
 	<div class="alert-message block-message success">
-		Your personal demo license code has been sent to your email address. Just copy and paste the license code into
-		the box below.
+		{{ phrase('admin.license.notice_license_has_been_emailed') }}
 	</div>
 {% endif %}
 
@@ -34,7 +33,7 @@
 <div class="alert-message block-message error">
 	<strong>{{ phrase('admin.license.we_encountered_a_problem') }}:</strong>
 	<ul>
-		{% if invalid %}<li>The license code you entered appears to be invalid. If you think this is a mistake, please email support@deskpro.com. (Code: {{ invalid }})</li>{% endif %}
+		{% if invalid %}<li>{{ phrase('admin.license.notice_invalid_license', {'invalid':invalid}) }}</li>{% endif %}
 	</ul>
 </div>
 {% endif %}

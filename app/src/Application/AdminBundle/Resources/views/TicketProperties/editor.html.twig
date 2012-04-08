@@ -52,7 +52,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 {% endblock %}
 {% block pagebar %}
 	<ul>
-		<li>Ticket Layout Editor: {% if department %}{{ department.full_title }}{% else %}Default{% endif %}</li>
+		<li>{{ phrase('admin.ticketproperties.ticket_layout_editor') }} {% if department %}{{ department.full_title }}{% else %}{{ phrase('agent.global.default') }}{% endif %}</li>
 	</ul>
 {% endblock %}
 {% block content %}
@@ -213,7 +213,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 </script>
 
 {############################
- # {{ phrase('agent.global.department') }}
+ # Department
  ############################}
 <script type="text/x-deskpro-plain" id="rendered_field_ticket_department">
 	<div class="subject">

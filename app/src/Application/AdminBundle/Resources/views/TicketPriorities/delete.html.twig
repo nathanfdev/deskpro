@@ -2,12 +2,12 @@
 {% block pagetitle %}
 	<h1>{{ phrase('admin.ticketpriorities.delete_priority') }}</h1>
 	<nav>
-		<a class="clean-white" href="{{ path('admin_ticketpris') }}">&larr; Back to ticket priorities</a>
+		<a class="clean-white" href="{{ path('admin_ticketpris') }}">&larr; {{ phrase('admin.ticketpriorities.back_to_ticket_priorities') }}</a>
 	</nav>
 {% endblock %}
 {% block page %}
 
-<p>Are you sure you want to delete the priority "<strong>{{ priority.title }}</strong>"?</p>
+<p>{{ phrase('admin.ticketpriorities.confirm_delete_priority', {'title':priority.title}) }}</p>
 
 <p>{{ phrase('admin.ticketpriorities.any_tickets_that_use_this_priority_will_have') }}</p>
 

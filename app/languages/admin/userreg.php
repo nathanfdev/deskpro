@@ -95,4 +95,5 @@ This applies to everything except new tickets. You can enable email validation o
   'admin.userreg.enter_your_twitter_consumer_secret' => 'Enter your Twitter consumer secret',
   'admin.userreg.table_containing_user_info' => 'Person Details',
   'admin.userreg.are_you_sure_delete_usersource' => 'Are you sure you want to delete this usersource? Users will not be able to log in with these credentials anymore.',
+  'admin.userreg.notice_when_email_exists' => 'If a user tries to submit a new ticket, submit new feedback, start a new chat or add a comment using an email address that belongs to an existing account, they will be prompted to login before the submission is accepted.',
 );

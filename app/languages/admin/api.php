@@ -9,4 +9,5 @@
   'admin.api.viewedit' => 'view/edit',
   'admin.api.you_have_created_no_api_keys' => 'You have created no API keys.',
   'admin.api.are_you_sure' => 'Are you sure?',
+  'admin.api.notice_api_auth_uses_user' => 'Every API request is made with the authority of an actual user. Enter the person who this API key will be making requests for.',
 );

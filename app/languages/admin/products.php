@@ -11,4 +11,6 @@
   'admin.products.back_to_products' => 'Back to products',
   'admin.products.are_you_sure_delete_product' => 'Are you sure you want to delete the product "<strong>{{title}}</strong>"?',
   'admin.products.are_you_sure_delete_product_top_level' => 'Are you sure you want to delete the product "<strong>{{title}}</strong>"? Since this is a top-level product, <strong>all of these child-products will be deleted too</strong>',
+  'admin.products.notice_products_allow_categorization' => 'Products are a type of categorization that you can use across the entire helpdesk. Create a product, which is usually a real product or service your company offers, and use it categorize all kinds of content like tickets, feedback and articles.',
+  'admin.products.no_products_created' => 'You have not created any products yet. Click the "{{subphrase}}" button to create one now.',
 );

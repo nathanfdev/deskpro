@@ -8,7 +8,7 @@
 		</ul>
 	</nav>
 	<ul id="tools_menu" style="display: none">
-		{#{% if not agent.is_vacation_mode %}<li id="vacation_overlay_trigger">Vacation Mode</li>{% endif %}#}
+		{#{% if not agent.is_vacation_mode %}<li id="vacation_overlay_trigger">{{ phrase('admin.agents.vacation_mode') }}</li>{% endif %}#}
 		<li id="delete_overlay_trigger">{{ phrase('admin.agents.delete_agent') }}</li>
 	</ul>
 	{% endif %}

@@ -23,9 +23,7 @@
 >
 
 	{{ design.helpbox() }}
-		<p>Products are a type of categorization that you can use across the entire helpdesk. Create a product, which
-		is usually a real product or service your company offers, and use it categorize all kinds of content
-		like tickets, feedback and articles.</p>
+		<p>{{ phrase('admin.products.notice_products_allow_categorization') }}</p>
 	{{ design.helpbox_end() }}
 
 	{% if all_products|length %}
@@ -42,7 +40,7 @@
 		{{ design.dpgrid_end() }}
 	{% else %}
 		<div class="note-box new-arrow">
-			You have not created any products yet. Click the "{{ phrase('admin.products.add_new_product') }}" button to create one now.
+            {{ phrase('admin.products.no_products_created', {'subphrase':phrase('admin.products.add_new_product')}) }}
 		</div>
 	{% endif %}
 

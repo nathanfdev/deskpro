@@ -10,4 +10,9 @@
   'admin.languages.create_a_new_language_using_one_of_these' => 'Create a new language using one of these available language packs',
   'admin.languages.create_new_language' => 'Create New Language',
   'admin.languages.are_you_sure_delete_languages' => 'Are you sure you want to delete this language? Custom phrases will be removed, and things (e.g., tickets) classified using this language will have their language unset.',
+  'admin.languages.edit_phrase' => 'Edit Phrase:',
+  'admin.languages.your_phrase' => 'Your Customized Phrase',
+  'admin.languages.default_phrase_for' => 'Default Phrase For {{title}}',
+  'admin.languages.default_deskpro_phrase' => 'Default DeskPRO Phrase',
+  'admin.languages.save_your_phrase' => 'Save Customized Phrase',
 );

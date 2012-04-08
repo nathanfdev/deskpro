@@ -26,4 +26,7 @@
   'admin.license.license_server_detected_error' => 'Our licensing server responded with the error code "{{error}}". You should contact support@deskpro.com if the problem persists.',
   'admin.license.supportdeskprocom' => 'support@deskpro.com',
   'admin.license.installkey' => 'install.key',
+  'admin.license.get_your_demo_license' => 'Get your demo license &rarr;',
+  'admin.license.notice_license_has_been_emailed' => 'Your personal demo license code has been sent to your email address. Just copy and paste the license code into the box below.',
+  'admin.license.notice_invalid_license' => 'The license code you entered appears to be invalid. If you think this is a mistake, please email support@deskpro.com. (Code: {{invalid}})',
 );

@@ -56,6 +56,7 @@
   'admin.global.templates' => 'Templates',
   'admin.global.scheduled_tasks' => 'Scheduled Tasks',
   'admin.global.on' => 'ON',
+  'admin.global.on_lc' => 'on',
   'admin.global.off' => 'OFF',
   'admin.global.permission' => 'Permission',
   'admin.global.default_value' => 'Default Value',

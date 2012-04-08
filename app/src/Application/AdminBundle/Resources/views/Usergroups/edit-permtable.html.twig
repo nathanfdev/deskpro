@@ -95,7 +95,7 @@
 					<!-- PERMISSION:feedback.submit --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['feedback.submit'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[feedback.submit]" value="1" /></td>
 				</tr>
 				<tr>
-					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; Require agent validation</td>
+					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ phrase('admin.usergroups.require_agent_validation') }}</td>
 					<!-- PERMISSION:feedback.submit_validate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['feedback.submit_validate'] %}checked="checked"{% endif %} name="permissions[feedback.submit_validate]" value="1" /></td>
 				</tr>
 				<tr>
@@ -107,7 +107,7 @@
 					<!-- PERMISSION:feedback.comment --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['feedback.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[feedback.comment]" value="1" /></td>
 				</tr>
 				<tr>
-					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; Require agent validation</td>
+					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ phrase('admin.usergroups.require_agent_validation') }}</td>
 					<!-- PERMISSION:feedback.comment_validate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['feedback.comment_validate'] %}checked="checked"{% endif %} name="permissions[feedback.comment_validate]" value="1" /></td>
 				</tr>
 			</tbody>
@@ -135,7 +135,7 @@
 					<!-- PERMISSION:articles.comment --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['articles.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[articles.comment]" value="1" /></td>
 				</tr>
 				<tr>
-					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; Require agent validation</td>
+					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ phrase('admin.usergroups.require_agent_validation') }}</td>
 					<!-- PERMISSION:articles.comment_validate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['articles.comment_validate'] %}checked="checked"{% endif %} name="permissions[articles.comment_validate]" value="1" /></td>
 				</tr>
 			</tbody>
@@ -164,7 +164,7 @@
 					<!-- PERMISSION:downloads.comment --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['downloads.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[downloads.comment]" value="1" /></td>
 				</tr>
 				<tr>
-					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; Require agent validation</td>
+					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ phrase('admin.usergroups.require_agent_validation') }}</td>
 					<!-- PERMISSION:downloads.comment_validate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['downloads.comment_validate'] %}checked="checked"{% endif %} name="permissions[downloads.comment_validate]" value="1" /></td>
 				</tr>
 			</tbody>
@@ -193,7 +193,7 @@
 					<!-- PERMISSION:news.comment --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['news.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.comment]" value="1" /></td>
 				</tr>
 				<tr>
-					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; Require agent validation</td>
+					<td class="title">&nbsp;&nbsp;&nbsp;&nbsp; {{ phrase('admin.usergroups.require_agent_validation') }}</td>
 					<!-- PERMISSION:news.comment_validate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['news.comment_validate'] %}checked="checked"{% endif %} name="permissions[news.comment_validate]" value="1" /></td>
 				</tr>
 			</tbody>

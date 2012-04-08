@@ -5,4 +5,6 @@
   'admin.ticketpriorities.you_have_not_created_any_ticket_priorities_yet' => 'You have not created any ticket priorities yet. Click the "Add New Priority" button to create one now.',
   'admin.ticketpriorities.edit_priority' => 'Edit Priority',
   'admin.ticketpriorities.new_priority' => 'New Priority',
+  'admin.ticketpriorities.back_to_ticket_priorities' => 'Back to ticket priorities',
+  'admin.ticketpriorities.confirm_delete_priority' => 'Are you sure you want to delete the priority "<strong>{{title}}</strong>"?',
 );

@@ -7,11 +7,11 @@
 		</header>
 		<article>
 			<ul>
-				<li class="{% if this_page == 'portal_editor' %}on{% endif %}"><a href="{{ path('admin_portal') }}">{{ phrase('admin.portal.portal_editor') }}</a></li>
-				<li class="{% if this_page == 'website_widgets' %}on{% endif %}"><a>{{ phrase('admin.portal.website_widgets') }}</a></li>
-				<li class="{% if this_page == 'labels' %}on{% endif %}"><a>{{ phrase('agent.global.labels') }}</a></li>
-				<li class="{% if this_page == 'portal_settings' %}on{% endif %}"><a href="{{ path('admin_portal_settings') }}">{{ phrase('admin.portal.global_settings') }}</a></li>
-				<li class="{% if this_page == 'portal_templates' %}on{% endif %}"><a href="{{ path('admin_templates_user') }}">{{ phrase('admin.global.templates') }}</a></li>
+				<li class="{% if this_page == 'portal_editor' %}{{ phrase('admin.global.on') }}{% endif %}"><a href="{{ path('admin_portal') }}">{{ phrase('admin.portal.portal_editor') }}</a></li>
+				<li class="{% if this_page == 'website_widgets' %}{{ phrase('admin.global.on') }}{% endif %}"><a>{{ phrase('admin.portal.website_widgets') }}</a></li>
+				<li class="{% if this_page == 'labels' %}{{ phrase('admin.global.on') }}{% endif %}"><a>{{ phrase('agent.global.labels') }}</a></li>
+				<li class="{% if this_page == 'portal_settings' %}{{ phrase('admin.global.on') }}{% endif %}"><a href="{{ path('admin_portal_settings') }}">{{ phrase('admin.portal.global_settings') }}</a></li>
+				<li class="{% if this_page == 'portal_templates' %}{{ phrase('admin.global.on') }}{% endif %}"><a href="{{ path('admin_templates_user') }}">{{ phrase('admin.global.templates') }}</a></li>
 			</ul>
 		</article>
 
@@ -27,8 +27,8 @@
 		</header>
 		<article>
 			<ul>
-				{#<li class="{% if this_page == 'kb_settings' %}on{% endif %}"><a>Settings</a></li>#}
-				<li class="{% if this_page == 'kb_fields' %}on{% endif %}"><a href="{{ path('admin_customdefarticles') }}">{{ phrase('admin.portal.custom_fields') }}</a></li>
+				{#<li class="{% if this_page == 'kb_settings' %}{{ phrase('admin.global.on') }}{% endif %}"><a>{{ phrase('admin.portal.settings') }}</a></li>#}
+				<li class="{% if this_page == 'kb_fields' %}{{ phrase('admin.global.on') }}{% endif %}"><a href="{{ path('admin_customdefarticles') }}">{{ phrase('admin.portal.custom_fields') }}</a></li>
 				<li><a href="{{ app.request.getBaseUrl() }}/agent/#app.publish" target="_blank">{{ phrase('admin.portal.manage_articles') }}</a></li>
 			</ul>
 		</article>
@@ -43,10 +43,10 @@
 		</header>
 		<article>
 			<ul>
-				{#<li class="{% if this_page == 'feedback_settings' %}on{% endif %}"><a href="{{ path('admin_feedback_settings' ) }}">Settings</a></li>#}
-				<li class="{% if this_page == 'feedback_statuses' %}on{% endif %}"><a href="{{ path('admin_feedback_statuses') }}">{{ phrase('agent.global.statuses') }}</a></li>
-				<li class="{% if this_page == 'feedback_cats' %}on{% endif %}"><a href="{{ path('admin_feedback_cats') }}">{{ phrase('agent.global.categories') }}</a></li>
-				<li class="{% if this_page == 'feedback_fields' %}on{% endif %}"><a href="{{ path('admin_customdeffeedback') }}">{{ phrase('admin.portal.custom_fields') }}</a></li>
+				{#<li class="{% if this_page == 'feedback_settings' %}{{ phrase('admin.global.on') }}{% endif %}"><a href="{{ path('admin_feedback_settings' ) }}">{{ phrase('admin.portal.settings') }}</a></li>#}
+				<li class="{% if this_page == 'feedback_statuses' %}{{ phrase('admin.global.on') }}{% endif %}"><a href="{{ path('admin_feedback_statuses') }}">{{ phrase('agent.global.statuses') }}</a></li>
+				<li class="{% if this_page == 'feedback_cats' %}{{ phrase('admin.global.on') }}{% endif %}"><a href="{{ path('admin_feedback_cats') }}">{{ phrase('agent.global.categories') }}</a></li>
+				<li class="{% if this_page == 'feedback_fields' %}{{ phrase('admin.global.on') }}{% endif %}"><a href="{{ path('admin_customdeffeedback') }}">{{ phrase('admin.portal.custom_fields') }}</a></li>
 				<li><a href="{{ app.request.getBaseUrl() }}/agent/#app.feedback" target="_blank">{{ phrase('admin.portal.manage_feedback') }}</a></li>
 			</ul>
 		</article>
@@ -61,7 +61,7 @@
 		</header>
 		<article>
 			<ul>
-				{#<li><a>Settings</a></li>#}
+				{#<li><a>{{ phrase('admin.portal.settings') }}</a></li>#}
 				<li><a>{{ phrase('admin.portal.custom_fields') }}</a></li>
 				<li><a href="{{ app.request.getBaseUrl() }}/agent/#app.publish" target="_blank">{{ phrase('admin.portal.manage_downloads') }}</a></li>
 			</ul>
@@ -77,7 +77,7 @@
 			</header>
 			<article>
 				<ul>
-					{#<li><a>Settings</a></li>#}
+					{#<li><a>{{ phrase('admin.portal.settings') }}</a></li>#}
 					<li><a>{{ phrase('admin.portal.custom_fields') }}</a></li>
 					<li><a href="{{ app.request.getBaseUrl() }}/agent/#app.publish" target="_blank">{{ phrase('admin.portal.manage_news') }}</a></li>
 				</ul>
@@ -90,7 +90,7 @@
 				<div class="onoff">
 					<input type="checkbox" name="troubles" value="1" checked="checked" class="onoff-slider section-toggle" />
 				</div>
-				<h4>Troubleshooters</h4>
+				<h4>{{ phrase('admin.portal.troubleshooters') }}</h4>
 			</header>
 			<article>
 				<ul>

@@ -68,8 +68,7 @@
 			<td width="10"><input type="checkbox" name="existing_account_login" value="1" {% if app.getSetting('core.existing_account_login') %}checked="checked"{% endif %} /></td>
 			<td>
 				<h3>{{ phrase('admin.userreg.force_login_for_existing_users') }}</h3>
-				If a user tries to submit a new ticket, submit new feedback, start a new chat or add a comment using an email address that belongs to an existing
-				account, they will be prompted to login before the submission is accepted.
+				{{ phrase('admin.userreg.notice_when_email_exists') }}
 			</td>
 		</tr>
 	</table>

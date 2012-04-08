@@ -19,7 +19,11 @@
   'admin.usergroups.new_usergroup' => 'New Usergroup',
   'admin.usergroups.note_description' => 'Note / Description',
   'admin.usergroups.save_usergroup' => 'Save Usergroup',
+  'admin.usergroups.usergroup' => 'Usergroup',
   'admin.usergroups.add_usergroup' => 'Add Usergroup',
+  'admin.usergroups.date_registered' => 'Date Registered',
   'admin.usergroups.browse' => 'browse',
   'admin.usergroups.are_you_sure_delete_usergroup' => 'Are you sure you want to delete this usergroup?',
+
+  'admin.usergroups.require_agent_validation' => 'Require agent validation',
 );

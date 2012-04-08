@@ -1,8 +1,8 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagetitle %}
-	<h1>{% if category.id %}Edit Category{% else %}New Category{% endif %}</h1>
+	<h1>{% if category.id %}{{ phrase('admin.ticketcategories.edit_category') }}{% else %}{{ phrase('admin.ticketcategories.new_category') }}{% endif %}</h1>
 	<nav>
-		<a class="clean-white" href="{{ path('admin_ticketcats') }}">&larr; Back to categories</a>
+		<a class="clean-white" href="{{ path('admin_ticketcats') }}">&larr; {{ phrase('admin.ticketcategories.back_to_categories') }}</a>
 	</nav>
 {% endblock %}
 {% block page %}

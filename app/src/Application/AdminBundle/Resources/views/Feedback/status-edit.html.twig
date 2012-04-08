@@ -9,7 +9,7 @@
 {% block pagetitle %}
 	<h1>{{ phrase('admin.feedback.edit_status') }}</h1>
 	<nav>
-		<a class="clean-white" href="{{ path('admin_feedback_statuses') }}">&larr; Back To List</a>
+		<a class="clean-white" href="{{ path('admin_feedback_statuses') }}">{{ phrase('admin.feedback.back_to_list') }}</a>
 	</nav>
 {% endblock %}
 {% block page %}
@@ -23,9 +23,9 @@
 		</div>
 		<div class="dp-form-input">
 			{% if cat.status_type == 'active' %}
-				Active Status
+				{{ phrase('admin.feedback.active_status') }}
 			{% else %}
-				Closed Status
+				{{ phrase('admin.feedback.closed_status') }}
 			{% endif %}
 		</div>
 	</div>
