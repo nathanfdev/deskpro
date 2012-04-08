@@ -139,13 +139,6 @@ $collection->add('dev_lang_find_phrases_twig', new Route(
 	array()
 ));
 
-$collection->add('dev_lang_find_raw_strings', new Route(
-	'/lang/find/raw/strings/{bundle}',
-	array('_controller' => 'DevBundle:Language:findRawStrings'),
-	array(),
-	array()
-));
-
 $collection->add('dev_lang_replace_phrases', new Route(
     '/lang/replace/phrases',
     array('_controller' => 'DevBundle:Language:replacePhraseIds'),
