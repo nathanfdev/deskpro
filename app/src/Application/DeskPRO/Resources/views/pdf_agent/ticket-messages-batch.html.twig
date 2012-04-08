@@ -5,7 +5,7 @@
 
         <tr>
             <td>{{ phrase('agent.pdf_agent.message_') }}{{ loop.index  }}</td>
-            <td align="right">By {{message.person.name}} at {{message.date_created|date('fulltime')}}</td>
+            <td align="right">{{ phrase('agent.global.by_person_at_date', {'person':message.person.name,'date':message.date_created|date('fulltime')}) }}</td>
         </tr>
     </table>
     <hr />

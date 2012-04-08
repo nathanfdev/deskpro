@@ -522,7 +522,7 @@
             </select>
         </div>
         <div class="options">
-            {% set days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+            {% set days = [phrase('agent.global.monday'), phrase('agent.global.tuesday'), phrase('agent.global.wednesday'), phrase('agent.global.thursday'), phrase('agent.global.friday'), phrase('agent.global.saturday'), phrase('agent.global.sunday')] %}
             {% for day in days %}
                 <label>{{ day }}</label>
                 <input type="checkbox" value="{{ day }}" name="days[]"/>

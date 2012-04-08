@@ -2,15 +2,15 @@
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_subject %}
 	{% if success %}
-		Successful login alert
+		{{ phrase('agent.emails_agent.alert_successful_login') }}
 	{% else %}
-		Failed login attempt alert
+		{{ phrase('agent.emails_agent.alert_failed_login') }}
 	{% endif %}
 {% endblock %}
 {% block content %}
 	{% set content %}
 		{% if success %}
-			Your account was used to successfully log in.<br />
+			{{ phrase('agent.emails_agent.notice_account_used_to_login') }}<br />
 		{% else %}
 			{{ phrase('agent.emails_agent.someone_tried_to_log_in_using_your_account') }}<br />
 		{% endif %}
@@ -22,8 +22,8 @@
 		{{ phrase('agent.emails_agent.first_seen') }}: {{ session.visitor.date_created|date('fulltime') }}<br />
 	{% endset %}
 	{% if success %}
-		{{ layout.section('Successful Login Alert', content) }}
+		{{ layout.section(phrase('agent.emails_agent.alert_successful_login'), content) }}
 	{% else %}
-		{{ layout.section('Failed Login Attempt', content) }}
+		{{ layout.section(phrase('agent.emails_agent.alert_failed_login'), content) }}
 	{% endif %}
 {% endblock %}

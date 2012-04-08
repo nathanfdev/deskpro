@@ -8,5 +8,10 @@
   'agent.emails_agent.a_new_ticket_has_been_created' => 'A new ticket has been created',
   'agent.emails_agent.an_agent_has_replied' => 'An agent has replied to "{{subject}}"',
   'agent.emails_agent.a_user_has_replied' => 'A user has replied to "{{subject}}"',
-  
+  'agent.emails_agent.section_title_ticket_properties' => 'Ticket Properties',
+  'agent.emails_agent.section_title_ticket_properties' => '"{{subject}}" has been updated.',
+  'agent.emails_agent.ticket_created_link' => '{{name}} &lt;{{email}}&gt; has created an agent account for you on {{link}}',
+  'agent.emails_agent.alert_successful_login' => 'Successful Login Alert',
+  'agent.emails_agent.alert_failed_login' => 'Failed Login Attempt Alert',
+  'agent.emails_agent.notice_account_used_to_login' => 'Your account was used to successfully log in.',
 );

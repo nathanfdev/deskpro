@@ -317,4 +317,12 @@
   'agent.global.ticket_starter' => 'Ticket Starter',
   'agent.global.default' => 'Default',
   'agent.global.widget_add' => '+',
+  'agent.global.by_person_at_date' => 'By {{person}} at {{date}}',
+  'agent.global.monday' => 'Monday',
+  'agent.global.tuesday' => 'Tuesday',
+  'agent.global.wednesday' => 'Wednesday',
+  'agent.global.thursday' => 'Thursday',
+  'agent.global.friday' => 'Friday',
+  'agent.global.saturday' => 'Saturday',
+  'agent.global.sunday' => 'Sunday',
 );

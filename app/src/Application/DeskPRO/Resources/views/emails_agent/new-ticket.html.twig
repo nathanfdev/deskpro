@@ -45,9 +45,9 @@
 	</tr>
 </table>
 {% endset %}
-{{ layout.section('Ticket Properties', content) }}
+{{ layout.section(phrase('agent.emails_agent.section_title_ticket_properties'), content) }}
 
-{{ layout.render_ticket_messages(messages, 'Messages') }}
+{{ layout.render_ticket_messages(messages, phrase('agent.global.messages')) }}
 
 <br/><br/>
 {{ layout.replycode(tac.access_code) }}
