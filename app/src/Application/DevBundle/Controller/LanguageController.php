@@ -663,11 +663,32 @@ class LanguageController extends Controller
 
         foreach($by_content as $k=>$v) {
             if(count($v) > 1) {
-                $id = 'global.'.$this->stringToId($k);
-                $id_exists = isset($global[$id]) || isset($id_track[$id]);
+                $packages = array('user' => array(),'admin_agent' => array());
 
-                $vars['dupes']['content'][] = array('data' => $k, 'id' => $id, 'exists' => $id_exists);
-                $id_track[$id] = 1;
+                foreach($v as $dupe) {
+                    list($package, ) = explode('.', $dupe['id']);
+
+                    if($package == 'user') {
+                        $packages['user'][] = $dupe['id'];
+                    }
+                    else {
+                        $packages['admin_agent'][] = $dupe['id'];
+                    }
+                }
+
+                if(count($packages['user']) > 1) {
+                    $id = 'user.global.'.$this->stringToId($k);
+                    $id_exists = isset($global[$id]) || isset($id_track[$id]);
+                    $id_track[$id] = 1;
+                    $vars['dupes']['content'][] = array('data' => $k, 'id' => $id, 'exists' => $id_exists, 'ids' => $packages['user']);
+                }
+
+                if(count($packages['admin_agent']) > 1) {
+                    $id = 'user.global.'.$this->stringToId($k);
+                    $id_exists = isset($global[$id]) || isset($id_track[$id]);
+                    $id_track[$id] = 1;
+                    $vars['dupes']['content'][] = array('data' => $k, 'id' => $id, 'exists' => $id_exists, 'ids' => $packages['admin_agent']);
+                }
             }
         }
 
