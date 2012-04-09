@@ -18,7 +18,6 @@
   'agent.task.or' => 'or',
   'agent.task.task_description' => 'Task Description...',
   'agent.task.enter_your_comment' => 'Enter your comment...', 
-  'agent.task.no_due_date' => 'No due date', 
   'agent.task.task_linked_to_ticket_label' => 'Task linked to: Ticket "{{label}}"', 
   'agent.task.task_linked_to_deal_label' => 'Task linked to: Deal "{{label}}"', 
 );

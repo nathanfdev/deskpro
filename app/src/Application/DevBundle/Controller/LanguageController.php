@@ -659,8 +659,7 @@ class LanguageController extends Controller
         }
 
         $id_track = array();
-        $rootdir = DP_ROOT.'/languages/DeskPRO';
-        $global = require($rootdir.'/global/global.php');
+        $rootdir = DP_ROOT.'/languages';
 
         foreach($by_content as $k=>$v) {
             if(count($v) > 1) {

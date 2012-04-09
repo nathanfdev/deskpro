@@ -7,7 +7,6 @@
   'admin.ticketworkflows.new_workflow' => 'New Workflow',
   'admin.ticketworkflows.back_to_workflows' => 'Back to workflows',
   'admin.ticketworkflows.edit_workflow' => 'Edit Workflow',
-  'admin.ticketworkflows.new_workflow' => 'New Workflow',
   'admin.ticketworkflows.back_to_ticket_workflows' => 'Back to ticket workflows',
   'admin.ticketworkflows.confirm_delete_workflow' => 'Are you sure you want to delete the workflow "<strong>{{title}}</strong>"?',
 );
