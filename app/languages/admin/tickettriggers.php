@@ -29,7 +29,7 @@
     'admin.tickettriggers.new_ticket_widget' => 'New Ticket via Website Widget',
     'admin.tickettriggers.new_ticket_agent' => 'New Ticket created by an Agent',
     'admin.tickettriggers.new_reply_web_person' => 'New Reply via Web Interface',
-    'admin.tickettriggers.new_reply_gateway_person' => "New Reply via Email',
+    'admin.tickettriggers.new_reply_gateway_person' => 'New Reply via Email',
     'admin.tickettriggers.new_reply_agent' => 'New Reply by an Agent',
     'admin.tickettriggers.property_change_user' => 'Ticket Updated by a User',
     'admin.tickettriggers.property_change_agent' => 'Ticket Updated by an Agent',

@@ -44,7 +44,7 @@ class Language
                 'UserBundle' => 'user',
                 'DeskPRO' => 'agent'
             );
-    public static $PACKAGES = array('agent', 'user', 'admin', 'deskpro');
+    public static $PACKAGES = array('agent', 'user', 'admin');
 
     public static function GetFileFinder()
     {

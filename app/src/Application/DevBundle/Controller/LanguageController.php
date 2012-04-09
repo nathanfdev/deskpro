@@ -468,12 +468,12 @@ class LanguageController extends Controller
             (
                 'id' => array(),
                 'file' => array(),
-                'prefixes' => array()
             ),
-            'missing' => array()
+            'prefixes' => array(),
+            'missing' => array(),
         );
 
-        list($vars['instances']['id'], $vars['instances']['file'], $vars['instances']['prefixes']) = Language::getPhraseFinder($this->container)->getPhrasesFromTwigFiles();
+        list($vars['instances']['id'], $vars['instances']['file'], $vars['prefixes']) = Language::getPhraseFinder($this->container)->getPhrasesFromTwigFiles();
         $missing = $this->getMissing(array_keys($vars['instances']['id']));
 
         if(isset($_POST['missing'])) {
@@ -492,12 +492,12 @@ class LanguageController extends Controller
             (
                 'id' => array(),
                 'file' => array(),
-                'prefixes' => array()
             ),
-            'missing' => array()
+            'prefixes' => array(),
+            'missing' => array(),
         );
 
-        list($vars['instances']['id'], $vars['instances']['file'], $vars['instances']['prefixes']) = Language::getPhraseFinder($this->container)->getPhrasesFromPHPFiles();
+        list($vars['instances']['id'], $vars['instances']['file'], $vars['prefixes']) = Language::getPhraseFinder($this->container)->getPhrasesFromPHPFiles();
         $missing = $this->getMissing(array_keys($vars['instances']['id']));
 
         if(isset($_POST['missing'])) {
@@ -521,7 +521,7 @@ class LanguageController extends Controller
             $state = 0;
 
             foreach($tokens as $token) {
-                // This is a very minimal parser and may break if the pec changes for lang file definitions.
+                // This is a very minimal parser and may break if the spec changes for lang file definitions.
                 if(!is_array($token) || $token[0] != T_WHITESPACE)
                     switch($state) {
                         case 0:
@@ -774,7 +774,6 @@ class LanguageController extends Controller
 
     public function replaceInLine($line, $string, $id, $color = false)
     {
-        // I think I need too check my regex book. This can't be good!
         $left = '/(.*(?:^|[\'>}])[^a-zA-Z]*)';
         $right = '([^a-zA-Z]*(?:[{<\']|$))/';
         $def_left = '/default\(\'';
