@@ -35,7 +35,7 @@
 			</div>
 			<div class="dp-form-input">
                 {% set phrase_link %}
-                    <a href="mailto:support@deskpro.com">{{ phrase('admin.license.supportdeskprocom') }}</a>
+                    <a href="mailto:support@deskpro.com">{{ phrase('agent.global.supportdeskprocom') }}</a>
                 {% endset %}
                 {{ phrase('admin.license.license_will_expire_on', {'date':lic.getExpireDate()|date('M j, Y'),'link':phrase_link}) }}
 			</div>

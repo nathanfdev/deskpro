@@ -498,7 +498,7 @@
 				<p>{{ phrase('agent.main.error_report_thank_you') }}</p>
 				<p>
                     {% set phrase_part %}
-                        <a href="mailto:support@deskpro.com">{{ phrase('agent.main.support_email') }}</a>
+                        <a href="mailto:support@deskpro.com">{{ phrase('agent.global.supportdeskprocom') }}</a>
                     {% endset %}
                     {{ phrase('agent.main.error_report_disclaimer', {'email':phrase_part}) }}
 				</p>
@@ -527,7 +527,7 @@
 		</div>
 	</div>
 	<div class="overlay-footer">
-		<button class="okay-trigger clean-white">{{ phrase('agent.okay') }}</button>
+		<button class="okay-trigger clean-white">{{ phrase('agent.global.okay') }}</button>
 		<button class="cancel-trigger clean-white">{{ phrase('agent.global.cancel') }}</button>
 	</div>
 </div>
@@ -542,7 +542,7 @@
 			<div class="input-wrap"><input type="text" id="prompt_overlay_input" /></div>
 		</div>
 		<div class="overlay-footer">
-			<button class="okay-trigger clean-white">{{ phrase('agent.okay') }}</button>
+			<button class="okay-trigger clean-white">{{ phrase('agent.global.okay') }}</button>
 			<button class="cancel-trigger clean-white">{{ phrase('agent.global.cancel') }}</button>
 		</div>
 	</div>

@@ -333,4 +333,6 @@
   'agent.global.new_organization' => 'New Organization',
   'agent.global.new_article' => 'New Article',
   'agent.global.new_task' => 'New Task',
+  'agent.global.supportdeskprocom' => 'support@deskpro.com',
+  'agent.global.okay' => 'Okay',
 );

@@ -49,11 +49,51 @@ class PhraseFinder
         $by_id = array();
         $by_file = array();
         $prefixes = array();
+        $cache_path = '/tmp/twig.phrase.cache';
+
+        if(file_exists($cache_path)) {
+            $cache = json_decode(file_get_contents($cache_path), true);
+        }
+        else {
+            $cache = array();
+        }
 
         foreach($templates as $file) {
+            if(isset($cache[$file]) && filemtime($file) == $cache[$file]['mtime']) {
+                foreach($cache[$file]['prefixes'] as $prefix) {
+                    list($id, $line) = $prefix;
+                    $prefixes[] = array('id' => $id, 'filename' => $file, 'line' => $line);
+                }
+
+                foreach($cache[$file]['phrases'] as $phrase) {
+                    list($id, $line) = $phrase;
+
+                    if(!isset($by_id[$id])) {
+                        $by_id[$id] = array();
+                    }
+
+                    $by_id[$id][] = array(
+                        'filename' => $file,
+                        'line' => $line
+                    );
+
+                    if(!isset($by_file[$file])) {
+                        $by_file[$file] = array();
+                    }
+
+                    $by_file[$file][] = array(
+                        'id' => $id,
+                        'line' => $line
+                    );
+                }
+
+                continue;
+            }
+
             $raw_twig = file_get_contents($file);
             $tokens = $twig->tokenize($raw_twig);
             $state = 0;
+            $cache[$file] = array('phrases' => array(), 'prefixes' => array(), 'mtime' => filemtime($file));
 
             while(!$tokens->isEOF()) {
                 $token = $tokens->next();
@@ -91,10 +131,12 @@ class PhraseFinder
                         break;
                     case 3:
                         if($type != \Twig_Token::PUNCTUATION_TYPE || ($value != ')' && $value != ',')) {
+                            $cache[$file]['prefixes'][] = array($id, $line);
                             $prefixes[] = array('id' => $id, 'filename' => $file, 'line' => $line);
                         }
-                        else
-                        {
+                        else {
+                            $cache[$file]['phrases'][] = array($id, $line);
+
                             if(!isset($by_id[$id])) {
                                 $by_id[$id] = array();
                             }
@@ -121,6 +163,7 @@ class PhraseFinder
             }
         }
 
+        file_put_contents($cache_path, json_encode($cache));
         return array($by_id, $by_file, $prefixes);
     }
 
@@ -130,12 +173,52 @@ class PhraseFinder
         $by_id = array();
         $by_file = array();
         $prefixes = array();
+        $cache_path = '/tmp/php.phrase.cache';
+
+        if(file_exists($cache_path)) {
+            $cache = json_decode(file_get_contents($cache_path), true);
+        }
+        else {
+            $cache = array();
+        }
 
         foreach($files as $file) {
+            if(isset($cache[$file]) && filemtime($file) == $cache[$file]['mtime']) {
+                foreach($cache[$file]['prefixes'] as $prefix) {
+                    list($id, $line) = $prefix;
+                    $prefixes[] = array('id' => $id, 'filename' => $file, 'line' => $line);
+                }
+
+                foreach($cache[$file]['phrases'] as $phrase) {
+                    list($id, $line) = $phrase;
+
+                    if(!isset($by_id[$id])) {
+                        $by_id[$id] = array();
+                    }
+
+                    $by_id[$id][] = array(
+                        'filename' => $file,
+                        'line' => $line
+                    );
+
+                    if(!isset($by_file[$file])) {
+                        $by_file[$file] = array();
+                    }
+
+                    $by_file[$file][] = array(
+                        'id' => $id,
+                        'line' => $line
+                    );
+                }
+
+                continue;
+            }
+
             $rawphp = file_get_contents($file);
             $tokens = token_get_all($rawphp);
             $state = 0;
             $line = 0;
+            $cache[$file] = array('phrases' => array(), 'prefixes' => array(), 'mtime' => filemtime($file));
 
             foreach($tokens as $token) {
                 if(is_array($token)) {
@@ -182,10 +265,12 @@ class PhraseFinder
                             break;
                         case 4:
                             if($token != ')' && $token != ',') {
+                                $cache[$file]['prefixes'][] = array($id, $line);
                                 $prefixes[] = array('id' => $id, 'filename' => $file, 'line' => $line);
                             }
-                            else
-                            {
+                            else {
+                                $cache[$file]['phrases'][] = array($id, $line);
+
                                 if(!isset($by_id[$id])) {
                                     $by_id[$id] = array();
                                 }
@@ -212,6 +297,7 @@ class PhraseFinder
             }
         }
 
+        file_put_contents($cache_path, json_encode($cache));
         return array($by_id, $by_file, $prefixes);
     }
 

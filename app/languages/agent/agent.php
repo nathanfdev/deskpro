@@ -16,7 +16,7 @@
   'agent.alert' => 'Alert',
   'agent.prompt' => 'Prompt',
   'agent.confirm' => 'Confirm',
-  'agent.okay' => 'Okay',
+
   'agent.merge' => 'Merge',
   'agent.approve' => 'Approve',
   'agent.disapprove' => 'Disapprove',

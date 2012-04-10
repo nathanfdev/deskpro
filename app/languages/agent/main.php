@@ -34,7 +34,7 @@
   'agent.main.wwwdeskprocom' => 'www.deskpro.com',
   'agent.main.toggle_mute' => 'Toggle mute',
   'agent.main.search_for_text_or_a_phrase' => 'Search for text or a phrase',
-  'agent.main.support_email' => 'support@deskpro.com',
+
   'agent.main.error_report_submitting' => 'Submitting error report ...',
   'agent.main.error_report_thank_you' => 'Thank you for submitting your error report.',
   'agent.main.error_report_disclaimer' => 'Please note that we do not respond to all error reports. If you have a question or require a response in regards to this error, contact us at {{email}}',

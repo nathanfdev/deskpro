@@ -24,6 +24,6 @@
   'admin.customdefabstract.display' => 'Display',
   'admin.customdefabstract.existing_values' => 'Existing Values',
   'admin.customdefabstract.notice_existing_items' => 'What should be done with the items that already have this value?',
-  'admin.customdefabstract.okay' => 'Okay',
+
   'admin.customdefabstract.this_field_lets_you_select_a_date' => 'This date field lets you select a date using a calendar widget.',
 );

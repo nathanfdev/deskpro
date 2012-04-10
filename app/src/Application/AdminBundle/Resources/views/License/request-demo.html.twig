@@ -40,7 +40,7 @@
 			<a href="{{ path('admin_license_keyfile', {email_address: email_address|default(app.user.primary_email_address) }) }}" class="install-key-file">{{ phrase('admin.license.installkey') }}</a>
 			<br />
             {% set phrase_link %}
-                <a href="mailto:support@deskpro.com" style="color: #000;">{{ phrase('admin.license.supportdeskprocom') }}</a>
+                <a href="mailto:support@deskpro.com" style="color: #000;">{{ phrase('agent.global.supportdeskprocom') }}</a>
             {% endset %}
             {{ phrase('admin.license.if_you_have_problems_with_license', {'link':phrase_link}) }}
 		</p>
