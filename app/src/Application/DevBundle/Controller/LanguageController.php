@@ -586,7 +586,7 @@ class LanguageController extends Controller
         
         if(count($parts) == 2) {
             $package = $parts[0];
-            $file = $parts[0];
+            $filename = $parts[0];
         }
         else {
             $package = $parts[0];
