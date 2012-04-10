@@ -9,13 +9,13 @@
 
 
 
-	'agent.window.new_person' => 'New Person',
-	'agent.window.new_organization' => 'New Organization',
-	'agent.window.new_article' => 'New Article',
+
+
+
 
 
 	'agent.window.new_news' => 'New News Post',
-	'agent.window.new_task' => 'New Task',
+
 	'agent.window.new_deal' => 'New Deal',
 
 

@@ -327,4 +327,10 @@
   'agent.global.friday' => 'Friday',
   'agent.global.saturday' => 'Saturday',
   'agent.global.sunday' => 'Sunday',
+  'agent.global.existing_picture' => 'Existing Picture',
+  'agent.global.host' => 'Host',
+  'agent.global.new_person' => 'New Person',
+  'agent.global.new_organization' => 'New Organization',
+  'agent.global.new_article' => 'New Article',
+  'agent.global.new_task' => 'New Task',
 );

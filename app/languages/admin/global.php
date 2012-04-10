@@ -21,7 +21,7 @@
   'admin.global.last' => 'Last',
   'admin.global.ticket_workflows' => 'Ticket Workflows',
   'admin.global.email_gateways' => 'Email Gateways',
-  'admin.global.host' => 'Host',
+
   'admin.global.secure' => 'Secure',
   'admin.global.port' => 'Port',
   'admin.global.username' => 'Username',

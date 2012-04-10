@@ -6,7 +6,7 @@
   'agent.task.linked_ticket' => 'Linked Ticket',
   'agent.task.completed_tasks' => 'Completed Tasks',
   'agent.task.my_tasks' => 'My Tasks',
-  'agent.task.new_task' => 'New Task',
+
   'agent.task.overdue' => 'Overdue',
   'agent.task.due_today' => 'Due Today',
   'agent.task.due_in_future' => 'Due In Future',

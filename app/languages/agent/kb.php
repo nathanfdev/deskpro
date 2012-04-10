@@ -16,7 +16,7 @@
   'agent.kb.drop_your_file_here_to_add_it_to' => 'Drop your file here to add it to this download',
   'agent.kb.for_ticket' => 'For Ticket',
   'agent.kb.create_article' => 'Create Article',
-  'agent.kb.new_article' => 'New Article',
+
   'agent.kb.all_articles' => 'All Articles',
   'agent.kb.event_time_ago_by_who_at_when' => '{{ago}} by {{name}} at {{date}}',
   'agent.kb.event_time_ago_at_when' => '{{ago}} at {{date}}',

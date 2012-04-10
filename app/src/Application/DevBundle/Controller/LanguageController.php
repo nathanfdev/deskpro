@@ -701,14 +701,14 @@ class LanguageController extends Controller
 
                 if(count($packages['user']) > 1) {
                     $id = 'user.global.'.$this->stringToId($k);
-                    $id_exists = isset($global[$id]) || isset($id_track[$id]);
+                    $id_exists = isset($by_id[$id]) || isset($id_track[$id]);
                     $id_track[$id] = 1;
                     $vars['dupes']['content'][] = array('data' => $k, 'id' => $id, 'exists' => $id_exists, 'ids' => $packages['user']);
                 }
 
                 if(count($packages['admin_agent']) > 1) {
                     $id = 'agent.global.'.$this->stringToId($k);
-                    $id_exists = isset($global[$id]) || isset($id_track[$id]);
+                    $id_exists = isset($by_id[$id]) || isset($id_track[$id]);
                     $id_track[$id] = 1;
                     $vars['dupes']['content'][] = array('data' => $k, 'id' => $id, 'exists' => $id_exists, 'ids' => $packages['admin_agent']);
                 }
