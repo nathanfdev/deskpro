@@ -49,7 +49,7 @@ class PhraseFinder
         $by_id = array();
         $by_file = array();
         $prefixes = array();
-        $cache_path = '/tmp/twig.phrase.cache';
+        $cache_path = DP_ROOT.'/sys/cache/twig.phrase.cache';
 
         if(file_exists($cache_path)) {
             $cache = json_decode(file_get_contents($cache_path), true);
@@ -173,7 +173,7 @@ class PhraseFinder
         $by_id = array();
         $by_file = array();
         $prefixes = array();
-        $cache_path = '/tmp/php.phrase.cache';
+        $cache_path = DP_ROOT.'/sys/cache/twig.phrase.cache';
 
         if(file_exists($cache_path)) {
             $cache = json_decode(file_get_contents($cache_path), true);
