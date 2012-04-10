@@ -603,7 +603,7 @@ class LanguageController extends Controller
                 continue;
             }
 
-            if($package == 'agent' && ($file_package != 'agent' && $file_package != 'admin')) {
+            if($package == 'agent' && $file_package == 'user') {
                 unset($files[$i]);
                 continue;
             }
