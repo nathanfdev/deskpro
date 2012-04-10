@@ -566,6 +566,7 @@
   'agent.continue' => 'Continue',
   'agent.usergroup' => 'Usergroup',
   'agent.everyone' => 'Everyone',
+  'agent.usergroup_everyone' => 'Everyone',
   'agent.flag_blue' => 'Blue',
   'agent.flag_green' => 'Green',
   'agent.flag_pink' => 'Pink',
