@@ -82,7 +82,7 @@
 							</td>
 							<td colspan="2">
 								<div class="position-input">
-									<input type="text" class="role" placeholder="{{ phrase('agent.organization.enter_position') }}" id="{{baseId}}_newmember_position" value="" />
+									<input type="text" class="role" placeholder="{{ phrase('agent.org.enter_position') }}" id="{{baseId}}_newmember_position" value="" />
 								</div>
 								<div class="controls">
 									<input type="hidden" id="{{baseId}}_newmember_person_id" value="" />
@@ -96,7 +96,7 @@
 						{% include 'AgentBundle:Organization:view-members-row.html.twig' %}
 					{% else %}
 						{% if not app.user.hasPerm('agent_people.edit') %}
-							<tr><td colspan="2">{{ phrase('agent.organization.this_organization_has_no_members') }}</td></tr>
+							<tr><td colspan="2">{{ phrase('agent.org.this_organization_has_no_members') }}</td></tr>
 						{% endif %}
 					{% endfor %}
 				</tbody>
