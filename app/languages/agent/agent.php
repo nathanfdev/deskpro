@@ -382,7 +382,6 @@
   'agent.email_address' => 'Email Address',
   'agent.add_a_label' => 'Add a label',
   'agent.set_a_position' => 'Set a position...',
-  'agent.created' => 'Created',
   'agent.never' => 'Never',
   'agent.awaiting_agent' => 'Awaiting Agent',
   'agent.filters' => 'Filters',
@@ -598,4 +597,5 @@
   'agent.feedback' => 'Feedback',
   'agent.new_ticket' => 'New Ticket',
   'agent.end_chat' => 'End Chat',
+  'agent.created' => 'Created',
 );

@@ -59,7 +59,7 @@
 			</thead>
 			<tbody>
 				<!-- PERMISSION:agent_tickets.use -->{{ _self.perm_col(phrase('admin.agents.use_tickets'), usergroup_values, 'agent_tickets', 'use') }}
-				<!-- PERMISSION:agent_tickets.create -->{{ _self.perm_col(phrase('admin.agents.create_ticket'), usergroup_values, 'agent_tickets', 'create', 'agent_tickets_use') }}
+				<!-- PERMISSION:agent_tickets.create -->{{ _self.perm_col(phrase('admin.agents.create_tickets'), usergroup_values, 'agent_tickets', 'create', 'agent_tickets_use') }}
                 {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.workflow') }}"></span>{% endset %}
 				<!-- PERMISSION:agent_tickets.reply_mass -->{{ _self.perm_col(phrase('admin.agents.widget_use_mass_actions_to_reply', {'subphrase':phrase_part}), usergroup_values, 'agent_tickets', 'reply_mass', 'agent_tickets_use') }}
                 {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.workflow') }}"></span>{% endset %}
@@ -170,10 +170,10 @@
 				<!-- PERMISSION:agent_people.delete -->{{ _self.perm_col(phrase('admin.agents.delete_people'), usergroup_values, 'agent_people', 'delete') }}
 			</tbody>
 			<tbody>
-				<!-- PERMISSION:agent_org.create -->{{ _self.perm_col(phrase('admin.agents.create_organization'), usergroup_values, 'agent_org', 'create') }}
-				<!-- PERMISSION:agent_org.edit -->{{ _self.perm_col(phrase('admin.agents.edit_organization'), usergroup_values, 'agent_org', 'edit') }}
+				<!-- PERMISSION:agent_org.create -->{{ _self.perm_col(phrase('admin.agents.create_organizations'), usergroup_values, 'agent_org', 'create') }}
+				<!-- PERMISSION:agent_org.edit -->{{ _self.perm_col(phrase('admin.agents.edit_organizations'), usergroup_values, 'agent_org', 'edit') }}
 				<!-- PERMISSION:agent_org.notes -->{{ _self.perm_col(phrase('admin.agents.add_notes_organization'), usergroup_values, 'agent_org', 'edit') }}
-				<!-- PERMISSION:agent_org.delete -->{{ _self.perm_col(phrase('admin.agents.delete_organization'), usergroup_values, 'agent_org', 'delete') }}
+				<!-- PERMISSION:agent_org.delete -->{{ _self.perm_col(phrase('admin.agents.delete_organizations'), usergroup_values, 'agent_org', 'delete') }}
 			</tbody>
 		</table>
 	</div>

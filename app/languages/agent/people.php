@@ -66,19 +66,19 @@
   'agent.people.since' => 'Since',
   'agent.people.on_page' => 'on page',
 
-  'agent.people.number_of_tickets' => 'Number of Tickets',
-  'agent.people.numberof_tickets' => 'Number of tickets',
-  'agent.people.select' => 'Select',
-  'agent.people.simple' => 'Simple',
-  'agent.people.find_person' => 'Find Person',
-  'agent.people.no_results_were_found' => 'No results were found',
-  'agent.people.view_all_results' => 'View all results',
-  'agent.people.no_people_match_your_criteria' => 'No people match your criteria',
-  'agent.people.date_craeted_newestoldest' => 'Date Craeted (Newest-Oldest)',
-  'agent.people.date_craeted_oldestnewest' => 'Date Craeted (Oldest-Newest)',
-  'agent.people.you_havent_labeled_any_tickets_load_a_ticket' => 'You haven\'t labeled any tickets. Load a ticket to label it.',
-  'agent.people.person_id' => 'Person ID',
-  'agent.people.find_by_above_criteria' => 'Find by the above criteria',
-  'agent.people.no_email' => 'No email',
-  'agent.people.showing_x_of_y_people' => 'Showing {{display_count}} of {{count}} people|Showing {{display_count}} of {{count}} people',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 );

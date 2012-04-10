@@ -131,7 +131,7 @@
   'agent.tickets.enter_an_email_address' => 'Enter an email address...',
   'agent.tickets.click_to_release_hold' => 'Click to release hold',
   'agent.tickets.no_flag' => 'No flag',
-  'agent.tickets.created' => 'Created',
+
   'agent.tickets.sending' => 'Sending',
   'agent.tickets.send_reply' => 'Send Reply',
   'agent.tickets.placeholder_type_a_result' => 'Start typing a reply...',

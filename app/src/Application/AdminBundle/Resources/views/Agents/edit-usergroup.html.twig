@@ -193,7 +193,7 @@
 							</tr>
 							<tr class="permrow">
 								<td class="title">
-									{{ phrase('admin.agents.validate_users_and_user_email_addresses') }}
+									{{ phrase('admin.agents.validate_users_and_emails') }}
 								</td>
 								{{ _self.perm_col(usergroup_values, 'people', 'validate') }}
 							</tr>
@@ -243,19 +243,19 @@
 						</thead>
 						<tbody>
 							<tr class="permrow">
-								<td class="title">{{ phrase('admin.agents.use_chat_system') }}</td>
+								<td class="title">{{ phrase('admin.agents.use_chat') }}</td>
 								{{ _self.perm_col(usergroup_values, 'chat', 'use') }}
 							</tr>
 							<tr>
-								<td class="title">{{ phrase('admin.agents.can_see_new_unassigned_chats') }}</td>
+								<td class="title">{{ phrase('admin.agents.view_new_unassigned_chats') }}</td>
 								{{ _self.perm_col(usergroup_values, 'chat', 'view_unassigned') }}
 							</tr>
 							<tr>
-								<td class="title">{{ phrase('admin.agents.can_see_chats_assigned_to_others') }}</td>
+								<td class="title">{{ phrase('admin.agents.view_others_chats') }}</td>
 								{{ _self.perm_col(usergroup_values, 'chat', 'view_others') }}
 							</tr>
 							<tr>
-								<td class="title">{{ phrase('admin.agents.can_delete_chat_transcripts') }}</td>
+								<td class="title">{{ phrase('admin.agents.delete_chat_transcripts') }}</td>
 								{{ _self.perm_col(usergroup_values, 'chat', 'delete') }}
 							</tr>
 						</tbody>

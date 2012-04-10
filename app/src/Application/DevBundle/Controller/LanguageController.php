@@ -270,6 +270,10 @@ class LanguageController extends Controller
             $filename = $parts[1];
         }
 
+        if(!file_exists($rootdir.'/'.$package.'/'.$filename.'.php')) {
+            die('Could not load language file.');
+        }
+
         $files = $by_content[$content];
 
         foreach($files as $i=>$file) {

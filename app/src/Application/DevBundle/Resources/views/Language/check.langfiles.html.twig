@@ -1,3 +1,4 @@
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js"></script>
 <a href="{{ path('dev_lang_index') }}">Back</a>
 <h2>Duplicates by id</h2>
 
@@ -24,11 +25,11 @@
 
     {% for id in content.ids %}
     {% set row = by_id[id][0] %}
-    <tr><td>{{row.filename}}</td><td>{{row.line}}</td><td>{{id}}</td></tr>
+    <tr><td>{{row.filename}}</td><td>{{row.line}}</td><td onclick="$('input[type=text]',$(this).parent().parent().parent().parent()).val($(this).text())">{{id}}</td></tr>
     {% endfor %}
 
 </table>
-    Id: <input type="text" name="id" value="{{content.id}}" /> {% if content.exists %}(exists){% endif %}
+    Id: <input type="text" name="id" size="100" value="{{content.id}}" /> {% if content.exists %}(exists){% endif %}
     <input type="hidden" name="content" value="{{content.data}}">
     <input type="submit" value="Globalise">
  </form>
