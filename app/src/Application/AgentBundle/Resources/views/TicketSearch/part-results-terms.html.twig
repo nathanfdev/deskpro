@@ -1,7 +1,7 @@
 <div class="search-form">
 	<form action="{{ path('agent_ticketsearch_runcustomfilter') }}" method="post" id="tickets_search_form">
 		<div class="search-terms"></div>
-		<div class="term"><span class="add-term">{{ phrase('agent.tickets.add_term_widget') }}</span> {{ phrase('agent.add_a_new_criteria') }}</div>
+		<div class="term"><span class="add-term">{{ phrase('agent.widget_add') }}</span> {{ phrase('agent.add_a_new_criteria') }}</div>
 		<div class="term">
 			{{ phrase('agent.order_by') }}
 			<select name="filter[order_by]">

@@ -1,10 +1,9 @@
-<?php return array(
-	'agent.login.email' => 'Email',
-	'agent.login.login_failed' => 'Invalid login. Please try again.',
-	'agent.login.enter_password' => 'Enter your password',
-	'agent.login.has_logged_out' => 'You have been logged out successfully.',
+<?php return array (
+  'agent.login.email' => 'Email',
+  'agent.login.login_failed' => 'Invalid login. Please try again.',
+  'agent.login.enter_password' => 'Enter your password',
+  'agent.login.has_logged_out' => 'You have been logged out successfully.',
   'agent.login.browser_requirements' => 'Browser Requirements',
-  'agent.login.the_admin_and_agent_interfaces_require_a_modern' => 'The admin and agent interfaces require a modern browser. We have detected that your browser is too outdated to use DeskPRO. Upgrade your browser to the latest version, or try downloading an alternative browser.',
   'agent.login.the_following_browsers_are_supported' => 'The following browsers are supported',
   'agent.login.mozilla_firefox' => 'Mozilla Firefox',
   'agent.login.google_chrome' => 'Google Chrome',

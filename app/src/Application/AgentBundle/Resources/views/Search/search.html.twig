@@ -20,7 +20,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.Search';
 			{% endfor %}
 		{% endif %}
 		{% if results.feedback %}
-			<header class="type-header">{{ phrase('agent.search.feedback') }}</header>
+			<header class="type-header">{{ phrase('agent.feedback') }}</header>
 			{% for res in results.feedback %}
 				{% include 'AgentBundle:Search:search-row-feedback.html.twig' with {feedback: res.object} %}
 			{% endfor %}

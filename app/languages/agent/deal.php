@@ -25,7 +25,7 @@
   'agent.deal.assigned_to' => 'Assigned To',
   'agent.deal.new_taskk' => 'New Task(k)',
   'agent.deal.edit_custome_fields' => 'Edit Custome Fields',
-  'agent.deal.percent_of' => '% of',
+
   'agent.deal.enter_note_' => 'Enter note ...',
   'agent.deal.pending_review' => 'Pending Review:',
   'agent.deal.closing' => 'Closing:',

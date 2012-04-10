@@ -1,7 +1,7 @@
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTicket';
-pageMeta.title = '{{ phrase('agent.tickets.newticket') }}';
+pageMeta.title = '{{ phrase('agent.new_ticket') }}';
 pageMeta.ticket_id = 0;
 
 pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'ticket'}) }}';

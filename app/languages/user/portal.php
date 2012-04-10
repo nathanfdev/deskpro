@@ -30,5 +30,5 @@
   'user.portal.our_staff' => 'Our Staff',
   'user.portal.online_staff' => 'Online Staff',
   'user.portal.twitter_message' => 'Message',
-  'user.portal.twitter_message_description' => 'Description'
+
 );

@@ -119,7 +119,6 @@
   'user.find' => 'Find',
   'user.articles' => 'Articles',
   'user.downloads' => 'Downloads',
-  'user.feedback' => 'Feedback',
   'user.deskpro' => 'DeskPRO',
   'user.resend_validation_email' => 'Resend Validation Email',
   'user.profile' => 'Profile',
@@ -152,7 +151,6 @@
   'user.thank_you' => 'Thank you',
   'user.please_choose_a_category' => 'Please choose a category',
   'user.summary' => 'Summary',
-  'user.description' => 'Description',
   'user.cancel' => 'Cancel',
   'user.send' => 'Send',
   'user.uploading' => 'Uploading:',
@@ -212,5 +210,7 @@
   'user.completed' => 'Completed',
   'user.declined' => 'Declined',
   'user.accepted' => 'Accepted',
-  'user.view_and_manage_ticket_online' => 'View and manage this ticket online:'
+  'user.view_and_manage_ticket_online' => 'View and manage this ticket online:',
+  'user.description' => 'Description',
+  'user.feedback' => 'Feedback',
 );

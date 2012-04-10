@@ -1,6 +1,6 @@
 <?php return array(
 	'user.feedback.error_not_found' => 'The feedback you\'re looking for could not be found. It may have been deleted.',
-	'user.feedback.section_name' => 'Feedback',
+
 	'user.feedback.status_all' => 'All',
 	'user.feedback.status_new' => 'New',
 	'user.feedback.status_active' => 'Active',
