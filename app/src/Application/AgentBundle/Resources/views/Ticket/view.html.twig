@@ -102,7 +102,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			{% endif %}
 		{% else %}
 			{{ phrase('agent.tickets.hidden_because') }}
-			<span>{{ phrase('core_tickets.hidden_status_' ~ ticket.hidden_status) }}</span><br />
+			<span>{{ phrase('agent.tickets.hidden_status_' ~ ticket.hidden_status) }}</span><br />
 			{{ phrase('agent.tickets.hidden_explain') }}
 		{% endif %}
 		</article>

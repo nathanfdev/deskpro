@@ -29,6 +29,8 @@
   'agent.global.ucfirst_delete' => 'Delete',
   'agent.global.types' => 'Types',
   'agent.global.all' => 'All',
+  'agent.global.any' => 'any',
+  'agent.global.visible' => 'visible',
   'agent.global.tickets' => 'Tickets',
   'agent.global.articles' => 'Articles',
   'agent.global.labels' => 'Labels',

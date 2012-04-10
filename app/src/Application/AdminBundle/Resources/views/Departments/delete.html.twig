@@ -24,7 +24,7 @@
 
 {% if ticket_count > 0 %}
 	<p>
-        {% set phrase_params = {'tickets':phrase('admin.departments.count_tickets', {'count':ticket_count}), 'chats':phrase(''admin.departments.count_chats'', {'count':chat_count})} %}
+        {% set phrase_params = {'tickets':phrase('admin.departments.count_tickets', {'count':ticket_count}), 'chats':phrase('admin.departments.count_chats', {'count':chat_count})} %}
         {{ phrase('admin.departments.there_are_tickets_and_chats', phrase_params) }}
 	<p>
 		{{ phrase('admin.departments.please_choose_a_subdepartment_to_move_them_into') }}:

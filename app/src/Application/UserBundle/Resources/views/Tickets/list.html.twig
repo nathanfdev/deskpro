@@ -21,7 +21,7 @@
 							<ul class="dp-meta">
 								<li>{{ ticket.date_created|date('M j Y') }}</li>
 								{% if ticket.department %}
-									<li>{{ phrase('user.global.department') }}: {{ phrase(ticket.department) }}</li>
+									<li>{{ phrase('user.global.department') }}: {{ticket.department.title}}</li>
 								{% endif %}
 								{% if last_messages[ticket.id] %}
 									<li>
@@ -60,7 +60,7 @@
 							<h4><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id }) }}">{{ ticket.subject }}</a></h4>
 							<ul class="dp-meta">
 								<li>{{ ticket.date_created|date('M j Y') }}</li>
-								<li>{{ phrase('user.global.department') }}: {{ phrase(ticket.department) }}</li>
+								<li>{{ phrase('user.global.department') }}: {{ticket.department.title}}</li>
 								{% if last_messages[ticket.id] %}
 									<li>
 										{% if last_messages[ticket.id].person.id == app.user.id %}

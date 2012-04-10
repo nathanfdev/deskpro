@@ -640,7 +640,7 @@ class FeedbackController extends AbstractController
 
 			$grouped_info[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
 		} else {
-			$status_name = App::getTranslator()->phrase('core_feedback.status_' . $status);
+			$status_name = App::getTranslator()->phrase('agent.feedback.status_' . $status);
 			$grouped_key = $status;
 			$grouped_info = array();
 

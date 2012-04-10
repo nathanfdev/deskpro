@@ -42,29 +42,29 @@ ul.attachment-list > li img.preview {
 <table cellspacing="5" cellpadding="0" border="0" width="100%"><tr>
 	<td>
 		<small>{{ phrase('user.tickets.department') }}</small><br />
-		{{ phrase(ticket.department) }}
+		{{ticket.department.title}}
 	</td>
 	{% if ticket.category %}
 	<td>
 		<small>{{ phrase('user.tickets.category') }}</small><br />
-		{{ phrase(ticket.category) }}
+		{{ticket.category.title}}
 	</td>
 	{% endif %}
 	{% if ticket.product %}
 	<td>
 		<small>{{ phrase('user.tickets.product') }}</small><br />
-		{{ phrase(ticket.product) }}
+		{{ticket.product.title}}
 	</td>
 	{% endif %}
 	{% if ticket.priority %}
 	<td>
 		<small>{{ phrase('user.tickets.priority') }}</small><br />
-		{{ phrase(ticket.priority) }}
+		{{ticket.priority.title}}
 	</td>
 	{% endif %}
 	<td>
 		<small>{{ phrase('user.tickets.status') }}</small><br />
-		{{ phrase('core_tickets.status_' ~ ticket.status) }}
+		{{ phrase('user.tickets.status_' ~ ticket.status) }}
 	</td>
 	<td>
 		<small>{{ phrase('user.tickets.agent') }}</small><br />
