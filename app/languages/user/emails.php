@@ -6,7 +6,6 @@
   'user.emails.subj_newfeedback_validate' => 'Thank you for submitting your feedback (validation required)',
   'user.emails.subj_newcomment_validate' => 'Thank you for your comment',
   'user.emails.subject_new_ticket_participant'    => '{{ticket_subject}}',
-
   'user.emails.an_agent_has_reset_your_account_password_you' => 'An agent has reset your account password. You can log in with these credentials',
   'user.emails.thank_you_for_chatting_with_us_here_is' => 'Thank you for chatting with us. Here is your chat transcript.',
   'user.emails.thank_you_for_for_comment' => 'Thank you for your comment on {{link}}.',

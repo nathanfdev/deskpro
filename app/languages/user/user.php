@@ -212,5 +212,5 @@
   'user.completed' => 'Completed',
   'user.declined' => 'Declined',
   'user.accepted' => 'Accepted',
-  'user.view_and_manage_ticket_online' => 'View and manage this ticket online:',
+  'user.view_and_manage_ticket_online' => 'View and manage this ticket online:'
 );

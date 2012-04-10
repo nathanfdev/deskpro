@@ -72,13 +72,10 @@
     'user.tickets.manage_participants' => 'Manage Participants',
     'user.tickets.category' => 'Category',
     'user.tickets.priority' => 'Priority',
-
-
     'user.tickets.status' => 'Status',
     'user.tickets.agent' => 'Agent',
     'user.tickets.attachment_max_size' => 'Max size',
     'user.tickets.check_you_email' => 'check your email',
-
     'user.tickets.modify_ticket' => 'Modify Ticket',
     'user.tickets.type_your_reply_here' => 'Type your reply here...',
 );
