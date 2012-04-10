@@ -27,7 +27,7 @@
 						<div class="dp-form">
 							<div class="dp-form-row">
 								<div class="dp-form-label">
-									<label>{{ phrase('user.ticket.leave_feedback_title') }}</label>
+									<label>{{ phrase('user.tickets.leave_feedback_title') }}</label>
 								</div>
 								<div class="dp-form-input">
 									<label><input type="radio" name="rating" value="1" {% if exist_feedback.rating == 1 %}checked="checked"{% endif %} /> {{ phrase('user.tickets.rate_helpful') }}</label>
@@ -38,7 +38,7 @@
 
 							<div class="dp-form-row">
 								<div class="dp-form-label">
-									<label>{{ phrase('user.ticket.leave_feedback_text_title') }}</label>
+									<label>{{ phrase('user.tickets.leave_feedback_text_title') }}</label>
 								</div>
 								<div class="dp-form-input">
 									<textarea name="message" style="width: 95%; height: 60px;">{{ exist_feedback.message }}</textarea>
