@@ -51,7 +51,7 @@ class Language
         return new FileFinder();
     }
 
-    public static function getPhraseFinder($container)
+    public static function GetPhraseFinder($container)
     {
         return new PhraseFinder($container);
     }

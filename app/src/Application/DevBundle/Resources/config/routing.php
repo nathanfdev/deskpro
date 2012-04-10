@@ -97,23 +97,16 @@ $collection->add('dev_lang_index', new Route(
 	array()
 ));
 
-$collection->add('dev_lang_check_langfiles', new Route(
-	'/lang/check/langfiles',
-	array('_controller' => 'DevBundle:Language:checkLanguageFiles'),
+$collection->add('dev_lang_find_problems', new Route(
+	'/lang/find/problems',
+	array('_controller' => 'DevBundle:Language:findProblems'),
 	array(),
 	array()
 ));
 
-$collection->add('dev_lang_find_phrases_php', new Route(
-	'/lang/find/phrases/php',
-	array('_controller' => 'DevBundle:Language:findPhrasesInPHPFiles'),
-	array(),
-	array()
-));
-
-$collection->add('dev_lang_find_phrases_twig', new Route(
-	'/lang/find/phrases/twig',
-	array('_controller' => 'DevBundle:Language:findPhrasesInTwigFiles'),
+$collection->add('dev_lang_reformat_langfiles', new Route(
+	'/lang/reformat/langfiles',
+	array('_controller' => 'DevBundle:Language:reformatLanguageFiles'),
 	array(),
 	array()
 ));

@@ -1,8 +1,11 @@
+{% if message is defined %}
+<p>{{message}}</p>
+{% endif %}
+
 <ul>
-    <li><a href="{{ path('dev_lang_find_phrases_php') }}">Find phrases in php files</a></li>
-    <li><a href="{{ path('dev_lang_find_phrases_twig') }}">Find phrases in twig files</a></li>
+    <li><a href="{{ path('dev_lang_find_problems') }}">Find problems</a></li>
     <hr />
-    <li><a href="{{ path('dev_lang_check_langfiles') }}">Check language files</a></li>
+    <li><a href="{{ path('dev_lang_export_all_po') }}" target="_blank">Export all to a single PO file (for debugging)</a></li>
     <hr />
-    <li><a href="{{ path('dev_lang_export_all_po') }}" target="_blank">Export all to PO</a></li>
+    <li><a href="{{ path('dev_lang_reformat_langfiles') }}" target="_blank">Reformat language files</a></li>
 </ul>

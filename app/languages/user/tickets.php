@@ -40,7 +40,7 @@
     'user.tickets.list_last_activity_by_x'           => 'Last activity by {{name}}',
     'user.tickets.list_last_activity_by_you'         => 'Last activity by you',
     'user.tickets.logging_in'                        => 'Logging in...',
-    'user.tickets.login_if_registered'               => 'If you are a registered user, please {{link}}.',
+
     'user.tickets.login_or_close'                    => '{{link1}} or {{link2}}',
     'user.tickets.lost_password_link'                => 'Lost password?',
     'user.tickets.manage_participants'               => 'Manage Participants',
