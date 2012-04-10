@@ -63,7 +63,13 @@ class LanguageController extends Controller
             $lines = explode("\n", $_POST['replacements']);
             $replace = array();
 
-            foreach($lines as $line) {
+            foreach($lines as $i=>$line) {
+                $line = trim($line);
+
+                if(empty($line)) {
+                    continue;
+                }
+
                 $old_new = explode(' ', $line);
 
                 if(count($old_new) == 0) {
@@ -71,7 +77,7 @@ class LanguageController extends Controller
                 }
 
                 if(count($old_new) != 2) {
-                    die('Must have a pair!');
+                    die('Must have a pair at line '.$i.'!');
                 }
 
                 $replace[] = array($old_new[0], $old_new[1]);
