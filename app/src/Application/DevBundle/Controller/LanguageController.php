@@ -337,7 +337,7 @@ class LanguageController extends Controller
         set_time_limit(0);
 
         if(isset($_POST['refactor'])) {
-            $files = Languages::GetFileFinder()->getLanguageFileList();
+            $files = Language::GetFileFinder()->getLanguageFileList();
 
             foreach($files as $file) {
                 $phrases = require($file);
@@ -354,11 +354,11 @@ class LanguageController extends Controller
                     $pairs[$id] = $text;
                 }
 
-                $length = max($lengths)+1;
+                $length = max($lengths);
 
                 foreach($pairs as $id=>$text) {
-                    $id = str_pad($id, $length - strlen($id));
-                    $data .= "    {$id}=>{$text}\n";
+                    $id = str_pad($id, $length);
+                    $data .= "    {$id} => {$text},\n";
                 }
 
                 $data .= ');';
