@@ -4,9 +4,9 @@
      <ul>
          <li><a href="{{ path('admin_usergroups') }}">{{ phrase('agent.usergroups') }}</a></li>
 		 {% if usergroup.id %}
-		 	<li>{{ phrase('admin.usergroups.edit_usergroup') }}</li>
+		 	<li>{{ phrase('admin.user_groups.edit_usergroup') }}</li>
 		 {% else %}
-		 	<li>{{ phrase('admin.usergroups.new_usergroup') }}</li>
+		 	<li>{{ phrase('admin.user_groups.new_usergroup') }}</li>
 		 {% endif %}
      </ul>
 {% endblock %}
@@ -30,7 +30,7 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('admin.usergroups.note_description') }}</label>
+				<label>{{ phrase('admin.user_groups.note_description') }}</label>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.note, {'attr': {'style': 'height: 50px'}}) }}
@@ -42,7 +42,7 @@
 				<label>{{ phrase('agent.number_of_members') }}</label>
 			</div>
 			<div class="dp-form-input">
-				{{ member_count|default('0') }} (<a href="{{ path('admin_usergroups_browse', {'id': usergroup.id})}}">{{ phrase('admin.usergroups.browse') }}</a>)
+				{{ member_count|default('0') }} (<a href="{{ path('admin_usergroups_browse', {'id': usergroup.id})}}">{{ phrase('admin.user_groups.browse') }}</a>)
 			</div>
 		</div>
 	</div>
@@ -59,7 +59,7 @@
 
 <footer class="controls">
 	<div class="is-not-loading">
-		<button class="clean-white">{{ phrase('admin.usergroups.save_usergroup') }}</button>
+		<button class="clean-white">{{ phrase('admin.user_groups.save_usergroup') }}</button>
 	</div>
 	<div class="is-loading">
 		<div class="loading-icon-flat">&nbsp;</div>
@@ -71,7 +71,7 @@
 
 {% if usergroup.id and usergroup.id != 1 %}
 <div class="delete-link-wrap">
-	<a href="{{ path('admin_usergroups_delete', {'id': usergroup.id, 'auth': security_token('delete_usergroup') }) }}" onclick="return confirm('{{ phrase('admin.usergroups.are_you_sure_delete_usergroup') }}');">{{ phrase('agent.delete') }}</a>
+	<a href="{{ path('admin_usergroups_delete', {'id': usergroup.id, 'auth': security_token('delete_usergroup') }) }}" onclick="return confirm('{{ phrase('admin.user_groups.are_you_sure_delete_usergroup') }}');">{{ phrase('agent.delete') }}</a>
 </div>
 {% endif %}
 

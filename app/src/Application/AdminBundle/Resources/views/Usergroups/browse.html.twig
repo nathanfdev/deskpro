@@ -6,7 +6,7 @@
 		 {% if usergroup.id %}
          	<li><a href="{{ path('admin_usergroups_edit', {'id': usergroup.id}) }}">{{ usergroup.title }}</a></li>
 		 {% endif %}
-         <li>{{ phrase('admin.usergroups.browse_members') }}</li>
+         <li>{{ phrase('admin.user_groups.browse_members') }}</li>
      </ul>
 {% endblock %}
 {% block page %}
@@ -19,7 +19,7 @@
 				<th style="text-align:left">&nbsp; {{ phrase('agent.name') }}</th>
 				<th style="text-align:left">&nbsp; {{ phrase('agent.organization') }}</th>
 				<th style="text-align:left">&nbsp; {{ phrase('agent.email_address') }}</th>
-				<th style="text-align:left">&nbsp; {{ phrase('admin.usergroups.date_registered') }}</th>
+				<th style="text-align:left">&nbsp; {{ phrase('admin.user_groups.date_registered') }}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -51,7 +51,7 @@
 
 {% else %}
 	<p>
-		{{ phrase('admin.usergroups.there_are_no_users_to_show') }}
+		{{ phrase('admin.user_groups.there_are_no_users_to_show') }}
 	</p>
 {% endif %}
 

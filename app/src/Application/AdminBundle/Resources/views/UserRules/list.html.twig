@@ -7,11 +7,11 @@
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li class="add"><a href="{{ path('admin_userrules_new') }}">{{ phrase('admin.userrules.add_new_rule') }}</a></li>
+			<li class="add"><a href="{{ path('admin_userrules_new') }}">{{ phrase('admin.user_rules.add_new_rule') }}</a></li>
 		</ul>
 	</nav>
 	<ul>
-		<li>{{ phrase('admin.userrules.user_rules') }}</li>
+		<li>{{ phrase('admin.user_rules.user_rules') }}</li>
 	</ul>
 {% endblock %}
 {% block page %}
@@ -19,7 +19,7 @@
 	<table width="100%">
 		<thead>
 			<tr>
-				<th style="text-align:left">&nbsp; {{ phrase('admin.userrules.match') }}</th>
+				<th style="text-align:left">&nbsp; {{ phrase('admin.user_rules.match') }}</th>
 				<th style="text-align:center" width="180">{{ phrase('agent.actions') }}</th>
 				<th style="text-align:left" width="50">&nbsp;</th>
 			</tr>
@@ -31,8 +31,8 @@
 						{% for p in rule.email_patterns %}{{ p }}{% if not loop.last %},{% endif %}{% endfor %}
 					</td>
 					<td>
-						{% if rule.add_usergroup %}{{ phrase('admin.userrules.add_to_usergroup') }} {{ rule.add_usergroup.title }}<br />{% endif %}
-						{% if rule.add_organization %}{{ phrase('admin.userrules.add_to_organization') }} {{ rule.add_organization.title }}{% endif %}
+						{% if rule.add_usergroup %}{{ phrase('admin.user_rules.add_to_usergroup') }} {{ rule.add_usergroup.title }}<br />{% endif %}
+						{% if rule.add_organization %}{{ phrase('admin.user_rules.add_to_organization') }} {{ rule.add_organization.title }}{% endif %}
 					</td>
 					<td style="padding: 3px 3px 0 0; text-align: right;">
 						<a href="{{ path('admin_userrules_edit', {rule_id:rule.id}) }}"><span class="btn-edit-gear"></span></a>
@@ -42,7 +42,7 @@
 				<tr>
 			 		<td colspan="3">
 						<p style="text-align: center">
-							{{ phrase('admin.userrules.you_havent_created_any_user_rules_yet') }}
+							{{ phrase('admin.user_rules.you_havent_created_any_user_rules_yet') }}
 						</p>
 					</td>
 				</tr>
@@ -52,13 +52,13 @@
 </div><br /><br />
 
 {% if org_domains|length %}
-	<p>{{ phrase('admin.userrules.notice_organisation_domains') }}</p>
+	<p>{{ phrase('admin.user_rules.notice_organisation_domains') }}</p>
 	<div class="check-grid item-list">
 	<table width="100%">
 		<thead>
 			<tr>
 				<th style="text-align:left">&nbsp; {{ phrase('agent.organization') }}</th>
-				<th style="text-align:left">{{ phrase('admin.userrules.domains') }}</th>
+				<th style="text-align:left">{{ phrase('admin.user_rules.domains') }}</th>
 			</tr>
 		</thead>
 		<tbody>

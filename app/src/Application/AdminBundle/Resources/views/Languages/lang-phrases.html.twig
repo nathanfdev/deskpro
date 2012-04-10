@@ -6,7 +6,7 @@
 {% endblock %}
 {% block pagebar %}
      <ul>
-		<li><a href="{{ path('admin_langs') }}">{{ phrase('admin.global.languages') }}</a></li>
+		<li><a href="{{ path('admin_langs') }}">{{ phrase('admin.general.languages') }}</a></li>
 		<li>{{ language.title }}</li>
 		<li>{{ phrase('admin.languages.phrasegroup_' ~ group|replace({'.': '_'})) }}</li>
      </ul>

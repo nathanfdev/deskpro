@@ -24,13 +24,13 @@
 	</form>
 </div>
 
-<h1 style="font-size: 13px">{{ phrase('admin.global.outgoing_email_accounts') }}</h1>
+<h1 style="font-size: 13px">{{ phrase('admin.general.outgoing_email_accounts') }}</h1>
 <div class="check-grid item-list">
 	<table width="100%">
 		<thead>
 			<tr>
 				<th style="text-align:left">&nbsp; {{ phrase('admin.gateway.use_criteria') }}</th>
-				<th style="text-align:left">{{ phrase('admin.global.account') }}</th>
+				<th style="text-align:left">{{ phrase('admin.general.account') }}</th>
 				<th style="text-align:left">{{ phrase('admin.gateway.backup_account') }}</th>
 				<th style="text-align:left" width="10">&nbsp;</th>
 			</tr>
@@ -49,7 +49,7 @@
 						{% if transport.backup_transport_type %}
 							{% if transport.backup_transport_type == 'smtp' %}{{ transport.backup_transport_options.host }}:{{ transport.backup_transport_options.username }}
 							{% elseif transport.backup_transport_type == 'gmail' %}{{ phrase('admin.gateway.from_google', {'pattern':transport.backup_transport_options.username}) }}
-							{% elseif transport.backup_transport_type == 'mail' %}{{ phrase('admin.global.php_mail') }}
+							{% elseif transport.backup_transport_type == 'mail' %}{{ phrase('admin.general.php_mail') }}
 							{% else %}{{ transport.backup_transport_type }}
 							{% endif %}
 						{% else %}

@@ -7,7 +7,7 @@
 		</ul>
 	</nav>
 	<ul>
-		<li><a href="{{ path('admin_emailgateways') }}">{{ phrase('admin.global.email_gateways') }}</a></li>
+		<li><a href="{{ path('admin_emailgateways') }}">{{ phrase('admin.general.email_gateways') }}</a></li>
 	</ul>
 {% endblock %}
 {% block sidebar_right %}
@@ -17,7 +17,7 @@
 			<div class="controls">
 				<a class="clean-white small" href="{{ path('admin_emailtrans_newaccount') }}">{{ phrase('agent.new') }}</a>
 			</div>
-			<h4>{{ phrase('admin.global.outgoing_email_accounts') }}</h4>
+			<h4>{{ phrase('admin.general.outgoing_email_accounts') }}</h4>
 		</header>
 		<article>
 			{% if all_transports|length > 1 %}{# > 1 because 1 is always the 'all' transport #}
@@ -77,7 +77,7 @@
 	<table width="100%">
 		<thead>
 			<tr>
-				<th style="text-align:left">&nbsp; {{ phrase('admin.global.account') }}</th>
+				<th style="text-align:left">&nbsp; {{ phrase('admin.general.account') }}</th>
 				<th style="text-align:left" width="10">&nbsp;</th>
 			</tr>
 		</thead>

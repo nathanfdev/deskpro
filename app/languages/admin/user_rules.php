@@ -1,0 +1,15 @@
+<?php return array (
+  'admin.user_rules.user_rules' => 'User Rules',
+  'admin.user_rules.new_rule' => 'New Rule',
+  'admin.user_rules.edit_rule' => 'Edit Rule',
+  'admin.user_rules.email_address_pattern' => 'Email Address Pattern',
+  'admin.user_rules.when_matching_add_user_to_usergroup' => 'When matching, add user to usergroup',
+  'admin.user_rules.add_new_rule' => 'Add New Rule',
+  'admin.user_rules.add_to_usergroup' => 'Add to usergroup',
+  'admin.user_rules.add_to_organization' => 'Add to organization',
+  'admin.user_rules.you_havent_created_any_user_rules_yet' => 'You haven\'t created any user rules yet.',
+  'admin.user_rules.domains' => 'Domains',
+  'admin.user_rules.match' => 'Match',
+  'admin.user_rules.enter_a_pattern_one_per_line_example_examplecom' => 'Enter a pattern, one per line. Example: *@example.com',
+  'admin.user_rules.notice_organisation_domains' => 'These organizations have domain name associations. Users that register with an email address that match any of these domains will be added to the appropriate organization. You can add or modify these domain associations by editing the organization from the agent interface.',
+);

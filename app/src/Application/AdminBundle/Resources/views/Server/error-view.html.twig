@@ -1,8 +1,8 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_server_error_logs') }}">{{ phrase('admin.global.error_logs') }}</a></li>
-		<li>{{ phrase('admin.global.error_log_id', {'id':log.id}) }}</li>
+		<li><a href="{{ path('admin_server_error_logs') }}">{{ phrase('admin.general.error_logs') }}</a></li>
+		<li>{{ phrase('admin.general.error_log_id', {'id':log.id}) }}</li>
 	</ul>
 {% endblock %}
 {% block page %}
@@ -28,7 +28,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.global.log_name') }}</label>
+			<label>{{ phrase('admin.general.log_name') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ log.log_name }}
@@ -37,7 +37,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.global.sn_code') }}</label>
+			<label>{{ phrase('admin.general.sn_code') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ log.session_name|default(phrase('agent.none')) }}
@@ -73,7 +73,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.global.additional_data') }}</label>
+			<label>{{ phrase('admin.general.additional_data') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<textarea style="width:99%; height:200px; font-family:Monaco, 'Courier New', courier, monospace;">{{data_structure}}</textarea>

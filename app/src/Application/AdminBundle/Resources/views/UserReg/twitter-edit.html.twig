@@ -2,16 +2,16 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
      <ul>
-         <li><a href="{{ path('admin_userreg_options') }}">{{ phrase('admin.registration.registration_settings') }}</a></li>
-		 <li>{{ phrase('admin.registration.twitter_setup') }}</li>
+         <li><a href="{{ path('admin_userreg_options') }}">{{ phrase('admin.user_registration.registration_settings') }}</a></li>
+		 <li>{{ phrase('admin.user_registration.twitter_setup') }}</li>
      </ul>
 {% endblock %}
 {% block prepage %}
 	<div style="padding: 10px 10px 0 10px;">
 		{{ design.helpbox() }}
 			<p>
-				{{ phrase('admin.registration.to_enable_twitter_integration_you_must_register_with') }}
-				<a href="https://dev.twitter.com/apps/new">{{ phrase('admin.registration.click_here_here_to_sign_up_now') }}</a>.
+				{{ phrase('admin.user_registration.to_enable_twitter_integration_you_must_register_with') }}
+				<a href="https://dev.twitter.com/apps/new">{{ phrase('admin.user_registration.click_here_here_to_sign_up_now') }}</a>.
 			</p>
 		{{ design.helpbox_end() }}
 	</div>
@@ -24,19 +24,19 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.registration.consumer_key') }}</label>
+			<label>{{ phrase('admin.user_registration.consumer_key') }}</label>
 		</div>
 		<div class="dp-form-input">
-			<input type="text" name="twitter[consumer_key]" value="{{ options.consumer_key }}" placeholder="{{ phrase('admin.registration.enter_your_twitter_consumer_key') }}" />
+			<input type="text" name="twitter[consumer_key]" value="{{ options.consumer_key }}" placeholder="{{ phrase('admin.user_registration.enter_your_twitter_consumer_key') }}" />
 		</div>
 	</div>
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.registration.consumer_secret') }}</label>
+			<label>{{ phrase('admin.user_registration.consumer_secret') }}</label>
 		</div>
 		<div class="dp-form-input">
-			<input type="text" name="twitter[consumer_secret]" value="{{ options.consumer_secret }}" placeholder="{{ phrase('admin.registration.enter_your_twitter_consumer_secret') }}" />
+			<input type="text" name="twitter[consumer_secret]" value="{{ options.consumer_secret }}" placeholder="{{ phrase('admin.user_registration.enter_your_twitter_consumer_secret') }}" />
 		</div>
 	</div>
 

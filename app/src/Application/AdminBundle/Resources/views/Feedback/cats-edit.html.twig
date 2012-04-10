@@ -12,7 +12,7 @@
 	{% endif %}
 {% endblock %}
 {% block pagetitle %}
-	<h1>{% if category.id %}{{ phrase('admin.global.edit_category') }}{% else %}{{ phrase('admin.global.new_category') }}{% endif %}</h1>
+	<h1>{% if category.id %}{{ phrase('admin.general.edit_category') }}{% else %}{{ phrase('admin.general.new_category') }}{% endif %}</h1>
 	<nav>
 		<a class="clean-white" href="{{ path('admin_feedback_cats') }}">{{ phrase('admin.feedback.back_to_categories') }}</a>
 	</nav>
@@ -35,7 +35,7 @@
 	{% if form.parent %}
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('admin.global.parent_category') }}</label>
+				<label>{{ phrase('admin.general.parent_category') }}</label>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.parent) }}

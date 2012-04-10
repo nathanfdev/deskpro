@@ -3,15 +3,15 @@
 <div data-element-handler="DeskPRO.Admin.ElementHandler.PortalNav" id="portal_nav">
 	<section class="top">
 		<header>
-			<h4>{{ phrase('admin.global.portal') }}</h4>
+			<h4>{{ phrase('admin.general.portal') }}</h4>
 		</header>
 		<article>
 			<ul>
-				<li class="{% if this_page == 'portal_editor' %}{{ phrase('admin.global.on') }}{% endif %}"><a href="{{ path('admin_portal') }}">{{ phrase('admin.portal.portal_editor') }}</a></li>
-				<li class="{% if this_page == 'website_widgets' %}{{ phrase('admin.global.on') }}{% endif %}"><a>{{ phrase('admin.portal.website_widgets') }}</a></li>
-				<li class="{% if this_page == 'labels' %}{{ phrase('admin.global.on') }}{% endif %}"><a>{{ phrase('agent.labels') }}</a></li>
-				<li class="{% if this_page == 'portal_settings' %}{{ phrase('admin.global.on') }}{% endif %}"><a href="{{ path('admin_portal_settings') }}">{{ phrase('admin.portal.global_settings') }}</a></li>
-				<li class="{% if this_page == 'portal_templates' %}{{ phrase('admin.global.on') }}{% endif %}"><a href="{{ path('admin_templates_user') }}">{{ phrase('admin.global.templates') }}</a></li>
+				<li class="{% if this_page == 'portal_editor' %}{{ phrase('admin.general.on') }}{% endif %}"><a href="{{ path('admin_portal') }}">{{ phrase('admin.portal.portal_editor') }}</a></li>
+				<li class="{% if this_page == 'website_widgets' %}{{ phrase('admin.general.on') }}{% endif %}"><a>{{ phrase('admin.portal.website_widgets') }}</a></li>
+				<li class="{% if this_page == 'labels' %}{{ phrase('admin.general.on') }}{% endif %}"><a>{{ phrase('agent.labels') }}</a></li>
+				<li class="{% if this_page == 'portal_settings' %}{{ phrase('admin.general.on') }}{% endif %}"><a href="{{ path('admin_portal_settings') }}">{{ phrase('admin.portal.global_settings') }}</a></li>
+				<li class="{% if this_page == 'portal_templates' %}{{ phrase('admin.general.on') }}{% endif %}"><a href="{{ path('admin_templates_user') }}">{{ phrase('admin.general.templates') }}</a></li>
 			</ul>
 		</article>
 
@@ -27,8 +27,8 @@
 		</header>
 		<article>
 			<ul>
-				{#<li class="{% if this_page == 'kb_settings' %}{{ phrase('admin.global.on') }}{% endif %}"><a>{{ phrase('admin.portal.settings') }}</a></li>#}
-				<li class="{% if this_page == 'kb_fields' %}{{ phrase('admin.global.on') }}{% endif %}"><a href="{{ path('admin_customdefarticles') }}">{{ phrase('admin.portal.custom_fields') }}</a></li>
+				{#<li class="{% if this_page == 'kb_settings' %}{{ phrase('admin.general.on') }}{% endif %}"><a>{{ phrase('admin.portal.settings') }}</a></li>#}
+				<li class="{% if this_page == 'kb_fields' %}{{ phrase('admin.general.on') }}{% endif %}"><a href="{{ path('admin_customdefarticles') }}">{{ phrase('admin.portal.custom_fields') }}</a></li>
 				<li><a href="{{ app.request.getBaseUrl() }}/agent/#app.publish" target="_blank">{{ phrase('admin.portal.manage_articles') }}</a></li>
 			</ul>
 		</article>
@@ -43,10 +43,10 @@
 		</header>
 		<article>
 			<ul>
-				{#<li class="{% if this_page == 'feedback_settings' %}{{ phrase('admin.global.on') }}{% endif %}"><a href="{{ path('admin_feedback_settings' ) }}">{{ phrase('admin.portal.settings') }}</a></li>#}
-				<li class="{% if this_page == 'feedback_statuses' %}{{ phrase('admin.global.on') }}{% endif %}"><a href="{{ path('admin_feedback_statuses') }}">{{ phrase('agent.statuses') }}</a></li>
-				<li class="{% if this_page == 'feedback_cats' %}{{ phrase('admin.global.on') }}{% endif %}"><a href="{{ path('admin_feedback_cats') }}">{{ phrase('agent.categories') }}</a></li>
-				<li class="{% if this_page == 'feedback_fields' %}{{ phrase('admin.global.on') }}{% endif %}"><a href="{{ path('admin_customdeffeedback') }}">{{ phrase('admin.portal.custom_fields') }}</a></li>
+				{#<li class="{% if this_page == 'feedback_settings' %}{{ phrase('admin.general.on') }}{% endif %}"><a href="{{ path('admin_feedback_settings' ) }}">{{ phrase('admin.portal.settings') }}</a></li>#}
+				<li class="{% if this_page == 'feedback_statuses' %}{{ phrase('admin.general.on') }}{% endif %}"><a href="{{ path('admin_feedback_statuses') }}">{{ phrase('agent.statuses') }}</a></li>
+				<li class="{% if this_page == 'feedback_cats' %}{{ phrase('admin.general.on') }}{% endif %}"><a href="{{ path('admin_feedback_cats') }}">{{ phrase('agent.categories') }}</a></li>
+				<li class="{% if this_page == 'feedback_fields' %}{{ phrase('admin.general.on') }}{% endif %}"><a href="{{ path('admin_customdeffeedback') }}">{{ phrase('admin.portal.custom_fields') }}</a></li>
 				<li><a href="{{ app.request.getBaseUrl() }}/agent/#app.feedback" target="_blank">{{ phrase('admin.portal.manage_feedback') }}</a></li>
 			</ul>
 		</article>

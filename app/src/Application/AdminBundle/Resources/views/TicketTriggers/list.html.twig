@@ -13,7 +13,7 @@
 	</ul>
 </nav>
 <ul>
-	<li>{{ phrase('admin.global.triggers') }}</li>
+	<li>{{ phrase('admin.general.triggers') }}</li>
 </ul>
 {% endblock %}
 {% block page %}
@@ -24,7 +24,7 @@
 		<ul>
 			<li class="dp-edit"><a href="{{ path('admin_tickettriggers_edit', {'trigger_id': trigger.id}) }}" class="popout-trigger"><span></span></a></li>
 			<li class="dp-move"><span></span></li>
-			<li class="dp-on-off trigger-toggle"><span class="off" {% if trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.global.off') }}</span><span class="on" {% if not trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.global.on') }}</span></li>
+			<li class="dp-on-off trigger-toggle"><span class="off" {% if trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.general.off') }}</span><span class="on" {% if not trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.general.on') }}</span></li>
 		</ul>
 	</div>
 	<div class="run-order"><label>{{ index }}</label></div>

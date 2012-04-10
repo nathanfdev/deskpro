@@ -23,6 +23,6 @@
 	<p>{{ phrase('admin.products.any_tickets_that_use_this_product_will_have') }}</p>
 {% endif %}
 
-<a class="btn" href="{{ path('admin_products_dodel', {'product_id': product.id, 'security_token': security_token('delete_product')}) }}">{{ phrase('admin.global.yes_i_am_sure_i_want_to_delete') }}</a>
+<a class="btn" href="{{ path('admin_products_dodel', {'product_id': product.id, 'security_token': security_token('delete_product')}) }}">{{ phrase('admin.general.yes_i_am_sure_i_want_to_delete') }}</a>
 
 {% endblock %}

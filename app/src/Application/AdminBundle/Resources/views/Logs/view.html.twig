@@ -2,7 +2,7 @@
 {% block content %}
 
 <div class="table-list-wrap">
-	<h2>{{ phrase('admin.global.error_log_id', {'id':log.id}) }}</h2>
+	<h2>{{ phrase('admin.general.error_log_id', {'id':log.id}) }}</h2>
 	<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
 		<tbody>
 			<tr>
@@ -16,7 +16,7 @@
 			</tr>
 
 			<tr>
-				<td><strong>{{ phrase('admin.global.log_name') }}</strong></td>
+				<td><strong>{{ phrase('admin.general.log_name') }}</strong></td>
 				<td>{{log.log_name}}</td>
 			</tr>
 
@@ -43,7 +43,7 @@
 			</tr>
 
 			<tr>
-				<td><strong>{{ phrase('admin.global.additional_data') }}</strong></td>
+				<td><strong>{{ phrase('admin.general.additional_data') }}</strong></td>
 				<td>
 					<textarea style="width:99%; height:200px; font-family:Monaco, 'Courier New', courier, monospace;">{{data_structure}}</textarea>
 				</td>

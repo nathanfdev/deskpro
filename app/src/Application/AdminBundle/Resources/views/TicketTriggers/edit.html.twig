@@ -21,7 +21,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 {% endblock %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_tickettriggers') }}">{{ phrase('admin.global.triggers') }}</a></li>
+		<li><a href="{{ path('admin_tickettriggers') }}">{{ phrase('admin.general.triggers') }}</a></li>
 		<li>{% if trigger.id %}{{ phrase('admin.tickets.edit_triggers') }}{% else %}{{ phrase('admin.tickets.new_trigger') }}{% endif %}</li>
 	</ul>
 {% endblock %}

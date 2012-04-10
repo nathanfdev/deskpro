@@ -10,7 +10,7 @@
           </ul>
      </nav>
      <ul>
-          <li>{{ phrase('admin.global.languages') }}</li>
+          <li>{{ phrase('admin.general.languages') }}</li>
      </ul>
 {% endblock %}
 {% block sidebar_right %}
@@ -22,7 +22,7 @@
 	<div class="resource-item-list">
 		<header>
 			<div class="controls">
-				<button class="clean-white small save-trigger" style="display: none" id="save_lang_settings">{{ phrase('admin.global.save_changes') }}</button>
+				<button class="clean-white small save-trigger" style="display: none" id="save_lang_settings">{{ phrase('admin.general.save_changes') }}</button>
 			</div>
 			<h4>{{ phrase('admin.languages.default_language') }}</h4>
 		</header>
@@ -38,7 +38,7 @@
 </div>
 {% endblock %}
 {% block page %}
-<h1>{{ phrase('admin.global.languages') }}</h1>
+<h1>{{ phrase('admin.general.languages') }}</h1>
 <ul class="item-list">
 	{% for lang in languages %}
 		<li>

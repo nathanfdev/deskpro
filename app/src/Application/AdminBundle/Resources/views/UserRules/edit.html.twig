@@ -1,11 +1,11 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_usergroups_new') }}">{{ phrase('admin.userrules.user_rules') }}</a></li>
+		<li><a href="{{ path('admin_usergroups_new') }}">{{ phrase('admin.user_rules.user_rules') }}</a></li>
 		{% if rule.id %}
-			<li>{{ phrase('admin.userrules.new_rule') }}</li>
+			<li>{{ phrase('admin.user_rules.new_rule') }}</li>
 		{% else %}
-			<li>{{ phrase('admin.userrules.edit_rule') }}</li>
+			<li>{{ phrase('admin.user_rules.edit_rule') }}</li>
 		{% endif %}
 	</ul>
 {% endblock %}
@@ -18,16 +18,16 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.userrules.email_address_pattern') }}</label>
+			<label>{{ phrase('admin.user_rules.email_address_pattern') }}</label>
 		</div>
 		<div class="dp-form-input">
-			<textarea name="rule[patterns_string]" placeholder="{{ phrase('admin.userrules.enter_a_pattern_one_per_line_example_examplecom') }}" rows="6" style="height: 115px">{{ rule.patterns_string }}</textarea>
+			<textarea name="rule[patterns_string]" placeholder="{{ phrase('admin.user_rules.enter_a_pattern_one_per_line_example_examplecom') }}" rows="6" style="height: 115px">{{ rule.patterns_string }}</textarea>
 		</div>
 	</div>
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.userrules.when_matching_add_user_to_usergroup') }}</label>
+			<label>{{ phrase('admin.user_rules.when_matching_add_user_to_usergroup') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<select name="rule[add_usergroup]">

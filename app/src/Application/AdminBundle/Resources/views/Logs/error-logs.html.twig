@@ -8,7 +8,7 @@
 		<thead>
 			<tr>
 				<th width="50">{{ phrase('agent.id') }}</th>
-				<th width="50">{{ phrase('admin.global.pri') }}</th>
+				<th width="50">{{ phrase('admin.general.pri') }}</th>
 				<th>{{ phrase('agent.message') }}</th>
 				<th width="180">{{ phrase('agent.date') }}</th>
 				<th>{{ phrase('admin.logs.details') }}</th>
@@ -31,7 +31,7 @@
 <div class="page_nav">
 	<ul>
 		{% if pagination.curpage != pagination.first %}
-			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.first}) }}">{{ phrase('admin.global.first') }}</a></li>
+			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.first}) }}">{{ phrase('admin.general.first') }}</a></li>
 			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.prev}) }}">{{ phrase('agent.prev') }}</a></li>
 		{% endif %}
 
@@ -40,8 +40,8 @@
 		{% endfor %}
 
 		{% if pagination.curpage != pagination.last %}
-			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.next}) }}">{{ phrase('admin.global.next') }}</a></li>
-			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.last}) }}">{{ phrase('admin.global.last') }}</a></li>
+			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.next}) }}">{{ phrase('admin.general.next') }}</a></li>
+			<li><a href="{{ path('admin_logs_errors_page', {'page': pagination.last}) }}">{{ phrase('admin.general.last') }}</a></li>
 		{% endif %}
 	</ul>
 </div>

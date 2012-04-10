@@ -2,11 +2,11 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
      <ul>
-		<li><a href="{{ path('admin_customdeforganizations') }}">{{ phrase('admin.global.organization_fields') }}</a></li>
+		<li><a href="{{ path('admin_customdeforganizations') }}">{{ phrase('admin.general.organization_fields') }}</a></li>
 		{% if field.id %}
-			<li>{{ phrase('admin.global.edit_field') }}</li>
+			<li>{{ phrase('admin.general.edit_field') }}</li>
 		{% else %}
-			<li>{{ phrase('admin.global.new_field') }}</li>
+			<li>{{ phrase('admin.general.new_field') }}</li>
 		{% endif %}
      </ul>
 {% endblock %}

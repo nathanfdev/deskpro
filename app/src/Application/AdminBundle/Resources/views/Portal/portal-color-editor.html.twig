@@ -1,6 +1,6 @@
 {% macro style_row(id, default_portal_style) %}
 	<div class="style-row color">
-		<div class="color-reset {% if app.getSetting('user_style.' ~ id) != default_portal_style['user_style.' ~ id] %}enabled{% endif %}" data-color-id="bg_color" data-color="{{ default_portal_style['user_style.' ~ id] }}">{{ phrase('admin.global.revert') }} <i style="background-color: {{ default_portal_style['user_style.' ~ id] }}"></i></div>
+		<div class="color-reset {% if app.getSetting('user_style.' ~ id) != default_portal_style['user_style.' ~ id] %}enabled{% endif %}" data-color-id="bg_color" data-color="{{ default_portal_style['user_style.' ~ id] }}">{{ phrase('admin.general.revert') }} <i style="background-color: {{ default_portal_style['user_style.' ~ id] }}"></i></div>
 		<div class="color-swatch color-swatch-icon" data-color-id="{{ id }}" data-color="{{ app.getSetting('user_style.' ~ id) }}">
 			<div style="background-color: {{ app.getSetting('user_style.' ~ id) }}"></div>
 		</div>
@@ -12,7 +12,7 @@
 <section id="portal_colors" style="display: none">
 	<article>
 		<div class="style-section">
-			<h4>{{ phrase('admin.global.general') }}</h4>
+			<h4>{{ phrase('admin.general.general') }}</h4>
 		</div>
 		{% for id in [
 			'bg_color', 'body_bg_color', 'text_color', 'meta_text_color',

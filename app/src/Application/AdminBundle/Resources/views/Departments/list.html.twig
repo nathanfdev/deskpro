@@ -7,7 +7,7 @@
 		</ul>
 	</nav>
 	<ul>
-		<li>{{ phrase('admin.global.departments') }}</li>
+		<li>{{ phrase('admin.general.departments') }}</li>
 	</ul>
 {% endblock %}
 {% block content %}
@@ -77,11 +77,11 @@
 
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>{{ phrase('admin.global.parent') }}</label>
+					<label>{{ phrase('admin.general.parent') }}</label>
 				</div>
 				<div class="dp-form-input">
 					<select name="parent_id" id="newdep_parent_id">
-						<option value="0">{{ phrase('admin.global.no_parent') }}</option>
+						<option value="0">{{ phrase('admin.general.no_parent') }}</option>
 						{% for department in all_departments %}
 							<option value="{{ department.id }}">{{ department.title }}</option>
 						{% endfor %}

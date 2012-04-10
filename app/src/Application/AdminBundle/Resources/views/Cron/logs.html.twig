@@ -2,12 +2,12 @@
 {% block pagebar %}
 	<nav>
           <ul>
-               <li><a href="{{ path('admin_server_cron_logs_clear', {x: security_token('clear_cron_logs') }) }}">{{ phrase('admin.global.clear_logs') }}</a></li>
+               <li><a href="{{ path('admin_server_cron_logs_clear', {x: security_token('clear_cron_logs') }) }}">{{ phrase('admin.general.clear_logs') }}</a></li>
           </ul>
      </nav>
 	<ul>
-		<li><a href="{{ path('admin_server_cron_logs') }}">{{ phrase('admin.global.scheduled_tasks') }}</a></li>
-		<li>{{ phrase('admin.global.logs') }}</li>
+		<li><a href="{{ path('admin_server_cron_logs') }}">{{ phrase('admin.general.scheduled_tasks') }}</a></li>
+		<li>{{ phrase('admin.general.logs') }}</li>
 	</ul>
 {% endblock %}
 {% block page %}

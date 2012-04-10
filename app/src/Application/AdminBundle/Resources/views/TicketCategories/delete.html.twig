@@ -23,6 +23,6 @@
 	<p>{{ phrase('admin.tickets.any_tickets_that_belong_this_category_will_have') }}</p>
 {% endif %}
 
-<a class="btn" href="{{ path('admin_ticketcats_dodel', {'category_id': category.id, 'security_token': security_token('delete_ticket_category')}) }}">{{ phrase('admin.global.yes_i_am_sure_i_want_to_delete') }}</a>
+<a class="btn" href="{{ path('admin_ticketcats_dodel', {'category_id': category.id, 'security_token': security_token('delete_ticket_category')}) }}">{{ phrase('admin.general.yes_i_am_sure_i_want_to_delete') }}</a>
 
 {% endblock %}

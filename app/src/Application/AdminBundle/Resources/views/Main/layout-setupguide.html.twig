@@ -7,14 +7,14 @@
 		<div id="dp_admin_steps_list">
 			<ul>
 				{% for id,info in app.setup_guide.getTasks() %}
-					<li class="{% if app.setup_guide.isTaskComplete(id) %}complete{% endif %}"><a href="{{ path(info.route) }}">{{ phrase('admin.setupguide.' ~ id) }}</a></li>
+					<li class="{% if app.setup_guide.isTaskComplete(id) %}complete{% endif %}"><a href="{{ path(info.route) }}">{{ phrase('admin.setup.' ~ id) }}</a></li>
 				{% endfor %}
 			</ul>
 		</div>
 	</div>
 	#}
 	<div class="next">
-		{{ phrase('admin.menu.next_step') }}: <a href="{{ path(nexttask.route) }}" class="step">{{ phrase('admin.setupguide.' ~ nexttask.id) }}</a>
+		{{ phrase('admin.menu.next_step') }}: <a href="{{ path(nexttask.route) }}" class="step">{{ phrase('admin.setup.' ~ nexttask.id) }}</a>
 		<em class="skip" onclick="window.location='{{ path('admin_skip_setup_todo') }}';">{{ phrase('admin.menu.or_skip') }}</em>
 	</div>
 	<div class="ui-progress-bar ui-container blue">

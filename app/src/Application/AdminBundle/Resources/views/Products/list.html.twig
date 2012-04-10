@@ -86,11 +86,11 @@
 
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('admin.global.parent') }}</label>
+						<label>{{ phrase('admin.general.parent') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<select name="parent_id" id="newcat_parent_id">
-							<option value="0">{{ phrase('admin.global.no_parent') }}</option>
+							<option value="0">{{ phrase('admin.general.no_parent') }}</option>
 							{% for product in all_products %}
 								<option value="{{ product.id }}">{{ product.title }}</option>
 							{% endfor %}

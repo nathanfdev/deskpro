@@ -705,7 +705,7 @@ class LanguageController extends Controller
 
                 if(count($packages['admin_agent']) > 1) {
                     if(count($packages['admin_agent']) == count($packages['admin'])) {
-                        $id = 'admin.global.'.$this->stringToId($k);
+                        $id = 'admin.general.'.$this->stringToId($k);
                     }
                     else {
                         $id = 'agent.global.'.$this->stringToId($k);
