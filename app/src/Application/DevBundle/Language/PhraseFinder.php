@@ -42,13 +42,10 @@ class PhraseFinder
         $this->container = $container;
     }
 
-    public function getPhrasesFromTwigFiles($bundle = null)
+    public function getPhrasesFromTwigFiles($bundle = null, &$by_id, &$errors, &$prefixes)
     {
         $twig = Language::GetTwigLexer($this->container);
         $templates = Language::GetFileFinder()->getTwigFileList($bundle);
-        $by_id = array();
-        $by_file = array();
-        $prefixes = array();
         $cache_path = DP_ROOT.'/sys/cache/twig.phrase.cache';
 
         if(file_exists($cache_path)) {
@@ -65,6 +62,10 @@ class PhraseFinder
                     $prefixes[] = array('id' => $id, 'filename' => $file, 'line' => $line);
                 }
 
+                if(isset($cache[$file]['errors'])) {
+                    $errors[$file] = $cache[$file]['errors'];
+                }
+
                 foreach($cache[$file]['phrases'] as $phrase) {
                     list($id, $line) = $phrase;
 
@@ -74,15 +75,6 @@ class PhraseFinder
 
                     $by_id[$id][] = array(
                         'filename' => $file,
-                        'line' => $line
-                    );
-
-                    if(!isset($by_file[$file])) {
-                        $by_file[$file] = array();
-                    }
-
-                    $by_file[$file][] = array(
-                        'id' => $id,
                         'line' => $line
                     );
                 }
@@ -114,7 +106,14 @@ class PhraseFinder
                         }
                         else {
                             $state = 0;
-                            $this->tokenWarningTwig('Unexpected token', $token, $file, $line);
+
+                            if(!isset($errors[$file])) {
+                                $cache[$file]['errors'] =
+                                $errors[$file] = array();
+                            }
+
+                            $cache[$file]['errors'] =
+                            $errors[$file][] = $this->tokenWarningTwig('Unexpected token', $token, $file, $line);
                         }
 
                         break;
@@ -125,7 +124,14 @@ class PhraseFinder
                         }
                         else {
                             $state = 0;
-                            $this->tokenWarningTwig('Unexpected token', $token, $file, $line);
+
+                            if(!isset($errors[$file])) {
+                                $cache[$file]['errors'] =
+                                $errors[$file] = array();
+                            }
+
+                            $cache[$file]['errors'] =
+                            $errors[$file][] = $this->tokenWarningTwig('Unexpected token', $token, $file, $line);
                         }
 
                         break;
@@ -164,15 +170,11 @@ class PhraseFinder
         }
 
         file_put_contents($cache_path, json_encode($cache));
-        return array($by_id, $by_file, $prefixes);
     }
 
-    public function getPhrasesFromPHPFiles($bundle = null)
+    public function getPhrasesFromPHPFiles($bundle = null, &$by_id, &$errors, &$prefixes, &$by_file)
     {
         $files = Language::GetFileFinder()->getPhpFileList($bundle);
-        $by_id = array();
-        $by_file = array();
-        $prefixes = array();
         $cache_path = DP_ROOT.'/sys/cache/twig.phrase.cache';
 
         if(file_exists($cache_path)) {
@@ -194,6 +196,10 @@ class PhraseFinder
 
                     if(!isset($by_id[$id])) {
                         $by_id[$id] = array();
+                    }
+
+                    if(isset($cache[$file]['errors'])) {
+                        $errors[$file] = $cache[$file]['errors'];
                     }
 
                     $by_id[$id][] = array(
@@ -248,7 +254,14 @@ class PhraseFinder
                             }
                             else {
                                 $state = 0;
-                                $this->tokenWarningPhp('Unexpected Token', $token, $file, $line);
+
+                                if(!isset($errors[$file])) {
+                                    $cache[$file]['errors'] =
+                                    $errors[$file] = array();
+                                }
+
+                                $cache[$file]['errors'] =
+                                $errors[$file][] = $this->tokenWarningPhp('Unexpected Token', $token, $file, $line);
                             }
 
                             break;
@@ -259,7 +272,14 @@ class PhraseFinder
                             }
                             else {
                                 $state = 0;
-                                $this->tokenWarningPhp('Unexpected Token', $token, $file, $line);
+
+                                if(!isset($errors[$file])) {
+                                    $cache[$file]['errors'] =
+                                    $errors[$file] = array();
+                                }
+
+                                $cache[$file]['errors'] =
+                                $errors[$file][] = $this->tokenWarningPhp('Unexpected Token', $token, $file, $line);
                             }
 
                             break;
@@ -306,13 +326,13 @@ class PhraseFinder
         if(is_array($token))
             $token = token_name($token[0]) .':'. $token[1];
 
-        echo "Warning: {$message} ($token) in {$file}:{$line}<br />";
+        return "Warning: {$message} ($token) in {$file}:{$line}<br />";
     }
 
     public function tokenWarningTwig($message, $token, $file, $line)
     {
         $token = \Twig_Token::TypeToString($token->getType(), true) .':'.$token->getValue();
 
-        echo "Warning: {$message} ($token) in {$file}:{$line}<br />";
+        return "Warning: {$message} ($token) in {$file}:{$line}<br />";
     }
 }

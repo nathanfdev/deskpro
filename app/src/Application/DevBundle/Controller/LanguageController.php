@@ -139,60 +139,9 @@ class LanguageController extends Controller
         return $this->exportToPOAction('');
     }
 
-    public function fixMissing($missing) {
-        $rootdir = DP_ROOT.'/languages/DeskPRO';
-        $missing = array_unique($missing);
-
-        foreach($missing as $id) {
-            $parts = explode('.', $id, 3);
-            $package = array_shift($parts);
-
-            $dst_file = $rootdir.'/'.$package.'/';
-
-            if(count($parts) == 2) {
-                $dst_file .= $parts[0].'.php';
-            }
-            else {
-                $dst_file .= $package.'.php';
-            }
-
-            if(file_exists($dst_file)) {
-                $target = require($dst_file);
-            }
-            else {
-                $target = array();
-            }
-
-            if(!isset($target[$id])) {
-                $target[$id] = '['.$id.']';
-                file_put_contents($dst_file, '<?php return '.var_export($target, true).';');
-            }
-        }
-    }
-
     public function findPhrasesInTwigFilesAction()
     {
-        $vars = array(
-            'instances' => array
-            (
-                'id' => array(),
-                'file' => array(),
-            ),
-            'prefixes' => array(),
-            'missing' => array(),
-        );
 
-        list($vars['instances']['id'], $vars['instances']['file'], $vars['prefixes']) = Language::getPhraseFinder($this->container)->getPhrasesFromTwigFiles();
-        $missing = $this->getMissing(array_keys($vars['instances']['id']));
-
-        if(isset($_POST['missing'])) {
-            $this->fixMissing($missing);
-        }
-
-        $vars['instances']['file'] = array();
-        $vars['missing'] = $missing;
-
-        return $this->render('DevBundle:Language:find.phrases.html.twig', $vars);
     }
 
     public function findPhrasesInPHPFilesAction()
@@ -219,81 +168,174 @@ class LanguageController extends Controller
         return $this->render('DevBundle:Language:find.phrases.html.twig', $vars);
     }
 
-    public function parseLangFiles($package = '')
+    public function findProblemsAction()
     {
-        $files = Language::GetFileFinder()->getLanguageFileList($package);
-        $by_id = array();
-        $by_content = array();
+        set_time_limit(0);
 
-        foreach($files as $file) {
-            $rawphp = file_get_contents($file);
-            $tokens = token_get_all($rawphp);
-            $state = 0;
+        if(isset($_POST['content'])) {
+            $this->globaliseString($_POST['content'], $_POST['id'], Language::getPhraseFinder($this->container)->getPhrasesFromTwigFiles(), Language::getPhraseFinder($this->container)->getPhrasesFromPHPFiles());
+        }
 
-            foreach($tokens as $token) {
-                // This is a very minimal parser and may break if the spec changes for lang file definitions.
-                if(!is_array($token) || $token[0] != T_WHITESPACE)
-                    switch($state) {
-                        case 0:
-                            if(is_array($token) && $token[0] == T_CONSTANT_ENCAPSED_STRING) {
-                                $state++;
-                                $id = eval('return '.$token[1].';');
-                            }
+        $vars = array(
+            'dupes' => array
+            (
+                'id' => array(),
+                'content' => array(),
+                'fuzzy_content' => array(),
+            ),
+            'phrases' => array
+            (
+                'id' => array(),
+                'file' => array(),
+            ),
+            'prefixes' => array(),
+            'missing' => array(),
+            'errors' => array(),
+        );
 
-                            break;
-                        case 1:
-                            if(is_array($token) && $token[0] == T_DOUBLE_ARROW) {
-                                $state++;
-                            }
-                            else {
-                                die('Unexpected token!');
-                            }
+        list($by_id, $by_content) = $this->parseLangFiles();
 
-                            break;
-                        case 2:
-                            if(is_array($token) && $token[0] == T_CONSTANT_ENCAPSED_STRING) {
-                                $content = eval('return '.$token[1].';');
-                                $state = 0;
-
-                                if(!isset($by_id[$id])) {
-                                    $by_id[$id] = array();
-                                }
-
-                                $by_id[$id][] = array(
-                                    'filename' => $file,
-                                    'content' => $content,
-                                    'line' => $token[2]
-                                );
-
-                                if(!isset($by_content[$content])) {
-                                    $by_content[$content] = array();
-                                }
-
-                                $by_content[$content][] = array(
-                                    'filename' => $file,
-                                    'id' => $id,
-                                    'line' => $token[2]
-                                );
-                            }
-                            else {
-                                die('Unexpected token in '.$file.'!');
-                            }
-
-                            break;
-                    }
+        foreach($by_id as $k=>$v) {
+            if(count($v) > 1) {
+                $vars['dupes']['id'][] = $k;
             }
         }
 
-        return array($by_id, $by_content);
+        $id_track = array();
+        $rootdir = DP_ROOT.'/languages';
+
+        foreach($by_content as $k=>$v) {
+            if(count($v) > 1) {
+                $packages = array('user' => array(),'admin' => array(), 'agent' => array());
+
+                foreach($v as $dupe) {
+                    list($package, ) = explode('.', $dupe['id']);
+
+                    $packages[$package][] = $dupe['id'];
+                }
+
+                $packages['admin_agent'] = array_merge($packages['agent'], $packages['admin']);
+
+                if(count($packages['user']) > 1) {
+                    $id = 'user.global.'.$this->stringToId($k);
+                    $id_exists = isset($by_id[$id]) || isset($id_track[$id]);
+                    $id_track[$id] = 1;
+                    $vars['dupes']['content'][] = array('data' => $k, 'id' => $id, 'exists' => $id_exists, 'ids' => $packages['user']);
+                }
+
+                if(count($packages['admin_agent']) > 1) {
+                    if(count($packages['admin_agent']) == count($packages['admin'])) {
+                        $id = 'admin.general.'.$this->stringToId($k);
+                    }
+                    else {
+                        $id = 'agent.global.'.$this->stringToId($k);
+                    }
+
+                    $id_exists = isset($by_id[$id]) || isset($id_track[$id]);
+                    $id_track[$id] = 1;
+                    $vars['dupes']['content'][] = array('data' => $k, 'id' => $id, 'exists' => $id_exists, 'ids' => $packages['admin_agent']);
+                }
+            }
+        }
+
+        $vars['by_id'] = $by_id;
+        $vars['by_content'] = $by_content;
+
+        $by_id = array();
+        $errors = array();
+        $prefixes = array();
+        $by_file = array();
+
+        Language::GetPhraseFinder($this->container)->getPhrasesFromTwigFiles(null, $by_id, $errors, $prefixes);
+        Language::GetPhraseFinder($this->container)->getPhrasesFromPHPFiles(null, $by_id, $errors, $prefixes, $by_file);
+        $missing = $this->getMissing(array_keys($by_id));
+
+        $vars['missing'] = $missing;
+        $vars['errors'] = $errors;
+        $vars['prefixes'] = $prefixes;
+        $vars['instances']['id'] = $by_id;
+        $vars['instances']['file'] = $by_file;
+
+        return $this->render('DevBundle:Language:find_problems.html.twig', $vars);
+    }
+
+    public function getLanguageData()
+    {
+        $files = Language::GetFileFinder()->getLanguageFileList();
+        $data = array();
+
+        foreach($files as $file) {
+            $data = array_merge($data, require($file));
+        }
+
+        return $data;
+    }
+
+    public function getMissing($ids)
+    {
+        $language_data = $this->getLanguageData();
+        $missing = array();
+
+        foreach($ids as $id) {
+            if(!array_key_exists($id, $language_data)) {
+                $missing[] = $id;
+            }
+        }
+
+        return $missing;
+    }
+
+    public function stringToId($string)
+    {
+        $string = strtolower($string);
+        $string = preg_replace('/[^a-zA-Z0-9_ ]/', '', $string);
+        $string = preg_replace('/ +/', ' ', $string);
+        $parts = explode(' ', $string);
+        $parts = array_slice($parts, 0, 8);
+        $string = implode('_', $parts);
+        return $string;
+    }
+
+    public function replacePhrasesInFiles($files, $from, $to, $prefix = false)
+    {
+        foreach($files as $file) {
+            $lines = file($file['filename']);
+            $data = '';
+
+            foreach($lines as $i=>$line) {
+                if($prefix) {
+                    if(preg_match('/(phrase\(\s*\')'.preg_quote($from, '/').'([^\']+\'\s*[,)])/', $line)) {
+                        $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($from, '/').'([^\']+\'\s*[,)])/', '\1'.$to.'\2', $line);
+                        echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br /> in {$file['filename']}<hr />";
+                        $data .= $new_line;
+                    }
+                    else {
+                        $data .= $line;
+                    }
+                }
+                else {
+                    if(preg_match('/(phrase\(\s*\')'.preg_quote($from, '/').'(\'\s*[,)])/', $line)) {
+                        $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($from, '/').'(\'\s*[,)])/', '\1'.$to.'\2', $line);
+                        echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br /> in {$file['filename']}<hr />";
+                        $data .= $new_line;
+                    }
+                    else {
+                        $data .= $line;
+                    }
+                }
+            }
+
+            file_put_contents($file['filename'], $data);
+        }
     }
 
     public function globaliseString($content, $id, $twig_phrases, $php_phrases)
     {
         list($by_id, $by_content) = $this->parseLangFiles();
         $rootdir = DP_ROOT.'/languages';
-        
+
         $parts = explode('.', $id, 3);
-        
+
         if(count($parts) == 2) {
             $package = $parts[0];
             $filename = $parts[0];
@@ -365,170 +407,102 @@ class LanguageController extends Controller
         }
     }
 
-    public function checkLanguageFilesAction()
+    public function parseLangFiles($package = '')
     {
-        set_time_limit(0);
-
-        if(isset($_POST['refactor'])) {
-            $files = Language::GetFileFinder()->getLanguageFileList();
-
-            foreach($files as $file) {
-                $phrases = require($file);
-                $lengths = array();
-                ksort($phrases);
-                $data = "<?php return array(\n";
-                $pairs = array();
-
-                foreach($phrases as $id=>$text) {
-                    $id = var_export($id, true);
-                    $text = var_export($text, true);
-
-                    $lengths[] = strlen($id);
-                    $pairs[$id] = $text;
-                }
-
-                $length = max($lengths);
-
-                foreach($pairs as $id=>$text) {
-                    $id = str_pad($id, $length);
-                    $data .= "    {$id} => {$text},\n";
-                }
-
-                $data .= ');';
-                file_put_contents($file, $data);
-            }
-        }
-
-        if(isset($_POST['content'])) {
-            $this->globaliseString($_POST['content'], $_POST['id'], Language::getPhraseFinder($this->container)->getPhrasesFromTwigFiles(), Language::getPhraseFinder($this->container)->getPhrasesFromPHPFiles());
-        }
-
-        $vars = array(
-            'dupes' => array
-            (
-                'id' => array(),
-                'content' => array()
-            )
-        );
-
-        list($by_id, $by_content) = $this->parseLangFiles();
-
-        foreach($by_id as $k=>$v) {
-            if(count($v) > 1) {
-                $vars['dupes']['id'][] = $k;
-            }
-        }
-
-        $id_track = array();
-        $rootdir = DP_ROOT.'/languages';
-
-        foreach($by_content as $k=>$v) {
-            if(count($v) > 1) {
-                $packages = array('user' => array(),'admin' => array(), 'agent' => array());
-
-                foreach($v as $dupe) {
-                    list($package, ) = explode('.', $dupe['id']);
-
-                    $packages[$package][] = $dupe['id'];
-                }
-
-                $packages['admin_agent'] = array_merge($packages['agent'], $packages['admin']);
-
-                if(count($packages['user']) > 1) {
-                    $id = 'user.global.'.$this->stringToId($k);
-                    $id_exists = isset($by_id[$id]) || isset($id_track[$id]);
-                    $id_track[$id] = 1;
-                    $vars['dupes']['content'][] = array('data' => $k, 'id' => $id, 'exists' => $id_exists, 'ids' => $packages['user']);
-                }
-
-                if(count($packages['admin_agent']) > 1) {
-                    if(count($packages['admin_agent']) == count($packages['admin'])) {
-                        $id = 'admin.general.'.$this->stringToId($k);
-                    }
-                    else {
-                        $id = 'agent.global.'.$this->stringToId($k);
-                    }
-
-                    $id_exists = isset($by_id[$id]) || isset($id_track[$id]);
-                    $id_track[$id] = 1;
-                    $vars['dupes']['content'][] = array('data' => $k, 'id' => $id, 'exists' => $id_exists, 'ids' => $packages['admin_agent']);
-                }
-            }
-        }
-
-        $vars['by_id'] = $by_id;
-        $vars['by_content'] = $by_content;
-
-        return $this->render('DevBundle:Language:check.langfiles.html.twig', $vars);
-    }
-
-    public function getLanguageData()
-    {
-        $files = Language::GetFileFinder()->getLanguageFileList();
-        $data = array();
+        $files = Language::GetFileFinder()->getLanguageFileList($package);
+        $by_id = array();
+        $by_content = array();
 
         foreach($files as $file) {
-            $data = array_merge($data, require($file));
-        }
+            $rawphp = file_get_contents($file);
+            $tokens = token_get_all($rawphp);
+            $state = 0;
 
-        return $data;
-    }
+            foreach($tokens as $token) {
+                // This is a very minimal parser and may break if the spec changes for lang file definitions.
+                if(!is_array($token) || $token[0] != T_WHITESPACE)
+                    switch($state) {
+                        case 0:
+                            if(is_array($token) && $token[0] == T_CONSTANT_ENCAPSED_STRING) {
+                                $state++;
+                                $id = eval('return '.$token[1].';');
+                            }
 
-    public function getMissing($ids)
-    {
-        $language_data = $this->getLanguageData();
-        $missing = array();
+                            break;
+                        case 1:
+                            if(is_array($token) && $token[0] == T_DOUBLE_ARROW) {
+                                $state++;
+                            }
+                            else {
+                                die('Unexpected token!');
+                            }
 
-        foreach($ids as $id) {
-            if(!array_key_exists($id, $language_data)) {
-                $missing[] = $id;
+                            break;
+                        case 2:
+                            if(is_array($token) && $token[0] == T_CONSTANT_ENCAPSED_STRING) {
+                                $content = eval('return '.$token[1].';');
+                                $state = 0;
+
+                                if(!isset($by_id[$id])) {
+                                    $by_id[$id] = array();
+                                }
+
+                                $by_id[$id][] = array(
+                                    'filename' => $file,
+                                    'content' => $content,
+                                    'line' => $token[2]
+                                );
+
+                                if(!isset($by_content[$content])) {
+                                    $by_content[$content] = array();
+                                }
+
+                                $by_content[$content][] = array(
+                                    'filename' => $file,
+                                    'id' => $id,
+                                    'line' => $token[2]
+                                );
+                            }
+                            else {
+                                die('Unexpected token in '.$file.'!');
+                            }
+
+                            break;
+                    }
             }
         }
 
-        return $missing;
+        return array($by_id, $by_content);
     }
 
-    public function stringToId($string)
-    {
-        $string = strtolower($string);
-        $string = preg_replace('/[^a-zA-Z0-9_ ]/', '', $string);
-        $string = preg_replace('/ +/', ' ', $string);
-        $parts = explode(' ', $string);
-        $parts = array_slice($parts, 0, 8);
-        $string = implode('_', $parts);
-        return $string;
-    }
+    public function fixMissing($missing) {
+        $rootdir = DP_ROOT.'/languages/DeskPRO';
+        $missing = array_unique($missing);
 
-    public function replacePhrasesInFiles($files, $from, $to, $prefix = false)
-    {
-        foreach($files as $file) {
-            $lines = file($file['filename']);
-            $data = '';
+        foreach($missing as $id) {
+            $parts = explode('.', $id, 3);
+            $package = array_shift($parts);
 
-            foreach($lines as $i=>$line) {
-                if($prefix) {
-                    if(preg_match('/(phrase\(\s*\')'.preg_quote($from, '/').'([^\']+\'\s*[,)])/', $line)) {
-                        $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($from, '/').'([^\']+\'\s*[,)])/', '\1'.$to.'\2', $line);
-                        echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br /> in {$file['filename']}<hr />";
-                        $data .= $new_line;
-                    }
-                    else {
-                        $data .= $line;
-                    }
-                }
-                else {
-                    if(preg_match('/(phrase\(\s*\')'.preg_quote($from, '/').'(\'\s*[,)])/', $line)) {
-                        $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($from, '/').'(\'\s*[,)])/', '\1'.$to.'\2', $line);
-                        echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br /> in {$file['filename']}<hr />";
-                        $data .= $new_line;
-                    }
-                    else {
-                        $data .= $line;
-                    }
-                }
+            $dst_file = $rootdir.'/'.$package.'/';
+
+            if(count($parts) == 2) {
+                $dst_file .= $parts[0].'.php';
+            }
+            else {
+                $dst_file .= $package.'.php';
             }
 
-            file_put_contents($file['filename'], $data);
+            if(file_exists($dst_file)) {
+                $target = require($dst_file);
+            }
+            else {
+                $target = array();
+            }
+
+            if(!isset($target[$id])) {
+                $target[$id] = '['.$id.']';
+                file_put_contents($dst_file, '<?php return '.var_export($target, true).';');
+            }
         }
     }
 }
