@@ -130,7 +130,7 @@
 			{% for dashboard in app.dashboards %}
 				<li data-dashboard-id="{{ dashboard.id }}" class="dashboard {% if this_page == 'dashboard_' ~ dashboard.id %}on{% endif %}"><a href="{{ path('report_trend_dashboard_view', { 'dashboard_id': dashboard.id }) }}">{{ dashboard.title }}</a></li>
 			{% endfor %}
-			<li class="new"><a href="{{ path('report_trend_dashboard_new') }}" class="new">{{ phrase('agent.report.views.new_dashboard') }}</a></li>
+			<li class="new"><a href="{{ path('report_trend_dashboard_new') }}" class="new">{{ phrase('agent.report.new_dashboard') }}</a></li>
 		</ul>
 	</nav>
 </div>
