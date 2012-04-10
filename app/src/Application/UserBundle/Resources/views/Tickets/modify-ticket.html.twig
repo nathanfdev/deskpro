@@ -32,7 +32,7 @@
 	</tr>
 	<tr>
 		<td id="category_select_wrap">
-			{{ phrase('user.tickets.category') }}
+			{{ phrase('user.category') }}
 		</td>
 		<td>
 			{{ property_fields.form_category_select('editticket[ticket][category_id]', ticket_options.ticket_categories_hierarchy, ticket.category_id, 'category_id') }}
@@ -51,7 +51,7 @@
 	{% if form.ticket.priority_id %}
 		<tr>
 			<td>
-				{{ phrase('user.tickets.priority') }}
+				{{ phrase('user.priority') }}
 			</td>
 			<td>
 				{{ form_widget(form.ticket.priority_id, {'attr': {'class': 'priority_id'}}) }}

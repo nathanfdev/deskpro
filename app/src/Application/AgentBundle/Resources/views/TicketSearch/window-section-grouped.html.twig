@@ -19,9 +19,9 @@
 <ul id="overview_grouping_menu" class="grouping-menu" style="display:none">
 	<li data-groupby="none">{{ phrase('agent.none') }}</li>
 	<li data-groupby="department_id">{{ phrase('agent.department') }}</li>
-	{% if app.getSetting('core.use_ticket_category') %}<li data-groupby="category_id">{{ phrase('agent.tickets.category') }}</li>{% endif %}
-	{% if app.getSetting('core.use_ticket_priority') %}	<li data-groupby="priority_id">{{ phrase('agent.tickets.priority') }}</li>{% endif %}
+	{% if app.getSetting('core.use_ticket_category') %}<li data-groupby="category_id">{{ phrase('agent.category') }}</li>{% endif %}
+	{% if app.getSetting('core.use_ticket_priority') %}	<li data-groupby="priority_id">{{ phrase('agent.priority') }}</li>{% endif %}
 	{% if app.getSetting('core.use_product') %}<li data-groupby="product_id">{{ phrase('agent.product') }}</li>{% endif %}
 	<li data-groupby="agent_id">{{ phrase('agent.agent') }}</li>
-	{% if app.getSetting('core.use_ticket_workflow') %}<li data-groupby="workflow_id">{{ phrase('agent.tickets.workflow') }}</li>{% endif %}
+	{% if app.getSetting('core.use_ticket_workflow') %}<li data-groupby="workflow_id">{{ phrase('agent.workflow') }}</li>{% endif %}
 </ul>

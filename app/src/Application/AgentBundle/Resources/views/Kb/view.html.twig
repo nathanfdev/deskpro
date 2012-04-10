@@ -313,11 +313,11 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <ul class="status-menu" data-option-name="status" style="display:none">
-	<li data-option-value="published">{{ phrase('agent.published') }}</li>
-	<li data-option-value="hidden.unpublished">{{ phrase('agent.unpublished') }}</li>
-	<li data-option-value="archived">{{ phrase('agent.archived') }}</li>
+	<li data-option-value="published">{{ phrase('agent.publish.status_published') }}</li>
+	<li data-option-value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</li>
+	<li data-option-value="archived">{{ phrase('agent.publish.status_archived') }}</li>
 	{% if article.person.id == app.user.id %}
-		<li data-option-value="hidden.draft">{{ phrase('agent.draft') }}</li>
+		<li data-option-value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</li>
 	{% endif %}
 </ul>
 

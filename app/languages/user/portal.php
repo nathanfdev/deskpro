@@ -26,7 +26,7 @@
   'user.portal.view_more_downloads' => 'View more downloads &rarr;',
   'user.portal.view_more_feedback' => 'View more feedback &rarr;',
   'user.portal.title_newest_feedback' => 'Newest Feedback',
-  'user.portal.news' => 'News',
+
   'user.portal.our_staff' => 'Our Staff',
   'user.portal.online_staff' => 'Online Staff',
   'user.portal.twitter_message' => 'Message',

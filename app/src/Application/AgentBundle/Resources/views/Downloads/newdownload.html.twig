@@ -37,9 +37,9 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="col">
 			<h4 class="light">{{ phrase('agent.status') }}</h4>
 			<select name="newdownload[status]">
-				<option value="published">{{ phrase('agent.published') }}</option>
-				<option value="hidden.unpublished">{{ phrase('agent.unpublished') }}</option>
-				<option value="hidden.draft">{{ phrase('agent.draft') }}</option>
+				<option value="published">{{ phrase('agent.publish.status_published') }}</option>
+				<option value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
+				<option value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
 				{% if constant('DP_DEBUG') %}
 					<option value="hidden.validating" selected="selected">{{ phrase('agent.dev_validating') }}</option>
 				{% endif %}

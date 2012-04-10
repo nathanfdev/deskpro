@@ -60,9 +60,9 @@
 			<tbody>
 				<!-- PERMISSION:agent_tickets.use -->{{ _self.perm_col(phrase('admin.agents.use_tickets'), usergroup_values, 'agent_tickets', 'use') }}
 				<!-- PERMISSION:agent_tickets.create -->{{ _self.perm_col(phrase('admin.agents.create_tickets'), usergroup_values, 'agent_tickets', 'create', 'agent_tickets_use') }}
-                {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.workflow') }}"></span>{% endset %}
+                {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.workflow') }}"></span>{% endset %}
 				<!-- PERMISSION:agent_tickets.reply_mass -->{{ _self.perm_col(phrase('admin.agents.widget_use_mass_actions_to_reply', {'subphrase':phrase_part}), usergroup_values, 'agent_tickets', 'reply_mass', 'agent_tickets_use') }}
-                {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.workflow') }}"></span>{% endset %}
+                {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.workflow') }}"></span>{% endset %}
 				<!-- PERMISSION:agent_tickets.modify_set_closed -->{{ _self.perm_col(phrase('admin.agents.widget_close_unclose_tickets', {'subphrase':phrase_part}), usergroup_values, 'agent_tickets', 'modify_set_closed', 'agent_tickets_use') }}
 			</tbody>
 			<tbody>
@@ -215,7 +215,7 @@
 				<!-- PERMISSION:agent_publish.create -->{{ _self.perm_col(phrase('agent.create_content'), usergroup_values, 'agent_publish', 'create') }}
 				<!-- PERMISSION:agent_publish.delete -->{{ _self.perm_col(phrase('agent.delete_content'), usergroup_values, 'agent_publish', 'delete') }}
 				<!-- PERMISSION:agent_publish.edit -->{{ _self.perm_col(phrase('admin.agents.edit_content'), usergroup_values, 'agent_publish', 'edit') }}
-                {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.workflow') }}"></span>{% endset %}
+                {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.workflow') }}"></span>{% endset %}
 				<!-- PERMISSION:agent_publish.validate -->{{ _self.perm_col(phrase('admin.agents.widget_validate_content_and_comments', {'subphrase':phrase_part}), usergroup_values, 'agent_publish', 'validate') }}
 			</tbody>
 		</table>

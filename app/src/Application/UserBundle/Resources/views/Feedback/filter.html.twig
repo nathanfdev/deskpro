@@ -68,9 +68,9 @@
 			<div class="dp-box-nav">
 				<ul>
 					<li class="dp-title">{{ phrase('user.status') }}</li>
-					<li {% if status == 'all' %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': 'all', 'slug': category.url_slug}) }}">{{ phrase('user.all') }}</a></li>
+					<li {% if status == 'all' %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': 'all', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_all') }}</a></li>
 					<li {% if status == 'popular' %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': 'popular', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_popular') }}</a></li>
-					<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': 'new', 'slug': category.url_slug}) }}">{{ phrase('user.new') }}</a></li>
+					<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': 'new', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_new') }}</a></li>
 					<li {% if status == 'active' %}class="on"{% endif %}>
 						<a href="{{ path('user_feedback', {'status': 'active', 'slug': category.url_slug}) }}">{{ phrase('user.active') }}</a>
 						<ul>
@@ -80,7 +80,7 @@
 						</ul>
 					</li>
 					<li {% if status == 'closed' %}class="on"{% endif %}>
-						<a href="{{ path('user_feedback', {'status': 'closed', 'slug': category.url_slug}) }}">{{ phrase('user.closed') }}</a>
+						<a href="{{ path('user_feedback', {'status': 'closed', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_closed') }}</a>
 						<ul>
 							{% for s_cat in closed_status_cats %}
 								<li {% if status == s_cat.status_code %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': s_cat.status_code, 'slug': category.url_slug}) }}">{{ s_cat.title }}</a></li>
@@ -101,7 +101,7 @@
 				{% if feedback_cats|length %}
 					<ul class="sep">
 						<li class="dp-title">{{ phrase('user.category') }}</li>
-						<li {% if not category %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': status, 'slug': 'all'}) }}">{{ phrase('user.all') }}</a></li>
+						<li {% if not category %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': status, 'slug': 'all'}) }}">{{ phrase('user.feedback.status_all') }}</a></li>
 						{% for cat in feedback_cats %}
 							{{ _self.cat_row(cat, status, category) }}
 						{% endfor %}

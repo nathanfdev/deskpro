@@ -39,7 +39,7 @@
             {% elseif ticket.status == 'awaiting_user' %}
             {{ phrase('agent.pending') }}
             {% elseif ticket.status == 'resolved' %}
-            {{ phrase('agent.resolved') }}
+            {{ phrase('agent.tickets.status_resolved') }}
             {% endif %}
 		</td>
 	</tr>

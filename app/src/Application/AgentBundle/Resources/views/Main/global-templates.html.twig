@@ -225,9 +225,9 @@
 {# Ticket Status #}
 <ul id="ticket_status_menu">
 	<li class="section-title">{{ phrase('agent.status') }}</li>
-	<li data-status="awaiting_agent">{{ phrase('agent.awaiting_agent') }}</li>
-	<li data-status="awaiting_user">{{ phrase('agent.awaiting_user') }}</li>
-	<li data-status="resolved">{{ phrase('agent.resolved') }}</li>
+	<li data-status="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</li>
+	<li data-status="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</li>
+	<li data-status="resolved">{{ phrase('agent.tickets.status_resolved') }}</li>
 	<li data-status="closed">{{ phrase('agent.closed') }}</li>
 </ul>
 
@@ -365,12 +365,12 @@
 		class="status-new"
 		data-status-type="new"
 		data-option-value="new"
-	>{{ phrase('agent.new') }}</li>
+	>{{ phrase('agent.feedback.status_new') }}</li>
 	<li
 		class="section-title status-active"
 		data-status-type="active"
 		data-option-value="active"
-	>{{ phrase('agent.active') }}</li>
+	>{{ phrase('agent.feedback.status_active') }}</li>
 	{% for cat in feedback_active_status_cats %}
 		<li
 			class="status-{{cat.id}}"

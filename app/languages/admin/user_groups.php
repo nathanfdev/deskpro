@@ -19,7 +19,7 @@
   'admin.user_groups.new_usergroup' => 'New Usergroup',
   'admin.user_groups.note_description' => 'Note / Description',
   'admin.user_groups.save_usergroup' => 'Save Usergroup',
-  'admin.user_groups.usergroup' => 'Usergroup',
+
   'admin.user_groups.add_usergroup' => 'Add Usergroup',
   'admin.user_groups.date_registered' => 'Date Registered',
   'admin.user_groups.browse' => 'browse',

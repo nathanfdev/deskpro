@@ -70,9 +70,9 @@
     'user.tickets.attach_a_file' => 'Attach a file',
     'user.tickets._your_tickets' => '- Your Tickets',
     'user.tickets.manage_participants' => 'Manage Participants',
-    'user.tickets.category' => 'Category',
-    'user.tickets.priority' => 'Priority',
-    'user.tickets.status' => 'Status',
+
+
+
     'user.tickets.agent' => 'Agent',
     'user.tickets.attachment_max_size' => 'Max size',
     'user.tickets.check_you_email' => 'check your email',

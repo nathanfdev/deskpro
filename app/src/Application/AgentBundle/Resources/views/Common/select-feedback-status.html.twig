@@ -1,6 +1,6 @@
 <select name="{{ name }}">
-	<option value="new">{{ phrase('agent.new') }}</option>
-	<optgroup label="{{ phrase('agent.active') }}">
+	<option value="new">{{ phrase('agent.feedback.status_new') }}</option>
+	<optgroup label="{{ phrase('agent.feedback.status_active') }}">
 		{% for cat in active_status_cats %}
 			<option value="active.{{ cat.id }}">{{ cat.title }}</option>
 		{% endfor %}

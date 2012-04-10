@@ -35,7 +35,7 @@
         'time_total_user_waiting': phrase('admin.tickets.time_total_user_waiting'),
         'time_agent_waiting': phrase('admin.tickets.time_agent_waiting'),
         'time_resolved': phrase('admin.tickets.time_resolved'),
-        'other': phrase('admin.tickets.other'),
+        'other': phrase('agent.other'),
 	} %}
 	{% for type,title in types %}
 		<li>
@@ -112,7 +112,7 @@
 </ul>
 
 <br />
-<button class="clean-white save-trigger">{{ phrase('admin.tickets.continue') }} &rarr;</button>
+<button class="clean-white save-trigger">{{ phrase('agent.continue') }} &rarr;</button>
 
 </form>
 {% endblock %}

@@ -3,12 +3,12 @@
 		class="status-new"
 		data-status-type="new"
 		data-option-value="new"
-	>{{ phrase('agent.new') }}</li>
+	>{{ phrase('agent.feedback.status_new') }}</li>
 	<li
 		class="section-title status-active"
 		data-status-type="active"
 		data-option-value="active"
-	>{{ phrase('agent.active') }}</li>
+	>{{ phrase('agent.feedback.status_active') }}</li>
 	{% for cat in active_status_cats %}
 		<li
 			class="status-{{cat.id}}"

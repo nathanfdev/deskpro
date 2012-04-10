@@ -1,10 +1,10 @@
 <?php return array (
   'agent.search.loading' => 'loading',
-  'agent.search.tickets' => 'Tickets',
+
   'agent.search.chat_conversations' => 'Chat Conversations',
-  'agent.search.articles' => 'Articles',
-  'agent.search.news' => 'News',
-  'agent.search.downloads' => 'Downloads',
+
+
+
   'agent.search.by' => 'By',
   'agent.search.showing_x_of_y_people' => 'Showing {{display_count}} of {{count}} people|Showing {{display_count}} of {{count}} people',
   'agent.search.no_email' => 'No email',

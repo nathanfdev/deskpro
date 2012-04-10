@@ -13,12 +13,12 @@
 			{% if ticket.status == 'awaiting_agent' or ticket.status == 'awaiting_user' %}
 				<div class="dp-status-switcher" title="{{ phrase('user.tickets.click_to_close') }}">
 					<div class="dp-status active dp-status-open">{{ phrase('user.open') }}</div>
-					<a class="dp-status switcher dp-status-closed" href="{{ path('user_tickets_close', {'ticket_ref': ticket.public_id}) }}">{{ phrase('user.closed') }}</a>
+					<a class="dp-status switcher dp-status-closed" href="{{ path('user_tickets_close', {'ticket_ref': ticket.public_id}) }}">{{ phrase('user.feedback.status_closed') }}</a>
 				</div>
 			{% elseif ticket.status == 'resolved' %}
 				<div class="dp-status dp-status-resolved">{{ phrase('user.resolved') }}</div>
 			{% elseif ticket.status == 'closed' %}
-				<div class="dp-status dp-status-closed">{{ phrase('user.closed') }}</div>
+				<div class="dp-status dp-status-closed">{{ phrase('user.feedback.status_closed') }}</div>
 			{% endif %}
 			<h1>{{ ticket.subject }}</h1>
             <a target="_blank" href="{{ path('user_tickets_view', {'ticket_ref': ticket.id, 'pdf': 1}) }}"><img src="{{ asset('images/filetypes/page_white_acrobat.png') }}" /> {{ phrase('user.download_pdf') }}</a>

@@ -58,7 +58,7 @@
   'admin.general.templates' => 'Templates',
   'admin.general.scheduled_tasks' => 'Scheduled Tasks',
   'admin.general.on' => 'ON',
-  'admin.general.on_lc' => 'on',
+
   'admin.general.off' => 'OFF',
   'admin.general.permission' => 'Permission',
   'admin.general.default_value' => 'Default Value',
@@ -74,8 +74,8 @@
   'admin.general.save_changes' => 'Save Changes',
   'admin.general.email_addresses' => 'Email Addresses',
   'admin.general.variable_name' => 'Variable Name',
-  'admin.general.value' => 'Value',
-  'admin.general.default' => 'Default',
+
+
   'admin.general.edit_category' => 'Edit Category',
   'admin.general.new_category' => 'New Category',
   'admin.general.setting' => 'Setting',

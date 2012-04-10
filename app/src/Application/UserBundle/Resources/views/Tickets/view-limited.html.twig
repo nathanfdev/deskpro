@@ -46,7 +46,7 @@ ul.attachment-list > li img.preview {
 	</td>
 	{% if ticket.category %}
 	<td>
-		<small>{{ phrase('user.tickets.category') }}</small><br />
+		<small>{{ phrase('user.category') }}</small><br />
 		{{ticket.category.title}}
 	</td>
 	{% endif %}
@@ -58,12 +58,12 @@ ul.attachment-list > li img.preview {
 	{% endif %}
 	{% if ticket.priority %}
 	<td>
-		<small>{{ phrase('user.tickets.priority') }}</small><br />
+		<small>{{ phrase('user.priority') }}</small><br />
 		{{ticket.priority.title}}
 	</td>
 	{% endif %}
 	<td>
-		<small>{{ phrase('user.tickets.status') }}</small><br />
+		<small>{{ phrase('user.status') }}</small><br />
 		{{ phrase('user.tickets.status_' ~ ticket.status) }}
 	</td>
 	<td>

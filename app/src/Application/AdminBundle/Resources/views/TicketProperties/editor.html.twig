@@ -170,7 +170,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
                                 {% set phrase_part %}
 								<select name="term_match_type">
                                     <option value="all">{{ phrase('admin.tickets.all') }}</option>
-                                    <option value="any">{{ phrase('admin.tickets.any') }}</option>
+                                    <option value="any">{{ phrase('agent.any') }}</option>
                                 </select>
                                 {% endset %}
                                 {{ phrase('admin.tickets.only_show_field_when_choice', {'choice':phrase_part}) }}

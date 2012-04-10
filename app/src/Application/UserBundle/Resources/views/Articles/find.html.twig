@@ -17,7 +17,7 @@
 				<tr>
 					<td>
 						<select name="category_id">
-							<option value="0">{{ phrase('user.all') }}</option>
+							<option value="0">{{ phrase('user.feedback.status_all') }}</option>
 							{% for cat in kb_cats %}
 								<option value="{{cat.id}}" {% if search_options.category_id == cat.id %}selected="selected"{% endif %}>{{ '--'|repeat(cat.depth) }}{{ cat.title }}</option>
 							{% endfor %}
@@ -25,7 +25,7 @@
 					</td>
 					<td>
 						<select name="product_id">
-							<option value="0">{{ phrase('user.all') }}</option>
+							<option value="0">{{ phrase('user.feedback.status_all') }}</option>
 							{% for prod in products %}
 								<option value="{{prod.id}}" {% if search_options.product_id == prod.id %}selected="selected"{% endif %}>{{ '--'|repeat(prod.depth) }}{{ prod.title }}</option>
 							{% endfor %}

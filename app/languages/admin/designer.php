@@ -5,8 +5,8 @@
   'admin.designer.reenable_simple_header' => 'Click here to re-enable the simple header',
   'admin.designer.notice_no_display_elements' => 'You have not enabled any display elements for this department. To add items, drag and drop elements from the right onto this area.',
   'admin.designer.visible' => 'Visible',
-  'admin.designer.all' => 'all',
-  'admin.designer.any' => 'any',
+
+
   'admin.designer.initial_status' => 'Initially {{option}}, and then toggle when {{all}} of these rules match:',
   'admin.designer.only_show_for_agents' => 'Only show this for agents',
   'admin.designer.add_new_rule' => 'Add a new rule',

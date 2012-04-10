@@ -2,13 +2,13 @@
 	<li class="is-nav-item with-route nav-archive-pending" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=awaiting_user&amp;view_name=pending">
 			<span class="title">
 				<span class="list-counter" id="ticket_archive_pending_count">{{ archive_counts['awaiting_user']|default(0) }}</span>
-				{{ phrase('agent.awaiting_user') }}
+				{{ phrase('agent.tickets.status_awaiting_user') }}
 			</span>
 	</li>
 	<li class="is-nav-item with-route nav-archive-resolved" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=resolved&amp;view_name=resolved">
 			<span class="title">
 				<span class="list-counter" id="ticket_archive_resolved_count">{{ archive_counts['resolved']|default(0) }}</span>
-				{{ phrase('agent.resolved') }}
+				{{ phrase('agent.tickets.status_resolved') }}
 			</span>
 	</li>
 	<li class="is-nav-item with-route nav-archive-closed" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=closed&amp;view_name=closed">

@@ -116,13 +116,13 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<div class="meta-line">
 		<div class="status set-status awaiting_agent" {% if ticket.status_code != 'awaiting_agent' %}style="display: none"{% endif %}>
 			<span class="marker-urgency-data urgency-{{ ticket.urgency }}">
-				<label>{{ phrase('agent.awaiting_agent') }}</label>
+				<label>{{ phrase('agent.tickets.status_awaiting_agent') }}</label>
 				<i class="ticket-urgency" id="{{baseId}}_urgency" data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</i>
 			</span>
 		</div>
-		<div class="status set-status awaiting_user" {% if ticket.status_code != 'awaiting_user' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.awaiting_user') }}</label></span></div>
+		<div class="status set-status awaiting_user" {% if ticket.status_code != 'awaiting_user' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.tickets.status_awaiting_user') }}</label></span></div>
 		<div class="status set-status closed" {% if ticket.status_code != 'closed' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.closed') }}</label></span></div>
-		<div class="status set-status resolved" {% if ticket.status_code != 'resolved' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.resolved') }}</label></span></div>
+		<div class="status set-status resolved" {% if ticket.status_code != 'resolved' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.tickets.status_resolved') }}</label></span></div>
 		<div class="status set-status hidden hidden_spam" {% if ticket.status_code != 'hidden.spam' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.spam') }}</label></span></div>
 		<div class="status set-status hidden hidden_validating" {% if ticket.status_code != 'hidden.validating' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.validating') }}</label></span></div>
 		<div class="status set-status hidden hidden_deleted" {% if ticket.status_code != 'hidden.deleted' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.deleted') }}</label></span></div>

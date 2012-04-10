@@ -15,12 +15,12 @@
 			{{ phrase('agent.tickets.group_by') }}
 			<select name="filter[group_by]">
 				<option value="">{{ phrase('agent.tickets.no_grouping') }}</option>
-				{% for id,name in {'priority_id':phrase('agent.tickets.priority'), 'status':phrase('agent.tickets.status'), 'department_id':phrase('agent.department'), 'category_id':phrase('agent.tickets.category'), 'product_id':phrase('agent.product'), 'agent_id':phrase('agent.agent'), 'agent_team_id':phrase('agent.tickets.agent_team')} %}
+				{% for id,name in {'priority_id':phrase('agent.priority'), 'status':phrase('agent.status'), 'department_id':phrase('agent.department'), 'category_id':phrase('agent.category'), 'product_id':phrase('agent.product'), 'agent_id':phrase('agent.agent'), 'agent_team_id':phrase('agent.agent_team')} %}
 					<option value="{{id}}" {%if filter.group_by == id %}selected="selected"{%endif%}>{{name}}</option>
 				{% endfor %}
 			</select>
 		</div>
-		<center><input type="submit" value="{{ phrase('agent.tickets.search') }}" /></center>
+		<center><input type="submit" value="{{ phrase('agent.search') }}" /></center>
 	</form>
 </div>
 
