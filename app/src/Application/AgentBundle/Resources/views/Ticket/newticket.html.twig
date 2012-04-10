@@ -63,7 +63,7 @@ pageMeta.baseId = '{{ baseId }}';
 				data-search-param="term"
 				data-position-bound="#{{baseId}}_userselect"
 			>
-				<input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.choose_a_person_to_create_this_ticket_for') }}" />
+				<input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.choose_person_for_ticket') }}" />
 				<input type="hidden" name="newticket[person][id]" value="{{ person.id }}" class="person-id" id="{{baseId}}_person_id" />
 
 				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
@@ -90,7 +90,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 		</div>
 		<div class="error-message person_id person_no_user">{{ phrase('agent.tickets.please_choose_or_create_user') }}</div>
-		<div class="error-message person_email_address">{{ phrase('agent.please_enter_a_valid_email_address') }}</div>
+		<div class="error-message person_email_address">{{ phrase('agent.please_enter_valid_email') }}</div>
 		<br class="clear" />
 	</div>
 </div>
@@ -367,7 +367,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">{{ phrase('agent.create_ticket') }} <kbd>{{ phrase('agent.tickets.altc') }}</kbd></button>
+		<button class="submit-trigger clean-white">{{ phrase('agent.create_ticket') }} <kbd>{{ phrase('agent.tickets.kbd_alt_c') }}</kbd></button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />

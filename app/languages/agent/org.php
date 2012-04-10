@@ -12,5 +12,5 @@
     'agent.org.email_domain_assoc_title'         => 'Email Domain Associations for {{name}}',
     'agent.org.enter_position'                   => 'Enter position',
     'agent.org.number_of_members'                => 'Number of Members',
-    'agent.org.this_organization_has_no_members' => 'This organization has no members.',
+    'agent.org.is_empty' => 'This organization has no members.',
 );

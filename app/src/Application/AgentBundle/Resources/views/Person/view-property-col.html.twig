@@ -51,7 +51,7 @@
 					<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="white-space: nowrap;" valign="middle">
 						<label>{{ phrase('agent.organization') }}:</label>
 					</td><td width="100%">
-						<input type="text" class="org-name" placeholder="{{ phrase('agent.enter_an_organization_name') }}" value="{{ person.organization.name }}" />
+						<input type="text" class="org-name" placeholder="{{ phrase('agent.enter_organization_name') }}" value="{{ person.organization.name }}" />
 					</td></tr></table>
 
 					<input type="hidden" class="org-id" value="{{ person.organization.id|default(0) }}" />

@@ -16,7 +16,7 @@
     'agent.deal.edit_name'           => 'edit name',
     'agent.deal.enter_note_'         => 'Enter note ...',
     'agent.deal.my_deals'            => 'My Deals',
-    'agent.deal.new_taskk'           => 'New Task(k)',
+    'agent.deal.new_task_kbd_k'           => 'New Task(k)',
     'agent.deal.open_deals'          => 'Open Deals',
     'agent.deal.others_deals'        => 'Others Deals',
     'agent.deal.pending_review'      => 'Pending Review:',

@@ -23,7 +23,7 @@
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>{{ phrase('agent.report.show_legend') }}</label>
-				<span>{{ phrase('agent.report.select_yes_to_display_the_chart_legend_works') }}</span>
+				<span>{{ phrase('agent.report.select_show_chart_legend') }}</span>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.show_legend) }}
@@ -43,7 +43,7 @@
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>{{ phrase('agent.report.data_range') }}</label>
-				<span>{{ phrase('agent.report.how_many_time_units_to_display', {'period_type': stat.getRunPeriodLength() }) }}</span>
+				<span>{{ phrase('agent.report.ask_time_unit_amount', {'period_type': stat.getRunPeriodLength() }) }}</span>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.number_data_points) }}

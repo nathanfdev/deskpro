@@ -96,7 +96,7 @@
 						{% include 'AgentBundle:Organization:view-members-row.html.twig' %}
 					{% else %}
 						{% if not app.user.hasPerm('agent_people.edit') %}
-							<tr><td colspan="2">{{ phrase('agent.org.this_organization_has_no_members') }}</td></tr>
+							<tr><td colspan="2">{{ phrase('agent.org.is_empty') }}</td></tr>
 						{% endif %}
 					{% endfor %}
 				</tbody>

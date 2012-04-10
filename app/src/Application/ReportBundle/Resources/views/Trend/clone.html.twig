@@ -14,7 +14,7 @@
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>{{ phrase('agent.group_by') }}</label>
-				<span>{{ phrase('agent.report.select_the_field_to_group_the_results_by') }}</span>
+				<span>{{ phrase('agent.report.select_group_field') }}</span>
 			</div>
 			<div class="dp-form-input group-by">
 				{{ form_widget(form.grouping_ref) }}
@@ -35,7 +35,7 @@
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>{{ phrase('agent.report.difference') }}</label>
-				<span>{{ phrase('agent.report.is_a_positive_number_good_bad_or_neutral') }}</span>
+				<span>{{ phrase('agent.report.ask_positive_number') }}</span>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.variation) }}
@@ -45,7 +45,7 @@
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>{{ phrase('agent.frequency') }}</label>
-				<span>{{ phrase('agent.report.how_often_does_this_statistic_need_to_run') }}</span>
+				<span>{{ phrase('agent.report.ask_run_interval') }}</span>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.run_frequency) }}
@@ -55,7 +55,7 @@
         <div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>{{ phrase('agent.report.star_the_statistic') }}</label>
-				<span>{{ phrase('agent.report.starred_statistic_display_at_the_top_of_the') }}</span>
+				<span>{{ phrase('agent.report.starred_statistic_display') }}</span>
 			</div>
 			<div class="dp-form-input">
 				<label>{{ form_widget(form.starred) }} {{ phrase('agent.report.starred') }}</label>

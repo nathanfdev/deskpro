@@ -97,7 +97,7 @@ pageMeta.baseId = '{{ baseId }}';
                 <span class="link-look who-voted-trigger">{{ phrase('agent.count_votecount_votes', {'count':article.num_ratings}) }}</span>
                 {% endset %}
                 {{ phrase('agent.percent_helpful_subphrase', {'percent':article.rating_percent,'subphrase':phrase_part}) }}<br />
-				<small>{{ phrase('agent.up_votes_found_this_the_article_helpful_down_votes_found', {'up_votes':article.up_votes,'down_votes':article.down_votes}) }}</small>
+				<small>{{ phrase('agent.found_article_helpful_or_not', {'up_votes':article.up_votes,'down_votes':article.down_votes}) }}</small>
 			</dd>
 
 			{% if article.date_created == article.date_published %}
@@ -147,7 +147,7 @@ pageMeta.baseId = '{{ baseId }}';
 					(<span class="remove-auto-unpublish options-text">{{ phrase('agent.remove') }}</span>)
 				</span>
 				<span class="options-text auto-unpublish-set" {% if article.date_end %}style="display: none"{% endif %}>
-					{{ phrase('agent.publish.set_an_automatic_unpublish_date') }}
+					{{ phrase('agent.publish.set_auto_unpublish_date') }}
 				</span>
 				<br />
 
@@ -166,7 +166,7 @@ pageMeta.baseId = '{{ baseId }}';
 					(<span class="remove-auto-publish options-text">{{ phrase('agent.remove') }}</span>)
 				</span>
 				<span class="options-text auto-publish-set" {% if article.date_published %}style="display: none"{% endif %}>
-					{{ phrase('agent.publish.set_an_automatic_publish_date') }}
+					{{ phrase('agent.publish.set_auto_publish_date') }}
 				</span>
 			</dd>
 		</dl>

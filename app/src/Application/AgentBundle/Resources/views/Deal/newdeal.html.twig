@@ -47,7 +47,7 @@ pageMeta.baseId = '{{ baseId }}';
 				data-position-bound="#{{baseId}}_userselect"
 			>
                                 {{ phrase('agent.person') }}:
-				<input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.choose_a_person_to_create_this_ticket_for') }}" />
+				<input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.choose_person_for_ticket') }}" />
 				<input type="hidden" name="newdeal[person][id]" value="{{ deal.person.id }}" class="person-id" id="{{baseId}}_person_id" />
 
 				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
@@ -90,7 +90,7 @@ pageMeta.baseId = '{{ baseId }}';
 				data-position-bound="@parent(.org-input)"
 			>
 				{{ phrase('agent.organization') }}:
-				<input type="text" class="org-name" placeholder="{{ phrase('agent.enter_an_organization_name') }}" value="{{ person.organization.name }}" />
+				<input type="text" class="org-name" placeholder="{{ phrase('agent.enter_organization_name') }}" value="{{ person.organization.name }}" />
 				<input type="hidden" class="org-id" name="newdeal[organizations][id]" value="{{ person.organization.id|default(0) }}" />
 				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
 					<li>

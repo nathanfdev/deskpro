@@ -8,9 +8,9 @@
 		<div class="insert-controls">
 			<label>
 				<input type="blob_append[]" value="{{ blob.id }}" checked="checked" />
-				{{ phrase('agent.list_as_an_attachment_to_the_article') }}
+				{{ phrase('agent.list_as_article_attachment') }}
 			</label>
-			{{ phrase('agent.andor') }} <a href="" class="insert-link" data-blob-id="{{ blob.id }}">{{ phrase('agent.link_to_the_file_from_within_the_article') }}</a>
+			{{ phrase('agent.andor') }} <a href="" class="insert-link" data-blob-id="{{ blob.id }}">{{ phrase('agent.file_link_from_article') }}</a>
 			<div class="insert-controls-overlay">
 				<div class="overlay-title" style="padding:  6px;">
 					{{ phrase('agent.insert_title', {'title':blob.display_title}) }}
@@ -20,14 +20,14 @@
 					<strong>{{ phrase('agent.url') }}</strong><br />
 					<input type="hidden" class="insert-url-code" value="![attach:{{ blob.id }} url]" />
 					<button class="dp-button">{{ phrase('agent.insert') }} {{ phrase('agent.url') }}</button><br />
-					{{ phrase('agent.this_will_insert_a_plaintext_url_to_the') }}
+					{{ phrase('agent.inserts_plaintext_url') }}
 
 					<hr />
 
 					<strong>{{ phrase('agent.link') }}</strong><br />
 					<input type="hidden" class="insert-link-code" value="![attach:{{ blob.id }} link:{{ '{{label}}' }}]" />
 					{{ phrase('agent.label') }}: <input type="text" class="link-label" value="{{ blob.display_title }}" /> <button class="dp-button">{{ phrase('agent.insert_link_to_page') }}</button><br />
-					{{ phrase('agent.this_will_insert_a_link_to_the_file') }}
+					{{ phrase('agent.inserts_file_link') }}
 
 					{% if blob.isImage() %}
 						<hr />
@@ -35,7 +35,7 @@
 						<strong>{{ phrase('agent.full_image') }}</strong>
 						<input type="hidden" class="insert-image-code" value="![attach:{{ blob.id }} image]" />
 						<button class="dp-button">{{ phrase('agent.insert_image') }}</button><br />
-						{{ phrase('agent.this_will_insert_the_fullsized_image') }}
+						{{ phrase('agent.inserts_full_image') }}
 
 						<hr />
 
@@ -44,7 +44,7 @@
 						{{ phrase('agent.width') }}: <input type="text" class="thumb-width" value="50" />
 						{{ phrase('agent.height') }}: <input type="text" class="thumb-height" value="50" />
 						<button class="dp-button">{{ phrase('agent.insert_thumbnail') }}</button><br />
-						{{ phrase('agent.this_will_insert_a_thumbnail_image_that_links') }}
+						{{ phrase('agent.inserts_thumbnail_with_link') }}
 					{% endif %}
 				</div>
 			</div>

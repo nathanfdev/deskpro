@@ -38,13 +38,13 @@ pageMeta.baseId = '{{ baseId }}';
 				<span class="linked-ticket" style="display:none">
 					<span class="btn-small-delete remove-link-trigger"></span>
                     {% set phrase_part %}<label></label>{% endset %}
-                    {{ phrase('agent.task.task_linked_to_ticket_label', {'label':phrase_part}) }}
+                    {{ phrase('agent.task.task_has_ticket_x', {'label':phrase_part}) }}
 				</span>
 
 				 <span class="linked-deal" style="display:none">
 					<span class="btn-small-delete remove-link-trigger"></span>
                      {% set phrase_part %}<label></label>{% endset %}
-                    {{ phrase('agent.task.task_linked_to_deal_label', {'label':phrase_part}) }}
+                    {{ phrase('agent.task.task_has_deal_x', {'label':phrase_part}) }}
 				</span>
 			</div>
 		</div>

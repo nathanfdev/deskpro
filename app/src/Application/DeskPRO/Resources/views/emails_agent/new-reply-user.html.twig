@@ -7,8 +7,8 @@
 {% endblock %}
 {% block content %}
 
-{% if is_new_agent_reply %}{{ phrase('agent.emails.an_agent_has_replied', {'subject':ticket.subject}) }}
-{% elseif is_new_user_reply %}{{ phrase('agent.emails.a_user_has_replied', {'subject':ticket.subject}) }}
+{% if is_new_agent_reply %}{{ phrase('agent.emails.agent_replied', {'subject':ticket.subject}) }}
+{% elseif is_new_user_reply %}{{ phrase('agent.emails.user_replied', {'subject':ticket.subject}) }}
 {% endif %}
 
 {{ layout.section('', content) }}

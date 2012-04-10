@@ -14,7 +14,7 @@
 				</div>
 			{{else}}
 				<div class="meta">
-					{% endraw %}{{ phrase('agent.chat.by_anon', {'chat_id': '${conversation_id}'}) }}{% raw %}
+					{% endraw %}{{ phrase('agent.chat.x_by_anonymous', {'chat_id': '${conversation_id}'}) }}{% raw %}
 					{{if department_id}}
 						{% endraw %}{{ phrase('agent.chat.in_department', {'name': '<em>${department_name}</em>'}) }}{% raw %}
 					{{/if}}

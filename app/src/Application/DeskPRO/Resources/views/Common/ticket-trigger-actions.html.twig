@@ -9,7 +9,7 @@
 		</div>
 	</div>
 
-	<div class="type" title="{{ phrase('agent.set_quotfromquot_address_on_email_notifications') }}" data-rule-type="set_from_address">
+	<div class="type" title="{{ phrase('agent.set_notifs_from_address') }}" data-rule-type="set_from_address">
 		<div class="options">
 			<input type="text" name="email_address" />
 		</div>
@@ -21,7 +21,7 @@
 	</div>
 
 	{% if event_group in ['new_ticket.web_person', 'new_ticket.gateway_person', 'new_ticket.widget'] %}
-		<div class="type" title="{{ phrase('agent.email_user_autoresponse_notification_about_new_ticket') }}" data-rule-type="set_email_template_user_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+		<div class="type" title="{{ phrase('agent.email_user_auto_new_ticket') }}" data-rule-type="set_email_template_user_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
 			<div class="options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_ticket" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
@@ -35,7 +35,7 @@
 				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-ticket-validate"></span>
 			</div>
 		</div>
-		<div class="type" title="{{ phrase('agent.email_agent_notification_about_new_ticket') }}" data-rule-type="set_email_template_agent_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+		<div class="type" title="{{ phrase('agent.email_agent_new_ticket') }}" data-rule-type="set_email_template_agent_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
 			<div class="options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="agent_new_ticket" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
@@ -44,14 +44,14 @@
 		</div>
 	{% endif %}
 	{% if event_group in ['new_ticket.agent'] %}
-		<div class="type" title="{{ phrase('agent.email_user_notification_of_new_ticket') }}" data-rule-type="set_email_template_user_new_ticket_agent" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+		<div class="type" title="{{ phrase('agent.email_user_new_ticket') }}" data-rule-type="set_email_template_user_new_ticket_agent" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
 			<div class="options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_ticket_agent" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
 				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-ticket-agent"></span>
 			</div>
 		</div>
-		<div class="type" title="{{ phrase('agent.email_agent_notification_about_new_ticket') }}" data-rule-type="set_email_template_agent_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+		<div class="type" title="{{ phrase('agent.email_agent_new_ticket') }}" data-rule-type="set_email_template_agent_new_ticket" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
 			<div class="options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="agent_new_ticket" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
@@ -60,14 +60,14 @@
 		</div>
 	{% endif %}
 	{% if event_group in ['new_reply.web_person', 'new_reply.gateway_person'] %}
-		<div class="type" title="{{ phrase('agent.email_user_autoresponse_notification_about_new_reply') }}" data-rule-type="set_email_template_user_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+		<div class="type" title="{{ phrase('agent.email_user_auto_new_reply') }}" data-rule-type="set_email_template_user_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
 			<div class="options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_reply_user" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
 				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-reply-user"></span>
 			</div>
 		</div>
-		<div class="type" title="{{ phrase('agent.email_agent_notification_about_new_reply') }}" data-rule-type="set_email_template_agent_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+		<div class="type" title="{{ phrase('agent.email_agent_new_reply') }}" data-rule-type="set_email_template_agent_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
 			<div class="options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="agent_new_reply_user" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
@@ -76,14 +76,14 @@
 		</div>
 	{% endif %}
 	{% if event_group in ['new_reply.agent'] %}
-		<div class="type" title="{{ phrase('agent.email_user_notification_of_new_agent_reply') }}" data-rule-type="set_email_template_user_new_reply_agent" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+		<div class="type" title="{{ phrase('agent.email_user_new_agent_reply') }}" data-rule-type="set_email_template_user_new_reply_agent" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
 			<div class="options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="user_new_reply_agent" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
 				<span class="status-value menu-trigger" data-tpldir="emails_user" data-tplprefix="new-reply-agent"></span>
 			</div>
 		</div>
-		<div class="type" title="{{ phrase('agent.email_agent_notification_of_new_agent_reply') }}" data-rule-type="set_email_template_agent_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
+		<div class="type" title="{{ phrase('agent.email_agent_new_agent_reply') }}" data-rule-type="set_email_template_agent_new_reply" data-rule-handler="DeskPRO.Admin.RuleBuilder.TemplateEdit">
 			<div class="options newline" style="display: block">
 				<input class="no-auto" type="hidden" name="tpl_type" value="agent_new_reply_agent" />
 				<input type="hidden" name="tpl" class="tpl-name" value="" />
@@ -210,9 +210,9 @@
 			</select>
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('agent.increasedecrease_urgency') }}" data-rule-type="urgency">
+	<div class="type" title="{{ phrase('agent.increase_decrease_urgency') }}" data-rule-type="urgency">
 		<div class="options">
-			<input type="text" name="num" /><small>{{ phrase('agent.enter_a_negative_number_to_have_urgency_decreased') }}</small>
+			<input type="text" name="num" /><small>{{ phrase('agent.urgency_enter_negative_number') }}</small>
 		</div>
 	</div>
 	<div class="type" title="{{ phrase('agent.set_urgency') }}" data-rule-type="urgency_set">
@@ -220,7 +220,7 @@
 			<input type="text" name="num" style="width: 50px" />
 			{% if event_trigger != 'new_ticket' %}
 			<select name="allow_lower">
-				<option value="0">{{ phrase('agent.only_set_when_urgency_is_lower') }}</option>
+				<option value="0">{{ phrase('agent.notice_only_when_urgency_lower') }}</option>
 				<option value="1">{{ phrase('agent.always_set_this_urgency') }}</option>
 			</select>
 			{% endif %}

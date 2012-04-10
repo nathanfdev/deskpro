@@ -25,6 +25,6 @@
     'agent.twitter.show_archived_tweets'                    => 'Show archived tweets',
     'agent.twitter.starred_tweets'                          => 'Starred Tweets',
     'agent.twitter.team_tweets'                             => 'Team Tweets',
-    'agent.twitter.there_are_no_followers_for_this_account' => 'There are no followers for this account',
+    'agent.twitter.no_followers' => 'There are no followers for this account',
     'agent.twitter.unknown'                                 => 'unknown',
 );

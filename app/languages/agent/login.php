@@ -13,9 +13,9 @@
     'agent.login.mozilla_firefox'                                    => 'Mozilla Firefox',
     'agent.login.notice_outdated_browser'                            => 'The admin and agent interfaces require a modern browser. We have detected that your browser is too outdated to use DeskPRO. Upgrade your browser to the latest version, or try downloading an alternative browser.',
     'agent.login.opera'                                              => 'Opera',
-    'agent.login.or_go_back_to_login_form'                           => 'or go back to login form',
-    'agent.login.the_following_browsers_are_supported'               => 'The following browsers are supported',
+    'agent.login.back_to_login'                           => 'or go back to login form',
+    'agent.login.supported_browsers'               => 'The following browsers are supported',
     'agent.login.version_x_or_later'                                 => 'v{{version}} or later',
-    'agent.login.we_sent_instructions_on_how_to_reset_your_password' => 'We sent insutructions on how to reset your password to the email address you provided.',
-    'agent.login.your_password_has_been_reset_successfully'          => 'Your password has been reset successfully.',
+    'agent.login.sent_pw_reset_instructions' => 'We sent insutructions on how to reset your password to the email address you provided.',
+    'agent.login.password_was_reset'          => 'Your password has been reset successfully.',
 );

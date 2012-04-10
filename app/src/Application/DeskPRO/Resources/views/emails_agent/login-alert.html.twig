@@ -10,9 +10,9 @@
 {% block content %}
 	{% set content %}
 		{% if success %}
-			{{ phrase('agent.emails.notice_account_used_to_login') }}<br />
+			{{ phrase('agent.emails.notice_account_login') }}<br />
 		{% else %}
-			{{ phrase('agent.emails.someone_tried_to_log_in_using_your_account') }}<br />
+			{{ phrase('agent.emails.notice_login_attempt') }}<br />
 		{% endif %}
 
 		{{ phrase('agent.emails.user_ip') }}: {{ session.visitor.ip_address }}<br />

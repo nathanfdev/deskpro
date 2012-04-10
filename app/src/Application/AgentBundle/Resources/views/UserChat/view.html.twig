@@ -214,7 +214,7 @@ pageMeta.baseId = '{{ baseId }}';
 				</div>
 			</div>
 			<div class="chatreply" id="{{baseId}}_replybox" style="{% if convo.status != 'open' %}display: none{% endif %};">
-				<div class="drop-file-zone"><h1>{{ phrase('agent.drop_your_file_here_to_attach_it_to') }}</h1></div>
+				<div class="drop-file-zone"><h1>{{ phrase('agent.drop_here_to_attach') }}</h1></div>
 				{% if convo.person and convo.person.id != session.person.id %}
 					<div class="impersonation-warning" id="{{baseId}}_imposter">
 						<strong>{{ phrase('agent.chat.warning') }}</strong>

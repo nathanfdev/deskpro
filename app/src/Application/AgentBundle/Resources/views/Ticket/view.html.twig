@@ -89,7 +89,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				{{ phrase('agent.tickets.perm_delete_note', {'time': hard_delete_time}) }}
 			{% endif %}
 		{% elseif ticket.hidden_status == 'spam' %}
-			{{ phrase('agent.tickets.this_ticket_has_been_marked_as_spam') }}<br />
+			{{ phrase('agent.tickets.ticket_is_marked_as_spam') }}<br />
 
 			{% if ticket_perms.delete %}
 				<div style="padding: 5px">

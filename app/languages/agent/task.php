@@ -16,7 +16,7 @@
     'agent.task.or'                          => 'or',
     'agent.task.overdue'                     => 'Overdue',
     'agent.task.task_description'            => 'Task Description...',
-    'agent.task.task_linked_to_deal_label'   => 'Task linked to: Deal "{{label}}"',
-    'agent.task.task_linked_to_ticket_label' => 'Task linked to: Ticket "{{label}}"',
+    'agent.task.task_has_deal_x'   => 'Task linked to: Deal "{{label}}"',
+    'agent.task.task_has_ticket_x' => 'Task linked to: Ticket "{{label}}"',
     'agent.task.tasks_i_delegated'           => 'Tasks I Delegated',
 );

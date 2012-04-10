@@ -62,9 +62,9 @@
 		<div class="options">
 			<select name="creation_system">
 				<option value="web">{{ phrase('agent.web_interface') }}</option>
-				<option value="web.person">-- {{ phrase('agent._by_user') }}</option>
+				<option value="web.person">-- {{ phrase('agent.by_user') }}</option>
 				<option value="widget.person">{{ phrase('agent.website_widget') }}</option>
-				<option value="web.agent">-- {{ phrase('agent._by_agent_on_behalf_of_user') }}</option>
+				<option value="web.agent">-- {{ phrase('agent.by_agent_for_user') }}</option>
 				<option value="gateway.person">{{ phrase('agent.email') }}</option>
 			</select>
 		</div>
@@ -610,7 +610,7 @@
 	{% endif %}
 
 	{% if 'robot_email' not in no_show_fields and event_trigger == 'new_ticket' or event_trigger == 'new_reply'  %}
-	<div class="type" title="{{ phrase('agent.email_is_sent_from_a_robot') }}" data-rule-type="robot_email">
+	<div class="type" title="{{ phrase('agent.email_sent_by_robot') }}" data-rule-type="robot_email">
 		<div class="op">
 			<input type="hidden" name="op" value="is" />
 		</div>

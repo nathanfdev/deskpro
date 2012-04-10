@@ -4,7 +4,7 @@
 	</div>
 	<div class="options">
 		<input type="hidden" name="archive_search" value="1" />
-		<span>{{ phrase('agent.tickets.search_all_tickets_including_tickets_that_are_resolved') }}</span>
+		<span>{{ phrase('agent.tickets.search_all_tickets') }}</span>
 	</div>
 </div>
 <div class="type" title="{{ phrase('agent.subject') }}" data-rule-type="subject">
@@ -180,8 +180,8 @@
 	<div class="options">
 		<select name="creation_system">
 			<option value="web">{{ phrase('agent.web_interface') }}</option>
-			<option value="web.person">-- {{ phrase('agent._by_user') }}</option>
-			<option value="web.agent">-- {{ phrase('agent._by_agent_on_behalf_of_user') }}</option>
+			<option value="web.person">-- {{ phrase('agent.by_user') }}</option>
+			<option value="web.agent">-- {{ phrase('agent.by_agent_for_user') }}</option>
 			<option value="gateway">{{ phrase('agent.email') }}</option>
 		</select>
 	</div>

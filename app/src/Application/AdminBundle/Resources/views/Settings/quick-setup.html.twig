@@ -23,7 +23,7 @@
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.default_from_email) }}
-				{% if errors.invalid_default_from_email %}<div class="dp-error">{{ phrase('agent.please_enter_a_valid_email_address') }}</div>{% endif %}
+				{% if errors.invalid_default_from_email %}<div class="dp-error">{{ phrase('agent.please_enter_valid_email') }}</div>{% endif %}
 			</div>
 		</div>
 

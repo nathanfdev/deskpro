@@ -4,8 +4,8 @@
 		<select name="order_by" class="sel-order-by">
 			<option class="date" value="article.date_created:desc">{{ phrase('agent.date_created_newestoldest') }}</option>
 			<option value="article.date_created:asc">{{ phrase('agent.date_created_oldestnewest') }}</option>
-			<option class="views" value="article.view_count:desc">{{ phrase('agent.publish.view_count_highestlowest') }}</option>
-			<option value="article.view_count:asc">{{ phrase('agent.publish.view_count_lowesthighest') }}</option>
+			<option class="views" value="article.view_count:desc">{{ phrase('agent.publish.view_count_highest_lowest') }}</option>
+			<option value="article.view_count:asc">{{ phrase('agent.publish.view_count_lowest_highest') }}</option>
 		</select>
 	</div>
 {% endblock %}
