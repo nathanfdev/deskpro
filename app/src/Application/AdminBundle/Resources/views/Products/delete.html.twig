@@ -8,7 +8,7 @@
 {% block page %}
 
 {% if category.children|length %}
-	<p>{{ phrase('admin.products.are_you_sure_delete_product', {'title':product.title}) }}</p>
+	<p>{{ phrase('admin.products.confirm_delete_product', {'title':product.title}) }}</p>
 
 	<ul class="bullet-list">
 		{% for c in product.children %}
@@ -16,13 +16,13 @@
 		{% endfor %}
 	</ul>
 
-	<p>{{ phrase('admin.products.any_tickets_that_use_any_of_these_products') }}</p>
+	<p>{{ phrase('admin.products.notice_products_will_be_removed') }}</p>
 {% else %}
-	<p>{{ phrase('admin.products.are_you_sure_delete_product_top_level', {'title':product.title}) }}</p>
+	<p>{{ phrase('admin.products.confirm_delete_product_top_level', {'title':product.title}) }}</p>
 
-	<p>{{ phrase('admin.products.any_tickets_that_use_this_product_will_have') }}</p>
+	<p>{{ phrase('admin.products.notice_product_will_be_removed') }}</p>
 {% endif %}
 
-<a class="btn" href="{{ path('admin_products_dodel', {'product_id': product.id, 'security_token': security_token('delete_product')}) }}">{{ phrase('admin.general.yes_i_am_sure_i_want_to_delete') }}</a>
+<a class="btn" href="{{ path('admin_products_dodel', {'product_id': product.id, 'security_token': security_token('delete_product')}) }}">{{ phrase('admin.general.confirm_delete') }}</a>
 
 {% endblock %}

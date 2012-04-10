@@ -40,7 +40,7 @@
 			<div class="dp-form-input">
 				{{ form_widget(form.parent) }}
 				<div id="move_note" style="display: none">
-					{{ phrase('admin.feedback.note_the_parent_category_selected_is_currently_a') }}
+					{{ phrase('admin.feedback.notice_parent_selected') }}
 				</div>
 			</div>
 		</div>
@@ -75,7 +75,7 @@
 					<h4>{{ phrase('admin.feedback.delete_category') }}</h4>
 				</div>
 				<div class="overlay-content">
-					<p>{{ phrase('admin.feedback.you_cannot_delete_the_last_category') }}</p>
+					<p>{{ phrase('admin.feedback.cannot_delete_last_category') }}</p>
 				</div>
 		</div>
 	{% elseif category.children|length %}
@@ -85,7 +85,7 @@
 					<h4>{{ phrase('admin.feedback.delete_category') }}</h4>
 				</div>
 				<div class="overlay-content">
-					<p>{{ phrase('admin.feedback.this_category_has_children_delete_the_child_categories') }}</p>
+					<p>{{ phrase('admin.feedback.notice_has_children') }}</p>
 				</div>
 		</div>
 	{% else %}
@@ -120,7 +120,7 @@
 							</div>
 						</div>
 					{% else %}
-						<p>{{ phrase('admin.feedback.are_you_sure_you_want_to_delete_this') }}</p>
+						<p>{{ phrase('admin.feedback.confirm_delete_this') }}</p>
 					{% endif %}
 				</div>
 				<div class="overlay-footer">

@@ -72,7 +72,7 @@
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="fielddef[validation_type]" value="required" {% if editfield.validation_type == 'required' %}checked="checked"{% endif %} />
-						{{ phrase('admin.custom_fields.require_user_to_input_a_value_for_this') }}
+						{{ phrase('admin.custom_fields.choice_require_user_input') }}
 					</label>
 					<div id="required_group" class="dp-group-options" style="display: none">
 						Min selections: {{ form_widget(form.min_length, { 'attr': { 'class': 'small', 'size': '5', 'style': 'width:60px' }}) }}
@@ -100,7 +100,7 @@
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="fielddef[agent_validation_type]" value="required" {% if editfield.agent_validation_type == 'required' %}checked="checked"{% endif %} />
-						{{ phrase('admin.custom_fields.require_user_to_input_a_value_for_this') }}
+						{{ phrase('admin.custom_fields.choice_require_user_input') }}
 					</label>
 					<div id="required_group" class="dp-group-options" style="display: none">
 						Min selections: {{ form_widget(form.agent_min_length, { 'attr': { 'class': 'small', 'size': '5', 'style': 'width:60px' }}) }}

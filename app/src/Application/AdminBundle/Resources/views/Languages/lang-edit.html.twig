@@ -47,7 +47,7 @@
 
 {% if language.id != 1 %}
 	<div style="width: 70%; text-align: right">
-		<a class="delete-link" href="{{ path('admin_langs_dellang', {'language_id': language.id, 'security_token': security_token('delete_lang') }) }}" onclick="return confirm('{{ phrase('admin.languages.are_you_sure_delete_languages') }}');">{{ phrase('admin.languages.delete_language') }}</a>
+		<a class="delete-link" href="{{ path('admin_langs_dellang', {'language_id': language.id, 'security_token': security_token('delete_lang') }) }}" onclick="return confirm('{{ phrase('admin.languages.confirm_delete_languages') }}');">{{ phrase('admin.languages.delete_language') }}</a>
 	</div>
 {% endif %}
 

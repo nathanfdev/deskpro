@@ -7,19 +7,19 @@
 		<ul>
 			<li class="link-settings">
 				<a href="{{ path('admin_settings') }}" data-search-keywords="settings options" data-search-name="Settings">{{ phrase('agent.settings') }}</a>
-				<p>{{ phrase('admin.menu.change_your_helpdesk_settings_like_your_website_url') }}</p>
+				<p>{{ phrase('admin.menu.change_settings') }}</p>
 			</li>
 			<li class="link-email">
 				<a href="{{ path('admin_emailtrans_setup') }}" data-search-keywords="email smtp mail outgoing" data-search-name="Settings &rsaquo; Outgoing Email Accounts">{{ phrase('admin.menu.outgoing_email_account') }}</a>
-				<p>{{ phrase('admin.menu.set_up_how_deskpro_sends_emails') }}</p>
+				<p>{{ phrase('admin.menu.set_email_methods') }}</p>
 			</li>
 			<li class="link-departments">
 				<a href="{{ path('admin_departments') }}" data-search-keywords="departments" data-search-name="Settings &rsaquo; Departments">{{ phrase('admin.general.departments') }}</a>
-				<p>{{ phrase('admin.menu.manage_your_departments') }}</p>
+				<p>{{ phrase('admin.menu.manage_departments') }}</p>
 			</li>
 			<li class="link-portal">
 				<a href="{{ path('admin_portal') }}" data-search-keywords="portal website" data-search-name="Settings &rsaquo; Portal">{{ phrase('admin.menu.portal_and_site_integration') }}</a>
-				<p>{{ phrase('admin.menu.change_the_appearance_of_your_helpdesk_homepage_and') }}</p>
+				<p>{{ phrase('admin.menu.change_homepage') }}</p>
 			</li>
 			<li class="link-products">
 				<a href="{{ path('admin_products') }}" data-search-keywords="products" data-search-name="Settings &rsaquo; Products">{{ phrase('agent.products') }}</a>
@@ -27,15 +27,15 @@
 			</li>
 			<li class="link-languages">
 				<a href="{{ path('admin_langs') }}" data-search-keywords="languages translations locale" data-search-name="Settings &rsaquo; Languages">{{ phrase('admin.general.languages') }}</a>
-				<p>{{ phrase('admin.menu.manage_locales_and_languages') }}</p>
+				<p>{{ phrase('admin.menu.manage_internationalization') }}</p>
 			</li>
 			<li>
 				<a href="{{ path('admin_templates_user') }}" data-search-keywords="templates portal" data-search-name="Settings &rsaquo; Email Template">{{ phrase('admin.menu.page_templates') }}</a>
-				<p>{{ phrase('admin.menu.edit_the_html_templates_for_any_page') }}</p>
+				<p>{{ phrase('admin.menu.edit_html') }}</p>
 			</li>
 			<li>
 				<a href="{{ path('admin_templates_email') }}" data-search-keywords="templates emails" data-search-name="Settings &rsaquo; Email Template">{{ phrase('admin.general.email_templates') }}</a>
-				<p>{{ phrase('admin.menu.edit_the_emails_sent_to_agents_and_users') }}</p>
+				<p>{{ phrase('admin.menu.edit_user_agent_emails') }}</p>
 			</li>
 		</ul>
 	</div>
@@ -49,23 +49,23 @@
 		<ul>
 			<li class="link-logs">
 				<a href="{{ path('admin_server_attach') }}" data-search-keywords="attachments uploads files" data-search-name="Server &rsaquo; File Uploads">{{ phrase('admin.general.file_uploads') }}</a>
-				<p>{{ phrase('admin.menu.test_file_uploading_and_change_storage_mechanism') }}</p>
+				<p>{{ phrase('admin.menu.manage_storage') }}</p>
 			</li>
 			<li class="link-scheduled-task">
 				<a href="{{ path('admin_server_cron') }}" data-search-keywords="server scheduled tasks cron" data-search-name="Server &rsaquo; Scheduled Tasks">{{ phrase('admin.general.scheduled_tasks') }}</a>
-				<p>{{ phrase('admin.menu.view_and_manage_scheduled_tasks_like_email_collection') }}</p>
+				<p>{{ phrase('admin.menu.manage_scheduled_tasks') }}</p>
 			</li>
 			<li class="link-database-tools">
 				<a href="{{ path('admin_server_phpinfo') }}" data-search-keywords="server php phpinfo" data-search-name="Server &rsaquo; PHP Info">{{ phrase('admin.general.php_info') }}</a>
-				<p>{{ phrase('admin.menu.view_information_about_your_php_installation') }}</p>
+				<p>{{ phrase('admin.menu.view_php_installation') }}</p>
 			</li>
 			<li class="link-server-info">
 				<a href="{{ path('admin_server_mysqlinfo') }}" data-search-keywords="server mysql" data-search-name="Server &rsaquo; MySQL Info">{{ phrase('admin.general.mysql_info') }}</a>
-				<p>{{ phrase('admin.menu.view_information_about_your_mysql_installation') }}</p>
+				<p>{{ phrase('admin.menu.view_mysql_installation') }}</p>
 			</li>
 			<li class="link-logs">
 				<a href="{{ path('admin_server_mysqlstatus') }}" data-search-keywords="server mysql" data-search-name="Server &rsaquo; Logs">{{ phrase('admin.general.mysql_status') }}</a>
-				<p>{{ phrase('admin.menu.view_information_about_the_status_of_your_mysql') }}</p>
+				<p>{{ phrase('admin.menu.view_mysql_status') }}</p>
 			</li>
 			<li class="link-logs">
 				<a href="{{ path('admin_server_error_logs') }}" data-search-keywords="logs errors" data-search-name="Server &rsaquo; Error Logs">{{ phrase('admin.general.error_logs') }}</a>
@@ -83,35 +83,35 @@
 		<ul>
 			<li class="link-settings">
 				<a href="{{ path('admin_userreg_options') }}" data-search-keywords="settings registration" data-search-name="Settings &rsaquo; Registration">{{ phrase('admin.menu.registration') }}</a>
-				<p>{{ phrase('admin.menu.change_how_the_helpdesk_should_handle_user_registration') }}</p>
+				<p>{{ phrase('admin.menu.change_registration') }}</p>
 			</li>
 			<li class="link-fields">
 				<a href="{{ path('admin_usergroups') }}" data-search-keywords="groups usergroups" data-search-name="Users &rsaquo; User Groups">{{ phrase('admin.menu.user_groups') }}</a>
-				<p>{{ phrase('admin.menu.create_user_groups_to_easily_manage_similar_users') }}</p>
+				<p>{{ phrase('admin.menu.create_user_groups') }}</p>
 			</li>
 			<li class="link-fields">
 				<a href="{{ path('admin_customdefpeople') }}" data-search-keywords="fields users userfields customfields custom" data-search-name="Users &rsaquo; Fields">{{ phrase('admin.menu.fields') }}</a>
-				<p>{{ phrase('admin.menu.create_custom_fields_that_can_be_added_to') }}</p>
+				<p>{{ phrase('admin.menu.create_custom_fields') }}</p>
 			</li>
 			<li class="link-labels">
 				<a href="{{ path('admin_labels', {'label_type': 'people'}) }}" data-search-keywords="labels users" data-search-name="Users &rsaquo; Labels">{{ phrase('agent.labels') }}</a>
-				<p>{{ phrase('admin.menu.define_labels_that_can_be_applied_to_users') }}</p>
+				<p>{{ phrase('admin.menu.define_user_labels') }}</p>
 			</li>
 			<li class="link-fields">
 				<a href="{{ path('admin_customdeforganizations') }}" data-search-keywords="organizations fields orgfields custom" data-search-name="Users &rsaquo; Organization Fields">{{ phrase('admin.general.organization_fields') }}</a>
-				<p>{{ phrase('admin.menu.create_custom_fields_that_can_be_added_to') }}</p>
+				<p>{{ phrase('admin.menu.create_custom_fields') }}</p>
 			</li>
 			<li class="link-labels">
 				<a href="{{ path('admin_labels', {'label_type': 'organizations'}) }}" data-search-keywords="organizations labels" data-search-name="Users &rsaquo; Organization Labels">{{ phrase('admin.menu.organization_labels') }}</a>
-				<p>{{ phrase('admin.menu.define_labels_that_can_be_applied_to_organizations') }}</p>
+				<p>{{ phrase('admin.menu.define_organization_labels') }}</p>
 			</li>
 			<li class="link-fields">
 				<a href="{{ path('admin_userrules') }}" data-search-keywords="user rules" data-search-name="Users &rsaquo; Rules">{{ phrase('admin.menu.rules') }}</a>
-				<p>{{ phrase('admin.menu.set_up_patterns_of_email_addresses_to_automatically') }}</p>
+				<p>{{ phrase('admin.menu.set_email_patterns') }}</p>
 			</li>
 			<li class="link-fields">
 				<a href="{{ path('admin_banning_emails') }}" data-search-keywords="banning" data-search-name="Users &rsaquo; Banning">{{ phrase('admin.general.banning') }}</a>
-				<p>{{ phrase('admin.menu.ban_ip_ranges_and_email_addresses') }}</p>
+				<p>{{ phrase('admin.menu.ban_items') }}</p>
 			</li>
 		</ul>
 	</div>
@@ -125,11 +125,11 @@
 		<ul>
 			<li class="link-plugins">
 				<a href="{{ path('admin_plugins') }}" data-search-keywords="plugins" data-search-name="Integrate &rsaquo; Plugins">{{ phrase('admin.menu.plugins') }}</a>
-				<p>{{ phrase('admin.menu.manage_or_install_plugins') }}</p>
+				<p>{{ phrase('admin.menu.manage_plugins') }}</p>
 			</li>
 			<li class="link-api">
 				<a href="{{ path('admin_api_keylist') }}" data-search-keywords="api" data-search-name="Integrate &rsaquo; API">{{ phrase('admin.menu.api') }}</a>
-				<p>{{ phrase('admin.menu.manage_your_api_keys_and_usage') }}</p>
+				<p>{{ phrase('admin.menu.manage_api') }}</p>
 			</li>
 		</ul>
 	</div>
@@ -143,39 +143,39 @@
 		<ul>
 			<li class="link-fields">
 				<a href="{{ path('admin_tickets_fields') }}" data-search-keywords="fields properties categories priorities workflows widgets" data-search-name="Tickets &rsaquo; Fields">{{ phrase('admin.menu.fields') }}</a>
-				<p>{{ phrase('admin.menu.manage_ticket_fields_like_categories_priorities_workflows_and') }}</p>
+				<p>{{ phrase('admin.menu.manage_ticket_fields') }}</p>
 			</li>
 			<li class="link-fields">
 				<a href="{{ path('admin_tickets_editor') }}" data-search-keywords="fields properties categories priorities workflows editor" data-search-name="Tickets &rsaquo; Editor">{{ phrase('admin.menu.editor') }}</a>
-				<p>{{ phrase('admin.menu.design_the_layout_of_your_new_ticket_forms') }}</p>
+				<p>{{ phrase('admin.menu.design_ticket_forms') }}</p>
 			</li>
 			<li class="link-ticket-filters">
 				<a href="{{ path('admin_tickets_filters') }}" data-search-keywords="filters" data-search-name="Tickets &rsaquo; Filters">{{ phrase('agent.filters') }}</a>
-				<p>{{ phrase('admin.menu.create_filters_that_will_appear_in_agent_interface') }}</p>
+				<p>{{ phrase('admin.menu.create_filters') }}</p>
 			</li>
 			<li class="link-ticket-triggers">
 				<a href="{{ path('admin_tickettriggers') }}" data-search-keywords="triggers escalations rules notifications business rules" data-search-name="Tickets &rsaquo; Triggers">{{ phrase('admin.general.triggers') }}</a>
-				<p>{{ phrase('admin.menu.define_triggers_to_that_change_or_escalate_tickets') }}</p>
+				<p>{{ phrase('admin.menu.define_triggers') }}</p>
 			</li>
 			<li class="link-email">
 				<a href="{{ path('admin_emailgateways') }}" data-search-keywords="email gateway incoming" data-search-name="Tickets &rsaquo; Email Gateways">{{ phrase('admin.general.email_gateways') }}</a>
-				<p>{{ phrase('admin.menu.manage_pop3_and_imap_accounts_that_deskpro_will') }}</p>
+				<p>{{ phrase('admin.menu.manage_email_accounts') }}</p>
 			</li>
 			<li class="link-ticket-macros">
 				<a href="" data-search-keywords="macros" data-search-name="Tickets &rsaquo; Macros">{{ phrase('agent.macros') }}</a>
-				<p>{{ phrase('admin.menu.create_groups_of_actions_that_can_be_performed') }}</p>
+				<p>{{ phrase('admin.menu.create_groups') }}</p>
 			</li>
 			<li class="link-ticket-macros">
 				<a href="{{ path('admin_features') }}" data-search-keywords="settings features" data-search-name="Tickets &rsaquo; Settings &amp; Features">{{ phrase('admin.menu.settings_and_features') }}</a>
-				<p>{{ phrase('admin.menu.set_other_ticket_features_like_feedback_options') }}</p>
+				<p>{{ phrase('admin.menu.set_other_ticket_features') }}</p>
 			</li>
 			<li class="link-labels">
 				<a href="{{ path('admin_labels', {'label_type': 'tickets'}) }}" data-search-keywords="tickets labels" data-search-name="Tickets &rsaquo; Labels">{{ phrase('agent.labels') }}</a>
-				<p>{{ phrase('admin.menu.define_labels_that_can_be_applied_to_tickets') }}</p>
+				<p>{{ phrase('admin.menu.define_ticket_labels') }}</p>
 			</li>
 			<li>
 				<a href="{{ path('admin_templates_email') }}" data-search-keywords="templates emails" data-search-name="Settings &rsaquo; Email Template">{{ phrase('admin.menu.email_notification_templates') }}</a>
-				<p>{{ phrase('admin.menu.edit_the_notification_emails') }}</p>
+				<p>{{ phrase('admin.menu.edit_notification_emails') }}</p>
 			</li>
 		</ul>
 	</div>

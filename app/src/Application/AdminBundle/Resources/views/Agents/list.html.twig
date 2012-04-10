@@ -17,8 +17,8 @@
 {% block prepage %}
 	<div style="padding: 10px 10px 0 10px;">
 		{{ design.helpbox() }}
-			<p>{{ phrase('admin.agents.agents_are_anybody_with_access_to_the_agent') }}</p>
-			<p>{{ phrase('admin.agents.agent_teams_are_for_helpdesks_that_want_to') }}</p>
+			<p>{{ phrase('admin.agents.explain_agents') }}</p>
+			<p>{{ phrase('admin.agents.explain_agent_teams') }}</p>
 		{{ design.helpbox_end() }}
 	</div>
 {% endblock %}
@@ -32,7 +32,7 @@
 				<h4>{{ phrase('admin.agents.permission_groups') }}</h4>
 			</header>
 			<article>
-				<article class="box-hint">{{ phrase('admin.agents.a_permission_group_is_a_set_of_system') }}</article>
+				<article class="box-hint">{{ phrase('admin.agents.explain_permission_group') }}</article>
 				<ul>
 					{% for usergroup in all_usergroups %}
 						<li class="usergroup usergroup-{{usergroup.id}}" data-usergroup-id="{{usergroup.id}}">
@@ -48,7 +48,7 @@
 							</div>
 						</li>
 					{% else %}
-						{{ phrase('admin.agents.you_have_not_created_any_permission_groups') }} <a href="{{ path('admin_agents_groups_new') }}">{{ phrase('admin.agents.click_here') }}</a> {{ phrase('admin.agents.to_create_one_now') }}
+						{{ phrase('admin.agents.no_perm_groups_yet') }} <a href="{{ path('admin_agents_groups_new') }}">{{ phrase('admin.agents.click_here') }}</a> {{ phrase('admin.agents.to_create_one_now') }}
 					{% endfor %}
 				</ul>
 			</article>
@@ -64,7 +64,7 @@
 				<h4>{{ phrase('agent.teams') }}</h4>
 			</header>
 			<article>
-				<article class="box-hint">{{ phrase('admin.agents.teams_are_an_a_way_to_organize_agents') }}</article>
+				<article class="box-hint">{{ phrase('admin.agents.explain_teams') }}</article>
 				<ul>
 					{% for team in all_teams %}
 						<li class="agent-team team-{{team.id}}" data-team-id="{{team.id}}">
@@ -81,7 +81,7 @@
 						</li>
 					{% else %}
 						<li>
-							{{ phrase('admin.agents.you_have_not_created_any_teams') }} <a href="{{ path('admin_agents_teams_new') }}">{{ phrase('admin.agents.click_here') }}</a> {{ phrase('admin.agents.to_create_one_now') }}
+							{{ phrase('admin.agents.no_teams_yet') }} <a href="{{ path('admin_agents_teams_new') }}">{{ phrase('admin.agents.click_here') }}</a> {{ phrase('admin.agents.to_create_one_now') }}
 						</li>
 					{% endfor %}
 				</ul>
@@ -100,9 +100,9 @@
 			<thead>
 				<tr>
 					<th class="single-title">{{ phrase('agent.agent') }}</th>
-					<th class="r-col" width="16"><img title="{{ phrase('admin.agents.can_access_the_admin_interface') }}" src="{{ asset('images/admin/icons/zone-admin.png') }}" /></th>
-					<th class="r-col" width="16"><img title="{{ phrase('admin.agents.can_access_the_reporting_interface') }}" src="{{ asset('images/admin/icons/zone-reports.png') }}" /></th>
-					<th class="r-col" width="16"><img title="{{ phrase('admin.agents.can_access_the_billing_interface') }}" src="{{ asset('images/admin/icons/zone-billing.png') }}" /></th>
+					<th class="r-col" width="16"><img title="{{ phrase('admin.agents.can_access_admin_interface') }}" src="{{ asset('images/admin/icons/zone-admin.png') }}" /></th>
+					<th class="r-col" width="16"><img title="{{ phrase('admin.agents.can_access_reporting_interface') }}" src="{{ asset('images/admin/icons/zone-reports.png') }}" /></th>
+					<th class="r-col" width="16"><img title="{{ phrase('admin.agents.can_access_billing_interface') }}" src="{{ asset('images/admin/icons/zone-billing.png') }}" /></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -139,7 +139,7 @@
 
 {% if count_deleted %}
 	<div class="deleted-text">
-        <a href="{{ path('admin_agents_deleted') }}">{{ phrase('admin.agents.there_are_deleted_agents', {'count':count_deleted}) }}</a>.
+        <a href="{{ path('admin_agents_deleted') }}">{{ phrase('admin.agents.deleted_agents_exist', {'count':count_deleted}) }}</a>.
 	</div>
 {% endif %}
 

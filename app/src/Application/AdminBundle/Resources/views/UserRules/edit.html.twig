@@ -21,13 +21,13 @@
 			<label>{{ phrase('admin.user_rules.email_address_pattern') }}</label>
 		</div>
 		<div class="dp-form-input">
-			<textarea name="rule[patterns_string]" placeholder="{{ phrase('admin.user_rules.enter_a_pattern_one_per_line_example_examplecom') }}" rows="6" style="height: 115px">{{ rule.patterns_string }}</textarea>
+			<textarea name="rule[patterns_string]" placeholder="{{ phrase('admin.user_rules.enter_pattern') }}" rows="6" style="height: 115px">{{ rule.patterns_string }}</textarea>
 		</div>
 	</div>
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.user_rules.when_matching_add_user_to_usergroup') }}</label>
+			<label>{{ phrase('admin.user_rules.choice_add_match_usergroup') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<select name="rule[add_usergroup]">

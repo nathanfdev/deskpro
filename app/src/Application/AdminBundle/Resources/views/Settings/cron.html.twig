@@ -12,7 +12,7 @@
 			<label>{{ phrase('admin.settings.configuring_scheduled_tasks') }}</label>
 		</div>
 		<div class="dp-form-input">
-			{{ phrase('admin.settings.how_you_configure_scheduled_tasks_depends_on_your') }}:
+			{{ phrase('admin.settings.notice_scheduled_tasks') }}:
 			<ul>
 				<li><a href="">{{ phrase('admin.settings.linux') }}</a></li>
 				<li><a href="">{{ phrase('admin.settings.windows') }}</a></li>
@@ -26,7 +26,7 @@
 				<label>{{ phrase('admin.settings.command_to_run_every_minute') }}</label>
 			</div>
 			<div class="dp-form-input">
-				{{ phrase('admin.settings.configure_this_command_to_be_executed_every_minute') }}:
+				{{ phrase('admin.settings.configure_minute_command') }}:
 <pre class="codebox">
 {{ php_path }} -q {{ path }}/cron.php
 </pre>
@@ -37,7 +37,7 @@
 
 {% if show_complete_form %}
 	<footer class="controls">
-		<a class="clean-white" href="{{ path('admin_settings_cron', {complete: '1'}) }}">{{ phrase('admin.settings.i_have_configured_scheduled_tasks') }}</a>
+		<a class="clean-white" href="{{ path('admin_settings_cron', {complete: '1'}) }}">{{ phrase('admin.settings.confirm_configured_scheduled_tasks') }}</a>
 	</footer>
 {% endif %}
 

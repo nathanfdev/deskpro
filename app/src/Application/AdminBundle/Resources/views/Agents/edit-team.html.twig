@@ -69,7 +69,7 @@
 		<h4>{{ phrase('admin.agents.delete_agent') }}</h4>
 	</div>
 	<div class="overlay-content">
-		<p>{{ phrase('admin.agents.deleting_this_team_will_also_cause_any_tickets') }}</p>
+		<p>{{ phrase('admin.agents.notice_deleting_teams') }}</p>
 	</div>
 	<div class="overlay-footer">
 		<form action="{{ path('admin_agents_teams_del', {'team_id': team.id, 'security_token': security_token('delete_team')}) }}" method="get">

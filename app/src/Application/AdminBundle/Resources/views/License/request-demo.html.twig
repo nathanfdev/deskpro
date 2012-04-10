@@ -8,10 +8,10 @@
 <div class="dp-page-box" style="padding-top: 15px;">
 	<div class="resource-item-list icon-group">
 		<header>
-			<h4>{{ phrase('admin.license.already_have_a_license_code') }}</h4>
+			<h4>{{ phrase('admin.license.ask_have_license_code') }}</h4>
 		</header>
 		<article>
-            {{ phrase('admin.license.if_you_already_have_a_license', {'path':path('admin_license_input')}) }}
+            {{ phrase('admin.license.do_if_have_license', {'path':path('admin_license_input')}) }}
 		</article>
 	</div>
 </div>
@@ -23,18 +23,18 @@
 
 {% if errors|length %}
 <div class="alert-message block-message error">
-	<strong>{{ phrase('admin.license.we_encountered_a_problem') }}:</strong>
+	<strong>{{ phrase('admin.license.error_encountered') }}:</strong>
 	<ul>
 		{% if errors.email %}<li>{{ phrase('agent.please_enter_valid_email') }}</li>{% endif %}
-		{% if errors.timeout %}<li>{{ phrase('admin.license.your_server_timedout_while_trying_to_contact_our') }}</li>{% endif %}
-		{% if errors.server_error %}<li>{{ phrase('admin.license.our_licensing_server_is_having_technical_difficulties_you') }}</li>{% endif %}
+		{% if errors.timeout %}<li>{{ phrase('admin.license.error_you_timed_out') }}</li>{% endif %}
+		{% if errors.server_error %}<li>{{ phrase('admin.license.error_licensing_server_problems') }}</li>{% endif %}
 		{% if errors.request_error %}<li>{{ phrase('admin.license.license_server_detected_error', {'error':errors.request_error}) }}</li>{% endif %}
-		{% if errors.unknown_request_error %}<li>{{ phrase('admin.license.there_was_an_unknown_problem_while_trying_to') }}</li>{% endif %}
+		{% if errors.unknown_request_error %}<li>{{ phrase('admin.license.error_licence_server_connection') }}</li>{% endif %}
 	</ul>
 
 	{% if errors.timeout or errors.unknown_request_error %}
 		<p>
-			{{ phrase('admin.license.a_connection_problem_may_be_temporary_but_it') }}
+			{{ phrase('admin.license.explain_connection_problems') }}
 		</p>
 		<p style="font-size: 120%; color: #000; margin-top: 10px; padding-top: 5px; border-top: #FBC7C6;">
 			<a href="{{ path('admin_license_keyfile', {email_address: email_address|default(app.user.primary_email_address) }) }}" class="install-key-file">{{ phrase('admin.license.installkey') }}</a>
@@ -42,7 +42,7 @@
             {% set phrase_link %}
                 <a href="mailto:support@deskpro.com" style="color: #000;">{{ phrase('agent.supportdeskprocom') }}</a>
             {% endset %}
-            {{ phrase('admin.license.if_you_have_problems_with_license', {'link':phrase_link}) }}
+            {{ phrase('admin.license.do_if_license_has_problems', {'link':phrase_link}) }}
 		</p>
 		<br class="clear" />
 	{% endif %}
@@ -56,12 +56,12 @@
 		</div>
 		<div class="dp-form-input">
 			<input type="text" name="email_address" value="{{ app.user.primary_email_address }}" /><br />
-			<small>{{ phrase('admin.license.your_personal_demo_license_code_will_be_sent') }}</small>
+			<small>{{ phrase('admin.license.notice_license_destination') }}</small>
 		</div>
 	</div>
 </div>
 
-	<button class="clean-white">{{ phrase('admin.license.get_your_demo_license') }}</button>
+	<button class="clean-white">{{ phrase('admin.license.get_demo_license') }}</button>
 </form>
 
 {% endblock %}

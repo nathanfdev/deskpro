@@ -9,8 +9,8 @@
 
 <p>{{ phrase('admin.tickets.confirm_delete_workflow', {'title':workflow.title}) }}</p>
 
-<p>{{ phrase('admin.tickets.any_tickets_that_use_this_workflow_will_have') }}</p>
+<p>{{ phrase('admin.tickets.notice_workflow_will_be_removed') }}</p>
 
-<a class="btn" href="{{ path('admin_ticketworks_dodel', {'workflow_id': workflow.id, 'security_token': security_token('delete_workflow')}) }}">{{ phrase('admin.general.yes_i_am_sure_i_want_to_delete') }}</a>
+<a class="btn" href="{{ path('admin_ticketworks_dodel', {'workflow_id': workflow.id, 'security_token': security_token('delete_workflow')}) }}">{{ phrase('admin.general.confirm_delete') }}</a>
 
 {% endblock %}

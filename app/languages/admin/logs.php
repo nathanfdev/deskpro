@@ -2,7 +2,7 @@
     'admin.logs.clear_all_errors'            => 'Clear all errors',
     'admin.logs.details'                     => 'Details',
     'admin.logs.error_logs_count'            => 'Error Logs ({{count}})|Error Logs ({{count}})',
-    'admin.logs.if_you_have_a_sn_code_for_a' => 'If you have a SN code for a specific error, you can look it up here.',
+    'admin.logs.notice_can_use_sn_code' => 'If you have a SN code for a specific error, you can look it up here.',
     'admin.logs.interval'                    => 'Interval',
     'admin.logs.last_run'                    => 'Last Run',
     'admin.logs.log'                         => 'Log',

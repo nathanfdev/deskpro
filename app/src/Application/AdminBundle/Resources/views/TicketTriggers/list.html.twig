@@ -63,17 +63,17 @@
 
 {% if not triggers %}
 <p>
-	{{ phrase('admin.tickets.you_havent_created_any_triggers_yet') }} <a href="{{ path('admin_tickettriggers_new_choosetype') }}">{{ phrase('admin.tickets.click_here_to_create_one_now') }}</a>.
+	{{ phrase('admin.tickets.no_triggers_yet') }} <a href="{{ path('admin_tickettriggers_new_choosetype') }}">{{ phrase('admin.tickets.click_here_to_create') }}</a>.
 </p>
 {% endif %}
 
 {% set types = {
-	'new_ticket.web_person': phrase('admin.tickets.new_ticket_web_person'),
-	'new_ticket.gateway_person': phrase('admin.tickets.new_ticket_gateway_person'),
+	'new_ticket.web_person': phrase('admin.tickets.new_ticket_web'),
+	'new_ticket.gateway_person': phrase('admin.tickets.new_ticket_gateway'),
 	'new_ticket.widget': phrase('admin.tickets.new_ticket_widget'),
 	'new_ticket.agent': phrase('admin.tickets.new_ticket_agent'),
-	'new_reply.web_person': phrase('admin.tickets.new_reply_web_person'),
-	'new_reply.gateway_person': phrase('admin.tickets.new_reply_gateway_person'),
+	'new_reply.web_person': phrase('admin.tickets.new_reply_web'),
+	'new_reply.gateway_person': phrase('admin.tickets.new_reply_gateway'),
 	'new_reply.agent': phrase('admin.tickets.new_reply_agent'),
 	'property_change.user': phrase('admin.tickets.property_change_user'),
 	'property_change.agent': phrase('admin.tickets.property_change_agent'),

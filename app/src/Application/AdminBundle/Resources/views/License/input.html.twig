@@ -9,11 +9,11 @@
 <div class="dp-page-box" style="padding-top: 15px;">
 	<div class="resource-item-list icon-group">
 		<header>
-			<h4>{{ phrase('admin.license.dont_have_a_license_code') }}</h4>
+			<h4>{{ phrase('admin.license.ask_doesnt_have_license') }}</h4>
 		</header>
 		<article>
-			{{ phrase('admin.license.if_youd_have_a_license_code_yet') }}
-			<a href="{{ path('admin_license_reqdemo') }}">{{ phrase('admin.license.click_here_generate_a_demo_license') }}</a>.
+			{{ phrase('admin.license.do_if_not_have_license') }}
+			<a href="{{ path('admin_license_reqdemo') }}">{{ phrase('admin.license.click_generate_demo_license') }}</a>.
 		</article>
 	</div>
 </div>
@@ -31,7 +31,7 @@
 
 {% if invalid %}
 <div class="alert-message block-message error">
-	<strong>{{ phrase('admin.license.we_encountered_a_problem') }}:</strong>
+	<strong>{{ phrase('admin.license.error_encountered') }}:</strong>
 	<ul>
 		{% if invalid %}<li>{{ phrase('admin.license.notice_invalid_license', {'invalid':invalid}) }}</li>{% endif %}
 	</ul>

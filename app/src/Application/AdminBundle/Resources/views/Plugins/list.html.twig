@@ -23,7 +23,7 @@ function _page_exec() {
 			<div style="font-size: 90%">{{plugin.description|raw}}</div>
 		</li>
 	{% else %}
-		<li>{{ phrase('admin.plugins.you_have_no_plugins_installed') }}</li>
+		<li>{{ phrase('admin.plugins.no_plugins_installed') }}</li>
 	{% endfor %}
 </ul>
 
@@ -40,7 +40,7 @@ function _page_exec() {
 			<div style="font-size: 90%">{{plugin_info.description|raw}}</div>
 		</li>
 	{% else %}
-		<li>{{ phrase('admin.plugins.you_have_no_plugins_available_for_installation') }}</li>
+		<li>{{ phrase('admin.plugins.no_plugins_available') }}</li>
 	{% endfor %}
 </ul>
 

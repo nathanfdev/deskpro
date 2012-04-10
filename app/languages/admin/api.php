@@ -6,8 +6,8 @@
     'admin.api.key'                          => 'Key',
     'admin.api.key_information'              => 'Key Information',
     'admin.api.note_or_description'          => 'Note or Description',
-    'admin.api.notice_api_auth_uses_user'    => 'Every API request is made with the authority of an actual user. Enter the person who this API key will be making requests for.',
+    'admin.api.notice_api_auth'    => 'Every API request is made with the authority of an actual user. Enter the person who this API key will be making requests for.',
     'admin.api.user_owner'                   => 'User Owner',
     'admin.api.viewedit'                     => 'view/edit',
-    'admin.api.you_have_created_no_api_keys' => 'You have created no API keys.',
+    'admin.api.no_api_keys_yet' => 'You have created no API keys.',
 );

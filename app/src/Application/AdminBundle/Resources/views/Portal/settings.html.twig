@@ -11,19 +11,19 @@
 			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
 				{{ phrase('admin.portal.allow_users_to_submit_comments') }}</label>
 			<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
-				{{ phrase('admin.portal.require_users_to_log_in_or_register_before') }}</label>
+				{{ phrase('admin.portal.comment_disable_anonymous') }}</label>
 			<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
-				{{ phrase('admin.portal.require_users_to_validate_their_email_addresses_before') }}</label>
+				{{ phrase('admin.portal.comment_require_email_validation') }}</label>
 			<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
-				{{ phrase('admin.portal.require_all_comments_to_be_manually_validated_by') }}</label>
+				{{ phrase('admin.portal.comment_require_validation') }}</label>
 			<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
-				{{ phrase('admin.portal.show_a_captcha_on_comment_forms') }}</label>
+				{{ phrase('admin.portal.comment_use_captcha') }}</label>
 		</div>
 		<div class="field_row">
 			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
 				{{ phrase('admin.portal.allow_users_to_rate_content') }}</label>
 			<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
-			{{ phrase('admin.portal.show_ratings_publicly') }}</label>
+			{{ phrase('admin.portal.show_ratings') }}</label>
 		</div>
 	</div>
 </div>
@@ -32,9 +32,9 @@
 	<h4>{{ phrase('admin.portal.integrations') }}</h4>
 	<div class="setting_fields">
 		<div class="field_row">
-			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} /> {{ phrase('admin.portal.show_facebook_like_button') }}</label>
-			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} /> {{ phrase('admin.portal.show_google_1_button') }}</label>
-			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} /> {{ phrase('admin.portal.show_addthis_widget') }}</label>
+			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} /> {{ phrase('admin.portal.show_facebook_like') }}</label>
+			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} /> {{ phrase('admin.portal.show_google_plus_one') }}</label>
+			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} /> {{ phrase('admin.portal.show_addthis') }}</label>
 		</div>
 	</div>
 </div>

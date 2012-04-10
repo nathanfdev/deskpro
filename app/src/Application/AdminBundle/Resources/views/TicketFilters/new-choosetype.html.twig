@@ -19,17 +19,17 @@
 			<div class="dp-input-group">
 				<label>
 					<input type="radio" name="filter_visibility" value="filter_global" checked="checked" />
-					{{ phrase('admin.tickets.global_filter_that_can_be_used_by_everyone') }}
+					{{ phrase('admin.tickets.explain_global_gilter') }}
 				</label>
 			</div>
 
 			<div class="dp-input-group">
 				<label>
 					<input type="radio" name="filter_visibility" value="filter_agent_team" />
-					{{ phrase('admin.tickets.only_allow_a_specific_team_to_use_this') }}
+					{{ phrase('admin.tickets.choice_specific_team_access') }}
 				</label>
 				<div id="agent_required_group" class="dp-group-options" style="display: none">
-					{{ phrase('admin.tickets.select_the_team_that_can_use_this_filter') }}: <select name="filter[agent_team_id]">
+					{{ phrase('admin.tickets.select_team_filter_access') }}: <select name="filter[agent_team_id]">
 						{% for k,v in agent_team_names %}
 							<option value="{{k}}">{{v}}</option>
 						{% endfor %}
@@ -40,10 +40,10 @@
 			<div class="dp-input-group">
 				<label>
 					<input type="radio" name="filter_visibility" value="filter_agent_team" />
-					{{ phrase('admin.tickets.only_allow_a_specific_agent_to_use_this') }}
+					{{ phrase('admin.tickets.choice_specific_agent_access') }}
 				</label>
 				<div id="agent_required_group" class="dp-group-options" style="display: none">
-					{{ phrase('admin.tickets.select_the_agent_that_can_use_this_filter') }}: <select name="filter[person_id]">
+					{{ phrase('admin.tickets.select_agent_filter_access') }}: <select name="filter[person_id]">
 						{% for k,v in agent_names %}
 							<option value="{{k}}">{{v}}</option>
 						{% endfor %}

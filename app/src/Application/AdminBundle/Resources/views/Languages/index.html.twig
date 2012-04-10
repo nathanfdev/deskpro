@@ -27,7 +27,7 @@
 			<h4>{{ phrase('admin.languages.default_language') }}</h4>
 		</header>
 		<article>
-			{{ phrase('admin.languages.the_default_language_used_for_users_and_submitted') }}:<br />
+			{{ phrase('admin.languages.notice_default_language') }}:<br />
 			<select id="default_lang_setting">
 				{% for lang in languages %}
 					<option value="{{lang.id}}" {% if app.getSetting('core.default_language_id') == lang.id %}selected="selected"{% endif %}>{{lang.title}}</option>

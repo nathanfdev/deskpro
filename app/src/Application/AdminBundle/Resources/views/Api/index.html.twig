@@ -23,7 +23,7 @@
 			<p>{{ phrase('admin.api.http_basic_auth') }}: <input type="text" class="flat" value="{{apikey.id}}:{{apikey.code}}" style="width: 200px;" /></p>
 		</li>
 	{% else %}
-		{{ phrase('admin.api.you_have_created_no_api_keys') }}
+		{{ phrase('admin.api.no_api_keys_yet') }}
 	{% endfor %}
 </ul>
 

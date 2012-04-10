@@ -51,11 +51,11 @@
 	<div class="setting_fields">
 		<div class="field_row">
 			<label><input type="checkbox" name="settings[core.helpdesk_disabled]" {% if app.getSetting('core.helpdesk_disabled') %}checked="checked"{% endif %} />
-				{{ phrase('admin.settings.the_helpdesk_is_currently_disabled') }}</label>
+				{{ phrase('admin.settings.notice_helpdesk_disabled') }}</label>
 		</div>
 		<div class="field_row">
 			<label><input type="checkbox" name="settings[core.redirect_correct_url]" {% if app.getSetting('core.redirect_correct_url') %}checked="checked"{% endif %} />
-				{{ phrase('admin.settings.always_redirect_users_to_the_helpdesk_url_if') }}
+				{{ phrase('admin.settings.notice_always_redirect_users') }}
 		</div>
 	</div>
 </div>
@@ -70,13 +70,13 @@
 				{{ phrase('admin.settings.max_upload_size') }}: <span id="user_attach_maxsize_label"></span> {{ phrase('admin.settings.mb') }}
 				<div id="user_attach_maxsize_slider"></div>
 				<div id="user_attach_maxsize_notice" data-maxsize="{{ max_uploadsize }}" style="display: none">
-					{{phrase('admin.settings.max_filesize_your_server_supports', {'filesize':max_uploadsize_readable}) }} <a>{{ phrase('admin.settings.learn_why_you_are_bound_by_this_limit') }}</a>
+					{{phrase('admin.settings.max_filesize_server', {'filesize':max_uploadsize_readable}) }} <a>{{ phrase('admin.settings.link_learn_about_limit') }}</a>
 				</div>
 			</div>
 
 			<div class="field_row">
-				<label style="display: inline;"><input type="radio" id="user_attach_limit_type_b" name="user_attach_limit_type" value="blacklist" {% if app.getSetting('core.attach_user_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.disallow_these_file_types') }}</label>
-				<label style="display: inline;"><input type="radio" id="user_attach_limit_type_w" name="user_attach_limit_type" value="whitelist" {% if not app.getSetting('core.attach_user_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.only_allow_these_file_types') }}</label>
+				<label style="display: inline;"><input type="radio" id="user_attach_limit_type_b" name="user_attach_limit_type" value="blacklist" {% if app.getSetting('core.attach_user_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.disallow_file_types') }}</label>
+				<label style="display: inline;"><input type="radio" id="user_attach_limit_type_w" name="user_attach_limit_type" value="whitelist" {% if not app.getSetting('core.attach_user_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.restrict_file_types') }}</label>
 				<input type="hidden" id="user_attach_limit_list_whitelist" name="settings[core.attach_user_must_exts]" value="{{ app.getSetting('core.attach_user_must_exts') }}" />
 				<input type="hidden" id="user_attach_limit_list_blacklist" name="settings[core.attach_user_not_exts]" value="{{ app.getSetting('core.attach_user_not_exts') }}" />
 				<input type="text" id="user_attach_limit_input" style="width: 300px; height: 22px;" />
@@ -89,13 +89,13 @@
 				{{ phrase('admin.settings.max_upload_size') }}: <span id="agent_attach_maxsize_label"></span> {{ phrase('admin.settings.mb') }}
 				<div id="agent_attach_maxsize_slider"></div>
 				<div id="agent_attach_maxsize_notice" data-maxsize="{{ max_uploadsize }}" style="display: none">
-                    {{phrase('admin.settings.max_filesize_your_server_supports', {'filesize':max_uploadsize_readable}) }} <a>{{ phrase('admin.settings.learn_why_you_are_bound_by_this_limit') }}</a>
+                    {{phrase('admin.settings.max_filesize_server', {'filesize':max_uploadsize_readable}) }} <a>{{ phrase('admin.settings.link_learn_about_limit') }}</a>
 				</div>
 			</div>
 
 			<div class="field_row">
-				<label style="display:inline"><input type="radio" id="agent_attach_limit_type_b" name="agent_attach_limit_type" value="blacklist" {% if app.getSetting('core.attach_agent_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.disallow_these_file_types') }}</label>
-				<label style="display:inline"><input type="radio" id="agent_attach_limit_type_w" name="agent_attach_limit_type" value="whitelist" {% if not app.getSetting('core.attach_agent_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.only_allow_these_file_types') }}</label>
+				<label style="display:inline"><input type="radio" id="agent_attach_limit_type_b" name="agent_attach_limit_type" value="blacklist" {% if app.getSetting('core.attach_agent_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.disallow_file_types') }}</label>
+				<label style="display:inline"><input type="radio" id="agent_attach_limit_type_w" name="agent_attach_limit_type" value="whitelist" {% if not app.getSetting('core.attach_agent_not_exts') %}checked="checked"{% endif %}> {{ phrase('admin.settings.restrict_file_types') }}</label>
 				<input type="hidden" id="agent_attach_limit_list_whitelist" name="settings[core.attach_agent_must_exts]" value="{{ app.getSetting('core.attach_agent_must_exts') }}" />
 				<input type="hidden" id="agent_attach_limit_list_blacklist" name="settings[core.attach_agent_not_exts]" value="{{ app.getSetting('core.attach_agent_not_exts') }}" />
 				<input type="text" id="agent_attach_limit_input" style="width: 300px; height: 22px;" />
@@ -111,7 +111,7 @@
 				<td style="padding-right: 10px;">
 					<label>
 						<input type="checkbox" name="settings[core.use_gravatar]" {% if app.getSetting('core.use_gravatar') %}checked="checked"{% endif %} />
-						{{ phrase('admin.settings.use_gravatar_profile_pictures_by_default_until_a') }}
+						{{ phrase('admin.settings.choice_gravatar_default') }}
 					</label>
 				</td>
 			</tr></table>
@@ -148,12 +148,12 @@
 		<h4>{{ phrase('admin.settings.advanced_settings') }}</h4>
 	</div>
 	<div class="overlay-content">
-		<p>{{ phrase('admin.settings.warning_settings_listed_in_advanced_settings_are_undocumented') }}</p>
+		<p>{{ phrase('admin.settings.warning_advanced_settings_undocumented') }}</p>
 		<br />
-		<p>{{ phrase('admin.settings.only_make_changes_if_you_know_what_you') }}</p>
+		<p>{{ phrase('admin.settings.notice_take_care') }}</p>
 	</div>
 	<div class="overlay-footer">
-		<a href="{{ path('admin_settings_adv') }}" class="clean-white">{{ phrase('admin.settings.continuet_to_advanced_settings') }}</a>
+		<a href="{{ path('admin_settings_adv') }}" class="clean-white">{{ phrase('admin.settings.continue_to_advanced_settings') }}</a>
 	</div>
 </div>
 

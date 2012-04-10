@@ -103,7 +103,7 @@
 					<!-- PERMISSION:feedback.rate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['feedback.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[feedback.rate]" value="1" /></td>
 				</tr>
 				<tr>
-					<td class="title">{{ phrase('admin.user_groups.submit_comments_on_feedback') }}</td>
+					<td class="title">{{ phrase('admin.user_groups.submit_feedback_comments') }}</td>
 					<!-- PERMISSION:feedback.comment --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['feedback.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[feedback.comment]" value="1" /></td>
 				</tr>
 				<tr>
@@ -131,7 +131,7 @@
 					<!-- PERMISSION:articles.rate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['articles.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[articles.rate]" value="1" /></td>
 				</tr>
 				<tr>
-					<td class="title">{{ phrase('admin.user_groups.submit_comments_on_articles') }}</td>
+					<td class="title">{{ phrase('admin.user_groups.submit_article_comments') }}</td>
 					<!-- PERMISSION:articles.comment --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['articles.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[articles.comment]" value="1" /></td>
 				</tr>
 				<tr>
@@ -160,7 +160,7 @@
 					<!-- PERMISSION:downloads.rate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['downloads.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[downloads.rate]" value="1" /></td>
 				</tr>
 				<tr>
-					<td class="title">{{ phrase('admin.user_groups.submit_comments_on_downloads') }}</td>
+					<td class="title">{{ phrase('admin.user_groups.submit_download_comments') }}</td>
 					<!-- PERMISSION:downloads.comment --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['downloads.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[downloads.comment]" value="1" /></td>
 				</tr>
 				<tr>
@@ -189,7 +189,7 @@
 					<!-- PERMISSION:news.rate --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['news.rate'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.rate]" value="1" /></td>
 				</tr>
 				<tr>
-					<td class="title">{{ phrase('admin.user_groups.submit_comments_on_news_posts') }}</td>
+					<td class="title">{{ phrase('admin.user_groups.submit_new_post_comments') }}</td>
 					<!-- PERMISSION:news.comment --><td class="prop"><input class="onoff-slider" type="checkbox" {% if permissions['news.comment'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.comment]" value="1" /></td>
 				</tr>
 				<tr>

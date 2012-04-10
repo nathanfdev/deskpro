@@ -7,29 +7,29 @@
 
 	{{ design.block_sections_item() }}
 		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\{{ phrase('admin.custom_fields.text') }}" checked="checked" /> {{ phrase('admin.custom_fields.text') }}</label></h3></header>
-		<p>{{ phrase('admin.custom_fields.this_is_a_simple_oneline_text_box') }}</p>
+		<p>{{ phrase('admin.custom_fields.explain_one_line_box') }}</p>
 	{{ design.block_sections_item_end() }}
 
 	{{ design.block_sections_item() }}
 		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Textarea" /> {{ phrase('admin.custom_fields.textarea') }}</label></h3></header>
-		<p>{{ phrase('admin.custom_fields.this_is_a_multiline_text_box_that_can') }}</p>
+		<p>{{ phrase('admin.custom_fields.explain_multi_line_box') }}</p>
 	{{ design.block_sections_item_end() }}
 
 	{{ design.block_sections_item() }}
 		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Choice" /> {{ phrase('admin.custom_fields.choice') }}</label></h3></header>
-		<p>{{ phrase('admin.custom_fields.this_is_a_set_of_predefined_options_presented') }}</p>
+		<p>{{ phrase('admin.custom_fields.explain_predefined_options') }}</p>
 	{{ design.block_sections_item_end() }}
 
 	{#
 	{{ design.block_sections_item() }}
 		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Date" /> {{ phrase('agent.date') }}</label></h3></header>
-		<p>{{ phrase('admin.custom_fields.this_field_lets_you_select_a_date') }}</p>
+		<p>{{ phrase('admin.custom_fields.explain_date_field') }}</p>
 	{{ design.block_sections_item_end() }}
 	#}
 
 	{{ design.block_sections_item() }}
 		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Display" /> {{ phrase('admin.custom_fields.display') }}</label></h3></header>
-		<p>{{ phrase('admin.custom_fields.this_is_a_widget_field_that_lets_you') }}</p>
+		<p>{{ phrase('admin.custom_fields.explain_widget_field') }}</p>
 	{{ design.block_sections_item_end() }}
 
 	<li class="footer">

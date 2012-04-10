@@ -14,7 +14,7 @@
 			<label>{{ phrase('admin.languages.language_pack') }}</label>
 		</div>
 		<div class="dp-form-input">
-			{{ phrase('admin.languages.create_a_new_language_using_one_of_these') }}:<br />
+			{{ phrase('admin.languages.clone_existing_language') }}:<br />
 			<select name="language_package">
 				{% for package,title in packs %}
 					<option value="{{ package }}">{{ title }}</option>

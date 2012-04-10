@@ -6,5 +6,5 @@
     'admin.twitter.oauth_token_secret'           => 'OAuth Token Secret',
     'admin.twitter.secret'                       => 'Secret',
     'admin.twitter.token'                        => 'Token',
-    'admin.twitter.you_have_no_accounts_defined' => 'You have no accounts defined.',
+    'admin.twitter.no_accounts_defined' => 'You have no accounts defined.',
 );

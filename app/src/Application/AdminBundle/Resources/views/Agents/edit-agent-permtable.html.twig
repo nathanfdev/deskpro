@@ -162,9 +162,9 @@
 				<!-- PERMISSION:agent_people.create -->{{ _self.perm_col(phrase('admin.agents.create_people'), usergroup_values, 'agent_people', 'create') }}
 				<!-- PERMISSION:agent_people.edit -->{{ _self.perm_col(phrase('admin.agents.edit_people'), usergroup_values, 'agent_people', 'edit') }}
 				<!-- PERMISSION:agent_people.validate -->{{ _self.perm_col(phrase('admin.agents.validate_users_and_emails'), usergroup_values, 'agent_people', 'validate', 'agent_people_edit') }}
-                {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.be_careful_who_you_allow_to_manage_email') }}"></span>{% endset %}
+                {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.warning_keep_manage_email_secure') }}"></span>{% endset %}
 				<!-- PERMISSION:agent_people.manage_emails -->{{ _self.perm_col(phrase('admin.agents.widget_edit_email_addresses', {'subphrase':phrase_part}), usergroup_values, 'agent_people', 'manage_emails', 'agent_people_edit') }}
-                {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.be_careful_who_you_allow_to_reset_user') }}"></span>{% endset %}
+                {% set phrase_part %}<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.warning_keep_reset_user_secure') }}"></span>{% endset %}
 				<!-- PERMISSION:agent_people.reset_password -->{{ _self.perm_col(phrase('admin.agents.widget_reset_passwords', {'subphrase':phrase_part}), usergroup_values, 'agent_people', 'reset_password', 'agent_people_edit') }}
 				<!-- PERMISSION:agent_people.notes -->{{ _self.perm_col(phrase('admin.agents.add_notes'), usergroup_values, 'agent_people', 'notes') }}
 				<!-- PERMISSION:agent_people.delete -->{{ _self.perm_col(phrase('admin.agents.delete_people'), usergroup_values, 'agent_people', 'delete') }}

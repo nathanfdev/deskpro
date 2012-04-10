@@ -45,18 +45,18 @@ function TicketTriggerEditPage_initTerms(handler) {
 					{% endfor %}
 				</select>
 			{% endmacro %}
-			{% if trigger.getTriggerGroup() == 'new_ticket.web_person' %}{{ phrase('admin.tickets.new_ticket_web_person') }}
-			{% elseif trigger.getTriggerGroup() == 'new_ticket.gateway_person' %}{{ phrase('admin.tickets.new_ticket_gateway_person') }}
+			{% if trigger.getTriggerGroup() == 'new_ticket.web_person' %}{{ phrase('admin.tickets.new_ticket_web') }}
+			{% elseif trigger.getTriggerGroup() == 'new_ticket.gateway_person' %}{{ phrase('admin.tickets.new_ticket_gateway') }}
 			{% elseif trigger.getTriggerGroup() == 'new_ticket.widget' %}{{ phrase('admin.tickets.new_ticket_widget') }}
-			{% elseif trigger.getTriggerGroup() == 'new_reply.web_person' %}{{ phrase('admin.tickets.new_reply_web_person') }}
-			{% elseif trigger.getTriggerGroup() == 'new_reply.gateway_person' %}{{ phrase('admin.tickets.new_reply_gateway_person') }}
+			{% elseif trigger.getTriggerGroup() == 'new_reply.web_person' %}{{ phrase('admin.tickets.new_reply_web') }}
+			{% elseif trigger.getTriggerGroup() == 'new_reply.gateway_person' %}{{ phrase('admin.tickets.new_reply_gateway') }}
 			{% elseif trigger.getTriggerGroup() == 'new_reply.agent' %}{{ phrase('admin.tickets.new_reply_agent') }}
 			{% elseif trigger.getTriggerGroup() == 'property_change.user' %}{{ phrase('admin.tickets.property_change_user') }}
 			{% elseif trigger.getTriggerGroup() == 'property_change.agent' %}{{ phrase('admin.tickets.property_change_agent') }}
-			{% elseif trigger.getTriggerGroup() == 'time_open' %}{{ phrase('admin.tickets.ticket_has_been_open_for') }} {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
-			{% elseif trigger.getTriggerGroup() == 'time_user_waiting' %}{{ phrase('admin.tickets.the_user_has_been_waiting_for_an_agent') }} {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
-			{% elseif trigger.getTriggerGroup() == 'time_agent_waiting' %}{{ phrase('admin.tickets.the_agent_has_been_waiting_for_the_user') }} {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
-			{% elseif trigger.getTriggerGroup() == 'time_total_user_waiting' %}{{ phrase('admin.tickets.the_user_has_been_waiting_for_a_total') }} {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
+			{% elseif trigger.getTriggerGroup() == 'time_open' %}{{ phrase('admin.tickets.ticket_open_for_duration') }} {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
+			{% elseif trigger.getTriggerGroup() == 'time_user_waiting' %}{{ phrase('admin.tickets.user_waiting_on_agent_duration') }} {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
+			{% elseif trigger.getTriggerGroup() == 'time_agent_waiting' %}{{ phrase('admin.tickets.agent_waiting_for_user') }} {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
+			{% elseif trigger.getTriggerGroup() == 'time_total_user_waiting' %}{{ phrase('admin.tickets.user_waiting_duration') }} {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
 			{% else %}{{trigger.event_trigger}}
 			{% endif %}
 		</div>
@@ -64,7 +64,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.description') }}</label> <em>{{ phrase('admin.tickets.optionally_enter_a_description_to_help_you_remember') }}</em>
+			<label>{{ phrase('agent.description') }}</label> <em>{{ phrase('admin.tickets.enter_optional_description') }}</em>
 		</div>
 		<div class="dp-form-input">
 			{% if trigger.sys_name %}
@@ -118,7 +118,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 {% if trigger.id %}
 	<div class="delete-link-wrap">
-		<a href="{{ path('admin_tickettriggers_delete', {id: trigger.id, auth: security_token('delete_trigger') }) }}" class="confirm-delete-trigger" data-prompt="{{ phrase('admin.tickets.are_you_sure_delete_trigger') }}">{{ phrase('agent.delete') }}</a>
+		<a href="{{ path('admin_tickettriggers_delete', {id: trigger.id, auth: security_token('delete_trigger') }) }}" class="confirm-delete-trigger" data-prompt="{{ phrase('admin.tickets.confirm_delete_trigger') }}">{{ phrase('agent.delete') }}</a>
 	</div>
 {% endif %}
 

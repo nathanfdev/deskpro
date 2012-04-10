@@ -42,7 +42,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 	<div class="inner-shadow"></div>
 	<section class="top">
 		<header>
-			<h4>{{ phrase('admin.tickets.embed_into_your_website') }}</h4>
+			<h4>{{ phrase('admin.tickets.embed_in_website') }}</h4>
 		</header>
 		<article class="with-single-button">
 			<button class="clean-white small" id="embed_form_overlay_trigger" data-load-url="{{ path('admin_tickets_editor_form_embed', {department_id: department.id|default(0)}) }}">{{ phrase('admin.tickets.integration_options') }}</button>
@@ -60,13 +60,13 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 <div style="padding: 10px 10px 0 10px">
 {{ design.helpbox() }}
 	<p>
-        {{ phrase('admin.tickets.notice_you_can_edit_the_form') }}
+        {{ phrase('admin.tickets.notice_can_edit_form') }}
 	</p>
 {{ design.helpbox_end() }}
 </div>
 
 <div class="pagetop-option">
-	<input type="checkbox" class="onoff-slider" id="per_department_check" data-update-url="{{ path('admin_tickets_editor_toggleper') }}" {% if app.getSetting('core_tickets.per_department_form') %}checked="checked"{% endif %}/> {{ phrase('admin.tickets.enable_custom_layouts_for_each_department') }}
+	<input type="checkbox" class="onoff-slider" id="per_department_check" data-update-url="{{ path('admin_tickets_editor_toggleper') }}" {% if app.getSetting('core_tickets.per_department_form') %}checked="checked"{% endif %}/> {{ phrase('admin.tickets.enable_custom_layouts_department') }}
 	{% if app.getSetting('core_tickets.per_department_form') %}
 		<div class="sub">
             {% set phrase_link1 %}
@@ -75,7 +75,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
             <span id="department_switcher" class="switcher"><span>{{ phrase('agent.department') }}</span></span>
             {% set phrase_link2 %}
             {% endset %}
-            {{ phrase('admin.tickets.edit_default_layout_or_select_another', {'link1':phrase_link1,'link2':phrase_link2}) }}
+            {{ phrase('admin.tickets.edit_or_select_default_layout', {'link1':phrase_link1,'link2':phrase_link2}) }}
 		</div>
 	{% endif %}
 </div>
@@ -131,7 +131,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 
 		<ul id="admin_ticket_editor_items" class="dp-form">
 			<li class="no-items-notice">
-				{{ phrase('admin.tickets.drag_and_drop_fields_from_the_left_onto') }}
+				{{ phrase('admin.tickets.drag_drop_fields') }}
 			</li>
 		</ul>
 		</form>
@@ -173,7 +173,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
                                     <option value="any">{{ phrase('agent.any') }}</option>
                                 </select>
                                 {% endset %}
-                                {{ phrase('admin.tickets.only_show_field_when_choice', {'choice':phrase_part}) }}
+                                {{ phrase('admin.tickets.show_field_when_choice', {'choice':phrase_part}) }}
                             </label>
 						</div>
 						<div class="dp-form-input">
@@ -196,7 +196,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 	<div class="dp-form-row">
 		<div class="dp-form-label">
 			<label>
-				<input type="checkbox" class="custom_options" name="custom_options" value="1" /> {{ phrase('admin.tickets.customize_choices_to_display') }}
+				<input type="checkbox" class="custom_options" name="custom_options" value="1" /> {{ phrase('admin.tickets.customize_display_choices') }}
 			</label>
 		</div>
 		<div class="dp-form-input custom-options" style="display:none"></div>
@@ -451,7 +451,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 <div id="embed_form_overlay" style="width: 785px; height: 555px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
-		<h4>{{ phrase('admin.tickets.embed_into_your_website') }}</h4>
+		<h4>{{ phrase('admin.tickets.embed_in_website') }}</h4>
 	</div>
 	<div class="overlay-content">
 		<div class="loading-icon-big" style="padding-top: 20px;"></div>

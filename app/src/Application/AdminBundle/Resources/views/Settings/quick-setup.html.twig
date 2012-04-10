@@ -19,7 +19,7 @@
 	<div class="dp-form-section">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('admin.settings.default_email_from_address') }}</label> <em class="desc">{{ phrase('admin.settings.enter_the_email_address_deskpro_should_use_by') }}</em>
+				<label>{{ phrase('admin.settings.default_email_from_address') }}</label> <em class="desc">{{ phrase('admin.settings.enter_default_email_origin') }}</em>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.default_from_email) }}
@@ -29,21 +29,21 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('admin.settings.deskpro_url') }}</label> <em class="desc">{{ phrase('admin.settings.this_is_the_url_to_deskpro_itself_with') }}</em>
+				<label>{{ phrase('admin.settings.deskpro_url') }}</label> <em class="desc">{{ phrase('admin.settings.notice_deskpro_url') }}</em>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.deskpro_url) }}
-				{% if errors.default_from_email %}<div class="dp-error">{{ phrase('admin.settings.please_enter_a_valid_url') }}</div>{% endif %}
+				{% if errors.default_from_email %}<div class="dp-error">{{ phrase('admin.settings.enter_valid_url') }}</div>{% endif %}
 			</div>
 		</div>
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('admin.settings.deskpro_name') }}</label> <em class="desc">{{ phrase('admin.settings.the_name_of_your_helpdesk') }}</em>
+				<label>{{ phrase('admin.settings.deskpro_name') }}</label> <em class="desc">{{ phrase('admin.settings.notice_name_of_your_helpdesk') }}</em>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.deskpro_name) }}
-				{% if errors.default_from_email %}<div class="dp-error">{{ phrase('admin.settings.please_enter_a_name_for_the_helpdesk') }}</div>{% endif %}
+				{% if errors.default_from_email %}<div class="dp-error">{{ phrase('admin.settings.enter_helpdesk_name') }}</div>{% endif %}
 			</div>
 		</div>
 
@@ -67,11 +67,11 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('admin.settings.default_timezone') }}</label> <em class="desc">{{ phrase('admin.settings.the_default_timezone_used_when_expressing_dates_to') }}</em>
+				<label>{{ phrase('admin.settings.default_timezone') }}</label> <em class="desc">{{ phrase('admin.settings.notice_default_timezone') }}</em>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.timezone) }}
-				{% if errors.default_from_email %}<div class="dp-error">{{ phrase('admin.settings.please_select_a_timezone') }}</div>{% endif %}
+				{% if errors.default_from_email %}<div class="dp-error">{{ phrase('admin.settings.select_timezone') }}</div>{% endif %}
 			</div>
 		</div>
 	</div>
@@ -82,7 +82,7 @@
 				<label>{{ form_widget(form.portal_enabled) }} {{ phrase('admin.settings.enable_portal') }}</label><br />
 			</div>
 			<div class="dp-form-input">
-				<p>{{ phrase('admin.settings.notice_deskpro_includes_user_frontend') }}</p>
+				<p>{{ phrase('admin.settings.notice_deskpro_user_frontend') }}</p>
 			</div>
 		</div>
 	</div>

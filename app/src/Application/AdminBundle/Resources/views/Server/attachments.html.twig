@@ -21,11 +21,11 @@
 						{{ phrase('admin.server.file_storage') }}
 						<div style="font-size: 11px">
 
-							{{ phrase('admin.server.notice_using_most_efficient_storage') }}
+							{{ phrase('admin.server.notice_most_efficient_storage') }}
                             {% set phrase_link %}
-                            <a class="switch-trigger">{{ phrase('admin.server.switch_back_to_database_storage') }}</a>
+                            <a class="switch-trigger">{{ phrase('admin.server.switch_to_database_storage') }}</a>
                             {% endset %}
-                            {% if not moving_id %}{{ phrase('admin.server.while_not_recommended_you_can', {'link':phrase_link}) }}{% endif %}
+                            {% if not moving_id %}{{ phrase('admin.server.note_recommended_link', {'link':phrase_link}) }}{% endif %}
 						</div>
 					</td>
 				</tr>
@@ -39,11 +39,11 @@
 					<td>
 						{{ phrase('admin.server.database_storage') }}
 						<div style="font-size: 11px">
-							{{ phrase('admin.server.databases_suboptimal_for_files') }}
+							{{ phrase('admin.server.databases_not_recommended') }}
                             {% set phrase_link %}
                             <a class="switch-trigger">{{ phrase('admin.server.switching_to_fs_storage') }}</a>
                             {% endset %}
-                            {% if not moving_id %}{{ phrase('admin.server.we_recommend_fs_storage', {'link':phrase_link}) }}{% endif %}
+                            {% if not moving_id %}{{ phrase('admin.server.recommend_fs_storage', {'link':phrase_link}) }}{% endif %}
 						</div>
 					</td>
 				</tr>
@@ -81,7 +81,7 @@
 			<tr>
 				<td>
 					<h3>{{ phrase('admin.general.file_uploads') }}</h3>
-					<p>{{ phrase('admin.server.this_setting_must_be_enabled_for_php_to') }}</p>
+					<p>{{ phrase('admin.server.required_for_upload') }}</p>
 				</td>
 				<td>{{ php_vars.file_uploads }}
 			</tr>
@@ -89,7 +89,7 @@
 			<tr>
 				<td>
 					<h3>{{ phrase('admin.server.upload_tmp_dir') }}</h3>
-					<p>{{ phrase('admin.server.this_is_where_php_saves_files_to_temporarily') }}</p>
+					<p>{{ phrase('admin.server.php_upload_location') }}</p>
 				</td>
 				<td>{{ php_vars.upload_tmp_dir }}
 			</tr>
@@ -97,7 +97,7 @@
 			<tr>
 				<td>
 					<h3>{{ phrase('admin.server.upload_max_filesize') }}</h3>
-					<p>{{ phrase('admin.server.this_is_the_maximum_size_for_any_single') }}</p>
+					<p>{{ phrase('admin.server.max_single_file_size') }}</p>
 				</td>
 				<td>{{ php_vars.upload_max_filesize }}
 			</tr>
@@ -105,7 +105,7 @@
 			<tr>
 				<td>
 					<h3>{{ phrase('admin.server.post_max_size') }}</h3>
-					<p>{{ phrase('admin.server.this_is_the_max_size_of_any_post') }}</p>
+					<p>{{ phrase('admin.server.max_post_size') }}</p>
 				</td>
 				<td>{{ php_vars.post_max_size }}
 			</tr>
@@ -152,9 +152,9 @@
 	</div>
 	<div class="overlay-content">
 		{% if use_fs %}
-			<p style="margin-bottom: 10px;">{{ phrase('admin.server.you_are_using_fs_want_to_switch', {'path':filestorage_path}) }}</p>
+			<p style="margin-bottom: 10px;">{{ phrase('admin.server.confirm_switch_to_db', {'path':filestorage_path}) }}</p>
 		{% else %}
-			<p style="margin-bottom: 10px;">{{ phrase('admin.server.you_are_using_db_want_to_switch', {'path':filestorage_path}) }}</p>
+			<p style="margin-bottom: 10px;">{{ phrase('admin.server.confirm_switch_to_fs', {'path':filestorage_path}) }}</p>
 		{% endif %}
 
 		<p style="margin: 10px; background-color: #F5F5F5; padding: 10px;">

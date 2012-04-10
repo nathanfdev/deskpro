@@ -34,18 +34,18 @@
 	<div class="dp-form-input">
 		{{ form_widget(form.table_prefix) }}
 		<br />
-		<small>{{ phrase('admin.user_registration.if_your_installation_is_using_a_table_prefix') }}</small>
+		<small>{{ phrase('admin.user_registration.enter_table_prefix_here') }}</small>
 	</div>
 </div>
 
 <div class="dp-form-row">
 	<div class="dp-form-label">
-		<label>{{ phrase('admin.user_registration.url_to_password_check_service') }}</label>
+		<label>{{ phrase('admin.user_registration.url_password_check') }}</label>
 	</div>
 	<div class="dp-form-input">
 		{{ form_widget(form.check_service_url) }}
 		<br />
-		<small>{{ phrase('admin.user_registration.the_url_to_the_password_check_service_you') }}</small>
+		<small>{{ phrase('admin.user_registration.lbl_url_password_check') }}</small>
 	</div>
 </div>
 
@@ -56,6 +56,6 @@
 	<div class="dp-form-input">
 		{{ form_widget(form.check_service_key) }}
 		<br />
-		<small>{{ phrase('admin.user_registration.the_secret_key_inside_the_password_check_service') }}</small>
+		<small>{{ phrase('admin.user_registration.lbl_password_key') }}</small>
 	</div>
 </div>

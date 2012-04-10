@@ -1,6 +1,6 @@
 <?php return array(
     'admin.user_groups.add_usergroup'                 => 'Add Usergroup',
-    'admin.user_groups.are_you_sure_delete_usergroup' => 'Are you sure you want to delete this usergroup?',
+    'admin.user_groups.confirm_delete_usergroup' => 'Are you sure you want to delete this usergroup?',
     'admin.user_groups.browse'                        => 'browse',
     'admin.user_groups.browse_members'                => 'Browse Members',
     'admin.user_groups.can_rate_articles'             => 'Can rate articles',
@@ -19,9 +19,9 @@
     'admin.user_groups.note_description'              => 'Note / Description',
     'admin.user_groups.require_agent_validation'      => 'Require agent validation',
     'admin.user_groups.save_usergroup'                => 'Save Usergroup',
-    'admin.user_groups.submit_comments_on_articles'   => 'Submit comments on articles',
-    'admin.user_groups.submit_comments_on_downloads'  => 'Submit comments on downloads',
-    'admin.user_groups.submit_comments_on_feedback'   => 'Submit comments on feedback',
-    'admin.user_groups.submit_comments_on_news_posts' => 'Submit comments on news posts',
-    'admin.user_groups.there_are_no_users_to_show'    => 'There are no users to show.',
+    'admin.user_groups.submit_article_comments'   => 'Submit comments on articles',
+    'admin.user_groups.submit_download_comments'  => 'Submit comments on downloads',
+    'admin.user_groups.submit_feedback_comments'   => 'Submit comments on feedback',
+    'admin.user_groups.submit_new_post_comments' => 'Submit comments on news posts',
+    'admin.user_groups.no_users'    => 'There are no users to show.',
 );

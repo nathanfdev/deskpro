@@ -9,8 +9,8 @@
 
 <p>{{ phrase('admin.tickets.confirm_delete_priority', {'title':priority.title}) }}</p>
 
-<p>{{ phrase('admin.tickets.any_tickets_that_use_this_priority_will_have') }}</p>
+<p>{{ phrase('admin.tickets.notice_priority_will_be_removed') }}</p>
 
-<a class="btn" href="{{ path('admin_ticketpris_dodel', {'priority_id': priority.id, 'security_token': security_token('delete_ticket_priority')}) }}">{{ phrase('admin.general.yes_i_am_sure_i_want_to_delete') }}</a>
+<a class="btn" href="{{ path('admin_ticketpris_dodel', {'priority_id': priority.id, 'security_token': security_token('delete_ticket_priority')}) }}">{{ phrase('admin.general.confirm_delete') }}</a>
 
 {% endblock %}

@@ -1,14 +1,14 @@
 <div>
 	<div class="overlay-section">
 		<h3>{{ phrase('admin.tickets.direct_link') }}</h3>
-		{{ phrase('admin.tickets.link_directly_to_the_new_ticket_form') }}:
+		{{ phrase('admin.tickets.choice_direct_link_ticket_form') }}:
 		<br />
 		<input type="text" value="{{ app.request.getUriForPath('') }}/new-ticket{% if department %}/{{ department.id }}{% endif %}" style="width: 80%;" />
 	</div>
 
 	<div class="overlay-section">
 		<h3>{{ phrase('admin.tickets.popup_window') }}</h3>
-		{{ phrase('admin.tickets.add_a_link_to_your_website_that_opens') }}
+		{{ phrase('admin.tickets.add_popup_link') }}
 		<br />
 {% set code %}
 <a
@@ -23,7 +23,7 @@
 
 	<div class="overlay-section">
 		<h3>{{ phrase('agent.website_widget') }}</h3>
-		{{ phrase('admin.tickets.embed_the_new_ticket_form_directly_into_any') }}:
+		{{ phrase('admin.tickets.embed_ticket_form_websites') }}:
 		<br />
 {% set code %}
 <!-- DeskPRO New Ticket -->

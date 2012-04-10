@@ -1,7 +1,7 @@
 <?php return array(
     'admin.languages.add_language'                                      => 'Add Language',
-    'admin.languages.are_you_sure_delete_languages'                     => 'Are you sure you want to delete this language? Custom phrases will be removed, and things (e.g., tickets) classified using this language will have their language unset.',
-    'admin.languages.create_a_new_language_using_one_of_these'          => 'Create a new language using one of these available language packs',
+    'admin.languages.confirm_delete_languages'                     => 'Are you sure you want to delete this language? Custom phrases will be removed, and things (e.g., tickets) classified using this language will have their language unset.',
+    'admin.languages.clone_existing_language'          => 'Create a new language using one of these available language packs',
     'admin.languages.create_new_language'                               => 'Create New Language',
     'admin.languages.default_deskpro_phrase'                            => 'Default DeskPRO Phrase',
     'admin.languages.default_language'                                  => 'Default Language',
@@ -74,6 +74,6 @@
 'admin.languages.phrasegroup_user_articles' => 'Artical Phrases',
 'admin.languages.phrasegroup_user_feedback' => 'Feedback Phrases',
     'admin.languages.save_your_phrase'                                  => 'Save Customized Phrase',
-    'admin.languages.the_default_language_used_for_users_and_submitted' => 'The default language used for users and submitted content (such as tickets)',
+    'admin.languages.notice_default_language' => 'The default language used for users and submitted content (such as tickets)',
     'admin.languages.your_phrase'                                       => 'Your Customized Phrase',
 );

@@ -32,7 +32,7 @@
 			{{ form_widget(form.lost_password_url) }}
 		</div>
 		<small>
-			{{ phrase('admin.user_registration.when_a_user_has_loggedin_using_this_usersource') }}
+			{{ phrase('admin.user_registration.explain_lost_password') }}
 		</small>
 	</div>
 
@@ -43,7 +43,7 @@
 
 {% if usersource.id %}
 <div class="delete-link-wrap">
-	<a href="{{ path('admin_userreg_usersource_delete', {id: usersource.id, security_token: security_token('delete_usersource') }) }}" onclick="return confirm('{{ phrase('admin.user_registration.are_you_sure_delete_usersource') }}');">{{ phrase('agent.delete') }}</a>
+	<a href="{{ path('admin_userreg_usersource_delete', {id: usersource.id, security_token: security_token('delete_usersource') }) }}" onclick="return confirm('{{ phrase('admin.user_registration.confirm_delete_user_source') }}');">{{ phrase('agent.delete') }}</a>
 </div>
 {% endif %}
 

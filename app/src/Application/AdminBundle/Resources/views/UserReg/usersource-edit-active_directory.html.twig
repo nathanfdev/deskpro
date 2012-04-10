@@ -5,7 +5,7 @@
 		<div class="dp-form-input">
 			{{ form_widget(form.host) }}<br />
 			<div style="padding-top: 4px">
-				<small>{{ phrase('admin.user_registration.if_youre_using_a_nonstandard_port_389_or') }}:</small>
+				<small>{{ phrase('admin.user_registration.enter_port_here') }}:</small>
 				{{ form_widget(form.port, {attr: {style: 'width: 50px'}}) }}
 			</div>
 		</div>
@@ -36,18 +36,18 @@
 		<div class="dp-form-input">
 			{{ form_widget(form.accountDomainName) }}
 			<br />
-			<small>{{ phrase('admin.user_registration.the_fqdn_name_for_users_in_this_directory') }}</small>
+			<small>{{ phrase('admin.user_registration.lbl_fqdn') }}</small>
 		</div>
 	</div>
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.user_registration.short_domain_name_slash') }}</label>
+			<label>{{ phrase('admin.user_registration.short_domain_name') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.accountDomainNameShort) }}
 			<br />
-			<small>{{ phrase('admin.user_registration.the_short_domain_name_for_users_in_this') }}</small>
+			<small>{{ phrase('admin.user_registration.lbl_short_user_domain') }}</small>
 		</div>
 	</div>
 
@@ -68,6 +68,6 @@
 		<div class="dp-form-input">
 			{{ form_widget(form.accountFilterFormat) }}
 			<br />
-			<small>{{ phrase('admin.user_registration.by_default_placeholder_is_use_this_instead') }}</small>
+			<small>{{ phrase('admin.user_registration.explain_default_filter') }}</small>
 		</div>
 	</div>

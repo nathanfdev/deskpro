@@ -78,7 +78,7 @@
 			{% endmacro %}
 
 			<nav class="check-grid-tabs">
-				<button class="clean-white small" style="float:right; position: relative; top: -4px;" id="load_agent_perms_btn">{{ phrase('admin.agents.load_permissions_from_agent') }}</button>
+				<button class="clean-white small" style="float:right; position: relative; top: -4px;" id="load_agent_perms_btn">{{ phrase('admin.agents.clone_perms_from_agent') }}</button>
 				<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
 					<li class="on" data-tab-for="#permgroup_tickets"><span>{{ phrase('agent.tickets') }}</span></li>
 					<li data-tab-for="#permgroup_people"><span>{{ phrase('admin.agents.people_and_organizations') }}</span></li>
@@ -200,14 +200,14 @@
 							<tr>
 								<td class="title">
 									{{ phrase('admin.agents.edit_email_addresses') }}
-									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.be_careful_who_you_allow_to_manage_email') }}"></span>
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.warning_keep_manage_email_secure') }}"></span>
 								</td>
 								{{ _self.perm_col(usergroup_values, 'people', 'manage_emails') }}
 							</tr>
 							<tr>
 								<td class="title">
 									{{ phrase('admin.agents.reset_passwords') }}
-									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.be_careful_who_you_allow_to_reset_user') }}"></span>
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.warning_keep_reset_user_secure') }}"></span>
 								</td>
 								{{ _self.perm_col(usergroup_values, 'people', 'reset_password') }}
 							</tr>
@@ -289,8 +289,8 @@
 							</tr>
 							<tr class="permrow">
 								<td class="title">
-									{{ phrase('admin.agents.validate_content_and_comments_including_own') }}
-									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.if_an_agent_does_not_have_this_permission') }}"></span>
+									{{ phrase('admin.agents.validate_content_and_comments') }}
+									<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.agents.notice_agent_without_permission') }}"></span>
 								</td>
 								{{ _self.perm_col(usergroup_values, 'publish', 'validate') }}
 							</tr>
@@ -313,7 +313,7 @@
 		<h4>{{ phrase('admin.agents.delete_agent') }}</h4>
 	</div>
 	<div class="overlay-content">
-		<p>{{ phrase('admin.agents.deleting_this_permission_group_will_remove_all_the') }}</p>
+		<p>{{ phrase('admin.agents.notice_deleting_perm_group') }}</p>
 	</div>
 	<div class="overlay-footer">
 		<form action="{{ path('admin_agents_groups_del', {'usergroup_id': usergroup.id, 'security_token': security_token('delete_group')}) }}" method="get">
