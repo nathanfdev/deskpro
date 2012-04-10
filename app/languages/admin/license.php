@@ -24,7 +24,6 @@
   'admin.license.if_you_already_have_a_license' => 'If you already have a license code, <a href="{{path}}">click here to enter it</a>.',
   'admin.license.if_you_have_problems_with_license' => 'If you continue to experience problems, email {{link}} with the key file linked to the left and we will generate a license code for you.',
   'admin.license.license_server_detected_error' => 'Our licensing server responded with the error code "{{error}}". You should contact support@deskpro.com if the problem persists.',
-
   'admin.license.installkey' => 'install.key',
   'admin.license.get_your_demo_license' => 'Get your demo license &rarr;',
   'admin.license.notice_license_has_been_emailed' => 'Your personal demo license code has been sent to your email address. Just copy and paste the license code into the box below.',

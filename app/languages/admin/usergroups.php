@@ -24,6 +24,5 @@
   'admin.usergroups.date_registered' => 'Date Registered',
   'admin.usergroups.browse' => 'browse',
   'admin.usergroups.are_you_sure_delete_usergroup' => 'Are you sure you want to delete this usergroup?',
-
-  'admin.usergroups.require_agent_validation' => 'Require agent validation',
+  'admin.usergroups.require_agent_validation' => 'Require agent validation'
 );

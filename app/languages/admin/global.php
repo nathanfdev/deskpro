@@ -1,4 +1,8 @@
 <?php return array (
+  'admin.global.deskpro_admin_interface' => 'DeskPRO Admin Interface',
+  'admin.global.home' => 'Home',
+  'admin.global.setup' => 'Setup',
+  'admin.global.server' => 'Server',
   'admin.global.yes_i_am_sure_i_want_to_delete' => 'Yes, I am sure I want to delete',
   'admin.global.parent_category' => 'Parent Category',
   'admin.global.ticket_categories' => 'Ticket Categories',
@@ -75,5 +79,5 @@
   'admin.global.edit_category' => 'Edit Category',
   'admin.global.new_category' => 'New Category',
   'admin.global.setting' => 'Setting',
-  'admin.global.php_mail' => 'PHP mail()',
+  'admin.global.php_mail' => 'PHP mail()'
 );

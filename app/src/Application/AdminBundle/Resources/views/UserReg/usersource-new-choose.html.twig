@@ -2,8 +2,8 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 <ul>
-	<li><a href="{{ path('admin_userreg_options') }}">{{ phrase('admin.userreg.registration_options') }}</a></li>
-	<li>{{ phrase('admin.userreg.new_usersource') }}</li>
+	<li><a href="{{ path('admin_userreg_options') }}">{{ phrase('admin.registration.registration_options') }}</a></li>
+	<li>{{ phrase('admin.registration.new_usersource') }}</li>
 </ul>
 {% endblock %}
 {% block page %}
@@ -12,27 +12,27 @@
 	{{ design.block_sections() }}
 
 	{{ design.block_sections_item() }}
-	<header><h3><label><input type="radio" name="usersource[source_type]" value="active_directory" /> {{ phrase('admin.userreg.active_directory') }}</label></h3></header>
+	<header><h3><label><input type="radio" name="usersource[source_type]" value="active_directory" /> {{ phrase('admin.registration.active_directory') }}</label></h3></header>
 	{{ design.block_sections_item_end() }}
 
 	{{ design.block_sections_item() }}
-	<header><h3><label><input type="radio" name="usersource[source_type]" value="db_table_php_password_check" /> {{ phrase('admin.userreg.custom_database') }}</label></h3></header>
+	<header><h3><label><input type="radio" name="usersource[source_type]" value="db_table_php_password_check" /> {{ phrase('admin.registration.custom_database') }}</label></h3></header>
 	{{ design.block_sections_item_end() }}
 
 	{{ design.block_sections_item() }}
-	<header><h3><label><input type="radio" name="usersource[source_type]" value="vbulletin" /> {{ phrase('admin.userreg.vbulletin_v3x_or_v4x') }}</label></h3></header>
+	<header><h3><label><input type="radio" name="usersource[source_type]" value="vbulletin" /> {{ phrase('admin.registration.vbulletin_v3x_or_v4x') }}</label></h3></header>
 	{{ design.block_sections_item_end() }}
 
 	{{ design.block_sections_item() }}
-	<header><h3><label><input type="radio" name="usersource[source_type]" value="php_bb_2" /> {{ phrase('admin.userreg.phpbb2') }}</label></h3></header>
+	<header><h3><label><input type="radio" name="usersource[source_type]" value="php_bb_2" /> {{ phrase('admin.registration.phpbb2') }}</label></h3></header>
 	{{ design.block_sections_item_end() }}
 
 	{{ design.block_sections_item() }}
-	<header><h3><label><input type="radio" name="usersource[source_type]" value="php_bb_3" /> {{ phrase('admin.userreg.phpbb3') }}</label></h3></header>
+	<header><h3><label><input type="radio" name="usersource[source_type]" value="php_bb_3" /> {{ phrase('admin.registration.phpbb3') }}</label></h3></header>
 	{{ design.block_sections_item_end() }}
 
 	{{ design.block_sections_item() }}
-	<header><h3><label><input type="radio" name="usersource[source_type]" value="ez_publish" /> {{ phrase('admin.userreg.ez_publish') }}</label></h3></header>
+	<header><h3><label><input type="radio" name="usersource[source_type]" value="ez_publish" /> {{ phrase('admin.registration.ez_publish') }}</label></h3></header>
 	{{ design.block_sections_item_end() }}
 
 	<li class="footer">

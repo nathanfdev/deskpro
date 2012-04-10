@@ -2,9 +2,9 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 <ul xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
-	<li><a href="{{ path('admin_userreg_options') }}">{{ phrase('admin.userreg.registration_options') }}</a></li>
+	<li><a href="{{ path('admin_userreg_options') }}">{{ phrase('admin.registration.registration_options') }}</a></li>
 	{% if not usersource.id %}
-		<li><a href="{{ path('admin_userreg_usersource_choose') }}">{{ phrase('admin.userreg.new_usersource') }}</a></li>
+		<li><a href="{{ path('admin_userreg_usersource_choose') }}">{{ phrase('admin.registration.new_usersource') }}</a></li>
 	{% else %}
 		<li>{{ usersource.title }}</li>
 	{% endif %}
@@ -26,13 +26,13 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.userreg.lost_password_url') }}</label>
+			<label>{{ phrase('admin.registration.lost_password_url') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.lost_password_url) }}
 		</div>
 		<small>
-			{{ phrase('admin.userreg.when_a_user_has_loggedin_using_this_usersource') }}
+			{{ phrase('admin.registration.when_a_user_has_loggedin_using_this_usersource') }}
 		</small>
 	</div>
 
@@ -43,7 +43,7 @@
 
 {% if usersource.id %}
 <div class="delete-link-wrap">
-	<a href="{{ path('admin_userreg_usersource_delete', {id: usersource.id, security_token: security_token('delete_usersource') }) }}" onclick="return confirm('{{ phrase('admin.userreg.are_you_sure_delete_usersource') }}');">{{ phrase('agent.delete') }}</a>
+	<a href="{{ path('admin_userreg_usersource_delete', {id: usersource.id, security_token: security_token('delete_usersource') }) }}" onclick="return confirm('{{ phrase('admin.registration.are_you_sure_delete_usersource') }}');">{{ phrase('agent.delete') }}</a>
 </div>
 {% endif %}
 

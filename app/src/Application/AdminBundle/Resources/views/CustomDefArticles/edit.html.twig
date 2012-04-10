@@ -4,7 +4,7 @@
 {% extends 'AdminBundle:CustomDefAbstract:edit.html.twig' %}
 {% block pagebar %}
      <ul>
-		<li><a href="{{ path('admin_customdefarticles') }}">{{ phrase('admin.customdef.article_fields') }}</a></li>
+		<li><a href="{{ path('admin_customdefarticles') }}">{{ phrase('admin.custom_fields.article_fields') }}</a></li>
 		{% if field.id %}
 			<li>{{ phrase('admin.global.edit_field') }}</li>
 		{% else %}

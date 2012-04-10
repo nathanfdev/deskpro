@@ -2,7 +2,7 @@
 {% block page %}
 
 <div style="text-align: right">
-	<a class="dp-button green" href="{{ path('admin_twitter_accounts_new') }}" target="_twitter">{{ phrase('admin.twitteraccount.create_new_account') }}</a>
+	<a class="dp-button green" href="{{ path('admin_twitter_accounts_new') }}" target="_twitter">{{ phrase('admin.twitter.create_new_account') }}</a>
 	<br /><br />
 </div>
 
@@ -11,7 +11,7 @@
 		{% include 'AdminBundle:TwitterAccount:list-row.html.twig' %}
 	{% else %}
 		<li>
-			{{ phrase('admin.twitteraccount.you_have_no_accounts_defined') }}
+			{{ phrase('admin.twitter.you_have_no_accounts_defined') }}
 		</li>
 	{% endfor %}
 </ul>

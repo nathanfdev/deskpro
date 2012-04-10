@@ -5,7 +5,6 @@
   'admin.server.database_storage' => 'Database Storage',
   'admin.server.storage_table' => 'Storage Table',
   'admin.server.blobs_storage' => 'blobs_storage',
-
   'admin.server.this_setting_must_be_enabled_for_php_to' => 'This setting must be enabled for PHP to accept file uploads at all.',
   'admin.server.this_is_where_php_saves_files_to_temporarily' => 'This is where PHP saves files to temporarily before they are processed by DeskPRO. This path must be writable by the web server for file uploads to work.',
   'admin.server.upload_max_filesize' => 'upload_max_filesize',

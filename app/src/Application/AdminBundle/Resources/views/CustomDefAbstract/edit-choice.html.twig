@@ -2,7 +2,7 @@
 {% block form_extra %}
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.customdef.how_to_display_the_options') }}</label>
+			<label>{{ phrase('admin.custom_fields.how_to_display_the_options') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.field_type) }}
@@ -11,7 +11,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.customdef.options') }}</label>
+			<label>{{ phrase('admin.custom_fields.options') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<div class="choices-builder" data-element-handler="DeskPRO.Admin.ElementHandler.ChoiceBuilder">
@@ -23,7 +23,7 @@
 					{% for id,choice in editfield.choices %}
 					<li class="item" data-choice-id="{{ id }}">
 						<div class="controls"><ul><li class="remove"><a>{{ phrase('agent.remove') }}</a></li></ul></div>
-						<div class="controls right"><ul><li class="drag"><a>{{ phrase('admin.customdef.drag') }}</a></li></ul></div>
+						<div class="controls right"><ul><li class="drag"><a>{{ phrase('admin.custom_fields.drag') }}</a></li></ul></div>
 						<div class="label">{{ choice }}</div>
 						<input type="hidden" name="fielddef[choices][]" class="row-value" value="exist.{{ loop.index0 }}:{{ id }}:{{ choice }}" />
 					</li>
@@ -32,7 +32,7 @@
 				<script type="text/x-deskpro-plain" class="row-tpl">
 					<li class="item new" data-choice-id="new">
 						<div class="controls"><ul><li class="remove"><a>{{ phrase('agent.remove') }}</a></li></ul></div>
-						<div class="controls right"><ul><li class="drag"><a>{{ phrase('admin.customdef.drag') }}</a></li></ul></div>
+						<div class="controls right"><ul><li class="drag"><a>{{ phrase('admin.custom_fields.drag') }}</a></li></ul></div>
 						<div class="label"></div>
 						<input type="hidden" name="fielddef[choices][]" class="row-value" value="" />
 					</li>
@@ -41,10 +41,10 @@
 					<div id="overlay_wrapper" style="width: 400px; height: 160px; display: none;">
 						<div class="overlay-title">
 							<span class="close-trigger close-overlay"></span>
-							<h4>{{ phrase('admin.customdef.existing_values') }}</h4>
+							<h4>{{ phrase('admin.custom_fields.existing_values') }}</h4>
 						</div>
 						<div class="overlay-content">
-							<p>{{ phrase('admin.customdef.notice_existing_items') }}</p>
+							<p>{{ phrase('admin.custom_fields.notice_existing_items') }}</p>
 							<select class="move-value"></select>
 						</div>
 						<div class="overlay-footer">
@@ -59,20 +59,20 @@
 	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('admin.customdef.user_validation') }}</label>
+				<label>{{ phrase('admin.custom_fields.user_validation') }}</label>
 			</div>
 			<div class="dp-form-input">
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="fielddef[validation_type]" value="" {% if not editfield.validation_type %}checked="checked"{% endif %} />
-						{{ phrase('admin.customdef.no_validation') }}
+						{{ phrase('admin.custom_fields.no_validation') }}
 					</label>
 				</div>
 
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="fielddef[validation_type]" value="required" {% if editfield.validation_type == 'required' %}checked="checked"{% endif %} />
-						{{ phrase('admin.customdef.require_user_to_input_a_value_for_this') }}
+						{{ phrase('admin.custom_fields.require_user_to_input_a_value_for_this') }}
 					</label>
 					<div id="required_group" class="dp-group-options" style="display: none">
 						Min selections: {{ form_widget(form.min_length, { 'attr': { 'class': 'small', 'size': '5', 'style': 'width:60px' }}) }}
@@ -87,20 +87,20 @@
 	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('admin.customdef.agent_validation') }}</label>
+				<label>{{ phrase('admin.custom_fields.agent_validation') }}</label>
 			</div>
 			<div class="dp-form-input">
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="fielddef[agent_validation_type]" value="" {% if not editfield.agent_validation_type %}checked="checked"{% endif %} />
-						{{ phrase('admin.customdef.no_validation') }}
+						{{ phrase('admin.custom_fields.no_validation') }}
 					</label>
 				</div>
 
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="fielddef[agent_validation_type]" value="required" {% if editfield.agent_validation_type == 'required' %}checked="checked"{% endif %} />
-						{{ phrase('admin.customdef.require_user_to_input_a_value_for_this') }}
+						{{ phrase('admin.custom_fields.require_user_to_input_a_value_for_this') }}
 					</label>
 					<div id="required_group" class="dp-group-options" style="display: none">
 						Min selections: {{ form_widget(form.agent_min_length, { 'attr': { 'class': 'small', 'size': '5', 'style': 'width:60px' }}) }}

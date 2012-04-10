@@ -45,7 +45,6 @@
     'admin.tickets.edit_priorities' => 'Edit Priorities',
     'admin.tickets.ticket_layout_editor' => 'Ticket Layout Editor:',
     'admin.tickets.back_to_ticket_properties' => 'Back to ticket properties',
-
     'admin.tickets.choose_type' => 'Choose Type',
     'admin.tickets.choose_the_event_that_should_initiate_the_trigger' => 'Choose the event that should initiate the trigger',
     'admin.tickets.ticket_updated' => 'Ticket Updated',
@@ -94,7 +93,6 @@
     'admin.tickets.weeks' => 'Weeks',
     'admin.tickets.months' => 'Months',
     'admin.tickets.continue' => 'Continue',
-
     'admin.tickets.choose_widget_type' => 'Choose Widget Type',
     'admin.tickets.widget_location' => 'Widget Location',
     'admin.tickets.display_field_in_agent_interface' => 'Display field in agent interface',
@@ -105,7 +103,6 @@
     'admin.tickets.admin_namenote' => 'Admin name/note',
     'admin.tickets.html_content' => 'HTML Content',
     'admin.tickets.create_new_widget' => 'Create New Widget',
-
     'admin.tickets.delete_workflow' => 'Delete Workflow',
     'admin.tickets.any_tickets_that_use_this_workflow_will_have' => 'Any tickets that use this workflow will have it unset, and have no workflow associated with them.',
     'admin.tickets.add_new_workflow' => 'Add New Workflow',
@@ -116,24 +113,19 @@
     'admin.tickets.edit_workflow' => 'Edit Workflow',
     'admin.tickets.back_to_ticket_workflows' => 'Back to ticket workflows',
     'admin.tickets.confirm_delete_workflow' => 'Are you sure you want to delete the workflow "<strong>{{title}}</strong>"?',
-
     'admin.tickets.delete_ticket_category' => 'Delete Ticket Category',
     'admin.tickets.any_tickets_that_belong_to_any_of_these' => 'Any tickets that belong to any of these categories will have it removed, resulting in the tickets having no category.',
     'admin.tickets.any_tickets_that_belong_this_category_will_have' => 'Any tickets that belong this category will have it removed, resulting in the tickets having no category.',
     'admin.tickets.add_new_category' => 'Add New Category',
     'admin.tickets.you_have_not_created_any_ticket_categories_yet' => 'You have not created any ticket categories yet. Click the "Add New Category" button to create one now.',
     'admin.tickets.edit_category_title' => 'Edit Category Title',
-
-
     'admin.tickets.back_to_ticket_categories' => 'Back to ticket categories',
     'admin.tickets.back_to_categories' => 'Back to categories',
     'admin.tickets.are_you_sure_delete_top_level' => 'Are you sure you want to delete the category "<strong>{{title}}</strong>"? Since this is a top-level category, <strong>all of these child-products will be deleted too</strong>',
     'admin.tickets.are_you_sure_delete' => 'Are you sure you want to delete the category "<strong>{{title}}</strong>"?',
-
     'admin.tickets.ticket_features_and_settings' => 'Ticket Features and Settings',
     'admin.tickets.enable_ticket_feedback' => 'Enable ticket feedback?',
     'admin.tickets.let_agents_read_ticket_feedback' => 'Let agents read ticket feedback',
-
     'admin.tickets.ticket_filters' => 'Ticket Filters',
     'admin.tickets.in_use_by' => 'In use by',
     'admin.tickets.disabled_by' => 'Disabled by',
@@ -153,7 +145,6 @@
     'admin.tickets.name_has_filter_enabled' => '{{name}} currently has this filter enabled in their settings',
     'admin.tickets.name_has_filter_disabled' => '{{name}} currently has this filter disabled in their settings',
     'admin.tickets.only_name_has_filter_access' => 'Only {{name}} has access to this filter',
-
     'admin.tickets.delete_priority' => 'Delete Priority',
     'admin.tickets.any_tickets_that_use_this_priority_will_have' => 'Any tickets that use this priority will have it removed.',
     'admin.tickets.add_new_priority' => 'Add New Priority',

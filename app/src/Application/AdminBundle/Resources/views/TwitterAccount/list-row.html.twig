@@ -12,16 +12,16 @@
 		<div style="font-size: 90%">{{ account.user.name }}</div>
 	</div>
 	<div style="float:left; margin-left: 250px;position:absolute">
-		<strong>{{ phrase('admin.twitteraccount.oauth') }}:</strong>
+		<strong>{{ phrase('admin.twitter.oauth') }}:</strong>
 		{% if verified[account.id] %}
 			<span style="color:green">{{ phrase('agent.verified') }}</span>
 		{% else %}
-			<span style="color:red">{{ phrase('admin.twitteraccount.error') }}</span>
+			<span style="color:red">{{ phrase('admin.twitter.error') }}</span>
 		{% endif %}
 		<div style="font-size: 50%">
-			<strong>{{ phrase('admin.twitteraccount.token') }}:</strong> {{ account.oauth_token }}
+			<strong>{{ phrase('admin.twitter.token') }}:</strong> {{ account.oauth_token }}
 			<br />
-			<strong>{{ phrase('admin.twitteraccount.secret') }}:</strong> {{ account.oauth_token_secret }}
+			<strong>{{ phrase('admin.twitter.secret') }}:</strong> {{ account.oauth_token_secret }}
 		</div>
 	</div>
 	<div style="clear:both"></div>

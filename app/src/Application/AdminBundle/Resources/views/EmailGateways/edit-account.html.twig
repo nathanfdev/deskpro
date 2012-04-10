@@ -9,9 +9,9 @@
 	<ul>
 		<li><a href="{{ path('admin_emailgateways') }}">{{ phrase('admin.global.email_gateways') }}</a></li>
 		{% if gateway.id %}
-			<li>{{ phrase('admin.emailgateways.edit_gateway') }}</li>
+			<li>{{ phrase('admin.gateway.edit_gateway') }}</li>
 		{% else %}
-			<li>{{ phrase('admin.emailgateways.new_gateway') }}</li>
+			<li>{{ phrase('admin.gateway.new_gateway') }}</li>
 		{% endif %}
 	</ul>
 {% endblock %}
@@ -29,12 +29,12 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.email_address') }}</label> <em class="desc">{{ phrase('admin.emailgateways.the_address_that_this_gateway_account_is_for') }}</em>
+			<label>{{ phrase('agent.email_address') }}</label> <em class="desc">{{ phrase('admin.gateway.the_address_that_this_gateway_account_is_for') }}</em>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.address, {attr: {id: "gateway_address"}}) }}<br />
 			<div id="add_addr_link" style="padding-top: 4px; width: 70%; text-align: right; {% if gateway.addresses|length > 1 %}display: none;{% endif %}">
-				{{ phrase('admin.emailgateways.will_this_account_recieve_mail_for_more_than') }} <button class="clean-white small">{{ phrase('admin.emailgateways.click_here_to_add_more') }}</button>
+				{{ phrase('admin.gateway.will_this_account_recieve_mail_for_more_than') }} <button class="clean-white small">{{ phrase('admin.gateway.click_here_to_add_more') }}</button>
 			</div>
 
 			<div class="choices-builder" id="gateway_addresses" style="margin-top:5px; {% if gateway.addresses|length < 2 %}display: none;{% endif %}">
@@ -66,13 +66,13 @@
 	<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('admin.emailgateways.account_information') }}</label>
+				<label>{{ phrase('admin.gateway.account_information') }}</label>
 			</div>
 			<div class="dp-form-input">
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="gateway[connection_type]" value="pop3" {% if not gateway.connection_type or gateway.connection_type == 'pop3' %}checked="checked"{% endif %} id="pop3_btn" />
-						{{ phrase('admin.emailgateways.pop3_account') }}
+						{{ phrase('admin.gateway.pop3_account') }}
 					</label>
 					<div class="dp-group-options" style="display: none">
 						<table cellspacing="0" cellpadding="0" width="100%">
@@ -133,17 +133,17 @@
 	<div id="smtp_options_default" {% if editgateway.define_transport %}style="display: none"{% endif %}>
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('admin.emailgateways.outgoing_mail_account') }}</label>
+				<label>{{ phrase('admin.gateway.outgoing_mail_account') }}</label>
 			</div>
 			<div class="dp-form-input">
 				<span class="show-non-gapps" {% if gateway.connection_type == 'gmail' %}style="display: none"{% endif %}>
                     {% set phrase_link %}
-                        <a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.emailgateways.default_outgoing_account') }}</a>.
+                        <a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.gateway.default_outgoing_account') }}</a>.
                     {% endset %}
-                    {{ phrase('admin.emailgateways.using_the', {'link':phrase_link}) }}
+                    {{ phrase('admin.gateway.using_the', {'link':phrase_link}) }}
                 </span>
-				<span class="show-gapps" {% if gateway.connection_type !='gmail' %}style="display: none"{% endif %}>{{ phrase('admin.emailgateways.use_the_google_apps_account_defined_above_for') }}</span>
-				<button class="clean-white small toggle-custom-smtp">{{ phrase('admin.emailgateways.use_a_different_outgoing_account') }}</button>
+				<span class="show-gapps" {% if gateway.connection_type !='gmail' %}style="display: none"{% endif %}>{{ phrase('admin.gateway.use_the_google_apps_account_defined_above_for') }}</span>
+				<button class="clean-white small toggle-custom-smtp">{{ phrase('admin.gateway.use_a_different_outgoing_account') }}</button>
 			</div>
 		</div>
 	</div>
@@ -152,7 +152,7 @@
 		<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>{{ phrase('admin.emailgateways.outgoing_mail_account') }}</label> <button class="clean-white small toggle-custom-smtp">{{ phrase('admin.emailgateways.go_back_to_using_the_default_outgoing_account') }}</button>
+					<label>{{ phrase('admin.gateway.outgoing_mail_account') }}</label> <button class="clean-white small toggle-custom-smtp">{{ phrase('admin.gateway.go_back_to_using_the_default_outgoing_account') }}</button>
 				</div>
 				<div class="dp-form-input">
 					<div class="dp-input-group">
@@ -246,7 +246,7 @@
 						<input type="radio" id="backup_form_none_radio" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="NONE" {% if not transport.backup_transport_type %}checked="checked"{% endif %} style="display:none" />
 						<label>
 							<input type="checkbox" id="backup_toggle" class="onoff-slider" {% if transport.backup_transport_type %}checked="checked"{% endif %} />
-							{{ phrase('admin.emailgateways.backup_outgoing_mail_account') }}
+							{{ phrase('admin.gateway.backup_outgoing_mail_account') }}
 						</label>
 					</div>
 					<div class="dp-form-input" id="backup_form" {% if not transport.backup_transport_type %}style="display: none"{% endif %}>
@@ -339,12 +339,12 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.emailgateways.enabled') }}</label>
+			<label>{{ phrase('admin.gateway.enabled') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<label>
 				{{ form_widget(form.is_enabled) }}
-				{{ phrase('admin.emailgateways.yes_process_email_from_this_account') }}
+				{{ phrase('admin.gateway.yes_process_email_from_this_account') }}
 			</label>
 		</div>
 	</div>
@@ -356,18 +356,18 @@
 <div id="test_gateway_settings_overlay" style="width: 400px; height: 200px; overflow:auto; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay close-trigger"></span>
-		<h4>{{ phrase('admin.emailgateways.test_incoming_email_account') }}</h4>
+		<h4>{{ phrase('admin.gateway.test_incoming_email_account') }}</h4>
 	</div>
 	<div class="overlay-content">
-		{{ phrase('admin.emailgateways.this_will_test_the_connection_to_your_email') }}
+		{{ phrase('admin.gateway.this_will_test_the_connection_to_your_email') }}
 		<div class="result">
 			<div class="is-loading loading-icon-big"><br /><br /></div>
 			<div class="is-not-loading">
 				<div class="success">
-					{{ phrase('admin.emailgateways.no_errors_were_reported') }}
+					{{ phrase('admin.gateway.no_errors_were_reported') }}
 				</div>
 				<div class="error">
-					{{ phrase('admin.emailgateways.there_was_an_error_while_trying_to_connect') }}: <span class="error-msg"></span>
+					{{ phrase('admin.gateway.there_was_an_error_while_trying_to_connect') }}: <span class="error-msg"></span>
 				</div>
 			</div>
 		</div>
@@ -410,7 +410,7 @@
 
 {% if gateway.id %}
 	<div class="delete-link-wrap">
-		<a href="{{ path('admin_emailgateways_del', {id: gateway.id, security_token: security_token('delete_gateway') }) }}" onclick="return confirm('{{ phrase('admin.emailgateways.are_you_sure_delete_gateway') }}');">{{ phrase('agent.delete') }}</a>
+		<a href="{{ path('admin_emailgateways_del', {id: gateway.id, security_token: security_token('delete_gateway') }) }}" onclick="return confirm('{{ phrase('admin.gateway.are_you_sure_delete_gateway') }}');">{{ phrase('agent.delete') }}</a>
 	</div>
 {% endif %}
 {% endblock %}

@@ -15,13 +15,13 @@
 	{% for group,subgroups in phrase_groups %}
 		<section class="top">
 			<header>
-				<h4>{{ phrase('admin.lang.phrasegroup_' ~ group) }}</h4>
+				<h4>{{ phrase('admin.languages.phrasegroup_' ~ group) }}</h4>
 			</header>
 			<article>
 				<ul>
 					{% for subgroup in subgroups %}
 					<li class="{% if this_page == 'phrase_group_' ~ group ~ '_' ~ subgroup %}on{% endif %}">
-						<a href="{{ path('admin_langs_editphrases', {'language_id': language.id, 'group': group ~'.'~ subgroup}) }}">{{ phrase('admin.lang.phrasegroup_' ~ group ~ '_' ~ subgroup) }}</a>
+						<a href="{{ path('admin_langs_editphrases', {'language_id': language.id, 'group': group ~'.'~ subgroup}) }}">{{ phrase('admin.languages.phrasegroup_' ~ group ~ '_' ~ subgroup) }}</a>
 					</li>
 					{% endfor %}
 				</ul>

@@ -15,4 +15,11 @@
   'admin.languages.default_phrase_for' => 'Default Phrase For {{title}}',
   'admin.languages.default_deskpro_phrase' => 'Default DeskPRO Phrase',
   'admin.languages.save_your_phrase' => 'Save Customized Phrase',
+  'admin.languages.phrasegroup_admin' => 'Admin Interface Phrases',
+  'admin.languages.phrasegroup_agent' => 'Agent Interface Phrases',
+  'admin.languages.phrasegroup_agent_tickets' => 'Tickets: General',
+  'admin.languages.phrasegroup_agent_tickets_email' => 'Tickets: Emails',
+  'admin.languages.phrasegroup_agent_tickets_user_email' => 'Tickets: User Emails',
+  'admin.languages.phrasegroup_user' => 'User Interface Phrases',
+  'admin.languages.phrasegroup_user_emails' => 'Emails'
 );

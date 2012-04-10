@@ -1,17 +1,17 @@
 <div class="dp-form-row">
 	<div class="dp-form-label">
-		<label>{{ phrase('admin.userreg.database_dsn') }}</label>
+		<label>{{ phrase('admin.registration.database_dsn') }}</label>
 	</div>
 	<div class="dp-form-input">
 		{{ form_widget(form.db_dsn) }}
 		<br />
-        <small>{{ phrase('admin.userreg.enter_dsn_mysql') }}</small>
+        <small>{{ phrase('admin.registration.enter_dsn_mysql') }}</small>
 	</div>
 </div>
 
 <div class="dp-form-row">
 	<div class="dp-form-label">
-		<label>{{ phrase('admin.userreg.database_user') }}</label>
+		<label>{{ phrase('admin.registration.database_user') }}</label>
 	</div>
 	<div class="dp-form-input">
 		{{ form_widget(form.db_username) }}
@@ -20,7 +20,7 @@
 
 <div class="dp-form-row">
 	<div class="dp-form-label">
-		<label>{{ phrase('admin.userreg.database_password') }}</label>
+		<label>{{ phrase('admin.registration.database_password') }}</label>
 	</div>
 	<div class="dp-form-input">
 		{{ form_widget(form.db_password) }}
@@ -29,11 +29,11 @@
 
 <div class="dp-form-row">
 	<div class="dp-form-label">
-		<label>{{ phrase('admin.userreg.table_prefix') }}</label>
+		<label>{{ phrase('admin.registration.table_prefix') }}</label>
 	</div>
 	<div class="dp-form-input">
 		{{ form_widget(form.table_prefix) }}
 		<br />
-		<small>{{ phrase('admin.userreg.if_your_installation_is_using_a_table_prefix') }}</small>
+		<small>{{ phrase('admin.registration.if_your_installation_is_using_a_table_prefix') }}</small>
 	</div>
 </div>

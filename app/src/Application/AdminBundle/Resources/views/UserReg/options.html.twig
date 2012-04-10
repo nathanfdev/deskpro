@@ -5,7 +5,7 @@
 {% endblock %}
 {% block pagebar %}
      <ul>
-         <li>{{ phrase('admin.userreg.registration_settings') }}</li>
+         <li>{{ phrase('admin.registration.registration_settings') }}</li>
      </ul>
 {% endblock %}
 {% block sidebar_right %}
@@ -13,12 +13,12 @@
 		<div class="resource-item-list">
 			<header>
 				<div class="controls">
-					<a class="clean-white small" href="{{ path('admin_userreg_usersource_choose') }}">{{ phrase('admin.userreg.add_user_source') }}</a>
+					<a class="clean-white small" href="{{ path('admin_userreg_usersource_choose') }}">{{ phrase('admin.registration.add_user_source') }}</a>
 				</div>
-				<h4>{{ phrase('admin.userreg.user_sources') }}</h4>
+				<h4>{{ phrase('admin.registration.user_sources') }}</h4>
 			</header>
 			<article>
-				<article class="box-hint">{{ phrase('admin.userreg.a_user_source_is_any_database_that_deskpro') }}</article>
+				<article class="box-hint">{{ phrase('admin.registration.a_user_source_is_any_database_that_deskpro') }}</article>
 				<ul>
 					<li>
 						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_deskpro_source_toggle') }}';" {% if app.getSetting('core.deskpro_source_enabled') %}checked="checked"{% endif %} />
@@ -34,7 +34,7 @@
 					</li>
 					<li>
 						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_google_toggle') }}';" {% if app.getSetting('core.google_source_enabled') %}checked="checked"{% endif %} />
-						{{ phrase('admin.userreg.google') }}
+						{{ phrase('admin.registration.google') }}
 					</li>
 					{% for usersource in usersources %}{% if usersource.source_type != 'facebook' and usersource.source_type != 'google' %}
 						<li>
@@ -57,18 +57,18 @@
 			<td width="10"><input type="checkbox" name="email_validation" value="1" {% if app.getSetting('core.email_validation') %}checked="checked"{% endif %} /></td>
 			<td>
 				<h3>{{ phrase('agent.force_email_validation') }}</h3>
-                {{ phrase('admin.userreg.notice_forces_users_to_validate_email', {'path':path('admin_tickettriggers')}) }}
+                {{ phrase('admin.registration.notice_forces_users_to_validate_email', {'path':path('admin_tickettriggers')}) }}
                 <br />
-				{% if reg_triggers['email_validation.web'] %}   <input class="onoff-slider trigger-toggle" type="checkbox" value="{{ reg_triggers['email_validation.web'].id }}" name="email_validation.web" {% if reg_triggers['email_validation.web'].is_enabled %}checked="checked"{% endif %} /> {{ phrase('admin.userreg.enable_validation_for_web_submitted_tickets') }}<br />{% endif %}
-				{% if reg_triggers['email_validation.email'] %} <input class="onoff-slider trigger-toggle" type="checkbox" value="{{ reg_triggers['email_validation.email'].id }}" name="email_validation.web" {% if reg_triggers['email_validation.email'].is_enabled %}checked="checked"{% endif %} /> {{ phrase('admin.userreg.enable_validation_for_email_submitted_tickets') }}<br />{% endif %}
-				{% if reg_triggers['email_validation.widget'] %}<input class="onoff-slider trigger-toggle" type="checkbox" value="{{ reg_triggers['email_validation.widget'].id }}" name="email_validation.web" {% if reg_triggers['email_validation.widget'].is_enabled %}checked="checked"{% endif %} /> {{ phrase('admin.userreg.enable_validation_for_widget_submitted_tickets') }}<br />{% endif %}
+				{% if reg_triggers['email_validation.web'] %}   <input class="onoff-slider trigger-toggle" type="checkbox" value="{{ reg_triggers['email_validation.web'].id }}" name="email_validation.web" {% if reg_triggers['email_validation.web'].is_enabled %}checked="checked"{% endif %} /> {{ phrase('admin.registration.enable_validation_for_web_submitted_tickets') }}<br />{% endif %}
+				{% if reg_triggers['email_validation.email'] %} <input class="onoff-slider trigger-toggle" type="checkbox" value="{{ reg_triggers['email_validation.email'].id }}" name="email_validation.web" {% if reg_triggers['email_validation.email'].is_enabled %}checked="checked"{% endif %} /> {{ phrase('admin.registration.enable_validation_for_email_submitted_tickets') }}<br />{% endif %}
+				{% if reg_triggers['email_validation.widget'] %}<input class="onoff-slider trigger-toggle" type="checkbox" value="{{ reg_triggers['email_validation.widget'].id }}" name="email_validation.web" {% if reg_triggers['email_validation.widget'].is_enabled %}checked="checked"{% endif %} /> {{ phrase('admin.registration.enable_validation_for_widget_submitted_tickets') }}<br />{% endif %}
 			</td>
 		</tr>
 		<tr>
 			<td width="10"><input type="checkbox" name="existing_account_login" value="1" {% if app.getSetting('core.existing_account_login') %}checked="checked"{% endif %} /></td>
 			<td>
-				<h3>{{ phrase('admin.userreg.force_login_for_existing_users') }}</h3>
-				{{ phrase('admin.userreg.notice_when_email_exists') }}
+				<h3>{{ phrase('admin.registration.force_login_for_existing_users') }}</h3>
+				{{ phrase('admin.registration.notice_when_email_exists') }}
 			</td>
 		</tr>
 	</table>
@@ -78,16 +78,16 @@
 <div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.userreg.registration_mode') }}</label>
+			<label>{{ phrase('admin.registration.registration_mode') }}</label>
 		</div>
 		<div class="dp-form-input" style="width: 95%;">
 			<div class="dp-input-group">
 				<label>
 					<input class="option-trigger" type="radio" name="mode" value="open" {% if not app.getSetting('core.user_mode') or app.getSetting('core.user_mode') == 'open' %}checked="checked"{% endif %}>
-					{{ phrase('admin.userreg.open_helpdesk') }}
+					{{ phrase('admin.registration.open_helpdesk') }}
 				</label>
 				<div class="dp-group-options" style="display: none">
-					<p>{{ phrase('admin.userreg.with_an_open_helpdesk_anyone_can_use_the') }}</p>
+					<p>{{ phrase('admin.registration.with_an_open_helpdesk_anyone_can_use_the') }}</p>
 					{{ _self.options_table(reg_triggers) }}
 				</div>
 			</div>
@@ -95,10 +95,10 @@
 			<div class="dp-input-group">
 				<label>
 					<input class="option-trigger" type="radio" name="mode" value="require_reg" {% if app.getSetting('core.user_mode') == 'require_reg' %}checked="checked"{% endif %}>
-					{{ phrase('admin.userreg.require_registration') }}
+					{{ phrase('admin.registration.require_registration') }}
 				</label>
 				<div class="dp-group-options" style="display: none">
-					<p>{{ phrase('admin.userreg.with_this_mode_the_helpdesk_is_readable_by') }}</p>
+					<p>{{ phrase('admin.registration.with_this_mode_the_helpdesk_is_readable_by') }}</p>
 					{{ _self.options_table(reg_triggers) }}
 				</div>
 			</div>
@@ -106,10 +106,10 @@
 			<div class="dp-input-group">
 				<label>
 					<input class="option-trigger" type="radio" name="mode" value="require_reg_agent_validation" {% if app.getSetting('core.user_mode') == 'require_reg_agent_validation' %}checked="checked"{% endif %}>
-					{{ phrase('admin.userreg.require_registration_with_agent_validation') }}
+					{{ phrase('admin.registration.require_registration_with_agent_validation') }}
 				</label>
 				<div class="dp-group-options" style="display: none">
-					<p>{{ phrase('admin.userreg.this_is_the_same_as_request_registration_except') }}</p>
+					<p>{{ phrase('admin.registration.this_is_the_same_as_request_registration_except') }}</p>
 					{{ _self.options_table(reg_triggers) }}
 				</div>
 			</div>
@@ -120,7 +120,7 @@
 					{{ phrase('agent.closed') }}
 				</label>
 				<div class="dp-group-options" style="display: none">
-					<p>{{ phrase('admin.userreg.notice_closed_helpdesk_closes_registration') }}</p>
+					<p>{{ phrase('admin.registration.notice_closed_helpdesk_closes_registration') }}</p>
 				</div>
 			</div>
 
@@ -130,7 +130,7 @@
 
 	<footer class="controls">
 		<div class="is-not-loading">
-			<button class="clean-white">{{ phrase('admin.userreg.save_registration_settings') }}</button>
+			<button class="clean-white">{{ phrase('admin.registration.save_registration_settings') }}</button>
 		</div>
 		<div class="is-loading">
 			<div class="loading-icon-flat">&nbsp;</div>

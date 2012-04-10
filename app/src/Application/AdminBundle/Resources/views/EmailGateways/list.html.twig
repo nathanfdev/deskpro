@@ -3,7 +3,7 @@
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li class="add"><a href="{{ path('admin_emailgateways_new') }}">{{ phrase('admin.emailgateways.add_email_gateway') }}</a></li>
+			<li class="add"><a href="{{ path('admin_emailgateways_new') }}">{{ phrase('admin.gateway.add_email_gateway') }}</a></li>
 		</ul>
 	</nav>
 	<ul>
@@ -30,7 +30,7 @@
 								</ul>
 							</div>
 
-							{{ phrase('admin.emailgateways.from') }}:
+							{{ phrase('admin.gateway.from') }}:
 							<a href="{{ path('admin_emailtrans_editaccount', { 'id': transport.id }) }}">
 							{% if transport.match_type == 'exact' %}{{ transport.match_pattern }}
 							{% elseif transport.match_type == 'domain' %}*@{{ transport.match_pattern }}
@@ -38,29 +38,29 @@
 							{% endif %}
 							</a>
 							<br />
-							{{ phrase('admin.emailgateways.send_through') }}:<br />
+							{{ phrase('admin.gateway.send_through') }}:<br />
 							&nbsp;&nbsp;&nbsp;<span title="{{ transport.title }}">{{ transport.title|truncate(45) }}</span>
 						</li>
 					{% endif %}{% endfor %}
 				</ul>
 				<p>
                     {% set phrase_link %}
-                        <a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.emailgateways.default_outgoing_account') }}</a>
+                        <a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.gateway.default_outgoing_account') }}</a>
                     {% endset %}
-                    {{ phrase('admin.emailgateways.when_no_rules_match', {'link':phrase_link}) }}
+                    {{ phrase('admin.gateway.when_no_rules_match', {'link':phrase_link}) }}
 				</p>
 			{% else %}
 				<p>
                     {% set phrase_link %}
-                    <a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.emailgateways.default_outgoing_account') }}</a>
+                    <a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.gateway.default_outgoing_account') }}</a>
                     {% endset %}
-                    {{ phrase('admin.emailgateways.all_email_is_being_sent_via', {'link':phrase_link}) }}
+                    {{ phrase('admin.gateway.all_email_is_being_sent_via', {'link':phrase_link}) }}
 				</p>
 				<p>
                     {% set phrase_link %}
-                    <a href="{{ path('admin_emailtrans_newaccount') }}">{{ phrase('admin.emailgateways.add_new_account') }}</a>
+                    <a href="{{ path('admin_emailtrans_newaccount') }}">{{ phrase('admin.gateway.add_new_account') }}</a>
                     {% endset %}
-                    {{ phrase('admin.emailgateways.explain_different_servers', {'link':phrase_link}) }}
+                    {{ phrase('admin.gateway.explain_different_servers', {'link':phrase_link}) }}
 				</p>
 			{% endif %}
 		</article>
@@ -70,7 +70,7 @@
 {% block page %}
 
 {{ design.helpbox() }}
-	<p>{{ phrase('admin.emailgateways.explain_email_gateway') }}</p>
+	<p>{{ phrase('admin.gateway.explain_email_gateway') }}</p>
 {{ design.helpbox_end() }}
 
 <div class="check-grid item-list">

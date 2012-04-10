@@ -8,7 +8,7 @@
      <ul>
 		<li><a href="{{ path('admin_langs') }}">{{ phrase('admin.global.languages') }}</a></li>
 		<li>{{ language.title }}</li>
-		<li>{{ phrase('admin.lang.phrasegroup_' ~ group|replace({'.': '_'})) }}</li>
+		<li>{{ phrase('admin.languages.phrasegroup_' ~ group|replace({'.': '_'})) }}</li>
      </ul>
 {% endblock %}
 {% block page %}

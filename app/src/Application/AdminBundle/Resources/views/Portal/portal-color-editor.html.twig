@@ -4,8 +4,8 @@
 		<div class="color-swatch color-swatch-icon" data-color-id="{{ id }}" data-color="{{ app.getSetting('user_style.' ~ id) }}">
 			<div style="background-color: {{ app.getSetting('user_style.' ~ id) }}"></div>
 		</div>
-		<label>{{ phrase('admin.portalcolors.' ~ id ~ '_title') }}</label>
-		<div class="desc">{{ phrase('admin.portalcolors.' ~ id ~ '_desc') }}</div>
+		<label>{{ phrase('admin.portal.color_' ~ id ~ '_title') }}</label>
+		<div class="desc">{{ phrase('admin.portal.color_' ~ id ~ '_desc') }}</div>
 	</div>
 {% endmacro %}
 
@@ -22,14 +22,14 @@
 		{% endfor %}
 
 		<div class="style-section">
-			<h4>{{ phrase('admin.portalcolors.section_header') }}</h4>
+			<h4>{{ phrase('admin.portal.color_section_header') }}</h4>
 		</div>
 		{% for id in ['header_name_color', 'header_name_color'] %}
 			{{ _self.style_row(id, default_portal_style) }}
 		{% endfor %}
 
 		<div class="style-section">
-			<h4>{{ phrase('admin.portalcolors.section_main_content') }}</h4>
+			<h4>{{ phrase('admin.portal.color_section_main_content') }}</h4>
 		</div>
 		{% for id in [
 			'content_bg_color', 'content_border_color',
@@ -39,14 +39,14 @@
 		{% endfor %}
 
 		<div class="style-section">
-			<h4>{{ phrase('admin.portalcolors.section_sidebar') }}</h4>
+			<h4>{{ phrase('admin.portal.color_section_sidebar') }}</h4>
 		</div>
 		{% for id in ['sidebar_block_title_color', 'sidebar_block_border_color'] %}
 			{{ _self.style_row(id, default_portal_style) }}
 		{% endfor %}
 
 		<div class="style-section">
-			<h4>{{ phrase('admin.portalcolors.section_buttons') }}</h4>
+			<h4>{{ phrase('admin.portal.color_section_buttons') }}</h4>
 		</div>
 		{% for id in [
 			'button_text', 'button_bg_start', 'button_bg_end', 'content_pill_btn_bg',
@@ -56,7 +56,7 @@
 		{% endfor %}
 
 		<div class="style-section">
-			<h4>{{ phrase('admin.portalcolors.section_misc') }}</h4>
+			<h4>{{ phrase('admin.portal.color_section_misc') }}</h4>
 		</div>
 		{% for id in ['cal_date_bg', 'cal_date_month_bg', 'cal_date_month_text', 'cal_date_text'] %}
 			{{ _self.style_row(id, default_portal_style) }}

@@ -3,21 +3,21 @@
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li class="add"><a href="{{ path('admin_emailtrans_newaccount') }}">{{ phrase('admin.emailtransports.add_account') }}</a></li>
+			<li class="add"><a href="{{ path('admin_emailtrans_newaccount') }}">{{ phrase('admin.gateway.add_account') }}</a></li>
 		</ul>
 	</nav>
 	<ul>
-		<li><a href="{{ path('admin_emailtrans_list') }}">{{ phrase('admin.emailtransports.outgoing_email') }}</a></li>
+		<li><a href="{{ path('admin_emailtrans_list') }}">{{ phrase('admin.gateway.outgoing_email') }}</a></li>
 	</ul>
 {% endblock %}
 {% block page %}
 
 {{ design.helpbox() }}
-	<p>{{ phrase('admin.emailtransports.notice_each_from_needs_mail_server') }}</p>
+	<p>{{ phrase('admin.gateway.notice_each_from_needs_mail_server') }}</p>
 {{ design.helpbox_end() }}
 
 <div class="top-option">
-	<h3>{{ phrase('admin.emailtransports.default_from_address') }}</h3>
+	<h3>{{ phrase('admin.gateway.default_from_address') }}</h3>
 	<form action="{{ path('admin_emailtrans_set_default_from') }}" method="post">
 		{{ form_token('admin_update_from') }}
 		<input type="text" name="default_from" value="{{ app.getSetting('core.default_from_email') }}" /> <button class="clean-white">{{ phrase('agent.update') }}</button>
@@ -29,9 +29,9 @@
 	<table width="100%">
 		<thead>
 			<tr>
-				<th style="text-align:left">&nbsp; {{ phrase('admin.emailtransports.use_criteria') }}</th>
+				<th style="text-align:left">&nbsp; {{ phrase('admin.gateway.use_criteria') }}</th>
 				<th style="text-align:left">{{ phrase('admin.global.account') }}</th>
-				<th style="text-align:left">{{ phrase('admin.emailtransports.backup_account') }}</th>
+				<th style="text-align:left">{{ phrase('admin.gateway.backup_account') }}</th>
 				<th style="text-align:left" width="10">&nbsp;</th>
 			</tr>
 		</thead>
@@ -39,16 +39,16 @@
 			{% for transport in transports %}
 				<tr {% if transport.match_type == 'all' %}class="highlight"{% endif %}>
 					<td>
-						{% if transport.match_type == 'exact' %}{{ phrase('admin.emailtransports.from_pattern', {'pattern':transport.match_pattern}) }}
-						{% elseif transport.match_type == 'domain' %}{{ phrase('admin.emailtransports.from_domain', {'pattern':transport.match_pattern}) }}
-						{% elseif transport.match_type == 'regex' %}{{ phrase('admin.emailtransports.from_pattern', {'pattern':transport.match_pattern}) }}
+						{% if transport.match_type == 'exact' %}{{ phrase('admin.gateway.from_pattern', {'pattern':transport.match_pattern}) }}
+						{% elseif transport.match_type == 'domain' %}{{ phrase('admin.gateway.from_domain', {'pattern':transport.match_pattern}) }}
+						{% elseif transport.match_type == 'regex' %}{{ phrase('admin.gateway.from_pattern', {'pattern':transport.match_pattern}) }}
 						{% elseif transport.match_type == 'all' %}{{ phrase('agent.default') }}{% endif %}
 					</td>
 					<td>{{ transport.title }}</td>
 					<td>
 						{% if transport.backup_transport_type %}
 							{% if transport.backup_transport_type == 'smtp' %}{{ transport.backup_transport_options.host }}:{{ transport.backup_transport_options.username }}
-							{% elseif transport.backup_transport_type == 'gmail' %}{{ phrase('admin.emailtransports.from_google', {'pattern':transport.backup_transport_options.username}) }}
+							{% elseif transport.backup_transport_type == 'gmail' %}{{ phrase('admin.gateway.from_google', {'pattern':transport.backup_transport_options.username}) }}
 							{% elseif transport.backup_transport_type == 'mail' %}{{ phrase('admin.global.php_mail') }}
 							{% else %}{{ transport.backup_transport_type }}
 							{% endif %}

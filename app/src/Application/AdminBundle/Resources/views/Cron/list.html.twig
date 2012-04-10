@@ -2,7 +2,7 @@
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li><a href="{{ path('admin_server_cron_logs') }}">{{ phrase('admin.cron.view_logs') }}</a></li>
+			<li><a href="{{ path('admin_server_cron_logs') }}">{{ phrase('admin.logs.view_logs') }}</a></li>
 		</ul>
 	</nav>
 	<ul>
@@ -14,10 +14,10 @@
 	<table width="100%">
 		<thead>
 			<tr>
-				<th style="text-align:left">&nbsp; {{ phrase('admin.cron.task') }}</th>
-				<th style="text-align:center" width="80">{{ phrase('admin.cron.interval') }}</th>
-				<th style="text-align:center" width="185">{{ phrase('admin.cron.last_run') }}</th>
-				<th style="text-align:center" width="185">{{ phrase('admin.cron.next_run') }}</th>
+				<th style="text-align:left">&nbsp; {{ phrase('admin.logs.task') }}</th>
+				<th style="text-align:center" width="80">{{ phrase('admin.logs.interval') }}</th>
+				<th style="text-align:center" width="185">{{ phrase('admin.logs.last_run') }}</th>
+				<th style="text-align:center" width="185">{{ phrase('admin.logs.next_run') }}</th>
 			</tr>
 		</thead>
 		<tbody>
