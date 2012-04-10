@@ -18,9 +18,9 @@
 			</div>
 			<ul>
 				<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
-				<li class="setting" id="user_settings_link"><a>{{ phrase('agent.global.settings') }}</a></li>
-				<li class="help"><a href="http://support.deskpro.com/">{{ phrase('agent.global.help') }}</a></li>
-				<li class="logout"><a href="{{ path('user_logout', {'auth': static_security_token('user_logout', 0)}) }}?to=agent">{{ phrase('agent.global.log_out') }}</a></li>
+				<li class="setting" id="user_settings_link"><a>{{ phrase('agent.settings') }}</a></li>
+				<li class="help"><a href="http://support.deskpro.com/">{{ phrase('agent.help') }}</a></li>
+				<li class="logout"><a href="{{ path('user_logout', {'auth': static_security_token('user_logout', 0)}) }}?to=agent">{{ phrase('agent.log_out') }}</a></li>
 			</ul>
 		</div>
 	</div>
@@ -43,7 +43,7 @@
 			<ul id="dp_notify_list">
 				<li id="dp_notify_list_none">
 					<article><em>{{ phrase('agent.main.notifications_about_new_tickets_and_chats_will_appear') }}</em></article>
-					<a>{{ phrase('agent.global.change_your_notification_settings') }}</a>
+					<a>{{ phrase('agent.change_your_notification_settings') }}</a>
 				</li>
 				<li class="dismissAll" id="dp_notify_list_dismiss" style="display: none">
 					<a>{{ phrase('agent.window.dismiss_notifications') }}</a>
@@ -59,7 +59,7 @@
 				<div class="type-icon">
 					<span class="icon"></span>
 				</div>
-				<input type="input" id="dp_omniinput" size="4" placeholder="{{ phrase('agent.global.search') }}" data-element-handler="DeskPRO.Agent.ElementHandler.OmniQuickSearch" />
+				<input type="input" id="dp_omniinput" size="4" placeholder="{{ phrase('agent.search') }}" data-element-handler="DeskPRO.Agent.ElementHandler.OmniQuickSearch" />
 			</div>
 		</div>
 		<div id="dp_omnibox_adv">
@@ -73,31 +73,31 @@
 	<div id="DP-CreateSection">
 		<div class="DP-createTicket">
 			<div id="createContentTrigger" class="newContent">
-				<a><span class="plusIcon">{{ phrase('agent.global.create') }}</span></a>
+				<a><span class="plusIcon">{{ phrase('agent.create') }}</span></a>
 			</div>
 		</div>
 		<!-- Header - Create Ticket Dropdown on click -->
 		<div id="createTicketToggle" style="display:none;">
 			<div class="createHeader">
-				<a>{{ phrase('agent.global.create') }}</a>
+				<a>{{ phrase('agent.create') }}</a>
 			</div>
 			<div class="createDropdown">
 				<ul class="createBtnPopups">
 					{% if app.user.hasPerm('agent_tickets.create') %}
-						<li id="create_ticket_btn"><a><span class="createTicket">{{ phrase('agent.global.new_ticket') }} <kbd>t</kbd></span></a></li>
+						<li id="create_ticket_btn"><a><span class="createTicket">{{ phrase('agent.new_ticket') }} <kbd>t</kbd></span></a></li>
 					{% endif %}
 					{% if app.user.hasPerm('agent_people.create') %}
-						<li id="create_person_btn"><a><span class="createPerson">{{ phrase('agent.global.new_person') }} <kbd>p</kbd></span></a></li>
+						<li id="create_person_btn"><a><span class="createPerson">{{ phrase('agent.new_person') }} <kbd>p</kbd></span></a></li>
 					{% endif %}
 					{% if app.user.hasPerm('agent_org.create') %}
-						<li id="create_organization_btn"><a><span class="createOrg">{{ phrase('agent.global.new_organization') }} <kbd>o</kbd></span></a></li>
+						<li id="create_organization_btn"><a><span class="createOrg">{{ phrase('agent.new_organization') }} <kbd>o</kbd></span></a></li>
 					{% endif %}
-					<li id="create_task_btn"><a><span class="createTask">{{ phrase('agent.global.new_task') }} <kbd>k</kbd></span></a></li>
+					<li id="create_task_btn"><a><span class="createTask">{{ phrase('agent.new_task') }} <kbd>k</kbd></span></a></li>
 					{% if app.user.hasPerm('agent_publish.create') %}
-						<li id="create_article_btn"><a><span class="createArticle">{{ phrase('agent.global.new_article') }} <kbd>a</kbd></span></a></li>
+						<li id="create_article_btn"><a><span class="createArticle">{{ phrase('agent.new_article') }} <kbd>a</kbd></span></a></li>
 						<li id="create_news_btn"><a><span class="createNews">{{ phrase('agent.window.new_news') }} <kbd>n</kbd></span></a></li>
-						<li id="create_download_btn"><a><span class="createDownload">{{ phrase('agent.global.new_download') }} <kbd>d</kbd></span></a></li>
-						<li id="create_feedback_btn"><a><span class="createFeedback">{{ phrase('agent.global.new_feedback') }} <kbd>i</kbd></span></a></li>
+						<li id="create_download_btn"><a><span class="createDownload">{{ phrase('agent.new_download') }} <kbd>d</kbd></span></a></li>
+						<li id="create_feedback_btn"><a><span class="createFeedback">{{ phrase('agent.new_feedback') }} <kbd>i</kbd></span></a></li>
 					{% endif %}
 				</ul>
 			</div>
@@ -109,7 +109,7 @@
 	<div id="dp_logo_wrap">
 		<div class="button-wrap">
 			<h1>
-				{{ phrase('agent.global.deskpro') }}
+				{{ phrase('agent.deskpro') }}
 				<span class="drop"></span>
 			</h1>
 		</div>
@@ -117,7 +117,7 @@
 	<div id="dp_logo_expand_wrap">
 		<div class="dropdown-header">
 			<h1>
-				{{ phrase('agent.global.deskpro') }}
+				{{ phrase('agent.deskpro') }}
 				<span class="drop"></span>
 			</h1>
 		</div>
@@ -131,20 +131,20 @@
 	<div id="DP-InterfaceSwitcher">
 		<div class="DP-adminSwitch">
 			<div class="adminSwitcher">
-				<a class="agent">{{ phrase('agent.global.agent_interface') }}<span class="dropdownIcon"></span></a>
+				<a class="agent">{{ phrase('agent.agent_interface') }}<span class="dropdownIcon"></span></a>
 			</div>
 		</div>
 		<!-- Header - Switch Button Interfaces- Dropdown -->
 		<div id="interfacesToggle" style="display:none;">
 		<div class="dropdownSwitcherWrap" >
 			<div class="switcherHeader">
-				<a class="agent"><span>{{ phrase('agent.global.agent_interface') }}</span></a>
+				<a class="agent"><span>{{ phrase('agent.agent_interface') }}</span></a>
 			</div>
 			<ul>
-				{% if app.user.can_admin %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin/login?dpsid-agent={{ app.getSession().getId() }}"><span>{{ phrase('agent.global.admin_interface') }}</span></a></li>{% endif %}
-				{% if app.user.can_billing %}<li><a class="billing" href="{{ app.request.getBaseUrl() }}/billing"><span>{{ phrase('agent.global.billing_interface') }}</span></a></li>{% endif %}
-				{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span>{{ phrase('agent.global.reports_interface') }}</span></a></li>{% endif %}
-				{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span>{{ phrase('agent.global.user_interface') }}</span></a></li>{% endif %}
+				{% if app.user.can_admin %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin/login?dpsid-agent={{ app.getSession().getId() }}"><span>{{ phrase('agent.admin_interface') }}</span></a></li>{% endif %}
+				{% if app.user.can_billing %}<li><a class="billing" href="{{ app.request.getBaseUrl() }}/billing"><span>{{ phrase('agent.billing_interface') }}</span></a></li>{% endif %}
+				{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span>{{ phrase('agent.reports_interface') }}</span></a></li>{% endif %}
+				{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span>{{ phrase('agent.user_interface') }}</span></a></li>{% endif %}
 			</ul>
 		</div>
 		</div>
@@ -157,12 +157,12 @@
 		<div class="DP-adminStatus">
 			<ul>
 				<li class="agentStatus" id="agent_status_trigger">
-					<a class="tipped on" id="agent_status" data-tipped="{{ phrase('agent.window.toggle_away_status') }}" data-tipped-options="hook: 'bottommiddle'"><em class="label-away">{{ phrase('agent.global.away') }}</em><em class="label-dnd">{{ phrase('agent.window.do_not_disturb_short') }}</em></a>
+					<a class="tipped on" id="agent_status" data-tipped="{{ phrase('agent.window.toggle_away_status') }}" data-tipped-options="hook: 'bottommiddle'"><em class="label-away">{{ phrase('agent.away') }}</em><em class="label-dnd">{{ phrase('agent.window.do_not_disturb_short') }}</em></a>
 					<div id="agent_status_menu" style="display:none;">
 						<div class="createDropdown">
 							<ul class="createBtnPopups">
 								<li class="status_go_available"><a><span class="statusAvailable">{{ phrase('agent.window.available') }}</span></a></li>
-								<li class="status_go_away"><a><span class="statusAway">{{ phrase('agent.global.away') }}</span></a></li>
+								<li class="status_go_away"><a><span class="statusAway">{{ phrase('agent.away') }}</span></a></li>
 								<li class="status_go_dnd"><a><span class="statusDnd">{{ phrase('agent.window.do_not_disturb') }}</span></a></li>
 							</ul>
 						</div>
@@ -208,12 +208,12 @@
 	<header>
 		<span id="omnisearch_reset">{{ phrase('agent.main.reset_form') }}</span>
 		<span class="close close-search-sheet"></span>
-		<em>{{ phrase('agent.global.search') }}:</em>
+		<em>{{ phrase('agent.search') }}:</em>
 		<ul>
-			<li data-tab-for="#dp_searchsheet_tickets">{{ phrase('agent.global.tickets') }}</li>
-			<li data-tab-for="#dp_searchsheet_people">{{ phrase('agent.global.people') }}</li>
-			<li data-tab-for="#dp_searchsheet_orgs">{{ phrase('agent.global.organizations') }}</li>
-			<li data-tab-for="#dp_searchsheet_content">{{ phrase('agent.global.publish_and_feedback') }}</li>
+			<li data-tab-for="#dp_searchsheet_tickets">{{ phrase('agent.tickets') }}</li>
+			<li data-tab-for="#dp_searchsheet_people">{{ phrase('agent.people') }}</li>
+			<li data-tab-for="#dp_searchsheet_orgs">{{ phrase('agent.organizations') }}</li>
+			<li data-tab-for="#dp_searchsheet_content">{{ phrase('agent.publish_and_feedback') }}</li>
 		</ul>
 	</header>
 
@@ -242,6 +242,6 @@
 	{# /Content Search Form #}
 
 	<footer>
-		<button id="omnisearch_submit">{{ phrase('agent.global.search') }}</button>
+		<button id="omnisearch_submit">{{ phrase('agent.search') }}</button>
 	</footer>
 </div>

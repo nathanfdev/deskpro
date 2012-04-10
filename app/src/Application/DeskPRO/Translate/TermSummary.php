@@ -84,7 +84,7 @@ class TermSummary
 
 		switch ($term) {
 			case 'id':
-				$summary = $this->_rangeSummary($tr->phrase('agent.global.id'), $op, $choice);
+				$summary = $this->_rangeSummary($tr->phrase('agent.id'), $op, $choice);
 				break;
 
 			case 'text':
@@ -95,7 +95,7 @@ class TermSummary
 				break;
 
 			case 'department':
-				$summary = $this->_choiceSummary($tr->phrase('agent.global.department'), $op, $choice, function($choice) {
+				$summary = $this->_choiceSummary($tr->phrase('agent.department'), $op, $choice, function($choice) {
 					$titles = App::getEntityRepository('DeskPRO:Department')->getDepartmentNames((array)$choice);
 					return $titles;
 				});
@@ -106,32 +106,32 @@ class TermSummary
 				break;
 
 			case 'ticket_category':
-				$summary = $this->_choiceSummary($tr->phrase('agent.global.category'), $op, $choice, function($choice) {
+				$summary = $this->_choiceSummary($tr->phrase('agent.category'), $op, $choice, function($choice) {
 					$titles = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoryNames((array)$choice);
 					return $titles;
 				});
 				break;
 
 			case 'product':
-				$summary = $this->_choiceSummary($tr->phrase('agent.global.product'), $op, $choice, function($choice) {
+				$summary = $this->_choiceSummary($tr->phrase('agent.product'), $op, $choice, function($choice) {
 					$titles = App::getEntityRepository('DeskPRO:Product')->getProductNames((array)$choice);
 					return $titles;
 				});
 				break;
 
 			case 'ticket_priority':
-				$summary = $this->_choiceSummary($tr->phrase('agent.global.priority'), $op, $choice, function($choice) {
+				$summary = $this->_choiceSummary($tr->phrase('agent.priority'), $op, $choice, function($choice) {
 					$titles = App::getEntityRepository('DeskPRO:TicketPriority')->getPriorityNames((array)$choice);
 					return $titles;
 				});
 				break;
 
 			case 'ticket_urgency':
-				$summary = $this->_rangeSummary($tr->phrase('agent.global.urgency'), $op, $choice);
+				$summary = $this->_rangeSummary($tr->phrase('agent.urgency'), $op, $choice);
 				break;
 
 			case 'date_created':
-				$summary = $this->_dateRangeSummary($tr->phrase('agent.global.date_created'), $op, $choice);
+				$summary = $this->_dateRangeSummary($tr->phrase('agent.date_created'), $op, $choice);
 				break;
 
 			case 'date_resolved':
@@ -151,14 +151,14 @@ class TermSummary
 				break;
 
 			case 'ticket_workflow':
-				$summary = $this->_choiceSummary($tr->phrase('agent.global.workflow'), $op, $choice, function($choice) {
+				$summary = $this->_choiceSummary($tr->phrase('agent.workflow'), $op, $choice, function($choice) {
 					$titles = App::getEntityRepository('DeskPRO:TicketWorkflow')->getWorkflowNames((array)$choice);
 					return $titles;
 				});
 				break;
 
 			case 'language':
-				$summary = $this->_choiceSummary($tr->phrase('agent.global.language'), $op, $choice, function($choice) {
+				$summary = $this->_choiceSummary($tr->phrase('agent.language'), $op, $choice, function($choice) {
 					$titles = App::getEntityRepository('DeskPRO:Language')->getTitles((array)$choice);
 					return $titles;
 				});
@@ -171,10 +171,10 @@ class TermSummary
 				$not_id = $info['not_id'];
 
 				if ($unassigned) {
-					$summary = $this->_choiceSummary($tr->phrase('agent.global.agent'), $op, $tr->phrase('agent.global.unassigned'));
+					$summary = $this->_choiceSummary($tr->phrase('agent.agent'), $op, $tr->phrase('agent.unassigned'));
 				} else {
 					if ($agent_ids) {
-						$summary = $this->_choiceSummary($tr->phrase('agent.global.agent'), $op, $agent_ids, function($choice) {
+						$summary = $this->_choiceSummary($tr->phrase('agent.agent'), $op, $agent_ids, function($choice) {
 							$titles = App::getEntityRepository('DeskPRO:Person')->getAgentNames((array)$choice);
 							return $titles;
 						});
@@ -193,18 +193,18 @@ class TermSummary
 				$no_team = $info['no_team'];
 
 				if ($no_team) {
-					$summary = $this->_choiceSummary($tr->phrase('agent.global.agent_team'), $op, $tr->phrase('agent.global.unassigned'));
+					$summary = $this->_choiceSummary($tr->phrase('agent.agent_team'), $op, $tr->phrase('agent.unassigned'));
 
 				} else {
 					if ($team_ids) {
-						$summary = $this->_choiceSummary($tr->phrase('agent.global.agent_team'), $op, $team_ids, function($choice) {
+						$summary = $this->_choiceSummary($tr->phrase('agent.agent_team'), $op, $team_ids, function($choice) {
 							$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
 							return $titles;
 						});
 					}
 
 					if ($not_ids) {
-						$summary = $this->_choiceSummary($tr->phrase('agent.global.agent_team'), 'not', $not_ids, function($choice) {
+						$summary = $this->_choiceSummary($tr->phrase('agent.agent_team'), 'not', $not_ids, function($choice) {
 							$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
 							return $titles;
 						});
@@ -267,7 +267,7 @@ class TermSummary
 				$choice_info = $this->_normalizeAgentChoice($choice);
 				if (!empty($choice_info['agent_ids'])) {
 					$choice = $choice_info['agent_ids'];
-					$summary = $this->_choiceSummary($tr->phrase('agent.global.followers'), $op, $choice, function($choice) {
+					$summary = $this->_choiceSummary($tr->phrase('agent.followers'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:Person')->getAgentNames((array)$choice);
 						return $titles;
 					}, true);
@@ -276,9 +276,9 @@ class TermSummary
 
 			case 'ticket_subject':
 				if ($op == self::OP_IS) {
-					$summary = $tr->phrase('agent.x_is_y', array('field' => $tr->phrase('agent.global.subject'), 'value' => $choice['subject']));
+					$summary = $tr->phrase('agent.x_is_y', array('field' => $tr->phrase('agent.subject'), 'value' => $choice['subject']));
 				} else {
-					$summary = $tr->phrase('agent.x_is_not_y', array('field' => $tr->phrase('agent.global.subject'), 'value' => $choice['subject']));
+					$summary = $tr->phrase('agent.x_is_not_y', array('field' => $tr->phrase('agent.subject'), 'value' => $choice['subject']));
 				}
 				break;
 
@@ -300,7 +300,7 @@ class TermSummary
 					$choices_in = implode(',', $choices_in);
 				}
 
-				$summary = $this->_choiceSummary($tr->phrase('agent.global.label'), $op, $choice);
+				$summary = $this->_choiceSummary($tr->phrase('agent.label'), $op, $choice);
 				break;
 
 			case 'person_field':

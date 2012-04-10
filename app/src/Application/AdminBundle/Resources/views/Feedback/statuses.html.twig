@@ -43,13 +43,13 @@
 	<div id="create_status_overlay" style="width: 400px; height: 250px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay close-trigger"></span>
-			<h4>{{ phrase('agent.global.create_status') }}</h4>
+			<h4>{{ phrase('agent.create_status') }}</h4>
 		</div>
 		<div class="overlay-content">
 			<div class="dp-form">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('agent.global.type') }}</label>
+						<label>{{ phrase('agent.type') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<select name="cat[status_type]">
@@ -61,7 +61,7 @@
 
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('agent.global.title') }}</label>
+						<label>{{ phrase('agent.title') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="text" name="cat[title]" value="" />
@@ -74,7 +74,7 @@
 				id="create_status_save_btn"
 				class="clean-white"
 				data-save-url="{{ path('admin_feedback_statuses_ajaxadd') }}"
-			>{{ phrase('agent.global.create_status') }}</button>
+			>{{ phrase('agent.create_status') }}</button>
 		</div>
 	</div>
 {% endblock %}

@@ -64,7 +64,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.global.description') }}</label> <em>{{ phrase('admin.tickets.optionally_enter_a_description_to_help_you_remember') }}</em>
+			<label>{{ phrase('agent.description') }}</label> <em>{{ phrase('admin.tickets.optionally_enter_a_description_to_help_you_remember') }}</em>
 		</div>
 		<div class="dp-form-input">
 			{% if trigger.sys_name %}
@@ -78,30 +78,30 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.global.criteria') }}</label>
+			<label>{{ phrase('agent.criteria') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<div class="criteria-form search-form">
 				<div class="search-terms"></div>
-				<div class="term"><span class="add-term">{{ phrase('agent.global.widget_add') }}</span> {{ phrase('agent.global.add_a_new_criteria') }}</div>
+				<div class="term"><span class="add-term">{{ phrase('agent.widget_add') }}</span> {{ phrase('agent.add_a_new_criteria') }}</div>
 			</div>
 		</div>
 	</div>
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.global.actions') }}</label>
+			<label>{{ phrase('agent.actions') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<div class="actions-form search-form">
 				<div class="search-terms"></div>
-				<div class="term"><span class="add-term">{{ phrase('agent.global.widget_add') }}</span> {{ phrase('admin.tickets.add_a_new_action') }}</div>
+				<div class="term"><span class="add-term">{{ phrase('agent.widget_add') }}</span> {{ phrase('admin.tickets.add_a_new_action') }}</div>
 			</div>
 		</div>
 	</div>
 </div>
 
-<button class="clean-white save-trigger">{{ phrase('agent.global.save') }}</button>
+<button class="clean-white save-trigger">{{ phrase('agent.save') }}</button>
 
 <!-- These never change -->
 {% for info in trigger.getStaticTerms() %}
@@ -118,7 +118,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 {% if trigger.id %}
 	<div class="delete-link-wrap">
-		<a href="{{ path('admin_tickettriggers_delete', {id: trigger.id, auth: security_token('delete_trigger') }) }}" class="confirm-delete-trigger" data-prompt="{{ phrase('admin.tickets.are_you_sure_delete_trigger') }}">{{ phrase('agent.global.delete') }}</a>
+		<a href="{{ path('admin_tickettriggers_delete', {id: trigger.id, auth: security_token('delete_trigger') }) }}" class="confirm-delete-trigger" data-prompt="{{ phrase('admin.tickets.are_you_sure_delete_trigger') }}">{{ phrase('agent.delete') }}</a>
 	</div>
 {% endif %}
 

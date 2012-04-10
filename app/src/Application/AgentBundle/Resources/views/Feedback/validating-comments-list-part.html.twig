@@ -22,7 +22,7 @@
 				</a>
 			</div>
 			<div style="float:right; padding-right: 4px;">
-				<button class="dp-button x-small delete-trigger" data-comment-id="{{comment.id}}">{{ phrase('agent.global.ucfirst_delete') }}</button>
+				<button class="dp-button x-small delete-trigger" data-comment-id="{{comment.id}}">{{ phrase('agent.ucfirst_delete') }}</button>
 				<button class="dp-button x-small approve-trigger" data-comment-id="{{comment.id}}">{{ phrase('agent.approve') }}</button>
 			</div>
 			<time class="timeago" datetime="{{ comment.date_created|date('c') }}">{{ comment.date_created|date('day_short') }}</time>

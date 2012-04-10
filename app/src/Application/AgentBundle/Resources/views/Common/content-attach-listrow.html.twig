@@ -8,7 +8,7 @@
 		<div class="insert-controls">
 			<label>
 				<input type="blob_append[]" value="{{ blob.id }}" checked="checked" />
-				{{ phrase('agent.global.list_as_an_attachment_to_the_article') }}
+				{{ phrase('agent.list_as_an_attachment_to_the_article') }}
 			</label>
 			{{ phrase('agent.andor') }} <a href="" class="insert-link" data-blob-id="{{ blob.id }}">{{ phrase('agent.link_to_the_file_from_within_the_article') }}</a>
 			<div class="insert-controls-overlay">
@@ -17,16 +17,16 @@
 				</div>
 				<div class="overlay-content" style="padding-bottom: 15px; max-height: 500px overflow: auto;">
 
-					<strong>{{ phrase('agent.global.url') }}</strong><br />
+					<strong>{{ phrase('agent.url') }}</strong><br />
 					<input type="hidden" class="insert-url-code" value="![attach:{{ blob.id }} url]" />
-					<button class="dp-button">{{ phrase('agent.global.insert') }} {{ phrase('agent.global.url') }}</button><br />
+					<button class="dp-button">{{ phrase('agent.insert') }} {{ phrase('agent.url') }}</button><br />
 					{{ phrase('agent.this_will_insert_a_plaintext_url_to_the') }}
 
 					<hr />
 
 					<strong>{{ phrase('agent.link') }}</strong><br />
 					<input type="hidden" class="insert-link-code" value="![attach:{{ blob.id }} link:{{ '{{label}}' }}]" />
-					{{ phrase('agent.global.label') }}: <input type="text" class="link-label" value="{{ blob.display_title }}" /> <button class="dp-button">{{ phrase('agent.insert_link_to_page') }}</button><br />
+					{{ phrase('agent.label') }}: <input type="text" class="link-label" value="{{ blob.display_title }}" /> <button class="dp-button">{{ phrase('agent.insert_link_to_page') }}</button><br />
 					{{ phrase('agent.this_will_insert_a_link_to_the_file') }}
 
 					{% if blob.isImage() %}

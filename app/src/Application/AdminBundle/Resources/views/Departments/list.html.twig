@@ -21,13 +21,13 @@
 	{{ design.dpgrid({class: 'dep-list'}) }}
 		{{ design.dpgrid_headerrow() }}
 			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 580px;"}) }}
-				<h1>{{ phrase('agent.global.department') }}</h1>
+				<h1>{{ phrase('agent.department') }}</h1>
 			{{ design.dpgrid_headercol_end() }}
 			{{ design.dpgrid_headercol({ class: 'l r tl tr l-margin r-margin', style: "width: 140px"}) }}
-				<h1>{{ phrase('agent.global.tickets') }}</h1>
+				<h1>{{ phrase('agent.tickets') }}</h1>
 			{{ design.dpgrid_headercol_end() }}
 			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 140px"}) }}
-				<h1>{{ phrase('agent.global.chat') }}</h1>
+				<h1>{{ phrase('agent.chat') }}</h1>
 			{{ design.dpgrid_headercol_end() }}
 		{{ design.dpgrid_headerrow_end() }}
 
@@ -45,7 +45,7 @@
 		<form class="dp-form" method="POST" action="{{ path('admin_departments_savetitle') }}">
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>{{ phrase('agent.global.title') }}</label>
+					<label>{{ phrase('agent.title') }}</label>
 				</div>
 				<div class="dp-form-input">
 					<input type="hidden" name="department_id" id="editdep_depid" value="" />
@@ -55,7 +55,7 @@
 		</form>
 	</div>
 	<div class="overlay-footer">
-		<button class="clean-white" id="editdep_savebtn">{{ phrase('agent.global.save') }}</button>
+		<button class="clean-white" id="editdep_savebtn">{{ phrase('agent.save') }}</button>
 	</div>
 </div>
 
@@ -68,7 +68,7 @@
 		<form class="dp-form" method="POST" action="{{ path('admin_departments_savenew') }}">
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>{{ phrase('agent.global.title') }}</label>
+					<label>{{ phrase('agent.title') }}</label>
 				</div>
 				<div class="dp-form-input">
 					<input type="text" name="title" id="newdep_title" value="" />
@@ -91,7 +91,7 @@
 		</form>
 	</div>
 	<div class="overlay-footer">
-		<button class="clean-white" id="newdep_savebtn">{{ phrase('agent.global.add') }}</button>
+		<button class="clean-white" id="newdep_savebtn">{{ phrase('agent.add') }}</button>
 	</div>
 </div>
 

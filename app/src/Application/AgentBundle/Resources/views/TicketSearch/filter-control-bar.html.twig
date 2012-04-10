@@ -6,33 +6,33 @@
 		<li class="right"><span class="sep"></span></li>
 	</ul>
 	<ul>
-		<li>{{ phrase('agent.global.ordered_by') }} </li>
+		<li>{{ phrase('agent.ordered_by') }} </li>
 		<li class="order-by-menu-trigger menu-fitted" data-menu-button=".button"><a class="button"><span class="label">{{ order_by_summary }}</span><em></em></a></li>
 		<li>{{ phrase('agent.and_grouped_by') }} </li>
-		<li class="group-by-menu-trigger menu-fitted" data-menu-button=".button"><a class="button"><span class="label">{{ grouping_summary|default(phrase('agent.global.none')) }}</span><em></em></a></li>
+		<li class="group-by-menu-trigger menu-fitted" data-menu-button=".button"><a class="button"><span class="label">{{ grouping_summary|default(phrase('agent.none')) }}</span><em></em></a></li>
 		<li><span class="sep"></span></li>
 	</ul>
 
 	<ul style="display: none" class="order-by-menu">
-		<li data-order-by="urgency">{{ phrase('agent.global.urgency') }}</li>
-		<li data-order-by="date_created">{{ phrase('agent.global.date_opened') }}</li>
-		{% if app.getSetting('core.use_ticket_priority') %}<li data-order-by="priority">{{ phrase('agent.global.priority') }}</li>{% endif %}
+		<li data-order-by="urgency">{{ phrase('agent.urgency') }}</li>
+		<li data-order-by="date_created">{{ phrase('agent.date_opened') }}</li>
+		{% if app.getSetting('core.use_ticket_priority') %}<li data-order-by="priority">{{ phrase('agent.priority') }}</li>{% endif %}
 	</ul>
 	<ul style="display: none" class="group-by-menu">
-		<li data-group-by="">{{ phrase('agent.global.none') }}</li>
+		<li data-group-by="">{{ phrase('agent.none') }}</li>
 		<li class="sep">-</li>
-		<li data-group-by="department">{{ phrase('agent.global.department') }}</li>
-		{% if app.getSetting('core.use_ticket_category') %}<li data-group-by="category">{{ phrase('agent.global.category') }}</li>{% endif %}
-		{% if app.getSetting('core.use_ticket_priority') %}<li data-group-by="priority">{{ phrase('agent.global.priority') }}</li>{% endif %}
-		{% if app.getSetting('core.use_product') %}<li data-group-by="product">{{ phrase('agent.global.product') }}</li>{% endif %}
-		{% if app.getSetting('core.use_ticket_workflow') %}<li data-group-by="workflow">{{ phrase('agent.global.workflow') }}</li>{% endif %}
-		<li data-group-by="organization">{{ phrase('agent.global.organization') }}</li>
-		<li data-group-by="language">{{ phrase('agent.global.language') }}</li>
-		<li data-group-by="urgency">{{ phrase('agent.global.urgency') }}</li>
-		<li data-group-by="agent">{{ phrase('agent.global.agent') }}</li>
-		{% if app.getSetting('core.use_agent_team') %}<li data-group-by="agent_team">{{ phrase('agent.global.agent_team') }}</li>{% endif %}
+		<li data-group-by="department">{{ phrase('agent.department') }}</li>
+		{% if app.getSetting('core.use_ticket_category') %}<li data-group-by="category">{{ phrase('agent.category') }}</li>{% endif %}
+		{% if app.getSetting('core.use_ticket_priority') %}<li data-group-by="priority">{{ phrase('agent.priority') }}</li>{% endif %}
+		{% if app.getSetting('core.use_product') %}<li data-group-by="product">{{ phrase('agent.product') }}</li>{% endif %}
+		{% if app.getSetting('core.use_ticket_workflow') %}<li data-group-by="workflow">{{ phrase('agent.workflow') }}</li>{% endif %}
+		<li data-group-by="organization">{{ phrase('agent.organization') }}</li>
+		<li data-group-by="language">{{ phrase('agent.language') }}</li>
+		<li data-group-by="urgency">{{ phrase('agent.urgency') }}</li>
+		<li data-group-by="agent">{{ phrase('agent.agent') }}</li>
+		{% if app.getSetting('core.use_agent_team') %}<li data-group-by="agent_team">{{ phrase('agent.agent_team') }}</li>{% endif %}
 		<li data-group-by="user_waiting">{{ phrase('agent.time_waiting') }}</li>
 		<li data-group-by="total_user_waiting">{{ phrase('agent.total_time_waiting') }}</li>
-		<li data-group-by="date_created">{{ phrase('agent.global.date_opened') }}</li>
+		<li data-group-by="date_created">{{ phrase('agent.date_opened') }}</li>
 	</ul>
 </header>

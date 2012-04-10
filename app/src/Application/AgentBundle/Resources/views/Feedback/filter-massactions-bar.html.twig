@@ -1,19 +1,19 @@
 <header class="list-selection-bar">
 	<input type="checkbox" class="selection-control" />
     {% set phrase_part %}<span class="selected-count">0</span>{% endset %}
-    {{ phrase('agent.global.display_count_selected', {'display_count':phrase_part}) }}
+    {{ phrase('agent.display_count_selected', {'display_count':phrase_part}) }}
 	<a class="perform-action perform-actions-trigger disabled">
 		<span>{{ phrase('agent.perform_actions') }}</span>
 	</a>
 	<ul class="actions-menu" data-menu-type="feedback-massactions-menu" style="display: none">
 		<li data-submenu-selector="#feedback_status_menu">
-			{{ phrase('agent.global.set_status') }}
+			{{ phrase('agent.set_status') }}
 		</li>
 		<li data-submenu-selector="#feedback_category_menu">
-			{{ phrase('agent.global.set_category') }}
+			{{ phrase('agent.set_category') }}
 		</li>
 		<li class="sep">-</li>
-		<li data-action="delete">{{ phrase('agent.global.ucfirst_delete') }}</li>
+		<li data-action="delete">{{ phrase('agent.ucfirst_delete') }}</li>
 		<li data-action="spam">{{ phrase('agent.mark_spam') }}</li>
 	</ul>
 </header>

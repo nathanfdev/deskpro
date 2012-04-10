@@ -9,7 +9,7 @@ pageMeta.actions = {{macro.actions|json_encode|raw}};
 pageMeta.baseId = '{{ baseId }}';
 </script>
 <header>
-	<span class="close close-trigger">{{ phrase('agent.global.close_lc') }}</span>
+	<span class="close close-trigger">{{ phrase('agent.close_lc') }}</span>
 	<h1>{% if macro.id %}{{ phrase('agent.settings.edit_macro') }}{% else %}{{ phrase('agent.settings.new_macro') }}{% endif %}</h1>
 </header>
 <article class="padded" data-width="600" data-height="400">
@@ -17,14 +17,14 @@ pageMeta.baseId = '{{ baseId }}';
 
 	<div class="dp-form">
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>{{ phrase('agent.global.title') }}</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.title') }}</label></div>
 			<div class="dp-form-input">
 				<input type="input" name="macro[title]" class="input-title" value="{{macro.title}}" />
 			</div>
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>{{ phrase('agent.global.actions') }}</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.actions') }}</label></div>
 			<div class="dp-form-input">
 				<div class="search-form" id="{{baseId}}_actions_list">
 					<div class="search-terms"></div>
@@ -38,7 +38,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</form>
 </article>
 <footer>
-	<button class="clean-white" id="{{baseId}}_save_btn">{{ phrase('agent.global.save') }}</button>
+	<button class="clean-white" id="{{baseId}}_save_btn">{{ phrase('agent.save') }}</button>
 </footer>
 {% block nullblock %}
 <script type="text/javascript" charset="utf-8">

@@ -7,14 +7,14 @@
 		#}
 		{% set perc = (100 / display_fields|length) %}
 		{% for field in display_fields %}
-			{% if field == 'name' %}<th width="{{perc}}%" data-field="email_address">{{ phrase('agent.global.name') }}</th>
-			{% elseif field == 'email' %}<th width="{{perc}}%" data-field="email_address">{{ phrase('agent.global.email_address') }}</th>
-			{% elseif field == 'org' %}<th width="{{perc}}%" data-field="email_address">{{ phrase('agent.global.organization') }}</th>
-			{% elseif field == 'org_pos' %}<th width="{{perc}}%" data-field="email_address">{{ phrase('agent.global.position') }}</th>
-			{% elseif field == 'organization' %}<th width="{{perc}}%" data-field="organization">{{ phrase('agent.global.organization') }}</th>
-			{% elseif field == 'language' %}<th width="{{perc}}%" data-field="language">{{ phrase('agent.global.language') }}</th>
-			{% elseif field == 'labels' %}<th width="{{perc}}%" data-field="labels">{{ phrase('agent.global.labels') }}</th>
-			{% elseif field == 'num_tickets' %}<th width="{{perc}}%" data-field="num_tickets">{{ phrase('agent.global.tickets') }}</th>
+			{% if field == 'name' %}<th width="{{perc}}%" data-field="email_address">{{ phrase('agent.name') }}</th>
+			{% elseif field == 'email' %}<th width="{{perc}}%" data-field="email_address">{{ phrase('agent.email_address') }}</th>
+			{% elseif field == 'org' %}<th width="{{perc}}%" data-field="email_address">{{ phrase('agent.organization') }}</th>
+			{% elseif field == 'org_pos' %}<th width="{{perc}}%" data-field="email_address">{{ phrase('agent.position') }}</th>
+			{% elseif field == 'organization' %}<th width="{{perc}}%" data-field="organization">{{ phrase('agent.organization') }}</th>
+			{% elseif field == 'language' %}<th width="{{perc}}%" data-field="language">{{ phrase('agent.language') }}</th>
+			{% elseif field == 'labels' %}<th width="{{perc}}%" data-field="labels">{{ phrase('agent.labels') }}</th>
+			{% elseif field == 'num_tickets' %}<th width="{{perc}}%" data-field="num_tickets">{{ phrase('agent.tickets') }}</th>
 			{% else %}
 				{% for f in person_field_defs %}
 					{% if field == 'person_fields['~f.id~']' %}

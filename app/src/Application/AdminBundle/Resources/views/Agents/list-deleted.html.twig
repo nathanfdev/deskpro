@@ -2,7 +2,7 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_agents') }}">{{ phrase('agent.global.agents') }}</a></li>
+		<li><a href="{{ path('admin_agents') }}">{{ phrase('agent.agents') }}</a></li>
 		<li>{{ phrase('admin.agents.deleted_agents') }}</li>
 	</ul>
 {% endblock %}
@@ -15,7 +15,7 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th class="single-title">{{ phrase('agent.global.agent') }}</th>
+					<th class="single-title">{{ phrase('agent.agent') }}</th>
 					<th class="r-col" width="30">&nbsp;</th>
 				</tr>
 			</thead>

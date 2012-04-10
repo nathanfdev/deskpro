@@ -13,7 +13,7 @@ function _page_exec() {
 {% endblock %}
 {% block pagebar %}
 	<ul>
-		<li>{{ phrase('agent.global.trends') }}</li>
+		<li>{{ phrase('agent.trends') }}</li>
 	</ul>
 {% endblock %}
 {% block page %}
@@ -30,12 +30,12 @@ function _page_exec() {
 		<thead>
 			<tr>
 				<th width="20"></th>
-				<th>{{ phrase('agent.global.title') }}</th>
-				<th width="100">{{ phrase('agent.global.group_by') }}</th>
+				<th>{{ phrase('agent.title') }}</th>
+				<th width="100">{{ phrase('agent.group_by') }}</th>
 				<th width="100">{{ phrase('agent.report.updates') }}</th>
-				<th width="200">{{ phrase('agent.global.author') }}</th>
-				<th width="200">{{ phrase('agent.global.trend') }}</th>
-				<th width="60" class="center">{{ phrase('agent.global.prev') }}</th>
+				<th width="200">{{ phrase('agent.author') }}</th>
+				<th width="200">{{ phrase('agent.trend') }}</th>
+				<th width="60" class="center">{{ phrase('agent.prev') }}</th>
 				<th width="60" class="center">{{ phrase('agent.report.current') }}</th>
 				<th width="90" class="center">{{ phrase('agent.report.difference_') }}</th>
 				<th width="10"></th>
@@ -80,7 +80,7 @@ function _page_exec() {
 	<div class="overlay-content">
 	</div>
 	<div class="overlay-loader">
-		<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" alt="{{ phrase('agent.global.loading_dot') }}" />
+		<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" alt="{{ phrase('agent.loading_dot') }}" />
 	</div>
 	<div class="overlay-footer">
 
@@ -96,7 +96,7 @@ function _page_exec() {
 
 	</div>
 	<div class="overlay-loader">
-		<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" alt="{{ phrase('agent.global.loading_dot') }}" />
+		<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" alt="{{ phrase('agent.loading_dot') }}" />
 	</div>
 	<div class="overlay-footer">
 

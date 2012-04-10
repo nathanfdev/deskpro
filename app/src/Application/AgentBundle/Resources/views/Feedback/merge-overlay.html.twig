@@ -23,7 +23,7 @@
 				{% for feedback in open_feedback %}
 					<li>
 						<a data-route="page:{{ path('agent_feedback_view', {'feedback_id': feedback.id}) }}" class="with-route">{{ feedback.title }}</a>
-						<button class="clean-gray xx-small merge-trigger" data-feedback-id="{{ feedback.id }}">{{ phrase('agent.global.merge') }}</button>
+						<button class="clean-gray xx-small merge-trigger" data-feedback-id="{{ feedback.id }}">{{ phrase('agent.merge') }}</button>
 					</li>
 				{% endfor %}
 			</ul>

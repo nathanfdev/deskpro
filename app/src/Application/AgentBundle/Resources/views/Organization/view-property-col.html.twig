@@ -20,18 +20,18 @@
 		{% if app.user.hasPerm('agent_org.edit') %}
 			<div class="controls">
 				<span class="edit-gear prop-edit-trigger"></span>
-				<div class="is-loading">{{ phrase('agent.global.saving') }}</div>
-				<button class="cancel" style="display: none">{{ phrase('agent.global.cancel') }}</button>
-				<button class="save" style="display: none">{{ phrase('agent.global.save') }}</button>
+				<div class="is-loading">{{ phrase('agent.saving') }}</div>
+				<button class="cancel" style="display: none">{{ phrase('agent.cancel') }}</button>
+				<button class="save" style="display: none">{{ phrase('agent.save') }}</button>
 			</div>
 		{% endif %}
-		<h4>{{ phrase('agent.global.properties') }}</h4>
+		<h4>{{ phrase('agent.properties') }}</h4>
 	</header>
 	<section>
 		{% if org.labels|length or app.user.hasPerm('agent_org.edit') %}
 			<div>
 				<dl class="table-list">
-					<dt class="type-labels">{{ phrase('agent.global.labels') }}</dt>
+					<dt class="type-labels">{{ phrase('agent.labels') }}</dt>
 					<dd class="org-tags tags-wrap noedit-tags">
 						<input id="{{baseId}}_label_input" type="text" value="{% for label in org.labels %}{{label.label}},{% endfor %}" />
 					</dd>
@@ -52,7 +52,7 @@
 
 		<div>
 			<dl class="table-list">
-				<dt class="type-labels">{{ phrase('agent.global.date_created') }}</dt>
+				<dt class="type-labels">{{ phrase('agent.date_created') }}</dt>
 				<dd>
 					<time class="timeago" datetime="{{org.date_created|date('c')}}">{{ org.date_created|date('day') }}</time>
 				</dd>

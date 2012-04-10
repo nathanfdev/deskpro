@@ -22,8 +22,8 @@
 				</div>
 				<div class="top-row-right visible-related-content-controls">
 					<div class="bound-faded"></div>
-					<span class="tipped related-link" title="{{ phrase('agent.global.add_as_related') }}"></span>
-					<span class="tipped related-unlink" title="{{ phrase('agent.global.remove_as_related') }}"></span>
+					<span class="tipped related-link" title="{{ phrase('agent.add_as_related') }}"></span>
+					<span class="tipped related-unlink" title="{{ phrase('agent.remove_as_related') }}"></span>
 				</div>
 			</div>
 			<hr class="clear-top" />
@@ -33,17 +33,17 @@
 						{% for field in display_fields %}
 							{% if field == 'category' %}
 								<li>
-									<span class="prop-title">{{ phrase('agent.global.category') }}</span>
+									<span class="prop-title">{{ phrase('agent.category') }}</span>
 									<span class="prop-val">{{ download.category.full_title }}</span>
 								</li>
 							{% elseif field == 'author' %}
 								<li>
-									<span class="prop-title">{{ phrase('agent.global.author') }}</span>
+									<span class="prop-title">{{ phrase('agent.author') }}</span>
 									<span class="prop-val">{{ download.person.display_name }}</span>
 								</li>
 							{% elseif field == 'date_created' %}
 								<li>
-									<span class="prop-title">{{ phrase('agent.global.date_created') }}</span>
+									<span class="prop-title">{{ phrase('agent.date_created') }}</span>
 									<span class="prop-val">{{ download.date_created|date('day')}}</span>
 								</li>
 							{% elseif field == 'num_downloads' %}

@@ -8,7 +8,7 @@
 	{% endif %}
 	{% endfor %}
 	<tr>
-		<th>{{ phrase('agent.global.timezone') }}</th>
+		<th>{{ phrase('agent.timezone') }}</th>
 		<td>
 			{{ person.timezone }} (GMT {{ person.getTimezoneOffset(true) }}, {{ phrase('agent.local_time') }}: {{ person.date_time|date('H:ia M j Y', person) }})
 		</td>

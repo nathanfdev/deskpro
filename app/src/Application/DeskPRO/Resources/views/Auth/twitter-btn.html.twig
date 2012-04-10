@@ -3,6 +3,6 @@
 	<a href="{{ path('user_login_authenticate', {'usersource_id': usersource.id}) }}"><img src="{{ asset('images/icons/social_media_mini_icons/twitter.png') }}" /></a>
 {% elseif button_type == 'button' %}
 	<a class="small btn" href="{{ path('user_login_authenticate', {'usersource_id': usersource.id}) }}">
-		<span style="background-image: url('{{ asset('images/icons/social_media_mini_icons/twitter.png') }}')">{{ phrase('agent.global.twitter') }}</span>
+		<span style="background-image: url('{{ asset('images/icons/social_media_mini_icons/twitter.png') }}')">{{ phrase('agent.twitter') }}</span>
 	</a>
 {% endif %}

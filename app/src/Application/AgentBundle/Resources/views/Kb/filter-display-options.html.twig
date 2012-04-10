@@ -2,16 +2,16 @@
 {% block other_options %}
 	<div style="display: none">
 		<select name="order_by" class="sel-order-by">
-			<option class="date" value="article.date_created:desc">{{ phrase('agent.global.date_created_newestoldest') }}</option>
-			<option value="article.date_created:asc">{{ phrase('agent.global.date_created_oldestnewest') }}</option>
+			<option class="date" value="article.date_created:desc">{{ phrase('agent.date_created_newestoldest') }}</option>
+			<option value="article.date_created:asc">{{ phrase('agent.date_created_oldestnewest') }}</option>
 			<option class="views" value="article.view_count:desc">{{ phrase('agent.kb.view_count_highestlowest') }}</option>
 			<option value="article.view_count:asc">{{ phrase('agent.kb.view_count_lowesthighest') }}</option>
 		</select>
 	</div>
 {% endblock %}
 {% block display_elements_list %}
-	<li data-field="author"><label><input type="checkbox" name="author" {% if 'author' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.author') }}</label></li>
-	<li data-field="category"><label><input type="checkbox" name="category" {% if 'category' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.categories') }}</label></li>
-	<li data-field="date_created"><label><input type="checkbox" name="date_created" {% if 'date_created' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.global.date_created') }}</label></li>
+	<li data-field="author"><label><input type="checkbox" name="author" {% if 'author' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.author') }}</label></li>
+	<li data-field="category"><label><input type="checkbox" name="category" {% if 'category' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.categories') }}</label></li>
+	<li data-field="date_created"><label><input type="checkbox" name="date_created" {% if 'date_created' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.date_created') }}</label></li>
 	<li data-field="view_count"><label><input type="checkbox" name="view_count" {% if 'view_count' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.num_views') }}</label></li>
 {% endblock %}

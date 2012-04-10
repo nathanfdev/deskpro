@@ -4,7 +4,7 @@
 	<meta charset="UTF-8"/>
 	<meta name="robots" content="NOINDEX" />
 	<meta http-equiv="X-UA-Compatible" content="IE=100" />
-	<title>{{ phrase('agent.global.deskpro') }}</title>
+	<title>{{ phrase('agent.deskpro') }}</title>
 
 	<link rel="stylesheet" href="{{ asset('javascripts/jquery/jquery-ui/css/ui-lightness/jquery-ui.css') }}" type="text/css" media="screen"  />
 	<link rel="stylesheet" href="{{ asset('javascripts/jquery/tipTip/tipTip.css') }}" type="text/css" media="screen"  />
@@ -55,7 +55,7 @@
 
 <div id="window_head" class="ui-layout-north">
 	<div id="window_head_top">
-		<div class="logo">{{ phrase('agent.global.deskpro') }}</div>
+		<div class="logo">{{ phrase('agent.deskpro') }}</div>
 		<div class="current-user">
 			{{person.display_name}}
 		</div>
@@ -63,8 +63,8 @@
 
 	<div id="window_header_nav">
 		<ul>
-			<li data-route="navpane:{{ path('agent_ticketsearch_filterspane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}">{{ phrase('agent.global.tickets') }}</li>
-			<li class="people" data-route="navpane:{{ path('agent_peoplesearch_labelspane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}">{{ phrase('agent.global.people') }}</li>
+			<li data-route="navpane:{{ path('agent_ticketsearch_filterspane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}">{{ phrase('agent.tickets') }}</li>
+			<li class="people" data-route="navpane:{{ path('agent_peoplesearch_labelspane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}">{{ phrase('agent.people') }}</li>
 		</ul>
 	</div>
 </div>

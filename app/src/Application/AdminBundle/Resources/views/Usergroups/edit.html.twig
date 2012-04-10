@@ -2,7 +2,7 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
      <ul>
-         <li><a href="{{ path('admin_usergroups') }}">{{ phrase('agent.global.usergroups') }}</a></li>
+         <li><a href="{{ path('admin_usergroups') }}">{{ phrase('agent.usergroups') }}</a></li>
 		 {% if usergroup.id %}
 		 	<li>{{ phrase('admin.usergroups.edit_usergroup') }}</li>
 		 {% else %}
@@ -21,7 +21,7 @@
 	<div class="dp-form-section">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('agent.global.title') }}</label>
+				<label>{{ phrase('agent.title') }}</label>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.title) }}
@@ -39,7 +39,7 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('agent.global.number_of_members') }}</label>
+				<label>{{ phrase('agent.number_of_members') }}</label>
 			</div>
 			<div class="dp-form-input">
 				{{ member_count|default('0') }} (<a href="{{ path('admin_usergroups_browse', {'id': usergroup.id})}}">{{ phrase('admin.usergroups.browse') }}</a>)
@@ -49,7 +49,7 @@
 
 	<div class="dp-form-section">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.global.permissions') }}</label>
+			<label>{{ phrase('agent.permissions') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{% include 'AdminBundle:Usergroups:edit-permtable.html.twig' %}
@@ -71,7 +71,7 @@
 
 {% if usergroup.id and usergroup.id != 1 %}
 <div class="delete-link-wrap">
-	<a href="{{ path('admin_usergroups_delete', {'id': usergroup.id, 'auth': security_token('delete_usergroup') }) }}" onclick="return confirm('{{ phrase('admin.usergroups.are_you_sure_delete_usergroup') }}');">{{ phrase('agent.global.delete') }}</a>
+	<a href="{{ path('admin_usergroups_delete', {'id': usergroup.id, 'auth': security_token('delete_usergroup') }) }}" onclick="return confirm('{{ phrase('admin.usergroups.are_you_sure_delete_usergroup') }}');">{{ phrase('agent.delete') }}</a>
 </div>
 {% endif %}
 

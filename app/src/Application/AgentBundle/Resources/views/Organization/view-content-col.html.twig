@@ -7,12 +7,12 @@
 		<header>
 			{% if app.user.hasPerm('agent_org.edit') %}
 			<div class="controls">
-				<div class="is-loading">{{ phrase('agent.global.saving') }}</div>
-				<div class="saved" style="display: none">{{ phrase('agent.global.saved') }}</div>
-				<div class="save" style="display: none">{{ phrase('agent.global.save') }}</div>
+				<div class="is-loading">{{ phrase('agent.saving') }}</div>
+				<div class="saved" style="display: none">{{ phrase('agent.saved') }}</div>
+				<div class="save" style="display: none">{{ phrase('agent.save') }}</div>
 			</div>
 			{% endif %}
-			<h4>{{ phrase('agent.global.summary') }}</h4>
+			<h4>{{ phrase('agent.summary') }}</h4>
 		</header>
 		<section>
 			<input type="hidden" name="action" value="set-summary" />
@@ -26,9 +26,9 @@
 	<header>
 		<nav>
 			<ul>
-				<li data-tab-for="#{{baseId}}_members_tab" class="on">{{ phrase('agent.global.members') }} <i class="count" data-tag="org-members-count-{{ org.id }}" id="{{baseId}}_members_count">{{members_count|default(0)}}</i></li>
+				<li data-tab-for="#{{baseId}}_members_tab" class="on">{{ phrase('agent.members') }} <i class="count" data-tag="org-members-count-{{ org.id }}" id="{{baseId}}_members_count">{{members_count|default(0)}}</i></li>
 				{% if org_tickets_count %}
-					<li data-tab-for="#{{baseId}}_tickets_tab">{{ phrase('agent.global.tickets') }} <span class="count" id="{{baseId}}_tickets_count">{{ org_tickets_count|default(0) }}</span></li>
+					<li data-tab-for="#{{baseId}}_tickets_tab">{{ phrase('agent.tickets') }} <span class="count" id="{{baseId}}_tickets_count">{{ org_tickets_count|default(0) }}</span></li>
 				{% endif %}
 			</ul>
 		</nav>
@@ -68,7 +68,7 @@
 
 											</ul>
 											<footer>
-												<span class="create-user">{{ phrase('agent.global.create_a_new_person') }}</span>
+												<span class="create-user">{{ phrase('agent.create_a_new_person') }}</span>
 											</footer>
 										</section>
 									</div>
@@ -86,8 +86,8 @@
 								</div>
 								<div class="controls">
 									<input type="hidden" id="{{baseId}}_newmember_person_id" value="" />
-									<button class="clean-white small" id="{{baseId}}_newmember_btn">{{ phrase('agent.global.add') }}</button>
-									<button class="clean-white small" id="{{baseId}}_newmember_cancel_btn">{{ phrase('agent.global.cancel') }}</button>
+									<button class="clean-white small" id="{{baseId}}_newmember_btn">{{ phrase('agent.add') }}</button>
+									<button class="clean-white small" id="{{baseId}}_newmember_cancel_btn">{{ phrase('agent.cancel') }}</button>
 								</div>
 							</td>
 						</tr>
@@ -147,13 +147,13 @@
 	<header>
 		<nav>
 			<ul>
-				{% if notes|length or app.user.hasPerm('agent_org.notes') %}<li data-tab-for="#{{baseId}}_notes_tab" class="on">{{ phrase('agent.global.notes') }} <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>{% endif %}
+				{% if notes|length or app.user.hasPerm('agent_org.notes') %}<li data-tab-for="#{{baseId}}_notes_tab" class="on">{{ phrase('agent.notes') }} <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>{% endif %}
 				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">{{ phrase('agent.activity_stream') }}</li>{% endif %}
 			</ul>
 		</nav>
 	</header>
 	<section>
-		{# {{ phrase('agent.global.notes') }} Tab #}
+		{# {{ phrase('agent.notes') }} Tab #}
 		{% if notes|length or app.user.hasPerm('agent_org.notes') %}
 			<article id="{{baseId}}_notes_tab" class="on">
 				<div class="notes-wrap">
@@ -170,11 +170,11 @@
 						>
 							<header>
 								<div class="controls">
-									<div class="is-loading">{{ phrase('agent.global.saving') }}</div>
-									<div class="saved" style="display: none">{{ phrase('agent.global.saved') }}</div>
-									<div class="save" style="display: none">{{ phrase('agent.global.save') }}</div>
+									<div class="is-loading">{{ phrase('agent.saving') }}</div>
+									<div class="saved" style="display: none">{{ phrase('agent.saved') }}</div>
+									<div class="save" style="display: none">{{ phrase('agent.save') }}</div>
 								</div>
-								<h3>{{ phrase('agent.global.new_note') }}</h3>
+								<h3>{{ phrase('agent.new_note') }}</h3>
 							</header>
 							<div class="textarea-section"><textarea class="integrated" name="note" placeholder=""></textarea></div>
 						</li>
@@ -182,7 +182,7 @@
 				</div>
 			</article>
 		{% endif %}
-		{# /{{ phrase('agent.global.notes') }} Tab #}
+		{# /{{ phrase('agent.notes') }} Tab #}
 
 		{# Activity Tab #}
 		{% if activity_stream|length %}

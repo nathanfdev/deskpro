@@ -345,7 +345,7 @@ class GroupingCounter
 		switch ($field) {
 			case 'category_id':
 				$titles = App::getOrm()->getRepository('DeskPRO:FeedbackCategory')->getFullCategoryNames();
-				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.global.none'));
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.none'));
 				break;
 
 			case 'status':

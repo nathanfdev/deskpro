@@ -344,7 +344,7 @@ class UserChatsStep extends AbstractDeskpro3Step
 					$add_end['is_sys'] = true;
 					$add_end['person_name'] = 'sys';
 					$add_end['metadata'] = 'a:0:{}';
-					$add_end['content'] = App::getTranslator()->phrase('agent.global.chat_ended');
+					$add_end['content'] = App::getTranslator()->phrase('agent.chat_ended');
 
 				} elseif (preg_match('#^end:who:user$#', $message_info['message']) || preg_match('#^end:who:user:timeout:#', $message_info['message'])) {
 					$message['person_name'] = 'sys';

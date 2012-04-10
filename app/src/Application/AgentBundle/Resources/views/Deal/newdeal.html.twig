@@ -20,10 +20,10 @@ pageMeta.baseId = '{{ baseId }}';
         <div class="section title-section" id="{{baseId}}_title_section">
             <div class="step">
                     <span class="num">1</span>
-                    <span class="check">{{ phrase('agent.global.done') }}</span>
+                    <span class="check">{{ phrase('agent.done') }}</span>
             </div>
             <div class="content">
-                    <h4>{{ phrase('agent.global.title') }}</h4>
+                    <h4>{{ phrase('agent.title') }}</h4>
                     <input type="text" name="newdeal[title]" class="title" id="{{baseId}}_title" value="" />
             </div>
         </div>
@@ -31,11 +31,11 @@ pageMeta.baseId = '{{ baseId }}';
         <div class="section cat-section" id="{{baseId}}_cat_section">
             <div class="step">
                     <span class="num">2</span>
-                    <span class="check">{{ phrase('agent.global.done') }}</span>
+                    <span class="check">{{ phrase('agent.done') }}</span>
             </div>
             <div class="content">
                <div class="col">
-                <button class="clean-white small switch-user" id="{{baseId}}_switch_user" style="display: none">{{ phrase('agent.global.change_user') }}</button>
+                <button class="clean-white small switch-user" id="{{baseId}}_switch_user" style="display: none">{{ phrase('agent.change_user') }}</button>
 		<div id="{{baseId}}_choose_user">
 			<div
 				id="{{baseId}}_user_searchbox"
@@ -46,8 +46,8 @@ pageMeta.baseId = '{{ baseId }}';
 				data-search-param="term"
 				data-position-bound="#{{baseId}}_userselect"
 			>
-                                {{ phrase('agent.global.person') }}:
-				<input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.global.choose_a_person_to_create_this_ticket_for') }}" />
+                                {{ phrase('agent.person') }}:
+				<input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.choose_a_person_to_create_this_ticket_for') }}" />
 				<input type="hidden" name="newdeal[person][id]" value="{{ deal.person.id }}" class="person-id" id="{{baseId}}_person_id" />
 
 				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
@@ -64,7 +64,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 						</ul>
 						<footer>
-							<span class="create-user">{{ phrase('agent.global.create_a_new_person') }}</span>
+							<span class="create-user">{{ phrase('agent.create_a_new_person') }}</span>
 						</footer>
 					</section>
 				</div>
@@ -89,8 +89,8 @@ pageMeta.baseId = '{{ baseId }}';
 				data-search-param="term"
 				data-position-bound="@parent(.org-input)"
 			>
-				{{ phrase('agent.global.organization') }}:
-				<input type="text" class="org-name" placeholder="{{ phrase('agent.global.enter_an_organization_name') }}" value="{{ person.organization.name }}" />
+				{{ phrase('agent.organization') }}:
+				<input type="text" class="org-name" placeholder="{{ phrase('agent.enter_an_organization_name') }}" value="{{ person.organization.name }}" />
 				<input type="hidden" class="org-id" name="newdeal[organizations][id]" value="{{ person.organization.id|default(0) }}" />
 				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
 					<li>
@@ -105,14 +105,14 @@ pageMeta.baseId = '{{ baseId }}';
 
 						</ul>
 						<footer>
-							<span class="create-org">{{ phrase('agent.global.create_a_new_organization') }}</span>
+							<span class="create-org">{{ phrase('agent.create_a_new_organization') }}</span>
 						</footer>
 					</section>
 				</div>
 			</div>
 			<div class="pos-input" {% if not deal.person.organization %}style="display: none"{% endif %}>
-				<label>{{ phrase('agent.global.position') }}:</label>
-				<input type="text" class="org-pos-set" placeholder="{{ phrase('agent.global.set_a_position') }}" value="{{ deal.person.organization_position }}" />
+				<label>{{ phrase('agent.position') }}:</label>
+				<input type="text" class="org-pos-set" placeholder="{{ phrase('agent.set_a_position') }}" value="{{ deal.person.organization_position }}" />
 			</div>
 		</div>
 
@@ -129,11 +129,11 @@ pageMeta.baseId = '{{ baseId }}';
         <div class="section department-section" id="{{baseId}}_dep_section">
             <div class="step">
                     <span class="num">3</span>
-                    <span class="check">{{ phrase('agent.global.done') }}</span>
+                    <span class="check">{{ phrase('agent.done') }}</span>
             </div>
             <div class="content">
                     <div class="col">
-                            <h4>{{ phrase('agent.global.type') }}</h4>
+                            <h4>{{ phrase('agent.type') }}</h4>
                             {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
                                 'name': 'newdeal[deal_type]',
                                 'with_blank': true,
@@ -157,18 +157,18 @@ pageMeta.baseId = '{{ baseId }}';
                             </dd>
                     </div>
                     <div class="col">
-                            <h4>{{ phrase('agent.global.assignment') }}</h4>
+                            <h4>{{ phrase('agent.assignment') }}</h4>
                             <input type="hidden" name="newdeal[agent_id]" value="{{person.id}}" id="{{baseId}}_agent_id" />
 
                             <span id="{{baseId}}_assign_btn" class="agent-prop-links">
-                                    <span id="{{baseId}}_agent_label">{{ phrase('agent.global.me') }}</span>
+                                    <span id="{{baseId}}_agent_label">{{ phrase('agent.me') }}</span>
                             </span>
                     </div>
                 <div class="col">
                     <h4>{{ phrase('agent.deal.visibility') }}</h4>
                     <select id="{{baseId}}_visibility" name="newdeal[visibility]">
-                        <option value="0">{{ phrase('agent.global.private') }}</option>
-                        <option value="1">{{ phrase('agent.global.public') }}</option>
+                        <option value="0">{{ phrase('agent.private') }}</option>
+                        <option value="1">{{ phrase('agent.public') }}</option>
 
                     </select>
                 </div>
@@ -180,11 +180,11 @@ pageMeta.baseId = '{{ baseId }}';
         <div class="section department-section" id="{{baseId}}_dep_section">
             <div class="step">
                     <span class="num">4</span>
-                    <span class="check">{{ phrase('agent.global.done') }}</span>
+                    <span class="check">{{ phrase('agent.done') }}</span>
             </div>
             <div class="content">
                     <div class="col">
-                            <h4>{{ phrase('agent.global.type') }}</h4>
+                            <h4>{{ phrase('agent.type') }}</h4>
                             {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
                                 'name': 'newdeal[deal_currency]',
                                 'with_blank': true,
@@ -195,7 +195,7 @@ pageMeta.baseId = '{{ baseId }}';
                             } %}
                     </div>
                     <div class="col">
-                            <h4>{{ phrase('agent.global.value') }}</h4>
+                            <h4>{{ phrase('agent.value') }}</h4>
                             <input type="text" name="newdeal[deal_value]" class="deal-value" id="{{baseId}}_deal_value" value="" />
                     </div>
                     <div class="col">
@@ -209,15 +209,15 @@ pageMeta.baseId = '{{ baseId }}';
         <div class="section other-section" id="{{baseId}}_other_section">
             <div class="step">
                     <span class="num">5</span>
-                    <span class="check">{{ phrase('agent.global.done') }}</span>
+                    <span class="check">{{ phrase('agent.done') }}</span>
             </div>
             <div class="content">
 		{# Tab Container #}
 		<div class="tab-container">
 			<nav id="{{baseId}}_other_props_tabs_wrap">
 				<ul id="{{baseId}}_other_props_tabs">
-					<li data-tab-for="> .tab-properties">{{ phrase('agent.global.properties') }}</li>
-					<li data-tab-for="> .tab-attach">{{ phrase('agent.global.attachments') }}</li>
+					<li data-tab-for="> .tab-properties">{{ phrase('agent.properties') }}</li>
+					<li data-tab-for="> .tab-attach">{{ phrase('agent.attachments') }}</li>
 				</ul>
 			</nav>
 			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
@@ -232,9 +232,9 @@ pageMeta.baseId = '{{ baseId }}';
 				{# Tab Attach #}
 				<div class="tab-attach" style="display: none">
 					{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newdeal[attach][]'} %}
-					<h6>{{ phrase('agent.global.attachments') }}</h6>
+					<h6>{{ phrase('agent.attachments') }}</h6>
 					<div class="file-input">
-						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.global.upload') }}</button>
+						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.upload') }}</button>
 					</div>
 					<ul class="files file-list"></ul>
 				</div>
@@ -246,7 +246,7 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
         <div class="foot">
-            <button class="submit-trigger clean-white">{{ phrase('agent.global.create_deal') }}</button>
+            <button class="submit-trigger clean-white">{{ phrase('agent.create_deal') }}</button>
         </div>
 
     </form>
@@ -254,24 +254,24 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="optionbox reply-agent-team-ob" id="{{baseId}}_agent_assign_ob">
     	<header>
-            <h4>{{ phrase('agent.global.assignment') }}s</h4>
+            <h4>{{ phrase('agent.assignment') }}s</h4>
             <span class="close close-trigger"></span>
         </header>
     	<div class="col">
 		<section data-section-name="agents">
 			<header>
-				<h3>{{ phrase('agent.global.agents') }}</h3>
-				<input type="text" class="filter-box" placeholder="{{ phrase('agent.global.filter') }}" />
+				<h3>{{ phrase('agent.agents') }}</h3>
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter') }}" />
 			</header>
 			<ul>
 				<li class="me last-me {% if deal.assigned_agent.id == deal.person.id or not deal.assigned_agent %}on{% endif %}">
 					<input type="radio" name="{{baseId}}_agent" value="{{ deal.person.id }}" {% if deal.assigned_agent.id == deal.person.id or not deal.assigned_agent.id %}checked="checked"{% endif %} />
-					<label><span class="agent-pic agent-label-{{ deal.person.id }}" style="background-image: url({{ deal.person.getPictureUrl(16) }})">{{ phrase('agent.global.me') }}</span></label>
+					<label><span class="agent-pic agent-label-{{ deal.person.id }}" style="background-image: url({{ deal.person.getPictureUrl(16) }})">{{ phrase('agent.me') }}</span></label>
 				</li>
 
 				<li>
 					<input type="radio" name="{{bsaeId}}_agent" value="0" />
-					<label><span class="agent-pic agent-label-0">{{ phrase('agent.global.unassigned') }}</span></label>
+					<label><span class="agent-pic agent-label-0">{{ phrase('agent.unassigned') }}</span></label>
 				</li>
 
 				{% for agent in agents %}
@@ -289,7 +289,7 @@ pageMeta.baseId = '{{ baseId }}';
 
     	<br class="clear" />
     	<footer>
-           <button class="save-trigger">{{ phrase('agent.global.apply') }}</button>
+           <button class="save-trigger">{{ phrase('agent.apply') }}</button>
         </footer>
     </div>
 

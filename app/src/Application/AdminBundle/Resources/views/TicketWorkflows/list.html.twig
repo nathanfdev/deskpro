@@ -25,7 +25,7 @@
 		{{ design.dpgrid({class: 'dep-list'}) }}
 			{{ design.dpgrid_headerrow() }}
 				{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 890px;"}) }}
-					<h1>{{ phrase('agent.global.workflow') }}</h1>
+					<h1>{{ phrase('agent.workflow') }}</h1>
 				{{ design.dpgrid_headercol_end() }}
 			{{ design.dpgrid_headerrow_end() }}
 
@@ -48,7 +48,7 @@
 			<form class="dp-form" method="POST" action="{{ path('admin_ticketworks_savetitle') }}">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('agent.global.title') }}</label>
+						<label>{{ phrase('agent.title') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="hidden" name="workflow_id" id="editcat_catid" value="" />
@@ -58,7 +58,7 @@
 			</form>
 		</div>
 		<div class="overlay-footer">
-			<button class="clean-white" id="editcat_savebtn">{{ phrase('agent.global.save') }}</button>
+			<button class="clean-white" id="editcat_savebtn">{{ phrase('agent.save') }}</button>
 		</div>
 	</div>
 
@@ -71,7 +71,7 @@
 			<form class="dp-form" method="POST" action="{{ path('admin_ticketworks_savenew') }}">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('agent.global.title') }}</label>
+						<label>{{ phrase('agent.title') }}</label>
 					</div>
 					<div class="dp-form-input">
 						<input type="text" name="title" id="newcat_title" value="" />
@@ -80,7 +80,7 @@
 			</form>
 		</div>
 		<div class="overlay-footer">
-			<button class="clean-white" id="newcat_savebtn">{{ phrase('agent.global.add') }}</button>
+			<button class="clean-white" id="newcat_savebtn">{{ phrase('agent.add') }}</button>
 		</div>
 	</div>
 

@@ -45,22 +45,22 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="profile-box-container-outer">
 	<div class="profile-box-container">
 		<header>
-			<h4>{{ phrase('agent.global.properties') }}</h4>
+			<h4>{{ phrase('agent.properties') }}</h4>
 		</header>
 		<section class="description-area">
 			<dl class="info-list">
-				<dt class="type-labels">{{ phrase('agent.global.labels') }}:</dt>
+				<dt class="type-labels">{{ phrase('agent.labels') }}:</dt>
 				<dd class="kb-tags tags-wrap noedit-tags">
 					<input type="text" id="{{baseId}}_labels_input" value="{% for label in news.labels %}{{label.label}},{% endfor %}" />
 				</dd>
 
-				<dt>{{ phrase('agent.global.rating') }}</dt>
+				<dt>{{ phrase('agent.rating') }}</dt>
 				<dd>
                     {% set phrase_part %}
-                    <span class="link-look who-voted-trigger">{{ phrase('agent.global.count_votecount_votes', {'count': news.num_ratings}) }}</span>
+                    <span class="link-look who-voted-trigger">{{ phrase('agent.count_votecount_votes', {'count': news.num_ratings}) }}</span>
                     {% endset %}
-                    {{ phrase('agent.global.percent_helpful_subphrase', {'percent':news.rating_percent,'subphrase':phrase_part}) }}<br />
-                    <small>{{ phrase('agent.global.up_votes_found_this_the_article_helpful_down_votes_found', {'up_votes':news.up_votes,'down_votes':news.down_votes}) }}</small>
+                    {{ phrase('agent.percent_helpful_subphrase', {'percent':news.rating_percent,'subphrase':phrase_part}) }}<br />
+                    <small>{{ phrase('agent.up_votes_found_this_the_article_helpful_down_votes_found', {'up_votes':news.up_votes,'down_votes':news.down_votes}) }}</small>
 				</dd>
 
 				<dt></dt>
@@ -74,7 +74,7 @@ pageMeta.baseId = '{{ baseId }}';
 			</dl>
 
 			<div class="controls" id="{{baseId}}_action_buttons">
-				<button class="clean-white delete nodelete-hide" {% if news.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.global.ucfirst_delete') }}</button>
+				<button class="clean-white delete nodelete-hide" {% if news.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.ucfirst_delete') }}</button>
 				<button class="clean-white permalink">{{ phrase('agent.copy_permalink') }}</button>
 				<button class="clean-white view-user-interface">{{ phrase('agent.view_in_user_interface') }}</button>
 				<br class="clear" />
@@ -87,11 +87,11 @@ pageMeta.baseId = '{{ baseId }}';
 	<header>
 		<nav  id="{{baseId}}_bodytabs">
 			<ul>
-				<li class="on" data-tab-for="#{{baseId}}_tab_contents .news-content"><span>{{ phrase('agent.global.page') }}</span></li>
-				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.global.comments') }} (<span id="{{baseId}}_count_comments">{{news_comments|length|default(0)}}</span>)</span></li>
+				<li class="on" data-tab-for="#{{baseId}}_tab_contents .news-content"><span>{{ phrase('agent.page') }}</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.comments') }} (<span id="{{baseId}}_count_comments">{{news_comments|length|default(0)}}</span>)</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.label_revisions') }} (<span id="{{baseId}}_count_revs">{{news.revisions|length|default(0)}}</span>)</span></li>
-				<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.global.related_content') }} (<span id="{{baseId}}_count_related">0</span>)</span></li>
-				<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('agent.global.search') }}</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.related_content') }} (<span id="{{baseId}}_count_related">0</span>)</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('agent.search') }}</span></li>
 			</ul>
 		</nav>
 	</header>
@@ -104,9 +104,9 @@ pageMeta.baseId = '{{ baseId }}';
 				{# Content #}
 				<nav class="sub-box-nav noedit-hide">
 					<ul class="option-buttons right" id="{{baseId}}_content_edit_btns">
-						<li class="kb-editor-edit edit" id="{{baseId}}_edit_btn"><span>{{ phrase('agent.global.ucfirst_edit') }}</span></li>
-						<li class="editor-save-trigger save" id="{{baseId}}_save_btn"><span>{{ phrase('agent.global.save') }}</span></li>
-						<li class="editor-cancel-trigger cancel" id="{{baseId}}_cancel_btn"><span>{{ phrase('agent.global.cancel') }}</span></li>
+						<li class="kb-editor-edit edit" id="{{baseId}}_edit_btn"><span>{{ phrase('agent.ucfirst_edit') }}</span></li>
+						<li class="editor-save-trigger save" id="{{baseId}}_save_btn"><span>{{ phrase('agent.save') }}</span></li>
+						<li class="editor-cancel-trigger cancel" id="{{baseId}}_cancel_btn"><span>{{ phrase('agent.cancel') }}</span></li>
 					</ul>
 				</nav>
 				<div id="{{baseId}}_content_ed" class="news-content content-tab-item">
@@ -137,7 +137,7 @@ pageMeta.baseId = '{{ baseId }}';
 							</div>
 							<div class="content">
 								<header>
-									<h4>{{ phrase('agent.global.new_comment') }}</h4>
+									<h4>{{ phrase('agent.new_comment') }}</h4>
 								</header>
 								<div class="body-text">
 									<textarea style="width:99%; height: 80px;"></textarea>
@@ -147,7 +147,7 @@ pageMeta.baseId = '{{ baseId }}';
 										<button class="clean-white">{{ phrase('agent.add_comment') }}</button>
 									</div>
 									<div class="loading-on" style="display:none">
-										{{ phrase('agent.global.saving') }}
+										{{ phrase('agent.saving') }}
 									</div>
 								</div>
 							</div>
@@ -201,15 +201,15 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <ul class="status-menu" data-option-name="status" style="display:none">
-	<li data-option-value="published">{{ phrase('agent.global.published') }}</li>
-	<li data-option-value="hidden.unpublished">{{ phrase('agent.global.unpublished') }}</li>
-	<li data-option-value="archived">{{ phrase('agent.global.archived') }}</li>
+	<li data-option-value="published">{{ phrase('agent.published') }}</li>
+	<li data-option-value="hidden.unpublished">{{ phrase('agent.unpublished') }}</li>
+	<li data-option-value="archived">{{ phrase('agent.archived') }}</li>
 	{% if news.person.id == app.user.id %}
-		<li data-option-value="hidden.draft">{{ phrase('agent.global.draft') }}</li>
+		<li data-option-value="hidden.draft">{{ phrase('agent.draft') }}</li>
 	{% endif %}
 </ul>
 
-{{ optionbox.category_ob(news_categories, phrase('agent.news.news_categories'), phrase('agent.global.apply'), {'id': baseId ~ '_cat_ob'}) }}
+{{ optionbox.category_ob(news_categories, phrase('agent.news.news_categories'), phrase('agent.apply'), {'id': baseId ~ '_cat_ob'}) }}
 
 {# scroll containers #}
 </div></div></div></div>

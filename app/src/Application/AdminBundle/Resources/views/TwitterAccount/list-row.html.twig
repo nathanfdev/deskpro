@@ -1,7 +1,7 @@
 <li class="account account-{{ account.id }}" data-account-id="{{ account.id }}" style="position:relative">
 	<div style="float:right">
 		<ul class="controls">
-			<li class="edit"><a class="popout-trigger" href="{{ path('admin_twitter_accounts_edit', {'account_id': account.id}) }}" data-width="400" data-height="250">{{ phrase('agent.global.edit') }}</a></li>
+			<li class="edit"><a class="popout-trigger" href="{{ path('admin_twitter_accounts_edit', {'account_id': account.id}) }}" data-width="400" data-height="250">{{ phrase('agent.edit') }}</a></li>
 		</ul>
 	</div>
 	<div style="float:left">
@@ -14,7 +14,7 @@
 	<div style="float:left; margin-left: 250px;position:absolute">
 		<strong>{{ phrase('admin.twitteraccount.oauth') }}:</strong>
 		{% if verified[account.id] %}
-			<span style="color:green">{{ phrase('agent.global.verified') }}</span>
+			<span style="color:green">{{ phrase('agent.verified') }}</span>
 		{% else %}
 			<span style="color:red">{{ phrase('admin.twitteraccount.error') }}</span>
 		{% endif %}

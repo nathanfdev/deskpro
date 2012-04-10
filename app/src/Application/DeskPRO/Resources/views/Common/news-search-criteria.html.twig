@@ -14,11 +14,11 @@
 	<div class="type" title="{{ phrase('agent.choose_criteria') }}" data-rule-type="">
 	</div>
 {% endif %}
-<div class="type" title="{{ phrase('agent.global.category') }}" data-rule-type="category">
+<div class="type" title="{{ phrase('agent.category') }}" data-rule-type="category">
 	<div class="op">
 		<select name="op" class="op">
-			<option value="is">{{ phrase('agent.global.is') }}</option>
-			<option value="not">{{ phrase('agent.global.is_not') }}</option>
+			<option value="is">{{ phrase('agent.is') }}</option>
+			<option value="not">{{ phrase('agent.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -57,11 +57,11 @@
 		{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
 	</div>
 </div>
-<div class="type" title="{{ phrase('agent.global.labels') }}" data-rule-type="label">
+<div class="type" title="{{ phrase('agent.labels') }}" data-rule-type="label">
 	<div class="op">
 		<select name="op" class="op">
-			<option value="is">{{ phrase('agent.global.include') }}</option>
-			<option value="not">{{ phrase('agent.global.does_not_include') }}</option>
+			<option value="is">{{ phrase('agent.include') }}</option>
+			<option value="not">{{ phrase('agent.does_not_include') }}</option>
 		</select>
 	</div>
 	<div class="options">

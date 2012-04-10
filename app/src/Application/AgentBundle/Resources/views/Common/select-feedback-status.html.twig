@@ -1,16 +1,16 @@
 <select name="{{ name }}">
-	<option value="new">{{ phrase('agent.global.new') }}</option>
-	<optgroup label="{{ phrase('agent.global.active') }}">
+	<option value="new">{{ phrase('agent.new') }}</option>
+	<optgroup label="{{ phrase('agent.active') }}">
 		{% for cat in active_status_cats %}
 			<option value="active.{{ cat.id }}">{{ cat.title }}</option>
 		{% endfor %}
 	</optgroup>
-	<optgroup label="{{ phrase('agent.global.closed') }}">
+	<optgroup label="{{ phrase('agent.closed') }}">
 		{% for cat in closed_status_cats %}
 			<option value="closed.{{ cat.id }}">{{ cat.title }}</option>
 		{% endfor %}
 	</optgroup>
 	{% if constant('DP_DEBUG') %}
-		<option value="hidden.validating" selected="selected">{{ phrase('agent.global.dev_validating') }}</option>
+		<option value="hidden.validating" selected="selected">{{ phrase('agent.dev_validating') }}</option>
 	{% endif %}
 </select>

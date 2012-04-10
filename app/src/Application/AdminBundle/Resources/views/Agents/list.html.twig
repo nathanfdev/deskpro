@@ -11,7 +11,7 @@
 		</ul>
 	</nav>
 	<ul>
-		<li>{{ phrase('agent.global.agents') }}</li>
+		<li>{{ phrase('agent.agents') }}</li>
 	</ul>
 {% endblock %}
 {% block prepage %}
@@ -27,7 +27,7 @@
 		<div class="resource-item-list">
 			<header>
 				<div class="controls">
-					<a class="clean-white small" href="{{ path('admin_agents_groups_new') }}">{{ phrase('agent.global.new') }}</a>
+					<a class="clean-white small" href="{{ path('admin_agents_groups_new') }}">{{ phrase('agent.new') }}</a>
 				</div>
 				<h4>{{ phrase('admin.agents.permission_groups') }}</h4>
 			</header>
@@ -59,9 +59,9 @@
 		<div class="resource-item-list icon-group">
 			<header>
 				<div class="controls">
-					<a class="clean-white small" href="{{ path('admin_agents_teams_new') }}">{{ phrase('agent.global.new') }}</a>
+					<a class="clean-white small" href="{{ path('admin_agents_teams_new') }}">{{ phrase('agent.new') }}</a>
 				</div>
-				<h4>{{ phrase('agent.global.teams') }}</h4>
+				<h4>{{ phrase('agent.teams') }}</h4>
 			</header>
 			<article>
 				<article class="box-hint">{{ phrase('admin.agents.teams_are_an_a_way_to_organize_agents') }}</article>
@@ -99,7 +99,7 @@
 		<table width="100%">
 			<thead>
 				<tr>
-					<th class="single-title">{{ phrase('agent.global.agent') }}</th>
+					<th class="single-title">{{ phrase('agent.agent') }}</th>
 					<th class="r-col" width="16"><img title="{{ phrase('admin.agents.can_access_the_admin_interface') }}" src="{{ asset('images/admin/icons/zone-admin.png') }}" /></th>
 					<th class="r-col" width="16"><img title="{{ phrase('admin.agents.can_access_the_reporting_interface') }}" src="{{ asset('images/admin/icons/zone-reports.png') }}" /></th>
 					<th class="r-col" width="16"><img title="{{ phrase('admin.agents.can_access_the_billing_interface') }}" src="{{ asset('images/admin/icons/zone-billing.png') }}" /></th>

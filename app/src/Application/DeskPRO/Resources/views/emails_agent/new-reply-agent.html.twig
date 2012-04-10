@@ -1,8 +1,8 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_subject %}
-	{% if is_new_agent_reply %}{{ phrase('agent.global.new_reply_ticket_subject', { ticket_subject: ticket.subject }) }}
-	{% else %}{{ phrase('agent.global.new_reply_ticket_subject', { ticket_subject: ticket.subject }) }}
+	{% if is_new_agent_reply %}{{ phrase('agent.new_reply_ticket_subject', { ticket_subject: ticket.subject }) }}
+	{% else %}{{ phrase('agent.new_reply_ticket_subject', { ticket_subject: ticket.subject }) }}
 	{% endif %}
 {% endblock %}
 {% block content %}
@@ -16,38 +16,38 @@
 {% set content %}
 <table cellspacing="0" cellpadding="3" width="100%">
 	<tr>
-		<td width="130">{{ phrase('agent.global.agent') }}</td>
-		<td>{{ticket.agent.display_name|default(phrase('agent.global.none'))}}</td>
+		<td width="130">{{ phrase('agent.agent') }}</td>
+		<td>{{ticket.agent.display_name|default(phrase('agent.none'))}}</td>
 	</tr>
 	<tr>
-		<td width="130">{{ phrase('agent.global.team') }}</td>
-		<td>{{ticket.agent_team.name|default(phrase('agent.global.none'))}}</td>
+		<td width="130">{{ phrase('agent.team') }}</td>
+		<td>{{ticket.agent_team.name|default(phrase('agent.none'))}}</td>
 	</tr>
 	<tr>
-		<td width="130">{{ phrase('agent.global.category') }}</td>
-		<td>{{ticket.category.full_title|default(phrase('agent.global.none'))}}</td>
+		<td width="130">{{ phrase('agent.category') }}</td>
+		<td>{{ticket.category.full_title|default(phrase('agent.none'))}}</td>
 	</tr>
 	<tr>
-		<td width="130">{{ phrase('agent.global.product') }}</td>
-		<td>{{ticket.product.title|default(phrase('agent.global.none'))}}</td>
+		<td width="130">{{ phrase('agent.product') }}</td>
+		<td>{{ticket.product.title|default(phrase('agent.none'))}}</td>
 	</tr>
 	<tr>
-		<td width="130">{{ phrase('agent.global.priority') }}</td>
-		<td>{{ticket.priority.title|default(phrase('agent.global.none'))}}</td>
+		<td width="130">{{ phrase('agent.priority') }}</td>
+		<td>{{ticket.priority.title|default(phrase('agent.none'))}}</td>
 	</tr>
 	<tr>
-		<td width="130">{{ phrase('agent.global.workflow') }}</td>
-		<td>{{ticket.workflow.title|default(phrase('agent.global.none'))}}</td>
+		<td width="130">{{ phrase('agent.workflow') }}</td>
+		<td>{{ticket.workflow.title|default(phrase('agent.none'))}}</td>
 	</tr>
 	<tr>
-		<td width="130">{{ phrase('agent.global.status') }}</td>
+		<td width="130">{{ phrase('agent.status') }}</td>
 		<td>
 			{% if not ticket.status or ticket.status == 'awaiting_agent' %}
-            {{ phrase('agent.global.open') }}
+            {{ phrase('agent.open') }}
 			{% elseif ticket.status == 'awaiting_user' %}
-            {{ phrase('agent.global.pending') }}
+            {{ phrase('agent.pending') }}
 			{% elseif ticket.status == 'resolved' %}
-            {{ phrase('agent.global.resolved') }}
+            {{ phrase('agent.resolved') }}
 			{% endif %}
 		</td>
 	</tr>
@@ -55,7 +55,7 @@
 {% endset %}
 {{ layout.section(phrase('agent.emails.section_title_ticket_properties'), content) }}
 
-{{ layout.render_ticket_messages(messages, phrase('agent.global.messages')) }}
+{{ layout.render_ticket_messages(messages, phrase('agent.messages')) }}
 
 <br/><br/>
 {{ layout.replycode(tac.access_code) }}

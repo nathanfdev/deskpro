@@ -51,7 +51,7 @@
 					{% if ticket.category %}
 						{{ticket.category.title}}
 					{% else %}
-						{{ phrase('agent.global.none') }}
+						{{ phrase('agent.none') }}
 					{% endif %}
 					</span>
 				</td>
@@ -61,7 +61,7 @@
 					{% if ticket.product %}
 						{{ticket.product.title}}
 					{% else %}
-						{{ phrase('agent.global.none') }}
+						{{ phrase('agent.none') }}
 					{% endif %}
 					</span>
 				</td>
@@ -71,7 +71,7 @@
 					{% if ticket.organization %}
 						<a data-route="page:{{ path('agent_org_view', {'organization_id': ticket.organization.id}) }}" data-route-title="@text">{{ticket.organization.name}}</a>
 					{% else %}
-						{{ phrase('agent.global.none') }}
+						{{ phrase('agent.none') }}
 					{% endif %}
 					</span>
 				</td>
@@ -89,7 +89,7 @@
 					{% if ticket.agent %}
 						{{ticket.agent.display_name}}
 					{% else %}
-						{{ phrase('agent.global.unassigned') }}
+						{{ phrase('agent.unassigned') }}
 					{% endif %}
 					</span>
 				</td>
@@ -99,7 +99,7 @@
 					{% if ticket.agent %}
 						{{ticket.agent_team.name}}
 					{% else %}
-						{{ phrase('agent.global.no_team') }}
+						{{ phrase('agent.no_team') }}
 					{% endif %}
 					</span>
 				</td>

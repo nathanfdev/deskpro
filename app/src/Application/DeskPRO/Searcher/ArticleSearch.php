@@ -410,7 +410,7 @@ class ArticleSearch extends SearcherAbstract
 						$choices_in = implode(',', $choices_in);
 					}
 
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.global.label'), $op, $choice);
+					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.label'), $op, $choice);
 
 					switch ($op) {
 						case self::OP_IS:

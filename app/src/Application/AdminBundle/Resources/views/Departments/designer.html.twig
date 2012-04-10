@@ -146,7 +146,7 @@ function _page_exec() {
 </div>
 
 <div style="margin-top: 10px; text-align: center">
-	<button class="dp-button green" type="submit">{{ phrase('agent.global.save') }}</button>
+	<button class="dp-button green" type="submit">{{ phrase('agent.save') }}</button>
 </div>
 
 </form>
@@ -163,10 +163,10 @@ function _page_exec() {
 
 		<div class="rules-wrap" id="rule_builder_${idClass}" data-id-class="${idClass}" style="display:none; min-width: 500px; height: 230px; overflow: auto; margin-bottom: 11px;">
             {% set phrase_part1 %}
-                <select name="initial_display[${itemId}]"><option value="hidden">{{ phrase('agent.global.hidden') }}</option><option value="visible">{{ phrase('agent.global.visible') }}</option></select>
+                <select name="initial_display[${itemId}]"><option value="hidden">{{ phrase('agent.hidden') }}</option><option value="visible">{{ phrase('agent.visible') }}</option></select>
             {% endset %}
             {% set phrase_part2 %}
-                <span class="ruletype">{{ phrase('agent.global.all') }}</span>
+                <span class="ruletype">{{ phrase('agent.all') }}</span>
             {% endset %}
             {{ phrase('admin.designer.initial_status', {'option':phrase_part1,'all':phrase_part2}) }}
 			<div class="septop">
@@ -178,7 +178,7 @@ function _page_exec() {
 			</div>
 			<br /><br />
             {{ set phrase_part }}
-                <span class="ruletype">{{ phrase('agent.global.any') }}</span>
+                <span class="ruletype">{{ phrase('agent.any') }}</span>
             {{ endset }}
 			{{ phrase('admin.designer.and_when_any_match', {'any':phrase_part}) }}
 			<div class="search-form ruletype-any">
@@ -199,11 +199,11 @@ function _page_exec() {
 		</div>
 	</div>
 	{% if term_options.products %}
-		<div class="type" title="{{ phrase('agent.global.product') }}" data-rule-type="product">
+		<div class="type" title="{{ phrase('agent.product') }}" data-rule-type="product">
 			<div class="op">
 				<select name="op">
-					<option value="is">{{ phrase('agent.global.is') }}</option>
-					<option value="not">{{ phrase('agent.global.is_not') }}</option>
+					<option value="is">{{ phrase('agent.is') }}</option>
+					<option value="not">{{ phrase('agent.is_not') }}</option>
 				</select>
 			</div>
 			<div class="options">
@@ -216,11 +216,11 @@ function _page_exec() {
 		</div>
 	{% endif %}
 	{% if term_options.ticket_categories_full %}
-		<div class="type" title="{{ phrase('agent.global.category') }}" data-rule-type="category">
+		<div class="type" title="{{ phrase('agent.category') }}" data-rule-type="category">
 			<div class="op">
 				<select name="op">
-					<option value="is">{{ phrase('agent.global.is') }}</option>
-					<option value="not">{{ phrase('agent.global.is_not') }}</option>
+					<option value="is">{{ phrase('agent.is') }}</option>
+					<option value="not">{{ phrase('agent.is_not') }}</option>
 				</select>
 			</div>
 			<div class="options">
@@ -233,13 +233,13 @@ function _page_exec() {
 		</div>
 	{% endif %}
 	{% if term_options.priorities %}
-		<div class="type" title="{{ phrase('agent.global.priority') }}" data-rule-type="priority">
+		<div class="type" title="{{ phrase('agent.priority') }}" data-rule-type="priority">
 			<div class="op">
 				<select name="op">
-					<option value="is">{{ phrase('agent.global.is') }}</option>
-					<option value="not">{{ phrase('agent.global.is_not') }}</option>
-					<option value="lt">{{ phrase('agent.global.is_less_than') }}</option>
-					<option value="gt">{{ phrase('agent.global.is_greater_than') }}</option>
+					<option value="is">{{ phrase('agent.is') }}</option>
+					<option value="not">{{ phrase('agent.is_not') }}</option>
+					<option value="lt">{{ phrase('agent.is_less_than') }}</option>
+					<option value="gt">{{ phrase('agent.is_greater_than') }}</option>
 				</select>
 			</div>
 			<div class="options">
@@ -252,11 +252,11 @@ function _page_exec() {
 		</div>
 	{% endif %}
 	{% if term_options.ticket_workflows %}
-		<div class="type" title="{{ phrase('agent.global.workflow') }}" data-rule-type="workflow">
+		<div class="type" title="{{ phrase('agent.workflow') }}" data-rule-type="workflow">
 			<div class="op">
 				<select name="op">
-					<option value="is">{{ phrase('agent.global.is') }}</option>
-					<option value="not">{{ phrase('agent.global.is_not') }}</option>
+					<option value="is">{{ phrase('agent.is') }}</option>
+					<option value="not">{{ phrase('agent.is_not') }}</option>
 				</select>
 			</div>
 			<div class="options">

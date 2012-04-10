@@ -6,10 +6,10 @@
 	<dt>{{ phrase('agent.tickets.message_id') }}</dt>
 	<dd>{{ message.id }}</dd>
 
-	<dt>{{ phrase('agent.global.ticket_id') }}</dt>
+	<dt>{{ phrase('agent.ticket_id') }}</dt>
 	<dd>{{ ticket.id }}</dd>
 
-	{#<dt>{{ phrase('agent.global.reference') }}</dt>
+	{#<dt>{{ phrase('agent.reference') }}</dt>
 	<dd>{{ ticket.ref }}</dd>#}
 
 	<dt>{{ phrase('agent.tickets.creation_system') }}</dt>
@@ -26,7 +26,7 @@
 	{% endif %}
 
 	{% if message.ip_address %}
-		<dt>{{ phrase('agent.global.ip_address') }}</dt>
+		<dt>{{ phrase('agent.ip_address') }}</dt>
 		<dd>{{ message.ip_address }}</dd>
 	{% endif %}
 
@@ -40,10 +40,10 @@
 		<dt>{{ phrase('agent.initial_visit') }}</dt>
 		<dd>{{ message.visitor.date_created|date('M j, Y H:ia') }}</dd>
 
-		<dt>{{ phrase('agent.global.last_activity') }}</dt>
+		<dt>{{ phrase('agent.last_activity') }}</dt>
 		<dd>{{ message.visitor.date_last|date('M j, Y H:ia') }}</dd>
 
-		<dt>{{ phrase('agent.global.landing_page') }}</dt>
+		<dt>{{ phrase('agent.landing_page') }}</dt>
 		<dd>{{ message.visitor.landing_page }}</dd>
 	{% endif %}
 </dl>

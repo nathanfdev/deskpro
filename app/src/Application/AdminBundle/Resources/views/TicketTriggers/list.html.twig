@@ -39,11 +39,11 @@
 				<div class="terms">
 					<em class="op ctrl">{{ phrase('admin.tickets.if') }}</em>
 					{% if trigger.event_trigger_option %}
-					{{ time_explain_prefix }} {% if trigger.getOptionScale() == 'seconds' %}{{ relative_time(trigger.getOptionSeconds()) }}{% else %}{{ trigger.event_trigger_option }}{% endif %} <br /><em class="op">{{ phrase('agent.global.and') }}</em>
+					{{ time_explain_prefix }} {% if trigger.getOptionScale() == 'seconds' %}{{ relative_time(trigger.getOptionSeconds()) }}{% else %}{{ trigger.event_trigger_option }}{% endif %} <br /><em class="op">{{ phrase('agent.and') }}</em>
 					{% endif %}
 					{% for desc in trigger.getTermDescriptions() %}
 					<span class="term">{{ desc }}</span>
-					{% if not loop.last %}<br /><em class="op">{{ phrase('agent.global.and') }}</em>{% endif %}
+					{% if not loop.last %}<br /><em class="op">{{ phrase('agent.and') }}</em>{% endif %}
 					{% endfor %}
 				</div>
 			</td><td valign="top" width="50%" style="padding-left: 15px;">
@@ -51,7 +51,7 @@
 					<em class="op ctrl">{{ phrase('admin.tickets.then') }}</em>
 					{% for desc in trigger.getActionDescriptions() %}
 					<span class="term">{{ desc|raw }}</span>
-					{% if not loop.last %}<br /><em class="op">{{ phrase('agent.global.and') }}</em>{% endif %}
+					{% if not loop.last %}<br /><em class="op">{{ phrase('agent.and') }}</em>{% endif %}
 					{% endfor %}
 				</div>
 			</td></tr></table>

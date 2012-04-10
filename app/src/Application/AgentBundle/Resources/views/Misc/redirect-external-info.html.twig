@@ -4,12 +4,12 @@
 		<dd>{{ info.title }}</dd>
 	{% endif %}
 
-	<dt>{{ phrase('agent.global.page') }}:</dt>
+	<dt>{{ phrase('agent.page') }}:</dt>
 	<dd>{{ info.size_readable }} {{ phrase('agent.misc.redirect_page_makeup', {'num_images': info.num_images, 'num_scripts': info.num_scripts}) }}</dd>
 
 	<dt>{{ phrase('agent.misc.redirect_server_ip') }}:</dt>
 	<dd>{{ info.ip }}</dd>
 
-	<dt>{{ phrase('agent.global.host') }}:</dt>
+	<dt>{{ phrase('agent.host') }}:</dt>
 	<dd>{{ info.hostname }}</dd>
 </dl>

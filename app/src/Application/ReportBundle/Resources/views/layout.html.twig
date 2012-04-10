@@ -83,11 +83,11 @@
 					<a onclick="toggle_visibility('userSetting');"><img src="{{ app.user.getPictureUrl(20) }}" alt="" /></a>
 				</div>
 				<ul>
-					<li class="logggedAs"><p>{{ phrase('agent.global.logged_in_as') }}</p></li>
+					<li class="logggedAs"><p>{{ phrase('agent.logged_in_as') }}</p></li>
 					<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
-					<li class="setting" id="user_settings_link"><a>{{ phrase('agent.global.settings') }}</a></li>
-					<li class="help"><a>{{ phrase('agent.global.help') }}</a></li>
-					<li class="logout"><a href="{{ app.request.getBaseUrl() }}/logout/{{ static_security_token('user_logout', 0) }}?to=admin">{{ phrase('agent.global.log_out') }}</a></li>
+					<li class="setting" id="user_settings_link"><a>{{ phrase('agent.settings') }}</a></li>
+					<li class="help"><a>{{ phrase('agent.help') }}</a></li>
+					<li class="logout"><a href="{{ app.request.getBaseUrl() }}/logout/{{ static_security_token('user_logout', 0) }}?to=admin">{{ phrase('agent.log_out') }}</a></li>
 				</ul>
 			</div>
 		</div>
@@ -98,21 +98,21 @@
 	<div id="DP-InterfaceSwitcher">
 		<div class="DP-adminSwitch">
 			<div class="adminSwitcher">
-				<a class="reports">{{ phrase('agent.global.reports_interface') }}<span class="dropdownIcon"></span></a>
+				<a class="reports">{{ phrase('agent.reports_interface') }}<span class="dropdownIcon"></span></a>
 			</div>
 		</div>
 		<!-- Header - Switch Button Interfaces- Dropdown -->
 		<div id="interfacesToggle" style="display:none;">
 		<div class="dropdownSwitcherWrap">
 			<div class="switcherHeader">
-				<a class="reports"><span>{{ phrase('agent.global.reports_interface') }}</span></a>
+				<a class="reports"><span>{{ phrase('agent.reports_interface') }}</span></a>
 			</div>
 			<ul>
-				{% if app.user.can_admin %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin/login?dpsid-agent={{ app.getSession().getId() }}"><span>{{ phrase('agent.global.admin_interface') }}</span></a></li>{% endif %}
-				{% if app.user.can_agent %}<li><a class="agent" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">{{ phrase('agent.global.agent_interface') }}</span></a></li>{% endif %}
-				{% if app.user.can_billing %}<li><a class="billing" href=""><span class="check">{{ phrase('agent.global.billing_interface') }}</span></a></li>{% endif %}
-				{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">{{ phrase('agent.global.report_interface') }}</span></a></li>{% endif %}
-				{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span class="check">{{ phrase('agent.global.user_interface') }}</span></a></li>{% endif %}
+				{% if app.user.can_admin %}<li><a class="admin" href="{{ app.request.getBaseUrl() }}/admin/login?dpsid-agent={{ app.getSession().getId() }}"><span>{{ phrase('agent.admin_interface') }}</span></a></li>{% endif %}
+				{% if app.user.can_agent %}<li><a class="agent" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">{{ phrase('agent.agent_interface') }}</span></a></li>{% endif %}
+				{% if app.user.can_billing %}<li><a class="billing" href=""><span class="check">{{ phrase('agent.billing_interface') }}</span></a></li>{% endif %}
+				{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">{{ phrase('agent.report_interface') }}</span></a></li>{% endif %}
+				{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span class="check">{{ phrase('agent.user_interface') }}</span></a></li>{% endif %}
 			</ul>
 		</div>
 		</div>
@@ -125,7 +125,7 @@
 <div id="dp_admin_nav">
 	<nav>
 		<ul>
-			<li class="{% if this_page == 'trends_index' %}on{% endif %}"><a href="{{ path('report_trend_index') }}">{{ phrase('agent.global.trends') }}</a></li>
+			<li class="{% if this_page == 'trends_index' %}on{% endif %}"><a href="{{ path('report_trend_index') }}">{{ phrase('agent.trends') }}</a></li>
 
 			{% for dashboard in app.dashboards %}
 				<li data-dashboard-id="{{ dashboard.id }}" class="dashboard {% if this_page == 'dashboard_' ~ dashboard.id %}on{% endif %}"><a href="{{ path('report_trend_dashboard_view', { 'dashboard_id': dashboard.id }) }}">{{ dashboard.title }}</a></li>

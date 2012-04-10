@@ -35,7 +35,7 @@
 
 	<li>
 		<header>
-			<h3><a href="{{ path('admin_products') }}">{{ phrase('agent.global.products') }}</a></h3>
+			<h3><a href="{{ path('admin_products') }}">{{ phrase('agent.products') }}</a></h3>
 			<div class="check-control">
 				<input type="checkbox" {% if app.getSetting('core.use_product') %}checked="checked"{% endif %} class="onoff-slider" data-enable-url="{{ path('admin_products_toggle', {enable: '1'}) }}" data-disable-url="{{ path('admin_products_toggle', {enable: '0'}) }}" />
 			</div>

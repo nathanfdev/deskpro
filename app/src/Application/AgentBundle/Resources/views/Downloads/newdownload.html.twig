@@ -2,7 +2,7 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewDownload';
 
-pageMeta.title = '{{ phrase('agent.global.new_download') }}';
+pageMeta.title = '{{ phrase('agent.new_download') }}';
 pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 
 {% set baseId = el_uid() %}
@@ -18,11 +18,11 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="first section cat-section" id="{{baseId}}_cat_section">
 	<div class="step">
 		<span class="num">1</span>
-		<span class="check">{{ phrase('agent.global.done') }}</span>
+		<span class="check">{{ phrase('agent.done') }}</span>
 	</div>
 	<div class="content">
 		<div class="col">
-			<h4>{{ phrase('agent.global.category') }}</h4>
+			<h4>{{ phrase('agent.category') }}</h4>
 			{% include 'AgentBundle:Common:select-standard.html.twig' with {
 				'name': 'newdownload[category_id]',
 				'id': baseId ~ '_cat',
@@ -35,13 +35,13 @@ pageMeta.baseId = '{{ baseId }}';
 			} %}
 		</div>
 		<div class="col">
-			<h4 class="light">{{ phrase('agent.global.status') }}</h4>
+			<h4 class="light">{{ phrase('agent.status') }}</h4>
 			<select name="newdownload[status]">
-				<option value="published">{{ phrase('agent.global.published') }}</option>
-				<option value="hidden.unpublished">{{ phrase('agent.global.unpublished') }}</option>
-				<option value="hidden.draft">{{ phrase('agent.global.draft') }}</option>
+				<option value="published">{{ phrase('agent.published') }}</option>
+				<option value="hidden.unpublished">{{ phrase('agent.unpublished') }}</option>
+				<option value="hidden.draft">{{ phrase('agent.draft') }}</option>
 				{% if constant('DP_DEBUG') %}
-					<option value="hidden.validating" selected="selected">{{ phrase('agent.global.dev_validating') }}</option>
+					<option value="hidden.validating" selected="selected">{{ phrase('agent.dev_validating') }}</option>
 				{% endif %}
 			</select>
 		</div>
@@ -52,10 +52,10 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section title-section" id="{{baseId}}_title_section">
 	<div class="step">
 		<span class="num">2</span>
-		<span class="check">{{ phrase('agent.global.done') }}</span>
+		<span class="check">{{ phrase('agent.done') }}</span>
 	</div>
 	<div class="content">
-		<h4>{{ phrase('agent.global.title') }}</h4>
+		<h4>{{ phrase('agent.title') }}</h4>
 		<input type="title" name="newdownload[title]" id="{{baseId}}_title" value="{{ state.newdownload.title }}" />
 	</div>
 </div>
@@ -63,11 +63,11 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section file-section" id="{{baseId}}_file_section">
 	<div class="step">
 		<span class="num">3</span>
-		<span class="check">{{ phrase('agent.global.done') }}</span>
+		<span class="check">{{ phrase('agent.done') }}</span>
 	</div>
 	<div class="content">
-		<h4>{{ phrase('agent.global.everyone') }}</h4>
-		<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.global.upload') }}</button>
+		<h4>{{ phrase('agent.everyone') }}</h4>
+		<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.upload') }}</button>
 		{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newdownload[attach]', noremove: true} %}
         <ul class="files file-list"></ul>
 	</div>
@@ -76,10 +76,10 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section article-section" id="{{baseId}}_content_section">
 	<div class="step">
 		<span class="num">4</span>
-		<span class="check">{{ phrase('agent.global.done') }}</span>
+		<span class="check">{{ phrase('agent.done') }}</span>
 	</div>
 	<div class="content">
-		<h4>{{ phrase('agent.global.description') }}</h4>
+		<h4>{{ phrase('agent.description') }}</h4>
 		<textarea type="text" name="newdownload[content]" id="{{baseId}}_content">{{ state.newdownload.content }}</textarea>
 	</div>
 </div>
@@ -88,26 +88,26 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section other-section" id="{{baseId}}_other_section">
 	<div class="step">
 		<span class="num">5</span>
-		<span class="check">{{ phrase('agent.global.done') }}</span>
+		<span class="check">{{ phrase('agent.done') }}</span>
 	</div>
 	<div class="content">
 		{# Tab Container #}
 		<div class="tab-container">
 			<nav id="{{baseId}}_other_props_tabs_wrap">
 				<ul id="{{baseId}}_other_props_tabs">
-					<li data-tab-for="> .tab-properties">{{ phrase('agent.global.properties') }}</li>
+					<li data-tab-for="> .tab-properties">{{ phrase('agent.properties') }}</li>
 				</ul>
 			</nav>
 			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
 				{# Tab Properties #}
 				<div class="tab-properties" style="display: none">
 					<dl>
-						<dt class="prop">{{ phrase('agent.global.url_slug') }}</dt>
+						<dt class="prop">{{ phrase('agent.url_slug') }}</dt>
 						<dd class="prop">
 							<input type="input" name="newdownload[slug]" id="{{baseId}}_slug" value="{{ state.newdownload.slug }}" />
 						</dd>
 
-						<dt class="prop">{{ phrase('agent.global.labels') }}</dt>
+						<dt class="prop">{{ phrase('agent.labels') }}</dt>
 						<dd class="prop">
 							<div class="tags-wrap article-tags">
 								<input type="text" value="{% for label in state.newdownload.labels %}{{label.label}},{% endfor %}" />
@@ -124,7 +124,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">{{ phrase('agent.downloads.create_download') }} <kbd>{{ phrase('agent.global.altc') }}</kbd></button>
+		<button class="submit-trigger clean-white">{{ phrase('agent.downloads.create_download') }} <kbd>{{ phrase('agent.altc') }}</kbd></button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

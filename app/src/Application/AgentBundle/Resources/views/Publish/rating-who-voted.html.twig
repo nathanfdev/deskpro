@@ -4,7 +4,7 @@
 			<tr>
 				<td>{{ phrase('agent.publish.who') }}</td>
 				{% if object_type != 'feedback' %}
-					<td>{{ phrase('agent.global.rating') }}</td>
+					<td>{{ phrase('agent.rating') }}</td>
 				{% endif %}
 				<td>{{ phrase('agent.publish.when') }}</td>
 			</tr>
@@ -22,7 +22,7 @@
 						{% if rating.name %}
 							{{ rating.name }}
 						{% else %}
-							{{ phrase('agent.global.anonymous') }}
+							{{ phrase('agent.anonymous') }}
 						{% endif %}
 						{% if rating.email %}
 							&lt;{{ rating.email }}&gt;

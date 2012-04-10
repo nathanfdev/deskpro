@@ -20,7 +20,7 @@
 		{% elseif convo.person_name or convo.person_email %}
 			{{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %}
 		{% else %}
-			{{ phrase('agent.global.anonymous') }}
+			{{ phrase('agent.anonymous') }}
 		{% endif %}
 		, <time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('day_short') }}</time>
 	</div>

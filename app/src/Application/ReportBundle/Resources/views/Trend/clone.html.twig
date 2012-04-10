@@ -4,7 +4,7 @@
 	<div class="dp-form">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('agent.global.title') }}</label>
+				<label>{{ phrase('agent.title') }}</label>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(form.title) }}
@@ -13,7 +13,7 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('agent.global.group_by') }}</label>
+				<label>{{ phrase('agent.group_by') }}</label>
 				<span>{{ phrase('agent.report.select_the_field_to_group_the_results_by') }}</span>
 			</div>
 			<div class="dp-form-input group-by">
@@ -22,11 +22,11 @@
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>{{ phrase('agent.global.criteria') }}</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.criteria') }}</label></div>
 			<div class="dp-form-input">
 				<div class="search-form" id="_criteria_list">
 					<div class="search-terms"></div>
-					<div class="term"><span class="add-term">+</span> {{ phrase('agent.global.add_a_new_term') }}</div>
+					<div class="term"><span class="add-term">+</span> {{ phrase('agent.add_a_new_term') }}</div>
 				</div>
 				{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'id': baseId ~ '_criteria_tpl', 'term_options': term_options, 'search_context': 'filter' } %}
 			</div>
@@ -44,7 +44,7 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('agent.global.frequency') }}</label>
+				<label>{{ phrase('agent.frequency') }}</label>
 				<span>{{ phrase('agent.report.how_often_does_this_statistic_need_to_run') }}</span>
 			</div>
 			<div class="dp-form-input">

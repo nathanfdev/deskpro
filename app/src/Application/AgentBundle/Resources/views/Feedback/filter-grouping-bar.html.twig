@@ -3,7 +3,7 @@
 		<ul>
 			<li class="{% if subgroup == sub.id %}on{% endif %}">
 				<a data-route="listpane:{{ subgroup_url|replace({'SUBGROUP_ID': ''}) }}">
-					{{ phrase('agent.global.all') }}
+					{{ phrase('agent.all') }}
 					<span class="count">{{ grouped_info[-1].total }}</span>
 				</a>
 			</li>
