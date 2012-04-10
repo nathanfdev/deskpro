@@ -51,6 +51,51 @@ class LanguageController extends Controller
 		return $this->render('DevBundle:Language:index.html.twig', array('bundles' => Language::$BUNDLES, 'bundle_map' => Language::$BUNDLES_MAP, 'packages' => Language::$PACKAGES));
     }
 
+    public function batchReplaceAction()
+    {
+        set_time_limit(0);
+        $changed = array();
+        $files = Language::GetFileFinder()->getLanguageFileList();
+        $files = array_merge($files, Language::GetFileFinder()->getPhpFileList());
+        $files = array_merge($files, Language::GetFileFinder()->getTwigFileList());
+
+        if(isset($_POST['replacements'])) {
+            $lines = explode("\n", $_POST['replacements']);
+            $replace = array();
+
+            foreach($lines as $line) {
+                $old_new = explode(' ', $line);
+
+                if(count($old_new) == 0) {
+                    continue;
+                }
+
+                if(count($old_new) != 2) {
+                    die('Must have a pair!');
+                }
+
+                $replace[] = array($old_new[0], $old_new[1]);
+            }
+
+            foreach($files as $file) {
+                $raw_original = $raw = file_get_contents($file);
+
+                foreach($replace as $pair) {
+                    list($old, $new) = $pair;
+
+                    $raw = str_replace($old, $new, $raw);
+                }
+
+                if($raw != $raw_original) {
+                    $changed[$file] = 1;
+                    file_put_contents($file, $raw);
+                }
+            }
+        }
+
+        return $this->render('DevBundle:Language:batch.replace.html.twig', array('changed' => array_keys($changed)));
+    }
+
     public function reformatLanguageFilesAction()
     {
         $files = Language::GetFileFinder()->getLanguageFileList();

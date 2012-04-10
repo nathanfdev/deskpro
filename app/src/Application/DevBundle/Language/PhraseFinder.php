@@ -175,7 +175,7 @@ class PhraseFinder
     public function getPhrasesFromPHPFiles($bundle = null, &$by_id, &$errors, &$prefixes, &$by_file)
     {
         $files = Language::GetFileFinder()->getPhpFileList($bundle);
-        $cache_path = DP_ROOT.'/sys/cache/twig.phrase.cache';
+        $cache_path = DP_ROOT.'/sys/cache/php.phrase.cache';
 
         if(file_exists($cache_path)) {
             $cache = json_decode(file_get_contents($cache_path), true);

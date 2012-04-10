@@ -97,6 +97,13 @@ $collection->add('dev_lang_index', new Route(
 	array()
 ));
 
+$collection->add('dev_lang_mass_replace', new Route(
+    '/lang/mass/replace',
+    array('_controller' => 'DevBundle:Language:batchReplace'),
+    array(),
+    array()
+));
+
 $collection->add('dev_lang_find_problems', new Route(
 	'/lang/find/problems',
 	array('_controller' => 'DevBundle:Language:findProblems'),
