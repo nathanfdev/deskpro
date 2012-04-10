@@ -138,5 +138,11 @@
     'agent.tickets.created' => 'Created',
     'agent.tickets.sending' => 'Sending',
     'agent.tickets.send_reply' => 'Send Reply',
-    'agent.tickets.placeholder_type_a_result' => 'Start typing a reply...',    
+    'agent.tickets.placeholder_type_a_result' => 'Start typing a reply...',
+
+    'agent.tickets.announce_this_ticket_in_campfire' => 'Announce this ticket in Campfire',
+
+    'agent.tickets.deleted_by_name' => 'Deleted by {{name}}',
+    'agent.tickets.load_more' => 'Load More',
+    'agent.tickets.message_number' => 'Message #{{number}}',
 );

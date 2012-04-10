@@ -57,5 +57,8 @@
     'agent.publish.status_hidden_unpublished' => 'Unpublished',
     'agent.publish.status_hidden_validating' => 'Validating',
     'agent.publish.status_hidden_user_validating' => 'User Validating',
-    'agent.publish.status_hidden_spam' => 'Spam',  
+    'agent.publish.status_hidden_spam' => 'Spam',
+
+    'agent.publish.article_id' => 'Article ID',
+    'agent.publish.words' => 'Words',
 );
