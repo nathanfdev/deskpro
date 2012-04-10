@@ -52,7 +52,7 @@
   'agent.global.date_created' => 'Date Created',
   'agent.global.unsaved_changes_were_restored' => 'Unsaved changes were restored.',
   'agent.global.rating' => 'Rating',
-  'agent.global.count_votecount_votes' => '{{count}} vote|{{count}} votes',
+  'agent.global.count_votecount_votes' => '1 vote|{{count}} votes',
   'agent.global.percent_helpful_subphrase' => '{{percent}}% helpful ({{subphrase}})',
   'agent.global.up_votes_found_this_the_article_helpful_down_votes_found' => '{{up_votes}} found this the article helpful, {{down_votes}} found the article unhelpful',
   'agent.global.page' => 'Page',

@@ -50,4 +50,13 @@
   'agent.publish.revision_by' => 'Revision by {{name}}',
   'agent.publish.helpful' => 'Helpful',
   'agent.publish.not_helpful' => 'Not Helpful',
+
+	'agent.publish.status_published' => 'Published',
+	'agent.publish.status_archived' => 'Archived',
+	'agent.publish.status_hidden_deleted' => 'Deleted',
+	'agent.publish.status_hidden_draft' => 'Draft',
+	'agent.publish.status_hidden_unpublished' => 'Unpublished',
+	'agent.publish.status_hidden_validating' => 'Validating',
+	'agent.publish.status_hidden_user_validating' => 'User Validating',
+	'agent.publish.status_hidden_spam' => 'Spam',  
 );
