@@ -335,14 +335,38 @@ class LanguageController extends Controller
     public function checkLanguageFilesAction()
     {
         set_time_limit(0);
-        if(isset($_POST['batch'])) {
-            $twig_phrases = Language::getPhraseFinder($this->container)->getPhrasesFromTwigFiles();
-            $php_phrases = Language::getPhraseFinder($this->container)->getPhrasesFromPHPFiles();
 
-            foreach($_POST['batch'] as $content) {
-                $this->globaliseString($content,'global.'.$this->stringToId($content), $twig_phrases, $php_phrases);
+        if(isset($_POST['refactor'])) {
+            $files = Languages::GetFileFinder()->getLanguageFileList();
+
+            foreach($files as $file) {
+                $phrases = require($file);
+                $lengths = array();
+                ksort($phrases);
+                $data = "<?php return array(\n";
+                $pairs = array();
+
+                foreach($phrases as $id=>$text) {
+                    $id = var_export($id, true);
+                    $text = var_export($text, true);
+
+                    $lengths[] = strlen($id);
+                    $pairs[$id] = $text;
+                }
+
+                $length = max($lengths)+1;
+
+                foreach($pairs as $id=>$text) {
+                    $id = str_pad($id, $length - strlen($id));
+                    $data .= "    {$id}=>{$text}\n";
+                }
+
+                $data .= ');';
+                file_put_contents($file, $data);
             }
-        } else if(isset($_POST['content'])) {
+        }
+
+        if(isset($_POST['content'])) {
             $this->globaliseString($_POST['content'], $_POST['id'], Language::getPhraseFinder($this->container)->getPhrasesFromTwigFiles(), Language::getPhraseFinder($this->container)->getPhrasesFromPHPFiles());
         }
 
