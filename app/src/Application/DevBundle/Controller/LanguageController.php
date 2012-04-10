@@ -581,18 +581,33 @@ class LanguageController extends Controller
     {
         list($by_id, $by_content) = $this->parseLangFiles();
         $rootdir = DP_ROOT.'/languages/DeskPRO';
-        $global = require($rootdir.'/global/global.php');
-
-        if(!isset($global[$id])) {
-            $global[$id] = $content;
-            $data = '<?php return '.var_export($global, true).';';
-            echo "Would put ".htmlspecialchars($data)."<br>";
-            file_put_contents($rootdir.'/global/global.php', $data);
+        
+        $parts = explode('.', $id, 3);
+        
+        if(count($parts) == 2) {
+            $package = $parts[0];
+            $file = $parts[0];
+        }
+        else {
+            $package = $parts[0];
+            $file = $parts[1];
         }
 
         $files = $by_content[$content];
 
-        foreach($files as $file) {
+        foreach($files as $i=>$file) {
+            list($file_package, ) = explode('.', $file['id'], 2);
+
+            if($package == 'user' && $file_package != 'user') {
+                unset($files[$i]);
+                continue;
+            }
+
+            if($package == 'agent' && ($file_package != 'agent' || $file_package != 'admin')) {
+                unset($files[$i]);
+                continue;
+            }
+
             $lines = file($file['filename']);
             $data = '';
 
@@ -607,6 +622,14 @@ class LanguageController extends Controller
             }
 
             file_put_contents($file['filename'], $data);
+        }
+
+        $global = require($rootdir.'/'.$package.'/'.$file.'.php');
+
+        if(!isset($global[$id])) {
+            $global[$id] = $content;
+            $data = '<?php return '.var_export($global, true).';';
+            file_put_contents($rootdir.'/global/global.php', $data);
         }
 
         list($by_id, ) = $twig_phrases;
