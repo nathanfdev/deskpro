@@ -40,7 +40,7 @@
 		<div id="dp_custom_head" class="dp-portal-block-content"></div>
 	</div>
 	<div id="dp_custom_head_placeholder" class="dp-portal-placeholder dp-portal-placeholder-head {% if custom_templates['UserBundle::custom-headinclude.html.twig'] %}dp-portal-placeholder-highlight{% endif %}" data-portal-block="head_include" data-portal-for="#dp_custom_head" data-mode="head">
-		<em>{{ phrase('user.designer.edit_page_head') }}</em>
+		<em>{{ phrase('admin.designer.edit_page_head') }}</em>
 	</div>
 	<div id="dp_custom_header_wrap" class="dp-portal-block" {% if not custom_templates['UserBundle::custom-header.html.twig'] %}style="display: none"{% endif %}>
 		<div id="dp_custom_header" class="dp-portal-block-content">
@@ -48,7 +48,7 @@
 		</div>
 	</div>
 	<div id="dp_custom_header_placeholder" class="dp-portal-placeholder dp-portal-placeholder-header" data-portal-block="header" data-portal-for="#dp_custom_header" {% if custom_templates['UserBundle::custom-header.html.twig'] %}style="display: none"{% endif %}>
-		<em>{{ phrase('user.designer.edit_header_section') }}</em>
+		<em>{{ phrase('admin.designer.edit_header_section') }}</em>
 	</div>
 {% else %}
 	{% include 'UserBundle::custom-header.html.twig' %}
@@ -64,7 +64,7 @@
 	<h2 {% if not app.getSetting('core.deskpro_tagline') %}style="display: none"{% endif %}>{{ app.getSetting('core.deskpro_tagline') }}</h2>
 	{% if admin_portal_controls %}
 	<div id="dp_header_portal_off">
-		{{ phrase('user.designer.reenable_simple_header') }}
+		{{ phrase('admin.designer.reenable_simple_header') }}
 	</div>
 	{% endif %}
 </div>
@@ -208,7 +208,7 @@
 		</div>
 	</div>
 	<div id="dp_custom_footer_placeholder" class="dp-portal-placeholder dp-portal-placeholder-footer" data-portal-block="footer" data-portal-for="#dp_custom_footer" {% if custom_templates['UserBundle::custom-footer.html.twig'] %}style="display: none"{% endif %}>
-		<em>{{ phrase('user.designer.edit_footer_section') }}</em>
+		<em>{{ phrase('admin.designer.edit_footer_section') }}</em>
 	</div>
 {% else %}
 	{% include 'UserBundle::custom-footer.html.twig' %}
