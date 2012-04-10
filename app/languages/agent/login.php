@@ -15,9 +15,7 @@
     'agent.login.opera'                                              => 'Opera',
     'agent.login.or_go_back_to_login_form'                           => 'or go back to login form',
     'agent.login.the_following_browsers_are_supported'               => 'The following browsers are supported',
-    'agent.login.v11_or_later'                                       => 'v11 or later',
-    'agent.login.v8_or_later'                                        => 'v8 or later',
+    'agent.login.version_x_or_later'                                 => 'v{{version}} or later',
     'agent.login.we_sent_instructions_on_how_to_reset_your_password' => 'We sent insutructions on how to reset your password to the email address you provided.',
-    'agent.login.we_sent_insutrctions_on_how_to_reset_your'          => 'We sent insutrctions on how to reset your password to the email address you provided.',
     'agent.login.your_password_has_been_reset_successfully'          => 'Your password has been reset successfully.',
 );

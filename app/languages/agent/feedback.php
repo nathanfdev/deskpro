@@ -1,7 +1,7 @@
 <?php return array(
     'agent.feedback.any_category'                 => 'Any Category',
     'agent.feedback.any_status'                   => 'Any Status',
-    'agent.feedback.articles_awaiting_validation' => '[agent.feedback.articles_awaiting_validation]',
+    'agent.feedback.articles_awaiting_validation' => 'Awaiting Validation',
     'agent.feedback.by_people_on_date'            => 'By {{people}} on {{date}}',
     'agent.feedback.closed'                       => 'Closed',
     'agent.feedback.closed_category'              => 'Closed: {{cat}}',

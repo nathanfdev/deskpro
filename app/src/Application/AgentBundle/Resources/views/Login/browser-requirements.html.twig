@@ -6,11 +6,11 @@
 
 		<p>{{ phrase('agent.login.the_following_browsers_are_supported') }}:</p>
 		<ul>
-			<li><a href="http://www.getfirefox.com">{{ phrase('agent.login.mozilla_firefox') }}</a> {{ phrase('agent.v4_or_later') }}</li>
-			<li><a href="http://www.google.com/chrome">{{ phrase('agent.login.google_chrome') }}</a> {{ phrase('agent.v17_or_later') }}</li>
-			<li><a href="http://www.apple.com/safari/">{{ phrase('agent.login.apple_safari') }}</a> {{ phrase('agent.v5_or_later') }}</li>
-			<li><a href="http://www.opera.com/">{{ phrase('agent.login.opera') }}</a> {{ phrase('agent.login.v11_or_later') }}</li>
-			<li><a href="http://www.microsoft.com/windows/internet-explorer/">{{ phrase('agent.internet_explorer') }}</a> {{ phrase('agent.login.v8_or_later') }}</li>
+			<li><a href="http://www.getfirefox.com">{{ phrase('agent.login.mozilla_firefox') }}</a> {{ phrase('agent.login.version_x_or_later', {'version':4}) }}</li>
+			<li><a href="http://www.google.com/chrome">{{ phrase('agent.login.google_chrome') }}</a> {{ phrase('agent.login.version_x_or_later', {'version':17}) }}</li>
+			<li><a href="http://www.apple.com/safari/">{{ phrase('agent.login.apple_safari') }}</a> {{ phrase('agent.login.version_x_or_later', {'version':5}) }}</li>
+			<li><a href="http://www.opera.com/">{{ phrase('agent.login.opera') }}</a> {{ phrase('agent.login.version_x_or_later', {'version':11}) }}</li>
+			<li><a href="http://www.microsoft.com/windows/internet-explorer/">{{ phrase('agent.internet_explorer') }}</a> {{ phrase('agent.login.version_x_or_later', {'version':8}) }}</li>
 		</ul>
 	</div>
 {% endblock %}
