@@ -1,7 +1,7 @@
 <div style="width: 360px; height: 250px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
-		<h4>{{ phrase('agent.ticket.edit_snippet_category') }}</h4>
+		<h4>{{ phrase('agent.tickets.edit_snippet_category') }}</h4>
 	</div>
 	<div class="overlay-content">
 		<input type="hidden" name="category_id" value="{{ category.id }}" />
@@ -12,7 +12,7 @@
 			<dt>{{ phrase('agent.global.permissions') }}:</dt>
 			<dd>
 				<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if category.getPermType() == 'me' %}checked="checked"{% endif %} /> {{ phrase('agent.global.just_me') }}</label><br />
-				{% if app.getSetting('core.use_agent_team') %}<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if category.getPermType() == 'team' %}checked="checked"{% endif %} /> {{ phrase('agent.ticket.my_team') }}</label><br />{% endif %}
+				{% if app.getSetting('core.use_agent_team') %}<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if category.getPermType() == 'team' %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.my_team') }}</label><br />{% endif %}
 				<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if category.getPermType() == 'global' %}checked="checked"{% endif %} /> {{ phrase('agent.global.everyone') }}</label><br />
 			</dd>
 

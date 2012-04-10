@@ -41,7 +41,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 </script>
 <div class="macro-controls">
-	<button class="save" id="macro_apply_btn">{{ phrase('agent.ticket.apply_macro') }}</button>
+	<button class="save" id="macro_apply_btn">{{ phrase('agent.tickets.apply_macro') }}</button>
 	<button class="cancel" id="macro_cancel_btn">{{ phrase('agent.global.cancel') }}</button>
 </div>
 
@@ -89,7 +89,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				{{ phrase('agent.tickets.perm_delete_note', {'time': hard_delete_time}) }}
 			{% endif %}
 		{% elseif ticket.hidden_status == 'spam' %}
-			{{ phrase('agent.ticket.this_ticket_has_been_marked_as_spam') }}<br />
+			{{ phrase('agent.tickets.this_ticket_has_been_marked_as_spam') }}<br />
 
 			{% if ticket_perms.delete %}
 				<div style="padding: 5px">
@@ -131,7 +131,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 		{% if ticket_perms.modify_set_hold %}
 			<div class="set-hold hold noedit-hide" {% if ticket.is_hold %}style="display: none"{% endif %}><span>{{ phrase('agent.tickets.set_hold') }}</span></div>
-			<div class="set-hold unhold noedit-hide" {% if not ticket.is_hold %}style="display: none"{% endif %}><span class="tipped" title="{{ phrase('agent.ticket.click_to_release_hold') }}">{{ phrase('agent.tickets.on_hold') }}</span></div>
+			<div class="set-hold unhold noedit-hide" {% if not ticket.is_hold %}style="display: none"{% endif %}><span class="tipped" title="{{ phrase('agent.tickets.click_to_release_hold') }}">{{ phrase('agent.tickets.on_hold') }}</span></div>
 		{% endif %}
 	</div>
 	<br class="clear" />
@@ -163,7 +163,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 					{% if ticket_perms.modify_cc or user_parts|length %}
 						<dt>
-							{{ phrase('agent.ticket.cc') }}
+							{{ phrase('agent.tickets.cc') }}
 							{% if ticket_perms.modify_cc %}<span id="{{baseId}}_new_cc_user" class="btn-small-add"></span>{% endif %}
 						</dt>
 						<dd
@@ -238,7 +238,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 							{% for part in agent_parts %}
 								<li><span class="agent-link" data-agent-id="{{ part.person.id }}">{{ part.person.display_name }}</span></li>
 							{% else %}
-								<li>{{ phrase('agent.ticket.no_followers') }}</li>
+								<li>{{ phrase('agent.tickets.no_followers') }}</li>
 							{% endfor %}
 						</ul>
 					</dd>
@@ -262,7 +262,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					data-element-handler="DeskPRO.ElementHandler.ListRadio"
 				>
 					<ul>
-						<li class="flag-none tipped {% if not ticket_flagged %}{{ phrase('agent.ticket.on') }}{% endif %}" data-value="none" title="{{ phrase('agent.ticket.no_flag') }}"><span></span></li>
+						<li class="flag-none tipped {% if not ticket_flagged %}{{ phrase('agent.tickets.on') }}{% endif %}" data-value="none" title="{{ phrase('agent.tickets.no_flag') }}"><span></span></li>
 						{% for color in ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'yellow'] %}
 						<li class="flag-{{color}} tipped {% if ticket_flagged == color %}on last-on{% endif %}" data-value="{{ color }}" title="{{ flag.flag_name(color) }}"><span>{{ flag.flag_name(color) }}</span></li>
 						{% endfor %}
@@ -293,7 +293,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				<th>{{ phrase('agent.global.created') }}:</th>
 				<td>
 					<time class="timeago" datetime="{{ticket.date_created|date('c')}}"></time>
-					{{ phrase('agent.ticket.on') }} {{ ticket.date_created|date('M j Y H:ia') }}
+					{{ phrase('agent.tickets.on') }} {{ ticket.date_created|date('M j Y H:ia') }}
 				</td>
 			</tr>
 
@@ -432,7 +432,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			</header>
 			<ul>
 				{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
-					<li class="me last-me {% if ticket.agent.id == app.user.id or not ticket.agent %}{{ phrase('agent.ticket.on') }}{% endif %}">
+					<li class="me last-me {% if ticket.agent.id == app.user.id or not ticket.agent %}{{ phrase('agent.tickets.on') }}{% endif %}">
 						<input type="radio" name="{{baseId}}_agent" value="{{ app.user.id }}" {% if ticket.agent.id == app.user.id %}checked="checked"{% endif %} />
 						<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.global.me') }}</span></label>
 					</li>
@@ -468,7 +468,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			<ul>
 				{% for team in app.user.getAgent().getTeams() %}
 					{% if ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id) %}
-					<li class="me {% if loop.last %}last-me{% endif %} {% if ticket.agent_team.id == team.id %}{{ phrase('agent.ticket.on') }}{% endif %}">
+					<li class="me {% if loop.last %}last-me{% endif %} {% if ticket.agent_team.id == team.id %}{{ phrase('agent.tickets.on') }}{% endif %}">
 						<input type="radio" name="{{baseId}}_agent_team" value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}checked="checked"{% endif %} />
 						<label class="agent-team-label-{{ team.id }}">{{ team.name }}</label>
 						<div class="bound-fade"></div>
@@ -477,7 +477,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				{% endfor %}
 
 				{% if ticket_perms.modify_assign_team or not ticket.agent_team %}
-					<li class="{% if not ticket.agent_team %}{{ phrase('agent.ticket.on') }}{% endif %}">
+					<li class="{% if not ticket.agent_team %}{{ phrase('agent.tickets.on') }}{% endif %}">
 						<input type="radio" name="{{baseId}}_agent_team" value="0" {% if not ticket.agent_team %}checked="checked"{% endif %} />
 						<label><span class="agent-team-label-0">{{ phrase('agent.global.no_team') }}</span></label>
 					</li>
@@ -505,7 +505,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			</header>
 			<ul>
 				{% if app.user.id in participant_ids or ticket_perms.modify_assign_self %}
-					<li class="me last-me {% if app.user.id in participant_ids %}{{ phrase('agent.ticket.on') }}{% endif %}">
+					<li class="me last-me {% if app.user.id in participant_ids %}{{ phrase('agent.tickets.on') }}{% endif %}">
 						<input type="checkbox" name="{{bsaeId}}_part" value="{{ app.user.id }}" {% if app.user.id in participant_ids %}checked="checked"{% endif %} />
 						<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.global.me') }}</span></label>
 					</li>

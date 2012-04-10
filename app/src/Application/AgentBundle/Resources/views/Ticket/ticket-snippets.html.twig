@@ -41,7 +41,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div id="{{baseId}}_new_snippet_cat" style="width: 360px; height: 250px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
-			<h4>{{ phrase('agent.ticket.new_snippet_category') }}</h4>
+			<h4>{{ phrase('agent.tickets.new_snippet_category') }}</h4>
 		</div>
 		<div class="overlay-content">
 			<dl class="generic-form-list">
@@ -51,7 +51,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<dt>{{ phrase('agent.global.permissions') }}:</dt>
 				<dd>
 					<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" checked="checked" /> {{ phrase('agent.global.just_me') }}</label><br />
-					{% if app.getSetting('core.use_agent_team') %}<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" /> {{ phrase('agent.ticket.my_team') }}</label><br />{% endif %}
+					{% if app.getSetting('core.use_agent_team') %}<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" /> {{ phrase('agent.tickets.my_team') }}</label><br />{% endif %}
 					<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" /> {{ phrase('agent.global.everyone') }}</label><br />
 				</dd>
 

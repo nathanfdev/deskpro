@@ -1,77 +1,77 @@
 {% if log.action_type == 'free' %}
 	{{ log.details.message }}
 {% elseif log.action_type == 'changed_agent' %}
-	<span class="type">{{ phrase('agent.global.assigned_agent') }}</span> {{ phrase('agent.ticket.changed_from') }}
+	<span class="type">{{ phrase('agent.global.assigned_agent') }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{log.details.old_agent_name|default(phrase('agent.global.unassigned'))}}</span>
     {{ phrase('agent.global.to') }} <span class="new-val">{{log.details.new_agent_name|default(phrase('agent.global.unassigned'))}}</span>
 {% elseif log.action_type == 'participant_added' %}
-	<span class="type">{{ phrase('agent.ticket.participant_added') }}</span>: <span class="new-val">{{log.details.name}}</span>
+	<span class="type">{{ phrase('agent.tickets.participant_added') }}</span>: <span class="new-val">{{log.details.name}}</span>
 {% elseif log.action_type == 'participant_removed' %}
-	<span class="type">{{ phrase('agent.ticket.participant_removed') }}</span>: <span class="old-val">{{log.details.name}}</span>
+	<span class="type">{{ phrase('agent.tickets.participant_removed') }}</span>: <span class="old-val">{{log.details.name}}</span>
 {% elseif log.action_type == 'ticket_created' %}
-	{{ phrase('agent.global.ticket') }} <span class="new-val">#{{log.details.ticket_id}}</span> {{ phrase('agent.ticket.created') }}
+	{{ phrase('agent.global.ticket') }} <span class="new-val">#{{log.details.ticket_id}}</span> {{ phrase('agent.tickets.created') }}
 {% elseif log.action_type == 'subject' %}
-	{{ phrase('agent.ticket.subject_changed_from') }} <span class="old-val">{{ log.details.old_subject }}</span> {{ phrase('agent.ticket.changed_from') }} <span class="new-val">{{ log.details.new_subject }}</span>
+	{{ phrase('agent.tickets.subject_changed_from') }} <span class="old-val">{{ log.details.old_subject }}</span> {{ phrase('agent.tickets.changed_from') }} <span class="new-val">{{ log.details.new_subject }}</span>
 {% elseif log.action_type == 'ticket_split' %}
-    {{ phrase('agent.ticket.ticket_split_form') }} <span class="old-val">#{{log.details.from_ticket_id}}</span>
+    {{ phrase('agent.tickets.ticket_split_form') }} <span class="old-val">#{{log.details.from_ticket_id}}</span>
 {% elseif log.action_type == 'merged' %}
-	{{ phrase('agent.global.ticket') }} <span class="old-val">#{{log.id_before}}</span> {{ phrase('agent.ticket.merged_into_this') }}
+	{{ phrase('agent.global.ticket') }} <span class="old-val">#{{log.id_before}}</span> {{ phrase('agent.tickets.merged_into_this') }}
 {% elseif log.action_type == 'merged_message' %}
-    {{ phrase('agent.global.message') }} <span class="old-val">#{{log.details.message_id}}</span> {{ phrase('agent.ticket.into_this_from_ticket', {'id':log.details.old_ticket_id}) }}
+    {{ phrase('agent.global.message') }} <span class="old-val">#{{log.details.message_id}}</span> {{ phrase('agent.tickets.into_this_from_ticket', {'id':log.details.old_ticket_id}) }}
 {% elseif log.action_type == 'merged_attach' %}
-    {{ phrase('agent.ticket.attachment') }} <span class="old-val">#{{log.id_object}}</span> {{ phrase('agent.ticket.into_this_from_ticket', {'id':log.id_before}) }}
+    {{ phrase('agent.tickets.attachment') }} <span class="old-val">#{{log.id_object}}</span> {{ phrase('agent.tickets.into_this_from_ticket', {'id':log.id_before}) }}
 {% elseif log.action_type == 'changed_category' %}
-	<span class="type">{{ phrase('agent.global.category') }}</span> {{ phrase('agent.ticket.changed_from') }}
-	<span class="old-val">{{log.details.old_category_title|default(phrase('agent.global.none'))}}</span> {{ phrase('agent.ticket.changed_from') }} <span class="new-val">{{log.details.new_category_title|default(phrase('agent.global.none'))}}</span>
+	<span class="type">{{ phrase('agent.global.category') }}</span> {{ phrase('agent.tickets.changed_from') }}
+	<span class="old-val">{{log.details.old_category_title|default(phrase('agent.global.none'))}}</span> {{ phrase('agent.tickets.changed_from') }} <span class="new-val">{{log.details.new_category_title|default(phrase('agent.global.none'))}}</span>
 {% elseif log.action_type == 'changed_department' %}
-	<span class="type">{{ phrase('agent.global.department') }}</span> {{ phrase('agent.ticket.changed_from') }}
-	<span class="old-val">{{log.details.old_department_title|default(phrase('agent.global.none'))}}</span> {{ phrase('agent.ticket.changed_from') }} <span class="new-val">{{log.details.new_department_title|default(phrase('agent.global.none'))}}</span>
+	<span class="type">{{ phrase('agent.global.department') }}</span> {{ phrase('agent.tickets.changed_from') }}
+	<span class="old-val">{{log.details.old_department_title|default(phrase('agent.global.none'))}}</span> {{ phrase('agent.tickets.changed_from') }} <span class="new-val">{{log.details.new_department_title|default(phrase('agent.global.none'))}}</span>
 {% elseif log.action_type == 'changed_organization' %}
-	<span class="type">{{ phrase('agent.global.organization') }}</span> {{ phrase('agent.ticket.changed_from') }}
-	<span class="old-val">{{log.details.old_org_name|default(phrase('agent.global.none'))}}</span> {{ phrase('agent.ticket.changed_from') }} <span class="new-val">{{log.details.new_org_name|default(phrase('agent.global.none'))}}</span>
+	<span class="type">{{ phrase('agent.global.organization') }}</span> {{ phrase('agent.tickets.changed_from') }}
+	<span class="old-val">{{log.details.old_org_name|default(phrase('agent.global.none'))}}</span> {{ phrase('agent.tickets.changed_from') }} <span class="new-val">{{log.details.new_org_name|default(phrase('agent.global.none'))}}</span>
 {% elseif log.action_type == 'changed_person' %}
-	<span class="type">{{ phrase('agent.ticket.user_owner') }}</span> {{ phrase('agent.ticket.changed_from') }}
-	<span class="old-val">#{{log.details.old_person_id}} {{old_person_name}}</span> {{ phrase('agent.ticket.changed_from') }} <span class="new-val">#{{log.details.new_person_id}} {{new_person_name}}</span>
+	<span class="type">{{ phrase('agent.tickets.user_owner') }}</span> {{ phrase('agent.tickets.changed_from') }}
+	<span class="old-val">#{{log.details.old_person_id}} {{old_person_name}}</span> {{ phrase('agent.tickets.changed_from') }} <span class="new-val">#{{log.details.new_person_id}} {{new_person_name}}</span>
 {% elseif log.action_type == 'executed_triggers' %}
-	<span class="type">{{ phrase('agent.global.ticket_triggers') }}</span> {{ phrase('agent.ticket.applied') }}:
+	<span class="type">{{ phrase('agent.global.ticket_triggers') }}</span> {{ phrase('agent.tickets.applied') }}:
 	<span class="new-val">{{ log.details.trigger_ids }}</span>
 {% elseif log.action_type == 'message_created' %}
-	<span class="type">{{ phrase('agent.ticket.new_message') }}</span> {% if log.details.message_id %}<span class="new-val">#{{log.details.message_id}}</span>{% endif %}
+	<span class="type">{{ phrase('agent.tickets.new_message') }}</span> {% if log.details.message_id %}<span class="new-val">#{{log.details.message_id}}</span>{% endif %}
 	{% if log.details.ip_address %}
-    {{ phrase('agent.ticket.from_web', {'address':log.details.ip_address}) }}
+    {{ phrase('agent.tickets.from_web', {'address':log.details.ip_address}) }}
 	{% endif %}
 	{% if log.details.email %}
-    {{ phrase('agent.ticket.from_email', {'address':log.details.email}) }}
+    {{ phrase('agent.tickets.from_email', {'address':log.details.email}) }}
 	{% endif %}
 {% elseif log.action_type == 'message_removed' %}
-	<span class="type">{{ phrase('agent.ticket.message_deleted') }}</span> <span class="old-val">#{{log.id_before}}</span>
+	<span class="type">{{ phrase('agent.tickets.message_deleted') }}</span> <span class="old-val">#{{log.id_before}}</span>
 {% elseif log.action_type == 'changed_priority' %}
-	<span class="type">{{ phrase('agent.global.priority') }}</span> {{ phrase('agent.ticket.changed_from') }}
-	<span class="old-val">{{log.details.old_priority_title|default(phrase('agent.global.none'))}}</span> {{ phrase('agent.ticket.changed_from') }} <span class="new-val">{{log.details.new_priority_title|default(phrase('agent.global.none'))}}</span>
+	<span class="type">{{ phrase('agent.global.priority') }}</span> {{ phrase('agent.tickets.changed_from') }}
+	<span class="old-val">{{log.details.old_priority_title|default(phrase('agent.global.none'))}}</span> {{ phrase('agent.tickets.changed_from') }} <span class="new-val">{{log.details.new_priority_title|default(phrase('agent.global.none'))}}</span>
 {% elseif log.action_type == 'changed_workflow' %}
-	<span class="type">{{ phrase('agent.global.workflow') }}</span> {{ phrase('agent.ticket.changed_from') }}
-	<span class="old-val">{{log.details.old_workflow_title|default(phrase('agent.global.none'))}}</span> {{ phrase('agent.ticket.changed_from') }} <span class="new-val">{{log.details.new_workflow_title|default(phrase('agent.global.none'))}}</span>
+	<span class="type">{{ phrase('agent.global.workflow') }}</span> {{ phrase('agent.tickets.changed_from') }}
+	<span class="old-val">{{log.details.old_workflow_title|default(phrase('agent.global.none'))}}</span> {{ phrase('agent.tickets.changed_from') }} <span class="new-val">{{log.details.new_workflow_title|default(phrase('agent.global.none'))}}</span>
 {% elseif log.action_type == 'changed_urgency' %}
-	<span class="type">{{ phrase('agent.global.urgency') }}</span> {{ phrase('agent.ticket.changed_from') }}
-	<span class="old-val">{{log.details.old_urgency}}</span> {{ phrase('agent.ticket.changed_from') }} <span class="new-val">{{log.details.new_urgency}}</span>
+	<span class="type">{{ phrase('agent.global.urgency') }}</span> {{ phrase('agent.tickets.changed_from') }}
+	<span class="old-val">{{log.details.old_urgency}}</span> {{ phrase('agent.tickets.changed_from') }} <span class="new-val">{{log.details.new_urgency}}</span>
 {% elseif log.action_type == 'changed_product' %}
-	<span class="type">{{ phrase('agent.global.product') }}</span> {{ phrase('agent.ticket.changed_from') }}
-	<span class="old-val">{{log.details.old_product_title|default(phrase('agent.global.none'))}}</span> {{ phrase('agent.ticket.changed_from') }} <span class="new-val">{{log.details.new_product_title|default(phrase('agent.global.none'))}}</span>
+	<span class="type">{{ phrase('agent.global.product') }}</span> {{ phrase('agent.tickets.changed_from') }}
+	<span class="old-val">{{log.details.old_product_title|default(phrase('agent.global.none'))}}</span> {{ phrase('agent.tickets.changed_from') }} <span class="new-val">{{log.details.new_product_title|default(phrase('agent.global.none'))}}</span>
 {% elseif log.action_type == 'attach_added' %}
-	<span class="type">{{ phrase('agent.ticket.new_attachment') }}</span> <span class="new-val">#{{log.details.attach_id}} {{ log.details.filename }}</span>
+	<span class="type">{{ phrase('agent.tickets.new_attachment') }}</span> <span class="new-val">#{{log.details.attach_id}} {{ log.details.filename }}</span>
 {% elseif log.action_type == 'attach_removed' %}
-	<span class="type">{{ phrase('agent.ticket.attachment_deleted') }}</span> <span class="old-val">#{{log.details.old_attach_id}} {{ log.details.filename }}</span>
+	<span class="type">{{ phrase('agent.tickets.attachment_deleted') }}</span> <span class="old-val">#{{log.details.old_attach_id}} {{ log.details.filename }}</span>
 {% elseif log.action_type == 'changed_status' %}
-	<span class="type">{{ phrase('agent.global.status') }}</span> {{ phrase('agent.ticket.changed_from') }}
-	<span class="old-val">{{ phrase( 'agent.tickets.status_' ~ log.details.old_status) }}</span> {{ phrase('agent.ticket.changed_from') }} <span class="new-val">{{ phrase( 'agent.tickets.status_' ~ log.details.new_status) }}</span>
+	<span class="type">{{ phrase('agent.global.status') }}</span> {{ phrase('agent.tickets.changed_from') }}
+	<span class="old-val">{{ phrase( 'agent.tickets.status_' ~ log.details.old_status) }}</span> {{ phrase('agent.tickets.changed_from') }} <span class="new-val">{{ phrase( 'agent.tickets.status_' ~ log.details.new_status) }}</span>
 {% elseif log.action_type == 'changed_custom_field' %}
-	<span class="type">{{ log.details.field_name }}</span> {{ phrase('agent.ticket.changed_from') }}
-	<span class="old-val">{{ log.details.value_before|default('(no value)') }}</span> {{ phrase('agent.ticket.changed_from') }} <span class="new-val">{{ log.details.value_after|default('(no value)') }}</span>
+	<span class="type">{{ log.details.field_name }}</span> {{ phrase('agent.tickets.changed_from') }}
+	<span class="old-val">{{ log.details.value_before|default('(no value)') }}</span> {{ phrase('agent.tickets.changed_from') }} <span class="new-val">{{ log.details.value_after|default('(no value)') }}</span>
 {% elseif log.action_type == 'agent_notify' %}
-	<span class="new-val expand">{{ phrase('agent.ticket.count_agents', {'count':log.details.who_emailed|length}) }}</span> {{ phrase('agent.ticket.notified_of') }}
+	<span class="new-val expand">{{ phrase('agent.tickets.count_agents', {'count':log.details.who_emailed|length}) }}</span> {{ phrase('agent.tickets.notified_of') }}
 
-	{% if log.details.type == 'newticket'%}{{ phrase('agent.ticket.lc_new_ticket') }}
-	{% elseif log.details.type == 'newreply' %}{{ phrase('agent.ticket.lc_new_reply') }}
+	{% if log.details.type == 'newticket'%}{{ phrase('agent.tickets.lc_new_ticket') }}
+	{% elseif log.details.type == 'newreply' %}{{ phrase('agent.tickets.lc_new_reply') }}
 	{% else %}{{ log.details.type }}
 	{% endif %}
 
@@ -89,18 +89,18 @@
 		</ul>
 	</div>
 {% elseif log.action_type == 'user_notify' %}
-	<span class="new-val expand" data-set=".set-emailed">{{ phrase('agent.ticket.count_users', {'count':log.details.who_emailed|length}) }}</span> {{ phrase('agent.ticket.notified_of') }}
+	<span class="new-val expand" data-set=".set-emailed">{{ phrase('agent.tickets.count_users', {'count':log.details.who_emailed|length}) }}</span> {{ phrase('agent.tickets.notified_of') }}
 
-	{% if log.details.type == 'newticket' %}{{ phrase('agent.ticket.lc_new_ticket') }}
-	{% elseif log.details.type == 'newreply' %}{{ phrase('agent.ticket.lc_new_reply') }}
+	{% if log.details.type == 'newticket' %}{{ phrase('agent.tickets.lc_new_ticket') }}
+	{% elseif log.details.type == 'newreply' %}{{ phrase('agent.tickets.lc_new_reply') }}
 	{% else %}{{ log.details.type }}
 	{% endif %}
 
 	{% if log.details.who_cced|length %}
         {% set phrase_part %}
-            <span class="new-val expand" data-set=".set-cced">{{ phrase('agent.ticket.count_users', {'count':log.details.who_cced|length}) }}</span>
+            <span class="new-val expand" data-set=".set-cced">{{ phrase('agent.tickets.count_users', {'count':log.details.who_cced|length}) }}</span>
         {% endset %}
-        {{ phrase('agent.ticket.and_count_were_cced', {'display_count':phrase_part,'count':log.details.who_cced|length}) }}
+        {{ phrase('agent.tickets.and_count_were_cced', {'display_count':phrase_part,'count':log.details.who_cced|length}) }}
 	{% endif %}
 
 	<div class="expand-set set-emailed" style="display: none">
