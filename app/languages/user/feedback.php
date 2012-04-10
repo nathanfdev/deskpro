@@ -3,7 +3,7 @@
     'user.feedback.count_votes'              => '{0} No votes|{1} {{count}} vote|]2,Unf]{{count}} votes',
     'user.feedback.desc_error'               => 'Please enter a description of at least 5 characters',
     'user.feedback.error_not_found'          => 'The feedback you\'re looking for could not be found. It may have been deleted.',
-    'user.feedback.label_explain_feedback'       => 'Explain your feedback',
+    'user.feedback.label_explain_feedback'   => 'Explain your feedback',
     'user.feedback.label_summary_explain'    => 'A title or a brief summary of what your feedback is about',
     'user.feedback.no_feedback_spec'         => 'There are no feedback submissions with those specificiations',
     'user.feedback.simialr_same_confirm_no'  => 'I still want to submit my feedback',

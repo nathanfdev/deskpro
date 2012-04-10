@@ -467,6 +467,7 @@
     'agent.settings'                                                 => 'Settings',
     'agent.show'                                                     => 'Show',
     'agent.showing'                                                  => 'Showing',
+    'agent.showing_results_x_of_y'                                   => 'Showing result 1 of 1|Showing results {{display_count}} of {{size}}',
     'agent.skype'                                                    => 'Skype',
     'agent.snippet_text_placeholder'                                 => 'Snippet text',
     'agent.snippets'                                                 => 'Snippets',
@@ -579,5 +580,4 @@
     'agent.years'                                                    => 'years',
     'agent.yim'                                                      => 'YIM',
     'agent.your_email_address'                                       => 'Your Email Address',
-    'agent.showing_results_x_of_y'          => 'Showing result 1 of 1|Showing results {{display_count}} of {{size}}',
 );

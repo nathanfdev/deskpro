@@ -53,34 +53,32 @@ class LanguageController extends Controller
 
     public function reformatLanguageFilesAction()
     {
-        if(isset($_POST['refactor'])) {
-            $files = Language::GetFileFinder()->getLanguageFileList();
+        $files = Language::GetFileFinder()->getLanguageFileList();
 
-            foreach($files as $file) {
-                $phrases = require($file);
-                $lengths = array();
-                ksort($phrases);
-                $data = "<?php return array(\n";
-                $pairs = array();
+        foreach($files as $file) {
+            $phrases = require($file);
+            $lengths = array();
+            ksort($phrases);
+            $data = "<?php return array(\n";
+            $pairs = array();
 
-                foreach($phrases as $id=>$text) {
-                    $id = var_export($id, true);
-                    $text = var_export($text, true);
+            foreach($phrases as $id=>$text) {
+                $id = var_export($id, true);
+                $text = var_export($text, true);
 
-                    $lengths[] = strlen($id);
-                    $pairs[$id] = $text;
-                }
-
-                $length = max($lengths);
-
-                foreach($pairs as $id=>$text) {
-                    $id = str_pad($id, $length);
-                    $data .= "    {$id} => {$text},\n";
-                }
-
-                $data .= ');';
-                file_put_contents($file, $data);
+                $lengths[] = strlen($id);
+                $pairs[$id] = $text;
             }
+
+            $length = max($lengths);
+
+            foreach($pairs as $id=>$text) {
+                $id = str_pad($id, $length);
+                $data .= "    {$id} => {$text},\n";
+            }
+
+            $data .= ');';
+            file_put_contents($file, $data);
         }
 
         return $this->render('DevBundle:Language:index.html.twig', array('bundles' => Language::$BUNDLES, 'bundle_map' => Language::$BUNDLES_MAP, 'packages' => Language::$PACKAGES, 'message' => 'Reformatted Language Files'));

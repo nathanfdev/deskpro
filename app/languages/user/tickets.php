@@ -1,6 +1,5 @@
 <?php return array(
     'user.ticekts.add_reply_btn'                     => 'Submit Reply',
-    'user.tickets.subject_your_tickets'                     => '{{subject}} - Your Tickets',
     'user.tickets.add_using_name_and_email'          => 'Add a new person by entering their name and email',
     'user.tickets.agent'                             => 'Agent',
     'user.tickets.attach_a_file'                     => 'Attach a file',
@@ -40,7 +39,6 @@
     'user.tickets.list_last_activity_by_x'           => 'Last activity by {{name}}',
     'user.tickets.list_last_activity_by_you'         => 'Last activity by you',
     'user.tickets.logging_in'                        => 'Logging in...',
-
     'user.tickets.login_or_close'                    => '{{link1}} or {{link2}}',
     'user.tickets.lost_password_link'                => 'Lost password?',
     'user.tickets.manage_participants'               => 'Manage Participants',
@@ -61,6 +59,7 @@
     'user.tickets.rate_unhelpful'                    => 'Not Helpful',
     'user.tickets.register_free'                     => 'Register a free account with {{email}} to interact with this ticket easier, and gain more site features.',
     'user.tickets.still_want_to_contact_you'         => 'I still want to submit a question',
+    'user.tickets.subject_your_tickets'              => '{{subject}} - Your Tickets',
     'user.tickets.submit'                            => 'Submit',
     'user.tickets.thank_you_please_wait'             => 'Thank you for submitting your ticket! You should get a confirmation email shortly.',
     'user.tickets.this_is_an_answer'                 => 'This answered my question',
