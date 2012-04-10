@@ -1,7 +1,7 @@
 <?php return array(
     'agent.1_wordcount_words'                                        => '1 Word|{{count}} Words',
-    'agent._by_agent_on_behalf_of_user'                              => '-- By agent on behalf of user',
-    'agent._by_user'                                                 => '-- By user',
+    'agent._by_agent_on_behalf_of_user'                              => 'By agent on behalf of user',
+    'agent._by_user'                                                 => 'By user',
     'agent.actions'                                                  => 'Actions',
     'agent.activity_stream'                                          => 'Activity Stream',
     'agent.add'                                                      => 'Add',
@@ -579,4 +579,5 @@
     'agent.years'                                                    => 'years',
     'agent.yim'                                                      => 'YIM',
     'agent.your_email_address'                                       => 'Your Email Address',
+    'agent.showing_results_x_of_y'          => 'Showing result 1 of 1|Showing results {{display_count}} of {{size}}',
 );

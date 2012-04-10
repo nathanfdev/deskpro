@@ -12,6 +12,5 @@
     'agent.org.email_domain_assoc_title'         => 'Email Domain Associations for {{name}}',
     'agent.org.enter_position'                   => 'Enter position',
     'agent.org.number_of_members'                => 'Number of Members',
-    'agent.org.showing_results_of_size'          => 'Showing result 1 of 1|Showing results {{display_count}} of {{size}}',
     'agent.org.this_organization_has_no_members' => 'This organization has no members.',
 );
