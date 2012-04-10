@@ -200,7 +200,7 @@ class AgentNotificationAction implements ActionInterface
 			'emailed' => array()
 		);
 
-		$subject_phrase = 'agent.tickets_email.subject_ticket_updated';
+		$subject_phrase = 'agent.emails_agent.subject_ticket_updated';
 		$tpl = $this->ticket_update_email_tpl;
 		$is_new_ticket = false;
 		$is_new_agent_reply = false;

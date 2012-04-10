@@ -32,4 +32,5 @@ Before our agents will read and reply to your message, you must validate your em
 Before you will be able to use your account, you must click on the following link to validate your email address',
   'user.emails_user.requested_password_reset_click_following_link' => 'You requested a password reset. To reset your password, click on the link below:',
   'user.emails_user.validate_by_clicking_link' => 'Please validate your email address online by clicking the following link:',
+	'user.emails_user.subject_new_ticket_participant'    => '{{ticket_subject}}',
 );

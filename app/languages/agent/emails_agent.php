@@ -14,4 +14,7 @@
   'agent.emails_agent.alert_successful_login' => 'Successful Login Alert',
   'agent.emails_agent.alert_failed_login' => 'Failed Login Attempt Alert',
   'agent.emails_agent.notice_account_used_to_login' => 'Your account was used to successfully log in.',
+
+	'agent.emails_agent.subject_new_ticket'        => 'New Ticket: {{ticket_subject}}',
+	'agent.emails_agent.subject_ticket_updated'    => 'Ticket Updated: {{ticket_subject}}',
 );
