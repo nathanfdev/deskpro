@@ -46,4 +46,5 @@
 
 	'user.chat.choose_department' => 'Choose a department',
 
+    'user.chat.send_a_transcript_of_this_chat_to' => 'Send a transcript of this chat to',
 );

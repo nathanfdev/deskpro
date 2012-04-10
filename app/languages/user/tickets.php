@@ -80,4 +80,5 @@
     'user.tickets.check_you_email' => 'check your email',
 
     'user.tickets.modify_ticket' => 'Modify Ticket',
+    'user.tickets.type_your_reply_here' => 'Type your reply here...',
 );
