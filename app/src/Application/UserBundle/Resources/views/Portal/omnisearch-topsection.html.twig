@@ -2,13 +2,13 @@
 	<div class="nav">
 		<ul style="float:right">
 			<li><a href="{{ path('user_register') }}">{{ phrase('user.portal.register_for_free') }}</a></li>
-			<li><a href="{{ path('user_login') }}" id="omni_login_button">{{ phrase('user.global.log_in') }}</a></li>
+			<li><a href="{{ path('user_login') }}" id="omni_login_button">{{ phrase('user.log_in') }}</a></li>
 		</ul>
 		<ul>
-			<li><a href="{{ path('user_articles') }}">{{ phrase('user.global.knowledgebase') }}</a></li>
+			<li><a href="{{ path('user_articles') }}">{{ phrase('user.knowledgebase') }}</a></li>
 			<li><a href="{{ path('user_news') }}">{{ phrase('user.portal.news') }}</a></li>
-			<li><a href="{{ path('user_downloads') }}">{{ phrase('user.global.downloads') }}</a></li>
-			<li><a href="{{ path('user_feedback') }}">{{ phrase('user.global.feedback') }}</a></li>
+			<li><a href="{{ path('user_downloads') }}">{{ phrase('user.downloads') }}</a></li>
+			<li><a href="{{ path('user_feedback') }}">{{ phrase('user.feedback') }}</a></li>
 		</ul>
 		<br class="clear" />
 		
@@ -17,16 +17,16 @@
 				<form action="{{ path('user_login_authenticate_local') }}" method="post">
 				<table cellspacing="0" cellpadding="0" width="100%"><tr>
 					<td width="50%">
-						<small>{{ phrase('user.global.email_address') }}:</small><br />
+						<small>{{ phrase('user.email_address') }}:</small><br />
 						<input type="text" name="email" value="" />
 					</td>
 					<td width="50%">
-						<small>{{ phrase('user.global.password') }}:</small><br />
+						<small>{{ phrase('user.password') }}:</small><br />
 						<input type="password" name="password" value="" />
 					</td>
 				</tr><tr><td colspan="2" style="text-align: right;">
-					<a style="" href="{{ path('user_login_resetpass') }}">{{ phrase('user.global.lost_your_login') }}</a>
-					<button class="dp-button x-small">{{ phrase('user.global.log_in') }}</button>
+					<a style="" href="{{ path('user_login_resetpass') }}">{{ phrase('user.lost_your_login') }}</a>
+					<button class="dp-button x-small">{{ phrase('user.log_in') }}</button>
 				</td></tr></table>
 				</form>
 
@@ -36,7 +36,7 @@
 	<div class="searchbar">
 		<form action="{{ path('user_search') }}" method="GET">
 			<input type="text" name="query" id="omni_search_txt" value="{{ query }}" placeholder="{{ phrase('user.portal.ask_or_feedback_here') }}" />
-			<button class="dp-button">{{ phrase('user.global.search') }}</button>
+			<button class="dp-button">{{ phrase('user.search') }}</button>
 		</form>
 		<div class="example">
 			{{ phrase('user.portal.example') }}: 
@@ -62,7 +62,7 @@
 					<p>{{ phrase('user.portal.not_what_you_are_looking_for') }}</p>
 					<ul class="links">
 						<li class="ticket"><a href="{{ path('user_tickets_new') }}"><span>{{ phrase('user.portal.submit_new_ticket') }}</span></a></li>
-						<li class="feedback"><a href="{{ path('user_feedback_newfeedback') }}"><span>{{ phrase('user.global.submit_feedback') }}</span></a></li>
+						<li class="feedback"><a href="{{ path('user_feedback_newfeedback') }}"><span>{{ phrase('user.submit_feedback') }}</span></a></li>
 						<li class="chat"><a href="#" class="dp-chat-trigger"><span>{{ phrase('user.portal.chat_with_agent') }}</span></a></li>
 					</ul>
 					<br class="clear" />

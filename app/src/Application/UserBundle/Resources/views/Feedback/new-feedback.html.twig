@@ -3,8 +3,8 @@
 <script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/NewFeedback.js') }}"></script>
 {% endblock %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_feedback') }}">{{ phrase('user.global.feedback') }}</a></li>
-	<li><a href="{{ path('user_feedback_newfeedback') }}">{{ phrase('user.global.submit_feedback') }}</a></li>
+	<li><a href="{{ path('user_feedback') }}">{{ phrase('user.feedback') }}</a></li>
+	<li><a href="{{ path('user_feedback_newfeedback') }}">{{ phrase('user.submit_feedback') }}</a></li>
 {% endblock %}
 {% block content %}
 
@@ -15,7 +15,7 @@
 >
 	<div class="dp-box">
 		<div class="dp-box-header">
-			<h1>{{ phrase('user.global.submit_feedback') }}</h1>
+			<h1>{{ phrase('user.submit_feedback') }}</h1>
 		</div>
 
 		<div class="dp-box-content-wrapper">
@@ -44,7 +44,7 @@
 					 ###############}
 					<div class="dp-form-row {% if error_fields['person_name'] %}dp-error{% endif %}"">
 						<div class="dp-form-label">
-							<label>{{ phrase('user.global.your_name') }} *</label>
+							<label>{{ phrase('user.your_name') }} *</label>
 						</div>
 						<div class="dp-form-input">
 							{{ form_widget(form.person_name, {
@@ -54,7 +54,7 @@
 								}
 							}) }}
 							<div class="dp-error-explain">
-								{{ phrase('user.global.please_enter_your_name') }}
+								{{ phrase('user.please_enter_your_name') }}
 							</div>
 						</div>
 					</div>
@@ -65,7 +65,7 @@
 
 					<div class="dp-form-row {% if error_fields['category_id'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
-							<label>{{ phrase('user.global.category') }} *</label>
+							<label>{{ phrase('user.category') }} *</label>
 						</div>
 						<div class="dp-form-input with-sub-options" data-field-validators="DeskPRO.Form.TwoLevelSelectValidator">
 							<div class="dp-select-wrapper" style="width: 70%;">
@@ -89,7 +89,7 @@
 								{% endfor %}
 							</div>
 							<div class="dp-error-explain">
-								{{ phrase('user.global.please_choose_a_category') }}
+								{{ phrase('user.please_choose_a_category') }}
 							</div>
 						</div>
 					</div>
@@ -100,7 +100,7 @@
 
 					<div class="dp-form-row {% if error_fields['title'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
-							<label>{{ phrase('user.global.summary') }} *</label> <em class="note">{{ phrase('user.feedback.label_summary_explain') }}</em>
+							<label>{{ phrase('user.summary') }} *</label> <em class="note">{{ phrase('user.feedback.label_summary_explain') }}</em>
 						</div>
 						<div class="dp-form-input">
 							{{ form_widget(form.title, {
@@ -117,7 +117,7 @@
 
 					<div class="dp-related-search" id="dp_newfeedback_related_container" style="display: none">
 						<h4>{{ phrase('user.feedback.similar_title') }}</h4>
-						<div class="subline">{{ phrase('user.global.dont_worry_you_can_click_a_title_and') }}</div>
+						<div class="subline">{{ phrase('user.dont_worry_you_can_click_a_title_and') }}</div>
 						<div class="dp-list results">
 						</div>
 						<div class="more-link" style="display: none;">
@@ -131,7 +131,7 @@
 
 					<div class="dp-form-row {% if error_fields['content'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
-							<label>{{ phrase('user.global.description') }} *</label> <em class="note">{{ phrase('user.feedback.label_desc_explain') }}</em>
+							<label>{{ phrase('user.description') }} *</label> <em class="note">{{ phrase('user.feedback.label_desc_explain') }}</em>
 						</div>
 						<div class="dp-form-input">
 							{{ form_widget(form.content, {
@@ -156,11 +156,11 @@
 		<div class="dp-overlay-outer dp-post-overlay">
 		<div class="dp-overlay">
 			<div class="dp-overlay-inner">
-				<span class="dp-close-btn">{{ phrase('user.global.close') }}</span>
+				<span class="dp-close-btn">{{ phrase('user.close') }}</span>
 				<div class="dp-content">
-					<span class="dp-open-full"><a>{{ phrase('user.global.open_full_page') }}</a></span>
+					<span class="dp-open-full"><a>{{ phrase('user.open_full_page') }}</a></span>
 					<div class="dp-content-holder">
-						<div class="dp-loading-msg">{{ phrase('user.global.loading') }}</div>
+						<div class="dp-loading-msg">{{ phrase('user.loading') }}</div>
 					</div>
 					<div class="dp-controls">
 						<div class="dp-default dp-control-section">

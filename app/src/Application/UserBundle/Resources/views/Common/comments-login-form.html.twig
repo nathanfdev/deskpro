@@ -3,8 +3,8 @@
 	<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="50%" style="padding-right: 10px;">
 		<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %} dp-form-row-person_name">
 			<div class="dp-form-label">
-				<label>{{ phrase('user.global.name') }}</label>
-				<em class="desc">{{ phrase('user.global.required') }}</em>
+				<label>{{ phrase('user.name') }}</label>
+				<em class="desc">{{ phrase('user.required') }}</em>
 			</div>
 			<div class="dp-form-input">
 				<input
@@ -43,8 +43,8 @@
 		<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="50%" style="padding-right: 10px;">
 			<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %} dp-form-row-person_name">
 				<div class="dp-form-label">
-					<label>{{ phrase('user.global.name') }}</label>
-					<em class="desc">{{ phrase('user.global.required') }}</em>
+					<label>{{ phrase('user.name') }}</label>
+					<em class="desc">{{ phrase('user.required') }}</em>
 				</div>
 				<div class="dp-form-input">
 					<input
@@ -63,7 +63,7 @@
 		</td><td valign="top" width="50%" style="padding-left: 10px;">
 			<div class="dp-form-row dp-form-row-person_email" id="comment_login_wrap">
 				<div class="dp-form-label">
-					<label>{{ phrase('user.global.email_address') }}</label>
+					<label>{{ phrase('user.email_address') }}</label>
 					<em class="desc">{{ phrase('user.required_not_displayed') }}</em>
 				</div>
 				<div class="dp-form-input">
@@ -77,7 +77,7 @@
 							/>
 					{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 					<div class="connect-with">
-						{{ phrase('user.global.or_connect_with') }}
+						{{ phrase('user.or_connect_with') }}
 						{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 						{{ render_usersource(usersource, 'widget_overlay_btn') }}
 						{% endfor %}

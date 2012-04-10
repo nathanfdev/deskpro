@@ -1,19 +1,19 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_profile') }}">{{ phrase('user.global.profile') }}</a></li>
+	<li><a href="{{ path('user_profile') }}">{{ phrase('user.profile') }}</a></li>
 {% endblock %}
-{% block page_title %}{{ phrase('user.global.your_profile') }}{% endblock %}
+{% block page_title %}{{ phrase('user.your_profile') }}{% endblock %}
 {% block content %}
 <div class="dp-content-block dp-profile-page">
 	<div class="dp-box">
 		<div class="dp-box-header">
-			<h1>{{ phrase('user.global.profile') }}</h1>
+			<h1>{{ phrase('user.profile') }}</h1>
 		</div>
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content dp-form">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.global.first_name') }}</label>
+						<label>{{ phrase('user.first_name') }}</label>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(form.first_name) }}
@@ -21,7 +21,7 @@
 				</div>
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.global.last_name') }}</label>
+						<label>{{ phrase('user.last_name') }}</label>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(form.last_name) }}
@@ -29,14 +29,14 @@
 				</div>
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.global.timezone') }}</label>
+						<label>{{ phrase('user.timezone') }}</label>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(form.timezone) }}
 					</div>
 				</div>
 
-				<button class="btn primary">{{ phrase('user.global.save') }}</button>
+				<button class="btn primary">{{ phrase('user.save') }}</button>
 			</div>
 		</div>
 	</div>
@@ -45,7 +45,7 @@
 <div class="dp-content-block dp-profile-page">
 	<div class="dp-box">
 		<div class="dp-box-header">
-			<h1>{{ phrase('user.global.email_addresses') }}</h1>
+			<h1>{{ phrase('user.email_addresses') }}</h1>
 		</div>
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content">
@@ -79,7 +79,7 @@
 							{% else %}
 								<a href="{{ path('user_profile_emails_setdefault', {'email_id': email.id}) }}">{{ phrase('user.profile.set_as_primary_address') }}</a>
 								&bull;
-								<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_remove', {'email_id': email.id}) }}">{{ phrase('user.global.ucfirst_delete') }}</a>
+								<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_remove', {'email_id': email.id}) }}">{{ phrase('user.ucfirst_delete') }}</a>
 							{% endif %}
 						</div>
 						{{ email.email }}
@@ -88,9 +88,9 @@
 					{% for email in validating_emails %}
 						<li class="validating">
 							<div class="dp-controls">
-								<a href="{{ path('user_profile_emails_validate_sendlink', {'email_id': email.id}) }}">{{ phrase('user.global.resend_validation_email') }}</a>
+								<a href="{{ path('user_profile_emails_validate_sendlink', {'email_id': email.id}) }}">{{ phrase('user.resend_validation_email') }}</a>
 								&bull;
-								<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_validate_remove', {'email_id': email.id}) }}">{{ phrase('user.global.ucfirst_delete') }}</a>
+								<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_validate_remove', {'email_id': email.id}) }}">{{ phrase('user.ucfirst_delete') }}</a>
 							</div>
 							{{ email.email }} <em>{{ phrase('user.profile.awaiting_validation') }}</em>
 						</li>
@@ -110,7 +110,7 @@
 <div class="dp-content-block dp-profile-page">
 	<div class="dp-box">
 		<div class="dp-box-header">
-			<h1>{{ phrase('user.global.change_password') }}</h1>
+			<h1>{{ phrase('user.change_password') }}</h1>
 		</div>
 		<div class="dp-box-content-wrapper">
 			<form action="{{ path('user_profile_changepassword') }}" method="post">
@@ -125,7 +125,7 @@
 					</div>
 					<div class="dp-form-row">
 						<div class="dp-form-label">
-							<label>{{ phrase('user.global.new_password') }}</label>
+							<label>{{ phrase('user.new_password') }}</label>
 						</div>
 						<div class="dp-form-input">
 							<input type="password" name="password" value="" />
@@ -133,14 +133,14 @@
 					</div>
 					<div class="dp-form-row">
 						<div class="dp-form-label">
-							<label>{{ phrase('user.global.repeat_password') }}</label>
+							<label>{{ phrase('user.repeat_password') }}</label>
 						</div>
 						<div class="dp-form-input">
 							<input type="password" name="password2" value="" />
 						</div>
 					</div>
 
-					<button class="btn primary">{{ phrase('user.global.change_password') }}</button>
+					<button class="btn primary">{{ phrase('user.change_password') }}</button>
 				</div>
 			</form>
 		</div>

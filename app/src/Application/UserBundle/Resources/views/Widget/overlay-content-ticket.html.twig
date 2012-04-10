@@ -7,7 +7,7 @@
 				<div>
 					<span>Or connet with</span>
 					<ul>
-						{{ phrase('user.global.or_connect_with') }}
+						{{ phrase('user.or_connect_with') }}
 						{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 							<li>{{ render_usersource(usersource, 'widget_overlay_btn') }}</li>
 						{% endfor %}
@@ -22,7 +22,7 @@
 					'attr': {
 						'data-field-validators': 'DeskPRO.Form.LengthValidator',
 						'data-min-len': 2,
-						'placeholder': phrase('user.global.your_name'),
+						'placeholder': phrase('user.your_name'),
 						'class': 'name-field'
 					}
 				}) }}
@@ -31,7 +31,7 @@
 				</span>
 			</div>
 			<div class="txt alignright dp-form-row-person_email">
-				<input type="text" class="email-field" id="dp_newticket_email" name="newticket[person][email]" value="" placeholder="{{ phrase('user.global.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+				<input type="text" class="email-field" id="dp_newticket_email" name="newticket[person][email]" value="" placeholder="{{ phrase('user.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 				<span class="tooltip-error">
 					<span>{{ phrase('user.register_please_enter_email') }}</span>
 				</span>
@@ -68,7 +68,7 @@
 				{% endfor %}
 			</select>
 			<span class="tooltip-error">
-				<span>{{ phrase('user.global.please_choose_a_department') }}</span>
+				<span>{{ phrase('user.please_choose_a_department') }}</span>
 			</span>
 		</div>
 		<div class="fields-row message dp-form-row-ticket_message">
@@ -97,7 +97,7 @@
 			<button class="btn-activity">{{ phrase('user.register_send_message') }}</button>
 		</div>
 		<div class="thank-you" id="dp_newticket_done" style="display: none">
-			<h2>{{ phrase('user.global.thank_you') }}</h2>
+			<h2>{{ phrase('user.thank_you') }}</h2>
 			<p>{{ phrase('user.register_thank_you_for_ticket') }}</p>
 		</div>
 	</form>

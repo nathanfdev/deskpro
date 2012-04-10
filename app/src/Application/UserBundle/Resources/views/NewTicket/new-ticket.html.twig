@@ -52,13 +52,13 @@ var ticketReader = {
 </script>
 <script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/NewTicket.js') }}"></script>
 {% endblock %}
-{% block page_title %}{{ phrase('user.global.new_ticket') }}{% endblock %}
+{% block page_title %}{{ phrase('user.new_ticket') }}{% endblock %}
 {% block breadcrumb %}
 	{% if is_user_loggedin() %}
 		<li><a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.your_tickets') }}</a></li>
-		<li><a href="{{ path('user_tickets_new') }}">{{ phrase('user.global.new_ticket') }}</a></li>
+		<li><a href="{{ path('user_tickets_new') }}">{{ phrase('user.new_ticket') }}</a></li>
 	{% else %}
-		<li><a href="{{ path('user_tickets_new') }}">{{ phrase('user.global.new_ticket') }}</a></li>
+		<li><a href="{{ path('user_tickets_new') }}">{{ phrase('user.new_ticket') }}</a></li>
 	{% endif %}
 {% endblock %}
 {% block content %}
@@ -72,7 +72,7 @@ var ticketReader = {
 >
 	<div class="dp-box">
 		<div class="dp-box-header">
-			<h1>{{ phrase('user.global.contact_us') }}</h1>
+			<h1>{{ phrase('user.contact_us') }}</h1>
 		</div>
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content dp-form">
@@ -101,7 +101,7 @@ var ticketReader = {
 				 ###############}
 				<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %}">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.global.your_name') }} *</label>
+						<label>{{ phrase('user.your_name') }} *</label>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(form.person.name, {
@@ -111,7 +111,7 @@ var ticketReader = {
 							}
 						}) }}
 						<div class="dp-error-explain">
-							{{ phrase('user.global.please_enter_your_name') }}
+							{{ phrase('user.please_enter_your_name') }}
 						</div>
 					</div>
 				</div>
@@ -128,7 +128,7 @@ var ticketReader = {
 
 				<div class="dp-related-search" id="dp_newticket_related_container" style="display: none">
 					<h4>{{ phrase('user.tickets.we_found_helpful_content') }}</h4>
-					<div class="subline">{{ phrase('user.global.dont_worry_you_can_click_a_title_and') }}</div>
+					<div class="subline">{{ phrase('user.dont_worry_you_can_click_a_title_and') }}</div>
 					<div class="dp-list results">
 					</div>
 					<div class="more-link" style="display: none;">
@@ -152,11 +152,11 @@ var ticketReader = {
 		<div class="dp-overlay-outer dp-post-overlay">
 		<div class="dp-overlay">
 			<div class="dp-overlay-inner">
-				<span class="dp-close-btn">{{ phrase('user.global.close_lc') }}</span>
+				<span class="dp-close-btn">{{ phrase('user.close_lc') }}</span>
 				<div class="dp-content">
-					<span class="dp-open-full"><a>{{ phrase('user.global.open_full_page') }}</a></span>
+					<span class="dp-open-full"><a>{{ phrase('user.open_full_page') }}</a></span>
 					<div class="dp-content-holder">
-						<div class="dp-loading-msg">{{ phrase('user.global.loading') }}</div>
+						<div class="dp-loading-msg">{{ phrase('user.loading') }}</div>
 					</div>
 					<div class="dp-controls">
 						<div class="dp-default dp-control-section">

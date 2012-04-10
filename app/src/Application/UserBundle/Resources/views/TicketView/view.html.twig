@@ -12,16 +12,16 @@
 		<div class="dp-box-header">
 			{% if ticket.status == 'awaiting_agent' or ticket.status == 'awaiting_user' %}
 				<div class="dp-status-switcher" title="{{ phrase('user.tickets.click_to_close') }}">
-					<div class="dp-status active dp-status-open">{{ phrase('user.global.open') }}</div>
-					<a class="dp-status switcher dp-status-closed" href="{{ path('user_tickets_close', {'ticket_ref': ticket.public_id}) }}">{{ phrase('user.global.closed') }}</a>
+					<div class="dp-status active dp-status-open">{{ phrase('user.open') }}</div>
+					<a class="dp-status switcher dp-status-closed" href="{{ path('user_tickets_close', {'ticket_ref': ticket.public_id}) }}">{{ phrase('user.closed') }}</a>
 				</div>
 			{% elseif ticket.status == 'resolved' %}
-				<div class="dp-status dp-status-resolved">{{ phrase('user.global.resolved') }}</div>
+				<div class="dp-status dp-status-resolved">{{ phrase('user.resolved') }}</div>
 			{% elseif ticket.status == 'closed' %}
-				<div class="dp-status dp-status-closed">{{ phrase('user.global.closed') }}</div>
+				<div class="dp-status dp-status-closed">{{ phrase('user.closed') }}</div>
 			{% endif %}
 			<h1>{{ ticket.subject }}</h1>
-            <a target="_blank" href="{{ path('user_tickets_view', {'ticket_ref': ticket.id, 'pdf': 1}) }}"><img src="{{ asset('images/filetypes/page_white_acrobat.png') }}" /> {{ phrase('user.global.download_pdf') }}</a>
+            <a target="_blank" href="{{ path('user_tickets_view', {'ticket_ref': ticket.id, 'pdf': 1}) }}"><img src="{{ asset('images/filetypes/page_white_acrobat.png') }}" /> {{ phrase('user.download_pdf') }}</a>
 		</div>
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content">
@@ -29,38 +29,38 @@
 				<div class="dp-ticket-info">
 					<ul>
 						<li>
-							<div class="label">{{ phrase('user.global.ticket_ref') }}</div>
+							<div class="label">{{ phrase('user.ticket_ref') }}</div>
 							<div class="value">{{ ticket.public_id }}</div>
 						</li>
 						<li>
-							<div class="label">{{ phrase('user.global.department') }}</div>
+							<div class="label">{{ phrase('user.department') }}</div>
 							<div class="value">{{ phrase_object(ticket.department, 'full') }}</div>
 						</li>
 
 						{% if ticket.category %}
 							<li>
-								<div class="label">{{ phrase('user.global.category') }}</div>
+								<div class="label">{{ phrase('user.category') }}</div>
 								<div class="value">{{ phrase_object(ticket.category, 'full') }}</div>
 							</li>
 						{% endif %}
 
 						{% if ticket.product %}
 							<li>
-								<div class="label">{{ phrase('user.global.product') }}</div>
+								<div class="label">{{ phrase('user.product') }}</div>
 								<div class="value">{{ phrase_object(ticket.product, 'full') }}</div>
 							</li>
 						{% endif %}
 
 						{% if ticket.priority %}
 							<li>
-								<div class="label">{{ phrase('user.global.priority') }}</div>
+								<div class="label">{{ phrase('user.priority') }}</div>
 								<div class="value">{{ phrase_object(ticket.priority) }}</div>
 							</li>
 						{% endif %}
 
 						{% if ticket.person.id != app.user.id %}
 							<li>
-								<div class="label">{{ phrase('user.global.ticket_starter') }}</div>
+								<div class="label">{{ phrase('user.ticket_starter') }}</div>
 								<div class="value">{{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;</div>
 							</li>
 						{% endif %}
@@ -171,7 +171,7 @@
 										{% endif %}
 										<div class="dp-form-row {% if error_fields['message'] %}dp-error{% endif %}">
 											<div class="dp-form-label">
-												<label>{{ phrase('user.global.add_reply') }}</label>
+												<label>{{ phrase('user.add_reply') }}</label>
 											</div>
 											<div class="dp-form-input">
 												<textarea
@@ -192,7 +192,7 @@
 
 									<div class="dp-form-row">
 										<div class="dp-form-label">
-											<label>{{ phrase('user.global.attachments') }}</label>
+											<label>{{ phrase('user.attachments') }}</label>
 										</div>
 										<div class="dp-form-input">
 											{% include 'UserBundle:Common:form-upload-input.html.twig' %}

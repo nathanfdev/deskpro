@@ -8,7 +8,7 @@
 
 		<div class="dp-form-row {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
 			<div class="dp-form-label">
-				<label>{{ phrase('user.global.your_email_address') }} *</label> <em class="desc">{{ phrase('user.login_if_already_reg_note', {'url': path('user_login')}) }}</em>
+				<label>{{ phrase('user.your_email_address') }} *</label> <em class="desc">{{ phrase('user.login_if_already_reg_note', {'url': path('user_login')}) }}</em>
 			</div>
 			<div class="dp-form-input">
 				<input type="text" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ initial_value }}" data-field-validators="DeskPRO.Form.EmailValidator" />
@@ -21,17 +21,17 @@
 		<div class="dp-form-row dp-inline-login-pass" style="display: none">
 			<div class="dp-login-section">
 				<div class="dp-form-label">
-					<label>{{ phrase('user.global.password') }}</label>
-					<a class="forgot" href="{{ path('user_login_resetpass') }}">{{ phrase('user.global.lost_qm') }}</a>
+					<label>{{ phrase('user.password') }}</label>
+					<a class="forgot" href="{{ path('user_login_resetpass') }}">{{ phrase('user.lost_qm') }}</a>
 				</div>
 				<div class="dp-form-input">
 					<input type="password" id="dp_inline_login_pass" />
 					<div class="dp-loading">
-						{{ phrase('user.global.loading') }}
+						{{ phrase('user.loading') }}
 					</div>
 					<div class="dp-btn-row">
-						<button class="btn primary dp-login-trigger {% if mode == 'advanced' %}mode-advanced{% endif %}">{{ phrase('user.global.log_in') }}</button>
-						<button class="btn dp-inline-login-open">{{ phrase('user.global.cancel') }}</button>
+						<button class="btn primary dp-login-trigger {% if mode == 'advanced' %}mode-advanced{% endif %}">{{ phrase('user.log_in') }}</button>
+						<button class="btn dp-inline-login-open">{{ phrase('user.cancel') }}</button>
 					</div>
 				</div>
 			</div>
@@ -43,10 +43,10 @@
 					<div class="dp-btn-row">
 						<div class="not-loading">
 							<button class="btn small dp-do-send">{{ phrase('user.lost_password_send_btn') }}</button>
-							<a class="back">{{ phrase('user.global.cancel') }}</a>
+							<a class="back">{{ phrase('user.cancel') }}</a>
 						</div>
 						<div class="is-loading">
-							{{ phrase('user.global.please_wait') }}
+							{{ phrase('user.please_wait') }}
 						</div>
 					</div>
 				</div>
@@ -68,7 +68,7 @@
 			>
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.global.your_email_address') }}</label>
+						<label>{{ phrase('user.your_email_address') }}</label>
 						{% if mode == 'advanced' %}
 						<em class="change-email"><a href="{{ path('user_profile') }}">{{ phrase('user.change_email') }}</a></em>
 						<em class="change-email-close" style="display: none"><a>{{ phrase('user.done_changing_email') }}</a></em>
@@ -103,7 +103,7 @@
 			<div class="dp-form-row {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.global.your_email_address') }} *</label>
+						<label>{{ phrase('user.your_email_address') }} *</label>
 					</div>
 				</div>
 				<div class="dp-form-input">

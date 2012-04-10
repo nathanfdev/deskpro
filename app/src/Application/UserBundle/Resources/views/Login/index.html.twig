@@ -1,13 +1,13 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_login') }}">{{ phrase('user.global.log_in') }}</a></li>
+	<li><a href="{{ path('user_login') }}">{{ phrase('user.log_in') }}</a></li>
 {% endblock %}
 {% block content %}
 <div class="dp-login-page">
 	<div class="dp-content-block">
 		<div class="dp-box">
 			<div class="dp-box-header">
-				<h1>{{ phrase('user.global.log_in') }}</h1>
+				<h1>{{ phrase('user.log_in') }}</h1>
 			</div>
 
 			<div class="dp-box-content-wrapper">
@@ -23,20 +23,20 @@
 						{% endif %}
 						<div class="dp-form">
 							<div class="dp-form-row">
-								<div class="dp-form-label">{{ phrase('user.global.email') }}</div>
+								<div class="dp-form-label">{{ phrase('user.email') }}</div>
 								<div class="dp-form-input">
 									<input type="text" value="" name="email" id="email" size="40" tabindex="1" />
 								</div>
 							</div>
 							<div class="dp-form-row">
-								<div class="dp-form-label">{{ phrase('user.global.password') }} <em class="note"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.global.lost_qm') }}</a></em></div>
+								<div class="dp-form-label">{{ phrase('user.password') }} <em class="note"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.lost_qm') }}</a></em></div>
 								<div class="dp-form-input">
 									<input type="password" value="" name="password" id="password" size="40" tabindex="2" />
 								</div>
 							</div>
 						</div>
 						<div class="footer">
-							<input class="btn primary" type="submit" value="{{ phrase('user.global.log_in') }}" />
+							<input class="btn primary" type="submit" value="{{ phrase('user.log_in') }}" />
 						</div>
 					</form>
 				</div>

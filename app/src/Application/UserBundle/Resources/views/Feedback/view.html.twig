@@ -6,7 +6,7 @@
 	<link rel="canonical" href="{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}" />
 {% endblock %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_feedback') }}">{{ phrase('user.global.feedback') }}</a></li>
+	<li><a href="{{ path('user_feedback') }}">{{ phrase('user.feedback') }}</a></li>
 	{% for cat in category_path %}
 		<li><a href="{{ path('user_feedback', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
@@ -33,7 +33,7 @@
 			<div class="dp-box-content-meta">
 				<div class="by-line">
 					<img src="{{ feedback.person.getPictureUrl(40) }}" />
-					{{ phrase('user.global.created_by_name_on_date', {'name': feedback.person.display_name, 'date': feedback.date_created|date('M d Y')}) }}
+					{{ phrase('user.created_by_name_on_date', {'name': feedback.person.display_name, 'date': feedback.date_created|date('M d Y')}) }}
 					<br class="dp-clear" style="clear:left" />
 				</div>
 			</div>

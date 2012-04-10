@@ -1,6 +1,6 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_tickets') }}">{{ phrase('user.global.tickets') }}</a></li>
+	<li><a href="{{ path('user_tickets') }}">{{ phrase('user.tickets') }}</a></li>
 	<li><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}">{{ ticket.subject }}</a></li>
 {% endblock %}
 {% block content %}
