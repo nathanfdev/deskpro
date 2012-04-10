@@ -5,6 +5,4 @@
   'user.emails.subj_newfeedback' => 'Thank you for submitting your feedback',
   'user.emails.subj_newfeedback_validate' => 'Thank you for submitting your feedback (validation required)',
   'user.emails.subj_newcomment_validate' => 'Thank you for your comment',
-  'user.emails.subj_newfeedback_validate' => '[user.emails.subj_newfeedback_validate]',
-  'user.emails.subj_newfeedback' => '[user.emails.subj_newfeedback]',
 );
