@@ -64,7 +64,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</h1>
     <div class="clear"></div>
     <div class="meta-line">
-        <div class="category set-department" id="{{baseId}}_dep_btn" data-department-id="{{ convo.department.id|default(0) }}"><span>{{ phrase('agent.global.department') }}: <span class="label-department-id">{{ convo.department.full_title|default(phrase('agent.userchat.no_department')) }}</span></span></div>
+        <div class="category set-department" id="{{baseId}}_dep_btn" data-department-id="{{ convo.department.id|default(0) }}"><span>{{ phrase('agent.global.department') }}: <span class="label-department-id">{{ convo.department.full_title|default(phrase('agent.chat.no_department')) }}</span></span></div>
         <div class="clear"></div>
     </div>
 </header>
@@ -96,7 +96,7 @@ pageMeta.baseId = '{{ baseId }}';
                                                 {% else %}
                                                 	{{ phrase('agent.global.anonymous') }}
                                                 {% endif %}
-                                                <span class="email"><b data-hide="@parent">{% if convo.person_email %}{{ convo.person_email }}{% else %}{{ phrase('agent.userchat.no_email') }}{% endif %}</b></span>
+                                                <span class="email"><b data-hide="@parent">{% if convo.person_email %}{{ convo.person_email }}{% else %}{{ phrase('agent.chat.no_email') }}{% endif %}</b></span>
                                             </span>
                                     </a>
                                 {% endif %}
@@ -123,7 +123,7 @@ pageMeta.baseId = '{{ baseId }}';
 								<a class="agent-link prop-agent-id" id="{{baseId}}_assign_btn" data-agent-id="{{ convo.agent.id|default(0) }}" style="background-image: url('{{ convo.agent.getPictureUrl(20) }}');">{{ convo.agent.display_name|default('Unassigned') }}</a>
 							</dd>
 
-							<dt class="followers-row" {% if not agent_parts|length %}style="display:none"{% endif %}>{{ phrase('agent.userchat.other_agents') }}</dt>
+							<dt class="followers-row" {% if not agent_parts|length %}style="display:none"{% endif %}>{{ phrase('agent.chat.other_agents') }}</dt>
 							<dd class="followers-row" {% if not agent_parts|length %}style="display:none"{% endif %}>
 								<ul id="{{baseId}}_followers_list" class="comma-list">
 									{% set has_others = false %}
@@ -134,7 +134,7 @@ pageMeta.baseId = '{{ baseId }}';
 										{% endif %}
 									{% endfor %}
 									{% if not has_others %}
-										<li>{{ phrase('agent.userchat.no_others') }}</li>
+										<li>{{ phrase('agent.chat.no_others') }}</li>
 									{% endif %}
 								</ul>
 							</dd>
@@ -217,8 +217,8 @@ pageMeta.baseId = '{{ baseId }}';
 				<div class="drop-file-zone"><h1>{{ phrase('agent.global.drop_your_file_here_to_attach_it_to') }}</h1></div>
 				{% if convo.person and convo.person.id != session.person.id %}
 					<div class="impersonation-warning" id="{{baseId}}_imposter">
-						<strong>{{ phrase('agent.userchat.warning') }}</strong>
-						<p>{{ phrase('agent.userchat.warning_email_address_not_unique') }}</p>
+						<strong>{{ phrase('agent.chat.warning') }}</strong>
+						<p>{{ phrase('agent.chat.warning_email_address_not_unique') }}</p>
 						<button class="clean-white small dismiss">{{ phrase('agent.global.dismiss') }}</button>
 					</div>
 				{% endif %}
@@ -233,7 +233,7 @@ pageMeta.baseId = '{{ baseId }}';
 					</ul>
 
 					<ul class="option-buttons right">
-						<li class="closetab tipped" id="{{baseId}}_end_btn" title="{{ phrase('agent.userchat.end_chat') }}"><span>{{ phrase('agent.global.end_chat') }}</span></li>
+						<li class="closetab tipped" id="{{baseId}}_end_btn" title="{{ phrase('agent.chat.end_chat') }}"><span>{{ phrase('agent.global.end_chat') }}</span></li>
 						<li class="send" id="{{baseId}}_send_btn"><span>{{ phrase('agent.global.send') }}</span></li>
 					</ul>
 				</nav>
@@ -255,7 +255,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="col">
 		<section data-section-name="agents">
 			<header>
-				<h3>{{ phrase('agent.userchat.assign_to') }}</h3>
+				<h3>{{ phrase('agent.chat.assign_to') }}</h3>
 				<input type="text" class="filter-box" placeholder="{{ phrase('agent.global.filter') }}" />
 			</header>
 			<ul>
@@ -285,7 +285,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="col">
 		<section data-section-name="followers">
 			<header>
-				<h3>{{ phrase('agent.userchat.invite_others') }}</h3>
+				<h3>{{ phrase('agent.chat.invite_others') }}</h3>
 				<input type="text" class="filter-box" placeholder="{{ phrase('agent.global.filter') }}" />
 			</header>
 			<ul>

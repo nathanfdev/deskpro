@@ -7,7 +7,7 @@
 		<li>
 			<h3 class="title is-nav-item agent-0" data-route="listpane:{{ path('agent_agentchat_history', {'agent_id': '0'}) }}">
 				<span class="list-counter">{{ chatted_counts[0]|default(0) }}</span>
-				{{ phrase('agent.agentchat.agent_chats') }}
+				{{ phrase('agent.chat.agent_chats') }}
 			</h3>
 			<ul class="sub-group show">
 				{% for agent in agent_chatted %}
@@ -25,7 +25,7 @@
 		<li>
 			<h3 class="title is-nav-item agent-team-0" data-route="listpane:{{ path('agent_agentchat_history_team', {'agent_team_id': '0'}) }}">
 				<span class="list-counter">{{ chatted_team_counts[0]|default(0) }}</span>
-				{{ phrase('agent.agentchat.team_chats') }}
+				{{ phrase('agent.chat.team_chats') }}
 			</h3>
 			<ul class="sub-group show">
 				{% for agent_team in agent_team_chatted %}

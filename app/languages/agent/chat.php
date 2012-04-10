@@ -58,5 +58,26 @@
 	'agent.chat.title_open' => 'Open Chats',
 
 	'agent.chat.filter_title_all' => 'All Chats',
-	'agent.chat.filter_title_mine' => 'My Chats'
+	'agent.chat.filter_title_mine' => 'My Chats',
+
+  'agent.chat.team_chats' => 'Team Chats',
+  'agent.chat.agent_chats' => 'Agent Chats',
+
+  'agent.chat.chat_by_anonymouse' => 'Chat by anonymouse',
+  'agent.chat.no_department' => 'No Department',
+  'agent.chat.user_is_viewing' => 'User is viewing',
+  'agent.chat.no_email' => 'No Email',
+  'agent.chat.other_agents' => 'Other Agents',
+  'agent.chat.no_others' => 'No others',
+  'agent.chat.warning' => 'Warning',
+  'agent.chat.assign_to' => 'Assign To',
+  'agent.chat.invite_others' => 'Invite Others',
+  'agent.chat.there_are_currently_no_open_chats' => 'There are currently no open chats.',
+  'agent.chat.chat_started_by' => 'Chat started by',
+  'agent.chat.count_seconds' => '{{count}} second|{{count}} seconds',
+  'agent.chat.new_ticket_by' => 'New ticket by {{name}} ({{email}})',
+  'agent.chat.new_agent_reply_by' => 'New agent reply by {{name}}',
+  'agent.chat.new_user_reply_by' => 'New user reply by {{name}}',
+  'agent.chat.end_chat' => 'End Chat',
+  'agent.chat.warning_email_address_not_unique' => 'The user entered an email address that matches an existing account in the system, but the user is not currently logged in. Be careful not to expose sensitive information in case the user is an imposter.',
 );
