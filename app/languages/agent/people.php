@@ -49,4 +49,20 @@
 	'agent.people.act_reg' => 'Registered an account',
 	'agent.people.act_submitted_ticket' => 'Submitted a ticket: ',
 	'agent.people.act_replied_ticket' => 'Replied to a ticket: ',
+
+  'agent.people.add_another' => 'Add another',
+  'agent.people.creation_by' => 'Creation By',
+  'agent.people.online_now' => 'Online Now',
+  'agent.people.add_an_email_address' => 'Add an email address',
+  'agent.people.download_vcard' => 'Download vCard',
+  'agent.people.drop_your_vcard_here' => 'Drop your vCard here',
+  'agent.people.create_person' => 'Create Person',
+  'agent.people.user_landed_on_page' => 'User landed on page',
+  'agent.people.and_came_from' => 'and came from',
+
+  'agent.people.count_members' => '{{count}} member|{{count}} members',
+  'agent.people.confirm_remove_email' => 'Are you sure you want to remove this email address?',
+  'agent.people.anonymous_user' => 'Anonymous User {{id}}',
+  'agent.people.since' => 'Since',
+  'agent.people.on_page' => 'on page',
 );

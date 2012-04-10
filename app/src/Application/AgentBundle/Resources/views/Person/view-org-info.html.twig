@@ -6,7 +6,7 @@
 
 	{% set members_count_row %}
 		<li class="count">
-			<a data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_organization&amp;terms[0][op]=is&amp;terms[0][organization_id]={{person.organization.id}}"><i class="org-members-count-{{ org.id }}">{{ phrase('agent.person.count_members', {'count':org_members_count}) }}</i></a>
+			<a data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_organization&amp;terms[0][op]=is&amp;terms[0][organization_id]={{person.organization.id}}"><i class="org-members-count-{{ org.id }}">{{ phrase('agent.people.count_members', {'count':org_members_count}) }}</i></a>
 		</li>
 	{% endset %}
 	{% include 'AgentBundle:Common:profile-view-contact-display.html.twig' with {

@@ -12,7 +12,7 @@ pageMeta.baseId = '{{ baseId }}';
 <a class="tab-anchor" href="#">&nbsp;</a>
 
 <form id="{{baseId}}_newperson" class="keybound-submit">
-<div class="drop-file-zone"><h1>{{ phrase('agent.person.drop_your_vcard_here') }}</h1></div>
+<div class="drop-file-zone"><h1>{{ phrase('agent.people.drop_your_vcard_here') }}</h1></div>
 <script class="template-upload" type="text/x-tmpl">
     {{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
     <p>{{ '{%=file.name%}' }} ({{ phrase('agent.global.saving') }})</p>
@@ -164,7 +164,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">{{ phrase('agent.person.create_person') }} <kbd>{{ phrase('agent.global.altc') }}</kbd></button>
+		<button class="submit-trigger clean-white">{{ phrase('agent.people.create_person') }} <kbd>{{ phrase('agent.global.altc') }}</kbd></button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

@@ -30,7 +30,7 @@ pageMeta.baseId = '{{ baseId }}';
 					&lt;{{ visitor.email }}&gt;
 				{% endif %}
 			{% else %}
-                {{ phrase('agent.person.anonymous_user', {'id':visitor.id}) }}
+                {{ phrase('agent.people.anonymous_user', {'id':visitor.id}) }}
 			{%endif %}
 		</h1>
 	</div>
@@ -71,9 +71,9 @@ pageMeta.baseId = '{{ baseId }}';
 		<article id="{{baseId}}_session_tab">
 			<table class="info-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
 				<tr>
-					<td class="label">{{ phrase('agent.person.online_now') }}</td>
+					<td class="label">{{ phrase('agent.people.online_now') }}</td>
 					<td class="value">
-						{{ phrase('agent.person.since') }}
+						{{ phrase('agent.people.since') }}
 						<time>{{session.date_created|date('fulltime')}}</time>
 						(<time class="timeago" datetime="{{session.date_created|date('c')}}"></time>)
 					</td>
@@ -83,15 +83,15 @@ pageMeta.baseId = '{{ baseId }}';
 					<td class="value">
 						<time>{{session.date_last|date('fulltime')}}</time>
 						(<time class="timeago" datetime="{{session.date_last|date('c')}}"></time>)
-						{{ phrase('agent.person.on_page') }} <em class="tipped" title="{{ session.visitor.last_page }}">...</em>
+						{{ phrase('agent.people.on_page') }} <em class="tipped" title="{{ session.visitor.last_page }}">...</em>
 				</tr>
 				<tr>
 					<td class="label">{{ phrase('agent.global.landing_page') }}</td>
 					<td class="value">
-						{{ phrase('agent.person.user_landed_on_page') }}
+						{{ phrase('agent.people.user_landed_on_page') }}
 						<em class="tipped" title="{{ session.visitor.landing_page }}">...</em>
 						{% if session.visitor.ref_page %}
-							{{ phrase('agent.person.and_came_from') }}
+							{{ phrase('agent.people.and_came_from') }}
 							<em class="tipped" title="{{ session.visitor.ref_page }}">...</em>
 						{% endif %}
 					</td>

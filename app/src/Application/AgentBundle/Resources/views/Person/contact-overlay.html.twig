@@ -5,7 +5,7 @@
 		<div class="contact-info">
 			<ul>
 				{% for email in person.emails %}
-					<li data-remove-name="remove_emails[]" data-remove-value="{{ email.id }}" data-confirm="{{ phrase('agent.person.confirm_remove_email') }}">
+					<li data-remove-name="remove_emails[]" data-remove-value="{{ email.id }}" data-confirm="{{ phrase('agent.people.confirm_remove_email') }}">
 						<div class="controls">
 							{% if app.user.hasPerm('agent_people.edit_emails') %}
 								<span class="remove">x</span>
@@ -24,8 +24,8 @@
 			</ul>
 			{% if app.user.hasPerm('agent_people.edit_emails') %}
 			<a class="add-trigger">
-				<em class="with-none">{{ phrase('agent.person.add_an_email_address') }}</em>
-				<em class="with-some">{{ phrase('agent.person.add_another') }}</em>
+				<em class="with-none">{{ phrase('agent.people.add_an_email_address') }}</em>
+				<em class="with-some">{{ phrase('agent.people.add_another') }}</em>
 			</a>
 			{% endif %}
 		</div>
