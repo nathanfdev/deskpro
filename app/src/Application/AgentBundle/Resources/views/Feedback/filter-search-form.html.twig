@@ -2,7 +2,7 @@
 	<form class="feedback-filter-form">
 		<div style="float:right">
 			<select name="order_by">
-				<optgroup label="{{ phrase('agent.order_by')}}">
+				<optgroup label="{{ phrase('agent.global.order_by')}}">
 					<option {% if filter_form.order_by == 'date.desc' %}selected="selected"{% endif %} value="date.desc">{{ phrase('agent.feedback.newest_on_top') }}</option>
 					<option {% if filter_form.order_by == 'date.asc' %}selected="selected"{% endif %} value="date.asc">{{ phrase('agent.feedback.oldest_on_top') }}</option>
 					<option {% if filter_form.order_by == 'votes.desc' %}selected="selected"{% endif %} value="votes.desc">{{ phrase('agent.feedback.top_voted_on_top') }}</option>

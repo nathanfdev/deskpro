@@ -51,8 +51,8 @@
     'admin.agents.can_see_new_unassigned_chats' => 'Can see new unassigned chats',
     'admin.agents.can_see_chats_assigned_to_others' => 'Can see chats assigned to others',
     'admin.agents.can_delete_chat_transcripts' => 'Can delete chat transcripts',
-    'admin.agents.create_content' => 'Create content',
-    'admin.agents.delete_content' => 'Delete content',
+
+
     'admin.agents.edit_others_content' => 'Edit other\'s content',
     'admin.agents.validate_content_and_comments_including_own' => 'Validate content and comments (including own)',
     'admin.agents.deleting_this_permission_group_will_remove_all_the' => 'Deleting this permission group will remove all the permissions from agents that belong to it.',
@@ -85,14 +85,14 @@
 
     'agent.agents.perm_use_tickets' => 'Use ticket application',
     'agent.agents.perm_create_ticket' => 'Create tickets',
-    'agent.agents.perm_reply_to_own_and_team_tickets' => 'Reply to own and teams tickets',
+
     'agent.agents.perm_change_department' => 'Change department',
     'agent.agents.perm_change_fields' => 'Change fields',
     'agent.agents.perm_assign_agents' => 'Assign agents',
     'agent.agents.perm_assign_teams' => 'Assign teams',
     'agent.agents.perm_assign_self' => 'Assign self',
     'agent.agents.perm_edit_cc' => 'Edit CCs',
-    'agent.agents.perm_merge' => 'Merge',
+
     'agent.agents.perm_edit_labels' => 'Edit labels',
     'agent.agents.perm_add_notes' => 'Add notes',
     'agent.agents.perm_set_onhold' => 'Set on-hold',
@@ -105,7 +105,7 @@
     'agent.agents.perm_reply_to_unassigned_tickets' => 'Reply to unassigned tickets',
     'agent.agents.perm_view_unassigned_tickets' => 'View unassigned tickets',
     'agent.agents.perm_view_others_tickets' => 'View others tickets',
-    'agent.agents.perm_reply_to_own_tickets' => 'Reply to own and teams tickets',
+
     'agent.agents.perm_reply_to_others_tickets' => 'Reply to others tickets',
     'agent.agents.perm_delete_others_tickets' => 'Delete and spam others tickets',
     'agent.agents.perm_delete_unassigned_tickets' => 'Delete and spam unassigned tickets',
@@ -121,8 +121,8 @@
     'agent.agents.perm_view_new_unassigned_chats' => 'Can see new unassigned chats',
     'agent.agents.perm_view_others_chats' => 'Can see chats assigned to others',
     'agent.agents.perm_delete_chat_transcripts' => 'Can delete chat transcripts',
-    'agent.agents.perm_create_content' => 'Create content',
-    'agent.agents.perm_delete_content' => 'Delete content',
+
+
     'agent.agents.perm_edit_content' => 'Edit others content',
 
     'agent.agents.perm_validate_content_and_comments' => 'Validate content and comments (including own) {{subphrase}}',

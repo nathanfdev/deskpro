@@ -49,7 +49,7 @@
 						{% if transport.backup_transport_type %}
 							{% if transport.backup_transport_type == 'smtp' %}{{ transport.backup_transport_options.host }}:{{ transport.backup_transport_options.username }}
 							{% elseif transport.backup_transport_type == 'gmail' %}{{ phrase('admin.emailtransports.from_google', {'pattern':transport.backup_transport_options.username}) }}
-							{% elseif transport.backup_transport_type == 'mail' %}{{ phrase('admin.emailtransports.php_mail') }}
+							{% elseif transport.backup_transport_type == 'mail' %}{{ phrase('admin.global.php_mail') }}
 							{% else %}{{ transport.backup_transport_type }}
 							{% endif %}
 						{% else %}

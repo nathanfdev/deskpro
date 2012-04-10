@@ -21,8 +21,8 @@
 	'user.feedback.simialr_same_confirm_yes' => 'I do not want to submit a new submission',
 	'user.feedback.simialr_same_confirm_no' => 'I still want to submit my feedback',
 	'user.feedback.votes_available' => 'You have up to {{part}} votes to cast on this feedback. How many do you want to use?',
-	'user.feedback.accepted' => 'Accepted',
-	'user.feedback.declined' => 'Declined',
-	'user.feedback.completed' => 'Completed',
+
+
+
 	'user.feedback.count_votes' => '{0} No votes|{1} {{count}} vote|]2,Unf]{{count}} votes',
 );

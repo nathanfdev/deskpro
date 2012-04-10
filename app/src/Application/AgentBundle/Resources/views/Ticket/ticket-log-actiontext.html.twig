@@ -3,7 +3,7 @@
 {% elseif log.action_type == 'changed_agent' %}
 	<span class="type">{{ phrase('agent.global.assigned_agent') }}</span> {{ phrase('agent.ticket.changed_from') }}
 	<span class="old-val">{{log.details.old_agent_name|default(phrase('agent.global.unassigned'))}}</span>
-    {{ phrase('agent.ticket.to') }} <span class="new-val">{{log.details.new_agent_name|default(phrase('agent.global.unassigned'))}}</span>
+    {{ phrase('agent.global.to') }} <span class="new-val">{{log.details.new_agent_name|default(phrase('agent.global.unassigned'))}}</span>
 {% elseif log.action_type == 'participant_added' %}
 	<span class="type">{{ phrase('agent.ticket.participant_added') }}</span>: <span class="new-val">{{log.details.name}}</span>
 {% elseif log.action_type == 'participant_removed' %}

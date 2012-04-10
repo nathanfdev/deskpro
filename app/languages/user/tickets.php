@@ -72,8 +72,8 @@
 'user.tickets.manage_participants' => 'Manage Participants',
 'user.tickets.category' => 'Category',
 'user.tickets.priority' => 'Priority',
-'user.tickets.department' => 'Department',
-'user.tickets.product' => 'Product',
+
+
 'user.tickets.status' => 'Status',
 'user.tickets.agent' => 'Agent',
   'user.tickets.attachment_max_size' => 'Max size',

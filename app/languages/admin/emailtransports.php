@@ -23,5 +23,5 @@
   'admin.emailtransports.from_pattern' => 'From {{pattern}}',
   'admin.emailtransports.from_domain' => 'From *@{{pattern}}',
   'admin.emailtransports.from_google' => 'Google Apps: {{username}}',
-  'admin.emailtransports.php_mail' => 'PHP mail()',
+
 );

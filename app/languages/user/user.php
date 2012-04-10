@@ -95,20 +95,20 @@
   'user.comments_logged_in_as' => 'Logged In As',
   'user.comments_please_enter_email' => 'Please enter your email address',
   'user.posted_date' => 'Posted: {{date}}',
-'user.product' => 'Product',
+
 'user.unassigned' => 'Unassigned',
   'user.remove' => 'Remove',
   'user.more_btn' => 'More',
   'user.new' => 'New',
-  'user.accepted' => 'Accepted',
-  'user.declined' => 'Declined',
-  'user.completed' => 'Completed',
+
+
+
   'user.login_with_twitter' => 'Login with twitter',
-  'user.register' => 'Register',
+
   'user.remove_participant' => 'Remove Participant',
   'user.add_using_name_and_email' => 'Add using name and email',
-  'user.first_name' => 'First Name',
-  'user.last_name' => 'Last Name',
+
+
   'user.form_email' => 'Email',
   'user.btn_add' => 'Add',
   'user.please_enter_department' => 'Please enter department',

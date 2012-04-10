@@ -74,7 +74,7 @@
     'agent.tickets.hidden_status_validating' => 'Validating',
     'agent.tickets.category' => 'Category',
     'agent.tickets.priority' => 'Priority',
-    'agent.tickets.agent' => 'Agent',
+
     'agent.tickets.workflow' => 'Workflow',
     'agent.tickets.newticket' => 'New Ticket',
     'agent.tickets.altc' => 'altc',

@@ -15,7 +15,7 @@
 			{{ phrase('agent.ticketsearch.group_by') }}
 			<select name="filter[group_by]">
 				<option value="">{{ phrase('agent.ticketsearch.no_grouping') }}</option>
-				{% for id,name in {'priority_id':phrase('agent.ticketsearch.priority'), 'status':phrase('agent.ticketsearch.status'), 'department_id':phrase('agent.ticketsearch.department'), 'category_id':phrase('agent.ticketsearch.category'), 'product_id':phrase('agent.ticketsearch.product'), 'agent_id':phrase('agent.ticketsearch.agent'), 'agent_team_id':phrase('agent.ticketsearch.agent_team')} %}
+				{% for id,name in {'priority_id':phrase('agent.ticketsearch.priority'), 'status':phrase('agent.ticketsearch.status'), 'department_id':phrase('agent.global.department'), 'category_id':phrase('agent.ticketsearch.category'), 'product_id':phrase('agent.global.product'), 'agent_id':phrase('agent.global.agent'), 'agent_team_id':phrase('agent.ticketsearch.agent_team')} %}
 					<option value="{{id}}" {%if filter.group_by == id %}selected="selected"{%endif%}>{{name}}</option>
 				{% endfor %}
 			</select>

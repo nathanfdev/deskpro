@@ -108,7 +108,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{% endif %}
 				<button class="clean-white delete delete-type nodelete-hide" {% if feedback.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.global.ucfirst_delete') }}</button>
 				<button class="clean-white spam delete-type noedit-hide" {% if feedback.status_code == "hidden.spam" %}style="display:none"{% endif %}>{{ phrase('agent.mark_spam') }}</button>
-				<button class="clean-white merge noedit-hide">{{ phrase('agent.merge') }}</button>
+				<button class="clean-white merge noedit-hide">{{ phrase('agent.global.merge') }}</button>
 				<button class="clean-white permalink">{{ phrase('agent.copy_permalink') }}</button>
 				<button class="clean-white view-user-interface">{{ phrase('agent.view_in_user_interface') }}</button>
 			</div>

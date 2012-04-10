@@ -5,8 +5,8 @@
   'admin.ticketcategories.add_new_category' => 'Add New Category',
   'admin.ticketcategories.you_have_not_created_any_ticket_categories_yet' => 'You have not created any ticket categories yet. Click the "Add New Category" button to create one now.',
   'admin.ticketcategories.edit_category_title' => 'Edit Category Title',
-  'admin.ticketcategories.new_category' => 'New Category',
-  'admin.ticketcategories.edit_category' => 'Edit Category',
+
+
   'admin.ticketcategories.back_to_ticket_categories' => 'Back to ticket categories',
   'admin.ticketcategories.back_to_categories' => 'Back to categories',
   'admin.ticketcategories.are_you_sure_delete_top_level' => 'Are you sure you want to delete the category "<strong>{{title}}</strong>"? Since this is a top-level category, <strong>all of these child-products will be deleted too</strong>',

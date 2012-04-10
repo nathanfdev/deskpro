@@ -55,7 +55,7 @@
   'agent.ticket.click_to_release_hold' => 'Click to release hold',
   'agent.ticket.no_flag' => 'No flag',
   'agent.ticket.percent_of' => '% of',
-  'agent.ticket.to' => 'To',
+
   'agent.ticket.created' => 'Created',
   'agent.ticket.sending' => 'Sending',
   'agent.ticket.send_reply' => 'Send Reply',

@@ -322,7 +322,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 		<div class="controls" id="{{baseId}}_properties_controls">
 			{% if ticket_perms.modify_fields %}<a class="clean-white properties-edit-trigger edit-fields-trigger"><span>{{ phrase('agent.edit_properties') }}</span></a>{% endif %}
-			{% if ticket_perms.modify_merge %}<a class="clean-white noedit-hide" id="{{baseId}}_merge_trigger"><span>{{ phrase('agent.merge') }}</span></a>{% endif %}
+			{% if ticket_perms.modify_merge %}<a class="clean-white noedit-hide" id="{{baseId}}_merge_trigger"><span>{{ phrase('agent.global.merge') }}</span></a>{% endif %}
 			{% if macros|length %}
 				<a class="clean-white arrow menu-fitted noedit-hide" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.global.macros') }}</span><em></em></a>
 			{% endif %}

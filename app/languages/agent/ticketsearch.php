@@ -31,10 +31,10 @@
   'agent.ticketsearch.ticket_field_name' => 'Ticket Field: {{field}}',
   'agent.ticketsearch.add_term_widget' => '+',
   'agent.ticketsearch.agent_team' => 'Agent Team',
-  'agent.ticketsearch.agent' => 'Agent',
-  'agent.ticketsearch.product' => 'Product',
+
+
   'agent.ticketsearch.category' => 'Category',
-  'agent.ticketsearch.department' => 'Department',
+
   'agent.ticketsearch.status' => 'Status',
   'agent.ticketsearch.search' => 'Search',
   'agent.ticketsearch.priority' => 'Priority',

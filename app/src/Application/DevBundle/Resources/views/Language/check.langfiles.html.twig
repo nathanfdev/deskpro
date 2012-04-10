@@ -28,7 +28,7 @@
     {% endfor %}
 
 </table>
-    Id: <input type="text" name="id" value="{{content.id}}" />
+    Id: <input type="text" name="id" value="{{content.id}}" /> {% if content.exists %}(exists){% endif %}
     <input type="hidden" name="content" value="{{content.data}}">
     <input type="submit" value="Globalise">
  </form>

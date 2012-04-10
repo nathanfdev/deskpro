@@ -28,8 +28,8 @@
 
 <form action="{{ path('user_tickets_participants_add', {'ticket_ref':ticket.ref}) }}" method="post">
 	{{ phrase('user.add_using_name_and_email') }}:<br />
-	{{ phrase('user.first_name') }}: {{ form_widget(newpart_form.first_name) }} &nbsp;&nbsp;
-	{{ phrase('user.last_name') }}: {{ form_widget(newpart_form.last_name) }}
+	{{ phrase('user.global.first_name') }}: {{ form_widget(newpart_form.first_name) }} &nbsp;&nbsp;
+	{{ phrase('user.global.last_name') }}: {{ form_widget(newpart_form.last_name) }}
 	<br />
 	{{ phrase('user.form_email') }}: {{ form_widget(newpart_form.email) }}
 	<input type="submit" value="{{ phrase('user.btn_add') }}" />

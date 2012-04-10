@@ -17,7 +17,7 @@
   'agent.prompt' => 'Prompt',
   'agent.confirm' => 'Confirm',
 
-  'agent.merge' => 'Merge',
+
   'agent.approve' => 'Approve',
   'agent.disapprove' => 'Disapprove',
   'agent.edit_properties' => 'Edit Properties',
@@ -27,7 +27,7 @@
   'agent.other_properties' => 'Other Properties',
   'agent.no' => 'No',
   'agent.disapprove_input' => 'Reason or comment to send to the author',
-  'agent.to' => 'To',
+
   'agent.mark_spam' => 'Mark as spam',
   'agent.copy_permalink' => 'Copy permalink',
   'agent.add_search_term' => 'Add search term',
@@ -137,17 +137,17 @@
   'agent.triggers_auto_close_close_resolved' => 'Auto-close tickets that are resolved',
 'agent.msg_user_timeout' => 'User timed out',
 'agent.msg_agent_timeout' => 'Agent timed out',
-'agent.usergroup_everyone' => 'Everyone',
+
 'agent.id' => 'Id',
-'agent.label' => 'Label',
+
 'agent.person_id' => 'User Id',
 'agent.assigned_agent_id' => 'Agent Id',
-'agent.order_by' => 'Order By',
-'agent.none' => 'None',
-'agent.department' => 'Department',
-'agent.product' => 'Product',
-  'agent.votes' => 'Votes',
-  'agent.agent' => 'Agent',
+
+
+
+
+
+
   'agent.date_created' => 'Date Created',
   
 	'agent.flag_blue'   => 'Blue',
