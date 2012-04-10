@@ -22,7 +22,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 {% block pagebar %}
 	<ul>
 		<li><a href="{{ path('admin_tickettriggers') }}">{{ phrase('admin.global.triggers') }}</a></li>
-		<li>{% if trigger.id %}{{ phrase('admin.tickettriggers.edit_triggers') }}{% else %}{{ phrase('admin.tickettriggers.new_trigger') }}{% endif %}</li>
+		<li>{% if trigger.id %}{{ phrase('admin.tickets.edit_triggers') }}{% else %}{{ phrase('admin.tickets.new_trigger') }}{% endif %}</li>
 	</ul>
 {% endblock %}
 {% block page %}
@@ -33,30 +33,30 @@ function TicketTriggerEditPage_initTerms(handler) {
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.tickettriggers.event') }}</label>
+			<label>{{ phrase('admin.tickets.event') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<input type="hidden" name="trigger[event_trigger]" value="{{ trigger.event_trigger }}" />
 			{% macro time_select(event_trigger_time, event_trigger_scale) %}
 				<input type="text" name="event_trigger_time" value="{{ event_trigger_time }}" size="10" style="width: 80px" class="small" />
 				<select name="event_trigger_scale">
-					{% for scale,label in {'minutes': phrase('admin.tickettriggers.minutes'), 'hours': phrase('admin.tickettriggers.hours'), 'days': phrase('admin.tickettriggers.days'), 'weeks': phrase('admin.tickettriggers.weeks'), 'months': phrase('admin.tickettriggers.months')} %}
+					{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
 						<option {% if event_trigger_scale == scale %}selected="selected"{% endif %} value="{{ scale }}">{{ label }}</option>
 					{% endfor %}
 				</select>
 			{% endmacro %}
-			{% if trigger.getTriggerGroup() == 'new_ticket.web_person' %}{{ phrase('admin.tickettriggers.new_ticket_web_person') }}
-			{% elseif trigger.getTriggerGroup() == 'new_ticket.gateway_person' %}{{ phrase('admin.tickettriggers.new_ticket_gateway_person') }}
-			{% elseif trigger.getTriggerGroup() == 'new_ticket.widget' %}{{ phrase('admin.tickettriggers.new_ticket_widget') }}
-			{% elseif trigger.getTriggerGroup() == 'new_reply.web_person' %}{{ phrase('admin.tickettriggers.new_reply_web_person') }}
-			{% elseif trigger.getTriggerGroup() == 'new_reply.gateway_person' %}{{ phrase('admin.tickettriggers.new_reply_gateway_person') }}
-			{% elseif trigger.getTriggerGroup() == 'new_reply.agent' %}{{ phrase('admin.tickettriggers.new_reply_agent') }}
-			{% elseif trigger.getTriggerGroup() == 'property_change.user' %}{{ phrase('admin.tickettriggers.property_change_user') }}
-			{% elseif trigger.getTriggerGroup() == 'property_change.agent' %}{{ phrase('admin.tickettriggers.property_change_agent') }}
-			{% elseif trigger.getTriggerGroup() == 'time_open' %}{{ phrase('admin.tickettriggers.ticket_has_been_open_for') }} {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
-			{% elseif trigger.getTriggerGroup() == 'time_user_waiting' %}{{ phrase('admin.tickettriggers.the_user_has_been_waiting_for_an_agent') }} {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
-			{% elseif trigger.getTriggerGroup() == 'time_agent_waiting' %}{{ phrase('admin.tickettriggers.the_agent_has_been_waiting_for_the_user') }} {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
-			{% elseif trigger.getTriggerGroup() == 'time_total_user_waiting' %}{{ phrase('admin.tickettriggers.the_user_has_been_waiting_for_a_total') }} {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
+			{% if trigger.getTriggerGroup() == 'new_ticket.web_person' %}{{ phrase('admin.tickets.new_ticket_web_person') }}
+			{% elseif trigger.getTriggerGroup() == 'new_ticket.gateway_person' %}{{ phrase('admin.tickets.new_ticket_gateway_person') }}
+			{% elseif trigger.getTriggerGroup() == 'new_ticket.widget' %}{{ phrase('admin.tickets.new_ticket_widget') }}
+			{% elseif trigger.getTriggerGroup() == 'new_reply.web_person' %}{{ phrase('admin.tickets.new_reply_web_person') }}
+			{% elseif trigger.getTriggerGroup() == 'new_reply.gateway_person' %}{{ phrase('admin.tickets.new_reply_gateway_person') }}
+			{% elseif trigger.getTriggerGroup() == 'new_reply.agent' %}{{ phrase('admin.tickets.new_reply_agent') }}
+			{% elseif trigger.getTriggerGroup() == 'property_change.user' %}{{ phrase('admin.tickets.property_change_user') }}
+			{% elseif trigger.getTriggerGroup() == 'property_change.agent' %}{{ phrase('admin.tickets.property_change_agent') }}
+			{% elseif trigger.getTriggerGroup() == 'time_open' %}{{ phrase('admin.tickets.ticket_has_been_open_for') }} {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
+			{% elseif trigger.getTriggerGroup() == 'time_user_waiting' %}{{ phrase('admin.tickets.the_user_has_been_waiting_for_an_agent') }} {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
+			{% elseif trigger.getTriggerGroup() == 'time_agent_waiting' %}{{ phrase('admin.tickets.the_agent_has_been_waiting_for_the_user') }} {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
+			{% elseif trigger.getTriggerGroup() == 'time_total_user_waiting' %}{{ phrase('admin.tickets.the_user_has_been_waiting_for_a_total') }} {{ _self.time_select(event_trigger_time, event_trigger_scale) }}
 			{% else %}{{trigger.event_trigger}}
 			{% endif %}
 		</div>
@@ -64,7 +64,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.global.description') }}</label> <em>{{ phrase('admin.tickettriggers.optionally_enter_a_description_to_help_you_remember') }}</em>
+			<label>{{ phrase('agent.global.description') }}</label> <em>{{ phrase('admin.tickets.optionally_enter_a_description_to_help_you_remember') }}</em>
 		</div>
 		<div class="dp-form-input">
 			{% if trigger.sys_name %}
@@ -95,7 +95,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 		<div class="dp-form-input">
 			<div class="actions-form search-form">
 				<div class="search-terms"></div>
-				<div class="term"><span class="add-term">{{ phrase('agent.global.widget_add') }}</span> {{ phrase('admin.tickettriggers.add_a_new_action') }}</div>
+				<div class="term"><span class="add-term">{{ phrase('agent.global.widget_add') }}</span> {{ phrase('admin.tickets.add_a_new_action') }}</div>
 			</div>
 		</div>
 	</div>
@@ -118,7 +118,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 {% if trigger.id %}
 	<div class="delete-link-wrap">
-		<a href="{{ path('admin_tickettriggers_delete', {id: trigger.id, auth: security_token('delete_trigger') }) }}" class="confirm-delete-trigger" data-prompt="{{ phrase('admin.tickettriggers.are_you_sure_delete_trigger') }}">{{ phrase('agent.global.delete') }}</a>
+		<a href="{{ path('admin_tickettriggers_delete', {id: trigger.id, auth: security_token('delete_trigger') }) }}" class="confirm-delete-trigger" data-prompt="{{ phrase('admin.tickets.are_you_sure_delete_trigger') }}">{{ phrase('agent.global.delete') }}</a>
 	</div>
 {% endif %}
 

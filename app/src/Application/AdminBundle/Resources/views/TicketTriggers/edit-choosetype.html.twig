@@ -6,13 +6,13 @@
 {% block pagebar %}
 	<ul>
 		<li><a href="{{ path('admin_tickettriggers') }}">{{ phrase('admin.global.triggers') }}</a></li>
-		<li>{{ phrase('admin.tickettriggers.choose_type') }}</li>
+		<li>{{ phrase('admin.tickets.choose_type') }}</li>
 	</ul>
 {% endblock %}
 {% block page %}
 
 <p>
-	{{ phrase('admin.tickettriggers.choose_the_event_that_should_initiate_the_trigger') }}
+	{{ phrase('admin.tickets.choose_the_event_that_should_initiate_the_trigger') }}
 </p>
 
 <form action="{{ path('admin_tickettriggers_edit', {'trigger_id': '0'}) }}" class="form" method="post" id="choice_form">
@@ -21,21 +21,21 @@
 
 <ul class="item-list">
 	{% set types = {
-        'new_ticket.web_person': phrase('admin.tickettriggers.new_ticket_web_person'),
-        'new_ticket.gateway_person': phrase('admin.tickettriggers.new_ticket_gateway_person'),
-        'new_ticket.widget': phrase('admin.tickettriggers.new_ticket_widget'),
-        'new_ticket.agent': phrase('admin.tickettriggers.new_ticket_agent'),
-        'new_reply.web_person': phrase('admin.tickettriggers.new_reply_web_person'),
-        'new_reply.gateway_person': phrase('admin.tickettriggers.new_reply_gateway_person'),
-        'new_reply.agent': phrase('admin.tickettriggers.new_reply_agent'),
-        'property_change.user': phrase('admin.tickettriggers.property_change_user'),
-        'property_change.agent': phrase('admin.tickettriggers.property_change_agent'),
-        'time_open': phrase('admin.tickettriggers.time_open'),
-        'time_user_waiting': phrase('admin.tickettriggers.time_user_waiting'),
-        'time_total_user_waiting': phrase('admin.tickettriggers.time_total_user_waiting'),
-        'time_agent_waiting': phrase('admin.tickettriggers.time_agent_waiting'),
-        'time_resolved': phrase('admin.tickettriggers.time_resolved'),
-        'other': phrase('admin.tickettriggers.other'),
+        'new_ticket.web_person': phrase('admin.tickets.new_ticket_web_person'),
+        'new_ticket.gateway_person': phrase('admin.tickets.new_ticket_gateway_person'),
+        'new_ticket.widget': phrase('admin.tickets.new_ticket_widget'),
+        'new_ticket.agent': phrase('admin.tickets.new_ticket_agent'),
+        'new_reply.web_person': phrase('admin.tickets.new_reply_web_person'),
+        'new_reply.gateway_person': phrase('admin.tickets.new_reply_gateway_person'),
+        'new_reply.agent': phrase('admin.tickets.new_reply_agent'),
+        'property_change.user': phrase('admin.tickets.property_change_user'),
+        'property_change.agent': phrase('admin.tickets.property_change_agent'),
+        'time_open': phrase('admin.tickets.time_open'),
+        'time_user_waiting': phrase('admin.tickets.time_user_waiting'),
+        'time_total_user_waiting': phrase('admin.tickets.time_total_user_waiting'),
+        'time_agent_waiting': phrase('admin.tickets.time_agent_waiting'),
+        'time_resolved': phrase('admin.tickets.time_resolved'),
+        'other': phrase('admin.tickets.other'),
 	} %}
 	{% for type,title in types %}
 		<li>
@@ -45,12 +45,12 @@
 
 	<li>
 		<input type="radio" name="trigger_group" value="time_open" />
-		{{ phrase('admin.tickettriggers.ticket_has_been_open_for') }}
+		{{ phrase('admin.tickets.ticket_has_been_open_for') }}
 		<span class="show-off">...</span>
 		<span class="show-on">
 			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />
 			<select name="event_trigger_scale">
-				{% for scale,label in {'minutes': phrase('admin.tickettriggers.minutes'), 'hours': phrase('admin.tickettriggers.hours'), 'days': phrase('admin.tickettriggers.days'), 'weeks': phrase('admin.tickettriggers.weeks'), 'months': phrase('admin.tickettriggers.months')} %}
+				{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
 					<option value="{{ scale }}">{{ label }}</option>
 				{% endfor %}
 			</select>
@@ -58,12 +58,12 @@
 	</li>
 
 	<li>
-		<input type="radio" name="trigger_group" value="time_user_waiting" /> {{ phrase('admin.tickettriggers.the_user_has_been_waiting_for_an_agent') }}
+		<input type="radio" name="trigger_group" value="time_user_waiting" /> {{ phrase('admin.tickets.the_user_has_been_waiting_for_an_agent') }}
 		<span class="show-off">...</span>
 		<span class="show-on">
 			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />
 			<select name="event_trigger_scale">
-				{% for scale,label in {'minutes': phrase('admin.tickettriggers.minutes'), 'hours': phrase('admin.tickettriggers.hours'), 'days': phrase('admin.tickettriggers.days'), 'weeks': phrase('admin.tickettriggers.weeks'), 'months': phrase('admin.tickettriggers.months')} %}
+				{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
 					<option value="{{ scale }}">{{ label }}</option>
 				{% endfor %}
 			</select>
@@ -71,12 +71,12 @@
 	</li>
 
 	<li>
-		<input type="radio" name="trigger_group" value="time_total_user_waiting" /> {{ phrase('admin.tickettriggers.the_user_has_been_waiting_for_a_total') }}
+		<input type="radio" name="trigger_group" value="time_total_user_waiting" /> {{ phrase('admin.tickets.the_user_has_been_waiting_for_a_total') }}
 		<span class="show-off">...</span>
 		<span class="show-on">
 			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />
 			<select name="event_trigger_scale">
-				{% for scale,label in {'minutes': phrase('admin.tickettriggers.minutes'), 'hours': phrase('admin.tickettriggers.hours'), 'days': phrase('admin.tickettriggers.days'), 'weeks': phrase('admin.tickettriggers.weeks'), 'months': phrase('admin.tickettriggers.months')} %}
+				{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
 					<option value="{{ scale }}">{{ label }}</option>
 				{% endfor %}
 			</select>
@@ -85,12 +85,12 @@
 
 
 	<li>
-		<input type="radio" name="trigger_group" value="time_agent_waiting" /> {{ phrase('admin.tickettriggers.the_agent_has_been_waiting_for_the_user') }}
+		<input type="radio" name="trigger_group" value="time_agent_waiting" /> {{ phrase('admin.tickets.the_agent_has_been_waiting_for_the_user') }}
 		<span class="show-off">...</span>
 		<span class="show-on">
 			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />
 			<select name="event_trigger_scale">
-				{% for scale,label in {'minutes': phrase('admin.tickettriggers.minutes'), 'hours': phrase('admin.tickettriggers.hours'), 'days': phrase('admin.tickettriggers.days'), 'weeks': phrase('admin.tickettriggers.weeks'), 'months': phrase('admin.tickettriggers.months')} %}
+				{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
 					<option value="{{ scale }}">{{ label }}</option>
 				{% endfor %}
 			</select>
@@ -98,12 +98,12 @@
 	</li>
 
 	<li>
-		<input type="radio" name="trigger_group" value="time_resolved" /> {{ phrase('admin.tickettriggers.the_ticket_has_been_resolved_for') }}
+		<input type="radio" name="trigger_group" value="time_resolved" /> {{ phrase('admin.tickets.the_ticket_has_been_resolved_for') }}
 		<span class="show-off">...</span>
 		<span class="show-on">
 			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />
 			<select name="event_trigger_scale">
-				{% for scale,label in {'minutes': phrase('admin.tickettriggers.minutes'), 'hours': phrase('admin.tickettriggers.hours'), 'days': phrase('admin.tickettriggers.days'), 'weeks': phrase('admin.tickettriggers.weeks'), 'months': phrase('admin.tickettriggers.months')} %}
+				{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
 					<option value="{{ scale }}">{{ label }}</option>
 				{% endfor %}
 			</select>
@@ -112,7 +112,7 @@
 </ul>
 
 <br />
-<button class="clean-white save-trigger">{{ phrase('admin.tickettriggers.continue') }} &rarr;</button>
+<button class="clean-white save-trigger">{{ phrase('admin.tickets.continue') }} &rarr;</button>
 
 </form>
 {% endblock %}

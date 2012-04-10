@@ -4,11 +4,11 @@
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li class="add"><a href="{{ path('admin_tickets_filters_new') }}">{{ phrase('admin.ticketfilters.add_new_filter') }}</a></li>
+			<li class="add"><a href="{{ path('admin_tickets_filters_new') }}">{{ phrase('admin.tickets.add_new_filter') }}</a></li>
 		</ul>
 	</nav>
 	<ul>
-		<li>{{ phrase('admin.ticketfilters.ticket_filters') }}</li>
+		<li>{{ phrase('admin.tickets.ticket_filters') }}</li>
 	</ul>
 {% endblock %}
 {% block page %}
@@ -22,7 +22,7 @@
 				{% if filter.is_global or filter.agent_team %}
 					{% set is_use_by = false %}
 					{% set use_by_list %}
-						<h4>{{ phrase('admin.ticketfilters.used_by') }}:</h4>
+						<h4>{{ phrase('admin.tickets.used_by') }}:</h4>
 						<ul>
 							{% for agent in agents %}
 								{% if not access_tester.isIgnored(agent, filter) and access_tester.canUse(agent, filter) %}
@@ -34,7 +34,7 @@
 					{% endset %}
 					{% set is_ignored_by = false %}
 					{% set ignored_by_list %}
-						<h4>{{ phrase('admin.ticketfilters.disabled_by') }}:</h4>
+						<h4>{{ phrase('admin.tickets.disabled_by') }}:</h4>
 						<ul>
 							{% for agent in agents %}
 								{% if access_tester.isIgnored(agent, filter) and access_tester.canUse(agent, filter) %}
@@ -57,7 +57,7 @@
 					{% endif %}
 					{% if not is_use_by and not is_ignored_by %}
 						<div class="namelistbox">
-                            {{ phrase('admin.ticketfilters.title_has_no_members', {'title':filter.agent_team.name}) }}
+                            {{ phrase('admin.tickets.title_has_no_members', {'title':filter.agent_team.name}) }}
 						</div>
 					{% endif %}
 				{% endif %}
@@ -68,7 +68,7 @@
 				{% for term in filter.getSummaryParts() %}
 					<li>{{ term }}</li>
 				{% else %}
-					<li>{{ phrase('admin.ticketfilters.no_terms_all_tickets_match') }}</li>
+					<li>{{ phrase('admin.tickets.no_terms_all_tickets_match') }}</li>
 				{% endfor %}
 			</ul>
 			<br class="clear" />
@@ -77,14 +77,14 @@
 {% endmacro %}
 
 {############################
-# {{ phrase('admin.ticketfilters.global_filters') }}
+# {{ phrase('admin.tickets.global_filters') }}
 #############################}
 
 {% if global_filters %}
 	{{ design.dpgrid() }}
 		{{ design.dpgrid_headerrow() }}
 			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 935px;"}) }}
-				<h1>{{ phrase('admin.ticketfilters.global_filters') }}</h1>
+				<h1>{{ phrase('admin.tickets.global_filters') }}</h1>
 			{{ design.dpgrid_headercol_end() }}
 		{{ design.dpgrid_headerrow_end() }}
 
@@ -97,14 +97,14 @@
 {% endif %}
 
 {############################
-# {{ phrase('admin.ticketfilters.team_filters') }}
+# {{ phrase('admin.tickets.team_filters') }}
 #############################}
 
 {% if team_filters %}
 	{{ design.dpgrid() }}
 		{{ design.dpgrid_headerrow() }}
 			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 935px;"}) }}
-				<h1>{{ phrase('admin.ticketfilters.team_filters') }}</h1>
+				<h1>{{ phrase('admin.tickets.team_filters') }}</h1>
 			{{ design.dpgrid_headercol_end() }}
 		{{ design.dpgrid_headerrow_end() }}
 
@@ -122,14 +122,14 @@
 {% endif %}
 
 {############################
-# {{ phrase('admin.ticketfilters.agent_filters') }}
+# {{ phrase('admin.tickets.agent_filters') }}
 #############################}
 
 {% if agent_filters %}
 	{{ design.dpgrid() }}
 		{{ design.dpgrid_headerrow() }}
 			{{ design.dpgrid_headercol({ class: 'l r tl tr', style: "width: 935px;"}) }}
-				<h1>{{ phrase('admin.ticketfilters.agent_filters') }}</h1>
+				<h1>{{ phrase('admin.tickets.agent_filters') }}</h1>
 			{{ design.dpgrid_headercol_end() }}
 		{{ design.dpgrid_headerrow_end() }}
 

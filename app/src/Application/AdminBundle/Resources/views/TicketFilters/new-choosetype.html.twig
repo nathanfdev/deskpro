@@ -1,7 +1,7 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_tickets_filters') }}">{{ phrase('admin.ticketfilters.ticket_filters') }}</a></li>
+		<li><a href="{{ path('admin_tickets_filters') }}">{{ phrase('admin.tickets.ticket_filters') }}</a></li>
 		<li>{{ phrase('agent.global.new_filter') }}</li>
 	</ul>
 {% endblock %}
@@ -13,23 +13,23 @@
 <div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('admin.ticketfilters.agent_access') }}</label>
+			<label>{{ phrase('admin.tickets.agent_access') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<div class="dp-input-group">
 				<label>
 					<input type="radio" name="filter_visibility" value="filter_global" checked="checked" />
-					{{ phrase('admin.ticketfilters.global_filter_that_can_be_used_by_everyone') }}
+					{{ phrase('admin.tickets.global_filter_that_can_be_used_by_everyone') }}
 				</label>
 			</div>
 
 			<div class="dp-input-group">
 				<label>
 					<input type="radio" name="filter_visibility" value="filter_agent_team" />
-					{{ phrase('admin.ticketfilters.only_allow_a_specific_team_to_use_this') }}
+					{{ phrase('admin.tickets.only_allow_a_specific_team_to_use_this') }}
 				</label>
 				<div id="agent_required_group" class="dp-group-options" style="display: none">
-					{{ phrase('admin.ticketfilters.select_the_team_that_can_use_this_filter') }}: <select name="filter[agent_team_id]">
+					{{ phrase('admin.tickets.select_the_team_that_can_use_this_filter') }}: <select name="filter[agent_team_id]">
 						{% for k,v in agent_team_names %}
 							<option value="{{k}}">{{v}}</option>
 						{% endfor %}
@@ -40,10 +40,10 @@
 			<div class="dp-input-group">
 				<label>
 					<input type="radio" name="filter_visibility" value="filter_agent_team" />
-					{{ phrase('admin.ticketfilters.only_allow_a_specific_agent_to_use_this') }}
+					{{ phrase('admin.tickets.only_allow_a_specific_agent_to_use_this') }}
 				</label>
 				<div id="agent_required_group" class="dp-group-options" style="display: none">
-					{{ phrase('admin.ticketfilters.select_the_agent_that_can_use_this_filter') }}: <select name="filter[person_id]">
+					{{ phrase('admin.tickets.select_the_agent_that_can_use_this_filter') }}: <select name="filter[person_id]">
 						{% for k,v in agent_names %}
 							<option value="{{k}}">{{v}}</option>
 						{% endfor %}

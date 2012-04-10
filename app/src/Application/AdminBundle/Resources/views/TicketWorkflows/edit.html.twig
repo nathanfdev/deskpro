@@ -1,8 +1,8 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagetitle %}
-	<h1>{% if workflow.id %}{{ phrase('admin.ticketworkflows.edit_workflow') }}{% else %}{{ phrase('admin.ticketworkflows.new_workflow') }}{% endif %}</h1>
+	<h1>{% if workflow.id %}{{ phrase('admin.tickets.edit_workflow') }}{% else %}{{ phrase('admin.tickets.new_workflow') }}{% endif %}</h1>
 	<nav>
-		<a class="clean-white" href="{{ path('admin_ticketworks') }}">&larr; {{ phrase('admin.ticketworkflows.back_to_ticket_workflows') }}</a>
+		<a class="clean-white" href="{{ path('admin_ticketworks') }}">&larr; {{ phrase('admin.tickets.back_to_ticket_workflows') }}</a>
 	</nav>
 {% endblock %}
 {% block page %}

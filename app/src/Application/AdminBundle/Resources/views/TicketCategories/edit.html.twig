@@ -2,7 +2,7 @@
 {% block pagetitle %}
 	<h1>{% if category.id %}{{ phrase('admin.global.edit_category') }}{% else %}{{ phrase('admin.global.new_category') }}{% endif %}</h1>
 	<nav>
-		<a class="clean-white" href="{{ path('admin_ticketcats') }}">&larr; {{ phrase('admin.ticketcategories.back_to_categories') }}</a>
+		<a class="clean-white" href="{{ path('admin_ticketcats') }}">&larr; {{ phrase('admin.tickets.back_to_categories') }}</a>
 	</nav>
 {% endblock %}
 {% block page %}

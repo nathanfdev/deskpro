@@ -7,7 +7,7 @@
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li class="add"><a id="newcat_open">{{ phrase('admin.ticketcategories.add_new_category') }}</a></li>
+			<li class="add"><a id="newcat_open">{{ phrase('admin.tickets.add_new_category') }}</a></li>
 		</ul>
 	</nav>
 	<ul>
@@ -36,14 +36,14 @@
 		{{ design.dpgrid_end() }}
 	{% else %}
 		<div class="note-box new-arrow">
-			You have not created any ticket categories yet. Click the "{{ phrase('admin.ticketcategories.add_new_category') }}" button to create one now.
+			You have not created any ticket categories yet. Click the "{{ phrase('admin.tickets.add_new_category') }}" button to create one now.
 		</div>
 	{% endif %}
 
 	<div id="editcat_overlay" style="width: 400px; height: 180px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
-			<h4>{{ phrase('admin.ticketcategories.edit_category_title') }}</h4>
+			<h4>{{ phrase('admin.tickets.edit_category_title') }}</h4>
 		</div>
 		<div class="overlay-content">
 			<form class="dp-form" method="POST" action="{{ path('admin_ticketcats_savetitle') }}">

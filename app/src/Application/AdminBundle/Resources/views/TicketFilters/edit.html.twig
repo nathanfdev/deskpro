@@ -25,7 +25,7 @@ $(document).ready(function() {
 {% endblock %}
 {% block pagebar %}
 	<ul>
-		<li><a href="{{ path('admin_tickets_filters') }}">{{ phrase('admin.ticketfilters.ticket_filters') }}</a></li>
+		<li><a href="{{ path('admin_tickets_filters') }}">{{ phrase('admin.tickets.ticket_filters') }}</a></li>
 		<li>{% if filter.id %}Edit Filter{% else %}New Filter{% endif %}</li>
 	</ul>
 {% endblock %}
@@ -82,7 +82,7 @@ $(document).ready(function() {
 				<div class="dp-form-row">
 					<div class="dp-form-label">
 						<label>
-							{{ phrase('admin.ticketfilters.in_use_by') }}:
+							{{ phrase('admin.tickets.in_use_by') }}:
 						</label>
 					</div>
 
@@ -106,7 +106,7 @@ $(document).ready(function() {
 				<div class="dp-form-row">
 					<div class="dp-form-label">
 						<label>
-							{{ phrase('admin.ticketfilters.disabled_by') }}:
+							{{ phrase('admin.tickets.disabled_by') }}:
 						</label>
 					</div>
 
@@ -130,14 +130,14 @@ $(document).ready(function() {
 		<div class="dp-form-row">
 			<div class="dp-form-label">
 				<label>
-					{{ phrase('admin.ticketfilters.only_name_has_filter_access', {'name':filter.person.name}) }}
+					{{ phrase('admin.tickets.only_name_has_filter_access', {'name':filter.person.name}) }}
 				</label>
 			</div>
 			<div class="dp-form-input">
 				{% if not filter_users %}
-                    {{ phrase('admin.ticketfilters.name_has_filter_disabled', {'name':filter.person.name}) }}
+                    {{ phrase('admin.tickets.name_has_filter_disabled', {'name':filter.person.name}) }}
 				{% else %}
-					{{ phrase('admin.ticketfilters.name_has_filter_enabled', {'name':filter.person.name}) }}
+					{{ phrase('admin.tickets.name_has_filter_enabled', {'name':filter.person.name}) }}
 				{% endif %}
 			</div>
 		</div>

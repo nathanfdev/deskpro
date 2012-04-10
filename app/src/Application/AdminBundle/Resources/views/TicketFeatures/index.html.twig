@@ -67,7 +67,7 @@ function _page_exec() {
 {% block content %}
 
 <div class="setting_section_head">
-	<h1>{{ phrase('admin.ticketfeatures.ticket_features_and_settings') }}</h1>
+	<h1>{{ phrase('admin.tickets.ticket_features_and_settings') }}</h1>
 </div>
 
 <input type="hidden" name="process" value="1" />
@@ -77,11 +77,11 @@ function _page_exec() {
 	<div class="setting_fields">
 		<div class="field_row">
 			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
-				{{ phrase('admin.ticketfeatures.enable_ticket_feedback') }}</label>
+				{{ phrase('admin.tickets.enable_ticket_feedback') }}</label>
 		</div>
 		<div class="field_row">
 			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
-				{{ phrase('admin.ticketfeatures.let_agents_read_ticket_feedback') }}</label>
+				{{ phrase('admin.tickets.let_agents_read_ticket_feedback') }}</label>
 		</div>
 	</div>
 </div>
