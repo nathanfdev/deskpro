@@ -113,15 +113,15 @@ pageMeta.baseId = '{{ baseId }}';
 							</tr>
 							<tr class="row-table-cotent dark">
 								<td class="col-table-content title-col">
-									<span>{{ phrase('agent.twitteruser.location') }}</span>
+									<span>{{ phrase('agent.twitter.location') }}</span>
 								</div>
 								<td width="70%"  class="col-table-content prop-val">
-									{% if user.location is none %}{{ phrase('agent.twitteruser.unknown') }}{% else %}{{ user.location }}{% endif %}
+									{% if user.location is none %}{{ phrase('agent.twitter.unknown') }}{% else %}{{ user.location }}{% endif %}
 								</td>
 							</tr>
 							<tr class="row-table-cotent">
 								<td class="col-table-content title-col">
-									<span>{{ phrase('agent.twitteruser.protected') }}</span>
+									<span>{{ phrase('agent.twitter.protected') }}</span>
 								</td>
 								<td width="70%"  class="col-table-content prop-val">
 									{% if user.is_protected %}yes{% else %}no{% endif %}
@@ -137,7 +137,7 @@ pageMeta.baseId = '{{ baseId }}';
 							</tr>
 							<tr class="row-table-cotent">
 								<td class="col-table-content title-col">
-									<span>{{ phrase('agent.twitteruser.geo') }}</span>
+									<span>{{ phrase('agent.twitter.geo') }}</span>
 								</td>
 								<td width="70%" class="col-table-content prop-val">
 									{% if user.is_geo_enabled %}yes{% else %}no{% endif %}

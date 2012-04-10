@@ -1,7 +1,7 @@
 <header class="list-selection-bar">
-    <input type="checkbox" class="selection-control" /> {% set phrase_part %}<span class="{{ phrase('agent.twitterstatus.selected') }}-count">0</span>{% endset %}{{ phrase('agent.twitterstatus.selected', {'count':phrase_part}) }}
+    <input type="checkbox" class="selection-control" /> {% set phrase_part %}<span class="{{ phrase('agent.twitter.selected') }}-count">0</span>{% endset %}{{ phrase('agent.twitter.selected', {'count':phrase_part}) }}
     <a class="perform-action perform-actions-trigger disabled">
-        <span>{{ phrase('agent.twitterstatus.perform_action') }}</span>
+        <span>{{ phrase('agent.twitter.perform_action') }}</span>
     </a>
 
     <ul class="actions-menu" style="display: none" data-menu-type="twitter-status-actions-menu">

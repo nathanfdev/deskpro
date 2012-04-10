@@ -28,7 +28,7 @@
 			</ul>
 		</div>
 		<div class="accounts" style="float: left">
-			{{ phrase('agent.twitterstatus.from_account') }}:<select name="account" id="twitter-reply-account-{{ account.id }}"><br />
+			{{ phrase('agent.twitter.from_account') }}:<select name="account" id="twitter-reply-account-{{ account.id }}"><br />
 			{% for person_account in person.twitter_accounts %}
 				<option value="{{ person_account.id }}" {% if person_account.id == account.id %}selected="selected"{% endif %}>
 					{{ person_account.user.screen_name }}
@@ -37,6 +37,6 @@
 			</select>
 		</div>
 		<textarea name="text" rows="2" cols="40"></textarea>
-		<p class="twitter-status-count"><span>0</span> {{ phrase('agent.twitterstatus.characters') }}</p>
+		<p class="twitter-status-count"><span>0</span> {{ phrase('agent.twitter.characters') }}</p>
 	</form>
 </div>

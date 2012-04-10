@@ -2,8 +2,8 @@
     <div class="list-control-bar">
     	<ul class="order-by-menu" >
             <li>{{ phrase('agent.global.sort_by') }}</li>
-            <li><a class="button {% if sortByDate == 'asc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'asc' }) }}">{{ phrase('agent.twitterstatus.oldest_first') }}</a></li>
-    		<li><a class="button {% if sortByDate == 'desc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'desc' }) }}">{{ phrase('agent.twitterstatus.newest_first') }}</a></li>
+            <li><a class="button {% if sortByDate == 'asc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'asc' }) }}">{{ phrase('agent.twitter.oldest_first') }}</a></li>
+    		<li><a class="button {% if sortByDate == 'desc' %}on{% endif %}" data-route="listpane:{{ path(twitter_list_route, {'account_id': account.id, 'sortbydate': 'desc' }) }}">{{ phrase('agent.twitter.newest_first') }}</a></li>
         </ul>
 
         <span>
@@ -12,7 +12,7 @@
         </span>
         <span>
             <input name="archived" type="checkbox" />
-            <label data-for="archived">{{ phrase('agent.twitterstatus.show_archived_tweets') }}</label>
+            <label data-for="archived">{{ phrase('agent.twitter.show_archived_tweets') }}</label>
         </span>
     </div>
 </header>

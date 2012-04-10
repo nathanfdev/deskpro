@@ -1,7 +1,6 @@
 <?php return array (
   'agent.twitter.direct' => 'Direct',
   'agent.twitter.replies' => 'Replies',
-
   'agent.twitter.retweets' => 'ReTweets',
   'agent.twitter.new_followers' => 'New Followers',
   'agent.twitter.searches' => 'Searches',
@@ -10,10 +9,22 @@
   'agent.twitter.my_tweets' => 'My Tweets',
   'agent.twitter.team_tweets' => 'Team Tweets',
   'agent.twitter.new_search' => 'New Search',
-
-
-
-
-
   'agent.twitter.example' => '#example',
+  'agent.twitter.oldest_first' => 'Oldest First',
+  'agent.twitter.newest_first' => 'Newest First',
+  'agent.twitter.show_archived_tweets' => 'Show archived tweets',
+  'agent.twitter.selected' => 'selected',
+  'agent.twitter.count_selected' => '{{count}} selected',
+  'agent.twitter.perform_action' => 'Perform Action',
+  'agent.twitter.add_note' => 'Add Note',
+  'agent.twitter.from_account' => 'From Account',
+  'agent.twitter.in_reply_to' => 'In reply to',
+  'agent.twitter.retweet_of' => 'Retweet of',
+  'agent.twitter.retweet' => 'Retweet',
+  'agent.twitter.characters' => 'characters',
+  'agent.twitter.there_are_no_followers_for_this_account' => 'There are no followers for this account',
+  'agent.twitter.location' => 'Location',
+  'agent.twitter.protected' => 'Protected',
+  'agent.twitter.geo' => 'GEO',
+  'agent.twitter.unknown' => 'unknown',
 );
