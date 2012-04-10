@@ -3,7 +3,7 @@
     'agent.chat.agent_chats'                       => 'Agent Chats',
     'agent.chat.assign_to'                         => 'Assign To',
     'agent.chat.by_anon'                           => 'Chat {{chat_id}} by Anonymous',
-    'agent.chat.chat_by_anonymouse'                => 'Chat by anonymouse',
+    'agent.chat.chat_by_anonymouse'                => 'Chat by Anonymous',
     'agent.chat.chat_history'                      => 'Chat History',
     'agent.chat.chat_started_by'                   => 'Chat started by',
     'agent.chat.chat_transcript'                   => 'Chat Transcript',

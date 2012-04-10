@@ -1,7 +1,7 @@
 <?php return array(
     'agent.pages.assign_to_self'                                                   => 'Assign to me',
     'agent.pages.available'                                                        => 'Available',
-    'agent.pages.click_icon_to_add_filter'                                         => 'Click <span class="add-icon"></span> to create a new filter',
+    'agent.pages.click_icon_to_add_filter'                                         => 'Click {{link}} to create a new filter',
     'agent.pages.click_icon_to_show_filters'                                       => 'Click <span class="gear-icon"></span> to show filters',
     'agent.pages.close_current_tab'                                                => 'Close current tab',
     'agent.pages.create_ticket_person'                                             => 'Create ticket for the person',

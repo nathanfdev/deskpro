@@ -1,8 +1,8 @@
 <?php return array(
     'agent.search.by'                            => 'By',
     'agent.search.chat_conversations'            => 'Chat Conversations',
-    'agent.search.date_created_newestoldest'     => 'Date Craeted (Newest-Oldest)',
-    'agent.search.date_created_oldesttonewest'   => 'Date Craeted (Oldest-Newest)',
+    'agent.search.date_created_newestoldest'     => 'Date Created (Newest-Oldest)',
+    'agent.search.date_created_oldesttonewest'   => 'Date Created (Oldest-Newest)',
     'agent.search.find_person'                   => 'Find Person',
     'agent.search.loading'                       => 'loading',
     'agent.search.no_email'                      => 'No email',

@@ -89,7 +89,8 @@
 				</li>
 			{% else %}
 				<li class="no-data">
-					{{ phrase('agent.pages.click_icon_to_add_filter') }}
+                    {% set phrase_link %}<span class="add-icon"></span>{% endset %}
+					{{ phrase('agent.pages.click_icon_to_add_filter', {'link'}) }}
 				</li>
 			{% endif %}
 		</ul>
