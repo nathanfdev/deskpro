@@ -26,7 +26,7 @@
 
 					<strong>{{ phrase('agent.link') }}</strong><br />
 					<input type="hidden" class="insert-link-code" value="![attach:{{ blob.id }} link:{{ '{{label}}' }}]" />
-					{{ phrase('agent.global.label') }}: <input type="text" class="link-label" value="{{ blob.display_title }}" /> <button class="dp-button">{{ phrase('agent.insert_link') }}</button><br />
+					{{ phrase('agent.global.label') }}: <input type="text" class="link-label" value="{{ blob.display_title }}" /> <button class="dp-button">{{ phrase('agent.insert_link_to_page') }}</button><br />
 					{{ phrase('agent.this_will_insert_a_link_to_the_file') }}
 
 					{% if blob.isImage() %}
