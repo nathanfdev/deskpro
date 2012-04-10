@@ -13,4 +13,8 @@
     'agent.search.showing_x_of_y_people'         => 'Showing {{display_count}} of {{count}} people|Showing {{display_count}} of {{count}} people',
     'agent.search.simple'                        => 'Simple',
     'agent.search.view_all_results'              => 'View all results',
+ 'agent.search.no_labeled_tickets' => 'You haven\'t labeled any tickets. Load a ticket to label it.',
+  'agent.search.person_id' => 'Person ID',
+  'agent.search.find_by_above_criteria' => 'Find by the above criteria',
+  
 );

@@ -107,7 +107,7 @@
 				<!-- PERMISSION:agent_tickets.view_unassigned -->{{ _self.perm_col(phrase('admin.agents.view_unassigned_tickets'), usergroup_values, 'agent_tickets', 'view_unassigned', 'agent_tickets_use') }}
 				<!-- PERMISSION:agent_tickets.reply_unassigned -->{{ _self.perm_col(phrase('admin.agents.reply_to_unassigned_tickets'), usergroup_values, 'agent_tickets', 'reply_unassigned', 'agent_tickets_view_unassigned') }}
                 {% set phrase_part %}<i class="expand-toggle" data-expand="subperm-modify_unassigned"></i>{% endset %}
-				<!-- PERMISSION:agent_tickets.modify_unassigned -->{{ _self.perm_col(phrase('admin.agents.widget__modify_unassigned_tickets', {'subphrase':phrase_part}), usergroup_values, 'agent_tickets', 'modify_unassigned', 'agent_tickets_view_unassigned', 'parentperm') }}
+				<!-- PERMISSION:agent_tickets.modify_unassigned -->{{ _self.perm_col(phrase('admin.agents.widget_modify_unassigned_tickets', {'subphrase':phrase_part}), usergroup_values, 'agent_tickets', 'modify_unassigned', 'agent_tickets_view_unassigned', 'parentperm') }}
 				<!-- PERMISSION:agent_tickets.modify_department_unassigned -->{{ _self.perm_col(phrase('admin.agents.change_department'), usergroup_values, 'agent_tickets', 'modify_department_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
 				<!-- PERMISSION:agent_tickets.modify_fields_unassigned -->{{ _self.perm_col(phrase('admin.agents.change_fields'), usergroup_values, 'agent_tickets', 'modify_fields_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
 				<!-- PERMISSION:agent_tickets.modify_assign_agent_unassigned -->{{ _self.perm_col(phrase('admin.agents.assign_agents'), usergroup_values, 'agent_tickets', 'modify_assign_agent_unassigned', 'agent_tickets_view_unassigned', 'subperm subperm-modify_unassigned') }}
@@ -127,7 +127,7 @@
 				<!-- PERMISSION:agent_tickets.view_others -->{{ _self.perm_col(phrase('admin.agents.view_others_tickets'), usergroup_values, 'agent_tickets', 'view_others', 'agent_tickets_use') }}
 				<!-- PERMISSION:agent_tickets.reply_others -->{{ _self.perm_col(phrase('admin.agents.reply_to_others_tickets'), usergroup_values, 'agent_tickets', 'reply_others', 'agent_tickets_use') }}
                 {% set phrase_part %}<i class="expand-toggle" data-expand="subperm-modify_others"></i>{% endset %}
-				<!-- PERMISSION:agent_tickets.modify_others -->{{ _self.perm_col(phrase('admin.agents.widget_others_tickets', {'subphrase':phrase_part}), usergroup_values, 'agent_tickets', 'modify_others', 'agent_tickets_use', 'parentperm') }}
+				<!-- PERMISSION:agent_tickets.modify_others -->{{ _self.perm_col(phrase('admin.agents.widget_modify_others_tickets', {'subphrase':phrase_part}), usergroup_values, 'agent_tickets', 'modify_others', 'agent_tickets_use', 'parentperm') }}
 				<!-- PERMISSION:agent_tickets.modify_department_others -->{{ _self.perm_col(phrase('admin.agents.change_department'), usergroup_values, 'agent_tickets', 'modify_department_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
 				<!-- PERMISSION:agent_tickets.modify_fields_others -->{{ _self.perm_col(phrase('admin.agents.change_fields'), usergroup_values, 'agent_tickets', 'modify_fields_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}
 				<!-- PERMISSION:agent_tickets.modify_assign_agent_others -->{{ _self.perm_col(phrase('admin.agents.assign_agents'), usergroup_values, 'agent_tickets', 'modify_assign_agent_others', 'agent_tickets_use', 'subperm subperm-modify_others') }}

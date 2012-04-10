@@ -92,6 +92,7 @@
     'admin.agents.view_new_unassigned_chats'                          => 'Can see new unassigned chats',
     'admin.agents.view_others_chats'                                  => 'Can see chats assigned to others',
     'admin.agents.view_others_tickets'                                => 'View others tickets',
+    'admin.agents.view_unassigned_tickets'                                => 'View unassigned tickets',
     'admin.agents.view_own_and_teams_tickets'                         => 'View own and teams tickets',
     'admin.agents.explain_agent_deleted'           => 'When an agent is deleted, their login and all access is revoked. Any assigned tickets are unassigned.',
     'admin.agents.explain_agent_vacation'             => 'When an agent is in vacation mode they cannot log in or use DeskPRO until it is turned off again. Other agents will not be able to assign tickets to them, and any currently assigned tickets will be unassigned if they are or become awaiting user.',
