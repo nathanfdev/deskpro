@@ -9,7 +9,7 @@
     'admin.settings.configure_scheduled_tasks'                                     => 'Configure Scheduled Tasks',
     'admin.settings.configure_this_command_to_be_executed_every_minute'            => 'Configure this command to be executed every minute',
     'admin.settings.configuring_scheduled_tasks'                                   => 'Configuring Scheduled Tasks',
-    'admin.settings.continuet_to_advanced_settings'                                => 'Continuet to Advanced Settings',
+    'admin.settings.continuet_to_advanced_settings'                                => 'Continue to Advanced Settings',
     'admin.settings.cookie_domain'                                                 => 'Cookie Domain',
     'admin.settings.cookie_path'                                                   => 'Cookie Path',
     'admin.settings.default_email_from_address'                                    => 'Default Email "From" Address',

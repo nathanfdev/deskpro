@@ -7,7 +7,7 @@
     'admin.user_registration.are_you_sure_delete_usersource'                        => 'Are you sure you want to delete this usersource? Users will not be able to log in with these credentials anymore.',
     'admin.user_registration.base_dn'                                               => 'Base DN',
     'admin.user_registration.by_default_placeholder_is_use_this_instead'            => 'By default, the filter performed when looking up users is <var>(&(objectClass=user)(sAMAccountName=%s))</var>. Use <var>%s</var> as the input placeholder.',
-    'admin.user_registration.click_here_here_to_sign_up_now'                        => 'Click here here to sign up now',
+    'admin.user_registration.click_here_here_to_sign_up_now'                        => 'Click here to sign up now',
     'admin.user_registration.consumer_key'                                          => 'Consumer Key',
     'admin.user_registration.consumer_secret'                                       => 'Consumer Secret',
     'admin.user_registration.custom_database'                                       => 'Custom Database',
