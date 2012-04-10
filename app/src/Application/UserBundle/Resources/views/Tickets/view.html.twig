@@ -1,6 +1,6 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block page_title %}
-	{{ ticket.subject }} {{ phrase('user.tickets._your_tickets') }}
+	{{ phrase('user.tickets.subject_your_tickets', {'subject':ticket.subject}) }}
 {% endblock %}
 {% block head %}
 <style type="text/css">
