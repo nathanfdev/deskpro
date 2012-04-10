@@ -1,9 +1,0 @@
-<a href="{{ path('dev_lang_index') }}">Back</a>
-
-<form method="post">
-    From <input type="text" name="from" /> to <input type="text" name="to" /> in:<br />
-    {% for bundle in bundles %}
-        <input type="checkbox" name="bundles[]" value="{{bundle}}"> {{bundle}}<br />
-    {% endfor %}<br />
-    <input type="submit" value="Replace" /> <input type="checkbox" value="1" name="prefix"> Prefix replace
-</form>

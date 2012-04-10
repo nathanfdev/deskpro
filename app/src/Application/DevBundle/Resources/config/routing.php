@@ -97,27 +97,6 @@ $collection->add('dev_lang_index', new Route(
 	array()
 ));
 
-$collection->add('dev_lang_list_langfiles', new Route(
-	'/lang/list/langfiles',
-	array('_controller' => 'DevBundle:Language:listLanguageFiles'),
-	array(),
-	array()
-));
-
-$collection->add('dev_lang_list_phpfiles', new Route(
-	'/lang/list/phpfiles',
-	array('_controller' => 'DevBundle:Language:listPhpFiles'),
-	array(),
-	array()
-));
-
-$collection->add('dev_lang_list_twigfiles', new Route(
-	'/lang/list/twigfiles',
-	array('_controller' => 'DevBundle:Language:listTwigFiles'),
-	array(),
-	array()
-));
-
 $collection->add('dev_lang_check_langfiles', new Route(
 	'/lang/check/langfiles',
 	array('_controller' => 'DevBundle:Language:checkLanguageFiles'),
@@ -139,44 +118,9 @@ $collection->add('dev_lang_find_phrases_twig', new Route(
 	array()
 ));
 
-$collection->add('dev_lang_replace_phrases', new Route(
-    '/lang/replace/phrases',
-    array('_controller' => 'DevBundle:Language:replacePhraseIds'),
-    array(),
-    array()
-));
-
-$collection->add('dev_lang_test_lexer', new Route(
-	'/lang/test/lexer',
-	array('_controller' => 'DevBundle:Language:testLexer'),
-	array(),
-	array()
-));
-
-$collection->add('dev_lang_test_tokenizer', new Route(
-	'/lang/test/tokenizer',
-	array('_controller' => 'DevBundle:Language:testTokenizer'),
-	array(),
-	array()
-));
-
-$collection->add('dev_lang_find_foreign', new Route(
-    '/lang/find/foreign/{bundle}',
-    array('_controller' => 'DevBundle:Language:findForeignIds'),
-    array(),
-    array()
-));
-
 $collection->add('dev_lang_export_all_po', new Route(
     '/lang/export/all/po',
     array('_controller' => 'DevBundle:Language:exportAllToPO'),
-    array(),
-    array()
-));
-
-$collection->add('dev_lang_export_po', new Route(
-    '/lang/export/po/{package}',
-    array('_controller' => 'DevBundle:Language:exportToPO'),
     array(),
     array()
 ));

@@ -1,24 +1,8 @@
 <ul>
-    <li><a href="{{ path('dev_lang_list_langfiles') }}">List language files</a></li>
-    <li><a href="{{ path('dev_lang_list_twigfiles') }}">List twig files</a></li>
-    <li><a href="{{ path('dev_lang_list_phpfiles') }}">List php files</a></li>
-    <hr />
     <li><a href="{{ path('dev_lang_find_phrases_php') }}">Find phrases in php files</a></li>
     <li><a href="{{ path('dev_lang_find_phrases_twig') }}">Find phrases in twig files</a></li>
     <hr />
     <li><a href="{{ path('dev_lang_check_langfiles') }}">Check language files</a></li>
-    <li><a href="{{ path('dev_lang_replace_phrases') }}">Replace phrases</a></li>
-    <hr />
-    <li><a href="{{ path('dev_lang_test_lexer') }}">Test Twig Preserving Lexer</a></li>
-    <li><a href="{{ path('dev_lang_test_tokenizer') }}">Test PHP Tokenizer</a></li>
     <hr />
     <li><a href="{{ path('dev_lang_export_all_po') }}" target="_blank">Export all to PO</a></li>
-    {% for package in packages %}
-    <li><a href="{{ path('dev_lang_export_po', {'package':package}) }}" target="_blank">Export {{package}} to PO</a></li>
-    {% endfor %}
-    <hr />
-
-    {% for bundle, lang in bundle_map %}
-    <li><a href="{{ path('dev_lang_find_foreign', {'bundle': bundle}) }}">Find foreign phrases in {{bundle}} </a></li>
-    {% endfor %}
 </ul>
