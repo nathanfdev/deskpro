@@ -580,7 +580,7 @@ class LanguageController extends Controller
     public function globaliseString($content, $id, $twig_phrases, $php_phrases)
     {
         list($by_id, $by_content) = $this->parseLangFiles();
-        $rootdir = DP_ROOT.'/languages/DeskPRO';
+        $rootdir = DP_ROOT.'/languages';
         
         $parts = explode('.', $id, 3);
         
@@ -590,7 +590,7 @@ class LanguageController extends Controller
         }
         else {
             $package = $parts[0];
-            $file = $parts[1];
+            $filename = $parts[1];
         }
 
         $files = $by_content[$content];
@@ -624,12 +624,12 @@ class LanguageController extends Controller
             file_put_contents($file['filename'], $data);
         }
 
-        $global = require($rootdir.'/'.$package.'/'.$file.'.php');
+        $global = require($rootdir.'/'.$package.'/'.$filename.'.php');
 
         if(!isset($global[$id])) {
             $global[$id] = $content;
             $data = '<?php return '.var_export($global, true).';';
-            file_put_contents($rootdir.'/global/global.php', $data);
+            file_put_contents($rootdir.'/'.$package.'/'.$filename.'.php', $data);
         }
 
         list($by_id, ) = $twig_phrases;
