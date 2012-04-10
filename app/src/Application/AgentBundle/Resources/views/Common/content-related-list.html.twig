@@ -7,7 +7,7 @@
 		<ul class="related-list">
 			{% for article in related_content.articles %}
 				<li class="related-content articles-{{article.id}}" data-content-type="articles" data-content-id="{{ article.id }}">
-					<button class="clean-white small remove noedit-hide">{{ phrase('agent.ucfirst_remove') }}</button>
+					<button class="clean-white small remove noedit-hide">{{ phrase('agent.remove') }}</button>
 					<a class="link-title link-route with-route" data-route="page:{{ object_path_agent(article) }}">{{ article.title }}</a>
 				</li>
 			{% endfor %}
@@ -18,7 +18,7 @@
 		<ul class="related-list">
 			{% for download in related_content.downloads %}
 				<li class="related-content downloads-{{download.id}}" data-content-type="articles" data-content-id="{{ download.id }}">
-					<button class="clean-white small remove noedit-hide">{{ phrase('agent.ucfirst_remove') }}</button>
+					<button class="clean-white small remove noedit-hide">{{ phrase('agent.remove') }}</button>
 					<a class="link-title link-route with-route" data-route="page:{{ object_path_agent(download) }}">{{ download.title }}</a>
 				</li>
 			{% endfor %}
@@ -29,7 +29,7 @@
 		<ul class="related-list">
 			{% for news in related_content.news %}
 				<li class="related-content news-{{news.id}}" data-content-type="news" data-content-id="{{ news.id }}">
-					<button class="clean-white small remove noedit-hide">{{ phrase('agent.ucfirst_remove') }}</button>
+					<button class="clean-white small remove noedit-hide">{{ phrase('agent.remove') }}</button>
 					<a class="link-title link-route with-route" data-route="page:{{ object_path_agent(news) }}">{{ news.title }}</a>
 				</li>
 			{% endfor %}
@@ -41,7 +41,7 @@
 		<ul class="related-list">
 			{% for feedback in related_content.feedback %}
 				<li class="related-content feedback-{{feedback.id}}" data-content-type="feedback" data-content-id="{{ feedback.id }}">
-					<button class="clean-white small remove noedit-hide">{{ phrase('agent.ucfirst_remove') }}</button>
+					<button class="clean-white small remove noedit-hide">{{ phrase('agent.remove') }}</button>
 					<a class="link-title link-route with-route" data-route="page:{{ object_path_agent(feedback) }}">{{ feedback.title }}</a>
 				</li>
 			{% endfor %}

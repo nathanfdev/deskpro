@@ -285,7 +285,7 @@
   'agent.tickets' => 'Tickets',
   'agent.articles' => 'Articles',
   'agent.labels' => 'Labels',
-  'agent.ucfirst_remove' => 'Remove',
+  'agent.remove' => 'Remove',
   'agent.category' => 'Category',
   'agent.done' => 'Done',
   'agent.status' => 'Status',

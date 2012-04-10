@@ -156,6 +156,7 @@ class LanguageController extends Controller
             $this->fixMissing($missing);
         }
 
+        $vars['instances']['file'] = array();
         $vars['missing'] = $missing;
 
         return $this->render('DevBundle:Language:find.phrases.html.twig', $vars);
