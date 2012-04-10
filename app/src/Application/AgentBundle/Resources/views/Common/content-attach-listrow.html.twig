@@ -10,41 +10,41 @@
 				<input type="blob_append[]" value="{{ blob.id }}" checked="checked" />
 				{{ phrase('agent.global.list_as_an_attachment_to_the_article') }}
 			</label>
-			{{ phrase('agent.common.andor') }} <a href="" class="insert-link" data-blob-id="{{ blob.id }}">{{ phrase('agent.common.link_to_the_file_from_within_the_article') }}</a>
+			{{ phrase('agent.andor') }} <a href="" class="insert-link" data-blob-id="{{ blob.id }}">{{ phrase('agent.link_to_the_file_from_within_the_article') }}</a>
 			<div class="insert-controls-overlay">
 				<div class="overlay-title" style="padding:  6px;">
-					{{ phrase('agent.common.insert_title', {'title':blob.display_title}) }}
+					{{ phrase('agent.insert_title', {'title':blob.display_title}) }}
 				</div>
 				<div class="overlay-content" style="padding-bottom: 15px; max-height: 500px overflow: auto;">
 
 					<strong>{{ phrase('agent.global.url') }}</strong><br />
 					<input type="hidden" class="insert-url-code" value="![attach:{{ blob.id }} url]" />
 					<button class="dp-button">{{ phrase('agent.global.insert') }} {{ phrase('agent.global.url') }}</button><br />
-					{{ phrase('agent.common.this_will_insert_a_plaintext_url_to_the') }}
+					{{ phrase('agent.this_will_insert_a_plaintext_url_to_the') }}
 
 					<hr />
 
-					<strong>{{ phrase('agent.common.link') }}</strong><br />
+					<strong>{{ phrase('agent.link') }}</strong><br />
 					<input type="hidden" class="insert-link-code" value="![attach:{{ blob.id }} link:{{ '{{label}}' }}]" />
-					{{ phrase('agent.global.label') }}: <input type="text" class="link-label" value="{{ blob.display_title }}" /> <button class="dp-button">{{ phrase('agent.common.insert_link') }}</button><br />
-					{{ phrase('agent.common.this_will_insert_a_link_to_the_file') }}
+					{{ phrase('agent.global.label') }}: <input type="text" class="link-label" value="{{ blob.display_title }}" /> <button class="dp-button">{{ phrase('agent.insert_link') }}</button><br />
+					{{ phrase('agent.this_will_insert_a_link_to_the_file') }}
 
 					{% if blob.isImage() %}
 						<hr />
 
-						<strong>{{ phrase('agent.common.full_image') }}</strong>
+						<strong>{{ phrase('agent.full_image') }}</strong>
 						<input type="hidden" class="insert-image-code" value="![attach:{{ blob.id }} image]" />
-						<button class="dp-button">{{ phrase('agent.common.insert_image') }}</button><br />
-						{{ phrase('agent.common.this_will_insert_the_fullsized_image') }}
+						<button class="dp-button">{{ phrase('agent.insert_image') }}</button><br />
+						{{ phrase('agent.this_will_insert_the_fullsized_image') }}
 
 						<hr />
 
-						<strong>{{ phrase('agent.common.linked_thumbnail') }}</strong>
+						<strong>{{ phrase('agent.linked_thumbnail') }}</strong>
 						<input type="hidden" class="insert-thumb-code" value="![attach:{{ blob.id }} thumb:{{ '{{width}},{{height}}' }}]" />
-						{{ phrase('agent.common.width') }}: <input type="text" class="thumb-width" value="50" />
-						{{ phrase('agent.common.height') }}: <input type="text" class="thumb-height" value="50" />
-						<button class="dp-button">{{ phrase('agent.common.insert_thumbnail') }}</button><br />
-						{{ phrase('agent.common.this_will_insert_a_thumbnail_image_that_links') }}
+						{{ phrase('agent.width') }}: <input type="text" class="thumb-width" value="50" />
+						{{ phrase('agent.height') }}: <input type="text" class="thumb-height" value="50" />
+						<button class="dp-button">{{ phrase('agent.insert_thumbnail') }}</button><br />
+						{{ phrase('agent.this_will_insert_a_thumbnail_image_that_links') }}
 					{% endif %}
 				</div>
 			</div>

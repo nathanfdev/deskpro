@@ -123,13 +123,13 @@
 							</div>
 							<div class="input">
 								<select name="contact_data[{{ contact.id }}][service]">
-									<option {% if contact.service == 'aim' %} {% endif %} value="aim">{{ phrase('agent.common.aim') }}</option>
-									<option {% if contact.service == 'msn' %} {% endif %} value="msn">{{ phrase('agent.common.msn') }}</option>
-									<option {% if contact.service == 'yim' %} {% endif %} value="yim">{{ phrase('agent.common.yim') }}</option>
-									<option {% if contact.service == 'icq' %} {% endif %} value="icq">{{ phrase('agent.common.icq') }}</option>
-									<option {% if contact.service == 'skype' %} {% endif %} value="icq">{{ phrase('agent.common.skype') }}</option>
-									<option {% if contact.service == 'gtalk' %} {% endif %} value="gtalk">{{ phrase('agent.common.gtalk') }}</option>
-									<option {% if contact.service == 'other' %} {% endif %} value="other">{{ phrase('agent.common.other') }}</option>
+									<option {% if contact.service == 'aim' %} {% endif %} value="aim">{{ phrase('agent.aim') }}</option>
+									<option {% if contact.service == 'msn' %} {% endif %} value="msn">{{ phrase('agent.msn') }}</option>
+									<option {% if contact.service == 'yim' %} {% endif %} value="yim">{{ phrase('agent.yim') }}</option>
+									<option {% if contact.service == 'icq' %} {% endif %} value="icq">{{ phrase('agent.icq') }}</option>
+									<option {% if contact.service == 'skype' %} {% endif %} value="icq">{{ phrase('agent.skype') }}</option>
+									<option {% if contact.service == 'gtalk' %} {% endif %} value="gtalk">{{ phrase('agent.gtalk') }}</option>
+									<option {% if contact.service == 'other' %} {% endif %} value="other">{{ phrase('agent.other') }}</option>
 								</select>
 								<input type="text" size="15" class="single-input" name="contact_data[{{ contact.id }}][username]" value="{{ contact.url }}" placeholder="{{ phrase('agent.people.im_account_placeholder') }}" />
 							</div>
@@ -151,13 +151,13 @@
 					</div>
 					<div class="input">
 						<select name="new_contact_data[instant_message][%id%][service]">
-							<option {% if contact.service == 'aim' %} {% endif %} value="aim">{{ phrase('agent.common.aim') }}</option>
-							<option {% if contact.service == 'msn' %} {% endif %} value="msn">{{ phrase('agent.common.msn') }}</option>
-							<option {% if contact.service == 'yim' %} {% endif %} value="yim">{{ phrase('agent.common.yim') }}</option>
-							<option {% if contact.service == 'icq' %} {% endif %} value="icq">{{ phrase('agent.common.icq') }}</option>
-							<option {% if contact.service == 'skype' %} {% endif %} value="icq">{{ phrase('agent.common.skype') }}</option>
-							<option {% if contact.service == 'gtalk' %} {% endif %} value="gtalk">{{ phrase('agent.common.gtalk') }}</option>
-							<option {% if contact.service == 'other' %} {% endif %} value="other">{{ phrase('agent.common.other') }}</option>
+							<option {% if contact.service == 'aim' %} {% endif %} value="aim">{{ phrase('agent.aim') }}</option>
+							<option {% if contact.service == 'msn' %} {% endif %} value="msn">{{ phrase('agent.msn') }}</option>
+							<option {% if contact.service == 'yim' %} {% endif %} value="yim">{{ phrase('agent.yim') }}</option>
+							<option {% if contact.service == 'icq' %} {% endif %} value="icq">{{ phrase('agent.icq') }}</option>
+							<option {% if contact.service == 'skype' %} {% endif %} value="icq">{{ phrase('agent.skype') }}</option>
+							<option {% if contact.service == 'gtalk' %} {% endif %} value="gtalk">{{ phrase('agent.gtalk') }}</option>
+							<option {% if contact.service == 'other' %} {% endif %} value="other">{{ phrase('agent.other') }}</option>
 						</select>
 						<input type="text" size="15" class="single-input" name="new_contact_data[instant_message][%id%][username]" value="" placeholder="{{ phrase('agent.people.im_account_placeholder') }}" />
 					</div>
@@ -182,7 +182,7 @@
 								<span class="remove">x</span>
 							</div>
 							<div class="input">
-								<input type="text" size="15" class="single-input" name="contact_data[{{ contact.id }}][username]" value="{{ contact.url }}" placeholder="{{ phrase('agent.common.twitter_username') }}" />
+								<input type="text" size="15" class="single-input" name="contact_data[{{ contact.id }}][username]" value="{{ contact.url }}" placeholder="{{ phrase('agent.twitter_username') }}" />
 								<input type="hidden" name="contact_data[{{ contact.id }}][display_feed]" value="1" />
 							</div>
 							<div class="label">
@@ -202,7 +202,7 @@
 						<span class="remove">x</span>
 					</div>
 					<div class="input">
-						<input type="text" size="15" class="single-input" name="new_contact_data[twitter][%id%][username]" value="{{ contact.url }}" placeholder="{{ phrase('agent.common.twitter_username') }}" />
+						<input type="text" size="15" class="single-input" name="new_contact_data[twitter][%id%][username]" value="{{ contact.url }}" placeholder="{{ phrase('agent.twitter_username') }}" />
 						<input type="hidden" name="new_contact_data[twitter][%id%][display_feed]" />
 					</div>
 					<div class="label">
@@ -217,7 +217,7 @@
 		 ############################################}
 
 		 <div class="row-type linkedin {% if contact_data.linkedin|length %}with-values{% endif %}">
-			<h4>{{ phrase('agent.common.linkedin') }}</h4>
+			<h4>{{ phrase('agent.linkedin') }}</h4>
 			<div class="contact-info">
 				<ul>
 					{% for contact in contact_data.linkedin %}
@@ -226,7 +226,7 @@
 								<span class="remove">x</span>
 							</div>
 							<div class="input">
-								<input type="text" size="15" name="contact_data[{{ contact.id }}][profile_url]" value="{{ contact.url }}" placeholder="{{ phrase('agent.common.linkedin_url') }}" />
+								<input type="text" size="15" name="contact_data[{{ contact.id }}][profile_url]" value="{{ contact.url }}" placeholder="{{ phrase('agent.linkedin_url') }}" />
 							</div>
 							<div class="label">
 								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('agent.global.add_a_label') }}" />
@@ -245,7 +245,7 @@
 						<span class="remove">x</span>
 					</div>
 					<div class="input">
-						<input type="text" size="15" class="single-input" name="new_contact_data[linkedin][%id%][profile_url]" value="{{ contact.url }}" placeholder="{{ phrase('agent.common.linkedin_url') }}" />
+						<input type="text" size="15" class="single-input" name="new_contact_data[linkedin][%id%][profile_url]" value="{{ contact.url }}" placeholder="{{ phrase('agent.linkedin_url') }}" />
 					</div>
 					<div class="label">
 						<input type="text" size="8" name="new_contact_data[linkedin][%id%][comment]" value="" placeholder="{{ phrase('agent.global.add_a_label') }}" />

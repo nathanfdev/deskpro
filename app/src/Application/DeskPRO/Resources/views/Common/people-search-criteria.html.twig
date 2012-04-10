@@ -11,7 +11,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('agent.common.choose_criteria') }}" data-rule-type="">
+	<div class="type" title="{{ phrase('agent.choose_criteria') }}" data-rule-type="">
 	</div>
 {% endif %}
 
@@ -70,12 +70,12 @@
 {% endif %}
 
 {% if 'person_date_created' not in no_show_fields %}
-<div class="type" title="{{ phrase('agent.common.date_created') }}" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="created">
+<div class="type" title="{{ phrase('agent.date_created') }}" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="created">
 	<div class="op">
 		<select name="op" class="op">
-			<option value="lte">{{ phrase('agent.common.before') }}</option>
-			<option value="gte">{{ phrase('agent.common.after') }}</option>
-			<option value="between">{{ phrase('agent.common.between') }}</option>
+			<option value="lte">{{ phrase('agent.before') }}</option>
+			<option value="gte">{{ phrase('agent.after') }}</option>
+			<option value="between">{{ phrase('agent.between') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -90,7 +90,7 @@
 		<select name="op">
 			<option value="contains">{{ phrase('agent.global.contains') }}</option>
 			<option value="notcontains">{{ phrase('agent.global.does_not_contain') }}</option>
-			<option value="is">{{ phrase('agent.common.is_exactly') }}</option>
+			<option value="is">{{ phrase('agent.is_exactly') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -188,7 +188,7 @@
 	{% set op_lang = {'is': phrase('agent.global.is'), 'not': phrase('agent.global.is_not'), 'contains': phrase('agent.global.contains'), 'notcontains': phrase('agent.global.does_not_contain'), 'gt': 'is greater than', 'lt': 'is less than'} %}
 	{% for field in term_options.custom_people_fields %}
 	{% if field.field_def.getFilterCapabilities(search_context) %}
-	<div class="type" title="{{ phrase('agent.common.field_name', {'field':field.field_def.title}) }}" data-rule-group="Person Fields" data-rule-type="person_field[{{field.field_def.id}}]">
+	<div class="type" title="{{ phrase('agent.field_name', {'field':field.field_def.title}) }}" data-rule-group="Person Fields" data-rule-type="person_field[{{field.field_def.id}}]">
 		<div class="op">
 			<select name="op">
 				{% if search_context == 'filter' %}
