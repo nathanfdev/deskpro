@@ -11,7 +11,7 @@
 
 	<h3>{{ phrase('user.resend_validation_email') }}</h3>
 	<p>
-		{{ phrase('user.resend_validate_you_will_receive_an_email') }}
+		{{ phrase('user.validation_email_sent') }}
 		<br /><br />
 		<form action="{{ path('user_profile_emails_validate_sendlink', {'email_id': email.id}) }}">
 			<input type="submit" value="Send validation email" />

@@ -9,7 +9,7 @@
 
 		{% if ticket.hidden_status == 'validating' %}
 			<p>
-				{{ phrase('user.tickets.check_you_email', {'email':ticket.person_email.email}) }}
+				{{ phrase('user.tickets.check_email', {'email':ticket.person_email.email}) }}
 			</p>
 		{% endif %}
 	</div>

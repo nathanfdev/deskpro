@@ -117,7 +117,7 @@
 
 					<div class="dp-related-search" id="dp_newfeedback_related_container" style="display: none">
 						<h4>{{ phrase('user.feedback.similar_title') }}</h4>
-						<div class="subline">{{ phrase('user.dont_worry_you_can_click_a_title_and') }}</div>
+						<div class="subline">{{ phrase('user.title_links_safe') }}</div>
 						<div class="dp-list results">
 						</div>
 						<div class="more-link" style="display: none;">
@@ -131,7 +131,7 @@
 
 					<div class="dp-form-row {% if error_fields['content'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
-							<label>{{ phrase('user.description') }} *</label> <em class="note">{{ phrase('user.feedback.label_desc_explain') }}</em>
+							<label>{{ phrase('user.description') }} *</label> <em class="note">{{ phrase('user.feedback.label_explain_feedback') }}</em>
 						</div>
 						<div class="dp-form-input">
 							{{ form_widget(form.content, {
@@ -169,8 +169,8 @@
 						</div>
 						<div class="dp-confirm-answered dp-control-section" style="display:none">
 							<p>{{ phrase('user.feedback.similar_same_confirm') }}</p>
-							<button class="btn small primary dp-answererd" data-type="close">{{ phrase('user.feedback.simialr_same_confirm_yes') }}</button>
-							<button class="btn small dp-answererd" data-type="ticket">{{ phrase('user.feedback.simialr_same_confirm_no') }}</button>
+							<button class="btn small primary dp-answererd" data-type="close">{{ phrase('user.feedback.similar_same_confirm_yes') }}</button>
+							<button class="btn small dp-answererd" data-type="ticket">{{ phrase('user.feedback.similar_same_confirm_no') }}</button>
 						</div>
 					</div>
 				</div>

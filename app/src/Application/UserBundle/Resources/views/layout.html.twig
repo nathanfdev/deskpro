@@ -84,7 +84,7 @@
 <div id="dp_search_assist" style="display: none;">
 	<div class="results"></div>
 	<div class="foot">
-		<h4>{{ phrase('user.search_did_you_find_it') }}</h4>
+		<h4>{{ phrase('user.is_search_relevant') }}</h4>
 		<ul>
 			<li class="ticket"><a href="{{ path('user_tickets_new') }}">{{ phrase('user.create_ticket') }}</a></li>
 			<li class="feedback"><a href="{{ path('user_feedback_newfeedback') }}">{{ phrase('user.create_feedback') }}</a></li>
@@ -130,7 +130,7 @@
 					</div>
 				</div>
 				<div class="dp-reset-sent" style="display: none">
-					{{ phrase('user.lost_password_sent_explain') }}
+					{{ phrase('user.lost_password_sent') }}
 					<center><br /><br /><a class="back">{{ phrase('user.lost_password_back_btn') }}</a></center>
 				</div>
 			</div>
@@ -146,7 +146,7 @@
 		<div id="dp_search_bar" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
 			<form action="{{ path('user_search') }}" method="GET">
 				<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td width="100%" style="padding-right: 16px;">
-					<input type="text" name="q" id="deskpro_search" {% if app.search_query %}value="{{ app.search_query }}"{% endif %} placeholder="{{ phrase('user.comments_enter_question_topic_or_keyword') }}" autocomplete="off" />
+					<input type="text" name="q" id="deskpro_search" {% if app.search_query %}value="{{ app.search_query }}"{% endif %} placeholder="{{ phrase('user.comments_enter_details') }}" autocomplete="off" />
 				</td><td width="50">
 					<button class="btn primary">{{ phrase('user.search') }}</button>
 				</td></tr></table>

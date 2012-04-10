@@ -2,7 +2,7 @@
 {% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
 {% block content %}
 	{{ layout.section_start() }}
-    {{ phrase('user.emails.thank_you_for_registering_please_validate_with_the_following_link') }}<br />
+    {{ phrase('user.emails.you_registered') }}<br />
 		<a href="{{ url('user_validate_email', {'id': vemail.id, 'auth': vemail.auth}) }}">
 	{{ layout.section_end() }}
 {% endblock %}

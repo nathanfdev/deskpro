@@ -1,7 +1,7 @@
 {% extends 'DeskPRO:emails_user:layout.html.twig' %}
 {% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
 {% block email_teaser_link %}
-	{{ phrase('user.emails.view_your_feedback_online_at') }}:<br />
+	{{ phrase('user.emails.view_feedback') }}:<br />
 	<a href="{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}">
 		{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}
 	</a>
@@ -9,16 +9,16 @@
 {% block content %}
 	{{ layout.section_start() }}
 		{% if show == 'validated' %}
-        {{ phrase('user.emails.your_feedback_had_been_validated_and_will_be_made_public', {'title':feedback.title}) }}
+        {{ phrase('user.emails.feedback_published', {'title':feedback.title}) }}
 		{% elseif show == 'closed' %}
-            {{ phrase('user.emails.your_feedback_was_closed', {'title':feedback.title, 'status':feedback.status_category.title}) }}
+            {{ phrase('user.emails.feedback_closed', {'title':feedback.title, 'status':feedback.status_category.title}) }}
         {% elseif show == 'closed' %}
-            {{ phrase('user.emails.your_feedback_has_been_updated', {'title': feedback.title, 'status':feedback.statuscategory.title}) }}
+            {{ phrase('user.emails.feedback_updated', {'title': feedback.title, 'status':feedback.statuscategory.title}) }}
         {% endif %}
 	{{ layout.section_end() }}
 
 	{{ layout.section_start() }}
-        {{ phrase('user.emails.your_feedback_has_count_votes', {'count': feedback.votes}) }}
+        {{ phrase('user.emails.feedback_votes', {'count': feedback.votes}) }}
 		<a href="{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}">
 			{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}
 		</a>

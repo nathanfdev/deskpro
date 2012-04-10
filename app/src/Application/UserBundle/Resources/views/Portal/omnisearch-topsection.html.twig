@@ -49,7 +49,7 @@
 			{% set phrase_link3 %}
 			<a href="" class="example-query">{{ phrase('user.portal.latest_version_download') }}</a>
 			{% endset %}
-			{{ phrase('user.portal.example_or_example', {'link1':phrase_link1,'link2':phrase_link2,'link3':phrase_link3}) }}
+			{{ phrase('user.portal.example_list', {'link1':phrase_link1,'link2':phrase_link2,'link3':phrase_link3}) }}
 		</div>
 
 		<div id="omni_search_menu_wrap">
@@ -59,7 +59,7 @@
 				</div>
 
 				<div class="create">
-					<p>{{ phrase('user.portal.not_what_you_are_looking_for') }}</p>
+					<p>{{ phrase('user.portal.are_results_relevant') }}</p>
 					<ul class="links">
 						<li class="ticket"><a href="{{ path('user_tickets_new') }}"><span>{{ phrase('user.portal.submit_new_ticket') }}</span></a></li>
 						<li class="feedback"><a href="{{ path('user_feedback_newfeedback') }}"><span>{{ phrase('user.submit_feedback') }}</span></a></li>

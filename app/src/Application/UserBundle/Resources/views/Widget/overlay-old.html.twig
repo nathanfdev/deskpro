@@ -40,7 +40,7 @@
 
 <div id="left_pane">
 	<div class="related-title">
-		{{ phrase('user.register_weve_found_similar_results') }}
+		{{ phrase('user.register_similar_results') }}
 		<span id="cancel_related">x</span>
 	</div>
 	<div class="search-area">
@@ -100,7 +100,7 @@
 										}
 									}) }}
 						<div class="dp-error-explain">
-							{{ phrase('user.register_please_enter_name') }}
+							{{ phrase('user.register_enter_name') }}
 						</div>
 					</div>
 				</div>
@@ -120,7 +120,7 @@
 						</div>
 						{% endif %}
 						<div class="dp-error-explain">
-							{{ phrase('user.register_please_enter_name') }}
+							{{ phrase('user.register_enter_name') }}
 						</div>
 					</div>
 				</div>
@@ -194,7 +194,7 @@
 									}
 								}) }}
 						<div class="dp-error-explain">
-							{{ phrase('user.register_please_enter_name') }}
+							{{ phrase('user.register_enter_name') }}
 						</div>
 					</div>
 				</div>
@@ -214,7 +214,7 @@
 						</div>
 						{% endif %}
 						<div class="dp-error-explain">
-							{{ phrase('user.register_please_enter_name') }}
+							{{ phrase('user.register_enter_name') }}
 						</div>
 					</div>
 				</div>
@@ -273,7 +273,7 @@
 
 		<div class="dp-form-row {% if error_fields['content'] %}dp-error{% endif %}">
 			<div class="dp-form-label">
-				<label>{{ phrase('user.description') }} *</label> <em class="note">{{ phrase('user.feedback.label_desc_explain') }}</em>
+				<label>{{ phrase('user.description') }} *</label> <em class="note">{{ phrase('user.feedback.label_explain_feedback') }}</em>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(feedbackform.content, {
@@ -322,7 +322,7 @@
 					<div class="dp-form-input">
 						<input type="text" class="name-field" id="dp_newchat_name" name="name" value="" placeholder="{{ phrase('user.your_name') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 						<div class="dp-error-explain">
-							{{ phrase('user.register_please_enter_name') }}
+							{{ phrase('user.register_enter_name') }}
 						</div>
 					</div>
 				</div>
@@ -342,7 +342,7 @@
 					<div class="dp-form-input">
 						<input type="text" class="email-field" id="dp_newchat_email" name="email" value="" placeholder="{{ phrase('user.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 						<div class="dp-error-explain">
-							{{ phrase('user.register_please_enter_name') }}
+							{{ phrase('user.register_enter_name') }}
 						</div>
 					</div>
 				</div>
@@ -385,8 +385,8 @@
 	</form>
 
 	<div class="thank-you" id="dp_newchat_done" style="display: none">
-		<h2>{{ phrase('user.register_please_wait') }}</h2>
-		<p>{{ phrase('user.register_please_wait_while') }}</p>
+		<h2>{{ phrase('user.register_wait') }}</h2>
+		<p>{{ phrase('user.register_wait_while') }}</p>
 	</div>
 </div>
 </div>

@@ -6,14 +6,14 @@ RE: {{ ticket.subject }}
 {% block content %}
 	{% set content %}
 		{{ layout.greeting(person) }}
-        {{ phrase('user.emails.thanks_you_for_your_reply_we_will_get_back_to_you') }}
+        {{ phrase('user.emails.you_replied') }}
 	{% endset %}
 	{{ layout.section('', content) }}
 
 	{{ layout.render_ticket_messages(messages, '', { highlight_top: 1}) }}
 
 	{% set content %}
-        {{ phrase('user.view_and_manage_ticket_online') }}
+        {{ phrase('user.access_ticket_online') }}
 		<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}" style="{{ layout.link_style() }}">
 			{{ url_display('user_tickets_view', {'ticket_ref': ticket.access_code}) }}
 		</a>

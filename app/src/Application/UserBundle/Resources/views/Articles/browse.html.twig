@@ -54,7 +54,7 @@
 						<div class="dp-meta">
 							{{ phrase('user.articles.meta_author', {'author': article.person.display_name}) }}
 							&middot;
-							{{ phrase('user.1_commentcount_comments', {'count': comment_counts[article.id]|default(0)}) }}
+							{{ phrase('user.count_comments', {'count': comment_counts[article.id]|default(0)}) }}
 						</div>
 					</li>
 					{% endfor %}

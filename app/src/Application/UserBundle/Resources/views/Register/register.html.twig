@@ -63,7 +63,7 @@
 						<div class="dp-form-input">
 							{{ form_widget(form.name) }}
 							<div class="dp-error-explain">
-								{{ phrase('user.register_please_enter_name') }}
+								{{ phrase('user.register_enter_name') }}
 							</div>
 						</div>
 					</div>
@@ -74,8 +74,8 @@
 						</div>
 						<div class="dp-form-input">
 							{{ form_widget(form.email) }}
-							{% if errors['email.invalid'] %}<div class="dp-error-explain">{{ phrase('user.register_please_enter_valid_email') }}</div>{% endif %}
-							{% if errors['email.in_use'] %}<div class="dp-error-explain">{{ phrase('user.register_email_address_exists_already') }}</div>{% endif %}
+							{% if errors['email.invalid'] %}<div class="dp-error-explain">{{ phrase('user.register_enter_valid_email') }}</div>{% endif %}
+							{% if errors['email.in_use'] %}<div class="dp-error-explain">{{ phrase('user.register_email_exists') }}</div>{% endif %}
 						</div>
 					</div>
 
@@ -86,7 +86,7 @@
 						<div class="dp-form-input">
 							{{ form_widget(form.password) }}
 						</div>
-						{% if errors['password.short'] %}<div class="dp-error-explain">{{ phrase('user.register_password_must_be_at_least') }}</div>{% endif %}
+						{% if errors['password.short'] %}<div class="dp-error-explain">{{ phrase('user.register_password_min_length') }}</div>{% endif %}
 						{% if errors['password.mismatch'] %}<div class="dp-error-explain">{{ phrase('user.register_password_mismatch') }}</div>{% endif %}
 					</div>
 
