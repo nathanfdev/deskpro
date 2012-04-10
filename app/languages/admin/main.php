@@ -48,4 +48,6 @@
   'admin.main.api' => 'API',
   'admin.main.editor' => 'Editor',
   'admin.main.email_notification_templates' => 'Email Notification Templates',
+  'admin.main.settings_and_features' => 'Settings &amp; Features',
+  'admin.main.portal_and_site_integration' => 'Portal &amp; Site Integration',
 );
