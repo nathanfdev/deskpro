@@ -1,12 +1,12 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_subject %}
-    {{ phrase('user.emails_user.re_subject', {'subject':ticket.subject}) }}
+    {{ phrase('user.emails.re_subject', {'subject':ticket.subject}) }}
 {% endblock %}
 {% block content %}
 	{% set content %}
 		{{ layout.greeting(person) }}
-		{{ phrase('user.emails_user.your_ticket_has_been_recieved_and_our_agents') }}
+		{{ phrase('user.emails.your_ticket_has_been_recieved_and_our_agents') }}
 	{% endset %}
 	{{ layout.section('', content) }}
 

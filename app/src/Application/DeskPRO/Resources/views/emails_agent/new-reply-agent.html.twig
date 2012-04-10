@@ -7,8 +7,8 @@
 {% endblock %}
 {% block content %}
 
-{% if is_new_agent_reply %}{{ phrase('agent.emails_agent.an_agent_has_replied', {'subject':ticket.subject}) }}
-{% elseif is_new_user_reply %}{{ phrase('agent.emails_agent.a_user_has_replied', {'subject':ticket.subject}) }}
+{% if is_new_agent_reply %}{{ phrase('agent.emails.an_agent_has_replied', {'subject':ticket.subject}) }}
+{% elseif is_new_user_reply %}{{ phrase('agent.emails.a_user_has_replied', {'subject':ticket.subject}) }}
 {% endif %}
 
 {{ layout.section('', content) }}
@@ -53,7 +53,7 @@
 	</tr>
 </table>
 {% endset %}
-{{ layout.section(phrase('agent.emails_agent.section_title_ticket_properties'), content) }}
+{{ layout.section(phrase('agent.emails.section_title_ticket_properties'), content) }}
 
 {{ layout.render_ticket_messages(messages, phrase('agent.global.messages')) }}
 

@@ -6,7 +6,7 @@ RE: {{ ticket.subject }}
 {% block content %}
 	{% set content %}
 		{{ layout.greeting(person) }}
-        {{ phrase('user.emails_user.thanks_you_for_your_reply_we_will_get_back_to_you') }}
+        {{ phrase('user.emails.thanks_you_for_your_reply_we_will_get_back_to_you') }}
 	{% endset %}
 	{{ layout.section('', content) }}
 

@@ -4,7 +4,7 @@
 	<!--ACCESS CODE: (#{{access_code_full}})-->
 	{% if is_first %}
 		{{ layout.section_start() }}
-            {{ phrase('user.emails_user.youve_been_included_in_a_ticket_started_by', {'name':ticket.person.display_name}) }}
+            {{ phrase('user.emails.youve_been_included_in_a_ticket_started_by', {'name':ticket.person.display_name}) }}
 		{{ layout.section_end() }}
 	{% endif %}
 

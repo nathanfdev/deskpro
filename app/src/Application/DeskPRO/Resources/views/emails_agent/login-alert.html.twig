@@ -2,28 +2,28 @@
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_subject %}
 	{% if success %}
-		{{ phrase('agent.emails_agent.alert_successful_login') }}
+		{{ phrase('agent.emails.alert_successful_login') }}
 	{% else %}
-		{{ phrase('agent.emails_agent.alert_failed_login') }}
+		{{ phrase('agent.emails.alert_failed_login') }}
 	{% endif %}
 {% endblock %}
 {% block content %}
 	{% set content %}
 		{% if success %}
-			{{ phrase('agent.emails_agent.notice_account_used_to_login') }}<br />
+			{{ phrase('agent.emails.notice_account_used_to_login') }}<br />
 		{% else %}
-			{{ phrase('agent.emails_agent.someone_tried_to_log_in_using_your_account') }}<br />
+			{{ phrase('agent.emails.someone_tried_to_log_in_using_your_account') }}<br />
 		{% endif %}
 
-		{{ phrase('agent.emails_agent.user_ip') }}: {{ session.visitor.ip_address }}<br />
+		{{ phrase('agent.emails.user_ip') }}: {{ session.visitor.ip_address }}<br />
 		{{ phrase('agent.global.user_agent') }}: {{ session.visitor.user_agent }}<br />
-		{{ phrase('agent.emails_agent.referring_page') }}: {{ session.visitor.ref_page|default('n/a') }}<br />
+		{{ phrase('agent.emails.referring_page') }}: {{ session.visitor.ref_page|default('n/a') }}<br />
 		{{ phrase('agent.global.landing_page') }}: {{ session.visitor.landing_page|default('n/a') }}<br />
-		{{ phrase('agent.emails_agent.first_seen') }}: {{ session.visitor.date_created|date('fulltime') }}<br />
+		{{ phrase('agent.emails.first_seen') }}: {{ session.visitor.date_created|date('fulltime') }}<br />
 	{% endset %}
 	{% if success %}
-		{{ layout.section(phrase('agent.emails_agent.alert_successful_login'), content) }}
+		{{ layout.section(phrase('agent.emails.alert_successful_login'), content) }}
 	{% else %}
-		{{ layout.section(phrase('agent.emails_agent.alert_failed_login'), content) }}
+		{{ layout.section(phrase('agent.emails.alert_failed_login'), content) }}
 	{% endif %}
 {% endblock %}

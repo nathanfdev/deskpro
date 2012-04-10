@@ -1,8 +1,8 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
-{% block email_subject %}{{ phrase('agent.emails_agent.subject_new_ticket', { ticket_subject: ticket.subject }) }}{% endblock %}
+{% block email_subject %}{{ phrase('agent.emails.subject_new_ticket', { ticket_subject: ticket.subject }) }}{% endblock %}
 {% block content %}
-{% set content %}{{ phrase('agent.emails_agent.a_new_ticket_has_been_created') }}{% endset %}
+{% set content %}{{ phrase('agent.emails.a_new_ticket_has_been_created') }}{% endset %}
 {{ layout.section('', content) }}
 
 {% set content %}
@@ -45,7 +45,7 @@
 	</tr>
 </table>
 {% endset %}
-{{ layout.section(phrase('agent.emails_agent.section_title_ticket_properties'), content) }}
+{{ layout.section(phrase('agent.emails.section_title_ticket_properties'), content) }}
 
 {{ layout.render_ticket_messages(messages, phrase('agent.global.messages')) }}
 

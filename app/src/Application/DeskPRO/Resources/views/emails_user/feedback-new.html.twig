@@ -2,7 +2,7 @@
 {% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
 {% block email_teaser_link %}
 	{% if feedback.status == 'visible' %}
-		{{ phrase('user.emails_user.view_your_feedback_online_at') }}:<br />
+		{{ phrase('user.emails.view_your_feedback_online_at') }}:<br />
 		<a href="{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}">
 			{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}
 		</a>
@@ -10,12 +10,12 @@
 {% endblock %}
 {% block content %}
 	{{ layout.section_start() }}
-		<p>{{ phrase('user.emails_user.thank_you_for_feedback', {'title':feedback.title}) }}</p>
+		<p>{{ phrase('user.emails.thank_you_for_feedback', {'title':feedback.title}) }}</p>
 		{% if validating %}
 			{% if feedback.status == 'visible' %}
-                {{ phrase('user.emails_user.validate_by_clicking_link') }}
+                {{ phrase('user.emails.validate_by_clicking_link') }}
 			{% else %}
-                {{ phrase('user.emails_user.before_your_feedback_will_be_displayed_you_must_validate') }}
+                {{ phrase('user.emails.before_your_feedback_will_be_displayed_you_must_validate') }}
 			{% endif %}
 			{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
 		{% endif %}

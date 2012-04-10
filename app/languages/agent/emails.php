@@ -1,0 +1,20 @@
+<?php return array (
+  'agent.emails.login_url' => 'Login URL',
+  'agent.emails.your_initial_password' => 'Your initial password',
+  'agent.emails.someone_tried_to_log_in_using_your_account' => 'Someone tried to log in using your account.',
+  'agent.emails.user_ip' => 'User IP',
+  'agent.emails.referring_page' => 'Referring Page',
+  'agent.emails.first_seen' => 'First Seen',
+  'agent.emails.a_new_ticket_has_been_created' => 'A new ticket has been created',
+  'agent.emails.an_agent_has_replied' => 'An agent has replied to "{{subject}}"',
+  'agent.emails.a_user_has_replied' => 'A user has replied to "{{subject}}"',
+  'agent.emails.section_title_ticket_properties' => 'Ticket Properties',
+  'agent.emails.ticket_updated' => '"{{subject}}" has been updated.',
+  'agent.emails.ticket_created_link' => '{{name}} &lt;{{email}}&gt; has created an agent account for you on {{link}}',
+  'agent.emails.alert_successful_login' => 'Successful Login Alert',
+  'agent.emails.alert_failed_login' => 'Failed Login Attempt Alert',
+  'agent.emails.notice_account_used_to_login' => 'Your account was used to successfully log in.',
+
+	'agent.emails.subject_new_ticket'        => 'New Ticket: {{ticket_subject}}',
+	'agent.emails.subject_ticket_updated'    => 'Ticket Updated: {{ticket_subject}}',
+);

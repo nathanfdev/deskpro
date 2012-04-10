@@ -3,11 +3,11 @@
 {% block content %}
 	{{ layout.section_start('Validation required', 2) }}
 		<p>
-            {{ phrase('user.emails_user.you_recently_tried_to_add_email_a_as_secondary_email_for_email_b', {'validating_email': validating_email.email, 'primary_email':person.primary_email_address}) }}
+            {{ phrase('user.emails.you_recently_tried_to_add_email_a_as_secondary_email_for_email_b', {'validating_email': validating_email.email, 'primary_email':person.primary_email_address}) }}
 		</p>
 
 		<p>
-            {{ phrase('user.emails_user.the_email_is_already_attached', {'validating_email':validating_email.email}) }}
+            {{ phrase('user.emails.the_email_is_already_attached', {'validating_email':validating_email.email}) }}
 		</p>
 	{{ layout.section_end() }}
 {% endblock %}
