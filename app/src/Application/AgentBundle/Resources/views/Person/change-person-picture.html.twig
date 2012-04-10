@@ -1,7 +1,7 @@
 <div class="change-picture-overlay {% if person.picture_blob %}with-existing{% endif %} mass-actions-overlay">
 	<div class="overlay-title">
 		<span class="close close-trigger">{{ phrase('agent.close_lc') }}</span>
-		<h4>{{ phrase('agent.misc.change_pic_for', {'name': person.display_name}) }}</h4>
+		<h4>{{ phrase('agent.change_pic_for', {'name': person.display_name}) }}</h4>
 	</div>
 	<div class="overlay-content">
 		<div class="drop-file-zone"><h1>{{ phrase('agent.drop_your_file_here_to_upload_a_new') }}</h1></div>
@@ -19,7 +19,7 @@
 					<input type="file" name="file-upload" />
 					<button class="clean-white small">{{ phrase('agent.upload') }}</button>
 				</div>
-				<h3>{{ phrase('agent.misc.new_pic') }}</h3>
+				<h3>{{ phrase('agent.new_pic') }}</h3>
 			</header>
 			<section>
 				<p class="explain">
@@ -44,7 +44,7 @@
 						<input type="hidden" name="new_blob_id" class="new_blob_id" value="{{ '{%=file.blob_id%}' }}" />
 						<input type="hidden" name="set_pic_opt" class="set_pic_opt" value="newpic" />
 						<img src="{{ '{%=file.download_url%}' }}?s=150" class="pic-new" data-setted-size="{{ '{%=file.download_url%}' }}?s=60" />
-						<div><button class="clean-white save-trigger small">{{ phrase('agent.misc.set_new_pic') }}</button></div>
+						<div><button class="clean-white save-trigger small">{{ phrase('agent.set_new_pic') }}</button></div>
 					</div>
 					{{ '{% } %}' }}
 					{{ '{% } %}' }}

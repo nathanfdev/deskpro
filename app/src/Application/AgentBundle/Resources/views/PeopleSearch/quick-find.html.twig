@@ -2,11 +2,11 @@
 	<header class="overlay-title">
 		<nav class="mode-buttons">
 			<ul>
-				<li class="simple on"><a>{{ phrase('agent.peoplesearch.simple') }}</a></li>
+				<li class="simple on"><a>{{ phrase('agent.search.simple') }}</a></li>
 				<li class="advanced"><a>{{ phrase('agent.advanced') }}</a></li>
 			</ul>
 		</nav>
-		<h4>{{ phrase('agent.peoplesearch.find_person') }}</h4>
+		<h4>{{ phrase('agent.search.find_person') }}</h4>
 	</header>
 	<div class="overlay-content no-footer">
 		<section class="search-area">
@@ -38,8 +38,8 @@
 			<img src="{{ asset('images/loading-big-circle.gif') }}" alt="" />
 		</section>
 		<section class="no-results-info" style="padding: 10px;">
-			<div class="no-search"><center>{{ phrase('agent.peoplesearch.find_by_above_criteria') }}</center></div>
-			<div class="no-results" style="display: none;"><center>{{ phrase('agent.peoplesearch.no_results_were_found') }}</center></div>
+			<div class="no-search"><center>{{ phrase('agent.search.find_by_above_criteria') }}</center></div>
+			<div class="no-results" style="display: none;"><center>{{ phrase('agent.search.no_results_were_found') }}</center></div>
 		</section>
 		{% include 'DeskPRO:Common:people-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'term_options': people_term_options } %}
 	</div>

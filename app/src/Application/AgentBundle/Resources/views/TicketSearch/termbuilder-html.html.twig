@@ -1,10 +1,10 @@
-<div class="type" title="{{ phrase('agent.ticketsearch.search_all_tickets') }}" data-rule-type="archive_search">
+<div class="type" title="{{ phrase('agent.tickets.search_all_tickets') }}" data-rule-type="archive_search">
 	<div class="op">
 		<input type="hidden" name="op" value="is" />
 	</div>
 	<div class="options">
 		<input type="hidden" name="archive_search" value="1" />
-		<span>{{ phrase('agent.ticketsearch.search_all_tickets_including_tickets_that_are_resolved') }}</span>
+		<span>{{ phrase('agent.tickets.search_all_tickets_including_tickets_that_are_resolved') }}</span>
 	</div>
 </div>
 <div class="type" title="{{ phrase('agent.subject') }}" data-rule-type="subject">
@@ -48,7 +48,7 @@
 		</select>
 	</div>
 </div>
-<div class="type" title="{{ phrase('agent.ticketsearch.participants') }}" data-rule-type="participant">
+<div class="type" title="{{ phrase('agent.tickets.participants') }}" data-rule-type="participant">
 	<div class="op">
 		<select name="op">
 			<option value="is">{{ phrase('agent.include') }}</option>
@@ -75,7 +75,7 @@
 			</div>
 			<select name="agent_team">
 				<option value="0">{{ phrase('agent.no_team') }}</option>
-				<option value="-1">{{ phrase('agent.ticketsearch.any_of_my_teams') }}</option>
+				<option value="-1">{{ phrase('agent.tickets.any_of_my_teams') }}</option>
 				{% for id,title in term_options.agent_teams %}
 					<option value="{{id}}">{{title}}</option>
 				{% endfor %}
@@ -187,7 +187,7 @@
 	</div>
 </div>
 {% if term_options.gateway_names %}
-<div class="type" title="{{ phrase('agent.ticketsearch.receiving_gateway_account') }}" data-rule-type="receiving_gateway">
+<div class="type" title="{{ phrase('agent.tickets.receiving_gateway_account') }}" data-rule-type="receiving_gateway">
 	<div class="op">
 		<select name="op">
 			<option value="is">{{ phrase('agent.is') }}</option>
@@ -223,7 +223,7 @@
 {% if term_options.custom_ticket_fields %}
 	{% set op_lang = {'is': phrase('agent.is'), 'not': phrase('agent.is_not'), 'contains': 'has', 'notcontains': 'does not have', 'gt': phrase('agent.is_greater_than'), 'lt': phrase('agent.is_less_than')} %}
 	{% for field in term_options.custom_ticket_fields %}
-		<div class="type" title="{{ phrase('agent.ticketsearch.ticket_field_name', {'field':field.field_def.title}) }}" data-rule-type="ticket_field[{{field.field_def.id}}]">
+		<div class="type" title="{{ phrase('agent.tickets.ticket_field_name', {'field':field.field_def.title}) }}" data-rule-type="ticket_field[{{field.field_def.id}}]">
 			<div class="op">
 				<select name="op">
 					{% for op in field.field_def.search_capabilities %}

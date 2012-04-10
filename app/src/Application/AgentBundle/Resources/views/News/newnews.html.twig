@@ -2,13 +2,13 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewNews';
 
-pageMeta.title = '{{ phrase('agent.news.new_post') }}';
+pageMeta.title = '{{ phrase('agent.publish.new_post') }}';
 pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-{% set dropzonehtml %}<div class="drop-file-zone"><h1>{{ phrase('agent.news.drop_your_file_here_to_add_it_to') }}</h1></div>{% endset %}
+{% set dropzonehtml %}<div class="drop-file-zone"><h1>{{ phrase('agent.publish.drop_your_file_here_to_add_it_to') }}</h1></div>{% endset %}
 {{ agentui.scroll_containers('page-new-news page-new-content', dropzonehtml) }}
 
 <a class="tab-anchor" href="#">&nbsp;</a>
@@ -22,7 +22,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<div class="content">
 		<div class="col">
-			<h4>{{ phrase('agent.news.category') }}</h4>
+			<h4>{{ phrase('agent.publish.category') }}</h4>
 			{% include 'AgentBundle:Common:select-standard.html.twig' with {
 				'name': 'newnews[category_id]',
 				'id': baseId ~ '_cat',
@@ -66,7 +66,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<span class="check">{{ phrase('agent.done') }}</span>
 	</div>
 	<div class="content">
-		<h4>{{ phrase('agent.news.post') }}</h4>
+		<h4>{{ phrase('agent.publish.post') }}</h4>
 		<textarea type="text" name="newnews[content]" id="{{baseId}}_content">{{ state.newnews.content }}</textarea>
 	</div>
 </div>
@@ -123,7 +123,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">{{ phrase('agent.news.create_news_post') }} <kbd>{{ phrase('agent.altc') }}</kbd></button>
+		<button class="submit-trigger clean-white">{{ phrase('agent.publish.create_news_post') }} <kbd>{{ phrase('agent.altc') }}</kbd></button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

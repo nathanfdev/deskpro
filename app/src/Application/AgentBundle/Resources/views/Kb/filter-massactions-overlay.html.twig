@@ -20,13 +20,13 @@
 							<div class="dp-input-group">
 								<label>
 									<input type="radio" class="option-trigger" name="action" value="draft" />
-									{{ phrase('agent.kb.set_as_draft') }}
+									{{ phrase('agent.publish.set_as_draft') }}
 								</label>
 
 								<div class="dp-group-options" style="display: none">
-									<span>{{ phrase('agent.kb.are_you_sure_you_would_like_to_set') }}</span>
+									<span>{{ phrase('agent.publish.are_you_sure_you_would_like_to_set') }}</span>
 									<div class="execute-row">
-										<a class="apply-actions">{{ phrase('agent.kb.apply_action') }}</a>
+										<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
 									</div>
 								</div>
 							</div>
@@ -39,7 +39,7 @@
 								<div class="dp-group-options" style="display: none">
 									<span>{{ phrase('agent.are_you_sure_you_would_like_to_delete') }}</span>
 									<div class="execute-row">
-										<a class="apply-actions">{{ phrase('agent.kb.apply_action') }}</a>
+										<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
 									</div>
 								</div>
 							</div>
@@ -47,11 +47,11 @@
 							<div class="dp-input-group">
 								<label>
 									<input type="radio" class="option-trigger" name="action" value="move" />
-									{{ phrase('agent.kb.change_category') }}
+									{{ phrase('agent.publish.change_category') }}
 								</label>
 								<div class="dp-group-options" style="display: none">
 									<label>
-										{{ phrase('agent.kb.move_to') }}: 
+										{{ phrase('agent.publish.move_to') }}: 
 										{% include 'AgentBundle:Common:select-standard.html.twig' with {
 											'name': 'to_category',
 											'id': baseId ~ '_cat',
@@ -65,7 +65,7 @@
 									</label>
 
 									<div class="execute-row">
-										<a class="apply-actions">{{ phrase('agent.kb.apply_action') }}</a>
+										<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
 									</div>
 								</div>
 							</div>

@@ -125,11 +125,11 @@
 				<section class="ticketreply">
 					<nav id="{{baseId}}_header_rows">
 						<ul class="option-buttons">
-							<li class="tipped attach hide-note" title="{{ phrase('agent.ticketsearch.add_attachments') }}">
+							<li class="tipped attach hide-note" title="{{ phrase('agent.tickets.add_attachments') }}">
 								<input type="file" class="file" name="file-upload" />
 								<span>{{ phrase('agent.attachments') }}</span>
 							</li>
-							<li class="tipped snippets hide-note" id="{{baseId}}_text_snippets_btn" title="{{ phrase('agent.ticketsearch.insert_text_snippets') }}"><span>{{ phrase('agent.snippets') }}</span></li>
+							<li class="tipped snippets hide-note" id="{{baseId}}_text_snippets_btn" title="{{ phrase('agent.tickets.insert_text_snippets') }}"><span>{{ phrase('agent.snippets') }}</span></li>
 						</ul>
 					</nav>
 					<article>
@@ -146,7 +146,7 @@
 								{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'actions[reply][attach_ids][]'} %}
 							</ul>
 							<div class="input-wrap">
-								<textarea placeholder="{{ phrase('agent.ticketsearch.enter_a_mass_reply') }}" id="{{baseId}}_replybox_txt" name="actions[reply][reply_text]"></textarea>
+								<textarea placeholder="{{ phrase('agent.tickets.enter_a_mass_reply') }}" id="{{baseId}}_replybox_txt" name="actions[reply][reply_text]"></textarea>
 							</div>
 						</section>
 					</article>

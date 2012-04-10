@@ -144,7 +144,7 @@
 						{% if ticket.real_total_user_waiting %}
 							<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting ~ " seconds")|date('c') }}"></time>
 						{% else %}
-							{{ phrase('agent.ticketsearch.na') }}
+							{{ phrase('agent.tickets.na') }}
 						{% endif %}
 					</span>
 				</li>

@@ -61,7 +61,7 @@ pageMeta.baseId = '{{ baseId }}';
                     <span class="link-look who-voted-trigger">{{ phrase('agent.count_votecount_votes', {'count':download.num_ratings}) }}</span>
                     {% endset %}
                     {{ phrase('agent.percent_helpful_subphrase', {'subphrase':phrase_part,'percent':download.rating_percent}) }}
-					<small>{{ phrase('agent.downloads.n_helpful_n_unhelpful', {'up_votes':download.up_votes, 'down_votes':download.down_votes}) }}</small>
+					<small>{{ phrase('agent.publish.n_helpful_n_unhelpful', {'up_votes':download.up_votes, 'down_votes':download.down_votes}) }}</small>
 				</dd>
 
 				<dt></dt>
@@ -76,7 +76,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 			<div class="controls" id="{{baseId}}_action_buttons">
 				<button class="clean-white delete nodelete-hide" {% if download.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.ucfirst_delete') }}</button>
-				<button class="clean-white permalink">{{ phrase('agent.downloads.copy_permalink') }}</button>
+				<button class="clean-white permalink">{{ phrase('agent.publish.copy_permalink') }}</button>
 				<button class="clean-white view-user-interface">{{ phrase('agent.view_in_user_interface') }}</button>
 				<br class="clear" />
 			</div>
@@ -215,7 +215,7 @@ pageMeta.baseId = '{{ baseId }}';
 	{% endif %}
 </ul>
 
-{{ optionbox.category_ob(download_categories, phrase('agent.downloads.download_category'), phrase('agent.apply'), {'id': baseId ~ '_cat_ob'}) }}
+{{ optionbox.category_ob(download_categories, phrase('agent.publish.download_category'), phrase('agent.apply'), {'id': baseId ~ '_cat_ob'}) }}
 
 </div></div> {# scrollbar divs #}
 </div> {# main layout div #}

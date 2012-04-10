@@ -8,7 +8,7 @@ pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-{% set dropzonehtml %}<div class="drop-file-zone"><h1>{{ phrase('agent.kb.drop_your_file_here_to_add_it_to') }}</h1></div>{% endset %}
+{% set dropzonehtml %}<div class="drop-file-zone"><h1>{{ phrase('agent.publish.drop_your_file_here_to_add_it_to') }}</h1></div>{% endset %}
 {{ agentui.scroll_containers('page-new-article page-new-content', dropzonehtml) }}
 
 <a class="tab-anchor" href="#">&nbsp;</a>
@@ -19,7 +19,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="pending-info" style="display: none;">
 	<h3>Creating pending article (added by <span class="person-name"></span>)</h3>
 	<div class="pending-ticket" style="display: none">
-		 {{ phrase('agent.kb.for_ticket') }}:
+		 {{ phrase('agent.publish.for_ticket') }}:
 		<a data-route="" class="with-route ticket-link"></a>
 	</div>
 	<div class="pending-reason" style="display: none"></div>
@@ -134,7 +134,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">{{ phrase('agent.kb.create_article') }} <kbd>{{ phrase('agent.altc') }}</kbd></button>
+		<button class="submit-trigger clean-white">{{ phrase('agent.publish.create_article') }} <kbd>{{ phrase('agent.altc') }}</kbd></button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

@@ -5,7 +5,7 @@
 		{% for line in terms_summary %}
 			{{line}}{% if not loop.last %},{% endif %}
 		{% else %}
-			{{ phrase('agent.kb.all_articles') }}
+			{{ phrase('agent.publish.all_articles') }}
 		{% endfor %}
 	</div>
 	{% endif %}

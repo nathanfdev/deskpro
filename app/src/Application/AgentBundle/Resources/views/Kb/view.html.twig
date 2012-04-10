@@ -109,7 +109,7 @@ pageMeta.baseId = '{{ baseId }}';
                     {% set phrase_part2 %}
                         <time>{{article.date_created|date('fulltime')}}</time>
                     {% endset %}
-                    {{ phrase('agent.kb.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name,'date':phrase_part2}) }}
+                    {{ phrase('agent.publish.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name,'date':phrase_part2}) }}
 				</dd>
 			{% else %}
 				<dt>{{ phrase('agent.date_created') }}:</dt>
@@ -120,7 +120,7 @@ pageMeta.baseId = '{{ baseId }}';
                     {% set phrase_part2 %}
                     <time>{{article.date_created|date('fulltime')}}</time>
                     {% endset %}
-                    {{ phrase('agent.kb.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name,'date':phrase_part2}) }}
+                    {{ phrase('agent.publish.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name,'date':phrase_part2}) }}
 				</dd>
 
 				{# Makes sure its not a future date, which means auto-publish sometime in the future #}
@@ -133,7 +133,7 @@ pageMeta.baseId = '{{ baseId }}';
                         {% set phrase_part2 %}
                         <time>{{article.date_created|date('fulltime')}}</time>
                         {% endset %}
-                        {{ phrase('agent.kb.event_time_ago_at_when', {'ago':phrase_part1,'date':phrase_part2}) }}
+                        {{ phrase('agent.publish.event_time_ago_at_when', {'ago':phrase_part1,'date':phrase_part2}) }}
 					</dd>
 				{% endif %}
 			{% endif %}
@@ -142,12 +142,12 @@ pageMeta.baseId = '{{ baseId }}';
 				<span class="auto-unpublish" {% if not article.date_end %}style="display: none"{% endif %}>
 					Automatically <span class="end-action opt" data-val="{{article.end_action|default('unpublish')}}">{{article.end_action|default('Unpublish')}}</span>
 					on <span class="end-date opt" {% if article.date_end %}data-val="{{ article.date_end|date('U') }}"{% endif %}>
-						{% if article.date_end %}{{ article.date_end|date('day') }}{% else %}{{ phrase('agent.kb.click_to_set_date') }}{% endif %}</span>
+						{% if article.date_end %}{{ article.date_end|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
 					<input type="text" class="end-date-input" value="{{ article.date_end|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
 					(<span class="remove-auto-unpublish options-text">{{ phrase('agent.remove') }}</span>)
 				</span>
 				<span class="options-text auto-unpublish-set" {% if article.date_end %}style="display: none"{% endif %}>
-					{{ phrase('agent.kb.set_an_automatic_unpublish_date') }}
+					{{ phrase('agent.publish.set_an_automatic_unpublish_date') }}
 				</span>
 				<br />
 
@@ -161,12 +161,12 @@ pageMeta.baseId = '{{ baseId }}';
 				<span class="auto-publish" {% if not article.date_published %}style="display: none"{% endif %}>
 					Automatically publish
 					on <span class="pub-date opt" {% if article.date_published %}data-val="{{ article.date_published|date('U') }}"{% endif %}>
-						{% if article.date_published %}{{ article.date_published|date('day') }}{% else %}{{ phrase('agent.kb.click_to_set_date') }}{% endif %}</span>
+						{% if article.date_published %}{{ article.date_published|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
 					<input type="text" class="pub-date-input" value="{{ article.date_published|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
 					(<span class="remove-auto-publish options-text">{{ phrase('agent.remove') }}</span>)
 				</span>
 				<span class="options-text auto-publish-set" {% if article.date_published %}style="display: none"{% endif %}>
-					{{ phrase('agent.kb.set_an_automatic_publish_date') }}
+					{{ phrase('agent.publish.set_an_automatic_publish_date') }}
 				</span>
 			</dd>
 		</dl>

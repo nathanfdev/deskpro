@@ -4,19 +4,19 @@
 	{% if filter %}
 		{{ filter.title }}
 	{% else %}
-		{{ phrase('agent.ticketsearch.results') }}
+		{{ phrase('agent.tickets.results') }}
 	{% endif %}
 {% endblock %}
 {% block other_options %}
 	<div style="display: none">
 		{{ phrase('agent.order_by') }}: <select name="order_by" class="sel-order-by">
-			<option class="urgency" value="ticket.urgency:desc">{{ phrase('agent.ticketsearch.urgency_highestlowest') }}</option>
-			<option value="ticket.urgency:asc">{{ phrase('agent.ticketsearch.urgency_lowesthighest') }}</option>
-			<option class="date_created" value="ticket.date_created:desc">{{ phrase('agent.ticketsearch.date_opened_newerolder') }}</option>
-			<option value="ticket.date_created:asc">{{ phrase('agent.ticketsearch.date_opened_oldernewer') }}</option>
+			<option class="urgency" value="ticket.urgency:desc">{{ phrase('agent.tickets.urgency_highestlowest') }}</option>
+			<option value="ticket.urgency:asc">{{ phrase('agent.tickets.urgency_lowesthighest') }}</option>
+			<option class="date_created" value="ticket.date_created:desc">{{ phrase('agent.tickets.date_opened_newerolder') }}</option>
+			<option value="ticket.date_created:asc">{{ phrase('agent.tickets.date_opened_oldernewer') }}</option>
 			{% if app.getSetting('core.use_ticket_priority') %}
-				<option class="priority" value="ticket.priority:desc">{{ phrase('agent.ticketsearch.priority_highestlowest') }}</option>
-				<option value="ticket.priority:asc">{{ phrase('agent.ticketsearch.priority_lowesthighest') }}</option>
+				<option class="priority" value="ticket.priority:desc">{{ phrase('agent.tickets.priority_highestlowest') }}</option>
+				<option value="ticket.priority:asc">{{ phrase('agent.tickets.priority_lowesthighest') }}</option>
 			{% endif %}
 		</select>
 	</div>

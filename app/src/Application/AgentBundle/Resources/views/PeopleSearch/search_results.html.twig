@@ -10,11 +10,11 @@
 		{% for person in people_list %}
 			<tr data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">
 				<td>{{person.display_name}}</td>
-				<td>{{person.primary_email.email|default(phrase('agent.peoplesearch.no_email'))}}</td>
+				<td>{{person.primary_email.email|default(phrase('agent.people.no_email'))}}</td>
 				<td>{{ phrase('agent.labels') }}</td>
 			</tr>
 		{% else %}
-			<tr><td colspan="3">{{ phrase('agent.peoplesearch.no_people_match_your_criteria') }}</td></tr>
+			<tr><td colspan="3">{{ phrase('agent.people.no_people_match_your_criteria') }}</td></tr>
 		{% endfor %}
 	</tbody>
 </table>

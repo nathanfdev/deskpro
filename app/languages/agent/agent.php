@@ -590,4 +590,15 @@
   'agent.reply_to_own_tickets' => 'Reply to own and teams tickets',
   'agent.delete_content' => 'Delete content',
   'agent.agent' => 'Agent',
+  'agent.change_pic_for' => 'Change picture for for {{name}}',
+
+  'agent.new_pic' => 'New Picture',
+  'agent.set_new_pic' => 'Set as new picture',
+  'agent.redirect_title' => 'You are about to leave the helpdesk',
+  'agent.redirect_page_title' => 'Page title',
+  'agent.redirect_page_makeup' => '(made up of {{num_images}} images and {{num_scripts}} scripts)',
+  'agent.redirect_server_ip' => 'Server IP',
+  'agent.redirect_server_host' => 'Server Hostname',
+  'agent.redirect_explain' => 'The link you clicked is for an external site on {{host}}. Are you sure you want to continue?',
+  'agent.redirect_continue' => 'Continue to {{url}}',
 );

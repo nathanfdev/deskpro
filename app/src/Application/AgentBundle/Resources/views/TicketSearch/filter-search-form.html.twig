@@ -19,10 +19,10 @@
 				<div class="term">
 					{{ phrase('agent.order_by') }}
 					<select name="order_by">
-						<option value="ticket.date_created:desc">{{ phrase('agent.ticketsearch.date_opened_newerolder') }}</option>
-						<option value="ticket.date_created:asc">{{ phrase('agent.ticketsearch.date_opened_oldernewer') }}</option>
-						<option value="ticket.priority:desc">{{ phrase('agent.ticketsearch.priority_highestlowest') }}</option>
-						<option value="ticket.priority:asc">{{ phrase('agent.ticketsearch.priority_lowesthighest') }}</option>
+						<option value="ticket.date_created:desc">{{ phrase('agent.tickets.date_opened_newerolder') }}</option>
+						<option value="ticket.date_created:asc">{{ phrase('agent.tickets.date_opened_oldernewer') }}</option>
+						<option value="ticket.priority:desc">{{ phrase('agent.tickets.priority_highestlowest') }}</option>
+						<option value="ticket.priority:asc">{{ phrase('agent.tickets.priority_lowesthighest') }}</option>
 					</select>
 				</div>
 				{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'term_options': ticket_options } %}
