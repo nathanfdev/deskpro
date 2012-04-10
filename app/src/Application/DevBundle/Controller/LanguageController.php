@@ -436,4 +436,37 @@ class LanguageController extends Controller
         $string = implode('_', $parts);
         return $string;
     }
+
+    public function replacePhrasesInFiles($files, $from, $to, $prefix = false)
+    {
+        foreach($files as $file) {
+            $lines = file($file['filename']);
+            $data = '';
+
+            foreach($lines as $i=>$line) {
+                if($prefix) {
+                    if(preg_match('/(phrase\(\s*\')'.preg_quote($from, '/').'([^\']+\'\s*[,)])/', $line)) {
+                        $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($from, '/').'([^\']+\'\s*[,)])/', '\1'.$to.'\2', $line);
+                        echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br />";
+                        $data .= $new_line;
+                    }
+                    else {
+                        $data .= $line;
+                    }
+                }
+                else {
+                    if(preg_match('/(phrase\(\s*\')'.preg_quote($from, '/').'(\'\s*[,)])/', $line)) {
+                        $new_line = preg_replace('/(phrase\(\s*\')'.preg_quote($from, '/').'(\'\s*[,)])/', '\1'.$to.'\2', $line);
+                        echo "Replacing line ".htmlspecialchars($line)." <br />with ".htmlspecialchars($new_line)."<br />";
+                        $data .= $new_line;
+                    }
+                    else {
+                        $data .= $line;
+                    }
+                }
+            }
+
+            file_put_contents($file['filename'], $data);
+        }
+    }
 }
