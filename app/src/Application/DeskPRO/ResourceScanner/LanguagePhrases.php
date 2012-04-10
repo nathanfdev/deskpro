@@ -47,7 +47,7 @@ class LanguagePhrases
 	public function __construct($lang_root = null)
 	{
 		if ($lang_root === null) {
-			$lang_root = DP_ROOT.'/languages/DeskPRO';
+			$lang_root = DP_ROOT.'/languages';
 		}
 
 		$this->lang_root = $lang_root;
@@ -91,7 +91,7 @@ class LanguagePhrases
 
 	public function getMasterPhrase($phrase_id)
 	{
-		$path = DP_ROOT.'/languages/DeskPRO';
+		$path = DP_ROOT.'/languages';
 		$group_parts = explode('.', $phrase_id);
 		array_pop($group_parts); // need the group name, not phrase
 
