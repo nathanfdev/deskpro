@@ -1,9 +1,9 @@
 <?php return array(
-    'user.articles.error_not_found'      => 'The article you\'re looking for could not be found. It may have been deleted.',
+    'user.articles.error_not_found'      => 'The article could not be found.',
     'user.articles.go'                   => 'Go',
     'user.articles.meta_author'          => 'Author: {{author}}',
-    'user.articles.no_articles'          => 'There are no articles yet.',
-    'user.articles.no_popular'           => 'There are no popular articles yet.',
+    'user.articles.no_articles'          => 'There are no articles.',
+    'user.articles.no_popular'           => 'There are no popular articles.',
     'user.articles.number_of_articles'   => '{{count}} articles',
     'user.articles.popular_section_name' => 'Popular Articles',
     'user.articles.previous'             => 'Previous',

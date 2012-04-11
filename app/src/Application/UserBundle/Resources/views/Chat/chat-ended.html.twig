@@ -3,10 +3,10 @@
 	<div class="dp-content-block dp-profile-page">
 		<div class="dp-box">
 			<div class="dp-box-header">
-				<h3>{{ phrase('user.chat.request_transcript_title') }}</h3>
+				<h3>{{ phrase('user.chat.transcript_title') }}</h3>
 			</div>
 			<div class="dp-box-content-wrapper">
-				{{ phrase('user.chat.request_transcript_explain') }}<br /><br />
+				{{ phrase('user.chat.transcript_explain') }}<br /><br />
 
 				<form action="{{ path('user_chat_chatended', {'session_code': session.session_code}) }}" method="post">
 				<input type="hidden" name="process" value="1" />
@@ -22,7 +22,7 @@
 					</tr>
 					<tr>
 						<td colspan="2" align="right">
-							<input type="submit" value="{{ phrase('user.chat.send_transcript_btn') }}" />
+							<input type="submit" value="{{ phrase('user.chat.transcript_btn') }}" />
 						</td>
 					</tr>
 				</table>

@@ -189,7 +189,7 @@ class UserChatManager
 			$this->em->flush();
 
 			if ($is_new_convo) {
-				$this->addSystemMessage($convo, 'user.chat.msg_started', array(), array(
+				$this->addSystemMessage($convo, 'user.chat.message_started', array(), array(
 					'user_hidden' => true,
 					'is_html' => false,
 				));
@@ -263,7 +263,7 @@ class UserChatManager
 
 			$this->addSystemMessage(
 				$convo,
-				'user.chat.user_joined',
+				'user.chat.message_user_joined',
 				array('name' => $person->display_name),
 				array('user_joined' => true, 'person_name' => $person->display_name, 'person_id' => $person->id)
 			);
@@ -291,7 +291,7 @@ class UserChatManager
 
 			$this->addSystemMessage(
 				$convo,
-				'user.chat.user_left',
+				'user.chat.message_user_left',
 				array('name' => $person->display_name),
 				array('user_left' => true, 'person_name' => $person->display_name, 'person_id' => $person->id)
 			);
@@ -338,7 +338,7 @@ class UserChatManager
 			}
 			$this->addSystemMessage(
 				$convo,
-				'user.chat.set_department',
+				'user.chat.message_set_department',
 				array('name' => $who->display_name, 'department' => $dep_name),
 				array('department_changed' => true, 'new_department_id' => $convo->department_id)
 			);

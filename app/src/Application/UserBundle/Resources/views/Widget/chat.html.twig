@@ -84,7 +84,7 @@
 	{% endif %}
 	<br />
 	<select name="department_id">
-		<option value="0">{{ phrase('user.chat.choose_department') }}</option>
+		<option value="0">{{ phrase('user.chat.select_department') }}</option>
 		{% for dep in departments %}
 			{% if dep.children|length %}
 				<optgroup label="{{ dep.title }}">
@@ -133,7 +133,7 @@
 		{% set phrase_part %}
 		<input type="text" name="email" value="" placeholder="{{ phrase('user.general.your_email_address') }}" />
 		{% endset %}
-		{{ phrase('user.chat.send_a_transcript_of_this_chat') }} 
+		{{ phrase('user.chat.transcript_to') }} 
 	</div>
 
 	<div class="form-row">
