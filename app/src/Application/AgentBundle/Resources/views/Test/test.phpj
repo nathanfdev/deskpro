@@ -1,3 +1,0 @@
-<?php
-$OUTPUT = array();
-$OUTPUT['test'] = 'testing 123';
