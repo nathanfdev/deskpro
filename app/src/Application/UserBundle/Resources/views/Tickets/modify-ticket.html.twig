@@ -16,7 +16,7 @@
 <table cellspacing="5" cellpadding="0" border="0" width="100%">
 	<tr>
 		<td width="150">
-			{{ phrase('user.subject') }}
+			{{ phrase('user.general.subject') }}
 		</td>
 		<td>
 			{{ form_widget(form.ticket.subject) }}
@@ -24,7 +24,7 @@
 	</tr>
 	<tr>
 		<td>
-			{{ phrase('user.department') }}
+			{{ phrase('user.general.department') }}
 		</td>
 		<td>
 			{{ property_fields.form_department_select('editticket[ticket][department_id]', ticket_options.departments_hierarchy, ticket.department_id, 'department_id') }}
@@ -32,7 +32,7 @@
 	</tr>
 	<tr>
 		<td id="category_select_wrap">
-			{{ phrase('user.category') }}
+			{{ phrase('user.general.category') }}
 		</td>
 		<td>
 			{{ property_fields.form_category_select('editticket[ticket][category_id]', ticket_options.ticket_categories_hierarchy, ticket.category_id, 'category_id') }}
@@ -41,7 +41,7 @@
 	{% if form.ticket.product_id %}
 		<tr>
 			<td>
-				{{ phrase('user.product') }}
+				{{ phrase('user.general.product') }}
 			</td>
 			<td>
 				{{ form_widget(form.ticket.product_id, {'attr': {'class': 'product_id'}}) }}
@@ -51,7 +51,7 @@
 	{% if form.ticket.priority_id %}
 		<tr>
 			<td>
-				{{ phrase('user.priority') }}
+				{{ phrase('user.general.priority') }}
 			</td>
 			<td>
 				{{ form_widget(form.ticket.priority_id, {'attr': {'class': 'priority_id'}}) }}
@@ -71,7 +71,7 @@
 	{% endfor %}
 </table>
 
-<center><input type="submit" value="{{ phrase('user.save') }}" /></center>
+<center><input type="submit" value="{{ phrase('user.general.save') }}" /></center>
 
 </form>
 

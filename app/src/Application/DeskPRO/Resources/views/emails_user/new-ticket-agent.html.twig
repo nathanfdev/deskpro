@@ -13,7 +13,7 @@
 	{{ layout.render_ticket_messages(messages) }}
 
 	{% set content %}
-        {{ phrase('user.access_ticket_online') }}
+        {{ phrase('user.general.access_ticket_online') }}
 		<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}" style="{{ layout.link_style() }}">
 			{{ url_display('user_tickets_view', {'ticket_ref': ticket.access_code}) }}
 		</a>

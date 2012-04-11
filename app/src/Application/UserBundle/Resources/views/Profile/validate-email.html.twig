@@ -1,17 +1,17 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block content %}
-	<h3>{{ phrase('user.title_validate_address', {email: email.email}) }}</h3>
+	<h3>{{ phrase('user.general.title_validate_address', {email: email.email}) }}</h3>
 	<p>
-		{{ phrase('user.enter_validate_code') }}
+		{{ phrase('user.general.enter_validate_code') }}
 		<form action="{{ path('user_profile_emails_validate', {'email_id': email.id}) }}" method="post">
 			<input type="input" name="code" value="" />
 			<input type="submit" value="Validate" />
 		</form>
 	</p>
 
-	<h3>{{ phrase('user.resend_validation_email') }}</h3>
+	<h3>{{ phrase('user.general.resend_validation_email') }}</h3>
 	<p>
-		{{ phrase('user.validation_email_sent') }}
+		{{ phrase('user.general.validation_email_sent') }}
 		<br /><br />
 		<form action="{{ path('user_profile_emails_validate_sendlink', {'email_id': email.id}) }}">
 			<input type="submit" value="Send validation email" />

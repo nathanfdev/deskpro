@@ -5,7 +5,7 @@
 			<div>
 				<span>Or connet with</span>
 				<ul>
-					{{ phrase('user.or_connect_with') }}
+					{{ phrase('user.general.or_connect_with') }}
 					{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 					<li>{{ render_usersource(usersource, 'widget_overlay_btn') }}</li>
 					{% endfor %}
@@ -16,15 +16,15 @@
 
 		<div class="fields-row">
 			<div class="txt dp-form-row-person_name">
-				<input type="text" class="name-field" id="dp_newchat_name" name="name" value="" placeholder="{{ phrase('user.your_name') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+				<input type="text" class="name-field" id="dp_newchat_name" name="name" value="" placeholder="{{ phrase('user.general.your_name') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 				<span class="tooltip-error">
-					<span>{{ phrase('user.register_enter_name') }}</span>
+					<span>{{ phrase('user.general.register_enter_name') }}</span>
 				</span>
 			</div>
 			<div class="txt alignright dp-form-row-person_email">
-				<input type="text" class="email-field" id="dp_newchat_email" name="email" value="" placeholder="{{ phrase('user.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+				<input type="text" class="email-field" id="dp_newchat_email" name="email" value="" placeholder="{{ phrase('user.general.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 				<span class="tooltip-error">
-					<span>{{ phrase('user.register_please_enter_email') }}</span>
+					<span>{{ phrase('user.general.register_please_enter_email') }}</span>
 				</span>
 			</div>
 		</div>
@@ -44,17 +44,17 @@
 				{% endfor %}
 			</select>
 			<span class="tooltip-error">
-				<span>{{ phrase('user.please_choose_a_department') }}</span>
+				<span>{{ phrase('user.general.please_choose_a_department') }}</span>
 			</span>
 		</div>
 
 		<div class="btn-holder clearfix">
-			<button class="btn-activity">{{ phrase('user.register_send_message') }}</button>
+			<button class="btn-activity">{{ phrase('user.general.register_send_message') }}</button>
 		</div>
 	</form>
 
 	<div class="thank-you" id="dp_newchat_done" style="display: none">
-		<h2>{{ phrase('user.register_wait') }}</h2>
-		<p>{{ phrase('user.register_wait_while') }}</p>
+		<h2>{{ phrase('user.general.register_wait') }}</h2>
+		<p>{{ phrase('user.general.register_wait_while') }}</p>
 	</div>
 </div>

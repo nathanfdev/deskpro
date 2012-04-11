@@ -1,6 +1,6 @@
 {% for news in news_entries %}
 	<li>
-		<div class="dp-cal-date" title="{{ phrase('user.posted_date', {'date':news.date_created|date('M d Y @ H:i:s')}) }}">
+		<div class="dp-cal-date" title="{{ phrase('user.general.posted_date', {'date':news.date_created|date('M d Y @ H:i:s')}) }}">
 			<div class="month">{{ news.date_created|date('M')|upper }}</div>
 			<div class="day">{{ news.date_created|date('d') }}</div>
 		</div>
@@ -12,9 +12,9 @@
 			<div class="dp-meta">
                 {{ phrase('user.news.author_name', {'name':news.person.display_name}) }}
 				{% if news.category %}
-					| {{ phrase('user.category') }} <a href="{{ path('user_news_list', {'slug': news.category.url_slug })}}">{{ news.category.title }}</a>
+					| {{ phrase('user.general.category') }} <a href="{{ path('user_news_list', {'slug': news.category.url_slug })}}">{{ news.category.title }}</a>
 				{% endif %}
-				{% if comment_counts[news.id] %}| {{ phrase('user.comments') }}: {{ comment_counts[news.id] }}{% endif %}
+				{% if comment_counts[news.id] %}| {{ phrase('user.general.comments') }}: {{ comment_counts[news.id] }}{% endif %}
 			</div>
 		</div>
 	</li>

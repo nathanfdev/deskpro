@@ -1,5 +1,5 @@
 <div class="dp-box-comments">
-	<h4>{{ phrase('user.count_comments', {'count': comments|length}) }}</h4>
+	<h4>{{ phrase('user.general.count_comments', {'count': comments|length}) }}</h4>
 	<div class="dp-box-comments-content">
 		{% if comments_widget %}
 			{{comments_widget|raw}}
@@ -23,12 +23,12 @@
 					{% if not app.user.id and app.getSetting('core.interact_require_login') %}
 						<li class="new-comment no-nav">
 							{% set phrase_link1 %}
-							<a href="{{ path('user_register') }}">{{ phrase('user.register') }}</a>
+							<a href="{{ path('user_register') }}">{{ phrase('user.general.register') }}</a>
 							{% endset %}
 							{% set phrase_link2 %}
-							<a href="{{ path('user_login') }}">{{ phrase('user.comments_login') }}</a>
+							<a href="{{ path('user_login') }}">{{ phrase('user.general.comments_login') }}</a>
 							{% endset %}
-							{{ phrase('user.comments_add_a_comment', {'link1':phrase_link1,'link2':phrase_link2}) }}
+							{{ phrase('user.general.comments_add_a_comment', {'link1':phrase_link1,'link2':phrase_link2}) }}
 						</li>
 					{% elseif app.user.hasPerm(check_perm) %}
 					<li class="new-comment {% if not app.user.is_guest %}no-nav{% endif %}" id="comments_login_info">
@@ -36,11 +36,11 @@
 							<div class="login-area">
 								<div class="inner-wrap">
 									<div>
-										<textarea name="new_comment[content]" cols="120" rows="5" placeholder="{{ phrase('user.comments_add_a_comment') }}"></textarea>
+										<textarea name="new_comment[content]" cols="120" rows="5" placeholder="{{ phrase('user.general.comments_add_a_comment') }}"></textarea>
 									</div>
 									<div id="comments_form_login_area" data-element-handler="DeskPRO.User.ElementHandler.CommentFormLogin" class="with-handler">{% include 'UserBundle:Common:comments-login-form.html.twig' %}</div>
 									<div style="padding-top: 0">
-										<button class="btn primary" style="margin-top: 10px;">{{ phrase('user.post_comment_btn') }}</button>
+										<button class="btn primary" style="margin-top: 10px;">{{ phrase('user.general.post_comment_btn') }}</button>
 									</div>
 								</div>
 							</div>

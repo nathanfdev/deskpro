@@ -1,4 +1,4 @@
-{{ phrase('user.login_using_facebook') }}<br />
+{{ phrase('user.general.login_using_facebook') }}<br />
 <form action="{{ path('user_login_authenticate', {'usersource_id': usersource.id}) }}" method="post">
-	<input type="image" src="http://developers.facebook.com/images/devsite/login-button.png" alt="{{ phrase('user.login_with_facebook') }}" style="cursor: pointer" />
+	<input type="image" src="http://developers.facebook.com/images/devsite/login-button.png" alt="{{ phrase('user.general.login_with_facebook') }}" style="cursor: pointer" />
 </form>

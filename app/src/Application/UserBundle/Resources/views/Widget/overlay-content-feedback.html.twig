@@ -7,7 +7,7 @@
 			<div>
 				<span>Or connet with</span>
 				<ul>
-					{{ phrase('user.or_connect_with') }}
+					{{ phrase('user.general.or_connect_with') }}
 					{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 					<li>{{ render_usersource(usersource, 'widget_overlay_btn') }}</li>
 					{% endfor %}
@@ -22,18 +22,18 @@
 					'attr': {
 						'data-field-validators': 'DeskPRO.Form.LengthValidator',
 						'data-min-len': 2,
-						'placeholder': phrase('user.your_name'),
+						'placeholder': phrase('user.general.your_name'),
 						'class': 'name-field'
 					}
 				}) }}
 				<span class="tooltip-error">
-					<span>{{ phrase('user.register_enter_name') }}</span>
+					<span>{{ phrase('user.general.register_enter_name') }}</span>
 				</span>
 			</div>
 			<div class="txt alignright dp-form-row-person_email">
-				<input type="text" class="email-field" id="dp_newticket_email" name="feedback[person_email]" value="" placeholder="{{ phrase('user.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+				<input type="text" class="email-field" id="dp_newticket_email" name="feedback[person_email]" value="" placeholder="{{ phrase('user.general.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 				<span class="tooltip-error">
-					<span>{{ phrase('user.register_please_enter_email') }}</span>
+					<span>{{ phrase('user.general.register_please_enter_email') }}</span>
 				</span>
 			</div>
 		</div>
@@ -60,7 +60,7 @@
 					{% endfor %}
 				</div>
 				<span class="tooltip-error">
-					<span>{{ phrase('user.please_choose_a_category') }}</span>
+					<span>{{ phrase('user.general.please_choose_a_category') }}</span>
 				</span>
 			</div>
 		</div>
@@ -98,12 +98,12 @@
 			</div></td></tr></table>
 		</div>
 		<div class="btn-holder clearfix">
-			<button class="btn-activity">{{ phrase('user.register_send_message') }}</button>
+			<button class="btn-activity">{{ phrase('user.general.register_send_message') }}</button>
 		</div>
 	</form>
 
 	<div class="thank-you" id="dp_newfeedback_done" style="display: none">
-		<h2>{{ phrase('user.thank_you') }}</h2>
-		<p>{{ phrase('user.register_thank_you_for_feedback') }}</p>
+		<h2>{{ phrase('user.general.thank_you') }}</h2>
+		<p>{{ phrase('user.general.register_thank_you_for_feedback') }}</p>
 	</div>
 </div>

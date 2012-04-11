@@ -34,7 +34,7 @@
 					<ul>
 						{% if pageinfo.prev %}
 							<li>
-								<a href="{{ path('user_search', {'q': query, 'p': pageinfo.prev }) }}">{{ phrase('user.page_prev') }}</a>
+								<a href="{{ path('user_search', {'q': query, 'p': pageinfo.prev }) }}">{{ phrase('user.general.page_prev') }}</a>
 							</li>
 						{% endif %}
 						{% for p in pageinfo.pages %}
@@ -44,7 +44,7 @@
 						{% endfor %}
 						{% if pageinfo.next %}
 							<li>
-								<a href="{{ path('user_search', {'q': query, 'p': pageinfo.prev }) }}">{{ phrase('user.page_next') }}</a>
+								<a href="{{ path('user_search', {'q': query, 'p': pageinfo.prev }) }}">{{ phrase('user.general.page_next') }}</a>
 							</li>
 						{% endif %}
 					</ul>

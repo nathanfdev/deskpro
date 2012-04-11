@@ -7,7 +7,7 @@
 		{{ phrase('user.feedback.votes_available', {'part':phrase_part}) }}
 		<br />
 		<ul>
-			<li class="num-0 on" data-num="0">&nbsp;{{ phrase('user.none') }}&nbsp;</li>
+			<li class="num-0 on" data-num="0">&nbsp;{{ phrase('user.general.none') }}&nbsp;</li>
 			{% for i in 1..app.getSetting('core_feedback.max_votes_feedback') %}
 				<li class="num-{{ i }} num" data-num="{{ i }}">{{ i }}</li>
 			{% endfor %}

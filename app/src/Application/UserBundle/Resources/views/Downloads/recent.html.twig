@@ -1,6 +1,6 @@
 {% extends 'UserBundle:Downloads:layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_downloads') }}">{{ phrase('user.downloads') }}</a></li>
+	<li><a href="{{ path('user_downloads') }}">{{ phrase('user.general.downloads') }}</a></li>
 	<li><a href="{{ path('user_downloads_recent') }}">{{ phrase('user.downloads.recent_section_name') }}</a></li>
 {% endblock %}
 {% block downloads_recent %}
@@ -16,7 +16,7 @@
 		{% if show_more %}
 		<div class="content-more">
 			<div class="is-not-loading">
-				<a class="button" href="{{ path('user_downloads_recent', {'page': page+1}) }}">{{ phrase('user.more')}}</a>
+				<a class="button" href="{{ path('user_downloads_recent', {'page': page+1}) }}">{{ phrase('user.general.more')}}</a>
 			</div>
 			<div class="is-loading">
 				<center><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></center>

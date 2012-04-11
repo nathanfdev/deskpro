@@ -1,6 +1,6 @@
 {% extends 'UserBundle:Articles:layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_articles') }}">{{ phrase('user.knowledgebase') }}</a></li>
+	<li><a href="{{ path('user_articles') }}">{{ phrase('user.general.knowledgebase') }}</a></li>
 	<li><a href="{{ path('user_articles_popular') }}">{{ phrase('user.articles.popular_section_name') }}</a></li>
 {% endblock %}
 {% block kb_popular %}
@@ -16,7 +16,7 @@
 		{% if show_more %}
 		<div class="content-more">
 			<div class="is-not-loading">
-				<button>{{ phrase('user.more') }}</button>
+				<button>{{ phrase('user.general.more') }}</button>
 			</div>
 			<div class="is-loading">
 				<center><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></center>

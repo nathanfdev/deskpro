@@ -1,6 +1,6 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_tickets') }}">{{ phrase('user.tickets') }}</a></li>
+	<li><a href="{{ path('user_tickets') }}">{{ phrase('user.general.tickets') }}</a></li>
 {% endblock %}
 {% block page_title %}{{ phrase('user.tickets.your_tickets') }}{% endblock %}
 {% block content %}
@@ -10,7 +10,7 @@
 <div class="dp-content-block dp-ticketlist-page dp-open-tickets">
 	<div class="dp-box">
 		<div class="dp-box-header">
-			<h1>{{ phrase('user.open_tickets') }}</h1>
+			<h1>{{ phrase('user.general.open_tickets') }}</h1>
 		</div>
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content">
@@ -21,7 +21,7 @@
 							<ul class="dp-meta">
 								<li>{{ ticket.date_created|date('M j Y') }}</li>
 								{% if ticket.department %}
-									<li>{{ phrase('user.department') }}: {{ticket.department.title}}</li>
+									<li>{{ phrase('user.general.department') }}: {{ticket.department.title}}</li>
 								{% endif %}
 								{% if last_messages[ticket.id] %}
 									<li>
@@ -60,7 +60,7 @@
 							<h4><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id }) }}">{{ ticket.subject }}</a></h4>
 							<ul class="dp-meta">
 								<li>{{ ticket.date_created|date('M j Y') }}</li>
-								<li>{{ phrase('user.department') }}: {{ticket.department.title}}</li>
+								<li>{{ phrase('user.general.department') }}: {{ticket.department.title}}</li>
 								{% if last_messages[ticket.id] %}
 									<li>
 										{% if last_messages[ticket.id].person.id == app.user.id %}

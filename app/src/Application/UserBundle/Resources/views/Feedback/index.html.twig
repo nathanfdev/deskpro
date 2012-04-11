@@ -10,14 +10,14 @@
 	<div style="background-color: #eee; padding: 3px;">
 		{% if not category %}
 			<a href="{{ path('user_feedback') }} ">{{ phrase('user.feedback.status_new') }}</a> |
-			<a href="{{ path('user_feedback_status', {'status': 'accepted'}) }} ">{{ phrase('user.accepted') }}</a> |
-			<a href="{{ path('user_feedback_status', {'status': 'declined'}) }} ">{{ phrase('user.declined') }}</a> |
-			<a href="{{ path('user_feedback_status', {'status': 'completed'}) }} ">{{ phrase('user.completed') }}</a>
+			<a href="{{ path('user_feedback_status', {'status': 'accepted'}) }} ">{{ phrase('user.general.accepted') }}</a> |
+			<a href="{{ path('user_feedback_status', {'status': 'declined'}) }} ">{{ phrase('user.general.declined') }}</a> |
+			<a href="{{ path('user_feedback_status', {'status': 'completed'}) }} ">{{ phrase('user.general.completed') }}</a>
 		{% else %}
 			<a href="{{ path('user_feedback_cat', {'slug': category.url_slug}) }} ">{{ phrase('user.feedback.status_new') }}</a> |
-			<a href="{{ path('user_feedback_cat_status', {'slug': category.url_slug, 'status': 'accepted'}) }} ">{{ phrase('user.accepted') }}</a> |
-			<a href="{{ path('user_feedback_cat_status', {'slug': category.url_slug, 'status': 'declined'}) }} ">{{ phrase('user.declined') }}</a> |
-			<a href="{{ path('user_feedback_cat_status', {'slug': category.url_slug, 'status': 'completed'}) }} ">{{ phrase('user.completed') }}</a>
+			<a href="{{ path('user_feedback_cat_status', {'slug': category.url_slug, 'status': 'accepted'}) }} ">{{ phrase('user.general.accepted') }}</a> |
+			<a href="{{ path('user_feedback_cat_status', {'slug': category.url_slug, 'status': 'declined'}) }} ">{{ phrase('user.general.declined') }}</a> |
+			<a href="{{ path('user_feedback_cat_status', {'slug': category.url_slug, 'status': 'completed'}) }} ">{{ phrase('user.general.completed') }}</a>
 		{% endif %}
 	</div>
 

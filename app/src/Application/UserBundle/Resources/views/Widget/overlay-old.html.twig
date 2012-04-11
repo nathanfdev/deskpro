@@ -40,13 +40,13 @@
 
 <div id="left_pane">
 	<div class="related-title">
-		{{ phrase('user.register_similar_results') }}
+		{{ phrase('user.general.register_similar_results') }}
 		<span id="cancel_related">x</span>
 	</div>
 	<div class="search-area">
-		<input id="search_box" type="text" placeholder="{{ phrase('user.register_search_for_something') }}Search for something..." />
+		<input id="search_box" type="text" placeholder="{{ phrase('user.general.register_search_for_something') }}Search for something..." />
 		<span id="search_box_clear" style="display: none">x</span>
-		<button id="search_box_go">{{ phrase('user.search') }}</button>
+		<button id="search_box_go">{{ phrase('user.general.search') }}</button>
 	</div>
 	<div class="list-area">
 		<ul id="new_content_list">
@@ -60,9 +60,9 @@
 <div id="right_pane">
 <div class="head-area with-handler">
 	<ul id="dp_overlay_navtabs">
-		<li data-tab-for="#newticket" class="on">{{ phrase('user.register_contact_our_agents') }}</li>
-		<li data-tab-for="#newfeedback">{{ phrase('user.submit_feedback') }}</li>
-		<li data-tab-for="#newchat">{{ phrase('user.register_chat_with_us') }}</li>
+		<li data-tab-for="#newticket" class="on">{{ phrase('user.general.register_contact_our_agents') }}</li>
+		<li data-tab-for="#newfeedback">{{ phrase('user.general.submit_feedback') }}</li>
+		<li data-tab-for="#newchat">{{ phrase('user.general.register_chat_with_us') }}</li>
 	</ul>
 </div>
 <div class="body-area" id="right_pane_body">
@@ -77,7 +77,7 @@
 		{% if app.user.id %}
 		<div class="form-row">
 			<div class="dp-form-row">
-				<div class="dp-form-label"><label>{{ phrase('user.you') }}</label></div>
+				<div class="dp-form-label"><label>{{ phrase('user.general.you') }}</label></div>
 				<div class="dp-form-input">
 					{{ app.user.display_name }} ({{ app.user.email_address }})
 				</div>
@@ -88,39 +88,39 @@
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="50%" style="padding-right: 10px;">
 				<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %} dp-form-row-person_name">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.your_name') }} *</label>
+						<label>{{ phrase('user.general.your_name') }} *</label>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(ticketform.person.name, {
 										'attr': {
 											'data-field-validators': 'DeskPRO.Form.LengthValidator',
 											'data-min-len': 2,
-											'placeholder': phrase('user.your_name'),
+											'placeholder': phrase('user.general.your_name'),
 											'class': 'name-field'
 										}
 									}) }}
 						<div class="dp-error-explain">
-							{{ phrase('user.register_enter_name') }}
+							{{ phrase('user.general.register_enter_name') }}
 						</div>
 					</div>
 				</div>
 			</td><td valign="top" width="50%" style="padding-left: 10px;">
 				<div class="dp-form-row dp-form-row-person_email">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.your_email_address') }} *</label>
+						<label>{{ phrase('user.general.your_email_address') }} *</label>
 					</div>
 					<div class="dp-form-input">
-						<input type="text" class="email-field" id="dp_newticket_email" name="newticket[person][email]" value="" placeholder="{{ phrase('user.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+						<input type="text" class="email-field" id="dp_newticket_email" name="newticket[person][email]" value="" placeholder="{{ phrase('user.general.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 						{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 						<div class="connect-with">
-							{{ phrase('user.or_connect_with') }}
+							{{ phrase('user.general.or_connect_with') }}
 							{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 							{{ render_usersource(usersource, 'widget_overlay_btn') }}
 							{% endfor %}
 						</div>
 						{% endif %}
 						<div class="dp-error-explain">
-							{{ phrase('user.register_enter_name') }}
+							{{ phrase('user.general.register_enter_name') }}
 						</div>
 					</div>
 				</div>
@@ -142,7 +142,7 @@
 
 		<div class="form-row">
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td><div style="position: relative">
-				<div class="dp-drop-file-zone"><h1>{{ phrase('user.register_drop_here_to_attach') }}</h1></div>
+				<div class="dp-drop-file-zone"><h1>{{ phrase('user.general.register_drop_here_to_attach') }}</h1></div>
 				{% include 'UserBundle:NewTicket:field-message.html.twig' with {form: ticketform, addclass: 'search-collect'} %}
 				{% include 'UserBundle:Common:form-upload-input.html.twig'  with { showAsLink: true } %}
 			</div></td></tr></table>
@@ -150,13 +150,13 @@
 
 		<div class="form-row">
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td>
-				<button class="dp-button">{{ phrase('user.register_send_message') }}</button>
+				<button class="dp-button">{{ phrase('user.general.register_send_message') }}</button>
 			</td></tr></table>
 		</div>
 	</form>
 	<div class="thank-you" id="dp_newticket_done" style="display: none">
-		<h2>{{ phrase('user.thank_you') }}</h2>
-		<p>{{ phrase('user.register_thank_you_for_ticket') }}</p>
+		<h2>{{ phrase('user.general.thank_you') }}</h2>
+		<p>{{ phrase('user.general.register_thank_you_for_ticket') }}</p>
 	</div>
 </div>
 
@@ -171,7 +171,7 @@
 		{% if app.user.id %}
 		<div class="form-row">
 			<div class="dp-form-row">
-				<div class="dp-form-label"><label>{{ phrase('user.you') }}</label></div>
+				<div class="dp-form-label"><label>{{ phrase('user.general.you') }}</label></div>
 				<div class="dp-form-input">
 					{{ app.user.display_name }} ({{ app.user.email_address }})
 				</div>
@@ -182,39 +182,39 @@
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="50%" style="padding-right: 10px;">
 				<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %} dp-form-row-person_name">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.your_name') }} *</label>
+						<label>{{ phrase('user.general.your_name') }} *</label>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(feedbackform.person_name, {
 									'attr': {
 										'data-field-validators': 'DeskPRO.Form.LengthValidator',
 										'data-min-len': 2,
-										'placeholder': phrase('user.your_name'),
+										'placeholder': phrase('user.general.your_name'),
 										'class': 'name-field'
 									}
 								}) }}
 						<div class="dp-error-explain">
-							{{ phrase('user.register_enter_name') }}
+							{{ phrase('user.general.register_enter_name') }}
 						</div>
 					</div>
 				</div>
 			</td><td width="50%" style="padding-left: 10px;">
 				<div class="dp-form-row dp-form-row-person_email">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.your_email_address') }} *</label>
+						<label>{{ phrase('user.general.your_email_address') }} *</label>
 					</div>
 					<div class="dp-form-input">
-						<input type="text" class="email-field" id="dp_newfeedback_email" name="feedback[person_email]" value="" placeholder="{{ phrase('user.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+						<input type="text" class="email-field" id="dp_newfeedback_email" name="feedback[person_email]" value="" placeholder="{{ phrase('user.general.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 						{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 						<div class="connect-with">
-							{{ phrase('user.or_connect_with') }}
+							{{ phrase('user.general.or_connect_with') }}
 							{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 							{{ render_usersource(usersource, 'widget_overlay_btn') }}
 							{% endfor %}
 						</div>
 						{% endif %}
 						<div class="dp-error-explain">
-							{{ phrase('user.register_enter_name') }}
+							{{ phrase('user.general.register_enter_name') }}
 						</div>
 					</div>
 				</div>
@@ -224,7 +224,7 @@
 
 		<div class="dp-form-row {% if error_fields['category_id'] %}dp-error{% endif %}">
 			<div class="dp-form-label">
-				<label>{{ phrase('user.category') }} *</label>
+				<label>{{ phrase('user.general.category') }} *</label>
 			</div>
 			<div class="dp-form-input with-sub-options feedbackCat_id_wrapper" data-field-validators="DeskPRO.Form.TwoLevelSelectValidator">
 				<div class="dp-select-wrapper" style="width: 70%;">
@@ -248,14 +248,14 @@
 					{% endfor %}
 				</div>
 				<div class="dp-error-explain">
-					{{ phrase('user.please_choose_a_category') }}
+					{{ phrase('user.general.please_choose_a_category') }}
 				</div>
 			</div>
 		</div>
 
 		<div class="dp-form-row {% if error_fields['title'] %}dp-error{% endif %}">
 			<div class="dp-form-label">
-				<label>{{ phrase('user.summary') }} *</label> <em class="note">{{ phrase('user.feedback.label_summary_explain') }}</em>
+				<label>{{ phrase('user.general.summary') }} *</label> <em class="note">{{ phrase('user.feedback.label_summary_explain') }}</em>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(feedbackform.title, {
@@ -273,7 +273,7 @@
 
 		<div class="dp-form-row {% if error_fields['content'] %}dp-error{% endif %}">
 			<div class="dp-form-label">
-				<label>{{ phrase('user.description') }} *</label> <em class="note">{{ phrase('user.feedback.label_explain_feedback') }}</em>
+				<label>{{ phrase('user.general.description') }} *</label> <em class="note">{{ phrase('user.feedback.label_explain_feedback') }}</em>
 			</div>
 			<div class="dp-form-input">
 				{{ form_widget(feedbackform.content, {
@@ -292,8 +292,8 @@
 		<input class="btn primary" type="submit" value="Submit Feedback" />
 	</form>
 	<div class="thank-you" id="dp_newfeedback_done" style="display: none">
-		<h2>{{ phrase('user.thank_you') }}</h2>
-		<p>{{ phrase('user.register_thank_you_for_feedback') }}</p>
+		<h2>{{ phrase('user.general.thank_you') }}</h2>
+		<p>{{ phrase('user.general.register_thank_you_for_feedback') }}</p>
 	</div>
 </div>
 
@@ -306,7 +306,7 @@
 		{% if app.user.id %}
 		<div class="form-row">
 			<div class="dp-form-row">
-				<div class="dp-form-label"><label>{{ phrase('user.you') }}</label></div>
+				<div class="dp-form-label"><label>{{ phrase('user.general.you') }}</label></div>
 				<div class="dp-form-input">
 					{{ app.user.display_name }} ({{ app.user.email_address }})
 				</div>
@@ -317,32 +317,32 @@
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="50%" style="padding-right: 10px;">
 				<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %} dp-form-row-person_name">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.your_name') }} *</label>
+						<label>{{ phrase('user.general.your_name') }} *</label>
 					</div>
 					<div class="dp-form-input">
-						<input type="text" class="name-field" id="dp_newchat_name" name="name" value="" placeholder="{{ phrase('user.your_name') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+						<input type="text" class="name-field" id="dp_newchat_name" name="name" value="" placeholder="{{ phrase('user.general.your_name') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 						<div class="dp-error-explain">
-							{{ phrase('user.register_enter_name') }}
+							{{ phrase('user.general.register_enter_name') }}
 						</div>
 					</div>
 				</div>
 			</td><td width="50%" style="padding-left: 10px;">
 				<div class="dp-form-row dp-form-row-person_email">
 					<div class="dp-form-label">
-						<label>{{ phrase('user.your_email_address') }} *</label>
+						<label>{{ phrase('user.general.your_email_address') }} *</label>
 					</div>
 					{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 					<div class="connect-with">
-						{{ phrase('user.or_connect_with') }}
+						{{ phrase('user.general.or_connect_with') }}
 						{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 						{{ render_usersource(usersource, 'widget_overlay_btn') }}
 						{% endfor %}
 					</div>
 					{% endif %}
 					<div class="dp-form-input">
-						<input type="text" class="email-field" id="dp_newchat_email" name="email" value="" placeholder="{{ phrase('user.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+						<input type="text" class="email-field" id="dp_newchat_email" name="email" value="" placeholder="{{ phrase('user.general.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 						<div class="dp-error-explain">
-							{{ phrase('user.register_enter_name') }}
+							{{ phrase('user.general.register_enter_name') }}
 						</div>
 					</div>
 				</div>
@@ -352,7 +352,7 @@
 
 		<div class="dp-form-row {% if error_fields['department_id'] %}dp-error{% endif %}">
 			<div class="dp-form-label">
-				<label>{{ phrase('user.department') }} *</label>
+				<label>{{ phrase('user.general.department') }} *</label>
 			</div>
 			<div class="department_id_wrapper with-sub-options dp-form-input" data-field-validators="DeskPRO.Form.TwoLevelSelectValidator">
 				<div class="dp-select-wrapper">
@@ -376,7 +376,7 @@
 					{% endfor %}
 				</div>
 				<div class="dp-error-explain">
-					{{ phrase('user.please_enter_department') }}
+					{{ phrase('user.general.please_enter_department') }}
 				</div>
 			</div>
 		</div>
@@ -385,8 +385,8 @@
 	</form>
 
 	<div class="thank-you" id="dp_newchat_done" style="display: none">
-		<h2>{{ phrase('user.register_wait') }}</h2>
-		<p>{{ phrase('user.register_wait_while') }}</p>
+		<h2>{{ phrase('user.general.register_wait') }}</h2>
+		<p>{{ phrase('user.general.register_wait_while') }}</p>
 	</div>
 </div>
 </div>

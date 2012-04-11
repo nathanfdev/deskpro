@@ -1,6 +1,6 @@
 {% extends 'UserBundle:News:layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_news') }}">{{ phrase('user.news') }}</a></li>
+	<li><a href="{{ path('user_news') }}">{{ phrase('user.general.news') }}</a></li>
 	{% for cat in category_path %}
 		<li><a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
@@ -32,7 +32,7 @@
 					<ul>
 						{% if pageinfo.prev %}
 							<li>
-								<a href="{{ path('user_news', {'status': status, 'slug': category.url_slug, 'page': pageinfo.prev }) }}">{{ phrase('user.page_prev') }}</a>
+								<a href="{{ path('user_news', {'status': status, 'slug': category.url_slug, 'page': pageinfo.prev }) }}">{{ phrase('user.general.page_prev') }}</a>
 							</li>
 						{% endif %}
 						{% for p in pageinfo.pages %}
@@ -42,7 +42,7 @@
 						{% endfor %}
 						{% if pageinfo.next %}
 							<li>
-								<a href="{{ path('user_news', {'status': status, 'slug': category.url_slug, 'page': pageinfo.next }) }}">{{ phrase('user.page_next') }}</a>
+								<a href="{{ path('user_news', {'status': status, 'slug': category.url_slug, 'page': pageinfo.next }) }}">{{ phrase('user.general.page_next') }}</a>
 							</li>
 						{% endif %}
 					</ul>

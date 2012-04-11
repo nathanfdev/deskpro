@@ -12,7 +12,7 @@
 	</li>
 {% endmacro %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_feedback') }}">{{ phrase('user.feedback') }}</a></li>
+	<li><a href="{{ path('user_feedback') }}">{{ phrase('user.general.feedback') }}</a></li>
 	<li>
 		<a href="{{ path('user_feedback', {'status': parent_status, 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_' ~ parent_status) }}</a>
 	</li>
@@ -35,7 +35,7 @@
 	{% endif %}
 {% endblock %}
 {% block page_title %}
-	{{ phrase('user.feedback') }}
+	{{ phrase('user.general.feedback') }}
 	/ {{ phrase('user.feedback.status_' ~ parent_status) }}
 	{% if parent_status != status %}
 		/
@@ -57,17 +57,17 @@
 	<div class="dp-box">
 		<div class="dp-box-header">
 			<div class="dp-box-options">
-				<a class="btn small dp-hide-print" href="{{ path('user_feedback_newfeedback') }}">{{ phrase('user.submit_feedback') }}</a>
+				<a class="btn small dp-hide-print" href="{{ path('user_feedback_newfeedback') }}">{{ phrase('user.general.submit_feedback') }}</a>
 			</div>
 			<h1>
-				<a href="{{ path('user_feedback_all') }}">{{ phrase('user.feedback') }}</a>
+				<a href="{{ path('user_feedback_all') }}">{{ phrase('user.general.feedback') }}</a>
 			</h1>
 		</div>
 
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-nav">
 				<ul>
-					<li class="dp-title">{{ phrase('user.status') }}</li>
+					<li class="dp-title">{{ phrase('user.general.status') }}</li>
 					<li {% if status == 'all' %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': 'all', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_all') }}</a></li>
 					<li {% if status == 'popular' %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': 'popular', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_popular') }}</a></li>
 					<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': 'new', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_new') }}</a></li>
@@ -91,16 +91,16 @@
 
 				{% if status != 'popular' %}
 					<div class="dp-sort-options">
-						{{ phrase('user.sort_by') }}:<br />
-							<a {% if search_options.order_by == 'num_ratings' %}style="font-weight:bold"{% endif %} href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'order_by': 'num_ratings'}) }}">{{ phrase('user.votes') }}</a>
+						{{ phrase('user.general.sort_by') }}:<br />
+							<a {% if search_options.order_by == 'num_ratings' %}style="font-weight:bold"{% endif %} href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'order_by': 'num_ratings'}) }}">{{ phrase('user.general.votes') }}</a>
 							/
-							<a {% if search_options.order_by == 'date_created' %}style="font-weight:bold"{% endif %} href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'order_by': 'date_created'}) }}">{{ phrase('user.date') }}</a>
+							<a {% if search_options.order_by == 'date_created' %}style="font-weight:bold"{% endif %} href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'order_by': 'date_created'}) }}">{{ phrase('user.general.date') }}</a>
 					</div>
 				{% endif %}
 
 				{% if feedback_cats|length %}
 					<ul class="sep">
-						<li class="dp-title">{{ phrase('user.category') }}</li>
+						<li class="dp-title">{{ phrase('user.general.category') }}</li>
 						<li {% if not category %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': status, 'slug': 'all'}) }}">{{ phrase('user.feedback.status_all') }}</a></li>
 						{% for cat in feedback_cats %}
 							{{ _self.cat_row(cat, status, category) }}
@@ -119,7 +119,7 @@
 									<div class="dp-bound-faded"></div>
 								</div>
 								<div class="meta">
-									{{ phrase('user.created_by_x', {'name': feedback.person.display_name}) }} |
+									{{ phrase('user.general.created_by_x', {'name': feedback.person.display_name}) }} |
 									{{ feedback.date_created|date('M d, Y') }} |
 										{% if feedback.status_category %}
 											{{ feedback.status_category.title }}
@@ -150,7 +150,7 @@
 							<ul>
 								{% if pageinfo.prev %}
 									<li>
-										<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'page': pageinfo.prev }) }}">{{ phrase('user.page_prev') }}</a>
+										<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'page': pageinfo.prev }) }}">{{ phrase('user.general.page_prev') }}</a>
 									</li>
 								{% endif %}
 								{% for p in pageinfo.pages %}
@@ -160,7 +160,7 @@
 								{% endfor %}
 								{% if pageinfo.next %}
 									<li>
-										<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'page': pageinfo.next }) }}">{{ phrase('user.page_next') }}</a>
+										<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'page': pageinfo.next }) }}">{{ phrase('user.general.page_next') }}</a>
 									</li>
 								{% endif %}
 							</ul>

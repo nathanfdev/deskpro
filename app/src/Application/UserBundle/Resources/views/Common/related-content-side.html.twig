@@ -1,24 +1,24 @@
 <div style="float:right; margin: 8px; padding: 5px; font-size: 11px; background-color: #F5F8FA; border: 1px solid #878F94;">
 	{% if related_content.articles %}
-		<strong>{{ phrase('user.related_articles') }}</strong><br />
+		<strong>{{ phrase('user.general.related_articles') }}</strong><br />
 		{% for rel in related_content.articles %}
 			&middot; <a href="{{ path('user_articles_article', {'slug': rel.url_slug}) }}">{{ rel.title }}</a><br />
 		{% endfor %}
 	{% endif %}
 	{% if related_content.downloads %}
-		<strong>{{ phrase('user.related_downloads') }}</strong><br />
+		<strong>{{ phrase('user.general.related_downloads') }}</strong><br />
 		{% for rel in related_content.downloads %}
 			&middot; <a href="{{ path('user_downloads_file', {'slug': rel.url_slug}) }}">{{ rel.title }}</a><br />
 		{% endfor %}
 	{% endif %}
 	{% if related_content.news %}
-		<strong>{{ phrase('user.related_news') }}</strong><br />
+		<strong>{{ phrase('user.general.related_news') }}</strong><br />
 		{% for rel in related_content.news %}
 			&middot; <a href="{{ path('user_news_view', {'slug': rel.url_slug}) }}">{{ rel.title }}</a><br />
 		{% endfor %}
 	{% endif %}
 	{% if related_content.feedback %}
-		<strong>{{ phrase('user.related_feedback') }}</strong><br />
+		<strong>{{ phrase('user.general.related_feedback') }}</strong><br />
 		{% for rel in related_content.feedback %}
 			&middot; <a href="{{ path('user_feedback_view', {'slug': rel.url_slug}) }}">{{ rel.title }}</a><br />
 		{% endfor %}

@@ -1,6 +1,6 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_register') }}">{{ phrase('user.register') }}</a></li>
+	<li><a href="{{ path('user_register') }}">{{ phrase('user.general.register') }}</a></li>
 {% endblock %}
 {% block content %}
 <div
@@ -30,15 +30,15 @@
 					<table cellspacing="0" cellpadding="0" width="100%">
 						<tr>
 							<td>
-								{{ phrase('user.email_address') }}<br />
+								{{ phrase('user.general.email_address') }}<br />
 								<input type="text" value="" name="email" size="20" />
 							</td>
 							<td>
-								{{ phrase('user.password') }} (<em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.lost_qm') }}</a></em>)<br />
+								{{ phrase('user.general.password') }} (<em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.general.log_in') }}</a></em>)<br />
 								<input type="password" value="" name="password" size="20" />
 							</td>
 							<td style="text-align: right; vertical-align: bottom;" valign="bottom">
-									<input class="btn" type="submit" value="{{ phrase('user.log_in') }}" />
+									<input class="btn" type="submit" value="{{ phrase('user.general.log_in') }}" />
 							</td>
 						</tr>
 					</table>
@@ -58,36 +58,36 @@
 
 					<div class="dp-form-row {% if error_fields['name'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
-							<label>{{ phrase('user.your_name') }} *</label>
+							<label>{{ phrase('user.general.your_name') }} *</label>
 						</div>
 						<div class="dp-form-input">
 							{{ form_widget(form.name) }}
 							<div class="dp-error-explain">
-								{{ phrase('user.register_enter_name') }}
+								{{ phrase('user.general.register_enter_name') }}
 							</div>
 						</div>
 					</div>
 
 					<div class="dp-form-row {% if error_fields['email'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
-							<label>{{ phrase('user.your_email_address') }} *</label>
+							<label>{{ phrase('user.general.your_email_address') }} *</label>
 						</div>
 						<div class="dp-form-input">
 							{{ form_widget(form.email) }}
-							{% if errors['email.invalid'] %}<div class="dp-error-explain">{{ phrase('user.register_enter_valid_email') }}</div>{% endif %}
-							{% if errors['email.in_use'] %}<div class="dp-error-explain">{{ phrase('user.register_email_exists') }}</div>{% endif %}
+							{% if errors['email.invalid'] %}<div class="dp-error-explain">{{ phrase('user.general.register_enter_valid_email') }}</div>{% endif %}
+							{% if errors['email.in_use'] %}<div class="dp-error-explain">{{ phrase('user.general.register_email_exists') }}</div>{% endif %}
 						</div>
 					</div>
 
 					<div class="dp-form-row {% if error_fields['password'] %}dp-error{% endif %}">
 						<div class="dp-form-label">
-							<label>{{ phrase('user.password') }} *</label>
+							<label>{{ phrase('user.general.password') }} *</label>
 						</div>
 						<div class="dp-form-input">
 							{{ form_widget(form.password) }}
 						</div>
-						{% if errors['password.short'] %}<div class="dp-error-explain">{{ phrase('user.register_password_min_length') }}</div>{% endif %}
-						{% if errors['password.mismatch'] %}<div class="dp-error-explain">{{ phrase('user.register_password_mismatch') }}</div>{% endif %}
+						{% if errors['password.short'] %}<div class="dp-error-explain">{{ phrase('user.general.register_password_min_length') }}</div>{% endif %}
+						{% if errors['password.mismatch'] %}<div class="dp-error-explain">{{ phrase('user.general.register_password_mismatch') }}</div>{% endif %}
 					</div>
 
 					<div class="dp-form-row">
@@ -101,7 +101,7 @@
 
 					<div class="dp-form-row">
 						<div class="dp-form-label">
-							<label>{{ phrase('user.label_captcha') }} *</label>
+							<label>{{ phrase('user.general.label_captcha') }} *</label>
 						</div>
 						<div class="dp-form-input">
 							{% include 'UserBundle:Common:recaptcha.html.twig' %}
@@ -109,7 +109,7 @@
 					</div>
 
 					<div class="dp-footer">
-						<input class="btn primary" type="submit" value="{{ phrase('user.register') }}" />
+						<input class="btn primary" type="submit" value="{{ phrase('user.general.register') }}" />
 					</div>
 				</form>
 			</div>

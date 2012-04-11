@@ -4,9 +4,9 @@
 	<div class="dp-box">
 		<div class="dp-box-header">
 			{% if category %}
-				<h1><a href="{{ path('user_downloads', {'slug': category.url_slug}) }}">{{ phrase('user.downloads') }}: {{category.title}}</a></h1>
+				<h1><a href="{{ path('user_downloads', {'slug': category.url_slug}) }}">{{ phrase('user.general.downloads') }}: {{category.title}}</a></h1>
 			{% else %}
-				<h1><a href="{{ path('user_downloads') }}">{{ phrase('user.downloads') }}</a></h1>
+				<h1><a href="{{ path('user_downloads') }}">{{ phrase('user.general.downloads') }}</a></h1>
 			{% endif %}
 		</div>
 

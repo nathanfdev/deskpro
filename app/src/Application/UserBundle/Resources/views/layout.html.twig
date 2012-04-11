@@ -84,28 +84,28 @@
 <div id="dp_search_assist" style="display: none;">
 	<div class="results"></div>
 	<div class="foot">
-		<h4>{{ phrase('user.is_search_relevant') }}</h4>
+		<h4>{{ phrase('user.general.is_search_relevant') }}</h4>
 		<ul>
-			<li class="ticket"><a href="{{ path('user_tickets_new') }}">{{ phrase('user.create_ticket') }}</a></li>
-			<li class="feedback"><a href="{{ path('user_feedback_newfeedback') }}">{{ phrase('user.create_feedback') }}</a></li>
-			<li class="chat dp-chat-trigger no-omni-trigger"><a href="#">{{ phrase('user.btn_create_chat') }}</a></li>
+			<li class="ticket"><a href="{{ path('user_tickets_new') }}">{{ phrase('user.general.create_ticket') }}</a></li>
+			<li class="feedback"><a href="{{ path('user_feedback_newfeedback') }}">{{ phrase('user.general.create_feedback') }}</a></li>
+			<li class="chat dp-chat-trigger no-omni-trigger"><a href="#">{{ phrase('user.general.btn_create_chat') }}</a></li>
 		</ul>
 		<br class="dp-clear" style="clear:left" />
 	</div>
 </div>
 
 {% if app.user.is_guest %}
-<div id="dp_login_box_title"><a href="{{ path('user_login') }}">{{ phrase('user.log_in') }}</a></div>
+<div id="dp_login_box_title"><a href="{{ path('user_login') }}">{{ phrase('user.general.log_in') }}</a></div>
 <div id="dp_login_box" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.LoginBox">
 	<form action="{{ path('user_login_authenticate_local') }}" class="form login" method="post">
 		<div class="dp-login-box-inner">
 			<dl>
-				<dt>{{ phrase('user.email_address') }}</dt>
+				<dt>{{ phrase('user.general.email_address') }}</dt>
 				<dd><input type="text" value="" name="email" id="dp_login_email" size="40" tabindex="1" /></dd>
 			</dl>
 			<div class="dp-login-section">
 				<dl>
-					<dt>{{ phrase('user.password') }} <em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.lost_qm') }}</a></em></dt>
+					<dt>{{ phrase('user.general.password') }} <em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.general.log_in') }}</a></em></dt>
 					<dd><input type="password" value="" name="password" id="dp_login_password" size="40" tabindex="2" /></dd>
 				</dl>
 				<div style="float:right">
@@ -113,25 +113,25 @@
 						{{ render_usersource(usersource, 'login_pull_btn') }}
 					{% endfor %}
 				</div>
-				<input class="btn" type="submit" value="{{ phrase('user.log_in') }}" />
+				<input class="btn" type="submit" value="{{ phrase('user.general.log_in') }}" />
 			</div>
 			<div class="dp-reset-section" style="display: none">
 				<div class="dp-reset-desc">
-					{{ phrase('user.lost_password_explain') }}
+					{{ phrase('user.general.lost_password_explain') }}
 					<br />
 					<div class="dp-btn-row">
 						<div class="not-loading">
-							<button class="btn small dp-do-send">{{ phrase('user.lost_password_send_btn') }}</button>
-							<br /><a class="back">{{ phrase('user.cancel') }}</a>
+							<button class="btn small dp-do-send">{{ phrase('user.general.lost_password_send_btn') }}</button>
+							<br /><a class="back">{{ phrase('user.general.cancel') }}</a>
 						</div>
 						<div class="is-loading">
-							{{ phrase('user.please_wait') }}
+							{{ phrase('user.general.please_wait') }}
 						</div>
 					</div>
 				</div>
 				<div class="dp-reset-sent" style="display: none">
-					{{ phrase('user.lost_password_sent') }}
-					<center><br /><br /><a class="back">{{ phrase('user.lost_password_back_btn') }}</a></center>
+					{{ phrase('user.general.lost_password_sent') }}
+					<center><br /><br /><a class="back">{{ phrase('user.general.lost_password_back_btn') }}</a></center>
 				</div>
 			</div>
 		</div>
@@ -146,9 +146,9 @@
 		<div id="dp_search_bar" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
 			<form action="{{ path('user_search') }}" method="GET">
 				<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td width="100%" style="padding-right: 16px;">
-					<input type="text" name="q" id="deskpro_search" {% if app.search_query %}value="{{ app.search_query }}"{% endif %} placeholder="{{ phrase('user.comments_enter_details') }}" autocomplete="off" />
+					<input type="text" name="q" id="deskpro_search" {% if app.search_query %}value="{{ app.search_query }}"{% endif %} placeholder="{{ phrase('user.general.comments_enter_details') }}" autocomplete="off" />
 				</td><td width="50">
-					<button class="btn primary">{{ phrase('user.search') }}</button>
+					<button class="btn primary">{{ phrase('user.general.search') }}</button>
 				</td></tr></table>
 			</form>
 		</div>
@@ -163,7 +163,7 @@
 	{% if breadcrumb %}
 		<div id="dp_breadcrumb">
 			<ul>
-				<li><a href="{{ path('user') }}">{{ phrase('user.helpdesk') }}</a></li>
+				<li><a href="{{ path('user') }}">{{ phrase('user.general.helpdesk') }}</a></li>
 				{{ breadcrumb }}
 			</ul>
 		</div>
@@ -195,7 +195,7 @@
 	</div>
 
 	<div id="dp_footer">
-		<a href="http://www.deskpro.com/">{{ phrase('user.powered_by') }}</a>
+		<a href="http://www.deskpro.com/">{{ phrase('user.general.powered_by') }}</a>
 	</div>
 </div>
 

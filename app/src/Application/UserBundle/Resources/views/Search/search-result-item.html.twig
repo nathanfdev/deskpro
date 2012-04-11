@@ -3,7 +3,7 @@
 		<a class="title" data-content-type="{{ res.type }}" data-content-id="{{ res.object.id }}" href="{{ path('user_articles_article', {'slug': res.object.url_slug}) }}">{{ res.object.title|emphasize_words(query) }}</a>
 		<div class="breadcrumb-line">
 			<ul>
-				<li><a href="{{ path('user_articles') }}">{{ phrase('user.articles') }}</a></li>
+				<li><a href="{{ path('user_articles') }}">{{ phrase('user.general.articles') }}</a></li>
 				{% for c in res.object.categories %}
 					{% if loop.index == 1 %}
 						{% for pc in c.tree_parents %}
@@ -18,7 +18,7 @@
 		<a class="title" data-content-type="{{ res.type }}" data-content-id="{{ res.object.id }}" href="{{ path('user_downloads_file', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a>
 		<div class="breadcrumb-line">
 			<ul>
-				<li><a href="{{ path('user_downloads') }}">{{ phrase('user.downloads') }}</a></li>
+				<li><a href="{{ path('user_downloads') }}">{{ phrase('user.general.downloads') }}</a></li>
 				{% for cat in res.object.category.tree_parents %}
 					<li><a href="{{ path('user_downloads', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 				{% endfor %}
@@ -28,7 +28,7 @@
 		<a class="title" data-content-type="{{ res.type }}" data-content-id="{{ res.object.id }}" href="{{ path('user_feedback_view', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a>
 		<div class="breadcrumb-line">
 			<ul>
-				<li><a href="{{ path('user_feedback') }}">{{ phrase('user.feedback') }}</a></li>
+				<li><a href="{{ path('user_feedback') }}">{{ phrase('user.general.feedback') }}</a></li>
 				{% for cat in res.object.category.tree_parents %}
 					<li><a href="{{ path('user_feedback', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 				{% endfor %}
@@ -38,7 +38,7 @@
 		<a class="title" data-content-type="{{ res.type }}" data-content-id="{{ res.object.id }}" href="{{ path('user_news_view', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a>
 		<div class="breadcrumb-line">
 			<ul>
-				<li><a href="{{ path('user_news') }}">{{ phrase('user.news') }}</a></li>
+				<li><a href="{{ path('user_news') }}">{{ phrase('user.general.news') }}</a></li>
 				{% for cat in res.object.category.tree_parents %}
 					<li><a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 				{% endfor %}

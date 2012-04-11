@@ -5,22 +5,22 @@
 {% block finish_pre %}{% endblock %}
 
 <div style="width: 220px; float:right; margin-left: 10px; background-color: #eee;">
-	{{ phrase('user.register_extra_benefits') }}:
+	{{ phrase('user.general.register_extra_benefits') }}:
 	<ul>
-		<li>{{ phrase('user.register__never_validate_again') }}n</li>
-		<li>{{ phrase('user.register_view_tickets_easily') }}</li>
-		<li>{{ phrase('user.register_manage_profile') }}</li>
+		<li>{{ phrase('user.general.register__never_validate_again') }}n</li>
+		<li>{{ phrase('user.general.register_view_tickets_easily') }}</li>
+		<li>{{ phrase('user.general.register_manage_profile') }}</li>
 	</ul>
 </div>
-<h2 style="font-size: 15px;">{{ phrase('user.register_can_set_a_password') }}</h2>
+<h2 style="font-size: 15px;">{{ phrase('user.general.register_can_set_a_password') }}</h2>
 <p>
-	{{ phrase('user.register_reuse_account') }}:
+	{{ phrase('user.general.register_reuse_account') }}:
 </p>
 <form action="{{ path('user_register_finish') }}" method="post">
 	<input type="hidden" name="process" value="1" />
-	{{ phrase('user.register_set_a_password') }}: <input type="password" name="password" value="" /><br />
-	{{ phrase('user.repeat') }}: <input type="password" name="password2" value="" /><br />
-	<input type="submit" value="{{ phrase('user.register_btn_register_account') }}" />
+	{{ phrase('user.general.register_set_a_password') }}: <input type="password" name="password" value="" /><br />
+	{{ phrase('user.general.repeat') }}: <input type="password" name="password2" value="" /><br />
+	<input type="submit" value="{{ phrase('user.general.register_btn_register_account') }}" />
 </form>
 
 <br style="clear:both;" />

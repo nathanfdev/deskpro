@@ -1,12 +1,12 @@
 {% if news_entries|length %}
 	<div class="dp-sidebar-block dp-news-block">
 		<div class="dp-box-header">
-			<h3><a href="{{ path('user_news') }}">{{ phrase('user.news') }}</a></h3>
+			<h3><a href="{{ path('user_news') }}">{{ phrase('user.general.news') }}</a></h3>
 		</div>
 		<ul class="dp-content-list">
 			{% for news in news_entries %}
 				<li>
-					<div class="dp-cal-date small" title="{{ phrase('user.posted_date', {'date':news.date_created|date('M d Y @ H:i:s')}) }}">
+					<div class="dp-cal-date small" title="{{ phrase('user.general.posted_date', {'date':news.date_created|date('M d Y @ H:i:s')}) }}">
 						<div class="month">{{ news.date_created|date('M')|upper }}</div>
 						<div class="day">{{ news.date_created|date('d') }}</div>
 					</div>
@@ -18,7 +18,7 @@
 			{% endfor %}
 		</ul>
 		<div class="dp-more" style="clear:left">
-			<a href="{{ path('user_news') }}">{{ phrase('user.view_more_news') }}</a>
+			<a href="{{ path('user_news') }}">{{ phrase('user.general.view_more_news') }}</a>
 		</div>
 	</div>
 {% endif %}

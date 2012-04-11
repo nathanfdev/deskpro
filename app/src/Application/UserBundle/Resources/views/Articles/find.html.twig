@@ -1,7 +1,7 @@
 {% extends 'UserBundle:Articles:layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_articles') }}">{{ phrase('user.knowledgebase') }}</a></li>
-	<li><a href="{{ path('user_articles_filter') }}">{{ phrase('user.find') }}</a></li>
+	<li><a href="{{ path('user_articles') }}">{{ phrase('user.general.knowledgebase') }}</a></li>
+	<li><a href="{{ path('user_articles_filter') }}">{{ phrase('user.general.find') }}</a></li>
 {% endblock %}
 {% block kb_find %}
 	<div>
@@ -10,9 +10,9 @@
 			<input type="hidden" name="order_by" value="{{ search_options.order_by }}" />
 			<table cellspacing="0" cellpadding="0" width="100%">
 				<tr>
-					<td>{{ phrase('user.category') }}:</td>
-					<td>{{ phrase('user.product') }}:</td>
-					<td rowspan="2"><button>{{ phrase('user.find') }}</button></td>
+					<td>{{ phrase('user.general.category') }}:</td>
+					<td>{{ phrase('user.general.product') }}:</td>
+					<td rowspan="2"><button>{{ phrase('user.general.find') }}</button></td>
 				</tr>
 				<tr>
 					<td>
@@ -41,7 +41,7 @@
 				<li class="article">
 					<div class="info-line" style="float:right">
 						<ul>
-							<li class="comments" title="{{ phrase('user.comments') }}"><span>{{ 0 }}</span></li>
+							<li class="comments" title="{{ phrase('user.general.comments') }}"><span>{{ 0 }}</span></li>
 							<li class="views" title="{{ phrase('user.articles.views') }}"><span>{{ article.view_count }}</span></li>
 						</ul>
 					</div>
@@ -57,8 +57,8 @@
 						<div class="sort-controls">
 							{{ phrase('user.articles.sorted_by') }}
 							<select name="order_by" onchange="$('#kb_find_form_btm select.page').val(1); $('#kb_find_form_btm').submit();">
-								<option value="id.desc" {% if search_options.order_by == 'id.desc' %}selected="selected"{% endif %}>{{ phrase('user.date') }}</option>
-								<option value="view_count.desc" {% if search_options.order_by == 'view_count.desc' %}selected="selected"{% endif %}>{{ phrase('user.popularity') }}</option>
+								<option value="id.desc" {% if search_options.order_by == 'id.desc' %}selected="selected"{% endif %}>{{ phrase('user.general.date') }}</option>
+								<option value="view_count.desc" {% if search_options.order_by == 'view_count.desc' %}selected="selected"{% endif %}>{{ phrase('user.general.popularity') }}</option>
 							</select>
 						</div>
 						{% if pageinfo.last != 1 %}
@@ -66,14 +66,14 @@
 							{% if pageinfo.prev %}
 								<a href="{{ path('user_articles_filter', search_options|merge({'page': pageinfo.prev})) }}" class="page-link page-left">{{ phrase('user.articles.previous') }}</a>
 							{% endif %}
-							{{ phrase('user.page') }}<select class="page" name="page" onchange="$('#kb_find_form_btm').submit();">
+							{{ phrase('user.general.page') }}<select class="page" name="page" onchange="$('#kb_find_form_btm').submit();">
 								{% for i in 1..pageinfo.last %}
 									<option value="{{i}}" {% if i == pageinfo.curpage %}selected="selected"{% endif %}>{{i}}</option>
 								{% endfor %}
 							</select>
-							{{ phrase('user.of') }} {{ pageinfo.last }} <button class="dp-button x-small">{{ phrase('user.articles.go') }}</button>
+							{{ phrase('user.general.of') }} {{ pageinfo.last }} <button class="dp-button x-small">{{ phrase('user.articles.go') }}</button>
 							{% if pageinfo.next %}
-								<a href="{{ path('user_articles_filter', search_options|merge({'page': pageinfo.next})) }}" class="page-link page-right">{{ phrase('user.next') }}</a>
+								<a href="{{ path('user_articles_filter', search_options|merge({'page': pageinfo.next})) }}" class="page-link page-right">{{ phrase('user.general.next') }}</a>
 							{% endif %}
 						</div>
 						{% endif %}
