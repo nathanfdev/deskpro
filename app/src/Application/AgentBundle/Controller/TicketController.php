@@ -734,6 +734,7 @@ class TicketController extends AbstractController
 	public function addParticipantAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'modify_cc');
+        $ticket_perms = $this->_getTicketPerms($ticket);
 
 		$person = null;
 		if ($this->in->getUint('person_id')) {
@@ -753,7 +754,7 @@ class TicketController extends AbstractController
 
 		if ($person->id) {
 			if ($ticket->hasParticipantPerson($person)) {
-				return $this->render('AgentBundle:Ticket:view-user-cc-row.html.twig', array('person' => $person));
+				return $this->render('AgentBundle:Ticket:view-user-cc-row.html.twig', array('person' => $person, 'ticket_perms' => $ticket_perms));
 			}
 		}
 
@@ -777,7 +778,7 @@ class TicketController extends AbstractController
 			throw $e;
 		}
 
-		return $this->render('AgentBundle:Ticket:view-user-cc-row.html.twig', array('person' => $person));
+		return $this->render('AgentBundle:Ticket:view-user-cc-row.html.twig', array('person' => $person, 'ticket_perms' => $ticket_perms));
 	}
 
 	############################################################################

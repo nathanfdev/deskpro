@@ -1,5 +1,5 @@
 <li data-person-id="{{ person.id }}" data-email-address="{{ person.primary_email_address }}">
-	{% if ticket_perms[modify_cc] %}<span class="btn-small-remove remove-row-trigger noedit-hide"></span>{% endif %}
+	{% if ticket_perms.modify_cc %}<span class="btn-small-remove remove-row-trigger noedit-hide"></span>{% endif %}
 	<a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">
 		{{ person.display_name }} &lt;{{ person.primary_email_address }}&gt;
 	</a>

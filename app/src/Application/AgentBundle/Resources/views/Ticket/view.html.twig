@@ -176,7 +176,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 						>
 							<ul>
 								{% for part in user_parts %}
-									{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person } %}
+									{% include 'AgentBundle:Ticket:view-user-cc-row.html.twig' with {'person': part.person, 'ticket_perms':ticket_perms } %}
 								{% endfor %}
 							</ul>
 							<script type="text/x-deskpro-plain" class="addrow-tpl">
