@@ -1618,13 +1618,6 @@ $collection->add('agent_public_drafts_mass', new Route(
 	array()
 ));
 
-$collection->add('agent_publish_searchlog', new Route(
-	'/publish/search-logs',
-	array('_controller' => 'AgentBundle:Publish:searchLogs'),
-	array(),
-	array()
-));
-
 $collection->add('agent_publish_search', new Route(
 	'/publish/search',
 	array('_controller' => 'AgentBundle:Publish:search'),

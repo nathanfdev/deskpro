@@ -657,23 +657,6 @@ class PublishController extends AbstractController
 	}
 
 	############################################################################
-	# searchlog related
-	############################################################################
-
-	public function searchLogsAction()
-	{
-		$recent_searches       = App::getEntityRepository('DeskPRO:SearchLog')->recentSearchTerms(100);
-		$popular_searches      = App::getEntityRepository('DeskPRO:SearchLog')->popularSearchTerms(100);
-		$popular_searches_low  = App::getEntityRepository('DeskPRO:SearchLog')->popularSearchTermsLowHits(100);
-
-		return $this->render('AgentBundle:Publish:searchlog.html.twig', array(
-			'recent_searches'      => $recent_searches,
-			'popular_searches'     => $popular_searches,
-			'popular_searches_low' => $popular_searches_low,
-		));
-	}
-
-	############################################################################
 	# saving categories
 	############################################################################
 
