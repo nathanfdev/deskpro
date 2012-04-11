@@ -108,11 +108,11 @@ class PhraseFinder
                             $state = 0;
 
                             if(!isset($errors[$file])) {
-                                $cache[$file]['errors'] =
+                                $cache[$file]['errors'][] =
                                 $errors[$file] = array();
                             }
 
-                            $cache[$file]['errors'] =
+                            $cache[$file]['errors'][] =
                             $errors[$file][] = $this->tokenWarningTwig('Unexpected token', $token, $file, $line);
                         }
 
@@ -126,11 +126,11 @@ class PhraseFinder
                             $state = 0;
 
                             if(!isset($errors[$file])) {
-                                $cache[$file]['errors'] =
+                                $cache[$file]['errors'][] =
                                 $errors[$file] = array();
                             }
 
-                            $cache[$file]['errors'] =
+                            $cache[$file]['errors'][] =
                             $errors[$file][] = $this->tokenWarningTwig('Unexpected token', $token, $file, $line);
                         }
 
@@ -260,7 +260,7 @@ class PhraseFinder
                                     $errors[$file] = array();
                                 }
 
-                                $cache[$file]['errors'] =
+                                $cache[$file]['errors'][] =
                                 $errors[$file][] = $this->tokenWarningPhp('Unexpected Token', $token, $file, $line);
                             }
 
@@ -278,7 +278,7 @@ class PhraseFinder
                                     $errors[$file] = array();
                                 }
 
-                                $cache[$file]['errors'] =
+                                $cache[$file]['errors'][] =
                                 $errors[$file][] = $this->tokenWarningPhp('Unexpected Token', $token, $file, $line);
                             }
 

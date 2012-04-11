@@ -1,266 +1,110 @@
 
-msgid "admin.views.deskpro_admin_interface"
-msgstr "DeskPRO Admin Interface"
-
-msgid "admin.views.home"
-msgstr "Home"
-
-msgid "admin.views.setup"
-msgstr "Setup"
-
-msgid "admin.views.server"
-msgstr "Server"
-
-msgid "admin.userrules.user_rules"
-msgstr "User Rules"
-
-msgid "admin.userrules.new_rule"
-msgstr "New Rule"
-
-msgid "admin.userrules.edit_rule"
-msgstr "Edit Rule"
-
-msgid "admin.userrules.email_address_pattern"
-msgstr "Email Address Pattern"
-
-msgid "admin.userrules.when_matching_add_user_to_usergroup"
-msgstr "When matching, add user to usergroup"
-
-msgid "admin.userrules.add_new_rule"
+msgid "admin.user_rules.add_new_rule"
 msgstr "Add New Rule"
 
-msgid "admin.userrules.add_to_usergroup"
-msgstr "Add to usergroup"
-
-msgid "admin.userrules.add_to_organization"
+msgid "admin.user_rules.add_to_organization"
 msgstr "Add to organization"
 
-msgid "admin.userrules.you_havent_created_any_user_rules_yet"
-msgstr "You haven't created any user rules yet."
+msgid "admin.user_rules.add_to_usergroup"
+msgstr "Add to usergroup"
 
-msgid "admin.userrules.domains"
+msgid "admin.user_rules.domains"
 msgstr "Domains"
 
-msgid "admin.userrules.enter_a_pattern_one_per_line_example_examplecom"
+msgid "admin.user_rules.edit_rule"
+msgstr "Edit Rule"
+
+msgid "admin.user_rules.email_address_pattern"
+msgstr "Email Address Pattern"
+
+msgid "admin.user_rules.enter_pattern"
 msgstr "Enter a pattern, one per line. Example: *@example.com"
 
-msgid "admin.userreg.registration_settings"
-msgstr "Registration Settings"
+msgid "admin.user_rules.match"
+msgstr "Match"
 
-msgid "admin.userreg.facebook_setup"
-msgstr "Facebook Setup"
+msgid "admin.user_rules.new_rule"
+msgstr "New Rule"
 
-msgid "admin.userreg.to_enable_facebook_integration_you_must_register_with"
-msgstr "To enable Facebook integration, you must register with Facebook to get your own application key and application secret."
+msgid "admin.user_rules.notice_organisation_domains"
+msgstr "These organizations have domain name associations. Users that register with an email address that match any of these domains will be added to the appropriate organization. You can add or modify these domain associations by editing the organization from the agent interface."
 
-msgid "admin.userreg.click_here_here_to_sign_up_now"
-msgstr "Click here here to sign up now"
+msgid "admin.user_rules.user_rules"
+msgstr "User Rules"
 
-msgid "admin.userreg.application_key"
-msgstr "Application Key"
+msgid "admin.user_rules.choice_add_match_usergroup"
+msgstr "When matching, add user to usergroup"
 
-msgid "admin.userreg.application_secret"
-msgstr "Application Secret"
+msgid "admin.user_rules.no_rules_yet"
+msgstr "You haven't created any user rules yet."
 
-msgid "admin.userreg.add_user_source"
-msgstr "Add User Source"
-
-msgid "admin.userreg.user_sources"
-msgstr "User Sources"
-
-msgid "admin.userreg.a_user_source_is_any_database_that_deskpro"
+msgid "admin.user_registration.explain_user_source"
 msgstr "A user source is any database that DeskPRO will use to authenticate users when they want to log in."
 
-msgid "admin.userreg.google"
-msgstr "Google"
-
-msgid "admin.userreg.force_login_for_existing_users"
-msgstr "Force login for existing users"
-
-msgid "admin.userreg.registration_mode"
-msgstr "Registration Mode"
-
-msgid "admin.userreg.open_helpdesk"
-msgstr "Open Helpdesk"
-
-msgid "admin.userreg.with_an_open_helpdesk_anyone_can_use_the"
-msgstr "With an open helpdesk, anyone can use the helpdesk and anyone can register and log in. When a new user tries to submit content such a new ticket, new feedback or new comments, a helpdesk profile will be created for them automatically."
-
-msgid "admin.userreg.require_registration"
-msgstr "Require Registration"
-
-msgid "admin.userreg.with_this_mode_the_helpdesk_is_readable_by"
-msgstr "With this mode, the helpdesk is readable by everyone but users must register or log in to submit content such as new tickets, new feedback, or new comments."
-
-msgid "admin.userreg.require_registration_with_agent_validation"
-msgstr "Require Registration with Agent Validation"
-
-msgid "admin.userreg.this_is_the_same_as_request_registration_except"
-msgstr "This is the same as "Request Registration" except that users must be manually validated by agents before they are able interact with the helpdesk."
-
-msgid "admin.userreg.save_registration_settings"
-msgstr "Save Registration Settings"
-
-msgid "admin.userreg.twitter_setup"
-msgstr "Twitter Setup"
-
-msgid "admin.userreg.to_enable_twitter_integration_you_must_register_with"
-msgstr "To enable Twitter integration, you must register with Twitterto get your own key and secret."
-
-msgid "admin.userreg.consumer_key"
-msgstr "Consumer Key"
-
-msgid "admin.userreg.consumer_secret"
-msgstr "Consumer Secret"
-
-msgid "admin.userreg.if_youre_using_a_nonstandard_port_389_or"
-msgstr "If you're using a non-standard port (389, or 636 for secure connections), enter it here"
-
-msgid "admin.userreg.use_secure_connection"
-msgstr "Use Secure Connection"
-
-msgid "admin.userreg.base_dn"
-msgstr "Base DN"
-
-msgid "admin.userreg.domain_name"
-msgstr "Domain Name"
-
-msgid "admin.userreg.the_fqdn_name_for_users_in_this_directory"
-msgstr "The FQDN name for users in this directory. For example, a user alice@acme.com would have a domain of acme.com. This option is not required, but if it is not supplied, usernames in principal name form (e.g., alice@acme.com) are not supported."
-
-msgid "admin.userreg.short_domain_name_slash"
-msgstr "Short Domain Name (Slash)"
-
-msgid "admin.userreg.the_short_domain_name_for_users_in_this"
-msgstr "The "short" domain name for users in this directory, "ACME". Note that there is a 1:1 mapping between this short name and the domain name above. This option should be used to specify the NetBIOS domain name for Windows networks. This option is not required but if it is not supplied, usernames in backslash form (e.g., ACME\alice) are not supported."
-
-msgid "admin.userreg.service_account"
-msgstr "Service Account"
-
-msgid "admin.userreg.custom_filter"
-msgstr "Custom Filter"
-
-msgid "admin.userreg.database_dsn"
-msgstr "Database DSN"
-
-msgid "admin.userreg.mysql"
-msgstr "MySQL"
-
-msgid "admin.userreg.ms_sql"
-msgstr "MS SQL"
-
-msgid "admin.userreg.sqlite"
-msgstr "SQLite"
-
-msgid "admin.userreg.more"
-msgstr "more"
-
-msgid "admin.userreg.database_user"
-msgstr "Database User"
-
-msgid "admin.userreg.database_password"
-msgstr "Database Password"
-
-msgid "admin.userreg.table"
-msgstr "Table"
-
-msgid "admin.userreg.id_field"
-msgstr ""ID" field"
-
-msgid "admin.userreg.the_field_that_contains_a_users_unique_id"
-msgstr "The field that contains a users unique ID."
-
-msgid "admin.userreg.username_field"
-msgstr ""Username" field"
-
-msgid "admin.userreg.if_your_schema_has_a_unique_username_field"
-msgstr "If your schema has a unique "username" field users can use to log in, enter it here. This field is optional and allows users to enter usernames into the login form instead of email addresses."
-
-msgid "admin.userreg.email_field"
-msgstr ""Email" field"
-
-msgid "admin.userreg.if_your_schema_has_a_unique_email_field"
-msgstr "If your schema has a unique "email" field users can use to log in, enter it here. Note that you must specify the username or email fields, or both."
-
-msgid "admin.userreg.password_field"
-msgstr ""Password" field"
-
-msgid "admin.userreg.the_field_in_the_table_that_contains_the"
-msgstr "The field in the table that contains the users password."
-
-msgid "admin.userreg.first_name_field"
-msgstr ""First Name" field"
-
-msgid "admin.userreg.if_your_schema_has_a_field_that_stores"
-msgstr "If your schema has a field that stores the users full name, enter it here."
-
-msgid "admin.userreg.last_name_field"
-msgstr ""Last Name" field"
-
-msgid "admin.userreg.full_name_field"
-msgstr ""Full Name" field"
-
-msgid "admin.userreg.php_code_to_verify_inputted_password"
-msgstr "PHP code to verify inputted password"
-
-msgid "admin.userreg.table_prefix"
-msgstr "Table Prefix"
-
-msgid "admin.userreg.if_your_installation_is_using_a_table_prefix"
-msgstr "If your installation is using a table prefix, enter it here."
-
-msgid "admin.userreg.url_to_password_check_service"
-msgstr "URL to password check service"
-
-msgid "admin.userreg.the_url_to_the_password_check_service_you"
-msgstr "The URL to the password check service you uploaded."
-
-msgid "admin.userreg.password_check_service_key"
-msgstr "Password check service key"
-
-msgid "admin.userreg.the_secret_key_inside_the_password_check_service"
-msgstr "The secret key inside the password check service file you uploaded"
-
-msgid "admin.userreg.registration_options"
-msgstr "Registration Options"
-
-msgid "admin.userreg.new_usersource"
-msgstr "New Usersource"
-
-msgid "admin.userreg.lost_password_url"
-msgstr "Lost Password URL"
-
-msgid "admin.userreg.when_a_user_has_loggedin_using_this_usersource"
-msgstr "When a user has logged-in using this usersource and later clicks the "Forgot Password" link, this is the URL they will be given to reset their password."
-
-msgid "admin.userreg.active_directory"
+msgid "admin.user_registration.active_directory"
 msgstr "Active Directory"
 
-msgid "admin.userreg.custom_database"
-msgstr "Custom Database"
+msgid "admin.user_registration.add_user_source"
+msgstr "Add User Source"
 
-msgid "admin.userreg.vbulletin_v3x_or_v4x"
-msgstr "vBulletin v3.x or v4.x"
+msgid "admin.user_registration.application_key"
+msgstr "Application Key"
 
-msgid "admin.userreg.phpbb2"
-msgstr "phpBB2"
+msgid "admin.user_registration.application_secret"
+msgstr "Application Secret"
 
-msgid "admin.userreg.phpbb3"
-msgstr "phpBB3"
+msgid "admin.user_registration.confirm_delete_user_source"
+msgstr "Are you sure you want to delete this usersource? Users will not be able to log in with these credentials anymore."
 
-msgid "admin.userreg.ez_publish"
-msgstr "eZ Publish"
+msgid "admin.user_registration.base_dn"
+msgstr "Base DN"
 
-msgid "admin.userreg.for_example"
-msgstr "For example"
-
-msgid "admin.userreg.enter_the_dsn"
-msgstr "Enter the DSN connection string for the database. Refer to the manual for the string format ({{links}}). For example, for a MySQL database: <var>mysql:host=localhost;dbname=mydb</var>"
-
-msgid "admin.userreg.by_default_placeholder_is_use_this_instead"
+msgid "admin.user_registration.explain_default_filter"
 msgstr "By default, the filter performed when looking up users is <var>(&(objectClass=user)(sAMAccountName=%s))</var>. Use <var>%s</var> as the input placeholder."
 
-msgid "admin.userreg.enter_raw_php_code"
+msgid "admin.user_registration.click_here_to_sign_up"
+msgstr "Click here to sign up now"
+
+msgid "admin.user_registration.consumer_key"
+msgstr "Consumer Key"
+
+msgid "admin.user_registration.consumer_secret"
+msgstr "Consumer Secret"
+
+msgid "admin.user_registration.custom_database"
+msgstr "Custom Database"
+
+msgid "admin.user_registration.custom_filter"
+msgstr "Custom Filter"
+
+msgid "admin.user_registration.database_dsn"
+msgstr "Database DSN"
+
+msgid "admin.user_registration.database_password"
+msgstr "Database Password"
+
+msgid "admin.user_registration.database_user"
+msgstr "Database User"
+
+msgid "admin.user_registration.domain_name"
+msgstr "Domain Name"
+
+msgid "admin.user_registration.email_field"
+msgstr ""Email" field"
+
+msgid "admin.user_registration.enable_validation_email_tickets"
+msgstr "Enable validation for email submitted tickets"
+
+msgid "admin.user_registration.enable_validation_web_tickets"
+msgstr "Enable validation for web submitted tickets"
+
+msgid "admin.user_registration.enable_validation_widget_tickets"
+msgstr "Enable validation for widget submitted tickets"
+
+msgid "admin.user_registration.enter_dsn_mysql"
+msgstr "Enter the DSN connection string for the database. Refer to the manual for the string format (<a href="http://www.php.net/manual/en/ref.pdo-mysql.connection.php">MySQL</a>). For example: <var>mysql:host=localhost;dbname=mydb</var>"
+
+msgid "admin.user_registration.enter_raw_php_code"
 msgstr "Enter the raw PHP code to use when checking the validity of an inputted password against\n"
 "				a found user record. The following variables are available for use:\n"
 "				<ul>\n"
@@ -272,697 +116,907 @@ msgstr "Enter the raw PHP code to use when checking the validity of an inputted 
 "                Here's some example code to check a salted password:<br />\n"
 "				<code>$pass = (md5($password_input . $userinfo['salt']) == $userinfo_password);</code>"
 
-msgid "admin.userreg.enter_dsn_mysql"
-msgstr "Enter the DSN connection string for the database. Refer to the manual for the string format (<a href="http://www.php.net/manual/en/ref.pdo-mysql.connection.php">MySQL</a>). For example: <var>mysql:host=localhost;dbname=mydb</var>"
+msgid "admin.user_registration.enter_the_dsn"
+msgstr "Enter the DSN connection string for the database. Refer to the manual for the string format ({{links}}). For example, for a MySQL database: <var>mysql:host=localhost;dbname=mydb</var>"
 
-msgid "admin.userreg.enable_validation_for_web_submitted_tickets"
-msgstr "Enable validation for web submitted tickets"
+msgid "admin.user_registration.enter_facebook_api_key"
+msgstr "Enter your Facebook API application key"
 
-msgid "admin.userreg.enable_validation_for_email_submitted_tickets"
-msgstr "Enable validation for email submitted tickets"
+msgid "admin.user_registration.enter_facebook_api_secret"
+msgstr "Enter your Facebook API application secret"
 
-msgid "admin.userreg.enable_validation_for_widget_submitted_tickets"
-msgstr "Enable validation for widget submitted tickets"
+msgid "admin.user_registration.enter_twitter_key"
+msgstr "Enter your Twitter consumer key"
 
-msgid "admin.userreg.notice_closed_helpdesk_closes_registration"
+msgid "admin.user_registration.enter_twitter_secret"
+msgstr "Enter your Twitter consumer secret"
+
+msgid "admin.user_registration.ez_publish"
+msgstr "eZ Publish"
+
+msgid "admin.user_registration.facebook_setup"
+msgstr "Facebook Setup"
+
+msgid "admin.user_registration.first_name_field"
+msgstr ""First Name" field"
+
+msgid "admin.user_registration.for_example"
+msgstr "For example"
+
+msgid "admin.user_registration.force_registered_login"
+msgstr "Force login for existing users"
+
+msgid "admin.user_registration.full_name_field"
+msgstr ""Full Name" field"
+
+msgid "admin.user_registration.google"
+msgstr "Google"
+
+msgid "admin.user_registration.id_field"
+msgstr ""ID" field"
+
+msgid "admin.user_registration.enter_table_prefix_here"
+msgstr "If your installation is using a table prefix, enter it here."
+
+msgid "admin.user_registration.enter_name_field_here"
+msgstr "If your schema has a field that stores the users full name, enter it here."
+
+msgid "admin.user_registration.enter_email_field_here"
+msgstr "If your schema has a unique "email" field users can use to log in, enter it here. Note that you must specify the username or email fields, or both."
+
+msgid "admin.user_registration.enter_username_field_here"
+msgstr "If your schema has a unique "username" field users can use to log in, enter it here. This field is optional and allows users to enter usernames into the login form instead of email addresses."
+
+msgid "admin.user_registration.enter_port_here"
+msgstr "If you're using a non-standard port (389, or 636 for secure connections), enter it here"
+
+msgid "admin.user_registration.last_name_field"
+msgstr ""Last Name" field"
+
+msgid "admin.user_registration.lost_password_url"
+msgstr "Lost Password URL"
+
+msgid "admin.user_registration.more"
+msgstr "more"
+
+msgid "admin.user_registration.ms_sql"
+msgstr "MS SQL"
+
+msgid "admin.user_registration.mysql"
+msgstr "MySQL"
+
+msgid "admin.user_registration.new_usersource"
+msgstr "New Usersource"
+
+msgid "admin.user_registration.notice_closed_helpdesk"
 msgstr "With a closed helpdesk, registration is closed so users must already exist in an external user-source or their accounts must be created manually by an agent."
 
-msgid "admin.userreg.notice_forces_users_to_validate_email"
+msgid "admin.user_registration.notice_force_validate_email"
 msgstr "Force users to validate their email address when they first register.\n"
 "\n"
 "This applies to everything except new tickets. You can enable email validation on tickets by enabling it in <a href="{{path}}">ticket triggers</a>."
 
-msgid "admin.userreg.enter_your_facebook_api_application_key"
-msgstr "Enter your Facebook API application key"
+msgid "admin.user_registration.notice_when_email_exists"
+msgstr "If a user tries to submit a new ticket, submit new feedback, start a new chat or add a comment using an email address that belongs to an existing account, they will be prompted to login before the submission is accepted."
 
-msgid "admin.userreg.enter_your_facebook_api_application_secret"
-msgstr "Enter your Facebook API application secret"
+msgid "admin.user_registration.open_helpdesk"
+msgstr "Open Helpdesk"
 
-msgid "admin.userreg.enter_your_twitter_consumer_key"
-msgstr "Enter your Twitter consumer key"
+msgid "admin.user_registration.password_check_service_key"
+msgstr "Password check service key"
 
-msgid "admin.userreg.enter_your_twitter_consumer_secret"
-msgstr "Enter your Twitter consumer secret"
+msgid "admin.user_registration.password_field"
+msgstr ""Password" field"
 
-msgid "admin.userreg.table_containing_user_info"
+msgid "admin.user_registration.php_password_code"
+msgstr "PHP code to verify inputted password"
+
+msgid "admin.user_registration.phpbb2"
+msgstr "phpBB2"
+
+msgid "admin.user_registration.phpbb3"
+msgstr "phpBB3"
+
+msgid "admin.user_registration.registration_mode"
+msgstr "Registration Mode"
+
+msgid "admin.user_registration.registration_options"
+msgstr "Registration Options"
+
+msgid "admin.user_registration.registration_settings"
+msgstr "Registration Settings"
+
+msgid "admin.user_registration.require_registration"
+msgstr "Require Registration"
+
+msgid "admin.user_registration.require_registration_agent_validation"
+msgstr "Require Registration with Agent Validation"
+
+msgid "admin.user_registration.save_registration_settings"
+msgstr "Save Registration Settings"
+
+msgid "admin.user_registration.service_account"
+msgstr "Service Account"
+
+msgid "admin.user_registration.short_domain_name"
+msgstr "Short Domain Name (Slash)"
+
+msgid "admin.user_registration.sqlite"
+msgstr "SQLite"
+
+msgid "admin.user_registration.table"
+msgstr "Table"
+
+msgid "admin.user_registration.table_containing_user_info"
 msgstr "Person Details"
 
-msgid "admin.usergroups.browse_members"
-msgstr "Browse Members"
+msgid "admin.user_registration.table_prefix"
+msgstr "Table Prefix"
 
-msgid "admin.usergroups.there_are_no_users_to_show"
-msgstr "There are no users to show."
+msgid "admin.user_registration.lbl_password_field"
+msgstr "The field in the table that contains the users password."
 
-msgid "admin.usergroups.can_use_tickets"
-msgstr "Can use tickets"
+msgid "admin.user_registration.lbl_user_id_field"
+msgstr "The field that contains a users unique ID."
 
-msgid "admin.usergroups.can_use_chat"
-msgstr "Can use chat"
+msgid "admin.user_registration.lbl_fqdn"
+msgstr "The FQDN name for users in this directory. For example, a user alice@acme.com would have a domain of acme.com. This option is not required, but if it is not supplied, usernames in principal name form (e.g., alice@acme.com) are not supported."
 
-msgid "admin.usergroups.can_use_feedback"
-msgstr "Can use feedback"
+msgid "admin.user_registration.lbl_password_key"
+msgstr "The secret key inside the password check service file you uploaded"
 
-msgid "admin.usergroups.can_submit_new_feedback"
-msgstr "Can submit new feedback"
+msgid "admin.user_registration.lbl_short_user_domain"
+msgstr "The "short" domain name for users in this directory, "ACME". Note that there is a 1:1 mapping between this short name and the domain name above. This option should be used to specify the NetBIOS domain name for Windows networks. This option is not required but if it is not supplied, usernames in backslash form (e.g., ACME\alice) are not supported."
 
-msgid "admin.usergroups.can_vote_on_feedback"
-msgstr "Can vote on feedback"
+msgid "admin.user_registration.lbl_url_password_check"
+msgstr "The URL to the password check service you uploaded."
 
-msgid "admin.usergroups.submit_comments_on_feedback"
-msgstr "Submit comments on feedback"
+msgid "admin.user_registration.notice_like_request_registration"
+msgstr "This is the same as "Request Registration" except that users must be manually validated by agents before they are able interact with the helpdesk."
 
-msgid "admin.usergroups.can_use_knowledgebase"
-msgstr "Can use knowledgebase"
+msgid "admin.user_registration.notice_enabled_facebook"
+msgstr "To enable Facebook integration, you must register with Facebook to get your own application key and application secret."
 
-msgid "admin.usergroups.can_rate_articles"
-msgstr "Can rate articles"
+msgid "admin.user_registration.notice_enable_twitter"
+msgstr "To enable Twitter integration, you must register with Twitterto get your own key and secret."
 
-msgid "admin.usergroups.submit_comments_on_articles"
-msgstr "Submit comments on articles"
+msgid "admin.user_registration.twitter_setup"
+msgstr "Twitter Setup"
 
-msgid "admin.usergroups.can_use_downloads"
-msgstr "Can use downloads"
+msgid "admin.user_registration.url_password_check"
+msgstr "URL to password check service"
 
-msgid "admin.usergroups.can_rate_downloads"
-msgstr "Can rate downloads"
+msgid "admin.user_registration.use_secure_connection"
+msgstr "Use Secure Connection"
 
-msgid "admin.usergroups.submit_comments_on_downloads"
-msgstr "Submit comments on downloads"
+msgid "admin.user_registration.user_sources"
+msgstr "User Sources"
 
-msgid "admin.usergroups.can_rate_news_posts"
-msgstr "Can rate news posts"
+msgid "admin.user_registration.username_field"
+msgstr ""Username" field"
 
-msgid "admin.usergroups.submit_comments_on_news_posts"
-msgstr "Submit comments on news posts"
+msgid "admin.user_registration.vbulletin_versions"
+msgstr "vBulletin v3.x or v4.x"
 
-msgid "admin.usergroups.edit_usergroup"
-msgstr "Edit Usergroup"
+msgid "admin.user_registration.explain_lost_password"
+msgstr "When a user has logged-in using this usersource and later clicks the "Forgot Password" link, this is the URL they will be given to reset their password."
 
-msgid "admin.usergroups.new_usergroup"
-msgstr "New Usergroup"
+msgid "admin.user_registration.explain_open_helpdesk"
+msgstr "With an open helpdesk, anyone can use the helpdesk and anyone can register and log in. When a new user tries to submit content such a new ticket, new feedback or new comments, a helpdesk profile will be created for them automatically."
 
-msgid "admin.usergroups.note_description"
-msgstr "Note / Description"
+msgid "admin.user_registration.explain_must_login_mode"
+msgstr "With this mode, the helpdesk is readable by everyone but users must register or log in to submit content such as new tickets, new feedback, or new comments."
 
-msgid "admin.usergroups.save_usergroup"
-msgstr "Save Usergroup"
-
-msgid "admin.usergroups.add_usergroup"
+msgid "admin.user_groups.add_usergroup"
 msgstr "Add Usergroup"
 
-msgid "admin.usergroups.browse"
+msgid "admin.user_groups.confirm_delete_usergroup"
+msgstr "Are you sure you want to delete this usergroup?"
+
+msgid "admin.user_groups.browse"
 msgstr "browse"
 
-msgid "admin.twitteraccount.error"
-msgstr "Error"
+msgid "admin.user_groups.browse_members"
+msgstr "Browse Members"
 
-msgid "admin.twitteraccount.oauth_token"
-msgstr "OAuth Token"
+msgid "admin.user_groups.can_rate_articles"
+msgstr "Can rate articles"
 
-msgid "admin.twitteraccount.oauth_token_secret"
-msgstr "OAuth Token Secret"
+msgid "admin.user_groups.can_rate_downloads"
+msgstr "Can rate downloads"
 
-msgid "admin.twitteraccount.oauth"
-msgstr "OAuth"
+msgid "admin.user_groups.can_rate_news_posts"
+msgstr "Can rate news posts"
 
-msgid "admin.twitteraccount.token"
-msgstr "Token"
+msgid "admin.user_groups.can_submit_new_feedback"
+msgstr "Can submit new feedback"
 
-msgid "admin.twitteraccount.secret"
-msgstr "Secret"
+msgid "admin.user_groups.can_use_chat"
+msgstr "Can use chat"
 
-msgid "admin.twitteraccount.create_new_account"
+msgid "admin.user_groups.can_use_downloads"
+msgstr "Can use downloads"
+
+msgid "admin.user_groups.can_use_feedback"
+msgstr "Can use feedback"
+
+msgid "admin.user_groups.can_use_knowledgebase"
+msgstr "Can use knowledgebase"
+
+msgid "admin.user_groups.can_use_tickets"
+msgstr "Can use tickets"
+
+msgid "admin.user_groups.can_vote_on_feedback"
+msgstr "Can vote on feedback"
+
+msgid "admin.user_groups.date_registered"
+msgstr "Date Registered"
+
+msgid "admin.user_groups.edit_usergroup"
+msgstr "Edit Usergroup"
+
+msgid "admin.user_groups.new_usergroup"
+msgstr "New Usergroup"
+
+msgid "admin.user_groups.note_description"
+msgstr "Note / Description"
+
+msgid "admin.user_groups.require_agent_validation"
+msgstr "Require agent validation"
+
+msgid "admin.user_groups.save_usergroup"
+msgstr "Save Usergroup"
+
+msgid "admin.user_groups.submit_article_comments"
+msgstr "Submit comments on articles"
+
+msgid "admin.user_groups.submit_download_comments"
+msgstr "Submit comments on downloads"
+
+msgid "admin.user_groups.submit_feedback_comments"
+msgstr "Submit comments on feedback"
+
+msgid "admin.user_groups.submit_new_post_comments"
+msgstr "Submit comments on news posts"
+
+msgid "admin.user_groups.no_users"
+msgstr "There are no users to show."
+
+msgid "admin.twitter.create_new_account"
 msgstr "Create New Account"
 
-msgid "admin.twitteraccount.you_have_no_accounts_defined"
+msgid "admin.twitter.error"
+msgstr "Error"
+
+msgid "admin.twitter.oauth"
+msgstr "OAuth"
+
+msgid "admin.twitter.oauth_token"
+msgstr "OAuth Token"
+
+msgid "admin.twitter.oauth_token_secret"
+msgstr "OAuth Token Secret"
+
+msgid "admin.twitter.secret"
+msgstr "Secret"
+
+msgid "admin.twitter.token"
+msgstr "Token"
+
+msgid "admin.twitter.no_accounts_defined"
 msgstr "You have no accounts defined."
 
-msgid "admin.ticketworkflows.delete_workflow"
-msgstr "Delete Workflow"
-
-msgid "admin.ticketworkflows.any_tickets_that_use_this_workflow_will_have"
-msgstr "Any tickets that use this workflow will have it unset, and have no workflow associated with them."
-
-msgid "admin.ticketworkflows.add_new_workflow"
-msgstr "Add New Workflow"
-
-msgid "admin.ticketworkflows.you_have_not_created_any_ticket_workflows_yet"
-msgstr "You have not created any ticket workflows yet. Click the "Add New Workflow" button to create one now."
-
-msgid "admin.ticketworkflows.edit_workflow_title"
-msgstr "Edit Workflow Title"
-
-msgid "admin.ticketworkflows.new_workflow"
-msgstr "New Workflow"
-
-msgid "admin.ticketwidgets.choose_widget_type"
-msgstr "Choose Widget Type"
-
-msgid "admin.ticketwidgets.widget_location"
-msgstr "Widget Location"
-
-msgid "admin.ticketwidgets.display_field_in_agent_interface"
-msgstr "Display field in agent interface"
-
-msgid "admin.ticketwidgets.tab_in_agent_interface"
-msgstr "Tab in agent interface"
-
-msgid "admin.ticketwidgets.display_field_in_user_interface"
-msgstr "Display field in user interface"
-
-msgid "admin.ticketwidgets.widget_type"
-msgstr "Widget Type"
-
-msgid "admin.ticketwidgets.simple_html_content"
-msgstr "Simple HTML content"
-
-msgid "admin.ticketwidgets.admin_namenote"
-msgstr "Admin name/note"
-
-msgid "admin.ticketwidgets.html_content"
-msgstr "HTML Content"
-
-msgid "admin.ticketwidgets.create_new_widget"
-msgstr "Create New Widget"
-
-msgid "admin.tickettriggers.choose_type"
-msgstr "Choose Type"
-
-msgid "admin.tickettriggers.choose_the_event_that_should_initiate_the_trigger"
-msgstr "Choose the event that should initiate the trigger"
-
-msgid "admin.tickettriggers.ticket_updated"
-msgstr "Ticket Updated"
-
-msgid "admin.tickettriggers.ticket_has_been_open_for"
-msgstr "Ticket has been open for"
-
-msgid "admin.tickettriggers.the_user_has_been_waiting_for_an_agent"
-msgstr "The user has been waiting for an agent to reply for"
-
-msgid "admin.tickettriggers.the_user_has_been_waiting_for_a_total"
-msgstr "The user has been waiting for a total of"
-
-msgid "admin.tickettriggers.the_agent_has_been_waiting_for_the_user"
-msgstr "The agent has been waiting for the user to reply for"
-
-msgid "admin.tickettriggers.the_ticket_has_been_resolved_for"
-msgstr "The ticket has been resolved for"
-
-msgid "admin.tickettriggers.event"
-msgstr "Event"
-
-msgid "admin.tickettriggers.optionally_enter_a_description_to_help_you_remember"
-msgstr "Optionally enter a description to help you remember what this trigger was created for"
-
-msgid "admin.tickettriggers.add_a_new_action"
-msgstr "Add a new action"
-
-msgid "admin.tickettriggers.add_trigger"
-msgstr "Add Trigger"
-
-msgid "admin.tickettriggers.you_havent_created_any_triggers_yet"
-msgstr "You haven't created any triggers yet."
-
-msgid "admin.tickettriggers.click_here_to_create_one_now"
-msgstr "Click here to create one now"
-
-msgid "admin.tickettriggers.new_ticket_triggers"
-msgstr "New Ticket Triggers"
-
-msgid "admin.tickettriggers.new_reply_triggers"
-msgstr "New Reply Triggers"
-
-msgid "admin.tickettriggers.ticket_update_triggers"
-msgstr "Ticket Update Triggers"
-
-msgid "admin.tickettriggers.triggers_based_on_the_time_a_ticket_has"
-msgstr "Triggers based on the time a ticket has been open"
-
-msgid "admin.tickettriggers.triggers_based_on_the_time_a_user_has"
-msgstr "Triggers based on the time a user has been waiting for a reply"
-
-msgid "admin.tickettriggers.triggers_based_on_the_total_time_a_user"
-msgstr "Triggers based on the total time a user has been waiting in a ticket"
-
-msgid "admin.tickettriggers.triggers_based_on_the_time_an_agent_has"
-msgstr "Triggers based on the time an agent has been waiting for a user reply"
-
-msgid "admin.tickettriggers.triggers_based_on_the_time_a_ticket_was"
-msgstr "Triggers based on the time a ticket was resolved"
-
-msgid "admin.tickettriggers.if"
-msgstr "if"
-
-msgid "admin.tickettriggers.then"
-msgstr "then"
-
-msgid "admin.ticketproperties.ticket_elements"
-msgstr "Ticket Elements"
-
-msgid "admin.ticketproperties.ticket_message"
-msgstr "Ticket Message"
-
-msgid "admin.ticketproperties.ticket_subject"
-msgstr "Ticket Subject"
-
-msgid "admin.ticketproperties.captcha"
-msgstr "CAPTCHA"
-
-msgid "admin.ticketproperties.embed_into_your_website"
-msgstr "Embed into your website"
-
-msgid "admin.ticketproperties.integration_options"
-msgstr "Integration Options"
-
-msgid "admin.ticketproperties.enable_custom_layouts_for_each_department"
-msgstr "Enable custom layouts for each department"
-
-msgid "admin.ticketproperties.default_layout"
-msgstr "Default Layout"
-
-msgid "admin.ticketproperties.new_ticket_form"
-msgstr "New Ticket Form"
-
-msgid "admin.ticketproperties.view_ticket_page"
-msgstr "View Ticket Page"
-
-msgid "admin.ticketproperties.modify_ticket_form"
-msgstr "Modify Ticket Form"
-
-msgid "admin.ticketproperties.drag_and_drop_fields_from_the_left_onto"
-msgstr "Drag and drop fields from the left onto this area to start designing your form."
-
-msgid "admin.ticketproperties.direct_link"
-msgstr "Direct Link"
-
-msgid "admin.ticketproperties.link_directly_to_the_new_ticket_form"
-msgstr "Link directly to the new ticket form"
-
-msgid "admin.ticketproperties.popup_window"
-msgstr "Popup Window"
-
-msgid "admin.ticketproperties.add_a_link_to_your_website_that_opens"
+msgid "admin.tickets.add_popup_link"
 msgstr "Add a link to your website that opens the form in a popup window."
 
-msgid "admin.ticketproperties.contact_us"
-msgstr "Contact us"
+msgid "admin.tickets.add_a_new_action"
+msgstr "Add a new action"
 
-msgid "admin.ticketproperties.embed_the_new_ticket_form_directly_into_any"
-msgstr "Embed the new ticket form directly into any webpage. Copy and paste the code into the spot you want the form to appear"
-
-msgid "admin.ticketproperties.add_new_field"
-msgstr "Add New Field"
-
-msgid "admin.ticketproperties.choose_a_category"
-msgstr "Choose a category..."
-
-msgid "admin.ticketproperties.choose_a_product"
-msgstr "Choose a product..."
-
-msgid "admin.ticketproperties.choose_a_priority"
-msgstr "Choose a priority..."
-
-msgid "admin.ticketproperties.customize_choices_to_display"
-msgstr "Customize choices to display"
-
-msgid "admin.ticketproperties.field_options"
-msgstr "Field Options"
-
-msgid "admin.ticketproperties.only_show_field_when_choice"
-msgstr "Only show this field when {{choice}} of these terms match"
-
-msgid "admin.ticketproperties.any"
-msgstr "any"
-
-msgid "admin.ticketproperties.all"
-msgstr "all"
-
-msgid "admin.ticketproperties.switch_to_department"
-msgstr "Switch to department"
-
-msgid "admin.ticketproperties.enable_alternative_for_x"
-msgstr "Enable alternative layout for {{subphrase}}"
-
-msgid "admin.ticketproperties.edit_default_layout_or_select_another"
-msgstr "Edit the {{link_a}} or select a specific {link2}"
-
-msgid "admin.ticketproperties.notice_you_can_edit_the_form"
-msgstr "You can edit the form a user sees when they go to submit a ticket. Just drag options from the left into the area below to enable more fields."
-
-msgid "admin.ticketproperties.explain_departments"
-msgstr "Departments organize your helpdesk into separate compartments that handle different things. For example, Sales and Support."
-
-msgid "admin.ticketproperties.explain_products"
-msgstr "Products are usually a real product or service your company offers. You can use it categorize all kinds of content like tickets, feedback and articles."
-
-msgid "admin.ticketproperties.explain_categories"
-msgstr "Categories are a general organization field usually used to handle grouping tickets within a department."
-
-msgid "admin.ticketproperties.explain_priorities"
-msgstr "Priorities rate how important a ticket is."
-
-msgid "admin.ticketproperties.explain_workflows"
-msgstr "Workflows can be used to record where in the lifetime a ticket currently is."
-
-msgid "admin.ticketproperties.you_have_count_departments"
-msgstr "You have 1 department.|You have {{count}} departments."
-
-msgid "admin.ticketproperties.you_have_count_products"
-msgstr "You have 1 products.|You have {{count}} products."
-
-msgid "admin.ticketproperties.you_have_count_categories"
-msgstr "You have 1 categories.|You have {{count}} categories."
-
-msgid "admin.ticketproperties.you_have_count_priorities"
-msgstr "You have 1 priorities.|You have {{count}} priorities."
-
-msgid "admin.ticketproperties.you_have_count_workflows"
-msgstr "You have 1 workflows.|You have {{count}} workflows."
-
-msgid "admin.ticketproperties.edit_departments"
-msgstr "Edit Departments"
-
-msgid "admin.ticketproperties.edit_products"
-msgstr "Edit Products"
-
-msgid "admin.ticketproperties.edit_priorities"
-msgstr "Edit Priorities"
-
-msgid "admin.ticketpriorities.delete_priority"
-msgstr "Delete Priority"
-
-msgid "admin.ticketpriorities.any_tickets_that_use_this_priority_will_have"
-msgstr "Any tickets that use this priority will have it removed."
-
-msgid "admin.ticketpriorities.add_new_priority"
-msgstr "Add New Priority"
-
-msgid "admin.ticketpriorities.you_have_not_created_any_ticket_priorities_yet"
-msgstr "You have not created any ticket priorities yet. Click the "Add New Priority" button to create one now."
-
-msgid "admin.ticketpriorities.edit_priority"
-msgstr "Edit Priority"
-
-msgid "admin.ticketpriorities.new_priority"
-msgstr "New Priority"
-
-msgid "admin.ticketfilters.ticket_filters"
-msgstr "Ticket Filters"
-
-msgid "admin.ticketfilters.in_use_by"
-msgstr "In use by"
-
-msgid "admin.ticketfilters.disabled_by"
-msgstr "Disabled by"
-
-msgid "admin.ticketfilters.add_new_filter"
-msgstr "Add New Filter"
-
-msgid "admin.ticketfilters.used_by"
-msgstr "Used by"
-
-msgid "admin.ticketfilters.no_terms_all_tickets_match"
-msgstr "No terms. All tickets match."
-
-msgid "admin.ticketfilters.global_filters"
-msgstr "Global Filters"
-
-msgid "admin.ticketfilters.team_filters"
-msgstr "Team Filters"
-
-msgid "admin.ticketfilters.agent_filters"
-msgstr "Agent Filters"
-
-msgid "admin.ticketfilters.agent_access"
-msgstr "Agent Access"
-
-msgid "admin.ticketfilters.global_filter_that_can_be_used_by_everyone"
-msgstr "Global filter that can be used by everyone"
-
-msgid "admin.ticketfilters.only_allow_a_specific_team_to_use_this"
-msgstr "Only allow a specific team to use this filter"
-
-msgid "admin.ticketfilters.select_the_team_that_can_use_this_filter"
-msgstr "Select the team that can use this filter"
-
-msgid "admin.ticketfilters.only_allow_a_specific_agent_to_use_this"
-msgstr "Only allow a specific agent to use this filter"
-
-msgid "admin.ticketfilters.select_the_agent_that_can_use_this_filter"
-msgstr "Select the agent that can use this filter"
-
-msgid "admin.ticketfilters.title_has_no_members"
-msgstr "{{title}} has no members. No one uses this filter."
-
-msgid "admin.ticketfeatures.ticket_features_and_settings"
-msgstr "Ticket Features and Settings"
-
-msgid "admin.ticketfeatures.enable_ticket_feedback"
-msgstr "Enable ticket feedback?"
-
-msgid "admin.ticketfeatures.let_agents_read_ticket_feedback"
-msgstr "Let agents read ticket feedback"
-
-msgid "admin.ticketcategories.delete_ticket_category"
-msgstr "Delete Ticket Category"
-
-msgid "admin.ticketcategories.any_tickets_that_belong_to_any_of_these"
-msgstr "Any tickets that belong to any of these categories will have it removed, resulting in the tickets having no category."
-
-msgid "admin.ticketcategories.any_tickets_that_belong_this_category_will_have"
-msgstr "Any tickets that belong this category will have it removed, resulting in the tickets having no category."
-
-msgid "admin.ticketcategories.add_new_category"
+msgid "admin.tickets.add_new_category"
 msgstr "Add New Category"
 
-msgid "admin.ticketcategories.you_have_not_created_any_ticket_categories_yet"
-msgstr "You have not created any ticket categories yet. Click the "Add New Category" button to create one now."
+msgid "admin.tickets.add_new_field"
+msgstr "Add New Field"
 
-msgid "admin.ticketcategories.edit_category_title"
-msgstr "Edit Category Title"
+msgid "admin.tickets.add_new_filter"
+msgstr "Add New Filter"
 
-msgid "admin.ticketcategories.new_category"
-msgstr "New Category"
+msgid "admin.tickets.add_new_priority"
+msgstr "Add New Priority"
 
-msgid "admin.ticketcategories.back_to_ticket_categories"
-msgstr "Back to ticket categories"
+msgid "admin.tickets.add_new_workflow"
+msgstr "Add New Workflow"
 
-msgid "admin.ticketcategories.are_you_sure_delete_top_level"
-msgstr "Are you sure you want to delete the category "<strong>{{title}}</strong>"? Since this is a top-level category, <strong>all of these child-products will be deleted too</strong>"
+msgid "admin.tickets.add_trigger"
+msgstr "Add Trigger"
 
-msgid "admin.ticketcategories.are_you_sure_delete"
+msgid "admin.tickets.admin_namenote"
+msgstr "Admin name/note"
+
+msgid "admin.tickets.agent_access"
+msgstr "Agent Access"
+
+msgid "admin.tickets.agent_filters"
+msgstr "Agent Filters"
+
+msgid "admin.tickets.all"
+msgstr "all"
+
+msgid "admin.tickets.notice_cat_will_be_removed"
+msgstr "Any tickets that belong this category will have it removed, resulting in the tickets having no category."
+
+msgid "admin.tickets.notice_cats_will_be_removed"
+msgstr "Any tickets that belong to any of these categories will have it removed, resulting in the tickets having no category."
+
+msgid "admin.tickets.notice_priority_will_be_removed"
+msgstr "Any tickets that use this priority will have it removed."
+
+msgid "admin.tickets.notice_workflow_will_be_removed"
+msgstr "Any tickets that use this workflow will have it unset, and have no workflow associated with them."
+
+msgid "admin.tickets.confirm_delete"
 msgstr "Are you sure you want to delete the category "<strong>{{title}}</strong>"?"
 
-msgid "admin.test.test_page"
-msgstr "Test Page"
+msgid "admin.tickets.confirm_delete_top_level"
+msgstr "Are you sure you want to delete the category "<strong>{{title}}</strong>"? Since this is a top-level category, <strong>all of these child-products will be deleted too</strong>"
 
-msgid "admin.test.overlay_title"
-msgstr "Overlay Title"
+msgid "admin.tickets.confirm_delete_trigger"
+msgstr "Are you sure you want to delete this trigger?"
 
-msgid "admin.test.overlay_content"
-msgstr "Overlay Content"
+msgid "admin.tickets.back_to_categories"
+msgstr "Back to categories"
 
-msgid "admin.test.overlay_footer"
-msgstr "Overlay Footer"
+msgid "admin.tickets.back_to_ticket_categories"
+msgstr "Back to ticket categories"
 
-msgid "admin.templates.layout"
-msgstr "Layout"
+msgid "admin.tickets.back_to_ticket_priorities"
+msgstr "Back to ticket priorities"
 
-msgid "admin.templates.revert_to_default"
-msgstr "Revert To Default"
+msgid "admin.tickets.back_to_ticket_properties"
+msgstr "Back to ticket properties"
 
-msgid "admin.templates.edit_templates"
-msgstr "Edit Templates"
+msgid "admin.tickets.back_to_ticket_workflows"
+msgstr "Back to ticket workflows"
 
-msgid "admin.templates.builtin_templates"
-msgstr "Built-in Templates"
+msgid "admin.tickets.back_to_workflows"
+msgstr "Back to workflows"
 
-msgid "admin.templates.custom_templates"
-msgstr "Custom Templates"
+msgid "admin.tickets.captcha"
+msgstr "CAPTCHA"
 
-msgid "admin.templates.create_new_custom_template"
-msgstr "Create New Custom Template"
+msgid "admin.tickets.choose_a_category"
+msgstr "Choose a category..."
 
-msgid "admin.templates.use_selected_template"
-msgstr "Use Selected Template"
+msgid "admin.tickets.choose_a_priority"
+msgstr "Choose a priority..."
 
-msgid "admin.templates.create_custom_template"
-msgstr "Create Custom Template"
+msgid "admin.tickets.choose_a_product"
+msgstr "Choose a product..."
 
-msgid "admin.templates.template_name"
-msgstr "Template Name"
+msgid "admin.tickets.choose_trigger_event"
+msgstr "Choose the event that should initiate the trigger"
 
-msgid "admin.templates.only_az_numbers_and_underscores"
-msgstr "(only A-Z, numbers and underscores)"
+msgid "admin.tickets.choose_type"
+msgstr "Choose Type"
 
-msgid "admin.templates.base_this_new_template_off_of_"
-msgstr "Base this new template off of ..."
+msgid "admin.tickets.choose_widget_type"
+msgstr "Choose Widget Type"
 
-msgid "admin.templates.none_blank_template"
-msgstr "None (blank template)"
+msgid "admin.tickets.click_here_to_create"
+msgstr "Click here to create one now"
 
-msgid "admin.templates.edit_agent_and_admin_templates"
-msgstr "Edit Agent and Admin Templates"
+msgid "admin.tickets.confirm_delete_priority"
+msgstr "Are you sure you want to delete the priority "<strong>{{title}}</strong>"?"
+
+msgid "admin.tickets.confirm_delete_workflow"
+msgstr "Are you sure you want to delete the workflow "<strong>{{title}}</strong>"?"
+
+msgid "admin.tickets.contact_us"
+msgstr "Contact us"
+
+msgid "admin.tickets.create_new_widget"
+msgstr "Create New Widget"
+
+msgid "admin.tickets.customize_display_choices"
+msgstr "Customize choices to display"
+
+msgid "admin.tickets.days"
+msgstr "Days"
+
+msgid "admin.tickets.default_layout"
+msgstr "Default Layout"
+
+msgid "admin.tickets.delete_priority"
+msgstr "Delete Priority"
+
+msgid "admin.tickets.delete_ticket_category"
+msgstr "Delete Ticket Category"
+
+msgid "admin.tickets.delete_workflow"
+msgstr "Delete Workflow"
+
+msgid "admin.tickets.direct_link"
+msgstr "Direct Link"
+
+msgid "admin.tickets.disabled_by"
+msgstr "Disabled by"
+
+msgid "admin.tickets.display_field_in_agent"
+msgstr "Display field in agent interface"
+
+msgid "admin.tickets.display_field_in_user"
+msgstr "Display field in user interface"
+
+msgid "admin.tickets.drag_drop_fields"
+msgstr "Drag and drop fields from the left onto this area to start designing your form."
+
+msgid "admin.tickets.edit_category_title"
+msgstr "Edit Category Title"
+
+msgid "admin.tickets.edit_or_select_default_layout"
+msgstr "Edit the {{link_a}} or select a specific {link2}"
+
+msgid "admin.tickets.edit_departments"
+msgstr "Edit Departments"
+
+msgid "admin.tickets.edit_priorities"
+msgstr "Edit Priorities"
+
+msgid "admin.tickets.edit_priority"
+msgstr "Edit Priority"
+
+msgid "admin.tickets.edit_products"
+msgstr "Edit Products"
+
+msgid "admin.tickets.edit_triggers"
+msgstr "Edit Trigger"
+
+msgid "admin.tickets.edit_workflow"
+msgstr "Edit Workflow"
+
+msgid "admin.tickets.edit_workflow_title"
+msgstr "Edit Workflow Title"
+
+msgid "admin.tickets.embed_in_website"
+msgstr "Embed into your website"
+
+msgid "admin.tickets.embed_ticket_form_websites"
+msgstr "Embed the new ticket form directly into any webpage. Copy and paste the code into the spot you want the form to appear"
+
+msgid "admin.tickets.enable_alternative_for_x"
+msgstr "Enable alternative layout for {{subphrase}}"
+
+msgid "admin.tickets.enable_custom_layouts_department"
+msgstr "Enable custom layouts for each department"
+
+msgid "admin.tickets.enable_ticket_feedback"
+msgstr "Enable ticket feedback?"
+
+msgid "admin.tickets.event"
+msgstr "Event"
+
+msgid "admin.tickets.explain_categories"
+msgstr "Categories are a general organization field usually used to handle grouping tickets within a department."
+
+msgid "admin.tickets.explain_departments"
+msgstr "Departments organize your helpdesk into separate compartments that handle different things. For example, Sales and Support."
+
+msgid "admin.tickets.explain_priorities"
+msgstr "Priorities rate how important a ticket is."
+
+msgid "admin.tickets.explain_products"
+msgstr "Products are usually a real product or service your company offers. You can use it categorize all kinds of content like tickets, feedback and articles."
+
+msgid "admin.tickets.explain_workflows"
+msgstr "Workflows can be used to record where in the lifetime a ticket currently is."
+
+msgid "admin.tickets.field_options"
+msgstr "Field Options"
+
+msgid "admin.tickets.explain_global_gilter"
+msgstr "Global filter that can be used by everyone"
+
+msgid "admin.tickets.global_filters"
+msgstr "Global Filters"
+
+msgid "admin.tickets.hours"
+msgstr "Hours"
+
+msgid "admin.tickets.html_content"
+msgstr "HTML Content"
+
+msgid "admin.tickets.if"
+msgstr "if"
+
+msgid "admin.tickets.in_use_by"
+msgstr "In use by"
+
+msgid "admin.tickets.integration_options"
+msgstr "Integration Options"
+
+msgid "admin.tickets.choice_agents_read_ticket_feedback"
+msgstr "Let agents read ticket feedback"
+
+msgid "admin.tickets.choice_direct_link_ticket_form"
+msgstr "Link directly to the new ticket form"
+
+msgid "admin.tickets.minutes"
+msgstr "Minutes"
+
+msgid "admin.tickets.modify_ticket_form"
+msgstr "Modify Ticket Form"
+
+msgid "admin.tickets.months"
+msgstr "Months"
+
+msgid "admin.tickets.name_filter_disabled"
+msgstr "{{name}} currently has this filter disabled in their settings"
+
+msgid "admin.tickets.name_filter_enabled"
+msgstr "{{name}} currently has this filter enabled in their settings"
+
+msgid "admin.tickets.new_priority"
+msgstr "New Priority"
+
+msgid "admin.tickets.new_reply_agent"
+msgstr "New Reply by an Agent"
+
+msgid "admin.tickets.new_reply_gateway"
+msgstr "New Reply via Email"
+
+msgid "admin.tickets.new_reply_triggers"
+msgstr "New Reply Triggers"
+
+msgid "admin.tickets.new_reply_web"
+msgstr "New Reply via Web Interface"
+
+msgid "admin.tickets.new_ticket_agent"
+msgstr "New Ticket created by an Agent"
+
+msgid "admin.tickets.new_ticket_form"
+msgstr "New Ticket Form"
+
+msgid "admin.tickets.new_ticket_gateway"
+msgstr "New Ticket via Email"
+
+msgid "admin.tickets.new_ticket_triggers"
+msgstr "New Ticket Triggers"
+
+msgid "admin.tickets.new_ticket_web"
+msgstr "New Ticket via Web Interface"
+
+msgid "admin.tickets.new_ticket_widget"
+msgstr "New Ticket via Website Widget"
+
+msgid "admin.tickets.new_trigger"
+msgstr "New Trigger"
+
+msgid "admin.tickets.new_workflow"
+msgstr "New Workflow"
+
+msgid "admin.tickets.all_tickets_match"
+msgstr "No terms. All tickets match."
+
+msgid "admin.tickets.notice_can_edit_form"
+msgstr "You can edit the form a user sees when they go to submit a ticket. Just drag options from the left into the area below to enable more fields."
+
+msgid "admin.tickets.choice_specific_agent_access"
+msgstr "Only allow a specific agent to use this filter"
+
+msgid "admin.tickets.choice_specific_team_access"
+msgstr "Only allow a specific team to use this filter"
+
+msgid "admin.tickets.name_has_filter_access"
+msgstr "Only {{name}} has access to this filter"
+
+msgid "admin.tickets.show_field_when_choice"
+msgstr "Only show this field when {{choice}} of these terms match"
+
+msgid "admin.tickets.enter_optional_description"
+msgstr "Optionally enter a description to help you remember what this trigger was created for"
+
+msgid "admin.tickets.popup_window"
+msgstr "Popup Window"
+
+msgid "admin.tickets.property_change_agent"
+msgstr "Ticket Updated by an Agent"
+
+msgid "admin.tickets.property_change_user"
+msgstr "Ticket Updated by a User"
+
+msgid "admin.tickets.select_agent_filter_access"
+msgstr "Select the agent that can use this filter"
+
+msgid "admin.tickets.select_team_filter_access"
+msgstr "Select the team that can use this filter"
+
+msgid "admin.tickets.simple_html_content"
+msgstr "Simple HTML content"
+
+msgid "admin.tickets.switch_to_department"
+msgstr "Switch to department"
+
+msgid "admin.tickets.tab_in_agent_interface"
+msgstr "Tab in agent interface"
+
+msgid "admin.tickets.team_filters"
+msgstr "Team Filters"
+
+msgid "admin.tickets.agent_waiting_for_user"
+msgstr "The agent has been waiting for the user to reply for"
+
+msgid "admin.tickets.ticket_resolved_duration"
+msgstr "The ticket has been resolved for"
+
+msgid "admin.tickets.user_waiting_duration"
+msgstr "The user has been waiting for a total of"
+
+msgid "admin.tickets.user_waiting_on_agent_duration"
+msgstr "The user has been waiting for an agent to reply for"
+
+msgid "admin.tickets.then"
+msgstr "then"
+
+msgid "admin.tickets.ticket_elements"
+msgstr "Ticket Elements"
+
+msgid "admin.tickets.ticket_features_settings"
+msgstr "Ticket Features and Settings"
+
+msgid "admin.tickets.ticket_filters"
+msgstr "Ticket Filters"
+
+msgid "admin.tickets.ticket_open_for_duration"
+msgstr "Ticket has been open for"
+
+msgid "admin.tickets.ticket_layout_editor"
+msgstr "Ticket Layout Editor:"
+
+msgid "admin.tickets.ticket_message"
+msgstr "Ticket Message"
+
+msgid "admin.tickets.ticket_subject"
+msgstr "Ticket Subject"
+
+msgid "admin.tickets.ticket_update_triggers"
+msgstr "Ticket Update Triggers"
+
+msgid "admin.tickets.ticket_updated"
+msgstr "Ticket Updated"
+
+msgid "admin.tickets.time_agent_waiting"
+msgstr "Time an agent has been waiting for a user reply"
+
+msgid "admin.tickets.time_open"
+msgstr "Time a ticket has been open"
+
+msgid "admin.tickets.time_resolved"
+msgstr "Time a ticket has been resolved for"
+
+msgid "admin.tickets.time_total_user_waiting"
+msgstr "Total time a user has been waiting in a ticket"
+
+msgid "admin.tickets.time_user_waiting"
+msgstr "Time a user has been waiting for a reply"
+
+msgid "admin.tickets.title_has_no_members"
+msgstr "{{title}} has no members. No one uses this filter."
+
+msgid "admin.tickets.triggers_on_open_duration"
+msgstr "Triggers based on the time a ticket has been open"
+
+msgid "admin.tickets.triggers_on_resolve_duration"
+msgstr "Triggers based on the time a ticket was resolved"
+
+msgid "admin.tickets.triggers_on_user_wait_duration"
+msgstr "Triggers based on the time a user has been waiting for a reply"
+
+msgid "admin.tickets.triggers_on_agent_wait_duration"
+msgstr "Triggers based on the time an agent has been waiting for a user reply"
+
+msgid "admin.tickets.triggers_on_total_user_wait_duration"
+msgstr "Triggers based on the total time a user has been waiting in a ticket"
+
+msgid "admin.tickets.used_by"
+msgstr "Used by"
+
+msgid "admin.tickets.view_ticket_page"
+msgstr "View Ticket Page"
+
+msgid "admin.tickets.weeks"
+msgstr "Weeks"
+
+msgid "admin.tickets.widget_location"
+msgstr "Widget Location"
+
+msgid "admin.tickets.widget_type"
+msgstr "Widget Type"
+
+msgid "admin.tickets.have_count_categories"
+msgstr "You have 1 categories.|You have {{count}} categories."
+
+msgid "admin.tickets.have_count_departments"
+msgstr "You have 1 department.|You have {{count}} departments."
+
+msgid "admin.tickets.have_count_priorities"
+msgstr "You have 1 priorities.|You have {{count}} priorities."
+
+msgid "admin.tickets.have_count_products"
+msgstr "You have 1 products.|You have {{count}} products."
+
+msgid "admin.tickets.have_count_workflows"
+msgstr "You have 1 workflows.|You have {{count}} workflows."
+
+msgid "admin.tickets.no_categories_yet"
+msgstr "You have not created any ticket categories yet. Click the "Add New Category" button to create one now."
+
+msgid "admin.tickets.no_priorities_yet"
+msgstr "You have not created any ticket priorities yet. Click the "Add New Priority" button to create one now."
+
+msgid "admin.tickets.no_workflows_yet"
+msgstr "You have not created any ticket workflows yet. Click the "Add New Workflow" button to create one now."
+
+msgid "admin.tickets.no_triggers_yet"
+msgstr "You haven't created any triggers yet."
 
 msgid "admin.templates.agent_and_admin_templates"
 msgstr "Agent and Admin Templates"
 
-msgid "admin.templates.count_outdated"
-msgstr "<i>{{count}}</i> outdated|<i>{{count}}</i> outdated"
+msgid "admin.templates.base_template_on_other"
+msgstr "Base this new template off of ..."
+
+msgid "admin.templates.builtin_templates"
+msgstr "Built-in Templates"
 
 msgid "admin.templates.count_custom"
 msgstr "<i>{{count}}</i> custom|<i>{{count}}</i> custom"
 
+msgid "admin.templates.count_outdated"
+msgstr "<i>{{count}}</i> outdated|<i>{{count}}</i> outdated"
+
 msgid "admin.templates.count_template"
 msgstr "<i>{{count}}</i> template|<i>{{count}}</i> templates"
+
+msgid "admin.templates.create_custom_template"
+msgstr "Create Custom Template"
+
+msgid "admin.templates.create_new_custom_template"
+msgstr "Create New Custom Template"
 
 msgid "admin.templates.custom"
 msgstr "custom"
 
+msgid "admin.templates.custom_templates"
+msgstr "Custom Templates"
+
+msgid "admin.templates.edit_agent_and_admin_templates"
+msgstr "Edit Agent and Admin Templates"
+
+msgid "admin.templates.edit_templates"
+msgstr "Edit Templates"
+
+msgid "admin.templates.layout"
+msgstr "Layout"
+
+msgid "admin.templates.none_blank_template"
+msgstr "None (blank template)"
+
+msgid "admin.templates.character_range"
+msgstr "(only A-Z, numbers and underscores)"
+
 msgid "admin.templates.outdated"
 msgstr "outdated"
 
-msgid "admin.setupguide.incoming_email"
-msgstr "Setup incoming email"
+msgid "admin.templates.revert_to_default"
+msgstr "Revert To Default"
 
-msgid "admin.setupguide.add_agents"
+msgid "admin.templates.template_name"
+msgstr "Template Name"
+
+msgid "admin.templates.use_selected_template"
+msgstr "Use Selected Template"
+
+msgid "admin.setup.add_agents"
 msgstr "Add a new agent"
 
-msgid "admin.setupguide.custom_header"
-msgstr "Add a custom header"
-
-msgid "admin.setupguide.add_ticketcategory"
+msgid "admin.setup.add_ticketcategory"
 msgstr "Create a ticket category"
 
-msgid "admin.setupguide.add_ticketpriority"
-msgstr "Create a ticket priority"
-
-msgid "admin.setupguide.add_ticketfield"
+msgid "admin.setup.add_ticketfield"
 msgstr "Create a new ticket field"
 
-msgid "admin.settings.revert_all_settings"
-msgstr "Revert ALL Settings"
+msgid "admin.setup.add_ticketpriority"
+msgstr "Create a ticket priority"
 
-msgid "admin.settings.set_value"
-msgstr "Set Value"
+msgid "admin.setup.custom_header"
+msgstr "Add a custom header"
 
-msgid "admin.settings.revert_settings"
-msgstr "Revert Settings"
+msgid "admin.setup.incoming_email"
+msgstr "Setup incoming email"
 
-msgid "admin.settings.are_you_sure_you_want_to_revert_all"
+msgid "admin.settings.add_label"
+msgstr "Add Label"
+
+msgid "admin.settings.advanced_settings"
+msgstr "Advanced Settings"
+
+msgid "admin.settings.advanced_settings_view"
+msgstr "Advanced settings view"
+
+msgid "admin.settings.notice_always_redirect_users"
+msgstr "Always redirect users to the 'Helpdesk URL' if they arrive on a different URL. For example, this will redirect non-www to www, and force https:// if you have that enabled."
+
+msgid "admin.settings.confirm_revert_all"
 msgstr "Are you sure you want to revert ALL settings on this page to their default values? There is no way to undo this action."
 
-msgid "admin.settings.configure_scheduled_tasks"
-msgstr "Configure Scheduled Tasks"
-
-msgid "admin.settings.configuring_scheduled_tasks"
-msgstr "Configuring Scheduled Tasks"
-
-msgid "admin.settings.how_you_configure_scheduled_tasks_depends_on_your"
-msgstr "How you configure scheduled tasks depends on your server set up. Here are guides for common servers"
-
-msgid "admin.settings.linux"
-msgstr "Linux"
-
-msgid "admin.settings.windows"
-msgstr "Windows"
+msgid "admin.settings.basics"
+msgstr "Basics"
 
 msgid "admin.settings.command_to_run_every_minute"
 msgstr "Command to run every minute"
 
-msgid "admin.settings.configure_this_command_to_be_executed_every_minute"
+msgid "admin.settings.configure_scheduled_tasks"
+msgstr "Configure Scheduled Tasks"
+
+msgid "admin.settings.configure_minute_command"
 msgstr "Configure this command to be executed every minute"
 
-msgid "admin.settings.i_have_configured_scheduled_tasks"
+msgid "admin.settings.configuring_scheduled_tasks"
+msgstr "Configuring Scheduled Tasks"
+
+msgid "admin.settings.continue_to_advanced_settings"
+msgstr "Continue to Advanced Settings"
+
+msgid "admin.settings.cookie_domain"
+msgstr "Cookie Domain"
+
+msgid "admin.settings.cookie_path"
+msgstr "Cookie Path"
+
+msgid "admin.settings.default_email_from_address"
+msgstr "Default Email "From" Address"
+
+msgid "admin.settings.default_timezone"
+msgstr "Default Timezone"
+
+msgid "admin.settings.deskpro_name"
+msgstr "DeskPRO Name"
+
+msgid "admin.settings.deskpro_url"
+msgstr "DeskPRO URL"
+
+msgid "admin.settings.disallow_file_types"
+msgstr "Disallow these file types"
+
+msgid "admin.settings.enable_portal"
+msgstr "Enable Portal"
+
+msgid "admin.settings.enter_default_email_origin"
+msgstr "Enter the email address DeskPRO should use by default when sending emails"
+
+msgid "admin.settings.filter"
+msgstr "Filter"
+
+msgid "admin.settings.gravatar"
+msgstr "Gravatar"
+
+msgid "admin.settings.notice_scheduled_tasks"
+msgstr "How you configure scheduled tasks depends on your server set up. Here are guides for common servers"
+
+msgid "admin.settings.confirm_configured_scheduled_tasks"
 msgstr "I have configured scheduled tasks"
 
 msgid "admin.settings.label_types"
 msgstr "Label Types"
 
-msgid "admin.settings.sort"
-msgstr "Sort"
+msgid "admin.settings.link_learn_about_limit"
+msgstr "Learn why you are bound by this limit."
 
-msgid "admin.settings.usage_count"
-msgstr "Usage Count"
+msgid "admin.settings.linux"
+msgstr "Linux"
 
-msgid "admin.settings.add_label"
-msgstr "Add Label"
-
-msgid "admin.settings.welcome_to_deskpro"
-msgstr "Welcome to DeskPRO"
-
-msgid "admin.settings.default_email_from_address"
-msgstr "Default Email "From" Address"
-
-msgid "admin.settings.enter_the_email_address_deskpro_should_use_by"
-msgstr "Enter the email address DeskPRO should use by default when sending emails"
-
-msgid "admin.settings.deskpro_url"
-msgstr "DeskPRO URL"
-
-msgid "admin.settings.this_is_the_url_to_deskpro_itself_with"
-msgstr "This is the URL to DeskPRO itself with a trailing slash"
-
-msgid "admin.settings.please_enter_a_valid_url"
-msgstr "Please enter a valid URL"
-
-msgid "admin.settings.deskpro_name"
-msgstr "DeskPRO Name"
-
-msgid "admin.settings.the_name_of_your_helpdesk"
-msgstr "The name of your helpdesk"
-
-msgid "admin.settings.please_enter_a_name_for_the_helpdesk"
-msgstr "Please enter a name for the helpdesk"
-
-msgid "admin.settings.your_site_name"
-msgstr "Your Site Name"
-
-msgid "admin.settings.your_main_website_name"
-msgstr "Your main website name"
-
-msgid "admin.settings.your_site_url"
-msgstr "Your Site URL"
-
-msgid "admin.settings.your_main_website_url"
-msgstr "Your main website URL"
-
-msgid "admin.settings.default_timezone"
-msgstr "Default Timezone"
-
-msgid "admin.settings.the_default_timezone_used_when_expressing_dates_to"
-msgstr "The default timezone used when expressing dates to users who do not have a preference set"
-
-msgid "admin.settings.please_select_a_timezone"
-msgstr "Please select a timezone"
-
-msgid "admin.settings.enable_portal"
-msgstr "Enable Portal"
-
-msgid "admin.settings.advanced_settings_view"
-msgstr "Advanced settings view"
-
-msgid "admin.settings.basics"
-msgstr "Basics"
-
-msgid "admin.settings.your_helpdesk_name"
-msgstr "Your helpdesk name"
-
-msgid "admin.settings.your_helpdesk_url"
-msgstr "Your helpdesk URL"
-
-msgid "admin.settings.your_website_name"
-msgstr "Your website name"
-
-msgid "admin.settings.your_website_url"
-msgstr "Your website URL"
-
-msgid "admin.settings.the_helpdesk_is_currently_disabled"
-msgstr "The helpdesk is currently disabled"
-
-msgid "admin.settings.always_redirect_users_to_the_helpdesk_url_if"
-msgstr "Always redirect users to the 'Helpdesk URL' if they arrive on a different URL. For example, this will redirect non-www to www, and force https:// if you have that enabled."
+msgid "admin.settings.max_filesize_server"
+msgstr "The max file size your server supports is {{filesize}}"
 
 msgid "admin.settings.max_upload_size"
 msgstr "Max upload size"
@@ -970,401 +1024,293 @@ msgstr "Max upload size"
 msgid "admin.settings.mb"
 msgstr "MB"
 
-msgid "admin.settings.learn_why_you_are_bound_by_this_limit"
-msgstr "Learn why you are bound by this limit."
-
-msgid "admin.settings.disallow_these_file_types"
-msgstr "Disallow these file types"
-
-msgid "admin.settings.only_allow_these_file_types"
-msgstr "Only allow these file types"
-
-msgid "admin.settings.gravatar"
-msgstr "Gravatar"
-
-msgid "admin.settings.use_gravatar_profile_pictures_by_default_until_a"
-msgstr "Use Gravatar profile pictures by default until a custom picture is uploaded"
-
-msgid "admin.settings.cookie_path"
-msgstr "Cookie Path"
-
-msgid "admin.settings.cookie_domain"
-msgstr "Cookie Domain"
-
-msgid "admin.settings.warning_settings_listed_in_advanced_settings_are_undocumented"
-msgstr "Warning: Settings listed in "Advanced Settings" are undocumented and changing them can have unexpected consequences."
-
-msgid "admin.settings.only_make_changes_if_you_know_what_you"
-msgstr "Only make changes if you know what you are doing or have been instructed by a support agent."
-
-msgid "admin.settings.continuet_to_advanced_settings"
-msgstr "Continuet to Advanced Settings"
-
-msgid "admin.settings.advanced_settings"
-msgstr "Advanced Settings"
-
-msgid "admin.settings.filter"
-msgstr "Filter"
-
-msgid "admin.settings.revert_setting_back_to_default"
-msgstr "Revert setting back to default"
-
 msgid "admin.settings.new_label"
 msgstr "new label"
 
-msgid "admin.server.storage_mechanism"
-msgstr "Storage Mechanism"
+msgid "admin.settings.notice_deskpro_user_frontend"
+msgstr "DeskPRO includes a user front-end where your users can submit tickets and feedback and read knowledgebase articles and news, and download files. You can configure all the options later. If you don't want a portal and you are using DeskPRO just to manage email, you can turn this off."
 
-msgid "admin.server.file_storage"
-msgstr "File Storage"
+msgid "admin.settings.restrict_file_types"
+msgstr "Only allow these file types"
 
-msgid "admin.server.storage_path"
-msgstr "Storage Path"
+msgid "admin.settings.notice_take_care"
+msgstr "Only make changes if you know what you are doing or have been instructed by a support agent."
 
-msgid "admin.server.database_storage"
-msgstr "Database Storage"
+msgid "admin.settings.enter_helpdesk_name"
+msgstr "Please enter a name for the helpdesk"
 
-msgid "admin.server.storage_table"
-msgstr "Storage Table"
+msgid "admin.settings.enter_valid_url"
+msgstr "Please enter a valid URL"
+
+msgid "admin.settings.select_timezone"
+msgstr "Please select a timezone"
+
+msgid "admin.settings.revert_all_settings"
+msgstr "Revert ALL Settings"
+
+msgid "admin.settings.revert_settings_to_default"
+msgstr "Revert setting back to default"
+
+msgid "admin.settings.revert_settings"
+msgstr "Revert Settings"
+
+msgid "admin.settings.set_value"
+msgstr "Set Value"
+
+msgid "admin.settings.sort"
+msgstr "Sort"
+
+msgid "admin.settings.notice_default_timezone"
+msgstr "The default timezone used when expressing dates to users who do not have a preference set"
+
+msgid "admin.settings.notice_helpdesk_disabled"
+msgstr "The helpdesk is currently disabled"
+
+msgid "admin.settings.notice_name_of_your_helpdesk"
+msgstr "The name of your helpdesk"
+
+msgid "admin.settings.notice_deskpro_url"
+msgstr "This is the URL to DeskPRO itself with a trailing slash"
+
+msgid "admin.settings.usage_count"
+msgstr "Usage Count"
+
+msgid "admin.settings.choice_gravatar_default"
+msgstr "Use Gravatar profile pictures by default until a custom picture is uploaded"
+
+msgid "admin.settings.warning_advanced_settings_undocumented"
+msgstr "Warning: Settings listed in "Advanced Settings" are undocumented and changing them can have unexpected consequences."
+
+msgid "admin.settings.welcome_to_deskpro"
+msgstr "Welcome to DeskPRO"
+
+msgid "admin.settings.windows"
+msgstr "Windows"
+
+msgid "admin.settings.your_helpdesk_name"
+msgstr "Your helpdesk name"
+
+msgid "admin.settings.your_helpdesk_url"
+msgstr "Your helpdesk URL"
+
+msgid "admin.settings.your_main_website_name"
+msgstr "Your main website name"
+
+msgid "admin.settings.your_main_website_url"
+msgstr "Your main website URL"
+
+msgid "admin.settings.your_site_name"
+msgstr "Your Site Name"
+
+msgid "admin.settings.your_site_url"
+msgstr "Your Site URL"
+
+msgid "admin.settings.your_website_name"
+msgstr "Your website name"
+
+msgid "admin.settings.your_website_url"
+msgstr "Your website URL"
 
 msgid "admin.server.blobs_storage"
 msgstr "blobs_storage"
 
-msgid "admin.server.setting"
-msgstr "Setting"
-
-msgid "admin.server.this_setting_must_be_enabled_for_php_to"
-msgstr "This setting must be enabled for PHP to accept file uploads at all."
-
-msgid "admin.server.this_is_where_php_saves_files_to_temporarily"
-msgstr "This is where PHP saves files to temporarily before they are processed by DeskPRO. This path must be writable by the web server for file uploads to work."
-
-msgid "admin.server.upload_max_filesize"
-msgstr "upload_max_filesize"
-
-msgid "admin.server.this_is_the_maximum_size_for_any_single"
-msgstr "This is the maximum size for any single file that PHP will accept from a client upload. The max size is also affected by post_max_size. The effective maximum is essentially the smallest of upload_max_filesize and post_max_size."
-
-msgid "admin.server.this_is_the_max_size_of_any_post"
-msgstr "This is the max size of any POST request that PHP will accept. That is, the size of any file uploads comboned with the size of actual form data cannot exceed this value. This setting and upload_max_filesize are generally about the same."
-
-msgid "admin.server.test_a_file_upload"
-msgstr "Test a file upload"
-
-msgid "admin.server.failed"
-msgstr "Failed"
-
-msgid "admin.server.success"
-msgstr "Success"
-
-msgid "admin.server.download_attachment"
-msgstr "Download attachment"
-
-msgid "admin.server.test_upload"
-msgstr "Test Upload"
+msgid "admin.server.btn_confirm_switch"
+msgstr "Confirm: Switch to the {{subphrase}} storage mechanism"
 
 msgid "admin.server.change_storage_mechanism"
 msgstr "Change Storage Mechanism"
 
-msgid "admin.server.important_configuration_values"
-msgstr "Important Configuration Values"
-
-msgid "admin.server.test_this_value"
-msgstr "test this value"
-
-msgid "admin.server.php_file_uploads"
-msgstr "file_uploads"
-
-msgid "admin.server.upload_tmp_dir"
-msgstr "upload_tmp_dir"
-
-msgid "admin.server.post_max_size"
-msgstr "post_max_size"
-
-msgid "admin.server.view"
-msgstr "view"
-
-msgid "admin.server.php_version"
-msgstr "php_version"
-
-msgid "admin.server.memory_limit"
-msgstr "memory_limit"
-
-msgid "admin.server.error_log"
-msgstr "error_log"
-
-msgid "admin.server.fs"
-msgstr "filesystem"
-
-msgid "admin.server.db"
-msgstr "database"
-
-msgid "admin.server.btn_confirm_switch"
-msgstr "Confirm: Switch to the {{subphrase}} storage mechanism"
-
-msgid "admin.server.notice_transfer_is_gradually_done"
-msgstr "The transfer is done gradually via a scheduled task. It may take some time before all of your files are completely transferred. All normal attachment functions like uploading and downloading will continue to work."
-
 msgid "admin.server.count_files_will_be_used"
 msgstr "{0} {{count}} files with a total size of {{size}} will be moved. |{1} {{count}} file with a total size of {{size}} will be moved.|]1,Inf] {{count}} files with a total size of {{size}} will be moved."
-
-msgid "admin.server.you_are_using_db_want_to_switch"
-msgstr "You are currently storing files in the database. Do you want to switch to the filesystem storage mechanism? Files will be stored on your server at {{path}}"
-
-msgid "admin.server.you_are_using_fs_want_to_switch"
-msgstr "You are currently storing files in the filesystem at {{path}}.<br /><br />Are you sure you want to switch back to using the database storage mechanism?"
-
-msgid "admin.server.db_to_fs"
-msgstr "the database to the filesystem"
-
-msgid "admin.server.fs_to_db"
-msgstr "the filesystem to the database"
 
 msgid "admin.server.currently_transferring"
 msgstr "Currently transferring files from {{subphrase}}."
 
+msgid "admin.server.database_storage"
+msgstr "Database Storage"
+
+msgid "admin.server.databases_not_recommended"
+msgstr "Databases are not designed to store files."
+
+msgid "admin.server.db"
+msgstr "database"
+
+msgid "admin.server.db_to_fs"
+msgstr "the database to the filesystem"
+
+msgid "admin.server.download_attachment"
+msgstr "Download attachment"
+
+msgid "admin.server.error_log"
+msgstr "error_log"
+
+msgid "admin.server.failed"
+msgstr "Failed"
+
+msgid "admin.server.file_storage"
+msgstr "File Storage"
+
+msgid "admin.server.file_storage_mechanism"
+msgstr "File Storage Mechanism"
+
 msgid "admin.server.files_have_been_processed"
 msgstr "{{count_done}} of {{count_todo}} ({{percent}}%) files have been processed."
 
-msgid "admin.server.databases_suboptimal_for_files"
-msgstr "Databases are not designed to store files."
+msgid "admin.server.fs"
+msgstr "filesystem"
 
-msgid "admin.server.switch_back_to_database_storage"
+msgid "admin.server.fs_to_db"
+msgstr "the filesystem to the database"
+
+msgid "admin.server.important_configuration_values"
+msgstr "Important Configuration Values"
+
+msgid "admin.server.memory_limit"
+msgstr "memory_limit"
+
+msgid "admin.server.mysql_col_command"
+msgstr "Command"
+
+msgid "admin.server.mysql_col_id"
+msgstr "ID"
+
+msgid "admin.server.mysql_col_info"
+msgstr "Info"
+
+msgid "admin.server.mysql_col_state"
+msgstr "State"
+
+msgid "admin.server.mysql_col_time"
+msgstr "Time"
+
+msgid "admin.server.notice_transfer_is_gradually_done"
+msgstr "The transfer is done gradually via a scheduled task. It may take some time before all of your files are completely transferred. All normal attachment functions like uploading and downloading will continue to work."
+
+msgid "admin.server.notice_most_efficient_storage"
+msgstr "You are currently using the most efficient storage mechanism."
+
+msgid "admin.server.php_file_uploads"
+msgstr "file_uploads"
+
+msgid "admin.server.php_version"
+msgstr "php_version"
+
+msgid "admin.server.post_max_size"
+msgstr "post_max_size"
+
+msgid "admin.server.storage_mechanism"
+msgstr "Storage Mechanism"
+
+msgid "admin.server.storage_path"
+msgstr "Storage Path"
+
+msgid "admin.server.storage_table"
+msgstr "Storage Table"
+
+msgid "admin.server.success"
+msgstr "Success"
+
+msgid "admin.server.switch_to_database_storage"
 msgstr "switch back to using database storage"
 
 msgid "admin.server.switching_to_fs_storage"
 msgstr "switching to filesystem storage"
 
-msgid "admin.server.we_recommend_fs_storage"
+msgid "admin.server.test_a_file_upload"
+msgstr "Test a file upload"
+
+msgid "admin.server.test_this_value"
+msgstr "test this value"
+
+msgid "admin.server.test_upload"
+msgstr "Test Upload"
+
+msgid "admin.server.max_post_size"
+msgstr "This is the max size of any POST request that PHP will accept. That is, the size of any file uploads comboned with the size of actual form data cannot exceed this value. This setting and upload_max_filesize are generally about the same."
+
+msgid "admin.server.max_single_file_size"
+msgstr "This is the maximum size for any single file that PHP will accept from a client upload. The max size is also affected by post_max_size. The effective maximum is essentially the smallest of upload_max_filesize and post_max_size."
+
+msgid "admin.server.php_upload_location"
+msgstr "This is where PHP saves files to temporarily before they are processed by DeskPRO. This path must be writable by the web server for file uploads to work."
+
+msgid "admin.server.required_for_upload"
+msgstr "This setting must be enabled for PHP to accept file uploads at all."
+
+msgid "admin.server.upload_max_filesize"
+msgstr "upload_max_filesize"
+
+msgid "admin.server.upload_tmp_dir"
+msgstr "upload_tmp_dir"
+
+msgid "admin.server.view"
+msgstr "view"
+
+msgid "admin.server.recommend_fs_storage"
 msgstr "We recommend {{link}} where files are stored as files in a directory on your server."
 
-msgid "admin.server.while_not_recommended_you_can"
+msgid "admin.server.note_recommended_link"
 msgstr "While not recommended, you can {{link}}."
 
-msgid "admin.server.notice_using_most_efficient_storage"
-msgstr "You are currently using the most efficient storage mechanism."
+msgid "admin.server.confirm_switch_to_fs"
+msgstr "You are currently storing files in the database. Do you want to switch to the filesystem storage mechanism? Files will be stored on your server at {{path}}"
 
-msgid "admin.server.file_storage_mechanism"
-msgstr "File Storage Mechanism"
-
-msgid "admin.products.delete_product"
-msgstr "Delete Product"
-
-msgid "admin.products.any_tickets_that_use_any_of_these_products"
-msgstr "Any tickets that use any of these products will have it removed, resulting in the ticket having no product set on it."
-
-msgid "admin.products.any_tickets_that_use_this_product_will_have"
-msgstr "Any tickets that use this product will have it removed, resulting in the ticket having no product set on it."
-
-msgid "admin.products.edit_product"
-msgstr "Edit Product"
-
-msgid "admin.products.new_product"
-msgstr "New Product"
-
-msgid "admin.products.parent_product"
-msgstr "Parent Product"
+msgid "admin.server.confirm_switch_to_db"
+msgstr "You are currently storing files in the filesystem at {{path}}.<br /><br />Are you sure you want to switch back to using the database storage mechanism?"
 
 msgid "admin.products.add_new_product"
 msgstr "Add New Product"
 
-msgid "admin.products.you_have_not_created_any_products_yet_click"
-msgstr "You have not created any products yet. Click the "Add New Product" button to create one now."
+msgid "admin.products.notice_products_will_be_removed"
+msgstr "Any tickets that use any of these products will have it removed, resulting in the ticket having no product set on it."
 
-msgid "admin.products.edit_product_title"
-msgstr "Edit Product Title"
+msgid "admin.products.notice_product_will_be_removed"
+msgstr "Any tickets that use this product will have it removed, resulting in the ticket having no product set on it."
+
+msgid "admin.products.confirm_delete_product"
+msgstr "Are you sure you want to delete the product "<strong>{{title}}</strong>"?"
+
+msgid "admin.products.confirm_delete_product_top_level"
+msgstr "Are you sure you want to delete the product "<strong>{{title}}</strong>"? Since this is a top-level product, <strong>all of these child-products will be deleted too</strong>"
 
 msgid "admin.products.back_to_products"
 msgstr "Back to products"
 
-msgid "admin.products.are_you_sure_delete_product"
-msgstr "Are you sure you want to delete the product "<strong>{{title}}</strong>"?"
+msgid "admin.products.delete_product"
+msgstr "Delete Product"
 
-msgid "admin.products.are_you_sure_delete_product_top_level"
-msgstr "Are you sure you want to delete the product "<strong>{{title}}</strong>"? Since this is a top-level product, <strong>all of these child-products will be deleted too</strong>"
+msgid "admin.products.edit_product"
+msgstr "Edit Product"
 
-msgid "admin.portalcolors.section_header"
-msgstr "Header"
+msgid "admin.products.edit_product_title"
+msgstr "Edit Product Title"
 
-msgid "admin.portalcolors.section_main_content"
-msgstr "Main Content"
+msgid "admin.products.new_product"
+msgstr "New Product"
 
-msgid "admin.portalcolors.section_sidebar"
-msgstr "Sidebar"
+msgid "admin.products.no_products_created"
+msgstr "You have not created any products yet. Click the "{{subphrase}}" button to create one now."
 
-msgid "admin.portalcolors.section_buttons"
-msgstr "Buttons"
+msgid "admin.products.notice_products_allow_categorization"
+msgstr "Products are a type of categorization that you can use across the entire helpdesk. Create a product, which is usually a real product or service your company offers, and use it categorize all kinds of content like tickets, feedback and articles."
 
-msgid "admin.portalcolors.section_misc"
-msgstr "Miscellaneous"
+msgid "admin.products.parent_product"
+msgstr "Parent Product"
 
-msgid "admin.portalcolors.bg_color_title"
-msgstr "Background Color"
+msgid "admin.products.notice_no_products"
+msgstr "You have not created any products yet. Click the "Add New Product" button to create one now."
 
-msgid "admin.portalcolors.bg_color_desc"
-msgstr "The page background color"
+msgid "admin.portal._or_just_enter_a_title_and_a"
+msgstr "... or just enter a title and a tagline"
 
-msgid "admin.portalcolors.header_bar_bg_color_title"
-msgstr "Header Bar Background"
+msgid "admin.portal.allow_users_to_rate_content"
+msgstr "Allow users to rate content"
 
-msgid "admin.portalcolors.header_bar_bg_color_desc"
-msgstr "The background color of the header bar where the searchbox is"
+msgid "admin.portal.allow_users_to_submit_comments"
+msgstr "Allow users to submit comments"
 
-msgid "admin.portalcolors.header_name_color_title"
-msgstr "Site Name"
-
-msgid "admin.portalcolors.header_name_color_desc"
-msgstr "The color of the site name text at the top of the page"
-
-msgid "admin.portalcolors.header_tagline_color_desc"
-msgstr "The color of the tagline text at the top of the page"
-
-msgid "admin.portalcolors.body_bg_color_title"
-msgstr "Body Background Color"
-
-msgid "admin.portalcolors.body_bg_color_desc"
-msgstr "The background color of the main DeskPRO page"
-
-msgid "admin.portalcolors.content_bg_color_title"
-msgstr "Content Box Background"
-
-msgid "admin.portalcolors.content_bg_color_desc"
-msgstr "The background of the main content boxes"
-
-msgid "admin.portalcolors.content_alt_bg_color_title"
-msgstr "Content Section Background"
-
-msgid "admin.portalcolors.content_alt_bg_color_desc"
-msgstr "Background color of misc sections within pages, like the area labels or the ratings buttons sit on"
-
-msgid "admin.portalcolors.content_block_shadow_color_title"
-msgstr "Content Box Shadow"
-
-msgid "admin.portalcolors.content_block_shadow_color_desc"
-msgstr "The shadow color that appears around content boxes"
-
-msgid "admin.portalcolors.content_border_color_title"
-msgstr "Content Box Border Color"
-
-msgid "admin.portalcolors.content_border_color_desc"
-msgstr "The color of the border around content boxes"
-
-msgid "admin.portalcolors.content_pill_btn_bg_title"
-msgstr ""View All" Button Background"
-
-msgid "admin.portalcolors.content_pill_btn_bg_desc"
-msgstr "The round buttons on article listings to view all listings"
-
-msgid "admin.portalcolors.content_pill_btn_border_title"
-msgstr ""View All" Button Border Color"
-
-msgid "admin.portalcolors.content_pill_btn_border_desc"
-msgstr "The border color on "view all" buttons"
-
-msgid "admin.portalcolors.content_pill_btn_text_color_title"
-msgstr ""View All" Button Text Color"
-
-msgid "admin.portalcolors.content_pill_btn_text_color_desc"
-msgstr "The text color in "view all" buttons"
-
-msgid "admin.portalcolors.sidebar_block_title_color_title"
-msgstr "Sidebar Section Headings Text Color"
-
-msgid "admin.portalcolors.sidebar_block_title_color_desc"
-msgstr "Text color of the titles to each section"
-
-msgid "admin.portalcolors.sidebar_block_border_color_title"
-msgstr "Sidebar Section Headings Border Color"
-
-msgid "admin.portalcolors.sidebar_block_border_color_desc"
-msgstr "Color of the thin border below headings"
-
-msgid "admin.portalcolors.cal_date_bg_title"
-msgstr "Calendar Icon Background"
-
-msgid "admin.portalcolors.cal_date_bg_desc"
-msgstr "Background color of the light bit"
-
-msgid "admin.portalcolors.cal_date_text_title"
-msgstr "Calendar Icon Text"
-
-msgid "admin.portalcolors.cal_date_text_desc"
-msgstr "Text color of the day bit"
-
-msgid "admin.portalcolors.cal_date_border_title"
-msgstr "Border color"
-
-msgid "admin.portalcolors.cal_date_border_desc"
-msgstr "Border of the calednar icon"
-
-msgid "admin.portalcolors.cal_date_month_bg_title"
-msgstr "Calendar Icon Month Background"
-
-msgid "admin.portalcolors.cal_date_month_bg_desc"
-msgstr "Background color of the month bit"
-
-msgid "admin.portalcolors.cal_date_month_text_title"
-msgstr "Calendar Icon Month Text"
-
-msgid "admin.portalcolors.cal_date_month_text_desc"
-msgstr "Text color of the month bit"
-
-msgid "admin.portalcolors.link_color_title"
-msgstr "Link Color"
-
-msgid "admin.portalcolors.link_color_desc"
-msgstr "Main link color"
-
-msgid "admin.portalcolors.link_color_hover_title"
-msgstr "Mouse-over Link Color"
-
-msgid "admin.portalcolors.link_color_hover_desc"
-msgstr "The color links turn to when hovering the mouse over them"
-
-msgid "admin.portalcolors.foot_copy_color_title"
-msgstr "Footer Text Color"
-
-msgid "admin.portalcolors.foot_copy_color_desc"
-msgstr "Text color of the footer copy text"
-
-msgid "admin.portalcolors.text_color_title"
-msgstr "Text Color"
-
-msgid "admin.portalcolors.text_color_desc"
-msgstr "The main text color"
-
-msgid "admin.portalcolors.meta_text_color_title"
-msgstr "Sub-Text Color"
-
-msgid "admin.portalcolors.meta_text_color_desc"
-msgstr "The text color used to show alternative info or meta-data like dates"
-
-msgid "admin.portalcolors.button_bg_start_title"
-msgstr "Button Gradent Start"
-
-msgid "admin.portalcolors.button_bg_start_desc"
-msgstr "The start color of the button gradient"
-
-msgid "admin.portalcolors.button_bg_end_title"
-msgstr "Button Gradent End"
-
-msgid "admin.portalcolors.button_bg_end_desc"
-msgstr "The end color of the button gradient"
-
-msgid "admin.portalcolors.button_text_title"
-msgstr "Button Text Color"
-
-msgid "admin.portalcolors.button_text_desc"
-msgstr "Text color in buttons"
-
-msgid "admin.portalcolors.comment_backdrop_title"
-msgstr "Comment Panel Background"
-
-msgid "admin.portalcolors.comment_backdrop_desc"
-msgstr "The background color of the comments panel"
-
-msgid "admin.portal.color_editor"
-msgstr "Color Editor"
+msgid "admin.portal.click_button_to_reenable_or_use_widgets"
+msgstr "Click the button above to re-enable the portal. Or use HTML widgets from the <a href="{{path}}">ticket editor</a> to embed DeskPRO into your own site."
 
 msgid "admin.portal.click_to_disable"
 msgstr "Click to disable"
@@ -1372,98 +1318,281 @@ msgstr "Click to disable"
 msgid "admin.portal.click_to_enable"
 msgstr "Click to enable"
 
-msgid "admin.portal.loading_editor"
-msgstr "Loading Editor"
+msgid "admin.portal.color_bg_color_desc"
+msgstr "The page background color"
 
-msgid "admin.portal.portal_editor"
-msgstr "Portal Editor"
+msgid "admin.portal.color_bg_color_title"
+msgstr "Background Color"
 
-msgid "admin.portal.website_widgets"
-msgstr "Website Widgets"
+msgid "admin.portal.color_body_bg_color_desc"
+msgstr "The background color of the main DeskPRO page"
 
-msgid "admin.portal.global_settings"
-msgstr "Global Settings"
+msgid "admin.portal.color_body_bg_color_title"
+msgstr "Body Background Color"
 
-msgid "admin.portal.custom_fields"
-msgstr "Custom Fields"
+msgid "admin.portal.color_button_bg_end_desc"
+msgstr "The end color of the button gradient"
 
-msgid "admin.portal.manage_articles"
-msgstr "Manage Articles"
+msgid "admin.portal.color_button_bg_end_title"
+msgstr "Button Gradent End"
 
-msgid "admin.portal.manage_feedback"
-msgstr "Manage Feedback"
+msgid "admin.portal.color_button_bg_start_desc"
+msgstr "The start color of the button gradient"
 
-msgid "admin.portal.manage_downloads"
-msgstr "Manage Downloads"
+msgid "admin.portal.color_button_bg_start_title"
+msgstr "Button Gradent Start"
 
-msgid "admin.portal.manage_news"
-msgstr "Manage News"
+msgid "admin.portal.color_button_text_desc"
+msgstr "Text color in buttons"
 
-msgid "admin.portal.edit_logo"
-msgstr "Edit Logo"
+msgid "admin.portal.color_button_text_title"
+msgstr "Button Text Color"
 
-msgid "admin.portal.edit_html"
-msgstr "Edit HTML"
+msgid "admin.portal.color_cal_date_bg_desc"
+msgstr "Background color of the light bit"
 
-msgid "admin.portal.upload_a_new_logo"
-msgstr "Upload a new logo"
+msgid "admin.portal.color_cal_date_bg_title"
+msgstr "Calendar Icon Background"
 
-msgid "admin.portal.save_logo"
-msgstr "Save logo"
+msgid "admin.portal.color_cal_date_border_desc"
+msgstr "Border of the calednar icon"
 
-msgid "admin.portal._or_just_enter_a_title_and_a"
-msgstr "... or just enter a title and a tagline"
+msgid "admin.portal.color_cal_date_border_title"
+msgstr "Border color"
 
-msgid "admin.portal.save_title_and_tagline"
-msgstr "Save title and tagline"
+msgid "admin.portal.color_cal_date_month_bg_desc"
+msgstr "Background color of the month bit"
 
-msgid "admin.portal.portal_settings"
-msgstr "Portal Settings"
+msgid "admin.portal.color_cal_date_month_bg_title"
+msgstr "Calendar Icon Month Background"
+
+msgid "admin.portal.color_cal_date_month_text_desc"
+msgstr "Text color of the month bit"
+
+msgid "admin.portal.color_cal_date_month_text_title"
+msgstr "Calendar Icon Month Text"
+
+msgid "admin.portal.color_cal_date_text_desc"
+msgstr "Text color of the day bit"
+
+msgid "admin.portal.color_cal_date_text_title"
+msgstr "Calendar Icon Text"
+
+msgid "admin.portal.color_comment_backdrop_desc"
+msgstr "The background color of the comments panel"
+
+msgid "admin.portal.color_comment_backdrop_title"
+msgstr "Comment Panel Background"
+
+msgid "admin.portal.color_content_alt_bg_color_desc"
+msgstr "Background color of misc sections within pages, like the area labels or the ratings buttons sit on"
+
+msgid "admin.portal.color_content_alt_bg_color_title"
+msgstr "Content Section Background"
+
+msgid "admin.portal.color_content_bg_color_desc"
+msgstr "The background of the main content boxes"
+
+msgid "admin.portal.color_content_bg_color_title"
+msgstr "Content Box Background"
+
+msgid "admin.portal.color_content_block_shadow_color_desc"
+msgstr "The shadow color that appears around content boxes"
+
+msgid "admin.portal.color_content_block_shadow_color_title"
+msgstr "Content Box Shadow"
+
+msgid "admin.portal.color_content_border_color_desc"
+msgstr "The color of the border around content boxes"
+
+msgid "admin.portal.color_content_border_color_title"
+msgstr "Content Box Border Color"
+
+msgid "admin.portal.color_content_pill_btn_bg_desc"
+msgstr "The round buttons on article listings to view all listings"
+
+msgid "admin.portal.color_content_pill_btn_bg_title"
+msgstr ""View All" Button Background"
+
+msgid "admin.portal.color_content_pill_btn_border_desc"
+msgstr "The border color on "view all" buttons"
+
+msgid "admin.portal.color_content_pill_btn_border_title"
+msgstr ""View All" Button Border Color"
+
+msgid "admin.portal.color_content_pill_btn_text_color_desc"
+msgstr "The text color in "view all" buttons"
+
+msgid "admin.portal.color_content_pill_btn_text_color_title"
+msgstr ""View All" Button Text Color"
+
+msgid "admin.portal.color_editor"
+msgstr "Color Editor"
+
+msgid "admin.portal.color_foot_copy_color_desc"
+msgstr "Text color of the footer copy text"
+
+msgid "admin.portal.color_foot_copy_color_title"
+msgstr "Footer Text Color"
+
+msgid "admin.portal.color_header_bar_bg_color_desc"
+msgstr "The background color of the header bar where the searchbox is"
+
+msgid "admin.portal.color_header_bar_bg_color_title"
+msgstr "Header Bar Background"
+
+msgid "admin.portal.color_header_name_color_desc"
+msgstr "The color of the site name text at the top of the page"
+
+msgid "admin.portal.color_header_name_color_title"
+msgstr "Site Name"
+
+msgid "admin.portal.color_header_tagline_color_desc"
+msgstr "The color of the tagline text at the top of the page"
+
+msgid "admin.portal.color_link_color_desc"
+msgstr "Main link color"
+
+msgid "admin.portal.color_link_color_hover_desc"
+msgstr "The color links turn to when hovering the mouse over them"
+
+msgid "admin.portal.color_link_color_hover_title"
+msgstr "Mouse-over Link Color"
+
+msgid "admin.portal.color_link_color_title"
+msgstr "Link Color"
+
+msgid "admin.portal.color_meta_text_color_desc"
+msgstr "The text color used to show alternative info or meta-data like dates"
+
+msgid "admin.portal.color_meta_text_color_title"
+msgstr "Sub-Text Color"
+
+msgid "admin.portal.color_section_buttons"
+msgstr "Buttons"
+
+msgid "admin.portal.color_section_header"
+msgstr "Header"
+
+msgid "admin.portal.color_section_main_content"
+msgstr "Main Content"
+
+msgid "admin.portal.color_section_misc"
+msgstr "Miscellaneous"
+
+msgid "admin.portal.color_section_sidebar"
+msgstr "Sidebar"
+
+msgid "admin.portal.color_sidebar_block_border_color_desc"
+msgstr "Color of the thin border below headings"
+
+msgid "admin.portal.color_sidebar_block_border_color_title"
+msgstr "Sidebar Section Headings Border Color"
+
+msgid "admin.portal.color_sidebar_block_title_color_desc"
+msgstr "Text color of the titles to each section"
+
+msgid "admin.portal.color_sidebar_block_title_color_title"
+msgstr "Sidebar Section Headings Text Color"
+
+msgid "admin.portal.color_text_color_desc"
+msgstr "The main text color"
+
+msgid "admin.portal.color_text_color_title"
+msgstr "Text Color"
 
 msgid "admin.portal.commenting"
 msgstr "Commenting"
 
-msgid "admin.portal.allow_users_to_submit_comments"
-msgstr "Allow users to submit comments"
+msgid "admin.portal.custom_fields"
+msgstr "Custom Fields"
 
-msgid "admin.portal.require_users_to_log_in_or_register_before"
-msgstr "Require users to log in or register before they can comment"
+msgid "admin.portal.edit_html"
+msgstr "Edit HTML"
 
-msgid "admin.portal.require_users_to_validate_their_email_addresses_before"
-msgstr "Require users to validate their email addresses before a comment is visible"
+msgid "admin.portal.edit_logo"
+msgstr "Edit Logo"
 
-msgid "admin.portal.require_all_comments_to_be_manually_validated_by"
-msgstr "Require all comments to be manually validated by agents"
-
-msgid "admin.portal.show_a_captcha_on_comment_forms"
-msgstr "Show a CAPTCHA on comment forms"
-
-msgid "admin.portal.allow_users_to_rate_content"
-msgstr "Allow users to rate content"
-
-msgid "admin.portal.show_ratings_publicly"
-msgstr "Show ratings publicly"
+msgid "admin.portal.global_settings"
+msgstr "Global Settings"
 
 msgid "admin.portal.integrations"
 msgstr "Integrations"
 
-msgid "admin.portal.show_facebook_like_button"
+msgid "admin.portal.loading_editor"
+msgstr "Loading Editor"
+
+msgid "admin.portal.manage_articles"
+msgstr "Manage Articles"
+
+msgid "admin.portal.manage_downloads"
+msgstr "Manage Downloads"
+
+msgid "admin.portal.manage_feedback"
+msgstr "Manage Feedback"
+
+msgid "admin.portal.manage_news"
+msgstr "Manage News"
+
+msgid "admin.portal.portal_editor"
+msgstr "Portal Editor"
+
+msgid "admin.portal.portal_is_disabled"
+msgstr "The portal is currently disabled. This means you have turned off your public facing website at {{url}}."
+
+msgid "admin.portal.portal_settings"
+msgstr "Portal Settings"
+
+msgid "admin.portal.comment_require_validation"
+msgstr "Require all comments to be manually validated by agents"
+
+msgid "admin.portal.comment_disable_anonymous"
+msgstr "Require users to log in or register before they can comment"
+
+msgid "admin.portal.comment_require_email_validation"
+msgstr "Require users to validate their email addresses before a comment is visible"
+
+msgid "admin.portal.save_logo"
+msgstr "Save logo"
+
+msgid "admin.portal.save_title_and_tagline"
+msgstr "Save title and tagline"
+
+msgid "admin.portal.comment_use_captcha"
+msgstr "Show a CAPTCHA on comment forms"
+
+msgid "admin.portal.show_addthis"
+msgstr "Show AddThis widget"
+
+msgid "admin.portal.show_facebook_like"
 msgstr "Show Facebook Like button"
 
-msgid "admin.portal.show_google_1_button"
+msgid "admin.portal.show_google_plus_one"
 msgstr "Show Google +1 button"
 
-msgid "admin.portal.show_addthis_widget"
-msgstr "Show AddThis widget"
+msgid "admin.portal.show_ratings"
+msgstr "Show ratings publicly"
 
 msgid "admin.portal.ticket_editor"
 msgstr "ticket editor"
 
-msgid "admin.portal.click_button_to_reenable_or_use_widgets"
-msgstr "Click the button above to re-enable the portal. Or use HTML widgets from the <a href="{{path}}">ticket editor</a> to embed DeskPRO into your own site."
+msgid "admin.portal.troubleshooters"
+msgstr "Troubleshooters"
 
-msgid "admin.portal.portal_is_disabled"
-msgstr "The portal is currently disabled. This means you have turned off your public facing website at {{url}}."
+msgid "admin.portal.upload_a_new_logo"
+msgstr "Upload a new logo"
+
+msgid "admin.portal.warning_dont_want_public_site"
+msgstr "If you do not want a public facing website you can disable the portal. You will still be able to accept tickets from the email gateways, and use HTML widgets on your website, but the user portal will be disabled and traces of the public website such as links in emails will be removed."
+
+msgid "admin.portal.website_widgets"
+msgstr "Website Widgets"
+
+msgid "admin.plugins.available_plugins"
+msgstr "Available Plugins"
+
+msgid "admin.plugins.install"
+msgstr "Install"
 
 msgid "admin.plugins.install_done"
 msgstr "Install Done"
@@ -1477,164 +1606,164 @@ msgstr "Installed Plugins"
 msgid "admin.plugins.uninstall"
 msgstr "Uninstall"
 
-msgid "admin.plugins.you_have_no_plugins_installed"
-msgstr "You have no plugins installed."
-
-msgid "admin.plugins.available_plugins"
-msgstr "Available Plugins"
-
-msgid "admin.plugins.install"
-msgstr "Install"
-
-msgid "admin.plugins.you_have_no_plugins_available_for_installation"
+msgid "admin.plugins.no_plugins_available"
 msgstr "You have no plugins available for installation"
 
-msgid "admin.main.no_permission"
-msgstr "No Permission"
+msgid "admin.plugins.no_plugins_installed"
+msgstr "You have no plugins installed."
 
-msgid "admin.main.you_do_not_have_permission_to_view_use"
-msgstr "You do not have permission to view use this page."
-
-msgid "admin.main.admin_dashboard"
+msgid "admin.menu.admin_dashboard"
 msgstr "Admin Dashboard"
 
-msgid "admin.main.click_an_icon_above_to_navigate_to_a"
-msgstr "Click an icon above to navigate to a section and configure your helpdesk."
-
-msgid "admin.main.change_your_helpdesk_settings_like_your_website_url"
-msgstr "Change your helpdesk settings, like your website URL"
-
-msgid "admin.main.set_up_how_deskpro_sends_emails"
-msgstr "Set up how DeskPRO sends emails"
-
-msgid "admin.main.manage_your_departments"
-msgstr "Manage your departments"
-
-msgid "admin.main.change_the_appearance_of_your_helpdesk_homepage_and"
-msgstr "Change the appearance of your helpdesk homepage and integrate it into your website"
-
-msgid "admin.main.manage_your_products"
-msgstr "Manage your products"
-
-msgid "admin.main.manage_locales_and_languages"
-msgstr "Manage locales and languages."
-
-msgid "admin.main.edit_the_html_templates_for_any_page"
-msgstr "Edit the HTML templates for any page"
-
-msgid "admin.main.edit_the_emails_sent_to_agents_and_users"
-msgstr "Edit the emails sent to agents and users"
-
-msgid "admin.main.test_file_uploading_and_change_storage_mechanism"
-msgstr "Test file uploading and change storage mechanism"
-
-msgid "admin.main.view_and_manage_scheduled_tasks_like_email_collection"
-msgstr "View and manage scheduled tasks like email collection and cleanup"
-
-msgid "admin.main.view_information_about_your_php_installation"
-msgstr "View information about your PHP installation"
-
-msgid "admin.main.view_information_about_your_mysql_installation"
-msgstr "View information about your MySQL installation"
-
-msgid "admin.main.view_information_about_the_status_of_your_mysql"
-msgstr "View information about the status of your MySQL installation"
-
-msgid "admin.main.view_logged_errors"
-msgstr "View logged errors"
-
-msgid "admin.main.change_how_the_helpdesk_should_handle_user_registration"
-msgstr "Change how the helpdesk should handle user registration"
-
-msgid "admin.main.create_user_groups_to_easily_manage_similar_users"
-msgstr "Create user groups to easily manage similar users, and to manage permissions on them."
-
-msgid "admin.main.create_custom_fields_that_can_be_added_to"
-msgstr "Create custom fields that can be added to organizations."
-
-msgid "admin.main.define_labels_that_can_be_applied_to_users"
-msgstr "Define labels that can be applied to users."
-
-msgid "admin.main.define_labels_that_can_be_applied_to_organizations"
-msgstr "Define labels that can be applied to organizations."
-
-msgid "admin.main.set_up_patterns_of_email_addresses_to_automatically"
-msgstr "Set up patterns of email addresses to automatically add users to usergroups and organizations"
-
-msgid "admin.main.ban_ip_ranges_and_email_addresses"
-msgstr "Ban IP ranges and email addresses"
-
-msgid "admin.main.manage_or_install_plugins"
-msgstr "Manage or install plugins."
-
-msgid "admin.main.manage_your_api_keys_and_usage"
-msgstr "Manage your API keys and usage."
-
-msgid "admin.main.manage_ticket_fields_like_categories_priorities_workflows_and"
-msgstr "Manage ticket fields like categories, priorities, workflows and your own defined fields."
-
-msgid "admin.main.design_the_layout_of_your_new_ticket_forms"
-msgstr "Design the layout of your new ticket forms and agent ticket interface."
-
-msgid "admin.main.create_filters_that_will_appear_in_agent_interface"
-msgstr "Create filters that will appear in agent interface to help your team find tickets faster."
-
-msgid "admin.main.define_triggers_to_that_change_or_escalate_tickets"
-msgstr "Define triggers to that change or escalate tickets, send notifications, set urgency and auto-close tickets."
-
-msgid "admin.main.manage_pop3_and_imap_accounts_that_deskpro_will"
-msgstr "Manage POP3 and IMAP accounts that DeskPRO will read email from as tickets"
-
-msgid "admin.main.create_groups_of_actions_that_can_be_performed"
-msgstr "Create groups of actions that can be performed on tickets with a single click."
-
-msgid "admin.main.set_other_ticket_features_like_feedback_options"
-msgstr "Set other ticket features like feedback options."
-
-msgid "admin.main.define_labels_that_can_be_applied_to_tickets"
-msgstr "Define labels that can be applied to tickets to help organize your helpdesk."
-
-msgid "admin.main.edit_the_notification_emails"
-msgstr "Edit the notification emails"
-
-msgid "admin.main.next_step"
-msgstr "Next step"
-
-msgid "admin.main.or_skip"
-msgstr "or skip"
-
-msgid "admin.main.outgoing_email_account"
-msgstr "Outgoing Email Account"
-
-msgid "admin.main.page_templates"
-msgstr "Page Templates"
-
-msgid "admin.main.registration"
-msgstr "Registration"
-
-msgid "admin.main.user_groups"
-msgstr "User Groups"
-
-msgid "admin.main.fields"
-msgstr "Fields"
-
-msgid "admin.main.organization_labels"
-msgstr "Organization Labels"
-
-msgid "admin.main.rules"
-msgstr "Rules"
-
-msgid "admin.main.plugins"
-msgstr "Plugins"
-
-msgid "admin.main.api"
+msgid "admin.menu.api"
 msgstr "API"
 
-msgid "admin.main.editor"
+msgid "admin.menu.ban_items"
+msgstr "Ban IP ranges and email addresses"
+
+msgid "admin.menu.change_registration"
+msgstr "Change how the helpdesk should handle user registration"
+
+msgid "admin.menu.change_homepage"
+msgstr "Change the appearance of your helpdesk homepage and integrate it into your website"
+
+msgid "admin.menu.change_settings"
+msgstr "Change your helpdesk settings, like your website URL"
+
+msgid "admin.menu.click_to_configure"
+msgstr "Click an icon above to navigate to a section and configure your helpdesk."
+
+msgid "admin.menu.create_custom_fields"
+msgstr "Create custom fields that can be added to organizations."
+
+msgid "admin.menu.create_filters"
+msgstr "Create filters that will appear in agent interface to help your team find tickets faster."
+
+msgid "admin.menu.create_groups"
+msgstr "Create groups of actions that can be performed on tickets with a single click."
+
+msgid "admin.menu.create_user_groups"
+msgstr "Create user groups to easily manage similar users, and to manage permissions on them."
+
+msgid "admin.menu.define_organization_labels"
+msgstr "Define labels that can be applied to organizations."
+
+msgid "admin.menu.define_ticket_labels"
+msgstr "Define labels that can be applied to tickets to help organize your helpdesk."
+
+msgid "admin.menu.define_user_labels"
+msgstr "Define labels that can be applied to users."
+
+msgid "admin.menu.define_triggers"
+msgstr "Define triggers to that change or escalate tickets, send notifications, set urgency and auto-close tickets."
+
+msgid "admin.menu.design_ticket_forms"
+msgstr "Design the layout of your new ticket forms and agent ticket interface."
+
+msgid "admin.menu.edit_user_agent_emails"
+msgstr "Edit the emails sent to agents and users"
+
+msgid "admin.menu.edit_html"
+msgstr "Edit the HTML templates for any page"
+
+msgid "admin.menu.edit_notification_emails"
+msgstr "Edit the notification emails"
+
+msgid "admin.menu.editor"
 msgstr "Editor"
 
-msgid "admin.main.email_notification_templates"
+msgid "admin.menu.email_notification_templates"
 msgstr "Email Notification Templates"
+
+msgid "admin.menu.fields"
+msgstr "Fields"
+
+msgid "admin.menu.manage_internationalization"
+msgstr "Manage locales and languages."
+
+msgid "admin.menu.manage_plugins"
+msgstr "Manage or install plugins."
+
+msgid "admin.menu.manage_email_accounts"
+msgstr "Manage POP3 and IMAP accounts that DeskPRO will read email from as tickets"
+
+msgid "admin.menu.manage_ticket_fields"
+msgstr "Manage ticket fields like categories, priorities, workflows and your own defined fields."
+
+msgid "admin.menu.manage_api"
+msgstr "Manage your API keys and usage."
+
+msgid "admin.menu.manage_departments"
+msgstr "Manage your departments"
+
+msgid "admin.menu.manage_your_products"
+msgstr "Manage your products"
+
+msgid "admin.menu.next_step"
+msgstr "Next step"
+
+msgid "admin.menu.no_permission"
+msgstr "No Permission"
+
+msgid "admin.menu.or_skip"
+msgstr "or skip"
+
+msgid "admin.menu.organization_labels"
+msgstr "Organization Labels"
+
+msgid "admin.menu.outgoing_email_account"
+msgstr "Outgoing Email Account"
+
+msgid "admin.menu.page_templates"
+msgstr "Page Templates"
+
+msgid "admin.menu.plugins"
+msgstr "Plugins"
+
+msgid "admin.menu.portal_and_site_integration"
+msgstr "Portal &amp; Site Integration"
+
+msgid "admin.menu.registration"
+msgstr "Registration"
+
+msgid "admin.menu.rules"
+msgstr "Rules"
+
+msgid "admin.menu.set_other_ticket_features"
+msgstr "Set other ticket features like feedback options."
+
+msgid "admin.menu.set_email_methods"
+msgstr "Set up how DeskPRO sends emails"
+
+msgid "admin.menu.set_email_patterns"
+msgstr "Set up patterns of email addresses to automatically add users to usergroups and organizations"
+
+msgid "admin.menu.settings_and_features"
+msgstr "Settings &amp; Features"
+
+msgid "admin.menu.manage_storage"
+msgstr "Test file uploading and change storage mechanism"
+
+msgid "admin.menu.user_groups"
+msgstr "User Groups"
+
+msgid "admin.menu.manage_scheduled_tasks"
+msgstr "View and manage scheduled tasks like email collection and cleanup"
+
+msgid "admin.menu.view_mysql_status"
+msgstr "View information about the status of your MySQL installation"
+
+msgid "admin.menu.view_mysql_installation"
+msgstr "View information about your MySQL installation"
+
+msgid "admin.menu.view_php_installation"
+msgstr "View information about your PHP installation"
+
+msgid "admin.menu.view_logged_errors"
+msgstr "View logged errors"
+
+msgid "admin.menu.error_no_permission"
+msgstr "You do not have permission to view use this page."
 
 msgid "admin.logs.clear_all_errors"
 msgstr "Clear all errors"
@@ -1642,116 +1771,149 @@ msgstr "Clear all errors"
 msgid "admin.logs.details"
 msgstr "Details"
 
+msgid "admin.logs.error_logs_count"
+msgstr "Error Logs ({{count}})|Error Logs ({{count}})"
+
+msgid "admin.logs.notice_can_use_sn_code"
+msgstr "If you have a SN code for a specific error, you can look it up here."
+
+msgid "admin.logs.interval"
+msgstr "Interval"
+
+msgid "admin.logs.last_run"
+msgstr "Last Run"
+
+msgid "admin.logs.log"
+msgstr "Log"
+
 msgid "admin.logs.look_up_sn"
 msgstr "Look up SN"
 
-msgid "admin.logs.if_you_have_a_sn_code_for_a"
-msgstr "If you have a SN code for a specific error, you can look it up here."
+msgid "admin.logs.next_run"
+msgstr "Next Run"
 
-msgid "admin.logs.view"
-msgstr "View"
+msgid "admin.logs.notice_error_logs"
+msgstr "Error logs contain recorded information about errors and exceptions on your helpdesk. Errors should generally not happen, so any logged information here is worth investigating."
 
 msgid "admin.logs.sn"
 msgstr "SN"
 
-msgid "admin.license.save_license_code"
-msgstr "Save License Code"
+msgid "admin.logs.task"
+msgstr "Task"
 
-msgid "admin.license.dont_have_a_license_code"
-msgstr "Don't have a license code?"
+msgid "admin.logs.view"
+msgstr "View"
 
-msgid "admin.license.if_youd_have_a_license_code_yet"
-msgstr "If you'd have a license code yet,"
+msgid "admin.logs.view_logs"
+msgstr "View Logs"
 
-msgid "admin.license.click_here_generate_a_demo_license"
-msgstr "click here generate a demo license"
+msgid "admin.license.explain_connection_problems"
+msgstr "A connection problem may be temporary, but it may indicate that your web server is behind a firewall that prevents it from communicating with our license server on the internet."
 
-msgid "admin.license.we_encountered_a_problem"
-msgstr "We encountered a problem"
-
-msgid "admin.license.your_license_code"
-msgstr "Your license code"
-
-msgid "admin.license.save_license"
-msgstr "Save License"
+msgid "admin.license.ask_have_license_code"
+msgstr "Already have a license code?"
 
 msgid "admin.license.change_license_code"
 msgstr "Change License Code"
 
-msgid "admin.license.your_license"
-msgstr "Your License"
-
-msgid "admin.license.license_id"
-msgstr "License ID"
+msgid "admin.license.click_generate_demo_license"
+msgstr "click here generate a demo license"
 
 msgid "admin.license.demo"
 msgstr "Demo"
 
-msgid "admin.license.this_is_a_fullyfunctional_demo_license_with_no"
-msgstr "This is a fully-functional demo license with no limitations on the number of agents."
-
 msgid "admin.license.demo_expiry"
 msgstr "Demo Expiry"
 
-msgid "admin.license.unlimited"
-msgstr "Unlimited"
+msgid "admin.license.ask_doesnt_have_license"
+msgstr "Don't have a license code?"
 
-msgid "admin.license.request_demo_license"
-msgstr "Request Demo License"
+msgid "admin.license.get_demo_license"
+msgstr "Get your demo license &rarr;"
 
-msgid "admin.license.already_have_a_license_code"
-msgstr "Already have a license code?"
-
-msgid "admin.license.your_server_timedout_while_trying_to_contact_our"
-msgstr "Your server timed-out while trying to contact our licesing server to generate your license code."
-
-msgid "admin.license.our_licensing_server_is_having_technical_difficulties_you"
-msgstr "Our licensing server is having technical difficulties. You can try again, or email support@deskpro.com and one of our agents will generate a license code for you"
-
-msgid "admin.license.there_was_an_unknown_problem_while_trying_to"
-msgstr "There was an unknown problem while trying to connect to our licensing server."
-
-msgid "admin.license.a_connection_problem_may_be_temporary_but_it"
-msgstr "A connection problem may be temporary, but it may indicate that your web server is behind a firewall that prevents it from communicating with our license server on the internet."
-
-msgid "admin.license.your_personal_demo_license_code_will_be_sent"
-msgstr "Your personal demo license code will be sent to this address"
-
-msgid "admin.license.license_will_expire_on"
-msgstr "This demo will expire on {{date}}. Contact {{link}} if you need more time."
-
-msgid "admin.license.if_you_already_have_a_license"
+msgid "admin.license.do_if_have_license"
 msgstr "If you already have a license code, <a href="{{path}}">click here to enter it</a>."
 
-msgid "admin.license.if_you_have_problems_with_license"
+msgid "admin.license.do_if_license_has_problems"
 msgstr "If you continue to experience problems, email {{link}} with the key file linked to the left and we will generate a license code for you."
 
-msgid "admin.license.license_server_detected_error"
-msgstr "Our licensing server responded with the error code "{{error}}". You should contact support@deskpro.com if the problem persists."
-
-msgid "admin.license.supportdeskprocom"
-msgstr "support@deskpro.com"
+msgid "admin.license.do_if_not_have_license"
+msgstr "If you don't have a license code yet,"
 
 msgid "admin.license.installkey"
 msgstr "install.key"
 
+msgid "admin.license.license_id"
+msgstr "License ID"
+
+msgid "admin.license.license_server_detected_error"
+msgstr "Our licensing server responded with the error code "{{error}}". You should contact support@deskpro.com if the problem persists."
+
+msgid "admin.license.license_will_expire_on"
+msgstr "This demo will expire on {{date}}. Contact {{link}} if you need more time."
+
+msgid "admin.license.notice_invalid_license"
+msgstr "The license code you entered appears to be invalid. If you think this is a mistake, please email support@deskpro.com. (Code: {{invalid}})"
+
+msgid "admin.license.notice_license_has_been_emailed"
+msgstr "Your personal demo license code has been sent to your email address. Just copy and paste the license code into the box below."
+
+msgid "admin.license.error_licensing_server_problems"
+msgstr "Our licensing server is having technical difficulties. You can try again, or email support@deskpro.com and one of our agents will generate a license code for you"
+
+msgid "admin.license.request_demo_license"
+msgstr "Request Demo License"
+
+msgid "admin.license.save_license"
+msgstr "Save License"
+
+msgid "admin.license.save_license_code"
+msgstr "Save License Code"
+
+msgid "admin.license.error_licence_server_connection"
+msgstr "There was an unknown problem while trying to connect to our licensing server."
+
+msgid "admin.license.notice_full_license"
+msgstr "This is a fully-functional demo license with no limitations on the number of agents."
+
+msgid "admin.license.unlimited"
+msgstr "Unlimited"
+
+msgid "admin.license.error_encountered"
+msgstr "We encountered a problem"
+
+msgid "admin.license.your_license"
+msgstr "Your License"
+
+msgid "admin.license.your_license_code"
+msgstr "Your license code"
+
+msgid "admin.license.notice_license_destination"
+msgstr "Your personal demo license code will be sent to this address"
+
+msgid "admin.license.error_you_timed_out"
+msgstr "Your server timed-out while trying to contact our licesing server to generate your license code."
+
 msgid "admin.languages.add_language"
 msgstr "Add Language"
+
+msgid "admin.languages.confirm_delete_languages"
+msgstr "Are you sure you want to delete this language? Custom phrases will be removed, and things (e.g., tickets) classified using this language will have their language unset."
+
+msgid "admin.languages.clone_existing_language"
+msgstr "Create a new language using one of these available language packs"
+
+msgid "admin.languages.create_new_language"
+msgstr "Create New Language"
+
+msgid "admin.languages.default_deskpro_phrase"
+msgstr "Default DeskPRO Phrase"
 
 msgid "admin.languages.default_language"
 msgstr "Default Language"
 
-msgid "admin.languages.the_default_language_used_for_users_and_submitted"
-msgstr "The default language used for users and submitted content (such as tickets)"
-
-msgid "admin.languages.edit_language"
-msgstr "Edit Language"
-
-msgid "admin.languages.new_language"
-msgstr "New Language"
-
-msgid "admin.languages.language_pack"
-msgstr "Language Pack"
+msgid "admin.languages.default_phrase_for"
+msgstr "Default Phrase For {{title}}"
 
 msgid "admin.languages.delete_language"
 msgstr "Delete Language"
@@ -1759,302 +1921,623 @@ msgstr "Delete Language"
 msgid "admin.languages.edit_details"
 msgstr "Edit Details"
 
-msgid "admin.languages.create_a_new_language_using_one_of_these"
-msgstr "Create a new language using one of these available language packs"
+msgid "admin.languages.edit_language"
+msgstr "Edit Language"
 
-msgid "admin.languages.create_new_language"
-msgstr "Create New Language"
+msgid "admin.languages.edit_phrase"
+msgstr "Edit Phrase:"
 
-msgid "admin.lang.phrasegroup_admin"
+msgid "admin.languages.language_pack"
+msgstr "Language Pack"
+
+msgid "admin.languages.new_language"
+msgstr "New Language"
+
+msgid "admin.languages.phrasegroup_admin"
 msgstr "Admin Interface Phrases"
 
-msgid "admin.lang.phrasegroup_agent"
+msgid "admin.languages.phrasegroup_agent"
 msgstr "Agent Interface Phrases"
 
-msgid "admin.lang.phrasegroup_agent_tickets"
+msgid "admin.languages.phrasegroup_agent_tickets"
 msgstr "Tickets: General"
 
-msgid "admin.lang.phrasegroup_agent_tickets_email"
+msgid "admin.languages.phrasegroup_agent_tickets_email"
 msgstr "Tickets: Emails"
 
-msgid "admin.lang.phrasegroup_agent_tickets_user_email"
+msgid "admin.languages.phrasegroup_agent_tickets_user_email"
 msgstr "Tickets: User Emails"
 
-msgid "admin.lang.phrasegroup_user"
+msgid "admin.languages.phrasegroup_user"
 msgstr "User Interface Phrases"
 
-msgid "admin.lang.phrasegroup_user_emails"
+msgid "admin.languages.phrasegroup_user_emails"
 msgstr "Emails"
 
-msgid "admin.global.yes_i_am_sure_i_want_to_delete"
-msgstr "Yes, I am sure I want to delete"
+msgid "admin.languages.phrasegroup_agent_pages"
+msgstr "General Phrases"
 
-msgid "admin.global.parent_category"
-msgstr "Parent Category"
+msgid "admin.languages.phrasegroup_agent_publish"
+msgstr "Publish Phrases"
 
-msgid "admin.global.ticket_categories"
-msgstr "Ticket Categories"
+msgid "admin.languages.phrasegroup_agent_chat"
+msgstr "Chat Phrases"
 
-msgid "admin.global.parent"
-msgstr "Parent"
+msgid "admin.languages.phrasegroup_agent_report"
+msgstr "Report Interface Phrases"
 
-msgid "admin.global.no_parent"
-msgstr "No Parent"
+msgid "admin.languages.phrasegroup_agent_agent"
+msgstr "Assorted Agent Phrases"
 
-msgid "admin.global.organization_fields"
-msgstr "Organization Fields"
+msgid "admin.languages.phrasegroup_agent_task"
+msgstr "Task Phrases"
 
-msgid "admin.global.edit_field"
-msgstr "Edit Field"
+msgid "admin.languages.phrasegroup_agent_mediabrowser"
+msgstr "Mediabrowser Phrases"
 
-msgid "admin.global.new_field"
-msgstr "New Field"
+msgid "admin.languages.phrasegroup_agent_twitter"
+msgstr "Twitter Phrases"
 
-msgid "admin.global.add_field"
-msgstr "Add Field"
+msgid "admin.languages.phrasegroup_agent_settings"
+msgstr "Settings Phrases"
 
-msgid "admin.global.choose_field_type"
-msgstr "Choose Field Type"
+msgid "admin.languages.phrasegroup_agent_search"
+msgstr "Search Phrases"
 
-msgid "admin.global.error_log_id"
-msgstr "Error Log #{{id}}"
+msgid "admin.languages.phrasegroup_agent_org"
+msgstr "Organisation Phrases"
 
-msgid "admin.global.log_name"
-msgstr "Log Name"
+msgid "admin.languages.phrasegroup_agent_emails"
+msgstr "Email Phrases"
 
-msgid "admin.global.additional_data"
-msgstr "Additional Data"
+msgid "admin.languages.phrasegroup_agent_deal"
+msgstr "Deal Phrases"
 
-msgid "admin.global.logs"
-msgstr "Logs"
+msgid "admin.languages.phrasegroup_agent_people"
+msgstr "People Phrases"
 
-msgid "admin.global.error_logs"
-msgstr "Error Logs"
+msgid "admin.languages.phrasegroup_agent_login"
+msgstr "Login Phrases"
 
-msgid "admin.global.sn_code"
-msgstr "SN Code"
+msgid "admin.languages.phrasegroup_agent_feedback"
+msgstr "Feedback Phrases"
 
-msgid "admin.global.pri"
-msgstr "Pri"
+msgid "admin.languages.phrasegroup_admin_plugins"
+msgstr "Plugin Phrases"
 
-msgid "admin.global.first"
-msgstr "First"
+msgid "admin.languages.phrasegroup_admin_general"
+msgstr "General Phrases"
 
-msgid "admin.global.next"
-msgstr "Next"
+msgid "admin.languages.phrasegroup_admin_gateway"
+msgstr "Gateway Phrases"
 
-msgid "admin.global.last"
-msgstr "Last"
+msgid "admin.languages.phrasegroup_admin_billing"
+msgstr "Billing Interface Phrases"
 
-msgid "admin.global.ticket_workflows"
-msgstr "Ticket Workflows"
+msgid "admin.languages.phrasegroup_admin_designer"
+msgstr "Portal Designed Phrases"
 
-msgid "admin.global.email_gateways"
-msgstr "Email Gateways"
+msgid "admin.languages.phrasegroup_admin_agents"
+msgstr "Agent Configuration Phrases"
 
-msgid "admin.global.host"
-msgstr "Host"
+msgid "admin.languages.phrasegroup_admin_tickets"
+msgstr "Ticket Phrases"
 
-msgid "admin.global.secure"
-msgstr "Secure"
+msgid "admin.languages.phrasegroup_admin_setup"
+msgstr "Setup Phrases"
 
-msgid "admin.global.port"
-msgstr "Port"
+msgid "admin.languages.phrasegroup_admin_twitter"
+msgstr "Twitter Phrases"
 
-msgid "admin.global.username"
-msgstr "Username"
+msgid "admin.languages.phrasegroup_admin_settings"
+msgstr "Settings Phrases"
 
-msgid "admin.global.test_settings"
-msgstr "Test Settings"
+msgid "admin.languages.phrasegroup_admin_banning"
+msgstr "Ban Phrases"
 
-msgid "admin.global.google_apps"
-msgstr "Google Apps"
+msgid "admin.languages.phrasegroup_admin_api"
+msgstr "API Phrases"
 
-msgid "admin.global.full_email_address"
-msgstr "Full Email Address"
+msgid "admin.languages.phrasegroup_admin_user_groups"
+msgstr "User Group Phrases"
 
-msgid "admin.global.php_mail"
-msgstr "PHP mail()"
+msgid "admin.languages.phrasegroup_admin_languages"
+msgstr "Language Phrases"
 
-msgid "admin.global.smtp_account"
-msgstr "SMTP Account"
+msgid "admin.languages.phrasegroup_admin_departments"
+msgstr "Department Phrases"
 
-msgid "admin.global.requires_auth"
-msgstr "Requires Auth"
+msgid "admin.languages.phrasegroup_admin_products"
+msgstr "Product Phrases"
 
-msgid "admin.global.yes"
-msgstr "Yes"
+msgid "admin.languages.phrasegroup_admin_logs"
+msgstr "Log Phrases"
 
-msgid "admin.global.test_now"
-msgstr "Test Now"
+msgid "admin.languages.phrasegroup_admin_server"
+msgstr "Server Phrases"
 
-msgid "admin.global.test_outgoing_email"
-msgstr "Test Outgoing Email"
+msgid "admin.languages.phrasegroup_admin_portal"
+msgstr "Portal Phrases"
 
-msgid "admin.global.send_a_test_email_to"
-msgstr "Send a test email to"
+msgid "admin.languages.phrasegroup_admin_user_registration"
+msgstr "Registration Phrases"
 
-msgid "admin.global.from_email_address"
-msgstr "From email address"
+msgid "admin.languages.phrasegroup_admin_templates"
+msgstr "Template Phrases"
 
-msgid "admin.global.no_errors_were_reported_but_you_should_confirm"
-msgstr "No errors were reported, but you should confirm that you recieved the test email."
+msgid "admin.languages.phrasegroup_admin_user_rules"
+msgstr "User Rules Phrases"
 
-msgid "admin.global.there_was_an_error_while_trying_to_send"
-msgstr "There was an error while trying to send the test email"
+msgid "admin.languages.phrasegroup_admin_feedback"
+msgstr "Feedback Phrases"
 
-msgid "admin.global.outgoing_email_accounts"
-msgstr "Outgoing Email Accounts"
+msgid "admin.languages.phrasegroup_admin_license"
+msgstr "License Phrases"
 
-msgid "admin.global.account"
+msgid "admin.languages.phrasegroup_admin_menu"
+msgstr "Menu Phrases"
+
+msgid "admin.languages.phrasegroup_admin_custom_fields"
+msgstr "Custom Fields Phrases"
+
+msgid "admin.languages.phrasegroup_user_chat"
+msgstr "Chat Phrases"
+
+msgid "admin.languages.phrasegroup_user_news"
+msgstr "News Phrases"
+
+msgid "admin.languages.phrasegroup_user_downloads"
+msgstr "Download Phrases"
+
+msgid "admin.languages.phrasegroup_user_tickets"
+msgstr "Ticket Phrases"
+
+msgid "admin.languages.phrasegroup_user_profile"
+msgstr "Profile Phrases"
+
+msgid "admin.languages.phrasegroup_user_search"
+msgstr "Search Phrases"
+
+msgid "admin.languages.phrasegroup_user_user"
+msgstr "General Phrases"
+
+msgid "admin.languages.phrasegroup_user_portal"
+msgstr "Portal Phrases"
+
+msgid "admin.languages.phrasegroup_user_articles"
+msgstr "Artical Phrases"
+
+msgid "admin.languages.phrasegroup_user_feedback"
+msgstr "Feedback Phrases"
+
+msgid "admin.languages.save_your_phrase"
+msgstr "Save Customized Phrase"
+
+msgid "admin.languages.notice_default_language"
+msgstr "The default language used for users and submitted content (such as tickets)"
+
+msgid "admin.languages.your_phrase"
+msgstr "Your Customized Phrase"
+
+msgid "admin.general.account"
 msgstr "Account"
 
-msgid "admin.global.mysql_status"
-msgstr "MySQL Status"
+msgid "admin.general.add_field"
+msgstr "Add Field"
 
-msgid "admin.global.php_info"
-msgstr "PHP Info"
+msgid "admin.general.additional_data"
+msgstr "Additional Data"
 
-msgid "admin.global.mysql_info"
-msgstr "MySQL Info"
-
-msgid "admin.global.file_uploads"
-msgstr "File Uploads"
-
-msgid "admin.global.clear_logs"
-msgstr "Clear Logs"
-
-msgid "admin.global.ticket_priorities"
-msgstr "Ticket Priorities"
-
-msgid "admin.global.save_settings"
-msgstr "Save Settings"
-
-msgid "admin.global.departments"
-msgstr "Departments"
-
-msgid "admin.global.ticket_fields"
-msgstr "Ticket Fields"
-
-msgid "admin.global.revert"
-msgstr "revert"
-
-msgid "admin.global.general"
-msgstr "General"
-
-msgid "admin.global.tagline"
-msgstr "Tagline"
-
-msgid "admin.global.portal"
-msgstr "Portal"
-
-msgid "admin.global.templates"
-msgstr "Templates"
-
-msgid "admin.global.scheduled_tasks"
-msgstr "Scheduled Tasks"
-
-msgid "admin.global.on"
-msgstr "ON"
-
-msgid "admin.global.off"
-msgstr "OFF"
-
-msgid "admin.global.permission"
-msgstr "Permission"
-
-msgid "admin.global.default_value"
-msgstr "Default Value"
-
-msgid "admin.global.pattern"
-msgstr "Pattern"
-
-msgid "admin.global.deals"
-msgstr "Deals"
-
-msgid "admin.global.alphabetical"
+msgid "admin.general.alphabetical"
 msgstr "Alphabetical"
 
-msgid "admin.global.helpdesk"
-msgstr "Helpdesk"
-
-msgid "admin.global.languages"
-msgstr "Languages"
-
-msgid "admin.global.email_templates"
-msgstr "Email Templates"
-
-msgid "admin.global.banning"
+msgid "admin.general.banning"
 msgstr "Banning"
 
-msgid "admin.global.triggers"
-msgstr "Triggers"
+msgid "admin.general.choose_field_type"
+msgstr "Choose Field Type"
 
-msgid "admin.global.locale"
-msgstr "Locale"
+msgid "admin.general.clear_logs"
+msgstr "Clear Logs"
 
-msgid "admin.global.save_changes"
-msgstr "Save Changes"
+msgid "admin.general.deals"
+msgstr "Deals"
 
-msgid "admin.global.email_addresses"
+msgid "admin.general.default_value"
+msgstr "Default Value"
+
+msgid "admin.general.departments"
+msgstr "Departments"
+
+msgid "admin.general.deskpro_admin_interface"
+msgstr "DeskPRO Admin Interface"
+
+msgid "admin.general.edit_category"
+msgstr "Edit Category"
+
+msgid "admin.general.edit_field"
+msgstr "Edit Field"
+
+msgid "admin.general.email_addresses"
 msgstr "Email Addresses"
 
-msgid "admin.feedback.note_the_parent_category_selected_is_currently_a"
-msgstr "Note: The parent category selected is currently a top-level category. By creating this child-category, any existing feedback will be moved over."
+msgid "admin.general.email_gateways"
+msgstr "Email Gateways"
 
-msgid "admin.feedback.feedback_using_this_category"
-msgstr "Feedback using this category"
+msgid "admin.general.email_templates"
+msgstr "Email Templates"
 
-msgid "admin.feedback.delete_category"
-msgstr "Delete Category"
+msgid "admin.general.error_log_id"
+msgstr "Error Log #{{id}}"
 
-msgid "admin.feedback.you_cannot_delete_the_last_category"
-msgstr "You cannot delete the last category."
+msgid "admin.general.error_logs"
+msgstr "Error Logs"
 
-msgid "admin.feedback.this_category_has_children_delete_the_child_categories"
-msgstr "This category has children. Delete the child categories first, and then you can delete this one."
+msgid "admin.general.file_uploads"
+msgstr "File Uploads"
 
-msgid "admin.feedback.are_you_sure_you_want_to_delete_this"
-msgstr "Are you sure you want to delete this status?"
+msgid "admin.general.first"
+msgstr "First"
 
-msgid "admin.feedback.feedback_categories"
-msgstr "Feedback Categories"
+msgid "admin.general.from_email_address"
+msgstr "From email address"
 
-msgid "admin.feedback.create_new_category"
-msgstr "Create New Category"
+msgid "admin.general.full_email_address"
+msgstr "Full Email Address"
 
-msgid "admin.feedback.edit_status"
-msgstr "Edit Status"
+msgid "admin.general.general"
+msgstr "General"
 
-msgid "admin.feedback.status_type"
-msgstr "Status Type"
+msgid "admin.general.google_apps"
+msgstr "Google Apps"
 
-msgid "admin.feedback.delete_status"
-msgstr "Delete Status"
+msgid "admin.general.helpdesk"
+msgstr "Helpdesk"
 
-msgid "admin.feedback.you_cannot_delete_the_last_status"
-msgstr "You cannot delete the last status."
+msgid "admin.general.home"
+msgstr "Home"
 
-msgid "admin.feedback.feedback_statuses"
-msgstr "Feedback Statuses"
+msgid "admin.general.languages"
+msgstr "Languages"
 
-msgid "admin.feedback.create_new_status"
-msgstr "Create New Status"
+msgid "admin.general.last"
+msgstr "Last"
 
-msgid "admin.feedback.create_stauts"
-msgstr "Create Stauts"
+msgid "admin.general.locale"
+msgstr "Locale"
+
+msgid "admin.general.log_name"
+msgstr "Log Name"
+
+msgid "admin.general.logs"
+msgstr "Logs"
+
+msgid "admin.general.mysql_info"
+msgstr "MySQL Info"
+
+msgid "admin.general.mysql_status"
+msgstr "MySQL Status"
+
+msgid "admin.general.new_category"
+msgstr "New Category"
+
+msgid "admin.general.new_field"
+msgstr "New Field"
+
+msgid "admin.general.next"
+msgstr "Next"
+
+msgid "admin.general.notice_no_errors_detected"
+msgstr "No errors were reported, but you should confirm that you recieved the test email."
+
+msgid "admin.general.no_parent"
+msgstr "No Parent"
+
+msgid "admin.general.off"
+msgstr "OFF"
+
+msgid "admin.general.on"
+msgstr "ON"
+
+msgid "admin.general.organization_fields"
+msgstr "Organization Fields"
+
+msgid "admin.general.outgoing_email_accounts"
+msgstr "Outgoing Email Accounts"
+
+msgid "admin.general.parent"
+msgstr "Parent"
+
+msgid "admin.general.parent_category"
+msgstr "Parent Category"
+
+msgid "admin.general.pattern"
+msgstr "Pattern"
+
+msgid "admin.general.permission"
+msgstr "Permission"
+
+msgid "admin.general.php_info"
+msgstr "PHP Info"
+
+msgid "admin.general.php_mail"
+msgstr "PHP mail()"
+
+msgid "admin.general.port"
+msgstr "Port"
+
+msgid "admin.general.portal"
+msgstr "Portal"
+
+msgid "admin.general.pri"
+msgstr "Pri"
+
+msgid "admin.general.requires_auth"
+msgstr "Requires Auth"
+
+msgid "admin.general.revert"
+msgstr "revert"
+
+msgid "admin.general.save_changes"
+msgstr "Save Changes"
+
+msgid "admin.general.save_settings"
+msgstr "Save Settings"
+
+msgid "admin.general.scheduled_tasks"
+msgstr "Scheduled Tasks"
+
+msgid "admin.general.secure"
+msgstr "Secure"
+
+msgid "admin.general.send_a_test_email_to"
+msgstr "Send a test email to"
+
+msgid "admin.general.server"
+msgstr "Server"
+
+msgid "admin.general.setting"
+msgstr "Setting"
+
+msgid "admin.general.setup"
+msgstr "Setup"
+
+msgid "admin.general.smtp_account"
+msgstr "SMTP Account"
+
+msgid "admin.general.sn_code"
+msgstr "SN Code"
+
+msgid "admin.general.tagline"
+msgstr "Tagline"
+
+msgid "admin.general.templates"
+msgstr "Templates"
+
+msgid "admin.general.test_now"
+msgstr "Test Now"
+
+msgid "admin.general.test_outgoing_email"
+msgstr "Test Outgoing Email"
+
+msgid "admin.general.test_settings"
+msgstr "Test Settings"
+
+msgid "admin.general.error_sending_test"
+msgstr "There was an error while trying to send the test email"
+
+msgid "admin.general.ticket_categories"
+msgstr "Ticket Categories"
+
+msgid "admin.general.ticket_fields"
+msgstr "Ticket Fields"
+
+msgid "admin.general.ticket_priorities"
+msgstr "Ticket Priorities"
+
+msgid "admin.general.ticket_workflows"
+msgstr "Ticket Workflows"
+
+msgid "admin.general.triggers"
+msgstr "Triggers"
+
+msgid "admin.general.username"
+msgstr "Username"
+
+msgid "admin.general.variable_name"
+msgstr "Variable Name"
+
+msgid "admin.general.yes"
+msgstr "Yes"
+
+msgid "admin.general.confirm_delete"
+msgstr "Yes, I am sure I want to delete"
+
+msgid "admin.gateway.account_information"
+msgstr "Account Information"
+
+msgid "admin.gateway.add_account"
+msgstr "Add Account"
+
+msgid "admin.gateway.add_email_gateway"
+msgstr "Add Email Gateway"
+
+msgid "admin.gateway.add_new_account"
+msgstr "add a new account"
+
+msgid "admin.gateway.addresses_matching_regex"
+msgstr "Addresses that match a regular expression"
+
+msgid "admin.gateway.all_email_is_being_sent_via"
+msgstr "All email is currently being sent through the {{link}}."
+
+msgid "admin.gateway.ask_delete_gateway"
+msgstr "Are you sure you want to delete this gateway? Email sent to this inbox will no longer be processed."
+
+msgid "admin.gateway.ask_delete_transport"
+msgstr "Are you sure you want to delete this SMTP account? If email is still being sent by the system From any of the affected addresses, users may fail to recieve them without this account."
+
+msgid "admin.gateway.backup_account"
+msgstr "Backup Account"
+
+msgid "admin.gateway.backup_mail_server"
+msgstr "Backup Mail Server"
+
+msgid "admin.gateway.backup_outgoing_mail_account"
+msgstr "Backup Outgoing Mail Account"
+
+msgid "admin.gateway.click_to_add_more"
+msgstr "Click here to add more."
+
+msgid "admin.gateway.default_from_address"
+msgstr "Default "From" Address"
+
+msgid "admin.gateway.default_from_email"
+msgstr "Default "From" email address"
+
+msgid "admin.gateway.default_outgoing_account"
+msgstr "default outgoing account"
+
+msgid "admin.gateway.delete_transport"
+msgstr "Delete Email Transport"
+
+msgid "admin.gateway.domain"
+msgstr "Domain"
+
+msgid "admin.gateway.edit_gateway"
+msgstr "Edit Gateway"
+
+msgid "admin.gateway.edit_server"
+msgstr "Edit Server"
+
+msgid "admin.gateway.email_address"
+msgstr "Email address"
+
+msgid "admin.gateway.enabled"
+msgstr "Enabled"
+
+msgid "admin.gateway.match_domain"
+msgstr "Every address at a domain"
+
+msgid "admin.gateway.exact_address"
+msgstr "Exact address"
+
+msgid "admin.gateway.explain_different_servers"
+msgstr "You may {{link}} to send emails using different servers. For example, if your SMTP server requires authentication for each specific "From" address, you will need to create multiple outgoing accounts for each "From" address you plan to support."
+
+msgid "admin.gateway.explain_email_gateway"
+msgstr "An email gateway reads email from an email account you control and converts those emails into tickets in DeskPRO for your agents to read and respond to. This allows you to communicate seamlessly with users via normal email."
+
+msgid "admin.gateway.from"
+msgstr "From"
+
+msgid "admin.gateway.from_domain"
+msgstr "From *@{{pattern}}"
+
+msgid "admin.gateway.from_google"
+msgstr "Google Apps: {{username}}"
+
+msgid "admin.gateway.from_pattern"
+msgstr "From {{pattern}}"
+
+msgid "admin.gateway.revert_default_outgoing_account"
+msgstr "Go back to using the default outgoing account"
+
+msgid "admin.gateway.mail_server"
+msgstr "Mail Server"
+
+msgid "admin.gateway.new_gateway"
+msgstr "New Gateway"
+
+msgid "admin.gateway.new_server"
+msgstr "New Server"
+
+msgid "admin.gateway.no_errors_were_reported"
+msgstr "No errors were reported."
+
+msgid "admin.gateway.notice_1"
+msgstr "This account is used by default when the system needs to email user. For example, registration confirmations and reset password links. You might also have email gateways and rules set up to send notifications from different email addresses."
+
+msgid "admin.gateway.notice_2"
+msgstr "If you have not set up other SMTP accounts to handle other email addresses, DeskPRO will attempt to use this account with a different "From" address. Depending on the service you are using, this might not work. For example, Gmail only allows the "From" address to be that of the account."
+
+msgid "admin.gateway.notice_mail_server_per_from"
+msgstr "You need to define a mail server for every address DeskPRO might send email "From." Sometimes a single mail server might let you send email from any "From" address, but sometimes (such as with Google Apps), the server will only let you send email from a single address."
+
+msgid "admin.gateway.outgoing_email"
+msgstr "Outgoing Email"
+
+msgid "admin.gateway.outgoing_mail_account"
+msgstr "Outgoing Mail Account"
+
+msgid "admin.gateway.pop3_account"
+msgstr "POP3 Account"
+
+msgid "admin.gateway.send_through"
+msgstr "Send through"
+
+msgid "admin.gateway.setup_default_mail_server"
+msgstr "Setup Default Mail Server"
+
+msgid "admin.gateway.test_incoming_email_account"
+msgstr "Test Incoming Email Account"
+
+msgid "admin.gateway.address_for_gateway"
+msgstr "The address that this gateway account is for"
+
+msgid "admin.gateway.error_while_connecting"
+msgstr "There was an error while trying to connect to your email account"
+
+msgid "admin.gateway.test_email_connection"
+msgstr "This will test the connection to your email account."
+
+msgid "admin.gateway.use_different_outgoing_account"
+msgstr "Use a different outgoing account"
+
+msgid "admin.gateway.use_criteria"
+msgstr "Use Criteria"
+
+msgid "admin.gateway.use_google_for_outgoing"
+msgstr "Use the Google Apps account defined above for outgoing mail"
+
+msgid "admin.gateway.using_the"
+msgstr "Using the {{link}}"
+
+msgid "admin.gateway.when_no_rules_match"
+msgstr "When none of the above rules match, email will be sent through the {{link}}."
+
+msgid "admin.gateway.ask_use_account_when"
+msgstr "When should this account be used?"
+
+msgid "admin.gateway.ask_if_multiple_addresses"
+msgstr "Will this account recieve mail for more than one address?"
+
+msgid "admin.gateway.confirm_process_account"
+msgstr "Yes, process email from this account"
+
+msgid "admin.feedback.explain_closed_status"
+msgstr "A closed status is a status assigned to feedback that are finished. Users cannot vote or comment on closed feedback."
 
 msgid "admin.feedback.active_status"
 msgstr "Active Status"
 
-msgid "admin.feedback.closed_status"
-msgstr "Closed Status"
-
-msgid "admin.feedback.create_status"
-msgstr "Create Status"
-
 msgid "admin.feedback.active_statuses"
 msgstr "Active Statuses"
+
+msgid "admin.feedback.explain_active_status"
+msgstr "An active status is a status assigned to feedback that have been reviewed, but haven't been implemented or haven't been decided on."
+
+msgid "admin.feedback.confirm_delete_this"
+msgstr "Are you sure you want to delete this status?"
+
+msgid "admin.feedback.back_to_categories"
+msgstr "&larr; Back to categories"
+
+msgid "admin.feedback.back_to_list"
+msgstr "&larr; Back To List"
+
+msgid "admin.feedback.closed_status"
+msgstr "Closed Status"
 
 msgid "admin.feedback.closed_statuses"
 msgstr "Closed Statuses"
@@ -2062,614 +2545,611 @@ msgstr "Closed Statuses"
 msgid "admin.feedback.count_feedback"
 msgstr "{{count}} feedback|{{count}} feedback"
 
-msgid "admin.feedback.an_active_status_is_a_status_assigned_to"
-msgstr "An active status is a status assigned to feedback that have been reviewed, but haven't been implemented or haven't been decided on."
+msgid "admin.feedback.create_new_category"
+msgstr "Create New Category"
 
-msgid "admin.feedback.a_closed_status_is_a_status_assigned_to"
-msgstr "A closed status is a status assigned to feedback that are finished. Users cannot vote or comment on closed feedback."
+msgid "admin.feedback.create_new_status"
+msgstr "Create New Status"
 
-msgid "admin.emailtransports.setup_default_mail_server"
-msgstr "Setup Default Mail Server"
+msgid "admin.feedback.delete_category"
+msgstr "Delete Category"
 
-msgid "admin.emailtransports.edit_server"
-msgstr "Edit Server"
+msgid "admin.feedback.delete_status"
+msgstr "Delete Status"
 
-msgid "admin.emailtransports.new_server"
-msgstr "New Server"
+msgid "admin.feedback.edit_status"
+msgstr "Edit Status"
 
-msgid "admin.emailtransports.when_should_this_account_be_used"
-msgstr "When should this account be used?"
+msgid "admin.feedback.feedback_categories"
+msgstr "Feedback Categories"
 
-msgid "admin.emailtransports.exact_address"
-msgstr "Exact address"
+msgid "admin.feedback.feedback_statuses"
+msgstr "Feedback Statuses"
 
-msgid "admin.emailtransports.email_address"
-msgstr "Email address"
+msgid "admin.feedback.feedback_using_this_category"
+msgstr "Feedback using this category"
 
-msgid "admin.emailtransports.every_address_at_a_domain"
-msgstr "Every address at a domain"
+msgid "admin.feedback.notice_parent_selected"
+msgstr "Note: The parent category selected is currently a top-level category. By creating this child-category, any existing feedback will be moved over."
 
-msgid "admin.emailtransports.addresses_that_match_a_regular_expression"
-msgstr "Addresses that match a regular expression"
+msgid "admin.feedback.status_type"
+msgstr "Status Type"
 
-msgid "admin.emailtransports.mail_server"
-msgstr "Mail Server"
+msgid "admin.feedback.notice_has_children"
+msgstr "This category has children. Delete the child categories first, and then you can delete this one."
 
-msgid "admin.emailtransports.backup_mail_server"
-msgstr "Backup Mail Server"
+msgid "admin.feedback.cannot_delete_last_category"
+msgstr "You cannot delete the last category."
 
-msgid "admin.emailtransports.add_account"
-msgstr "Add Account"
+msgid "admin.feedback.cannot_delete_last_status"
+msgstr "You cannot delete the last status."
 
-msgid "admin.emailtransports.default_from_address"
-msgstr "Default "From" Address"
+msgid "admin.designer.add_new_rule"
+msgstr "Add a new rule"
 
-msgid "admin.emailtransports.backup_account"
-msgstr "Backup Account"
-
-msgid "admin.emailtransports.default_from_email_address"
-msgstr "Default "From" email address"
-
-msgid "admin.emailtransports.outgoing_email"
-msgstr "Outgoing Email"
-
-msgid "admin.emailtransports.delete"
-msgstr "Delete Email Transport"
-
-msgid "admin.emailgateways.edit_gateway"
-msgstr "Edit Gateway"
-
-msgid "admin.emailgateways.new_gateway"
-msgstr "New Gateway"
-
-msgid "admin.emailgateways.the_address_that_this_gateway_account_is_for"
-msgstr "The address that this gateway account is for"
-
-msgid "admin.emailgateways.will_this_account_recieve_mail_for_more_than"
-msgstr "Will this account recieve mail for more than one address?"
-
-msgid "admin.emailgateways.click_here_to_add_more"
-msgstr "Click here to add more."
-
-msgid "admin.emailgateways.account_information"
-msgstr "Account Information"
-
-msgid "admin.emailgateways.pop3_account"
-msgstr "POP3 Account"
-
-msgid "admin.emailgateways.outgoing_mail_account"
-msgstr "Outgoing Mail Account"
-
-msgid "admin.emailgateways.use_the_google_apps_account_defined_above_for"
-msgstr "Use the Google Apps account defined above for outgoing mail"
-
-msgid "admin.emailgateways.use_a_different_outgoing_account"
-msgstr "Use a different outgoing account"
-
-msgid "admin.emailgateways.go_back_to_using_the_default_outgoing_account"
-msgstr "Go back to using the default outgoing account"
-
-msgid "admin.emailgateways.backup_outgoing_mail_account"
-msgstr "Backup Outgoing Mail Account"
-
-msgid "admin.emailgateways.enabled"
-msgstr "Enabled"
-
-msgid "admin.emailgateways.yes_process_email_from_this_account"
-msgstr "Yes, process email from this account"
-
-msgid "admin.emailgateways.test_incoming_email_account"
-msgstr "Test Incoming Email Account"
-
-msgid "admin.emailgateways.this_will_test_the_connection_to_your_email"
-msgstr "This will test the connection to your email account."
-
-msgid "admin.emailgateways.no_errors_were_reported"
-msgstr "No errors were reported."
-
-msgid "admin.emailgateways.there_was_an_error_while_trying_to_connect"
-msgstr "There was an error while trying to connect to your email account"
-
-msgid "admin.emailgateways.add_email_gateway"
-msgstr "Add Email Gateway"
-
-msgid "admin.emailgateways.send_through"
-msgstr "Send through"
-
-msgid "admin.emailgateways.from"
-msgstr "From"
-
-msgid "admin.emailgateways.default_outgoing_account"
-msgstr "default outgoing account"
-
-msgid "admin.emailgateways.add_new_account"
-msgstr "add a new account"
-
-msgid "admin.emailgateways.using_the"
-msgstr "Using the {{link}}"
-
-msgid "admin.emailgateways.domain"
-msgstr "Domain"
-
-msgid "admin.emailgateways.when_no_rules_match"
-msgstr "When none of the above rules match, email will be sent through the {{link}}."
-
-msgid "admin.emailgateways.all_email_is_being_sent_via"
-msgstr "All email is currently being sent through the {{link}}."
-
-msgid "admin.emailgateways.explain_different_servers"
-msgstr "You may {{link}} to send emails using different servers. For example, if your SMTP server requires authentication for each specific "From" address, you will need to create multiple outgoing accounts for each "From" address you plan to support."
-
-msgid "admin.emailgateways.explain_email_gateway"
-msgstr "An email gateway reads email from an email account you control and converts those emails into tickets in DeskPRO for your agents to read and respond to. This allows you to communicate seamlessly with users via normal email."
-
-msgid "admin.designer.edit_page_head"
-msgstr "Click here to edit custom &lt;head&gt; HTML"
-
-msgid "admin.designer.edit_header_section"
-msgstr "Click here to set custom header HTML"
+msgid "admin.designer.and_when_any_match"
+msgstr "and when {{any}} of these rules match:"
 
 msgid "admin.designer.edit_footer_section"
 msgstr "Click here to set custom footer HTML"
 
+msgid "admin.designer.edit_header_section"
+msgstr "Click here to set custom header HTML"
+
+msgid "admin.designer.edit_page_head"
+msgstr "Click here to edit custom &lt;head&gt; HTML"
+
+msgid "admin.designer.initial_status"
+msgstr "Initially {{option}}, and then toggle when {{all}} of these rules match:"
+
+msgid "admin.designer.notice_no_display_elements"
+msgstr "You have not enabled any display elements for this department. To add items, drag and drop elements from the right onto this area."
+
+msgid "admin.designer.only_show_for_agents"
+msgstr "Only show this for agents"
+
 msgid "admin.designer.reenable_simple_header"
 msgstr "Click here to re-enable the simple header"
 
-msgid "admin.departments.delete_department"
-msgstr "Delete Department"
-
-msgid "admin.departments.yes_delete_this_department_and_all_subdepartments"
-msgstr "Yes, delete this department and all sub-departments"
-
-msgid "admin.departments.yes_delete_this_department"
-msgstr "Yes, delete this department"
-
-msgid "admin.departments.new_custom_field"
-msgstr "New custom field"
-
-msgid "admin.departments.widgets"
-msgstr "Widgets"
-
-msgid "admin.departments.new_widget"
-msgstr "New widget"
+msgid "admin.designer.visible"
+msgstr "Visible"
 
 msgid "admin.departments.add_new_department"
 msgstr "Add New Department"
 
-msgid "admin.departments.the_department_field_is_the_primary_grouping_field"
-msgstr "The department field is the primary grouping field for tickets and chats. For many helpdesks, this will be the only field configured. A typical set of departments would include "Sales", "Support" and "Billing"."
-
-msgid "admin.departments.edit_department_title"
-msgstr "Edit Department Title"
-
-msgid "admin.departments.new_department"
-msgstr "New Department"
-
-msgid "admin.departments.please_choose_a_subdepartment_to_move_them_into"
-msgstr "Please choose a sub-department to move them into"
-
-msgid "admin.departments.there_are_tickets_and_chats"
-msgstr "There {{tickets}} and {{chats}} using this department."
-
-msgid "admin.departments.count_tickets"
-msgstr "{0} are 0 tickets|{1} is 1 ticket|]1,1000] are {{count}} tickets|[1001,Inf] are over 1000 tickets"
+msgid "admin.departments.count_agents"
+msgstr "{{count}} agent|{{count}} agents"
 
 msgid "admin.departments.count_chats"
 msgstr "{0} 0 chats|{1} 1 chat|]1,1000] {{count}} chats|[1001,Inf] over 1000 chats"
 
-msgid "admin.customdefpeople.people_fields"
-msgstr "People Fields"
+msgid "admin.departments.count_tickets"
+msgstr "{0} are 0 tickets|{1} is 1 ticket|]1,1000] are {{count}} tickets|[1001,Inf] are over 1000 tickets"
 
-msgid "admin.customdeffeedback.feedback_fields"
-msgstr "Feedback Fields"
+msgid "admin.departments.delete_department"
+msgstr "Delete Department"
 
-msgid "admin.customdefarticles.article_fields"
-msgstr "Article Fields"
+msgid "admin.departments.edit_department_title"
+msgstr "Edit Department Title"
 
-msgid "admin.customdefabstract.text"
-msgstr "Text"
+msgid "admin.departments.new_custom_field"
+msgstr "New custom field"
 
-msgid "admin.customdefabstract.this_is_a_simple_oneline_text_box"
-msgstr "This is a simple one-line text box."
+msgid "admin.departments.new_department"
+msgstr "New Department"
 
-msgid "admin.customdefabstract.this_is_a_multiline_text_box_that_can"
-msgstr "This is a multi-line text box that can be used for longer entries like descriptions or notes."
+msgid "admin.departments.new_widget"
+msgstr "New widget"
 
-msgid "admin.customdefabstract.this_is_a_widget_field_that_lets_you"
-msgstr "This is a widget field that lets you enter any kind of HTML for display purposes. It does not take any input."
+msgid "admin.departments.no_agents"
+msgstr "No agents"
 
-msgid "admin.customdefabstract.html_to_display"
-msgstr "HTML to display"
+msgid "admin.departments.choose_destination_dept"
+msgstr "Please choose a sub-department to move them into"
 
-msgid "admin.customdefabstract.user_validation"
-msgstr "User Validation"
+msgid "admin.departments.notice_dept_default_grouping"
+msgstr "The department field is the primary grouping field for tickets and chats. For many helpdesks, this will be the only field configured. A typical set of departments would include "Sales", "Support" and "Billing"."
 
-msgid "admin.customdefabstract.no_validation"
-msgstr "No validation"
+msgid "admin.departments.tickets_chats_using_dept"
+msgstr "There {{tickets}} and {{chats}} using this department."
 
-msgid "admin.customdefabstract.min_characters"
-msgstr "Min characters"
+msgid "admin.departments.widgets"
+msgstr "Widgets"
 
-msgid "admin.customdefabstract.max_characters"
-msgstr "Max characters"
+msgid "admin.departments.confirm_delete_dept"
+msgstr "Yes, delete this department"
 
-msgid "admin.customdefabstract.match_regular_expression"
-msgstr "Match regular expression"
+msgid "admin.departments.confirm_delete_dept_and_all_subdepartments"
+msgstr "Yes, delete this department and all sub-departments"
 
-msgid "admin.customdefabstract.custom_styling"
-msgstr "Custom Styling"
-
-msgid "admin.customdefabstract.custom_css_class"
-msgstr "Custom CSS class"
-
-msgid "admin.customdefabstract.field_type"
-msgstr "Field type"
-
-msgid "admin.customdefabstract.you_have_not_created_any_fields_yet"
-msgstr "You have not created any fields yet."
-
-msgid "admin.customdefabstract.how_to_display_the_options"
-msgstr "How to display the options"
-
-msgid "admin.customdefabstract.options"
-msgstr "Options"
-
-msgid "admin.customdefabstract.drag"
-msgstr "drag"
-
-msgid "admin.customdefabstract.require_user_to_input_a_value_for_this"
-msgstr "Require user to input a value for this field"
-
-msgid "admin.customdefabstract.agent_validation"
+msgid "admin.custom_fields.agent_validation"
 msgstr "Agent Validation"
 
-msgid "admin.customdefabstract.textarea"
-msgstr "Textarea"
+msgid "admin.custom_fields.article_fields"
+msgstr "Article Fields"
 
-msgid "admin.customdefabstract.choice"
+msgid "admin.custom_fields.choice"
 msgstr "Choice"
 
-msgid "admin.customdefabstract.this_is_a_set_of_predefined_options_presented"
-msgstr "This is a set of predefined options presented as a drop-down select menu, radio buttons or checkboxes."
+msgid "admin.custom_fields.custom_css_class"
+msgstr "Custom CSS class"
 
-msgid "admin.customdefabstract.display"
+msgid "admin.custom_fields.custom_styling"
+msgstr "Custom Styling"
+
+msgid "admin.custom_fields.display"
 msgstr "Display"
 
-msgid "admin.cron.view_logs"
-msgstr "View Logs"
+msgid "admin.custom_fields.drag"
+msgstr "drag"
 
-msgid "admin.cron.interval"
-msgstr "Interval"
+msgid "admin.custom_fields.existing_values"
+msgstr "Existing Values"
 
-msgid "admin.cron.last_run"
-msgstr "Last Run"
+msgid "admin.custom_fields.feedback_fields"
+msgstr "Feedback Fields"
 
-msgid "admin.cron.next_run"
-msgstr "Next Run"
+msgid "admin.custom_fields.field_type"
+msgstr "Field type"
 
-msgid "admin.cron.log"
-msgstr "Log"
+msgid "admin.custom_fields.how_to_display_the_options"
+msgstr "How to display the options"
 
-msgid "admin.billing.main.deskpro_billing_interface"
-msgstr "DeskPRO Billing Interface"
+msgid "admin.custom_fields.html_to_display"
+msgstr "HTML to display"
 
-msgid "admin.billing.main.coming_soon"
+msgid "admin.custom_fields.match_regular_expression"
+msgstr "Match regular expression"
+
+msgid "admin.custom_fields.max_characters"
+msgstr "Max characters"
+
+msgid "admin.custom_fields.min_characters"
+msgstr "Min characters"
+
+msgid "admin.custom_fields.no_validation"
+msgstr "No validation"
+
+msgid "admin.custom_fields.notice_existing_items"
+msgstr "What should be done with the items that already have this value?"
+
+msgid "admin.custom_fields.options"
+msgstr "Options"
+
+msgid "admin.custom_fields.people_fields"
+msgstr "People Fields"
+
+msgid "admin.custom_fields.choice_require_user_input"
+msgstr "Require user to input a value for this field"
+
+msgid "admin.custom_fields.text"
+msgstr "Text"
+
+msgid "admin.custom_fields.textarea"
+msgstr "Textarea"
+
+msgid "admin.custom_fields.explain_date_field"
+msgstr "This date field lets you select a date using a calendar widget."
+
+msgid "admin.custom_fields.explain_multi_line_box"
+msgstr "This is a multi-line text box that can be used for longer entries like descriptions or notes."
+
+msgid "admin.custom_fields.explain_predefined_options"
+msgstr "This is a set of predefined options presented as a drop-down select menu, radio buttons or checkboxes."
+
+msgid "admin.custom_fields.explain_one_line_box"
+msgstr "This is a simple one-line text box."
+
+msgid "admin.custom_fields.explain_widget_field"
+msgstr "This is a widget field that lets you enter any kind of HTML for display purposes. It does not take any input."
+
+msgid "admin.custom_fields.user_validation"
+msgstr "User Validation"
+
+msgid "admin.custom_fields.no_fields_yet"
+msgstr "You have not created any fields yet."
+
+msgid "admin.billing.coming_soon"
 msgstr "Coming Soon"
 
-msgid "admin.banning.ip_addresses"
-msgstr "IP Addresses"
+msgid "admin.billing.deskpro_billing_interface"
+msgstr "DeskPRO Billing Interface"
 
 msgid "admin.banning.add_email_ban"
 msgstr "Add Email Ban"
 
-msgid "admin.banning.banning_ip_addresses"
-msgstr "Banning IP Addresses"
+msgid "admin.banning.add_ip_ban"
+msgstr "Add IP Ban"
 
 msgid "admin.banning.ban_email_address"
 msgstr "Ban Email Address"
 
-msgid "admin.banning.email_address_pattern"
-msgstr "Email address pattern"
-
-msgid "admin.banning.examples_baduserexamplecom_spammydomaincom_spammydomain"
-msgstr "Examples: baduser@example.com, *@spammy-domain.com, *@spammy-domain.*"
-
-msgid "admin.banning.save_ban"
-msgstr "Save Ban"
-
-msgid "admin.banning.add_ip_ban"
-msgstr "Add IP Ban"
-
 msgid "admin.banning.ban_ip_address"
 msgstr "Ban IP Address"
 
-msgid "admin.banning.ip_address_pattern"
-msgstr "IP address pattern"
+msgid "admin.banning.banning_ip_addresses"
+msgstr "Banning IP Addresses"
 
-msgid "admin.banning.examples_19216811_or_192168"
+msgid "admin.banning.email_address_pattern"
+msgstr "Email address pattern"
+
+msgid "admin.banning.examples_ip_patterns"
 msgstr "Examples: 192.168.1.1 or 192.168.*"
+
+msgid "admin.banning.examples_email_patterns"
+msgstr "Examples: baduser@example.com, *@spammy-domain.com, *@spammy-domain.*"
 
 msgid "admin.banning.filter_list_"
 msgstr "Filter list ..."
 
-msgid "admin.api.key_information"
-msgstr "Key Information"
+msgid "admin.banning.ip_address_pattern"
+msgstr "IP address pattern"
 
-msgid "admin.api.key"
-msgstr "Key"
+msgid "admin.banning.ip_addresses"
+msgstr "IP Addresses"
 
-msgid "admin.api.http_basic_auth"
-msgstr "HTTP Basic Auth"
+msgid "admin.banning.save_ban"
+msgstr "Save Ban"
 
-msgid "admin.api.example_curl"
-msgstr "Example cURL"
-
-msgid "admin.api.note_or_description"
-msgstr "Note or Description"
-
-msgid "admin.api.user_owner"
-msgstr "User Owner"
+msgid "admin.api.are_you_sure"
+msgstr "Are you sure?"
 
 msgid "admin.api.create_api_key"
 msgstr "Create API Key"
 
+msgid "admin.api.example_curl"
+msgstr "Example cURL"
+
+msgid "admin.api.http_basic_auth"
+msgstr "HTTP Basic Auth"
+
+msgid "admin.api.key"
+msgstr "Key"
+
+msgid "admin.api.key_information"
+msgstr "Key Information"
+
+msgid "admin.api.note_or_description"
+msgstr "Note or Description"
+
+msgid "admin.api.notice_api_auth"
+msgstr "Every API request is made with the authority of an actual user. Enter the person who this API key will be making requests for."
+
+msgid "admin.api.user_owner"
+msgstr "User Owner"
+
 msgid "admin.api.viewedit"
 msgstr "view/edit"
 
-msgid "admin.api.you_have_created_no_api_keys"
+msgid "admin.api.no_api_keys_yet"
 msgstr "You have created no API keys."
 
-msgid "admin.agents.vacation_mode"
-msgstr "Vacation Mode"
-
-msgid "admin.agents.when_an_agent_is_in_vacation_mode_they"
-msgstr "When an agent is in vacation mode they cannot log in or use DeskPRO until it is turned off again. Other agents will not be able to assign tickets to them, and any currently assigned tickets will be unassigned if they are or become awaiting user."
-
-msgid "admin.agents.delete_agent"
-msgstr "Delete Agent"
-
-msgid "admin.agents.when_an_agent_is_deleted_their_login_and"
-msgstr "When an agent is deleted, their login and all access is revoked. Any assigned tickets are unassigned."
-
-msgid "admin.agents.people_and_organizations"
-msgstr "People and Organizations"
-
-msgid "admin.agents.overrides"
-msgstr "Overrides"
-
-msgid "admin.agents.edit_agent"
-msgstr "Edit Agent"
-
-msgid "admin.agents.new_agent"
-msgstr "New Agent"
-
-msgid "admin.agents.initial_password"
-msgstr "Initial Password"
-
-msgid "admin.agents.zone_access"
-msgstr "Zone Access"
-
-msgid "admin.agents.can_access_admin"
-msgstr "Can access admin"
-
-msgid "admin.agents.can_access_reports"
-msgstr "Can access reports"
-
-msgid "admin.agents.can_access_billing"
-msgstr "Can access billing"
-
-msgid "admin.agents.department_access_permissions"
-msgstr "Department Access Permissions"
-
-msgid "admin.agents.permission_groups"
-msgstr "Permission Groups"
-
-msgid "admin.agents.save_agent"
-msgstr "Save Agent"
-
-msgid "admin.agents.delete_team"
-msgstr "Delete Team"
-
-msgid "admin.agents.edit_team"
-msgstr "Edit Team"
-
-msgid "admin.agents.new_team"
-msgstr "New Team"
-
-msgid "admin.agents.deleting_this_team_will_also_cause_any_tickets"
-msgstr "Deleting this team will also cause any tickets assigned to the team to be unassigned."
-
-msgid "admin.agents.delete_permission_group"
-msgstr "Delete Permission Group"
-
-msgid "admin.agents.edit_permission_group"
-msgstr "Edit Permission Group"
-
-msgid "admin.agents.new_permission_group"
-msgstr "New Permission Group"
-
-msgid "admin.agents.load_permissions_from_agent"
-msgstr "Load Permissions From Agent"
-
-msgid "admin.agents.onoff"
-msgstr "On/Off"
-
-msgid "admin.agents.use_ticket_system"
-msgstr "Use ticket system"
-
-msgid "admin.agents.create_tickets"
-msgstr "Create tickets"
-
-msgid "admin.agents.view_own_and_teams_tickets"
-msgstr "View own and teams tickets"
-
-msgid "admin.agents.modify_own_and_teams_tickets"
-msgstr "Modify own and teams tickets"
-
-msgid "admin.agents.delete_own_and_teams_tickets"
-msgstr "Delete own and teams tickets"
-
-msgid "admin.agents.resolve_own_and_teams_tickets"
-msgstr "Resolve own and teams tickets"
-
-msgid "admin.agents.view_unassigned_tickets"
-msgstr "View unassigned tickets"
-
-msgid "admin.agents.modify_unassigned_tickets"
-msgstr "Modify unassigned tickets"
-
-msgid "admin.agents.delete_unassigned_tickets"
-msgstr "Delete unassigned tickets"
-
-msgid "admin.agents.resolve_unassigned_tickets"
-msgstr "Resolve unassigned tickets"
-
-msgid "admin.agents.view_others_tickets"
-msgstr "View others tickets"
-
-msgid "admin.agents.modify_others_tickets"
-msgstr "Modify others tickets"
-
-msgid "admin.agents.delete_others_tickets"
-msgstr "Delete others tickets"
-
-msgid "admin.agents.resolve_others_tickets"
-msgstr "Resolve others tickets"
-
-msgid "admin.agents.create_people"
-msgstr "Create people"
-
-msgid "admin.agents.edit_people"
-msgstr "Edit people"
-
-msgid "admin.agents.delete_people"
-msgstr "Delete people"
-
-msgid "admin.agents.validate_users_and_user_email_addresses"
-msgstr "Validate users and user email addresses"
-
-msgid "admin.agents.edit_email_addresses"
-msgstr "Edit email addresses"
-
-msgid "admin.agents.reset_passwords"
-msgstr "Reset passwords"
-
-msgid "admin.agents.create_organizations"
-msgstr "Create organizations"
-
-msgid "admin.agents.edit_organizations"
-msgstr "Edit organizations"
-
-msgid "admin.agents.delete_organizations"
-msgstr "Delete organizations"
-
-msgid "admin.agents.use_chat_system"
-msgstr "Use chat system"
-
-msgid "admin.agents.can_see_new_unassigned_chats"
-msgstr "Can see new unassigned chats"
-
-msgid "admin.agents.can_see_chats_assigned_to_others"
-msgstr "Can see chats assigned to others"
-
-msgid "admin.agents.can_delete_chat_transcripts"
-msgstr "Can delete chat transcripts"
-
-msgid "admin.agents.create_content"
-msgstr "Create content"
-
-msgid "admin.agents.delete_content"
-msgstr "Delete content"
-
-msgid "admin.agents.edit_others_content"
-msgstr "Edit other's content"
-
-msgid "admin.agents.validate_content_and_comments_including_own"
-msgstr "Validate content and comments (including own)"
-
-msgid "admin.agents.deleting_this_permission_group_will_remove_all_the"
-msgstr "Deleting this permission group will remove all the permissions from agents that belong to it."
-
-msgid "admin.agents.deleted_agents"
-msgstr "Deleted Agents"
-
-msgid "admin.agents.restore"
-msgstr "Restore"
+msgid "admin.agents.explain_permission_group"
+msgstr "A permission group is a set of system permissions that you can easily re-use by adding agents to the group."
 
 msgid "admin.agents.add_agent"
 msgstr "Add Agent"
 
-msgid "admin.agents.agents_are_anybody_with_access_to_the_agent"
-msgstr "Agents are anybody with access to the agent or admin interface of your helpdesk and will often include individuals with a range of roles within your organisation."
+msgid "admin.agents.add_notes"
+msgstr "Add notes"
 
-msgid "admin.agents.agent_teams_are_for_helpdesks_that_want_to"
+msgid "admin.agents.add_notes_organization"
+msgstr "Add notes to organizations"
+
+msgid "admin.agents.explain_agent_teams"
 msgstr "Agent teams are for helpdesks that want to assign tickets to a group of agents instead of or as well as to an individual agent. A typical use is to have Tier 1 or Tier 2 support agents. The agent team concept is to enable group ticket assignment; you should use agent permission groups to manage group permissions."
 
-msgid "admin.agents.a_permission_group_is_a_set_of_system"
-msgstr "A permission group is a set of system permissions that you can easily re-use by adding agents to the group."
+msgid "admin.agents.explain_agents"
+msgstr "Agents are anybody with access to the agent or admin interface of your helpdesk and will often include individuals with a range of roles within your organisation."
 
-msgid "admin.agents.you_have_not_created_any_permission_groups"
-msgstr "You have not created any permission groups."
+msgid "admin.agents.confirm_delete_dept"
+msgstr "Are you sure you want to delete the department "<strong>{{title}}</strong>"?"
+
+msgid "admin.agents.confirm_delete_dept_top_level"
+msgstr "Are you sure you want to delete the department "<strong>{{title}}</strong>"? Since this is a top-level department, <strong>all of these sub-departments will be deleted too</strong>:"
+
+msgid "admin.agents.assign_agents"
+msgstr "Assign agents"
+
+msgid "admin.agents.assign_self"
+msgstr "Assign self"
+
+msgid "admin.agents.assign_teams"
+msgstr "Assign teams"
+
+msgid "admin.agents.warning_keep_manage_email_secure"
+msgstr "Be careful who you allow to manage email addresses. Since an agent can add any email address, including ones they might have control over, it means they could use that to gain access to the account if they really wanted to."
+
+msgid "admin.agents.warning_keep_reset_user_secure"
+msgstr "Be careful who you allow to reset user passwords. Since an agent can reset the password to anything they want, it means they can gain access to the account if they really wanted to."
+
+msgid "admin.agents.can_access_admin"
+msgstr "Can access admin"
+
+msgid "admin.agents.can_access_billing"
+msgstr "Can access billing"
+
+msgid "admin.agents.can_access_reports"
+msgstr "Can access reports"
+
+msgid "admin.agents.can_access_admin_interface"
+msgstr "Can access the admin interface"
+
+msgid "admin.agents.can_access_billing_interface"
+msgstr "Can access the billing interface"
+
+msgid "admin.agents.can_access_reporting_interface"
+msgstr "Can access the reporting interface"
+
+msgid "admin.agents.change_department"
+msgstr "Change department"
+
+msgid "admin.agents.change_fields"
+msgstr "Change fields"
 
 msgid "admin.agents.click_here"
 msgstr "Click here"
 
-msgid "admin.agents.to_create_one_now"
-msgstr "to create one now."
+msgid "admin.agents.create_organizations"
+msgstr "Create organizations"
 
-msgid "admin.agents.teams_are_an_a_way_to_organize_agents"
-msgstr "Teams are an a way to organize agents into work groups."
+msgid "admin.agents.create_people"
+msgstr "Create people"
 
-msgid "admin.agents.you_have_not_created_any_teams"
-msgstr "You have not created any teams."
+msgid "admin.agents.create_tickets"
+msgstr "Create tickets"
 
-msgid "admin.agents.enable_vacation_mode_for_name"
-msgstr "Enable vacation mode for {{name}}"
+msgid "admin.agents.delete_agent"
+msgstr "Delete Agent"
+
+msgid "admin.agents.delete_chat_transcripts"
+msgstr "Can delete chat transcripts"
+
+msgid "admin.agents.delete_followed_tickets"
+msgstr "Delete and spam followed tickets"
 
 msgid "admin.agents.delete_name"
 msgstr "Delete {{name}}"
 
-msgid "admin.agents.name_in_vacation"
-msgstr "{{name}} is currently in vacation mod"
+msgid "admin.agents.delete_organizations"
+msgstr "Delete organizations"
+
+msgid "admin.agents.delete_others_tickets"
+msgstr "Delete and spam others tickets"
+
+msgid "admin.agents.delete_own_and_team_tickets"
+msgstr "Delete and spam own and teams tickets"
+
+msgid "admin.agents.delete_own_and_teams_tickets"
+msgstr "Delete own and teams tickets"
+
+msgid "admin.agents.delete_people"
+msgstr "Delete people"
+
+msgid "admin.agents.delete_permission_group"
+msgstr "Delete Permission Group"
+
+msgid "admin.agents.delete_team"
+msgstr "Delete Team"
+
+msgid "admin.agents.delete_unassigned_tickets"
+msgstr "Delete and spam unassigned tickets"
+
+msgid "admin.agents.deleted_agents"
+msgstr "Deleted Agents"
+
+msgid "admin.agents.notice_deleting_perm_group"
+msgstr "Deleting this permission group will remove all the permissions from agents that belong to it."
+
+msgid "admin.agents.notice_deleting_teams"
+msgstr "Deleting this team will also cause any tickets assigned to the team to be unassigned."
+
+msgid "admin.agents.department_access_permissions"
+msgstr "Department Access Permissions"
+
+msgid "admin.agents.edit_agent"
+msgstr "Edit Agent"
+
+msgid "admin.agents.edit_cc"
+msgstr "Edit CCs"
+
+msgid "admin.agents.edit_content"
+msgstr "Edit others content"
+
+msgid "admin.agents.edit_email_addresses"
+msgstr "Edit email addresses"
+
+msgid "admin.agents.edit_labels"
+msgstr "Edit labels"
+
+msgid "admin.agents.edit_organizations"
+msgstr "Edit organizations"
+
+msgid "admin.agents.edit_others_content"
+msgstr "Edit other's content"
+
+msgid "admin.agents.edit_people"
+msgstr "Edit people"
+
+msgid "admin.agents.edit_permission_group"
+msgstr "Edit Permission Group"
+
+msgid "admin.agents.edit_team"
+msgstr "Edit Team"
+
+msgid "admin.agents.enable_vacation_mode_name"
+msgstr "Enable vacation mode for {{name}}"
+
+msgid "admin.agents.notice_agent_without_permission"
+msgstr "If an agent does not have this permission, then any new content they create or edits they make will be held in a validation queue before they appear live on the site."
 
 msgid "admin.agents.if_name_is_back"
 msgstr "If {{name}} is back:"
 
+msgid "admin.agents.initial_password"
+msgstr "Initial Password"
+
+msgid "admin.agents.clone_perms_from_agent"
+msgstr "Load Permissions From Agent"
+
+msgid "admin.agents.modify_others_tickets"
+msgstr "Modify others tickets"
+
+msgid "admin.agents.modify_own_and_teams_tickets"
+msgstr "Modify own and teams tickets"
+
+msgid "admin.agents.modify_unassigned_tickets"
+msgstr "Modify unassigned tickets"
+
+msgid "admin.agents.name_in_vacation"
+msgstr "{{name}} is currently in vacation mod"
+
+msgid "admin.agents.new_agent"
+msgstr "New Agent"
+
+msgid "admin.agents.new_permission_group"
+msgstr "New Permission Group"
+
+msgid "admin.agents.new_team"
+msgstr "New Team"
+
+msgid "admin.agents.onoff"
+msgstr "On/Off"
+
+msgid "admin.agents.overrides"
+msgstr "Overrides"
+
+msgid "admin.agents.people_and_organizations"
+msgstr "People and Organizations"
+
+msgid "admin.agents.permission_groups"
+msgstr "Permission Groups"
+
+msgid "admin.agents.reply_to_followed_tickets"
+msgstr "Reply to followed tickets"
+
+msgid "admin.agents.reply_to_others_tickets"
+msgstr "Reply to others tickets"
+
+msgid "admin.agents.reply_to_unassigned_tickets"
+msgstr "Reply to unassigned tickets"
+
+msgid "admin.agents.reset_passwords"
+msgstr "Reset passwords"
+
+msgid "admin.agents.resolve_others_tickets"
+msgstr "Resolve others tickets"
+
+msgid "admin.agents.resolve_own_and_teams_tickets"
+msgstr "Resolve own and teams tickets"
+
+msgid "admin.agents.resolve_unassigned_tickets"
+msgstr "Resolve unassigned tickets"
+
+msgid "admin.agents.restore"
+msgstr "Restore"
+
+msgid "admin.agents.save_agent"
+msgstr "Save Agent"
+
+msgid "admin.agents.set_onhold"
+msgstr "Set on-hold"
+
+msgid "admin.agents.set_status_awaiting_agent"
+msgstr "Set status to awaiting agent"
+
+msgid "admin.agents.set_status_awaiting_user"
+msgstr "Set status to awaiting user"
+
+msgid "admin.agents.set_status_resolved"
+msgstr "Set status to resolved"
+
+msgid "admin.agents.explain_teams"
+msgstr "Teams are an a way to organize agents into work groups."
+
+msgid "admin.agents.deleted_agents_exist"
+msgstr "There is 1 deleted agent|There are {{count}} deleted agents"
+
+msgid "admin.agents.to_create_one_now"
+msgstr "to create one now."
+
 msgid "admin.agents.turn_off_vacation_mode"
 msgstr "Turn off vacation mode."
 
-msgid "admin.agents.while_in_vacation_cannot_login"
+msgid "admin.agents.use_chat"
+msgstr "Use chat system"
+
+msgid "admin.agents.use_ticket_system"
+msgstr "Use ticket system"
+
+msgid "admin.agents.use_tickets"
+msgstr "Use ticket application"
+
+msgid "admin.agents.vacation_mode"
+msgstr "Vacation Mode"
+
+msgid "admin.agents.validate_content_and_comments"
+msgstr "Validate content and comments (including own)"
+
+msgid "admin.agents.validate_users_and_emails"
+msgstr "Validate users and user email addresses"
+
+msgid "admin.agents.view_new_unassigned_chats"
+msgstr "Can see new unassigned chats"
+
+msgid "admin.agents.view_others_chats"
+msgstr "Can see chats assigned to others"
+
+msgid "admin.agents.view_others_tickets"
+msgstr "View others tickets"
+
+msgid "admin.agents.view_unassigned_tickets"
+msgstr "View unassigned tickets"
+
+msgid "admin.agents.view_own_and_teams_tickets"
+msgstr "View own and teams tickets"
+
+msgid "admin.agents.explain_agent_deleted"
+msgstr "When an agent is deleted, their login and all access is revoked. Any assigned tickets are unassigned."
+
+msgid "admin.agents.explain_agent_vacation"
+msgstr "When an agent is in vacation mode they cannot log in or use DeskPRO until it is turned off again. Other agents will not be able to assign tickets to them, and any currently assigned tickets will be unassigned if they are or become awaiting user."
+
+msgid "admin.agents.notice_effect_of_vacation"
 msgstr "While in vacation mode, agents cannot log in or use the system at all."
 
-msgid "admin.agents.there_are_deleted_agents"
-msgstr "There is 1 deleted agent|There are {{count}} deleted agents"
+msgid "admin.agents.widget_close_unclose_tickets"
+msgstr "Can close and unclose tickets {{subphrase}}"
 
-msgid "admin.agents.are_you_sure_delete_dept"
-msgstr "Are you sure you want to delete the department "<strong>{{title}}</strong>"?"
+msgid "admin.agents.widget_edit_email_addresses"
+msgstr "Edit users email addresses {{subphrase}}"
 
-msgid "admin.agents.are_you_sure_delete_dept_top_level"
-msgstr "Are you sure you want to delete the department "<strong>{{title}}</strong>"? Since this is a top-level department, <strong>all of these sub-departments will be deleted too</strong>:"
+msgid "admin.agents.widget_modify_followed_tickets"
+msgstr "{{subphrase}} Modify followed tickets"
 
-msgid "admin.agents.be_careful_who_you_allow_to_manage_email"
-msgstr "Be careful who you allow to manage email addresses. Since an agent can add any email address, including ones they might have control over, it means they could use that to gain access to the account if they really wanted to."
+msgid "admin.agents.widget_modify_others_tickets"
+msgstr "{{subphrase}} Modify others tickets"
 
-msgid "admin.agents.be_careful_who_you_allow_to_reset_user"
-msgstr "Be careful who you allow to reset user passwords. Since an agent can reset the password to anything they want, it means they can gain access to the account if they really wanted to."
+msgid "admin.agents.widget_modify_own_tickets"
+msgstr "{{subphrase}} Modify own and teams tickets"
 
-msgid "admin.agents.if_an_agent_does_not_have_this_permission"
-msgstr "If an agent does not have this permission, then any new content they create or edits they make will be held in a validation queue before they appear live on the site."
+msgid "admin.agents.widget_modify_unassigned_tickets"
+msgstr "{{subphrase}} Modify unassigned tickets"
 
-msgid "admin.agents.can_access_the_admin_interface"
-msgstr "Can access the admin interface"
+msgid "admin.agents.widget_reset_passwords"
+msgstr "Reset user passwords {{subphrase}}"
 
-msgid "admin.agents.can_access_the_reporting_interface"
-msgstr "Can access the reporting interface"
+msgid "admin.agents.widget_use_mass_actions_to_reply"
+msgstr "Can use mass actions to reply {{subphrase}}"
 
-msgid "admin.agents.can_access_the_billing_interface"
-msgstr "Can access the billing interface"
+msgid "admin.agents.widget_validate_content_and_comments"
+msgstr "Validate content and comments (including own) {{subphrase}}"
 
-msgid "admin.settings_and_features"
-msgstr "Settings &amp; Features"
+msgid "admin.agents.no_perm_groups_yet"
+msgstr "You have not created any permission groups."
 
-msgid "admin.portal_and_site_integration"
-msgstr "Portal &amp; Site Integration"
+msgid "admin.agents.no_teams_yet"
+msgstr "You have not created any teams."
+
+msgid "admin.agents.zone_access"
+msgstr "Zone Access"

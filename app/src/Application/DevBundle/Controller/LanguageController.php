@@ -187,7 +187,54 @@ class LanguageController extends Controller
 
     public function exportAllToPOAction()
     {
-        return $this->exportToPOAction('');
+        $packages = array('user', 'agent', 'admin');
+
+        foreach($packages as $package) {
+            $files = array();
+            $folder = DP_ROOT.'/languages/'.$package;
+
+            $dh = opendir($folder);
+
+            while(($file = readdir($dh)) !== false) {
+                $file = $folder.'/'.$file;
+
+                if(is_file($file)) {
+                    $files[] = $file;
+                }
+            }
+
+            closedir($dh);
+
+            $strings = array();
+
+            foreach($files as $file) {
+                $strings = array_merge(require($file), $strings);
+            }
+
+            $file = DP_ROOT.'/languages/'.ucfirst($package).'.po';
+            echo "Exporting: {$file}\n";
+            $fs = fopen($file, 'w');
+
+            foreach($strings as $source => $target) {
+                fwrite($fs, "\nmsgid \"{$source}\"\n");
+                fwrite($fs, "msgstr ");
+                $parts = explode("\n", $target);
+
+                foreach($parts as $i=>$part) {
+                    fwrite($fs, '"'.$part);
+
+                    if($i != count($parts) -1) {
+                        fwrite($fs, '\n');
+                    }
+
+                    fwrite($fs, "\"\n");
+                }
+            }
+
+            fclose($fs);
+        }
+
+        return $this->render('DevBundle:Language:index.html.twig', array('bundles' => Language::$BUNDLES, 'bundle_map' => Language::$BUNDLES_MAP, 'packages' => Language::$PACKAGES, 'message' => 'Exported PO files'));
     }
 
     public function findProblemsAction()

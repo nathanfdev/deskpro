@@ -58,7 +58,7 @@ class LanguageToPOCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 
         foreach($packages as $package) {
             $files = array();
-            $folder = DP_ROOT.'/languages/DeskPRO/'.$package;
+            $folder = DP_ROOT.'/languages/'.$package;
 
             $dh = opendir($folder);
 
