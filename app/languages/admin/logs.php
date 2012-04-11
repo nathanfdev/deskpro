@@ -11,6 +11,5 @@
     'admin.logs.notice_error_logs'           => 'Error logs contain recorded information about errors and exceptions on your helpdesk. Errors should generally not happen, so any logged information here is worth investigating.',
     'admin.logs.sn'                          => 'SN',
     'admin.logs.task'                        => 'Task',
-    'admin.logs.view'                        => 'View',
     'admin.logs.view_logs'                   => 'View Logs',
 );

@@ -77,4 +77,5 @@
     'admin.general.variable_name'                                  => 'Variable Name',
     'admin.general.yes'                                            => 'Yes',
     'admin.general.confirm_delete'                 => 'Yes, I am sure I want to delete',
+    'admin.general.view'                        => 'View',
 );

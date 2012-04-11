@@ -18,7 +18,6 @@
     'admin.gateway.domain'                                        => 'Domain',
     'admin.gateway.edit_gateway'                                  => 'Edit Gateway',
     'admin.gateway.edit_server'                                   => 'Edit Server',
-    'admin.gateway.email_address'                                 => 'Email address',
     'admin.gateway.enabled'                                       => 'Enabled',
     'admin.gateway.match_domain'                     => 'Every address at a domain',
     'admin.gateway.exact_address'                                 => 'Exact address',
