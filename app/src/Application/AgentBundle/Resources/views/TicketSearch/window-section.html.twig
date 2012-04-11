@@ -85,12 +85,12 @@
 					</li>
 				{% endfor %}
 				<li class="no-data launch-customfilters-editor" {% if has_any_showing %}style="display: none"{% endif %}>
-					{{ phrase('agent.pages.click_icon_to_show_filters') }}
+					{{ phrase('agent.interface.click_icon_to_show_filters') }}
 				</li>
 			{% else %}
 				<li class="no-data">
                     {% set phrase_link %}<span class="add-icon"></span>{% endset %}
-					{{ phrase('agent.pages.click_icon_to_add_filter', {'link'}) }}
+					{{ phrase('agent.interface.click_icon_to_add_filter', {'link'}) }}
 				</li>
 			{% endif %}
 		</ul>

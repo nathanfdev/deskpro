@@ -12,17 +12,17 @@
 		<tr>
 			<td>
 				{% if blob_object.object_type == 'ticket' %}
-                    {%set phrase_part = phrase('agent.mediabrowser.ticket') %}
+                    {%set phrase_part = phrase('agent.media.ticket') %}
                     {% set phrase_link %}
                     <a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': blob_object.object.id}) }}">{{ blob_object.object.subject }}</a>
                     {% endset %}
 				{% elseif blob_object.object_type == 'kb' %}
-					{%set phrase_part = phrase('agent.mediabrowser.article') %}
+					{%set phrase_part = phrase('agent.media.article') %}
                     {% set phrase_link %}
                     <a class="with-route" data-route="{{ path('agent_kb_view', {'article_id': blob_object.object.id}) }}">{{ blob_object.object.title }}</a>
                     {% endset %}
 				{% endif %}
-                {{ phrase('agent.mediabrowser.file_attached_to_thing', {'filename':blob_object.blob.filename,'subphrase':phrase_part,'link':phrase_link}) }}
+                {{ phrase('agent.media.file_attached_to_thing', {'filename':blob_object.blob.filename,'subphrase':phrase_part,'link':phrase_link}) }}
 			</td>
 			<td>
 				{{ blob_object.blob.date_created|date('day') }}

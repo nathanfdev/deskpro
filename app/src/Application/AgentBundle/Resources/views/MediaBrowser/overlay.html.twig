@@ -1,11 +1,11 @@
 <div class="media-browser overlay">
 	<div class="overlay-title">
-		<h4>{{ phrase('agent.mediabrowser.media') }}</h4>
+		<h4>{{ phrase('agent.media.media') }}</h4>
 		<nav>
 			<ul>
-				<li class="tab-trigger new-file on" data-tab-for=".tab-content.new-file"><a>{{ phrase('agent.mediabrowser.choose_files') }}</a></li>
-				<li class="tab-trigger recent" data-tab-for=".tab-content.recent"><a>{{ phrase('agent.mediabrowser.recent_uploads') }}</a></li>
-				<li class="tab-trigger library" data-tab-for=".tab-content.library"><a>{{ phrase('agent.mediabrowser.library') }}</a></li>
+				<li class="tab-trigger new-file on" data-tab-for=".tab-content.new-file"><a>{{ phrase('agent.media.choose_files') }}</a></li>
+				<li class="tab-trigger recent" data-tab-for=".tab-content.recent"><a>{{ phrase('agent.media.recent_uploads') }}</a></li>
+				<li class="tab-trigger library" data-tab-for=".tab-content.library"><a>{{ phrase('agent.media.library') }}</a></li>
 			</ul>
 		</nav>
 	</div>
@@ -14,10 +14,10 @@
 			<form action="{{ path('agent_mediabrowser_acceptupload') }}" method="POST" enctype="multipart/form-data" class="upload-form">
 				<input type="hidden" name="protocol" value="http" />
 				<label class="fileinput-button">
-					<span>{{ phrase('agent.mediabrowser.choose_files_from_computer') }}</span>
+					<span>{{ phrase('agent.media.choose_files_from_computer') }}</span>
 					<input type="file" name="files[]" multiple="multiple" />
 				</label>
-				{{ phrase('agent.mediabrowser.drop_here') }}
+				{{ phrase('agent.media.drop_here') }}
 			</form>
 			<div class="files-list">
             </div>

@@ -483,7 +483,7 @@
 <div id="global_ajax_error" style="display:none;">
 	<div class="ajax-error-overlay mass-actions-overlay">
 		<div class="overlay-title">
-			<button class="clean-white small" id="global_ajax_error_submit" style="position: absolute; right: 40px; top: 8px;">{{ phrase('agent.pages.report_this_error_to_deskpro') }}</button>
+			<button class="clean-white small" id="global_ajax_error_submit" style="position: absolute; right: 40px; top: 8px;">{{ phrase('agent.interface.report_this_error_to_deskpro') }}</button>
 			<h4>
 				{{ phrase('agent.network_error') }}
 			</h4>
@@ -493,14 +493,14 @@
 				{{ phrase('agent.network_error_explain') }}.
 			</p>
 			<div id="global_ajax_error_info" style="font-size: 9px; margin-top: 8px;"></div>
-			<div class="loading-on">{{ phrase('agent.pages.error_report_submitting') }}</div>
+			<div class="loading-on">{{ phrase('agent.interface.error_report_submitting') }}</div>
 			<div class="success-on">
-				<p>{{ phrase('agent.pages.error_report_thank_you') }}</p>
+				<p>{{ phrase('agent.interface.error_report_thank_you') }}</p>
 				<p>
                     {% set phrase_part %}
                         <a href="mailto:support@deskpro.com">{{ phrase('agent.supportdeskprocom') }}</a>
                     {% endset %}
-                    {{ phrase('agent.pages.error_report_disclaimer', {'email':phrase_part}) }}
+                    {{ phrase('agent.interface.error_report_disclaimer', {'email':phrase_part}) }}
 				</p>
 			</div>
 		</div>

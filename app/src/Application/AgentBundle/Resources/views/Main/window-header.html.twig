@@ -42,11 +42,11 @@
 			</div>
 			<ul id="dp_notify_list">
 				<li id="dp_notify_list_none">
-					<article><em>{{ phrase('agent.pages.notifs_appear_here') }}</em></article>
+					<article><em>{{ phrase('agent.interface.notifs_appear_here') }}</em></article>
 					<a>{{ phrase('agent.change_notif_settings') }}</a>
 				</li>
 				<li class="dismissAll" id="dp_notify_list_dismiss" style="display: none">
-					<a>{{ phrase('agent.pages.dismiss_notifications') }}</a>
+					<a>{{ phrase('agent.interface.dismiss_notifications') }}</a>
 				</li>
 			</ul>
 		</div>
@@ -95,7 +95,7 @@
 					<li id="create_task_btn"><a><span class="createTask">{{ phrase('agent.new_task') }} <kbd>k</kbd></span></a></li>
 					{% if app.user.hasPerm('agent_publish.create') %}
 						<li id="create_article_btn"><a><span class="createArticle">{{ phrase('agent.new_article') }} <kbd>a</kbd></span></a></li>
-						<li id="create_news_btn"><a><span class="createNews">{{ phrase('agent.pages.new_news') }} <kbd>n</kbd></span></a></li>
+						<li id="create_news_btn"><a><span class="createNews">{{ phrase('agent.interface.new_news') }} <kbd>n</kbd></span></a></li>
 						<li id="create_download_btn"><a><span class="createDownload">{{ phrase('agent.new_download') }} <kbd>d</kbd></span></a></li>
 						<li id="create_feedback_btn"><a><span class="createFeedback">{{ phrase('agent.new_feedback') }} <kbd>i</kbd></span></a></li>
 					{% endif %}
@@ -122,7 +122,7 @@
 			</h1>
 		</div>
 		<div class="dropdown-content">
-			<a href="http://www.deskpro.com/" target="_blank">{{ phrase('agent.pages.powered_by') }} <span>{{ phrase('agent.pages.deskpro_website_host') }}</span></a>
+			<a href="http://www.deskpro.com/" target="_blank">{{ phrase('agent.interface.powered_by') }} <span>{{ phrase('agent.interface.deskpro_website_host') }}</span></a>
 		</div>
 	</div>
 
@@ -157,26 +157,26 @@
 		<div class="DP-adminStatus">
 			<ul>
 				<li class="agentStatus" id="agent_status_trigger">
-					<a class="tipped on" id="agent_status" data-tipped="{{ phrase('agent.pages.toggle_away_status') }}" data-tipped-options="hook: 'bottommiddle'"><em class="label-away">{{ phrase('agent.away') }}</em><em class="label-dnd">{{ phrase('agent.pages.do_not_disturb_short') }}</em></a>
+					<a class="tipped on" id="agent_status" data-tipped="{{ phrase('agent.interface.toggle_away_status') }}" data-tipped-options="hook: 'bottommiddle'"><em class="label-away">{{ phrase('agent.away') }}</em><em class="label-dnd">{{ phrase('agent.interface.do_not_disturb_short') }}</em></a>
 					<div id="agent_status_menu" style="display:none;">
 						<div class="createDropdown">
 							<ul class="createBtnPopups">
-								<li class="status_go_available"><a><span class="statusAvailable">{{ phrase('agent.pages.available') }}</span></a></li>
+								<li class="status_go_available"><a><span class="statusAvailable">{{ phrase('agent.interface.available') }}</span></a></li>
 								<li class="status_go_away"><a><span class="statusAway">{{ phrase('agent.away') }}</span></a></li>
-								<li class="status_go_dnd"><a><span class="statusDnd">{{ phrase('agent.pages.do_not_disturb') }}</span></a></li>
+								<li class="status_go_dnd"><a><span class="statusDnd">{{ phrase('agent.interface.do_not_disturb') }}</span></a></li>
 							</ul>
 						</div>
 					</div>
 				</li>
 				<li class="networkStatIndicator" id="network_status_indicator">
 					<a class="tipped" data-tipped="network_status_tip" data-tipped-options="inline:true, hook: 'bottommiddle'"></a>
-					<div id='network_status_tip' style="display: none;">{{ phrase('agent.pages.network_status') }}<br /><div class='network-status-green'>{{ phrase('agent.pages.network_status_okay') }}</div><div class='network-status-red'>{{ phrase('agent.pages.network_status_bad') }}</div></div>
+					<div id='network_status_tip' style="display: none;">{{ phrase('agent.interface.network_status') }}<br /><div class='network-status-green'>{{ phrase('agent.interface.network_status_okay') }}</div><div class='network-status-red'>{{ phrase('agent.interface.network_status_bad') }}</div></div>
 				</li>
 				<li class="keyboardIcon">
-					<a id="keyboard_shortcuts_trigger" class="tipped" title="{{ phrase('agent.pages.keyboard_shortcuts') }}" data-tipped-options="hook: 'bottommiddle'"></a>
+					<a id="keyboard_shortcuts_trigger" class="tipped" title="{{ phrase('agent.interface.keyboard_shortcuts') }}" data-tipped-options="hook: 'bottommiddle'"></a>
 				</li>
 				<li class="soundIcon">
-					<a class="tipped" id="sound_icon" title="{{ phrase('agent.pages.sound_explain') }}" data-tipped-options="hook: 'bottommiddle'"></a>
+					<a class="tipped" id="sound_icon" title="{{ phrase('agent.interface.sound_explain') }}" data-tipped-options="hook: 'bottommiddle'"></a>
 				</li>
 			</ul>
 		</div>
@@ -206,7 +206,7 @@
 
 <div id="dp_searchsheet" data-element-handler="DeskPRO.Agent.ElementHandler.OmniSearchSheet">
 	<header>
-		<span id="omnisearch_reset">{{ phrase('agent.pages.reset_form') }}</span>
+		<span id="omnisearch_reset">{{ phrase('agent.interface.reset_form') }}</span>
 		<span class="close close-search-sheet"></span>
 		<em>{{ phrase('agent.search') }}:</em>
 		<ul>

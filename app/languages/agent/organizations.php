@@ -1,0 +1,16 @@
+<?php return array(
+    'argent.organizations.add_person'                       => 'Add a person to this organization',
+    'argent.organizations.create_organization'              => 'Create Organization',
+    'argent.organizations.email_domain_assoc'               => 'Email Domain Associations',
+    'argent.organizations.email_domain_assoc_add'           => 'Add New Domain',
+    'argent.organizations.email_domain_assoc_explain'       => 'Users with emails at these domains will be automatically associated with this organization.',
+    'argent.organizations.email_domain_assoc_move'          => 'Assoicate 1 user|Associate {{count}} users',
+    'argent.organizations.email_domain_assoc_move_all'      => 'Assoicate 1 user that already belongs to a different organization|Associate {{count}} users that already belong to different organizations',
+    'argent.organizations.email_domain_assoc_none'          => 'Set an email domain to auto-associate users with this organization.',
+    'argent.organizations.email_domain_assoc_remove'        => 'Remove email domain',
+    'argent.organizations.email_domain_assoc_remove_users'  => 'Remove email domain and unassign 1 user from this organization|Remove email domain and unassign {{count}} users from this organization',
+    'argent.organizations.email_domain_assoc_title'         => 'Email Domain Associations for {{name}}',
+    'argent.organizations.enter_position'                   => 'Enter position',
+    'argent.organizations.number_of_members'                => 'Number of Members',
+    'argent.organizations.is_empty' => 'This organization has no members.',
+);

@@ -14,7 +14,7 @@ pageMeta.baseId = '{{ baseId }}';
 <form action="{{ path('agent_task_save') }}" method="post" id="{{baseId}}_form">
 	<div id="{{baseId}}_tasks"></div>
 	<div class="add-new-task">
-		<button class="clean-white" id="{{baseId}}_add_btn"><span class="btn-add"></span>{{ phrase('agent.task.add_another_task') }}</button>
+		<button class="clean-white" id="{{baseId}}_add_btn"><span class="btn-add"></span>{{ phrase('agent.tasks.add_another_task') }}</button>
 	</div>
 </form>
 
@@ -22,7 +22,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="task-row">
 		<span class="btn-remove remove-row-trigger"></span>
 		<div class="task-input">
-			<input type="text"   class="input-title" name="newtask[%baseId%][title]" value="" class="task-title" placeholder="{{ phrase('agent.task.task_description') }}" />
+			<input type="text"   class="input-title" name="newtask[%baseId%][title]" value="" class="task-title" placeholder="{{ phrase('agent.tasks.task_description') }}" />
 			<input type="hidden" class="input-date-due" name="newtask[%baseId%][date_due]" value="" />
 			<input type="hidden" class="input-agent" name="newtask[%baseId%][assigned_agent]" value="" />
 			<input type="hidden" class="input-vis" name="newtask[%baseId%][visibility]" value="0" />
@@ -32,19 +32,19 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="task-info">
 			<ul>
 				<li class="noval opt-trigger assigned_agent"><label>{{ phrase('agent.me') }}</label><span class="drop-icon"></span></li>
-				<li class="noval opt-trigger date_due"><label>{{ phrase('agent.task.no_due_date') }}</label><span class="drop-icon"></span></li>
+				<li class="noval opt-trigger date_due"><label>{{ phrase('agent.tasks.no_due_date') }}</label><span class="drop-icon"></span></li>
 			</ul>
 			<div class="linked-container" style="display:none">
 				<span class="linked-ticket" style="display:none">
 					<span class="btn-small-delete remove-link-trigger"></span>
                     {% set phrase_part %}<label></label>{% endset %}
-                    {{ phrase('agent.task.task_has_ticket_x', {'label':phrase_part}) }}
+                    {{ phrase('agent.tasks.task_has_ticket_x', {'label':phrase_part}) }}
 				</span>
 
 				 <span class="linked-deal" style="display:none">
 					<span class="btn-small-delete remove-link-trigger"></span>
                      {% set phrase_part %}<label></label>{% endset %}
-                    {{ phrase('agent.task.task_has_deal_x', {'label':phrase_part}) }}
+                    {{ phrase('agent.tasks.task_has_deal_x', {'label':phrase_part}) }}
 				</span>
 			</div>
 		</div>
