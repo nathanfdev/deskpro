@@ -34,7 +34,6 @@
     'agent.chat.no_department'                     => 'No Department',
     'agent.chat.no_email'                          => 'No Email',
     'agent.chat.no_online_agents'                  => 'There are no other agents online',
-    'agent.chat.no_open_chats'                     => 'There are no open chats.',
     'agent.chat.no_others'                         => 'No others',
     'agent.chat.offline'                           => 'Offline',
     'agent.chat.online'                            => 'Online',

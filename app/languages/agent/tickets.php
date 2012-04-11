@@ -126,7 +126,7 @@
     'agent.tickets.results'                                                => 'Results',
     'agent.tickets.results_num_summary'                                    => 'Showing {{current}} of {{count}} ticket|Showing {{current}} of {{count}} tickets',
     'agent.tickets.search_all_tickets'                                     => 'Search all tickets',
-    'agent.tickets.search_all_tickets' => 'Search all tickets, including tickets that are resolved or closed',
+    'agent.tickets.explain_search_all_tickets' => 'Search all tickets, including tickets that are resolved or closed',
     'agent.tickets.search_for_people_to_add'                               => 'Search for people to add, or enter their email addresses to create them',
     'agent.tickets.send_reply'                                             => 'Send Reply',
     'agent.tickets.sending'                                                => 'Sending',
