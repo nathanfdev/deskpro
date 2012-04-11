@@ -29,7 +29,7 @@
 <pre>{{content.data}}</pre>
 <form method="post">
 <table cellspacing="0" cellpadding="2" border="1" width="90%">
-    <tr><th>File</th><th>Line</th><th>Id</th></tr>
+    <tr><th>File</th><th>Line</th><th>Id</th><th>Content</th></tr>
 
     {% for id in content.ids %}
     {% set row = by_id[id][0] %}
@@ -37,6 +37,7 @@
         <td>{{row.filename}}</td>
         <td>{{row.line}}</td>
         <td onclick="$('input[type=text]',$(this).parent().parent().parent().parent()).val($(this).text())">{{id}}</td>
+        <td>{{row.content}}</td>
     </tr>
     {% endfor %}
 
@@ -73,27 +74,7 @@
         {% endfor %}
     {% endfor %}
 </table>
-<h2>Prefixes</h2>
-<p>
-    A prefix is where the phrase finder detects a call to phrase but finds something else after the phrase parameter that does not finish it, suggesting a partial phrase.
-</p>
-<table cellspacing="0" cellpadding="2" border="1" width="90%">
-<tr><th>Id</th><th>File</th><th>Line</th></tr>
 
-    {% for prefix in prefixes %}
-        <tr><td>{{prefix.id}}</td><td>{{prefix.filename}}</td><td>{{prefix.line}}</td></tr>
-    {% endfor %}
-</table>
-<h2>Errors</h2>
-<table cellspacing="0" cellpadding="2" border="1" width="90%">
-<tr><th>Message</th></tr>
-
-    {% for file,messages in errors %}
-        {% for message in messages %}
-            <tr><td>{{message}}</td></tr>
-        {% endfor %}
-    {% endfor %}
-</table>
 <h2>Unused Phrases</h2>
 <p>
     Warning: This tool may produce false positives. It is not safe to remove these phrases blindly.

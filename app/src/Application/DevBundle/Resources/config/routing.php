@@ -111,6 +111,13 @@ $collection->add('dev_lang_find_problems', new Route(
 	array()
 ));
 
+$collection->add('dev_lang_show_useful', new Route(
+    '/lang/show/useful',
+    array('_controller' => 'DevBundle:Language:showUseful'),
+    array(),
+    array()
+));
+
 $collection->add('dev_lang_reformat_langfiles', new Route(
 	'/lang/reformat/langfiles',
 	array('_controller' => 'DevBundle:Language:reformatLanguageFiles'),

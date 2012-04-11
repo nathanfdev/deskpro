@@ -293,6 +293,29 @@ class LanguageController extends Controller
         return $this->render('DevBundle:Language:find_problems.html.twig', $vars);
     }
 
+    public function showUsefulAction()
+    {
+        set_time_limit(0);
+
+        $vars = array(
+            'prefixes' => array(),
+            'errors' => array(),
+        );
+
+        $found_by_id = array();
+        $errors = array();
+        $prefixes = array();
+        $by_file = array();
+
+        Language::GetPhraseFinder($this->container)->getPhrasesFromTwigFiles(null, $found_by_id, $errors, $prefixes);
+        Language::GetPhraseFinder($this->container)->getPhrasesFromPHPFiles(null, $found_by_id, $errors, $prefixes, $by_file);
+
+        $vars['errors'] = $errors;
+        $vars['prefixes'] = $prefixes;
+
+        return $this->render('DevBundle:Language:show.useful.html.twig', $vars);
+    }
+
     public function matchesPrefix($id, $prefixes) {
         foreach($prefixes as $prefix) {
             if(preg_match('/^('.preg_quote($prefix['id']).')/', $id)) {
