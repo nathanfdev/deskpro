@@ -54,6 +54,6 @@ class SystemLanguage extends \Application\DeskPRO\Entity\Language
 		$this->id = 0;
 		$this->locale = 'en_US';
 		$this->title = "English (US)";
-		$this->language_package = 'DeskproLanguages\\DeskPRO\\LangPackage';
+		$this->language_package = 'DeskproLanguages\\LangPackage';
 	}
 }

@@ -8,7 +8,7 @@
 $l = new \Application\DeskPRO\Entity\Language();
 $l['title'] = 'English';
 $l['locale'] = 'en_US';
-$l['language_package'] = 'DeskproLanguages\\DeskPRO\\LangPackage';
+$l['language_package'] = 'DeskproLanguages\\LangPackage';
 $em->persist($l);
 $em->flush();
 
