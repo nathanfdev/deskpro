@@ -2,7 +2,12 @@
 <a href="{{ path('dev_lang_index') }}">Back</a>
 <h1>Checking Language files</h1>
 
+{# DUPLICATE IDS #}
 <h2>Duplicates by id</h2>
+<p>
+    IDs should be unique (exist once in languages files). Example of non-unique ids: array('id'=&gt;1,'id=&gt;2);
+    Duplicate ids should be fixed before any script is run!
+</p>
 
 {% for id in dupes.id %}
 <h3>Duplicates for {{id}}</h3>
@@ -16,6 +21,7 @@
 </table>
 {% endfor %}
 
+{# DUPLICATE CONTENT #}
 <h2>Duplicates by content</h2>
 
 {% for content in dupes.content %}
@@ -41,7 +47,8 @@
  </form>
 {% endfor %}
 
-<h2>Duplicates by fuxxy content</h2>
+{# DUPLICATE CONTENT FUZZY #}
+<h2>Duplicates by fuzzy content</h2>
 
 {% for content in dupes.fuzzy_content %}
 <h3>Duplicates for:</h3>
@@ -69,6 +76,7 @@
 
 <h1>Checking phrases in php and twig files</h1>
 
+{# PHRASES IN PHP #}
 <h2>Phrases in php files</h2>
 
 {% for file, data in instances.file %}
@@ -93,6 +101,9 @@
     {% endfor %}
 </table>
 <h2>Prefixes</h2>
+<p>
+    A prefix is where the phrase finder detects a call to phrase but finds something else after the phrase parameter that does not finish it, suggesting a partial phrase.
+</p>
 <table cellspacing="0" cellpadding="2" border="1" width="90%">
 <tr><th>Id</th><th>File</th><th>Line</th></tr>
 
@@ -110,6 +121,13 @@
         {% endfor %}
     {% endfor %}
 </table>
-<form method="post">
-    <input type="submit" name="missing" value="Fix Missing">
-</form>
+<h2>Unused Phrases</h2>
+<p>
+    Warning: This tool may produce false positives. It is not safe to remove these phrases blindly.
+</p>
+<table cellspacing="0" cellpadding="2" border="1" width="90%">
+    <tr><th>Id</th></tr>
+    {% for row in unused %}
+    <tr><td>{{row.display}}</td></tr>
+    {% endfor %}
+</table>

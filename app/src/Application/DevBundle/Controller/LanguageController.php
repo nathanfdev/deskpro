@@ -190,41 +190,14 @@ class LanguageController extends Controller
         return $this->exportToPOAction('');
     }
 
-    public function findPhrasesInTwigFilesAction()
-    {
-
-    }
-
-    public function findPhrasesInPHPFilesAction()
-    {
-        $vars = array(
-            'instances' => array
-            (
-                'id' => array(),
-                'file' => array(),
-            ),
-            'prefixes' => array(),
-            'missing' => array(),
-        );
-
-        list($vars['instances']['id'], $vars['instances']['file'], $vars['prefixes']) = Language::getPhraseFinder($this->container)->getPhrasesFromPHPFiles();
-        $missing = $this->getMissing(array_keys($vars['instances']['id']));
-
-        if(isset($_POST['missing'])) {
-            $this->fixMissing($missing);
-        }
-
-        $vars['missing'] = $missing;
-
-        return $this->render('DevBundle:Language:find.phrases.html.twig', $vars);
-    }
-
     public function findProblemsAction()
     {
         set_time_limit(0);
 
         if(isset($_POST['content'])) {
-            $this->globaliseString($_POST['content'], $_POST['id'], Language::getPhraseFinder($this->container)->getPhrasesFromTwigFiles(), Language::getPhraseFinder($this->container)->getPhrasesFromPHPFiles());
+            $this->globaliseString($_POST['content'], $_POST['id'],
+                Language::GetPhraseFinder($this->container)->getPhrasesFromTwigFiles(null, $by_id, $errors, $prefixes),
+                Language::GetPhraseFinder($this->container)->getPhrasesFromPHPFiles(null, $by_id, $errors, $prefixes, $by_file));
         }
 
         $vars = array(
@@ -253,7 +226,6 @@ class LanguageController extends Controller
         }
 
         $id_track = array();
-        $rootdir = DP_ROOT.'/languages';
 
         foreach($by_content as $k=>$v) {
             if(count($v) > 1) {
@@ -292,22 +264,43 @@ class LanguageController extends Controller
         $vars['by_id'] = $by_id;
         $vars['by_content'] = $by_content;
 
-        $by_id = array();
+        $found_by_id = array();
         $errors = array();
         $prefixes = array();
         $by_file = array();
 
-        Language::GetPhraseFinder($this->container)->getPhrasesFromTwigFiles(null, $by_id, $errors, $prefixes);
-        Language::GetPhraseFinder($this->container)->getPhrasesFromPHPFiles(null, $by_id, $errors, $prefixes, $by_file);
-        $missing = $this->getMissing(array_keys($by_id));
+        Language::GetPhraseFinder($this->container)->getPhrasesFromTwigFiles(null, $found_by_id, $errors, $prefixes);
+        Language::GetPhraseFinder($this->container)->getPhrasesFromPHPFiles(null, $found_by_id, $errors, $prefixes, $by_file);
+        $missing = $this->getMissing(array_keys($found_by_id));
+
+        $vars['unused'] = array();
+
+        foreach($by_id as $id => $value) {
+            if(!isset($found_by_id[$id])) {
+                $var['unused'][] = array(
+                    'id' => $id,
+                    'display' => $this->matchesPrefix($id, $prefixes)
+                );
+            }
+        }
 
         $vars['missing'] = $missing;
         $vars['errors'] = $errors;
         $vars['prefixes'] = $prefixes;
-        $vars['instances']['id'] = $by_id;
+        $vars['instances']['id'] = $found_by_id;
         $vars['instances']['file'] = $by_file;
 
         return $this->render('DevBundle:Language:find_problems.html.twig', $vars);
+    }
+
+    public function matchesPrefix($id, $prefixes) {
+        foreach($prefixes as $prefix) {
+            if(preg_match('/^'.preg_quote($prefix['id']).'/', $id)) {
+                return preg_replace('/^'.preg_quote($prefix['id']).'/', '<b>$1</b>', $id);
+            }
+        }
+
+        return $id;
     }
 
     public function getLanguageData()
