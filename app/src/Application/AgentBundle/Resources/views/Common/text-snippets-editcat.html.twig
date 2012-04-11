@@ -9,7 +9,7 @@
 		<dd>
 			<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if perm_type == 'me' %}checked="checked"{% endif %} /> {{ phrase('agent.general.just_me') }}</label><br />
 			<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if perm_type == 'team' %}checked="checked"{% endif %} /> {{ phrase('agent.general.teams') }}</label><br />
-			<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if perm_type == 'global' %}checked="checked"{% endif %} /> {{ phrase('agent.general.everyone') }}</label><br />
+			<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if perm_type == 'global' %}checked="checked"{% endif %} /> {{ phrase('agent.general.usergroup_everyone') }}</label><br />
 		</dd>
 
 		<dt class="perm-teams" style="display: none">{{ phrase('agent.general.teams') }}:</dt>

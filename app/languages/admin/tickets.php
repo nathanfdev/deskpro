@@ -10,7 +10,7 @@
     'admin.tickets.admin_namenote'                                      => 'Admin name/note',
     'admin.tickets.agent_access'                                        => 'Agent Access',
     'admin.tickets.agent_filters'                                       => 'Agent Filters',
-    'admin.tickets.all'                                                 => 'all',
+
     'admin.tickets.notice_cat_will_be_removed'     => 'Any tickets that belong this category will have it removed, resulting in the tickets having no category.',
     'admin.tickets.notice_cats_will_be_removed'             => 'Any tickets that belong to any of these categories will have it removed, resulting in the tickets having no category.',
     'admin.tickets.notice_priority_will_be_removed'        => 'Any tickets that use this priority will have it removed.',

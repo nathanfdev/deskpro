@@ -52,7 +52,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<dd>
 					<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" checked="checked" /> {{ phrase('agent.general.just_me') }}</label><br />
 					{% if app.getSetting('core.use_agent_team') %}<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" /> {{ phrase('agent.tickets.my_team') }}</label><br />{% endif %}
-					<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" /> {{ phrase('agent.general.everyone') }}</label><br />
+					<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" /> {{ phrase('agent.general.usergroup_everyone') }}</label><br />
 				</dd>
 
 				<dt class="perm-teams" style="display: none">{{ phrase('agent.general.teams') }}:</dt>

@@ -135,7 +135,7 @@ class TermSummary
 				break;
 
 			case 'date_resolved':
-				$summary = $this->_dateRangeSummary($tr->phrase('agent.tickets.date_resolved'), $op, $choice);
+				$summary = $this->_dateRangeSummary($tr->phrase('agent.general.date_resolved'), $op, $choice);
 				break;
 
 			case 'date_closed':
@@ -143,11 +143,11 @@ class TermSummary
 				break;
 
 			case 'date_last_user_reply':
-				$summary = $this->_dateRangeSummary($tr->phrase('agent.tickets.date_last_user_reply'), $op, $choice);
+				$summary = $this->_dateRangeSummary($tr->phrase('agent.general.date_of_last_user_reply'), $op, $choice);
 				break;
 
 			case 'date_last_agent_reply':
-				$summary = $this->_dateRangeSummary($tr->phrase('agent.tickets.date_last_agent_reply'), $op, $choice);
+				$summary = $this->_dateRangeSummary($tr->phrase('agent.general.date_of_last_agent_reply'), $op, $choice);
 				break;
 
 			case 'ticket_workflow':

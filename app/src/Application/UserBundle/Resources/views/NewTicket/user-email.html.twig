@@ -13,7 +13,7 @@
 			<div class="dp-form-label">
 				<label>{{ phrase('user.tickets.label_your_email_star') }}</label> <em class="desc">
 				{% set phrase_link %}
-					<a href="{{ path('user_login') }}" class="dp-newticket-login-open">{{ phrase('user.tickets.link_login') }}</a>
+					<a href="{{ path('user_login') }}" class="dp-newticket-login-open">{{ phrase('user.general.log_in') }}</a>
 				{% endset %}
 				{{ phrase('user.general.login_if_registered', {'link':phrase_link}) }}
 				<a href="{{ path('user_login_resetpass') }}">{{ phrase('user.tickets.lost_password_link') }}</a></em>

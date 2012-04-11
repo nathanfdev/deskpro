@@ -681,7 +681,7 @@ class TicketSearch extends SearcherAbstract
 					break;
 				case self::TERM_DATE_RESOLVED:
 					$this->affected_fields[] = 'ticket.date_resolved';
-					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.tickets.date_resolved'), $op, $choice);
+					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_resolved'), $op, $choice);
 					$wheres[] = $this->_dateMatch("$tickets_table.date_resolved", $op, $choice);
 					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('resolved'));
 					break;
@@ -693,12 +693,12 @@ class TicketSearch extends SearcherAbstract
 					break;
 				case self::TERM_DATE_LAST_USER_REPLY:
 					$this->affected_fields[] = 'ticket.date_last_user_reply';
-					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.tickets.date_last_user_reply'), $op, $choice);
+					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_of_last_user_reply'), $op, $choice);
 					$wheres[] = $this->_dateMatch("$tickets_table.date_last_user_reply", $op, $choice);
 					break;
 				case self::TERM_DATE_LAST_AGENT_REPLY:
 					$this->affected_fields[] = 'ticket.date_last_agent_reply';
-					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.tickets.date_last_agent_reply'), $op, $choice);
+					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_of_last_agent_reply'), $op, $choice);
 					$wheres[] = $this->_dateMatch("$tickets_table.date_last_agent_reply", $op, $choice);
 					break;
 				case self::TERM_WORKFLOW:

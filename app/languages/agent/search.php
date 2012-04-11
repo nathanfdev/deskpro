@@ -2,7 +2,7 @@
     'agent.search.by'                            => 'By',
     'agent.search.chat_conversations'            => 'Chat Conversations',
 
-    'agent.search.date_created_oldest_newest'   => 'Date Created (Oldest-Newest)',
+
     'agent.search.find_person'                   => 'Find Person',
     'agent.search.loading'                       => 'loading',
     'agent.search.no_email'                      => 'No email',

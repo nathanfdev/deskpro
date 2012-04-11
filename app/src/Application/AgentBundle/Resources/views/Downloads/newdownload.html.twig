@@ -66,7 +66,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<span class="check">{{ phrase('agent.general.done') }}</span>
 	</div>
 	<div class="content">
-		<h4>{{ phrase('agent.general.everyone') }}</h4>
+		<h4>{{ phrase('agent.general.usergroup_everyone') }}</h4>
 		<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.general.upload') }}</button>
 		{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newdownload[attach]', noremove: true} %}
         <ul class="files file-list"></ul>

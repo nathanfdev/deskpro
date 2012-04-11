@@ -8,7 +8,7 @@
     'agent.publish.apply_action'                       => 'Apply Action',
     'agent.publish.ask_set_to_draft' => 'Are you sure you would like to set the selected items as drafts?',
     'agent.publish.article_id'                         => 'Article ID',
-    'agent.publish.articles'                           => 'articles',
+    'agent.publish.showing_count_articles'                           => '{{display_count}} article|{{display_count}} articles',
     'agent.publish.automatically_on'                   => 'Automatically on',
     'agent.publish.automatically_publish_on'           => 'Automatically publish on',
     'agent.publish.change_category'                    => 'Change Category',
@@ -25,9 +25,9 @@
     'agent.publish.count_articles'                     => '1 Article|{{count}} Articles',
 
 
-    'agent.publish.create_category'                    => 'create category',
 
-    'agent.publish.create_news_post'                   => 'Create News Post',
+
+
     'agent.publish.discard_unsaved_changes'            => 'Discard and revert to default',
     'agent.publish.download_category'                  => 'Download Category',
     'agent.publish.download_count'                     => 'Download Count',

@@ -11,6 +11,6 @@
     'agent.organizations.email_domain_assoc_remove_users'  => 'Remove email domain and unassign 1 user from this organization|Remove email domain and unassign {{count}} users from this organization',
     'agent.organizations.email_domain_assoc_title'         => 'Email Domain Associations for {{name}}',
     'agent.organizations.enter_position'                   => 'Enter position',
-    'agent.organizations.number_of_members'                => 'Number of Members',
+
     'agent.organizations.is_empty' => 'This organization has no members.',
 );
