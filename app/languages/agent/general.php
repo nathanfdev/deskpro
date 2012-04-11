@@ -57,6 +57,7 @@
   'agent.general.assign' => 'Assign',
   'agent.general.assign_agent' => 'Assign Agent',
   'agent.general.assign_team' => 'Assign Team',
+  'agent.general.assign_to' => 'Assign to',
   'agent.general.assigned' => 'Assigned',
   'agent.general.assigned_agent' => 'Assigned Agent',
   'agent.general.assigned_agent_id' => 'Agent Id',
