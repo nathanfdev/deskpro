@@ -275,9 +275,9 @@ class LanguageController extends Controller
 
         $vars['unused'] = array();
 
-        foreach($by_id as $id => $value) {
+        foreach($vars['by_id'] as $id => $value) {
             if(!isset($found_by_id[$id])) {
-                $var['unused'][] = array(
+                $vars['unused'][] = array(
                     'id' => $id,
                     'display' => $this->matchesPrefix($id, $prefixes)
                 );
@@ -295,8 +295,8 @@ class LanguageController extends Controller
 
     public function matchesPrefix($id, $prefixes) {
         foreach($prefixes as $prefix) {
-            if(preg_match('/^'.preg_quote($prefix['id']).'/', $id)) {
-                return preg_replace('/^'.preg_quote($prefix['id']).'/', '<b>$1</b>', $id);
+            if(preg_match('/^('.preg_quote($prefix['id']).')/', $id)) {
+                return preg_replace('/^('.preg_quote($prefix['id']).')/', '<b>\1</b>', $id);
             }
         }
 
@@ -484,7 +484,7 @@ class LanguageController extends Controller
                             break;
                         case 2:
                             if(is_array($token) && $token[0] == T_CONSTANT_ENCAPSED_STRING) {
-                                $content = eval('return '.$token[1].';');
+                                $content = strtolower(eval('return '.$token[1].';'));
                                 $state = 0;
 
                                 if(!isset($by_id[$id])) {
