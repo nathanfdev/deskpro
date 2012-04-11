@@ -59,7 +59,7 @@
 										</a></li>
 									</script>
 									<div class="input-wrapper">
-										<input type="input" id="{{baseId}}_add_searchbox_txt" style="width: 98%" class="term integrated" placeholder="{{ phrase('argent.organizations.add_person') }}" class="user-input" />
+										<input type="input" id="{{baseId}}_add_searchbox_txt" style="width: 98%" class="term integrated" placeholder="{{ phrase('agent.organizations.add_person') }}" class="user-input" />
 									</div>
 									<input type="hidden" name="person_id" class="person-id" value="" />
 									<div class="person-search-box" style="display: none">
@@ -82,7 +82,7 @@
 							</td>
 							<td colspan="2">
 								<div class="position-input">
-									<input type="text" class="role" placeholder="{{ phrase('argent.organizations.enter_position') }}" id="{{baseId}}_newmember_position" value="" />
+									<input type="text" class="role" placeholder="{{ phrase('agent.organizations.enter_position') }}" id="{{baseId}}_newmember_position" value="" />
 								</div>
 								<div class="controls">
 									<input type="hidden" id="{{baseId}}_newmember_person_id" value="" />
@@ -96,7 +96,7 @@
 						{% include 'AgentBundle:Organization:view-members-row.html.twig' %}
 					{% else %}
 						{% if not app.user.hasPerm('agent_people.edit') %}
-							<tr><td colspan="2">{{ phrase('argent.organizations.is_empty') }}</td></tr>
+							<tr><td colspan="2">{{ phrase('agent.organizations.is_empty') }}</td></tr>
 						{% endif %}
 					{% endfor %}
 				</tbody>

@@ -3,16 +3,16 @@
 	<div class="profile-box-container email-assoc">
 		<header>
 			{% if app.user.hasPerm('agent_org.edit') %}<span class="edit-gear email-assoc-edit"></span>{% endif %}
-			<h4>{{ phrase('argent.organizations.email_domain_assoc') }}</h4>
+			<h4>{{ phrase('agent.organizations.email_domain_assoc') }}</h4>
 		</header>
 		<section>
 			{% if not org_email_domains|length %}
 				<p>
-					{{ phrase('argent.organizations.email_domain_assoc_none') }}
+					{{ phrase('agent.organizations.email_domain_assoc_none') }}
 				</p>
 			{% else %}
 				<p>
-					{{ phrase('argent.organizations.email_domain_assoc_explain') }}
+					{{ phrase('agent.organizations.email_domain_assoc_explain') }}
 					{% for domain in org_email_domains %}{{ domain }}{% if not loop.last %}, {% endif %}{% endfor %}
 				</p>
 			{% endif %}
