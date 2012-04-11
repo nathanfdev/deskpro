@@ -8,7 +8,7 @@
     'agent.deal.custom_field_a'      => 'Custom Field A',
     'agent.deal.deal_size'           => 'Deal Size',
     'agent.deal.deal_type'           => 'Deal Type',
-    'agent.deal.display_options'     => 'Display options',
+
     'agent.deal.edit_custome_fields' => 'Edit Custome Fields',
     'agent.deal.edit_customfields'   => 'Edit Custom Fields',
     'agent.deal.edit_name'           => 'edit name',

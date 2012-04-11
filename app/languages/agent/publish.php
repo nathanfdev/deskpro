@@ -26,7 +26,7 @@
 
 
     'agent.publish.create_category'                    => 'create category',
-    'agent.publish.create_download'                    => 'Create Download',
+
     'agent.publish.create_news_post'                   => 'Create News Post',
     'agent.publish.discard_unsaved_changes'            => 'Discard and revert to default',
     'agent.publish.download_category'                  => 'Download Category',

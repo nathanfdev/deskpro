@@ -137,7 +137,7 @@
     'agent.tickets.set_delete'                                             => 'Mark For Deletion',
     'agent.tickets.set_hold'                                               => 'Set on hold',
     'agent.tickets.set_resolved'                                           => 'Set resolved',
-    'agent.tickets.set_spam'                                               => 'Mark As Spam',
+
     'agent.tickets.split_from_here'                                        => 'Split ticket from here',
     'agent.tickets.status_awaiting_agent'                                  => 'Awaiting Agent',
     'agent.tickets.status_awaiting_user'                                   => 'Awaiting User',
