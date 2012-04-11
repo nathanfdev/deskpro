@@ -2,7 +2,7 @@
 	<ul class="property-list">
 		{% if people_options.organizations %}
 		<li class="ob">
-			<label>{{ phrase('agent.organization') }}</label>
+			<label>{{ phrase('agent.general.organization') }}</label>
 			<div class="values">
 				<select name="set_term[person_organization]" multiple="multiple">
 					{% for id,title in people_options.organizations %}
@@ -14,7 +14,7 @@
 		{% endif %}
 		{% if people_options.usergroups %}
 		<li class="ob">
-			<label>{{ phrase('agent.usergroup') }}</label>
+			<label>{{ phrase('agent.general.usergroup') }}</label>
 			<div class="values">
 				<select name="set_term[person_usergroup]" multiple="multiple">
 					{% for id,title in people_options.usergroups %}
@@ -25,25 +25,25 @@
 		</li>
 		{% endif %}
 		<li class="field-input">
-			<label>{{ phrase('agent.label') }}</label>
+			<label>{{ phrase('agent.general.label') }}</label>
 			<div class="values">
 				<input class="form-label-input" type="text" name="set_term[person_label]" />
 			</div>
 		</li>
 		<li class="field-input">
-			<label>{{ phrase('agent.name') }}</label>
+			<label>{{ phrase('agent.general.name') }}</label>
 			<div class="values">
 				<input type="text" name="set_term[person_name]" />
 			</div>
 		</li>
 		<li class="field-input">
-			<label>{{ phrase('agent.email_address') }}</label>
+			<label>{{ phrase('agent.general.email_address') }}</label>
 			<div class="values">
 				<input type="text" name="set_term[person_email]" />
 			</div>
 		</li>
 		<li class="field-input">
-			<label>{{ phrase('agent.phone') }}</label>
+			<label>{{ phrase('agent.general.phone') }}</label>
 			<div class="values">
 				<input type="text" name="set_term[person_contact_phone]" />
 			</div>
@@ -66,7 +66,7 @@
 
 	<div class="search-form" id="peoplesearch_criteria_list" data-templates="#peoplesearch_criteria_tpl">
 		<div class="search-terms"></div>
-		<div class="term"><span class="add-term">+</span> {{ phrase('agent.add_criteria_term') }}</div>
+		<div class="term"><span class="add-term">+</span> {{ phrase('agent.general.add_criteria_term') }}</div>
 	</div>
 </form>
 

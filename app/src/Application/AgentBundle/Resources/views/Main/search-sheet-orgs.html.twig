@@ -1,25 +1,25 @@
 <form action="{{ path('agent_orgsearch_customfilter') }}">
 	<ul class="property-list">
 		<li class="field-input">
-			<label>{{ phrase('agent.name') }}</label>
+			<label>{{ phrase('agent.general.name') }}</label>
 			<div class="values">
 				<input type="text" name="set_term[org_name]" />
 			</div>
 		</li>
 		<li class="field-input">
-			<label>{{ phrase('agent.label') }}</label>
+			<label>{{ phrase('agent.general.label') }}</label>
 			<div class="values">
 				<input class="form-label-input" type="text" name="set_term[org_label]" />
 			</div>
 		</li>
 		<li class="field-input">
-			<label>{{ phrase('agent.email_domain') }}</label>
+			<label>{{ phrase('agent.general.email_domain') }}</label>
 			<div class="values">
 				<input type="text" name="set_term[org_email_domain]" />
 			</div>
 		</li>
 		<li class="field-input">
-			<label>{{ phrase('agent.phone') }}</label>
+			<label>{{ phrase('agent.general.phone') }}</label>
 			<div class="values">
 				<input type="text" name="set_term[org_contact_phone]" />
 			</div>
@@ -29,7 +29,7 @@
 
 	<div class="search-form" id="orgsearch_criteria_list" data-templates="#orgsearch_criteria_tpl">
 		<div class="search-terms"></div>
-		<div class="term"><span class="add-term">+</span> {{ phrase('agent.add_criteria_term') }}</div>
+		<div class="term"><span class="add-term">+</span> {{ phrase('agent.general.add_criteria_term') }}</div>
 	</div>
 </form>
 

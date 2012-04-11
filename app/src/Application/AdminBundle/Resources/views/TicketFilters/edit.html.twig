@@ -36,7 +36,7 @@ $(document).ready(function() {
 
 <div class="dp-form-row">
 	<div class="dp-form-label">
-		<label>{{ phrase('agent.type') }}</label>
+		<label>{{ phrase('agent.general.type') }}</label>
 	</div>
 	<div class="dp-form-input">
 		{% if filter.is_global %}
@@ -50,7 +50,7 @@ $(document).ready(function() {
 </div>
 <div class="dp-form-row">
 	<div class="dp-form-label">
-		<label>{{ phrase('agent.title') }}</label>
+		<label>{{ phrase('agent.general.title') }}</label>
 	</div>
 	<div class="dp-form-input">
 		<input type="text" name="filter[title]" value="{{filter.title}}" />
@@ -64,13 +64,13 @@ $(document).ready(function() {
 </div>
 <div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.criteria') }}</label>
+			<label>{{ phrase('agent.general.criteria') }}</label>
 		</div>
 
 	<div class="dp-form-input">
 		<div class="criteria-form search-form">
 			<div class="search-terms"></div>
-			<div class="term"><span class="add-term">+</span> {{ phrase('agent.add_a_new_criteria') }}</div>
+			<div class="term"><span class="add-term">+</span> {{ phrase('agent.general.add_a_new_criteria') }}</div>
 		</div>
 	</div>
 </div>
@@ -144,7 +144,7 @@ $(document).ready(function() {
 	{% endif %}
 {% endif %}
 
-<button class="clean-white save-trigger">{{ phrase('agent.save') }}</button>
+<button class="clean-white save-trigger">{{ phrase('agent.general.save') }}</button>
 
 </form>
 

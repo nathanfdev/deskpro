@@ -29,7 +29,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.email_address') }}</label> <em class="desc">{{ phrase('admin.gateway.address_for_gateway') }}</em>
+			<label>{{ phrase('agent.general.email_address') }}</label> <em class="desc">{{ phrase('admin.gateway.address_for_gateway') }}</em>
 		</div>
 		<div class="dp-form-input">
 			{{ form_widget(form.address, {attr: {id: "gateway_address"}}) }}<br />
@@ -39,14 +39,14 @@
 
 			<div class="choices-builder" id="gateway_addresses" style="margin-top:5px; {% if gateway.addresses|length < 2 %}display: none;{% endif %}">
 				<header>
-					<input type="text" class="new-choice" value="" style="width: 280px !important" /> <button class="clean-white add-trigger">{{ phrase('agent.add') }}</button>
+					<input type="text" class="new-choice" value="" style="width: 280px !important" /> <button class="clean-white add-trigger">{{ phrase('agent.general.add') }}</button>
 				</header>
 				<div style="display: none" id="choice_extra_fields"></div>
 				<ul class="list">
 					{% for adr in gateway.addresses %}
 						{% if loop.index != 1 %}
 						<li data-address-id="{{ adr.id }}">
-							<div class="controls"><ul><li class="remove"><a>{{ phrase('agent.remove') }}</a></li></ul></div>
+							<div class="controls"><ul><li class="remove"><a>{{ phrase('agent.general.remove') }}</a></li></ul></div>
 							<div class="label">{{ adr.title }}</div>
 						</li>
 						{% endif %}
@@ -54,7 +54,7 @@
 				</ul>
 				<script type="text/x-deskpro-plain" class="row-tpl">
 					<li class="item new" data-choice-id="new">
-						<div class="controls"><ul><li class="remove"><a>{{ phrase('agent.remove') }}</a></li></ul></div>
+						<div class="controls"><ul><li class="remove"><a>{{ phrase('agent.general.remove') }}</a></li></ul></div>
 						<div class="label"></div>
 						<input type="hidden" name="new_address[%id%][match_pattern]" class="row-value" value="" />
 					</li>
@@ -77,7 +77,7 @@
 					<div class="dp-group-options" style="display: none">
 						<table cellspacing="0" cellpadding="0" width="100%">
 							<tr>
-								<td width="100">{{ phrase('agent.host') }}:</td>
+								<td width="100">{{ phrase('agent.general.host') }}:</td>
 								<td>
 									{{ form_widget(form.pop3_options.host, {'attr': {'class': 'small'}}) }}<br />
 								</td>
@@ -95,7 +95,7 @@
 								<td>{{ form_widget(form.pop3_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr>
-								<td>{{ phrase('agent.password') }}:</td>
+								<td>{{ phrase('agent.general.password') }}:</td>
 								<td>{{ form_widget(form.pop3_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
@@ -117,7 +117,7 @@
 								<td>{{ form_widget(form.gmail_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr>
-								<td>{{ phrase('agent.password') }}:</td>
+								<td>{{ phrase('agent.general.password') }}:</td>
 								<td>{{ form_widget(form.gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
@@ -176,7 +176,7 @@
 						<div class="dp-group-options" style="display: none">
 							<table cellspacing="0" cellpadding="0" width="100%">
 								<tr>
-									<td class="title" width="120">{{ phrase('agent.host') }}:</td>
+									<td class="title" width="120">{{ phrase('agent.general.host') }}:</td>
 									<td>
 										{{ form_widget(trans_form.smtp_options.host, {'attr': {'class': 'small'}}) }}<br />
 									</td>
@@ -205,7 +205,7 @@
 									<td>{{ form_widget(trans_form.smtp_options.username, {'attr': {'class': 'small'}}) }}</td>
 								</tr>
 								<tr id="smtp_auth_password">
-									<td class="title">{{ phrase('agent.password') }}:</td>
+									<td class="title">{{ phrase('agent.general.password') }}:</td>
 									<td>{{ form_widget(trans_form.smtp_options.password, {'attr': {'class': 'small'}}) }}</td>
 								</tr>
 							</table>
@@ -228,7 +228,7 @@
 									<td>{{ form_widget(trans_form.gmail_options.username, {'attr': {'class': 'small'}}) }}</td>
 								</tr>
 								<tr>
-									<td class="title">{{ phrase('agent.password') }}:</td>
+									<td class="title">{{ phrase('agent.general.password') }}:</td>
 									<td>{{ form_widget(trans_form.gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
 								</tr>
 							</table>
@@ -270,7 +270,7 @@
 							<div class="dp-group-options" style="display: none">
 								<table cellspacing="0" cellpadding="0" width="100%">
 									<tr>
-										<td  class="title" width="120">{{ phrase('agent.host') }}:</td>
+										<td  class="title" width="120">{{ phrase('agent.general.host') }}:</td>
 										<td>
 											{{ form_widget(trans_form.backup_smtp_options.host, {'attr': {'class': 'small'}}) }}<br />
 										</td>
@@ -299,7 +299,7 @@
 										<td>{{ form_widget(trans_form.backup_smtp_options.username, {'attr': {'class': 'small'}}) }}</td>
 									</tr>
 									<tr id="backup_smtp_auth_password">
-										<td class="title">{{ phrase('agent.password') }}:</td>
+										<td class="title">{{ phrase('agent.general.password') }}:</td>
 										<td>{{ form_widget(trans_form.backup_smtp_options.password, {'attr': {'class': 'small'}}) }}</td>
 									</tr>
 								</table>
@@ -322,7 +322,7 @@
 										<td>{{ form_widget(trans_form.backup_gmail_options.username, {'attr': {'class': 'small'}}) }}</td>
 									</tr>
 									<tr>
-										<td class="title">{{ phrase('agent.password') }}:</td>
+										<td class="title">{{ phrase('agent.general.password') }}:</td>
 										<td>{{ form_widget(trans_form.backup_gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
 									</tr>
 								</table>
@@ -350,7 +350,7 @@
 	</div>
 </div>
 
-<button class="clean-white">{{ phrase('agent.save') }}</button>
+<button class="clean-white">{{ phrase('agent.general.save') }}</button>
 </form>
 
 <div id="test_gateway_settings_overlay" style="width: 400px; height: 200px; overflow:auto; display: none;">
@@ -410,7 +410,7 @@
 
 {% if gateway.id %}
 	<div class="delete-link-wrap">
-		<a href="{{ path('admin_emailgateways_del', {id: gateway.id, security_token: security_token('delete_gateway') }) }}" onclick="return confirm('{{ phrase('admin.gateway.ask_delete_gateway') }}');">{{ phrase('agent.delete') }}</a>
+		<a href="{{ path('admin_emailgateways_del', {id: gateway.id, security_token: security_token('delete_gateway') }) }}" onclick="return confirm('{{ phrase('admin.gateway.ask_delete_gateway') }}');">{{ phrase('agent.general.delete') }}</a>
 	</div>
 {% endif %}
 {% endblock %}

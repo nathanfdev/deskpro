@@ -66,7 +66,7 @@ pageMeta.baseId = '{{ baseId }}';
                     {% set phrase_part2 %}
                     <span class="results-total-count" id="{{baseId}}_total_count">{{ ticket_ids|length }}</span>
                     {% endset %}
-                    {{ phrase('agent.showing_results_x_of_y', {'count':ticket_ids|length,'display_count':phrase_part1,'size':phrase_part2}) }}
+                    {{ phrase('agent.general.showing_results_x_of_y', {'count':ticket_ids|length,'display_count':phrase_part1,'size':phrase_part2}) }}
 				</div>
 				{% if ticket_ids|length > per_page %}
 					<ul class="pagenav no-prev">
@@ -83,7 +83,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 	<section class="list-listing no-results" id="{{baseId}}_no_results" {% if ticket_ids|length %}style="display:none"{% endif %}>
 		<article class="row-item no-results">
-			<p style="padding: 15px;">{{ phrase('agent.there_are_no_results') }}</p>
+			<p style="padding: 15px;">{{ phrase('agent.general.there_are_no_results') }}</p>
 		</article>
 	</section>
 

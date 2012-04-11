@@ -7,41 +7,41 @@
 		<span>{{ phrase('agent.tickets.explain_search_all_tickets') }}</span>
 	</div>
 </div>
-<div class="type" title="{{ phrase('agent.subject') }}" data-rule-type="subject">
+<div class="type" title="{{ phrase('agent.general.subject') }}" data-rule-type="subject">
 	<div class="op">
 		<select name="op">
-			<option value="is">{{ phrase('agent.is') }}</option>
-			<option value="not">{{ phrase('agent.is_not') }}</option>
-			<option value="contains">{{ phrase('agent.contains') }}</option>
-			<option value="not_contains">{{ phrase('agent.does_not_contain') }}</option>
+			<option value="is">{{ phrase('agent.general.is') }}</option>
+			<option value="not">{{ phrase('agent.general.is_not') }}</option>
+			<option value="contains">{{ phrase('agent.general.contains') }}</option>
+			<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
 		</select>
 	</div>
 	<div class="options">
 		<input type="text" name="subject" value="" />
 	</div>
 </div>
-<div class="type" title="{{ phrase('agent.labels') }}" data-rule-type="label">
+<div class="type" title="{{ phrase('agent.general.labels') }}" data-rule-type="label">
 	<div class="op">
 		<select name="op">
-			<option value="is">{{ phrase('agent.includes_label') }}</option>
-			<option value="not">{{ phrase('agent.does_not_include_label') }}</option>
+			<option value="is">{{ phrase('agent.general.includes_label') }}</option>
+			<option value="not">{{ phrase('agent.general.does_not_include_label') }}</option>
 		</select>
 	</div>
 	<div class="options">
 		<input type="text" name="label" value="" />
 	</div>
 </div>
-<div class="type" title="{{ phrase('agent.assigned_agent') }}" data-rule-type="agent">
+<div class="type" title="{{ phrase('agent.general.assigned_agent') }}" data-rule-type="agent">
 	<div class="op">
 		<select name="op">
-			<option value="is">{{ phrase('agent.is') }}</option>
-			<option value="not">{{ phrase('agent.is_not') }}</option>
+			<option value="is">{{ phrase('agent.general.is') }}</option>
+			<option value="not">{{ phrase('agent.general.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
 		<select name="agent">
-			<option value="0">{{ phrase('agent.unassigned') }}</option>
-			<option value="-1">{{ phrase('agent.me') }}</option>
+			<option value="0">{{ phrase('agent.general.unassigned') }}</option>
+			<option value="-1">{{ phrase('agent.general.me') }}</option>
 			{% for id,label in term_options.agents %}
 				<option value="{{id}}">{{label}}</option>
 			{% endfor %}
@@ -51,13 +51,13 @@
 <div class="type" title="{{ phrase('agent.tickets.participants') }}" data-rule-type="participant">
 	<div class="op">
 		<select name="op">
-			<option value="is">{{ phrase('agent.include') }}</option>
-			<option value="not">{{ phrase('agent.does_not_include') }}</option>
+			<option value="is">{{ phrase('agent.general.include') }}</option>
+			<option value="not">{{ phrase('agent.general.does_not_include') }}</option>
 		</select>
 	</div>
 	<div class="options">
 		<select name="agent">
-			<option value="-1">{{ phrase('agent.me') }}</option>
+			<option value="-1">{{ phrase('agent.general.me') }}</option>
 			{% for id,label in term_options.agents %}
 				<option value="{{id}}">{{label}}</option>
 			{% endfor %}
@@ -65,16 +65,16 @@
 	</div>
 </div>
 {% if term_options.agent_teams %}
-	<div class="type" title="{{ phrase('agent.agent_team') }}" data-rule-type="agent_team">
+	<div class="type" title="{{ phrase('agent.general.agent_team') }}" data-rule-type="agent_team">
 		<div class="options">
 			<div class="op">
 				<select name="op">
-					<option value="is">{{ phrase('agent.is') }}</option>
-					<option value="not">{{ phrase('agent.is_not') }}</option>
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
 				</select>
 			</div>
 			<select name="agent_team">
-				<option value="0">{{ phrase('agent.no_team') }}</option>
+				<option value="0">{{ phrase('agent.general.no_team') }}</option>
 				<option value="-1">{{ phrase('agent.tickets.any_of_my_teams') }}</option>
 				{% for id,title in term_options.agent_teams %}
 					<option value="{{id}}">{{title}}</option>
@@ -83,11 +83,11 @@
 		</div>
 	</div>
 {% endif %}
-<div class="type" title="{{ phrase('agent.status') }}" data-rule-type="status">
+<div class="type" title="{{ phrase('agent.general.status') }}" data-rule-type="status">
 	<div class="op">
 		<select name="op">
-			<option value="is">{{ phrase('agent.is') }}</option>
-			<option value="not">{{ phrase('agent.is_not') }}</option>
+			<option value="is">{{ phrase('agent.general.is') }}</option>
+			<option value="not">{{ phrase('agent.general.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -95,17 +95,17 @@
 			<option value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
 			<option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
 			<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
-			<option value="closed">{{ phrase('agent.closed') }}</option>
-			<option value="hidden">{{ phrase('agent.hidden_awaiting_validating_spam') }}</option>
+			<option value="closed">{{ phrase('agent.general.closed') }}</option>
+			<option value="hidden">{{ phrase('agent.general.hidden_awaiting_validating_spam') }}</option>
 		</select>
 	</div>
 </div>
 {% if term_options.products %}
-	<div class="type" title="{{ phrase('agent.product') }}" data-rule-type="product">
+	<div class="type" title="{{ phrase('agent.general.product') }}" data-rule-type="product">
 		<div class="op">
 			<select name="op">
-				<option value="is">{{ phrase('agent.is') }}</option>
-				<option value="not">{{ phrase('agent.is_not') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -118,11 +118,11 @@
 	</div>
 {% endif %}
 {% if term_options.departments %}
-	<div class="type" title="{{ phrase('agent.department') }}" data-rule-type="department">
+	<div class="type" title="{{ phrase('agent.general.department') }}" data-rule-type="department">
 		<div class="op">
 			<select name="op">
-				<option value="is">{{ phrase('agent.is') }}</option>
-				<option value="not">{{ phrase('agent.is_not') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -135,11 +135,11 @@
 	</div>
 {% endif %}
 {% if term_options.categories %}
-	<div class="type" title="{{ phrase('agent.category') }}" data-rule-type="category">
+	<div class="type" title="{{ phrase('agent.general.category') }}" data-rule-type="category">
 		<div class="op">
 			<select name="op">
-				<option value="is">{{ phrase('agent.is') }}</option>
-				<option value="not">{{ phrase('agent.is_not') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -152,13 +152,13 @@
 	</div>
 {% endif %}
 {% if term_options.priorities %}
-	<div class="type" title="{{ phrase('agent.priority') }}" data-rule-type="priority">
+	<div class="type" title="{{ phrase('agent.general.priority') }}" data-rule-type="priority">
 		<div class="op">
 			<select name="op">
-				<option value="is">{{ phrase('agent.is') }}</option>
-				<option value="not">{{ phrase('agent.is_not') }}</option>
-				<option value="lt">{{ phrase('agent.is_less_than') }}</option>
-				<option value="gt">{{ phrase('agent.is_greater_than') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
+				<option value="lt">{{ phrase('agent.general.is_less_than') }}</option>
+				<option value="gt">{{ phrase('agent.general.is_greater_than') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -170,19 +170,19 @@
 		</div>
 	</div>
 {% endif %}
-<div class="type" title="{{ phrase('agent.originated_interface') }}" data-rule-type="creation_system">
+<div class="type" title="{{ phrase('agent.general.originated_interface') }}" data-rule-type="creation_system">
 	<div class="op">
 		<select name="op">
-			<option value="is">{{ phrase('agent.is') }}</option>
-			<option value="not">{{ phrase('agent.is_not') }}</option>
+			<option value="is">{{ phrase('agent.general.is') }}</option>
+			<option value="not">{{ phrase('agent.general.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
 		<select name="creation_system">
-			<option value="web">{{ phrase('agent.web_interface') }}</option>
-			<option value="web.person">-- {{ phrase('agent.by_user') }}</option>
-			<option value="web.agent">-- {{ phrase('agent.by_agent_for_user') }}</option>
-			<option value="gateway">{{ phrase('agent.email') }}</option>
+			<option value="web">{{ phrase('agent.general.web_interface') }}</option>
+			<option value="web.person">-- {{ phrase('agent.general.by_user') }}</option>
+			<option value="web.agent">-- {{ phrase('agent.general.by_agent_for_user') }}</option>
+			<option value="gateway">{{ phrase('agent.general.email') }}</option>
 		</select>
 	</div>
 </div>
@@ -190,8 +190,8 @@
 <div class="type" title="{{ phrase('agent.tickets.receiving_gateway_account') }}" data-rule-type="receiving_gateway">
 	<div class="op">
 		<select name="op">
-			<option value="is">{{ phrase('agent.is') }}</option>
-			<option value="not">{{ phrase('agent.is_not') }}</option>
+			<option value="is">{{ phrase('agent.general.is') }}</option>
+			<option value="not">{{ phrase('agent.general.is_not') }}</option>
 		</select>
 	</div>
 	<div class="options">
@@ -204,11 +204,11 @@
 </div>
 {% endif %}
 {% if term_options.ticket_workflows %}
-	<div class="type" title="{{ phrase('agent.workflow') }}" data-rule-type="workflow">
+	<div class="type" title="{{ phrase('agent.general.workflow') }}" data-rule-type="workflow">
 		<div class="op">
 			<select name="op">
-				<option value="is">{{ phrase('agent.is') }}</option>
-				<option value="not">{{ phrase('agent.is_not') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -221,7 +221,7 @@
 	</div>
 {% endif %}
 {% if term_options.custom_ticket_fields %}
-	{% set op_lang = {'is': phrase('agent.is'), 'not': phrase('agent.is_not'), 'contains': 'has', 'notcontains': 'does not have', 'gt': phrase('agent.is_greater_than'), 'lt': phrase('agent.is_less_than')} %}
+	{% set op_lang = {'is': phrase('agent.general.is'), 'not': phrase('agent.general.is_not'), 'contains': 'has', 'notcontains': 'does not have', 'gt': phrase('agent.general.is_greater_than'), 'lt': phrase('agent.general.is_less_than')} %}
 	{% for field in term_options.custom_ticket_fields %}
 		<div class="type" title="{{ phrase('agent.tickets.ticket_field_name', {'field':field.field_def.title}) }}" data-rule-type="ticket_field[{{field.field_def.id}}]">
 			<div class="op">

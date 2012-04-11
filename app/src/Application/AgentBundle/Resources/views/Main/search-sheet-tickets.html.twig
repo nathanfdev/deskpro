@@ -1,36 +1,36 @@
 <form action="{{ path('agent_ticketsearch_runcustomfilter') }}">
 	<ul class="property-list">
 		<li class="ob">
-			<label>{{ phrase('agent.department') }}</label>
+			<label>{{ phrase('agent.general.department') }}</label>
 			<div class="values">
 				{% include 'AgentBundle:Common:select-department.html.twig' with {
 					'name': 'set_term[department][]',
-					'blank_title': phrase('agent.department'),
+					'blank_title': phrase('agent.general.department'),
 					'departments': ticket_options.departments_hierarchy,
 					'add_attr': 'multiple="multiple"'
 				} %}
 			</div>
 		</li>
 		<li class="ob">
-			<label>{{ phrase('agent.status') }}</label>
+			<label>{{ phrase('agent.general.status') }}</label>
 			<div class="values">
 				<select name="set_term[status][]" multiple="multiple">
 					<option data-start="1" class="start" value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
 					<option data-start="1" class="start" value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
 					<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
-					<option value="closed">{{ phrase('agent.closed') }}</option>
-					<option value="hidden.validated">{{ phrase('agent.awaiting_validation') }}</option>
-					<option value="hidden.spam">{{ phrase('agent.spam') }}</option>
-					<option value="hidden.deleted">{{ phrase('agent.deleted') }}</option>
+					<option value="closed">{{ phrase('agent.general.closed') }}</option>
+					<option value="hidden.validated">{{ phrase('agent.general.awaiting_validation') }}</option>
+					<option value="hidden.spam">{{ phrase('agent.general.spam') }}</option>
+					<option value="hidden.deleted">{{ phrase('agent.general.deleted') }}</option>
 				</select>
 			</div>
 		</li>
 		<li class="ob">
-			<label>{{ phrase('agent.agent') }}</label>
+			<label>{{ phrase('agent.general.agent') }}</label>
 			<div class="values">
 				{% include 'AgentBundle:Common:select-agent.html.twig' with {
 					'name': 'set_term[agent][]',
-					'blank_title': phrase('agent.agent'),
+					'blank_title': phrase('agent.general.agent'),
 					'departments': ticket_options.agents,
 					'add_attr': 'multiple="multiple"'
 				} %}
@@ -38,11 +38,11 @@
 		</li>
 		{% if app.getSetting('core.use_agent_team') %}
 			<li class="ob">
-				<label>{{ phrase('agent.agent') }} {{ phrase('agent.team') }}</label>
+				<label>{{ phrase('agent.general.agent') }} {{ phrase('agent.general.agent_team') }}</label>
 				<div class="values">
 					{% include 'AgentBundle:Common:select-agent-team.html.twig' with {
 						'name': 'set_term[agent_team][]',
-						'blank_title': phrase('agent.agent_team'),
+						'blank_title': phrase('agent.general.agent_team'),
 						'departments': ticket_options.agent_teams,
 						'add_attr': 'multiple="multiple"'
 					} %}
@@ -50,11 +50,11 @@
 			</li>
 		{% endif %}
 		<li class="ob">
-			<label>{{ phrase('agent.followers') }}</label>
+			<label>{{ phrase('agent.general.followers') }}</label>
 			<div class="values">
 				{% include 'AgentBundle:Common:select-agent.html.twig' with {
 					'name': 'set_term[participant][]',
-					'blank_title': phrase('agent.agent'),
+					'blank_title': phrase('agent.general.agent'),
 					'departments': ticket_options.agents,
 					'add_attr': 'multiple="multiple"'
 				} %}
@@ -62,11 +62,11 @@
 		</li>
 		{% if app.getSetting('core.use_ticket_category') %}
 		<li class="ob">
-			<label>{{ phrase('agent.category') }}</label>
+			<label>{{ phrase('agent.general.category') }}</label>
 			<div class="values">
 				{% include 'AgentBundle:Common:select-category.html.twig' with {
 					'name': 'set_term[category][]',
-					'blank_title': phrase('agent.category'),
+					'blank_title': phrase('agent.general.category'),
 					'categories': ticket_options.ticket_categories_hierarchy,
 					'add_attr': 'multiple="multiple"'
 				} %}
@@ -75,11 +75,11 @@
 		{% endif %}
 		{% if app.getSetting('core.use_product') %}
 		<li class="ob">
-			<label>{{ phrase('agent.product') }}</label>
+			<label>{{ phrase('agent.general.product') }}</label>
 			<div class="values">
 				{% include 'AgentBundle:Common:select-product.html.twig' with {
 					'name': 'set_term[product][]',
-					'blank_title': phrase('agent.product'),
+					'blank_title': phrase('agent.general.product'),
 					'products': ticket_options.products_hierarchy,
 					'add_attr': 'multiple="multiple"'
 				} %}
@@ -88,11 +88,11 @@
 		{% endif %}
 		{% if app.getSetting('core.use_ticket_priority') %}
 		<li class="ob">
-			<label>{{ phrase('agent.priority') }}</label>
+			<label>{{ phrase('agent.general.priority') }}</label>
 			<div class="values">
 				{% include 'AgentBundle:Common:select-priority.html.twig' with {
 					'name': 'set_term[priority][]',
-					'blank_title': phrase('agent.priority'),
+					'blank_title': phrase('agent.general.priority'),
 					'priorities': ticket_options.ticket_priorities,
 					'add_attr': 'multiple="multiple"'
 				} %}
@@ -101,11 +101,11 @@
 		{% endif %}
 		{% if app.getSetting('core.use_ticket_workflow') %}
 		<li class="ob">
-			<label>{{ phrase('agent.workflow') }}</label>
+			<label>{{ phrase('agent.general.workflow') }}</label>
 			<div class="values">
 				{% include 'AgentBundle:Common:select-workflow.html.twig' with {
 					'name': 'set_term[workflow][]',
-					'blank_title': phrase('agent.workflow'),
+					'blank_title': phrase('agent.general.workflow'),
 					'workflows': ticket_options.ticket_workflows,
 					'add_attr': 'multiple="multiple"'
 				} %}
@@ -115,7 +115,7 @@
 
 		{% if ticket_options.people_organizations %}
 		<li class="ob">
-			<label>{{ phrase('agent.organization') }}</label>
+			<label>{{ phrase('agent.general.organization') }}</label>
 			<div class="values">
 				<select name="set_term[organization][]" multiple="multiple">
 					{% for id,title in ticket_options.people_organizations %}
@@ -128,7 +128,7 @@
 
 		{% if ticket_options.languages %}
 			<li class="ob">
-				<label>{{ phrase('agent.language') }}</label>
+				<label>{{ phrase('agent.general.language') }}</label>
 				<div class="values">
 					<select name="language">
 						{% for id,title in term_options.languages %}
@@ -156,7 +156,7 @@
 
 	<div class="search-form" id="tickersearch_criteria_list" data-templates="#tickersearch_criteria_tpl">
 		<div class="search-terms"></div>
-		<div class="term"><span class="add-term">+</span> {{ phrase('agent.add_criteria_term') }}</div>
+		<div class="term"><span class="add-term">+</span> {{ phrase('agent.general.add_criteria_term') }}</div>
 	</div>
 
 	<ul class="property-list">

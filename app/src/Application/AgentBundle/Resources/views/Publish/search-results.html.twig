@@ -28,32 +28,32 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.Basic';
 					</div>
 					<div class="top-row-right visible-ticket-controls">
 						<div class="bound-faded"></div>
-						<span class="tipped kb-insert-link" title="{{ phrase('agent.insert_link') }}" data-article-id="{{ article.id }}"></span>
-						<span class="tipped kb-insert-content" title="{{ phrase('agent.insert_content') }}" data-article-id="{{ article.id }}"></span>
+						<span class="tipped kb-insert-link" title="{{ phrase('agent.general.insert_link') }}" data-article-id="{{ article.id }}"></span>
+						<span class="tipped kb-insert-content" title="{{ phrase('agent.general.insert_content') }}" data-article-id="{{ article.id }}"></span>
 					</div>
 					<div class="top-row-right visible-related-content-controls">
 						<div class="bound-faded"></div>
-						<span class="tipped related-link" title="{{ phrase('agent.add_as_related') }}"></span>
-						<span class="tipped related-unlink" title="{{ phrase('agent.remove_as_related') }}"></span>
+						<span class="tipped related-link" title="{{ phrase('agent.general.add_as_related') }}"></span>
+						<span class="tipped related-unlink" title="{{ phrase('agent.general.remove_as_related') }}"></span>
 					</div>
 				</div>
 				<hr class="clear-top" />
 				<div class="extra-fields">
 					<ul>
 						<li>
-							<span class="prop-title">{{ phrase('agent.category') }}</span>
+							<span class="prop-title">{{ phrase('agent.general.category') }}</span>
 							<span class="prop-val">{{ article.category_names }}</span>
 						</li>
 						<li>
-							<span class="prop-title">{{ phrase('agent.author') }}</span>
+							<span class="prop-title">{{ phrase('agent.general.author') }}</span>
 							<span class="prop-val">{{ article.by_line }}</span>
 						</li>
 						<li>
-							<span class="prop-title">{{ phrase('agent.date_created') }}</span>
+							<span class="prop-title">{{ phrase('agent.general.date_created') }}</span>
 							<span class="prop-val">{{ article.date_created|date('day')}}</span>
 						</li>
 						<li>
-							<span class="prop-title">{{ phrase('agent.num_views') }}</span>
+							<span class="prop-title">{{ phrase('agent.general.num_views') }}</span>
 							<span class="prop-val">{{ article.view_count|default(0) }}</span>
 						</li>
 					</ul>
@@ -95,23 +95,23 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.Basic';
 					</div>
 					<div class="top-row-right visible-related-content-controls">
 						<div class="bound-faded"></div>
-						<span class="tipped related-link" title="{{ phrase('agent.add_as_related') }}"></span>
-						<span class="tipped related-unlink" title="{{ phrase('agent.remove_as_related') }}"></span>
+						<span class="tipped related-link" title="{{ phrase('agent.general.add_as_related') }}"></span>
+						<span class="tipped related-unlink" title="{{ phrase('agent.general.remove_as_related') }}"></span>
 					</div>
 				</div>
 				<hr class="clear-top" />
 				<div class="extra-fields">
 					<ul>
 						<li>
-							<span class="prop-title">{{ phrase('agent.category') }}</span>
+							<span class="prop-title">{{ phrase('agent.general.category') }}</span>
 							<span class="prop-val">{{ feedback.category.full_title }}</span>
 						</li>
 						<li>
-							<span class="prop-title">{{ phrase('agent.author') }}</span>
+							<span class="prop-title">{{ phrase('agent.general.author') }}</span>
 							<span class="prop-val">{{ feedback.person.display_name }} {% if feedback.person.primary_email_address %}({{ feedback.person.primary_email_address }}){% endif %}</span>
 						</li>
 						<li>
-							<span class="prop-title">{{ phrase('agent.date_created') }}</span>
+							<span class="prop-title">{{ phrase('agent.general.date_created') }}</span>
 							<span class="prop-val">{{ feedback.date_created|date('day')}}</span>
 						</li>
 					</ul>
@@ -136,25 +136,25 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.Basic';
 					</div>
 					<div class="top-row-right visible-related-content-controls">
 						<div class="bound-faded"></div>
-						<span class="tipped related-link" title="{{ phrase('agent.add_as_related') }}"></span>
-						<span class="tipped related-unlink" title="{{ phrase('agent.remove_as_related') }}"></span>
+						<span class="tipped related-link" title="{{ phrase('agent.general.add_as_related') }}"></span>
+						<span class="tipped related-unlink" title="{{ phrase('agent.general.remove_as_related') }}"></span>
 					</div>
 				</div>
 				<hr class="clear-top" />
 				<div class="extra-fields">
 					<ul>
 						<li>
-							<span class="prop-title">{{ phrase('agent.category') }}</span>
+							<span class="prop-title">{{ phrase('agent.general.category') }}</span>
 							<span class="prop-val">{{ news.category.full_title }}</span>
 						</li>
 
 						<li>
-							<span class="prop-title">{{ phrase('agent.author') }}</span>
+							<span class="prop-title">{{ phrase('agent.general.author') }}</span>
 							<span class="prop-val">{{ news.person.display_name }}</span>
 						</li>
 
 						<li>
-							<span class="prop-title">{{ phrase('agent.date_created') }}</span>
+							<span class="prop-title">{{ phrase('agent.general.date_created') }}</span>
 							<span class="prop-val">{{ news.date_created|date('day')}}</span>
 						</li>
 					</ul>

@@ -14,10 +14,10 @@
 	<table width="100%">
 		<thead>
 			<tr>
-				<th width="50">{{ phrase('agent.id') }}</th>
+				<th width="50">{{ phrase('agent.general.id') }}</th>
 				<th width="50">{{ phrase('admin.general.pri') }}</th>
-				<th>{{ phrase('agent.message') }}</th>
-				<th width="180">{{ phrase('agent.date') }}</th>
+				<th>{{ phrase('agent.general.message') }}</th>
+				<th width="180">{{ phrase('agent.general.date') }}</th>
 				<th>Details&nbsp;</th>
 			</tr>
 		</thead>
@@ -40,7 +40,7 @@
 	<ul>
 		{% if pagination.curpage != pagination.first %}
 			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.first}) }}">{{ phrase('admin.general.first') }}</a></li>
-			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.prev}) }}">{{ phrase('agent.prev') }}</a></li>
+			<li><a href="{{ path('admin_server_error_logs', {'p': pagination.prev}) }}">{{ phrase('agent.general.prev') }}</a></li>
 		{% endif %}
 
 		{% for i in pagination.pages %}

@@ -7,18 +7,18 @@
 		<div class="email">{{ person.primary_email_address }}</div>
 		<dl>
 			{% if person.organization %}
-				<dt>{{ phrase('agent.organization') }}</dt>
+				<dt>{{ phrase('agent.general.organization') }}</dt>
 				<dd>{{ person.organization.name }} {% if person.organization_position %}({{ person.organization_position }}){% endif %}</dd>
 			{% endif %}
 			{% if person.usergroups|length %}
-				<dt>{{ phrase('agent.usergroup') }}</dt>
+				<dt>{{ phrase('agent.general.usergroup') }}</dt>
 				<dd>
 					{% for u in person.usergroups %}
 						{{ u.title }}{% if not loop.last %},{% endif %}
 					{% endfor %}
 				</dd>
 			{% endif %}
-			<dt>{{ phrase('agent.date_created') }}</dt>
+			<dt>{{ phrase('agent.general.date_created') }}</dt>
 			<dd>{{ person.date_created|date('day') }}</dd>
 		</dl>
 	</div>

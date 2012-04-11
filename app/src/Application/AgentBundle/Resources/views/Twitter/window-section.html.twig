@@ -33,11 +33,11 @@
 	<ul class="source-list with-tree no-editor" style="margin-bottom: 10px">
 		<li class="has-children dp-cat-li sub-expanded">
 			<div class="item-wrap dp-cat-item">
-				<span class="sub-toggle">{{ phrase('agent.expand') }}</span>
+				<span class="sub-toggle">{{ phrase('agent.general.expand') }}</span>
 
 				<span class="title" data-route="listpane:{{ path('agent_twitter_statuses_list', {'account_id': account.id}) }}">
 					<span class="list-counter" id="twitter_{{ account.id }}_inbox_count" data-count="{{ account.countTimeline() }}">{{ account.countTimeline() }}</span>
-					<span>{{ phrase('agent.inbox') }}</span>
+					<span>{{ phrase('agent.general.inbox') }}</span>
 				</span>
 			</div>
 			<ul class="sub-group">
@@ -61,7 +61,7 @@
 					<div class="item-wrap dp-cat-item">
 						<span class="title" data-route="listpane:{{ path('agent_twitter_mentions_list', {'account_id': account.id}) }}">
 							<span class="list-counter" id="twitter_{{ account.id }}_mentions_count" data-count="{{ account.countMentions() }}">{{ account.countMentions() }}</span>
-							<span>{{ phrase('agent.mentions') }}</span>
+							<span>{{ phrase('agent.general.mentions') }}</span>
 						</span>
 					</div>
 				</li>
@@ -78,7 +78,7 @@
 
 		<li class="has-children dp-cat-li">
 			<div class="item-wrap dp-cat-item">
-				<span class="sub-toggle">{{ phrase('agent.expand') }}</span>
+				<span class="sub-toggle">{{ phrase('agent.general.expand') }}</span>
 
 				<span class="title" data-route="listpane:{{ path('agent_twitter_followers_list', {'account_id': account.id}) }}">
 					<span class="list-counter" id="twitter_{{ account.id }}_new_followers_count" data-count="{{ account.countNewFollowers() }}">{{ account.countNewFollowers() }}</span>
@@ -102,7 +102,7 @@
 
 		<li class="has-children dp-cat-li">
 			<div class="item-wrap dp-cat-item">
-				<span class="sub-toggle">{{ phrase('agent.expand') }}</span>
+				<span class="sub-toggle">{{ phrase('agent.general.expand') }}</span>
 
 				<span class="title" data-route="listpane:listpane:page:{{ path('agent_twitter_list_searches', {'account_id': account.id}) }}">
 					<span class="list-counter" id="twitter_{{ account.id }}_searches_count" data-count="{{ account.searches.count|default(0) }}">{{ account.searches.count|default(0) }}</span>
@@ -126,7 +126,7 @@
 			<div class="item-wrap dp-cat-item">
 				<span class="title" data-route="listpane:{{ path('agent_twitter_followers_list', {'account_id': account.id}) }}">
 					<span class="list-counter" id="twitter_{{ account.id }}_followers_count" data-count="{{ account.followers.count|default(0) }}">{{ account.followers.count|default(0) }}</span>
-					<span>{{ phrase('agent.followers') }}</span>
+					<span>{{ phrase('agent.general.followers') }}</span>
 				</span>
 			</div>
 		</li>

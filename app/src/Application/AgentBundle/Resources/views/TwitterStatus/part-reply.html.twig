@@ -5,25 +5,25 @@
 
 <div class="form-reply" style="display: none">
 	<form>
-		<h5>{{ phrase('agent.add_reply') }}</h5>
+		<h5>{{ phrase('agent.general.add_reply') }}</h5>
 		<div class="type" style="float: left">
 			<div style="float: left">
 				<img src="{{ asset('images/agent/icons/twitter_public.png') }}" /><br />
-				<span>{{ phrase('agent.public') }}</span>
+				<span>{{ phrase('agent.general.public') }}</span>
 			</div>
 			<div style="float: left">
 				<img src="{{ asset('images/agent/icons/twitter_private.png') }}" /><br />
-				<span>{{ phrase('agent.private') }}</span>
+				<span>{{ phrase('agent.general.private') }}</span>
 			</div>
 
 			<ul style="display: none">
 				<li>
 					<input type="radio" name="type" value="private" />
-					<label for="private">{{ phrase('agent.private') }}</label>
+					<label for="private">{{ phrase('agent.general.private') }}</label>
 				</li>
 				<li>
 					<input type="radio" name="type" value="public" checked="checked" />
-					<label for="public">{{ phrase('agent.public') }}</label>
+					<label for="public">{{ phrase('agent.general.public') }}</label>
 				</li>
 			</ul>
 		</div>

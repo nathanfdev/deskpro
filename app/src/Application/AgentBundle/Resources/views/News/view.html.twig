@@ -24,7 +24,7 @@ pageMeta.baseId = '{{ baseId }}';
 {# /scroll containers #}
 
 <div class="delete-notice" {% if news.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
-	{{ phrase('agent.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.undelete') }}</button>
+	{{ phrase('agent.general.record_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.category') }}</button>
 </div>
 
 {% if news.status_code == "hidden.validating" %}
@@ -37,7 +37,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<br class="clear" />
 	<div class="meta-line">
 		<div class="status the-status article-status"><span>{{ phrase('agent.publish.status_' ~ news.status_code|replace({'.':'_'})) }}</span></div>
-		<div class="category" id="{{baseId}}_cat_trigger"><span>{{ phrase('agent.category') }}: <span id="{{baseId}}_cat_label">{{ news.category.full_title }}</span></span></div>
+		<div class="category" id="{{baseId}}_cat_trigger"><span>{{ phrase('agent.general.category') }}: <span id="{{baseId}}_cat_label">{{ news.category.full_title }}</span></span></div>
 	</div>
 	<br class="clear" />
 </header>
@@ -45,27 +45,27 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="profile-box-container-outer">
 	<div class="profile-box-container">
 		<header>
-			<h4>{{ phrase('agent.properties') }}</h4>
+			<h4>{{ phrase('agent.general.properties') }}</h4>
 		</header>
 		<section class="description-area">
 			<dl class="info-list">
-				<dt class="type-labels">{{ phrase('agent.labels') }}:</dt>
+				<dt class="type-labels">{{ phrase('agent.general.labels') }}:</dt>
 				<dd class="kb-tags tags-wrap noedit-tags">
 					<input type="text" id="{{baseId}}_labels_input" value="{% for label in news.labels %}{{label.label}},{% endfor %}" />
 				</dd>
 
-				<dt>{{ phrase('agent.rating') }}</dt>
+				<dt>{{ phrase('agent.general.rating') }}</dt>
 				<dd>
                     {% set phrase_part %}
-                    <span class="link-look who-voted-trigger">{{ phrase('agent.count_votecount_votes', {'count': news.num_ratings}) }}</span>
+                    <span class="link-look who-voted-trigger">{{ phrase('agent.general.count_votecount_votes', {'count': news.num_ratings}) }}</span>
                     {% endset %}
-                    {{ phrase('agent.percent_helpful_subphrase', {'percent':news.rating_percent,'subphrase':phrase_part}) }}<br />
-                    <small>{{ phrase('agent.found_article_helpful_or_not', {'up_votes':news.up_votes,'down_votes':news.down_votes}) }}</small>
+                    {{ phrase('agent.general.percent_helpful_subphrase', {'percent':news.rating_percent,'subphrase':phrase_part}) }}<br />
+                    <small>{{ phrase('agent.general.found_article_helpful_or_not', {'up_votes':news.up_votes,'down_votes':news.down_votes}) }}</small>
 				</dd>
 
 				<dt></dt>
 				<dd>
-					{{ phrase('agent.created_timeago_by_x_on_y', {
+					{{ phrase('agent.general.created_timeago_by_x_on_y', {
 						'timeago': '<time class="timeago" datetime="' ~ news.date_created|date('c') ~'"></time>',
 						'name': news.person.display_name,
 						'date': '<time>' ~ news.date_created|date('fulltime') ~ '</time>'
@@ -74,9 +74,9 @@ pageMeta.baseId = '{{ baseId }}';
 			</dl>
 
 			<div class="controls" id="{{baseId}}_action_buttons">
-				<button class="clean-white delete nodelete-hide" {% if news.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.ucfirst_delete') }}</button>
-				<button class="clean-white permalink">{{ phrase('agent.copy_permalink') }}</button>
-				<button class="clean-white view-user-interface">{{ phrase('agent.view_in_user_interface') }}</button>
+				<button class="clean-white delete nodelete-hide" {% if news.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.general.ucfirst_delete') }}</button>
+				<button class="clean-white permalink">{{ phrase('agent.general.copy_permalink') }}</button>
+				<button class="clean-white view-user-interface">{{ phrase('agent.general.view_in_user_interface') }}</button>
 				<br class="clear" />
 			</div>
 		</section>
@@ -87,11 +87,11 @@ pageMeta.baseId = '{{ baseId }}';
 	<header>
 		<nav  id="{{baseId}}_bodytabs">
 			<ul>
-				<li class="on" data-tab-for="#{{baseId}}_tab_contents .news-content"><span>{{ phrase('agent.page') }}</span></li>
-				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.comments') }} (<span id="{{baseId}}_count_comments">{{news_comments|length|default(0)}}</span>)</span></li>
-				<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.label_revisions') }} (<span id="{{baseId}}_count_revs">{{news.revisions|length|default(0)}}</span>)</span></li>
-				<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.related_content') }} (<span id="{{baseId}}_count_related">0</span>)</span></li>
-				<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('agent.search') }}</span></li>
+				<li class="on" data-tab-for="#{{baseId}}_tab_contents .news-content"><span>{{ phrase('agent.general.page') }}</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.general.comments') }} (<span id="{{baseId}}_count_comments">{{news_comments|length|default(0)}}</span>)</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.general.label_revisions') }} (<span id="{{baseId}}_count_revs">{{news.revisions|length|default(0)}}</span>)</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.general.related_content') }} (<span id="{{baseId}}_count_related">0</span>)</span></li>
+				<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('agent.general.search') }}</span></li>
 			</ul>
 		</nav>
 	</header>
@@ -104,9 +104,9 @@ pageMeta.baseId = '{{ baseId }}';
 				{# Content #}
 				<nav class="sub-box-nav noedit-hide">
 					<ul class="option-buttons right" id="{{baseId}}_content_edit_btns">
-						<li class="kb-editor-edit edit" id="{{baseId}}_edit_btn"><span>{{ phrase('agent.ucfirst_edit') }}</span></li>
-						<li class="editor-save-trigger save" id="{{baseId}}_save_btn"><span>{{ phrase('agent.save') }}</span></li>
-						<li class="editor-cancel-trigger cancel" id="{{baseId}}_cancel_btn"><span>{{ phrase('agent.cancel') }}</span></li>
+						<li class="kb-editor-edit edit" id="{{baseId}}_edit_btn"><span>{{ phrase('agent.general.ucfirst_edit') }}</span></li>
+						<li class="editor-save-trigger save" id="{{baseId}}_save_btn"><span>{{ phrase('agent.general.save') }}</span></li>
+						<li class="editor-cancel-trigger cancel" id="{{baseId}}_cancel_btn"><span>{{ phrase('agent.general.cancel') }}</span></li>
 					</ul>
 				</nav>
 				<div id="{{baseId}}_content_ed" class="news-content content-tab-item">
@@ -137,17 +137,17 @@ pageMeta.baseId = '{{ baseId }}';
 							</div>
 							<div class="content">
 								<header>
-									<h4>{{ phrase('agent.new_comment') }}</h4>
+									<h4>{{ phrase('agent.general.new_comment') }}</h4>
 								</header>
 								<div class="body-text">
 									<textarea style="width:99%; height: 80px;"></textarea>
 								</div>
 								<div class="footer-text">
 									<div class="loading-off">
-										<button class="clean-white">{{ phrase('agent.add_comment') }}</button>
+										<button class="clean-white">{{ phrase('agent.general.add_comment') }}</button>
 									</div>
 									<div class="loading-on" style="display:none">
-										{{ phrase('agent.saving') }}
+										{{ phrase('agent.general.saving') }}
 									</div>
 								</div>
 							</div>
@@ -209,7 +209,7 @@ pageMeta.baseId = '{{ baseId }}';
 	{% endif %}
 </ul>
 
-{{ optionbox.category_ob(news_categories, phrase('agent.publish.news_categories'), phrase('agent.apply'), {'id': baseId ~ '_cat_ob'}) }}
+{{ optionbox.category_ob(news_categories, phrase('agent.publish.news_categories'), phrase('agent.general.apply'), {'id': baseId ~ '_cat_ob'}) }}
 
 {# scroll containers #}
 </div></div></div></div>

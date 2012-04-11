@@ -12,13 +12,13 @@
 
 		{% if convo.department %}
 			<div class="row department">
-				<label>{{ phrase('agent.department') }}</label>
+				<label>{{ phrase('agent.general.department') }}</label>
 				{{ convo.department.full_title }}
 			</div>
 		{% endif %}
 
 		<div class="row waiting">
-			<label>{{ phrase('agent.user_waiting') }}</label>
+			<label>{{ phrase('agent.general.user_waiting') }}</label>
 			<span class="wait-timer" data-time="{{ waiting_secs }}">{{ phrase('agent.chat.count_seconds', {'count':waiting_secs}) }}</span>
 		</div>
 
@@ -31,7 +31,7 @@
 
 		{% if tickets|length %}
 			<div class="row tickets">
-				<label>{{ phrase('agent.open_tickets') }}</label>
+				<label>{{ phrase('agent.general.open_tickets') }}</label>
 				<ul>
 					{% for ticket in tickets %}
 						<li>
@@ -44,13 +44,13 @@
 
 		{% if visitor %}
 			<div class="row ip">
-				<label>{{ phrase('agent.ip_address') }}</label>
+				<label>{{ phrase('agent.general.ip_address') }}</label>
 				{{ visitor.ip_address }}
 			</div>
 		{% endif %}
 	</div>
 	<footer>
-		<button class="clean-white small dismiss-trigger">{{ phrase('agent.dismiss') }}</button>
+		<button class="clean-white small dismiss-trigger">{{ phrase('agent.general.dismiss') }}</button>
 		<button class="clean-white small accept-trigger">{{ phrase('agent.chat.take_chat') }}</button>
 	</footer>
 </section>

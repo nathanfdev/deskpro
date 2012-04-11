@@ -219,7 +219,7 @@ class TaskSearch extends SearcherAbstract
 			switch ($term) {
 				case self::TERM_ID:
 					$wheres[] = $this->_rangeMatch("$org_table.id", $op, $choice, true);
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.id'), $op, $choice);
+					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
 					break;
 
 				case self::TERM_TITLE:
@@ -228,17 +228,17 @@ class TaskSearch extends SearcherAbstract
 
 				case self::TERM_PERSON_ID:
 					$wheres[] = $this->_rangeMatch("tasks.person_id", $op, $choice, true);
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.person_id'), $op, $choice);
+					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.person_id'), $op, $choice);
 					break;
 
 				case self::TERM_ASSIGNED_AGENT_ID:
 					$wheres[] = $this->_rangeMatch("tasks.assigned_agent_id", $op, $choice, true);
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.assigned_agent_id'), $op, $choice);
+					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.assigned_agent_id'), $op, $choice);
 					break;
 
 				case self::TERM_ASSIGNED_AGENT_TEAM_ID:
 					$wheres[] = $this->_rangeMatch("tasks.assigned_agent_team_id", $op, $choice, true);
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.assigned_agent_id'), $op, $choice);
+					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.assigned_agent_id'), $op, $choice);
 					break;
 
 			}

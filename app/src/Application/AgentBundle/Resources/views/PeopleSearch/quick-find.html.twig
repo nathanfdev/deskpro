@@ -3,7 +3,7 @@
 		<nav class="mode-buttons">
 			<ul>
 				<li class="simple on"><a>{{ phrase('agent.search.simple') }}</a></li>
-				<li class="advanced"><a>{{ phrase('agent.advanced') }}</a></li>
+				<li class="advanced"><a>{{ phrase('agent.general.advanced') }}</a></li>
 			</ul>
 		</nav>
 		<h4>{{ phrase('agent.search.find_person') }}</h4>
@@ -11,25 +11,25 @@
 	<div class="overlay-content no-footer">
 		<section class="search-area">
 			<form class="simple">
-				<button class="simple-search-trigger dp-button x-small" style="float:right">{{ phrase('agent.find_person_with_criteria') }}</button>
+				<button class="simple-search-trigger dp-button x-small" style="float:right">{{ phrase('agent.general.find_person_with_criteria') }}</button>
 
 				<input type="hidden" name="terms[0][type]" value="person_name" />
 				<input type="hidden" name="terms[0][op]" value="contains" />
 				<input type="hidden" name="terms[1][type]" value="person_email" />
 				<input type="hidden" name="terms[1][op]" value="contains" />
 
-				{{ phrase('agent.name') }}: <input type="text" name="terms[0][name]" value="" />
+				{{ phrase('agent.general.name') }}: <input type="text" name="terms[0][name]" value="" />
 				&nbsp;&nbsp;&nbsp;
-				{{ phrase('agent.email') }}: <input type="text" name="terms[1][email]" value="" />
+				{{ phrase('agent.general.email') }}: <input type="text" name="terms[1][email]" value="" />
 			</form>
 			<form class="advanced" style="display: none;">
 				<div class="row" style="margin-top: 0;">
 					<div class="search-form">
 						<div class="search-terms"></div>
-						<div class="term"><span class="add-term">+</span> {{ phrase('agent.add_a_new_term') }}</div>
+						<div class="term"><span class="add-term">+</span> {{ phrase('agent.general.add_a_new_term') }}</div>
 					</div>
 				</div>
-				<center><button class="advanced-search-trigger dp-button x-small">{{ phrase('agent.find_person_with_criteria') }}</button></center>
+				<center><button class="advanced-search-trigger dp-button x-small">{{ phrase('agent.general.find_person_with_criteria') }}</button></center>
 			</form>
 		</section>
 		<section class="deskpro-results-list" style="display:none">

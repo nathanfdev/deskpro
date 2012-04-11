@@ -21,7 +21,7 @@
 								</li>
 								<li class="" data-route="listpane:{{ path('agent_twitter_mentions_list', {'account_id': account.id}) }}">
 									<span class="list-counter" id="twitter_{{ account.id }}_mentions_count">{{ account.user.mentions.count }}</span>
-									{{ phrase('agent.mentions') }}
+									{{ phrase('agent.general.mentions') }}
 								</li>
 								<li class="" data-route="listpane:{{ path('agent_twitter_retweets_list', {'account_id': account.id}) }}">
 									<span class="list-counter" id="twitter_{{ account.id }}_retweets_count">0</span>
@@ -37,7 +37,7 @@
 								</li>
 								<li class="" data-route="">
 									<span class="list-counter" id="twitter_{{ account.id }}_followers_count">{{ account.followers.count }}</span>
-									{{ phrase('agent.followers') }}
+									{{ phrase('agent.general.followers') }}
 								</li>
 								<li class="" data-route="listpane:{{ path('agent_twitter_outgoing_list', {'account_id': account.id}) }}">
 									<span class="list-counter" id="twitter_{{ account.id }}_sent_count">{{ account.user.statuses.count }}</span>

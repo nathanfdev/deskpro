@@ -41,7 +41,7 @@ pageMeta.resultIds = {{ result_ids|json_encode|raw }};
 
 	{% if not feedback|length %}
 		<section class="list-listing no-results">
-			<p>{{ phrase('agent.there_are_no_results') }}</p>
+			<p>{{ phrase('agent.general.there_are_no_results') }}</p>
 		</section>
 	{% endif %}
 
@@ -50,7 +50,7 @@ pageMeta.resultIds = {{ result_ids|json_encode|raw }};
 			<div class="cursor">
 				{{ phrase('agent.feedback.showing_results') }}
 				<span class="results-showing-count" id="{{baseId}}_showing_count"></span>
-				{{ phrase('agent.of') }}
+				{{ phrase('agent.general.of') }}
 				<span class="results-total-count" id="{{baseId}}_total_count">{{ result_ids|length }}</span>
 			</div>
 			{% if result_ids|length > per_page %}

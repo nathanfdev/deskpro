@@ -35,7 +35,7 @@
 			</div>
 			<div class="dp-form-input">
                 {% set phrase_link %}
-                    <a href="mailto:support@deskpro.com">{{ phrase('agent.supportdeskprocom') }}</a>
+                    <a href="mailto:support@deskpro.com">{{ phrase('agent.general.supportdeskprocom') }}</a>
                 {% endset %}
                 {{ phrase('admin.license.license_will_expire_on', {'date':lic.getExpireDate()|date('M j, Y'),'link':phrase_link}) }}
 			</div>
@@ -43,7 +43,7 @@
 	{% else %}
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('agent.agents') }}</label>
+				<label>{{ phrase('agent.general.agents') }}</label>
 			</div>
 			<div class="dp-form-input">
 				{% if not lic.getMaxAgents() %}

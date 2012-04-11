@@ -2,17 +2,17 @@
 	<span class="close"></span>
 	<input type="hidden" name="category_id" value="{{ category.id }}" />
 	<dl>
-		<dt>{{ phrase('agent.title') }}:</dt>
+		<dt>{{ phrase('agent.general.title') }}:</dt>
 		<dd><input type="text" name="title" value="{{ category.title }}" /></dd>
 
-		<dt>{{ phrase('agent.permissions') }}:</dt>
+		<dt>{{ phrase('agent.general.permissions') }}:</dt>
 		<dd>
-			<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if perm_type == 'me' %}checked="checked"{% endif %} /> {{ phrase('agent.just_me') }}</label><br />
-			<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if perm_type == 'team' %}checked="checked"{% endif %} /> {{ phrase('agent.teams') }}</label><br />
-			<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if perm_type == 'global' %}checked="checked"{% endif %} /> {{ phrase('agent.everyone') }}</label><br />
+			<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if perm_type == 'me' %}checked="checked"{% endif %} /> {{ phrase('agent.general.just_me') }}</label><br />
+			<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if perm_type == 'team' %}checked="checked"{% endif %} /> {{ phrase('agent.general.teams') }}</label><br />
+			<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if perm_type == 'global' %}checked="checked"{% endif %} /> {{ phrase('agent.general.everyone') }}</label><br />
 		</dd>
 
-		<dt class="perm-teams" style="display: none">{{ phrase('agent.teams') }}:</dt>
+		<dt class="perm-teams" style="display: none">{{ phrase('agent.general.teams') }}:</dt>
 		<dd class="perm-teams" style="display: none">
 			<select name="teams[]" multiple="multiple" size="6">
 				{% for team in agent_teams %}
@@ -23,7 +23,7 @@
 	</dl>
 
 	<div class="controls">
-		<button class="clean-white small save-trigger">{{ phrase('agent.save')}}</button>
-		<button class="clean-white small delete-trigger">{{ phrase('agent.ucfirst_delete') }}</button>
+		<button class="clean-white small save-trigger">{{ phrase('agent.general.save')}}</button>
+		<button class="clean-white small delete-trigger">{{ phrase('agent.general.ucfirst_delete') }}</button>
 	</div>
 </div>

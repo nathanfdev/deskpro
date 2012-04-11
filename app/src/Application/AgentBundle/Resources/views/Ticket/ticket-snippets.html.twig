@@ -10,7 +10,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<nav>
 		<header>
 			<span class="new-category"></span>
-			<h4>{{ phrase('agent.categories') }}</h4>
+			<h4>{{ phrase('agent.general.categories') }}</h4>
 		</header>
 		<ul id="{{ baseId }}_catlist">
 			{% for category in ticket_snippet_cats %}
@@ -30,7 +30,7 @@ pageMeta.baseId = '{{ baseId }}';
 			{% endfor %}
 
 			<div class="no-cats-message" {% if ticket_snippet_cats|length %}style="display: none"{% endif %}>
-				{{ phrase('agent.snippets_none_explain') }}
+				{{ phrase('agent.general.snippets_none_explain') }}
 			</div>
         {# Page Containers #}
         </div></div>
@@ -45,17 +45,17 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 		<div class="overlay-content">
 			<dl class="generic-form-list">
-				<dt>{{ phrase('agent.title') }}:</dt>
+				<dt>{{ phrase('agent.general.title') }}:</dt>
 				<dd><input type="text" name="title" value="New Category" /></dd>
 
-				<dt>{{ phrase('agent.permissions') }}:</dt>
+				<dt>{{ phrase('agent.general.permissions') }}:</dt>
 				<dd>
-					<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" checked="checked" /> {{ phrase('agent.just_me') }}</label><br />
+					<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" checked="checked" /> {{ phrase('agent.general.just_me') }}</label><br />
 					{% if app.getSetting('core.use_agent_team') %}<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" /> {{ phrase('agent.tickets.my_team') }}</label><br />{% endif %}
-					<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" /> {{ phrase('agent.everyone') }}</label><br />
+					<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" /> {{ phrase('agent.general.everyone') }}</label><br />
 				</dd>
 
-				<dt class="perm-teams" style="display: none">{{ phrase('agent.teams') }}:</dt>
+				<dt class="perm-teams" style="display: none">{{ phrase('agent.general.teams') }}:</dt>
 				<dd class="perm-teams" style="display: none">
 					<select name="teams[]" multiple="multiple" size="6">
 						{% for team in agent_teams %}
@@ -67,7 +67,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 		<div class="overlay-footer">
 			<div class="is-not-loading">
-				<button class="clean-white small new-cat-trigger">{{ phrase('agent.add') }}</button>
+				<button class="clean-white small new-cat-trigger">{{ phrase('agent.general.add') }}</button>
 			</div>
 			<div class="is-loading">
 				<img src="{{ asset('images/spinners/loading-small-flat.gif') }}" />

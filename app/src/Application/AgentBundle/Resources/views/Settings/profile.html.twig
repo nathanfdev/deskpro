@@ -4,28 +4,28 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 <form action="{{ path('agent_settings_profile_save') }}" method="post">
 	<div class="dp-form">
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>{{ phrase('agent.name') }}</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.general.name') }}</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.name) }}
 			</div>
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>{{ phrase('agent.email') }}</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.general.email') }}</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.email, {'attr': {'id': 'settings_profile_email'}}) }}
 			</div>
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>{{ phrase('agent.timezone') }}</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.general.timezone') }}</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.timezone) }}
 			</div>
 		</div>
 
 		<div class="dp-form-row new-picture">
-			<div class="dp-form-label"><label>{{ phrase('agent.label_picture') }}</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.general.label_picture') }}</label></div>
 			<div class="dp-form-input">
 				<table cellspacing="0" cellpadding="0"><tr>
 					<td style="padding-right: 15px;"><img src="{{ app.user.getPictureUrl(80) }}" /><br /><em class="desc">{{ phrase('agent.settings.your_current_picture') }}</em></td>
@@ -37,7 +37,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			</div>
 			<script class="template-upload" type="text/x-tmpl">
 				{{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
-				<p>{{ '{%=file.name%}' }} ({{ phrase('agent.saving') }})</p>
+				<p>{{ '{%=file.name%}' }} ({{ phrase('agent.general.saving') }})</p>
 				{{ '{% } %}' }}
 			</script>
 			<script class="template-download" type="text/x-tmpl">
@@ -58,10 +58,10 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>{{ phrase('agent.change_password') }}</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.general.change_password') }}</label></div>
 			<div class="dp-form-input double-password">
-				{{ form_widget(form.password, {'attr': { 'placeholder': phrase('agent.new_password'), 'class': 'password1' }}) }}
-				{{ form_widget(form.password2, {'attr': { 'placeholder': phrase('agent.repeat_password'), 'class': 'password2' }}) }}
+				{{ form_widget(form.password, {'attr': { 'placeholder': phrase('agent.general.new_password'), 'class': 'password1' }}) }}
+				{{ form_widget(form.password2, {'attr': { 'placeholder': phrase('agent.general.repeat_password'), 'class': 'password2' }}) }}
 				<br /><em class="desc">{{ phrase('agent.settings.leave_password_blank') }}</em>
 			</div>
 		</div>
@@ -75,5 +75,5 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		</div>
 	</div>
 
-	<button type="submit" class="clean-white submit-trigger">{{ phrase('agent.save') }}</button>
+	<button type="submit" class="clean-white submit-trigger">{{ phrase('agent.general.save') }}</button>
 </form>

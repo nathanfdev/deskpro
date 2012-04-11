@@ -7,31 +7,31 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Basic';
 
 <table class="list" cellspacing="0" width="100%">
 	<tr class="white line-1">
-		<td width="120">{{ phrase('agent.landing_page') }}</td>
+		<td width="120">{{ phrase('agent.general.landing_page') }}</td>
 		<td><input type="text" style="width: 90%" value="{{ session.visitor.landing_page }}" /></td>
 	</tr>
 	<tr class="white line-1">
-		<td>{{ phrase('agent.current_page') }}</td>
+		<td>{{ phrase('agent.general.current_page') }}</td>
 		<td><input type="text" style="width: 90%" value="{{ session.visitor.last_page }}" /></td>
 	</tr>
 	<tr class="white line-1">
-		<td>{{ phrase('agent.referrer') }}</td>
+		<td>{{ phrase('agent.general.referrer') }}</td>
 		<td><input type="text" style="width: 90%" value="{{ session.visitor.ref_page }}" /></td>
 	</tr>
 	<tr class="white line-1">
-		<td>{{ phrase('agent.initial_visit') }}</td>
+		<td>{{ phrase('agent.general.initial_visit') }}</td>
 		<td>{{ session.visitor.date_created|date('Y-m-d H:m:s') }}</td>
 	</tr>
 	<tr class="white line-1">
-		<td>{{ phrase('agent.session_started') }}</td>
+		<td>{{ phrase('agent.general.session_started') }}</td>
 		<td>{{ session.date_created|date('Y-m-d H:m:s') }}</td>
 	</tr>
 	<tr class="white line-1">
-		<td>{{ phrase('agent.last_activity') }}</td>
+		<td>{{ phrase('agent.general.last_activity') }}</td>
 		<td>{{ session.visitor.date_last|date('Y-m-d H:m:s') }}</td>
 	</tr>
 	<tr class="white line-1">
-		<td>{{ phrase('agent.ip_address') }}</td>
+		<td>{{ phrase('agent.general.ip_address') }}</td>
 		<td>
 			{% if session.visitor.ip_address %}
 				<img src="http://api.hostip.info/flag.php?ip=12.215.42.19" border="0" width="53" height="27" align="left" style="padding-right: 8px;" />
@@ -40,7 +40,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Basic';
 		</td>
 	</tr>
 	<tr class="white line-1">
-		<td>{{ phrase('agent.browser_agent') }}</td>
+		<td>{{ phrase('agent.general.browser_agent') }}</td>
 		<td>{{ session.visitor.user_agent }}</td>
 	</tr>
 </table>

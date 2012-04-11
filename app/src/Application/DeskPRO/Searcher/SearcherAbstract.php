@@ -403,18 +403,18 @@ abstract class SearcherAbstract implements PersonContextInterface
 		}
 
 		if ($op == self::OP_BETWEEN) {
-			$summary = App::getTranslator()->phrase('agent.x_is_between_y_and_z', array(
+			$summary = App::getTranslator()->phrase('agent.general.x_is_between_y_and_z', array(
 				'field' => $field,
 				'value1' => $range1,
 				'value2' => $range2
 			));
 		} elseif ($op == self::OP_GTE) {
-			$summary = App::getTranslator()->phrase('agent.x_is_greater_than_y', array(
+			$summary = App::getTranslator()->phrase('agent.general.x_is_greater_than_y', array(
 				'field' => $field,
 				'value' => $range1,
 			));
 		} else {
-			$summary = App::getTranslator()->phrase('agent.x_is_less_than_y', array(
+			$summary = App::getTranslator()->phrase('agent.general.x_is_less_than_y', array(
 				'field' => $field,
 				'value' => $range1,
 			));
@@ -442,7 +442,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 		if (!empty($choice['date1'])) {
 			$date1 = $choice['date1'];
 		} else if (!empty($choice['date1_relative']) AND !empty($choice['date1_relative_type'])) {
-			return App::getTranslator()->phrase('agent.x_before_y', array(
+			return App::getTranslator()->phrase('agent.general.x_before_y', array(
 				'field' => $field,
 				'value' => (int)$choice['date1_relative'] . " {$choice['date1_relative_type']} ago"
 			));
@@ -454,7 +454,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 		if (!empty($choice['date2'])) {
 			$date2 = $choice['date2'];
 		} else if (!empty($choice['date2_relative']) AND !empty($choice['date2_relative_type'])) {
-			return App::getTranslator()->phrase('agent.x_before_y', array(
+			return App::getTranslator()->phrase('agent.general.x_before_y', array(
 				'field' => $field,
 				'value' => (int)$choice['date2_relative'] . " {$choice['date2_relative_type']} ago"
 			));
@@ -487,18 +487,18 @@ abstract class SearcherAbstract implements PersonContextInterface
 		}
 
 		if ($op == self::OP_BETWEEN) {
-			$summary = App::getTranslator()->phrase('agent.x_is_between_y_and_z', array(
+			$summary = App::getTranslator()->phrase('agent.general.x_is_between_y_and_z', array(
 				'field' => $field,
 				'value1' => $date1->format('M j, Y'),
 				'value2' => $date2->format('M j, Y')
 			));
 		} elseif ($op == self::OP_GTE) {
-			$summary = App::getTranslator()->phrase('agent.x_after_y', array(
+			$summary = App::getTranslator()->phrase('agent.general.x_after_y', array(
 				'field' => $field,
 				'value' => $date1->format('M j, Y'),
 			));
 		} else {
-			$summary = App::getTranslator()->phrase('agent.x_before_y', array(
+			$summary = App::getTranslator()->phrase('agent.general.x_before_y', array(
 				'field' => $field,
 				'value' => $date1->format('M j, Y'),
 			));
@@ -673,16 +673,16 @@ abstract class SearcherAbstract implements PersonContextInterface
 
 		switch ($op) {
 			case self::OP_IS:
-				$summary = App::getTranslator()->phrase('agent.x_is_y', array('field' => $field, 'value' => $title));
+				$summary = App::getTranslator()->phrase('agent.general.x_is_y', array('field' => $field, 'value' => $title));
 				break;
 			case self::OP_NOT:
-				$summary = App::getTranslator()->phrase('agent.x_is_not_y', array('field' => $field, 'value' => $title));
+				$summary = App::getTranslator()->phrase('agent.general.x_is_not_y', array('field' => $field, 'value' => $title));
 				break;
 			case self::OP_CONTAINS:
-				$summary = App::getTranslator()->phrase('agent.x_is_y', array('field' => $field, 'value' => $title));
+				$summary = App::getTranslator()->phrase('agent.general.x_is_y', array('field' => $field, 'value' => $title));
 				break;
 			case self::OP_NOTCONTAINS:
-				$summary = App::getTranslator()->phrase('agent.x_is_not_y', array('field' => $field, 'value' => $title));
+				$summary = App::getTranslator()->phrase('agent.general.x_is_not_y', array('field' => $field, 'value' => $title));
 				break;
 		}
 

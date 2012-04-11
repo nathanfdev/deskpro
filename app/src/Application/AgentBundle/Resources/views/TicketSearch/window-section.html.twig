@@ -6,7 +6,7 @@
 			<span class="count"></span>
 			{{ phrase('agent.tickets.tickets_on_hold') }}
 		</div>
-		<h1>{{ phrase('agent.inbox') }}</h1>
+		<h1>{{ phrase('agent.general.inbox') }}</h1>
 		<span id="ticket_filter_launch_editor" class="settings"></span>
 	</header>
 	<article id="system_filters_wrap">
@@ -61,7 +61,7 @@
 
 <section class="source-section custom-filters-section">
 	<header>
-		<h1>{{ phrase('agent.filters') }}</h1>
+		<h1>{{ phrase('agent.general.filters') }}</h1>
 		<span id="ticket_customfilters_launch_editor" class="add launch-customfilters-settings {% if not custom_filters|length %}solo{% endif %}"></span>
 		{% if custom_filters|length %}<span id="ticket_customfilters_launch_editor" class="settings launch-customfilters-editor"></span>{% endif %}
 	</header>
@@ -99,9 +99,9 @@
 
 <section class="source-tabs" id="tickets_outline_tabstrip">
 	<ul>
-		<li class="labels"  data-tab-for="#tickets_outline_labels"><span>{{ phrase('agent.labels') }}</span></li>
-		<li class="flagged" data-tab-for="#tickets_outline_flagged"><span>{{ phrase('agent.flagged') }}</span></li>
-		<li class="archive fill-out" data-tab-for="#tickets_outline_archive"><span>{{ phrase('agent.archive') }}</span></li>
+		<li class="labels"  data-tab-for="#tickets_outline_labels"><span>{{ phrase('agent.general.labels') }}</span></li>
+		<li class="flagged" data-tab-for="#tickets_outline_flagged"><span>{{ phrase('agent.general.flagged') }}</span></li>
+		<li class="archive fill-out" data-tab-for="#tickets_outline_archive"><span>{{ phrase('agent.general.archive') }}</span></li>
 	</ul>
 </section>
 
@@ -125,20 +125,20 @@
 		</script>
 		<script type="text/x-deskpro-plain" class="editor-fields-tpl">
 			<select>
-				<option value="">{{ phrase('agent.group_by') }} {{ phrase('agent.none') }}</option>
-				<option value="department">{{ phrase('agent.group_by') }} {{ phrase('agent.department') }}</option>
-				{% if app.getSetting('core.use_ticket_category') %}<option value="category">{{ phrase('agent.group_by') }} {{ phrase('agent.category') }}</option>{% endif %}
-				{% if app.getSetting('core.use_ticket_priority') %}<option value="priority">{{ phrase('agent.group_by') }} {{ phrase('agent.priority') }}</option>{% endif %}
-				{% if app.getSetting('core.use_product') %}<option value="product">{{ phrase('agent.group_by') }} {{ phrase('agent.product') }}</option>{% endif %}
-				{% if app.getSetting('core.use_ticket_workflow') %}<option value="workflow">{{ phrase('agent.group_by') }} {{ phrase('agent.workflow') }}</option>{% endif %}
-				<option value="organization">{{ phrase('agent.group_by') }} {{ phrase('agent.organization') }}</option>
-				<option value="language">{{ phrase('agent.group_by') }} {{ phrase('agent.language') }}</option>
-				<option value="urgency">{{ phrase('agent.group_by') }} {{ phrase('agent.urgency') }}</option>
-				<option value="agent">{{ phrase('agent.group_by') }} {{ phrase('agent.agent') }}</option>
-				{% if app.getSetting('core.use_agent_team') %}<option value="agent_team">{{ phrase('agent.group_by') }} {{ phrase('agent.agent_team') }}</option>{% endif %}
-				<option value="user_waiting">{{ phrase('agent.group_by') }} {{ phrase('agent.time_waiting') }}</option>
-				<option value="total_user_waiting">{{ phrase('agent.group_by') }} {{ phrase('agent.total_time_waiting') }}</option>
-				<option value="date_created">{{ phrase('agent.group_by') }} {{ phrase('agent.date_opened') }}</option>
+				<option value="">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>
+				<option value="department">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>
+				{% if app.getSetting('core.use_ticket_category') %}<option value="category">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>{% endif %}
+				{% if app.getSetting('core.use_ticket_priority') %}<option value="priority">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>{% endif %}
+				{% if app.getSetting('core.use_product') %}<option value="product">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>{% endif %}
+				{% if app.getSetting('core.use_ticket_workflow') %}<option value="workflow">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>{% endif %}
+				<option value="organization">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>
+				<option value="language">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>
+				<option value="urgency">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>
+				<option value="agent">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>
+				{% if app.getSetting('core.use_agent_team') %}<option value="agent_team">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>{% endif %}
+				<option value="user_waiting">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>
+				<option value="total_user_waiting">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>
+				<option value="date_created">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.show') }}</option>
 			</select>
 		</script>
 	</section>
@@ -155,7 +155,7 @@
 		<script type="text/x-deskpro-plain" class="editor-fields-tpl">
 			<div>
 				<span class="edit"></span>
-				<label><input type="checkbox" checked="checked" class="dp-checkbox" /> {{ phrase('agent.show') }}</label>
+				<label><input type="checkbox" checked="checked" class="dp-checkbox" /> {{ phrase('agent.general.show') }}</label>
 			</div>
 		</script>
 	</section>

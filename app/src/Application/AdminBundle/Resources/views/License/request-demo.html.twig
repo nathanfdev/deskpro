@@ -25,7 +25,7 @@
 <div class="alert-message block-message error">
 	<strong>{{ phrase('admin.license.error_encountered') }}:</strong>
 	<ul>
-		{% if errors.email %}<li>{{ phrase('agent.please_enter_valid_email') }}</li>{% endif %}
+		{% if errors.email %}<li>{{ phrase('agent.general.please_enter_valid_email') }}</li>{% endif %}
 		{% if errors.timeout %}<li>{{ phrase('admin.license.error_you_timed_out') }}</li>{% endif %}
 		{% if errors.server_error %}<li>{{ phrase('admin.license.error_licensing_server_problems') }}</li>{% endif %}
 		{% if errors.request_error %}<li>{{ phrase('admin.license.license_server_detected_error', {'error':errors.request_error}) }}</li>{% endif %}
@@ -40,7 +40,7 @@
 			<a href="{{ path('admin_license_keyfile', {email_address: email_address|default(app.user.primary_email_address) }) }}" class="install-key-file">{{ phrase('admin.license.installkey') }}</a>
 			<br />
             {% set phrase_link %}
-                <a href="mailto:support@deskpro.com" style="color: #000;">{{ phrase('agent.supportdeskprocom') }}</a>
+                <a href="mailto:support@deskpro.com" style="color: #000;">{{ phrase('agent.general.supportdeskprocom') }}</a>
             {% endset %}
             {{ phrase('admin.license.do_if_license_has_problems', {'link':phrase_link}) }}
 		</p>
@@ -52,7 +52,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.your_email_address') }}</label>
+			<label>{{ phrase('agent.general.your_email_address') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<input type="text" name="email_address" value="{{ app.user.primary_email_address }}" /><br />

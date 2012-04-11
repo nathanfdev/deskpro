@@ -10,7 +10,7 @@
 <div class="dp-form">
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.id') }}</label>
+			<label>{{ phrase('agent.general.id') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ log.id }}
@@ -19,7 +19,7 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.date') }}</label>
+			<label>{{ phrase('agent.general.date') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{ log.date_created|date('Y-m-d H:m:s') }}
@@ -40,13 +40,13 @@
 			<label>{{ phrase('admin.general.sn_code') }}</label>
 		</div>
 		<div class="dp-form-input">
-			{{ log.session_name|default(phrase('agent.none')) }}
+			{{ log.session_name|default(phrase('agent.general.none')) }}
 		</div>
 	</div>
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.priority') }}</label>
+			<label>{{ phrase('agent.general.priority') }}</label>
 		</div>
 		<div class="dp-form-input">
 			{{log.priority}} {{log.priority_name}}
@@ -55,16 +55,16 @@
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.flag') }}</label>
+			<label>{{ phrase('agent.general.flag') }}</label>
 		</div>
 		<div class="dp-form-input">
-			{{ log.flag|default(phrase('agent.none')) }}
+			{{ log.flag|default(phrase('agent.general.none')) }}
 		</div>
 	</div>
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.message') }}</label>
+			<label>{{ phrase('agent.general.message') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<textarea style="width:99%; height:200px; font-family:Monaco, 'Courier New', courier, monospace;">{{log.message}}</textarea>

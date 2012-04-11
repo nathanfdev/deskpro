@@ -14,7 +14,7 @@
 	{% endif %}
 
 	<ul>
-		<li><a href="{{ path('admin_agents') }}">{{ phrase('agent.agents') }}</a></li>
+		<li><a href="{{ path('admin_agents') }}">{{ phrase('agent.general.agents') }}</a></li>
 		{% if agent.id %}
 			<li>{{ phrase('admin.agents.edit_agent') }}</li>
 		{% else %}
@@ -50,7 +50,7 @@
 	<div class="dp-form-section">
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('agent.name') }}</label>
+				<label>{{ phrase('agent.general.name') }}</label>
 			</div>
 			<div class="dp-form-input">
 				<input style="width:200px;" type="text" name="agent[first_name]" value="{{ agent.first_name }}" />
@@ -60,7 +60,7 @@
 
 		<div class="dp-form-row">
 			<div class="dp-form-label">
-				<label>{{ phrase('agent.email') }}</label>
+				<label>{{ phrase('agent.general.email') }}</label>
 			</div>
 			<div class="dp-form-input">
 				<input style="width:422px;" type="text" name="agent[email]" value="{{ agent.primary_email_address }}" />
@@ -81,7 +81,7 @@
 		{% if all_teams %}
 			<div class="dp-form-row">
 				<div class="dp-form-label">
-					<label>{{ phrase('agent.teams') }}</label>
+					<label>{{ phrase('agent.general.teams') }}</label>
 				</div>
 				<div class="dp-form-input">
 					<div class="checkbox-rows"  style="width:417px;">
@@ -138,9 +138,9 @@
 							<table width="100%">
 								<thead>
 									<tr>
-										<th style="text-align: left;">{{ phrase('agent.department') }}</th>
-										<th width="60">{{ phrase('agent.tickets') }}</th>
-										<th width="60">{{ phrase('agent.chat') }}</th>
+										<th style="text-align: left;">{{ phrase('agent.general.department') }}</th>
+										<th width="60">{{ phrase('agent.general.tickets') }}</th>
+										<th width="60">{{ phrase('agent.general.chat') }}</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -207,7 +207,7 @@
 			<td width="65%" style="padding-left: 10px">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('agent.permissions') }}</label>
+						<label>{{ phrase('agent.general.permissions') }}</label>
 					</div>
 					<div class="dp-form-input" id="permgroup_table">
 						{% include 'AdminBundle:Agents:edit-agent-permtable.html.twig' %}

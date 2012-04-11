@@ -1,11 +1,11 @@
 <nav class="check-grid-tabs">
 	<ul data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-trigger-elements="> li">
-		<li class="on" data-tab-for="#permgroup_tickets"><span>{{ phrase('agent.tickets') }}</span></li>
-		<li data-tab-for="#permgroup_chat"><span>{{ phrase('agent.chat') }}</span></li>
-		<li data-tab-for="#permgroup_feedback"><span>{{ phrase('agent.feedback') }}</span></li>
-		<li data-tab-for="#permgroup_articles"><span>{{ phrase('agent.articles') }}</span></li>
-		<li data-tab-for="#permgroup_downloads"><span>{{ phrase('agent.downloads') }}</span></li>
-		<li data-tab-for="#permgroup_news"><span>{{ phrase('agent.news') }}</span></li>
+		<li class="on" data-tab-for="#permgroup_tickets"><span>{{ phrase('agent.general.tickets') }}</span></li>
+		<li data-tab-for="#permgroup_chat"><span>{{ phrase('agent.general.chat') }}</span></li>
+		<li data-tab-for="#permgroup_feedback"><span>{{ phrase('agent.general.feedback') }}</span></li>
+		<li data-tab-for="#permgroup_articles"><span>{{ phrase('agent.general.articles') }}</span></li>
+		<li data-tab-for="#permgroup_downloads"><span>{{ phrase('agent.general.downloads') }}</span></li>
+		<li data-tab-for="#permgroup_news"><span>{{ phrase('agent.general.news') }}</span></li>
 	</ul>
 </nav>
 
@@ -174,7 +174,7 @@
 
 <div id="permgroup_news" style="display: none" class="dp-form-box">
 	<!-- PERMISSION:news.use --><input class="onoff-slider" type="checkbox" {% if permissions['news.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.use]" value="1" />
-	{{ phrase('agent.news') }}
+	{{ phrase('agent.general.news') }}
 	<div class="check-grid" style="max-height: 200px; overflow: auto;">
 		<table width="100%">
 			<thead>

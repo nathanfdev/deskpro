@@ -1,13 +1,13 @@
 <div class="change-picture-overlay {% if org.picture_blob %}with-existing{% endif %} mass-actions-overlay">
 	<div class="overlay-title">
-		<span class="close close-trigger">{{ phrase('agent.close_lc') }}</span>
-		<h4>{{ phrase('agent.change_pic_for', {'name': org.name}) }}</h4>
+		<span class="close close-trigger">{{ phrase('agent.general.close_lc') }}</span>
+		<h4>{{ phrase('agent.general.change_pic_for', {'name': org.name}) }}</h4>
 	</div>
 	<div class="overlay-content">
-		<div class="drop-file-zone"><h1>{{ phrase('agent.drop_here_to_upload') }}</h1></div>
+		<div class="drop-file-zone"><h1>{{ phrase('agent.general.drop_here_to_upload') }}</h1></div>
 		{% if org.picture_blob %}
 		<div class="existing-picture">
-			<header><h3>{{ phrase('agent.existing_picture') }}</h3></header>
+			<header><h3>{{ phrase('agent.general.existing_picture') }}</h3></header>
 			<section>
 				<img src="{{ org.getPictureUrl(150) }}" />
 			</section>
@@ -17,20 +17,20 @@
 			<header>
 				<div class="upload-control">
 					<input type="file" name="file-upload" />
-					<button class="clean-white small">{{ phrase('agent.upload') }}</button>
+					<button class="clean-white small">{{ phrase('agent.general.upload') }}</button>
 				</div>
-				<h3>{{ phrase('agent.new_pic') }}</h3>
+				<h3>{{ phrase('agent.general.new_pic') }}</h3>
 			</header>
 			<section>
 				<p class="explain">
-					{{ phrase('agent.upload_explain') }}
+					{{ phrase('agent.general.upload_explain') }}
 				</p>
 				<div class="files">
 				</div>
 
 				<script class="template-upload" type="text/x-tmpl">
 					{{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
-					<p>{{ '{%=file.name%}' }} ({{ phrase('agent.saving') }})</p>
+					<p>{{ '{%=file.name%}' }} ({{ phrase('agent.general.saving') }})</p>
 					{{ '{% } %}' }}
 				</script>
 				<script class="template-download" type="text/x-tmpl">
@@ -44,7 +44,7 @@
 							<input type="hidden" name="new_blob_id" class="new_blob_id" value="{{ '{%=file.blob_id%}' }}" />
 							<input type="hidden" name="set_pic_opt" class="set_pic_opt" value="newpic" />
 							<img src="{{ '{%=file.download_url%}' }}?s=150" class="pic-new" data-setted-size="{{ '{%=file.download_url%}' }}?s=60" />
-							<div><button class="clean-white save-trigger small">{{ phrase('agent.set_new_pic') }}</button></div>
+							<div><button class="clean-white save-trigger small">{{ phrase('agent.general.set_new_pic') }}</button></div>
 						</div>
 					{{ '{% } %}' }}
 					{{ '{% } %}' }}

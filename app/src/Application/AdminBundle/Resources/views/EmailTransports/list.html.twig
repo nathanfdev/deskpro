@@ -20,7 +20,7 @@
 	<h3>{{ phrase('admin.gateway.default_from_address') }}</h3>
 	<form action="{{ path('admin_emailtrans_set_default_from') }}" method="post">
 		{{ form_token('admin_update_from') }}
-		<input type="text" name="default_from" value="{{ app.getSetting('core.default_from_email') }}" /> <button class="clean-white">{{ phrase('agent.update') }}</button>
+		<input type="text" name="default_from" value="{{ app.getSetting('core.default_from_email') }}" /> <button class="clean-white">{{ phrase('agent.general.update') }}</button>
 	</form>
 </div>
 
@@ -42,7 +42,7 @@
 						{% if transport.match_type == 'exact' %}{{ phrase('admin.gateway.from_pattern', {'pattern':transport.match_pattern}) }}
 						{% elseif transport.match_type == 'domain' %}{{ phrase('admin.gateway.from_domain', {'pattern':transport.match_pattern}) }}
 						{% elseif transport.match_type == 'regex' %}{{ phrase('admin.gateway.from_pattern', {'pattern':transport.match_pattern}) }}
-						{% elseif transport.match_type == 'all' %}{{ phrase('agent.default') }}{% endif %}
+						{% elseif transport.match_type == 'all' %}{{ phrase('agent.general.default') }}{% endif %}
 					</td>
 					<td>{{ transport.title }}</td>
 					<td>
@@ -53,7 +53,7 @@
 							{% else %}{{ transport.backup_transport_type }}
 							{% endif %}
 						{% else %}
-							{{ phrase('agent.none') }}
+							{{ phrase('agent.general.none') }}
 						{% endif %}
 					</td>
 					<td style="padding: 3px 3px 0 0">

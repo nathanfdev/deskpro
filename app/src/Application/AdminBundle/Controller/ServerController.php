@@ -203,7 +203,7 @@ class ServerController extends AbstractController
 
 			$error = $accept->getError($file, 'agent');
 			if ($error) {
-				$failed = $this->container->getTranslator()->phrase('agent.attach_error_' . $error['error_code'], $error);
+				$failed = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
 			} else {
 				$attach = $accept->accept($file);
 			}

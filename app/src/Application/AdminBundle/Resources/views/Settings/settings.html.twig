@@ -2,7 +2,7 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 	<ul>
-		<li>{{ phrase('agent.settings') }}</li>
+		<li>{{ phrase('agent.general.settings') }}</li>
 	</ul>
 {% endblock %}
 {% block html_head %}
@@ -60,10 +60,10 @@
 	</div>
 </div>
 <div class="setting_field_row">
-	<h4>{{ phrase('agent.attachments') }}</h4>
+	<h4>{{ phrase('agent.general.attachments') }}</h4>
 	<div class="setting_fields">
 		<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" style="padding-right: 15px" width="50%">
-			<h6>{{ phrase('agent.users') }}</h6>
+			<h6>{{ phrase('agent.general.users') }}</h6>
 
 			<div class="field_row">
 				<input type="hidden" id="user_attach_maxsize" name="settings[core.attach_user_maxsize]" value="{{ app.getSetting('core.attach_user_maxsize') }}" />
@@ -82,7 +82,7 @@
 				<input type="text" id="user_attach_limit_input" style="width: 300px; height: 22px;" />
 			</div>
 		</td><td valign="top" style="padding-left: 15px" width="50%">
-			<h6>{{ phrase('agent.agents') }}</h6>
+			<h6>{{ phrase('agent.general.agents') }}</h6>
 
 			<div class="field_row">
 				<input type="hidden" id="agent_attach_maxsize" name="settings[core.attach_agent_maxsize]" value="{{ app.getSetting('core.attach_agent_maxsize') }}" />
@@ -119,7 +119,7 @@
 	</div>
 </div>
 <div class="setting_field_row">
-	<h4>{{ phrase('agent.advanced') }}</h4>
+	<h4>{{ phrase('agent.general.advanced') }}</h4>
 	<div class="setting_fields">
 		<div class="field_row">
 			<table cellspacing="0" cellpadding="0"><tr>

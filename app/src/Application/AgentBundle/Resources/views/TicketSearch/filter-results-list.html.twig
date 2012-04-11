@@ -40,35 +40,35 @@ pageMeta.baseId = '{{ baseId }}';
 <section class="dp-overlay">
 	<header>
 		<div class="controls">
-			<a class="order-by-menu-trigger clean-white arrow menu-fitted">{{ phrase('agent.ordered_by') }} <span class="label">{{ order_by_summary }}</span><em></em></a>
-			<a class="group-by-menu-trigger clean-white arrow menu-fitted">{{ phrase('agent.grouped_by') }} <span class="label">{{ grouping_summary|default(phrase('agent.none')) }}</span><em></em></a>
-			<a class="display-options-trigger clean-white">{{ phrase('agent.display_options') }}</a>
+			<a class="order-by-menu-trigger clean-white arrow menu-fitted">{{ phrase('agent.general.ordered_by') }} <span class="label">{{ order_by_summary }}</span><em></em></a>
+			<a class="group-by-menu-trigger clean-white arrow menu-fitted">{{ phrase('agent.general.grouped_by') }} <span class="label">{{ grouping_summary|default(phrase('agent.general.display_options')) }}</span><em></em></a>
+			<a class="display-options-trigger clean-white">{{ phrase('agent.general.display_options') }}</a>
 		</div>
 
 		<ul style="display: none" class="order-by-menu">
-			<li data-order-by="urgency">{{ phrase('agent.urgency') }}</li>
-			<li data-order-by="date_created">{{ phrase('agent.date_opened') }}</li>
-			<li data-order-by="priority">{{ phrase('agent.priority') }}</li>
+			<li data-order-by="urgency">{{ phrase('agent.general.urgency') }}</li>
+			<li data-order-by="date_created">{{ phrase('agent.general.date_opened') }}</li>
+			<li data-order-by="priority">{{ phrase('agent.general.priority') }}</li>
 		</ul>
 		<ul style="display: none" class="group-by-menu">
-			<li data-group-by="">{{ phrase('agent.none') }}</li>
-			<li data-group-by="department">{{ phrase('agent.department') }}</li>
-			{% if app.getSetting('core.use_ticket_category') %}<li data-group-by="category">{{ phrase('agent.category') }}</li>{% endif %}
-			{% if app.getSetting('core.use_ticket_category') %}<li data-group-by="priority">{{ phrase('agent.priority') }}</li>{% endif %}
-			{% if app.getSetting('core.use_ticket_workflow') %}<li data-group-by="workflow">{{ phrase('agent.workflow') }}</li>{% endif %}
-			{% if app.getSetting('core.use_product') %}<li data-group-by="product">{{ phrase('agent.product') }}</li>{% endif %}
-			<li data-group-by="organization">{{ phrase('agent.organization') }}</li>
-			<li data-group-by="language">{{ phrase('agent.language') }}</li>
-			<li data-group-by="urgency">{{ phrase('agent.urgency') }}</li>
-			<li data-group-by="agent">{{ phrase('agent.agent') }}</li>
-			{% if app.getSetting('core.use_agent_team') %}<li data-group-by="agent_team">{{ phrase('agent.agent_team') }}</li>{% endif %}
-			<li data-group-by="time_waiting">{{ phrase('agent.time_waiting') }}</li>
-			<li data-group-by="total_user_waiting">{{ phrase('agent.total_time_waiting') }}</li>
-			<li data-group-by="date_created">{{ phrase('agent.date_opened') }}</li>
+			<li data-group-by="">{{ phrase('agent.general.none') }}</li>
+			<li data-group-by="department">{{ phrase('agent.general.department') }}</li>
+			{% if app.getSetting('core.use_ticket_category') %}<li data-group-by="category">{{ phrase('agent.general.category') }}</li>{% endif %}
+			{% if app.getSetting('core.use_ticket_category') %}<li data-group-by="priority">{{ phrase('agent.general.priority') }}</li>{% endif %}
+			{% if app.getSetting('core.use_ticket_workflow') %}<li data-group-by="workflow">{{ phrase('agent.general.workflow') }}</li>{% endif %}
+			{% if app.getSetting('core.use_product') %}<li data-group-by="product">{{ phrase('agent.general.product') }}</li>{% endif %}
+			<li data-group-by="organization">{{ phrase('agent.general.organization') }}</li>
+			<li data-group-by="language">{{ phrase('agent.general.language') }}</li>
+			<li data-group-by="urgency">{{ phrase('agent.general.urgency') }}</li>
+			<li data-group-by="agent">{{ phrase('agent.general.agent') }}</li>
+			{% if app.getSetting('core.use_agent_team') %}<li data-group-by="agent_team">{{ phrase('agent.general.agent_team') }}</li>{% endif %}
+			<li data-group-by="time_waiting">{{ phrase('agent.general.time_waiting') }}</li>
+			<li data-group-by="total_user_waiting">{{ phrase('agent.general.total_time_waiting') }}</li>
+			<li data-group-by="date_created">{{ phrase('agent.general.date_opened') }}</li>
 		</ul>
 
 		<span class="close close-trigger"></span>
-		<h1>{{ phrase('agent.tickets') }}</h1>
+		<h1>{{ phrase('agent.general.tickets') }}</h1>
 	</header>
 	<article>
 		{% include 'AgentBundle:TicketSearch:filter-display-options-overlay.html.twig' with {show_all: 1 } %}
@@ -82,14 +82,14 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 	</article>
 	<div class="full-loading" style="display: none">
-		<em>{{ phrase('agent.loading') }}</em>
+		<em>{{ phrase('agent.general.loading') }}</em>
 	</div>
 	<footer class="is-ticket-list bottom-action-bar">
 			<div class="check-count selection-bar">
-				{{ phrase('agent.x_selected', {'num_placeholder': '<span class="selected-count">0</span>'}) }}
+				{{ phrase('agent.general.x_selected', {'num_placeholder': '<span class="selected-count">0</span>'}) }}
 
 				<button class="clean-white perform-actions-trigger">
-					<span>{{ phrase('agent.perform_actions') }}</span>
+					<span>{{ phrase('agent.general.perform_actions') }}</span>
 				</button>
 			</div>
 			<div class="pagecontrols results-nav">
@@ -106,7 +106,7 @@ pageMeta.baseId = '{{ baseId }}';
                     {% set phrase_part2 %}
                     <span class="results-total-count" id="{{baseId}}_total_count">{{ ticket_ids|length }}</span>
                     {% endset %}
-                    {{ phrase('agent.showing_results_x_of_y', {'count':ticket_ids|length,'display_count':phrase_part1,'size':phrase_part2}) }}
+                    {{ phrase('agent.general.showing_results_x_of_y', {'count':ticket_ids|length,'display_count':phrase_part1,'size':phrase_part2}) }}
 				</div>
 				{% if ticket_ids|length > per_page %}
 					<ul class="pagenav no-prev">

@@ -9,26 +9,26 @@ pageMeta.terms = {{filter.terms|json_encode|raw}};
 pageMeta.baseId = '{{ baseId }}';
 </script>
 <header>
-	<span class="close close-trigger">{{ phrase('agent.close_lc') }}</span>
-	<h1>{% if filter.id %}{{ phrase('agent.settings.edit_filter') }}{% else %}{{ phrase('agent.new_filter') }}{% endif %}</h1>
+	<span class="close close-trigger">{{ phrase('agent.general.close_lc') }}</span>
+	<h1>{% if filter.id %}{{ phrase('agent.settings.edit_filter') }}{% else %}{{ phrase('agent.general.new_filter') }}{% endif %}</h1>
 </header>
 <article class="padded" data-width="600" data-height="400">
 	<form id="{{baseId}}_form" action="{{ path('agent_settings_ticketfilters_edit_save', { 'filter_id': filter.id|default(0) }) }}" method="post" accept-charset="utf-8">
 
 	<div class="dp-form">
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>{{ phrase('agent.title') }}</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.general.title') }}</label></div>
 			<div class="dp-form-input">
 				<input type="input" name="filter[title]" class="input-title" value="{{filter.title}}" />
 			</div>
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>{{ phrase('agent.criteria') }}</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.general.criteria') }}</label></div>
 			<div class="dp-form-input">
 				<div class="search-form" id="{{baseId}}_criteria_list">
 					<div class="search-terms"></div>
-					<div class="term"><span class="add-term">+</span> {{ phrase('agent.add_criteria_term') }}</div>
+					<div class="term"><span class="add-term">+</span> {{ phrase('agent.general.add_criteria_term') }}</div>
 				</div>
 				{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'id': baseId ~ '_criteria_tpl', 'term_options': term_options, 'search_context': 'filter' } %}
 			</div>
@@ -38,5 +38,5 @@ pageMeta.baseId = '{{ baseId }}';
 	</form>
 </article>
 <footer>
-	<button class="clean-white" id="{{baseId}}_save_btn">{{ phrase('agent.save') }}</button>
+	<button class="clean-white" id="{{baseId}}_save_btn">{{ phrase('agent.general.save') }}</button>
 </footer>

@@ -307,7 +307,7 @@ class ArticleSearch extends SearcherAbstract
 			switch ($term) {
                 case self::TERM_ID:
 					$wheres[] = $this->_rangeMatch("articles.id", $op, $choice, true);
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.id'), $op, $choice);
+					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
 					break;
 
 				case self::TERM_HIDDEN_STATUS:
@@ -410,7 +410,7 @@ class ArticleSearch extends SearcherAbstract
 						$choices_in = implode(',', $choices_in);
 					}
 
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.label'), $op, $choice);
+					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
 
 					switch ($op) {
 						case self::OP_IS:

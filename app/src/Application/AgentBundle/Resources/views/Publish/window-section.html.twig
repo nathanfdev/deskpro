@@ -1,6 +1,6 @@
 {% if app.user.hasPerm('agent_publish.validate') %}
 <section class="group-section first open">
-	<header><h2>{{ phrase('agent.pending') }}</h2></header>
+	<header><h2>{{ phrase('agent.general.pending') }}</h2></header>
 	<article>
 		<section class="source-section sys-filters-section">
 			<ul class="source-list">
@@ -42,21 +42,21 @@
 {% endif %}
 
 <section class="group-section open">
-	<header><h2>{{ phrase('agent.knowledgebase') }}</h2></header>
+	<header><h2>{{ phrase('agent.general.knowledgebase') }}</h2></header>
 	<article>
 		{% include 'AgentBundle:Publish:kb-tab.html.twig' %}
 	</article>
 </section>
 
 <section class="group-section">
-	<header><h2>{{ phrase('agent.news') }}</h2></header>
+	<header><h2>{{ phrase('agent.general.news') }}</h2></header>
 	<article style="display: none">
 		{% include 'AgentBundle:Publish:news-tab.html.twig' %}
 	</article>
 </section>
 
 <section class="group-section">
-	<header><h2>{{ phrase('agent.downloads') }}</h2></header>
+	<header><h2>{{ phrase('agent.general.downloads') }}</h2></header>
 	<article style="display: none">
 		{% include 'AgentBundle:Publish:downloads-tab.html.twig' %}
 	</article>
@@ -94,13 +94,13 @@
 </div>
 <div id="publish_cat_editor" class="cat-editor" style="display: none">
 	<span class="close-trigger">x</span>
-	<h5>{{ phrase('agent.usergroups') }}</h5>
+	<h5>{{ phrase('agent.general.usergroups') }}</h5>
 	<div class="list">
 		{% for ug in usergroups %}
 			<label>
 				<input type="checkbox" class="usergroup usergroup-{{ ug.id }} {% if ug.sys_name == 'everyone' %}everyone{% endif %}" value="{{ ug.id }}" />
 				{% if ug.sys_name %}
-					{{ phrase('agent.usergroup_' ~ ug.sys_name) }}
+					{{ phrase('agent.general.usergroup_' ~ ug.sys_name) }}
 				{% else %}
 					{{ ug.title }}
 				{% endif %}
@@ -113,11 +113,11 @@
 <script type="text/x-deskpro-plain" id="publish_outline_cat_list_newitem">
 	<li	>
 		<span class="edit-cat">edit</span>
-		<span class="delete-cat">{{ phrase('agent.delete') }}</span>
-		<span class="sub-toggle">{{ phrase('agent.expand') }}</span>
+		<span class="delete-cat">{{ phrase('agent.general.delete') }}</span>
+		<span class="sub-toggle">{{ phrase('agent.general.expand') }}</span>
 		<span class="title is-nav-item fitted">
 			<span class="list-counter" data-count="0">0</span>
-			<span class="title-edit">{{ phrase('agent.add_category') }}</span>
+			<span class="title-edit">{{ phrase('agent.general.add_category') }}</span>
 			<em class="spacer">&nbsp;</em>
 		</span>
 		<ul class="sub-group"></ul>

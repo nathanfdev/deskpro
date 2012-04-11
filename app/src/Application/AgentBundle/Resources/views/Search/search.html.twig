@@ -8,7 +8,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.Search';
 {% if results|length %}
 	<section class="list-listing">
 		{% if results.ticket %}
-			<header class="type-header">{{ phrase('agent.tickets') }}</header>
+			<header class="type-header">{{ phrase('agent.general.tickets') }}</header>
 			{% for res in results.ticket %}
 				{% include 'AgentBundle:Search:search-row-ticket.html.twig' with {ticket: res.object} %}
 			{% endfor %}
@@ -20,25 +20,25 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.Search';
 			{% endfor %}
 		{% endif %}
 		{% if results.feedback %}
-			<header class="type-header">{{ phrase('agent.feedback') }}</header>
+			<header class="type-header">{{ phrase('agent.general.feedback') }}</header>
 			{% for res in results.feedback %}
 				{% include 'AgentBundle:Search:search-row-feedback.html.twig' with {feedback: res.object} %}
 			{% endfor %}
 		{% endif %}
 		{% if results.article %}
-			<header class="type-header">{{ phrase('agent.articles') }}</header>
+			<header class="type-header">{{ phrase('agent.general.articles') }}</header>
 			{% for res in results.article %}
 				{% include 'AgentBundle:Search:search-row-article.html.twig' with {article: res.object} %}
 			{% endfor %}
 		{% endif %}
 		{% if results.news %}
-			<header class="type-header">{{ phrase('agent.news') }}</header>
+			<header class="type-header">{{ phrase('agent.general.news') }}</header>
 			{% for res in results.news %}
 				{% include 'AgentBundle:Search:search-row-news.html.twig' with {news: res.object} %}
 			{% endfor %}
 		{% endif %}
 		{% if results.download %}
-			<header class="type-header">{{ phrase('agent.downloads') }}</header>
+			<header class="type-header">{{ phrase('agent.general.downloads') }}</header>
 			{% for res in results.download %}
 				{% include 'AgentBundle:Search:search-row-download.html.twig' with {download: res.object} %}
 			{% endfor %}
@@ -47,7 +47,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.Search';
 {% else %}
 	<section class="list-listing no-results">
 		<article class="row-item no-results">
-			<p style="padding: 15px;">{{ phrase('agent.there_are_no_results') }}</p>
+			<p style="padding: 15px;">{{ phrase('agent.general.there_are_no_results') }}</p>
 		</article>
 	</section>
 {% endif %}

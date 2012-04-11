@@ -112,7 +112,7 @@
 					<div class="dp-group-options" style="display: none">
 						<table cellspacing="0" cellpadding="0" width="100%">
 							<tr>
-								<td class="title" width="120">{{ phrase('agent.host') }}:</td>
+								<td class="title" width="120">{{ phrase('agent.general.host') }}:</td>
 								<td>
 									{{ form_widget(form.smtp_options.host, {'attr': {'class': 'small'}}) }}<br />
 								</td>
@@ -141,7 +141,7 @@
 								<td>{{ form_widget(form.smtp_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr id="smtp_auth_password">
-								<td class="title">{{ phrase('agent.password') }}:</td>
+								<td class="title">{{ phrase('agent.general.password') }}:</td>
 								<td>{{ form_widget(form.smtp_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
@@ -164,7 +164,7 @@
 								<td>{{ form_widget(form.gmail_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr>
-								<td class="title">{{ phrase('agent.password') }}:</td>
+								<td class="title">{{ phrase('agent.general.password') }}:</td>
 								<td>{{ form_widget(form.gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
@@ -207,7 +207,7 @@
 					<div class="dp-group-options" style="display: none">
 						<table cellspacing="0" cellpadding="0" width="100%">
 							<tr>
-								<td  class="title" width="120">{{ phrase('agent.host') }}:</td>
+								<td  class="title" width="120">{{ phrase('agent.general.host') }}:</td>
 								<td>
 									{{ form_widget(form.backup_smtp_options.host, {'attr': {'class': 'small'}}) }}<br />
 								</td>
@@ -236,7 +236,7 @@
 								<td>{{ form_widget(form.backup_smtp_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr id="backup_smtp_auth_password">
-								<td class="title">{{ phrase('agent.password') }}:</td>
+								<td class="title">{{ phrase('agent.general.password') }}:</td>
 								<td>{{ form_widget(form.backup_smtp_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
@@ -259,7 +259,7 @@
 								<td>{{ form_widget(form.backup_gmail_options.username, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 							<tr>
-								<td class="title">{{ phrase('agent.password') }}:</td>
+								<td class="title">{{ phrase('agent.general.password') }}:</td>
 								<td>{{ form_widget(form.backup_gmail_options.password, {'attr': {'class': 'small'}}) }}</td>
 							</tr>
 						</table>
@@ -273,7 +273,7 @@
 	</div>
 </div>
 
-<button class="clean-white">{{ phrase('agent.save') }}</button>
+<button class="clean-white">{{ phrase('agent.general.save') }}</button>
 </form>
 
 <div id="test_settings_overlay" style="width: 400px; height: 230px; overflow:auto; display: none;">

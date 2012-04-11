@@ -73,7 +73,7 @@ pageMeta.baseId = '{{ baseId }}';
     <div class="titlewrap">
         <div class="isLeft">
             <dl class="table-list">
-                <dt class="type-labels select-deal" id="{{baseId}}_deal_type" data-deal-id="{{ deal.id }}">{{ phrase('agent.type') }}</dt>
+                <dt class="type-labels select-deal" id="{{baseId}}_deal_type" data-deal-id="{{ deal.id }}">{{ phrase('agent.general.type') }}</dt>
                 <dd>
                     {% include 'AgentBundle:Deal:select-deal-options.html.twig' with {
                                 'name': 'actions[dealtype]',
@@ -115,9 +115,9 @@ pageMeta.baseId = '{{ baseId }}';
             <div class="isLeft category the-visibility deal-visibility" id="{{baseId}}_visibility_trigger">
                 <span id="{{baseId}}_visibility_label">
                         {% if deal.visibility == 0 %}
-                                {{ phrase('agent.private') }}
+                                {{ phrase('agent.general.private') }}
                         {% elseif deal.visibility == 1 %}
-                                {{ phrase('agent.public') }}
+                                {{ phrase('agent.general.public') }}
                         {% endif %}
                 </span>
             </div>
@@ -125,11 +125,11 @@ pageMeta.baseId = '{{ baseId }}';
             <div class="isLeft hasMargineLeft-10px status the-status deal-status" id="{{baseId}}_status_trigger">
                 <span id="{{baseId}}_status_label">
                         {% if deal.status == 0 %}
-                                {{ phrase('agent.open') }}
+                                {{ phrase('agent.general.open') }}
                         {% elseif deal.status == 1 %}
                                 {{ phrase('agent.deal.won') }}
                         {% elseif deal.status == 2 %}
-                                {{ phrase('agent.lost') }}
+                                {{ phrase('agent.general.lost') }}
                         {% endif %}
                 </span>
             </div>
@@ -158,18 +158,18 @@ pageMeta.baseId = '{{ baseId }}';
 
 {{ optionbox.start('Status', {'id': baseId ~ '_status_ob'}) }}
 	{{ optionbox.section_start('', 'status') }}
-		<li class="top parent-option item-open" data-item-id="0" data-full-title="{{ phrase('agent.open') }}">
+		<li class="top parent-option item-open" data-item-id="0" data-full-title="{{ phrase('agent.general.open') }}">
 			<input type="radio" name="status" value="o" />
-			<label>{{ phrase('agent.open') }}</label>
+			<label>{{ phrase('agent.general.open') }}</label>
 		</li>
 		<li class="top parent-option item-won" data-item-id="1" data-full-title="{{ phrase('agent.deal.won') }}">
 			<input type="radio" name="status" value="1" />
 			<label>{{ phrase('agent.deal.won') }}</label>
 		</li>
 
-		<li class="top parent-option item-lost" data-item-id="2" data-full-title="{{ phrase('agent.lost') }}">
+		<li class="top parent-option item-lost" data-item-id="2" data-full-title="{{ phrase('agent.general.lost') }}">
 			<input type="radio" name="status" value="2" />
-			<label>{{ phrase('agent.lost') }}</label>
+			<label>{{ phrase('agent.general.lost') }}</label>
 		</li>
 	{{ optionbox.section_end() }}
 {{ optionbox.end('Set Status') }}
@@ -177,13 +177,13 @@ pageMeta.baseId = '{{ baseId }}';
 
 {{ optionbox.start('Visibility', {'id': baseId ~ '_visibility_ob'}) }}
 	{{ optionbox.section_start('', 'visibility') }}
-		<li class="top parent-option item-private" data-item-id="0" data-full-title="{{ phrase('agent.private') }}">
+		<li class="top parent-option item-private" data-item-id="0" data-full-title="{{ phrase('agent.general.private') }}">
 			<input type="radio" name="visibility" value="o" />
-			<label>{{ phrase('agent.private') }}</label>
+			<label>{{ phrase('agent.general.private') }}</label>
 		</li>
-		<li class="top parent-option item-public" data-item-id="1" data-full-title="{{ phrase('agent.public') }}">
+		<li class="top parent-option item-public" data-item-id="1" data-full-title="{{ phrase('agent.general.public') }}">
 			<input type="radio" name="visibility" value="1" />
-			<label>{{ phrase('agent.public') }}</label>
+			<label>{{ phrase('agent.general.public') }}</label>
 		</li>
 	{{ optionbox.section_end() }}
 {{ optionbox.end('Set Visibility') }}

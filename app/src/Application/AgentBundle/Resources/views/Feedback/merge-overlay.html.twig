@@ -1,6 +1,6 @@
 <div class="ticket-merge feedback-merge overlay">
 	<div class="overlay-title">
-		<h4>{{ phrase('agent.merge_x_into', {'name': feedback.title|e}) }}</h4>
+		<h4>{{ phrase('agent.general.merge_x_into', {'name': feedback.title|e}) }}</h4>
 		<div class="info">
 			{{ phrase('agent.feedback.merge_explain') }}
 		</div>
@@ -23,7 +23,7 @@
 				{% for feedback in open_feedback %}
 					<li>
 						<a data-route="page:{{ path('agent_feedback_view', {'feedback_id': feedback.id}) }}" class="with-route">{{ feedback.title }}</a>
-						<button class="clean-gray xx-small merge-trigger" data-feedback-id="{{ feedback.id }}">{{ phrase('agent.merge') }}</button>
+						<button class="clean-gray xx-small merge-trigger" data-feedback-id="{{ feedback.id }}">{{ phrase('agent.general.merge') }}</button>
 					</li>
 				{% endfor %}
 			</ul>

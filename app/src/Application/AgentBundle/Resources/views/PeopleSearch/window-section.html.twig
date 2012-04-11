@@ -4,14 +4,14 @@
 
 <section class="source-section sys-filters-section">
 	<header>
-		<h1>{{ phrase('agent.people') }}</h1>
+		<h1>{{ phrase('agent.general.people') }}</h1>
 	</header>
 	<article>
 		<ul class="source-list" id="people_outline_people_list">
 			<li class="people nav-people is-nav-item" id="people_nav_all">
 				<h3 class="title auto-load-route " data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}">
 					<span class="list-counter">{{ people_count }}</span>
-					{{ phrase('agent.people') }}
+					{{ phrase('agent.general.people') }}
 				</h3>
 			</li>
 
@@ -32,14 +32,14 @@
 
 		<section class="source-tabs" style="margin-top: 8px;">
 			<ul>
-				<li class="labels" ><span>{{ phrase('agent.labels') }}</span></li>
+				<li class="labels" ><span>{{ phrase('agent.general.labels') }}</span></li>
 			</ul>
 		</section>
 
 		<section class="source-switcher-tabs spaced" id="people_outline_tabstrip" {% if not people_tag_index|length %}style="display:none"{% endif %}>
 			<ul>
-				<li data-tab-for="#people_outline_tagcloud" id="people_outline_tagcloud_tr" class="cloud on">{{ phrase('agent.labels_cloud') }}</li>
-				<li data-tab-for="#people_outline_taglist" id="people_outline_taglist_tr" class="list">{{ phrase('agent.labels_list') }}</li>
+				<li data-tab-for="#people_outline_tagcloud" id="people_outline_tagcloud_tr" class="cloud on">{{ phrase('agent.general.labels_cloud') }}</li>
+				<li data-tab-for="#people_outline_taglist" id="people_outline_taglist_tr" class="list">{{ phrase('agent.general.labels_list') }}</li>
 			</ul>
 		</section>
 
@@ -59,14 +59,14 @@
 
 <section class="source-section sys-filters-section">
 	<header>
-		<h1>{{ phrase('agent.organizations') }}</h1>
+		<h1>{{ phrase('agent.general.organizations') }}</h1>
 	</header>
 	<article>
 		<ul class="source-list" id="people_outline_org_list">
 			<li id="org_nav_all" class="people nav-people is-nav-item">
 				<h3 class="title" data-route="listpane:{{ path('agent_orgsearch_customfilter') }}">
 					<span class="list-counter">{{ org_count|default('0') }}</span>
-					{{ phrase('agent.organizations') }}
+					{{ phrase('agent.general.organizations') }}
 				</h3>
 			</li>
 
@@ -88,14 +88,14 @@
 
 		<section class="source-tabs" style="margin-top: 8px;">
 			<ul>
-				<li class="labels" ><span>{{ phrase('agent.labels') }}</span></li>
+				<li class="labels" ><span>{{ phrase('agent.general.labels') }}</span></li>
 			</ul>
 		</section>
 
 		<section class="source-switcher-tabs spaced" id="people_outline_org_tabstrip" {% if not org_tag_index|length %}style="display:none"{% endif %}>
 			<ul>
-				<li data-tab-for="#people_outline_org_tagcloud" id="people_outline_org_tagcloud_tr" class="cloud on">{{ phrase('agent.labels_cloud') }}</li>
-				<li data-tab-for="#people_outline_org_taglist" id="people_outline_org_taglist_tr" class="list">{{ phrase('agent.labels_list') }}</li>
+				<li data-tab-for="#people_outline_org_tagcloud" id="people_outline_org_tagcloud_tr" class="cloud on">{{ phrase('agent.general.labels_cloud') }}</li>
+				<li data-tab-for="#people_outline_org_taglist" id="people_outline_org_taglist_tr" class="list">{{ phrase('agent.general.labels_list') }}</li>
 			</ul>
 		</section>
 

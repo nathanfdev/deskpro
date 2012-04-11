@@ -6,12 +6,12 @@
 	<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
 		<tbody>
 			<tr>
-				<td width="200"><strong>{{ phrase('agent.id') }}</strong></td>
+				<td width="200"><strong>{{ phrase('agent.general.id') }}</strong></td>
 				<td>{{log.id}}</td>
 			</tr>
 
 			<tr>
-				<td><strong>{{ phrase('agent.date') }}</strong></td>
+				<td><strong>{{ phrase('agent.general.date') }}</strong></td>
 				<td>{{log.date_created|date('Y-m-d H:m:s')}}</td>
 			</tr>
 
@@ -21,22 +21,22 @@
 			</tr>
 
 			<tr>
-				<td><strong>{{ phrase('agent.flag') }}</strong></td>
-				<td>{{log.flag|default(phrase('agent.none'))}}</td>
+				<td><strong>{{ phrase('agent.general.flag') }}</strong></td>
+				<td>{{log.flag|default(phrase('agent.general.none'))}}</td>
 			</tr>
 
 			<tr>
-				<td><strong>{{ phrase('agent.priority') }}</strong></td>
+				<td><strong>{{ phrase('agent.general.priority') }}</strong></td>
 				<td>{{log.priority}} {{log.priority_name}}</td>
 			</tr>
 
 			<tr>
 				<td><strong>{{ phrase('admin.logs.sn') }}</strong></td>
-				<td>{{log.session_name|default(phrase('agent.none'))}}</td>
+				<td>{{log.session_name|default(phrase('agent.general.none'))}}</td>
 			</tr>
 
 			<tr>
-				<td><strong>{{ phrase('agent.message') }}</strong></td>
+				<td><strong>{{ phrase('agent.general.message') }}</strong></td>
 				<td>
 					<textarea style="width:99%; height:200px; font-family:Monaco, 'Courier New', courier, monospace;">{{log.message}}</textarea>
 				</td>

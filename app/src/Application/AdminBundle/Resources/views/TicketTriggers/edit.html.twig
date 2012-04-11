@@ -64,11 +64,11 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.description') }}</label> <em>{{ phrase('admin.tickets.enter_optional_description') }}</em>
+			<label>{{ phrase('agent.general.description') }}</label> <em>{{ phrase('admin.tickets.enter_optional_description') }}</em>
 		</div>
 		<div class="dp-form-input">
 			{% if trigger.sys_name %}
-				{{ phrase('agent.triggers_' ~ trigger.sys_name|replace({'.': '_'})) }}
+				{{ phrase('agent.general.triggers_' ~ trigger.sys_name|replace({'.': '_'})) }}
 				<div style="display: none">{{ form_widget(form.title) }}</div>
 			{% else %}
 				{{ form_widget(form.title) }}
@@ -78,30 +78,30 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.criteria') }}</label>
+			<label>{{ phrase('agent.general.criteria') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<div class="criteria-form search-form">
 				<div class="search-terms"></div>
-				<div class="term"><span class="add-term">{{ phrase('agent.widget_add') }}</span> {{ phrase('agent.add_a_new_criteria') }}</div>
+				<div class="term"><span class="add-term">{{ phrase('agent.general.widget_add') }}</span> {{ phrase('agent.general.actions') }}</div>
 			</div>
 		</div>
 	</div>
 
 	<div class="dp-form-row">
 		<div class="dp-form-label">
-			<label>{{ phrase('agent.actions') }}</label>
+			<label>{{ phrase('agent.general.actions') }}</label>
 		</div>
 		<div class="dp-form-input">
 			<div class="actions-form search-form">
 				<div class="search-terms"></div>
-				<div class="term"><span class="add-term">{{ phrase('agent.widget_add') }}</span> {{ phrase('admin.tickets.add_a_new_action') }}</div>
+				<div class="term"><span class="add-term">{{ phrase('agent.general.widget_add') }}</span> {{ phrase('admin.tickets.add_a_new_action') }}</div>
 			</div>
 		</div>
 	</div>
 </div>
 
-<button class="clean-white save-trigger">{{ phrase('agent.save') }}</button>
+<button class="clean-white save-trigger">{{ phrase('agent.general.save') }}</button>
 
 <!-- These never change -->
 {% for info in trigger.getStaticTerms() %}
@@ -118,7 +118,7 @@ function TicketTriggerEditPage_initTerms(handler) {
 
 {% if trigger.id %}
 	<div class="delete-link-wrap">
-		<a href="{{ path('admin_tickettriggers_delete', {id: trigger.id, auth: security_token('delete_trigger') }) }}" class="confirm-delete-trigger" data-prompt="{{ phrase('admin.tickets.confirm_delete_trigger') }}">{{ phrase('agent.delete') }}</a>
+		<a href="{{ path('admin_tickettriggers_delete', {id: trigger.id, auth: security_token('delete_trigger') }) }}" class="confirm-delete-trigger" data-prompt="{{ phrase('admin.tickets.confirm_delete_trigger') }}">{{ phrase('agent.general.delete') }}</a>
 	</div>
 {% endif %}
 

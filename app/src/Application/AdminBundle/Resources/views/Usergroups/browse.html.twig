@@ -2,7 +2,7 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block pagebar %}
      <ul>
-         <li><a href="{{ path('admin_usergroups') }}">{{ phrase('agent.usergroups') }}</a></li>
+         <li><a href="{{ path('admin_usergroups') }}">{{ phrase('agent.general.usergroups') }}</a></li>
 		 {% if usergroup.id %}
          	<li><a href="{{ path('admin_usergroups_edit', {'id': usergroup.id}) }}">{{ usergroup.title }}</a></li>
 		 {% endif %}
@@ -16,9 +16,9 @@
 	<table width="100%">
 		<thead>
 			<tr>
-				<th style="text-align:left">&nbsp; {{ phrase('agent.name') }}</th>
-				<th style="text-align:left">&nbsp; {{ phrase('agent.organization') }}</th>
-				<th style="text-align:left">&nbsp; {{ phrase('agent.email_address') }}</th>
+				<th style="text-align:left">&nbsp; {{ phrase('agent.general.name') }}</th>
+				<th style="text-align:left">&nbsp; {{ phrase('agent.general.organization') }}</th>
+				<th style="text-align:left">&nbsp; {{ phrase('agent.general.email_address') }}</th>
 				<th style="text-align:left">&nbsp; {{ phrase('admin.user_groups.date_registered') }}</th>
 			</tr>
 		</thead>
@@ -30,7 +30,7 @@
 						{% if person.organization %}
 						{% if person.organization_position %}{{ person.organization_position }}, {% endif %}{{ person.organization.name }}
 						{% else %}
-                            {{ phrase('agent.none') }}
+                            {{ phrase('agent.general.none') }}
 						{% endif %}
 					</td>
 					<td>{{ person.primary_email_address }}</td>

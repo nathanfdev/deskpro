@@ -1,9 +1,9 @@
-{{ phrase('agent.types') }}:
-<label>{{ phrase('agent.all') }} <input type="checkbox" name="types[]" value="all" /></label>
-<label>{{ phrase('agent.tickets') }} <input type="checkbox" name="types[]" value="tickets" /></label>
-<label>{{ phrase('agent.articles') }} <input type="checkbox" name="types[]" value="kb" /></label>
+{{ phrase('agent.general.types') }}:
+<label>{{ phrase('agent.general.all') }} <input type="checkbox" name="types[]" value="all" /></label>
+<label>{{ phrase('agent.general.tickets') }} <input type="checkbox" name="types[]" value="tickets" /></label>
+<label>{{ phrase('agent.general.articles') }} <input type="checkbox" name="types[]" value="kb" /></label>
 
-{{ phrase('agent.labels') }}: <input type="text" name="labels" value="{{ labels }}" />
+{{ phrase('agent.general.labels') }}: <input type="text" name="labels" value="{{ labels }}" />
 
 {% if blob_objects|length %}
 <table width="100%" cellpadding="0" cellspacing="0">

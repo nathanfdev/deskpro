@@ -25,38 +25,38 @@ body {
 <hr />
 
 <table class="ticket_attribute">
-    <tr><th>{{ phrase('agent.ticket_ref') }}</th></tr>
+    <tr><th>{{ phrase('agent.general.ticket_ref') }}</th></tr>
     <tr><td>{{ ticket.public_id }}</td></tr>
 </table>
 <table class="ticket_attribute">
-    <tr><th>{{ phrase('agent.department') }}</th></tr>
+    <tr><th>{{ phrase('agent.general.department') }}</th></tr>
     <tr><td>{{ phrase_object(ticket.department, 'full') }}</td></tr>
 </table>
 
 {% if ticket.category %}
     <table class="ticket_attribute">
-        <tr><th>{{ phrase('agent.category') }}</th></tr>
+        <tr><th>{{ phrase('agent.general.category') }}</th></tr>
         <tr><td>{{ phrase_object(ticket.category, 'full') }}</td></tr>
     </table>
 {% endif %}
 
 {% if ticket.product %}
     <table class="ticket_attribute">
-        <tr><th>{{ phrase('agent.product') }}</th></tr>
+        <tr><th>{{ phrase('agent.general.product') }}</th></tr>
         <tr><td>{{ phrase_object(ticket.product, 'full') }}<td></tr>
     </table>
 {% endif %}
 
 {% if ticket.priority %}
     <table class="ticket_attribute">
-        <tr><th>{{ phrase('agent.priority') }}</th></tr>
+        <tr><th>{{ phrase('agent.general.priority') }}</th></tr>
         <tr><td>{{ phrase_object(ticket.priority) }}</td></tr>
     </table>
 {% endif %}
 
 {% if ticket.person.id != app.user.id %}
     <table class="ticket_attribute">
-        <tr><th>{{ phrase('agent.ticket_starter') }}</th></tr>
+        <tr><th>{{ phrase('agent.general.ticket_starter') }}</th></tr>
         <tr><td>{{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;</td></tr>
     </table>
 {% endif %}

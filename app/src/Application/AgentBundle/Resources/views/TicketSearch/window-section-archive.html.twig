@@ -14,25 +14,25 @@
 	<li class="is-nav-item with-route nav-archive-closed" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=closed&amp;view_name=closed">
 			<span class="title">
 				<span class="list-counter" id="ticket_archive_closed_count">{{ archive_counts['closed']|default(0) }}</span>
-				{{ phrase('agent.closed') }}
+				{{ phrase('agent.general.closed') }}
 			</span>
 	</li>
 	<li class="is-nav-item with-route nav-archive-validating" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=validating&amp;terms[1][type]=status&amp;terms[1][op]=is&amp;terms[1][options][status]=hidden&amp;view_name=validating">
 			<span class="title">
 				<span class="list-counter" id="ticket_archive_validating_count">{{ archive_counts['hidden.validating']|default(0) }}</span>
-				{{ phrase('agent.awaiting_validation') }}
+				{{ phrase('agent.general.awaiting_validation') }}
 			</span>
 	</li>
 	<li class="is-nav-item with-route nav-archive-spam" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=spam&amp;terms[1][type]=status&amp;terms[1][op]=is&amp;terms[1][options][status]=hidden&amp;view_name=spam">
 			<span class="title">
 				<span class="list-counter" id="ticket_archive_spam_count">{{ archive_counts['hidden.spam']|default(0) }}</span>
-				{{ phrase('agent.spam') }}
+				{{ phrase('agent.general.spam') }}
 			</span>
 	</li>
 	<li class="is-nav-item nav-archive-recycle-bin" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=deleted&amp;terms[1][type]=status&amp;terms[1][op]=is&amp;terms[1][options][status]=hidden&amp;view_name=deleted">
 			<span class="title">
 				<span class="list-counter" id="ticket_archive_recycle_bin_count">{{ archive_counts['hidden.deleted']|default(0) }}</span>
-				{{ phrase('agent.recycle_bin') }}
+				{{ phrase('agent.general.recycle_bin') }}
 			</span>
 	</li>
 </ul>

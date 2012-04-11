@@ -1,7 +1,7 @@
 <section class="source-switcher-tabs spaced" id="tickets_outline_labels_switcher" {% if not labels_index|length %}style="display: none"{% endif %} data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
 	<ul>
-		<li data-tab-for="#ticket_labels_list" class="list on">{{ phrase('agent.labels_list') }}</li>
-		<li data-tab-for="#ticket_labels_cloud" class="cloud">{{ phrase('agent.labels_cloud') }}</li>
+		<li data-tab-for="#ticket_labels_list" class="list on">{{ phrase('agent.general.labels_list') }}</li>
+		<li data-tab-for="#ticket_labels_cloud" class="cloud">{{ phrase('agent.general.labels_cloud') }}</li>
 	</ul>
 </section>
 
@@ -20,7 +20,7 @@
 			{% endfor %}
 		</dl>
 	{% else %}
-		<span class="no-labels">{{ phrase('agent.no_ticket_labels') }}</span>
+		<span class="no-labels">{{ phrase('agent.general.no_ticket_labels') }}</span>
 	{% endif %}
 </section>
 <section class="source-labels-cloud" id="ticket_labels_cloud" style="display: none;">
@@ -31,6 +31,6 @@
 			{% endfor %}
 		</ul>
 	{% else %}
-		<span class="no-labels">{{ phrase('agent.no_ticket_labels') }}</span>
+		<span class="no-labels">{{ phrase('agent.general.no_ticket_labels') }}</span>
 	{% endif %}
 </section>

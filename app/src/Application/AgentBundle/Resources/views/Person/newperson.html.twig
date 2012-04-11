@@ -1,7 +1,7 @@
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewPerson';
-pageMeta.title = '{{ phrase('agent.new_person') }}';
+pageMeta.title = '{{ phrase('agent.general.new_person') }}';
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
@@ -15,7 +15,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="drop-file-zone"><h1>{{ phrase('agent.people.drop_your_vcard_here') }}</h1></div>
 <script class="template-upload" type="text/x-tmpl">
     {{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
-    <p>{{ '{%=file.name%}' }} ({{ phrase('agent.saving') }})</p>
+    <p>{{ '{%=file.name%}' }} ({{ phrase('agent.general.saving') }})</p>
     {{ '{% } %}' }}
 </script>
 <script class="template-download" type="text/x-tmpl">
@@ -23,10 +23,10 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="first section cat-section" id="{{baseId}}_email_section">
 	<div class="step">
 		<span class="num">{{ inc_counter('steps') }}</span>
-		<span class="check">{{ phrase('agent.done') }}</span>
+		<span class="check">{{ phrase('agent.general.done') }}</span>
 	</div>
 	<div class="content">
-		<h4>{{ phrase('agent.email') }}</h4>
+		<h4>{{ phrase('agent.general.email') }}</h4>
 		<input type="text" name="newperson[email]" id="{{baseId}}_email" value="" class="fill" />
 	</div>
 </div>
@@ -34,10 +34,10 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section cat-section" id="{{baseId}}_name_section">
 	<div class="step">
 		<span class="num">{{ inc_counter('steps') }}</span>
-		<span class="check">{{ phrase('agent.done') }}</span>
+		<span class="check">{{ phrase('agent.general.done') }}</span>
 	</div>
 	<div class="content">
-		<h4>{{ phrase('agent.name') }}</h4>
+		<h4>{{ phrase('agent.general.name') }}</h4>
 		<input type="text" name="newperson[name]" id="{{baseId}}_name" value="" class="fill" />
 	</div>
 </div>
@@ -46,10 +46,10 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section title-section" id="{{baseId}}_org_section">
 	<div class="step">
 		<span class="num">{{ inc_counter('steps') }}</span>
-		<span class="check">{{ phrase('agent.done') }}</span>
+		<span class="check">{{ phrase('agent.general.done') }}</span>
 	</div>
 	<div class="content">
-		<h4>{{ phrase('agent.organization') }}</h4>
+		<h4>{{ phrase('agent.general.organization') }}</h4>
 		<div
 			class="org-input"
 			id="{{baseId}}_org_searchbox"
@@ -61,7 +61,7 @@ pageMeta.baseId = '{{ baseId }}';
 			data-position-bound=".org-name"
 			data-super-container=".page-new-content"
 		>
-			<input type="text" class="org-name fill" name="newperson[new_organization]" placeholder="{{ phrase('agent.enter_organization_name') }}" value="" />
+			<input type="text" class="org-name fill" name="newperson[new_organization]" placeholder="{{ phrase('agent.general.enter_organization_name') }}" value="" />
 			<input type="hidden" class="org-id" id="{{baseId}}_org_id" name="newperson[organization_id]" value="" />
 			<script type="text/x-deskpro-tmpl" class="user-row-tpl">
 				<li>
@@ -76,13 +76,13 @@ pageMeta.baseId = '{{ baseId }}';
 
 					</ul>
 					<footer>
-						<span class="create-org">{{ phrase('agent.create_a_new_organization') }}</span>
+						<span class="create-org">{{ phrase('agent.general.create_a_new_organization') }}</span>
 					</footer>
 				</section>
 			</div>
 
 			<div id="{{baseId}}_org_pos" style="display: none; margin-top: 10px">
-				<h4>{{ phrase('agent.position') }}</h4>
+				<h4>{{ phrase('agent.general.position') }}</h4>
 				<input type="text" name="newperson[organization_position]" value="" size="40" />
 			</div>
 		</div>
@@ -93,7 +93,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section title-section" id="{{baseId}}_fields_section">
 	<div class="step">
 		<span class="num">{{ inc_counter('steps') }}</span>
-		<span class="check">{{ phrase('agent.done') }}</span>
+		<span class="check">{{ phrase('agent.general.done') }}</span>
 	</div>
 	<div class="content">
         {% for f in custom_fields %}
@@ -108,21 +108,21 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section other-section" id="{{baseId}}_other_section">
 	<div class="step">
 		<span class="num">{{ inc_counter('steps') }}</span>
-		<span class="check">{{ phrase('agent.done') }}</span>
+		<span class="check">{{ phrase('agent.general.done') }}</span>
 	</div>
 	<div class="content">
 		{# Tab Container #}
 		<div class="tab-container">
 			<nav id="{{baseId}}_other_props_tabs_wrap">
 				<ul id="{{baseId}}_other_props_tabs">
-					<li data-tab-for="> .tab-properties">{{ phrase('agent.properties') }}</li>
+					<li data-tab-for="> .tab-properties">{{ phrase('agent.general.properties') }}</li>
 				</ul>
 			</nav>
 			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
 				{# Tab Properties #}
 				<div class="tab-properties" style="display: none">
 					<dl>
-						<dt class="prop">{{ phrase('agent.labels') }}</dt>
+						<dt class="prop">{{ phrase('agent.general.labels') }}</dt>
 						<dd class="prop">
 							<div class="tags-wrap article-tags">
 								<input type="text" value="{% for label in state.newperson.labels %}{{label}},{% endfor %}"/>
@@ -130,7 +130,7 @@ pageMeta.baseId = '{{ baseId }}';
 						</dd>
 
 						{% if usergroup_names|length %}
-						<dt class="prop">{{ phrase('agent.usergroups') }}</dt>
+						<dt class="prop">{{ phrase('agent.general.usergroups') }}</dt>
 						<dd class="prop">
 							<div id="{{baseId}}_ug_container">
 								<select name="newperson[usergroups][]">
@@ -142,9 +142,9 @@ pageMeta.baseId = '{{ baseId }}';
 						</dd>
 						{% endif %}
 
-						<dt class="prop">{{ phrase('agent.timezone') }}</dt>
+						<dt class="prop">{{ phrase('agent.general.timezone') }}</dt>
 						<dd class="prop">
-							<select id="{{baseId}}_timezone" name="newperson[timezone]" data-placeholder="{{ phrase('agent.timezone') }}" style="width: 200px">
+							<select id="{{baseId}}_timezone" name="newperson[timezone]" data-placeholder="{{ phrase('agent.general.timezone') }}" style="width: 200px">
 								<option></option>
 								{% for tz in timezone_options %}
 									<option value="{{tz}}">{{ tz }}</option>
@@ -164,7 +164,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">{{ phrase('agent.people.create_person') }} <kbd>{{ phrase('agent.altc') }}</kbd></button>
+		<button class="submit-trigger clean-white">{{ phrase('agent.people.create_person') }} <kbd>{{ phrase('agent.general.altc') }}</kbd></button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

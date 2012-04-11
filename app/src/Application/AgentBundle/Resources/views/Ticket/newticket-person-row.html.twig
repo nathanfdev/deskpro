@@ -1,5 +1,5 @@
 <div class="col">
-	<h4>{{ phrase('agent.email_address') }}</h4>
+	<h4>{{ phrase('agent.general.email_address') }}</h4>
 	{% if person.id and person.primary_email and person.primary_email.email %}
 		{{ person.primary_email.email }}
 	{% else %}
@@ -8,10 +8,10 @@
 </div>
 
 <div class="col">
-	<h4>{{ phrase('agent.name') }}</h4>
+	<h4>{{ phrase('agent.general.name') }}</h4>
 	<input type="text" name="newticket[person][name]" class="name" value="{{ person.name }}" />
 	{% if person.id %}
-		<a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">{{ phrase('agent.view_profile') }}</a>
+		<a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">{{ phrase('agent.general.view_profile') }}</a>
 	{% endif %}
 </div>
 <br class="clear" />

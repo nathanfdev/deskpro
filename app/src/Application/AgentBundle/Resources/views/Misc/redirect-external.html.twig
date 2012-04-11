@@ -35,12 +35,12 @@
 <div id="dp_admin_page">
 	<div class="dp-page-box">
 		<div class="page-content">
-			<h1>{{ phrase('agent.redirect_title') }}</h1>
+			<h1>{{ phrase('agent.general.redirect_title') }}</h1>
 			<p>
-				{{ phrase('agent.redirect_explain', {'host': urlinfo.host|e}) }}
+				{{ phrase('agent.general.redirect_explain', {'host': urlinfo.host|e}) }}
 			</p>
 			<div class="url-go">
-				<a class="clean-white" href="{{ url }}">{{ phrase('agent.redirect_continue', {'url': url|e}) }}</a>
+				<a class="clean-white" href="{{ url }}">{{ phrase('agent.general.redirect_continue', {'url': url|e}) }}</a>
 			</div>
 			<div id="url_info" class="url-info" style="display: none"></div>
 		</div>

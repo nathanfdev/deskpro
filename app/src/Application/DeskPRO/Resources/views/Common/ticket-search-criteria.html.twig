@@ -11,29 +11,29 @@
 			</div>
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('agent.choose_criteria') }}" data-rule-type="">
+	<div class="type" title="{{ phrase('agent.general.choose_criteria') }}" data-rule-type="">
 	</div>
 {% endif %}
 
 	{% if 'action_performer' not in no_show_fields and 0 %}
-		<div class="type" title="{{ phrase('agent.performer') }}" data-rule-type="action_performer">
+		<div class="type" title="{{ phrase('agent.general.performer') }}" data-rule-type="action_performer">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('agent.is') }}</option>
-					<option value="not">{{ phrase('agent.is_not') }}</option>
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
 				</select>
 			</div>
 			<div class="options">
 				<select name="action_performer">
-					<option value="agent">{{ phrase('agent.agent') }}</option>
-					<option value="person">{{ phrase('agent.user') }}</option>
+					<option value="agent">{{ phrase('agent.general.agent') }}</option>
+					<option value="person">{{ phrase('agent.general.user') }}</option>
 				</select>
 			</div>
 		</div>
 	{% endif %}
 
 	{% if 'is_new_user' not in no_show_fields and 'new_ticket' in event_group %}
-	<div class="type" title="{{ phrase('agent.is_a_new_user') }}" data-rule-type="is_new_user">
+	<div class="type" title="{{ phrase('agent.general.is_a_new_user') }}" data-rule-type="is_new_user">
 		<div class="op">
 			<input type="hidden" name="op" value="is" />
 		</div>
@@ -41,7 +41,7 @@
 			<input type="hidden" name="is_new_user" value="1" />
 		</div>
 	</div>
-	<div class="type" title="{{ phrase('agent.is_not_a_new_user') }}" data-rule-type="is_not_new_user">
+	<div class="type" title="{{ phrase('agent.general.is_not_a_new_user') }}" data-rule-type="is_not_new_user">
 		<div class="op">
 			<input type="hidden" name="op" value="is" />
 		</div>
@@ -52,31 +52,31 @@
 	{% endif %}
 
 	{% if 'creation_system' not in no_show_fields and 'new_ticket' not in event_group %}
-	<div class="type" title="{{ phrase('agent.originated_interface') }}" data-rule-type="creation_system" data-term-type="GenericMenuTerm" data-term-triggers="interface,orig-interface,original-interface">
+	<div class="type" title="{{ phrase('agent.general.originated_interface') }}" data-rule-type="creation_system" data-term-type="GenericMenuTerm" data-term-triggers="interface,orig-interface,original-interface">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">{{ phrase('agent.is') }}</option>
-				<option value="not">{{ phrase('agent.is_not') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
 			</select>
 		</div>
 		<div class="options">
 			<select name="creation_system">
-				<option value="web">{{ phrase('agent.web_interface') }}</option>
-				<option value="web.person">-- {{ phrase('agent.by_user') }}</option>
-				<option value="widget.person">{{ phrase('agent.website_widget') }}</option>
-				<option value="web.agent">-- {{ phrase('agent.by_agent_for_user') }}</option>
-				<option value="gateway.person">{{ phrase('agent.email') }}</option>
+				<option value="web">{{ phrase('agent.general.web_interface') }}</option>
+				<option value="web.person">-- {{ phrase('agent.general.by_user') }}</option>
+				<option value="widget.person">{{ phrase('agent.general.website_widget') }}</option>
+				<option value="web.agent">-- {{ phrase('agent.general.by_agent_for_user') }}</option>
+				<option value="gateway.person">{{ phrase('agent.general.email') }}</option>
 			</select>
 		</div>
 	</div>
 	{% endif %}
 
 	{% if 'gateway_address' not in no_show_fields and term_options.gateway_addresses %}
-		<div class="type" title="{{ phrase('agent.ticket_gateway_address') }}" data-rule-type="gateway_address" data-term-type="GenericMenuTerm" data-term-triggers="gateway,address,gateway_address">
+		<div class="type" title="{{ phrase('agent.general.ticket_gateway_address') }}" data-rule-type="gateway_address" data-term-type="GenericMenuTerm" data-term-triggers="gateway,address,gateway_address">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('agent.is') }}</option>
-					<option value="not">{{ phrase('agent.is_not') }}</option>
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
 				</select>
 			</div>
 			<div class="options">
@@ -90,11 +90,11 @@
 	{% endif %}
 
 	{% if 'gateway_account' not in no_show_fields and term_options.gateway_accounts %}
-		<div class="type" title="{{ phrase('agent.ticket_gateway_account') }}" data-rule-type="gateway_account" data-term-type="GenericMenuTerm" data-term-triggers="gateway,account,gateway_account">
+		<div class="type" title="{{ phrase('agent.general.ticket_gateway_account') }}" data-rule-type="gateway_account" data-term-type="GenericMenuTerm" data-term-triggers="gateway,account,gateway_account">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('agent.is') }}</option>
-					<option value="not">{{ phrase('agent.is_not') }}</option>
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
 				</select>
 			</div>
 			<div class="options">
@@ -108,13 +108,13 @@
 	{% endif %}
 
 	{% if 'subject' not in no_show_fields %}
-	<div class="type" title="{{ phrase('agent.subject') }}" data-rule-type="subject">
+	<div class="type" title="{{ phrase('agent.general.subject') }}" data-rule-type="subject">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="contains">{{ phrase('agent.contains') }}</option>
-				<option value="not_contains">{{ phrase('agent.does_not_contain') }}</option>
-				<option value="is">{{ phrase('agent.is') }}</option>
-				<option value="not">{{ phrase('agent.is_not') }}</option>
+				<option value="contains">{{ phrase('agent.general.contains') }}</option>
+				<option value="not_contains">{{ phrase('agent.general.does_not_contain') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -124,17 +124,17 @@
 	{% endif %}
 
 	{% if 'department' not in no_show_fields and term_options.departments_hierarchy %}
-		<div class="type" title="{{ phrase('agent.department') }}" data-rule-type="department" data-term-type="GenericMenuTerm" data-term-triggers="dep,department">
+		<div class="type" title="{{ phrase('agent.general.department') }}" data-rule-type="department" data-term-type="GenericMenuTerm" data-term-triggers="dep,department">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('agent.is') }}</option>
-					<option value="not">{{ phrase('agent.is_not') }}</option>
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
 					{% if with_change_terms %}
-						<option value="changed">{{ phrase('agent.changed') }}</option>
-						<option value="changed_to">{{ phrase('agent.changed_to') }}</option>
-						<option value="changed_from">{{ phrase('agent.changed_from') }}</option>
-						<option value="not_changed_to">{{ phrase('agent.not_changed_to') }}</option>
-						<option value="not_changed_from">{{ phrase('agent.not_changed_from') }}</option>
+						<option value="changed">{{ phrase('agent.general.changed') }}</option>
+						<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+						<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+						<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+						<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
 					{% endif %}
 				</select>
 			</div>
@@ -154,24 +154,24 @@
 	{% endif %}
 
 	{% if 'agent' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
-	<div class="type" title="{{ phrase('agent.assigned_agent') }}" data-rule-type="agent" data-term-type="GenericMenuTerm" data-term-triggers="agent">
+	<div class="type" title="{{ phrase('agent.general.assigned_agent') }}" data-rule-type="agent" data-term-type="GenericMenuTerm" data-term-triggers="agent">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">{{ phrase('agent.is') }}</option>
-				<option value="not">{{ phrase('agent.is_not') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
 				{% if with_change_terms %}
-					<option value="changed">{{ phrase('agent.changed') }}</option>
-					<option value="changed_to">{{ phrase('agent.changed_to') }}</option>
-					<option value="changed_from">{{ phrase('agent.changed_from') }}</option>
-					<option value="not_changed_to">{{ phrase('agent.not_changed_to') }}</option>
-					<option value="not_changed_from">{{ phrase('agent.not_changed_from') }}</option>
+					<option value="changed">{{ phrase('agent.general.changed') }}</option>
+					<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+					<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+					<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+					<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
 				{% endif %}
 			</select>
 		</div>
 		<div class="options">
 			<select name="agent">
-				<option value="0">{{ phrase('agent.unassigned') }}</option>
-				<option value="-1">{{ phrase('agent.current_agent') }}</option>
+				<option value="0">{{ phrase('agent.general.unassigned') }}</option>
+				<option value="-1">{{ phrase('agent.general.current_agent') }}</option>
 				{% for id,label in term_options.agents %}
 					<option value="{{id}}">{{label}}</option>
 				{% endfor %}
@@ -181,24 +181,24 @@
 	{% endif %}
 
 	{% if options.agent_teams and 'agent_team' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
-		<div class="type" title="{{ phrase('agent.agent_team') }}" data-rule-type="agent_team" data-term-type="GenericMenuTerm" data-term-triggers="team,agent-team">
+		<div class="type" title="{{ phrase('agent.general.agent_team') }}" data-rule-type="agent_team" data-term-type="GenericMenuTerm" data-term-triggers="team,agent-team">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('agent.is') }}</option>
-					<option value="not">{{ phrase('agent.is_not') }}</option>
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
 					{% if with_change_terms %}
-						<option value="changed">{{ phrase('agent.changed') }}</option>
-						<option value="changed_to">{{ phrase('agent.changed_to') }}</option>
-						<option value="changed_from">{{ phrase('agent.changed_from') }}</option>
-						<option value="not_changed_to">{{ phrase('agent.not_changed_to') }}</option>
-						<option value="not_changed_from">{{ phrase('agent.not_changed_from') }}</option>
+						<option value="changed">{{ phrase('agent.general.changed') }}</option>
+						<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+						<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+						<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+						<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
 					{% endif %}
 				</select>
 			</div>
 			<div class="options">
 				<select name="agent_team">
-					<option value="0">{{ phrase('agent.no_team') }}</option>
-					<option value="-1">{{ phrase('agent.any_of_current_agents_teams') }}</option>
+					<option value="0">{{ phrase('agent.general.no_team') }}</option>
+					<option value="-1">{{ phrase('agent.general.any_of_current_agents_teams') }}</option>
 					{% for id,title in term_options.agent_teams %}
 						<option value="{{id}}">{{title}}</option>
 					{% endfor %}
@@ -208,21 +208,21 @@
 	{% endif %}
 
 	{% if 'participant' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
-	<div class="type" title="{{ phrase('agent.followers') }}" data-rule-type="participant" data-term-type="GenericMenuTerm" data-term-triggers="followers">
+	<div class="type" title="{{ phrase('agent.general.followers') }}" data-rule-type="participant" data-term-type="GenericMenuTerm" data-term-triggers="followers">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">{{ phrase('agent.include') }}</option>
-				<option value="not">{{ phrase('agent.does_not_include') }}</option>
+				<option value="is">{{ phrase('agent.general.include') }}</option>
+				<option value="not">{{ phrase('agent.general.does_not_include') }}</option>
 				{% if with_change_terms %}
-					<option value="changed">{{ phrase('agent.changed') }}</option>
-					<option value="changed_to">{{ phrase('agent.changed_to_include') }}</option>
-					<option value="changed_from">{{ phrase('agent.changed_to_remove') }}</option>
+					<option value="changed">{{ phrase('agent.general.changed') }}</option>
+					<option value="changed_to">{{ phrase('agent.general.changed_to_include') }}</option>
+					<option value="changed_from">{{ phrase('agent.general.changed_to_remove') }}</option>
 				{% endif %}
 			</select>
 		</div>
 		<div class="options">
 			<select name="agent">
-				<option value="-1">{{ phrase('agent.current_agent') }}</option>
+				<option value="-1">{{ phrase('agent.general.current_agent') }}</option>
 				{% for id,label in term_options.agents %}
 					<option value="{{id}}">{{label}}</option>
 				{% endfor %}
@@ -232,15 +232,15 @@
 	{% endif %}
 
 	{% if 'label' not in no_show_fields and not event_trigger or event_trigger != 'new_ticket' %}
-	<div class="type" title="{{ phrase('agent.labels') }}" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="tickets" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
+	<div class="type" title="{{ phrase('agent.general.labels') }}" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="tickets" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">{{ phrase('agent.is') }}</option>
-				<option value="not">{{ phrase('agent.is_not') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
 				{% if with_change_terms %}
-					<option value="changed">{{ phrase('agent.changed') }}</option>
-					<option value="changed_to">{{ phrase('agent.changed_to_include') }}</option>
-					<option value="changed_from">{{ phrase('agent.changed_to_remove') }}</option>
+					<option value="changed">{{ phrase('agent.general.changed') }}</option>
+					<option value="changed_to">{{ phrase('agent.general.changed_to_include') }}</option>
+					<option value="changed_from">{{ phrase('agent.general.changed_to_remove') }}</option>
 				{% endif %}
 			</select>
 		</div>
@@ -251,17 +251,17 @@
 	{% endif  %}
 
 	{% if 'status' not in no_show_fields %}
-	<div class="type" title="{{ phrase('agent.status') }}" data-rule-type="status" data-term-type="GenericMenuTerm" data-term-triggers="status">
+	<div class="type" title="{{ phrase('agent.general.status') }}" data-rule-type="status" data-term-type="GenericMenuTerm" data-term-triggers="status">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">{{ phrase('agent.is') }}</option>
-				<option value="not">{{ phrase('agent.is_not') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
 				{% if with_change_terms %}
-					<option value="changed">{{ phrase('agent.changed') }}</option>
-					<option value="changed_to">{{ phrase('agent.changed_to') }}</option>
-					<option value="changed_from">{{ phrase('agent.changed_from') }}</option>
-					<option value="not_changed_to">{{ phrase('agent.not_changed_to') }}</option>
-					<option value="not_changed_from">{{ phrase('agent.not_changed_from') }}</option>
+					<option value="changed">{{ phrase('agent.general.changed') }}</option>
+					<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+					<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+					<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+					<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
 				{% endif %}
 			</select>
 		</div>
@@ -270,19 +270,19 @@
 				<option value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
 				<option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
 				<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
-				<option value="closed">{{ phrase('agent.closed') }}</option>
-				<option value="hidden">{{ phrase('agent.hidden_awaiting_validating_spam') }}</option>
+				<option value="closed">{{ phrase('agent.general.closed') }}</option>
+				<option value="hidden">{{ phrase('agent.general.hidden_awaiting_validating_spam') }}</option>
 			</select>
 		</div>
 	</div>
 	{% endif %}
 
 	{% if 'organization' not in no_show_fields and term_options.organizations %}
-	<div class="type" title="{{ phrase('agent.organization') }}" data-term-type="GenericMenuTerm" data-term-triggers="org,organization,company" data-rule-type="organization">
+	<div class="type" title="{{ phrase('agent.general.organization') }}" data-term-type="GenericMenuTerm" data-term-triggers="org,organization,company" data-rule-type="organization">
 		<div class="op">
 			<select name="op">
-				<option value="is">{{ phrase('agent.is') }}</option>
-				<option value="not">{{ phrase('agent.is_not') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -296,17 +296,17 @@
 	{% endif %}
 
 	{% if 'product' not in no_show_fields and term_options.products %}
-		<div class="type" title="{{ phrase('agent.product') }}" data-rule-type="product" data-term-type="GenericMenuTerm" data-term-triggers="prod,product">
+		<div class="type" title="{{ phrase('agent.general.product') }}" data-rule-type="product" data-term-type="GenericMenuTerm" data-term-triggers="prod,product">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('agent.is') }}</option>
-					<option value="not">{{ phrase('agent.is_not') }}</option>
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
 					{% if with_change_terms %}
-						<option value="changed">{{ phrase('agent.changed') }}</option>
-						<option value="changed_to">{{ phrase('agent.changed_to') }}</option>
-						<option value="changed_from">{{ phrase('agent.changed_from') }}</option>
-						<option value="not_changed_to">{{ phrase('agent.not_changed_to') }}</option>
-						<option value="not_changed_from">{{ phrase('agent.not_changed_from') }}</option>
+						<option value="changed">{{ phrase('agent.general.changed') }}</option>
+						<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+						<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+						<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+						<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
 					{% endif %}
 				</select>
 			</div>
@@ -321,17 +321,17 @@
 	{% endif %}
 
 	{% if 'category' not in no_show_fields and term_options.categories %}
-		<div class="type" title="{{ phrase('agent.category') }}" data-rule-type="category" data-term-type="GenericMenuTerm" data-term-triggers="cat,category">
+		<div class="type" title="{{ phrase('agent.general.category') }}" data-rule-type="category" data-term-type="GenericMenuTerm" data-term-triggers="cat,category">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('agent.is') }}</option>
-					<option value="not">{{ phrase('agent.is_not') }}</option>
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
 					{% if with_change_terms %}
-						<option value="changed">{{ phrase('agent.changed') }}</option>
-						<option value="changed_to">{{ phrase('agent.changed_to') }}</option>
-						<option value="changed_from">{{ phrase('agent.changed_from') }}</option>
-						<option value="not_changed_to">{{ phrase('agent.not_changed_to') }}</option>
-						<option value="not_changed_from">{{ phrase('agent.not_changed_from') }}</option>
+						<option value="changed">{{ phrase('agent.general.changed') }}</option>
+						<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+						<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+						<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+						<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
 					{% endif %}
 				</select>
 			</div>
@@ -346,20 +346,20 @@
 	{% endif %}
 
 	{% if 'urgency' not in no_show_fields %}
-	<div class="type" title="{{ phrase('agent.urgency') }}" data-rule-type="urgency" data-term-type="GenericInputTerm" data-term-triggers="urgency">
+	<div class="type" title="{{ phrase('agent.general.urgency') }}" data-rule-type="urgency" data-term-type="GenericInputTerm" data-term-triggers="urgency">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">{{ phrase('agent.is') }}</option>
-				<option value="not">{{ phrase('agent.is_not') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
 				<option value="lte">&lt;=</option>
 				<option value="gte">&gt;=</option>
 				{% if with_change_terms %}
-					<optgroup label="{{ phrase('agent.changed') }}">
-						<option value="changed">{{ phrase('agent.changed') }}</option>
-						<option value="changed_to">{{ phrase('agent.changed_to') }}</option>
-						<option value="changed_from">{{ phrase('agent.changed_from') }}</option>
-						<option value="not_changed_to">{{ phrase('agent.not_changed_to') }}</option>
-						<option value="not_changed_from">{{ phrase('agent.not_changed_from') }}</option>
+					<optgroup label="{{ phrase('agent.general.changed') }}">
+						<option value="changed">{{ phrase('agent.general.changed') }}</option>
+						<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+						<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+						<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+						<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
 					</optgroup>
 					<optgroup label="Changed (ranged)">
 						<option value="changed_to_gte">Changed to &gt;=</option>
@@ -379,19 +379,19 @@
 	{% endif %}
 
 	{% if 'priority' not in no_show_fields and term_options.priorities %}
-		<div class="type" title="{{ phrase('agent.priority') }}" data-rule-type="priority" data-term-type="GenericMenuTerm" data-term-triggers="pri,priority">
+		<div class="type" title="{{ phrase('agent.general.priority') }}" data-rule-type="priority" data-term-type="GenericMenuTerm" data-term-triggers="pri,priority">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('agent.is') }}</option>
-					<option value="not">{{ phrase('agent.is_not') }}</option>
-					<option value="lte">{{ phrase('agent.is_less_than') }}</option>
-					<option value="gte">{{ phrase('agent.is_greater_than') }}</option>
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
+					<option value="lte">{{ phrase('agent.general.is_less_than') }}</option>
+					<option value="gte">{{ phrase('agent.general.is_greater_than') }}</option>
 					{% if with_change_terms %}
-						<option value="changed">{{ phrase('agent.changed') }}</option>
-						<option value="changed_to">{{ phrase('agent.changed_to') }}</option>
-						<option value="changed_from">{{ phrase('agent.changed_from') }}</option>
-						<option value="not_changed_to">{{ phrase('agent.not_changed_to') }}</option>
-						<option value="not_changed_from">{{ phrase('agent.not_changed_from') }}</option>
+						<option value="changed">{{ phrase('agent.general.changed') }}</option>
+						<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+						<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+						<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+						<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
 					{% endif %}
 				</select>
 			</div>
@@ -406,17 +406,17 @@
 	{% endif %}
 
 	{% if 'workflow' not in no_show_fields and term_options.ticket_workflows %}
-		<div class="type" title="{{ phrase('agent.workflow') }}" data-rule-type="workflow" data-term-type="GenericMenuTerm" data-term-triggers="work,workflow">
+		<div class="type" title="{{ phrase('agent.general.workflow') }}" data-rule-type="workflow" data-term-type="GenericMenuTerm" data-term-triggers="work,workflow">
 			<div class="op">
 				<select name="op" class="op">
-					<option value="is">{{ phrase('agent.is') }}</option>
-					<option value="not">{{ phrase('agent.is_not') }}</option>
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
 					{% if with_change_terms %}
-						<option value="changed">{{ phrase('agent.changed') }}</option>
-						<option value="changed_to">{{ phrase('agent.changed_to') }}</option>
-						<option value="changed_from">{{ phrase('agent.changed_from') }}</option>
-						<option value="not_changed_to">{{ phrase('agent.not_changed_to') }}</option>
-						<option value="not_changed_from">{{ phrase('agent.not_changed_from') }}</option>
+						<option value="changed">{{ phrase('agent.general.changed') }}</option>
+						<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+						<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+						<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+						<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
 					{% endif %}
 				</select>
 			</div>
@@ -431,11 +431,11 @@
 	{% endif %}
 
 	{% if 'language' not in no_show_fields and term_options.languages %}
-	<div class="type" title="{{ phrase('agent.language') }}" data-term-type="GenericMenuTerm" data-rule-type="language" data-term-triggers="lang,language">
+	<div class="type" title="{{ phrase('agent.general.language') }}" data-term-type="GenericMenuTerm" data-rule-type="language" data-term-triggers="lang,language">
 		<div class="op">
 			<select name="op">
-				<option value="is">{{ phrase('agent.is') }}</option>
-				<option value="not">{{ phrase('agent.is_not') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -449,12 +449,12 @@
 	{% endif %}
 
 	{% if 'date_created' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
-	<div class="type" title="{{ phrase('agent.date_created') }}" data-rule-type="date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-type="GenericDateTerm" data-term-triggers="date-created">
+	<div class="type" title="{{ phrase('agent.general.date_created') }}" data-rule-type="date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-type="GenericDateTerm" data-term-triggers="date-created">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="lte">{{ phrase('agent.before') }}</option>
-				<option value="gte">{{ phrase('agent.after') }}</option>
-				<option value="between">{{ phrase('agent.between') }}</option>
+				<option value="lte">{{ phrase('agent.general.before') }}</option>
+				<option value="gte">{{ phrase('agent.general.after') }}</option>
+				<option value="between">{{ phrase('agent.general.between') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -464,21 +464,21 @@
 	{% endif %}
 
     {% if 'time_created' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
-    <div class="type" title="{{ phrase('agent.time_created') }}" data-rule-type="time_created">
+    <div class="type" title="{{ phrase('agent.general.time_created') }}" data-rule-type="time_created">
         <div class="op">
             <select name="op" class="op">
-                <option value="before">{{ phrase('agent.before') }}</option>
-                <option value="after">{{ phrase('agent.after') }}</option>
+                <option value="before">{{ phrase('agent.general.before') }}</option>
+                <option value="after">{{ phrase('agent.general.after') }}</option>
             </select>
         </div>
         <div class="options">
-            <label>{{ phrase('agent.hour') }}</label>
+            <label>{{ phrase('agent.general.hour') }}</label>
             <select name="hour1">
                 {% for hour in range(0,23) %}
                 <option>{{ '%02s'|format(hour) }}</option>
                 {% endfor %}
             </select>
-            <label>{{ phrase('agent.minute') }}</label>
+            <label>{{ phrase('agent.general.minute') }}</label>
             <select name="minute1">
                 {% for minute in range(0,59) %}
                 <option>{{ '%02s'|format(minute) }}</option>
@@ -489,21 +489,21 @@
     {% endif %}
 
     {% if 'time_user_reply' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
-    <div class="type" title="{{ phrase('agent.time_of_last_user_reply') }}" data-rule-type="time_user_replied">
+    <div class="type" title="{{ phrase('agent.general.time_of_last_user_reply') }}" data-rule-type="time_user_replied">
         <div class="op">
             <select name="op" class="op">
-                <option value="before">{{ phrase('agent.before') }}</option>
-                <option value="after">{{ phrase('agent.after') }}</option>
+                <option value="before">{{ phrase('agent.general.before') }}</option>
+                <option value="after">{{ phrase('agent.general.after') }}</option>
             </select>
         </div>
         <div class="options">
-            <label>{{ phrase('agent.hour') }}</label>
+            <label>{{ phrase('agent.general.hour') }}</label>
             <select name="hour1">
                 {% for hour in range(0,23) %}
                 <option>{{ '%02s'|format(hour) }}</option>
                 {% endfor %}
             </select>
-            <label>{{ phrase('agent.minute') }}</label>
+            <label>{{ phrase('agent.general.minute') }}</label>
             <select name="minute1">
                 {% for minute in range(0,59) %}
                 <option>{{ '%02s'|format(minute) }}</option>
@@ -514,15 +514,15 @@
     {% endif %}
 
     {% if 'day_created' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
-    <div class="type" title="{{ phrase('agent.day_created') }}" data-rule-type="day_created">
+    <div class="type" title="{{ phrase('agent.general.day_created') }}" data-rule-type="day_created">
         <div class="op">
             <select name="op" class="op">
-                <option value="is">{{ phrase('agent.is') }}</option>
-                <option value="not">{{ phrase('agent.is_not') }}</option>
+                <option value="is">{{ phrase('agent.general.is') }}</option>
+                <option value="not">{{ phrase('agent.general.is_not') }}</option>
             </select>
         </div>
         <div class="options">
-            {% set days = [phrase('agent.monday'), phrase('agent.tuesday'), phrase('agent.wednesday'), phrase('agent.thursday'), phrase('agent.friday'), phrase('agent.saturday'), phrase('agent.sunday')] %}
+            {% set days = [phrase('agent.general.monday'), phrase('agent.general.day_last_user_reply'), phrase('agent.general.day_last_user_reply'), phrase('agent.general.day_last_user_reply'), phrase('agent.general.day_last_user_reply'), phrase('agent.general.day_last_user_reply'), phrase('agent.general.day_last_user_reply')] %}
             {% for day in days %}
                 <label>{{ day }}</label>
                 <input type="checkbox" value="{{ day }}" name="days[]"/>
@@ -532,11 +532,11 @@
     {% endif %}
 
     {% if 'day_last_user_reply' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
-    <div class="type" title="{{ phrase('agent.day_last_user_reply') }}" data-rule-type="day_last_user_reply">
+    <div class="type" title="{{ phrase('agent.general.day_last_user_reply') }}" data-rule-type="day_last_user_reply">
         <div class="op">
             <select name="op" class="op">
-                <option value="is">{{ phrase('agent.is') }}</option>
-                <option value="not">{{ phrase('agent.is_not') }}</option>
+                <option value="is">{{ phrase('agent.general.is') }}</option>
+                <option value="not">{{ phrase('agent.general.is_not') }}</option>
             </select>
         </div>
         <div class="options">
@@ -550,12 +550,12 @@
     {% endif %}
 
 	{% if 'date_resolved' not in no_show_fields and (not event_trigger or event_trigger == 'time_resolved') %}
-	<div class="type" title="{{ phrase('agent.date_resolved') }}" data-rule-type="date_resolved" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="date-resolved">
+	<div class="type" title="{{ phrase('agent.general.date_resolved') }}" data-rule-type="date_resolved" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="date-resolved">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="lte">{{ phrase('agent.before') }}</option>
-				<option value="gte">{{ phrase('agent.after') }}</option>
-				<option value="between">{{ phrase('agent.between') }}</option>
+				<option value="lte">{{ phrase('agent.general.before') }}</option>
+				<option value="gte">{{ phrase('agent.general.after') }}</option>
+				<option value="between">{{ phrase('agent.general.between') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -565,12 +565,12 @@
 	{% endif %}
 
 	{% if 'date_closed' not in no_show_fields and not event_trigger %}
-	<div class="type" title="{{ phrase('agent.date_closed') }}" data-rule-type="date_closed" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
+	<div class="type" title="{{ phrase('agent.general.date_closed') }}" data-rule-type="date_closed" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="lte">{{ phrase('agent.before') }}</option>
-				<option value="gte">{{ phrase('agent.after') }}</option>
-				<option value="between">{{ phrase('agent.between') }}</option>
+				<option value="lte">{{ phrase('agent.general.before') }}</option>
+				<option value="gte">{{ phrase('agent.general.after') }}</option>
+				<option value="between">{{ phrase('agent.general.between') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -580,12 +580,12 @@
 	{% endif %}
 
 	{% if 'date_last_agent_reply' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
-	<div class="type" title="{{ phrase('agent.date_of_last_agent_reply') }}" data-rule-type="date_last_agent_reply" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
+	<div class="type" title="{{ phrase('agent.general.date_of_last_agent_reply') }}" data-rule-type="date_last_agent_reply" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="lte">{{ phrase('agent.before') }}</option>
-				<option value="gte">{{ phrase('agent.after') }}</option>
-				<option value="between">{{ phrase('agent.between') }}</option>
+				<option value="lte">{{ phrase('agent.general.before') }}</option>
+				<option value="gte">{{ phrase('agent.general.after') }}</option>
+				<option value="between">{{ phrase('agent.general.between') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -595,12 +595,12 @@
 	{% endif %}
 
 	{% if 'date_last_user_reply' not in no_show_fields %}
-	<div class="type" title="{{ phrase('agent.date_of_last_user_reply') }}" data-rule-type="date_last_user_reply" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
+	<div class="type" title="{{ phrase('agent.general.date_of_last_user_reply') }}" data-rule-type="date_last_user_reply" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="lte">{{ phrase('agent.before') }}</option>
-				<option value="gte">{{ phrase('agent.after') }}</option>
-				<option value="between">{{ phrase('agent.between') }}</option>
+				<option value="lte">{{ phrase('agent.general.before') }}</option>
+				<option value="gte">{{ phrase('agent.general.after') }}</option>
+				<option value="between">{{ phrase('agent.general.between') }}</option>
 			</select>
 		</div>
 		<div class="options">
@@ -610,7 +610,7 @@
 	{% endif %}
 
 	{% if 'robot_email' not in no_show_fields and event_trigger == 'new_ticket' or event_trigger == 'new_reply'  %}
-	<div class="type" title="{{ phrase('agent.email_sent_by_robot') }}" data-rule-type="robot_email">
+	<div class="type" title="{{ phrase('agent.general.email_sent_by_robot') }}" data-rule-type="robot_email">
 		<div class="op">
 			<input type="hidden" name="op" value="is" />
 		</div>
@@ -621,7 +621,7 @@
 	{% endif %}
 
 	{% if 'ticket_field' not in no_show_fields and term_options.custom_ticket_fields %}
-		{% set op_lang = {'is': phrase('agent.is'), 'not': phrase('agent.is_not'), 'contains': phrase('agent.contains'), 'notcontains': phrase('agent.does_not_contain'), 'gt': phrase('agent.is_greater_than'), 'lt': phrase('agent.is_less_than') } %}
+		{% set op_lang = {'is': phrase('agent.general.is'), 'not': phrase('agent.general.is_not'), 'contains': phrase('agent.general.contains'), 'notcontains': phrase('agent.general.does_not_contain'), 'gt': phrase('agent.general.is_greater_than'), 'lt': phrase('agent.general.is_less_than') } %}
 		{% for field in term_options.custom_ticket_fields %}
 			{% if field.field_def.getFilterCapabilities(search_context) %}
 			<div class="type" title="{{field.field_def.title}}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">

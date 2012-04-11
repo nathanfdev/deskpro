@@ -229,7 +229,7 @@ class MiscController extends AbstractController
 
 		$error = $accept->getError($file, 'agent');
 		if ($error) {
-			$error['error'] = $this->container->getTranslator()->phrase('agent.attach_error_' . $error['error_code'], $error);
+			$error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
 			return $this->createJsonResponse(array($error));
 		}
 

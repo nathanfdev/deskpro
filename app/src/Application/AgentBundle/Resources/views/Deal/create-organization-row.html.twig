@@ -1,6 +1,6 @@
 <div class="add-new-org-container">
 <div class="col">
-	<h4>{{ phrase('agent.name') }}</h4>
+	<h4>{{ phrase('agent.general.name') }}</h4>
 	{% if organization.id %}
 		{{ organization.name }}
 	{% else %}
@@ -10,6 +10,6 @@
 <br class="clear" />
 <footer>
    <button class="save-org-trigger clean-white small">{{ phrase('agent.deal.add_organization') }}</button>
-   <button class="cancel-org-trigger clean-white small">{{ phrase('agent.cancel') }}</button>
+   <button class="cancel-org-trigger clean-white small">{{ phrase('agent.general.cancel') }}</button>
 </footer>
 </div>

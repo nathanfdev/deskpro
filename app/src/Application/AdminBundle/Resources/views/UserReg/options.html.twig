@@ -22,15 +22,15 @@
 				<ul>
 					<li>
 						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_deskpro_source_toggle') }}';" {% if app.getSetting('core.deskpro_source_enabled') %}checked="checked"{% endif %} />
-						{{ phrase('agent.deskpro') }}
+						{{ phrase('agent.general.deskpro') }}
 					</li>
 					<li>
 						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_facebook_toggle') }}';" {% if app.getSetting('core.facebook_source_enabled') %}checked="checked"{% endif %} />
-						{{ phrase('agent.facebook') }} <a href="{{ path('admin_userreg_facebook_edit') }}" class="btn-edit-gear2" style="position: relative; top: 2px;"></a>
+						{{ phrase('agent.general.facebook') }} <a href="{{ path('admin_userreg_facebook_edit') }}" class="btn-edit-gear2" style="position: relative; top: 2px;"></a>
 					</li>
 					<li>
 						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_twitter_toggle') }}';" {% if app.getSetting('core.twitter_source_enabled') %}checked="checked"{% endif %} />
-						{{ phrase('agent.twitter') }} <a href="{{ path('admin_userreg_twitter_edit') }}" class="btn-edit-gear2" style="position: relative; top: 2px;"></a>
+						{{ phrase('agent.general.twitter') }} <a href="{{ path('admin_userreg_twitter_edit') }}" class="btn-edit-gear2" style="position: relative; top: 2px;"></a>
 					</li>
 					<li>
 						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_google_toggle') }}';" {% if app.getSetting('core.google_source_enabled') %}checked="checked"{% endif %} />
@@ -56,7 +56,7 @@
 		<tr>
 			<td width="10"><input type="checkbox" name="email_validation" value="1" {% if app.getSetting('core.email_validation') %}checked="checked"{% endif %} /></td>
 			<td>
-				<h3>{{ phrase('agent.force_email_validation') }}</h3>
+				<h3>{{ phrase('agent.general.force_email_validation') }}</h3>
                 {{ phrase('admin.user_registration.notice_force_validate_email', {'path':path('admin_tickettriggers')}) }}
                 <br />
 				{% if reg_triggers['email_validation.web'] %}   <input class="onoff-slider trigger-toggle" type="checkbox" value="{{ reg_triggers['email_validation.web'].id }}" name="email_validation.web" {% if reg_triggers['email_validation.web'].is_enabled %}checked="checked"{% endif %} /> {{ phrase('admin.user_registration.enable_validation_web_tickets') }}<br />{% endif %}
@@ -117,7 +117,7 @@
 			<div class="dp-input-group">
 				<label>
 					<input class="option-trigger" type="radio" name="mode" value="closed" {% if app.getSetting('core.user_mode') == 'closed' %}checked="checked"{% endif %}>
-					{{ phrase('agent.closed') }}
+					{{ phrase('agent.general.closed') }}
 				</label>
 				<div class="dp-group-options" style="display: none">
 					<p>{{ phrase('admin.user_registration.notice_closed_helpdesk') }}</p>

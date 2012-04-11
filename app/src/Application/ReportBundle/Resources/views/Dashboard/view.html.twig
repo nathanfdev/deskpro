@@ -22,7 +22,7 @@ function _page_exec() {
 {% block pagebar %}
 	<nav>
 		<ul>
-			<li id="report-dashboard-set-editable" class="edit"><a href="#">{{ phrase('agent.ucfirst_edit') }}</a></li>
+			<li id="report-dashboard-set-editable" class="edit"><a href="#">{{ phrase('agent.general.ucfirst_edit') }}</a></li>
 		</ul>
 	</nav>
 	<ul>
@@ -37,7 +37,7 @@ function _page_exec() {
 			<div class="dp-form">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
-						<label>{{ phrase('agent.title') }}</label>
+						<label>{{ phrase('agent.general.title') }}</label>
 					</div>
 					<div class="dp-form-input">
 						{{ form_widget(form.title) }}
@@ -54,8 +54,8 @@ function _page_exec() {
 				</div>
 			</div>
 
-			<a id="report-dashboard-delete" href="{{ path('report_trend_dashboard_delete', {'dashboard_id': dashboard.id}) }}" class="btn secondary">{{ phrase('agent.ucfirst_delete') }}</a>
-			<a id="report-dashboard-set-viewable" href="#" class="btn primary">{{ phrase('agent.save') }}</a>
+			<a id="report-dashboard-delete" href="{{ path('report_trend_dashboard_delete', {'dashboard_id': dashboard.id}) }}" class="btn secondary">{{ phrase('agent.general.ucfirst_delete') }}</a>
+			<a id="report-dashboard-set-viewable" href="#" class="btn primary">{{ phrase('agent.general.save') }}</a>
 		</form>
 	</div>
 
@@ -72,7 +72,7 @@ function _page_exec() {
 
 		</div>
 		<div class="overlay-loader">
-			<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" alt="{{ phrase('agent.loading_dot') }}" />
+			<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" alt="{{ phrase('agent.general.loading_dot') }}" />
 		</div>
 		<div class="overlay-footer">
 
@@ -88,7 +88,7 @@ function _page_exec() {
 			<div id="fullscreen_overlay_wrapper_content"></div>
 		</div>
 		<div class="overlay-loader">
-			<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" alt="{{ phrase('agent.loading_dot') }}" />
+			<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" alt="{{ phrase('agent.general.loading_dot') }}" />
 		</div>
 		<div class="overlay-footer">
 
@@ -102,7 +102,7 @@ function _page_exec() {
 			<thead>
 				<tr>
 					<th width="16"></th>
-					<th>{{ phrase('agent.title') }}</th>
+					<th>{{ phrase('agent.general.title') }}</th>
 					<th width="100">Group By</th>
 					<th width="100">Updates</th>
 					<th width="100">Author</th>

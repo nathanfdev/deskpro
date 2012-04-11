@@ -253,7 +253,7 @@ class ChatConversationSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_DATE_CREATED:
-					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.date_created'), $op, $choice);
+					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_created'), $op, $choice);
 					$wheres[] = $this->_dateMatch('chat_conversations.date_created', $op, $choice);
 					break;
 

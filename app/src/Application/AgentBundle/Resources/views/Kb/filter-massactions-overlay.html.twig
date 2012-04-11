@@ -7,7 +7,7 @@
 		<header>
 			<span class="close close-trigger"></span>
 			<h1>
-				{{ phrase('agent.apply_to_x_selections', {'placeholder': '<span class="selected-tickets-count"></span>'}) }}
+				{{ phrase('agent.general.apply_to_x_selections', {'placeholder': '<span class="selected-tickets-count"></span>'}) }}
 			</h1>
 		</header>
 		<article>
@@ -34,10 +34,10 @@
 							<div class="dp-input-group">
 								<label>
 									<input type="radio" class="option-trigger" name="action" value="delete" />
-									{{ phrase('agent.ucfirst_delete') }}
+									{{ phrase('agent.general.ucfirst_delete') }}
 								</label>
 								<div class="dp-group-options" style="display: none">
-									<span>{{ phrase('agent.ask_delete_selected') }}</span>
+									<span>{{ phrase('agent.general.ask_delete_selected') }}</span>
 									<div class="execute-row">
 										<a class="apply-actions">{{ phrase('agent.publish.apply_action') }}</a>
 									</div>

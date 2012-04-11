@@ -2,7 +2,7 @@
 	<div class="show">
 		<div class="controls">
 			<span class="edit-trigger"></span>
-			<div class="insertBtn snippet-trigger" data-snippet-id="{{ snippet.id }}"><a>{{ phrase('agent.insert') }}</a></div>
+			<div class="insertBtn snippet-trigger" data-snippet-id="{{ snippet.id }}"><a>{{ phrase('agent.general.insert') }}</a></div>
 		</div>
 		<label>{{ snippet.title }}</label>
 		<div class="content show">
@@ -28,9 +28,9 @@
 			<div class="content">
 				<textarea name="snippet">{{ snippet.snippet }}</textarea>
 				<div class="edit-controls">
-					<button class="clean-white save-snippet-trigger">{{ phrase('agent.update') }}</button>
-					<button class="clean-white cancel-snippet-trigger">{{ phrase('agent.cancel') }}</button>
-					<span class="delete-snippet-trigger" data-snippet-id="{{ snippet.id }}" style="cursor: pointer;">{{ phrase('agent.delete_snippet') }}</span>
+					<button class="clean-white save-snippet-trigger">{{ phrase('agent.general.update') }}</button>
+					<button class="clean-white cancel-snippet-trigger">{{ phrase('agent.general.cancel') }}</button>
+					<span class="delete-snippet-trigger" data-snippet-id="{{ snippet.id }}" style="cursor: pointer;">{{ phrase('agent.general.delete_snippet') }}</span>
 				</div>
 			</div>
 		</form>

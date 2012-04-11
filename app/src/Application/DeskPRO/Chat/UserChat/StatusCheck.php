@@ -100,7 +100,7 @@ class StatusCheck
 		if ($last < $cut_close) {
 
 			$msg = $this->conversation->addSystemMessage(
-				App::getTranslator()->phrase('agent.msg_user_timeout'),
+				App::getTranslator()->phrase('agent.general.msg_user_timeout'),
 				true
 			);
 
@@ -139,7 +139,7 @@ class StatusCheck
 
 		if ($last < $cut) {
 			$msg = $this->conversation->addSystemMessage(
-				App::getTranslator()->phrase('agent.msg_agent_timeout'),
+				App::getTranslator()->phrase('agent.general.msg_agent_timeout'),
 				true
 			);
 

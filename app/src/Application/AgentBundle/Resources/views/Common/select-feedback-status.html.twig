@@ -5,12 +5,12 @@
 			<option value="active.{{ cat.id }}">{{ cat.title }}</option>
 		{% endfor %}
 	</optgroup>
-	<optgroup label="{{ phrase('agent.closed') }}">
+	<optgroup label="{{ phrase('agent.general.closed') }}">
 		{% for cat in closed_status_cats %}
 			<option value="closed.{{ cat.id }}">{{ cat.title }}</option>
 		{% endfor %}
 	</optgroup>
 	{% if constant('DP_DEBUG') %}
-		<option value="hidden.validating" selected="selected">{{ phrase('agent.dev_validating') }}</option>
+		<option value="hidden.validating" selected="selected">{{ phrase('agent.general.dev_validating') }}</option>
 	{% endif %}
 </select>

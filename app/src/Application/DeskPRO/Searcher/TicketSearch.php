@@ -582,7 +582,7 @@ class TicketSearch extends SearcherAbstract
 					} else {
 						$wheres[] = $this->_rangeMatch("$tickets_table.id", $op, $choice, true);
 					}
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.id'), $op, $choice);
+					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
 					break;
 
 				case self::TERM_TEXT:
@@ -607,7 +607,7 @@ class TicketSearch extends SearcherAbstract
 					break;
 				case self::TERM_DEPARTMENT:
 					$this->affected_fields[] = 'ticket.department_id';
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.department'), $op, $choice, function($choice) {
+					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.department'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:Department')->getDepartmentNames((array)$choice);
 						return $titles;
 					});
@@ -637,7 +637,7 @@ class TicketSearch extends SearcherAbstract
 					break;
 				case self::TERM_CATEGORY:
 					$this->affected_fields[] = 'ticket.category_id';
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.category'), $op, $choice, function($choice) {
+					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.category'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoryNames((array)$choice);
 						return $titles;
 					});
@@ -650,7 +650,7 @@ class TicketSearch extends SearcherAbstract
 					break;
 				case self::TERM_PRODUCT:
 					$this->affected_fields[] = 'ticket.product_id';
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.product'), $op, $choice, function($choice) {
+					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.product'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:Product')->getProductNames((array)$choice);
 						return $titles;
 					});
@@ -672,11 +672,11 @@ class TicketSearch extends SearcherAbstract
 					break;
 				case self::TERM_URGENCY:
 					$this->affected_fields[] = 'ticket.urgency';
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.urgency'), $op, $choice);
+					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.urgency'), $op, $choice);
 					$wheres[] = $this->_rangeMatch("$tickets_table.urgency", $op, $choice);
 					break;
 				case self::TERM_DATE_CREATED:
-					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.date_created'), $op, $choice);
+					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_created'), $op, $choice);
 					$wheres[] = $this->_dateMatch("$tickets_table.date_created", $op, $choice);
 					break;
 				case self::TERM_DATE_RESOLVED:
@@ -703,7 +703,7 @@ class TicketSearch extends SearcherAbstract
 					break;
 				case self::TERM_WORKFLOW:
 					$this->affected_fields[] = 'ticket.workflow_id';
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.workflow'), $op, $choice, function($choice) {
+					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.workflow'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:TicketWorkflow')->getWorkflowNames((array)$choice);
 						return $titles;
 					});
@@ -737,11 +737,11 @@ class TicketSearch extends SearcherAbstract
 					$not_id = $info['not_id'];
 
 					if ($unassigned) {
-						$this->summary[] = $this->_choiceSummary($tr->phrase('agent.agent'), $op, $tr->phrase('agent.unassigned'));
+						$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $tr->phrase('agent.general.agent'));
 						$wheres[] = "$tickets_table.agent_id IS NULL";
 					} else {
 						if ($agent_ids) {
-							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.agent'), $op, $agent_ids, function($choice) {
+							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent'), $op, $agent_ids, function($choice) {
 								$titles = App::getEntityRepository('DeskPRO:Person')->getAgentNames((array)$choice);
 								return $titles;
 							});
@@ -754,7 +754,7 @@ class TicketSearch extends SearcherAbstract
 						}
 
 						if ($not_id) {
-							$this->summary[] = $tr->phrase('agent.agent_is_not_me');
+							$this->summary[] = $tr->phrase('agent.general.agent_is_not_me');
 							$wheres[] = "$tickets_table.agent_id != " . $not_id;
 						}
 					}
@@ -769,11 +769,11 @@ class TicketSearch extends SearcherAbstract
 
 					if ($no_team) {
 						$wheres[] = "$tickets_table.agent_team_id IS NULL";
-						$this->summary[] = $this->_choiceSummary($tr->phrase('agent.agent_team'), $op, $tr->phrase('agent.unassigned'));
+						$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), $op, $tr->phrase('agent.general.agent_team'));
 
 					} else {
 						if ($team_ids) {
-							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.agent_team'), $op, $team_ids, function($choice) {
+							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), $op, $team_ids, function($choice) {
 								$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
 								return $titles;
 							});
@@ -786,7 +786,7 @@ class TicketSearch extends SearcherAbstract
 						}
 
 						if ($not_ids) {
-							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.agent_team'), 'not', $not_ids, function($choice) {
+							$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.agent_team'), 'not', $not_ids, function($choice) {
 								$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
 								return $titles;
 							});
@@ -846,7 +846,7 @@ class TicketSearch extends SearcherAbstract
 					}
 					$choice_str = implode(', ', $choice_str);
 
-					$this->summary[] = $tr->phrase('agent.x_is_y', array('field' => $tr->phrase('agent.status'), 'value' => $choice_str));
+					$this->summary[] = $tr->phrase('agent.general.x_is_y', array('field' => $tr->phrase('agent.general.is_not_x'), 'value' => $choice_str));
 
 					$wheres[] = $this->_choiceMatch("$tickets_table.hidden_status", $op, $choice);
 					$this->enableArchiveSearch();
@@ -864,11 +864,11 @@ class TicketSearch extends SearcherAbstract
 						$wheres[] = "tickets.is_hold = 0";
 					}
 
-					$this->summary[] = $tr->phrase('agent.is_not_x', array('field' => 'on hold'));
+					$this->summary[] = $tr->phrase('agent.general.is_not_x', array('field' => 'on hold'));
 
 					break;
 				case self::TERM_ORGANIZATION:
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.organization'), $op, $choice, function($choice) {
+					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.organization'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames((array)$choice);
 						return $titles;
 					});
@@ -891,7 +891,7 @@ class TicketSearch extends SearcherAbstract
 						continue;
 					}
 
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.followers'), $op, $choice, function($choice) {
+					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.followers'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:Person')->getAgentNames((array)$choice);
 						return $titles;
 					}, true);
@@ -907,9 +907,9 @@ class TicketSearch extends SearcherAbstract
 					}
 
 					if ($op == self::OP_IS) {
-						$this->summary[] = $tr->phrase('agent.x_is_y', array('field' => $tr->phrase('agent.subject'), 'value' => $choice));
+						$this->summary[] = $tr->phrase('agent.general.x_is_y', array('field' => $tr->phrase('agent.general.x_is_not_y'), 'value' => $choice));
 					} else {
-						$this->summary[] = $tr->phrase('agent.x_is_not_y', array('field' => $tr->phrase('agent.subject'), 'value' => $choice));
+						$this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => $tr->phrase('agent.general.label'), 'value' => $choice));
 					}
 					$wheres[] = $this->_stringMatch($field, $op, $choice);
 					break;
@@ -942,7 +942,7 @@ class TicketSearch extends SearcherAbstract
 						$choices_in = implode(',', $choices_in);
 					}
 
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.label'), $op, $choice);
+					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
 
 					switch ($op) {
 						case self::OP_IS:
@@ -994,9 +994,9 @@ class TicketSearch extends SearcherAbstract
 							}
 
 							if ($op == self::OP_IS) {
-								$this->summary[] = $tr->phrase('agent.x_is_y', array('field' => $field['title'], 'value' => $choice));
+								$this->summary[] = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $choice));
 							} else {
-								$this->summary[] = $tr->phrase('agent.x_is_not_y', array('field' => $field['title'], 'value' => $choice));
+								$this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $choice));
 							}
 
 							$joins[] = array(
@@ -1042,9 +1042,9 @@ class TicketSearch extends SearcherAbstract
 							$choice_str = implode(', ', $choice_str);
 
 							if ($op == self::OP_IS OR $op== self::OP_CONTAINS) {
-								$this->summary[] = $tr->phrase('agent.x_is_y', array('field' => $field['title'], 'value' => $choice_str));
+								$this->summary[] = $tr->phrase('agent.general.x_is_y', array('field' => $field['title'], 'value' => $choice_str));
 							} else {
-								$this->summary[] = $tr->phrase('agent.x_is_not_y', array('field' => $field['title'], 'value' => $choice_str));
+								$this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => $field['title'], 'value' => $choice_str));
 							}
 
 							$field = 'custom_data_ticket_'.$join_id.'.field_id';
@@ -1091,7 +1091,7 @@ class TicketSearch extends SearcherAbstract
 
 				case self::TERM_CREATION_SYSTEM:
 					$set_status = true;
-					$this->summary[] = $tr->phrase('agent.x_is_y', array(
+					$this->summary[] = $tr->phrase('agent.general.x_is_y', array(
 						'field' => $tr->phrase('agent.tickets.creation_system'),
 						'value' => $tr->phrase('agent.tickets.creation_system_' . str_replace('.', '_', $choice))
 					));

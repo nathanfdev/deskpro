@@ -11,7 +11,7 @@
 				{{ phrase('agent.tickets.deleted_by_name', {'name':deleted_tickets[ticket.id].by_person.display_name}) }}
 				{% if deleted_tickets[ticket.id].reason %}
 					<br />
-					{{ phrase('agent.reason') }}: {{ deleted_tickets[ticket.id].reason }}
+					{{ phrase('agent.general.reason') }}: {{ deleted_tickets[ticket.id].reason }}
 				{% endif %}
 			</td>
 		</tr>

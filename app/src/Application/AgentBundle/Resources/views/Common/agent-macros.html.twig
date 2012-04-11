@@ -1,6 +1,6 @@
 {% macro name_or_me(person, noval) %}
 	{% if person.id == app.user.id %}
-		{{ phrase('agent.me') }}
+		{{ phrase('agent.general.me') }}
 	{% elseif not person %}
 		{{ noval }}
 	{% else %}
@@ -11,7 +11,7 @@
 {% macro team_name_or_me(team, noval) %}
 	{% if not app.getSetting('core.use_agent_team') %}{{ noval }}{% endif %}
 	{% if app.user.getAgent().isTeamMember(team.id) and app.user.getAgent().isSingleTeams() %}
-		{{ phrase('agent.my_team') }}
+		{{ phrase('agent.general.my_team') }}
 	{% elseif not team %}
 		{{ noval }}
 	{% else %}

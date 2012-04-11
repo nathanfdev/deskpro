@@ -19,13 +19,13 @@
 <div class="optionbox" id="agent_optionbox_check">
 	<section data-section-name="followers">
 		<header>
-			<h3>{{ phrase('agent.agents') }}</h3>
-			<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter') }}" />
+			<h3>{{ phrase('agent.general.agents') }}</h3>
+			<input type="text" class="filter-box" placeholder="{{ phrase('agent.general.filter') }}" />
 		</header>
 		<ul>
 			<li class="me last-me {% if app.user.id in participant_ids %}on{% endif %}">
 				<input type="checkbox" name="agent_optionbox_check" value="{{ app.user.id }}" {% if app.user.id in participant_ids %}checked="checked"{% endif %} />
-				<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.me') }}</span></label>
+				<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.general.me') }}</span></label>
 			</li>
 
 			{% for agent in agents %}
@@ -44,8 +44,8 @@
 <div class="optionbox" id="agent_optionbox_radio">
 	<section data-section-name="agents">
 		<header>
-			<h3>{{ phrase('agent.agents') }}</h3>
-			<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter') }}" />
+			<h3>{{ phrase('agent.general.agents') }}</h3>
+			<input type="text" class="filter-box" placeholder="{{ phrase('agent.general.filter') }}" />
 		</header>
 		<ul>
 			{% for agent in agents %}
@@ -60,17 +60,17 @@
 <div class="optionbox" id="agent_team_optionbox_radio">
 	<section data-section-name="teams">
 		<header>
-			<h3>{{ phrase('agent.agent_teams') }}</h3>
-			<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter') }}" />
+			<h3>{{ phrase('agent.general.agent_teams') }}</h3>
+			<input type="text" class="filter-box" placeholder="{{ phrase('agent.general.filter') }}" />
 		</header>
 		<ul>
 			{% if app.getSetting('core.use_agent_team') %}
 				{% if app.user.teams %}
-					<li class="group-title"><strong>{{ phrase('agent.my_teams') }}</strong></li>
+					<li class="group-title"><strong>{{ phrase('agent.general.my_teams') }}</strong></li>
 					{% for team in app.user.teams %}
 						<li><input type="radio" name="agent_team_optionbox_radio" value="{{ team.id }}" /><label>{{ team.name }}</label></li>
 					{% endfor %}
-					<li class="group-title"><strong>{{ phrase('agent.all_teams') }}</strong></li>
+					<li class="group-title"><strong>{{ phrase('agent.general.all_teams') }}</strong></li>
 				{% endif %}
 
 				{% for team in agent_teams %}
@@ -101,8 +101,8 @@
 	<div class="optionbox">
 		<section data-section-name="department">
 			<header>
-				<h3>{{ phrase('agent.department') }}</h3>
-				<input type="text" class="filter-box" placeholder="{{ phrase('agent.filter') }}" />
+				<h3>{{ phrase('agent.general.department') }}</h3>
+				<input type="text" class="filter-box" placeholder="{{ phrase('agent.general.filter') }}" />
 			</header>
 			<ul>
 				{% for dep in ticket_options.departments_hierarchy %}
@@ -224,24 +224,24 @@
 
 {# Ticket Status #}
 <ul id="ticket_status_menu">
-	<li class="section-title">{{ phrase('agent.status') }}</li>
+	<li class="section-title">{{ phrase('agent.general.status') }}</li>
 	<li data-status="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</li>
 	<li data-status="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</li>
 	<li data-status="resolved">{{ phrase('agent.tickets.status_resolved') }}</li>
-	<li data-status="closed">{{ phrase('agent.closed') }}</li>
+	<li data-status="closed">{{ phrase('agent.general.closed') }}</li>
 </ul>
 
 {# Comment Menu #}
 <ul id="comment_tools_menu" data-menu-flag="copy-menu">
-	<li data-action="edit">{{ phrase('agent.edit_comment') }}</li>
-	<li data-action="delete">{{ phrase('agent.delete_comment') }}</li>
-	<li data-action="create-ticket">{{ phrase('agent.create_ticket') }}</li>
+	<li data-action="edit">{{ phrase('agent.general.edit_comment') }}</li>
+	<li data-action="delete">{{ phrase('agent.general.delete_comment') }}</li>
+	<li data-action="create-ticket">{{ phrase('agent.general.create_ticket') }}</li>
 </ul>
 
 {# Comment Validation Menu #}
 <ul id="comment_validation_menu" data-menu-flag="copy-menu">
-	<li data-action="approve">{{ phrase('agent.validate_comment') }}</li>
-	<li data-action="delete">{{ phrase('agent.delete_comment') }}</li>
+	<li data-action="approve">{{ phrase('agent.general.validate_comment') }}</li>
+	<li data-action="delete">{{ phrase('agent.general.delete_comment') }}</li>
 </ul>
 
 {# Popover tempalte #}
@@ -251,7 +251,7 @@
 			<header>
 				<span class="close close-trigger"></span>
 				<h1 class="tab-title"></h1>
-				<span class="move-to-tab">{{ phrase('agent.move_to_tab') }}</span>
+				<span class="move-to-tab">{{ phrase('agent.general.move_to_tab') }}</span>
 			</header>
 			<article class="popover-inner">
 
@@ -272,13 +272,13 @@
 
 {# Usergroups #}
 <ul id="usergroups_menu">
-	<li data-usergroup-id="1">{{ phrase('agent.everyone') }}</li>
+	<li data-usergroup-id="1">{{ phrase('agent.general.everyone') }}</li>
 </ul>
 
 <script type="text/x-deskpro-plain" id="comment_edit_tpl">
 	<div class="comment-edit">
 		<textarea class="comment"></textarea><br />
-		<button class="dp-button xx-small save-trigger">{{ phrase('agent.save') }}</button>
+		<button class="dp-button xx-small save-trigger">{{ phrase('agent.general.save') }}</button>
 	</div>
 </script>
 
@@ -382,7 +382,7 @@
 		class="section-title status-closed"
 		data-status-type="closed"
 		data-option-value="closed"
-	>{{ phrase('agent.closed') }}</li>
+	>{{ phrase('agent.general.closed') }}</li>
 	{% for cat in feedback_closed_status_cats %}
 		<li
 			class="status-{{cat.id}}"
@@ -435,15 +435,15 @@
 
 {# Everything Menus #}
 <div id="everything_search_terms_global">
-	<div class="type" title="{{ phrase('agent.labels') }}" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="everything" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
+	<div class="type" title="{{ phrase('agent.general.labels') }}" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="everything" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">{{ phrase('agent.is') }}</option>
-				<option value="not">{{ phrase('agent.is_not') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+				<option value="not">{{ phrase('agent.general.is_not') }}</option>
 				{% if with_change_terms %}
-					<option value="changed">{{ phrase('agent.changed') }}</option>
-					<option value="changed_to">{{ phrase('agent.changed_to_include') }}</option>
-					<option value="changed_from">{{ phrase('agent.changed_to_remove') }}</option>
+					<option value="changed">{{ phrase('agent.general.changed') }}</option>
+					<option value="changed_to">{{ phrase('agent.general.changed_to_include') }}</option>
+					<option value="changed_from">{{ phrase('agent.general.changed_to_remove') }}</option>
 				{% endif %}
 			</select>
 		</div>
@@ -474,7 +474,7 @@
 #}
 <script type="text/x-deskpro-tmpl" id="tab_loading_template">
 	%startScript%
-	pageMeta.title = '{{ phrase('agent.loading') }}';
+	pageMeta.title = '{{ phrase('agent.general.loading') }}';
 	%endScript%
 
 	<div class="tab-loading"></div>
@@ -485,12 +485,12 @@
 		<div class="overlay-title">
 			<button class="clean-white small" id="global_ajax_error_submit" style="position: absolute; right: 40px; top: 8px;">{{ phrase('agent.interface.report_this_error_to_deskpro') }}</button>
 			<h4>
-				{{ phrase('agent.network_error') }}
+				{{ phrase('agent.general.network_error') }}
 			</h4>
 		</div>
 		<div class="overlay-content">
 			<p class="error-desc">
-				{{ phrase('agent.network_error_explain') }}.
+				{{ phrase('agent.general.network_error_explain') }}.
 			</p>
 			<div id="global_ajax_error_info" style="font-size: 9px; margin-top: 8px;"></div>
 			<div class="loading-on">{{ phrase('agent.interface.error_report_submitting') }}</div>
@@ -498,7 +498,7 @@
 				<p>{{ phrase('agent.interface.error_report_thank_you') }}</p>
 				<p>
                     {% set phrase_part %}
-                        <a href="mailto:support@deskpro.com">{{ phrase('agent.supportdeskprocom') }}</a>
+                        <a href="mailto:support@deskpro.com">{{ phrase('agent.general.supportdeskprocom') }}</a>
                     {% endset %}
                     {{ phrase('agent.interface.error_report_disclaimer', {'email':phrase_part}) }}
 				</p>
@@ -509,8 +509,8 @@
 <div id="alert_overlay" style="display:none;">
 	<div class="alert-overlay mass-actions-overlay">
 		<div class="overlay-title">
-			<span class="close-trigger">{{ phrase('agent.dismiss') }}</span>
-			<h4>{{ phrase('agent.alert') }}</h4>
+			<span class="close-trigger">{{ phrase('agent.general.dismiss') }}</span>
+			<h4>{{ phrase('agent.general.alert') }}</h4>
 		</div>
 		<div class="overlay-content">
 			<p id="alert_overlay_msg"></p>
@@ -520,15 +520,15 @@
 <div id="confirm_overlay" style="display:none;">
 	<div class="confirm-overlay mass-actions-overlay">
 		<div class="overlay-title">
-			<h4>{{ phrase('agent.confirm') }}</h4>
+			<h4>{{ phrase('agent.general.confirm') }}</h4>
 		</div>
 		<div class="overlay-content">
 			<p id="confirm_overlay_msg"></p>
 		</div>
 	</div>
 	<div class="overlay-footer">
-		<button class="okay-trigger clean-white">{{ phrase('agent.okay') }}</button>
-		<button class="cancel-trigger clean-white">{{ phrase('agent.cancel') }}</button>
+		<button class="okay-trigger clean-white">{{ phrase('agent.general.okay') }}</button>
+		<button class="cancel-trigger clean-white">{{ phrase('agent.general.cancel') }}</button>
 	</div>
 </div>
 
@@ -542,8 +542,8 @@
 			<div class="input-wrap"><input type="text" id="prompt_overlay_input" /></div>
 		</div>
 		<div class="overlay-footer">
-			<button class="okay-trigger clean-white">{{ phrase('agent.okay') }}</button>
-			<button class="cancel-trigger clean-white">{{ phrase('agent.cancel') }}</button>
+			<button class="okay-trigger clean-white">{{ phrase('agent.general.okay') }}</button>
+			<button class="cancel-trigger clean-white">{{ phrase('agent.general.cancel') }}</button>
 		</div>
 	</div>
 </div>
@@ -561,7 +561,7 @@
 		</div>
 	</article>
 	<footer>
-		<button class="continue-trigger clean-white">{{ phrase('agent.continue') }}</button>
+		<button class="continue-trigger clean-white">{{ phrase('agent.general.continue') }}</button>
 	</footer>
 </section>
 
@@ -571,7 +571,7 @@
 			<div class="search-form actions-list">
 				<div class="search-terms">
 				</div>
-				<div class="term add-term-row" style="display:none"><span class="add-term">{{ phrase('agent.widget_add') }}</span> {{ phrase('agent.add_action_term') }}</div>
+				<div class="term add-term-row" style="display:none"><span class="add-term">{{ phrase('agent.general.widget_add') }}</span> {{ phrase('agent.general.add_action_term') }}</div>
 			</div>
 			{% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with { 'classname': 'actions-builder-tpl', 'term_options': ticket_options } %}
 		</div>
