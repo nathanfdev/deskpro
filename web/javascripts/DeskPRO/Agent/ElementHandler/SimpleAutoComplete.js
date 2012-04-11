@@ -23,6 +23,7 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
         this.termInput   = $('.cc-people-search-trigger', this.el);
         this.resultsBox  = $('.person-search-box', this.el);
         this.resultsList = $('.results-list', this.resultsBox);
+        this.addButton = $('.cc-saverow-trigger', this.el);
 
         this.tplHtml = DeskPRO_Window.util.getPlainTpl($('.user-row-tpl', this.el));
 
@@ -59,6 +60,8 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
                     var email = $('.user-email', current).text().trim();
 
                     self.termInput.val(email);
+                    self.addButton.click();
+                    self.close();
 
                     self.el.trigger('personsearchboxclick', [personId, name, email, self]);
                 } else {
@@ -118,6 +121,8 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
             var email = $('.user-email', this).text().trim();
 
             self.termInput.val(email);
+            self.addButton.click();
+            self.close();
         });
 
         this.resultsBox.detach().hide().appendTo('body');
