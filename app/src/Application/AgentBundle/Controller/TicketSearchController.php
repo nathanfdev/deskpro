@@ -773,8 +773,8 @@ class TicketSearchController extends AbstractController
 
     protected function _outputCsv($vars, $results_helper) {
         $response = new \Symfony\Component\HttpFoundation\Response();
-        $response->headers->set('Content-Type', 'text/csv');
-        $response->headers->set('Content-Disposition', 'attachment; filename=TicketList.csv');
+        //$response->headers->set('Content-Type', 'text/csv');
+        //$response->headers->set('Content-Disposition', 'attachment; filename=TicketList.csv');
         $response->sendHeaders();
 
         $display_fields = array(
@@ -797,7 +797,6 @@ class TicketSearchController extends AbstractController
             'locked_by_agent',
             'ref',
             'auth',
-            'notify_template',
             'creation_system',
             'notify_email',
             'ticket_hash',
