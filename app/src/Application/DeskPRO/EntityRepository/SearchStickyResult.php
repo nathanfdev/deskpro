@@ -51,7 +51,7 @@ class SearchStickyResult extends EntityRepository
 		} elseif ($object instanceof \Application\DeskPRO\Entity\Feedback) {
 			$object_type = 'DeskPRO:Feedback';
 		} else {
-			throw new \InvalidArgumentException("Unknow type");
+			throw new \InvalidArgumentException("Unknown type");
 		}
 
 		return $this->getWordsFor($object_type, $object->id);

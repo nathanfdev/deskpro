@@ -456,7 +456,7 @@ class GroupingCounter
 				// Make note of unknown items (should never happen, but better to include than not!)
 				foreach ($ids as $id) {
 					if (!isset($group_structure[$id])) {
-						$group_structure[$id] = array('id' => $id, 'title' => "Unknow $id");
+						$group_structure[$id] = array('id' => $id, 'title' => "Unknown $id");
 					}
 				}
 

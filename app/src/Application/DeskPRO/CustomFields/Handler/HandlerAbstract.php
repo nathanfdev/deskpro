@@ -297,7 +297,7 @@ abstract class HandlerAbstract
 				break;
 
 			default:
-				throw new \InvalidArgumentException("Unknow context `$context`");
+				throw new \InvalidArgumentException("Unknown context `$context`");
 		}
 
 		return $this->$method($data);

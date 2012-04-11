@@ -119,7 +119,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 
 		$classname = 'Application\\DeskPRO\\Usersource\\Adapter\\' . $this->getTypeName();
 		if (!class_exists($classname)) {
-			throw new \RuntimeException("Unknow usersource type `$classname`");
+			throw new \RuntimeException("Unknown usersource type `$classname`");
 		}
 
 		$this->_adapter_instance = new $classname($this);

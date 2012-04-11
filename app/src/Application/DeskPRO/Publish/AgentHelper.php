@@ -534,7 +534,7 @@ class AgentHelper implements PersonContextInterface
 				break;
 		}
 
-		throw new \InvalidArgumentException("Unknow type `$type`");
+		throw new \InvalidArgumentException("Unknown type `$type`");
 	}
 
 
@@ -562,6 +562,6 @@ class AgentHelper implements PersonContextInterface
 				break;
 		}
 
-		throw new \InvalidArgumentException("Unknow type `$type`");
+		throw new \InvalidArgumentException("Unknown type `$type`");
 	}
 }

@@ -291,7 +291,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$php_path = $this->getContainer()->getPhpBinaryPath();
 
 		if (!$php_path) {
-			$logger->log("Unknow path to PHP executable. Edit your /config.php file and specify a value for php_path.\n", Logger::ERR);
+			$logger->log("Unknown path to PHP executable. Edit your /config.php file and specify a value for php_path.\n", Logger::ERR);
 			return 1;
 		} else {
 			$logger->log("Path to PHP executable found at " . $php_path, Logger::INFO);

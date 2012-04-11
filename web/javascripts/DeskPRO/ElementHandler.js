@@ -68,7 +68,7 @@ DeskPRO.ElementHandler = new Orb.Class({
 				}
 				initNow = false;
 			} else {
-				DP.console.error('Unknow parent handler element %s on element %o and handler %o', sel, this.el, this);
+				DP.console.error('Unknown parent handler element %s on element %o and handler %o', sel, this.el, this);
 			}
 		}
 

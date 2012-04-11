@@ -672,7 +672,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var agentEl = $('#agent_offline_list .agent-' + agent_id);
 
 		if (!agentEl.length) {
-			DP.console.error('Unknow agent %i', agent_id);
+			DP.console.error('Unknown agent %i', agent_id);
 			return null;
 		}
 
@@ -701,7 +701,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var teamEl = $('#agent_team_list .team-' + team_id);
 
 		if (!teamEl.length) {
-			DP.console.error('Unknow team %i', team_id);
+			DP.console.error('Unknown team %i', team_id);
 			return null;
 		}
 

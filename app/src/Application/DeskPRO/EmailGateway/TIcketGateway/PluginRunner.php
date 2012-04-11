@@ -79,7 +79,7 @@ class PluginRunner implements EventSubscriberInterface
 	public function __call($method, $args)
 	{
 		if (!in_array($method, $this->getSubscribedEvents())) {
-			throw new \BadMethodCallException("Unknow method `$method`");
+			throw new \BadMethodCallException("Unknown method `$method`");
 		}
 
 		if (empty($args[0]) OR !($args[0] instanceof GatewayEvent)) {

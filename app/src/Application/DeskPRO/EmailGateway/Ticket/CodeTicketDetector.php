@@ -122,7 +122,7 @@ class CodeTicketDetector implements TicketDetectorInterface
 	}
 
 	/**
-	 * Unknow people are added as CC's. If you know the P/TAC then it's as good as a passowrd.
+	 * Unknown people are added as CC's. If you know the P/TAC then it's as good as a passowrd.
 	 *
 	 * @return bool
 	 */

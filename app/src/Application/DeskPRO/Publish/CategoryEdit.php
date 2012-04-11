@@ -76,7 +76,7 @@ class CategoryEdit
 				$obj = new NewsCategory;
 				break;
 			default:
-				throw new \InvalidArgumentException("Unknow type `$type`");
+				throw new \InvalidArgumentException("Unknown type `$type`");
 		}
 
 		$obj['title'] = $title;
