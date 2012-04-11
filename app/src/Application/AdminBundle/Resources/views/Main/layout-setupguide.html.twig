@@ -14,7 +14,7 @@
 	</div>
 	#}
 	<div class="next">
-		{{ phrase('admin.menu.next_step') }}: <a href="{{ path(nexttask.route) }}" class="step">{{ phrase('admin.setup.' ~ nexttask.id) }}</a>
+		{{ phrase('admin.menu.next_step') }}: <a href="{{ path(nexttask.route) }}" class="step">{{ phrase('admin.setup.taskid_' ~ nexttask.id) }}</a>
 		<em class="skip" onclick="window.location='{{ path('admin_skip_setup_todo') }}';">{{ phrase('admin.menu.or_skip') }}</em>
 	</div>
 	<div class="ui-progress-bar ui-container blue">

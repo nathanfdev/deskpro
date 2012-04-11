@@ -35,7 +35,7 @@
 	<li data-field="labels"><label><input type="checkbox" name="labels" {% if 'labels' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.labels') }}</label></li>
 	<li data-field="date_user_waiting"><label><input type="checkbox" name="date_user_waiting" {% if 'date_user_waiting' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.user_waiting') }}</label></li>
 	{% for t in types %}
-		<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.' ~ t) }}</label></li>
+		<li data-field="{{ t }}"><label><input type="checkbox" name="{{ t }}" {% if t in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.tickets.type_' ~ t) }}</label></li>
 	{% endfor %}
 	{% for f in ticket_field_defs %}
 		{% set t = 'ticket_fields[' ~ f.id ~ ']' %}
