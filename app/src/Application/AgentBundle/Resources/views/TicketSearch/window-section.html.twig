@@ -124,22 +124,22 @@
 			</div>
 		</script>
 		<script type="text/x-deskpro-plain" class="editor-fields-tpl">
-			<select>
-				<option value="">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>
-				<option value="department">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>
-				{% if app.getSetting('core.use_ticket_category') %}<option value="category">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>{% endif %}
-				{% if app.getSetting('core.use_ticket_priority') %}<option value="priority">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>{% endif %}
-				{% if app.getSetting('core.use_product') %}<option value="product">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>{% endif %}
-				{% if app.getSetting('core.use_ticket_workflow') %}<option value="workflow">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>{% endif %}
-				<option value="organization">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>
-				<option value="language">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>
-				<option value="urgency">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>
-				<option value="agent">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>
-				{% if app.getSetting('core.use_agent_team') %}<option value="agent_team">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>{% endif %}
-				<option value="user_waiting">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>
-				<option value="total_user_waiting">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.group_by') }}</option>
-				<option value="date_created">{{ phrase('agent.general.group_by') }} {{ phrase('agent.general.show') }}</option>
-			</select>
+            <select>
+                <option value="">{{ phrase('agent.global.group_by') }} {{ phrase('agent.global.none') }}</option>
+                <option value="department">{{ phrase('agent.global.group_by') }} {{ phrase('agent.global.department') }}</option>
+                {% if app.getSetting('core.use_ticket_category') %}<option value="category">{{ phrase('agent.global.group_by') }} {{ phrase('agent.global.category') }}</option>{% endif %}
+                {% if app.getSetting('core.use_ticket_priority') %}<option value="priority">{{ phrase('agent.global.group_by') }} {{ phrase('agent.global.priority') }}</option>{% endif %}
+                {% if app.getSetting('core.use_product') %}<option value="product">{{ phrase('agent.global.group_by') }} {{ phrase('agent.global.product') }}</option>{% endif %}
+                {% if app.getSetting('core.use_ticket_workflow') %}<option value="workflow">{{ phrase('agent.global.group_by') }} {{ phrase('agent.global.workflow') }}</option>{% endif %}
+                <option value="organization">{{ phrase('agent.global.group_by') }} {{ phrase('agent.global.organization') }}</option>
+                <option value="language">{{ phrase('agent.global.group_by') }} {{ phrase('agent.global.language') }}</option>
+                <option value="urgency">{{ phrase('agent.global.group_by') }} {{ phrase('agent.global.urgency') }}</option>
+                <option value="agent">{{ phrase('agent.global.group_by') }} {{ phrase('agent.global.agent') }}</option>
+                {% if app.getSetting('core.use_agent_team') %}<option value="agent_team">{{ phrase('agent.global.group_by') }} {{ phrase('agent.global.agent_team') }}</option>{% endif %}
+                <option value="user_waiting">{{ phrase('agent.global.group_by') }} {{ phrase('agent.global.time_waiting') }}</option>
+                <option value="total_user_waiting">{{ phrase('agent.global.group_by') }} {{ phrase('agent.global.total_time_waiting') }}</option>
+                <option value="date_created">{{ phrase('agent.global.group_by') }} {{ phrase('agent.global.date_opened') }}</option>
+            </select>
 		</script>
 	</section>
 </section>
