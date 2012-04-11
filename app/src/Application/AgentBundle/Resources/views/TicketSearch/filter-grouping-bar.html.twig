@@ -40,7 +40,11 @@
 			{% endif %}
 			{% if count_all > 0 %}
 				<li data-grouping-option="{{ cat.id }}" {% if not (grouping_option == 'DP_NOT_SET' or grouping_option == '-1') and grouping_option == cat.id %}class="on"{% endif %} id="{{baseId}}_total_grouped_count">
-					<a data-route="{{ grouping_url ~ cat.id }}">
+					<a data-route="{{ grouping_url ~ cat.id }}"
+                       {% if group_by == 'urgency' %}
+                            class="group-by-pill urgency-{{cat.title}}"
+                       {% endif %}
+                            >
 						{{ cat.title }}
 						<span>
 							{% if cat.children %}
