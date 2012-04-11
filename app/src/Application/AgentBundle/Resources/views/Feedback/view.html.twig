@@ -27,7 +27,7 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <div class="spam-notice" {% if feedback.status_code != "hidden.spam" %}style="display: none;"{% endif %}>
-	{{ phrase('agent.general.record_marked_spam') }} <button class="clean-gray xxx-small unspam">{{ phrase('agent.general.closed') }}</button>
+	{{ phrase('agent.general.record_marked_spam') }} <button class="clean-gray xxx-small unspam">{{ phrase('agent.tickets.status_closed') }}</button>
 </div>
 
 {% if feedback.status_code == "hidden.validating" %}
@@ -45,7 +45,7 @@ pageMeta.baseId = '{{ baseId }}';
 			{% elseif feedback.status == 'active' %}
 				{{ phrase('agent.feedback.status_active') }}: {{ feedback.status_category.title }}
 			{% elseif feedback.status == 'closed' %}
-				{{ phrase('agent.general.closed') }}: {{ feedback.status_category.title }}
+				{{ phrase('agent.tickets.status_closed') }}: {{ feedback.status_category.title }}
 			{% else %}
 				{{ phrase('agent.general.hidden') }}
 			{% endif %}
@@ -254,7 +254,7 @@ pageMeta.baseId = '{{ baseId }}';
 		class="section-title status-closed"
 		data-status-type="closed"
 		data-option-value="closed"
-	>{{ phrase('agent.general.closed') }}</li>
+	>{{ phrase('agent.tickets.status_closed') }}</li>
 	{% for cat in closed_status_cats %}
 		<li
 			class="status-{{cat.id}}"
@@ -281,9 +281,9 @@ pageMeta.baseId = '{{ baseId }}';
 				<label>{{ cat.title }}</label>
 			</li>
 		{% endfor %}
-		<li class="top parent-option item-closed" data-item-id="closed" data-full-title="{{ phrase('agent.feedback.closed') }}">
+		<li class="top parent-option item-closed" data-item-id="closed" data-full-title="{{ phrase('agent.feedback.status_closed') }}">
 			<input type="radio" name="status" value="closed" />
-			<label>{{ phrase('agent.general.closed') }}</label>
+			<label>{{ phrase('agent.tickets.status_closed') }}</label>
 		</li>
 		{% for cat in closed_status_cats %}
 			<li class="child item-closed-{{cat.id}}" data-item-id="closed.{{cat.id}}" data-full-title="{{ phrase('agent.feedback.closed_category', {'cat':cat.title }) }}">

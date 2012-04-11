@@ -321,11 +321,15 @@ class NewsSearch extends SearcherAbstract
 						$wheres[] = $this->_stringMatch('news.status', $op, $status);
 					}
 
-					$phrase = 'agent.x_is_y';
+                    $phrase_vars = array('field' => 'Status', 'value' => ($hidden_status ? $hidden_status : $status);
+
 					if ($op == self::OP_NOT OR $op == self::OP_NOTCONTAINS) {
-						$phrase = 'agent.x_is_not_y';
+                        $this->summary[] = $tr->phrase('agent.general.x_is_not_y', $phrase_vars));
 					}
-					$this->summary[] = $tr->phrase($phrase, array('field' => 'Status', 'value' => ($hidden_status ? $hidden_status : $status)));
+                    else {
+					    $this->summary[] = $tr->phrase('agent.general.x_is_y', $phrase_vars));
+                    }
+
 					break;
 
 				case self::TERM_PUBLISHED:

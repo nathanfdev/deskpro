@@ -1,8 +1,6 @@
 <?php return array(
     'agent.deal.add_organization'    => 'Add Organization',
     'agent.deal.add_user'            => 'Add User',
-    'agent.deal.and_grouped_by'      => 'and Grouped by',
-    'agent.deal.assigned_to'         => 'Assigned To',
     'agent.deal.change_organization' => 'Change Organization',
     'agent.deal.closed_deals'        => 'Closed Deals',
     'agent.deal.closing'             => 'Closing:',

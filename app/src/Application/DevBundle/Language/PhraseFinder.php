@@ -108,7 +108,7 @@ class PhraseFinder
                             $state = 0;
 
                             if(!isset($errors[$file])) {
-                                $cache[$file]['errors'][] =
+                                $cache[$file]['errors'] =
                                 $errors[$file] = array();
                             }
 
@@ -126,7 +126,7 @@ class PhraseFinder
                             $state = 0;
 
                             if(!isset($errors[$file])) {
-                                $cache[$file]['errors'][] =
+                                $cache[$file]['errors'] =
                                 $errors[$file] = array();
                             }
 
@@ -326,13 +326,13 @@ class PhraseFinder
         if(is_array($token))
             $token = token_name($token[0]) .':'. $token[1];
 
-        return "Warning: {$message} ($token) in {$file}:{$line}<br />";
+        return "Warning: {$message} ($token) in {$file}:{$line}";
     }
 
     public function tokenWarningTwig($message, $token, $file, $line)
     {
         $token = \Twig_Token::TypeToString($token->getType(), true) .':'.$token->getValue();
 
-        return "Warning: {$message} ($token) in {$file}:{$line}<br />";
+        return "Warning: {$message} ($token) in {$file}:{$line}";
     }
 }

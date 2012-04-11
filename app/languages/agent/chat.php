@@ -1,7 +1,6 @@
 <?php return array(
     'agent.chat.added_as_participant'              => 'Added as a participant',
     'agent.chat.agent_chats'                       => 'Agent Chats',
-    'agent.chat.assign_to'                         => 'Assign To',
     'agent.chat.x_by_anonymous'                           => 'Chat {{chat_id}} by Anonymous',
     'agent.chat.x_by_anonymousymous'                => 'Chat by Anonymous',
     'agent.chat.chat_history'                      => 'Chat History',
@@ -18,7 +17,6 @@
     'agent.chat.invite_others'                     => 'Invite Others',
     'agent.chat.join_chat'                         => 'Join Chat',
     'agent.chat.label_assigned_others'             => 'Other agents in this chat',
-    'agent.chat.label_assigned_to'                 => 'Assigned to',
     'agent.chat.leave_chat_confirm'                => 'Are you sure you want to leave this chat?',
     'agent.chat.leave_end'                         => 'End chat and leave',
     'agent.chat.leave_unassign'                    => 'Unassign myself and leave',

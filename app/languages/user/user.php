@@ -2,7 +2,7 @@
     'user.count_comments'                     => '1 Comment|{{count}} Comments',
     'user._add'                                        => '[+] Add',
     'user.accepted'                                    => 'Accepted',
-    'user.active'                                      => 'Active',
+
     'user.add_reply'                                   => 'Add Reply',
     'user.add_using_name_and_email'                    => 'Add using name and email',
     'user.agent_bar_admin'                             => 'Admin',

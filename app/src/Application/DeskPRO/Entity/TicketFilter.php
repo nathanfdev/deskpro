@@ -226,18 +226,16 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 				case 'agent_team':
 				case 'agent_team_w_hold':
 
-					$phrase = 'agent.tickets.filter_agent_team';
-
 					$person = App::getCurrentPerson();
 					if ($person && $person->isAgent()) {
 						$person->loadHelper('Agent');
 
 						if (count($person->getTeams()) > 1) {
-							$phrase = 'agent.tickets.filter_agent_teams';
+							return $tr->phrase('agent.tickets.filter_agent_teams');
 						}
 					}
 
-					return $tr->phrase($phrase);
+					return $tr->phrase('agent.tickets.filter_agent_team');
 
 				case 'participant':
 				case 'participant_w_hold':

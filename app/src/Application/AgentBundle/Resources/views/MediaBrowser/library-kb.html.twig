@@ -17,7 +17,7 @@
                     <a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': blob_object.object.id}) }}">{{ blob_object.object.subject }}</a>
                     {% endset %}
 				{% elseif blob_object.object_type == 'kb' %}
-					{%set phrase_part = phrase('agent.media.article') %}
+					{%set phrase_part = phrase('agent.general.article') %}
                     {% set phrase_link %}
                     <a class="with-route" data-route="{{ path('agent_kb_view', {'article_id': blob_object.object.id}) }}">{{ blob_object.object.title }}</a>
                     {% endset %}

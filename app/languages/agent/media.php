@@ -1,5 +1,4 @@
 <?php return array(
-    'agent.media.article'                                  => 'article',
     'agent.media.attached_to_ticket'                       => 'attached to ticket',
     'agent.media.choose_files'                             => 'Choose Files',
     'agent.media.choose_files_from_computer'          => 'Choose files from your computer',

@@ -51,7 +51,6 @@
     'admin.user_registration.enter_port_here'              => 'If you\'re using a non-standard port (389, or 636 for secure connections), enter it here',
     'admin.user_registration.last_name_field'                                       => '"Last Name" field',
     'admin.user_registration.lost_password_url'                                     => 'Lost Password URL',
-    'admin.user_registration.more'                                                  => 'more',
     'admin.user_registration.ms_sql'                                                => 'MS SQL',
     'admin.user_registration.mysql'                                                 => 'MySQL',
     'admin.user_registration.new_usersource'                                        => 'New Usersource',

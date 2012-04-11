@@ -14,7 +14,7 @@
 	<li class="is-nav-item with-route nav-archive-closed" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=closed&amp;view_name=closed">
 			<span class="title">
 				<span class="list-counter" id="ticket_archive_closed_count">{{ archive_counts['closed']|default(0) }}</span>
-				{{ phrase('agent.general.closed') }}
+				{{ phrase('agent.tickets.status_closed') }}
 			</span>
 	</li>
 	<li class="is-nav-item with-route nav-archive-validating" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=validating&amp;terms[1][type]=status&amp;terms[1][op]=is&amp;terms[1][options][status]=hidden&amp;view_name=validating">

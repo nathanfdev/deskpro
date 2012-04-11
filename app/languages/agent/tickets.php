@@ -36,7 +36,7 @@
     'agent.tickets.creation_system_gateway_person'                         => 'Email by user',
     'agent.tickets.creation_system_web_agent'                              => 'Web interface by agent',
     'agent.tickets.creation_system_web_person'                             => 'Web interface by user',
-    'agent.tickets.date_closed'                                            => 'Date Closed',
+
     'agent.tickets.date_first_agent_reply'                                 => 'Date of First Agent Reply',
     'agent.tickets.date_last_agent_reply'                                  => 'Date of Last Agent Reply',
     'agent.tickets.date_last_user_reply'                                   => 'Date of Last User Reply',
@@ -155,7 +155,7 @@
     'agent.tickets.ticket_split_form'                                      => 'Ticket split from',
     'agent.tickets.tickets_on_hold'                                        => 'Tickets on hold',
     'agent.tickets.time_created'                                           => 'Time Created',
-    'agent.tickets.time_last_agent_reply'                                  => 'Time of Last User Reply',
+
     'agent.tickets.unassigned_tickets'                                     => 'Unassigned tickets',
     'agent.tickets.unhelpful'                                              => 'unhelpful',
     'agent.tickets.urgency_highest_lowest'                                  => 'Urgency (Highest-Lowest)',

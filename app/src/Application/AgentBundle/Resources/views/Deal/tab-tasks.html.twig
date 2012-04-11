@@ -10,7 +10,7 @@
                     </div>
                     <div class="message-body">
                         <span>
-                            {{ phrase('agent.deal.assigned_to') }} {% if deal_task.task.assigned_agent.name is not null%}
+                            {{ phrase('agent.general.assigned_to') }} {% if deal_task.task.assigned_agent.name is not null%}
                             <a data-route="person:{{ path('agent_people_view', {'person_id': deal_task.task.assigned_agent.id|default('0')}) }}">
                                 {{deal_task.task.assigned_agent.name}}
                             </a>

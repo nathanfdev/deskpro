@@ -55,7 +55,7 @@
 		<li>
 			<span class="title is-nav-item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'closed'}) }}">
 				<span class="list-counter is-nav-item" id="feedback_status_closed_0_count">{{ status_counts.closed[0]|default(0) }}</span>
-				{{ phrase('agent.general.closed') }}
+				{{ phrase('agent.tickets.status_closed') }}
 			</span>
 			<ul class="sub-group indented-list">
 				{% for cat in closed_status_cats %}

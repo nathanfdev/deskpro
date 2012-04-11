@@ -22,10 +22,9 @@
     'agent.publish.compare_older_title'                => 'Older',
     'agent.publish.compare_selected'                   => 'Compare Selected',
     'agent.publish.content_to_validate'                => 'Content to Validate',
-    'agent.publish.copy_permalink'                     => 'Copy Permalink',
     'agent.publish.count_articles'                     => '1 Article|{{count}} Articles',
-    'agent.publish.count_files'                        => '1 File|{{count}} Files',
-    'agent.publish.create_article'                     => 'Create Article',
+
+
     'agent.publish.create_category'                    => 'create category',
     'agent.publish.create_download'                    => 'Create Download',
     'agent.publish.create_news_post'                   => 'Create News Post',

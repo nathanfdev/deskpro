@@ -228,7 +228,7 @@
 	<li data-status="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</li>
 	<li data-status="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</li>
 	<li data-status="resolved">{{ phrase('agent.tickets.status_resolved') }}</li>
-	<li data-status="closed">{{ phrase('agent.general.closed') }}</li>
+	<li data-status="closed">{{ phrase('agent.tickets.status_closed') }}</li>
 </ul>
 
 {# Comment Menu #}
@@ -382,7 +382,7 @@
 		class="section-title status-closed"
 		data-status-type="closed"
 		data-option-value="closed"
-	>{{ phrase('agent.general.closed') }}</li>
+	>{{ phrase('agent.tickets.status_closed') }}</li>
 	{% for cat in feedback_closed_status_cats %}
 		<li
 			class="status-{{cat.id}}"

@@ -121,7 +121,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			</span>
 		</div>
 		<div class="status set-status awaiting_user" {% if ticket.status_code != 'awaiting_user' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.tickets.status_awaiting_user') }}</label></span></div>
-		<div class="status set-status closed" {% if ticket.status_code != 'closed' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.general.closed') }}</label></span></div>
+		<div class="status set-status closed" {% if ticket.status_code != 'closed' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.tickets.status_closed') }}</label></span></div>
 		<div class="status set-status resolved" {% if ticket.status_code != 'resolved' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.tickets.status_resolved') }}</label></span></div>
 		<div class="status set-status hidden hidden_spam" {% if ticket.status_code != 'hidden.spam' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.general.spam') }}</label></span></div>
 		<div class="status set-status hidden hidden_validating" {% if ticket.status_code != 'hidden.validating' %}style="display: none"{% endif %}><span><label>{{ phrase('agent.general.validating') }}</label></span></div>

@@ -139,7 +139,7 @@ class TermSummary
 				break;
 
 			case 'date_closed':
-				$summary = $this->_dateRangeSummary($tr->phrase('agent.tickets.date_closed'), $op, $choice);
+				$summary = $this->_dateRangeSummary($tr->phrase('agent.general.date_closed'), $op, $choice);
 				break;
 
 			case 'date_last_user_reply':

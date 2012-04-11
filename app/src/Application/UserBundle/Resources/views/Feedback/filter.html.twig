@@ -72,7 +72,7 @@
 					<li {% if status == 'popular' %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': 'popular', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_popular') }}</a></li>
 					<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': 'new', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_new') }}</a></li>
 					<li {% if status == 'active' %}class="on"{% endif %}>
-						<a href="{{ path('user_feedback', {'status': 'active', 'slug': category.url_slug}) }}">{{ phrase('user.active') }}</a>
+						<a href="{{ path('user_feedback', {'status': 'active', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_active') }}</a>
 						<ul>
 							{% for s_cat in active_status_cats %}
 								<li {% if status == s_cat.status_code %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': s_cat.status_code, 'slug': category.url_slug}) }}">{{ s_cat.title }}</a></li>
