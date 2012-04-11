@@ -31,6 +31,7 @@
 * @package DeskPRO
 */
 
+
 namespace Application\UserBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
