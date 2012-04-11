@@ -363,6 +363,48 @@ class LanguageController extends Controller
         return $this->render('DevBundle:Language:show.useful.html.twig', $vars);
     }
 
+    public function showWordCountAction() {
+        $directories = array(
+            array('user', 'User Interface'),
+            array('agent', 'Agent Interface'),
+            array('admin', 'Admin Interface')
+        );
+
+        $t_wordcount = 0;
+        $t_keycount = 0;
+        echo '<a href="'.$this->generateUrl('dev_lang_index').'">Back</a><pre>';
+
+        foreach ($directories AS $interface) {
+
+            $keycount = 0;
+            $wordcount = 0;
+
+            $dir = DP_ROOT . '/languages/' . $interface['0'];
+
+            if ($handle = opendir($dir)) {
+                while (false !== ($filename = readdir($handle))) {
+                    if ($filename != "." && $filename != "..") {
+
+                        $words = include($dir . '/' . $filename);
+                        $keycount += count($words);
+                        foreach ($words AS $key => $var) {
+                            $wordcount += str_word_count($var);
+                        }
+                    }
+                }
+
+                closedir($handle);
+
+                echo $interface['1'] . " :: $wordcount words in $keycount phrases\n";
+                $t_wordcount += $wordcount;
+                $t_keycount += $keycount;
+
+            }
+        }
+
+        return new Response();
+    }
+
     public function matchesPrefix($id, $prefixes) {
         foreach($prefixes as $prefix) {
             if(preg_match('/^('.preg_quote($prefix['id']).')/', $id)) {
@@ -554,7 +596,7 @@ class LanguageController extends Controller
                             break;
                         case 2:
                             if(is_array($token) && $token[0] == T_CONSTANT_ENCAPSED_STRING) {
-                                $content = strtolower(eval('return '.$token[1].';'));
+                                $content = eval('return '.$token[1].';');
                                 $state = 0;
 
                                 if(!isset($by_id[$id])) {
@@ -567,11 +609,11 @@ class LanguageController extends Controller
                                     'line' => $token[2]
                                 );
 
-                                if(!isset($by_content[$content])) {
-                                    $by_content[$content] = array();
+                                if(!isset($by_content[strtolower($content)])) {
+                                    $by_content[strtolower($content)] = array();
                                 }
 
-                                $by_content[$content][] = array(
+                                $by_content[strtolower($content)][] = array(
                                     'filename' => $file,
                                     'id' => $id,
                                     'line' => $token[2]

@@ -4,7 +4,6 @@
     'admin.banning.ban_email_address'                                       => 'Ban Email Address',
     'admin.banning.ban_ip_address'                                          => 'Ban IP Address',
     'admin.banning.banning_ip_addresses'                                    => 'Banning IP Addresses',
-    'admin.banning.email_address_pattern'                                   => 'Email address pattern',
     'admin.banning.examples_ip_patterns'                             => 'Examples: 192.168.1.1 or 192.168.*',
     'admin.banning.examples_email_patterns' => 'Examples: baduser@example.com, *@spammy-domain.com, *@spammy-domain.*',
     'admin.banning.filter_list_'                                            => 'Filter list ...',

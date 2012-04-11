@@ -553,7 +553,7 @@
     'agent.general.view_in_user_interface'                                   => 'View in user interface',
     'agent.general.view_profile'                                             => 'view profile',
     'agent.general.view_unformatted'                                         => 'View Unformatted',
-    'agent.general.visible'                                                  => 'visible',
+    'agent.general.visible'                                                  => 'Visible',
     'agent.general.visitor_id'                                               => 'Visitor ID',
     'agent.general.votes'                                                    => 'Votes',
     'agent.general.web_interface'                                            => 'Web interface',
