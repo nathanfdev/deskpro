@@ -149,7 +149,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					<dd>
 						<a class="user-link clean-white as-popover preload" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
 							<span style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');">
-								{{ ticket.person.display_name }}{% if ticket.person.organization %},
+								{{ ticket.person.display_name }}&nbsp;{% if ticket.person.organization %},
 									{% if ticket.person.organization_position %}{{ ticket.person.organization_position }}{% endif %}
 									{{ ticket.person.organization }}
 								{% endif %}

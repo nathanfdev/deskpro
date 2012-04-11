@@ -5,7 +5,10 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.UserChat';
 {% elseif convo.person_name or convo.person_email %}
 	var t = [];
 	{% if convo.person_name %}t.push({{ convo.person_name|json_encode|raw }});{% endif %}
-	{% if convo.person_email %}t.push({{ '<' ~ convo.person_email ~ '>'|json_encode|raw }});{% endif %}
+	{% if convo.person_email %}
+    {% set email_addr = '<' ~ convo.person_email ~ '>' %}
+        t.push({{ email_addr|json_encode|raw }});
+    {% endif %}
 	pageMeta.title = t.join(' ');
 {% else %}
 	pageMeta.title = '{{ phrase('agent.chat.title_chat_id', {'chat_id': convo.id}) }}';
@@ -48,16 +51,20 @@ pageMeta.baseId = '{{ baseId }}';
 					data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}"
 				>{{ convo.person.display_name }}</a> &lt;{{ convo.person.primary_email_address }}&gt;</a>
 			{% else %}
-				<a
+                {% if convo.person_name or convo.person_email %}
+                {% set convo_display_name %}
+                    {{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %}
+                {% endset %}
+                {% else %}
+                {% set convo_display_name = phrase('agent.general.anonymous') %}
+                {% endif %}
+				{% if convo.session %}<a
 					class="as-popover"
 					data-route="person:{{ path('agent_people_viewsession', {'session_id': convo.session.id}) }}"
-				>
-					{% if convo.person_name or convo.person_email %}
-						{{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %}
-					{% else %}
-						{{ phrase('agent.general.anonymous') }}
-					{% endif %}
-				</a>
+				>{{convo_display_name}}</a>
+                {% else %}
+                    {{convo_display_name}}
+                {% endif %}
 			{% endif %}
 		{% endset %}
 		{{ phrase('agent.chat.chat_with_x', {'name': chat_person_name}) }}
@@ -89,16 +96,23 @@ pageMeta.baseId = '{{ baseId }}';
                                         </span>
                                     </a>
                                 {% else %}
+                                    {% set convo_display_user_box %}
+                                        <span>
+                                            {% if convo.person_name %}
+                                                {{ convo.person_name }}
+                                            {% else %}
+                                                {{ phrase('agent.general.anonymous') }}
+                                            {% endif %}
+                                            <span class="email"><b data-hide="@parent">{% if convo.person_email %}{{ convo.person_email }}{% else %}{{ phrase('agent.chat.no_email') }}{% endif %}</b></span>
+                                        </span>
+                                    {% endset %}
+                                    {% if convo.session %}
                                     <a class="user-link clean-white as-popover preload" data-route="person:{{ path('agent_people_viewsession', {'session_id': convo.session.id}) }}">
-                                            <span>
-                                                {% if convo.person_name %}
-                                                	{{ convo.person_name }}
-                                                {% else %}
-                                                	{{ phrase('agent.general.anonymous') }}
-                                                {% endif %}
-                                                <span class="email"><b data-hide="@parent">{% if convo.person_email %}{{ convo.person_email }}{% else %}{{ phrase('agent.chat.no_email') }}{% endif %}</b></span>
-                                            </span>
+                                        {{ convo_display_user_box }}
                                     </a>
+                                    {% else %}
+                                        <a class="user-link clean-white">{{ convo_display_user_box }}</a>
+                                    {% endif %}
                                 {% endif %}
                                     <div class="clear"></div>
                             </dd>
