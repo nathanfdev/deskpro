@@ -60,6 +60,8 @@ class ReportErrors extends \Orb\Log\Writer\AbstractWriter
 				} catch (\Exception $e) {
 					$log['url'] = 'Command: ' . print_r(isset($_SERVER['argv'])?$_SERVER['argv']:'', true);
 				}
+
+                $log['server_ip'] = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : 'Unknown';
 				$log['ref_url'] = empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER'];
 				$log['user_agent'] = empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'];
 				$log['request_data'] = print_r($_REQUEST, 1);
