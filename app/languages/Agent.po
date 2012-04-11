@@ -38,6 +38,9 @@ msgstr "New Search"
 msgid "agent.twitter.newest_first"
 msgstr "Newest First"
 
+msgid "agent.twitter.no_followers"
+msgstr "There are no followers for this account"
+
 msgid "agent.twitter.oldest_first"
 msgstr "Oldest First"
 
@@ -77,20 +80,11 @@ msgstr "Starred Tweets"
 msgid "agent.twitter.team_tweets"
 msgstr "Team Tweets"
 
-msgid "agent.twitter.no_followers"
-msgstr "There are no followers for this account"
-
 msgid "agent.twitter.unknown"
 msgstr "unknown"
 
 msgid "agent.tickets.add_attachments"
 msgstr "Add attachments"
-
-msgid "agent.tickets.all_tickets"
-msgstr "All tickets"
-
-msgid "agent.tickets.kbd_alt_c"
-msgstr "altc"
 
 msgid "agent.tickets.and_count_were_cced"
 msgstr "(and {{display_count}} was CC'ed)|(and {{display_count}} were CC'ed)"
@@ -118,12 +112,6 @@ msgstr "Attachment"
 
 msgid "agent.tickets.attachment_deleted"
 msgstr "Attachment deleted"
-
-msgid "agent.tickets.awaiting_agent"
-msgstr "Awaiting agent"
-
-msgid "agent.tickets.awaiting_user"
-msgstr "Awaiting user"
 
 msgid "agent.tickets.cc"
 msgstr "CC"
@@ -194,29 +182,14 @@ msgstr "Web interface by agent"
 msgid "agent.tickets.creation_system_web_person"
 msgstr "Web interface by user"
 
-msgid "agent.tickets.date_closed"
-msgstr "Date Closed"
-
 msgid "agent.tickets.date_first_agent_reply"
 msgstr "Date of First Agent Reply"
-
-msgid "agent.tickets.date_last_agent_reply"
-msgstr "Date of Last Agent Reply"
-
-msgid "agent.tickets.date_last_user_reply"
-msgstr "Date of Last User Reply"
 
 msgid "agent.tickets.date_opened_newerolder"
 msgstr "Date Opened (Newer-Older)"
 
 msgid "agent.tickets.date_opened_oldernewer"
 msgstr "Date Opened (Older-Newer)"
-
-msgid "agent.tickets.date_resolved"
-msgstr "Date Resolved"
-
-msgid "agent.tickets.day_created"
-msgstr "Day Created"
 
 msgid "agent.tickets.day_last_agent_reply"
 msgstr "Day of Last User Reply"
@@ -230,9 +203,6 @@ msgstr "Deleted by {{name}}"
 msgid "agent.tickets.display_options_for_results"
 msgstr "Display Options For Results"
 
-msgid "agent.tickets.upload_files_here"
-msgstr "Drag and drop files onto this area or choose a file"
-
 msgid "agent.tickets.edit_snippet_category"
 msgstr "Edit Snippet Category"
 
@@ -241,6 +211,12 @@ msgstr "Enter a mass reply"
 
 msgid "agent.tickets.enter_an_email_address"
 msgstr "Enter an email address..."
+
+msgid "agent.tickets.explain_flags"
+msgstr "Flags let you create personal collections of tickets. Double-click on a flag to change its title."
+
+msgid "agent.tickets.explain_search_all_tickets"
+msgstr "Search all tickets, including tickets that are resolved or closed"
 
 msgid "agent.tickets.export_to_csv"
 msgstr "Export to CSV"
@@ -255,16 +231,13 @@ msgid "agent.tickets.filter_agent_teams"
 msgstr "My Teams' Tickets"
 
 msgid "agent.tickets.filter_all"
-msgstr "All Tickets"
+msgstr "all tickets"
 
 msgid "agent.tickets.filter_participant"
 msgstr "Tickets I Follow"
 
 msgid "agent.tickets.filter_unassigned"
-msgstr "Unassigned Tickets"
-
-msgid "agent.tickets.explain_flags"
-msgstr "Flags let you create personal collections of tickets. Double-click on a flag to change its title."
+msgstr "unassigned tickets"
 
 msgid "agent.tickets.from_email"
 msgstr "from email (address)"
@@ -307,6 +280,9 @@ msgstr "Insert text snippets"
 
 msgid "agent.tickets.into_this_from_ticket"
 msgstr "into this from ticket #{{id}}"
+
+msgid "agent.tickets.kbd_alt_c"
+msgstr "altc"
 
 msgid "agent.tickets.keep_current_status"
 msgstr "Keep current status"
@@ -464,9 +440,6 @@ msgstr "Showing {{current}} of {{count}} ticket|Showing {{current}} of {{count}}
 msgid "agent.tickets.search_all_tickets"
 msgstr "Search all tickets"
 
-msgid "agent.tickets.explain_search_all_tickets"
-msgstr "Search all tickets, including tickets that are resolved or closed"
-
 msgid "agent.tickets.search_for_people_to_add"
 msgstr "Search for people to add, or enter their email addresses to create them"
 
@@ -497,17 +470,14 @@ msgstr "Set on hold"
 msgid "agent.tickets.set_resolved"
 msgstr "Set resolved"
 
-msgid "agent.tickets.set_spam"
-msgstr "Mark As Spam"
-
 msgid "agent.tickets.split_from_here"
 msgstr "Split ticket from here"
 
 msgid "agent.tickets.status_awaiting_agent"
-msgstr "Awaiting Agent"
+msgstr "awaiting agent"
 
 msgid "agent.tickets.status_awaiting_user"
-msgstr "Awaiting User"
+msgstr "awaiting user"
 
 msgid "agent.tickets.status_closed"
 msgstr "Closed"
@@ -527,9 +497,6 @@ msgstr "Subject changed from"
 msgid "agent.tickets.subscribed_tickets"
 msgstr "Subscribed tickets"
 
-msgid "agent.tickets.ticket_is_marked_as_spam"
-msgstr "This ticket has been marked as spam."
-
 msgid "agent.tickets.ticket_by_user"
 msgstr "Tickets by the same user"
 
@@ -538,6 +505,9 @@ msgstr "Ticket Field: {{field}}"
 
 msgid "agent.tickets.ticket_is_deleted"
 msgstr "Ticket is deleted"
+
+msgid "agent.tickets.ticket_is_marked_as_spam"
+msgstr "This ticket has been marked as spam."
 
 msgid "agent.tickets.ticket_log"
 msgstr "Ticket Log"
@@ -548,17 +518,11 @@ msgstr "Ticket split from"
 msgid "agent.tickets.tickets_on_hold"
 msgstr "Tickets on hold"
 
-msgid "agent.tickets.time_created"
-msgstr "Time Created"
-
-msgid "agent.tickets.time_last_agent_reply"
-msgstr "Time of Last User Reply"
-
-msgid "agent.tickets.unassigned_tickets"
-msgstr "Unassigned tickets"
-
 msgid "agent.tickets.unhelpful"
 msgstr "unhelpful"
+
+msgid "agent.tickets.upload_files_here"
+msgstr "Drag and drop files onto this area or choose a file"
 
 msgid "agent.tickets.urgency_highest_lowest"
 msgstr "Urgency (Highest-Lowest)"
@@ -568,9 +532,6 @@ msgstr "Urgency (Lowest-Highest)"
 
 msgid "agent.tickets.user_email"
 msgstr "User Email"
-
-msgid "agent.tickets.user_owner"
-msgstr "User owner"
 
 msgid "agent.tickets.user_waiting_total_x"
 msgstr "User has been waiting a total of <time>{{total}}</time> since the ticket started."
@@ -644,6 +605,9 @@ msgstr "Task linked to: Ticket "{{label}}""
 msgid "agent.tasks.tasks_i_delegated"
 msgstr "Tasks I Delegated"
 
+msgid "agent.settings.agent_messages"
+msgstr "Agent Messages"
+
 msgid "agent.settings.browser_notifications"
 msgstr "Browser Notifications"
 
@@ -701,12 +665,6 @@ msgstr "A new user registered"
 msgid "agent.settings.notif_new_user_validate"
 msgstr "A new user registered and requires validation"
 
-msgid "agent.settings.agent_messages"
-msgstr "Agent Messages"
-
-msgid "agent.settings.user_messages"
-msgstr "User Messages"
-
 msgid "agent.settings.ticket_signature"
 msgstr "Ticket Signature"
 
@@ -719,6 +677,9 @@ msgstr "Notifications"
 msgid "agent.settings.title_ticket_notifs"
 msgstr "Ticket Notifications"
 
+msgid "agent.settings.user_messages"
+msgstr "User Messages"
+
 msgid "agent.settings.your_current_picture"
 msgstr "Your current picture"
 
@@ -728,11 +689,8 @@ msgstr "By"
 msgid "agent.search.chat_conversations"
 msgstr "Chat Conversations"
 
-msgid "agent.search.date_created_newestoldest"
-msgstr "Date Created (Newest-Oldest)"
-
-msgid "agent.search.date_created_oldest_newest"
-msgstr "Date Created (Oldest-Newest)"
+msgid "agent.search.find_by_above_criteria"
+msgstr "Find by the above criteria"
 
 msgid "agent.search.find_person"
 msgstr "Find Person"
@@ -743,6 +701,9 @@ msgstr "loading"
 msgid "agent.search.no_email"
 msgstr "No email"
 
+msgid "agent.search.no_labeled_tickets"
+msgstr "You haven't labeled any tickets. Load a ticket to label it."
+
 msgid "agent.search.no_people_match_your_criteria"
 msgstr "No people match your criteria"
 
@@ -751,6 +712,9 @@ msgstr "No results were found"
 
 msgid "agent.search.number_of_tickets"
 msgstr "Number of Tickets"
+
+msgid "agent.search.person_id"
+msgstr "Person ID"
 
 msgid "agent.search.select"
 msgstr "Select"
@@ -764,15 +728,6 @@ msgstr "Simple"
 msgid "agent.search.view_all_results"
 msgstr "View all results"
 
-msgid "agent.search.no_labeled_tickets"
-msgstr "You haven't labeled any tickets. Load a ticket to label it."
-
-msgid "agent.search.person_id"
-msgstr "Person ID"
-
-msgid "agent.search.find_by_above_criteria"
-msgstr "Find by the above criteria"
-
 msgid "agent.report.add"
 msgstr "[Add]"
 
@@ -781,6 +736,15 @@ msgstr "Add Chart"
 
 msgid "agent.report.add_dashboard_chart"
 msgstr "Add Dashboard Chart"
+
+msgid "agent.report.ask_positive_number"
+msgstr "Is a positive number good, bad or neutral?"
+
+msgid "agent.report.ask_run_interval"
+msgstr "How often does this statistic need to run?"
+
+msgid "agent.report.ask_time_unit_amount"
+msgstr "How many {{period_type}} worth of data do you want to display?"
 
 msgid "agent.report.chart_type"
 msgstr "Chart Type"
@@ -815,9 +779,6 @@ msgstr "Disable"
 msgid "agent.report.disable_the_statistic"
 msgstr "Disable the statistic?"
 
-msgid "agent.report.notice_disabling_effect"
-msgstr "Disabling the statistic will cause future data to be unavailable"
-
 msgid "agent.report.display_grouping_data"
 msgstr "Display Grouping Data?"
 
@@ -830,20 +791,14 @@ msgstr "[Edit]"
 msgid "agent.report.edit_trend"
 msgstr "Edit Trend"
 
-msgid "agent.report.ask_time_unit_amount"
-msgstr "How many {{period_type}} worth of data do you want to display?"
-
-msgid "agent.report.ask_run_interval"
-msgstr "How often does this statistic need to run?"
-
-msgid "agent.report.ask_positive_number"
-msgstr "Is a positive number good, bad or neutral?"
-
 msgid "agent.report.live_reports"
 msgstr "Live Reports"
 
 msgid "agent.report.new_dashboard"
 msgstr "New Dashboard"
+
+msgid "agent.report.notice_disabling_effect"
+msgstr "Disabling the statistic will cause future data to be unavailable"
 
 msgid "agent.report.number_columns"
 msgstr "Number Columns"
@@ -851,11 +806,11 @@ msgstr "Number Columns"
 msgid "agent.report.select_group_field"
 msgstr "Select the field to group the results by."
 
-msgid "agent.report.select_show_grouped_date"
-msgstr "Select yes to display the data grouped by {{group_by}}"
-
 msgid "agent.report.select_show_chart_legend"
 msgstr "Select yes to display the chart legend (works best with bigger charts)"
+
+msgid "agent.report.select_show_grouped_date"
+msgstr "Select yes to display the data grouped by {{group_by}}"
 
 msgid "agent.report.show_legend"
 msgstr "Show Legend?"
@@ -899,14 +854,11 @@ msgstr "All News"
 msgid "agent.publish.apply_action"
 msgstr "Apply Action"
 
-msgid "agent.publish.ask_set_to_draft"
-msgstr "Are you sure you would like to set the selected items as drafts?"
-
 msgid "agent.publish.article_id"
 msgstr "Article ID"
 
-msgid "agent.publish.articles"
-msgstr "articles"
+msgid "agent.publish.ask_set_to_draft"
+msgstr "Are you sure you would like to set the selected items as drafts?"
 
 msgid "agent.publish.automatically_on"
 msgstr "Automatically on"
@@ -947,26 +899,8 @@ msgstr "Compare Selected"
 msgid "agent.publish.content_to_validate"
 msgstr "Content to Validate"
 
-msgid "agent.publish.copy_permalink"
-msgstr "Copy Permalink"
-
 msgid "agent.publish.count_articles"
 msgstr "1 Article|{{count}} Articles"
-
-msgid "agent.publish.count_files"
-msgstr "1 File|{{count}} Files"
-
-msgid "agent.publish.create_article"
-msgstr "Create Article"
-
-msgid "agent.publish.create_category"
-msgstr "create category"
-
-msgid "agent.publish.create_download"
-msgstr "Create Download"
-
-msgid "agent.publish.create_news_post"
-msgstr "Create News Post"
 
 msgid "agent.publish.discard_unsaved_changes"
 msgstr "Discard and revert to default"
@@ -979,6 +913,12 @@ msgstr "Download Count"
 
 msgid "agent.publish.download_replace_file"
 msgstr "Upload a new file to replace the old one"
+
+msgid "agent.publish.downloads_highest_lowest"
+msgstr "Number of Downloads (Highest-Lowest)"
+
+msgid "agent.publish.downloads_lowest_highest"
+msgstr "Number of Downloads (Lowest-Highest)"
 
 msgid "agent.publish.draft_content"
 msgstr "My Drafts"
@@ -1037,12 +977,6 @@ msgstr "No other articles, downloads or news posts have been linked to this. Bro
 msgid "agent.publish.not_helpful"
 msgstr "Not Helpful"
 
-msgid "agent.publish.downloads_highest_lowest"
-msgstr "Number of Downloads (Highest-Lowest)"
-
-msgid "agent.publish.downloads_lowest_highest"
-msgstr "Number of Downloads (Lowest-Highest)"
-
 msgid "agent.publish.pending_articles"
 msgstr "Pending Articles"
 
@@ -1088,14 +1022,17 @@ msgstr "Recent Searches"
 msgid "agent.publish.searches_unhelpful"
 msgstr "Searches where this was rated unhelpful"
 
+msgid "agent.publish.set_as_draft"
+msgstr "Set as Draft"
+
 msgid "agent.publish.set_auto_publish_date"
 msgstr "Set an automatic publish date"
 
 msgid "agent.publish.set_auto_unpublish_date"
 msgstr "Set an automatic unpublish date"
 
-msgid "agent.publish.set_as_draft"
-msgstr "Set as Draft"
+msgid "agent.publish.showing_count_articles"
+msgstr "{{display_count}} article|{{display_count}} articles"
 
 msgid "agent.publish.showing_count_downloads"
 msgstr "Showing {{display_count}} download|Showing {{display_count}} downloads"
@@ -1182,7 +1119,7 @@ msgid "agent.people.add_an_email_address"
 msgstr "Add an email address"
 
 msgid "agent.people.add_another"
-msgstr "Add another"
+msgstr "add another"
 
 msgid "agent.people.add_facebook_profile"
 msgstr "Add a Facebook profile"
@@ -1225,9 +1162,6 @@ msgstr "Yes, this user auto-responds to emails"
 
 msgid "agent.people.confirm_remove_email"
 msgstr "Are you sure you want to remove this email address?"
-
-msgid "agent.people.contact_add_another"
-msgstr "Add Another"
 
 msgid "agent.people.contact_info"
 msgstr "Contact Information"
@@ -1343,14 +1277,8 @@ msgstr "Email Domain Associations for {{name}}"
 msgid "agent.organizations.enter_position"
 msgstr "Enter position"
 
-msgid "agent.organizations.number_of_members"
-msgstr "Number of Members"
-
 msgid "agent.organizations.is_empty"
 msgstr "This organization has no members."
-
-msgid "agent.media.article"
-msgstr "article"
 
 msgid "agent.media.attached_to_ticket"
 msgstr "attached to ticket"
@@ -1366,6 +1294,9 @@ msgstr "Crop and Scale"
 
 msgid "agent.media.download_file"
 msgstr "Download file"
+
+msgid "agent.media.drop_here"
+msgstr "or drag and drop files onto this window"
 
 msgid "agent.media.file_attached_to_thing"
 msgstr "{{filename}} attached to {{subphrase}} {{link}}"
@@ -1391,8 +1322,8 @@ msgstr "Library"
 msgid "agent.media.media"
 msgstr "Media"
 
-msgid "agent.media.drop_here"
-msgstr "or drag and drop files onto this window"
+msgid "agent.media.no_files_selected"
+msgstr "You have no selected any files to attach."
 
 msgid "agent.media.recent_uploads"
 msgstr "Recent Uploads"
@@ -1403,9 +1334,6 @@ msgstr "Scale"
 msgid "agent.media.ticket"
 msgstr "ticket"
 
-msgid "agent.media.no_files_selected"
-msgstr "You have no selected any files to attach."
-
 msgid "agent.login.alert_fields_must_match"
 msgstr "The two password fields do not match."
 
@@ -1414,6 +1342,9 @@ msgstr "Please enter a password of at least 4 characters."
 
 msgid "agent.login.apple_safari"
 msgstr "Apple Safari"
+
+msgid "agent.login.back_to_login"
+msgstr "or go back to login form"
 
 msgid "agent.login.browser_requirements"
 msgstr "Browser Requirements"
@@ -1448,20 +1379,17 @@ msgstr "The admin and agent interfaces require a modern browser. We have detecte
 msgid "agent.login.opera"
 msgstr "Opera"
 
-msgid "agent.login.back_to_login"
-msgstr "or go back to login form"
+msgid "agent.login.password_was_reset"
+msgstr "Your password has been reset successfully."
+
+msgid "agent.login.sent_pw_reset_instructions"
+msgstr "We sent insutructions on how to reset your password to the email address you provided."
 
 msgid "agent.login.supported_browsers"
 msgstr "The following browsers are supported"
 
 msgid "agent.login.version_x_or_later"
 msgstr "v{{version}} or later"
-
-msgid "agent.login.sent_pw_reset_instructions"
-msgstr "We sent insutructions on how to reset your password to the email address you provided."
-
-msgid "agent.login.password_was_reset"
-msgstr "Your password has been reset successfully."
 
 msgid "agent.interface.assign_to_self"
 msgstr "Assign to me"
@@ -1484,17 +1412,11 @@ msgstr "Create ticket for the person"
 msgid "agent.interface.creation"
 msgstr "Creation"
 
-msgid "agent.interface.kbd_ctrl_left"
-msgstr "ctrl+left"
-
-msgid "agent.interface.kbd_ctrl_right"
-msgstr "ctrl+right"
-
-msgid "agent.interface.kbd_ctrl_shift_c"
-msgstr "ctrl+shift+c"
-
 msgid "agent.interface.deskpro_agent_interface"
 msgstr "DeskPRO Agent Interface"
+
+msgid "agent.interface.deskpro_website_host"
+msgstr "www.deskpro.com"
 
 msgid "agent.interface.dev"
 msgstr "DEV"
@@ -1507,9 +1429,6 @@ msgstr "Do Not Disturb"
 
 msgid "agent.interface.do_not_disturb_short"
 msgstr "DND"
-
-msgid "agent.interface.kbd_enter"
-msgstr "enter"
 
 msgid "agent.interface.error_report_disclaimer"
 msgstr "Please note that we do not respond to all error reports. If you have a question or require a response in regards to this error, contact us at {{email}}"
@@ -1528,6 +1447,18 @@ msgstr "Go to next tab"
 
 msgid "agent.interface.go_to_previous_tab"
 msgstr "Go to previous tab"
+
+msgid "agent.interface.kbd_ctrl_left"
+msgstr "ctrl+left"
+
+msgid "agent.interface.kbd_ctrl_right"
+msgstr "ctrl+right"
+
+msgid "agent.interface.kbd_ctrl_shift_c"
+msgstr "ctrl+shift+c"
+
+msgid "agent.interface.kbd_enter"
+msgstr "enter"
 
 msgid "agent.interface.kbd_new_article"
 msgstr "a"
@@ -1553,6 +1484,24 @@ msgstr "k"
 msgid "agent.interface.kbd_new_ticket"
 msgstr "t"
 
+msgid "agent.interface.kbd_shift_a"
+msgstr "shift+a"
+
+msgid "agent.interface.kbd_shift_c"
+msgstr "shift+c"
+
+msgid "agent.interface.kbd_shift_r"
+msgstr "shift+r"
+
+msgid "agent.interface.kbd_shift_t"
+msgstr "shift+t"
+
+msgid "agent.interface.kbd_space"
+msgstr "space"
+
+msgid "agent.interface.kbd_up_or_down"
+msgstr "up or down"
+
 msgid "agent.interface.key_close_tab"
 msgstr "Close tab"
 
@@ -1567,6 +1516,9 @@ msgstr "Keyboard"
 
 msgid "agent.interface.keyboard_shortcuts"
 msgstr "Keyboard Shortcuts"
+
+msgid "agent.interface.major_items_appear_here"
+msgstr "Tickets, Users, Organizations, Articles, News, Downloads and Feedback open here."
 
 msgid "agent.interface.network_status"
 msgstr "Network Status"
@@ -1628,47 +1580,14 @@ msgstr "Search in types"
 msgid "agent.interface.set_ticket_resolved"
 msgstr "Set ticket resolved"
 
-msgid "agent.interface.kbd_shift_a"
-msgstr "shift+a"
-
-msgid "agent.interface.kbd_shift_c"
-msgstr "shift+c"
-
-msgid "agent.interface.kbd_shift_r"
-msgstr "shift+r"
-
-msgid "agent.interface.kbd_shift_t"
-msgstr "shift+t"
-
 msgid "agent.interface.sound_explain"
 msgstr "Change or mute sound notifications"
-
-msgid "agent.interface.kbd_space"
-msgstr "space"
-
-msgid "agent.interface.major_items_appear_here"
-msgstr "Tickets, Users, Organizations, Articles, News, Downloads and Feedback open here."
 
 msgid "agent.interface.toggle_away_status"
 msgstr "Toggle your away status"
 
 msgid "agent.interface.toggle_mute"
 msgstr "Toggle mute"
-
-msgid "agent.interface.kbd_up_or_down"
-msgstr "up or down"
-
-msgid "agent.interface.deskpro_website_host"
-msgstr "www.deskpro.com"
-
-msgid "agent.general.count_words"
-msgstr "1 Word|{{count}} Words"
-
-msgid "agent.general.by_agent_for_user"
-msgstr "By agent on behalf of user"
-
-msgid "agent.general.by_user"
-msgstr "By user"
 
 msgid "agent.general.actions"
 msgstr "Actions"
@@ -1773,7 +1692,7 @@ msgid "agent.general.alert"
 msgstr "Alert"
 
 msgid "agent.general.all"
-msgstr "All"
+msgstr "all"
 
 msgid "agent.general.all_teams"
 msgstr "All Teams"
@@ -1791,7 +1710,7 @@ msgid "agent.general.and"
 msgstr "and"
 
 msgid "agent.general.and_grouped_by"
-msgstr "and Grouped By"
+msgstr "and grouped by"
 
 msgid "agent.general.andor"
 msgstr "and/or"
@@ -1820,14 +1739,14 @@ msgstr "Approve"
 msgid "agent.general.archive"
 msgstr "Archive"
 
-msgid "agent.general.ask_delete_selected"
-msgstr "Are you sure you would like to delete the selected items?"
-
 msgid "agent.general.article"
 msgstr "Article"
 
 msgid "agent.general.articles"
 msgstr "Articles"
+
+msgid "agent.general.ask_delete_selected"
+msgstr "Are you sure you would like to delete the selected items?"
 
 msgid "agent.general.assign"
 msgstr "Assign"
@@ -1837,6 +1756,9 @@ msgstr "Assign Agent"
 
 msgid "agent.general.assign_team"
 msgstr "Assign Team"
+
+msgid "agent.general.assign_to"
+msgstr "Assign to"
 
 msgid "agent.general.assigned"
 msgstr "Assigned"
@@ -1849,6 +1771,9 @@ msgstr "Agent Id"
 
 msgid "agent.general.assigned_team"
 msgstr "Assigned team"
+
+msgid "agent.general.assigned_to"
+msgstr "Assigned to"
 
 msgid "agent.general.assignment"
 msgstr "Assignment"
@@ -1863,7 +1788,7 @@ msgid "agent.general.author"
 msgstr "Author"
 
 msgid "agent.general.awaiting_validation"
-msgstr "Awaiting Validation"
+msgstr "awaiting validation"
 
 msgid "agent.general.away"
 msgstr "Away"
@@ -1880,11 +1805,17 @@ msgstr "Billing Interface"
 msgid "agent.general.browser_agent"
 msgstr "Browser Agent"
 
+msgid "agent.general.by_agent_for_user"
+msgstr "By agent on behalf of user"
+
 msgid "agent.general.by_name"
 msgstr "By {{name}}"
 
 msgid "agent.general.by_person_at_date"
 msgstr "By {{person}} at {{date}}"
+
+msgid "agent.general.by_user"
+msgstr "By user"
 
 msgid "agent.general.calendar"
 msgstr "Calendar"
@@ -1897,6 +1828,9 @@ msgstr "Categories"
 
 msgid "agent.general.category"
 msgstr "Category"
+
+msgid "agent.general.change_notif_settings"
+msgstr "Change your notification settings"
 
 msgid "agent.general.change_password"
 msgstr "Change Password"
@@ -1912,9 +1846,6 @@ msgstr "Change Status"
 
 msgid "agent.general.change_user"
 msgstr "Change User"
-
-msgid "agent.general.change_notif_settings"
-msgstr "Change your notification settings"
 
 msgid "agent.general.changed"
 msgstr "Changed"
@@ -1940,11 +1871,11 @@ msgstr "Chat ended"
 msgid "agent.general.chats"
 msgstr "Chats"
 
-msgid "agent.general.choose_person_for_ticket"
-msgstr "Choose a person to create this ticket for"
-
 msgid "agent.general.choose_criteria"
 msgstr "Choose criteria..."
+
+msgid "agent.general.choose_person_for_ticket"
+msgstr "Choose a person to create this ticket for"
 
 msgid "agent.general.click_to_upload_picture"
 msgstr "Click to upload a new picture"
@@ -1954,9 +1885,6 @@ msgstr "close"
 
 msgid "agent.general.close_tab"
 msgstr "Close Tab"
-
-msgid "agent.general.closed"
-msgstr "Closed"
 
 msgid "agent.general.comments"
 msgstr "Comments"
@@ -1994,6 +1922,9 @@ msgstr "1 file|{{count}} files"
 msgid "agent.general.count_votecount_votes"
 msgstr "1 vote|{{count}} votes"
 
+msgid "agent.general.count_words"
+msgstr "1 Word|{{count}} Words"
+
 msgid "agent.general.create"
 msgstr "Create"
 
@@ -2004,7 +1935,7 @@ msgid "agent.general.create_a_new_person"
 msgstr "Create a new person"
 
 msgid "agent.general.create_article"
-msgstr "Create article"
+msgstr "create article"
 
 msgid "agent.general.create_content"
 msgstr "Create Content"
@@ -2013,16 +1944,16 @@ msgid "agent.general.create_deal"
 msgstr "Create Deal"
 
 msgid "agent.general.create_download"
-msgstr "Create download"
+msgstr "create download"
 
 msgid "agent.general.create_feedback"
 msgstr "Create Feedback"
 
 msgid "agent.general.create_new_category"
-msgstr "Create Category"
+msgstr "create category"
 
 msgid "agent.general.create_news"
-msgstr "Create news post"
+msgstr "create news post"
 
 msgid "agent.general.create_status"
 msgstr "Create Status"
@@ -2052,22 +1983,22 @@ msgid "agent.general.date"
 msgstr "Date"
 
 msgid "agent.general.date_closed"
-msgstr "Date closed"
+msgstr "date closed"
 
 msgid "agent.general.date_created"
 msgstr "Date Created"
 
 msgid "agent.general.date_created_newestoldest"
-msgstr "Date Created (Newest-Oldest)"
+msgstr "date created (newest-oldest)"
 
 msgid "agent.general.date_created_oldestnewest"
-msgstr "Date Created (Oldest-Newest)"
+msgstr "date created (oldest-newest)"
 
 msgid "agent.general.date_of_last_agent_reply"
-msgstr "Date of last agent reply"
+msgstr "date of last agent reply"
 
 msgid "agent.general.date_of_last_user_reply"
-msgstr "Date of last user reply"
+msgstr "date of last user reply"
 
 msgid "agent.general.date_opened"
 msgstr "Date Opened"
@@ -2076,10 +2007,10 @@ msgid "agent.general.date_published"
 msgstr "Date Published"
 
 msgid "agent.general.date_resolved"
-msgstr "Date resolved"
+msgstr "date resolved"
 
 msgid "agent.general.day_created"
-msgstr "Day created"
+msgstr "day created"
 
 msgid "agent.general.day_last_user_reply"
 msgstr "Day last user reply"
@@ -2157,7 +2088,7 @@ msgid "agent.general.display_name"
 msgstr "Display name"
 
 msgid "agent.general.display_options"
-msgstr "Display Options"
+msgstr "display options"
 
 msgid "agent.general.does_not_contain"
 msgstr "does not contain"
@@ -2182,6 +2113,9 @@ msgstr "Download PDF"
 
 msgid "agent.general.downloads"
 msgstr "Downloads"
+
+msgid "agent.general.drog_file_here"
+msgstr "(or drag a file onto this window)"
 
 msgid "agent.general.drop_here_to_attach"
 msgstr "Drop your file here to attach it to your reply"
@@ -2210,14 +2144,14 @@ msgstr "Email"
 msgid "agent.general.email_address"
 msgstr "Email Address"
 
+msgid "agent.general.email_agent_new_agent_reply"
+msgstr "Email: Agent notification of new agent reply"
+
 msgid "agent.general.email_agent_new_reply"
 msgstr "Email: Agent notification about new reply"
 
 msgid "agent.general.email_agent_new_ticket"
 msgstr "Email: Agent notification about new ticket"
-
-msgid "agent.general.email_agent_new_agent_reply"
-msgstr "Email: Agent notification of new agent reply"
 
 msgid "agent.general.email_domain"
 msgstr "Email Domain"
@@ -2246,17 +2180,11 @@ msgstr "Email: User validation alert"
 msgid "agent.general.end_chat"
 msgstr "End Chat"
 
-msgid "agent.general.urgency_enter_negative_number"
-msgstr "(Enter a negative number to have urgency decreased)"
-
 msgid "agent.general.enter_organization_name"
 msgstr "Enter an organization name..."
 
 msgid "agent.general.error_page_not_found"
 msgstr "The page you are looking for could not be found"
-
-msgid "agent.general.everyone"
-msgstr "Everyone"
 
 msgid "agent.general.existing_picture"
 msgstr "Existing Picture"
@@ -2291,11 +2219,23 @@ msgstr "Email text box"
 msgid "agent.general.field_type_texturl"
 msgstr "URL text box"
 
+msgid "agent.general.file_link_from_article"
+msgstr "link to the file from within the article"
+
 msgid "agent.general.files"
 msgstr "Files"
 
 msgid "agent.general.filter"
 msgstr "Filter..."
+
+msgid "agent.general.filter_checks_selected"
+msgstr "When in a filter listing, checks the checkbox on the select row"
+
+msgid "agent.general.filter_moves_cursor"
+msgstr "When in a filter listing, moves selected row cursor"
+
+msgid "agent.general.filter_opens_selected"
+msgstr "When in a filter listing, opens the selected row"
 
 msgid "agent.general.filters"
 msgstr "Filters"
@@ -2341,6 +2281,9 @@ msgstr "Followers"
 
 msgid "agent.general.force_email_validation"
 msgstr "Force email validation"
+
+msgid "agent.general.found_article_helpful_or_not"
+msgstr "{{up_votes}} found this the article helpful, {{down_votes}} found the article unhelpful"
 
 msgid "agent.general.frequency"
 msgstr "Frequency"
@@ -2435,6 +2378,18 @@ msgstr "Insert Thumbnail"
 msgid "agent.general.insert_title"
 msgstr "Insert {{title}}"
 
+msgid "agent.general.inserts_file_link"
+msgstr "This will insert a link to the file with the label as the clickable link text."
+
+msgid "agent.general.inserts_full_image"
+msgstr "This will insert the full-sized image."
+
+msgid "agent.general.inserts_plaintext_url"
+msgstr "This will insert a plain-text URL to the file."
+
+msgid "agent.general.inserts_thumbnail_with_link"
+msgstr "This will insert a thumbnail image that links to the full-sized image."
+
 msgid "agent.general.inserturl"
 msgstr "Insert URL"
 
@@ -2525,9 +2480,6 @@ msgstr "less than"
 msgid "agent.general.link"
 msgstr "Link"
 
-msgid "agent.general.file_link_from_article"
-msgstr "link to the file from within the article"
-
 msgid "agent.general.linked_chat"
 msgstr "Linked Chat"
 
@@ -2589,7 +2541,7 @@ msgid "agent.general.mark_as_pending_kb"
 msgstr "Mark as a pending KB article"
 
 msgid "agent.general.mark_spam"
-msgstr "Mark as spam"
+msgstr "mark as spam"
 
 msgid "agent.general.matches"
 msgstr "Matches"
@@ -2744,6 +2696,9 @@ msgstr "Note"
 msgid "agent.general.notes"
 msgstr "Notes"
 
+msgid "agent.general.notice_only_when_urgency_lower"
+msgstr "Only set when urgency is lower"
+
 msgid "agent.general.num_downloads"
 msgstr "Number of Downloads"
 
@@ -2754,7 +2709,7 @@ msgid "agent.general.number_of_downloads"
 msgstr "Number of downloads"
 
 msgid "agent.general.number_of_members"
-msgstr "Number of members"
+msgstr "number of members"
 
 msgid "agent.general.of"
 msgstr "of"
@@ -2764,9 +2719,6 @@ msgstr "Okay"
 
 msgid "agent.general.online_now"
 msgstr "Onlne Now"
-
-msgid "agent.general.notice_only_when_urgency_lower"
-msgstr "Only set when urgency is lower"
 
 msgid "agent.general.open"
 msgstr "Open"
@@ -3035,14 +2987,14 @@ msgstr "Set Flag"
 msgid "agent.general.set_new_pic"
 msgstr "Set as new picture"
 
+msgid "agent.general.set_notifs_from_address"
+msgstr "Set &quot;From&quot; address on email notifications"
+
 msgid "agent.general.set_priority"
 msgstr "Set Priority"
 
 msgid "agent.general.set_product"
 msgstr "Set Product"
-
-msgid "agent.general.set_notifs_from_address"
-msgstr "Set &quot;From&quot; address on email notifications"
 
 msgid "agent.general.set_status"
 msgstr "Set Status"
@@ -3125,18 +3077,6 @@ msgstr "There are no more results"
 msgid "agent.general.there_are_no_results"
 msgstr "There are no results"
 
-msgid "agent.general.inserts_file_link"
-msgstr "This will insert a link to the file with the label as the clickable link text."
-
-msgid "agent.general.inserts_plaintext_url"
-msgstr "This will insert a plain-text URL to the file."
-
-msgid "agent.general.inserts_thumbnail_with_link"
-msgstr "This will insert a thumbnail image that links to the full-sized image."
-
-msgid "agent.general.inserts_full_image"
-msgstr "This will insert the full-sized image."
-
 msgid "agent.general.thursday"
 msgstr "Thursday"
 
@@ -3168,10 +3108,10 @@ msgid "agent.general.tickets"
 msgstr "Tickets"
 
 msgid "agent.general.time_created"
-msgstr "Time created"
+msgstr "time created"
 
 msgid "agent.general.time_of_last_user_reply"
-msgstr "Time of last user reply"
+msgstr "time of last user reply"
 
 msgid "agent.general.time_waiting"
 msgstr "Time Waiting"
@@ -3245,12 +3185,6 @@ msgstr "Unsaved changes were restored."
 msgid "agent.general.unspam"
 msgstr "Unspam"
 
-msgid "agent.general.found_article_helpful_or_not"
-msgstr "{{up_votes}} found this the article helpful, {{down_votes}} found the article unhelpful"
-
-msgid "agent.general.drog_file_here"
-msgstr "(or drag a file onto this window)"
-
 msgid "agent.general.update"
 msgstr "Update"
 
@@ -3262,6 +3196,9 @@ msgstr "Click the upload button or drop a file onto this area."
 
 msgid "agent.general.urgency"
 msgstr "Urgency"
+
+msgid "agent.general.urgency_enter_negative_number"
+msgstr "(Enter a negative number to have urgency decreased)"
 
 msgid "agent.general.url"
 msgstr "URL"
@@ -3288,7 +3225,7 @@ msgid "agent.general.usergroup"
 msgstr "Usergroup"
 
 msgid "agent.general.usergroup_everyone"
-msgstr "Everyone"
+msgstr "everyone"
 
 msgid "agent.general.usergroups"
 msgstr "Usergroups"
@@ -3324,7 +3261,7 @@ msgid "agent.general.view_unformatted"
 msgstr "View Unformatted"
 
 msgid "agent.general.visible"
-msgstr "visible"
+msgstr "Visible"
 
 msgid "agent.general.visitor_id"
 msgstr "Visitor ID"
@@ -3343,15 +3280,6 @@ msgstr "Wednesday"
 
 msgid "agent.general.weeks"
 msgstr "weeks"
-
-msgid "agent.general.filter_checks_selected"
-msgstr "When in a filter listing, checks the checkbox on the select row"
-
-msgid "agent.general.filter_moves_cursor"
-msgstr "When in a filter listing, moves selected row cursor"
-
-msgid "agent.general.filter_opens_selected"
-msgstr "When in a filter listing, opens the selected row"
 
 msgid "agent.general.widget_add"
 msgstr "+"
@@ -3410,14 +3338,11 @@ msgstr "Any Category"
 msgid "agent.feedback.any_status"
 msgstr "Any Status"
 
-msgid "agent.feedback.articles_awaiting_validation"
-msgstr "Awaiting Validation"
-
 msgid "agent.feedback.by_people_on_date"
 msgstr "By {{people}} on {{date}}"
 
-msgid "agent.feedback.closed"
-msgstr "Closed"
+msgid "agent.feedback.changes_restored"
+msgstr "Unsaved changes wererestored."
 
 msgid "agent.feedback.closed_category"
 msgstr "Closed: {{cat}}"
@@ -3482,9 +3407,6 @@ msgstr "Validating"
 msgid "agent.feedback.top_voted_on_top"
 msgstr "Top voted on top"
 
-msgid "agent.feedback.changes_restored"
-msgstr "Unsaved changes wererestored."
-
 msgid "agent.feedback.update_filter"
 msgstr "Update Filter"
 
@@ -3497,20 +3419,14 @@ msgstr "Votes (Least-Most)"
 msgid "agent.feedback.votes_most_least"
 msgstr "Votes (Most-Least)"
 
-msgid "agent.emails.ticket_was_created"
-msgstr "A new ticket has been created"
-
-msgid "agent.emails.user_replied"
-msgstr "A user has replied to "{{subject}}""
+msgid "agent.emails.agent_replied"
+msgstr "An agent has replied to "{{subject}}""
 
 msgid "agent.emails.alert_failed_login"
 msgstr "Failed Login Attempt Alert"
 
 msgid "agent.emails.alert_successful_login"
 msgstr "Successful Login Alert"
-
-msgid "agent.emails.agent_replied"
-msgstr "An agent has replied to "{{subject}}""
 
 msgid "agent.emails.first_seen"
 msgstr "First Seen"
@@ -3521,14 +3437,14 @@ msgstr "Login URL"
 msgid "agent.emails.notice_account_login"
 msgstr "Your account was used to successfully log in."
 
+msgid "agent.emails.notice_login_attempt"
+msgstr "Someone tried to log in using your account."
+
 msgid "agent.emails.referring_page"
 msgstr "Referring Page"
 
 msgid "agent.emails.section_title_ticket_properties"
 msgstr "Ticket Properties"
-
-msgid "agent.emails.notice_login_attempt"
-msgstr "Someone tried to log in using your account."
 
 msgid "agent.emails.subject_new_ticket"
 msgstr "New Ticket: {{ticket_subject}}"
@@ -3542,8 +3458,14 @@ msgstr "{{name}} &lt;{{email}}&gt; has created an agent account for you on {{lin
 msgid "agent.emails.ticket_updated"
 msgstr ""{{subject}}" has been updated."
 
+msgid "agent.emails.ticket_was_created"
+msgstr "A new ticket has been created"
+
 msgid "agent.emails.user_ip"
 msgstr "User IP"
+
+msgid "agent.emails.user_replied"
+msgstr "A user has replied to "{{subject}}""
 
 msgid "agent.emails.your_initial_password"
 msgstr "Your initial password"
@@ -3553,12 +3475,6 @@ msgstr "Add Organization"
 
 msgid "agent.deal.add_user"
 msgstr "Add User"
-
-msgid "agent.deal.and_grouped_by"
-msgstr "and Grouped by"
-
-msgid "agent.deal.assigned_to"
-msgstr "Assigned To"
 
 msgid "agent.deal.change_organization"
 msgstr "Change Organization"
@@ -3580,9 +3496,6 @@ msgstr "Deal Size"
 
 msgid "agent.deal.deal_type"
 msgstr "Deal Type"
-
-msgid "agent.deal.display_options"
-msgstr "Display options"
 
 msgid "agent.deal.edit_custome_fields"
 msgstr "Edit Custome Fields"
@@ -3641,15 +3554,6 @@ msgstr "Added as a participant"
 msgid "agent.chat.agent_chats"
 msgstr "Agent Chats"
 
-msgid "agent.chat.assign_to"
-msgstr "Assign To"
-
-msgid "agent.chat.x_by_anonymous"
-msgstr "Chat {{chat_id}} by Anonymous"
-
-msgid "agent.chat.x_by_anonymousymous"
-msgstr "Chat by Anonymous"
-
 msgid "agent.chat.chat_history"
 msgstr "Chat History"
 
@@ -3691,9 +3595,6 @@ msgstr "Join Chat"
 
 msgid "agent.chat.label_assigned_others"
 msgstr "Other agents in this chat"
-
-msgid "agent.chat.label_assigned_to"
-msgstr "Assigned to"
 
 msgid "agent.chat.leave_chat_confirm"
 msgstr "Are you sure you want to leave this chat?"
@@ -3740,6 +3641,9 @@ msgstr "No Email"
 msgid "agent.chat.no_online_agents"
 msgstr "There are no other agents online"
 
+msgid "agent.chat.no_open_chats"
+msgstr "There are currently no open chats."
+
 msgid "agent.chat.no_others"
 msgstr "No others"
 
@@ -3766,9 +3670,6 @@ msgstr "Take Chat"
 
 msgid "agent.chat.team_chats"
 msgstr "Team Chats"
-
-msgid "agent.chat.no_open_chats"
-msgstr "There are currently no open chats."
 
 msgid "agent.chat.title_active_chats"
 msgstr "Active Chats"
@@ -3799,6 +3700,12 @@ msgstr "Warning"
 
 msgid "agent.chat.warning_email_address_not_unique"
 msgstr "The user entered an email address that matches an existing account in the system, but the user is not currently logged in. Be careful not to expose sensitive information in case the user is an imposter."
+
+msgid "agent.chat.x_by_anonymous"
+msgstr "Chat {{chat_id}} by Anonymous"
+
+msgid "agent.chat.x_by_anonymousymous"
+msgstr "Chat by Anonymous"
 
 msgid "agent.chat.you_have_been_invited"
 msgstr "You have been invited to join a chat"
