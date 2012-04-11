@@ -580,4 +580,8 @@
     'agent.general.years'                           => 'years',
     'agent.general.yim'                             => 'YIM',
     'agent.general.your_email_address'              => 'Your Email Address',
+'agent.general.group_none' => 'None',
+'agent.general.group_department' => 'Department',
+'agent.general.group_agent' => 'Agent',
+'agent.general.group_date_created' => 'Date Created',
 );
