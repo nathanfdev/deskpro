@@ -9,7 +9,7 @@
     'admin.user_rules.enter_pattern'               => 'Enter a pattern, one per line. Example: *@example.com',
     'admin.user_rules.match'                       => 'Match',
     'admin.user_rules.new_rule'                    => 'New Rule',
-    'admin.user_rules.no_rules_yet'                => 'You haven\'t created any user rules yet.',
+    'admin.user_rules.no_rules_yet'                => 'You have not created any user rules yet.',
     'admin.user_rules.notice_organisation_domains' => 'These organizations have domain name associations. Users that register with an email address that match any of these domains will be added to the appropriate organization. You can add or modify these domain associations by editing the organization from the agent interface.',
     'admin.user_rules.user_rules'                  => 'User Rules',
 );

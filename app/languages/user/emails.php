@@ -1,5 +1,5 @@
 <?php return array(
-    'user.emails.added_to_ticket'                 => 'You\'ve been included in a ticket started by {{name}}.',
+    'user.emails.added_to_ticket'                 => 'You have been included in a ticket started by {{name}}.',
     'user.emails.agent_created_ticket'            => 'An agent has created a ticket for you.',
     'user.emails.agent_reset_password'            => 'An agent has reset your account password. You can log in with these credentials',
     'user.emails.agent_responded'                 => 'An agent has responded to your message.',
@@ -23,7 +23,7 @@
     'user.emails.subject'                         => '{{ticket_subject}}',
     'user.emails.thank_you_for_feedback'          => 'Thank you for submitting your feedback "{{title}}"',
     'user.emails.thank_you_for_for_comment'       => 'Thank you for your comment on {{link}}.',
-    'user.emails.the_email_is_already_attached'   => 'However, {{validating_email}} is already attached to a different account. If you\'d like to merge these two accounts together, please reply to this email and one of our agents will be happy to help.',
+    'user.emails.the_email_is_already_attached'   => 'However, {{validating_email}} is already attached to a different account. If you would like to merge these two accounts together, please reply to this email and one of our agents will be happy to help.',
     'user.emails.ticket_received'                 => 'Your ticket has been recieved and our agents will reply to you as soon as they can.',
     'user.emails.to_validate_with_link'           => 'To validate your email address, click on the link below',
     'user.emails.user_flooded_email'              => 'You recently sent an email to our helpdesk. Our automated system has detected that you have sent many messages in rapid succession.

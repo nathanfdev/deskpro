@@ -14,7 +14,7 @@
     'admin.feedback.delete_category'              => 'Delete Category',
     'admin.feedback.delete_status'                => 'Delete Status',
     'admin.feedback.edit_status'                  => 'Edit Status',
-    'admin.feedback.explain_active_status'        => 'An active status is a status assigned to feedback that have been reviewed, but haven\'t been implemented or haven\'t been decided on.',
+    'admin.feedback.explain_active_status'        => 'An active status is a status assigned to feedback that have been reviewed, but have not been implemented or have not been decided on.',
     'admin.feedback.explain_closed_status'        => 'A closed status is a status assigned to feedback that are finished. Users cannot vote or comment on closed feedback.',
     'admin.feedback.feedback_categories'          => 'Feedback Categories',
     'admin.feedback.feedback_statuses'            => 'Feedback Statuses',

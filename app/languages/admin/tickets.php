@@ -103,7 +103,7 @@
     'admin.tickets.new_workflow'                         => 'New Workflow',
     'admin.tickets.no_categories_yet'                    => 'You have not created any ticket categories yet. Click the "Add New Category" button to create one now.',
     'admin.tickets.no_priorities_yet'                    => 'You have not created any ticket priorities yet. Click the "Add New Priority" button to create one now.',
-    'admin.tickets.no_triggers_yet'                      => 'You haven\'t created any triggers yet.',
+    'admin.tickets.no_triggers_yet'                      => 'You have not created any triggers yet.',
     'admin.tickets.no_workflows_yet'                     => 'You have not created any ticket workflows yet. Click the "Add New Workflow" button to create one now.',
     'admin.tickets.notice_can_edit_form'                 => 'You can edit the form a user sees when they go to submit a ticket. Just drag options from the left into the area below to enable more fields.',
     'admin.tickets.notice_cat_will_be_removed'           => 'Any tickets that belong this category will have it removed, resulting in the tickets having no category.',

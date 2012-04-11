@@ -1,5 +1,5 @@
 <?php return array(
-    'admin.license.ask_doesnt_have_license'         => 'Don\'t have a license code?',
+    'admin.license.ask_doesnt_have_license'         => 'No license code?',
     'admin.license.ask_have_license_code'           => 'Already have a license code?',
     'admin.license.change_license_code'             => 'Change License Code',
     'admin.license.click_generate_demo_license'     => 'click here generate a demo license',
@@ -7,7 +7,7 @@
     'admin.license.demo_expiry'                     => 'Demo Expiry',
     'admin.license.do_if_have_license'              => 'If you already have a license code, <a href="{{path}}">click here to enter it</a>.',
     'admin.license.do_if_license_has_problems'      => 'If you continue to experience problems, email {{link}} with the key file linked to the left and we will generate a license code for you.',
-    'admin.license.do_if_not_have_license'          => 'If you don\'t have a license code yet,',
+    'admin.license.do_if_not_have_license'          => 'If you do not have a license code yet,',
     'admin.license.error_encountered'               => 'We encountered a problem',
     'admin.license.error_licence_server_connection' => 'There was an unknown problem while trying to connect to our licensing server.',
     'admin.license.error_licensing_server_problems' => 'Our licensing server is having technical difficulties. You can try again, or email support@deskpro.com and one of our agents will generate a license code for you',

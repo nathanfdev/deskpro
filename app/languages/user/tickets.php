@@ -47,7 +47,7 @@
     'user.tickets.new_validating_notice'             => 'Since this is your first time submitting a ticket from {{email}}, you must validate your email address before our agents will respond. Check your email now and click the validation link we sent you.',
     'user.tickets.no_longer_need_to_contact_you'     => 'I do not need to contact you anymore',
     'user.tickets.oops_form_mistakes'                => 'Oops! There are mistakes with your form. Correct the highlighted feels and then try again.',
-    'user.tickets.participate_explain'               => 'You\'re a participant on the ticket "{{ticket_subject}}" by {{ticket_person_name}}. If you want more control over your profile, like setting a different email address or changing your name, register an account.',
+    'user.tickets.participate_explain'               => 'You are a participant on the ticket "{{ticket_subject}}" by {{ticket_person_name}}. If you want more control over your profile, like setting a different email address or changing your name, register an account.',
     'user.tickets.please_choose_priority'            => 'Please choose a priority',
     'user.tickets.please_choose_product'             => 'Please choose a product',
     'user.tickets.please_choose_subject_at_least'    => 'Please enter a subject of at least 5 characters',

@@ -7,7 +7,7 @@
     'user.portal.example'                 => 'Example',
     'user.portal.example_list'            => '"{{link1}}", "{{link2}}" or "{{link3}}"',
     'user.portal.how_do_i_add_account'    => 'How do I add an account?',
-    'user.portal.if_not_registered'       => 'Don\'t have an account? {{link}} so you can view your ticket history and manage your profile.',
+    'user.portal.if_not_registered'       => 'No account? {{link}} so you can view your ticket history and manage your profile.',
     'user.portal.label_email'             => 'Email Address:',
     'user.portal.label_password'          => 'Password:',
     'user.portal.latest_version_download' => 'Latest version download',

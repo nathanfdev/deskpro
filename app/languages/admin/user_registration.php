@@ -23,16 +23,16 @@
     'admin.user_registration.enter_facebook_api_key'                => 'Enter your Facebook API application key',
     'admin.user_registration.enter_facebook_api_secret'             => 'Enter your Facebook API application secret',
     'admin.user_registration.enter_name_field_here'                 => 'If your schema has a field that stores the users full name, enter it here.',
-    'admin.user_registration.enter_port_here'                       => 'If you\'re using a non-standard port (389, or 636 for secure connections), enter it here',
+    'admin.user_registration.enter_port_here'                       => 'If you are using a non-standard port (389, or 636 for secure connections), enter it here',
     'admin.user_registration.enter_raw_php_code'                    => 'Enter the raw PHP code to use when checking the validity of an inputted password against
 				a found user record. The following variables are available for use:
 				<ul>
 					<li>&middot; $userinfo is the full row from your table</li>
 					<li>&middot; $userinfo_password is the password field from the row. This is the same as $userinfo[\'yourpasswordfield\']</li>
 					<li>&middot; $password_input is the password inputted by the user. This is what you need to check against $userinfo_password.</li>
-					<li>&middot; $pass is a boolean value. If the password is correct, set this variable to true. If it\'s invalid, set it to false.</li>
+					<li>&middot; $pass is a boolean value. If the password is correct, set this variable to true. If it is invalid, set it to false.</li>
 				</ul>
-                Here\'s some example code to check a salted password:<br />
+                Here is some example code to check a salted password:<br />
 				<code>$pass = (md5($password_input . $userinfo[\'salt\']) == $userinfo_password);</code>',
     'admin.user_registration.enter_table_prefix_here'               => 'If your installation is using a table prefix, enter it here.',
     'admin.user_registration.enter_the_dsn'                         => 'Enter the DSN connection string for the database. Refer to the manual for the string format ({{links}}). For example, for a MySQL database: <var>mysql:host=localhost;dbname=mydb</var>',
