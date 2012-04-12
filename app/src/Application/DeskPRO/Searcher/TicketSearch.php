@@ -460,16 +460,17 @@ class TicketSearch extends SearcherAbstract
 
 
 		$order_by = '';
+        $tr = App::getTranslator();
 
 		switch ($type) {
 			case 'ticket.urgency':
 				$order_by = "ORDER BY tickets.urgency $dir, tickets.id $dir";
-				$this->order_summary = "Urgency";
+				$this->order_summary = $tr->phrase('agent.general.urgency');
 				break;
 
 			case 'ticket.date_created':
 				$order_by = "ORDER BY tickets.id $dir";
-				$this->order_summary = "Date created";
+				$this->order_summary = $tr->phrase('agent.general.date_opened');
 				break;
 
 			case 'ticket.priority':
@@ -479,7 +480,7 @@ class TicketSearch extends SearcherAbstract
 				} else {
 					$order_by = "ORDER BY tickets.priority_id $dir, tickets.id $dir";
 				}
-				$this->order_summary = "Priority";
+				$this->order_summary = $tr->phrase('agent.general.priority');
 				break;
 
 			case 'ticket.date_resolved':

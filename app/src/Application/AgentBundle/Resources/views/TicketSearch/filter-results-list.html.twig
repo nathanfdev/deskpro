@@ -64,7 +64,7 @@ pageMeta.baseId = '{{ baseId }}';
 			{% if app.getSetting('core.use_agent_team') %}<li data-group-by="agent_team">{{ phrase('agent.general.agent_team') }}</li>{% endif %}
 			<li data-group-by="time_waiting">{{ phrase('agent.general.time_waiting') }}</li>
 			<li data-group-by="total_user_waiting">{{ phrase('agent.general.total_time_waiting') }}</li>
-			<li data-group-by="date_created">{{ phrase('agent.general.date_opened') }}</li>
+			<li data-group-by="date_created">{{ phrase('agent.general.time_since_creation') }}</li>
 		</ul>
 
 		<span class="close close-trigger"></span>

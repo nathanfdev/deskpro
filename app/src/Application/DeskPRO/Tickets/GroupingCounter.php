@@ -482,80 +482,82 @@ class GroupingCounter
 	 */
 	public function getFieldTitles($field, array $ids)
 	{
+        $tr = App::getTranslator();
 		$titles = null;
+
 		switch ($field) {
 			case TicketSearch::TERM_DEPARTMENT:
-				$this->grouping_summary = "Department";
+				$this->grouping_summary = $tr->phrase('agent.general.department');
 				$titles = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
 				break;
 
 			case TicketSearch::TERM_AGENT:
-				$this->grouping_summary = "Agent";
+				$this->grouping_summary = $tr->phrase('agent.general.agent');
 				$titles = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.unassigned'));
 				break;
 
 			case TicketSearch::TERM_AGENT_TEAM:
-				$this->grouping_summary = "Agent Team";
+				$this->grouping_summary = $tr->phrase('agent.general.agent_team');
 				$titles = App::getOrm()->getRepository('DeskPRO:AgentTeam')->getTeamNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.unassigned'));
 				break;
 
 			case TicketSearch::TERM_URGENCY:
-				$this->grouping_summary = "Urgency";
+				$this->grouping_summary = $tr->phrase('agent.general.urgency');
 				$x = range(1, 10);
 				$titles = array_combine($x, $x);
 				break;
 
 			case TicketSearch::TERM_CATEGORY:
-				$this->grouping_summary = "Category";
+				$this->grouping_summary = $tr->phrase('agent.general.category');
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getCategoryNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
 				break;
 
 			case TicketSearch::TERM_PRIORITY:
-				$this->grouping_summary = "Priority";
+				$this->grouping_summary = $tr->phrase('agent.general.priority');
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
 				break;
 
 			case TicketSearch::TERM_PRODUCT:
-				$this->grouping_summary = "Product";
+				$this->grouping_summary = $tr->phrase('agent.general.product');
 				$titles = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
 				break;
 
 			case TicketSearch::TERM_WORKFLOW:
-				$this->grouping_summary = "Workflow";
+				$this->grouping_summary = $tr->phrase('agent.general.workflow');
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketWorkflow')->getWorkflowNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
 				break;
 
 			case TicketSearch::TERM_ORGANIZATION:
-				$this->grouping_summary = "Organization";
+				$this->grouping_summary = $tr->phrase('agent.general.organization');
 				$titles = App::getOrm()->getRepository('DeskPRO:Organization')->getOrganizationNames($ids);
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
 				break;
 
 			case TicketSearch::TERM_LANGUAGE:
-				$this->grouping_summary = "Language";
+				$this->grouping_summary = $tr->phrase('agent.general.language');
 				$titles = App::getOrm()->getRepository('DeskPRO:Language')->getTitles();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
 				break;
 
 			case TicketSearch::TERM_USER_WAITING:
-				$this->grouping_summary = "Time User Waiting";
+				$this->grouping_summary = $tr->phrase('agent.general.time_waiting');
 				$titles = $this->getTimeTitles();
 				break;
 
 			case TicketSearch::TERM_TOTAL_USER_WAITING:
-				$this->grouping_summary = "Total Time User Waiting";
+				$this->grouping_summary = $tr->phrase('agent.general.total_time_waiting');
 				$titles = $this->getTimeTitles();
 				break;
 
 			case TicketSearch::TERM_DATE_CREATED:
-				$this->grouping_summary = "Time Since Creation";
+				$this->grouping_summary = $tr->phrase('agent.general.time_since_creation');
 				$titles = $this->getTimeTitles();
 				break;
 
