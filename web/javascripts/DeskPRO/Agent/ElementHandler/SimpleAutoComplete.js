@@ -12,7 +12,7 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
 	},
 
     /**
-     * Inits the search box to ensre it can be positioned properly
+     * Inits the search box to ensure it can be positioned properly
      */
     _initResultsBox: function() {
         var self = this;
@@ -52,23 +52,21 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
                 ev.preventDefault();
 
                 var current = $('li.on', self.resultsList);
-                console.log(self.resultsList);
-                console.log(current);
+
                 if (current.length) {
                     var personId = current.data('person-id');
                     var name  = $('.user-name', current).text().trim();
                     var email = $('.user-email', current).text().trim();
 
                     self.termInput.val(email);
-                    self.addButton.click();
-                    self.close();
-
                     self.el.trigger('personsearchboxclick', [personId, name, email, self]);
                 } else {
                     var term = self.getTerm();
                     self.el.trigger('personsearchboxclicknew', [term, self]);
                 }
 
+                self.addButton.click();
+                self.close();
             } else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
 
                 ev.preventDefault();

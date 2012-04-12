@@ -75,7 +75,6 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 					var email = li.data('email-address');
 					var trb = getReplyController();
 					trb.addCc(email);
-
 					row.remove();
 				}
 			});

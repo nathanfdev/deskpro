@@ -794,10 +794,6 @@ class TicketController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		if ($person->id) {
-			return $this->createJsonResponse(array('success' => true));
-		}
-
 		$this->db->beginTransaction();
 
 		try {
@@ -806,7 +802,7 @@ class TicketController extends AbstractController
 			$this->db->commit();
 		} catch (\Exception $e) {
 			$this->db->rollback();
-			$this->db->commit();
+            return $this->createJsonResponse(array('success' => false));
 		}
 
 		return $this->createJsonResponse(array('success' => true));
