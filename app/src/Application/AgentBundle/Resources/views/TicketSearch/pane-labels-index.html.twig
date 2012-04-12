@@ -20,7 +20,7 @@
 			{% endfor %}
 		</dl>
 	{% else %}
-		<span class="no-labels">{{ phrase('agent.general.no_ticket_labels') }}</span>
+    <aside class="source-info-explain">{{ phrase('agent.general.no_ticket_labels') }}</aside>
 	{% endif %}
 </section>
 <section class="source-labels-cloud" id="ticket_labels_cloud" style="display: none;">
@@ -31,6 +31,6 @@
 			{% endfor %}
 		</ul>
 	{% else %}
-		<span class="no-labels">{{ phrase('agent.general.no_ticket_labels') }}</span>
+    <aside class="source-info-explain">{{ phrase('agent.general.no_ticket_labels') }}</aside>
 	{% endif %}
 </section>
