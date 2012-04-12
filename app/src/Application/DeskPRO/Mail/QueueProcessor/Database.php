@@ -55,7 +55,7 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 
 		while ($queue_id = $this->getNextId()) {
 
-			$queue_info = $db->fetchAssoc("SELECT * FROM sendmail_queue WHERE id = ?", $queue_id);
+			$queue_info = $db->fetchAssoc("SELECT * FROM sendmail_queue WHERE id = ?", array($queue_id));
 			if (!$queue_info) {
 				continue;
 			}
