@@ -523,6 +523,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		// If its not a tab, we can just ignore the event
 		if (!el[0] || !el.is('li')) {
 			DP.console.log('not click %o', event.target);
+			this.cancelClickActivate = false;
 			return;
 		}
 
@@ -539,6 +540,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 				tab.page.fireEvent('closeTab', [event, tab]);
 
 				if (event.deskpro.cancelClose) {
+					this.cancelClickActivate = false;
 					return;
 				}
 			}
