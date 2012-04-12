@@ -92,8 +92,10 @@
 		<div id="userSetting" class="dp_admin_element" style="display:none;">
 			<div class="userProfileDropdown" >
 				<div class="userProfileDropdownHeader">
-					<a><em style="background-image: url({{ app.user.getPictureUrl(20) }});"></em></a>
-					<span class="drop"></span>
+					<a>
+                        <em style="background-image: url({{ app.user.getPictureUrl(20) }});"></em>
+                        <span class="drop"></span>
+                    </a>
 				</div>
 				<ul>
 					<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
