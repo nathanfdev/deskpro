@@ -212,10 +212,12 @@ class CategoryHierarchy
 			$db = App::getDb();
 			$cats = $this->em->createQuery("SELECT c FROM {$this->entity_name} c ORDER BY c.display_order ASC, c.id ASC")->execute();
 
+			$this->_cat_ids = array();
 			foreach ($cats as &$c) {
 				if (empty($c['url_slug'])) {
-					$c['url_slug'] = $c['id'] . '-' . Strings::slugifyTitle($c['title']);
+					$c['url_slug'] = $c->getId() . '-' . Strings::slugifyTitle($c['title']);
 				}
+				$this->_cat_ids[] = $c->getId();
 			}
 			unset($c);
 
@@ -224,10 +226,8 @@ class CategoryHierarchy
 			}
 
 			foreach ($cats as $c) {
-				$this->_cat_parent_map[$c['id']] = $c['parent_id'] ? $c['parent_id'] : 0;
+				$this->_cat_parent_map[$c->getId()] = $c['parent_id'] ? $c['parent_id'] : 0;
 			}
-
-			$this->_cat_ids = array_keys($cats);
 
 			$this->_cat_names = Arrays::flattenToIndex($cats, 'title');
 
