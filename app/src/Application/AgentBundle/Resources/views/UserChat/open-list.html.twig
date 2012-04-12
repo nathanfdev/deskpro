@@ -22,7 +22,7 @@ pageMeta.agent_id = {{ agent.id|default(0)}};
     			<div class="userinfo general">
                         {% if convo.person %}
                             {% set phrase_part %}<a
-                                class="user-link as-popover"
+                                class="user-link click-through"
                                 data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}"
                             >{{ convo.person.display_name }}</a> &lt;{{ convo.person.primary_email_address }}&gt;</a>{% endset %}
                         {% else %}

@@ -67,7 +67,7 @@ class TicketChecker extends AbstractChecker
 		# then we know right away they can view
 		#------------------------------
 
-		if ($ticket->agent && $ticket->agent->id = $this->person->id) {
+		if ($ticket->agent && $ticket->agent->id == $this->person->id) {
 			return true;
 		}
 
@@ -123,7 +123,7 @@ class TicketChecker extends AbstractChecker
 		#------------------------------
 
 		if ($this->person->hasPerm('agent_tickets.delete_own')) {
-			if ($ticket->agent && $ticket->agent->id = $this->person->id) {
+			if ($ticket->agent && $ticket->agent->id == $this->person->id) {
 				return true;
 			}
 
@@ -181,7 +181,7 @@ class TicketChecker extends AbstractChecker
 		#------------------------------
 
 		if ($this->person->hasPerm('agent_tickets.reply_own')) {
-			if ($ticket->agent && $ticket->agent->id = $this->person->id) {
+			if ($ticket->agent && $ticket->agent->id == $this->person->id) {
 				return true;
 			}
 

@@ -224,9 +224,19 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				<dl>
 					<dt class="agent-row">{{ phrase('agent.general.agent') }}</dt>
 					<dd class="agent-row">
-						<span class="agent-link agent-icon prop-agent-id {% if ticket.agent.id == app.user.id %}me{% elseif not ticket.agent.id %}no-agent{% endif %}" data-none-label="{{ phrase('agent.general.no_agent_assigned') }}" data-agent-id="{{ ticket.agent.id }}" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">{{ ticket.agent.display_name|default(phrase('agent.general.team')) }}</span>
+                        {% set agent_class -%}
+                        {%- if ticket.agent.id == app.user.id -%}
+                            me
+                        {%- elseif not ticket.agent.id -%}
+                                no-agent
+                            {%- else -%}
+                                other-agent
+                            {%- endif -%}
+                        {%- endset %}
+						<span class="agent-link agent-icon prop-agent-id {{agent_class}}" data-none-label="{{ phrase('agent.general.no_agent_assigned') }}" data-agent-id="{{ ticket.agent.id }}" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">
+                            {{- ticket.agent.display_name|default(phrase('agent.general.team')) -}}
+                        </span>
 					</dd>
-
 					<dt class="team-row" {% if not ticket.agent_team %}style="display: none"{% endif %}>{{ phrase('agent.general.team') }}</dt>
 					<dd class="team-row" {% if not ticket.agent_team %}style="display: none"{% endif %}>
 						<span class="prop-agent-team-id">{{ ticket.agent_team.name|default(phrase('agent.general.none')) }}</span>

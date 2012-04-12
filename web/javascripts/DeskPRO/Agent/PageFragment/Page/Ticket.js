@@ -163,6 +163,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.ownObject(this.ticketLocked);
 		}
 
+        $('.agent-link.other-agent', this.El).on('click', function() {
+            DeskPRO_Window.sections.agent_chat_section.newChatWindow([$(this).data('agent-id')]);
+        });
+
 		this.rescanMessageTypes = function() {
 			if ($('.attachment-list', msgWrap).length) {
 				self.getEl('msgcheck_attach').show();
