@@ -88,17 +88,22 @@ class LookupBasicEntityPersister extends BasicEntityPersister
 
 			$persister = $uof->getEntityPersister($assoc['targetEntity']);
 			$classname = $assoc['targetEntity'];
+			$has = false;
+
 			if ($persister instanceof LookupBasicEntityPersister) {
 				$idmap = $uof->getIdentityMap();
 				if (isset($idmap[$classname])) {
 					foreach ($idmap[$classname] as $ent) {
 						if ($ent->__hasRunLoad__() && $ent->parent && $ent->parent->getId() == $sourceEntity->getId()) {
+							$has = true;
 							$coll->hydrateAdd($ent);
 						}
 					}
 				}
 
-				return $coll;
+				if ($has) {
+					return $coll;
+				}
 			}
 		}
 
