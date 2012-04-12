@@ -61,6 +61,40 @@ class FilestorageLoader
 
 	public function run()
 	{
+		#------------------------------
+		# Normalize env
+		#------------------------------
+
+		setlocale(LC_CTYPE, 'C');
+		date_default_timezone_set('UTC');
+		ini_set('default_charset', 'UTF-8');
+
+		\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor/php-utf8');
+
+		#------------------------------
+		# Undo magic quotes
+		#------------------------------
+
+		// Check exists since its gone in PHP 5.4
+		if (function_exists('get_magic_quotes_gpc')) {
+			ini_set('magic_quotes_runtime', 0);
+
+			if (get_magic_quotes_gpc()) {
+				$clean_fn = function(&$v) {
+					$v = stripslashes($v);
+				};
+
+				array_walk_recursive($_GET,     $clean_fn);
+				array_walk_recursive($_POST,    $clean_fn);
+				array_walk_recursive($_COOKIE,  $clean_fn);
+				array_walk_recursive($_REQUEST, $clean_fn);
+			}
+		}
+
+		#------------------------------
+		# Load config
+		#------------------------------
+
 		global $DP_CONFIG;
 		require DP_CONFIG_FILE;
 
