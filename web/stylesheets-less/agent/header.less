@@ -1904,3 +1904,57 @@ ul#dp_notify_list li#dp_notify_list_none {
 	position: relative;
 	top: 1px;
 }
+
+
+
+
+#dp_header > section {
+	background-repeat: no-repeat;
+	background-position: 100% 0;
+	background-image: url("../../images/agent/header/header-divider.png") /** sprite-ref: ui-v; sprite-alignment: right */;
+	float: left;
+	overflow: hidden;
+	padding: 6px 9px 8px 10px;
+}
+
+#dp_header > section nav {
+	padding: 1px 9px 2px 9px;
+	.gradient(#5a90b8, #3c6094);
+	border: 1px solid #314559;
+	.border-radius(3px, 3px, 3px, 3px);
+	box-shadow: 0 1px 0 #386DA1, 0 1px 0 #75B3DA inset, 0 0 1px #5283AF inset;
+	overflow: hidden;
+	cursor: pointer;
+	position: relative;
+
+	&:hover {
+		.gradient(#5c93ba, #4670aa);
+	}
+}
+
+#dp_header > section nav h1 {
+	display: block;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+	font-size: 11px;
+	font-weight: normal;
+	line-height: 22px;
+	color: #F2F9FF;
+	font-family: @body-font;
+
+	a {
+		color: #F2F9FF;
+		text-decoration: none;
+	}
+}
+
+
+#dp_header > section nav i {
+	.iconbase(6px, 5px);
+	background-image: url(../../images/agent/dropdown-white.png);
+	position: absolute;
+	top: 15px;
+	right: 6px;
+}
