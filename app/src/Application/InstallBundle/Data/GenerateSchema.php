@@ -173,7 +173,7 @@ CREATE TABLE `tickets_search_active` (
   `total_to_first_reply` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `status` (`status`),
-  KEY `person_id` (`person_id`) USING BTREE
+  KEY `person_id` (`person_id`)
 ) ENGINE=MyISAM
 SQL;
 
@@ -215,7 +215,7 @@ CREATE TABLE `tickets_search_message` (
   `content` longtext NOT NULL,
   PRIMARY KEY (`id`),
   KEY `status` (`status`),
-  KEY `person_id` (`person_id`) USING BTREE,
+  KEY `person_id` (`person_id`),
   FULLTEXT KEY `content` (`content`)
 ) ENGINE=MyISAM
 SQL;
@@ -250,7 +250,7 @@ CREATE TABLE `tickets_search_message_active` (
   `content` longtext NOT NULL,
   PRIMARY KEY (`id`),
   KEY `status` (`status`),
-  KEY `person_id` (`person_id`) USING BTREE,
+  KEY `person_id` (`person_id`),
   FULLTEXT KEY `content` (`content`)
 ) ENGINE=MyISAM
 SQL;
