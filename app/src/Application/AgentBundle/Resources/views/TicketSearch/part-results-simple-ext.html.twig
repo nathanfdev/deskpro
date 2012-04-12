@@ -99,7 +99,11 @@
 					<span class="prop-title">{{ phrase('agent.general.agent') }}:</span>
 					<span class="prop-val" data-prop-value="{{ticket_agent.id}}">
 					{% if ticket_agent %}
-						{{ ticket_agent.display_name }}
+                        {% if ticket_agent.id == app.user.id %}
+                            {{ ticket_agent.display_name }}
+                        {% else %}
+                            <a class="agent_link">{{ ticket_agent.display_name }}</a>
+                        {% endif %}
 					{% else %}
 						{{ phrase('agent.general.unassigned') }}
 					{% endif %}
