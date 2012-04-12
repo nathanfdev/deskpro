@@ -243,12 +243,10 @@ class PeopleSearchController extends AbstractController
 			if (strpos($f, 'person_fields[') === 0) $has_u_fields = true;
 		}
 
-		if ($has_u_fields) {
-			$user_field_manager = $this->container->getSystemService('person_fields_manager');
+		$user_field_manager = $this->container->getSystemService('person_fields_manager');
 
-			foreach ($people as $p) {
-				$user_all_custom_fields[$p->id] = $user_field_manager->getDisplayArrayForObject($p);
-			}
+		foreach ($people as $p) {
+			$user_all_custom_fields[$p->id] = $user_field_manager->getDisplayArrayForObject($p);
 		}
 
 		$person_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
