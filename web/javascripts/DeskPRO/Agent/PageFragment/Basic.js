@@ -82,6 +82,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 				}
 				self.destroyObjects = null;
 			}
+
+			DeskPRO_Window.getMessageBroker().removeTaggedListeners(self.OBJ_ID);
 		});
 		this.addEvent('destroy', this.destroy);
 

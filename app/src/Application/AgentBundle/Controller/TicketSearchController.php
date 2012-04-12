@@ -999,16 +999,29 @@ class TicketSearchController extends AbstractController
 			$view_type = 'simple-ext';
 		}
 
-		$pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.' . $filter['id']);
+		if ($this->in->getString('view_name')) {
+			$pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.name_' . $this->in->getString('view_name'));
+		} elseif ($filter) {
+			$pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.' . $filter['id']);
+		} else {
+			$pref_display_fields = $this->person->getPref('agent.ui.ticket-basic-display-fields.general');
+		}
 		if ($pref_display_fields) {
 			$vars['display_fields'] = $pref_display_fields;
 		} else {
 			// Default display fields based on the filter
-			$vars['display_fields'] = $this->_suggestedDisplayFields($filter->getSearcher());
+			if ($filter) {
+				$vars['display_fields'] = $this->_suggestedDisplayFields($filter->getSearcher());
+			} else {
+				$vars['display_fields'] = $this->_suggestedDisplayFields();
+			}
 		}
 
 		$is_partial = true;
 		$tpl = 'AgentBundle:TicketSearch:part-results-'.$view_type.'.html.twig';
+
+		$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay(array($ticket->id => $ticket));
+		$vars['ticket_display'] = $ticket_display;
 
 		return $this->render($tpl, $vars);
 	}

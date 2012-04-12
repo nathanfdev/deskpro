@@ -20,7 +20,7 @@
 {% if not tickets %}
 	pageMeta.noResults = true;
 {% endif %}
-pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'filter_id': filter_id}) }}?ticket_id=$ticket_id&view_type=$view_type&view_name={{ view_name }}';
+pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'filter_id': filter_id|default('0')}) }}?ticket_id=$ticket_id&view_type=$view_type&view_name={{ view_name }}';
 pageMeta.fetchResultsUrl = '{{ path('agent_ticketsearch_getpage') }}';
 
 {% if filter.sys_name == 'agent' %}pageMeta.groupingIgnore=["agent","agent_team"];{% endif %}

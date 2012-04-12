@@ -21,7 +21,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.unlocked', (function(info) {
 			var ticketId = info.ticket_id;
 			$('.ticket-' + ticketId, this.contentWrapper).removeClass('locked');
-		}).bind(this));
+		}).bind(this), null, [this.OBJ_ID]);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.locked', (function(info) {
 			var ticketId = info.ticket_id;
 			$('.ticket-' + ticketId, this.contentWrapper).addClass('locked');
@@ -41,7 +41,12 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 				$(this).remove();
 				self.updateTicketCountLabels();
 			});
-		}).bind(this))
+		}).bind(this), null, [this.OBJ_ID])
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.ticket_updated', function(info) {
+			var ticketId = info.ticket_id;
+			self.addTicket(ticketId, true);
+		}, null, [this.OBJ_ID]);
 
 		this.wrapper = $(el);
 		this.contentWrapper = $('.layout-content:first', this.wrapper);
@@ -135,7 +140,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		this.layout.resizeAll();
 	},
 
-	addTicket: function(ticket_id) {
+	addTicket: function(ticket_id, replace_existing) {
 		var self = this;
 		if (!this.meta.loadSingleUrl) {
 			return;
@@ -169,12 +174,24 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 					$('.timeago', el).timeago();
 
 					var exist = self.getEl('results_wrap').find('article.ticket-' + ticketId);
-					if (exist[0]) {
-						exist.remove();
-					}
 
-					self.getEl('results_wrap').prepend(el);
-					el.slideDown();
+					if (exist[0] && replace_existing) {
+
+						if (el.is('.row-item')) {
+							el = el.find('.row-item');
+						}
+
+						exist.after(el);
+						exist.remove();
+						el.show();
+					} else {
+						if (exist[0]) {
+							exist.remove();
+						}
+
+						self.getEl('results_wrap').prepend(el);
+						el.slideDown();
+					}
 
 					this.countTotal++;
 					this.updateTicketCountLabels();

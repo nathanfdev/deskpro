@@ -30,6 +30,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 
 		this.changeManager = new DeskPRO.Agent.Ticket.ChangeManager(this);
+		this.changeManager.addEvent('updateResult', function() {
+			DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.ticket_updated', { ticket_id: self.meta.ticket_id });
+		});
 
 		this.ticketDisplay = new DeskPRO.Agent.PageHelper.TicketDisplay(this, {
 			wrapper: el

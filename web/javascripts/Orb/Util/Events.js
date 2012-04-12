@@ -147,6 +147,7 @@ Orb.Util.Events = {
 	},
 
 	__cleanupTaggedEvents: function() {
+		return;
 		Object.each(this.__events_tagged, function(tag_fns, tag) {
 			var newTaggedFns = [], hasChange = false;
 			Array.each(tag_fns, function(tag_fn) {
@@ -166,6 +167,6 @@ Orb.Util.Events = {
 			} else {
 				newTaggedFns = null;
 			}
-		});
+		}, this);
 	}
 };
