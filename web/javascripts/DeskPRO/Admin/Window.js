@@ -194,7 +194,7 @@ DeskPRO.Admin.Window = new Orb.Class({
 			list.hide().detach().appendTo('body');
 
 			var left = $('#userSetting_trigger').offset().left;
-			left -= 136;
+			left -= 135;
 
 			list.css({
 				top: 41,
