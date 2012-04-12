@@ -69,8 +69,6 @@ class FilestorageLoader
 		date_default_timezone_set('UTC');
 		ini_set('default_charset', 'UTF-8');
 
-		\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor/php-utf8');
-
 		#------------------------------
 		# Undo magic quotes
 		#------------------------------
