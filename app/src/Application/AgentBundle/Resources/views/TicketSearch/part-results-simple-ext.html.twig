@@ -94,7 +94,7 @@
 					{% endif %}
 					</span>
 				</li>
-			{% elseif field == 'agent' and (ticket_agent or changed_fields[ticket.id].agent) %}
+			{% elseif field == 'agent' %}
 				<li class="{{field}} {% if changed_fields[ticket.id].agent %}changed{% endif %}">
 					<span class="prop-title">{{ phrase('agent.general.agent') }}:</span>
 					<span class="prop-val" data-prop-value="{{ticket_agent.id}}">
