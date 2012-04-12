@@ -584,9 +584,17 @@ class AgentsController extends AbstractController
 
 		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
+		$usergroup_values = App::getDb()->fetchAllKeyValue("
+			SELECT name, value
+			FROM permissions
+			LEFT JOIN usergroups ON (usergroups.id = permissions.id)
+			WHERE usergroups.id = ? AND value = 1
+		", array($team_id), 'usergroup_id', 'name', 'value');
+
 		return $this->render('AdminBundle:Agents:edit-team.html.twig', array(
 			'team' => $team,
-			'agents' => $agents
+			'agents' => $agents,
+			'usergroup_values' => $usergroup_values,
 		));
 	}
 
