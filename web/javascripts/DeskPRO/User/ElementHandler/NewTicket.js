@@ -10,6 +10,8 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 		this.ticketForm = $('#dp_newticket_form');
 
+        $('.Date.customfield input').datepicker();
+
 		this._initSuggestionsBox();
 		this._initFields();
 		this._initLoginForm(this.el);

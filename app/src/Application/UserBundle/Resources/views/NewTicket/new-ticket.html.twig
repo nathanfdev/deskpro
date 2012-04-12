@@ -51,7 +51,11 @@ var ticketReader = {
 {{ ticket_display_js|raw }}
 </script>
 <script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/NewTicket.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ asset('stylesheets/vendor/jquery-ui/portal-theme/jquery-ui.css') }}" />
 {% endblock %}
+
+
+
 {% block page_title %}{{ phrase('user.general.new_ticket') }}{% endblock %}
 {% block breadcrumb %}
 	{% if is_user_loggedin() %}
