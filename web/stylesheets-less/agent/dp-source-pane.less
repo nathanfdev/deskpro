@@ -1106,12 +1106,12 @@ li.all .add-new {
 }
 
 section.group-section {
-
 	> header {
-		.gradient(darken(#F0F3F4, 10%), darken(#DDE3E7, 10%));
-		border-bottom: 1px solid #BFC5C9;
-		.inner-shadow-color(0, 0, 9px);
-		cursor: pointer;
+        .gradient(#d9dfe6, #b9c5d0);
+        position: relative;
+        height: 24px;
+        overflow: hidden;
+        cursor: pointer;
 
 		h2 {
 			color: #575E66;
@@ -1132,8 +1132,7 @@ section.group-section {
 	}
 
 	> article {
-		border-bottom: 1px solid #BFC5C9;
-		padding-bottom: 22px;
+        margin-bottom: 11px;
 	}
 }
 
@@ -1141,17 +1140,7 @@ section.group-section.open > header h2 {
     .section_source_header_style();
 }
 
-> article {
-    border-bottom: 1px solid #BFC5C9;
-    padding-bottom: 22px;
-}
-section.group-section.first {
-	header {
-		border-top: 1px solid #BFC5C9;
-	}
-}
-
-section.group-section.last{
+section.group-section.last {
 	> article {
 		border-bottom: none;
 	}
