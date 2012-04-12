@@ -1,6 +1,6 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Person';
-pageMeta.title = {{ person.display_name|json_encode|raw }};
+pageMeta.title = {{ person.getDisplayContact()|json_encode|raw }};
 pageMeta.person_id = {{person.id}};
 pageMeta.url_fragment  = '{{ url_fragment('agent_people_view', {'person_id': person.id}) }}';
 pageMeta.pageIdentity = 'person:{{person.id}}';
