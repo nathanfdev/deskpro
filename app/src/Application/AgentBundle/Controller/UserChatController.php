@@ -531,7 +531,8 @@ class UserChatController extends AbstractController
 			'departments' => $departments,
 			'single_dep_mode' => $single_dep_mode,
 			'ended_filters' => $filters,
-			'ended_groups' => $groupers
+			'ended_groups' => $groupers,
+            'agent_id' => $this->getPerson()->id,
 		));
 
 		return $this->createJsonResponse(array('section_html' => $html));
