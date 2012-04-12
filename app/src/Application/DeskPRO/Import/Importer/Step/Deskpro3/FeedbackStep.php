@@ -161,7 +161,7 @@ class FeedbackStep extends AbstractDeskpro3Step
 
 		$new_feedback->person = $new_person;
 		$new_feedback->title = $feedback['title'];
-		$new_feedback->content = $feedback['message'];
+		$new_feedback->content = nl2br(htmlspecialchars($feedback['message'], \ENT_QUOTES, 'UTF-8'));
 		$new_feedback->date_created = new \DateTime('@' . $feedback['created_at']);
 		$new_feedback->date_published = new \DateTime('@' . $feedback['created_at']);
 
