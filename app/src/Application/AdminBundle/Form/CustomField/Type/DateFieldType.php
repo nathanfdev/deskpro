@@ -37,12 +37,12 @@ namespace Application\AdminBundle\Form\CustomField\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
-class TextareaFieldType extends TextFieldType
+class DateFieldType extends TextFieldType
 {
 	public function getDefaultOptions(array $options)
 	{
 		return array(
-			'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\TextareaField',
+			'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\DateField',
 		);
 	}
 }

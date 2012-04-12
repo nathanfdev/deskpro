@@ -34,7 +34,7 @@
 
 namespace Application\AdminBundle\Form\CustomField\Model;
 
-class TextareaField extends TextField
+class DateField extends TextField
 {
 
 }

@@ -20,12 +20,10 @@
 		<p>{{ phrase('admin.custom_fields.explain_predefined_options') }}</p>
 	{{ design.block_sections_item_end() }}
 
-	{#
 	{{ design.block_sections_item() }}
 		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Date" /> {{ phrase('agent.general.date') }}</label></h3></header>
 		<p>{{ phrase('admin.custom_fields.explain_date_field') }}</p>
 	{{ design.block_sections_item_end() }}
-	#}
 
 	{{ design.block_sections_item() }}
 		<header><h3><label><input type="radio" name="fielddef[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Display" /> {{ phrase('admin.custom_fields.display') }}</label></h3></header>
