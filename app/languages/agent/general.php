@@ -515,7 +515,7 @@
     'agent.general.to'                              => 'To',
     'agent.general.total_time_waiting'              => 'Total Time Waiting',
     'agent.general.trend'                           => 'Trend',
-    'agent.general.trends'                          => 'Trends',
+    'agent.general.all_trends'                      => 'All Trends',
     'agent.general.triggers_auto_close_resolved'    => 'Auto-close tickets that are resolved',
     'agent.general.triggers_urgency_base'           => 'Default urgency for new tickets',
     'agent.general.tuesday'                         => 'Tuesday',

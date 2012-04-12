@@ -416,6 +416,14 @@ DeskPRO.UI.Menu = new Orb.Class({
 			this.elements.wrapperOuter.removeClass('with-point');
 		}
 
+		if ((top + this.elements.wrapperOuter.height()) > ($(window).height() - 15)) {
+			this.elements.wrapper.addClass('with-scrolldown');
+			this.elements.wrapperInner.css('max-height', $(window).height() - top - 15);
+		} else {
+			this.elements.wrapper.removeClass('with-scrolldown');
+			this.elements.wrapperInner.css('max-height', 'auto');
+		}
+
 		this.elements.wrapperOuter.css({
 			'z-index': this.options.zIndex+2,
 			'position': 'absolute',
@@ -601,6 +609,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 	 * Init the menu by moving the menu list and created the required wrapper elements.
 	 */
 	_initMenu: function () {
+		var self = this;
 
 		if (this.hasInit) return true;
 		this.hasInit = true;
@@ -690,6 +699,34 @@ DeskPRO.UI.Menu = new Orb.Class({
 			}).bind(this));
 		}
 
+		this.elements.wrapper.find('.deskpro-menu-scrolldown').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopImmediatePropagation();
+
+			var newpos = self.elements.wrapperInner.scrollTop() + 20;
+			var max = self.elements.wrapper.height() - self.elements.wrapperInner.height();
+			if (newpos >= max) {
+				self.elements.wrapper.removeClass('with-scrolldown');
+				newpos += 10;
+			}
+
+			self.elements.wrapperInner.scrollTop(newpos);
+			self.elements.wrapper.addClass('with-scrollup');
+		});
+
+		this.elements.wrapper.find('.deskpro-menu-scrollup').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopImmediatePropagation();
+
+			var newpos = self.elements.wrapperInner.scrollTop() - 20;
+			if (newpos < 0) newpos = 0;
+			self.elements.wrapperInner.scrollTop(newpos);
+			self.elements.wrapper.addClass('with-scrolldown');
+			if (newpos == 0) {
+				self.elements.wrapper.removeClass('with-scrollup');
+			}
+		});
+
 		this.fireEvent('menuInit', { menu: this });
 
 		return true;
@@ -710,7 +747,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 		this.elements.wrapperInner = $('<div class="deskpro-menu-inner '+this.options.customClassname+'" />');
 		this.elements.wrapperInner.appendTo(this.elements.wrapperOuter);
 
-		this.elements.wrapper = $('<div class="deskpro-menu '+this.options.customClassname+'">');
+		this.elements.wrapper = $('<div class="deskpro-menu '+this.options.customClassname+'"><div class="deskpro-menu-scrollup"></div><div class="deskpro-menu-scrolldown"></div>');
 		this.elements.wrapper.appendTo(this.elements.wrapperInner);
 	},
 

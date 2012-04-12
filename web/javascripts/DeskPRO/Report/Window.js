@@ -28,6 +28,11 @@ DeskPRO.Report.Window = new Orb.Class({
 				return helper;
 			}
 		});
+
+		var menu = new DeskPRO.UI.Menu({
+			triggerElement: '#all_trends_menu_trigger',
+			menuElement: '#all_trends_menu'
+		});
 	},
 
 	/**

@@ -111,12 +111,22 @@ class DeskproContainer extends Container
 		}
 
 		$classname = 'Application\\DeskPRO\\DependencyInjection\\SystemServices\\' . $this->camelize($id) . 'Service';
+		$options = null;
 
 		if (!class_exists($classname)) {
-			throw new \InvalidArgumentException("Invalid service `$id`, tried class `$classname`");
+			if ($ent = \Orb\Util\Strings::extractRegexMatch('#^(.*?)Data$#', $id, 1)) {
+				$classname = 'Application\\DeskPRO\\DependencyInjection\\SystemServices\\BaseRepositoryService';
+				$options = array('entity' => 'DeskPRO:' . ucfirst($ent));
+			} else {
+				throw new \InvalidArgumentException("Invalid service `$id`, tried class `$classname`");
+			}
 		}
 
-		$obj = $classname::create($this);
+		if ($options) {
+			$obj = $classname::create($this, $options);
+		} else {
+			$obj = $classname::create($this);
+		}
 
 		$this->system_services[$id] = $obj;
 

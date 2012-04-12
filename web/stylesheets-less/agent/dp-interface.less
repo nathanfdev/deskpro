@@ -709,7 +709,7 @@ input.tab-focus {
 
     font-family: Helvetica,Arial,sans-serif;
     font-size: 11px;
-
+	overflow: hidden;
 }
 
 .with-point .deskpro-menu-inner:after {
@@ -728,6 +728,36 @@ input.tab-focus {
 
 .deskpro-menu {
 
+}
+
+.deskpro-menu > .deskpro-menu-scrollup,
+.deskpro-menu > .deskpro-menu-scrolldown {
+	display: none;
+	position: absolute;
+	height: 12px;
+	cursor: pointer;
+	left: 0;
+	right: 0;
+	z-index: 1;
+}
+
+.deskpro-menu > .deskpro-menu-scrollup {
+	top: 0;
+	background: #E3E4E6 url(../../images/agent/button-uparrow.png) no-repeat 50% 50%;
+}
+
+.deskpro-menu > .deskpro-menu-scrolldown {
+	bottom: 0;
+	background: #E3E4E6 url(../../images/agent/button-downarrow.png) no-repeat 50% 50%;
+}
+
+.deskpro-menu.with-scrollup {
+	padding-top: 13px;
+	.deskpro-menu-scrollup { display: block; }
+}
+.deskpro-menu.with-scrolldown {
+	padding-bottom: 13px;
+	.deskpro-menu-scrolldown { display: block; }
 }
 
 .deskpro-menu > ul {

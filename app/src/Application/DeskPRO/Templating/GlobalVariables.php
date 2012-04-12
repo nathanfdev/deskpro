@@ -103,10 +103,28 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::get('browser_sniffer');
 	}
 
+	public function get($name)
+	{
+		return $this->__get($name);
+	}
+
 	public function __get($name)
 	{
 		if (isset($this->variables[$name])) {
 			return $this->variables[$name];
+		}
+
+		if ($ent = \Orb\Util\Strings::extractRegexMatch('#^(.*?)Data$#', $name, 1)) {
+			return App::getContainer()->getSystemService(ucfirst($ent) . 'Data');
+		}
+
+		return null;
+	}
+
+	public function __call($method, $args)
+	{
+		if ($var = \Orb\Util\Strings::extractRegexMatch('#^get(.*?)$#', $method, 1)) {
+			return $this->__get(ucfirst($method));
 		}
 
 		return null;
