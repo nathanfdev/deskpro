@@ -136,11 +136,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         try {
             $db = $this->getOrm()->getConnection();
 
-            $db->replace('settings', array(
-                'name' => 'core.done_rewrite_urls_check',
-                'value' => time(),
-            ));
-            $db->replace('settings', array(
+           $db->replace('settings', array(
                 'name' => 'core.install_timestamp',
                 'value' => time(),
             ));
@@ -155,12 +151,6 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $db->replace('settings', array(
                 'name' => 'core.deskpro_version',
                 'value' => date('YmdHis'),
-            ));
-
-
-            $db->replace('settings', array(
-                'name' => 'core.rewrite_urls',
-                'value' => '1',
             ));
 
             $this->getOrm()->getConnection()->commit();
