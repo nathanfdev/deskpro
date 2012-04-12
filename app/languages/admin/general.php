@@ -22,6 +22,8 @@
 	'admin.general.error_ssl_tip'             => 'Secure connections require the OpenSSL PHP extension which is currently not installed.',
 	'admin.general.error_ssl_feature_tip'     => 'This feature requires the OpenSSL PHP extension which is currently not installed.',
 	'admin.general.error_ssl_feature_link'    => 'Learn how to install OpenSSL.',
+	'admin.general.error_cron_inactive'       => 'We have detected that the DeskPRO scheduled task is not running. This task is required for DeskPRO to function properly.',
+	'admin.general.error_cron_inactive_go'    => 'Click here to learn about configuring scheduled tasks',
     'admin.general.file_uploads'              => 'File Uploads',
     'admin.general.first'                     => 'First',
     'admin.general.from_email_address'        => 'From email address',

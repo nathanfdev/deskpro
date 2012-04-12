@@ -1,44 +1,88 @@
+{% set is_cron_page = 1 %}
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
 	<ul>
 		<li>{{ phrase('admin.settings.configure_scheduled_tasks') }}</li>
 	</ul>
 {% endblock %}
-{% block page %}
+{% block content %}
 
-<div class="dp-form">
-	<div class="dp-form-row">
-		<div class="dp-form-label">
-			<label>{{ phrase('admin.settings.configuring_scheduled_tasks') }}</label>
+<div class="dp-page-box">
+	<div class="page-content">
+		{{ phrase('admin.settings.cron_explain') }}
+		{% if not found_php_path %}
+		<div class="alert-message block-message error">
+			{{ phrase('admin.settings.cron_notice_php_path_not_found') }}
 		</div>
-		<div class="dp-form-input">
-			{{ phrase('admin.settings.notice_scheduled_tasks') }}:
-			<ul>
-				<li><a href="">{{ phrase('admin.settings.linux') }}</a></li>
-				<li><a href="">{{ phrase('admin.settings.windows') }}</a></li>
-			</ul>
-		</div>
-	</div>
+		{% endif %}
 
-	<div class="dp-form">
-		<div class="dp-form-row">
-			<div class="dp-form-label">
-				<label>{{ phrase('admin.settings.command_to_run_every_minute') }}</label>
-			</div>
-			<div class="dp-form-input">
-				{{ phrase('admin.settings.configure_minute_command') }}:
-<pre class="codebox">
-{{ php_path }} -q {{ path }}/cron.php
-</pre>
-			</div>
+		<br />
+		<br />
+
+		{% if not get_instance_ability('is_windows') %}
+		<div class="content-table template-dir">
+			<table width="100%">
+				<thead>
+				<tr>
+					<th class="single-title" colspan="10">
+						<h1 class="noexpand">{{ phrase('admin.settings.cron_setup_linux') }}</h1>
+					</th>
+				</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							{{ phrase('admin.settings.cron_setup_linux_edit_file') }}
+							<pre class="code-box">* * * * * exampleuser {{ php_path }} -q {{ path }}/cron.php</pre>
+							<div class="small-note-box">{{ phrase('admin.settings.cron_setup_linux_edit_file_user') }}</div>
+							<br />
+							<p>
+								<a href="{{ get_service_url('dp.kb.install.cron') }}">{{ phrase('admin.settings.cron_detailed_instructions') }}</a>
+							</p>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
+		<br />
+		{% endif %}
+
+		{% if get_instance_ability('is_windows') %}
+		<div class="content-table template-dir">
+			<table width="100%">
+				<thead>
+				<tr>
+					<th class="single-title" colspan="10">
+						<h1 class="noexpand">{{ phrase('admin.settings.cron_setup_windows') }}</h1>
+					</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>
+						{{ phrase('admin.settings.cron_setup_linux_edit_file') }}
+						<pre class="code-box">* * * * * exampleuser {{ php_path }} -q {{ path }}/cron.php</pre>
+						<div class="small-note-box">{{ phrase('admin.settings.cron_setup_linux_edit_file_user') }}</div>
+						<br />
+						<p>
+							<a href="{{ get_service_url('dp.kb.install.cron') }}">{{ phrase('admin.settings.cron_detailed_instructions') }}</a>
+						</p>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<br />
+		{% endif %}
+
+		<br />
+
+		{% if show_complete_form %}
+		<footer class="controls">
+			<a class="clean-white" href="{{ path('admin_settings_cron', {complete: '1'}) }}">{{ phrase('admin.settings.confirm_configured_scheduled_tasks') }} &rarr;</a>
+		</footer>
+		{% endif %}
 	</div>
 </div>
-
-{% if show_complete_form %}
-	<footer class="controls">
-		<a class="clean-white" href="{{ path('admin_settings_cron', {complete: '1'}) }}">{{ phrase('admin.settings.confirm_configured_scheduled_tasks') }}</a>
-	</footer>
-{% endif %}
 
 {% endblock %}

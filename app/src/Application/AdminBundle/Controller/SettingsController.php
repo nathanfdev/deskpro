@@ -365,10 +365,6 @@ class SettingsController extends AbstractController
 
 	public function cronAction()
 	{
-		// TODO when have proper cron page with help etc, put this step back
-		App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '31');
-		return $this->redirectRoute('admin');
-
 		$setup_initial = $this->container->getSetting('core.setup_initial');
 
 		if ($this->in->getBool('complete')) {
@@ -378,14 +374,7 @@ class SettingsController extends AbstractController
 			}
 		}
 
-		$try = array('/usr/bin/php', '/usr/local/bin/php', 'C:\\php5\\bin\\php.exe');
-		$got = null;
-		foreach ($try as $p) {
-			if (is_executable($p)) {
-				$got = $p;
-				break;
-			}
-		}
+		$got = $this->container->getPhpBinaryPath();
 		if (!$got) {
 			$got = '/path/to/php';
 		}
@@ -397,6 +386,7 @@ class SettingsController extends AbstractController
 			'last_run' => $last_run,
 			'path' => $path,
 			'php_path' => $got,
+			'found_php_path' => $got != '/path/to/php',
 			'show_complete_form' => ($setup_initial < 30)
 		));
 	}

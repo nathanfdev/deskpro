@@ -557,7 +557,7 @@ class Util
 	 * This takes an array of numbers, and encodes them as an alpha string (0-26 as a-z).
 	 *
 	 * @param array $parts
-	 * @return void
+	 * @return string
 	 */
 	public static function encodeNumberSegments(array $parts, $alphabet = 'base36')
 	{
@@ -641,7 +641,7 @@ class Util
 	 * With options: array('world' => 1, 'hello' => 2, 'blah' => 'unrelated')
 	 * Thie method returns: array(2, 1)
 	 *
-	 * @param ReflectionFunctionAbstract $func_refl
+	 * @param \ReflectionFunctionAbstract $func_refl
 	 * @param array $options
 	 * @return array
 	 */

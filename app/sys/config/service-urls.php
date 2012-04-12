@@ -22,4 +22,5 @@
 	'dp.kb.install.error_db_version'      => 'http://support.deskpro.com/',
 	'dp.kb.install.error_db_no_innodb'    => 'http://support.deskpro.com/',
 	'dp.kb.install.error_db_not_empty'    => 'http://support.deskpro.com/',
+	'dp.kb.install.cron'                  => 'http://support.deskpro.com/',
 );

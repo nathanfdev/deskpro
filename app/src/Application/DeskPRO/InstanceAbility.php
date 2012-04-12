@@ -80,6 +80,15 @@ class InstanceAbility
 		return $this->canUseSsl();
 	}
 
+	public function isWindows()
+	{
+		if (strpos(strtoupper(PHP_OS), 'WIN') === 0) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public function __call($method, array $args = array())
 	{
 		return false;
