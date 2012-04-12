@@ -69,7 +69,7 @@ DeskPRO.Admin.ElementHandler.AgentEditPage = new Orb.Class({
 				self.suppressChange = false;
 
 				if (!$(this).data('tipped')) {
-					var tipped = Tipped.create(this, "This permission is granted through one of the selected usergroups to the left.", {
+					var tipped = Tipped.create(this, "This permission is granted through one of the selected permissions groups to the left.", {
 						showOn: false,
 						closeButton: true,
 						hideOn: 'click-outside'
