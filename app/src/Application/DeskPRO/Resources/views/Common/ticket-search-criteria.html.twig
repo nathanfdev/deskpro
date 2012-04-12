@@ -620,9 +620,9 @@
 	</div>
 	{% endif %}
 
-	{% if 'ticket_field' not in no_show_fields and term_options.custom_ticket_fields %}
+	{% if 'ticket_field' not in no_show_fields and app.get('TicketFieldsManager').getFields() %}
 		{% set op_lang = {'is': phrase('agent.general.is'), 'not': phrase('agent.general.is_not'), 'contains': phrase('agent.general.contains'), 'notcontains': phrase('agent.general.does_not_contain'), 'gt': phrase('agent.general.is_greater_than'), 'lt': phrase('agent.general.is_less_than') } %}
-		{% for field in term_options.custom_ticket_fields %}
+		{% for field in app.get('TicketFieldsManager').getDisplayArray() %}
 			{% if field.field_def.getFilterCapabilities(search_context) %}
 			<div class="type" title="{{field.field_def.title}}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">
 				<div class="op">
