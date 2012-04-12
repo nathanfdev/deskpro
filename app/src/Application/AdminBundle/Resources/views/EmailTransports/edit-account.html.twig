@@ -180,6 +180,19 @@
 						</div>
 					</div>
 				</div>
+				{% else %}
+				<div class="dp-input-group grayed">
+					<label>
+						<input type="radio" class="option-trigger" name="transport[transport_type]" value="gmail" {% if transport.transport_type == 'gmail' %}checked="checked"{% endif %} />
+						{{ phrase('admin.general.google_apps') }}
+					</label>
+					<div class="dp-group-options" style="display: none">
+						<p>
+							{{ phrase('admin.general.error_ssl_feature_tip') }}
+							<a href="{{ get_service_url('dp.kb.install.error_openssl') }}">{{ phrase('admin.general.error_ssl_feature_link') }}</a>
+						</p>
+					</div>
+				</div>
 				{% endif %}
 			</div>
 		</div>
@@ -279,6 +292,19 @@
 						<div class="test-row">
 							<span class="test-button test-account-settings backup"><span class="lightning-small-icon"></span> {{ phrase('admin.general.test_settings') }}</span>
 						</div>
+					</div>
+				</div>
+				{% else %}
+				<div class="dp-input-group grayed">
+					<label>
+						<input type="radio" class="option-trigger" name="transport[transport_type]" value="gmail" {% if transport.transport_type == 'gmail' %}checked="checked"{% endif %} />
+						{{ phrase('admin.general.google_apps') }}
+					</label>
+					<div class="dp-group-options" style="display: none">
+						<p>
+							{{ phrase('admin.general.error_ssl_feature_tip') }}
+							<a href="{{ get_service_url('dp.kb.install.error_openssl') }}">{{ phrase('admin.general.error_ssl_feature_link') }}</a>
+						</p>
 					</div>
 				</div>
 				{% endif %}

@@ -2,7 +2,8 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/EditEmailGatewayPage.js') }}"></script>
+<script type="text/javascript" xmlns="http://www.w3.org/1999/html"
+		src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/EditEmailGatewayPage.js') }}"></script>
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/EditEmailTransportPage.js') }}"></script>
 {% endblock %}
 {% block pagebar %}
@@ -131,6 +132,19 @@
 						</div>
 					</div>
 				</div>
+				{% else %}
+					<div class="dp-input-group grayed">
+						<label>
+							<input type="radio" class="option-trigger" name="gateway[connection_type]" value="gmail" {% if gateway.connection_type == 'gmail' %}checked="checked"{% endif %} id="gapps_btn" />
+							{{ phrase('admin.general.google_apps') }}
+						</label>
+						<div class="dp-group-options" style="display: none">
+							<p>
+								{{ phrase('admin.general.error_ssl_feature_tip') }}
+								<a href="{{ get_service_url('dp.kb.install.error_openssl') }}">{{ phrase('admin.general.error_ssl_feature_link') }}</a>
+							</p>
+						</div>
+					</div>
 				{% endif %}
 			</div>
 		</div>

@@ -41,7 +41,6 @@ class InstanceAbility
 {
 	public function canUseSsl()
 	{
-		return false;
 		static $has_ssl;
 
 		if ($has_ssl === null) {
