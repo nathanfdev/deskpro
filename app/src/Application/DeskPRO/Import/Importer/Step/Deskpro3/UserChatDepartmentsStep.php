@@ -118,7 +118,7 @@ class UserChatDepartmentsStep extends AbstractDeskpro3Step
 		$dep = new Department();
 		$dep->title = $chat_dep['name'];
 		$dep->display_order = '1' . $chat_dep['displayorder'];
-		$dep->is_tickets_enabled = true;
+		$dep->is_tickets_enabled = false;
 		$dep->is_chat_enabled = true;
 
 		$this->getEm()->persist($dep);
