@@ -326,7 +326,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$phrase = $this->handler_class;
 		$phrase = str_replace('Application\\DeskPRO\\CustomFields\\Handler\\', '', $phrase);
 		$phrase = str_replace('\\', '_', $phrase);
-		$phrase = "agent.field_type_$phrase";
+		$phrase = "agent.general.field_type_$phrase";
 		$phrase = strtolower($phrase);
 
 		return $phrase;

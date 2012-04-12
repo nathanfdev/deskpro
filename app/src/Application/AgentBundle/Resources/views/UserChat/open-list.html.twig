@@ -33,8 +33,8 @@ pageMeta.agent_id = {{ agent.id|default(0)}};
                             {% endif %}
                         {% endif %}
 
-                    {{ phrase('agent.general.by_name', {'name':phrase_part}) }}
-    				, <time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('day_short') }}</time>
+                    {{ phrase('agent.general.by_name', {'name':phrase_part}) }},
+    				<time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('day_short') }}</time>
     			</div>
     		</article>
     	{% else %}

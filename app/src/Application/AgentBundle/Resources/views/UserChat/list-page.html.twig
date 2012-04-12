@@ -15,16 +15,19 @@
 			</div>
 			<div class="userinfo general">
                 {% if convo.person %}
-                {{ phrase('agent.general.by_name', {'name':convo.person}) }}
-					<a class="name click-through"
-					 data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id|default('0')}) }}" data-route-title="@selector(.person-tip)">
-					<span class="person-name-picture" style="background-image: url({{ convo.person.getPictureUrl(15) }})">{{ convo.person.display_name }}</span></a>
-					{% if convo.person.email_address %}<span class="convo.person-email">&lt;{{ convo.person.email_address }}&gt;</span>,{% endif %}
-				{% elseif convo.person_name or convo.person_email %}
-					{{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %},
-				{% else %}
-					{{ phrase('agent.general.anonymous') }},
-				{% endif %}
+                {% set phrase_part %}<a
+                    class="user-link click-through"
+                    data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}"
+                    >{{ convo.person.display_name }}</a> &lt;{{ convo.person.primary_email_address }}&gt;</a>{% endset %}
+                {% else %}
+                {% if convo.person_name or convo.person_email %}
+                {% set phrase_part %}{{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %}{% endset %}
+                {% else %}
+                {% set phrase_part %}{{ phrase('agent.general.anonymous') }}{% endset %}
+                {% endif %}
+                {% endif %}
+
+                {{ phrase('agent.general.by_name', {'name':phrase_part}) }},
 				<time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('day_short') }}</time>
 			</div>
 		</article>
