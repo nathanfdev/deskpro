@@ -1772,7 +1772,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('#dp_logo_expand_wrap').detach().appendTo('body').show();
 		});
 		$('#dp_logo_expand_wrap').on('click', function(ev) {
-			ev.preventDefault();
 			ev.stopPropagation();
 			$('#dp_logo_expand_wrap').hide();
 		});
