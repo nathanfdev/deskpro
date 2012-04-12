@@ -92,6 +92,8 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			return 1;
 		}
 
+		$start_step = $input->getOption('step');
+
 		#----------------------------------------
 		# Set environment
 		#----------------------------------------
@@ -220,7 +222,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		# Check requirements
 		#----------------------------------------
 
-		if ($mode == 'run' && $page == 1) {
+		if ($mode == 'run' && !$start_step) {
 
 			try {
 				$stat_db = $this->getContainer()->getDb();
@@ -411,7 +413,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$sm = $db->getSchemaManager();
 
 		$tables = $sm->listTableNames();
-		if ($tables && $mode == 'run') {
+		if ($tables && $mode == 'run' && !$start_step) {
 			$logger->log('Your database already contains tables. DeskPRO requires a new, empty database to import into.' . PHP_EOL, Logger::ERR);
 			$logger->log('Create a new empty database and edit /config.php with the new details, then try again.'  . PHP_EOL, Logger::ERR);
 			return 22;

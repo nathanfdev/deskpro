@@ -128,7 +128,7 @@ class SetupGuide
 
 		} elseif ($step < 30) {
 			if (!($this->controller instanceof \Application\AdminBundle\Controller\SettingsController) || $action != 'cronAction') {
-				return $this->controller->redirectRoute('S');
+				return $this->controller->redirectRoute('admin_settings_cron');
 			}
 		}
 

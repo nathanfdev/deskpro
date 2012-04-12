@@ -191,7 +191,7 @@
 <!-- /BEGIN NAV BAR -->
 <div id="dp_page_wrap">
 
-{% if not is_cron_page and app.getSetting('core.setup_initial') > 30 and not app.getSetting('core.last_cron_run') and app.getSetting('core.install_timestamp') and ( ('now'|date('U') - 360) > app.getSetting('core.install_timestamp')) %}
+{% if not is_cron_page and app.getSetting('core.setup_initial') > 30 and not app.getSetting('core.last_cron_run') and app.getSetting('core.install_timestamp') and ( ('now'|date('U') - 600) > app.getSetting('core.install_timestamp')) %}
 	<div class="cron-warn">
 		<p>{{ phrase('admin.general.error_cron_inactive') }}</p>
 		<a class="clean-white" href="{{ path('admin_settings_cron') }}">{{ phrase('admin.general.error_cron_inactive_go') }} &rarr;</a>

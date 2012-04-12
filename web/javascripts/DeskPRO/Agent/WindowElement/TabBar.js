@@ -516,17 +516,12 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		if (el_click.is('li')) {
 			var el = el_click;
-		} else if (el_click.parent().is('li')) {
-			var el = el_click.parent();
 		} else {
-			var el = el_click.parentsUntil('li');
-			if (el.length) {
-				el = el.parent(); // jquery doesnt include the actual parent in parentsUntil
-			}
+			var el = el_click.closest('li');
 		}
 
 		// If its not a tab, we can just ignore the event
-		if (!el.is('li')) {
+		if (!el[0] || !el.is('li')) {
 			DP.console.log('not click %o', event.target);
 			return;
 		}

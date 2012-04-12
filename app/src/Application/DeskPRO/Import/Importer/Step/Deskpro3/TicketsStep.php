@@ -158,21 +158,6 @@ class TicketsStep extends AbstractDeskpro3Step
 		#------------------------------
 
 		if ($ticket_info['nodisplay'] == 'spam' && (time() - $ticket_info['timestamp_opened']) > 1296000 /* 15 days */) {
-			// Null row just to get a mapped auto-inc ID so the whole mapping system works for the delete log
-			$this->db->executeUpdate("INSERT INTO tickets SET department_id = NULL");
-			$new_ticket_id = $this->db->lastInsertId();
-			$this->db->delete('tickets', array('id' => $new_ticket_id));
-
-			$this->saveMappedId('ticket', $ticket_id, $new_ticket_id, true);
-
-			$this->db->insert('tickets_deleted', array(
-				'ticket_id'     => $new_ticket_id,
-				'new_ticket_id' => null,
-				'date_created'  => null,
-				'by_person_id'  => null,
-				'reason'        => 'Marked as spam'
-			));
-
 			return;
 		}
 
