@@ -66,7 +66,7 @@ section.source-section header {
 	overflow: hidden;
 }
 
-section.source-section header h1 {
+.section_source_header_style() {
 	font-size: 11px;
 	font-family: @heading-font;
 	font-weight: bold;
@@ -76,6 +76,10 @@ section.source-section header h1 {
 	padding: 0;
 	margin: 0 0 0 5px;
 	line-height: 24px;
+}
+
+section.source-section header h1 {
+    .section_source_header_style();
 }
 
 section.source-section header span.settings {
@@ -1101,8 +1105,6 @@ li.all .add-new {
 	line-height: 120%;
 }
 
-
-
 section.group-section {
 
 	> header {
@@ -1112,15 +1114,15 @@ section.group-section {
 		cursor: pointer;
 
 		h2 {
-		    display: block;
-			line-height: 25px;
 			color: #575E66;
 			font-family: @heading-font;
 			font-weight: bold;
-			font-size: 13px;
-			padding: 0 0 0 6px;
-
+			font-size: 11px;
+	        margin: 0 0 0 5px;
+			padding: 0;
 			text-shadow: 0px 1px 0px darken(#ffffff, 5%);
+	        text-transform: uppercase;
+	        line-height: 24px;
 		}
 
 		&:hover {
@@ -1135,6 +1137,14 @@ section.group-section {
 	}
 }
 
+section.group-section.open > header h2 {
+    .section_source_header_style();
+}
+
+> article {
+    border-bottom: 1px solid #BFC5C9;
+    padding-bottom: 22px;
+}
 section.group-section.first {
 	header {
 		border-top: 1px solid #BFC5C9;
