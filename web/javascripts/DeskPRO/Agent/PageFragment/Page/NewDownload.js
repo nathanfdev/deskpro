@@ -36,6 +36,13 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 		this.ownObject(this.stateSaver);
 	},
 
+	destroyPage: function() {
+		// Workaround for tinymce bug to do with remove()
+		// We'll manually remove the node ourselves
+		var el = this.wrapper.find('.article-section').get(0);
+		el.parentNode.removeChild(el);
+	},
+
 	closeSelf: function() {
 		var ev = {cancel: false};
 		this.fireEvent('closeSelf', ev);
