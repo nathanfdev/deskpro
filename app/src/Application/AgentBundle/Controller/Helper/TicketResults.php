@@ -190,6 +190,7 @@ class TicketResults
 		$searcher->addTerm(TicketSearch::TERM_ID, TicketSearch::OP_IS, $this->getTicketIds());
 
 		$term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($this->group_field, $field_id);
+
 		$searcher->addTerm($term['type'], $term['op'], $term['options']);
 
 		if ($this->order_by) {

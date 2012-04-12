@@ -690,7 +690,8 @@ class GroupingCounter
 				}
 
 				return $term;
-
+            case TicketSearch::TERM_URGENCY:
+                return array('type' => $groupvar, 'op' => 'contains', 'options' => array($groupchoice));
 			default;
 				return array('type' => $groupvar, 'op' => 'is', 'options' => array($groupchoice));
 		}

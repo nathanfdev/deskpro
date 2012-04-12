@@ -673,7 +673,7 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_URGENCY:
 					$this->affected_fields[] = 'ticket.urgency';
 					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.urgency'), $op, $choice);
-					$wheres[] = $this->_rangeMatch("$tickets_table.urgency", $op, $choice);
+					$wheres[] = $this->_choiceMatch("$tickets_table.urgency", $op, $choice);
 					break;
 				case self::TERM_DATE_CREATED:
 					$this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_created'), $op, $choice);
