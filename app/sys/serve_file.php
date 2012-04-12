@@ -641,7 +641,7 @@ class FilestorageLoader
 		$desc = $container->getSystemService('filestorage')->getFileDescriptor($blob['id']);
 		$file = $desc->get();
 
-		if (!is_file($file)) {
+		if (!$file) {
 			header("HTTP/1.0 404 Not Found");
 			echo "File not found. (no_exist)";
 			exit;
