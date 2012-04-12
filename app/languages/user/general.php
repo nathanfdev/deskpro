@@ -74,7 +74,7 @@
     'user.general.label_tagged_with'               => 'Tagged with',
     'user.general.last_name'                       => 'Last Name',
     'user.general.loading'                         => 'Loading',
-    'user.general.log_in'                          => 'log in',
+    'user.general.log_in'                          => 'Log In',
     'user.general.log_out'                         => 'Log Out',
     'user.general.login_error'                     => 'The email address or password you entered is invalid. Please try again.',
     'user.general.login_if_registered'             => 'If you are a registered user, please {{link}}.',
