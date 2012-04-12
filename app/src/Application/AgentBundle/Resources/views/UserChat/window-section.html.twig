@@ -1,5 +1,5 @@
 {% macro dep_row(dep, dep_counts, depth) %}
-	<li class="{% if depth %}sub-item with-elbow{% endif %}" {% if not dep_counts[dep.id ~ '_total'] %}style="display: none"{% endif %}>
+	<li class="is-nav-item {% if depth %} sub-item with-elbow{% endif %}" {% if not dep_counts[dep.id ~ '_total'] %}style="display: none"{% endif %}>
 		{% if depth %}
 			<span class="elbow">|</span>
 		{% endif %}
@@ -24,7 +24,7 @@
 		<ul class="source-list">
 			{# New Chats #}
 			<li id="userchat_deplist_all" {% if not dep_counts['0_total'] %}style="display: none"{% endif %}>
-				<h3 class="title" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': '0'}) }}">
+				<h3 class="title is-nav-item" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': '0'}) }}">
 					<span class="list-counter" id="userchat_deplist_0_counter" data-count="{{ dep_counts['0_total']|default(0) }}">{{ dep_counts['0_total']|default(0) }}</span>
 					{{ phrase('agent.chat.title_new_chats') }}
 				</h3>
@@ -39,7 +39,7 @@
 
 			{# Active Chats #}
 			<li id="userchat_list_all" {% if not counts['total'] %}style="display: none"{% endif %}>
-				<h3 class="title" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': agent_id}) }}">
+				<h3 class="title is-nav-item" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': agent_id}) }}">
 					<span class="list-counter" id="userchat_list_allagents_counter" data-count="{{ counts['total']|default(0) }}">{{ counts['total']|default(0) }}</span>
 					{{ phrase('agent.chat.title_active_chats') }}
 				</h3>
