@@ -66,7 +66,13 @@ class ExceptionListener
 	protected function _logException(\Exception $exception)
 	{
 		if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-			$this->_log404($exception);
+			try {
+				$req = App::getRequest();
+				if ($req && $req->isXmlHttpRequest()) {
+					$this->_log404($exception);
+				}
+			} catch (\Exception $e) {}
+
 			return;
 		}
 
