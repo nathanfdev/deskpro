@@ -57,9 +57,11 @@ class TemplatesController extends AbstractController
 		$list = $this->groupMap($map, $custom_templates);
 
 		// Put the DeskPRO ones last
-		$tmp = $list['DeskPRO'];
-		unset($list['DeskPRO']);
-		$list['DeskPRO'] = $tmp;
+        if(isset($list['DeskPRO'])) {
+            $tmp = $list['DeskPRO'];
+            unset($list['DeskPRO']);
+            $list['DeskPRO'] = $tmp;
+        }
 
 		return $this->render('AdminBundle:Templates:user-templates.html.twig', array(
 			'list' => $list,
