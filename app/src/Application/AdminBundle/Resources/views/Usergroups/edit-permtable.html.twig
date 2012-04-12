@@ -11,7 +11,7 @@
 
 <div id="permgroup_tickets" style="display: none" class="dp-form-box">
 	<!-- PERMISSION:tickets.use --><input class="onoff-slider" type="checkbox" {% if permissions['tickets.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[tickets.use]" value="1" /> {{ phrase('admin.user_groups.can_use_tickets') }}
-	<div class="check-grid" style="max-height: 200px; overflow: auto;">
+	<div class="check-grid">
 		<table width="100%">
 			<thead>
 				<tr>
@@ -46,7 +46,7 @@
 
 <div id="permgroup_chat" style="display: none" class="dp-form-box">
 	<!-- PERMISSION:chat.use --><input class="onoff-slider" type="checkbox" {% if permissions['chat.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[chat.use]" value="1" /> {{ phrase('admin.user_groups.can_use_chat') }}
-	<div class="check-grid" style="max-height: 200px; overflow: auto;">
+	<div class="check-grid">
 		<table width="100%">
 			<thead>
 				<tr>
@@ -81,7 +81,7 @@
 
 <div id="permgroup_feedback" style="display: none" class="dp-form-box">
 	<!-- PERMISSION:feedback.use --><input class="onoff-slider" type="checkbox" {% if permissions['feedback.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[feedback.use]" value="1" /> {{ phrase('admin.user_groups.can_use_feedback') }}
-	<div class="check-grid" style="max-height: 200px; overflow: auto;">
+	<div class="check-grid">
 		<table width="100%">
 			<thead>
 				<tr>
@@ -117,7 +117,7 @@
 
 <div id="permgroup_articles" style="display: none" class="dp-form-box">
 	<!-- PERMISSION:articles.use --><input class="onoff-slider" type="checkbox" {% if permissions['articles.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[articles.use]" value="1" /> {{ phrase('admin.user_groups.can_use_knowledgebase') }}
-	<div class="check-grid" style="max-height: 200px; overflow: auto;">
+	<div class="check-grid">
 		<table width="100%">
 			<thead>
 				<tr>
@@ -146,7 +146,7 @@
 <div id="permgroup_downloads" style="display: none" class="dp-form-box">
 	<!-- PERMISSION:downloads.use --><input class="onoff-slider" type="checkbox" {% if permissions['downloads.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[downloads.use]" value="1" />
 	{{ phrase('admin.user_groups.can_use_downloads') }}
-	<div class="check-grid" style="max-height: 200px; overflow: auto;">
+	<div class="check-grid">
 		<table width="100%">
 			<thead>
 				<tr>
@@ -175,7 +175,7 @@
 <div id="permgroup_news" style="display: none" class="dp-form-box">
 	<!-- PERMISSION:news.use --><input class="onoff-slider" type="checkbox" {% if permissions['news.use'] or not usergroup.id %}checked="checked"{% endif %} name="permissions[news.use]" value="1" />
 	{{ phrase('agent.general.news') }}
-	<div class="check-grid" style="max-height: 200px; overflow: auto;">
+	<div class="check-grid">
 		<table width="100%">
 			<thead>
 				<tr>
