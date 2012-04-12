@@ -74,6 +74,8 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 			WHERE o.id IN(?0)
 		")->execute(array($ids));
 
+		$q_res = Arrays::orderIdArray($ids, $q_res);
+
 		return $q_res;
 	}
 

@@ -210,7 +210,7 @@ class CategoryHierarchy
 		} else {
 
 			$db = App::getDb();
-			$cats = $this->repos->findAll();
+			$cats = $this->em->createQuery("SELECT c FROM {$this->entity_name} c ORDER BY c.display_order ASC, c.id ASC")->execute();
 
 			foreach ($cats as &$c) {
 				if (empty($c['url_slug'])) {
