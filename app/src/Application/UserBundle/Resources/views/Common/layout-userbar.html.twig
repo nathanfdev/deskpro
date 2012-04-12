@@ -1,7 +1,7 @@
 <div id="dp_userbar">
 	{% if app.user.is_guest %}
 		{{ phrase('user.general.welcome_back_guest') }} &middot;
-		<a href="{{ path('user_login') }}" id="dp_login_link">{{ phrase('user.general.log_in') }}</a> &middot; <a href="{{ path('user_register') }}">{{ phrase('user.general.welcome_back_x') }}</a>
+		<a href="{{ path('user_login') }}" id="dp_login_link">{{ phrase('user.general.log_in') }}</a> &middot; <a href="{{ path('user_register') }}">{{ phrase('user.general.register') }}</a>
 	{% else %}
 		{{ phrase('user.general.welcome_back_x', {'name': app.user.display_name}) }} &middot;
 		{% if app.user.HelpdeskUser.ticket_count %}
