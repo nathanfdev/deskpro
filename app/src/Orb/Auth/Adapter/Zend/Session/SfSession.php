@@ -34,7 +34,7 @@
 
 namespace Orb\Auth\Adapter\Zend\Storage;
 
-use \Symfony\Component\HttpFoundation\Session;
+use \Symfony\Component\HttpFoundation\Session as SymfonySession;
 
 /**
  * A storage adapter that uses a Symfony session wrapper
@@ -44,7 +44,7 @@ class Session implements \Zend\Authentication\Storage
     /**
      * Object to proxy $_SESSION storage
      *
-     * @var Symfony\Component\HttpFoundation\Session
+     * @var \Symfony\Component\HttpFoundation\Session
      */
     protected $_session;
 
@@ -60,7 +60,7 @@ class Session implements \Zend\Authentication\Storage
 	 * @param Session $session
 	 * @param string $name The name in the session to save data to
 	 */
-	public function __construct(Session $session, $name = 'OrbAuthAdapterZendStorageSfSession')
+	public function __construct(SymfonySession $session, $name = 'OrbAuthAdapterZendStorageSfSession')
 	{
 		$this->_session = $session;
 

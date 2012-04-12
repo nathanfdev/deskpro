@@ -196,6 +196,22 @@ if ($htaccess_path && $htaccess_contents) {
 	file_put_contents($htaccess_path, $htaccess_contents);
 }
 
+#####################################################################
+
+$time = microtime(true);
+echo "build-checkphp ... ";
+
+$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checkphp.php', DP_ROOT.'/bin/build');
+$proc->setTimeout(600);
+$proc->run($output_realtime);
+
+if (!$proc->isSuccessful()) {
+	echo ("\nDetected error. Quitting.\n");
+	exit($proc->getExitCode());
+}
+
+echo " DONE " . sprintf("%.f", microtime(true)-$time);
+echo "\n";
 
 #####################################################################
 

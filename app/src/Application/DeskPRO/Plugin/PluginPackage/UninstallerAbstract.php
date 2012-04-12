@@ -93,7 +93,9 @@ abstract class UninstallerAbstract
 	{
 		$session = $this->controller->session;
 
-		$session_key = $this->plugin_package_name::getName() . '_uninstall';
+		$n = $this->plugin_package_name;
+		$name = $n::getName();
+		$session_key = $name . '_uninstall';
 		if (isset($session[$session_key])) {
 			$session_data = $session[$session_key];
 			if (!empty($session_data['installer_data'])) {
@@ -125,7 +127,7 @@ abstract class UninstallerAbstract
 		return $ret;
 	}
 
-	
+
 	/**
 	 * Empty hook to cleanup any non-standard items
 	 */
@@ -161,8 +163,9 @@ abstract class UninstallerAbstract
 	 */
 	public function stepUninstall()
 	{
+		$n = $this->plugin_package_name;
 		return $this->controller->render('AdminBundle:Plugin:uninstall_done.html.twig', array(
-			'title' => $this->plugin_package_name::getTitle()
+			'title' => $n::getTitle()
 		));
 	}
 
