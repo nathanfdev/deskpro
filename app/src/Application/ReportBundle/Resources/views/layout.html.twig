@@ -66,6 +66,29 @@
 
 <!-- BEGIN HEADER BAR -->
 <div id="dp_header">
+	{# User Logo #}
+	<div id="dp_header_user">
+	<div class="button-wrap" id="userSetting_trigger">
+		<h1>
+			<cite style="background-image: url({{ app.user.getPictureUrl(24) }});"></cite>
+			<span class="drop"></span>
+		</h1>
+	</div>
+</div>
+	<!-- Header - User Control Dropdown -->
+	<div id="userSetting" style="display:none;">
+		<div class="userProfileDropdown" >
+			<div class="userProfileDropdownHeader">
+				<a><em style="background-image: url({{ app.user.getPictureUrl(24) }});"></em></a>
+				<span class="drop"></span>
+			</div>
+			<ul>
+				<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
+				<li class="help"><a href="http://support.deskpro.com/">{{ phrase('agent.general.help') }}</a></li>
+				<li class="logout"><a href="{{ app.request.getBaseUrl() }}/logout/{{ static_security_token('user_logout', 0) }}?to=admin">{{ phrase('agent.general.log_out') }}</a></li>
+			</ul>
+		</div>
+	</div>
 	<section class="trends">
 		<nav><h1><a href="{{ path('report') }}">Trends</a></h1></nav>
 	</section>
@@ -85,32 +108,25 @@
 		<nav><h1><a>Feedback</a></h1></nav>
 	</section>
 
-	<!-- BEGIN USER SECTION -->
-	<div id="DP-UserSection">
-		<div id="DP-userControl">
-			<div class="currentUserAvatar">
-				<div class="userWrapper">
-					<a onclick="toggle_visibility('userSetting');"><img src="{{ app.user.getPictureUrl(20) }}" alt="" /></a>
-				</div>
-				<span class="dropdownIcon" onclick="toggle_visibility('userSetting');"></span>
-			</div>
+	{# DeskPRO Logo #}
+	<div id="dp_logo_wrap">
+		<div class="button-wrap">
+			<h1>
+				{{ phrase('agent.general.deskpro') }}
+				<span class="drop"></span>
+			</h1>
 		</div>
-		<!-- Header - User Control Dropdown -->
-		<div id="userSetting" style="display:none;">
-			<div class="userProfileDropdown" >
-				<div class="userProfileDropdownHeader">
-					<a onclick="toggle_visibility('userSetting');"><img src="{{ app.user.getPictureUrl(20) }}" alt="" /></a>
-				</div>
-				<ul>
-					<li class="logggedAs"><p>{{ phrase('agent.general.logged_in_as') }}</p></li>
-					<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
-					<li class="setting" id="user_settings_link"><a>{{ phrase('agent.general.settings') }}</a></li>
-					<li class="help"><a>{{ phrase('agent.general.help') }}</a></li>
-					<li class="logout"><a href="{{ app.request.getBaseUrl() }}/logout/{{ static_security_token('user_logout', 0) }}?to=admin">{{ phrase('agent.general.log_out') }}</a></li>
-				</ul>
-			</div>
+	</div>
+	<div id="dp_logo_expand_wrap">
+		<div class="dropdown-header">
+			<h1>
+				{{ phrase('agent.general.deskpro') }}
+				<span class="drop"></span>
+			</h1>
 		</div>
-	<!-- END USER SECTION -->
+		<div class="dropdown-content">
+			<a href="http://www.deskpro.com/" target="_blank">{{ phrase('agent.interface.powered_by') }} <span>{{ phrase('agent.interface.deskpro_website_host') }}</span></a>
+		</div>
 	</div>
 
 	<!-- BEGIN INTERFACE SECTION -->

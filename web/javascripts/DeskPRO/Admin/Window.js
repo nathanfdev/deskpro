@@ -268,6 +268,44 @@ DeskPRO.Admin.Window = new Orb.Class({
 				ev.preventDefault();
 			}
 		});
+
+		// DeskPRO logo menu
+		$('#dp_logo_wrap .button-wrap').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			var left = $('#dp_logo_wrap .button-wrap').offset().left + 51;
+			$('#dp_logo_expand_wrap').detach().appendTo('body').css('left', left).css('right', 'auto').show();
+		});
+		$('#dp_logo_expand_wrap').on('click', function(ev) {
+			ev.stopPropagation();
+			$('#dp_logo_expand_wrap').hide();
+		});
+
+		// User menu
+		$('#userSetting_trigger').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var list = $('#userSetting');
+			list.hide().detach().appendTo('body');
+			list.css({
+				top: 41,
+				left: $('#userSetting_trigger').offset().left + 1
+			});
+			list.show();
+
+			var backdrop = $('<div class="backdrop" />').appendTo('body');
+
+			var close = function() {
+				list.hide();
+				backdrop.remove();
+			};
+			backdrop.on('click', close);
+			list.on('click', close);
+			$('ul', list).on('click', function(ev) {
+				ev.stopPropagation();
+			});
+		});
 	},
 
 	updatePageNavPos: function() {
