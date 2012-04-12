@@ -187,6 +187,7 @@ class CategoryEdit
 		$entity = self::getEntityNameFor($type);
 
 		$ids = array_values($orders);
+		$ids = array_unique($ids);
 		$ids = Arrays::castToType($ids, 'integer');
 
 		$cats = App::getOrm()->createQuery("
