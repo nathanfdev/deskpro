@@ -228,7 +228,10 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
 
                     this.resultsList.append(row);
                 }, this);
-                this.open();
+
+                if(this.termInput.is(':focus')) {
+                    this.open();
+                }
             }
         });
     },
