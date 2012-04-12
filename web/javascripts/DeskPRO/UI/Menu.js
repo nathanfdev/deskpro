@@ -420,7 +420,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 			this.elements.wrapper.addClass('with-scrolldown');
 			this.elements.wrapperInner.css('max-height', $(window).height() - top - 15);
 		} else {
-			this.elements.wrapper.removeClass('with-scrolldown');
+			this.elements.wrapper.removeClass('with-scrolldown with-scrollup');
 			this.elements.wrapperInner.css('max-height', 'auto');
 		}
 
