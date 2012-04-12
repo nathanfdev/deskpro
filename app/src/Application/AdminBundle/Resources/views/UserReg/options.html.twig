@@ -24,18 +24,39 @@
 						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_deskpro_source_toggle') }}';" {% if app.getSetting('core.deskpro_source_enabled') %}checked="checked"{% endif %} />
 						{{ phrase('agent.general.deskpro') }}
 					</li>
-					<li>
-						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_facebook_toggle') }}';" {% if app.getSetting('core.facebook_source_enabled') %}checked="checked"{% endif %} />
-						{{ phrase('agent.general.facebook') }} <a href="{{ path('admin_userreg_facebook_edit') }}" class="btn-edit-gear2" style="position: relative; top: 2px;"></a>
-					</li>
-					<li>
-						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_twitter_toggle') }}';" {% if app.getSetting('core.twitter_source_enabled') %}checked="checked"{% endif %} />
-						{{ phrase('agent.general.twitter') }} <a href="{{ path('admin_userreg_twitter_edit') }}" class="btn-edit-gear2" style="position: relative; top: 2px;"></a>
-					</li>
-					<li>
-						<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_google_toggle') }}';" {% if app.getSetting('core.google_source_enabled') %}checked="checked"{% endif %} />
-						{{ phrase('admin.user_registration.google') }}
-					</li>
+					{% if get_instance_ability('can_use_facebook_auth') %}
+						<li>
+							<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_facebook_toggle') }}';" {% if app.getSetting('core.facebook_source_enabled') %}checked="checked"{% endif %} />
+							{{ phrase('agent.general.facebook') }} <a href="{{ path('admin_userreg_facebook_edit') }}" class="btn-edit-gear2" style="position: relative; top: 2px;"></a>
+						</li>
+					{% else %}
+						<li class="tipped-click" data-tipped-target=".jquery-checkbox img" data-tipped-options="maxWidth: 250, skin:'dperror'" title="{{ phrase('admin.general.error_ssl_feature_tip') }}">
+							<input class="onoff-slider" type="checkbox" />
+							{{ phrase('agent.general.facebook') }}
+						</li>
+					{% endif %}
+					{% if get_instance_ability('can_use_twitter_auth') %}
+						<li>
+							<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_twitter_toggle') }}';" {% if app.getSetting('core.twitter_source_enabled') %}checked="checked"{% endif %} />
+							{{ phrase('agent.general.twitter') }} <a href="{{ path('admin_userreg_twitter_edit') }}" class="btn-edit-gear2" style="position: relative; top: 2px;"></a>
+						</li>
+					{% else %}
+						<li class="tipped-click" data-tipped-target=".jquery-checkbox img" data-tipped-options="maxWidth: 250, skin:'dperror'" title="{{ phrase('admin.general.error_ssl_feature_tip') }}">
+							<input class="onoff-slider" type="checkbox" />
+							{{ phrase('agent.general.twitter') }}
+						</li>
+					{% endif %}
+					{% if get_instance_ability('can_use_google_auth') %}
+						<li>
+							<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_google_toggle') }}';" {% if app.getSetting('core.google_source_enabled') %}checked="checked"{% endif %} />
+							{{ phrase('admin.user_registration.google') }}
+						</li>
+					{% else %}
+						<li class="tipped-click" data-tipped-target=".jquery-checkbox img" data-tipped-options="maxWidth: 250, skin:'dperror'" title="{{ phrase('admin.general.error_ssl_feature_tip') }}">
+							<input class="onoff-slider" type="checkbox" />
+							{{ phrase('agent.general.google') }}
+						</li>
+					{% endif %}
 					{% for usersource in usersources %}{% if usersource.source_type != 'facebook' and usersource.source_type != 'google' %}
 						<li>
 							<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_usersource_toggle', {id: usersource.id}) }}';" {% if usersource.is_enabled %}checked="checked"{% endif %} />

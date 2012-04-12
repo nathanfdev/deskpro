@@ -149,6 +149,49 @@ DeskPRO.Admin.Window = new Orb.Class({
 			$(this).addClass('tipped-inited');
 		});
 
+		jQuery.extend(Tipped.Skins, {
+			'dperror' : {
+				border: { size: 1, color: '#CF2020' },
+				background: '#F3DDDE',
+				radius: { size: 1, position: 'border' },
+				shadow: true,
+				closeButtonSkin: 'light'
+			}
+		});
+		$('.tipped-click').each(function() {
+			var target = $(this);
+			if (target.data('tipped-target')) {
+				target = target.find(target.data('tipped-target'));
+			}
+
+			if (target.is('.tipped-inited')) {
+				return;
+			}
+			var options = {};
+			if ($(this).data('tipped-options')) {
+				eval('options = {' + $(this).data('tipped-options') + '}');
+			}
+			options.showOn = false;
+			options.hideOn = 'click-outside';
+
+			var id = target.attr('id');
+			if (!id) {
+				id = Orb.getUniqueId('tipped');
+				target.attr('id', id);
+			}
+
+			Tipped.create('#' + id, $(this).data('tipped') || $(this).attr('title'), options);
+			$(this).attr('title', '');
+			target.addClass('tipped-inited');
+
+			target.on('click', function(ev) {
+				ev.preventDefault();
+				ev.stopPropagation();
+				ev.stopImmediatePropagation();
+				Tipped.show('#' + id);
+			});
+		});
+
 		$(document).on('click', '.click-go', function(ev) {
 			var url = $(this).data('url');
 			if (url) {

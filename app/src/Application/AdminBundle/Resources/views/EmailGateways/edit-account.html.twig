@@ -84,7 +84,11 @@
 							</tr>
 							<tr>
 								<td>{{ phrase('admin.general.secure') }}:</td>
-								<td>{{ form_widget(form.pop3_options.secure, {'attr': {'class': 'small'}}) }}</td>
+								{% if get_instance_ability('can_use_secure_smtp') %}
+									<td>{{ form_widget(form.pop3_options.secure, {'attr': {'class': 'small'}}) }}</td>
+								{% else %}
+									<td>{{ phrase('agent.general.no') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.general.error_ssl_tip') }}"></span></td>
+								{% endif %}
 							</tr>
 							<tr>
 								<td>{{ phrase('admin.general.port') }}:</td>
@@ -105,6 +109,7 @@
 					</div>
 				</div>
 
+				{% if get_instance_ability('can_use_google_apps') %}
 				<div class="dp-input-group">
 					<label>
 						<input type="radio" class="option-trigger" name="gateway[connection_type]" value="gmail" {% if gateway.connection_type == 'gmail' %}checked="checked"{% endif %} id="gapps_btn" />
@@ -126,6 +131,7 @@
 						</div>
 					</div>
 				</div>
+				{% endif %}
 			</div>
 		</div>
 	</div>
@@ -183,7 +189,11 @@
 								</tr>
 								<tr>
 									<td class="title">{{ phrase('admin.general.secure') }}:</td>
-									<td>{{ form_widget(trans_form.smtp_options.secure, {'attr': {'class': 'small'}}) }}</td>
+									{% if get_instance_ability('can_use_secure_smtp') %}
+										<td>{{ form_widget(trans_form.smtp_options.secure, {'attr': {'class': 'small'}}) }}</td>
+									{% else %}
+										<td>{{ phrase('agent.general.no') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.general.error_ssl_tip') }}."></span></td>
+									{% endif %}
 								</tr>
 								<tr>
 									<td class="title">{{ phrase('admin.general.port') }}:</td>
@@ -216,6 +226,7 @@
 						</div>
 					</div>
 
+					{% if get_instance_ability('can_use_google_apps') %}
 					<div class="dp-input-group">
 						<label>
 							<input type="radio" class="option-trigger" name="transport[transport_type]" value="gmail" {% if transport.transport_type == 'gmail' %}checked="checked"{% endif %} />
@@ -237,6 +248,7 @@
 							</div>
 						</div>
 					</div>
+					{% endif %}
 				</div>
 			</div>
 
@@ -277,7 +289,11 @@
 									</tr>
 									<tr>
 										<td class="title">{{ phrase('admin.general.secure') }}:</td>
-										<td>{{ form_widget(trans_form.backup_smtp_options.secure, {'attr': {'class': 'small'}}) }}</td>
+										{% if get_instance_ability('can_use_secure_smtp') %}
+											<td>{{ form_widget(trans_form.backup_smtp_options.secure, {'attr': {'class': 'small'}}) }}</td>
+										{% else %}
+											<td>{{ phrase('agent.general.no') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.general.error_ssl_tip') }}"></span></td>
+										{% endif %}
 									</tr>
 									<tr>
 										<td class="title">{{ phrase('admin.general.port') }}:</td>
@@ -310,6 +326,7 @@
 							</div>
 						</div>
 
+						{% if get_instance_ability('can_use_google_apps') %}
 						<div class="dp-input-group">
 							<label>
 								<input type="radio" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="gmail" {% if transport.backup_transport_type == 'gmail' %}checked="checked"{% endif %} />
@@ -331,6 +348,7 @@
 								</div>
 							</div>
 						</div>
+						{% endif %}
 					</div>
 				</div>
 			</div>

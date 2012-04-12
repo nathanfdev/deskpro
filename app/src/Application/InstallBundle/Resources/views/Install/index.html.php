@@ -239,6 +239,24 @@
 		<tr>
 			<td>
 				<?php $failed = false ?>
+				<?php if (!isset($errors['openssl_ext'])): ?>
+				<span class="label success" style="float:right">OK</span>
+				<?php else: $failed = true; ?>
+				<span class="label notice" style="float:right">RECOMMENDED</span>
+				<?php endif ?>
+				Checking for the <a href="http://www.php.net/manual/en/apc.installation.php">OpenSSL</a> extension
+				<?php if ($failed): ?>
+				<div class="alert-message block-message info">
+					<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_openssl') ?>" class="kb-read-more" target="_blank">Read more about this</a>
+					We recommend installing the OpenSSL extension so you can use web resources that require a secure connection (such as Google Apps, secure email servers, Facebook or Twitter).
+				</div>
+				<?php endif ?>
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<?php $failed = false ?>
 				<?php if (!isset($errors['apc_check'])): ?>
 				<span class="label success" style="float:right">OK</span>
 				<?php else: $failed = true; ?>

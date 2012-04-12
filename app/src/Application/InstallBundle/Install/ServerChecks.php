@@ -278,7 +278,7 @@ class ServerChecks
 		}
 
 		#------------------------------
-		# session_ext
+		# image_manip
 		#------------------------------
 
 		if ($type == 'image_manip' || $type == 'all') {
@@ -358,6 +358,24 @@ class ServerChecks
 				$this->server_errors['pdo_ext'] = array(
 					'message' => $msg,
 					'level' => 'fatal'
+				);
+			}
+		}
+
+		#------------------------------
+		# openssl
+		#------------------------------
+
+		if ($type == 'openssl_ext' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking if the OpenSSL extension is enabled", Logger::DEBUG);
+			if (extension_loaded('openssl')) {
+				$this->getLogger()->log("[OK] OpenSSL installed", Logger::DEBUG);
+			} else {
+				$msg = "We recommend installing the OpenSSL extension so you can use resources that require a secure connection such as Google Apps, Facebook and Twitter.";
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['openssl_ext'] = array(
+					'message' => $msg,
+					'level' => 'recommended'
 				);
 			}
 		}

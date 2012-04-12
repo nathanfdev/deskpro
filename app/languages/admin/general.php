@@ -19,6 +19,8 @@
     'admin.general.error_log_id'              => 'Error Log #{{id}}',
     'admin.general.error_logs'                => 'Error Logs',
     'admin.general.error_sending_test'        => 'There was an error while trying to send the test email',
+	'admin.general.error_ssl_tip'             => 'Secure connections require the OpenSSL PHP extension which is currently not installed.',
+	'admin.general.error_ssl_feature_tip'     => 'This features requires the OpenSSL PHP extension which is currently not installed.',
     'admin.general.file_uploads'              => 'File Uploads',
     'admin.general.first'                     => 'First',
     'admin.general.from_email_address'        => 'From email address',

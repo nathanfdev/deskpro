@@ -104,6 +104,7 @@ class TemplatingExtension extends \Twig_Extension
 			'relative_time' => new \Twig_Function_Method($this, 'relativeTime', array('is_safe' => array('html'))),
 			'get_service_url' => new \Twig_Function_Method($this, 'getServiceUrl', array('is_safe' => array('html'))),
 			'get_service_url_raw' => new \Twig_Function_Method($this, 'getServiceUrlRaw', array('is_safe' => array('html'))),
+			'get_instance_ability' => new \Twig_Function_Method($this, 'getInstanceAbility'),
         );
     }
 
@@ -121,7 +122,6 @@ class TemplatingExtension extends \Twig_Extension
 			'date'   => new \Twig_Filter_Method($this, 'userDate'),
 			'slugify' =>  new \Twig_Filter_Method($this, 'slugify'),
 			'emphasize_words' => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
-			'lower' => new \Twig_Filter_Method($this, 'lowercase'),
 			'strip_linebreaks' => new \Twig_Filter_Method($this, 'stripLinebreaks'),
 			'explode' => new \Twig_Filter_Method($this, 'explodeString'),
 			'split' => new \Twig_Filter_Method($this, 'explodeString'),
@@ -138,6 +138,12 @@ class TemplatingExtension extends \Twig_Extension
 			'lower' => new \Twig_Filter_Method($this, 'strLower'),
         );
     }
+
+	public function getInstanceAbility($method)
+	{
+		$method = Strings::underscoreToCamelCase($method);
+		return $this->container->getSystemService('instance_ability')->$method();
+	}
 
 	public function getServiceUrl($name, $params = null, $named_params = null, $html = true)
 	{
@@ -323,11 +329,6 @@ class TemplatingExtension extends \Twig_Extension
 			default:
 				return null;
 		}
-	}
-
-	public function lowercase($string)
-	{
-		return strtolower($string);
 	}
 
 	public function emphasizeWords($string, $words)
