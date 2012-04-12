@@ -725,6 +725,13 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.hideEditor();
 	},
 
+	destroyPage: function() {
+		// Workaround for tinymce bug to do with remove()
+		// We'll manually remove the node ourselves
+		var el = $('.article-editor-wrap', this.getEl('content_ed')).get(0);
+		el.parentNode.removeChild(el);
+	},
+
 	showEditor: function() {
 
 		var self = this;
@@ -754,7 +761,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 			txt.css({ width: w, height: h });
 
-			DP.rteTextarea(txt, {
+			this.rte = DP.rteTextarea(txt, {
 				setup: function(ed) {
 					ed.onKeyPress.add(function() {
 						self.editStateSaver.triggerChange();

@@ -90,6 +90,13 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		DeskPRO_Window.util.modCountEl(this.getEl('count_revs'), '+');
 	},
 
+	destroyPage: function() {
+		// Workaround for tinymce bug to do with remove()
+		// We'll manually remove the node ourselves
+		var el = $('.download-editor-wrap', this.getEl('content_ed')).get(0);
+		el.parentNode.removeChild(el);
+	},
+
 	//#################################################################
 	//# Basic
 	//#################################################################
