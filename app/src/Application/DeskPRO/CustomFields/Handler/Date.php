@@ -41,9 +41,9 @@ use Application\DeskPRO\App;
 /**
  * Handles the date field
  */
-class Date extends HandlerAbstract
+class Date extends Text
 {
-	public function renderHtml(array $data = null, array $template_vars = array())
+/*	public function renderHtml(array $data = null, array $template_vars = array())
 	{
 		if ($data === null) return '';
 
@@ -99,5 +99,5 @@ class Date extends HandlerAbstract
 	public function getSearchType()
 	{
 		return 'value';
-	}
+	}*/
 }
