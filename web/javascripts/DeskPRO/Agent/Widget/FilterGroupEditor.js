@@ -263,6 +263,10 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 		// hard-coded value: offset of list from top of pane. aka height of header that says "INBOX"
 		var top = this.options.marginTop;
 
+		var evData = {marginTop: top};
+		this.fireEvent('setMarginTop', evData);
+		top = evData.marginTop;
+
 		this.controlRealEl.css({
 			'margin-top': top /* so the sync below doesnt need to worry about where it is */
 		});
@@ -282,7 +286,7 @@ DeskPRO.Agent.Widget.FilterGroupEditor = new Orb.Class({
 			}
 
 			editEl.css({
-				top: pos.top-this.options.marginTop-1,
+				top: pos.top-top-1,
 				height: el.height()
 			});
 		}).bind(this));

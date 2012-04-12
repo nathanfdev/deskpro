@@ -55,14 +55,16 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			this.filterGroupEditor.destroy();
 
 		this.filterGroupEditor = new DeskPRO.Agent.Widget.FilterGroupEditor({
-			containerElement: '#chat_outline .scroll-content',
+			containerElement: '#chat_outline',
 			listElement: '#chats_outline_sys_filters',
 			triggerElement: '#chat_filter_launch_editor',
 			controlElement: '#chat_filter_group_editor',
-			marginTop: 82,
 			useIntId: false,
 			onGroupingChanged: function(data) {
 				self.refreshFilterGrouping(data, self);
+			},
+			onSetMarginTop: function(evData) {
+				evData.marginTop = $('#chats_outline_sys_filters').position().top;
 			}
 		});
 		this.filterGroupEditor._initControl();
@@ -110,8 +112,9 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	updateGroupingVars: function() {
-		for(filterId in this.groups)
+		for(filterId in this.groups) {
 			$('#chat_filter_group_editor .filter-' + filterId + ' .field-option').val(this.groups[filterId]);
+		}
 	},
 
 	onShow: function() {
