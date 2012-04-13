@@ -1,11 +1,11 @@
 {# Box Summary #}
-{% if person.summary|length or app.user.hasPerm('agent_people.edit') %}
+{% if person.summary|length or perms.edit %}
 	<div class="profile-box-container summary"
 		data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
 		data-form-save-url="{{ path('agent_people_ajaxsave', {'person_id': person.id}) }}"
 	>
 		<header>
-			{% if app.user.hasPerm('agent_people.edit') %}
+			{% if perms.edit %}
 				<div class="controls">
 					<div class="is-loading">{{ phrase('agent.general.saving') }}</div>
 					<div class="saved" style="display: none">{{ phrase('agent.general.saved') }}</div>
@@ -16,7 +16,7 @@
 		</header>
 		<section>
 			<input type="hidden" name="action" value="set-summary" />
-			<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary" {% if not app.user.hasPerm('agent_people.edit') %}onkeydown="return false;"{% endif %}>{{ person.summary }}</textarea></div>
+			<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary" {% if not perms.edit %}onkeydown="return false;"{% endif %}>{{ person.summary }}</textarea></div>
 		</section>
 	</div>
 {% endif %}
@@ -25,7 +25,7 @@
 {# Properties Box #}
 <div class="profile-box-container properties" id="{{baseId}}_properties_box">
 	<header>
-		{% if app.user.hasPerm('agent_people.edit') %}
+		{% if perms.edit %}
 			<div class="controls">
 				<span class="edit-gear prop-edit-trigger"></span>
 				<div class="is-loading">{{ phrase('agent.general.saving') }}</div>
@@ -36,7 +36,7 @@
 		<h4>{{ phrase('agent.general.properties') }}</h4>
 	</header>
 	<section>
-		{% if person.labels|length or app.user.hasPerm('agent_people.edit') %}
+		{% if person.labels|length or perms.edit %}
 		<table class="prop-table" cellpadding="0" cellspacing="0" width="100%">
 			<tr>
 				<th>{{ phrase('agent.general.labels') }}</th>
@@ -48,7 +48,7 @@
 		<div class="table-list" id="{{baseId}}_custom_fields_rendered">
 			{% include 'AgentBundle:Person:view-customfields-rendered-rows.html.twig' %}
 		</div>
-		{% if app.user.hasPerm('agent_people.edit') %}
+		{% if perms.edit %}
 		<div class="table-list" id="{{baseId}}_custom_fields_editable" style="display: none">
 			{% include 'AgentBundle:Person:view-customfields-edit-rows.html.twig' %}
 		</div>
@@ -158,7 +158,7 @@
 	<header>
 		<nav>
 			<ul>
-				{% if notes|length or app.user.hasPerm('agent_people.notes') %}<li data-tab-for="#{{baseId}}_notes_tab" class="on">{{ phrase('agent.general.notes') }} <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>{% endif %}
+				{% if notes|length or perms.notes %}<li data-tab-for="#{{baseId}}_notes_tab" class="on">{{ phrase('agent.general.notes') }} <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>{% endif %}
 				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">{{ phrase('agent.general.activity_stream') }}</li>{% endif %}
 				<li data-tab-for="#{{baseId}}_tracking_tab">{{ phrase('agent.general.detail') }}</li>
 			</ul>
@@ -166,14 +166,14 @@
 	</header>
 	<section>
 		{# Notes Tab #}
-		{% if notes|length or app.user.hasPerm('agent_people.notes') %}
+		{% if notes|length or perms.notes %}
 			<article id="{{baseId}}_notes_tab" class="on">
 				<div class="notes-wrap">
 					<ul>
 						{% for note in notes|reverse %}
 							{% include 'AgentBundle:Person:note-li.html.twig' with {'note': note} %}
 						{% endfor %}
-						{% if app.user.hasPerm('agent_people.notes') %}
+						{% if perms.notes %}
 							<li class="new-note"
 								data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
 								data-form-list-selector="ul"

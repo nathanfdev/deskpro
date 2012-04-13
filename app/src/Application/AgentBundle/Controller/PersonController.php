@@ -162,12 +162,14 @@ class PersonController extends AbstractController
 		$person_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForPerson($person);
 		$person_chats_count = count($person_chats);
 
+		$is_editable = $this->isPersonEditable($person);
 		$perms = array(
-			'edit'             => $this->person->hasPerm('agent_people.edit'),
-			'delete'           => $this->person->hasPerm('agent_people.delete'),
-			'edit_emails'      => $this->person->hasPerm('agent_people.manage_emails'),
-			'reset_password'   => $this->person->hasPerm('agent_people.reset_password'),
-			'org_create'       => $this->person->hasPerm('agent_org.create')
+			'edit'             => $is_editable && $this->person->hasPerm('agent_people.edit'),
+			'delete'           => $is_editable && $this->person->hasPerm('agent_people.delete'),
+			'edit_emails'      => $is_editable && $this->person->hasPerm('agent_people.manage_emails'),
+			'reset_password'   => $is_editable && $this->person->hasPerm('agent_people.reset_password'),
+			'notes'            => $is_editable && $this->person->hasPerm('agent_people.notes'),
+			'org_create'       => $is_editable && $this->person->hasPerm('agent_org.create')
 		);
 
         $is_vcf = $this->in->getBool('vcf');
@@ -283,6 +285,7 @@ class PersonController extends AbstractController
 			'org_members_count' => $org_members_count,
 			'org_contact_data' => $org_contact_data,
 			'perms' => $perms,
+			'is_person_editable' => $is_editable
 		));
 	}
 
@@ -338,7 +341,6 @@ class PersonController extends AbstractController
 
 	public function ajaxSaveAction($person_id)
 	{
-
 		$person = $this->getPersonOr404($person_id);
 
 		$this->em->beginTransaction();
@@ -348,7 +350,7 @@ class PersonController extends AbstractController
 
 		$action = $this->in->getString('action');
 
-		if (!$this->person->hasPerm('agent_people.edit')) {
+		if (!$this->person->hasPerm('agent_people.edit') || !$this->isPersonEditable($person)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
@@ -519,11 +521,11 @@ class PersonController extends AbstractController
 
 	public function ajaxSaveCustomFieldsAction($person_id)
 	{
-		if (!$this->person->hasPerm('agent_people.edit')) {
+		$person = $this->getPersonOr404($person_id);
+
+		if (!$this->person->hasPerm('agent_people.edit') || !$this->isPersonEditable($person)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
-
-		$person = $this->getPersonOr404($person_id);
 
 		$timezone_options = \DateTimeZone::listIdentifiers();
 
@@ -577,11 +579,11 @@ class PersonController extends AbstractController
 
 	public function saveContactDataAction($person_id)
 	{
-		if (!$this->person->hasPerm('agent_people.edit')) {
+		$person = $this->getPersonOr404($person_id);
+
+		if (!$this->person->hasPerm('agent_people.edit') || !$this->isPersonEditable($person)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
-
-		$person = $this->getPersonOr404($person_id);
 
 		$this->em->beginTransaction();
 
@@ -813,11 +815,11 @@ class PersonController extends AbstractController
 
 	public function ajaxSaveLabelsAction($person_id)
 	{
-		if (!$this->person->hasPerm('agent_people.edit')) {
+		$person = $this->getPersonOr404($person_id);
+
+		if (!$this->person->hasPerm('agent_people.edit') || !$this->isPersonEditable($person)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
-
-		$person = $this->getPersonOr404($person_id);
 
 		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 
@@ -835,11 +837,11 @@ class PersonController extends AbstractController
 
 	public function deletePersonAction($person_id, $security_token)
 	{
-		if (!$this->person->hasPerm('agent_people.delete')) {
+		$person = $this->getPersonOr404($person_id);
+
+		if (!$this->person->hasPerm('agent_people.delete') || !$this->isPersonEditable($person)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
-
-		$person = $this->getPersonOr404($person_id);
 
 		if (!$this->session->getEntity()->checkSecurityToken('delete_person', $security_token)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -918,6 +920,19 @@ class PersonController extends AbstractController
 				'success' => false,
 			));
 		}
+	}
+
+	public function isPersonEditable($person)
+	{
+		if ($this->person->can_admin) {
+			return true;
+		}
+
+		if ($person->is_agent && $person->getId() != $this->person->getId()) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**

@@ -1,6 +1,6 @@
 {% if person.is_agent %}
 {# Agent Box #}
-<div class="profile-box-container summary">
+<div class="profile-box-container highlighted">
 	<header>
 		{% if app.user.can_admin %}<a class="edit-gear" href="{{ app.request.getBaseUrl() }}/admin/agents/{{ person.id }}/edit" target="_blank"></a>{% endif %}
 		<h4 class="agent-icon">{{ phrase('agent.general.agent') }}</h4>
@@ -23,7 +23,7 @@
 {# Box Contact #}
 <div class="profile-box-container summary">
 	<header>
-		{% if app.user.hasPerm('agent_people.edit') %}<span class="edit-gear contact-edit"></span>{% endif %}
+		{% if perms.edit %}<span class="edit-gear contact-edit"></span>{% endif %}
 		<h4>{{ phrase('agent.people.contact_info') }}</h4>
 	</header>
 	<section>
@@ -37,10 +37,10 @@
 <div id="{{baseId}}_contact_outside"></div>
 
 {# Organization Box #}
-{% if person.organization or app.user.hasPerm('agent_people.edit') %}
+{% if person.organization or perms.edit %}
 	<div class="profile-box-container summary" id="{{baseId}}_org_box">
 		<header id="{{baseId}}_org_display_header">
-			{% if app.user.hasPerm('agent_people.edit') %}
+			{% if perms.edit %}
 				<div class="controls">
 					<span class="edit-gear org-edit-trigger"></span>
 					<div class="is-loading">{{ phrase('agent.general.saving') }}</div>

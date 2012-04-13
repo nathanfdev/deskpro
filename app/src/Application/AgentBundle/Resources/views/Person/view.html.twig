@@ -15,14 +15,7 @@ pageMeta.personPicIcon = '{{ person.picture_blob.getThumbnailUrl(13) }}';
 pageMeta.personGravatarIcon = '{{ person.primary_email.getGravatarUrl() }}&s=13';
 {% endif %}
 
-pageMeta.perms = {
-	edit: {% if app.user.hasPerm('agent_people.edit') %}true{% else %}false{% endif %},
-	"delete": {% if app.user.hasPerm('agent_people.delete') %}true{% else %}false{% endif %},
-	edit_emails: {% if app.user.hasPerm('agent_people.edit_emails') %}true{% else %}false{% endif %},
-	reset_password: {% if app.user.hasPerm('agent_people.reset_password') %}true{% else %}false{% endif %},
-	org_create: {% if app.user.hasPerm('agent_org.create') %}true{% else %}false{% endif %}
-
-};
+pageMeta.perms = {{ perms|json_encode|raw }};
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
@@ -30,7 +23,7 @@ pageMeta.baseId = '{{ baseId }}';
 {% if person.is_agent %}pageMeta.isAgent = true;{% endif %}
 </script>
 {# Page Containers #}
-<div class="profile layout-content with-scrollbar {% if not app.user.hasPerm('agent_people.edit') %}perm-no-edit{% endif %} {% if not person.is_agent and not app.user.hasPerm('agent_people.delete') %}perm-no-delete{% endif %}">
+<div class="profile layout-content with-scrollbar {% if not perms.edit %}perm-no-edit{% endif %} {% if not perms.delete %}perm-no-delete{% endif %}">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 {# /Page Containers #}
@@ -41,7 +34,7 @@ pageMeta.baseId = '{{ baseId }}';
 			{% if app.user.hasPerm('agent_tickets.create') %}
 				<li class="create-ticket"><a class="clean-white large">{{ phrase('agent.general.create_ticket') }}</a></li>
 			{% endif %}
-			{% if not person.is_agent and (app.user.hasPerm('agent_people.reset_password') or app.user.hasPerm('agent_people.delete')) %}
+			{% if perms.reset_password or perms.delete %}
 				<li class="more menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.more') }} <em></em></a></li>
 			{% endif %}
 		</ul>
@@ -53,7 +46,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<h1>
 			<span id="{{baseId}}_showname">{{ person.name|default('Double-click to set Name') }}</span>
 			<span id="{{baseId}}_editname" style="display: none"><input type="text" size="20" name="name" value="{{ person.name }}" /></span>
-			{% if app.user.hasPerm('agent_people.edit') %}<span id="{{baseId}}_editname_start" class="edit-name-gear"></span>{% endif %}
+			{% if perms.edit %}<span id="{{baseId}}_editname_start" class="edit-name-gear"></span>{% endif %}
 			<a id="{{baseId}}_editname_end" class="edit-name-save clean-white small" style="display: none">{{ phrase('agent.general.done') }}</a>
 		</h1>
 		<div class="meta-line">
@@ -70,8 +63,8 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 
 	<ul id="{{baseId}}_more_actions_menu" style="display: none;">
-		{% if not person.is_agent and app.user.hasPerm('agent_people.reset_password') %}<li data-action="reset-password" class="reset-password">{{ phrase('agent.general.reset_password') }}</li>{% endif %}
-		{% if not person.is_agent and app.user.hasPerm('agent_people.delete') %}
+		{% if perms.reset_password %}<li data-action="reset-password" class="reset-password">{{ phrase('agent.general.reset_password') }}</li>{% endif %}
+		{% if perms.delete %}
 			<li
 				data-action="delete"
 				data-delete-url="{{ path('agent_people_delete', {'person_id': person.id, 'security_token': security_token('delete_person') }) }}"
