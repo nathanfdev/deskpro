@@ -1770,6 +1770,11 @@ ul.activity-stream time {
 	line-height: 22px;
 	text-transform: uppercase;
 	font-family: @heading-font;
+
+	&.agent-icon {
+		background: url(../../images/agent/header/interface-agent-color.png) no-repeat 6px 50%;
+		padding-left: 25px;
+	}
 }
 
 .profile-box-container > header .edit-gear {
@@ -1854,7 +1859,17 @@ ul.activity-stream time {
 
 .profile-box-container > section > p {
 	margin: 8px;
-	font-size: 10px;
+	font-size: 11px;
+}
+
+.profile-box-container > section ul.standard {
+	margin: 0 8px 8px 12px;
+	font-size: 11px;
+
+	> li {
+		list-style-type: disc;
+		margin-left: 15px;
+	}
 }
 
 .profile-box-container.tabbed > section > article { display: none; }

@@ -26,9 +26,11 @@ pageMeta.perms = {
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
+
+{% if person.is_agent %}pageMeta.isAgent = true;{% endif %}
 </script>
 {# Page Containers #}
-<div class="profile layout-content with-scrollbar {% if not app.user.hasPerm('agent_people.edit') %}perm-no-edit{% endif %} {% if not app.user.hasPerm('agent_people.delete') %}perm-no-delete{% endif %}">
+<div class="profile layout-content with-scrollbar {% if not app.user.hasPerm('agent_people.edit') %}perm-no-edit{% endif %} {% if not person.is_agent and not app.user.hasPerm('agent_people.delete') %}perm-no-delete{% endif %}">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 {# /Page Containers #}
@@ -39,7 +41,7 @@ pageMeta.baseId = '{{ baseId }}';
 			{% if app.user.hasPerm('agent_tickets.create') %}
 				<li class="create-ticket"><a class="clean-white large">{{ phrase('agent.general.create_ticket') }}</a></li>
 			{% endif %}
-			{% if app.user.hasPerm('agent_people.reset_password') or app.user.hasPerm('agent_people.delete') %}
+			{% if not person.is_agent and (app.user.hasPerm('agent_people.reset_password') or app.user.hasPerm('agent_people.delete')) %}
 				<li class="more menu-fitted" data-menu-button="> a"><a class="clean-white large arrow">{{ phrase('agent.general.more') }} <em></em></a></li>
 			{% endif %}
 		</ul>
@@ -68,8 +70,8 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 
 	<ul id="{{baseId}}_more_actions_menu" style="display: none;">
-		{% if app.user.hasPerm('agent_people.reset_password') %}<li data-action="reset-password" class="reset-password">{{ phrase('agent.general.reset_password') }}</li>{% endif %}
-		{% if app.user.hasPerm('agent_people.delete') %}
+		{% if not person.is_agent and app.user.hasPerm('agent_people.reset_password') %}<li data-action="reset-password" class="reset-password">{{ phrase('agent.general.reset_password') }}</li>{% endif %}
+		{% if not person.is_agent and app.user.hasPerm('agent_people.delete') %}
 			<li
 				data-action="delete"
 				data-delete-url="{{ path('agent_people_delete', {'person_id': person.id, 'security_token': security_token('delete_person') }) }}"

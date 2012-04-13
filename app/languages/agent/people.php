@@ -45,4 +45,6 @@
     'agent.people.warn_email_address'        => 'The email address {{email}} matches this profile. But	because the user has not logged in to the helpdesk, we cannot verify their identity. Be careful not to release any sensitive information.',
     'agent.people.website'                   => 'Website',
     'agent.people.website_url_placeholder'   => 'Website URL',
+	'agent.people.user_is_agent'             => '{{name}} is an agent on this helpdesk.',
+	'agent.people.member_of_teams'           => 'They are a member of the following teams:',
 );

@@ -1,3 +1,25 @@
+{% if person.is_agent %}
+{# Agent Box #}
+<div class="profile-box-container summary">
+	<header>
+		{% if app.user.can_admin %}<a class="edit-gear" href="{{ app.request.getBaseUrl() }}/admin/agents/{{ person.id }}/edit" target="_blank"></a>{% endif %}
+		<h4 class="agent-icon">{{ phrase('agent.general.agent') }}</h4>
+	</header>
+	<section>
+		<p>{{ phrase('agent.people.user_is_agent', {'name': person.display_name}) }}</p>
+		{% if person.Agent.getTeams() %}
+			<p>{{ phrase('agent.people.member_of_teams') }}</p>
+			<ul class="standard">
+				{% for team in person.Agent.getTeams() %}
+					<li>{{ team.name }}</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	</section>
+</div>
+{# /Box #}
+{% endif %}
+
 {# Box Contact #}
 <div class="profile-box-container summary">
 	<header>
