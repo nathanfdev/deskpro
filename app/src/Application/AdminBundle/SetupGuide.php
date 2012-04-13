@@ -99,36 +99,9 @@ class SetupGuide
 		# Setup first
 		#------------------------------
 
-		if (!$step) {
+		if (!$step || $step < 30) {
 			if (!($this->controller instanceof \Application\AdminBundle\Controller\SettingsController) || $action != 'quickSetupAction') {
-				return $this->controller->redirectRoute('admin_welcome');
-			}
-
-		#------------------------------
-		# SMTP next
-		#------------------------------
-
-		} elseif ($step < 10) {
-			if (!($this->controller instanceof \Application\AdminBundle\Controller\EmailTransportsController) || ($action != 'setupAction' && $action != 'editAccountAction')) {
-				return $this->controller->redirectRoute('admin_emailtrans_setup');
-			}
-
-		#------------------------------
-		# License
-		#------------------------------
-
-		} elseif ($step < 20) {
-			if (!($this->controller instanceof \Application\AdminBundle\Controller\LicenseController)) {
-				return $this->controller->redirectRoute('admin_license');
-			}
-
-		#------------------------------
-		# Cron
-		#------------------------------
-
-		} elseif ($step < 30) {
-			if (!($this->controller instanceof \Application\AdminBundle\Controller\SettingsController) || $action != 'cronAction') {
-				return $this->controller->redirectRoute('admin_settings_cron');
+				//return $this->controller->redirectRoute('admin_welcome');
 			}
 		}
 

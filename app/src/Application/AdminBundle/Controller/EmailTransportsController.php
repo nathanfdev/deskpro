@@ -127,8 +127,17 @@ class EmailTransportsController extends AbstractController
 				}
 
 				$setup_initial = $this->container->getSetting('core.setup_initial');
-				if ($setup_initial < 10) {
-					App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '11');
+				$set_setup = false;
+				if ($setup_initial < 30) {
+					App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '31');
+					$set_setup = true;
+				}
+
+				if ($this->request->isXmlHttpRequest()) {
+					return $this->createJsonResponse(array('success' => true));
+				}
+
+				if ($set_setup) {
 					return $this->redirectRoute('admin_license');
 				}
 
@@ -137,10 +146,16 @@ class EmailTransportsController extends AbstractController
 			}
 		}
 
-		return $this->render('AdminBundle:EmailTransports:edit-account.html.twig', array(
+		$tpl = 'AdminBundle:EmailTransports:edit-account.html.twig';
+		if ($this->request->isPartialRequest()) {
+			$tpl = 'AdminBundle:EmailTransports:edit-account-form.html.twig';
+		}
+
+		return $this->render($tpl, array(
 			'transport' => $transport,
 			'form' => $form->createView(),
 			'edittrans' => $edittrans,
+			'partial' => $this->request->isPartialRequest()
 		));
 	}
 

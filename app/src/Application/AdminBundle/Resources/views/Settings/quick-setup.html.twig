@@ -2,9 +2,9 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block html_head %}
-<script type="text/javascript" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
-		src="{{ asset('vendor/detect_timezone.js') }}"></script>
+<script type="text/javascript" src="{{ asset('vendor/detect_timezone.js') }}"></script>
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/QuickSetup.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/EditEmailTransportPage.js') }}"></script>
 {% endblock %}
 {% block dp_full_page %}
 	<div class="dp_admin_pagebar">
@@ -62,7 +62,7 @@
 		</ul>
 	</div>
 	<div class="dp_admin_page" id="section_enter_license">
-		<div class="mega-tick" style="display: none"></div>
+		<div class="mega-tick" {% if not license_code %}style="display: none"{% endif %}></div>
 		<div class="dp_admin_page_inner">
 			<div class="dp-page-box">
 				<div class="page-content">
@@ -73,26 +73,31 @@
 	</div>
 	<br />
 
-	<div class="dp_admin_pagebar" id="section_config_smtp">
+	<div class="dp_admin_pagebar">
 		<ul>
 			<li>Configure Outgoing Email</li>
 		</ul>
 	</div>
-	<div class="dp_admin_page">
+	<div class="dp_admin_page" id="section_config_smtp">
+		<div class="mega-tick" {% if not default_transport %}style="display: none"{% endif %}></div>
 		<div class="dp_admin_page_inner">
-			XXX
+			<div class="dp-page-box">
+				<div class="page-content">
+					{% include 'AdminBundle:Settings:quick-setup-outgoing-email.html.twig' %}
+				</div>
+			</div>
 		</div>
 	</div>
 	<br />
 
-	<div class="dp_admin_pagebar" id="section_config_pop3">
+	<div class="dp_admin_pagebar">
 		<ul>
 			<li>Configure Incoming Email</li>
 		</ul>
 	</div>
-	<div class="dp_admin_page">
+	<div class="dp_admin_page" id="section_config_pop3">
 		<div class="dp_admin_page_inner">
-			XXX
+			{% include 'AdminBundle:Settings:quick-setup-incoming-email.html.twig' %}
 		</div>
 	</div>
 	<br />

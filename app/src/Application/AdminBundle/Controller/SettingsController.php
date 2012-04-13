@@ -315,10 +315,22 @@ class SettingsController extends AbstractController
 			}
 		}
 
+		$default_transport = $this->em->createQuery("
+			SELECT t
+			FROM DeskPRO:EmailTransport t
+			WHERE t.match_type = 'all'
+		")->getOneOrNullResult();
+		$outgoing_email_form = $this->forward('AdminBundle:EmailTransports:editAccount', array('id' => $default_transport ? $default_transport->getId() : '0'), array('_partial' => 'setup'))->getContent();
+
 		return $this->render('AdminBundle:Settings:quick-setup.html.twig', array(
 			'setup' => $setup,
 			'form' => $form->createView(),
-			'errors' => $errors
+			'errors' => $errors,
+			'outgoing_email_form' => $outgoing_email_form,
+
+			// Existing values
+			'license_code' => $this->container->getSetting('core.license'),
+			'default_transport' => $default_transport,
 		));
 	}
 

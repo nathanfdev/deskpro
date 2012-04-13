@@ -1,6 +1,6 @@
-<div class="page-radio-group open" id="lic_group_get_demo">
+<div class="page-radio-group {%  if not license_code %}open{% endif %}" id="lic_group_get_demo">
 	<header>
-		<h3><label><input type="radio" checked="checked" name="lic_box" /> Get a demo license</input></label></h3>
+		<h3><label><input type="radio" {%  if not license_code %}checked="checked"{% endif %} name="lic_box" /> Get a demo license</input></label></h3>
 	</header>
 	<article>
 		<form action="{{ path('admin_license_reqdemo') }}" method="post">
@@ -62,9 +62,9 @@
 	</article>
 </div>
 
-<div class="page-radio-group" id="lic_group_enter_license">
+<div class="page-radio-group {% if license_code %}open{% endif %}" id="lic_group_enter_license">
 	<header>
-		<h3><label><input type="radio" name="lic_box" /> Enter license code</input></label></h3>
+		<h3><label><input type="radio" name="lic_box" {% if license_code %}checked="checked"{% endif %} /> Enter license code</input></label></h3>
 	</header>
 	<article>
 		<div class="alert-message block-message error errors-box" style="display: none">

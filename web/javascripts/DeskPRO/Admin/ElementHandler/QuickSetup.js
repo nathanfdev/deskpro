@@ -9,6 +9,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 		this._initInstallSoftwareSection();
 		this._initCronSection();
 		this._initLicenseSection();
+		this._initOutgoingEmailSection();
 	},
 
 	//##################################################################################################################
@@ -168,6 +169,40 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 						$('#section_enter_license').find('.mega-tick').fadeIn();
 					} else {
 						enterlicGroup.find('.errors-box').show().find('.lic-err-code').text(data.error_code);
+					}
+				}
+			});
+		});
+	},
+
+	//##################################################################################################################
+	//# Outgoing Email
+	//##################################################################################################################
+
+	_initOutgoingEmailSection: function() {
+		var self = this;
+		var wrapper = $('#section_config_smtp');
+
+		var form = wrapper.find('form');
+
+		form.on('submit', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var formData = form.serializeArray();
+
+			form.addClass('mark-loading');
+			$.ajax({
+				url: form.attr('action'),
+				data: formData,
+				type: 'POST',
+				dataType: 'json',
+				complete: function() {
+					form.removeClass('mark-loading');
+				},
+				success: function(data) {
+					if (data.success) {
+						wrapper.find('.mega-tick').fadeIn();
 					}
 				}
 			});
