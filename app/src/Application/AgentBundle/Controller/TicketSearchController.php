@@ -480,7 +480,7 @@ class TicketSearchController extends AbstractController
 			'cache_id'            => $result_cache->id,
 			'order_by_summary'    => $result_cache->getExtraData('order_by_summary'),
 			'terms_summary'       => $result_cache->getExtraData('terms_summary'),
-			'order_by'            => $result_cache->getExtraData('order_by'),
+			'order_by'            => explode(':', $result_cache->getExtraData('order_by')),
 			'ticket_ids'          => $result_cache->results,
 			'view_name'           => $this->in->getString('view_name'),
 			'view_extra'          => $this->in->getString('view_extra'),
@@ -524,9 +524,11 @@ class TicketSearchController extends AbstractController
 		if (!$order_by) {
 			$order_by = $this->person->getPref('agent.ui.ticket-filter-order-by.' . $filter['id']);
 		}
+
 		if (!$order_by AND $filter['order_by']) {
 			$order_by = $filter['order_by'];
 		}
+
 		if ($order_by) {
 			$searcher->setOrderByCode($order_by);
 		}
@@ -578,7 +580,8 @@ class TicketSearchController extends AbstractController
 			'terms_summary' => $searcher->getSummary(),
 			'set_group_term' => $set_group_term,
 			'set_group_option' => $set_group_option,
-			'ticket_ids' => $results
+			'ticket_ids' => $results,
+            'order_by' => $searcher->getOrderBy(),
 		);
 
 		$pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.' . $filter['id']);

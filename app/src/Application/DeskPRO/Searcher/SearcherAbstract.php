@@ -184,14 +184,15 @@ abstract class SearcherAbstract implements PersonContextInterface
 	 * Set orderBy using a 'code' which is "type:direction" such as "ticket.id:asc".
 	 *
 	 * @param string $order_by_code
+     * @param string $separator
 	 */
-	public function setOrderByCode($order_by_code)
+	public function setOrderByCode($order_by_code, $separator = ':')
 	{
-		if (strpos($order_by_code, ':') === false) {
-			$order_by_code .= ':' . self::ORDER_DESC;
+		if (strpos($order_by_code, $separator) === false) {
+			$order_by_code .= $separator . self::ORDER_DESC;
 		}
 
-		list($type, $direction) = explode(':', $order_by_code);
+		list($type, $direction) = explode($separator, $order_by_code);
 
 		$this->setOrderBy($type, $direction);
 	}

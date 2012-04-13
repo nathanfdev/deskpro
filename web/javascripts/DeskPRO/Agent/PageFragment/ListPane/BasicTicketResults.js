@@ -419,19 +419,26 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			onItemClicked: function(info) {
 				var item = $(info.itemEl);
 
-				var prop = item.data('order-by')
+				var prop = item.data('order-by');
 				var label = item.text().trim();
 
 				// Change the displayed label for some visual feedback
 				$('.label', sortMenuBtn).text(label);
+                $('.label', sortMenuBtn).removeClass('order-by-asc');
+                $('.label', sortMenuBtn).removeClass('order-by-desc');
+                $('.label', sortMenuBtn).addClass('order-by-' + prop.split('_').pop());
+
 
 				var disOptWrap = self.displayOptions.getWrapperElement();
 				var sel = $('select.sel-order-by', disOptWrap);
 				$('option', sel).prop('selected', false);
 				$('option.' + prop, sel).prop('selected', true);
 
-				self.wrapper.find('header.list-grouping-bar').hide();
-				self.getEl('grouping_loading').show();
+                if(self.wrapper.find('header.list-grouping-bar').css('display') == 'block') {
+                    self.wrapper.find('header.list-grouping-bar').hide();
+                    self.getEl('grouping_loading').show();
+                }
+
 				self.displayOptions.saveAndRefresh();
 			}
 		});

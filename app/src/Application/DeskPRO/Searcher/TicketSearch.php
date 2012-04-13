@@ -484,22 +484,32 @@ class TicketSearch extends SearcherAbstract
 				break;
 
 			case 'ticket.date_resolved':
-				$this->order_summary = "Date resolved";
+				$this->order_summary = $tr->phrase('agent.general.date_resolved');
 				$order_by = "ORDER BY tickets.date_resolved $dir";
 				break;
 
 			case 'ticket.date_closed':
-				$this->order_summary = "Date closed";
+				$this->order_summary = $tr->phrase('agent.general.date_opened');
 				$order_by = "ORDER BY tickets.date_closed $dir";
 				break;
 
 			case 'ticket.last_activity':
-				$this->order_summary = "Last user activity";
+				$this->order_summary = $tr->phrase('agent.general.date_of_last_user_reply');
 				$order_by = "ORDER BY tickets.date_last_user_reply $dir";
 				break;
 
+            case 'ticket.total_user_waiting':
+                $this->order_summary = $tr->phrase('agent.general.total_time_waiting');
+                $order_by = "ORDER BY tickets.total_user_waiting $dir";
+                break;
+
+            case 'ticket.date_user_waiting':
+                $this->order_summary = $tr->phrase('agent.general.time_waiting');
+                $order_by = "ORDER BY tickets.date_user_waiting $dir";
+                break;
+
 			case 'ticket.organization':
-				$this->order_summary = "Organization name";
+				$this->order_summary = $tr->phrase('agent.general.organization_name');
 				$order_by = array(
 					"INNER JOIN organizations AS sort_table ON (sort_table.id = tickets.organization_id)",
 					"ORDER BY sort_table.name $dir"

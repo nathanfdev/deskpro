@@ -40,15 +40,24 @@ pageMeta.baseId = '{{ baseId }}';
 <section class="dp-overlay">
 	<header>
 		<div class="controls">
-			<a class="order-by-menu-trigger clean-white arrow menu-fitted">{{ phrase('agent.general.ordered_by') }} <span class="label">{{ order_by_summary }}</span><em></em></a>
+			<a class="order-by-menu-trigger clean-white arrow menu-fitted">{{ phrase('agent.general.ordered_by') }} <span class="label order-by-{{ order_by[1] }}">{{ order_by_summary }}</span><em></em></a>
 			<a class="group-by-menu-trigger clean-white arrow menu-fitted">{{ phrase('agent.general.grouped_by') }} <span class="label">{{ grouping_summary|default(phrase('agent.general.none')) }}</span><em></em></a>
 			<a class="display-options-trigger clean-white">{{ phrase('agent.general.display_options') }}</a>
 		</div>
 
 		<ul style="display: none" class="order-by-menu">
-			<li data-order-by="urgency">{{ phrase('agent.general.urgency') }}</li>
-			<li data-order-by="date_created">{{ phrase('agent.general.date_opened') }}</li>
-			<li data-order-by="priority">{{ phrase('agent.general.priority') }}</li>
+            <li data-order-by="urgency_asc" class="order-by-asc">{{ phrase('agent.general.urgency') }}</li>
+            <li data-order-by="urgency_desc" class="order-by-desc">{{ phrase('agent.general.urgency') }}</li>
+			<li data-order-by="date_created_asc" class="order-by-asc">{{ phrase('agent.general.date_opened') }}</li>
+			<li data-order-by="date_created_desc" class="order-by-desc">{{ phrase('agent.general.date_opened') }}</li>
+            {% if app.getSetting('core.use_ticket_priority') %}
+			<li data-order-by="priority_asc" class="order-by-asc">{{ phrase('agent.general.priority') }}</li>
+			<li data-order-by="priority_desc" class="order-by-desc">{{ phrase('agent.general.priority') }}</li>
+            {% endif %}
+			<li data-order-by="time_waiting_asc" class="order-by-asc">{{ phrase('agent.general.time_waiting') }}</li>
+			<li data-order-by="time_waiting_desc" class="order-by-desc">{{ phrase('agent.general.time_waiting') }}</li>
+			<li data-order-by="total_user_waiting_asc" class="order-by-asc">{{ phrase('agent.general.total_time_waiting') }}</li>
+			<li data-order-by="total_user_waiting_desc" class="order-by-desc">{{ phrase('agent.general.total_time_waiting') }}</li>
 		</ul>
 		<ul style="display: none" class="group-by-menu">
 			<li data-group-by="">{{ phrase('agent.general.none') }}</li>
