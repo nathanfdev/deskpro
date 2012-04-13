@@ -100,11 +100,16 @@
 		<div class="mega-tick" {% if not initial_pop %}style="display: none"{% endif %}></div>
 		<div class="dp_admin_page_inner">
 			<div class="dp-page-box">
-				<div class="page-content"
+				<div class="page-content" style="position:relative;">
 					{% include 'AdminBundle:Settings:quick-setup-incoming-email.html.twig' %}
 				</div>
 			</div>
 		</div>
 	</div>
 	<br />
+
+	<div class="setup-done-section" id="section_done">
+		<button class="clean-white disabled" data-url="{{ path('admin') }}">Continue &rarr;</button>
+		<em>We know you're keen, but you have <label>5</label> more steps to go!</em>
+	</div>
 {% endblock %}

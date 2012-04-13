@@ -3750,3 +3750,40 @@ table.form-table td {
 table.form-table td.label {
 	font-size: 10pt;
 }
+
+.setup-done-section {
+	text-align: center;
+	margin-top: 20px;
+	margin-bottom: 30px;
+
+	button {
+		font-size: 12pt;
+		font-weight: bold;
+		font-family: @heading-font;
+		padding: 12px 60px 12px 60px;
+		cursor: pointer;
+
+		&.disabled {
+			cursor: not-allowed;
+			background-color: #aaa;
+			.opacity(50);
+		}
+	}
+	em {
+		line-height: 100%;
+		display: block;
+		padding-top: 9px;
+		font-style: normal;
+		font-size: 10pt;
+		text-shadow: 0 1px 0 #fff;
+
+		label {
+			display: inline-block;
+			background-color: #fff;
+			border: 1px solid #BCC1C6;
+			.rounded(12px);
+			padding: 5px;
+			width: 15px;
+		}
+	}
+}

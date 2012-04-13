@@ -11,6 +11,25 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 		this._initLicenseSection();
 		this._initOutgoingEmailSection();
 		this._initIncomingEmailSection();
+
+		self.recountSteps();
+	},
+
+	recountSteps: function() {
+		var checks = $('.mega-tick');
+		var total_count = 5;
+		var done_count = checks.filter(':visible').length;
+
+		if (done_count >= total_count) {
+			$('#section_done').find('button').removeClass('disabled').on('click', function(ev) {
+				ev.preventDefault();
+				window.location = $(this).data('url');
+			});
+
+			$('#section_done').find('em').hide();
+		} else {
+			$('#section_done').find('label').text((total_count - done_count)+'');
+		}
 	},
 
 	//##################################################################################################################
@@ -168,6 +187,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 				success: function(data) {
 					if (data.success) {
 						$('#section_enter_license').find('.mega-tick').fadeIn();
+						self.recountSteps();
 					} else {
 						enterlicGroup.find('.errors-box').show().find('.lic-err-code').text(data.error_code);
 					}
@@ -204,6 +224,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 				success: function(data) {
 					if (data.success) {
 						wrapper.find('.mega-tick').fadeIn();
+						self.recountSteps();
 					}
 				}
 			});
@@ -217,6 +238,12 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 	_initIncomingEmailSection: function() {
 		var self = this;
 		var wrapper = $('#section_config_pop3');
+
+		$('#pop3_skip_trigger').on('click', function(ev) {
+			ev.preventDefault();
+			wrapper.find('.mega-tick').fadeIn();
+			self.recountSteps();
+		});
 
 		var form = wrapper.find('form');
 
@@ -238,6 +265,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 				success: function(data) {
 					if (data.success) {
 						wrapper.find('.mega-tick').fadeIn();
+						self.recountSteps();
 					}
 				}
 			});
