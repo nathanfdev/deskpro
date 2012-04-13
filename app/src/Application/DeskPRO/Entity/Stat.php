@@ -504,13 +504,30 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * TODO: return the date the last full data processing happenend, for
-	 * daily it will be the day before last_full_run, for monthly the
+	 * For daily it will be the day before last_full_run, for monthly the
 	 * month before last_full_run
+	 *
+	 * @return \DateTime
 	 */
 	public function getLastFullRun()
 	{
-		return new \DateTime("2011-11-29 00:00:00");
+		$last = $this->last_run ? $this->last_run : new \DateTime();
+
+		switch ($this->run_frequency) {
+			case 'daily':
+				$new = $last->modify('-1 day');
+				break;
+			case 'monthly':
+				$new = \Orb\Util\Dates::modMonths($last, -1);
+				break;
+			case 'yearly':
+				$new = \Orb\Util\Dates::modYears($last, -1);
+				break;
+			default:
+				throw new \Exception("Unable to retrieve getLastFullRun for run_frequency " . $this->run_frequency);
+		}
+
+		return $new;
 	}
 
 	public function setRunFrequency($run_frequency)
@@ -895,7 +912,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'last_run', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_run', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'author', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'author_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'parent_stat', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Stat', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'parent_stat_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'author', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'author_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'parent_stat', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Stat', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'parent_stat_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 	}
 }

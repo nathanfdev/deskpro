@@ -130,7 +130,7 @@ class Dates
      *
      * @param  int  $month  The month to get, or null for current month
      * @param  int  $year   The year to get, or null for current year
-     * @return Orb_Date
+     * @return \DateTime
      */
     public static function lastDayInMonth($month = null, $year = null)
     {
@@ -147,7 +147,7 @@ class Dates
      *
      * @param  int  $month  The month to get, or null for current month
      * @param  int  $year   The year to get, or null for current year
-     * @return Orb_Date
+     * @return \DateTime
      */
     public static function firstDayInMonth($month = null, $year = null)
     {
@@ -156,6 +156,69 @@ class Dates
 
     	return new \DateTime('@' . mktime(0, 0, 0, $month, 1, $year));
     }
+
+
+	/**
+	 * Add or remove months from a date. This differs from DateTime::modify(x) in that
+	 * only the month changes. That is, 2012-11-15 +1 month is 2012-12-15 (e.g., always 15th).
+	 *
+	 * @param \DateTime $date
+	 * @param int       $mod_months  Months to modify by, can be negative
+	 */
+	public static function modMonths(\DateTime $date, $mod_months)
+	{
+		$month = (int)$date->format('n');
+		$year  = (int)$date->format('Y');
+		$day   = (int)$date->format('j');
+
+		$new_date = clone $date;
+
+		$neg = false;
+		if ($mod_months < 1) {
+			$neg = true;
+			$mod_months = abs($mod_months);
+		}
+
+		do {
+			if ($neg) {
+				$month--;
+				if ($month < 1) {
+					$month = 12;
+					$year--;
+				}
+			} else {
+				$month++;
+				if ($month > 12) {
+					$month = 1;
+					$year++;
+				}
+			}
+		} while (--$months);
+
+		$new_date->setDate($year, $month, $day);
+		return $new_date;
+	}
+
+
+	/**
+	 * Adds or removes years from a date.
+	 *
+	 * @param \DateTime $date
+	 * @param int       $months  Months to modify by, can be negative
+	 */
+	public static function modYears(\DateTime $date, $mod_years)
+	{
+		$month = (int)$date->format('n');
+		$year  = (int)$date->format('Y');
+		$day   = (int)$date->format('j');
+
+		$new_date = clone $date;
+
+		$year += $mod_years;
+
+		$new_date->setDate($year, $month, $day);
+		return $new_date;
+	}
 
 
 	/**

@@ -65,8 +65,7 @@ class GenerateStats extends AbstractJob
 			// Generate the run frequency method to execute
 			$method = 'get' . ucwords($run_frequency) . 'StatIdsRequiringUpdate';
 
-			$stat_ids 	= App::getEntityRepository('DeskPRO:Stat')
-						->$method($this->date_time);
+			$stat_ids = App::getEntityRepository('DeskPRO:Stat')->$method($this->date_time);
 
 			$count_stats 	= count($stat_ids);
 
@@ -87,8 +86,7 @@ class GenerateStats extends AbstractJob
 	protected function processStatIds($stat_ids)
 	{
 		// Get the all the stats
-		$stats = App::getEntityRepository('DeskPRO:Stat')
-				->getByIds($stat_ids);
+		$stats = App::getEntityRepository('DeskPRO:Stat')->getByIds($stat_ids);
 
 		foreach ($stats as $stat) {
 			$this->processStat($stat);
@@ -102,9 +100,12 @@ class GenerateStats extends AbstractJob
 	 */
 	protected function processStat($stat)
 	{
+		$this->logStatus("Processing {$stat->id} {$stat->title}");
+
 		$stat_concept_class = $stat->getStatConceptClass();
 
 		$stat_concept = new $stat_concept_class($stat, $stat->getLastFullRun());
+		$stat_concept->setLogger($this->logger);
 		$stat_concept->addGrouping($stat->getGroupingRef());
 		$values = $stat_concept->getStats($this->date_time);
 
@@ -137,6 +138,8 @@ class GenerateStats extends AbstractJob
 			$stat_value_group->setStatUnix(time());
 			$this->orm->persist($stat_value_group);
 		}
+
+		$this->logStatus("=> Value: {$values['ungrouped']} with " . count($values['grouped']) . " groups");
 
 		// Update the last run
 		$stat->setLastRun(new \DateTime());

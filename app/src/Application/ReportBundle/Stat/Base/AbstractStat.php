@@ -83,7 +83,7 @@ abstract class AbstractStat implements StatInterface
 	 * The last stat date. Useful if you need to see what has happened
 	 * sine the last time the stat collected data
 	 *
-	 * @var \DaeTime
+	 * @var \DateTime
 	 */
 	protected $last_stat_date = null;
 
@@ -91,6 +91,11 @@ abstract class AbstractStat implements StatInterface
 	 * DB instance
 	 */
 	protected $db;
+
+	/**
+	 * @var \Application\DeskPRO\Log\Logger
+	 */
+	protected $logger = null;
 
 	public function __construct(Stat $stat, \DateTime $last_stat_date)
 	{
@@ -102,6 +107,14 @@ abstract class AbstractStat implements StatInterface
 		$this->results = array('ungrouped' => array(), 'grouped' => array());
 
 		$this->init();
+	}
+
+	/**
+	 * @param \Application\DeskPRO\Log\Logger $logger
+	 */
+	public function setLogger(\Application\DeskPRO\Log\Logger $logger)
+	{
+		$this->logger = $logger;
 	}
 
 	/**
@@ -179,15 +192,14 @@ abstract class AbstractStat implements StatInterface
 
 			if ($with_grouping) {
 				$this->applyGroupByToQuery($executeQuery);
+				if ($this->logger) $this->logger->log("=> Query: " . $query->getSql(), 'DEBUG');
 				$this->results['grouped'][$identifier] = $executeQuery->execute()->fetchAll(\PDO::FETCH_ASSOC);
 			}
 			else {
-
+				if ($this->logger) $this->logger->log("=> Query: " . $query->getSql(), 'DEBUG');
 				$this->results['ungrouped'][$identifier] = $executeQuery->execute()->fetchAll(\PDO::FETCH_ASSOC);
 			}
-			var_dump($executeQuery->getSql());
 		}
-
 	}
 
 	/**

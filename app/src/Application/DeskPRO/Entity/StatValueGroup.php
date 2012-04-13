@@ -109,6 +109,6 @@ class StatValueGroup extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'value', 'type' => 'decimal', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'value', ));
 		$metadata->mapField(array( 'fieldName' => 'stat_unix', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'stat_unix', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'stat_value', 'targetEntity' => 'Application\\DeskPRO\\Entity\\StatValue', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'stat_value_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'stat_value', 'targetEntity' => 'Application\\DeskPRO\\Entity\\StatValue', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'stat_value_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 	}
 }
