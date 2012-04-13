@@ -76,7 +76,6 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 	 * The dashboard author
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_MAPPING\OneToOne(targetEntity="Person", fetch="EAGER")
 	 */
 	protected $author;
 
@@ -88,7 +87,6 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 	 * The number of columns in the dashboard
 	 *
 	 * @var int
-	 * @ORM_MAPPING\Column(name="number_columns", type="integer")
 	 */
 	protected $number_columns;
 
@@ -96,9 +94,13 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 	 * Is the dashboard disabled
 	 *
 	 * @var bool
-	 * @ORM_MAPPING\Column(name="disabled", type="boolean")
 	 */
 	protected $disabled;
+
+	/**
+	 * @var int
+	 */
+	protected $display_order = 0;
 
 	/**
 	 * The dashboard creation date
@@ -187,6 +189,7 @@ class ReportDashboard extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->mapField(array( 'fieldName' => 'number_columns', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'number_columns', ));
 		$metadata->mapField(array( 'fieldName' => 'disabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'disabled', ));
+		$metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'author', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'author_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));

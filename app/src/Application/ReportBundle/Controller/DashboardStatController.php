@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ReportDashboardStat;
 use Application\ReportBundle\Form\EditReportDashboardStatType;
 
-class DashboardController extends AbstractController
+class DashboardStatController extends AbstractController
 {
 	/**
 	 * Edit a dashboard stat
@@ -47,25 +47,25 @@ class DashboardController extends AbstractController
 	{
 		$dashboardStat = $this->getDashboard($dashboard_stat_id);
 		$stat	       = $dashboardStat->getStat();
-		
+
 		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
-		
+
 		if ($this->in->getBool('process')) {
 			$form->bindRequest($this->get('request'));
-			
+
 			if ($form->isValid()) {
 				App::getOrm()->persist($dashboardStat);
 				App::getOrm()->flush();
 			}
 		}
-		
+
 		return $this->render('ReportBundle:DashboardStat:edit.html.twig', array(
 			'dashboard_stat' => $dashboardStat,
 			'stat'		 => $stat,
 			'form'      	 => $form->createView(),
 		));
 	}
-	
+
 	/**
 	 * Get the Dashboard Stat Entity
 	 *
@@ -77,8 +77,8 @@ class DashboardController extends AbstractController
 		if (!$dashboardStat) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_dashboard_stat");
 		}
-		
+
 		return $dashboardStat;
 	}
-	
+
 }

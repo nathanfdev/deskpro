@@ -14,12 +14,17 @@ DeskPRO.Report.Window = new Orb.Class({
 				var postData = [];
 				$('#dp_admin_nav').find('li.dashboard').each(function() {
 					postData.push({
-						name: 'dashboard[]',
+						name: 'dashboard_ids[]',
 						value: $(this).data('dashboard-id')
 					});
 				});
 
-				console.log(postData);
+				$.ajax({
+					url: $('#dp_admin_nav ul').data('update-orders-url'),
+					data: postData,
+					type: 'POST',
+					dataType: 'json'
+				});
 			},
 			helper: function(ev, el) {
 				var helper = $('<div class="dashboard-drag-helper"><span></span></div>');

@@ -7,7 +7,7 @@ $collection = new RouteCollection();
 
 $collection->add('report', new Route(
 	'/',
-	array('_controller' => 'ReportBundle:Trend:index'),
+	array('_controller' => 'ReportBundle:Dashboard:index'),
 	array(),
 	array()
 ));
@@ -58,6 +58,13 @@ $collection->add('report_trend_dashboard_edit', new Route(
 	'/trends/dashboards/{dashboard_id}/edit',
 	array('_controller' => 'ReportBundle:Dashboard:edit'),
 	array('dashboard_id' => '\\d+'),
+	array()
+));
+
+$collection->add('report_trend_dashboard_updateorders', new Route(
+	'/trends/dashboards/update-orders.json',
+	array('_controller' => 'ReportBundle:Dashboard:ajaxUpdateOrders'),
+	array(),
 	array()
 ));
 

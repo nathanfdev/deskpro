@@ -45,7 +45,12 @@ class DashboardController extends AbstractController
 
 	public function indexAction()
 	{
-		return $this->render('ReportBundle:Dashboard:index.html.twig');
+		$first = \Orb\Util\Arrays::getFirstItem($this->dashboards);
+		if (!$first) {
+			return $this->redirectRoute('report_trend_dashboard_new');
+		}
+
+		return $this->redirectRoute('report_trend_dashboard_view', array('dashboard_id' => $first->getId()));
 	}
 
 	/**
@@ -80,6 +85,12 @@ class DashboardController extends AbstractController
 		if ($this->in->getBool('process')) {
 			$request = $this->getRequest();
 			$form->bindRequest($request);
+
+			$order = App::getDb()->fetchColumn("SELECT display_order FROM report_dashboard ORDER BY display_order DESC LIMIT 1");
+			if (!$order) $order = 10;
+			$order += 10;
+
+			$dashboard->display_order = $order;
 
 			App::getOrm()->persist($dashboard);
 			App::getOrm()->flush();
@@ -143,6 +154,27 @@ class DashboardController extends AbstractController
 			'dashboard' => $dashboard,
 			'form'      => $form->createView(),
 		));
+	}
+
+	public function ajaxUpdateOrdersAction()
+	{
+		$ids = $this->in->getCleanValueArray('dashboard_ids', 'uint', 'discard');
+
+		$this->db->beginTransaction();
+		try {
+			$order = 10;
+			foreach ($ids as $id) {
+				$this->db->update('report_dashboard', array('display_order' => $order), array('id' => $id));
+				$order += 10;
+			}
+
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 	/**

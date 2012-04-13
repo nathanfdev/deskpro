@@ -39,7 +39,7 @@ use Application\DeskPRO\App;
 
 class ReportDashboard extends EntityRepository
 {
-	
+
 	/**
 	 * Get dashboards
 	 *
@@ -50,6 +50,7 @@ class ReportDashboard extends EntityRepository
 		$dashboards = $this->getEntityManager()->createQuery("
 			SELECT rd
 			FROM DeskPRO:ReportDashboard rd
+			ORDER BY rd.display_order
 		")->execute();
 
 		return $dashboards;

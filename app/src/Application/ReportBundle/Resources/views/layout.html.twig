@@ -159,12 +159,12 @@
 <!-- BEGIN NAV BAR -->
 <div id="dp_admin_nav">
 	<nav>
-		<ul>
+		<ul data-update-orders-url="{{ path('report_trend_dashboard_updateorders') }}">
 			{% for dashboard in app.dashboards %}
 				<li data-dashboard-id="{{ dashboard.id }}" class="dashboard {% if this_page == 'dashboard_' ~ dashboard.id %}on{% endif %}"><a href="{{ path('report_trend_dashboard_view', { 'dashboard_id': dashboard.id }) }}">{{ dashboard.title }}</a></li>
 			{% endfor %}
 			<li class="new" id="new_dashboard_trigger"><a href="{{ path('report_trend_dashboard_new') }}" class="new">{{ phrase('agent.report.new_dashboard') }}</a></li>
-			<li class="{% if this_page == 'trends_index' %}on{% endif %} trends" id="all_trends_menu_trigger"><a href="{{ path('report_trend_index') }}">{{ phrase('agent.general.all_trends') }}</a><i></i></li>
+			<li class="{% if this_page == 'trends_index' %}on{% endif %} trends" {#id="all_trends_menu_trigger"#}><a href="{{ path('report_trend_index') }}">{{ phrase('agent.general.all_trends') }}</a><i></i></li>
 		</ul>
 	</nav>
 </div>
