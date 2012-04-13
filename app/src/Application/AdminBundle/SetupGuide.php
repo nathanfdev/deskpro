@@ -106,7 +106,7 @@ class SetupGuide
 				&& !($this->controller instanceof \Application\AdminBundle\Controller\EmailTransportsController)
 				&& !($this->controller instanceof \Application\AdminBundle\Controller\EmailTransportsController)
 			) {
-				return $this->controller->redirectRoute('admin_welcome');
+				//return $this->controller->redirectRoute('admin_welcome');
 			}
 		}
 
