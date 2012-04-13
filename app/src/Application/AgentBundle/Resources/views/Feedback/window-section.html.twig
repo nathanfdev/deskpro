@@ -108,7 +108,7 @@
 </section>
 <section id="feedback_outline_labels" class="deskpro-tab-item" data-tab-trigger="#feedback_outline_tabstrip li.labels">
 	<section class="source-labels-list">
-		{% if not feedback_tag_index|length %}
+		{% if feedback_tag_index|length %}
 			<dl>
 				{% for letter,labels in feedback_tag_index %}
 					<dt>{{ letter }}</dt>
@@ -122,7 +122,7 @@
 				{% endfor %}
 			</dl>
 		{% else %}
-			<p class="no-labels">{{ phrase('agent.feedback.no_labels_explain') }}</p>
+            <aside class="source-info-explain">{{ phrase('agent.feedback.no_labels_explain') }}</aside>
 		{% endif %}
 	</section>
 </section>

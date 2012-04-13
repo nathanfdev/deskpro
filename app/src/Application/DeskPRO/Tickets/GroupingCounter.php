@@ -507,7 +507,6 @@ class GroupingCounter
 			case TicketSearch::TERM_URGENCY:
 				$this->grouping_summary = $tr->phrase('agent.general.urgency');
 				$x = range(1, 10);
-                array_reverse($x);
 				$titles = array_combine($x, $x);
 				break;
 
