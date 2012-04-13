@@ -5,7 +5,9 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 
 	initialize: function(options) {
 
-		this.options = {};
+		this.options = {
+			findingAgentTimeout: 55000
+		};
 		this.setOptions(options || {});
 
 		this.comms = {
@@ -129,7 +131,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		if (this.conversationId) {
 			if (this.options.initialMessages) {
 				$('#dp_chat_start').hide();
-				$('#dp_chat_finding_agent').hide();
+				this.foundAgent();
 				$('#dp_chat_active').show();
 
 				Array.each(this.options.initialMessages, function(m) {
@@ -138,7 +140,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 
 			} else {
 				$('#dp_chat_start').hide();
-				$('#dp_chat_finding_agent').show();
+				this.startFindingAgent();
 				$('#dp_chat_active').hide();
 			}
 
@@ -213,6 +215,14 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 				$('body').removeClass('file-drag-over');
 			}, 100);
 		});
+
+		$('.cancel-and-newticket-trigger').attr('href', BASE_URL + 'new-ticket').attr('target', '_blank').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			window.open(BASE_URL + 'new-ticket', 'dp_newticket');
+			self.endChatReal();
+		});
 	},
 
 	startChat: function() {
@@ -221,7 +231,27 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		this.sendMessage('', data, { starting: true });
 
 		$('#dp_chat_start').hide();
+	},
+
+	startFindingAgent: function() {
+		console.log('ChatWin.startFindingAgent');
+		var self = this;
 		$('#dp_chat_finding_agent').show();
+		$('#dp_chat_finding_agent_more').hide();
+		this.findingAgentTimer = window.setTimeout(function() {
+			console.log('ChatWin.startFindingAgent timeout');
+			$('#dp_chat_finding_agent_more').show();
+		}, this.options.findingAgentTimeout);
+	},
+
+	foundAgent: function() {
+		console.log('ChatWin.foundAgent');
+		$('#dp_chat_finding_agent').hide();
+		$('#dp_chat_finding_agent_more').hide();
+		if (this.findingAgentTimer) {
+			window.clearTimeout(this.findingAgentTimer);
+			this.findingAgentTimer = null;
+		}
 	},
 
 	sendTypedMessage: function() {
@@ -390,7 +420,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		}
 	},
 
-	endChatReal: function() {
+	endChatReal: function(callback) {
 		var self = this;
 		var data = $('#dp_chat_done').find('input, select, textarea').serializeArray();
 
@@ -402,6 +432,9 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			context: this,
 			dataType: 'json',
 			complete: function() {
+				if (callback) {
+					callback();
+				}
 				self.tellParent('destroy', []);
 			}
 		});
@@ -410,7 +443,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 	chatAssigned: function(agentId, name, avatar) {
 		if (parseInt(agentId)) {
 			$('#dp_chat_start').hide();
-			$('#dp_chat_finding_agent').hide();
+			this.foundAgent();
 			$('#dp_chat_active').show();
 
 			var tpl = document.getElementById('dp_chat_tpl_agent_header').innerHTML;

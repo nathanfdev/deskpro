@@ -102,6 +102,9 @@
 
 <div id="dp_chat_finding_agent" style="display: none">
 	<p>{{ phrase('user.chat.please_wait_for_agent_for_chat') }}</p>
+	<div id="dp_chat_finding_agent_more" style="display: none">
+		{{ phrase('user.chat.agent_wait_long_suggestion') }}
+	</div>
 </div>
 
 <div id="dp_chat_active" style="display: none">
@@ -133,7 +136,7 @@
 		{% set phrase_part %}
 		<input type="text" name="email" value="" placeholder="{{ phrase('user.general.your_email_address') }}" />
 		{% endset %}
-		{{ phrase('user.chat.transcript_to') }} 
+		{{ phrase('user.chat.transcript_to') }}
 	</div>
 
 	<div class="form-row">
