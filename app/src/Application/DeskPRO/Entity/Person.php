@@ -1453,8 +1453,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 					's' => $size
 				), true);
 
-			} elseif (App::getSetting('core.use_gravatar') AND $this->gravatar_url) {
-				$url = $this->gravatar_url;
+			} elseif (App::getSetting('core.use_gravatar') && $this->primary_email->getId()) {
+				$url = $this->primary_email->getGravatarUrl();
 				if ($size != 80) {
 					$url .= '&s=' . $size;
 				}
@@ -1489,12 +1489,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function hasPicture($auto_check = false)
 	{
-		if ($this->picture_blob OR $this->gravatar_url) {
+		if ($this->picture_blob || $this->gravatar_url) {
 			return true;
 		}
 
-		// Try to auto-update gravatar
-		if (!$this->gravatar_url AND $this->primary_email AND App::getSetting('core.use_gravatar')) {
+		if ($this->primary_email AND App::getSetting('core.use_gravatar')) {
 			return true;
 		}
 
