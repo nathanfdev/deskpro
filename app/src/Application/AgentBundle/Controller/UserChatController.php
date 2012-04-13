@@ -543,7 +543,7 @@ class UserChatController extends AbstractController
 	public function listChatsAction()
 	{
 		$agent_id = $this->in->getInt('agent_id');
-		$agent = null;
+		$agent = -1;
 		if ($agent_id) {
 			$agent = App::findEntity('DeskPRO:Person', $agent_id);
 		}

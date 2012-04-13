@@ -24,7 +24,7 @@
 		<ul class="source-list">
 			{# New Chats #}
 			<li id="userchat_deplist_all" {% if not dep_counts['0_total'] %}style="display: none"{% endif %}>
-				<h3 class="title is-nav-item" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': '0'}) }}">
+				<h3 class="title is-nav-item" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': null}) }}">
 					<span class="list-counter" id="userchat_deplist_0_counter" data-count="{{ dep_counts['0_total']|default(0) }}">{{ dep_counts['0_total']|default(0) }}</span>
 					{{ phrase('agent.chat.title_new_chats') }}
 				</h3>
