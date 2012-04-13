@@ -9,7 +9,7 @@
 			<td>
 				<div style="height: 300px; overflow: auto;">
 					<pre style="font-family: monospace; border: none; margin: 0; padding: 0;">
-This document contains the End User License Agreement between DeskPRO Ltd. 
+This document contains the End User License Agreement between DeskPRO Ltd.
 herein referred to as "the company", "we", "us", and "our",
 and the End User (herein referred to as "you", "your", "yours", etc.). By
 installing and using DeskPRO (herein referred to as "the software"), you are
@@ -26,7 +26,7 @@ additional administration privileges. A "user" is a unique account installed
 in an instance of DeskPRO, used by one or more persons to obtain support from
 your technical staff. A "ticket" is a single support request tracked in the
 software. These are normally submitted by your users but can also be created
-by your agents. 
+by your agents.
 
 Right To Run
 
@@ -67,7 +67,7 @@ to be exposed any portion of the source code to any other party without the
 express written consent of DeskPRO Ltd. You may not attempt to
 circumvent any license validation checks. Unless you have purchased a
 copyright removal license, all copyright notices must remain intact in the
-source code. 
+source code.
 
 Removal of Copyright Notices
 
@@ -109,9 +109,9 @@ License Transfer
 We may, at our discretion, allow you to transfer your license to another
 party, providing the license:
 
-has not already been transferred 
+has not already been transferred
 was purchased more than 4 months ago the
-members area access is active 
+members area access is active
 the license was purchased at full cost with no discount
 the price paid is higher than or equal to current retail value
 
@@ -161,10 +161,10 @@ This Agreement is governed by the laws of England and Wales.
 </table>
 
 <div class="alert-message block-message warn" id="agreement_box">
-	<label style="float: none; width: 100%;"><input type="checkbox" id="accept_check" /> I agree to the above license agreement</label>
+	<label style="float: none; width: 100%;"><input type="checkbox" id="accept_check" tabindex="1" /> I agree to the above license agreement</label>
 
 	<div class="alert-actions">
-		<a class="btn disabled" id="next_btn" href="<?php echo $view['router']->generate('install_checks') ?>">Go to step 2: Perform server checks</a>
+		<a class="btn disabled" tabindex="2" id="next_btn" href="<?php echo $view['router']->generate('install_checks') ?>">Go to step 2: Perform server checks</a>
 	</div>
 </div>
 <script type="text/javascript">

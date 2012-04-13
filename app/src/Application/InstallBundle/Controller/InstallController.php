@@ -109,6 +109,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		$has_db_checks = false;
 
 		if (!$is_fatal) {
+			$did_create_db = false;
 			$has_db_checks = true;
 			if (file_exists(DP_CONFIG_FILE)) {
 				$has_config = true;
@@ -123,7 +124,10 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 							global $DP_CONFIG;
 							$dbh = new \PDO("mysql:host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
 							$dbh->exec("CREATE DATABASE `{$DP_CONFIG['db']['dbname']}`");
-						} catch (\Exception $e) {}
+							$did_create_db = true;
+						} catch (\Exception $e) {
+							$did_create_db = false;
+						}
 					}
 				}
 
@@ -177,6 +181,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			'db_config' => App::getConfig('db'),
 			'logs_dir_info' => $logs_dir_info,
 			'ini_path' => $ini_path,
+			'did_create_db' => $did_create_db,
 		));
 	}
 
@@ -608,10 +613,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 		$base_url = $this->get('request')->getBaseUrl();
 
-		return $this->render('InstallBundle:Install:install-done.html.php', array(
-			'agent' => $agent,
-			'base_url' => $base_url,
-		));
+		return $this->redirect($base_url . '/admin/');
 	}
 
 	###############################################################################

@@ -314,6 +314,10 @@
 							the details you entered are correct.
 							<p><code><?php echo $errors['db_connect']['message'] ?></code></p>
 						</div>
+					<?php endif; if ($did_create_db): ?>
+						<div class="alert-message block-message success">
+							The database was automatically created for you.
+						</div>
 					<?php endif ?>
 				</td>
 			</tr>

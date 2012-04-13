@@ -357,6 +357,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 				&& !preg_match('#^/admin/welcome#', $path)
 				&& !preg_match('#^/admin/setup/default-smtp#', $path)
 				&& !preg_match('#^/admin/license#', $path)
+				&& !preg_match('#^/admin/welcome#', $path)
 			) {
 				$response = new RedirectResponse($request->getBaseUrl() . '/admin/license');
 				return $response;

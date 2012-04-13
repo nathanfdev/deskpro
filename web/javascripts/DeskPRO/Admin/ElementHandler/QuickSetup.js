@@ -99,6 +99,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 					}, 15000);
 				} else {
 					$('#section_install_cron').find('.mega-tick').fadeIn();
+					self.recountSteps();
 				}
 			}
 		});
