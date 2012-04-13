@@ -175,7 +175,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		else {
 			this.elements.wrapperOuter.css({
 				'z-index': (zindex ? zindex+1 : ''),
-				'position': 'absolute',
+				'position': 'fixed',
 				'left': leftForCenter
 			});
 		}
