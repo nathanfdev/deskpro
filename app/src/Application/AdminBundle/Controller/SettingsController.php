@@ -330,6 +330,7 @@ class SettingsController extends AbstractController
 
 			// Existing values
 			'license_code' => $this->container->getSetting('core.license'),
+			'last_cron_run' => $this->container->getSetting('core.last_cron_run'),
 			'default_transport' => $default_transport,
 		));
 	}

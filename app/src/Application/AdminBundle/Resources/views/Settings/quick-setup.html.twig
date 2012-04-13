@@ -39,13 +39,13 @@
 	</div>
 	<br />
 
-	<div class="dp_admin_pagebar" id="section_install_cron" data-check-url="{{ path('admin_settings_cron_check') }}">
+	<div class="dp_admin_pagebar">
 		<ul>
 			<li>Install Scheduled Task</li>
 		</ul>
 	</div>
-	<div class="dp_admin_page">
-		<div class="mega-tick" style="display: none"></div>
+	<div class="dp_admin_page" id="section_install_cron" data-check-url="{{ path('admin_settings_cron_check') }}">
+		<div class="mega-tick" {% if not last_cron_run %}style="display: none"{% endif %}></div>
 		<div class="dp_admin_page_inner">
 			<div class="dp-page-box">
 				<div class="page-content">
