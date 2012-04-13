@@ -18,6 +18,16 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 	initPage: function(el) {
 		var self = this;
 
+        $('.extra-fields .agent .agent_link', this.el).on('click', function(ev) {
+            var agent_id = $(this).parent().data('prop-value');
+
+            if(agent_id) {
+                ev.stopPropagation();
+                ev.preventDefault();
+                DeskPRO_Window.sections.agent_chat_section.newChatWindow([agent_id]);
+            }
+        });
+
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.unlocked', (function(info) {
 			var ticketId = info.ticket_id;
 			$('.ticket-' + ticketId, this.contentWrapper).removeClass('locked');

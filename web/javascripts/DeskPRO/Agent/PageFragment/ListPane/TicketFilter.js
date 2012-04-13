@@ -13,18 +13,6 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilter = new Orb.Class({
 	initPage: function(el) {
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ticket-section.list-activated', { listType: 'filter', id: this.getMetaData('filter_id'), topGroupingOption: this.meta.topGroupingOption || null });
-
-
-        $('.extra-fields .agent .agent_link', this.el).on('click', function(ev) {
-            var agent_id = $(this).parent().data('prop-value');
-
-            if(agent_id) {
-                ev.stopPropagation();
-                ev.preventDefault();
-                DeskPRO_Window.sections.agent_chat_section.newChatWindow([agent_id]);
-            }
-        });
-
 		this.resultTypeId = this.getMetaData('filter_id');
 		this.parent(el);
 	},
