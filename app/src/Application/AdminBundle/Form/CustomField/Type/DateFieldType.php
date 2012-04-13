@@ -37,8 +37,14 @@ namespace Application\AdminBundle\Form\CustomField\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
-class DateFieldType extends TextFieldType
+class DateFieldType extends CustomFieldTypeAbstract
 {
+    protected function buildCustomFieldForm(FormBuilder $builder, array $options)
+    {
+        $builder->add('default_value', 'text', array('required' => false));
+        $builder->add('default_mode', 'text', array('required' => true));
+    }
+
 	public function getDefaultOptions(array $options)
 	{
 		return array(

@@ -34,7 +34,29 @@
 
 namespace Application\AdminBundle\Form\CustomField\Model;
 
-class DateField extends TextField
+class DateField extends CustomFieldAbstract
 {
+    public $default_value = '';
+    public $default_mode = 'current';
 
+    public function init()
+    {
+        $this->default_value = $this->_field->default_value;
+        $this->default_mode = $this->_field->getOption('default_mode');
+
+        if(empty($this->default_value)) {
+            $this->default_value = date('m/d/Y');
+        }
+
+        if(empty($this->default_mode)) {
+            $this->default_mode = 'current';
+        }
+    }
+
+    protected function setFieldProperties()
+    {
+        $field = $this->_field;
+        $field->default_value = $this->default_value;
+        $field->setOption('default_mode', $this->default_mode);
+    }
 }

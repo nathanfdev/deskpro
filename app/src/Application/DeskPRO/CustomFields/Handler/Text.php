@@ -49,6 +49,7 @@ class Text extends HandlerAbstract
 			$setData = $data['value'];
 		}
 		$field = App::getFormFactory()->createNamedBuilder('text', $this->getFormFieldName(), $setData, array('required' => false));
+        $field->setData($setData);
 
 		return $field;
 	}

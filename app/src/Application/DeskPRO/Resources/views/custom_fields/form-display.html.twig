@@ -4,5 +4,7 @@
 	{% endblock %}
 {% endset %}
 {% block content %}
-	<div class="{{field_type}}_{{field_def.id}} {{field_handler_name}} form {{ field_def.getOption('custom_css_classname', '') }} customfield" id="{{elId}}_form_wrap">{{ field_input }}{{ field_def.getOption('html', '')|raw }}</div>
+	<div class="{{field_type}}_{{field_def.id}} {{field_handler_name}} form {{ field_def.getOption('custom_css_classname', '') }} customfield" id="{{elId}}_form_wrap">
+        {{- field_input }}{{ field_def.getOption('html', '')|raw -}}
+    </div>
 {% endblock %}

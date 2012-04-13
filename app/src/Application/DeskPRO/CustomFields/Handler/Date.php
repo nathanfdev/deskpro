@@ -43,22 +43,6 @@ use Application\DeskPRO\App;
  */
 class Date extends Text
 {
-/*	public function renderHtml(array $data = null, array $template_vars = array())
-	{
-		if ($data === null) return '';
-
-		$data['value'] = date('M d, Y', $data['value']);
-		parent::renderText($data, $template_vars);
-	}
-
-	public function renderText(array $data = null, array $template_vars = array())
-	{
-		if ($data === null) return '';
-
-		$data['value'] = date('M d, Y', $data['value']);
-		parent::renderText($data, $template_vars);
-	}
-
 	public function getFormField(array $data = null)
 	{
 		$setData = null;
@@ -71,33 +55,8 @@ class Date extends Text
 			//'format' => 3,
 			'required' => false
 		));
+        $field->setData($setData);
 
 		return $field;
 	}
-
-	function getDataFromForm(array $form_data)
-	{
-		$name = $this->getFormFieldName();
-
-		$value = null;
-		if (!empty($form_data[$name])) {
-			return array();
-			$value = $form_data[$name];
-			$value = strtotime($value);
-		}
-
-		return array(
-			array($this->field_def['id'], 'value', $value)
-		);
-	}
-
-	public function getSearchCapabilities()
-	{
-		return array('is', 'not', 'gt', 'lt');
-	}
-
-	public function getSearchType()
-	{
-		return 'value';
-	}*/
 }

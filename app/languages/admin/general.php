@@ -9,6 +9,8 @@
     'admin.general.confirm_delete'            => 'Yes, I am sure I want to delete',
     'admin.general.deals'                     => 'Deals',
     'admin.general.default_value'             => 'Default Value',
+    'admin.general.default_current_date'             => 'Use date at time as default value',
+    'admin.general.default_specify'             => 'Specify Default Value',
     'admin.general.departments'               => 'Departments',
     'admin.general.deskpro_admin_interface'   => 'DeskPRO Admin Interface',
     'admin.general.edit_category'             => 'Edit Category',

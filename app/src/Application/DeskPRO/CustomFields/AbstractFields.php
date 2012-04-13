@@ -76,7 +76,7 @@ abstract class AbstractFields
 		$custom_fields = array();
 		$has_value = false;
 		foreach ($field_defs as $f_def) {
-			$value = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : null;
+			$value = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : array('value' => $f_def['default_value']);
 
 			$f = $f_def->getHandler()->getFormField($value);
 
