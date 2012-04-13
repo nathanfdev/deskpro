@@ -1,4 +1,4 @@
-<?php return array(
+de<?php return array(
     'agent.deal.add_organization'    => 'Add Organization',
     'agent.deal.add_user'            => 'Add User',
     'agent.deal.change_organization' => 'Change Organization',

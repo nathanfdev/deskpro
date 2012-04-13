@@ -133,6 +133,8 @@
     'agent.tickets.status_awaiting_user'             => 'Awaiting User',
     'agent.tickets.status_closed'                    => 'Closed',
     'agent.tickets.status_hidden'                    => 'Hidden',
+    'agent.tickets.hidden_status_spam'       => 'Spam',
+    'agent.tickets.hidden_status_deleted'    => 'Deleted',
     'agent.tickets.status_hidden_validating'         => 'Awaiting Validating',
     'agent.tickets.status_resolved'                  => 'Resolved',
     'agent.tickets.subject_changed_from'             => 'Subject changed from',
