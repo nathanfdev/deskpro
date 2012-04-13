@@ -20,12 +20,11 @@ pageMeta.tabIdClass      = 'user_chat_tab_{{convo.id}}';
 pageMeta.status = '{{ convo.status }}';
 pageMeta.isEnded = {% if convo.status == 'ended' %}true{% else %}false{% endif %};
 
-pageMeta.session_id = {{ convo.session.id|default('null') }};
+pageMeta.session_id = {{ session.id|default(0) }};
 {% if convo.person.id %}
 pageMeta.viewPersonUrl = '{{ path('agent_people_view', {'person_id': convo.person.id}) }}';
 pageMeta.person_id = {{ convo.person.id }};
-{% elseif convo.session %}
-pageMeta.viewPersonUrl = '{{ path('agent_people_viewsession', {'session_id': convo.session.id}) }}';
+{% else %}
 pageMeta.person_id = 0;
 {% endif %}
 
@@ -58,13 +57,7 @@ pageMeta.baseId = '{{ baseId }}';
                 {% else %}
                 {% set convo_display_name = phrase('agent.general.anonymous') %}
                 {% endif %}
-				{% if convo.session %}<a
-					class="as-popover"
-					data-route="person:{{ path('agent_people_viewsession', {'session_id': convo.session.id}) }}"
-				>{{convo_display_name}}</a>
-                {% else %}
-                    {{convo_display_name}}
-                {% endif %}
+                   {{convo_display_name}}
 			{% endif %}
 		{% endset %}
 		{{ phrase('agent.chat.chat_with_x', {'name': chat_person_name}) }}
@@ -106,13 +99,7 @@ pageMeta.baseId = '{{ baseId }}';
                                             <span class="email"><b data-hide="@parent">{% if convo.person_email %}{{ convo.person_email }}{% else %}{{ phrase('agent.chat.no_email') }}{% endif %}</b></span>
                                         </span>
                                     {% endset %}
-                                    {% if convo.session %}
-                                    <a class="user-link clean-white as-popover preload" data-route="person:{{ path('agent_people_viewsession', {'session_id': convo.session.id}) }}">
-                                        {{ convo_display_user_box }}
-                                    </a>
-                                    {% else %}
-                                        {{ convo_display_user_box }}
-                                    {% endif %}
+                                    {{ convo_display_user_box }}
                                 {% endif %}
                                     <div class="clear"></div>
                             </dd>

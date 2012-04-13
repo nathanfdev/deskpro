@@ -8,7 +8,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.PersonSession';
 	pageMeta.title = 'Anonymous User';
 {% endif %}
 pageMeta.session_id = {{session.id}};
-pageMeta.visitor_id = {{visitor.id}};
+pageMeta.visitor_id = {{visitor.id|default(0)}};
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';

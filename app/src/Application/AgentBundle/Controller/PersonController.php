@@ -317,7 +317,7 @@ class PersonController extends AbstractController
 
 		$visitor = $session->visitor;
 		$related_person = null;
-		if ($session->visitor->email) {
+		if ($session->visitor && $session->visitor->email) {
 			$related_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($session->visitor->email);
 
 			if ($related_person) {
