@@ -69,7 +69,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<dt>{{ phrase('agent.general.votes') }}:</dt>
 			<dd>
 				<span class="link-look who-voted-trigger">
-                    {% set phrase_part %}}
+                    {% set phrase_part %}
                     <span id="{{baseId}}_num_votes">{{ feedback.num_ratings }}</span>
                     {% endset %}
                     {{ phrase('agent.feedback.count_votes', {'display_count':phrase_part,'count':feedback.num_ratings}) }}

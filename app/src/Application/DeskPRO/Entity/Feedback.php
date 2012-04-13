@@ -230,7 +230,12 @@ class Feedback extends ContentAbstract
 	public function getStatusCode()
 	{
 		if ($this->status == self::STATUS_ACTIVE OR $this->status == self::STATUS_CLOSED) {
-			return $this->status . '.' . $this->status_category->id;
+            if($this->status_category) {
+                return $this->status . '.' . $this->status_category->id;
+            }
+            else {
+                return $this->status;
+            }
 		} elseif ($this->status == self::STATUS_HIDDEN) {
 			return $this->status . '.' . $this->hidden_status;
 		} else {
