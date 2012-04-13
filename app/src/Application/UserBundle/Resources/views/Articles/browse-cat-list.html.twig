@@ -13,9 +13,14 @@
 					</li>
 				{% endfor %}
 			</ul>
-			<a href="{{ path('user_articles', {'slug': cat.url_slug}) }}" class="view-more">
-				{{ phrase('user.articles.view_all_x_articles', {'count': category_counts[cat.id ~ '_total']}) }}
-			</a>
+            {% set this_cat_counts = category_counts[cat.id ~ '_total'] %}
+            {% if not this_cat_counts %}
+                {{ phrase('user.articles.no_articles') }}
+            {% else %}
+                <a href="{{ path('user_articles', {'slug': cat.url_slug}) }}" class="view-more">
+                    {{ phrase('user.articles.view_all_x_articles', {'count': this_cat_counts}) }}
+                </a>
+            {% endif %}
 		</li>
 	{% endfor %}
 </ul>
