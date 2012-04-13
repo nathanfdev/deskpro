@@ -135,6 +135,7 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 				}
 
 				formItem.insertAfter(el);
+                $('.Date.customfield input', formItem).datepicker();
 
 				draggingSidebarEl.hide();
 				el.remove();
@@ -350,6 +351,8 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 				}
 				formItem.data('rules', item.rules);
 			}
+
+            $('.Date.customfield input', formItem).datepicker();
 		}
 
 		if (TICKET_DISPLAY_DATA && TICKET_DISPLAY_DATA.length) {

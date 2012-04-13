@@ -50,7 +50,7 @@
     'admin.tickets.drag_drop_fields'                     => 'Drag and drop fields from the left onto this area to start designing your form.',
     'admin.tickets.edit_category_title'                  => 'Edit Category Title',
     'admin.tickets.edit_departments'                     => 'Edit Departments',
-    'admin.tickets.edit_or_select_default_layout'        => 'Edit the {{link_a}} or select a specific {link2}',
+    'admin.tickets.edit_or_select_default_layout'        => 'Edit the {{link1}} or select a specific {{link2}}',
     'admin.tickets.edit_priorities'                      => 'Edit Priorities',
     'admin.tickets.edit_priority'                        => 'Edit Priority',
     'admin.tickets.edit_products'                        => 'Edit Products',
