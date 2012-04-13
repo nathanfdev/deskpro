@@ -49,7 +49,7 @@ function _page_exec() {
 					<td>{{ stat.getGroupingName }} </td>
 					<td class="period">{{ stat.period }}</td>
 					<td>{{ stat.authorName }}</td>
-					<td><span class="sparkline">{{ stat.trendPoints|join(',') }}</span></td>
+					<td><div class="sparkline" style="width:200px">{{ stat.trendPoints|join(',') }}</div></td>
 					{% for prev_value in stat.getEndData(2) %}
 						<td class="prev-value">{{ stat.formatData(prev_value, chart.getDisplayUnits)|default('-') }}</td>
 					{% endfor %}
