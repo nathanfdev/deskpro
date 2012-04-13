@@ -39,6 +39,7 @@ if ($results['person']) {
 		$OUTPUT['person'][] = array(
 			'id' => $r->id,
 			'title' => $r->getDisplayName() . ($r->getPrimaryEmailAddress() ? ' &lt;' . $r->getPrimaryEmailAddress() . '&gt;' : ''),
+			'icon' => $r->getPictureUrl(16),
 			'subtitle' => $org_str ? $org_str : null,
 			'route' => 'person:' . $router->generate('agent_people_view', array('person_id' => $r->id))
 		);

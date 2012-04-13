@@ -294,6 +294,13 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 					resultEl = $(resultElHtml);
 					resultEl.data('route', res.route).attr('data-route', res.route);
 
+					if (res.icon) {
+						resultEl.find('label').css({
+							'background': 'url("'+res.icon+'") no-repeat 0 50%',
+							'padding-left': '21px'
+						});
+					}
+
 					if (res.subtitle) {
 						$('<span>').addClass('subtitle').html(res.subtitle).appendTo(resultEl);
 					}
