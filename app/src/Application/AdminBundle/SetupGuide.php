@@ -100,8 +100,13 @@ class SetupGuide
 		#------------------------------
 
 		if (!$step || $step < 30) {
-			if (!($this->controller instanceof \Application\AdminBundle\Controller\SettingsController) || $action != 'quickSetupAction') {
-				//return $this->controller->redirectRoute('admin_welcome');
+			if (
+				!($this->controller instanceof \Application\AdminBundle\Controller\SettingsController)
+				&& !($this->controller instanceof \Application\AdminBundle\Controller\LicenseController)
+				&& !($this->controller instanceof \Application\AdminBundle\Controller\EmailTransportsController)
+				&& !($this->controller instanceof \Application\AdminBundle\Controller\EmailTransportsController)
+			) {
+				return $this->controller->redirectRoute('admin_welcome');
 			}
 		}
 
