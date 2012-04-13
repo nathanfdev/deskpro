@@ -237,7 +237,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 			this.getEl('showing_count').text(showing);
 			this.getEl('total_count').text(this.countTotal);
-			this.getEl('total_grouped_count').text(this.countTotal);
+			$('span', this.getEl('total_grouped_count')).text(this.countTotal);
 			this.selectionBar.resetCountLabel();
 		}
 	},
