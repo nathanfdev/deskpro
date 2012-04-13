@@ -10,6 +10,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 		this._initCronSection();
 		this._initLicenseSection();
 		this._initOutgoingEmailSection();
+		this._initIncomingEmailSection();
 	},
 
 	//##################################################################################################################
@@ -182,6 +183,40 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 	_initOutgoingEmailSection: function() {
 		var self = this;
 		var wrapper = $('#section_config_smtp');
+
+		var form = wrapper.find('form');
+
+		form.on('submit', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var formData = form.serializeArray();
+
+			form.addClass('mark-loading');
+			$.ajax({
+				url: form.attr('action'),
+				data: formData,
+				type: 'POST',
+				dataType: 'json',
+				complete: function() {
+					form.removeClass('mark-loading');
+				},
+				success: function(data) {
+					if (data.success) {
+						wrapper.find('.mega-tick').fadeIn();
+					}
+				}
+			});
+		});
+	},
+
+	//##################################################################################################################
+	//# Incoming Email
+	//##################################################################################################################
+
+	_initIncomingEmailSection: function() {
+		var self = this;
+		var wrapper = $('#section_config_pop3');
 
 		var form = wrapper.find('form');
 

@@ -322,16 +322,25 @@ class SettingsController extends AbstractController
 		")->getOneOrNullResult();
 		$outgoing_email_form = $this->forward('AdminBundle:EmailTransports:editAccount', array('id' => $default_transport ? $default_transport->getId() : '0'), array('_partial' => 'setup'))->getContent();
 
+		$initial_pop = $this->em->createQuery("
+			SELECT t
+			FROM DeskPRO:EmailGateway t
+			ORDER BY t.id ASC
+		")->setMaxResults(1)->getOneOrNullResult();
+		$incoming_email_form = $this->forward('AdminBundle:EmailGateways:editAccount', array('id' => $initial_pop ? $initial_pop->getId() : '0'), array('_partial' => 'setup'))->getContent();
+
 		return $this->render('AdminBundle:Settings:quick-setup.html.twig', array(
 			'setup' => $setup,
 			'form' => $form->createView(),
 			'errors' => $errors,
 			'outgoing_email_form' => $outgoing_email_form,
+			'incoming_email_form' => $incoming_email_form,
 
 			// Existing values
 			'license_code' => $this->container->getSetting('core.license'),
 			'last_cron_run' => $this->container->getSetting('core.last_cron_run'),
 			'default_transport' => $default_transport,
+			'initial_pop' => $initial_pop,
 		));
 	}
 

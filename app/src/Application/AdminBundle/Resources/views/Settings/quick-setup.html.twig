@@ -5,6 +5,7 @@
 <script type="text/javascript" src="{{ asset('vendor/detect_timezone.js') }}"></script>
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/QuickSetup.js') }}"></script>
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/EditEmailTransportPage.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/EditEmailGatewayPage.js') }}"></script>
 {% endblock %}
 {% block dp_full_page %}
 	<div class="dp_admin_pagebar">
@@ -96,8 +97,13 @@
 		</ul>
 	</div>
 	<div class="dp_admin_page" id="section_config_pop3">
+		<div class="mega-tick" {% if not initial_pop %}style="display: none"{% endif %}></div>
 		<div class="dp_admin_page_inner">
-			{% include 'AdminBundle:Settings:quick-setup-incoming-email.html.twig' %}
+			<div class="dp-page-box">
+				<div class="page-content"
+					{% include 'AdminBundle:Settings:quick-setup-incoming-email.html.twig' %}
+				</div>
+			</div>
 		</div>
 	</div>
 	<br />

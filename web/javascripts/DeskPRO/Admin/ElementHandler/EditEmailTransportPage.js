@@ -23,8 +23,12 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 			self.overlay.open();
 		});
 
+		var overlayId = 'test_settings_overlay';
+		if (this.el.data('overlay-id')) {
+			overlayId = this.el.data('overlay-id');
+		}
 		this.overlay = new DeskPRO.UI.Overlay({
-			contentElement: $('#test_settings_overlay'),
+			contentElement: $('#' + overlayId),
 			onBeforeOverlayOpened: function() {
 				var el = self.overlay.getElement();
 

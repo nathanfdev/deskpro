@@ -183,17 +183,27 @@ class EmailGatewaysController extends AbstractController
 
 				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.task_completed_incoming_email', time());
 
+				if ($this->request->isXmlHttpRequest()) {
+					return $this->createJsonResponse(array('success' => true));
+				}
+
 				$this->session->setFlash('saved', $gateway->title);
 				return $this->redirectRoute('admin_emailgateways');
 			}
 		}
 
-		return $this->render('AdminBundle:EmailGateways:edit-account.html.twig', array(
+		$tpl = 'AdminBundle:EmailGateways:edit-account.html.twig';
+		if ($this->request->isPartialRequest()) {
+			$tpl = 'AdminBundle:EmailGateways:edit-account-form.html.twig';
+		}
+
+		return $this->render($tpl, array(
 			'gateway' => $gateway,
 			'transport' => $transport,
 			'form' => $form->createView(),
 			'trans_form' => $trans_form->createView(),
 			'editgateway' => $editgateway,
+			'partial' => $this->request->isPartialRequest()
 		));
 	}
 
