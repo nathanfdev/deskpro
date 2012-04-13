@@ -99,7 +99,17 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 		var current = this.resultWrap.find('.result-focus');
 		if (ev.keyCode == 13 /* enter key */) {
 			ev.preventDefault();
-			self.updateResultsLong();
+
+			// If there is a selection, then open that selection
+			var focused = this.resultWrap.find('.result-focus');
+			if (focused[0]) {
+				DeskPRO_Window.runPageRouteFromElement(focused);
+				this.close();
+
+			// Otherwise do the "long" search
+			} else {
+				self.updateResultsLong();
+			}
 
 		} else if (ev.keyCode == 27 /* escape key */) {
 			// First escape just deselects
