@@ -9,8 +9,8 @@
 			<td>
 				<div style="height: 300px; overflow: auto;">
 					<pre style="font-family: monospace; border: none; margin: 0; padding: 0;">
-This document contains the End User License Agreement between Headstart
-Solutions Limited, herein referred to as "the company", "we", "us", and "our",
+This document contains the End User License Agreement between DeskPRO Ltd. 
+herein referred to as "the company", "we", "us", and "our",
 and the End User (herein referred to as "you", "your", "yours", etc.). By
 installing and using DeskPRO (herein referred to as "the software"), you are
 agreeing to these terms and conditions.
@@ -19,14 +19,16 @@ Terms and Definitions
 
 An "instance" of the software is a unique installation of the software on a
 system capable of running it, whether used for production purposes or for
-testing. A "technician" is a unique account installed in an instance of
+testing. An "agent" is a unique account installed in an instance of
 DeskPRO, used by a member of your technical staff to provide technical support
-assistance to your users. An "administrator" or "admin" is a technician with
+assistance to your users. An "administrator" or "admin" is an agent with
 additional administration privileges. A "user" is a unique account installed
 in an instance of DeskPRO, used by one or more persons to obtain support from
 your technical staff. A "ticket" is a single support request tracked in the
 software. These are normally submitted by your users but can also be created
-by your technicians. Right To Run
+by your agents. 
+
+Right To Run
 
 Your purchase of a DeskPRO license grants you the right to make use of a
 single instance of the software. You may temporarily install a second instance
@@ -47,7 +49,7 @@ sell, assign, pledge, transfer or otherwise dispose of the Software in any
 form, on a temporary or permanent basis, without the prior written consent of
 DeskPRO Ltd.
 
-Accurte License Information
+Accurate License Information
 
 Your right to use a DeskPRO instance under a purchased license requires you to
 provide accurate information regarding the location (or planned location) of
@@ -57,16 +59,17 @@ instance(s).
 
 Alteration of Source Code
 
-If you have purchased DeskPRO Enterprise, which includes visible source code,
-you are permitted to make modifications to the software to suit your needs,
-subject to these conditions:
+You are permitted to alter the source code of DeskPRO subject to the following
+conditions:
 
 You may not distribute the software or any portion thereof, or permit or cause
 to be exposed any portion of the source code to any other party without the
-express written consent of DeskPRO Limited. You may not attempt to
+express written consent of DeskPRO Ltd. You may not attempt to
 circumvent any license validation checks. Unless you have purchased a
 copyright removal license, all copyright notices must remain intact in the
-source code. Removal of Copyright Notices
+source code. 
+
+Removal of Copyright Notices
 
 If you have not purchased a copyright removal license, all copyright notices
 included in the software (including in source code and templates) must remain
@@ -106,10 +109,11 @@ License Transfer
 We may, at our discretion, allow you to transfer your license to another
 party, providing the license:
 
-has not already been transferred was purchased more than 4 months ago the
-members area access is active the license was purchased at full cost (for
-example a 2nd license purchased at a discount can not be transfered)
-Disclaimer of Liability
+has not already been transferred 
+was purchased more than 4 months ago the
+members area access is active 
+the license was purchased at full cost with no discount
+the price paid is higher than or equal to current retail value
 
 THE SOFTWARE AND THE ACCCOMPANYING FILES ARE SOLD "AS IS" AND WITHOUT
 WARRANTIES AS TO PERFORMANCE OF MERCHANTABILITY OR ANY OTHER WARRANTIED
@@ -137,7 +141,7 @@ HEREIN IS FOUND TO HAVE FAILED OF ITS ESSENTIAL PURPOSE.
 
 Termination of License
 
-DeskPRO Limited reserves the right to terminate your license if
+DeskPRO Ltd. reserves the right to terminate your license if
 any clause of this agreement is found to have been violated.
 
 Enforcability
