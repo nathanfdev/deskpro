@@ -49,13 +49,13 @@ class Date extends Text
 		if ($data AND !empty($data['value'])) {
 			$setData = $data['value'];
 		}
+
 		$field = App::getFormFactory()->createNamedBuilder('text', $this->getFormFieldName(), $setData, array(
 			//'widget' => 'text',
 			//'input' => 'timestamp',
 			//'format' => 3,
 			'required' => false
 		));
-        $field->setData($setData);
 
 		return $field;
 	}
