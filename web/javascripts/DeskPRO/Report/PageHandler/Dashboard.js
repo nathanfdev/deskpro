@@ -198,8 +198,13 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
             var top  = this.caclTop(i);
             var left = this.caclLeft(i);
 
+			var nodisplay = '';
+			if (!this.is_edit_state) {
+				nodisplay = 'display:none;';
+			}
+
             var html = '\
-<div class="cell" id="cell_'+i+'" data-id="'+i+'" style="top:'+top+'px; left:'+left+'px; height:'+height+'px; width:'+width+'px;" >\
+<div class="cell" id="cell_'+i+'" data-id="'+i+'" style="top:'+top+'px; left:'+left+'px; height:'+height+'px; width:'+width+'px;'+nodisplay+'" >\
 <span class="inner"> \
 	<a href="#" class="dashboard-new-placeholder-link">Click to Add a Chart<br />Or<br />Drop an Existing Chart</a>\
 </span>\
@@ -238,8 +243,13 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
             var top  = this.caclTop(i);
             var left = this.caclLeft(i);
 
+			var nodisplay = '';
+			if (!this.is_edit_state) {
+				nodisplay = 'display:none;';
+			}
+
             var html = '\
-<div class="cell" id="cell_'+i+'" data-id="'+i+'" style="top:'+top+'px; left:'+left+'px; height:'+height+'px; width:'+width+'px;" >\
+<div class="cell" id="cell_'+i+'" data-id="'+i+'" style="top:'+top+'px; left:'+left+'px; height:'+height+'px; width:'+width+'px;'+nodisplay+'" >\
 <span class="inner"> \
 	<a href="#" class="dashboard-new-placeholder-link">Click to Add a Chart<br />Or<br />Drop an Existing Chart</a>\
 </span>\
@@ -428,8 +438,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		var html = '<div id="dashboard-empty-notice"><a href="#">The dashboard is currently empty. Click here to add some charts</a></div>';
 		this.$dashboard.append(html);
 
-		// Add one row to the grid
-		self.setupCellGrid(1);
+		this.setupCellGrid(1);
 
 		$('#dashboard-empty-notice a').click(function() {
 			self.setEditable(true);
@@ -463,6 +472,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 	// Update UI state to editable
 	updateToEditable: function() {
 		var self = this;
+		this.is_edit_state = true;
 
 		// Hide the edit link, show the view link
 		$("#report-dashboard-set-editable").css('display', 'none');
@@ -484,12 +494,12 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		});
 
 		this.calculateColumnWidth();
-
-		this.is_edit_state = true;
 	},
 
 	// Update UI state to viewable
 	updateToViewable: function() {
+
+		this.is_edit_state = false;
 
 		// Save the new state of the dashboard
 		this.saveDashboardState();
@@ -497,9 +507,6 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		// Hide the view link, show the edit link
 		$("#report-dashboard-set-editable").css('display', 'block');
 		$("#report-dashboard-options").css('display', 'none');
-
-		// Remove the add placeholder
-		this.hideAddChartPlaceholder();
 
 		this.$dashboard.find(".widget").draggable('destroy');
 		this.$dashboard.find(".cell").droppable('destroy');
@@ -511,7 +518,8 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 			v.widget.setEditable(false);
 		});
 
-		this.is_edit_state = false;
+		// Remove the add placeholder
+		this.hideAddChartPlaceholder();
 	},
 
 	// Apply the draggable plugin to widgets
@@ -825,15 +833,17 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		}
 
 
-		this.$dashboard.find('.cell').css('display', 'block');
+		if (this.is_edit_state) {
+			this.$dashboard.find('.cell').css('display', 'block');
+		} else {
+			this.$dashboard.find('.cell').css('display', 'none');
+		}
 	},
 
 	// Remove the placeholder
 	hideAddChartPlaceholder: function() {
-
 		// Remove the 'Add Widget' placeholders
-		this.$dashboard.find('.cell').css('display', 'none')
-
+		this.$dashboard.find('.cell').css('display', 'none');
 	},
 
 	// Show a chart fullscreen

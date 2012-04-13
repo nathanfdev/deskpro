@@ -306,6 +306,11 @@ DeskPRO.Admin.Window = new Orb.Class({
 				ev.stopPropagation();
 			});
 		});
+
+		var newDashOverlay = new DeskPRO.UI.Overlay({
+			triggerElement: '#new_dashboard_trigger',
+			contentElement: '#new_dashboard_overlay'
+		});
 	},
 
 	updatePageNavPos: function() {

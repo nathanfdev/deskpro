@@ -163,7 +163,7 @@
 			{% for dashboard in app.dashboards %}
 				<li data-dashboard-id="{{ dashboard.id }}" class="dashboard {% if this_page == 'dashboard_' ~ dashboard.id %}on{% endif %}"><a href="{{ path('report_trend_dashboard_view', { 'dashboard_id': dashboard.id }) }}">{{ dashboard.title }}</a></li>
 			{% endfor %}
-			<li class="new"><a href="{{ path('report_trend_dashboard_new') }}" class="new">{{ phrase('agent.report.new_dashboard') }}</a></li>
+			<li class="new" id="new_dashboard_trigger"><a href="{{ path('report_trend_dashboard_new') }}" class="new">{{ phrase('agent.report.new_dashboard') }}</a></li>
 			<li class="{% if this_page == 'trends_index' %}on{% endif %} trends" id="all_trends_menu_trigger"><a href="{{ path('report_trend_index') }}">{{ phrase('agent.general.all_trends') }}</a><i></i></li>
 		</ul>
 	</nav>
@@ -191,6 +191,32 @@
 				</div>
 			</div>
 		{% endblock %}
+	</div>
+</div>
+
+<div id="new_dashboard_overlay" style="width: 400px; height: 200px; overflow:auto; display: none;">
+	<div class="overlay-title">
+		<span class="close-overlay close-trigger"></span>
+		<h4>{{ phrase('agent.report.new_dashboard') }}</h4>
+	</div>
+	<div class="overlay-content">
+		<form action="{{ path('report_trend_dashboard_new') }}" method="post" id="new_dashboard_form">
+			<input type="hidden" name="process" value="1" />
+
+			<div class="dp-form">
+				<div class="dp-form-row">
+					<div class="dp-form-label">
+						<label>{{ phrase('agent.general.title') }}</label>
+					</div>
+					<div class="dp-form-input">
+						<input type="text" id="report_dashboard_title" name="report_dashboard[title]" />
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="overlay-footer">
+		<button class="clean-white" onclick="$('#new_dashboard_form').submit();">{{ phrase('agent.general.save') }}</button>
 	</div>
 </div>
 
