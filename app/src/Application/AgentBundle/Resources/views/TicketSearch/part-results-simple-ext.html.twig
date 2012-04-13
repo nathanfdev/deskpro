@@ -27,7 +27,7 @@
 	</div>
 	<div class="userinfo">
 		<a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': ticket_person.id|default('0')}) }}" data-route-title="@selector(.person-tip)">
-			<span data-person-id="{{ ticket_person.id|default(0) }}">{{ ticket_person.display_name }}</span></a>
+			<span class="with-icon" data-person-id="{{ ticket_person.id|default(0) }}" style="background-image: url('{{ ticket_person.getPictureUrl(16) }}');">{{ ticket_person.display_name }}</span></a>
 		{% if ticket_person.organization %}
 			<span class="org">
 				({% if ticket_person.organization_position %}{{ ticket_person.organization_position }}, {% endif %}{{ ticket_person.organization.name }})
