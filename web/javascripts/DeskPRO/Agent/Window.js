@@ -2014,7 +2014,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				backdrop.remove();
 			};
 			backdrop.on('click', close);
-			list.on('click', close);
+			list.find('a').on('click', close);
 			$('ul', list).on('click', function(ev) {
 				ev.stopPropagation();
 			});
@@ -2040,7 +2040,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				backdrop.remove();
 			};
 			backdrop.on('click', close);
-			list.on('click', close);
+			list.find('a').on('click', close);
 			$('ul', list).on('click', function(ev) {
 				ev.stopPropagation();
 			});

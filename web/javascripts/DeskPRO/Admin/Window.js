@@ -129,6 +129,8 @@ DeskPRO.Admin.Window = new Orb.Class({
 			});
 			list.show();
 
+			list.find('a').on('click', function() { list.hide(); backdrop.remove(); });
+
 			var backdrop = $('<div class="backdrop" />').appendTo('body');
 			backdrop.on('click', function() {
 				list.hide();
@@ -270,15 +272,22 @@ DeskPRO.Admin.Window = new Orb.Class({
 		});
 
 		// DeskPRO logo menu
+		var logoBackdrop = null;
 		$('#dp_logo_wrap .button-wrap').on('click', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 			var left = $('#dp_logo_wrap .button-wrap').offset().left + 51;
 			$('#dp_logo_expand_wrap').detach().appendTo('body').css('left', left).css('right', 'auto').show();
+			if (!logoBackdrop) {
+				logoBackdrop = $('<div class="backdrop" />').appendTo('body');
+				logoBackdrop.click(function() { logoBackdrop.hide();$('#dp_logo_expand_wrap').hide(); });
+			}
+			logoBackdrop.show();
 		});
 		$('#dp_logo_expand_wrap').on('click', function(ev) {
 			ev.stopPropagation();
 			$('#dp_logo_expand_wrap').hide();
+			if (logoBackdrop) logoBackdrop.hide();
 		});
 
 		// User menu
