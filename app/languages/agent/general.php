@@ -171,7 +171,7 @@
     'agent.general.display_count_selected'          => '{{display_count}} selected',
     'agent.general.display_elements'                => 'Display Elements',
     'agent.general.display_name'                    => 'Display name',
-    'agent.general.display_options'                 => 'display options',
+    'agent.general.display_options'                 => 'Display Options',
     'agent.general.does_not_contain'                => 'does not contain',
     'agent.general.does_not_include'                => 'does not include',
     'agent.general.does_not_include_label'          => 'does not include label',
