@@ -144,14 +144,6 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	protected $variation;
 
 	/**
-	 * Is the stat starred
-	 *
-	 * @var boolean
-	 * @ORM_MAPPING\Column(name="starred", type="boolean")
-	 */
-	protected $starred = false;
-
-	/**
 	 * Should we generate stats
 	 *
 	 * @var bool
@@ -897,7 +889,6 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'grouping_ref', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'grouping_ref', ));
 		$metadata->mapField(array( 'fieldName' => 'stat_concept_class', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'stat_concept_class', ));
 		$metadata->mapField(array( 'fieldName' => 'variation', 'type' => 'string', 'length' => 7, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'variation', ));
-		$metadata->mapField(array( 'fieldName' => 'starred', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'starred', ));
 		$metadata->mapField(array( 'fieldName' => 'generate_stats', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'generate_stats', ));
 		$metadata->mapField(array( 'fieldName' => 'disabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'disabled', ));
 		$metadata->mapField(array( 'fieldName' => 'run_frequency', 'type' => 'string', 'length' => 10, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'run_frequency', ));

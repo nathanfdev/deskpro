@@ -29,8 +29,6 @@
     'agent.report.select_show_grouped_date'  => 'Select yes to display the data grouped by {{group_by}}',
     'agent.report.show_legend'               => 'Show Legend?',
     'agent.report.star_the_statistic'        => 'Star the statistic?',
-    'agent.report.starred'                   => 'Starred',
-    'agent.report.starred_statistic_display' => 'Starred statistic display at the top of the trend list',
     'agent.report.updates'                   => 'Updates',
     'agent.report.view_chart'                => 'View Chart',
     'agent.report.x'                         => '[x]',

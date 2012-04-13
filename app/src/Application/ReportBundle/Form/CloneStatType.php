@@ -65,7 +65,6 @@ class CloneStatType extends AbstractType
 			'choices' => $variations,
 			'expanded' => true,
 		));
-                $builder->add('starred', 'checkbox', array('required' => false));
 	}
 
 	public function getName()

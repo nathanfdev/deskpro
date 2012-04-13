@@ -101,7 +101,6 @@ function _page_exec() {
 		<table id="dashboard_widget_select" class="table-list stat-list" cellspacing="0" cellpadding="0" width="100%">
 			<thead>
 				<tr>
-					<th width="16"></th>
 					<th>{{ phrase('agent.general.title') }}</th>
 					<th width="100">Group By</th>
 					<th width="100">Updates</th>
@@ -112,7 +111,6 @@ function _page_exec() {
 			<tbody>
 				{% for stat in all_stats %}
 					<tr>
-						<td class="{{stat.starred ? 'starred' : ''}}"></td>
 						<td>{{stat.title}}</td>
 						<td>{{ stat.getGroupingName }} </td>
 						<td class="period">{{ stat.period }}</td>

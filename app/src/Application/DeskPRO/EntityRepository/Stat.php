@@ -51,7 +51,7 @@ class Stat extends EntityRepository
 			SELECT s
 			FROM DeskPRO:Stat s
 			WHERE s.disabled = :disabled
-			ORDER BY s.starred DESC, s.title
+			ORDER BY s.title ASC
 		")->setParameter('disabled', false)->execute();
 
 		return $stats;

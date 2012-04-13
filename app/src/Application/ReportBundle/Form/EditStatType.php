@@ -52,7 +52,6 @@ class EditStatType extends AbstractType
 			'choices' => $variations,
 			'expanded' => true,
 		));
-		$builder->add('starred', 'checkbox', array('required' => false));
 		$builder->add('disabled', 'checkbox', array('required' => false));
 	}
 
