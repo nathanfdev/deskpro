@@ -267,7 +267,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					);
 				} else if (action == 'delete') {
 					DeskPRO_Window.showConfirm(
-						$('<div>Are you sure you want to delete this user? <strong class="warning">The user will be permanantly deleted</strong>. Their tickets and other resources will be removed.'),
+						$('<div>Are you sure you want to delete this user? <strong class="warning">The user will be permanantly deleted</strong>. Their tickets and other resources will be completely removed.</div>'),
 						function() {
 							$.ajax({
 								url: $(info.itemEl).data('delete-url'),

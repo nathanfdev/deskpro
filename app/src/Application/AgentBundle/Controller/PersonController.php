@@ -65,11 +65,7 @@ class PersonController extends AbstractController
 
 	public function viewAction($person_id, $with_warn_for_email = false)
 	{
-		if ($person_id) {
-			$person = $this->getPersonOr404($person_id);
-		} else {
-			$person = new Person();
-		}
+		$person = $this->getPersonOr404($person_id);
 
 		if (!$person['first_name'] && !$person['last_name'] && $person['name']) {
 			$parts = explode(' ', $person['name'], 2);
@@ -845,7 +841,7 @@ class PersonController extends AbstractController
 
 		$person = $this->getPersonOr404($person_id);
 
-		if (!$this->session->getEntity()->checkSecurityToken('delete_person', $security_token) OR !$this->person->hasPerm('users.delete')) {
+		if (!$this->session->getEntity()->checkSecurityToken('delete_person', $security_token)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
@@ -929,9 +925,9 @@ class PersonController extends AbstractController
 	 */
 	protected function getPersonOr404($person_id)
 	{
-		try {
-			$person = $this->em->find('DeskPRO:Person', $person_id);
-		} catch (\Doctrine\ORM\NoResultException $e) {
+		$person = $this->em->find('DeskPRO:Person', $person_id);
+
+		if (!$person) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no person with ID $person_id");
 		}
 
