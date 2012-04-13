@@ -127,24 +127,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleUpdateCounts: function(data) {
-		$('#chat_outline .agent-chat-count').hide();
-
-		$('#userchat_navitem_0 .list-counter').html('0');
-
-		if (!data.counts) {
-			return;
-		}
-
-		var unassigned = 0;
-		Object.each(data.counts, function (count, agent_id) {
-			if (agent_id == '0') {
-				unassigned = count;
-			}
-			$('#userchat_navitem_'+agent_id+' .list-counter').html(count);
-			$('#userchat_navitem_'+agent_id).show();
-		});
-
-		this.updateBadge(unassigned);
+        this.updateBadge($('#userchat_deplist_0_counter').text());
 	},
 
 	isChatOpen: function(convoId) {
@@ -223,6 +206,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				this.modDepListingCount(data.department_id, '+');
 			}
 		}
+
+        this.handleUpdateCounts();
 	},
 
 	handleChatEnded: function(data) {
@@ -237,6 +222,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		if (this.dismissedChats[data.conversation_id]) {
 			delete this.dismissedChats[data.conversation_id];
 		}
+
+        this.handleUpdateCounts();
 	},
 
 	handlePartsUpdated: function(data) {
@@ -259,6 +246,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		if (!data.agent_id) {
 			this.modDepListingCount(data.department_id, '+');
 		}
+
+        this.handleUpdateCounts();
 	},
 
 	handleUnassignedChat: function(data) {
@@ -281,7 +270,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			});
 		}
 
-		DeskPRO_Window.getMessageBroker().sendMessage('chat_convo.' + data.conversation_id + '.unassigned', data);
+        this.handleUpdateCounts();
 	},
 
 	handleInvited: function(data) {
@@ -333,6 +322,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		if (data.agent_id == DESKPRO_PERSON_ID && !this.isChatOpen(data.conversation_id)) {
 			DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
 		}
+
+        this.handleUpdateCounts();
 	},
 
 	showNewChatAlert: function(data) {
