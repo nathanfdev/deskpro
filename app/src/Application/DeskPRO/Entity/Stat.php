@@ -227,7 +227,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 			return $this->author->getDisplayName();
 		}
 		else {
-			return 'deskpro';
+			return 'Default';
 		}
 	}
 
