@@ -2,6 +2,18 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 </script>
 <form action="{{ path('agent_settings_profile_save') }}" method="post">
+
+	<div class="form-errors" id="agent_settings_win_errors" style="display: none">
+		Please correct the following errors with your form:
+		<ul>
+			<li class="name_short">Please enter your full name</li>
+			<li class="email_invalid">Please enter a valid email address</li>
+			<li class="email_in_use">The email address you entered is already in use by another agent</li>
+			<li class="password_short">Please enter a password of at least 5 characters</li>
+			<li class="password_mismatch">The two password fields are not the same</li>
+		</ul>
+	</div>
+
 	<div class="dp-form">
 		<div class="dp-form-row">
 			<div class="dp-form-label"><label>{{ phrase('agent.general.name') }}</label></div>

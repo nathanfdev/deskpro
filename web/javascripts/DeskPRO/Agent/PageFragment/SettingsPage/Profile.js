@@ -90,7 +90,22 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 					$('input.password1', form).val('');
 					$('input.password2', form).val('');
 				},
-				success: function() {
+				success: function(data) {
+
+					if (data.form_errors) {
+
+						$('#agent_settings_win_errors').find('li').hide();
+						Array.each(data.form_errors, function (code) {
+							var classname = code.replace(/\./g, '_');
+							$('#agent_settings_win_errors').find('li.' + classname).show();
+						});
+						$('#agent_settings_win_errors').show();
+
+						return;
+					}
+
+					$('#agent_settings_win_errors').hide();
+
 					self.settingsWindow.showSavePuff();
 					startEmail = $('#settings_profile_email').val();
 				}

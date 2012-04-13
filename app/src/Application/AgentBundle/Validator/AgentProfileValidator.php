@@ -29,39 +29,64 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage AgentBundle
+ * @subpackage UserBundle
  */
 
-namespace Application\AgentBundle\Form\Type;
+namespace Application\AgentBundle\Validator;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-class SettingsProfile extends AbstractType
+use Orb\Util\Arrays;
+use Orb\Validator\AbstractValidator;
+use Application\AgentBundle\Form\Model\SettingsProfile;
+
+class AgentProfileValidator extends AbstractValidator
 {
-	public function buildForm(FormBuilder $builder, array $options)
-    {
-		$builder->add('name', 'text', array('required' => false));
-		$builder->add('email', 'text', array('required' => false));
-		$builder->add('timezone', 'choice', array(
-			'choices' => array_combine(\DateTimeZone::listIdentifiers(), \DateTimeZone::listIdentifiers())
-		));
-		$builder->add('password', 'password', array('required' => false));
-		$builder->add('password2', 'password', array('required' => false));
-		$builder->add('ticket_signature', 'textarea', array('required' => false));
+	/**
+	 * @var \Application\AgentBundle\Form\Model\SettingsProfile
+	 */
+	protected $profile;
 
-		$builder->add('new_picture_blob_id', 'hidden', array('required' => false));
-    }
-
-	public function getDefaultOptions(array $options)
+	/**
+	 * @param \Application\AgentBundle\Form\Model\SettingsProfile $profile
+	 * @return bool
+	 */
+	protected function checkIsValid($profile)
 	{
-		return array(
-			'data_class' => 'Application\\AgentBundle\\Form\\Model\\SettingsProfile',
-		);
-	}
+		$this->profile = $profile;
 
-    public function getName()
-    {
-        return 'settings_profile';
-    }
+		$validator = new \Orb\Validator\StringLength(array('min' => 3));
+		if (!$validator->isValid($this->profile->name)) {
+			$this->addError('name.short');
+		}
+
+		if (!\Orb\Validator\StringEmail::isValueValid($this->profile->email)) {
+			$this->addError('email.invalid');
+		} else {
+			$check_exist = App::getDb()->fetchColumn("
+				SELECT person_id
+				FROM people_emails
+				WHERE email = ?
+			", array($this->profile->email));
+			if ($check_exist && $check_exist != $this->profile->getPerson()->getId()) {
+				$this->addError('email.in_use');
+			}
+		}
+
+		if ($this->profile->password) {
+			$validator = new \Orb\Validator\StringLength(array('min' => 5));
+			if (!$validator->isValid($this->profile->password)) {
+				$this->addError('password.short');
+			} elseif ($this->profile->password != $this->profile->password2) {
+				$this->addError('password.mismatch');
+			}
+		}
+
+		if ($this->errors) {
+			return false;
+		}
+
+		return true;
+	}
 }

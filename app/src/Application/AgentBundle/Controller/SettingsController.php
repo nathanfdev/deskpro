@@ -70,6 +70,15 @@ class SettingsController extends AbstractController
 			}
 		}
 
+		$validator = new \Application\AgentBundle\Validator\AgentProfileValidator();
+		if (!$validator->isValid($edit_profile)) {
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'error_code' => 'form_errors',
+				'form_errors' => $validator->getErrors()
+			));
+		}
+
 		$edit_profile->save();
 
 		return $this->createJsonResponse(array('success' => true));

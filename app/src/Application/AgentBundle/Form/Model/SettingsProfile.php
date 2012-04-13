@@ -69,6 +69,11 @@ class SettingsProfile
 		$this->ticket_signature = $person->getPref('agent.ticket_signature');
 	}
 
+	public function getPerson()
+	{
+		return $this->person;
+	}
+
 	public function requiresAuth()
 	{
 		if ($this->password || $this->email != $this->person->getPrimaryEmailAddress()) {
