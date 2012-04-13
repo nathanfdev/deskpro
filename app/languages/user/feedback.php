@@ -13,7 +13,7 @@
     'user.feedback.similar_same_confirm_no'  => 'I still want to submit my feedback',
     'user.feedback.similar_same_confirm_yes' => 'I do not want to submit a new submission',
     'user.feedback.similar_title'            => 'We found the following feedback submissions that may be similar to yours',
-    'user.feedback.status_active'            => 'active',
+    'user.feedback.status_active'            => 'Active',
     'user.feedback.status_all'               => 'All',
     'user.feedback.status_closed'            => 'Closed',
     'user.feedback.status_new'               => 'New',
