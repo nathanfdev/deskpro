@@ -40,7 +40,7 @@
 			{# Active Chats #}
 			<li id="userchat_list_all" {% if not counts['total'] %}style="display: none"{% endif %}>
 				<h3 class="title is-nav-item" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': agent_id}) }}">
-					<span class="list-counter" id="userchat_list_allagents_counter" data-count="{{ counts['total']|default(0) }}">{{ counts['total']|default(0) }}</span>
+					<span class="list-counter" id="userchat_list_allagents_counter" data-count="{{ counts.active|default(0) }}">{{ counts.active|default(0) }}</span>
 					{{ phrase('agent.chat.title_active_chats') }}
 				</h3>
 				<ul class="sub-group show">

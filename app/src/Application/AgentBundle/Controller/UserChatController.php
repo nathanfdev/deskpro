@@ -451,6 +451,11 @@ class UserChatController extends AbstractController
 		// Initial counts
 		$initial_counts = App::getDb()->fetchAllKeyValue($searcher->getSql());
 		$initial_counts['total'] = array_sum(array_values($initial_counts));
+        $initial_counts['active'] = $initial_counts['total'];
+
+        if(isset($initial_counts[-1])) {
+            $initial_counts['active'] -= $initial_counts[-1];
+        }
 
 		$searcher = new ChatConversationSearch();
 		$searcher->setPersonContext($this->person);

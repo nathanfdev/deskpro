@@ -72,6 +72,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.updateGroupingVars();
 
 		this._lastLoaded = new Date();
+        this.updateBadge($('#userchat_deplist_0_counter').text());
 	},
 
 	refreshFilterGrouping: function(filterId) {
@@ -206,6 +207,10 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				$('#userchat_no_chats').hide();
 			}
 		}
+
+        if(id == 0) {
+            this.updateBadge(count);
+        }
 	},
 
 	handleDepChange: function(data) {
