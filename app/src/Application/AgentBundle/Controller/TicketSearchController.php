@@ -317,7 +317,12 @@ class TicketSearchController extends AbstractController
 			$grouper->setGrouping($ticket_batch['grouping']);
 			$grouper->setMode('specify', $ticket_batch['ticket_ids']);
 
-			$grouped_info = $grouper->getDisplayArray();
+            $grouped_info = $grouper->getDisplayArray();
+
+            if($ticket_batch['grouping'] == 'urgency') {
+                $grouped_info['group1_structure'] = array_reverse($grouped_info['group1_structure']);
+            }
+
 			$batches[$batch_id] = $this->renderView('AgentBundle:TicketSearch:window-filter-groupresult.html.twig', array(
 				'grouping_var' => $ticket_batch['grouping'],
 				'grouped_info' => $grouped_info,
