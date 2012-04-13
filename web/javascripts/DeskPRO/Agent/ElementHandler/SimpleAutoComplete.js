@@ -25,7 +25,7 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
         this.resultsList = $('.results-list', this.resultsBox);
         this.addButton = $('.cc-saverow-trigger', this.el);
 
-        this.tplHtml = DeskPRO_Window.util.getPlainTpl($('.user-row-tpl', this.el));
+        this.tplHtml = DeskPRO_Window.util.getPlainTpl($('.user-row-tpl', this.el.parent()));
 
         //------------------------------
         // Update caller schedules the update requests
@@ -229,7 +229,7 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
                     this.resultsList.append(row);
                 }, this);
 
-                if(this.termInput.is(':focus')) {
+                if(this.termInput.is(':focus') && data.length) {
                     this.open();
                 }
             }

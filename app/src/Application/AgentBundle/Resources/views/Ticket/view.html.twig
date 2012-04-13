@@ -180,30 +180,39 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 								{% endfor %}
 							</ul>
 							<script type="text/x-deskpro-plain" class="addrow-tpl">
-								<li class="addrow noedit-hide">
-									<span class="btn-small-remove remove-row-trigger"></span>
-									<input type="text" class="user-part cc-people-search-trigger" />
-                                    <div class="person-search-box" style="display: none">
-                                        <section>
-                                            <ul class="results-list">
-
-                                            </ul>
-                                        </section>
-                                    </div>
-                                    <span class="is-not-loading"><button class="clean-white small cc-saverow-trigger">{{ phrase('agent.general.add') }}</button></span>
-                                    <span class="is-loading">{{ phrase('agent.general.saving') }}</span>
-                                    <script class="user-row-tpl" type="text/x-deskpro-tmpl">
-                                        <li>
-                                            <a>
-                                                <span class="user-name"></span>
-                                                <address>&lt;<span class="user-email"></span>&gt;</address>
-                                                <div class="bound-fade"></div>
-                                            </a>
-                                        </li>
-                                    </script>
+                                <div class="cc-autocomplete addrow noedit-hide">
+                                    <table width="100%">
+                                        <tr>
+                                            <td>
+                                                <span class="btn-small-remove remove-row-trigger"></span>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="user-part cc-people-search-trigger" style="width:100%;" />
+                                                <div class="person-search-box" style="display: none">
+                                                    <section>
+                                                        <ul class="results-list">
+                                                        </ul>
+                                                    </section>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="is-not-loading"><button class="clean-white small cc-saverow-trigger">{{ phrase('agent.general.add') }}</button></span>
+                                                <span class="is-loading">{{ phrase('agent.general.saving') }}</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </script>
+                            <script class="user-row-tpl" type="text/x-deskpro-tmpl">
+                                <li>
+                                    <a>
+                                        <span class="user-name"></span>
+                                        <address>&lt;<span class="user-email"></span>&gt;</address>
+                                        <div class="bound-fade"></div>
+                                    </a>
                                 </li>
-							</script>
-						</dd>
+                            </script>
+                        </dd>
 					{% endif %}
 				</dl>
 			</article>
