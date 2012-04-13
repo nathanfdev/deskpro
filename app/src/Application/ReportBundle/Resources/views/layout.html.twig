@@ -157,7 +157,7 @@
 <!-- /BEGIN HEADER BAR -->
 
 <!-- BEGIN NAV BAR -->
-<div id="dp_admin_nav">
+<div id="dp_admin_nav" class="dp_admin_nav">
 	<nav>
 		<ul data-update-orders-url="{{ path('report_trend_dashboard_updateorders') }}">
 			{% for dashboard in app.dashboards %}
@@ -176,14 +176,14 @@
 	{% endfor %}
 </ul>
 
-<div id="dp_page_wrap">
+<div id="dp_page_wrap" class="dp_page_wrap">
 
 	{% set pagebar %}{% block pagebar %}{% endblock %}{% endset %}
 	{% if pagebar|trim|length %}
-		<div id="dp_admin_pagebar">{{ pagebar|raw }}</div>
+		<div id="dp_admin_pagebar" class="dp_admin_pagebar">{{ pagebar|raw }}</div>
 	{% endif %}
 
-	<div id="dp_admin_page" {% if not pagebar|trim|length %}class="no-header"{% endif %}>
+	<div id="dp_admin_page" class="dp_admin_page {% if not pagebar|trim|length %}no-header{% endif %}">
 		{% block content %}
 			<div class="dp-page-box">
 				<div class="page-content">
