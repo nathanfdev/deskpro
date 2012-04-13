@@ -209,8 +209,7 @@ class CategoryHierarchy
 			}
 		} else {
 
-			$db = App::getDb();
-			$cats = $this->em->createQuery("SELECT c FROM {$this->entity_name} c ORDER BY c.display_order ASC, c.id ASC")->execute();
+			$cats = $this->em->createQuery("SELECT c FROM {$this->entity_name} c INDEX BY c.id ORDER BY c.display_order ASC, c.id ASC")->execute();
 
 			$this->_cat_ids = array();
 			foreach ($cats as &$c) {

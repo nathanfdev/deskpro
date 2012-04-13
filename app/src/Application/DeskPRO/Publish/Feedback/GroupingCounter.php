@@ -47,6 +47,17 @@ class GroupingCounter
 	protected $this_person_id = null;
 
 	protected $terms = array();
+	protected $ids = null;
+
+	/**
+	 * Set specific IDs we want to group
+	 *
+	 * @param array $ids
+	 */
+	public function setIds(array $ids)
+	{
+		$this->ids = $ids;
+	}
 
 	/**
 	 * Get an array of counts suitable for looping in a template etc
@@ -234,10 +245,15 @@ class GroupingCounter
 		}
 		$select_fields[] = 'COUNT(*) AS total';
 
+		$where = "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status != 'validating')";
+		if (is_array($this->ids)) {
+			$where = "WHERE feedback.id IN(" . implode(',', $this->ids) . ")";
+		}
+
 		$sql = "
 			SELECT " . implode(', ', $select_fields) . "
 			FROM feedback
-			WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status != 'validating')
+			$where
 			$group_by WITH ROLLUP
 		";
 
@@ -394,6 +410,6 @@ class GroupingCounter
 	public function setGrouping($grouping1, $grouping2 = null)
 	{
 		$this->grouping1 = $grouping1 ? $grouping1 : 'category';
-		$this->grouping2 = $grouping2 ? $grouping2 : 'status';
+		$this->grouping2 = $grouping2;
 	}
 }

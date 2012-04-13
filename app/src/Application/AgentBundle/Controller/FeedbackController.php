@@ -595,6 +595,23 @@ class FeedbackController extends AbstractController
 		// $status can be either a top-level name like active, closed or hidden,
 		// or an integer which will be treated as a status category (Active > Planned for example)
 
+		if (strpos($status, '.') !== false) {
+			list ($status, $v_status) = explode('.', $status);
+			$top_result_helper = FeedbackResults::newFromRequest($this, array(
+				'specific_terms' => array(
+					'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
+					'v_status' => array('type' => 'hidden_status', 'op' => 'is', 'hidden_status' => $v_status)
+				)
+			));
+		} else {
+			$top_result_helper = FeedbackResults::newFromRequest($this, array(
+				'specific_terms' => array(
+					'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
+					'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
+				)
+			));
+		}
+
 		if ($this->in->getString('subgroup')) {
 			$result_helper = FeedbackResults::newFromRequest($this, array(
 				'specific_terms' => array(
@@ -604,63 +621,13 @@ class FeedbackController extends AbstractController
 				)
 			));
 		} else {
-			if (strpos($status, '.') !== false) {
-				list ($status, $v_status) = explode('.', $status);
-				$result_helper = FeedbackResults::newFromRequest($this, array(
-					'specific_terms' => array(
-						'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
-						'v_status' => array('type' => 'hidden_status', 'op' => 'is', 'hidden_status' => $v_status)
-					)
-				));
-			} else {
-				$result_helper = FeedbackResults::newFromRequest($this, array(
-					'specific_terms' => array(
-						'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
-						'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
-					)
-				));
-			}
+			$result_helper = $top_result_helper;
 		}
 
 		$grouping = new GroupingCounter();
-		$grouping->setGrouping('status', 'category_id');
+		$grouping->setGrouping('category_id');
+		$grouping->setIds($top_result_helper->getFeedbackIds());
 		$grouped = $grouping->getDisplayArray();
-
-		if (ctype_digit($status)) {
-			$status_cat = App::findEntity('DeskPRO:FeedbackStatusCategory', $status);
-			$status_name = $status_cat['title'];
-			$grouped_key = $status_cat['status_type'] . '.' . $status_cat['id'];
-
-			$grouped_info = array();
-			$t = 0;
-			if (isset($grouped['items'][$grouped_key])) {
-				$grouped_info = Arrays::mergeAssoc($grouped_info, array($grouped_key => $grouped['items'][$grouped_key]));
-				$t = $grouped['items'][$grouped_key]['total'];
-			}
-
-			$grouped_info[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
-		} else {
-			$status_name = App::getTranslator()->phrase('agent.feedback.status_' . $status);
-			$grouped_key = $status;
-			$grouped_info = array();
-
-			if ($status == 'active') {
-				$status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-			} else {
-				$status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
-			}
-
-			$t = 0;
-			foreach ($status_cats as $c) {
-				$k = $status . '.' . $c['id'];
-				if (isset($grouped['items'][$k])) {
-					$grouped_info = Arrays::mergeAssoc($grouped_info, array($k => $grouped['items'][$k]));
-					$t += $grouped['items'][$k]['total'];
-				}
-			}
-
-			$grouped_info[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
-		}
 
 		return $this->renderList(
 			$result_helper,
@@ -669,9 +636,6 @@ class FeedbackController extends AbstractController
 				'list_type' => 'status',
 				'status' => $status,
 				'grouped' => $grouped,
-				'grouped_key' => $grouped_key,
-				'grouped_info' => $grouped_info,
-				'page_title' => $status_name,
 				'subgroup' => $this->in->getString('subgroup'),
 			)
 		);
