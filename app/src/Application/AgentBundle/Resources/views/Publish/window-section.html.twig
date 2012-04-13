@@ -1,6 +1,6 @@
 {% if app.user.hasPerm('agent_publish.validate') %}
-<section class="group-section first open">
-	<header><h2>{{ phrase('agent.general.pending') }}</h2></header>
+<section class="source-section">
+	<header><h1>{{ phrase('agent.general.pending') }}</h1></header>
 	<article>
 		<section class="source-section sys-filters-section">
 			<ul class="source-list">
@@ -42,28 +42,28 @@
 {% endif %}
 
 <section class="group-section open">
-	<header><h2>{{ phrase('agent.general.knowledgebase') }}</h2></header>
+	<header><h1>{{ phrase('agent.general.knowledgebase') }}</h1></header>
 	<article>
 		{% include 'AgentBundle:Publish:kb-tab.html.twig' %}
 	</article>
 </section>
 
 <section class="group-section">
-	<header><h2>{{ phrase('agent.general.news') }}</h2></header>
+	<header><h1>{{ phrase('agent.general.news') }}</h1></header>
 	<article style="display: none">
 		{% include 'AgentBundle:Publish:news-tab.html.twig' %}
 	</article>
 </section>
 
 <section class="group-section">
-	<header><h2>{{ phrase('agent.general.downloads') }}</h2></header>
+	<header><h1>{{ phrase('agent.general.downloads') }}</h1></header>
 	<article style="display: none">
 		{% include 'AgentBundle:Publish:downloads-tab.html.twig' %}
 	</article>
 </section>
 
 <section class="group-section">
-	<header><h2>{{ phrase('agent.publish.glossary') }}</h2></header>
+	<header><h1>{{ phrase('agent.publish.glossary') }}</h1></header>
 	<article style="display: none">
 		{% include 'AgentBundle:Publish:kb-glossary.html.twig' %}
 		<br class="clear" />
