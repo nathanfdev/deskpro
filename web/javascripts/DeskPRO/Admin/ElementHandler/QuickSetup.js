@@ -5,12 +5,31 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 
 	initPage: function() {
 		var self = this;
-		this._autoTimezone();
+
+		this._initInstallSoftwareSection();
+		this._initCronSection();
+		this._initLicenseSection();
+	},
+
+	//##################################################################################################################
+	//# Install Software Section
+	//##################################################################################################################
+
+	_initInstallSoftwareSection: function() {
 		this._autoDeskproUrl();
+		this._autoTimezone();
+
+		var postData = $('#setting_form').serializeArray();
+		var form = $('#setting_form');
+		$.ajax({
+			url: form.attr('action'),
+			method: 'POST',
+			data: postData
+		});
 	},
 
 	_autoDeskproUrl: function() {
-		var field = $('#setup_deskpro_url');
+		var field = $('#setting_url');
 		if (field.val()) {
 			return;//already have a value
 		}
@@ -22,7 +41,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 	},
 
 	_autoTimezone: function() {
-		var tz = $('#setup_timezone');
+		var tz = $('#setting_timezone');
 		if (tz.val() && tz.val() != 'UTC') {
 			return;//already have a value
 		}
@@ -37,5 +56,121 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 				}
 			})
 		}
+	},
+
+	//##################################################################################################################
+	//# Cron
+	//##################################################################################################################
+
+	_initCronSection: function() {
+		this.doCronCheck();
+	},
+
+	doCronCheck: function() {
+		var self = this;
+		$.ajax({
+			url: $('#section_install_cron').data('check-url'),
+			dataType: 'json',
+			success: function(data) {
+				if (!data || !data.cron_okay) {
+					window.setTimeout(function() {
+						self.doCronCheck();
+					}, 15000);
+				} else {
+					$('#section_install_cron').find('.mega-tick').fadeIn();
+				}
+			}
+		});
+	},
+
+	//##################################################################################################################
+	//# License
+	//##################################################################################################################
+
+	_initLicenseSection: function() {
+		var self = this;
+		var wrapper = $('#section_enter_license');
+
+		wrapper.find('.page-radio-group').on('click', function(ev) {
+			wrapper.find('.page-radio-group').removeClass('open');
+			$(this).addClass('open').find(':radio').prop('checked', true);
+		});
+
+		var reqlicGroup   = $('#lic_group_get_demo');
+		var enterlicGroup = $('#lic_group_enter_license');
+
+		//-----
+		// Handling license request
+		//-----
+
+		reqlicGroup.find('form').on('submit', function(ev) {
+
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			enterlicGroup.find('.demo-sent-message').hide();
+			enterlicGroup.find('.errors-box').hide();
+			reqlicGroup.find('.errors-box').hide().find('.error-item').hide();
+
+			var form = $(this);
+			var formData = form.serializeArray();
+
+			form.addClass('mark-loading');
+			$.ajax({
+				url: $(this).attr('action'),
+				type: 'POST',
+				data: formData,
+				dataTyoe: 'json',
+				complete: function() {
+					form.removeClass('mark-loading');
+				},
+				success: function(data) {
+					if (data.success) {
+						enterlicGroup.find('.demo-sent-message').show();
+						wrapper.find('.page-radio-group').removeClass('open');
+						enterlicGroup.addClass('open').find(':radio').prop('checked', true);
+					} else {
+						var errbox = reqlicGroup.find('.errors-box').show();
+						Array.each(data.error_codes, function(code) {
+							code = code.replace(/\./g, '_');
+							errbox.find('.error_' + code).show();
+						});
+					}
+				}
+			});
+		});
+
+		//-----
+		// Handling license set
+		//-----
+
+		enterlicGroup.find('form').on('submit', function(ev) {
+
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			enterlicGroup.find('.errors-box').hide();
+
+			var form = $(this);
+			var formData = form.serializeArray();
+
+			form.addClass('mark-loading');
+			$.ajax({
+				url: $(this).attr('action'),
+				type: 'POST',
+				data: formData,
+				dataTyoe: 'json',
+				complete: function() {
+					form.removeClass('mark-loading');
+				},
+				success: function(data) {
+					if (data.success) {
+						$('#section_enter_license').find('.mega-tick').fadeIn();
+					} else {
+						enterlicGroup.find('.errors-box').show().find('.lic-err-code').text(data.error_code);
+					}
+				}
+			});
+		});
 	}
 });

@@ -1,3 +1,4 @@
+{% if app.getSetting('core.setup_initial') > 30 %}{% set is_post_install = false %}{% else %}{% set is_post_install = true %}{% endif %}
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
@@ -60,88 +61,94 @@
 
 	<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
 </head>
-<body class="{% if is_demo %}is-demo{% endif %}" {% if page_handler %}data-element-handler="{{ page_handler }}"{% endif %}>
+<body class="{% if is_demo %}is-demo{% endif %} {% if is_post_install %}post-install{% endif %}" {% if page_handler %}data-element-handler="{{ page_handler }}"{% endif %}>
 
-{% if app.getSetting('core.setup_initial') > 30 %}
 {% block header %}
 <!-- BEGIN HEADER BAR -->
 <div id="dp_header">
-	{# User Logo #}
-	<div id="dp_header_user">
-		<div class="button-wrap" id="userSetting_trigger">
-			<h1>
-				<cite style="background-image: url({{ app.user.getPictureUrl(24) }});"></cite>
-				<span class="drop"></span>
-			</h1>
-		</div>
-	</div>
-	<!-- Header - User Control Dropdown -->
-	<div id="userSetting" style="display:none;">
-		<div class="userProfileDropdown" >
-			<div class="userProfileDropdownHeader">
-				<a><em style="background-image: url({{ app.user.getPictureUrl(24) }});"></em></a>
-				<span class="drop"></span>
-			</div>
-			<ul>
-				<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
-				<li class="help"><a href="http://support.deskpro.com/">{{ phrase('agent.general.help') }}</a></li>
-				<li class="logout"><a href="{{ path('user_logout', {'auth': static_security_token('user_logout', 0)}) }}?to=agent">{{ phrase('agent.general.log_out') }}</a></li>
-			</ul>
-		</div>
-	</div>
-
-
-	{# DeskPRO Logo #}
-	<div id="dp_logo_wrap">
-		<div class="button-wrap">
-			<h1>
-				{{ phrase('agent.general.deskpro') }}
-				<span class="drop"></span>
-			</h1>
-		</div>
-	</div>
-	<div id="dp_logo_expand_wrap">
-		<div class="dropdown-header">
-			<h1>
-				{{ phrase('agent.general.deskpro') }}
-				<span class="drop"></span>
-			</h1>
-		</div>
-		<div class="dropdown-content">
-			<a href="http://www.deskpro.com/" target="_blank">{{ phrase('agent.interface.powered_by') }} <span>{{ phrase('agent.interface.deskpro_website_host') }}</span></a>
-		</div>
-	</div>
-
-	<!-- BEGIN INTERFACE SECTION -->
-	<div id="DP-InterfaceSwitcher">
-		<div class="DP-adminSwitch">
-			<div class="adminSwitcher">
-				<a class="admin">{{ phrase('agent.general.admin_interface') }}<span class="dropdownIcon"></span></a>
+	{% if is_post_install %}
+		<h3>Administration</h3>
+	{% else %}{# else not post install #}
+		{# User Logo #}
+		<div id="dp_header_user">
+			<div class="button-wrap" id="userSetting_trigger">
+				<h1>
+					<cite style="background-image: url({{ app.user.getPictureUrl(24) }});"></cite>
+					<span class="drop"></span>
+				</h1>
 			</div>
 		</div>
-		<!-- Header - Switch Button Interfaces- Dropdown -->
-		<div id="interfacesToggle" style="display:none;">
-			<div class="dropdownSwitcherWrap">
-				<div class="switcherHeader">
-					<a class="admin"><span>{{ phrase('agent.general.admin_interface') }}</span></a>
+		<!-- Header - User Control Dropdown -->
+		<div id="userSetting" style="display:none;">
+			<div class="userProfileDropdown" >
+				<div class="userProfileDropdownHeader">
+					<a><em style="background-image: url({{ app.user.getPictureUrl(24) }});"></em></a>
+					<span class="drop"></span>
 				</div>
 				<ul>
-					{% if app.user.can_agent %}<li><a class="agent" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">{{ phrase('agent.general.agent_interface') }}</span></a></li>{% endif %}
-					{% if app.user.can_billing %}<li><a class="billing" href="{{ app.request.getBaseUrl() }}/billing"><span class="check">{{ phrase('agent.general.billing_interface') }}</span></a></li>{% endif %}
-					{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">{{ phrase('agent.general.report_interface') }}</span></a></li>{% endif %}
-					{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span class="check">{{ phrase('agent.general.user_interface') }}</span></a></li>{% endif %}
+					<li class="currentUsername"><p>{{ app.user.display_name }}</p></li>
+					<li class="help"><a href="http://support.deskpro.com/">{{ phrase('agent.general.help') }}</a></li>
+					<li class="logout"><a href="{{ path('user_logout', {'auth': static_security_token('user_logout', 0)}) }}?to=agent">{{ phrase('agent.general.log_out') }}</a></li>
 				</ul>
 			</div>
 		</div>
-	</div>
-	<!-- END INTERFACE SECTION -->
+
+
+		{# DeskPRO Logo #}
+		<div id="dp_logo_wrap">
+			<div class="button-wrap">
+				<h1>
+					{{ phrase('agent.general.deskpro') }}
+					<span class="drop"></span>
+				</h1>
+			</div>
+		</div>
+		<div id="dp_logo_expand_wrap">
+			<div class="dropdown-header">
+				<h1>
+					{{ phrase('agent.general.deskpro') }}
+					<span class="drop"></span>
+				</h1>
+			</div>
+			<div class="dropdown-content">
+				<a href="http://www.deskpro.com/" target="_blank">{{ phrase('agent.interface.powered_by') }} <span>{{ phrase('agent.interface.deskpro_website_host') }}</span></a>
+			</div>
+		</div>
+
+		<!-- BEGIN INTERFACE SECTION -->
+		<div id="DP-InterfaceSwitcher">
+			<div class="DP-adminSwitch">
+				<div class="adminSwitcher">
+					<a class="admin">{{ phrase('agent.general.admin_interface') }}<span class="dropdownIcon"></span></a>
+				</div>
+			</div>
+			<!-- Header - Switch Button Interfaces- Dropdown -->
+			<div id="interfacesToggle" style="display:none;">
+				<div class="dropdownSwitcherWrap">
+					<div class="switcherHeader">
+						<a class="admin"><span>{{ phrase('agent.general.admin_interface') }}</span></a>
+					</div>
+					<ul>
+						{% if app.user.can_agent %}<li><a class="agent" href="{{ app.request.getBaseUrl() }}/agent/"><span class="check">{{ phrase('agent.general.agent_interface') }}</span></a></li>{% endif %}
+						{% if app.user.can_billing %}<li><a class="billing" href="{{ app.request.getBaseUrl() }}/billing"><span class="check">{{ phrase('agent.general.billing_interface') }}</span></a></li>{% endif %}
+						{% if app.user.can_reports %}<li><a class="reports" href="{{ app.request.getBaseUrl() }}/reports"><span class="check">{{ phrase('agent.general.report_interface') }}</span></a></li>{% endif %}
+						{% if app.getSetting('user.portal_enabled') %}<li><a class="user" href="{{ app.request.getBaseUrl() }}/"><span class="check">{{ phrase('agent.general.user_interface') }}</span></a></li>{% endif %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- END INTERFACE SECTION -->
+	{% endif %}{# /endif not post install #}
 </div>
 <!-- /BEGIN HEADER BAR -->
 
 <!-- BEGIN NAV BAR -->
 <div id="dp_admin_nav">
+	{% if is_post_install %}<div class="capture-click"></div>{% endif %}
 	<div id="dp_admin_nav_sections" class="deskproPane">
-		{% include 'AdminBundle:Main:layout-setupguide.html.twig' %}
+		{% if not is_post_install %}
+			{% include 'AdminBundle:Main:layout-setupguide.html.twig' %}
+		{% endif %}
 
 		<ul>
 			<li>
@@ -186,21 +193,22 @@
 </div>
 
 {% endblock %}
-{% endif %}
 
 <!-- /BEGIN NAV BAR -->
 <div id="dp_page_wrap">
 
+{% if is_post_install %}
 {% if not is_cron_page and app.getSetting('core.setup_initial') > 30 and not app.getSetting('core.last_cron_run') and app.getSetting('core.install_timestamp') and ( ('now'|date('U') - 600) > app.getSetting('core.install_timestamp')) %}
 	<div class="cron-warn">
 		<p>{{ phrase('admin.general.error_cron_inactive') }}</p>
 		<a class="clean-white" href="{{ path('admin_settings_cron') }}">{{ phrase('admin.general.error_cron_inactive_go') }} &rarr;</a>
 	</div>
 {% endif %}
+{% endif %}
 
 {% set pagebar %}{% block pagebar %}{% endblock %}{% endset %}
 {% if pagebar|trim|length %}
-	<div id="dp_admin_pagebar">{{ pagebar|raw }}</div>
+	<div id="dp_admin_pagebar" class="dp_admin_pagebar">{{ pagebar|raw }}</div>
 {% endif %}
 
 {% block pagebar_after %}{% endblock %}
@@ -229,9 +237,9 @@
 {% set sidebar %}{% block sidebar %}{% endblock %}{% endset %}
 {% set sidebar_right %}{% block sidebar_right %}{% endblock %}{% endset %}
 {% block dp_full_page %}
-<div id="dp_admin_page" class="{% if sidebar|trim|length %}with-sidebar{% endif %} {% if sidebar_right|trim|length %}with-sidebar-right{% endif %} {{ admin_page_class }}">
+<div id="dp_admin_page" class="dp_admin_page {% if sidebar|trim|length %}with-sidebar{% endif %} {% if sidebar_right|trim|length %}with-sidebar-right{% endif %} {{ admin_page_class }}">
 	{% block prepage %}{% endblock %}
-	<div id="dp_admin_page_inner">
+	<div id="dp_admin_page_inner" class="dp_admin_page_inner">
 		{% if sidebar|trim|length %}
 			<div id="dp_admin_page_sidebar" class="dp-sidebar">{{ sidebar|raw }}</div>
 		{% endif %}

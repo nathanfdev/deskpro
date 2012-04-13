@@ -59,7 +59,7 @@
 	/**
 	 * The URL to the DeskPRO installation
 	 */
-	'core.deskpro_url' => 'http://localhost/',
+	'core.deskpro_url' => '',
 
 	/**
 	 * The name of the DeskPRO helpdesk
@@ -100,7 +100,7 @@
 	/**
 	 * The secret string used for this installation used when generating various hashes
 	 */
-	'core.app_secret' => 'EE31CDD75AFA0ECC46004FD80B376C1180DBB0E7FCFEC925341A68FE6CF8630F',
+	'core.app_secret' => 'APP_SECRET',
 
 	/**
 	 * The default "from" address to send all email from

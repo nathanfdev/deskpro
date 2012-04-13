@@ -37,6 +37,16 @@ a.delete-link:hover {
 	position: relative;
 	border-left:  1px solid #2A5083;
 	border-right:  1px solid #2A5083;
+
+	h3 {
+		line-height: 39px;
+		font-size: 14pt;
+		color: #fff;
+		font-family: @heading-font;
+		font-weight: bold;
+		padding: 0 0 0 10px;
+		margin: 0;
+	}
 }
 
 #dp_omnibox {
@@ -90,6 +100,7 @@ a.delete-link:hover {
 
 
 #dp_admin_nav{
+	position: relative;
 	background: #263343;
 	height: 58px;
 
@@ -106,10 +117,15 @@ a.delete-link:hover {
 	border: 1px solid #242526;
 	border-top:  none;
 }
+#dp_admin_nav .capture-click {
+	position: absolute;
+	top: 0; right: 0; bottom: 0; left: 0;
+	z-index: 1;
+}
 
-#dp_admin_nav.disabled {
+.post-install #dp_admin_nav {
 	#dp_admin_nav_sections {
-		.opacity(50);
+		.opacity(40);
 	}
 }
 
@@ -326,14 +342,14 @@ a.delete-link:hover {
 	margin-right: auto;
 }
 
-#dp_admin_page {
+.dp_admin_page {
 	position: relative;
 }
 
-#dp_admin_page_inner {
+.dp_admin_page_inner {
 	position: relative;
 }
-#dp_admin_page {
+.dp_admin_page {
 	color: #404040;
 	background-color: #fff;
 
@@ -345,7 +361,7 @@ a.delete-link:hover {
 	z-index: 1;
 }
 
-#dp_admin_page.with-top {
+.dp_admin_page.with-top {
 	border-top: 1px solid #CACFD6;
 	.rounded(6px);
 }
@@ -353,7 +369,7 @@ a.delete-link:hover {
 .dp-page-box {
 }
 
-#dp_admin_page_sidebar {
+.dp_admin_page_sidebar {
     position: absolute;
 	top: 0;
     right: 0;
@@ -362,7 +378,7 @@ a.delete-link:hover {
 	padding-right: 15px;
 }
 
-#dp_admin_page_sidebar_right {
+.dp_admin_page_sidebar_right {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -371,11 +387,11 @@ a.delete-link:hover {
 	padding-right: 15px;
 }
 
-#dp_admin_page.with-sidebar > #dp_admin_page_inner > .dp-page-box {
+.dp_admin_page.with-sidebar > .dp_admin_page_inner > .dp-page-box {
 	padding-left: 290px;
 }
 
-#dp_admin_page.with-sidebar-right > #dp_admin_page_inner > .dp-page-box {
+.dp_admin_page.with-sidebar-right > .dp_admin_page_inner > .dp-page-box {
 	padding-right: 290px
 }
 
@@ -399,7 +415,7 @@ a.delete-link:hover {
 	color: #666;
 }
 
-#dp_admin_page p {
+.dp_admin_page p {
 	margin-bottom: 10px;
 }
 
@@ -414,25 +430,25 @@ a.delete-link:hover {
 	margin-bottom: 10px;
 }
 
-#dp_admin_pagetitle {
+.dp_admin_pagetitle {
 	margin: 5px 20px 10px 20px;
 }
 
-#dp_admin_pagetitle nav {
+.dp_admin_pagetitle nav {
 	margin-top: 4px;
 }
 
-#dp_admin_pagetitle nav button {
+.dp_admin_pagetitle nav button {
 	font-size: 11px;
 	padding: 4px 12px 4px 14px;
 }
 
-#dp_admin_pagetitle h1 {
+.dp_admin_pagetitle h1 {
 	font-size: 20px;
 	color: #000;
 }
 
-#dp_admin_pagetitle h1 > select {
+.dp_admin_pagetitle h1 > select {
 	font-size: 14px !important;
 }
 
@@ -1917,7 +1933,7 @@ footer.setting_field_row {
 }
 
 
-#dp_admin_pagetitle .onoff {
+.dp_admin_pagetitle .onoff {
 	float: left;
 	margin-right: 5px;
 	position: relative;
@@ -2633,7 +2649,7 @@ nav.admin-object-nav li:hover {
 
 
 
-#dp_admin_pagebar {
+.dp_admin_pagebar {
     margin-top: 10px;
 	background: url(../../images/agent/header/header-bg.png) repeat-x 0 0;
 	border: 1px solid #cacfd6;
@@ -2671,7 +2687,7 @@ nav.admin-object-nav li:hover {
 	}
 }
 
-#dp_admin_pagebar > nav {
+.dp_admin_pagebar > nav {
 	float: right;
 	margin: 6px 7px 0 0;
 
@@ -3682,4 +3698,55 @@ a.install-key-file {
     margin-right: 8px;
     max-height: 100px;
     overflow-y: auto;
+}
+
+.dp_admin_page_inner {
+	overflow: hidden;
+}
+
+.page-radio-group {
+	border: 1px solid #D9DBDB;
+	background-color: #F5F5F5;
+	padding: 8px;
+	margin-bottom: 10px;
+	.rounded(8px);
+
+	> header {
+		input[type="radio"] {
+			margin-right: 5px;
+		}
+		h3 {
+			font-family: @body-font-bold;
+		}
+	}
+	> article {
+		display: none;
+		padding-left: 24px;
+	}
+}
+.page-radio-group.open {
+	> article { display: block; }
+}
+
+ul.checked-list {
+	li {
+		background: url(../../images/agent/icons/check.png) no-repeat 0 50%;
+		padding-left: 21px;
+		line-height: 24px;
+	}
+}
+
+.mega-tick {
+	position: absolute;
+	top: 0; right: 0; bottom: 0; left: 0;
+	background: rgba(255, 255, 255, 0.5) url(../../images/big-tick.png) no-repeat 50% 50%;
+	z-index: 1;
+}
+
+table.form-table td {
+	padding: 6px;
+	vertical-align: middle;
+}
+table.form-table td.label {
+	font-size: 10pt;
 }

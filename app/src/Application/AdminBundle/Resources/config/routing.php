@@ -415,6 +415,20 @@ $collection->add('admin_settings', new Route(
 	array()
 ));
 
+$collection->add('admin_settings_silent_settings', new Route(
+	'/settings/welcome/set-settings-silent.json',
+	array('_controller' => 'AdminBundle:Settings:setSilentSettings'),
+	array(),
+	array()
+));
+
+$collection->add('admin_settings_cron_check', new Route(
+	'/settings/cron/check.json',
+	array('_controller' => 'AdminBundle:Settings:checkCron'),
+	array(),
+	array()
+));
+
 $collection->add('admin_settings_cron', new Route(
 	'/settings/cron',
 	array('_controller' => 'AdminBundle:Settings:cron'),

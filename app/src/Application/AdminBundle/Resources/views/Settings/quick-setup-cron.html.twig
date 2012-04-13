@@ -1,0 +1,59 @@
+{{ phrase('admin.settings.cron_explain') }}
+
+<br />
+
+{% if not get_instance_ability('is_windows') %}
+<div class="content-table template-dir">
+	<table width="100%">
+		<thead>
+		<tr>
+			<th class="single-title" colspan="10">
+				<h1 class="noexpand">{{ phrase('admin.settings.cron_setup_linux') }}</h1>
+			</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td>
+				{{ phrase('admin.settings.cron_setup_linux_edit_file') }}
+				<pre class="code-box">* * * * * exampleuser {{ php_path }} -q {{ path }}/cron.php</pre>
+				<div class="small-note-box">{{ phrase('admin.settings.cron_setup_linux_edit_file_user') }}</div>
+				<br />
+				<p>
+					<a href="{{ get_service_url('dp.kb.install.cron') }}">{{ phrase('admin.settings.cron_detailed_instructions') }}</a>
+				</p>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+<br />
+{% endif %}
+
+{% if get_instance_ability('is_windows') %}
+<div class="content-table template-dir">
+	<table width="100%">
+		<thead>
+		<tr>
+			<th class="single-title" colspan="10">
+				<h1 class="noexpand">{{ phrase('admin.settings.cron_setup_windows') }}</h1>
+			</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td>
+				{{ phrase('admin.settings.cron_setup_linux_edit_file') }}
+				<pre class="code-box">* * * * * exampleuser {{ php_path }} -q {{ path }}/cron.php</pre>
+				<div class="small-note-box">{{ phrase('admin.settings.cron_setup_linux_edit_file_user') }}</div>
+				<br />
+				<p>
+					<a href="{{ get_service_url('dp.kb.install.cron') }}">{{ phrase('admin.settings.cron_detailed_instructions') }}</a>
+				</p>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+<br />
+{% endif %}

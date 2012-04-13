@@ -2,94 +2,98 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block html_head %}
-<script type="text/javascript" src="{{ asset('vendor/detect_timezone.js') }}"></script>
+<script type="text/javascript" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
+		src="{{ asset('vendor/detect_timezone.js') }}"></script>
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/QuickSetup.js') }}"></script>
 {% endblock %}
-{% block pagebar %}
-	<ul>
-		<li>{{ phrase('admin.settings.welcome_to_deskpro') }}</li>
-	</ul>
-{% endblock %}
-{% block page %}
+{% block dp_full_page %}
+	<div class="dp_admin_pagebar">
+		<ul>
+			<li>Install Software</li>
+		</ul>
+	</div>
+	<div class="dp_admin_page" id="section_install_software">
+		<div class="mega-tick"></div>
+		<div class="dp_admin_page_inner">
+			<div class="dp-page-box">
+				<div class="page-content">
 
-<form class="dp-form" method="post" action="{{ path('admin_welcome') }}" id="quick_setup_form">
-	<input type="hidden" name="process" value="1" />
-	{{ form_token() }}
+					<form action="{{ path('admin_settings_silent_settings') }}" method="post" id="setting_form">
+						<input type="hidden" name="timezone" id="setting_timezone" value="UTC" />
+						<input type="hidden" name="url" id="setting_url" value="" />
+					</form>
 
-	<div class="dp-form-section">
-		<div class="dp-form-row">
-			<div class="dp-form-label">
-				<label>{{ phrase('admin.settings.default_email_from_address') }}</label> <em class="desc">{{ phrase('admin.settings.enter_default_email_origin') }}</em>
-			</div>
-			<div class="dp-form-input">
-				{{ form_widget(form.default_from_email) }}
-				{% if errors.invalid_default_from_email %}<div class="dp-error">{{ phrase('agent.general.please_enter_valid_email') }}</div>{% endif %}
-			</div>
-		</div>
-
-		<div class="dp-form-row">
-			<div class="dp-form-label">
-				<label>{{ phrase('admin.settings.deskpro_url') }}</label> <em class="desc">{{ phrase('admin.settings.notice_deskpro_url') }}</em>
-			</div>
-			<div class="dp-form-input">
-				{{ form_widget(form.deskpro_url) }}
-				{% if errors.default_from_email %}<div class="dp-error">{{ phrase('admin.settings.enter_valid_url') }}</div>{% endif %}
-			</div>
-		</div>
-
-		<div class="dp-form-row">
-			<div class="dp-form-label">
-				<label>{{ phrase('admin.settings.deskpro_name') }}</label> <em class="desc">{{ phrase('admin.settings.notice_name_of_your_helpdesk') }}</em>
-			</div>
-			<div class="dp-form-input">
-				{{ form_widget(form.deskpro_name) }}
-				{% if errors.default_from_email %}<div class="dp-error">{{ phrase('admin.settings.enter_helpdesk_name') }}</div>{% endif %}
-			</div>
-		</div>
-
-		<div class="dp-form-row">
-			<div class="dp-form-label">
-				<label>{{ phrase('admin.settings.your_site_name') }}</label> <em class="desc">{{ phrase('admin.settings.your_main_website_name') }}</em>
-			</div>
-			<div class="dp-form-input">
-				{{ form_widget(form.site_name) }}
-			</div>
-		</div>
-
-		<div class="dp-form-row">
-			<div class="dp-form-label">
-				<label>{{ phrase('admin.settings.your_site_url') }}</label> <em class="desc">{{ phrase('admin.settings.your_main_website_url') }}</em>
-			</div>
-			<div class="dp-form-input">
-				{{ form_widget(form.site_url) }}
-			</div>
-		</div>
-
-		<div class="dp-form-row">
-			<div class="dp-form-label">
-				<label>{{ phrase('admin.settings.default_timezone') }}</label> <em class="desc">{{ phrase('admin.settings.notice_default_timezone') }}</em>
-			</div>
-			<div class="dp-form-input">
-				{{ form_widget(form.timezone) }}
-				{% if errors.default_from_email %}<div class="dp-error">{{ phrase('admin.settings.select_timezone') }}</div>{% endif %}
+					<ul class="checked-list">
+						<li>License agreement</li>
+						<li>Server checks</li>
+						<li>File integrity checks</li>
+						<li>Database installation</li>
+						<li>Initial admin account</li>
+					</ul>
+					<br />
+					<br />
+					<p>DeskPRO has been installed successfully.</p>
+				</div>
 			</div>
 		</div>
 	</div>
+	<br />
 
-	<div class="dp-form-section">
-		<div class="dp-form-row">
-			<div class="dp-form-label">
-				<label>{{ form_widget(form.portal_enabled) }} {{ phrase('admin.settings.enable_portal') }}</label><br />
-			</div>
-			<div class="dp-form-input">
-				<p>{{ phrase('admin.settings.notice_deskpro_user_frontend') }}</p>
+	<div class="dp_admin_pagebar" id="section_install_cron" data-check-url="{{ path('admin_settings_cron_check') }}">
+		<ul>
+			<li>Install Scheduled Task</li>
+		</ul>
+	</div>
+	<div class="dp_admin_page">
+		<div class="mega-tick" style="display: none"></div>
+		<div class="dp_admin_page_inner">
+			<div class="dp-page-box">
+				<div class="page-content">
+					{% include 'AdminBundle:Settings:quick-setup-cron.html.twig' %}
+				</div>
 			</div>
 		</div>
 	</div>
+	<br />
 
-	<footer class="controls">
-		<button class="clean-white">{{ phrase('agent.general.continue') }}</button>
-	</footer>
-</form>
+	<div class="dp_admin_pagebar">
+		<ul>
+			<li>Enter License</li>
+		</ul>
+	</div>
+	<div class="dp_admin_page" id="section_enter_license">
+		<div class="mega-tick" style="display: none"></div>
+		<div class="dp_admin_page_inner">
+			<div class="dp-page-box">
+				<div class="page-content">
+					{% include 'AdminBundle:Settings:quick-setup-license.html.twig' %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<br />
 
+	<div class="dp_admin_pagebar" id="section_config_smtp">
+		<ul>
+			<li>Configure Outgoing Email</li>
+		</ul>
+	</div>
+	<div class="dp_admin_page">
+		<div class="dp_admin_page_inner">
+			XXX
+		</div>
+	</div>
+	<br />
+
+	<div class="dp_admin_pagebar" id="section_config_pop3">
+		<ul>
+			<li>Configure Incoming Email</li>
+		</ul>
+	</div>
+	<div class="dp_admin_page">
+		<div class="dp_admin_page_inner">
+			XXX
+		</div>
+	</div>
+	<br />
 {% endblock %}

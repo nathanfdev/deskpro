@@ -87,7 +87,6 @@ class SettingsController extends AbstractController
 		));
 	}
 
-
 	############################################################################
 	# advanced
 	############################################################################
@@ -321,6 +320,34 @@ class SettingsController extends AbstractController
 			'form' => $form->createView(),
 			'errors' => $errors
 		));
+	}
+
+	public function setSilentSettingsAction()
+	{
+		$timezone = $this->in->getString('timezone');
+		$url = $this->in->getString('url');
+
+		if ($timezone && !$this->container->getSetting('core.default_timezone')) {
+			$this->container->get('deskpro.core.settings')->setSetting('core.default_timezone', $timezone);
+		}
+		if ($url && !$this->container->getSetting('core.deskpro_url')) {
+			$this->container->get('deskpro.core.settings')->setSetting('core.deskpro_url', $url);
+		}
+
+		if ($this->container->getSetting('core.app_secret') == 'APP_SERCRET') {
+			$this->container->get('deskpro.core.settings')->setSetting('core.app_secret', Strings::random(50, Strings::CHARS_ALPHANUM_IU));
+		}
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	public function checkCronAction()
+	{
+		if ($this->container->getSetting('core.last_cron_run')) {
+			return $this->createJsonResponse(array('cron_okay' => true));
+		}
+
+		return $this->createJsonResponse(array('cron_okay' => false));
 	}
 
 	public function checkInternetAccessAction()

@@ -124,6 +124,11 @@ class LicenseController extends AbstractController
 									$errors['request_error'] = $data['error_code'];
 								}
 							} else {
+								if ($this->request->isXmlHttpRequest()) {
+									return $this->createJsonResponse(array(
+										'success' => true
+									));
+								}
 								return $this->redirectRoute('admin_license_input', array('from_demo' => 1));
 							}
 						}
@@ -146,6 +151,13 @@ class LicenseController extends AbstractController
 						$errors[$failed] = true;
 					}
 				}
+			}
+
+			if ($this->request->isXmlHttpRequest()) {
+				return $this->createJsonResponse(array(
+					'error' => true,
+					'error_codes' => $errors,
+				));
 			}
 		}
 
@@ -177,6 +189,14 @@ class LicenseController extends AbstractController
 
 		$lic = License::create($license_code, $this->settings->get('core.install_key'));
 		if ($lic->isLicenseCodeError()) {
+
+			if ($this->request->isXmlHttpRequest()) {
+				return $this->createJsonResponse(array(
+					'error' => true,
+					'error_code' => $lic->getLicenseCodeError()
+				));
+			}
+
 			return $this->redirectRoute('admin_license_input', array('invalid' => $lic->getLicenseCodeError()));
 		}
 
@@ -220,6 +240,12 @@ class LicenseController extends AbstractController
 			}
 
 			if ($failed) {
+				if ($this->request->isXmlHttpRequest()) {
+					return $this->createJsonResponse(array(
+						'error' => true,
+						'error_code' => $failed === true ? 'unknown_request_error' : 'req_' . $failed
+					));
+				}
 				if ($failed === true) {
 					return $this->redirectRoute('admin_license_input', array('invalid' => 'unknown_request_error'));
 				} else {
@@ -239,8 +265,17 @@ class LicenseController extends AbstractController
 		}
 
 		$setup_initial = $this->container->getSetting('core.setup_initial');
+		$set_setup = false;
 		if ($setup_initial < 20) {
 			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '21');
+			$set_setup = true;
+		}
+
+		if ($this->request->isXmlHttpRequest()) {
+			return $this->createJsonResponse(array(
+				'success' => true
+			));
+		} elseif ($set_setup) {
 			return $this->redirectRoute('admin');
 		}
 

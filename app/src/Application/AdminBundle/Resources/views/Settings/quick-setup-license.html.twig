@@ -1,0 +1,102 @@
+<div class="page-radio-group open" id="lic_group_get_demo">
+	<header>
+		<h3><label><input type="radio" checked="checked" name="lic_box" /> Get a demo license</input></label></h3>
+	</header>
+	<article>
+		<form action="{{ path('admin_license_reqdemo') }}" method="post">
+			<input type="hidden" name="process" value="1" />
+
+			<div class="alert-message block-message error errors-box" style="display: none;">
+				<strong>{{ phrase('admin.license.error_encountered') }}:</strong>
+				<ul>
+					<li class="error-item error_email">{{ phrase('agent.general.please_enter_valid_email') }}</li>
+					<li class="error-item error_timeout">{{ phrase('admin.license.error_you_timed_out') }}</li>
+					<li class="error-item error_server_error">{{ phrase('admin.license.error_licensing_server_problems') }}</li>
+					<li class="error-item error_request_error">{{ phrase('admin.license.license_server_detected_error', {'error':errors.request_error}) }}</li>
+					<li class="error-item error_unknown_request_error">{{ phrase('admin.license.error_licence_server_connection') }}</li>
+				</ul>
+
+				<div class="error-item error_timeout error_unknown_request_error" style="display: none">
+					<p>
+						{{ phrase('admin.license.explain_connection_problems') }}
+					</p>
+					<p style="font-size: 120%; color: #000; margin-top: 10px; padding-top: 5px; border-top: #FBC7C6;">
+						<a href="{{ path('admin_license_keyfile', {email_address: email_address|default(app.user.primary_email_address) }) }}" class="install-key-file">{{ phrase('admin.license.installkey') }}</a>
+						<br />
+						{% set phrase_link %}
+						<a href="mailto:support@deskpro.com" style="color: #000;">{{ phrase('agent.general.supportdeskprocom') }}</a>
+						{% endset %}
+						{{ phrase('admin.license.do_if_license_has_problems', {'link':phrase_link}) }}
+					</p>
+					<br class="clear" />
+				</div>
+			</div>
+
+			<input type="hidden" name="process" value="1" />
+			<table cellspacing="0" cellpadding="0" class="form-table" width="100%">
+				<tr>
+					<td class="label" width="250" valign="middle">Send license to:</td>
+					<td><input type="text" name="email_address" value="{{ app.user.primary_email_address }}" /></td>
+				</tr>
+				<tr>
+					<td class="label" valign="middle">Your website or company name:</td>
+					<td><input type="text" name="website_name" value="" /></td>
+				</tr>
+				<tr>
+					<td class="label"  valign="middle">Your website URL:</td>
+					<td><input type="text" name="website_url" value="" /></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>
+						<div class="is-not-loading">
+							<button class="clean-white">{{ phrase('admin.license.get_demo_license') }}</button>
+						</div>
+						<div class="is-loading">
+							<i class="flat-spinner"></i>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</article>
+</div>
+
+<div class="page-radio-group" id="lic_group_enter_license">
+	<header>
+		<h3><label><input type="radio" name="lic_box" /> Enter license code</input></label></h3>
+	</header>
+	<article>
+		<div class="alert-message block-message error errors-box" style="display: none">
+			<strong>{{ phrase('admin.license.error_encountered') }}:</strong>
+			<ul>
+				<li>{{ phrase('admin.license.notice_invalid_license', {'invalid':'<span class="lic-err-code"></span>'}) }}</li>
+			</ul>
+		</div>
+
+		<form action="{{ path('admin_license_input_save') }}" method="post">
+			<table cellspacing="0" cellpadding="0" class="form-table" width="100%">
+				<tr>
+					<td class="label" width="150" valign="middle">License code:</td>
+					<td>
+						<div class="alert-message block-message success demo-sent-message" style="display: none;">
+							Your demo license has been sent. Check your email and then copy and paste the code into the box below.
+						</div>
+						<textarea name="license_code" style="height: 150px; width: 90%;"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>
+						<div class="is-not-loading">
+							<button class="clean-white">Save License &rarr;</button>
+						</div>
+						<div class="is-loading">
+							<i class="flat-spinner"></i>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</article>
+</div>
