@@ -136,7 +136,7 @@ class FeedbackController extends AbstractController
 		$content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($feedback, $this->person, $this->session->getVisitor());
 		$my_vote = $content_rating->getRating();
 
-		$feedback_categories     = App::getEntityRepository('DeskPRO:FeedbackCategory')->getCategoryHelper()->getCategoriesInHierarchy();
+		$feedback_categories = App::getEntityRepository('DeskPRO:FeedbackCategory')->getCategoryHelper()->getCategoriesInHierarchy();
 		$active_status_cats  = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
 		$closed_status_cats  = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
@@ -160,9 +160,9 @@ class FeedbackController extends AbstractController
 			'related_content'     => $related_content,
 			'sticky_search_words' => $sticky_search_words,
 
-			'feedback_categories'    => $feedback_categories,
-			'active_status_cats' => $active_status_cats,
-			'closed_status_cats' => $closed_status_cats,
+			'feedback_categories'  => $feedback_categories,
+			'active_status_cats'   => $active_status_cats,
+			'closed_status_cats'   => $closed_status_cats,
 		));
 	}
 

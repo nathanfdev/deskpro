@@ -201,39 +201,32 @@ class CategoryHierarchy
 	{
 		if (!$reset && $this->_cat_hierarchy !== null) return $this->_cat_hierarchy;
 
-		$cat_info = null;
+		$cats = $this->em->getConnection()->fetchAllKeyed("
+			SELECT id, parent_id, title
+			FROM {$this->table_name}
+			ORDER BY display_order ASC, id ASC
+		", array(), 'id');
 
-		if ($cat_info) {
-			foreach ($cat_info as $k => $v) {
-				$this->$k = $v;
-			}
-		} else {
-
-			$cats = $this->em->createQuery("SELECT c FROM {$this->entity_name} c INDEX BY c.id ORDER BY c.display_order ASC, c.id ASC")->execute();
-
-			$this->_cat_ids = array();
-			foreach ($cats as &$c) {
-				if (empty($c['url_slug'])) {
-					$c['url_slug'] = $c->getId() . '-' . Strings::slugifyTitle($c['title']);
-				}
-				$this->_cat_ids[] = $c->getId();
-			}
-			unset($c);
-
-			if ($this->processor_callback) {
-				$cats = $this->processor_callback($cats);
-			}
-
-			foreach ($cats as $c) {
-				$this->_cat_parent_map[$c->getId()] = $c['parent_id'] ? $c['parent_id'] : 0;
-			}
-
-			$this->_cat_names = Arrays::flattenToIndex($cats, 'title');
-
-			$cats = Arrays::intoHierarchy($cats, null);
-			$this->_cat_hierarchy = $cats;
-			$this->_cat_hierarchy_flat = Arrays::flattenHierarchy($cats);
+		$this->_cat_ids = array();
+		foreach ($cats as &$c) {
+			$c['url_slug'] = $c['id'] . '-' . Strings::slugifyTitle($c['title']);
+			$this->_cat_ids[] = $c['id'];
 		}
+		unset($c);
+
+		if ($this->processor_callback) {
+			$cats = $this->processor_callback($cats);
+		}
+
+		foreach ($cats as $c) {
+			$this->_cat_parent_map[$c['id']] = $c['parent_id'] ? $c['parent_id'] : 0;
+		}
+
+		$this->_cat_names = Arrays::flattenToIndex($cats, 'title');
+
+		$cats = Arrays::intoHierarchy($cats, null);
+		$this->_cat_hierarchy = $cats;
+		$this->_cat_hierarchy_flat = Arrays::flattenHierarchy($cats);
 
 		return $this->_cat_hierarchy;
 	}
