@@ -70,6 +70,44 @@ class SettingsController extends AbstractController
 			}
 		}
 
+		// Check for dupe emails where a user already exists, we'll send a merge request
+		// -> Only do this when the other user is a plain user and not an agent
+		// TODO: user merge
+		if (false) {
+			$check_exists = $this->em->getRepository('DeskPRO:Person')->findByEmail($edit_profile->email);
+			if ($check_exists && $check_exists->getId() != $this->person->getId() && !$check_exists->is_agent) {
+
+				// Insert the merge code
+				$tmpdata = \Application\DeskPRO\Entity\TmpData::create('validated_merge_user', array(
+					'agent_id' => $this->person->getId(),
+					'other_user_id' => $check_exists->getId(),
+					'email_address' => $edit_profile->email,
+					'_type' => 'agent_profile_email',
+				), '+2 days');
+
+				$this->em->persist($tmpdata);
+				$this->em->flush();
+
+				$vars = array(
+					'person'       => $this->person,
+					'other_person' => $check_exists,
+					'authcode'     => $tmpdata->getCode(),
+					'old_email'    => $this->person->getEmailAddress(),
+					'new_email'    => $edit_profile->email
+				);
+
+				// Send validation email
+				$message = App::getMailer()->createMessage();
+				$message->setTemplate('DeskPRO:emails_agent:agent-changeemail-mergeuser.html.twig', $vars);
+				$message->setTo($edit_profile->email, $agent->getDisplayName());
+				App::getMailer()->send($message);
+
+				// Pop the old email address back so it passes the dupe check validation,
+				// we're not actually updating the address yet
+				$edit_profile->email = $this->person->getEmailAddress();
+			}
+		}
+
 		$validator = new \Application\AgentBundle\Validator\AgentProfileValidator();
 		if (!$validator->isValid($edit_profile)) {
 			return $this->createJsonResponse(array(

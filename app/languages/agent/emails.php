@@ -10,10 +10,12 @@
     'agent.emails.section_title_ticket_properties' => 'Ticket Properties',
     'agent.emails.subject_new_ticket'              => 'New Ticket: {{ticket_subject}}',
     'agent.emails.subject_ticket_updated'          => 'Ticket Updated: {{ticket_subject}}',
+    'agent.emails.subject_email_change_merge'      => 'Confirm email change and accout merger',
     'agent.emails.ticket_created_link'             => '{{name}} &lt;{{email}}&gt; has created an agent account for you on {{link}}',
     'agent.emails.ticket_updated'                  => '"{{subject}}" has been updated.',
     'agent.emails.ticket_was_created'              => 'A new ticket has been created',
     'agent.emails.user_ip'                         => 'User IP',
     'agent.emails.user_replied'                    => 'A user has replied to "{{subject}}"',
     'agent.emails.your_initial_password'           => 'Your initial password',
+	'agent.emails.email_change_merge'              => 'This email is to confirm you want to merge your two existing helpdesk accounts: {{old_email}} and {{new_email}}. If you do not want to merge these accounts, or did not request this, then you can ignore this email. To confirm the merger, click on the following link:',
 );

@@ -1,0 +1,13 @@
+{% extends 'DeskPRO:emails_common:layout.html.twig' %}
+{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
+{% block email_subject %}{{ phrase('agent.emails.subject_email_change_merge') }}{% endblock %}
+{% block content %}
+
+{% set section_content %}
+	{{ phrase('agent.emails.email_change_merge', {old_email: old_email, new_email: new_email}) }}
+	<br /><br />
+
+{% endset %}
+{{ layout.section(phrase('agent.emails.section_title_ticket_properties'), section_content) }}
+
+{% endblock %}
