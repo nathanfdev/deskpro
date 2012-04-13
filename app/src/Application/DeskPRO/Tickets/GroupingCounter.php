@@ -605,7 +605,7 @@ class GroupingCounter
 			9676800    => '3 - 4 months',
 			12096000   => '4 - 5 months',
 			14515200   => '5 - 6 months',
-			9000000000 => '> 6 months'
+			'9000000000' => '> 6 months'
 		);
 
 		return $times;
