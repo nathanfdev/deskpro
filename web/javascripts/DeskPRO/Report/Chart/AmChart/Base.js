@@ -15,7 +15,7 @@ DeskPRO.Report.Chart.AmChart.Base = new Orb.Class({
 		//      fallback: Tries Flash, otherwise falls back to javascript
 		//      javascript: JavaScript only (if not supported charts will fail)
 		//      flash: Flash only
-		this.support_mode = this.options.support_mode || 'fallback';
+		this.support_mode = this.options.support_mode || 'flash';
 
 		// Instance of AM chart
 		this.chart = null;
@@ -44,8 +44,7 @@ DeskPRO.Report.Chart.AmChart.Base = new Orb.Class({
 		}
 
 		var vars = {
-			path: "/web/vendor/amcharts/flash/",
-
+			path: ASSETS_BASE_URL+"/vendor/amcharts/flash/",
 			settings_file: setting_url
 		};
 
