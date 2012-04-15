@@ -267,6 +267,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 			var formData = form.serializeArray();
 
 			form.addClass('mark-loading');
+			wrapper.find('.errors-box').hide();
 			$.ajax({
 				url: form.attr('action'),
 				data: formData,
@@ -279,6 +280,8 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 					if (data.success) {
 						wrapper.find('.mega-tick').fadeIn();
 						self.recountSteps();
+					} else {
+						wrapper.find('.errors-box').show().find('.error-message').text(data.error_message);
 					}
 				}
 			});

@@ -125,6 +125,6 @@ class Pop3 extends AbstractFetcher
 
 	public function test()
 	{
-		return true;
+		$this->readNext();
 	}
 }

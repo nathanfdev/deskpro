@@ -658,6 +658,12 @@ class UserKernel extends AbstractKernel
 
 	public function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 	{
+		$setup_step = App::getSetting('core.setup_initial');
+		$is_installed = ($setup_step < 30 ? false : true);
+		if (!$is_installed) {
+			return null;
+		}
+
 		$response = parent::preResponseHandled($request, $type, $catch);
 		if ($response) {
 			return $response;

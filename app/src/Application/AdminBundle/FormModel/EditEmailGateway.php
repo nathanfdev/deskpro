@@ -62,6 +62,8 @@ class EditEmailGateway
 	protected $persist_objs = array();
 	protected $remove_objs = array();
 
+	protected $has_applied = false;
+
 	public function __construct(EmailGateway $gateway)
 	{
 		$this->gateway = $gateway;
@@ -117,6 +119,12 @@ class EditEmailGateway
 
 	public function apply()
 	{
+		if ($this->has_applied) {
+			return;
+		}
+
+		$this->has_applied = true;
+
 		$this->gateway->connection_type = $this->connection_type;
 		if ($this->connection_type == 'pop3') {
 			$this->gateway->connection_options = $this->pop3_options;

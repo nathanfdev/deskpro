@@ -100,13 +100,26 @@ class EmailGatewaysController extends AbstractController
 
 		$edittrans = new EditEmailTransportModel($transport);
 		$trans_form = $this->get('form.factory')->create(new EditEmailTransportForm(), $edittrans);
+		$errors = array();
 
 		if ($this->request->isPost()) {
 			$this->ensureRequestToken('edit_gateway');
 			$form->bindRequest($this->get('request'));
 			$trans_form->bindRequest($this->get('request'));
 
-			if ($form->isValid()) {
+			$editgateway->apply();
+			try {
+				$conn = $gateway->getFetcher();
+				$conn->test();
+			} catch (\Exception $e) {
+				if ($this->request->isXmlHttpRequest()) {
+					return $this->createJsonResponse(array('error' => true, 'error_code' => 'connect_error', 'error_message' => $e->getMessage()));
+				} else {
+					$errors = array('message' => $e->getMessage());
+				}
+			}
+
+			if (!$errors && $form->isValid()) {
 
 				$editgateway->define_transport = $this->in->getBool('gateway.define_transport');
 
@@ -198,6 +211,7 @@ class EmailGatewaysController extends AbstractController
 		}
 
 		return $this->render($tpl, array(
+			'errors' => $errors,
 			'gateway' => $gateway,
 			'transport' => $transport,
 			'form' => $form->createView(),
