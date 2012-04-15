@@ -80,12 +80,30 @@ class LicenseController extends AbstractController
 		$errors = array();
 		$email_address = $this->in->getString('email_address');
 		if ($this->in->getBool('process')) {
+
+			$set_website_name = $this->container->getSetting('core.site_name');
+			$set_website_url = $this->container->getSetting('core.site_url');
+			if ($this->in->getString('website_name')) {
+				$set_website_name = $this->in->getString('website_name');
+				$this->container->get('deskpro.core.settings')->setSetting('core.site_name', $set_website_name);
+			}
+			if ($this->in->getString('website_url')) {
+				$set_website_url = $this->in->getString('website_url');
+				$this->container->get('deskpro.core.settings')->setSetting('core.site_url', $set_website_url);
+			}
+
 			if (!$email_address || !\Orb\Validator\StringEmail::isValueValid($email_address)) {
 				$errors['email'] = true;
 			}
 
-			if (!$errors) {
+			if (!$set_website_name) {
+				$errors['site_name'] = true;
+			}
+			if (!$set_website_url) {
+				$errors['site_url'] = true;
+			}
 
+			if (!$errors) {
 				$client = new \Zend\Http\Client(null, array('timeout' => 15));
 				$client->setMethod(\Zend\Http\Request::METHOD_POST);
 				$client->setUri(DP_LIC_SERVER . '/license/request-demo.json');
@@ -163,7 +181,7 @@ class LicenseController extends AbstractController
 
 		return $this->render('AdminBundle:License:request-demo.html.twig', array(
 			'errors' => $errors,
-			'email_address' => $email_address
+			'email_address' => $email_address,
 		));
 	}
 

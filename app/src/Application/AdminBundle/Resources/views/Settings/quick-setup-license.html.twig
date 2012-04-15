@@ -14,6 +14,8 @@
 					<li class="error-item error_server_error">{{ phrase('admin.license.error_licensing_server_problems') }}</li>
 					<li class="error-item error_request_error">{{ phrase('admin.license.license_server_detected_error', {'error':errors.request_error}) }}</li>
 					<li class="error-item error_unknown_request_error">{{ phrase('admin.license.error_licence_server_connection') }}</li>
+					<li class="error-item error_site_name">{{ phrase('admin.license.error_site_name') }}</li>
+					<li class="error-item error_site_url">{{ phrase('admin.license.error_site_url') }}</li>
 				</ul>
 
 				<div class="error-item error_timeout error_unknown_request_error" style="display: none">
@@ -39,12 +41,12 @@
 					<td><input type="text" name="email_address" value="{{ app.user.primary_email_address }}" /></td>
 				</tr>
 				<tr>
-					<td class="label" valign="middle">Your website or company name:</td>
-					<td><input type="text" name="website_name" value="" /></td>
+					<td class="label" valign="middle">Your organization name:</td>
+					<td><input type="text" name="website_name" value="{{ app.getSetting('core.site_name') }}" /></td>
 				</tr>
 				<tr>
-					<td class="label"  valign="middle">Your website URL:</td>
-					<td><input type="text" name="website_url" value="" /></td>
+					<td class="label"  valign="middle">Your organization website URL:</td>
+					<td><input type="text" name="website_url" value="{{ app.getSetting('core.site_url') }}" /></td>
 				</tr>
 				<tr>
 					<td>&nbsp;</td>
