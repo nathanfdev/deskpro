@@ -420,13 +420,13 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 				var item = $(info.itemEl);
 
 				var prop = item.data('order-by');
-				var label = item.text().trim();
+				var label = item.find('.label').text().trim();
 
 				// Change the displayed label for some visual feedback
-				$('.label', sortMenuBtn).text(label);
-                $('.label', sortMenuBtn).removeClass('order-by-asc');
-                $('.label', sortMenuBtn).removeClass('order-by-desc');
-                $('.label', sortMenuBtn).addClass('order-by-' + prop.split('_').pop());
+				$('.label label', sortMenuBtn).text(label);
+				sortMenuBtn.find('.order-dir').hide();
+				console.log('.order-dir.' + prop.split('_').pop());
+				sortMenuBtn.find('.order-dir.' + prop.split('_').pop()).show();
 
 
 				var disOptWrap = self.displayOptions.getWrapperElement();

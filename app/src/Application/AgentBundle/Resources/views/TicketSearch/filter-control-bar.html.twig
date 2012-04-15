@@ -7,25 +7,25 @@
 	</ul>
 	<ul>
 		<li>{{ phrase('agent.general.ordered_by') }} </li>
-		<li class="order-by-menu-trigger menu-fitted" data-menu-button=".button"><a class="button"><span class="label order-by-{{ order_by[1] }}">{{ order_by_summary }}</span><em></em></a></li>
+		<li class="order-by-menu-trigger menu-fitted" data-menu-button=".button"><a class="button"><span class="label"><label>{{ order_by_summary }}</label> <i class="order-dir asc" {% if order_by[1] != 'asc' %}style="display: none"{% endif %}>ASC</i><i class="order-dir desc" {% if order_by[1] != 'desc' %}style="display: none"{% endif %}>DESC</i></span><em></em></a></li>
 		<li>{{ phrase('agent.general.and_grouped_by') }} </li>
 		<li class="group-by-menu-trigger menu-fitted" data-menu-button=".button"><a class="button"><span class="label">{{ grouping_summary|default(phrase('agent.general.none')) }}</span><em></em></a></li>
-	
+
 	</ul>
 
 	<ul style="display: none" class="order-by-menu">
-        <li data-order-by="urgency_asc" class="order-by-asc">{{ phrase('agent.general.urgency') }}</li>
-        <li data-order-by="urgency_desc" class="order-by-desc">{{ phrase('agent.general.urgency') }}</li>
-        <li data-order-by="date_created_asc" class="order-by-asc">{{ phrase('agent.general.date_opened') }}</li>
-        <li data-order-by="date_created_desc" class="order-by-desc">{{ phrase('agent.general.date_opened') }}</li>
+        <li data-order-by="urgency_asc"><label class="label">{{ phrase('agent.general.urgency') }}</label> <i class="order-dir">ASC</i></li>
+        <li data-order-by="urgency_desc"><label class="label">{{ phrase('agent.general.urgency') }}</label> <i class="order-dir">DESC</i></li>
+        <li data-order-by="date_created_asc"><label class="label">{{ phrase('agent.general.date_opened') }}</label> <i class="order-dir">ASC</i></li>
+        <li data-order-by="date_created_desc"><label class="label">{{ phrase('agent.general.date_opened') }}</label> <i class="order-dir">DESC</i></li>
         {% if app.getSetting('core.use_ticket_priority') %}
-        <li data-order-by="priority_asc" class="order-by-asc">{{ phrase('agent.general.priority') }}</li>
-        <li data-order-by="priority_desc" class="order-by-desc">{{ phrase('agent.general.priority') }}</li>
+        <li data-order-by="priority_asc"><label class="label">{{ phrase('agent.general.priority') }}</label> <i class="order-dir">ASC</i></li>
+        <li data-order-by="priority_desc"><label class="label">{{ phrase('agent.general.priority') }}</label> <i class="order-dir">DESC</i></li>
         {% endif %}
-        <li data-order-by="time_waiting_asc" class="order-by-asc">{{ phrase('agent.general.time_waiting') }}</li>
-        <li data-order-by="time_waiting_desc" class="order-by-desc">{{ phrase('agent.general.time_waiting') }}</li>
-        <li data-order-by="total_user_waiting_asc" class="order-by-asc">{{ phrase('agent.general.total_time_waiting') }}</li>
-        <li data-order-by="total_user_waiting_desc" class="order-by-desc">{{ phrase('agent.general.total_time_waiting') }}</li>
+        <li data-order-by="time_waiting_asc"><label class="label">{{ phrase('agent.general.time_waiting') }}</label> <i class="order-dir">ASC</i></li>
+        <li data-order-by="time_waiting_desc"><label class="label">{{ phrase('agent.general.time_waiting') }}</label> <i class="order-dir">DESC</i></li>
+        <li data-order-by="total_user_waiting_asc"><label class="label">{{ phrase('agent.general.total_time_waiting') }}</label> <i class="order-dir">ASC</i></li>
+        <li data-order-by="total_user_waiting_desc"><label class="label">{{ phrase('agent.general.total_time_waiting') }}</label> <i class="order-dir">DESC</i></li>
 	</ul>
 	<ul style="display: none" class="group-by-menu">
 		<li data-group-by="">{{ phrase('agent.general.none') }}</li>

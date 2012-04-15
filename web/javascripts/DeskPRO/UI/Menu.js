@@ -316,7 +316,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 				height: 4,
 				top: tPos.top + tHeight - 4,
 				left: tPos.left + 1,
-				'z-index': '90000'
+				'z-index': this.options.zIndex+10
 			}).appendTo('body');
 
 		} else {
