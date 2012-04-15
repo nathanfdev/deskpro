@@ -345,21 +345,23 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			# No license
 			#------------------------------
 
-			// If we dont have a license, then we are allowed to view exactly four sections:
+			// If we dont have a license or not completed installs, then we are allowed to view exactly four sections:
 			// 1) /admin/login               Logging in
 			// 2) /admin/welcome             Initial config
 			// 3) /admin/setup/default-smtp  Setting up outgoing email
 			// 4) /admin/license             Setting up the license
 
+			$setup_step = App::getSetting('core.setup_initial');
+			$is_installed = ($setup_step < 30 ? false : true);
 			if (
-				!License::getLicense()->hasLicense()
+				(!License::getLicense()->hasLicense() || !$is_installed)
 				&& !preg_match('#^/admin/login#', $path)
 				&& !preg_match('#^/admin/welcome#', $path)
 				&& !preg_match('#^/admin/setup/default-smtp#', $path)
 				&& !preg_match('#^/admin/license#', $path)
 				&& !preg_match('#^/admin/welcome#', $path)
 			) {
-				$response = new RedirectResponse($request->getBaseUrl() . '/admin/license');
+				$response = new RedirectResponse($request->getBaseUrl() . '/admin/welcome');
 				return $response;
 			}
 
