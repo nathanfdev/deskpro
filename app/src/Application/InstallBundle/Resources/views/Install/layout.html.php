@@ -23,13 +23,27 @@
 		}
 		body > table > tbody > tr > td {
 			vertical-align: middle;
-			background: url(../../web/images/dp-logo-color.png) no-repeat 50% 100%;
-			padding-bottom: 80px;
 			border-top: 10px solid transparent;
 			border-bottom: 10px solid transparent;
 		}
 
+		#dp_logo {
+			background: url(../../web/images/dp-logo-color.png);
+			width: 200px;
+			height: 59px;
+			cursor: pointer;
+			text-decoration: none;
+			overflow: hidden;
+			text-indent: -1000px;
+
+			position: absolute;
+			right: 15px;
+			top: 15px;
+			z-index: 1;
+		}
+
 		.dp-wrapper {
+			position: relative;
 			background-color: #fff;
 			border: 1px solid #D0D2D3;
 			-webkit-border-radius: 6px;
@@ -39,10 +53,17 @@
 		}
 
 		.page-header {
-			margin-top: -15px;
-			margin-left: -15px;
-			margin-right: -15px;
-			margin-bottom: 8px;
+			position: relative;
+			height: 87px;
+			padding: 0;
+			margin: 0;
+			margin: -25px;
+			margin-bottom: 22px;
+		}
+
+		.page-header .inner {
+			padding: 20px;
+			padding-top: 25px;
 		}
 	</style>
 	<?php $view['slots']->output('head') ?>
@@ -54,8 +75,11 @@
 			<td align="center" valign="middle" width="100%" height="100%">
 				<div class="container">
 				<div class="dp-wrapper">
+					<a id="dp_logo" href="http://support.deskpro.com/">DeskPRO</a>
 					<div class="page-header">
-						<h1>Installation<?php if ($view['slots']->has('subtitle')): ?>&nbsp;<small><?php $view['slots']->output('subtitle') ?></small><?php endif ?></h1>
+						<div class="inner">
+							<h1>Installation<?php if ($view['slots']->has('subtitle')): ?>&nbsp;<small><?php $view['slots']->output('subtitle') ?></small><?php endif ?></h1>
+						</div>
 					</div>
 					<?php $view['slots']->output('_content') ?>
 				</div>
