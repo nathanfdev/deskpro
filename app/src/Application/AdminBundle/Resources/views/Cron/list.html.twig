@@ -10,6 +10,45 @@
 	</ul>
 {% endblock %}
 {% block page %}
+
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+		<tr>
+			<th style="text-align:left">&nbsp; Last Run Time</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td>
+				Time tasks were last executed:
+				{% if last_run %}
+					{{ relative_time(time_since_run) }} ago
+					({{ last_run|date('Y-m-d H:i:s') }})
+				{% else %}
+					Never
+				{% endif %}
+			</td>
+		</tr>
+		{% if is_problem %}
+			<tr>
+				<td>
+					<div class="alert-message block-message error" style="margin: 10px;">
+						The scheduled tasks do not appear to be running, or the time between executions is too high. You should
+						ensure <var>/cron.php</var> is running once a minute.
+
+						<br />
+						<br />
+						<a href="{{ path('admin_settings_cron') }}">Click here for more information</a>.
+					</div>
+				</td>
+			</tr>
+		{% endif %}
+		</tbody>
+	</table>
+</div>
+<br />
+
 <div class="check-grid item-list">
 	<table width="100%">
 		<thead>

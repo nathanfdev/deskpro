@@ -723,6 +723,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				'value' => '1',
 			));
 
+			$DP_CONFIG = $this->getContainer()->getSysConfig('*');
 			foreach (array('db_host', 'db_user', 'db_name') as $k) {
 				App::getDb()->replace('settings', array(
 					'name' => 'core.imported_' , $k,
