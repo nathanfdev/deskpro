@@ -121,3 +121,15 @@ $DP_CONFIG['enable_debug_trace'] = false;
 
 $DP_CONFIG['enable_slow_page_log'] = false;
 $DP_CONFIG['enable_slow_page_log_minquerytime'] = false;
+
+######################################################
+# OPTIONAL : Mail Debug                              #
+#                                                    #
+# Sometimes a support agent may ask you to enable    #
+# these options to help debug a problem              #
+######################################################
+
+$DP_CONFIG['debug']['mail'] = array();
+$DP_CONFIG['debug']['mail']['save_to_file'] = false;
+$DP_CONFIG['debug']['mail']['disable_send'] = false;
+$DP_CONFIG['debug']['mail']['force_to'] = '';
