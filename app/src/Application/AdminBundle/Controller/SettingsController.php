@@ -325,6 +325,7 @@ class SettingsController extends AbstractController
 		$initial_pop = $this->em->createQuery("
 			SELECT t
 			FROM DeskPRO:EmailGateway t
+			WHERE t.is_enabled = true
 			ORDER BY t.id ASC
 		")->setMaxResults(1)->getOneOrNullResult();
 		$incoming_email_form = $this->forward('AdminBundle:EmailGateways:editAccount', array('id' => $initial_pop ? $initial_pop->getId() : '0'), array('_partial' => 'setup'))->getContent();
