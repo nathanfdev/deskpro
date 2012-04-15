@@ -31,7 +31,7 @@ define('DP_TECHNICAL_EMAIL', '');
 ######################################################
 
 // leave this
-$DP_CONFIG = array();
+$DP_CONFIG = array('debug' => array());
 
 ######################################################
 # Location of PHP Binary                             #
