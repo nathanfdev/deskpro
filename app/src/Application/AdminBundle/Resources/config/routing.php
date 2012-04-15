@@ -1644,7 +1644,7 @@ $collection->add('admin_emailtrans_editaccount', new Route(
 
 $collection->add('admin_emailtrans_del', new Route(
 	'/email/outgoing/accounts/{id}/delete/{security_token}',
-	array('_controller' => 'AdminBundle:EmailGateways:delete'),
+	array('_controller' => 'AdminBundle:EmailTransports:delete'),
 	array('id' => '\\d+'),
 	array()
 ));

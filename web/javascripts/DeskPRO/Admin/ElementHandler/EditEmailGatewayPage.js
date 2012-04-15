@@ -84,6 +84,28 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 				$('.show-gapps').hide();
 			}
 		});
+
+		var errorBox = $('#page_error_box');
+		if (errorBox[0]) {
+			errorBox.hide();
+			$('#gateway_form').on('submit', function (ev) {
+				var errors = self.getFormErrors();
+				if (errors && errors.length) {
+
+					console.log('Errors: %o', errors);
+
+					errorBox.find('li.error-item').hide();
+
+					Array.each(errors, function(code) {
+						errorBox.find('li.error_' + code).show();
+					});
+
+					errorBox.show();
+
+					ev.preventDefault();
+				}
+			});
+		}
 	},
 
 	_initAddresses: function() {
