@@ -1681,6 +1681,27 @@ $collection->add('admin_server_cron_logs_clear', new Route(
 	array()
 ));
 
+$collection->add('admin_server_checks', new Route(
+	'/server/checks',
+	array('_controller' => 'AdminBundle:Server:serverChecks'),
+	array(),
+	array()
+));
+
+$collection->add('admin_server_file_checks', new Route(
+	'/server/file-integrity-checks',
+	array('_controller' => 'AdminBundle:Server:fileChecks'),
+	array(),
+	array()
+));
+
+$collection->add('admin_server_file_checks_do', new Route(
+	'/server/file-integrity-checks/do/{batch}',
+	array('_controller' => 'AdminBundle:Server:fileChecksDo', 'batch' => '0'),
+	array(),
+	array()
+));
+
 $collection->add('admin_server_phpinfo', new Route(
 	'/server/phpinfo',
 	array('_controller' => 'AdminBundle:Server:phpinfo'),

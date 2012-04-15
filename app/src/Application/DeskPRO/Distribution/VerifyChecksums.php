@@ -43,7 +43,12 @@ class VerifyChecksums
 
 	public function __construct($chunk_size = 200)
 	{
-		$standard_hashes = require DP_ROOT.'/sys/Resources/distro-checksums.php';
+		if (!is_file(DP_ROOT.'/sys/Resources/distro-checksums.php')) {
+			// Get it to appear in the missing list in admin
+			$standard_hashes = array('/app/sys/Resources/distro-checksums.php' => 'missing');
+		} else {
+			$standard_hashes = require DP_ROOT.'/sys/Resources/distro-checksums.php';
+		}
 		$this->count_all = count($standard_hashes);
 		$standard_hashes = array_chunk($standard_hashes, $chunk_size, true);
 		$this->standard_hashes = $standard_hashes;

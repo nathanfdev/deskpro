@@ -72,6 +72,70 @@ class ServerController extends AbstractController
 		));
 	}
 
+	############################################################################
+	# server-checks
+	############################################################################
+
+	public function serverChecksAction()
+	{
+		$server_check = new \Application\InstallBundle\Install\ServerChecks();
+		$server_check->checkServer();
+
+		$is_fatal = $server_check->hasFatalErrors();
+		$has_db_checks = false;
+
+		if (!$is_fatal) {
+			$has_db_checks = true;
+			$server_check->checkDatabase(App::getConfig('db'));
+		}
+
+		$is_fatal = $server_check->hasFatalErrors();
+
+		$ini_path = '';
+		if ($server_check->hasErrors()) {
+			$ini_path = \Orb\Util\Env::getPhpIniPath();
+		}
+
+		$vars = array(
+			'errors' => $server_check->getErrors(),
+			'is_fatal' => $is_fatal,
+			'has_db_checks' => $has_db_checks,
+			'db_config' => App::getConfig('db'),
+			'ini_path' => $ini_path,
+		);
+
+		$table = $this->renderView('AdminBundle:Server:server-checks-table.html.php', $vars);
+		$vars['table'] = $table;
+
+		return $this->render('AdminBundle:Server:server-checks.html.twig', $vars);
+	}
+
+
+	############################################################################
+	# file-checks
+	############################################################################
+
+	public function fileChecksAction()
+	{
+		$verify = new \Application\DeskPRO\Distribution\VerifyChecksums();
+		$count  = $verify->countChunks();
+
+		return $this->render('AdminBundle:Server:file-checks.html.twig', array(
+			'count' => $count,
+		));
+	}
+
+	public function fileChecksDoAction($batch = 0)
+	{
+		$verify = new \Application\DeskPRO\Distribution\VerifyChecksums();
+		$results = $verify->compareChunk($batch);
+
+		return $this->render('AdminBundle:Server:file-checks-do.html.twig', array(
+			'results' => $results,
+			'batch' => $batch
+		));
+	}
+
 
 	############################################################################
 	# mysqlinfo

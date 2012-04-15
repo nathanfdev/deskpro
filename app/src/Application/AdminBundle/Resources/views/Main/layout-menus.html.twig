@@ -48,6 +48,14 @@
 	<div id="server_menu">
 		<ul>
 			<li class="link-logs">
+				<a href="{{ path('admin_server_checks') }}" data-search-keywords="server checks" data-search-name="Server &rsaquo; Check Server Requirements">Check Server Requirements</a>
+				<p>Check server requirements and view recommended changes</p>
+			</li>
+			<li class="link-logs">
+				<a href="{{ path('admin_server_file_checks') }}" data-search-keywords="server file checks" data-search-name="Server &rsaquo; Check File Integrity">Check File Integrity</a>
+				<p>Check DeskPRO's source file integrity. This will reveal any files are changed or invalid from the default.</p>
+			</li>
+			<li class="link-logs">
 				<a href="{{ path('admin_server_attach') }}" data-search-keywords="attachments uploads files" data-search-name="Server &rsaquo; File Uploads">{{ phrase('admin.general.file_uploads') }}</a>
 				<p>{{ phrase('admin.menu.manage_storage') }}</p>
 			</li>
