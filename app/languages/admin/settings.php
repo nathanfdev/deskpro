@@ -14,7 +14,7 @@
     'admin.settings.cookie_domain'                          => 'Cookie Domain',
     'admin.settings.cookie_path'                            => 'Cookie Path',
 	'admin.settings.cron_notice_php_path_not_found'         => 'Note: We could not automatically detect the path to the PHP binary. You should edit <var>config.php</var> to specify the path, and then refresh this page for the proper command.',
-	'admin.settings.cron_explain'                           => 'For DeskPRO to operate correctly, you must have your server to run a scheduled task or cron job to perform tasks like regular cleanup, running triggers, and processing emails.',
+	'admin.settings.cron_explain'                           => 'To perform tasks such as processing email, running triggers and sending notifications DeskPRO requires that you schedule the <var>cron.php</var> file in the root folder to be regularly run with a cron script (on linux) or a scheduled task (on windows). It is recommend that you run the <var>cron.php</var> file every minute.',
     'admin.settings.cron_setup_linux'                       => 'Creating a cron job on Linux',
     'admin.settings.cron_setup_linux_edit_file'             => 'Edit <var>/etc/crontab</var> to add the following line:',
     'admin.settings.cron_setup_linux_edit_file_user'        => 'Replace "exampleuser" with the user account to run the command with. For example, you might want to run the user with the permissions of the web server which is typically "www" or "nobody".',
