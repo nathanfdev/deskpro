@@ -361,6 +361,27 @@ class SettingsController extends AbstractController
 			$this->container->get('deskpro.core.settings')->setSetting('core.app_secret', Strings::random(50, Strings::CHARS_ALPHANUM_IU));
 		}
 
+		$url = App::getRequest()->getUriForPath('/__checkurlrewrite');
+		$url_noindex = str_replace('/index.php/', '/', $url);
+
+		try {
+			$client = new \Zend\Http\Client(null, array('timeout' => 5));
+			$client->setMethod(\Zend\Http\Request::METHOD_GET);
+			$client->setUri($url_noindex);
+			$result = $client->send();
+			if ($result->isSuccess() && strpos($result->getBody(), 'dp_check_url_ok') !== false) {
+				$db->replace('settings', array(
+					'name' => 'core.rewrite_urls',
+					'value' => '1',
+				));
+			}
+
+			$db->replace('settings', array(
+				'name' => 'core.done_rewrite_urls_check',
+				'value' => time(),
+			));
+		} catch (\Exception $e) {}
+
 		return $this->createJsonResponse(array('success' => true));
 	}
 

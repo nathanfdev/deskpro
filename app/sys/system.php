@@ -461,6 +461,11 @@ abstract class AbstractKernel extends BaseAbstractKernel
 	{
 		$path = $request->getPathInfo();
 
+		// Excluse ajax requests
+		if ($request->isXmlHttpRequest()) {
+			return null;
+		}
+
 		if (isset($GLOBALS['DP_CONFIG']['rewrite_urls']) && $GLOBALS['DP_CONFIG']['rewrite_urls']) {
 			// Force no index.php
 			if (strpos($request->getRequestUri(), '/index.php') !== false) {
