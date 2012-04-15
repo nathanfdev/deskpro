@@ -106,7 +106,13 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		));
 
 		try {
-			$ret = $this->doExecute($input, $output);
+			$step = (int)App::getSetting('core.setup_initial');
+
+			// Only run crom if we've passed initial setup
+			if ($step && $step >= 30) {
+				$ret = $this->doExecute($input, $output);
+			}
+
 			App::getDb()->delete('settings', array('name' => 'core.croncheck.' . $cron_id));
 			App::getDb()->replace('settings', array('name' => 'core.last_cron_run', 'value' => time()));
 			return $ret;
