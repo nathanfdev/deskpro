@@ -123,6 +123,16 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 		var reqlicGroup   = $('#lic_group_get_demo');
 		var enterlicGroup = $('#lic_group_enter_license');
 
+		$('#lic_do_send_again').on('click', function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			enterlicGroup.find('.demo-sent-message').hide();
+			wrapper.find('.page-radio-group').removeClass('open');
+			enterlicGroup.removeClass('open');
+			reqlicGroup.addClass('open').find(':radio').prop('checked', true);
+		});
+
 		//-----
 		// Handling license request
 		//-----
@@ -155,7 +165,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 						enterlicGroup.addClass('open').find(':radio').prop('checked', true);
 					} else {
 						var errbox = reqlicGroup.find('.errors-box').show();
-						Array.each(data.error_codes, function(code) {
+						Object.each(data.error_codes, function(v,code) {
 							code = code.replace(/\./g, '_');
 							errbox.find('.error_' + code).show();
 						});
