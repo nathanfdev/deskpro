@@ -416,9 +416,9 @@ DeskPRO.UI.Menu = new Orb.Class({
 			this.elements.wrapperOuter.removeClass('with-point');
 		}
 
-		if ((top + this.elements.wrapperOuter.height()) > ($(window).height() - 15)) {
+		if ((top + this.elements.wrapperOuter.height()) > ($(window).height() - 3)) {
 			this.elements.wrapper.addClass('with-scrolldown');
-			this.elements.wrapperInner.css('max-height', $(window).height() - top - 15);
+			this.elements.wrapperInner.css('max-height', $(window).height() - top - 3);
 		} else {
 			this.elements.wrapper.removeClass('with-scrolldown with-scrollup');
 			this.elements.wrapperInner.css('max-height', 'auto');
@@ -703,8 +703,8 @@ DeskPRO.UI.Menu = new Orb.Class({
 			ev.preventDefault();
 			ev.stopImmediatePropagation();
 
-			var newpos = self.elements.wrapperInner.scrollTop() + 20;
-			var max = self.elements.wrapper.height() - self.elements.wrapperInner.height();
+			var newpos = self.elements.wrapperInner.scrollTop() + 30;
+			var max = self.elements.wrapper.height() - self.elements.wrapperInner.height() + 30;
 			if (newpos >= max) {
 				self.elements.wrapper.removeClass('with-scrolldown');
 				newpos += 10;
@@ -718,7 +718,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 			ev.preventDefault();
 			ev.stopImmediatePropagation();
 
-			var newpos = self.elements.wrapperInner.scrollTop() - 20;
+			var newpos = self.elements.wrapperInner.scrollTop() - 30;
 			if (newpos < 0) newpos = 0;
 			self.elements.wrapperInner.scrollTop(newpos);
 			self.elements.wrapper.addClass('with-scrolldown');
