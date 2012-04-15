@@ -582,7 +582,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$display = $this->getDisplayName();
 		if ($this->getPrimaryEmailAddress() && $display != $this->getPrimaryEmailAddress()) {
-			$display .= " &lt;{$this->getPrimaryEmailAddress()}&gt;";
+			$display .= " <{$this->getPrimaryEmailAddress()}>";
 		}
 
 		return $display;
