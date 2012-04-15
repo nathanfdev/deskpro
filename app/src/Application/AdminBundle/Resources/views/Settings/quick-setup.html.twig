@@ -40,6 +40,41 @@
 	</div>
 	<br />
 
+	{% if app.getSetting('core.deskpro3importer') %}
+		<div class="dp_admin_pagebar">
+			<ul>
+				<li>Import DeskPRO v3 Database</li>
+			</ul>
+		</div>
+		<div class="dp_admin_page" id="section_import_dp3">
+			<div class="mega-tick"></div>
+			<div class="dp_admin_page_inner">
+				<div class="dp-page-box">
+					<div class="page-content">
+						<ul class="checked-list">
+							<li>
+								DeskPRO v3 database: {{ app.getSetting('core.imported_db_user') }}@{{ app.getSetting('core.imported_db_host') }}/{{ app.getSetting('core.imported_db_name') }}
+							</li>
+							<li>
+								Version check
+							</li>
+							<li>
+								Import DeskPRO v3 data into new database
+							</li>
+							<li>
+								Cleanup
+							</li>
+						</ul>
+						<br />
+						<br />
+						<p>Your old DeskPRO v3 data has been imported into the new DeskPRO v4 installation.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br />
+	{% endif %}
+
 	<div class="dp_admin_pagebar">
 		<ul>
 			<li>Install Scheduled Task</li>

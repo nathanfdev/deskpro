@@ -713,6 +713,13 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				'value' => '1',
 			));
 
+			foreach (array('db_host', 'db_user', 'db_name') as $k) {
+				App::getDb()->replace('settings', array(
+					'name' => 'core.imported_' , $k,
+					'value' => $DP_CONFIG['import'][$k],
+				));
+			}
+
 			// Clear the map tables
 			App::getDb()->exec("TRUNCATE TABLE import_map");
 

@@ -12,12 +12,14 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 		this._initOutgoingEmailSection();
 		this._initIncomingEmailSection();
 
+		this.totalStepCount = $('.mega-tick').length;
+
 		self.recountSteps();
 	},
 
 	recountSteps: function() {
 		var checks = $('.mega-tick');
-		var total_count = 5;
+		var total_count = this.totalStepCount;
 		var done_count = checks.filter(':visible').length;
 
 		if (done_count >= total_count) {
