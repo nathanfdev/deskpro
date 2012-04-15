@@ -414,6 +414,15 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		$tables = $sm->listTableNames();
 		if ($tables && $mode == 'run' && !$start_step) {
+
+			try {
+				$is_installed = $db->fetchColumn("SELECT value FROM settings WHERE name = 'core.install_timestamp'");
+				if ($is_installed) {
+					$logger->log("The import has already been processed. You should now try logging in to the admin interface at /admin/."  . PHP_EOL, Logger::ERR);
+					return 22;
+				}
+			} catch (\Exception $e) {}
+
 			$logger->log('Your database already contains tables. DeskPRO requires a new, empty database to import into.' . PHP_EOL, Logger::ERR);
 			$logger->log('Create a new empty database and edit /config.php with the new details, then try again.'  . PHP_EOL, Logger::ERR);
 			return 22;
@@ -534,10 +543,6 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				throw $e;
 			}
 
-			App::getDb()->replace('settings', array(
-				'name' => 'core.install_timestamp',
-				'value' => time(),
-			));
 			App::getDb()->replace('settings', array(
 				'name' => 'core.deskpro_build',
 				'value' => DP_BUILD_TIME,
@@ -706,6 +711,11 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 			// Clear caches like kb/news/ideas/files category caches
 			App::getDb()->executeUpdate('TRUNCATE TABLE cache');
+
+			App::getDb()->replace('settings', array(
+				'name' => 'core.install_timestamp',
+				'value' => time(),
+			));
 
 			// Mark that we've done this import
 			App::getDb()->replace('settings', array(
