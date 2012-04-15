@@ -216,12 +216,32 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 	_initOutgoingEmailSection: function() {
 		var self = this;
 		var wrapper = $('#section_config_smtp');
+		var errorBox = wrapper.find('.errors-box');
 
 		var form = wrapper.find('form');
 
 		form.on('submit', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
+
+			errorBox.hide();
+
+			var handler = wrapper.find('.edit-email-transport-page').data('handler');
+			var errors = handler.getFormErrors();
+			if (errors && errors.length) {
+
+				console.log('Errors: %o', errors);
+
+				errorBox.find('li.error-item').hide();
+
+				Array.each(errors, function(code) {
+					errorBox.find('li.error_' + code).show();
+				});
+
+				errorBox.show();
+
+				return;
+			}
 
 			var formData = form.serializeArray();
 
@@ -251,6 +271,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 	_initIncomingEmailSection: function() {
 		var self = this;
 		var wrapper = $('#section_config_pop3');
+		var errorBox = wrapper.find('.errors-box');
 
 		$('#pop3_skip_trigger').on('click', function(ev) {
 			ev.preventDefault();
@@ -263,6 +284,26 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 		form.on('submit', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
+
+			errorBox.hide();
+			errorBox.find('li.error-item').hide();
+
+			var handler = wrapper.find('.edit-email-gateway-page').data('handler');
+			var errors = handler.getFormErrors();
+			if (errors && errors.length) {
+
+				console.log('Errors: %o', errors);
+
+				errorBox.find('li.error-item').hide();
+
+				Array.each(errors, function(code) {
+					errorBox.find('li.error_' + code).show();
+				});
+
+				errorBox.show();
+
+				return;
+			}
 
 			var formData = form.serializeArray();
 
@@ -281,7 +322,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 						wrapper.find('.mega-tick').fadeIn();
 						self.recountSteps();
 					} else {
-						wrapper.find('.errors-box').show().find('.error-message').text(data.error_message);
+						wrapper.find('.errors-box').show().find('.error-message').text(data.error_message).show();
 					}
 				}
 			});

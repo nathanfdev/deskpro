@@ -6,6 +6,8 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 	init: function() {
 		var self = this;
 
+		this.el.addClass('edit-email-transport-page');
+
 		$(document).on('click', ':radio.transport-type-backup', function() {
 			if ($(this).is('.none')) {
 				$('.test-account-settings.backup').hide();
@@ -111,5 +113,67 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 				$('#backup_form').slideUp();
 			}
 		});
+	},
+
+	getFormErrors: function() {
+		var errors = this.getGeneralFormErrors();
+
+		var type = this.el.find(':radio[name="transport[transport_type]"]:checked').val();
+		if (type == 'smtp') {
+			errors.combine(this.getSmtpFormErrors());
+		} else if (type == 'gmail') {
+			errors.combine(this.getGappsFormErrors());
+		}
+
+		return errors;
+	},
+
+	getSmtpFormErrors: function() {
+		var host = $('#transport_smtp_options_host').val();
+		var port = $('#transport_smtp_options_port').val();
+		var require_auth = this.el.find('.smtp-requires-auth-check').is(':checked');
+		var username = $('#transport_smtp_options_username').val();
+
+		var errors = [];
+		if (!host.length) {
+			errors.push('smtp_host');
+		}
+		if (!parseInt(port) || !parseInt(port)) {
+			errors.push('smtp_port');
+		}
+
+		if (require_auth) {
+			if (!username.length) {
+				errors.push('smtp_username');
+			}
+		}
+
+		return errors;
+	},
+
+	getGeneralFormErrors: function() {
+		var default_el = $('#default_from_email');
+		if (default_el[0]) {
+			if (!default_el.val().length || default_el.val().indexOf('@') === -1) {
+				return ['default_email'];
+			}
+		}
+
+		return [];
+	},
+
+	getGappsFormErrors: function() {
+		var username = $('#transport_gmail_options_username').val();
+		var password = $('#transport_gmail_options_password').val();
+
+		var errors = [];
+		if (!username.length) {
+			errors.push('gapps_username');
+		}
+		if (!password.length) {
+			errors.push('gapps_password');
+		}
+
+		return errors;
 	}
 });

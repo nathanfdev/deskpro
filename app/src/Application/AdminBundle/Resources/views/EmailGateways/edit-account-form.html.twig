@@ -139,10 +139,14 @@
 			</div>
 			<div class="dp-form-input">
 				<span class="show-non-gapps" {% if gateway.connection_type == 'gmail' %}style="display: none"{% endif %}>
-                    {% set phrase_link %}
-                        <a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.gateway.default_outgoing_account') }}</a>.
-                    {% endset %}
-                    {{ phrase('admin.gateway.using_the', {'link':phrase_link}) }}
+					{% if partial == 'setup' %}
+						Use the default outgoing email account you defined above.
+					{% else %}
+						{% set phrase_link %}
+							<a href="{{ path('admin_emailtrans_setup') }}">{{ phrase('admin.gateway.default_outgoing_account') }}</a>.
+						{% endset %}
+						{{ phrase('admin.gateway.using_the', {'link':phrase_link}) }}
+					{% endif %}
                 </span>
 				<span class="show-gapps" {% if gateway.connection_type !='gmail' %}style="display: none"{% endif %}>{{ phrase('admin.gateway.use_google_for_outgoing') }}</span>
 				<button class="clean-white small toggle-custom-smtp">{{ phrase('admin.gateway.use_different_outgoing_account') }}</button>
@@ -248,6 +252,7 @@
 				</div>
 			</div>
 
+			{% if partial != 'setup' %}
 			<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 				<div class="dp-form-row">
 					<div class="dp-form-label">
@@ -348,10 +353,11 @@
 					</div>
 				</div>
 			</div>
+			{% endif %}
 		</div>
 	</div>
 
-	<div class="dp-form-row">
+	<div class="dp-form-row" {% if partial == 'setup' %}style="display: none"{% endif %}>
 		<div class="dp-form-label">
 			<label>{{ phrase('admin.gateway.enabled') }}</label>
 		</div>
