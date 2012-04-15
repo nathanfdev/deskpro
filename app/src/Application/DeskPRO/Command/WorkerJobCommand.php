@@ -82,11 +82,10 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 					return 0;
 				} else {
 					$title = "WARNING: Cron ($cron_id) has been active for {$diff}";
+					$text = "Cron ($cron_id) has been marked as active for {$diff} (since " . $date->format('Y-m-d H:i:s') . ").\n\n"
+							. "This is most likely caused by a fatal error that prevented the runner from resetting the timer.\n\n"
+							. "Cron will now resume, but this is a problem you should investigate. Refer to the error log files and contact support@deskpro.com.";
 					if (App::getConfig('technical_email')) {
-						$text = "Cron ($cron_id) has been marked as active for {$diff} (since " . $date->format('Y-m-d H:i:s') . ").\n\n"
-							  . "This is most likely caused by a fatal error that prevented the runner from resetting the timer.\n\n"
-							  . "Cron will now resume, but this is a problem you should investigate. Refer to the error log files and contact support@deskpro.com.";
-
 						$message = App::getMailer()->createMessage();
 						$message->setSubject($title);
 						$message->setBody($text, 'text/plain');
@@ -111,6 +110,8 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 			// Only run crom if we've passed initial setup
 			if ($step && $step >= 30) {
 				$ret = $this->doExecute($input, $output);
+			} else {
+				$ret = 0;
 			}
 
 			App::getDb()->delete('settings', array('name' => 'core.croncheck.' . $cron_id));
