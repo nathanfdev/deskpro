@@ -39,7 +39,7 @@
     'agent.general.always_notify_agents'            => 'Always notify agents',
     'agent.general.always_set_this_urgency'         => 'Always set this urgency',
     'agent.general.and'                             => 'and',
-    'agent.general.and_grouped_by'                  => 'and grouped by',
+    'agent.general.and_grouped_by'                  => 'grouped by',
     'agent.general.andor'                           => 'and/or',
     'agent.general.anonymous'                       => 'Anonymous',
     'agent.general.another_test'                    => 'Test {1} and {2} and {{three}}',
