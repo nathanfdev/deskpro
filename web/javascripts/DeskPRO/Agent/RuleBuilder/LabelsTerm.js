@@ -59,8 +59,8 @@ DeskPRO.Agent.RuleBuilder.LabelsTerm = new Orb.Class({
 			top: this.currentValue.offset().top
 		});
 
-		this.backdrop.show();
 		this.wrapper.show();
+		this.backdrop.show().css('z-index', parseInt(this.wrapper.css('z-index')) - 1);
 	},
 
 	hide: function() {

@@ -14,9 +14,18 @@ DeskPRO.Agent.PageFragment.SettingsPage.Macros = new Orb.Class({
 		this.el = el;
 
 		$('#settingswin').bind('dp_settings_macrosupdated', function() {
-			self.settingsWindow.reloadInterface = true;
 			self.settingsWindow.reloadTab('macros');
 		});
+
+		var event = jQuery.Event("dp_macros_updated");
+		event.macroItems = [];
+		this.el.find('.obj-macro').each(function(ev) {
+			event.macroItems.push({
+				id: $(this).data('macro-id'),
+				title: $(this).text()
+			});
+		});
+		$('#settingswin').trigger(event);
 
 		this.el.on('click', '.delete-macro', function() {
 			var row = $(this).closest('tr');

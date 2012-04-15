@@ -19,7 +19,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Macros';
 		<tbody>
 			{% for macro in all_macros %}
 				<tr>
-					<td>{{ macro.title }}</td>
+					<td><label class="obj-macro" data-macro-id="{{ macro.id }}">{{ macro.title }}</label></td>
 					<td class="prop" style="text-align: center;">
 						<ul class="controls">
 							<li class="delete delete-macro" data-delete-url="{{ path('agent_settings_ticketmacros_del', { 'macro_id': macro.id }) }}"></li>

@@ -310,6 +310,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 						top: spanEl.offset().top
 					});
 					wrapper.appendTo('body').show();
+					backdrop.css('z-index', parseInt(wrapper.css('z-index')) - 1);
 					inputEl.on('keypress', enterCloseFn).focus();
 
 					$('.close-trigger', wrapper).on('click', closeFn);

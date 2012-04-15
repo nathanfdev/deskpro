@@ -222,12 +222,29 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		this.macroApplyBtn  = $('.save', this.macroControls);
 		this.macroCancelBtn = $('.cancel', this.macroControls);
 
+		var macroMenu = this.getEl('macros_menu');
 		this.macrosMenu = new DeskPRO.UI.Menu({
 			triggerElement: this.getEl('macros_menu_trigger'),
-			menuElement: this.getEl('macros_menu'),
+			menuElement: macroMenu,
 			onItemClicked: (function(info) {
-				this.confirmMacro($(info.itemEl).data('macro-id'));
+				var item = $(info.itemEl);
+				if (item.hasClass('open-settings-trigger')) {
+					$('#settingswin').trigger('dp_open', 'macros');
+				} else {
+					this.confirmMacro($(info.itemEl).data('macro-id'));
+				}
 			}).bind(this)
+		});
+
+		$('#settingswin').on('dp_macros_updated', function(ev) {
+			macroMenu.find('li').not('.open-settings-trigger').remove();
+			Array.each(ev.macroItems, function(x) {
+				var li = $('<li />');
+				li.data('macro-id', x.id);
+				li.text(x.title);
+
+				li.appendTo(macroMenu);
+			});
 		});
 
 		this.macroCancelBtn.on('click', (function() {

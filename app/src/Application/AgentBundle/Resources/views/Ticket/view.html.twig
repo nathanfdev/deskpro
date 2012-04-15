@@ -342,9 +342,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<div class="controls" id="{{baseId}}_properties_controls">
 			{% if ticket_perms.modify_fields %}<a class="clean-white properties-edit-trigger edit-fields-trigger"><span>{{ phrase('agent.general.edit_properties') }}</span></a>{% endif %}
 			{% if ticket_perms.modify_merge %}<a class="clean-white noedit-hide" id="{{baseId}}_merge_trigger"><span>{{ phrase('agent.general.merge') }}</span></a>{% endif %}
-			{% if macros|length %}
-				<a class="clean-white arrow menu-fitted noedit-hide" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.general.macros') }}</span><em></em></a>
-			{% endif %}
+			<a class="clean-white arrow menu-fitted noedit-hide" id="{{baseId}}_macros_menu_trigger"><span>{{ phrase('agent.general.macros') }}</span><em></em></a>
 			{% if ticket_perms.delete %}
 			{% if not (ticket.hidden_status in ['deleted', 'spam'] )%}
 				<a class="clean-white nodelete-hide" id="{{baseId}}_delete_trigger"><span>{{ phrase('agent.general.ucfirst_delete') }}</span></a>
