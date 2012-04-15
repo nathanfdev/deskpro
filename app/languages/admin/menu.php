@@ -5,7 +5,7 @@
     'admin.menu.change_homepage'              => 'Change the appearance of your helpdesk homepage and integrate it into your website',
     'admin.menu.change_registration'          => 'Change how the helpdesk should handle user registration',
     'admin.menu.change_settings'              => 'Change your helpdesk settings, like your website URL',
-    'admin.menu.click_to_configure'           => 'Click an icon above to navigate to a section and configure your helpdesk.',
+    'admin.menu.click_to_configure'           => 'The DeskPRO setup guide and admin dashboard is under final development. For now, please access DeskPRO options using the menu above.',
     'admin.menu.create_custom_fields'         => 'Create custom fields that can be added to organizations.',
     'admin.menu.create_filters'               => 'Create filters that will appear in agent interface to help your team find tickets faster.',
     'admin.menu.create_groups'                => 'Create groups of actions that can be performed on tickets with a single click.',
