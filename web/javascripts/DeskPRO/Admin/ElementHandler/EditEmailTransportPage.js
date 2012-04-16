@@ -87,7 +87,7 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 				},
 				success: function(data) {
 					if (data.success) {
-						$('.error', el).show();
+						$('.error', el).hide();
 						$('.success', el).show();
 					} else {
 						$('.success', el).hide();
