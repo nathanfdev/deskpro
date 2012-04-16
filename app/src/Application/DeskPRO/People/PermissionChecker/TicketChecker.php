@@ -270,7 +270,7 @@ class TicketChecker extends AbstractChecker
             $set_suffix = 'followed';
         }
         else {
-			$set_suffix = 'other';
+			$set_suffix = 'others';
 		}
 
 		$perm_gloabl   = 'agent_tickets.modify_' . $set_suffix;

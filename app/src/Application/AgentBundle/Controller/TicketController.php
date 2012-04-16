@@ -1109,7 +1109,7 @@ class TicketController extends AbstractController
 
 	public function ajaxSaveActionsAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id);
+		$ticket = $this->getTicketOr404($ticket_id, 'modify');
 		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
 
 		$result = $ticket_edit->applyActions($this->in->getCleanValueArray('actions', 'raw', 'raw'));
@@ -1150,11 +1150,16 @@ class TicketController extends AbstractController
 				}
 			}
 
+			if ($this->in->getBool('with_set_agent_parts')) {
+				$agents = $this->em->getRepository('DeskPRO:Person')->getPeopleFromIds($this->in->getCleanValueArray('agent_part_ids', 'uint', 'discard'));
+				$ticket->setAgentParticipants($agents);
+			}
+
 			$ticket_edit->save();
 			$this->em->flush();
 
+			$field_manager = $this->container->getSystemService('ticket_fields_manager');
 			if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-				$field_manager = $this->container->getSystemService('ticket_fields_manager');
 
 				if (!empty($_POST['custom_fields'])) {
 					$post_custom_fields = $this->request->request->get('custom_fields', array());
@@ -1767,6 +1772,31 @@ class TicketController extends AbstractController
 
 	############################################################################
 
+	public function checkPerm($ticket, $check_perm)
+	{
+		$fail = false;
+		if (strpos($check_perm, 'modify_') === 0) {
+			$check_perm = str_replace('modify_', '', $check_perm);
+			if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, $check_perm)) {
+				$fail = true;
+			}
+		} elseif ($check_perm == 'delete') {
+			if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
+				$fail = true;
+			}
+		} elseif ($check_perm == 'reply') {
+			if (!$this->person->PermissionsManager->TicketChecker->canReply($ticket)) {
+				$fail = true;
+			}
+		}
+
+		if ($fail) {
+			return false;
+		}
+
+		return true;
+	}
+
 	/**
 	 * @return \Application\DeskPRO\Entity\Ticket
 	 */
@@ -1783,26 +1813,8 @@ class TicketController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_id");
 		}
 
-		if ($check_perm) {
-			$fail = false;
-			if (strpos($check_perm, 'modify_') === 0) {
-				$check_perm = str_replace('modify_', '', $check_perm);
-				if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, $check_perm)) {
-					$fail = true;
-				}
-			} elseif ($check_perm == 'delete') {
-				if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
-					$fail = true;
-				}
-			} elseif ($check_perm == 'reply') {
-				if (!$this->person->PermissionsManager->TicketChecker->canReply($ticket)) {
-					$fail = true;
-				}
-			}
-
-			if ($fail) {
-				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_id");
-			}
+		if ($check_perm && !$this->checkPerm($ticket, $check_perm)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_id");
 		}
 
 		return $ticket;

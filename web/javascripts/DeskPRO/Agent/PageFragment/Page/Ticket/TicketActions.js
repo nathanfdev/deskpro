@@ -36,17 +36,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 				var agent_id = parseInt(selections.agents || 0);
 				var agentProp = self.changeManager.getPropertyManager('agent_id');
-				self.changeManager.setInstantChange(agentProp, agent_id);
+				self.changeManager.addChange(agentProp, agent_id, true);
 
 				var agent_team_id = parseInt(selections.teams || 0);
 				var agentTeamProp = self.changeManager.getPropertyManager('agent_team_id');
-				self.changeManager.setInstantChange(agentTeamProp, agent_team_id);
+				self.changeManager.addChange(agentTeamProp, agent_team_id, true);
 
 				followersList.empty();
 
 				var selections = ob.getAllSelected();
 
-				var postData = [];
+				var postData = [{
+					name: 'with_set_agent_parts',
+					value: 1
+				}];
 				Array.each(selections.followers, function(part_id) {
 					var label = $('.agent-part-label-' + part_id, ob.getElement()).first().text().trim();
 
@@ -61,7 +64,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 					followersList.append(li);
 
 					postData.push({
-						name: 'agent_part_ids[]',
+						name: 'set_agent_part_ids[]',
 						value: part_id
 					});
 				});
@@ -70,12 +73,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 					followersList.append('<li>No followers</li>');
 				}
 
-				$.ajax({
-					url: BASE_URL + 'agent/tickets/'+self.page.meta.ticket_id+'/set-agent-parts.json',
-					type: 'POST',
-					dataType: 'json',
-					data: postData
-				});
+				self.changeManager.saveChanges(postData);
 
 				if (!agent_team_id) {
 					$('.team-row', self.getEl('people_box_agent')).hide();
