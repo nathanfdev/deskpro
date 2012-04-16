@@ -114,8 +114,8 @@
 
 .datepicker > span {
     position:absolute;
-    z-index: 10;
-    top: 20px;
+    z-index: 100;
+    top: 24px;
     left: 0px;
 }
 
@@ -142,6 +142,7 @@
     padding: 2px 8px 3px 6px;
     position: relative;
     text-shadow: 0 1px 0 #FFFFFF;
+    font-size: 10px;
 }
 
 .datepicker em {
@@ -163,7 +164,10 @@
     top: 0px;
     background-color: #000000;
     opacity: 0.55;
-    display: none;
+}
+
+.agent-hours-overlay.hidden {
+    display:none;
 }
 </style>
 <script type="text/javascript">
@@ -181,10 +185,15 @@
         $('.datepicker > a').on('click', function(){
             if($('.datepicker > span').hasClass('hidden')) {
                 $('.datepicker > span').removeClass('hidden');
+                $('.agent-hours-overlay').removeClass('hidden');
             }
             else {
                 $('.datepicker > span').addClass('hidden');
+                $('.agent-hours-overlay').addClass('hidden');
             }
+        });
+        $('.agent-hours-overlay').on('click', function() {
+            $('.datepicker > a').click();
         });
         {#$('.datechooser select').on('change', function() {
             document.location = $(this).val();
@@ -267,5 +276,5 @@
     {% endif %}
 </table>
 
-<div class="agent-hours-overlay"></div>
+<div class="agent-hours-overlay hidden"></div>
 {% endblock %}
