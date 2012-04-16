@@ -233,6 +233,10 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 	public function licenseAction()
 	{
+        if(count($this->getDoctrine()->getConnection()->fetchAll('SHOW TABLES'))) {
+            $this->redirect($this->generateUrl('install_install_data'));
+        }
+
 		return $this->render('InstallBundle:Install:license.html.php', array(
 
 		));

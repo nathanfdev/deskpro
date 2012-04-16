@@ -109,8 +109,8 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         $install_schema->setLogger($logger);
 
         $install_schema->run(false);
-        $this->createAdmin();
-        $this->saveSettings();
+        //$this->createAdmin();
+        //$this->saveSettings();
     }
 
     private function createDatabase()

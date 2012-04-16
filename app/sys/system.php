@@ -268,6 +268,11 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			}
 		}
 
+        if(!App::getSetting('core.install_timestamp')) {
+            $response = new RedirectResponse($request->getBasePath() . '/index.php/install/');
+            return $response;
+        }
+
 		// Make sure we arent offline
 		if ($this->isHelpdeskOffline()) {
 			$response = new Response();
