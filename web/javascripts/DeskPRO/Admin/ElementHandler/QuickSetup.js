@@ -105,7 +105,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 				if (!data || !data.cron_okay) {
 					window.setTimeout(function() {
 						self.doCronCheck();
-					}, 15000);
+					}, 3200);
 
 					if (data.cron_errors) {
 						$('#cron_errors').show().html(data.cron_errors);
