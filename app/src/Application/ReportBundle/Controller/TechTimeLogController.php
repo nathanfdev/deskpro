@@ -132,8 +132,8 @@ class TechTimeLogController extends AbstractController
 
     private function mysqlDateToPhpDate($mysql_date)
     {
-        $dt = \DateTime::createFromFormat('Y-m-d H:i:s', $mysql_date, $this->person->getDateTimezone());
-        $dt->setTimeZone(new \DateTimeZone('UTC'));
+        $dt = \DateTime::createFromFormat('Y-m-d H:i:s', $mysql_date, new \DateTimeZone('UTC'));
+        $dt->setTimeZone($this->person->getDateTimezone());
         return $dt;
     }
 }
