@@ -82,4 +82,11 @@ $collection->add('install_install_done', new Route(
 	array()
 ));
 
+$collection->add('install_send_install_report_error', new Route(
+	'/install-report-error',
+	array('_controller' => 'InstallBundle:Install:sendInstallReportError'),
+	array(),
+	array()
+));
+
 return $collection;

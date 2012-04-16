@@ -81,6 +81,7 @@ window.DpStatus = {
 
 		if (DpStatus.hasErrors) {
 			$('#install_error').show();
+			sendReportError();
 		} else {
 			$('#install_done').show();
 		}

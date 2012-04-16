@@ -54,6 +54,7 @@ var installStatus = {
 
 		if (installStatus.hasError) {
 			$('#install_error').show();
+			sendReportError();
 		} else {
 			$('#install_done').show();
 		}

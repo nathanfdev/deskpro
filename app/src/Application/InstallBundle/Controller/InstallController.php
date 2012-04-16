@@ -528,6 +528,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
 			$this->getLogger()->log("[InstallData] Exception Trace: {$einfo['trace']}", 'debug');
 
+			$this->sendInstallReport(true);
+
 			$this->getOrm()->getConnection()->rollback();
 			throw $e;
 		}
@@ -614,17 +616,28 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 		$base_url = $this->get('request')->getBaseUrl();
 
-		$data = array(
-			'log' => @file_get_contents($this->container->getLogDir() . '/install.log'),
-			'is_error' => 0,
-			'source_type' => 'install.web'
-		);
-		\Application\DeskPRO\Service\ErrorReporter::sendReport('report-install', $data, 10);
+		$this->sendInstallReport(false);
 
 		return $this->redirect($base_url . '/admin/');
 	}
 
+	public function sendInstallReportErrorAction()
+	{
+		$this->sendInstallReport(true);
+		exit(1);
+	}
+
 	###############################################################################
+
+	public function sendInstallReport($error = false)
+	{
+		$data = array(
+			'log' => @file_get_contents($this->container->getLogDir() . '/install.log'),
+			'is_error' => $error ? 0 : 1,
+			'source_type' => 'install.web'
+		);
+		\Application\DeskPRO\Service\ErrorReporter::sendReport('report-install', $data, 10);
+	}
 
 	/**
 	 * @return \Orb\Input\Reader\Reader

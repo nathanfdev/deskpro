@@ -66,6 +66,14 @@
 			padding-top: 25px;
 		}
 	</style>
+	<script type="text/javascript">
+		function sendReportError()
+		{
+			$.ajax({
+				url: '<?php echo $view['router']->generate('install_send_install_report_error') ?>'
+			});
+		}
+	</script>
 	<?php $view['slots']->output('head') ?>
 </head>
 <body>
