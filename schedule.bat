@@ -1,5 +1,4 @@
 @ECHO off
-echo %DATE% %TIME% > data\tmp\schedule.txt
 :Label1
 echo This utility will create a scheduled task which runs
 echo DeskPRO's inbuilt task scheduler every minute.
@@ -27,6 +26,7 @@ echo.
 GOTO Label1
 )
 schtasks /create /tn DeskPRO /sc MINUTE /tr "%php% -q %~dp0cron.php"
+echo %DATE% %TIME% > data\tmp\schedule.txt
 echo.
 echo It will take 60 seconds for the scheduled task to begin
 pause
