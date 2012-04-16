@@ -72,7 +72,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.updateGroupingVars();
 
 		this._lastLoaded = new Date();
-        this.updateBadge($('#userchat_deplist_0_counter').text());
+        this.handleUpdateCounts();
 	},
 
 	refreshFilterGrouping: function(filterId) {
@@ -127,7 +127,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleUpdateCounts: function(data) {
-        this.updateBadge($('#userchat_deplist_0_counter').text());
+        this.updateBadge($('#userchat_deplist_0_counter').text() + $('#userchat_deplist_allagents_counter').text());
 	},
 
 	isChatOpen: function(convoId) {
