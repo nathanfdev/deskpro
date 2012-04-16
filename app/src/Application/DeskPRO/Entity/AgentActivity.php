@@ -72,13 +72,13 @@ class AgentActivity extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\AgentActivity';
 		$metadata->setPrimaryTable(array(
-			'name' => 'person_activity',
+			'name' => 'agent_activity',
 			'indexes' => array(
-				'date_created_idx' => array('columns' => array('date_created'))
+				'date_created_idx' => array('columns' => array('date_active'))
 			)
 		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-		$metadata->mapField(array( 'fieldName' => 'date_active', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'date_active', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_active', 'id' => true, ));
 		//$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'id' => true,  ));
 	}
