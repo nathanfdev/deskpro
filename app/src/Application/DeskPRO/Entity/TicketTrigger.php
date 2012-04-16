@@ -530,7 +530,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 
 				if ($who_type == 'user') {
 					return 'property_change.user';
-				} elseif ($who_type == 'agent') {
+				} else {
 					return 'property_change.agent';
 				}
 
@@ -541,6 +541,8 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 			default:
 				return $this->event_trigger;
 		}
+
+		return 'other';
 	}
 
 

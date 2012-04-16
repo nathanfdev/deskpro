@@ -328,6 +328,50 @@ class TicketTerms
 				}
 				break;
 
+			case 'to_address':
+
+				if (!$ticket->email_reader) {
+					return false;
+				}
+
+				$check = strtolower($choice['to_address']);
+
+				$tos = $ticket->email_reader->getToAddresses();
+				foreach ($tos as $to) {
+					$to = $to->getEmail();
+					$to = strtolower($to);
+
+					if ($check == $to) {
+						return true;
+					}
+				}
+
+				return false;
+
+				break;
+
+			case 'cc_address':
+
+				if (!$ticket->email_reader) {
+					return false;
+				}
+
+				$check = strtolower($choice['cc_address']);
+
+				$ccs = $ticket->email_reader->getCcAddresses();
+				foreach ($ccs as $cc) {
+					$cc = $to->getEmail();
+					$cc = strtolower($cc);
+
+					if ($check == $cc) {
+						return true;
+					}
+				}
+
+				return false;
+
+				break;
+
 			case TicketSearch::TERM_DEPARTMENT:
 				$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
 				if (count($choice) == 1) $choice = $choice[0];

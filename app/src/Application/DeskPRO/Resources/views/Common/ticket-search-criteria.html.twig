@@ -51,6 +51,25 @@
 	</div>
 	{% endif %}
 
+	{% if 'new_ticket.gateway_person' in event_group %}
+		<div class="type" title="{{ phrase('agent.general.to_address') }}" data-rule-type="to_address">
+			<div class="op">
+				<input type="hidden" name="op" value="is" />
+			</div>
+			<div class="options">
+				<input type="text" name="to_address" value="" />
+			</div>
+		</div>
+		<div class="type" title="{{ phrase('agent.general.cc_address') }}" data-rule-type="cc_address">
+			<div class="op">
+				<input type="hidden" name="op" value="is" />
+			</div>
+			<div class="options">
+				<input type="text" name="cc_address" value="" />
+			</div>
+		</div>
+	{% endif %}
+
 	{% if 'creation_system' not in no_show_fields and 'new_ticket' not in event_group %}
 	<div class="type" title="{{ phrase('agent.general.originated_interface') }}" data-rule-type="creation_system" data-term-type="GenericMenuTerm" data-term-triggers="interface,orig-interface,original-interface">
 		<div class="op">

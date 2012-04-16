@@ -429,7 +429,7 @@ class TermSummary
 				break;
 
 			case 'gateway_account':
-				$names = App::getOrm()->getRepository('DeskPRO:EmailGateway')->getGatewayNames((array)$choice['gateway_address']);
+				$names = App::getOrm()->getRepository('DeskPRO:EmailGateway')->getGatewayNames((array)$choice['gateway_account']);
 				$summary = "Gateway account is " . implode($names, ' or ');
 				break;
 		}

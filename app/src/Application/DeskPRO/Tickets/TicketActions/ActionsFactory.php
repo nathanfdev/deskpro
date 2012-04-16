@@ -154,6 +154,10 @@ class ActionsFactory
 				$options['email_address'] = $value['email_address'];
 				break;
 
+			case 'set_from_name':
+				$options['from_name'] = $value['name'];
+				break;
+
 			case 'new_ticket':
 				$options = array('mode' => isset($value['mode']) ? $value['mode'] : 'run');
 				break;
