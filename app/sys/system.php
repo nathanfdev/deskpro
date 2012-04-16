@@ -175,18 +175,7 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 	public function getUserLogDir()
 	{
-		static $log_dir = null;
-
-		if ($log_dir === null) {
-			global $DP_CONFIG;
-			if (isset($DP_CONFIG['dir_logs']) && $DP_CONFIG['dir_logs']) {
-				$log_dir = $DP_CONFIG['dir_logs'];
-			} else {
-				$log_dir = DP_WEB_ROOT . '/data/logs';
-			}
-		}
-
-		return $log_dir;
+		return dp_get_log_dir();
 	}
 
 	public function getLogDir()
@@ -196,34 +185,12 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 	public function getBackupDir()
 	{
-		static $backup_dir = null;
-
-		if ($backup_dir === null) {
-			global $DP_CONFIG;
-			if (isset($DP_CONFIG['dir_backups']) && $DP_CONFIG['dir_backups']) {
-				$backup_dir = $DP_CONFIG['dir_backups'];
-			} else {
-				$backup_dir = DP_WEB_ROOT . '/data/backups';
-			}
-		}
-
-		return $backup_dir;
+		return dp_get_backup_dir();
 	}
 
 	public function getBlobDir()
 	{
-		static $blob_dir = null;
-
-		if ($blob_dir === null) {
-			global $DP_CONFIG;
-			if (isset($DP_CONFIG['dir_files']) && $DP_CONFIG['dir_files']) {
-				$blob_dir = $DP_CONFIG['dir_files'];
-			} else {
-				$blob_dir = DP_WEB_ROOT . '/data/files';
-			}
-		}
-
-		return $blob_dir;
+		return dp_get_blob_dir();
 	}
 
 	protected function getKernelParameters()
@@ -566,6 +533,77 @@ class CliKernel extends AgentKernel
 		$bundles[] = new \Symfony\Bundle\DoctrineMigrationsBundle\DoctrineMigrationsBundle();
 
 		return $bundles;
+	}
+
+	public function boot($mode = 'cli')
+	{
+		parent::boot();
+
+		if ($mode == 'cron') {
+			$this->runCronBootChecks();
+		}
+	}
+
+	protected function runCronBootChecks()
+	{
+		$server_check = new \Application\InstallBundle\Install\ServerChecks();
+		$server_check->setMode('cron');
+		$server_check->checkServer();
+
+		try {
+			$server_check->checkDatabase(App::getConfig('db'));
+		} catch (\Exception $e) {}
+
+		if ($server_check->hasFatalErrors()) {
+			$this->handleCronBootErrors($server_check);
+			exit(1);
+		}
+	}
+
+	protected function handleCronBootErrors(\Application\InstallBundle\Install\ServerChecks $server_check)
+	{
+		$errors = $server_check->getFatalErrors();
+
+		$error_messages = array();
+		$error_codes = array();
+		foreach ($errors as $k => $e) {
+			$error_messages[] = $e['message'];
+			$error_codes[] = $k;
+		}
+
+		$msg = "There are problems with your server that prevent DeskPRO from executing this command:\n\n";
+		$msg .= '- ' . implode("\n- ", $error_messages);
+		$msg .= "\n\n###\n\n";
+
+		foreach ($error_codes as $code) {
+			$msg .= "error:$code\n";
+		}
+
+		$ini_path = deskpro_install_guess_phpini_path();
+		if ($ini_path) {
+			$msg .= "ini_path: $ini_path\n";
+		}
+
+		echo $msg;
+
+		$db_write = false;
+		if (!$server_check->hasErrorType('pdo_ext') && !$server_check->hasErrorType('pdo_mysql_ext') && !$server_check->hasDbErrors()) {
+			try {
+				$db = App::getDb();
+				$db->replace('install_data', array(
+					'build' => 1,
+					'name'  => 'cron_run_errors',
+					'data' => $msg
+				));
+				$db_write = true;
+			} catch (\Exception $e) {
+				$db_write = false;
+			}
+		}
+
+		if (!$db_write) {
+			@file_put_contents(dp_get_log_dir().'/cron-boot-errors.log', $msg);
+		}
 	}
 }
 

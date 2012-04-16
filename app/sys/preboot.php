@@ -1,5 +1,6 @@
 <?php if (!defined('DP_ROOT')) exit('No access');
 require DP_ROOT . '/src/Application/InstallBundle/Install/server_check_functions.php';
+require DP_ROOT . '/sys/load_config.php';
 
 
 #------------------------------
@@ -28,24 +29,41 @@ unset($max_time);
 #------------------------------
 
 $errors = array();
+$errors_codes = array();
 
 if (!deskpro_install_check_version()) {
 	$errors[] = "The version of PHP you have is too old. DeskPRO requires PHP v5.3.2 or newer. You need to upgrade your version.";
+	$errors_codes[] = 'php_version';
 }
 
 if (!deskpro_install_check_pcre()) {
 	$errors[] = "PHP is configured with a `pcre.backtrack_limit` value that is too low. Edit your php.ini configuration and change it to at least 100000.";
+	$errors_codes[] = 'pcre_backtrack_limit';
 }
 
 if (!deskpro_install_check_safemode()) {
 	$errors[] = "PHP currently has <code>safe_mode</code> enabled. DeskPRO requires safe_mode to be set to \"Off\". You need to edit your PHP configuration to make this change.";
+	$errors_codes[] = 'safe_mode';
 }
 
 if ($errors) {
 	if (php_sapi_name() == 'cli') {
-		echo "There are problems with your server that prevent DeskPRO from executing this command:\n\n";
-		echo '- ' . implode("\n- ", $errors);
-		echo "\n\n";
+		$msg = "There are problems with your server that prevent DeskPRO from executing this command:\n\n";
+		$msg .= '- ' . implode("\n- ", $errors);
+		$msg .= "\n\n";
+
+		if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') {
+			$msg_codes = array();
+			foreach ($errors_codes as $e) {
+				$msg_codes[] = 'error: ' . $e;
+			}
+
+			$ini_path = deskpro_install_guess_phpini_path();
+			if ($ini_path) {
+				$msg_codes[] = "ini_path: $ini_path";
+			}
+			@file_put_contents(dp_get_log_dir().'/cron-boot-errors.log', $msg . "###\n\n" . implode("\n", $msg_codes));
+		}
 	} else {
 		$errors = '<ul><li>' . implode('</li><li>', $errors) . '</li></ul>';
 		echo deskpro_install_basic_error($errors);

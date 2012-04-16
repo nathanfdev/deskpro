@@ -149,3 +149,23 @@ function deskpro_install_check_parseinisize($val)
 
 	return $val;
 }
+
+/**
+ * @return string
+ */
+function deskpro_install_guess_phpini_path()
+{
+	ob_start();
+	phpinfo();
+	$phpinfo = ob_get_clean();
+	$phpinfo = html_entity_decode(strip_tags($phpinfo), ENT_QUOTES);
+
+	if (preg_match('#^Loaded Configuration File (.*?)$#m', $phpinfo, $m)) {
+		$path = $m[1];
+		$path = str_replace('=>', '', $path);
+		$path = trim($path);
+		return $path;
+	} else {
+		return false;
+	}
+}

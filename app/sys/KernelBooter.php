@@ -58,38 +58,7 @@ class KernelBooter
 			return;
 		}
 
-		if (file_exists(DP_CONFIG_FILE)) {
-			require DP_CONFIG_FILE;
-
-			if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
-				$DP_CONFIG = array();
-			}
-
-			if (!isset($DP_CONFIG['db'])) $DP_CONFIG['db'] = array();
-			if (!isset($DP_CONFIG['db']['host']))      $DP_CONFIG['db']['host']      = defined('DP_DATABASE_HOST')     ? DP_DATABASE_HOST     : 'localhost';
-			if (!isset($DP_CONFIG['db']['user']))      $DP_CONFIG['db']['user']      = defined('DP_DATABASE_USER')     ? DP_DATABASE_USER     : 'YOUR_DATABASE_USER';
-			if (!isset($DP_CONFIG['db']['password']))  $DP_CONFIG['db']['password']  = defined('DP_DATABASE_PASSWORD') ? DP_DATABASE_PASSWORD : 'YOUR_DATABASE_PASS';
-			if (!isset($DP_CONFIG['db']['dbname']))    $DP_CONFIG['db']['dbname']    = defined('DP_DATABASE_NAME')     ? DP_DATABASE_NAME     : 'YOUR_DATABASE_NAME';
-			if (!isset($DP_CONFIG['technical_email'])) $DP_CONFIG['technical_email'] = defined('DP_TECHNICAL_EMAIL')   ? DP_TECHNICAL_EMAIL   : '';
-		} else {
-			if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
-				$DP_CONFIG = array();
-				$DP_CONFIG['db'] = array();
-				$DP_CONFIG['db']['host']      = 'localhost';
-				$DP_CONFIG['db']['user']      = 'YOUR_DATABASE_USER';
-				$DP_CONFIG['db']['password']  = 'YOUR_DATABASE_PASS';
-				$DP_CONFIG['db']['dbname']    = 'YOUR_DATABASE_NAME';
-				$DP_CONFIG['technical_email'] = '';
-			}
-		}
-
-		if (!defined('DP_BUILD_TIME')) {
-			if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
-				require(DP_ROOT.'/sys/config/build-time.php');
-			} else {
-				define('DP_BUILD_TIME', 1323444089); // would be used by someone who hasnt built yet
-			}
-		}
+		dp_load_config();
 
 		if (isset($DP_CONFIG['enable_debug_trace']) && $DP_CONFIG['enable_debug_trace']) {
 			if (!function_exists('xdebug_start_trace')) {
@@ -276,7 +245,7 @@ class KernelBooter
 	public static function bootCli($env = 'prod', $debug = false)
 	{
 		static::ensureCli();
-		$app = static::getCliApp($env, $debug);
+		$app = static::getCliApp('cmd', $env, $debug);
 
 		$GLOBALS['DP_IS_IN_CLI'] = true;
 		$app->run();
@@ -293,7 +262,7 @@ class KernelBooter
 	public static function bootCron($env = 'prod', $debug = false)
 	{
 		static::ensureCli();
-		$app = static::getCliApp($env, $debug, true);
+		$app = static::getCliApp('cron', $env, $debug, true);
 
 		if (!$app) {
 			return;
@@ -320,7 +289,7 @@ class KernelBooter
 	{
 		static::ensureCli();
 
-		$app = static::getCliApp($env, $debug);
+		$app = static::getCliApp('import', $env, $debug);
 
 		$argv = $_SERVER['argv'];
 		array_shift($argv); // remove cron.php
@@ -343,7 +312,7 @@ class KernelBooter
 	{
 		static::ensureCli();
 
-		$app = static::getCliApp($env, $debug);
+		$app = static::getCliApp('upgrade', $env, $debug);
 
 		$argv = $_SERVER['argv'];
 		array_shift($argv); // remove upgrade.php
@@ -363,7 +332,7 @@ class KernelBooter
 	 * @param bool $debug
 	 * @return \Symfony\Bundle\FrameworkBundle\Console\Application
 	 */
-	public static function getCliApp($env = 'prod', $debug = false, $enforce_offline_mode = false)
+	public static function getCliApp($mode, $env = 'prod', $debug = false, $enforce_offline_mode = false)
 	{
 		global $DP_CONFIG;
 
@@ -382,16 +351,15 @@ class KernelBooter
 			$debug = false;
 		}
 
+		define('DP_INTERFACE', 'cli');
 		$kernel = new \DeskPRO\Kernel\CliKernel($env, $debug);
-		$kernel->boot();
+		$kernel->boot($mode);
 
 		if ($enforce_offline_mode) {
 			if ($kernel->isHelpdeskOffline()) {
 				return null;
 			}
 		}
-
-		define('DP_INTERFACE', 'cli');
 
 		$app = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
 		$app->setCatchExceptions(false);

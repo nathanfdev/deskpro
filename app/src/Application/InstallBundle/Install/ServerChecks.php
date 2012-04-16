@@ -41,6 +41,9 @@ use Application\DeskPRO\App;
 
 class ServerChecks
 {
+	const MODE_NORMAL = 'normal';
+	const MODE_CRON = 'cron';
+
 	/**
 	 * @var \Orb\Log\Logger
 	 */
@@ -52,11 +55,36 @@ class ServerChecks
 	protected $server_errors = array();
 
 	/**
+	 * @var bool
+	 */
+	protected $has_fatal_server_errors = false;
+
+	/**
+	 * @var bool
+	 */
+	protected $has_fatal_db_errors = false;
+
+	/**
+	 * @var string
+	 */
+	protected $mode = 'normal';
+
+	/**
 	 * @param \Orb\Log\Logger $logger
 	 */
 	public function setLogger(Logger $logger)
 	{
 		$this->logger = $logger;
+	}
+
+	/**
+	 * Set check mode
+	 *
+	 * @param string $mode
+	 */
+	public function setMode($mode)
+	{
+		$this->mode = $mode;
 	}
 
 	protected function getLogger()
@@ -98,6 +126,28 @@ class ServerChecks
 		}
 
 		return false;
+	}
+
+
+	/**
+	 * Are there any fatal server (pre-db checks) errors?
+	 *
+	 * @return bool
+	 */
+	public function hasFatalServerErrors()
+	{
+		return $this->has_fatal_server_errors;
+	}
+
+
+	/**
+	 * Are there any fatal DB (post server) errors?
+	 *
+	 * @return bool
+	 */
+	public function hasFatalDbErrors()
+	{
+		return $this->has_fatal_db_errors;
 	}
 
 
@@ -147,9 +197,9 @@ class ServerChecks
 	public function getFatalErrors()
 	{
 		$ret = array();
-		foreach ($this->server_errors as $e) {
+		foreach ($this->server_errors as $k => $e) {
 			if ($e['level'] == 'fatal') {
-				$ret[] = $e;
+				$ret[$k] = $e;
 			}
 		}
 
@@ -200,6 +250,7 @@ class ServerChecks
 			if (deskpro_install_check_version()) {
 				$this->getLogger()->log("[OK] PHP version of " . phpversion() . " is OK", Logger::DEBUG);
 			} else {
+				$this->has_fatal_server_errors = true;
 				$msg = "[FATAL] Install PHP 5.3.2 or newer. You currently have " . phpversion();
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['php_version'] = array(
@@ -222,6 +273,7 @@ class ServerChecks
 				require_once(DP_CONFIG_FILE);
 
 				if (!defined('DP_DATABASE_HOST') || !defined('DP_DATABASE_USER') || !defined('DP_DATABASE_PASSWORD') || !defined('DP_DATABASE_NAME')) {
+					$this->has_fatal_server_errors = true;
 					$msg = "/config.php exists but does not contain the required database values";
 					$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 					$this->server_errors['config_values'] = array(
@@ -232,6 +284,7 @@ class ServerChecks
 					$this->getLogger()->log("[OK] config file exists and contains required values", Logger::DEBUG);
 				}
 			} else {
+				$this->has_fatal_server_errors = true;
 				$msg = "/config.php file is missing";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['config'] = array(
@@ -250,6 +303,7 @@ class ServerChecks
 			if (function_exists('json_encode')) {
 				$this->getLogger()->log("[OK] json extension installed", Logger::DEBUG);
 			} else {
+				$this->has_fatal_server_errors = true;
 				$msg = "Install and enable the json extension";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['json_ext'] = array(
@@ -263,11 +317,12 @@ class ServerChecks
 		# session_ext
 		#------------------------------
 
-		if ($type == 'session_ext' || $type == 'all') {
+		if ($type == 'session_ext' || ($type == 'all' && $this->mode != 'cron')) {
 			$this->getLogger()->log("[CHECK] Checking for session extension", Logger::DEBUG);
 			if (function_exists('session_start')) {
 				$this->getLogger()->log("[OK] session extension installed", Logger::DEBUG);
 			} else {
+				$this->has_fatal_server_errors = true;
 				$msg = "Install and enable the session extension";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['session_ext'] = array(
@@ -281,11 +336,12 @@ class ServerChecks
 		# image_manip
 		#------------------------------
 
-		if ($type == 'image_manip' || $type == 'all') {
+		if ($type == 'image_manip' || ($type == 'all' && $this->mode != 'cron')) {
 			$this->getLogger()->log("[CHECK] Checking for an image manipulation extension", Logger::DEBUG);
 			if (deskpro_install_check_image_manip()) {
 				$this->getLogger()->log("[OK] An image manipulation extension is installed", Logger::DEBUG);
 			} else {
+				$this->has_fatal_server_errors = true;
 				$msg = "Install and enable the Imagick, Gmagick or GD extension";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['image_manip'] = array(
@@ -304,6 +360,7 @@ class ServerChecks
 			if (function_exists('ctype_alpha')) {
 				$this->getLogger()->log("[OK] ctype session installed", Logger::DEBUG);
 			} else {
+				$this->has_fatal_server_errors = true;
 				$msg = "Install and enable the ctype extension";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['ctype_ext'] = array(
@@ -322,6 +379,7 @@ class ServerChecks
 			if (function_exists('token_get_all')) {
 				$this->getLogger()->log("[OK] tokenizer session installed", Logger::DEBUG);
 			} else {
+				$this->has_fatal_server_errors = true;
 				$msg = "Install and enable the tokenizer extension";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['tokenizer_ext'] = array(
@@ -340,11 +398,11 @@ class ServerChecks
 			if (deskpro_install_check_pdo()) {
 				$this->getLogger()->log("[OK] PDO installed", Logger::DEBUG);
 
-
 				$this->getLogger()->log("[CHECK] Checking for PDO_MySQL", Logger::DEBUG);
 				if (deskpro_install_check_pdo_mysql()) {
 					$this->getLogger()->log("[OK] PDO_MySQL installed", Logger::DEBUG);
 				} else {
+					$this->has_fatal_server_errors = true;
 					$msg = "You need to install the MySQL PDO driver";
 					$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 					$this->server_errors['pdo_mysql_ext'] = array(
@@ -353,6 +411,7 @@ class ServerChecks
 					);
 				}
 			} else {
+				$this->has_fatal_server_errors = true;
 				$msg = "Install and enable the PDO/PDO_MySQL extension";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['pdo_ext'] = array(
@@ -427,6 +486,7 @@ class ServerChecks
 			if (function_exists('iconv')) {
 				$this->getLogger()->log("[OK] iconv is installed", Logger::DEBUG);
 			} else {
+				$this->has_fatal_server_errors = true;
 				$msg = "You must install and enabled the iconv extension";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['iconv_ext'] = array(
@@ -445,6 +505,7 @@ class ServerChecks
 			if (deskpro_install_check_memory_limit()) {
 				$this->getLogger()->log("[OK] Memory limit is okay", Logger::DEBUG);
 			} else {
+				$this->has_fatal_server_errors = true;
 				$msg = "DeskPRO needs PHP's memory_limit option to be at least 128 MB";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['memory_limit'] = array(
@@ -464,6 +525,7 @@ class ServerChecks
 			if (is_dir($dir) && is_writable($dir)) {
 				$this->getLogger()->log("[OK] Logs dir is writable", Logger::DEBUG);
 			} else {
+				$this->has_fatal_server_errors = true;
 				$msg = "The " . str_replace(DP_WEB_ROOT, '', $dir) . " directory must exist and be writable";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 				$this->server_errors['logs_write'] = array(
@@ -491,11 +553,17 @@ class ServerChecks
 	{
 		$db_conf['driver'] = 'pdo_mysql';
 
+		// Dont attempt check if theres a PDO failure
+		if ($this->hasErrorType('pdo_ext') || $this->hasErrorType('pdo_mysql_ext')) {
+			return;
+		}
+
 		$this->getLogger()->log("[CHECK] Checking database connection", Logger::DEBUG);
 		try {
 			$db = \Doctrine\DBAL\DriverManager::getConnection($db_conf);
 			$db->connect();
 		} catch (\Exception $e) {
+			$this->has_fatal_db_errors = true;
 			$msg = "Connection failed: {$e->getMessage()}";
 			$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
 			$this->server_errors['db_connect'] = array(
@@ -506,34 +574,38 @@ class ServerChecks
 			return false;
 		}
 
-		$this->getLogger()->log("[CHECK] checking for innodb engine", Logger::DEBUG);
-		$engines = App::getDb()->fetchAllKeyed("SHOW ENGINES", array(), 'Engine');
-		if (!$engines || !isset($engines['InnoDB']) || $engines['InnoDB']['Support'] == 'NO') {
-			$msg = "MySQL does not have the InnoDB engine enabled";
-			$this->getLogger()->log("[FAIL] $msg", Logger::INFO);
-			$this->server_errors['db_no_innodb'] = array(
-				'message' => $msg,
-				'level' => 'fatal'
-			);
+		if ($this->mode != 'cron') {
+			$this->getLogger()->log("[CHECK] checking for innodb engine", Logger::DEBUG);
+			$engines = App::getDb()->fetchAllKeyed("SHOW ENGINES", array(), 'Engine');
+			if (!$engines || !isset($engines['InnoDB']) || $engines['InnoDB']['Support'] == 'NO') {
+				$this->has_fatal_db_errors = true;
+				$msg = "MySQL does not have the InnoDB engine enabled";
+				$this->getLogger()->log("[FAIL] $msg", Logger::INFO);
+				$this->server_errors['db_no_innodb'] = array(
+					'message' => $msg,
+					'level' => 'fatal'
+				);
 
-			return false;
-		} else {
-			$this->getLogger()->log("[OK] innodb engine enabled", Logger::DEBUG);
-		}
+				return false;
+			} else {
+				$this->getLogger()->log("[OK] innodb engine enabled", Logger::DEBUG);
+			}
 
-		$this->getLogger()->log("[CHECK] Checking mysql version is >= 5.0", Logger::DEBUG);
-		$ver = $db->fetchColumn("SHOW VARIABLES LIKE 'version'", array(), 1);
-		if (version_compare($ver, '5.0', '>=')) {
-			$this->getLogger()->log("[OK] mysql version is okay", Logger::DEBUG);
-		} else {
-			$msg = "Install MySQL verson 5.0 or newer";
-			$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
-			$this->server_errors['db_version'] = array(
-				'message' => $msg,
-				'level' => 'fatal'
-			);
+			$this->getLogger()->log("[CHECK] Checking mysql version is >= 5.0", Logger::DEBUG);
+			$ver = $db->fetchColumn("SHOW VARIABLES LIKE 'version'", array(), 1);
+			if (version_compare($ver, '5.0', '>=')) {
+				$this->getLogger()->log("[OK] mysql version is okay", Logger::DEBUG);
+			} else {
+				$this->has_fatal_db_errors = true;
+				$msg = "Install MySQL verson 5.0 or newer";
+				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->server_errors['db_version'] = array(
+					'message' => $msg,
+					'level' => 'fatal'
+				);
 
-			return false;
+				return false;
+			}
 		}
 
 		return true;

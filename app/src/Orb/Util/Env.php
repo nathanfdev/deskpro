@@ -132,7 +132,10 @@ class Env
 		$phpinfo = html_entity_decode(strip_tags($phpinfo), ENT_QUOTES);
 
 		if (preg_match('#^Loaded Configuration File (.*?)$#m', $phpinfo, $m)) {
-			return $m[1];
+			$path = $m[1];
+			$path = str_replace('=>', '', $path);
+			$path = trim($path);
+			return $path;
 		} else {
 			return false;
 		}
