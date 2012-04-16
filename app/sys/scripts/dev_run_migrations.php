@@ -19,6 +19,30 @@ class RunMigrations
 {
 	public function run()
 	{
+		if (isset($_REQUEST['run'])) {
+			$this->runMigrations();
+		} else {
+			$this->runIntro();
+		}
+	}
+
+	public function runIntro()
+	{
+		echo "<html><title>Run Migrations</title><body>";
+		echo "<h1>Run Migrations</h1>";
+		echo "<p>This will run through the developer migration scripts to bring your database up to the latest schema version.</p>";
+		echo "<p>Running migrations may take some time. For simple changes, it will take around 10 seconds.</p>";
+		echo "<p>You can also run migrations from the command-line:<br /><code>php app/cmd.php dpdev:do-migrations</code></p>";
+
+		$url = $_SERVER['PHP_SELF'] . '?' . (!empty($_SERVER['QUERY_STRING']) ? str_replace('&', '&amp;', $_SERVER['QUERY_STRING']) : '') . '&amp;run';
+
+		echo "<p>When you are ready to proceed, click the button below.<br /><a href=\"$url\">Click here to run the migration scripts now</a></p>";
+
+		echo "</body></html>";
+	}
+
+	public function runMigrations()
+	{
 		global $DP_CONFIG;
 		require DP_CONFIG_FILE;
 

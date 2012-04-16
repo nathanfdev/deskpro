@@ -194,6 +194,8 @@ class Version<version> extends AbstractMigration
 
 		file_put_contents($path, $code);
 
+		file_put_contents(DP_ROOT.'/sys/VERSION', $version);
+
 		if ($editorCmd = $input->getOption('editor-cmd')) {
 			shell_exec($editorCmd . ' ' . escapeshellarg($path));
 		}
