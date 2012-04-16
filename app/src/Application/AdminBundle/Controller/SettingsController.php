@@ -391,7 +391,39 @@ class SettingsController extends AbstractController
 			return $this->createJsonResponse(array('cron_okay' => true));
 		}
 
-		return $this->createJsonResponse(array('cron_okay' => false));
+		// Check for error db record
+		$error_message = App::getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1 AND name = 'cron_run_errors'");
+		if (!$error_message) {
+			// Check for a logged message
+			if (file_exists(dp_get_log_dir().'/cron-boot-errors.log')) {
+				$error_message = file_get_contents(dp_get_log_dir().'/cron-boot-errors.log');
+			}
+		}
+
+		$cron_errors = false;
+		if ($error_message) {
+			$split = explode('###', $error_message);
+			$codes_string = array_pop($split);
+			$codes_string = trim($codes_string);
+
+			$ini_path = Strings::extractRegexMatch('#^ini_path:(.*?)$#m', $codes_string, 1);
+
+			$error_codes = array();
+			if (preg_match_all('#^error:(.*?)$#m', $codes_string, $m, \PREG_PATTERN_ORDER)) {
+				$error_codes = $m[1];
+			}
+
+			$cron_errors = $this->renderView('AdminBundle:Settings:quick-setup-cron-errors.html.twig', array(
+				'error_codes' => $error_codes,
+				'ini_path' => $ini_path,
+				'log_dir' => dp_get_log_dir()
+			));
+		}
+
+		return $this->createJsonResponse(array(
+			'cron_okay' => false,
+			'cron_errors' => $cron_errors,
+		));
 	}
 
 	public function checkInternetAccessAction()

@@ -4,6 +4,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 	Extends: DeskPRO.ElementHandler,
 
 	initPage: function() {
+		window.QUICK_SETUP = this;
 		var self = this;
 
 		this._initInstallSoftwareSection();
@@ -32,6 +33,11 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 		} else {
 			$('#section_done').find('label').text((total_count - done_count)+'');
 		}
+	},
+
+	scrollToSection: function(section) {
+		var title = $(section);
+		$('html,body').animate({scrollTop: title.offset().top - 45 }, 600);
 	},
 
 	//##################################################################################################################
@@ -86,6 +92,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 	//##################################################################################################################
 
 	_initCronSection: function() {
+		this.hasCronError = false;
 		this.doCronCheck();
 	},
 
@@ -99,8 +106,19 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 					window.setTimeout(function() {
 						self.doCronCheck();
 					}, 15000);
+
+					if (data.cron_errors) {
+						$('#cron_errors').show().html(data.cron_errors);
+
+						if (!self.hasCronError) {
+							self.scrollToSection('#section_install_cron');
+						}
+						self.hasCronError = true;
+					}
 				} else {
+					self.hasCronError = false;
 					$('#section_install_cron').find('.mega-tick').fadeIn();
+					$('#cron_errors').hide();
 					self.recountSteps();
 				}
 			}
