@@ -268,7 +268,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			}
 		}
 
-        if(!App::getSetting('core.install_timestamp')) {
+        if(!App::getSetting('core.install_timestamp') && !preg_match('#^/install/#', $path)) {
             $response = new RedirectResponse($request->getBasePath() . '/index.php/install/');
             return $response;
         }
