@@ -158,7 +158,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$data = array('stats' => $stats);
 			$data['is_error'] = $server_check->hasFatalErrors();
 			$data['source_type'] = 'install.web';
-			\Application\DeskPRO\Service\ErrorReporter::sendReport('report-stats', $stats, 10);
+			\Application\DeskPRO\Service\ErrorReporter::sendReport('report-stats', $data, 10);
 		}
 
 		$ini_path = '';

@@ -258,7 +258,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$data = array('stats' => $stats);
 			$data['is_error'] = $server_check->hasFatalErrors();
 			$data['source_type'] = 'import.dp3';
-			\Application\DeskPRO\Service\ErrorReporter::sendReport('report-stats', $stats, 10);
+			\Application\DeskPRO\Service\ErrorReporter::sendReport('report-stats', $data, 10);
 
 			if ($server_check->hasFatalErrors()) {
 				$str = "There are problems with your server setup that prevents DeskPRO v4 from installing:\n";
