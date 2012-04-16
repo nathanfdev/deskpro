@@ -46,7 +46,7 @@ class TechTimeLogController extends AbstractController
         $dt = new \DateTime('now', new \DateTimeZone('UTC'));
         $dt->setTime(0, 0, 0);
         $vars = $this->getVarsForDate($dt);
-        return $this->render('ReportBundle:TechTimeLog:index.html.twig', $vars);
+        return $this->render('ReportBundle:AgentHours:index.html.twig', $vars);
     }
 
     public function listAction($date)
@@ -56,7 +56,7 @@ class TechTimeLogController extends AbstractController
         $dt->setDate($year, $month, $day);
         $dt->setTime(0, 0, 0);
         $vars = $this->getVarsForDate($dt);
-        return $this->render('ReportBundle:TechTimeLog:index.html.twig', $vars);
+        return $this->render('ReportBundle:AgentHours:index.html.twig', $vars);
     }
 
     private function getVarsForDate($date)
