@@ -9,6 +9,7 @@ if (php_sapi_name() != 'cli') {
 define('DP_BUILDING', true);
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
 define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
+define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
 
 // Remove log stuff
 $rm_paths = array(

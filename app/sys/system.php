@@ -175,6 +175,7 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 	public function getUserLogDir()
 	{
+		require_once DP_ROOT . '/sys/load_config.php';
 		return dp_get_log_dir();
 	}
 
@@ -185,11 +186,13 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 	public function getBackupDir()
 	{
+		require_once DP_ROOT . '/sys/load_config.php';
 		return dp_get_backup_dir();
 	}
 
 	public function getBlobDir()
 	{
+		require_once DP_ROOT . '/sys/load_config.php';
 		return dp_get_blob_dir();
 	}
 
@@ -607,7 +610,7 @@ class CliKernel extends AgentKernel
 		}
 
 		if (!$db_write) {
-			@file_put_contents(dp_get_log_dir().'/cron-boot-errors.log', $msg);
+			@file_put_contents($this->getLogDir() .'/cron-boot-errors.log', $msg);
 		}
 	}
 }

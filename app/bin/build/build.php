@@ -11,6 +11,7 @@ require './php-path.php';
 define('DP_BUILDING', true);
 define('DP_ROOT', realpath(__DIR__ . '/../../'));
 define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
+define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
 
 $htaccess_path = realpath(DP_ROOT . '/../.htaccess');
 if (is_file($htaccess_path) && is_writable($htaccess_path)) {
