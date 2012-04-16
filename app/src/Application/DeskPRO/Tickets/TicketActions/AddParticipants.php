@@ -117,6 +117,7 @@ class AddParticipantsAction implements ActionInterface
 	 */
 	public function getDescription($as_html = true)
 	{
+        $tr = App::getTranslator();
 		$people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->add_people_ids);
 		if (!$people) return '';
 
@@ -125,6 +126,6 @@ class AddParticipantsAction implements ActionInterface
 			$names[] = $p->getDisplayName();
 		}
 
-		return "Add participants: " . implode($names, ', ');
+		return $tr->phrase('agent.tickets.add_parts_action', array('parts' => implode(', ', $names)));
 	}
 }

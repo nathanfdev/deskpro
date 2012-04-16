@@ -126,6 +126,7 @@ class StatusAction implements ActionInterface
 	 */
 	public function getDescription($as_html = true)
 	{
-		return 'Set status to ' . App::getTranslator()->phrase('agent.tickets.status_' . str_replace('.', '_', $this->status));
+        $tr = App::getTranslator();
+		return $tr->phrase('admin.tickets.set_status_to_x', array('status' => $tr->phrase('agent.tickets.status_' . str_replace('.', '_', $this->status))));
 	}
 }

@@ -136,15 +136,17 @@ class AgentAction implements ActionInterface, PersonContextInterface
 	 */
 	public function getDescription($as_html = true)
 	{
+        $tr = App::getTranslator();
+
 		if ($this->agent_id == -1) {
-			return 'Assign agent to current logged in agent';
+			return $tr->phrase('agent.tickets.assign_current_action');
 		} elseif ($this->agent_id == 0) {
-			return 'Unassign agent';
+			return $tr->phrase('agent.tickets.unassign_action');
 		} else {
 			$name = App::getEntityRepository('DeskPRO:Person')->getAgentNames(array($this->agent_id));
 			if (!isset($name[$this->agent_id])) return '';
 
-			return 'Assign agent to ' . $name[$this->agent_id];
+			return $tr->phrase('agent.tickets.assign_to_agent_action', array('agent' => $name[$this->agent_id]));
 		}
 	}
 }

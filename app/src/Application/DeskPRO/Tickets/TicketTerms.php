@@ -634,6 +634,7 @@ class TicketTerms
 	public function getDescriptions()
 	{
 		$descs = array();
+        $tr = App::getTranslator();
 
 		foreach ($this->terms as $info) {
 
@@ -648,14 +649,14 @@ class TicketTerms
 			$choice = $info['options'];
 
 			if (strpos($op, 'changed') !== false) {
-				$descs[] = "Changed so that " . $this->getTermDescription($term, $op, $choice);
+				$descs[] = $tr->phrase('admin.tickets.changed_to_effect', array('description' => $this->getTermDescription($term, $op, $choice)));
 			} else {
 				$descs[] = $this->getTermDescription($term, $op, $choice);
 			}
 		}
 
 		if (!$descs) {
-			$descs[] = "Any ticket";
+			$descs[] = $tr->phrase('admin.tickets.any_ticket');
 		}
 
 		return $descs;

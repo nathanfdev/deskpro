@@ -155,4 +155,13 @@
     'agent.tickets.user_waiting_x_and_total_y'       => 'User has been waiting <time>{{waiting}}</time> for a reply and a total of <time>{{total}}</time> since the ticket started.',
     'agent.tickets.your_teams_tickets'               => 'Your teams tickets',
     'agent.tickets.your_tickets'                     => 'Your tickets',
+    'agent.tickets.add_parts_action'                     => 'Add participants: {parts}',
+    'agent.tickets.agents_action'                     => 'Agents: {agents}',
+    'agent.tickets.teams_action'                     => 'Teams: {teams}',
+    'agent.tickets.and_sep'                     => ' and ',
+    'agent.tickets.always_notify_people'                     => 'Always notify {parts}',
+    'agent.tickets.add_labels_action'                     => 'Add labels: {labels}',
+    'agent.tickets.assign_current_action'                     => 'Assign agent to current logged in agent',
+    'agent.tickets.unassign_action'                     => 'Unassign agent',
+    'agent.tickets.assign_to_agent_action'                     => 'Assign agent to {agent}',
 );

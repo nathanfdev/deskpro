@@ -69,12 +69,14 @@ class AddAgentNotifyModifier implements CollectionModifierInterface
 		$agent_ids = array();
 		$agent_team_ids = array();
 
+        $tr = App::getTranslator();
+
 		foreach ($this->codes as $send_to) {
 			if ($send_to == 'assigned_agent') {
-				if ($ticket['agent_id']) $desc_agents[] = 'Assigned';
+				if ($ticket['agent_id']) $desc_agents[] = $tr->phrase('agent.tickets.assigned');
 
 			} elseif ($send_to == 'assigned_agent_team') {
-				if ($ticket['agent_id']) $desc_teams[] = 'Assigned';
+				if ($ticket['agent_id']) $desc_teams[] = $tr->phrase('agent.tickets.assigned');
 
 			} elseif (strpos($send_to, 'agent.') === 0) {
 				list (, $agent_id) = explode('.', $send_to, 2);
@@ -91,18 +93,18 @@ class AddAgentNotifyModifier implements CollectionModifierInterface
 
 		$parts = array();
 		if ($desc_agents) {
-			$parts[] = 'Agents: ' . $desc_agents;
+			$parts[] = $tr->phrase('agent.tickets.agents_action', array('agents' => $desc_agents));
 		}
 		if ($desc_teams) {
-			$parts[] = 'Teams: '. $desc_teams;
+			$parts[] = $tr->phrase('agent.tickets.teams_action', array('teams' => $desc_teams));
 		}
 
 		if (!$parts) {
 			return '';
 		}
 
-		$parts = implode(' and ', $parts);
+		$parts = implode($tr->phrase('agent.tickets.sep_and'), $parts);
 
-		return "Always notify $parts";
+		return $tr->phrase('agent.tickets.always_notify_people', array('parts' => $parts));
 	}
 }

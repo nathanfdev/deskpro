@@ -155,4 +155,9 @@
 	'admin.tickets.gateway_created_success'              => 'The email gateway was created successfully.',
 	'admin.tickets.gateway_created_success_trigger'      => 'You can optionally create a trigger now for new tickets that come into this gateway.',
 	'admin.tickets.gateway_created_success_trigger_orback'  => 'Or go back to email gateways',
+	'admin.tickets.any_ticket'  => 'Any ticket',
+	'admin.tickets.changed_to_effect'  => 'Changed so that {desc}',
+	'admin.tickets.set_status_to_x'  => 'Set status to {status}',
+	'admin.tickets.set_urgency_to_x'  => 'Set urgency to {urgency}',
+	'admin.tickets.set_urgency_to_x_when_lower'  => 'Set urgency to {urgency} when it is not already higher',
 );

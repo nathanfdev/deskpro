@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\App;
 
 use Orb\Util\Arrays;
 
@@ -130,6 +131,8 @@ class AddLabelsAction implements ActionInterface
 	 */
 	public function getDescription($as_html = true)
 	{
-		return "Add labels: " . implode($this->add_labels, ', ');
+        $tr = App::getTranslator();
+        $tr->phrase('agent.tickets.agents_action', array('agents' => $desc_agents));
+		return $tr->phrase('agent.tickets.add_labels_action', array('labels' => implode(', ', $this->add_labels)));
 	}
 }

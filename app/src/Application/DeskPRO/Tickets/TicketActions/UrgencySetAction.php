@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\App;
 
 use Orb\Util\Numbers;
 
@@ -111,10 +112,12 @@ class UrgencySetAction implements ActionInterface
 	 */
 	public function getDescription($as_html = true)
 	{
+        $tr = App::getTranslator();
+
 		if ($this->allow_lower) {
-			return 'Set urgency to ' . $this->num;
+			return $tr->phrase('admin.tickets.set_urgency_to_x', array('urgency' => $this->num));
 		} else {
-			return 'Set urgency to ' . $this->num . ' when it is not already higher';
+			return $tr->phrase('admin.tickets.set_urgency_to_x_when_lower', array('urgency' => $this->num));
 		}
 	}
 }
