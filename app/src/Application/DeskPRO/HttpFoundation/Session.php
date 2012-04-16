@@ -128,8 +128,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		$this->visitor = $vis;
 
         if($this->getPerson() && $this->getPerson()->IsAgent
-        && !App::getRequest()->isXmlHttpRequest()
-        && !preg_match('#^/(new$|get-new-messages|poller$|dp/)#', $path)) {
+        && !preg_match('#^/(get-new-messages|.*/poller$|.*/new$)#', $path)) {
             $agent = $this->getPerson();
             $date_active = new \DateTime();
             list($hour, $minute) = explode(':', $date_active->format('H:i'));

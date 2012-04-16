@@ -29,57 +29,52 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage AdminBundle
  */
 
-namespace Application\DeskPRO\Entity;
+namespace Application\ReportBundle\Controller;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Application\DeskPRO\App;
 
-/**
- * Person log items (aka user stream)
- *
- */
-class AgentActivity extends \Application\DeskPRO\Domain\DomainObject
+class TechTimeLogController extends AbstractController
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person = null;
+    /**
+     * Show the list of trends. Starred trends first
+     */
+    public function indexAction()
+    {
+        $db = App::getDb();
+        $today = new \DateTime();
+        $agent_ids = $db->fetchAll('SELECT DISTINCT agent_id FROM agent_activity WHERE DATE(date_active) = ?', array($today->format('Y-m-d')));
+        $agent_repo = $this->getDoctrine()->getRepository('DeskPRO:Person');
+        $block_size = 5;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_active;
+        $agents = array();
+        $times = array();
+        $totals = array();
 
-	public function __construct()
-	{
-        $date_active = new \DateTime();
-        list($hour, $minute) = explode(':', $date_active->format('H:i'));
-        $minute = intval($minute / 5) * 5;
-        $date_active->setTime($hour, $minute, 0);
+        foreach($agent_ids as $agent_id) {
+            $agent_id = $agent_id['agent_id'];
+            $agents[] = $agent_repo->find($agent_id);
+            $active_times = $db->fetchAll('SELECT HOUR(date_active) AS `hour`, MINUTE(date_active) AS `minute` FROM agent_activity WHERE DATE(date_active) = ? AND agent_id = ?', array($today->format('Y-m-d'), $agent_id));
 
-		$this->date_active = $date_active;
-	}
+            $times[$agent_id] = array();
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+            foreach($active_times as $time) {
+                $minute = $time['minute'];
+                $hour = $time['hour'];
+                $times[$agent_id][intval(($hour * 60) / $block_size + $minute / $block_size)] = $time;
+            }
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\AgentActivity';
-		$metadata->setPrimaryTable(array(
-			'name' => 'person_activity',
-			'indexes' => array(
-				'date_created_idx' => array('columns' => array('date_created'))
-			)
-		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-		$metadata->mapField(array( 'fieldName' => 'date_active', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', 'id' => true, ));
-		//$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'id' => true,  ));
-	}
+            $total_minutes = count($active_times) * $block_size;
+            $totals[$agent_id] = array('hours' => intval($total_minutes / 60), 'minutes' => $total_minutes % 60);
+        }
+
+        return $this->render('ReportBundle:TechTimeLog:index.html.twig', array(
+            'agents' => $agents,
+            'today' => $today,
+            'times' => $times,
+            'block_size' => $block_size,
+        ));
+    }
 }

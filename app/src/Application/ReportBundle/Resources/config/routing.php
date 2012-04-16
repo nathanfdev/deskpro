@@ -180,5 +180,11 @@ $collection->add('report_login_authenticate_local', new Route(
 	array()
 ));
 
+$collection->add('tech_time_log_index', new Route(
+    '/techtimelog/index',
+    array('_controller' => 'ReportBundle:TechTimeLog:index'),
+    array(),
+    array()
+));
 
 return $collection;

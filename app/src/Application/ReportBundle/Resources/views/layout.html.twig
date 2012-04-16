@@ -156,6 +156,7 @@
 </div>
 <!-- /BEGIN HEADER BAR -->
 
+{% block nav_block %}
 <!-- BEGIN NAV BAR -->
 <div id="dp_admin_nav" class="dp_admin_nav">
 	<nav>
@@ -168,6 +169,7 @@
 		</ul>
 	</nav>
 </div>
+{% endblock %}
 
 <ul id="all_trends_menu" style="display: none">
 	<li><a href="{{ path('report_trend_index') }}">View All</a></li>
