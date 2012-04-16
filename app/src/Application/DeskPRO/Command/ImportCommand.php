@@ -131,9 +131,13 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$logger->addWriter($wr);
 
 		$log_file_path = $this->getContainer()->getKernel()->getUserLogDir() . '/import.log';
+		if ($mode == 'run' && !$start_step) {
+			@unlink($log_file_path);
+		}
 		try {
 			if (!(isset($DP_CONFIG['import']['nolog']) && $DP_CONFIG['import']['nolog'])) {
-				$wr = new \Orb\Log\Writer\Stream($log_file_path, $mode == 'run' ? 'w' : 'a');
+				$wr = new \Orb\Log\Writer\Stream($log_file_path, 'a');
+				$wr->enableNewStreamPerWrite();
 			} else {
 				$logger->disabled = true;
 			}
@@ -296,7 +300,9 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$logger->log("Unknown path to PHP executable. Edit your /config.php file and specify a value for php_path.\n", Logger::ERR);
 			return 1;
 		} else {
-			$logger->log("Path to PHP executable found at " . $php_path, Logger::INFO);
+			if ($mode == 'run' && !$start_step) {
+				$logger->log("Path to PHP executable found at " . $php_path, Logger::INFO);
+			}
 		}
 
 		#----------------------------------------

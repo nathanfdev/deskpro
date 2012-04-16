@@ -53,6 +53,15 @@ class Stream extends AbstractWriter
 	 */
 	protected $_did_open_stream = false;
 
+	protected $stream_url = null;
+	protected $stream_mode = 'a';
+	protected $close_after_write = false;
+
+	public function enableNewStreamPerWrite()
+	{
+		$this->close_after_write = true;
+	}
+
 	/**
 	 * @param  mixed  streamOrUrl     Stream or URL to open as a stream
 	 * @param  string mode            Mode, only applicable if a URL is given
@@ -75,6 +84,20 @@ class Stream extends AbstractWriter
 
 			$this->_stream = $stream_or_url;
 		} else {
+			$this->stream_url = $stream_or_url;
+			$this->stream_mode = $mode;
+		}
+
+		if ($add_lineformatter) {
+			$this->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
+		}
+	}
+
+	public function getStream()
+	{
+		if (!$this->_stream) {
+			$mode = $this->stream_mode;
+			$stream_or_url = $this->stream_url;
 			if (!($this->_stream = @fopen($stream_or_url, $mode, false))) {
 				$msg = "\"$stream_or_url\" cannot be opened with mode \"$mode\"";
 				throw new \RuntimeException($msg);
@@ -83,17 +106,22 @@ class Stream extends AbstractWriter
 			$this->_did_open_stream = true;
 		}
 
-		if ($add_lineformatter) {
-			$this->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
+		return $this->_stream;
+	}
+
+	public function closeStream()
+	{
+		if ($this->_did_open_stream AND is_resource($this->_stream)) {
+			fclose($this->_stream);
+			$this->_stream = null;
+			$this->_did_open_stream = false;
 		}
 	}
 
 
 	public function shutdown()
 	{
-		if ($this->_did_open_stream AND is_resource($this->_stream)) {
-			fclose($this->_stream);
-		}
+		$this->closeStream();
 	}
 
 	/**
@@ -101,8 +129,14 @@ class Stream extends AbstractWriter
 	 */
 	public function _write(LogItem $log_item)
 	{
-		if (false === @fwrite($this->_stream, $log_item[LogItem::MESSAGE_LINE] . "\n")) {
+		$stream = $this->getStream();
+
+		if (false === @fwrite($stream, $log_item[LogItem::MESSAGE_LINE] . "\n")) {
 			throw new \RuntimeException("Unable to write to stream");
+		}
+
+		if ($this->close_after_write) {
+			$this->closeStream();
 		}
 	}
 }
