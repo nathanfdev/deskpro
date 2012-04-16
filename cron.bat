@@ -1,1 +1,0 @@
-php.exe "%~dp0cron.php"

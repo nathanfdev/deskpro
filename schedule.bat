@@ -1,0 +1,34 @@
+@ECHO off
+FOR /F "tokens=*" %%A IN ('TIME/T') DO FOR %%B IN (%%A) DO SET Time=%%B
+FOR /F "tokens=*" %%A IN ('DATE/T') DO FOR %%B IN (%%A) DO SET Date=%%B
+echo %Date% %Time% > data\tmp\schedule.txt
+:Label1
+echo This utility will create a scheduled task which runs
+echo DeskPRO's inbuilt task scheduler every minute.
+echo.
+echo To continue; we need to know the full path to where you
+echo have installed PHP on your system. An example might be
+echo C:\wamp\www\php\php-win.exe
+echo.
+echo Please note that you may have a php.exe in the same folder
+echo You should use php-win.exe which surpresses the display
+echo of a command line window.
+echo.
+set /p php="PHP Path: "
+echo.
+%php% -r echo('Installed'); > data\tmp\php.txt
+set /p info= < data\tmp\php.txt
+del data\tmp\php.txt
+IF NOT "%info%"=="Installed" (
+echo. 
+echo.
+echo.
+echo * The path to PHP entered was invalid *
+echo.
+echo.
+GOTO Label1
+)
+schtasks /create /tn DeskPRO /sc MINUTE /tr "%php% -q %~dp0cron.php"
+echo.
+echo It will take 60 seconds for the scheduled task to begin
+pause

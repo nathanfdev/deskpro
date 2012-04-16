@@ -52,10 +52,12 @@
 		<tbody>
 		<tr>
 			<td>
-				{{ phrase('admin.settings.cron_setup_linux_edit_file') }}
-				<pre class="code-box">* * * * * exampleuser {{ php_path }} -q {{ path }}/cron.php</pre>
-				<div class="small-note-box">{{ phrase('admin.settings.cron_setup_linux_edit_file_user') }}</div>
-				<br />
+				Option 1: <br />
+				    * Open the folder where you have installed DeskPRO: C:/blah/blah<br />
+				    * Run the file called schedule.bat<br />
+<br />
+				Option 2:<br />
+				    * Manually open Windows Scheduled tasks and create a scheduled task for php-win.exe to run cron.php every minute.<br />
 				<p>
 					<a href="{{ get_service_url('dp.kb.install.cron') }}">{{ phrase('admin.settings.cron_detailed_instructions') }}</a>
 				</p>
