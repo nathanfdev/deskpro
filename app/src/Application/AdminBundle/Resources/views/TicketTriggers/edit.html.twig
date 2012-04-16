@@ -6,14 +6,26 @@
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
 function TicketTriggerEditPage_initTerms(handler) {
+	var basename;
+
+	{% if from_gateway %}
+		basename = 'terms['+Orb.uuid()+']';
+		handler.criteriaEditor.addNewRow($('.criteria-form .search-terms'), basename, { type: 'gateway_account', op: 'is', options: { gateway_account: {{ from_gateway.id }} } });
+
+		{% if from_gateway.getPrimaryEmailAddress() %}
+			basename = 'actions['+Orb.uuid()+']';
+			handler.actionsEditor.addNewRow($('.actions-form .search-terms'), basename, { type: 'set_from_address', options: { email_address: '{{ from_gateway.getPrimaryEmailAddress() }}' } });
+		{% endif %}
+	{% endif %}
+
 	{% for action in trigger.terms %}
-		var basename = 'terms['+Orb.uuid()+']';
+		basename = 'terms['+Orb.uuid()+']';
 		handler.criteriaEditor.addNewRow($('.criteria-form .search-terms'), basename, { type: '{{action.type}}', op: '{{action.op}}', options: {{action.options|json_encode|raw}} });
 	{% endfor %}
 
 	var count = 0;
 	{% for action in trigger.actions %}
-		var basename = 'actions['+Orb.uuid()+']';
+		basename = 'actions['+Orb.uuid()+']';
 		handler.actionsEditor.addNewRow($('.actions-form .search-terms'), basename, { type: '{{action.type}}', options: {{action.options|json_encode|raw}} });
 	{% endfor %}
 }
@@ -26,6 +38,15 @@ function TicketTriggerEditPage_initTerms(handler) {
 	</ul>
 {% endblock %}
 {% block page %}
+
+{% if from_gateway %}
+	<div class="alert-message block-message success">
+		<h3>{{ phrase('admin.tickets.gateway_created_success') }}</h3>
+		{{ phrase('admin.tickets.gateway_created_success_trigger') }}
+		<br />
+		<a href="{{ path('admin_emailgateways') }}" class="clean-white">{{ phrase('admin.tickets.gateway_created_success_trigger_orback') }}</a>
+	</div>
+{% endif %}
 
 <form action="{{ path('admin_tickettriggers_edit', {'trigger_id': trigger.id|default(0)}) }}" method="post">
 <input type="hidden" name="process" value="1" />

@@ -74,6 +74,22 @@ class EmailGatewayAddress extends \Application\DeskPRO\Domain\DomainObject
 	protected $run_order = 0;
 
 	/**
+	 * @static
+	 * @param \Application\DeskPRO\Entity\EmailGateway $gateway
+	 * @param string $email_address
+	 * @return \Application\DeskPRO\Entity\EmailGatewayAddress
+	 */
+	public static function newEmailAddress(EmailGateway $gateway, $email_address)
+	{
+		$addr = new self();
+		$addr->gateway = $gateway;
+		$addr->match_type = 'exact';
+		$addr->match_pattern = $email_address;
+
+		return $addr;
+	}
+
+	/**
 	 * @return int
 	 */
 	public function getId()

@@ -149,4 +149,7 @@
     'admin.tickets.weeks'                                => 'Weeks',
     'admin.tickets.widget_location'                      => 'Widget Location',
     'admin.tickets.widget_type'                          => 'Widget Type',
+	'admin.tickets.gateway_created_success'              => 'The email gateway was created successfully.',
+	'admin.tickets.gateway_created_success_trigger'      => 'You can optionally create a trigger now for new tickets that come into this gateway.',
+	'admin.tickets.gateway_created_success_trigger_orback'  => 'Or go back to email gateways',
 );

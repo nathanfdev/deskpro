@@ -125,6 +125,21 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * Get the primary email address on this gateway
+	 *
+	 * @return string
+	 */
+	public function getPrimaryEmailAddress()
+	{
+		if (!$this->addresses) {
+			return null;
+		}
+
+		return \Orb\Util\Arrays::getFirstItem($this->addresses);
+	}
+
+
+	/**
 	 * @return array
 	 */
 	public function getConnectionOptions()

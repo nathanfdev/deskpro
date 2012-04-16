@@ -39,6 +39,9 @@ use Application\DeskPRO\Entity\EmailGatewayAddress;
 
 class PopAccountsStep extends AbstractDeskpro3Step
 {
+	protected $default_email_address = null;
+	protected $email_addresses_map = array();
+
 	public static function getTitle()
 	{
 		return 'Import POP3 Accounts';
@@ -51,6 +54,38 @@ class PopAccountsStep extends AbstractDeskpro3Step
 		if (!$count) {
 			return;
 		}
+
+		#------------------------------
+		# Map ticket accounts (email addresses) to their gateway accounts
+		#------------------------------
+
+		$this->default_email_address = $this->getOldDb()->fetchColumn("SELECT email FROM gateway_emails WHERE is_default = 1");
+		$all_email_addresses = $this->getOldDb()->fetchAllKeyValue("SELECT id, email FROM gateway_emails");
+
+		$all_rules = $this->getOldDb()->fetchAll("SELECT * FROM ticket_rules_mail");
+		foreach ($all_rules as $rule) {
+			$rule['criteria'] = @unserialize($rule['criteria']);
+
+			if (!is_array($rule['criteria']) || !isset($rule['criteria']['pop']) || !$rule['accountid']) {
+				continue;
+			}
+
+			$email_address = isset($all_email_addresses[$rule['accountid']]) ? $all_email_addresses[$rule['accountid']] : null;
+			if (!$email_address) {
+				continue;
+			}
+
+			$popid = (int)$rule['criteria']['pop'];
+			if (!isset($this->email_addresses_map[$popid])) {
+				$this->email_addresses_map[$popid] = array();
+			}
+
+			$this->email_addresses_map[$popid][] = $email_address;
+		}
+
+		#------------------------------
+		# Process accounts
+		#------------------------------
 
 		$accounts = $this->getOldDb()->fetchAll("SELECT * FROM gateway_pop_accounts WHERE target = 'user' ORDER BY id ASC");
 
@@ -103,6 +138,24 @@ class PopAccountsStep extends AbstractDeskpro3Step
 		$new_gateway->is_enabled = false;
 
 		$this->getEm()->persist($new_gateway);
+		$this->getEm()->flush();
+
+		$set_addresses = !empty($this->email_addresses_map[$account['id']]) ? $this->email_addresses_map[$account['id']] : array();
+		if (\Orb\Validator\StringEmail::isValueValid($account['username'])) {
+			$set_addresses[] = $account['username'];
+		}
+		if (!$set_addresses) {
+			$set_addresses[] = $this->default_email_address;
+		}
+
+		array_walk($set_addresses, function (&$v, $k) { $v = strtolower($v); });
+		$set_addresses = array_unique($set_addresses, \SORT_STRING);
+
+		foreach ($set_addresses as $addr) {
+			$new_address = EmailGatewayAddress::newEmailAddress($new_gateway, $addr);
+			$this->getEm()->persist($new_address);
+		}
+
 		$this->getEm()->flush();
 
 		$this->saveMappedId('gateway_account', $account['id'], $new_gateway->id);

@@ -90,7 +90,9 @@ class EmailGatewaysController extends AbstractController
 			} else {
 				$transport = new \Application\DeskPRO\Entity\EmailTransport();
 			}
+			$is_new = false;
 		} else {
+			$is_new = true;
 			$gateway = new \Application\DeskPRO\Entity\EmailGateway();
 			$transport = new \Application\DeskPRO\Entity\EmailTransport();
 		}
@@ -198,6 +200,10 @@ class EmailGatewaysController extends AbstractController
 
 				if ($this->request->isXmlHttpRequest()) {
 					return $this->createJsonResponse(array('success' => true));
+				}
+
+				if ($is_new) {
+					$this->redirectRoute('admin_tickettriggers_edit', array('trigger_id' => '0', 'from_gateway' => $gateway->id));
 				}
 
 				$this->session->setFlash('saved', $gateway->title);

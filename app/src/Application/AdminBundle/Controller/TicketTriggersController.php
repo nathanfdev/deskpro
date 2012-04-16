@@ -81,10 +81,21 @@ class TicketTriggersController extends AbstractController
 
 	public function editAction($trigger_id)
 	{
+		$from_gateway_id = $this->in->getUint('from_gateway');
+		$from_gateway = null;
+		if ($from_gateway_id) {
+			$from_gateway = $this->em->find('DeskPRO:EmailGateway', $from_gateway_id);
+		}
+
 		if (!$trigger_id) {
 			$trigger = new Entity\TicketTrigger();
 
-			switch ($this->in->getString('trigger_group')) {
+			$trigger_group = $this->in->getString('trigger_group');
+			if (!$trigger_group && $from_gateway) {
+				$trigger_group = 'new_ticket.gateway_person';
+			}
+
+			switch ($trigger_group) {
 				case 'new_ticket.web_person':
 					$trigger['event_trigger'] = 'new_ticket';
 					$trigger->terms = array(array('type' => 'creation_system', 'op' => 'is', 'options' => array('creation_system' => 'web.person')));
@@ -189,6 +200,7 @@ class TicketTriggersController extends AbstractController
 			'event_trigger_scale' => $trigger->getOptionScale(),
 			'form'      => $form->createView(),
 			'term_options' => $ticket_options,
+			'from_gateway' => $from_gateway,
 		));
 	}
 
