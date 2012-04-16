@@ -1,7 +1,5 @@
 @ECHO off
-FOR /F "tokens=*" %%A IN ('TIME/T') DO FOR %%B IN (%%A) DO SET Time=%%B
-FOR /F "tokens=*" %%A IN ('DATE/T') DO FOR %%B IN (%%A) DO SET Date=%%B
-echo %Date% %Time% > data\tmp\schedule.txt
+echo %DATE% %TIME% > data\tmp\schedule.txt
 :Label1
 echo This utility will create a scheduled task which runs
 echo DeskPRO's inbuilt task scheduler every minute.
