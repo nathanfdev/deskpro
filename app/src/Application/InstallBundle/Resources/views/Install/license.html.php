@@ -19,14 +19,16 @@ Terms and Definitions
 
 An "instance" of the software is a unique installation of the software on a
 system capable of running it, whether used for production purposes or for
-testing. An "agent" is a unique account installed in an instance of
-DeskPRO, used by a member of your technical staff to provide technical support
-assistance to your users. An "administrator" or "admin" is an agent with
-additional administration privileges. A "user" is a unique account installed
-in an instance of DeskPRO, used by one or more persons to obtain support from
-your technical staff. A "ticket" is a single support request tracked in the
-software. These are normally submitted by your users but can also be created
-by your agents.
+testing. 
+An "agent" is a unique account installed in an instance of
+DeskPRO, used by a member of your staff to provide support assistance 
+to your users. 
+An "administrator" or "admin" is an agent with additional administration 
+privileges. 
+A "user" is a unique account installed in an instance of DeskPRO, used 
+by one or more persons to obtain support from your staff. 
+A "ticket" is a single support request tracked in the software. These 
+are normally submitted by your users but can also be created by your agents.
 
 Right To Run
 
@@ -34,7 +36,7 @@ Your purchase of a DeskPRO license grants you the right to make use of a
 single instance of the software. You may temporarily install a second instance
 of DeskPRO on an internal development server for testing and deployment
 planning, but only one instance of DeskPRO shall be in operation (available
-for access to your users or technicians).
+for access to your users or agents).
 
 If you wish to run more than one instance of DeskPRO, you must purchase an
 additional license for each additional instance.
