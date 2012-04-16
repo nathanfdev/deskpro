@@ -39,7 +39,7 @@ namespace Application\DeskPRO\Integration\XenForo\UserShare;
  */
 class Install
 {
-	public static function install()
+	public static function installer()
 	{
 		/*
 		 Create table:
@@ -59,6 +59,6 @@ class Install
 
 	public static function uninstall()
 	{
-		
+
 	}
 }
