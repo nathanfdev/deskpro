@@ -128,14 +128,14 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		$this->visitor = $vis;
 
         if($this->getPerson() && $this->getPerson()->IsAgent
-        && !preg_match('#^/(get-new-messages|.*/poller$|.*/new$)#', $path)) {
+        && !preg_match('#^/(get-new-messages|.*/poller|.*/new)#', $path)) {
             $agent = $this->getPerson();
             $date_active = new \DateTime();
             list($hour, $minute) = explode(':', $date_active->format('H:i'));
             $minute = intval($minute / 5) * 5;
             $date_active->setTime($hour, $minute, 0);
 
-            App::getDb()->executeQuery('REPLACE INTO agent_activity VALUES(?,?)', array($agent['id'], $date_active->format('Y-m-d H:i:s')));
+            App::getDb()->executeQuery('REPLACE INTO agent_activity(agent_id, date_active) VALUES(?,?)', array($agent['id'], $date_active->format('Y-m-d H:i:s')));
         }
 
 		$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvid', $vis['visitor_code'], 'never');
