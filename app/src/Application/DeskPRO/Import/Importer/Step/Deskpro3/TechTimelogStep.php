@@ -53,7 +53,7 @@ class TechTimelogStep extends AbstractDeskpro3Step
 
 	public function countPages()
 	{
-		$count = $this->getOldDb()->fetchColumn("SELECT COUNT(*) FROM tech_timelog");
+		$count = $this->getOldDb()->fetchColumn("SELECT id FROM tech_timelog ORDER BY id DESC LIMIT 1");
 		if (!$count) {
 			return 1;
 		}
@@ -120,7 +120,7 @@ class TechTimelogStep extends AbstractDeskpro3Step
 		}
 
 		$date_start = new \DateTime('@' . $log['startstamp']);
-		list($hour, $minute) = explode(':', $date_active->format('H:i'));
+		list($hour, $minute) = explode(':', $date_start->format('H:i'));
 		$minute = intval($minute / 5) * 5;
 		$date_start->setTime($hour, $minute, 0);
 
@@ -128,7 +128,7 @@ class TechTimelogStep extends AbstractDeskpro3Step
 
 		do {
 			$this->addBatch($agent_id, $date_start);
-			$date_start->add(new \DateInterval('5M'));
+			$date_start->add(new \DateInterval('PT5M'));
 		} while ($date_start < $date_end);
 	}
 
@@ -138,7 +138,7 @@ class TechTimelogStep extends AbstractDeskpro3Step
 			return;
 		}
 
-		$sql = "INSERT INTO agent_activity (agent_id, date_active) VALUES " . implode(', ', $this->batch_insert);
+		$sql = "REPLACE INTO agent_activity (agent_id, date_active) VALUES " . implode(', ', $this->batch_insert);
 		$this->getDb()->exec($sql);
 
 		$this->batch_insert = array();
@@ -146,7 +146,7 @@ class TechTimelogStep extends AbstractDeskpro3Step
 
 	protected function addBatch($agent_id, \DateTime $datetime)
 	{
-		$this->batch_insert[] = "($agent_id. '" . $datetime->format('Y-m-d H:i:s') . "')";
+		$this->batch_insert[] = "($agent_id, '" . $datetime->format('Y-m-d H:i:s') . "')";
 
 		if (count($this->batch_insert) >= 250) {
 			$this->flushBatch();
