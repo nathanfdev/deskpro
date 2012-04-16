@@ -66,6 +66,7 @@ class TechTimeLogController extends AbstractController
 
         $end_date = clone $start_date;
         $end_date->add(new \DateInterval('P1D'));
+        // Remove a single second to stop overlap.
         $end_date->sub(new \DateInterval('PT1S'));
         $date_range = array($start_date->format('Y-m-d H:i:s'), $end_date->format('Y-m-d H:i:s'));
 
@@ -89,8 +90,7 @@ class TechTimeLogController extends AbstractController
             $times[$agent_id] = array();
 
             foreach($active_times as $time) {
-                $dt = \DateTime::createFromFormat('Y-m-d H:i:s', $time['date_active'], $this->person->getDateTimezone());
-                $dt->setTimeZone(new \DateTimeZone('UTC'));
+                $dt = $this->mysqlDateToPhpDate($time['date_active']);
 
                 $hour = $dt->format('H');
                 $minute = $dt->format('i');
@@ -103,7 +103,6 @@ class TechTimeLogController extends AbstractController
         }
 
         $dates_raw = $db->fetchAll('SELECT DISTINCT DATE(date_active) AS `date` FROM agent_activity ORDER BY date_active');
-        $dates = array();
 
         foreach($dates_raw as $date_raw) {
             $new_date = new \DateTime();
@@ -115,6 +114,10 @@ class TechTimeLogController extends AbstractController
             }
         }
 
+        $dates = array();
+        $min_date = $this->mysqlDateToPhpDate($db->fetchColumn('SELECT MIN(date_active) FROM agent_activity'));
+        $max_date = $this->mysqlDateToPhpDate($db->fetchColumn('SELECT MAX(date_active) FROM agent_activity'));
+
         return array(
             'agents' => $agents,
             'today' => $date,
@@ -122,6 +125,15 @@ class TechTimeLogController extends AbstractController
             'block_size' => $block_size,
             'totals' => $totals,
             'dates' => $dates,
+            'max_date' => $max_date,
+            'min_date' => $min_date,
         );
+    }
+
+    private function mysqlDateToPhpDate($mysql_date)
+    {
+        $dt = \DateTime::createFromFormat('Y-m-d H:i:s', $mysql_date, $this->person->getDateTimezone());
+        $dt->setTimeZone(new \DateTimeZone('UTC'));
+        return $dt;
     }
 }

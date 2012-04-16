@@ -90,9 +90,6 @@
 
 .date_today {
     padding: 8px;
-    border-bottom-style: solid;
-    border-bottom-color: #CCCCCC;
-    border-bottom-width: 1px;
     text-align: center;
 }
 
@@ -104,6 +101,9 @@
     border-bottom-style: solid;
     border-bottom-color: #CCCCCC;
     border-bottom-width: 1px;
+    border-top-style: solid;
+    border-top-color: #CCCCCC;
+    border-top-width: 1px;
     padding: 0px;
     width: {{ (4 * blocks_in_hour) -1 }}px;
 }
@@ -129,7 +129,16 @@
 </style>
 <script type="text/javascript">
     $(document).ready(function(){
-        {#$('.datepicker > span').datepicker();
+        $('.datepicker > span').datepicker(
+                {
+                    'onSelect': function(dateText) {
+                        document.location = "{{ path('agent_time_log_list_date', {'date':''}) }}/" + dateText;
+                    },
+                    'dateFormat': 'yy-mm-dd',
+                    'minDate': new Date({{ min_date|date('Y') }}, {{ min_date|date('m') }} -1, {{ min_date|date('d') }}),
+                    'maxDate': new Date({{ max_date|date('Y') }}, {{ max_date|date('m') }} -1, {{ max_date|date('d') }}),
+                }
+        );
         $('.datepicker > a').on('click', function(){
             if($('.datepicker > span').hasClass('hidden')) {
                 $('.datepicker > span').removeClass('hidden');
@@ -137,14 +146,14 @@
             else {
                 $('.datepicker > span').addClass('hidden');
             }
-        });#}
-        $('.datechooser select').on('change', function() {
-            document.location = $(this).val();
         });
+        {#$('.datechooser select').on('change', function() {
+            document.location = $(this).val();
+        });#}
     });
 
 </script>
-{% if dates|length %}
+{#{% if dates|length %}
 <div class="datechooser">
     <form>
         View Agent Activity for: <select>
@@ -156,16 +165,22 @@
         </select>
     </form>
 </div>
-{% endif %}
-{% if agents|length %}
-<table>
+{% endif %}#}
 
+<table class="chart_parent_table">
     <tr>
-        <th rowspan="2" colspan="2" class="left_panel empty"></th>
-        <th class="date_today" colspan="24">Agent activity for: {{ today|date('dS F Y') }}
-        {#<span class="datepicker"><a>{{ today|date('dS F Y') }}</a><span class="hidden"></span></span>#}
+        <th rowspan="{% if agents|length %}2{% else %}1{% endif %}" colspan="2" class="left_panel empty"></th>
+        <th class="date_today" colspan="24">
+            {% if agents|length %}
+            Agent activity for:
+            {% else %}
+            No agent activity for:
+            {% endif %}
+             {#{{ today|date('dS F Y') }}#}
+        <span class="datepicker"><a>{{ today|date('jS F Y') }}</a><span class="hidden"></span></span>
         </th>
     </tr>
+    {% if agents|length %}
     <tr>
         {% for i in range(0, 23) %}
             <td class="hour_title {% if loop.first %}first{% endif %}">
@@ -210,8 +225,7 @@
         {% endif %}
     </tr>
     {% endfor %}
+    {% endif %}
 </table>
-{% else %}
-<p>No agent activity for: {{ today|date('dS F Y') }}</p>
-{% endif %}
+
 {% endblock %}
