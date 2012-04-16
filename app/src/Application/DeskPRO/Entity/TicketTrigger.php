@@ -597,6 +597,22 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		$this->_ticket_terms = null;
 	}
 
+
+	public function isUneditable()
+	{
+		if (!$this->sys_name) {
+			return false;
+		}
+
+		static $uneditable = array(
+			'email_validation.web' => 1,
+			'email_validation.email' => 1,
+			'email_validation.widget' => 1,
+		);
+
+		return isset($uneditable[$this->sys_name]);
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################

@@ -426,7 +426,7 @@ $q->terms = array(
 	array(
 		'type' => 'creation_system',
 		'op' => 'is',
-		'options' => array('creation_system' => 'web.person'),
+		'options' => array('creation_system' => 'gateway.person'),
 	),
 );
 $q->actions = array(
@@ -454,7 +454,7 @@ $q->terms = array(
 	array(
 		'type' => 'creation_system',
 		'op' => 'is',
-		'options' => array('creation_system' => 'web.gateway'),
+		'options' => array('creation_system' => 'new_ticket.web_person'),
 	),
 );
 $q->actions = array(
@@ -482,7 +482,7 @@ $q->terms = array(
 	array(
 		'type' => 'creation_system',
 		'op' => 'is',
-		'options' => array('creation_system' => 'widget'),
+		'options' => array('creation_system' => 'new_ticket.widget'),
 	),
 );
 $q->actions = array(

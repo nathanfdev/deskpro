@@ -152,6 +152,10 @@ class TicketTriggersController extends AbstractController
 			if ($this->in->getString('trigger.event_trigger_option')) {
 				$trigger['event_trigger_option'] = $this->in->getString('trigger.event_trigger_option');
 			}
+
+			if (!$trigger || $trigger->isUneditable()) {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+			}
 		}
 
 		if ($trigger->getTriggerGroup() == 'other') {

@@ -75,7 +75,7 @@
 {% macro options_table(reg_triggers) %}
 	<table cellspacing="0" cellpadding="0" width="100%" style="margin-left: 8px; margin-right: 6px;">
 		<tr>
-			<td width="10"><input type="checkbox" name="email_validation" value="1" {% if app.getSetting('core.email_validation') %}checked="checked"{% endif %} /></td>
+			<td width="10"><input type="checkbox" class="onoff-slider" name="email_validation" value="1" {% if app.getSetting('core.email_validation') %}checked="checked"{% endif %} /></td>
 			<td>
 				<h3>{{ phrase('agent.general.force_email_validation') }}</h3>
                 {{ phrase('admin.user_registration.notice_force_validate_email', {'path':path('admin_tickettriggers')}) }}
@@ -83,10 +83,11 @@
 				{% if reg_triggers['email_validation.web'] %}   <input class="onoff-slider trigger-toggle" type="checkbox" value="{{ reg_triggers['email_validation.web'].id }}" name="email_validation.web" {% if reg_triggers['email_validation.web'].is_enabled %}checked="checked"{% endif %} /> {{ phrase('admin.user_registration.enable_validation_web_tickets') }}<br />{% endif %}
 				{% if reg_triggers['email_validation.email'] %} <input class="onoff-slider trigger-toggle" type="checkbox" value="{{ reg_triggers['email_validation.email'].id }}" name="email_validation.web" {% if reg_triggers['email_validation.email'].is_enabled %}checked="checked"{% endif %} /> {{ phrase('admin.user_registration.enable_validation_email_tickets') }}<br />{% endif %}
 				{% if reg_triggers['email_validation.widget'] %}<input class="onoff-slider trigger-toggle" type="checkbox" value="{{ reg_triggers['email_validation.widget'].id }}" name="email_validation.web" {% if reg_triggers['email_validation.widget'].is_enabled %}checked="checked"{% endif %} /> {{ phrase('admin.user_registration.enable_validation_widget_tickets') }}<br />{% endif %}
+				<br />
 			</td>
 		</tr>
 		<tr>
-			<td width="10"><input type="checkbox" name="existing_account_login" value="1" {% if app.getSetting('core.existing_account_login') %}checked="checked"{% endif %} /></td>
+			<td width="10"><input type="checkbox" class="onoff-slider" name="existing_account_login" value="1" {% if app.getSetting('core.existing_account_login') %}checked="checked"{% endif %} /></td>
 			<td>
 				<h3>{{ phrase('admin.user_registration.force_registered_login') }}</h3>
 				{{ phrase('admin.user_registration.notice_when_email_exists') }}

@@ -22,7 +22,9 @@
 <li class="item-row trigger-row is-trigger {% if trigger.is_enabled %}{% else %}off{% endif %}" id="trigger_{{ trigger.id }}" data-trigger-id="{{ trigger.id }}">
 	<div class="dp-block-controls">
 		<ul>
-			<li class="dp-edit"><a href="{{ path('admin_tickettriggers_edit', {'trigger_id': trigger.id}) }}" class="popout-trigger"><span></span></a></li>
+			{% if not trigger.isUneditable() %}
+				<li class="dp-edit"><a href="{{ path('admin_tickettriggers_edit', {'trigger_id': trigger.id}) }}" class="popout-trigger"><span></span></a></li>
+			{% endif %}
 			<li class="dp-move"><span></span></li>
 			<li class="dp-on-off trigger-toggle"><span class="off" {% if trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.general.off') }}</span><span class="on" {% if not trigger.is_enabled %}style="display: none"{% endif %}>{{ phrase('admin.general.on') }}</span></li>
 		</ul>
@@ -34,7 +36,7 @@
 		{% elseif trigger.title %}
 		<lable><h2>{{ trigger.title }}</h2></lable>
 		{% endif %}
-		<div class="trigger-desc">
+		<div class="trigger-desc" {% if trigger.isUneditable() %}style="display: none"{% endif %}>
 			<table cellspacing="0" cellpadding="0"><tr><td valign="top" width="350">
 				<div class="terms">
 					<em class="op ctrl">{{ phrase('admin.tickets.if') }}</em>
