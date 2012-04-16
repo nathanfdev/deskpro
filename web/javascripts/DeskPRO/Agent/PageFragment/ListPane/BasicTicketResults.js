@@ -158,7 +158,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 		this.resultsHelper.prependResultId(ticket_id);
 
-		if (1 || this.resultsHelper.getCurrentPage() == 1) {
+		if (this.resultsHelper.getCurrentPage() == 1) {
 			var url = this.meta.loadSingleUrl.replace('$ticket_id', ticket_id).replace('$view_type', this.meta.viewType);
 
 			$.ajax({
