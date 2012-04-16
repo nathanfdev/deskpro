@@ -90,22 +90,22 @@
 		</div>
 	</div>
 	<section class="trends">
-		<nav><h1><a href="{{ path('report') }}">Trends</a></h1></nav>
+		<nav><h1><a href="{{ path('report') }}">{{ phrase('agent.report.trends') }}</a></h1></nav>
 	</section>
 	<section class="builder">
-		<nav><h1><a>Report Builder</a></h1></nav>
+		<nav><h1><a>{{ phrase('agent.report.report_builder') }}</a></h1></nav>
 	</section>
 	<section class="tech-activity">
-		<nav><h1><a>Tech Activity</a></h1></nav>
+		<nav><h1><a>{{ phrase('agent.report.agent_activity') }}</a></h1></nav>
 	</section>
 	<section class="tech-hours">
-		<nav><h1><a>Tech Hours</a></h1></nav>
+		<nav><h1><a href="{{ path('agent_time_log_index') }}">{{ phrase('agent.report.agent_hours') }}</a></h1></nav>
 	</section>
 	<section class="publish">
-		<nav><h1><a>Publish</a></h1></nav>
+		<nav><h1><a>{{ phrase('agent.general.publish') }}</a></h1></nav>
 	</section>
 	<section class="feedback">
-		<nav><h1><a>Feedback</a></h1></nav>
+		<nav><h1><a>{{ phrase('agent.general.feedback') }}</a></h1></nav>
 	</section>
 
 	{# DeskPRO Logo #}

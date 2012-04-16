@@ -1,122 +1,216 @@
-{% set this_page = 'tech_time_log_index' %}
+{% set this_page = 'agent_time_log_index' %}
 {% extends 'ReportBundle::layout.html.twig' %}
 {% block nav_block %}
 {% endblock %}
 {% block page %}
+{% set blocks_in_hour = (60 / block_size) %}
+{% set blocks_in_day = blocks_in_hour * 24 %}
 <style type="text/css">
 .dp-page-box {
     background-color: #FFFFFF;
+    width: 1500px;
 }
 
 .time_cell {
     width: 4px;
     vertical-align: middle;
+    padding: 0px;
+    height: 26px;
 }
 
-.time_cell.active div {
+.time_cell.active .bar {
     background-color: #90ee90;
-    height: 6px;
+    height: 8px;
     border-bottom-style: solid;
-    border-bottom-color: #AAAAAA;
+    border-bottom-color: #999999;
     border-bottom-width: 1px;
     border-top-style: solid;
-    border-top-color: #AAAAAA;
+    border-top-color: #999999;
     border-top-width: 1px;
 }
 
-.time_cell.active.first div {
+.time_cell.active.first .bar {
     border-left-style: solid;
-    border-left-color: #AAAAAA;
+    border-left-color: #999999;
     border-left-width: 1px;
 }
 
-.time_cell.active.last div {
+.time_cell.active.last .bar {
     border-right-style: solid;
-    border-right-color: #AAAAAA;
+    border-right-color: #999999;
     border-right-width: 1px;
-}
-
-.time_cell.hour {
-    width: 3px;
-    border-right-style: solid;
-    border-right-color: #AAAAAA;
-    border-right-width: 1px;
-}
-
-.time_cell.active {
 }
 
 .time_row.last .time_cell {
     border-bottom-style: solid;
-    border-bottom-color: #AAAAAA;
+    border-bottom-color: #CCCCCC;
     border-bottom-width: 1px;
 }
 
-.left_panel.agent_name {
+.left_panel {
     padding: 4px;
+}
+
+.left_panel.agent_total {
     border-right-style: solid;
-    border-right-color: #AAAAAA;
+    border-right-color: #CCCCCC;
     border-right-width: 1px;
 }
 
 .hour_title.first {
     border-left-style: solid;
-    border-left-color: #AAAAAA;
+    border-left-color: #CCCCCC;
     border-left-width: 1px;
+}
+
+.chart_container {
+    padding: 0px;
+    width: {{ 4*blocks_in_day }}px
+}
+
+.chart_container > div {
+    position: relative;
+}
+
+.chart_container > div > table {
+    position: absolute;
+}
+
+.border_table {
+    width: 100%;
+    height: {{ agents|length * 26}}px;
+}
+
+.border_table td {
+    border-right-style: solid;
+    border-right-color: #CCCCCC;
+    border-right-width: 1px;
 }
 
 .date_today {
     padding: 8px;
     border-bottom-style: solid;
-    border-bottom-color: #AAAAAA;
+    border-bottom-color: #CCCCCC;
     border-bottom-width: 1px;
+    text-align: center;
 }
 
 .hour_title {
     text-align: center;
     border-right-style: solid;
-    border-right-color: #AAAAAA;
+    border-right-color: #CCCCCC;
     border-right-width: 1px;
     border-bottom-style: solid;
-    border-bottom-color: #AAAAAA;
+    border-bottom-color: #CCCCCC;
     border-bottom-width: 1px;
+    padding: 0px;
+    width: {{ (4 * blocks_in_hour) -1 }}px;
+}
+
+.datepicker {
+    position: relative;
+}
+
+.datepicker > span {
+    position:absolute;
+    z-index: 10;
+    top: 20px;
+    left: 0px;
+}
+
+.datepicker > span.hidden {
+    display:none;
+}
+
+.datechooser {
+    text-align: right;
 }
 </style>
-{% set blocks_in_hour = (60 / block_size) %}
-{% set blocks_in_day = blocks_in_hour * 24 %}
-<table border="1">
+<script type="text/javascript">
+    $(document).ready(function(){
+        {#$('.datepicker > span').datepicker();
+        $('.datepicker > a').on('click', function(){
+            if($('.datepicker > span').hasClass('hidden')) {
+                $('.datepicker > span').removeClass('hidden');
+            }
+            else {
+                $('.datepicker > span').addClass('hidden');
+            }
+        });#}
+        $('.datechooser select').on('change', function() {
+            document.location = $(this).val();
+        });
+    });
+
+</script>
+{% if dates|length %}
+<div class="datechooser">
+    <form>
+        View Agent Activity for: <select>
+            {% for date in dates %}
+                <option {% if date|date('Y-m-d') == today|date('Y-m-d') %}selected="selected"{% endif %} value="{{ path('agent_time_log_list_date', {'date':date|date('Y-m-d')}) }}">
+                    {{ date|date('dS F Y') }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+{% endif %}
+{% if agents|length %}
+<table>
 
     <tr>
-        <th rowspan="2" class="left_panel empty"></th>
-        <th class="date_today" colspan="{{ blocks_in_day }}">Agent activity for {{ today|date('Y:m:d') }}</th>
+        <th rowspan="2" colspan="2" class="left_panel empty"></th>
+        <th class="date_today" colspan="24">Agent activity for: {{ today|date('dS F Y') }}
+        {#<span class="datepicker"><a>{{ today|date('dS F Y') }}</a><span class="hidden"></span></span>#}
+        </th>
     </tr>
     <tr>
         {% for i in range(0, 23) %}
-            <td class="hour_title {% if loop.first %}first{% endif %}" colspan="{{ blocks_in_hour }}">
+            <td class="hour_title {% if loop.first %}first{% endif %}">
                 {{ '%02d'|format(i) }}:00
             </td>
         {% endfor %}
     </tr>
-
-    {% set last_active = 0 %}
     {% for agent in agents %}
-        <tr class="time_row {% if loop.last %}last{% endif %}">
-            <td class="left_panel agent_name">{{ agent.name }}</td>
-
-            {% for i in range(0, blocks_in_day - 1) %}
-                <td class="time_cell
-                {% if times[agent.id][i] is defined %}
-                    {% if not loop.first and not last_active %}first{% endif %}
-                    {% if loop.last or not times[agent.id][i + 1] is defined %}last{% endif %}
-                    {% set last_active = 1 %}
-                    active
-                {% else %}
-                    {% set last_active = 0 %}
-                    {% if ((i + 1) % blocks_in_hour) == 0 %}hour{% endif %}
-                {% endif %}
-                "><div></div></td>
-            {% endfor %}
-        </tr>
+    {% set last_active = 0 %}
+    <tr>
+        <td class="left_panel agent_name">{{ agent.name }}</td>
+        <td class="left_panel agent_total">({{ totals[agent.id].hours }}hrs, {{ totals[agent.id].minutes }}mins)</td>
+        {% if loop.first %}
+        <td class="chart_container" colspan="24" rowspan="{{ agents|length }}">
+            <div><table>
+                {% for agent in agents %}
+                <tr class="time_row {% if loop.last %}last{% endif %}">
+                    {% for i in range(0, blocks_in_day - 1) %}
+                    <td class="time_cell
+                            {% if times[agent.id][i] is defined %}
+                                {% if loop.first or not last_active %}first{% endif %}
+                                {% if loop.last or not times[agent.id][i + 1] is defined %}last{% endif %}
+                                {% set last_active = 1 %}
+                                active
+                            {% else %}
+                            {% set last_active = 0 %}
+                            {% if ((i + 1) % blocks_in_hour) == 0 %}hour{% endif %}
+                        {% endif %}
+                        "><div class="bar"></div></td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table></div>
+            <table class="border_table">
+                <tr>
+                    {% for i in range(0, 23) %}
+                    <td>&nbsp;</td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </td>
+        {% endif %}
+    </tr>
     {% endfor %}
 </table>
+{% else %}
+<p>No agent activity for: {{ today|date('dS F Y') }}</p>
+{% endif %}
 {% endblock %}

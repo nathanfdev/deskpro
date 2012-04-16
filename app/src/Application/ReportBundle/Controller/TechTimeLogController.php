@@ -43,9 +43,23 @@ class TechTimeLogController extends AbstractController
      */
     public function indexAction()
     {
+        $vars = $this->getVarsForDate(new \DateTime());
+        return $this->render('ReportBundle:TechTimeLog:index.html.twig', $vars);
+    }
+
+    public function listAction($date)
+    {
+        $dt = new \DateTime();
+        list($year, $month, $day) = explode('-', $date);
+        $dt->setDate($year, $month, $day);
+        $vars = $this->getVarsForDate($dt);
+        return $this->render('ReportBundle:TechTimeLog:index.html.twig', $vars);
+    }
+
+    private function getVarsForDate($date)
+    {
         $db = App::getDb();
-        $today = new \DateTime();
-        $agent_ids = $db->fetchAll('SELECT DISTINCT agent_id FROM agent_activity WHERE DATE(date_active) = ?', array($today->format('Y-m-d')));
+        $agent_ids = $db->fetchAll('SELECT DISTINCT agent_id FROM agent_activity WHERE DATE(date_active) = ?', array($date->format('Y-m-d')));
         $agent_repo = $this->getDoctrine()->getRepository('DeskPRO:Person');
         $block_size = 5;
 
@@ -56,7 +70,7 @@ class TechTimeLogController extends AbstractController
         foreach($agent_ids as $agent_id) {
             $agent_id = $agent_id['agent_id'];
             $agents[] = $agent_repo->find($agent_id);
-            $active_times = $db->fetchAll('SELECT HOUR(date_active) AS `hour`, MINUTE(date_active) AS `minute` FROM agent_activity WHERE DATE(date_active) = ? AND agent_id = ?', array($today->format('Y-m-d'), $agent_id));
+            $active_times = $db->fetchAll('SELECT HOUR(date_active) AS `hour`, MINUTE(date_active) AS `minute` FROM agent_activity WHERE DATE(date_active) = ? AND agent_id = ?', array($date->format('Y-m-d'), $agent_id));
 
             $times[$agent_id] = array();
 
@@ -70,11 +84,26 @@ class TechTimeLogController extends AbstractController
             $totals[$agent_id] = array('hours' => intval($total_minutes / 60), 'minutes' => $total_minutes % 60);
         }
 
-        return $this->render('ReportBundle:TechTimeLog:index.html.twig', array(
+        $dates_raw = $db->fetchAll('SELECT DISTINCT DATE(date_active) AS `date` FROM agent_activity ORDER BY date_active');
+        $dates = array();
+
+        foreach($dates_raw as $date_raw) {
+            $new_date = new \DateTime();
+            list($year, $month, $day) = explode('-', $date_raw['date']);
+
+            if($year != 0) {
+                $new_date->setDate($year, $month, $day);
+                $dates[] = $new_date;
+            }
+        }
+
+        return array(
             'agents' => $agents,
-            'today' => $today,
+            'today' => $date,
             'times' => $times,
             'block_size' => $block_size,
-        ));
+            'totals' => $totals,
+            'dates' => $dates,
+        );
     }
 }

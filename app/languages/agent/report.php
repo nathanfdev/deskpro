@@ -32,4 +32,8 @@
     'agent.report.updates'                   => 'Updates',
     'agent.report.view_chart'                => 'View Chart',
     'agent.report.x'                         => '[x]',
+    'agent.report.trends'                         => 'Trends',
+    'agent.report.agent_activity'                         => 'Agent Activity',
+    'agent.report.agent_hours'                         => 'Agent Hours',
+    'agent.report.report_builder'                         => 'Report Builder',
 );
