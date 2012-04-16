@@ -301,7 +301,7 @@
 			<?php else: $failed = true; $db_failed = true; ?>
 			<span class="label important" style="float:right">FAIL</span>
 			<?php endif ?>
-			Check database connection (<?php echo $db_config['user'] ?>@<?php echo $db_config['host'] ?>/<?php echo $db_config['dbname'] ?>)
+			Check database connection (<?php echo $db_config['user'] ?>@<?php echo $db_config['host'] ?>/<?php echo $db_config['dbname'] ?><?php if (!$failed and $did_create_db): ?>, the database was automatically created for you.<?php endif ?>)
 			<?php if ($failed): ?>
 			<div class="alert-message block-message error">
 				<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_db_connect') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
@@ -309,11 +309,7 @@
 				the details you entered are correct.
 				<p><code><?php echo $errors['db_connect']['message'] ?></code></p>
 			</div>
-			<?php endif; if ($did_create_db): ?>
-			<div class="alert-message block-message success">
-				The database was automatically created for you.
-			</div>
-			<?php endif ?>
+			<?php endif; ?>
 		</td>
 	</tr>
 
