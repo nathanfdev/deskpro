@@ -43,15 +43,18 @@ class TechTimeLogController extends AbstractController
      */
     public function indexAction()
     {
-        $vars = $this->getVarsForDate(new \DateTime());
+        $dt = new \DateTime('now', new \DateTimeZone('UTC'));
+        $dt->setTime(0, 0, 0);
+        $vars = $this->getVarsForDate($dt);
         return $this->render('ReportBundle:TechTimeLog:index.html.twig', $vars);
     }
 
     public function listAction($date)
     {
-        $dt = new \DateTime();
+        $dt = new \DateTime('now', new \DateTimeZone('UTC'));
         list($year, $month, $day) = explode('-', $date);
         $dt->setDate($year, $month, $day);
+        $dt->setTime(0, 0, 0);
         $vars = $this->getVarsForDate($dt);
         return $this->render('ReportBundle:TechTimeLog:index.html.twig', $vars);
     }
@@ -59,8 +62,16 @@ class TechTimeLogController extends AbstractController
     private function getVarsForDate($date)
     {
         $db = App::getDb();
-        $agent_ids = $db->fetchAll('SELECT DISTINCT agent_id FROM agent_activity WHERE DATE(date_active) = ?', array($date->format('Y-m-d')));
+        $start_date = $date->setTimezone($this->person->getDateTimezone());
+
+        $end_date = clone $start_date;
+        $end_date->add(new \DateInterval('P1D'));
+        $end_date->sub(new \DateInterval('PT1S'));
+        $date_range = array($start_date->format('Y-m-d H:i:s'), $end_date->format('Y-m-d H:i:s'));
+
+        $agent_ids = $db->fetchAll('SELECT DISTINCT agent_id FROM agent_activity WHERE date_active BETWEEN ? AND ?', $date_range);
         $agent_repo = $this->getDoctrine()->getRepository('DeskPRO:Person');
+
         $block_size = 5;
 
         $agents = array();
@@ -70,13 +81,20 @@ class TechTimeLogController extends AbstractController
         foreach($agent_ids as $agent_id) {
             $agent_id = $agent_id['agent_id'];
             $agents[] = $agent_repo->find($agent_id);
-            $active_times = $db->fetchAll('SELECT HOUR(date_active) AS `hour`, MINUTE(date_active) AS `minute` FROM agent_activity WHERE DATE(date_active) = ? AND agent_id = ?', array($date->format('Y-m-d'), $agent_id));
+
+            $active_times = $db->fetchAll('SELECT date_active FROM agent_activity WHERE agent_id = ? AND date_active BETWEEN ? AND ? ORDER BY date_active',
+                array_merge(array($agent_id), $date_range)
+            );
 
             $times[$agent_id] = array();
 
             foreach($active_times as $time) {
-                $minute = $time['minute'];
-                $hour = $time['hour'];
+                $dt = \DateTime::createFromFormat('Y-m-d H:i:s', $time['date_active'], $this->person->getDateTimezone());
+                $dt->setTimeZone(new \DateTimeZone('UTC'));
+
+                $hour = $dt->format('H');
+                $minute = $dt->format('i');
+
                 $times[$agent_id][intval(($hour * 60) / $block_size + $minute / $block_size)] = $time;
             }
 
