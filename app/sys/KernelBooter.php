@@ -297,8 +297,10 @@ class KernelBooter
 		$input = new \Symfony\Component\Console\Input\ArgvInput($argv);
 
 		$GLOBALS['DP_IS_IN_CLI'] = true;
+		$GLOBALS['DP_IS_INSTALL'] = true;
 		$app->run($input);
 		$GLOBALS['DP_IS_IN_CLI'] = false;
+		$GLOBALS['DP_IS_INSTALL'] = false;
 	}
 
 
@@ -320,8 +322,10 @@ class KernelBooter
 		$input = new \Symfony\Component\Console\Input\ArgvInput($argv);
 
 		$GLOBALS['DP_IS_IN_CLI'] = true;
+		$GLOBALS['DP_IS_INSTALL'] = true;
 		$app->run($input);
 		$GLOBALS['DP_IS_IN_CLI'] = false;
+		$GLOBALS['DP_IS_INSTALL'] = false;
 	}
 
 

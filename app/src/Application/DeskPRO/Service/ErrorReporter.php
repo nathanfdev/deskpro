@@ -29,25 +29,69 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Import
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Import\Importer\Step\Deskpro3;
+namespace Application\DeskPRO\Service;
+use Application\DeskPRO\App;
 
-class CleanupDoneStep extends AbstractDeskpro3Step
+class ErrorReporter
 {
-	/**
-	 * @var \Application\DeskPRO\Import\Importer\Deskpro3Importer
-	 */
-	protected $importer;
-
-	public static function getTitle()
+	public static function getBasicData()
 	{
-		return 'Done';
+		try {
+			$db = App::getDb();
+		} catch (\Exception $e) {
+			$db = null;
+		}
+		$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($db);
+		$all_stats = $stats_fetcher->getStats();
+
+		$info = array(
+			'os' => $all_stats['server_os'],
+			'web_server' => $all_stats['web_server'],
+			'php_version' => $all_stats['php_version'],
+			'mysql_version' => $all_stats['mysql_version'],
+			'build' => DP_BUILD_TIME,
+		);
+
+		if (defined('DP_INTERFACE')) {
+			$url = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
+			try {
+				$url = App::getRequest()->getUri();
+			} catch (\Exception $e) {}
+		} else {
+			$url = '';
+		}
+
+		if (php_sapi_name() == 'cli') {
+			$url = implode(' ', $_SERVER['argv']);
+		}
+
+		$info['url'] = $url;
+		$info['hostname'] = @gethostname();
+
+		if ((defined('DP_INTERFACE') && DP_INTERFACE != 'install') || (!isset($GLOBALS['DP_IS_INSTALL']) || !$GLOBALS['DP_IS_INSTALL'])) {
+			try {
+				$info['license_id'] = \DeskPRO\Kernel\License::getLicense()->getLicenseId();
+			} catch (\Exception $e) {
+				$info['license_id'] = '';
+			}
+		}
+
+		return $info;
 	}
 
-	public function run($page = 1)
+	public static function sendReport($service, array $data = array(), $timeout = 5)
 	{
-		\Application\DeskPRO\Command\ImportCommand::sendLogFile(false);
+		$data = array_merge($data, self::getBasicData());
+
+		try {
+			$client = new \Zend\Http\Client(null, array('timeout' => 5));
+			$client->setMethod(\Zend\Http\Request::METHOD_POST);
+			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/' . $service . '.json');
+			$client->getRequest()->post()->fromArray($data);
+			$r = $client->send();
+		} catch (\Exception $e) {}
 	}
 }

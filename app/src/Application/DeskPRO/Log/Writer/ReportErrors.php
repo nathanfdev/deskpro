@@ -76,21 +76,23 @@ class ReportErrors extends \Orb\Log\Writer\AbstractWriter
 				$log['data'] = print_r($info, true);
 			}
 
-			$log['build'] = App::getBuildTime() . ' (' . date('Y-m-d H:i:s', App::getBuildTime()) . ')';
-
 			if (isset($info['subject'])) {
 				$log['subject'] = $info['subject'];
-			} elseif (isset($info['data']['errfile'])) {
-				$log['subject'] = $info['data']['errfile'] . ':' . $info['data']['errline'];
-				$log['subject'] = str_replace('\\', '/', $info['subject']);
-				$log['subject'] = str_replace(DP_WEB_ROOT, '', $info['subject']);
 			}
 
-			$client = new \Zend\Http\Client(null, array('timeout' => 10));
-			$client->setMethod(\Zend\Http\Request::METHOD_POST);
-			$client->getRequest()->post()->set('log', $log);
-			$client->setUri(DP_LIC_SERVER . '/report-error.json');
-			$res = $client->send();
+			$data = array('log' => $log);
+
+			if (isset($info['summary'])) {
+				$data['error_summary'] = $info['summary'];
+			}
+
+			if (isset($info['errfile'])) {
+				$data['errfile'] = str_replace(DP_WEB_ROOT, '', $info['errfile']);
+				$data['errline'] = $info['errline'];
+			}
+
+			\Application\DeskPRO\Service\ErrorReporter::sendReport('report-error', $data, 5);
+
 		} catch (\Exception $e) {}
 	}
 }

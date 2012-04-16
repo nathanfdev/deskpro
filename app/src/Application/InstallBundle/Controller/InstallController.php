@@ -151,20 +151,14 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		$logs_dir_info = str_replace(DP_WEB_ROOT, '', $logs_dir_info);
 
 		if (!isset($_POST['stats_opt_out'])) {
-			try {
-				$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($this->getDb());
-				$stats = $stats_fetcher->getStats();
-				$stats['server_check_errors'] = $server_check->getErrors();
+			$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($this->getDb());
+			$stats = $stats_fetcher->getStats();
+			$stats['server_check_errors'] = $server_check->getErrors();
 
-				$client = new \Zend\Http\Client(null, array('timeout' => 5));
-				$client->setMethod(\Zend\Http\Request::METHOD_POST);
-				$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/report-stats.json');
-				foreach ($stats as $k => $v) {
-					$client->getRequest()->post()->set("stats[$k]", $v);
-				}
-				$r = $client->send();
-				$this->getLogger()->log('Stat server responds: ' . $r->getBody(), 'debug');
-			} catch (\Exception $e) { }
+			$data = array('stats' => $stats);
+			$data['is_error'] = $server_check->hasFatalErrors();
+			$data['source_type'] = 'install.web';
+			\Application\DeskPRO\Service\ErrorReporter::sendReport('report-stats', $stats, 10);
 		}
 
 		$ini_path = '';
@@ -616,6 +610,13 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		$agent = $this->getDb()->fetchAssoc("SELECT * FROM people LIMIT 1");
 
 		$base_url = $this->get('request')->getBaseUrl();
+
+		$data = array(
+			'log' => @file_get_contents($this->container->getLogDir() . '/install.log'),
+			'is_error' => 0,
+			'source_type' => 'install.web'
+		);
+		\Application\DeskPRO\Service\ErrorReporter::sendReport('report-install', $data, 10);
 
 		return $this->redirect($base_url . '/admin/');
 	}

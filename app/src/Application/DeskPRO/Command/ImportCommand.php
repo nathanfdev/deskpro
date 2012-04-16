@@ -126,7 +126,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			}
 			if ($count++ > 3) return;
 
-			\Application\DeskPRO\Command\ImportCommand::sendLogFile();
+			\Application\DeskPRO\Command\ImportCommand::sendLogFile(true);
 		});
 		$logger->addWriter($wr);
 
@@ -253,6 +253,12 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 					$server_check->checkDatabase($DP_CONFIG['db']);
 				}
 			}
+
+			$stats['server_check_errors'] = $server_check->getErrors();
+			$data = array('stats' => $stats);
+			$data['is_error'] = $server_check->hasFatalErrors();
+			$data['source_type'] = 'import.dp3';
+			\Application\DeskPRO\Service\ErrorReporter::sendReport('report-stats', $stats, 10);
 
 			if ($server_check->hasFatalErrors()) {
 				$str = "There are problems with your server setup that prevents DeskPRO v4 from installing:\n";
@@ -813,7 +819,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 	}
 
-	public static function sendLogFile()
+	public static function sendLogFile($is_error)
 	{
 		global $DP_CONFIG;
 		if (isset($DP_CONFIG['no_report_errors']) AND $DP_CONFIG['no_report_errors']) {
@@ -825,25 +831,12 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			return;
 		}
 
-		$import_log_name = 'import.log';
-		$import_log = file_get_contents($import_log_path);
-		$import_log = "[WITH ERROR REPORT]\n\n\n" . $import_log;
+		$data = array(
+			'log' => @file_get_contents($import_log_path),
+			'is_error' => $is_error ? 1 : 0,
+			'source_type' => 'import.dp3'
+		);
 
-		try {
-			$compress_file = new \Orb\File\CompressFile($import_log);
-			if ($compress_file->compress() && file_exists($compress_file->getTmpFile()) && filesize($compress_file->getTmpFile())) {
-				$import_log = file_get_contents($compress_file->getTmpFile());
-				$import_log_name = 'import.log.' . $compress_file->getCompressedType();
-			}
-		} catch (\Exception $e) {}
-
-		try {
-			$client = new \Zend\Http\Client(null, array('timeout' => 20));
-			$client->setMethod(\Zend\Http\Request::METHOD_POST);
-			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/submit-import-log.json');
-			$client->setParameterPost(array('logname' => $import_log_name));
-			$client->setFileUpload($import_log_name, 'logfile', $import_log, 'application/octet-stream');
-			$client->send();
-		} catch (\Exception $e) {}
+		\Application\DeskPRO\Service\ErrorReporter::sendReport('report-import', $data, 10);
 	}
 }
