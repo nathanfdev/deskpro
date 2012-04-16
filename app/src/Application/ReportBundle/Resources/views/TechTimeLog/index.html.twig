@@ -127,8 +127,6 @@
     text-align: right;
 }
 
-
-
 .datepicker a {
     background: -moz-linear-gradient(#FAFCFD, #F0F2F3) repeat scroll 0 0 padding-box transparent;
     border: 1px solid #B6BABF;
@@ -180,6 +178,7 @@
                     'dateFormat': 'yy-mm-dd',
                     'minDate': new Date({{ min_date|date('Y') }}, {{ min_date|date('m') }} -1, {{ min_date|date('d') }}),
                     'maxDate': new Date({{ max_date|date('Y') }}, {{ max_date|date('m') }} -1, {{ max_date|date('d') }}),
+                    'defaultDate': new Date({{ today|date('Y') }}, {{ today|date('m') }} -1, {{ today|date('d') }})
                 }
         );
         $('.datepicker > a').on('click', function(){
