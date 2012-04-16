@@ -359,7 +359,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 
 		$params = array('date_cut' => $date);
 		switch ($this->event_trigger) {
-			case self::EVENT_TIME_UNRESOLVED:
+			case self::EVENT_TIME_OPEN:
 				$qb->where("t.status IN('awaiting_agent','awaiting_user') AND t.date_created < :date_cut");
 				break;
 			case self::EVENT_TIME_USER_WAITING:
@@ -493,6 +493,8 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 					case 'gateway.agent':
 					case 'web.agent':
 						return 'new_ticket.agent';
+					default:
+						return 'new_ticket';
 				}
 				break;
 
@@ -517,6 +519,8 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 					}
 				}
 
+				return 'new_reply';
+
 				break;
 
 			case self::EVENT_PROPERTY_CHANGE:
@@ -526,17 +530,17 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 
 				if ($who_type == 'user') {
 					return 'property_change.user';
-				} else {
+				} elseif ($who_type == 'agent') {
 					return 'property_change.agent';
 				}
+
+				return 'property_change';
 
 				break;
 
 			default:
 				return $this->event_trigger;
 		}
-
-		return 'other';
 	}
 
 

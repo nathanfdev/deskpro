@@ -25,27 +25,45 @@
         'new_ticket.gateway_person': phrase('admin.tickets.new_ticket_gateway'),
         'new_ticket.widget': phrase('admin.tickets.new_ticket_widget'),
         'new_ticket.agent': phrase('admin.tickets.new_ticket_agent'),
+	} %}
+	<li>
+		<label><input type="radio" name="trigger_group" value="new_ticket" /> New Ticket</label>
+		<br />
+		{% for type,title in types %}
+			<i class="indent"></i><label><input type="radio" name="trigger_group" value="{{ type }}" /> {{ title }}</label>
+			<br />
+		{% endfor %}
+	</li>
+
+	{% set types = {
         'new_reply.web_person': phrase('admin.tickets.new_reply_web'),
         'new_reply.gateway_person': phrase('admin.tickets.new_reply_gateway'),
         'new_reply.agent': phrase('admin.tickets.new_reply_agent'),
+	} %}
+	<li>
+		<label><input type="radio" name="trigger_group" value="new_reply" /> New Reply</label>
+		<br />
+		{% for type,title in types %}
+		<i class="indent"></i><label><input type="radio" name="trigger_group" value="{{ type }}" /> {{ title }}</label>
+			<br />
+		{% endfor %}
+	</li>
+
+	{% set types = {
         'property_change.user': phrase('admin.tickets.property_change_user'),
         'property_change.agent': phrase('admin.tickets.property_change_agent'),
-        'time_open': phrase('admin.tickets.time_open'),
-        'time_user_waiting': phrase('admin.tickets.time_user_waiting'),
-        'time_total_user_waiting': phrase('admin.tickets.time_total_user_waiting'),
-        'time_agent_waiting': phrase('admin.tickets.time_agent_waiting'),
-        'time_resolved': phrase('admin.tickets.time_resolved'),
-        'other': phrase('agent.general.other'),
 	} %}
-	{% for type,title in types %}
-		<li>
-			<input type="radio" name="trigger_group" value="{{ type }}" /> {{ title }}
-		</li>
-	{% endfor %}
+	<li>
+		<label><input type="radio" name="trigger_group" value="property_change" /> Ticket Updated</label>
+		<br />
+		{% for type,title in types %}
+			<i class="indent"></i><label><input type="radio" name="trigger_group" value="{{ type }}" /> {{ title }}</label>
+			<br />
+		{% endfor %}
+	</li>
 
 	<li>
-		<input type="radio" name="trigger_group" value="time_open" />
-		{{ phrase('admin.tickets.ticket_open_for_duration') }}
+		<label><input type="radio" name="trigger_group" value="time_open" />{{ phrase('admin.tickets.ticket_open_for_duration') }}</label>
 		<span class="show-off">...</span>
 		<span class="show-on">
 			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />
@@ -71,7 +89,7 @@
 	</li>
 
 	<li>
-		<input type="radio" name="trigger_group" value="time_total_user_waiting" /> {{ phrase('admin.tickets.user_waiting_duration') }}
+		<label><input type="radio" name="trigger_group" value="time_total_user_waiting" /> {{ phrase('admin.tickets.user_waiting_duration') }}</label>
 		<span class="show-off">...</span>
 		<span class="show-on">
 			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />
@@ -85,7 +103,7 @@
 
 
 	<li>
-		<input type="radio" name="trigger_group" value="time_agent_waiting" /> {{ phrase('admin.tickets.agent_waiting_for_user') }}
+		<label><input type="radio" name="trigger_group" value="time_agent_waiting" /> {{ phrase('admin.tickets.agent_waiting_for_user') }}</label>
 		<span class="show-off">...</span>
 		<span class="show-on">
 			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />
@@ -98,7 +116,7 @@
 	</li>
 
 	<li>
-		<input type="radio" name="trigger_group" value="time_resolved" /> {{ phrase('admin.tickets.ticket_resolved_duration') }}
+		<label><input type="radio" name="trigger_group" value="time_resolved" /> {{ phrase('admin.tickets.ticket_resolved_duration') }}</label>
 		<span class="show-off">...</span>
 		<span class="show-on">
 			<input type="text" name="event_trigger_time" value="" size="10" style="width: 80px" class="small" />
