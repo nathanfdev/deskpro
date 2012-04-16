@@ -36,7 +36,7 @@ namespace Application\ReportBundle\Controller;
 
 use Application\DeskPRO\App;
 
-class TechTimeLogController extends AbstractController
+class AgentHoursController extends AbstractController
 {
     /**
      * Show the list of trends. Starred trends first

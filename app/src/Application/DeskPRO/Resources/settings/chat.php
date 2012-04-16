@@ -1,7 +1,7 @@
 <?php return array(
 
 	/**
-	 * round_robin: Techs are assigned chats in round robin, least number of chats
+	 * round_robin: Agents are assigned chats in round robin, least number of chats
 	 * everyone: Everyone sees the notification at the same time
 	 */
 	'core_chat.assign_mode' => 'everyone', // round_robin, everyone
