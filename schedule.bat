@@ -13,10 +13,10 @@ echo of a command line window.
 echo.
 set /p php="PHP Path: "
 echo.
-%php% -r echo('Installed'); > data\tmp\php.txt
+"%php%" -r "echo(\"installed\");" > data\tmp\php.txt
 set /p info= < data\tmp\php.txt
 del data\tmp\php.txt
-IF NOT "%info%"=="Installed" (
+IF NOT "%info%"=="installed" (
 echo. 
 echo.
 echo.
