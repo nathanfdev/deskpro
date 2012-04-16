@@ -61,6 +61,7 @@ class DevDoMigrationCommand extends \Symfony\Bundle\DoctrineMigrationsBundle\Com
 
 	public function execute(InputInterface $input, OutputInterface $output)
 	{
+        set_time_limit(0);
 		$check = App::getDb()->fetchColumn("SHOW TABLES LIKE 'dev_migration_versions'");
 		if (!$check) {
 			App::getDb()->exec("

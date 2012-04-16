@@ -134,7 +134,7 @@ class Ticket extends AbstractEntityRepository
 				SELECT t
 				FROM DeskPRO:Ticket t INDEX BY t.id
 				WHERE t.person = ?1
-				ORDER BY t.id DESC
+				ORDER BY t.status,t.urgency DESC
 			")->setParameters(array(1=>$person))->setMaxResults($limit)->execute();
 		} else {
 			$tickets = $this->getEntityManager()->createQuery("
@@ -142,7 +142,7 @@ class Ticket extends AbstractEntityRepository
 				FROM DeskPRO:Ticket t INDEX BY t.id
 				LEFT JOIN t.participants p
 				WHERE t.person = ?1 OR p.person = ?2
-				ORDER BY t.id DESC
+				ORDER BY t.status,t.urgency DESC
 			")->setParameters(array(1=>$person, 2=>$person))->setMaxResults($limit)->execute();
 		}
 
