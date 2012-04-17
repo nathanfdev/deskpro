@@ -81,11 +81,6 @@ class DataController extends AbstractController
 
 	public function sendErrorReportAction()
 	{
-		$token = $this->in->getString('token');
-		if (!\Orb\Util\Util::checkStaticSecurityToken($token, 'dp_submit_error_report')) {
-			return $this->createJsonResponse(array('error' => true));
-		}
-
 		$error_text = $this->in->getString('error_text');
 
 		$ip_address = $this->request->getClientIp();
@@ -93,16 +88,17 @@ class DataController extends AbstractController
 		$referrer   = empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER'];
 		$hash       = $this->in->getString('hash');
 
-		$error_text = "IP: $ip_address\nUser agent: $user_agent\nReferrer: $referrer\nFragment: $hash\n\n$error_text";
+		$info = array(
+			'hash' => $this->in->getString('hash'),
+			'ip_address' => $ip_address,
+			'user_agent' => $user_agent,
+			'referrer' => $referrer,
+			'fragment' => $hash,
+			'comment' => $this->in->getString('comment'),
+			'error_text' => $error_text,
+		);
 
-		$comment = $this->in->getString('comment');
-
-		$client = new \Zend\Http\Client(null, array('timeout' => 10));
-		$client->setMethod(\Zend\Http\Request::METHOD_POST);
-		$client->getRequest()->post()->set('error_text', $error_text);
-		$client->getRequest()->post()->set('comment', $comment);
-		$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/report-error-manual.json');
-		$client->send();
+		\Application\DeskPRO\Service\ErrorReporter::sendReport('report-error-manual', array('error_summary' => 'Manually submitted error report', 'log' => $info), 10);
 
 		return $this->createJsonResponse(array('success' => true));
 	}

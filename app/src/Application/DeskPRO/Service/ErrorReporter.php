@@ -48,10 +48,12 @@ class ErrorReporter
 		$all_stats = $stats_fetcher->getStats();
 
 		$info = array(
-			'os'            => isset($all_stats['server_os'])     ? $all_stats['server_os'] : '',
-			'web_server'    => isset($all_stats['web_server'])    ? $all_stats['web_server'] : '',
-			'php_version'   => isset($all_stats['php_version'])   ? $all_stats['php_version'] : '',
-			'mysql_version' => isset($all_stats['mysql_version']) ? $all_stats['mysql_version'] : '',
+			'os'                => isset($all_stats['server_os'])     ? $all_stats['server_os'] : '',
+			'web_server'        => isset($all_stats['web_server'])    ? $all_stats['web_server'] : '',
+			'php_version'       => isset($all_stats['php_version'])   ? $all_stats['php_version'] : '',
+			'mysql_version'     => isset($all_stats['mysql_version']) ? $all_stats['mysql_version'] : '',
+			'client_ip'         => isset($_SERVER['REMOTE_ADDR'])     ? $_SERVER['REMOTE_ADDR'] : '',
+			'client_user_agent' => isset($_SERVER['HTTP_REFERER'])    ? $_SERVER['HTTP_REFERER'] : '',
 			'build' => DP_BUILD_TIME,
 		);
 
