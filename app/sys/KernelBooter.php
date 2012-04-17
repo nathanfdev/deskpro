@@ -228,10 +228,11 @@ class KernelBooter
 			$kernel = new $kernel_class($env, $debug);
 			$kernel->handle($request)->send();
 		} catch (\PDOException $e) {
-			if ($e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
+			if ($e->getCode() == '2002' || $e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
 				header('Location: ' . $request->getBasePath() . '/index.php/install/');
 				exit;
 			}
+			throw $e;
 		}
 	}
 

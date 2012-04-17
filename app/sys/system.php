@@ -267,7 +267,10 @@ abstract class AbstractKernel extends BaseAbstractKernel
 				$response = new RedirectResponse($request->getBasePath() . '/index.php/install/');
 				return $response;
 			} else {
-				throw $e;
+				// Ignore connection related errors on installer
+				if (DP_INTERFACE != 'install') {
+					throw $e;
+				}
 			}
 		}
 
@@ -771,6 +774,20 @@ class KernelErrorHandler
 		}
 
 		$errinfo = self::getErrorInfo($errno, $errstr, $errfile, $errline);
+
+		// PDO::__construct on Windows sometimes doesnt listen to the PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+		// option. So it'll generate warnings instead of exceptions.
+		// This tries to catch those cases, and turn them into exceptions.
+		if (strpos($errinfo['errstr'], 'PDO::__construct') !== false) {
+			$code = $errinfo['errno'];
+			if (preg_match('#PDO::__construct\\(\\): \\[(.*?)\\]#', $errinfo['errstr'], $m)) {
+				$code = $m[1];
+			}
+			$pdo_e = new \PDOException($errinfo['errstr'], $code);
+			throw $pdo_e;
+		}
+
+
 		self::logErrorInfo($errinfo);
 
 		if ($errinfo['display']) {
