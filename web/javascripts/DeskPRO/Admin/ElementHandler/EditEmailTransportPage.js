@@ -10,13 +10,13 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 
 		$(document).on('click', ':radio.transport-type-backup', function() {
 			if ($(this).is('.none')) {
-				$('.test-account-settings.backup').hide();
+				$('.test-account-settings.backup', this.el).hide();
 			} else {
-				$('.test-account-settings.backup').show();
+				$('.test-account-settings.backup', this.el).show();
 			}
 		});
 
-		$(document).on('click', '.test-account-settings', function() {
+		this.el.on('click', '.test-account-settings', function() {
 			self.mode = '';
 			if ($(this).is('.backup')) {
 				self.mode = 'backup';
@@ -69,8 +69,8 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 			}
 		});
 
-		$('button.test-trigger', '#test_settings_overlay').on('click', function() {
-			var el = $('#test_settings_overlay');
+		$('button.test-trigger', '#'+overlayId).on('click', function() {
+			var el = $('#'+overlayId);
 			$('.result', el).show().addClass('loading');
 
 			var postData = self.testPostData;
