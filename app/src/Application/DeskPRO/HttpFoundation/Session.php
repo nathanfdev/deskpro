@@ -135,7 +135,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
             $minute = intval($minute / 5) * 5;
             $date_active->setTime($hour, $minute, 0);
 
-            App::getDb()->executeQuery('REPLACE INTO agent_activity(agent_id, date_active) VALUES(?,?)', array($agent['id'], $date_active->format('Y-m-d H:i:s')));
+            App::getDb()->executeQuery('INSERT IGNORE INTO agent_activity(agent_id, date_active) VALUES(?,?)', array($agent['id'], $date_active->format('Y-m-d H:i:s')));
         }
 
 		$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpvid', $vis['visitor_code'], 'never');
