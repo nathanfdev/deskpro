@@ -462,7 +462,6 @@ class UserChatController extends AbstractController
 		$searcher->setColumns('IF(department_id, department_id, -1) AS department_id, COUNT(*) AS count');
 		$searcher->setGroupBy('chat_conversations.agent_id');
 		$searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'open');
-		// Possible permissions bug!
 		$searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS, 0);
 
 		$dep_counts = App::getDb()->fetchAllKeyValue($searcher->getSql());
@@ -750,10 +749,9 @@ class UserChatController extends AbstractController
 		$filters = array();
 
 		foreach($this->filters as $filter) {
-			if($filter == 'all'
-			&& !$this->person->hasPerm('agent_tickets.view_others')
-			&& !$this->person->hasPerm('agent_tickets.view_unassigned'))
+			if($filter == 'all'	&& !$this->person->hasPerm('agent_chat.view_others') && !$this->person->hasPerm('agent_chat.view_unassigned')) {
 				continue;
+			}
 
 			$filters[] = $filter;
 		}

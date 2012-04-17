@@ -42,7 +42,9 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 	_initSection: function(data) {
 		if(this.hasSectionInitialised) {
-			return;
+			this._lastLoaded = new Date();
+			this.filterGroupEditor.destroy();
+			this.contentEl.empty();
 		}
 
 		this.hasSectionInitialised = true;
@@ -119,7 +121,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	onShow: function() {
-		this._lastLoaded = new Date();
 		DeskPRO_Window.getSectionData('chat_section', this._initSection.bind(this));
 	},
 

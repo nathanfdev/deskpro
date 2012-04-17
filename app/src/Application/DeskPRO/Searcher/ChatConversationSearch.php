@@ -126,12 +126,16 @@ class ChatConversationSearch extends SearcherAbstract
 		# Add wheres
 		#------------------------------
 
-		if(!$this->person->hasPerm('agent_tickets.view_unassigned')) {
-			$parts['wheres'][] = 'agent_id IS NOT NULL';
+		if(!$this->person->hasPerm('agent_chat.view_unassigned')) {
+			$parts['wheres'][] = 'chat_conversations.agent_id IS NOT NULL';
+		}
+
+		if(!$this->person->hasPerm('agent_chat.view_others')) {
+			$parts['wheres'][] = '(chat_conversations.agent_id IS NULL OR chat_conversations.agent_id = ' . $this->getPersonContext()->getId() . ')';
 		}
 
 		if($this->person->getAgentPermissions()->getDisallowedDepartments('chat')) {
-			$parts['wheres'][] = 'department_id NOT IN('.implode(',',$this->person->getAgentPermissions()->getDisallowedDepartments('chat')).')';
+			$parts['wheres'][] = '(department_id IS NULL OR department_id NOT IN('.implode(',',$this->person->getAgentPermissions()->getDisallowedDepartments('chat')).'))';
 		}
 
 		if (!$this->person->hasPerm('agent_tickets.view_others')) {
