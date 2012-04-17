@@ -79,6 +79,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						Array.each(data.error_codes, function(code) {
 							this.showErrorCode(code);
 						}, this);
+						this.updateUi();
 					}
 				}
 
@@ -133,6 +134,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				$('div.message-section.section', this.wrapper).removeClass('error');
 				break;
 		}
+
+		this.updateUi();
 	},
 
 	setNewByComment: function(data) {
@@ -157,6 +160,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		} else {
 			$('option[value="approve"]', this.getEl('comment_action')).show();
 		}
+
+		this.updateUi();
 	},
 
 	setNewByChat: function(data) {
@@ -169,6 +174,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			this.getEl('user_searchbox').find('input.person-id').val(data.person_id);
 			this.getEl('user_section').hide();
 		}
+
+		this.updateUi();
 	},
 
 	setNewByPerson: function(data) {
@@ -177,6 +184,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.setUser(data.person_id);
 		this.getEl('user_section').hide();
 		this.getEl('user_searchbox').find('input.person-id').val(data.person_id);
+
+		this.updateUi();
 	},
 
 	_resetForX: function() {
@@ -186,6 +195,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.getEl('for_chat_id').val('');
 		this.getEl('for_comment_type').val('');
 		this.getEl('for_comment_id').val('');
+
+		this.updateUi();
 	},
 
 	//#########################################################################
@@ -208,6 +219,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			searchbox.show();
 			rechooseBtn.hide();
 			self.loadSnippetsViewer();
+			self.updateUi();
 		};
 
 		var placeUserRow = function(html) {
@@ -228,6 +240,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					$('input.person-id', searchbox).val(personId);
 					placeUserRow(html);
 					self.loadSnippetsViewer();
+					self.updateUi();
 				}
 			});
 			sb.close();
@@ -248,6 +261,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					} else {
 						$('input.name', userfields).val(term);
 					}
+
+					self.updateUi();
 				}
 			});
 			sb.close();
@@ -292,6 +307,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			fnCheck();
 			e.on('change', fnCheck);
 		}
+
+		this.updateUi();
 	},
 
 	//#########################################################################
@@ -343,6 +360,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			}
 
 			self.getEl('cc_list').append(html);
+			self.updateUi();
 
 			sb.close();
 			sb.reset();
@@ -350,6 +368,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		this.getEl('cc_list').on('click', 'em.remove', function() {
 			$(this).closest('li').remove();
+			self.updateUi();
 		});
 	},
 
@@ -381,6 +400,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				self.getEl('agent_team_id').val(agent_team_id);
 				var label = $('.agent-team-label-' + agent_team_id, obEl).text().trim();
 				self.getEl('agent_team_label').text(label);
+
+				self.updateUi();
 			}
 		});
 
@@ -391,6 +412,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			} else {
 				self.getEl('dep_section').removeClass('done');
 			}
+
+			self.updateUi();
 		});
 	},
 
@@ -462,6 +485,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			var ob = new DeskPRO.UI.OptionBoxBuilder({
 				values: el,
 				noValText: 'None',
+				selectDefault: true,
 				title: 'Choose an option'
 			});
 			el.addClass('has-init');
@@ -471,8 +495,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			values: this.getEl('dep'),
 			noValText: 'None',
 			title: 'Department',
+			selectDefault: true,
 			onClose: function() {
-				updateFields();
+				//updateFields();
 			}
 		});
 
@@ -538,6 +563,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					});
 					self.ownObject(self.labelsInput);
 				}
+
+				self.updateUi();
 			},
 			onTabClick: (function(ev) {
 				var contentWrap = this.getEl('other_props_tabs_content');
@@ -555,6 +582,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						navWrap.addClass('on');
 					}
 				}
+
+				self.updateUi();
 			}).bind(this)
 		});
 		this.ownObject(this.otherTabs);
@@ -570,9 +599,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				ev.preventDefault();
 				ev.stopPropagation();
 				el.remove();
+				self.updateUi();
 			});
 
 			el.appendTo(self.getEl('cc_list'));
+			self.updateUi();
 
 			txt.val('');
 		});
@@ -589,6 +620,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			} else {
 				li.addClass('unchecked');
 			}
+			self.updateUi();
 		});
 	}
 });

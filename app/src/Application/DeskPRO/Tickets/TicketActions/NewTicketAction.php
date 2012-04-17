@@ -70,7 +70,7 @@ class NewTicketAction implements BreakableAction, ActionInterface
 	/**
 	 * @var string
 	 */
-	protected $newticket_agent_email_tpl = 'DeskPRO:emails_user:new-ticket-byagent.html.twig';
+	protected $newticket_agent_email_tpl = 'DeskPRO:emails_user:new-ticket-agent.html.twig';
 
 	/**
 	 * @var bool

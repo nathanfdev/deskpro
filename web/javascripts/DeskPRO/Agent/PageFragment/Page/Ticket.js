@@ -126,6 +126,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				$('div.log-row', msgWrap).hide();
 				$('div.log-batch', msgWrap).hide();
 			}
+
+			self.updateUi();
 		};
 
 		$('.tickets-msg-controls input', this.wrapper).on('click', function() {

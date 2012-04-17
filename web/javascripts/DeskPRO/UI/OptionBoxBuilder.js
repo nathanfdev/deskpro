@@ -44,6 +44,7 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 				options.selectType = 'radio';
 			}
 
+			var hasSelected = false;
 			selectEl = options.values;
 			options.values = [];
 
@@ -85,13 +86,17 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 					});
 				} else {
 					if (!is_child) is_sub = false;
+					if (!hasSelected && options.selectDefault) {
+						el.addClass('start');
+						hasSelected = true;
+					}
 					options.values.push({
 						label: label,
 						value: el.val(),
 						hasChild: has_child,
 						hasParent: is_child,
 						childDepth: child_depth,
-						isSelected: el.hasClass('start') || el.data('start')
+						isSelected: (el.hasClass('start') || el.data('start') ? true : false)
 					});
 				}
 			});

@@ -175,15 +175,6 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		// Handle window resizes
 		if (this.options.positionMode == 'side') {
 			DeskPRO_Window.layout.addEvent('resized', this.updatePositions, this);
-		} else {
-			$(window).on('resize', function() {
-				self.updatePositions();
-			});
-		}
-
-		var c = $('.scroll-content', this.popoverOuter).first();
-		if (c.length) {
-			c.on('resize', this.updatePositions.bind(this));
 		}
 	},
 
@@ -192,6 +183,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		if (!this.pageSource) return;
 
 		this.page = DeskPRO_Window.createPageFragment(this.pageSource);
+		this.page.addEvent('updateUi', this.updatePositions.bind(this));
 		this.popover.html(this.pageSource);
 		this.pageSource = null;
 
