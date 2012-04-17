@@ -63,6 +63,7 @@
 		var oViewport = { obj: $('.scroll-viewport:first', this) };
 		var oContent = { obj: $('.scroll-content:first', this) };
 		var oScrollbar = { obj: $('.scrollbar:first', this) };
+		oScrollbar.obj.addClass('disable');
 		var oTrack = { obj: $('.track:first', oScrollbar.obj) };
 		var oThumb = { obj: $('.thumb:first', oScrollbar.obj) };
 		var sAxis = options.axis == 'x', sDirection = sAxis ? 'left' : 'top', sSize = sAxis ? 'Width' : 'Height';
