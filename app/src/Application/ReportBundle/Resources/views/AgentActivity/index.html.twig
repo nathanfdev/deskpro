@@ -75,81 +75,72 @@
             <tr>
                 <td class="hour_cell">{{ '%02d'|format(hour) }}:00</td>
                 {% for agent in agents %}
-                    <td>
-                    {% set act = activity[agent.id] %}
+                <td>
+                    {% set hour_index = '_' ~ hour %}
+                    {% if activity[agent.id][hour_index] is defined %}
                         <table>
-                        {% if act.chats is defined and act.chats[hour] is defined %}
-                            {% for conv_id,messages in act.chats[hour] %}
-                                <tr>
-                                    <td>
-                                        Sent {{ messages }} messages in chat
-                                    </td>
-                                    <td>
-                                        #<a href="{{ app.request.getBaseUrl() }}/agent/#app.userchat,c:{{conv_id}}">{{conv_id}}</a>
-                                    </td>
-                                </tr>
+                            {% for minute, logs in activity[agent.id][hour_index] %}
+                                {% set minute_display = '%02d'|format(minute) %}
+                                {% for row in logs %}
+                                    {% set type = row.type %}
+                                    {% set log = row.data %}
+                                    {% if type == 'chat' %}
+                                            <tr>
+                                                <td>({{ minute_display }})
+                                                    Sent {{ log.count }} messages in chat
+                                                </td>
+                                                <td>
+                                                    #<a href="{{ app.request.getBaseUrl() }}/agent/#app.userchat,c:{{row.conversation.id}}">{{row.conversation.id}}</a>
+                                                </td>
+                                            </tr>
+                                    {% elseif type == 'ticket' %}
+                                        {% set no_show = 0 %}
+                                        {% set action_text %}
+                                            {% include 'ReportBundle:AgentActivity:ticket-log-actiontext.html.twig' %}
+                                        {% endset %}
+                                        {% if not no_show %}
+                                            <tr>
+                                                <td>({{ minute_display }}) {{ log.action_type }}
+                                                    {{ action_text }}
+                                                </td>
+                                                <td>
+                                                    <a href="{{ app.request.getBaseUrl() }}/agent/#app.tickets,t:{{log.ticket.id}}">{{ log.ticket.subject }}</a>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% elseif type == 'news' %}
+                                        <tr>
+                                            <td>({{ minute_display }})
+                                                Created news revision
+                                            </td>
+                                            <td>
+                                                <a href="{{ app.request.getBaseUrl() }}/agent/#app.publish,n:{{log.id}}">{{ log.title }}</a>
+                                            </td>
+                                        </tr>
+                                    {% elseif type == 'article' %}
+                                        <tr>
+                                            <td>({{ minute_display }})
+                                                Created article revision
+                                            </td>
+                                            <td>
+                                                <a href="{{ app.request.getBaseUrl() }}/agent/#app.publish,a:{{log.id}}">{{ log.title }}</a>
+                                            </td>
+                                        </tr>
+                                    {% elseif type == 'download' %}
+                                        <tr>
+                                            <td>({{ minute_display }})
+                                                Created download revision
+                                            </td>
+                                            <td>
+                                                <a href="{{ app.request.getBaseUrl() }}/agent/#app.publish,d:{{log.id}}">{{ log.title }}</a>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
                             {% endfor %}
-                        {% endif %}
-
-                        {% if act.tickets is defined and act.tickets[hour] is defined %}
-                            {% for log in act.tickets[hour] %}
-                                {% set no_show = 0 %}
-                                {% set action_text %}
-                                    {% include 'ReportBundle:AgentActivity:ticket-log-actiontext.html.twig' %}
-                                {% endset %}
-                                {% if not no_show %}
-                                    <tr>
-                                        <td>{{ log.action_type }}
-                                            {{ action_text }}
-                                        </td>
-                                        <td>
-                                            <a href="{{ app.request.getBaseUrl() }}/agent/#app.tickets,t:{{log.ticket.id}}">{{ log.ticket.subject }}</a>
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-
-                        {% if act.news is defined and act.news[hour] is defined %}
-                        {% for log in act.news[hour] %}
-                        <tr>
-                            <td>
-                                Created news revision
-                            </td>
-                            <td>
-                                <a href="{{ app.request.getBaseUrl() }}/agent/#app.publish,n:{{log.news.id}}">{{ log.news.title }}</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                        {% endif %}
-
-                        {% if act.article is defined and act.article[hour] is defined %}
-                        {% for log in act.article[hour] %}
-                        <tr>
-                            <td>
-                                Created article revision
-                            </td>
-                            <td>
-                                <a href="{{ app.request.getBaseUrl() }}/agent/#app.publish,a:{{log.article.id}}">{{ log.article.title }}</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                        {% endif %}
-
-                        {% if act.download is defined and act.download[hour] is defined %}
-                        {% for log in act.download[hour] %}
-                        <tr>
-                            <td>
-                                Created download revision
-                            </td>
-                            <td>
-                                <a href="{{ app.request.getBaseUrl() }}/agent/#app.publish,d:{{log.download.id}}">{{ log.download.title }}</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                        {% endif %}
                         </table>
-                    </td>
+                    {% endif %}
+                </td>
                 {% endfor %}
             </tr>
         {% endfor %}

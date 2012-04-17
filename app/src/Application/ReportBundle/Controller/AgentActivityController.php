@@ -62,30 +62,39 @@ class AgentActivityController extends AbstractController
         $agents = array();
 
         foreach($agent_list as $agent) {
+            $logs = array();
             $chats = $this->getChatLogForAgent($agent, $date);
-            $activity[$agent['id']] = array();
 
             if(!empty($chats)) {
-                $agents[$agent['id']] = $agent;
-                $activity[$agent['id']]['chats'] = $chats;
+                $logs = array_merge_recursive($logs, $chats);
             }
 
             $ticket_logs = $this->getTicketLogForAgent($agent, $date);
 
             if(!empty($ticket_logs)) {
-                $agents[$agent['id']] = $agent;
-                $activity[$agent['id']]['tickets'] = $ticket_logs;
+                $logs = array_merge_recursive($logs, $ticket_logs);
             }
 
             $revisions = $this->getRevistionsForAgent($agent, $date);
 
             if(!empty($revisions)) {
-                $agents[$agent['id']] = $agent;
-                $activity[$agent['id']] = array_merge($activity[$agent['id']], $revisions);
+                $logs = array_merge_recursive($logs, $revisions);
             }
 
-            if(empty($activity[$agent['id']])) {
-                unset($activity[$agent['id']]);
+            if(!empty($logs)) {
+                foreach($logs as $hour => $by_minute) {
+                    $minutely = array();
+
+                    foreach($by_minute as $minute => $item) {
+                        $minutely[trim($minute, '_')] = $item;
+                    }
+
+                    ksort($minutely, SORT_NUMERIC);
+                    $logs[$hour] = $minutely;
+                }
+
+                $agents[$agent['id']] = $agent;
+                $activity[$agent['id']] = $logs;
             }
         }
 
@@ -112,16 +121,17 @@ class AgentActivityController extends AbstractController
             foreach($revisions as $revision) {
                 $date = $this->mysqlDateToPhpDate($revision['date_created']->format('Y-m-d H:i:s'));
                 $hour = $date->format('G');
+                $minute = (int)$date->format('i');
 
                 if(!isset($counts_hourly[$item_lc])) {
                     $counts_hourly[$item_lc] = array();
                 }
 
-                if(!isset($counts_hourly[$item_lc][$hour])) {
-                    $counts_hourly[$item_lc][$hour] = array();
+                if(!isset($counts_hourly['_'.$hour]['_'.$minute])) {
+                    $counts_hourly['_'.$hour]['_'.$minute] = array();
                 }
 
-                $counts_hourly[$item_lc][$hour][] = $revision;
+                $counts_hourly['_'.$hour]['_'.$minute][] = array('type' => $item_lc, 'data' => $revision);
             }
         }
 
@@ -139,12 +149,17 @@ class AgentActivityController extends AbstractController
         foreach($logs as $log) {
             $date = $this->mysqlDateToPhpDate($log['date_created']->format('Y-m-d H:i:s'));
             $hour = $date->format('G');
+            $minute = (int)$date->format('i');
 
-            if(!isset($counts_hourly[$hour])) {
-                $counts_hourly[$hour] = array();
+            if(!isset($counts_hourly['_'.$hour])) {
+                $counts_hourly['_'.$hour] = array();
             }
 
-            $counts_hourly[$hour][] = $log;
+            if(!isset($counts_hourly['_'.$hour]['_'.$minute])) {
+                $counts_hourly['_'.$hour]['_'.$minute] = array();
+            }
+
+            $counts_hourly['_'.$hour]['_'.$minute][] = array('type' => 'ticket', 'data' => $log);
         }
 
         return $counts_hourly;
@@ -153,6 +168,8 @@ class AgentActivityController extends AbstractController
     private function getChatLogForAgent($agent, $date) {
         $date_range = $this->createMysqlDateRangeForUser($date);
         $db = $this->getDoctrine()->getConnection();
+        $em = $this->getDoctrine()->getEntityManager();
+
         // Could GROUP BY HOUR(date_created), but as timezones are in effect, it is easier to do this in PHP.
         $messages = $db->fetchAll(
             'SELECT cm.date_created, conversation_id
@@ -168,20 +185,43 @@ class AgentActivityController extends AbstractController
         foreach($messages as $message) {
             $date = $this->mysqlDateToPhpDate($message['date_created']);
             $hour = $date->format('G');
+            $minute = (int)$date->format('i');
 
             if(!isset($counts_hourly[$hour])) {
                 $counts_hourly[$hour] = array();
             }
 
             if(!isset($counts_hourly[$hour][$message['conversation_id']])) {
-                $counts_hourly[$hour][$message['conversation_id']] = 1;
+                $counts_hourly[$hour][$message['conversation_id']] = array('count' => 1, 'last' => $minute);
             }
             else {
-                $counts_hourly[$hour][$message['conversation_id']]++;
+                $counts_hourly[$hour][$message['conversation_id']]['count']++;
+
+                if($counts_hourly[$hour][$message['conversation_id']]['count']['last'] < $minute) {
+                    $counts_hourly[$hour][$message['conversation_id']]['count'] = $minute;
+                }
             }
         }
 
-        return $counts_hourly;
+        $counts = array();
+
+        foreach($counts_hourly as $hour => $stats) {
+            $hour = '_'.$hour;
+            $counts[$hour] = array();
+
+            foreach($stats as $convo_id => $stat) {
+                $convo = $em->getRepository('DeskPRO:ChatConversation')->find($convo_id);
+                $minute = '_'.$stat['last'];
+
+                if(!isset($counts[$hour][$minute])) {
+                    $counts[$hour][$minute] = array();
+                }
+
+                $counts[$hour][$minute][] = array('type' => 'chat', 'count' => $stat['count'], 'conversation' => $convo);
+            }
+        }
+
+        return $counts;
     }
 
     private function createDateFromParamString($date_str)
