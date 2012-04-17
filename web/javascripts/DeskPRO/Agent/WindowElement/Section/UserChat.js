@@ -128,7 +128,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleUpdateCounts: function(data) {
-        this.updateBadge($('#userchat_deplist_0_counter').text() + $('#userchat_deplist_allagents_counter').text());
+        this.updateBadge(parseInt($('#userchat_deplist_0_counter').text()) + parseInt($('#userchat_list_allagents_counter').text()));
 	},
 
 	isChatOpen: function(convoId) {
