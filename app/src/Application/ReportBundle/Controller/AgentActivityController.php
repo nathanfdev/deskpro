@@ -123,9 +123,9 @@ class AgentActivityController extends AbstractController
             );
 
             foreach($revisions as $revision) {
-                $date = $this->mysqlDateToPhpDate($revision['date_created']->format('Y-m-d H:i:s'));
-                $hour = $date->format('G');
-                $minute = (int)$date->format('i');
+                $date_created = $this->mysqlDateToPhpDate($revision['date_created']->format('Y-m-d H:i:s'));
+                $hour = $date_created->format('G');
+                $minute = (int)$date_created->format('i');
 
                 if(!isset($counts_hourly[$item_lc])) {
                     $counts_hourly[$item_lc] = array();
@@ -248,6 +248,9 @@ class AgentActivityController extends AbstractController
 
     private function createMysqlDateRangeForUser($date)
     {
+        // Let the date be reused!
+        $date = clone $date;
+
         // Apply the user's timezone offset.
         $start_date = $date->setTimezone($this->person->getDateTimezone());
 

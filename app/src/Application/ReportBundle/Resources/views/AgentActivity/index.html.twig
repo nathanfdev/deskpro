@@ -143,7 +143,7 @@
                                     {% endset %}
                                     {% if action_text|trim() is not empty %}
                                     <div class="activity activity_type_{{ type }}"><div class="type_icon"></div>
-                                    ({{ minute_display }}) {{ log.action_type }} {{ action_text }} in
+                                    ({{ minute_display }}) {{ action_text }} in
                                     <a href="{{ app.request.getBaseUrl() }}/agent/#app.tickets,t:{{log.ticket.id}}">{{ log.ticket.subject }}</a>
                                     </div>
                                     {% endif %}
