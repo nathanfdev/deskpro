@@ -685,3 +685,59 @@ h2 {
 
 	top: 40px;
 }
+
+.reports-popup-page-overlay {
+    position: fixed;
+    z-index: 50;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    top: 0px;
+    background-color: #000000;
+    opacity: 0.55;
+}
+
+.reports-popup-page-overlay.hidden {
+    display:none;
+}
+
+.drop-down > a {
+    background: -moz-linear-gradient(#FAFCFD, #F0F2F3) repeat scroll 0 0 padding-box transparent;
+    border: 1px solid #B6BABF;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
+    color: #626A73;
+    cursor: pointer;
+    font-family: Arial,Helvetica,sans-serif;
+    font-weight: bold;
+    line-height: 12px;
+    padding: 2px 8px 3px 6px;
+    position: relative;
+    text-shadow: 0 1px 0 #FFFFFF;
+    font-size: 10px;
+}
+
+.drop-down > a > em {
+    background-image: url("../../../web/images/agent/button-downarrow.png");
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 5px;
+    margin: 5px 0 0 5px;
+    overflow: hidden;
+    width: 7px;
+}
+
+.datepicker {
+    position: relative;
+}
+
+.datepicker > span {
+    position:absolute;
+    z-index: 100;
+    top: 24px;
+    left: 0px;
+}
+
+.datepicker > span.hidden {
+    display:none;
+}
