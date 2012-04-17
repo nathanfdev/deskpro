@@ -108,18 +108,17 @@
                                     {% if type == 'chat' %}
                                             <tr>
                                                 <td>({{ minute_display }})
-                                                    Sent {{ log.count }} messages in chat
+                                                    Sent {{ row.count }} messages in chat
                                                 </td>
                                                 <td>
                                                     #<a href="{{ app.request.getBaseUrl() }}/agent/#app.userchat,c:{{row.conversation.id}}">{{row.conversation.id}}</a>
                                                 </td>
                                             </tr>
                                     {% elseif type == 'ticket' %}
-                                        {% set no_show = 0 %}
                                         {% set action_text %}
                                             {% include 'ReportBundle:AgentActivity:ticket-log-actiontext.html.twig' %}
                                         {% endset %}
-                                        {% if not no_show %}
+                                        {% if action_text|trim() is not empty %}
                                             <tr>
                                                 <td>({{ minute_display }}) {{ log.action_type }}
                                                     {{ action_text }}

@@ -47,7 +47,7 @@ class AgentActivityController extends AbstractController
     {
         $em = $this->getDoctrine()->getEntityManager();
         $vars = array(
-            'hide_unknown' => false,
+            'hide_unknown' => 1,
         );
         $date = $this->createDateFromParamString($date);
         $all_agents = $em->getRepository('DeskPRO:Person')->getAgents();
@@ -201,8 +201,8 @@ class AgentActivityController extends AbstractController
             else {
                 $counts_hourly[$hour][$message['conversation_id']]['count']++;
 
-                if($counts_hourly[$hour][$message['conversation_id']]['count']['last'] < $minute) {
-                    $counts_hourly[$hour][$message['conversation_id']]['count'] = $minute;
+                if($counts_hourly[$hour][$message['conversation_id']]['last'] < $minute) {
+                    $counts_hourly[$hour][$message['conversation_id']]['last'] = $minute;
                 }
             }
         }
