@@ -66,6 +66,13 @@ class AgentActivityController extends AbstractController
                 $agents[$agent['id']] = $agent;
                 $activity[$agent['id']]= array('chats' => $chats);
             }
+
+            $ticket_logs = $this->getTicketLogForAgent($agent, $date);
+
+            if(!empty($ticket_logs)) {
+                $agents[$agent['id']] = $agent;
+                $activity[$agent['id']]['tickets'] = $ticket_logs;
+            }
         }
 
         $vars['agents'] = $agents;
@@ -73,6 +80,28 @@ class AgentActivityController extends AbstractController
         $vars['agent_id'] = $agent_id;
 
         return $this->render('ReportBundle:AgentActivity:index.html.twig', $vars);
+    }
+
+    private function getTicketLogForAgent($agent, $date) {
+        $em = $this->getDoctrine()->getEntityManager();
+        $counts_hourly = array();
+        $logs = $em->getRepository('DeskPRO:TicketLog')->getLogsForAgent(
+            $agent,
+            array('date_range' => $this->createMysqlDateRangeForUser($date))
+        );
+
+        foreach($logs as $log) {
+            $date = $this->mysqlDateToPhpDate($log['date_created']);
+            $hour = $date->format('G');
+
+            if(!isset($counts_hourly[$hour])) {
+                $counts_hourly[$hour] = array();
+            }
+
+            $counts_hourly[$hour][] = $log;
+        }
+
+        return $counts_hourly;
     }
 
     private function getChatLogForAgent($agent, $date) {

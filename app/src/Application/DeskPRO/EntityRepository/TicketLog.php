@@ -69,7 +69,7 @@ class TicketLog extends EntityRepository
 				SELECT log
 				FROM DeskPRO:TicketLog log INDEX BY log.id
 				WHERE log.person = ?1
-				AND date_created BETWEEN ?2 AND ?3
+				AND log.date_created BETWEEN ?2 AND ?3
 				ORDER BY log.date_created ASC
 			")
             ->setParameter(1, $agent)
