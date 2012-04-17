@@ -53,6 +53,11 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 	 */
 	protected $logger;
 
+	/**
+	 * @var float
+	 */
+	protected $cmd_start_time;
+
 	protected function configure()
 	{
 		$this->setName('dp:import');
@@ -66,6 +71,8 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$this->cmd_start_time = microtime(true);
+
 		$output->setFormatter(new \Orb\Console\Formatter\MaxLineLengthFormatter(80));
 
 		$GLOBALS['DP_NOSQL_LOG'] = true;
@@ -766,7 +773,9 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$client->send();
 			} catch (\Exception $e) { }
 
-			echo "Import Complete.\n";
+			$total_time = sprintf("%.03f", microtime(true) - $this->cmd_start_time);
+
+			$logger->log("All Done ($total_time seconds)", 'INFO');
 
 			return 0;
 		}
