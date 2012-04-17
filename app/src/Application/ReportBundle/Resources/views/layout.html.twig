@@ -96,10 +96,10 @@
 		<nav><h1><a>{{ phrase('agent.report.report_builder') }}</a></h1></nav>
 	</section>
 	<section class="tech-activity">
-		<nav><h1><a>{{ phrase('agent.report.agent_activity') }}</a></h1></nav>
+		<nav><h1><a href="{{ path('report_agent_activity_index') }}">{{ phrase('agent.report.agent_activity') }}</a></h1></nav>
 	</section>
 	<section class="tech-hours">
-		<nav><h1><a href="{{ path('agent_time_log_index') }}">{{ phrase('agent.report.agent_hours') }}</a></h1></nav>
+		<nav><h1><a href="{{ path('report_agent_hours_index') }}">{{ phrase('agent.report.agent_hours') }}</a></h1></nav>
 	</section>
 	<section class="publish">
 		<nav><h1><a>{{ phrase('agent.general.publish') }}</a></h1></nav>

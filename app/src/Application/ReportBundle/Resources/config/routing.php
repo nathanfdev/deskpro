@@ -180,16 +180,30 @@ $collection->add('report_login_authenticate_local', new Route(
 	array()
 ));
 
-$collection->add('agent_time_log_index', new Route(
+$collection->add('report_agent_hours_index', new Route(
     '/agenthours/index/',
     array('_controller' => 'ReportBundle:AgentHours:index'),
     array(),
     array()
 ));
 
-$collection->add('agent_time_log_list_date', new Route(
+$collection->add('report_agent_hours_list_date', new Route(
     '/agenthours/list/{date}',
     array('_controller' => 'ReportBundle:AgentHours:list'),
+    array(),
+    array()
+));
+
+$collection->add('report_agent_activity_index', new Route(
+    '/agentactivity/index/',
+    array('_controller' => 'ReportBundle:AgentActivity:index'),
+    array(),
+    array()
+));
+
+$collection->add('report_agent_activity_list', new Route(
+    '/agentactivity/list/{agent}/{date}',
+    array('_controller' => 'ReportBundle:AgentActivity:list'),
     array(),
     array()
 ));

@@ -38,9 +38,6 @@ use Application\DeskPRO\App;
 
 class AgentHoursController extends AbstractController
 {
-    /**
-     * Show the list of trends. Starred trends first
-     */
     public function indexAction()
     {
         $dt = new \DateTime('now', new \DateTimeZone('UTC'));

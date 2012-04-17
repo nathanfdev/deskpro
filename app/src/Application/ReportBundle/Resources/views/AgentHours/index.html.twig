@@ -1,4 +1,4 @@
-{% set this_page = 'agent_time_log_index' %}
+{% set this_page = 'report_agent_hours_index' %}
 {% extends 'ReportBundle::layout.html.twig' %}
 {% block nav_block %}
 {% endblock %}
@@ -172,7 +172,7 @@
         $('.datepicker > span').datepicker(
                 {
                     'onSelect': function(dateText) {
-                        document.location = "{{ path('agent_time_log_list_date', {'date':''}) }}/" + dateText;
+                        document.location = "{{ path('report_agent_hours_list_date', {'date':''}) }}/" + dateText;
                     },
                     'dateFormat': 'yy-mm-dd',
                     'minDate': new Date({{ min_date|date('Y') }}, {{ min_date|date('m') }} -1, {{ min_date|date('d') }}),
@@ -214,7 +214,7 @@
     <form>
         View Agent Activity for: <select>
             {% for date in dates %}
-                <option {% if date|date('Y-m-d') == today|date('Y-m-d') %}selected="selected"{% endif %} value="{{ path('agent_time_log_list_date', {'date':date|date('Y-m-d')}) }}">
+                <option {% if date|date('Y-m-d') == today|date('Y-m-d') %}selected="selected"{% endif %} value="{{ path('report_agent_hours_list_date', {'date':date|date('Y-m-d')}) }}">
                     {{ date|date('dS F Y') }}
                 </option>
             {% endfor %}
