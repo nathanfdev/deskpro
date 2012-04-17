@@ -332,7 +332,7 @@
     'agent.general.macro_actions_loaded_explain'    => 'The following actions were loaded into the mass-actions editor:',
     'agent.general.macros'                          => 'Macros',
     'agent.general.mark_as_pending_kb'              => 'Mark as a pending KB article',
-    'agent.general.mark_spam'                       => 'mark as spam',
+    'agent.general.mark_spam'                       => 'Mark as spam',
     'agent.general.matches'                         => 'Matches',
     'agent.general.me'                              => 'Me',
     'agent.general.members'                         => 'Members',

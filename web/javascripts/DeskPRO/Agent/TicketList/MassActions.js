@@ -73,6 +73,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		this.wrapperEl = this.options.templateElement || $('div.mass-actions-overlay-container', page.wrapper);
 		this.wrapperEl.detach();
 		this.wrapper = this.wrapperEl.clone();
+        this.wrapper.tinyscrollbar();
 		console.log(this.wrapper);
 		this.backdropEls = null;
 
@@ -104,6 +105,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 
 		this.wrapper.remove();
 		this.wrapper = this.wrapperEl.clone();
+        this.wrapper.tinyscrollbar();
 		this._hasInit = false;
 
 		this.hasAnyChange = false;
@@ -683,11 +685,49 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		var pos = $('#dp_content').offset();
 		var top = pos.top - 4;
 
+        var bottom = 10;
+        var height = '';
+
+        var scrollContent = $('.scroll-content', this.wrapper).first();
+        var contentH = false;
+        var hasHeader = !!($('> section > header', this.wrapper).length);
+        var hasFooter = !!($('> section > footer', this.wrapper).length);
+
+        if (scrollContent.length) {
+            contentH = scrollContent.height();
+            if (hasHeader) {
+                contentH += 36;
+            }
+            if (hasFooter) {
+                contentH += 45;
+            }
+
+            contentH += 31;
+        }
+
+        if (hasHeader) $('> section > article', this.wrapper).removeClass('no-header');
+        else $('> section > article', this.wrapper).addClass('no-header');
+
+        if (hasFooter) $('> section > article', this.wrapper).removeClass('no-footer');
+        else $('> section > article', this.wrapper).addClass('no-footer');
+
+        if (contentH < 350) {
+            contentH = 350;
+        }
+
+        var maxH = $(window).height() - top - 10;
+
+        if (contentH && contentH < maxH) {
+            bottom = '';
+            height = contentH;
+        }
+
 		this.wrapper.css({
 			top: pos.top - 4,
 			left: pos.left + 8,
 			right: 3,
-			bottom: 10
+			bottom: bottom,
+            height: height
 		});
 
 		//------------------------------
@@ -720,6 +760,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 				left: contentStart
 			});
 		}
+        this.wrapper.tinyscrollbar_update();
 	},
 
 	_initMacroOverlay: function() {
@@ -865,14 +906,14 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 	open: function() {
 		this._initOverlay();
 
+        //this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(this, $('> section > article', this.wrapper), {});
 		this.updatePositions();
-
+        DeskPRO_Window.layout.addEvent('resized', this.updatePositions, this);
 		this.wrapper.addClass('open');
 		this.backdropEls.show();
 
 		this.updateCount(null);
 		this.wrapper.addClass('open');
-
 		//this.updatePreview();
 	},
 
@@ -885,6 +926,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			return false;
 		}
 
+        DeskPRO_Window.layout.removeEvent('resized', this.updatePositions, this);
 		this.wrapper.removeClass('open');
 		this.backdropEls.hide();
 		this.fireEvent('closed', [this]);

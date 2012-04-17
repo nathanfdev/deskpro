@@ -1,3 +1,4 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <div
 	class="mass-actions-overlay-container mass-actions"
 	data-base-id="{{baseId}}"
@@ -14,6 +15,7 @@
 			</h1>
 		</header>
 		<article>
+            {{ agentui.scroll_containers('', '') }}
 			{% if macros|length %}
 				<div class="macro-load">
 					<select class="macro is-not-loading">
@@ -170,6 +172,7 @@
 					</div>
 				</dd>
 			</dl>
+        {{ agentui.scroll.containers.end() }}
 		</article>
 		<footer>
 			<div class="is-not-loading"><button class="apply-actions">{{ phrase('agent.general.apply') }}</button></div>
