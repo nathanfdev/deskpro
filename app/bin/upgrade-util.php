@@ -653,6 +653,10 @@ class Upgrade
 			if (!$mysql_dump_path) {
 				$mysql_dump_path = false;
 			}
+
+			if (strpos($mysql_dump_path, ' ') !== false) {
+				$mysql_dump_path = "\"$mysql_dump_path\"";
+			}
 		}
 
 		return $mysql_dump_path;
@@ -689,6 +693,10 @@ class Upgrade
 			if (!$mysql_path) {
 				$mysql_path = false;
 			}
+
+			if (strpos($mysql_path, ' ') !== false) {
+				$mysql_path = "\"$mysql_path\"";
+			}
 		}
 
 		return $mysql_path;
@@ -716,6 +724,10 @@ class Upgrade
 
 			if (!$php_path) {
 				$php_path = false;
+			}
+
+			if (strpos($php_path, ' ') !== false) {
+				$php_path = "\"$php_path\"";
 			}
 		}
 

@@ -459,6 +459,10 @@ class DeskproContainer extends Container
 			if (!$php_path) {
 				$php_path = false;
 			}
+
+			if (strpos($php_path, ' ') !== false) {
+				$php_path = "\"$php_path\"";
+			}
 		}
 
 		return $php_path;
@@ -490,6 +494,10 @@ class DeskproContainer extends Container
 
 			if (!$mysqdump_path) {
 				$mysqdump_path = false;
+			}
+
+			if (strpos($mysqdump_path, ' ') !== false) {
+				$mysqdump_path = "\"$mysqdump_path\"";
 			}
 		}
 
