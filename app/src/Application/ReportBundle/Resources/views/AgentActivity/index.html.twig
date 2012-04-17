@@ -3,5 +3,34 @@
 {% block nav_block %}
 {% endblock %}
 {% block page %}
+<div>Showing Agent Activity for: </div>
+<table border="1">
+    <tr>
+        <th>Hour</th>
+        {% for agent in agents %}
+        <th>{{ agent.name }}</th>
+        {% endfor %}
+    </tr>
+    {% for hour in range(0,23) %}
+        <tr>
+            <td>{{ '%02d'|format(hour) }}</td>
+            {% for agent in agents %}
+                <td>
+                {% set act = activity[agent.id] %}
 
+                {% if act.chats is defined %}
+                    {% if act.chats[hour] is defined %}
+                        {% for conv_id,messages in act.chats[hour] %}
+                            <div>
+                                {{ messages }} messages in chat conversation
+                                #<a href="{{ app.request.getBaseUrl() }}/agent/#app.userchat,c:{{conv_id}}">{{conv_id}}</a>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
 {% endblock %}

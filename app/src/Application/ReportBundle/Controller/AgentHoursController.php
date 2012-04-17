@@ -89,7 +89,7 @@ class AgentHoursController extends AbstractController
             foreach($active_times as $time) {
                 $dt = $this->mysqlDateToPhpDate($time['date_active']);
 
-                $hour = $dt->format('H');
+                $hour = $dt->format('G');
                 $minute = $dt->format('i');
 
                 $times[$agent_id][intval(($hour * 60) / $block_size + $minute / $block_size)] = $time;

@@ -40,11 +40,118 @@ class AgentActivityController extends AbstractController
 {
     public function indexAction()
     {
-        return $this->listAction(0, date('Y,m,d'));
+        return $this->listAction(0, date('Y-m-d'));
     }
 
-    public function listAction($agent, $date)
+    public function listAction($agent_id, $date)
     {
-        return $this->render('ReportBundle:AgentActivity:index.html.twig', array());
+        $em = $this->getDoctrine()->getEntityManager();
+        $vars = array();
+        $date = $this->createDateFromParamString($date);
+
+        if($agent_id) {
+            $agent_list = array($em->getRepository('DeskPRO:Person')->find($agent_id));
+        }
+        else {
+            $agent_list = $em->getRepository('DeskPRO:Person')->getAgents();
+        }
+
+        $activity = array();
+        $agents = array();
+
+        foreach($agent_list as $agent) {
+            $chats = $this->getChatLogForAgent($agent, $date);
+
+            if(!empty($chats)) {
+                $agents[$agent['id']] = $agent;
+                $activity[$agent['id']]= array('chats' => $chats);
+            }
+        }
+
+        $vars['agents'] = $agents;
+        $vars['activity'] = $activity;
+        $vars['agent_id'] = $agent_id;
+
+        return $this->render('ReportBundle:AgentActivity:index.html.twig', $vars);
+    }
+
+    private function getChatLogForAgent($agent, $date) {
+        $date_range = $this->createMysqlDateRangeForUser($date);
+        $db = $this->getDoctrine()->getConnection();
+        // Could GROUP BY HOUR(date_created), but as timezones are in effect, it is easier to do this in PHP.
+        $messages = $db->fetchAll(
+            'SELECT cm.date_created, conversation_id
+            FROM chat_messages AS cm
+            INNER JOIN chat_conversations AS cc
+            ON cc.id = conversation_id
+            WHERE agent_id = ? AND cm.date_created BETWEEN ? AND ?',
+            array($agent['id'], $date_range['start'], $date_range['end'])
+        );
+
+        $counts_hourly = array();
+
+        foreach($messages as $message) {
+            $date = $this->mysqlDateToPhpDate($message['date_created']);
+            $hour = $date->format('G');
+
+            if(!isset($counts_hourly[$hour])) {
+                $counts_hourly[$hour] = array();
+            }
+
+            if(!isset($counts_hourly[$hour][$message['conversation_id']])) {
+                $counts_hourly[$hour][$message['conversation_id']] = 1;
+            }
+            else {
+                $counts_hourly[$hour][$message['conversation_id']]++;
+            }
+        }
+
+        return $counts_hourly;
+    }
+
+    private function createDateFromParamString($date_str)
+    {
+        $dt = new \DateTime('now', new \DateTimeZone('UTC'));
+        list($year, $month, $day) = explode('-', $date_str);
+        $dt->setDate($year, $month, $day);
+        $dt->setTime(0, 0, 0);
+
+        return $dt;
+    }
+
+    private function createDateToday()
+    {
+        $dt = new \DateTime('now', new \DateTimeZone('UTC'));
+        $dt->setTime(0, 0, 0);
+
+        return $dt;
+    }
+
+    private function createMysqlDateRangeForUser($date)
+    {
+        // Apply the user's timezone offset.
+        $start_date = $date->setTimezone($this->person->getDateTimezone());
+
+        // The timezone offset will already be applied, so no need to reapply.
+        $end_date = clone $start_date;
+        // Make this represent the end of the day.
+        $end_date->add(new \DateInterval('P1D'));
+        // Remove a single second to stop overlap, for cases where the comparison is (date >= start and date <= end).
+        $end_date->sub(new \DateInterval('PT1S'));
+
+        // Package using MySQL date format.
+        $date_range = array(
+            'start' => $start_date->format('Y-m-d H:i:s'),
+            'end' => $end_date->format('Y-m-d H:i:s')
+        );
+
+        return $date_range;
+    }
+
+    private function mysqlDateToPhpDate($mysql_date)
+    {
+        $dt = \DateTime::createFromFormat('Y-m-d H:i:s', $mysql_date, new \DateTimeZone('UTC'));
+        $dt->setTimeZone($this->person->getDateTimezone());
+        return $dt;
     }
 }

@@ -61,4 +61,31 @@ class TicketLog extends EntityRepository
 
 		return $query->execute();
 	}
+
+    public function getLogsForAgent(Entity\Person $agent, array $options = array())
+    {
+        if(isset($options['date_range'])) {
+            $query = $this->_em->createQuery("
+				SELECT log
+				FROM DeskPRO:TicketLog log INDEX BY log.id
+				WHERE log.person = ?1
+				AND date_created BETWEEN ?2 AND ?3
+				ORDER BY log.date_created ASC
+			")
+            ->setParameter(1, $agent)
+            ->setParameter(2, $options['date_range']['start'])
+            ->setParameter(3, $options['date_range']['end'])
+            ;
+        } else {
+            $query = $this->_em->createQuery("
+				SELECT log
+				FROM DeskPRO:TicketLog log INDEX BY log.id
+				WHERE log.person = ?1
+				ORDER BY log.date_created ASC
+			")
+            ->setParameter(1, $agent);
+        }
+
+        return $query->execute();
+    }
 }
