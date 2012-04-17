@@ -46,7 +46,9 @@ class AgentActivityController extends AbstractController
     public function listAction($agent_id, $date)
     {
         $em = $this->getDoctrine()->getEntityManager();
-        $vars = array();
+        $vars = array(
+            'hide_unknown' => false,
+        );
         $date = $this->createDateFromParamString($date);
 
         if($agent_id) {

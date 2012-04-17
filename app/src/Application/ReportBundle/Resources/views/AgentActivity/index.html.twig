@@ -93,14 +93,20 @@
 
                         {% if act.tickets is defined and act.tickets[hour] is defined %}
                             {% for log in act.tickets[hour] %}
-                            <tr>
-                                <td>
+                                {% set no_show = 0 %}
+                                {% set action_text %}
                                     {% include 'ReportBundle:AgentActivity:ticket-log-actiontext.html.twig' %}
-                                </td>
-                                <td>
-                                    <a href="{{ app.request.getBaseUrl() }}/agent/#app.tickets,t:{{log.ticket.id}}">{{ log.ticket.subject }}</a>
-                                </td>
-                            </tr>
+                                {% endset %}
+                                {% if not no_show %}
+                                    <tr>
+                                        <td>{{ log.action_type }}
+                                            {{ action_text }}
+                                        </td>
+                                        <td>
+                                            <a href="{{ app.request.getBaseUrl() }}/agent/#app.tickets,t:{{log.ticket.id}}">{{ log.ticket.subject }}</a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
                             {% endfor %}
                         {% endif %}
 
