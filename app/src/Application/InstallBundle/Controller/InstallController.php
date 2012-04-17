@@ -56,6 +56,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 			try {
 				$wr = new \Orb\Log\Writer\Stream($this->container->getLogDir() . '/install.log', $reset ? 'w' : 'a');
+				$wr->getStream();
 				$logger->addWriter($wr);
 			} catch (\Exception $e) {}
 
@@ -108,6 +109,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		$has_config = false;
 		$has_db_checks = false;
 
+		$did_create_db = false;
 		if (!$is_fatal) {
 			$did_create_db = false;
 			$has_db_checks = true;
