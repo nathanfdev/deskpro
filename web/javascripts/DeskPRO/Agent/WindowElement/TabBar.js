@@ -466,6 +466,57 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.activateTab(tab);
 	},
 
+    /**
+     * Activate a tab by id
+     *
+     * @param {String} id
+     */
+    tabToFrontTabById: function(id) {
+        var tab = this.getTab(id);
+        this.activateTabById(id);
+
+        if (!tab) {
+            DP.console.log("Cannot activate, unknown tab %s", id);
+        }
+
+        var btn = tab.tabBtn;
+        tab.tabBtn.detach();
+        tab.tabBtn = btn;
+
+        var otherTab = null;
+        if (tab.page && tab.page.meta.tabPlaceholderId) {
+            otherTab = this.getTab(tab.page.meta.tabPlaceholderId);
+        }
+
+        if (otherTab && otherTab != tab) {
+            tab.tabBtn.insertAfter(otherTab.tabBtn);
+            otherTab.tabBtn.remove();
+
+            if (this.currentTabId == otherTab.id) {
+                wasActive = true;
+                this.currentTabId = null;
+            }
+
+            this.removeTab(otherTab, true);
+
+        } else {
+            tab.tabBtn.prependTo(this.tabList);
+        }
+
+        tab.tabBtn.addClass('is-alerting');
+        var timeout = this._alertTabDoHighlight.periodical(500, this, [tab.tabBtn]);
+        tab.tabBtn.data('alerting-timeout', timeout);
+
+        if(tab.alertEndTimeout) {
+            clearTimeout(tab.alertEndTimeout);
+        }
+
+        var self = this;
+
+        tab.alertEndTimeout = setTimeout(function(){
+            delete(tab.alertEndTimeout);self.clearAlertTab(tab);
+        }, 2000);
+    },
 
 	//##################################################################################################################
 	// Tab functionality
