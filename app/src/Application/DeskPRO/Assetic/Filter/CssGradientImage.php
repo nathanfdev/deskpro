@@ -64,7 +64,6 @@ class CssGradientImage implements FilterInterface
 		}
 
 		$save_dir = realpath($asset->getSourceRoot() . '/../') . '/images/gradients';
-		error_log($save_dir);
 		if (!is_dir($save_dir)) {
 			mkdir($save_dir, 0755, true);
 		}
