@@ -1,3 +1,9 @@
+<Files ~ "^config\.php|cron\.php|import\.php|upgrade\.php|schedule\.bat$">
+	Order allow,deny
+    Allow from none
+    Deny from all
+</Files>
+
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 
