@@ -79,6 +79,10 @@ class PersonController extends AbstractController
 			}
 		}
 
+		if ($person->is_agent) {
+			$person->loadHelper('Agent');
+		}
+
 		#------------------------------
 		# Custom fields
 		#------------------------------
