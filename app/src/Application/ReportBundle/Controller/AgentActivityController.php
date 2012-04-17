@@ -61,10 +61,11 @@ class AgentActivityController extends AbstractController
 
         foreach($agent_list as $agent) {
             $chats = $this->getChatLogForAgent($agent, $date);
+            $activity[$agent['id']] = array();
 
             if(!empty($chats)) {
                 $agents[$agent['id']] = $agent;
-                $activity[$agent['id']]= array('chats' => $chats);
+                $activity[$agent['id']]['chats'] = $chats;
             }
 
             $ticket_logs = $this->getTicketLogForAgent($agent, $date);
@@ -73,6 +74,17 @@ class AgentActivityController extends AbstractController
                 $agents[$agent['id']] = $agent;
                 $activity[$agent['id']]['tickets'] = $ticket_logs;
             }
+
+            $revisions = $this->getRevistionsForAgent($agent, $date);
+
+            if(!empty($revisions)) {
+                $agents[$agent['id']] = $agent;
+                $activity[$agent['id']] = array_merge($activity[$agent['id']], $revisions);
+            }
+
+            if(empty($activity[$agent['id']])) {
+                unset($activity[$agent['id']]);
+            }
         }
 
         $vars['agents'] = $agents;
@@ -80,6 +92,38 @@ class AgentActivityController extends AbstractController
         $vars['agent_id'] = $agent_id;
 
         return $this->render('ReportBundle:AgentActivity:index.html.twig', $vars);
+    }
+
+    private function getRevistionsForAgent($agent, $date) {
+        $items = array('News', 'Article', 'Download');
+        $em = $this->getDoctrine()->getEntityManager();
+        $counts_hourly = array();
+
+        foreach($items as $item) {
+            $item_lc = strtolower($item);
+
+            $revisions = $em->getRepository('DeskPRO:'.$item.'Revision')->getRevisionsForAgent(
+                $agent,
+                array('date_range' => $this->createMysqlDateRangeForUser($date))
+            );
+
+            foreach($revisions as $revision) {
+                $date = $this->mysqlDateToPhpDate($revision['date_created']->format('Y-m-d H:i:s'));
+                $hour = $date->format('G');
+
+                if(!isset($counts_hourly[$item_lc])) {
+                    $counts_hourly[$item_lc] = array();
+                }
+
+                if(!isset($counts_hourly[$item_lc][$hour])) {
+                    $counts_hourly[$item_lc][$hour] = array();
+                }
+
+                $counts_hourly[$item_lc][$hour][] = $revision;
+            }
+        }
+
+        return $counts_hourly;
     }
 
     private function getTicketLogForAgent($agent, $date) {

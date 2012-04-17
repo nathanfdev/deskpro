@@ -38,6 +38,6 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class NewsRevision extends EntityRepository
+class NewsRevision extends AbstractRevisionRepository
 {
 }

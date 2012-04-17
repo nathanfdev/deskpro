@@ -3,40 +3,97 @@
 {% block nav_block %}
 {% endblock %}
 {% block page %}
-<div>Showing Agent Activity for: </div>
-<table border="1">
-    <tr>
-        <th>Hour</th>
-        {% for agent in agents %}
-        <th>{{ agent.name }}</th>
-        {% endfor %}
-    </tr>
-    {% for hour in range(0,23) %}
+
+<style type="text/css">
+.reports_agent_activity_section table td {
+    padding: 2px;
+}
+</style>
+<div class="reports_agent_activity_section">
+    <div>Showing Agent Activity for: </div>
+    <table border="1">
         <tr>
-            <td>{{ '%02d'|format(hour) }}</td>
+            <th>Hour</th>
             {% for agent in agents %}
-                <td>
-                {% set act = activity[agent.id] %}
-
-                {% if act.chats is defined and act.chats[hour] is defined %}
-                    {% for conv_id,messages in act.chats[hour] %}
-                        <div>
-                            {{ messages }} messages in chat conversation
-                            #<a href="{{ app.request.getBaseUrl() }}/agent/#app.userchat,c:{{conv_id}}">{{conv_id}}</a>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-
-                {% if act.tickets is defined and act.tickets[hour] is defined %}
-                    {% for log in act.tickets[hour] %}
-                    <div>
-                        {% include 'ReportBundle:AgentActivity:ticket-log-actiontext.html.twig' %}
-                    </div>
-                    {% endfor %}
-                {% endif %}
-                </td>
+            <th>{{ agent.name }}</th>
             {% endfor %}
         </tr>
-    {% endfor %}
-</table>
+        {% for hour in range(0,23) %}
+            <tr>
+                <td>{{ '%02d'|format(hour) }}</td>
+                {% for agent in agents %}
+                    <td>
+                    {% set act = activity[agent.id] %}
+                        <table>
+                        {% if act.chats is defined and act.chats[hour] is defined %}
+                            {% for conv_id,messages in act.chats[hour] %}
+                                <tr>
+                                    <td>
+                                        Sent {{ messages }} messages in chat
+                                    </td>
+                                    <td>
+                                        #<a href="{{ app.request.getBaseUrl() }}/agent/#app.userchat,c:{{conv_id}}">{{conv_id}}</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+
+                        {% if act.tickets is defined and act.tickets[hour] is defined %}
+                            {% for log in act.tickets[hour] %}
+                            <tr>
+                                <td>
+                                    {% include 'ReportBundle:AgentActivity:ticket-log-actiontext.html.twig' %}
+                                </td>
+                                <td>
+                                    <a href="{{ app.request.getBaseUrl() }}/agent/#app.tickets,t:{{log.ticket.id}}">{{ log.ticket.subject }}</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endif %}
+
+                        {% if act.news is defined and act.news[hour] is defined %}
+                        {% for log in act.news[hour] %}
+                        <tr>
+                            <td>
+                                Created news revision
+                            </td>
+                            <td>
+                                <a href="{{ app.request.getBaseUrl() }}/agent/#app.publish,n:{{log.news.id}}">{{ log.news.title }}</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+
+                        {% if act.article is defined and act.article[hour] is defined %}
+                        {% for log in act.article[hour] %}
+                        <tr>
+                            <td>
+                                Created article revision
+                            </td>
+                            <td>
+                                <a href="{{ app.request.getBaseUrl() }}/agent/#app.publish,a:{{log.article.id}}">{{ log.article.title }}</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+
+                        {% if act.download is defined and act.download[hour] is defined %}
+                        {% for log in act.download[hour] %}
+                        <tr>
+                            <td>
+                                Created download revision
+                            </td>
+                            <td>
+                                <a href="{{ app.request.getBaseUrl() }}/agent/#app.publish,d:{{log.download.id}}">{{ log.download.title }}</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                        </table>
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+</div>
 {% endblock %}

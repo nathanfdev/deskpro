@@ -38,6 +38,6 @@ use Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class FeedbackRevision extends EntityRepository
+class FeedbackRevision extends AbstractRevisionRepository
 {
 }
