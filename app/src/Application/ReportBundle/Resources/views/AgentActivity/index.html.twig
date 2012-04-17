@@ -32,6 +32,39 @@
 .title_bar form {
     display: inline;
 }
+
+.activity_type_ticket .type_icon {
+    background-image: url("/DeskPRO/web/images/agent/tabs/tabtype-ticket.png");
+}
+
+.activity_type_chat .type_icon {
+    background-image: url("/DeskPRO/web/images/agent/tabs/tabtype-chat.png");
+}
+
+.activity_type_download .type_icon {
+    background-image: url("/DeskPRO/web/images/agent/tabs/tabtype-download.png");
+}
+
+.activity_type_news .type_icon {
+    background-image: url("/DeskPRO/web/images/agent/tabs/tabtype-news.png");
+}
+
+
+.activity_type_article .type_icon {
+    background-image: url("/DeskPRO/web/images/agent/tabs/tabtype-content.png");
+}
+
+.activity .type_icon {
+    width: 15px;
+    height: 14px;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+    
+.activity {
+    vertical-align: middle;
+}
 </style>
 <script type="text/javascript">
     $(document).ready(function(){
@@ -99,66 +132,40 @@
                 <td>
                     {% set hour_index = '_' ~ hour %}
                     {% if activity[agent.id][hour_index] is defined %}
-                        <table>
-                            {% for minute, logs in activity[agent.id][hour_index] %}
-                                {% set minute_display = '%02d'|format(minute) %}
-                                {% for row in logs %}
-                                    {% set type = row.type %}
-                                    {% set log = row.data %}
-                                    {% if type == 'chat' %}
-                                            <tr>
-                                                <td>({{ minute_display }})
-                                                    Sent {{ row.count }} messages in chat
-                                                </td>
-                                                <td>
-                                                    #<a href="{{ app.request.getBaseUrl() }}/agent/#app.userchat,c:{{row.conversation.id}}">{{row.conversation.id}}</a>
-                                                </td>
-                                            </tr>
-                                    {% elseif type == 'ticket' %}
-                                        {% set action_text %}
-                                            {% include 'ReportBundle:AgentActivity:ticket-log-actiontext.html.twig' %}
-                                        {% endset %}
-                                        {% if action_text|trim() is not empty %}
-                                            <tr>
-                                                <td>({{ minute_display }}) {{ log.action_type }}
-                                                    {{ action_text }}
-                                                </td>
-                                                <td>
-                                                    <a href="{{ app.request.getBaseUrl() }}/agent/#app.tickets,t:{{log.ticket.id}}">{{ log.ticket.subject }}</a>
-                                                </td>
-                                            </tr>
-                                        {% endif %}
-                                    {% elseif type == 'news' %}
-                                        <tr>
-                                            <td>({{ minute_display }})
-                                                Created news revision
-                                            </td>
-                                            <td>
-                                                <a href="{{ app.request.getBaseUrl() }}/agent/#app.publish,n:{{log.id}}">{{ log.title }}</a>
-                                            </td>
-                                        </tr>
-                                    {% elseif type == 'article' %}
-                                        <tr>
-                                            <td>({{ minute_display }})
-                                                Created article revision
-                                            </td>
-                                            <td>
-                                                <a href="{{ app.request.getBaseUrl() }}/agent/#app.publish,a:{{log.id}}">{{ log.title }}</a>
-                                            </td>
-                                        </tr>
-                                    {% elseif type == 'download' %}
-                                        <tr>
-                                            <td>({{ minute_display }})
-                                                Created download revision
-                                            </td>
-                                            <td>
-                                                <a href="{{ app.request.getBaseUrl() }}/agent/#app.publish,d:{{log.id}}">{{ log.title }}</a>
-                                            </td>
-                                        </tr>
+                        {% for minute, logs in activity[agent.id][hour_index] %}
+                            {% set minute_display = '%02d'|format(minute) %}
+                            {% for row in logs %}
+                                {% set type = row.type %}
+                                {% set log = row.data %}
+                                {% if type == 'ticket' %}
+                                    {% set action_text %}
+                                    {% include 'ReportBundle:AgentActivity:ticket-log-actiontext.html.twig' %}
+                                    {% endset %}
+                                    {% if action_text|trim() is not empty %}
+                                    <div class="activity activity_type_{{ type }}"><div class="type_icon"></div>
+                                    ({{ minute_display }}) {{ log.action_type }} {{ action_text }} in
+                                    <a href="{{ app.request.getBaseUrl() }}/agent/#app.tickets,t:{{log.ticket.id}}">{{ log.ticket.subject }}</a>
+                                    </div>
                                     {% endif %}
-                                {% endfor %}
+                                {% else %}
+                                    <div class="activity activity_type_{{ type }}"><div class="type_icon"></div>
+                                    {% if type == 'chat' %}
+                                        ({{ minute_display }}) Sent {{ row.count }} messages in chat
+                                        #<a href="{{ app.request.getBaseUrl() }}/agent/#app.userchat,c:{{row.conversation.id}}">{{row.conversation.id}}</a>
+                                    {% elseif type == 'news' %}
+                                        ({{ minute_display }}) Created news revision in
+                                        <a href="{{ app.request.getBaseUrl() }}/agent/#app.publish,n:{{log.id}}">{{ log.title }}</a>
+                                    {% elseif type == 'article' %}
+                                        ({{ minute_display }}) Created article revision in
+                                        <a href="{{ app.request.getBaseUrl() }}/agent/#app.publish,a:{{log.id}}">{{ log.title }}</a>
+                                    {% elseif type == 'download' %}
+                                        ({{ minute_display }}) Created download revision in
+                                        <a href="{{ app.request.getBaseUrl() }}/agent/#app.publish,d:{{log.id}}">{{ log.title }}</a>
+                                    {% endif %}
+                                    </div>
+                                {% endif %}
                             {% endfor %}
-                        </table>
+                        {% endfor %}
                     {% endif %}
                 </td>
                 {% endfor %}
