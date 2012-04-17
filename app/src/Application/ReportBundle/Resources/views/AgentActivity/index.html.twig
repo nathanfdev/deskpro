@@ -8,6 +8,26 @@
 .reports_agent_activity_section table td {
     padding: 2px;
 }
+
+.reports_agent_activity_section .activity_table {
+    border-width: 1px;
+    border-style: solid;
+    border-color: #CCCCCC;
+}
+
+.reports_agent_activity_section .activity_table > thead > tr {
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+    border-bottom-color: #CCCCCC;
+}
+
+.hour_cell {
+    text-align: center;
+}
+
+.title_bar {
+    margin-bottom: 8px;
+}
 </style>
 <script type="text/javascript">
     $(document).ready(function(){
@@ -33,23 +53,27 @@
         $('.reports-popup-page-overlay').on('click', function() {
             $('.datepicker > a').click();
         });
+        $('.activity_table > tbody > tr:odd').css('background-color', '#EEEEEE');
     });
 
 </script>
 <div class="reports_agent_activity_section">
-    <div>Showing Agent Activity for:
+    <div class="title_bar">Showing Agent Activity for:
         <span class="datepicker drop-down"><a>{{ view_date|date('jS F Y') }}<em></em></a><span class="hidden"></span></span>
     </div>
-    <table border="1">
-        <tr>
-            <th>Hour</th>
-            {% for agent in agents %}
-            <th>{{ agent.name }}</th>
-            {% endfor %}
-        </tr>
+    <table class="activity_table">
+        <thead>
+            <tr>
+                <th>Hour</th>
+                {% for agent in agents %}
+                <th>{{ agent.name }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
         {% for hour in range(0,23) %}
             <tr>
-                <td>{{ '%02d'|format(hour) }}</td>
+                <td class="hour_cell">{{ '%02d'|format(hour) }}:00</td>
                 {% for agent in agents %}
                     <td>
                     {% set act = activity[agent.id] %}
@@ -123,6 +147,7 @@
                 {% endfor %}
             </tr>
         {% endfor %}
+        </tbody>
     </table>
     <div class="reports-popup-page-overlay hidden"></div>
 </div>
