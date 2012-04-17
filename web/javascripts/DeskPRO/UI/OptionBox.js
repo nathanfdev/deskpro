@@ -155,6 +155,17 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 	},
 
 	updateCountEls: function(section) {
+
+		if (!section) {
+			var self = this;
+			this.el.find('section').each(function() {
+				if ($(this).data('section-name')) {
+					self.updateCountEls($(this));
+				}
+			});
+			return;
+		}
+
 		var count = $('ul :checkbox:checked', section).length;
 		var countEl = $('.selected-count', section);
 
@@ -326,6 +337,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			}
 		});
 
+		this.updateCountEls();
 		this.fireEvent('open', [this]);
 	},
 
