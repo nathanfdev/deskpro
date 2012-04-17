@@ -117,7 +117,7 @@ class AgentHoursController extends AbstractController
 
         return array(
             'agents' => $agents,
-            'today' => $date,
+            'view_date' => $date,
             'times' => $times,
             'block_size' => $block_size,
             'totals' => $totals,

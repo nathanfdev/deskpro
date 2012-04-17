@@ -50,12 +50,13 @@ class AgentActivityController extends AbstractController
             'hide_unknown' => false,
         );
         $date = $this->createDateFromParamString($date);
+        $all_agents = $em->getRepository('DeskPRO:Person')->getAgents();
 
         if($agent_id) {
             $agent_list = array($em->getRepository('DeskPRO:Person')->find($agent_id));
         }
         else {
-            $agent_list = $em->getRepository('DeskPRO:Person')->getAgents();
+            $agent_list = $all_agents;
         }
 
         $activity = array();
@@ -101,6 +102,9 @@ class AgentActivityController extends AbstractController
         $vars['agents'] = $agents;
         $vars['activity'] = $activity;
         $vars['agent_id'] = $agent_id;
+        $vars['all_agents'] = $all_agents;
+        $vars['view_date'] = $date;
+        $vars['today'] = new \DateTime('now', new \DateTimeZone('UTC'));
 
         return $this->render('ReportBundle:AgentActivity:index.html.twig', $vars);
     }

@@ -118,7 +118,7 @@
                     'dateFormat': 'yy-mm-dd',
                     'minDate': new Date({{ min_date|date('Y') }}, {{ min_date|date('m') }} -1, {{ min_date|date('d') }}),
                     'maxDate': new Date({{ max_date|date('Y') }}, {{ max_date|date('m') }} -1, {{ max_date|date('d') }}),
-                    'defaultDate': new Date({{ today|date('Y') }}, {{ today|date('m') }} -1, {{ today|date('d') }})
+                    'defaultDate': new Date({{ view_date|date('Y') }}, {{ view_date|date('m') }} -1, {{ view_date|date('d') }})
                 }
         );
         $('.datepicker > a').on('click', function(){
@@ -155,7 +155,7 @@
     <form>
         View Agent Activity for: <select>
             {% for date in dates %}
-                <option {% if date|date('Y-m-d') == today|date('Y-m-d') %}selected="selected"{% endif %} value="{{ path('report_agent_hours_list_date', {'date':date|date('Y-m-d')}) }}">
+                <option {% if date|date('Y-m-d') == view_date|date('Y-m-d') %}selected="selected"{% endif %} value="{{ path('report_agent_hours_list_date', {'date':date|date('Y-m-d')}) }}">
                     {{ date|date('dS F Y') }}
                 </option>
             {% endfor %}
@@ -173,8 +173,8 @@
             {% else %}
             No agent activity for:
             {% endif %}
-             {#{{ today|date('dS F Y') }}#}
-        <span class="datepicker drop-down"><a>{{ today|date('jS F Y') }}<em></em></a><span class="hidden"></span></span>
+             {#{{ view_date|date('dS F Y') }}#}
+        <span class="datepicker drop-down"><a>{{ view_date|date('jS F Y') }}<em></em></a><span class="hidden"></span></span>
         </th>
     </tr>
     {% if agents|length %}

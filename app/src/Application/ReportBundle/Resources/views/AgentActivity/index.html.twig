@@ -28,6 +28,10 @@
 .title_bar {
     margin-bottom: 8px;
 }
+
+.title_bar form {
+    display: inline;
+}
 </style>
 <script type="text/javascript">
     $(document).ready(function(){
@@ -37,7 +41,8 @@
                         document.location = "{{ path('report_agent_activity_list', {'agent_id': 0, 'date':''}) }}/" + dateText;
                     },
                     'dateFormat': 'yy-mm-dd',
-                    'defaultDate': new Date({{ view_date|date('Y') }}, {{ view_date|date('m') }} -1, {{ view_date|date('d') }})
+                    'defaultDate': new Date({{ view_date|date('Y') }}, {{ view_date|date('m') }} -1, {{ view_date|date('d') }}),
+                    'maxDate': new Date({{ today|date('Y') }}, {{ today|date('m') }} -1, {{ today|date('d') }})
                 }
         );
         $('.datepicker > a').on('click', function(){
@@ -54,13 +59,29 @@
             $('.datepicker > a').click();
         });
         $('.activity_table > tbody > tr:odd').css('background-color', '#EEEEEE');
+        $('#agent_selector').on('change', function() {
+            document.location = $('#agent_selector').val();
+        })
     });
 
 </script>
 <div class="reports_agent_activity_section">
     <div class="title_bar">Showing Agent Activity for:
+        <form>
+            <select id="agent_selector">
+                <option {% if agent_id == 0 %}selected="selected"{% endif %} value="{{ path('report_agent_activity_list', {'agent_id': 0, 'date':view_date|date('Y-m-d')}) }}">All Agents</option>
+
+                {% for agent in all_agents %}
+                    <option {% if agent_id == agent.id %}selected="selected"{% endif %} value="{{ path('report_agent_activity_list', {'agent_id': agent.id, 'date':view_date|date('Y-m-d')}) }}">
+                        {{ agent.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+        on
         <span class="datepicker drop-down"><a>{{ view_date|date('jS F Y') }}<em></em></a><span class="hidden"></span></span>
     </div>
+    {% if agents|length %}
     <table class="activity_table">
         <thead>
             <tr>
@@ -146,6 +167,9 @@
         {% endfor %}
         </tbody>
     </table>
+    {% else %}
+        <p>No activity found for this date.</p>
+    {% endif %}
     <div class="reports-popup-page-overlay hidden"></div>
 </div>
 {% endblock %}
