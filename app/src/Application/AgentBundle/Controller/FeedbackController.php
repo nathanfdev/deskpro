@@ -143,6 +143,11 @@ class FeedbackController extends AbstractController
 		$category = $feedback->category;
 		$category_path = $category->getTreeParents();
 
+		$perms = array(
+			'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($feedback),
+			'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($feedback),
+		);
+
 		return $this->render('AgentBundle:Feedback:view.html.twig', array(
 			'feedback'           => $feedback,
 			'feedback_comments'  => $feedback_comments,
@@ -163,6 +168,7 @@ class FeedbackController extends AbstractController
 			'feedback_categories'  => $feedback_categories,
 			'active_status_cats'   => $active_status_cats,
 			'closed_status_cats'   => $closed_status_cats,
+			'perms'                => $perms
 		));
 	}
 
@@ -181,6 +187,14 @@ class FeedbackController extends AbstractController
 	public function ajaxSaveEditablesAction($feedback_id)
 	{
 		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
+
+		if (!$feedback) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (!$this->person->PermissionsManager->PublishChecker->canEdit($feedback)) {
+			return $this->createJsonResponse(array('success' => false));
+		}
 
 		$ret = '';
 
@@ -207,6 +221,13 @@ class FeedbackController extends AbstractController
 	public function ajaxUpdateCategoryAction($feedback_id, $category_id)
 	{
 		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
+
+		if (!$feedback) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+
+
 		$cat  = App::findEntity('DeskPRO:FeedbackCategory', $category_id);
 
 		$feedback->category = $cat;
@@ -225,6 +246,14 @@ class FeedbackController extends AbstractController
 	public function ajaxUpdateStatusAction($feedback_id, $status_code)
 	{
 		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
+
+		if (!$feedback) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+		if (!$this->person->PermissionsManager->PublishChecker->canEdit($feedback)) {
+			return $this->createJsonResponse(array('success' => false));
+		}
+
 		$feedback['status_code'] = $status_code;
 
 		App::getOrm()->transactional(function ($em) use ($feedback) {
@@ -241,6 +270,13 @@ class FeedbackController extends AbstractController
 	public function ajaxSaveCustomFieldsAction($feedback_id)
 	{
 		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
+
+		if (!$feedback) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+		if (!$this->person->PermissionsManager->PublishChecker->canEdit($feedback)) {
+			return $this->createJsonResponse(array('success' => false));
+		}
 
 		$this->em->beginTransaction();
 
@@ -269,6 +305,13 @@ class FeedbackController extends AbstractController
 	public function ajaxSaveLabelsAction($feedback_id)
 	{
 		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
+
+		if (!$feedback) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+		if (!$this->person->PermissionsManager->PublishChecker->canEdit($feedback)) {
+			return $this->createJsonResponse(array('success' => false));
+		}
 
 		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 
@@ -308,9 +351,24 @@ class FeedbackController extends AbstractController
 	public function ajaxSaveAction($feedback_id)
 	{
 		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
+
+		if (!$feedback) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$rev = null;
 
 		$action = $this->in->getString('action');
+
+		if ($action == 'delete') {
+			if (!$this->person->PermissionsManager->PublishChecker->canDelete($feedback)) {
+				return $this->createJsonResponse(array('success' => false));
+			}
+		} else {
+			if (!$this->person->PermissionsManager->PublishChecker->canEdit($feedback)) {
+				return $this->createJsonResponse(array('success' => false));
+			}
+		}
 
 		$data = array('success' => 1);
 
@@ -439,6 +497,17 @@ class FeedbackController extends AbstractController
 	{
 		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
 		$other_feedback = App::findEntity('DeskPRO:Feedback', $other_feedback_id);
+
+		if (!$feedback || !$other_feedback) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (!$this->person->PermissionsManager->PublishChecker->canEdit($feedback)
+			|| !$this->person->PermissionsManager->PublishChecker->canEdit($other_feedback)
+			|| !$this->person->PermissionsManager->PublishChecker->canDelete($other_feedback)
+		) {
+			return $this->createJsonResponse(array('success' => false));
+		}
 
 		$old_feedback_id = $other_feedback['id'];
 

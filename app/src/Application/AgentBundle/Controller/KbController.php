@@ -114,6 +114,11 @@ class KbController extends AbstractController
 
 		$article_categories  = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoryHelper()->getCategoriesInHierarchy();
 
+		$perms = array(
+			'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($article),
+			'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($article),
+		);
+
         $vars = array(
             'article'              => $article,
             'custom_fields'        => $custom_fields,
@@ -126,6 +131,7 @@ class KbController extends AbstractController
             'state'                => $state,
             'article_categories'   => $article_categories,
             'glossary_words'       => $glossary_words,
+			'perms'                => $perms,
         );
 
         if($is_pdf)
@@ -244,16 +250,25 @@ class KbController extends AbstractController
 
 				switch ($action) {
 					case 'draft':
+						if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
+							continue;
+						}
 						$article->status_code = 'hidden.draft';
 						break;
 					case 'delete':
+						if (!$this->person->PermissionsManager->PublishChecker->canDelete($article)) {
+							continue;
+						}
 						$article->status_code = 'hidden.deleted';
 						break;
 					case 'move':
+						if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
+							continue;
+						}
 						$article->removeFromCategory($from);
-						// Refactor!
-						if(!$article->isInCategory($to))
+						if(!$article->isInCategory($to)) {
 							$article->addToCategory($to);
+						}
 
 						break;
 				}
@@ -271,9 +286,24 @@ class KbController extends AbstractController
 	public function ajaxSaveAction($article_id)
 	{
 		$article = App::findEntity('DeskPRO:Article', $article_id);
+
+		if (!$article) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$rev = null;
 
 		$action = $this->in->getString('action');
+
+		if ($action == 'delete') {
+			if (!$this->person->PermissionsManager->PublishChecker->canDelete($article)) {
+				return $this->createJsonResponse(array('success' => false));
+			}
+		} else {
+			if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
+				return $this->createJsonResponse(array('success' => false));
+			}
+		}
 
 		$data = array('success' => 1);
 
@@ -399,6 +429,14 @@ class KbController extends AbstractController
 	{
 		$article = App::findEntity('DeskPRO:Article', $article_id);
 
+		if (!$article) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$this->em->beginTransaction();
 
 		try {
@@ -426,6 +464,10 @@ class KbController extends AbstractController
 	public function ajaxSaveCommentAction($article_id)
 	{
 		$article = App::findEntity('DeskPRO:Article', $article_id);
+
+		if (!$article) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
 
 		$comment = new ArticleComment();
 		$comment->article = $article;
@@ -494,6 +536,13 @@ class KbController extends AbstractController
 	{
 		$pending_article = App::findEntity('DeskPRO:ArticlePendingCreate', $pending_article_id);
 
+		if (!$pending_article) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+		if (!$this->person->PermissionsManager->PublishChecker->canValidate($pending_article)) {
+			return $this->createJsonResponse(array('success' => false));
+		}
+
 		App::getOrm()->remove($pending_article);
 		App::getOrm()->flush();
 
@@ -536,6 +585,9 @@ class KbController extends AbstractController
 		foreach ($p_articles as $p_article) {
 			switch ($action) {
 				case 'delete':
+					if (!$this->person->PermissionsManager->PublishChecker->canValidate($p_article)) {
+						continue;
+					}
 					$this->em->remove($p_article);
 					break;
 			}

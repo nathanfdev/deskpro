@@ -75,6 +75,11 @@ class DownloadsController extends AbstractController
 
 		$download_categories = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryHelper()->getCategoriesInHierarchy();
 
+		$perms = array(
+			'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($download),
+			'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($download),
+		);
+
 		return $this->render('AgentBundle:Downloads:view.html.twig', array(
 			'download'              => $download,
 			'download_comments'     => $download_comments,
@@ -82,7 +87,8 @@ class DownloadsController extends AbstractController
 			'related_content'       => $related_content,
 			'state'                 => $state,
 			'sticky_search_words'   => $sticky_search_words,
-			'rated_searches'        => $rated_searches
+			'rated_searches'        => $rated_searches,
+			'perms'                 => $perms,
 		));
 	}
 
@@ -114,6 +120,10 @@ class DownloadsController extends AbstractController
 	public function ajaxSaveLabelsAction($download_id)
 	{
 		$download = App::findEntity('DeskPRO:Download', $download_id);
+
+		if (!$download || !$this->person->PermissionsManager->PublishChecker->canEdit($download)) {
+			return new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
 
 		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 
@@ -149,7 +159,21 @@ class DownloadsController extends AbstractController
 		$download = App::findEntity('DeskPRO:Download', $download_id);
 		$rev = null;
 
+		if (!$download) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$action = $this->in->getString('action');
+
+		if ($action == 'delete') {
+			if (!$this->person->PermissionsManager->PublishChecker->canDelete($download)) {
+				return $this->createJsonResponse(array('success' => false));
+			}
+		} else {
+			if (!$this->person->PermissionsManager->PublishChecker->canEdit($download)) {
+				return $this->createJsonResponse(array('success' => false));
+			}
+		}
 
 		$data = array('success' => 1);
 

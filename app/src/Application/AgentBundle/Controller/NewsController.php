@@ -77,6 +77,11 @@ class NewsController extends AbstractController
 
 		$news_categories = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryHelper()->getCategoriesInHierarchy();
 
+		$perms = array(
+			'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($news),
+			'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($news),
+		);
+
 		return $this->render('AgentBundle:News:view.html.twig', array(
 			'news'                 => $news,
 			'news_comments'        => $news_comments,
@@ -84,7 +89,8 @@ class NewsController extends AbstractController
 			'related_content'      => $related_content,
 			'state'                => $state,
 			'sticky_search_words'  => $sticky_search_words,
-			'rated_searches'       => $rated_searches
+			'rated_searches'       => $rated_searches,
+			'perms'                => $perms,
 		));
 	}
 
@@ -100,6 +106,13 @@ class NewsController extends AbstractController
 	public function ajaxSaveLabelsAction($news_id)
 	{
 		$news = App::findEntity('DeskPRO:News', $news_id);
+
+		if (!$news) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+		if (!$this->person->PermissionsManager->PublishChecker->canEdit($news)) {
+			return $this->createJsonResponse(array('success' => 0));
+		}
 
 		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 
@@ -135,7 +148,21 @@ class NewsController extends AbstractController
 		$news = App::findEntity('DeskPRO:News', $news_id);
 		$rev = null;
 
+		if (!$news) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$action = $this->in->getString('action');
+
+		if ($action == 'delete') {
+			if (!$this->person->PermissionsManager->PublishChecker->canDelete($news)) {
+				return $this->createJsonResponse(array('success' => false));
+			}
+		} else {
+			if (!$this->person->PermissionsManager->PublishChecker->canEdit($news)) {
+				return $this->createJsonResponse(array('success' => false));
+			}
+		}
 
 		$data = array('success' => 1);
 
