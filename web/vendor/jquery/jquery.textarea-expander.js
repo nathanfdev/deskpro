@@ -58,6 +58,7 @@
 				e.boxWidth = ewidth;
 
 				$(e).trigger('textareaexpander_expanded');
+				$(document).trigger('textareaexpander_expanded');
 			}
 
 			return true;

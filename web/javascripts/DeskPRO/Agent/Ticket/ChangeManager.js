@@ -145,6 +145,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		}, this);
 
 		this.fireEvent('changesApplied', { changes: this.changes });
+		window.setTimeout(this.ticketPage.updateUi.bind(this.ticketPage), 450);
 	},
 
 
@@ -231,6 +232,8 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				}
 			});
 		}
+
+		window.setTimeout(this.ticketPage.updateUi.bind(this.ticketPage), 450);
 	},
 
 

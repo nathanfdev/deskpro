@@ -262,6 +262,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		el.detach().appendTo(this.getEl('messages_box'));
 		el.show();
 
+		this.updateUi.bind(this);
 		this.getEl('messages_box').scrollTop(10000);
 	},
 
@@ -321,6 +322,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		this.hasEnded = true;
 
 		this.getEl('replybox').hide().addClass('chat-ended');
+		this.updateUi();
 	},
 
 	addPart: function(agent_id) {
@@ -462,6 +464,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			alertEl.appendTo(this.el);
 			DeskPRO_Window.handleSoundElements(alertEl);
 		}
+
+		this.updateUi();
 	},
 
 	sendMessage: function(msg) {
@@ -579,6 +583,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		});
 		this.el.bind('fileuploadstart', function() {
 			self.getEl('uploading_list').detach().appendTo(self.getEl('messages_box')).show();
+			self.updateUi();
 			self.getEl('messages_box').scrollTop(10000);
 		});
 	}

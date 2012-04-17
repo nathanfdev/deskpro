@@ -14,41 +14,21 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 
 		this.setOptions(options);
 
-		element.tinyscrollbar();
-		this.initUpdateTimer();
-
-		// If pageObject supports Events, then we'll attach
-		// activate/deactivate on timers. Just assume pageObject
-		// uses those events (ie page fragments do)
 		if (pageObject.addEvent) {
-			var self = this;
 			pageObject.addEvent(this.options.showEvent, function() {
-				self.initUpdateTimer();
-			});
-			pageObject.addEvent(this.options.hideEvent, function() {
-				self.removeResizeTimer();
-			});
+				this.updateSize();
+			}, this);
 		}
+
+		var tiny = element.tinyscrollbar();
+		element.data('scroll_handler', this);
+		element.addClass('with-scroll-handler');
 	},
 
-	initUpdateTimer: function() {
-		var element = this.element;
-		if (element.data('resize-special-event')) return;
-
-		var viewport = $('div.scroll-viewport', element).first();
-		viewport.on('resize', function() {
-			// When pane size changes, need to re-size the scroll
-			element.tinyscrollbar_update();
-		});
-
-		var content = $('div.scroll-content', element).first();
-		content.on('resize', function() {
-			// When content changes within the pane, need to re-size the scroll
-			element.tinyscrollbar_update();
-		});
-	},
-
-	removeResizeTimer: function() {
-		this.element.unbind('resize');
+	updateSize: function() {
+		var el = this.element;
+		window.setTimeout(function() {
+			el.tinyscrollbar_update();
+		}, 250);
 	}
 });

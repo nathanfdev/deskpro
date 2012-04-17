@@ -154,6 +154,8 @@ class FilestorageLoader
 			// The trailing 0 denotes it as a database storage authcode
 			} elseif (preg_match('#^/([0-9]+)([A-Z]+0)/(.*?)$#', $pathinfo, $m)) {
 				$this->handleDbBlobRequest($m[1], $m[2], $m[3]);
+			} elseif (preg_match('#^/gradient$#', $pathinfo)) {
+				$this->handleGradientRequest();
 			} else {
 				header("HTTP/1.0 404 Not Found");
 				echo "File not found. (1)";
@@ -213,6 +215,77 @@ class FilestorageLoader
 		}
 
 		$this->showBlob($blob);
+	}
+
+
+	/**
+	 * Generates a gradient image on the fly
+	 */
+	public function handleGradientRequest()
+	{
+		if (!function_exists('imagepng') || (!function_exists('imagecreatetruecolor') && !function_exists('imagecreate'))) {
+			header("HTTP/1.0 404 Not Found");
+			echo "File not found (no_image_manip)";
+			return;
+		}
+
+		require DP_ROOT . '/src/Orb/Util/Numbers.php';
+		require DP_ROOT . '/src/Orb/Images/Util.php';
+
+		$start_color = isset($_REQUEST['start_color']) ? (string)$_REQUEST['start_color'] : '000000';
+		$end_color   = isset($_REQUEST['end_color'])   ? (string)$_REQUEST['end_color']   : '000000';
+
+		$get_rgb = function($color) {
+			// Not rgb(
+			if (!strpos($color, '(') || !strpos($color, ')')) {
+				$color = preg_replace('#[^a-fA-F0-9]#', '', $color);
+				if (strlen($color) == 6 || strlen($color) == 3) {
+					$color = \Orb\Util\Numbers::hex2rgb($color);
+					if ($color) {
+						$color = 'rgb(' . implode(',', $color) . ')';
+					} else {
+						$color = 'rgb(0,0,0)';
+					}
+				} else {
+					$color = 'rgb(0,0,0)';
+				}
+			}
+
+			if (preg_match('#rgb\((.*?),(.*?),(.*?)\)#i', $color, $m)) {
+				$rgb = array(
+					'red'   => (int)trim($m[1]),
+					'green' => (int)trim($m[2]),
+					'blue'  => (int)trim($m[3]),
+				);
+				return $rgb;
+			} else {
+				return array('red' => 0, 'green' => 0, 'blue' => 0);
+			}
+		};
+
+		$start_color = $get_rgb($start_color);
+		$end_color   = $get_rgb($end_color);
+
+		$size = isset($_REQUEST['size']) ? (int)$_REQUEST['size'] : 20;
+		if ($size < 1) $size = 20;
+		if ($size > 1000) $size = 1000;
+
+		$direction = isset($_REQUEST['direction']) ? $_REQUEST['direction'] : 'vertical';
+		if ($direction != 'vertical' && $direction != 'horizontal') {
+			$direction = 'vertical';
+		}
+
+		$im = \Orb\Images\Util::getGradientImage($size, $start_color, $end_color, $direction, 1, 1);
+
+		$desc = implode('-',$start_color) . '_' . implode('-', $end_color) . '_' . $direction . '_' . $size . '.png';
+
+		header('Last-Modified: ' . date('D, d M Y H:i:s', 1366187634).' GMT');
+		header('Expires: ' . date('D, d M Y H:i:s', 1366187657).' GMT');
+		header('Cache-Control: max-age=31556926,public');
+		header('Content-Disposition: inline; filename=' . $desc);
+		header("Content-type: image/png");
+		imagepng($im);
+		exit;
 	}
 
 

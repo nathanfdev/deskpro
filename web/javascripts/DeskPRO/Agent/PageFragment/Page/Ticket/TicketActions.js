@@ -85,6 +85,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				} else {
 					$('.followers-row', self.getEl('people_box_agent')).show();
 				}
+
+				window.setTimeout(this.page.updateUi.bind(this.page), 450);
 			}
 		});
 

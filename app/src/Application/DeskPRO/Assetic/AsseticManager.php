@@ -453,6 +453,11 @@ class AsseticManager
 				);
 				$filter->setLineBreak(500);
 				break;
+			case 'image_gradients':
+				$filter = new \Application\DeskPRO\Assetic\Filter\CssGradientImage(array(
+
+				));
+				break;
 			case 'css':
 				$filter = new \Assetic\Filter\CssMinFilter();
 				$filter->setFilters(array(

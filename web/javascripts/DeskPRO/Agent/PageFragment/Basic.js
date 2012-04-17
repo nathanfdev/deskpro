@@ -15,6 +15,12 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
 	},
 
+	updateUi: function() {
+		this.wrapper.find('.with-scroll-handler').each(function() {
+			$(this).data('scroll_handler').updateSize();
+		});
+	},
+
 	initialize: function(html) {
 		var self = this;
 
@@ -44,6 +50,11 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
 		this.addEvent('activate', function() {
 			DeskPRO_Window.getMessageBroker().sendMessage('page-fragment.activated', { page: this });
+			if (this.wrapper) {
+				this.wrapper.find('.with-scroll-handler').each(function() {
+					$(this).data('scroll_handler').updateSize();
+				});
+			}
 		}, this);
 		this.addEvent('deactivate', function() {
 			DeskPRO_Window.getMessageBroker().sendMessage('page-fragment.deactivated', { page: this });

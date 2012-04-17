@@ -294,7 +294,14 @@ span.gear{
 	overflow:hidden;
 }
 .deskproTabList li:hover, .deskproTabList li.over {
-	.gradient-h(rgba(234,236,238,0), rgba(219,221,223,1));
+	@rgba_start: rgba(234,236,238,0);
+	@rgba_end: rgba(219,221,223,1);
+	background: transparent; /* old browsers just dont have fading */
+	background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Opera11.10+ */
+	background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
 }
 // for ie
 .no-cssgradients .deskproTabList li:hover,
@@ -307,7 +314,15 @@ span.gear{
 }
 
 .deskproTabList li:hover .bound-fade, .deskproTabList li.over .bound-fade {
-    .gradient-h(rgba(234,236,238,0), rgba(219,221,223,1));
+	@rgba_start: rgba(234,236,238,0);
+	@rgba_end: rgba(219,221,223,1);
+	background: transparent; /* old browsers just dont have fading */
+	background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Opera11.10+ */
+	background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
+
 }
 
 .deskproTabList li.is-alerting{
@@ -348,12 +363,26 @@ span.gear{
 }
 
 .deskproTabList li.is-alerting .bound-fade {
-	.gradient-h(rgba(82,124,166,0), rgba(82,124,166,1));
+	@rgba_start: rgba(82,124,166,0);
+	@rgba_end: rgba(82,124,166,1);
+	background: transparent; /* old browsers just dont have fading */
+	background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Opera11.10+ */
+	background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
 }
 
 .deskproTabList li.is-alerting:hover .bound-fade,
 .deskproTabList li.is-alerting.alert-highlight .bound-fade {
-	.gradient-h(rgba(110,156,203,0), rgba(110,156,203,1));
+	@rgba_start: rgba(110,156,203,0);
+	@rgba_end: rgba(110,156,203,1);
+	background: transparent; /* old browsers just dont have fading */
+	background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Opera11.10+ */
+	background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
 }
 
 .deskproTabList li.activeTabList .bound-fade {
@@ -369,7 +398,15 @@ span.gear{
 }
 
 .deskproTabList li .bound-fade {
-	.gradient-h(rgba(197,200,205,0), rgba(197,200,205,1));
+	@rgba_start: rgba(197,200,205,0);
+	@rgba_end: rgba(197,200,205,1);
+	background: transparent; /* old browsers just dont have fading */
+	background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Opera11.10+ */
+	background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
+
 	position: absolute;
 	top: 0; right: 0; bottom: 0; width: 45px;
 
@@ -1461,7 +1498,7 @@ table.tickets-simple td .bound-fade {
 	right: -5px;
 	bottom: 0;
 	width: 35px;
-	.gradient-h(rgba(255,252,252,0), rgba(255,252,252,1));
+
 }
 
 table.tickets-simple td .line {
@@ -2344,7 +2381,7 @@ padding: 30px;
 	background-color: #ECEEF0;
 }
 
-.page-ticket header {
+.page-ticket .page-header {
 	background-color: #fff;
 }
 

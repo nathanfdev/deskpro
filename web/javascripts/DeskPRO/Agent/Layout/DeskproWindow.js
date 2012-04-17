@@ -14,10 +14,9 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		// Where the center section (where all cols are embedded) starts
 		this.CENTER_START = 55;
 
-		// Handle window resizes
-		$(window).on('resize', function() {
+		window.onresize = function() {
 			self.doResize();
-		});
+		};
 	},
 
 	doResize: function() {
@@ -34,6 +33,10 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		$('#dp_omnibox_wrap').width(listWidth-1); // -1 for border
 		$('#dp_omnibox').width(listWidth-56); // -1 for border
 		$('#dp_content').css('left', this.LEFT_START + listWidth + 1); //+1 for border
+
+		$('.with-scroll-handler').each(function() {
+			$(this).data('scroll_handler').updateSize();
+		});
 
 		this.fireEvent('resized', [this]);
 	}

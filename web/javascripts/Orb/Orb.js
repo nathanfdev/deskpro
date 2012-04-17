@@ -680,7 +680,7 @@ jQuery.fn.extend({
   // The numeric interval (in milliseconds) at which the resize event polling
   // loop executes. Defaults to 250.
 
-  jq_resize[ str_delay ] = 200;
+  jq_resize[ str_delay ] = 1000000;
 
   // Property: jQuery.resize.throttleWindow
   //

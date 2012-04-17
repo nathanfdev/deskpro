@@ -50,6 +50,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			$(sels, this.contentWrapper).fadeOut(400, function() {
 				$(this).remove();
 				self.updateTicketCountLabels();
+				self.updateUi();
 			});
 		}).bind(this), null, [this.OBJ_ID])
 
@@ -200,7 +201,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 						}
 
 						self.getEl('results_wrap').prepend(el);
-						el.slideDown();
+						el.slideDown('fast', self.updateUi.bind(self));
 					}
 
 					this.countTotal++;
@@ -219,6 +220,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			el.remove();
 			self.countTotal--;
 			self.updateTicketCountLabels();
+			self.updateUi();
 		});
 	},
 

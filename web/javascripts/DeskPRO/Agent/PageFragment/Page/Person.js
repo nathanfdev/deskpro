@@ -297,9 +297,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		this._initOrgEdit();
 
+		var self = this;
 		this.getEl('tickets_viewall').on('click', function(ev){
 			var row = $(this).closest('tr').remove();
-			self.getEl('tickets_rest').slideDown();
+			self.getEl('tickets_rest').slideDown('fast', function() { self.updateUi(); });
 		});
 
 		$('.new-note textarea', this.getEl('notes_tab')).TextAreaExpander(40, 225);
@@ -321,6 +322,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				$('.cancel', box).hide();
 				fieldsForm.hide();
 				fieldsRendered.show();
+				self.updateUi();
 			} else {
 				$('.prop-edit-trigger', box).hide();
 				$('.is-loading', box).hide();
@@ -328,6 +330,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				$('.cancel', box).show();
 				fieldsRendered.hide();
 				fieldsForm.show();
+				self.updateUi();
 			}
 		};
 
@@ -388,6 +391,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		} else {
 			contactBox.removeClass('no-section');
 		}
+
+		this.updateUi();
 	},
 
 	//#########################################################################
@@ -516,6 +521,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				els.filter('.remove-org').show();
 			}
 		}
+
+		this.updateUi();
 	},
 
 	toggleOrgEdit: function(force) {
@@ -532,6 +539,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			orgEdit.show();
 			this.orgEnableBtn('cancel');
 		}
+
+		this.updateUi();
 	},
 
 	//#########################################################################
@@ -555,6 +564,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 	saveLabels: function() {
 		this._doSaveLabels();
+		this.updateUi();
 	},
 
 	_doSaveLabels: function() {

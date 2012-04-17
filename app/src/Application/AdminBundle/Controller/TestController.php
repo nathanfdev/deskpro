@@ -43,6 +43,13 @@ class TestController extends AbstractController
 {
 	public function indexAction()
 	{
+		$filter = new \Orb\Assetic\Filter\CssGradientImage();
+		$im = $filter->getGradientImage(50, '#FFD237', '#604D0E', 'vertical', 1, 200);
+
+		header("Content-type: image/png");
+		imagepng($im);
+
+		exit;
 		$AGENTGROUP_ALL = $this->em->find('DeskPRO:Usergroup', 6);
 
 		$scanner = new \Application\InstallBundle\Data\AgentGroupPermScanner();

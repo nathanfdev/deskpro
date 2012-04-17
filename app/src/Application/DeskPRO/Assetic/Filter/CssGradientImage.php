@@ -32,77 +32,102 @@
  * @category Auth
  */
 
-namespace Orb\Assetic\Filter;
+namespace Application\DeskPRO\Assetic\Filter;
 
 use Assetic\Filter\FilterInterface;
 use Assetic\Asset\AssetInterface;
 use Assetic\Util\ProcessBuilder;
 
-class SmartSprites implements FilterInterface
-{
-	protected $smartsprites_bin;
+use Orb\Images\Util as ImageUtil;
 
+class CssGradientImage implements FilterInterface
+{
 	/**
 	 * @var \Orb\Util\OptionsArray
 	 */
 	public $options;
 
-	public function __construct($smartsprites_bin, array $options = array())
+	public function __construct(array $options = array())
 	{
-		$this->smartsprites_bin = $smartsprites_bin;
 		$this->options = new \Orb\Util\OptionsArray($options);
 	}
 
-	public function setOptions(array $options)
-	{
-		$this->options->setAll($options);
-	}
-
 	public function filterDump(AssetInterface $asset)
-    {
+	{
 
-    }
+	}
 
 	public function filterLoad(AssetInterface $asset)
 	{
 		if ($this->options->get('ignore')) {
 			return;
 		}
-		$pb = new ProcessBuilder();
-		$pb->add($this->smartsprites_bin);
 
-		$pb->setWorkingDirectory(dirname($this->smartsprites_bin));
-
-		$prefix = preg_replace('#[^0-9a-zA-Z\-_]#', '-', $asset->getSourcePath());
-		$tmpfile = $asset->getSourceRoot() . '/' . $prefix . '-' . substr(sha1(time().rand(11111, 99999)), 0, 7) . '.css';
-		$expect_outfile = str_replace('.css', '-sprite.css', $tmpfile);
-
-		if (file_put_contents($tmpfile, $asset->getContent()) === false) {
-			@unlink($tmpfile);
-			throw new \RuntimeException('Error creating tmp CSS file in source directory. SmartSprites requires the file to be in the proper location, so we tried to make a temp file there but failed: '.$tmpfile);
+		$save_dir = realpath($asset->getSourceRoot() . '/../') . '/images/gradients';
+		error_log($save_dir);
+		if (!is_dir($save_dir)) {
+			mkdir($save_dir, 0755, true);
 		}
 
-		$pb->add('--css-files')->add($tmpfile);
-
-		$proc = $pb->getProcess();
-		$code = $proc->run();
-
-		@unlink($tmpfile);
-
-		if (0 < $code) {
-			if (file_exists($expect_outfile)) {
-				unlink($expect_outfile);
+		$lines = explode("\n", $asset->getContent());
+		foreach ($lines as &$l) {
+			$m = null;
+			if (!preg_match('#/\*gradient_(h|v):([0-9]+):(.*?):(.*?)\*/#', $l, $m)) {
+				continue;
 			}
 
-			throw new \RuntimeException("[SmartSprites] " . $proc->getCommandLine() . "\n\n" . $proc->getOutput() . "\n\n" . $proc->getErrorOutput());
+			$direction       = $m[1] == 'v' ? 'vertical' : 'horizontal';
+			$size            = $m[2];
+			$start_color     = $m[3];
+			$end_color       = $m[4];
+			$start_color_rgb = self::normalizeColorToRgbString($start_color);
+			$end_color_rgb   = self::normalizeColorToRgbString($end_color);
+
+			$desc = implode('-',$start_color_rgb) . '_' . implode('-', $end_color_rgb) . '_' . $direction . '_' . $size . '.png';
+			$path = $save_dir . '/' . $desc;
+
+			if (!is_file($path)) {
+				$im = ImageUtil::getGradientImage($size, $start_color_rgb, $end_color_rgb, $direction);
+				imagepng($im, $path);
+			}
+
+			$l = preg_replace(
+				'#url\("?(.*?)"?\)#',
+				'url(../images/gradients/' . $desc . ')',
+				$l
+			);
 		}
 
-		// No file means SmartSprites just didnt need to do anything,
-		// so we need to check for it
+		$lines = implode("\n", $lines);
+		$asset->setContent($lines);
+	}
 
-		if (file_exists($expect_outfile)) {
-        	$asset->setContent(file_get_contents($expect_outfile));
-			unlink($expect_outfile);
+	public static function normalizeColorToRgbString($color)
+	{
+		// Not rgb(
+		if (!strpos($color, '(') || !strpos($color, ')')) {
+			$color = preg_replace('#[^a-fA-F0-9]#', '', $color);
+			if (strlen($color) == 6 || strlen($color) == 3) {
+				$color = \Orb\Util\Numbers::hex2rgb($color);
+				if ($color) {
+					$color = 'rgb(' . implode(',', $color) . ')';
+				} else {
+					$color = 'rgb(0,0,0)';
+				}
+			} else {
+				$color = 'rgb(0,0,0)';
+			}
+		}
+
+		if (preg_match('#rgb\((.*?),(.*?),(.*?)\)#i', $color, $m)) {
+			$rgb = array(
+				'red'   => (int)trim($m[1]),
+				'green' => (int)trim($m[2]),
+				'blue'  => (int)trim($m[3]),
+			);
+			return $rgb;
+		} else {
+			return array('red' => 0, 'green' => 0, 'blue' => 0);
 		}
 	}
 }

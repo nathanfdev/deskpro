@@ -304,6 +304,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			DeskPRO_Window.initInterfaceServices(this.getEl('replybox_wrap'));
 			$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
 		}
+
+		window.setTimeout(this.updateUi.bind(this), 450);
 	},
 
 	displayNewMessage: function(html, slideCallback) {
@@ -357,6 +359,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 			});
 		});
+
+
 	},
 
 	incCount: function(id) {
@@ -383,6 +387,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	addAttachToList: function(attachInfo) {
 		var row = $('.template-download', this.getEl('replybox')).tmpl(attachInfo);
 		$('.file-list', this.getEl('replybox')).append(row);
+		this.updateUi();
 	},
 
 	//#################################################################
@@ -437,10 +442,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 
 		this.custom_fields_edit.slideDown();
+		window.setTimeout(this.updateUi.bind(this), 450);
 	},
 
 	closeCustomFieldEditor: function() {
 		this.custom_fields_edit.slideUp();
+		window.setTimeout(this.updateUi.bind(this), 450);
 	},
 
 	_saveCustomFields: function(fieldEls) {

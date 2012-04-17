@@ -1768,6 +1768,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 	_initWindowInterface: function() {
 		var self = this;
 
+		// Update sizes when textareas resize
+		$(document).on('textareaexpander_expanded', function() {
+			$('.with-scroll-handler').each(function() {
+				$(this).data('scroll_handler').updateSize();
+			});
+		});
+
 		this.notifications = new DeskPRO.Agent.Notifications();
 
 		// DeskPRO logo menu
@@ -2242,10 +2249,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	_initLayout: function() {
-
-		window.setInterval(function() {
-			$('body').toggleClass('timer-mark');
-		}, 1000);
 
 		this.layout = new DeskPRO.Agent.Layout.DeskproWindow();
 		this.layout.doResize();
