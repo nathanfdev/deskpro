@@ -91,7 +91,7 @@ class AgentActivityController extends AbstractController
         );
 
         foreach($logs as $log) {
-            $date = $this->mysqlDateToPhpDate($log['date_created']);
+            $date = $this->mysqlDateToPhpDate($log['date_created']->format('Y-m-d H:i:s'));
             $hour = $date->format('G');
 
             if(!isset($counts_hourly[$hour])) {

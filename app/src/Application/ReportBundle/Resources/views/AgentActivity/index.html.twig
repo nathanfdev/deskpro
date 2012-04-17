@@ -18,15 +18,21 @@
                 <td>
                 {% set act = activity[agent.id] %}
 
-                {% if act.chats is defined %}
-                    {% if act.chats[hour] is defined %}
-                        {% for conv_id,messages in act.chats[hour] %}
-                            <div>
-                                {{ messages }} messages in chat conversation
-                                #<a href="{{ app.request.getBaseUrl() }}/agent/#app.userchat,c:{{conv_id}}">{{conv_id}}</a>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
+                {% if act.chats is defined and act.chats[hour] is defined %}
+                    {% for conv_id,messages in act.chats[hour] %}
+                        <div>
+                            {{ messages }} messages in chat conversation
+                            #<a href="{{ app.request.getBaseUrl() }}/agent/#app.userchat,c:{{conv_id}}">{{conv_id}}</a>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if act.tickets is defined and act.tickets[hour] is defined %}
+                    {% for log in act.tickets[hour] %}
+                    <div>
+                        {% include 'ReportBundle:AgentActivity:ticket-log-actiontext.html.twig' %}
+                    </div>
+                    {% endfor %}
                 {% endif %}
                 </td>
             {% endfor %}
