@@ -227,6 +227,19 @@
 			<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_logs_dir') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
 			The logs directory (<?php echo $logs_dir_info ?>) must exist and be writable.
 		</div>
+			<?php if ($is_default_logs_dir): ?>
+				<p>
+					We recommend making the entire data/ directory (and everything under it) writable. Some features you may want to use later will require write access, so we recommend making the
+					changes now for easier setup.
+				</p>
+			<?php endif ?>
+			<?php if (strpos(strtoupper(PHP_OS), 'WIN') === 0): ?>
+			<?php else: ?>
+				<p>
+					On Linux systems, you can run this command from the terminal:
+					<code>chmod -R 0777 <?php if ($is_default_logs_dir): ?><?php echo DP_WEB_ROOT ?>/data<?php else: ?><?php echo $logs_dir_info_full ?><?php endif ?></code>
+				</p>
+			<?php endif ?>
 		<?php endif ?>
 	</td>
 </tr>

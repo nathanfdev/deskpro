@@ -149,8 +149,13 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 		$is_fatal = $server_check->hasFatalErrors();
 
-		$logs_dir_info = $this->container->getKernel()->getUserLogDir();
-		$logs_dir_info = str_replace(DP_WEB_ROOT, '', $logs_dir_info);
+		$logs_dir_info_full = $this->container->getKernel()->getUserLogDir();
+		$logs_dir_info = str_replace(DP_WEB_ROOT, '', $logs_dir_info_full);
+
+		$is_default_logs_dir = true;
+		if ($logs_dir_info_full != DP_WEB_ROOT.'/data/logs') {
+			$is_default_logs_dir = false;
+		}
 
 		if (!isset($_POST['stats_opt_out'])) {
 			$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($this->getDb());
@@ -176,6 +181,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			'has_db_checks' => $has_db_checks,
 			'db_config' => App::getConfig('db'),
 			'logs_dir_info' => $logs_dir_info,
+			'logs_dir_full' => $logs_dir_info_full,
+			'is_default_logs_dir' => $is_default_logs_dir,
 			'ini_path' => $ini_path,
 			'did_create_db' => $did_create_db,
 		));
