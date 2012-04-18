@@ -893,23 +893,15 @@ $em->flush();
 ##BEGIN:create_portal_block.news##
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
 $b->section = 'portal';
-$b->type = 'News';
+$b->type = 'news';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
-##BEGIN:create_portal_block.staff_sidebar##
+##BEGIN:create_portal_block.userinfo_sidebar##
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
 $b->section = 'userinfo';
 $b->type = 'userinfo';
-$b->is_enabled = true;
-$em->persist($b);
-$em->flush();
-
-##BEGIN:create_portal_block.staff_sidebar##
-$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section = 'sidebar';
-$b->type = 'staff';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
@@ -925,6 +917,14 @@ $em->flush();
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
 $b->section = 'sidebar';
 $b->type = 'feedback_cat_list';
+$em->persist($b);
+$em->flush();
+
+##BEGIN:create_portal_block.staff_sidebar##
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'sidebar';
+$b->type = 'staff';
+$b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
