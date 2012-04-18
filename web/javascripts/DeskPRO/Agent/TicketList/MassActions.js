@@ -320,7 +320,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 
 		this.assignOptionBox = new DeskPRO.UI.OptionBoxRevertable({
 			element: this.getElById('agent_selector'),
-			trigger: this.getElById('assign_btn'),
+			trigger: $('li', this.getElById('assign_btn')),
 			onSave: function(ob) {
 				self.updateAssignmentsDisplay();
 				self.updatePreview();

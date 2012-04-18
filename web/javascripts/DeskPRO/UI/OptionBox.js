@@ -41,8 +41,8 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 		// Basic elements
 		//------------------------------
 
-		this.backdrop = $('<div class="backdrop optionbox-backdrop" />').hide().appendTo('body');
-		this.backdrop.css('z-index');
+		this.backdrop = $('<div class="backdrop optionbox-backdrop" />');
+        this.backdrop.appendTo('body').hide();
 
 		if (!this.el.parent().is('body')) {
 			this.el.detach().appendTo('body');
