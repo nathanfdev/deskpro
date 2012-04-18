@@ -20,36 +20,91 @@
 
 {% block page %}
 <style type="text/css">
-    
+    .feedback-message {
+        border: 1px solid #000000;
+        padding: 4px;
+        display: inline-block;
+    }
+
+    .feedback-row {
+        display: inline-block;
+    }
+
+    .feedback-content {
+        display: inline-block;
+    }
+
+    .feedback-title-row img {
+        display: inline;
+        vertical-align: middle;
+    }
+
+    .feedback-title-row td {
+        vertical-align: middle;
+    }
+
+    .feedback-table td {
+        padding: 6px;
+    }
+
+    .feedback-fields {
+        margin-bottom: 4px;
+    }
+
+    .feedback-fields > span {
+        margin-right: 8px;
+    }
 </style>
 
 <div class="reports_agent_feed_section">
     {% if feedback is empty %}
     <p>There is no feedback.</p>
     {% else %}
-    <div>
+        <table class="feedback-table">
         {% for f in feedback %}
-            <div>
-                <span>{{ f.date_created|date('fulltime') }}</span>
-                {% set img_src = 'images/report/feedback/rating_' ~ f.rating ~ '.png' %}
-                <img src="{{ asset(img_src) }}" />
-                <span>Ticket #<a>{{ f.ticket.id }}</a> "{{ f.ticket.subject }}" by <a>{{ f.ticket.person.name }} &lt;{{ f.ticket.person.name }}&gt;</a></span>
-            </div>
-            <div>
-                <div class="fieldbox">
-                    <div>Agent: <a>{{ f.ticket_message.person.name }}</a></div>
-                    <div>Time User Waiting: <time class="timeago" data-timeago-no-ago="1" datetime="{{ f.ticket.date_user_waiting|date('c') }}"></time>{{f.ticket.date_user_waiting}}</div>
-                </div>
-                <div class="message">
-                    {{ f.message }}
-                </div>
-            </div>
+            <tr class="feedback-title-row">
+                <td valign="middle">
+                    <time class="timeago" datetime="{{ f.date_created|date('c') }}"></time>
+                </td>
+                <td valign="middle">
+                    {% set img_src = 'images/report/feedback/rating_' ~ f.rating ~ '.png' %}
+                    <img src="{{ asset(img_src) }}" />
+                </td>
+                <td>
+                    <span>
+                        Ticket #<a href="{{ app.request.getBaseUrl() }}/agent/#app.tickets,t:{{f.ticket.id}}">{{ f.ticket.id }}</a>
+                        "{{ f.ticket.subject }}"
+                        by
+                        <a href="{{ app.request.getBaseUrl() }}/agent/#app.people,p:{{f.ticket.person.id}}">{{ f.ticket.person.name }} &lt;{{ f.ticket.person.name }}&gt;</a></span>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>
+                    <div class="feedback-content">
+                        <div class="feedback-fields">
+                            <span>Agent: <a href="{{ app.request.getBaseUrl() }}/agent/#app.people,p:{{f.ticket_message.person.id}}">{{ f.ticket_message.person.name }}</a></span>
+                            <span>Time User Waiting: <time class="timeago" data-timeago-no-ago="1" datetime="{{ f.ticket.date_user_waiting|date('c') }}"></time></span>
+                        </div>
+                        <div class="feedback-message">
+                            {{ f.message }}
+                        </div>
+                    </div>
+                </td>
+            </tr>
         {% endfor %}
-    </div>
-    {% if page != 0 %}
-    <a href="{{ path('report_agent_feedback_feed', {'page':page - 1}) }}">Previous Page</a>
-    {% endif %}
-    <a href="{{ path('report_agent_feedback_feed', {'page':page + 1}) }}">Next Page</a>
+        </table>
+        <br />
+        Showing Page: {{page}}<br />
+        {% set has_next = (page + 1) * 20 < count %}
+        {% if page != 0 %}
+            <a href="{{ path('report_agent_feedback_feed', {'page':page - 1}) }}">Previous Page</a>{% if has_next %},{%endif %}
+        {% endif %}
+
+        {% if has_next %}
+            <a href="{{ path('report_agent_feedback_feed', {'page':page + 1}) }}">Next Page</a>
+        {% endif %}
     {% endif %}
 </div>
 {% endblock %}

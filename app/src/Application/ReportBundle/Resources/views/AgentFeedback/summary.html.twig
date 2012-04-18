@@ -8,6 +8,10 @@
 {% block page_js_exec %}
 <script type="text/javascript">
     $(document).ready(function(){
+        var add_done_button = function() {
+
+        }
+
         $('.datepicker > span').datepicker(
                 {
                     'changeMonth': true,
@@ -16,14 +20,22 @@
                     'showButtonPanel': true,
                     'dateFormat': 'yy-mm',
                     'closeText': 'Done',
-                    'defaultDate': new Date({{ view_date|date('Y') }}, {{ view_date|date('m') }} -1, {{ view_date|date('d') }}),
-                    'onClose': function(dateText, inst) {
-                        var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-                        var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-                        $(this).datepicker('setDate', new Date(year, month, 1));
+                    'defaultDate': new Date({{ view_date|date('Y') }}, {{ view_date|date('m') }} - 1, 1),
+                    'onChangeMonthYear': function(year, month, inst) {
+                        $(this).datepicker('setDate', new Date(year, month - 1, 1));
+                    },
+                    'beforeShow': function(input, inst) {
+                        var done_button = $('<button/>');
+                        done_button.addClass('datepicker-btn-done').button().text('Done');
+                        done_button.click(function(){
+                            var date = $('.datepicker > span').datepicker('getDate');
+                            document.location = "{{ path('report_agent_feedback_summary', {'date':''}) }}/" + date.getFullYear() + '-' + (date.getMonth() + 1);
+                        });
+                        $('.datepicker > span .ui-datepicker-buttonpane').append(done_button);
                     }
                 }
         );
+
         $('.datepicker > a').on('click', function(){
             if($('.datepicker > span').hasClass('hidden')) {
                 $('.datepicker > span').removeClass('hidden');
@@ -34,6 +46,7 @@
                 $('.reports-popup-page-overlay').addClass('hidden');
             }
         });
+
         $('.reports-popup-page-overlay').on('click', function() {
             $('.datepicker > a').click();
         });
@@ -49,34 +62,78 @@
     .datepicker.nodays .ui-datepicker-calendar {
         display: none;
     }​
+
+    .datepicker-btn-done {
+        float: right;
+    }
+
+    .reports_agent_feedback_summary_section > table .border-right {
+        border-right-style: solid;
+        border-right-color: #00000;
+        border-right-width: 1px;
+    }
+
+    .reports_agent_feedback_summary_section > table tr.border-top {
+        border-top-style: solid;
+        border-top-color: #00000;
+        border-top-width: 1px;
+    }
+
+    .reports_agent_feedback_summary_section > table .border-bottom {
+        border-bottom-style: solid;
+        border-bottom-color: #00000;
+        border-bottom-width: 1px;
+    }
+
+    .reports_agent_feedback_summary_section > table td.rating_1,
+    .reports_agent_feedback_summary_section > table td.left-column {
+        text-align: right;
+    }
+
+    .reports_agent_feedback_summary_section > table th,
+    .reports_agent_feedback_summary_section > table td {
+        padding: 6px;
+    }
+
+    .reports_agent_feedback_summary_section > table td {
+        vertical-align: middle;
+    }
 </style>
 <div class="reports_agent_feedback_summary_section">
     <table>
         <tr>
-            <td><span class="datepicker nodays drop-down"><a>{{ view_date|date('M Y') }}<em></em></a><span class="hidden"></span></span></td>
+            <td class="border-right datepicker-cell"><span class="datepicker nodays drop-down"><a>{{ view_date|date('M Y') }}<em></em></a><span class="hidden"></span></span></td>
             {% for agent in agents %}
-                <th colspan="2">{{ agent.name }}</th>
+                <th class="border-bottom {% if not loop.last %}border-right{% endif %}" colspan="2">{{ agent.name }}</th>
             {% endfor %}
         </tr>
         {% for i,day in days %}
             <tr>
-                <td>{{ day|date('jS') }}</td>
+                <td class="border-right left-column">{{ day|date('jS') }}</td>
 
                 {% for agent in agents %}
-                    <td>
-                        {{ summary[i][agent.id][0] }}
+                    <td class="rating_1">
+                        <img src="{{ asset('images/report/feedback/rating_1.png') }}" />
+                        {{ summary[i][agent.id][1] }}
                     </td>
-                    <td>
+                    <td class="rating_0 {% if not loop.last %}border-right{% endif %}">
+                        <img src="{{ asset('images/report/feedback/rating_0.png') }}" />
                         {{ summary[i][agent.id][0] }}
                     </td>
                 {% endfor %}
             </tr>
         {% endfor %}
-        <tr>
-            <th>Total</th>
+        <tr class="border-top">
+            <td class="border-right left-column">Total</td>
             {% for agent in agents %}
-                <td>{{ totals[agent.id][0] }}</td>
-                <td>{{ totals[agent.id][1] }}</td>
+                <td class="rating_1">
+                    <img src="{{ asset('images/report/feedback/rating_1.png') }}" />
+                    {{ totals[agent.id][1] }}
+                </td>
+                <td class="rating_0 {% if not loop.last %}border-right{% endif %}">
+                    <img src="{{ asset('images/report/feedback/rating_0.png') }}" />
+                    {{ totals[agent.id][0] }}
+                </td>
             {% endfor %}
         </tr>
     </table>

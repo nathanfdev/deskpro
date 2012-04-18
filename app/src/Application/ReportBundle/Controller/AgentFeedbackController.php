@@ -109,6 +109,7 @@ class AgentFeedbackController extends AbstractController
 
         $vars['feedback'] = $feedback;
         $vars['count'] = $count;
+        $vars['page'] = $page;
 
         return $this->render('ReportBundle:AgentFeedback:feed.html.twig', $vars);
     }
