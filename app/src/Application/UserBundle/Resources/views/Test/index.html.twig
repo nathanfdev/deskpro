@@ -1,26 +1,59 @@
 {% set breadcrumb %}{% block breadcrumb %}{% endblock %}{% endset %}
 {% if not breadcrumb|trim|length %}{% set breadcrumb = false %}{% endif %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html id="dp_html" xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 	{% if page_noindex %}<meta name="robots" content="noindex,nofollow" />{% endif %}
 	{% if app.getSetting('core.favicon_blob_id') %}
-	<link rel="shortcut icon" id="favicon" href="{{ path('favicon', {}, true) }}" />
+		<link rel="shortcut icon" id="favicon" href="{{ path('favicon', {}, true) }}" />
 	{% else %}
-	<link rel="shortcut icon" id="favicon" href="{{ asset('images/favicon.ico') }}" />
+		<link rel="shortcut icon" id="favicon" href="{{ asset('images/favicon.ico') }}" />
 	{% endif %}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{% block page_title %}{{ app.getSetting('core.deskpro_name') }}{% endblock %}</title>
 
-	{% include 'UserBundle:Common:resources.html.twig' %}
-
 	<meta property="og:site_name" content="{{ app.getSetting('core.site_name')|default(app.getSetting('core.core.helpdesk_name')) }}" />
 	{% if app.getSetting('core.facebook_admins') %}<meta property="fb:admins" content="{{ app.getSetting('core.facebook_admins') }}" />{% endif %}
 
+	<script type="text/javascript">
+		var BASE_URL = '{{ path('user') }}';
+		var ASSETS_BASE_URL = '{{ asset('') }}';
+		var DESKPRO_PERSON_ID = {{ app.user.id|default(0) }};
+
+		{% if constant('DP_DEBUG') %}
+			DP_DEBUG = true;
+			Dp_EnableDebug = true;
+		{% else %}
+			DP_DEBUG = false;
+			Dp_EnableDebug = false;
+		{% endif %}
+	</script>
+
+	{% if app.isDebug() %}
+		{{ dp_asset_html('user_vendors') }}
+		{{ dp_asset_html('user_common') }}
+		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBasePath() }}/file.php/res-user/main.css?{{ app.style.css_updated|date('u')|crc32 }}&amp;reload=1" media="screen,print" />
+	{% else %}
+		{{ dp_asset_html('user') }}
+		{% if not app.style.css_blob or admin_portal_controls %}
+			<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBasePath() }}/file.php/res-user/main.css?{{ app.style.css_updated|date('u')|crc32 }}&amp;reload=1" media="screen,print" />
+		{% else %}
+		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.style.css_blob.getDownloadUrl() }}?{{ app.style.css_blob.id }}" media="screen,print" />
+		{% endif %}
+	{% endif %}
+
+	<link rel="stylesheet" type="text/css" href="{{ asset('stylesheets/user/main-print.css') }}" media="print" />
+	<!--[if IE ]><link href="{{ asset('stylesheets/user/main-ie.css') }}" rel="stylesheet" type="text/css"><![endif]-->
+
+	<script type="text/javascript">
+		window.DeskPRO_Window = new DeskPRO.User.Window();
+		$(document).ready(function() {
+			window.DeskPRO_Window.initPage();
+		});
+	</script>
+
 	{{ portal_css(['sidebar', 'pagetop']) }}
 	{{ portal_js(['sidebar', 'pagetop']) }}
-
-	{% block head %}{% endblock %}
 
 	{% if admin_portal_controls %}
 	<script type="text/javascript">var IS_ADMIN_CONTROLS = true;</script>
@@ -30,39 +63,36 @@
 	{{ dp_asset_html('user_portaladmin_css') }}
 	{% endif %}
 
+	{% block head %}{% endblock %}
 	{% include 'UserBundle::custom-headinclude.html.twig' %}
 </head>
 <body>
 <script type="text/javascript">document.body.className += " with-js";</script>
 
-<div id="dp_outer_wrapper">
-	<div id="dp_wrapper">
-		<div id="dp_header">
-			<div id="">
-				<div id="dp_header">
-					<h1><a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a></h1>
-					<h2 {% if not app.getSetting('core.deskpro_tagline') %}style="display: none"{% endif %}>{{ app.getSetting('core.deskpro_tagline') }}</h2>
-				</div>
-			</div>
+<div id="dp">
+	<div id="dp_main">
+		<div id="dp_header_bar">
+			<section id="dp_header_title">
+				<h1>Help Center</h1>
+			</section>
+			<section id="dp_header_search">
+				<form class="form-search" id="dp_omnisearch">
+					<input type="input" id="deskpro_search" placeholder="Search for something" />
+					<button class="btn" type="submit">Search</button>
+				</form>
+			</section>
 		</div>
-		<div id="dp_inner_wrapper">
+		<div id="dp_page_wrapper" class="clear_fix">
 			<div id="dp_sidebar_wrapper">
-				<div id="dp_sidebar">
-					{% set sidebar %}{% block sidebar %}{{ portal_section('sidebar') }}{% endblock %}{% endset %}
-					{{ sidebar }}
-				</div>
+				<section id="dp_sidebar">
+					{% block sidebar %}{% endblock %}
+				</section>
 			</div>
-			<div id="dp_page_wrapper">
-				<div id="dp_page">
-					<div id="dp_nav">
-
-					</div>
-					<div id="dp_content">
-						content
-					</div>
-				</div>
+			<div id="dp_content_wrapper">
+				<section id="dp_content">
+					{% block content %}{% endblock %}
+				</section>
 			</div>
-			<br style="clear:both;height: 1px;overflow: hidden;" />
 		</div>
 	</div>
 </div>

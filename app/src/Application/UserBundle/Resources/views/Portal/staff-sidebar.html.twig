@@ -1,6 +1,6 @@
 {% if staff|length %}
-	<div class="dp-sidebar-block dp-online-block">
-		<div class="dp-box-header">
+	<section class="dp-sidebar-block">
+		<header>
 			<h3>
 				{% if title %}
 					{{ title }}
@@ -12,29 +12,18 @@
 					{% endif %}
 				{% endif %}
 			</h3>
-		</div>
-		<div class="dp-summary">
-			{{ phrase('user.portal.we_are_here_to_help') }}
-		</div>
-		{% if staff|length > 5 %}
-			<ul class="dp-compact">
+		</header>
+		<article class="dp-written">
+			<p class="dp-summary">
+				{{ phrase('user.portal.we_are_here_to_help') }}
+			</p>
+			<ul class="clear_fix dp-person-list {% if staff|length > 5 %}dp-compact{% endif %}">
 				{% for agent in staff %}
-					<li title="{{ agent.display_name }}">
-						<span style="background-image: url('{{ agent.getPictureUrl(24) }}')"></span>
-					</li>
+				<li title="{{ agent.display_name }}">
+					<span style="background-image: url('{{ agent.getPictureUrl(24) }}')">{{ agent.display_name }}</span>
+				</li>
 				{% endfor %}
 			</ul>
-			<br class="dp-clear" style="clear:left" />
-		{% else %}
-			<ul>
-				{% for agent in staff %}
-					<li>
-						<div class="item">
-							<span style="background-image: url('{{ agent.getPictureUrl(24) }}')">{{ agent.display_name }}</span>
-						</div>
-					</li>
-				{% endfor %}
-			</ul>
-		{% endif %}
-	</div>
+		</article>
+	</section>
 {% endif %}

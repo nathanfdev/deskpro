@@ -1,3 +1,4 @@
+{% set this_section = 'news' %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block head %}
 	{{ portal_css('portal') }}
@@ -5,19 +6,7 @@
 {% endblock %}
 {% block content %}
 
-	<div class="dp-content-block dp-welcome-page">
-		<div class="dp-box">
-			<div class="dp-box-content-wrapper">
-				<h3>Welcome</h3>
-				<p>
-					Welcome to the DeskPRO help center. Browser our <a href="">articles</a>, <a>submit feedback</a> or <a>contact us directly</a>.
-				</p>
-				<p>
-					If you are new to DeskPRO, we recommend reading our <a href="">Getting Started Guide</a>.
-				</p>
-			</div>
-		</div>
-	</div>
+	{% include 'UserBundle:Portal:welcome-block.html.twig' %}
 
 	{{ portal_section('portal') }}
 {% endblock %}

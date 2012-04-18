@@ -105,6 +105,7 @@ class TemplatingExtension extends \Twig_Extension
 			'get_service_url' => new \Twig_Function_Method($this, 'getServiceUrl', array('is_safe' => array('html'))),
 			'get_service_url_raw' => new \Twig_Function_Method($this, 'getServiceUrlRaw', array('is_safe' => array('html'))),
 			'get_instance_ability' => new \Twig_Function_Method($this, 'getInstanceAbility'),
+			'is_array' => new \Twig_Function_Method($this, 'isArray'),
         );
     }
 
@@ -138,6 +139,11 @@ class TemplatingExtension extends \Twig_Extension
 			'lower' => new \Twig_Filter_Method($this, 'strLower'),
         );
     }
+
+	public function isArray($var)
+	{
+		return is_array($var);
+	}
 
 	public function getInstanceAbility($method)
 	{

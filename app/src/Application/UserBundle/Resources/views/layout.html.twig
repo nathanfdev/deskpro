@@ -1,39 +1,77 @@
-{% set breadcrumb %}{% block breadcrumb %}{% endblock %}{% endset %}
-{% if not breadcrumb|trim|length %}{% set breadcrumb = false %}{% endif %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html id="dp_html" xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 	{% if page_noindex %}<meta name="robots" content="noindex,nofollow" />{% endif %}
 	{% if app.getSetting('core.favicon_blob_id') %}
-		<link rel="shortcut icon" id="favicon" href="{{ path('favicon', {}, true) }}" />
+	<link rel="shortcut icon" id="favicon" href="{{ path('favicon', {}, true) }}" />
 	{% else %}
-		<link rel="shortcut icon" id="favicon" href="{{ asset('images/favicon.ico') }}" />
+	<link rel="shortcut icon" id="favicon" href="{{ asset('images/favicon.ico') }}" />
 	{% endif %}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{% block page_title %}{{ app.getSetting('core.deskpro_name') }}{% endblock %}</title>
 
-	{% include 'UserBundle:Common:resources.html.twig' %}
-
 	<meta property="og:site_name" content="{{ app.getSetting('core.site_name')|default(app.getSetting('core.core.helpdesk_name')) }}" />
 	{% if app.getSetting('core.facebook_admins') %}<meta property="fb:admins" content="{{ app.getSetting('core.facebook_admins') }}" />{% endif %}
+
+	<script type="text/javascript">
+		var BASE_URL = '{{ path('user') }}';
+		var ASSETS_BASE_URL = '{{ asset('') }}';
+		var DESKPRO_PERSON_ID = {{ app.user.id|default(0) }};
+
+		{% if constant('DP_DEBUG') %}
+		DP_DEBUG = true;
+		Dp_EnableDebug = true;
+		{% else %}
+		DP_DEBUG = false;
+		Dp_EnableDebug = false;
+		{% endif %}
+	</script>
+
+	{% if app.isDebug() %}
+		{{ dp_asset_html('user_vendors') }}
+		{{ dp_asset_html('user_common') }}
+		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBasePath() }}/file.php/res-user/main.css?{{ app.style.css_updated|date('u')|crc32 }}&amp;reload=1" media="screen,print" />
+	{% else %}
+		{{ dp_asset_html('user') }}
+		{% if not app.style.css_blob or admin_portal_controls %}
+			<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBasePath() }}/file.php/res-user/main.css?{{ app.style.css_updated|date('u')|crc32 }}&amp;reload=1" media="screen,print" />
+		{% else %}
+			<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.style.css_blob.getDownloadUrl() }}?{{ app.style.css_blob.id }}" media="screen,print" />
+		{% endif %}
+	{% endif %}
+
+	<link rel="stylesheet" type="text/css" href="{{ asset('stylesheets/user/main-print.css') }}" media="print" />
+	<!--[if IE ]><link href="{{ asset('stylesheets/user/main-ie.css') }}" rel="stylesheet" type="text/css"><![endif]-->
+
+	<script type="text/javascript">
+		window.DeskPRO_Window = new DeskPRO.User.Window();
+		$(document).ready(function() {
+			window.DeskPRO_Window.initPage();
+		});
+	</script>
 
 	{{ portal_css(['sidebar', 'pagetop']) }}
 	{{ portal_js(['sidebar', 'pagetop']) }}
 
-	{% block head %}{% endblock %}
-
 	{% if admin_portal_controls %}
-		<script type="text/javascript">var IS_ADMIN_CONTROLS = true;</script>
-		{{ dp_asset_html('agent_vendors') }}
-		{{ dp_asset_html('agent_common') }}
-		{{ dp_asset_html('user_portaladmin') }}
-		{{ dp_asset_html('user_portaladmin_css') }}
+	<script type="text/javascript">var IS_ADMIN_CONTROLS = true;</script>
+	{{ dp_asset_html('agent_vendors') }}
+	{{ dp_asset_html('agent_common') }}
+	{{ dp_asset_html('user_portaladmin') }}
+	{{ dp_asset_html('user_portaladmin_css') }}
 	{% endif %}
 
+	{% block head %}{% endblock %}
 	{% include 'UserBundle::custom-headinclude.html.twig' %}
 </head>
 <body>
 <script type="text/javascript">document.body.className += " with-js";</script>
+
+{# Processing #}
+{% set breadcrumb %}{% block breadcrumb %}{% endblock %}{% endset %}
+{% if not breadcrumb|trim %}{% set breadcrumb = false %}{% endif %}
+{% set sidebar %}{% block sidebar %}{{ portal_section('sidebar') }}{% endblock %}{% endset %}
+{% if not sidebar|trim %}{% set sidebar = false %}{% endif %}
 
 {% if admin_portal_controls %}
 	<div id="dp_custom_head_wrap" class="dp-portal-block" style="display: none">
@@ -54,203 +92,60 @@
 	{% include 'UserBundle::custom-header.html.twig' %}
 {% endif %}
 
-<div id="deskpro" class="deskpro {% block body_class %}{% endblock %}{% if breadcrumb %}dp-with-breadcrumb{% endif %}">
-
-<div id="dp_search_assist" style="display: none;">
-	<div class="results"></div>
-	<div class="foot">
-		<h4>{{ phrase('user.general.is_search_relevant') }}</h4>
-		<ul>
-			<li class="ticket"><a href="{{ path('user_tickets_new') }}">{{ phrase('user.general.create_ticket') }}</a></li>
-			<li class="feedback"><a href="{{ path('user_feedback_newfeedback') }}">{{ phrase('user.general.create_feedback') }}</a></li>
-			<li class="chat dp-chat-trigger no-omni-trigger"><a href="#">{{ phrase('user.general.btn_create_chat') }}</a></li>
-		</ul>
-		<br class="dp-clear" style="clear:left" />
-	</div>
-</div>
-
-{% if app.user.is_guest %}
-<div id="dp_login_box_title"><a href="{{ path('user_login') }}">{{ phrase('user.general.log_in') }}</a></div>
-<div id="dp_login_box" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.LoginBox">
-	<form action="{{ path('user_login_authenticate_local') }}" class="form login" method="post">
-		<div class="dp-login-box-inner">
-			<dl>
-				<dt>{{ phrase('user.general.email_address') }}</dt>
-				<dd><input type="text" value="" name="email" id="dp_login_email" size="40" tabindex="1" /></dd>
-			</dl>
-			<div class="dp-login-section">
-				<dl>
-					<dt>{{ phrase('user.general.password') }} <em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.general.log_in') }}</a></em></dt>
-					<dd><input type="password" value="" name="password" id="dp_login_password" size="40" tabindex="2" /></dd>
-				</dl>
-				<div style="float:right">
-					{% for usersource in app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
-						{{ render_usersource(usersource, 'login_pull_btn') }}
-					{% endfor %}
-				</div>
-				<input class="btn" type="submit" value="{{ phrase('user.general.log_in') }}" />
-			</div>
-			<div class="dp-reset-section" style="display: none">
-				<div class="dp-reset-desc">
-					{{ phrase('user.general.lost_password_explain') }}
-					<br />
-					<div class="dp-btn-row">
-						<div class="not-loading">
-							<button class="btn small dp-do-send">{{ phrase('user.general.lost_password_send_btn') }}</button>
-							<br /><a class="back">{{ phrase('user.general.cancel') }}</a>
-						</div>
-						<div class="is-loading">
-							{{ phrase('user.general.please_wait') }}
-						</div>
-					</div>
-				</div>
-				<div class="dp-reset-sent" style="display: none">
-					{{ phrase('user.general.lost_password_sent') }}
-					<center><br /><br /><a class="back">{{ phrase('user.general.lost_password_back_btn') }}</a></center>
-				</div>
-			</div>
-		</div>
-	</form>
-</div>
-{% endif %}
-
-{% if admin_portal_controls %}
-	<div id="dp_header" {% if app.logoblob %}class="dp-with-logo"{% endif %}>
-		<a href="{{ path('user') }}"><img class="logo" {% if app.logoblob %}src="{{ app.logoblob.getDownloadUrl() }}"{% endif %} /></a>
-
-		<h1><a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a></h1>
-		<h2 {% if not app.getSetting('core.deskpro_tagline') %}style="display: none"{% endif %}>{{ app.getSetting('core.deskpro_tagline') }}</h2>
-		{% if admin_portal_controls %}
-		<div id="dp_header_portal_off">
-			{{ phrase('admin.designer.reenable_simple_header') }}
-		</div>
-		{% endif %}
-	</div>
-{% else %}
-	<div id="dp_header" {% if app.logoblob %}class="dp-with-logo"{% endif %}>
-		{% if app.logoblob %}
-		<a href="{{ path('user') }}"><img class="logo" src="{{ app.logoblob.getDownloadUrl() }}" /></a>
-		{% else %}
-		<h1><a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a></h1>
-		{% if app.getSetting('core.deskpro_tagline') %}
-		<h2>{{ app.getSetting('core.deskpro_tagline') }}</h2>
-		{% endif %}
-		{% endif %}
-	</div>
-{% endif %}
-
-{% set sidebar %}{% block sidebar %}{{ portal_section('sidebar') }}{% endblock %}{% endset %}
-<div id="dp_page" {% if not sidebar|trim|length %}class="no-sidebar"{% endif %}>
-	<div id="dp_header_bar">
-		<h1>Help Center</h1>
-		<div id="dp_header_controls">
-			<div id="dp_search_bar" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
-				<form action="{{ path('user_search') }}" method="GET">
-					<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td width="100%">
-						<input type="text" name="q" id="deskpro_search" {% if app.search_query %}value="{{ app.search_query }}"{% endif %} placeholder="{{ phrase('user.general.comments_enter_details') }}" autocomplete="off" />
-					</td><td width="50">
-						<button class="btn primary">{{ phrase('user.general.search') }}</button>
-					</td></tr></table>
+<div id="dp">
+	<div id="dp_main">
+		<div id="dp_header_bar">
+			<section id="dp_header_title">
+				<h1>{{ app.getSetting('core.deskpro_name') }}</h1>
+			</section>
+			<section id="dp_header_search">
+				<form class="dp-form-search" id="dp_omnisearch">
+					<input type="input" id="deskpro_search" placeholder="Search for something" />
+					<button class="dp-btn" type="submit">Search</button>
 				</form>
+			</section>
+		</div>
+		<div id="dp_page_wrapper" class="dp-clearfix">
+			<div id="dp_sidebar_wrapper">
+				<section id="dp_sidebar">
+					{{ sidebar }}
+				</section>
+			</div>
+			<div id="dp_content_wrapper">
+				<nav id="dp_content_tabs">
+					<ul>
+						<li class="dp-tab-news {% if this_section == 'news' %}on{% endif %}">
+							<a href="{{ path('user') }}">
+								<i class="dp-icon-home"></i> <h3>Portal</h3>
+								<label>Welcome &amp; News</label>
+							</a>
+						</li>
+						<li class="dp-tab-news {% if this_section == 'articles' %}on{% endif %}">
+							<a href="{{ path('user_articles') }}">
+								<i class="dp-icon-folder-open"></i> <h3>Knowledgebase</h3>
+								<label>Read help articles</label>
+							</a>
+						</li>
+						<li class="dp-tab-news {% if this_section == 'feedback' %}on{% endif %}">
+							<a href="{{ path('user_feedback') }}">
+								<i class="dp-icon-file"></i> <h3>Feedback</h3>
+								<label>Customer suggestions</label>
+							</a>
+						</li>
+						<li class="dp-tab-news {% if this_section == 'tickets' %}on{% endif %}">
+							<a href="{{ path('user_tickets_new') }}">
+								<i class="dp-icon-inbox"></i> <h3>Contact Us</h3>
+								<label>We are here to help</label>
+							</a>
+						</li>
+					</ul>
+				</nav>
+				<section id="dp_content">
+					{% block content %}{% endblock %}
+				</section>
 			</div>
 		</div>
-
-		<br class="dp-clear" />
 	</div>
-
-	{% if sidebar|trim|length %}
-	<div id="dp_sidebar">
-
-		<div class="dp-sidebar-block dp-cats-block">
-			<div class="dp-box-header">
-				<h3>Knowledgebase</h3>
-			</div>
-			<ul>
-				<li>Sales</li>
-				<li>Support</li>
-				<li>Customization</li>
-				<li>Troubleshooting</li>
-			</ul>
-		</div>
-
-		<div class="dp-sidebar-block dp-cats-block">
-			<div class="dp-box-header">
-				<h3>Feedback</h3>
-			</div>
-			<ul>
-				<li>General</li>
-				<li>User Interface</li>
-				<li>Agent Interface</li>
-				<li>Admin Interface</li>
-				<li>Gateways</li>
-			</ul>
-		</div>
-
-		{{ sidebar }}
-	</div>
-	{% endif %}
-
-	{% if breadcrumb %}
-		<div id="dp_breadcrumb">
-			<ul>
-				<li><a href="{{ path('user') }}">{{ phrase('user.general.helpdesk') }}</a></li>
-				{{ breadcrumb }}
-			</ul>
-		</div>
-	{% endif %}
-
-	<div id="dp_content">
-		<div id="dp_nav_wrapper">
-			<ul>
-				<li>
-					<h1 class="home"><a>Home</a></h1>
-				</li>
-				<li>
-					<h1><a>Knowledgebase</a></h1>
-					<label>Articles and guides.</label>
-				</li>
-				<li>
-					<h1><a>Feedback</a></h1>
-					<label>Submit ideas or read custom feedback.</label>
-				</li>
-				<li>
-					<h1><a>Contact Us</a></h1>
-					<label>Get in contact with one of our agents.</label>
-				</li>
-			</ul>
-		</div>
-		<div id="dp_page_wrapper">
-
-			{% if app.session.hasFlash('new_ticket') %}
-				<div class="dp-content-block">
-					<div class="dp-box">
-						<div class="dp-box-content-wrapper">
-							<div class="dp-box-content">
-								<div class="alert-message block-message success">
-									<p>{{ phrase('user.tickets.created_successfully') }}</p>
-									{% if app.session.hasFlash('new_ticket_validating_email') %}
-										<p>
-											{{ phrase('user.tickets.new_validating_notice', {'email': app.session.flash('new_ticket_validating_email')}) }}
-										 </p>
-									{% elseif app.session.hasFlash('new_ticket_email') %}
-										{{ phrase('user.tickets.new_ticket_notice', {'email': app.session.flash('new_ticket_email')}) }}
-									{% endif %}
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			{% endif %}
-
-			{% block content %}{% endblock %}
-		</div>
-	</div>
-
-	<div id="dp_footer">
-		<a href="http://www.deskpro.com/">{{ phrase('user.general.powered_by') }}</a>
-	</div>
-</div>
-
 </div>
 
 {% if admin_portal_controls %}
@@ -272,20 +167,19 @@
 
 {% if not app.getSetting('user.disable_chat_element') and not admin_portal_controls %}
 	{% include 'UserBundle:Common:chat-loader.html.twig' %}
-
 	<!-- DeskPRO Widget -->
 	<div id="dp_newticket_form" style="display: none"></div>
 	<script type="text/javascript">
-	var DpOverlayWidget_Options = DpOverlayWidget_Options || {};
-	DpOverlayWidget_Options.staticUrl = '{{ asset_url('') }}';
-	DpOverlayWidget_Options.deskproUrl = '{{ url('user') }}';
-	DpOverlayWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
-	(function() {
-		var scr = document.createElement('script');
-		scr.src = '{{ asset('javascripts/DeskPRO/User/WebsiteWidget/Overlay.js') }}';
-		scr.setAttribute('async', 'true');
-		document.documentElement.firstChild.appendChild(scr);
-	})();
+		var DpOverlayWidget_Options = DpOverlayWidget_Options || {};
+		DpOverlayWidget_Options.staticUrl = '{{ asset_url('') }}';
+		DpOverlayWidget_Options.deskproUrl = '{{ url('user') }}';
+		DpOverlayWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
+		(function() {
+			var scr = document.createElement('script');
+			scr.src = '{{ asset('javascripts/DeskPRO/User/WebsiteWidget/Overlay.js') }}';
+			scr.setAttribute('async', 'true');
+			document.documentElement.firstChild.appendChild(scr);
+		})();
 	</script>
 	<!-- /DeskPRO Widget -->
 {% endif %}
