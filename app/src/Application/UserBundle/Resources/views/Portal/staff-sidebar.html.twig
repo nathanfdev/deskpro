@@ -17,7 +17,7 @@
 			<p class="dp-summary">
 				{{ phrase('user.portal.we_are_here_to_help') }}
 			</p>
-			<ul class="clear_fix dp-person-list {% if staff|length > 5 %}dp-compact{% endif %}">
+			<ul class="dp-clearfix dp-person-list {% if staff|length > 5 %}dp-compact{% endif %}">
 				{% for agent in staff %}
 				<li title="{{ agent.display_name }}">
 					<span style="background-image: url('{{ agent.getPictureUrl(24) }}')">{{ agent.display_name }}</span>

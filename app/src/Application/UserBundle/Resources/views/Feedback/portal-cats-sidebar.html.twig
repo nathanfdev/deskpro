@@ -1,0 +1,21 @@
+<section class="dp-sidebar-block">
+	<header>
+		<h3>
+			{% if title %}{{ title }}{% else %}Feedback{% endif %}
+		</h3>
+	</header>
+	<article class="dp-written">
+		<p class="dp-summary">
+			Browse through {{ counts[0]['all']|default(0) }} customer suggestions
+		</p>
+		<ul class="dp-cat-list">
+			{% for cat in categories %}
+				<li>
+					<i class="dp-icon-folder-close"></i>
+					<a href="{{ path('user_feedback', {slug: cat.url_slug}) }}">{{ cat.title }}</a>
+					<span class="dp-badge dp-small">{{ counts[cat.id]['all']|default(0) }}</span>
+				</li>
+			{% endfor %}
+		</ul>
+	</article>
+</section>
