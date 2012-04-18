@@ -932,6 +932,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
+		if (!noswitch && !handler.isVisible()) {
+			noswitch = true;
+		}
+
 		handler.setListPageFragment(page, noswitch);
 		this.listPage = page;
 
