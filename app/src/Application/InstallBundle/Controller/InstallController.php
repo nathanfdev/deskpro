@@ -238,6 +238,10 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 	{
         try {
             if(count($this->getDoctrine()->getConnection()->fetchAll('SHOW TABLES'))) {
+				if (!$this->ensureNotInstalled()) {
+					// Redirect to base if already installed
+					return $this->redirect($this->container->getRequest()->getBaseUrl());
+				}
                 return $this->redirect($this->generateUrl('install_install_data'));
             }
         }
