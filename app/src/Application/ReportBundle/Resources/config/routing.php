@@ -181,29 +181,43 @@ $collection->add('report_login_authenticate_local', new Route(
 ));
 
 $collection->add('report_agent_hours_index', new Route(
-    '/agenthours/index/',
+    '/agent/hours/index/',
     array('_controller' => 'ReportBundle:AgentHours:index'),
     array(),
     array()
 ));
 
 $collection->add('report_agent_hours_list_date', new Route(
-    '/agenthours/list/{date}',
+    '/agent/hours/list/{date}',
     array('_controller' => 'ReportBundle:AgentHours:list'),
     array(),
     array()
 ));
 
 $collection->add('report_agent_activity_index', new Route(
-    '/agentactivity/index/',
+    '/agent/activity/index/',
     array('_controller' => 'ReportBundle:AgentActivity:index'),
     array(),
     array()
 ));
 
 $collection->add('report_agent_activity_list', new Route(
-    '/agentactivity/list/{agent_id}/{date}',
+    '/agent/activity/list/{agent_id}/{date}',
     array('_controller' => 'ReportBundle:AgentActivity:list'),
+    array(),
+    array()
+));
+
+$collection->add('report_agent_feedback_summary', new Route(
+    '/agent/feedback/summary/{date}',
+    array('_controller' => 'ReportBundle:AgentFeedback:summary'),
+    array(),
+    array()
+));
+
+$collection->add('report_agent_feedback_feed', new Route(
+    '/agent/feedback/feed/{page}',
+    array('_controller' => 'ReportBundle:AgentFeedback:feed'),
     array(),
     array()
 ));

@@ -89,4 +89,47 @@ class TicketFeedback extends EntityRepository
 		$res = Arrays::keyFromData($res, 'message_id');
 		return $res;
 	}
+
+    public function getFeedbackForFeed($page)
+    {
+        $query = $this->getEntityManager()->createQuery("
+			SELECT f
+			FROM DeskPRO:TicketFeedback f
+			ORDER BY f.date_created DESC")
+            ->setMaxResults(20)
+            ->setFirstResult($page * 20);
+
+        return $query->execute();
+    }
+
+    public function getCountForPaging()
+    {
+        $query = $this->getEntityManager()->createQuery("
+			SELECT COUNT(f)
+			FROM DeskPRO:TicketFeedback f");
+
+        return $query->execute();
+    }
+
+    public function getFeedbackRatingsForAgent(PersonEntity $agent, $date_range)
+    {
+        $db = App::getDb();
+        $result = $db->fetchAll('
+            SELECT tf.rating AS rating
+            FROM ticket_feedback AS tf
+            INNER JOIN tickets_messages AS tm
+            ON tf.ticket_id = tm.id
+            WHERE tm.person_id = ?
+            AND tf.date_created BETWEEN ? AND ?',
+            array($agent['id'], $date_range['start'], $date_range['end']));
+
+        return $result;
+    }
+
+    public function getFirstCreatedDate()
+    {
+        $db = App::getDb();
+        $result = $db->fetchColumn('SELECT MIN(date_created) FROM ticket_feedback');
+        return $result;
+    }
 }
