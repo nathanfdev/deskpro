@@ -15,6 +15,7 @@ DeskPRO.Report.Chart.DeskPRO.SimpleVariation = new Orb.Class({
 
 		this.sparkline_data = [];
 
+		// TODO handle resize without element resize monitor
 		$('#' + this.element_id).on('resize', function() {
 			$('#' + self.element_id + ' .sparkline').sparkline(self.sparkline_data, { width: '100%', height: '30px'});
 		});

@@ -105,6 +105,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			box1.css('min-height', h);
 		};
 
+		// TODO handle resize without element resize monitor
 		box1_in.on('resize', syncSizes);
 		box2_in.on('resize', syncSizes);
 		syncSizes();

@@ -166,6 +166,7 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 		});
 
 		// Need to ensure dashboard update correctly if window size changes
+		// TODO handle resize without element resize monitor
 		this.$dashboard.on('resize', function() {
 			// Dont do this while we are dragging
 			if (false === self.is_widget_dragging) {

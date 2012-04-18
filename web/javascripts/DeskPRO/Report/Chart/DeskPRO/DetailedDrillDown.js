@@ -19,6 +19,7 @@ DeskPRO.Report.Chart.DeskPRO.DetailedDrillDown = new Orb.Class({
 			self.renderSparklines();
 		});
 
+		// TODO handle resize without element resize monitor
 		$('#' + this.element_id).resize(function() {
 			$('#' + self.element_id + ' td.trend').html('');
 

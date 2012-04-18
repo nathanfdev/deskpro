@@ -551,6 +551,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			chatView.css('top', h + 125);
 		};
 
+		// TODO handle resize without element resize monitor
 		box1_in.on('resize', syncSizes);
 		box2_in.on('resize', syncSizes);
 		syncSizes();
