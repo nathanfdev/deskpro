@@ -3,7 +3,7 @@
 	<li><a href="{{ path('user_downloads') }}">{{ phrase('user.general.downloads') }}</a></li>
 	<li><a href="{{ path('user_downloads_recent') }}">{{ phrase('user.downloads.recent_section_name') }}</a></li>
 {% endblock %}
-{% block downloads_recent %}
+{% block content %}
 	<div class="with-handler"
 		data-element-handler="DeskPRO.User.ElementHandler.MoreLoader"
 		data-load-url="{{ path('user_downloads_recent', {'page': '00000'})|replace({'00000': '{page}'}) }}"
