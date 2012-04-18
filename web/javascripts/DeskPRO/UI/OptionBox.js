@@ -342,10 +342,13 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 	},
 
 	close: function() {
+		if(this._hasInit) {
+        this.backdrop.hide();
+		}
+
 		if (!this.isOpen()) return;
 
 		this.el.hide().removeClass('open');
-		this.backdrop.hide();
 
 		this.fireEvent('close', [this]);
 	},
