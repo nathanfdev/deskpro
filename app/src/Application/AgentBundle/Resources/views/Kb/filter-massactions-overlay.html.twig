@@ -1,3 +1,4 @@
+{% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <div
 	class="mass-actions-overlay-container mass-actions"
 	data-base-id="{{baseId}}"
@@ -11,6 +12,7 @@
 			</h1>
 		</header>
 		<article>
+            {{ agentui.scroll_containers('', '') }}
 			<div class="dp-radio-expander-form">
 				<div class="dp-form-row-group" data-element-handler="DeskPRO.Admin.ElementHandler.RadioExpander" data-group-class="dp-input-group" data-expand-class="dp-group-options">
 					<div class="dp-form-row">
@@ -73,6 +75,7 @@
 					</div>
 				</div>
 			</div>
+            {{ agentui.scroll.containers.end() }}
 		</article>
 	</section>
 </div>

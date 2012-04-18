@@ -760,6 +760,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 				left: contentStart
 			});
 		}
+
         this.wrapper.tinyscrollbar_update();
 	},
 
