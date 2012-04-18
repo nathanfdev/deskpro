@@ -208,16 +208,16 @@ $collection->add('report_agent_activity_list', new Route(
     array()
 ));
 
-$collection->add('report_agent_feedback_index', new Route(
-    '/agent/feedback/index/',
-    array('_controller' => 'ReportBundle:AgentFeedback:index'),
+$collection->add('report_agent_feedback_summary', new Route(
+    '/agent/feedback/summary/{date}',
+    array('_controller' => 'ReportBundle:AgentFeedback:summary'),
     array(),
     array()
 ));
 
-$collection->add('report_agent_feedback_list', new Route(
-    '/agent/feedback/list/{date}',
-    array('_controller' => 'ReportBundle:AgentFeedback:list'),
+$collection->add('report_agent_feedback_feed', new Route(
+    '/agent/feedback/feed/{page}',
+    array('_controller' => 'ReportBundle:AgentFeedback:feed'),
     array(),
     array()
 ));
