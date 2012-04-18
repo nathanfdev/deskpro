@@ -1,4 +1,4 @@
-{% extends 'UserBundle:Articles:layout.html.twig' %}
+{% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
 	<li><a href="{{ path('user_articles') }}">{{ phrase('user.general.knowledgebase') }}</a></li>
 	<li><a href="{{ path('user_articles_popular') }}">{{ phrase('user.articles.popular_section_name') }}</a></li>

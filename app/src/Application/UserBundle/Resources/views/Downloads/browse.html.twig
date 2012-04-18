@@ -1,4 +1,4 @@
-{% extends 'UserBundle:Downloads:layout.html.twig' %}
+{% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
 	<li><a href="{{ path('user_downloads') }}">{{ phrase('user.general.downloads') }}</a></li>
 	{% for cat in category_path %}

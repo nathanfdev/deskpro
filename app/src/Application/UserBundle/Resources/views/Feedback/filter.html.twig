@@ -1,4 +1,4 @@
-{% extends 'UserBundle::layout-partial-aware.html.twig' %}
+{% extends 'UserBundle::layout.html.twig' %}
 {% macro cat_row(cat, status, selected_cat) %}
 	<li {% if cat.id == selected_cat.id %}class="on"{% endif %}>
 		<a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug}) }}">{{ cat.title }}</a>
