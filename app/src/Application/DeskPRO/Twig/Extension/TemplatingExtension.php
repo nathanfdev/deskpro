@@ -367,22 +367,27 @@ class TemplatingExtension extends \Twig_Extension
 	{
 		switch ($format) {
 			case 'full':
+				//D, jS M Y
 				$format = App::getSetting('core.date_full');
 				break;
 
 			case 'fulltime':
+				//D, jS M Y g:ia
 				$format = App::getSetting('core.date_fulltime');
 				break;
 
 			case 'day':
+				//M j Y
 				$format = App::getSetting('core.date_day');
 				break;
 
 			case 'day_short':
+				//M j
 				$format = App::getSetting('core.date_day_short');
 				break;
 
 			case 'time':
+				//g:i a
 				$format = App::getSetting('core.date_time');
 				break;
 		}

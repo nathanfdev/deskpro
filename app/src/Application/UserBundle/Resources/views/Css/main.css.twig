@@ -1190,6 +1190,47 @@ nav#dp_content_tabs label {
 	border-bottom: none;
 }
 
+#dp .dp-content-post > header h3 {
+	font-size: 15pt;
+	font-weight: normal;
+	margin: 0;
+	padding: 0;
+	line-height: 100%;
+	padding-bottom: 2px;
+}
+
+#dp .dp-content-post > article {
+	padding: 15px;
+}
+
+#dp .dp-content-post > article p {
+	line-height: 160%;
+}
+
+#dp .dp-content-post > footer {
+	padding-left: 15px;
+}
+
+#dp ul.dp-post-info {
+	margin: 0;
+	padding: 0;
+}
+
+#dp ul.dp-post-info li {
+	display: inline-block;
+	margin-right: 18px;
+	font-size: 9pt;
+	color: #898888;
+}
+
+#dp ul.dp-post-info li i {
+	{{ _self.opacity(0.5) }}
+}
+
+#dp ul.dp-post-info li a {
+	color: #898888;
+	text-decoration: underline;
+}
 
 /******************************
 * Social Block: Style for the block that contains twitter, facebook and gplus buttons
@@ -1283,47 +1324,6 @@ nav#dp_content_tabs label {
 * These styles apply to news listings and news posts
 ***********************************************************************************************************************/
 
-#dp .dp-news-post > header h3 {
-	font-size: 15pt;
-	font-weight: normal;
-	margin: 0;
-	padding: 0;
-	line-height: 100%;
-	padding-bottom: 2px;
-}
-
-#dp .dp-news-post > article {
-	padding: 15px;
-}
-
-#dp .dp-news-post > article p {
-	line-height: 160%;
-}
-
-#dp .dp-news-post > footer {
-	padding-left: 15px;
-}
-
-#dp ul.dp-post-info {
-	margin: 0;
-	padding: 0;
-}
-
-#dp ul.dp-post-info li {
-	display: inline-block;
-	margin-right: 18px;
-	font-size: 9pt;
-	color: #898888;
-}
-
-#dp ul.dp-post-info li i {
-	{{ _self.opacity(0.5) }}
-}
-#dp ul.dp-post-info li a {
-	color: #898888;
-	text-decoration: underline;
-}
-
 #dp .dp-cal-date {
     width: 46px;
     float: left;
@@ -1363,6 +1363,15 @@ nav#dp_content_tabs label {
     border-radius: 0px 0px 4px 4px;
 }
 
+/***********************************************************************************************************************
+* Articles
+* These styles apply to article lists and articles
+***********************************************************************************************************************/
+
+#dp .dp-articles-block ul.dp-content-list > li {
+	margin: 0 0 10px 0;
+	padding: 10px 0 10px 0;
+}
 
 
 /***********************************************************************************************************************

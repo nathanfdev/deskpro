@@ -49,17 +49,21 @@
 				{% endif %}
 			</header>
 		{% endif %}
-		<div class="dp-content-block dp-news-block">
+		<div class="dp-content-block dp-articles-block">
 			<div class="dp-content-wrapper">
 				<ul class="dp-content-list">
 					{% for article in articles %}
 					<li>
-						<h4><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></h4>
-						<div class="dp-meta">
-							{{ phrase('user.articles.meta_author', {'author': article.person.display_name}) }}
-							&middot;
-							{{ phrase('user.general.count_comments', {'count': comment_counts[article.id]|default(0)}) }}
-						</div>
+						<section class="dp-article-post dp-content-post">
+							<header>
+								<h3 style="margin-bottom: 0"><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></h3>
+								<ul class="dp-post-info">
+									<li class="dp-author"><i class="dp-icon-user"></i> {{ article.person.display_name }}</li>
+									<li class="dp-date"><i class="dp-icon-calendar"></i> {{ article.date_created|date('full') }}</li>
+									<li class="dp-comments"><i class="dp-icon-comment"></i> {{ phrase('user.general.count_comments', {'count': comment_counts[article.id]|default(0)}) }}</li>
+								</ul>
+							</header>
+						</section>
 					</li>
 					{% endfor %}
 				</ul>
