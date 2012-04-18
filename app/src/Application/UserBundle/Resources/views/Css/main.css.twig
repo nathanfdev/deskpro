@@ -976,6 +976,14 @@ section#dp_header_search .dp-btn {
 
 }
 
+#dp_breadcrumb_wrap .dp-breadcrumb li i {
+	{{ _self.opacity(0.7) }}
+}
+
+#dp_breadcrumb_wrap .dp-breadcrumb li:last-child .dp-divider {
+	display: none;
+}
+
 /***********************************************************************************************************************
 * Main Nav Tabs
 * These are the big tabs at the top of the page for Home, Knowledgebase, Feedback and Contact Us
@@ -1296,6 +1304,21 @@ nav#dp_content_tabs label {
 	padding: 0;
 }
 
+
+/******************************
+* A table used for design/layout
+******************************/
+
+#dp table.dp-layout,
+#dp table.dp-layout > thead > tr > td,
+#dp table.dp-layout > thead > tr > th,
+#dp table.dp-layout > tbody > tr > td,
+#dp table.dp-layout > tbody > tr > th {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
 /***********************************************************************************************************************
 * Portal Section
 * This is a master wrapper around page section
@@ -1375,6 +1398,39 @@ nav#dp_content_tabs label {
 	padding: 10px 0 10px 0;
 }
 
+/***********************************************************************************************************************
+* Feedback
+***********************************************************************************************************************/
+
+#dp .dp-new-feedback-section > article {
+	margin: 0;
+}
+
+#dp .dp-new-feedback {
+	margin: 30px;
+	margin-bottom: 30px;
+	background-color: #F5F5F5;
+	border: 1px solid #DADADA;
+	padding: 10px;
+	{{ _self.border_radius(6) }};
+}
+
+#dp .dp-new-feedback > header h2 {
+	font-size: 11pt;
+	font-weight: bold;
+	color: #8D8D8D;
+}
+
+#dp .dp-new-feedback .dp-search-bar input.dp-suggest-title {
+	width: 95%;
+	padding: 5px 8px 5px 8px;
+	font-size: 14pt;
+	height: auto;
+}
+
+#dp .dp-new-feedback .dp-search-bar  .dp-btn {
+
+}
 
 /***********************************************************************************************************************
 * Browse Lists
