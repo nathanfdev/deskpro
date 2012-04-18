@@ -898,85 +898,25 @@ $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
-##BEGIN:create_portal_block.kb##
-$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section = 'portal';
-$b->type = 'Kb';
-$b->is_enabled = true;
-$em->persist($b);
-$em->flush();
-
-##BEGIN:create_portal_block.feedback##
-$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section = 'portal';
-$b->type = 'Feedback';
-$b->is_enabled = true;
-$em->persist($b);
-$em->flush();
-
-##BEGIN:create_portal_block.downloads##
-$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section = 'portal';
-$b->type = 'Downloads';
-$em->persist($b);
-$em->flush();
-
-##BEGIN:create_portal_block.contact_sidebar##
-$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section = 'sidebar';
-$b->type = 'Contact';
-$b->is_enabled = true;
-$em->persist($b);
-$em->flush();
-
-##BEGIN:create_portal_block.nav_sidebar##
-$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section = 'sidebar';
-$b->type = 'Nav';
-$b->is_enabled = true;
-$em->persist($b);
-$em->flush();
-
 ##BEGIN:create_portal_block.staff_sidebar##
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
 $b->section = 'sidebar';
-$b->type = 'Staff';
+$b->type = 'staff';
 $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
-##BEGIN:create_portal_block.news_sidebar##
+##BEGIN:create_portal_block.kb_cat_list##
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
 $b->section = 'sidebar';
-$b->type = 'News';
+$b->type = 'kb_cat_list';
 $em->persist($b);
 $em->flush();
 
-##BEGIN:create_portal_block.downloads_sidebar##
+##BEGIN:create_portal_block.feedback_cat_list##
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
 $b->section = 'sidebar';
-$b->type = 'Downloads';
-$em->persist($b);
-$em->flush();
-
-##BEGIN:create_portal_block.feedback_sidebar##
-$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section = 'sidebar';
-$b->type = 'Feedback';
-$em->persist($b);
-$em->flush();
-
-##BEGIN:create_portal_block.labels_sidebar##
-$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section = 'sidebar';
-$b->type = 'Labels';
-$em->persist($b);
-$em->flush();
-
-##BEGIN:create_portal_block.twitter_sidebar##
-$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section = 'sidebar';
-$b->type = 'Twitter';
+$b->type = 'feedback_cat_list';
 $em->persist($b);
 $em->flush();
 
