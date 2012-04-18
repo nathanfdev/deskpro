@@ -1,53 +1,57 @@
+{% set this_section = 'articles' %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_articles') }}">{{ phrase('user.general.knowledgebase') }}</a></li>
-	{% for cat in category_path %}
-		<li><a href="{{ path('user_articles', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
-	{% endfor %}
-	<li><a href="{{ path('user_articles', {'slug': category.url_slug}) }}">{{category.title}}</a></li>
+	<li><a href="{{ path('user_articles') }}">{{ phrase('user.general.knowledgebase') }}</a>{% if category %}<span class="dp-divider">&rarr;</span>{% endif %}</li>
+	{% if category %}
+		{% for cat in category_path %}
+			<li><a href="{{ path('user_articles', {'slug': cat.url_slug}) }}">{{cat.title}}</a><span class="dp-divider">&rarr;</span></li>
+		{% endfor %}
+		<li><a href="{{ path('user_articles', {'slug': category.url_slug}) }}">{{category.title}}</a></li>
+	{% endif %}
 {% endblock %}
 {% block page_title %}
-	{{ phrase('user.general.knowledgebase') }} /
-	{% for cat in category_path %}
-		{{cat.title}} /
-	{% endfor %}
-	{{category.title}}
+	{{ phrase('user.general.knowledgebase') }}
+	{% if category %}
+		/
+		{% for cat in category_path %}
+			{{cat.title}} /
+		{% endfor %}
+		{{category.title}}
+	{% endif %}
 {% endblock %}
 {% block content %}
 
 {% if category_children|length or not articles|length %}
-	<div class="dp-content-block dp-kb-page">
-		<div class="dp-box">
-			<div class="dp-box-header">
-				{% if category %}
-					<h1>{{ phrase('user.articles.there_are_x_subcats', {'count': category_children|length}) }}</h1>
-				{% else %}
-					<h1>{{ phrase('user.general.knowledgebase') }}</h1>
-				{% endif %}
-			</div>
-
-			<div class="dp-box-content-wrapper">
-				<div class="dp-box-content">
+	<section class="dp-portal-section">
+		<header>
+			{% if category %}
+				<h1>{{ phrase('user.articles.there_are_x_subcats', {'count': category_children|length}) }}</h1>
+			{% else %}
+				<h1>{{ phrase('user.general.knowledgebase') }}</h1>
+			{% endif %}
+		</header>
+		<div class="dp-content-block dp-news-block">
+			<div class="dp-content-wrapper">
+				<ul class="dp-content-list">
 					{% include 'UserBundle:Articles:browse-cat-list.html.twig' with {'categories': category_children, 'category_articles': category_children_articles} %}
-				</div>
-				<br class="dp-clear" style="clear: left;" />
+				</ul>
 			</div>
 		</div>
-	</div>
+	</section>
 {% endif %}
 
 {% if articles %}
-<div class="dp-content-block dp-kb-page">
-	<div class="dp-box">
-		<div class="dp-box-header">
-			{% if category %}
-				<h1>{{ phrase('user.articles.there_are_x_articles', {'count': articles|length}) }}</h1>
-			{% endif %}
-		</div>
-
-		<div class="dp-box-content-wrapper">
-			<div class="dp-box-content">
-				<ul class="dp-browse-list-full sep">
+	<section class="dp-portal-section">
+		{% if category %}
+			<header>
+				{% if category %}
+					<h1>{{ phrase('user.articles.there_are_x_articles', {'count': articles|length}) }}</h1>
+				{% endif %}
+			</header>
+		{% endif %}
+		<div class="dp-content-block dp-news-block">
+			<div class="dp-content-wrapper">
+				<ul class="dp-content-list">
 					{% for article in articles %}
 					<li>
 						<h4><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></h4>
@@ -61,8 +65,7 @@
 				</ul>
 			</div>
 		</div>
-	</div>
-</div>
+	</section>
 {% endif %}
 
 {% endblock %}

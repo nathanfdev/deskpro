@@ -936,10 +936,6 @@ section#dp_header_search .dp-btn {
 * These rules just define the layout of the two columns (page column and the sidebar)
 ***********************************************************************************************************************/
 
-#dp_content {
-	z-index: 2;
-}
-
 {% set dp_sidebar_width = 250 %}
 
 #dp_page_wrapper {
@@ -963,6 +959,19 @@ section#dp_header_search .dp-btn {
 	background-color: #fff;
 	border: 1px double #d2d0d0;
 	{{ _self.border_radius({ tr: 5, bl: 5, br: 5 }) }}
+	overflow: hidden;
+}
+
+#dp_breadcrumb_wrap {
+
+}
+
+#dp_breadcrumb_wrap .dp-breadcrumb {
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	{{ _self.border_radius(0) }}
+
 }
 
 /***********************************************************************************************************************
@@ -1092,6 +1101,12 @@ nav#dp_content_tabs label {
 * Content
 * These styles are general styling applied to pages in DeskPRO
 ***********************************************************************************************************************/
+
+#dp .dp-br-clear {
+	clear: both;
+	height: 1px;
+	overflow: hidden;
+}
 
 #dp .dp-summary {
 	font-size: 90%;
@@ -1346,4 +1361,126 @@ nav#dp_content_tabs label {
     -moz-border-radius-bottomleft: 4px;
     -webkit-border-radius: 0px 0px 4px 4px;
     border-radius: 0px 0px 4px 4px;
+}
+
+
+
+/***********************************************************************************************************************
+* Browse Lists
+* These are category lists that have a heading for the parent, and then links for one level of children,
+* and a link for "view all"
+***********************************************************************************************************************/
+
+#dp ul.dp-browse-list {
+	list-style-type: none;
+	clear: left;
+
+	padding-bottom: 40px;
+	margin-left: 15px;
+}
+
+#dp ul.dp-browse-list:first-of-type {
+	border-top: none;
+	margin-top: 0;
+}
+
+#dp ul.dp-browse-list a {
+	cursor: pointer;
+}
+
+#dp ul.dp-browse-list .dp-view-more {
+	float: left;
+	background-color: #F0F0F0;
+	{{ _self.border_radius(8) }}
+}
+
+#dp ul.dp-browse-list .dp-view-more a {
+	display: block;
+	padding: 5px 10px 5px 10px;
+}
+
+#dp ul.dp-browse-list .dp-view-more a:hover {
+	text-decoration: none;
+}
+
+#dp ul.dp-browse-list .dp-view-more .dp-badge {
+	position: relative;
+	top: -1px;
+}
+
+#dp ul.dp-browse-list > li {
+	float: left;
+	width: 45%;
+
+	background: transparent url(../../web/images/user/page.png) no-repeat 0 0px;
+	padding-left: 24px;
+	margin-bottom: 35px;
+}
+
+#dp ul.dp-browse-list > li > h3 {
+	font-size: 11pt;
+	margin: 0;
+	padding: 1px 0 3px 0;
+	line-height: 100%;
+}
+
+#dp ul.dp-browse-list > li > h3 a {
+	color: #000;
+}
+
+#dp ul.dp-browse-list > li > ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+#dp ul.dp-browse-list > li > ul > li {
+	line-height: 100%;
+	padding: 0 3px;
+	margin-left: 15px;
+	list-style: square;
+	line-height: 150%;
+}
+
+/******************
+* dp-browse-list-full
+*******************/
+
+#dp ul.dp-browse-list-full {
+	list-style-type: none;
+	font-size: 11px;
+
+	padding-top: 5px;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 0;
+}
+
+#dp ul.dp-browse-list-full.sep {
+	margin-top: 10px;
+	clear: left;
+}
+
+#dp ul.dp-browse-list-full a {
+	cursor: pointer;
+}
+
+#dp ul.dp-browse-list-full > li {
+	margin-bottom: 8px;
+}
+
+#dp ul.dp-browse-list-full > li:last-of-type {
+	border-bottom: none;
+}
+
+#dp ul.dp-browse-list-full > li > h3 {
+	font-size: 10pt;
+	font-weight: normal;
+	margin: 0;
+	padding: 0 0 0 0;
+	line-height: 100%;
+}
+
+#dp ul.dp-browse-list-full > li .dp-meta {
+	color: {{ stylevar.meta_text_color }};
 }

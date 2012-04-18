@@ -144,6 +144,17 @@
 					</ul>
 				</nav>
 				<section id="dp_content">
+					{% if breadcrumb %}
+						<nav id="dp_breadcrumb_wrap">
+							<ul class="dp-breadcrumb">
+								<li>
+									<a href="{{ path('user') }}"><i class="dp-icon-home"></i></a>
+									<span class="dp-divider">&rarr;</span>
+								</li>
+								{{ breadcrumb }}
+							</ul>
+						</nav>
+					{% endif %}
 					{% block content %}{% endblock %}
 				</section>
 			</div>

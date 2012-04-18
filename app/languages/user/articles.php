@@ -11,6 +11,6 @@
     'user.articles.sorted_by'            => 'Sorted by',
     'user.articles.there_are_x_articles' => 'There is 1 article|There are {{count}} articles',
     'user.articles.there_are_x_subcats'  => 'There is 1 sub-category|There are {{count}} sub-categories',
-    'user.articles.view_all_x_articles'  => 'View 1 Article|View all {{count}} Articles',
+    'user.articles.view_all_x_articles'  => 'View 1 article|View all {{count}} articles',
     'user.articles.views'                => 'Views',
 );
