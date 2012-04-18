@@ -694,15 +694,15 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		var hasFooter = !!($('> section > footer', this.wrapper).length);
 
 		if (scrollContent.length) {
-	    	contentH = scrollContent.height();
-	    	if (hasHeader) {
-	        	contentH += 36;
-	    	}
-	    	if (hasFooter) {
-	        	contentH += 45;
-	    	}
+			contentH = scrollContent.height();
+			if (hasHeader) {
+				contentH += 36;
+			}
+			if (hasFooter) {
+				contentH += 45;
+			}
 
-	    	contentH += 31;
+			contentH += 31;
 		}
 
 		if (hasHeader) $('> section > article', this.wrapper).removeClass('no-header');
@@ -712,14 +712,14 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		else $('> section > article', this.wrapper).addClass('no-footer');
 
 		if (contentH < 350) {
-	    	contentH = 350;
+			contentH = 350;
 		}
 
 		var maxH = $(window).height() - top - 10;
 
 		if (contentH && contentH < maxH) {
-	    	bottom = '';
-	    	height = contentH;
+			bottom = '';
+			height = contentH;
 		}
 
 		this.wrapper.css({
@@ -727,7 +727,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			left: pos.left + 8,
 			right: 3,
 			bottom: bottom,
-	    	height: height
+			height: height
 		});
 
 		//------------------------------
