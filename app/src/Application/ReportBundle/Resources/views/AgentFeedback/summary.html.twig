@@ -8,33 +8,25 @@
 {% block page_js_exec %}
 <script type="text/javascript">
     $(document).ready(function(){
-        var add_done_button = function() {
-
-        }
-
-        $('.datepicker > span').datepicker(
+        $('.datepicker > span > span').datepicker(
                 {
                     'changeMonth': true,
                     'changeYear': true,
                     'changeDay': false,
-                    'showButtonPanel': true,
+                    'showButtonPanel': false,
                     'dateFormat': 'yy-mm',
                     'closeText': 'Done',
                     'defaultDate': new Date({{ view_date|date('Y') }}, {{ view_date|date('m') }} - 1, 1),
                     'onChangeMonthYear': function(year, month, inst) {
                         $(this).datepicker('setDate', new Date(year, month - 1, 1));
                     },
-                    'beforeShow': function(input, inst) {
-                        var done_button = $('<button/>');
-                        done_button.addClass('datepicker-btn-done').button().text('Done');
-                        done_button.click(function(){
-                            var date = $('.datepicker > span').datepicker('getDate');
-                            document.location = "{{ path('report_agent_feedback_summary', {'date':''}) }}/" + date.getFullYear() + '-' + (date.getMonth() + 1);
-                        });
-                        $('.datepicker > span .ui-datepicker-buttonpane').append(done_button);
-                    }
                 }
         );
+
+        $('.datepicker-btn-done').on('click', function(){
+            var date = $('.datepicker > span > span').datepicker('getDate');
+            document.location = "{{ path('report_agent_feedback_summary', {'date':''}) }}/" + date.getFullYear() + '-' + (date.getMonth() + 1);
+        }).button();
 
         $('.datepicker > a').on('click', function(){
             if($('.datepicker > span').hasClass('hidden')) {
@@ -62,10 +54,6 @@
     .datepicker.nodays .ui-datepicker-calendar {
         display: none;
     }​
-
-    .datepicker-btn-done {
-        float: right;
-    }
 
     .reports_agent_feedback_summary_section > table .border-right {
         border-right-style: solid;
@@ -98,11 +86,24 @@
     .reports_agent_feedback_summary_section > table td {
         vertical-align: middle;
     }
+
+    .ui-datepicker {
+        border: none;
+    }
+
+    .datepicker > span {
+        padding: 4px;
+    }
+
+    button.datepicker-btn-done {
+        float: right;
+        margin: 4px;
+    }
 </style>
 <div class="reports_agent_feedback_summary_section">
     <table>
         <tr>
-            <td class="border-right datepicker-cell"><span class="datepicker nodays drop-down"><a>{{ view_date|date('M Y') }}<em></em></a><span class="hidden"></span></span></td>
+            <td class="border-right datepicker-cell"><span class="datepicker nodays drop-down"><a>{{ view_date|date('M Y') }}<em></em></a><span class="hidden ui-widget-content ui-corner-all"><span></span><button class="datepicker-btn-done">Done</button></span></span></td>
             {% for agent in agents %}
                 <th class="border-bottom {% if not loop.last %}border-right{% endif %}" colspan="2">{{ agent.name }}</th>
             {% endfor %}
