@@ -16,6 +16,8 @@
 				{% endif %}
 				{% if comment_counts[news.id] %}| {{ phrase('user.general.comments') }}: {{ comment_counts[news.id] }}{% endif %}
 			</div>
+			<div class="postcontent" style="margin-left: 59px; font-size: 10pt; line-height: 150% !important; padding-top: 9px;">{{ news.content|raw }}</div>
+			<div class="socialplaceholder"></div>
 		</div>
 	</li>
 {% endfor %}

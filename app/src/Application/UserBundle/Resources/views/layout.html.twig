@@ -56,31 +56,6 @@
 
 <div id="deskpro" class="deskpro {% block body_class %}{% endblock %}{% if breadcrumb %}dp-with-breadcrumb{% endif %}">
 
-{% if admin_portal_controls %}
-<div id="dp_header" {% if app.logoblob %}class="dp-with-logo"{% endif %}>
-	<a href="{{ path('user') }}"><img class="logo" {% if app.logoblob %}src="{{ app.logoblob.getDownloadUrl() }}"{% endif %} /></a>
-
-	<h1><a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a></h1>
-	<h2 {% if not app.getSetting('core.deskpro_tagline') %}style="display: none"{% endif %}>{{ app.getSetting('core.deskpro_tagline') }}</h2>
-	{% if admin_portal_controls %}
-	<div id="dp_header_portal_off">
-		{{ phrase('admin.designer.reenable_simple_header') }}
-	</div>
-	{% endif %}
-</div>
-{% else %}
-	<div id="dp_header" {% if app.logoblob %}class="dp-with-logo"{% endif %}>
-		{% if app.logoblob %}
-		<a href="{{ path('user') }}"><img class="logo" src="{{ app.logoblob.getDownloadUrl() }}" /></a>
-		{% else %}
-			<h1><a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a></h1>
-			{% if app.getSetting('core.deskpro_tagline') %}
-				<h2>{{ app.getSetting('core.deskpro_tagline') }}</h2>
-			{% endif %}
-		{% endif %}
-	</div>
-{% endif %}
-
 <div id="dp_search_assist" style="display: none;">
 	<div class="results"></div>
 	<div class="foot">
@@ -139,23 +114,78 @@
 </div>
 {% endif %}
 
+{% if admin_portal_controls %}
+	<div id="dp_header" {% if app.logoblob %}class="dp-with-logo"{% endif %}>
+		<a href="{{ path('user') }}"><img class="logo" {% if app.logoblob %}src="{{ app.logoblob.getDownloadUrl() }}"{% endif %} /></a>
+
+		<h1><a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a></h1>
+		<h2 {% if not app.getSetting('core.deskpro_tagline') %}style="display: none"{% endif %}>{{ app.getSetting('core.deskpro_tagline') }}</h2>
+		{% if admin_portal_controls %}
+		<div id="dp_header_portal_off">
+			{{ phrase('admin.designer.reenable_simple_header') }}
+		</div>
+		{% endif %}
+	</div>
+{% else %}
+	<div id="dp_header" {% if app.logoblob %}class="dp-with-logo"{% endif %}>
+		{% if app.logoblob %}
+		<a href="{{ path('user') }}"><img class="logo" src="{{ app.logoblob.getDownloadUrl() }}" /></a>
+		{% else %}
+		<h1><a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a></h1>
+		{% if app.getSetting('core.deskpro_tagline') %}
+		<h2>{{ app.getSetting('core.deskpro_tagline') }}</h2>
+		{% endif %}
+		{% endif %}
+	</div>
+{% endif %}
+
 {% set sidebar %}{% block sidebar %}{{ portal_section('sidebar') }}{% endblock %}{% endset %}
 <div id="dp_page" {% if not sidebar|trim|length %}class="no-sidebar"{% endif %}>
 	<div id="dp_header_bar">
-		{% include 'UserBundle:Common:layout-userbar.html.twig' %}
-		<div id="dp_search_bar" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
-			<form action="{{ path('user_search') }}" method="GET">
-				<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td width="100%" style="padding-right: 16px;">
-					<input type="text" name="q" id="deskpro_search" {% if app.search_query %}value="{{ app.search_query }}"{% endif %} placeholder="{{ phrase('user.general.comments_enter_details') }}" autocomplete="off" />
-				</td><td width="50">
-					<button class="btn primary">{{ phrase('user.general.search') }}</button>
-				</td></tr></table>
-			</form>
+		<h1>Help Center</h1>
+		<div id="dp_header_controls">
+			<div id="dp_search_bar" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
+				<form action="{{ path('user_search') }}" method="GET">
+					<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td width="100%">
+						<input type="text" name="q" id="deskpro_search" {% if app.search_query %}value="{{ app.search_query }}"{% endif %} placeholder="{{ phrase('user.general.comments_enter_details') }}" autocomplete="off" />
+					</td><td width="50">
+						<button class="btn primary">{{ phrase('user.general.search') }}</button>
+					</td></tr></table>
+				</form>
+			</div>
 		</div>
+
+		<br class="dp-clear" />
 	</div>
 
 	{% if sidebar|trim|length %}
 	<div id="dp_sidebar">
+
+		<div class="dp-sidebar-block dp-cats-block">
+			<div class="dp-box-header">
+				<h3>Knowledgebase</h3>
+			</div>
+			<ul>
+				<li>Sales</li>
+				<li>Support</li>
+				<li>Customization</li>
+				<li>Troubleshooting</li>
+			</ul>
+		</div>
+
+		<div class="dp-sidebar-block dp-cats-block">
+			<div class="dp-box-header">
+				<h3>Feedback</h3>
+			</div>
+			<ul>
+				<li>General</li>
+				<li>User Interface</li>
+				<li>Agent Interface</li>
+				<li>Admin Interface</li>
+				<li>Gateways</li>
+			</ul>
+		</div>
+
 		{{ sidebar }}
 	</div>
 	{% endif %}
@@ -170,28 +200,50 @@
 	{% endif %}
 
 	<div id="dp_content">
-		{% if app.session.hasFlash('new_ticket') %}
-			<div class="dp-content-block">
-				<div class="dp-box">
-					<div class="dp-box-content-wrapper">
-						<div class="dp-box-content">
-							<div class="alert-message block-message success">
-								<p>{{ phrase('user.tickets.created_successfully') }}</p>
-								{% if app.session.hasFlash('new_ticket_validating_email') %}
-									<p>
-										{{ phrase('user.tickets.new_validating_notice', {'email': app.session.flash('new_ticket_validating_email')}) }}
-									 </p>
-								{% elseif app.session.hasFlash('new_ticket_email') %}
-									{{ phrase('user.tickets.new_ticket_notice', {'email': app.session.flash('new_ticket_email')}) }}
-								{% endif %}
+		<div id="dp_nav_wrapper">
+			<ul>
+				<li>
+					<h1 class="home"><a>Home</a></h1>
+				</li>
+				<li>
+					<h1><a>Knowledgebase</a></h1>
+					<label>Articles and guides.</label>
+				</li>
+				<li>
+					<h1><a>Feedback</a></h1>
+					<label>Submit ideas or read custom feedback.</label>
+				</li>
+				<li>
+					<h1><a>Contact Us</a></h1>
+					<label>Get in contact with one of our agents.</label>
+				</li>
+			</ul>
+		</div>
+		<div id="dp_page_wrapper">
+
+			{% if app.session.hasFlash('new_ticket') %}
+				<div class="dp-content-block">
+					<div class="dp-box">
+						<div class="dp-box-content-wrapper">
+							<div class="dp-box-content">
+								<div class="alert-message block-message success">
+									<p>{{ phrase('user.tickets.created_successfully') }}</p>
+									{% if app.session.hasFlash('new_ticket_validating_email') %}
+										<p>
+											{{ phrase('user.tickets.new_validating_notice', {'email': app.session.flash('new_ticket_validating_email')}) }}
+										 </p>
+									{% elseif app.session.hasFlash('new_ticket_email') %}
+										{{ phrase('user.tickets.new_ticket_notice', {'email': app.session.flash('new_ticket_email')}) }}
+									{% endif %}
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		{% endif %}
+			{% endif %}
 
-		{% block content %}{% endblock %}
+			{% block content %}{% endblock %}
+		</div>
 	</div>
 
 	<div id="dp_footer">

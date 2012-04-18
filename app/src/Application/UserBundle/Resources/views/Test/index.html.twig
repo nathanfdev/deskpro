@@ -1,5 +1,71 @@
-{% extends 'UserBundle::layout.html.twig' %}
-{% block page_title %}Your Profile{% endblock %}
-{% block content %}
-	Test
-{% endblock %}
+{% set breadcrumb %}{% block breadcrumb %}{% endblock %}{% endset %}
+{% if not breadcrumb|trim|length %}{% set breadcrumb = false %}{% endif %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+	{% if page_noindex %}<meta name="robots" content="noindex,nofollow" />{% endif %}
+	{% if app.getSetting('core.favicon_blob_id') %}
+	<link rel="shortcut icon" id="favicon" href="{{ path('favicon', {}, true) }}" />
+	{% else %}
+	<link rel="shortcut icon" id="favicon" href="{{ asset('images/favicon.ico') }}" />
+	{% endif %}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>{% block page_title %}{{ app.getSetting('core.deskpro_name') }}{% endblock %}</title>
+
+	{% include 'UserBundle:Common:resources.html.twig' %}
+
+	<meta property="og:site_name" content="{{ app.getSetting('core.site_name')|default(app.getSetting('core.core.helpdesk_name')) }}" />
+	{% if app.getSetting('core.facebook_admins') %}<meta property="fb:admins" content="{{ app.getSetting('core.facebook_admins') }}" />{% endif %}
+
+	{{ portal_css(['sidebar', 'pagetop']) }}
+	{{ portal_js(['sidebar', 'pagetop']) }}
+
+	{% block head %}{% endblock %}
+
+	{% if admin_portal_controls %}
+	<script type="text/javascript">var IS_ADMIN_CONTROLS = true;</script>
+	{{ dp_asset_html('agent_vendors') }}
+	{{ dp_asset_html('agent_common') }}
+	{{ dp_asset_html('user_portaladmin') }}
+	{{ dp_asset_html('user_portaladmin_css') }}
+	{% endif %}
+
+	{% include 'UserBundle::custom-headinclude.html.twig' %}
+</head>
+<body>
+<script type="text/javascript">document.body.className += " with-js";</script>
+
+<div id="dp_outer_wrapper">
+	<div id="dp_wrapper">
+		<div id="dp_header">
+			<div id="">
+				<div id="dp_header">
+					<h1><a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a></h1>
+					<h2 {% if not app.getSetting('core.deskpro_tagline') %}style="display: none"{% endif %}>{{ app.getSetting('core.deskpro_tagline') }}</h2>
+				</div>
+			</div>
+		</div>
+		<div id="dp_inner_wrapper">
+			<div id="dp_sidebar_wrapper">
+				<div id="dp_sidebar">
+					{% set sidebar %}{% block sidebar %}{{ portal_section('sidebar') }}{% endblock %}{% endset %}
+					{{ sidebar }}
+				</div>
+			</div>
+			<div id="dp_page_wrapper">
+				<div id="dp_page">
+					<div id="dp_nav">
+
+					</div>
+					<div id="dp_content">
+						content
+					</div>
+				</div>
+			</div>
+			<br style="clear:both;height: 1px;overflow: hidden;" />
+		</div>
+	</div>
+</div>
+
+</body>
+</html>
