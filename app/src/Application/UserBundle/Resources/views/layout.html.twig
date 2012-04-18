@@ -65,7 +65,10 @@
 	{% include 'UserBundle::custom-headinclude.html.twig' %}
 </head>
 <body>
-<script type="text/javascript">document.body.className += " with-js";</script>
+<div id="fb-root"></div>
+<script type="text/javascript">document.body.className += " dp-with-js";</script>
+<script type="text/javascript">(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return;	js = d.createElement(s); js.id = id; js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=113084412087018"; fjs.parentNode.insertBefore(js, fjs); }(document, 'script', 'facebook-jssdk'));</script>
+<script type="text/javascript">(function() { var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true; po.src = 'https://apis.google.com/js/plusone.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);})();</script>
 
 {# Processing #}
 {% set breadcrumb %}{% block breadcrumb %}{% endblock %}{% endset %}

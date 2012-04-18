@@ -16,7 +16,7 @@
 	'user_style.cal_date_bg'                     => '#F8F8F8',
 	'user_style.cal_date_text'                   => '#888',
 	'user_style.cal_date_border'                 => '#DEDEDE',
-	'user_style.cal_date_month_bg'               => '#253F66',
+	'user_style.cal_date_month_bg'               => '#2A69A9',
 	'user_style.cal_date_month_text'             => '#fff',
 	'user_style.link_color'                      => '#0069D6',
 	'user_style.link_color_hover'                => '#00438a',

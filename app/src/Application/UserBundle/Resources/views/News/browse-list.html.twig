@@ -13,8 +13,6 @@
 {% endblock %}
 {% block news_list %}
 
-<h2>Latest News</h2>
-
 <div class="with-handler"
 		data-element-handler="DeskPRO.User.ElementHandler.MoreLoader"
 		data-load-url="{{ path('user_news_list', {'page': '00000', 'per_page': per_page})|replace({'00000': '{page}'}) }}"

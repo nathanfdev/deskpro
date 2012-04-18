@@ -1,23 +1,24 @@
+{% import 'UserBundle:Common:macros-social.html.twig' as social %}
 {% for news in news_entries %}
 	<li>
-		<div class="dp-cal-date" title="{{ phrase('user.general.posted_date', {'date':news.date_created|date('M d Y @ H:i:s')}) }}">
-			<div class="month">{{ news.date_created|date('M')|upper }}</div>
-			<div class="day">{{ news.date_created|date('d') }}</div>
-		</div>
-		<div class="dp-inner">
-			<div class="dp-faded-container">
-				<h4 style="margin-bottom: 0"><a href="{{ path('user_news_view', {'slug': news.url_slug}) }}">{{ news.title }}</a></h4>
-				<div class="dp-bound-faded"></div>
+		<section class="dp-news-post">
+			<div class="dp-cal-date" title="{{ phrase('user.general.posted_date', {'date':news.date_created|date('M d Y @ H:i:s')}) }}">
+				<div class="dp-month">{{ news.date_created|date('M')|upper }}</div>
+				<div class="dp-day">{{ news.date_created|date('d') }}</div>
 			</div>
-			<div class="dp-meta">
-                {{ phrase('user.news.author_name', {'name':news.person.display_name}) }}
-				{% if news.category %}
-					| {{ phrase('user.general.category') }} <a href="{{ path('user_news_list', {'slug': news.category.url_slug })}}">{{ news.category.title }}</a>
-				{% endif %}
-				{% if comment_counts[news.id] %}| {{ phrase('user.general.comments') }}: {{ comment_counts[news.id] }}{% endif %}
-			</div>
-			<div class="postcontent" style="margin-left: 59px; font-size: 10pt; line-height: 150% !important; padding-top: 9px;">{{ news.content|raw }}</div>
-			<div class="socialplaceholder"></div>
-		</div>
+			<header class="dp-clearfix">
+				<h3 style="margin-bottom: 0"><a href="{{ path('user_news_view', {'slug': news.url_slug}) }}">{{ news.title }}</a></h3>
+				<ul class="dp-post-info">
+					<li class="dp-author"><i class="dp-icon-user"></i> {{ news.person.display_name }}</li>
+					<li class="dp-category"><i class="dp-icon-tag"></i> <a href="{{ path('user_news_list', {'slug': news.category.url_slug })}}">{{ news.category.title }}</a></li>
+				</ul>
+			</header>
+			<article>
+				{{ news.content|raw }}
+			</article>
+			<footer>
+				{{ social.social_block(path('user_news_view', {'slug': news.url_slug}), news.title) }}
+			</footer>
+		</section>
 	</li>
 {% endfor %}

@@ -40,6 +40,11 @@
 	box-shadow: {{ args }};
 {% endmacro %}
 
+{% macro opacity(op) %}
+	opacity: {{ op }};
+	filter:alpha(opacity={{ op * 100 }}); /* For IE8 and earlier */
+{% endmacro %}
+
 /***********************************************************************************************************************
 * Twitter Bootstrap 2.0 (http://twitter.github.com/bootstrap/)
 * Modified with #dp parent and prefix classnames with dp-
@@ -957,7 +962,7 @@ section#dp_header_search .dp-btn {
 
 
 /***********************************************************************************************************************
-* Page Layout
+* Layout
 * These rules just define the layout of the two columns (page column and the sidebar)
 ***********************************************************************************************************************/
 
@@ -1034,6 +1039,7 @@ nav#dp_content_tabs ul li:hover,
 nav#dp_content_tabs ul li.on {
 	{{ _self.box_shadow('1px 0px 2px rgba(0,0,0, 0.3), inset 0px 0px 1px rgba(0,0,0, 0.3)') }}
 	border: 1px solid #c9d0d8;
+	cursor: pointer;
 }
 
 nav#dp_content_tabs ul li.on {
@@ -1067,7 +1073,7 @@ nav#dp_content_tabs h3  {
 }
 
 nav#dp_content_tabs i {
-	opacity: 0.7;
+	{{ _self.opacity(0.7) }}
 	margin-left: 8px;
 }
 
@@ -1113,15 +1119,171 @@ nav#dp_content_tabs label {
 }
 
 /***********************************************************************************************************************
-* Intro Box
-* This is a box typically found at the top of a page to introduce the user to something
+* Content
+* These styles are general styling applied to pages in DeskPRO
 ***********************************************************************************************************************/
 
-.dp-intro-box {
+/******************************
+* Intro Box
+* The welcome box at the top of pages, like the top of the portal
+******************************/
+
+#dp .dp-intro-box {
 	margin: 30px;
-	margin-bottom: 50px;
+	margin-bottom: 30px;
 	background-color: #F5F5F5;
 	border: 1px solid #DADADA;
 	padding: 10px;
-	{{ _self.border_radius(6) }}
+	{{ _self.border_radius(6) }};
+}
+
+/******************************
+* Content Listing: General styling applied to lists of content, like a listing of news posts
+******************************/
+
+#dp ul.dp-content-list {
+	margin: 0;
+	padding: 0;
+}
+
+#dp ul.dp-content-list > li {
+	list-style: none;
+	padding: 0 0 35px 0;
+	margin: 15px 0 35px 0;
+	border-bottom: 1px solid #DDDCDC;
+}
+
+#dp ul.dp-content-list > li:last-child {
+	border-bottom: none;
+}
+
+
+/******************************
+* Social Block: Style for the block that contains twitter, facebook and gplus buttons
+******************************/
+
+#dp .dp-social-block > table {
+	margin: 0;
+	padding: 0;
+}
+
+#dp .dp-social-block > table th {
+	font-weight: bold;
+	vertical-align: middle;
+	padding-right: 10px;
+}
+
+#dp .dp-social-block > table td {
+	padding: 0 10px 0 10px;
+	vertical-align: middle;
+}
+
+/***********************************************************************************************************************
+* Portal Section
+* This is a master wrapper around page section
+***********************************************************************************************************************/
+
+.dp-portal-section {
+	margin: 15px;
+}
+
+#dp section.dp-portal-section {
+	margin-bottom: 15px;
+}
+
+#dp section.dp-portal-section > header h1 {
+	font-size: 20pt;
+	font-weight: normal;
+	font-family: "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",sans-serif;
+	color: #C3C2C2;
+	margin-bottom: 25px;
+}
+
+#dp section.dp-portal-section > .dp-content-block {
+	margin-left: 15px;
+}
+
+/***********************************************************************************************************************
+* News
+* These styles apply to news listings and news posts
+***********************************************************************************************************************/
+
+#dp .dp-news-post > header h3 {
+	font-size: 15pt;
+	font-weight: normal;
+	margin: 0;
+	padding: 0;
+	line-height: 100%;
+	padding-bottom: 2px;
+}
+
+#dp .dp-news-post > article {
+	padding: 15px;
+}
+
+#dp .dp-news-post > article p {
+	line-height: 160%;
+}
+
+#dp .dp-news-post > footer {
+	padding-left: 15px;
+}
+
+#dp ul.dp-post-info {
+	margin: 0;
+	padding: 0;
+}
+
+#dp ul.dp-post-info li {
+	display: inline-block;
+	margin-right: 18px;
+	font-size: 9pt;
+	color: #898888;
+}
+
+#dp ul.dp-post-info li i {
+	{{ _self.opacity(0.5) }}
+}
+#dp ul.dp-post-info li a {
+	color: #898888;
+	text-decoration: underline;
+}
+
+#dp .dp-cal-date {
+    width: 46px;
+    float: left;
+	margin-right: 12px;
+}
+
+#dp .dp-cal-date .dp-month {
+    background-color: {{ stylevar.cal_date_month_bg }};
+    font-size: 9px;
+    font-weight: bold;
+    color: {{ stylevar.cal_date_month_text }};
+    text-align: center;
+
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-topright: 4px;
+    -moz-border-radius-bottomright: 0px;
+    -moz-border-radius-bottomleft: 0px;
+    -webkit-border-radius: 4px 4px 0px 0px;
+    border-radius: 4px 4px 0px 0px;
+}
+
+#dp .dp-cal-date .dp-day {
+    background-color: {{ stylevar.cal_date_bg }};
+    border: 2px solid {{ stylevar.cal_date_border }};
+    border-top: none;
+    text-align: center;
+    color: {{ stylevar.cal_date_text }};
+    font-family: 'Myriad Pro','Myriad',helvetica,arial,sans-serif;
+    font-size: 13px;
+    padding-top: 2px;
+
+    -moz-border-radius-topleft: 0px;
+    -moz-border-radius-topright: 0px;
+    -moz-border-radius-bottomright: 4px;
+    -moz-border-radius-bottomleft: 4px;
+    -webkit-border-radius: 0px 0px 4px 4px;
+    border-radius: 0px 0px 4px 4px;
 }

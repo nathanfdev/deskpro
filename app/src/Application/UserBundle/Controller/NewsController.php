@@ -109,6 +109,9 @@ class NewsController extends AbstractController
 		}
 
 		$tpl = 'UserBundle:News:browse-list.html.twig';
+		if ($this->request->isPartialRequest() == 'portal') {
+			$tpl = 'UserBundle:News:portal-display.html.twig';
+		}
 		if ($this->request->isPartialRequest() == 'more') {
 			$tpl = 'UserBundle:News:browse-news-list.html.twig';
 		}

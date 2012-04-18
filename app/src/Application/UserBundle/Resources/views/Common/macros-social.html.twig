@@ -1,0 +1,23 @@
+{% macro twitter_share(page_url, page_title) %}
+	<a href="https://twitter.com/share" class="twitter-share-button" {% if page_url %}data-url="{{ page_url }}"{% endif %} {% if page_title %}data-text="{{ page_title }}"{% endif %}>Tweet</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+{% endmacro %}
+
+{% macro facebook_like(page_url) %}
+	<div class="fb-like" data-href="http://exampdadasdle.com/" data-send="false" data-layout="button_count" data-width="100" data-show-faces="false"></div>
+{% endmacro %}
+
+{% macro gplus_plusone(page_url) %}
+	<div class="g-plusone" data-size="medium" data-href="{{ page_url }}"></div>
+{% endmacro %}
+
+{% macro social_block(page_url, page_title) %}
+	<div class="dp-social-block">
+		<table><tr>
+			<th>Share this:</th>
+			<td>{{ _self.twitter_share(page_url, page_title) }}</td>
+			<td>{{ _self.facebook_like(page_url) }}</td>
+			<td>{{ _self.gplus_plusone(page_url) }}</td>
+		</tr></table>
+	</div>
+{% endmacro %}
