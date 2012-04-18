@@ -200,7 +200,7 @@
     'user.general.uploading'                       => 'Uploading:',
     'user.general.validation_email_sent'           => 'You should have recieved a validation email with a special link in it. If you never got this email, click the button below to request another one.',
     'user.general.view_more_news'                  => 'View more news &rarr;',
-    'user.general.view_my_x_tickets'               => 'View my ticket|View my {{count}} tickets',
+    'user.general.view_your_x_tickets'             => 'View my ticket|View my {{count}} tickets',
     'user.general.votes'                           => 'Votes',
     'user.general.welcome_back_guest'              => 'Welcome back, guest',
     'user.general.welcome_back_x'                  => 'Welcome back, {{name}}',
@@ -212,4 +212,5 @@
     'user.general.your_email_address'              => 'Your Email Address',
     'user.general.your_name'                       => 'Your Name',
     'user.general.your_profile'                    => 'Your Profile',
+    'user.general.edit_your_profile'               => 'Edit your profile',
 );

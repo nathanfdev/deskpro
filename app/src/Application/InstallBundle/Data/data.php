@@ -900,6 +900,14 @@ $em->flush();
 
 ##BEGIN:create_portal_block.staff_sidebar##
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
+$b->section = 'userinfo';
+$b->type = 'userinfo';
+$b->is_enabled = true;
+$em->persist($b);
+$em->flush();
+
+##BEGIN:create_portal_block.staff_sidebar##
+$b = new \Application\DeskPRO\Entity\PortalPageDisplay();
 $b->section = 'sidebar';
 $b->type = 'staff';
 $b->is_enabled = true;

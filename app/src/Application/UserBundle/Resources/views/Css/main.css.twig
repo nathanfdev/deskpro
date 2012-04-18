@@ -1098,6 +1098,12 @@ nav#dp_content_tabs label {
 	color: #888;
 }
 
+#dp .not-loading { display: block; }
+#dp .is-loading { display: none; }
+
+#dp .loading .not-loading { display: none; }
+#dp .loading .is-loading { display: block; }
+
 /******************************
 * A person list is a list with a person avatar, and a name.
 * Options: .dp-compact turns the list into just an avatar shown side-by-side
@@ -1212,6 +1218,24 @@ nav#dp_content_tabs label {
 
 #dp ul.dp-cat-list li:hover i {
 	{{ _self.opacity(1) }}
+}
+
+#dp .dp-login-box-inner {
+	margin: 20px 0 0 0;
+}
+
+#dp .dp-login-box-inner .dp-btn-row { text-align: right; }
+#dp .dp-reset-section .dp-btn-row { text-align: center; margin-top: 8px; }
+#dp .dp-login-box-inner .dp-reset-desc { text-align: center; }
+
+#dp .dp-login-box-inner form {
+	margin: 0;
+	padding: 0;
+}
+
+#dp .dp-login-box-inner dl {
+	margin: 0;
+	padding: 0;
 }
 
 /***********************************************************************************************************************
