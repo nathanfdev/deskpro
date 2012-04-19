@@ -4,7 +4,7 @@
 			<span class="elbow">|</span>
 		{% endif %}
 		<span class="title" data-route="listpane:{{ path('agent_userchat_listopen', {'department_id':dep.id}) }}">
-			<span class="list-counter" id="userchat_deplist_{{ dep.id }}_counter" data-count="{{ dep_counts[dep.id ~ '_total']|default(0) }}">{{ dep_counts[dep.id ~ '_total']|default(0) }}</span>
+			<span class="list-counter" {% if depth %}data-parentid="{{ dep.getParentId() }}"{% endif %}  id="userchat_deplist_{{ dep.id }}_counter" data-count="{{ dep_counts[dep.id ~ '_total']|default(0) }}">{{ dep_counts[dep.id ~ '_total']|default(0) }}</span>
 			{{ dep.title }}
 		</span>
 	</li>

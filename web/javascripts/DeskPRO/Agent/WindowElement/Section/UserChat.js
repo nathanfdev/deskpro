@@ -128,7 +128,18 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleUpdateCounts: function(data) {
-        this.updateBadge(parseInt($('#userchat_deplist_0_counter').text()) + parseInt($('#userchat_list_allagents_counter').text()));
+		var count = parseInt($('#userchat_deplist_0_counter').text()) + parseInt($('#userchat_list_allagents_counter').text());
+		this.updateBadge(count);
+
+		if (count < 1) {
+			$('#userchat_deplist_all').hide();
+			if (!$('#userchat_list_all').is(':visible')) {
+				$('#userchat_no_chats').show();
+			}
+		} else {
+			$('#userchat_deplist_all').show();
+			$('#userchat_no_chats').hide();
+		}
 	},
 
 	isChatOpen: function(convoId) {
@@ -169,32 +180,41 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				$('#userchat_no_chats').hide();
 			}
 		}
+
+		this.handleUpdateCounts();
 	},
+
 	modDepListingCount: function(id, op, count) {
 		var el = $('#userchat_deplist_' + id + '_counter');
 		var newCount = DeskPRO_Window.util.modCountEl(el, op, count);
 
-		var row = el.closest('li');
-		if (row.parent().is('.sub-group')) {
-			var parentEl = $('.list-counter', row.parent().closest('li')).first();
-			DeskPRO_Window.util.modCountEl(parentEl, op, count);
-		}
+		if(id != '0') {
+			var row = el.closest('li');
+			if (row.parent().is('.sub-group')) {
+				var parentEl = $('#userchat_deplist_' + el.data('parentid') + '_counter');
+				var newParentCount = DeskPRO_Window.util.modCountEl(parentEl, op, count);
+				var parentRow = parentEl.closest('li');
 
-		if (id != '0') {
-			if (newCount < 1) {
-				$('#userchat_deplist_all').hide();
-				if (!$('#userchat_list_all').is(':visible')) {
-					$('#userchat_no_chats').show();
+				if(newParentCount) {
+					parentRow.show();
 				}
-			} else {
-				$('#userchat_deplist_all').show();
-				$('#userchat_no_chats').hide();
+				else {
+					parentRow.hide();
+				}
+			}
+
+			if(newCount) {
+				row.show();
+			}
+			else {
+				row.hide();
 			}
 		}
 
-        if(id == 0) {
-            this.updateBadge(count);
-        }
+		var elAll = $('#userchat_deplist_0_counter');
+		DeskPRO_Window.util.modCountEl(parentEl, op, count);
+
+		this.handleUpdateCounts();
 	},
 
 	handleDepChange: function(data) {
@@ -208,7 +228,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			}
 		}
 
-        this.handleUpdateCounts();
+		this.handleUpdateCounts();
 	},
 
 	handleChatEnded: function(data) {
@@ -224,7 +244,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			delete this.dismissedChats[data.conversation_id];
 		}
 
-        this.handleUpdateCounts();
+		this.handleUpdateCounts();
 	},
 
 	handlePartsUpdated: function(data) {
@@ -248,7 +268,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			this.modDepListingCount(data.department_id, '+');
 		}
 
-        this.handleUpdateCounts();
+		this.handleUpdateCounts();
 	},
 
 	handleUnassignedChat: function(data) {
@@ -271,7 +291,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			});
 		}
 
-        this.handleUpdateCounts();
+		this.handleUpdateCounts();
 	},
 
 	handleInvited: function(data) {
@@ -324,7 +344,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
 		}
 
-        this.handleUpdateCounts();
+		this.handleUpdateCounts();
 	},
 
 	showNewChatAlert: function(data) {
