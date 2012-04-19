@@ -1462,8 +1462,12 @@ nav#dp_content_tabs label {
 ***********************************************************************************************************************/
 
 #dp .dp-articles-block ul.dp-content-list > li {
-	margin: 0 0 20px 0;
-	padding: 0 0 20px 0;
+	margin: 0;
+	padding: 20px 0 20px 0;
+}
+
+#dp .dp-articles-block ul.dp-content-list > li:first-child {
+	padding-top: 10px;
 }
 
 /***********************************************************************************************************************
@@ -1518,12 +1522,10 @@ nav#dp_content_tabs label {
 * Voting button
 ******************************/
 
-#dp .dp-voted-row td.dp-row-contain  {
-	background-color: #FDFAD7;
-}
-
-#dp .dp-feedback-vote {
-	width: 63px;
+#dp .dp-voted-row {
+	-moz-box-shadow: inset 0 0 5px #CBC78D;
+	box-shadow: inset 0 0 5px #CBC78D;
+	background-color: #FFFAB3;
 }
 
 #dp .dp-feedback-vote .dp-feedback-btn {

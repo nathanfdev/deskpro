@@ -1,8 +1,8 @@
-<li>
-	<section class="dp-feedback-post dp-feedback-row dp-content-post {% if has_voted_ids[feedback.id] %}dp-voted-row{% endif %}">
+<li class="dp-feedback-row {% if has_voted_ids[feedback.id] %}dp-voted-row{% endif %}"">
+	<section class="dp-feedback-post dp-content-post">
 		<header>
 			<table class="dp-layout" width="100%"><tr>
-				<td width="50" style="padding-right: 16px;">{% include 'UserBundle:Feedback:voting-widget.html.twig' %}</td>
+				<td width="50" style="padding-right: 16px; padding-left: 16px;">{% include 'UserBundle:Feedback:voting-widget.html.twig' %}</td>
 				<td class="dp-row-contain">
 					<h3 style="margin-bottom: 0"><a href="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}">{{feedback.title}}</a></h3>
 					<ul class="dp-post-info">
