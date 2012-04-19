@@ -936,7 +936,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			noswitch = true;
 		}
 
+		if (handler.isVisible() && !handler.listPage) {
+			noswitch = false;
+		}
+
 		handler.setListPageFragment(page, noswitch);
+
 		this.listPage = page;
 
 		if (!noswitch) {
@@ -972,7 +977,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.routePrefixes[prefix].push(callback);
 	},
-
 
 
 	/**
