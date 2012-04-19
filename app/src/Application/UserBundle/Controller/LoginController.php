@@ -644,12 +644,11 @@ HTML;
 		App::getOrm()->flush();
 
 		$html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('person' => $person, 'mode' => $this->in->getString('mode')));
-		$html_userbar = $this->renderView('UserBundle:Common:layout-userbar.html.twig', array('person' => $person));
 
 		return $this->createJsonResponse(array(
 			'html' => $html,
 			'sections_replace' => array(
-				'dp_userbar' => $html_userbar,
+
 			),
 			'person_id' => $person['id'],
 			'name' => $person['name']

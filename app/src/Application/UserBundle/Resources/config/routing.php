@@ -536,13 +536,6 @@ $collection->add('user_feedback_view', new Route(
 	array()
 ));
 
-$collection->add('user_feedback_newfeedback', new Route(
-	'/feedback/new-feedback',
-	array('_controller' => 'UserBundle:Feedback:newFeedback'),
-	array(),
-	array()
-));
-
 $collection->add('user_feedback_newfeedback_finishlogin', new Route(
 	'/feedback/new-feedback/login-finished/{feedback_id}',
 	array('_controller' => 'UserBundle:Feedback:newFinishLogin'),

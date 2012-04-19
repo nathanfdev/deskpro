@@ -6,38 +6,37 @@
 		</div>
 		{% endif %}
 
-		<div class="dp-form-row {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
-			<div class="dp-form-label">
-				<label>{{ phrase('user.general.your_email_address') }} *</label>
-                <em class="desc">
-                    {% set phrase_link %}
-                        <a href="{{path('user_login')}}" class="dp-inline-login-open">{{ phrase('user.general.log_in') }}</a>
-                    {% endset %}
-                    {{ phrase('user.general.login_if_registered', {'link': phrase_link}) }}
-                </em>
+		<div class="dp-control-group {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
+			<div class="dp-control-label">
+				<label><strong>{{ phrase('user.general.your_email_address') }}</strong></label>
 			</div>
-			<div class="dp-form-input">
+			<div class="dp-controls dp-fill">
 				<input type="text" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ initial_value }}" data-field-validators="DeskPRO.Form.EmailValidator" />
-				<div class="dp-error-explain">
+				<div class="dp-help-inline dp-error-explain">
 					{{ phrase('user.general.form_fix_email') }}
+				</div>
+				<div class="dp-help-inline">
+					{% set phrase_link %}
+						<a href="{{path('user_login')}}" class="dp-inline-login-open">{{ phrase('user.general.log_in') }}</a>
+					{% endset %}
+					{{ phrase('user.general.login_if_registered', {'link': phrase_link}) }}
 				</div>
 			</div>
 		</div>
 
-		<div class="dp-form-row dp-inline-login-pass" style="display: none">
+		<div class="dp-control-group dp-inline-login-pass" style="display: none">
 			<div class="dp-login-section">
-				<div class="dp-form-label">
-					<label>{{ phrase('user.general.password') }}</label>
-					<a class="forgot" href="{{ path('user_login_resetpass') }}">{{ phrase('user.general.lost_qm') }}</a>
+				<div class="dp-control-label">
+					<label><strong>{{ phrase('user.general.password') }}</strong> <a class="forgot" href="{{ path('user_login_resetpass') }}">{{ phrase('user.general.lost_qm') }}</a></label>
 				</div>
-				<div class="dp-form-input">
+				<div class="dp-controls dp-fill">
 					<input type="password" id="dp_inline_login_pass" />
 					<div class="dp-loading">
 						{{ phrase('user.general.loading') }}
 					</div>
 					<div class="dp-btn-row">
-						<button class="btn primary dp-login-trigger {% if mode == 'advanced' %}mode-advanced{% endif %}">{{ phrase('user.general.log_in') }}</button>
-						<button class="btn dp-inline-login-open">{{ phrase('user.general.cancel') }}</button>
+						<button class="dp-btn dp-btn-primary dp-login-trigger {% if mode == 'advanced' %}mode-advanced{% endif %}">{{ phrase('user.general.log_in') }}</button>
+						<button class="dp-btn dp-inline-login-open">{{ phrase('user.general.cancel') }}</button>
 					</div>
 				</div>
 			</div>
@@ -58,7 +57,7 @@
 				</div>
 				<div class="dp-reset-sent" style="display: none">
 					{{ phrase('user.general.lost_password_sent') }}<br />
-					<a class="btn small back">{{ phrase('user.general.lost_password_back_btn') }}</a>
+					<a class="dp-btn small back">{{ phrase('user.general.lost_password_back_btn') }}</a>
 				</div>
 			</div>
 		</div>
@@ -72,15 +71,15 @@
 				data-security-token="{{ security_token('email_manage') }}"
 				{% endif %}
 			>
-				<div class="dp-form-row">
-					<div class="dp-form-label">
+				<div class="dp-control-group">
+					<div class="dp-control-label">
 						<label>{{ phrase('user.general.your_email_address') }}</label>
 						{% if mode == 'advanced' %}
 						<em class="change-email"><a href="{{ path('user_profile') }}">{{ phrase('user.general.change_email') }}</a></em>
 						<em class="change-email-close" style="display: none"><a>{{ phrase('user.general.done_changing_email') }}</a></em>
 						{% endif %}
 					</div>
-					<div class="dp-form-input">
+					<div class="dp-controls dp-fill">
 						<input type="text" id="dp_inline_login_email" class="dp-email-field" name="{{ email_form_name }}" value="{{ app.user.primary_email_address }}" readonly="readonly" />
 
 					</div>
@@ -106,15 +105,15 @@
 				{% endif %}
 			</div>
 		{% else %}
-			<div class="dp-form-row {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
-				<div class="dp-form-row">
-					<div class="dp-form-label">
+			<div class="dp-control-group {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
+				<div class="dp-control-group">
+					<div class="dp-control-label">
 						<label>{{ phrase('user.general.your_email_address') }} *</label>
 					</div>
 				</div>
-				<div class="dp-form-input">
+				<div class="dp-controls dp-fill">
 					<input type="text" id="dp_inline_login_email" class="dp-email-field" name="{{ email_form_name }}" value="" />
-					<div class="dp-error-explain">
+					<div class="dp-help-inline dp-error-explain">
 						{{ phrase('user.general.form_fix_email') }}
 					</div>
 				</div>

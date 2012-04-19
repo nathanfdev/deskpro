@@ -158,6 +158,10 @@ class FeedbackController extends AbstractController
 				->countsOnCollection($feedback);
 		}
 
+		#------------------------------
+		# We have the submit form on the same pag
+		#------------------------------
+
 		$newfeedback = new \Application\DeskPRO\Feedback\NewFeedback(
 			App::getSession()->getVisitor()
 		);
@@ -169,6 +173,31 @@ class FeedbackController extends AbstractController
 		}
 
 		$form = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
+
+		#------------------------------
+		# New feedback submitted
+		#------------------------------
+
+		$errors = $error_fields = null;
+		if ($this->in->getBool('process_new')) {
+			$validator = new \Application\UserBundle\Validator\NewFeedbackValidator();
+
+			$form->bindRequest($this->get('request'));
+			if ($validator->isValid($newfeedback)) {
+				$feedback = $newfeedback->save();
+
+				if ($newfeedback->require_login) {
+					return $this->redirectRoute('user_login', array('return' => $this->generateUrl('user_feedback_newfeedback_finishlogin', array('feedback_id' => $feedback->id))));
+				} elseif ($feedback->getStatusCode() == 'hidden.user_validating') {
+					return $this->redirectRoute('user');
+				} else {
+					return $this->redirectRoute('user_feedback_view', array('slug' => $feedback->getUrlSlug()));
+				}
+			} else {
+				$errors = $validator->getErrors(true);
+				$error_fields = $validator->getErrorGroups(true);
+			}
+		}
 
 		return $this->render('UserBundle:Feedback:filter.html.twig', array(
 			'feedback_cats'      => $feedback_cats,
@@ -190,66 +219,9 @@ class FeedbackController extends AbstractController
 			'search_options'     => $search_options,
 			'has_voted_ids'      => $has_voted_ids,
 			'status_cat'         => $status_cat,
+
 			'newfeedback' => $newfeedback,
 			'form' => $form->createView(),
-		));
-	}
-
-
-
-	/**
-	 * New feedback
-	 */
-	public function newFeedbackAction()
-	{
-		if (!$this->person->hasPerm('core.feedback_submit_check')) {
-			return $this->renderLoginOrPermissionError($this->generateUrl('user_feedback_newfeedback'));
-		}
-
-		$newfeedback = new \Application\DeskPRO\Feedback\NewFeedback(
-			App::getSession()->getVisitor()
-		);
-		$newfeedback->setPersonContext($this->person);
-
-		if ($this->search_query && !$this->request->isPost()) {
-			$newfeedback->title = $this->search_query;
-		}
-
-		// Initial value from coming from a category
-		if ($this->in->getUint('category_id')) {
-			$newfeedback->category_id = $this->in->getUint('category_id');
-		}
-
-		$form = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
-		$validator = new \Application\UserBundle\Validator\NewFeedbackValidator();
-
-		$errors = null;
-		$error_fields = null;
-
-		if ($this->get('request')->getMethod() == 'POST') {
-			$form->bindRequest($this->get('request'));
-
-			if ($validator->isValid($newfeedback)) {
-				$feedback = $newfeedback->save();
-
-				if ($newfeedback->require_login) {
-					return $this->redirectRoute('user_login', array('return' => $this->generateUrl('user_feedback_newfeedback_finishlogin', array('feedback_id' => $feedback->id))));
-				} elseif ($feedback->getStatusCode() == 'hidden.user_validating') {
-					return $this->redirectRoute('user');
-				} else {
-					return $this->redirectRoute('user_feedback_view', array('slug' => $feedback->getUrlSlug()));
-				}
-			} else {
-				$errors = $validator->getErrors(true);
-				$error_fields = $validator->getErrorGroups(true);
-			}
-		}
-
-		$feedback_categories = App::getEntityRepository('DeskPRO:FeedbackCategory')->getCategoryHelper()->getCategoriesInHierarchy();
-
-		return $this->render('UserBundle:Feedback:new-feedback.html.twig', array(
-			'form' => $form->createView(),
-			'feedback_categories' => $feedback_categories,
 			'errors' => $errors,
 			'error_fields' => $error_fields,
 		));

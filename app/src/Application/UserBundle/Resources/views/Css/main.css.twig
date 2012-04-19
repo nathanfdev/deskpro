@@ -1402,6 +1402,20 @@ nav#dp_content_tabs label {
 
 
 /******************************
+* Inline login form
+******************************/
+
+#dp .dp-inline-login.open {
+	background-color: #F6F6F6;
+	padding-left: 8px;
+	padding-right: 8px;
+	border: 1px solid #DFDFDF;
+	{{ _self.border_radius(5) }}
+	margin: -1px -9px -1px -9px;
+}
+
+
+/******************************
 * A table used for design/layout
 ******************************/
 
@@ -1450,6 +1464,8 @@ nav#dp_content_tabs label {
 /******************************
 * Various spinners
 ******************************/
+
+#dp .dp-loading { display:none; }
 
 #dp .dp-loading-line {
 	background: url(../../web/images/spinners/loading-big-circle.gif) no-repeat 50% 10px;

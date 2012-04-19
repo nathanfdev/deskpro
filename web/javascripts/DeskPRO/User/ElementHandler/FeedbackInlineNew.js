@@ -8,6 +8,9 @@ DeskPRO.User.ElementHandler.FeedbackInlineNew = new Orb.Class({
 		var self = this;
 
 		this.form = $('#new_suggest_form');
+		this.form.on('submit', function() {
+			$('#feedback_title').val($('#new_suggest_title').val());
+		});
 		this.isFormOpen = false;
 		this.isSuggestOpen = false;
 
@@ -25,6 +28,10 @@ DeskPRO.User.ElementHandler.FeedbackInlineNew = new Orb.Class({
 		this.searchBox.on('keyup', function() {
 			self.openForm();
 			self.touchCaller.touch($(this).val().trim());
+		});
+
+		this.inlineLogin = new DeskPRO.User.InlineLoginForm({
+			context: this.el
 		});
 	},
 

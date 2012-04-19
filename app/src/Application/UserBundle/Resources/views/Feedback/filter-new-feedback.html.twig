@@ -4,27 +4,20 @@
 	data-element-handler="DeskPRO.User.ElementHandler.FeedbackInlineNew"
 >
 	<div class="dp-search-bar">
-			<table class="dp-layout" width="100%"><tr>
-				<td style="vertical-align: top; white-space: nowrap;" width="100%">
-					<div class="dp-input-prepend">
-						<span class="dp-add-on">I suggest ...</span><input type="text" class="dp-suggest-title" id="new_suggest_title" name="feedback[title]" placeholder="" />
+		<table class="dp-layout" width="100%"><tr>
+			<td style="vertical-align: top; white-space: nowrap;" width="100%" class="{% if error_fields['title'] %}dp-error{% endif %}">
+				<div class="dp-input-prepend">
+					<span class="dp-add-on">I suggest ...</span><input type="text" class="dp-suggest-title" id="new_suggest_title" value="{{ newfeedback.title }}" />
 				</div>
 			</td>
 			<td style="vertical-align: top;"><button class="dp-btn dp-go-btn dp-btn-success">Go</button></td>
 		</tr></table>
 
-		<form action="{{ path('user_feedback_newfeedback') }}" method="post" class="with-form-validator" id="new_suggest_form">
-			<div style="display:none">
-				{# This element is bound to the search bar at the top #}
-				{{ form_widget(form.title, {
-					'attr': {
-						'data-field-validators': 'DeskPRO.Form.LengthValidator',
-						'data-min-len': 5
-					}
-				}) }}
-			</div>
+		<form action="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by }) }}" method="post" class="with-form-validator" id="new_suggest_form">
+			<input type="hidden" name="process_new" value="1" />
+			<input type="hidden" name="feedback[title]" id="feedback_title" value="{{ newfeedback.title }}" />
 			<div class="dp-feedback-form dp-well dp-well-light dp-form-vertical" style="display: none">
-				<fieldset class="dp-related-section">
+				<fieldset class="dp-related-section" style="display: none;">
 					<legend>Related Suggestions</legend>
 					<div class="dp-similar-results">
 						<div class="dp-loading-line" style="display: none">Searching</div>
@@ -36,8 +29,8 @@
 
 					{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'feedback[person_email]', 'mode': 'identity' } %}
 
-					<div class="dp-control-group">
-						<label class="dp-control-label">Your Name</label>
+					<div class="dp-control-group {% if error_fields['person_name'] %}dp-error{% endif %}">
+						<label class="dp-control-label"><strong>Your Name</strong></label>
 						<div class="dp-controls dp-fill">
 							{{ form_widget(form.person_name, {
 								'attr': {
@@ -50,8 +43,8 @@
 							</div>
 						</div>
 					</div>
-					<div class="dp-control-group">
-						<label class="dp-control-label">Tell us about your idea</label>
+					<div class="dp-control-group {% if error_fields['content'] %}dp-error{% endif %}">
+						<label class="dp-control-label"><strong>Tell us about your idea</strong></label>
 						<div class="dp-controls dp-fill">
 							{{ form_widget(form.content, {
 								'attr': {
@@ -65,8 +58,8 @@
 							</div>
 						</div>
 					</div>
-					<div class="dp-control-group">
-						<label class="dp-control-label">Select a category</label>
+					<div class="dp-control-group {% if error_fields['category_id'] %}dp-error{% endif %}">
+						<label class="dp-control-label"><strong>Select a category</strong></label>
 						<div class="dp-controls">
 							{% macro cat_opt(selected, cat, depth) %}
 								{% set indent = '&nbsp;'|repeat(depth) %}
@@ -80,7 +73,8 @@
 									<option value="{{ cat.id }}" {% if selected == cat.id %}selected="selected"{% endif %}>{{ indent|raw }}{{ cat.title }}</option>
 								{% endif %}
 							{% endmacro %}
-							<select name="feedback[category_id]">
+							<select name="feedback[category_id]" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="1" data-exclude-blank="1">
+								<option value=""></option>
 								{% for cat in feedback_cats %}
 									{{ _self.cat_opt(newfeedback.category_id, cat, 0) }}
 								{% endfor %}
