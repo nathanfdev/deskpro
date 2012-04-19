@@ -3,7 +3,7 @@
     pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TaskList';
     pageMeta.search_type = '{{ search_type }}';
     pageMeta.search_category = '{{ search_category }}';
-
+    pageMeta.url_fragment = '{{ url_fragment('agent_task_list', {'search_type': search_type, 'search_category':search_category}) }}';
     {% set baseId = el_uid() %}
     pageMeta.baseId = '{{ baseId }}';
 </script>

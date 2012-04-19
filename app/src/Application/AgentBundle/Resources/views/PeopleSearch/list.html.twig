@@ -7,6 +7,7 @@ pageMeta.pageUrl = '{{ path('agent_peoplesearch_customfilter') }}?partial=1&cach
 pageMeta.refreshUrl = '{{ path('agent_peoplesearch_customfilter') }}?cache_id={{cache_id}}&letter={{selected_letter}}';
 pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
 pageMeta.fetchResultsUrl = '{{ path('agent_peoplesearch_getpage') }}';
+pageMeta.url_fragment = '{{ url_fragment('agent_peoplesearch_customfilter', {'letter': selected_letter}) }}';
 pageMeta.resultId = {{cache_id}};
 pageMeta.cache_id = {{cache_id}};
 {% if not people %}

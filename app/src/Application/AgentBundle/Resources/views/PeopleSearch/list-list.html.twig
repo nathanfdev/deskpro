@@ -13,6 +13,7 @@ pageMeta.cache_id = {{cache_id}};
 	pageMeta.noResults = true;
 {% endif %}
 
+pageMeta.url_fragment = '{{ url_fragment('agent_peoplesearch_customfilter', {'letter': selected_letter}) }}';
 pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
 pageMeta.fetchResultsUrl = '{{ path('agent_peoplesearch_getpage', {'view_type': 'list'}) }}';
 pageMeta.viewType = 'list';

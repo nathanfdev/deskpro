@@ -12,6 +12,7 @@ pageMeta.baseId = '{{ baseId }}';
 pageMeta.resultId = {{cache_id}};
 pageMeta.perPage = 50;
 pageMeta.orgResultIds = {{ org_ids|json_encode|raw }};
+pageMeta.url_fragment = '{{ url_fragment('agent_orgsearch_customfilter') }}';
 </script>
 {{ agentui.scroll_containers('page-org-list') }}
 

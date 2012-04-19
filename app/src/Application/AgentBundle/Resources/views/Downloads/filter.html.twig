@@ -1,7 +1,7 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.DownloadList';
 pageMeta.refreshUrl = '{{ path('agent_downloads_list', {'cache_id': result_id}) }}';
-
+pageMeta.url_fragment = '{{ url_fragment('agent_downloads_list', {'category_id': category.id}) }}';
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>

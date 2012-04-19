@@ -2,7 +2,7 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.UserChatFilter';
 pageMeta.fetchResultsUrl = '{{ path('agent_userchat_filterlist_page', {'filter_id': filter_id}) }}';
-
+pageMeta.url_fragment = '{{ url_fragment('agent_userchat_filterlist', {'filter_id': filter_id}) }}';
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 

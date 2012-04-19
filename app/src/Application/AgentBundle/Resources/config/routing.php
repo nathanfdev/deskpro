@@ -505,7 +505,7 @@ $collection->add('agent_person_ajaxsavecustomfields', new Route(
 ));
 
 $collection->add('agent_peoplesearch_customfilter', new Route(
-	'/people-search/search',
+	'/people-search/search/{letter}',
 	array('_controller' => 'AgentBundle:PeopleSearch:search'),
 	array(),
 	array('fragment_name' => 'people', 'fragment_type' => 'list')
@@ -1951,7 +1951,7 @@ $collection->add('agent_feedback_category', new Route(
 	'/feedback/category/{category_id}',
 	array('_controller' => 'AgentBundle:Feedback:categoryList'),
 	array(),
-	array()
+    array('fragment_name' => 'category', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_feedback_status', new Route(
@@ -1965,7 +1965,7 @@ $collection->add('agent_feedback_label', new Route(
 	'/feedback/label/{label}',
 	array('_controller' => 'AgentBundle:Feedback:labelList'),
 	array(),
-	array()
+    array('fragment_name' => 'label', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_feedback_filter', new Route(
