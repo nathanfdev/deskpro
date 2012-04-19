@@ -15,7 +15,7 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 
 		$(this.el.data('add-trigger')).on('click', function() {
 			var row = $(rowtpl);
-			row.appendTo(list.parents('article'));
+			row.appendTo(list.closest('article'));
             row.autoCompleteElement = new DeskPRO.Agent.ElementHandler.SimpleAutoComplete(row);
 		});
 
@@ -23,8 +23,8 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 			return $('.ticket-reply-form', self.el.data('replybox-container')).data('handler');
 		};
 
-		this.el.parents('article').on('click', '.remove-row-trigger', function(ev) {
-			var row = $(this).parents('.addrow');
+		this.el.closest('article').on('click', '.remove-row-trigger', function(ev) {
+			var row = $(this).closest('.addrow');
 			var personId = row.data('person-id');
 			var email = row.data('email-address');
 
@@ -53,32 +53,32 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 		});
 
 
-        this.el.parents('article').on('click', '.cc-saverow-trigger', function(ev) {
-            var row = $(this).parents('.addrow');
-            var email = $('input', row).val().trim();
+		this.el.closest('article').on('click', '.cc-saverow-trigger', function(ev) {
+			var row = $(this).closest('.addrow');
+			var email = $('input', row).val().trim();
 
-            if (!email) {
-                return;
-            }
+			if (!email) {
+				return;
+			}
 
-            row.addClass('loading');
+			row.addClass('loading');
 
-            $.ajax({
-                url: addUrl,
-                type: 'POST',
-                data: { email_address: email },
-                dataType: 'html',
-                success: function(html) {
-                    var li = $(html);
+			$.ajax({
+				url: addUrl,
+				type: 'POST',
+				data: { email_address: email },
+				dataType: 'html',
+				success: function(html) {
+					var li = $(html);
 
-                    li.appendTo(list);
+					li.appendTo(list);
 
-                    var email = li.data('email-address');
-                    var trb = getReplyController();
-                    trb.addCc(email);
-                    row.remove();
-                }
-            });
-        });
+					var email = li.data('email-address');
+					var trb = getReplyController();
+					trb.addCc(email);
+					row.remove();
+				}
+			});
+		});
 	},
 });
