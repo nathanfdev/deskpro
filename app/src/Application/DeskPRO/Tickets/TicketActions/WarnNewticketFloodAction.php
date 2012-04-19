@@ -78,6 +78,7 @@ class WarnNewticketFloodAction extends AbstractUserNotificationAction
 	 */
 	public function getDescription($as_html = true)
 	{
-		return 'Send email warning that the user is flooding the system';
+		$tr = App::getTranslator();
+		return $tr->phrase('agent.tickets.send_flood_warning_action');
 	}
 }

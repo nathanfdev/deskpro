@@ -143,11 +143,13 @@ class ReplyAction implements ActionInterface, PersonContextInterface
 	 */
 	public function getDescription($as_html = true)
 	{
+		$tr = App::getTranslator();
+
 		if ($as_html) {
 			$flat = str_replace(array("\r\n", "\n"), ' ', $this->reply_text);
 			if (strlen($flat) > 80) $flat = substr($flat, 0, 80) . '...';
-			return 'Add reply <span class="highlight-description">'.htmlspecialchars($flat).'</span>';
+			return $tr->phrase('agent.tickets.add_reply_x_action', array('desc' => '<span class="highlight-description">'.htmlspecialchars($flat).'</span>'));
 		}
-		return "Add reply";
+		return $tr->phrase('agent.tickets.add_reply_action');
 	}
 }

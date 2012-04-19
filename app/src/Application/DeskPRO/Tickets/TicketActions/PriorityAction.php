@@ -104,13 +104,15 @@ class PriorityAction implements ActionInterface
 	 */
 	public function getDescription($as_html = true)
 	{
+		$tr = App::getTranslator();
+
 		if ($this->category_id == 0) {
-			return 'Remove priority';
+			return $tr->phrase('agent.tickets.remove_priority_action');
 		} else {
 			$names = App::getEntityRepository('DeskPRO:TicketPriority')->getPriorityNames();
 			if (!isset($names[$this->priority_id])) return '';
 
-			return 'Set priority to ' . $names[$this->priority_id];
+			return $tr->phrase('agent.tickets.set_priority_action', array('priority' => $names[$this->priority_id]));
 		}
 	}
 }

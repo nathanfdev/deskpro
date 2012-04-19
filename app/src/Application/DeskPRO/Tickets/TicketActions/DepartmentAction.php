@@ -104,9 +104,11 @@ class DepartmentAction implements ActionInterface
 	 */
 	public function getDescription($as_html = true)
 	{
+		$tr = App::getTranslator();
+
 		$names = App::getEntityRepository('DeskPRO:Department')->getFullDepartmentNames();
 		if (!isset($names[$this->department_id])) return '';
 
-		return 'Set department to ' . $names[$this->department_id];
+		return $tr->phrase('agent.tickets.set_department_action', array('department' => $names[$this->department_id]));
 	}
 }

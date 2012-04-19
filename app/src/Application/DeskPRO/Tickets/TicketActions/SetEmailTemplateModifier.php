@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
+use Application\DeskPRO\App;
+
 class SetEmailTemplateModifier implements CollectionModifierInterface
 {
 	protected $tpl;
@@ -66,6 +68,7 @@ class SetEmailTemplateModifier implements CollectionModifierInterface
 	 */
 	public function getDescription($as_html = true)
 	{
-		return "Use email template: {$this->tpl}";
+		$tr = App::getTranslator();
+		return $tr->phrase('agent.tickets.use_email_tpl_action', array('tpl' => $this->tpl));
 	}
 }

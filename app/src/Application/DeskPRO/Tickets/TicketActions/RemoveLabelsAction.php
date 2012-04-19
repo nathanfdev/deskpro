@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\App;
 
 use Orb\Util\Arrays;
 
@@ -130,6 +131,7 @@ class RemoveLabelsAction implements ActionInterface
 	 */
 	public function getDescription($as_html = true)
 	{
-		return "Remove labels: " . implode($this->remove_labels, ', ');
+		$tr = App::getTranslator();
+		return $tr->phrase('agent.tickets.remove_labels_action', array('labels' => $this->remove_labels));
 	}
 }

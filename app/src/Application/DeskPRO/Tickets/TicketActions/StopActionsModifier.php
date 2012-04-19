@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
+use Application\DeskPRO\App;
+
 /**
  * A special modifier detected in the TriggerExecutor that stops further triggers from adding
  * their actions to the collection.
@@ -53,6 +55,7 @@ class StopActionsModifier implements CollectionModifierInterface
 	 */
 	public function getDescription($as_html = true)
 	{
-		return "Stop processing later triggers";
+		$tr = App::getTranslator();
+		return $tr->phrase('agent.tickets.stop_later_triggers_action');
 	}
 }

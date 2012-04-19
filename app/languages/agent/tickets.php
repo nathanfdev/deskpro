@@ -155,13 +155,61 @@
     'agent.tickets.user_waiting_x_and_total_y'       => 'User has been waiting <time>{{waiting}}</time> for a reply and a total of <time>{{total}}</time> since the ticket started.',
     'agent.tickets.your_teams_tickets'               => 'Your teams tickets',
     'agent.tickets.your_tickets'                     => 'Your tickets',
-    'agent.tickets.add_parts_action'                     => 'Add participants: {parts}',
-    'agent.tickets.agents_action'                     => 'Agents: {agents}',
-    'agent.tickets.teams_action'                     => 'Teams: {teams}',
+    'agent.tickets.add_parts_action'                     => 'Add participants: {{parts}}',
+    'agent.tickets.agents_action'                     => 'Agents: {{agents}}',
+    'agent.tickets.teams_action'                     => 'Teams: {{teams}}',
     'agent.tickets.and_sep'                     => ' and ',
-    'agent.tickets.always_notify_people'                     => 'Always notify {parts}',
-    'agent.tickets.add_labels_action'                     => 'Add labels: {labels}',
+    'agent.tickets.always_notify_people'                     => 'Always notify {{parts}}',
+    'agent.tickets.add_labels_action'                     => 'Add labels: {{labels}}',
     'agent.tickets.assign_current_action'                     => 'Assign agent to current logged in agent',
     'agent.tickets.unassign_action'                     => 'Unassign agent',
-    'agent.tickets.assign_to_agent_action'                     => 'Assign agent to {agent}',
+    'agent.tickets.assign_to_agent_action'                     => 'Assign agent to {{agent}}',
+
+    'agent.tickets.assign_current_team_action' => 'Assign team to current logged in agents team',
+    'agent.tickets.unassign_team' => 'Unassign team',
+    'agent.tickets.assign_team_action' => 'Assign team to {{name}}',
+
+    'agent.tickets.remove_category_action' => 'Remove category',
+    'agent.tickets.set_category_action' => 'Set category to {{category}}',
+
+    'agent.tickets.set_department_action' => 'Set department to {{department}}',
+
+    'agent.tickets.disable_agent_notifs_action' => 'Disable agent notifications',
+    'agent.tickets.disable_all_notifs_action' => 'Disable all notifications',
+    'agent.tickets.disabled_user_notifs_action' => 'Disable user notifications',
+
+    'agent.tickets.unset_flag_action' => 'Unset flag',
+    'agent.tickets.set_flag_to_action' => 'Set flag to {{flag}}',
+
+    'agent.tickets.force_email_validation_action' => 'Force email validation',
+
+    'agent.tickets.set_x_to_y_action' => 'Set {{title}} to {{value}}',
+
+    'agent.tickets.remove_priority_action' => 'Remove priority',
+    'agent.tickets.set_priority_action' => 'Set priority to {{priority}}',
+
+    'agent.tickets.remove_product_action' => 'Remove product',
+    'agent.tickets.set_product_action' => 'Set product to {{product}}',
+
+    'agent.tickets.remove_labels_action' => 'Remove labels: {{labels}}',
+    'agent.tickets.remove_participants_action' => 'Remove participants: {{parts}}',
+
+    'agent.tickets.add_reply_x_action' => 'Add reply {{desc}}',
+    'agent.tickets.add_reply_action' => 'Add reply',
+
+    'agent.tickets.use_email_tpl_action' => 'Use email template: {{tpl}}',
+
+    'agent.tickets.send_notifs_from_email_action' => 'Send notifications from {{email}}',
+
+    'agent.tickets.send_notifs_from_name_action' => 'Send notifications with then from name {{name}}',
+
+    'agent.tickets.stop_later_triggers_action' => 'Stop processing later triggers',
+
+    'agent.tickets.decrease_urgency_action' => 'Decrease urgency by {{amount}}',
+    'agent.tickets.increase_urgency_action' => 'Increase urgency by {{amount}}',
+
+    'agent.tickets.send_flood_warning_action' => 'Send email warning that the user is flooding the system',
+
+    'agent.tickets.remove_workflow_action' => 'Remove workflow',
+    'agent.tickets.set_workflow_action' => 'Set workflow to {{workflow}}',
 );

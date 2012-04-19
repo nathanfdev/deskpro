@@ -104,13 +104,15 @@ class CategoryAction implements ActionInterface
 	 */
 	public function getDescription($as_html = true)
 	{
+		$tr = App::getTranslator();
+
 		if ($this->category_id == 0) {
-			return 'Remove category';
+			return $tr->phrase('agent.tickets.remove_category_action');
 		} else {
 			$names = App::getEntityRepository('DeskPRO:TicketCategory')->getFullCategoryNames();
 			if (!isset($names[$this->category_id])) return '';
 
-			return 'Set category to ' . $names[$this->category_id];
+			return $tr->phrase('agent.tickets.set_category_action', array('category' => $names[$this->category_id]));
 		}
 	}
 }

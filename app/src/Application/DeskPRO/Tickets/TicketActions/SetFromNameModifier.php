@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
+use Application\DeskPRO\App;
+
 class SetFromNameModifier implements CollectionModifierInterface
 {
 	protected $from_name;
@@ -58,6 +60,7 @@ class SetFromNameModifier implements CollectionModifierInterface
 	 */
 	public function getDescription($as_html = true)
 	{
-		return "Send notifications with then from name {$this->from_name}";
+		$tr = App::getTranslator();
+		return $tr->phrase('agent.tickets.send_notifs_from_name_action', array('name' => $this->from_name));
 	}
 }

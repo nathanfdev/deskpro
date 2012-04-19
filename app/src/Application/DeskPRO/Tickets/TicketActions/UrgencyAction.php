@@ -38,6 +38,8 @@ use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
 
+use Application\DeskPRO\App;
+
 use Orb\Util\Numbers;
 
 /**
@@ -102,12 +104,13 @@ class UrgencyAction implements ActionInterface
 	 */
 	public function getDescription($as_html = true)
 	{
+		$tr = App::getTranslator();
 		if (!$this->num) return '';
 
 		if ($this->num < 0) {
-			return 'Decrease urgency by ' . abs($this->num);
+			return $tr->phrase('agent.tickets._action', array('urgency' => abs($this->num)));
 		} else {
-			return 'Increase urgency by ' . $this->num;
+			return $tr->phrase('agent.tickets._action', array('urgency' => $this->num));
 		}
 	}
 }

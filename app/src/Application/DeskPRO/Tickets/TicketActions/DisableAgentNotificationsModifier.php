@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
+use Application\DeskPRO\App;
+
 class DisableAgentNotificationsModifier implements CollectionModifierInterface
 {
 	public function modifyCollection(ActionsCollection $collection)
@@ -54,6 +56,7 @@ class DisableAgentNotificationsModifier implements CollectionModifierInterface
 	 */
 	public function getDescription($as_html = true)
 	{
-		return 'Disable agent notifications';
+		$tr = App::getTranslator();
+		return $tr->phrase('agent.tickets.disable_agent_notifs_action');
 	}
 }

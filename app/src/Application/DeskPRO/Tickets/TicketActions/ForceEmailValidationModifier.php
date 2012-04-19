@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
+use Application\DeskPRO\App;
+
 class ForceEmailValidationModifier implements CollectionModifierInterface
 {
 	public function __construct()
@@ -53,6 +55,7 @@ class ForceEmailValidationModifier implements CollectionModifierInterface
 	 */
 	public function getDescription($as_html = true)
 	{
-		return 'Force email validation';
+		$tr = App::getTranslator();
+		return $tr->phrase('agent.tickets.force_email_validation_action');
 	}
 }

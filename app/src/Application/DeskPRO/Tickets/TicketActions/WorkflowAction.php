@@ -103,13 +103,15 @@ class WorkflowAction implements ActionInterface
 	 */
 	public function getDescription($as_html = true)
 	{
+		$tr = App::getTranslator();
+
 		if ($this->workflow_id == 0) {
-			return 'Remove workflow';
+			return $tr->phrase('agent.tickets.remove_workflow_action');
 		} else {
 			$names = App::getEntityRepository('DeskPRO:TicketWorkflow')->getWorkflowNames();
 			if (!isset($names[$this->workflow_id])) return '';
 
-			return 'Set workflow to ' . $names[$this->workflow_id];
+			return $tr->phrase('agent.tickets.set_workflow_action', array('workflow' => $names[$this->workflow_id]));
 		}
 	}
 }

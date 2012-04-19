@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
+use Application\DeskPRO\App;
+
 class SetFromAddressModifier implements CollectionModifierInterface
 {
 	protected $email_address;
@@ -58,6 +60,7 @@ class SetFromAddressModifier implements CollectionModifierInterface
 	 */
 	public function getDescription($as_html = true)
 	{
-		return "Send notifications from {$this->email_address}";
+		$tr = App::getTranslator();
+		return $tr->phrase('agent.tickets.send_notifs_from_email_action', array('email' => $this->email_address));
 	}
 }

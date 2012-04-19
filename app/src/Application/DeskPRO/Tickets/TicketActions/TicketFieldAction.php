@@ -40,6 +40,8 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\CustomFields\FieldManager;
 use Application\DeskPRO\Entity\CustomDefTicket;
 
+use Application\DeskPRO\App;
+
 class TicketFieldAction implements ActionInterface
 {
 	/**
@@ -121,9 +123,10 @@ class TicketFieldAction implements ActionInterface
 	 */
 	public function getDescription($as_html = true)
 	{
+		$tr = App::getTranslator();
 		$title = $this->field_def->title;
 		$value = $this->value;
 
-		return "Set $title to $value";
+		return $tr->phrase('agent.tickets.set_x_to_y_action', array('title' => $title, 'value' => $value));
 	}
 }

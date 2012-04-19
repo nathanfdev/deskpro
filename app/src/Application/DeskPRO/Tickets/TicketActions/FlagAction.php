@@ -38,6 +38,7 @@ use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\App;
 
 /**
  * Sets flag
@@ -116,10 +117,12 @@ class FlagAction implements ActionInterface, PersonContextInterface
 	 */
 	public function getDescription($as_html = true)
 	{
+		$tr = App::getTranslator();
+
 		if (!$this->flag) {
-			return 'Unset flag';
+			return $tr->phrase('agent.tickets.unset_flag_action');
 		} else {
-			return 'Set flag to ' . $this->flag;
+			return $tr->phrase('agent.tickets.set_flag_to_action', array('flag' => $this->flag));
 		}
 	}
 }

@@ -148,15 +148,17 @@ class AgentTeamAction implements ActionInterface, PersonContextInterface
 	 */
 	public function getDescription($as_html = true)
 	{
+		$tr = App::getTranslator();
+
 		if ($this->agent_team_id == -1) {
-			return 'Assign team to current logged in agents team';
+			return $tr->phrase('agent.tickets.assign_current_team_action');
 		} elseif ($this->agent_team_id == 0) {
-			return 'Unassign team';
+			return $tr->phrase('agent.tickets.unassign_team');
 		} else {
 			$name = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames($this->agent_team_id);
 			if (!$name) return '';
 
-			return 'Assign team to ' . $name[0];
+			return $tr->phrase('agent.tickets.assign_team_action', array('name' => $name[0]));
 		}
 	}
 }

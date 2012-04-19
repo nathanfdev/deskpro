@@ -125,6 +125,6 @@ class RemoveParticipants implements ActionInterface
 			$names[] = $p->getDisplayName();
 		}
 
-		return "Remove participants: " . implode($names, ', ');
+		return $tr->phrase('agent.tickets.remove_participants_action', array('parts' => implode(', ', $names)));
 	}
 }
