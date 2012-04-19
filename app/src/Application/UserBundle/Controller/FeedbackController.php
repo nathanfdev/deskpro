@@ -53,7 +53,7 @@ class FeedbackController extends AbstractController
 	/**
 	 * Main index shows initial category listing
 	 */
-	public function filterAction($status = 'any-status', $slug = 'all-categories', $order_by = 'popular')
+	public function filterAction($status = 'any-status', $slug = 'all-categories', $order_by = 'popular', $just_form = false)
 	{
 		/** @var $structure \Application\DeskPRO\Publish\Structure */
 		$structure = $this->container->getSystemService('publish_structure');
@@ -143,9 +143,13 @@ class FeedbackController extends AbstractController
 			'max' => $per_page
 		);
 
-		$feedback_ids = $searcher->getMatches($limit);
+		$feedback_ids = array();
+		$feedback = array();
 
-		$feedback = App::getEntityRepository('DeskPRO:Feedback')->getByResultIds($feedback_ids);
+		if (!$just_form) {
+			$feedback_ids = $searcher->getMatches($limit);
+			$feedback = App::getEntityRepository('DeskPRO:Feedback')->getByResultIds($feedback_ids);
+		}
 
 		$category_counts = $structure->getFeedbackCategoryCounts($this->person);
 		$status_counts   = $structure->getFeedbackStatusCounts($this->person);
@@ -179,7 +183,9 @@ class FeedbackController extends AbstractController
 		#------------------------------
 
 		$errors = $error_fields = null;
+		$is_submitted = false;
 		if ($this->in->getBool('process_new')) {
+			$is_submitted = true;
 			$validator = new \Application\UserBundle\Validator\NewFeedbackValidator();
 
 			$form->bindRequest($this->get('request'));
@@ -220,9 +226,11 @@ class FeedbackController extends AbstractController
 			'has_voted_ids'      => $has_voted_ids,
 			'status_cat'         => $status_cat,
 
-			'newfeedback' => $newfeedback,
-			'form' => $form->createView(),
-			'errors' => $errors,
+			'just_form'    => $just_form,
+			'is_submitted' => $is_submitted,
+			'newfeedback'  => $newfeedback,
+			'form'         => $form->createView(),
+			'errors'       => $errors,
 			'error_fields' => $error_fields,
 		));
 	}

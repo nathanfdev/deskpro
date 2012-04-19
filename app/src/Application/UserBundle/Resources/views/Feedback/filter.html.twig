@@ -89,41 +89,42 @@
 
 {% include 'UserBundle:Feedback:filter-new-feedback.html.twig' %}
 
-<section class="dp-portal-section">
-	{% if category %}
-	<header>
+{% if not just_form %}
+	<section class="dp-portal-section">
 		{% if category %}
-		<h1>{{ phrase('user.articles.there_are_x_articles', {'count': articles|length}) }}</h1>
-		{% endif %}
-	</header>
-	{% endif %}
-	<div class="dp-content-block dp-articles-block">
-		<div class="dp-content-wrapper">
-			<div style="float:left; width: 100%;">
-				{% include 'UserBundle:Feedback:filter-nav.html.twig' %}
-			</div>
-			<br style="clear:left;height: 1px;" />
-
-			<ul class="dp-content-list">
-				{% for feedback in feedback %}
-					{% include 'UserBundle:Feedback:filter-list-item.html.twig' %}
-				{% endfor %}
-			</ul>
-
-			{% if pageinfo.last != 1 %}
-				{% set page_url = path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by }) ~ '?p=' %}
-				<div class="dp-pagination">
-					<ul>
-						{% if pageinfo.prev %}<li><a href="{{ page_url ~ pageinfo.prev }}">&larr; {{ phrase('user.general.page_prev') }}</a></li>{% endif %}
-						{% for p in pageinfo.pages %}
-							<li class="{% if pageinfo.cursor == p %}dp-active{% endif %}"><a href="{{ page_url ~ p }}">{{ p }}</a>
-						{% endfor %}
-						{% if pageinfo.next %}<li><a href="{{ page_url ~ pageinfo.next }}">{{ phrase('user.general.page_next') }} &rarr;</a></li>{% endif %}
-					</ul>
-				</div>
+		<header>
+			{% if category %}
+			<h1>{{ phrase('user.articles.there_are_x_articles', {'count': articles|length}) }}</h1>
 			{% endif %}
-		</div>
-	</div>
-</section>
+		</header>
+		{% endif %}
+		<div class="dp-content-block dp-articles-block">
+			<div class="dp-content-wrapper">
+				<div style="float:left; width: 100%;">
+					{% include 'UserBundle:Feedback:filter-nav.html.twig' %}
+				</div>
+				<br style="clear:left;height: 1px;" />
 
+				<ul class="dp-content-list">
+					{% for feedback in feedback %}
+						{% include 'UserBundle:Feedback:filter-list-item.html.twig' %}
+					{% endfor %}
+				</ul>
+
+				{% if pageinfo.last != 1 %}
+					{% set page_url = path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by }) ~ '?p=' %}
+					<div class="dp-pagination">
+						<ul>
+							{% if pageinfo.prev %}<li><a href="{{ page_url ~ pageinfo.prev }}">&larr; {{ phrase('user.general.page_prev') }}</a></li>{% endif %}
+							{% for p in pageinfo.pages %}
+								<li class="{% if pageinfo.cursor == p %}dp-active{% endif %}"><a href="{{ page_url ~ p }}">{{ p }}</a>
+							{% endfor %}
+							{% if pageinfo.next %}<li><a href="{{ page_url ~ pageinfo.next }}">{{ phrase('user.general.page_next') }} &rarr;</a></li>{% endif %}
+						</ul>
+					</div>
+				{% endif %}
+			</div>
+		</div>
+	</section>
+{% endif %}
 {% endblock %}

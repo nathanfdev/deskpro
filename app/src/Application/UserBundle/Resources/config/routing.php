@@ -522,9 +522,9 @@ $collection->add('user_feedback', new Route(
 	array()
 ));
 
-$collection->add('user_feedback_all', new Route(
-	'/feedback/all',
-	array('_controller' => 'UserBundle:Feedback:filter', 'status' => 'all', 'slug' => 'all'),
+$collection->add('user_feedback_new', new Route(
+	'/feedback/new-feedback',
+	array('_controller' => 'UserBundle:Feedback:filter', 'just_form' => 1,  'status' => 'any-status', 'slug' => 'all-categories', 'order_by' => 'popular'),
 	array(),
 	array()
 ));
