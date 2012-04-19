@@ -4,43 +4,66 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.OpenChats';
 pageMeta.agent_id = {{ agent.id|default(0)}};
 {% endblock pagemeta %}
 {% block listing %}
-    <section class="search-reuslts page-set">
-    	{% for convo in convos %}
-    		<article
-    			class="row-item convo-{{ convo.id }} without-selection"
-    			data-convo-id="{{ convo.id }}"
-    			data-route="page:{{ path('agent_userchat_view', {'conversation_id': convo.id}) }}" data-route-title="@selector(a.subject)" data-route-openclass="open">
-    			<div class="top-row">
-    				<div class="top-row-left">
-    					<h3>
-    						<a class="subject click-through">
-    							{{ convo.subjectLine }}
-    						</a>
-    					</h3>
-    				</div>
-    			</div>
-    			<div class="userinfo general">
-                        {% if convo.person %}
-                            {% set phrase_part %}<a
-                                class="user-link click-through"
-                                data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}"
-                            >{{ convo.person.display_name }}</a> &lt;{{ convo.person.primary_email_address }}&gt;</a>{% endset %}
-                        {% else %}
-                            {% if convo.person_name or convo.person_email %}
-                                {% set phrase_part %}{{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %}{% endset %}
-                            {% else %}
-                                {% set phrase_part %}{{ phrase('agent.general.anonymous') }}{% endset %}
-                            {% endif %}
-                        {% endif %}
+{% if convos|length %}
+<section class="search-reuslts page-set" data-page="{{ page }}">
+	{% for convo in convos %}
+		<article
+			class="row-item convo-{{ convo.id }} without-selection"
+			data-convo-id="{{ convo.id }}"
+			data-route="page:{{ path('agent_userchat_view', {'conversation_id': convo.id}) }}" data-route-title="@selector(a.subject)" data-route-openclass="open">
+			<div class="top-row">
+				<div class="top-row-left">
+					<h3>
+						<a class="subject click-through">
+							{{ convo.subjectLine }}
+						</a>
+					</h3>
+				</div>
+			</div>
+			<div class="userinfo general">
+				{% if convo.person %}
+				{% set phrase_part %}<a
+					class="click-through name"
+					data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}"
+					><span class="with-icon" data-person-id="{{ convo.person.id|default(0) }}" style="background-image: url('{{ convo.person.getPictureUrl(16) }}');">{{ convo.person.display_name }}</span></a> &lt;{{ convo.person.primary_email_address }}&gt;
+						{% if convo.person.organization %}
+							<span class="org">
+								({% if ticket_person.organization_position %}{{ ticket_person.organization_position }}, {% endif %}{{ ticket_person.organization.name }})
+							</span>
+						{% endif %}
+				{% endset %}
+				{% else %}
+					{% if convo.person_name or convo.person_email %}
+						{% set phrase_part %}{{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %}{% endset %}
+					{% else %}
+						{% set phrase_part %}{{ phrase('agent.general.anonymous') }}{% endset %}
+					{% endif %}
+				{% endif %}
 
-                    {{ phrase('agent.general.by_name', {'name':phrase_part}) }},
-    				<time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('day_short') }}</time>
-    			</div>
-    		</article>
-    	{% else %}
-    		<article class="row-item">
-	    		<p style="padding: 15px;">{{ phrase('agent.chat.no_open_chats') }}</p>
-    		</article>
-    	{% endfor %}
-    </section>
+				{{ phrase('agent.general.by_name', {'name':phrase_part}) }},
+				<time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('day_short') }}</time>
+			</div>
+		</article>
+	{% endfor %}
+	<footer class="results-nav">
+		<div class="cursor">
+			{% set total = convos|length %}
+			{% set phrase_part1 %}
+			<span class="results-showing-count" id="{{baseId}}_showing_count">{{ total }}</span>
+			{% endset %}
+			{% set phrase_part2 %}
+			<span class="results-total-count" id="{{baseId}}_total_count">{{ total }}</span>
+			{% endset %}
+			{{ phrase('agent.general.showing_results_x_of_y', {'count':total,'display_count':phrase_part1,'size':phrase_part2}) }}
+		</div>
+		<div class="loading">
+
+		</div>
+	</footer>
+</section>
+{% else %}
+<section class="list-listing no-results">
+	<p>{{ phrase('agent.general.there_are_no_results') }}</p>
+</section>
+{% endif %}
 {% endblock listing %}

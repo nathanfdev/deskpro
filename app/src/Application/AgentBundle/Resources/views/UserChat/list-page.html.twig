@@ -1,5 +1,6 @@
+{% if chats|length %}
 <section class="search-reuslts page-set" data-page="{{ page }}">
-	{% for convo in chats%}
+	{% for convo in chats %}
 		<article
 			class="row-item convo-{{ convo.id }} without-selection"
 			data-convo-id="{{ convo.id }}"
@@ -14,22 +15,33 @@
 				</div>
 			</div>
 			<div class="userinfo general">
-                {% if convo.person %}
-                {% set phrase_part %}<a
-                    class="user-link click-through"
-                    data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}"
-                    >{{ convo.person.display_name }}</a> &lt;{{ convo.person.primary_email_address }}&gt;</a>{% endset %}
-                {% else %}
-                {% if convo.person_name or convo.person_email %}
-                {% set phrase_part %}{{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %}{% endset %}
-                {% else %}
-                {% set phrase_part %}{{ phrase('agent.general.anonymous') }}{% endset %}
-                {% endif %}
-                {% endif %}
+				{% if convo.person %}
+				{% set phrase_part %}<a
+					class="click-through name"
+					data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}"
+					><span class="with-icon" data-person-id="{{ convo.person.id|default(0) }}" style="background-image: url('{{ convo.person.getPictureUrl(16) }}');">{{ convo.person.display_name }}</span></a> &lt;{{ convo.person.primary_email_address }}&gt;
+						{% if convo.person.organization %}
+							<span class="org">
+								({% if ticket_person.organization_position %}{{ ticket_person.organization_position }}, {% endif %}{{ ticket_person.organization.name }})
+							</span>
+						{% endif %}
+				{% endset %}
+				{% else %}
+					{% if convo.person_name or convo.person_email %}
+						{% set phrase_part %}{{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %}{% endset %}
+					{% else %}
+						{% set phrase_part %}{{ phrase('agent.general.anonymous') }}{% endset %}
+					{% endif %}
+				{% endif %}
 
-                {{ phrase('agent.general.by_name', {'name':phrase_part}) }},
+				{{ phrase('agent.general.by_name', {'name':phrase_part}) }},
 				<time class="timeago" datetime="{{ convo.date_created|date('c') }}">{{ convo.date_created|date('day_short') }}</time>
 			</div>
 		</article>
 	{% endfor %}
 </section>
+{% else %}
+	<section class="list-listing no-results">
+		<p>{{ phrase('agent.general.there_are_no_results') }}</p>
+	</section>
+{% endif %}

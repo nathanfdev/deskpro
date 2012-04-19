@@ -165,23 +165,24 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	modListingCount: function(id, op, count) {
-		var el = $('#userchat_list_' + id + '_counter');
+		var el = $('#userchat_list_' + (id != '0'?id:'allagents') + '_counter');
 		var newCount = DeskPRO_Window.util.modCountEl(el, op, count);
-		DeskPRO_Window.util.modCountEl($('#userchat_list_allagents_counter'), op, count);
 
 		if (id != '0') {
-			if (newCount < 1) {
-				$('#userchat_list_all').hide();
-				if (!$('#userchat_deplist_all').is(':visible')) {
-					$('#userchat_no_chats').show();
-				}
-			} else {
-				$('#userchat_list_all').show();
-				$('#userchat_no_chats').hide();
-			}
-		}
+			var row = el.closest('li');
 
-		this.handleUpdateCounts();
+			if(newCount) {
+				row.show();
+			}
+			else {
+				row.hide();
+			}
+
+			this.modListingCount(0, op, count);
+		}
+		else {
+			this.handleUpdateCounts();
+		}
 	},
 
 	modDepListingCount: function(id, op, count) {
@@ -190,17 +191,12 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		if(id != '0') {
 			var row = el.closest('li');
-			if (row.parent().is('.sub-group')) {
-				var parentEl = $('#userchat_deplist_' + el.data('parentid') + '_counter');
-				var newParentCount = DeskPRO_Window.util.modCountEl(parentEl, op, count);
-				var parentRow = parentEl.closest('li');
 
-				if(newParentCount) {
-					parentRow.show();
-				}
-				else {
-					parentRow.hide();
-				}
+			if (el.data('parentid')) {
+				this.modDepListingCount(el.data('parentid'), op, count);
+			}
+			else {
+				this.modDepListingCount(0, op, count);
 			}
 
 			if(newCount) {
@@ -210,11 +206,9 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				row.hide();
 			}
 		}
-
-		var elAll = $('#userchat_deplist_0_counter');
-		DeskPRO_Window.util.modCountEl(parentEl, op, count);
-
-		this.handleUpdateCounts();
+		else {
+			this.handleUpdateCounts();
+		}
 	},
 
 	handleDepChange: function(data) {
@@ -252,7 +246,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleNewChat: function(data) {
-		this.modListingCount(data.agent_id, '+');
 		if (!data.agent_id) {
 			if (!this.dismissedChats[data.conversation_id]) {
 				var info_line = [];
@@ -273,7 +266,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 	handleUnassignedChat: function(data) {
 		this.modListingCount(data.old_agent_id, '-');
-		this.modListingCount(0, '+');
 
 		if (data.old_agent_id) {
 			this.modDepListingCount(data.department_id, '+');
@@ -325,7 +317,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleReassignedChat: function(data) {
-		this.modListingCount(data.old_agent_id, '-');
 		this.modListingCount(data.agent_id, '+');
 
 		if (data.agent_id && !data.old_agent_id) {
