@@ -80,7 +80,7 @@
 							<td>
 								<div class="fade-container">
 									<div class="line">
-										<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-notabreload="" data-route-title="@text">{{ticket.subject}}</a>
+										<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-notabreload data-route-title="@text">{{ticket.subject}}</a>
 									</div>
 									<div class="bound-fade"></div>
 								</div>
@@ -109,7 +109,7 @@
 							<td>
 								<div class="fade-container">
 									<div class="line">
-										<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@text">{{ticket.subject}}</a>
+										<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-notabreload data-route-title="@text">{{ticket.subject}}</a>
 									</div>
 									<div class="bound-fade"></div>
 								</div>
@@ -137,7 +137,7 @@
 							<td>
 								<div class="fade-container">
 									<div class="line">
-										<a data-route="page:{{ path('agent_userchat_view', {'conversation_id': chat.id}) }}" data-route-title="@text">{{ chat.getSubjectLine() }}</a>
+										<a data-route="page:{{ path('agent_userchat_view', {'conversation_id': chat.id}) }}" data-route-notabreload data-route-title="@text">{{ chat.getSubjectLine() }}</a>
 									</div>
 									<div class="bound-fade"></div>
 								</div>
