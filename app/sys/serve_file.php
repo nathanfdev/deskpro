@@ -586,8 +586,14 @@ class FilestorageLoader
 		}
 
 		if ($is_image && $size) {
+			$is_fit = false;
+
+			if (isset($_GET['size-fit'])) {
+				$is_fit = (boolean)$_GET['size-fit'];
+			}
+
 			$sth = $this->getPdo()->prepare("SELECT * FROM blobs WHERE original_blob_id = :original_blob_id AND sys_name = :sys_name");
-			$sth->execute(array('original_blob_id' => $blob_id, 'sys_name' => "blob-$blob_id-$size"));
+			$sth->execute(array('original_blob_id' => $blob_id, 'sys_name' => $this->getSizedBlobSysName($blob_id, $size, $is_fit)));
 			$sub_blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
 			// Already have the cached resized blob
@@ -597,7 +603,7 @@ class FilestorageLoader
 
 			// Generate the resized blob and save it now
 			} else {
-				$blob = $this->createSizedBlob($blob, $size, $this->getPdo());
+				$blob = $this->createSizedBlob($blob, $size, $is_fit, $this->getPdo());
 			}
 		}
 
@@ -702,10 +708,21 @@ class FilestorageLoader
 	}
 
 
+	protected function getSizedBlobSysName($blob_id, $size, $is_fit)
+	{
+		$sys_name = 'blob-' . $blob_id . '-' . $size;
+
+		if($is_fit) {
+			$sys_name .= '-fit';
+		}
+
+		return $sys_name;
+	}
+
 	/**
 	 * Resize a blob. This needs to load the entire environment.
 	 */
-	protected function createSizedBlob($blob_info, $size)
+	protected function createSizedBlob($blob_info, $size, $is_fit)
 	{
 		$container = $this->bootFullSystem();
 
@@ -721,14 +738,34 @@ class FilestorageLoader
 		}
 
 		$image = $container->getImagine()->load($file);
-		$image->resize(new \Imagine\Image\Box($size, $size));
+		$size_w = $size_h = $size;
+		$width = $image->getSize()->getWidth();
+		$height = $image->getSize()->getHeight();
+
+		if($height > $width) {
+			$size_w = round($size_w * ($width / $height));
+		}
+		elseif($width > $height) {
+			$size_h = round($size_h * ($height / $width));
+		}
+
+		if($size_w == 0) {
+			$size_w = 1;
+		}
+
+		if($size_h == 0) {
+			$size_h = 1;
+		}
+
+		$box = new \Imagine\Image\Box($size_w, $size_h);
+		$image->resize($box);
 		$file = $image->get($blob->getImageType());
 
 		$desc = $container->getSystemService('filestorage')->createRandomPath();
 		$desc->write($file, array(
 			'content_type' => $blob->content_type,
 			'filename' => $blob->filename,
-			'sys_name' => 'blob-' . $blob->id . '-' . $size,
+			'sys_name' => $this->getSizedBlobSysName($blob->id, $size, $is_fit),
 			'original_blob_id' => $blob->id,
 		));
 

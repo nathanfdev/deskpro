@@ -324,7 +324,6 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			onSave: function(ob) {
 				self.updateAssignmentsDisplay();
 				self.updatePreview();
-				self.close();
 			}
 		});
 
