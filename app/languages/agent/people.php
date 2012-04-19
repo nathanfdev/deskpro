@@ -47,4 +47,5 @@
     'agent.people.website_url_placeholder'   => 'Website URL',
 	'agent.people.user_is_agent'             => '{{name}} is an agent on this helpdesk.',
 	'agent.people.member_of_teams'           => 'They are a member of the following teams:',
+	'agent.people.enter_name_here'           => 'Enter a name here',
 );

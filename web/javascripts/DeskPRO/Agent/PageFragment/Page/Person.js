@@ -143,7 +143,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					var setPos  = postxt.val().trim();
 				}
 
-				namef.show().text(setName ? setName : 'Double-click to set name');
+				if(!setName) {
+					return;
+				}
+
 				if (setPos) {
 					orgpos.show().find('.org-pos-display').text(setPos);
 				} else {
@@ -153,7 +156,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				editName.hide();
 				editOrgpos.hide();
 				startBtn.show();
+				namef.show();
+				orgpos.hide();
 				stopBtn.hide();
+				namef.text(setName);
 
 				var postData = [];
 				postData.push({
@@ -189,6 +195,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				}
 			});
 			this.getEl('editname_start').on('click', startEditable);
+
 			this.getEl('editname_end').on('click', stopEditable);
 
 			$('.contact-list-wrapper', this.wrapper).first().on('click', '.set-primary', function() {
@@ -366,6 +373,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					tabWarn.remove();
 				});
 			});
+		}
+
+		if(this.getEl('editname_start').is('.auto-click')) {
+			this.getEl('editname_start').click();
 		}
 	},
 
