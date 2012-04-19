@@ -738,27 +738,33 @@ class FilestorageLoader
 		}
 
 		$image = $container->getImagine()->load($file);
-		$size_w = $size_h = $size;
-		$width = $image->getSize()->getWidth();
-		$height = $image->getSize()->getHeight();
 
-		if($height > $width) {
-			$size_w = round($size_w * ($width / $height));
-		}
-		elseif($width > $height) {
-			$size_h = round($size_h * ($height / $width));
+		// Only shrink if it doesn't fit inside the box.
+		if (max($width, $height) > $size) {
+			$size_w = $size_h = $size;
+			$width = $image->getSize()->getWidth();
+			$height = $image->getSize()->getHeight();
+
+			// Preserve image ratio.
+			if ($height > $width) {
+				$size_w = round($size_w * ($width / $height));
+			}
+			elseif ($width > $height) {
+				$size_h = round($size_h * ($height / $width));
+			}
+
+			if ($size_w == 0) {
+				$size_w = 1;
+			}
+
+			if ($size_h == 0) {
+				$size_h = 1;
+			}
+
+			$box = new \Imagine\Image\Box($size_w, $size_h);
+			$image->resize($box);
 		}
 
-		if($size_w == 0) {
-			$size_w = 1;
-		}
-
-		if($size_h == 0) {
-			$size_h = 1;
-		}
-
-		$box = new \Imagine\Image\Box($size_w, $size_h);
-		$image->resize($box);
 		$file = $image->get($blob->getImageType());
 
 		$desc = $container->getSystemService('filestorage')->createRandomPath();
