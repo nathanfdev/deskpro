@@ -94,6 +94,17 @@ DeskPRO.Agent.WindowElement.TabBarOverflow = new Orb.Class({
 		this.overflowEnabled = false;
 	},
 
+	/**
+	 * Scrolls all the way to the left.
+	 *
+	 * @param amount
+	 */
+	resetScroll: function() {
+		if(this.overflowEnabled) {
+			this.scrollable.scrollLeft(0);
+			this.tabPane.removeClass('with-leftbar');
+		}
+	},
 
 	/**
 	 * Scroll to the left
