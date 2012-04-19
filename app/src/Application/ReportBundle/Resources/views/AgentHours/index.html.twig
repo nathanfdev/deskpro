@@ -1,14 +1,14 @@
 {% set this_page = 'report_agent_hours_index' %}
 {% extends 'ReportBundle::layout.html.twig' %}
+
 {% block nav_block %}
 {% endblock %}
+
 {% block page %}
+<div class="reports_agent_hours_section">
 {% set blocks_in_hour = (60 / block_size) %}
 {% set blocks_in_day = blocks_in_hour * 24 %}
 <style type="text/css">
-.dp-page-box {
-    background-color: #FFFFFF;
-}
 
 .time_cell {
     width: 4px;
@@ -150,7 +150,6 @@
     });
 
 </script>
-<div class="reports_agent_activity_section">
 {#{% if dates|length %}
 <div class="datechooser">
     <form>
