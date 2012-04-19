@@ -91,7 +91,7 @@ class TermSummary
 				if (is_array($choice)) {
 					$choice = array_pop($choice);
 				}
-				$summary = "Content matches: " . $choice;
+				$summary = $tr->phrase('agent.general.content_matches_summary', array('pattern' => $choice));
 				break;
 
 			case 'department':
@@ -221,20 +221,22 @@ class TermSummary
 					}
 				}
 
-				$choice_str = implode(' or ', $choice_str);
-				$summary = 'Status is ' . $choice_str;
+				$choice_str = implode($tr->phrase('agent.general.or_sep'), $choice_str);
+				$summary = $tr->phrase('agent.general.status_is', array('status' => $choice_str));
 				break;
 
 			case 'ticket_status_hidden':
 				$choice_str = array();
+
 				foreach ((array)$choice as $c) {
 					$choice_str[] = $tr->phrase('agent.tickets.hidden_status_' . $c);
 				}
+
 				$choice_str = implode(', ', $choice_str);
 				break;
 
 			case 'ticket_hold':
-				$summary = $tr->phrase('agent.general.is_not_x', array('field' => 'on hold'));
+				$summary = $tr->phrase('agent.general.is_not_x', array('field' => $tr->phrase('ticket.general.on_hold_summary')));
 				break;
 
 			case 'organization':
@@ -252,15 +254,15 @@ class TermSummary
 				break;
 
 			case 'email':
-				$this->summary[] = "Email is " . $choice;
+				$this->summary[] = $tr->phrase('agent.general.email_is_summary', array('email' => $choice));
 				break;
 
 			case 'email_domain':
-				$this->summary[] = "Email domain is " . $choice;
+				$this->summary[] = $tr->phrase('agent.general.domain_is_summary', array('domain' => $choice));
 				break;
 
 			case 'name':
-				$this->summary[] = "Name is " . $choice;
+				$this->summary[] = $tr->phrase('agent.general.name_is_summary', array('name' => $choice));
 				break;
 
 			case 'ticket_participant':
@@ -285,9 +287,9 @@ class TermSummary
 			case 'flagged':
 				$color = $choice;
 				if ($color == 'any') {
-					$summary = "Flagged";
+					$summary = $tr->phrase('agent.general.flagged_summary');
 				} else {
-					$summary = "Flagged with color {$color}";
+					$summary = $tr->phrase('agent.general.flagged_with_color_summary', array('color' => $color));
 				}
 				break;
 
@@ -360,15 +362,15 @@ class TermSummary
 				break; // end break TERM_TICKET_FIELD
 
 			case 'user_waiting':
-				$summary = "User waiting " . \Orb\Util\Dates::secsToReadable($choice);
+				$summary = $tr->phrase('agent.general.user_waiting_x', array('time' => \Orb\Util\Dates::secsToReadable($choice)));
 				break;
 
 			case 'agent_waiting':
-				$summary = "Agent waiting " . \Orb\Util\Dates::secsToReadable($choice);
+				$summary = $tr->phrase('agent.general.agent_waiting_x', array('time' => \Orb\Util\Dates::secsToReadable($choice)));
 				break;
 
 			case 'total_user_waiting':
-				$summary = "Total user waiting time is " . \Orb\Util\Dates::secsToReadable($choice);
+				$summary = $tr->phrase('agent.general.total_user_waiting_x', array('time' => \Orb\Util\Dates::secsToReadable($choice)));
 				break;
 
 			case 'ticket_creation_system':
@@ -401,36 +403,36 @@ class TermSummary
 				break;
 
 			case 'robot_email':
-				$summary = 'Email sent from a robot (such as an auto-reply)';
+				$summary = $tr->phrase('agent.general.email_send_by_robot_summary');
 				break;
 
-            case 'time_created':
-                $summary = "Time created $op {$choice['hour1']}:{$choice['minute1']}:00";
-                break;
+			case 'time_created':
+				$summary = $tr->phrase('agent.general.time_created_summary', array('op' => $op, 'hour' => $choice['hour1'], 'minute' =>$choice['minute1']));
+				break;
 
-            case 'time_last_user_reply':
-                $summary = "'Time of last user reply $op {$choice['hour1']}:{$choice['minute1']}:00";
-                break;
+			case 'time_last_user_reply':
+				$summary = $tr->phrase('agent.general.time_user_reply_summary', array('op' => $op, 'hour' => $choice['hour1'], 'minute' =>$choice['minute1']));
+				break;
 
-            case 'day_created':
-                $summary = "Day created $op in ".implode(', ', $choice['days']);
-                break;
+			case 'day_created':
+				$summary = $tr->phrase('agent.general.day_created_summary', array('op' => $op, 'days' => implode(', ', $choice['days'])));
+				break;
 
-            case 'day_last_user_reply':
-                $summary = "Day of last user reply $op in ".implode(', ', $choice['days']);
-                break;
+			case 'day_last_user_reply':
+				$summary = $tr->phrase('agent.general.day_user_replay_summary', array('op' => $op, 'days' => implode(', ', $choice['days'])));
+				break;
 
 			case 'is_new_user':
-				$summary = "Is a new user";
+				$summary = $tr->phrase('agent.general.new_user_summary');
 				break;
 
 			case 'is_not_new_user':
-				$summary = "Is not a new user";
+				$summary = $tr->phrase('agent.general.not_new_user_summary');
 				break;
 
 			case 'gateway_account':
 				$names = App::getOrm()->getRepository('DeskPRO:EmailGateway')->getGatewayNames((array)$choice['gateway_account']);
-				$summary = "Gateway account is " . implode($names, ' or ');
+				$summary = $tr->phrase('agent.general.gateway_is_summary');"Gateway account is " . implode(' or ', $names);
 				break;
 		}
 

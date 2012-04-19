@@ -604,4 +604,28 @@
 'agent.general.group_department' => 'Department',
 'agent.general.group_agent' => 'Agent',
 'agent.general.group_date_created' => 'Date Created',
+
+	'agent.general.email_send_by_robot_summary' => 'Email sent from a robot (such as an auto-reply)',
+	'agent.general.time_created_summary' => 'Time created {{op}} {{hour}}:{{minute}}:00',
+	'agent.general.time_user_reply_summary' => 'Time of last user reply {{op}} {{hour}}:{{minute}}:00',
+	'agent.general.day_created_summary' => 'Day created {{op}} in {{days}}',
+	'agent.general.day_user_replay_summary' => 'Day of last user reply {{op}} in {{days}}',
+	'agent.general.new_user_summary' => 'Is a new user',
+	'agent.general.not_new_user_summary' => 'Is not a new user',
+	'agent.general.gateway_is_summary' => 'Gateway account is {{names}}',
+
+	'agent.general.user_waiting_x' => 'User waiting {{time}}',
+	'agent.general.agent_waiting_x' => 'Agent waiting {{time}}',
+	'agent.general.total_user_waiting_x' => 'Total user waiting time is {{time}}',
+
+	'agent.general.flagged_summary' => 'Flagged',
+	'agent.general.flagged_with_color_summary' => 'Flagged with color {{color}}',
+	'agent.general.domain_is_summary' => 'Email domain is {{domain}}',
+	'agent.general.email_is_summary' => 'Email is {{email}}',
+	'agent.general.name_is_summary' => 'Name is {{name}}',
+
+	'agent.general.on_hold_summary' => 'on hold',
+	'agent.general.or_sep' => ' or ',
+	'agent.general.status_is' => 'Status is {{status}}',
+	'agent.general.content_matches_summary' => 'Content matches: {{pattern}}',
 );
