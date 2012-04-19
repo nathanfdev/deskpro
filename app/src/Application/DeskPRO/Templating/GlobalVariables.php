@@ -98,6 +98,11 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::getSystemService('UsersourceManager');
 	}
 
+	public function getDataRepository($ent)
+	{
+		return App::getSystemService("{$ent}Data");
+	}
+
 	public function getBrowserSniffer()
 	{
 		return App::get('browser_sniffer');

@@ -87,82 +87,17 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 		});
 		this.depSelect.data('original-name', this.depSelect.attr('name'));
 
-		$('select.sub_department_id', this.el).on('change', function(){
-			self.setDepartment($(this).val());
-		});
-
-		$('.with-sub-options:not(.department_id_wrapper)', this.el).each(function() {
-			var parentSel = $('.parent-option', this);
-			parentSel.data('original-name', parentSel.attr('name'));
-
-			var wrapper = this;
-
-			parentSel.on('change', function() {
-				var val = $(this).val();
-				var sub = $('.sub-options-' + val, wrapper);
-
-				var allSubs = $('.dp-sub-options', wrapper).hide();
-				$('select', allSubs).attr('name', '');
-
-				sub.show();
-
-				if (sub.length) {
-					// If there is a sub, zero out the parent name and give it to the child
-					parentSel.attr('name', '');
-					$('select', sub).attr('name', parentSel.data('original-name'));
-				} else {
-					// Otherwise make sure the parent has the proper name
-					parentSel.attr('name', parentSel.data('original-name'));
-				}
-			});
-		});
-
-		$('.ticket_category.ticket-display-field select, .ticket_priority.ticket-display-field select, .ticket_product.ticket-display-field select').on('change', function() {
+		$('.ticket_category select, .ticket_priority select, .ticket_product select').on('change', function() {
 			if (self.depItemsWithChecked) {
 				self.runChecks();
 			}
-		});
-
-		$('form', this.el).on('submit', function(ev) {
-
-			$('.sub-options:hidden', this.el).remove();
-
-			// Just zero out the name of the parent, so
-			// the child is always used
-			$('.with.dp-sub-options', this.el).each(function() {
-				var sub = $('.dp-sub-options', this);
-				if (sub) {
-					var parent = $('.parent-option');
-					parent.attr('name', '');
-				}
-			});
 		});
 
 		this.handleDepChange();
 	},
 
 	handleDepChange: function() {
-		var wrapper = $('.department_id_wrapper', this.el);
-
-		var allSubs = $('.dp-sub-options', wrapper).hide();
-		$('select', allSubs).attr('name', '');
-
-		var depId = this.depSelect.val();
-		var sub = $('.sub-options-' + depId, wrapper);
-
-		if (!sub.length) {
-			this.depSelect.attr('name', this.depSelect.data('original-name'));
-			this.setDepartment(depId);
-			return;
-		} else {
-			this.depSelect.attr('name', '');
-			$('select', sub).attr('name', this.depSelect.data('original-name'));
-		}
-
-		sub.show();
-		var subDepId = $('select.department_id', sub);
-
-		this.setDepartment(subDepId);
+		this.setDepartment(depId);
 	},
 
 	setDepartment: function(department_id) {

@@ -9,25 +9,25 @@
 		</div>
 		{% endif %}
 
-		<div class="dp-form-row">
-			<div class="dp-form-label">
-				<label>{{ phrase('user.tickets.label_your_email_star') }}</label> <em class="desc">
+		<div class="dp-control-group">
+			<div class="dp-control-label">
+				<label><strong>{{ phrase('user.tickets.label_your_email_star') }}</strong></label> <em class="desc">
 				{% set phrase_link %}
 					<a href="{{ path('user_login') }}" class="dp-newticket-login-open">{{ phrase('user.general.log_in') }}</a>
 				{% endset %}
 				{{ phrase('user.general.login_if_registered', {'link':phrase_link}) }}
 				<a href="{{ path('user_login_resetpass') }}">{{ phrase('user.tickets.lost_password_link') }}</a></em>
 			</div>
-			<div class="dp-form-input">
+			<div class="dp-controls dp-fill">
 				<input type="text" id="dp_newticket_email" name="newticket[person][email]" value="" />
 			</div>
 		</div>
 
-		<div class="dp-form-row dp-newticket-login-pass">
-			<div class="dp-form-label">
-				<label>{{ phrase('user.general.password') }}</label>
+		<div class="dp-control-group dp-newticket-login-pass">
+			<div class="dp-control-label">
+				<label><strong>{{ phrase('user.general.password') }}</strong></label>
 			</div>
-			<div class="dp-form-input">
+			<div class="dp-controls dp-fill">
 				<input type="password" id="dp_newticket_login_pass" />
 				<div class="dp-loading">
 					{{ phrase('user.tickets.logging_in') }}
@@ -44,11 +44,11 @@
 			</div>
 		</div>
 	{% else %}
-		<div class="dp-form-row">
-			<div class="dp-form-label">
-				<label>{{ phrase('user.general.your_email_address') }}</label></em>
+		<div class="dp-control-group">
+			<div class="dp-control-label">
+				<label><strong>{{ phrase('user.general.your_email_address') }}</strong></label></em>
 			</div>
-			<div class="dp-form-input">
+			<div class="dp-controls dp-fill">
 				{{ app.user.primary_email_address }}
 			</div>
 		</div>

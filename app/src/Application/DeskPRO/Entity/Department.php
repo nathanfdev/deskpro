@@ -59,7 +59,7 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	protected $parent = null;
 
 	/**
-	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $children = null;
 
@@ -102,7 +102,7 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	public function getParentId()
 	{
 		if ($this->parent) {
-			return $this->parent['id'];
+			return $this->parent->getId();
 		}
 
 		return 0;
@@ -146,24 +146,6 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 
 
 	/**
-	 * Get children
-	 * @return Doctrine\Common\Collections\ArrayCollection
-	 */
-	public function getChildren()
-	{
-		// We only support a second level,
-		// so if *we* are the child, then there are no more
-		if ($this->parent) {
-			// empty collection
-			return new \Doctrine\Common\Collections\ArrayCollection();
-		}
-
-		return $this->children;
-	}
-
-
-
-	/**
 	 * Get all children down the entire tree
 	 *
 	 * Note: Currently only two levels, so this is the same as getChildren()
@@ -175,6 +157,10 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		return $this->getChildren();
 	}
 
+	public function getChildren()
+	{
+		return $this->children;
+	}
 
 	/**
 	 * Return a unique ID that we can use to look up translations for this object
@@ -227,14 +213,14 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Department';
 		$metadata->setPrimaryTable(array( 'name' => 'departments', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
 		$metadata->mapField(array( 'fieldName' => 'is_tickets_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_tickets_enabled', ));
 		$metadata->mapField(array( 'fieldName' => 'is_chat_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_chat_enabled', ));
 		$metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => 'parent',  'orderBy' => array( 'title' => 'ASC', ), 'indexBy' => 'id' ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => NULL, 'inversedBy' => 'children', 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => 'parent',  'orderBy' => array( 'display_order' => 'ASC', ), 'indexBy' => 'id' ));
 	}
 }

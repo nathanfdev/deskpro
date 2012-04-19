@@ -1,10 +1,10 @@
-<div class="dp-form-row {% if error_fields['ticket.priority_id'] %}dp-error{% endif %}">
-	<div class="dp-form-label">
-		<label>{{ phrase('user.general.priority') }}</label>
+<div class="dp-control-group {% if error_fields['ticket.priority_id'] %}dp-error{% endif %}">
+	<div class="dp-control-label">
+		<label><strong>{{ phrase('user.general.priority') }}</strong></label>
 	</div>
-	<div class="dp-form-input">
+	<div class="dp-controls dp-fill ticket_priority">
 		{{ form_widget(form.ticket.priority_id, {'class': 'priority_id'}) }}
-		<div class="dp-error-explain">
+		<div class="dp-help-inline dp-error-explain">
 			{{ phrase('user.tickets.please_choose_priority') }}
 		</div>
 	</div>

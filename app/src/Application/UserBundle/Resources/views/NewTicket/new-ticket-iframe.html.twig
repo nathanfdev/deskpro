@@ -104,13 +104,13 @@ var ticketReader = {
  # Email
  ###############}
 
-<div class="dp-form-row {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
-	<div class="dp-form-label">
-		<label>{{ phrase('user.general.your_email_address') }} *</label>
+<div class="dp-control-group {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
+	<div class="dp-control-label">
+		<label><strong>{{ phrase('user.general.your_email_address') }} *</strong></label>
 	</div>
-	<div class="dp-form-input">
+	<div class="dp-controls dp-fill">
 		<input type="text" name="newticket[person][email]" value="{{ newticket.person.email }}" data-field-validators="DeskPRO.Form.EmailValidator" />
-		<div class="dp-error-explain">
+		<div class="dp-help-inline dp-error-explain">
 			{{ phrase('user.general.form_fix_email') }}
 		</div>
 	</div>
@@ -120,18 +120,18 @@ var ticketReader = {
 {###############
  # Name
  ###############}
-<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %}">
-	<div class="dp-form-label">
-		<label>{{ phrase('user.general.your_name') }} *</label>
+<div class="dp-control-group {% if error_fields['person.name'] %}dp-error{% endif %}">
+	<div class="dp-control-label">
+		<label><strong>{{ phrase('user.general.your_name') }} *</strong></label>
 	</div>
-	<div class="dp-form-input">
+	<div class="dp-controls dp-fill">
 		{{ form_widget(form.person.name, {
 			'attr': {
 				'data-field-validators': 'DeskPRO.Form.LengthValidator',
 				'data-min-len': 2
 			}
 		}) }}
-		<div class="dp-error-explain">
+		<div class="dp-help-inline dp-error-explain">
 			{{ phrase('user.general.register_enter_name') }}
 		</div>
 	</div>

@@ -85,8 +85,6 @@ class NewTicketController extends AbstractController
 		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'newticket[custom_ticket_fields]');
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
 
-		$departments = App::getEntityRepository('DeskPRO:Department')->findAll();
-
 		$captcha_html = '';
 		if ($captcha) {
 			$captcha_html = $captcha->getHtml();
@@ -206,13 +204,11 @@ class NewTicketController extends AbstractController
 		}
 
 		return $this->render($tpl, array(
-			'departments' => $departments,
 			'set_dep_id' => $set_dep_id,
 
 			'newticket' => $newticket,
 			'ticket_options' => $newticket_formtype->getTicketOptions(),
 			'newticket_formtype' => $newticket_formtype,
-			'custom_fields' => $newticket_formtype->getTicketFields(),
 			'form' => $form->createView(),
 			'custom_fields' => $custom_fields,
 			'ticket_display_js' => $ticket_display_js,

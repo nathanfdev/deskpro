@@ -1,10 +1,10 @@
-<div class="dp-form-row">
-	<div class="dp-form-label">
-		<label>{{ phrase('user.tickets.prove_you_are_human') }}</label>
+<div class="dp-control-group">
+	<div class="dp-control-label">
+		<label><strong>{{ phrase('user.tickets.prove_you_are_human') }}</strong></label>
 	</div>
-	<div class="dp-form-input">
+	<div class="dp-controls dp-fill">
 		{{ captcha_html|raw }}
-		<div class="dp-error-explain">
+		<div class="dp-help-inline dp-error-explain">
 			{{ phrase('user.tickets.captcha_incorrect') }}
 		</div>
 	</div>

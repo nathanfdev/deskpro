@@ -26,27 +26,25 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage
+ */
 
-namespace Application\DevBundle\Controller;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\ClientMessage;
-
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
-
-class TestController extends Controller
+class DepartmentDataService extends BaseRepositoryService
 {
-    public function indexAction()
-    {
+	public static function create(DeskproContainer $container, array $options = null)
+	{
+		if (!$options) $options = array();
+		$options['entity'] = 'Application\\DeskPRO\\Entity\\Department';
 
-		exit;
-		return $this->render('DevBundle:Test:test.html.twig');
-    }
+		$em = $container->getEm();
+		$o = new static($em, $options);
+		return $o;
+	}
 }

@@ -54,7 +54,7 @@ class ArticleCategory extends CategoryAbstract
 	protected $children;
 
 	/**
-	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $usergroups;
 

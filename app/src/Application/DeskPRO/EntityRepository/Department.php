@@ -39,7 +39,7 @@ use Orb\Util\Arrays;
 use Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 
-class Department extends AbstractEntityRepository implements Preloadable
+class Department extends AbstractCategoryRepository
 {
 	public function preload()
 	{
@@ -61,7 +61,6 @@ class Department extends AbstractEntityRepository implements Preloadable
 		}
 	}
 
-
 	public function findByTitle($title)
 	{
 		try {
@@ -79,144 +78,27 @@ class Department extends AbstractEntityRepository implements Preloadable
 
 	public function getAll()
 	{
-		$this->_load();
-		if (($top = $this->getIdentityHelper()->getCollection('top')) === null) {
-			$top = array();
-			foreach ($this->getIdentityHelper()->getCollection('all') as $d) {
-				if (!$d->parent) {
-					$top[] = $d;
-				}
-			}
-
-			$this->getIdentityHelper()->setCollectionFromResults('top', $top);
-		}
-
-		return $top;
+		return $this->getCategoryHelper()->getRootNodes();
 	}
 
 	public function getDepartmentIds()
 	{
-		$this->_load();
-		return $this->getIdentityHelper()->getCollectionIds('all');
+		return $this->getCategoryHelper()->getCategoryIds();
 	}
 
 	public function getDepartmentsInHierarchy()
 	{
-		$this->_load();
-		return $this->getAll();
+		return $this->getCategoryHelper()->getRootNodes();
 	}
 
-
-
-	/**
-	 * Gets the names for each department, indexed by department ID.
-	 *
-	 * @return array
-	 */
 	public function getDepartmentNames($for_ids = null)
 	{
-		$this->_load();
-
-		$names = array();
-
-		foreach ($this->getIdentityHelper()->getCollection('all') as $d) {
-			if ($for_ids && !in_array($d->id, $for_ids)) {
-				continue;
-			}
-
-			$names[$d->id] = $d->getTitle();
-		}
-
-		return $names;
+		return $this->getCategoryHelper()->getCategoryNames($for_ids);
 	}
 
-
-
-	/**
-	 * Gets a flat array of department names, indexed by department ID. Children
-	 * names are separated by $sep.
-	 *
-	 * @return array
-	 */
 	public function getFullDepartmentNames($sep = ' > ', $include_tops = true)
 	{
-		$this->_load();
-		if ($sep === null) {
-			$sep = ' > ';
-		}
-		return $this->_getFullDepartmentNames(array(), $this->getDepartmentsInHierarchy(), $sep, $include_tops);
-	}
-
-	protected function _getFullDepartmentNames($basenames, $deps, $sep, $include_tops)
-	{
-		$names = array();
-
-		foreach ($deps as $dep) {
-			$k = $dep->getId();
-			$name = $basenames;
-			$name[] = $dep['title'];
-
-			if (!$dep['children'] OR $include_tops) {
-				$names[$k] = implode($sep, $name);
-			}
-			if ($dep['children']) {
-				$names = Arrays::mergeAssoc($names, $this->_getFullDepartmentNames($name, $dep['children'], $sep, $include_tops));
-			}
-		}
-
-		return $names;
-	}
-
-
-
-	/**
-	 * Get an array of all children IDs for a specific parent. 0 means all ids in all cats
-	 *
-	 * @param int $parent_id
-	 * @return array
-	 */
-	public function getIdsInTree($parent_id, $incude_top = true)
-	{
-		$this->_load();
-		if (is_object($parent_id)) {
-			$parent_id = $parent_id->id;
-		} else if (is_array($parent_id)) {
-			$ids = array();
-			foreach ($parent_id as $pid) {
-				$ids = array_merge($ids, $this->getIdsInTree($pid, $incude_top));
-			}
-
-			return $ids;
-		}
-
-		$ids = array();
-		if ($incude_top AND $parent_id) {
-			$ids[] = $parent_id;
-		}
-
-		$deps = $this->getDepartmentsInHierarchy();
-		if ($parent_id) {
-			if (
-				empty($deps[$parent_id])
-				OR
-				empty($deps[$parent_id]['children'])
-			) {
-				return $ids; // $ids because it'll have top if requested with $include_top
-			}
-			$deps = $deps[$parent_id]['children'];
-		}
-
-		foreach ($deps as $dep) {
-			$ids[] = $dep['id'];
-
-			if ($dep['children']) {
-				foreach ($dep['children'] as $childdep) {
-					$ids[] = $childdep['id'];
-				}
-			}
-		}
-
-		return $ids;
+		return $this->getCategoryHelper()->getFullCategoryNames($sep, $include_tops);
 	}
 
 

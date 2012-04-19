@@ -11,11 +11,11 @@
 					{###############
 					 # Department
 					 ###############}
-					<div class="dp-form-row {% if error_fields['ticket.department_id'] %}dp-error{% endif %}">
-						<div class="dp-form-label">
-							<label>{{ phrase('user.tickets.begin_with_department') }}</label>
+					<div class="dp-control-group {% if error_fields['ticket.department_id'] %}dp-error{% endif %}">
+						<div class="dp-control-label">
+							<label><strong>{{ phrase('user.tickets.begin_with_department') }}</strong></label>
 						</div>
-						<div class="department_id_wrapper with-sub-options dp-form-input">
+						<div class="department_id_wrapper with-sub-options dp-controls dp-fill">
 							<select name="set_dep_id">
 								<option value=""></option>
 								{% for id,title in ticket_options.departments_full %}

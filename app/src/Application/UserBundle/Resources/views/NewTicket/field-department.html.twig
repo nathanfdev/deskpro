@@ -1,36 +1,17 @@
-<div class="dp-form-row {% if error_fields['ticket.department_id'] %}dp-error{% endif %}">
-	<div class="dp-form-label">
-		<label>{{ phrase('user.general.department') }} *</label>
+{% import 'UserBundle:Common:macros-form.html.twig' as formmacro %}
+<div class="dp-control-group {% if error_fields['ticket.department_id'] %}dp-error{% endif %}">
+	<div class="dp-control-label">
+		<label><strong>{{ phrase('user.general.department') }} *</strong></label>
 	</div>
-	{% if set_dep_id %}
-		{{ ticket_options.departments_full[set_dep_id] }}
-		<input type="hidden" name="newticket[ticket][department_id]" value="{{ set_dep_id }}" />
-		<input type="hidden" name="set_dep_id" value="{{ set_dep_id }}" />
-	{% else %}
-		<div class="department_id_wrapper with-sub-options dp-form-input" data-field-validators="DeskPRO.Form.TwoLevelSelectValidator">
-			<div class="dp-select-wrapper">
-				<select name="newticket[ticket][department_id]" class="department_id parent-option">
-					<option value=""></option>
-					{% for id,info in ticket_options.departments_hierarchy %}
-						<option value="{{id}}">{{info.title}}</option>
-					{% endfor %}
-				</select>
-				{% for parent_id, parent_info in ticket_options.departments_hierarchy %}
-					{% if parent_info.children|length %}
-					<div class="dp-sub-options sub-options-department_id sub-options-{{parent_id}}" style="display: none">
-						<select class="sub_department_id">
-							<option value=""></option>
-							{% for id,info in parent_info.children %}
-								<option value="{{id}}">{{info.title}}</option>
-							{% endfor %}
-						</select>
-					</div>
-					{% endif %}
-				{% endfor %}
-			</div>
-			<div class="dp-error-explain">
-				{{ phrase('user.general.please_choose_a_department') }}
-			</div>
+	<div class="dp-controls dp-fill ticket_department">
+		<select name="newticket[ticket][department_id]">
+			<option value=""></option>
+			{% for cat in app.getDataRepository('Department').getRootNodes() %}
+				{{ formmacro.select_options_hierarchy(cat, newticket.ticket.department_id) }}
+			{% endfor %}
+		</select>
+		<div class="dp-help-inline dp-error-explain">
+			{{ phrase('user.general.please_choose_a_department') }}
 		</div>
-	{% endif %}
+	</div>
 </div>

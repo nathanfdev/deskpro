@@ -1,8 +1,8 @@
-<div class="dp-form-row {% if error_fields['ticket.subject'] %}dp-error{% endif %} dp-form-row-ticket_subject">
-	<div class="dp-form-label">
-		<label>{{ phrase('user.general.subject') }} *</label>
+<div class="dp-control-group {% if error_fields['ticket.subject'] %}dp-error{% endif %} dp-control-group-ticket_subject">
+	<div class="dp-control-label">
+		<label><strong>{{ phrase('user.general.subject') }} *</strong></label>
 	</div>
-	<div class="dp-form-input">
+	<div class="dp-controls dp-fill">
 		{{ form_widget(form.ticket.subject, {
 			'attr': {
 				'data-field-validators': 'DeskPRO.Form.LengthValidator',
@@ -11,7 +11,7 @@
 				'class': addclass
 			}
 		}) }}
-		<div class="dp-error-explain">
+		<div class="dp-help-inline dp-error-explain">
 			{{ phrase('user.tickets.please_choose_subject_at_least') }}
 		</div>
 	</div>

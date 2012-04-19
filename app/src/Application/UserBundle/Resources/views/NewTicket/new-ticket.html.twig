@@ -53,9 +53,6 @@ var ticketReader = {
 <script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/NewTicket.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ asset('stylesheets/vendor/jquery-ui/portal-theme/jquery-ui.css') }}" />
 {% endblock %}
-
-
-
 {% block page_title %}{{ phrase('user.general.new_ticket') }}{% endblock %}
 {% block breadcrumb %}
 	{% if is_user_loggedin() %}
@@ -67,115 +64,76 @@ var ticketReader = {
 {% endblock %}
 {% block content %}
 
-{% if not set_dep_id %}<div class="without-js">{% include 'UserBundle:NewTicket:new-ticket-nojs-preform.html.twig' %}</div>{% endif %}
+<section class="dp-portal-section dp-new-feedback-section">
+	<header>
+		<h1>{{ phrase('user.general.contact_us') }}</h1>
+	</header>
+	<article>
+		<p>
+			{{ phrase('user.tickets.contact_us_explain') }}
+		</p>
+	</article>
+</section>
 
-<div
-	class="dp-content-block dp-newticket-page with-handler {% if not set_dep_id %}require-js{% endif %}"
-	data-element-handler="DeskPRO.User.ElementHandler.NewTicket"
-	data-suggestions-url="{{ path('user_search_similarto', {'content_type': 'article'}) }}"
->
-	<div class="dp-box">
-		<div class="dp-box-header">
-			<h1>{{ phrase('user.general.contact_us') }}</h1>
-		</div>
-		<div class="dp-box-content-wrapper">
-			<div class="dp-box-content dp-form">
-				{% if errors|length %}
-					<div class="alert-message error">
-						{{ phrase('user.tickets.oops_form_mistakes') }}
-						<!--
-						{{ debug_var(error_fields) }}
-						{{ debug_var(errors) }}
-						-->
-					</div>
-				{% endif %}
-				<form action="{{ path('user_tickets_new') }}" method="post" id="dp_newticket_form" enctype="multipart/form-data" class="with-form-validator">
-				<input type="hidden" name="preticket_status_id" id="dp_newticket_preticket_status_id" value="" />
-				<input type="hidden" name="process" value="1" />
+<section class="dp-portal-section dp-new-ticket-section">
+	<article>
+		<form action="{{ path('user_tickets_new') }}" method="post" id="dp_newticket_form" enctype="multipart/form-data" class="with-form-validator dp-well">
+			<input type="hidden" name="preticket_status_id" id="dp_newticket_preticket_status_id" value="" />
+			<input type="hidden" name="process" value="1" />
 
-				{###############
-				 # Email
-				 ###############}
+			{###############
+			 # Email
+			 ###############}
 
-				{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]', 'form_key_prefix': 'person.', 'initial_value': newticket.person.email, 'mode': 'advanced' } %}
+			{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]', 'form_key_prefix': 'person.', 'initial_value': newticket.person.email, 'mode': 'advanced' } %}
 
 
-				{###############
-				 # Name
-				 ###############}
-				<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %}">
-					<div class="dp-form-label">
-						<label>{{ phrase('user.general.your_name') }} *</label>
-					</div>
-					<div class="dp-form-input">
-						{{ form_widget(form.person.name, {
-							'attr': {
-								'data-field-validators': 'DeskPRO.Form.LengthValidator',
-								'data-min-len': 2
-							}
-						}) }}
-						<div class="dp-error-explain">
-							{{ phrase('user.general.please_enter_your_name') }}
-						</div>
-					</div>
+			{###############
+			 # Name
+			 ###############}
+			<div class="dp-control-group {% if error_fields['person.name'] %}dp-error{% endif %}">
+				<div class="dp-control-label">
+					<label><strong>{{ phrase('user.general.your_name') }} *</strong></label>
 				</div>
-
-				{#--- FIELDS CONTAINER ---#}
-				<div id="fields_container">
-					{# First time outputs items in order and visible depending on the page data #}
-					{% include 'UserBundle:NewTicket:field-list-loop.html.twig' with {'page_data': default_page_data, 'mode': 'default', 'page_data_field_ids': page_data_field_ids }%}
-
-					{# Second time outputs the remaining order invisible, JS will handle reordering when changing departments #}
-					{% include 'UserBundle:NewTicket:field-list-loop.html.twig' with {'page_data': default_page_data, 'mode': 'non_default', 'page_data_field_ids': page_data_field_ids }%}
-				</div>
-				{#--- FIELDS CONTAINER ---#}
-
-				<div class="dp-related-search" id="dp_newticket_related_container" style="display: none">
-					<h4>{{ phrase('user.tickets.we_found_helpful_content') }}</h4>
-					<div class="subline">{{ phrase('user.general.title_links_safe') }}</div>
-					<div class="dp-list results">
-					</div>
-					<div class="more-link" style="display: none;">
-						{% set phrase_part %}
-						<span class="count">0</span>
-						{% endset %}
-						<a>{{ phrase('user.tickets.view_more_results', {'part':phrase_part}) }}</a>
-					</div>
-				</div>
-
-				<div class="dp-footer">
-					<input class="btn primary" type="submit" value="{{ phrase('user.tickets.submit') }}" />
-				</div>
-
-				</form>
-			</div>
-		</div>
-	</div>
-
-	<script type="text/x-deskpro-plain" class="related-content-overlay-tpl">
-		<div class="dp-overlay-outer dp-post-overlay">
-		<div class="dp-overlay">
-			<div class="dp-overlay-inner">
-				<span class="dp-close-btn">{{ phrase('user.general.close_lc') }}</span>
-				<div class="dp-content">
-					<span class="dp-open-full"><a>{{ phrase('user.general.open_full_page') }}</a></span>
-					<div class="dp-content-holder">
-						<div class="dp-loading-msg">{{ phrase('user.general.loading') }}</div>
-					</div>
-					<div class="dp-controls">
-						<div class="dp-default dp-control-section">
-							<button class="btn small dp-section-toggle primary dp-set-answered" data-toggle-section=".dp-confirm-answered">{{ phrase('user.tickets.this_is_an_answer') }}</button>
-							<button class="btn small dp-not-answered">{{ phrase('user.tickets.this_is_no_answer') }}</button>
-						</div>
-						<div class="dp-confirm-answered dp-control-section" style="display:none">
-							<p>{{ phrase('user.tickets.want_to_email_us') }}</p>
-							<button class="btn small primary dp-answererd" data-type="close">{{ phrase('user.tickets.no_longer_need_to_contact_you') }}</button>
-							<button class="btn small dp-answererd" data-type="ticket">{{ phrase('user.tickets.still_want_to_contact_you') }}</button>
-						</div>
+				<div class="dp-controls dp-fill">
+					{{ form_widget(form.person.name, {
+						'attr': {
+							'data-field-validators': 'DeskPRO.Form.LengthValidator',
+							'data-min-len': 2
+						}
+					}) }}
+					<div class="dp-help-inline dp-help-inline dp-error-explain">
+						{{ phrase('user.general.please_enter_your_name') }}
 					</div>
 				</div>
 			</div>
-		</div>
-	</script>
-</div>
+
+			{#--- FIELDS CONTAINER ---#}
+			<div id="fields_container">
+				{# First time outputs items in order and visible depending on the page data #}
+				{% include 'UserBundle:NewTicket:field-list-loop.html.twig' with {'page_data': default_page_data, 'mode': 'default', 'page_data_field_ids': page_data_field_ids }%}
+
+				{# Second time outputs the remaining order invisible, JS will handle reordering when changing departments #}
+				{% include 'UserBundle:NewTicket:field-list-loop.html.twig' with {'page_data': default_page_data, 'mode': 'non_default', 'page_data_field_ids': page_data_field_ids }%}
+			</div>
+			{#--- FIELDS CONTAINER ---#}
+
+			<div class="dp-related-search" id="dp_newticket_related_container" style="display: none">
+				<h4>{{ phrase('user.tickets.we_found_helpful_content') }}</h4>
+				<div class="subline">{{ phrase('user.general.title_links_safe') }}</div>
+				<div class="dp-list results">
+				</div>
+				<div class="more-link" style="display: none;">
+					{% set phrase_part %}
+					<span class="count">0</span>
+					{% endset %}
+					<a>{{ phrase('user.tickets.view_more_results', {'part':phrase_part}) }}</a>
+				</div>
+			</div>
+
+			<input class="dp-btn dp-btn-primary" type="submit" value="{{ phrase('user.tickets.submit') }}" />
+		</form>
+	</article>
+</section>
+
 {% endblock %}

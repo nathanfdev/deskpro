@@ -1,28 +1,16 @@
-<div class="dp-form-row  {% if error_fields['ticket.category_id'] %}dp-error{% endif %}">
-	<div class="dp-form-label">
-		<label>{{ phrase('user.general.category') }}</label>
+{% import 'UserBundle:Common:macros-form.html.twig' as formmacro %}
+<div class="dp-control-group {% if error_fields['ticket.category_id'] %}dp-error{% endif %}">
+	<div class="dp-control-label">
+		<label><strong>{{ phrase('user.general.category') }}</strong></label>
 	</div>
-	<div class="dp-form-input with-sub-options">
-		<select name="newticket[ticket][category_id]" class="parent-option category_id">
-			<option value=""></option>
-			{% for id,info in ticket_options.ticket_categories_hierarchy %}
-				<option value="{{id}}">{{info.title}}</option>
+	<div class="dp-controls dp-fill ticket_category">
+		<select name="newticket[ticket][category_id]">
+			{% for cat in app.getDataRepository('TicketCategory').getRootNodes() %}
+				{{ formmacro.select_options_hierarchy(cat, newticket.ticket.category_id) }}
 			{% endfor %}
 		</select>
-		{% for parent_id, parent_info in ticket_options.ticket_categories_hierarchy %}
-			{% if parent_info.children|length %}
-			<div class="dp-sub-options sub-options-category_id sub-options-{{parent_id}}" style="display: none">
-				<select class="sub_category_id">
-					<option value=""></option>
-					{% for id,info in parent_info.children %}
-						<option value="{{id}}">{{info.title}}</option>
-					{% endfor %}
-				</select>
-			</div>
-			{% endif %}
-		{% endfor %}
-		<div class="dp-error-explain">
-			{{ phrase('user.general.please_choose_a_category') }}
+		<div class="dp-help-inline dp-error-explain">
+			{{ phrase('user.general.please_choose_a_category') }}{{ phrase('user.tickets.please_choose_product') }}
 		</div>
 	</div>
 </div>

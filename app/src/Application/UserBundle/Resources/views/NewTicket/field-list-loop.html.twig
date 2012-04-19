@@ -64,7 +64,7 @@
 
 {% for f in custom_fields %}
 {% if (mode == 'default' and item.field_type == 'ticket_field' and item.field_id == f.id) or (mode =='non_default' and item.id not in page_data_field_ids) %}
-<div data-field-id="ticket_field[{{f.id}}]" class="dp-form-row custom-field ticket_field_{{f.id}} ticket-display-field" {% if mode == 'non_default' %}style="display: none"{% endif %}>
+<div data-field-id="ticket_field[{{f.id}}]" class="dp-control-group custom-field ticket_field_{{f.id}} ticket-display-field" {% if mode == 'non_default' %}style="display: none"{% endif %}>
 	{% include 'UserBundle:NewTicket:field-custom-field.html.twig' %}
 </div>
 {% endif %}
