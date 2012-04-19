@@ -512,9 +512,13 @@ $collection->add('user_news_newcomment', new Route(
 ));
 
 $collection->add('user_feedback', new Route(
-	'/feedback/{status}/{slug}',
-	array('_controller' => 'UserBundle:Feedback:filter', 'status' => 'new', 'slug' => 'all'),
-	array('slug' => '((\\d+(\\-.*?)?)?)|all', 'status' => '(all|popular|new|active|closed)(\\.([0-9]+))?'),
+	'/feedback/{order_by}/{status}/{slug}',
+	array('_controller' => 'UserBundle:Feedback:filter', 'status' => 'all', 'slug' => 'all-categories', 'order_by' => 'popular'),
+	array(
+		'slug'   => '((\\d+(\\-.*?)?)?)|all\-categories',
+		'status' => '(all|undecided|active|closed)(\\.([0-9]+))?',
+		'order_by'   => '(popular|newest|most\-voted)',
+	),
 	array()
 ));
 
@@ -526,7 +530,7 @@ $collection->add('user_feedback_all', new Route(
 ));
 
 $collection->add('user_feedback_view', new Route(
-	'/feedback/feedback/{slug}',
+	'/feedback/view/{slug}',
 	array('_controller' => 'UserBundle:Feedback:view'),
 	array(),
 	array()
@@ -556,27 +560,6 @@ $collection->add('user_feedback_newcomment', new Route(
 $collection->add('user_feedback_vote', new Route(
 	'/feedback/vote/{feedback_id}',
 	array('_controller' => 'UserBundle:Feedback:vote'),
-	array(),
-	array()
-));
-
-$collection->add('user_feedback_status', new Route(
-	'/feedback/all/{status}',
-	array('_controller' => 'UserBundle:Feedback:index', 'slug' => 0),
-	array(),
-	array()
-));
-
-$collection->add('user_feedback_cat', new Route(
-	'/feedback/{slug}',
-	array('_controller' => 'UserBundle:Feedback:index', 'status' => 'new'),
-	array(),
-	array()
-));
-
-$collection->add('user_feedback_cat_status', new Route(
-	'/feedback/{slug}/{status}',
-	array('_controller' => 'UserBundle:Feedback:index'),
 	array(),
 	array()
 ));

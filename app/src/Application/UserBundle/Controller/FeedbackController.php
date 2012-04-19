@@ -53,7 +53,7 @@ class FeedbackController extends AbstractController
 	/**
 	 * Main index shows initial category listing
 	 */
-	public function filterAction($status = 'popular', $slug = 'all')
+	public function filterAction($status = 'all', $slug = 'all', $order_by = 'popular')
 	{
 		/** @var $structure \Application\DeskPRO\Publish\Structure */
 		$structure = $this->container->getSystemService('publish_structure');
@@ -70,18 +70,22 @@ class FeedbackController extends AbstractController
 		$sub_status_id = 0;
 
 		if (!$status) {
-			$status = 'new';
+			$status = 'all';
 		}
 
 		if (!$slug) {
 			$slug = 'all';
 		}
 
+		if ($order_by != 'popular' && $order_by != 'newest' && $order_by != 'most-voted') {
+			$order_by = 'popular';
+		}
+
 		$search_options = array(
-			'order_by' => 'num_ratings',
+			'order_by' => $order_by,
 		);
 
-		if ($slug && $slug != 'all') {
+		if ($slug && $slug != 'all-categories') {
 			$category_id = $this->container->getRouter()->getIdFromSlug($slug);
 			$category = null;
 
@@ -116,24 +120,17 @@ class FeedbackController extends AbstractController
 		$searcher = new \Application\DeskPRO\Searcher\FeedbackSearch();
 		$searcher->setPersonContext($this->person);
 
-		if ($status == 'popular') {
-			$searcher->addTerm('status', 'is', array('active', 'new'));
-			$searcher->setOrderByCode('num_ratings');
-			$search_options['order_by'] = 'num_ratings';
-		} else {
-			if ($status != 'all') {
-				$searcher->addTerm('status', 'is', $status);
-			}
-
-			if (strpos($status, '.') !== false) {
-				list($parent_status, $sub_status_id) = explode('.', $status, 2);
-			}
-
-			if ($this->in->getString('order_by')) {
-				$search_options['order_by'] = $this->in->getString('order_by');
-				$searcher->setOrderByCode($search_options['order_by']);
-			}
+		if ($status != 'all') {
+			$searcher->addTerm('status', 'is', $status);
 		}
+
+		$status_cat = null;
+		if (strpos($status, '.') !== false) {
+			list($parent_status, $sub_status_id) = explode('.', $status, 2);
+			$status_cat = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->find($sub_status_id);
+		}
+
+		$searcher->setOrderByCode($search_options['order_by']);
 
 		if ($category) {
 			$searcher->addTerm('category', 'is', $category['id']);
@@ -151,6 +148,7 @@ class FeedbackController extends AbstractController
 		$feedback = App::getEntityRepository('DeskPRO:Feedback')->getByResultIds($feedback_ids);
 
 		$category_counts = $structure->getFeedbackCategoryCounts($this->person);
+		$status_counts   = $structure->getFeedbackStatusCounts($this->person);
 		$has_voted_ids = $this->person->FeedbackVotes->getVotesOnFeedbackCollection($feedback_ids);
 
 		$comment_counts = array();
@@ -161,7 +159,7 @@ class FeedbackController extends AbstractController
 		}
 
 		return $this->render('UserBundle:Feedback:filter.html.twig', array(
-			'feedback_cats'          => $feedback_cats,
+			'feedback_cats'      => $feedback_cats,
 			'active_status_cats' => $active_status_cats,
 			'closed_status_cats' => $closed_status_cats,
 			'status_subcats'     => $status_subcats,
@@ -170,14 +168,16 @@ class FeedbackController extends AbstractController
 			'cat_id'             => 0,
 			'category_path'      => $category_path,
 			'category_counts'    => $category_counts,
+			'status_counts'      => $status_counts,
 			'status'             => $status,
 			'parent_status'      => $parent_status,
-			'feedback'              => $feedback,
+			'feedback'           => $feedback,
 			'comment_counts'     => $comment_counts,
 			'pageinfo'           => $pageinfo,
 			'num_results'        => $total,
 			'search_options'     => $search_options,
 			'has_voted_ids'      => $has_voted_ids,
+			'status_cat'         => $status_cat,
 		));
 	}
 

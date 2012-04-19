@@ -258,6 +258,9 @@ class Numbers
 
 		$info['curpage'] = self::bound($info['curpage'], 1, $info['last']);
 
+		$info['cursor'] = $page;
+		$info['limit'] = $per_page;
+
 		return $info;
 	}
 

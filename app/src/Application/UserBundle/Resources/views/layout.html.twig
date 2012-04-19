@@ -123,19 +123,19 @@
 								<label>Welcome &amp; News</label>
 							</a>
 						</li>
-						<li class="dp-tab-news {% if this_section == 'articles' %}on{% endif %}">
+						<li class="dp-tab-articles {% if this_section == 'articles' %}on{% endif %}">
 							<a href="{{ path('user_articles') }}">
 								<i class="dp-icon-folder-open"></i> <h3>Knowledgebase</h3>
 								<label>Read help articles</label>
 							</a>
 						</li>
-						<li class="dp-tab-news {% if this_section == 'feedback' %}on{% endif %}">
+						<li class="dp-tab-feedback {% if this_section == 'feedback' %}on{% endif %}">
 							<a href="{{ path('user_feedback') }}">
 								<i class="dp-icon-file"></i> <h3>Feedback</h3>
 								<label>Customer suggestions</label>
 							</a>
 						</li>
-						<li class="dp-tab-news {% if this_section == 'tickets' %}on{% endif %}">
+						<li class="dp-tab-contact {% if this_section == 'tickets' %}on{% endif %}">
 							<a href="{{ path('user_tickets_new') }}">
 								<i class="dp-icon-inbox"></i> <h3>Contact Us</h3>
 								<label>We are here to help</label>

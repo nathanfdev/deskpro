@@ -63,6 +63,11 @@ class Structure implements PersonContextInterface
 	protected $em;
 
 	/**
+	 * @var \Application\DeskPRO\DBAL\Connection
+	 */
+	protected $db;
+
+	/**
 	 * @var \Orb\Doctrine\Common\Cache\PreloadedMysqlCache
 	 */
 	protected $cache = null;
@@ -92,6 +97,7 @@ class Structure implements PersonContextInterface
 		$this->person_context = $person_context;
 
 		$this->em = $em;
+		$this->db = $em->getConnection();
 		$this->cache = $cache;
 	}
 
@@ -339,6 +345,36 @@ class Structure implements PersonContextInterface
 	}
 
 
+	public function getFeedbackStatusCounts(Person $person_context = null)
+	{
+		$ent = 'DeskPRO:FeedbackStatusCategory';
+		$id = 'status.counts.' . $ent . '.' . $person_context->getUsergroupSetKey();
+
+		if ($counts = $this->cache->fetch($id)) {
+			return $counts;
+		}
+
+		$count_status = $this->db->fetchAllKeyValue("
+			SELECT status, COUNT(*)
+			FROM feedback
+			GROUP BY status
+		");
+
+		$count_status = array_merge($count_status, $this->db->fetchAllKeyValue("
+			SELECT status_category_id, COUNT(*)
+			FROM feedback
+			WHERE status_category_id IS NOT NULL
+			GROUP BY status_category_id
+		"));
+
+		$this->cache->save($id, $counts);
+
+		return $count_status;
+
+		return $counts;
+	}
+
+
 	/**
 	 * @param \Application\DeskPRO\Entity\Person|null $person_context
 	 * @return array
@@ -346,7 +382,7 @@ class Structure implements PersonContextInterface
 	public function getFeedbackCategoryCounts(Person $person_context = null)
 	{
 		$ent = 'DeskPRO:FeedbackCategory';
-		$id = 'categories.counts.' . $ent;
+		$id = 'categories.counts.' . $ent . $person_context->getUsergroupSetKey();;
 		$this->loadCategories($ent);
 
 		if ($counts = $this->cache->fetch($id)) {

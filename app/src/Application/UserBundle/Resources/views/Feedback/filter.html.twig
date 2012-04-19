@@ -1,4 +1,8 @@
+{% set this_section = 'feedback' %}
 {% extends 'UserBundle::layout.html.twig' %}
+{% block head %}
+<script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/FeedbackNav.js') }}"></script>
+{% endblock %}
 {% macro cat_row(cat, status, selected_cat) %}
 	<li {% if cat.id == selected_cat.id %}class="on"{% endif %}>
 		<a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug}) }}">{{ cat.title }}</a>
@@ -13,27 +17,38 @@
 {% endmacro %}
 {% block breadcrumb %}
 	<li><a href="{{ path('user_feedback') }}">{{ phrase('user.general.feedback') }}</a><span class="dp-divider">&rarr;</span></li>
-	<li>
-		<a href="{{ path('user_feedback', {'status': parent_status, 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_' ~ parent_status) }}</a>
-		<span class="dp-divider">&rarr;</span>
-	</li>
-	{% if parent_status != status %}
+	{% if not (status == 'all' and search_options.order_by == 'popular' and not category) %}
 		<li>
-			<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug}) }}">
-				{% if parent_status == 'active' %}
-					{{ active_status_cats[sub_status_id].title }}
-				{% else %}
-					{{ closed_status_cats[sub_status_id].title }}
+			<a href="{{ path('user_feedback', {order_by:search_options.order_by}) }}">
+				{% if search_options.order_by == 'popular' %}{{ phrase('user.feedback.popular') }}
+				{% elseif search_options.order_by == 'popular' %}{{ phrase('user.feedback.newest') }}
+				{% elseif search_options.order_by == 'most-voted' %}{{ phrase('user.feedback.most_voted') }}
 				{% endif %}
 			</a>
 			<span class="dp-divider">&rarr;</span>
 		</li>
-	{% endif %}
-	{% if category %}
-		{% for cat in category.getTreeParents() %}
-			<li><a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug}) }}">{{ cat.title }}</a><span class="dp-divider">&rarr;</span></li>
-		{% endfor %}
-		<li><a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug}) }}">{{ category.title }}</a><span class="dp-divider">&rarr;</span></li>
+		{% if parent_status != status %}
+			<li>
+				<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug}) }}">
+					{% if parent_status == 'active' %}
+						{{ active_status_cats[sub_status_id].title }}
+					{% else %}
+						{{ closed_status_cats[sub_status_id].title }}
+					{% endif %}
+				</a>
+				<span class="dp-divider">&rarr;</span>
+			</li>
+		{% endif %}
+		{% if category %}
+			{% for cat in category.getTreeParents() %}
+				<li><a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug}) }}">{{ cat.title }}</a><span class="dp-divider">&rarr;</span></li>
+			{% endfor %}
+			<li><a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug}) }}">{{ category.title }}</a><span class="dp-divider">&rarr;</span></li>
+		{% endif %}
+		<li>
+			<a href="{{ path('user_feedback', {'status': parent_status, 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_' ~ parent_status) }}</a>
+			<span class="dp-divider">&rarr;</span>
+		</li>
 	{% endif %}
 {% endblock %}
 {% block page_title %}
@@ -60,139 +75,160 @@
 	<header>
 		<h1>{{ phrase('user.general.feedback') }}</h1>
 	</header>
-	<article class="dp-new-feedback">
-		<header>
-			<h2>Make a suggestion</h2>
-		</header>
-		<article>
-			<div class="dp-search-bar">
-				<table class="dp-layout" width="100%"><tr>
-					<td><input type="text" class="dp-suggest-title" id="new_suggest_title" name="feedback[title]" placeholder="I suggest ..." /></td>
-					<td><button class="dp-btn dp-btn-success">Go</button></td>
-				</tr></table>
-			</div>
-		</article>
+	<article>
+		<p>
+			{{ phrase('user.feedback.explain') }}
+		</p>
 	</article>
 </section>
 
-<div class="dp-content-block dp-feedback-page">
-	<div class="dp-box">
-		<div class="dp-box-header">
-			<div class="dp-box-options">
-				<a class="btn small dp-hide-print" href="{{ path('user_feedback_newfeedback') }}">{{ phrase('user.general.submit_feedback') }}</a>
-			</div>
-			<h1>
-				<a href="{{ path('user_feedback_all') }}">{{ phrase('user.general.feedback') }}</a>
-			</h1>
-		</div>
+<article class="dp-new-feedback">
+	<div class="dp-search-bar">
+		<table class="dp-layout" width="100%"><tr>
+			<td style="vertical-align: top; white-space: nowrap;" width="100%">
+				<div class="dp-input-prepend">
+					<span class="dp-add-on">I suggest ...</span><input type="text" class="dp-suggest-title" id="new_suggest_title" name="feedback[title]" placeholder="" />
+				</div>
+			</td>
+			<td style="vertical-align: top;"><button class="dp-btn dp-btn-success">Go</button></td>
+		</tr></table>
+	</div>
+</article>
 
-		<div class="dp-box-content-wrapper">
-			<div class="dp-box-nav">
-				<ul>
-					<li class="dp-title">{{ phrase('user.general.status') }}</li>
-					<li {% if status == 'all' %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': 'all', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_all') }}</a></li>
-					<li {% if status == 'popular' %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': 'popular', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_popular') }}</a></li>
-					<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': 'new', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_new') }}</a></li>
-					<li {% if status == 'active' %}class="on"{% endif %}>
-						<a href="{{ path('user_feedback', {'status': 'active', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_active') }}</a>
-						<ul>
-							{% for s_cat in active_status_cats %}
-								<li {% if status == s_cat.status_code %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': s_cat.status_code, 'slug': category.url_slug}) }}">{{ s_cat.title }}</a></li>
-							{% endfor %}
-						</ul>
+<section class="dp-portal-section">
+	{% if category %}
+	<header>
+		{% if category %}
+		<h1>{{ phrase('user.articles.there_are_x_articles', {'count': articles|length}) }}</h1>
+		{% endif %}
+	</header>
+	{% endif %}
+	<div class="dp-content-block dp-articles-block">
+		<div class="dp-content-wrapper">
+			<div style="float:left; width: 100%;">
+				<ul class="dp-nav dp-nav-tabs with-handler" data-element-handler="DeskPRO.User.ElementHandler.FeedbackNav">
+					<li class="{% if search_options.order_by == 'popular' %}dp-active{% endif %}">
+						<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'popular'}) }}">{{ phrase('user.feedback.popular') }}</a>
 					</li>
-					<li {% if status == 'closed' %}class="on"{% endif %}>
-						<a href="{{ path('user_feedback', {'status': 'closed', 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_closed') }}</a>
-						<ul>
-							{% for s_cat in closed_status_cats %}
-								<li {% if status == s_cat.status_code %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': s_cat.status_code, 'slug': category.url_slug}) }}">{{ s_cat.title }}</a></li>
-							{% endfor %}
-						</ul>
+					<li class="{% if search_options.order_by == 'newest' %}dp-active{% endif %}">
+						<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'newest'}) }}">{{ phrase('user.feedback.newest') }}</a>
 					</li>
-				</ul>
-
-				{% if status != 'popular' %}
-					<div class="dp-sort-options">
-						{{ phrase('user.general.sort_by') }}:<br />
-							<a {% if search_options.order_by == 'num_ratings' %}style="font-weight:bold"{% endif %} href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'order_by': 'num_ratings'}) }}">{{ phrase('user.general.votes') }}</a>
-							/
-							<a {% if search_options.order_by == 'date_created' %}style="font-weight:bold"{% endif %} href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'order_by': 'date_created'}) }}">{{ phrase('user.general.date') }}</a>
-					</div>
-				{% endif %}
-
-				{% if feedback_cats|length %}
-					<ul class="sep">
-						<li class="dp-title">{{ phrase('user.general.category') }}</li>
-						<li {% if not category %}class="on"{% endif %}><a href="{{ path('user_feedback', {'status': status, 'slug': 'all'}) }}">{{ phrase('user.feedback.status_all') }}</a></li>
-						{% for cat in feedback_cats %}
-							{{ _self.cat_row(cat, status, category) }}
-						{% endfor %}
-					</ul>
-				{% endif %}
-			</div>
-			<div class="dp-box-content dp-with-nav">
-				<ul class="dp-feedback-list">
-					{% for feedback in feedback %}
-						<li>
-							{% include 'UserBundle:Feedback:voting-widget.html.twig' %}
-							<div class="item">
-								<div class="dp-faded-container">
-									<h3><a href="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}">{{feedback.title}}</a></h3>
-									<div class="dp-bound-faded"></div>
-								</div>
-								<div class="meta">
-									{{ phrase('user.general.created_by_x', {'name': feedback.person.display_name}) }} |
-									{{ feedback.date_created|date('M d, Y') }} |
-										{% if feedback.status_category %}
-											{{ feedback.status_category.title }}
-										{% else %}
-											{{ phrase('user.feedback.status_' ~ feedback.status) }}
-										{% endif %}
-									{% if comment_counts[feedback.id] %}| Comments: {{ comment_counts[feedback.id] }}{% endif %}
-								</div>
-							</div>
-						</li>
-					{% else %}
-						<li>{{ phrase('user.feedback.no_feedback_spec') }}</li>
-					{% endfor %}
-				</ul>
-			</div>
-			{% if is_partial_request() %}
-				{% if num_results > feedback|length %}
-					<div class="dp-footer">
-						<a class="btn" href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug}) }}">
-							{{ phrase('user.feedback.view_all_x_feedback', {'count': num_results}) }}
+					<li class="{% if search_options.order_by == 'most-voted' %}dp-active{% endif %}">
+						<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'most-voted'}) }}">{{ phrase('user.feedback.most_voted') }}</a>
+					</li>
+					<li class="dp-dropdown" style="float:right">
+						<a href="#" class="dp-dropdown-toggle" data-toggle="dp-dropdown">
+							{% if status == 'all' %}
+								{{ phrase('user.feedback.any_status') }}
+							{% else %}
+								{% if status_cat %}
+									{{ status_cat.title }}
+								{% else %}
+									{% if status == 'undecided' %}{{ phrase('user.feedback.status_undecided') }}
+									{% elseif status == 'active' %}{{ phrase('user.feedback.status_active') }}
+									{% elseif status == 'closed' %}{{ phrase('user.feedback.status_closed') }}
+									{% endif %}
+								{% endif %}
+							{% endif %}
+							<b class="dp-caret"></b>
 						</a>
-					</div>
-				{% endif %}
-			{% else %}
-				{% if pageinfo.last != 1 %}
-					<div class="dp-footer">
-						<div class="pagination">
-							<ul>
-								{% if pageinfo.prev %}
-									<li>
-										<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'page': pageinfo.prev }) }}">{{ phrase('user.general.page_prev') }}</a>
-									</li>
+						<ul class="dp-dropdown-element dp-pull-right dp-cat-list" id="dp_feedback_cat_menu">
+							<li>
+								<i class="dp-icon-asterisk"></i>
+								<a href="{{ path('user_feedback', {'status': 'undecided', 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ phrase('user.feedback.status_undecided') }}</a>
+								<span class="dp-badge dp-small">{{ status_counts['undecided']|default(0) }}</span>
+							</li>
+							<li class="sep"></li>
+							<li>
+								<i class="dp-icon-time"></i>
+								<a href="{{ path('user_feedback', {'status': 'active', 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ phrase('user.feedback.status_active') }}</a>
+								<span class="dp-badge dp-small">{{ status_counts['active']|default(0) }}</span>
+							</li>
+							{% for status in active_status_cats %}
+								<li class="dp-sub">
+									<i class="dp-icon-time"></i>
+									<a href="{{ path('user_feedback', {'status': 'active.'~status.id, 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ status.title }}</a>
+									<span class="dp-badge dp-small">{{ status_counts[status.id]|default(0) }}</span>
+								</li>
+							{% endfor %}
+							<li class="sep"></li>
+							<li>
+								<i class="dp-icon-inbox"></i>
+								<a href="{{ path('user_feedback', {'status': 'closed', 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ phrase('user.feedback.status_closed') }}</a>
+								<span class="dp-badge dp-small">{{ status_counts['closed']|default(0) }}</span>
+							</li>
+							{% for status in closed_status_cats %}
+								<li class="dp-sub">
+									<i class="dp-icon-time"></i>
+									<a href="{{ path('user_feedback', {'status': 'active.'~status.id, 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ status.title }}</a>
+									<span class="dp-badge dp-small">{{ status_counts[status.id]|default(0) }}</span>
+								</li>
+							{% endfor %}
+						</ul>
+					</li>
+					<li class="dp-dropdown" style="float:right">
+						<a href="#" class="dp-dropdown-toggle" data-toggle="dp-dropdown">
+							{% if category.id %}
+								{{ category.full_title }}
+							{% else %}
+								{{ phrase('user.feedback.all_categories') }}
+							{% endif %}
+							<b class="dp-caret"></b>
+						</a>
+						<ul class="dp-dropdown-element dp-pull-right dp-cat-list" id="dp_feedback_cat_menu">
+							{% macro cat_li(category_counts, status, order_by, cat, depth) %}
+								{% if not depth %}{% set depth = 0 %}{% endif %}
+								<li {% if depth %}class="dp-sub dp-sub-depth-{{ depth }}"{% endif %}>
+									<i class="dp-icon-folder-close"></i>
+									<a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug, 'order_by': order_by}) }}">{{ cat.title }}</a>
+									<span class="dp-badge dp-small">{{ category_counts[cat.id]['all']|default(0) }}</span>
+								</li>
+								{% if cat.getChildren()|length %}
+									{% for child in cat.getChildren() %}
+										{{ _self.cat_li(category_counts, 	status, search_options.order_by, child, depth+1) }}
+									{% endfor %}
 								{% endif %}
-								{% for p in pageinfo.pages %}
-									<li {% if pageinfo.curpage == p %}class="active"{% endif %}>
-										<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'page': p }) }}">{{ p }}</a>
-									</li>
-								{% endfor %}
-								{% if pageinfo.next %}
-									<li>
-										<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug, 'page': pageinfo.next }) }}">{{ phrase('user.general.page_next') }}</a>
-									</li>
-								{% endif %}
+							{% endmacro %}
+							{% for cat in feedback_cats %}
+								{{ _self.cat_li(category_counts, status, search_options.order_by, cat) }}
+							{% endfor %}
+						</ul>
+					</li>
+				</ul>
+			</div>
+
+			<ul class="dp-content-list">
+				{% for feedback in feedback %}
+				<li>
+					<section class="dp-article-post dp-content-post">
+						<header>
+							<h3 style="margin-bottom: 0"><a href="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}">{{feedback.title}}</a></h3>
+							<ul class="dp-post-info">
+								<li class="dp-author"><i class="dp-icon-user"></i> {{ feedback.person.display_name }}</li>
+								<li class="dp-category"><i class="dp-icon-folder-close"></i> <a href="{{ path('user_feedback', {'status': status, 'slug': feedback.category.url_slug}) }}">{{ feedback.category.title }}</a></li>
+								<li class="dp-date"><i class="dp-icon-calendar"></i> {{ feedback.date_created|date('full') }}</li>
+								<li class="dp-comments"><i class="dp-icon-comment"></i> {{ phrase('user.general.count_comments', {'count': comment_counts[feedback.id]|default(0)}) }}</li>
 							</ul>
-							<br class="dp-clear" style="clear:right"/>
-						</div>
-					</div>
-				{% endif %}
+						</header>
+					</section>
+				</li>
+				{% endfor %}
+			</ul>
+
+			{% if pageinfo.last != 1 %}
+				{% set page_url = path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by }) ~ '?p=' %}
+				<div class="dp-pagination">
+					<ul>
+						{% if pageinfo.prev %}<li><a href="{{ page_url ~ pageinfo.prev }}">&larr; {{ phrase('user.general.page_prev') }}</a></li>{% endif %}
+						{% for p in pageinfo.pages %}
+							<li class="{% if pageinfo.cursor == p %}dp-active{% endif %}"><a href="{{ page_url ~ p }}">{{ p }}</a>
+						{% endfor %}
+						{% if pageinfo.next %}<li><a href="{{ page_url ~ pageinfo.next }}">{{ phrase('user.general.page_next') }} &rarr;</a></li>{% endif %}
+					</ul>
+				</div>
 			{% endif %}
-			<br class="dp-clear" style="clear:left" />
 		</div>
 	</div>
-</div>
+</section>
+
 {% endblock %}

@@ -188,6 +188,13 @@ abstract class SearcherAbstract implements PersonContextInterface
 	 */
 	public function setOrderByCode($order_by_code, $separator = ':')
 	{
+		if ($order_by_code == 'newest') {
+			$order_by_code = 'date_created:desc';
+		}
+		if ($order_by_code == 'most-voted') {
+			$order_by_code = 'num_ratings:desc';
+		}
+
 		if (strpos($order_by_code, $separator) === false) {
 			$order_by_code .= $separator . self::ORDER_DESC;
 		}

@@ -569,7 +569,7 @@ $CONFIG['user_vendors'] = array(
 		'vendor/mootools/mootools-core.min.js',
 		'vendor/modernizr.min.js',
 		'vendor/PIE/PIE.js',
-		'vendor/bootstrap/bootstrap-custom.min.js',
+		'vendor/bootstrap/bootstrap-custom.js',
 	)
 );
 
