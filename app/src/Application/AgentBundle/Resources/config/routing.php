@@ -508,7 +508,7 @@ $collection->add('agent_peoplesearch_customfilter', new Route(
 	'/people-search/search',
 	array('_controller' => 'AgentBundle:PeopleSearch:search'),
 	array(),
-	array()
+	array('fragment_name' => 'people', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_peoplesearch_getpage', new Route(
@@ -681,7 +681,7 @@ $collection->add('agent_orgsearch_customfilter', new Route(
 	'/organization-search/search',
 	array('_controller' => 'AgentBundle:OrganizationSearch:search'),
 	array(),
-	array()
+	array('fragment_name' => 'orgs', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_orgsearch_quicknamesearch', new Route(
@@ -1283,7 +1283,7 @@ $collection->add('agent_task_list', new Route(
 	'/tasks/list/{search_type}/{search_categoty}',
 	array('_controller' => 'AgentBundle:Task:taskList', 'search_type' => NULL, 'search_categoty' => NULL),
 	array(),
-	array()
+	array('fragment_name' => 'tasks', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_task_ajax_labels_save', new Route(
@@ -1503,7 +1503,7 @@ $collection->add('agent_public_validatingcontent_next', new Route(
 	'/publish/content/get-next-validating/{type}/{content_id}.json',
 	array('_controller' => 'AgentBundle:Publish:nextValidatingContent'),
 	array(),
-	array()
+	array('fragment_name' => 'pending', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_publish_validatingcomments', new Route(
@@ -1734,7 +1734,7 @@ $collection->add('agent_kb_list', new Route(
 	'/kb/list/{category_id}',
 	array('_controller' => 'AgentBundle:Kb:list', 'category_id' => '0'),
 	array(),
-	array()
+	array('fragment_name' => 'knowledgebase', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_kb_cat', new Route(
@@ -1790,7 +1790,7 @@ $collection->add('agent_news_list', new Route(
 	'/news/list/{category_id}',
 	array('_controller' => 'AgentBundle:News:list', 'category_id' => '0'),
 	array(),
-	array()
+	array('fragment_name' => 'news', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_news_view', new Route(
@@ -1853,7 +1853,7 @@ $collection->add('agent_downloads_list', new Route(
 	'/downloads/list/{category_id}',
 	array('_controller' => 'AgentBundle:Downloads:list', 'category_id' => '0'),
 	array(),
-	array()
+	array('fragment_name' => 'downloads', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_downloads_view', new Route(
@@ -1958,7 +1958,7 @@ $collection->add('agent_feedback_status', new Route(
 	'/feedback/status/{status}',
 	array('_controller' => 'AgentBundle:Feedback:statusList'),
 	array(),
-	array()
+	array('fragment_name' => 'status', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_feedback_label', new Route(
@@ -2166,7 +2166,7 @@ $collection->add('agent_userchat_filterlist', new Route(
 	'/chat/filter',
 	array('_controller' => 'AgentBundle:UserChat:filter'),
 	array(),
-	array()
+	array('fragment_name' => 'ended', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_userchat_filterlist_page', new Route(
@@ -2187,7 +2187,7 @@ $collection->add('agent_userchat_listopen', new Route(
 	'/chat/list-open',
 	array('_controller' => 'AgentBundle:UserChat:listChats'),
 	array(),
-	array()
+	array('fragment_name' => 'open', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_userchat_send_messageview', new Route(
