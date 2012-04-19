@@ -1,0 +1,13 @@
+<li>
+	<section class="dp-article-post dp-content-post">
+		<header>
+			<h3 style="margin-bottom: 0"><a href="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}">{{feedback.title}}</a></h3>
+			<ul class="dp-post-info">
+				<li class="dp-author"><i class="dp-icon-user"></i> {{ feedback.person.display_name }}</li>
+				<li class="dp-category"><i class="dp-icon-folder-close"></i> <a href="{{ path('user_feedback', {'status': status, 'slug': feedback.category.url_slug}) }}">{{ feedback.category.title }}</a></li>
+				<li class="dp-date"><i class="dp-icon-calendar"></i> {{ feedback.date_created|date('full') }}</li>
+				<li class="dp-comments"><i class="dp-icon-comment"></i> {{ phrase('user.general.count_comments', {'count': comment_counts[feedback.id]|default(0)}) }}</li>
+			</ul>
+		</header>
+	</section>
+</li>

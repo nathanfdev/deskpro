@@ -82,18 +82,7 @@
 	</article>
 </section>
 
-<article class="dp-new-feedback">
-	<div class="dp-search-bar">
-		<table class="dp-layout" width="100%"><tr>
-			<td style="vertical-align: top; white-space: nowrap;" width="100%">
-				<div class="dp-input-prepend">
-					<span class="dp-add-on">I suggest ...</span><input type="text" class="dp-suggest-title" id="new_suggest_title" name="feedback[title]" placeholder="" />
-				</div>
-			</td>
-			<td style="vertical-align: top;"><button class="dp-btn dp-btn-success">Go</button></td>
-		</tr></table>
-	</div>
-</article>
+{% include 'UserBundle:Feedback:filter-new-feedback.html.twig' %}
 
 <section class="dp-portal-section">
 	{% if category %}
@@ -106,112 +95,12 @@
 	<div class="dp-content-block dp-articles-block">
 		<div class="dp-content-wrapper">
 			<div style="float:left; width: 100%;">
-				<ul class="dp-nav dp-nav-tabs with-handler" data-element-handler="DeskPRO.User.ElementHandler.FeedbackNav">
-					<li class="{% if search_options.order_by == 'popular' %}dp-active{% endif %}">
-						<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'popular'}) }}">{{ phrase('user.feedback.popular') }}</a>
-					</li>
-					<li class="{% if search_options.order_by == 'newest' %}dp-active{% endif %}">
-						<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'newest'}) }}">{{ phrase('user.feedback.newest') }}</a>
-					</li>
-					<li class="{% if search_options.order_by == 'most-voted' %}dp-active{% endif %}">
-						<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'most-voted'}) }}">{{ phrase('user.feedback.most_voted') }}</a>
-					</li>
-					<li class="dp-dropdown" style="float:right">
-						<a href="#" class="dp-dropdown-toggle" data-toggle="dp-dropdown">
-							{% if status == 'all' %}
-								{{ phrase('user.feedback.any_status') }}
-							{% else %}
-								{% if status_cat %}
-									{{ status_cat.title }}
-								{% else %}
-									{% if status == 'undecided' %}{{ phrase('user.feedback.status_undecided') }}
-									{% elseif status == 'active' %}{{ phrase('user.feedback.status_active') }}
-									{% elseif status == 'closed' %}{{ phrase('user.feedback.status_closed') }}
-									{% endif %}
-								{% endif %}
-							{% endif %}
-							<b class="dp-caret"></b>
-						</a>
-						<ul class="dp-dropdown-element dp-pull-right dp-cat-list" id="dp_feedback_cat_menu">
-							<li>
-								<i class="dp-icon-asterisk"></i>
-								<a href="{{ path('user_feedback', {'status': 'undecided', 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ phrase('user.feedback.status_undecided') }}</a>
-								<span class="dp-badge dp-small">{{ status_counts['undecided']|default(0) }}</span>
-							</li>
-							<li class="sep"></li>
-							<li>
-								<i class="dp-icon-time"></i>
-								<a href="{{ path('user_feedback', {'status': 'active', 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ phrase('user.feedback.status_active') }}</a>
-								<span class="dp-badge dp-small">{{ status_counts['active']|default(0) }}</span>
-							</li>
-							{% for status in active_status_cats %}
-								<li class="dp-sub">
-									<i class="dp-icon-time"></i>
-									<a href="{{ path('user_feedback', {'status': 'active.'~status.id, 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ status.title }}</a>
-									<span class="dp-badge dp-small">{{ status_counts[status.id]|default(0) }}</span>
-								</li>
-							{% endfor %}
-							<li class="sep"></li>
-							<li>
-								<i class="dp-icon-inbox"></i>
-								<a href="{{ path('user_feedback', {'status': 'closed', 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ phrase('user.feedback.status_closed') }}</a>
-								<span class="dp-badge dp-small">{{ status_counts['closed']|default(0) }}</span>
-							</li>
-							{% for status in closed_status_cats %}
-								<li class="dp-sub">
-									<i class="dp-icon-time"></i>
-									<a href="{{ path('user_feedback', {'status': 'active.'~status.id, 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ status.title }}</a>
-									<span class="dp-badge dp-small">{{ status_counts[status.id]|default(0) }}</span>
-								</li>
-							{% endfor %}
-						</ul>
-					</li>
-					<li class="dp-dropdown" style="float:right">
-						<a href="#" class="dp-dropdown-toggle" data-toggle="dp-dropdown">
-							{% if category.id %}
-								{{ category.full_title }}
-							{% else %}
-								{{ phrase('user.feedback.all_categories') }}
-							{% endif %}
-							<b class="dp-caret"></b>
-						</a>
-						<ul class="dp-dropdown-element dp-pull-right dp-cat-list" id="dp_feedback_cat_menu">
-							{% macro cat_li(category_counts, status, order_by, cat, depth) %}
-								{% if not depth %}{% set depth = 0 %}{% endif %}
-								<li {% if depth %}class="dp-sub dp-sub-depth-{{ depth }}"{% endif %}>
-									<i class="dp-icon-folder-close"></i>
-									<a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug, 'order_by': order_by}) }}">{{ cat.title }}</a>
-									<span class="dp-badge dp-small">{{ category_counts[cat.id]['all']|default(0) }}</span>
-								</li>
-								{% if cat.getChildren()|length %}
-									{% for child in cat.getChildren() %}
-										{{ _self.cat_li(category_counts, 	status, search_options.order_by, child, depth+1) }}
-									{% endfor %}
-								{% endif %}
-							{% endmacro %}
-							{% for cat in feedback_cats %}
-								{{ _self.cat_li(category_counts, status, search_options.order_by, cat) }}
-							{% endfor %}
-						</ul>
-					</li>
-				</ul>
+				{% include 'UserBundle:Feedback:filter-nav.html.twig' %}
 			</div>
 
 			<ul class="dp-content-list">
 				{% for feedback in feedback %}
-				<li>
-					<section class="dp-article-post dp-content-post">
-						<header>
-							<h3 style="margin-bottom: 0"><a href="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}">{{feedback.title}}</a></h3>
-							<ul class="dp-post-info">
-								<li class="dp-author"><i class="dp-icon-user"></i> {{ feedback.person.display_name }}</li>
-								<li class="dp-category"><i class="dp-icon-folder-close"></i> <a href="{{ path('user_feedback', {'status': status, 'slug': feedback.category.url_slug}) }}">{{ feedback.category.title }}</a></li>
-								<li class="dp-date"><i class="dp-icon-calendar"></i> {{ feedback.date_created|date('full') }}</li>
-								<li class="dp-comments"><i class="dp-icon-comment"></i> {{ phrase('user.general.count_comments', {'count': comment_counts[feedback.id]|default(0)}) }}</li>
-							</ul>
-						</header>
-					</section>
-				</li>
+					{% include 'UserBundle:Feedback:filter-list-item.html.twig' %}
 				{% endfor %}
 			</ul>
 
