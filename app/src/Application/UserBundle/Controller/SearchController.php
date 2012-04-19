@@ -222,16 +222,11 @@ class SearchController extends AbstractController
 
 	public function similarToAction($content_type)
 	{
-		$content = $this->request->query->get('content', '');
+		 $content = isset($_REQUEST['content']) ? (string)$_REQUEST['content'] : '';
 
 		$search = App::getSearchAdapter();
-
-		if ($search->isCapable('searcher_content_similar')) {
-			$result_set = $search->getContentSearcher()->similarContent($content, array($content_type));
-			$results = $search->getResultSetObjects($result_set, true);
-		} else {
-			$results = array();
-		}
+		$result_set = $search->getContentSearcher()->omnisearch($content, array($content_type));
+		$results = $search->getResultSetObjects($result_set, true);
 
 		return $this->render('UserBundle:Search:similar-to.html.twig', array(
 			'results' => $results,

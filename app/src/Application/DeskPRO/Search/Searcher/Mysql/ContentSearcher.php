@@ -196,8 +196,8 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 	}
 
 
-	public function omnisearch($query_text)
+	public function omnisearch($query_text, array $limit_types = null)
 	{
-		return $this->query($query_text, 10, 1, null, true);
+		return $this->query($query_text, 10, 1, $limit_types, true);
 	}
 }

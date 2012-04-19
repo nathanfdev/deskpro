@@ -158,6 +158,18 @@ class FeedbackController extends AbstractController
 				->countsOnCollection($feedback);
 		}
 
+		$newfeedback = new \Application\DeskPRO\Feedback\NewFeedback(
+			App::getSession()->getVisitor()
+		);
+		$newfeedback->setPersonContext($this->person);
+
+		// Initial value from coming from a category
+		if ($category) {
+			$newfeedback->category_id = $category->getId();
+		}
+
+		$form = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
+
 		return $this->render('UserBundle:Feedback:filter.html.twig', array(
 			'feedback_cats'      => $feedback_cats,
 			'active_status_cats' => $active_status_cats,
@@ -178,6 +190,8 @@ class FeedbackController extends AbstractController
 			'search_options'     => $search_options,
 			'has_voted_ids'      => $has_voted_ids,
 			'status_cat'         => $status_cat,
+			'newfeedback' => $newfeedback,
+			'form' => $form->createView(),
 		));
 	}
 

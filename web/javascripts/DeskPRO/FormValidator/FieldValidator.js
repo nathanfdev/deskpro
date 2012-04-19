@@ -9,7 +9,7 @@ DeskPRO.Form.FieldValidator = new Orb.Class({
 		if (this.el.data('val-wrap-sel')) {
 			this.wrapper = this.el.closest(this.el.data('val-wrap-sel'));
 		} else {
-			this.wrapper = this.el.closest('.dp-form-row');
+			this.wrapper = this.el.closest('.dp-form-row, .dp-control-group').first();
 		}
 
 		this.init();
@@ -18,6 +18,7 @@ DeskPRO.Form.FieldValidator = new Orb.Class({
 	init: function() { },
 
 	setErrorCodes: function(codes) {
+		console.log("Errors on %o: %o", this, codes);
 		this.wrapper.removeClass('dp-error-' + this._getMyErrorCodes().join(' dp-error-'));
 
 		if (codes && codes.length) {

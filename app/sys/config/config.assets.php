@@ -523,6 +523,7 @@ $CONFIG['user_common'] = array(
 		'javascripts/DeskPRO/UI/SimpleTabs.js',
 		'javascripts/DeskPRO/UI/Overlay.js',
 		'javascripts/DeskPRO/User/Window.js',
+		'javascripts/DeskPRO/TouchCaller.js',
 
 		'javascripts/DeskPRO/User/ElementHandler/ElementHandlerAbstract.js',
 		'javascripts/DeskPRO/User/ElementHandler/MoreLoader.js',

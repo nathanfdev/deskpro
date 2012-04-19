@@ -38,6 +38,10 @@ DeskPRO.TouchCaller = new Orb.Class({
 
 	touch: function(touch, force) {
 
+		if (touch === '') {
+			touch = '(empty)';
+		}
+
 		if (typeof touch == 'undefined' || touch == null) {
 			this.lastTouch = null;
 			touch = true;

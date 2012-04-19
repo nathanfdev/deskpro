@@ -1,5 +1,8 @@
 {% set this_section = 'feedback' %}
 {% extends 'UserBundle::layout.html.twig' %}
+{% block head %}
+	<script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/FeedbackInlineNew.js') }}"></script>
+{% endblock %}
 {% macro cat_row(cat, status, selected_cat) %}
 	<li {% if cat.id == selected_cat.id %}class="on"{% endif %}>
 		<a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug}) }}">{{ cat.title }}</a>
@@ -31,7 +34,12 @@
 			<li><a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug}) }}">{{ category.title }}</a><span class="dp-divider">&rarr;</span></li>
 		{% endif %}
 		<li>
-			<a href="{{ path('user_feedback', {'status': parent_status, 'slug': category.url_slug}) }}">{{ phrase('user.feedback.status_' ~ parent_status) }}</a>
+			<a href="{{ path('user_feedback', {'status': parent_status, 'slug': category.url_slug}) }}">
+				{% if parent_status == 'new' %}{{ phrase('user.feedback.status_new') }}
+				{% elseif parent_status == 'active' %}{{ phrase('user.feedback.status_active') }}
+				{% elseif parent_status == 'closed' %}{{ phrase('user.feedback.status_closed') }}
+				{% endif %}
+			</a>
 			<span class="dp-divider">&rarr;</span>
 		</li>
 		{% if parent_status != status %}
