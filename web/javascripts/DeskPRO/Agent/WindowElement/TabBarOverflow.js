@@ -51,6 +51,26 @@ DeskPRO.Agent.WindowElement.TabBarOverflow = new Orb.Class({
 		}
 	},
 
+	/**
+	 *
+	 */
+	getBounds: function() {
+		var left = this.tabList.position().left;
+
+		// Make sure tab edges hidden under the button are taken into account.
+		if(this.tabPane.is('with-leftbar')) {
+			left += 18;
+		}
+
+		var right = left + this.tabPane.width();
+
+		// Again, don't hide tab edges under the scroll button.
+		if(this.tabPane.is('with-rightbar')) {
+			right -= 18;
+		}
+
+		return {'left': left, 'right': right};
+	},
 
 	/**
 	 * Check if overflow controls are required right now

@@ -380,6 +380,22 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.currentTabId = null;
 	},
 
+	/**
+	 * Determines if a tab is visible in relation to scrolling.
+	 *
+	 * @param tab
+	 */
+	isTabVisible: function(tab) {
+		var left = tab.tabBtn.position().left;
+
+		// Attempt to ignore margin and border. Lets hope they're the same on both sides.
+		var guess_slack = Math.round((tab.tabBtn.outerWidth() - tab.tabBtn.innerWidth()) / 2);
+		var right = left + tab.tabBtn.innerWidth() + guess_slack;
+
+		var bounds = this.tabBarOverflow.getBounds();
+
+		return !(right < bounds.left || left > bounds.right);
+	},
 
 	/**
 	 * Remove a tab
@@ -475,7 +491,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		var tab = this.getTab(id);
 
 		if (!tab) {
-		DP.console.log("Cannot activate, unknown tab %s", id);
+			DP.console.log("Cannot activate, unknown tab %s", id);
 		}
 
 		var btn = tab.tabBtn;
@@ -502,19 +518,21 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		tab.tabBtn.prependTo(this.tabList);
 		}
 
-		tab.tabBtn.addClass('is-alerting');
-		var timeout = this._alertTabDoHighlight.periodical(500, this, [tab.tabBtn]);
-		tab.tabBtn.data('alerting-timeout', timeout);
-
-		if(tab.alertEndTimeout) {
-		clearTimeout(tab.alertEndTimeout);
-		}
-
-		var self = this;
+		this.tabBarOverflow.resetScroll();
 
 		if(!noalert) {
+			tab.tabBtn.addClass('is-alerting');
+			var timeout = this._alertTabDoHighlight.periodical(500, this, [tab.tabBtn]);
+			tab.tabBtn.data('alerting-timeout', timeout);
+
+			if(tab.alertEndTimeout) {
+				clearTimeout(tab.alertEndTimeout);
+			}
+
+			var self = this;
 			tab.alertEndTimeout = setTimeout(function(){
-			delete(tab.alertEndTimeout);self.clearAlertTab(tab);
+				self.clearAlertTab(tab);
+				delete(tab.alertEndTimeout);
 			}, 2000);
 		}
 	},
@@ -527,8 +545,10 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		var el = tab.tabBtn;
 		if (!el.length || el.is('.activeTabList') || el.is('.is-alerting')) return;
 
-		this.tabToFrontTabById(tab.id, true);
-		this.tabBarOverflow.resetScroll();
+		if(!this.isTabVisible(tab)) {
+			this.tabToFrontTabById(tab.id, true);
+		}
+
 		el.addClass('is-alerting');
 		var timeout = this._alertTabDoHighlight.periodical(700, this, [el]);
 		el.data('alerting-timeout', timeout);
