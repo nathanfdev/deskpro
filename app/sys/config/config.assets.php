@@ -566,13 +566,10 @@ $CONFIG['user_vendors'] = array(
 		'vendor/jquery/fileupload/jquery.fileupload.js',
 		'vendor/jquery/fileupload/jquery.fileupload-ui.js',
 
-		'vendor/jquery/tipped/js/excanvas/excanvas.js',
-		'vendor/jquery/tipped/js/spinners/spinners.js',
-		'vendor/jquery/tipped/js/tipped/tipped.js',
-
 		'vendor/mootools/mootools-core.min.js',
 		'vendor/modernizr.min.js',
 		'vendor/PIE/PIE.js',
+		'vendor/bootstrap/bootstrap-custom.min.js',
 	)
 );
 
