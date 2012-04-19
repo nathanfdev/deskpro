@@ -500,40 +500,28 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		var otherTab = null;
 		if (tab.page && tab.page.meta.tabPlaceholderId) {
-		otherTab = this.getTab(tab.page.meta.tabPlaceholderId);
+			otherTab = this.getTab(tab.page.meta.tabPlaceholderId);
 		}
 
 		if (otherTab && otherTab != tab) {
-		tab.tabBtn.insertAfter(otherTab.tabBtn);
-		otherTab.tabBtn.remove();
+			tab.tabBtn.insertAfter(otherTab.tabBtn);
+			otherTab.tabBtn.remove();
 
-		if (this.currentTabId == otherTab.id) {
-		wasActive = true;
-		this.currentTabId = null;
-		}
+			if (this.currentTabId == otherTab.id) {
+				wasActive = true;
+				this.currentTabId = null;
+			}
 
-		this.removeTab(otherTab, true);
+			this.removeTab(otherTab, true);
 
 		} else {
-		tab.tabBtn.prependTo(this.tabList);
+			tab.tabBtn.prependTo(this.tabList);
 		}
 
 		this.tabBarOverflow.resetScroll();
 
 		if(!noalert) {
-			tab.tabBtn.addClass('is-alerting');
-			var timeout = this._alertTabDoHighlight.periodical(500, this, [tab.tabBtn]);
-			tab.tabBtn.data('alerting-timeout', timeout);
-
-			if(tab.alertEndTimeout) {
-				clearTimeout(tab.alertEndTimeout);
-			}
-
-			var self = this;
-			tab.alertEndTimeout = setTimeout(function(){
-				self.clearAlertTab(tab);
-				delete(tab.alertEndTimeout);
-			}, 2000);
+			tab.tabBtn.effect("pulsate", { times:4 }, 500);
 		}
 	},
 

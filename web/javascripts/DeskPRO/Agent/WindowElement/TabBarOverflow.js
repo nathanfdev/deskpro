@@ -55,7 +55,7 @@ DeskPRO.Agent.WindowElement.TabBarOverflow = new Orb.Class({
 	 *
 	 */
 	getBounds: function() {
-		var left = this.tabList.position().left;
+		var left = -this.tabList.parent().position().left;
 
 		// Make sure tab edges hidden under the button are taken into account.
 		if(this.tabPane.is('with-leftbar')) {
@@ -68,7 +68,7 @@ DeskPRO.Agent.WindowElement.TabBarOverflow = new Orb.Class({
 		if(this.tabPane.is('with-rightbar')) {
 			right -= 18;
 		}
-
+		console.log('left: ' + left + ' right: ' + right);
 		return {'left': left, 'right': right};
 	},
 
