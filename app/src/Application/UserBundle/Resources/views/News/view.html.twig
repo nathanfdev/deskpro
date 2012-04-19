@@ -1,19 +1,18 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block head %}
-	<meta property="og:url" content="{{ path('user_news_view', {'slug': post.url_slug}) }}" />
-	<meta property="og:title" content="{{post.title}}" />
+	<meta property="og:url" content="{{ path('user_news_view', {'slug': news.url_slug}) }}" />
+	<meta property="og:title" content="{{news.title}}" />
 	<meta property="og:type" content="blog" />
-	<link rel="canonical" href="{{ url('user_news_view', {'slug': post.url_slug}) }}" />
+	<link rel="canonical" href="{{ url('user_news_view', {'slug': news.url_slug}) }}" />
 {% endblock %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_news') }}">{{ phrase('user.general.news') }}</a></li>
 	{% for cat in category_path %}
-		<li><a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+		<li><a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{cat.title}}</a><span class="dp-divider">&rarr;</span></li>
 	{% endfor %}
-	<li><a href="{{ path('user_news_view', {'slug': post.url_slug}) }}">{{ post.title }}</a></li>
+	<li><a href="{{ path('user_news_view', {'slug': news.url_slug}) }}">{{ news.title }}</a><span class="dp-divider">&rarr;</span></li>
 {% endblock %}
 {% block page_title %}
-	{{ post.title }}
+	{{ news.title }}
 	-
 	News
 	{% for cat in category_path %}
@@ -21,45 +20,38 @@
 	{% endfor %}
 {% endblock %}
 {% block content %}
-<div class="dp-news-page">
-	<div class="dp-content-block">
-		<div class="dp-box">
-			<div class="dp-box-header">
-				<h1>{{ post.title }}</h1>
-			</div>
 
-			<div class="dp-box-content-meta">
-				<div class="by-line">
-					<img src="{{ post.person.getPictureUrl(40) }}" />
-					{{ phrase('user.general.created_by_name_on_date', {'name': post.person.display_name, 'date': post.date_created|date('M d Y')}) }}
-					<br class="dp-clear" style="clear:left" />
-				</div>
-			</div>
-
-			<div class="dp-box-content-wrapper">
-				<div class="dp-box-content">
-					<div class="dp-post">{{ post.content_html|raw }}</div>
-
-					{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': post.labels} %}
-
-					{% if app.user.hasPerm('news.rate') %}
-						{% include 'UserBundle:Common:rating-bar.html.twig' with {'content_object': post} %}
-					{% endif %}
-
-					{% if app.getSetting('core.facebook_like') %}
-						{% include 'UserBundle:Common:facebook-like.html.twig' with {'page_permalink': news.permalink} %}
-					{% endif %}
-
-					{% if app.user.hasPerm('news.comment') %}
-						{% include 'UserBundle:Common:comments-box.html.twig' with {
-							'comments': comments,
-							'form_action': path('user_news_newcomment', {'post_id': post.id}),
-							'check_perm': 'news.comment'
-						} %}
-					{% endif %}
-				</div>
-			</div>
-		</div>
+<section class="dp-news-post dp-content-post dp-content-page">
+	<div class="dp-cal-date" title="{{ phrase('user.general.posted_date', {'date':news.date_created|date('M d Y @ H:i:s')}) }}">
+		<div class="dp-month">{{ news.date_created|date('M')|upper }}</div>
+		<div class="dp-day">{{ news.date_created|date('d') }}</div>
 	</div>
-</div>
+	<header>
+		<h3 style="margin-bottom: 0"><a href="{{ path('user_news_view', {'slug': news.url_slug}) }}">{{ news.title }}</a></h3>
+		<ul class="dp-post-info">
+			<li class="dp-author"><i class="dp-icon-user"></i> {{ news.person.display_name }}</li>
+			<li class="dp-category"><i class="dp-icon-folder-close"></i> <a href="{{ path('user_news_list', {'slug': news.category.url_slug })}}">{{ news.category.title }}</a></li>
+		</ul>
+	</header>
+	<article>
+		{{ news.content_html|raw }}
+	</article>
+	<footer>
+		{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': news.labels} %}
+
+		{% if app.user.hasPerm('news.rate') %}
+			{% include 'UserBundle:Common:rating-bar.html.twig' with {'content_object': news} %}
+		{% endif %}
+	</footer>
+</section>
+
+{% if app.user.hasPerm('news.comment') %}
+	{% include 'UserBundle:Common:comments-box.html.twig' with {
+		'type': 'news',
+		'comments': comments,
+		'form_action': path('user_news_newcomment', {'post_id': news.id}),
+		'check_perm': 'news.comment'
+	} %}
+{% endif %}
+
 {% endblock %}

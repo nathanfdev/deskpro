@@ -250,9 +250,9 @@
 #dp .dp-uneditable-input{display:block;background-color:#ffffff;border-color:#eee;-webkit-box-shadow:inset 0 1px 2px rgba(0, 0, 0, 0.025);-moz-box-shadow:inset 0 1px 2px rgba(0, 0, 0, 0.025);box-shadow:inset 0 1px 2px rgba(0, 0, 0, 0.025);cursor:not-allowed;}
 #dp :-moz-placeholder{color:#999999;}
 #dp::-webkit-input-placeholder{color:#999999;}
-#dp .dp-help-block,#dp .help-inline{color:#555555;}
+#dp .dp-help-block,#dp .dp-help-inline{color:#555555;}
 #dp .dp-help-block{display:block;margin-bottom:9px;}
-#dp .help-inline{display:inline-block;*display:inline;*zoom:1;vertical-align:middle;padding-left:5px;}
+#dp .dp-help-inline{display:inline-block;*display:inline;*zoom:1;vertical-align:middle;padding-left:5px;}
 #dp .dp-input-prepend,#dp .dp-input-append{margin-bottom:5px;}
 #dp .dp-input-prepend input,#dp .dp-input-append input,#dp .dp-input-prepend select,#dp .dp-input-append select,#dp .dp-input-prepend .dp-uneditable-input,#dp .dp-input-append .dp-uneditable-input{*margin-left:0;-webkit-border-radius:0 3px 3px 0;-moz-border-radius:0 3px 3px 0;border-radius:0 3px 3px 0;}
 #dp .dp-input-prepend input:focus,#dp .dp-input-append input:focus,#dp .dp-input-prepend select:focus,#dp .dp-input-append select:focus,#dp .dp-input-prepend .dp-uneditable-input:focus,#dp .dp-input-append .dp-uneditable-input:focus{position:relative;z-index:2;}
@@ -268,7 +268,7 @@
 #dp .dp-input-prepend.dp-input-append .dp-add-on:first-child,#dp .dp-input-prepend.dp-input-append .dp-btn:first-child{margin-right:-1px;-webkit-border-radius:3px 0 0 3px;-moz-border-radius:3px 0 0 3px;border-radius:3px 0 0 3px;}
 #dp .dp-input-prepend.dp-input-append .dp-add-on:last-child,#dp .dp-input-prepend.dp-input-append .dp-btn:last-child{margin-left:-1px;-webkit-border-radius:0 3px 3px 0;-moz-border-radius:0 3px 3px 0;border-radius:0 3px 3px 0;}
 #dp .dp-search-query{padding-left:14px;padding-right:14px;margin-bottom:0;-webkit-border-radius:14px;-moz-border-radius:14px;border-radius:14px;}
-#dp .dp-form-search input,#dp .form-inline input,#dp .form-horizontal input,#dp .dp-form-search textarea,#dp .form-inline textarea,#dp .form-horizontal textarea,#dp .dp-form-search select,#dp .form-inline select,#dp .form-horizontal select,#dp .dp-form-search .help-inline,#dp .form-inline .help-inline,#dp .form-horizontal .help-inline,#dp .dp-form-search .dp-uneditable-input,#dp .form-inline .dp-uneditable-input,#dp .form-horizontal .dp-uneditable-input,#dp .dp-form-search .dp-input-prepend,#dp .form-inline .dp-input-prepend,#dp .form-horizontal .dp-input-prepend,#dp .dp-form-search .dp-input-append,#dp .form-inline .dp-input-append,#dp .form-horizontal .dp-input-append{display:inline-block;margin-bottom:0;}
+#dp .dp-form-search input,#dp .form-inline input,#dp .form-horizontal input,#dp .dp-form-search textarea,#dp .form-inline textarea,#dp .form-horizontal textarea,#dp .dp-form-search select,#dp .form-inline select,#dp .form-horizontal select,#dp .dp-form-search .dp-help-inline,#dp .form-inline .dp-help-inline,#dp .form-horizontal .dp-help-inline,#dp .dp-form-search .dp-uneditable-input,#dp .form-inline .dp-uneditable-input,#dp .form-horizontal .dp-uneditable-input,#dp .dp-form-search .dp-input-prepend,#dp .form-inline .dp-input-prepend,#dp .form-horizontal .dp-input-prepend,#dp .dp-form-search .dp-input-append,#dp .form-inline .dp-input-append,#dp .form-horizontal .dp-input-append{display:inline-block;margin-bottom:0;}
 #dp .dp-form-search .dp-hide,#dp .form-inline .dp-hide,#dp .form-horizontal .dp-hide{display:none;}
 #dp .dp-form-search label,#dp .form-inline label{display:inline-block;}
 #dp .dp-form-search .dp-input-append,#dp .form-inline .dp-input-append,#dp .dp-form-search .dp-input-prepend,#dp .form-inline .dp-input-prepend{margin-bottom:0;}
@@ -812,6 +812,10 @@
 /***********************************************************************************************************************
 * DeskPRO customizations or additions made to Twitter Bootstrap
 ***********************************************************************************************************************/
+
+#dp form {
+	margin: 0;
+}
 
 #dp .dp-icon-thumbup {
 	background: transparent url(../../web/images/user/thumb-up.png) no-repeat 0 0;
@@ -1834,4 +1838,93 @@ nav#dp_content_tabs label {
 	margin: 0;
 	padding: 0 0 0 0;
 	line-height: 100%;
+}
+
+
+/***********************************************************************************************************************
+* Content Pages
+***********************************************************************************************************************/
+
+#dp section.dp-content-page {
+	margin: 25px;
+}
+
+#dp section.dp-content-page > header {
+	margin-bottom: 10px;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #D2D0D0;
+}
+
+#dp section.dp-content-page > header h3 {
+	font-size: 20pt;
+}
+
+#dp section.dp-content-page > article,
+#dp section.dp-content-page > footer {
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+/******************************
+* Rating bar
+******************************/
+
+#dp .dp-user-vote {
+	font-size: 10pt;
+}
+
+#dp .dp-user-vote .dp-show-ratings {
+	float: left;
+}
+
+#dp .dp-user-vote {
+	text-align: right;
+}
+
+#dp .dp-user-vote button.dp-good span {
+	background: url(../../web/images/user/tick.png) no-repeat 0 50%;
+	padding-left: 19px;
+}
+#dp .dp-user-vote button.dp-bad span {
+	background: url(../../web/images/user/cross.png) no-repeat 0 50%;
+	padding-left: 19px;
+}
+
+
+/***********************************************************************************************************************
+* Comments Box
+***********************************************************************************************************************/
+
+#dp section.dp-comments-box {
+	margin: 25px;
+}
+
+#dp section.dp-comments-box header h4 {
+	font-size: 15pt;
+	font-weight: normal;
+	margin: 0;
+	padding: 0;
+	line-height: 100%;
+	padding-bottom: 10px;
+}
+
+#dp section.dp-comments-box article.dp-well {
+	margin-bottom: 0;
+}
+
+#dp section.dp-comments-box article > ul {
+	margin: 0;
+}
+
+#dp section.dp-comments-box article > ul > li {
+	list-style: none;
+	margin: 10px 0 10px 0;
+	padding: 10px 0 10px 0;
+	border-bottom: 1px solid #D2D0D0;
+}
+
+#dp section.dp-comments-box article > ul > li.new-comment textarea {
+	width: 98%;
 }

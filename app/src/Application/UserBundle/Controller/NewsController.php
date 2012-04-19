@@ -164,20 +164,20 @@ class NewsController extends AbstractController
 	 */
 	public function viewAction($slug)
 	{
-		$post = App::getEntityRepository('DeskPRO:News')->getBySlug($slug);
-		if (!$post) {
+		$news = App::getEntityRepository('DeskPRO:News')->getBySlug($slug);
+		if (!$news) {
 			return $this->renderStandardError('@user_news.error_not_found', '@user.error_not_found', 404);
 		}
 
 		// Auto-correct URL
-		if ($slug != $post->getUrlSlug()) {
-			return $this->redirectRoute('user_news_view', array('slug' => $post->getUrlSlug()), 301);
+		if ($slug != $news->getUrlSlug()) {
+			return $this->redirectRoute('user_news_view', array('slug' => $news->getUrlSlug()), 301);
 		}
 
 		// Get the user subscription
 		$subscription = false;
 		if (!$this->person->isGuest()) {
-			$subscription = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscription($post, $this->person);
+			$subscription = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscription($news, $this->person);
 			if ($subscription) {
 				$subscription->touch();
 				$this->em->persist($subscription);
@@ -186,34 +186,34 @@ class NewsController extends AbstractController
 		}
 
 		$categories = App::getEntityRepository('DeskPRO:NewsCategory')->getRootNodes();
-		$category = $post->category;
+		$category = $news->category;
 		$category_path = $category->getTreeParents();
 
 		$comments = null;
 		$comments_widget = null;
-		$comments_helper = Comments::create($post);
+		$comments_helper = Comments::create($news);
 		if ($comments_helper) {
 			$comments_widget = $comments_helper->getHtml();
 		} else {
-			$comments = App::getEntityRepository('DeskPRO:NewsComment')->getComments($post);
+			$comments = App::getEntityRepository('DeskPRO:NewsComment')->getComments($news);
 		}
 
 		if (App::getSetting('core.facebook_like')) {
-			$like_helper = FacebookLike::create($post);
+			$like_helper = FacebookLike::create($news);
 			$facebook_like = $like_helper->getHtml();
 		}
 
-		$related_finder = new RelatedContentFinder($this->person, $post);
+		$related_finder = new RelatedContentFinder($this->person, $news);
 		$related_content = $related_finder->getRelatedEntities();
 
-		$content_rating = new ContentRating($post, $this->person, $this->session->getVisitor());
+		$content_rating = new ContentRating($news, $this->person, $this->session->getVisitor());
 		$content_rating->setRequest($this->request);
 		$rating = $content_rating->getRating();
 
 		if ($rating_log_search_id = $content_rating->getSearchLogId()) {
-			$this->session->set('news.' . $post['id'], $rating_log_search_id);
-		} elseif ($this->session->has('news.' . $post['id'])) {
-			$rating_log_search_id = $this->session->get('news.' . $post['id']);
+			$this->session->set('news.' . $news['id'], $rating_log_search_id);
+		} elseif ($this->session->has('news.' . $news['id'])) {
+			$rating_log_search_id = $this->session->get('news.' . $news['id']);
 		} else {
 			$rating_log_search_id = 0;
 		}
@@ -227,7 +227,7 @@ class NewsController extends AbstractController
 			'subscription' => $subscription,
 			'rating' => $rating,
 			'rating_log_search_id' => $rating_log_search_id,
-			'post' => $post,
+			'news' => $news,
 			'category_path' => $category_path,
 			'category' => $category,
 			'categories' => $categories,

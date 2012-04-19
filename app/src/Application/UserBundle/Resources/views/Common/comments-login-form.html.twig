@@ -1,30 +1,30 @@
 {% if not app.user.is_guest %}
 <div class="dp-form">
 	<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="50%" style="padding-right: 10px;">
-		<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %} dp-form-row-person_name">
-			<div class="dp-form-label">
-				<label>{{ phrase('user.general.name') }}</label>
-				<em class="desc">{{ phrase('user.general.required') }}</em>
+		<div class="dp-control-group {% if error_fields['person.name'] %}dp-error{% endif %} dp-control-group-person_name">
+			<div class="dp-control-label">
+				<label><strong>{{ phrase('user.general.name') }}</strong></label>
+				<div class="dp-help-inline">{{ phrase('user.general.required') }}</div>
 			</div>
-			<div class="dp-form-input">
+			<div class="dp-controls">
 				<input
-						type="text"
-						name="new_comment[name]"
-						class="display-name-field"
-						value="{{ app.user.display_name }}"
-						data-field-validators="DeskPRO.Form.LengthValidator"
-						data-min-len="2"
-						/>
-				<div class="dp-error-explain">
+					type="text"
+					name="new_comment[name]"
+					class="display-name-field"
+					value="{{ app.user.display_name }}"
+					data-field-validators="DeskPRO.Form.LengthValidator"
+					data-min-len="2"
+				/>
+				<div class="dp-help-inline dp-error-explain">
 					{{ phrase('user.general.register_enter_name') }}
 				</div>
 			</div>
 		</div>
 	</td><td valign="top" width="50%" style="padding-left: 10px;">
-		<div class="dp-form-label">
-			<label>{{ phrase('user.general.comments_logged_in_as') }}</label>
+		<div class="dp-control-label">
+			<label><strong>{{ phrase('user.general.comments_logged_in_as') }}</strong></label>
 		</div>
-		<div class="dp-form-input">
+		<div class="dp-controls">
 			<span class="logged-in-as {{ app.session.get('auth_usersource_type') }}">
 				{% if app.session.get('usersource_display_link') %}
 					<a href="{{ app.session.get('usersource_display_link') }}">
@@ -41,32 +41,32 @@
 <div class="dp-form">
 	<div class="form-row">
 		<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="50%" style="padding-right: 10px;">
-			<div class="dp-form-row {% if error_fields['person.name'] %}dp-error{% endif %} dp-form-row-person_name">
-				<div class="dp-form-label">
-					<label>{{ phrase('user.general.name') }}</label>
-					<em class="desc">{{ phrase('user.general.required') }}</em>
+			<div class="dp-control-group {% if error_fields['person.name'] %}dp-error{% endif %} dp-control-group-person_name">
+				<div class="dp-control-label">
+					<label><strong>{{ phrase('user.general.name') }}</strong></label>
+					<div class="dp-help-inline">{{ phrase('user.general.required') }}</div>
 				</div>
-				<div class="dp-form-input">
+				<div class="dp-controls">
 					<input
-							type="text"
-							name="new_comment[name]"
-							class="display-name-field"
-							value=""
-							data-field-validators="DeskPRO.Form.LengthValidator"
-							data-min-len="2"
-							/>
-					<div class="dp-error-explain">
+						type="text"
+						name="new_comment[name]"
+						class="display-name-field"
+						value=""
+						data-field-validators="DeskPRO.Form.LengthValidator"
+						data-min-len="2"
+						/>
+					<div class="dp-help-inline dp-error-explain">
 						{{ phrase('user.general.register_enter_name') }}
 					</div>
 				</div>
 			</div>
 		</td><td valign="top" width="50%" style="padding-left: 10px;">
-			<div class="dp-form-row dp-form-row-person_email" id="comment_login_wrap">
-				<div class="dp-form-label">
-					<label>{{ phrase('user.general.email_address') }}</label>
-					<em class="desc">{{ phrase('user.general.required_not_displayed') }}</em>
+			<div class="dp-control-group dp-control-group-person_email" id="comment_login_wrap">
+				<div class="dp-control-label">
+					<label><strong>{{ phrase('user.general.email_address') }}</strong></label>
+					<div class="dp-help-inline">{{ phrase('user.general.required_not_displayed') }}</div>
 				</div>
-				<div class="dp-form-input">
+				<div class="dp-controls">
 					<input
 							type="text"
 							name="new_comment[email]"
