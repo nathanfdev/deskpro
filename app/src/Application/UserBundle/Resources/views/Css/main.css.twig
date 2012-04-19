@@ -324,8 +324,8 @@
 #dp table .span22{float:none;width:1724px;margin-left:0;}
 #dp table .span23{float:none;width:1804px;margin-left:0;}
 #dp table .span24{float:none;width:1884px;margin-left:0;}
-#dp [class^="dp-icon-"],#dp [class*=" icon-"]{display:inline-block;width:14px;height:14px;line-height:14px;vertical-align:text-top;background-image:url("../../web/images/glyphicons-halflings.png");background-position:14px 14px;background-repeat:no-repeat;*margin-right:.3em;}
-#dp [class^="dp-icon-"]:last-child,#dp [class*=" icon-"]:last-child{*margin-left:0;}
+#dp [class^="dp-icon-"],#dp [class*=" dp-icon-"]{display:inline-block;width:14px;height:14px;line-height:14px;vertical-align:text-top;background-image:url("../../web/images/glyphicons-halflings.png");background-position:14px 14px;background-repeat:no-repeat;*margin-right:.3em;}
+#dp [class^="dp-icon-"]:last-child,#dp [class*=" dp-icon-"]:last-child{*margin-left:0;}
 #dp .dp-icon-white{background-image:url("../../web/images/glyphicons-halflings-white.png");}
 #dp .dp-icon-glass{background-position:0 0;}
 #dp .dp-icon-music{background-position:-24px 0;}
@@ -812,6 +812,10 @@
 /***********************************************************************************************************************
 * DeskPRO customizations or additions made to Twitter Bootstrap
 ***********************************************************************************************************************/
+
+#dp .dp-icon-thumbup {
+	background: transparent url(../../web/images/user/thumb-up.png) no-repeat 0 0;
+}
 
 #dp .dp-badge:hover {
 	cursor: default;
@@ -1458,8 +1462,8 @@ nav#dp_content_tabs label {
 ***********************************************************************************************************************/
 
 #dp .dp-articles-block ul.dp-content-list > li {
-	margin: 0 0 10px 0;
-	padding: 10px 0 10px 0;
+	margin: 0 0 20px 0;
+	padding: 0 0 20px 0;
 }
 
 /***********************************************************************************************************************
@@ -1508,6 +1512,103 @@ nav#dp_content_tabs label {
 	padding: 5px 10px 5px 10px;
 	font-size: 14pt;
 	margin-top: 2px;=
+}
+
+/******************************
+* Voting button
+******************************/
+
+#dp .dp-voted-row td.dp-row-contain  {
+	background-color: #FDFAD7;
+}
+
+#dp .dp-feedback-vote {
+	width: 63px;
+}
+
+#dp .dp-feedback-vote .dp-feedback-btn {
+	display: block;
+	border: 1px solid #ADADAD;
+	{{ _self.gradient('#FBFBFB', '#E4E4E4', '#FBFBFB') }}
+	{{ _self.border_radius(3) }}
+	font-size: 10px;
+	font-weight: bold;
+	line-height: 14px;
+	padding: 3px 5px 3px 5px;
+	width: 52px;
+}
+
+#dp .dp-feedback-vote .dp-feedback-badge {
+	border: 1px solid #DDDCDC;
+	{{ _self.border_radius(3) }}
+}
+
+#dp .dp-feedback-vote:hover .dp-feedback-btn,
+#dp .dp-feedback-vote.dp-voted .dp-feedback-btn {
+	cursor: pointer;
+	border-color: #007EC0;
+	{{ _self.gradient('#FBFBFB', '#D6E2E4', '#FBFBFB') }}
+}
+
+#dp .dp-feedback-vote:hover .dp-feedback-count,
+#dp .dp-feedback-vote.dp-voted .dp-feedback-count {
+	border-color: #007EC0;
+}
+#dp .dp-feedback-vote:hover .dp-feedback-count .dp-arrow-outer,
+#dp .dp-feedback-vote.dp-voted .dp-feedback-count .dp-arrow-outer {
+	border-top-color: #007EC0;
+}
+
+#dp .dp-feedback-vote .dp-feedback-btn i {
+	{{ _self.opacity(0.6) }}
+}
+#dp .dp-feedback-vote .dp-feedback-btn span {
+	margin-left: 5px;
+	color: #5C5C5C;
+}
+
+#dp .dp-feedback-vote .dp-feedback-count {
+	background-color: #fff;
+	position: relative;
+	display: block;
+	border: 1px solid #DDDCDC;
+	{{ _self.border_radius(3) }}
+	padding: 3px 0 3px 0;
+	width: 63px;
+	font-size: 11px;
+	text-align: center;
+	margin-bottom: 6px;
+	line-height: 100%;
+}
+
+#dp .dp-feedback-vote .dp-feedback-count em {
+	display: block;
+	top: -1px;
+	font-style: normal;
+}
+
+#dp .dp-feedback-vote .dp-feedback-count .dp-arrow-outer {
+	display: block;
+	position: absolute;
+	left: 25px;
+	bottom: -6px;
+
+	width: 0;
+	height: 0;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-top: 6px solid #DDDCDC;
+}
+#dp .dp-feedback-vote .dp-feedback-count .dp-arrow-inner {
+	display: block;
+	position: absolute;
+	left: 25px;
+	bottom: -5px;
+	width: 0;
+	height: 0;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-top: 6px solid #fff;
 }
 
 /***********************************************************************************************************************

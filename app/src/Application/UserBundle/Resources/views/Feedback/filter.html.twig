@@ -1,8 +1,5 @@
 {% set this_section = 'feedback' %}
 {% extends 'UserBundle::layout.html.twig' %}
-{% block head %}
-<script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/FeedbackNav.js') }}"></script>
-{% endblock %}
 {% macro cat_row(cat, status, selected_cat) %}
 	<li {% if cat.id == selected_cat.id %}class="on"{% endif %}>
 		<a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug}) }}">{{ cat.title }}</a>
@@ -97,6 +94,7 @@
 			<div style="float:left; width: 100%;">
 				{% include 'UserBundle:Feedback:filter-nav.html.twig' %}
 			</div>
+			<br style="clear:left;height: 1px;" />
 
 			<ul class="dp-content-list">
 				{% for feedback in feedback %}

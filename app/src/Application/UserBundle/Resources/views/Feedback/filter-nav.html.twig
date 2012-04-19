@@ -1,4 +1,4 @@
-<ul class="dp-nav dp-nav-tabs dp-nav-thicksep with-handler" data-element-handler="DeskPRO.User.ElementHandler.FeedbackNav">
+<ul class="dp-nav dp-nav-tabs dp-nav-thicksep">
 	<li class="{% if search_options.order_by == 'popular' %}dp-active{% endif %}">
 		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'popular'}) }}">{{ phrase('user.feedback.popular') }}</a>
 	</li>

@@ -71,8 +71,6 @@ DeskPRO.User.Window = new Orb.Class({
 	initFeatures: function(contextEl) {
 		var self = this;
 
-		this.feedbackVoteHelper = new DeskPRO.User.ElementHandler.Helper.FeedbackVote();
-
 		$('.with-handler[data-element-handler]', contextEl).each(function() {
 			var el = $(this);
 			var className = el.data('element-handler');

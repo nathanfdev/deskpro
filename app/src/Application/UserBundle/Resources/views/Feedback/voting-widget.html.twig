@@ -1,4 +1,12 @@
-<div class="dp-feedback-vote {% if has_voted_ids[feedback.id] or has_voted_this %}dp-voted{% endif %}" data-vote-url="{{ path('user_feedback_vote', {'feedback_id': feedback.id}) }}">
-	<span></span>
-	<em>{{ feedback.total_rating|default(0) }}</em>
+<div
+		data-element-handler="DeskPRO.User.ElementHandler.FeedbackAgreeBtn"
+		class="with-handler dp-feedback-vote {% if has_voted_ids[feedback.id] or has_voted_this %}dp-voted{% endif %}"
+		data-vote-url="{{ path('user_feedback_vote', {'feedback_id': feedback.id}) }}"
+	>
+	<div class="dp-feedback-count">
+		<i class="dp-arrow-outer"></i>
+		<i class="dp-arrow-inner"></i>
+		<em>{{ feedback.total_rating|default(0) }}</em>
+	</div>
+	<span class="dp-feedback-btn"><i class="dp-icon-thumbup"></i><span>I agree</span></span>
 </div>

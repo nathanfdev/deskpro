@@ -374,7 +374,7 @@ class FeedbackController extends AbstractController
 		if ($r) {
 			$feedback->removeRating($r);
 			$this->em->remove($r);
-			$this->em->flush($r);
+			$this->em->flush();
 		}
 
 		if ($this->in->getInt('rating')) {
