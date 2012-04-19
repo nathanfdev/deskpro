@@ -110,7 +110,7 @@ class AgentActivityController extends AbstractController
     }
 
     private function getRevistionsForAgent($agent, $date) {
-        $items = array('News', 'Article', 'Download');
+        $items = array('News', 'Article', 'Download', 'Feedback');
         $em = $this->getDoctrine()->getEntityManager();
         $counts_hourly = array();
 

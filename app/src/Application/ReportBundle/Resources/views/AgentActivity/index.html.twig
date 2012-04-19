@@ -49,6 +49,9 @@
     background-image: url("/DeskPRO/web/images/agent/tabs/tabtype-news.png");
 }
 
+.activity_type_feedback .type_icon {
+    background-image: url("/DeskPRO/web/images/agent/tabs/tabtype-feedback.png");
+}
 
 .activity_type_article .type_icon {
     background-image: url("/DeskPRO/web/images/agent/tabs/tabtype-content.png");
@@ -161,6 +164,9 @@
                                     {% elseif type == 'download' %}
                                         ({{ minute_display }}) Created download revision in
                                         <a href="{{ app.request.getBaseUrl() }}/agent/#app.publish,d:{{log.id}}">{{ log.title }}</a>
+                                    {% elseif type == 'feedback' %}
+                                        ({{ minute_display }}) Created feedback revision in
+                                        <a href="{{ app.request.getBaseUrl() }}/agent/#app.feedback,a:{{log.id}}">{{ log.title }}</a>
                                     {% endif %}
                                     </div>
                                 {% endif %}
