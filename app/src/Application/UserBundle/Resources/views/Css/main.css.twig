@@ -1026,6 +1026,7 @@ section#dp_header_search .dp-btn {
 #dp_page_wrapper {
 	background-color: #ededed;
 	padding: 18px;
+	padding-bottom: 15px;
 	border: 1px solid #B2B1B1;
 	border-top: none;
 }
@@ -1037,6 +1038,7 @@ section#dp_header_search .dp-btn {
 
 #dp_content_wrapper {
 	margin-right: {{ dp_sidebar_width+18 }}px;
+	margin-bottom: 15px;
 }
 
 #dp_content {
@@ -1062,6 +1064,33 @@ section#dp_header_search .dp-btn {
 
 #dp_breadcrumb_wrap .dp-breadcrumb li:last-child .dp-divider {
 	display: none;
+}
+
+#dp_footer {
+	clear: both;
+	margin: 0;
+	padding: 0;
+	line-height: 100%;
+}
+
+#dp_footer .dp-copy {
+	color: #B2B2B2;
+	font-size: 9pt;
+	padding-left: 10px;
+}
+
+#dp_footer .dp-copy a {
+	color: #B2B2B2;
+	text-decoration: none;
+}
+
+#dp_footer .dp-copy a strong {
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+#dp_footer .dp-copy a:hover {
+	color: #000;
 }
 
 /***********************************************************************************************************************
@@ -1571,7 +1600,7 @@ nav#dp_content_tabs label {
 }
 
 #dp .dp-new-feedback {
-	margin: 30px;
+	margin: 15px;
 	margin-bottom: 30px;
 	background-color: #F5F5F5;
 	border: 1px solid #DADADA;
@@ -1610,6 +1639,10 @@ nav#dp_content_tabs label {
 	margin-top: 2px;=
 }
 
+#dp .dp-feedback-section {
+	margin-left: 0;
+}
+
 /******************************
 * Voting button
 ******************************/
@@ -1630,6 +1663,7 @@ nav#dp_content_tabs label {
 	line-height: 14px;
 	padding: 3px 5px 3px 5px;
 	width: 52px;
+	white-space: nowrap;
 }
 
 #dp .dp-feedback-vote .dp-feedback-badge {
