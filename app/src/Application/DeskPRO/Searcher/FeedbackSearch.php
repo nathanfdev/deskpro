@@ -311,12 +311,6 @@ class FeedbackSearch extends SearcherAbstract
 						$types = array_unique($types);
 					}
 
-					foreach ($types as &$_t) {
-						if ($_t == 'undecided') {
-							$_t = 'new';
-						}
-					}
-
 					$part_where = array();
 					if ($cats) {
 						$part_where[] = $this->_choiceMatch('feedback.status_category_id', $op, $cats);

@@ -53,7 +53,7 @@ class FeedbackController extends AbstractController
 	/**
 	 * Main index shows initial category listing
 	 */
-	public function filterAction($status = 'all', $slug = 'all', $order_by = 'popular')
+	public function filterAction($status = 'any-status', $slug = 'all-categories', $order_by = 'popular')
 	{
 		/** @var $structure \Application\DeskPRO\Publish\Structure */
 		$structure = $this->container->getSystemService('publish_structure');
@@ -70,11 +70,11 @@ class FeedbackController extends AbstractController
 		$sub_status_id = 0;
 
 		if (!$status) {
-			$status = 'all';
+			$status = 'any-status';
 		}
 
 		if (!$slug) {
-			$slug = 'all';
+			$slug = 'all-categories';
 		}
 
 		if ($order_by != 'popular' && $order_by != 'newest' && $order_by != 'most-voted') {
@@ -120,7 +120,7 @@ class FeedbackController extends AbstractController
 		$searcher = new \Application\DeskPRO\Searcher\FeedbackSearch();
 		$searcher->setPersonContext($this->person);
 
-		if ($status != 'all') {
+		if ($status != 'any-status') {
 			$searcher->addTerm('status', 'is', $status);
 		}
 

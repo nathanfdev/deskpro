@@ -825,6 +825,9 @@
 #dp .dp-nav li .dp-info-prefix {
 	color: #838383;
 }
+#dp .dp-nav li.dp-open .dp-info-prefix {
+	color: #fff;
+}
 
 #dp .dp-dropdown-element { position:absolute;top:100%;left:0;z-index:1000;float:left;display:none;min-width:160px;padding:4px 0;margin:0;list-style:none;background-color:#ffffff;border-color:#ccc;border-color:rgba(0, 0, 0, 0.2);border-style:solid;border-width:1px;-webkit-border-radius:0 0 5px 5px;-moz-border-radius:0 0 5px 5px;border-radius:0 0 5px 5px;-webkit-box-shadow:0 5px 10px rgba(0, 0, 0, 0.2);-moz-box-shadow:0 5px 10px rgba(0, 0, 0, 0.2);box-shadow:0 5px 10px rgba(0, 0, 0, 0.2);-webkit-background-clip:padding-box;-moz-background-clip:padding;background-clip:padding-box;*border-right-width:2px;*border-bottom-width:2px; }
 #dp .dp-dropdown-element {
@@ -835,6 +838,36 @@
 }
 #dp .dp-dropdown-element.dp-pull-right{right:0;left:auto;}
 #dp .dp-dropdown.dp-open .dp-dropdown-element { display: block; }
+
+#dp .dp-dropdown.dp-right-option {
+	float: right;
+}
+
+#dp .dp-dropdown.dp-right-option > a {
+	background-color:#ffffff;
+	border:1px solid #ddd;
+	{{ _self.border_radius(0) }}
+	border-right: none;
+	margin-right: 0;
+}
+
+#dp .dp-dropdown.dp-right-option.dp-first > a {
+	{{ _self.border_radius({ tl: 4}) }}
+}
+#dp .dp-dropdown.dp-right-option.dp-last > a {
+	border-right: 1px solid #ddd;
+	{{ _self.border_radius({ tr: 4}) }}
+}
+
+#dp .dp-nav-thicksep {
+	border-bottom-width: 2px;
+}
+
+#dp .dp-nav-thicksep > li.dp-active, #dp .dp-nav-thicksep > li:hover { margin-bottom: -2px; }
+#dp .dp-nav-thicksep > li.dp-active > a, #dp .dp-nav-thicksep > li:hover > a { border-bottom-width: 2px; }
+
+#dp .dp-nav-thicksep > li.dp-active.dp-right-option, #dp .dp-nav-thicksep > li:hover { margin-bottom: -1px; }
+#dp .dp-nav-thicksep > li.dp-active.dp-right-option > a, #dp .dp-nav-thicksep > li:hover > a { border-bottom-width: 1px; }
 
 /***********************************************************************************************************************
 * #dp_html
@@ -1591,8 +1624,4 @@ nav#dp_content_tabs label {
 	margin: 0;
 	padding: 0 0 0 0;
 	line-height: 100%;
-}
-
-#dp ul.dp-browse-list-full > li .dp-meta {
-	color: {{ stylevar.meta_text_color }};
 }
