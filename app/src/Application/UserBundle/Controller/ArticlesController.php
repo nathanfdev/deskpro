@@ -355,12 +355,18 @@ class ArticlesController extends AbstractController
 			$tpl = 'UserBundle:Articles:article-overlay.html.twig';
 		}
 
+		$glossary = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
+		$glossary_words = $glossary->findWords($article->content);
+		$word_defs = $glossary->getWordDefs($glossary_words);
+
 		return $this->render($tpl, array(
 			'subscription' => $subscription,
 			'rating' => $rating,
 			'rating_log_search_id' => $rating_log_search_id,
 
 			'article' => $article,
+			'glossary_words' => $glossary_words,
+			'word_defs' => $word_defs,
 			'all_categories' => $all_categories,
 			'comments' => $comments,
 			'comments_widget' => $comments_widget,

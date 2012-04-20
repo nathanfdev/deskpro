@@ -4,7 +4,7 @@ Orb.createNamespace('DeskPRO');
  * Finds words in text and wraps them in a span
  */
 DeskPRO.WordHighlighter = {
-	highlight: function(node, words, excluseStopwords) {
+	highlight: function(node, words, excluseStopwords, onlyFirst) {
 
 		words = words.map(function(w) {
 			return w.toLowerCase();
@@ -30,18 +30,22 @@ DeskPRO.WordHighlighter = {
 		}
 
 		var addedNodes = [];
-		this._do(node, words, addedNodes);
+		this._do(node, words, addedNodes, onlyFirst, {});
 
 		return addedNodes;
 	},
 
-	_do: function(node, words, addedNodes) {
+	_do: function(node, words, addedNodes, onlyFirst, _doneWords) {
 		var i;
 
 		if (node.nodeType == 3) {
 			for (i = 0; i < words.length; i++) {
+				if (onlyFirst && _doneWords[i]) continue;
+
 				var pos = node.data.toLowerCase().indexOf(words[i]);
 				if (pos >= 0 && !$(node.parentNode).hasClass('dp-highlight-word') && !$(node.parentNode).closest('.dp-highlight-word')[0]) {
+					_doneWords[i] = true;
+
 					var spannode = document.createElement('span');
 					spannode.className = 'dp-highlight-word';
 					spannode.setAttribute('data-word', words[i]);
@@ -52,7 +56,7 @@ DeskPRO.WordHighlighter = {
 					var middleclone = middlebit.cloneNode(true);
 					spannode.appendChild(middleclone);
 
-					this._do(endbit, words, addedNodes);
+					this._do(endbit, words, addedNodes, onlyFirst, _doneWords);
 
 					middlebit.parentNode.replaceChild(spannode, middlebit);
 				}
@@ -60,7 +64,7 @@ DeskPRO.WordHighlighter = {
 		}else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
 			var children = $.makeArray(node.childNodes);
 			for (i = 0; i < children.length; i++) {
-				this._do(children[i], words, addedNodes);
+				this._do(children[i], words, addedNodes, onlyFirst, _doneWords);
 			}
 		}
 	},

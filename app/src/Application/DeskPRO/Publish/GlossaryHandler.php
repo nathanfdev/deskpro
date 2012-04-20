@@ -90,10 +90,14 @@ class GlossaryHandler
 
 	public function loadWords(array $words)
 	{
+		if (!$words) {
+			return;
+		}
+
 		$load = array_diff($words, array_keys($this->_defs));
 		if ($load) {
 			$in_q = array_fill(0, count($load), '?');
-			$in_q = implode(',');
+			$in_q = implode(',', $in_q);
 
 			$words = $this->db->fetchAllKeyValue("
 				SELECT word, content
@@ -103,6 +107,12 @@ class GlossaryHandler
 
 			$this->_defs = array_merge($this->_defs, $words);
 		}
+	}
+
+	public function getWordDefs(array $words = array())
+	{
+		$this->loadWords($words);
+		return $this->_defs;
 	}
 
 	/**

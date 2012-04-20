@@ -124,7 +124,7 @@
         $tip
           .remove()
           .css({ top: 0, left: 0, display: 'block' })
-          .appendTo(inside ? this.$element : document.body)
+          .appendTo(inside ? this.$element : $('#dp'))
 
         pos = this.getPosition(inside)
 
@@ -418,7 +418,7 @@
         backdrop.call(this, function () {
           var transition = $.support.transition && that.$element.hasClass('dp-fade')
 
-          !that.$element.parent().length && that.$element.appendTo(document.body) //don't move modals dom position
+          !that.$element.parent().length && that.$element.appendTo($('#dp')) //don't move modals dom position
 
           that.$element
             .show()
@@ -492,7 +492,7 @@
       var doAnimate = $.support.transition && animate
 
       this.$backdrop = $('<div class="dp-modal-backdrop ' + animate + '" />')
-        .appendTo(document.body)
+        .appendTo($('#dp'))
 
       if (this.options.backdrop != 'static') {
         this.$backdrop.click($.proxy(this.hide, this))
