@@ -271,12 +271,19 @@ var DpOverlayWidget = new (function() {
 			css = [];
 			css.push('position: relative');
 			css.push('text-align: left');
-			css.push('background: transparent url(' + options.staticUrl + 'images/spinners/loading-big-circle.gif) no-repeat 50% 50%');
+			css.push('border: 1px solid #9C9B9B');
+			css.push('background: #F9FAFC url(' + options.staticUrl + 'images/spinners/loading-big-circle.gif) no-repeat 50% 50%');
 			css.push('width: 960px');
 			css.push('height: 500px');
 			css.push('margin: auto');
 			css.push('padding: 0');
 			css.push('box-shadow: none');
+			css.push('-webkit-border-radius: 4px');
+			css.push('-moz-border-radius: 4px');
+			css.push('border-radius: 4px');
+			css.push('box-shadow:0 0 9px #e7e7e7');
+			css.push('-webkit-box-shadow: 0 0 9px #e7e7e7');
+			css.push('-moz-box-shadow: 0 0 9px #e7e7e7');
 			css = css.join(';');
 			overlayWrapInner = $('<div style="' + css  +'"></div>').appendTo(overlayWrap);
 

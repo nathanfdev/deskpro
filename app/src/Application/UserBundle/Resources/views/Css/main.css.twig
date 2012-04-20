@@ -1239,6 +1239,37 @@ nav#dp_content_tabs label {
 #dp .loading .is-loading { display: block; }
 
 /******************************
+* Drop zone targets
+******************************/
+
+.dp-drop-file-zone {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: none;
+
+	background-color: rgba(175, 192, 213, 0.7);
+	z-index: 1000000;
+	display: none;
+}
+
+.dp-drop-file-zone h1 {
+	margin: 10px auto 0 auto;
+	width: 300px;
+	text-align: center;
+	padding: 25px;
+	background-color: #AFC0D5;
+	font-size: 18px;
+	border: 1px solid #66717F;
+}
+
+body.file-drag-over .dp-drop-file-zone {
+	display: block;
+}
+
+/******************************
 * A person list is a list with a person avatar, and a name.
 * Options: .dp-compact turns the list into just an avatar shown side-by-side
 ******************************/
