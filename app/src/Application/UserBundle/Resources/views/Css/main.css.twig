@@ -502,11 +502,11 @@ nav#dp_content_tabs ul li {
 	overflow: hidden;
 
 	border: 1px solid #c9d0d8;
-	border-bottom: none;
+	border-bottom: 1px solid #D2D0D0;
 
 	background-color: #fff;
 	{{ _self.border_radius({ tr: 6, tl: 6}) }}
-	{{ _self.box_shadow('1px 0px 2px rgba(0,0,0, 0.2)') }}
+	{{ _self.box_shadow('1px 0 2px rgba(0,0,0, 0.2)') }}
 	box-sizing: content-box;
 
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -515,10 +515,10 @@ nav#dp_content_tabs ul li {
 }
 
 nav#dp_content_tabs ul li:hover {
-	{{ _self.box_shadow('1px 0px 2px rgba(0,0,0, 0.4)') }}
+	{{ _self.box_shadow('1px 0 2px rgba(0,0,0, 0.4)') }}
 }
 nav#dp_content_tabs ul li.on {
-	{{ _self.box_shadow('1px 0px 2px rgba(0,0,0, 0.4)') }}
+	{{ _self.box_shadow('1px 0 2px rgba(0,0,0, 0.4)') }}
 	border: 1px solid #c9d0d8;
 	border-bottom: 1px solid #fff;
 	cursor: pointer;
