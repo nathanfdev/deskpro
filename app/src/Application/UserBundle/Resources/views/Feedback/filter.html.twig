@@ -61,21 +61,35 @@
 {% endblock %}
 {% block page_title %}
 	{{ phrase('user.general.feedback') }}
-	/ {{ phrase('user.feedback.status_' ~ parent_status) }}
-	{% if parent_status != status %}
-		/
-		{% if parent_status == 'active' %}
-			{{ active_status_cats[sub_status_id].title }}
-		{% else %}
-			{{ closed_status_cats[sub_status_id].title }}
-		{% endif %}
+	{% if not (status == 'any-status' and search_options.order_by == 'popular' and not category) %}
+		-
+		{% if search_options.order_by == 'popular' %}{{ phrase('user.feedback.popular') }}
+		{% elseif search_options.order_by == 'popular' %}{{ phrase('user.feedback.newest') }}
+		{% elseif search_options.order_by == 'most-voted' %}{{ phrase('user.feedback.most_voted') }}
+		{% elseif search_options.order_by == 'i-voted' %}{{ phrase('user.feedback.i_voted') }}
 	{% endif %}
 	{% if category %}
 		{% for cat in category.getTreeParents() %}
-			/ {{ cat.title }}
+			- {{ cat.title }}
 		{% endfor %}
-		/ {{ category.title }}
+		- {{ category.title }}
 	{% endif %}
+	{% if parent_status and parent_status != 'any-status' %}
+		-
+		{% if parent_status == 'gathering-feedback' %}{{ phrase('user.feedback.status_new') }}
+		{% elseif parent_status == 'active' %}{{ phrase('user.feedback.status_active') }}
+		{% elseif parent_status == 'closed' %}{{ phrase('user.feedback.status_closed') }}
+		{% endif %}
+		{% if parent_status != status %}
+			-
+			{% if parent_status == 'active' %}
+				{{ active_status_cats[sub_status_id].title }}
+			{% else %}
+				{{ closed_status_cats[sub_status_id].title }}
+			{% endif %}
+		{% endif %}
+	{% endif %}
+{% endif %}
 {% endblock %}
 {% block content %}
 

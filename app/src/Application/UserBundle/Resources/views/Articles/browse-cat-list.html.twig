@@ -2,7 +2,7 @@
 	{% for cat in categories %}
 		{% if loop.index0 != 0 and loop.index0 % 2 == 0 %}</ul><ul class="dp-browse-list">{% endif %}
 		<li>
-			<h3><a href="{{ path('user_articles', {'slug': cat.url_slug}) }}">{{ cat.title }}</a></h3>
+			<h3 class="dp-fadeaway-container"><a class="dp-fadeaway-title" href="{{ path('user_articles', {'slug': cat.url_slug}) }}">{{ cat.title }}</a><div class="dp-fadeaway"></div></h3>
 			<ul>
 				{% for article in category_articles[cat.id] %}
 					<li>
