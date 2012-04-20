@@ -131,7 +131,7 @@
     'user.general.priority'                        => 'Priority',
     'user.general.product'                         => 'Product',
     'user.general.profile'                         => 'Profile',
-    'user.general.rating_x_of_y_found_helpful'     => '{{percent}}% of {{vote_count}} found this page helpful',
+    'user.general.rating_x_of_y_found_helpful'     => '{{vote_up}} of {{vote_count}} people found this page helpful',
     'user.general.register'                        => 'Register',
     'user.general.register__never_validate_again'  => 'Never have to validate your tickets again',
     'user.general.register_btn_register_account'   => 'Register my account',
