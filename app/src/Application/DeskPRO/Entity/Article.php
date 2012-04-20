@@ -241,6 +241,17 @@ class Article extends ContentAbstract
 		return $path;
 	}
 
+	public function getPrimaryCategory()
+	{
+		if (!$this->categories) {
+			return null;
+		}
+
+		foreach ($this->categories as $c) {
+			return $c;
+		}
+	}
+
 	public function addAttachment(ArticleAttachment $attach)
 	{
 		$this->attachments->add($attach);

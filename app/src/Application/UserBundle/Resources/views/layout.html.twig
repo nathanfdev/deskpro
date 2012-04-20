@@ -102,8 +102,8 @@
 				<h1>{{ app.getSetting('core.deskpro_name') }}</h1>
 			</section>
 			<section id="dp_header_search" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
-				<form class="dp-form-search" id="dp_omnisearch">
-					<input type="input" id="dp_search" placeholder="Search for something" />
+				<form action="{{ path('user_search') }}" class="dp-form-search" id="dp_omnisearch">
+					<input type="input" name="q" id="dp_search" placeholder="Search for something" />
 					<button class="dp-btn" type="submit">Search</button>
 				</form>
 			</section>

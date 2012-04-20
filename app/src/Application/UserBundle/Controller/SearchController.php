@@ -108,7 +108,8 @@ class SearchController extends AbstractController
 			'results'           => $results,
 			'sticky_results'    => $sticky_results,
 			'query'             => $q,
-			'pageinfo'          => $pageinfo
+			'pageinfo'          => $pageinfo,
+			'num_results'       => $total,
 		));
 	}
 

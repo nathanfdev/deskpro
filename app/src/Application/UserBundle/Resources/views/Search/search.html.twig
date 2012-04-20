@@ -1,59 +1,46 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
 	{% if query %}
-		<li><a href="{{ path('user_search', {'q': query }) }}">{{ query }}</a></li>
+		<li>Search for: <a href="{{ path('user_search', {'q': query }) }}">{{ query }}</a></li>
 	{% endif %}
 {% endblock %}
 {% block content %}
 
-<div class="dp-search-page">
-	<div class="dp-content-block">
-		<div class="dp-box">
-			<div class="dp-box-content">
-				<div class="dp-search-list">
-					<ul>
-						{% if not results and not sticky_results %}
-							<li><h4>{{ phrase('user.search.no_results_help') }}</h4></li>
-						{% else %}
-							{% if sticky_results %}
-								{% for res in sticky_results %}
-									{% include 'UserBundle:Search:search-result-item.html.twig' with {'is_sticky': true}%}
-								{% endfor %}
-							{% endif %}
-							{% for res in results %}
-								{% include 'UserBundle:Search:search-result-item.html.twig' %}
-							{% endfor %}
-						{% endif %}
-					</ul>
-				</div>
-			</div>
-
-			{% if pageinfo.pages|length > 1 %}
-			<div class="dp-footer">
-				<div class="pagination">
-					<ul>
-						{% if pageinfo.prev %}
-							<li>
-								<a href="{{ path('user_search', {'q': query, 'p': pageinfo.prev }) }}">{{ phrase('user.general.page_prev') }}</a>
-							</li>
-						{% endif %}
-						{% for p in pageinfo.pages %}
-							<li {% if pageinfo.curpage == p %}class="active"{% endif %}>
-								<a href="{{ path('user_search', {'q': query, 'p': p }) }}">{{ p }}</a>
-							</li>
+<section class="dp-portal-section">
+	<header>
+		<h1>{{ phrase('user.search.x_search_results', {count: num_results}) }}
+	</header>
+	<div class="dp-content-block dp-search-block">
+		<div class="dp-content-wrapper">
+			{% if not results and not sticky_results %}
+				<p>{{ phrase('user.search.no_results_help') }}</p>
+			{% else %}
+				<ul class="dp-content-list">
+					{% if sticky_results %}
+						{% for res in sticky_results %}
+							{% include 'UserBundle:Search:search-result-item.html.twig' with {'is_sticky': true}%}
 						{% endfor %}
-						{% if pageinfo.next %}
-							<li>
-								<a href="{{ path('user_search', {'q': query, 'p': pageinfo.prev }) }}">{{ phrase('user.general.page_next') }}</a>
-							</li>
-						{% endif %}
-					</ul>
-					<br class="dp-clear" style="clear:right"/>
-				</div>
-			</div>
+					{% endif %}
+					{% for res in results %}
+						{% include 'UserBundle:Search:search-result-item.html.twig' %}
+					{% endfor %}
+				</ul>
 			{% endif %}
 		</div>
 	</div>
-</div>
+</section>
+
+{% if pageinfo.last != 1 %}
+	{% set page_url = path('user_search', {'q': q}) ~ '&amp;p=' %}
+	<div class="dp-pagination">
+		<ul>
+			{% if pageinfo.prev %}<li><a href="{{ page_url ~ pageinfo.prev }}">&larr; {{ phrase('user.general.page_prev') }}</a></li>{% endif %}
+			{% for p in pageinfo.pages %}
+				<li class="{% if pageinfo.cursor == p %}dp-active{% endif %}"><a href="{{ page_url ~ p }}">{{ p }}</a>
+			{% endfor %}
+			{% if pageinfo.next %}<li><a href="{{ page_url ~ pageinfo.next }}">{{ phrase('user.general.page_next') }} &rarr;</a></li>{% endif %}
+		</ul>
+	</div>
+{% endif %}
 
 {% endblock %}
