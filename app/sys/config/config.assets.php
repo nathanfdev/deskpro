@@ -527,7 +527,6 @@ $CONFIG['user_common'] = array(
 
 		'javascripts/DeskPRO/User/ElementHandler/ElementHandlerAbstract.js',
 		'javascripts/DeskPRO/User/ElementHandler/MoreLoader.js',
-		'javascripts/DeskPRO/User/ElementHandler/Helper/FeedbackVote.js',
 		'javascripts/DeskPRO/User/ElementHandler/LoginBox.js',
 		'javascripts/DeskPRO/User/ElementHandler/NewTicket.js',
 		'javascripts/DeskPRO/User/ElementHandler/FormUploadHandler.js',
