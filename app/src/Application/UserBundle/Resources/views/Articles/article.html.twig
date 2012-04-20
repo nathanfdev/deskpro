@@ -1,3 +1,4 @@
+{% import 'UserBundle:Common:macros-social.html.twig' as social %}
 {% set this_section = 'articles' %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block head %}
@@ -49,6 +50,8 @@
 		{% if app.user.hasPerm('articles.rate') %}
 			{% include 'UserBundle:Common:rating-bar.html.twig' with {'content_object': article} %}
 		{% endif %}
+
+		{{ social.social_block(path('user_articles_article', {'slug': article.url_slug}), article.title) }}
 	</footer>
 </section>
 
