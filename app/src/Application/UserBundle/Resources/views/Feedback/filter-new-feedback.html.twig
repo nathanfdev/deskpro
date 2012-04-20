@@ -27,15 +27,16 @@
 			<input type="hidden" name="process_new" value="1" />
 			<input type="hidden" name="feedback[title]" id="feedback_title" value="{{ newfeedback.title }}" />
 			<div class="dp-feedback-form dp-well dp-well-light dp-form-vertical" {% if not just_form and not is_submitted %}style="display: none"{% endif %}>
-				<fieldset class="dp-related-section" style="display: none;">
-					<legend>Related Suggestions</legend>
-					<div class="dp-similar-results">
-						<div class="dp-loading-line" style="display: none">Searching</div>
-						<div class="dp-results"></div>
-					</div>
-				</fieldset>
 				<fieldset>
 					<legend>Submit a new suggestion</legend>
+
+					<div class="dp-related-section" style="display: none;">
+						<h4>We found these related suggestions</h4>
+						<div class="dp-similar-results">
+							<div class="dp-loading-line" style="display: none">Searching</div>
+							<div class="dp-results"></div>
+						</div>
+					</div>
 
 					{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'feedback[person_email]', 'mode': 'identity' } %}
 
