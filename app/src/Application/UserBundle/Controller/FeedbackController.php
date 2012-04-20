@@ -58,7 +58,7 @@ class FeedbackController extends AbstractController
 		/** @var $structure \Application\DeskPRO\Publish\Structure */
 		$structure = $this->container->getSystemService('publish_structure');
 
-		$page = $this->in->getUint('page');
+		$page = $this->in->getUint('p');
 		$page = max(1, $page);
 
 		$per_page = 20;
