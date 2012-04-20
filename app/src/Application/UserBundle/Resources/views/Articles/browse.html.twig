@@ -56,7 +56,7 @@
 					<li>
 						<section class="dp-article-post dp-content-post">
 							<header>
-								<h3 style="margin-bottom: 0"><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></h3>
+								<h3 style="margin-bottom: 0" class="dp-fadeaway-container"><a class="dp-fadeaway-title" href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a><div class="dp-fadeaway"></div></h3>
 								<ul class="dp-post-info">
 									<li class="dp-author"><i class="dp-icon-user"></i> {{ article.person.display_name }}</li>
 									<li class="dp-date"><i class="dp-icon-calendar"></i> {{ article.date_created|date('full') }}</li>
