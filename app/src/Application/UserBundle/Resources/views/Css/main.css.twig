@@ -287,7 +287,8 @@ section#dp_header_search .dp-btn {
 }
 
 #dp_breadcrumb_wrap {
-
+	position: relative;
+	overflow: hidden;
 }
 
 #dp_breadcrumb_wrap .dp-breadcrumb {
@@ -295,14 +296,28 @@ section#dp_header_search .dp-btn {
 	border-left: none;
 	border-right: none;
 	{{ _self.border_radius({ tl: 6, tr: 6, bl: 0, br: 0 }) }}
+	white-space: nowrap;
 }
 
 #dp_breadcrumb_wrap .dp-breadcrumb li i {
 	{{ _self.opacity(0.7) }}
+	white-space: nowrap;
 }
 
 #dp_breadcrumb_wrap .dp-breadcrumb li:last-child .dp-divider {
 	display: none;
+}
+
+#dp_breadcrumb_wrap .dp-breadcrumb-fade {
+	position: absolute;
+	top: 0px;
+	right: 0;
+	bottom: 23px;
+	width: 60px;
+
+	{{ _self.border_radius({ tr: 6}) }}
+
+	background: transparent url(../../web/images/user/breadcrumb-fade.png) no-repeat 100% 0;
 }
 
 #dp_footer {
