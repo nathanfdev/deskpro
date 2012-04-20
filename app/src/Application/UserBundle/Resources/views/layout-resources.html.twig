@@ -1,0 +1,39 @@
+<script type="text/javascript">
+	var BASE_URL = '{{ path('user') }}';
+	var ASSETS_BASE_URL = '{{ asset('') }}';
+	var DESKPRO_PERSON_ID = {{ app.user.id|default(0) }};
+
+	{% if constant('DP_DEBUG') %}
+	DP_DEBUG = true;
+	Dp_EnableDebug = true;
+	{% else %}
+	DP_DEBUG = false;
+	Dp_EnableDebug = false;
+	{% endif %}
+</script>
+
+{% if app.isDebug() %}
+	{{ dp_asset_html('user_vendors') }}
+	{{ dp_asset_html('user_common') }}
+	<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBasePath() }}/file.php/res-user/main.css?{{ app.style.css_updated|date('u')|crc32 }}&amp;reload=1" media="screen,print" />
+{% else %}
+	{{ dp_asset_html('user') }}
+	{% if not app.style.css_blob or admin_portal_controls %}
+		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBasePath() }}/file.php/res-user/main.css?{{ app.style.css_updated|date('u')|crc32 }}&amp;reload=1" media="screen,print" />
+	{% else %}
+		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.style.css_blob.getDownloadUrl() }}?{{ app.style.css_blob.id }}" media="screen,print" />
+	{% endif %}
+{% endif %}
+
+<link rel="stylesheet" type="text/css" href="{{ asset('stylesheets/user/main-print.css') }}" media="print" />
+<!--[if IE ]><link href="{{ asset('stylesheets/user/main-ie.css') }}" rel="stylesheet" type="text/css"><![endif]-->
+
+<script type="text/javascript">
+	window.DeskPRO_Window = new DeskPRO.User.Window();
+	$(document).ready(function() {
+		window.DeskPRO_Window.initPage();
+	});
+</script>
+
+{{ portal_css(['sidebar', 'pagetop']) }}
+{{ portal_js(['sidebar', 'pagetop']) }}

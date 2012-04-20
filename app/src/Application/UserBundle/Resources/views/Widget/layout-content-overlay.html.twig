@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" class="dp-simple-popup">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	{% include 'UserBundle:Common:resources.html.twig' %}
+	{% include 'UserBundle::layout-resources.html.twig' %}
 	{% block head %}{% endblock %}
 
 	<script type="text/javascript">
@@ -23,17 +23,24 @@
 	</script>
 </head>
 <body id="dp_content_overlay">
-	<div class="dp-content-holder">
-		{% block content %}{% endblock %}
-	</div>
-	{% block foot %}
-	<div class="dp-controls">
-		<button class="dp-open-in-window" style="float: right">{{ phrase('user.general.widget_open_in_new_window') }}</button>
-		<div class="dp-default dp-control-section">
-			<button class="btn small dp-section-toggle primary dp-set-answered" data-toggle-section=".dp-confirm-answered">{{ phrase('user.general.widget_bad_result') }}</button>
-			<button class="btn small dp-not-answered">{{ phrase('user.general.widget_good_result') }}</button>
+
+	<div id="dp">
+
+		<section class="dp-article-post dp-content-post dp-content-page">
+			<article id="dp_article_content">
+				{% block content %}{% endblock %}
+			</article>
+		</section>
+
+		{% block foot %}
+		<div class="dp-controls">
+			<button class="dp-btn dp-open-in-window" style="float: right">{{ phrase('user.general.widget_open_in_new_window') }}</button>
+			<div class="dp-default dp-control-section">
+				<button class="dp-btn small dp-section-toggle dp-primary dp-set-answered" data-toggle-section=".dp-confirm-answered">{{ phrase('user.general.widget_bad_result') }}</button>
+				<button class="dp-btn small dp-not-answered">{{ phrase('user.general.widget_good_result') }}</button>
+			</div>
 		</div>
+		{% endblock %}
 	</div>
-	{% endblock %}
 </body>
 </html>
