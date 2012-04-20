@@ -120,8 +120,10 @@ class FeedbackController extends AbstractController
 		$searcher = new \Application\DeskPRO\Searcher\FeedbackSearch();
 		$searcher->setPersonContext($this->person);
 		$searcher->setVisitor(App::getSession()->getVisitor());
-
 		if ($status != 'any-status') {
+			if ($status == 'gathering-feedback') {
+				$status = 'new';
+			}
 			$searcher->addTerm('status', 'is', $status);
 		}
 

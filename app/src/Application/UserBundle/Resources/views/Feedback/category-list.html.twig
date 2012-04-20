@@ -4,7 +4,7 @@
 	</ul>
 	<ul>
 		<li style="margin-bottom: 15px;">
-			{% if not status or status == 'new' %}
+			{% if not status or status == 'gathering-feedback' %}
 				<a href="{{ path('user_feedback') }}">
 			{% else %}
 				<a href="{{ path('user_feedback_status', {'status': status}) }}">
@@ -14,7 +14,7 @@
 		</li>
 	{% for cat in categories %}
 		<li>
-			{% if not status or status == 'new' %}
+			{% if not status or status == 'gathering-feedback' %}
 				<a href="{{ path('user_feedback_cat', {'slug': cat.url_slug}) }}">
 			{% else %}
 				<a href="{{ path('user_feedback_cat_status', {'slug': cat.url_slug, 'status': status}) }}">

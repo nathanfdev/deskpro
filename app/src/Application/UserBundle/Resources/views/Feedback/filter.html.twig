@@ -37,7 +37,7 @@
 		{% if parent_status and parent_status != 'any-status' %}
 			<li>
 				<a href="{{ path('user_feedback', {'status': parent_status, 'slug': category.url_slug}) }}">
-					{% if parent_status == 'new' %}{{ phrase('user.feedback.status_new') }}
+					{% if parent_status == 'gathering-feedback' %}{{ phrase('user.feedback.status_new') }}
 					{% elseif parent_status == 'active' %}{{ phrase('user.feedback.status_active') }}
 					{% elseif parent_status == 'closed' %}{{ phrase('user.feedback.status_closed') }}
 					{% endif %}

@@ -43,7 +43,7 @@
 				{% if status_cat %}
 					{{ status_cat.title }}
 				{% else %}
-					{% if status == 'new' %}{{ phrase('user.feedback.status_new') }}
+					{% if status == 'gathering-feedback' %}{{ phrase('user.feedback.status_new') }}
 					{% elseif status == 'active' %}{{ phrase('user.feedback.status_active') }}
 					{% elseif status == 'closed' %}{{ phrase('user.feedback.status_closed') }}
 					{% endif %}
@@ -60,7 +60,7 @@
 			<li class="sep"></li>
 			<li>
 				<i class="dp-icon-asterisk"></i>
-				<a href="{{ path('user_feedback', {'status': 'new', 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ phrase('user.feedback.status_new') }}</a>
+				<a href="{{ path('user_feedback', {'status': 'gathering-feedback', 'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ phrase('user.feedback.status_new') }}</a>
 				<span class="dp-badge dp-small">{{ status_counts['new']|default(0) }}</span>
 			</li>
 			<li class="sep"></li>

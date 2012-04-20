@@ -516,7 +516,7 @@ $collection->add('user_feedback', new Route(
 	array('_controller' => 'UserBundle:Feedback:filter', 'status' => 'any-status', 'slug' => 'all-categories', 'order_by' => 'popular'),
 	array(
 		'slug'   => '((\\d+(\\-.*?)?)?)|all\-categories',
-		'status' => '(any-status|new|active|closed)(\\.([0-9]+))?',
+		'status' => '(any-status|gathering\-feedback|active|closed)(\\.([0-9]+))?',
 		'order_by'   => '(popular|newest|most\-voted|i\-voted)',
 	),
 	array()

@@ -16,7 +16,7 @@
     'user.feedback.status_active'                => 'Active',
     'user.feedback.status_all'                   => 'All',
     'user.feedback.status_closed'                => 'Closed',
-    'user.feedback.status_new'                   => 'New',
+    'user.feedback.status_new'                   => 'Gathering Feedback',
     'user.feedback.status_popular'               => 'Popular',
     'user.feedback.summary_error'                => 'Please enter a summary of at laest 5 characters',
     'user.feedback.view_all_x_feedback'          => 'View 1 feedback submission|View all {{count}} feedback submissions',
