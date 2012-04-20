@@ -84,6 +84,8 @@ class WidgetController extends AbstractController
 		$latest_content = new \Application\DeskPRO\Publish\LatestContent($this->em);
 		$latest_content->setMaxCount(10);
 
+		$chat_active = App::getEntityRepository('DeskPRO:Session')->hasAvailableAgents();
+
 		$vars = array(
 			'departments' => $departments,
 
@@ -95,6 +97,7 @@ class WidgetController extends AbstractController
 			'newfeedback' => $newfeedback,
 			'feedbackform' => $feedbackform->createView(),
 			'feedback_categories' => $feedback_categories,
+			'chat_active' => $chat_active,
 
 			'newest_content' => $latest_content->getResults(),
 		);

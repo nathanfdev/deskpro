@@ -48,7 +48,7 @@
 		<div id="dp_overlay_navtabs" class="head clearfix tabset">
 			<a data-tab-for="#newticket" class="btn active"><i class="icon icon-call"></i> Contact Our Agents</a>
 			<a data-tab-for="#newfeedback" class="btn"><i class="icon icon-mail"></i> Submit Feedback</a>
-			<a data-tab-for="#newchat" class="btn"><i class="icon icon-chat"></i>Chat with us Live</a>
+			{% if chat_active %}<a data-tab-for="#newchat" class="btn"><i class="icon icon-chat"></i>Chat with us Live</a>{% endif %}
 		</div>
 		<div class="widget-content">
 			{% include 'UserBundle:Widget:overlay-content-ticket.html.twig' %}
