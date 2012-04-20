@@ -28,4 +28,5 @@
     'user.feedback.status_undecided'         => 'Undecided',
     'user.feedback.any_status'               => 'Any Status',
     'user.feedback.all_categories'           => 'All Categories',
+    'user.feedback.there_are_x_suggestions'  => '{0} There are no suggestions|{1} There is 1 suggestion|[1,Inf]There are {{count}} suggestions',
 );

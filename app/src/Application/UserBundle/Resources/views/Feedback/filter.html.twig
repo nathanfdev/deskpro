@@ -94,13 +94,9 @@
 
 {% if not just_form %}
 	<section class="dp-portal-section dp-feedback-section">
-		{% if category %}
 		<header>
-			{% if category %}
-			<h1>{{ phrase('user.articles.there_are_x_articles', {'count': articles|length}) }}</h1>
-			{% endif %}
+			<h1>{{ phrase('user.feedback.there_are_x_suggestions', {'count': num_results}) }}</h1>
 		</header>
-		{% endif %}
 		<div class="dp-content-block dp-articles-block">
 			<div class="dp-content-wrapper">
 				<div style="float:left; width: 100%;">
