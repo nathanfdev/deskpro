@@ -506,7 +506,7 @@ $collection->add('agent_person_ajaxsavecustomfields', new Route(
 
 $collection->add('agent_peoplesearch_customfilter', new Route(
 	'/people-search/search/{letter}',
-	array('_controller' => 'AgentBundle:PeopleSearch:search'),
+	array('_controller' => 'AgentBundle:PeopleSearch:search', 'letter' => ''),
 	array(),
 	array('fragment_name' => 'people', 'fragment_type' => 'list')
 ));
