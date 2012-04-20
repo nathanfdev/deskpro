@@ -101,9 +101,9 @@
 			<section id="dp_header_title">
 				<h1>{{ app.getSetting('core.deskpro_name') }}</h1>
 			</section>
-			<section id="dp_header_search">
+			<section id="dp_header_search" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
 				<form class="dp-form-search" id="dp_omnisearch">
-					<input type="input" id="deskpro_search" placeholder="Search for something" />
+					<input type="input" id="dp_search" placeholder="Search for something" />
 					<button class="dp-btn" type="submit">Search</button>
 				</form>
 			</section>
@@ -164,6 +164,19 @@
 					<a href="http://www.deskpro.com/">Powered by <strong>DeskPRO</strong></a>
 				</div>
 			</footer>
+		</div>
+	</div>
+
+	<div id="dp_search_assist" style="display: none;">
+		<div class="results"></div>
+		<div class="foot">
+			<h4>{{ phrase('user.general.is_search_relevant') }}</h4>
+			<ul>
+				<li class="ticket"><a href="{{ path('user_tickets_new') }}">{{ phrase('user.general.create_ticket') }}</a></li>
+				<li class="feedback"><a href="{{ path('user_feedback_new') }}">{{ phrase('user.general.create_feedback') }}</a></li>
+				<li class="chat dp-chat-trigger no-omni-trigger"><a href="#">{{ phrase('user.general.btn_create_chat') }}</a></li>
+			</ul>
+			<br class="dp-clear" style="clear:left" />
 		</div>
 	</div>
 </div>

@@ -7,9 +7,9 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 	init: function() {
 		var self = this;
 
-		this.backdrop    = $('<div class="dp-backdrop" />').hide().appendTo('#deskpro');
+		this.backdrop    = $('<div class="dp-backdrop" />').hide().appendTo('#dp');
 		this.assistEl    = $('#dp_search_assist');
-		this.searchboxEl = $('#deskpro_search');
+		this.searchboxEl = $('#dp_search');
 
 		this.resultsEl   = $('div.results', this.assistEl);
 
@@ -95,12 +95,20 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 
 	updatePosition: function() {
 		var pos = this.searchboxEl.offset();
+		var left = pos.left;
+
 		var w = this.searchboxEl.outerWidth();
 		var h = this.searchboxEl.outerHeight();
 
+		if (w < 700) {
+			var diff = 700 - w;
+			w = 700;
+			left -= diff;
+		}
+
 		this.assistEl.css({
-			top: pos.top + h,
-			left: pos.left - 1,
+			top: pos.top + h + 1,
+			left: left -1 ,
 			width: w - 1
 		});
 	},
