@@ -80,7 +80,11 @@ class TemplateLocator extends BaseTemplateLocator
 
 	protected function logUsedTemplate($key, $path)
 	{
-		$back = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS);
+		if (defined('DEBUG_BACKTRACE_IGNORE_ARGS') && isset($GLOBALS['DP_CONFIG']['enable_debug_log_tpl_use']) && $GLOBALS['DP_CONFIG']['enable_debug_log_tpl_use']) {
+			$back = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS);
+		} else {
+			$back = debug_backtrace();
+		}
 		$guess_origin = 'unknown';
 
 		foreach ($back as $b) {
