@@ -4,7 +4,7 @@
 			<table class="dp-layout" width="100%"><tr>
 				<td width="50" style="padding-right: 16px; padding-left: 16px;">{% include 'UserBundle:Feedback:voting-widget.html.twig' %}</td>
 				<td class="dp-row-contain">
-					<h3 style="margin-bottom: 0"><a href="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}">{{feedback.title}}</a></h3>
+					<h3 style="margin-bottom: 0" class="dp-fadeaway-container"><a class="dp-fadeaway-title" href="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}">{{feedback.title}}</a><div class="dp-fadeaway"></div></h3>
 					<ul class="dp-post-info">
 						<li class="dp-author"><i class="dp-icon-user"></i> {{ feedback.person.display_name }}</li>
 						<li class="dp-category"><i class="dp-icon-folder-close"></i> <a href="{{ path('user_feedback', {'status': status, 'slug': feedback.category.url_slug}) }}">{{ feedback.category.title }}</a></li>
