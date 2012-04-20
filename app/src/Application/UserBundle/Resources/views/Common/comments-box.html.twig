@@ -9,16 +9,18 @@
 			<ul>
 				{% for comment in comments %}
 					<li {% if comment.person.is_agent == 2 %}class="agent"{% endif %}>
-						<div class="avatar" style="background-image: url('{{ path('serve_default_picture', {'s': 30}) }}');"></div>
-						<div class="post">
-							<div class="byline">
-								<span class="time">{{ comment.date_created|date('M j, Y') }}</span>
-								<cite>{{ comment.getUserName() }}</cite>
+						<header>
+							<div class="avatar" style="width: 40px; height: 40px; background-image: url('{{ path('serve_default_picture', {'s': 40}) }}');"></div>
+							<div class="byline" style="margin-left: 48px;">
+								<h4>{{ comment.getUserName() }}</h4>
+								<ul class="dp-post-info">
+									<li class="dp-date"><i class="dp-icon-calendar"></i> {{ comment.date_created|date('full') }}</li>
+								</ul>
 							</div>
-							<div class="message">
-								{{ comment.content_html|raw }}
-							</div>
-						</div>
+						</header>
+						<article>
+							{{ comment.content_html|raw }}
+						</article>
 					</li>
 				{% endfor %}
 				{% if not no_comment_form %}
