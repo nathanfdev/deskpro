@@ -2,6 +2,13 @@
 {% block pagemeta %}
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.OpenChats';
 pageMeta.agent_id = {{ agent.id|default(0)}};
+
+{% if filter_type == 'new' %}
+	pageMeta.url_fragment = '{{ url_fragment('agent_userchat_list_new', {'department_id': department_id}) }}';
+{% elseif filter_type == 'active' %}
+	pageMeta.url_fragment = '{{ url_fragment('agent_userchat_list_active', {'agent_id': agent_id}) }}';
+{% endif %}
+
 {% endblock pagemeta %}
 {% block listing %}
 {% if convos|length %}

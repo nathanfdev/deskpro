@@ -1,5 +1,11 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PublishDraftsList';
+
+{% if all %}
+	pageMeta.url_fragment = '{{ url_fragment('agent_public_drafts', {'type': 'all'}) }}';
+{% else %}
+	pageMeta.url_fragment = '{{ url_fragment('agent_public_drafts', {'type': 'mine'}) }}';
+{% endif %}
 </script>
 <div class="layout-content">
 <div class="content">

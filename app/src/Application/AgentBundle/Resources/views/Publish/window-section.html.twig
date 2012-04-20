@@ -22,14 +22,14 @@
 						{{ phrase('agent.publish.pending_articles') }}
 					</h3>
 				</li>
-				<li class="is-nav-item" data-route="listpane:{{ path('agent_public_drafts') }}">
+				<li class="is-nav-item" data-route="listpane:{{ path('agent_public_drafts', {'type': 'mine'}) }}">
 					<h3 class="title">
 						<span class="list-counter" id="publish_drafts_count">{{ counts.drafts|default(0) }}</span>
 						{{ phrase('agent.publish.draft_content') }}
 					</h3>
 				</li>
 
-				<li class="is-nav-item" data-route="listpane:{{ path('agent_public_drafts', { 'all': 1 }) }}">
+				<li class="is-nav-item" data-route="listpane:{{ path('agent_public_drafts', {'type': 'all'}) }}">
 					<h3 class="title">
 						<span class="list-counter" id="publish_drafts_count">{{ counts.all_drafts|default(0) }}</span>
 						{{ phrase('agent.publish.all_draft_content') }}

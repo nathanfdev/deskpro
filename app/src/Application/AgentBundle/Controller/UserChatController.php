@@ -543,26 +543,50 @@ class UserChatController extends AbstractController
 	}
 
 
-
-	public function listChatsAction()
+	public function listNewChatsAction($department_id)
 	{
-		$agent_id = $this->in->getInt('agent_id');
-		$agent = -1;
-		if ($agent_id) {
-			$agent = App::findEntity('DeskPRO:Person', $agent_id);
-		}
-
-		$department_id = $this->in->getInt('department_id');
 		$department = null;
 		if ($department_id) {
 			$department = App::findEntity('DeskPRO:Department', $department_id);
+
+			if (!$department) {
+				$department = null;
+			}
+		}
+		else {
+			$department = null;
 		}
 
-		$convos = App::getEntityRepository('DeskPRO:ChatConversation')->getOpenForAgentAndDepartment($agent, $department);
+		$convos = App::getEntityRepository('DeskPRO:ChatConversation')->getOpenForAgentAndDepartment(-1, $department);
+
+		return $this->render('AgentBundle:UserChat:open-list.html.twig', array(
+			'convos' => $convos,
+			'department_id' => $department_id,
+			'department' => $department,
+			'filter_type' => 'new',
+		));
+	}
+
+	public function listActiveChatsAction($agent_id)
+	{
+		if ($agent_id > 0) {
+			$agent = App::findEntity('DeskPRO:Person', $agent_id);
+
+			if(!$agent) {
+				$agent = -1;
+			}
+		}
+		else {
+			$agent = -1;
+		}
+
+		$convos = App::getEntityRepository('DeskPRO:ChatConversation')->getOpenForAgentAndDepartment($agent, null);
 
 		return $this->render('AgentBundle:UserChat:open-list.html.twig', array(
 			'agent' => $agent,
-			'convos' => $convos
+			'agent_id' => $agent_id,
+			'convos' => $convos,
+			'filter_type' => 'active',
 		));
 	}
 

@@ -506,7 +506,7 @@ $collection->add('agent_person_ajaxsavecustomfields', new Route(
 
 $collection->add('agent_peoplesearch_customfilter', new Route(
 	'/people-search/search/{letter}',
-	array('_controller' => 'AgentBundle:PeopleSearch:search', 'letter' => ''),
+	array('_controller' => 'AgentBundle:PeopleSearch:search', 'letter' => 'A'),
 	array(),
 	array('fragment_name' => 'people', 'fragment_type' => 'list')
 ));
@@ -1605,10 +1605,10 @@ $collection->add('agent_publish_cats_updatestructure', new Route(
 ));
 
 $collection->add('agent_public_drafts', new Route(
-	'/publish/drafts',
+	'/publish/drafts/{type}',
 	array('_controller' => 'AgentBundle:Publish:listDrafts'),
 	array(),
-	array()
+	array('fragment_name' => 'drafts', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_public_drafts_mass', new Route(
@@ -1720,7 +1720,7 @@ $collection->add('agent_kb_pending', new Route(
 	'/kb/pending-articles',
 	array('_controller' => 'AgentBundle:Kb:listPendingArticles'),
 	array(),
-	array()
+	array('fragment_name' => 'pending', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_kb_pending_massactions', new Route(
@@ -2183,11 +2183,18 @@ $collection->add('agent_userchat_filterlist_group_counts', new Route(
 	array()
 ));
 
-$collection->add('agent_userchat_listopen', new Route(
-	'/chat/list-open',
-	array('_controller' => 'AgentBundle:UserChat:listChats'),
+$collection->add('agent_userchat_list_new', new Route(
+	'/chat/list-new/{department_id}',
+	array('_controller' => 'AgentBundle:UserChat:listNewChats'),
 	array(),
-	array('fragment_name' => 'open', 'fragment_type' => 'list')
+	array('fragment_name' => 'new', 'fragment_type' => 'list')
+));
+
+$collection->add('agent_userchat_list_active', new Route(
+	'/chat/list-active/{agent_id}',
+	array('_controller' => 'AgentBundle:UserChat:listActiveChats'),
+	array(),
+	array('fragment_name' => 'active', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_userchat_send_messageview', new Route(

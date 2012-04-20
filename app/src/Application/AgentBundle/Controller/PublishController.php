@@ -527,10 +527,19 @@ class PublishController extends AbstractController
 	# content validating
 	############################################################################
 
-	public function listDraftsAction()
+	public function listDraftsAction($type)
+	{
+		if($type == 'all') {
+			return $this->listDrafts(true);
+		}
+		else {
+			return $this->listDrafts(false);
+		}
+	}
+
+	protected function listDrafts($get_all)
 	{
 		$per_page = 25;
-		$get_all = $this->in->getBool('all');
 
 		$curpage = $this->in->getUint('page');
 		if (!$curpage) $curpage = 1;
