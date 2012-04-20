@@ -80,7 +80,7 @@ class TemplateLocator extends BaseTemplateLocator
 
 	protected function logUsedTemplate($key, $path)
 	{
-		$back = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+		$back = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS);
 		$guess_origin = 'unknown';
 
 		foreach ($back as $b) {
