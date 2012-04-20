@@ -25,21 +25,26 @@
 					<div class="dp-login-box-inner">
 						<dl>
 							<dt>{{ phrase('user.general.email_address') }}</dt>
-							<dd><input type="text" value="" name="email" id="dp_login_email" size="40" tabindex="1" /></dd>
+							<dd>
+								<input type="text" value="" name="email" id="dp_login_email" size="40" tabindex="1" />
+							</dd>
 						</dl>
 						<div class="dp-login-section">
 							<dl>
 								<dt>{{ phrase('user.general.password') }} <em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.general.lost_qm') }}</a></em></dt>
 								<dd><input type="password" value="" name="password" id="dp_login_password" size="40" tabindex="2" /></dd>
 							</dl>
-							<div style="float:right">
-								{% for usersource in app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
-								{{ render_usersource(usersource, 'login_pull_btn') }}
-								{% endfor %}
-							</div>
 							<div class="dp-btn-row">
 								<input class="btn" type="submit" value="{{ phrase('user.general.log_in') }}" />
 							</div>
+							{% if app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
+								<div style="border-top: 1px solid #ccc; padding-top: 5px; margin-top: 5px;">
+									Or connect with
+									{% for usersource in app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
+										{{ render_usersource(usersource, 'login_pull_btn') }}
+									{% endfor %}
+								</div>
+							{% endif %}
 						</div>
 						<div class="dp-reset-section" style="display: none">
 							<div class="dp-reset-desc">

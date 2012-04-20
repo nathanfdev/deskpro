@@ -17,7 +17,7 @@
 {% endmacro %}
 {% block breadcrumb %}
 	<li><a href="{{ path('user_feedback') }}">{{ phrase('user.general.feedback') }}</a><span class="dp-divider">&rarr;</span></li>
-	{% if not (status == 'all' and search_options.order_by == 'popular' and not category) %}
+	{% if not (status == 'any-status' and search_options.order_by == 'popular' and not category) %}
 		<li>
 			<a href="{{ path('user_feedback', {order_by:search_options.order_by}) }}">
 				{% if search_options.order_by == 'popular' %}{{ phrase('user.feedback.popular') }}
@@ -33,26 +33,29 @@
 			{% endfor %}
 			<li><a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug}) }}">{{ category.title }}</a><span class="dp-divider">&rarr;</span></li>
 		{% endif %}
-		<li>
-			<a href="{{ path('user_feedback', {'status': parent_status, 'slug': category.url_slug}) }}">
-				{% if parent_status == 'new' %}{{ phrase('user.feedback.status_new') }}
-				{% elseif parent_status == 'active' %}{{ phrase('user.feedback.status_active') }}
-				{% elseif parent_status == 'closed' %}{{ phrase('user.feedback.status_closed') }}
-				{% endif %}
-			</a>
-			<span class="dp-divider">&rarr;</span>
-		</li>
-		{% if parent_status != status %}
+		{% if parent_status and parent_status != 'any-status' %}
 			<li>
-				<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug}) }}">
-					{% if parent_status == 'active' %}
-						{{ active_status_cats[sub_status_id].title }}
-					{% else %}
-						{{ closed_status_cats[sub_status_id].title }}
+				<a href="{{ path('user_feedback', {'status': parent_status, 'slug': category.url_slug}) }}">
+					{% if parent_status == 'new' %}{{ phrase('user.feedback.status_new') }}
+					{% elseif parent_status == 'active' %}{{ phrase('user.feedback.status_active') }}
+					{% elseif parent_status == 'closed' %}{{ phrase('user.feedback.status_closed') }}
+}
 					{% endif %}
 				</a>
 				<span class="dp-divider">&rarr;</span>
 			</li>
+			{% if parent_status != status %}
+				<li>
+					<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug}) }}">
+						{% if parent_status == 'active' %}
+							{{ active_status_cats[sub_status_id].title }}
+						{% else %}
+							{{ closed_status_cats[sub_status_id].title }}
+						{% endif %}
+					</a>
+					<span class="dp-divider">&rarr;</span>
+				</li>
+			{% endif %}
 		{% endif %}
 	{% endif %}
 {% endblock %}

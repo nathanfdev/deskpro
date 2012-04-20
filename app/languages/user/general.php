@@ -36,7 +36,7 @@
     'user.general.contact_us'                      => 'Contact Us',
     'user.general.content_help_articles'           => 'Help Articles',
     'user.general.continue'                        => 'Continue',
-    'user.general.count_comments'                  => '1 Comment|{{count}} Comments',
+    'user.general.count_comments'                  => '{0} Comments|{1} 1 Comment|[1,+Inf] {{count}} Comments',
     'user.general.create_feedback'                 => 'Create Feedback',
     'user.general.create_ticket'                   => 'Create Ticket',
     'user.general.created_by_name_on_date'         => 'Created by {{name}} on {{date}}',
