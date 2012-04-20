@@ -94,7 +94,7 @@ class TemplateLocator extends BaseTemplateLocator
 				&& strpos($b['file'], '/Twig/Loader') === false
 				&& strpos($b['file'], '/DeskPRO/Twig') === false
 				&& strpos($b['file'], '/lib/Twig/') === false
-				&& strpos($b['file'], '/lib/Symfony/') === false
+				&& strpos($b['file'], '/symfony/src/') === false
 			) {
 				$guess_origin = $b['file'] . ' line ' . $b['line'];
 				break;
