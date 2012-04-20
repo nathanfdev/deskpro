@@ -565,6 +565,8 @@ nav#dp_content_tabs h3 {
 	color: #0088CC;
 	text-decoration: none;
 	display: inline-block;
+	zoom:1;
+	*display:inline;
 }
 nav#dp_content_tabs h3  {
 	line-height: 100%;
@@ -650,6 +652,46 @@ nav#dp_content_tabs label {
 #dp .dp-highlight-word {
 	border-bottom: 1px dotted #706960;
 	cursor: help;
+}
+
+/******************************
+* Fadeaway containers
+******************************/
+
+/*
+	To get a fading effect on text, you need:
+	1) To know the height of the text line
+	2) The text line must be wrapper in a positioned container
+	3) Along with the text, there must be a dp-fadeaway element that actually draws the fade
+
+	The container is overflow:hidden and the text should be whitespace:nowrap. This'll
+	cause the text to overrun the container. The fadeaway element is a absolutely
+	positioned element over the right side of the text which overlaps and gives us the effect
+	by having left-most opacity at 0, and right-most opacity at 100.
+
+	This uses transparent PNG's so if you don't have a white bg, you need to generate a new image.
+*/
+
+#dp .dp-fadeaway-container {
+	position: relative;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+#dp .dp-fadeaway-container .dp-fadetitle {
+	white-space: nowrap;
+}
+
+#dp .dp-fadeaway-container .dp-fadeaway {
+	width: 53px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background: transparent url(../../web/images/fadeaway-white.png) repeat-y 100% 0;
+}
+
+#dp .dp-fadeaway-container .dp-badge {
 }
 
 /******************************
@@ -782,6 +824,8 @@ body.file-drag-over .dp-drop-file-zone {
 
 #dp ul.dp-post-info li {
 	display: inline-block;
+	zoom:1;
+	*display:inline;
 	margin-right: 18px;
 	font-size: 9pt;
 	color: #898888;
