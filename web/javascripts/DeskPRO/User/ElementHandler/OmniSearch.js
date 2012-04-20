@@ -51,7 +51,7 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 
 		$('.foot a', this.assistEl).on('click', function(ev) {
 			var el = $(this);
-			if (el.is('.no-omni-trigger')) {
+			if (el.is('.no-omni-trigger') || el.closest('li').is('.no-omni-trigger')) {
 				return;
 			}
 
@@ -95,20 +95,13 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 
 	updatePosition: function() {
 		var pos = this.searchboxEl.offset();
-		var left = pos.left;
 
 		var w = this.searchboxEl.outerWidth();
 		var h = this.searchboxEl.outerHeight();
 
-		if (w < 700) {
-			var diff = 700 - w;
-			w = 700;
-			left -= diff;
-		}
-
 		this.assistEl.css({
 			top: pos.top + h + 1,
-			left: left -1 ,
+			left: pos.left,
 			width: w - 1
 		});
 	},

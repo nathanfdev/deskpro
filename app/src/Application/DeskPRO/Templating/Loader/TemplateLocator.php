@@ -42,6 +42,7 @@ class TemplateLocator extends BaseTemplateLocator
 {
 	protected $locator;
 	protected $cache = array();
+	protected $loaded_list = array();
 
 	public function __construct(FileLocatorInterface $locator, $cacheDir = null)
 	{
@@ -62,6 +63,7 @@ class TemplateLocator extends BaseTemplateLocator
 		$key = $template->getLogicalName();
 
 		if (isset($this->cache[$key])) {
+			$this->logUsedTemplate($key, $this->cache[$key]['path']);
 			return $this->cache[$key]['path'];
 		}
 
@@ -69,9 +71,45 @@ class TemplateLocator extends BaseTemplateLocator
 			$this->cache[$key] = array(
 				'path' => $this->locator->locate($template->getPath(), $currentPath)
 			);
+			$this->logUsedTemplate($key, $this->cache[$key]['path']);
 			return $this->cache[$key]['path'];
 		} catch (\InvalidArgumentException $e) {
 			throw new \InvalidArgumentException(sprintf('Unable to find template "%s" : "%s".', $template, $e->getMessage()), 0, $e);
 		}
+	}
+
+	protected function logUsedTemplate($key, $path)
+	{
+		$back = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+		$guess_origin = 'unknown';
+
+		foreach ($back as $b) {
+			if (!isset($b['file']) || !isset($b['line'])) {
+				continue;
+			}
+
+			if (
+				strpos($b['file'], '/Templating/') === false
+				&& strpos($b['file'], '/TwigBundle/') === false
+				&& strpos($b['file'], '/Twig/Loader') === false
+				&& strpos($b['file'], '/DeskPRO/Twig') === false
+				&& strpos($b['file'], '/lib/Twig/') === false
+				&& strpos($b['file'], '/lib/Symfony/') === false
+			) {
+				$guess_origin = $b['file'] . ' line ' . $b['line'];
+				break;
+			}
+		}
+
+		$this->loaded_list[] = array(
+			'key' => $key,
+			'path' => $path,
+			'origin' => $guess_origin
+		);
+	}
+
+	public function getLoadedTemplates()
+	{
+		return $this->loaded_list;
 	}
 }

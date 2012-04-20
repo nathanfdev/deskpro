@@ -114,8 +114,27 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 	protected function postResponseHandled($response)
 	{
+		global $DP_CONFIG;
+
 		if (session_id() !== '') {
 			session_write_close();
+		}
+
+		if (isset($DP_CONFIG['enable_debug_log_tpl_use']) && $DP_CONFIG['enable_debug_log_tpl_use']) {
+			$loc = $this->container->get('templating.locator');
+			$write = array();
+
+			$write[] = sprintf("=== BEGIN REQUEST %s ===\nURL: %s", date('D, jS M Y H:i:s'), defined('DP_REQUEST_URL') ? DP_REQUEST_URL : 'unknown');
+
+			foreach ($loc->getLoadedTemplates() as $x => $info) {
+				$info['origin'] = str_replace(DP_ROOT, '', $info['origin']);
+				$write[] = sprintf("%3d: {$info['key']} \n     -> {$info['origin']}", $x);
+			}
+
+			$write[] = '';
+			$write[] = '';
+			$write = implode("\n", $write);
+			file_put_contents($this->getLogDir() . '/template_use.log', $write, \FILE_APPEND);
 		}
 	}
 
