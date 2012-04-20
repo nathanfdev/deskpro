@@ -92,17 +92,17 @@
 		</ul>
 	</li>
 
-	<li class="{% if search_options.order_by == 'popular' %}dp-active{% endif %}">
-		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'popular'}) }}">{{ phrase('user.feedback.popular') }}</a>
-	</li>
-	<li class="{% if search_options.order_by == 'newest' %}dp-active{% endif %}">
-		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'newest'}) }}">{{ phrase('user.feedback.newest') }}</a>
+	<li class="{% if search_options.order_by == 'i-voted' %}dp-active{% endif %}">
+		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'i-voted'}) }}">{{ phrase('user.feedback.i_voted') }}</a>
 	</li>
 	<li class="{% if search_options.order_by == 'most-voted' %}dp-active{% endif %}">
 		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'most-voted'}) }}">{{ phrase('user.feedback.most_voted') }}</a>
 	</li>
-	<li class="{% if search_options.order_by == 'i-voted' %}dp-active{% endif %}">
-		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'i-voted'}) }}">{{ phrase('user.feedback.i_voted') }}</a>
+	<li class="{% if search_options.order_by == 'newest' %}dp-active{% endif %}">
+		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'newest'}) }}">{{ phrase('user.feedback.newest') }}</a>
+	</li>
+	<li class="{% if search_options.order_by == 'popular' %}dp-active{% endif %}">
+		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'popular'}) }}">{{ phrase('user.feedback.popular') }}</a>
 	</li>
 	<li class="dp-label-tab"><em>Sort:</em></li>
 </ul>
