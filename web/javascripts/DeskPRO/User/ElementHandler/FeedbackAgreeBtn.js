@@ -6,6 +6,11 @@ DeskPRO.User.ElementHandler.FeedbackAgreeBtn = new Orb.Class({
 
 	init: function() {
 		var self = this;
+
+		if (this.el.hasClass('dp-feedback-closed')) {
+			return;
+		}
+
 		this.el.find('.dp-feedback-btn').on('click', function() {
 			self.voteOnElement(self.el);
 		});

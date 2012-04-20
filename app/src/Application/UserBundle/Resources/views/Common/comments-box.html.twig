@@ -22,6 +22,10 @@
 							{{ comment.content_html|raw }}
 						</article>
 					</li>
+				{% else %}
+					<li class="dp-no-comments">
+						{{ phrase('user.general.comments_no_comments') }}
+					</li>
 				{% endfor %}
 				{% if not no_comment_form %}
 					{% if not app.user.id and app.getSetting('core.interact_require_login') %}

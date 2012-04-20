@@ -26,6 +26,7 @@
     'user.general.close_lc'                        => 'close',
     'user.general.close_window'                    => 'Close Window',
     'user.general.comments'                        => 'Comments',
+    'user.general.comments_no_comments'            => 'There are no comments.',
     'user.general.comments_add_a_comment'          => 'Add a comment',
     'user.general.comments_enter_details'          => 'Enter a question, keyword or topic..',
     'user.general.comments_logged_in_as'           => 'Logged In As',

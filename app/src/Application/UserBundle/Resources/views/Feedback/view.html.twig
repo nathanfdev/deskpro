@@ -1,3 +1,4 @@
+{% set this_section = 'feedback' %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block head %}
 	<meta property="og:url" content="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}" />
@@ -24,13 +25,18 @@
 
 <section class="dp-article-post dp-content-post dp-content-page">
 	<header>
-		<h3 style="margin-bottom: 0">{{ feedback.title }}</h3>
-		<ul class="dp-post-info">
-			<li class="dp-author"><i class="dp-icon-user"></i> {{ feedback.person.display_name }}</li>
-			<li class="dp-category"><i class="dp-icon-folder-close"></i> <a href="{{ path('user_feedback', {'slug': feedback.category.url_slug}) }}">{{ feedback.category.title }}</a></li>
-			<li class="dp-date"><i class="dp-icon-calendar"></i> {{ feedback.date_created|date('full') }}</li>
-			<li class="dp-comments"><i class="dp-icon-comment"></i> {{ phrase('user.general.count_comments', {'count': comment_counts[feedback.id]|default(0)}) }}</li>
-		</ul>
+		<table class="dp-layout" width="100%"><tr>
+			<td width="50" style="padding-right: 16px; padding-left: 16px;">{% include 'UserBundle:Feedback:voting-widget.html.twig' %}</td>
+			<td class="dp-row-contain">
+				<h3 style="margin-bottom: 0">{{ feedback.title }}</h3>
+				<ul class="dp-post-info">
+					<li class="dp-author"><i class="dp-icon-user"></i> {{ feedback.person.display_name }}</li>
+					<li class="dp-category"><i class="dp-icon-folder-close"></i> <a href="{{ path('user_feedback', {'slug': feedback.category.url_slug}) }}">{{ feedback.category.title }}</a></li>
+					<li class="dp-date"><i class="dp-icon-calendar"></i> {{ feedback.date_created|date('full') }}</li>
+					<li class="dp-comments"><i class="dp-icon-comment"></i> {{ phrase('user.general.count_comments', {'count': comment_counts[feedback.id]|default(0)}) }}</li>
+				</ul>
+			</td>
+		</tr></table>
 	</header>
 	<article>
 		{{ feedback.content_html|raw }}
@@ -45,7 +51,8 @@
 		'type': 'feedback',
 		'comments': comments,
 		'form_action': path('user_feedback_newcomment', {'feedback_id': feedback.id}),
-		'check_perm': 'feedback.comment'
+		'check_perm': 'feedback.comment',
+		'no_comment_form': (feedback.status == 'closed')
 	} %}
 {% endif %}
 

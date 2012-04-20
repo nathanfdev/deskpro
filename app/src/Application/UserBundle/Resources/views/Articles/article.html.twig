@@ -1,3 +1,4 @@
+{% set this_section = 'articles' %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block head %}
 	<meta property="og:url" content="{{ path('user_articles_article', {'slug': article.url_slug}) }}" />

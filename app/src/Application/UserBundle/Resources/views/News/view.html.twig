@@ -1,3 +1,4 @@
+{% set this_section = 'news' %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block head %}
 	<meta property="og:url" content="{{ path('user_news_view', {'slug': news.url_slug}) }}" />
