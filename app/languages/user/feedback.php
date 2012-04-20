@@ -23,6 +23,7 @@
     'user.feedback.votes_available'              => 'You have up to {{part}} votes to cast on this feedback. How many do you want to use?',
     'user.feedback.explain'                      => 'These suggestions are customer-submitted ideas that you can discuss and vote on. Support the ideas you like most so we can improve on the things that matter most.',
     'user.feedback.most_voted'                   => 'Most Voted',
+    'user.feedback.i_voted'                      => 'I Voted',
     'user.feedback.popular'                      => 'Popular',
     'user.feedback.newest'                       => 'Newest',
     'user.feedback.status_undecided'             => 'Undecided',

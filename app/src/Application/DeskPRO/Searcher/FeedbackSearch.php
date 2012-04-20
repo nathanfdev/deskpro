@@ -54,6 +54,12 @@ class FeedbackSearch extends SearcherAbstract
 	const ORDER_DATE  = 'id';
 	const ORDER_NUM_RATINGS = 'num_ratings';
 
+	protected $visitor;
+
+	public function setVisitor($visitor)
+	{
+		$this->visitor = $visitor;
+	}
 
 	/**
 	 * Run the search and return an array of matching ID's.
@@ -131,9 +137,10 @@ class FeedbackSearch extends SearcherAbstract
 		}
 
 		if (is_array($order_by)) {
-			list ($order_join, $order_by) = $order_by;
+			list ($order_join, $real_order_by) = $order_by;
 
 			$sql .= " $order_join ";
+			$order_by = $real_order_by;
 		}
 
 		#------------------------------
@@ -183,9 +190,10 @@ class FeedbackSearch extends SearcherAbstract
 		}
 
 		if (is_array($order_by)) {
-			list ($order_join, $order_by) = $order_by;
+			list ($order_join, $real_order_by) = $order_by;
 
 			$sql .= " $order_join ";
+			$order_by = $real_order_by;
 		}
 
 		#------------------------------
@@ -243,10 +251,30 @@ class FeedbackSearch extends SearcherAbstract
 				$order_by = "ORDER BY feedback.date_published $dir";
 				break;
 
+			case 'i-voted':
+			case 'i_voted':
+				if (!$this->person && !$this->visitor) {
+					$this->order_by = array('id', 'DESC');
+					return $this->getOrderBy();
+				}
+
+				if ($this->person->id) {
+					$join = "LEFT JOIN ratings ON (ratings.object_id = feedback.id AND ratings.object_type = 'feedback' AND ratings.person_id = {$this->person->id})";
+				} else {
+					$join = "LEFT JOIN ratings ON (ratings.object_id = feedback.id AND ratings.object_type = 'feedback' AND ratings.visitor_id = {$this->visitor->id})";
+				}
+
+				$order_by = array(
+					$join,
+					"ORDER BY ratings.date_created DESC, feedback.id DESC"
+				);
+				break;
+
 			//case 'popularity':
 			//	$order_by = "ORDER BY feedback.popularity $dir";
 			//	break;
 
+			case 'most-voted':
 			case 'num_ratings':
 				$order_by = "ORDER BY feedback.num_ratings $dir";
 				break;

@@ -23,6 +23,7 @@
 				{% if search_options.order_by == 'popular' %}{{ phrase('user.feedback.popular') }}
 				{% elseif search_options.order_by == 'popular' %}{{ phrase('user.feedback.newest') }}
 				{% elseif search_options.order_by == 'most-voted' %}{{ phrase('user.feedback.most_voted') }}
+				{% elseif search_options.order_by == 'i-voted' %}{{ phrase('user.feedback.i_voted') }}
 				{% endif %}
 			</a>
 			<span class="dp-divider">&rarr;</span>

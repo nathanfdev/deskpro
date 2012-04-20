@@ -77,7 +77,7 @@ class FeedbackController extends AbstractController
 			$slug = 'all-categories';
 		}
 
-		if ($order_by != 'popular' && $order_by != 'newest' && $order_by != 'most-voted') {
+		if ($order_by != 'popular' && $order_by != 'newest' && $order_by != 'most-voted' && $order_by != 'i-voted') {
 			$order_by = 'popular';
 		}
 
@@ -119,6 +119,7 @@ class FeedbackController extends AbstractController
 
 		$searcher = new \Application\DeskPRO\Searcher\FeedbackSearch();
 		$searcher->setPersonContext($this->person);
+		$searcher->setVisitor(App::getSession()->getVisitor());
 
 		if ($status != 'any-status') {
 			$searcher->addTerm('status', 'is', $status);
@@ -233,6 +234,54 @@ class FeedbackController extends AbstractController
 			'errors'       => $errors,
 			'error_fields' => $error_fields,
 		));
+	}
+
+		/**
+	 * View an feedback
+	 *
+	 * @param  $feedback_id
+	 */
+	public function voteAction($feedback_id)
+	{
+		$feedback = App::getEntityRepository('DeskPRO:Feedback')->find($feedback_id);
+		if (!$feedback) {
+			return $this->renderStandardError('@user_feedback.error_not_found', '@user.error_not_found', 404);
+		}
+
+		if ($this->person['id']) {
+			$r = App::getEntityRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Feedback', $feedback_id, $this->person, $this->session->getVisitor());
+		} else {
+			$r = App::getEntityRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Feedback', $feedback_id, null, $this->session->getVisitor());
+		}
+
+		if ($r) {
+			$feedback->removeRating($r);
+			$this->em->remove($r);
+			$this->em->flush();
+		}
+
+		if ($this->in->getInt('rating')) {
+			$content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($feedback, $this->person, $this->session->getVisitor());
+			$content_rating->setRequest($this->request);
+
+			$this->em->beginTransaction();
+			$content_rating->setRating(
+				$this->in->getInt('rating'),
+				$this->in->getUint('log_search_id')
+			);
+			$this->em->flush();
+			$this->em->commit();
+		}
+
+		if ($this->request->isXmlHttpRequest()) {
+			return $this->createJsonResponse(array(
+				'success' => true,
+				'voted' => $this->in->getInt('rating'),
+				'total_rating' => $feedback->total_rating,
+			));
+		}
+
+		return $this->redirectRoute('user_feedback_view', array('slug' => $feedback->getUrlSlug()));
 	}
 
 	public function newFinishLoginAction($feedback_id)

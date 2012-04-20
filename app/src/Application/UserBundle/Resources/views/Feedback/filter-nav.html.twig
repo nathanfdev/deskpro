@@ -1,14 +1,40 @@
-<ul class="dp-nav dp-nav-tabs dp-nav-thicksep">
-	<li class="{% if search_options.order_by == 'popular' %}dp-active{% endif %}">
-		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'popular'}) }}">{{ phrase('user.feedback.popular') }}</a>
+<ul class="dp-nav dp-nav-tabs dp-feedback-nav dp-nav-thicksep">
+	<li class="dp-dropdown dp-alt-option dp-first" style="float: left;">
+		<a href="#" class="dp-dropdown-toggle" data-toggle="dp-dropdown">
+			{% if category.id %}
+				<span class="dp-info-prefix">Category:</span>
+				{{ category.full_title }}
+			{% else %}
+				{{ phrase('user.feedback.all_categories') }}
+			{% endif %}
+			<b class="dp-caret"></b>
+		</a>
+		<ul class="dp-dropdown-element dp-cat-list" id="dp_feedback_cat_menu">
+			<li {% if depth %}class="dp-sub dp-sub-depth-{{ depth }}"{% endif %}>
+				<i class="dp-icon-repeat"></i>
+				<a href="{{ path('user_feedback', {'status': status, 'order_by': search_options.order_by}) }}">{{ phrase('user.feedback.all_categories') }}</a>
+				<span class="dp-badge dp-small">{{ category_counts[0]['all']|default(0) }}</span>
+			</li>
+			<li class="sep"></li>
+			{% macro cat_li(category_counts, status, order_by, cat, depth) %}
+				{% if not depth %}{% set depth = 0 %}{% endif %}
+				<li {% if depth %}class="dp-sub dp-sub-depth-{{ depth }}"{% endif %}>
+					<i class="dp-icon-folder-close"></i>
+					<a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug, 'order_by': order_by}) }}">{{ cat.title }}</a>
+					<span class="dp-badge dp-small">{{ category_counts[cat.id]['all']|default(0) }}</span>
+				</li>
+				{% if cat.getChildren()|length %}
+					{% for child in cat.getChildren() %}
+						{{ _self.cat_li(category_counts, status, order_by, child, depth+1) }}
+					{% endfor %}
+				{% endif %}
+			{% endmacro %}
+			{% for cat in feedback_cats %}
+				{{ _self.cat_li(category_counts, status, search_options.order_by, cat) }}
+			{% endfor %}
+		</ul>
 	</li>
-	<li class="{% if search_options.order_by == 'newest' %}dp-active{% endif %}">
-		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'newest'}) }}">{{ phrase('user.feedback.newest') }}</a>
-	</li>
-	<li class="{% if search_options.order_by == 'most-voted' %}dp-active{% endif %}">
-		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'most-voted'}) }}">{{ phrase('user.feedback.most_voted') }}</a>
-	</li>
-	<li class="dp-dropdown dp-right-option dp-last" style="float:right">
+	<li class="dp-dropdown dp-alt-option dp-last" style="float: left;">
 		<a href="#" class="dp-dropdown-toggle" data-toggle="dp-dropdown">
 			{% if status == 'any-status' %}
 				{{ phrase('user.feedback.any_status') }}
@@ -25,7 +51,7 @@
 			{% endif %}
 			<b class="dp-caret"></b>
 		</a>
-		<ul class="dp-dropdown-element dp-pull-right dp-cat-list" id="dp_feedback_cat_menu">
+		<ul class="dp-dropdown-element dp-cat-list" id="dp_feedback_cat_menu">
 			<li>
 				<i class="dp-icon-repeat"></i>
 				<a href="{{ path('user_feedback', {'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ phrase('user.feedback.any_status') }}</a>
@@ -65,39 +91,18 @@
 			{% endfor %}
 		</ul>
 	</li>
-	<li class="dp-dropdown dp-right-option dp-first">
-		<a href="#" class="dp-dropdown-toggle" data-toggle="dp-dropdown">
-			{% if category.id %}
-				<span class="dp-info-prefix">Category:</span>
-				{{ category.full_title }}
-			{% else %}
-				{{ phrase('user.feedback.all_categories') }}
-			{% endif %}
-			<b class="dp-caret"></b>
-		</a>
-		<ul class="dp-dropdown-element dp-pull-right dp-cat-list" id="dp_feedback_cat_menu">
-			<li {% if depth %}class="dp-sub dp-sub-depth-{{ depth }}"{% endif %}>
-				<i class="dp-icon-repeat"></i>
-				<a href="{{ path('user_feedback', {'status': status, 'order_by': search_options.order_by}) }}">{{ phrase('user.feedback.all_categories') }}</a>
-				<span class="dp-badge dp-small">{{ category_counts[0]['all']|default(0) }}</span>
-			</li>
-			<li class="sep"></li>
-			{% macro cat_li(category_counts, status, order_by, cat, depth) %}
-				{% if not depth %}{% set depth = 0 %}{% endif %}
-				<li {% if depth %}class="dp-sub dp-sub-depth-{{ depth }}"{% endif %}>
-					<i class="dp-icon-folder-close"></i>
-					<a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug, 'order_by': order_by}) }}">{{ cat.title }}</a>
-					<span class="dp-badge dp-small">{{ category_counts[cat.id]['all']|default(0) }}</span>
-				</li>
-				{% if cat.getChildren()|length %}
-					{% for child in cat.getChildren() %}
-						{{ _self.cat_li(category_counts, status, order_by, child, depth+1) }}
-					{% endfor %}
-				{% endif %}
-			{% endmacro %}
-			{% for cat in feedback_cats %}
-				{{ _self.cat_li(category_counts, status, search_options.order_by, cat) }}
-			{% endfor %}
-		</ul>
+
+	<li class="{% if search_options.order_by == 'popular' %}dp-active{% endif %}">
+		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'popular'}) }}">{{ phrase('user.feedback.popular') }}</a>
 	</li>
+	<li class="{% if search_options.order_by == 'newest' %}dp-active{% endif %}">
+		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'newest'}) }}">{{ phrase('user.feedback.newest') }}</a>
+	</li>
+	<li class="{% if search_options.order_by == 'most-voted' %}dp-active{% endif %}">
+		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'most-voted'}) }}">{{ phrase('user.feedback.most_voted') }}</a>
+	</li>
+	<li class="{% if search_options.order_by == 'i-voted' %}dp-active{% endif %}">
+		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'i-voted'}) }}">{{ phrase('user.feedback.i_voted') }}</a>
+	</li>
+	<li class="dp-label-tab"><em>Sort:</em></li>
 </ul>
