@@ -12,6 +12,9 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 		this.searchboxEl = $('#dp_search');
 
 		this.resultsEl   = $('div.results', this.assistEl);
+		$('#dp_search_assist').on('click', function() {
+			$('#dp_omnisearch').submit();
+		});
 
 		this.searchboxEl.on('focus', this.activateAssist.bind(this));
 
@@ -136,6 +139,13 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 					this.close();
 				} else {
 					this.resultsEl.append(wrap);
+
+					if (this.resultsEl.find('li').length >= 10) {
+						$('#dp_search_assist').find('.dp-more-link').show();
+					} else {
+						$('#dp_search_assist').find('.dp-more-link').hide();
+					}
+
 					this.open();
 				}
 			}

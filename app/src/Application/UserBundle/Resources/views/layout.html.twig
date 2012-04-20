@@ -103,7 +103,7 @@
 			</section>
 			<section id="dp_header_search" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
 				<form action="{{ path('user_search') }}" class="dp-form-search" id="dp_omnisearch">
-					<input type="input" name="q" id="dp_search" placeholder="Search for something" />
+					<input type="input" name="q" id="dp_search" placeholder="Search for something" value="{{ query }}" />
 					<button class="dp-btn" type="submit">Search</button>
 				</form>
 			</section>
@@ -170,6 +170,9 @@
 	<div id="dp_search_assist" style="display: none;">
 		<div class="results"></div>
 		<div class="foot">
+			<div class="dp-more-link">
+				<button class="dp-btn dp-btn-success">View more search results &rarr;</button>
+			</div>
 			<h4>{{ phrase('user.general.is_search_relevant') }}</h4>
 			<ul>
 				<li class="ticket"><a href="{{ path('user_tickets_new') }}">{{ phrase('user.general.create_ticket') }}</a></li>
