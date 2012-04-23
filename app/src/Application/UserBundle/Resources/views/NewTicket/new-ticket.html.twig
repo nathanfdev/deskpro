@@ -86,7 +86,7 @@ var ticketReader = {
 			 # Email
 			 ###############}
 
-			{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]', 'form_key_prefix': 'person.', 'initial_value': newticket.person.email, 'mode': 'advanced' } %}
+			{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]', 'form_key_prefix': 'person.', 'initial_value': newticket.person.email, 'mode': 'advanced', context: 'newticket' } %}
 
 
 			{###############
@@ -94,7 +94,9 @@ var ticketReader = {
 			 ###############}
 			<div class="dp-control-group {% if error_fields['person.name'] %}dp-error{% endif %}">
 				<div class="dp-control-label">
-					<label><strong>{{ phrase('user.general.your_name') }} *</strong></label>
+					<label>
+						<strong>{{ phrase('user.general.your_name') }} *</strong>
+					</label>
 				</div>
 				<div class="dp-controls dp-fill">
 					{{ form_widget(form.person.name, {

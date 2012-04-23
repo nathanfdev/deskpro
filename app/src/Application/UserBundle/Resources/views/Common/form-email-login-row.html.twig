@@ -8,18 +8,23 @@
 
 		<div class="dp-control-group {% if error_fields[form_key_prefix ~ 'email'] %}dp-error{% endif %}">
 			<div class="dp-control-label">
-				<label><strong>{{ phrase('user.general.your_email_address') }}</strong></label>
+				<label>
+					<strong>{{ phrase('user.general.your_email_address') }} *</strong>
+					<aside>
+						{% if context == 'newticket' %}
+							{{ phrase_dev('This is where our agent replies will be sent.') }}
+						{% endif %}
+						{% set phrase_link %}
+							<a href="{{path('user_login')}}" class="dp-inline-login-open">{{ phrase('user.general.log_in') }}</a>
+						{% endset %}
+						{{ phrase('user.general.login_if_registered', {'link': phrase_link}) }}
+					</aside>
+				</label>
 			</div>
 			<div class="dp-controls dp-fill">
 				<input type="text" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ initial_value }}" data-field-validators="DeskPRO.Form.EmailValidator" />
 				<div class="dp-help-inline dp-error-explain">
 					{{ phrase('user.general.form_fix_email') }}
-				</div>
-				<div class="dp-help-inline">
-					{% set phrase_link %}
-						<a href="{{path('user_login')}}" class="dp-inline-login-open">{{ phrase('user.general.log_in') }}</a>
-					{% endset %}
-					{{ phrase('user.general.login_if_registered', {'link': phrase_link}) }}
 				</div>
 			</div>
 		</div>

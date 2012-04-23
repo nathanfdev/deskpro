@@ -1,6 +1,6 @@
 <div class="dp-control-group {% if error_fields['ticket.message'] %}dp-error{% endif %} dp-control-group-ticket_message">
 	<div class="dp-control-label">
-		<label><strong>{{ phrase('user.tickets.lbl_what_is_your_question') }}</strong></label>
+		<label><strong>{{ phrase('user.tickets.lbl_what_is_your_question') }} *</strong></label>
 	</div>
 	<div class="dp-controls dp-fill">
 		{{ form_widget(form.ticket.message, {
