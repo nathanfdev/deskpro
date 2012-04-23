@@ -78,4 +78,7 @@
     'user.tickets.your_tickets'                      => 'Your Tickets',
     'user.tickets.contact_us_explain'                => 'Just fill in this form to create your ticket and our agents will reply to you via email as soon as they can.',
     'user.tickets.email_explain'                     => 'This is where our agent replies will be sent',
+	'user.tickets.flash_new_ticket_login' => 'Your ticket has been submitted. Log in to view it now.',
+	'user.tickets.flash_new_ticket_validating_email' => 'Before your ticket will be read by our agents, you must confirm your email address. We sent an email confirmation to {{email}}.',
+	'user.tickets.new_ticket_email' => 'Your new ticket has been submitted. Our agents will reply to your email address {{email}}.',
 );

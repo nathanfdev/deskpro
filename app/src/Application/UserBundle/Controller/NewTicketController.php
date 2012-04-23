@@ -129,7 +129,7 @@ class NewTicketController extends AbstractController
 				}
 
 				if ($ticket->person_email_validating) {
-					$this->session->setFlash('new_ticket_validating', $ticket->person_email_validating->getEmail());
+					$this->session->setFlash('new_ticket_validating_email', $ticket->person_email_validating->getEmail());
 					$this->session->save();
 				}
 
@@ -143,6 +143,7 @@ class NewTicketController extends AbstractController
 
 				// New users are always sent back to home with flash message.
 				} elseif ($person->isNewPerson() || !$person->is_user) {
+
 					$go = 'front';
 
 				// Existing users are redirected to the ticket if they're using a validated email address.
@@ -167,6 +168,8 @@ class NewTicketController extends AbstractController
 							$this->session->setFlash('new_ticket_email', $ticket->person_email->getEmail());
 						}
 						$this->session->setFlash('new_ticket', $ticket->getPublicId());
+
+						$this->session->save();
 
 						return $this->redirectRoute('user');
 					} else {
