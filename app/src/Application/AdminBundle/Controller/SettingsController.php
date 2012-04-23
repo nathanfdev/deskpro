@@ -370,13 +370,13 @@ class SettingsController extends AbstractController
 			$client->setUri($url_noindex);
 			$result = $client->send();
 			if ($result->isSuccess() && strpos($result->getBody(), 'dp_check_url_ok') !== false) {
-				$db->replace('settings', array(
+				$this->db->replace('settings', array(
 					'name' => 'core.rewrite_urls',
 					'value' => '1',
 				));
 			}
 
-			$db->replace('settings', array(
+			$this->db->replace('settings', array(
 				'name' => 'core.done_rewrite_urls_check',
 				'value' => time(),
 			));
