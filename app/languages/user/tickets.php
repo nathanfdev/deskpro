@@ -66,6 +66,7 @@
     'user.tickets.this_is_an_answer'                 => 'This answered my question',
     'user.tickets.this_is_no_answer'                 => 'This did not answer my question',
     'user.tickets.ticket_count'                      => '1 Ticket|{{count}} Tickets',
+    'user.tickets.new_reply'                         => 'New Reply',
     'user.tickets.type_your_reply_here'              => 'Type your reply here...',
     'user.tickets.validate_to_be_seen'               => '<strong>Important!</strong> Before your ticket will be read by our agents, you need to validate your email address. Check your email for our confirmation link.',
     'user.tickets.view_more_results'                 => 'View {{part}} more results',

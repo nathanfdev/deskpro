@@ -159,5 +159,6 @@
 	'admin.tickets.changed_to_effect'  => 'Changed so that {desc}',
 	'admin.tickets.set_status_to_x'  => 'Set status to {status}',
 	'admin.tickets.set_urgency_to_x'  => 'Set urgency to {urgency}',
-	'admin.tickets.set_urgency_to_x_when_lower'  => 'Set urgency to {urgency} when it is not already higher',
+	'admin.tickets.set_urgency_to_x'  => 'Set urgency to {urgency}',
+	'admin.tickets.ticket_ref'  => 'Ticket Ref',
 );

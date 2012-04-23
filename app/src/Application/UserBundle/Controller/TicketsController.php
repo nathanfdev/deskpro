@@ -67,7 +67,7 @@ class TicketsController extends AbstractController
 	 */
     public function listAction()
     {
-		if ($this->person->is_agent && 0) {
+		if ($this->person->is_agent) {
 			$tickets = App::getOrm()->createQuery("
 				SELECT ticket
 				FROM DeskPRO:Ticket ticket

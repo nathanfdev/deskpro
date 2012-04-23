@@ -1,0 +1,67 @@
+<table class="dp-table dp-table-striped dp-table-bordered">
+	<tbody>
+		<tr>
+			<th width="150">{{ phrase('user.general.department') }}</th>
+			<td>{{ phrase_object(ticket.department, 'full') }}</td>
+		</tr>
+
+		<tr>
+			<th>{{ phrase('user.general.assigned_agent') }}</th>
+			<td>{% if ticket.agent %}{{ ticket.agent.display_name }}{% else %}{{ phrase('user.general.unassigned') }}{% endif %}</td>
+		</tr>
+
+		{% if ticket.person.id != app.user.id %}
+		<tr>
+			<th>{{ phrase('user.general.ticket_starter') }}</th>
+			<td>{{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;</td>
+		</tr>
+		{% endif %}
+
+		{% if ticket.category %}
+			<tr>
+				<th>{{ phrase('user.general.category') }}</th>
+				<td>{{ phrase_object(ticket.category, 'full') }}</td>
+			</tr>
+		{% endif %}
+
+		{% if ticket.product %}
+			<tr>
+				<th>{{ phrase('user.general.product') }}</th>
+				<td>{{ phrase_object(ticket.product, 'full') }}</td>
+			</tr>
+		{% endif %}
+
+		{% if ticket.priority %}
+			<tr>
+				<th>{{ phrase('user.general.priority') }}</th>
+				<td>{{ phrase_object(ticket.priority) }}</td>
+			</tr>
+		{% endif %}
+
+		{% if user_participants|length %}
+			<tr>
+				<th>{{ phrase('user.tickets.label_cced') }}</th>
+				<td>
+					<ul>
+						{% for part in user_participants %}
+							<tr>
+								{{ part.person.display_name }} &lt;{{ part.person.email_address }}&gt;
+							</tr>
+						{% endfor %}
+					</ul>
+				</td>
+			</tr>
+		{% endif %}
+
+		{% for f in custom_fields %}
+			{% if ticket.hasCustomField(f.field_def.id) %}
+				<tr>
+					<th>{{f.title}}</th>
+					<td>
+						{{ render_custom_field(f) }}
+					</td>
+				</tr>
+			{% endif %}
+		{% endfor %}
+	</tbody>
+</table>

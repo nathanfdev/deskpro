@@ -195,6 +195,7 @@
     'user.general.title_validate_address'          => 'Validate {{email}}',
     'user.general.ucfirst_delete'                  => 'Delete',
     'user.general.unassigned'                      => 'Unassigned',
+    'user.general.assigned_agent'                      => 'Assigned Agent',
     'user.general.unsubscribe_link'                => 'Unsubscribe',
     'user.general.upload'                          => 'Upload',
     'user.general.upload_a_file'                   => 'Upload a file',

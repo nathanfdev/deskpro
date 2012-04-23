@@ -1,0 +1,48 @@
+<li class="{% if message.person.is_agent %}agent-reply{% endif %}">
+	<header>
+		<div class="avatar" style="width: 40px; height: 40px; background-image: url('{{ message.person.getPictureUrl(40) }}');"></div>
+		<div class="byline" style="margin-left: 48px;">
+			<h4>{{ message.person.display_name }}</h4>
+			<ul class="dp-post-info">
+				<li class="dp-date"><i class="dp-icon-calendar"></i> <span class="timeago" title="{{ message.date_created|date('c') }}">{{ message.date_created|date('fulltime') }}</span></li>
+			</ul>
+		</div>
+	</header>
+	<article>
+		{{ message.message_html|raw }}
+
+		{% if message_to_attach[message.id] %}
+			<ul class="attachment-list">
+				{% for attach_id in message_to_attach[message.id] %}
+					{% set ticket_attach = attachments[attach_id] %}
+					<li class="{% if ticket_attach.blob.isImage() %}is-image{% else %}dp-icon-file dp-icon-{{ticket_attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
+						{% if ticket_attach.blob.isImage() %}
+							<a href="{{ ticket_attach.blob.download_url }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 'filename': ticket_attach.blob.filename, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
+						{% endif %}
+						<a href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a>
+						<span class="size">({{ ticket_attach.blob.readable_filesize }})</span>
+					</li>
+				{% endfor %}
+			</ul>
+		{%endif%}
+
+		{% if message.id == last_agent_message_id and message.person.id != app.user.id %}
+			<div class="feedback-link">
+				<span class="desc">
+					{% if user_ratings[message.id] == 1 %}
+						{{ phrase('user.tickets.you_rated_helpful') }}
+					{% elseif user_ratings[message.id] == -1 %}
+						{{ phrase('user.tickets.you_rated_unhelpful') }}
+					{% else %}
+						{{ phrase('user.tickets.was_reply_helpful') }}
+					{% endif %}
+				</span>
+				<span class="desc-helpful">{{ phrase('user.tickets.rate_helpful') }}</span>
+				<span class="desc-not-helpful">{{ phrase('user.tickets.rate_unhelpful') }}</span>
+
+				<a class="helpful" href="{{ path('user_tickets_feedback', {'ticket_ref': ticket.ref, 'message_id': message.id, 'rating': 1 }) }}">{{ phrase('user.tickets.rate_helpful') }}</a>
+				<a class="not-helpful" href="{{ path('user_tickets_feedback', {'ticket_ref': ticket.ref, 'message_id': message.id, 'rating': -1 }) }}">{{ phrase('user.tickets.rate_unhelpful') }}</a>
+			</div>
+		{% endif %}
+	</article>
+</li>
