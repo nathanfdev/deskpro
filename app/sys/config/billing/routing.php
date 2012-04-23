@@ -4,7 +4,7 @@ use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
 
 $collection = new RouteCollection();
-$collection->addCollection($loader->import(DP_ROOT.'/src/Application/DeskPRO/Resources/config/routing.php'));
-$collection->addCollection($loader->import(DP_ROOT.'/src/Application/BillingBundle/Resources/config/routing.php'), '/billing');
+$collection->addCollection($loader->import(DP_ROOT.'/src/Application/DeskPRO/Resources/config/dp-routing.php'));
+$collection->addCollection($loader->import(DP_ROOT.'/src/Application/BillingBundle/Resources/config/billing-routing.php'), '/billing');
 
 return $collection;

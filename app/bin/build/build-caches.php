@@ -31,6 +31,7 @@ $kernel_classes = array(
 	'DeskPRO\\Kernel\\ReportKernel',
 	'DeskPRO\\Kernel\\UserKernel',
 	'DeskPRO\\Kernel\\InstallKernel',
+	'DeskPRO\\Kernel\\BillingKernel',
 );
 
 if ($proc_kernel === null) {

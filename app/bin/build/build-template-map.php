@@ -15,11 +15,12 @@ require DP_ROOT . '/bin/build/inc.php';
 require DP_ROOT.'/sys/system.php';
 
 $paths = array(
-	'AdminBundle'   => DP_ROOT.'/src/Application/AdminBundle/Resources/views',
-	'AgentBundle'   => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
-	'DeskPRO'       => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
-	'ReportBundle'  => DP_ROOT.'/src/Application/ReportBundle/Resources/views',
-	'UserBundle'    => DP_ROOT.'/src/Application/UserBundle/Resources/views',
+	'AdminBundle'      => DP_ROOT.'/src/Application/AdminBundle/Resources/views',
+	'AgentBundle'      => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
+	'DeskPRO'          => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
+	'ReportBundle'     => DP_ROOT.'/src/Application/ReportBundle/Resources/views',
+	'UserBundle'       => DP_ROOT.'/src/Application/UserBundle/Resources/views',
+	'BillingBundle'    => DP_ROOT.'/src/Application/BillingBundle/Resources/views',
 );
 
 $tpl_info = array();
