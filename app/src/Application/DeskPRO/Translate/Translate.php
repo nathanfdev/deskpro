@@ -639,18 +639,7 @@ class Translate implements PersonContextInterface
 
 		if (!$phrase_text) $phrase_text = '';
 
-		if ($vars) {
-			$keys = array_keys($vars);
-			$values = array_values($vars);
-
-			array_walk($keys, function (&$val) {
-				$val = '{{' . $val . '}}';
-			});
-
-			$vars = array_combine($keys, $values);
-		}
-
-		$phrase_text = strtr($phrase_text, $vars);
+		$phrase_text = $this->replaceVarsInString($phrase_text, $vars);
 
 		// A second pass detects phrase. replacements that might've been put in by replacements themselves
 		$m = null;
@@ -676,6 +665,31 @@ class Translate implements PersonContextInterface
                 return '!'.strtoupper($parts[0]).'!';
             }
         }
+
+		return $phrase_text;
+	}
+
+
+	/**
+	 * Replaces {{vars}} form $vars in $phrase_text.
+	 *
+	 * @param $phrase_text
+	 * @param array $vars
+	 * @return string
+	 */
+	public function replaceVarsInString($phrase_text, array $vars = array())
+	{
+		if ($vars) {
+			$keys = array_keys($vars);
+			$values = array_values($vars);
+
+			array_walk($keys, function (&$val) {
+				$val = '{{' . $val . '}}';
+			});
+
+			$vars = array_combine($keys, $values);
+			$phrase_text = strtr($phrase_text, $vars);
+		}
 
 		return $phrase_text;
 	}

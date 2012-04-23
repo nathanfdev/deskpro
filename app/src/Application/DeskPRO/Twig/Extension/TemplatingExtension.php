@@ -66,7 +66,8 @@ class TemplatingExtension extends \Twig_Extension
     {
         return array(
             'phrase'   => new \Twig_Function_Method($this, 'getPhrase', array('is_safe' => array('html'))),
-            'phrase_object'   => new \Twig_Function_Method($this, 'getPhraseObject'),
+            'phrase_object' => new \Twig_Function_Method($this, 'getPhraseObject'),
+			'phrase_dev' => new \Twig_Function_Method($this, 'getPhraseDev'),
 			'url_fragment' => new \Twig_Function_Method($this, 'urlFragment'),
 			'asset_full' => new \Twig_Function_Method($this, 'assetFull'),
 			'asset_url' => new \Twig_Function_Method($this, 'assetFull'),
@@ -651,6 +652,11 @@ class TemplatingExtension extends \Twig_Extension
 		$handler = $display_array['handler'];
 		$vars = array_merge($display_array, $vars);
 		return $handler->renderText($display_array['value'], $vars);
+	}
+
+	public function getPhraseDev($phrase_name, array $vars = array())
+	{
+		return $this->container->get('deskpro.core.translate')->replaceVarsInString($phrase_name, $vars);
 	}
 
 	public function getPhrase($phrase_name, array $vars = array())
