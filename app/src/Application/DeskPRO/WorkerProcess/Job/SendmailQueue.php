@@ -52,6 +52,7 @@ class SendmailQueue extends AbstractJob
 
 	public function run()
 	{
+		return;
 		$db_proc = new DatabaseQueueProcessor();
 		$db_proc->processQueue(array($this, '_sendMessage'));
 
