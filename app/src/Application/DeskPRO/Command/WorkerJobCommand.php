@@ -66,8 +66,8 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		# Clean up installer error detection
 		#------------------------------
 
-		if (file_exists(dp_get_log_dir().'/cron-preboot-errors.log')) {
-			@unlink(dp_get_log_dir().'/cron-preboot-errors.log');
+		if (file_exists(dp_get_log_dir().'/cron-boot-errors.log')) {
+			@unlink(dp_get_log_dir().'/cron-boot-errors.log');
 		}
 
 		App::getDb()->delete('install_data', array('build' => 1, 'name' => 'cron_run_errors'));
