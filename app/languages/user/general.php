@@ -216,4 +216,5 @@
     'user.general.your_profile'                    => 'Your Profile',
     'user.general.edit_your_profile'               => 'Edit your profile',
 	'user.general.all_categories'                  => 'All Categories',
+	'user.general.add'                             => 'Add',
 );

@@ -4,146 +4,148 @@
 {% endblock %}
 {% block page_title %}{{ phrase('user.general.your_profile') }}{% endblock %}
 {% block content %}
-<div class="dp-content-block dp-profile-page">
-	<div class="dp-box">
-		<div class="dp-box-header">
-			<h1>{{ phrase('user.general.profile') }}</h1>
-		</div>
-		<div class="dp-box-content-wrapper">
-			<div class="dp-box-content dp-form">
-				<div class="dp-form-row">
-					<div class="dp-form-label">
-						<label>{{ phrase('user.general.first_name') }}</label>
-					</div>
-					<div class="dp-form-input">
-						{{ form_widget(form.first_name) }}
-					</div>
-				</div>
-				<div class="dp-form-row">
-					<div class="dp-form-label">
-						<label>{{ phrase('user.general.last_name') }}</label>
-					</div>
-					<div class="dp-form-input">
-						{{ form_widget(form.last_name) }}
-					</div>
-				</div>
-				<div class="dp-form-row">
-					<div class="dp-form-label">
-						<label>{{ phrase('user.general.timezone') }}</label>
-					</div>
-					<div class="dp-form-input">
-						{{ form_widget(form.timezone) }}
-					</div>
-				</div>
 
-				<button class="btn primary">{{ phrase('user.general.save') }}</button>
+<section class="dp-portal-section">
+	<header>
+		<h1>{{ phrase('user.general.profile') }}</h1>
+	</header>
+	<div class="dp-content-block dp-profile-block">
+		<div class="dp-control-group">
+			<div class="dp-control-label">
+				<label>{{ phrase('user.general.first_name') }}</label>
+			</div>
+			<div class="dp-controls dp-fill">
+				{{ form_widget(form.first_name) }}
 			</div>
 		</div>
-	</div>
-</div>
-
-<div class="dp-content-block dp-profile-page">
-	<div class="dp-box">
-		<div class="dp-box-header">
-			<h1>{{ phrase('user.general.email_addresses') }}</h1>
+		<div class="dp-control-group">
+			<div class="dp-control-label">
+				<label>{{ phrase('user.general.last_name') }}</label>
+			</div>
+			<div class="dp-controls dp-fill">
+				{{ form_widget(form.last_name) }}
+			</div>
 		</div>
-		<div class="dp-box-content-wrapper">
-			<div class="dp-box-content">
-				{% if app.session.hasFlash('resent_validation_email') %}
-					<div class="alert-message info">
-						{{ phrase('user.profile.validation_resent_to', {'email':app.session.flash('resent_validation_email')}) }}
-					</div>
-				{% endif %}
-				{% if app.session.hasFlash('removed_email') %}
-					<div class="alert-message info">
-						{{ phrase('user.profile.email_was_removed', {'email':app.session.flash('removed_email')}) }}
-					</div>
-				{% endif %}
-				{% if app.session.hasFlash('new_email') %}
-					<div class="alert-message info">
-						{{ phrase('user.profile.email_was_added', {'email':app.session.flash('removed_email')}) }}
-					</div>
-				{% endif %}
-				{% if app.session.hasFlash('new_email_validating') %}
-					<div class="alert-message info">
-						{{ phrase('user.profile.email_was_added_validate_it', {'email':app.session.flash('removed_email')}) }}
-					</div>
-				{% endif %}
+		<div class="dp-control-group">
+			<div class="dp-control-label">
+				<label>{{ phrase('user.general.timezone') }}</label>
+			</div>
+			<div class="dp-controls dp-fill">
+				{{ form_widget(form.timezone) }}
+			</div>
+		</div>
 
-				<ul class="dp-emails-list">
+		<button class="dp-btn dp-btn-primary">{{ phrase('user.general.save') }}</button>
+	</div>
+</section>
+
+<section class="dp-portal-section">
+	<header>
+		<h1>{{ phrase('user.general.email_addresses') }}</h1>
+	</header>
+	<div class="dp-content-block dp-profile-block">
+		<div class="dp-content-wrapper">
+			{% if app.session.hasFlash('resent_validation_email') %}
+				<div class="dp-alert">
+					{{ phrase('user.profile.validation_resent_to', {'email':app.session.flash('resent_validation_email')}) }}
+				</div>
+			{% endif %}
+			{% if app.session.hasFlash('removed_email') %}
+				<div class="dp-alert">
+					{{ phrase('user.profile.email_was_removed', {'email':app.session.flash('removed_email')}) }}
+				</div>
+			{% endif %}
+			{% if app.session.hasFlash('new_email') %}
+				<div class="dp-alert">
+					{{ phrase('user.profile.email_was_added', {'email':app.session.flash('removed_email')}) }}
+				</div>
+			{% endif %}
+			{% if app.session.hasFlash('new_email_validating') %}
+				<div class="dp-alert">
+					{{ phrase('user.profile.email_was_added_validate_it', {'email':app.session.flash('removed_email')}) }}
+				</div>
+			{% endif %}
+
+			<table class="dp-emails-table dp-table dp-table-bordered dp-table-striped">
+				<tbody>
 					{% for email in app.user.emails %}
-					<li>
-						<div class="dp-controls">
-							{% if email.id == app.user.primary_email.id %}
-								{{ phrase('user.profile.primary_address') }}
-							{% else %}
-								<a href="{{ path('user_profile_emails_setdefault', {'email_id': email.id}) }}">{{ phrase('user.profile.set_as_primary_address') }}</a>
-								&bull;
-								<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_remove', {'email_id': email.id}) }}">{{ phrase('user.general.ucfirst_delete') }}</a>
-							{% endif %}
-						</div>
-						{{ email.email }}
-					</li>
+						<tr>
+							<td>
+								<div class="dp-controls">
+									{% if email.id == app.user.primary_email.id %}
+										{{ phrase('user.profile.primary_address') }}
+									{% else %}
+										<a href="{{ path('user_profile_emails_setdefault', {'email_id': email.id}) }}">{{ phrase('user.profile.set_as_primary_address') }}</a>
+										&bull;
+										<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_remove', {'email_id': email.id}) }}">{{ phrase('user.general.ucfirst_delete') }}</a>
+									{% endif %}
+								</div>
+								{{ email.email }}
+							</td>
+						</tr>
 					{% endfor %}
 					{% for email in validating_emails %}
-						<li class="validating">
-							<div class="dp-controls">
-								<a href="{{ path('user_profile_emails_validate_sendlink', {'email_id': email.id}) }}">{{ phrase('user.general.resend_validation_email') }}</a>
-								&bull;
-								<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_validate_remove', {'email_id': email.id}) }}">{{ phrase('user.general.ucfirst_delete') }}</a>
-							</div>
-							{{ email.email }} <em>{{ phrase('user.profile.awaiting_validation') }}</em>
-						</li>
+						<tr class="validating">
+							<td>
+								<div class="dp-controls">
+									<a href="{{ path('user_profile_emails_validate_sendlink', {'email_id': email.id}) }}">{{ phrase('user.general.resend_validation_email') }}</a>
+									&bull;
+									<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_validate_remove', {'email_id': email.id}) }}">{{ phrase('user.general.ucfirst_delete') }}</a>
+								</div>
+								{{ email.email }} <em>{{ phrase('user.profile.awaiting_validation') }}</em>
+							</td>
+						</tr>
 					{% endfor %}
-					<li class="dp-new-email">
-						<form action="{{ path('user_profile_emails_new') }}" method="post">
-							<label>{{ phrase('user.profile.add_email_address') }}:</label><br />
-							<input type="text" name="new_email" value="" size="30" /> <button class="btn small"></button>
-						</form>
-					</li>
-				</ul>
-			</div>
+					<tr class="dp-new-email">
+						<td>
+							<form action="{{ path('user_profile_emails_new') }}" method="post">
+								<input type="text" name="new_email" value="" size="50" style="width: 350px;" placeholder="{{ phrase('user.profile.add_email_address') }}" />
+								<br />
+								<button class="dp-btn dp-btn-primary">{{ phrase('user.general.add') }}</button>
+							</form>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
-</div>
+</section>
 
-<div class="dp-content-block dp-profile-page">
-	<div class="dp-box">
-		<div class="dp-box-header">
-			<h1>{{ phrase('user.general.change_password') }}</h1>
-		</div>
-		<div class="dp-box-content-wrapper">
-			<form action="{{ path('user_profile_changepassword') }}" method="post">
-				<div class="dp-box-content dp-form">
-					<div class="dp-form-row">
-						<div class="dp-form-label">
-							<label>{{ phrase('user.profile.current_password') }}</label>
-						</div>
-						<div class="dp-form-input">
-							<input type="password" name="current_password" value="" />
-						</div>
+<section class="dp-portal-section">
+	<header>
+		<h1>{{ phrase('user.general.change_password') }}</h1>
+	</header>
+	<div class="dp-content-block dp-profile-block">
+		<form action="{{ path('user_profile_changepassword') }}" method="post">
+			<div class="dp-box-content dp-form">
+				<div class="dp-control-group">
+					<div class="dp-control-label">
+						<label>{{ phrase('user.profile.current_password') }}</label>
 					</div>
-					<div class="dp-form-row">
-						<div class="dp-form-label">
-							<label>{{ phrase('user.general.new_password') }}</label>
-						</div>
-						<div class="dp-form-input">
-							<input type="password" name="password" value="" />
-						</div>
+					<div class="dp-controls dp-fill">
+						<input type="password" name="current_password" value="" />
 					</div>
-					<div class="dp-form-row">
-						<div class="dp-form-label">
-							<label>{{ phrase('user.general.repeat_password') }}</label>
-						</div>
-						<div class="dp-form-input">
-							<input type="password" name="password2" value="" />
-						</div>
-					</div>
-
-					<button class="btn primary">{{ phrase('user.general.change_password') }}</button>
 				</div>
-			</form>
-		</div>
+				<div class="dp-control-group">
+					<div class="dp-control-label">
+						<label>{{ phrase('user.general.new_password') }}</label>
+					</div>
+					<div class="dp-controls dp-fill">
+						<input type="password" name="password" value="" />
+					</div>
+				</div>
+				<div class="dp-control-group">
+					<div class="dp-control-label">
+						<label>{{ phrase('user.general.repeat_password') }}</label>
+					</div>
+					<div class="dp-controls dp-fill">
+						<input type="password" name="password2" value="" />
+					</div>
+				</div>
+
+				<button class="dp-btn dp-btn-primary">{{ phrase('user.general.change_password') }}</button>
+			</div>
+		</form>
 	</div>
-</div>
+</section>
 {% endblock %}
