@@ -5,81 +5,81 @@
 {% block page_title %}{{ phrase('user.tickets.your_tickets') }}{% endblock %}
 {% block content %}
 
-{% if active_tickets %}
-<div class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.TicketList">
-<div class="dp-content-block dp-ticketlist-page dp-open-tickets">
-	<div class="dp-box">
-		<div class="dp-box-header">
-			<h1>{{ phrase('user.general.open_tickets') }}</h1>
-		</div>
-		<div class="dp-box-content-wrapper">
-			<div class="dp-box-content">
-				<ul class="dp-ticketlist">
-					{% for ticket in active_tickets %}
-						<li>
-							<h4><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id }) }}">{{ ticket.subject }}</a></h4>
-							<ul class="dp-meta">
-								<li>{{ ticket.date_created|date('M j Y') }}</li>
-								{% if ticket.department %}
-									<li>{{ phrase('user.general.department') }}: {{ticket.department.title}}</li>
+<section class="dp-ticketlist-section dp-portal-section">
+	<header>
+		<h1>{{ phrase('user.general.open_tickets') }}</h1>
+	</header>
+	<div class="dp-content-block">
+		<div class="dp-content-wrapper">
+			<ul class="dp-ticket-list">
+				{% for ticket in active_tickets %}
+					<li>
+						<div class="dp-title">
+							<div class="dp-fadeaway-container">
+								<h4 class="dp-fadetitle"><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id }) }}">{{ ticket.subject }}</a></h4>
+								<div class="dp-fadeaway-inner-container">
+									<div class="dp-fadeaway"></div>
+									<div class="dp-opaque-fadeaway">
+										<span class="dp-time">{{ ticket.date_created|date('full') }}</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<ul class="dp-post-info">
+							<li class="dp-category"><i class="dp-icon-folder-close"></i> {{ ticket.department.full_title }}</li>
+							<li class="dp-author"><i class="dp-icon-user"></i>
+								{% if last_messages[ticket.id].person.id == app.user.id %}
+									{{ phrase('user.tickets.list_last_activity_by_you') }}
+								{% else %}
+									{{ phrase('user.tickets.list_last_activity_by_x', {'name': last_messages[ticket.id].person.display_name}) }}
 								{% endif %}
-								{% if last_messages[ticket.id] %}
-									<li>
-										{% if last_messages[ticket.id].person.id == app.user.id %}
-											{{ phrase('user.tickets.list_last_activity_by_you') }}
-										{% else %}
-											{{ phrase('user.tickets.list_last_activity_by_x', {'name': last_messages[ticket.id].person.display_name}) }}
-										{% endif %}
-										(<span class="timeago" title="{{ last_messages[ticket.id].date_created|date('c') }}">{{ last_messages[ticket.id].date_created|date('M j Y h:ia') }}</span>)
-									</li>
-								{% endif %}
-								<li>
-									<a class="close-ticket-trigger" href="{{ path('user_tickets_close', {'ticket_ref': ticket.public_id, 'back': 'list'}) }}"></a>
-								</li>
-							</ul>
-						</li>
-					{% endfor %}
-				</ul>
-			</div>
+								(<span class="timeago" title="{{ last_messages[ticket.id].date_created|date('c') }}">{{ last_messages[ticket.id].date_created|date('fulltime') }}</span>)
+							</li>
+						</ul>
+					</li>
+				{% endfor %}
+			</ul>
 		</div>
 	</div>
-</div>
-{% endif %}
+</section>
 
-{% if resolved_tickets %}
-<div class="dp-content-block dp-ticketlist-page dp-open-tickets">
-	<div class="dp-box">
-		<div class="dp-box-header">
-			<h1>{{ phrase('user.tickets.list_closed') }}</h1>
-		</div>
-		<div class="dp-box-content-wrapper">
-			<div class="dp-box-content">
-				<ul class="dp-ticketlist">
-					{% for ticket in resolved_tickets %}
-						<li>
-							<h4><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id }) }}">{{ ticket.subject }}</a></h4>
-							<ul class="dp-meta">
-								<li>{{ ticket.date_created|date('M j Y') }}</li>
-								<li>{{ phrase('user.general.department') }}: {{ticket.department.title}}</li>
-								{% if last_messages[ticket.id] %}
-									<li>
-										{% if last_messages[ticket.id].person.id == app.user.id %}
-											{{ phrase('user.tickets.list_last_activity_by_you') }}
-										{% else %}
-											{{ phrase('user.tickets.list_last_activity_by_x', {'name': last_messages[ticket.id].person.display_name}) }}
-										{% endif %}
-										(<span class="timeago" title="{{ last_messages[ticket.id].date_created|date('c') }}">{{ last_messages[ticket.id].date_created|date('M j Y h:ia') }}</span>)
-									</li>
+<br />
+
+<section class="dp-ticketlist-section dp-portal-section">
+	<header>
+		<h1>{{ phrase('user.tickets.list_closed') }}</h1>
+	</header>
+	<div class="dp-content-block">
+		<div class="dp-content-wrapper">
+			<ul class="dp-ticket-list">
+				{% for ticket in resolved_tickets %}
+					<li>
+						<div class="dp-title">
+							<div class="dp-fadeaway-container">
+								<h4 class="dp-fadetitle"><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id }) }}">{{ ticket.subject }}</a></h4>
+								<div class="dp-fadeaway-inner-container">
+									<div class="dp-fadeaway"></div>
+									<div class="dp-opaque-fadeaway">
+										<span class="dp-time">{{ ticket.date_created|date('full') }}</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<ul class="dp-post-info">
+							<li class="dp-category"><i class="dp-icon-folder-close"></i> {{ ticket.department.full_title }}</li>
+							<li class="dp-author"><i class="dp-icon-user"></i>
+								{% if last_messages[ticket.id].person.id == app.user.id %}
+									{{ phrase('user.tickets.list_last_activity_by_you') }}
+								{% else %}
+									{{ phrase('user.tickets.list_last_activity_by_x', {'name': last_messages[ticket.id].person.display_name}) }}
 								{% endif %}
-							</ul>
-						</li>
-					{% endfor %}
-				</ul>
-			</div>
+								(<span class="timeago" title="{{ last_messages[ticket.id].date_created|date('c') }}">{{ last_messages[ticket.id].date_created|date('fulltime') }}</span>)
+							</li>
+						</ul>
+					</li>
+				{% endfor %}
+			</ul>
 		</div>
 	</div>
-</div>
-{% endif %}
-
-</div>
+</section>
 {% endblock %}

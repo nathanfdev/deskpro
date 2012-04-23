@@ -201,7 +201,7 @@
     'user.general.uploading'                       => 'Uploading:',
     'user.general.validation_email_sent'           => 'You should have recieved a validation email with a special link in it. If you never got this email, click the button below to request another one.',
     'user.general.view_more_news'                  => 'View more news &rarr;',
-    'user.general.view_your_x_tickets'             => 'View my ticket|View my {{count}} tickets',
+    'user.general.view_your_x_tickets'             => '{1} View your ticket|[2,Inf] View your {{count}} tickets',
     'user.general.votes'                           => 'Votes',
     'user.general.welcome_back_guest'              => 'Welcome back, guest',
     'user.general.welcome_back_x'                  => 'Welcome back, {{name}}',

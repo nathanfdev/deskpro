@@ -691,6 +691,23 @@ nav#dp_content_tabs label {
 	white-space: nowrap;
 }
 
+#dp .dp-fadeaway-container .dp-fadeaway-inner-container {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+}
+
+#dp .dp-fadeaway-container .dp-fadeaway-inner-container .dp-opaque-fadeaway {
+	margin-left: 53px;
+	background-color: #fff;
+}
+
+#dp .dp-fadeaway-container .dp-fadeaway-inner-container .dp-fadeaway {
+	right: auto;
+	left: 0;
+}
+
 #dp .dp-fadeaway-container .dp-fadeaway {
 	width: 53px;
 	position: absolute;
@@ -698,10 +715,6 @@ nav#dp_content_tabs label {
 	right: 0;
 	bottom: 0;
 	background: transparent url(../../web/images/fadeaway-white.png) repeat-y 100% 0;
-}
-
-#dp .dp-fadeaway-container .dp-badge {
-
 }
 
 /******************************
@@ -1626,4 +1639,55 @@ body.file-drag-over .dp-drop-file-zone {
 #dp .dp-register-page > section > header .dp-connect-with {
 	float: right;
 	font-size: 11px;
+}
+
+
+/***********************************************************************************************************************
+* Tickets list
+***********************************************************************************************************************/
+
+#dp section.dp-ticketlist-section > .dp-content-block {
+	margin: 0;
+}
+
+#dp ul.dp-ticket-list {
+	margin: 0;
+	padding: 0;
+}
+
+#dp ul.dp-ticket-list > li {
+	margin: 0;
+	padding: 12px;
+	border: 1px solid #DDDDDD;
+	border-top: none;
+	list-style: none;
+}
+
+#dp ul.dp-ticket-list > li:first-child {
+	border-top: 1px solid #DDDDDD;
+	{{ _self.border_radius({tr: 4, tl: 4}) }}
+}
+#dp ul.dp-ticket-list > li:last-child {
+	{{ _self.border_radius({br: 4, bl: 4}) }}
+}
+
+#dp .dp-ticket-list .dp-title .dp-label {
+	position: relative;
+	top: -2px;
+}
+
+#dp .dp-ticket-list .dp-title h4 {
+	display: inline-block;
+	font-size: 12pt;
+	line-height: 18px;
+}
+
+#dp .dp-ticket-list .dp-title .dp-time {
+	font-size: 11px;
+	color: #777;
+}
+
+#dp .dp-ticket-list .dp-last-active {
+	margin-top: 4px;
+	font-size: 9pt;
 }

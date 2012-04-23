@@ -67,13 +67,22 @@ class TicketsController extends AbstractController
 	 */
     public function listAction()
     {
-		$tickets = App::getOrm()->createQuery("
-			SELECT ticket
-			FROM DeskPRO:Ticket ticket
-			LEFT JOIN ticket.participants part
-			WHERE ticket.person = :person OR part.person = :person
-			ORDER BY ticket.id DESC
-		")->execute(array('person' => $this->person));
+		if ($this->person->is_agent && 0) {
+			$tickets = App::getOrm()->createQuery("
+				SELECT ticket
+				FROM DeskPRO:Ticket ticket
+				WHERE ticket.person = :person
+				ORDER BY ticket.id DESC
+			")->execute(array('person' => $this->person));
+		} else {
+			$tickets = App::getOrm()->createQuery("
+				SELECT ticket
+				FROM DeskPRO:Ticket ticket
+				LEFT JOIN ticket.participants part
+				WHERE ticket.person = :person OR part.person = :person
+				ORDER BY ticket.id DESC
+			")->execute(array('person' => $this->person));
+		}
 
 		$active_tickets = array();
 		$resolved_tickets = array();
