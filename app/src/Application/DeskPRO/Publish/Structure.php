@@ -345,27 +345,57 @@ class Structure implements PersonContextInterface
 	}
 
 
-	public function getFeedbackStatusCounts(Person $person_context = null)
+	public function getFeedbackStatusCounts($category = null, Person $person_context = null)
 	{
 		$ent = 'DeskPRO:FeedbackStatusCategory';
-		$id = 'status.counts.' . $ent . '.' . $person_context->getUsergroupSetKey();
+
+		if ($category) {
+			$id = 'status.counts.' . $ent . '.' . $category->id .  '.' . $person_context->getUsergroupSetKey();
+		} else {
+			$id = 'status.counts.' . $ent . '.' . $person_context->getUsergroupSetKey();
+		}
 
 		if ($counts = $this->cache->fetch($id)) {
 			return $counts;
 		}
 
-		$count_status = $this->db->fetchAllKeyValue("
-			SELECT status, COUNT(*)
-			FROM feedback
-			GROUP BY status
-		");
+		$in_cats = '';
+		if ($category) {
+			$in_cats = implode(',', $category->getTreeIds(true));
+		}
 
-		$count_status = array_merge($count_status, $this->db->fetchAllKeyValue("
-			SELECT status_category_id, COUNT(*)
-			FROM feedback
-			WHERE status_category_id IS NOT NULL
-			GROUP BY status_category_id
-		"));
+		if ($category) {
+			$counts = $this->db->fetchAllKeyValue("
+				SELECT status, COUNT(*)
+				FROM feedback
+				WHERE category_id IN ($in_cats)
+				GROUP BY status
+			");
+		} else {
+			$counts = $this->db->fetchAllKeyValue("
+				SELECT status, COUNT(*)
+				FROM feedback
+				GROUP BY status
+			");
+		}
+
+		$counts['all'] = array_sum($counts);
+
+		if ($category) {
+			$counts = array_merge($counts, $this->db->fetchAllKeyValue("
+				SELECT status_category_id, COUNT(*)
+				FROM feedback
+				WHERE status_category_id IS NOT NULL AND category_id IN ($in_cats)
+				GROUP BY status_category_id
+			"));
+		} else {
+			$counts = array_merge($counts, $this->db->fetchAllKeyValue("
+				SELECT status_category_id, COUNT(*)
+				FROM feedback
+				WHERE status_category_id IS NOT NULL
+				GROUP BY status_category_id
+			"));
+		}
 
 		$this->cache->save($id, $counts, time() + 3600);
 
@@ -394,19 +424,19 @@ class Structure implements PersonContextInterface
 
 			$searcher = new FeedbackSearch();
 			$searcher->setPersonContext($person_context);
-			$searcher->addTerm(FeedbackSearch::TERM_CATEGORY_SPECIFIC, 'is', $c['id']);
+			$searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
 			$searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', Feedback::STATUS_NEW);
 			$cat_counts['new'] = $searcher->getCount();
 
 			$searcher = new FeedbackSearch();
 			$searcher->setPersonContext($person_context);
-			$searcher->addTerm(FeedbackSearch::TERM_CATEGORY_SPECIFIC, 'is', $c['id']);
+			$searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
 			$searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', Feedback::STATUS_ACTIVE);
 			$cat_counts['active'] = $searcher->getCount();
 
 			$searcher = new FeedbackSearch();
 			$searcher->setPersonContext($person_context);
-			$searcher->addTerm(FeedbackSearch::TERM_CATEGORY_SPECIFIC, 'is', $c['id']);
+			$searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
 			$searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', Feedback::STATUS_CLOSED);
 			$cat_counts['closed'] = $searcher->getCount();
 

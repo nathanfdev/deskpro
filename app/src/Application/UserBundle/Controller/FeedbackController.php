@@ -155,7 +155,7 @@ class FeedbackController extends AbstractController
 		}
 
 		$category_counts = $structure->getFeedbackCategoryCounts($this->person);
-		$status_counts   = $structure->getFeedbackStatusCounts($this->person);
+		$status_counts   = $structure->getFeedbackStatusCounts($category, $this->person);
 		$has_voted_ids = $this->person->FeedbackVotes->getVotesOnFeedbackCollection($feedback_ids);
 
 		$comment_counts = array();
