@@ -260,6 +260,12 @@ class SettingsController extends AbstractController
 
 	public function quickSetupAction()
 	{
+		// Mark as done
+		if ($this->in->getBool('done')) {
+			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '31');
+			return $this->redirectRoute('admin');
+		}
+
 		if (!App::getSetting('core.rewrite_urls') && !App::getSetting('core.done_rewrite_urls_check')) {
 			$this->db->replace('settings', array(
 				'name' => 'core.done_rewrite_urls_check',
@@ -328,12 +334,15 @@ class SettingsController extends AbstractController
 		")->setMaxResults(1)->getOneOrNullResult();
 		$incoming_email_form = $this->forward('AdminBundle:EmailGateways:editAccount', array('id' => $initial_pop ? $initial_pop->getId() : '0'), array('_partial' => 'setup'))->getContent();
 
+		$is_import = App::getSetting('core.deskpro3importer') ?: false;
+
 		return $this->render('AdminBundle:Settings:quick-setup.html.twig', array(
 			'setup' => $setup,
 			'form' => $form->createView(),
 			'errors' => $errors,
 			'outgoing_email_form' => $outgoing_email_form,
 			'incoming_email_form' => $incoming_email_form,
+			'is_import' => $is_import,
 
 			// Existing values
 			'license_code' => $this->container->getSetting('core.license'),

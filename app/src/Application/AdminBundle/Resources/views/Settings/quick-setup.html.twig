@@ -40,7 +40,7 @@
 	</div>
 	<br />
 
-	{% if app.getSetting('core.deskpro3importer') %}
+	{% if is_import %}
 		<div class="dp_admin_pagebar">
 			<ul>
 				<li>Import DeskPRO v3 Database</li>
@@ -109,42 +109,44 @@
 	</div>
 	<br />
 
-	<div class="dp_admin_pagebar">
-		<ul>
-			<li>Configure Outgoing Email</li>
-		</ul>
-	</div>
-	<div class="dp_admin_page" id="section_config_smtp">
-		<div class="mega-tick" {% if not default_transport %}style="display: none"{% endif %}></div>
-		<div class="dp_admin_page_inner">
-			<div class="dp-page-box">
-				<div class="page-content">
-					{% include 'AdminBundle:Settings:quick-setup-outgoing-email.html.twig' %}
+	{% if not is_import %}
+		<div class="dp_admin_pagebar">
+			<ul>
+				<li>Configure Outgoing Email</li>
+			</ul>
+		</div>
+		<div class="dp_admin_page" id="section_config_smtp">
+			<div class="mega-tick" {% if not default_transport %}style="display: none"{% endif %}></div>
+			<div class="dp_admin_page_inner">
+				<div class="dp-page-box">
+					<div class="page-content">
+						{% include 'AdminBundle:Settings:quick-setup-outgoing-email.html.twig' %}
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<br />
+		<br />
 
-	<div class="dp_admin_pagebar">
-		<ul>
-			<li>Configure Incoming Email</li>
-		</ul>
-	</div>
-	<div class="dp_admin_page" id="section_config_pop3">
-		<div class="mega-tick" {% if not initial_pop %}style="display: none"{% endif %}></div>
-		<div class="dp_admin_page_inner">
-			<div class="dp-page-box">
-				<div class="page-content" style="position:relative;">
-					{% include 'AdminBundle:Settings:quick-setup-incoming-email.html.twig' %}
+		<div class="dp_admin_pagebar">
+			<ul>
+				<li>Configure Incoming Email</li>
+			</ul>
+		</div>
+		<div class="dp_admin_page" id="section_config_pop3">
+			<div class="mega-tick" {% if not initial_pop %}style="display: none"{% endif %}></div>
+			<div class="dp_admin_page_inner">
+				<div class="dp-page-box">
+					<div class="page-content" style="position:relative;">
+						{% include 'AdminBundle:Settings:quick-setup-incoming-email.html.twig' %}
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<br />
+		<br />
+	{% endif %}
 
 	<div class="setup-done-section" id="section_done">
-		<button class="clean-white disabled" data-url="{{ path('admin') }}">Continue &rarr;</button>
+		<button class="clean-white disabled" data-url="{{ path('admin_welcome', {done: 1}) }}">Continue &rarr;</button>
 		<em>We know you're keen, but you have <label>5</label> more steps to go!</em>
 	</div>
 {% endblock %}
