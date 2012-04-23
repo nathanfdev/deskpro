@@ -119,6 +119,7 @@ class RegisterController extends AbstractController
 			'errors' => $errors,
 			'error_fields' => $error_fields,
 			'from_ticket' => $from_ticket,
+			'this_page' => 'register',
 		));
 	}
 

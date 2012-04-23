@@ -74,8 +74,21 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$return = '';
 		}
 
+		$register = new \Application\UserBundle\Form\Model\Register();
+		$reg_formtype = new \Application\UserBundle\Form\RegisterType();
+		$form = $this->get('form.factory')->create($reg_formtype, $register);
+
+		$failed_login_name = false;
+		if ($this->session->has('failed_login_name')) {
+			$failed_login_name = $this->session->get('failed_login_name');
+			$this->session->remove('failed_login_name');
+			$this->session->save();
+		}
+
 		return $this->render($this->tpl_prefix . ':index.html.twig', array(
-			'return' => $return
+			'return' => $return,
+			'form' => $form->createView(),
+			'failed_login_name' => $failed_login_name,
 		));
 	}
 
