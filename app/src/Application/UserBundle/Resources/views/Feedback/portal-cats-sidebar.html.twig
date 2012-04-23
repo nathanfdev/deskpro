@@ -1,12 +1,12 @@
 <section class="dp-sidebar-block">
 	<header>
 		<h3>
-			{% if title %}{{ title }}{% else %}Feedback{% endif %}
+			{% if title %}{{ title }}{% else %}{{ phrase('user.general.feedback') }}{% endif %}
 		</h3>
 	</header>
 	<article class="dp-written">
 		<p class="dp-summary">
-			Browse through {{ counts[0]['all']|default(0) }} customer suggestions
+			{{ phrase('user.feedback.browser_our_x_suggestions', {count: counts[0]['all']|default(0)} )}}
 		</p>
 		<ul class="dp-cat-list">
 			{% for cat in categories %}

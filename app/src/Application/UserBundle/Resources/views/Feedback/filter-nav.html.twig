@@ -2,7 +2,7 @@
 	<li class="dp-dropdown dp-alt-option dp-first" style="float: left;">
 		<a href="#" class="dp-dropdown-toggle" data-toggle="dp-dropdown">
 			{% if category.id %}
-				<span class="dp-info-prefix">Category:</span>
+				<span class="dp-info-prefix">{{ phrase('user.general.category') }}:</span>
 				{{ category.full_title }}
 			{% else %}
 				{{ phrase('user.feedback.all_categories') }}
@@ -39,7 +39,7 @@
 			{% if status == 'any-status' %}
 				{{ phrase('user.feedback.any_status') }}
 			{% else %}
-				<span class="dp-info-prefix">Status:</span>
+				<span class="dp-info-prefix">{{ phrase('user.general.status') }}:</span>
 				{% if status_cat %}
 					{{ status_cat.title }}
 				{% else %}
@@ -104,5 +104,5 @@
 	<li class="{% if search_options.order_by == 'popular' %}dp-active{% endif %}">
 		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'popular'}) }}">{{ phrase('user.feedback.popular') }}</a>
 	</li>
-	<li class="dp-label-tab"><em>Sort:</em></li>
+	<li class="dp-label-tab"><em>{{ phrase('user.general.sort_by') }}:</em></li>
 </ul>

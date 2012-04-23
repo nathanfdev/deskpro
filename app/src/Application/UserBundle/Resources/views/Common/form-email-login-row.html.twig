@@ -12,7 +12,7 @@
 					<strong>{{ phrase('user.general.your_email_address') }} *</strong>
 					<aside>
 						{% if context == 'newticket' %}
-							{{ phrase_dev('This is where our agent replies will be sent.') }}
+							{{ phrase('user.tickets.email_explain') }}
 						{% endif %}
 						{% set phrase_link %}
 							<a href="{{path('user_login')}}" class="dp-inline-login-open">{{ phrase('user.general.log_in') }}</a>

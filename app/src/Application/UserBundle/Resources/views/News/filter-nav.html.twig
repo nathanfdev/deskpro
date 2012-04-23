@@ -2,7 +2,7 @@
 	<li class="dp-dropdown dp-active dp-first" style="float: left;">
 		<a href="#" class="dp-dropdown-toggle" data-toggle="dp-dropdown">
 			{% if category.id %}
-				<span class="dp-info-prefix">Category:</span>
+				<span class="dp-info-prefix">{{ phrase('user.general.category') }}:</span>
 				{{ category.full_title }}
 			{% else %}
 				{{ phrase('user.general.all_categories') }}

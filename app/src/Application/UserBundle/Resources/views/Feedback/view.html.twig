@@ -17,7 +17,7 @@
 {% block page_title %}
 	{{ feedback.title }}
 	-
-	Feedback
+	{{ phrase('user.general.feedback') }}
 	{% for cat in category_path %}
 		/ {{ cat.title }}
 	{% endfor %}

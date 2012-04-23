@@ -1,12 +1,12 @@
 <section class="dp-sidebar-block">
 	<header>
 		<h3>
-			{% if title %}{{ title }}{% else %}Knowledgebase{% endif %}
+			{% if title %}{{ title }}{% else %}{{ phrase('user.general.knowledgebase') }}{% endif %}
 		</h3>
 	</header>
 	<article class="dp-written">
 		<p class="dp-summary">
-			Browse through our {{ counts['0_total']|default(0) }} help articles
+			{{ phrase('user.articles.browser_our_x_articles', {count: counts['0_total']|default(0)}) }}
 		</p>
 		<ul class="dp-cat-list">
 			{% for cat in categories %}

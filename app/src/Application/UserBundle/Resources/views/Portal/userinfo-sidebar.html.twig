@@ -1,7 +1,7 @@
 {% if app.user.id %}
 	<section class="dp-sidebar-block">
 		<header>
-			<h3>Welcome back, {{ app.user.first_name|default(app.user.display_name) }}</h3>
+			<h3>{{ phrase('user.general.welcome_back_x', {name: app.user.first_name|default(app.user.display_name)}) }}</h3>
 		</header>
 		<article class="dp-written">
 			<ul>
@@ -14,11 +14,12 @@
 {% else %}
 	<section class="dp-sidebar-block">
 		<header>
-			<h3>Welcome, Guest</h3>
+			<h3>{{ phrase('user.general.welcome_back_guest') }}</h3>
 		</header>
 		<article class="dp-written">
 			<div class="dp-summary">
-				<a href="{{ path('user_register') }}">Register</a> or log in below.
+				{% set link_url = path('user_register') %}
+				{{ phrase('user.general.register_or_login_below', {link_url: link_url}) }}
 			</div>
 			<div id="dp_login_box" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.LoginBox">
 				<form action="{{ path('user_login_authenticate_local') }}" method="post">
@@ -39,7 +40,7 @@
 							</div>
 							{% if app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
 								<div class="dp-usersource-list">
-									Or connect with
+									{{ phrase('user.general.or_connect_with') }}
 									{% for usersource in app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
 										{{ render_usersource(usersource, 'login_pull_btn') }}
 									{% endfor %}

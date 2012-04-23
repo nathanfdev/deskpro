@@ -83,26 +83,26 @@
 					<ul>
 						<li class="dp-tab-news {% if this_section == 'news' %}on{% endif %}">
 							<a href="{{ path('user') }}">
-								<i class="dp-icon-home"></i> <h3>Home</h3>
-								<label>Welcome &amp; News</label>
+								<i class="dp-icon-home"></i> <h3>{{ phrase('user.general.tab_home') }}</h3>
+								<label>{{ phrase('user.general.tab_home_note') }}</label>
 							</a>
 						</li>
 						<li class="dp-tab-articles {% if this_section == 'articles' %}on{% endif %}">
 							<a href="{{ path('user_articles') }}">
-								<i class="dp-icon-folder-open"></i> <h3>Knowledgebase</h3>
-								<label>Read help articles</label>
+								<i class="dp-icon-folder-open"></i> <h3>{{ phrase('user.general.tab_kb') }}</h3>
+								<label>{{ phrase('user.general.tab_kb_note') }}</label>
 							</a>
 						</li>
 						<li class="dp-tab-feedback {% if this_section == 'feedback' %}on{% endif %}">
 							<a href="{{ path('user_feedback') }}">
-								<i class="dp-icon-file"></i> <h3>Feedback</h3>
-								<label>Customer suggestions</label>
+								<i class="dp-icon-file"></i> <h3>{{ phrase('user.general.tab_feedback') }}</h3>
+								<label>{{ phrase('user.general.tab_feedback_note') }}</label>
 							</a>
 						</li>
 						<li class="dp-tab-contact {% if this_section == 'tickets' %}on{% endif %}">
 							<a href="{{ path('user_tickets_new') }}">
-								<i class="dp-icon-inbox"></i> <h3>Contact Us</h3>
-								<label>We are here to help</label>
+								<i class="dp-icon-inbox"></i> <h3>{{ phrase('user.general.tab_contact') }}</h3>
+								<label>{{ phrase('user.general.tab_contact_note') }}</label>
 							</a>
 						</li>
 					</ul>
@@ -134,7 +134,7 @@
 		<div class="results"></div>
 		<div class="foot">
 			<div class="dp-more-link">
-				<button class="dp-btn dp-btn-success">View more search results &rarr;</button>
+				<button class="dp-btn dp-btn-success">{{ phrase('user.general.view_more_search_results')}} &rarr;</button>
 			</div>
 			<h4>{{ phrase('user.general.is_search_relevant') }}</h4>
 			<ul>

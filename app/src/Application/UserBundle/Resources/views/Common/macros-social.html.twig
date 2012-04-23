@@ -17,7 +17,7 @@
 {% macro social_block(page_url, page_title) %}
 	<div class="dp-social-block">
 		<table style="margin: 0 auto 0 auto;"><tr>
-			<th width="100" style="vertical-align: top;">Share this:</th>
+			<th width="100" style="vertical-align: top;">{{ phrase('user.general.share_this') }}:</th>
 			<td width="50" style="vertical-align: top;">{{ _self.twitter_share(page_url, page_title) }}</td>
 			<td width="50" style="vertical-align: top;">{{ _self.facebook_like(page_url) }}</td>
 			<td width="50" style="vertical-align: top;">{{ _self.gplus_plusone(page_url) }}</td>

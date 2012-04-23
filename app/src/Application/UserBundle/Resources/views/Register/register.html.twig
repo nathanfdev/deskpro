@@ -37,14 +37,14 @@
 		<header>
 			{% if app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
 				<div class="dp-connect-with">
-					{{ phrase_dev('Or connect with') }}
+					{{ phrase('user.general.or_connect_with') }}
 					{% for usersource in app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
 						{{ render_usersource(usersource, 'login_pull_btn') }}
 					{% endfor %}
 				</div>
 			{% endif %}
 			<label>
-				<h3><input type="radio" name="user_type" id="user_type_exist" {% if this_page == 'login' %}checked="checked"{% endif %} /> {{ phrase_dev("I am already a registered user") }}</h3>
+				<h3><input type="radio" name="user_type" id="user_type_exist" {% if this_page == 'login' %}checked="checked"{% endif %} /> {{ phrase('user.general.im_already_registered') }}</h3>
 			</label>
 		</header>
 		<article id="user_type_exist_form" class="dp-well dp-well-light" {% if this_page != 'login' %}style="display:none"{% endif %}>
@@ -87,7 +87,7 @@
 	<section class="dp-well">
 		<header>
 			<label>
-				<h3><input type="radio" name="user_type" id="user_type_new" {% if this_page == 'register' %}checked="checked"{% endif %} /> {{ phrase_dev("I am a new user") }}</h3>
+				<h3><input type="radio" name="user_type" id="user_type_new" {% if this_page == 'register' %}checked="checked"{% endif %} /> {{ phrase('user.general.im_new_user') }}</h3>
 			</label>
 		</header>
 		<article id="user_type_new_form" class="dp-well dp-well-light" {% if this_page != 'register' %}style="display:none"{% endif %}>

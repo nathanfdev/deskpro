@@ -77,4 +77,5 @@
     'user.tickets.you_rated_unhelpful'               => 'You rated this message as unhelpful',
     'user.tickets.your_tickets'                      => 'Your Tickets',
     'user.tickets.contact_us_explain'                => 'Just fill in this form to create your ticket and our agents will reply to you via email as soon as they can.',
+    'user.tickets.email_explain'                     => 'This is where our agent replies will be sent',
 );

@@ -33,4 +33,10 @@
     'user.feedback.voting_closed'                => 'Voting closed',
     'user.feedback.voting_closed_explain'        => 'This suggestion has been closed to new votes and comments.',
     'user.feedback.i_agree'                      => 'I agree',
+    'user.feedback.i_suggest_you'                => 'I suggest you...',
+    'user.feedback.submit_new_suggestion'        => 'Submit a new suggestion',
+    'user.feedback.found_similar_suggestions'    => 'We found these similar suggestions',
+	'user.feedback.tell_us_about_idea'           => 'Tell us about your idea',
+	'user.feedback.submit_feedback'              => 'Submit Feedback',
+	'user.feedback.browser_our_x_suggestions'    => 'Browse through our custom suggestions|Browse through our {{count}} customer suggestion',
 );
