@@ -8,11 +8,11 @@
 	<link rel="canonical" href="{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}" />
 {% endblock %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_feedback') }}">{{ phrase('user.general.feedback') }}</a><span class="dp-divider">&rarr;</span></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_feedback') }}">{{ phrase('user.general.feedback') }}</a></li>
 	{% for cat in category_path %}
-		<li><a href="{{ path('user_feedback', {'slug': cat.url_slug}) }}">{{cat.title}}</a><span class="dp-divider">&rarr;</span></li>
+		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_feedback', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
-	<li><a href="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}">{{feedback.title}}</a><span class="dp-divider">&rarr;</span></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_feedback_view', {'slug': feedback.url_slug}) }}">{{feedback.title}}</a></li>
 {% endblock %}
 {% block page_title %}
 	{{ feedback.title }}
@@ -27,7 +27,7 @@
 <section class="dp-article-post dp-content-post dp-content-page">
 	<header>
 		<table class="dp-layout" width="100%"><tr>
-			<td width="50" style="padding-right: 16px; padding-left: 16px;">{% include 'UserBundle:Feedback:voting-widget.html.twig' %}</td>
+			<td width="50" style="padding-right: 16px;">{% include 'UserBundle:Feedback:voting-widget.html.twig' %}</td>
 			<td class="dp-row-contain">
 				<h3 style="margin-bottom: 0">{{ feedback.title }}</h3>
 				<ul class="dp-post-info">

@@ -57,10 +57,10 @@ var ticketReader = {
 {% block page_title %}{{ phrase('user.general.new_ticket') }}{% endblock %}
 {% block breadcrumb %}
 	{% if is_user_loggedin() %}
-		<li><a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.your_tickets') }}</a></li>
-		<li><a href="{{ path('user_tickets_new') }}">{{ phrase('user.general.new_ticket') }}</a></li>
+		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.your_tickets') }}</a></li>
+		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets_new') }}">{{ phrase('user.general.new_ticket') }}</a></li>
 	{% else %}
-		<li><a href="{{ path('user_tickets_new') }}">{{ phrase('user.general.new_ticket') }}</a></li>
+		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets_new') }}">{{ phrase('user.general.new_ticket') }}</a></li>
 	{% endif %}
 {% endblock %}
 {% block content %}

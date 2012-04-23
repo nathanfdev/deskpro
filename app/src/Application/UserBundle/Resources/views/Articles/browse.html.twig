@@ -1,12 +1,12 @@
 {% set this_section = 'articles' %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_articles') }}">{{ phrase('user.general.knowledgebase') }}</a>{% if category %}<span class="dp-divider">&rarr;</span>{% endif %}</li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_articles') }}">{{ phrase('user.general.knowledgebase') }}</a>{% if category %}{% endif %}</li>
 	{% if category %}
 		{% for cat in category_path %}
-			<li><a href="{{ path('user_articles', {'slug': cat.url_slug}) }}">{{cat.title}}</a><span class="dp-divider">&rarr;</span></li>
+			<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_articles', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 		{% endfor %}
-		<li><a href="{{ path('user_articles', {'slug': category.url_slug}) }}">{{category.title}}</a></li>
+		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_articles', {'slug': category.url_slug}) }}">{{category.title}}</a></li>
 	{% endif %}
 {% endblock %}
 {% block page_title %}

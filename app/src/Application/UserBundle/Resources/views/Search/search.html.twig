@@ -1,7 +1,7 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
 	{% if query %}
-		<li>Search for: <a href="{{ path('user_search', {'q': query }) }}">{{ query }}</a></li>
+		<li><span class="dp-divider">&rarr;</span> Search for: <a href="{{ path('user_search', {'q': query }) }}">{{ query }}</a></li>
 	{% endif %}
 {% endblock %}
 {% block content %}

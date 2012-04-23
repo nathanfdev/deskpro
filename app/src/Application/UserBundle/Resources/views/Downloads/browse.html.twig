@@ -1,8 +1,8 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_downloads') }}">{{ phrase('user.general.downloads') }}</a></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads') }}">{{ phrase('user.general.downloads') }}</a></li>
 	{% for cat in category_path %}
-		<li><a href="{{ path('user_downloads', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+		<li><<span class="dp-divider">&rarr;</span> a href="{{ path('user_downloads', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
 {% endblock %}
 {% block page_title %}

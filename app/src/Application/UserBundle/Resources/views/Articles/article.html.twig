@@ -8,15 +8,15 @@
 	<link rel="canonical" href="{{ url('user_articles_article', {'slug': article.url_slug}) }}" />
 {% endblock %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_articles') }}">{{ phrase('user.general.knowledgebase') }}</a><span class="dp-divider">&rarr;</span></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_articles') }}">{{ phrase('user.general.knowledgebase') }}</a></li>
 	{% for categories in all_categories %}
 		{% if loop.index0 == 0 %}
 			{% for c in categories %}
-				<li><a href="{{ path('user_articles', {'slug': c.url_slug}) }}">{{c.title}}</a><span class="dp-divider">&rarr;</span></li>
+				<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_articles', {'slug': c.url_slug}) }}">{{c.title}}</a></li>
 			{% endfor %}
 		{% endif %}
 	{% endfor %}
-	<li><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{article.title}}</a><span class="dp-divider">&rarr;</span></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{article.title}}</a></li>
 {% endblock %}
 {% block page_title %}
 	{{ article.title }}

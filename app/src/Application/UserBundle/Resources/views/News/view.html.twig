@@ -9,9 +9,9 @@
 {% endblock %}
 {% block breadcrumb %}
 	{% for cat in category_path %}
-		<li><a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{cat.title}}</a><span class="dp-divider">&rarr;</span></li>
+		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
-	<li><a href="{{ path('user_news_view', {'slug': news.url_slug}) }}">{{ news.title }}</a><span class="dp-divider">&rarr;</span></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news_view', {'slug': news.url_slug}) }}">{{ news.title }}</a></li>
 {% endblock %}
 {% block page_title %}
 	{{ news.title }}
