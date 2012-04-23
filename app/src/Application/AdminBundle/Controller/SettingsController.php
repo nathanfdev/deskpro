@@ -57,8 +57,6 @@ class SettingsController extends AbstractController
 				'core.helpdesk_disabled'       => empty($_POST['settings']['core.helpdesk_disabled']) ? 0 : 1,
 				'core.cookie_path'             => $_POST['settings']['core.cookie_path'],
 				'core.cookie_domain'           => $_POST['settings']['core.cookie_domain'],
-				'core.cookie_domain'           => $_POST['settings']['core.cookie_domain'],
-				'core.cookie_domain'           => $_POST['settings']['core.cookie_domain'],
 				'core.use_gravatar'            => empty($_POST['settings']['core.use_gravatar']) ? 0 : 1,
 				'core.redirect_correct_url'    => empty($_POST['settings']['core.redirect_correct_url']) ? 0 : 1,
 
