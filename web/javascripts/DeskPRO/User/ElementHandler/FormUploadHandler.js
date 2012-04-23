@@ -11,27 +11,86 @@ DeskPRO.User.ElementHandler.FormUploadHandler = new Orb.Class({
 			dropZone = $(document);
 		}
 
-		this.el.fileupload({
+		var options = {
 			url: this.el.data('upload-to'),
 			dropZone: dropZone,
 			autoUpload: true,
 			formData: {
 				security_token: this.el.data('security-token')
-			},
-			start: function() {
-				self.el.find('li.error').remove();
-			},
-			uploadTemplate: $('.dptpl-attach-upload', this.el),
-			downloadTemplate: $('.dptpl-attach-download', this.el)
-		});
+			}
+		};
 
-		this.el.on('click', '.remove', function() {
-			var li = $(this).closest('li.uploaded').fadeOut('fast', function() {
-				li.remove();
-			});
-		});
+		this._handleOptions(options);
+
+		this.el.fileupload(options);
 
 		$('.dp-fallback', this.el).remove();
 		$('.dp-good-upload', this.el).show();
+	},
+
+	_handleOptions: function(options) {
+		var el = this.el;
+
+		if (!options.namespace) {
+			options.namespace = Orb.uuid();
+		}
+
+		if (!options.dropZone) {
+			options.dropZone = $(el);
+		}
+
+		if (typeof options.autoUpload == 'undefined') {
+			options.autoUpload = true;
+		}
+
+		if (options.uploadTemplate) {
+			var setel = options.uploadTemplate;
+		} else {
+			var setel = $('.template-upload', el);
+		}
+		if (!setel.attr('id')) {
+			var id = Orb.getUniqueId('up');
+			setel.attr('id', id);
+		} else {
+			var id = setel.attr('id');
+		}
+		delete(options.uploadTemplate);
+		options.uploadTemplateId = id;
+
+		if (options.downloadTemplate) {
+			var setel = options.downloadTemplate;
+		} else {
+			var setel = $('.template-download', el);
+		}
+		if (!setel.attr('id')) {
+			var id = Orb.getUniqueId('up');
+			setel.attr('id', id);
+		} else {
+			var id = setel.attr('id');
+		}
+		delete(options.downloadTemplate);
+		options.downloadTemplateId = id;
+
+		if (!options.filesContainer) {
+			options.filesContainer = $(el).find('.files');
+		}
+
+		options.start = function() {
+			// Dont stack error messes. Once you upload again, the old one disappears
+			$(el).find('.error').remove();
+		};
+
+		$(el).on('click', '.remove-attach-trigger', function(ev) {
+			// Ignore .delete as they may be items rendered with the page,
+			// eg. the list handles delete of existing attachments on its own
+			if ($(this).hasClass('delete')) {
+				return;
+			}
+			ev.preventDefault();
+			var el = $(this);
+			el.closest('li').slideUp('fast', function() {
+				el.remove();
+			});
+		});
 	}
 });

@@ -554,10 +554,10 @@ $CONFIG['user_vendors'] = array(
 	'files' => array(
 		'vendor/jquery/jquery.min.js',
 		'vendor/jquery/jquery-ui/jquery-ui.min.js',
-		'vendor/jquery/jquery-tmpl/jquery.tmpl.min.js',
 		'vendor/jquery/jquery.cookie.js',
 		'vendor/jquery/jquery.history.js',
 		'vendor/jquery/jquery.form.js',
+		'vendor/jquery/tmpl.min.js',
 
 		'vendor/jquery/jquery.sizes.min.js',
 		'vendor/jquery/jquery.ajax-retry.js',

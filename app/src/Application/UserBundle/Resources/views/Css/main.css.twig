@@ -1878,3 +1878,61 @@ body.file-drag-over .dp-drop-file-zone {
 	float: right;
 	font-size: 9pt;
 }
+
+/***********************************************************************************************************************
+* Profile page
+***********************************************************************************************************************/
+
+#dp .dp-hidden-file-upload {
+	position: relative;
+	width: 150px;
+}
+
+#dp .dp-hidden-file-upload span {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	font-size: 11px;
+}
+
+#dp .dp-hidden-file-upload span.link{
+	color: #1B94D1;
+	text-decoration: underline;
+	font-size: 10pt;
+}
+
+#dp .dp-hidden-file-upload input {
+	filter: alpha(opacity=0);
+	-khtml-opacity: 0;
+	-moz-opacity: 0;
+	opacity: 0;
+}
+
+#dp ul.file-list {
+	margin: 0;
+	padding: 0;
+}
+
+#dp ul.file-list li {
+	padding: 0;
+	margin: 0 0 4px 0;
+	list-style: none;
+	line-height: 20px;
+}
+
+#dp ul.file-list li em.remove-attach-trigger {
+	float: left;
+	background: url(../../web/images/user/cross.png) no-repeat 0 50%;
+	width: 16px;
+	height: 20px;
+	margin-right: 5px;
+	cursor: pointer;
+}
+
+#dp ul.file-list li span {
+	margin-left: 5px;
+	font-size: 10px;
+	color: #666;
+}
