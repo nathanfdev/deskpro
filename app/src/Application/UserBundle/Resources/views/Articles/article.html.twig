@@ -51,7 +51,9 @@
 			{% include 'UserBundle:Common:rating-bar.html.twig' with {'content_object': article} %}
 		{% endif %}
 
-		{{ social.social_block(path('user_articles_article', {'slug': article.url_slug}), article.title) }}
+		{% if app.getSetting('core.show_share_widget') %}
+			{{ social.social_block(path('user_articles_article', {'slug': article.url_slug}), article.title) }}
+		{% endif %}
 	</footer>
 </section>
 

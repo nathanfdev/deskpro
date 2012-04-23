@@ -45,7 +45,9 @@
 	<footer>
 		{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': feedback.labels} %}
 
-		{{ social.social_block(path('user_feedback_view', {'slug': feedback.url_slug}), feedback.title) }}
+		{% if app.getSetting('core.show_share_widget') %}
+			{{ social.social_block(path('user_feedback_view', {'slug': feedback.url_slug}), feedback.title) }}
+		{% endif %}
 	</footer>
 </section>
 

@@ -483,22 +483,15 @@ $collection->add('user_downloads_newcomment', new Route(
 	array()
 ));
 
-$collection->add('user_news_list', new Route(
-	'/news/list/{slug}/{page}',
-	array('_controller' => 'UserBundle:News:browse', 'slug' => '', 'page' => 1, 'list_type' => 'list'),
-	array('slug' => '(\\d+(\\-.*?)?)?', 'page' => '\\d+'),
-	array()
-));
-
 $collection->add('user_news', new Route(
-	'/news/{slug}/{page}',
+	'/news/{slug}',
 	array('_controller' => 'UserBundle:News:browse', 'slug' => '', 'page' => 1),
 	array('slug' => '(\\d+(\\-.*?)?)?', 'page' => '\\d+'),
 	array()
 ));
 
 $collection->add('user_news_view', new Route(
-	'/news/posts/{slug}',
+	'/news/view/{slug}',
 	array('_controller' => 'UserBundle:News:view'),
 	array(),
 	array()

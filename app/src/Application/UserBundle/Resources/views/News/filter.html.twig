@@ -1,0 +1,73 @@
+{% set this_section = 'feedback' %}
+{% extends 'UserBundle::layout.html.twig' %}
+{% block head %}
+	<script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/FeedbackInlineNew.js') }}"></script>
+{% endblock %}
+{% macro cat_row(cat, status, selected_cat) %}
+	<li {% if cat.id == selected_cat.id %}class="on"{% endif %}>
+		<a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug}) }}">{{ cat.title }}</a>
+		{% if cat.children|length %}
+			<ul>
+				{% for subcat in cat.children %}
+					{{ _self.cat_row(subcat, status) }}
+				{% endfor %}
+			</ul>
+		{% endif %}
+	</li>
+{% endmacro %}
+{% block breadcrumb %}
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news') }}">{{ phrase_dev("News") }}</a></li>
+	{% if category %}
+		{% for cat in category.getTreeParents() %}
+			<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{ cat.title }}</a></li>
+		{% endfor %}
+		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news', {'slug': category.url_slug}) }}">{{ category.title }}</a></li>
+	{% endif %}
+{% endblock %}
+{% block page_title %}
+	{{ phrase_dev("News") }}
+	{% if category %}
+		{% for cat in category.getTreeParents() %}
+			- {{ cat.title }}
+		{% endfor %}
+		- {{ category.title }}
+	{% endif %}
+{% endblock %}
+{% block content %}
+
+<section class="dp-portal-section dp-new-feedback-section">
+	<header>
+		<h1>{{ phrase_dev("News") }}</h1>
+	</header>
+</section>
+
+<section class="dp-portal-section dp-feedback-section">
+	<div class="dp-content-block dp-articles-block">
+		<div class="dp-content-wrapper">
+			<div style="float:left; width: 100%;">
+				{% include 'UserBundle:News:filter-nav.html.twig' %}
+			</div>
+			<br style="clear:left;height: 1px;" />
+
+			<ul class="dp-content-list">
+				{% for news in news_entries %}
+					{% include 'UserBundle:News:filter-list-item.html.twig' %}
+				{% endfor %}
+			</ul>
+
+			{% if pageinfo.last != 1 %}
+				{% set page_url = path('user_news', {'slug': category.url_slug}) ~ '?p=' %}
+				<div class="dp-pagination">
+					<ul>
+						{% if pageinfo.prev %}<li><a href="{{ page_url ~ pageinfo.prev }}">&larr; {{ phrase('user.general.page_prev') }}</a></li>{% endif %}
+						{% for p in pageinfo.pages %}
+							<li class="{% if pageinfo.cursor == p %}dp-active{% endif %}"><a href="{{ page_url ~ p }}">{{ p }}</a>
+						{% endfor %}
+						{% if pageinfo.next %}<li><a href="{{ page_url ~ pageinfo.next }}">{{ phrase('user.general.page_next') }} &rarr;</a></li>{% endif %}
+					</ul>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+</section>
+{% endblock %}

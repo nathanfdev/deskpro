@@ -252,4 +252,9 @@
 	 * True to have links from chat intercepted and sent through the security page
 	 */
 	'core.agent_intercept_external_link' => false,
+
+	/**
+	 * Show the share widget (twitter/facebook/linkedin/gplus)
+	 */
+	'core.show_share_widget' => true,
 );

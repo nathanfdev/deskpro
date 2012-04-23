@@ -5,7 +5,9 @@
 	<div class="dp-content-block dp-news-block">
 		<div class="dp-content-wrapper">
 			<ul class="dp-content-list">
-				{% include 'UserBundle:News:browse-news-list.html.twig' %}
+				{% for news in news_entries %}
+					{% include 'UserBundle:News:filter-list-item.html.twig' %}
+				{% endfor %}
 			</ul>
 		</div>
 	</div>

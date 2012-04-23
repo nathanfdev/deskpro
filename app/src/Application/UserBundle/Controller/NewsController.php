@@ -50,13 +50,14 @@ use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 
 class NewsController extends AbstractController
 {
-	public function browseAction($slug = '', $page = 1, $list_type = 'list')
+	public function browseAction($slug = '')
 	{
 		/** @var $structure \Application\DeskPRO\Publish\Structure */
 		$structure = $this->container->getSystemService('publish_structure');
 
-		if ($this->in->getUint('page')) {
-			$page = $this->in->getUint('page');
+		$page = 1;
+		if ($this->in->getUint('p')) {
+			$page = $this->in->getUint('p');
 		}
 		if (!$page || $page < 1) $page = 1;
 
@@ -96,6 +97,7 @@ class NewsController extends AbstractController
 
 		$news_cats = $structure->getNewsCategories();
 		$news_cat_objs = $structure->getNewsCategories();
+		$category_counts = $structure->getNewsCategoryCounts($this->person);
 
 		if ($search_options['order_by']) {
 			$searcher->setOrderByCode($search_options['order_by']);
@@ -103,17 +105,14 @@ class NewsController extends AbstractController
 			$searcher->setOrderBy('id', 'desc');
 		}
 
-		$per_page = 20;
+		$per_page = 5;
 		if ($this->request->isPartialRequest() == 'portal') {
 			$per_page = 2;
 		}
 
-		$tpl = 'UserBundle:News:browse-list.html.twig';
+		$tpl = 'UserBundle:News:filter.html.twig';
 		if ($this->request->isPartialRequest() == 'portal') {
 			$tpl = 'UserBundle:News:portal-display.html.twig';
-		}
-		if ($this->request->isPartialRequest() == 'more') {
-			$tpl = 'UserBundle:News:browse-news-list.html.twig';
 		}
 
 		$total = $searcher->getCount();
@@ -124,8 +123,7 @@ class NewsController extends AbstractController
 		);
 
 		$news_ids = $searcher->getMatches($limit);
-
-		$news = App::getEntityRepository('DeskPRO:News')->getByResultIds($news_ids);
+		$news = App::getEntityRepository('DeskPRO:News')->getByIds($news_ids, true);
 
 		$show_more = false;
 		if ($page < $pageinfo['last']) {
@@ -139,8 +137,6 @@ class NewsController extends AbstractController
 				->countsOnCollection($news);
 		}
 
-		$category_counts = $structure->getNewsCategoryCounts($this->person);
-
 		return $this->render($tpl, array(
 			'news_cats' => $news_cats,
 			'news_cat_objs' => $news_cat_objs,
@@ -151,7 +147,6 @@ class NewsController extends AbstractController
 			'comment_counts' => $comment_counts,
 			'num_results' => $total,
 			'pageinfo' => $pageinfo,
-			'list_type' => $list_type,
 			'per_page' => $per_page,
 			'show_more' => $show_more
 		));

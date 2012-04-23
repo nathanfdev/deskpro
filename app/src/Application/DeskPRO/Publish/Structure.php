@@ -243,7 +243,7 @@ class Structure implements PersonContextInterface
 
 		$counts = $this->_getTotalCounts($counts, $this->context_category_data[$ent]['all'], $this->context_category_data[$ent]['helper']);
 
-		$this->cache->save($id, $counts);
+		$this->cache->save($id, $counts, time() + 3600);
 
 		return $counts;
 	}
@@ -367,9 +367,7 @@ class Structure implements PersonContextInterface
 			GROUP BY status_category_id
 		"));
 
-		$this->cache->save($id, $counts);
-
-		return $count_status;
+		$this->cache->save($id, $counts, time() + 3600);
 
 		return $counts;
 	}
@@ -382,7 +380,7 @@ class Structure implements PersonContextInterface
 	public function getFeedbackCategoryCounts(Person $person_context = null)
 	{
 		$ent = 'DeskPRO:FeedbackCategory';
-		$id = 'categories.counts.' . $ent . $person_context->getUsergroupSetKey();;
+		$id = 'categories.counts.' . $ent . '.' . $person_context->getUsergroupSetKey();
 		$this->loadCategories($ent);
 
 		if ($counts = $this->cache->fetch($id)) {
@@ -427,7 +425,7 @@ class Structure implements PersonContextInterface
 
 		$counts[0]['all'] = array_sum($counts[0]);
 
-		$this->cache->save($id, $counts);
+		$this->cache->save($id, $counts, time() + 3600);
 
 		return $counts;
 	}
@@ -537,7 +535,7 @@ class Structure implements PersonContextInterface
 	public function getDownloadCategoryCounts(Person $person_context = null)
 	{
 		$ent = 'DeskPRO:DownloadCategory';
-		$id = 'categories.counts.' . $ent;
+		$id = 'categories.counts.' . $ent . '.' . $person_context->getUsergroupSetKey();
 		$this->loadCategories($ent);
 
 		if ($counts = $this->cache->fetch($id)) {
@@ -557,7 +555,7 @@ class Structure implements PersonContextInterface
 
 		$counts = $this->_getTotalCounts($counts, $this->getDownloadCategories(), $this->getDownloadCategoryHelper());
 
-		$this->cache->save($id, $counts);
+		$this->cache->save($id, $counts, time() + 3600);
 
 		return $counts;
 	}
@@ -667,7 +665,7 @@ class Structure implements PersonContextInterface
 	public function getNewsCategoryCounts(Person $person_context = null)
 	{
 		$ent = 'DeskPRO:NewsCategory';
-		$id = 'categories.counts.' . $ent;
+		$id = 'categories.counts.' . $ent . '.' . $person_context->getUsergroupSetKey();
 		$this->loadCategories($ent);
 
 		if ($counts = $this->cache->fetch($id)) {
@@ -683,31 +681,11 @@ class Structure implements PersonContextInterface
 			$searcher->addTerm(NewsSearch::TERM_STATUS, 'is', 'published');
 
 			$counts[$c['id']] = $searcher->getCount();
-
-			$counts['0_total'] += $counts[$c['id']];
 		}
 
-		$structure = $this;
-		$fn_count = function($node) use (&$counts, $structure, &$fn_count) {
-			$total = 0;
-			foreach ($structure->getNewsCategoryHelper()->getChildren($node, true) as $c) {
-				// We already have the single count
-				$total += $counts[$c['id']];
+		$counts = $this->_getTotalCounts($counts, $this->getNewsCategories(), $this->getNewsCategoryHelper());
 
-				// Now add up all its subs
-				$total += $fn_count($c);
-			}
-
-			if ($node) {
-				$counts[$node['id'] . '_total'] = $total;
-			}
-
-			return $total;
-		};
-
-		$fn_count(null);
-
-		$this->cache->save($id, $counts);
+		$this->cache->save($id, $counts, time() + 3600);
 
 		return $counts;
 	}
