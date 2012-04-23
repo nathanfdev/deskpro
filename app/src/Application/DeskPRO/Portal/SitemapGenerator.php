@@ -161,7 +161,7 @@ class SitemapGenerator
 		);
 
 		$items[] = array(
-			'loc' => $this->router->generate('user_feedback_newfeedback', array()),
+			'loc' => $this->router->generate('user_feedback_new', array()),
 			'changefreq' => 'monthly',
 		);
 
