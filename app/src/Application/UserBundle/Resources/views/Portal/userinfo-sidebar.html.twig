@@ -35,10 +35,10 @@
 								<dd><input type="password" value="" name="password" id="dp_login_password" size="40" tabindex="2" /></dd>
 							</dl>
 							<div class="dp-btn-row">
-								<input class="btn" type="submit" value="{{ phrase('user.general.log_in') }}" />
+								<input class="dp-btn" type="submit" value="{{ phrase('user.general.log_in') }}" />
 							</div>
 							{% if app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
-								<div style="border-top: 1px solid #ccc; padding-top: 5px; margin-top: 5px;">
+								<div class="dp-usersource-list">
 									Or connect with
 									{% for usersource in app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
 										{{ render_usersource(usersource, 'login_pull_btn') }}
@@ -52,7 +52,7 @@
 								<br />
 								<div class="dp-btn-row">
 									<div class="not-loading">
-										<button class="btn small dp-do-send">{{ phrase('user.general.lost_password_send_btn') }}</button>
+										<button class="dp-btn dp-do-send">{{ phrase('user.general.lost_password_send_btn') }}</button>
 										<br /><a class="back">{{ phrase('user.general.cancel') }}</a>
 									</div>
 									<div class="is-loading">
