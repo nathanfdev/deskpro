@@ -2,20 +2,11 @@
 msgid "user.ticekts.add_reply_btn"
 msgstr "Submit Reply"
 
-msgid "user.tickets.add_using_name_and_email"
-msgstr "Add a new person by entering their name and email"
-
 msgid "user.tickets.agent"
 msgstr "Agent"
 
 msgid "user.tickets.attach_a_file"
 msgstr "Attach a file"
-
-msgid "user.tickets.attachment_max_size"
-msgstr "Max size"
-
-msgid "user.tickets.attachments_max_size"
-msgstr "You may upload an attachment less than 5 MB"
 
 msgid "user.tickets.begin_with_department"
 msgstr "Begin by choosing a department"
@@ -28,9 +19,6 @@ msgstr "The code you entered is incorrect."
 
 msgid "user.tickets.check_email"
 msgstr "check your email"
-
-msgid "user.tickets.check_email_link"
-msgstr "<strong>Important</strong>! Before your ticket will be read by our agents, you need to validate your email address. Check your email ({{email}}) for our confirmation link."
 
 msgid "user.tickets.click_here"
 msgstr "click here"
@@ -50,8 +38,11 @@ msgstr "Are you sure you want to close your ticket? Once your ticket is closed, 
 msgid "user.tickets.closed_thanks"
 msgstr "Your ticket has been closed"
 
-msgid "user.tickets.created_successfully"
-msgstr "Your ticket has been created successfully."
+msgid "user.tickets.contact_us_explain"
+msgstr "Just fill in this form to create your ticket and our agents will reply to you via email as soon as they can."
+
+msgid "user.tickets.email_explain"
+msgstr "This is where our agent replies will be sent"
 
 msgid "user.tickets.feedback_close_btn"
 msgstr "I have got what I needed, close my ticket now"
@@ -76,6 +67,15 @@ msgstr "Thank you for submitting your ticket! You can view your ticket online he
 
 msgid "user.tickets.finish_validating"
 msgstr "But wait! Before your ticket will be read by our agents, you need to validate your email address. Check your email ({{email}}) for our confirmation link."
+
+msgid "user.tickets.flash_new_ticket_login"
+msgstr "Your ticket has been submitted. Log in to view it now."
+
+msgid "user.tickets.flash_new_ticket_validating_email"
+msgstr "Before your ticket will be read by our agents, you must confirm your email address. We sent an email confirmation to {{email}}."
+
+msgid "user.tickets.from_x_at_y"
+msgstr "From {{name}} at {{date}}"
 
 msgid "user.tickets.have_we_answered"
 msgstr "Have we answered your question? Feel free to <a href="{{link_url}}">close this ticket</a>"
@@ -131,20 +131,17 @@ msgstr "Modify Ticket"
 msgid "user.tickets.must_validate_email"
 msgstr "<strong>Important!</strong> You still need to validate your email address ({{email}}) before your ticket will be read by our agents. Check your email now and click on the link."
 
-msgid "user.tickets.new_ticket_notice"
-msgstr "Our agents will respond to your email address at {{email}}."
+msgid "user.tickets.new_reply"
+msgstr "New Reply"
 
-msgid "user.tickets.new_validating_notice"
-msgstr "Since this is your first time submitting a ticket from {{email}}, you must validate your email address before our agents will respond. Check your email now and click the validation link we sent you."
-
-msgid "user.tickets.no_longer_need_to_contact_you"
-msgstr "I do not need to contact you anymore"
+msgid "user.tickets.new_ticket_email"
+msgstr "Your new ticket has been submitted. Our agents will reply to your email address {{email}}."
 
 msgid "user.tickets.oops_form_mistakes"
 msgstr "Oops! There are mistakes with your form. Correct the highlighted feels and then try again."
 
 msgid "user.tickets.participate_explain"
-msgstr "You're a participant on the ticket "{{ticket_subject}}" by {{ticket_person_name}}. If you want more control over your profile, like setting a different email address or changing your name, register an account."
+msgstr "You are a participant on the ticket "{{ticket_subject}}" by {{ticket_person_name}}. If you want more control over your profile, like setting a different email address or changing your name, register an account."
 
 msgid "user.tickets.please_choose_priority"
 msgstr "Please choose a priority"
@@ -170,8 +167,14 @@ msgstr "Not Helpful"
 msgid "user.tickets.register_free"
 msgstr "Register a free account with {{email}} to interact with this ticket easier, and gain more site features."
 
-msgid "user.tickets.still_want_to_contact_you"
-msgstr "I still want to submit a question"
+msgid "user.tickets.status_closed"
+msgstr "Closed"
+
+msgid "user.tickets.status_open"
+msgstr "Open"
+
+msgid "user.tickets.status_resolved"
+msgstr "Resolved"
 
 msgid "user.tickets.subject_your_tickets"
 msgstr "{{subject}} - Your Tickets"
@@ -182,15 +185,6 @@ msgstr "Submit"
 msgid "user.tickets.thank_you_please_wait"
 msgstr "Thank you for submitting your ticket! You should get a confirmation email shortly."
 
-msgid "user.tickets.this_is_an_answer"
-msgstr "This answered my question"
-
-msgid "user.tickets.this_is_no_answer"
-msgstr "This did not answer my question"
-
-msgid "user.tickets.ticket_count"
-msgstr "1 Ticket|{{count}} Tickets"
-
 msgid "user.tickets.type_your_reply_here"
 msgstr "Type your reply here..."
 
@@ -199,9 +193,6 @@ msgstr "<strong>Important!</strong> Before your ticket will be read by our agent
 
 msgid "user.tickets.view_more_results"
 msgstr "View {{part}} more results"
-
-msgid "user.tickets.want_to_email_us"
-msgstr "We are happy we were able to answer your question. Do you still want to email us?"
 
 msgid "user.tickets.was_reply_helpful"
 msgstr "Was this reply helpful?"
@@ -226,6 +217,9 @@ msgstr "Search Tags"
 
 msgid "user.search.no_results_help"
 msgstr "No results, try using different terms."
+
+msgid "user.search.x_search_results"
+msgstr "{{count}} search result|{{count}} search results"
 
 msgid "user.profile.add_email_address"
 msgstr "Add an email address to your account"
@@ -252,7 +246,7 @@ msgid "user.profile.email_validate_sent"
 msgstr "Validation email sent to {{email}}"
 
 msgid "user.profile.email_validate_sent_explain"
-msgstr "We've just sent you a new validation email. Click the link in the email to validate your email address."
+msgstr "We have just sent you a new validation email. Click the link in the email to validate your email address."
 
 msgid "user.profile.email_validated"
 msgstr "{{email}} validated"
@@ -265,36 +259,6 @@ msgstr "Email {{email}} was added. To start using this email address, you must v
 
 msgid "user.profile.email_was_removed"
 msgstr "Email {{email}} was removed"
-
-msgid "user.profile.error_dupe_email"
-msgstr "That email has already been validated."
-
-msgid "user.profile.error_email_exists"
-msgstr "Email address exists"
-
-msgid "user.profile.error_email_exists_explain"
-msgstr "That email address already exists in our system."
-
-msgid "user.profile.error_invalid_email"
-msgstr "Invalid email address"
-
-msgid "user.profile.error_invalid_email_code"
-msgstr "The validation link seems to be invalid."
-
-msgid "user.profile.error_invalid_email_explain"
-msgstr "We could not find that email address on your account."
-
-msgid "user.profile.error_last_email"
-msgstr "That's your last email address"
-
-msgid "user.profile.error_last_email_explain"
-msgstr "You can't remove your last email address. Try adding a new one first, and then you can delete this one. If you already have other addresses, make sure you've validated them."
-
-msgid "user.profile.error_not_validated_email"
-msgstr "Email address is not validated"
-
-msgid "user.profile.error_validate_to_use"
-msgstr "That email address has not been validated yet. You need to validate the email address before you can set it as your account default."
 
 msgid "user.profile.feedback_subscriptions"
 msgstr "Feedback Subscriptions"
@@ -332,17 +296,14 @@ msgstr "Votes in favor of this feedback"
 msgid "user.portal.are_results_relevant"
 msgstr "None of these results what you were looking for?"
 
+msgid "user.portal.ask_add_account"
+msgstr "How do I add an account?"
+
 msgid "user.portal.ask_or_feedback_here"
 msgstr "Ask a question, suggest an feedback or search the helpdesk here"
 
-msgid "user.portal.chat_live"
-msgstr "Chat live"
-
 msgid "user.portal.chat_with_agent"
 msgstr "Chat with an agent"
-
-msgid "user.portal.email_us"
-msgstr "Email us"
 
 msgid "user.portal.example"
 msgstr "Example"
@@ -350,26 +311,11 @@ msgstr "Example"
 msgid "user.portal.example_list"
 msgstr ""{{link1}}", "{{link2}}" or "{{link3}}""
 
-msgid "user.portal.how_do_i_add_account"
-msgstr "How do I add an account?"
-
-msgid "user.portal.if_not_registered"
-msgstr "Don't have an account? {{link}} so you can view your ticket history and manage your profile."
-
-msgid "user.portal.label_email"
-msgstr "Email Address:"
-
-msgid "user.portal.label_password"
-msgstr "Password:"
-
 msgid "user.portal.latest_version_download"
 msgstr "Latest version download"
 
 msgid "user.portal.login_using_twitter"
 msgstr "Log in using your Twitter account."
-
-msgid "user.portal.login_with_twitter"
-msgstr "Log in with Twitter"
 
 msgid "user.portal.online_staff"
 msgstr "Online Staff"
@@ -383,20 +329,11 @@ msgstr "Pricing"
 msgid "user.portal.register_for_free"
 msgstr "Register for free"
 
-msgid "user.portal.register_now"
-msgstr "Register now"
-
 msgid "user.portal.submit_new_ticket"
 msgstr "Submit a new ticket"
 
-msgid "user.portal.submit_suggestion"
-msgstr "Submit a suggestion"
-
 msgid "user.portal.title_newest_feedback"
 msgstr "Newest Feedback"
-
-msgid "user.portal.twitter_message"
-msgstr "Message"
 
 msgid "user.portal.twitter_user_link"
 msgstr "@{{name}} on twitter"
@@ -413,35 +350,14 @@ msgstr "View more feedback &rarr;"
 msgid "user.portal.we_are_here_to_help"
 msgstr "Our friendly support staff are here to help."
 
-msgid "user.portal.welcome_guest"
-msgstr "Welcome, Guest"
-
-msgid "user.portal.welcome_name"
-msgstr "Welcome, {{ name }}"
-
-msgid "user.news.author_name"
-msgstr "Author: {{name}}"
-
-msgid "user.news.count_words_remaining"
-msgstr "({{count}} more word)|({{count}} more words)"
-
-msgid "user.news.error_not_found"
-msgstr "The post you're looking for could not be found. It may have been deleted."
-
-msgid "user.news.view_all_x_news"
-msgstr "View all entries|View all {{count}} entries"
-
-msgid "user.news.view_entire_article"
-msgstr "Read the rest of this news article"
-
-msgid "user.general._add"
-msgstr "[+] Add"
-
 msgid "user.general.accepted"
 msgstr "Accepted"
 
 msgid "user.general.access_ticket_online"
 msgstr "View and manage this ticket online:"
+
+msgid "user.general.add"
+msgstr "Add"
 
 msgid "user.general.add_reply"
 msgstr "Add Reply"
@@ -467,17 +383,20 @@ msgstr "Set status: away"
 msgid "user.general.agents_working"
 msgstr "Our agents will now read and reply to all of your messages."
 
+msgid "user.general.all_categories"
+msgstr "All Categories"
+
 msgid "user.general.anonymous"
 msgstr "Anonymous"
 
 msgid "user.general.articles"
 msgstr "Articles"
 
+msgid "user.general.assigned_agent"
+msgstr "Assigned Agent"
+
 msgid "user.general.attachments"
 msgstr "Attachments"
-
-msgid "user.general.btn_add"
-msgstr "Add"
 
 msgid "user.general.btn_create_chat"
 msgstr "Start Chat"
@@ -497,6 +416,9 @@ msgstr "Change Password"
 msgid "user.general.chat"
 msgstr "Chat"
 
+msgid "user.general.chat_with_us"
+msgstr "Chat with us live"
+
 msgid "user.general.choose_email"
 msgstr "Choose the email address you want to use"
 
@@ -505,9 +427,6 @@ msgstr "New email address"
 
 msgid "user.general.close"
 msgstr "Close"
-
-msgid "user.general.close_lc"
-msgstr "close"
 
 msgid "user.general.close_window"
 msgstr "Close Window"
@@ -518,17 +437,11 @@ msgstr "Comments"
 msgid "user.general.comments_add_a_comment"
 msgstr "Add a comment"
 
-msgid "user.general.comments_enter_details"
-msgstr "Enter a question, keyword or topic.."
-
 msgid "user.general.comments_logged_in_as"
 msgstr "Logged In As"
 
-msgid "user.general.comments_login"
-msgstr "Login"
-
-msgid "user.general.comments_login_to_comment"
-msgstr "{link1} or {link2} to submit comments."
+msgid "user.general.comments_no_comments"
+msgstr "There are no comments."
 
 msgid "user.general.comments_please_enter_email"
 msgstr "Please enter your email address"
@@ -536,29 +449,26 @@ msgstr "Please enter your email address"
 msgid "user.general.completed"
 msgstr "Completed"
 
+msgid "user.general.contact_our_agents"
+msgstr "Contact our agents"
+
 msgid "user.general.contact_us"
 msgstr "Contact Us"
-
-msgid "user.general.content_help_articles"
-msgstr "Help Articles"
 
 msgid "user.general.continue"
 msgstr "Continue"
 
 msgid "user.general.count_comments"
-msgstr "1 Comment|{{count}} Comments"
+msgstr "{{count}} Comment|{{count}} Comments"
+
+msgid "user.general.count_votes"
+msgstr "{{count}} Vote|{{count}} Votes"
 
 msgid "user.general.create_feedback"
-msgstr "Create Feedback"
-
-msgid "user.general.create_ticket"
-msgstr "Create Ticket"
+msgstr "Give Feedback"
 
 msgid "user.general.created_by_name_on_date"
 msgstr "Created by {{name}} on {{date}}"
-
-msgid "user.general.created_by_x"
-msgstr "Created by {{name}}"
 
 msgid "user.general.date"
 msgstr "Date"
@@ -587,8 +497,8 @@ msgstr "Downloads"
 msgid "user.general.edit_my_profile"
 msgstr "Edit my profile"
 
-msgid "user.general.email"
-msgstr "Email"
+msgid "user.general.edit_your_profile"
+msgstr "Edit your profile"
 
 msgid "user.general.email_address"
 msgstr "Email Address"
@@ -599,26 +509,11 @@ msgstr "Email Addresses"
 msgid "user.general.enable_js_to_view_comments"
 msgstr "Please enable JavaScript to view comments."
 
-msgid "user.general.end_chat"
-msgstr "End Chat"
+msgid "user.general.enter_short_summary"
+msgstr "Enter a short summary"
 
 msgid "user.general.enter_validate_code"
 msgstr "If you already have a validation code from your email, enter it here:"
-
-msgid "user.general.error_expired_token"
-msgstr "The page you are trying to access has expire. Go back and try again."
-
-msgid "user.general.error_not_allowed"
-msgstr "Sorry, the action you are trying to perform is not allowed."
-
-msgid "user.general.error_not_allowed_help"
-msgstr "You are currently logged out. <a href="{{login_url}}">Log in</a> and try again."
-
-msgid "user.general.error_not_allowed_title"
-msgstr "You are not allowed to do that"
-
-msgid "user.general.error_not_found"
-msgstr "The page you are looking for was not found."
 
 msgid "user.general.feedback"
 msgstr "Feedback"
@@ -635,8 +530,20 @@ msgstr "Oops! There are mistakes with your form. Correct the highlighted fields 
 msgid "user.general.form_fix_email"
 msgstr "Enter a valid email address"
 
+msgid "user.general.go"
+msgstr "Go"
+
 msgid "user.general.helpdesk"
 msgstr "Helpdesk"
+
+msgid "user.general.helpdesk_by"
+msgstr "Helpdesk software by <strong>{{deskpro}}</strong>"
+
+msgid "user.general.im_already_registered"
+msgstr "I am already a registered user"
+
+msgid "user.general.im_new_user"
+msgstr "I am a new user"
 
 msgid "user.general.is_search_relevant"
 msgstr "Did not find what you were looking for?"
@@ -656,11 +563,14 @@ msgstr "Tagged with"
 msgid "user.general.last_name"
 msgstr "Last Name"
 
+msgid "user.general.latest_news"
+msgstr "Latest News"
+
 msgid "user.general.loading"
 msgstr "Loading"
 
 msgid "user.general.log_in"
-msgstr "log in"
+msgstr "Log In"
 
 msgid "user.general.log_out"
 msgstr "Log Out"
@@ -710,6 +620,9 @@ msgstr "You marked this page as helpful"
 msgid "user.general.marked_as_unhelpful"
 msgstr "You marked this page as unhelpful"
 
+msgid "user.general.message"
+msgstr "Message"
+
 msgid "user.general.more"
 msgstr "More"
 
@@ -718,9 +631,6 @@ msgstr "Name"
 
 msgid "user.general.new_password"
 msgstr "New Password"
-
-msgid "user.general.new_reply"
-msgstr "New Reply"
 
 msgid "user.general.new_ticket"
 msgstr "New Ticket"
@@ -731,23 +641,20 @@ msgstr "News"
 msgid "user.general.next"
 msgstr "Next"
 
+msgid "user.general.no_definition"
+msgstr "No definition"
+
 msgid "user.general.no_more_results"
 msgstr "There are no more results"
 
 msgid "user.general.none"
 msgstr "None"
 
-msgid "user.general.not_found"
-msgstr "Not Found"
-
 msgid "user.general.of"
 msgstr "of"
 
 msgid "user.general.open"
 msgstr "Open"
-
-msgid "user.general.open_full_page"
-msgstr "Open full page"
 
 msgid "user.general.open_tickets"
 msgstr "Open Tickets"
@@ -761,11 +668,8 @@ msgstr "Or connect with"
 msgid "user.general.page"
 msgstr "Page"
 
-msgid "user.general.page_next"
-msgstr "Next  &rarr;"
-
 msgid "user.general.page_prev"
-msgstr "&larr; Prev"
+msgstr "Prev"
 
 msgid "user.general.password"
 msgstr "Password"
@@ -788,17 +692,11 @@ msgstr "please wait"
 msgid "user.general.popularity"
 msgstr "Popularity"
 
-msgid "user.general.portal_enabled"
-msgstr "true"
-
 msgid "user.general.post_comment_btn"
 msgstr "Post Comment"
 
 msgid "user.general.posted_date"
 msgstr "Posted: {{date}}"
-
-msgid "user.general.powered_by"
-msgstr "Powered by DeskPRO customer service platform"
 
 msgid "user.general.priority"
 msgstr "Priority"
@@ -810,25 +708,16 @@ msgid "user.general.profile"
 msgstr "Profile"
 
 msgid "user.general.rating_x_of_y_found_helpful"
-msgstr "{{percent}}% of {{vote_count}} found this page helpful"
+msgstr "{{vote_up}} of {{vote_count}} people found this page helpful"
 
 msgid "user.general.register"
 msgstr "Register"
-
-msgid "user.general.register__never_validate_again"
-msgstr "Never have to validate your tickets again"
 
 msgid "user.general.register_btn_register_account"
 msgstr "Register my account"
 
 msgid "user.general.register_can_set_a_password"
 msgstr "Optionally set a password"
-
-msgid "user.general.register_chat_with_us"
-msgstr "Chat with us live"
-
-msgid "user.general.register_contact_our_agents"
-msgstr "Contact our agents"
 
 msgid "user.general.register_drop_here_to_attach"
 msgstr "Drop your file here to attach it to your message"
@@ -845,11 +734,14 @@ msgstr "Please enter a valid email address."
 msgid "user.general.register_extra_benefits"
 msgstr "Here are some other benifits"
 
-msgid "user.general.register_link"
-msgstr "Sign Up"
-
 msgid "user.general.register_manage_profile"
 msgstr "Manage your profile, like adding multiple email addresses"
+
+msgid "user.general.register_never_validate_again"
+msgstr "Never have to validate your tickets again"
+
+msgid "user.general.register_or_login_below"
+msgstr "{{link}} or login below."
 
 msgid "user.general.register_password_min_length"
 msgstr "Please enter a password of at least 5 characters."
@@ -863,9 +755,6 @@ msgstr "Please enter email address"
 msgid "user.general.register_reuse_account"
 msgstr "Create an account now so you can log in later to easier interact with our helpdesk"
 
-msgid "user.general.register_search_for_something"
-msgstr "Search for something..."
-
 msgid "user.general.register_send_message"
 msgstr "Send Message"
 
@@ -873,7 +762,7 @@ msgid "user.general.register_set_a_password"
 msgstr "Set a password"
 
 msgid "user.general.register_similar_results"
-msgstr "We've found the following results that are similar to your message"
+msgstr "We have found the following results that are similar to your message"
 
 msgid "user.general.register_thank_you_for_feedback"
 msgstr "Thank you for submitting your feedback!"
@@ -923,14 +812,14 @@ msgstr "Resend Validation Email"
 msgid "user.general.reset_password"
 msgstr "Reset Password"
 
-msgid "user.general.resolved"
-msgstr "Resolved"
-
 msgid "user.general.save"
 msgstr "Save"
 
 msgid "user.general.search"
 msgstr "Search"
+
+msgid "user.general.search_for_something"
+msgstr "Search for something"
 
 msgid "user.general.send"
 msgstr "Send"
@@ -943,6 +832,9 @@ msgstr "This page was unhelpful"
 
 msgid "user.general.settings"
 msgstr "Settings"
+
+msgid "user.general.share_this"
+msgstr "Share this"
 
 msgid "user.general.sort_by"
 msgstr "Sort by"
@@ -964,6 +856,21 @@ msgstr "You are subscribed to this page."
 
 msgid "user.general.summary"
 msgstr "Summary"
+
+msgid "user.general.tab_contact_note"
+msgstr "We are here to help"
+
+msgid "user.general.tab_feedback_note"
+msgstr "Customer Suggestions"
+
+msgid "user.general.tab_home"
+msgstr "Home"
+
+msgid "user.general.tab_home_note"
+msgstr "Welcome &amp; News"
+
+msgid "user.general.tab_kb_note"
+msgstr "Read help articles"
 
 msgid "user.general.tags"
 msgstr "Tags"
@@ -987,10 +894,7 @@ msgid "user.general.timezone"
 msgstr "Timezone"
 
 msgid "user.general.title_links_safe"
-msgstr "Don't worry, you can click a title and you will remain on this page."
-
-msgid "user.general.title_resources"
-msgstr "Resources"
+msgstr "Do not worry, you can click a title and you will remain on this page."
 
 msgid "user.general.title_validate_address"
 msgstr "Validate {{email}}"
@@ -1019,8 +923,11 @@ msgstr "You should have recieved a validation email with a special link in it. I
 msgid "user.general.view_more_news"
 msgstr "View more news &rarr;"
 
-msgid "user.general.view_my_x_tickets"
-msgstr "View my ticket|View my {{count}} tickets"
+msgid "user.general.view_more_search_results"
+msgstr "View more search results"
+
+msgid "user.general.view_your_x_tickets"
+msgstr "View your {{count}} ticket|View your {{count}} tickets"
 
 msgid "user.general.votes"
 msgstr "Votes"
@@ -1058,14 +965,32 @@ msgstr "Your Profile"
 msgid "user.feedback.all_feedback"
 msgstr "All Feedback"
 
+msgid "user.feedback.any_status"
+msgstr "Any Status"
+
+msgid "user.feedback.browse_our_x_suggestions"
+msgstr "Browse through our {{count}} customer suggestion|Browse through our {{count}} customer suggestions"
+
 msgid "user.feedback.count_votes"
-msgstr "{0} No votes|{1} {{count}} vote|]2,Unf]{{count}} votes"
+msgstr "{{count}} vote|{{count}} votes"
 
 msgid "user.feedback.desc_error"
 msgstr "Please enter a description of at least 5 characters"
 
-msgid "user.feedback.error_not_found"
-msgstr "The feedback you're looking for could not be found. It may have been deleted."
+msgid "user.feedback.explain"
+msgstr "These suggestions are customer-submitted ideas that you can discuss and vote on. Support the ideas you like most so we can improve on the things that matter most."
+
+msgid "user.feedback.found_similar_suggestions"
+msgstr "We found these similar suggestions"
+
+msgid "user.feedback.i_agree"
+msgstr "I agree"
+
+msgid "user.feedback.i_suggest_you"
+msgstr "I suggest you..."
+
+msgid "user.feedback.i_voted"
+msgstr "I voted"
 
 msgid "user.feedback.label_explain_feedback"
 msgstr "Explain your feedback"
@@ -1073,32 +998,14 @@ msgstr "Explain your feedback"
 msgid "user.feedback.label_summary_explain"
 msgstr "A title or a brief summary of what your feedback is about"
 
-msgid "user.feedback.no_feedback_spec"
-msgstr "There are no feedback submissions with those specificiations"
+msgid "user.feedback.most_voted"
+msgstr "Most Voted"
 
-msgid "user.feedback.similar_count"
-msgstr "View {{count_place}} more results"
-
-msgid "user.feedback.similar_not_same_as"
-msgstr "This isn't the same as my submission"
-
-msgid "user.feedback.similar_same_as"
-msgstr "This is the same as my submission"
-
-msgid "user.feedback.similar_same_confirm"
-msgstr "Looks like you have found someone who had the same idea as you did. Does that mean you do not need to create a new one?"
-
-msgid "user.feedback.similar_same_confirm_no"
-msgstr "I still want to submit my feedback"
-
-msgid "user.feedback.similar_same_confirm_yes"
-msgstr "I do not want to submit a new submission"
-
-msgid "user.feedback.similar_title"
-msgstr "We found the following feedback submissions that may be similar to yours"
+msgid "user.feedback.newest"
+msgstr "Newest"
 
 msgid "user.feedback.status_active"
-msgstr "active"
+msgstr "Active"
 
 msgid "user.feedback.status_all"
 msgstr "All"
@@ -1107,22 +1014,118 @@ msgid "user.feedback.status_closed"
 msgstr "Closed"
 
 msgid "user.feedback.status_new"
-msgstr "New"
+msgstr "Gathering Feedback"
 
 msgid "user.feedback.status_popular"
 msgstr "Popular"
 
+msgid "user.feedback.status_undecided"
+msgstr "Undecided"
+
+msgid "user.feedback.submit_feedback"
+msgstr "Submit Feedback"
+
+msgid "user.feedback.submit_new_suggestion"
+msgstr "Submit a new suggestion"
+
 msgid "user.feedback.summary_error"
-msgstr "Please enter a summary of at laest 5 characters"
+msgstr "Please enter a summary of at least 5 characters"
 
-msgid "user.feedback.view_all_x_feedback"
-msgstr "View 1 feedback submission|View all {{count}} feedback submissions"
+msgid "user.feedback.tell_us_about_idea"
+msgstr "Tell us about your idea"
 
-msgid "user.feedback.votes_available"
-msgstr "You have up to {{part}} votes to cast on this feedback. How many do you want to use?"
+msgid "user.feedback.there_are_x_suggestions"
+msgstr "There is {{count}} suggestion|There are {{count}} suggestions"
+
+msgid "user.feedback.voting_closed"
+msgstr "Voting closed"
+
+msgid "user.feedback.voting_closed_explain"
+msgstr "This suggestion has been closed to new votes and comments."
+
+msgid "user.error.articles_not_found"
+msgstr "The article could not be found."
+
+msgid "user.error.attach_failed_upload"
+msgstr "Your attachment failed to upload (did you cancel it?). You should try again."
+
+msgid "user.error.attach_no_file"
+msgstr "Please select a file to upload"
+
+msgid "user.error.attach_not_allowed_exts"
+msgstr "The type of file you uploaded is not allowed."
+
+msgid "user.error.attach_not_in_allowed_exts"
+msgstr "Only the following file types can be uploaded: {{error_detail}}"
+
+msgid "user.error.attach_server_error"
+msgstr "There was a problem with our server while trying to accept your attachment. Please try again."
+
+msgid "user.error.attach_size"
+msgstr "Your attachment is too large. The maximum file size is {{error_detail}}"
+
+msgid "user.error.downloads_not_found"
+msgstr "The file you are looking for could not be found. It may have been deleted."
+
+msgid "user.error.dupe_email"
+msgstr "That email has already been validated."
+
+msgid "user.error.email_exists"
+msgstr "Email address exists"
+
+msgid "user.error.email_exists_explain"
+msgstr "That email address already exists in our system."
+
+msgid "user.error.expired_token"
+msgstr "The page you are trying to access has expire. Go back and try again."
+
+msgid "user.error.feedback_not_found"
+msgstr "The feedback you are looking for could not be found. It may have been deleted."
+
+msgid "user.error.invalid_email"
+msgstr "Invalid email address"
+
+msgid "user.error.invalid_email_code"
+msgstr "The validation link seems to be invalid."
+
+msgid "user.error.invalid_email_explain"
+msgstr "We could not find that email address on your account."
+
+msgid "user.error.last_email"
+msgstr "That is your last email address"
+
+msgid "user.error.last_email_explain"
+msgstr "You can not remove your last email address. Try adding a new one first, and then you can delete this one. If you already have other addresses, make sure you have validated them."
+
+msgid "user.error.news_not_found"
+msgstr "The post you are looking for could not be found. It may have been deleted."
+
+msgid "user.error.not_allowed"
+msgstr "Sorry, the action you are trying to perform is not allowed."
+
+msgid "user.error.not_allowed_help"
+msgstr "You are currently logged out. <a href="{{login_url}}">Log in</a> and try again."
+
+msgid "user.error.not_allowed_title"
+msgstr "You are not allowed to do that"
+
+msgid "user.error.not_allowed_you"
+msgstr "You are not allowed to perform that action."
+
+msgid "user.error.not_found"
+msgstr "The page you are looking for was not found."
+
+msgid "user.error.not_found_title"
+msgstr "Not Found"
+
+msgid "user.error.not_validated_email"
+msgstr "Email address is not validated"
+
+msgid "user.error.validate_to_use"
+msgstr "That email address has not been validated yet. You need to validate the email address before you can set it as your account default."
 
 msgid "user.emails.added_to_ticket"
-msgstr "You've been included in a ticket started by {{name}}."
+msgstr "You have been included in a ticket started by {{name}}."
 
 msgid "user.emails.agent_created_ticket"
 msgstr "An agent has created a ticket for you."
@@ -1154,6 +1157,9 @@ msgstr "Your feedback currently has <strong>{{count}}</strong> vote. View your f
 msgid "user.emails.finish_adding_secondary"
 msgstr "To finish adding this secondonary email address to your account, simply click on the following validation link"
 
+msgid "user.emails.greeting"
+msgstr "Dear {{name}},"
+
 msgid "user.emails.link_reset_password"
 msgstr "You requested a password reset. To reset your password, click on the link below:"
 
@@ -1162,6 +1168,9 @@ msgstr "Simply click on the following link to validate to your email address"
 
 msgid "user.emails.re_subject"
 msgstr "RE: {{subject}}"
+
+msgid "user.emails.sbj_validate_email"
+msgstr "Validate your email address"
 
 msgid "user.emails.secondary_not_unique"
 msgstr "You recently tried to add this email address, {{validating_email}}, as a secondary address on the account whose primary email address is {{primary_email}}."
@@ -1194,7 +1203,7 @@ msgid "user.emails.thank_you_for_for_comment"
 msgstr "Thank you for your comment on {{link}}."
 
 msgid "user.emails.the_email_is_already_attached"
-msgstr "However, {{validating_email}} is already attached to a different account. If you'd like to merge these two accounts together, please reply to this email and one of our agents will be happy to help."
+msgstr "However, {{validating_email}} is already attached to a different account. If you would like to merge these two accounts together, please reply to this email and one of our agents will be happy to help."
 
 msgid "user.emails.ticket_received"
 msgstr "Your ticket has been recieved and our agents will reply to you as soon as they can."
@@ -1203,11 +1212,11 @@ msgid "user.emails.to_validate_with_link"
 msgstr "To validate your email address, click on the link below"
 
 msgid "user.emails.user_flooded_email"
-msgstr "You recently sent an email to our helpdesk. Our automated system has detected that you have sent many messages in rapid succession.\n"
+msgstr "You recently sent an email to our helpdesk. Our automated system has detected that you have sent many messages in rapid succession.\n"
 "To protect against an auto-responder loop our helpdesk will not send to you any more automatic notification emails. You will continue to receive replies by our staff and you can continue in replying to them, you will simply not receive automatic confirmations of any replies you make."
 
 msgid "user.emails.validate_first"
-msgstr "Thank you for contacting us.\n"
+msgstr "Thank you for contacting us.\n"
 "Before our agents will read and reply to your message, you must validate your email address."
 
 msgid "user.emails.validate_for_comment"
@@ -1226,7 +1235,7 @@ msgid "user.emails.warning_confirmation_emails_off"
 msgstr "Warning: Confirmation emails turned off"
 
 msgid "user.emails.you_registered"
-msgstr "Thank you for registering an account.\n"
+msgstr "Thank you for registering an account.\n"
 "Before you will be able to use your account, you must click on the following link to validate your email address"
 
 msgid "user.emails.you_replied"
@@ -1238,17 +1247,11 @@ msgstr "Thank you for chatting with us. Here is your chat transcript."
 msgid "user.downloads.category"
 msgstr "Folder"
 
-msgid "user.downloads.error_not_found"
-msgstr "The file you're looking for could not be found. It may have been deleted."
-
 msgid "user.downloads.label_download"
 msgstr "Download"
 
 msgid "user.downloads.no_downloads"
 msgstr "There are no downloads yet."
-
-msgid "user.downloads.no_popular"
-msgstr "There are no popular downloads yet."
 
 msgid "user.downloads.popular_section_name"
 msgstr "Popular Downloads"
@@ -1257,22 +1260,22 @@ msgid "user.downloads.recent_section_name"
 msgstr "Recent Downloads"
 
 msgid "user.downloads.view_all_x"
-msgstr "View download|View all {{count}} downloads"
+msgstr "View {{count}} download|View all {{count}} downloads"
+
+msgid "user.chat.ask_comments"
+msgstr "Comments?"
 
 msgid "user.chat.assigned_to"
 msgstr "Chat assigned to {{name}}"
-
-msgid "user.chat.choose_department"
-msgstr "Choose a department"
-
-msgid "user.chat.comments"
-msgstr "Comments?"
 
 msgid "user.chat.confirm_end_chat"
 msgstr "Are you sure you want to end your chat?"
 
 msgid "user.chat.drop_file_here"
 msgstr "Drop your file here to upload it"
+
+msgid "user.chat.end_chat"
+msgstr "End Chat"
 
 msgid "user.chat.ended_agent_timeout"
 msgstr "Chat ended: Agent timeout"
@@ -1292,20 +1295,32 @@ msgstr "Chat ended: User timeout"
 msgid "user.chat.enter_email_address"
 msgstr "enter your email address"
 
+msgid "user.chat.message_set_department"
+msgstr "{{name}} set department to {{department}}"
+
+msgid "user.chat.message_started"
+msgstr "Chat started"
+
+msgid "user.chat.message_transcript_sent"
+msgstr "Transcript of this chat sent to {{part}}"
+
+msgid "user.chat.message_user_joined"
+msgstr "{{name}} joined the chat"
+
+msgid "user.chat.message_user_left"
+msgstr "{{name}} left the chat"
+
 msgid "user.chat.msg_agent_timeout"
-msgstr "{{name}} is not responding. This ticket will be reassigned to another agnet."
+msgstr "{{name}} is not responding. Please wait while will try to find another agent."
 
 msgid "user.chat.msg_new_user_track"
 msgstr "User is viewing: {{label}}"
 
-msgid "user.chat.msg_started"
-msgstr "Chat started"
+msgid "user.chat.notice_still_waiting"
+msgstr "We are still trying to find an available agent to take your chat. Do you want to cancel your chat and <a class="cancel-and-newticket-trigger">submit a new ticket instead?</a>"
 
 msgid "user.chat.please_wait_for_agent"
 msgstr "Please wait while we find an agent for you"
-
-msgid "user.chat.please_wait_for_agent_for_chat"
-msgstr "Please wait while we find an agent to take your chat"
 
 msgid "user.chat.rate_response_time"
 msgstr "Rate our response time"
@@ -1313,65 +1328,50 @@ msgstr "Rate our response time"
 msgid "user.chat.rate_satisfaction"
 msgstr "Rate your overall satisfaction"
 
-msgid "user.chat.request_transcript_explain"
-msgstr "Thank you for chatting with us! If you would like a transcript of your chat, just fill in the form below."
-
-msgid "user.chat.request_transcript_title"
-msgstr "Request A Transcript"
+msgid "user.chat.select_department"
+msgstr "Select a department"
 
 msgid "user.chat.send_a_file"
 msgstr "Send a file from your computer"
 
-msgid "user.chat.send_a_transcript_of_this_chat"
-msgstr "Send a transcript of this chat to"
-
 msgid "user.chat.send_and_close"
 msgstr "Send and close this window"
-
-msgid "user.chat.send_transcript_btn"
-msgstr "Send me the transcript"
-
-msgid "user.chat.sent_chat_to"
-msgstr "Send a transcript of this chat to {{part}}"
-
-msgid "user.chat.set_department"
-msgstr "{{name}} set department to {{department}}"
 
 msgid "user.chat.start_chat"
 msgstr "Start Chatting"
 
-msgid "user.chat.transcript_email_sent"
+msgid "user.chat.transcript_btn"
+msgstr "Send me the transcript"
+
+msgid "user.chat.transcript_explain"
+msgstr "Thank you for chatting with us. To receive a transcript please complete the following form:"
+
+msgid "user.chat.transcript_sent"
 msgstr "Your chat transcript has been sent."
+
+msgid "user.chat.transcript_title"
+msgstr "Request A Transcript"
+
+msgid "user.chat.transcript_to"
+msgstr "Send a transcript of this chat to"
 
 msgid "user.chat.unassigned"
 msgstr "Chat unassigned"
 
-msgid "user.chat.user_joined"
-msgstr "{{name}} joined the chat"
-
-msgid "user.chat.user_left"
-msgstr "{{name}} left the chat"
-
 msgid "user.chat.you_are_chatting_with"
-msgstr "You're chatting with"
+msgstr "You are chatting with"
 
-msgid "user.articles.error_not_found"
-msgstr "The article you're looking for could not be found. It may have been deleted."
-
-msgid "user.articles.go"
-msgstr "Go"
-
-msgid "user.articles.meta_author"
-msgstr "Author: {{author}}"
+msgid "user.articles.browse_our_x_articles"
+msgstr "Browse through our {{count}} article|Browse through our {{count}} articles"
 
 msgid "user.articles.no_articles"
-msgstr "There are no articles yet."
+msgstr "There are no articles."
 
 msgid "user.articles.no_popular"
-msgstr "There are no popular articles yet."
+msgstr "There are no popular articles."
 
 msgid "user.articles.number_of_articles"
-msgstr "{{count}} articles"
+msgstr "{{count}} article|{{count}} articles"
 
 msgid "user.articles.popular_section_name"
 msgstr "Popular Articles"
@@ -1386,13 +1386,13 @@ msgid "user.articles.sorted_by"
 msgstr "Sorted by"
 
 msgid "user.articles.there_are_x_articles"
-msgstr "There is 1 article|There are {{count}} articles"
+msgstr "There is {{count}} article|There are {{count}} articles"
 
 msgid "user.articles.there_are_x_subcats"
-msgstr "There is 1 sub-category|There are {{count}} sub-categories"
+msgstr "There is {{count}} sub-category|There are {{count}} sub-categories"
 
 msgid "user.articles.view_all_x_articles"
-msgstr "View Articles|View all {{count}} Articles"
+msgstr "View {{count}} article|View all {{count}} articles"
 
 msgid "user.articles.views"
 msgstr "Views"
