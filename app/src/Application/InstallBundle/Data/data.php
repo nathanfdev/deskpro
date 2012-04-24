@@ -910,6 +910,7 @@ $em->flush();
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
 $b->section = 'sidebar';
 $b->type = 'kb_cat_list';
+$b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
@@ -917,6 +918,7 @@ $em->flush();
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
 $b->section = 'sidebar';
 $b->type = 'feedback_cat_list';
+$b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
