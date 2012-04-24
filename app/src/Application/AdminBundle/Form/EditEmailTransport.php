@@ -63,7 +63,7 @@ class EditEmailTransport extends AbstractType
 			$options_form = $builder->create($n, 'form');
 			$options_form->add('host', 'text', array('required' => false));
 			$options_form->add('username', 'text', array('required' => false));
-			$options_form->add('password', 'text', array('required' => false));
+			$options_form->add('password', 'password', array('required' => false));
 			$options_form->add('port', 'text', array('required' => false));
 			$options_form->add('secure', 'choice', array('required' => false, 'empty_value' => '', 'choices' => array('ssl' => 'SSL', 'tls' => 'TLS')));
 			$builder->add($options_form);
@@ -72,7 +72,7 @@ class EditEmailTransport extends AbstractType
 		foreach (array('gmail_options', 'backup_gmail_options') as $n) {
 			$options_form = $builder->create($n, 'form');
 			$options_form->add('username', 'text', array('required' => false));
-			$options_form->add('password', 'text', array('required' => false));
+			$options_form->add('password', 'password', array('required' => false));
 			$builder->add($options_form);
 		}
 	}

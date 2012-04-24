@@ -60,14 +60,14 @@ class EditEmailGateway extends AbstractType
 		$options_form = $builder->create('pop3_options', 'form');
 		$options_form->add('host', 'text', array('required' => false));
 		$options_form->add('username', 'text', array('required' => false));
-		$options_form->add('password', 'text', array('required' => false));
+		$options_form->add('password', 'password', array('required' => false));
 		$options_form->add('port', 'text', array('required' => false));
 		$options_form->add('secure', 'choice', array('required' => false, 'empty_value' => '', 'choices' => array('ssl' => 'SSL', 'tls' => 'TLS')));
 		$builder->add($options_form);
 
 		$options_form = $builder->create('gmail_options', 'form');
 		$options_form->add('username', 'text', array('required' => false));
-		$options_form->add('password', 'text', array('required' => false));
+		$options_form->add('password', 'password', array('required' => false));
 		$builder->add($options_form);
 	}
 
