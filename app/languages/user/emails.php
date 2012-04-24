@@ -10,6 +10,7 @@
     'user.emails.feedback_updated'                => 'Your submitted feedback "{{title}}" has been updated. It is now filed under the new status "{{status}}"',
     'user.emails.feedback_votes'                  => 'Your feedback currently has <strong>{{count}}</strong> vote. View your feedback online at:|Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:',
     'user.emails.finish_adding_secondary'         => 'To finish adding this secondonary email address to your account, simply click on the following validation link',
+    'user.emails.greeting'                        => 'Dear {{name}},',
     'user.emails.link_reset_password'             => 'You requested a password reset. To reset your password, click on the link below:',
     'user.emails.link_validate'                   => 'Simply click on the following link to validate to your email address',
     'user.emails.re_subject'                      => 'RE: {{subject}}',
@@ -39,5 +40,4 @@ Before our agents will read and reply to your message, you must validate your em
 Before you will be able to use your account, you must click on the following link to validate your email address',
     'user.emails.you_replied'                     => 'Thank you for your reply. Our agents will respond to you as soon as they can.',
     'user.emails.your_chat_transcript'            => 'Thank you for chatting with us. Here is your chat transcript.',
-    'user.emails.greeting'            => 'Dear {{name}},',
 );
