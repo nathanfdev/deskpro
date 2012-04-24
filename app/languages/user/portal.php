@@ -1,10 +1,10 @@
 <?php return array(
     'user.portal.are_results_relevant'    => 'None of these results what you were looking for?',
+    'user.portal.ask_add_account'         => 'How do I add an account?',
     'user.portal.ask_or_feedback_here'    => 'Ask a question, suggest an feedback or search the helpdesk here',
     'user.portal.chat_with_agent'         => 'Chat with an agent',
     'user.portal.example'                 => 'Example',
     'user.portal.example_list'            => '"{{link1}}", "{{link2}}" or "{{link3}}"',
-    'user.portal.ask_add_account'    => 'How do I add an account?',
     'user.portal.latest_version_download' => 'Latest version download',
     'user.portal.login_using_twitter'     => 'Log in using your Twitter account.',
     'user.portal.online_staff'            => 'Online Staff',
