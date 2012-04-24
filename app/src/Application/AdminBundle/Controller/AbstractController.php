@@ -58,10 +58,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function preAction($action, $arguments = null)
 	{
-		if (!$this->request->isXmlHttpRequest() && !UserAgentRequirementCheck::passAgentInterface()) {
-			return $this->redirect(App::getRequest()->getUriForPath('/agent/browser-requirements'));
-		}
-
 		if (!$this->person['id']) {
 			if ($this->isPostRequest()) {
 				$return = $this->get('router')->generate('admin');
@@ -78,6 +74,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 		$setup_guide = new \Application\AdminBundle\SetupGuide($this->container, $this);
 		$this->setup_guide = $setup_guide;
+
+		if ($setup_guide->hasDoneInitialSetup() && !$this->request->isXmlHttpRequest() && !UserAgentRequirementCheck::passAgentInterface()) {
+			return $this->redirect(App::getRequest()->getUriForPath('/agent/browser-requirements'));
+		}
+
 		$this->container->get('templating.globals')->setVariable('setup_guide', $setup_guide);
 		return $setup_guide->preActionHelper($action, $arguments);
 	}

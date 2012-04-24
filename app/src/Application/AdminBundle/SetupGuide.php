@@ -115,6 +115,22 @@ class SetupGuide
 
 
 	/**
+	 * Has the user been through the initial setup?
+	 *
+	 * @return bool
+	 */
+	public function hasDoneInitialSetup()
+	{
+		$step = (int)$this->container->getSetting('core.setup_initial');
+		if (!$step || $step < 30) {
+			return false;
+		}
+
+		return true;
+	}
+
+
+	/**
 	 * This goes through the tasks and returns its info. If no more tasks are left to complete, then null is returned.
 	 *
 	 * @return null
