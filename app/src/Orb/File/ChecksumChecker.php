@@ -117,7 +117,11 @@ class ChecksumChecker
 		foreach ($this->getIterator() as $file) {
 			$count++;
 			$path = str_replace($this->base_dir, '', $file->getRealPath());
-			$hash = md5_file($file->getRealPath());
+
+			$file_contents = file_get_contents($file->getRealPath());
+			$file_contents = trim(str_replace("\n", '', $file_contents));
+
+			$hash = md5($file_contents);
 			$this->checksums[$path] = $hash;
 
 			if ($progress_callback) {
