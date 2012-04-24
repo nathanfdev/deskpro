@@ -85,6 +85,10 @@
 				sScroll = 'relative';
 			}
 
+			if (!oViewport.obj[0]) {
+				return;
+			}
+
 			oViewport[options.axis] = oViewport.obj[0]['offset'+ sSize];
 			oContent[options.axis] = oContent.obj[0]['scroll'+ sSize];
 			oContent.ratio = oViewport[options.axis] / oContent[options.axis];
