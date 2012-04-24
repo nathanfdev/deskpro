@@ -3,7 +3,7 @@
     'user.articles.meta_author'          => 'Author: {{author}}',
     'user.articles.no_articles'          => 'There are no articles.',
     'user.articles.no_popular'           => 'There are no popular articles.',
-    'user.articles.number_of_articles'   => '{{count}} articles',
+    'user.articles.number_of_articles'   => '{{count}} article|{{count}} articles',
     'user.articles.popular_section_name' => 'Popular Articles',
     'user.articles.previous'             => 'Previous',
     'user.articles.recent_section_name'  => 'Recent Articles',

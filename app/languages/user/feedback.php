@@ -18,7 +18,7 @@
     'user.feedback.status_closed'                => 'Closed',
     'user.feedback.status_new'                   => 'Gathering Feedback',
     'user.feedback.status_popular'               => 'Popular',
-    'user.feedback.summary_error'                => 'Please enter a summary of at laest 5 characters',
+    'user.feedback.summary_error'                => 'Please enter a summary of at least 5 characters',
     'user.feedback.view_all_x_feedback'          => 'View 1 feedback submission|View all {{count}} feedback submissions',
     'user.feedback.votes_available'              => 'You have up to {{part}} votes to cast on this feedback. How many do you want to use?',
     'user.feedback.explain'                      => 'These suggestions are customer-submitted ideas that you can discuss and vote on. Support the ideas you like most so we can improve on the things that matter most.',
