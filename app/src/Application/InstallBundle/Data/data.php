@@ -900,7 +900,7 @@ $em->flush();
 
 ##BEGIN:create_portal_block.userinfo_sidebar##
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
-$b->section = 'userinfo';
+$b->section = 'sidebar';
 $b->type = 'userinfo';
 $b->is_enabled = true;
 $em->persist($b);
