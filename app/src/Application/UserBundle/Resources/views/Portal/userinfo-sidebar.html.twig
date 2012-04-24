@@ -18,8 +18,11 @@
 		</header>
 		<article class="dp-written">
 			<div class="dp-summary">
-				{% set link_url = path('user_register') %}
-				{{ phrase('user.general.register_or_login_below', {link_url: link_url}) }}
+                {% set phrase_link %}
+                <a href="{{ path('user_register') }}">{{ phrase('user.general.register') }}</a>
+                {% endset %}
+				{% set link_url =  %}
+				{{ phrase('user.general.register_or_login_below', {'link': phrase_link}) }}
 			</div>
 			<div id="dp_login_box" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.LoginBox">
 				<form action="{{ path('user_login_authenticate_local') }}" method="post">

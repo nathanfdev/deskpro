@@ -13,7 +13,6 @@
     'user.feedback.label_summary_explain'     => 'A title or a brief summary of what your feedback is about',
     'user.feedback.most_voted'                => 'Most Voted',
     'user.feedback.newest'                    => 'Newest',
-    'user.feedback.no_feedback_spec'          => 'There are no feedback submissions with those specificiations',
     'user.feedback.status_active'             => 'Active',
     'user.feedback.status_all'                => 'All',
     'user.feedback.status_closed'             => 'Closed',
@@ -24,9 +23,7 @@
     'user.feedback.submit_new_suggestion'     => 'Submit a new suggestion',
     'user.feedback.summary_error'             => 'Please enter a summary of at least 5 characters',
     'user.feedback.tell_us_about_idea'        => 'Tell us about your idea',
-    'user.feedback.there_are_x_suggestions'   => '{0} There are no suggestions|{1} There is 1 suggestion|[1,Inf]There are {{count}} suggestions',
-    'user.feedback.view_all_x_feedback'       => 'View 1 feedback submission|View all {{count}} feedback submissions',
-    'user.feedback.votes_available'           => 'You have up to {{part}} votes to cast on this feedback. How many do you want to use?',
+    'user.feedback.there_are_x_suggestions'   => 'There is {{count}} suggestion|There are {{count}} suggestions',
     'user.feedback.voting_closed'             => 'Voting closed',
     'user.feedback.voting_closed_explain'     => 'This suggestion has been closed to new votes and comments.',
 );
