@@ -154,6 +154,8 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 		// Re-write absolute paths to use DP_ROOT instead
 		$content = str_replace("'" . DP_ROOT, 'DP_ROOT.\'', $content);
+		// Correct double slash paths
+		$content = str_replace('prod//', 'prod/', $content);
 
 		$cache->write($content, $container->getResources());
 	}
@@ -912,12 +914,12 @@ class KernelErrorHandler
 		$str = array();
 		if ($errinfo['type'] == 'exception') {
 			$e = $errinfo['exception'];
-			$line = sprintf("DeskPRO Exception: %s:%s (%s line %s): %s\n", $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $e->getMessage());
+			$line = sprintf("Exception: %s:%s (%s line %s): %s\n", date('Y-m-d H:i:s'), $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $e->getMessage());
 			$str[] = sprintf("[%s] Exception %s %s\n", date('Y-m-d H:i:s'), $e->getCode(), $e->getMessage());
 			$str[] = sprintf("\t-> Type: %s\n", $errinfo['exception_type']);
 			$str[] = sprintf("\t-> Line %d on file %s\n", $errinfo['errline'], $errinfo['errfile']);
 		} else {
-			$line = sprintf("DeskPRO Error: %s (%s line %s): %s\n", $errinfo['errname'], $errinfo['errfile'], $errinfo['errline'], $errinfo['errstr']);
+			$line = sprintf("DeskPRO Error: %s (%s line %s): %s\n", date('Y-m-d H:i:s'), $errinfo['errname'], $errinfo['errfile'], $errinfo['errline'], $errinfo['errstr']);
 			$str[] = sprintf("[%s] Error %s\n", date('Y-m-d H:i:s'), $errinfo['errstr']);
 			$str[] = sprintf("\t-> Type: %s\n", $errinfo['errname']);
 			$str[] = sprintf("\t-> Line %d on file %s\n", $errinfo['errline'], $errinfo['errfile']);
