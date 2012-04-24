@@ -2,11 +2,41 @@
 {% extends 'ReportBundle::layout.html.twig' %}
 {% block nav_block %}
 {% endblock %}
+{% block pagebar %}
+<ul>
+	<li>
+		Showing Agent Activity for:
+		<form style="display: inline">
+			<select id="agent_selector">
+				<option {% if agent_id == 0 %}selected="selected"{% endif %} value="{{ path('report_agent_activity_list', {'agent_id': 0, 'date':view_date|date('Y-m-d')}) }}">All Agents</option>
+				{% for agent in all_agents %}
+					<option {% if agent_id == agent.id %}selected="selected"{% endif %} value="{{ path('report_agent_activity_list', {'agent_id': agent.id, 'date':view_date|date('Y-m-d')}) }}">
+						{{ agent.name }}
+					</option>
+				{% endfor %}
+			</select>
+		</form>
+		on
+		<span class="dp-nav-btn datepicker"><a>{{ view_date|date('jS F Y') }}</a><em class="drop"></em><span class="hidden"></span></span>
+	</li>
+</ul>
+{% endblock %}
 {% block page %}
 
 <style type="text/css">
-.reports_agent_activity_section table td {
-    padding: 2px;
+#dp_admin_pagebar {
+	overflow: visible;
+}
+
+#dp_admin_pagebar .datepicker > a > em {
+	height: 6px;
+	margin-left: 8px;
+}
+
+#dp_admin_pagebar .datepicker > span {
+	font-size: 100%;
+	line-height: 100%;
+	text-shadow: none;
 }
 
 .reports_agent_activity_section .activity_table {
@@ -15,46 +45,32 @@
     border-color: #CCCCCC;
 }
 
-.reports_agent_activity_section .activity_table > thead > tr {
-    border-bottom-width: 2px;
-    border-bottom-style: solid;
-    border-bottom-color: #CCCCCC;
-}
-
 .hour_cell {
     text-align: center;
 }
 
-.title_bar {
-    margin-bottom: 8px;
-}
-
-.title_bar form {
-    display: inline;
-}
-
 .activity_type_ticket .type_icon {
-    background-image: url("/DeskPRO/web/images/agent/tabs/tabtype-ticket.png");
+    background-image: url({{ asset('images/agent/tabs/tabtype-ticket.png') }});
 }
 
 .activity_type_chat .type_icon {
-    background-image: url("/DeskPRO/web/images/agent/tabs/tabtype-chat.png");
+    background-image: url({{ asset('images/agent/tabs/tabtype-chat.png') }});
 }
 
 .activity_type_download .type_icon {
-    background-image: url("/DeskPRO/web/images/agent/tabs/tabtype-download.png");
+    background-image: url({{ asset('images/agent/tabs/tabtype-download.png') }});
 }
 
 .activity_type_news .type_icon {
-    background-image: url("/DeskPRO/web/images/agent/tabs/tabtype-news.png");
+    background-image: url({{ asset('images/agent/tabs/tabtype-news.png') }});
 }
 
 .activity_type_feedback .type_icon {
-    background-image: url("/DeskPRO/web/images/agent/tabs/tabtype-feedback.png");
+    background-image: url({{ asset('images/agent/tabs/tabtype-feedback.png') }});
 }
 
 .activity_type_article .type_icon {
-    background-image: url("/DeskPRO/web/images/agent/tabs/tabtype-content.png");
+    background-image: url({{ asset('images/agent/tabs/tabtype-content.png') }});
 }
 
 .activity .type_icon {
@@ -63,8 +79,10 @@
     display: inline-block;
     background-repeat: no-repeat;
     background-position: 50% 50%;
+	position: relative;
+	top: 3px;
 }
-    
+
 .activity {
     vertical-align: middle;
 }
@@ -102,21 +120,6 @@
 
 </script>
 <div class="reports_agent_activity_section">
-    <div class="title_bar">Showing Agent Activity for:
-        <form>
-            <select id="agent_selector">
-                <option {% if agent_id == 0 %}selected="selected"{% endif %} value="{{ path('report_agent_activity_list', {'agent_id': 0, 'date':view_date|date('Y-m-d')}) }}">All Agents</option>
-
-                {% for agent in all_agents %}
-                    <option {% if agent_id == agent.id %}selected="selected"{% endif %} value="{{ path('report_agent_activity_list', {'agent_id': agent.id, 'date':view_date|date('Y-m-d')}) }}">
-                        {{ agent.name }}
-                    </option>
-                {% endfor %}
-            </select>
-        </form>
-        on
-        <span class="datepicker drop-down"><a>{{ view_date|date('jS F Y') }}<em></em></a><span class="hidden"></span></span>
-    </div>
     {% if agents|length %}
     <table class="activity_table">
         <thead>

@@ -2701,7 +2701,7 @@ nav.admin-object-nav li:hover {
 		font-size: 15px;
 
 		height: 36px;
-		line-height: 35px;
+		line-height: 34px;
 
 		color: #EEF7FE;
 		text-shadow: 1px 1px 0px rgba(0,0,0, 0.2);
@@ -2726,11 +2726,54 @@ nav.admin-object-nav li:hover {
 	}
 }
 
+.dp_admin_pagebar .dp-nav-btn {
+	display: inline-block;
+
+	.gradient(#5a90b8, #3c6094);
+	border: 1px solid #314559;
+	.border-radius(3px, 3px, 3px, 3px);
+	box-shadow: 0 1px 0 #386DA1, 0 1px 0 #75B3DA inset, 0 0 1px #5283AF inset;
+	height: 20px;
+	line-height: 20px;
+	padding: 0 6px 1px;
+	cursor: pointer;
+	position: relative;
+	top: 0px;
+	font-family: @body-font;
+	font-size: 11px;
+	margin-left: 5px;
+
+	&:hover {
+	  .gradient(#5c93ba, #4670aa);
+	}
+
+	> a {
+	  color: #F2F9FF;
+	  font-size: 11px;
+	  font-weight: normal;
+	  line-height: 22px;
+	  height: 22px;
+	  padding: 0 4px 0 4px;
+	  text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+	}
+
+	em.drop {
+	  position: relative;
+	  top: 10px;
+	  .iconbase(6px, 5px);
+	  background-repeat: no-repeat;
+	  background-position: 0 0;
+	  background-image: url(../../images/agent/dropdown-white.png);
+	  float: right;
+	  margin-left: 4px;
+	}
+}
+
 .dp_admin_pagebar > nav {
 	float: right;
 	margin: 6px 7px 0 0;
 
-	> ul > li {
+	> ul > li  {
 		float: left;
 		.gradient(#5a90b8, #3c6094);
 		border: 1px solid #314559;
@@ -3827,4 +3870,26 @@ table.form-table td.label {
 			width: 15px;
 		}
 	}
+}
+
+table.activity_table th {
+	font-size: 12pt;
+	font-family: @heading-font;
+	font-weight: bold;
+	line-height: 20px;
+	padding: 10px 8px 10px 8px;
+	border-bottom: 1px solid #CCCCCC;
+}
+
+table.activity_table td {
+	border-left: 1px solid #CCCCCC;
+	padding: 5px 12px 5px 12px;
+}
+
+table.activity_table td.hour_cell {
+	background-color: #EEEEEE;
+}
+
+table.activity_table tr:hover td {
+	background-color: #FFFABC;
 }
