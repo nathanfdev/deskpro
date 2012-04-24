@@ -47,7 +47,7 @@ class UserAgentRequirementCheck
 		// Check for known browsers
 		if ($browser->getBrowser() == \Browser::BROWSER_FIREFOX && $browser->getVersion() < 4) {
 			return false;
-		} elseif ($browser->getBrowser() == \Browser::BROWSER_CHROME && $browser->getVersion() < 17) {
+		} elseif ($browser->getBrowser() == \Browser::BROWSER_CHROME && $browser->getVersion() < 14) {
 			return false;
 		} elseif ($browser->getBrowser() == \Browser::BROWSER_SAFARI && $browser->getVersion() < 5) {
 			return false;
