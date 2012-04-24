@@ -32,55 +32,60 @@
  * @subpackage AdminBundle
  */
 
-namespace Application\AdminBundle\Form;
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
+namespace Application\AdminBundle\Form\CustomField\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormView;
 
-use Application\AdminBundle\Form\CustomField\Type\PasswordValueType;
+/**
+ * A password field, that actually retains it's value as instructed.
+ */
 
-class EditEmailTransport extends AbstractType
+class PasswordValueType extends AbstractType
 {
-	public function __construct()
-	{
-
-	}
-
+	/**
+	 * {@inheritdoc}
+	 */
 	public function buildForm(FormBuilder $builder, array $options)
 	{
-		$builder->add('match_type', 'text');
-		$builder->add('match_email', 'text', array('required' => false));
-		$builder->add('match_domain', 'text', array('required' => false));
-		$builder->add('match_regex', 'text', array('required' => false));
+		$builder->setAttribute('always_empty', $options['always_empty']);
+	}
 
-		$builder->add('transport_type', 'text');
-		$builder->add('backup_transport_type', 'text', array('required' => false));
-
-		foreach (array('smtp_options', 'backup_smtp_options') as $n) {
-			$options_form = $builder->create($n, 'form');
-			$options_form->add('host', 'text', array('required' => false));
-			$options_form->add('username', 'text', array('required' => false));
-			$options_form->add('password', new PasswordValueType(), array('required' => false, 'always_empty' => false));
-			$options_form->add('port', 'text', array('required' => false));
-			$options_form->add('secure', 'choice', array('required' => false, 'empty_value' => '', 'choices' => array('ssl' => 'SSL', 'tls' => 'TLS')));
-			$builder->add($options_form);
-		}
-
-		foreach (array('gmail_options', 'backup_gmail_options') as $n) {
-			$options_form = $builder->create($n, 'form');
-			$options_form->add('username', 'text', array('required' => false));
-			$options_form->add('password', new PasswordValueType(), array('required' => false, 'always_empty' => false));
-			$builder->add($options_form);
+	/**
+	 * {@inheritdoc}
+	 */
+	public function buildView(FormView $view, FormInterface $form)
+	{
+		if ($form->getAttribute('always_empty')) {
+			$view->set('value', '');
 		}
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getDefaultOptions(array $options)
+	{
+		return array(
+			'always_empty' => true,
+		);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getParent(array $options)
+	{
+		return 'text';
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function getName()
 	{
-		return 'transport';
+		return 'password';
 	}
 }

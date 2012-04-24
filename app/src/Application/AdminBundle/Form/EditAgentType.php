@@ -42,13 +42,15 @@ use Orb\Util\Arrays;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
+use Application\AdminBundle\Form\CustomField\Type\PasswordValueType;
+
 class EditAgentType extends AbstractType
 {
 	public function buildForm(FormBuilder $builder, array $options)
 	{
 		$builder->add('first_name', 'text');
 		$builder->add('last_name', 'text');
-		$builder->add('password', 'password', array('required' => false));
+		$builder->add('password', new PasswordValueType(), array('required' => false, 'always_empty' => false));
 		$builder->add('email', 'text');
 
 		$zones = array('access_agent' => 'Agent', 'access_admin' => 'Admin', 'access_reports' => 'Reports', 'access_billing' => 'Billing');

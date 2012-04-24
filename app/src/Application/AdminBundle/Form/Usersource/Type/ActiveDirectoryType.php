@@ -37,6 +37,8 @@ namespace Application\AdminBundle\Form\Usersource\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 
+use Application\AdminBundle\Form\CustomField\Type\PasswordValueType;
+
 class ActiveDirectoryType extends AbstractType
 {
 	public function buildForm(FormBuilder $builder, array $options)
@@ -48,7 +50,7 @@ class ActiveDirectoryType extends AbstractType
 		$builder->add('host', 'text', array('required' => true));
 		$builder->add('baseDn', 'text', array('required' => true));
 		$builder->add('username', 'text', array('required' => true));
-		$builder->add('password', 'password', array('required' => true));
+		$builder->add('password', new PasswordValueType(), array('required' => true, 'always_empty' => false));
 		$builder->add('accountDomainName', 'text', array('required' => true));
 		$builder->add('accountDomainNameShort', 'text', array('required' => true));
 		$builder->add('accountFilterFormat', 'text', array('required' => false));
