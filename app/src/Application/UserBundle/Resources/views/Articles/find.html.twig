@@ -71,7 +71,7 @@
 									<option value="{{i}}" {% if i == pageinfo.curpage %}selected="selected"{% endif %}>{{i}}</option>
 								{% endfor %}
 							</select>
-							{{ phrase('user.general.of') }} {{ pageinfo.last }} <button class="dp-button x-small">{{ phrase('user.articles.go') }}</button>
+							{{ phrase('user.general.of') }} {{ pageinfo.last }} <button class="dp-button x-small">{{ phrase('user.general.go') }}</button>
 							{% if pageinfo.next %}
 								<a href="{{ path('user_articles_filter', search_options|merge({'page': pageinfo.next})) }}" class="page-link page-right">{{ phrase('user.general.next') }}</a>
 							{% endif %}

@@ -21,7 +21,6 @@
     'user.portal.submit_new_ticket'       => 'Submit a new ticket',
     'user.portal.submit_suggestion'       => 'Submit a suggestion',
     'user.portal.title_newest_feedback'   => 'Newest Feedback',
-    'user.portal.twitter_message'         => 'Message',
     'user.portal.twitter_user_link'       => '@{{name}} on twitter',
     'user.portal.twitter_view_more'       => 'View more from @{{name}} &rarr;',
     'user.portal.view_more_downloads'     => 'View more downloads &rarr;',

@@ -67,8 +67,8 @@
 			</section>
 			<section id="dp_header_search" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
 				<form action="{{ path('user_search') }}" class="dp-form-search" id="dp_omnisearch">
-					<input type="input" name="q" id="dp_search" placeholder="Search for something" value="{{ query }}" />
-					<button class="dp-btn" type="submit">Search</button>
+					<input type="input" name="q" id="dp_search" placeholder="{{ phrase('user.general.search_for_something') }}" value="{{ query }}" />
+					<button class="dp-btn" type="submit">{{ phrase('user.general.search') }}</button>
 				</form>
 			</section>
 		</div>
@@ -127,7 +127,7 @@
 			</div>
 			<footer id="dp_footer">
 				<div class="dp-copy">
-					<a href="http://www.deskpro.com/">Helpdesk software by <strong>DeskPRO</strong></a>
+					<a href="http://www.deskpro.com/">{{ phrase('user.general.helpdesk_by', {'deskpro': phrase('user.general.deskpro')}) }}</a>
 				</div>
 			</footer>
 		</div>

@@ -17,11 +17,11 @@
 		{% if type == 'article' %}
 			{{ item.getSearchSummary(100) }}
 		{% elseif type == 'news' %}
-			{{ item.date_created|date('Y-m-d') }} &middot; {{ item.num_comments }} Comments
+			{{ item.date_created|date('Y-m-d') }} &middot; {{ phrase('user.general.count_comments', {'count': item.num_comments}) }}
 		{% elseif type == 'download' %}
 			{{ item.getFileName() }} &middot; {{ item.getReadableFileSize() }}
 		{% elseif type == 'feedback' %}
-			{{ item.total_rating }} Votes &middot; {{ item.num_comments }} Comments
+            {{ phrase('user.general.count_votes', {'count': item.total_rating}) }} &middot; {{ phrase('user.general.count_comments', {'count': item.num_comments}) }}
 		{% endif %}
 	</div>
 </li>
