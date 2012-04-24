@@ -841,7 +841,7 @@ class KernelErrorHandler
 
 			if (isset($GLOBALS['DP_IS_IN_CLI'])) {
 				if (self::$wrote_log_file) echo "\n(Refer to " . self::$wrote_log_file . " for details)\n";
-				if (self::$wrote_php_log) echo "\n(Refer to the PHP erorr log for details)\n";
+				else echo "\n(Refer to the PHP erorr log for details)\n";
 			}
 		}
 
@@ -908,15 +908,16 @@ class KernelErrorHandler
 	public static function logToFile(array $errinfo)
 	{
 		self::$wrote_log_file = false;
-		self::$wrote_php_log = false;
 
 		$str = array();
 		if ($errinfo['type'] == 'exception') {
 			$e = $errinfo['exception'];
+			$line = sprintf("DeskPRO Exception: %s:%s (%s line %s): %s\n", $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $e->getMessage());
 			$str[] = sprintf("[%s] Exception %s %s\n", date('Y-m-d H:i:s'), $e->getCode(), $e->getMessage());
 			$str[] = sprintf("\t-> Type: %s\n", $errinfo['exception_type']);
 			$str[] = sprintf("\t-> Line %d on file %s\n", $errinfo['errline'], $errinfo['errfile']);
 		} else {
+			$line = sprintf("DeskPRO Error: %s (%s line %s): %s\n", $errinfo['errname'], $errinfo['errfile'], $errinfo['errline'], $errinfo['errstr']);
 			$str[] = sprintf("[%s] Error %s\n", date('Y-m-d H:i:s'), $errinfo['errstr']);
 			$str[] = sprintf("\t-> Type: %s\n", $errinfo['errname']);
 			$str[] = sprintf("\t-> Line %d on file %s\n", $errinfo['errline'], $errinfo['errfile']);
@@ -932,22 +933,26 @@ class KernelErrorHandler
 
 		$str = implode('', $str);
 
-		$written = false;
+		// Always write error line to standard error log
+		@error_log($line, 0);
+
 		if (class_exists('Application\DeskPRO\App') && App::getLogDir() && ($fh = @fopen(App::getLogDir() . '/error.log', 'a')) !== false) {
 			$written = @fwrite($fh, $str);
 			@fclose($fh);
 
 			if ($written) {
 				self::$wrote_log_file = App::getLogDir() . '/error.log';
+
+				// Max 5MB
+				if (filesize(self::$wrote_log_file) > 5242880) {
+					$file = @file_get_contents(self::$wrote_log_file);
+					if ($file) {
+						$file = substr($file, -5242880);
+						@file_put_contents(self::$wrote_log_file, $file);
+						$file = null;
+					}
+				}
 			}
-		}
-
-		// Try to write to php error log instead
-		if (!$written) {
-			@ini_set('log_errors_max_len', strlen($str));
-			@error_log($str, 0);
-
-			self::$wrote_php_log = true;
 		}
 	}
 
