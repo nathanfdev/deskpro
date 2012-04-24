@@ -133,6 +133,14 @@ $definition->setArguments(array(
 $definition->addMethodCall('setPrefix', array('dres', new Reference('deskpro.interface_value')));
 $container->setDefinition('default_result_cache', $definition);
 
+// validator.mapping.loader.loader_chain
+$definition = new Definition();
+$definition->setClass('%validator.mapping.loader.loader_chain.class%');
+$definition->setArguments(array(array(
+	new Reference('validator.mapping.loader.static_method_loader')
+)));
+$container->setDefinition('validator.mapping.loader.loader_chain', $definition);
+
 // deskpro.search_index.entity_updater_listener
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Entity\\EventListener\\SearchUpdater');

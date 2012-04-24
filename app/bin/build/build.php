@@ -234,7 +234,7 @@ echo "build-checksum-file ... ";
 
 if ($quick) {
 	echo "SKIPPED (--quick)";
-	unlink(DP_ROOT.'/sys/Resources/distro-checksums.php');
+	@unlink(DP_ROOT.'/sys/Resources/distro-checksums.php');
 } else {
 	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checksum-file.php', DP_ROOT.'/bin/build');
 	$proc->setTimeout(600);
