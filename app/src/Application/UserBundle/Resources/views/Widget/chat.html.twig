@@ -52,7 +52,7 @@
 <div id="dp_chat_end_confirm" style="display: none">
 	{{ phrase('user.chat.confirm_end_chat') }}
 	<button id="dp_chat_end_no">{{ phrase('user.general.cancel') }}</button>
-	<button id="dp_chat_end_yes">{{ phrase('user.general.end_chat') }}</button>
+	<button id="dp_chat_end_yes">{{ phrase('user.chat.end_chat') }}</button>
 </div>
 
 <i id="dp_chatwin_min"></i>
@@ -101,9 +101,9 @@
 </div>
 
 <div id="dp_chat_finding_agent" style="display: none">
-	<p>{{ phrase('user.chat.please_wait_for_agent_for_chat') }}</p>
+	<p>{{ phrase('user.chat.please_wait_for_agent') }}</p>
 	<div id="dp_chat_finding_agent_more" style="display: none">
-		{{ phrase('user.chat.agent_wait_long_suggestion') }}
+		{{ phrase('user.chat.notice_still_waiting') }}
 	</div>
 </div>
 
@@ -164,7 +164,7 @@
 	</div>
 
 	<div class="form-row">
-		{{ phrase('user.chat.comments') }}
+		{{ phrase('user.chat.ask_comments') }}
 		<textarea name="comments"></textarea>
 	</div>
 

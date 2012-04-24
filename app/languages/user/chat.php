@@ -1,7 +1,7 @@
 <?php return array(
-    'user.chat.agent_wait_long_suggestion'     => 'We are still trying to find an available agent to take your chat. Do you want to cancel your chat and <a class="cancel-and-newticket-trigger">submit a new ticket instead?</a>',
+    'user.chat.notice_still_waiting'     => 'We are still trying to find an available agent to take your chat. Do you want to cancel your chat and <a class="cancel-and-newticket-trigger">submit a new ticket instead?</a>',
     'user.chat.assigned_to'                    => 'Chat assigned to {{name}}',
-    'user.chat.comments'                       => 'Comments?',
+    'user.chat.ask_comments'                       => 'Comments?',
     'user.chat.confirm_end_chat'               => 'Are you sure you want to end your chat?',
     'user.chat.drop_file_here'                 => 'Drop your file here to upload it',
     'user.chat.ended_agent_timeout'            => 'Chat ended: Agent timeout',
@@ -18,7 +18,6 @@
     'user.chat.msg_agent_timeout'              => '{{name}} is not responding. Please wait while will try to find another agent.',
     'user.chat.msg_new_user_track'             => 'User is viewing: {{label}}',
     'user.chat.please_wait_for_agent'          => 'Please wait while we find an agent for you',
-    'user.chat.please_wait_for_agent_for_chat' => 'Please wait while we find an agent to take your chat',
     'user.chat.rate_response_time'             => 'Rate our response time',
     'user.chat.rate_satisfaction'              => 'Rate your overall satisfaction',
     'user.chat.select_department'              => 'Select a department',
@@ -32,4 +31,5 @@
     'user.chat.transcript_to'                  => 'Send a transcript of this chat to',
     'user.chat.unassigned'                     => 'Chat unassigned',
     'user.chat.you_are_chatting_with'          => 'You are chatting with',
+    'user.chat.end_chat'                         => 'End Chat',
 );
