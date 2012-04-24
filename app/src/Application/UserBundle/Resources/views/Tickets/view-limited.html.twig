@@ -110,7 +110,7 @@ ul.attachment-list > li img.preview {
 <form action="{{ path('user_tickets_addreply', {'ticket_ref': ticket.ref}) }}" method="post" {{ form_enctype(newreply_form) }}>
 <div style="border: 2px solid #ddd; margin-bottom: 15px;">
 	<div style="background-color: #ddd;">
-		<h4>{{ phrase('user.general.new_reply') }}</h4>
+		<h4>{{ phrase('user.tickets.new_reply') }}</h4>
 	</div>
 	<div style="">
 		{{ form_widget(newreply_form.message, {'attr': {'style': 'width: 90%; height: 100px;'}}) }}

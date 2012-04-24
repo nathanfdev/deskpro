@@ -38,7 +38,7 @@
 			{% for p in pageinfo.pages %}
 				<li class="{% if pageinfo.cursor == p %}dp-active{% endif %}"><a href="{{ page_url|raw ~ p }}">{{ p }}</a>
 			{% endfor %}
-			{% if pageinfo.next %}<li><a href="{{ page_url|raw ~ pageinfo.next }}">{{ phrase('user.general.page_next') }} &rarr;</a></li>{% endif %}
+			{% if pageinfo.next %}<li><a href="{{ page_url|raw ~ pageinfo.next }}">{{ phrase('user.general.next') }} &rarr;</a></li>{% endif %}
 		</ul>
 	</div>
 {% endif %}

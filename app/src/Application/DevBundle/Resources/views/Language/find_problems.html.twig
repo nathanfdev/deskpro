@@ -2,6 +2,19 @@
 <a href="{{ path('dev_lang_index') }}">Back</a>
 <h1>Checking Language files</h1>
 
+{# WRONG FILES #}
+<h2>Incorrect Ids</h2>
+<p>
+    IDs relate to a phrases location in a file. In some cases an id may be in the wrong file.
+</p>
+
+<table cellspacing="0" cellpadding="2" border="1" width="90%">
+    <tr><th>Id</th><th>Real file</th><th>Expected file</th></tr>
+        {% for id, details in wrong_files %}
+            <tr><td>{{details.id}}</td><td>{{details.realpath}}</td><td>{{details.expectpath}}</td></tr>
+        {% endfor %}
+</table>
+
 {# DUPLICATE IDS #}
 <h2>Duplicates by id</h2>
 <p>
@@ -22,7 +35,7 @@
 {% endfor %}
 
 {# DUPLICATE CONTENT #}
-<h2>Duplicates by content</h2>
+<h2>Duplicates by exact content</h2>
 
 {% for content in dupes.content %}
 <h3>Duplicates for:</h3>

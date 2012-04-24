@@ -308,8 +308,36 @@ class LanguageController extends Controller
             }
         }
 
-        $vars['by_id'] = $by_id;
-        $vars['by_content'] = $by_content;
+		$vars['by_id'] = $by_id;
+		$vars['by_content'] = $by_content;
+
+		$wrong_file = array();
+
+		foreach($by_id as $id => $instances) {
+			foreach($instances as $data) {
+				$real_file = basename($data['filename'], 'php');
+				$real_folder = basename(dirname($data['filename']));
+				$real_path = $real_folder . '/' . $real_file;
+
+				list($expect_folder, $rest) = explode('.', $id, 2);
+
+				$parts = explode('.', $rest, 3);
+
+				$expect_file = array_shift($parts);
+
+				if(count($parts) == 2) {
+					$expect_file .= '.' . array_shift($parts);
+				}
+
+				$expect_path = $expect_folder . '/' . $expect_file;
+
+				if($expect_path != $expect_file) {
+					$wrong_file[] = array('id' => $id, 'realpath' => $real_path, 'expectpath' => $expect_path);
+				}
+			}
+		}
+
+		$vars['wrong_file'] = $wrong_file;
 
         $found_by_id = array();
         $errors = array();
@@ -347,8 +375,61 @@ class LanguageController extends Controller
         $vars = array(
             'prefixes' => array(),
             'errors' => array(),
+			'dupes' => array('fuzzy' => array()),
         );
 
+		list($by_id, $by_content) = $this->parseLangFiles();
+		$by_fuzzy = array();
+
+		foreach($by_content as $k=>$v) {
+			$k = strtolower($k);
+			$k = preg_replace('/\{\{[^}]+]\}\}/', '{{}}', $k);
+			$k = preg_replace('/[^a-z{}|]/', '', $k);
+
+			if(!isset($by_fuzzy[$k])) {
+				$by_fuzzy[$k] = array();
+			}
+
+			$by_fuzzy[$k] = array_merge($by_fuzzy[$k], $v);
+		}
+
+		$vars['by_fuzzy'] = $by_fuzzy;
+
+		foreach($by_fuzzy as $k=>$v) {
+			if(count($v) > 1) {
+				$packages = array('user' => array(),'admin' => array(), 'agent' => array());
+
+				foreach($v as $dupe) {
+					list($package, ) = explode('.', $dupe['id']);
+
+					$packages[$package][] = $dupe['id'];
+				}
+
+				$packages['admin_agent'] = array_merge($packages['agent'], $packages['admin']);
+
+				if(count($packages['user']) > 1) {
+					$id = 'user.global.'.$this->stringToId($k);
+					$id_exists = isset($by_id[$id]) || isset($id_track[$id]);
+					$id_track[$id] = 1;
+					$vars['dupes']['content'][] = array('data' => $k, 'id' => $id, 'exists' => $id_exists, 'ids' => $packages['user']);
+				}
+
+				if(count($packages['admin_agent']) > 1) {
+					if(count($packages['admin_agent']) == count($packages['admin'])) {
+						$id = 'admin.general.'.$this->stringToId($k);
+					}
+					else {
+						$id = 'agent.global.'.$this->stringToId($k);
+					}
+
+					$id_exists = isset($by_id[$id]) || isset($id_track[$id]);
+					$id_track[$id] = 1;
+					$vars['dupes']['fuzzy'][] = array('data' => $k, 'id' => $id, 'exists' => $id_exists, 'ids' => $packages['admin_agent']);
+				}
+			}
+		}
+
+		$vars['by_id'] = $by_id;
         $found_by_id = array();
         $errors = array();
         $prefixes = array();
@@ -609,11 +690,11 @@ class LanguageController extends Controller
                                     'line' => $token[2]
                                 );
 
-                                if(!isset($by_content[strtolower($content)])) {
-                                    $by_content[strtolower($content)] = array();
+                                if(!isset($by_content[$content])) {
+                                    $by_content[$content] = array();
                                 }
 
-                                $by_content[strtolower($content)][] = array(
+                                $by_content[$content][] = array(
                                     'filename' => $file,
                                     'id' => $id,
                                     'line' => $token[2]

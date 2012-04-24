@@ -1,5 +1,4 @@
 <?php return array(
-    'user.feedback.all_categories'            => 'All Categories',
     'user.feedback.all_feedback'              => 'All Feedback',
     'user.feedback.any_status'                => 'Any Status',
     'user.feedback.browser_our_x_suggestions' => 'Browse through our custom suggestions|Browse through our {{count}} customer suggestions',
@@ -16,7 +15,6 @@
     'user.feedback.most_voted'                => 'Most Voted',
     'user.feedback.newest'                    => 'Newest',
     'user.feedback.no_feedback_spec'          => 'There are no feedback submissions with those specificiations',
-    'user.feedback.popular'                   => 'Popular',
     'user.feedback.similar_count'             => 'View {{count_place}} more results',
     'user.feedback.similar_not_same_as'       => 'This is not the same as my submission',
     'user.feedback.similar_same_as'           => 'This is the same as my submission',
