@@ -54,8 +54,7 @@ class AgentFeedbackController extends AbstractController
         $first_created = $repo->getFirstCreatedDate();
 
         $days = array();
-        // Warning: I'm uncertain where or not this plays nice with locales/system settings.
-        $days_in_month = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+        $days_in_month = \Orb\Util\Dates::daysInMonth($month, $year);
         $day_date = clone $dt;
 
         for($i = 1; $i <= $days_in_month; $i++) {

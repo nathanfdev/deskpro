@@ -107,6 +107,9 @@ class Dates
     		12 => 31,
     	);
 
+		$month = (int)$month;
+		$year  = (int)$year;
+
     	// Special case for leap years when Feb has 29 days
     	if ($month == 2) {
     		if (!$year) $year = date('Y');
@@ -137,6 +140,9 @@ class Dates
     	if ($month === null) $month = date('n');
     	if ($year === null) $year = date('Y');
 
+		$month = (int)$month;
+		$year  = (int)$year;
+
     	return new \DateTime('@' . mktime(23, 59, 59, $month+1, 0, $year));
     }
 
@@ -153,6 +159,9 @@ class Dates
     {
     	if ($month === null) $month = date('n');
     	if ($year === null) $year = date('Y');
+
+		$month = (int)$month;
+		$year  = (int)$year;
 
     	return new \DateTime('@' . mktime(0, 0, 0, $month, 1, $year));
     }
