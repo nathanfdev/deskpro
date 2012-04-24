@@ -1,7 +1,7 @@
 <?php return array(
     'user.feedback.all_feedback'              => 'All Feedback',
     'user.feedback.any_status'                => 'Any Status',
-    'user.feedback.browser_our_x_suggestions' => 'Browse through our {{count}} customer suggestion|Browse through our {{count}} customer suggestions',
+    'user.feedback.browse_our_x_suggestions' => 'Browse through our {{count}} customer suggestion|Browse through our {{count}} customer suggestions',
     'user.feedback.count_votes'               => '{{count}} vote|{{count}} votes',
     'user.feedback.desc_error'                => 'Please enter a description of at least 5 characters',
     'user.feedback.explain'                   => 'These suggestions are customer-submitted ideas that you can discuss and vote on. Support the ideas you like most so we can improve on the things that matter most.',
