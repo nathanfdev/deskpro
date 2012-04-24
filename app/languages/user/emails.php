@@ -21,6 +21,7 @@
     'user.emails.subj_newfeedback'                => 'Thank you for submitting your feedback',
     'user.emails.subj_newfeedback_validate'       => 'Thank you for submitting your feedback (validation required)',
     'user.emails.subj_newticket_validate'         => 'Validate your email address for your new ticket',
+    'user.emails.sbj_validate_email'         => 'Validate your email address',
     'user.emails.subject'                         => '{{ticket_subject}}',
     'user.emails.thank_you_for_feedback'          => 'Thank you for submitting your feedback "{{title}}"',
     'user.emails.thank_you_for_for_comment'       => 'Thank you for your comment on {{link}}.',

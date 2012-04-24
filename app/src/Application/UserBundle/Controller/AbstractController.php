@@ -147,6 +147,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function renderStandardTokenError()
 	{
-		return $this->renderStandardError('@user.error_expired_token');
+		return $this->renderStandardError('@user.error.expired_token');
 	}
 }
