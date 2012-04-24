@@ -38,6 +38,11 @@ $output_realtime = function($type, $buffer) {
 	}
 };
 
+$quick = false;
+if (in_array('--quick', $_SERVER['argv'])) {
+	$quick = true;
+}
+
 #####################################################################
 
 $time = microtime(true);
@@ -145,7 +150,11 @@ echo "\n";
 $time = microtime(true);
 echo "build-template-map ... ";
 
-$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-template-map.php', DP_ROOT.'/bin/build');
+if ($quick) {
+	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-template-map.php --bogus', DP_ROOT.'/bin/build');
+} else {
+	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-template-map.php', DP_ROOT.'/bin/build');
+}
 $proc->setTimeout(600);
 $proc->run($output_realtime);
 
@@ -202,13 +211,17 @@ if ($htaccess_path && $htaccess_contents) {
 $time = microtime(true);
 echo "build-checkphp ... ";
 
-$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checkphp.php', DP_ROOT.'/bin/build');
-$proc->setTimeout(600);
-$proc->run($output_realtime);
+if ($quick) {
+	echo "SKIPPED (--quick)";
+} else {
+	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checkphp.php', DP_ROOT.'/bin/build');
+	$proc->setTimeout(600);
+	$proc->run($output_realtime);
 
-if (!$proc->isSuccessful()) {
-	echo ("\nDetected error. Quitting.\n");
-	exit($proc->getExitCode());
+	if (!$proc->isSuccessful()) {
+		echo ("\nDetected error. Quitting.\n");
+		exit($proc->getExitCode());
+	}
 }
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
@@ -219,13 +232,18 @@ echo "\n";
 $time = microtime(true);
 echo "build-checksum-file ... ";
 
-$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checksum-file.php', DP_ROOT.'/bin/build');
-$proc->setTimeout(600);
-$proc->run($output_realtime);
+if ($quick) {
+	echo "SKIPPED (--quick)";
+	unlink(DP_ROOT.'/sys/Resources/distro-checksums.php');
+} else {
+	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checksum-file.php', DP_ROOT.'/bin/build');
+	$proc->setTimeout(600);
+	$proc->run($output_realtime);
 
-if (!$proc->isSuccessful()) {
-	echo ("\nDetected error. Quitting.\n");
-	exit($proc->getExitCode());
+	if (!$proc->isSuccessful()) {
+		echo ("\nDetected error. Quitting.\n");
+		exit($proc->getExitCode());
+	}
 }
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
