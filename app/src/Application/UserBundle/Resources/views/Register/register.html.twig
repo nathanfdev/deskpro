@@ -26,9 +26,9 @@
 
 	{% if from_ticket.id %}
 		<div class="dp-alert dp-alert-success">
-			<strong>"{{ from_ticket.subject }}" can be viewed online</strong><br />
+			<strong>{{ phrase('user.general.x_is_online', {'subject': from_ticket.subject}) }}</strong><br />
 			<p>
-				To view and manage your ticket online, register for an account or log in. This step is optional, you will still get replies from our agents to your email address.
+				{{ phrase('user.general.explain_register_for_online_tickets') }}
 			<p>
 		</div>
 	{% endif %}

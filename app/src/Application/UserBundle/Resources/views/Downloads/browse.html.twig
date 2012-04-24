@@ -6,7 +6,7 @@
 	{% endfor %}
 {% endblock %}
 {% block page_title %}
-	Downloads /
+	{{ phrase('user.general.downloads') }} /
 	{% for cat in category_path %}
 		{{cat.title}} /
 	{% endfor %}

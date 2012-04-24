@@ -81,4 +81,5 @@
 	'user.tickets.flash_new_ticket_login' => 'Your ticket has been submitted. Log in to view it now.',
 	'user.tickets.flash_new_ticket_validating_email' => 'Before your ticket will be read by our agents, you must confirm your email address. We sent an email confirmation to {{email}}.',
 	'user.tickets.new_ticket_email' => 'Your new ticket has been submitted. Our agents will reply to your email address {{email}}.',
+	'user.tickets.from_x_at_y' => 'From {{name}} at {{date}}',
 );

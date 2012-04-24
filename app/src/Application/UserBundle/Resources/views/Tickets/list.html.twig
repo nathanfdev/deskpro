@@ -16,7 +16,14 @@
 					<li>
 						<div class="dp-title">
 							<div class="dp-fadeaway-container">
-								<h4 class="dp-fadetitle"><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id }) }}">{{ ticket.subject }}</a></h4>
+								<h4 class="dp-fadetitle">
+                                    <a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id }) }}">{{ ticket.subject }}</a>
+                                    {% if 0 %}
+                                    <a target="_blank" href="{{ path('user_tickets_view', {'ticket_ref': ticket.id, 'pdf': 1}) }}">
+                                        <img src="{{ asset('images/filetypes/page_white_acrobat.png') }}" alt="{{ phrase('user.general.download_pdf') }}" />
+                                    </a>
+                                    {% endif %}
+                                </h4>
 								<div class="dp-fadeaway-inner-container">
 									<div class="dp-fadeaway"></div>
 									<div class="dp-opaque-fadeaway">
@@ -56,7 +63,14 @@
 					<li>
 						<div class="dp-title">
 							<div class="dp-fadeaway-container">
-								<h4 class="dp-fadetitle"><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id }) }}">{{ ticket.subject }}</a></h4>
+								<h4 class="dp-fadetitle">
+                                    <a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id }) }}">{{ ticket.subject }}</a>
+                                    {% if 0 %}
+                                    <a target="_blank" href="{{ path('user_tickets_view', {'ticket_ref': ticket.id, 'pdf': 1}) }}">
+                                        <img src="{{ asset('images/filetypes/page_white_acrobat.png') }}" alt="{{ phrase('user.general.download_pdf') }}" />
+                                    </a>
+                                    {% endif %}
+                                </h4>
 								<div class="dp-fadeaway-inner-container">
 									<div class="dp-fadeaway"></div>
 									<div class="dp-opaque-fadeaway">

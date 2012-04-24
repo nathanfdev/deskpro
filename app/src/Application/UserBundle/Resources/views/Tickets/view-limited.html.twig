@@ -116,7 +116,7 @@ ul.attachment-list > li img.preview {
 		{{ form_widget(newreply_form.message, {'attr': {'style': 'width: 90%; height: 100px;'}}) }}
 		<br />
 		{{ phrase('user.tickets.attach_a_file') }}: {{ form_widget(newreply_form.new_upload) }}
-		<center><input type="submit" value="Add Reply" /></center>
+		<center><input type="submit" value="{{ phrase('user.general.add_reply') }}" /></center>
 	</div>
 </div>
 {{ form_rest(newreply_form) }}

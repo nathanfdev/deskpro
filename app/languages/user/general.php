@@ -236,4 +236,5 @@
 	'user.general.view_more_search_results' => 'View more search results',
     'user.general.message'         => 'Message',
     'user.general.enter_short_summary'         => 'Enter a short summary',
+    'user.general.no_definition'         => 'No definition',
 );

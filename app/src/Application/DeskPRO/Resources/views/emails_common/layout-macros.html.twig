@@ -80,5 +80,5 @@
 {% endmacro %}
 
 {% macro greeting(person) %}
-	Dear {{ person.display_name }},<br /><br />
+	{{ phrase('user.emails.greeting', {'name': person.display_name}) }}<br /><br />
 {% endmacro %}

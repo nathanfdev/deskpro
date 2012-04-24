@@ -5,9 +5,8 @@
 		{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 		<div class="socials">
 			<div>
-				<span>Or connet with</span>
+				<span>{{ phrase('user.general.or_connect_with') }}</span>
 				<ul>
-					{{ phrase('user.general.or_connect_with') }}
 					{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 					<li>{{ render_usersource(usersource, 'widget_overlay_btn') }}</li>
 					{% endfor %}

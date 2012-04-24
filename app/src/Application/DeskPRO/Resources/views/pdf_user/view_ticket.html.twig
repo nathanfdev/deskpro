@@ -22,7 +22,6 @@ body {
 </style>
 
 <h1>{{ ticket.subject }}</h1>
-<hr />
 
 <table class="ticket_attribute">
     <tr><th>{{ phrase('agent.general.ticket_ref') }}</th></tr>
@@ -92,7 +91,7 @@ body {
 <table width="100%" class="ticket_list_table" border="0" cellspacing="0">
     <tr><td colspan="2"><hr /></td></tr>
     <tr>
-        <th>From {{ message.person.display_name }} at {{ message.date_created|date('fulltime') }}</th>
+        <th>{{ phrase('user.tickets.from_x_at_y', {'name': message.person.display_name, 'date': message.date_created|date('fulltime')}) }}</th>
     </tr>
     <tr><td colspan="2"><hr /></td></tr>
 
