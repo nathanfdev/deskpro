@@ -122,11 +122,11 @@ button.datepicker-btn-done {
                 {% for agent in agents %}
                     <td class="rating_1">
                         <img src="{{ asset('images/report/feedback/rating_1.png') }}" />
-                        {{ summary[i][agent.id][1] }}
+                        {{ summary[i][agent.id][1]|default(0) }}
                     </td>
                     <td class="rating_0 {% if not loop.last %}border-right{% endif %}">
                         <img src="{{ asset('images/report/feedback/rating_0.png') }}" />
-                        {{ summary[i][agent.id][0] }}
+                        {{ summary[i][agent.id][0]|default(0) }}
                     </td>
                 {% endfor %}
             </tr>
