@@ -119,7 +119,7 @@ class MainController extends AbstractController
 
 		$error = $accept->getError($file, 'user');
 		if ($error) {
-			$error['error'] = $this->container->getTranslator()->phrase('user.general.attach_error_' . $error['error_code'], $error);
+			$error['error'] = $this->container->getTranslator()->phrase('user.error.attach_' . $error['error_code'], $error);
 			return $this->createJsonResponse(array($error));
 		}
 
@@ -144,7 +144,7 @@ class MainController extends AbstractController
 		$validator = EmailValidator::createFromId($id, $auth);
 
 		if (!$validator) {
-			return $this->renderStandardError('@user.profile.error_invalid_email_code', '', 404);
+			return $this->renderStandardError('@user.error.invalid_email_code', '', 404);
 		}
 
 		$valdating_email = $validator->getValidatingEmail();
@@ -162,7 +162,7 @@ class MainController extends AbstractController
 			$email = $validator->validate();
 		} catch (\OutOfBoundsException $e) {
 			if ($e->getCode() == 100) {
-				return $this->renderStandardError('@user.profile.error_dupe_email');
+				return $this->renderStandardError('@user.error.dupe_email');
 			} else {
 				throw $e;
 			}

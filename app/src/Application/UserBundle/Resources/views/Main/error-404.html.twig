@@ -9,7 +9,7 @@
 				{% if error_title %}
 					<h1>{{ error_title }}</h1>
 				{% else %}
-					<h1>{{ phrase('user.general.not_found') }}</h1>
+					<h1>{{ phrase('user.error.not_found_title') }}</h1>
 				{% endif %}
 			</div>
 
@@ -18,7 +18,7 @@
 					{% if error_message %}
 						{{ error_message }}
 					{% else %}
-						{{ phrase('user.general.error_not_found') }}
+						{{ phrase('user.error.not_found') }}
 					{% endif %}
 				</div>
 			</div>

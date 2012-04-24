@@ -122,11 +122,11 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$email = $this->person->getEmailId($email_id);
 
 		if (!$email) {
-			return $this->renderStandardError('@user_profile.error_invalid_email_explain', '@user_profile.error_invalid_email', 404);
+			return $this->renderStandardError('@user.error.invalid_email_explain', '@user.error.invalid_email', 404);
 		}
 
 		if (!$email['is_validated']) {
-			return $this->renderStandardError('@user_profile.error_not_validated_setdefault', '@user_profile.error_not_validated_email', 409);
+			return $this->renderStandardError('@user.error.validate_to_use', '@user.error.not_validated_email', 409);
 		}
 
 		$person = $this->person;
@@ -152,7 +152,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$email = $this->person->getEmailId($email_id);
 
 		if (!$email) {
-			return $this->renderStandardError('@user_profile.error_invalid_email_explain', '@user_profile.error_invalid_email', 404);
+			return $this->renderStandardError('@user.error.invalid_email_explain', '@user.error.invalid_email', 404);
 		}
 
 		#------------------------------
@@ -169,7 +169,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		}
 
 		if (!$pass_count) {
-			return $this->renderStandardError('@user_profile.error_last_email_explain', '@user_profile.error_last_email', 409);
+			return $this->renderStandardError('@user.error.last_email_explain', '@user.error.last_email', 409);
 		}
 
 		#------------------------------
@@ -192,7 +192,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$validating_email = App::findEntity('DeskPRO:PersonEmailValidating', $email_id);
 
 		if (!$validating_email || $validating_email->person['id'] != $this->person['id']) {
-			return $this->renderStandardError('@user_profile.error_invalid_email_explain', '@user_profile.error_invalid_email', 404);
+			return $this->renderStandardError('@user.error.invalid_email_explain', '@user.error.invalid_email', 404);
 		}
 
 		App::getOrm()->transactional(function ($em) use ($validating_email) {
@@ -294,7 +294,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$validating_email = App::findEntity('DeskPRO:PersonEmailValidating', $email_id);
 
 		if (!$validating_email || $validating_email->person['id'] != $this->person['id']) {
-			return $this->renderStandardError('@user_profile.error_invalid_email_explain', '@user_profile.error_invalid_email', 404);
+			return $this->renderStandardError('@user.error.invalid_email_explain', '@user.error.invalid_email', 404);
 		}
 
 		$this->_doSendValidationEmail($validating_email);

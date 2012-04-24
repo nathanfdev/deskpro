@@ -68,7 +68,7 @@ class DownloadsController extends AbstractController
 			}
 
 			if (!$category) {
-				return $this->renderStandardError('@user.error_not_found_title', '@user.error_not_found', 404);
+				return $this->renderStandardError('@user.error.not_found_title', '@user.error.not_found', 404);
 			}
 
 			// Auto-correct URL
@@ -224,7 +224,7 @@ class DownloadsController extends AbstractController
 	{
 		$download = App::getEntityRepository('DeskPRO:Download')->getBySlug($slug);
 		if (!$download) {
-			return $this->renderStandardError('@user_downloads.not_found', '@user.error_not_found', 404);
+			return $this->renderStandardError('@user.error.downloads_not_found', '@user.error.not_found', 404);
 		}
 
 		// Auto-correct URL
@@ -312,7 +312,7 @@ class DownloadsController extends AbstractController
 
 		$download = App::getEntityRepository('DeskPRO:Download')->find($download_id);
 		if (!$download) {
-			return $this->renderStandardError('@user_downloads.error_not_found', '@user.error_not_found', 404);
+			return $this->renderStandardError('@user.error.downloads_not_found', '@user.error.not_found', 404);
 		}
 
 		$new_comment = new \Application\DeskPRO\Comments\NewComment(

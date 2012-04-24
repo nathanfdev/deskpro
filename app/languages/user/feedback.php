@@ -4,7 +4,6 @@
     'user.feedback.browser_our_x_suggestions' => 'Browse through our custom suggestions|Browse through our {{count}} customer suggestions',
     'user.feedback.count_votes'               => '{0} No votes|{1} {{count}} vote|]2,Unf]{{count}} votes',
     'user.feedback.desc_error'                => 'Please enter a description of at least 5 characters',
-    'user.feedback.error_not_found'           => 'The feedback you are looking for could not be found. It may have been deleted.',
     'user.feedback.explain'                   => 'These suggestions are customer-submitted ideas that you can discuss and vote on. Support the ideas you like most so we can improve on the things that matter most.',
     'user.feedback.found_similar_suggestions' => 'We found these similar suggestions',
     'user.feedback.i_agree'                   => 'I agree',

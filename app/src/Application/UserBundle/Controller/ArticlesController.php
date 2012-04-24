@@ -72,7 +72,7 @@ class ArticlesController extends AbstractController
 			}
 
 			if (!$category) {
-				return $this->renderStandardError('@user.error_not_found_title', '@user.error_not_found', 404);
+				return $this->renderStandardError('@user.error.not_found_title', '@user.error.not_found', 404);
 			}
 
 			// Auto-correct URL
@@ -289,7 +289,7 @@ class ArticlesController extends AbstractController
 	{
 		$article = App::getEntityRepository('DeskPRO:Article')->getBySlug($slug);
 		if (!$article) {
-			return $this->renderStandardError('@user_articles.error_not_found', '@user.error_not_found', 404);
+			return $this->renderStandardError('@user.error.articles_not_found', '@user.error.not_found', 404);
 		}
 
 		// Auto-correct URL
@@ -394,7 +394,7 @@ class ArticlesController extends AbstractController
 
 		$article = App::getEntityRepository('DeskPRO:Article')->find($article_id);
 		if (!$article) {
-			return $this->renderStandardError('@user_articles.error_not_found', '@user.error_not_found', 404);
+			return $this->renderStandardError('@user.error.articles_not_found', '@user.error.not_found', 404);
 		}
 
 		$new_comment = new \Application\DeskPRO\Comments\NewComment(
