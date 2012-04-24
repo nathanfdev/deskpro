@@ -53,6 +53,13 @@ class Message extends \Orb\Mail\Message
 	 */
 	protected $template_vars;
 
+	/**
+	 * Is the message being re-sent?
+	 *
+	 * @var bool
+	 */
+	protected $is_retrying = false;
+
 
 	public function doPrepare()
 	{
@@ -120,5 +127,26 @@ class Message extends \Orb\Mail\Message
 	public static function newInstance($subject = null, $body = null, $contentType = null, $charset = null)
 	{
 		return new static($subject, $body, $contentType, $charset);
+	}
+
+
+	/**
+	 * Get is retrying flag. A message is set as retrying when it is being sent
+	 * after being queued (either because it was deemed unimportant, or because of an error).
+	 *
+	 * @return bool
+	 */
+	public function getIsRetrying()
+	{
+		return $this->is_retrying;
+	}
+
+
+	/**
+	 * Sets is retrying flag
+	 */
+	public function setIsRetrying()
+	{
+		$this->is_retrying = true;
 	}
 }

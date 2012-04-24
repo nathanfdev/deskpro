@@ -35,33 +35,10 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$deps = App::getSystemService('DepartmentData')->getRootNodes();
+		$message = App::getMailer()->createMessage();
+		$message->setTo('chroder@gmail.com', 'Nadeau');
 
-		foreach ($deps as $d) {
-			echo sprintf("%d %s\n", $d->getId(), $d->getFullTitle());
-
-			if ($d->getChildren()) {
-				foreach ($d->getChildren() as $d2) {
-					echo sprintf("%d %s\n", $d2->getId(), $d2->getFullTitle());
-				}
-			}
-		}
-
-		echo "\n";
-		echo str_repeat("-", 40);
-		echo "\n";
-
-		$deps = App::getSystemService('DepartmentData')->getRootNodes();
-
-		foreach ($deps as $d) {
-			echo sprintf("%d %s\n", $d->getId(), $d->getFullTitle());
-
-			if ($d->getChildren()) {
-				foreach ($d->getChildren() as $d2) {
-					echo sprintf("%d %s\n", $d2->getId(), $d2->getFullTitle());
-				}
-			}
-		}
+		var_dump($message->getTo());
 
 		echo "\n";
 	}

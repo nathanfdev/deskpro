@@ -70,14 +70,19 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 			$message = implode('', $message);
 			$message = unserialize($message);
 
+
 			if (!$message) {
 				throw new \RuntimeException('Failed to read or unserialize message');
+			}
+
+			if ($message instanceof \Application\DeskPRO\Mail\Message) {
+				$message->setIsRetrying();
 			}
 
 			$ret = call_user_func($callback, $message);
 			if ($ret & self::PROCESS_SUCCESS) {
 				$queue_info['date_sent'] = date('Y-m-d H:m:s');
-				$db->execUpdate("
+				$db->executeUpdate("
 					UPDATE sendmail_queue
 					SET attempts = ?, date_sent = ?, has_sent = 1, date_next_attempt = null
 					WHERE id = ?", array($queue_info['attempts'], $queue_info['date_sent'], $queue_id)
@@ -161,9 +166,9 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 
 		$db->insert('sendmail_queue', array(
 			'subject' => Util::coalesce($message->getSubject(), ''),
-			'to_address' => Util::coalesce(implode(', ', (array)$message->getTo()), ''), // this is really just for info purposes, easier to grep the db
+			'to_address' => Util::coalesce(implode(', ', array_keys($message->getTo())), ''), // this is really just for info purposes, easier to grep the db
 			'date_created' => date('Y-m-d H:m:s'),
-			'date_next_attempt' => date('Y-m-d H:m:s'),
+			'date_next_attempt' => date('Y-m-d H:m:s', time() + 120),
 		));
 		$queue_id = $db->lastInsertId();
 
@@ -200,7 +205,7 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 
 		$db->insert('sendmail_queue', array(
 			'subject' => Util::coalesce($message->getSubject(), ''),
-			'to_address' => Util::coalesce(implode(', ', (array)$message->getTo()), ''),
+			'to_address' => Util::coalesce(implode(', ', array_keys($message->getTo())), ''),
 			'date_created' => date('Y-m-d H:m:s'),
 			'date_sent' => date('Y-m-d H:m:s'),
 			'has_sent' => true,

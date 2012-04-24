@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Mail;
 
 use Application\DeskPRO\App;
 
-use Orb\Mail\Message;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 

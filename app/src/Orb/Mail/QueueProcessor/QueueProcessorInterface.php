@@ -43,9 +43,9 @@ use Orb\Util\Util;
  */
 interface QueueProcessorInterface
 {
-	const PROCESS_SUCCESS = 0;
-	const PROCESS_FAILURE = 1;
-	const PROCESS_STOP = 2;
+	const PROCESS_SUCCESS = 1;
+	const PROCESS_FAILURE = 2;
+	const PROCESS_STOP = 4;
 
 	/**
 	 * Start the queue system

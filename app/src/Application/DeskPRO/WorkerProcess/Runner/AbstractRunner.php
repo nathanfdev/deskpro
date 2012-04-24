@@ -60,6 +60,11 @@ abstract class AbstractRunner
 	 */
 	protected $job_options;
 
+	/**
+	 * @var int
+	 */
+	protected $job_time_limit = 40;
+
 
 	/**
 	 * Sets the options array to pass to jobs when they are run
@@ -92,6 +97,10 @@ abstract class AbstractRunner
 	 */
 	public function runJob(Entity\WorkerJob $worker_job)
 	{
+		if ($this->job_time_limit) {
+			@set_time_limit($this->job_time_limit);
+		}
+
 		$job = $this->getJob($worker_job);
 		$logger = $job->getLogger();
 
@@ -108,6 +117,10 @@ abstract class AbstractRunner
 		$worker_job['last_run_date'] = new \DateTime();
 		App::getOrm()->persist($worker_job);
 		App::getOrm()->flush();
+
+		if ($this->job_time_limit) {
+			@set_time_limit(0);
+		}
 	}
 
 

@@ -47,12 +47,14 @@ class SendmailQueue extends AbstractJob
 {
 	const DEFAULT_INTERVAL = 60;
 
-	protected $count_success;
-	protected $count_failed;
+	protected $count_success = 0;
+	protected $count_failed = 0;
+	protected $time_start = 0;
 
 	public function run()
 	{
-		return;
+		$this->time_start = time();
+
 		$db_proc = new DatabaseQueueProcessor();
 		$db_proc->processQueue(array($this, '_sendMessage'));
 
@@ -75,12 +77,23 @@ class SendmailQueue extends AbstractJob
 			$mailer->getTransport()->enableQueue();
 		}
 
+		$ret = 0;
+
 		if (!$success) {
 			$this->count_failed++;
-			return DatabaseQueueProcessor::PROCESS_FAILURE;
+			$ret = DatabaseQueueProcessor::PROCESS_FAILURE;
+		} else{
+			$this->count_success++;
+			$ret = DatabaseQueueProcessor::PROCESS_SUCCESS;
 		}
 
-		$this->count_success++;
-		return DatabaseQueueProcessor::PROCESS_SUCCESS;
+		$time = time();
+		$running = $time - $this->time_start;
+		if ($running > 30) {
+			$this->logStatus("Running for {$running} seconds, stopping this round of processing");
+			$ret = $ret | DatabaseQueueProcessor::PROCESS_STOP;
+		}
+
+		return $ret;
 	}
 }

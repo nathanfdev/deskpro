@@ -148,6 +148,19 @@ class DelegatingTransport implements \Swift_Transport
 			$use_queue = true;
 		}
 
+		if ($use_queue && $this->isQueueEnabled()) {
+			$use_queue = false;
+		}
+
+		$is_retrying = false;
+		if ($message instanceof \Application\DeskPRO\Mail\Message) {
+			$is_retrying = $message->getIsRetrying();
+		}
+
+		if ($is_retrying && $use_queue) {
+			$use_queue = false;
+		}
+
 		$bcc_list = App::getSetting('core.bcc_all_emails');
 		if ($bcc_list) {
 			foreach (explode(',',$bcc_list) as $bcc_e) {
@@ -162,7 +175,7 @@ class DelegatingTransport implements \Swift_Transport
 			if (!$tr->isStarted()) $tr->start();
 
 			$success = $tr->send($message, $failedRecipients);
-		} elseif ($use_queue AND $this->isQueueEnabled()) {
+		} elseif ($use_queue) {
 			$tr= $this->getQueueTransport();
 			if (!$tr->isStarted()) $tr->start();
 
@@ -183,11 +196,15 @@ class DelegatingTransport implements \Swift_Transport
 			}
 
 			if (!$success) {
-				$success = $this->getQueueTransport()->send($message);
+				if (!$is_retrying && $this->isQueueEnabled()) {
+					$success = $this->getQueueTransport()->send($message);
+				} else {
+					$success = false;
+				}
 			} else {
 				// Save a logged copy too
 				$queue_proc = $this->getQueueTransport()->getQueueProcessor();
-				if ($queue_proc instanceof DatabaseQueueProcessor) {
+				if (!$is_retrying && $queue_proc instanceof DatabaseQueueProcessor) {
 					$queue_proc->addLoggedMessage($message);
 				}
 			}
