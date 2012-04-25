@@ -139,7 +139,7 @@ class AddressMatcher
 					$regex = trim($pattern['match_pattern'], '/');
 					if (preg_match('/' . $regex . '/i', $address)) {
 						$match_address_id = $pattern['id'];
-						break;
+						break 2;
 					}
 			}
 		}
