@@ -707,6 +707,18 @@ $em->persist($j);
 $em->flush();
 
 
+##BEGIN:create_jobs.cleanup_stats##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'cleanup_stats';
+$j['worker_group'] = 'cleanup';
+$j['title'] = 'Cleanup Stats';
+$j['description'] = 'Cleanup stat records that are outside of the reporting scope';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupStats';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupStats::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
+
 ##BEGIN:create_jobs.cleanup_sendmail##
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'cleanup_sendmail';

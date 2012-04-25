@@ -45,7 +45,7 @@ use Application\DeskPRO\Entity\StatValueGroup;
  */
 class GenerateStats extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 86400; // Daily
+	const DEFAULT_INTERVAL = 3600; // Hourly
 
 	protected $date_time;
 

@@ -187,14 +187,20 @@ class DashboardController extends AbstractController
 	 */
 	public function deleteAction($dashboard_id)
 	{
+		$this->db->beginTransaction();
 		try {
 			$dashboard  = $this->getDashboard($dashboard_id);
-			App::getOrm()->remove($dashboard->getStat());
+			$stat = $dashboard->stat;
+
+			App::getOrm()->remove($stat);
 			App::getOrm()->remove($dashboard);
 			App::getOrm()->flush();
-		}
-		catch (\Exception $e) {
-			die($e);
+
+			$this->db->commit();
+
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
 		}
 
 		return $this->redirectRoute('report_trend_index');
