@@ -26,6 +26,13 @@
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/AgentEditPage.js') }}"></script>
 {% endblock %}
 {% block page %}
+
+{% if app.getSession().getFlash('saved_agent') %}
+	<div class="alert-message block-message success">
+		Agent was saved successfully.
+	</div>
+{% endif %}
+
 {% if agent.is_vacation_mode %}
 	<div class="alert-message block-message info">
 		<h1>{{ phrase('admin.agents.name_in_vacation', {'name':agent.display_name}) }}</h1>

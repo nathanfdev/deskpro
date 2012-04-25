@@ -467,16 +467,19 @@ class AgentsController extends AbstractController
 
 		if ($is_new) {
 
-				// Send welcome email
-				$email_body = App::get('templating')->render('DeskPRO:emails_agent:agent-welcome.html.twig', array('agent' => $agent));
-				$message = App::getMailer()->createMessage();
-				$message->setTo($agent->getPrimaryEmailAddress(), $agent->getDisplayName());
-				$message->setSubject('Your new agent account');
-				$message->setBody($email_body, 'text/html');
-				App::getMailer()->send($message);
+			// Send welcome email
+			$email_body = App::get('templating')->render('DeskPRO:emails_agent:agent-welcome.html.twig', array('agent' => $agent));
+			$message = App::getMailer()->createMessage();
+			$message->setTo($agent->getPrimaryEmailAddress(), $agent->getDisplayName());
+			$message->setSubject('Your new agent account');
+			$message->setBody($email_body, 'text/html');
+			App::getMailer()->send($message);
 
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_agents', time());
-			}
+			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_agents', time());
+		}
+
+		App::getSession()->setFlash('saved_agent', 1);
+		App::getSession()->save();
 
 		return $this->redirectRoute('admin_agents_edit', array('person_id' => $agent->id));
 	}

@@ -3606,21 +3606,21 @@ body.popup section.body textarea.fill {
 .check-grid.item-list > table thead th {
 	padding: 5px 0 5px 0;
 }
-.check-grid > table thead th {
+.check-grid > table > thead > tr > th {
 	font-family: @heading-font;
 	font-size: 12px;
 
 	.gradient(#ffffff, darken(#FDFDFD, 8%));
 	border-bottom: 1px solid #D9DBDB;
 
-	padding: 3px 8px 2px 8px;
+	padding: 3px 8px 2px 8px !important;
 	vertical-align: middle;
 }
 
-.check-grid > table > tbody > th,
-.check-grid > table > thead > th,
-.check-grid > table > thead > td,
-.check-grid > table > tbody > td {
+.check-grid > table > tbody > tr > th,
+.check-grid > table > thead > tr > th,
+.check-grid > table > thead > tr > td,
+.check-grid > table > tbody > tr > td {
 	padding: 4px 0 4px 0;
 	font-size: 12px;
 }
