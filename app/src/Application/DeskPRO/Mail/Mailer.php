@@ -83,7 +83,13 @@ class Mailer extends \Swift_Mailer
 			$this->registerPlugin(new \Orb\Mail\Plugins\CancelSend());
 		}
 
-		$this->registerPlugin(new \Orb\Mail\Plugins\DefaultFromAddress(App::getConfig('mail.default_from')));
+		try {
+			$default = App::getSetting('core.default_from_email');
+			$name    = App::getSetting('core.deskpro_name');
+			if ($default) {
+				$this->registerPlugin(new \Orb\Mail\Plugins\DefaultFromAddress($default, $name));
+			}
+		} catch (\Exception $e) {}
 	}
 
 	public static function newInstance(\Swift_Transport $transport)

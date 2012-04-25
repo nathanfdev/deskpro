@@ -43,10 +43,12 @@ use Orb\Util\Util;
 class DefaultFromAddress implements \Swift_Events_SendListener
 {
 	protected $from;
+	protected $name = '';
 
-	public function __construct($from)
+	public function __construct($from, $name = '')
 	{
 		$this->from = $from;
+		$this->name = $name;
 	}
 
 	public function sendPerformed(\Swift_Events_SendEvent $evt)
@@ -60,7 +62,14 @@ class DefaultFromAddress implements \Swift_Events_SendListener
 		$headers = $message->getHeaders();
 
 		if (!$message->getFrom()) {
-			$message->setFrom($this->from);
+			$message->setFrom($this->from, $this->name);
+		} else {
+			$from = array_pop($message->getFrom());
+
+			// Default email without the name
+			if ($from[0] == $this->from && empty($from[1])) {
+				$message->setFrom($this->from, $this->name);
+			}
 		}
 	}
 }
