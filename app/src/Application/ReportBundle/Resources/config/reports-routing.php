@@ -5,6 +5,31 @@ use Symfony\Component\Routing\Route;
 
 $collection = new RouteCollection();
 
+$collection->add('report_login', new Route(
+	'/login',
+	array('_controller' => 'ReportBundle:Login:index'),
+	array(),
+	array()
+));
+
+$collection->add('report_logout', new Route(
+	'/logout/{auth}',
+	array('_controller' => 'ReportBundle:Login:logout'),
+	array(),
+	array()
+));
+
+$collection->add('report_login_authenticate_local', new Route(
+	'/login/authenticate-password',
+	array('_controller' => 'ReportBundle:Login:authenticateLocal', 'usersource_id' => 0),
+	array(),
+	array()
+));
+
+################################################################################
+# Trends
+################################################################################
+
 $collection->add('report', new Route(
 	'/',
 	array('_controller' => 'ReportBundle:Dashboard:index'),
@@ -145,81 +170,81 @@ $collection->add('report_chart_get_fullscreen_details', new Route(
 	array()
 ));
 
-$collection->add('report_live_index', new Route(
-	'/live-reports',
-	array('_controller' => 'ReportBundle:Live:index'),
-	array(),
-	array()
-));
-
-$collection->add('report_live_view', new Route(
-	'/live-reports/{stat_id}',
-	array('_controller' => 'ReportBundle:Live:view'),
-	array('stat_id' => '\\d+'),
-	array()
-));
-
-$collection->add('report_login', new Route(
-	'/login',
-	array('_controller' => 'ReportBundle:Login:index'),
-	array(),
-	array()
-));
-
-$collection->add('report_logout', new Route(
-	'/logout/{auth}',
-	array('_controller' => 'ReportBundle:Login:logout'),
-	array(),
-	array()
-));
-
-$collection->add('report_login_authenticate_local', new Route(
-	'/login/authenticate-password',
-	array('_controller' => 'ReportBundle:Login:authenticateLocal', 'usersource_id' => 0),
-	array(),
-	array()
-));
+################################################################################
+# Agent Hours
+################################################################################
 
 $collection->add('report_agent_hours_index', new Route(
-    '/agent/hours/index/',
+    '/agent-hours',
     array('_controller' => 'ReportBundle:AgentHours:index'),
     array(),
     array()
 ));
 
 $collection->add('report_agent_hours_list_date', new Route(
-    '/agent/hours/list/{date}',
+    '/agent-hours/{date}',
     array('_controller' => 'ReportBundle:AgentHours:list'),
     array(),
     array()
 ));
 
+################################################################################
+# Agent Activity
+################################################################################
+
 $collection->add('report_agent_activity_index', new Route(
-    '/agent/activity/index/',
+    '/agent-activity',
     array('_controller' => 'ReportBundle:AgentActivity:index'),
     array(),
     array()
 ));
 
 $collection->add('report_agent_activity_list', new Route(
-    '/agent/activity/list/{agent_id}/{date}',
+    '/agent-activity/list/{agent_id}/{date}',
     array('_controller' => 'ReportBundle:AgentActivity:list'),
     array(),
     array()
 ));
 
+################################################################################
+# Agent Feedback
+################################################################################
+
+$collection->add('report_agent_feedback_feed', new Route(
+	'/agent-feedback/{page}',
+	array('_controller' => 'ReportBundle:AgentFeedback:feed', 'page' => '0'),
+	array(),
+	array()
+));
+
 $collection->add('report_agent_feedback_summary', new Route(
-    '/agent/feedback/summary/{date}',
+    '/agent-feedback/summary/{date}',
     array('_controller' => 'ReportBundle:AgentFeedback:summary'),
     array(),
     array()
 ));
 
-$collection->add('report_agent_feedback_feed', new Route(
-    '/agent/feedback/feed/{page}',
-    array('_controller' => 'ReportBundle:AgentFeedback:feed'),
-    array(),
-    array()
+################################################################################
+# Publish
+################################################################################
+
+$collection->add('report_publish', new Route(
+	'/publish',
+	array('_controller' => 'ReportBundle:ReportBuilder:index'),
+	array(),
+	array()
 ));
+
+################################################################################
+# Report Builder
+################################################################################
+
+$collection->add('report_builder', new Route(
+	'/report-builder',
+	array('_controller' => 'ReportBundle:ReportBuilder:index'),
+	array(),
+	array()
+));
+
 
 return $collection;

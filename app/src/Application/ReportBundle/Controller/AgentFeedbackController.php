@@ -40,6 +40,10 @@ class AgentFeedbackController extends AbstractController
 {
     public function summaryAction($date)
     {
+		if (!$date) {
+			$date = date('Y-m');
+		}
+
         $dt = new \DateTime('now', new \DateTimeZone('UTC'));
         list($year, $month) = explode('-', $date);
         $dt->setDate($year, $month, 1);

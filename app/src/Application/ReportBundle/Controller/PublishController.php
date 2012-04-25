@@ -36,12 +36,11 @@ namespace Application\ReportBundle\Controller;
 
 use Application\DeskPRO\App;
 
-class LiveController extends AbstractController
+class PublishController extends AbstractController
 {
-	
 	public function indexAction()
 	{
-		return $this->render('ReportBundle:Live:index.html.twig');
+		return $this->render('ReportBundle:Publish:index.html.twig');
 	}
-	
+
 }
