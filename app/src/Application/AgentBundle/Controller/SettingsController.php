@@ -136,12 +136,15 @@ class SettingsController extends AbstractController
 
 		$my_subs = $this->em->getRepository('DeskPRO:TicketFilterSubscription')->getForAgent($this->person);
 
+		$admin_triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->findTriggersForcingNotificationForAgent($this->person);
+
 		return $this->render('AgentBundle:Settings:ticket-notifications.html.twig', array(
 			'all_filters' => $all_filters,
 			'sys_filters' => $sys_filters,
 			'sys_filters_hold' => $sys_filters_hold,
 			'custom_filters' => $custom_filters,
 			'my_subs' => $my_subs,
+			'admin_triggers' => $admin_triggers,
 		));
 	}
 

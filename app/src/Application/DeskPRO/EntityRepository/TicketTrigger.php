@@ -39,6 +39,7 @@ use Orb\Util\Numbers;
 use Orb\Util\Arrays;
 
 use \Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 
 class TicketTrigger extends EntityRepository
 {
@@ -191,5 +192,45 @@ class TicketTrigger extends EntityRepository
 		")->execute();
 
 		return $triggers;
+	}
+
+
+	/**
+	 * Search for triggers that force an email notification on an agent.
+	 *
+	 * @param \Application\DeskPRO\Entity\Person $agent
+	 * @return array
+	 */
+	public function findTriggersForcingNotificationForAgent(PersonEntity $agent)
+	{
+		$triggers = $this->getEntityManager()->createQuery("
+			SELECT trig
+			FROM DeskPRO:TicketTrigger trig
+			WHERE trig.is_enabled = true
+		")->execute();
+
+		$ret = array();
+
+		$find_codes = array('agent.' . $agent->id);
+		foreach ($agent->getHelper('Agent')->getTeamIds() as $tid) {
+			$find_codes[] = 'agent_team.' . $tid;
+		}
+
+		foreach ($triggers as $tr) {
+			foreach ($tr->actions as $action) {
+				if ($action['type'] != 'add_agent_notify') {
+					continue;
+				}
+
+				foreach ($find_codes as $code) {
+					if (in_array($code, $action['options']['codes'])) {
+						$ret[] = $tr;
+						break;
+					}
+				}
+			}
+		}
+
+		return $ret;
 	}
 }

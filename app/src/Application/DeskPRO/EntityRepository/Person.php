@@ -102,6 +102,11 @@ class Person extends AbstractEntityRepository
 			$for_ids = array($for_ids);
 		}
 
+		// No names to return
+		if (is_array($for_ids) && !$for_ids) {
+			return array();
+		}
+
 		foreach ($this->getAgents() as $agent) {
 			if ($for_ids && !in_array($agent->id, $for_ids)) {
 				continue;

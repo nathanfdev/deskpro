@@ -192,4 +192,6 @@
     'agent.tickets.user_waiting_x_and_total_y'       => 'User has been waiting <time>{{waiting}}</time> for a reply and a total of <time>{{total}}</time> since the ticket started.',
     'agent.tickets.your_teams_tickets'               => 'Your teams tickets',
     'agent.tickets.your_tickets'                     => 'Your tickets',
+	'agent.tickets.admin_trigger_notifications'      => 'Triggers that notify you',
+	'agent.tickets.admin_trigger_notifications_explain' => 'An administrator has created these triggers that send you email notifications.',
 );

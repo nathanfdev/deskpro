@@ -162,6 +162,10 @@ class ActionsFactory
 				$options = array('mode' => isset($value['mode']) ? $value['mode'] : 'run');
 				break;
 
+			case 'add_agent_notify':
+				$options = array('codes' => $value['codes']);
+				break;
+
 			default:
 				if (strpos($name, 'set_email_template_') !== false) {
 					$options = array(

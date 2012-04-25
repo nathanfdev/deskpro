@@ -88,22 +88,26 @@ class AddAgentNotifyModifier implements CollectionModifierInterface
 			}
 		}
 
-		$desc_agents = $desc_agents + App::getEntityRepository('DeskPRO:Person')->getAgentNames($agent_ids);
-		$desc_teams  = $desc_agents + App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames($agent_team_ids);
+		if ($agent_ids) {
+			$desc_agents = array_merge($desc_agents, App::getEntityRepository('DeskPRO:Person')->getAgentNames($agent_ids));
+		}
+		if ($agent_team_ids) {
+			$desc_teams  = array_merge($desc_agents, App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames($agent_team_ids));
+		}
 
 		$parts = array();
 		if ($desc_agents) {
-			$parts[] = $tr->phrase('agent.tickets.agents_action', array('agents' => $desc_agents));
+			$parts[] = $tr->phrase('agent.tickets.agents_action', array('agents' => implode(', ', $desc_agents)));
 		}
 		if ($desc_teams) {
-			$parts[] = $tr->phrase('agent.tickets.teams_action', array('teams' => $desc_teams));
+			$parts[] = $tr->phrase('agent.tickets.teams_action', array('teams' => implode(', ', $desc_teams)));
 		}
 
 		if (!$parts) {
 			return '';
 		}
 
-		$parts = implode($tr->phrase('agent.tickets.sep_and'), $parts);
+		$parts = implode($tr->phrase('agent.general.and'), $parts);
 
 		return $tr->phrase('agent.tickets.always_notify_people', array('parts' => $parts));
 	}
