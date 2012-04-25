@@ -5,45 +5,49 @@
 {% block page_title %}{{ phrase('user.general.your_profile') }}{% endblock %}
 {% block content %}
 
-<section class="dp-portal-section">
-	<header>
-		<h1>{{ phrase('user.general.profile') }}</h1>
-	</header>
-	<div class="dp-content-block dp-profile-block">
-		<div class="dp-control-group">
-			<div class="dp-control-label">
-				<label>{{ phrase('user.general.first_name') }}</label>
-			</div>
-			<div class="dp-controls dp-fill">
-				{{ form_widget(form.first_name) }}
-			</div>
-		</div>
-		<div class="dp-control-group">
-			<div class="dp-control-label">
-				<label>{{ phrase('user.general.last_name') }}</label>
-			</div>
-			<div class="dp-controls dp-fill">
-				{{ form_widget(form.last_name) }}
-			</div>
-		</div>
-		<div class="dp-control-group">
-			<div class="dp-control-label">
-				<label>{{ phrase('user.general.timezone') }}</label>
-			</div>
-			<div class="dp-controls dp-fill">
-				{{ form_widget(form.timezone) }}
-			</div>
-		</div>
+<form accept="{{ path('user_profile') }}" method="POST">
 
-		<button class="dp-btn dp-btn-primary">{{ phrase('user.general.save') }}</button>
-	</div>
-</section>
+	<section class="dp-portal-section">
+		<header>
+			<h1>{{ phrase('user.general.profile') }}</h1>
+		</header>
+		<div class="dp-content-block dp-profile-block">
+			<div class="dp-control-group">
+				<div class="dp-control-label">
+					<label>{{ phrase('user.general.first_name') }}</label>
+				</div>
+				<div class="dp-controls dp-fill">
+					{{ form_widget(form.first_name) }}
+				</div>
+			</div>
+			<div class="dp-control-group">
+				<div class="dp-control-label">
+					<label>{{ phrase('user.general.last_name') }}</label>
+				</div>
+				<div class="dp-controls dp-fill">
+					{{ form_widget(form.last_name) }}
+				</div>
+			</div>
+			<div class="dp-control-group">
+				<div class="dp-control-label">
+					<label>{{ phrase('user.general.timezone') }}</label>
+				</div>
+				<div class="dp-controls dp-fill">
+					{{ form_widget(form.timezone) }}
+				</div>
+			</div>
+
+			<button class="dp-btn dp-btn-primary">{{ phrase('user.general.save') }}</button>
+		</div>
+	</section>
+</form>
 
 <section class="dp-portal-section">
 	<header>
 		<h1>{{ phrase('user.general.email_addresses') }}</h1>
 	</header>
 	<div class="dp-content-block dp-profile-block">
+
 		<div class="dp-content-wrapper">
 			{% if app.session.hasFlash('resent_validation_email') %}
 				<div class="dp-alert">
@@ -63,6 +67,16 @@
 			{% if app.session.hasFlash('new_email_validating') %}
 				<div class="dp-alert">
 					{{ phrase('user.profile.email_was_added_validate_it', {'email':app.session.flash('removed_email')}) }}
+				</div>
+			{% endif %}
+			{% if app.getSession().getFlash('invalid_email') %}
+				<div class="dp-alert dp-alert-error">
+					{{ phrase('user.profile.trying_to_add_invalid_email') }}
+				</div>
+			{% endif %}
+			{% if app.getSession().getFlash('email_exists') %}
+				<div class="dp-alert dp-alert-error">
+					{{ phrase('user.profile.email_validate_exists') }}
 				</div>
 			{% endif %}
 

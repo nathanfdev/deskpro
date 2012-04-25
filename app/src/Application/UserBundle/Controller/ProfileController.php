@@ -219,28 +219,17 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			return $this->redirectRoute('user_profile');
 		}
 
+		if (!\Orb\Validator\StringEmail::isValueValid($email_address)) {
+			$this->session->setFlash('invalid_email', 1);
+			$this->session->save();
+			return $this->redirectRoute('user_profile');
+		}
+
 		$email_exists = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($email_address);
 		if ($email_exists) {
-			$person = $this->person;
-
-			$vars = array(
-				'email_subject' => new \Application\DeskPRO\Translate\DelegatePhrase('user.emails.subj_newemail_exists'),
-				'email_exists' => $email_exists,
-				'person' => $person
-			);
-
-			App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($vars, $person, $email_exists) {
-				$email_subject = $tr->phrase($vars['email_subject']);
-				$email_body = App::get('templating')->render('DeskPRO:emails_user:new-email-exists.html.twig', $vars);
-
-				$message = App::getMailer()->createMessage();
-				$message->setTo($email_exists->getEmail(), $person->getDisplayName());
-				$message->setSubject($email_subject);
-				$message->setBody($email_body, 'text/html');
-				$message->enableQueueHint();
-
-				App::getMailer()->send($message);
-			});
+			$this->session->setFlash('email_exists', 1);
+			$this->session->save();
+			return $this->redirectRoute('user_profile');
 		}
 
 		$validating_email = new PersonEmailValidating($email_address);
@@ -255,6 +244,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$this->_doSendValidationEmail($validating_email);
 
 		$this->session->setFlash('new_email_validating', $validating_email['email']);
+		$this->session->save();
 
 		return $this->redirectRoute('user_profile');
 	}

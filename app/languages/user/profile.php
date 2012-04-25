@@ -4,6 +4,7 @@
     'user.profile.awaiting_validation'         => '(awaiting validation)',
     'user.profile.current_password'            => 'Current Password',
     'user.profile.download_subscriptions'      => 'Download Subscriptions',
+    'user.profile.trying_to_add_invalid_email' => 'The email address you entered is invalid.',
     'user.profile.email_validate_exists'       => 'The email address you are trying to activate on your account is already attached to a different account.',
     'user.profile.email_validate_exists_help'  => 'If you own both accounts and want to merge them together, please <a href="{{link_url}}">submit a ticket</a> and one of our agents will be happy to help.',
     'user.profile.email_validate_sent'         => 'Validation email sent to {{email}}',
