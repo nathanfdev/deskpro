@@ -61,21 +61,8 @@ DeskPRO.Report.Dashboard.Widget = new Orb.Class({
 			// Show the edit overlay
 			$('#overlay_wrapper .overlay-loader').css('display', 'block');
 			$('#overlay_wrapper .overlay-title h4').html('Edit Dashboard Chart');
-			self.dashboard.openOverlay('');
 
-			$.ajax({
-				url: DeskPRO_Window.getUrl('report_trend_dashboard_stat_edit', {dashboard_id: self.dashboard.dashboard_id, dashboard_stat_id: self.widget_id}),
-				type: 'GET',
-				dataType: 'json',
-				success: function(data) {
-					// Set the edit content
-					$('#overlay_wrapper .overlay-content').html(data.html);
-					$('#overlay_wrapper .overlay-loader').css('display', 'none');
-
-					var form = $('#dashboard_widget_edit_form');
-					self.dashboard.saveEditWidget(form);
-				}
-			});
+			new DeskPRO.Report.Dashboard.EditWidget(self.dashboard.dashboard_id, self.widget_id);
 
 			return false;
 		});

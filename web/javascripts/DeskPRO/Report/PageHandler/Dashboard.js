@@ -274,13 +274,12 @@ DeskPRO.Report.PageHandler.Dashboard = new Orb.Class({
 
 	// Open the overlay loading in a template
 	openOverlay: function(overlay_content) {
+		console.trace();
 		var overlay = new DeskPRO.Report.Dashboard.NewWidget(this);
 	},
 
 	// Clean the overlay and close it
 	closeOverlay: function() {
-
-
 
 	},
 

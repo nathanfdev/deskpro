@@ -188,8 +188,8 @@ class DashboardController extends AbstractController
 	public function deleteAction($dashboard_id)
 	{
 		try {
-			$dashboard     = $this->getDashboard($dashboard_id);
-
+			$dashboard  = $this->getDashboard($dashboard_id);
+			App::getOrm()->remove($dashboard->getStat());
 			App::getOrm()->remove($dashboard);
 			App::getOrm()->flush();
 		}
@@ -299,10 +299,21 @@ class DashboardController extends AbstractController
 
 		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
 
+		$trend_form = $this->get('form.factory')->create(new CloneStatType(), $stat);
+
 		if ($this->in->getBool('process')) {
 			$form->bindRequest($this->get('request'));
+			$trend_form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
+				$stat->setTitle($dashboardStat->getTitle());
+				$stat->setAuthor($this->person);
+				$term_rules = RuleBuilder::newTermsBuilder();
+				$stat['criteria'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+
+				App::getOrm()->persist($stat);
+				App::getOrm()->flush();
+
 				App::getOrm()->persist($dashboardStat);
 				App::getOrm()->flush();
 
@@ -317,12 +328,20 @@ class DashboardController extends AbstractController
 			'dashboard_stat_id' => $dashboardStat->getId(),
 		));
 
+		$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
+
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
+		$term_options['custom_ticket_fields'] = $custom_fields;
+
 		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
 			'dashboard' => $dashboard,
 			'stat'      => $stat,
 			'form'      => $form->createView(),
 			'form_route' => $form_route,
 			'form_id'    => 'dashboard_widget_edit_form',
+			'trend_form' => $trend_form->createView(),
+			'term_options' => $term_options,
 		));
 
 		return $this->createJsonResponse(array('html' => $html));
@@ -428,7 +447,7 @@ class DashboardController extends AbstractController
 	/**
 	 * Get the Dashboard Entity
 	 *
-	 * @throws NotFoundHttpException
+	 * @return \Application\DeskPRO\Entity\ReportDashboard
 	 */
 	protected function getDashboard($dashboard_id)
 	{
@@ -443,7 +462,7 @@ class DashboardController extends AbstractController
 	/**
 	 * Get the Stat Entity
 	 *
-	 * @throws NotFoundHttpException
+	 * @return \Application\DeskPRO\Entity\Stat
 	 */
 	protected function getStatType($stat_type)
 	{
@@ -454,7 +473,7 @@ class DashboardController extends AbstractController
 	/**
 	 * Get the Stat Entity
 	 *
-	 * @throws NotFoundHttpException
+	 * @return \Application\DeskPRO\Entity\Stat
 	 */
 	protected function getStat($stat_id)
 	{
@@ -469,7 +488,7 @@ class DashboardController extends AbstractController
 	/**
 	 * Get the Dashboard Stat Entity
 	 *
-	 * @throws NotFoundHttpException
+	 * @return \Application\DeskPRO\Entity\ReportDashboardStat
 	 */
 	protected function getDashboardStat($dashboard_stat_id)
 	{

@@ -96,4 +96,6 @@
 	{{ form_rest(trend_form) }}
 
 	<button class="btn primary save-trigger">{{ phrase('agent.general.save') }}</button>
+
+	<script type="text/x-json" class="set_terms_json">{{ stat.criteria|json_encode|raw }}</script>
 </form>

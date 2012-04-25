@@ -472,6 +472,7 @@ $CONFIG['report_dashboard'] = array(
 		'javascripts/DeskPRO/Report/PageHandler/Dashboard.js',
 		'javascripts/DeskPRO/Report/Dashboard/Widget.js',
 		'javascripts/DeskPRO/Report/Dashboard/NewWidget.js',
+		'javascripts/DeskPRO/Report/Dashboard/EditWidget.js',
 		'javascripts/DeskPRO/Report/PageHandler/Trend.js',
 	),
 );

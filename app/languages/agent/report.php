@@ -45,5 +45,4 @@
 	'agent.report.stat_title_totaluserwaitingticketresolvedtime'   => 'Total user waiting time',
 	'agent.report.stat_title_totalagentwaitingticketresolvedtime'  => 'Total agent waiting time',
 	'agent.report.stat_title_ticketfirstresponsetime'              => 'Time until first response',
-	'agent.report.stat_title_ticketsopened'                        => 'Count of tickets opened',
 );
