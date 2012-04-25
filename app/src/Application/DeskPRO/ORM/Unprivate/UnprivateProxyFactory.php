@@ -51,13 +51,16 @@ class UnprivateProxyFactory extends \Doctrine\ORM\Proxy\ProxyFactory
     {
         $proxyDir = $toDir ?: $this->_proxyDir;
         $proxyDir = rtrim($proxyDir, DIRECTORY_SEPARATOR);
+        $num = 0;
         foreach ($classes as $class) {
-            if ($class->isMappedSuperclass) {
+            if ($class->isMappedSuperclass || $class->reflClass->isAbstract()) {
                 continue;
             }
             $proxyFileName = $this->getProxyFileName($class->name, $proxyDir);
             $this->_generateProxyClass($class, $proxyFileName, self::$_proxyClassTemplate);
+            $num++;
         }
+        return $num;
     }
     protected function _generateProxyClass($class, $fileName, $file)
     {

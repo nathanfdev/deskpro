@@ -1142,16 +1142,12 @@ class BasicEntityPersister
                 foreach ($columns AS $column) {
                     $placeholder = '?';
 
-					/* DESKPRO EDIT:
-					 * Temp edit to fix PHP notice. See http://www.doctrine-project.org/jira/browse/DDC-1705
-					 * Will be fixed in the official release of 2.2.2
-					 */
-					if (isset($this->_class->fieldNames[$column]) &&
-							isset($this->_columnTypes[$this->_class->fieldNames[$column]]) &&
-							isset($this->_class->fieldMappings[$this->_class->fieldNames[$column]]['requireSQLConversion'])) {
-						$type = Type::getType($this->_columnTypes[$this->_class->fieldNames[$column]]);
-						$placeholder = $type->convertToDatabaseValueSQL('?', $this->_platform);
-					}
+                    if (isset($this->_columnTypes[$column]) &&
+                        isset($this->_class->fieldNames[$column]) &&
+                        isset($this->_class->fieldMappings[$this->_class->fieldNames[$column]]['requireSQLConversion'])) {
+                        $type = Type::getType($this->_columnTypes[$column]);
+                        $placeholder = $type->convertToDatabaseValueSQL('?', $this->_platform);
+                    }
 
                     $values[] = $placeholder;
                 }
