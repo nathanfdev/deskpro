@@ -270,9 +270,9 @@ class FeedbackSearch extends SearcherAbstract
 				);
 				break;
 
-			//case 'popularity':
-			//	$order_by = "ORDER BY feedback.popularity $dir";
-			//	break;
+			case 'popular':
+				$order_by = "ORDER BY ((total_rating^2)/DATEDIFF(NOW(),date_created)) DESC, date_created DESC";
+				break;
 
 			case 'most-voted':
 			case 'num_ratings':
