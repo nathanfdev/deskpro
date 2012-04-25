@@ -88,11 +88,11 @@ function TicketTriggerEditPage_initTerms(handler) {
 			<label>{{ phrase('agent.general.description') }}</label> <em>{{ phrase('admin.tickets.enter_optional_description') }}</em>
 		</div>
 		<div class="dp-form-input">
-			{% if trigger.sys_name %}
-				{{ phrase('agent.general.triggers_' ~ trigger.sys_name|replace({'.': '_'})) }}
-				<div style="display: none">{{ form_widget(form.title) }}</div>
-			{% else %}
-				{{ form_widget(form.title) }}
+			{% if trigger.title %}
+                {{ form_widget(form.title) }}
+            {% elseif trigger.sys_name %}
+                {{ phrase('agent.general.triggers_' ~ trigger.sys_name|replace({'.': '_'})) }}
+                <div style="display: none">{{ form_widget(form.title) }}</div>
 			{% endif %}
 		</div>
 	</div>
