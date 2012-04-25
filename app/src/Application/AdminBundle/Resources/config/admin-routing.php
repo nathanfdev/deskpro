@@ -415,6 +415,13 @@ $collection->add('admin_settings', new Route(
 	array()
 ));
 
+$collection->add('admin_settings_saveform', new Route(
+	'/settings/save-settings/{type}/{auth}',
+	array('_controller' => 'AdminBundle:Settings:settingsSaveForm'),
+	array(),
+	array()
+));
+
 $collection->add('admin_settings_silent_settings', new Route(
 	'/settings/welcome/set-settings-silent.json',
 	array('_controller' => 'AdminBundle:Settings:setSilentSettings'),

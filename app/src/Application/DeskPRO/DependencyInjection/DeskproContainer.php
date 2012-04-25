@@ -419,6 +419,18 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * Get the settings object
+	 *
+	 * @return \Application\DeskPRO\Settings\Settings
+	 */
+	public function getSettingsHandler()
+	{
+		$settings = $this->get(self::SERVICE_SETTINGS);
+		return $settings;
+	}
+
+
+	/**
 	 * Get a value from the main system configuration
 	 *
 	 * @param string $name

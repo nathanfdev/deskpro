@@ -85,6 +85,43 @@ class SettingsController extends AbstractController
 		));
 	}
 
+	public function settingsSaveFormAction($type, $auth)
+	{
+		$auth_id = 'settings_' . $type;
+		$this->ensureAuthToken($auth_id, $auth);
+
+		$set_settings = $this->in->getCleanValueArray('settings', 'string', 'str_simple');
+
+		// set_settings contains an array of names that should be set
+		// If no value, it means its a null value (aka to be unset/set to default)
+		foreach ($this->in->getCleanValueArray('set_settings', 'str_simple', 'discard') as $k) {
+			if (!isset($set_settings[$k])) {
+				$set_settings[$k] = null;
+			}
+		}
+
+		$this->db->beginTransaction();
+		try {
+			foreach ($set_settings as $k => $v) {
+				$this->container->getSettingsHandler()->setSetting($k, $v);
+			}
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		$this->session->setFlash('saved_settings', 1);
+		$this->session->save();
+
+		$return = $this->in->getString('return');
+		if ($return) {
+			return $this->redirect($return);
+		}
+
+		return $this->redirectRoute('admin');
+	}
+
 	############################################################################
 	# advanced
 	############################################################################

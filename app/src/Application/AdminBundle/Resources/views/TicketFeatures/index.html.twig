@@ -1,92 +1,40 @@
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block html_head %}
-<style>
-.setting_section_head {
-	margin: -10px -10px 0 -10px;
-	padding: 0 0 10px 3px;
-}
-
-.setting_section_head a {
-	font-size: 9px;
-	color: #C7CBD1;
-	text-decoration: none;
-	float: right;
-}
-.setting_section_head a:hover {
-	color: #777A80;
-}
-
-.setting_section_head h1 {
-	font-size: 25px;
-	font-weight: normal;
-}
-
-.setting_field_row {
-	border-top:  1px solid #ccc;
-	padding: 18px 0 0 0;
-	margin: 8px 0 0 0;
-}
-
-.setting_field_row h4 {
-	float: left;
-	font-size: 15px;
-	padding-top: 4px;
-}
-
-.setting_field_row .setting_fields {
-	margin-left: 150px;
-}
-
-.field_row {
-	margin-bottom: 16px;
-}
-
-.field_row label {
-	font-family: Helvetica, sans-serif;
-	font-size: 12px;
-	display: block;
-	margin-bottom: 2px;
-}
-
-.setting_fields input[type="text"] {
-	background-color: #FCFCFC;
-	border:  1px solid #DCE1E8;
-	padding: 1px;
-	-moz-border-radius: 2px;
-	border-radius: 2px;
-}
-</style>
+{% block pagebar %}
+<ul>
+	<li>{{ phrase('admin.tickets.ticket_features_settings') }}</li>
+</ul>
 {% endblock %}
-{% block page_js_exec %}
-<script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	
-}
-</script>
-{% endblock %}
-{% block content %}
+{% block page %}
 
-<div class="setting_section_head">
-	<h1>{{ phrase('admin.tickets.ticket_features_settings') }}</h1>
-</div>
+{% if app.getSession().getFlash('saved_settings') %}
+	<div class="alert-message block-message success">
+		Settings were saved successfully.
+	</div>
+{% endif %}
 
-<input type="hidden" name="process" value="1" />
+<form action="{{ path('admin_settings_saveform', {type: 'ticket_features', auth: security_token('settings_ticket_features') }) }}">
+<input type="hidden" name="return" value="{{ path('admin_features') }}" />
+
+<input type="hidden" name="set_settings[]" value="core.tickets.enable_feedback" />
+<input type="hidden" name="set_settings[]" value="core.tickets.feedback_agents_read" />
 
 <div class="setting_field_row">
 	<h4>{{ phrase('agent.general.feedback') }}</h4>
 	<div class="setting_fields">
 		<div class="field_row">
-			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
+			<label><input type="checkbox" name="settings[core.tickets.enable_feedback]" {% if app.getSetting('core.tickets.enable_feedback') %}checked="checked"{% endif %} />
 				{{ phrase('admin.tickets.enable_ticket_feedback') }}</label>
 		</div>
 		<div class="field_row">
-			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
+			<label><input type="checkbox" name="settings[core.tickets.feedback_agents_read]" {% if app.getSetting('core.tickets.feedback_agents_read') %}checked="checked"{% endif %} />
 				{{ phrase('admin.tickets.choice_agents_read_ticket_feedback') }}</label>
 		</div>
 	</div>
 </div>
 <div class="setting_field_row" style="text-align: center">
-	<button class="dp-button">{{ phrase('admin.general.save_settings') }}</button>
+	<button class="btn primary">{{ phrase('admin.general.save_settings') }}</button>
 </div>
+
+</form>
 
 {% endblock %}
