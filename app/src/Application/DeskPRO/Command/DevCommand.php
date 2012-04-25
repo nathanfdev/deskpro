@@ -47,6 +47,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 	{
 		$this->setName('dpdev:dev');
 		$this->addOption('reset-routing', null, InputOption::VALUE_NONE, "Deletes cached routing so it will be regenerated next load");
+		$this->addOption('reset-templates', null, InputOption::VALUE_NONE, "Deletes compiled template files");
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -67,6 +68,9 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 			}
 
 			$output->writeln("Done.");
+		} else if ($input->getOption('reset-templates')) {
+			$fs = new \Symfony\Component\Filesystem\Filesystem();
+			$fs->remove(DP_ROOT.'/sys/cache/twig-compiled');
 		}
 	}
 }

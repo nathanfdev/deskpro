@@ -97,29 +97,4 @@ function _page_exec() {
 
 	{% include 'ReportBundle:Dashboard:widget.html.twig' %}
 
-	<script id="dashboard_widget_select" type="text/x-jquery-tmpl">
-		<table id="dashboard_widget_select" class="table-list stat-list" cellspacing="0" cellpadding="0" width="100%">
-			<thead>
-				<tr>
-					<th>{{ phrase('agent.general.title') }}</th>
-					<th width="100">Group By</th>
-					<th width="100">Updates</th>
-					<th width="100">Author</th>
-					<th width="16" class="icon"></th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for stat in all_stats %}
-					<tr>
-						<td>{{stat.title}}</td>
-						<td>{{ stat.getGroupingName }} </td>
-						<td class="period">{{ stat.period }}</td>
-						<td>{{stat.authorName}}</td>
-						<td class="icon"><a href="{{ path('report_trend_dashboard_stat_new', { 'dashboard_id': dashboard.id, 'stat_id': stat.id }) }} " title="{{ phrase('agent.report.add_chart') }}" class="add-chart"><img src="{{ asset('images/report/icons/add.png') }}" alt="{{ phrase('agent.report.add') }}"/></a></td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</script>
-
 {% endblock %}

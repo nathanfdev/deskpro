@@ -100,10 +100,17 @@ $collection->add('report_trend_dashboard_delete', new Route(
 	array()
 ));
 
+$collection->add('report_trend_dashboard_newwidget', new Route(
+	'/trends/dashboards/{dashboard_id}/widget/new',
+	array('_controller' => 'ReportBundle:Dashboard:newWidget'),
+	array(),
+	array()
+));
+
 $collection->add('report_trend_dashboard_stat_new', new Route(
-	'/trends/dashboards/{dashboard_id}/new-stat/{stat_id}',
+	'/trends/dashboards/{dashboard_id}/new-stat/{stat_type}',
 	array('_controller' => 'ReportBundle:Dashboard:dashboardStatNew'),
-	array('dashboard_id' => '\\d+', 'stat_id' => '\\d+'),
+	array('dashboard_id' => '\\d+'),
 	array()
 ));
 

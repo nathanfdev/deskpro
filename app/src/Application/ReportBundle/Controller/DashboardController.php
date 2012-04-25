@@ -40,6 +40,11 @@ use Application\DeskPRO\Entity\ReportDashboardStat;
 use Application\ReportBundle\Form\EditReportDashboardType;
 use Application\ReportBundle\Form\EditReportDashboardStatType;
 
+use Application\ReportBundle\Form\CloneStatType;
+use Application\ReportBundle\Form\EditStatType;
+use Application\ReportBundle\Stat\Base\AbstractStat;
+use Application\DeskPRO\UI\RuleBuilder;
+
 class DashboardController extends AbstractController
 {
 
@@ -219,42 +224,55 @@ class DashboardController extends AbstractController
 	/**
 	 * Add a new stat to the dashboard
 	 */
-	public function dashboardStatNewAction($dashboard_id, $stat_id)
+	public function dashboardStatNewAction($dashboard_id, $stat_type)
 	{
 		$dashboard     = $this->getDashboard($dashboard_id);
-		$stat          = $this->getStat($stat_id);
+		$stat          = $this->getStatType($stat_type);
 
 		$dashboardStat = new ReportDashboardStat();
 		$dashboardStat->setReportDashboard($dashboard);
 		$dashboardStat->setStat($stat);
-		$dashboardStat->setTitle($stat->getTitle());
+		$dashboardStat->setTitle(App::getTranslator()->phrase('agent.report.stat_title_' . strtolower($stat->getStatType())));
 		$dashboardStat->setNumberDataPoints($stat->getDefaultDataPointCount());
 		$dashboardStat->setDisplayGrouping(false);
 
 		$form = $this->get('form.factory')->create(new EditReportDashboardStatType(), $dashboardStat);
 
+		$trend_form = $this->get('form.factory')->create(new CloneStatType(), $stat);
+
 		if ($this->in->getBool('process')) {
 			$form->bindRequest($this->get('request'));
+			$trend_form->bindRequest($this->get('request'));
 
-			if ($form->isValid()) {
-				$next_slot_number = App::getEntityRepository('DeskPRO:ReportDashboardStat')
-				       ->getNextDashboardStatSlot($dashboard_id);
+			$stat->setTitle($dashboardStat->getTitle());
+			$stat->setAuthor($this->person);
+			$term_rules = RuleBuilder::newTermsBuilder();
+			$stat['criteria'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
 
-				$dashboardStat->setSlotNumber($next_slot_number);
+			App::getOrm()->persist($stat);
+			App::getOrm()->flush();
 
-				App::getOrm()->persist($dashboardStat);
-				App::getOrm()->flush();
+			$next_slot_number = App::getEntityRepository('DeskPRO:ReportDashboardStat')->getNextDashboardStatSlot($dashboard_id);
+			$dashboardStat->setSlotNumber($next_slot_number);
 
-				$widget = $this->getWidgetDetails($dashboardStat);
+			App::getOrm()->persist($dashboardStat);
+			App::getOrm()->flush();
 
-				return $this->createJsonResponse(array('widget' => $widget));
-			}
+			$widget = $this->getWidgetDetails($dashboardStat);
+
+			return $this->createJsonResponse(array('widget' => $widget));
 		}
 
 		$form_route = $this->generateUrl('report_trend_dashboard_stat_new', array(
 			'dashboard_id' => $dashboard->getId(),
-			'stat_id' => $stat->getId(),
+			'stat_type' => $stat_type,
 		));
+
+		$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
+
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
+		$term_options['custom_ticket_fields'] = $custom_fields;
 
 		$html = $this->renderView('ReportBundle:Dashboard:editWidget.html.twig', array(
 			'dashboard'  => $dashboard,
@@ -262,6 +280,8 @@ class DashboardController extends AbstractController
 			'form'       => $form->createView(),
 			'form_route' => $form_route,
 			'form_id'    => 'dashboard_widget_new_form',
+			'trend_form' => $trend_form->createView(),
+			'term_options' => $term_options,
 		));
 
 		return $this->createJsonResponse(array('html' => $html));
@@ -358,6 +378,22 @@ class DashboardController extends AbstractController
 		return $this->createJsonResponse(array('widgets' => $widgets));
 	}
 
+	####################################################################################################################
+	# Adding and editing widgets
+	####################################################################################################################
+
+	public function newWidgetAction($dashboard_id)
+	{
+		$dashboard = $this->getDashboard($dashboard_id);
+
+		return $this->render('ReportBundle:Dashboard:widget-choose.html.twig', array(
+			'dashboard' => $dashboard,
+		));
+	}
+
+
+	####################################################################################################################
+
 	/**
 	 * Get the widget deatails ready for JSON response
 	 *
@@ -402,6 +438,17 @@ class DashboardController extends AbstractController
 		}
 
 		return $dashboard;
+	}
+
+	/**
+	 * Get the Stat Entity
+	 *
+	 * @throws NotFoundHttpException
+	 */
+	protected function getStatType($stat_type)
+	{
+		$stat = \Application\DeskPRO\Entity\Stat::newStatType($stat_type);
+		return $stat;
 	}
 
 	/**

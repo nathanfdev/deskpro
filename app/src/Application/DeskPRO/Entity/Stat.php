@@ -204,6 +204,37 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_display_unit = '';
 
+	/**
+	 * @static
+	 * @param $stat_type
+	 * @return \Application\DeskPRO\Entity\Stat
+	 */
+	public static function newStatType($stat_type)
+	{
+		$stat = new static();
+
+		$stat->stat_concept_class = 'Application\\ReportBundle\\Stat\\DeskPRO\\' . $stat_type;
+
+		switch ($stat_type) {
+			case 'TicketsOpened':
+				$stat->grouping_ref = 'tickets.date_created';
+				break;
+
+			case 'TicketsAwaitingAgent':
+			case 'RateOfTicketsProcessed':
+			case 'ReopenedTickets':
+			case 'FirstResolutionRate':
+			case 'TicketsAgentParticipate':
+			case 'TotalTicketResolveTime':
+			case 'TotalUserWaitingTicketResolvedTime':
+			case 'TicketFirstResponseTime':
+				$stat->grouping_ref = 'tickets.agent_id';
+				break;
+		}
+
+		return $stat;
+	}
+
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
@@ -888,6 +919,11 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		return $data;
 	}
 
+
+	public function getStatType()
+	{
+		return \Orb\Util\Util::getBaseClassname($this->stat_concept_class);
+	}
 
 
 	############################################################################

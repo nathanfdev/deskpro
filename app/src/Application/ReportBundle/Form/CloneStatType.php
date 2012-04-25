@@ -52,7 +52,7 @@ class CloneStatType extends AbstractType
 			$variations[$variation] = ucwords($variation);
 		}
 
-		$builder->add('title', 'text');
+		$builder->add('title', 'hidden');
 		$builder->add('grouping_ref', 'choice', array(
 			'choices' => Stat::getGroupingReferencesDisplay(),
 			'empty_value' => false
