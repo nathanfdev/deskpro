@@ -168,7 +168,7 @@ class AddressMatcher
 		foreach ($reader->getToAddresses() as $email) {
 			$address = $email->getEmail();
 
-			$matched_address = $this->getMatchingAddress($address);
+			$matched_address = $this->getMatchingAddress($address, $gateway);
 			if ($matched_address) {
 				return $matched_address;
 			}
@@ -177,7 +177,7 @@ class AddressMatcher
 		foreach ($reader->getCcAddresses() as $email) {
 			$address = $email->getEmail();
 
-			$matched_address = $this->getMatchingAddress($address);
+			$matched_address = $this->getMatchingAddress($address, $gateway);
 			if ($matched_address) {
 				return $matched_address;
 			}
