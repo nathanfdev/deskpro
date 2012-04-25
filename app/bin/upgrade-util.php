@@ -47,11 +47,11 @@ if (php_sapi_name() != 'cli') {
 define('DP_START_DIR', getcwd());
 
 if (!defined('DP_ROOT')) {
-	define('DP_ROOT', realpath(__DIR__ . '/../'));
+	define('DP_ROOT', realpath(dirname(__FILE__) . '/../'));
 }
 
 if (!defined('DP_WEB_ROOT')) {
-	define('DP_WEB_ROOT', realpath(__DIR__ . '/../../'));
+	define('DP_WEB_ROOT', realpath(dirname(__FILE__) . '/../../'));
 }
 
 @ini_set('memory_limit', -1);

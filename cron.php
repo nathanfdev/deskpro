@@ -1,3 +1,3 @@
 <?php
 define('DP_BOOT_MODE', 'cron');
-require __DIR__ . '/index.php';
+require dirname(__FILE__) . '/index.php';
