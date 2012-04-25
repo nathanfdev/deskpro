@@ -145,9 +145,6 @@ class AddressMatcher
 		}
 
 		if (!$match_address_id) {
-			if ($gateway && $gateway->getPrimaryEmailAddress()) {
-				return $gateway->getPrimaryEmailAddress();
-			}
 			return null;
 		}
 
@@ -183,8 +180,8 @@ class AddressMatcher
 			}
 		}
 
-		if ($gateway && $gateway->default_address) {
-			return $gateway->default_address;
+		if ($gateway && $gateway->getPrimaryEmailAddress()) {
+			return $gateway->getPrimaryEmailAddress();
 		}
 
 		return null;

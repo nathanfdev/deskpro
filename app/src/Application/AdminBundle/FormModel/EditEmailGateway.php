@@ -107,16 +107,6 @@ class EditEmailGateway
 		$this->remove_addresses = $remove_addresses;
 	}
 
-	/**
-	 * $desc should be a string type:pattern, like exact:test@example.com
-	 *
-	 * @param string $desc
-	 */
-	public function setDefaultAddress($desc)
-	{
-		$this->set_default_address = $desc;
-	}
-
 	public function apply()
 	{
 		if ($this->has_applied) {
@@ -136,6 +126,12 @@ class EditEmailGateway
 
 		$this->gateway->gateway_type = $this->gateway_type;
 		$this->gateway->is_enabled = $this->is_enabled;
+	}
+
+
+	public function save()
+	{
+		$this->apply();
 
 		if ($this->remove_addresses) {
 			foreach ($this->remove_addresses as $address_id) {
@@ -144,19 +140,16 @@ class EditEmailGateway
 				}
 
 				$this->remove_objs[] = $this->gateway->addresses[$address_id];
-
 				$this->gateway->addresses->remove($address_id);
-				if ($this->gateway->default_address && $this->gateway->default_address->id == $address_id) {
-					$this->gateway->default_address = null;
-				}
 			}
 		}
-	}
 
-
-	public function save()
-	{
-		$this->apply();
+		if ($this->new_addresses) {
+			foreach ($this->new_addresses as $address) {
+				$address->gateway = $this->gateway;
+				$this->gateway->addresses->add($address);
+			}
+		}
 
 		App::getOrm()->persist($this->gateway);
 		App::getOrm()->flush();

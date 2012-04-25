@@ -118,6 +118,7 @@ class EmailGatewaysController extends AbstractController
 			$trans_form->bindRequest($this->get('request'));
 
 			$editgateway->apply();
+
 			try {
 				$conn = $gateway->getFetcher();
 				$conn->test();
@@ -145,9 +146,10 @@ class EmailGatewaysController extends AbstractController
 				}
 
 				$found = false;
+
 				foreach ($gateway->addresses as $a) {
 					if ($a->match_pattern == $editgateway->address) {
-						$found = $a;
+						$found = true;
 						break;
 					}
 				}
