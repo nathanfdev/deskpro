@@ -664,6 +664,30 @@ class Translate implements PersonContextInterface
 				$parts = explode('.', $phrase_name);
 				return '!'.strtoupper($parts[0]).'!';
 			}
+		} else if($debug == 'package_prefix') {
+			$p_prefixes = array(
+				'agent' => 'Ѯ',
+				'admin' => 'Ѿ',
+				'user' => 'Ѱ',
+				'object' => 'Ѳ',
+				'resource' => 'Ѻ',
+				'array' => 'Г',
+				'unknown' => 'Ц',
+			);
+
+			if(!is_scalar($phrase_name)) {
+				$package = typeof($phrase_name);
+			}
+			else {
+				$parts = explode('.', $phrase_name);
+				$package = $parts[0];
+			}
+
+			if(!isset($p_prefixes[$package])) {
+				$package = 'unknown';
+			}
+
+			return $p_prefixes[$package].$phrase_text;
 		} else if ($debug == 'prefix') {
 			return '__'.$phrase_text;
 		}
