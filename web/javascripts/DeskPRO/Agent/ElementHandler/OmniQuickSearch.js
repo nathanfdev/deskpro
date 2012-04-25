@@ -96,7 +96,7 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 
 	_handleKeyPress: function(ev) {
 		var self = this;
-		var current = this.resultWrap.find('.result-focus');
+		var current = $('#dp_omniresults').find('.result-focus');
 		if (ev.keyCode == 13 /* enter key */) {
 			ev.preventDefault();
 
@@ -129,10 +129,11 @@ DeskPRO.Agent.ElementHandler.OmniQuickSearch = new Orb.Class({
 				if (dir == 'down') {
 					$('.result-item', this.resultWrap).first().addClass('result-focus');
 				} else {
-					$('.result-item', this.resultWrap).last().addClass('result-focus');
+					$('.result-item', this.resultWrap).filter(':visible').last().addClass('result-focus');
 				}
 			} else {
-				var items = this.resultWrap.find('.result-item');
+				var items = $('#dp_omniresults').find('.result-item');
+				items = items.filter(':visible');
 				var currentIndex = -1, x=0;
 				items.each(function() {
 					if ($(this).hasClass('result-focus')) {
