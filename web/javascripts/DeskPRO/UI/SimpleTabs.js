@@ -134,7 +134,7 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 
 		this.lastActiveTabContent = eventData.tabContent;
 
-		var parentContainer = eventData.tabContent.closest('.tabViewDetailContent');
+		var parentContainer = eventData.tabContent.closest('.tabViewDetailContent, .with-page-fragment').first();
 		if (parentContainer) {
 			parentContainer.find('.with-scroll-handler').each(function() {
 				$(this).data('scroll_handler').updateSize();
