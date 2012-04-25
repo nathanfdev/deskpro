@@ -203,4 +203,5 @@
     'user.general.your_email_address'              => 'Your Email Address',
     'user.general.your_name'                       => 'Your Name',
     'user.general.your_profile'                    => 'Your Profile',
+	'explain_register_for_online_tickets'          => 'To view and manage your ticket online, register for an account or log in. This step is optional, you will still get replies from our agents to your email address.',
 );
