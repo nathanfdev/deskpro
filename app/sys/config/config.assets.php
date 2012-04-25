@@ -61,6 +61,7 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/stacktrace.js',
 		'vendor/jsdump.js',
 		'vendor/jquery/jquery.min.js',
+		'vendor/jquery/jquery.resize.min.js',
 		'vendor/jquery/jquery-ui/jquery-ui.min.js',
 		'vendor/jquery/jquery-tmpl/jquery.tmpl.min.js',
 		'vendor/jquery/jquery.cookie.js',
