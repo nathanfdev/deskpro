@@ -165,18 +165,10 @@
 				<li data-dashboard-id="{{ dashboard.id }}" class="dashboard {% if this_page == 'dashboard_' ~ dashboard.id %}on{% endif %}"><a href="{{ path('report_trend_dashboard_view', { 'dashboard_id': dashboard.id }) }}">{{ dashboard.title }}</a></li>
 			{% endfor %}
 			<li class="new" id="new_dashboard_trigger"><a href="{{ path('report_trend_dashboard_new') }}" class="new">{{ phrase('agent.report.new_dashboard') }}</a></li>
-			<li class="{% if this_page == 'trends_index' %}on{% endif %} trends" {#id="all_trends_menu_trigger"#}><a href="{{ path('report_trend_index') }}">{{ phrase('agent.general.all_trends') }}</a><i></i></li>
 		</ul>
 	</nav>
 </div>
 {% endblock %}
-
-<ul id="all_trends_menu" style="display: none">
-	<li><a href="{{ path('report_trend_index') }}">View All</a></li>
-	{% for stat in app.get('statData').getEnabledStats() %}
-		<li>{{ stat.title }}</li>
-	{% endfor %}
-</ul>
 
 <div id="dp_page_wrap" class="dp_page_wrap">
 
