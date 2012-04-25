@@ -1,5 +1,20 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block html_head %}
+<style type="text/css">
+	ul.small-detail-list {
+		margin: 0 0 0 20px;
+		padding: 0;
+	}
+
+	ul.small-detail-list li {
+		font-size: 11px;
+		list-style: square;
+		pading: 0 0 0 5px;
+		margin: 0;
+	}
+</style>
+{% endblock %}
 {% block pagebar %}
 	<nav>
 		<ul>
@@ -73,7 +88,14 @@
 	<p>{{ phrase('admin.gateway.explain_email_gateway') }}</p>
 {{ design.helpbox_end() }}
 
-<div class="check-grid item-list">
+<div style="padding-bottom: 5px; font-size: 11px;">
+	{{ phrase('admin.general.view_by') }}:
+	<label><input type="radio" name="view_by" value="address" checked="checked" onclick="$('#by_account').hide(); $('#by_address').show();"> {{ phrase('admin.general.email_addresses') }}</label>
+	&nbsp;&nbsp;
+	<label><input type="radio" name="view_by" value="account" onclick="$('#by_account').show(); $('#by_address').hide();"> {{ phrase('admin.general.account') }}</label>
+</div>
+
+<div class="check-grid item-list" id="by_account" style="display:none;">
 	<table width="100%">
 		<thead>
 			<tr>
@@ -87,13 +109,52 @@
 					<td>
 						<input
 							type="checkbox"
-							class="onoff-slider"
+							class="onoff-slider gateway-toggle-{{ gateway.id }}"
 							{% if gateway.is_enabled %}checked="checked"{% endif %}
 							data-element-handler="DeskPRO.ElementHandler.CheckboxCallUrl"
 							data-url="{{ path('admin_emailgateways_quicktoggle', {'id': gateway.id}) }}"
 							data-state-property="is_enabled"
 						/>
 						{{ gateway.title }}
+						<ul class="small-detail-list">
+							{% for address in gateway.addresses %}
+								<li>{{ address.match_pattern }}</li>
+							{% endfor %}
+						</ul>
+					</td>
+					<td style="padding: 3px 3px 0 0">
+						<a href="{{ path('admin_emailgateways_edit', { 'id': gateway.id }) }}"><span class="btn-edit-gear"></span></a>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+<div class="check-grid item-list" id="by_address">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th style="text-align:left">&nbsp; {{ phrase('agent.general.email_address') }}</th>
+				<th style="text-align:left" width="10">&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for pattern,gateway in all_gateways_byemail %}
+				<tr>
+					<td>
+						<input
+							type="checkbox"
+							class="onoff-slider gateway-toggle-{{ gateway.id }}"
+							{% if gateway.is_enabled %}checked="checked"{% endif %}
+							data-element-handler="DeskPRO.ElementHandler.CheckboxCallUrl"
+							data-url="{{ path('admin_emailgateways_quicktoggle', {'id': gateway.id}) }}"
+							data-state-property="is_enabled"
+						/>
+						{{ pattern }}
+						<ul class="small-detail-list">
+							<li>{{ phrase('admin.general.account') }}: {{ gateway.title }}</li>
+						</ul>
 					</td>
 					<td style="padding: 3px 3px 0 0">
 						<a href="{{ path('admin_emailgateways_edit', { 'id': gateway.id }) }}"><span class="btn-edit-gear"></span></a>

@@ -67,9 +67,17 @@ class EmailGatewaysController extends AbstractController
 
 		$all_transports = $this->em->getRepository('DeskPRO:EmailTransport')->findAll();
 
+		$all_gateways_byemail = array();
+		foreach ($all_gateways as $gateway) {
+			foreach ($gateway->addresses as $addr) {
+				$all_gateways_byemail[$addr->match_pattern] = $gateway;
+			}
+		}
+
 		return $this->render('AdminBundle:EmailGateways:list.html.twig', array(
 			'all_gateways' => $all_gateways,
 			'all_transports' => $all_transports,
+			'all_gateways_byemail' => $all_gateways_byemail
 		));
 	}
 
@@ -241,7 +249,7 @@ class EmailGatewaysController extends AbstractController
 			$em->flush();
 		});
 
-		return $this->createJsonResponse(array('success' => true, 'is_enabled' => $gateway->is_enabled));
+		return $this->createJsonResponse(array('success' => true, 'is_enabled' => $gateway->is_enabled, 'gateway_id' => $gateway->getId()));
 	}
 
 	############################################################################

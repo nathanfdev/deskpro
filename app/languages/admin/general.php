@@ -85,4 +85,5 @@
     'admin.general.variable_name'             => 'Variable Name',
     'admin.general.view'                      => 'View',
     'admin.general.yes'                       => 'Yes',
+	'admin.general.view_by' => 'View by',
 );
