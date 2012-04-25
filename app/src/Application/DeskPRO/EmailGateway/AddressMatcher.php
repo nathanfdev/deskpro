@@ -42,6 +42,8 @@ use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\EmailGatewayAddress;
 use Application\DeskPRO\Entity\EmailGateway;
 
+use Orb\Util\Strings;
+
 /**
  * This looks at an email address ('to') and tries to match it against an EmailGatewayAddress.
  * If no address matches, then the default address for a gateway is returned.
@@ -113,13 +115,13 @@ class AddressMatcher
 	{
 		$this->getPatterns();
 
-		$address = strtolower($address);
+		$address = Strings::utf8_strtolower($address);
 
 		$match_address_id = null;
 		foreach ($this->patterns as $pattern) {
 			switch ($pattern['match_type']) {
 				case 'exact':
-					if ($address == $pattern['match_pattern']) {
+					if ($address == Strings::utf8_strtolower($pattern['match_pattern'])) {
 						$match_address_id = $pattern['id'];
 						break 2;
 					}
@@ -127,7 +129,7 @@ class AddressMatcher
 
 				case 'domain':
 					list (, $domain) = explode('@', $address);
-					if ($domain == $pattern['match_pattern']) {
+					if ($domain == Strings::utf8_strtolower($pattern['match_pattern'])) {
 						$match_address_id = $pattern['id'];
 						break 2;
 					}
