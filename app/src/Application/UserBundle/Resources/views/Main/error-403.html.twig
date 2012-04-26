@@ -1,35 +1,37 @@
 {% set page_noindex = true %}
 {% extends 'UserBundle::layout.html.twig' %}
+{% block breadcrumb %}
+	<li><span class="dp-divider">&rarr;</span> {{ phrase('user.error.not_allowed_title') }}</li>
+{% endblock %}
 {% block content %}
 
-<div class="dp-error-page">
-	<div class="dp-content-block">
-		<div class="dp-box">
-			<div class="dp-box-header">
-				{% if error_title %}
-					<h1>{{ error_title }}</h1>
-				{% else %}
-					<h1>{{ phrase('user.error.not_allowed_title') }}</h1>
-				{% endif %}
-			</div>
+{% if app.getLastException()._dp_sn %}
+	<!-- [SN{{ app.getLastException()._dp_sn }}] -->
+{% endif %}
 
-			<div class="dp-box-content-wrapper">
-				<div class="dp-box-content">
-					{% if error_message %}
-						{{ error_message }}
-					{% else %}
-						{{ phrase('user.error.not_allowed') }}
-					{% endif %}
+<section class="dp-content-post dp-content-page">
+	<header>
+		<h3 style="margin-bottom: 0">
+			{% if error_title %}
+				{{ error_title }}
+			{% else %}
+				{{ phrase('user.error.not_allowed_title') }}
+			{% endif %}
+		</h3>
+	</header>
+	<article>
+		{% if error_message %}
+			{{ error_message }}
+		{% else %}
+			{{ phrase('user.error.not_allowed') }}
+		{% endif %}
 
-					{% if app.user.is_guest %}
-						<p>
-							{{ phrase('user.error.not_allowed_help', {'login_url': path('user_login')}) }}
-						</p>
-					{% endif %}
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+		{% if app.user.is_guest %}
+			<p>
+				{{ phrase('user.error.not_allowed_help', {'login_url': path('user_login')}) }}
+			</p>
+		{% endif %}
+	</article>
+</section>
 
 {% endblock %}

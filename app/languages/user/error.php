@@ -26,4 +26,7 @@
     'user.error.not_found_title'            => 'Not Found',
     'user.error.not_validated_email'        => 'Email address is not validated',
     'user.error.validate_to_use'            => 'That email address has not been validated yet. You need to validate the email address before you can set it as your account default.',
+    'user.error.error' => 'Error',
+    'user.error.server_error_explain' => 'There was a server error that prevented the page from loading. Please try again.',
+    'user.error.error_log_code' => 'Error Code',
 );

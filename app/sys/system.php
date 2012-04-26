@@ -432,6 +432,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			new \Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
 			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
 			new \Application\DeskPRO\DeskPROBundle(),
+			new \Application\UserBundle\UserBundle(),
 		);
 
 		$bundles = array_merge($bundles, $this->registerAdditionalBundles());
@@ -492,10 +493,7 @@ class AdminKernel extends AbstractKernel
 	protected function registerAdditionalBundles()
 	{
 		$bundles = array(
-			new \Application\AdminBundle\AdminBundle(),
-
-			// Needed for templates etc
-			new \Application\UserBundle\UserBundle(),
+			new \Application\AdminBundle\AdminBundle()
 		);
 
 		return $bundles;
@@ -718,7 +716,6 @@ class UserKernel extends AbstractKernel
 	{
 		$bundles = array(
 			new \Application\AgentBundle\AgentBundle(), // so templates can work when notiying
-			new \Application\UserBundle\UserBundle(),
 		);
 
 		return $bundles;

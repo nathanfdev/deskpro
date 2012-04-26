@@ -1,23 +1,36 @@
 {% set page_noindex = true %}
 {% extends 'UserBundle::layout.html.twig' %}
+{% block breadcrumb %}
+	<li><span class="dp-divider">&rarr;</span> {{ phrase('user.error.error') }}</li>
+{% endblock %}
 {% block content %}
 
-<div class="dp-error-page">
-	<div class="dp-content-block">
-		<div class="dp-box">
-			{% if error_title %}
-			<div class="dp-box-header">
-				<h1>{{ error_title }}</h1>
-			</div>
-			{% endif %}
+{% if app.getLastException()._dp_sn %}
+	<!-- [SN{{ app.getLastException()._dp_sn }}] -->
+{% endif %}
 
-			<div class="dp-box-content-wrapper">
-				<div class="dp-box-content">
-					{{ error_message }}
-				</div>
+<section class="dp-content-post dp-content-page">
+	<header>
+		{% if app.getLastException()._dp_sn %}
+			<div style="float: right; font-size: 11px; color: #5A6467;">
+				{{ phrase('user.error.error_log_code') }}: {{ app.getLastException()._dp_sn }}
 			</div>
-		</div>
-	</div>
-</div>
+		{% endif %}
+		<h3 style="margin-bottom: 0">
+			{% if error_title %}
+				{{ error_title }}
+			{% else %}
+				{{ phrase('user.error.error') }}
+			{% endif %}
+		</h3>
+	</header>
+	<article>
+		{% if error_message %}
+			{{ error_message }}
+		{% else %}
+			{{ phrase('user.error.server_error_explain') }}
+		{% endif %}
+	</article>
+</section>
 
 {% endblock %}

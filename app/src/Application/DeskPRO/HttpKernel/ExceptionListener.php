@@ -60,6 +60,9 @@ class ExceptionListener
 		$exception = $event->getException();
 		$this->_logException($exception);
 
+		// This is fetched from the template
+		$this->last_exception = $exception;
+
 		$this->handling_exception = false;
 	}
 
@@ -90,9 +93,6 @@ class ExceptionListener
 		$trace = KernelErrorHandler::stripPathPrefix($trace);
 
 		$exception->_dp_sn = Strings::random(8, Strings::CHARS_KEY);
-
-		// This is fetched from the template
-		$this->last_exception = $exception;
 
 		try {
 			$logger = App::createNewLogger('error_not_found', null);
