@@ -297,12 +297,6 @@ class SettingsController extends AbstractController
 
 	public function quickSetupAction()
 	{
-		// Mark as done
-		if ($this->in->getBool('done')) {
-			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '31');
-			return $this->redirectRoute('admin');
-		}
-
 		if (!App::getSetting('core.rewrite_urls') && !App::getSetting('core.done_rewrite_urls_check')) {
 			$this->db->replace('settings', array(
 				'name' => 'core.done_rewrite_urls_check',
@@ -325,37 +319,6 @@ class SettingsController extends AbstractController
 			}
 		}
 
-		// If coming from the importer we already know all this info
-		if (App::getSetting('core.deskpro3importer') && !App::getSetting('core.setup_initial')) {
-
-			// Update URL though
-			$url = App::getRequest()->getUriForPath('/');
-			$url = str_replace('/index.php/', '/', $url);
-			$this->db->replace('settings', array(
-				'name' => 'core.deskpro_url',
-				'value' => $url,
-			));
-
-			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '1');
-
-			return $this->redirectRoute('admin');
-		}
-
-		$setup = new \Application\AdminBundle\FormModel\QuickSetup();
-		$form = $this->get('form.factory')->create(new \Application\AdminBundle\Form\QuickSetupType(), $setup);
-
-		$errors = false;
-		if ($this->in->getBool('process')) {
-			$this->ensureRequestToken();
-			$form->bindRequest($this->get('request'));
-
-			$errors = $setup->getErrors();
-			if (!$errors) {
-				$setup->save();
-				return $this->redirectRoute('admin');
-			}
-		}
-
 		$default_transport = $this->em->createQuery("
 			SELECT t
 			FROM DeskPRO:EmailTransport t
@@ -373,10 +336,31 @@ class SettingsController extends AbstractController
 
 		$is_import = App::getSetting('core.deskpro3importer') ?: false;
 
+		// Mark as done
+		if ($this->in->getBool('done')) {
+			$pass = true;
+			if (!$default_transport) {
+				$pass = false;
+			}
+			if (!$this->container->getSetting('core.last_cron_run')) {
+				$pass = false;
+			}
+			if (!$this->container->getSetting('core.license')) {
+				$pass = false;
+			}
+
+			// Offer a flag to force pass
+			if ($this->in->getBool('force')) {
+				$pass = true;
+			}
+
+			if ($pass) {
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '1');
+				return $this->redirectRoute('admin');
+			}
+		}
+
 		return $this->render('AdminBundle:Settings:quick-setup.html.twig', array(
-			'setup' => $setup,
-			'form' => $form->createView(),
-			'errors' => $errors,
 			'outgoing_email_form' => $outgoing_email_form,
 			'incoming_email_form' => $incoming_email_form,
 			'is_import' => $is_import,
@@ -515,10 +499,7 @@ class SettingsController extends AbstractController
 		$setup_initial = $this->container->getSetting('core.setup_initial');
 
 		if ($this->in->getBool('complete')) {
-			if ($setup_initial < 30) {
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '31');
-				return $this->redirectRoute('admin');
-			}
+			return $this->redirectRoute('admin');
 		}
 
 		$got = $this->container->getPhpBinaryPath();

@@ -93,13 +93,11 @@ class SetupGuide
 			return null;
 		}
 
-		$step = (int)$this->container->getSetting('core.setup_initial');
-
 		#------------------------------
 		# Setup first
 		#------------------------------
 
-		if (!$step || $step < 30) {
+		if (!$this->hasDoneInitialSetup()) {
 			if (
 				!($this->controller instanceof \Application\AdminBundle\Controller\SettingsController)
 				&& !($this->controller instanceof \Application\AdminBundle\Controller\LicenseController)
@@ -122,7 +120,7 @@ class SetupGuide
 	public function hasDoneInitialSetup()
 	{
 		$step = (int)$this->container->getSetting('core.setup_initial');
-		if (!$step || $step < 30) {
+		if (!$step) {
 			return false;
 		}
 
@@ -148,7 +146,7 @@ class SetupGuide
 
 
 	/**
-	 * Goes through the tasks and marks the next todo item as finished.
+	 * Goes through the tasks and marks the next item as finished.
 	 *
 	 * @return null
 	 */

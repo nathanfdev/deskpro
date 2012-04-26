@@ -126,19 +126,8 @@ class EmailTransportsController extends AbstractController
 					App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.default_from_email', $this->in->getString('default_from_email'));
 				}
 
-				$setup_initial = $this->container->getSetting('core.setup_initial');
-				$set_setup = false;
-				if ($setup_initial < 30) {
-					App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '31');
-					$set_setup = true;
-				}
-
 				if ($this->request->isXmlHttpRequest()) {
 					return $this->createJsonResponse(array('success' => true));
-				}
-
-				if ($set_setup) {
-					return $this->redirectRoute('admin_license');
 				}
 
 				$this->session->setFlash('saved', $transport->title);

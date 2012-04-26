@@ -122,7 +122,9 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 			$step = (int)App::getSetting('core.setup_initial');
 
 			// Only run crom if we've passed initial setup
-			if ($step && $step >= 30) {
+			// This command will just execute nothing and set the last run time
+			// so the system knows its been set up
+			if ($step) {
 				$ret = $this->doExecute($input, $output);
 			} else {
 				$ret = 0;

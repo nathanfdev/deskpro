@@ -350,8 +350,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			// 3) /admin/setup/default-smtp  Setting up outgoing email
 			// 4) /admin/license             Setting up the license
 
-			$setup_step = App::getSetting('core.setup_initial');
-			$is_installed = ($setup_step < 30 ? false : true);
+			$is_installed = App::getSetting('core.setup_initial');
 			if (
 				(!License::getLicense()->hasLicense() || !$is_installed)
 				&& !preg_match('#^/admin/login#', $path)
@@ -733,8 +732,7 @@ class UserKernel extends AbstractKernel
 
 	public function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 	{
-		$setup_step = App::getSetting('core.setup_initial');
-		$is_installed = ($setup_step < 30 ? false : true);
+		$is_installed = App::getSetting('core.setup_initial');
 		if (!$is_installed) {
 			return null;
 		}
