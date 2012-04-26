@@ -47,7 +47,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		if (input) {
 			input.width(propBox.width() - 140);
 
-			$(window).resize(function() {
+			this.wrapper.on('dp_resize', function() {
 				window.setTimeout(function() {
 					var w = propBox.width() - 140;
 					input.width(w);

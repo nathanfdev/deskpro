@@ -39,6 +39,7 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 		window.setTimeout(function() {
 			self._initScroll();
 			self.element.tinyscrollbar_update();
+			self.element.trigger('dp_resize');
 		}, 250);
 	}
 });
