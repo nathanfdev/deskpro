@@ -86,6 +86,17 @@ class Mailer extends \Swift_Mailer
 		try {
 			$default = App::getSetting('core.default_from_email');
 			$name    = App::getSetting('core.deskpro_name');
+
+			if (!$default) {
+				if (!empty($_SERVER['HOST_NAME'])) {
+					$default = 'deskpro@' . $_SERVER['HOST_NAME'];
+				} elseif (@php_uname('n')) {
+					$default = 'deskpro@' . php_uname('n');
+				} else {
+					$default = 'deskpro@localhost';
+				}
+			}
+
 			if ($default) {
 				$this->registerPlugin(new \Orb\Mail\Plugins\DefaultFromAddress($default, $name));
 			}
