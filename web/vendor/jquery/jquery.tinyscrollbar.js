@@ -61,12 +61,11 @@
 			oContent.obj.css(sDirection, -iScroll);
 		});
 
-		var oViewport = { obj: $('.scroll-viewport:first', this) };
-		var oContent = { obj: $('.scroll-content:first', this) };
-		var oScrollbar = { obj: $('.scrollbar:first', this) };
-		oScrollbar.obj.addClass('disable');
-		var oTrack = { obj: $('.track:first', oScrollbar.obj) };
-		var oThumb = { obj: $('.thumb:first', oScrollbar.obj) };
+		var oViewport = { obj: $('.scroll-viewport', oWrapper).first() };
+		var oContent = { obj: $('.scroll-content', oWrapper).first() };
+		var oScrollbar = { obj: $('.scrollbar', oWrapper).first() };
+		var oTrack = { obj: $('.track', oScrollbar.obj) };
+		var oThumb = { obj: $('.thumb', oScrollbar.obj) };
 		var sAxis = options.axis == 'x', sDirection = sAxis ? 'left' : 'top', sSize = sAxis ? 'Width' : 'Height';
 		var iScroll, iPosition = { start: 0, now: 0 }, iMouse = {};
 		var wheelStopTimeout = null;
@@ -77,9 +76,10 @@
 			return this;
 		}
 		this.initialize = function(){
-			this.tinyscrollbar_update();
 			setEvents();
+			var self = this;
 			window.setTimeout(function() {
+				self.tinyscrollbar_update();
 				oWrapper.addClass('scroll-draw');
 			}, 250);
 		};

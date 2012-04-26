@@ -14,13 +14,14 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 			'hideEvent': false
 		};
 
+		this.element.data('scroll_handler', this);
+		this.element.addClass('with-scroll-handler');
+
 		this.setOptions(options);
 
 		if (pageObject.addEvent && this.options.showEvent) {
 			pageObject.addEvent(this.options.showEvent, function() {
-				window.setTimeout(function() {
-					self.updateSize();
-				}, 250);
+				this.updateSize();
 			}, this);
 		} else {
 			this._initScroll();
@@ -31,12 +32,13 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 		if (this.hasInit) return;
 		this.hasInit = true;
 		this.element.tinyscrollbar();
-		this.element.data('scroll_handler', this);
-		this.element.addClass('with-scroll-handler');
 	},
 
 	updateSize: function() {
-		this._initScroll();
-		this.element.tinyscrollbar_update();
+		var self = this;
+		window.setTimeout(function() {
+			self._initScroll();
+			self.element.tinyscrollbar_update();
+		}, 250);
 	}
 });
