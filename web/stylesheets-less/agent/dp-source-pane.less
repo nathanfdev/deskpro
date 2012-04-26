@@ -62,20 +62,20 @@ section.source-section header {
 	.gradient(#d9dfe6, #b9c5d0);
 	position: relative;
 
-	height: 24px;
+	height: 26px;
 	overflow: hidden;
 }
 
 .section_source_header_style() {
 	font-size: 11px;
-	font-family: @heading-font;
+	font-family: @toolbar-font;
 	font-weight: bold;
 	text-shadow: 0 1px 0 rgba(255,255,255,0.5);
 	color: #738699;
 	text-transform: uppercase;
 	padding: 0;
 	margin: 0 0 0 5px;
-	line-height: 24px;
+	line-height: 28px;
 }
 
 section.source-section header h1 {
@@ -156,8 +156,8 @@ ul.source-list li h3.title {
 	color: #575E66;
 	font-weight: bold;
 	font-family: @source-heading-font;
-	font-size: 11px;
-	padding: 6px 0 5px 10px;
+	font-size: 12px;
+	padding: 6px 0 6px 10px;
 }
 
 ul.source-list li.filter-hidden {
@@ -273,7 +273,7 @@ ul.source-list li:not(.nav-selected) > .item-wrap > span.title:not(.nav-selected
 ul.source-list li .list-counter {
 	font-family: @count-badge-font;
 	font-size: 10px;
-	line-height: 14px;
+	line-height: 13px;
 	color: #fff;
 	text-shadow: 0 1px 0 #6c7680;
 	.border-radius(10px, 10px, 10px, 10px);
@@ -1108,22 +1108,15 @@ section.group-section {
 	> header {
         .gradient(#d9dfe6, #b9c5d0);
         position: relative;
-        height: 24px;
+        height: 26px;
         overflow: hidden;
         cursor: pointer;
 
 		h1 {
-			color: #575E66;
-			font-family: @heading-font;
-			font-weight: bold;
-			font-size: 11px;
-	        margin: 0 0 0 5px;
-			padding: 0;
-            padding-left: 12px;
-			text-shadow: 0px 1px 0px darken(#ffffff, 5%);
-	        text-transform: uppercase;
-	        line-height: 24px;
-	        background: url("../../images/agent/expand-small.png") 0 50% no-repeat;
+			.section_source_header_style();
+            padding-left: 14px;
+	        background: url("../../images/agent/expand-small.png") 0 9px no-repeat;
+			line-height: 28px;
 		}
 
 		&:hover {
@@ -1140,7 +1133,7 @@ section.group-section {
 section.group-section.open > header h1 {
     .section_source_header_style();
     background: url("../../images/agent/collapse-small.png") 0 50% no-repeat;
-    padding-left: 12px;
+    padding-left: 14px;
 }
 
 section.group-section.last {

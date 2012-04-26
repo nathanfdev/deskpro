@@ -11,7 +11,7 @@
 		padding: 0px 8px;
 		line-height: 25px;
 		text-transform: uppercase;
-		font-family: @heading-font-alt;
+		font-family: @heading-font;
 	}
 }
 
@@ -409,7 +409,7 @@ span.gear{
 }
 
 .deskproTabList li.activeTabList a{
-	color: #2d5680;
+	color: #000000;
 	text-shadow: none;
 }
 .deskproTabList li a{
@@ -418,7 +418,7 @@ span.gear{
     background-image: url(../../images/agent/tabs/tabtype-general.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 1px; sprite-margin-top: 9px; sprite-margin-bottom: 15px; */;
 
 	font-size: 11px;
-	color: #676D73;
+	color: #000000;
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 	padding: 5px 4px 3px 19px;
 	float: left;
@@ -550,7 +550,7 @@ header.page-header .id-number {
 	border: 1px solid #C3CED9;
     .border-radius(3px, 3px, 3px, 3px);
     float: left;
-    padding: 5px 8px 2px 8px;
+    padding: 2px 8px 2px 8px;
 	font-size: 13px;
 	font-weight: bold;
 	color: #636b73;
@@ -559,10 +559,10 @@ header.page-header .id-number {
 
 header.page-header h1 {
 	float: left;
-	margin: 5px 0 0 10px;
-	color: #2d5680;
-	font-size: 13px;
-	font-weight: bold;
+	margin: 2px 0 0 10px;
+	color: #000;
+	font-size: 14px;
+	font-weight: normal;
 }
 
 header.page-header .meta-line {
@@ -643,19 +643,19 @@ header.page-header .meta-line .status.closed span                    { .ticket_u
 }
 .status-pill {
 	position: relative;
-	top: -4px;
+	top: -5px;
 	.gradient(#8bbe72, #71b058);
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
 	.border-radius(3px, 3px, 3px, 3px);
 	border: 1px solid #719A5D;
 
-	font-size: 10px;
+	font-size: 11px;
 	float: left;
 	padding: 2px 5px 2px 5px;
 	line-height: 100%;
 	color: #fff;
 	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
-	font-family: Verdana, Arial, sans-serif;
+	font-family: @status-pill-font;
 	white-space:nowrap;
 
 	&.awaiting_agent {
@@ -772,7 +772,7 @@ section.description-area {
 
 section.description-area .info-list {
 	color: @body-text-color-alt;
-	font-size: 12px;
+	font-size: 13px;
 }
 
 section.description-area .info-list dl { line-height: 20px; }
@@ -832,10 +832,15 @@ section.description-area .controls {
 
 section.description-area .info-list .prop-val.display-content .menu-trigger,
 section.description-area .info-list .prop-title.display-title .menu-trigger {
-	color: @body-text-color-alt;
+	color: @body-text-color;
 	pointer: default;
+	cursor: text;
 }
 
+section.description-area .info-list .prop-title.display-title .menu-trigger {
+	color: @body-text-color-alt;
+	cursor: text;
+}
 
 /*****************************************************************************
  * Tab strip
@@ -1093,7 +1098,7 @@ article.content-message.agent-message .content header {
 }
 
 article.content-message .content header h4 {
-	font-family: @heading-font-alt;
+	font-family: @heading-font;
 	font-weight: bold;
 	font-size: 11px;
 	margin: 0 5px 0 8px;
@@ -1133,7 +1138,7 @@ article.content-message .content header .comment-validate-btn {
 
 article.content-message .content .body-text {
 	padding: 6px;
-	font-size: 12px;
+	font-size: 13px;
 }
 
 article.content-message .content .footer-text {
@@ -1176,17 +1181,14 @@ article.content-message .content .feedback p {
  * Tickets
 /*****************************************************************************/
 
-ul.tickets-msg-controls {
-	font-size: 10px;
-}
-
 ul.tickets-msg-controls li {
 	display: inline;
 	padding-right: 8px;
 }
 
 ul.tickets-msg-controls .dp-checkbox {
-    margin-top: 1px;
+	position: relative;
+	top: 1px;
 	margin-right: 4px;
 }
 
@@ -1338,7 +1340,7 @@ section.ticket-reply article.reply-area .attach-list-area span {
 	padding: 10px;
 	color: #404040;
 	line-height: 145%;
-	font-size: 12px;
+	font-size: 13px;
 }
 
 .content-post-wrap h1,
@@ -1433,7 +1435,7 @@ section.ticket-reply article.reply-area .attach-list-area span {
 }
 
 .table-container .table-title h4 {
-	font-size: 12px;
+	font-size: 13px;
 	color: #404040;
 	padding:  6px;
 }
@@ -1450,7 +1452,7 @@ table.tickets-simple th {
 
 table.tickets-simple td {
 	border-top: 1px solid #D5E3EE;
-	font-size: 12px;
+	font-size: 13px;
 	vertical-align: middle;
 	padding: 4px;
 	width: auto;
@@ -1520,7 +1522,7 @@ table.tickets-simple tr.add-new-member td {
 
 table.info-simple td {
 	border-top: 1px solid #D5E3EE;
-	font-size: 12px;
+	font-size: 13px;
 	vertical-align: middle;
 	padding: 1px 4px 1px 3px;
 }
@@ -1600,7 +1602,7 @@ ul.activity-stream time {
 .notes-wrap .message .message-body {
 	margin-left: 28px;
 	padding: 3px;
-	font-size: 12px;
+	font-size: 13px;
 }
 
 .notes-wrap .message .message-body:after {
@@ -1742,7 +1744,7 @@ ul.activity-stream time {
 
 .profile-box-container > header {
 	.gradient(#F0F1F3, #DADBDE);
-	height: 22px;
+	height: 24px;
 	border: 1px solid #ACB6BF;
 	position: relative;
 
@@ -1752,9 +1754,9 @@ ul.activity-stream time {
 
 .profile-box-container > header > nav ul li {
 
-	height: 22px;
+	height: 24px;
 	overflow: hidden;
-	line-height: 24px;
+	line-height: 26px;
 
 	display: block;
 	float: left;
@@ -1763,7 +1765,7 @@ ul.activity-stream time {
 	.gradient(#edeff2, #e6eaed);
 	position: relative;
 
-	font-size: 10px;
+	font-size: 11px;
 	font-weight: bold;
 	color: #738699;
 	padding: 0px 8px;
@@ -1805,11 +1807,11 @@ ul.activity-stream time {
 }
 
 .profile-box-container > header h4 {
-	font-size: 10px;
+	font-size: 11px;
 	font-weight: bold;
 	color: #738699;
 	padding: 0px 8px;
-	line-height: 22px;
+	line-height: 25px;
 	text-transform: uppercase;
 	font-family: @heading-font;
 
@@ -1927,7 +1929,7 @@ ul.activity-stream time {
 
 .profile-box-container dl.table-list {
 	margin: 0 4px 0 4px;
-	font-size: 12px;
+	font-size: 13px;
 }
 
 .profile-box-container dl.table-list:first-child {
@@ -1975,7 +1977,7 @@ ul.activity-stream time {
 	background-repeat: no-repeat;
 	padding-left: 20px;
 	position: relative;
-	font-size: 12px;
+	font-size: 13px;
 }
 
 .contact-list ul li.email.is-primary .set-primary,
@@ -2335,7 +2337,7 @@ padding: 30px;
 }
 
 .contact-list-wrapper.org > strong {
-	font-size: 12px;
+	font-size: 13px;
 	padding:  4px 0 4px 4px;
 	display: block;
 	line-height: 100%;
@@ -2394,9 +2396,9 @@ padding: 30px;
 .page-ticket .profile-box-container.ticket-messages .tickets-msg-controls {
 	float: left;
 	margin-left: 6px;
-	font-size: 10px;
+	font-size: 11px;
 	line-height: 24px;
-
+	text-shadow: none;
 }
 
 .page-ticket .profile-box-container.ticket-messages > section {
@@ -2406,7 +2408,7 @@ padding: 30px;
 
 .userchat-page .people-box > section,
 .page-ticket .people-box > section {
-	font-size: 12px;
+	font-size: 13px;
 }
 
 .page-ticket .people-box {
@@ -2449,7 +2451,7 @@ padding: 30px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	float: left;
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: bold;
 }
 
@@ -2701,7 +2703,7 @@ padding: 30px;
 
 .snippets-overlay > nav > header h4 {
 	font-weight: bold;
-	font-size: 12px;
+	font-size: 13px;
 
 	text-shadow: 0 1px 0 #DFE4E9;
 	color: #6C7680;
@@ -2853,7 +2855,7 @@ padding: 30px;
 .snippets-overlay .snippet-sections li label {
 	color: #2D5680;
 	font-weight: bold;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: @heading-font;
 }
 
@@ -3608,7 +3610,7 @@ body.popup section.body textarea.fill {
 }
 .check-grid > table > thead > tr > th {
 	font-family: @heading-font;
-	font-size: 12px;
+	font-size: 13px;
 
 	.gradient(#ffffff, darken(#FDFDFD, 8%));
 	border-bottom: 1px solid #D9DBDB;
@@ -3622,7 +3624,7 @@ body.popup section.body textarea.fill {
 .check-grid > table > thead > tr > td,
 .check-grid > table > tbody > tr > td {
 	padding: 4px 0 4px 0;
-	font-size: 12px;
+	font-size: 13px;
 }
 
 .check-grid.item-list > table > thead > tr > td,
@@ -3695,7 +3697,7 @@ body.popup section.body textarea.fill {
 	line-height: 22px;
 	padding-left: 5px;
 	font-family: @heading-font;
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: bold;
 }
 
@@ -3708,7 +3710,7 @@ nav.check-grid-tabs ul li {
 	margin-left: 6px;
 	line-height: 100%;
 	padding: 3px 8px 3px 8px;
-	font-size: 12px;
+	font-size: 13px;
 	background-color: #fff;
 	border: 1px solid #D9DBDB;
 	border-bottom: none;
@@ -3733,7 +3735,7 @@ nav.check-grid-tabs ul li.on, nav.check-grid-tabs ul li.on:hover {
 	li {
 		list-style-type: disc;
 		margin-left: 15px;
-		font-size: 12px;
+		font-size: 13px;
 	}
 }
 
@@ -3753,7 +3755,7 @@ nav.check-grid-tabs ul li.on, nav.check-grid-tabs ul li.on:hover {
 
 .dp-form .dp-form-label label {
 	font-weight: bold;
-	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-family: @body-font;
 	font-size: 13px;
 }
 
@@ -3862,9 +3864,8 @@ nav.check-grid-tabs ul li.on, nav.check-grid-tabs ul li.on:hover {
 	.gradient(#ffffff, #FAFAFA);
 	color: #808080;
 	padding: 6px;
-	padding-top: 8px;
 	border: 1px solid #CCCCCC;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: @input-font;
 	.rounded(3px);
 	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1) inset;
@@ -3918,7 +3919,7 @@ nav.check-grid-tabs ul li.on, nav.check-grid-tabs ul li.on:hover {
 
 .search-form .term .remove {
 	width: 11px;
-	background: transparent url("../../images/agent/icons/close-small-dark.png") no-repeat center 0;
+	background: transparent url("../../images/agent/icons/close-small-dark.png") no-repeat center center;
 	text-indent: -1000px;
 	overflow: hidden;
 	cursor: pointer;
@@ -3928,7 +3929,7 @@ nav.check-grid-tabs ul li.on, nav.check-grid-tabs ul li.on:hover {
 
 .search-form .add-term {
 	width: 10px;
-	background: transparent url("../../images/agent/icons/omni-plus.png") no-repeat center 0;
+	background: transparent url("../../images/agent/icons/omni-plus.png") no-repeat center center;
 	text-indent: -1000px;
 	overflow: hidden;
 	cursor: pointer;
@@ -4250,7 +4251,7 @@ section.new-user-chat-alert div.messages {
 
     background-color: rgba(245,247,250, 0.7);
     .rounded(2px);
-    font-size: 12px;
+    font-size: 13px;
 }
 
 section.new-user-chat-alert div.messages .row {
@@ -4612,7 +4613,7 @@ ul.agent-parts-link li {
 .redirect-screen .url-go a {
 	font-size: 16px;
 	font-weight: normal;
-	font-family: @heading-font-alt;
+	font-family: @heading-font;
 	padding: 10px 35px 10px 35px;
 	max-width: 400px;
 	overflow: hidden;
@@ -4669,7 +4670,7 @@ ul.agent-parts-link li {
 	margin: 0;
 	.box-shadow(none);
 	width: 98%;
-	font-size: 12px;
+	font-size: 13px;
 	padding: 3px;
 	.border-radius(5px, 5px, 0, 0);
 }
@@ -4788,7 +4789,7 @@ article.task .task-title input[type="checkbox"] {
 }
 
 article.task .task-title h5 {
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: normal;
 	font-family: @body-font;
 	margin-left: 20px;
@@ -4874,7 +4875,7 @@ article.task .new-comment .comment-input span {
 
 .page-task-list .task-group header h4 {
 	padding-left: 5px;
-	font-size: 12px;
+	font-size: 13px;
 }
 
 .page-task-list article.task .task-info .assoc {
@@ -4997,7 +4998,7 @@ article.task .new-comment .comment-input span {
 }
 
 .content-table > table thead th {
-	font-family: 'Myriad Pro','Myriad',helvetica,arial,sans-serif;
+	font-family: @content-table-th-font;
 	font-size: 15px;
 	border-bottom: 1px solid #D9DBDB;
 	padding: 5px 4px 2px 4px;
@@ -5081,7 +5082,7 @@ article.task .new-comment .comment-input span {
 }
 
 .content-tabs > nav {
-	font-family: 'Myriad Pro','Myriad',helvetica,arial,sans-serif;
+	font-family: @content-table-th-font;
 	font-size: 13px;
 	border-bottom: 1px solid #D9DBDB;
 	background-color: darken(#FDFDFD, 3%);
@@ -5302,7 +5303,7 @@ table.prop-table {
 		color: #7E7E7E;
 		vertical-align: middle;
 		padding: 0 6px 0 6px;
-		font-size: 12px;
+		font-size: 13px;
 		width: 110px;
 		font-weight: normal;
 		text-align: left;
@@ -5311,7 +5312,7 @@ table.prop-table {
 
 	td {
 		padding: 6px;
-		font-size: 12px;
+		font-size: 13px;
 		vertical-align: middle;
 		border-top: 1px solid #D5E3EE;
 	}

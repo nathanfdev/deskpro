@@ -9,8 +9,8 @@
 	background-color: #F5F7FA;
 	border-right: 1px;
 	border-right-style: solid;
-	border-right-color: #8D9094;
-	box-shadow: 2px 0 3px 0 rgba(0, 0, 0, 0.15);
+	border-right-color: #AFAFB4;
+	box-shadow: 2px 0 2px 0 rgba(0, 0, 0, 0.1);
 	z-index: 1;
 	line-height: 16px;
 }
@@ -53,15 +53,16 @@
 
 .list-control-bar{
 	.gradient(#F0F1F3, #DADBDE);
-	height: 25px;
+	height: 27px;
 	position: relative;
 	border-bottom: 1px solid #B6BABF;
+	overflow: hidden;
 }
 
 .list-control-bar ul{
 	color: #FFFFFF;
-	font-size: 10px;
-	padding: 3px 9px 0 6px;
+	font-size: 11px;
+	padding: 0px 9px 0 6px;
 	text-shadow: 0 1px 0 #000000;
 }
 
@@ -72,7 +73,7 @@
 	color: #828e99;
 	padding: 0 2px;
 	text-shadow: 0 1px 0 #fff;
-	line-height: 20px;
+	line-height: 30px;
 }
 
 .list-control-bar ul li a.button, a.performActTrigger{
@@ -80,15 +81,15 @@
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
 	border: 1px solid #b6babf;
 	.border-radius(3px, 3px, 3px, 3px);
-	padding: 2px 8px 3px 6px;
+	padding: 2px 8px 2px 6px;
 	float: left;
 	color: #626a73;
 	text-shadow: 0 1px 0 #fff;
 	cursor: pointer;
-	font-weight: bold;
-	font-family: @button-font;
-	line-height: 12px;
+	font-family: @toolbar-font;
+	line-height: 100%;
 	position: relative;
+	top: 5px;
 }
 
 .list-control-bar ul a.button.menu-open {
@@ -172,6 +173,11 @@
 	padding-right: 0;
 }
 
+.list-control-bar ul.btn-controls li a {
+	position: relative;
+	top: 5px;
+}
+
 
 /*****************************************************************************
  * Grouping Bar
@@ -232,23 +238,21 @@
 .list-selection-bar{
 	.gradient(#F0F1F3, #DADBDE);
 	box-shadow: 0 1px 0 #FFFFFF;
-	border-bottom: 1px solid #B3B8BD;
+	border-bottom: 1px solid #A2A7AC;
 	clear: both;
-	height: 25px;
-	line-height: 25px;
+	height: 28px;
+	line-height: 30px;
 	color: #959da6;
 	text-shadow: 0 1px 0 #fff;
-	font-size: 11px;
+	font-size: 12px;
 	position: relative;
 	padding-left: 25px;
+	font-family: @toolbar-font;
 }
 .list-selection-bar input.selection-control{
     position: absolute;
-    top: 6px;
+    top: 7px;
     left: 4px;
-}
-.list-selection-bar span.selected-count{
-	font-size: 11px;
 }
 .list-selection-bar a.perform-action {
 	.gradient(#fafcfd, #f0f2f3);
@@ -260,14 +264,13 @@
 	color: #626a73;
 	text-shadow: 0 1px 0 #fff;
 	cursor: pointer;
-	font-weight: bold;
-	font-family: @button-font;
+	font-family: @toolbar-font;
 	line-height: 12px;
 	position: relative;
 
 	float: right;
-	font-size: 10px;
-	margin: 4px 10px 0 0;
+	font-size: 11px;
+	margin: 5px 6px 0 0;
 	padding: 2px 5px 2px 5px;
 }
 
@@ -393,9 +396,9 @@
 	margin-right: 5px;
 	margin-top: 1px;
 	margin-bottom: 1px;
-	font-size: 10px;
+	font-size: 11px;
 	line-height: 100%;
-	padding:  3px 4px 2px 4px;
+	padding:  2px 4px 2px 4px;
 	.border-radius(4px, 4px, 4px, 4px);
 }
 
@@ -493,7 +496,7 @@
 	font-family: @heading-font;
 }
 .list-listing .row-item .top-row .top-row-left h3 a{
-	font-size: 12px;
+	font-size: 13px;
 	cursor: pointer;
 	text-shadow: 0 1px 0 #FFFFFF;
 	text-decoration: underline;
@@ -528,7 +531,7 @@
 	color: @link-color;
 
 	span.with-icon {
-		padding-left: 18px;
+		padding-left: 20px;
 		background-position: 0 50%;
 		background-repeat: no-repeat;
 	}
@@ -620,7 +623,7 @@ table.tickets-simple td.status .status
 	line-height: 100%;
 	color: #fff;
 	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
-	font-family: Verdana, Arial, sans-serif;
+	font-family: @status-pill-font;
 }
 
 .list-listing .row-item .on-hold{
@@ -641,8 +644,8 @@ table.tickets-simple td.status .status
 
 .list-listing .row-item .userinfo {
 	position: relative;
-	margin-top: 20px;
-	height: 18px;
+	margin-top: 23px;
+	height: 20px;
 	overflow:  hidden;
 	white-space: nowrap;
 }
@@ -794,7 +797,7 @@ table.tickets-simple td.status .status
 .table-result-list table thead th {
 	border-right: #C8C9CD;
 	padding: 4px 0 4px 5px;
-	font-size: 12px;
+	font-size: 13px;
 	color: #595959;
 	text-shadow: 0 1px 0 #FFFFFF;
 	font-family: @heading-font;
@@ -914,7 +917,7 @@ footer.results-nav .cursor {
 	line-height: 27px;
 	text-align: center;
 	color: #75777A;
-	font-size: 10px;
+	font-size: 12px;
 	float: left;
 }
 
@@ -1352,7 +1355,7 @@ section.dp-overlay > header nav ul li {
 	text-align: center;
 	padding: 0 12px 0 12px;
 	cursor: pointer;
-	font-size: 12px;
+	font-size: 13px;
 }
 section.dp-overlay > header nav ul li.on,
 section.dp-overlay > header nav ul li:hover {
@@ -1549,7 +1552,7 @@ section.dp-overlay > article.no-footer {
 
 	font-style: normal;
 	font-weight: bold;
-	font-family: @heading-font-alt;
+	font-family: @heading-font;
 	font-size: 13px;
 }
 

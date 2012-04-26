@@ -14,8 +14,8 @@ table { border-collapse: collapse; border-spacing: 0; }
 td { vertical-align: top; }
 
 select, .ui-widget select {
-	font-size: 12px !important;
-	font-family: Arial, Verdana, sans-serif;
+	font-size: 13px !important;
+	font-family: @body-font;
 	margin: 0;
 	padding:0;
 }
@@ -35,19 +35,19 @@ a, button, input, textarea, submit {
 
 body {
 	background-color: #eaebed;
-	font-size: 11px;
+	font-size: 13px;
 	font-weight: normal;
 	line-height: 18px;
 	font-family: @body-font;
 	color: @body-text-color;
 }
 
-h1, h2, h3, h4, h5, h6 { font-family: @heading-font-alt }
+h1, h2, h3, h4, h5, h6 { font-family: @heading-font }
 h1 { font-size: 14px; }
 h2 { font-size: 13px; }
-h3 { font-size: 12px; }
-h4 { font-size: 12px; }
-h4 { font-size: 12px; }
+h3 { font-size: 13px; }
+h4 { font-size: 13px; }
+h4 { font-size: 13px; }
 
 a {
 	color: @link-text-color;
@@ -591,7 +591,7 @@ input.tab-focus {
 	color: #595959;
   font-size: 14px;
   font-weight: bold;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: @heading-font;
   padding-top: 8px;
 }
 
@@ -710,7 +710,7 @@ input.tab-focus {
     -moz-border-radius: 2px;
     border-radius: 2px;
 
-    font-family: Helvetica,Arial,sans-serif;
+    font-family: @menu-font;
     font-size: 11px;
 	overflow: hidden;
 }
@@ -777,8 +777,8 @@ input.tab-focus {
 
     position: relative;
 
-	font-family: Helvetica,Arial,sans-serif;
-    font-size: 11px;
+	font-family: @menu-font;
+    font-size: 12px;
 }
 
 .deskpro-menu > ul > li:first-child {
@@ -865,7 +865,7 @@ input.tab-focus {
 	padding-left: 3px;
 	padding-top: 2px;
 	padding-bottom: 3px;
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: @menu-font;
 	font-size: 11px;
 	font-weight: bold;
 }
@@ -984,9 +984,9 @@ input.tab-focus {
 .ui-state-disabled { cursor: default !important; }
 .ui-icon { display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat; }
 .ui-widget-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-.ui-widget { font-family: Verdana,Arial,sans-serif; font-size: 1.1em; }
+.ui-widget { font-family: @body-font; font-size: 1.1em; }
 .ui-widget .ui-widget { font-size: 1em; }
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Verdana,Arial,sans-serif; font-size: 1em; }
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: @body-font; font-size: 1em; }
 .ui-widget-content { border: 1px solid #aaaaaa; background: #ffffff url(../../vendor/jquery/jquery-ui/css/smoothness/images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x; color: #222222; }
 .ui-widget-content a { color: #222222; }
 .ui-widget-header { border: 1px solid #aaaaaa; background: #cccccc url(../../vendor/jquery/jquery-ui/css/smoothness/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x; color: #222222; font-weight: bold; }
@@ -1499,7 +1499,7 @@ input[type="text"], input[type="password"], textarea {
 	color: #000;
 	padding: 1px;
 	border: 1px solid #DEDEDE;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: @input-font;
 	.rounded(2px);
 	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1) inset;
@@ -1739,8 +1739,7 @@ a.clean-white {
 	color: #626A73;
 	padding: 2px 6px 2px 8px;
 	cursor: pointer;
-	font-size: 10px;
-	font: bold 10px/15px @button-font;
+	font: 12px/15px @button-font;
 	position: relative;
 	white-space: nowrap;
 	text-decoration: none !important;
@@ -1961,7 +1960,7 @@ a.clean-white {
 .optionbox > header h4 {
 	font-size: 14px;
 	line-height: 25px;
-	padding-top: 2px;
+	padding-top: 0px;
 }
 
 .optionbox section {
@@ -2505,7 +2504,7 @@ a.clean-white {
  	}
 
  	h1 {
-		font-family: 'Myriad Pro','Myriad',helvetica,arial,sans-serif;
+		font-family: @heading-font;
         font-size: 15px;
         display: block;
         line-height: 19px;
@@ -2663,8 +2662,8 @@ a.clean-white {
 	}
 
 	h1 {
-		font-family: @heading-font-alt;
-		font-size: 12px;
+		font-family: @heading-font;
+		font-size: 13px;
 		display: block;
 		line-height: 100%;
 		margin-top: 1px;
@@ -2924,7 +2923,7 @@ ul.cc-list {
 
 .code-box {
 	font-family: "Monaco", "Consolas", "Courier New", monospace;
-	font-size: 12px;
+	font-size: 13px;
 	padding: 10px;
 	margin: 10px;
 	background-color: #EDEDED;
