@@ -8,7 +8,7 @@
 						<h3><a data-route="listpane:{{ path('agent_twitter_statuses_list', {'account_id': account.id}) }}">@{{ account.user.screen_name }}</a></h3>
 					</div>
 					<div class="inner-container-content with-scrollbar" id="twitter-account-{{ account.id }}">
-						<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+						<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 						<div class="viewport"><div class="overview">
 							<ol>
 								<li class="" data-route="listpane:{{ path('agent_twitter_messages_list', {'account_id': account.id}) }}">

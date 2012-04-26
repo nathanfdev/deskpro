@@ -27,7 +27,7 @@
 		if (oWrapper.is('.scroll-content') && !oWrapper.parent().is('.scroll-viewport')) {
 			var parentWrapper = oWrapper.parent();
 			oWrapper.wrap('<div class="scroll-viewport" />');
-			$('<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>').insertBefore(oWrapper);
+			$('<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>').insertBefore(oWrapper);
 
 			parentWrapper.addClass('with-scrollbar');
 
@@ -38,7 +38,8 @@
 			return oWrapper;
 		}
 
-		oWrapper.addClass('scroll-setup');
+		oWrapper.addClass('scroll-setup with-scrollbar');
+
 		oWrapper.on('goscrolltop', function() {
 			oThumb.obj.css(sDirection, 0);
 			oContent.obj.css(sDirection, 0);
@@ -78,6 +79,9 @@
 		this.initialize = function(){
 			this.tinyscrollbar_update();
 			setEvents();
+			window.setTimeout(function() {
+				oWrapper.addClass('scroll-draw');
+			}, 250);
 		};
 		this.tinyscrollbar_update = function(sScroll){
 
@@ -92,7 +96,11 @@
 			oViewport[options.axis] = oViewport.obj[0]['offset'+ sSize];
 			oContent[options.axis] = oContent.obj[0]['scroll'+ sSize];
 			oContent.ratio = oViewport[options.axis] / oContent[options.axis];
-			oScrollbar.obj.toggleClass('disable', oContent.ratio >= 1);
+			if (oContent.ratio >= 1) {
+				oScrollbar.obj.addClass('disable');
+			} else {
+				oScrollbar.obj.removeClass('disable');
+			}
 			oTrack[options.axis] = options.size == 'auto' ? oViewport[options.axis] : options.size;
 			oThumb[options.axis] = Math.min(oTrack[options.axis], Math.max(0, ( options.sizethumb == 'auto' ? (oTrack[options.axis] * oContent.ratio) : options.sizethumb )));
 
@@ -141,13 +149,6 @@
 				oWrapper[0].addEventListener('mousewheel', wheel, false );
 			}
 			else if(options.scroll){oWrapper[0].onmousewheel = wheel;}
-
-			oViewport.obj.mouseover(function(ev) {
-				oScrollbar.obj.addClass('is-scrolling');
-			});
-			oViewport.obj.mouseout(function(ev) {
-				oScrollbar.obj.removeClass('is-scrolling');
-			});
 		};
 		function start(oEvent){
 			iMouse.start = sAxis ? oEvent.pageX : oEvent.pageY;
@@ -156,7 +157,6 @@
 			$(document).bind('mousemove', drag);
 			$(document).bind('mouseup', end);
 			oThumb.obj.bind('mouseup', end);
-			oScrollbar.obj.addClass('is-scrolling');
 			return false;
 		};
 		function wheel(oEvent){
@@ -183,7 +183,6 @@
 			$(document).unbind('mousemove', drag);
 			$(document).unbind('mouseup', end);
 			oThumb.obj.unbind('mouseup', end);
-			oScrollbar.obj.removeClass('is-scrolling');
 			return false;
 		};
 		function drag(oEvent){

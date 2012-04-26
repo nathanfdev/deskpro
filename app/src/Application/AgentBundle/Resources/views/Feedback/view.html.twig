@@ -19,7 +19,7 @@ pageMeta.isValidating = true;
 pageMeta.baseId = '{{ baseId }}';
 </script>
 <div class="layout-content full-page page-feedback-view with-scrollbar {% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
-<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content"related-content>
 
 <div class="delete-notice" {% if feedback.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>

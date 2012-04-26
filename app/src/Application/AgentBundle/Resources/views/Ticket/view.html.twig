@@ -52,7 +52,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	{{ phrase('agent.tickets.in_use_by') }} <cite>{{ ticket.locked_by_agent }}</cite>.
 </div>
 {% endif %}
-<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 
 {% if ticket.is_locked %}<div class="locked-overlay" id="{{baseId}}_locked_overlay"></div>{% endif %}

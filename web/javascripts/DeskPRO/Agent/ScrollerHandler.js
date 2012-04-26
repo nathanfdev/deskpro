@@ -6,29 +6,37 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 	initialize: function(pageObject, element, options) {
 		this.pageObject = pageObject;
 		this.element = element = $(element);
+		this.hasInit = false;
+		var self = this;
 
 		this.options = {
-			'showEvent': 'activate',
-			'hideEvent': 'deactivate'
+			'showEvent': false,
+			'hideEvent': false
 		};
 
 		this.setOptions(options);
 
-		if (pageObject.addEvent) {
+		if (pageObject.addEvent && this.options.showEvent) {
 			pageObject.addEvent(this.options.showEvent, function() {
-				this.updateSize();
+				window.setTimeout(function() {
+					self.updateSize();
+				}, 250);
 			}, this);
+		} else {
+			this._initScroll();
 		}
+	},
 
-		var tiny = element.tinyscrollbar();
-		element.data('scroll_handler', this);
-		element.addClass('with-scroll-handler');
+	_initScroll: function() {
+		if (this.hasInit) return;
+		this.hasInit = true;
+		this.element.tinyscrollbar();
+		this.element.data('scroll_handler', this);
+		this.element.addClass('with-scroll-handler');
 	},
 
 	updateSize: function() {
-		var el = this.element;
-		window.setTimeout(function() {
-			el.tinyscrollbar_update();
-		}, 250);
+		this._initScroll();
+		this.element.tinyscrollbar_update();
 	}
 });

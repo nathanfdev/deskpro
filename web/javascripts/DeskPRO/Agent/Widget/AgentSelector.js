@@ -41,7 +41,7 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 
 		var listWrapper = $(
 			'<div class="with-scrollbar">' +
-			'<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>' +
+			'<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>' +
 			'<div class="scroll-viewport"><div class="scroll-content">' +
 			'</div></div></div>'
 		);

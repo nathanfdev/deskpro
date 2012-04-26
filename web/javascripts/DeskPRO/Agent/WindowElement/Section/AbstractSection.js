@@ -150,7 +150,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 			if (!contentEl.length) {
 				var html = [];
 				html.push('<div class="with-scrollbar ' + this.sectionEl.attr('id') + '">');
-				html.push('<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>');
+				html.push('<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>');
 				html.push('<div class="scroll-viewport"><div class="scroll-content">');
 				html = html.join('');
 

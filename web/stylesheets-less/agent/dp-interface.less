@@ -1400,14 +1400,13 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 	left: 55px;
 }
 
-.with-scrollbar .thumb .end,
-.with-scrollbar .thumb { background-color: #003D5D; }
-.with-scrollbar .scroll-viewport { position: absolute; top: 0; bottom: 0; left: 0; right: 0; overflow: hidden; }
-.with-scrollbar .scroll-content { position: absolute; left: 0; top: 0; right: 0; }
-.with-scrollbar .scrollbar { position: relative; float: right; width: 6px; z-index: 1000;}
-.with-scrollbar .track { }
+.scroll-viewport { position: absolute; top: 0; bottom: 0; left: 0; right: 0; overflow: hidden; }
+.scroll-content { position: absolute; left: 0; top: 0; right: 0; }
+.scrollbar { position: relative; float: right; width: 6px; z-index: 1000;}
+.scrollbar > .track { display: none; }
+.scroll-draw > .scrollbar > .track { display: block; }
 
-.with-scrollbar .scrollbar:hover .thumb, .with-scrollbar .scrollbar.is-scrolling .thumb {
+.scroll-draw:hover > .scrollbar .thumb {
     -webkit-transition: background 500ms ease;
     -moz-transition: background 500ms ease;
     transition: background 500ms ease;
@@ -1415,7 +1414,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
     background-color: #686D75;
 }
 
-.with-scrollbar .thumb {
+.scrollbar .thumb {
 	height: 20px; width: 5px; cursor: pointer; overflow: hidden; position: absolute; top: 0;
 	.border-radius(4px, 4px, 4px, 4px);
     background-color: transparent;
@@ -1429,11 +1428,11 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
     min-height: 54px !important;
 }
 
-.with-scrollbar .thumb .end { display:none; }
-.with-scrollbar .disable{ display: none; }
+.scrollbar .thumb .end { display:none; }
+.scrollbar.disable{ display: none; }
 
-.with-scrollbar.scrollbar-disabled .viewport { position: static; }
-.with-scrollbar.scrollbar-disabled .scrollbar { display: none; }
+.scrollbar-disabled .viewport { position: static; }
+.scrollbar-disabled .scrollbar { display: none; }
 
 
 #dp_devbar {

@@ -13,7 +13,7 @@ pageMeta.baseId = '{{ baseId }}';
 </script>
 {# Page Containers #}
 <div class="profile layout-content with-scrollbar">
-<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 {# /Page Containers #}
 <form class="value-form" style="display:none">
@@ -44,7 +44,7 @@ pageMeta.baseId = '{{ baseId }}';
 
                             } %}
          </span>
-        
+
 
         <span class="editable" data-editable-for="#{{baseId}}_editdeal_value">{{deal.deal_value}} </span>
         <span class="edit-name-gear" style="display: none">{{ phrase('agent.deal.edit_name') }}</span>
@@ -53,9 +53,9 @@ pageMeta.baseId = '{{ baseId }}';
                         <input type="text" size="20" name="deal_value" value="{{ deal.deal_value }}" />
                 </div>
     </nav>
-    <div class="titlewrap">        
+    <div class="titlewrap">
             <h4 class="id-number">#{{deal.id}}</h4>
-            
+
 
             <h1>
                 <span class="editable" data-editable-for="#{{baseId}}_editname">{{ deal.title|default('Double-click to set Title') }}</span>
@@ -67,9 +67,9 @@ pageMeta.baseId = '{{ baseId }}';
             </h1>
 
     </div>
-    
+
     <div class="clear"></div>
-    
+
     <div class="titlewrap">
         <div class="isLeft">
             <dl class="table-list">
@@ -106,9 +106,9 @@ pageMeta.baseId = '{{ baseId }}';
                 </dd>
             </dl>
         </div>
-        
+
     </div>
-    
+
     <div class="isRight">
 
         <div class="meta-line">
@@ -136,7 +136,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 
     </div>
-    
+
     <div class="clear"></div>
 </header>
 
