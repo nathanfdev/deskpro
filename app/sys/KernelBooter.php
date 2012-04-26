@@ -360,7 +360,7 @@ class KernelBooter
 		$kernel = new \DeskPRO\Kernel\CliKernel($env, $debug);
 		$kernel->boot($mode);
 
-		if ($enforce_offline_mode) {
+		if ($enforce_offline_mode || ($mode == 'cron' && !App::getSetting('core.setup_initial'))) {
 			if ($kernel->isHelpdeskOffline()) {
 				return null;
 			}
