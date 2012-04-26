@@ -48,7 +48,7 @@ class CleanupStats extends AbstractJob
 	{
 		$dashboard_stats = App::getOrm()->createQuery("
 			SELECT ds, s
-			FROM DeskPRO:DashboardStat ds
+			FROM DeskPRO:ReportDashboardStat ds
 			LEFT JOIN ds.stat s
 		")->execute();
 

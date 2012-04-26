@@ -7,6 +7,13 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 		window.QUICK_SETUP = this;
 		var self = this;
 
+		if ($('html').hasClass('no-rgba')) {
+			this.showFn = 'show';
+		} else {
+			this.showFn = 'fadeIn';
+		}
+
+
 		this._initInstallSoftwareSection();
 		this._initCronSection();
 		this._initLicenseSection();
@@ -100,8 +107,10 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 		var self = this;
 		$.ajax({
 			url: $('#section_install_cron').data('check-url'),
+			cache: false,
 			dataType: 'json',
 			success: function(data) {
+				console.log(data.cron_okay);
 				if (!data || !data.cron_okay) {
 					window.setTimeout(function() {
 						self.doCronCheck();
@@ -117,7 +126,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 					}
 				} else {
 					self.hasCronError = false;
-					$('#section_install_cron').find('.mega-tick').fadeIn();
+					$('#section_install_cron').find('.mega-tick')[self.showFn]();
 					$('#cron_errors').hide();
 					self.recountSteps();
 				}
@@ -217,7 +226,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 				},
 				success: function(data) {
 					if (data.success) {
-						$('#section_enter_license').find('.mega-tick').fadeIn();
+						$('#section_enter_license').find('.mega-tick')[self.showFn]();
 						self.recountSteps();
 					} else {
 						enterlicGroup.find('.errors-box').show().find('.lic-err-code').text(data.error_code);
@@ -274,7 +283,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 				},
 				success: function(data) {
 					if (data.success) {
-						wrapper.find('.mega-tick').fadeIn();
+						wrapper.find('.mega-tick')[self.showFn]();
 						self.recountSteps();
 					}
 				}
@@ -293,7 +302,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 
 		$('#pop3_skip_trigger').on('click', function(ev) {
 			ev.preventDefault();
-			wrapper.find('.mega-tick').fadeIn();
+			wrapper.find('.mega-tick')[self.showFn]();
 			self.recountSteps();
 		});
 
@@ -337,7 +346,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 				},
 				success: function(data) {
 					if (data.success) {
-						wrapper.find('.mega-tick').fadeIn();
+						wrapper.find('.mega-tick')[self.showFn]();
 						self.recountSteps();
 					} else {
 						wrapper.find('.errors-box').show().find('.error-message').text(data.error_message).show();
