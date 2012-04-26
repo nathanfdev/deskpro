@@ -151,13 +151,6 @@ class EditEmailGateway
 				}
 			}
 		}
-
-		if ($this->new_addresses) {
-			foreach ($this->new_addresses as $address) {
-				$address->gateway = $this->gateway;
-				$this->gateway->addresses->add($address);
-			}
-		}
 	}
 
 
@@ -165,11 +158,20 @@ class EditEmailGateway
 	{
 		$this->apply();
 
+		App::getOrm()->persist($this->gateway);
+		App::getOrm()->flush();
+
 		foreach ($this->remove_objs as $obj) {
 			App::getOrm()->remove($obj);
 		}
 
-		App::getOrm()->persist($this->gateway);
+		foreach ($this->new_addresses as $address) {
+			$address->gateway = $this->gateway;
+			$this->gateway->addresses->add($address);
+
+			App::getOrm()->persist($address);
+		}
+
 		App::getOrm()->flush();
 	}
 }
