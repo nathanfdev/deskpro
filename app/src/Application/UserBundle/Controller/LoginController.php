@@ -101,7 +101,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		// When an agent actually logs out, we should be clearing the state
 		$person = $this->session->getPerson();
 		if ($person['is_agent']) {
-			App::getDb()->executeUpdate("
+			$this->db->executeUpdate("
 				DELETE FROM people_prefs
 				WHERE person_id = ? AND name = ?
 			", array($person['id'], 'agent.ui.state'));
@@ -174,10 +174,10 @@ HTML;
 			// Send alert
 			$attempt_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
 			if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email')) {
-				$message = App::getMailer()->createMessage();
-				$message->setTemplate('DeskPRO:emails_agent:login-alert.html.twig', array('success' => false, 'session' => App::getSession()->getEntity()));
+				$message = $this->container->getMailer()->createMessage();
+				$message->setTemplate('DeskPRO:emails_agent:login-alert.html.twig', array('success' => false, 'session' => $this->session->getEntity()));
 				$message->setTo($attempt_person->getPrimaryEmailAddress(), $attempt_person->getDisplayName());
-				App::getMailer()->send($message);
+				$this->container->getMailer()->send($message);
 			}
 
 			$this->session->set('failed_login_name', $this->in->getString('email'));
@@ -189,8 +189,8 @@ HTML;
 
 		$person = $identity['person'];
 		$person->setLastLoginAt();
-		App::getOrm()->persist($person);
-		App::getOrm()->flush();
+		$this->em->persist($person);
+		$this->em->flush();
 
 		$this->session->set('auth_person_id', $identity->getIdentity());
 		$this->session->set('dp_interface', DP_INTERFACE);
@@ -218,14 +218,14 @@ HTML;
 
 			// Send alert
 			if ($person->getPref('agent_notif.login_attempt.email')) {
-				$message = App::getMailer()->createMessage();
-				$message->setTemplate('DeskPRO:emails_agent:login-alert.html.twig', array('success' => true, 'session' => App::getSession()->getEntity()));
+				$message = $this->container->getMailer()->createMessage();
+				$message->setTemplate('DeskPRO:emails_agent:login-alert.html.twig', array('success' => true, 'session' => $this->session->getEntity()));
 				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-				App::getMailer()->send($message);
+				$this->container->getMailer()->send($message);
 			}
 
-			App::getOrm()->persist($cm);
-			App::getOrm()->flush();
+			$this->em->persist($cm);
+			$this->em->flush();
 		}
 
 		if ($return) {
@@ -245,7 +245,7 @@ HTML;
 	 */
 	public function jstellLoginAction($security_token, $usersource_id)
 	{
-		if (!App::getSession()->getEntity()->checkSecurityToken('jstell', $security_token)) {
+		if (!$this->session->getEntity()->checkSecurityToken('jstell', $security_token)) {
 			return $this->createResponse('');
 		}
 
@@ -261,7 +261,7 @@ HTML;
 		# Auth local
 		#------------------------------
 
-		if (App::getSetting('core.deskpro_source_enabled')) {
+		if ($this->container->getSetting('core.deskpro_source_enabled')) {
 			$adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
 			$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
 			$result = $adapter->authenticate();
@@ -275,7 +275,7 @@ HTML;
 		# Auth usersources that accept local input
 		#------------------------------
 
-		$usersources = App::getOrm()->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
+		$usersources = $this->em->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
 		foreach ($usersources as $us) {
 
 			/** @var $us \Application\DeskPRO\Entity\Usersource */
@@ -309,7 +309,7 @@ HTML;
 	{
 		$return = $this->in->getString('return');
 
-		$usersource = App::getOrm()->find('DeskPRO:Usersource', $usersource_id);
+		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 		$adapter = $this->_initUserSourceAdapter($usersource, $this->in->getString('context'));
 
 		#------------------------------
@@ -326,8 +326,8 @@ HTML;
 				$person = $login_processor->getPerson();
 				$person->setLastLoginAt();
 
-				App::getOrm()->persist($person);
-				App::getOrm()->flush();
+				$this->em->persist($person);
+				$this->em->flush();
 
 				$this->session->set('auth_person_id', $person->id);
 				$this->session->set('dp_interface', DP_INTERFACE);
@@ -418,7 +418,7 @@ HTML;
 	public function authenticateCallbackAction($usersource_id)
 	{
 		$return = $this->in->getString('return');
-		$usersource = App::getOrm()->find('DeskPRO:Usersource', $usersource_id);
+		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 
 		$adapter = $this->_initUserSourceAdapter($usersource);
 
@@ -488,7 +488,7 @@ HTML;
 
 		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
 			$adapter->setCallbackUrl(
-				App::getSetting('core.helpdesk_url') .
+				$this->container->getSetting('core.helpdesk_url') .
 				$this->generateUrl('user_login_callback', array('usersource_id' => $usersource['id']), false)
 			);
 		}
@@ -522,14 +522,14 @@ HTML;
 	public function sendResetPasswordAction()
 	{
 		$email = $this->in->getString('email');
-		$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email);
+		$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
 
 		if (!$person) {
 
 			// If no user was found in our database, then the account might not have
 			// been set up yet. For adapters that support it, we can still see if we
 			// can be helpful and redirect to another source they exist in
-			$usersources = App::getOrm()->getRepository('DeskPRO:Usersource')->getUserInfoFetchableUsersources();
+			$usersources = $this->em->getRepository('DeskPRO:Usersource')->getUserInfoFetchableUsersources();
 			foreach ($usersources as $us) {
 				$found = $us->getUserInfoFromIdentity($email, 'email');
 				if ($found && $us->lost_password_url) {
@@ -547,7 +547,7 @@ HTML;
 		// but could also mean they registered through a usersource which means they might
 		// need to use a different reset URL
 		if (!$person->password) {
-			$associations = App::getOrm()->getRepository('DeskPRO:PersonUsersourceAssoc')->getAssociationsForPerson($person);
+			$associations = $this->em->getRepository('DeskPRO:PersonUsersourceAssoc')->getAssociationsForPerson($person);
 			foreach ($associations as $assoc) {
 				if ($assoc->usersource->lost_password_url) {
 					return $this->redirect($assoc->usersource->lost_password_url);
@@ -558,8 +558,8 @@ HTML;
 		// If they're still here, then we just send them through the normal DeskPRO reset procedure
 
 		$code_data = TmpData::create('reset-password', array('person_id' => $person['id']), '+2 days');
-		App::getOrm()->persist($code_data);
-		App::getOrm()->flush();
+		$this->em->persist($code_data);
+		$this->em->flush();
 
 		$vars = array(
 			'code' => $code_data->getCode(),
@@ -567,11 +567,11 @@ HTML;
 			'email' => $email
 		);
 
-		$message = App::getMailer()->createMessage();
+		$message = $this->container->getMailer()->createMessage();
 		$message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
 		$message->setTo($email, $person->getDisplayName());
 
-		App::getMailer()->send($message);
+		$this->container->getMailer()->send($message);
 
 		if ($this->request->isXmlHttpRequest()) {
 			return $this->createJsonResponse(array('success' =>1 ));
@@ -581,10 +581,10 @@ HTML;
 
 	public function resetPasswordNewPassAction($code)
 	{
-		$code_data = App::getEntityRepository('DeskPRO:TmpData')->getByCode($code, 'reset-password');
+		$code_data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code, 'reset-password');
 		$person = null;
 		if ($code_data) {
-			$person = App::findEntity('DeskPRO:Person', $code_data->getData('person_id', 0));
+			$person = $this->em->find('DeskPRO:Person', $code_data->getData('person_id', 0));
 		}
 
 		if (!$code_data OR !$person) {
@@ -597,7 +597,7 @@ HTML;
 
 			if ($pass == $pass2) {
 				$person->setPassword($pass);
-				App::getOrm()->transactional(function ($em) use ($person, $code_data) {
+				$this->em->transactional(function ($em) use ($person, $code_data) {
 					$em->persist($person);
 					$em->remove($code_data);
 					$em->flush();
@@ -653,8 +653,8 @@ HTML;
 
 		App::setCurrentPerson($person);
 
-		App::getOrm()->persist($person);
-		App::getOrm()->flush();
+		$this->em->persist($person);
+		$this->em->flush();
 
 		$html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', array('person' => $person, 'mode' => $this->in->getString('mode')));
 

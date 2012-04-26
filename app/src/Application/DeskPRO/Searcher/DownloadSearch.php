@@ -356,7 +356,7 @@ class DownloadSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch('downloads.category_id', $op, $ids);
 
 					$this->summary[] = $this->_choiceSummary('Category', $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryNames((array)$choice);
+						$titles = App::getEntityRepository('DeskPRO:DownloadCategory')->getNames((array)$choice);
 						return $titles;
 					});
 					break;

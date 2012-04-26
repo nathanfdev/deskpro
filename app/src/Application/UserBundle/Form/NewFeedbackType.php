@@ -53,7 +53,7 @@ class NewFeedbackType extends AbstractType
 		$builder->add('content', 'textarea');
 
 		$builder->add('category_id', 'choice', array(
-			'choices' => App::getEntityRepository('DeskPRO:FeedbackCategory')->getFullCategoryNames(' > ', false),
+			'choices' => App::getEntityRepository('DeskPRO:FeedbackCategory')->getFullNames(' > ', false),
 			'required' => false // needed for empty_value to appear
 		));
 

@@ -76,7 +76,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$this->setup_guide = $setup_guide;
 
 		if ($setup_guide->hasDoneInitialSetup() && !$this->request->isXmlHttpRequest() && !UserAgentRequirementCheck::passAgentInterface()) {
-			return $this->redirect(App::getRequest()->getUriForPath('/agent/browser-requirements'));
+			return $this->redirect($this->request->getUriForPath('/agent/browser-requirements'));
 		}
 
 		$this->container->get('templating.globals')->setVariable('setup_guide', $setup_guide);

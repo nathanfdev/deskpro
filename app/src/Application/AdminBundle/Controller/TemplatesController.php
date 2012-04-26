@@ -143,7 +143,7 @@ class TemplatesController extends AbstractController
 		$map = $tplfiles->getTemplateMap();
 		$name = $this->in->getString('name');
 
-		$code = App::getDb()->fetchColumn("SELECT template_code FROM templates WHERE name = ?", array($name));
+		$code = $this->db->fetchColumn("SELECT template_code FROM templates WHERE name = ?", array($name));
 		if (!$code && isset($map[$name])) {
 			$code = file_get_contents($map[$name]['path']);
 		}
@@ -165,7 +165,7 @@ class TemplatesController extends AbstractController
 	public function revertTemplateAction()
 	{
 		$name = $this->in->getString('name');
-		App::getDb()->delete('templates', array('name' => $name));
+		$this->db->delete('templates', array('name' => $name));
 
 		return $this->createJsonResponse(array('success' => true, 'name' => $name));
 	}
@@ -181,7 +181,7 @@ class TemplatesController extends AbstractController
 	public function saveTemplateAction()
 	{
 		$name = $this->in->getString('name');
-		App::getDb()->delete('templates', array('name' => $name));
+		$this->db->delete('templates', array('name' => $name));
 
 		$code = $this->in->getRaw('code');
 
@@ -286,7 +286,7 @@ class TemplatesController extends AbstractController
 		}
 
 		$name = $this->in->getString('name');
-		App::getDb()->delete('templates', array('name' => $name));
+		$this->db->delete('templates', array('name' => $name));
 
 		$copy_tpl = $this->in->getString('copy_tpl');
 		$code = '';
@@ -294,7 +294,7 @@ class TemplatesController extends AbstractController
 			$tplfiles = new TemplateFiles();
 			$map = $tplfiles->getTemplateMap();
 
-			$code = App::getDb()->fetchColumn("SELECT template_code FROM templates WHERE name = ?", array($copy_tpl));
+			$code = $this->db->fetchColumn("SELECT template_code FROM templates WHERE name = ?", array($copy_tpl));
 			if (!$code && isset($map[$copy_tpl])) {
 				$code = file_get_contents($map[$copy_tpl]['path']);
 			}
@@ -383,12 +383,12 @@ class TemplatesController extends AbstractController
 	{
 		$vars = array();
 
-		$ticket = App::getOrm()->createQuery("SELECT t FROM DeskPRO:Ticket t WHERE t.status != 'hidden' ORDER BY t.id DESC")->setMaxResults(1)->getSingleResult();
+		$ticket = $this->em->createQuery("SELECT t FROM DeskPRO:Ticket t WHERE t.status != 'hidden' ORDER BY t.id DESC")->setMaxResults(1)->getSingleResult();
 		$vars['ticket']      = $ticket;
 		$vars['person']      = $this->person;
 		$vars['access_code'] = $ticket->getAccessCode();
 
-		$messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket,array(
+		$messages = $this->em->getRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket,array(
 			'limit' => 25,
 			'order' => 'DESC',
 			'with_notes' => true

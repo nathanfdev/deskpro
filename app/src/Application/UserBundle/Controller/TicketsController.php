@@ -68,14 +68,14 @@ class TicketsController extends AbstractController
     public function listAction()
     {
 		if ($this->person->is_agent) {
-			$tickets = App::getOrm()->createQuery("
+			$tickets = $this->em->createQuery("
 				SELECT ticket
 				FROM DeskPRO:Ticket ticket
 				WHERE ticket.person = :person
 				ORDER BY ticket.id DESC
 			")->execute(array('person' => $this->person));
 		} else {
-			$tickets = App::getOrm()->createQuery("
+			$tickets = $this->em->createQuery("
 				SELECT ticket
 				FROM DeskPRO:Ticket ticket
 				LEFT JOIN ticket.participants part
@@ -102,7 +102,7 @@ class TicketsController extends AbstractController
 
 		$last_messages = array();
 		if ($tickets) {
-			$last_messages = App::getOrm()->createQuery("
+			$last_messages = $this->em->createQuery("
 				SELECT m, p
 				FROM DeskPRO:TicketMessage m
 				LEFT JOIN m.person p
@@ -134,7 +134,7 @@ class TicketsController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_ref);
 
-		$ticket_attachments = App::getEntityRepository('DeskPRO:TicketAttachment')->getTicketAttachments($ticket);
+		$ticket_attachments = $this->em->getRepository('DeskPRO:TicketAttachment')->getTicketAttachments($ticket);
 		$ticket_message_attachments = array();
 		foreach ($ticket_attachments as $attach) {
 			if (!isset($ticket_message_attachments[$attach['message']['id']])) {
@@ -150,7 +150,7 @@ class TicketsController extends AbstractController
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured);
 
 		// Widgets
-		$widget_recs = App::getEntityRepository('DeskPRO:Widget')->getWidgetsForSection('user.ticket');
+		$widget_recs = $this->em->getRepository('DeskPRO:Widget')->getWidgetsForSection('user.ticket');
 		$widgets = array();
 		if (count($widget_recs)) {
 			$widgets = \Application\DeskPRO\Widgets\Factory::createHandlersForWidgets(
@@ -189,7 +189,7 @@ class TicketsController extends AbstractController
 	 */
 	public function viewWithAuthAction($ticket_ref, $ticket_auth)
 	{
-		$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
+		$ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
 		if (!$ticket OR !($tac = $ticket->findAccessCode($ticket_auth))) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
@@ -199,15 +199,15 @@ class TicketsController extends AbstractController
 		$this->session->set('ticket_access', $this->session_allowed);
 
 		// And also mark the user and ticket as validated
-		App::getOrm()->beginTransaction();
+		$this->em->beginTransaction();
 
 		$person_email = $ticket->findEmailForPerson($tac->person);
 		if ($person_email) {
 			$person_email['is_validated'] = true;
-			App::getOrm()->persist($person_email);
+			$this->em->persist($person_email);
 		}
 		$tac->person['is_confirmed'] = true;
-		App::getOrm()->persist($tac->person);
+		$this->em->persist($tac->person);
 
 		if (!$tac->person['is_user']) {
 			$this->session->set('after_register', $this->generateUrl('user_tickets_view', array('ticket_ref' => $ticket['ref'])));
@@ -215,9 +215,9 @@ class TicketsController extends AbstractController
 			$this->session->set('finish_register_mode', array('type' => 'ticket_participant', 'ticket_id' => $ticket['id']));
 		}
 
-		App::getOrm()->persist($ticket);
-		App::getOrm()->flush();
-		App::getOrm()->commit();
+		$this->em->persist($ticket);
+		$this->em->flush();
+		$this->em->commit();
 
 		// Regular ticket page
 		return $this->viewAction($ticket_ref);
@@ -288,9 +288,9 @@ class TicketsController extends AbstractController
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
-				App::getOrm()->transactional(function() use ($ticket) {
-					App::getOrm()->persist($ticket);
-					App::getOrm()->flush();
+				$this->em->transactional(function() use ($ticket) {
+					$this->em->persist($ticket);
+					$this->em->flush();
 				});
 
 				return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket_ref));
@@ -357,9 +357,9 @@ class TicketsController extends AbstractController
 
 		$ticket->removeParticipant($person_id);
 
-		App::getOrm()->transactional(function() use ($ticket) {
-			App::getOrm()->persist($ticket);
-			App::getOrm()->flush();
+		$this->em->transactional(function() use ($ticket) {
+			$this->em->persist($ticket);
+			$this->em->flush();
 		});
 
 		return $this->redirectRoute('user_tickets_participants', array('ticket_ref' => $ticket['ref']));
@@ -372,7 +372,7 @@ class TicketsController extends AbstractController
 	public function feedbackAction($ticket_ref, $message_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_ref);
-		$message = App::findEntity('DeskPRO:TicketMessage', $message_id);
+		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
 
 		// Message must be of the correct ticket,
 		// must not be a note,
@@ -382,7 +382,7 @@ class TicketsController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
 		}
 
-		$feedback = App::getEntityRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, true);
+		$feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, true);
 
 		if ($this->in->getUint('rating')) {
 			$feedback->setRating(1);
@@ -398,7 +398,7 @@ class TicketsController extends AbstractController
 	public function feedbackSaveAction($ticket_ref, $message_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_ref);
-		$message = App::findEntity('DeskPRO:TicketMessage', $message_id);
+		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
 
 		// Message must be of the correct ticket,
 		// must not be a note,
@@ -408,7 +408,7 @@ class TicketsController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
 		}
 
-		$feedback = App::getEntityRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, true);
+		$feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, true);
 		$feedback['message'] = $this->in->getString('message');
 		if ($this->in->getBool('rating')) {
 			$feedback->rateUp();
@@ -416,7 +416,7 @@ class TicketsController extends AbstractController
 			$feedback->rateDown();
 		}
 
-		App::getOrm()->transactional(function($em) use ($feedback) {
+		$this->em->transactional(function($em) use ($feedback) {
 			$em->persist($feedback);
 			$em->flush();
 		});
@@ -431,7 +431,7 @@ class TicketsController extends AbstractController
 	public function feedbackCloseTicketAction($ticket_ref, $message_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_ref);
-		$message = App::findEntity('DeskPRO:TicketMessage', $message_id);
+		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
 
 		// Message must be of the correct ticket,
 		// must not be a note,
@@ -441,7 +441,7 @@ class TicketsController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
 		}
 
-		$feedback = App::getEntityRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, false);
+		$feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, false);
 
 		if (!$feedback) {
 			//throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid feedback");
@@ -449,7 +449,7 @@ class TicketsController extends AbstractController
 
 		$ticket->setStatus(Entity\Ticket::STATUS_CLOSED);
 
-		App::getOrm()->transactional(function($em) use ($ticket) {
+		$this->em->transactional(function($em) use ($ticket) {
 			$em->persist($ticket);
 			$em->flush();
 		});
@@ -465,8 +465,8 @@ class TicketsController extends AbstractController
 	public function closeAction($ticket_ref)
 	{
 		$ticket  = $this->getTicketOr404($ticket_ref);
-		$message = App::getEntityRepository('DeskPRO:TicketMessage')->getLastAgentReply($ticket);
-		$exist_feedback = App::getEntityRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, false);
+		$message = $this->em->getRepository('DeskPRO:TicketMessage')->getLastAgentReply($ticket);
+		$exist_feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, false);
 		$no_feedback = false;
 
 		if ($message->person->id == $this->person->id) {
@@ -517,9 +517,9 @@ class TicketsController extends AbstractController
 	protected function getTicketOr404($ticket_ref, $authcode = null)
 	{
 		if (ctype_digit($ticket_ref)) {
-			$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneById($ticket_ref);
+			$ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneById($ticket_ref);
 		} else {
-			$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
+			$ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
 		}
 
 		/** @var $ticket \Application\DeskPRO\Entity\Ticket */
@@ -529,7 +529,7 @@ class TicketsController extends AbstractController
 		}
 
 		if (isset($this->session_allowed[$ticket['id']])) {
-			$person = App::getEntityRepository('DeskPRO:Person')->find($this->session_allowed[$ticket['id']]['person_id']);
+			$person = $this->em->getRepository('DeskPRO:Person')->find($this->session_allowed[$ticket['id']]['person_id']);
 
 			// Set the current person context
 			if ($person['is_user'] AND $this->person != $person) {

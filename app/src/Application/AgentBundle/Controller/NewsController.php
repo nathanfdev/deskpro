@@ -64,18 +64,18 @@ class NewsController extends AbstractController
 
 	public function viewAction($news_id)
 	{
-		$news = App::findEntity('DeskPRO:News', $news_id);
-		$news_comments = App::getEntityRepository('DeskPRO:NewsComment')->getComments($news);
+		$news = $this->em->find('DeskPRO:News', $news_id);
+		$news_comments = $this->em->getRepository('DeskPRO:NewsComment')->getComments($news);
 
 		$related_finder = new RelatedContentFinder($this->person, $news);
 		$related_content = $related_finder->getRelatedEntities();
 
-		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editarticle', $this->person->id);
+		$state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editarticle', $this->person->id);
 
 		$sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($news);
-		$rated_searches = App::getEntityRepository('DeskPRO:SearchLog')->getRatedSearchesFor('news', $news['id'], 'counted');
+		$rated_searches = $this->em->getRepository('DeskPRO:SearchLog')->getRatedSearchesFor('news', $news['id'], 'counted');
 
-		$news_categories = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryHelper()->getCategoriesInHierarchy();
+		$news_categories = $this->em->getRepository('DeskPRO:NewsCategory')->getInHierarchy();
 
 		$perms = array(
 			'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($news),
@@ -96,7 +96,7 @@ class NewsController extends AbstractController
 
 	public function viewRevisionsAction($news_id)
 	{
-		$news = App::findEntity('DeskPRO:News', $news_id);
+		$news = $this->em->find('DeskPRO:News', $news_id);
 
 		return $this->render('AgentBundle:News:view-revisions-tab.html.twig', array(
 			'news' => $news,
@@ -105,7 +105,7 @@ class NewsController extends AbstractController
 
 	public function ajaxSaveLabelsAction($news_id)
 	{
-		$news = App::findEntity('DeskPRO:News', $news_id);
+		$news = $this->em->find('DeskPRO:News', $news_id);
 
 		if (!$news) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -118,15 +118,15 @@ class NewsController extends AbstractController
 
 		$news->getLabelManager()->setLabelsArray($labels);
 
-		App::getOrm()->persist($news);
-		App::getOrm()->flush();
+		$this->em->persist($news);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => 1));
 	}
 
 	public function ajaxSaveCommentAction($news_id)
 	{
-		$news = App::findEntity('DeskPRO:News', $news_id);
+		$news = $this->em->find('DeskPRO:News', $news_id);
 
 		$comment = new NewsComment();
 		$comment->news = $news;
@@ -135,8 +135,8 @@ class NewsController extends AbstractController
 		$comment['status'] = 'visible';
 		$comment['date_created']  = new \DateTime();
 
-		App::getOrm()->persist($comment);
-		App::getOrm()->flush();
+		$this->em->persist($comment);
+		$this->em->flush();
 
 		return $this->render('AgentBundle:News:view-comment.html.twig', array(
 			'comment' => $comment
@@ -145,7 +145,7 @@ class NewsController extends AbstractController
 
 	public function ajaxSaveAction($news_id)
 	{
-		$news = App::findEntity('DeskPRO:News', $news_id);
+		$news = $this->em->find('DeskPRO:News', $news_id);
 		$rev = null;
 
 		if (!$news) {
@@ -199,7 +199,7 @@ class NewsController extends AbstractController
 
 			case 'content':
 
-				App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editcontent', $this->person->id);
+				$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editcontent', $this->person->id);
 
 				$news['content'] = $this->in->getString('content');
 				$data['content_html'] = $this->renderView('AgentBundle:News:view-content-tab.html.twig', array(
@@ -261,7 +261,7 @@ class NewsController extends AbstractController
 	{
 		$category = null;
 		if ($category_id) {
-			$category = App::findEntity('DeskPRO:NewsCategory', $category_id);
+			$category = $this->em->find('DeskPRO:NewsCategory', $category_id);
 		}
 
 		$show_all = false;
@@ -304,9 +304,9 @@ class NewsController extends AbstractController
 
 	public function newNewsAction()
 	{
-		$news_categories = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryHelper()->getFlatHierarchy();
+		$news_categories = $this->em->getRepository('DeskPRO:NewsCategory')->getFlatHierarchy();
 
-		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newnews', $this->person->id);
+		$state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newnews', $this->person->id);
 
 		return $this->render('AgentBundle:News:newnews.html.twig', array(
 			'news_categories' => $news_categories,
@@ -329,7 +329,7 @@ class NewsController extends AbstractController
 
 			$news = $newnews->getNews();
 
-			App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newnews', $this->person->id);
+			$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newnews', $this->person->id);
 
 			return $this->createJsonResponse(array(
 				'success' => true,

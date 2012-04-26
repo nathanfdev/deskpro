@@ -97,10 +97,10 @@ class SettingsController extends AbstractController
 				);
 
 				// Send validation email
-				$message = App::getMailer()->createMessage();
+				$message = $this->container->getMailer()->createMessage();
 				$message->setTemplate('DeskPRO:emails_agent:agent-changeemail-mergeuser.html.twig', $vars);
 				$message->setTo($edit_profile->email, $agent->getDisplayName());
-				App::getMailer()->send($message);
+				$this->container->getMailer()->send($message);
 
 				// Pop the old email address back so it passes the dupe check validation,
 				// we're not actually updating the address yet
@@ -266,8 +266,8 @@ class SettingsController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Could not find filter");
 		}
 
-		App::getOrm()->remove($filter);
-		App::getOrm()->flush();
+		$this->em->remove($filter);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => true));
 	}
@@ -280,7 +280,7 @@ class SettingsController extends AbstractController
 
 	public function ticketMacrosAction()
     {
-		$all_macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->findAll();
+		$all_macros = $this->em->getRepository('DeskPRO:TicketMacro')->findAll();
 
 		if (!count($all_macros)) {
 			$all_macros = false;
@@ -298,7 +298,7 @@ class SettingsController extends AbstractController
 
 		if ($macro_id) {
 
-			$macro = App::getOrm()->getRepository('DeskPRO:TicketMacro')->find($macro_id);
+			$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 			if (!$macro) {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Could not find macro");
 			}
@@ -313,7 +313,7 @@ class SettingsController extends AbstractController
 		$ticket_options['custom_ticket_fields'] = $custom_fields;
 
 		// People stuff
-		$ticket_options['people_organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
+		$ticket_options['people_organizations'] = $this->em->getRepository('DeskPRO:Organization')->getOrganizationNames();
 		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 		$ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
 
@@ -327,7 +327,7 @@ class SettingsController extends AbstractController
 	{
 		if ($macro_id) {
 
-			$macro = App::getOrm()->getRepository('DeskPRO:TicketMacro')->find($macro_id);
+			$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 			if (!$macro) {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Could not find macro");
 			}
@@ -345,21 +345,21 @@ class SettingsController extends AbstractController
 
 		$macro['actions'] = $actions;
 
-		App::getOrm()->persist($macro);
-		App::getOrm()->flush();
+		$this->em->persist($macro);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => true));
 	}
 
 	public function ticketMacroDeleteAction($macro_id)
 	{
-		$macro = App::getOrm()->getRepository('DeskPRO:TicketMacro')->find($macro_id);
+		$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 		if (!$macro) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Could not find macro");
 		}
 
-		App::getOrm()->remove($macro);
-		App::getOrm()->flush();
+		$this->em->remove($macro);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => true));
 	}

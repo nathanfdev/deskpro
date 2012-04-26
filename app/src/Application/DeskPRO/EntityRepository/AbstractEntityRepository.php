@@ -81,6 +81,15 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 
 
 	/**
+	 * @return int
+	 */
+	public function countAll()
+	{
+		return $this->_em->getConnection()->fetchColumn("SELECT COUNT(*) FROM `" . $this->getTableName() . "`");
+	}
+
+
+	/**
 	 * @return string
 	 */
 	public function getTableName()

@@ -124,7 +124,7 @@ class NewTicketType extends AbstractType
 
 		if (!empty($ticket_options['departments_hierarchy'])) {
 			$ticket_builder->add('department_id', 'choice', array(
-				'choices' => App::getOrm()->getRepository('DeskPRO:Department')->getFullDepartmentNames(null, false)
+				'choices' => App::getOrm()->getRepository('DeskPRO:Department')->getFullNames(null, false)
 			));
 		}
 

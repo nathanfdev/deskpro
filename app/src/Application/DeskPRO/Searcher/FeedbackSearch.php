@@ -371,7 +371,7 @@ class FeedbackSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch('feedback.category_id', $op, $ids);
 
 					$this->summary[] = $this->_choiceSummary('Category', $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:FeedbackCategory')->getCategoryNames((array)$choice);
+						$titles = App::getEntityRepository('DeskPRO:FeedbackCategory')->getNames((array)$choice);
 						return $titles;
 					});
 					break;

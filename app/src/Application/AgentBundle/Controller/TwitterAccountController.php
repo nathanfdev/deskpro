@@ -47,7 +47,7 @@ class TwitterAccountController extends AbstractController
         {
                 $agentId = $accounts = $this->person->getId();
 
-                $statuses = App::getEntityRepository('DeskPRO:TwitterStatus')->findStarredTweetsForAgentId($agentId);
+                $statuses = $this->em->getRepository('DeskPRO:TwitterStatus')->findStarredTweetsForAgentId($agentId);
 
                 return $this->render('AgentBundle:TwitterAccount:starred-tweets.html.twig', array(
                         'statuses' => $statuses
@@ -58,7 +58,7 @@ class TwitterAccountController extends AbstractController
         {
                 $agentId = $accounts = $this->person->getId();
 
-                $statuses = App::getEntityRepository('DeskPRO:TwitterStatus')->findTweetsForAgentId($agentId);
+                $statuses = $this->em->getRepository('DeskPRO:TwitterStatus')->findTweetsForAgentId($agentId);
 
                 return $this->render('AgentBundle:TwitterAccount:my-tweets.html.twig', array(
                         'statuses' => $statuses
@@ -70,7 +70,7 @@ class TwitterAccountController extends AbstractController
         {
                 $agentId = $accounts = $this->person->getId();
 
-                $statuses = App::getEntityRepository('DeskPRO:TwitterStatus')->findTweetsForAgentTeamByAgentId($agentId);
+                $statuses = $this->em->getRepository('DeskPRO:TwitterStatus')->findTweetsForAgentTeamByAgentId($agentId);
 
                 return $this->render('AgentBundle:TwitterAccount:team-tweets.html.twig', array(
                         'statuses' => $statuses
@@ -89,7 +89,7 @@ class TwitterAccountController extends AbstractController
         public function runSearchAction($account_id, $search_id)
         {
                 $account = $this->getAccount($account_id);
-                $search = App::getEntityRepository('DeskPRO:TwitterAccountSearch')->find($search_id);
+                $search = $this->em->getRepository('DeskPRO:TwitterAccountSearch')->find($search_id);
 
                 if (!$search) {
                         throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no search with ID "%d"', $search_id));
@@ -144,7 +144,7 @@ class TwitterAccountController extends AbstractController
                 }
 
                 // check if account exists
-                $account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->find($id);
+                $account = $this->em->getRepository('DeskPRO:TwitterAccount')->find($id);
                 if (!$account) {
                         throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no account with ID "%d"', $id));
                 }

@@ -71,15 +71,15 @@ class KbController extends AbstractController
 	public function viewArticleAction($article_id)
 	{
         $is_pdf = $this->in->getBool('pdf');
-		$article = App::findEntity('DeskPRO:Article', $article_id);
+		$article = $this->em->find('DeskPRO:Article', $article_id);
 		if (!$article) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown article $article_id");
 		}
 
 		if ($this->in->getBool('do_validate') AND $article['status_code'] == 'hidden.validating') {
 			$article['status_code'] = Article::STATUS_PUBLISHED;
-			App::getOrm()->persist($article);
-			App::getOrm()->flush();
+			$this->em->persist($article);
+			$this->em->flush();
 		}
 
 		$tpl = 'AgentBundle:Kb:view.html.twig';
@@ -95,7 +95,7 @@ class KbController extends AbstractController
 		# Article props
 		#------------------------------
 
-		$article_comments = App::getEntityRepository('DeskPRO:ArticleComment')->getComments($article);
+		$article_comments = $this->em->getRepository('DeskPRO:ArticleComment')->getComments($article);
 
 		$article_revisions = $article->getRevisions();
 
@@ -106,13 +106,13 @@ class KbController extends AbstractController
 		$content = $article->content;
 		$glossary_words = $glossary->findWords($content);
 
-		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editarticle', $this->person->id);
+		$state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editarticle', $this->person->id);
 
 		$sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($article);
 
-		$rated_searches = App::getEntityRepository('DeskPRO:SearchLog')->getRatedSearchesFor('article', $article['id'], 'counted');
+		$rated_searches = $this->em->getRepository('DeskPRO:SearchLog')->getRatedSearchesFor('article', $article['id'], 'counted');
 
-		$article_categories  = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoryHelper()->getCategoriesInHierarchy();
+		$article_categories  = $this->em->getRepository('DeskPRO:ArticleCategory')->getInHierarchy();
 
 		$perms = array(
 			'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($article),
@@ -179,7 +179,7 @@ class KbController extends AbstractController
 
 	public function viewRevisionsAction($article_id)
 	{
-		$article = App::findEntity('DeskPRO:Article', $article_id);
+		$article = $this->em->find('DeskPRO:Article', $article_id);
 		if (!$article) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown article $article_id");
 		}
@@ -194,14 +194,14 @@ class KbController extends AbstractController
 
 	public function ajaxSaveLabelsAction($article_id)
 	{
-		$article = App::findEntity('DeskPRO:Article', $article_id);
+		$article = $this->em->find('DeskPRO:Article', $article_id);
 
 		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 
 		$article->getLabelManager()->setLabelsArray($labels);
 
-		App::getOrm()->persist($article);
-		App::getOrm()->flush();
+		$this->em->persist($article);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => 1));
 	}
@@ -233,8 +233,8 @@ class KbController extends AbstractController
 					break;
 				}
 
-				$from = App::findEntity('DeskPRO:ArticleCategory', $from_category);
-				$to = App::findEntity('DeskPRO:ArticleCategory', $to_category);
+				$from = $this->em->find('DeskPRO:ArticleCategory', $from_category);
+				$to = $this->em->find('DeskPRO:ArticleCategory', $to_category);
 
 				if(!$from || !$to) {
 					$error = $tr->phrase('agent.publish.error_kb_not_in_db');
@@ -252,7 +252,7 @@ class KbController extends AbstractController
 			$this->em->beginTransaction();
 
 			foreach ($articles as $article_id) {
-				$article = App::findEntity('DeskPRO:Article', $article_id);
+				$article = $this->em->find('DeskPRO:Article', $article_id);
 
 				if(!$article) {
 					$missing++;
@@ -327,7 +327,7 @@ class KbController extends AbstractController
 
 	public function ajaxSaveAction($article_id)
 	{
-		$article = App::findEntity('DeskPRO:Article', $article_id);
+		$article = $this->em->find('DeskPRO:Article', $article_id);
 
 		if (!$article) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -423,7 +423,7 @@ class KbController extends AbstractController
 				foreach ($article->attachments as $k => $attach) {
 					if ($attach->blob['id'] == $this->in->getUint('blob_id')) {
 						$article->attachments->remove($k);
-						App::getOrm()->remove($attach);
+						$this->em->remove($attach);
 						break;
 					}
 				}
@@ -432,7 +432,7 @@ class KbController extends AbstractController
 
 			case 'content':
 
-				App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editarticle', $this->person->id);
+				$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editarticle', $this->person->id);
 
 				$article['content'] = $this->in->getString('content');
 
@@ -469,7 +469,7 @@ class KbController extends AbstractController
 
 	public function ajaxSaveCustomFieldsAction($article_id)
 	{
-		$article = App::findEntity('DeskPRO:Article', $article_id);
+		$article = $this->em->find('DeskPRO:Article', $article_id);
 
 		if (!$article) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -505,7 +505,7 @@ class KbController extends AbstractController
 
 	public function ajaxSaveCommentAction($article_id)
 	{
-		$article = App::findEntity('DeskPRO:Article', $article_id);
+		$article = $this->em->find('DeskPRO:Article', $article_id);
 
 		if (!$article) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -518,8 +518,8 @@ class KbController extends AbstractController
 		$comment['status'] = 'visible';
 		$comment['date_created']  = new \DateTime();
 
-		App::getOrm()->persist($comment);
-		App::getOrm()->flush();
+		$this->em->persist($comment);
+		$this->em->flush();
 
 		return $this->render('AgentBundle:Kb:view-comment.html.twig', array(
 			'comment' => $comment
@@ -535,7 +535,7 @@ class KbController extends AbstractController
 	 */
 	public function listPendingArticlesAction()
 	{
-		$pending_articles = App::getEntityRepository('DeskPRO:ArticlePendingCreate')->getPendingArticles();
+		$pending_articles = $this->em->getRepository('DeskPRO:ArticlePendingCreate')->getPendingArticles();
 
 		return $this->render('AgentBundle:Kb:pending-articles.html.twig', array(
 			'pending_articles' => $pending_articles,
@@ -552,7 +552,7 @@ class KbController extends AbstractController
 		$pending_article->person = $this->person;
 
 		if ($this->in->getUint('ticket_id')) {
-			$ticket = App::findEntity('DeskPRO:Ticket', $this->in->getUint('ticket_id'));
+			$ticket = $this->em->find('DeskPRO:Ticket', $this->in->getUint('ticket_id'));
 			if ($ticket) {
 				$pending_article->ticket = $ticket;
 			}
@@ -560,8 +560,8 @@ class KbController extends AbstractController
 
 		$pending_article['comment'] = $this->in->getString('comment');
 
-		App::getOrm()->persist($pending_article);
-		App::getOrm()->flush();
+		$this->em->persist($pending_article);
+		$this->em->flush();
 
 		$row_html = $this->renderView('AgentBundle:Kb:pending-articles-page.html.twig', array('pending_articles' => array($pending_article)));
 
@@ -576,7 +576,7 @@ class KbController extends AbstractController
 	 */
 	public function removePendingArticleAction($pending_article_id)
 	{
-		$pending_article = App::findEntity('DeskPRO:ArticlePendingCreate', $pending_article_id);
+		$pending_article = $this->em->find('DeskPRO:ArticlePendingCreate', $pending_article_id);
 
 		if (!$pending_article) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -585,8 +585,8 @@ class KbController extends AbstractController
 			return $this->createJsonResponse(array('success' => false));
 		}
 
-		App::getOrm()->remove($pending_article);
-		App::getOrm()->flush();
+		$this->em->remove($pending_article);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array(
 			'success' => true,
@@ -596,7 +596,7 @@ class KbController extends AbstractController
 
 	public function pendingArticleInfoAction($pending_article_id)
 	{
-		$pending_article = App::findEntity('DeskPRO:ArticlePendingCreate', $pending_article_id);
+		$pending_article = $this->em->find('DeskPRO:ArticlePendingCreate', $pending_article_id);
 
 		$data = array();
 		$data['id'] = $pending_article_id;
@@ -651,7 +651,7 @@ class KbController extends AbstractController
 	{
 		$category = null;
 		if ($category_id) {
-			$category = App::findEntity('DeskPRO:ArticleCategory', $category_id);
+			$category = $this->em->find('DeskPRO:ArticleCategory', $category_id);
 		}
 
 		$show_all = false;
@@ -680,9 +680,9 @@ class KbController extends AbstractController
 			$tpl = 'AgentBundle:Kb:filter-page.html.twig';
 		}
 
-		$article_categories = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoryHelper()->getCategoriesInHierarchy();
+		$article_categories = $this->em->getRepository('DeskPRO:ArticleCategory')->getInHierarchy();
 
-		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newarticle', $this->person->id);
+		$state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newarticle', $this->person->id);
 
 		return $this->render($tpl, array(
 			'results'            => $results,
@@ -700,7 +700,7 @@ class KbController extends AbstractController
 
 	public function articleInfoAction($article_id)
 	{
-		$article = App::findEntity('DeskPRO:Article', $article_id);
+		$article = $this->em->find('DeskPRO:Article', $article_id);
 
 		$data = array(
 			'article_id' => $article['id'],
@@ -731,9 +731,9 @@ class KbController extends AbstractController
 
 	public function newArticleAction()
 	{
-		$article_categories = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoryHelper()->getCategoriesInHierarchy();
+		$article_categories = $this->em->getRepository('DeskPRO:ArticleCategory')->getInHierarchy();
 
-		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newarticle', $this->person->id);
+		$state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newarticle', $this->person->id);
 
 		return $this->render('AgentBundle:Kb:newarticle.html.twig', array(
 			'article_categories' => $article_categories,
@@ -759,14 +759,14 @@ class KbController extends AbstractController
 			$article = $newarticle->getArticle();
 
 			if ($this->in->getUint('pending_article_id')) {
-				$pending_article = App::findEntity('DeskPRO:ArticlePendingCreate', $this->in->getUint('pending_article_id'));
+				$pending_article = $this->em->find('DeskPRO:ArticlePendingCreate', $this->in->getUint('pending_article_id'));
 				if ($pending_article) {
-					App::getOrm()->remove($pending_article);
-					App::getOrm()->flush();
+					$this->em->remove($pending_article);
+					$this->em->flush();
 				}
 			}
 
-			App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newarticle', $this->person->id);
+			$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newarticle', $this->person->id);
 
 			return $this->createJsonResponse(array(
 				'success' => true,

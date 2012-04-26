@@ -54,7 +54,7 @@ class AgentsController extends AbstractController
 
 	public function agentsAction()
 	{
-		$all_agents = App::getOrm()->createQuery("
+		$all_agents = $this->em->createQuery("
 			SELECT p, pic, email
 			FROM DeskPRO:Person p INDEX BY p.id
 			LEFT JOIN p.primary_email email
@@ -63,27 +63,27 @@ class AgentsController extends AbstractController
 			ORDER BY p.first_name, p.last_name
 		")->execute();
 
-		$count_deleted = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1 AND is_deleted = 1");
+		$count_deleted = $this->db->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1 AND is_deleted = 1");
 
 		foreach ($all_agents as $agent) {
 			$agent->loadHelper('Agent');
 		}
 
-		$all_teams = App::getOrm()->createQuery("
+		$all_teams = $this->em->createQuery("
 			SELECT t
 			FROM DeskPRO:AgentTeam t INDEX BY t.id
 			ORDER BY t.name ASC
 		")->execute();
 
-		$all_usergroups = App::getOrm()->createQuery("
+		$all_usergroups = $this->em->createQuery("
 			SELECT ug
 			FROM DeskPRO:Usergroup ug INDEX BY ug.id
 			WHERE ug.is_agent_group = true
 			ORDER BY ug.title ASC
 		")->execute();
 
-		$team_member_ids = App::getEntityRepository('DeskPRO:AgentTeam')->getSortedMemberIds();
-		$usergroup_member_ids = App::getEntityRepository('DeskPRO:Usergroup')->getSortedAgentIds();
+		$team_member_ids = $this->em->getRepository('DeskPRO:AgentTeam')->getSortedMemberIds();
+		$usergroup_member_ids = $this->em->getRepository('DeskPRO:Usergroup')->getSortedAgentIds();
 
 		$agent_to_groups = array();
 		foreach ($usergroup_member_ids as $ug_id => $members) {
@@ -138,7 +138,7 @@ class AgentsController extends AbstractController
 
 	public function deletedAgentsAction()
 	{
-		$all_agents = App::getOrm()->createQuery("
+		$all_agents = $this->em->createQuery("
 			SELECT p, pic, email
 			FROM DeskPRO:Person p INDEX BY p.id
 			LEFT JOIN p.primary_email email
@@ -169,13 +169,13 @@ class AgentsController extends AbstractController
 			$agent = new \Application\DeskPRO\Entity\Person();
 		}
 
-		$all_teams = App::getOrm()->createQuery("
+		$all_teams = $this->em->createQuery("
 			SELECT t
 			FROM DeskPRO:AgentTeam t
 			ORDER BY t.name ASC
 		")->execute();
 
-		$all_usergroups = App::getOrm()->createQuery("
+		$all_usergroups = $this->em->createQuery("
 			SELECT ug
 			FROM DeskPRO:Usergroup ug
 			WHERE ug.is_agent_group = true
@@ -195,7 +195,7 @@ class AgentsController extends AbstractController
 			WHERE person_id = ?
 		", array($agent->id));
 
-		$departments = $this->em->getRepository('DeskPRO:Department')->getAll();
+		$departments = $this->container->getDataService('Department')->getAll();
 
 		$agent_usergroups = $this->db->fetchAllCol("SELECT usergroup_id FROM person2usergroups WHERE person_id = ?", array($agent->id));
 		$agent_teams = $this->db->fetchAllCol("SELECT team_id FROM agent_team_members WHERE person_id = ?", array($agent->id));
@@ -468,18 +468,18 @@ class AgentsController extends AbstractController
 		if ($is_new) {
 
 			// Send welcome email
-			$email_body = App::get('templating')->render('DeskPRO:emails_agent:agent-welcome.html.twig', array('agent' => $agent));
-			$message = App::getMailer()->createMessage();
+			$email_body = $this->container->get('templating')->render('DeskPRO:emails_agent:agent-welcome.html.twig', array('agent' => $agent));
+			$message = $this->container->getMailer()->createMessage();
 			$message->setTo($agent->getPrimaryEmailAddress(), $agent->getDisplayName());
 			$message->setSubject('Your new agent account');
 			$message->setBody($email_body, 'text/html');
-			App::getMailer()->send($message);
+			$this->container->getMailer()->send($message);
 
-			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_agents', time());
+			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_agents', time());
 		}
 
-		App::getSession()->setFlash('saved_agent', 1);
-		App::getSession()->save();
+		$this->session->setFlash('saved_agent', 1);
+		$this->session->save();
 
 		return $this->redirectRoute('admin_agents_edit', array('person_id' => $agent->id));
 	}
@@ -574,7 +574,7 @@ class AgentsController extends AbstractController
 					$this->db->insert('agent_team_members', array('team_id' => $team->id, 'person_id' => $pid));
 				}
 
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_team', '1');
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_team', '1');
 
 				$this->em->getConnection()->commit();
 			} catch (\Exception $e) {
@@ -587,7 +587,7 @@ class AgentsController extends AbstractController
 
 		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
-		$usergroup_values = App::getDb()->fetchAllKeyValue("
+		$usergroup_values = $this->db->fetchAllKeyValue("
 			SELECT name, value
 			FROM permissions
 			LEFT JOIN usergroups ON (usergroups.id = permissions.id)
@@ -615,9 +615,9 @@ class AgentsController extends AbstractController
 			$this->em->remove($team);
 			$this->em->flush();
 
-			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM agent_teams");
+			$count = $this->db->fetchColumn("SELECT COUNT(*) FROM agent_teams");
 			if (!$count) {
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_agent_team', '0');
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_agent_team', '0');
 			}
 
 			$this->em->getConnection()->commit();
@@ -728,7 +728,7 @@ class AgentsController extends AbstractController
 	 */
 	protected function getAgentTeamOr404($id)
 	{
-		$team = App::getEntityRepository('DeskPRO:AgentTeam')->find($id);
+		$team = $this->em->getRepository('DeskPRO:AgentTeam')->find($id);
 		if (!$team) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no team with ID $id");
 		}
@@ -741,7 +741,7 @@ class AgentsController extends AbstractController
 	 */
 	protected function getAgentGroupOr404($id)
 	{
-		$ug = App::getEntityRepository('DeskPRO:Usergroup')->find($id);
+		$ug = $this->em->getRepository('DeskPRO:Usergroup')->find($id);
 		if (!$ug || !$ug->is_agent_group) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no usergroup with ID $id");
 		}

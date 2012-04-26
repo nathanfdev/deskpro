@@ -96,7 +96,7 @@ class TermSummary
 
 			case 'department':
 				$summary = $this->_choiceSummary($tr->phrase('agent.general.department'), $op, $choice, function($choice) {
-					$titles = App::getEntityRepository('DeskPRO:Department')->getDepartmentNames((array)$choice);
+					$titles = App::getDataService('Department')->getNames((array)$choice);
 					return $titles;
 				});
 				break;
@@ -107,21 +107,21 @@ class TermSummary
 
 			case 'ticket_category':
 				$summary = $this->_choiceSummary($tr->phrase('agent.general.category'), $op, $choice, function($choice) {
-					$titles = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoryNames((array)$choice);
+					$titles = App::getEntityRepository('DeskPRO:TicketCategory')->getNames((array)$choice);
 					return $titles;
 				});
 				break;
 
 			case 'product':
 				$summary = $this->_choiceSummary($tr->phrase('agent.general.product'), $op, $choice, function($choice) {
-					$titles = App::getEntityRepository('DeskPRO:Product')->getProductNames((array)$choice);
+					$titles = App::getEntityRepository('DeskPRO:Product')->getNames((array)$choice);
 					return $titles;
 				});
 				break;
 
 			case 'ticket_priority':
 				$summary = $this->_choiceSummary($tr->phrase('agent.general.priority'), $op, $choice, function($choice) {
-					$titles = App::getEntityRepository('DeskPRO:TicketPriority')->getPriorityNames((array)$choice);
+					$titles = App::getEntityRepository('DeskPRO:TicketPriority')->getNames((array)$choice);
 					return $titles;
 				});
 				break;
@@ -152,7 +152,7 @@ class TermSummary
 
 			case 'ticket_workflow':
 				$summary = $this->_choiceSummary($tr->phrase('agent.general.workflow'), $op, $choice, function($choice) {
-					$titles = App::getEntityRepository('DeskPRO:TicketWorkflow')->getWorkflowNames((array)$choice);
+					$titles = App::getEntityRepository('DeskPRO:TicketWorkflow')->getNames((array)$choice);
 					return $titles;
 				});
 				break;

@@ -52,7 +52,7 @@ class UserRulesController extends AbstractController
 		$rules = $this->em->getRepository('DeskPRO:UserRule')->findAll();
 
 		// Also organizations with domains
-		$org_domains = App::getDb()->fetchAllGrouped("
+		$org_domains = $this->db->fetchAllGrouped("
 			SELECT organization_email_domains.organization_id AS id, organization_email_domains.domain, organizations.name
 			FROM organization_email_domains
 			LEFT JOIN organizations ON (organizations.id = organization_email_domains.organization_id)

@@ -369,7 +369,7 @@ class ArticleSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch("$join_name.category_id", $op, $ids);
 
 					$this->summary[] = $this->_choiceSummary('Category', $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoryNames((array)$choice);
+						$titles = App::getEntityRepository('DeskPRO:ArticleCategory')->getNames((array)$choice);
 						return $titles;
 					});
 

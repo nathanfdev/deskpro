@@ -66,11 +66,11 @@ class DealController extends AbstractController
     {
 
         $deal = new Deal();
-        $deal_type = App::getEntityRepository('DeskPRO:DealType')->findAll();
-        $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType(0);
-        $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
-        $deal_currency = App::getEntityRepository('DeskPRO:Currency')->findAll();
-        
+        $deal_type = $this->em->getRepository('DeskPRO:DealType')->findAll();
+        $deal_stage = $this->em->getRepository('DeskPRO:DealStage')->getDealStagesByDealType(0);
+        $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+        $deal_currency = $this->em->getRepository('DeskPRO:Currency')->findAll();
+
 
         return $this->render('AgentBundle:Deal:newdeal.html.twig', array(
            'deal_type' => $deal_type,
@@ -110,7 +110,7 @@ class DealController extends AbstractController
 
     public function getSectionDataAction()
     {
-        
+
         $deal_repository = $this->em->getRepository('DeskPRO:Deal');
         $person = $this->person;
 
@@ -132,7 +132,7 @@ class DealController extends AbstractController
         $other_lost_deals = $deal_repository->findDealsForOther($person, 2);
         $other_total_lostdeals = $deal_repository->countDealsForOther($person, 2);
 
-        
+
         $section_html = $this->renderView('AgentBundle:Deal:window-section.html.twig',array(
             'myopendeals' => $my_open_deals,
             'my_total_opendeals' => $my_total_opendeals,
@@ -151,7 +151,7 @@ class DealController extends AbstractController
             'section_html' => $section_html,
         ));
     }
-    
+
 
     public function dealListAction($owner_type = null, $deal_status = null, $deal_type_id = null)
     {
@@ -231,15 +231,15 @@ class DealController extends AbstractController
         } else{
             $deal = new Deal();
         }
-        
-        $notes = App::getEntityRepository('DeskPRO:DealNote')->getNotesForDeal($deal);
-        $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
-        $deal_type = App::getEntityRepository('DeskPRO:DealType')->findAll();
-        $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal->getDealType()->getId());
+
+        $notes = $this->em->getRepository('DeskPRO:DealNote')->getNotesForDeal($deal);
+        $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+        $deal_type = $this->em->getRepository('DeskPRO:DealType')->findAll();
+        $deal_stage = $this->em->getRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal->getDealType()->getId());
 
         $deal_attachments = $this->em->getRepository('DeskPRO:DealAttachment')->findByDeal($deal);
         $assoceated_tasks = $this->em->getRepository('DeskPRO:TaskAssociatedDeal')->findByDeal($deal);
-        $deal_currency  = App::getEntityRepository('DeskPRO:Currency')->findAll();
+        $deal_currency  = $this->em->getRepository('DeskPRO:Currency')->findAll();
 
         $related_finder = new RelatedContentFinder($this->person, $deal);
         $related_content = $related_finder->getRelatedEntities();
@@ -247,8 +247,8 @@ class DealController extends AbstractController
 //        print \Doctrine\Common\Util\Debug::dump($related_content);exit;}
 
         $field_manager = $this->container->getSystemService('deal_fields_manager');
-        $custom_fields = $field_manager->getDisplayArrayForObject($deal); 
-        
+        $custom_fields = $field_manager->getDisplayArrayForObject($deal);
+
         $participant_person_ids = array();
         $participant_org_ids = array();
 
@@ -261,7 +261,7 @@ class DealController extends AbstractController
         {
             $participant_org_ids[] = $organization->id;
         }
-        
+
         $tpl = 'AgentBundle:Deal:deal-view.html.twig';
         return $this->render($tpl, array(
             'deal' => $deal,
@@ -270,7 +270,7 @@ class DealController extends AbstractController
             'deal_types' => $deal_type,
             'deal_stage' => $deal_stage,
             'participant_person_ids' => $participant_person_ids,
-            'participant_org_ids' => $participant_org_ids,            
+            'participant_org_ids' => $participant_org_ids,
             'person' => $this->person,
             'deal_attachments' => $deal_attachments,
             'assoceated_tasks' => $assoceated_tasks,
@@ -294,7 +294,7 @@ class DealController extends AbstractController
 		$note_txt = $this->in->getString('note');
 
 		$em = $this->em;
-		
+
 		$note = new DealNote();
 		$note['agent'] = $this->person;
 		$note['deal'] = $deal;
@@ -302,7 +302,7 @@ class DealController extends AbstractController
 		$em->persist($note);
 
 		$em->flush();
-		
+
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'deal_id' => $deal['id'],
@@ -327,8 +327,8 @@ class DealController extends AbstractController
 
 		$deal->getLabelManager()->setLabelsArray($labels);
 
-		App::getOrm()->persist($deal);
-		App::getOrm()->flush();
+		$this->em->persist($deal);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => 1));
 	}
@@ -362,12 +362,12 @@ class DealController extends AbstractController
 		));
 	}
 
-        
+
         public function setAgentParticipantsAction($deal_id, $agent_id)
 	{
-		$deal = $this->getDealOr404($deal_id);		
+		$deal = $this->getDealOr404($deal_id);
                 $agent_id = ($agent_id == 0) ? null : $agent_id;
-                
+
 		$this->db->beginTransaction();
 
 		try {
@@ -392,31 +392,31 @@ class DealController extends AbstractController
             );
             switch ($this->in->getString('action')) {
                 case 'remove-person':
-                    $person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
+                    $person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
                     if ($person) {
                         $deal->deletePeople($person);
                         $data['remove_person_id'] = $person['id'];
                     }
                     break;
                 case 'remove-organization':
-                    $organization = App::findEntity('DeskPRO:Organization', $this->in->getUint('organization_id'));
+                    $organization = $this->em->find('DeskPRO:Organization', $this->in->getUint('organization_id'));
                     if ($organization) {
                         $deal->deleteOrganization($organization);
                         $data['remove_organization_id'] = $organization['id'];
                     }
                     break;
                 case 'change-dealtype':
-                    
-                    $deal_type = App::findEntity('DeskPRO:DealType', $this->in->getUint('deal_type_id'));
+
+                    $deal_type = $this->em->find('DeskPRO:DealType', $this->in->getUint('deal_type_id'));
                     if($deal_id){
                         $deal->setDealTypeId($this->in->getUint('deal_type_id'));
                         $deal->setDealStageId(null);
                     }
-                    
-                    $data['change_deal_type_id'] = $deal_type['id'];
-                    $deal_stage = App::getEntityRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal_type->getId());
 
-                     
+                    $data['change_deal_type_id'] = $deal_type['id'];
+                    $deal_stage = $this->em->getRepository('DeskPRO:DealStage')->getDealStagesByDealType($deal_type->getId());
+
+
                     $tpl = $this->renderView('AgentBundle:Deal:select-deal-options.html.twig', array(
                         'name'=> 'newdeal[deal_stage]',
                         'id' => uniqid().'_select_deal_stage',
@@ -429,7 +429,7 @@ class DealController extends AbstractController
                     ));
 
                     $data['deal_stage'] = $tpl;
-                    
+
                     break;
 
                 case 'change-dealstage':
@@ -472,7 +472,7 @@ class DealController extends AbstractController
                                 $this->in->getString('content_id')
                         );
                         break;
-                    
+
             }
 
             if($deal_id){
@@ -554,10 +554,10 @@ class DealController extends AbstractController
 
                 $email = $this->in->getString('email');
                 $name = $this->in->getString('name');
-                
+
                 if ($person_id) {
                     $person = $this->em->find('DeskPRO:Person', $person_id);
-                    
+
 		} else if($email){
                     $person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
                 }
@@ -607,21 +607,21 @@ class DealController extends AbstractController
                 $deal = $this->getDealOr404($this->in->getString('deal_id'));
                 $name = $this->in->getString('name');
                 $organization = false;
-                
+
 		if ($org_id) {
 			$organization = $this->em->find('DeskPRO:Organization', $org_id);
 		}else if($name){
                     $organization = $this->em->getRepository('DeskPRO:Organization')->findOneByName($name);
 
                 }
-                
+
                 if(!$organization)
                 {
                     $organization = new Organization();
                     $organization->name = $name;
                 }
 
-                $this->em->persist($organization);                
+                $this->em->persist($organization);
 
 		// Checked if the person already added to the deal.
               if($deal_repository->findOrganizationInDeal($organization, $this->in->getString('deal_id')) <= 0)

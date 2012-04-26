@@ -148,7 +148,7 @@ class ChartController extends AbstractController
 	 */
 	protected function getDashboardStat($dashboard_stat_id)
 	{
-		$dashboardStat = App::getEntityRepository('DeskPRO:ReportDashboardStat')->find($dashboard_stat_id);
+		$dashboardStat = $this->em->getRepository('DeskPRO:ReportDashboardStat')->find($dashboard_stat_id);
 		if (!$dashboardStat) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_dashboard_stat");
 		}

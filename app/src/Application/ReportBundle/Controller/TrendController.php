@@ -47,7 +47,7 @@ class TrendController extends AbstractController
 	 */
 	public function indexAction()
 	{
-		$stats = App::getEntityRepository('DeskPRO:Stat')->getEnabledStats();
+		$stats = $this->em->getRepository('DeskPRO:Stat')->getEnabledStats();
 
 		foreach ($stats as $stat) {
 			$end_date = new \DateTime();
@@ -102,8 +102,8 @@ class TrendController extends AbstractController
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
-				App::getOrm()->persist($stat);
-				App::getOrm()->flush();
+				$this->em->persist($stat);
+				$this->em->flush();
 
 				$this->session->setFlash('saved', $stat->title);
 				$redirect_url = $this->generateUrl('report_trend_index');
@@ -138,8 +138,8 @@ class TrendController extends AbstractController
 				$term_rules = RuleBuilder::newTermsBuilder();
 				$cloned['criteria'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
 
-				App::getOrm()->persist($cloned);
-				App::getOrm()->flush();
+				$this->em->persist($cloned);
+				$this->em->flush();
 
 				$this->session->setFlash('saved', $stat->title);
 				$redirect_url = $this->generateUrl('report_trend_index');
@@ -167,7 +167,7 @@ class TrendController extends AbstractController
 	 */
 	protected function getStat($stat_id)
 	{
-		$stat = App::getEntityRepository('DeskPRO:Stat')->find($stat_id);
+		$stat = $this->em->getRepository('DeskPRO:Stat')->find($stat_id);
 		if (!$stat) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_stat");
 		}

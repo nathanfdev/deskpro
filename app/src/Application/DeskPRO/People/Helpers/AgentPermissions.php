@@ -97,7 +97,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 			return $this->_disallowed_ids[$context];
 		}
 
-		$all_ids = App::getEntityRepository('DeskPRO:Department')->getDepartmentIds();
+		$all_ids = App::getDataService('Department')->getIds();
 
 		$allowed_ids = $this->getAllowedDepartments($context);
 

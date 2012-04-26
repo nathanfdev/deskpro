@@ -142,7 +142,7 @@ class OrganizationSearchController extends AbstractController
 	{
 		$result_cache = false;
 		if ($this->in->getUint('cache_id')) {
-			$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
+			$result_cache = $this->em->getRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
 			if ($result_cache['person_id'] != $this->person['id']) {
 				$result_cache = false;
 			}
@@ -197,8 +197,8 @@ class OrganizationSearchController extends AbstractController
 			$result_cache['results'] = $results;
 			$result_cache['num_results'] = count($results);
 
-			App::getOrm()->persist($result_cache);
-			App::getOrm()->flush();
+			$this->em->persist($result_cache);
+			$this->em->flush();
 		}
 
 		#------------------------------
@@ -223,8 +223,8 @@ class OrganizationSearchController extends AbstractController
 			$result_cache['results'] = $results;
 			$result_cache['num_results'] = count($results);
 
-			App::getOrm()->persist($result_cache);
-			App::getOrm()->flush();
+			$this->em->persist($result_cache);
+			$this->em->flush();
 		}
 
 		#------------------------------

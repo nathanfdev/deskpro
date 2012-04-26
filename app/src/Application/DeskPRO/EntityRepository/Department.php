@@ -41,75 +41,8 @@ use \Doctrine\ORM\EntityRepository;
 
 class Department extends AbstractCategoryRepository
 {
-	public function preload()
-	{
-		$this->_load();
-	}
-
-	private function _load()
-	{
-		static $has_loaded = false;
-		if (!$has_loaded) {
-			$has_loaded = true;
-			$all = $this->getEntityManager()->createQuery("
-				SELECT d
-				FROM DeskPRO:Department d
-				ORDER BY d.display_order ASC
-			")->execute();
-
-			$this->getIdentityHelper()->setCollectionFromResults('all', $all);
-		}
-	}
-
-	public function findByTitle($title)
-	{
-		try {
-			$department = $this->getEntityManager()->createQuery("
-				SELECT d
-				FROM DeskPRO:Department d
-				WHERE d.title LIKE ?1
-			")->setParameter(1, "%$title%")->getSingleResult();
-		} catch (\Exception $e) {
-			return null;
-		}
-
-		return $department;
-	}
-
 	public function getAll()
 	{
-		return $this->getCategoryHelper()->getRootNodes();
-	}
-
-	public function getDepartmentIds()
-	{
-		return $this->getCategoryHelper()->getCategoryIds();
-	}
-
-	public function getDepartmentsInHierarchy()
-	{
-		return $this->getCategoryHelper()->getRootNodes();
-	}
-
-	public function getDepartmentNames($for_ids = null)
-	{
-		return $this->getCategoryHelper()->getCategoryNames($for_ids);
-	}
-
-	public function getFullDepartmentNames($sep = ' > ', $include_tops = true)
-	{
-		return $this->getCategoryHelper()->getFullCategoryNames($sep, $include_tops);
-	}
-
-
-	/**
-	 * Count all cats that exist
-	 *
-	 * @return int
-	 */
-	public function countAll()
-	{
-		$this->_load();
-		return count($this->getIdentityHelper()->getCollectionIds('all'));
+		return $this->getRootNodes();
 	}
 }

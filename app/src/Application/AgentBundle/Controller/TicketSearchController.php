@@ -80,7 +80,7 @@ class TicketSearchController extends AbstractController
 		}
 
 		//agent.ui.filter
-		$filter_show_options = App::getDb()->fetchAllKeyValue("
+		$filter_show_options = $this->db->fetchAllKeyValue("
 			SELECT name, value_str
 			FROM people_prefs
 			WHERE person_id = ? AND name LIKE 'agent.ui.filter-visibility.%'
@@ -96,7 +96,7 @@ class TicketSearchController extends AbstractController
 		$label_lister = new \Application\DeskPRO\Labels\LabelLister('tickets');
 		$index = $label_lister->getIndexList();
 
-		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('ticket', 25);
+		$label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('ticket', 25);
 		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
 		$cloud = $cloud_gen->getCloud();
 
@@ -151,7 +151,7 @@ class TicketSearchController extends AbstractController
 		$label_lister = new \Application\DeskPRO\Labels\LabelLister('tickets');
 		$index = $label_lister->getIndexList();
 
-		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('ticket', 25);
+		$label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('ticket', 25);
 		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
 		$cloud = $cloud_gen->getCloud();
 
@@ -353,7 +353,7 @@ class TicketSearchController extends AbstractController
 	public function getFlaggedSectionDataAction()
 	{
 		$data = array();
-		$data['flag_counts'] = App::getEntityRepository('DeskPRO:TicketFlagged')->getCountsForPerson($this->person);
+		$data['flag_counts'] = $this->em->getRepository('DeskPRO:TicketFlagged')->getCountsForPerson($this->person);
 
 		return $this->createJsonResponse($data);
 	}
@@ -362,7 +362,7 @@ class TicketSearchController extends AbstractController
 	{
 		$result_cache = false;
 		if ($this->in->getUint('cache_id')) {
-			$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
+			$result_cache = $this->em->getRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
 			if ($result_cache['person_id'] != $this->person['id']) {
 				$result_cache = false;
 			}
@@ -515,7 +515,7 @@ class TicketSearchController extends AbstractController
 	public function runFilterAction($filter_id)
 	{
         $view_type = $this->in->getString('view_type');
-		$filter = App::getEntityRepository('DeskPRO:TicketFilter')->find($filter_id);
+		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($filter_id);
 
 		$searcher = $filter->getSearcher();
 		$searcher->setPerson($this->person);
@@ -603,7 +603,7 @@ class TicketSearchController extends AbstractController
 
 	public function runNamedFilterAction($filter_name)
 	{
-		$filter = App::getEntityRepository('DeskPRO:TicketFilter')->findOneBy(array('sys_name' => $filter_name));
+		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->findOneBy(array('sys_name' => $filter_name));
 		return $this->runFilterAction($filter['id']);
 	}
 
@@ -669,7 +669,7 @@ class TicketSearchController extends AbstractController
 		}
 
         if($view_type != 'csv') {
-		    $flagged_tickets = App::getEntityRepository('DeskPRO:TicketFlagged')->getFlagsForTickets($tickets, $this->person);
+		    $flagged_tickets = $this->em->getRepository('DeskPRO:TicketFlagged')->getFlagsForTickets($tickets, $this->person);
         }
         else {
             $flagged_tickets = array();
@@ -682,7 +682,7 @@ class TicketSearchController extends AbstractController
 		$macros = null;
 		$ticket_options = null;
 		if (!$is_partial) {
-			$macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
+			$macros = $this->em->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
 			$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
 			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
@@ -690,7 +690,7 @@ class TicketSearchController extends AbstractController
 			$ticket_options['custom_ticket_fields'] = $custom_fields;
 
 			// People stuff
-			$ticket_options['people_organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
+			$ticket_options['people_organizations'] = $this->em->getRepository('DeskPRO:Organization')->getOrganizationNames();
 			$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 			$ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
 		}
@@ -703,8 +703,8 @@ class TicketSearchController extends AbstractController
 
 		$pageinfo = Numbers::getPaginationPages($results_helper->getCount(), $page, $per_page);
 
-		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
-		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
 		$has_t_fields = false;
 		$has_u_fields = false;
@@ -991,10 +991,10 @@ class TicketSearchController extends AbstractController
 
 	public function getSingleTicketRowAction($filter_id)
 	{
-		$filter = App::getEntityRepository('DeskPRO:TicketFilter')->find($filter_id);
+		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($filter_id);
 
 		$ticket_id = $this->in->getUint('ticket_id');
-		$ticket = App::findEntity('DeskPRO:Ticket', $ticket_id);
+		$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
 
 		$vars = array(
 			'page' => -1,
@@ -1064,9 +1064,9 @@ class TicketSearchController extends AbstractController
 	public function ajaxReleaseLocksAction()
 	{
 		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
-		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+		$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
 
-		App::getOrm()->beginTransaction();
+		$this->em->beginTransaction();
 
 		foreach ($tickets as $ticket) {
 			$ticket->unlockTicket();
@@ -1081,12 +1081,12 @@ class TicketSearchController extends AbstractController
 				'created_by_client' => $this->session->getEntity()->getId(),
 			));
 
-			App::getOrm()->persist($ticket);
-			App::getOrm()->persist($lock_cm);
+			$this->em->persist($ticket);
+			$this->em->persist($lock_cm);
 		}
 
-		App::getOrm()->flush();
-		App::getOrm()->commit();
+		$this->em->flush();
+		$this->em->commit();
 
 		return $this->createJsonResponse(array('success' => true));
 	}
@@ -1099,17 +1099,17 @@ class TicketSearchController extends AbstractController
 	public function ajaxDeleteTicketsAction()
 	{
 		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
-		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+		$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
 
 		$deleted_tickets = array();
 
-		App::getOrm()->beginTransaction();
+		$this->em->beginTransaction();
 		foreach ($tickets as $ticket) {
 			$deleted_tickets[] = $ticket['id'];
-			App::getOrm()->remove($ticket);
+			$this->em->remove($ticket);
 		}
-		App::getOrm()->flush();
-		App::getOrm()->commit();
+		$this->em->flush();
+		$this->em->commit();
 
 		return $this->createJsonResponse(array('success' => true, 'deleted_tickets' => $deleted_tickets));
 	}
@@ -1123,12 +1123,12 @@ class TicketSearchController extends AbstractController
 	public function ajaxGetMacroAction()
 	{
 		$macro_id = $this->in->getUint('macro_id');
-		$macro = App::getEntityRepository('DeskPRO:TicketMacro')->find($macro_id);
+		$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 
 		$tickets = null;
 		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
 		if ($ticket_ids) {
-			$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+			$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
 		}
 
 		$actions = $macro->getActionsArrayForCollection($tickets);
@@ -1148,7 +1148,7 @@ class TicketSearchController extends AbstractController
 	public function ajaxGetMacroActionsAction()
 	{
 		$macro_id = $this->in->getUint('macro_id');
-		$macro = App::getEntityRepository('DeskPRO:TicketMacro')->find($macro_id);
+		$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 
 		return $this->createJsonResponse(array(
 			'macro_id' => $macro['id'],

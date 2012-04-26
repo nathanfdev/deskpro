@@ -137,8 +137,8 @@ class ArticleResults
 			$result_cache['results'] = $results;
 			$result_cache['num_results'] = count($results);
 
-			App::getOrm()->persist($result_cache);
-			App::getOrm()->flush();
+			$this->em->persist($result_cache);
+			$this->em->flush();
 		}
 
 		return new self($controller, $result_cache);

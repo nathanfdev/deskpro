@@ -57,9 +57,9 @@ class PeopleSearchController extends AbstractController
 		# People labels
 		#------------------------------
 
-		$people_count = App::getEntityRepository('DeskPRO:Person')->getCount();
+		$people_count = $this->em->getRepository('DeskPRO:Person')->getCount();
 
-		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
+		$label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
 		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
 		$people_tag_cloud = $cloud_gen->getCloud();
 
@@ -70,18 +70,18 @@ class PeopleSearchController extends AbstractController
 		# Org labels
 		#------------------------------
 
-		$org_count = App::getEntityRepository('DeskPRO:Organization')->getCount();
+		$org_count = $this->em->getRepository('DeskPRO:Organization')->getCount();
 
-		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
+		$label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
 		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
 		$org_tag_cloud = $cloud_gen->getCloud();
 
 		$label_lister = new \Application\DeskPRO\Labels\LabelLister('organizations');
 		$org_tag_index = $label_lister->getIndexList();
 
-		$usergroup_names      = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
-		$usergroup_counts     = App::getEntityRepository('DeskPRO:Usergroup')->getCountsFor(array_keys($usergroup_names));
-		$org_usergroup_counts = App::getEntityRepository('DeskPRO:Usergroup')->getCountsFor(array_keys($usergroup_names));
+		$usergroup_names      = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
+		$usergroup_counts     = $this->em->getRepository('DeskPRO:Usergroup')->getCountsFor(array_keys($usergroup_names));
+		$org_usergroup_counts = $this->em->getRepository('DeskPRO:Usergroup')->getCountsFor(array_keys($usergroup_names));
 
 		$data['section_html'] = $this->renderView('AgentBundle:PeopleSearch:window-section.html.twig', array(
 			'usergroup_names'      => $usergroup_names,
@@ -102,7 +102,7 @@ class PeopleSearchController extends AbstractController
 	public function reloadLabelDataAction()
 	{
 		// People
-		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
+		$label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
 		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
 		$people_tag_cloud = $cloud_gen->getCloud();
 
@@ -110,7 +110,7 @@ class PeopleSearchController extends AbstractController
 		$people_tag_index = $label_lister->getIndexList();
 
 		// Orgs
-		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
+		$label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
 		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
 		$org_tag_cloud = $cloud_gen->getCloud();
 
@@ -276,7 +276,7 @@ class PeopleSearchController extends AbstractController
 	{
 		$result_cache = false;
 		if ($this->in->getUint('cache_id')) {
-			$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
+			$result_cache = $this->em->getRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
 			if (!$result_cache OR $result_cache['person_id'] != $this->person['id']) {
 				$result_cache = false;
 			}
@@ -292,7 +292,7 @@ class PeopleSearchController extends AbstractController
 
 			$old_result_cache = false;
 			if ($this->in->getUint('copy_display_options')) {
-				$old_result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($this->in->getUint('copy_display_options'));
+				$old_result_cache = $this->em->getRepository('DeskPRO:ResultCache')->find($this->in->getUint('copy_display_options'));
 				if (!$old_result_cache OR $old_result_cache['person_id'] != $this->person['id']) {
 					$old_result_cache = false;
 				}
@@ -381,8 +381,8 @@ class PeopleSearchController extends AbstractController
 				$result_cache['extra'] = $old_result_cache['extra'];
 			}
 
-			App::getOrm()->persist($result_cache);
-			App::getOrm()->flush();
+			$this->em->persist($result_cache);
+			$this->em->flush();
 		}
 
 		#------------------------------
@@ -413,8 +413,8 @@ class PeopleSearchController extends AbstractController
 			$result_cache['num_results'] = count($results);
 			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
 
-			App::getOrm()->persist($result_cache);
-			App::getOrm()->flush();
+			$this->em->persist($result_cache);
+			$this->em->flush();
 		}
 
 		#------------------------------
@@ -456,9 +456,9 @@ class PeopleSearchController extends AbstractController
 
 		// Used in the search form again
         $titles = array();
-        $titles['organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
-        $titles['usergroups'] = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
-        $titles['languages'] = App::getEntityRepository('DeskPRO:Language')->getTitles();
+        $titles['organizations'] = $this->em->getRepository('DeskPRO:Organization')->getOrganizationNames();
+        $titles['usergroups'] = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
+        $titles['languages'] = $this->em->getRepository('DeskPRO:Language')->getTitles();
 		$vars['titles'] = $titles;
 
 		return $this->_getResponseForPeople('list', $result_cache['id'], $results_helper, $vars);
@@ -532,10 +532,10 @@ class PeopleSearchController extends AbstractController
 		$usergroup = null;
 
 		if ($this->in->getUint('organization_id')) {
-			$organization = App::findEntity('DeskPRO:Organization', $this->in->getUint('organization_id'));
+			$organization = $this->em->find('DeskPRO:Organization', $this->in->getUint('organization_id'));
 		}
 		if ($this->in->getUint('usergroup_id')) {
-			$usergroup = App::findEntity('DeskPRO:Usergroup', $this->in->getUint('usergroup_id'));
+			$usergroup = $this->em->find('DeskPRO:Usergroup', $this->in->getUint('usergroup_id'));
 		}
 
 
@@ -651,7 +651,7 @@ class PeopleSearchController extends AbstractController
 		$not_in_org = $this->in->getUint('exclude_org');
 
 		if (!$q && $this->in->getBool('start_with')) {
-			$people_list = App::getDb()->fetchAll("
+			$people_list = $this->db->fetchAll("
 				SELECT p.id, p.first_name, p.last_name, e.email
 				FROM people p
 				LEFT JOIN people_emails e ON (e.person_id = p.id)
@@ -661,7 +661,7 @@ class PeopleSearchController extends AbstractController
 			");
 		} else {
 
-			$people_list = App::getDb()->fetchAll("
+			$people_list = $this->db->fetchAll("
 				SELECT p.id, p.first_name, p.last_name, e.email
 				FROM people p
 				LEFT JOIN people_emails e ON (e.person_id = p.id)
@@ -699,7 +699,7 @@ class PeopleSearchController extends AbstractController
 
 	public function orgLabelsPaneAction()
 	{
-		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
+		$label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
 		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
 		$cloud = $cloud_gen->getCloud();
 
@@ -724,9 +724,9 @@ class PeopleSearchController extends AbstractController
 
 	public function usergroupsPaneAction()
 	{
-		$all_usergroups = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
+		$all_usergroups = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
 
-		$usergroup_counts = App::getDb()->fetchAllKeyValue("
+		$usergroup_counts = $this->db->fetchAllKeyValue("
 			SELECT usergroup_id, COUNT(*)
 			FROM person2usergroups
 			GROUP BY usergroup_id

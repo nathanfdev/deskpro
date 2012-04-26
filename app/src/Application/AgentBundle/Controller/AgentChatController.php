@@ -114,12 +114,12 @@ class AgentChatController extends AbstractController
 
 	public function getOnlineAgentsAction()
 	{
-		$cutoff = date('Y-m-d H:m:s', time() - App::getSetting('core.sessions_lifetime'));
+		$cutoff = date('Y-m-d H:m:s', time() - $this->container->getSetting('core.sessions_lifetime'));
 
 		$agent_info = array();
 		$online_agents = array();
 
-		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
+		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
 		foreach ($agents as $agent) {
 			$agent_info[$agent['id']] = array(
@@ -131,7 +131,7 @@ class AgentChatController extends AbstractController
 			);
 		}
 
-		$sessions = App::getOrm()->createQuery("
+		$sessions = $this->em->createQuery("
 			SELECT s,p
 			FROM DeskPRO:Session s
 			LEFT JOIN s.person p
@@ -164,13 +164,13 @@ class AgentChatController extends AbstractController
 	 */
 	public function getSectionDataAction()
 	{
-		$agent_chatted = App::getEntityRepository('DeskPRO:ChatConversation')->getAgentList($this->person);
-		$agent_team_chatted = App::getEntityRepository('DeskPRO:ChatConversation')->getAgentTeamList($this->person);
+		$agent_chatted = $this->em->getRepository('DeskPRO:ChatConversation')->getAgentList($this->person);
+		$agent_team_chatted = $this->em->getRepository('DeskPRO:ChatConversation')->getAgentTeamList($this->person);
 
-		$agent_chatted_counts = App::getEntityRepository('DeskPRO:ChatConversation')->getConvoCountsBetween($this->person, array_keys($agent_chatted));
+		$agent_chatted_counts = $this->em->getRepository('DeskPRO:ChatConversation')->getConvoCountsBetween($this->person, array_keys($agent_chatted));
 		$agent_chatted_counts[0] = array_sum($agent_chatted_counts);
 
-		$agent_team_chatted_counts = App::getEntityRepository('DeskPRO:ChatConversation')->getTeamConvoCounts($this->person);
+		$agent_team_chatted_counts = $this->em->getRepository('DeskPRO:ChatConversation')->getTeamConvoCounts($this->person);
 		$agent_team_chatted_counts[0] = array_sum($agent_team_chatted_counts);
 
 		$html = $this->renderView('AgentBundle:AgentChat:window-section.html.twig', array(
@@ -186,14 +186,14 @@ class AgentChatController extends AbstractController
 	public function agentHistoryAction($agent_id)
 	{
 		if ($agent_id) {
-			$agent = App::findEntity('DeskPRO:Person', $agent_id);
-			$conversations = App::getEntityRepository('DeskPRO:ChatConversation')->getChatsForPeople(array(
+			$agent = $this->em->find('DeskPRO:Person', $agent_id);
+			$conversations = $this->em->getRepository('DeskPRO:ChatConversation')->getChatsForPeople(array(
 				$this->person['id'],
 				$agent['id']
 			));
 		} else {
 			$agent = null;
-			$conversations = App::getEntityRepository('DeskPRO:ChatConversation')->getAgentChatsForPerson($this->person);
+			$conversations = $this->em->getRepository('DeskPRO:ChatConversation')->getAgentChatsForPerson($this->person);
 		}
 
 		$tpl = 'AgentBundle:AgentChat:list.html.twig';
@@ -210,11 +210,11 @@ class AgentChatController extends AbstractController
 	public function agentTeamHistoryAction($agent_team_id)
 	{
 		if ($agent_team_id) {
-			$agent_team = App::findEntity('DeskPRO:AgentTeam', $agent_team_id);
-			$conversations = App::getEntityRepository('DeskPRO:ChatConversation')->getTeamChatsForPerson($this->person, $agent_team);
+			$agent_team = $this->em->find('DeskPRO:AgentTeam', $agent_team_id);
+			$conversations = $this->em->getRepository('DeskPRO:ChatConversation')->getTeamChatsForPerson($this->person, $agent_team);
 		} else {
 			$agent_team = null;
-			$conversations = App::getEntityRepository('DeskPRO:ChatConversation')->getTeamChatsForPerson($this->person, null);
+			$conversations = $this->em->getRepository('DeskPRO:ChatConversation')->getTeamChatsForPerson($this->person, null);
 		}
 
 		$tpl = 'AgentBundle:AgentChat:list-team.html.twig';
@@ -230,9 +230,9 @@ class AgentChatController extends AbstractController
 
 	public function agentChatTranscriptAction($conversation_id)
 	{
-		$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+		$conversation = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
-		$convo_messages = App::getOrm()->createQuery("
+		$convo_messages = $this->em->createQuery("
 			SELECT m
 			FROM DeskPRO:ChatMessage m
 			WHERE m.conversation = ?1

@@ -48,7 +48,7 @@ class GlossaryController extends AbstractController
 {
 	public function glossaryListAction()
 	{
-		$words = App::getEntityRepository('DeskPRO:GlossaryWord')->getWords();
+		$words = $this->em->getRepository('DeskPRO:GlossaryWord')->getWords();
 		$word_count = count($words);
 		$words = Arrays::sortIntoAlphabeticalIndex($words, null, true, true);
 
@@ -64,8 +64,8 @@ class GlossaryController extends AbstractController
 		$word['word'] = $this->in->getString('word');
 		$word['content'] = $this->in->getString('content');
 
-		App::getOrm()->persist($word);
-		App::getOrm()->flush();
+		$this->em->persist($word);
+		$this->em->flush();
 
 		$first = Strings::utf8_substr($word['word'], 0, 1);
 		$first = Strings::utf8_accents_to_ascii($first);
@@ -87,11 +87,11 @@ class GlossaryController extends AbstractController
 
 	public function glossarySaveWordJsonAction($word_id)
 	{
-		$word = App::findEntity('DeskPRO:GlossaryWord', $word_id);
+		$word = $this->em->find('DeskPRO:GlossaryWord', $word_id);
 		$word['content'] = $this->in->getString('content');
 
-		App::getOrm()->persist($word);
-		App::getOrm()->flush();
+		$this->em->persist($word);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array(
 			'id' => $word['id'],
@@ -102,9 +102,9 @@ class GlossaryController extends AbstractController
 
 	public function glossaryDeleteWordJsonAction($word_id)
 	{
-		$word = App::findEntity('DeskPRO:GlossaryWord', $word_id);
-		App::getOrm()->remove($word);
-		App::getOrm()->flush();
+		$word = $this->em->find('DeskPRO:GlossaryWord', $word_id);
+		$this->em->remove($word);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array(
 			'id' => $word['id'],
@@ -114,7 +114,7 @@ class GlossaryController extends AbstractController
 
 	public function glossaryWordJsonAction($word_id)
 	{
-		$word = App::findEntity('DeskPRO:GlossaryWord', $word_id);
+		$word = $this->em->find('DeskPRO:GlossaryWord', $word_id);
 
 		return $this->createJsonResponse(array(
 			'id' => $word['id'],
@@ -128,7 +128,7 @@ class GlossaryController extends AbstractController
 		$def = '';
 
 		try {
-			$word = App::getEntityRepository('DeskPRO:GlossaryWord')->findOneByWord($word);
+			$word = $this->em->getRepository('DeskPRO:GlossaryWord')->findOneByWord($word);
 			$def = $word['content'];
 		} catch (\Exception $e) {
 			$def = '';

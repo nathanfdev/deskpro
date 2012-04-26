@@ -201,7 +201,7 @@ class Structure implements PersonContextInterface
 	{
 		$ent = 'DeskPRO:ArticleCategory';
 		$this->loadCategories($ent);
-		return $this->_getFullCategoryNames(array(), $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
+		return $this->_getFullNames(array(), $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
 	}
 
 
@@ -330,7 +330,7 @@ class Structure implements PersonContextInterface
 	{
 		$ent = 'DeskPRO:FeedbackCategory';
 		$this->loadCategories($ent);
-		return $this->_getFullCategoryNames(array(), $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
+		return $this->_getFullNames(array(), $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
 	}
 
 
@@ -543,7 +543,7 @@ class Structure implements PersonContextInterface
 	{
 		$ent = 'DeskPRO:DownloadCategory';
 		$this->loadCategories($ent);
-		return $this->_getFullCategoryNames(array(), $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
+		return $this->_getFullNames(array(), $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
 	}
 
 
@@ -673,7 +673,7 @@ class Structure implements PersonContextInterface
 	{
 		$ent = 'DeskPRO:NewsCategory';
 		$this->loadCategories($ent);
-		return $this->_getFullCategoryNames(array(), $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
+		return $this->_getFullNames(array(), $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
 	}
 
 
@@ -749,7 +749,7 @@ class Structure implements PersonContextInterface
 	 * @param $include_tops
 	 * @return array
 	 */
-	protected function _getFullCategoryNames($basenames, $cats, $sep, $include_tops)
+	protected function _getFullNames($basenames, $cats, $sep, $include_tops)
 	{
 		$names = array();
 
@@ -761,7 +761,7 @@ class Structure implements PersonContextInterface
 				$names[$k] = implode($sep, $name);
 			}
 			if ($cat['children']) {
-				$names = Arrays::mergeAssoc($names, $this->_getFullCategoryNames($name, $cat['children'], $sep, $include_tops));
+				$names = Arrays::mergeAssoc($names, $this->_getFullNames($name, $cat['children'], $sep, $include_tops));
 			}
 		}
 

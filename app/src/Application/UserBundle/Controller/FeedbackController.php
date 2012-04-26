@@ -113,13 +113,13 @@ class FeedbackController extends AbstractController
 		}
 
 		$feedback_cats  = $structure->getFeedbackRootCategories();
-		$active_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-		$closed_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+		$active_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
+		$closed_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 		$status_subcats = Arrays::mergeAssoc($active_status_cats, $closed_status_cats);
 
 		$searcher = new \Application\DeskPRO\Searcher\FeedbackSearch();
 		$searcher->setPersonContext($this->person);
-		$searcher->setVisitor(App::getSession()->getVisitor());
+		$searcher->setVisitor($this->session->getVisitor());
 		if ($status != 'any-status') {
 			if ($status == 'gathering-feedback') {
 				$status = 'new';
@@ -130,7 +130,7 @@ class FeedbackController extends AbstractController
 		$status_cat = null;
 		if (strpos($status, '.') !== false) {
 			list($parent_status, $sub_status_id) = explode('.', $status, 2);
-			$status_cat = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->find($sub_status_id);
+			$status_cat = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->find($sub_status_id);
 		}
 
 		$searcher->setOrderByCode($search_options['order_by']);
@@ -151,7 +151,7 @@ class FeedbackController extends AbstractController
 
 		if (!$just_form) {
 			$feedback_ids = $searcher->getMatches($limit);
-			$feedback = App::getEntityRepository('DeskPRO:Feedback')->getByResultIds($feedback_ids);
+			$feedback = $this->em->getRepository('DeskPRO:Feedback')->getByResultIds($feedback_ids);
 		}
 
 		$category_counts = $structure->getFeedbackCategoryCounts($this->person);
@@ -160,7 +160,7 @@ class FeedbackController extends AbstractController
 
 		$comment_counts = array();
 		if ($feedback) {
-			$comment_counts = App::getEntityRepository('DeskPRO:FeedbackCategory')
+			$comment_counts = $this->em->getRepository('DeskPRO:FeedbackCategory')
 				->getCommentHelper()
 				->countsOnCollection($feedback);
 		}
@@ -170,7 +170,7 @@ class FeedbackController extends AbstractController
 		#------------------------------
 
 		$newfeedback = new \Application\DeskPRO\Feedback\NewFeedback(
-			App::getSession()->getVisitor()
+			$this->session->getVisitor()
 		);
 		$newfeedback->setPersonContext($this->person);
 
@@ -245,15 +245,15 @@ class FeedbackController extends AbstractController
 	 */
 	public function voteAction($feedback_id)
 	{
-		$feedback = App::getEntityRepository('DeskPRO:Feedback')->find($feedback_id);
+		$feedback = $this->em->getRepository('DeskPRO:Feedback')->find($feedback_id);
 		if (!$feedback) {
 			return $this->renderStandardError('@user.error.feedback_not_found', '@user.error.not_found', 404);
 		}
 
 		if ($this->person['id']) {
-			$r = App::getEntityRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Feedback', $feedback_id, $this->person, $this->session->getVisitor());
+			$r = $this->em->getRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Feedback', $feedback_id, $this->person, $this->session->getVisitor());
 		} else {
-			$r = App::getEntityRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Feedback', $feedback_id, null, $this->session->getVisitor());
+			$r = $this->em->getRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Feedback', $feedback_id, null, $this->session->getVisitor());
 		}
 
 		if ($r) {
@@ -327,7 +327,7 @@ class FeedbackController extends AbstractController
 	 */
 	public function viewAction($slug)
 	{
-		$feedback = App::getEntityRepository('DeskPRO:Feedback')->getBySlug($slug);
+		$feedback = $this->em->getRepository('DeskPRO:Feedback')->getBySlug($slug);
 		if (!$feedback) {
 			return $this->renderStandardError('@user.error.feedback_not_found', '@user.error.not_found', 404);
 		}
@@ -340,7 +340,7 @@ class FeedbackController extends AbstractController
 		// Get the user subscription
 		$subscription = false;
 		if (!$this->person->isGuest()) {
-			$subscription = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscription($feedback, $this->person);
+			$subscription = $this->em->getRepository('DeskPRO:ContentSubscription')->getSubscription($feedback, $this->person);
 			if ($subscription) {
 				$subscription->touch();
 				$this->em->persist($subscription);
@@ -348,7 +348,7 @@ class FeedbackController extends AbstractController
 			}
 		}
 
-		$categories = App::getEntityRepository('DeskPRO:FeedbackCategory')->getRootNodes();
+		$categories = $this->em->getRepository('DeskPRO:FeedbackCategory')->getRootNodes();
 
 		$category = $feedback->category;
 		$category_path = $category->getTreeParents();
@@ -361,10 +361,10 @@ class FeedbackController extends AbstractController
 		if ($comments_helper) {
 			$comments_widget = $comments_helper->getHtml();
 		} else {
-			$comments = App::getEntityRepository('DeskPRO:FeedbackComment')->getComments($feedback);
+			$comments = $this->em->getRepository('DeskPRO:FeedbackComment')->getComments($feedback);
 		}
 
-		if (App::getSetting('core.facebook_like')) {
+		if ($this->container->getSetting('core.facebook_like')) {
 			$like_helper = FacebookLike::create($feedback);
 			$facebook_like = $like_helper->getHtml();
 		}
@@ -404,7 +404,7 @@ class FeedbackController extends AbstractController
 	 */
 	public function newCommentAction($feedback_id)
 	{
-		$feedback = App::getEntityRepository('DeskPRO:Feedback')->find($feedback_id);
+		$feedback = $this->em->getRepository('DeskPRO:Feedback')->find($feedback_id);
 		if (!$feedback) {
 			return $this->renderStandardError('@user.error.feedback_not_found', '@user.error.not_found', 404);
 		}
@@ -454,10 +454,10 @@ class FeedbackController extends AbstractController
 
 		$category = null;
 		if ($category_id) {
-			$category = App::findEntity('DeskPRO:FeedbackCategory', $category_id);
+			$category = $this->em->find('DeskPRO:FeedbackCategory', $category_id);
 		}
 
-		$feedback = App::getEntityRepository('DeskPRO:Feedback')->getNewest($status, $num, $category);
+		$feedback = $this->em->getRepository('DeskPRO:Feedback')->getNewest($status, $num, $category);
 
 		$vars = array(
 			'category' => $category,

@@ -293,6 +293,15 @@ class App
 		return $container->getSystemService($service_name);
 	}
 
+	/**
+	 * @param string $id
+	 * @return \Application\DeskPRO\DependencyInjection\SystemServices\BaseRepositoryService
+	 */
+	public static function getDataService($id)
+	{
+		return self::getContainer(self::DEFAULT_NAME)->getSystemService($id . 'Data');
+	}
+
 
 	/**
 	 * Get a system service

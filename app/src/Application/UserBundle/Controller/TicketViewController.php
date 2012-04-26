@@ -73,7 +73,7 @@ class TicketViewController extends AbstractController
 			switch ($lookup_type) {
 				case 'id':
 					if (Numbers::isInteger($ticket_ref)) {
-						$ticket = App::findEntity('DeskPRO:Ticket', $ticket_ref);
+						$ticket = $this->em->find('DeskPRO:Ticket', $ticket_ref);
 						if ($ticket) {
 							return $this->viewTicket($ticket, $display_data);
 						}
@@ -83,7 +83,7 @@ class TicketViewController extends AbstractController
 				case 'ref':
 					$ref_gen = $this->get('deskpro.ref_generator');
 					if ($ref_gen->isRefMatch($ticket_ref)) {
-						$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
+						$ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
 						if ($ticket) {
 							return $this->viewTicket($ticket, $display_data);
 						}
@@ -92,7 +92,7 @@ class TicketViewController extends AbstractController
 
 				case 'ptac':
 
-					$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($ticket_ref);
+					$ticket = $this->em->getRepository('DeskPRO:Ticket')->getByAccessCode($ticket_ref);
 
 					// If they arent a user they can register now
 					if ($ticket && $this->person->isGuest()) {
@@ -105,8 +105,8 @@ class TicketViewController extends AbstractController
 					// then we need to add them so they can see it
 					if (!$ticket->hasParticipantPerson($this->person)) {
 						$ticket->addParticipantPerson($this->person);
-						App::getOrm()->persist($ticket);
-						App::getOrm()->flush();
+						$this->em->persist($ticket);
+						$this->em->flush();
 					}
 
 					if ($ticket) {

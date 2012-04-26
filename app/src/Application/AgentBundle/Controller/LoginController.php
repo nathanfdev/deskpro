@@ -53,10 +53,10 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 		$has_done_reset = false;
 
 		if ($code = $this->in->getString('reset_code')) {
-			$code_data = App::getEntityRepository('DeskPRO:TmpData')->getByCode($code, 'reset-password');
+			$code_data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code, 'reset-password');
 			$person = null;
 			if ($code_data) {
-				$person = App::findEntity('DeskPRO:Person', $code_data->getData('person_id', 0));
+				$person = $this->em->find('DeskPRO:Person', $code_data->getData('person_id', 0));
 			}
 
 			if ($code_data AND $person) {

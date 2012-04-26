@@ -275,7 +275,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 	{
 		if ($this->_dep_disallowed_ids !== null) return $this->_dep_disallowed_ids;
 
-		$all_ids = App::getEntityRepository('DeskPRO:Department')->getDepartmentIds();
+		$all_ids = App::getDataService('Department')->getIds();
 		$allowed_ids = $this->getAllowedDepartments();
 
 		$disallowed_ids = array_diff($all_ids, $allowed_ids);

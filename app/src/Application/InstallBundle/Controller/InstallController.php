@@ -117,7 +117,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 				$has_config = true;
 
 				try {
-					App::getDb()->connect();
+					$this->db->connect();
 				} catch (\PDOException $e) {
 					if ($e->getCode() == '1049') {
 
@@ -585,7 +585,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		$rewrite_urls = false;
 		try {
 
-			$url = App::getRequest()->getUriForPath('/__checkurlrewrite');
+			$url = $this->request->getUriForPath('/__checkurlrewrite');
 			$url_noindex = str_replace('/index.php/', '/', $url);
 
 			$client = new \Zend\Http\Client(null, array('timeout' => 5));

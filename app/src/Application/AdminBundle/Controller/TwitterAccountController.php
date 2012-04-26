@@ -219,7 +219,7 @@ class TwitterAccountController extends AbstractController
 			$this->processStatus($status);
 		}
 
-		App::getOrm()->flush();
+		$this->em->flush();
 	}
 
 	/**
@@ -301,10 +301,10 @@ class TwitterAccountController extends AbstractController
 	 */
 	protected function getOrCreateUser($user)
 	{
-		$entity = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find((string) $user->id);
+		$entity = $this->em->getRepository('DeskPRO:TwitterUser')->find((string) $user->id);
 		if (!$entity) {
 			$entity = TwitterUser::createFromXML($user);
-			App::getOrm()->persist($entity);
+			$this->em->persist($entity);
 		}
 
 		return $entity;
@@ -332,8 +332,8 @@ class TwitterAccountController extends AbstractController
 
 			if ($form->isValid()) {
 				$is_edited = true;
-				App::getOrm()->persist($account);
-				App::getOrm()->flush();
+				$this->em->persist($account);
+				$this->em->flush();
 
 				$row_html = $this->renderView('AdminBundle:TwitterAccount:list-row.html.twig', array(
 					'account' => $account

@@ -74,7 +74,7 @@ class TicketCategoriesController extends AbstractController
 	public function saveTitleAction()
 	{
 		$category_id = $this->in->getUint('category_id');
-		$category = App::findEntity('DeskPRO:TicketCategory', $category_id);
+		$category = $this->em->find('DeskPRO:TicketCategory', $category_id);
 
 		if (!$category) {
 			throw $this->createNotFoundException();
@@ -110,7 +110,7 @@ class TicketCategoriesController extends AbstractController
 
 		$parent = null;
 		if ($this->in->getUint('parent_id')) {
-			$parent = App::findEntity('DeskPRO:TicketCategory', $this->in->getUint('parent_id'));
+			$parent = $this->em->find('DeskPRO:TicketCategory', $this->in->getUint('parent_id'));
 		}
 
 		if ($parent and !$parent->parent) {
@@ -124,9 +124,9 @@ class TicketCategoriesController extends AbstractController
 			$this->em->flush();
 
 			// First category: enable the feature
-			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_categories");
+			$count = $this->db->fetchColumn("SELECT COUNT(*) FROM ticket_categories");
 			if ($count == 1) {
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_category', '0');
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_category', '0');
 			}
 
 			$this->em->getConnection()->commit();
@@ -135,7 +135,7 @@ class TicketCategoriesController extends AbstractController
 			throw $e;
 		}
 
-		App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_ticketcategory', time());
+		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_ticketcategory', time());
 
 		return $this->redirectRoute('admin_ticketcats');
 	}
@@ -146,7 +146,7 @@ class TicketCategoriesController extends AbstractController
 
 	public function deleteAction($category_id)
 	{
-		$category = App::getEntityRepository('DeskPRO:TicketCategory')->find($category_id);
+		$category = $this->em->getRepository('DeskPRO:TicketCategory')->find($category_id);
 
 		return $this->render('AdminBundle:TicketCategories:delete.html.twig', array(
 			'category'  => $category,
@@ -155,7 +155,7 @@ class TicketCategoriesController extends AbstractController
 
 	public function doDeleteAction($category_id, $security_token)
 	{
-		$category = App::getEntityRepository('DeskPRO:TicketCategory')->find($category_id);
+		$category = $this->em->getRepository('DeskPRO:TicketCategory')->find($category_id);
 
 		if (!$this->session->getEntity()->checkSecurityToken('delete_ticket_category', $security_token)) {
 			return $this->renderStandardTokenError();
@@ -168,9 +168,9 @@ class TicketCategoriesController extends AbstractController
 		$this->em->remove($category);
 		$this->em->flush();
 
-		$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_categories");
+		$count = $this->db->fetchColumn("SELECT COUNT(*) FROM ticket_categories");
 		if (!$count) {
-			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_category', '0');
+			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_category', '0');
 		}
 
 		$this->em->commit();
@@ -197,14 +197,14 @@ class TicketCategoriesController extends AbstractController
 	public function toggleFeatureAction($enable)
 	{
 		if ($enable) {
-			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_categories");
+			$count = $this->db->fetchColumn("SELECT COUNT(*) FROM ticket_categories");
 			if (!$count) {
 				return $this->redirectRoute('admin_ticketcats');
 			}
 
-			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_category', '1');
+			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_category', '1');
 		} else {
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_category', '0');
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_category', '0');
 		}
 
 		$url = $this->generateUrl('admin_ticketcats');

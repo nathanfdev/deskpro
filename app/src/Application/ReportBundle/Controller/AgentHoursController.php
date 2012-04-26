@@ -58,7 +58,7 @@ class AgentHoursController extends AbstractController
 
     private function getVarsForDate($date)
     {
-        $db = App::getDb();
+        $db = $this->db;
         $start_date = $date->setTimezone($this->person->getDateTimezone());
 
         $end_date = clone $start_date;

@@ -68,9 +68,9 @@ class PortalController extends AbstractController
 		));
 
 		$blob_id = $desc->getPath();
-		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+		$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
 
-		App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.favicon_blob_id', $blob_id);
+		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.favicon_blob_id', $blob_id);
 
 		return $this->redirectRoute('admin_portal');
 	}
@@ -141,7 +141,7 @@ class PortalController extends AbstractController
 	public function togglePortalAction()
 	{
 		$enable = $this->in->getBoolInt('enable');
-		App::getEntityRepository('DeskPRO:Setting')->updateSetting('user.portal_enabled', $enable);
+		$this->em->getRepository('DeskPRO:Setting')->updateSetting('user.portal_enabled', $enable);
 
 		return $this->redirectRoute('admin_portal');
 	}

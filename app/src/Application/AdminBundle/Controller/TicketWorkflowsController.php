@@ -53,7 +53,7 @@ class TicketWorkflowsController extends AbstractController
 	 */
 	public function listAction()
 	{
-		$all_workflows = App::getOrm()->createQuery("
+		$all_workflows = $this->em->createQuery("
 			SELECT w
 			FROM DeskPRO:TicketWorkflow w
 			ORDER BY w.display_order ASC
@@ -73,7 +73,7 @@ class TicketWorkflowsController extends AbstractController
 	public function saveTitleAction()
 	{
 		$workflow_id = $this->in->getUint('workflow_id');
-		$workflow = App::findEntity('DeskPRO:TicketWorkflow', $workflow_id);
+		$workflow = $this->em->find('DeskPRO:TicketWorkflow', $workflow_id);
 
 		if (!$workflow) {
 			throw $this->createNotFoundException();
@@ -114,9 +114,9 @@ class TicketWorkflowsController extends AbstractController
 			$this->em->flush();
 
 			// First workflow: enable the feature
-			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_workflows");
+			$count = $this->db->fetchColumn("SELECT COUNT(*) FROM ticket_workflows");
 			if ($count == 1) {
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_workflow', '0');
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_workflow', '0');
 			}
 
 			$this->em->getConnection()->commit();
@@ -134,7 +134,7 @@ class TicketWorkflowsController extends AbstractController
 
 	public function deleteAction($workflow_id)
 	{
-		$workflow = App::getEntityRepository('DeskPRO:TicketWorkflow')->find($workflow_id);
+		$workflow = $this->em->getRepository('DeskPRO:TicketWorkflow')->find($workflow_id);
 
 		return $this->render('AdminBundle:TicketWorkflows:delete.html.twig', array(
 			'workflow'  => $workflow,
@@ -143,7 +143,7 @@ class TicketWorkflowsController extends AbstractController
 
 	public function doDeleteAction($workflow_id, $security_token)
 	{
-		$workflow = App::getEntityRepository('DeskPRO:TicketWorkflow')->find($workflow_id);
+		$workflow = $this->em->getRepository('DeskPRO:TicketWorkflow')->find($workflow_id);
 
 		if (!$this->session->getEntity()->checkSecurityToken('delete_workflow', $security_token)) {
 			return $this->renderStandardTokenError();
@@ -153,9 +153,9 @@ class TicketWorkflowsController extends AbstractController
 		$this->em->remove($workflow);
 		$this->em->flush();
 
-		$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_workflows");
+		$count = $this->db->fetchColumn("SELECT COUNT(*) FROM ticket_workflows");
 		if (!$count) {
-			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_workflow', '0');
+			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_workflow', '0');
 		}
 
 		$this->em->commit();
@@ -182,14 +182,14 @@ class TicketWorkflowsController extends AbstractController
 	public function toggleFeatureAction($enable)
 	{
 		if ($enable) {
-			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_workflows");
+			$count = $this->db->fetchColumn("SELECT COUNT(*) FROM ticket_workflows");
 			if (!$count) {
 				return $this->redirectRoute('admin_ticketworks');
 			}
 
-			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_workflow', '1');
+			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_workflow', '1');
 		} else {
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_workflow', '0');
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_workflow', '0');
 		}
 
 		$url = $this->generateUrl('admin_ticketworks');

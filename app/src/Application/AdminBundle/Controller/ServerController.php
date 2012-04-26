@@ -144,7 +144,7 @@ class ServerController extends AbstractController
 	public function mysqlinfoAction()
 	{
 		try {
-			$mysqlinfo = App::getDb()->fetchAllKeyValue("SHOW VARIABLES", array(), 0, 1);
+			$mysqlinfo = $this->db->fetchAllKeyValue("SHOW VARIABLES", array(), 0, 1);
 		} catch (\Exception $e) {
 			$mysqlinfo = null;
 		}
@@ -162,13 +162,13 @@ class ServerController extends AbstractController
 	public function mysqlstatusAction()
 	{
 		try {
-			$mysqlprocs = App::getDb()->fetchAll("SHOW PROCESSLIST");
+			$mysqlprocs = $this->db->fetchAll("SHOW PROCESSLIST");
 		} catch (\Exception $e) {
 			$mysqlprocs = null;
 		}
 
 		try {
-			$mysqlstatus = App::getDb()->fetchAllKeyValue("SHOW STATUS", array(), 0, 1);
+			$mysqlstatus = $this->db->fetchAllKeyValue("SHOW STATUS", array(), 0, 1);
 		} catch (\Exception $e) {
 			$mysqlstatus = null;
 		}
@@ -188,8 +188,8 @@ class ServerController extends AbstractController
 	{
 		$page = max(1, $this->in->getUint('p'));
 
-		$logs_count = App::getEntityRepository('DeskPRO:LogItem')->getErrorLogsCount($page);
-		$logs = App::getEntityRepository('DeskPRO:LogItem')->getErrorLogs($page, 25);
+		$logs_count = $this->em->getRepository('DeskPRO:LogItem')->getErrorLogsCount($page);
+		$logs = $this->em->getRepository('DeskPRO:LogItem')->getErrorLogs($page, 25);
 		$pagination = Numbers::getPaginationPages($logs_count, $page, 25, 5);
 
 		return $this->render('AdminBundle:Server:error-logs.html.twig', array(
@@ -203,7 +203,7 @@ class ServerController extends AbstractController
 	{
 		$log_sn = trim(preg_replace('#^SN#', '', $log_sn));
 
-		$log = App::getEntityRepository('DeskPRO:LogItem')->findBySn($log_sn);
+		$log = $this->em->getRepository('DeskPRO:LogItem')->findBySn($log_sn);
 		if (!$log) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_log");
 		}
@@ -221,7 +221,7 @@ class ServerController extends AbstractController
 
 	public function viewAction($log_id)
 	{
-		$log = App::getEntityRepository('DeskPRO:LogItem')->find($log_id);
+		$log = $this->em->getRepository('DeskPRO:LogItem')->find($log_id);
 		if (!$log) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_log");
 		}

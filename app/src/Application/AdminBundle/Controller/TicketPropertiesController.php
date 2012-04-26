@@ -54,11 +54,11 @@ class TicketPropertiesController extends AbstractController
 	public function listAction()
 	{
 		$counts = array();
-		$counts['ticket_category'] = App::getEntityRepository('DeskPRO:TicketCategory')->countAll();
-		$counts['ticket_priority'] = App::getEntityRepository('DeskPRO:TicketPriority')->countAll();
-		$counts['ticket_workflow'] = App::getEntityRepository('DeskPRO:TicketWorkflow')->countAll();
-		$counts['department']      = App::getEntityRepository('DeskPRO:Department')->countAll();
-		$counts['product']         = App::getEntityRepository('DeskPRO:Product')->countAll();
+		$counts['ticket_category'] = $this->em->getRepository('DeskPRO:TicketCategory')->countAll();
+		$counts['ticket_priority'] = $this->em->getRepository('DeskPRO:TicketPriority')->countAll();
+		$counts['ticket_workflow'] = $this->em->getRepository('DeskPRO:TicketWorkflow')->countAll();
+		$counts['department']      = $this->em->getRepository('DeskPRO:Department')->countAll();
+		$counts['product']         = $this->em->getRepository('DeskPRO:Product')->countAll();
 
 		$fields = App::getApi('custom_fields.tickets')->getFields();
 
@@ -78,16 +78,16 @@ class TicketPropertiesController extends AbstractController
 	public function editorAction($department_id, $section = 'create')
 	{
 		// If no per-department forms, then we cant edit a department
-		if ($department_id AND !App::getSetting('core_tickets.per_department_form')) {
+		if ($department_id AND !$this->container->getSetting('core_tickets.per_department_form')) {
 			return $this->redirectRoute('admin_tickets_editor');
 		}
 
-		$departments = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
-		$department_hierarchy = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
+		$departments = $this->em->getRepository('DeskPRO:Department')->getInHierarchy();
+		$department_hierarchy = $this->em->getRepository('DeskPRO:Department')->getInHierarchy();
 
 		$department = null;
 		if ($department_id) {
-			$department = App::getEntityRepository('DeskPRO:Department')->find($department_id);
+			$department = $this->em->getRepository('DeskPRO:Department')->find($department_id);
 		}
 
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
@@ -101,7 +101,7 @@ class TicketPropertiesController extends AbstractController
 
 		// Existing options
 		$is_default = false;
-		$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionDataResolve($department, $section, 'default', $is_default);
+		$page_data = $this->em->getRepository('DeskPRO:TicketPageDisplay')->getSectionDataResolve($department, $section, 'default', $is_default);
 
 		return $this->render('AdminBundle:TicketProperties:editor.html.twig', array(
 			'departments' => $departments,
@@ -122,14 +122,14 @@ class TicketPropertiesController extends AbstractController
 		$department = null;
 
 		if ($department_id) {
-			$department = App::findEntity('DeskPRO:Department', $department_id);
+			$department = $this->em->find('DeskPRO:Department', $department_id);
 		}
 
 		$page_data = $this->in->getArrayValue('items', 'post');
-		$page_display = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getOrCreate($department, $section, 'default');
+		$page_display = $this->em->getRepository('DeskPRO:TicketPageDisplay')->getOrCreate($department, $section, 'default');
 		$page_display->data = $page_data;
 
-		App::getOrm()->transactional(function($em) use ($page_display) {
+		$this->em->transactional(function($em) use ($page_display) {
 			$em->persist($page_display);
 			$em->flush();
 		});
@@ -142,17 +142,17 @@ class TicketPropertiesController extends AbstractController
 		$department = null;
 
 		if ($department_id) {
-			$department = App::findEntity('DeskPRO:Department', $department_id);
+			$department = $this->em->find('DeskPRO:Department', $department_id);
 		}
 
-		$page_display_default = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionDataResolve($department, $section, 'default');
-		$page_display = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getOrCreate($department, $section, 'default');
+		$page_display_default = $this->em->getRepository('DeskPRO:TicketPageDisplay')->getSectionDataResolve($department, $section, 'default');
+		$page_display = $this->em->getRepository('DeskPRO:TicketPageDisplay')->getOrCreate($department, $section, 'default');
 
 		if ($page_display_default) {
 			$page_display->data = $page_display_default;
 		}
 
-		App::getOrm()->transactional(function($em) use ($page_display) {
+		$this->em->transactional(function($em) use ($page_display) {
 			$em->persist($page_display);
 			$em->flush();
 		});
@@ -169,12 +169,12 @@ class TicketPropertiesController extends AbstractController
 		$department = null;
 
 		if ($department_id) {
-			$department = App::findEntity('DeskPRO:Department', $department_id);
+			$department = $this->em->find('DeskPRO:Department', $department_id);
 		}
 
 		$d = $this->em->getRepository('DeskPRO:TicketPageDisplay')->findOneBy(array('department' => $department_id ? $department_id : null, 'zone' => $section, 'section' => 'default'));
 		if ($d) {
-			App::getOrm()->transactional(function($em) use ($d) {
+			$this->em->transactional(function($em) use ($d) {
 				$em->remove($d);
 				$em->flush();
 			});
@@ -190,7 +190,7 @@ class TicketPropertiesController extends AbstractController
 	public function togglePerDepartmentAction()
 	{
 		$enable = $this->in->getBoolInt('enable');
-		App::getEntityRepository('DeskPRO:Setting')->updateSetting('core_tickets.per_department_form', $enable);
+		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core_tickets.per_department_form', $enable);
 
 		return $this->redirectRoute('admin_tickets_editor');
 	}
@@ -201,11 +201,11 @@ class TicketPropertiesController extends AbstractController
 
 	public function formEmbedAction($department_id)
 	{
-		$department_hierarchy = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
+		$department_hierarchy = $this->em->getRepository('DeskPRO:Department')->getInHierarchy();
 
 		$department = null;
 		if ($department_id) {
-			$department = App::findEntity('DeskPRO:Department', $department_id);
+			$department = $this->em->find('DeskPRO:Department', $department_id);
 		}
 
 		return $this->render('AdminBundle:TicketProperties:form-embed.html.twig', array(

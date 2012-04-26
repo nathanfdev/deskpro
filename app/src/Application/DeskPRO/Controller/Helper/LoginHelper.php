@@ -68,7 +68,7 @@ class LoginHelper
 
 	public function execIndexAction(array $vars = array())
 	{
-		$usersources = App::getOrm()->createQuery('
+		$usersources = $this->em->createQuery('
 			SELECT us
 			FROM DeskPRO:Usersource us
 			INDEX BY us.id
@@ -159,8 +159,8 @@ class LoginHelper
 
 		$person = $identity['person'];
 		$person->setLastLoginAt();
-		App::getOrm()->persist($person);
-		App::getOrm()->flush();
+		$this->em->persist($person);
+		$this->em->flush();
 
 		$this->controller->session->set('auth_person_id', $identity->getIdentity());
 
@@ -184,8 +184,8 @@ class LoginHelper
 				'created_by_client' => $this->controller->session->getEntityId(),
 			));
 
-			App::getOrm()->persist($cm);
-			App::getOrm()->flush();
+			$this->em->persist($cm);
+			$this->em->flush();
 		}
 
 		return $this->_redirectLoginSuccess();
@@ -195,7 +195,7 @@ class LoginHelper
 	{
 		$return = $this->controller->in->getString('return');
 
-		$usersource = App::getOrm()->find('DeskPRO:Usersource', $usersource_id);
+		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 
 		$adapter = $this->_initUserSourceAdapter($usersource);
 
@@ -260,7 +260,7 @@ class LoginHelper
 
 	public function execAuthenticateCallbackAction($usersource_id)
 	{
-		$usersource = App::getOrm()->find('DeskPRO:Usersource', $usersource_id);
+		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 
 		$adapter = $this->_initUserSourceAdapter($usersource);
 

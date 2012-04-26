@@ -45,9 +45,9 @@ class TicketFiltersController extends AbstractController
 
 	public function indexAction()
 	{
-		$global_filters = App::getEntityRepository('DeskPRO:TicketFilter')->getAllGlobalFilters();
-		$team_filters   = App::getEntityRepository('DeskPRO:TicketFilter')->getAllTeamFilters();
-		$agent_filters  = App::getEntityRepository('DeskPRO:TicketFilter')->getAllAgentFilters();
+		$global_filters = $this->em->getRepository('DeskPRO:TicketFilter')->getAllGlobalFilters();
+		$team_filters   = $this->em->getRepository('DeskPRO:TicketFilter')->getAllTeamFilters();
+		$agent_filters  = $this->em->getRepository('DeskPRO:TicketFilter')->getAllAgentFilters();
 
 		$access_tester = new \Application\DeskPRO\Tickets\FilterAccessResolver($this->em);
 		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
@@ -67,8 +67,8 @@ class TicketFiltersController extends AbstractController
 	public function newChooseTypeAction()
 	{
  		return $this->render('AdminBundle:TicketFilters:new-choosetype.html.twig', array(
-			'agent_names'      => App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames(),
-			'agent_team_names' => App::getOrm()->getRepository('DeskPRO:AgentTeam')->getTeamNames(),
+			'agent_names'      => $this->em->getRepository('DeskPRO:Person')->getAgentNames(),
+			'agent_team_names' => $this->em->getRepository('DeskPRO:AgentTeam')->getTeamNames(),
 		));
 	}
 
@@ -102,7 +102,7 @@ class TicketFiltersController extends AbstractController
 			$filter_users = null;
 			$filter_users_ignore = null;
 		} else {
-			$filter = App::getEntityRepository('DeskPRO:TicketFilter')->find($filter_id);
+			$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($filter_id);
 			if (!$filter) {
 				return $this->createNotFoundException();
 			}

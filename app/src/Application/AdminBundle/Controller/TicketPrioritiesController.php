@@ -53,7 +53,7 @@ class TicketPrioritiesController extends AbstractController
 	 */
 	public function listAction()
 	{
-		$all_priorities = App::getOrm()->createQuery("
+		$all_priorities = $this->em->createQuery("
 			SELECT p
 			FROM DeskPRO:TicketPriority p
 			ORDER BY p.priority ASC
@@ -73,7 +73,7 @@ class TicketPrioritiesController extends AbstractController
 	public function saveTitleAction()
 	{
 		$priority_id = $this->in->getUint('priority_id');
-		$priority = App::findEntity('DeskPRO:TicketPriority', $priority_id);
+		$priority = $this->em->find('DeskPRO:TicketPriority', $priority_id);
 
 		if (!$priority) {
 			throw $this->createNotFoundException();
@@ -118,9 +118,9 @@ class TicketPrioritiesController extends AbstractController
 			$this->em->flush();
 
 			// First priority: enable the feature
-			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_priorities");
+			$count = $this->db->fetchColumn("SELECT COUNT(*) FROM ticket_priorities");
 			if ($count == 1) {
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_priority', '0');
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_priority', '0');
 			}
 
 			$this->em->getConnection()->commit();
@@ -129,7 +129,7 @@ class TicketPrioritiesController extends AbstractController
 			throw $e;
 		}
 
-		App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_ticketpriority', time());
+		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_ticketpriority', time());
 
 		return $this->redirectRoute('admin_ticketpris');
 	}
@@ -140,7 +140,7 @@ class TicketPrioritiesController extends AbstractController
 
 	public function deleteAction($priority_id)
 	{
-		$priority = App::getEntityRepository('DeskPRO:TicketPriority')->find($priority_id);
+		$priority = $this->em->getRepository('DeskPRO:TicketPriority')->find($priority_id);
 
 		return $this->render('AdminBundle:TicketPriorities:delete.html.twig', array(
 			'priority'  => $priority,
@@ -149,7 +149,7 @@ class TicketPrioritiesController extends AbstractController
 
 	public function doDeleteAction($priority_id, $security_token)
 	{
-		$priority = App::getEntityRepository('DeskPRO:TicketPriority')->find($priority_id);
+		$priority = $this->em->getRepository('DeskPRO:TicketPriority')->find($priority_id);
 
 		if (!$this->session->getEntity()->checkSecurityToken('delete_ticket_priority', $security_token)) {
 			return $this->renderStandardTokenError();
@@ -159,9 +159,9 @@ class TicketPrioritiesController extends AbstractController
 		$this->em->remove($priority);
 		$this->em->flush();
 
-		$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_priorities");
+		$count = $this->db->fetchColumn("SELECT COUNT(*) FROM ticket_priorities");
 		if (!$count) {
-			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_priority', '0');
+			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_priority', '0');
 		}
 
 		$this->em->commit();
@@ -178,14 +178,14 @@ class TicketPrioritiesController extends AbstractController
 	public function toggleFeatureAction($enable)
 	{
 		if ($enable) {
-			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_priorities");
+			$count = $this->db->fetchColumn("SELECT COUNT(*) FROM ticket_priorities");
 			if (!$count) {
 				return $this->redirectRoute('admin_ticketpris');
 			}
 
-			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_priority', '1');
+			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_priority', '1');
 		} else {
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_priority', '0');
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_ticket_priority', '0');
 		}
 
 		$url = $this->generateUrl('admin_ticketpris');

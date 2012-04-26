@@ -71,7 +71,7 @@ class SettingsController extends AbstractController
 			array_walk($update_settings, 'trim');
 
 			foreach ($update_settings as $k => $v) {
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting($k, $v);
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting($k, $v);
 			}
 
 			return $this->redirectRoute('admin_settings');
@@ -134,7 +134,7 @@ class SettingsController extends AbstractController
 		$settings_files = new \Application\DeskPRO\ResourceScanner\AdvancedSettings();
 		$show_settings = $settings_files->getAllSettings();
 
-		if (App::getSession()->checkSecurityToken('revert_all', $this->in->getString('revert_all'))) {
+		if ($this->session->checkSecurityToken('revert_all', $this->in->getString('revert_all'))) {
 			$this->db->beginTransaction();
 			try {
 
@@ -167,7 +167,7 @@ class SettingsController extends AbstractController
 	public function advancedSetAction($name)
 	{
 		$value = $this->in->getValue('value');
-		App::getEntityRepository('DeskPRO:Setting')->updateSetting($name, $value);
+		$this->em->getRepository('DeskPRO:Setting')->updateSetting($name, $value);
 
 		return $this->createJsonResponse(array('success' => true));
 	}
@@ -285,7 +285,7 @@ class SettingsController extends AbstractController
 			return $this->renderStandardTokenError();
 		}
 
-		App::getEntityRepository('DeskPRO:Setting')->updateSetting($setting_name, $this->in->getRaw('value'));
+		$this->em->getRepository('DeskPRO:Setting')->updateSetting($setting_name, $this->in->getRaw('value'));
 
 		return $this->createJsonResponse(array('success' => true));
 	}
@@ -297,13 +297,13 @@ class SettingsController extends AbstractController
 
 	public function quickSetupAction()
 	{
-		if (!App::getSetting('core.rewrite_urls') && !App::getSetting('core.done_rewrite_urls_check')) {
+		if (!$this->container->getSetting('core.rewrite_urls') && !$this->container->getSetting('core.done_rewrite_urls_check')) {
 			$this->db->replace('settings', array(
 				'name' => 'core.done_rewrite_urls_check',
 				'value' => time(),
 			));
 
-			$url = App::getRequest()->getUriForPath('/__checkurlrewrite');
+			$url = $this->request->getUriForPath('/__checkurlrewrite');
 			$url_noindex = str_replace('/index.php/', '/', $url);
 
 			$client = new \Zend\Http\Client(null, array('timeout' => 5));
@@ -334,7 +334,7 @@ class SettingsController extends AbstractController
 		")->setMaxResults(1)->getOneOrNullResult();
 		$incoming_email_form = $this->forward('AdminBundle:EmailGateways:editAccount', array('id' => $initial_pop ? $initial_pop->getId() : '0'), array('_partial' => 'setup'))->getContent();
 
-		$is_import = App::getSetting('core.deskpro3importer') ?: false;
+		$is_import = $this->container->getSetting('core.deskpro3importer') ?: false;
 
 		// Mark as done
 		if ($this->in->getBool('done')) {
@@ -355,7 +355,7 @@ class SettingsController extends AbstractController
 			}
 
 			if ($pass) {
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '1');
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '1');
 				return $this->redirectRoute('admin');
 			}
 		}
@@ -389,7 +389,7 @@ class SettingsController extends AbstractController
 			$this->container->get('deskpro.core.settings')->setSetting('core.app_secret', Strings::random(50, Strings::CHARS_ALPHANUM_IU));
 		}
 
-		$url = App::getRequest()->getUriForPath('/__checkurlrewrite');
+		$url = $this->request->getUriForPath('/__checkurlrewrite');
 		$url_noindex = str_replace('/index.php/', '/', $url);
 
 		try {
@@ -420,7 +420,7 @@ class SettingsController extends AbstractController
 		}
 
 		// Check for error db record
-		$error_message = App::getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1 AND name = 'cron_run_errors'");
+		$error_message = $this->db->fetchColumn("SELECT data FROM install_data WHERE build = 1 AND name = 'cron_run_errors'");
 		if (!$error_message) {
 			// Check for a logged message
 			if (file_exists(dp_get_log_dir().'/cron-boot-errors.log')) {
@@ -456,8 +456,8 @@ class SettingsController extends AbstractController
 
 	public function checkInternetAccessAction()
 	{
-		$time = App::getSetting('core.last_network_check');
-		$checked = App::getSetting('core.network_check');
+		$time = $this->container->getSetting('core.last_network_check');
+		$checked = $this->container->getSetting('core.network_check');
 
 		$is_connected = false;
 
@@ -475,11 +475,11 @@ class SettingsController extends AbstractController
 				$is_connected = false;
 			}
 
-			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.last_network_check', time());
+			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.last_network_check', time());
 			if ($is_connected) {
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.network_check', '1');
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.network_check', '1');
 			} else {
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.network_check', '0');
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.network_check', '0');
 			}
 		} else {
 			$is_connected = true;

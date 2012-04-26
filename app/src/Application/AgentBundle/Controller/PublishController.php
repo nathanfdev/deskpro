@@ -93,7 +93,7 @@ class PublishController extends AbstractController
 		$counts['validating_content']    = $this->publish_helper->getValidatingContentCount();
 		$counts['drafts']                = $this->publish_helper->getDraftsCount();
 		$counts['all_drafts']            = $this->publish_helper->getDraftsCount(false);
-		$counts['pending']               = App::getDb()->fetchColumn("SELECT COUNT(*) FROM article_pending_create");
+		$counts['pending']               = $this->db->fetchColumn("SELECT COUNT(*) FROM article_pending_create");
 
 		$usergroups = $this->em->getRepository('DeskPRO:Usergroup')->findAll();
 
@@ -162,11 +162,11 @@ class PublishController extends AbstractController
 	{
 		$entity = $this->_getCommentEntityName($typename);
 
-		$comment = App::findEntity($entity, $comment_id);
+		$comment = $this->em->find($entity, $comment_id);
 		$comment['status'] = 'visible';
 
-		App::getOrm()->persist($comment);
-		App::getOrm()->flush();
+		$this->em->persist($comment);
+		$this->em->flush();
 
 		$this->_sendCommentApprovedNotification($comment);
 
@@ -180,11 +180,11 @@ class PublishController extends AbstractController
 	{
 		$entity = $this->_getCommentEntityName($typename);
 
-		$comment = App::findEntity($entity, $comment_id);
+		$comment = $this->em->find($entity, $comment_id);
 		$comment['status'] = 'deleted';
 
-		App::getOrm()->persist($comment);
-		App::getOrm()->flush();
+		$this->em->persist($comment);
+		$this->em->flush();
 
 		$this->_sendCommentDeletedNotification($comment);
 
@@ -204,7 +204,7 @@ class PublishController extends AbstractController
 			$entity = $this->_getCommentEntityName($typename);
 			if (!$entity) continue;
 
-			$results = App::getEntityRepository($entity)->getByIds($ids);
+			$results = $this->em->getRepository($entity)->getByIds($ids);
 			foreach ($results as $r) {
 				if ($action == 'approve') {
 					$r->status = 'visible';
@@ -230,7 +230,7 @@ class PublishController extends AbstractController
 	{
 		$entity = $this->_getCommentEntityName($typename);
 
-		$comment = App::findEntity($entity, $comment_id);
+		$comment = $this->em->find($entity, $comment_id);
 
 		return $this->createJsonResponse(array(
 			'comment_id' => $comment['id'],
@@ -243,11 +243,11 @@ class PublishController extends AbstractController
 	{
 		$entity = $this->_getCommentEntityName($typename);
 
-		$comment = App::findEntity($entity, $comment_id);
+		$comment = $this->em->find($entity, $comment_id);
 		$comment->content = $this->in->getString('comment');
 
-		App::getOrm()->persist($comment);
-		App::getOrm()->flush();
+		$this->em->persist($comment);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array(
 			'comment_id' => $comment['id'],
@@ -260,7 +260,7 @@ class PublishController extends AbstractController
 	{
 		$entity = $this->_getCommentEntityName($typename);
 
-		$comment = App::findEntity($entity, $comment_id);
+		$comment = $this->em->find($entity, $comment_id);
 
 		return $this->createJsonResponse(array(
 			'message'       => $comment->getContentPlain(),
@@ -293,11 +293,11 @@ class PublishController extends AbstractController
 	{
 		if ($comment->getUserEmail()) {
 			$email_subject = 'Your comment was published';
-			$email_body = App::get('templating')->render('DeskPRO:emails_user:comment-approved.html.twig', array(
+			$email_body = $this->container->get('templating')->render('DeskPRO:emails_user:comment-approved.html.twig', array(
 				'comment' => $comment
 			));
 
-			$message = App::getMailer()->createMessage();
+			$message = $this->container->getMailer()->createMessage();
 			if ($comment->person) {
 				$message->setTo($comment->person->getPrimaryEmailAddress(), $comment->person->getDisplayName());
 			} else {
@@ -306,7 +306,7 @@ class PublishController extends AbstractController
 			$message->setSubject($email_subject);
 			$message->setBody($email_body, 'text/html');
 			$message->enableQueueHint();
-			App::getMailer()->send($message);
+			$this->container->getMailer()->send($message);
 		}
 	}
 
@@ -314,11 +314,11 @@ class PublishController extends AbstractController
 	{
 		if ($comment->getUserEmail()) {
 			$email_subject = 'Your comment was read';
-			$email_body = App::get('templating')->render('DeskPRO:emails_user:comment-deleted.html.twig', array(
+			$email_body = $this->container->get('templating')->render('DeskPRO:emails_user:comment-deleted.html.twig', array(
 				'comment' => $comment
 			));
 
-			$message = App::getMailer()->createMessage();
+			$message = $this->container->getMailer()->createMessage();
 			if ($comment->person) {
 				$message->setTo($comment->person->getPrimaryEmailAddress(), $comment->person->getDisplayName());
 			} else {
@@ -327,7 +327,7 @@ class PublishController extends AbstractController
 			$message->setSubject($email_subject);
 			$message->setBody($email_body, 'text/html');
 			$message->enableQueueHint();
-			App::getMailer()->send($message);
+			$this->container->getMailer()->send($message);
 		}
 	}
 
@@ -499,7 +499,7 @@ class PublishController extends AbstractController
 			$entity =  $this->publish_helper->getEntityNameFor($type);
 			if (!$entity) continue;
 
-			$results = App::getEntityRepository($entity)->getByIds($ids);
+			$results = $this->em->getRepository($entity)->getByIds($ids);
 			foreach ($results as $r) {
 				if ($action == 'approve') {
 					$r->status = 'approve';
@@ -583,7 +583,7 @@ class PublishController extends AbstractController
 			$entity =  $this->publish_helper->getEntityNameFor($type);
 			if (!$entity) continue;
 
-			$results = App::getEntityRepository($entity)->getByIds($ids);
+			$results = $this->em->getRepository($entity)->getByIds($ids);
 			foreach ($results as $r) {
 				if ($r['status_code'] != 'hidden.draft' OR $r->person['id'] != $this->person['id']) continue;
 				if ($action == 'delete') {
@@ -651,7 +651,7 @@ class PublishController extends AbstractController
 
 	public function ratingWhoVotedAction($object_type, $object_id)
 	{
-		$ratings = App::getOrm()->createQuery("
+		$ratings = $this->em->createQuery("
 			SELECT r
 			FROM DeskPRO:Rating r
 			LEFT JOIN r.person p
@@ -697,11 +697,11 @@ class PublishController extends AbstractController
 					if (isset($new_cats[$cat_info['parentId']])) {
 						$cat['parent'] = $new_cats[$cat_info['parentId']];
 					} else {
-						$cat['parent'] = App::getEntityRepository($entity_name)->find($cat_info['parentId']);
+						$cat['parent'] = $this->em->getRepository($entity_name)->find($cat_info['parentId']);
 					}
 				}
 			} else {
-				$cat = App::getEntityRepository($entity_name)->find($cat_info['id']);
+				$cat = $this->em->getRepository($entity_name)->find($cat_info['id']);
 			}
 
 			$cat['title'] = $cat_info['title'];

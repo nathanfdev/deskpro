@@ -69,8 +69,8 @@ class TwitterController extends AbstractController
 			$statuses['starred'] += $account->countStarredStatuses();
 		}
 
-		$statuses['account'] = App::getEntityRepository('DeskPRO:TwitterStatus')->countTweetsForAgentId($agentId);
-		$statuses['team'] = App::getEntityRepository('DeskPRO:TwitterStatus')->countTweetsForAgentTeamByAgentId($agentId);
+		$statuses['account'] = $this->em->getRepository('DeskPRO:TwitterStatus')->countTweetsForAgentId($agentId);
+		$statuses['team'] = $this->em->getRepository('DeskPRO:TwitterStatus')->countTweetsForAgentTeamByAgentId($agentId);
 
 		$data['section_html'] = $this->renderView('AgentBundle:Twitter:window-section.html.twig', array(
 			'statuses' => $statuses,
@@ -130,11 +130,11 @@ class TwitterController extends AbstractController
         $includeArchived = $this->in->getValue('include.archived');
         $includeAccount  = $this->in->getBool('include.account');
 
-        $statuses = App::getEntityRepository('DeskPRO:TwitterStatus')
+        $statuses = $this->em->getRepository('DeskPRO:TwitterStatus')
             ->findStarredTweetsForAgentId(
                 $agentId,
-                $includeArchived, 
-                $includeAccount, 
+                $includeArchived,
+                $includeAccount,
                 $this->getSortByDate()
             );
 
@@ -151,11 +151,11 @@ class TwitterController extends AbstractController
         $includeArchived = $this->in->getValue('include.archived');
         $includeAccount  = $this->in->getBool('include.account');
 
-        $statuses = App::getEntityRepository('DeskPRO:TwitterStatus')
+        $statuses = $this->em->getRepository('DeskPRO:TwitterStatus')
             ->findTweetsForAgentId(
                 $agentId,
-                $includeArchived, 
-                $includeAccount, 
+                $includeArchived,
+                $includeAccount,
                 $this->getSortByDate()
             );
 
@@ -170,11 +170,11 @@ class TwitterController extends AbstractController
         $includeArchived = $this->in->getValue('include.archived');
         $includeAccount  = $this->in->getBool('include.account');
 
-        $statuses = App::getEntityRepository('DeskPRO:TwitterStatus')
+        $statuses = $this->em->getRepository('DeskPRO:TwitterStatus')
             ->findTweetsForAgentTeamByAgentId(
                 $agentId,
-                $includeArchived, 
-                $includeAccount, 
+                $includeArchived,
+                $includeAccount,
                 $this->getSortByDate()
             );
 
@@ -195,7 +195,7 @@ class TwitterController extends AbstractController
     public function runSearchAction($account_id, $search_id)
     {
         $account = $this->getAccount($account_id);
-        $search = App::getEntityRepository('DeskPRO:TwitterAccountSearch')->find($search_id);
+        $search = $this->em->getRepository('DeskPRO:TwitterAccountSearch')->find($search_id);
 
         if (!$search) {
                 throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no search with ID "%d"', $search_id));
@@ -250,7 +250,7 @@ class TwitterController extends AbstractController
             }
 
             // check if account exists
-            $account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->find($id);
+            $account = $this->em->getRepository('DeskPRO:TwitterAccount')->find($id);
             if (!$account) {
                     throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no account with ID "%d"', $id));
             }

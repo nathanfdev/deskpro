@@ -373,7 +373,7 @@ class TicketTerms
 				break;
 
 			case TicketSearch::TERM_DEPARTMENT:
-				$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
+				$choice = App::getDataService('Department')->getIdsInTree($choice, true);
 				if (count($choice) == 1) $choice = $choice[0];
 
 				if (!$this->_testChoiceMatch($ticket['department_id'], $op, $choice)) return false;
@@ -547,7 +547,7 @@ class TicketTerms
 				case TicketSearch::TERM_DEPARTMENT:
 					$ids = array();
 					foreach ((array)$choice as $cond) {
-						$ids = array_merge($ids, App::getEntityRepository('DeskPRO:Department')->getIdsInTree($cond, true));
+						$ids = array_merge($ids, App::getDataService('Department')->getIdsInTree($cond, true));
 					}
 					$ids = Arrays::castToType($ids, 'int');
 					if (count($ids) == 1) $ids = $ids[0];

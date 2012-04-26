@@ -135,6 +135,16 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * @param string $id
+	 * @return \Application\DeskPRO\DependencyInjection\SystemServices\BaseRepositoryService
+	 */
+	public function getDataService($id)
+	{
+		return $this->getSystemService($id . 'Data');
+	}
+
+
+	/**
 	 * This calls a system factory and returns a new instance of some kind of object.
 	 *
 	 * @throws \InvalidArgumentException

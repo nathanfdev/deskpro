@@ -50,34 +50,34 @@ class MiscController extends AbstractController
 
 		// Common names
 		$js[] = 'window.DESKPRO_NAME_REGISTRY = {};';
-		$js[] = 'window.DESKPRO_NAME_REGISTRY.agent = ' . json_encode(App::getEntityRepository('DeskPRO:Person')->getAgentNames()) . ';';
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.agent = ' . json_encode($this->container->getDataService('Person')->getAgentNames()) . ';';
 		if ($this->container->getSetting('core.use_agent_team')) {
-			$js[] = 'window.DESKPRO_NAME_REGISTRY.agent_team = ' . json_encode(App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames()) . ';';
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.agent_team = ' . json_encode($this->container->getDataService('AgentTeam')->getTeamNames()) . ';';
 		} else {
 			$js[] = 'window.DESKPRO_NAME_REGISTRY.agent_team = {};';
 		}
-		$js[] = 'window.DESKPRO_NAME_REGISTRY.department = ' . json_encode(App::getEntityRepository('DeskPRO:Department')->getDepartmentNames(null, true)) . ';';
-		$js[] = 'window.DESKPRO_NAME_REGISTRY.department_full = ' . json_encode(App::getEntityRepository('DeskPRO:Department')->getFullDepartmentNames(null, true)) . ';';
-		$js[] = 'window.DESKPRO_NAME_REGISTRY.department_hierarchy = ' . json_encode(App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy(null, true)) . ';';
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.department = ' . json_encode($this->container->getDataService('Department')->getNames(null, true)) . ';';
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.department_full = ' . json_encode($this->container->getDataService('Department')->getFullNames(null, true)) . ';';
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.department_hierarchy = ' . json_encode($this->container->getDataService('Department')->getInHierarchy(null, true)) . ';';
 		if ($this->container->getSetting('core.use_product')) {
-			$js[] = 'window.DESKPRO_NAME_REGISTRY.product = ' . json_encode(App::getEntityRepository('DeskPRO:Product')->getProductNames()) . ';';
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.product = ' . json_encode($this->container->getDataService('Product')->getNames()) . ';';
 		} else {
 			$js[] = 'window.DESKPRO_NAME_REGISTRY.product = {};';
 		}
 		if ($this->container->getSetting('core.use_ticket_category')) {
-			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category = ' . json_encode(App::getEntityRepository('DeskPRO:TicketCategory')->getCategoryNames()) . ';';
-			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category_full = ' . json_encode(App::getEntityRepository('DeskPRO:TicketCategory')->getFullCategoryNames(null, true)) . ';';
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category = ' . json_encode($this->container->getDataService('TicketCategory')->getNames()) . ';';
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category_full = ' . json_encode($this->container->getDataService('TicketCategory')->getFullNames(null, true)) . ';';
 		} else {
 			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category = {};';
 			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category_full = {};';
 		}
 		if ($this->container->getSetting('core.use_ticket_category')) {
-			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_priority = ' . json_encode(App::getEntityRepository('DeskPRO:TicketPriority')->getPriorityNames()) . ';';
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_priority = ' . json_encode($this->container->getDataService('TicketPriority')->getNames()) . ';';
 		} else {
 			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_priority = {};';
 		}
 		if ($this->container->getSetting('core.use_ticket_workflow')) {
-			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_workflow = ' . json_encode(App::getEntityRepository('DeskPRO:TicketWorkflow')->getWorkflowNames()) . ';';
+			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_workflow = ' . json_encode($this->container->getDataService('TicketWorkflow')->getNames()) . ';';
 		} else {
 			$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_workflow = {};';
 		}
@@ -111,7 +111,7 @@ class MiscController extends AbstractController
 		// Data
 		$js[] = 'window.DESKPRO_DATA_REGISTRY = {}';
 
-		$system_filters = App::getDb()->fetchAllKeyValue("SELECT id, sys_name FROM ticket_filters WHERE is_global=1 AND sys_name IS NOT NULL");
+		$system_filters = $this->db->fetchAllKeyValue("SELECT id, sys_name FROM ticket_filters WHERE is_global=1 AND sys_name IS NOT NULL");
 		$system_filters = Arrays::castToType($system_filters, 'string', 'int');
 		$js[] = 'window.DESKPRO_DATA_REGISTRY.systemFilters = ' . json_encode($system_filters) . ';';
 
@@ -123,9 +123,9 @@ class MiscController extends AbstractController
 		$fragment_router = new FragmentRouter($this->get('router')->getGenerator());
 		$js[] = $fragment_router->compile();
 
-		$count = App::getEntityRepository('DeskPRO:LabelDef')->countLabels();
+		$count = $this->em->getRepository('DeskPRO:LabelDef')->countLabels();
 		if ($count <= 300) {
-			$js[] = "window.DESKPRO_DATA_REGISTRY.labels = " . json_encode(APp::getEntityRepository('DeskPRO:LabelDef')->getAllLabelsToTyped());
+			$js[] = "window.DESKPRO_DATA_REGISTRY.labels = " . json_encode($this->em->getRepository('DeskPRO:LabelDef')->getAllLabelsToTyped());
 		}
 
 		$js = implode("\n", $js);
@@ -143,7 +143,7 @@ class MiscController extends AbstractController
 
 		foreach ($this->in->getCleanValueArray('prefs', 'raw', 'string') as $pref_name => $value)
 		{
-			$pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => $pref_name));
+			$pref = $this->em->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => $pref_name));
 			if (!$pref) {
 				$pref = new Entity\PersonPref();
 				$pref['name'] = $pref_name;
@@ -156,10 +156,10 @@ class MiscController extends AbstractController
 			}
 
 			$pref['value'] = $value;
-			App::getOrm()->persist($pref);
+			$this->em->persist($pref);
 		}
 
-		App::getOrm()->flush();
+		$this->em->flush();
 
 		return $this->createJsonResponse(array(
 			'success' => true
@@ -171,7 +171,7 @@ class MiscController extends AbstractController
 		$value = array();
 		$value['tabs'] = $this->in->getCleanValueArray('tabs', 'raw', 'discard');
 
-		$pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => 'agent.ui.state'));
+		$pref = $this->em->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => 'agent.ui.state'));
 		if (!$pref) {
 			$pref = new Entity\PersonPref();
 			$pref['name'] = 'agent.ui.state';
@@ -179,8 +179,8 @@ class MiscController extends AbstractController
 		}
 		$pref['value'] = $value;
 
-		App::getOrm()->persist($pref);
-		App::getOrm()->flush();
+		$this->em->persist($pref);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array(
 			'success' => true
@@ -190,7 +190,7 @@ class MiscController extends AbstractController
 	public function ajaxLabelsAutocompleteAction($label_type)
 	{
 		$search = $this->in->getString('term');
-		$statement = App::getDb()->executeQuery("
+		$statement = $this->db->executeQuery("
 			SELECT label
 			FROM label_defs
 			WHERE label_type = ? AND label LIKE ?
@@ -209,7 +209,7 @@ class MiscController extends AbstractController
 
 	public function showBlobAction($blob_id)
 	{
-		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+		$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
 
 		$response = $this->container->get('response');
 		$response->headers->set('Content-Type', $blob['content_type'] . '; filename=' . $blob['filename']);
@@ -238,7 +238,7 @@ class MiscController extends AbstractController
 		if ($this->in->getString('attach_to_object')) {
 			switch ($this->in->getString('attach_to_object')) {
 				case 'article':
-					$article = App::findEntity('DeskPRO:Article', $this->in->getUint('object_id'));
+					$article = $this->em->find('DeskPRO:Article', $this->in->getUint('object_id'));
 
 					$attach = new \Application\DeskPRO\Entity\ArticleAttachment();
 					$attach['blob'] = $blob;
@@ -246,8 +246,8 @@ class MiscController extends AbstractController
 
 					$article->addAttachment($attach);
 
-					App::getOrm()->persist($article);
-					App::getOrm()->flush();
+					$this->em->persist($article);
+					$this->em->flush();
 
 					break;
 			}
@@ -324,7 +324,7 @@ class MiscController extends AbstractController
 		$sessionEnt = $this->session->getEntity();
 		$sessionEnt['active_status'] = $status;
 
-		App::getOrm()->transactional(function($em) use ($sessionEnt) {
+		$this->em->transactional(function($em) use ($sessionEnt) {
 			$em->persist($sessionEnt);
 			$em->flush();
 		});
@@ -339,10 +339,10 @@ class MiscController extends AbstractController
 
 	public function snippetsViewerAction($typename)
 	{
-		$text_snippets = App::getEntityRepository('DeskPRO:TextSnippet')->getSnippetsForAgent($typename, $this->person);
-		$text_snippet_cats = App::getEntityRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent($typename, $this->person);
+		$text_snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent($typename, $this->person);
+		$text_snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent($typename, $this->person);
 
-		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
 		return $this->render('AgentBundle:Common:text-snippets.html.twig', array(
 			'text_snippets'      => $text_snippets,
@@ -388,7 +388,7 @@ class MiscController extends AbstractController
 
 	public function editSnippetCatAction()
 	{
-		$cat = App::findEntity('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
+		$cat = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
 
 		return $this->render('AgentBundle:Common:text-snippets-editcat.html.twig', array(
 			'category' => $cat,
@@ -397,7 +397,7 @@ class MiscController extends AbstractController
 
 	public function saveSnippetCatAction()
 	{
-		$cat = App::findEntity('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
+		$cat = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
 		$cat['title'] = $this->in->getString('title');
 
 		$this->em->persist($cat);
@@ -411,7 +411,7 @@ class MiscController extends AbstractController
 
 	public function deleteSnippetCatAction()
 	{
-		$cat = App::findEntity('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
+		$cat = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
 
 		$cat_id = $cat['id'];
 
@@ -428,10 +428,10 @@ class MiscController extends AbstractController
 	public function saveSnippetAction()
 	{
 		if ($this->in->getUint('snippet_id')) {
-			$snippet = App::findEntity('DeskPRO:TextSnippet', $this->in->getUint('snippet_id'));
+			$snippet = $this->em->find('DeskPRO:TextSnippet', $this->in->getUint('snippet_id'));
 			$category = $snippet->category;
 		} else {
-			$category = App::findEntity('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
+			$category = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'));
 			$snippet = new \Application\DeskPRO\Entity\TextSnippet();
 			$snippet->category = $category;
 		}
@@ -456,7 +456,7 @@ class MiscController extends AbstractController
 
 	public function deleteSnippetAction()
 	{
-		$snippet = App::findEntity('DeskPRO:TextSnippet', $this->in->getUint('snippet_id'));
+		$snippet = $this->em->find('DeskPRO:TextSnippet', $this->in->getUint('snippet_id'));
 
 		$snippet_id = $snippet['id'];
 		$category_id = $snippet->category['id'];

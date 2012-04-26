@@ -48,7 +48,7 @@ class UserRegController extends AbstractController
 
 	public function optionsAction()
 	{
-		$usersources = App::getOrm()->createQuery("
+		$usersources = $this->em->createQuery("
 			SELECT us
 			FROM DeskPRO:Usersource us
 			ORDER BY us.display_order ASC, us.title ASC
@@ -64,10 +64,10 @@ class UserRegController extends AbstractController
 
 	public function saveOptionsAction()
 	{
-		App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.user_mode', $this->in->getString('mode'));
-		App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.reg_url', $this->in->getString('reg_url'));
-		App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.email_validation', $this->in->getBool('email_validation'));
-		App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.existing_account_login', $this->in->getBool('existing_account_login'));
+		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.user_mode', $this->in->getString('mode'));
+		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.reg_url', $this->in->getString('reg_url'));
+		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.email_validation', $this->in->getBool('email_validation'));
+		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.existing_account_login', $this->in->getBool('existing_account_login'));
 
 		return $this->createJsonResponse(array('success'=> true));
 	}
@@ -79,7 +79,7 @@ class UserRegController extends AbstractController
 
 	public function deskproSourceToggleAction()
 	{
-		$onoff = App::getSetting('core.deskpro_source_enabled');
+		$onoff = $this->container->getSetting('core.deskpro_source_enabled');
 
 		$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_source_enabled', (int)(!$onoff));
 

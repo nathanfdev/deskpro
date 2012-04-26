@@ -76,7 +76,7 @@ class EditAgentType extends AbstractType
 			'multiple' => true
 		));
 
-		$department_names = App::getEntityRepository('DeskPRO:Department')->getFullDepartmentNames();
+		$department_names = App::getEntityRepository('DeskPRO:Department')->getFullNames();
 		$builder->add('allowed_departments', 'choice', array(
 			'choices' => $department_names,
 			'expanded' => true,

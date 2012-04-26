@@ -206,7 +206,7 @@ class EmailGatewaysController extends AbstractController
 					throw $e;
 				}
 
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.task_completed_incoming_email', time());
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.task_completed_incoming_email', time());
 
 				if ($this->request->isXmlHttpRequest()) {
 					return $this->createJsonResponse(array('success' => true));

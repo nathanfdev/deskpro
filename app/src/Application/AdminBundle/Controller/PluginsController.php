@@ -52,7 +52,7 @@ class PluginsController extends AbstractController
 		$finder = new PluginFinder();
 		$available_plguins = $finder->findPlugins();
 
-		$installed_plugins_ids = App::getDb()->fetchAllCol("SELECT id FROM plugins");
+		$installed_plugins_ids = $this->db->fetchAllCol("SELECT id FROM plugins");
 		$installed_plugins = array();
 
 		foreach ($installed_plugins_ids as $plugin_id) {
@@ -90,7 +90,7 @@ class PluginsController extends AbstractController
 		$plugin['resources_path']         = $package_name::getResourcesPath();
 		$plugin['autoload_paths']         = $package_name::getAutoloadPaths();
 
-		App::get('deskpro.plugin_manager')->addPlugin($plugin);
+		$this->container->get('deskpro.plugin_manager')->addPlugin($plugin);
 
 		$autoload_paths = $package_name::getAutoloadPaths();
 		if ($autoload_paths) {
@@ -115,16 +115,16 @@ class PluginsController extends AbstractController
 	 */
 	public function uninstallAction($plugin_id)
 	{
-		$plugin = App::findEntity('DeskPRO:Plugin', $plugin_id);
+		$plugin = $this->em->find('DeskPRO:Plugin', $plugin_id);
 		$package_class = $plugin['package_class'];
 
-		App::getOrm()->beginTransaction();
+		$this->em->beginTransaction();
 
-		App::getOrm()->remove($plugin);
+		$this->em->remove($plugin);
 		$package_class::uninstall($plugin);
 
-		App::getOrm()->flush();
-		App::getOrm()->commit();
+		$this->em->flush();
+		$this->em->commit();
 
 		return $this->redirectRoute('admin_plugins');
 	}

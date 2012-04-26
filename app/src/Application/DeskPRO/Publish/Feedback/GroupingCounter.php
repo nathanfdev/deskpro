@@ -153,7 +153,7 @@ class GroupingCounter
 
 		switch ($this->grouping1) {
 			case 'category_id':
-				$group1_structure = App::getEntityRepository('DeskPRO:FeedbackCategory')->getFullCategoryNames();
+				$group1_structure = App::getEntityRepository('DeskPRO:FeedbackCategory')->getFullNames();
 				break;
 
 			case 'status':
@@ -170,7 +170,7 @@ class GroupingCounter
 		if ($this->grouping2) {
 			switch ($this->grouping2) {
 				case 'category_id':
-					$group1_structure = App::getEntityRepository('DeskPRO:FeedbackCategory')->getFullCategoryNames();
+					$group1_structure = App::getEntityRepository('DeskPRO:FeedbackCategory')->getFullNames();
 					break;
 
 				case 'status':
@@ -360,7 +360,7 @@ class GroupingCounter
 		$titles = null;
 		switch ($field) {
 			case 'category_id':
-				$titles = App::getOrm()->getRepository('DeskPRO:FeedbackCategory')->getFullCategoryNames();
+				$titles = App::getOrm()->getRepository('DeskPRO:FeedbackCategory')->getFullNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
 				break;
 

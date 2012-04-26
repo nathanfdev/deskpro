@@ -120,7 +120,7 @@ class ContentRating
 
 		$res = null;
 		if ($this->person) {
-			$res = App::getOrm()->createQuery("
+			$res = $this->em->createQuery("
 				SELECT r
 				FROM DeskPRO:Rating r
 				WHERE
@@ -131,7 +131,7 @@ class ContentRating
 			  ->setParameter(3, $this->visitor)
 			  ->execute();
 		} else {
-			$res = App::getOrm()->createQuery("
+			$res = $this->em->createQuery("
 				SELECT r
 				FROM DeskPRO:Rating r
 				WHERE
@@ -211,11 +211,11 @@ class ContentRating
 
 		$this->content_object->addRating($rating);
 
-		App::getOrm()->beginTransaction();
-		App::getOrm()->persist($rating);
-		App::getOrm()->persist($this->content_object);
-		App::getOrm()->flush();
-		App::getOrm()->commit();
+		$this->em->beginTransaction();
+		$this->em->persist($rating);
+		$this->em->persist($this->content_object);
+		$this->em->flush();
+		$this->em->commit();
 
 		$this->rating = $rating;
 

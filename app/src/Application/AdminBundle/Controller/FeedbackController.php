@@ -229,7 +229,7 @@ class FeedbackController extends AbstractController
 			}
 		}
 
-		$other_cats = $this->em->getRepository('DeskPRO:FeedbackCategory')->getCategoriesInHierarchy();
+		$other_cats = $this->em->getRepository('DeskPRO:FeedbackCategory')->getInHierarchy();
 		$exclude_cat_ids = $this->em->getRepository('DeskPRO:FeedbackCategory')->getChildrenIds($category, false);
 		$exclude_cat_ids[] = $category->id;
 

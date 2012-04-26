@@ -125,7 +125,7 @@ class RegisterController extends AbstractController
 
 	public function finishAction()
 	{
-		$person = App::getEntityRepository('DeskPRO:Person')->find($this->session->get('finish_register_person', 0));
+		$person = $this->em->getRepository('DeskPRO:Person')->find($this->session->get('finish_register_person', 0));
 
 		// Invalid person if they dont exist or already are registered.
 		// just pop the user back to index
@@ -141,14 +141,14 @@ class RegisterController extends AbstractController
 		switch ($modeinfo['type']) {
 			case 'ticket':
 				$tpl = 'finish-ticket.html.twig';
-				$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($modeinfo['id']);
+				$ticket = $this->em->getRepository('DeskPRO:Ticket')->find($modeinfo['id']);
 
 				$vars['ticket'] = $ticket;
 				break;
 
 			case 'ticket_participant':
 				$tpl = 'finish-ticket-participant.html.twig';
-				$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($modeinfo['ticket_id']);
+				$ticket = $this->em->getRepository('DeskPRO:Ticket')->find($modeinfo['ticket_id']);
 
 				$vars['ticket'] = $ticket;
 				break;
@@ -167,8 +167,8 @@ class RegisterController extends AbstractController
 				$person['password'] = $password;
 				$person['is_user'] = true;
 
-				App::getOrm()->persist($person);
-				App::getOrm()->flush();
+				$this->em->persist($person);
+				$this->em->flush();
 
 				$this->session->set('auth_person_id', $person['id']);
 

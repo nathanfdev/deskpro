@@ -57,12 +57,12 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
-				App::getOrm()->persist($this->person);
-				App::getOrm()->flush();
+				$this->em->persist($this->person);
+				$this->em->flush();
 			}
 		}
 
-		$validating_emails = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getForPerson($this->person);
+		$validating_emails = $this->em->getRepository('DeskPRO:PersonEmailValidating')->getForPerson($this->person);
 
 		return $this->render('UserBundle:Profile:index.html.twig', array(
 			'form' => $form->createView(),
@@ -92,7 +92,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			} else {
 				$this->person->setPassword($password);
 				$person = $this->person;
-				App::getOrm()->transactional(function ($em) use ($person) {
+				$this->em->transactional(function ($em) use ($person) {
 					$em->persist($person);
 				});
 				return $this->redirectRoute('user_profile');
@@ -132,7 +132,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$person = $this->person;
 		$person->primary_email = $email;
 
-		App::getOrm()->transactional(function ($em) use ($person) {
+		$this->em->transactional(function ($em) use ($person) {
 			$em->persist($person);
 		});
 
@@ -176,11 +176,11 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		# Do the remove now
 		#------------------------------
 
-		App::getOrm()->beginTransaction();
+		$this->em->beginTransaction();
 		$this->person->removeEmailAddressId($email['id']);
-		App::getOrm()->persist($this->person);
-		App::getOrm()->flush();
-		App::getOrm()->commit();
+		$this->em->persist($this->person);
+		$this->em->flush();
+		$this->em->commit();
 
 		$this->session->setFlash('removed_email', $email['email']);
 
@@ -189,13 +189,13 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
 	public function removeEmailValidatingAction($email_id)
 	{
-		$validating_email = App::findEntity('DeskPRO:PersonEmailValidating', $email_id);
+		$validating_email = $this->em->find('DeskPRO:PersonEmailValidating', $email_id);
 
 		if (!$validating_email || $validating_email->person['id'] != $this->person['id']) {
 			return $this->renderStandardError('@user.error.invalid_email_explain', '@user.error.invalid_email', 404);
 		}
 
-		App::getOrm()->transactional(function ($em) use ($validating_email) {
+		$this->em->transactional(function ($em) use ($validating_email) {
 			$em->remove($validating_email);
 			$em->flush();
 		});
@@ -225,7 +225,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			return $this->redirectRoute('user_profile');
 		}
 
-		$email_exists = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($email_address);
+		$email_exists = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($email_address);
 		if ($email_exists) {
 			$this->session->setFlash('email_exists', 1);
 			$this->session->save();
@@ -236,7 +236,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$validating_email['email'] = $email_address;
 		$validating_email->person = $this->person;
 
-		App::getOrm()->transactional(function ($em) use ($validating_email) {
+		$this->em->transactional(function ($em) use ($validating_email) {
 			$em->persist($validating_email);
 			$em->flush();
 		});
@@ -264,15 +264,15 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
 		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($vars, $person, $validating_email) {
 			$email_subject = $tr->phrase($vars['email_subject']);
-			$email_body = App::get('templating')->render('DeskPRO:emails_user:new-email-validate.html.twig', $vars);
+			$email_body = $this->container->get('templating')->render('DeskPRO:emails_user:new-email-validate.html.twig', $vars);
 
-			$message = App::getMailer()->createMessage();
+			$message = $this->container->getMailer()->createMessage();
 			$message->setTo($validating_email->getEmail(), $person->getDisplayName());
 			$message->setSubject($email_subject);
 			$message->setBody($email_body, 'text/html');
 			$message->enableQueueHint();
 
-			App::getMailer()->send($message);
+			$this->container->getMailer()->send($message);
 		});
 	}
 
@@ -281,7 +281,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 	 */
 	public function sendValidateEmailLinkAction($email_id)
 	{
-		$validating_email = App::findEntity('DeskPRO:PersonEmailValidating', $email_id);
+		$validating_email = $this->em->find('DeskPRO:PersonEmailValidating', $email_id);
 
 		if (!$validating_email || $validating_email->person['id'] != $this->person['id']) {
 			return $this->renderStandardError('@user.error.invalid_email_explain', '@user.error.invalid_email', 404);
@@ -300,7 +300,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
 	public function subscriptionsAction()
 	{
-		$unsorted_subscriptions = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscriptionsForPerson($this->person);
+		$unsorted_subscriptions = $this->em->getRepository('DeskPRO:ContentSubscription')->getSubscriptionsForPerson($this->person);
 
 		$subscriptions = array(
 			'article' => array(),
@@ -334,12 +334,12 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			return $this->createNotFoundException();
 		}
 
-		$object = App::findEntity($ent, $id);
+		$object = $this->em->find($ent, $id);
 		if (!$object) {
 			return $this->createNotFoundException();
 		}
 
-		$sub = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscription($object, $this->person);
+		$sub = $this->em->getRepository('DeskPRO:ContentSubscription')->getSubscription($object, $this->person);
 		if (!$sub) {
 			$sub = \Application\DeskPRO\Entity\ContentSubscription::create($object, $this->person);
 			$this->em->persist($sub);
@@ -361,12 +361,12 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			return $this->createNotFoundException();
 		}
 
-		$object = App::findEntity($ent, $id);
+		$object = $this->em->find($ent, $id);
 		if (!$object) {
 			return $this->createNotFoundException();
 		}
 
-		$sub = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscription($object, $this->person);
+		$sub = $this->em->getRepository('DeskPRO:ContentSubscription')->getSubscription($object, $this->person);
 		if ($sub) {
 			$this->em->remove($sub);
 			$this->em->flush($sub);

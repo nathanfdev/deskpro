@@ -77,25 +77,25 @@ class Tickets
 		$options = array();
 
 		if ($person['is_agent']) {
-			$options['agents'] = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
+			$options['agents'] = App::getDataService('Person')->getAgentNames();
 
 			if (App::getSetting('core.use_agent_team')) {
-				$options['agent_teams'] = App::getOrm()->getRepository('DeskPRO:AgentTeam')->getTeamNames();
+				$options['agent_teams'] = App::getDataService('AgentTeam')->getTeamNames();
 			} else {
 				$options['agent_teams'] = array();
 			}
 		}
 
-		$options['departments_hierarchy'] = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
-		$options['departments_full'] = App::getOrm()->getRepository('DeskPRO:Department')->getFullDepartmentNames(null, false);
-		$options['departments'] = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentNames(null, false);
-		$options['gateway_addresses'] = App::getOrm()->getRepository('DeskPRO:EmailGatewayAddress')->getOptions();
-		$options['gateway_accounts'] = App::getOrm()->getRepository('DeskPRO:EmailGateway')->getGatewayNames();
+		$options['departments_hierarchy'] = App::getDataService('Department')->getInHierarchy();
+		$options['departments_full'] = App::getDataService('Department')->getFullNames(null, false);
+		$options['departments'] = App::getDataService('Department')->getNames(null, false);
+		$options['gateway_addresses'] = App::getDataService('EmailGatewayAddress')->getOptions();
+		$options['gateway_accounts'] = App::getDataService('EmailGateway')->getGatewayNames();
 
 		if (App::getSetting('core.use_ticket_category')) {
-			$options['ticket_categories_hierarchy'] = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getCategoriesInHierarchy();
-			$options['ticket_categories_full'] = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getFullCategoryNames(null, false);
-			$options['ticket_categories'] = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getCategoryNames(null, false);
+			$options['ticket_categories_hierarchy'] = App::getDataService('TicketCategory')->getInHierarchy();
+			$options['ticket_categories_full'] = App::getDataService('TicketCategory')->getFullNames(null, false);
+			$options['ticket_categories'] = App::getDataService('TicketCategory')->getNames(null, false);
 		} else {
 			$options['ticket_categories_hierarchy'] = array();
 			$options['ticket_categories_full'] = array();
@@ -103,22 +103,21 @@ class Tickets
 		}
 
 		if (App::getSetting('core.use_ticket_workflow')) {
-			$options['ticket_workflows'] = App::getOrm()->getRepository('DeskPRO:TicketWorkflow')->getWorkflowNames();
+			$options['ticket_workflows'] = App::getDataService('TicketWorkflow')->getNames();
 		} else {
 			$options['ticket_workflows'] = array();
 		}
 
 		if (App::getSetting('core.use_product')) {
-			$options['products'] = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
-			//$options['products_full']       = App::getOrm()->getRepository('DeskPRO:Product')->getFullProductNames(null, false);
-			$options['products_hierarchy']  = App::getOrm()->getRepository('DeskPRO:Product')->getProductsInHierarchy();
+			$options['products'] = App::getDataService('Product')->getNames();
+			$options['products_hierarchy']  = App::getDataService('Product')->getInHierarchy();
 		} else {
 			$options['products'] = array();
 			$options['products_hierarchy']  = array();
 		}
 
 		if (App::getSetting('core.use_ticket_priority')) {
-			$options['priorities']  = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
+			$options['priorities']  = App::getDataService('TicketPriority')->getNames();
 		} else {
 			$options['priorities'] = array();
 		}

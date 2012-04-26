@@ -105,13 +105,13 @@ class RecycleBinController extends AbstractController
 			$no_more = true;
 		}
 
-		$deleted_tickets = App::getOrm()->createQuery("
+		$deleted_tickets = $this->em->createQuery("
 			SELECT d
 			FROM DeskPRO:TicketDeleted d INDEX BY d.ticket_id
 			LEFT JOIN d.by_person p
 			WHERE d.ticket_id IN (" . implode(',', $results) . ")
 		");
-		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($results);
+		$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($results);
 
 
 		$vars = array(

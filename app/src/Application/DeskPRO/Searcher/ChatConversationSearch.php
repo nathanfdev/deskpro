@@ -252,7 +252,7 @@ class ChatConversationSearch extends SearcherAbstract
 					break;
 				case self::TERM_DEPARTMENT_ID:
 					$children[] = $choice;
-					$children = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
+					$children = App::getDataService('Department')->getIdsInTree($choice, true);
 					$wheres[] = $this->_choiceMatch('chat_conversations.department_id', $op, $children, true);
 					break;
 

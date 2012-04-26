@@ -619,12 +619,12 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_DEPARTMENT:
 					$this->affected_fields[] = 'ticket.department_id';
 					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.department'), $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:Department')->getDepartmentNames((array)$choice);
+						$titles = App::getDataService('Department')->getNames((array)$choice);
 						return $titles;
 					});
 
 					if ($choice && (!is_array($choice) || !in_array('0', $choice))) {
-						$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
+						$choice = App::getDataService('Department')->getIdsInTree($choice, true);
 					}
 
 					if (count($choice) == 1) {
@@ -649,7 +649,7 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_CATEGORY:
 					$this->affected_fields[] = 'ticket.category_id';
 					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.category'), $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoryNames((array)$choice);
+						$titles = App::getEntityRepository('DeskPRO:TicketCategory')->getNames((array)$choice);
 						return $titles;
 					});
 
@@ -662,7 +662,7 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_PRODUCT:
 					$this->affected_fields[] = 'ticket.product_id';
 					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.product'), $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:Product')->getProductNames((array)$choice);
+						$titles = App::getEntityRepository('DeskPRO:Product')->getNames((array)$choice);
 						return $titles;
 					});
 
@@ -715,7 +715,7 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_WORKFLOW:
 					$this->affected_fields[] = 'ticket.workflow_id';
 					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.workflow'), $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:TicketWorkflow')->getWorkflowNames((array)$choice);
+						$titles = App::getEntityRepository('DeskPRO:TicketWorkflow')->getNames((array)$choice);
 						return $titles;
 					});
 
@@ -1225,7 +1225,7 @@ class TicketSearch extends SearcherAbstract
 					break;
 				case self::TERM_DEPARTMENT:
 					if (count($choice) == 1) $choice = Arrays::getFirstItem($choice);
-					$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
+					$choice = App::getDataService('Department')->getIdsInTree($choice, true);
 
 					if (!$this->_testChoiceMatch($ticket['department_id'], $op, $choice)) return false;
 					break;

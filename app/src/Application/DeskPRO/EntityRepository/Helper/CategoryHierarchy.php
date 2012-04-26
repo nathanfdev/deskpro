@@ -74,20 +74,11 @@ class CategoryHierarchy
 	 */
 	protected $cache_tag = null;
 
-	/**
-	 * @var string
-	 */
-	protected $where_cond = null;
-
 	protected $_cat_hierarchy = null;
 	protected $_cat_hierarchy_flat = null;
 	protected $_cat_names = null;
 	protected $_cat_ids = array();
 	protected $_cat_parent_map = array();
-
-	protected $select_fields = array('id', 'title', 'parent_id');
-
-	protected $processor_callback = null;
 
 	public function __construct(EntityManager $em, AbstractEntityRepository $repos, $entity_name, ClassMetadata $class, $cache_tag = null)
 	{
@@ -104,45 +95,6 @@ class CategoryHierarchy
 		$this->cache_tag = $cache_tag;
 	}
 
-
-	/**
-	 * Set the fields that the basic (cachable) fetchers will select.
-	 *
-	 * @param array $select_fields
-	 */
-	public function setSelectFields(array $select_fields)
-	{
-		$this->select_fields = $select_fields;
-	}
-
-
-	/**
-	 * If provided, the function will be called on the array of raw category data from the db.
-	 * The result is used for the rest of this class' work (and cached).
-	 *
-	 * The callback is given an array $cats, and should return the same array (usually modified!)
-	 *
-	 * @param $callback
-	 * @return void
-	 */
-	public function setProcessorCallback($callback)
-	{
-		$this->processor_callback = $callback;
-	}
-
-
-	/**
-	 * Set the where condition when fetching categories
-	 *
-	 * @param  $where_cond
-	 * @return string
-	 */
-	public function setWhereCond($where_cond)
-	{
-		$this->where_cond = $where_cond;
-	}
-
-
 	/**
 	 * Get all root node ids
 	 *
@@ -150,7 +102,7 @@ class CategoryHierarchy
 	 */
 	public function getRootNodeIds()
 	{
-		$this->getCategoriesInHierarchy();
+		$this->getInHierarchy();
 
 		$root_ids = array();
 
@@ -184,10 +136,9 @@ class CategoryHierarchy
 	 *
 	 * @return array
 	 */
-	public function getCategoryIds()
+	public function getIds()
 	{
-		$this->getCategoriesInHierarchy();
-
+		$this->getInHierarchy();
 		return $this->_cat_ids;
 	}
 
@@ -197,15 +148,19 @@ class CategoryHierarchy
 	 *
 	 * @return null
 	 */
-	public function getCategoriesInHierarchy($reset = false)
+	public function getInHierarchy($reset = false)
 	{
 		if (!$reset && $this->_cat_hierarchy !== null) return $this->_cat_hierarchy;
 
-		$cats = $this->em->getConnection()->fetchAllKeyed("
-			SELECT id, parent_id, title
-			FROM {$this->table_name}
-			ORDER BY display_order ASC, id ASC
-		", array(), 'id');
+		if (is_array($reset)) {
+			$cats = $reset;
+		} else {
+			$cats = $this->em->getConnection()->fetchAllKeyed("
+				SELECT id, parent_id, title
+				FROM {$this->table_name}
+				ORDER BY display_order ASC, id ASC
+			", array(), 'id');
+		}
 
 		$this->_cat_ids = array();
 		foreach ($cats as &$c) {
@@ -213,10 +168,6 @@ class CategoryHierarchy
 			$this->_cat_ids[] = $c['id'];
 		}
 		unset($c);
-
-		if ($this->processor_callback) {
-			$cats = $this->processor_callback($cats);
-		}
 
 		foreach ($cats as $c) {
 			$this->_cat_parent_map[$c['id']] = $c['parent_id'] ? $c['parent_id'] : 0;
@@ -248,9 +199,9 @@ class CategoryHierarchy
 	 *
 	 * @return array
 	 */
-	public function getCategoryNames($for_ids = null)
+	public function getNames($for_ids = null)
 	{
-		$this->getCategoriesInHierarchy();
+		$this->getInHierarchy();
 		if ($for_ids === null) {
 			return $this->_cat_names;
 		}
@@ -273,15 +224,15 @@ class CategoryHierarchy
 	 *
 	 * @return array
 	 */
-	public function getFullCategoryNames($sep = ' > ', $include_tops = true)
+	public function getFullNames($sep = ' > ', $include_tops = true)
 	{
 		if ($sep === null) {
 			$sep = ' > ';
 		}
-		return $this->_getFullCategoryNames(array(), $this->getCategoriesInHierarchy(), $sep, $include_tops);
+		return $this->_getFullNames(array(), $this->getInHierarchy(), $sep, $include_tops);
 	}
 
-	protected function _getFullCategoryNames($basenames, $cats, $sep, $include_tops)
+	protected function _getFullNames($basenames, $cats, $sep, $include_tops)
 	{
 		$names = array();
 
@@ -293,7 +244,7 @@ class CategoryHierarchy
 				$names[$k] = implode($sep, $name);
 			}
 			if ($cat['children']) {
-				$names = Arrays::mergeAssoc($names, $this->_getFullCategoryNames($name, $cat['children'], $sep, $include_tops));
+				$names = Arrays::mergeAssoc($names, $this->_getFullNames($name, $cat['children'], $sep, $include_tops));
 			}
 		}
 
@@ -308,7 +259,7 @@ class CategoryHierarchy
 	 */
 	public function getFlatHierarchy()
 	{
-		$this->getCategoriesInHierarchy();
+		$this->getInHierarchy();
 		return $this->_cat_hierarchy_flat;
 	}
 
@@ -363,7 +314,7 @@ class CategoryHierarchy
 	 */
 	public function getChildrenIds($category = null, $direct = true)
 	{
-		$this->getCategoriesInHierarchy();
+		$this->getInHierarchy();
 
 		// All ids if null
 		if ($category === null) {
@@ -466,58 +417,14 @@ class CategoryHierarchy
 	}
 
 
-	/**
-	 * Runs through the hierarchy to reset 'depth' and 'root' values,
-	 * and updates all 'display_order' so that they are stored in
-	 * real tree order.
-	 *
-	 * This isnt just "bad" thing, it sholud be called for example
-	 * when a new category is created, or one is deleted.
-	 *
-	 * @return void
-	 */
-	public function repair()
-	{
-		$this->getCategoriesInHierarchy(true);
 
-		$all = $this->em->createQuery("
-			SELECT c
-			FROM {$this->entity_name} c INDEX BY c.id
-		")->execute();
-
-		$display_order = 0;
-
-		$current_root = null;
-
-		$this->em->beginTransaction();
-
-		foreach ($this->getFlatHierarchy() as $cid => $cinfo) {
-			$cat = $all[$cid];
-
-			$display_order += 10;
-			$cat->display_order = $display_order;
-			$cat->depth = $cinfo['depth'];
-
-			if (!$cat->parent) {
-				$current_root = $cat;
-				$cat->root = null;
-			} else {
-				$cat->root = $current_root['id'];
-			}
-
-			$this->em->persist($cat);
-		}
-
-		$this->em->flush();
-		$this->em->commit();
-	}
 
 
 	public function getTotalCounts(array $counts)
 	{
 		$counts['0_total'] = 0;
 
-		foreach ($this->getCategoryIds() as $c_id) {
+		foreach ($this->getIds() as $c_id) {
 			$total = 0;
 			if (isset($counts[$c_id])) {
 				$total = $counts[$c_id];

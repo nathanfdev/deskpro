@@ -123,7 +123,7 @@ class NewsController extends AbstractController
 		);
 
 		$news_ids = $searcher->getMatches($limit);
-		$news = App::getEntityRepository('DeskPRO:News')->getByIds($news_ids, true);
+		$news = $this->em->getRepository('DeskPRO:News')->getByIds($news_ids, true);
 
 		$show_more = false;
 		if ($page < $pageinfo['last']) {
@@ -132,7 +132,7 @@ class NewsController extends AbstractController
 
 		$comment_counts = array();
 		if ($news) {
-			$comment_counts = App::getEntityRepository('DeskPRO:NewsCategory')
+			$comment_counts = $this->em->getRepository('DeskPRO:NewsCategory')
 				->getCommentHelper()
 				->countsOnCollection($news);
 		}
@@ -159,7 +159,7 @@ class NewsController extends AbstractController
 	 */
 	public function viewAction($slug)
 	{
-		$news = App::getEntityRepository('DeskPRO:News')->getBySlug($slug);
+		$news = $this->em->getRepository('DeskPRO:News')->getBySlug($slug);
 		if (!$news) {
 			return $this->renderStandardError('@user.error.news_not_found', '@user.error.not_found', 404);
 		}
@@ -172,7 +172,7 @@ class NewsController extends AbstractController
 		// Get the user subscription
 		$subscription = false;
 		if (!$this->person->isGuest()) {
-			$subscription = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscription($news, $this->person);
+			$subscription = $this->em->getRepository('DeskPRO:ContentSubscription')->getSubscription($news, $this->person);
 			if ($subscription) {
 				$subscription->touch();
 				$this->em->persist($subscription);
@@ -180,7 +180,7 @@ class NewsController extends AbstractController
 			}
 		}
 
-		$categories = App::getEntityRepository('DeskPRO:NewsCategory')->getRootNodes();
+		$categories = $this->em->getRepository('DeskPRO:NewsCategory')->getRootNodes();
 		$category = $news->category;
 		$category_path = $category->getTreeParents();
 
@@ -190,10 +190,10 @@ class NewsController extends AbstractController
 		if ($comments_helper) {
 			$comments_widget = $comments_helper->getHtml();
 		} else {
-			$comments = App::getEntityRepository('DeskPRO:NewsComment')->getComments($news);
+			$comments = $this->em->getRepository('DeskPRO:NewsComment')->getComments($news);
 		}
 
-		if (App::getSetting('core.facebook_like')) {
+		if ($this->container->getSetting('core.facebook_like')) {
 			$like_helper = FacebookLike::create($news);
 			$facebook_like = $like_helper->getHtml();
 		}
@@ -252,7 +252,7 @@ class NewsController extends AbstractController
 			return $this->renderLoginOrPermissionError();
 		}
 
-		$post = App::getEntityRepository('DeskPRO:News')->find($post_id);
+		$post = $this->em->getRepository('DeskPRO:News')->find($post_id);
 		if (!$post) {
 			return $this->renderStandardError('@user.error.news_not_found', '@user.error.not_found', 404);
 		}

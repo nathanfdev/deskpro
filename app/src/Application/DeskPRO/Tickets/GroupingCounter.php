@@ -436,15 +436,15 @@ class GroupingCounter
 	{
 		switch ($field) {
 			case TicketSearch::TERM_DEPARTMENT:
-				$group_structure = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
+				$group_structure = App::getDataService('Department')->getInHierarchy();
 				break;
 
 			case TicketSearch::TERM_CATEGORY:
-				$group_structure = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoriesInHierarchy();
+				$group_structure = App::getDataService('TicketCategory')->getInHierarchy();
 				break;
 
 			case TicketSearch::TERM_PRODUCT:
-				$group_structure = App::getEntityRepository('DeskPRO:Product')->getCategoriesInHierarchy();
+				$group_structure = App::getDataService('Product')->getInHierarchy();
 				break;
 
 			default:
@@ -488,19 +488,19 @@ class GroupingCounter
 		switch ($field) {
 			case TicketSearch::TERM_DEPARTMENT:
 				$this->grouping_summary = $tr->phrase('agent.general.department');
-				$titles = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentNames();
+				$titles = App::getDataService('Department')->getNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
 				break;
 
 			case TicketSearch::TERM_AGENT:
 				$this->grouping_summary = $tr->phrase('agent.general.agent');
-				$titles = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
+				$titles = App::getDataService('Person')->getAgentNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.unassigned'));
 				break;
 
 			case TicketSearch::TERM_AGENT_TEAM:
 				$this->grouping_summary = $tr->phrase('agent.general.agent_team');
-				$titles = App::getOrm()->getRepository('DeskPRO:AgentTeam')->getTeamNames();
+				$titles = App::getDataService('AgentTeam')->getTeamNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.unassigned'));
 				break;
 
@@ -512,37 +512,37 @@ class GroupingCounter
 
 			case TicketSearch::TERM_CATEGORY:
 				$this->grouping_summary = $tr->phrase('agent.general.category');
-				$titles = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getCategoryNames();
+				$titles = App::getDataService('TicketCategory')->getNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
 				break;
 
 			case TicketSearch::TERM_PRIORITY:
 				$this->grouping_summary = $tr->phrase('agent.general.priority');
-				$titles = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
+				$titles = App::getDataService('TicketPriority')->getNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
 				break;
 
 			case TicketSearch::TERM_PRODUCT:
 				$this->grouping_summary = $tr->phrase('agent.general.product');
-				$titles = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
+				$titles = App::getDataService('Product')->getNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
 				break;
 
 			case TicketSearch::TERM_WORKFLOW:
 				$this->grouping_summary = $tr->phrase('agent.general.workflow');
-				$titles = App::getOrm()->getRepository('DeskPRO:TicketWorkflow')->getWorkflowNames();
+				$titles = App::getDataService('TicketWorkflow')->getNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
 				break;
 
 			case TicketSearch::TERM_ORGANIZATION:
 				$this->grouping_summary = $tr->phrase('agent.general.organization');
-				$titles = App::getOrm()->getRepository('DeskPRO:Organization')->getOrganizationNames($ids);
+				$titles = App::getDataService('Organization')->getOrganizationNames($ids);
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
 				break;
 
 			case TicketSearch::TERM_LANGUAGE:
 				$this->grouping_summary = $tr->phrase('agent.general.language');
-				$titles = App::getOrm()->getRepository('DeskPRO:Language')->getTitles();
+				$titles = App::getDataService('Language')->getTitles();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
 				break;
 

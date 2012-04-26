@@ -106,7 +106,7 @@ class GenericCategory extends AbstractPersonContextValidator
 			return false;
 		}
 
-		$valid_ids = $this->repository->getCategoryHelper()->getCategoryIds();
+		$valid_ids = $this->repository->getIds();
 
 		if (!in_array($valid_ids, $value)) {
 			$this->addError('invalid_id');

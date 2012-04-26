@@ -115,11 +115,11 @@ class DownloadsController extends AbstractController
 
 		$download_ids = $searcher->getMatches($limit);
 
-		$downloads = App::getEntityRepository('DeskPRO:Download')->getByResultIds($download_ids);
+		$downloads = $this->em->getRepository('DeskPRO:Download')->getByResultIds($download_ids);
 
 		$comment_counts = array();
 		if ($downloads) {
-			$comment_counts = App::getEntityRepository('DeskPRO:DownloadCategory')
+			$comment_counts = $this->em->getRepository('DeskPRO:DownloadCategory')
 				->getCommentHelper()
 				->countsOnCollection($downloads);
 		}
@@ -133,7 +133,7 @@ class DownloadsController extends AbstractController
 			'comment_counts' => $comment_counts,
 			'num_results' => $total,
 			'pageinfo' => $pageinfo,
-			'section_counts' => App::getEntityRepository('DeskPRO:Download')->getSectionCounts($this->person),
+			'section_counts' => $this->em->getRepository('DeskPRO:Download')->getSectionCounts($this->person),
 		));
 	}
 
@@ -155,7 +155,7 @@ class DownloadsController extends AbstractController
 		));
 
 		if ($download_ids) {
-			$downloads = App::getEntityRepository('DeskPRO:Download')->getByResultIds($download_ids);
+			$downloads = $this->em->getRepository('DeskPRO:Download')->getByResultIds($download_ids);
 		} else {
 			$downloads = array();
 		}
@@ -171,7 +171,7 @@ class DownloadsController extends AbstractController
 			'downloads' => $downloads,
 			'show_more' => $show_more,
 			'page' => $page,
-			'section_counts' => App::getEntityRepository('DeskPRO:Download')->getSectionCounts($this->person),
+			'section_counts' => $this->em->getRepository('DeskPRO:Download')->getSectionCounts($this->person),
 		));
 	}
 
@@ -194,7 +194,7 @@ class DownloadsController extends AbstractController
 		));
 
 		if ($download_ids) {
-			$downloads = App::getEntityRepository('DeskPRO:Download')->getByResultIds($download_ids);
+			$downloads = $this->em->getRepository('DeskPRO:Download')->getByResultIds($download_ids);
 		} else {
 			$downloads = array();
 		}
@@ -210,7 +210,7 @@ class DownloadsController extends AbstractController
 			'downloads' => $downloads,
 			'show_more' => $show_more,
 			'page' => $page,
-			'section_counts' => App::getEntityRepository('DeskPRO:Download')->getSectionCounts($this->person),
+			'section_counts' => $this->em->getRepository('DeskPRO:Download')->getSectionCounts($this->person),
 		));
 	}
 
@@ -222,7 +222,7 @@ class DownloadsController extends AbstractController
 	 */
 	public function fileAction($slug)
 	{
-		$download = App::getEntityRepository('DeskPRO:Download')->getBySlug($slug);
+		$download = $this->em->getRepository('DeskPRO:Download')->getBySlug($slug);
 		if (!$download) {
 			return $this->renderStandardError('@user.error.downloads_not_found', '@user.error.not_found', 404);
 		}
@@ -235,7 +235,7 @@ class DownloadsController extends AbstractController
 		// Get the user subscription
 		$subscription = false;
 		if (!$this->person->isGuest()) {
-			$subscription = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscription($download, $this->person);
+			$subscription = $this->em->getRepository('DeskPRO:ContentSubscription')->getSubscription($download, $this->person);
 			if ($subscription) {
 				$subscription->touch();
 				$this->em->persist($subscription);
@@ -255,7 +255,7 @@ class DownloadsController extends AbstractController
 		if ($comments_helper) {
 			$comments_widget = $comments_helper->getHtml();
 		} else {
-			$comments = App::getEntityRepository('DeskPRO:DownloadComment')->getComments($download);
+			$comments = $this->em->getRepository('DeskPRO:DownloadComment')->getComments($download);
 		}
 
 		$content_rating = new ContentRating($download, $this->person, $this->session->getVisitor());
@@ -310,7 +310,7 @@ class DownloadsController extends AbstractController
 			return $this->renderLoginOrPermissionError();
 		}
 
-		$download = App::getEntityRepository('DeskPRO:Download')->find($download_id);
+		$download = $this->em->getRepository('DeskPRO:Download')->find($download_id);
 		if (!$download) {
 			return $this->renderStandardError('@user.error.downloads_not_found', '@user.error.not_found', 404);
 		}

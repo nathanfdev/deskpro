@@ -49,7 +49,7 @@ class PortalController extends AbstractController
 
 		$custom_templates = null;
 		if ($show_portal_controls) {
-			$custom_templates = App::getDb()->fetchAllKeyValue("SELECT name,id FROM templates");
+			$custom_templates = $this->db->fetchAllKeyValue("SELECT name,id FROM templates");
 		}
 
 		if (!$show_portal_controls) {
@@ -93,7 +93,7 @@ class PortalController extends AbstractController
 	public function saveRatingAction($object_type, $object_id)
 	{
 		$entity_name = 'DeskPRO:' . ucfirst($object_type);
-		$content_object = App::findEntity($entity_name, $object_id);
+		$content_object = $this->em->find($entity_name, $object_id);
 
 		$perm_name = false;
 		switch ($entity_name) {
@@ -129,7 +129,7 @@ class PortalController extends AbstractController
 		$this->em->commit();
 
 		if ($this->session->has('preticket_id')) {
-			$preticket = App::findEntity('DeskPRO:PreticketContent', $this->session->get('preticket_id'));
+			$preticket = $this->em->find('DeskPRO:PreticketContent', $this->session->get('preticket_id'));
 			$this->session->remove('preticket_id');
 
 			if ($preticket) {

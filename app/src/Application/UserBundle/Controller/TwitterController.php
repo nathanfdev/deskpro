@@ -45,7 +45,7 @@ class TwitterController extends AbstractController
     public function messageAction($id)
     {
         // Get the twitter status
-        $status = App::getEntityRepository('DeskPRO:TwitterStatus')->find($id);
+        $status = $this->em->getRepository('DeskPRO:TwitterStatus')->find($id);
 
         if (!$status) {
                 throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no message with ID "%d"', $id));

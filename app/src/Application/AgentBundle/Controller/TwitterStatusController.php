@@ -209,7 +209,7 @@ class TwitterStatusController extends AbstractController
 	 */
 	protected function getStatus($id)
 	{
-		$status = App::getOrm()->getRepository('DeskPRO:TwitterStatus')->find($id);
+		$status = $this->em->getRepository('DeskPRO:TwitterStatus')->find($id);
 		if (!$status) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no status with ID "%d"', $id));
 		}
@@ -235,7 +235,7 @@ class TwitterStatusController extends AbstractController
 		}
 
 		// check if account exists
-		$account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->find($id);
+		$account = $this->em->getRepository('DeskPRO:TwitterAccount')->find($id);
 		if (!$account) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no account with ID "%d"', $id));
 		}

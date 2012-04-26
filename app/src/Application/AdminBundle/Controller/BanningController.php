@@ -53,7 +53,7 @@ class BanningController extends AbstractController
 
 	public function listEmailsAction()
 	{
-		$banned_emails = App::getEntityRepository('DeskPRO:BanEmail')->getList();
+		$banned_emails = $this->em->getRepository('DeskPRO:BanEmail')->getList();
 
 		return $this->render('AdminBundle:Banning:list-emails.html.twig', array(
 			'counts' => $this->getCounts(),
@@ -63,7 +63,7 @@ class BanningController extends AbstractController
 
 	public function listIpsAction()
 	{
-		$banned_ips    = App::getEntityRepository('DeskPRO:BanIp')->getList();
+		$banned_ips    = $this->em->getRepository('DeskPRO:BanIp')->getList();
 
 		return $this->render('AdminBundle:Banning:list-ips.html.twig', array(
 			'counts' => $this->getCounts(),
@@ -78,8 +78,8 @@ class BanningController extends AbstractController
 		$ipban = new Entity\BanIp();
 		$ipban['banned_ip'] = $ip_address;
 
-		App::getOrm()->persist($ipban);
-		App::getOrm()->flush();
+		$this->em->persist($ipban);
+		$this->em->flush();
 
 		return $this->render('AdminBundle:Banning:ip-row.html.twig', array(
 			'ip' => $ipban['banned_ip']
@@ -93,8 +93,8 @@ class BanningController extends AbstractController
 		$emailban = new Entity\BanEmail();
 		$emailban['banned_email'] = $email_address;
 
-		App::getOrm()->persist($emailban);
-		App::getOrm()->flush();
+		$this->em->persist($emailban);
+		$this->em->flush();
 
 		return $this->render('AdminBundle:Banning:email-row.html.twig', array(
 			'email' => $emailban['banned_email']
@@ -105,11 +105,11 @@ class BanningController extends AbstractController
 	{
 		$ip_address = $this->in->getString('ip');
 
-		$ipban = App::getEntityRepository('DeskPRO:BanIp')->find($ip_address);
+		$ipban = $this->em->getRepository('DeskPRO:BanIp')->find($ip_address);
 
 		if ($ipban) {
-			App::getOrm()->remove($ipban);
-			App::getOrm()->flush();
+			$this->em->remove($ipban);
+			$this->em->flush();
 		}
 
 		return $this->createJsonResponse(array(
@@ -122,11 +122,11 @@ class BanningController extends AbstractController
 	{
 		$email_address = $this->in->getString('email');
 
-		$emailban = App::getEntityRepository('DeskPRO:BanEmail')->find($email_address);
+		$emailban = $this->em->getRepository('DeskPRO:BanEmail')->find($email_address);
 
 		if ($emailban) {
-			App::getOrm()->remove($emailban);
-			App::getOrm()->flush();
+			$this->em->remove($emailban);
+			$this->em->flush();
 		}
 
 		return $this->createJsonResponse(array(

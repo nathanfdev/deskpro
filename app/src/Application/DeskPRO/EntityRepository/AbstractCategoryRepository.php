@@ -60,31 +60,65 @@ class AbstractCategoryRepository extends AbstractEntityRepository
 		return $this->_cat_helper;
 	}
 
-	public function findAll()
-	{
-		static $has_done = false;
-		if (!$has_done) {
-			$has_done = true;
-			return parent::findAll();
-		}
-
-		$res = array();
-
-		$idmap = $this->getEntityManager()->getUnitOfWork()->getIdentityMap();
-		$classname = $this->getClassMetadata()->getName();
-		if (isset($idmap[$classname])) {
-			foreach ($idmap[$classname] as $ent) {
-				$res[] = $ent;
-			}
-		}
-
-		return $res;
-	}
-
 	public function getPermissionTableName()
 	{
 		return null;
 	}
+
+
+	/**
+	 * Runs through the hierarchy to reset 'depth' and 'root' values,
+	 * and updates all 'display_order' so that they are stored in
+	 * real tree order.
+	 *
+	 * This isnt just "bad" thing, it sholud be called for example
+	 * when a new category is created, or one is deleted.
+	 *
+	 * @return void
+	 */
+	public function repair()
+	{
+		$cats = $this->em->getConnection()->fetchAllKeyed("
+			SELECT id, parent_id
+			FROM `".$this->getTableName()."`
+			ORDER BY display_order ASC, id ASC
+		", array(), 'id');
+
+		$flat = Arrays::intoHierarchy($cats);
+		$flat = Arrays::flattenHierarchy($flat);
+
+		$all = $this->em->createQuery("
+			SELECT c
+			FROM {$this->entity_name} c INDEX BY c.id
+		")->execute();
+
+		$display_order = 0;
+
+		$current_root = null;
+
+		$this->em->beginTransaction();
+
+		foreach ($flat as $cid => $cinfo) {
+			$cat = $all[$cid];
+
+			$display_order += 10;
+			$cat->display_order = $display_order;
+			$cat->depth = $cinfo['depth'];
+
+			if (!$cat->parent) {
+				$current_root = $cat;
+				$cat->root = null;
+			} else {
+				$cat->root = $current_root['id'];
+			}
+
+			$this->em->persist($cat);
+		}
+
+		$this->em->flush();
+		$this->em->commit();
+	}
+
 
 	/**
 	 * Pass through to helper

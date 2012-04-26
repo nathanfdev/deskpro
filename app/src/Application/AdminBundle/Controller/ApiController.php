@@ -81,10 +81,10 @@ class ApiController extends AbstractController
 
 		if ($this->isPostRequest()) {
 			$apikey['note'] = $this->in->getString('api_key.note');
-			$apikey['person'] = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('person_email'));
+			$apikey['person'] = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('person_email'));
 
-			App::getOrm()->persist($apikey);
-			App::getOrm()->flush();
+			$this->em->persist($apikey);
+			$this->em->flush();
 		}
 
 		return $this->render('AdminBundle:Api:edit-key.html.twig', array(
@@ -105,8 +105,8 @@ class ApiController extends AbstractController
 	{
 		$apikey = $this->getApiKeyOr404($id);
 
-		App::getOrm()->remove($apikey);
-		App::getOrm()->flush();
+		$this->em->remove($apikey);
+		$this->em->flush();
 
 		return $this->redirectRoute('admin_api_keylist');
 	}
@@ -120,7 +120,7 @@ class ApiController extends AbstractController
 	 */
 	protected function getApiKeyOr404($id)
 	{
-		$apikey = App::getEntityRepository('DeskPRO:ApiKey')->find($id);
+		$apikey = $this->em->getRepository('DeskPRO:ApiKey')->find($id);
 		if (!$apikey) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no API Key with ID $id");
 		}

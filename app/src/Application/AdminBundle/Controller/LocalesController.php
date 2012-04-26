@@ -81,7 +81,7 @@ class LocalesController extends AbstractController
 		if (!$locale_id) {
 			$locale = new Entity\Locale();
 		} else {
-			$locale = App::getEntityRepository('DeskPRO:Locale')->find($locale_id);
+			$locale = $this->em->getRepository('DeskPRO:Locale')->find($locale_id);
 		}
 
 		$form = $this->get('form.factory')->create(new EditLocaleType(), $locale);
@@ -93,8 +93,8 @@ class LocalesController extends AbstractController
 
 			if ($form->isValid()) {
 				$is_edited = true;
-				App::getOrm()->persist($locale);
-				App::getOrm()->flush();
+				$this->em->persist($locale);
+				$this->em->flush();
 
 				$row_html = $this->renderView('AdminBundle:Locales:list-row.html.twig', array('locale' => $locale));
 			}

@@ -68,7 +68,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			}
 		}
 
-		$this->dashboards = App::getEntityRepository('DeskPRO:ReportDashboard')->getDashboards();
+		$this->dashboards = $this->em->getRepository('DeskPRO:ReportDashboard')->getDashboards();
 		$this->get('templating.globals')->setVariable('dashboards', $this->dashboards);
 	}
 
@@ -105,8 +105,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	protected function rememberLastPage($url = null)
 	{
 		if (!$url) {
-			$url = App::getRequest()->getRequestUri();
+			$url = $this->request->getRequestUri();
 		}
-		App::getSession()->set('report_last_page', $url);
+		$this->session->set('report_last_page', $url);
 	}
 }

@@ -42,7 +42,7 @@ class MainController extends AbstractController
     {
 		$this->person->loadPrefGroup('agent.ui');
 
-		$last_message_id = App::getDb()->fetchColumn("
+		$last_message_id = $this->db->fetchColumn("
 			SELECT id
 			FROM client_messages
 			ORDER BY id DESC
@@ -54,9 +54,9 @@ class MainController extends AbstractController
 
 		// Used in some header menus for search options
 		$titles = array();
-		$titles['organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
-		$titles['usergroups'] = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
-		$titles['languages'] = App::getEntityRepository('DeskPRO:Language')->getTitles();
+		$titles['organizations'] = $this->em->getRepository('DeskPRO:Organization')->getOrganizationNames();
+		$titles['usergroups'] = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
+		$titles['languages'] = $this->em->getRepository('DeskPRO:Language')->getTitles();
 
 		// Person menu needs these
 		$people_fields = $this->container->getSystemService('person_fields_manager')->getDisplayArray();
@@ -65,15 +65,15 @@ class MainController extends AbstractController
 		// Ticket options for search pane of tickets menu
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
-		$state_pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => 'agent.ui.state'));
+		$state_pref = $this->em->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => 'agent.ui.state'));
 		$restore_state = null;
 		if ($state_pref) {
 			$restore_state = $state_pref['value'];
 		}
 
 		// Agent info
-		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
-		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
 		// Countr code
 		$phone_country_info = \Orb\Data\CountryCallingCodes::getData();
@@ -92,7 +92,7 @@ class MainController extends AbstractController
 		$ticket_options['custom_ticket_fields'] = $custom_fields;
 
 		// People stuff
-		$ticket_options['people_organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
+		$ticket_options['people_organizations'] = $this->em->getRepository('DeskPRO:Organization')->getOrganizationNames();
 		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 		$ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
 
@@ -103,8 +103,8 @@ class MainController extends AbstractController
 			'custom_org_fields' => $this->container->getSystemService('org_fields_manager')->getDisplayArray()
 		);
 
-		$cutoff = date('Y-m-d H:m:s', time() - App::getSetting('core.sessions_lifetime'));
-		$online_agent_ids = App::getDb()->fetchAllCol("
+		$cutoff = date('Y-m-d H:m:s', time() - $this->container->getSetting('core.sessions_lifetime'));
+		$online_agent_ids = $this->db->fetchAllCol("
 			SELECT p.id
 			FROM sessions s
 			LEFT JOIN people AS p ON p.id = s.person_id
@@ -114,7 +114,7 @@ class MainController extends AbstractController
 		return $this->render('AgentBundle:Main:index.html.twig', array(
 			'has_raw_assets' => $has_raw_assets,
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
-			'agent_names' => App::getEntityRepository('DeskPRO:Person')->getAgentNames(),
+			'agent_names' => $this->em->getRepository('DeskPRO:Person')->getAgentNames(),
 			'online_agent_ids' => $online_agent_ids,
 			'is_demo' => $this->in->checkIsset('show-demo-bar'),
 			'last_message_id' => $last_message_id,
@@ -163,9 +163,9 @@ class MainController extends AbstractController
 
 		// Used in some header menus for search options
         $titles = array();
-        $titles['organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
-        $titles['usergroups'] = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
-        $titles['languages'] = App::getEntityRepository('DeskPRO:Language')->getTitles();
+        $titles['organizations'] = $this->em->getRepository('DeskPRO:Organization')->getOrganizationNames();
+        $titles['usergroups'] = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
+        $titles['languages'] = $this->em->getRepository('DeskPRO:Language')->getTitles();
 
 		$people_fields = $this->container->getSystemService('person_fields_manager')->getDisplayArray();
 		$org_fields = $this->container->getSystemService('org_fields_manager')->getDisplayArray();
@@ -175,7 +175,7 @@ class MainController extends AbstractController
 		$ticket_options['custom_ticket_fields'] = $custom_fields;
 
 		// People stuff
-		$ticket_options['people_organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
+		$ticket_options['people_organizations'] = $this->em->getRepository('DeskPRO:Organization')->getOrganizationNames();
 		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 		$ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
 

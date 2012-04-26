@@ -79,7 +79,7 @@ class GroupingCounter
 				foreach($counts as $count)
 					$counts_department[$count['id']] = $count;
 
-				$departments = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
+				$departments = App::getDataService('Department')->getInHierarchy();
 
 				foreach($departments as $i => $department) {
 					if(!isset($counts_department[$department['id']])) {

@@ -51,8 +51,8 @@ class WidgetController extends AbstractController
 	public function proxyAction($key)
 	{
 		if (!App::isDebug() OR $key != 'DBEUG') {
-			$session = App::getSession();
-			$check_key = App::getSession()->getSessionSecret('proxy_key');
+			$session = $this->session;
+			$check_key = $this->session->getSessionSecret('proxy_key');
 
 			if ($check_key != $key)  {
 				return $this->createResponse('Invalid key', 403);
@@ -112,7 +112,7 @@ class WidgetController extends AbstractController
 	 */
 	public function saveUserPrefsAction($key, $widget_id)
 	{
-		$session = App::getSession();
+		$session = $this->session;
 
 		if (!App::isDebug() OR $key != 'DBEUG') {
 			$check_key = md5($session->getId() . App::getAppSecret());
@@ -122,7 +122,7 @@ class WidgetController extends AbstractController
 			}
 		}
 
-		$widget = App::getEntityRepository('DeskPRO:Widget')->find($widget_id);
+		$widget = $this->em->getRepository('DeskPRO:Widget')->find($widget_id);
 		$pref_prefix = 'widget.' . $widget_id['name_id'] . '.';
 
 		$person = $session->getPerson();
@@ -132,7 +132,7 @@ class WidgetController extends AbstractController
 			foreach ($this->in->getCleanValueArray('prefs', 'raw', 'string') as $pref_name => $value)
 			{
 				$pref_name = $pref_prefix . $pref_name;
-				$pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person_id' => $this->person['id'], 'name' => $pref_name));
+				$pref = $this->em->getRepository('DeskPRO:PersonPref')->find(array('person_id' => $this->person['id'], 'name' => $pref_name));
 				if (!$pref) {
 					$pref = new Entity\PersonPref();
 					$pref['name'] = $pref_name;
@@ -140,10 +140,10 @@ class WidgetController extends AbstractController
 				}
 
 				$pref['value'] = $value;
-				App::getOrm()->persist($pref);
+				$this->em->persist($pref);
 			}
 
-			App::getOrm()->flush();
+			$this->em->flush();
 
 		// Otherwise save to session
 		} else {

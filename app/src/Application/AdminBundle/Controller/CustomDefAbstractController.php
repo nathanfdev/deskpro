@@ -161,7 +161,7 @@ abstract class CustomDefAbstractController extends AbstractController
 
 
 				if ($is_new && static::API_NAME	== 'custom_fields.tickets') {
-					App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_ticketfield', time());
+					$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_ticketfield', time());
 				}
 
 				$this->getTemplateVars(); // to get routebasename

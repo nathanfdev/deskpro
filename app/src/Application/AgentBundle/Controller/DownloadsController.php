@@ -61,19 +61,19 @@ class DownloadsController extends AbstractController
 
 	public function viewAction($download_id)
 	{
-		$download = App::findEntity('DeskPRO:Download', $download_id);
-		$download_comments = App::getEntityRepository('DeskPRO:DownloadComment')->getComments($download);
+		$download = $this->em->find('DeskPRO:Download', $download_id);
+		$download_comments = $this->em->getRepository('DeskPRO:DownloadComment')->getComments($download);
 
 		$related_finder = new RelatedContentFinder($this->person, $download);
 		$related_content = $related_finder->getRelatedEntities();
 
-		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editdownload', $this->person->id);
+		$state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editdownload', $this->person->id);
 
 		$sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($download);
 
-		$rated_searches = App::getEntityRepository('DeskPRO:SearchLog')->getRatedSearchesFor('download', $download['id'], 'counted');
+		$rated_searches = $this->em->getRepository('DeskPRO:SearchLog')->getRatedSearchesFor('download', $download['id'], 'counted');
 
-		$download_categories = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryHelper()->getCategoriesInHierarchy();
+		$download_categories = $this->em->getRepository('DeskPRO:DownloadCategory')->getInHierarchy();
 
 		$perms = array(
 			'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($download),
@@ -94,7 +94,7 @@ class DownloadsController extends AbstractController
 
 	public function infoAction($download_id)
 	{
-		$download = App::findEntity('DeskPRO:Download', $download_id);
+		$download = $this->em->find('DeskPRO:Download', $download_id);
 		$blob = $download->blob;
 
 		$data = array(
@@ -110,7 +110,7 @@ class DownloadsController extends AbstractController
 
 	public function viewRevisionsAction($download_id)
 	{
-		$download = App::findEntity('DeskPRO:Download', $download_id);
+		$download = $this->em->find('DeskPRO:Download', $download_id);
 
 		return $this->render('AgentBundle:Downloads:view-revisions-tab.html.twig', array(
 			'download' => $download,
@@ -119,7 +119,7 @@ class DownloadsController extends AbstractController
 
 	public function ajaxSaveLabelsAction($download_id)
 	{
-		$download = App::findEntity('DeskPRO:Download', $download_id);
+		$download = $this->em->find('DeskPRO:Download', $download_id);
 
 		if (!$download || !$this->person->PermissionsManager->PublishChecker->canEdit($download)) {
 			return new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -129,15 +129,15 @@ class DownloadsController extends AbstractController
 
 		$download->getLabelManager()->setLabelsArray($labels);
 
-		App::getOrm()->persist($download);
-		App::getOrm()->flush();
+		$this->em->persist($download);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => 1));
 	}
 
 	public function ajaxSaveCommentAction($download_id)
 	{
-		$download = App::findEntity('DeskPRO:Download', $download_id);
+		$download = $this->em->find('DeskPRO:Download', $download_id);
 
 		$comment = new DownloadComment();
 		$comment->download = $download;
@@ -146,8 +146,8 @@ class DownloadsController extends AbstractController
 		$comment['status'] = 'visible';
 		$comment['date_created']  = new \DateTime();
 
-		App::getOrm()->persist($comment);
-		App::getOrm()->flush();
+		$this->em->persist($comment);
+		$this->em->flush();
 
 		return $this->render('AgentBundle:Downloads:view-comment.html.twig', array(
 			'comment' => $comment
@@ -156,7 +156,7 @@ class DownloadsController extends AbstractController
 
 	public function ajaxSaveAction($download_id)
 	{
-		$download = App::findEntity('DeskPRO:Download', $download_id);
+		$download = $this->em->find('DeskPRO:Download', $download_id);
 		$rev = null;
 
 		if (!$download) {
@@ -211,12 +211,12 @@ class DownloadsController extends AbstractController
 
 			case 'content':
 
-				App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editdownload', $this->person->id);
+				$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editdownload', $this->person->id);
 
 				$changed_blob = false;
 				if ($this->in->getUint('attach')) {
 					$changed_blob = true;
-					$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->in->getUint('attach'));
+					$blob = $this->em->getRepository('DeskPRO:Blob')->find($this->in->getUint('attach'));
         			$download->blob = $blob;
 				}
 
@@ -294,7 +294,7 @@ class DownloadsController extends AbstractController
 	{
 		$category = null;
 		if ($category_id) {
-			$category = App::findEntity('DeskPRO:DownloadCategory', $category_id);
+			$category = $this->em->find('DeskPRO:DownloadCategory', $category_id);
 		}
 
 		$show_all = false;
@@ -338,8 +338,8 @@ class DownloadsController extends AbstractController
 
 	public function newDownloadAction()
 	{
-		$download_categories = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryHelper()->getFlatHierarchy();
-		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newdownload', $this->person->id);
+		$download_categories = $this->em->getRepository('DeskPRO:DownloadCategory')->getFlatHierarchy();
+		$state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newdownload', $this->person->id);
 
 		return $this->render('AgentBundle:Downloads:newdownload.html.twig', array(
 			'download_categories' => $download_categories,
@@ -362,7 +362,7 @@ class DownloadsController extends AbstractController
 
 			$download = $newdownload->getDownload();
 
-			App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newdownload', $this->person->id);
+			$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newdownload', $this->person->id);
 
 			return $this->createJsonResponse(array(
 				'success' => true,

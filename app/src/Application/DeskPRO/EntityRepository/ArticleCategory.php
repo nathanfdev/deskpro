@@ -129,7 +129,7 @@ class ArticleCategory extends AbstractCategoryRepository
 	{
 		$counts = array('0' => 0, '0_total' => 0);
 
-		foreach ($this->getCategoryHelper()->getCategoryIds() as $cid) {
+		foreach ($this->getIds() as $cid) {
 			$searcher = new ArticleSearch();
 			$searcher->setPersonContext($person_context);
 			$searcher->addTerm(ArticleSearch::TERM_CATEGORY_SPECIFIC, 'is', $cid);
@@ -138,7 +138,7 @@ class ArticleCategory extends AbstractCategoryRepository
 			$counts[$cid] = $searcher->getCount();
 		}
 
-		$counts = $this->getCategoryHelper()->getTotalCounts($counts);
+		$counts = $this->getTotalCounts($counts);
 
 		return $counts;
 	}

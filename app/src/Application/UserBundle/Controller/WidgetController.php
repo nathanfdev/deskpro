@@ -61,7 +61,7 @@ class WidgetController extends AbstractController
 		$newticket_formtype = new NewTicketType($this->person);
 		$ticketform = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
-		$departments = App::getEntityRepository('DeskPRO:Department')->findAll();
+		$departments = $this->em->getRepository('DeskPRO:Department')->findAll();
 
 		#------------------------------
 		# New idea form
@@ -70,7 +70,7 @@ class WidgetController extends AbstractController
 		/** @var $structure \Application\DeskPRO\Publish\Structure */
 		$structure = $this->container->getSystemService('publish_structure');
 
-		$newfeedback = new \Application\DeskPRO\Feedback\NewFeedback(App::getSession()->getVisitor());
+		$newfeedback = new \Application\DeskPRO\Feedback\NewFeedback($this->session->getVisitor());
 		$newfeedback->setPersonContext($this->person);
 		$feedbackform = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
 
@@ -84,7 +84,7 @@ class WidgetController extends AbstractController
 		$latest_content = new \Application\DeskPRO\Publish\LatestContent($this->em);
 		$latest_content->setMaxCount(10);
 
-		$chat_active = App::getEntityRepository('DeskPRO:Session')->hasAvailableAgents();
+		$chat_active = $this->em->getRepository('DeskPRO:Session')->hasAvailableAgents();
 
 		$vars = array(
 			'departments' => $departments,
@@ -155,7 +155,7 @@ class WidgetController extends AbstractController
 
 	public function newFeedbackAction()
 	{
-		$newfeedback = new \Application\DeskPRO\Feedback\NewFeedback(App::getSession()->getVisitor());
+		$newfeedback = new \Application\DeskPRO\Feedback\NewFeedback($this->session->getVisitor());
 		$newfeedback->setPersonContext($this->person);
 		$form = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
 
@@ -198,7 +198,7 @@ class WidgetController extends AbstractController
 
 		$convo_messages = false;
 		if ($convo) {
-			$convo_messages_obj = App::getOrm()->createQuery("
+			$convo_messages_obj = $this->em->createQuery("
 				SELECT m
 				FROM DeskPRO:ChatMessage m
 				WHERE m.conversation = ?1 AND m.is_user_hidden = false
@@ -213,7 +213,7 @@ class WidgetController extends AbstractController
 			}
 		}
 
-		$departments = $this->container->getEm()->getRepository('DeskPRO:Department')->getAll();
+		$departments = $this->container->getDataService('Department')->getAll();
 
 		$vars = array(
 			'session_code' => $session->getSessionCode(),

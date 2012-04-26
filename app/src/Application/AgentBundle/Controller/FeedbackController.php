@@ -71,20 +71,20 @@ class FeedbackController extends AbstractController
 		$data = array();
 
 		$counts = array();
-		$counts['feedback_awaiting_validation']    = App::getEntityRepository('DeskPRO:Feedback')->countAwaitingValidation();
-		$counts['comments_awaiting_validation'] = App::getEntityRepository('DeskPRO:FeedbackComment')->countAwaitingValidation();
+		$counts['feedback_awaiting_validation']    = $this->em->getRepository('DeskPRO:Feedback')->countAwaitingValidation();
+		$counts['comments_awaiting_validation'] = $this->em->getRepository('DeskPRO:FeedbackComment')->countAwaitingValidation();
 
 		$status_counts = array();
-		$status_counts['new']    = App::getEntityRepository('DeskPRO:Feedback')->countNew();
-		$status_counts['active'] = App::getEntityRepository('DeskPRO:Feedback')->countActiveGrouped();
-		$status_counts['closed'] = App::getEntityRepository('DeskPRO:Feedback')->countClosedGrouped();
-		$status_counts['hidden'] = App::getEntityRepository('DeskPRO:Feedback')->countHiddenGrouped();
+		$status_counts['new']    = $this->em->getRepository('DeskPRO:Feedback')->countNew();
+		$status_counts['active'] = $this->em->getRepository('DeskPRO:Feedback')->countActiveGrouped();
+		$status_counts['closed'] = $this->em->getRepository('DeskPRO:Feedback')->countClosedGrouped();
+		$status_counts['hidden'] = $this->em->getRepository('DeskPRO:Feedback')->countHiddenGrouped();
 
-		$category_counts = App::getEntityRepository('DeskPRO:Feedback')->countAllCategoriesGrouped();
+		$category_counts = $this->em->getRepository('DeskPRO:Feedback')->countAllCategoriesGrouped();
 
-		$feedback_cats          = App::getEntityRepository('DeskPRO:FeedbackCategory')->getCategoryHelper()->getFlatHierarchy();
-		$active_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-		$closed_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+		$feedback_cats          = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
+		$active_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
+		$closed_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
 		$label_lister = new \Application\DeskPRO\Labels\LabelLister('feedback');
 		$feedback_tag_index = $label_lister->getIndexList();
@@ -108,7 +108,7 @@ class FeedbackController extends AbstractController
 
 	public function viewAction($feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
+		$feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
 
 		#------------------------------
 		# Custom fields
@@ -129,16 +129,16 @@ class FeedbackController extends AbstractController
 		$related_finder = new RelatedContentFinder($this->person, $feedback);
 		$related_content = $related_finder->getRelatedEntities();
 
-		$rated_searches = App::getEntityRepository('DeskPRO:SearchLog')->getRatedSearchesFor('feedback', $feedback['id'], 'counted');
+		$rated_searches = $this->em->getRepository('DeskPRO:SearchLog')->getRatedSearchesFor('feedback', $feedback['id'], 'counted');
 
-		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
+		$state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
 
 		$content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($feedback, $this->person, $this->session->getVisitor());
 		$my_vote = $content_rating->getRating();
 
-		$feedback_categories = App::getEntityRepository('DeskPRO:FeedbackCategory')->getCategoryHelper()->getCategoriesInHierarchy();
-		$active_status_cats  = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-		$closed_status_cats  = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+		$feedback_categories = $this->em->getRepository('DeskPRO:FeedbackCategory')->getInHierarchy();
+		$active_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
+		$closed_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
 		$category = $feedback->category;
 		$category_path = $category->getTreeParents();
@@ -174,7 +174,7 @@ class FeedbackController extends AbstractController
 
 	public function whoVotedAction($feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
+		$feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
 
 		$feedback_votes = $feedback->votes->toArray();
 
@@ -186,7 +186,7 @@ class FeedbackController extends AbstractController
 
 	public function ajaxSaveEditablesAction($feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
+		$feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
 
 		if (!$feedback) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -206,7 +206,7 @@ class FeedbackController extends AbstractController
 				break;
 		}
 
-		App::getOrm()->transactional(function ($em) use ($feedback) {
+		$this->em->transactional(function ($em) use ($feedback) {
 			$em->persist($feedback);
 			$em->flush();
 		});
@@ -220,7 +220,7 @@ class FeedbackController extends AbstractController
 
 	public function ajaxUpdateCategoryAction($feedback_id, $category_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
+		$feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
 
 		if (!$feedback) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -228,11 +228,11 @@ class FeedbackController extends AbstractController
 
 
 
-		$cat  = App::findEntity('DeskPRO:FeedbackCategory', $category_id);
+		$cat  = $this->em->find('DeskPRO:FeedbackCategory', $category_id);
 
 		$feedback->category = $cat;
 
-		App::getOrm()->transactional(function ($em) use ($feedback) {
+		$this->em->transactional(function ($em) use ($feedback) {
 			$em->persist($feedback);
 			$em->flush();
 		});
@@ -245,7 +245,7 @@ class FeedbackController extends AbstractController
 
 	public function ajaxUpdateStatusAction($feedback_id, $status_code)
 	{
-		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
+		$feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
 
 		if (!$feedback) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -256,7 +256,7 @@ class FeedbackController extends AbstractController
 
 		$feedback['status_code'] = $status_code;
 
-		App::getOrm()->transactional(function ($em) use ($feedback) {
+		$this->em->transactional(function ($em) use ($feedback) {
 			$em->persist($feedback);
 			$em->flush();
 		});
@@ -269,7 +269,7 @@ class FeedbackController extends AbstractController
 
 	public function ajaxSaveCustomFieldsAction($feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
+		$feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
 
 		if (!$feedback) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -304,7 +304,7 @@ class FeedbackController extends AbstractController
 
 	public function ajaxSaveLabelsAction($feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
+		$feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
 
 		if (!$feedback) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -317,15 +317,15 @@ class FeedbackController extends AbstractController
 
 		$feedback->getLabelManager()->setLabelsArray($labels);
 
-		App::getOrm()->persist($feedback);
-		App::getOrm()->flush();
+		$this->em->persist($feedback);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => 1));
 	}
 
 	public function ajaxSaveCommentAction($feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
+		$feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
 
 		$comment = new FeedbackComment();
 		$comment->feedback = $feedback;
@@ -340,8 +340,8 @@ class FeedbackController extends AbstractController
 
 		$comment['date_created']  = new \DateTime();
 
-		App::getOrm()->persist($comment);
-		App::getOrm()->flush();
+		$this->em->persist($comment);
+		$this->em->flush();
 
 		return $this->render('AgentBundle:Feedback:view-comment.html.twig', array(
 			'comment' => $comment
@@ -350,7 +350,7 @@ class FeedbackController extends AbstractController
 
 	public function ajaxSaveAction($feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
+		$feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
 
 		if (!$feedback) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -406,7 +406,7 @@ class FeedbackController extends AbstractController
 
 			case 'content':
 
-				App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
+				$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
 
 				$feedback['content'] = $this->in->getString('content');
 
@@ -471,7 +471,7 @@ class FeedbackController extends AbstractController
 
 	public function mergeOverlayAction($feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
+		$feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
 
 		$open_feedback = $this->em->getRepository('DeskPRO:Feedback')->getByIds($this->in->getCleanValueArray('open_feedback_ids', 'uint', 'discard'));
 
@@ -495,8 +495,8 @@ class FeedbackController extends AbstractController
 	 */
 	public function mergeAction($feedback_id, $other_feedback_id)
 	{
-		$feedback = App::findEntity('DeskPRO:Feedback', $feedback_id);
-		$other_feedback = App::findEntity('DeskPRO:Feedback', $other_feedback_id);
+		$feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
+		$other_feedback = $this->em->find('DeskPRO:Feedback', $other_feedback_id);
 
 		if (!$feedback || !$other_feedback) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -579,7 +579,7 @@ class FeedbackController extends AbstractController
 			));
 		}
 
-		$cat = App::findEntity('DeskPRO:FeedbackCategory', $category_id);
+		$cat = $this->em->find('DeskPRO:FeedbackCategory', $category_id);
 
 		$grouping = new GroupingCounter();
 		$grouping->setGrouping('category_id', 'status');
@@ -737,9 +737,9 @@ class FeedbackController extends AbstractController
 		}
 
 		// Options for the filter form
-		$feedback_cats          = App::getEntityRepository('DeskPRO:FeedbackCategory')->getCategoryHelper()->getFlatHierarchy();
-		$active_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-		$closed_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+		$feedback_cats          = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
+		$active_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
+		$closed_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
 		$display_fields = $this->person->getPref('agent.ui.feedback-filter-display-fields.0');
 		if (!$display_fields) {
@@ -779,7 +779,7 @@ class FeedbackController extends AbstractController
 					break;
 
 				case 'set-category':
-					$cat = App::findEntity('DeskPRO:FeedbackCategory', $this->in->getUint('category_id'));
+					$cat = $this->em->find('DeskPRO:FeedbackCategory', $this->in->getUint('category_id'));
 					if ($cat) {
 						$feedback->category = $cat;
 					}
@@ -815,11 +815,11 @@ class FeedbackController extends AbstractController
 
 	public function newFeedbackAction()
 	{
-		$feedback_categories    = App::getEntityRepository('DeskPRO:FeedbackCategory')->getCategoryHelper()->getFlatHierarchy();
-		$active_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-		$closed_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+		$feedback_categories    = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
+		$active_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
+		$closed_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
-		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newfeedback', $this->person->id);
+		$state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newfeedback', $this->person->id);
 
 		return $this->render('AgentBundle:Feedback:newfeedback.html.twig', array(
 			'feedback_categories'    => $feedback_categories,
@@ -844,7 +844,7 @@ class FeedbackController extends AbstractController
 
 			$feedback = $newfeedback->getFeedback();
 
-			App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newfeedback', $this->person->id);
+			$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newfeedback', $this->person->id);
 
 			return $this->createJsonResponse(array(
 				'success' => true,

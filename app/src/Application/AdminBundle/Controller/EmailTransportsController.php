@@ -123,7 +123,7 @@ class EmailTransportsController extends AbstractController
 				}
 
 				if ($transport->match_type == 'all') {
-					App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.default_from_email', $this->in->getString('default_from_email'));
+					$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.default_from_email', $this->in->getString('default_from_email'));
 				}
 
 				if ($this->request->isXmlHttpRequest()) {
@@ -168,7 +168,7 @@ class EmailTransportsController extends AbstractController
 				$tr = $transport->getTransport();
 			}
 
-			$message = App::getMailer()->createMessage();
+			$message = $this->container->getMailer()->createMessage();
 			$message->setTo($this->in->getString('send_to'));
 			$message->setFrom($this->in->getString('send_from'));
 			$message->setSubject('Test DeskPRO Email');
@@ -176,7 +176,7 @@ class EmailTransportsController extends AbstractController
 			$message->setForceTransport($tr);
 
 			$failed = array();
-			App::getMailer()->send($message, $failed);
+			$this->container->getMailer()->send($message, $failed);
 
 			if ($failed) {
 				return $this->createJsonResponse(array('error' => true, 'error_code' => 'dp_1', 'error_message' => 'Connection succeeded, but the server was unable or unwilling to deliver the test email to ' . $this->in->getString('send_to')));

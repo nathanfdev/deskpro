@@ -84,7 +84,7 @@ class Department extends AbstractPersonContextValidator
 			return false;
 		}
 
-		$valid_ids = App::getEntityRepository('DeskPRO:Department')->getDepartmentIds();
+		$valid_ids = App::getDataService('Department')->getIds();
 
 		if (!in_array($value, $valid_ids)) {
 			$this->addError('invalid_id');

@@ -42,9 +42,9 @@ class MainController extends AbstractController
 		// If we just came from the agent interface, lets redirect the
 		// person back where they just were
 		$ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : false;
-		$old_url = App::getSession()->get('admin_last_page');
+		$old_url = $this->session->get('admin_last_page');
 		if ($old_url AND $ref AND strpos($ref, '/agent/') !== false AND strpos($ref, '/admin/') === false) {
-			App::getSession()->remove('admin_last_page');
+			$this->session->remove('admin_last_page');
 
 			return $this->redirect($old_url);
 		}
@@ -63,12 +63,12 @@ class MainController extends AbstractController
 		));
 
 		$blob_id = $desc->getPath();
-		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+		$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
 
 		if ($this->in->getString('attach_to_object')) {
 			switch ($this->in->getString('attach_to_object')) {
 				case 'article':
-					$article = App::findEntity('DeskPRO:Article', $this->in->getUint('object_id'));
+					$article = $this->em->find('DeskPRO:Article', $this->in->getUint('object_id'));
 
 					$attach = new \Application\DeskPRO\Entity\ArticleAttachment();
 					$attach['blob'] = $blob;
@@ -76,8 +76,8 @@ class MainController extends AbstractController
 
 					$article->addAttachment($attach);
 
-					App::getOrm()->persist($article);
-					App::getOrm()->flush();
+					$this->em->persist($article);
+					$this->em->flush();
 
 					break;
 			}

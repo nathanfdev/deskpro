@@ -111,7 +111,7 @@ class PollerController extends AbstractController
 	public function checkTicketsMessage()
 	{
 		$ticket_ids = $this->in->getCleanValueArray('check-ticket-ids', 'uint', 'discard');
-		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+		$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
 
 		$messages = array();
 		foreach ($tickets as $ticket) {

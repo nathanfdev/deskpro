@@ -38,6 +38,10 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class DepartmentDataService extends BaseRepositoryService
 {
+	protected $has_init = false;
+	protected $cats;
+	protected $cat_ids = array();
+
 	public static function create(DeskproContainer $container, array $options = null)
 	{
 		if (!$options) $options = array();
@@ -46,5 +50,91 @@ class DepartmentDataService extends BaseRepositoryService
 		$em = $container->getEm();
 		$o = new static($em, $options);
 		return $o;
+	}
+
+	protected function preload()
+	{
+		if ($this->has_init) {
+			return;
+		}
+		$this->has_init = false;
+
+		$this->cats = $this->em->createQuery("
+			SELECT d
+			FROM DeskPRO:Department d
+			ORDER BY d.display_order ASC
+		")->execute();
+
+		$cats = array();
+
+		// force hydration
+		foreach ($this->cats as $c) {
+			$this->cat_ids = $c->getId();
+			$c->getTitle();
+
+			$cats[$c->getId()] = array(
+				'id' => $c->getId(),
+				'parent_id' => $c->parent ? $c->parent->getId() : null,
+				'title' => $c->getTitle()
+			);
+		}
+
+		$this->repos->getInHierarchy($cats);
+	}
+
+	public function getByIds(array $ids, $keep_order = false)
+	{
+		$this->preload();
+		$ret = array();
+
+		foreach ($ids as $id) {
+			if (isset($this->cats[$id])) {
+				$ret[$id] = $this->cats[$id];
+			}
+		}
+
+		return $ret;
+	}
+
+	public function getChildren($category = null, $direct = true)
+	{
+		$this->preload();
+		$ids = $this->repos->getChildrenIds($category, $direct);
+		if (!$ids) {
+			return array();
+		}
+
+		return $this->getByIds($ids);
+	}
+
+	public function getRootNodes()
+	{
+		$this->preload();
+		$root_ids = $this->repos->getRootNodeIds();
+
+		if (!$root_ids) {
+			return array();
+		}
+
+		return $this->getByIds($root_ids);
+	}
+
+	public function getPath($category)
+	{
+		$this->preload();
+		$ids = $this->repos->getPathIds($category);
+
+		if (!$ids) {
+			return array();
+		}
+
+		return $this->getByIds($ids);
+	}
+
+
+	public function __call($method, array $args = array())
+	{
+		$this->preload();
+		return parent::__call($method, $args);
 	}
 }

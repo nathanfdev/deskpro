@@ -113,7 +113,7 @@ class NewTicketController extends AbstractController
 
 				// Its no longer a preticket, so we can delete the record
 				if ($preticket_id = $this->in->getUint('preticket_status_id')) {
-					$preticket = App::findEntity('DeskPRO:PreticketContent', $preticket_id);
+					$preticket = $this->em->find('DeskPRO:PreticketContent', $preticket_id);
 
 					// Must be same user
 					if ($preticket) {
@@ -236,7 +236,7 @@ class NewTicketController extends AbstractController
 
 		$preticket = null;
 		if ($id) {
-			$preticket = App::findEntity('DeskPRO:PreticketContent', $id);
+			$preticket = $this->em->find('DeskPRO:PreticketContent', $id);
 
 			// Must be same user
 			if ($preticket) {
@@ -289,7 +289,7 @@ class NewTicketController extends AbstractController
 
 		$preticket = null;
 		if ($id) {
-			$preticket = App::findEntity('DeskPRO:PreticketContent', $id);
+			$preticket = $this->em->find('DeskPRO:PreticketContent', $id);
 
 			// Must be same user
 			if ($preticket) {
@@ -332,7 +332,7 @@ class NewTicketController extends AbstractController
 
 		$preticket = null;
 		if ($id) {
-			$preticket = App::findEntity('DeskPRO:PreticketContent', $id);
+			$preticket = $this->em->find('DeskPRO:PreticketContent', $id);
 
 			// Must be same user
 			if ($preticket) {
@@ -375,7 +375,7 @@ class NewTicketController extends AbstractController
 
 	public function thanksAction($ticket_ref)
 	{
-		$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
+		$ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
 
 		// Must exist, and match the ref n the session (so theres no info leak)
 		if (!$ticket OR $ticket['ref'] != $this->session->get('submitted_ticket')) {

@@ -53,7 +53,7 @@ class TicketWidgetsController extends AbstractController
 	 */
 	public function listAction()
 	{
-		$all_widgets = App::getOrm()->createQuery("
+		$all_widgets = $this->em->createQuery("
 			SELECT w
 			FROM DeskPRO:Widget w
 			WHERE w.section LIKE ?1 OR w.section LIKE ?2
@@ -91,7 +91,7 @@ class TicketWidgetsController extends AbstractController
 		if (!$widget_id) {
 			$widget = new Entity\Widget();
 		} else {
-			$widget = App::getEntityRepository('DeskPRO:Widget')->find($widget_id);
+			$widget = $this->em->getRepository('DeskPRO:Widget')->find($widget_id);
 		}
 
 		$form = \Symfony\Component\Form\Form::create($this->get('form.context'), 'widget');
@@ -111,8 +111,8 @@ class TicketWidgetsController extends AbstractController
 		$row_html = false;
 		if ($this->in->getBool('process')) {
 			$is_edited = true;
-			App::getOrm()->persist($widget);
-			App::getOrm()->flush();
+			$this->em->persist($widget);
+			$this->em->flush();
 
 			$row_html = $this->renderView('AdminBundle:TicketWidgets:list-row.html.twig', array('widget' => $widget));
 		}

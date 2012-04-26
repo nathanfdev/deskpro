@@ -64,9 +64,9 @@ class DashboardController extends AbstractController
 	public function viewAction($dashboard_id)
 	{
 		$dashboard       = $this->getDashboard($dashboard_id);
-		$dashboard_stats = App::getEntityRepository('DeskPRO:ReportDashboardStat')->getDashboardStats($dashboard_id);
+		$dashboard_stats = $this->em->getRepository('DeskPRO:ReportDashboardStat')->getDashboardStats($dashboard_id);
 
-		$all_stats	 = App::getEntityRepository('DeskPRO:Stat')->getEnabledStats();
+		$all_stats	 = $this->em->getRepository('DeskPRO:Stat')->getEnabledStats();
 
 		$form = $this->get('form.factory')->create(new EditReportDashboardType(), $dashboard);
 
@@ -91,14 +91,14 @@ class DashboardController extends AbstractController
 			$request = $this->getRequest();
 			$form->bindRequest($request);
 
-			$order = App::getDb()->fetchColumn("SELECT display_order FROM report_dashboard ORDER BY display_order DESC LIMIT 1");
+			$order = $this->db->fetchColumn("SELECT display_order FROM report_dashboard ORDER BY display_order DESC LIMIT 1");
 			if (!$order) $order = 10;
 			$order += 10;
 
 			$dashboard->display_order = $order;
 
-			App::getOrm()->persist($dashboard);
-			App::getOrm()->flush();
+			$this->em->persist($dashboard);
+			$this->em->flush();
 			return $this->redirectRoute('report_trend_dashboard_view', array(
 				'dashboard_id' => $dashboard->getId(),
 			));
@@ -131,7 +131,7 @@ class DashboardController extends AbstractController
 
 			// Save dashboard information
 			$dashboard->setNumberColumns($dashboard_state['number_columns']);
-			App::getOrm()->persist($dashboard);
+			$this->em->persist($dashboard);
 
 			// Save the widgets
 			foreach ($dashboard_state['widgets'] as $widget) {
@@ -144,14 +144,14 @@ class DashboardController extends AbstractController
 					$dashboardStat->setGridRows($widget['grid_rows']);
 					$dashboardStat->setSlotNumber($widget['slot_number']);
 
-					App::getOrm()->persist($dashboardStat);
+					$this->em->persist($dashboardStat);
 				}
 				catch (\Exception $e) {
 					$success = false;
 				}
 			}
 
-			App::getOrm()->flush();
+			$this->em->flush();
 			return $this->createJsonResponse(array('success' => true));
 		}
 
@@ -192,9 +192,9 @@ class DashboardController extends AbstractController
 			$dashboard  = $this->getDashboard($dashboard_id);
 			$stat = $dashboard->stat;
 
-			App::getOrm()->remove($stat);
-			App::getOrm()->remove($dashboard);
-			App::getOrm()->flush();
+			$this->em->remove($stat);
+			$this->em->remove($dashboard);
+			$this->em->flush();
 
 			$this->db->commit();
 
@@ -217,8 +217,8 @@ class DashboardController extends AbstractController
 			$dashboard     = $this->getDashboard($dashboard_id);
 			$dashboardStat = $this->getDashboardStat($dashboard_stat_id);
 
-			App::getOrm()->remove($dashboardStat);
-			App::getOrm()->flush();
+			$this->em->remove($dashboardStat);
+			$this->em->flush();
 		}
 		catch (\Exception $e) {
 			$success = false;
@@ -255,14 +255,14 @@ class DashboardController extends AbstractController
 			$term_rules = RuleBuilder::newTermsBuilder();
 			$stat['criteria'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
 
-			App::getOrm()->persist($stat);
-			App::getOrm()->flush();
+			$this->em->persist($stat);
+			$this->em->flush();
 
-			$next_slot_number = App::getEntityRepository('DeskPRO:ReportDashboardStat')->getNextDashboardStatSlot($dashboard_id);
+			$next_slot_number = $this->em->getRepository('DeskPRO:ReportDashboardStat')->getNextDashboardStatSlot($dashboard_id);
 			$dashboardStat->setSlotNumber($next_slot_number);
 
-			App::getOrm()->persist($dashboardStat);
-			App::getOrm()->flush();
+			$this->em->persist($dashboardStat);
+			$this->em->flush();
 
 			$widget = $this->getWidgetDetails($dashboardStat);
 
@@ -317,11 +317,11 @@ class DashboardController extends AbstractController
 				$term_rules = RuleBuilder::newTermsBuilder();
 				$stat['criteria'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
 
-				App::getOrm()->persist($stat);
-				App::getOrm()->flush();
+				$this->em->persist($stat);
+				$this->em->flush();
 
-				App::getOrm()->persist($dashboardStat);
-				App::getOrm()->flush();
+				$this->em->persist($dashboardStat);
+				$this->em->flush();
 
 				$widget = $this->getWidgetDetails($dashboardStat);
 
@@ -367,11 +367,11 @@ class DashboardController extends AbstractController
 			$form->bindRequest($this->get('request'));
 
 			if ($form->isValid()) {
-				$next_slot_number = App::getEntityRepository('DeskPRO:ReportDashboardStat')
+				$next_slot_number = $this->em->getRepository('DeskPRO:ReportDashboardStat')
 				       ->getNextDashboardStatSlot($dashboard_id);
 
-				App::getOrm()->persist($dashboard_stat);
-				App::getOrm()->flush();
+				$this->em->persist($dashboard_stat);
+				$this->em->flush();
 
 				$widget = $this->getWidgetDetails($dashboard_stat);
 
@@ -393,7 +393,7 @@ class DashboardController extends AbstractController
 	public function ajaxFetchWidgetsAction($dashboard_id)
 	{
 		$dashboard       = $this->getDashboard($dashboard_id);
-		$dashboard_stats = App::getEntityRepository('DeskPRO:ReportDashboardStat')->getDashboardStats($dashboard_id);
+		$dashboard_stats = $this->em->getRepository('DeskPRO:ReportDashboardStat')->getDashboardStats($dashboard_id);
 
 		$widgets = array();
 		foreach ($dashboard_stats as $dashboard_stat) {
@@ -457,7 +457,7 @@ class DashboardController extends AbstractController
 	 */
 	protected function getDashboard($dashboard_id)
 	{
-		$dashboard = App::getEntityRepository('DeskPRO:ReportDashboard')->find($dashboard_id);
+		$dashboard = $this->em->getRepository('DeskPRO:ReportDashboard')->find($dashboard_id);
 		if (!$dashboard) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_stat_dashboard");
 		}
@@ -483,7 +483,7 @@ class DashboardController extends AbstractController
 	 */
 	protected function getStat($stat_id)
 	{
-		$stat = App::getEntityRepository('DeskPRO:Stat')->find($stat_id);
+		$stat = $this->em->getRepository('DeskPRO:Stat')->find($stat_id);
 		if (!$stat) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_stat");
 		}
@@ -498,7 +498,7 @@ class DashboardController extends AbstractController
 	 */
 	protected function getDashboardStat($dashboard_stat_id)
 	{
-		$dashboardStat = App::getEntityRepository('DeskPRO:ReportDashboardStat')->find($dashboard_stat_id);
+		$dashboardStat = $this->em->getRepository('DeskPRO:ReportDashboardStat')->find($dashboard_stat_id);
 		if (!$dashboardStat) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("error_404_dashboard_stat");
 		}

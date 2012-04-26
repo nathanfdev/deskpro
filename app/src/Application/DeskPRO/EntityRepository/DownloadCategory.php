@@ -118,7 +118,7 @@ class DownloadCategory extends AbstractCategoryRepository
 	{
 		$counts = array('0' => 0, '0_total' => 0);
 
-		foreach ($this->getCategoryHelper()->getCategoryIds() as $cid) {
+		foreach ($this->getIds() as $cid) {
 			$searcher = new DownloadSearch();
 			$searcher->setPersonContext($person_context);
 			$searcher->addTerm(DownloadSearch::TERM_CATEGORY_SPECIFIC, 'is', $cid);
@@ -127,7 +127,7 @@ class DownloadCategory extends AbstractCategoryRepository
 			$counts[$cid] = $searcher->getCount();
 		}
 
-		$counts = $this->getCategoryHelper()->getTotalCounts($counts);
+		$counts = $this->getTotalCounts($counts);
 
 		return $counts;
 	}

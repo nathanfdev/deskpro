@@ -149,7 +149,7 @@ class MainController extends AbstractController
 
 		$valdating_email = $validator->getValidatingEmail();
 
-		$email_exists = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($validator->getValidatingEmail()->getEmail());
+		$email_exists = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($validator->getValidatingEmail()->getEmail());
 		if ($email_exists && $email_exists->person->id != $valdating_email->person->id) {
 			return $this->render('UserBundle:Main:validate-email-exists.html.twig', array(
 				'email' => $email,
@@ -193,17 +193,17 @@ class MainController extends AbstractController
 				'person_email' => $this->person->getPrimaryEmailAddress(),
 			);
 
-			if (App::getSession()->get('auth_usersource_id')) {
-				$usersource = App::getOrm()->getRepository('DeskPRO:Usersource')->getUsersource(App::getSession()->get('auth_usersource_id'));
+			if ($this->session->get('auth_usersource_id')) {
+				$usersource = $this->em->getRepository('DeskPRO:Usersource')->getUsersource($this->session->get('auth_usersource_id'));
 				if ($usersource) {
 					$person_data['usersource_type']     = $usersource->source_type;
 					$person_data['usersource_title']    = $usersource->title;
 
-					if (App::getSession()->get('auth_usersource_display_name')) {
-						$person_data['usersource_display_name']  = App::getSession()->get('auth_usersource_display_name');
+					if ($this->session->get('auth_usersource_display_name')) {
+						$person_data['usersource_display_name']  = $this->session->get('auth_usersource_display_name');
 					}
-					if (App::getSession()->get('auth_usersource_display_link')) {
-						$person_data['usersource_display_link']  = App::getSession()->get('auth_usersource_display_link');
+					if ($this->session->get('auth_usersource_display_link')) {
+						$person_data['usersource_display_link']  = $this->session->get('auth_usersource_display_link');
 					}
 				}
 			}

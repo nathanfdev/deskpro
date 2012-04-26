@@ -36,26 +36,9 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 
-use \Doctrine\ORM\EntityRepository;
-
-class TicketWorkflow extends EntityRepository
+class TicketWorkflow extends AbstractEntityRepository
 {
 	protected $_workflow_names = null;
-
-	public function findByTitle($title)
-	{
-		try {
-			$workflow = $this->getEntityManager()->createQuery("
-				SELECT w
-				FROM DeskPRO:TicketWorkflow w
-				WHERE w.title LIKE ?1
-			")->setParameter(1, "%$title%")->getSingleResult();
-		} catch (\Exception $e) {
-			return null;
-		}
-
-		return $workflow;
-	}
 
 	protected function _loadWorkflowNames()
 	{
@@ -69,7 +52,7 @@ class TicketWorkflow extends EntityRepository
 		");
 	}
 
-	public function getWorkflowNames($for_ids = null)
+	public function getNames($for_ids = null)
 	{
 		$this->_loadWorkflowNames();
 
@@ -85,16 +68,5 @@ class TicketWorkflow extends EntityRepository
 		}
 
 		return $ret;
-	}
-
-
-	/**
-	 * Count all workflows that exist
-	 *
-	 * @return int
-	 */
-	public function countAll()
-	{
-		return App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_workflows");
 	}
 }

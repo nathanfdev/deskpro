@@ -94,8 +94,8 @@ class TicketResultsDisplay
 			}
 		}
 
-		$this->dep_names = $this->em->getRepository('DeskPRO:Department')->getFullDepartmentNames();
-		$this->people = $this->em->getRepository('DeskPRO:Person')->getPeopleResultsFromIds($people_ids);
+		$this->dep_names = App::getDataService('Department')->getFullNames();
+		$this->people = App::getDataService('Person')->getPeopleResultsFromIds($people_ids);
 	}
 
 

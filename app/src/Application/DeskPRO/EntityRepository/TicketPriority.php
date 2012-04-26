@@ -36,9 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 
-use \Doctrine\ORM\EntityRepository;
-
-class TicketPriority extends EntityRepository
+class TicketPriority extends AbstractEntityRepository
 {
 	protected $priority_names = null;
 
@@ -60,7 +58,7 @@ class TicketPriority extends EntityRepository
 	/**
 	 * @return array
 	 */
-	public function getPriorityNames($for_ids = null)
+	public function getNames($for_ids = null)
 	{
 		if ($this->priority_names !== null && !$for_ids) return $this->priority_names;
 
@@ -93,18 +91,7 @@ class TicketPriority extends EntityRepository
 	 */
 	public function getIdsInOrder()
 	{
-		$names = $this->getPriorityNames();
+		$names = $this->getNames();
 		return array_keys($names);
-	}
-
-
-	/**
-	 * Count all pris that exist
-	 *
-	 * @return int
-	 */
-	public function countAll()
-	{
-		return App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_priorities");
 	}
 }

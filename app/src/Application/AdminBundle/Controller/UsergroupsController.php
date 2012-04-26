@@ -57,13 +57,13 @@ class UsergroupsController extends AbstractController
 			ORDER BY ug.title ASC
 		")->execute();
 
-		$member_counts = App::getDb()->fetchAllKeyValue("
+		$member_counts = $this->db->fetchAllKeyValue("
 			SELECT usergroup_id, COUNT(*)
 			FROM person2usergroups
 			GROUP BY usergroup_id
 		");
 
-		$member_counts[0] = App::getDb()->fetchColumn("
+		$member_counts[0] = $this->db->fetchColumn("
 			SELECT COUNT(*) FROM people
 		");
 
@@ -84,7 +84,7 @@ class UsergroupsController extends AbstractController
 			$usergroup = new Entity\Usergroup();
 			$is_new = true;
 		} else {
-			$usergroup = App::getEntityRepository('DeskPRO:Usergroup')->find($id);
+			$usergroup = $this->em->getRepository('DeskPRO:Usergroup')->find($id);
 			$is_new = false;
 		}
 
@@ -166,14 +166,14 @@ class UsergroupsController extends AbstractController
 
 		$member_count = 0;
 		if ($id) {
-			$member_count = App::getDb()->fetchColumn("
+			$member_count = $this->db->fetchColumn("
 				SELECT COUNT(*)
 				FROM person2usergroups
 				WHERE usergroup_id = ?
 			", array($id));
 		}
 
-		$departments = $this->em->getRepository('DeskPRO:Department')->getAll();
+		$departments = $this->container->getDataService('Department')->getAll();
 
 		$ug_deps = $this->db->fetchAllGrouped("
 			SELECT department_id, app
@@ -181,7 +181,7 @@ class UsergroupsController extends AbstractController
 			WHERE usergroup_id = ?
 		", array($usergroup->id), 'department_id', 'app', 'app');
 
-		$permissions = App::getDb()->fetchAllKeyValue("
+		$permissions = $this->db->fetchAllKeyValue("
 			SELECT name, value
 			FROM permissions
 			WHERE permissions.usergroup_id = ?
@@ -210,7 +210,7 @@ class UsergroupsController extends AbstractController
 		if (!$id) {
 			$usergroup = new Entity\Usergroup();
 		} else {
-			$usergroup = App::getEntityRepository('DeskPRO:Usergroup')->find($id);
+			$usergroup = $this->em->getRepository('DeskPRO:Usergroup')->find($id);
 		}
 
 		if (!$usergroup || $usergroup->sys_name) {
@@ -234,20 +234,20 @@ class UsergroupsController extends AbstractController
 	{
 		$usergroup = null;
 		if ($id) {
-			$usergroup = App::getEntityRepository('DeskPRO:Usergroup')->find($id);
+			$usergroup = $this->em->getRepository('DeskPRO:Usergroup')->find($id);
 			if (!$usergroup || $usergroup->sys_name) {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 			}
 		}
 
 		if ($id && $id != 1) {
-			$member_count = App::getDb()->fetchColumn("
+			$member_count = $this->db->fetchColumn("
 				SELECT COUNT(*)
 				FROM person2usergroups
 				WHERE usergroup_id = ?
 			", array($id));
 		} else {
-			$member_count = App::getDb()->fetchColumn("
+			$member_count = $this->db->fetchColumn("
 				SELECT COUNT(*)
 				FROM people
 			", array($id));

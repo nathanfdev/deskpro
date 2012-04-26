@@ -53,8 +53,8 @@ class OrganizationController extends AbstractController
 		$org = new Organization();
 		$org['name'] = $this->in->getString('name');
 
-		App::getOrm()->persist($org);
-		App::getOrm()->flush();
+		$this->em->persist($org);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array(
 			'organization_id' => $org['id']
@@ -80,17 +80,17 @@ class OrganizationController extends AbstractController
 		# Misc info needed
 		#------------------------------
 
-		$notes = App::getEntityRepository('DeskPRO:OrganizationNote')->getNotesForOrganization($org);
+		$notes = $this->em->getRepository('DeskPRO:OrganizationNote')->getNotesForOrganization($org);
 
-		$org_tickets = App::getEntityRepository('DeskPRO:Ticket')->getRecentOrganizationTickets($org);
-		$org_tickets_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForOrganization($org);
+		$org_tickets = $this->em->getRepository('DeskPRO:Ticket')->getRecentOrganizationTickets($org);
+		$org_tickets_count = $this->em->getRepository('DeskPRO:Ticket')->countTicketsForOrganization($org);
 
 		$activity_stream = $this->em->getRepository('DeskPRO:PersonActivity')->getForOrganization($org, 10);
 
 		// Count members
-		$members_count = App::getEntityRepository('DeskPRO:Organization')->countMembersFor($org);
+		$members_count = $this->em->getRepository('DeskPRO:Organization')->countMembersFor($org);
 
-		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
+		$usergroup_names = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
 		$org_usergroups = $org->usergroups;
 
 		$contact_data = array();
@@ -103,7 +103,7 @@ class OrganizationController extends AbstractController
 
 		$org_domain_data = $this->getOrgEmailDisplayData($org);
 
-		$org_members = App::getEntityRepository('DeskPRO:Person')->getOrganizationMembers($org);
+		$org_members = $this->em->getRepository('DeskPRO:Person')->getOrganizationMembers($org);
 
 		return $this->render('AgentBundle:Organization:view.html.twig', array(
 			'org'                => $org,
@@ -204,7 +204,7 @@ class OrganizationController extends AbstractController
 				break;
 
 			case 'set-picture':
-				$blob = App::findEntity('DeskPRO:Blob', $this->in->getUint('blob_id'));
+				$blob = $this->em->find('DeskPRO:Blob', $this->in->getUint('blob_id'));
 				if ($blob) {
 					$org->picture_blob = $blob;
 					$this->em->persist($org);
@@ -215,7 +215,7 @@ class OrganizationController extends AbstractController
 				if (!$this->person->hasPerm('agent_people.edit')) {
 					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 				}
-				$person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
+				$person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
 				if ($person->organization) {
 					$data['already_in_organization'] = true;
 				} elseif ($person) {
@@ -228,7 +228,7 @@ class OrganizationController extends AbstractController
 				break;
 
 			case 'get-person-row':
-				$person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
+				$person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
 				if ($person->organization->id = $org->id) {
 					$data['row_html'] = $this->renderView('AgentBundle:Organization:view-members-row.html.twig', array('person' => $person));
 				}
@@ -238,7 +238,7 @@ class OrganizationController extends AbstractController
 				if (!$this->person->hasPerm('agent_people.edit')) {
 					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 				}
-				$person = App::findEntity('DeskPRO:Person', $this->in->getUint('person_id'));
+				$person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
 				if ($person && $person->organization && $person->organization->id == $org->id) {
 					$person->organization = null;
 					$this->em->persist($person);
@@ -328,7 +328,7 @@ class OrganizationController extends AbstractController
 
 		// Adding org emails
 		foreach ($this->in->getCleanValueArray('new_org_email_domain') as $domain) {
-			$check = App::getEntityRepository('DeskPRO:OrganizationEmailDomain')->find($domain);
+			$check = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find($domain);
 			if (!$check) {
 				$org_email_domain = new \Application\DeskPRO\Entity\OrganizationEmailDomain();
 				$org_email_domain->organization = $org;
@@ -340,7 +340,7 @@ class OrganizationController extends AbstractController
 
 		//remove_org_email
 		foreach ($this->in->getCleanValueArray('remove_org_email') as $domain) {
-			$check = App::getEntityRepository('DeskPRO:OrganizationEmailDomain')->find($domain);
+			$check = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find($domain);
 			if ($check && $check->organization->id == $org->id) {
 				$this->em->remove($check);
 			}
@@ -367,7 +367,7 @@ class OrganizationController extends AbstractController
 		$this->em->flush();
 		$this->em->commit();
 
-		$org_email_domains = App::getEntityRepository('DeskPRO:OrganizationEmailDomain')->getDomainsForOrganization($org);
+		$org_email_domains = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->getDomainsForOrganization($org);
 
 		$contact_data = array();
 		foreach ($org->contact_data as $cd) {
@@ -401,7 +401,7 @@ class OrganizationController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$person = App::findEntity('DeskPRO:Person', $person_id);
+		$person = $this->em->find('DeskPRO:Person', $person_id);
 		if ($person) {
 			$person->organization_position = $this->in->getString('organization_position');
 
@@ -461,8 +461,8 @@ class OrganizationController extends AbstractController
 
 		$org->getLabelManager()->setLabelsArray($labels);
 
-		App::getOrm()->persist($org);
-		App::getOrm()->flush();
+		$this->em->persist($org);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => 1));
 	}
@@ -473,11 +473,11 @@ class OrganizationController extends AbstractController
 
 	protected  function getOrgEmailDisplayData($org)
 	{
-		$org_email_domains = App::getEntityRepository('DeskPRO:OrganizationEmailDomain')->getDomainsForOrganization($org);
+		$org_email_domains = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->getDomainsForOrganization($org);
 
-		$org_count_domain_nonmembers   = App::getEntityRepository('DeskPRO:PersonEmail')->countDomainsWithNoCompany($org_email_domains, $org);
-		$org_count_domain_takenmembers = App::getEntityRepository('DeskPRO:PersonEmail')->countDomainsWithOtherCompany($org_email_domains, $org);
-		$org_count_domain_members      = App::getEntityRepository('DeskPRO:OrganizationEmailDomain')->countMembersAtDomains($org, $org_email_domains);
+		$org_count_domain_nonmembers   = $this->em->getRepository('DeskPRO:PersonEmail')->countDomainsWithNoCompany($org_email_domains, $org);
+		$org_count_domain_takenmembers = $this->em->getRepository('DeskPRO:PersonEmail')->countDomainsWithOtherCompany($org_email_domains, $org);
+		$org_count_domain_members      = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->countMembersAtDomains($org, $org_email_domains);
 
 		return array(
 			'org'                => $org,
@@ -605,7 +605,7 @@ class OrganizationController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.neworg', $this->person->id);
+		$state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.neworg', $this->person->id);
 
 		#------------------------------
 		# Custom fields
@@ -644,7 +644,7 @@ class OrganizationController extends AbstractController
 
 			$org = $neworg->getOrganization();
 
-			App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.neworg', $this->person->id);
+			$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.neworg', $this->person->id);
 
 			return $this->createJsonResponse(array(
 				'success' => true,

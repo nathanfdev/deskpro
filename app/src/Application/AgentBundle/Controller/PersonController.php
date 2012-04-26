@@ -94,9 +94,9 @@ class PersonController extends AbstractController
 		# Misc info needed
 		#------------------------------
 
-		$notes = App::getEntityRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
-		$person_tickets = App::getEntityRepository('DeskPRO:Ticket')->getPersonTickets($person, 50);
-		$person_tickets_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForPerson($person);
+		$notes = $this->em->getRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
+		$person_tickets = $this->em->getRepository('DeskPRO:Ticket')->getPersonTickets($person, 50);
+		$person_tickets_count = $this->em->getRepository('DeskPRO:Ticket')->countTicketsForPerson($person);
 
 		$max = 5;
 		$person_tickets_initial = array();
@@ -134,7 +134,7 @@ class PersonController extends AbstractController
 			$contact_data[$cd->contact_type][] = $cd->getTemplateVars();
 		}
 
-		$session = App::getEntityRepository('DeskPRO:Session')->getSessionForPerson($person);
+		$session = $this->em->getRepository('DeskPRO:Session')->getSessionForPerson($person);
 		if ($session) {
 			$visitor = $session->visitor;
 		} else {
@@ -142,7 +142,7 @@ class PersonController extends AbstractController
 		}
 
 		$timezone_options = \DateTimeZone::listIdentifiers();
-		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
+		$usergroup_names = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
 
 		$person->loadHelper('PermissionsManager');
 		$person_usergroups_ids = $person->getPermissionsManager()->getUsergroupIds();
@@ -152,7 +152,7 @@ class PersonController extends AbstractController
 		$org_members_count = null;
 		$org_contact_data = null;
 		if ($person->organization) {
-			$org_members_count = App::getEntityRepository('DeskPRO:Organization')->countMembersFor($person->organization);
+			$org_members_count = $this->em->getRepository('DeskPRO:Organization')->countMembersFor($person->organization);
 
 			$org_contact_data = array();
 			foreach ($person->organization->contact_data as $cd) {
@@ -209,7 +209,7 @@ class PersonController extends AbstractController
 
 
             if($person->organization_id) {
-                $organisation = App::findEntity('DeskPRO:Organization', $person->organization_id);
+                $organisation = $this->em->find('DeskPRO:Organization', $person->organization_id);
             }
             else {
                 $organisation = '';
@@ -312,7 +312,7 @@ class PersonController extends AbstractController
 
 	public function viewSessionAction($session_id)
 	{
-		$session = App::findEntity('DeskPRO:Session', $session_id);
+		$session = $this->em->find('DeskPRO:Session', $session_id);
 
 		if ($session->is_person) {
 			return $this->viewAction($session->person->id);
@@ -409,7 +409,7 @@ class PersonController extends AbstractController
 				break;
 
 			case 'set-picture':
-				$blob = App::findEntity('DeskPRO:Blob', $this->in->getUint('blob_id'));
+				$blob = $this->em->find('DeskPRO:Blob', $this->in->getUint('blob_id'));
 				if ($blob) {
 					$person->setPictureBlob($blob);
 					$this->em->persist($person);
@@ -428,9 +428,9 @@ class PersonController extends AbstractController
 				$org = null;
 
 				if ($id) {
-					$org = App::getEntityRepository('DeskPRO:Organization')->find($id);
+					$org = $this->em->getRepository('DeskPRO:Organization')->find($id);
 				} elseif ($name) {
-					$org = App::getEntityRepository('DeskPRO:Organization')->getByName($name);
+					$org = $this->em->getRepository('DeskPRO:Organization')->getByName($name);
 
 					if (!$org) {
 						$org = new Organization();
@@ -451,7 +451,7 @@ class PersonController extends AbstractController
 					$org_members_count = null;
 					$org_contact_data = null;
 					if ($person->organization) {
-						$org_members_count = App::getEntityRepository('DeskPRO:Organization')->countMembersFor($person->organization);
+						$org_members_count = $this->em->getRepository('DeskPRO:Organization')->countMembersFor($person->organization);
 
 						$org_contact_data = array();
 						foreach ($person->organization->contact_data as $cd) {
@@ -498,16 +498,16 @@ class PersonController extends AbstractController
 					$this->em->persist($person);
 
 					if ($this->in->getBool('send_email')) {
-						$email_body = App::get('templating')->render('DeskPRO:emails_user:agent-changed-password.html.twig', array(
+						$email_body = $this->container->get('templating')->render('DeskPRO:emails_user:agent-changed-password.html.twig', array(
 							'person' => $person
 						));
 
-						$message = App::getMailer()->createMessage();
+						$message = $this->container->getMailer()->createMessage();
 						$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 						$message->setSubject('New Password');
 						$message->setBody($email_body, 'text/html');
 						$message->enableQueueHint();
-						App::getMailer()->send($message);
+						$this->container->getMailer()->send($message);
 					}
 				}
 				break;
@@ -829,8 +829,8 @@ class PersonController extends AbstractController
 
 		$person->getLabelManager()->setLabelsArray($labels);
 
-		App::getOrm()->persist($person);
-		App::getOrm()->flush();
+		$this->em->persist($person);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => 1));
 	}
@@ -867,7 +867,7 @@ class PersonController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newperson', $this->person->id);
+		$state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newperson', $this->person->id);
 
 		#------------------------------
 		# Custom fields
@@ -883,7 +883,7 @@ class PersonController extends AbstractController
 		$custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($user_field_defs, $user_data_structured, $custom_fields_form);
 
 		$timezone_options = \DateTimeZone::listIdentifiers();
-		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
+		$usergroup_names = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
 
 		return $this->render('AgentBundle:Person:newperson.html.twig', array(
 			'state' => $state,
@@ -913,7 +913,7 @@ class PersonController extends AbstractController
 
 			$person = $newperson->getPerson();
 
-			App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);
+			$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);
 
 			return $this->createJsonResponse(array(
 				'success' => true,

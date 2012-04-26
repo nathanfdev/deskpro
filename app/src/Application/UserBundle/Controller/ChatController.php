@@ -70,7 +70,7 @@ class ChatController extends AbstractController
 		if (!$convo) {
 			// It might've been closed, but we still want the events to tell about it being closed!
 			if ($this->in->getUint('conversation_id')) {
-				$convo = App::findEntity('DeskPRO:ChatConversation', $this->in->getUint('conversation_id'));
+				$convo = $this->em->find('DeskPRO:ChatConversation', $this->in->getUint('conversation_id'));
 				if (!$convo || !$convo->session || $convo->session->id != $session->id) {
 					$convo = null;
 				}
@@ -88,7 +88,7 @@ class ChatController extends AbstractController
 		// if $since is 0, the client is new and asking for us to send it the last id
 		if ($since == 0) {
 			$data = array('messages' => array(), 'last_id' => -1);
-			$last_id = App::getDb()->fetchColumn("SELECT id FROM client_messages ORDER BY id DESC LIMIT 1");
+			$last_id = $this->db->fetchColumn("SELECT id FROM client_messages ORDER BY id DESC LIMIT 1");
 			if ($last_id) {
 				$data['last_id'] = $last_id;
 			}
@@ -101,7 +101,7 @@ class ChatController extends AbstractController
 			if ($since) {
 				$data = array('messages' => array(), 'last_id' => -1);
 
-				$all_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessagesForClientInChannels($session['id'], 0, $channels, $since);
+				$all_messages = $this->em->getRepository('DeskPRO:ClientMessage')->getMessagesForClientInChannels($session['id'], 0, $channels, $since);
 				foreach ($all_messages as $message) {
 					$handler = $message->getHandler();
 
@@ -164,7 +164,7 @@ class ChatController extends AbstractController
 		$chat_manager = $this->getChatManager($session_code);
 		$convo = $chat_manager->getChat();
 
-		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->in->getUint('send_blob_id'));
+		$blob = $this->em->getRepository('DeskPRO:Blob')->find($this->in->getUint('send_blob_id'));
 
 		$msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">" . htmlspecialchars($blob->filename) . "</a> (" . $blob->getReadableFilesize() . ")";
 		if ($blob->isImage()) {
@@ -213,7 +213,7 @@ class ChatController extends AbstractController
 	public function chatSessionAction()
 	{
 		// First lets see if anyone is even available for chatting
-		if (!App::getEntityRepository('DeskPRO:Session')->hasAvailableAgents()) {
+		if (!$this->em->getRepository('DeskPRO:Session')->hasAvailableAgents()) {
 			$response = $this->render('UserBundle:Chat:chat-session-unavailable.js.php');
 			$response->setLastModified(date_create('-1 day'));
 			$response->setExpires(date_create("-1 day"));
@@ -258,7 +258,7 @@ class ChatController extends AbstractController
 
 		if (!$convo) {
 			if ($this->in->getUint('conversation_id')) {
-				$convo = App::findEntity('DeskPRO:ChatConversation', $this->in->getUint('conversation_id'));
+				$convo = $this->em->find('DeskPRO:ChatConversation', $this->in->getUint('conversation_id'));
 				if (!$convo || !$convo->session || $convo->session->id != $session->id) {
 					$convo = null;
 				}
@@ -301,7 +301,7 @@ class ChatController extends AbstractController
 
 	protected function _sendTranscript($convo, $email, $name)
 	{
-		$convo_messages = App::getOrm()->createQuery("
+		$convo_messages = $this->em->createQuery("
 			SELECT m
 			FROM DeskPRO:ChatMessage m
 			WHERE m.conversation = ?1 AND m.is_user_hidden = false
@@ -314,15 +314,15 @@ class ChatController extends AbstractController
 		);
 
 		$email_subject = 'Chat Transcript';
-		$email_body = App::get('templating')->render('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
+		$email_body = $this->container->get('templating')->render('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
 
-		$message = App::getMailer()->createMessage();
+		$message = $this->container->getMailer()->createMessage();
 		$message->setTo($email, $name);
 		$message->setSubject($email_subject);
 		$message->setBody($email_body, 'text/html');
 		$message->enableQueueHint();
 
-		App::getMailer()->send($message);
+		$this->container->getMailer()->send($message);
 	}
 
 	public function chatEndedFeedbackAction($session_code)
@@ -333,7 +333,7 @@ class ChatController extends AbstractController
 
 		if (!$convo) {
 			if ($this->in->getUint('conversation_id')) {
-				$convo = App::findEntity('DeskPRO:ChatConversation', $this->in->getUint('conversation_id'));
+				$convo = $this->em->find('DeskPRO:ChatConversation', $this->in->getUint('conversation_id'));
 				if (!$convo || !$convo->session || $convo->session->id != $session->id) {
 					$convo = null;
 				}
@@ -360,8 +360,8 @@ class ChatController extends AbstractController
 			$convo->rating_overall = $this->in->getUint('rating_overall');
 		}
 
-		App::getOrm()->persist($convo);
-		App::getOrm()->flush();
+		$this->em->persist($convo);
+		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => true));
 	}
@@ -374,13 +374,13 @@ class ChatController extends AbstractController
 	public function chatWindowAction($session_code)
 	{
 		// First lets see if anyone is even available for chatting
-		if (!App::getEntityRepository('DeskPRO:Session')->hasAvailableAgents()) {
+		if (!$this->em->getRepository('DeskPRO:Session')->hasAvailableAgents()) {
 			return $this->createResponse('');
 		}
 
 		$session = null;
 		if ($session_code) {
-			$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($session_code);
+			$session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_code);
 		}
 
 		if (!$session) {
@@ -388,10 +388,10 @@ class ChatController extends AbstractController
 			$session = $sessionObj->getEntity();
 		}
 
-		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getLatestChatForSession($session, false);
+		$conversation = $this->em->getRepository('DeskPRO:ChatConversation')->getLatestChatForSession($session, false);
 		if ($conversation) {
 			$conversation['is_window'] = true;
-			App::getOrm()->transactional(function ($em) use ($conversation) {
+			$this->em->transactional(function ($em) use ($conversation) {
 				$em->persist($conversation);
 				$em->flush();
 			});
@@ -423,7 +423,7 @@ class ChatController extends AbstractController
 	 */
 	public function getChatManager($session_code)
 	{
-		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($session_code);
+		$session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_code);
 		if (!$session) {
 			return null;
 		}

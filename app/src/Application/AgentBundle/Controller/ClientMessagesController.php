@@ -49,7 +49,7 @@ class ClientMessagesController extends AbstractController
 		$new_since = $this->in->getUint('since');
 		$last_since = $this->person->getPref('agent.ui.last_message_id');
 
-		$data = App::getEntityRepository('DeskPRO:ClientMessage')->getMessageData(
+		$data = $this->em->getRepository('DeskPRO:ClientMessage')->getMessageData(
 			$this->person,
 			$this->session,
 			$new_since,

@@ -62,7 +62,7 @@ class TwitterUserController extends AbstractController
 		}
 
 		// check if account exists
-		$account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->find($id);
+		$account = $this->em->getRepository('DeskPRO:TwitterAccount')->find($id);
 		if (!$account) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no account with ID "%d"', $id));
 		}
@@ -72,7 +72,7 @@ class TwitterUserController extends AbstractController
 
 	protected function getUser($id)
 	{
-		$user = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find($id);
+		$user = $this->em->getRepository('DeskPRO:TwitterUser')->find($id);
 		if (!$user) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no user with ID "%d"', $id));
 		}

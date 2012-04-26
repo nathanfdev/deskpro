@@ -123,14 +123,14 @@ class TicketController extends AbstractController
 				$date_deleted = $ticket_deleted['date_created'];
 			}
 
-			$hard_delete_time = $date_deleted->getTimestamp() + App::getSetting('core_tickets.hard_delete_time');
+			$hard_delete_time = $date_deleted->getTimestamp() + $this->container->getSetting('core_tickets.hard_delete_time');
 			$hard_delete_time = max(0, $hard_delete_time - time());
 
 			if ($hard_delete_time) {
 				$hard_delete_time = Dates::secsToReadable($hard_delete_time);
 			}
 		} elseif ($ticket['hidden_status'] == 'spam') {
-			$hard_delete_time = $ticket->date_status->getTimestamp() + App::getSetting('core_tickets.spam_delete_time');
+			$hard_delete_time = $ticket->date_status->getTimestamp() + $this->container->getSetting('core_tickets.spam_delete_time');
 			$hard_delete_time = max(0, $hard_delete_time - time());
 
 			if ($hard_delete_time) {
@@ -1687,7 +1687,7 @@ class TicketController extends AbstractController
 				}
 
 				$ticket->recomputeHash();
-				if ($dupe_ticket = App::getEntityRepository('DeskPRO:Ticket')->checkDupeTicket($ticket)) {
+				if ($dupe_ticket = $this->em->getRepository('DeskPRO:Ticket')->checkDupeTicket($ticket)) {
 					$e = new \Application\DeskPRO\Tickets\DuplicateTicketException();
 					$e->ticket_id = $dupe_ticket->id;
 					throw $e;
@@ -1802,7 +1802,7 @@ class TicketController extends AbstractController
 	 */
 	protected function getTicketOr404($ticket_id, $check_perm = null)
 	{
-		$q = App::getOrm()->createQuery("SELECT t FROM DeskPRO:Ticket t WHERE t.id = ?0");
+		$q = $this->em->createQuery("SELECT t FROM DeskPRO:Ticket t WHERE t.id = ?0");
 		$q->setFetchMode('DeskPRO:Person', 'person', 'EAGER');
 		$q->setFetchMode('DeskPRO:Person', 'agent', 'EAGER');
 		$q->setParameters(array($ticket_id));

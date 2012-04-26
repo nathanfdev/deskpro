@@ -109,7 +109,7 @@ class CategoryAction implements ActionInterface
 		if ($this->category_id == 0) {
 			return $tr->phrase('agent.tickets.remove_category_action');
 		} else {
-			$names = App::getEntityRepository('DeskPRO:TicketCategory')->getFullCategoryNames();
+			$names = App::getEntityRepository('DeskPRO:TicketCategory')->getFullNames();
 			if (!isset($names[$this->category_id])) return '';
 
 			return $tr->phrase('agent.tickets.set_category_action', array('category' => $names[$this->category_id]));

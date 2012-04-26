@@ -49,7 +49,7 @@ class BlobController extends AbstractController
 
 		list($blob_id, $blob_auth) = explode('-', $blob_auth_id, 2);
 
-		$blob = App::getEntityRepository('DeskPRO:Blob')->find($blob_id);
+		$blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
 
 		if (!$blob OR $blob['authcode'] != $blob_auth) {
 			return $this->createResponse('');
@@ -73,7 +73,7 @@ class BlobController extends AbstractController
 			if (isset($options['cache']) && $options['cache']) {
 
 				//cache_date_cleanup
-				$cached_blob = App::getEntityRepository('DeskPRO:Blob')->getSystemBlob($name);
+				$cached_blob = $this->em->getRepository('DeskPRO:Blob')->getSystemBlob($name);
 			}
 
 			if ($cached_blob) {
@@ -134,7 +134,7 @@ class BlobController extends AbstractController
 	 */
 	public function personPictureAction($person_id, $size)
 	{
-		$person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
+		$person = $this->em->getRepository('DeskPRO:Person')->find($person_id);
 
 		if ($person->hasPicture()) {
 			if ($person['picture_blob']) {
@@ -170,7 +170,7 @@ class BlobController extends AbstractController
 			$size = 80;
 		}
 
-		$org = App::getEntityRepository('DeskPRO:Organization')->find($org_id);
+		$org = $this->em->getRepository('DeskPRO:Organization')->find($org_id);
 
 		if ($person->picture_blob) {
 			$response = $this->getDownloadResponse($org, array(
@@ -202,7 +202,7 @@ class BlobController extends AbstractController
 		} else {
 
 			$name = $sys_name . '-' . $size;
-			$cached_blob = App::getEntityRepository('DeskPRO:Blob')->getSystemBlob($name);
+			$cached_blob = $this->em->getRepository('DeskPRO:Blob')->getSystemBlob($name);
 
 			if (!$cached_blob) {
 				$desc = App::getApi('filestorage')->createRandomPath();
@@ -296,7 +296,7 @@ class BlobController extends AbstractController
 		} else {
 
 			$name = $sys_name . '-' . $size;
-			$cached_blob = App::getEntityRepository('DeskPRO:Blob')->getSystemBlob($name);
+			$cached_blob = $this->em->getRepository('DeskPRO:Blob')->getSystemBlob($name);
 
 			if (!$cached_blob) {
 				$desc = App::getApi('filestorage')->createRandomPath();
@@ -340,10 +340,10 @@ class BlobController extends AbstractController
 	 */
 	public function faviconAction()
 	{
-		$favicon_id = App::getSetting('core.favicon_blob_id');
+		$favicon_id = $this->container->getSetting('core.favicon_blob_id');
 		$blob = null;
 		if ($favicon_id) {
-			$blob = App::getEntityRepository('DeskPRO:Blob')->find($favicon_id);
+			$blob = $this->em->getRepository('DeskPRO:Blob')->find($favicon_id);
 		}
 
 		if ($blob) {

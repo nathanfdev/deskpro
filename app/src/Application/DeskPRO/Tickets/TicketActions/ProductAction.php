@@ -109,7 +109,7 @@ class ProductAction implements ActionInterface
 		if ($this->product_id == 0) {
 			return $tr->phrase('agent.tickets.remove_product_action');
 		} else {
-			$names = App::getEntityRepository('DeskPRO:Product')->getFullProductNames();
+			$names = App::getEntityRepository('DeskPRO:Product')->getFullNames();
 			if (!isset($names[$this->product_id])) return '';
 
 			return $tr->phrase('agent.tickets.set_product_action', array('product' => $names[$this->product_id]));

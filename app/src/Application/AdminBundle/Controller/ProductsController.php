@@ -74,7 +74,7 @@ class ProductsController extends AbstractController
 	public function saveTitleAction()
 	{
 		$product_id = $this->in->getUint('product_id');
-		$product = App::findEntity('DeskPRO:Product', $product_id);
+		$product = $this->em->find('DeskPRO:Product', $product_id);
 
 		if (!$product) {
 			throw $this->createNotFoundException();
@@ -110,7 +110,7 @@ class ProductsController extends AbstractController
 
 		$parent = null;
 		if ($this->in->getUint('parent_id')) {
-			$parent = App::findEntity('DeskPRO:Product', $this->in->getUint('parent_id'));
+			$parent = $this->em->find('DeskPRO:Product', $this->in->getUint('parent_id'));
 		}
 
 		if ($parent and !$parent->parent) {
@@ -124,9 +124,9 @@ class ProductsController extends AbstractController
 			$this->em->flush();
 
 			// Created first prod, enable the product feature
-			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM products");
+			$count = $this->db->fetchColumn("SELECT COUNT(*) FROM products");
 			if ($count == 1) {
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_product', '1');
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_product', '1');
 			}
 
 			$this->em->getConnection()->commit();
@@ -154,7 +154,7 @@ class ProductsController extends AbstractController
 
 	public function deleteAction($product_id)
 	{
-		$product = App::getEntityRepository('DeskPRO:Product')->find($product_id);
+		$product = $this->em->getRepository('DeskPRO:Product')->find($product_id);
 
 		return $this->render('AdminBundle:Products:delete.html.twig', array(
 			'product'  => $product,
@@ -163,7 +163,7 @@ class ProductsController extends AbstractController
 
 	public function doDeleteAction($product_id, $security_token)
 	{
-		$product = App::getEntityRepository('DeskPRO:Product')->find($product_id);
+		$product = $this->em->getRepository('DeskPRO:Product')->find($product_id);
 
 		if (!$this->session->getEntity()->checkSecurityToken('delete_product', $security_token)) {
 			return $this->renderStandardTokenError();
@@ -176,9 +176,9 @@ class ProductsController extends AbstractController
 		$this->em->remove($product);
 		$this->em->flush();
 
-		$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM products");
+		$count = $this->db->fetchColumn("SELECT COUNT(*) FROM products");
 		if (!$count) {
-			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_product', '0');
+			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_product', '0');
 		}
 
 		$this->em->commit();
@@ -194,14 +194,14 @@ class ProductsController extends AbstractController
 	public function toggleFeatureAction($enable)
 	{
 		if ($enable) {
-			$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM products");
+			$count = $this->db->fetchColumn("SELECT COUNT(*) FROM products");
 			if (!$count) {
 				return $this->redirectRoute('admin_products');
 			}
 
-			App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_product', '1');
+			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_product', '1');
 		} else {
-				App::getEntityRepository('DeskPRO:Setting')->updateSetting('core.use_product', '0');
+				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.use_product', '0');
 		}
 
 		$url = $this->generateUrl('admin_products');

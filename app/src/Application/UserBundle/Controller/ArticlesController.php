@@ -98,7 +98,7 @@ class ArticlesController extends AbstractController
 
 			$article_ids = $searcher->getMatches($limit);
 
-			$articles = App::getEntityRepository('DeskPRO:Article')->getByResultIds($article_ids);
+			$articles = $this->em->getRepository('DeskPRO:Article')->getByResultIds($article_ids);
 
 		} else {
 			$category = null;
@@ -111,12 +111,12 @@ class ArticlesController extends AbstractController
 
 		$comment_counts = array();
 		if ($articles) {
-			$comment_counts = App::getEntityRepository('DeskPRO:ArticleCategory')
+			$comment_counts = $this->em->getRepository('DeskPRO:ArticleCategory')
 				->getCommentHelper()
 				->countsOnCollection($articles);
 		}
 
-		$category_children_articles = App::getEntityRepository('DeskPRO:Article')->getNewestInNodes($category_children, 5, $this->person);
+		$category_children_articles = $this->em->getRepository('DeskPRO:Article')->getNewestInNodes($category_children, 5, $this->person);
 
 		$tpl = 'UserBundle:Articles:browse.html.twig';
 
@@ -128,7 +128,7 @@ class ArticlesController extends AbstractController
 			'category_counts' => $category_counts,
 			'articles' => $articles,
 			'comment_counts' => $comment_counts,
-			'section_counts' => App::getEntityRepository('DeskPRO:Article')->getSectionCounts()
+			'section_counts' => $this->em->getRepository('DeskPRO:Article')->getSectionCounts()
 		));
 	}
 
@@ -144,7 +144,7 @@ class ArticlesController extends AbstractController
 		$per_page = 20;
 
 		$kb_cats  = $structure->getArticleRootCategories();
-		$products = App::getEntityRepository('DeskPRO:Product')->getCategoryHelper()->getFlatHierarchy();
+		$products = $this->em->getRepository('DeskPRO:Product')->getFlatHierarchy();
 
 		$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
 		$searcher->setPersonContext($this->person);
@@ -175,7 +175,7 @@ class ArticlesController extends AbstractController
 		));
 
 		if ($article_ids) {
-			$articles = App::getEntityRepository('DeskPRO:Article')->getByResultIds($article_ids);
+			$articles = $this->em->getRepository('DeskPRO:Article')->getByResultIds($article_ids);
 		} else {
 			$articles = array();
 		}
@@ -190,7 +190,7 @@ class ArticlesController extends AbstractController
 			'search_options_url' => http_build_query($search_options, null, '&amp;'),
 			'articles' => $articles,
 			'num_results' => $total,
-			'section_counts' => App::getEntityRepository('DeskPRO:Article')->getSectionCounts($this->person),
+			'section_counts' => $this->em->getRepository('DeskPRO:Article')->getSectionCounts($this->person),
 		));
 	}
 
@@ -216,7 +216,7 @@ class ArticlesController extends AbstractController
 		));
 
 		if ($article_ids) {
-			$articles = App::getEntityRepository('DeskPRO:Article')->getByResultIds($article_ids);
+			$articles = $this->em->getRepository('DeskPRO:Article')->getByResultIds($article_ids);
 		} else {
 			$articles = array();
 		}
@@ -232,7 +232,7 @@ class ArticlesController extends AbstractController
 			'articles' => $articles,
 			'show_more' => $show_more,
 			'page' => $page,
-			'section_counts' => App::getEntityRepository('DeskPRO:Article')->getSectionCounts($this->person),
+			'section_counts' => $this->em->getRepository('DeskPRO:Article')->getSectionCounts($this->person),
 		));
 	}
 
@@ -259,7 +259,7 @@ class ArticlesController extends AbstractController
 		));
 
 		if ($article_ids) {
-			$articles = App::getEntityRepository('DeskPRO:Article')->getByResultIds($article_ids);
+			$articles = $this->em->getRepository('DeskPRO:Article')->getByResultIds($article_ids);
 		} else {
 			$articles = array();
 		}
@@ -275,7 +275,7 @@ class ArticlesController extends AbstractController
 			'articles' => $articles,
 			'show_more' => $show_more,
 			'page' => $page,
-			'section_counts' => App::getEntityRepository('DeskPRO:Article')->getSectionCounts($this->person),
+			'section_counts' => $this->em->getRepository('DeskPRO:Article')->getSectionCounts($this->person),
 		));
 	}
 
@@ -287,7 +287,7 @@ class ArticlesController extends AbstractController
 	 */
 	public function articleAction($slug)
 	{
-		$article = App::getEntityRepository('DeskPRO:Article')->getBySlug($slug);
+		$article = $this->em->getRepository('DeskPRO:Article')->getBySlug($slug);
 		if (!$article) {
 			return $this->renderStandardError('@user.error.articles_not_found', '@user.error.not_found', 404);
 		}
@@ -300,7 +300,7 @@ class ArticlesController extends AbstractController
 		// Get the user subscription
 		$subscription = false;
 		if (!$this->person->isGuest()) {
-			$subscription = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscription($article, $this->person);
+			$subscription = $this->em->getRepository('DeskPRO:ContentSubscription')->getSubscription($article, $this->person);
 			if ($subscription) {
 				$subscription->touch();
 				$this->em->persist($subscription);
@@ -327,10 +327,10 @@ class ArticlesController extends AbstractController
 		if ($comments_helper) {
 			$comments_widget = $comments_helper->getHtml();
 		} else {
-			$comments = App::getEntityRepository('DeskPRO:ArticleComment')->getComments($article);
+			$comments = $this->em->getRepository('DeskPRO:ArticleComment')->getComments($article);
 		}
 
-		if (App::getSetting('core.facebook_like')) {
+		if ($this->container->getSetting('core.facebook_like')) {
 			$like_helper = FacebookLike::create($article);
 			$facebook_like = $like_helper->getHtml();
 		}
@@ -392,7 +392,7 @@ class ArticlesController extends AbstractController
 			return $this->renderLoginOrPermissionError();
 		}
 
-		$article = App::getEntityRepository('DeskPRO:Article')->find($article_id);
+		$article = $this->em->getRepository('DeskPRO:Article')->find($article_id);
 		if (!$article) {
 			return $this->renderStandardError('@user.error.articles_not_found', '@user.error.not_found', 404);
 		}

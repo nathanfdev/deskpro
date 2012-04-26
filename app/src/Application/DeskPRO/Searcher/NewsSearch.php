@@ -384,7 +384,7 @@ class NewsSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch('news.category_id', $op, $ids);
 
 					$this->summary[] = $this->_choiceSummary('Category', $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryNames((array)$choice);
+						$titles = App::getEntityRepository('DeskPRO:NewsCategory')->getNames((array)$choice);
 						return $titles;
 					});
 					break;

@@ -109,7 +109,7 @@ class LicenseController extends AbstractController
 				$client->setUri(DP_LIC_SERVER . '/license/request-demo.json');
 				$client->getRequest()->post()->set('install_key', $this->settings->get('core.install_key'));
 				$client->getRequest()->post()->set('email_address', $email_address);
-				$client->getRequest()->post()->set('url', App::getRequest()->getUriForPath('/'));
+				$client->getRequest()->post()->set('url', $this->request->getUriForPath('/'));
 
 				$hostname = gethostname();
 
@@ -306,7 +306,7 @@ class LicenseController extends AbstractController
 		$install_data = array();
 		$install_data['install_key'] = $this->settings->get('core.install_key');
 		$install_data['email_address'] = $email_address;
-		$install_data['url'] = App::getRequest()->getUriForPath('/');
+		$install_data['url'] = $this->request->getUriForPath('/');
 		$install_data = json_encode($install_data);
 		$install_data = base64_encode($install_data);
 

@@ -52,7 +52,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 		$tpl_globals = $this->container->get('templating.globals');
 		if (!$tpl_globals->getVariable('usersources')) {
-			 $tpl_globals->setVariable('usersources', App::getEntityRepository('DeskPRO:Usersource')->getAllUsersources());
+			 $tpl_globals->setVariable('usersources', $this->em->getRepository('DeskPRO:Usersource')->getAllUsersources());
 		}
 
 		if ($this->in->getString('q')) {
