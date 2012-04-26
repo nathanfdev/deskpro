@@ -236,6 +236,34 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		if ($mode == 'run' && !$start_step) {
 
+			$new_download = null;
+			$this_build = date('Y-m-d', DP_BUILD_TIME);
+			$new_build = 0;
+			try {
+				$latest_version = \Application\DeskPRO\Service\LicenseService::getLatestVersion();
+				$new_build = date('Y-m-d', $latest_version['build']);
+				if ($latest_version['build'] > DP_BUILD_TIME) {
+					$new_download = $latest_version['download'];
+				}
+			} catch (\Exception $e) {}
+
+			if ($new_download) {
+				$logger->log(sprintf("A newer version of DeskPRO is available. You have version %s but version %s is available for download.", $this_build, $new_build), Logger::INFO);
+				echo "\n\n";
+				$logger->log(sprintf("You can download the new version from: %s", $new_download), Logger::INFO);
+
+				try {
+					$yes = $this->getHelper('dialog')->askConfirmation($output, 'Do you want to abort? [Y/n]> ');
+				} catch (\Exception $e) {
+					$yes = false;
+				}
+				if ($yes) {
+					echo "Aborted. You can re-run this command again at any time.\n";
+					echo "\n";
+					return 0;
+				}
+			}
+
 			try {
 				$stat_db = $this->getContainer()->getDb();
 			} catch (\Exception $e) {

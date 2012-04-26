@@ -188,6 +188,10 @@ $(document).ready(function() {
 			<a class="btn" href="http://support.deskpro.com/">Visit our helpdesk</a>
 		</div>
 	</div>
+
+	<div style="margin-top: 10px; text-align: right; font-size: 10px; margin-bottom: -40px;">
+		<a href="<?php echo $view['router']->generate('install_create_tables') ?>" onclick="return confirm('We recommend contacting support@deskpro.com to resolve this error. Continuing with the installation process when there were detected abnormalities may result in a corrupt helpdesk. Are you sure you want to continue?');">Continue to the next step anyway</a> &rarr;
+	</div>
 </div>
 
 <div id="install_done" style="display: none">

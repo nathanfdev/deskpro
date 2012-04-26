@@ -6,6 +6,17 @@
 
 <?php require(DP_ROOT.'/src/Application/InstallBundle/Resources/views/Install/server-checks-table.html.php') ?>
 
+<?php if ($new_download): ?>
+	<div class="alert-message block-message info" style="border: 3px solid #BDD1D7; margin-top: 35px; margin-bottom: 35px;">
+		<strong>There is a newer version of DeskPRO available</strong><br />
+		The version you are trying to install is version <var><?php echo $this_build ?></var>. A newer version, version <var><?php echo $new_build ?></var>, is available.
+		<div class="alert-actions" style="margin-top: 10px;">
+			<a class="btn primary" href="<?php echo $new_download ?>">Click here to download the new version now</a>
+			<br /><div style="font-size: 10px;">Download URL: <?php echo $new_download ?></div>
+		</div>
+	</div>
+<?php endif ?>
+
 <?php if ($is_fatal): ?>
 	<div class="alert-message block-message error">
 		<strong>There were errors</strong>, as noted above, that must be fixed before you
@@ -32,8 +43,12 @@
 	</div>
 <?php else: ?>
 	<div class="alert-message block-message success">
-		<strong>Everything looks okay.</strong> You are ready to continue to continute
-		to the next step.
+		<?php if ($new_download): ?>
+			If you do not want to download the updated version of DeskPRO, you can conitnue on to the next step to install this outdated version.
+		<?php else: ?>
+			<strong>Everything looks okay.</strong> You are ready to continue to continute
+			to the next step.
+		<?php endif ?>
 
 		<div class="alert-actions">
 			<a class="btn" href="<?php echo $view['router']->generate('install_verify_files') ?>">Go to step 3: Verify file integrity</a>

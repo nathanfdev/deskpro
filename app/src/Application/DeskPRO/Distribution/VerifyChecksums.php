@@ -71,7 +71,9 @@ class VerifyChecksums
 		foreach ($chunk_files as $f) {
 			$filepath = $uproot.$f;
 			if (file_exists($filepath)) {
-				$chunk_hashes[$f] = md5_file($filepath);
+				$file_contents = file_get_contents($filepath);
+				$file_contents = trim(str_replace("\n", '', $file_contents));
+				$chunk_hashes[$f] = md5($file_contents);
 			}
 		}
 

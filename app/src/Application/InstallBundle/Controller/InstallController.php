@@ -173,6 +173,22 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$ini_path = \Orb\Util\Env::getPhpIniPath();
 		}
 
+		#------------------------------
+		# Try to check for latest version
+		#------------------------------
+
+		$new_download = null;
+		$this_build = date('Y-m-d', DP_BUILD_TIME);
+		$new_build = 0;
+		try {
+			$latest_version = \Application\DeskPRO\Service\LicenseService::getLatestVersion();
+			$new_build = date('Y-m-d', $latest_version['build']);
+			if ($latest_version['build'] > DP_BUILD_TIME) {
+				$new_download = $latest_version['download'];
+			}
+		} catch (\Exception $e) {}
+
+
 		return $this->render('InstallBundle:Install:index.html.php', array(
 			'can_write_config' => $can_write_config,
 			'errors' => $server_check->getErrors(),
@@ -185,6 +201,9 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			'is_default_logs_dir' => $is_default_logs_dir,
 			'ini_path' => $ini_path,
 			'did_create_db' => $did_create_db,
+			'new_download' => $new_download,
+			'this_build' => $this_build,
+			'new_build' => $new_build
 		));
 	}
 
