@@ -8,7 +8,7 @@
 <div class="dp-form">
 
 	{% block email_transports_form_top %}
-		{% if partial == 'setup' %}
+		{% if partial == 'setup' or transport.match_type == 'all' %}
 			<div class="dp-form-row">
 				<div class="dp-form-label">
 					<label>{{ phrase('admin.gateway.default_from_email') }}</label>
