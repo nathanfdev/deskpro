@@ -88,5 +88,11 @@
     'agent.publish.word_def'                      => 'Word defintion',
     'agent.publish.word_title'                    => 'Word title',
     'agent.publish.words'                         => 'Words',
-    'agent.publsih.file_changed'                  => 'File changed',
+    'agent.publish.file_changed'                  => 'File changed',
+    'agent.publish.error_kb_bad_input'            => 'Bad user input, this is probably a bug.',
+    'agent.publish.error_kb_cats_same' => 'Categories are the same.',
+    'agent.publish.error_kb_not_in_db'             => 'A category was not found.',
+    'agent.publish.error_kb_unaffected'             => 'Some articles weren\'t affected:',
+    'agent.publish.error_kb_missing'             => '{{count}} article not found.|{{count}} articles not found.',
+    'agent.publish.error_kb_perm_denied'             => '{{count}} permission error.|{{count}} permission errors.',
 );

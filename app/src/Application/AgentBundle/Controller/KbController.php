@@ -214,14 +214,21 @@ class KbController extends AbstractController
 
 		$data = array('success' => 1, 'category' => $from_category);
 		$skip = false;
+		$tr = App::getTranslator();
+		$error = null;
 
 		switch ($action) {
 			case 'move':
 				$to_category = $this->in->getInt('to_category');
 
-				if(!$from_category
-				|| !$to_category
-				|| ($from_category == $to_category)) {
+				if(!$from_category || !$to_category) {
+					$error = $tr->phrase('agent.publish.error_kb_bad_input');
+					$skip = true;
+					break;
+				}
+
+				if ($from_category == $to_category) {
+					$error = $tr->phrase('agent.publish.error_kb_cats_same');
 					$skip = true;
 					break;
 				}
@@ -229,8 +236,8 @@ class KbController extends AbstractController
 				$from = App::findEntity('DeskPRO:ArticleCategory', $from_category);
 				$to = App::findEntity('DeskPRO:ArticleCategory', $to_category);
 
-				if(!$from
-				|| !$to) {
+				if(!$from || !$to) {
+					$error = $tr->phrase('agent.publish.error_kb_not_in_db');
 					$skip = true;
 					break;
 				}
@@ -239,37 +246,51 @@ class KbController extends AbstractController
 		}
 
 		if(!$skip) {
+			$affected = 0;
+			$perm_failures = 0;
+			$missing = 0;
 			$this->em->beginTransaction();
 
 			foreach ($articles as $article_id) {
 				$article = App::findEntity('DeskPRO:Article', $article_id);
 
 				if(!$article) {
+					$missing++;
 					continue;
 				}
 
 				switch ($action) {
 					case 'draft':
 						if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
+							$perm_failures++;
 							continue;
 						}
+
 						$article->status_code = 'hidden.draft';
+						$affected++;
 						break;
 					case 'delete':
 						if (!$this->person->PermissionsManager->PublishChecker->canDelete($article)) {
+							$perm_failures++;
 							continue;
 						}
+
 						$article->status_code = 'hidden.deleted';
+						$affected++;
 						break;
 					case 'move':
 						if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
+							$perm_failures++;
 							continue;
 						}
+
 						$article->removeFromCategory($from);
+
 						if(!$article->isInCategory($to)) {
 							$article->addToCategory($to);
 						}
 
+						$affected++;
 						break;
 				}
 
@@ -278,8 +299,29 @@ class KbController extends AbstractController
 
 			$this->em->flush();
 			$this->em->commit();
+
+			if($affected < count($articles)) {
+				$error = $tr->phrase('agent.publish.error_kb_unaffected');
+				$error .= "<br />\n";
+
+				$errors = array();
+
+				if($missing) {
+					$errors[] = $tr->phrase('agent.publish.error_kb_missing_articles', array('count' => $missing));
+				}
+
+				if($perm_failures) {
+					$errors[] = $tr->phrase('agent.publish.error_kb_perm_denied', array('count' => $perm_failures));
+				}
+
+				$error .= implode("<br />\n", $errors);
+			}
+		}
+		else {
+			$data['success'] = false;
 		}
 
+		$data['error'] = $error;
 		return $this->createJsonResponse($data);
 	}
 

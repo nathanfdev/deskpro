@@ -109,6 +109,10 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 				$('#publish_outline_articlescat_list .kb-cat-' + category + ' .is-nav-item').click();
 			});
 		}
+
+		if(data.error) {
+			DeskPRO_Window.showAlert(data.error);
+		}
 	},
 
 	initVisibleTicket: function() {
