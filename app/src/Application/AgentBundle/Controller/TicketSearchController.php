@@ -427,7 +427,7 @@ class TicketSearchController extends AbstractController
 		# Run a filter if we need to
 		#------------------------------
 
-		if ($do_run||1) {
+		if ($do_run) {
 			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
 			$searcher->setPerson($this->person);
 			if ($order_by) {
