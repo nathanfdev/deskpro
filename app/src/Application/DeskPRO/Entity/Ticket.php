@@ -1481,9 +1481,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->undeleteTicket();
 		}
 
+		if($status != self::STATUS_AWAITING_AGENT) {
+			$this->setModelField('urgency', 0);
+		}
+
 		if ($this->is_hold && $status != self::STATUS_AWAITING_AGENT) {
 			$this->setModelField('is_hold', false);
-			$this->setModelField('urgency', 0);
 		}
 	}
 
