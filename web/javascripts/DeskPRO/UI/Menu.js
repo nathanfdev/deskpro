@@ -802,6 +802,8 @@ DeskPRO.UI.Menu = new Orb.Class({
 	 */
 	destroy: function() {
 
+		this.closeMenu();
+
 		if (this.elements && this.elements.shim) {
 			this.elements.shim.remove();
 		}

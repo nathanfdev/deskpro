@@ -162,12 +162,40 @@
     'agent.tickets.set_workflow_action'              => 'Set workflow to {{workflow}}',
     'agent.tickets.set_x_to_y_action'                => 'Set {{title}} to {{value}}',
     'agent.tickets.split_from_here'                  => 'Split ticket from here',
+
     'agent.tickets.status_awaiting_agent'            => 'Awaiting Agent',
     'agent.tickets.status_awaiting_user'             => 'Awaiting User',
     'agent.tickets.status_closed'                    => 'Closed',
     'agent.tickets.status_hidden'                    => 'Hidden',
-    'agent.tickets.status_hidden_validating'         => 'Awaiting Validating',
     'agent.tickets.status_resolved'                  => 'Resolved',
+
+	'agent.tickets.status_awaiting_agent_spam'            => 'Spam',
+	'agent.tickets.status_awaiting_agent_validating'            => 'Awaiting Validating',
+	'agent.tickets.status_awaiting_agent_deleted'            => 'Deleted',
+	'agent.tickets.status_awaiting_agent_temp'            => 'Temporary',
+
+	'agent.tickets.status_awaiting_user_spam'            => 'Spam',
+	'agent.tickets.status_awaiting_user_validating'            => 'Awaiting Validating',
+	'agent.tickets.status_awaiting_user_deleted'            => 'Deleted',
+	'agent.tickets.status_awaiting_user_temp'            => 'Temporary',
+
+
+	'agent.tickets.status_resolved_spam'            => 'Spam',
+	'agent.tickets.status_resolved_validating'            => 'Awaiting Validating',
+	'agent.tickets.status_resolved_deleted'            => 'Deleted',
+	'agent.tickets.status_resolved_temp'            => 'Temporary',
+
+
+	'agent.tickets.status_closed_spam'            => 'Spam',
+	'agent.tickets.status_closed_validating'            => 'Awaiting Validating',
+	'agent.tickets.status_closed_deleted'            => 'Deleted',
+	'agent.tickets.status_closed_temp'            => 'Temporary',
+
+	'agent.tickets.status_hidden_spam'            => 'Spam',
+	'agent.tickets.status_hidden_validating'            => 'Awaiting Validating',
+	'agent.tickets.status_hidden_deleted'            => 'Deleted',
+	'agent.tickets.status_hidden_temp'            => 'Temporary',
+
     'agent.tickets.stop_later_triggers_action'       => 'Stop processing later triggers',
     'agent.tickets.subject_changed_from'             => 'Subject changed from',
     'agent.tickets.subscribed_tickets'               => 'Subscribed tickets',

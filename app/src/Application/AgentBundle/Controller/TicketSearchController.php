@@ -427,7 +427,7 @@ class TicketSearchController extends AbstractController
 		# Run a filter if we need to
 		#------------------------------
 
-		if ($do_run) {
+		if ($do_run||1) {
 			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
 			$searcher->setPerson($this->person);
 			if ($order_by) {
@@ -459,10 +459,13 @@ class TicketSearchController extends AbstractController
 				$result_cache->person = $this->person;
 			}
 
+			$needs_urgency = $searcher->needsUrgency();
+
 			$result_cache->results = $results;
 			$result_cache->criteria = $terms;
 			$result_cache->num_results = count($results);
 			$result_cache->setExtraData('order_by', $order_by);
+			$result_cache->setExtraData('needs_urgency', $needs_urgency);
 			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
 			$result_cache->setExtraData('order_by_summary', $searcher->getOrderBySummary());
 
@@ -480,6 +483,7 @@ class TicketSearchController extends AbstractController
 			'cache_id'            => $result_cache->id,
 			'order_by_summary'    => $result_cache->getExtraData('order_by_summary'),
 			'terms_summary'       => $result_cache->getExtraData('terms_summary'),
+			'needs_urgency'       => $result_cache->getExtraData('needs_urgency'),
 			'order_by'            => explode(':', $result_cache->getExtraData('order_by')),
 			'ticket_ids'          => $result_cache->results,
 			'view_name'           => $this->in->getString('view_name'),
@@ -573,9 +577,12 @@ class TicketSearchController extends AbstractController
 			$helper->setGroupField($group_by);
 		}
 
+		$needs_urgency = $searcher->needsUrgency();
+
 		$vars = array(
 			'filter' => $filter,
 			'filter_id' => $filter['id'],
+			'needs_urgency' => $needs_urgency,
 			'order_by_summary' => $searcher->getOrderBySummary(),
 			'terms_summary' => $searcher->getSummary(),
 			'set_group_term' => $set_group_term,
@@ -763,7 +770,7 @@ class TicketSearchController extends AbstractController
 		));
 
         if($view_type == 'csv') {
-            return $this-> _outputCsv($vars, $results_helper);
+            return $this->_outputCsv($vars, $results_helper);
         }
 
 		$html = $this->renderView($tpl, $vars);

@@ -731,7 +731,9 @@ class TicketSearch extends SearcherAbstract
 						$this->specific_fields[] = self::TERM_LANGUAGE;
 					}
 
-					$choice = array_pop($choice);
+					if(is_array($choice)) {
+						$choice = array_pop($choice);
+					}
 
 					if ($choice == App::getSetting('core.default_language_id')) {
 						$wheres[] = "(" . $this->_choiceMatch("$tickets_table.language_id", $op, $choice, true) . " OR " . $this->_choiceMatch("$tickets_table.language_id", $op, 0, true) . ")";
@@ -1431,5 +1433,41 @@ class TicketSearch extends SearcherAbstract
 	public function addRawWhere($where)
 	{
 		$this->add_raw_wheres[] = $where;
+	}
+
+	/**
+	 * Try to determine whether or not order by/group can be applied to results.
+	 *
+	 * This is used for a UI enhancement, and getting perfect accuracy is non-trivial.
+	 * Additional checks may need to be added to enable this elsewhere.
+	 *
+	 * In case of any doubt this should return true as it is better to show the options that are of no effect in cases
+	 * than to not show it when it is needed.
+	 *
+	 * @return bool True if urgency options should be applied.
+	 */
+	public function needsUrgency()
+	{
+		$terms = $this->getTerms();
+
+		if(!isset($terms['status'])) {
+			return true;
+		}
+
+		list($op, $data) = $terms['status'];
+
+		if(isset($data['status'])) {
+			$status = $data['status'];
+		}
+
+		if(isset($data['options']) && isset($data['options']['status'])) {
+			$status = $data['options']['status'];
+		}
+
+		if(isset($status) && $op == 'is' && $status != 'awaiting_agent') {
+			return false;
+		}
+
+		return true;
 	}
 }

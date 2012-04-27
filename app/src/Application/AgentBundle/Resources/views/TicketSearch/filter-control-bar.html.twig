@@ -14,8 +14,10 @@
 	</ul>
 
 	<ul style="display: none" class="order-by-menu">
+        {% if needs_urgency %}
         <li data-order-by="urgency_asc"><label class="label">{{ phrase('agent.general.urgency') }}</label> <i class="order-dir">ASC</i></li>
         <li data-order-by="urgency_desc"><label class="label">{{ phrase('agent.general.urgency') }}</label> <i class="order-dir">DESC</i></li>
+        {% endif %}
         <li data-order-by="date_created_asc"><label class="label">{{ phrase('agent.general.date_opened') }}</label> <i class="order-dir">ASC</i></li>
         <li data-order-by="date_created_desc"><label class="label">{{ phrase('agent.general.date_opened') }}</label> <i class="order-dir">DESC</i></li>
         {% if app.getSetting('core.use_ticket_priority') %}
@@ -37,7 +39,9 @@
 		{% if app.getSetting('core.use_ticket_workflow') %}<li data-group-by="workflow">{{ phrase('agent.general.workflow') }}</li>{% endif %}
 		<li data-group-by="organization">{{ phrase('agent.general.organization') }}</li>
 		<li data-group-by="language">{{ phrase('agent.general.language') }}</li>
-		<li data-group-by="urgency">{{ phrase('agent.general.urgency') }}</li>
+        {% if needs_urgency %}
+		    <li data-group-by="urgency">{{ phrase('agent.general.urgency') }}</li>
+        {% endif %}
 		<li data-group-by="agent">{{ phrase('agent.general.agent') }}</li>
 		{% if app.getSetting('core.use_agent_team') %}<li data-group-by="agent_team">{{ phrase('agent.general.agent_team') }}</li>{% endif %}
 		<li data-group-by="user_waiting">{{ phrase('agent.general.time_waiting') }}</li>

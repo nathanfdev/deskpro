@@ -71,6 +71,11 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		}
 
 		this.wrapperEl = this.options.templateElement || $('div.mass-actions-overlay-container', page.wrapper);
+
+		if(!this.wrapperEl.length) {
+			return;
+		}
+
 		this.wrapperEl.detach();
 		this.wrapper = this.wrapperEl.clone();
 		this.wrapper.tinyscrollbar();
