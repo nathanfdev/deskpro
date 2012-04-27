@@ -132,6 +132,8 @@ class TemplatingExtension extends \Twig_Extension
 			'crc32' => new \Twig_Filter_Method($this, 'crc32'),
 			'url_domain' => new \Twig_Filter_Method($this, 'getUrlDomain'),
 			'truncate' => new \Twig_Filter_Method($this, 'strTruncate'),
+			'first' =>new \Twig_Filter_Method($this, 'getFirst'),
+			'last' =>new \Twig_Filter_Method($this, 'getLast'),
 
 			'hex2rgb' => new \Twig_Filter_Method($this, 'hex2rgb'),
 
@@ -140,6 +142,16 @@ class TemplatingExtension extends \Twig_Extension
 			'lower' => new \Twig_Filter_Method($this, 'strLower'),
         );
     }
+
+	public function getFirst($var)
+	{
+		return \Orb\Util\Arrays::getFirstItem($var);
+	}
+
+	public function getLast($var)
+	{
+		return \Orb\Util\Arrays::getLastItem($var);
+	}
 
 	public function isArray($var)
 	{

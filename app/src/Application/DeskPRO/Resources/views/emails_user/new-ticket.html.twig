@@ -10,12 +10,11 @@
 	{% endset %}
 	{{ layout.section('', content) }}
 
-	{{ layout.render_ticket_messages(messages) }}
-
+	{{ layout.render_top_message(messages|first) }}
 
 	{% set content %}
         {{ phrase('user.general.access_ticket_online') }}
-		<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}" style="{{ layout.link_style() }}">
+		<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}" style="{{ layout.info_link_style() }}">
 			{{ url_display('user_tickets_view', {'ticket_ref': ticket.access_code}) }}
 		</a>
 	{% endset %}

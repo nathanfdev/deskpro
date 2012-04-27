@@ -2,7 +2,7 @@
 	<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:15px;">
 		{% if title %}
 			<tr>
-				<td style="font-size:18px; color:#0D1C3E; padding-top:6px; padding-bottom:6px;">
+				<td style="font-size:18px; color:#242424; padding-top:6px; padding-bottom:6px;">
 					{{ title }}
 				</td>
 			</tr>
@@ -17,25 +17,22 @@
 	</table>
 {% endmacro %}
 
-{% macro link_style() %}color: #0065A3;text-decoration: none;{% endmacro %}
+{% macro link_style() %}color: #0065A3;text-decoration: underline;{% endmacro %}
+{% macro info_link_style() %}color: #949494;text-decoration: underline;{% endmacro %}
 
 {% macro info_section(content, options) %}
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:8px;">
-		{% if content %}
-			<tr>
-				<td style="font-size:11px; line-height:125%; padding:8px; background-color: #E3ECF7; {% if options.center %}text-align: center;{% endif %}">
-					{{ content }}
-				</td>
-			</tr>
-		{% endif %}
-	</table>
+	<p style="margin: 0; padding: 0;">{{ content }}</p>
+{% endmacro %}
+
+{% macro sep() %}
+	<p style="height: 2px; padding: 0; margin: 15px 0 15px 0; background-color: #C5C5C5;">&nbsp;</p>
 {% endmacro %}
 
 {% macro messages_section(title, content, options) %}
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:15px;margin-bottom:15px;">
 	{% if title %}
 	<tr>
-		<td style="font-size:18px; color:#0D1C3E; padding-top:6px; padding-bottom:6px;">
+		<td style="font-size:18px; color:#242424; padding-top:6px; padding-bottom:6px;">
 			{{ title }}
 		</td>
 	</tr>
@@ -51,28 +48,37 @@
 {% endmacro %}
 
 {% macro message(author, time, message, options) %}
-	<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td style="font-size:12px; line-height:125%; {% if not options.highlight %}border-bottom:1px solid #CCCCCC;padding: 5px;{% endif %}">
-		<div style="padding: 7px; {% if options.highlight %}border: 1px solid #C6CBD3;{% endif %}">
-			{% if author %}<span style="font-family:Arial, Helvetica, sans-serif; color:#388D34; font-size:12px; font-weight:bold;">{{ author|raw }}</span>{% endif %}
-			{% if time %}<span style="font-family:Arial, Helvetica, sans-serif; color:#868686; font-size:11px;">{{ time|raw }}</span>{% endif %}
-		</div>
-		<div style="padding: 7px; {% if options.highlight %}margin-bottom: 35px; background-color: #EAEFF9; border: 1px solid #C6CBD3; border-top: none;{% endif %}">
-			{{ message|raw }}
-		</div>
-	</td></tr></table>
+	<table width="620" border="0" cellspacing="0" cellpadding="3">
+		<tr><td style="font-size:12px; line-height:125%; color: #6D6D6D;">{{ phrase('user.emails.on_x_at_y_z_wrote', { date: time|date('full'), time: time|date('time'), author: author|e }) }}</td></tr>
+		<tr><td style="font-size:12px; line-height:145%; padding-left: 6px;">
+			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="border-left: 1px solid #00174B; color: #00174B; font-size:13px; line-height:135%; padding-left: 8px;">
+				{{ message|raw }}
+			</td></tr></table>
+		</td></tr>
+		<tr><td><br /></td></tr>
+	</table>
+{% endmacro %}
+
+{% macro render_top_message(message, options) %}
+	<table width="620" border="0" cellspacing="0" cellpadding="3">
+		<tr><td style="font-size:13px; line-height:145%;">
+			{{ message.message_html|raw }}
+		</td></tr>
+	</table>
 {% endmacro %}
 
 {% macro render_ticket_messages(messages, title, options) %}
-	{% set section_content %}
-		{% for message in messages %}
-			{% if options.highlight_top and loop.first %}
-				{{ _self.message(message.person.display_contact, message.date_created|date('full'), message.message_html, {highlight: 1}) }}
-			{% else %}
-				{{ _self.message(message.person.display_contact, message.date_created|date('full'), message.message_html) }}
-			{% endif %}
-		{% endfor %}
-	{% endset %}
-	{{ _self.messages_section(title, section_content) }}
+	{% if not options.skip_top or (options.skip_top and messages|length > 1) %}
+		{% set section_content %}
+			{% for message in messages %}
+				{% if options.skip_top and loop.first %}
+				{% else %}
+					{{ _self.message(message.person.display_contact, message.date_created, message.message_html) }}
+				{% endif %}
+			{% endfor %}
+		{% endset %}
+		{{ _self.messages_section(title, section_content) }}
+	{% endif %}
 {% endmacro %}
 
 {% macro replycode(code) %}

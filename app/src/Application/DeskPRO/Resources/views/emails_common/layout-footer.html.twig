@@ -1,8 +1,15 @@
+{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 <tr>
-	<td colspan="2" align="center" bgcolor="#0D1C3E" style="padding:12px; font-size:12px; color:#fff;">
-		<a href="{{ app.getSetting('core.deskpro_url') }}" style="color:#fff; text-decoration: none;">{{ app.getSetting('core.deskpro_name') }}</a>
-		{% if app.getSetting('core.site_name') %}
-		| <a href="{{ app.getSetting('core.site_url') }}" style="color:#fff; text-decoration: none;">{{ app.getSetting('core.site_name') }}</a>
-		{% endif %}
+	<td valign="top" style="color:#949494; background-color: #FFFFFF">
+		{{ layout.sep }}
+		{{ footer_content|raw }}
+		<p style="margin: 6px 0 0 0; padding: 0;">
+			{% if app.getSetting('core.site_name') %}
+				<a href="{{ app.getSetting('core.site_name') }}" style="{{ layout.info_link_style() }}">{{ app.getSetting('core.site_name') }}</a>
+				&middot; <a href="{{ app.getSetting('core.site_url') }}" style="{{ layout.info_link_style() }}">{{ app.getSetting('core.site_url') }}</a>
+			{% else %}
+				<a href="{{ app.getSetting('core.deskpro_url') }}" style="{{ layout.info_link_style() }}">{{ app.getSetting('core.deskpro_url') }}</a>
+			{% endif %}
+		</p>
 	</td>
 </tr>

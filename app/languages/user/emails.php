@@ -41,4 +41,5 @@ Before our agents will read and reply to your message, you must validate your em
 Before you will be able to use your account, you must click on the following link to validate your email address',
     'user.emails.you_replied'                     => 'Thank you for your reply. Our agents will respond to you as soon as they can.',
     'user.emails.your_chat_transcript'            => 'Thank you for chatting with us. Here is your chat transcript.',
+	'user.emails.on_x_at_y_z_wrote'               => 'On {{date}} at {{time}}, {{author}} wrote:'
 );
