@@ -862,6 +862,11 @@ class TicketController extends AbstractController
 		# Handle new message
 		#------------------------------
 
+		$draft_pref = $this->em->getRepository('DeskPRO:PersonPref')->find(array(
+			'person' => $this->person['id'],
+			'name' => "ticket_draft.{$ticket['id']}"
+		));
+
 		$message = new Entity\TicketMessage();
 		$message['ticket'] = $ticket;
 		$message['person'] = $this->person;
@@ -898,129 +903,146 @@ class TicketController extends AbstractController
 		# Handle CC'ing/parts
 		#------------------------------
 
-		$this->em->beginTransaction();
+		$add_parts = array();
+		$rem_parts = array();
+		$changed_parts = false;
 
-		if (!$message['is_agent_note']) {
+		$email_validator = new \Orb\Validator\StringEmail();
 
-			$changed_parts = false;
+		$current_user_ids = array();
+		$current_agent_ids = array();
+		foreach ($ticket->participants as $p) {
+			if ($p->person->is_agent) {
+				$current_agent_ids[] = $p->person->id;
+			} else {
+				$current_user_ids[] = $p->person->id;
+			}
+		}
 
-			$email_validator = new \Orb\Validator\StringEmail();
+		// People cc emails
+		$user_parts_emails = $this->in->getString('user_parts');
+		$user_parts_emails = explode(',', $user_parts_emails);
 
-			$current_user_ids = array();
-			$current_agent_ids = array();
-			foreach ($ticket->participants as $p) {
-				if ($p->person->is_agent) {
-					$current_agent_ids[] = $p->person->id;
-				} else {
-					$current_user_ids[] = $p->person->id;
+		$got_user_ids = array();
+		$new_user_ids = array();
+		foreach ($user_parts_emails as $email) {
+			if (!$email || !$email_validator->isValid($email)) {
+				continue;
+			}
+
+			$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+			if ($person) {
+				$got_user_ids[] = $person->id;
+			} else {
+				$person = Person::newContactPerson(array('email' => $email));
+				$this->em->persist($person);
+				$this->em->flush();
+				$new_user_ids[] = $person->id;
+			}
+
+			$changed_parts = true;
+			$add_parts[] = $person;
+		}
+
+		$remove_user_ids = array_diff($current_user_ids, $got_user_ids);
+		foreach ($remove_user_ids as $id) {
+			$changed_parts = true;
+			$rem_parts[] = $id;
+		}
+
+		$got_agent_ids = $this->in->getCleanValueArray('agent_parts', 'string', 'discard');
+		foreach ($got_agent_ids as $id) {
+			$changed_parts = true;
+			$add_parts[] = $this->em->find('DeskPRO:Person', $id);
+		}
+
+		$remove_agent_ids = array_diff($current_agent_ids, $got_agent_ids);
+		foreach ($remove_agent_ids as $id) {
+			$changed_parts = true;
+			$rem_parts[] = $id;
+		}
+
+		if ($new_user_ids) {
+			$tracker = $ticket->getTicketLogger();
+			$tracker->recordExtra('enabled_cc', $new_user_ids);
+		}
+
+		#------------------------------
+		# Save
+		#------------------------------
+
+		$this->db->beginTransaction();
+
+		try {
+
+			if ($add_parts) {
+				foreach ($add_parts as $p) {
+					$ticket->addParticipantPerson($p);
+				}
+			}
+			if ($rem_parts) {
+				foreach ($rem_parts as $pid) {
+					$ticket->removeParticipantPerson($pid);
 				}
 			}
 
-			// People cc emails
-			$user_parts_emails = $this->in->getString('user_parts');
-			$user_parts_emails = explode(',', $user_parts_emails);
+			#------------------------------
+			# Handle actions
+			#------------------------------
 
-			$got_user_ids = array();
-			$new_user_ids = array();
-			foreach ($user_parts_emails as $email) {
-				if (!$email || !$email_validator->isValid($email)) {
-					continue;
+			if (!$message['is_agent_note']) {
+				if ($this->in->getBool('options.do_assign')) {
+					$ticket['agent_id'] = $this->in->getUint('options.agent_id');
 				}
 
-				$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
-				if ($person) {
-					$got_user_ids[] = $person->id;
-				} else {
-					$person = Person::newContactPerson(array('email' => $email));
-					$this->em->persist($person);
-					$this->em->flush();
-					$new_user_ids[] = $person->id;
+				if ($this->in->getBool('options.do_assign_team')) {
+					$ticket['agent_team_id'] = $this->in->getUint('options.agent_team_id');
 				}
 
-				$ticket->addParticipantPerson($person);
+				if ($this->in->getBool('options.do_status')) {
+					$ticket['status'] = $this->in->getString('options.status');
+				}
+
+				if ($this->in->getBool('options.do_kbpending')) {
+					$kb_pending = new ArticlePendingCreate();
+					$kb_pending->fromArray(array(
+						'person' => $this->person,
+						'ticket' => $ticket,
+						'message' => $message
+					));
+					$this->em->persist($kb_pending);
+				}
 			}
 
-			$remove_user_ids = array_diff($current_user_ids, $got_user_ids);
-			foreach ($remove_user_ids as $id) {
-				$ticket->removeParticipantPerson($id);
+			// Delete any possible ticket draft
+			if ($draft_pref) {
+				$this->em->remove($draft_pref);
 			}
 
-			$got_agent_ids = $this->in->getCleanValueArray('agent_parts', 'string', 'discard');
-			foreach ($got_agent_ids as $id) {
-				$ticket->addParticipantPerson($id);
-			}
-
-			$remove_agent_ids = array_diff($current_agent_ids, $got_agent_ids);
-			foreach ($remove_agent_ids as $id) {
-				$ticket->removeParticipantPerson($id);
-			}
-
+			$this->em->persist($ticket);
 			$this->em->flush();
-
-			if (count($got_agent_ids) != count($current_agent_ids) OR count($got_user_ids) != count($got_user_ids)) {
-				$changed_parts = true;
-			}
-
-			if ($changed_parts) {
-				if ($new_user_ids) {
-					$tracker = $ticket->getTicketLogger();
-					$tracker->recordExtra('enabled_cc', $new_user_ids);
-				}
-
-				$participants = $this->em->createQuery("
-					SELECT p
-					FROM DeskPRO:TicketParticipant p
-					LEFT JOIN p.person person
-					LEFT JOIN p.person_email person_email
-					WHERE p.ticket = ?1 AND person.is_agent = true
-				")->setParameter(1, $ticket)->execute();
-
-				$updated_agent_parts_count = count($participants);
-
-				$updated_agent_parts = $this->renderView('AgentBundle:Ticket:view-participants-agents.html.twig', array(
-					'ticket' => $ticket,
-					'participants' => $participants
-				));
-			}
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
 		}
-
-		#------------------------------
-		# Handle actions
-		#------------------------------
 
 		if (!$message['is_agent_note']) {
-			if ($this->in->getBool('options.do_assign')) {
-				$ticket['agent_id'] = $this->in->getUint('options.agent_id');
-			}
+			$participants = $this->em->createQuery("
+				SELECT p
+				FROM DeskPRO:TicketParticipant p
+				LEFT JOIN p.person person
+				LEFT JOIN p.person_email person_email
+				WHERE p.ticket = ?1 AND person.is_agent = true
+			")->setParameter(1, $ticket)->execute();
 
-			if ($this->in->getBool('options.do_assign_team')) {
-				$ticket['agent_team_id'] = $this->in->getUint('options.agent_team_id');
-			}
+			$updated_agent_parts_count = count($participants);
 
-			if ($this->in->getBool('options.do_status')) {
-				$ticket['status'] = $this->in->getString('options.status');
-			}
-
-			if ($this->in->getBool('options.do_kbpending')) {
-				$kb_pending = new ArticlePendingCreate();
-				$kb_pending->fromArray(array(
-					'person' => $this->person,
-					'ticket' => $ticket,
-					'message' => $message
-				));
-				$this->em->persist($kb_pending);
-			}
+			$updated_agent_parts = $this->renderView('AgentBundle:Ticket:view-participants-agents.html.twig', array(
+				'ticket' => $ticket,
+				'participants' => $participants
+			));
 		}
-
-		// Delete any possible ticket draft
-		$draft_pref = $this->em->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => "ticket_draft.{$ticket['id']}"));
-		if ($draft_pref) {
-			$this->em->remove($draft_pref);
-		}
-
-		$this->em->persist($ticket);
-		$this->em->flush();
-		$this->em->commit();
 
 		$client_messages = false;
 		if ($this->in->getUint('client_messages_since')) {

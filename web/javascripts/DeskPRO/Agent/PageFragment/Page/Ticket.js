@@ -275,36 +275,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (data.ticket_messages_block) {
 			var new_messages = $(data.ticket_messages_block).hide();
 			new_messages.appendTo($(this.getEl('messages_wrap'))).slideDown('fast');
-
-			var showMessages = $('input.show-messages', this.wrapper).is(':checked');
-			var showAttach = $('input.show-attach', this.wrapper).is(':checked');
-			var showNotes = $('input.show-notes', this.wrapper).is(':checked');
-			var showLogs = $('input.show-logs', this.wrapper).is(':checked');
-
-			var msgWrap = $('.messages-wrap', this.wrapper);
-
-			if (!showAttach) {
-				$('.attachment-list', new_messages).hide();
-			}
-			if (showMessages) {
-				$('.attachment-lone', new_messages).hide();
-			}
-
-			if (!showMessages) {
-				new_messages.find('article.message:not(.note-message)').hide();
-				if (showAttach) {
-					new_messages.find('article.message.has-attach').hide();
-				}
-			}
-			if (!showNotes) {
-				new_messages.find('div.note-message').hide();
-
-			if (!showLogs) {
-				new_messages.find('div.log-row').hide();
-				new_messages.find('div.log-batch').hide();
-			}}
-
-			this._initMessage(new_messages);
 		}
 
 		if (data.updated_agent_parts_html) {
@@ -316,6 +286,37 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.getEl('replybox_wrap').empty().append(data.replybox_html);
 			DeskPRO_Window.initInterfaceServices(this.getEl('replybox_wrap'));
 			$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
+		}
+
+		var showMessages = $('input.show-messages', this.wrapper).is(':checked');
+		var showAttach   = $('input.show-attach', this.wrapper).is(':checked');
+		var showNotes    = $('input.show-notes', this.wrapper).is(':checked');
+		var showLogs     = $('input.show-logs', this.wrapper).is(':checked');
+
+		var msgWrap = $('.messages-wrap', this.wrapper);
+
+		this._initMessage(new_messages);
+
+		if (!showAttach) {
+			$('.attachment-list', this.getEl('messages_wrap')).hide();
+		}
+		if (showMessages) {
+			$('.attachment-lone', this.getEl('messages_wrap')).hide();
+		}
+
+		if (!showMessages) {
+			this.getEl('messages_wrap').find('article.message:not(.note-message)').hide();
+			if (showAttach) {
+				this.getEl('messages_wrap').find('article.message.has-attach').hide();
+			}
+		}
+		if (!showNotes) {
+			this.getEl('messages_wrap').find('div.note-message').hide();
+		}
+
+		if (!showLogs) {
+			this.getEl('messages_wrap').find('.log-row').hide();
+			this.getEl('messages_wrap').find('.log-batch').hide();
 		}
 
 		window.setTimeout(this.updateUi.bind(this), 450);

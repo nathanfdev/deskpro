@@ -275,26 +275,28 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 				$sql = substr($sql, 0, 5000);
 
 				$params = array();
-				foreach ($q['params'] as $v) {
-					if (is_numeric($v) || ctype_digit($v)) {
-						$params[] = $v;
-					} elseif (is_string($v)) {
-						$v = str_replace(array("\r\n", "\n", "\t"), ' ', $v);
-						$v = preg_replace('# {2,}#', ' ', $v);
+				if ($q['params']) {
+					foreach ($q['params'] as $v) {
+						if (is_numeric($v) || ctype_digit($v)) {
+							$params[] = $v;
+						} elseif (is_string($v)) {
+							$v = str_replace(array("\r\n", "\n", "\t"), ' ', $v);
+							$v = preg_replace('# {2,}#', ' ', $v);
 
-						if (strlen($v) > 100) {
-							$v = substr($v, 0, 100);
+							if (strlen($v) > 100) {
+								$v = substr($v, 0, 100);
+							}
+
+							$params[] = 'string:' . $v;
+						} elseif ($v === null) {
+							$params[] = 'NULL';
+						} elseif (is_array($v)) {
+							$params[] = 'array:' . count($v);
+						} elseif (is_object($v)) {
+							$params[] = get_class($v);
+						} else {
+							$params[] = gettype($v);
 						}
-
-						$params[] = 'string:' . $v;
-					} elseif ($v === null) {
-						$params[] = 'NULL';
-					} elseif (is_array($v)) {
-						$params[] = 'array:' . count($v);
-					} elseif (is_object($v)) {
-						$params[] = get_class($v);
-					} else {
-						$params[] = gettype($v);
 					}
 				}
 
