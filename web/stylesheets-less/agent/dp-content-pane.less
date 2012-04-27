@@ -1039,13 +1039,11 @@ article.content-message {
 
 article.content-message .avatar {
 	background: #fff;
-	/*
-	padding: 1px;
-	box-shadow: 0 0px 1px rgba(0,0,0,0.5), inset 0 1px 0 rgba(0,0,0,0.1), inset 0 0 2px 1px rgba(0,0,0,0.1);
-	*/
 	float: left;
 	width: 40px;
 	height: 40px;
+	.rounded(2px);
+	overflow: hidden;
 }
 article.content-message .avatar img {
 	margin: 0;
@@ -1070,10 +1068,10 @@ article.content-message .content header {
 	border-bottom: 1px solid #acb2bf;
 	position: relative;
 
-	color: #5B513D;
+	color: #404040;
 	line-height: 22px;
 	padding-top: 1px;
-	height: 22px;
+	height: 26px;
 	overflow: hidden;
 }
 
@@ -1085,7 +1083,7 @@ article.content-message.note-message .content header {
 	position: relative;
 
 	color: #5B513D;
-	line-height: 22px;
+	line-height: 26px;
 }
 
 article.content-message.agent-message .content header {
@@ -1094,29 +1092,29 @@ article.content-message.agent-message .content header {
 	box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset;
 	border-bottom: 1px solid #bfb9ac;
 	position: relative;
-	color: #404040;
 }
 
 article.content-message .content header h4 {
 	font-family: @heading-font;
 	font-weight: bold;
-	font-size: 11px;
+	font-size: 12px;
+	line-height: 25px;
 	margin: 0 5px 0 8px;
 	display: inline;
 }
 
 article.content-message .content header .message-counter {
 	float: right;
-	font-size: 10px;
+	font-size: 11px;
 	margin-right: 6px;
-	line-height: 22px;
+	line-height: 25px;
 }
 
 article.content-message .content header .message-counter.with-gear {
 	cursor: pointer;
     background-repeat: no-repeat;
-	background-position: 0 4px;
-    background-image: url(../../images/agent/gear-dark.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 4px; sprite-margin-bottom: 15px; */;
+	background-position: 0 7px;
+    background-image: url(../../images/agent/gear-dark.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-top: 7px; sprite-margin-bottom: 15px; */;
 	padding-left: 16px;
 }
 
