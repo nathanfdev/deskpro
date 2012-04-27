@@ -112,7 +112,9 @@ class UnitOfWork extends DoctrineUnitOfWork
 		if ($repos instanceof Preloadable) {
 			$repos->preload();
 		} else {
-			$repos->findAll();
+			foreach ($repos->findAll() as $e) {
+				$e->__load();
+			}
 		}
 	}
 
