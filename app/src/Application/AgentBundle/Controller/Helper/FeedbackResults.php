@@ -45,7 +45,7 @@ use Orb\Util\Arrays;
 class FeedbackResults
 {
 	/**
-	 * @var Application\AgentBundle\Controller\AbstractController
+	 * @var \Application\AgentBundle\Controller\AbstractController
 	 */
 	protected $controller;
 
@@ -78,7 +78,7 @@ class FeedbackResults
 	{
 		$result_cache = false;
 		if ($controller->in->getUint('cache_id')) {
-			$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($controller->in->getUint('cache_id'));
+			$result_cache = $controller->em->getRepository('DeskPRO:ResultCache')->find($controller->in->getUint('cache_id'));
 			if ($result_cache['person_id'] != $controller->person['id']) {
 				$result_cache = false;
 			}
@@ -208,7 +208,7 @@ class FeedbackResults
 	protected function _getPageFromFeedbackIds(array $feedback_ids, $page, $per_page)
 	{
 		$page_feedback_ids = Arrays::getPageChunk($feedback_ids, $page, $per_page);
-		$feedback_raw = App::getEntityRepository('DeskPRO:Feedback')->getByIds($page_feedback_ids);
+		$feedback_raw = $this->controller->em->getEntityRepository('DeskPRO:Feedback')->getByIds($page_feedback_ids);
 
 		// - We'll get a page of results, but that actual page isn't going to be
 		// sorted the way we want, because MySQL was just sent a list of ID's.
