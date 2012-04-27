@@ -303,7 +303,7 @@
 </div>
 </form>
 
-<div id="test_settings_overlay" style="width: 400px; height: 230px; overflow:auto; display: none;">
+<div id="test_settings_overlay" style="width: 500px; height: 300px; overflow:auto; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay close-trigger"></span>
 		<h4>{{ phrase('admin.general.test_outgoing_email') }}</h4>
@@ -318,7 +318,9 @@
 					{{ phrase('admin.general.notice_no_errors_detected') }}
 				</div>
 				<div class="error" style="display:none">
-					{{ phrase('admin.general.error_sending_test') }}: <span class="error-msg"></span>
+					{{ phrase('admin.general.error_sending_test') }}
+					<a class="show-error-message">{{ phrase('admin.general.error_see_response') }}</a>
+					<div class="error-msg" style="display: none; margin-top: 8px; padding: 8px; background-color: #fff;"></div>
 				</div>
 			</div>
 		</div>

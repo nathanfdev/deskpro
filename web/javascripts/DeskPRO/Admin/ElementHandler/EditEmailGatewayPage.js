@@ -19,7 +19,11 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 
 				$('.result', el).hide().removeClass('loading');
 				$('.success', el).hide();
-				$('.error', el).hide();
+				$('.error, .error .error-msg', el).hide();
+				$('.show-error-message', el).show().on('click', function() {
+					$(this).hide();
+					el.find('.error-msg').show();
+				});
 
 				var postData = $('#gateway_form').serializeArray();
 				self.testPostData = postData;
@@ -45,6 +49,8 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 						$('.success', el).show();
 					} else {
 						$('.error', el).show();
+						$('.error-msg', el).hide();
+						$('.show-error-message', el).show();
 						$('.error-msg', el).text(data.error_code + ' ' + data.error_message);
 					}
 				}

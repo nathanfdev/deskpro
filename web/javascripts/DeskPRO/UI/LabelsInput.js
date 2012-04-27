@@ -74,7 +74,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 		this.options.textarea.textext({
 			plugins: 'autocomplete suggestions tags prompt',
 			suggestions: tagSource,
-			prompt: this.options.placeholder || 'Add a label...',
+			prompt: this.options.placeholder || (DESKPRO_LANG['agent.general.add_a_label'] || 'Add a label...'),
 			tags: {
 				items: exist
 			}

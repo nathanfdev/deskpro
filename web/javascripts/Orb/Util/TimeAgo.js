@@ -26,7 +26,7 @@ Orb.Util.TimeAgo = {
 		'months':   '{0} months',
 		'year':     '1 year',
 		'years':    '{0} years',
-        'ago':      'ago'
+		'ago':      'ago'
 	},
 
 
@@ -35,8 +35,8 @@ Orb.Util.TimeAgo = {
 	 *
 	 * @param date
 	 */
-	get: function(date) {
-		return this.getForMs(this.getDateDiff(date));
+	get: function(date, ago) {
+		return this.getForMs(this.getDateDiff(date), ago);
 	},
 
 
@@ -105,10 +105,11 @@ Orb.Util.TimeAgo = {
 
 			var data = el.data('timeago');
 			if (!isNaN(data.datetime)) {
-                var text = self.get(data.datetime);
-                if (!el.data('timeago-no-ago')) {
-                    text += ' ' + self.phrases['ago'];
-                }
+				var ago = true;
+				if (el.data('timeago-no-ago') == "1") {
+					ago = false;
+				}
+                var text = self.get(data.datetime, ago);
 				el.text(text);
 			}
 		});
@@ -152,18 +153,18 @@ Orb.Util.TimeAgo = {
 	 *
 	 * @param ms
 	 */
-	getForMs: function(ms) {
+	getForMs: function(ms, ago) {
 		var info = this.getRelativeInfo(ms);
 
 		var total_secs = parseInt(ms / 1000);
 
 		// less than 120 secons: 20 seconds
 		if (total_secs <= 120) {
-			return this.getPhraseFor('sec', info.secs).replace('{0}', info.secs);
+			return this.getPhraseFor('sec', info.secs, ago);
 
 		// less than 120 minutes: 20 minutes
 		} else if (total_secs <= 1200) {
-			return this.getPhraseFor('min', info.mins).replace('{0}', info.mins);
+			return this.getPhraseFor('min', info.mins, ago);
 
 		// less than 24 hours: 2 1/2 hours
 		} else if (total_secs <= 86400) {
@@ -187,43 +188,43 @@ Orb.Util.TimeAgo = {
 				phrase_hours += ' ' + fraction;
 			}
 
-			return this.getPhraseFor('hour', phrase_num).replace('{0}', phrase_hours);
+			return this.getPhraseFor('hour', phrase_num, ago);
 
 		// less than 3 days: 2 days 2 hours
 		} else if (total_secs <= 259200) {
-			var phrase_days = this.getPhraseFor('day', info.days).replace('{0}', info.days);
+			var phrase_days = this.getPhraseFor('day', info.days, ago);
 			if (info.hours > 0) {
-				phrase_days += ' ' + this.getPhraseFor('hour', info.hours).replace('{0}', info.hours);
+				phrase_days += ' ' + this.getPhraseFor('hour', info.hours, ago);
 			}
 
 			return phrase_days;
 
 		// less than 1 month: 5 days
 		} else if (total_secs <= 2419200) {
-			return this.getPhraseFor('day', info.days).replace('{0}', info.days);
+			return this.getPhraseFor('day', info.days, ago);
 
 		// less than 3 months: 5 weeks
 		} else if (total_secs <= 7257600) {
 			var weeks = parseInt(info.days / 7);
-			return this.getPhraseFor('week', weeks).replace('{0}', weeks);
+			return this.getPhraseFor('week', weeks, ago);
 
 		// less than a year: 8 months
 		} else if (total_secs <= 29030400) {
 			var months = parseInt(info.days / 30);
-			return this.getPhraseFor('month', info.months).replace('{0}', months);
+			return this.getPhraseFor('month', info.months, ago);
 
 		// less than 5 years: 1 year 3 months
 		} else if (total_secs <= 145152000) {
-			var phrase_years = this.getPhraseFor('year', info.years).replace('{0}', info.years);
+			var phrase_years = this.getPhraseFor('year', info.years, ago);
 			if (info.months > 0) {
-				phrase_years += ' ' + this.getPhraseFor('month', info.months).replace('{0}', info.months);
+				phrase_years += ' ' + this.getPhraseFor('month', info.months, ago);
 			}
 
 			return phrase_years;
 
 		// more than 5 years: 8 years
 		} else {
-			return this.getPhraseFor('year', info.years).replace('{0}', info.years);
+			return this.getPhraseFor('year', info.years, ago);
 		}
 	},
 
@@ -248,7 +249,11 @@ Orb.Util.TimeAgo = {
 	 * @param string type
 	 * @param int num
 	 */
-	getPhraseFor: function(type, num) {
+	getPhraseFor: function(type, num, ago) {
+
+		if (Orb_Util_TimeAgo_getPhraseFor) {
+			return Orb_Util_TimeAgo_getPhraseFor(type, num, ago);
+		}
 
 		if (type == 'sec' && num <= 0) {
 			return this.phrases['sec_less'];
@@ -259,7 +264,15 @@ Orb.Util.TimeAgo = {
 			k += 's';
 		}
 
-		return this.phrases[k];
+		var phrase = this.phrases[k];
+
+		if (ago) {
+			phrase += ' ' + this.phrases['ago'];
+		}
+
+		phrase = phrase.replace(/\{0\}/g, num);
+
+		return phrase;
 	}
 };
 

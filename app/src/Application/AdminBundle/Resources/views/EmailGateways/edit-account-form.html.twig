@@ -392,7 +392,9 @@
 					{{ phrase('admin.gateway.no_errors_were_reported') }}
 				</div>
 				<div class="error">
-					{{ phrase('admin.gateway.error_while_connecting') }}: <span class="error-msg"></span>
+					{{ phrase('admin.gateway.error_while_connecting') }}
+					<a class="show-error-message">{{ phrase('admin.general.error_see_response') }}</a>
+					<div class="error-msg" style="display: none; margin-top: 8px; padding: 8px; background-color: #fff;"></div>
 				</div>
 			</div>
 		</div>
@@ -420,7 +422,9 @@
 					{{ phrase('admin.general.notice_no_errors_detected') }}
 				</div>
 				<div class="error">
-					{{ phrase('admin.general.error_sending_test') }}: <span class="error-msg"></span>
+					{{ phrase('admin.general.error_sending_test') }}
+					<a class="show-error-message">{{ phrase('admin.general.error_see_response') }}</a>
+					<div class="error-msg" style="display: none; margin-top: 8px; padding: 8px; background-color: #fff;"></div>
 				</div>
 			</div>
 		</div>
