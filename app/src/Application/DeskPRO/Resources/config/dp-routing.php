@@ -125,4 +125,12 @@ $collection->add('dp3_redirect_idea', new Route(
 ));
 
 
+$collection->add('dp_agent_lang', new Route(
+	'/internal-data/agent-lang.js',
+	array('_controller' => 'DeskPRO:Data:agentLangJs'),
+	array(),
+	array()
+));
+
+
 return $collection;

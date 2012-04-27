@@ -60,6 +60,8 @@
 	{% block page_js_exec %}{% endblock %}
 
 	<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
+
+	<script src="{{ path('dp_agent_lang') }}"></script>
 </head>
 <body class="{% if is_demo %}is-demo{% endif %} {% if is_post_install %}post-install{% endif %}" {% if page_handler %}data-element-handler="{{ page_handler }}"{% endif %}>
 

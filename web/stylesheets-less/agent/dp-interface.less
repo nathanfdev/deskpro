@@ -912,8 +912,36 @@ input.tab-focus {
  * jQuery checkbox theme
 /*****************************************************************************/
 
-.jquery-checkbox       {display: inline; font-size: 13px; line-height: 13px; cursor: pointer; cursor: hand;}
+.jquery-checkbox       {display: inline; font-size: 13px; line-height: 13px; cursor: pointer; cursor: hand; position: relative;}
 .jquery-checkbox .mark {display: inline;}
+
+.jquery-checkbox .dp-on-text,
+.jquery-checkbox .dp-off-text {
+	display: block;
+	font-size: 10px;
+	font-weight: bold;
+	line-height: 100%;
+	position: absolute;
+	top: 4px;
+	text-align: center
+}
+
+.jquery-checkbox .dp-on-text {
+	left: 8px;
+	right: 4px;
+	color: #fff;
+	text-shadow: 1px 1px rgba(0, 0, 0, 0.3);
+}
+.jquery-checkbox .dp-off-text {
+	color: #000;
+	text-shadow: 1px 1px rgba(255, 255, 255, 0.3);
+	left: 2px;
+	right: 11px;
+}
+
+.jquery-checkbox .dp-on-text { display: none; }
+.jquery-checkbox.jquery-checkbox-checked .dp-on-text { display: block; }
+.jquery-checkbox.jquery-checkbox-checked .dp-off-text { display: none; }
 
 .jquery-checkbox img {vertical-align: middle; width: 41px; height: 13px;}
 .jquery-checkbox img{background: transparent url(../../images/agent/checkbox-onoff.png) no-repeat;}

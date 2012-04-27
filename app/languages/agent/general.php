@@ -656,4 +656,7 @@
 	'agent.general.reltimeago_x_week'      => '{0} weeks ago',
 	'agent.general.reltimeago_x_month'     => '{0} months ago',
 	'agent.general.reltimeago_x_year'      => '{0} years ago',
+
+	'agent.general.check_on' => 'ON',
+	'agent.general.check_off' => 'OFF',
 );

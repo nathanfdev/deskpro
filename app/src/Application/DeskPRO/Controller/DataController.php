@@ -56,6 +56,31 @@ class DataController extends AbstractController
 		return $response;
 	}
 
+	public function agentLangJsAction()
+	{
+		$tr = $this->container->getTranslator();
+
+		$js_phrases = array();
+		$js_phrases['agent.general.add_a_label'] = $tr->phrase('agent.general.add_a_label');
+		$js_phrases['agent.general.check_on']    = $tr->phrase('agent.general.check_on');
+		$js_phrases['agent.general.check_off']   = $tr->phrase('agent.general.check_off');
+
+		foreach (array('reltime', 'reltimeago') as $pre) {
+			foreach (array('less_second', 'second', 'minute', 'hour', 'day', 'week', 'month', 'year') as $name) {
+				$js_phrases["agent.general.{$pre}_1_{$name}"] = $tr->phrase("agent.general.{$pre}_1_{$name}");
+				$js_phrases["agent.general.{$pre}_x_{$name}"] = $tr->phrase("agent.general.{$pre}_x_{$name}");
+			}
+		}
+
+		$js = "window.DESKPRO_LANG = " . json_encode($js_phrases) . ";";
+
+		$response = $this->response;
+		$response->headers->set('Content-Type', 'application/javascript');
+		$response->setContent($js);
+
+		return $response;
+	}
+
 	public function logJsErrorAction()
 	{
 		$message    = $this->in->getString('message');

@@ -79,7 +79,7 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/jquery.textarea-expander.js',
 		'vendor/jquery/jquery.ajax-retry.js',
 
-		'vendor/jquery/jquery-checkbox/jquery.checkbox.min.js',
+		'vendor/jquery/jquery-checkbox/jquery.checkbox.js',
 		'vendor/jquery/token-field/jquery.token-field.js',
 
 		'vendor/jquery/jquery-textext/src/js/textext.core.js',

@@ -150,18 +150,6 @@ function Orb_Util_TimeAgo_getPhraseFor(type, num, ago) {
 }
 JS;
 
-		$js_phrases = array();
-		$js_phrases['agent.general.add_a_label'] = $tr->phrase('agent.general.add_a_label');
-
-		foreach (array('reltime', 'reltimeago') as $pre) {
-			foreach (array('less_second', 'second', 'minute', 'hour', 'day', 'week', 'month', 'year') as $name) {
-				$js_phrases["agent.general.{$pre}_1_{$name}"] = $tr->phrase("agent.general.{$pre}_1_{$name}");
-				$js_phrases["agent.general.{$pre}_x_{$name}"] = $tr->phrase("agent.general.{$pre}_x_{$name}");
-			}
-		}
-
-		$js[] = "window.DESKPRO_LANG = " . json_encode($js_phrases) . ";";
-
 		$js = implode("\n", $js);
 
 		$response = $this->response;
