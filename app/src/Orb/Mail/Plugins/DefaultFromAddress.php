@@ -64,7 +64,8 @@ class DefaultFromAddress implements \Swift_Events_SendListener
 		if (!$message->getFrom()) {
 			$message->setFrom($this->from, $this->name);
 		} else {
-			$from = array_pop($message->getFrom());
+			$from = $message->getFrom();
+			$from = array_pop($from);
 
 			// Default email without the name
 			if ($from[0] == $this->from && empty($from[1])) {

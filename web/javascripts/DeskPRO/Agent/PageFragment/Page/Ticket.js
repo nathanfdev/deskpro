@@ -219,7 +219,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					window.setTimeout((function() {
 						this.closeSelf();
 					}).bind(this), 400);
-				} else {
+				} else if (!result.dupe_message) {
 					// Apply changed props
 					var agentProp = this.changeManager.getPropertyManager('agent_id');
 					agentProp.setIncomingValue(result.agent_id);
@@ -257,6 +257,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	handleTicketUpdate: function(data) {
+
+		if (data.dupe_message) {
+			// If its a dupe then it'd already be added ot the message list,
+			// we can just clear out the message box
+			var sig = this.getEl('replybox_wrap').find('textarea.signature-value').val();
+			if (sig) sig = "\n\n" + sig;
+
+			this.getEl('replybox_wrap').find('textarea[name="message"]').val(sig);
+			return;
+		}
+
 		if (data.client_messages) {
 			DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
 		}
