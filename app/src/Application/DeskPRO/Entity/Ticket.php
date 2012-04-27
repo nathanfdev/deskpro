@@ -1483,6 +1483,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		if ($this->is_hold && $status != self::STATUS_AWAITING_AGENT) {
 			$this->setModelField('is_hold', false);
+			$this->setModelField('urgency', 0);
 		}
 	}
 
