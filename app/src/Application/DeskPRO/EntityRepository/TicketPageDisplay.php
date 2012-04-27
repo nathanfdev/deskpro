@@ -106,8 +106,69 @@ class TicketPageDisplay extends EntityRepository
 			}
 		}
 
+		// If we get here with still nothing,
+		// then we're auto-generating a 'create' form for everything there is in the system (oh, lawdy!)
+		if ($page_data === null) {
+			$is_resolved = true;
+			$page_data = $this->generateFullSectionData();
+		}
+
 		return $page_data;
 	}
+
+
+	/**
+	 * Generates a page data array that has all enable-able components on it.
+	 *
+	 * @return array
+	 */
+	public function generateFullSectionData()
+	{
+		$page_data = array();
+
+		$page_data[] = array(
+			'id' => 'ticket_department',
+			'field_type' => 'ticket_department'
+		);
+		$page_data[] = array(
+			'id' => 'ticket_category',
+			'field_type' => 'ticket_category'
+		);
+		$page_data[] = array(
+			'id' => 'ticket_priority',
+			'field_type' => 'ticket_priority'
+		);
+		$page_data[] = array(
+			'id' => 'ticket_product',
+			'field_type' => 'ticket_product'
+		);
+
+		// Custom fields
+		$fields = $this->_em->getRepository('DeskPRO:CustomDefTicket')->getEnabledTopFields();
+		foreach ($fields as $f) {
+			$page_data[] = array(
+				'id' => 'ticket_field[1]',
+				'field_type' => 'ticket_field',
+				'field_id' => $f->getId()
+			);
+		}
+
+		$page_data[] = array(
+			'id' => 'ticket_subject',
+			'field_type' => 'ticket_subject'
+		);
+		$page_data[] = array(
+			'id' => 'message',
+			'field_type' => 'message'
+		);
+		$page_data[] = array(
+			'id' => 'attachments',
+			'field_type' => 'attachments'
+		);
+
+		return $page_data;
+	}
+
 
 	public function getSectionData($department, $zone, $section = 'default')
 	{

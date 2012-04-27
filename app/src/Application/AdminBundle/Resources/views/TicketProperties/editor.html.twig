@@ -11,7 +11,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 <div class="page-nav-block">
 	<div class="inner-shadow"></div>
 	<section class="top">
-		{% if is_default and not (not department and section == 'create') %}<div class="disable-overlay"></div>{% endif %}
+		{% if is_default %}<div class="disable-overlay"></div>{% endif %}
 		<header>
 			<h4>{{ phrase('admin.tickets.ticket_elements') }}</h4>
 		</header>
@@ -97,8 +97,15 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		<br />
 	</nav>
 
-	{% if not (not department and section == 'create') %}
 	<div class="editor-toggle-alt-view">
+		{% if is_default %}
+			{% if section == 'view' or section == 'modify' %}
+				{{ phrase('admin.tickets.view_modify_ticket_page_default_explain') }}
+			{% else %}
+				{{ phrase('admin.tickets.new_ticket_form_default_explain') }}
+			{% endif %}
+			<br />
+		{% endif %}
 		<input
 			type="checkbox"
 			class="onoff-slider"
@@ -108,15 +115,14 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			{% if not is_default %}checked="checked"{% endif %}
 		/>
         {% if section == 'view' %}
-        {% set phrase_part = phrase('admin.tickets.view_ticket_page') %}
+        	{% set phrase_part = phrase('admin.tickets.view_ticket_page') %}
         {% elseif section == 'create' %}
-        {% set phrase_part = phrase('admin.tickets.new_ticket_form') %}
+        	{% set phrase_part = phrase('admin.tickets.new_ticket_form') %}
         {% else %}
-        {% set phrase_part = phrase('admin.tickets.modify_ticket_form') %}
+        	{% set phrase_part = phrase('admin.tickets.modify_ticket_form') %}
         {% endif %}
         {{ phrase('admin.tickets.enable_alternative_for_x', {'subphrase':phrase_part}) }}
 	</div>
-	{% endif %}
 
 	<section>
 		<form
@@ -127,7 +133,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 			data-element-handler="DeskPRO.Admin.ElementHandler.TicketEditor"
 			data-section="{{section}}"
 		>
-		{% if is_default and not (not department and section == 'create') %}<div class="disable-overlay"></div>{% endif %}
+		{% if is_default %}<div class="disable-overlay"></div>{% endif %}
 
 		<ul id="admin_ticket_editor_items" class="dp-form">
 			<li class="no-items-notice">

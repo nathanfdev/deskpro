@@ -161,4 +161,6 @@
     'admin.tickets.weeks'                                  => 'Weeks',
     'admin.tickets.widget_location'                        => 'Widget Location',
     'admin.tickets.widget_type'                            => 'Widget Type',
+	'admin.tickets.new_ticket_form_default_explain'         => 'These options are being automatically generated. All of the available fields your helpdesk has defined are enabled.',
+	'admin.tickets.view_modify_ticket_page_default_explain' => 'These options are being automatically generated based on the fields visible on the "New Ticket Form"',
 );
