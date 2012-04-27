@@ -144,8 +144,9 @@ class FeedbackResults
 			 */
 			$result_cache['extra'] = array();
 
-			$this->em->persist($result_cache);
-			$this->em->flush();
+			$em = App::getOrm();
+			$em->persist($result_cache);
+			$em->flush();
 		}
 
 		return new self($controller, $result_cache);

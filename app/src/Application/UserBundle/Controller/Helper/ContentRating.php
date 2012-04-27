@@ -118,9 +118,11 @@ class ContentRating
 			else return null;
 		}
 
+		$em = App::getOrm();
+
 		$res = null;
 		if ($this->person) {
-			$res = $this->em->createQuery("
+			$res = $em->createQuery("
 				SELECT r
 				FROM DeskPRO:Rating r
 				WHERE
@@ -131,7 +133,7 @@ class ContentRating
 			  ->setParameter(3, $this->visitor)
 			  ->execute();
 		} else {
-			$res = $this->em->createQuery("
+			$res = $em->createQuery("
 				SELECT r
 				FROM DeskPRO:Rating r
 				WHERE

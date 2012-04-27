@@ -54,9 +54,10 @@ class NewCommentFormType extends AbstractType
 	public function buildForm(FormBuilder $builder, array $options)
 	{
 		if (!$this->person['id']) {
-			$builder->add('name', 'text');
 			$builder->add('email', 'text');
 		}
+
+		$builder->add('name', 'text');
 		$builder->add('content', 'textarea');
 	}
 

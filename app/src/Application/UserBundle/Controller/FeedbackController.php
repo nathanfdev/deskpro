@@ -337,6 +337,13 @@ class FeedbackController extends AbstractController
 			return $this->redirectRoute('user_feedback_view', array('slug' => $feedback->getUrlSlug()), 301);
 		}
 
+		return $this->viewFeedback($feedback);
+	}
+
+	private function viewFeedback($feedback, $errors = null)
+	{
+
+
 		// Get the user subscription
 		$subscription = false;
 		if (!$this->person->isGuest()) {
@@ -396,7 +403,6 @@ class FeedbackController extends AbstractController
 		));
 	}
 
-
 	/**
 	 * Submit a new comment
 	 *
@@ -409,7 +415,7 @@ class FeedbackController extends AbstractController
 			return $this->renderStandardError('@user.error.feedback_not_found', '@user.error.not_found', 404);
 		}
 
-		if ($content_object == 'closed') {
+		if ($feedback->getStatus() == 'closed') {
 			return $this->renderStandardError('@user.feedback.voting_closed', '@user.feedback.voting_closed_explain');
 		}
 
@@ -420,6 +426,9 @@ class FeedbackController extends AbstractController
 		);
 
 		$newcomment_formtype = new NewCommentFormType($this->person);
+		/**
+		 *
+		 */
 		$form = $this->get('form.factory')->create($newcomment_formtype, $new_comment);
 
 		if ($this->get('request')->getMethod() == 'POST') {
@@ -435,7 +444,10 @@ class FeedbackController extends AbstractController
 					));
 				}
 			}
+
+			return $this->viewFeedback($feedback);
 		}
+
 		return $this->redirectRoute('user_feedback_view', array(
 			'slug' => $feedback->getUrlSlug(),
 		));
