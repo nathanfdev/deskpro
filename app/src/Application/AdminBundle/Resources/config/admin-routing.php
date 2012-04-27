@@ -26,6 +26,20 @@ $collection->add('admin_welcome', new Route(
 	array()
 ));
 
+$collection->add('admin_apps', new Route(
+	'/apps',
+	array('_controller' => 'AdminBundle:Settings:apps'),
+	array(),
+	array()
+));
+
+$collection->add('admin_apps_toggle', new Route(
+	'/apps/toggle',
+	array('_controller' => 'AdminBundle:Settings:appToggle'),
+	array(),
+	array()
+));
+
 $collection->add('admin_networkcheck', new Route(
 	'/misc/network',
 	array('_controller' => 'AdminBundle:Settings:quickSetup'),

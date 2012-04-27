@@ -49,6 +49,11 @@ use Orb\Util\Numbers;
 class ContentRating
 {
 	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	protected $em;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\ContentAbstract
 	 */
 	protected $content_object;
@@ -92,6 +97,7 @@ class ContentRating
 		$this->visitor = $visitor;
 		$this->content_object = $content_object;
 
+		$this->em = App::getOrm();
 	}
 
 

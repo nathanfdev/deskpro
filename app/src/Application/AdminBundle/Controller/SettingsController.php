@@ -518,4 +518,15 @@ class SettingsController extends AbstractController
 			'show_complete_form' => ($setup_initial < 30)
 		));
 	}
+
+	############################################################################
+	# apps
+	############################################################################
+
+	public function appsAction()
+	{
+		return $this->render('AdminBundle:Settings:apps.html.twig', array(
+
+		));
+	}
 }

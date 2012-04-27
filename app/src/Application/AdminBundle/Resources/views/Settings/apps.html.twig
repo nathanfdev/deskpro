@@ -1,0 +1,83 @@
+{% set page_handler = 'DeskPRO.Admin.ElementHandler.SettingsPage' %}
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagebar %}
+	<ul>
+		<li>{{ phrase('admin.general.apps') }}</li>
+	</ul>
+{% endblock %}
+{% block page %}
+
+<div class="portal-toggle inline chat">
+	{% if app.getSetting('user.portal_enabled') %}
+		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
+	{% else %}
+		<a class="toggle-btn disabled" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
+	{% endif %}
+	<h3>{{ phrase('admin.general.apps_chat') }}</h3>
+	<p>
+		{{ phrase('admin.general.apps_chat_explain') }}
+	</p>
+</div>
+
+<div class="portal-toggle inline chat">
+	{% if app.getSetting('user.portal_enabled') %}
+		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
+	{% else %}
+		<a class="toggle-btn disabled" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
+	{% endif %}
+	<h3>{{ phrase('admin.general.apps_feedback') }}</h3>
+	<p>
+		{{ phrase('admin.general.apps_feedback_explain') }}
+	</p>
+	<div class="screen"><img src="{{ asset('images/admin/screens/feedback.png') }}" /></div>
+</div>
+
+<div class="portal-toggle inline chat">
+	{% if app.getSetting('user.portal_enabled') %}
+		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
+	{% else %}
+		<a class="toggle-btn disabled" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
+	{% endif %}
+	<h3>{{ phrase('admin.general.apps_tasks') }}</h3>
+	<p>
+		{{ phrase('admin.general.apps_tasks_explain') }}
+	</p>
+</div>
+
+<div class="portal-toggle inline chat">
+	{% if app.getSetting('user.portal_enabled') %}
+		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
+	{% else %}
+		<a class="toggle-btn disabled" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
+	{% endif %}
+	<h3>{{ phrase('admin.general.apps_news') }}</h3>
+	<p>
+		{{ phrase('admin.general.apps_news_explain') }}
+	</p>
+</div>
+
+<div class="portal-toggle inline chat">
+	{% if app.getSetting('user.portal_enabled') %}
+		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
+	{% else %}
+		<a class="toggle-btn disabled" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
+	{% endif %}
+	<h3>{{ phrase('admin.general.apps_downloads') }}</h3>
+	<p>
+		{{ phrase('admin.general.apps_downloads_explain') }}
+	</p>
+</div>
+
+<div class="portal-toggle inline chat">
+	{% if app.getSetting('user.portal_enabled') %}
+		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
+	{% else %}
+		<a class="toggle-btn disabled" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
+	{% endif %}
+	<h3>{{ phrase('admin.general.apps_kb') }}</h3>
+	<p>
+		{{ phrase('admin.general.apps_kb_explain') }}
+	</p>
+</div>
+
+{% endblock %}

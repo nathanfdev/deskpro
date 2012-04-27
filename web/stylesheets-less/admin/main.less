@@ -265,6 +265,16 @@ span.label.notice{background-color:#62cffc;}
 	background-position: 9px 0px;
 	background-image: url(../../images/admin/app-nav/start-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 9px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
 }
+#dp_admin_nav_sections li a span.apps {
+	background-repeat: no-repeat;
+	background-position: 7px 0px;
+	background-image: url(../../images/admin/app-nav/apps.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
+}
+#dp_admin_nav_sections li:hover a span.apps {
+	background-repeat: no-repeat;
+	background-position: 7px 0px;
+	background-image: url(../../images/admin/app-nav/apps-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 7px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
+}
 #dp_admin_nav_sections li a span.home {
 	background-repeat: no-repeat;
 	background-position: 4px 0px;
@@ -3056,9 +3066,34 @@ nav.admin-object-nav li:hover {
 	margin: 0 1px 20px 1px;
 	.border-radius(0, 0, 6px, 6px);
 
+	&.inline {
+		.border-radius(6px, 6px, 6px, 6px);
+	}
+
+	h3 {
+		font-size: 14pt;
+		padding: 8px;
+		padding-bottom: 0;
+		margin: 0 15px 0 98px;
+	}
+
 	p {
 		padding: 8px;
-		margin: 0 15px 0 115px;
+		margin: 0 15px 0 98px;
+	}
+
+	&.chat .toggle-btn {
+		margin-top: 8px;
+	}
+
+	.screen {
+		padding: 8px;
+		margin: 0 0 0 98px;
+
+		img {
+			.rounded(5px);
+			overflow: hidden;
+		}
 	}
 
 	.toggle-btn {
