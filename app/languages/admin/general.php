@@ -87,4 +87,5 @@
     'admin.general.view'                      => 'View',
     'admin.general.yes'                       => 'Yes',
 	'admin.general.view_by' => 'View by',
+	'admin.general.start' => 'Start',
 );

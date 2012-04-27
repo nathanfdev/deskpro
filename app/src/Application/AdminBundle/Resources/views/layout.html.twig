@@ -152,6 +152,15 @@
 			{% include 'AdminBundle:Main:layout-setupguide.html.twig' %}
 		{% endif %}
 
+		{% if is_quick_setup %}
+			<ul class="start-ul">
+				<li>
+					<a href="{{ path('admin_welcome') }}"><span class="start">{{ phrase('admin.general.start') }}</span></a>
+				</li>
+			</ul>
+			<div class="sep">-</div>
+		{% endif %}
+
 		<ul>
 			<li>
 				<a href="{{ path('admin') }}"><span class="home">{{ phrase('admin.general.home') }}</span></a>
@@ -162,9 +171,15 @@
 			<li data-menu="#setup_menu">
 				<a><span class="setup">{{ phrase('admin.general.setup') }}</span></a>
 			</li>
+		</ul>
+		<div class="sep">-</div>
+		<ul>
 			<li>
 				<a href="{{ path('admin_agents') }}"><span class="agents">{{ phrase('agent.general.agents') }}</span></a>
 			</li>
+		</ul>
+		<div class="sep">-</div>
+		<ul>
 			<li data-menu="#users_menu">
 				<a><span class="users">{{ phrase('agent.general.users') }}</span></a>
 			</li>
@@ -174,15 +189,15 @@
 			<li>
 				<a href="{{ path('admin_portal') }}"><span class="publish">{{ phrase('admin.general.portal') }}</span></a>
 			</li>
+		</ul>
+		<div class="sep">-</div>
+		<ul>
 			<li data-menu="#chat_menu">
 				<a><span class="chat">{{ phrase('agent.general.chat') }}</span></a>
 			</li>
-			{# <li>
-				<a href="{{ path('admin_twitter_accounts') }}"><span class="twitter">Twitter</span></a>
-			</li>
-			<li>
-				<a><span class="deals">Deals</span></a>
-			</li> #}
+		</ul>
+		<div class="sep">-</div>
+		<ul>
 			<li data-menu="#tickets_menu">
 				<a><span class="tickets">{{ phrase('agent.general.tickets') }}</span></a>
 			</li>
@@ -191,6 +206,7 @@
 		<ul>
 			<li data-menu="#server_menu"><a><span class="server">{{ phrase('admin.general.server') }}</span></a></li>
 		</ul>
+		<div class="sep">-</div>
 	</div>
 </div>
 

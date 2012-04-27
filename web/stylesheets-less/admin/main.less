@@ -145,13 +145,16 @@ span.label.notice{background-color:#62cffc;}
 }
 #dp_admin_nav .capture-click {
 	position: absolute;
-	top: 0; right: 0; bottom: 0; left: 0;
+	top: 0; right: 0; bottom: 0; left: 70px;
 	z-index: 1;
 }
 
 .post-install #dp_admin_nav {
-	#dp_admin_nav_sections {
+	#dp_admin_nav_sections ul {
 		.opacity(40);
+	}
+	#dp_admin_nav_sections ul.start-ul {
+		.opacity(100);
 	}
 }
 
@@ -189,7 +192,8 @@ span.label.notice{background-color:#62cffc;}
 	height: 60px;
 	.gradient(#263343, #37485E);
 	border-right: 1px solid #242526;
-	overflow: hidden;
+	overflow-y: hidden;
+	.box-shadow(1px 0 2px rgba(255, 255, 255, 0.08));
 }
 
 #dp_admin_nav_sections .server-menu {
@@ -229,7 +233,7 @@ span.label.notice{background-color:#62cffc;}
 	width: 35px;
 }
 #dp_admin_nav_sections li a span {
-	font-size: 10px;
+	font-size: 12px;
 }
 
 #dp_admin_nav_sections li a{
@@ -250,6 +254,16 @@ span.label.notice{background-color:#62cffc;}
     height: 7px;
     margin: 0;
     padding: 28px 0 0;
+}
+#dp_admin_nav_sections li a span.start {
+	background-repeat: no-repeat;
+	background-position: 9px 0px;
+	background-image: url(../../images/admin/app-nav/start.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 9px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
+}
+#dp_admin_nav_sections li:hover a span.start {
+	background-repeat: no-repeat;
+	background-position: 9px 0px;
+	background-image: url(../../images/admin/app-nav/start-on.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 9px; sprite-margin-top: 0px; sprite-margin-bottom: 38px; */;
 }
 #dp_admin_nav_sections li a span.home {
 	background-repeat: no-repeat;
