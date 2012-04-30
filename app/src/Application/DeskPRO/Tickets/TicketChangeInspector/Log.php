@@ -331,6 +331,8 @@ class Log
 		$ticket_log['action_type'] = $action->getLogName();
 		$ticket_log['details'] = $action->getLogDetails();
 
-		App::getOrm()->persist($ticket_log);
+		if ($ticket_log['details']) {
+			App::getOrm()->persist($ticket_log);
+		}
 	}
 }
