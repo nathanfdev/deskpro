@@ -13,7 +13,7 @@
 		{% if ticket.status == 'awaiting_agent' or ticket.status == 'awaiting_user' %}
 			<div class="dp-status-switcher" title="{{ phrase('user.tickets.click_to_close') }}">
 				<div class="dp-status active dp-status-open">{{ phrase('user.general.open') }}</div>
-				<a class="dp-status switcher dp-status-closed" href="{{ path('user_tickets_close', {'ticket_ref': ticket.public_id}) }}">{{ phrase('user.tickets.status_resolved') }}</a>
+				<a class="dp-status switcher dp-status-closed" href="{{ path('user_tickets_resolve', {'ticket_ref': ticket.public_id}) }}">{{ phrase('user.tickets.status_resolved') }}</a>
 			</div>
 		{% elseif ticket.status == 'resolved' %}
 			<div class="dp-status dp-status-resolved">{{ phrase('user.tickets.status_resolved') }}</div>
@@ -43,58 +43,71 @@
 
 	{% if ticket.status == 'awaiting_agent' %}
 		<article class="dp-early-close dp-well">
-			{{ phrase('user.tickets.have_we_answered', {'link_url': path('user_tickets_close', {'ticket_ref': ticket.public_id})}) }}
+			{{ phrase('user.tickets.have_we_answered', {'link_url': path('user_tickets_resolve', {'ticket_ref': ticket.public_id})}) }}
 		</article>
 	{% endif %}
 
-	<article class="dp-reply-wrap dp-well dp-newreply-wrap">
-		<header>
-			<h4>{{ phrase('user.tickets.new_reply') }}</h4>
-		</header>
-		<div class="dp-well dp-well-light">
-			<form action="{{ path('user_tickets_addreply', {'ticket_ref': ticket.public_id}) }}" method="POST" class="with-form-validator" enctype="multipart/form-data">
-				<div class="dp-form">
-					{% if errors|length %}
-						<div class="dp-alert dp-alert-error dp-error">
-							{{ phrase('user.general.form_errors_correct') }}
-							<!--
-							{{ debug_var(error_fields) }}
-							{{ debug_var(errors) }}
-							-->
-						</div>
-					{% endif %}
-					<div class="dp-control-group {% if error_fields['message'] %}dp-error{% endif %}">
-						<div class="dp-controls dp-fill">
-							<textarea
-								name="newreply[message]"
-								cols="120"
-								rows="5"
-								style="width: 98%; height: 200px"
-								placeholder="{{ phrase('user.tickets.type_your_reply_here') }}"
-								data-field-validators="DeskPRO.Form.LengthValidator"
-								data-min-len="0"
-							>{{ newreply.message }}</textarea>
+	{% if ticket.status == 'closed' %}
+		<article class="dp-reply-wrap dp-well dp-newreply-wrap">
+			<header>
+				<h4>{{ phrase('user.tickets.new_reply') }}</h4>
+			</header>
+			<div class="dp-well dp-well-light">
+				<p>
+					{{ phrase('user.tickets.new_reply_closed_explain') }}
+				</p>
+			</div>
+		</article>
+	{% else %}
+		<article class="dp-reply-wrap dp-well dp-newreply-wrap">
+			<header>
+				<h4>{{ phrase('user.tickets.new_reply') }}</h4>
+			</header>
+			<div class="dp-well dp-well-light">
+				<form action="{{ path('user_tickets_addreply', {'ticket_ref': ticket.public_id}) }}" method="POST" class="with-form-validator" enctype="multipart/form-data">
+					<div class="dp-form">
+						{% if errors|length %}
+							<div class="dp-alert dp-alert-error dp-error">
+								{{ phrase('user.general.form_errors_correct') }}
+								<!--
+								{{ debug_var(error_fields) }}
+								{{ debug_var(errors) }}
+								-->
+							</div>
+						{% endif %}
+						<div class="dp-control-group {% if error_fields['message'] %}dp-error{% endif %}">
+							<div class="dp-controls dp-fill">
+								<textarea
+									name="newreply[message]"
+									cols="120"
+									rows="5"
+									style="width: 98%; height: 200px"
+									placeholder="{{ phrase('user.tickets.type_your_reply_here') }}"
+									data-field-validators="DeskPRO.Form.LengthValidator"
+									data-min-len="0"
+								>{{ newreply.message }}</textarea>
 
-							<div class="dp-help-inline dp-error-explain">
-								{{ phrase('user.tickets.message_error') }}
+								<div class="dp-help-inline dp-error-explain">
+									{{ phrase('user.tickets.message_error') }}
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
 
-				<div class="dp-control-group">
-					<div class="dp-control-label">
-						<label>{{ phrase('user.general.attachments') }}</label>
+					<div class="dp-control-group">
+						<div class="dp-control-label">
+							<label>{{ phrase('user.general.attachments') }}</label>
+						</div>
+						<div class="dp-controls">
+							{% include 'UserBundle:Common:form-upload-input.html.twig' %}
+						</div>
 					</div>
-					<div class="dp-controls">
-						{% include 'UserBundle:Common:form-upload-input.html.twig' %}
-					</div>
-				</div>
 
-				<button class="dp-btn dp-btn-primary" style="margin-top: 10px;">{{ phrase('user.ticekts.add_reply_btn') }}</button>
-			</form>
-		</div>
-	</article>
+					<button class="dp-btn dp-btn-primary" style="margin-top: 10px;">{{ phrase('user.ticekts.add_reply_btn') }}</button>
+				</form>
+			</div>
+		</article>
+	{% endif %}
 </section>
 
 {% endblock %}

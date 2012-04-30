@@ -378,9 +378,9 @@ $collection->add('user_tickets_participants_remove', new Route(
 	array()
 ));
 
-$collection->add('user_tickets_close', new Route(
-	'/ticket-edit/{ticket_ref}/close',
-	array('_controller' => 'UserBundle:Tickets:close'),
+$collection->add('user_tickets_resolve', new Route(
+	'/ticket-edit/{ticket_ref}/resolve',
+	array('_controller' => 'UserBundle:Tickets:resolve'),
 	array(),
 	array()
 ));

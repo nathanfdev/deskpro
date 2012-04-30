@@ -84,8 +84,9 @@ class TicketsController extends AbstractController
 			")->execute(array('person' => $this->person));
 		}
 
-		$active_tickets = array();
+		$active_tickets   = array();
 		$resolved_tickets = array();
+		$closed_tickets   = array();
 
 		$ticket_ids = array();
 
@@ -93,8 +94,10 @@ class TicketsController extends AbstractController
 			$ticket_ids[] = $t['id'];
 			if ($t['status'] == 'awaiting_agent' OR $t['status'] == 'awaiting_user') {
 				$active_tickets[] = $t;
-			} else {
+			} elseif ($t['status'] == 'resolved') {
 				$resolved_tickets[] = $t;
+			} else {
+				$closed_tickets[] = $t;
 			}
 		}
 
@@ -115,9 +118,10 @@ class TicketsController extends AbstractController
 		}
 
         return $this->render('UserBundle:Tickets:list.html.twig', array(
-			'active_tickets' => $active_tickets,
+			'active_tickets'   => $active_tickets,
 			'resolved_tickets' => $resolved_tickets,
-			'last_messages' => $last_messages
+			'closed_tickets'   => $closed_tickets,
+			'last_messages'    => $last_messages
 		));
     }
 
@@ -235,6 +239,10 @@ class TicketsController extends AbstractController
 	public function addReplyAction($ticket_ref)
 	{
 		$ticket = $this->getTicketOr404($ticket_ref);
+
+		if ($ticket->status == 'closed') {
+			return $this->renderLoginOrPermissionError();
+		}
 
 		$newreply = new \Application\UserBundle\Tickets\NewReply($ticket, $this->person);
 		$form = $this->get('form.factory')->create(new NewTicketReplyType(), $newreply);
@@ -462,7 +470,7 @@ class TicketsController extends AbstractController
 		));
 	}
 
-	public function closeAction($ticket_ref)
+	public function resolveAction($ticket_ref)
 	{
 		$ticket  = $this->getTicketOr404($ticket_ref);
 		$message = $this->em->getRepository('DeskPRO:TicketMessage')->getLastAgentReply($ticket);
@@ -502,7 +510,7 @@ class TicketsController extends AbstractController
 			return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
 		}
 
-		return $this->render('UserBundle:Tickets:close.html.twig', array(
+		return $this->render('UserBundle:Tickets:resolve.html.twig', array(
 			'ticket' => $ticket,
 			'message' => $message,
 			'exist_feedback' => $exist_feedback,

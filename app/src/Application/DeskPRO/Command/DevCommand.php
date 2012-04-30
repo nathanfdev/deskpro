@@ -56,11 +56,12 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 			$output->writeln("Deleting cached routing ...");
 
 			$finder = new \Symfony\Component\Finder\Finder();
-			$finder->name('/Url(Generator|Matcher)/')->in(array(
-				DP_ROOT.'/sys/cache/dev',
-				DP_ROOT.'/sys/cache/prod'
-			));
 
+			$dirs = array();
+			if (is_dir(DP_ROOT.'/sys/cache/dev')) $dirs[] = DP_ROOT.'/sys/cache/dev';
+			if (is_dir(DP_ROOT.'/sys/cache/prod')) $dirs[] = DP_ROOT.'/sys/cache/prod';
+
+			$finder->name('/Url(Generator|Matcher)/')->in($dirs);
 			$fs = new \Symfony\Component\Filesystem\Filesystem();
 			foreach ($finder as $file) {
 				$output->writeln(sprintf("<info>Removing %s</info>", $file->getFileName()));
