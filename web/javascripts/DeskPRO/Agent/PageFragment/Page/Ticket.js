@@ -375,8 +375,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 		});
 
-		messageEl.find('article.message').each(function() {
+		var lastCount = 0;
+		if (this.lastMessageCount) {
+			lastCount = this.lastMessageCount;
+		}
+		if (messageEl.hasClass('messages-wrap')) {
+			var articles = messageEl.find('article.message');
+		} else {
+			var articles = messageEl.filter('article.message');
+		}
+		articles.each(function() {
 			var article = $(this);
+
+			lastCount++;
+			article.find('.message-counter').text('#' + lastCount);
+
 			var fullEl = article.find('.body-text-full-message');
 			if (fullEl[0]) {
 				var simpleEl = article.find('.body-text-message');
@@ -394,6 +407,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				});
 			}
 		});
+		this.lastMessageCount = lastCount;
 	},
 
 	incCount: function(id) {
