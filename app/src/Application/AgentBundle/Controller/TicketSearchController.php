@@ -1178,7 +1178,6 @@ class TicketSearchController extends AbstractController
 		$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsResultsFromIds($ticket_ids);
 
 		if ($actions && $tickets) {
-			$this->em->beginTransaction();
 
 			$factory = new ActionsFactory();
 			$collection = new ActionsCollection();
@@ -1193,13 +1192,37 @@ class TicketSearchController extends AbstractController
 				$collection->add($action);
 			}
 
-			foreach ($tickets as $ticket) {
-				$collection->apply($ticket, $this->person);
-				$this->em->persist($ticket);
-				$this->em->flush();
-			}
+			$count = 0;
 
-			$this->em->commit();
+
+			try {
+				foreach ($tickets as $ticket) {
+
+					if ($count == 0) {
+						$this->em->beginTransaction();
+					}
+
+					$count++;
+					$collection->apply($ticket, $this->person);
+					$this->em->persist($ticket);
+					$this->em->flush();
+
+					// Commit in batches of three
+					if ($count % 3 == 0) {
+						$this->em->commit();
+						$count = 0;
+					}
+				}
+
+				if ($count) {
+					$this->em->commit();
+				}
+			} catch (\Exception $e) {
+				if ($count) {
+					$this->em->rollback();
+				}
+				throw $e;
+			}
 		}
 
 		return $this->createJsonResponse(array('success' => true));

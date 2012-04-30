@@ -53,11 +53,6 @@ use Orb\Util\Arrays;
 class SearchUpdater
 {
 	/**
-	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
-	 */
-	protected $listener;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 */
 	protected $ticket;
@@ -72,10 +67,9 @@ class SearchUpdater
 	 */
 	protected $search_text = null;
 
-	public function __construct(TicketChangeTracker $tracker)
+	public function __construct($ticket)
 	{
-		$this->tracker = $tracker;
-		$this->ticket = $tracker->getTicket();
+		$this->ticket = $ticket;
 	}
 
 

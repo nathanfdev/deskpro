@@ -427,7 +427,7 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	{
 		if ($this->search_updater !== null) return $this->search_updater;
 
-		$this->search_updater = new TicketChangeInspector\SearchUpdater($this);
+		$this->search_updater = new TicketChangeInspector\SearchUpdater($this->getTicket());
 		return $this->search_updater;
 	}
 
@@ -476,9 +476,12 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 		$person_activity->run();
 
 		$total_time = microtime(true) - $this->start_time;
-		$this->logMessage("[TicketChangeTracker] END TICKET {$this->ticket['id']} : Took " . $total_time . " seconds");
 
+		$time = microtime(true);
 		$this->getSearchUpdater()->run();
+		$this->logMessage(sprintf("[TicketChangeTracker] Search updater took %.4f seconds", microtime(true)-$time));
+
+		$this->logMessage("[TicketChangeTracker] END TICKET {$this->ticket['id']} : Took " . $total_time . " seconds");
 
 		$this->running = false;
 	}
