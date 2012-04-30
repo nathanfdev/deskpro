@@ -29,7 +29,7 @@
 				{{ phrase('agent.general.spam') }}
 			</span>
 	</li>
-	<li class="is-nav-item nav-archive-recycle-bin" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=deleted&amp;terms[1][type]=status&amp;terms[1][op]=is&amp;terms[1][options][status]=hidden&amp;view_name=deleted">
+	<li class="is-nav-item nav-archive-recycle-bin" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=deleted&amp;terms[0][op]=is&amp;terms[0][options][deleted]=1&amp;view_name=deleted">
 			<span class="title">
 				<span class="list-counter" id="ticket_archive_recycle_bin_count">{{ archive_counts['hidden.deleted']|default(0) }}</span>
 				{{ phrase('agent.general.recycle_bin') }}

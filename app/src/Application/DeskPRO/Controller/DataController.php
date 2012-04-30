@@ -65,8 +65,11 @@ class DataController extends AbstractController
 		$js_phrases['agent.general.check_on']    = $tr->phrase('agent.general.check_on');
 		$js_phrases['agent.general.check_off']   = $tr->phrase('agent.general.check_off');
 
+		$js_phrases["agent.general.reltime_less_second"] = $tr->phrase("agent.general.reltime_less_second");
+		$js_phrases["agent.general.reltimeago_less_second"] = $tr->phrase("agent.general.reltime_less_second");
+
 		foreach (array('reltime', 'reltimeago') as $pre) {
-			foreach (array('less_second', 'second', 'minute', 'hour', 'day', 'week', 'month', 'year') as $name) {
+			foreach (array('second', 'minute', 'hour', 'day', 'week', 'month', 'year') as $name) {
 				$js_phrases["agent.general.{$pre}_1_{$name}"] = $tr->phrase("agent.general.{$pre}_1_{$name}");
 				$js_phrases["agent.general.{$pre}_x_{$name}"] = $tr->phrase("agent.general.{$pre}_x_{$name}");
 			}
