@@ -16,6 +16,14 @@
 </div>
 
 <div class="portal-toggle inline chat">
+	<a class="toggle-btn" onclick="alert('{{ phrase('admin.portal.cannot_disable') }}'); return false;" style="cursor:default;"></a>
+	<h3>{{ phrase('admin.general.apps_crm') }}</h3>
+	<p>
+		{{ phrase('admin.general.apps_crm_explain') }}
+	</p>
+</div>
+
+<div class="portal-toggle inline chat">
 	{% if app.getSetting('core.apps_chat') %}
 		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
 	{% else %}

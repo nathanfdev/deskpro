@@ -392,6 +392,13 @@ DeskPRO.Admin.Window = new Orb.Class({
 			left: pos.left
 		});
 
+		if (!menuEl.hasClass('has-init')) {
+			menuEl.addClass('has-init');
+			menuEl.find('li').on('click', function() {
+				window.location = $(this).find('a').first().attr('href');
+			})
+		}
+
 		menuEl.show();
 		triggerEl.show();
 		this.headerMenuBackdrop.show();

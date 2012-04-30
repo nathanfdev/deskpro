@@ -91,6 +91,8 @@
 	'admin.general.apps' => 'Apps',
 	'admin.general.apps_tickets' => 'Tickets',
 	'admin.general.apps_tickets_explain' => 'User submit tickets from your website, portal or email. Tickets are the core of DeskPRO and cannot be disabled.',
+	'admin.general.apps_crm' => 'CRM',
+	'admin.general.apps_crm_explain' => 'Management of people and organizations',
 	'admin.general.apps_chat' => 'Chat',
 	'admin.general.apps_chat_explain' => 'The chat application allows your users to start a real-time chat with your agents. When enabled, a small "Start Chat" button will be added to the bottom of every page on the portal, and you can easily add a widget to your own website too.',
 	'admin.general.apps_feedback' => 'Feedback',

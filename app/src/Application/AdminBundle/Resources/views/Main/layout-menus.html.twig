@@ -188,12 +188,63 @@
 		</ul>
 	</div>
 
-
 	{#############################
-	 # Publish Menu
+	 # Chat Menu
 	 #############################}
 
-	<div id="publish_menu">
+	<div id="chat_menu">
+		<ul>
+			<li class="link-fields">
+				<a href="{{ path('admin_departments') }}" data-search-keywords="departments" data-search-name="Settings &rsaquo; Departments">{{ phrase('admin.general.departments') }}</a>
+				<p>{{ phrase('admin.menu.manage_departments') }}</p>
+			</li>
+		</ul>
+	</div>
 
+
+	{#############################
+	 # KB menu
+	 #############################}
+
+	<div id="kb_menu">
+		<ul>
+			<li class="link-fields"><a href="{{ path('admin_customdefarticles') }}">{{ phrase('admin.portal.custom_fields') }}</a></li>
+			<li class="link-fields"><a href="{{ app.request.getBaseUrl() }}/agent/#app.publish" target="_blank">{{ phrase('admin.portal.manage_articles') }}</a></li>
+		</ul>
+	</div>
+
+	{#############################
+	 # Feedback menu
+	 #############################}
+
+	<div id="feedback_menu">
+		<ul>
+			<li class="link-fields"><a href="{{ path('admin_feedback_statuses') }}">{{ phrase('agent.general.statuses') }}</a></li>
+			<li class="link-fields"><a href="{{ path('admin_feedback_cats') }}">{{ phrase('agent.general.categories') }}</a></li>
+			<li class="link-fields"><a href="{{ path('admin_customdeffeedback') }}">{{ phrase('admin.portal.custom_fields') }}</a></li>
+			<li class="link-fields"><a href="{{ app.request.getBaseUrl() }}/agent/#app.feedback" target="_blank">{{ phrase('admin.portal.manage_feedback') }}</a></li>
+		</ul>
+	</div>
+
+	{#############################
+	 # Downloads menu
+	 #############################}
+
+	<div id="downloads_menu">
+		<ul>
+			<li class="link-fields"><a>{{ phrase('admin.portal.custom_fields') }}</a></li>
+			<li class="link-fields"><a href="{{ app.request.getBaseUrl() }}/agent/#app.publish" target="_blank">{{ phrase('admin.portal.manage_downloads') }}</a></li>
+		</ul>
+	</div>
+
+	{#############################
+	 # News menu
+	 #############################}
+
+	<div id="news_menu">
+		<ul>
+			<li class="link-fields"><a>{{ phrase('admin.portal.custom_fields') }}</a></li>
+			<li class="link-fields"><a href="{{ app.request.getBaseUrl() }}/agent/#app.publish" target="_blank">{{ phrase('admin.portal.manage_news') }}</a></li>
+		</ul>
 	</div>
 </div>

@@ -311,6 +311,7 @@
     'agent.general.is_x'                                    => 'is {{field}}',
     'agent.general.just_me'                                 => 'Just me',
     'agent.general.knowledgebase'                           => 'Knowledgebase',
+    'agent.general.kb'                                      => 'KB',
     'agent.general.label'                                   => 'Label',
     'agent.general.label_picture'                           => 'Picture',
     'agent.general.label_revisions'                         => 'Revisions',
