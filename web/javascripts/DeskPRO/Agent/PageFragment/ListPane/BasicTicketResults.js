@@ -79,7 +79,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			}
 		};
 		if (this.meta.viewType == 'list') {
-			opt.selectionBar = $('.selection-bar', el);
+			opt.selectionBar = $('thead, .selection-bar', el);
 		}
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, opt);
 		this.ownObject(this.selectionBar);
