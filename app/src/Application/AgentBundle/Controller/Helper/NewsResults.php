@@ -133,8 +133,8 @@ class NewsResults
 			$result_cache['results'] = $results;
 			$result_cache['num_results'] = count($results);
 
-			$this->em->persist($result_cache);
-			$this->em->flush();
+			$controller->em->persist($result_cache);
+			$controller->em->flush();
 		}
 
 		return new self($controller, $result_cache);

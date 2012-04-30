@@ -144,7 +144,7 @@ class FeedbackResults
 			 */
 			$result_cache['extra'] = array();
 
-			$em = App::getOrm();
+			$em = $controller->em;
 			$em->persist($result_cache);
 			$em->flush();
 		}
