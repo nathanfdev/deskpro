@@ -67,6 +67,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	const HIDDEN_STATUS_DELETED = 'deleted';
 	const HIDDEN_STATUS_TEMP = 'temp';
 
+	/**#@+
+	 * These strings in $notify_email_name have special meanings.
+	 * NOTIFY_NAME_HELPDESK: The helpdesk name
+	 * NOTIFY_NAME_PERSON: The person who sent the reply, or if no person (eg auto-response), then the helpdesk
+	 */
+	const NOTIFY_NAME_HELPDESK = '__DP_HELPDESK__';
+	const NOTIFY_NAME_PERSON = '__DP_PERSON__';
+	/**#@-*/
+
 	/**
 	 * @var int
 	 */

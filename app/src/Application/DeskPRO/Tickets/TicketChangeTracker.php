@@ -167,6 +167,44 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 		return false;
 	}
 
+	/**
+	 * Get the new agent reply just added
+	 *
+	 * @return \Application\DeskPRO\Entity\TicketMessage
+	 */
+	public function getNewAgentReply()
+	{
+		$messages = $this->getChangedProperty('messages');
+		if ($messages) {
+			$message = array_shift($messages);
+			$message = $message['new'];
+			if ($message->person->is_agent) {
+				return $message;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get the new agent reply just added
+	 *
+	 * @return \Application\DeskPRO\Entity\TicketMessage
+	 */
+	public function getNewUserReply()
+	{
+		$messages = $this->getChangedProperty('messages');
+		if ($messages) {
+			$message = array_shift($messages);
+			$message = $message['new'];
+			if (!$message->person->is_agent) {
+				return $message;
+			}
+		}
+
+		return null;
+	}
+
 
 	/**
 	 * Check if a new user reply was added

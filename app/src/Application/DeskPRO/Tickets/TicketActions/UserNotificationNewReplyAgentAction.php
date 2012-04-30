@@ -52,6 +52,8 @@ class UserNotificationNewReplyAgentAction extends AbstractUserNotificationAction
 	 */
 	public function apply(Ticket $ticket)
 	{
+		$this->via_message = $this->tracker->getNewAgentReply();
+
 		// Person has confirmation notifications disabled
 		if ($ticket->person->disable_autoresponses) {
 			return;

@@ -327,10 +327,18 @@ class NewTicketAction implements BreakableAction, ActionInterface
 	public function getFromAddress(Ticket $ticket)
 	{
 		if ($ticket->notify_email) {
-			return $ticket->notify_email;
+			$from_email = $ticket->notify_email;
+		} else {
+			$from_email = App::getSetting('core.default_from_email');
 		}
 
-		return App::getSetting('core.default_from_email');
+		if ($ticket->notify_email_name) {
+			$from_name = $ticket->notify_email_name;
+		} else {
+			$from_name = App::getSetting('core.deskpro_name');
+		}
+
+		return array($from_email => $from_name);
 	}
 
 

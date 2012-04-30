@@ -53,6 +53,7 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 	protected $tracker;
 	protected $person_context;
 	protected $email_sets = array();
+	protected $via_message;
 
 	public function __construct(TicketChangeTracker $tracker)
 	{
@@ -62,10 +63,24 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 	public function getFromAddress(Ticket $ticket)
 	{
 		if ($ticket->notify_email) {
-			return $ticket->notify_email;
+			$from_email = $ticket->notify_email;
+		} else {
+			$from_email = App::getSetting('core.default_from_email');
 		}
 
-		return App::getSetting('core.default_from_email');
+		if ($ticket->notify_email_name) {
+			$from_name = $ticket->notify_email_name;
+		} else {
+			if ($this->via_message) {
+				error_log("with message");
+				$from_name = $this->via_message->getPerson()->getDisplayName();
+			} else {
+				error_log("message");
+				$from_name = App::getSetting('core.deskpro_name');
+			}
+		}
+
+		return array($from_email => $from_name);
 	}
 
 	public function setEmailTemplate($tpl, $tpl_type)
@@ -105,6 +120,8 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 		$vars['messages'] = $messages;
 
 		$from_address = $this->getFromAddress($ticket);
+
+		error_log("here");
 
 		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $only_cc_ids) {
 
