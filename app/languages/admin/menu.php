@@ -51,7 +51,7 @@
     'admin.menu.view_mysql_status'            => 'View information about the status of your MySQL installation',
     'admin.menu.view_php_installation'        => 'View information about your PHP installation',
 	'admin.menu.check_server_requirements' => 'Check Server Requirements',
-	'admin.menu.check_server_requirements_epxlain' => 'Check server requirements and view recommended changes',
+	'admin.menu.check_server_requirements_explain' => 'Check server requirements and view recommended changes',
 	'admin.menu.check_file_integrity' => 'Check File Integrity',
 	'admin.menu.check_file_integrity_explain' => 'Check DeskPRO\'s source file integrity. This will reveal any files are changed or invalid from the default.',
 );
