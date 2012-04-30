@@ -163,4 +163,9 @@
     'admin.tickets.widget_type'                            => 'Widget Type',
 	'admin.tickets.new_ticket_form_default_explain'         => 'These options are being automatically generated. All of the available fields your helpdesk has defined are enabled.',
 	'admin.tickets.view_modify_ticket_page_default_explain' => 'These options are being automatically generated based on the fields visible on the "New Ticket Form"',
+	'admin.tickets.x_since_time_open' => '&gt; {{time}} since ticket was opened',
+	'admin.tickets.x_since_total_user_waiting' => 'User has been waiting &gt; {{time}}',
+	'admin.tickets.x_since_time_user_waiting' => '&gt; {{time}} since status was set to awaiting user',
+	'admin.tickets.x_since_time_agent_waiting' => '&gt; {{time}} since status was set to awaiting agent',
+	'admin.tickets.x_since_time_resolved' => '&gt; {{time}} since status was set to resolved',
 );
