@@ -71,7 +71,7 @@ class LogItem extends EntityRepository
 	}
 
 
-	
+
 	/**
 	 * Get an array of error logs
 	 *
@@ -81,7 +81,7 @@ class LogItem extends EntityRepository
 	 */
 	public function getErrorLogs($page = 1, $per_page = 25)
 	{
-		$offset = max(0, $page - 1);
+		$offset = max(0, $page - 1) * $per_page;
 
 		return $this->_em->createQuery("
 			SELECT l
@@ -89,16 +89,16 @@ class LogItem extends EntityRepository
 			WHERE l.log_name = ?1
 			ORDER BY l.id DESC
 		")->setParameter(1, 'error_log')
-		  ->setFirstResult($page)
+		  ->setFirstResult($offset)
 		  ->setMaxResults($per_page)
 		  ->execute();
 	}
-	
+
 
 
 	/**
 	 * Deletes all error logs
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function clearAllErrorLogs()
