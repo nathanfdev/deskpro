@@ -257,4 +257,35 @@
 	 * Show the share widget (twitter/facebook/linkedin/gplus)
 	 */
 	'core.show_share_widget' => true,
+
+	/**
+	 * Enable the KB?
+	 */
+	'core.apps_kb' => 1,
+
+	/**
+	 * Enable feedback?
+	 */
+	'core.apps_feedback' => 1,
+
+	/**
+	 * Enable chat?
+	 */
+	'core.apps_chat' => 1,
+
+	/**
+	 * Enable agent tasks?
+	 */
+	'core.apps_tasks' => 1,
+
+	/**
+	 * Enable news
+	 */
+	'core.apps_news' => 1,
+
+	/**
+	 * Enable downloads
+	 */
+	'core.apps_downloads' => 1,
+
 );

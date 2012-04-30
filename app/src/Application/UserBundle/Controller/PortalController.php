@@ -64,24 +64,6 @@ class PortalController extends AbstractController
 					return $this->redirectRoute('user_tickets_new');
 				}
 			}
-
-
-			// Check if the user can see anythign based on ug permissions
-			$any = false;
-			foreach ($portal_page->getSectionDisplayItems('portal') as $item) {
-				if ($item->checkPermission()) {
-					$any = true;
-					break;
-				}
-			}
-
-			if (!$any) {
-				if ($this->person->isGuest() && (!$this->person->hasPerm('tickets.use') || $this->container->getSetting('core.user_mode') == 'require_reg' || $this->container->getSetting('core.user_mode') == 'require_reg_agent_validation')) {
-					return $this->redirectRoute('user_login');
-				} else {
-					return $this->redirectRoute('user_tickets_new');
-				}
-			}
 		}
 
         return $this->render('UserBundle:Portal:portal.html.twig', array(

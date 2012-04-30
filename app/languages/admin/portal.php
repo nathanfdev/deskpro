@@ -4,6 +4,7 @@
     'admin.portal.allow_users_to_submit_comments'          => 'Allow users to submit comments',
     'admin.portal.click_button_to_reenable_or_use_widgets' => 'Click the button above to re-enable the portal. Or use HTML widgets from the <a href="{{path}}">ticket editor</a> to embed DeskPRO into your own site.',
     'admin.portal.click_to_disable'                        => 'Click to disable',
+	'admin.portal.cannot_disable'                          => 'Cannot disable',
     'admin.portal.click_to_enable'                         => 'Click to enable',
     'admin.portal.color_bg_color_desc'                     => 'The page background color',
     'admin.portal.color_bg_color_title'                    => 'Background Color',

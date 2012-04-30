@@ -8,7 +8,15 @@
 {% block page %}
 
 <div class="portal-toggle inline chat">
-	{% if app.getSetting('user.portal_enabled') %}
+	<a class="toggle-btn" onclick="alert('{{ phrase('admin.portal.cannot_disable') }}'); return false;" style="cursor:default;"></a>
+	<h3>{{ phrase('admin.general.apps_tickets') }}</h3>
+	<p>
+		{{ phrase('admin.general.apps_tickets_explain') }}
+	</p>
+</div>
+
+<div class="portal-toggle inline chat">
+	{% if app.getSetting('core.apps_chat') %}
 		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
 	{% else %}
 		<a class="toggle-btn disabled" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
@@ -20,23 +28,22 @@
 </div>
 
 <div class="portal-toggle inline chat">
-	{% if app.getSetting('user.portal_enabled') %}
-		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
+	{% if app.getSetting('core.apps_feedback') %}
+		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'feedback', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
 	{% else %}
-		<a class="toggle-btn disabled" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
+		<a class="toggle-btn disabled" href="{{ path('admin_apps_toggle', {app: 'feedback', enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
 	{% endif %}
 	<h3>{{ phrase('admin.general.apps_feedback') }}</h3>
 	<p>
 		{{ phrase('admin.general.apps_feedback_explain') }}
 	</p>
-	<div class="screen"><img src="{{ asset('images/admin/screens/feedback.png') }}" /></div>
 </div>
 
 <div class="portal-toggle inline chat">
-	{% if app.getSetting('user.portal_enabled') %}
-		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
+	{% if app.getSetting('core.apps_tasks') %}
+		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'tasks', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
 	{% else %}
-		<a class="toggle-btn disabled" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
+		<a class="toggle-btn disabled" href="{{ path('admin_apps_toggle', {app: 'tasks', enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
 	{% endif %}
 	<h3>{{ phrase('admin.general.apps_tasks') }}</h3>
 	<p>
@@ -45,10 +52,10 @@
 </div>
 
 <div class="portal-toggle inline chat">
-	{% if app.getSetting('user.portal_enabled') %}
-		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
+	{% if app.getSetting('core.apps_news') %}
+		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'news', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
 	{% else %}
-		<a class="toggle-btn disabled" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
+		<a class="toggle-btn disabled" href="{{ path('admin_apps_toggle', {app: 'news', enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
 	{% endif %}
 	<h3>{{ phrase('admin.general.apps_news') }}</h3>
 	<p>
@@ -57,10 +64,10 @@
 </div>
 
 <div class="portal-toggle inline chat">
-	{% if app.getSetting('user.portal_enabled') %}
-		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
+	{% if app.getSetting('core.apps_downloads') %}
+		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'downloads', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
 	{% else %}
-		<a class="toggle-btn disabled" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
+		<a class="toggle-btn disabled" href="{{ path('admin_apps_toggle', {app: 'downloads', enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
 	{% endif %}
 	<h3>{{ phrase('admin.general.apps_downloads') }}</h3>
 	<p>
@@ -69,10 +76,10 @@
 </div>
 
 <div class="portal-toggle inline chat">
-	{% if app.getSetting('user.portal_enabled') %}
-		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
+	{% if app.getSetting('core.apps_kb') %}
+		<a class="toggle-btn" href="{{ path('admin_apps_toggle', {app: 'kb', enable: '0'}) }}"><em>{{ phrase('admin.portal.click_to_disable') }}</em></a>
 	{% else %}
-		<a class="toggle-btn disabled" href="{{ path('admin_apps_toggle', {app: 'chat', enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
+		<a class="toggle-btn disabled" href="{{ path('admin_apps_toggle', {app: 'kb', enable: '1'}) }}"><em>{{ phrase('admin.portal.click_to_enable') }}</em></a>
 	{% endif %}
 	<h3>{{ phrase('admin.general.apps_kb') }}</h3>
 	<p>

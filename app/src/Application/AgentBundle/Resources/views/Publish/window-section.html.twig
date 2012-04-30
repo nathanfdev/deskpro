@@ -41,26 +41,32 @@
 </section>
 {% endif %}
 
-<section class="group-section open">
-	<header><h1>{{ phrase('agent.general.knowledgebase') }}</h1></header>
-	<article>
-		{% include 'AgentBundle:Publish:kb-tab.html.twig' %}
-	</article>
-</section>
+{% if app.getSetting('core.apps_kb') %}
+	<section class="group-section open">
+		<header><h1>{{ phrase('agent.general.knowledgebase') }}</h1></header>
+		<article>
+			{% include 'AgentBundle:Publish:kb-tab.html.twig' %}
+		</article>
+	</section>
+{% endif%}
 
-<section class="group-section">
-	<header><h1>{{ phrase('agent.general.news') }}</h1></header>
-	<article style="display: none">
-		{% include 'AgentBundle:Publish:news-tab.html.twig' %}
-	</article>
-</section>
+{% if app.getSetting('core.apps_news') %}
+	<section class="group-section">
+		<header><h1>{{ phrase('agent.general.news') }}</h1></header>
+		<article style="display: none">
+			{% include 'AgentBundle:Publish:news-tab.html.twig' %}
+		</article>
+	</section>
+{% endif %}
 
-<section class="group-section">
-	<header><h1>{{ phrase('agent.general.downloads') }}</h1></header>
-	<article style="display: none">
-		{% include 'AgentBundle:Publish:downloads-tab.html.twig' %}
-	</article>
-</section>
+{% if app.getSetting('core.apps_downloads') %}
+	<section class="group-section">
+		<header><h1>{{ phrase('agent.general.downloads') }}</h1></header>
+		<article style="display: none">
+			{% include 'AgentBundle:Publish:downloads-tab.html.twig' %}
+		</article>
+	</section>
+{% endif %}
 
 <section class="group-section">
 	<header><h1>{{ phrase('agent.publish.glossary') }}</h1></header>

@@ -529,4 +529,14 @@ class SettingsController extends AbstractController
 
 		));
 	}
+
+	public function appToggleAction()
+	{
+		$name = 'core.apps_' . $this->in->getString('app');
+		$on = $this->in->getIbool('enable');
+
+		$this->container->getSettingsHandler()->setSetting($name, $on);
+
+		return $this->redirectRoute('admin_apps');
+	}
 }

@@ -310,6 +310,21 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	 */
 	public function hasPerm($name)
 	{
+		if ($name == 'articles.use' && !App::getSetting('core.apps_kb')) {
+			return false;
+		}
+		if ($name == 'feedback.use' && !App::getSetting('core.apps_feedback')) {
+			return false;
+		}
+		if ($name == 'downloads.use' && !App::getSetting('core.apps_downloads')) {
+			return false;
+		}
+		if ($name == 'news.use' && !App::getSetting('core.apps_news')) {
+			return false;
+		}
+		if ($name == 'chat.use' && !App::getSetting('core.apps_chat')) {
+			return false;
+		}
 		return $this->get('Usergroups')->getPermission($name) ? true : false;
 	}
 
