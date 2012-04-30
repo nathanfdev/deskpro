@@ -3,9 +3,9 @@
 <head>
 	{% if page_noindex %}<meta name="robots" content="noindex,nofollow" />{% endif %}
 	{% if app.getSetting('core.favicon_blob_id') %}
-	<link rel="shortcut icon" id="favicon" href="{{ path('favicon', {}, true) }}" />
+		<link rel="shortcut icon" id="favicon" href="{{ path('favicon', {}, true) }}" />
 	{% else %}
-	<link rel="shortcut icon" id="favicon" href="{{ asset('images/favicon.ico') }}" />
+		<link rel="shortcut icon" id="favicon" href="{{ app.getRequest().getBasePath() }}/favicon.ico" />
 	{% endif %}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{% block page_title %}{{ app.getSetting('core.deskpro_name') }}{% endblock %}</title>

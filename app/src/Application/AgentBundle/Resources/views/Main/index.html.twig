@@ -16,7 +16,7 @@
 	{% if app.getSetting('core.favicon_blob_id') %}
 		<link rel="shortcut icon" id="favicon" href="{{ path('favicon', {}, true) }}" />
 	{% else %}
-		<link rel="shortcut icon" id="favicon" href="{{ asset('images/favicon.ico') }}" />
+		<link rel="shortcut icon" id="favicon" href="{{ app.getRequest().getBasePath() }}/favicon.ico" />
 	{% endif %}
 
 	<title>{{ phrase('agent.interface.deskpro_agent_interface') }}</title>
