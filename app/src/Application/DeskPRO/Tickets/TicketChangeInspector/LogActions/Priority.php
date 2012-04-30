@@ -55,6 +55,14 @@ class Priority implements LogActionInterface
 
 	public function getLogDetails()
 	{
+		if ($this->old_pri and $this->new_pri) {
+			if ($this->old_pri->getId() == $this->new_pri->getId()) {
+				return array();
+			}
+		} else if (!$this->old_pri and !$this->new_pri) {
+			return array();
+		}
+
 		return array(
 			'id_before' => $this->old_pri['id'] ?: null,
 			'id_after'  => $this->new_pri['id'] ?: null,

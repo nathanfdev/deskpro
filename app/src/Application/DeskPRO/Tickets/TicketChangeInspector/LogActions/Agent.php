@@ -55,6 +55,14 @@ class Agent implements LogActionInterface
 
 	public function getLogDetails()
 	{
+		if ($this->old_agent and $this->new_agent) {
+			if ($this->old_agent->getId() == $this->new_agent->getId()) {
+				return array();
+			}
+		} else if (!$this->old_agent and !$this->new_agent) {
+			return array();
+		}
+
 		return array(
 			'id_before' => $this->old_agent['id'] ?: null,
 			'id_after'  => $this->new_agent['id'] ?: null,

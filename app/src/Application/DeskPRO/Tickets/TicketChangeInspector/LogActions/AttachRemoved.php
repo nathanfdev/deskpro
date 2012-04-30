@@ -68,6 +68,10 @@ class AttachRemoved implements LogActionInterface
 
 	public function getLogDetails()
 	{
+		if (!$this->attach) {
+			return array();
+		}
+
 		$details = array();
 		$details['id_before']     = $this->old_id;
 		$details['old_attach_id'] = $this->old_id;

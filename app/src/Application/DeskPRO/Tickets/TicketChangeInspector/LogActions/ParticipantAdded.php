@@ -53,6 +53,10 @@ class ParticipantAdded implements LogActionInterface
 
 	public function getLogDetails()
 	{
+		if (!$this->person) {
+			return array();
+		}
+
 		return array(
 			'id_before' => null,
 			'id_after'  => $this->person->id,

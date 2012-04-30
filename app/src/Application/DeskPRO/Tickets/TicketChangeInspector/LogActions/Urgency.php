@@ -57,6 +57,10 @@ class Urgency implements LogActionInterface
 
 	public function getLogDetails()
 	{
+		if ($this->old_urgency == $this->new_urgency) {
+			return array();
+		}
+
 		return array(
 			'id_before' => $this->old_urgency ?: null,
 			'id_after'  => $this->new_urgency ?: null,

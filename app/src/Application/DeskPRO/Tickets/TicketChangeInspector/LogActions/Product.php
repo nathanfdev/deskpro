@@ -55,6 +55,14 @@ class Product implements LogActionInterface
 
 	public function getLogDetails()
 	{
+		if ($this->old_product and $this->new_product) {
+			if ($this->old_product->getId() == $this->new_product->getId()) {
+				return array();
+			}
+		} else if (!$this->old_product and !$this->new_product) {
+			return array();
+		}
+
 		return array(
 			'id_before' => $this->old_product['id'] ?: null,
 			'id_after'  => $this->new_product['id'] ?: null,

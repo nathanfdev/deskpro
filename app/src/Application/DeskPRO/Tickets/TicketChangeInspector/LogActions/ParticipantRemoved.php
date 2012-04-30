@@ -53,6 +53,10 @@ class ParticipantRemoved implements LogActionInterface
 
 	public function getLogDetails()
 	{
+		if (!$this->part) {
+			return array();
+		}
+
 		return array(
 			'id_before' => $this->part->id,
 			'id_after'  => null,

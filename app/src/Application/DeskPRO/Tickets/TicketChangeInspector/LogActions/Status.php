@@ -55,6 +55,10 @@ class Status implements LogActionInterface
 
 	public function getLogDetails()
 	{
+		if ($this->old_status == $this->new_status) {
+			return array();
+		}
+
 		return array(
 			'id_before' => Ticket::getStatusInt($this->old_status) ?: null,
 			'id_after'  => Ticket::getStatusInt($this->new_status) ?: null,

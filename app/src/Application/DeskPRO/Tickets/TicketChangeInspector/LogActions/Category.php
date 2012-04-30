@@ -55,6 +55,14 @@ class Category implements LogActionInterface
 
 	public function getLogDetails()
 	{
+		if ($this->old_cat and $this->new_cat) {
+			if ($this->old_cat->getId() == $this->new_cat->getId()) {
+				return array();
+			}
+		} else if (!$this->old_cat and !$this->new_cat) {
+			return array();
+		}
+
 		return array(
 			'id_before' => $this->old_cat['id'] ?: null,
 			'id_after'  => $this->new_cat['id'] ?: null,

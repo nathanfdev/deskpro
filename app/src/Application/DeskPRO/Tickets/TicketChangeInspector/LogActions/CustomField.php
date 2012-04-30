@@ -58,6 +58,10 @@ class CustomField implements LogActionInterface
 
 	public function getLogDetails()
 	{
+		if ($this->old == $this->new) {
+			return array();
+		}
+
 		return array(
 			'value_before' => $this->old,
 			'value_after' => $this->new,

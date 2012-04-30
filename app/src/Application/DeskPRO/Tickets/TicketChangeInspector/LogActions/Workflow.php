@@ -55,6 +55,14 @@ class Workflow implements LogActionInterface
 
 	public function getLogDetails()
 	{
+		if ($this->old_work and $this->new_work) {
+			if ($this->old_work->getId() == $this->new_work->getId()) {
+				return array();
+			}
+		} else if (!$this->old_work and !$this->new_work) {
+			return array();
+		}
+
 		return array(
 			'id_before' => $this->old_work['id'] ?: null,
 			'id_after'  => $this->new_work['id'] ?: null,

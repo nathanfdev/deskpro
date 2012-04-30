@@ -55,6 +55,14 @@ class Organization implements LogActionInterface
 
 	public function getLogDetails()
 	{
+		if ($this->old_org and $this->new_org) {
+			if ($this->old_org->getId() == $this->new_org->getId()) {
+				return array();
+			}
+		} else if (!$this->old_org and !$this->new_org) {
+			return array();
+		}
+
 		return array(
 			'id_before' => $this->old_org['id'] ?: null,
 			'id_after'  => $this->new_org['id'] ?: null,

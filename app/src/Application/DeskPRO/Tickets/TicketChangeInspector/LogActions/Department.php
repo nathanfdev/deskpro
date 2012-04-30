@@ -55,6 +55,14 @@ class Department implements LogActionInterface
 
 	public function getLogDetails()
 	{
+		if ($this->old_dep and $this->new_dep) {
+			if ($this->old_dep->getId() == $this->new_dep->getId()) {
+				return array();
+			}
+		} else if (!$this->old_dep and !$this->new_dep) {
+			return array();
+		}
+
 		return array(
 			'id_before' => $this->old_dep['id'] ?: null,
 			'id_after'  => $this->new_dep['id'] ?: null,

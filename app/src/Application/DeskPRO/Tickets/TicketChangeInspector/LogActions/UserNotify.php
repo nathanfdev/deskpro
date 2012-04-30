@@ -78,6 +78,10 @@ class UserNotify implements LogActionInterface
 			);
 		}
 
+		if (!$details['who_emailed'] && !$details['who_cced']) {
+			return array();
+		}
+
 		return $details;
 	}
 

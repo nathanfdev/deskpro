@@ -53,6 +53,10 @@ class AttachAdded implements LogActionInterface
 
 	public function getLogDetails()
 	{
+		if (!$this->attach) {
+			return array();
+		}
+
 		$details = array();
 		$details['id_after']  = $this->attach->id;
 		$details['attach_id'] = $this->attach->id;
