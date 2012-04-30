@@ -105,4 +105,5 @@
 	'admin.general.apps_kb_explain' => 'The knowledgebase application allows your agents to write help articles that users can search and browse from your portal.',
 	'admin.general.apps_downloads' => 'Downloads',
 	'admin.general.apps_downloads_explain' => 'The downloads applications allows your agents to upload files into a structured downloads section that users can search and browse from your portal.',
+	'admin.general.edit_css' => 'Edit CSS',
 );

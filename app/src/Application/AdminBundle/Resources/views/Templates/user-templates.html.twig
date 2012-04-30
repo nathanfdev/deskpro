@@ -1,7 +1,7 @@
 {% set this_page = 'portal_templates' %}
 {% set page_handler = 'DeskPRO.Admin.ElementHandler.TemplateEditList' %}
 {% import 'AdminBundle:Templates:macros.html.twig' as tplmacro %}
-{% extends 'AdminBundle::layout.html.twig' %}
+{% extends 'AdminBundle:Portal:layout.html.twig' %}
 {% block pagebar %}
 <nav>
 	<ul>
@@ -14,6 +14,17 @@
 {% endblock %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/TemplateEditList.js') }}"></script>
+{% if open_template %}
+	<script type="text/javascript">
+		var OPEN_TEMPLATE = {{ open_template|json_encode|raw }};
+		$(document).ready(function() {
+			var row = $('tr[data-template-name="' + OPEN_TEMPLATE + '"]');
+			if (row[0]) {
+				row.find('.edit-tpl-trigger').click();
+			}
+		});
+	</script>
+{% endif %}
 {% endblock %}
 
 {% block page %}
@@ -25,5 +36,4 @@
 {% endfor %}
 
 {{ tplmacro.render_editor_overlay() }}
-
 {% endblock %}

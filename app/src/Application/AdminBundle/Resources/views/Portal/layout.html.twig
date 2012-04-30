@@ -12,6 +12,7 @@
 				<li class="{% if this_page == 'labels' %}{{ phrase('admin.general.on') }}{% endif %}"><a>{{ phrase('agent.general.labels') }}</a></li>
 				<li class="{% if this_page == 'portal_settings' %}{{ phrase('admin.general.on') }}{% endif %}"><a href="{{ path('admin_portal_settings') }}">{{ phrase('admin.portal.global_settings') }}</a></li>
 				<li class="{% if this_page == 'portal_templates' %}{{ phrase('admin.general.on') }}{% endif %}"><a href="{{ path('admin_templates_user') }}">{{ phrase('admin.general.templates') }}</a></li>
+				<li><a href="{{ path('admin_templates_user', {open: 'UserBundle:Css:main.css.twig'}) }}">{{ phrase('admin.general.edit_css') }}</a></li>
 			</ul>
 		</article>
 

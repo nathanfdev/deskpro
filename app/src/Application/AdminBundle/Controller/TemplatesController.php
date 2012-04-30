@@ -66,6 +66,7 @@ class TemplatesController extends AbstractController
 		return $this->render('AdminBundle:Templates:user-templates.html.twig', array(
 			'list' => $list,
 			'custom_templates' => $custom_templates,
+			'open_template' => $this->in->getString('open')
 		));
 	}
 
