@@ -257,6 +257,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		if ($this->reader->getBodyHtml()->getBody()) {
+			$this->logMessage('[TicketGatewayProcessor] doNewReply read HTML email');
 			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
 			if (!$email_info['body']) {
 				$email_info['body'] = $this->reader->getBodyHtml()->getBody();
@@ -265,6 +266,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['body_is_html'] = true;
 
 		} else {
+			$this->logMessage('[TicketGatewayProcessor] doNewReply read text email');
 			$txt = $this->reader->getBodyText()->getBodyUtf8();
 			if (!$txt && $this->reader->getBodyText()->getBody()) {
 				$txt = $this->reader->getBodyText()->getBody();
@@ -311,7 +313,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$message['person'] = $person;
 		$message['email'] = $this->reader->getFromAddress()->getEmail();
 
-		$message['message'] = $email_info['body_is_html'] ? $email_info['body'] : nl2br(htmlspecialchars($email_info['body']));
+		$message['message'] = $email_info['body'];
 
 		foreach ($this->processBlobs() as $blob) {
 			$attach = new Entity\TicketAttachment();
@@ -438,15 +440,15 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		if ($this->reader->getBodyHtml()->getBody()) {
+			$this->logMessage('[TicketGatewayProcessor] runNewTicket read HTML email');
 			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
 			if (!$email_info['body']) {
 				$email_info['body'] = $this->reader->getBodyHtml()->getBody();
 				$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
 			}
 			$email_info['body_is_html'] = true;
-
-			$this->logMessage('[TicketGatewayProcessor] Using text email');
 		} else {
+			$this->logMessage('[TicketGatewayProcessor] runNewTicket read text email');
 			$txt = $this->reader->getBodyText()->getBodyUtf8();
 			if (!$txt && $this->reader->getBodyText()->getBody()) {
 				$txt = $this->reader->getBodyText()->getBody();
@@ -533,7 +535,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$ticket->gateway = $this->getGateway();
 		$ticket->gateway_address = $this->getGatewayAddress();
 
-		$message['message'] = $email_info['body_is_html'] ? $email_info['body'] : nl2br(htmlspecialchars($email_info['body']));
+		$message['message'] = $email_info['body'];
 
 		App::getOrm()->persist($ticket);
 		App::getOrm()->persist($message);

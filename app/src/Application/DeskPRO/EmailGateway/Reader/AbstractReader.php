@@ -44,7 +44,7 @@ abstract class AbstractReader
 
 	public function setProperty($name, $value)
 	{
-		$this->properties;
+		$this->properties[$name] = $value;
 	}
 
 	public function getProperty($name, $default = null)

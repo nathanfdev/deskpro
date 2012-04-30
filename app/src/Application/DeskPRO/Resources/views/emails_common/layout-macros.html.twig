@@ -73,7 +73,11 @@
 			{% for message in messages %}
 				{% if options.skip_top and loop.first %}
 				{% else %}
-					{{ _self.message(message.person.display_contact, message.date_created, message.message_html) }}
+					{% if message.person.is_agent %}
+						{{ _self.message(message.person.display_name, message.date_created, message.message_html) }}
+					{% else %}
+						{{ _self.message(message.person.display_contact, message.date_created, message.message_html) }}
+					{% endif %}
 				{% endif %}
 			{% endfor %}
 		{% endset %}

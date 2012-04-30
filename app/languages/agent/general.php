@@ -278,7 +278,7 @@
     'agent.general.hour'                                    => 'Hour',
     'agent.general.hours'                                   => 'hours',
     'agent.general.icq'                                     => 'ICQ',
-    'agent.general.id'                                      => 'Id',
+    'agent.general.id'                                      => 'ID',
     'agent.general.inbox'                                   => 'Inbox',
     'agent.general.include'                                 => 'include',
     'agent.general.includes_label'                          => 'includes label',

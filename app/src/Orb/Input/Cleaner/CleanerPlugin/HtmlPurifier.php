@@ -86,7 +86,7 @@ class HtmlPurifier implements CleanerPlugin
 
 		switch ($type) {
 			case 'html':
-				$config->set('HTML.Allowed', 'br,div,em,strong,span,h1,h2,h3,h4,h5,h6,table,thead,tbody,tfoot,tr,td,th,a[href],ul,li,dd,dt,dl,ol,p,pre,code');
+				$config->set('HTML.Allowed', 'br,div,em,strong,span,h1,h2,h3,h4,h5,h6,table,thead,tbody,tfoot,tr,td,th,a[href],ul,li,dd,dt,dl,ol,p,pre,code,blockquote');
 				$config->set('URI.DisableExternalResources', true);
 				break;
 
@@ -101,14 +101,36 @@ class HtmlPurifier implements CleanerPlugin
 				break;
 
 			case 'html_email':
-				$config->set('HTML.Allowed', 'em,strong,a[href],ul,li,dd,dt,dl,ol,p,span,br');
+				$config->set('HTML.Allowed', 'em,strong,a[href],ul,li,dd,dt,dl,ol,p,span,br,hr,table,thead,tbody,tfoot,tr,td,th,pre,code,div,blockquote');
 				$config->set('AutoFormat.Linkify', true);
 				$config->set('URI.DisableExternalResources', true);
-				$config->set('AutoFormat.RemoveEmpty', true);
-				$config->set('AutoFormat.RemoveSpansWithoutAttributes', true);
-				$config->set('AutoFormat.RemoveEmpty', true);
-				$config->set('CSS.AllowedFonts', array('courier', 'courier new', 'monospace', 'monospaced', 'monaco'));
-				$config->set('CSS.AllowedProperties', array('font-family', 'font-weight', 'font-style'));
+				$config->set('AutoFormat.RemoveEmpty', false);
+				$config->set('CSS.AllowedFonts', array(
+					'arial',
+					'comic sans ms',
+					'courier',
+					'courier new',
+					'geneva',
+					'georgia',
+					'helvetica',
+					'helvetica neue',
+					'impact',
+					'lucida grande',
+					'marker felt',
+					'microsoft sans serif',
+					'monaco',
+					'monospace',
+					'monospaced',
+					'palatino',
+					'papyrus',
+					'sans-serif',
+					'serif',
+					'tahoma',
+					'times',
+					'trebuchet ms',
+					'verdana',
+				));
+				$config->set('CSS.AllowedProperties', array('font-family', 'font-weight', 'font-style', 'font-size', 'color'));
 				$config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
 				$config->set('HTML.TidyLevel', 'medium');
 				break;

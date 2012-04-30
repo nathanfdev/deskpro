@@ -133,8 +133,10 @@ class Runner
 			}
 			$to = implode(', ', $to);
 
+			$from = $reader->getFromAddress()->getEmail();
+
 			$subj = substr($reader->getSubject()->getSubject(), 0, 40);
-			$this->logger->log("[Message] To: $to :: $subj", 'debug');
+			$this->logger->log("[Message] To: $to :: From: $from :: Subject: $subj", 'debug');
 
 			App::getOrm()->beginTransaction();
 

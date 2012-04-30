@@ -16,6 +16,10 @@
 {% set content %}
 <table cellspacing="0" cellpadding="3" width="100%">
 	<tr>
+		<td width="130">{{ phrase('agent.general.id') }}</td>
+		<td>{{ ticket.id }}</td>
+	</tr>
+	<tr>
 		<td width="130">{{ phrase('agent.general.agent') }}</td>
 		<td>{{ticket.agent.display_name|default(phrase('agent.general.none'))}}</td>
 	</tr>

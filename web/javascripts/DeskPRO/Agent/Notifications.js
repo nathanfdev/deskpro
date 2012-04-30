@@ -91,11 +91,11 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		// <3 because the dismiss button and the help note are li's
 		if ($('#dp_notify_list').find('> li').length < 3) {
-			$('#dp_notify_list_none').hide();
-			$('#dp_notify_list_dismiss').show();
-		} else {
 			$('#dp_notify_list_none').show();
 			$('#dp_notify_list_dismiss').hide();
+		} else {
+			$('#dp_notify_list_none').hide();
+			$('#dp_notify_list_dismiss').show();
 		}
 
 		if (newcount < 1) {
