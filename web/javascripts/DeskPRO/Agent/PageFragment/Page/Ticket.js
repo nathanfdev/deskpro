@@ -336,6 +336,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	_initMessage: function(messageEl) {
+		var self = this;
 		var imageEls = $('ul.attachment-list li.is-image a', messageEl);
 
 		imageEls.colorbox({
@@ -374,7 +375,25 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 		});
 
-
+		messageEl.find('article.message').each(function() {
+			var article = $(this);
+			var fullEl = article.find('.body-text-full-message');
+			if (fullEl[0]) {
+				var simpleEl = article.find('.body-text-message');
+				fullEl.find('.message-toggle-btn > em').on('click', function(ev) {
+					ev.preventDefault();
+					fullEl.hide();
+					simpleEl.show();
+					self.updateUi();
+				});
+				simpleEl.find('.message-toggle-btn > em').on('click', function(ev) {
+					ev.preventDefault();
+					fullEl.show();
+					simpleEl.hide();
+					self.updateUi();
+				});
+			}
+		});
 	},
 
 	incCount: function(id) {

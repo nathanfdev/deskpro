@@ -281,12 +281,16 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
 		}
 
+		$body_full = $email_info['body'];
+
 		$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
 		$email_info['body'] = $cut->cutQuoteBlock($email_info['body'], $email_info['body_is_html']);
 		if ($email_info['body_is_html']) {
 			// Send through cleaner again to fix html problems from cutting
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
 		}
+
+		$email_info['body'] = \Orb\Util\Strings::trimHtml($email_info['body']);
 
 		$ev = $this->createGatewayEvent(array(
 			'ticket' => $ticket,
@@ -314,6 +318,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$message['email'] = $this->reader->getFromAddress()->getEmail();
 
 		$message['message'] = $email_info['body'];
+		$message['message_full'] = $body_full;
 
 		foreach ($this->processBlobs() as $blob) {
 			$attach = new Entity\TicketAttachment();
@@ -464,6 +469,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if ($email_info['body_is_html'] && $this->cleaner && $this->cleaner->supportsType('html_email')) {
 			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
 		}
+
+		$email_info['body'] = \Orb\Util\Strings::trimHtml($email_info['body']);
 
 		$ev = $this->createGatewayEvent(array(
 			'person' => $person,

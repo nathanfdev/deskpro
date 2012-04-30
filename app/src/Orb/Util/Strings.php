@@ -1069,10 +1069,27 @@ class Strings
 	 */
 	public static function trimHtml($string)
 	{
+		$string = trim($string);
+
+		// Try to unwrap simple div wrappers around the string: <div>xxx</div> to just xxx
+		do {
+			$old_string = $string;
+
+			if (preg_match('#^<div\s*>#m', $string, $m) && preg_match('#</div>$#m', $string, $m2)) {
+				$string = trim(substr($string, strlen($m[0]), -strlen($m2[0])));
+			}
+		} while ($string != $old_string);
+
+		// Handle HTML whitespace
 		do {
 			$old_string = $string;
 			$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#im', '', $string);
 			$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#im', '', $string);
+
+			// Div wrappers around whitespce
+			$string = preg_replace('#^<div\s*>\s*(<br>|<br />|<br/>|<p>\s*</p>)?\s*</div>#im', '', $string);
+			$string = preg_replace('#<div\s*>\s*(<br>|<br />|<br/>|<p>\s*</p>)?\s*</div>$#im', '', $string);
+
 		} while ($string != $old_string);
 
 		return $string;

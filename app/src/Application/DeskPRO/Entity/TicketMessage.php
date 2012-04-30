@@ -120,6 +120,15 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	protected $message;
 
 	/**
+	 * This is the full message, including all quotes/cut content.
+	 * This will still be the HTMLPurifier'ed content (so it's safe),
+	 * it's just the message before it's been run through the cutter.
+	 *
+	 * @var string
+	 */
+	protected $message_full = null;
+
+	/**
 	 * If the message was created from an email just now, then this is the reader
 	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
 	 */
@@ -175,6 +184,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		$message = \Orb\Util\Strings::htmlEntityDecodeUtf8($message);
 
 		return $message;
+	}
+
+	public function getMessageFull()
+	{
+		return $this->message_full;
 	}
 
 	public function getMessagePlainHtml()
@@ -321,6 +335,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email', ));
 		$metadata->mapField(array( 'fieldName' => 'message_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message_hash', ));
 		$metadata->mapField(array( 'fieldName' => 'message', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message', ));
+		$metadata->mapField(array( 'fieldName' => 'message_full', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'message_full', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));

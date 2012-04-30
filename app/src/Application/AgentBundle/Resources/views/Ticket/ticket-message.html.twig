@@ -17,7 +17,16 @@
 			<time class="timeago" datetime="{{message.date_created|date('c')}}"></time>
 		</header>
 		<div class="body-text">
-			{{message.message_html|safe_link_urls_html }}
+			<div class="body-text-message">
+				{{message.message_html|safe_link_urls_html }}
+				{% if message.message_full %}<div class="message-toggle-btn"><em class="tipped" title="View full quoted message">&bull; &bull; &bull;</em></div>{% endif %}
+			</div>
+			{% if message.message_full %}
+				<div class="body-text-full-message" style="display: none;">
+					{{message.message_full|raw }}
+					<div class="message-toggle-btn"><em>&bull; &bull; &bull;</em></div>
+				</div>
+			{% endif %}
 			{% if ticket_message_attachments[message.id] %}
 				<ul class="attachment-list">
 					{% for attach_id in ticket_message_attachments[message.id] %}

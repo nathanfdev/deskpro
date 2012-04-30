@@ -59,7 +59,6 @@ class DefaultFromAddress implements \Swift_Events_SendListener
 	public function beforeSendPerformed(\Swift_Events_SendEvent $evt)
 	{
 		$message = $evt->getMessage();
-		$headers = $message->getHeaders();
 
 		if (!$message->getFrom()) {
 			$message->setFrom($this->from, $this->name);
@@ -67,9 +66,9 @@ class DefaultFromAddress implements \Swift_Events_SendListener
 			$from = $message->getFrom();
 			$from = array_pop($from);
 
-			// Default email without the name
-			if ($from[0] == $this->from && empty($from[1])) {
-				$message->setFrom($this->from, $this->name);
+			// Set the name if we dont have one
+			if (empty($from[1])) {
+				$message->setFrom($from[0], $this->name);
 			}
 		}
 	}
