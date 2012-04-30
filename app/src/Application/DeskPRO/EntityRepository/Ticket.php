@@ -126,27 +126,38 @@ class Ticket extends AbstractEntityRepository
 	 *
 	 * @return array
 	 */
-	public function getPersonTickets(Entity\Person $person, $limit = null)
+	public function getPersonTickets(Entity\Person $person, $limit = null, $status_order = false)
 	{
-		if ($person->is_agent) {
-			// Agents we dont consider participant "their" ticket
-			$tickets = $this->getEntityManager()->createQuery("
-				SELECT t
-				FROM DeskPRO:Ticket t INDEX BY t.id
-				WHERE t.person = ?1
-				ORDER BY t.status DESC, t.urgency DESC
-			")->setParameters(array(1=>$person))->setMaxResults($limit)->execute();
-		} else {
-			$tickets = $this->getEntityManager()->createQuery("
-				SELECT t
-				FROM DeskPRO:Ticket t INDEX BY t.id
-				LEFT JOIN t.participants p
-				WHERE t.person = ?1 OR p.person = ?2
-				ORDER BY t.status DESC,t.urgency DESC
-			")->setParameters(array(1=>$person, 2=>$person))->setMaxResults($limit)->execute();
+		$params = array($person->getId());
+		if (!$person->is_agent) {
+			$params[] = $person->getId();
 		}
 
-		return $tickets;
+		if ($status_order) {
+			$ids = $this->_em->getConnection()->fetchAllCol("
+				SELECT tickets.id
+				FROM tickets
+					" . (!$person->is_agent ? 'LEFT JOIN tickets_participants AS part ON (part.ticket_id = tickets.id)' : '') ."
+				WHERE tickets.person_id = ?
+				" . (!$person->is_agent ? 'OR part.person_id = ?' : '') ."
+				ORDER BY FIELD(tickets.status, 'awaiting_agent', 'awaiting_user', 'resolved', 'closed', 'hidden') ASC, tickets.urgency DESC
+			", $params);
+		} else {
+			$ids = $this->_em->getConnection()->fetchAllCol("
+				SELECT tickets.id
+				FROM tickets
+					" . (!$person->is_agent ? 'LEFT JOIN tickets_participants AS part ON (part.ticket_id = tickets.id)' : '') ."
+				WHERE tickets.person_id = ?
+				" . (!$person->is_agent ? 'OR part.person_id = ?' : '') ."
+				ORDER BY tickets.id DESC
+			", $params);
+		}
+
+		if (!$ids) {
+			return array();
+		}
+
+		return $this->getByIds($ids, true);
 	}
 
 
