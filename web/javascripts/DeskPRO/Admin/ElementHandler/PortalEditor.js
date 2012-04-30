@@ -96,6 +96,8 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 					template_name = 'UserBundle::custom-header.html.twig';
 				} else if (controller.name == 'head_include') {
 					template_name = 'UserBundle::custom-headinclude.html.twig';
+				} else if (controller.name == 'welcome') {
+					template_name = 'UserBundle:Portal:welcome-block.html.twig';
 				} else {
 					template_name = 'UserBundle::custom-footer.html.twig';
 				}
@@ -220,6 +222,8 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 			template_name = 'UserBundle::custom-header.html.twig';
 		} else if (name == 'head_include') {
 			template_name = 'UserBundle::custom-headinclude.html.twig';
+		} else if (name == 'welcome') {
+			template_name = 'UserBundle:Portal:welcome-block.html.twig';
 		} else {
 			template_name = 'UserBundle::custom-footer.html.twig';
 		}

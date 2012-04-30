@@ -6,7 +6,20 @@
 {% endblock %}
 {% block content %}
 
-	{% include 'UserBundle:Portal:welcome-block.html.twig' %}
+	{% if admin_portal_controls %}
+		{% set welcome_block %}{% include 'UserBundle:Portal:welcome-block.html.twig' %}{% endset %}
+		{% set welcome_block = welcome_block|trim %}
+		<div id="dp_custom_welcome_wrap" class="dp-portal-block" {% if not welcome_block %}style="display: none"{% endif %}>
+			<div id="dp_custom_welcome" class="dp-portal-block-content">
+				{{ welcome_block|raw }}
+			</div>
+		</div>
+		<div id="dp_custom_welcome_placeholder" class="dp-portal-placeholder dp-portal-placeholder-header" data-portal-block="welcome" data-portal-for="#dp_custom_welcome" {% if welcome_block %}style="display: none"{% endif %}>
+			<em>{{ phrase('admin.designer.edit_header_section') }}</em>
+		</div>
+	{% else %}
+		{% include 'UserBundle:Portal:welcome-block.html.twig' %}
+	{% endif %}
 
 	{{ portal_section('portal') }}
 {% endblock %}

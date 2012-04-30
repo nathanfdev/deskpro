@@ -204,7 +204,7 @@
  */
 
 html#dp_html, html#dp_html body {
-	background: #fff;
+	background: {{ stylevar.bg_color }};
 	margin: 0;
 	padding: 0;
 }
@@ -213,7 +213,7 @@ html#dp_html, html#dp_html body {
 	font-family: {{ font_body|raw }};
 	font-size: 13px;
 	line-height: 18px;
-	color: #333333;
+	color: {{ stylevar.text_color }};
 }
 
 #dp li, #dp td, #dp span, #dp label {
@@ -261,8 +261,8 @@ html#dp_html, html#dp_html body {
 	position: relative;
 	max-width: {{ page_width }}px;
 	height: {{ dp_header_bar_height }}px;
-	background-color: #2a69a9;
-	color: #fff;
+	background-color: {{ stylevar.header_bar_bg_color }};
+	color: {{ stylevar.header_text_color }};
 	border-bottom: 2px solid #1A4A7A;
 	{{ _self.border_radius({ tl: 6, tr: 6}) }}
 	overflow: hidden;

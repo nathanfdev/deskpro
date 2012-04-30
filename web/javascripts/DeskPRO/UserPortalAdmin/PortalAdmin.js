@@ -31,7 +31,7 @@ var PortalAdmin = {
 		this.contentCol = $('#dp_content');
 		this.sideCol = $('#dp_sidebar');
 
-		this.initBlocks(this.contentCol, '.dp-content-block');
+		//this.initBlocks(this.contentCol, '.dp-content-block');
 		this.initBlocks(this.sideCol, '.dp-sidebar-block');
 
 		//----------------------------------------
