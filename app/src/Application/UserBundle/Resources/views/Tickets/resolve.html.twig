@@ -12,7 +12,7 @@
 
 		<div class="dp-box-content-wrapper">
 			<div class="dp-box-content">
-				<form action="{{ path('user_tickets_close', {'ticket_ref': ticket.ref}) }}" method="post">
+				<form action="{{ path('user_tickets_resolve', {'ticket_ref': ticket.ref}) }}" method="post">
 				<input type="hidden" name="process" value="1" />
 				<div class="dp-box-section">
 					<p>
