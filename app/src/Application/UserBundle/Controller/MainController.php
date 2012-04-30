@@ -127,7 +127,7 @@ class MainController extends AbstractController
 
 		return $this->createJsonResponse(array(array(
 			'blob_id'           => $blob->getId(),
-			'blob_auth_id'      => $blob->getAuthId(),
+			'blob_auth_id'      => $blob->id . '-' . $blob->authcode,
 			'download_url'      => $blob->getDownloadUrl(true),
 			'filename'          => $blob->getFilename(),
 			'filesize_readable' => $blob->getReadableFilesize()

@@ -15,7 +15,7 @@
 			<ul class="attachment-list">
 				{% for attach_id in message_to_attach[message.id] %}
 					{% set ticket_attach = attachments[attach_id] %}
-					<li class="{% if ticket_attach.blob.isImage() %}is-image{% else %}dp-icon-file dp-icon-{{ticket_attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
+					<li class="{% if ticket_attach.blob.isImage() %}is-image{% else %}dp-fileicon dp-fileicon-{{ticket_attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
 						{% if ticket_attach.blob.isImage() %}
 							<a href="{{ ticket_attach.blob.download_url }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 'filename': ticket_attach.blob.filename, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
 						{% endif %}

@@ -27,7 +27,7 @@
 			</li>
 			{{ '{% } else { %}'}}
 			<li>
-				<input type="hidden" name="{{ formname|default('attach') }}" value="{{ '{%=file.blob_id%}' }}" />
+				<input type="hidden" name="{{ blob_field_name|default('attach_ids[]') }}" value="{{ '{%=file.blob_auth_id%}' }}" />
 				{% if not noremove %}<em class="remove-attach-trigger"></em>{% endif %}
 				<label><a href="{{ '{%=file.download_url%}' }}" target="_blank">{{ '{%=file.filename%}' }}</a><span>{{ '{%=file.filesize_readable%}' }}</span></label>
 			</li>
