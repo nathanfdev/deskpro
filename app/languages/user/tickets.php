@@ -25,7 +25,7 @@
     'user.tickets.flash_new_ticket_login'            => 'Your ticket has been submitted. Log in to view it now.',
     'user.tickets.flash_new_ticket_validating_email' => 'Before your ticket will be read by our agents, you must confirm your email address. We sent an email confirmation to {{email}}.',
     'user.tickets.from_x_at_y'                       => 'From {{name}} at {{date}}',
-    'user.tickets.have_we_answered'                  => 'Have we answered your question? Feel free to <a href="{{link_url}}">close this ticket</a>',
+    'user.tickets.have_we_answered'                  => 'Have we answered your question? Feel free to <a href="{{link_url}}">resolve this ticket</a>',
     'user.tickets.invalid_email'                     => 'The email address or password you entered is invalid. Please try again or {{link}} if you have lost your password.',
     'user.tickets.label_cced'                        => 'CCed',
     'user.tickets.label_your_email_star'             => 'Your Email Address *',

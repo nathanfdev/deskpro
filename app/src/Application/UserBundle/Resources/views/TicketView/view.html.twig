@@ -13,7 +13,7 @@
 		{% if ticket.status == 'awaiting_agent' or ticket.status == 'awaiting_user' %}
 			<div class="dp-status-switcher" title="{{ phrase('user.tickets.click_to_close') }}">
 				<div class="dp-status active dp-status-open">{{ phrase('user.general.open') }}</div>
-				<a class="dp-status switcher dp-status-closed" href="{{ path('user_tickets_close', {'ticket_ref': ticket.public_id}) }}">{{ phrase('user.feedback.status_closed') }}</a>
+				<a class="dp-status switcher dp-status-closed" href="{{ path('user_tickets_close', {'ticket_ref': ticket.public_id}) }}">{{ phrase('user.tickets.status_resolved') }}</a>
 			</div>
 		{% elseif ticket.status == 'resolved' %}
 			<div class="dp-status dp-status-resolved">{{ phrase('user.tickets.status_resolved') }}</div>

@@ -230,7 +230,7 @@ html#dp_html, html#dp_html body {
 }
 
 #dp_main {
-	width: {{ page_width }}px;
+	max-width: {{ page_width }}px;
 	margin: 15px auto 15px auto;
 }
 
@@ -254,8 +254,8 @@ html#dp_html, html#dp_html body {
 
 {% set dp_header_bar_height = 55 %}
 #dp_header_bar {
-position: relative;
-	width: {{ page_width }}px;
+	position: relative;
+	max-width: {{ page_width }}px;
 	height: {{ dp_header_bar_height }}px;
 	background-color: #2a69a9;
 	color: #fff;
