@@ -72,10 +72,8 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 			$from_name = $ticket->notify_email_name;
 		} else {
 			if ($this->via_message) {
-				error_log("with message");
 				$from_name = $this->via_message->getPerson()->getDisplayName();
 			} else {
-				error_log("message");
 				$from_name = App::getSetting('core.deskpro_name');
 			}
 		}
@@ -120,8 +118,6 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 		$vars['messages'] = $messages;
 
 		$from_address = $this->getFromAddress($ticket);
-
-		error_log("here");
 
 		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $only_cc_ids) {
 
