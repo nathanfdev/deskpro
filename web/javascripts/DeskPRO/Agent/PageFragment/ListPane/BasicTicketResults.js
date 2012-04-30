@@ -202,10 +202,10 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 						self.getEl('results_wrap').prepend(el);
 						el.slideDown('fast', self.updateUi.bind(self));
-					}
 
-					this.countTotal++;
-					this.updateTicketCountLabels();
+						this.countTotal++;
+						this.updateTicketCountLabels();
+					}
 				}
 			});
 		}
@@ -225,6 +225,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 	},
 
 	updateTicketCountLabels: function() {
+
 		var showing = $('article.row-item', this.wrapper).length || 0;
 
 		if (this.countTotal < 0) {
@@ -247,7 +248,13 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			this.getEl('no_results').hide();
 			this.getEl('is_results').show();
 
-			this.getEl('showing_count').text(showing);
+			var lowerBounds = ((this.resultsHelper.currentPage-1) * this.resultsHelper.options.perPage) + 1;
+			var upperBounds = (lowerBounds-1) + showing;
+			if (upperBounds > this.countTotal) {
+				upperBounds = this.countTotal;
+			}
+
+			this.getEl('showing_count').text(lowerBounds + '-' + upperBounds);
 			this.getEl('total_count').text(this.countTotal);
 			$('span', this.getEl('total_grouped_count')).text(this.countTotal);
 			this.selectionBar.resetCountLabel();
