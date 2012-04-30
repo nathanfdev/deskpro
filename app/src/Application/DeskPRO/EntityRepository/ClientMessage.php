@@ -71,7 +71,7 @@ class ClientMessage extends EntityRepository
 			$all_messages = $this->getMessagesForClient($session->getEntityId(), $person['id'], $since);
 		}
 
-		if ($with_last_since) {
+		if ($all_messages and $with_last_since) {
 			$all_messages = array_merge($all_messages, $this->getInitialMessagesForPerson($person, $with_last_since));
 		}
 
