@@ -73,8 +73,6 @@ class ListUpdater
 	 */
 	public function run()
 	{
-		$this->tracker->logMessage('[ListUpdater] run');
-
 		$filter_changes = $this->filter_detector->getFilterMatches();
 		$ticket_id = $this->tracker->getTicket()->id;
 
@@ -82,6 +80,9 @@ class ListUpdater
 
 		$count_adds = 0;
 		$count_dels = 0;
+
+		$this->tracker->logMessage('[ListUpdater] run');
+		$time = microtime(true);
 
 		$this->em->beginTransaction();
 		try {
@@ -92,37 +93,38 @@ class ListUpdater
 					if (!isset($online_agents[$agent->id])) continue;
 
 					$count_adds++;
-
-					$cm = new ClientMessage();
-					$cm->fromArray(array(
+					$this->em->getConnection()->insert('client_messages', array(
 						'channel' => 'agent.filter-update',
-						'data' => array(
+						'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+						'date_created' => date('Y-m-d H:i:s'),
+						'data' => serialize(array(
 							'ticket_id'  => $ticket_id,
 							'filter_id'  => $filter['id'],
 							'op' => 'add'
-						),
-						'for_person' => $agent,
-						'created_by_client' => 'sys'
+						)),
+						'for_person_id' => $agent->getId(),
+						'created_by_client' => 'sys',
+						'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
 					));
-					$this->em->persist($cm);
 				}
 				foreach ($change_info['del'] as $agent) {
 					if (!isset($online_agents[$agent->id])) continue;
 
 					$count_dels++;
 
-					$cm = new ClientMessage();
-					$cm->fromArray(array(
+					$this->em->getConnection()->insert('client_messages', array(
 						'channel' => 'agent.filter-update',
-						'data' => array(
+						'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+						'date_created' => date('Y-m-d H:i:s'),
+						'data' => serialize(array(
 							'ticket_id'  => $ticket_id,
 							'filter_id'  => $filter['id'],
-							'op' => 'del'
-						),
-						'for_person' => $agent,
-						'created_by_client' => 'sys'
+							'op' => 'add'
+						)),
+						'for_person_id' => $agent->getId(),
+						'created_by_client' => 'sys',
+						'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
 					));
-					$this->em->persist($cm);
 				}
 			}
 
@@ -133,6 +135,6 @@ class ListUpdater
 			throw $e;
 		}
 
-		$this->tracker->logMessage("[ListUpdater] Done with $count_adds adds and $count_dels dels messages sent");
+		$this->tracker->logMessage(sprintf("[ListUpdater] Done with $count_adds adds and $count_dels dels messages sent in %.4f seconds",microtime(true)-$time));
 	}
 }

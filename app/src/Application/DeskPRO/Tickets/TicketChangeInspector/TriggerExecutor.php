@@ -153,6 +153,7 @@ class TriggerExecutor
 		if ($this->is_performing || $this->is_cancelled) return;
 
 		$this->tracker->logMessage('[TriggerExecutor] run');
+		$time = microtime(true);
 
 		$this->is_performing = true;
 
@@ -281,11 +282,12 @@ class TriggerExecutor
 
 		$actions_collection = new ActionsCollection();
 
-		$trigger_logs = array();
-
 		foreach ($all_triggers as $trigger) {
+			$trigger_time = microtime(true);
+			$this->tracker->logMessage("[TriggerExecutor] Testing trigger match {$trigger->id} {$trigger->event_trigger} " . print_r($trigger->terms,true) . " " . print_r($trigger->actions, true));
 			if ($trigger->isTriggerMatch($this->tracker->getTicket(), $this->tracker)) {
-				$this->tracker->logMessage("[TriggerExecutor] Executing trigger {$trigger->id} {$trigger->event_trigger} " . print_r($trigger->terms,true) . " " . print_r($trigger->actions, true));
+
+				$this->tracker->logMessage(sprintf('[TriggerExecutor] -- Match', microtime(true)-$trigger_time));
 
 				foreach ($trigger['actions'] as $action_info) {
 					$action = $factory->createFromInfo($action_info);
@@ -294,7 +296,11 @@ class TriggerExecutor
 						$this->tracker->recordExtraMulti('trigger', $trigger);
 					}
 				}
+			} else {
+				$this->tracker->logMessage(sprintf('[TriggerExecutor] -- No match', microtime(true)-$trigger_time));
 			}
+
+			$this->tracker->logMessage(sprintf('[TriggerExecutor] -- Done trigger in %.4f seconds', microtime(true)-$trigger_time));
 
 			if ($actions_collection->hasModifierType('StopActions')) {
 				break;
@@ -381,9 +387,13 @@ class TriggerExecutor
 		if (!$person) {
 			$person = $this->tracker->getTicket()->person;
 		}
-		$actions_collection->apply($this->tracker->getTicket(), $person);
 
+		$trigger_apply_time = microtime(true);
+		$this->tracker->logMessage(sprintf('[TriggerExecutor] Applying %d actions', $actions_collection->countActions()));
+		$actions_collection->apply($this->tracker->getTicket(), $person, $this->tracker->getLog());
+		$this->tracker->logMessage(sprintf('[TriggerExecutor] -- Done in %.4f sections', microtime(true)-$trigger_apply_time));
 
+		$this->tracker->logMessage(sprintf('[TriggerExecutor] Done all work in %.4f seconds', microtime(true)-$time));
 
 		$this->is_performing = false;
 	}

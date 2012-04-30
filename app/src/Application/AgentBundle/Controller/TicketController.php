@@ -309,7 +309,7 @@ class TicketController extends AbstractController
 
 		// Sort log items into messages
 		// - $ticket_message_logs[123] is an array of log items that should be displayed before it
-		// - $ticket_message_logs[123] is an array of remaining log items (ie after last message)
+		// - $ticket_message_logs[after] is an array of remaining log items (ie after last message)
 		$log_keys = array_keys($ticket_logs);
 
 		$before_m = null;
@@ -1199,7 +1199,6 @@ class TicketController extends AbstractController
 			$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
 			$this->em->commit();
-
 		} catch (\Exception $e) {
 			$this->em->rollback();
 			throw $e;

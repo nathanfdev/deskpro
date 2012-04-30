@@ -116,6 +116,7 @@ class Mailer extends \Swift_Mailer
 	{
 		if ($service == 'message') {
 			$message = \Application\DeskPRO\Mail\Message::newInstance();
+			$message->setEncoder(\Swift_Encoding::get8BitEncoding());
 			$message->setTemplateEngine($this->templating);
 			return $message;
 		}

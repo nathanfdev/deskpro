@@ -258,7 +258,10 @@ class AgentNotificationAction implements ActionInterface
 			$message->getHeaders()->get('Message-ID')->setId($tac->getUniqueEmailMessageId());
 			$message->setFrom($this->getFromAddress($ticket));
 
+			$email_time = microtime(true);
 			App::getMailer()->send($message);
+
+			$this->tracker->logMessage("[AgentNotificationAction] Email: " . $agent_id . ' ' . $agent->getPrimaryEmailAddress());
 
 			$change_info['emailed'][] = $agent;
 		}

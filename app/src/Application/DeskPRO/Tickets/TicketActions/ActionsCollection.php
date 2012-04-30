@@ -89,6 +89,15 @@ class ActionsCollection
 
 
 	/**
+	 * @return int
+	 */
+	public function countActions()
+	{
+		return count($this->actions);
+	}
+
+
+	/**
 	 * Add a new action
 	 *
 	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $action
@@ -224,7 +233,7 @@ class ActionsCollection
 	 * @param \Application\DeskPRO\Entity\Ticket $ticket
 	 * @param \Application\DeskPRO\Entity\Person $person_context
 	 */
-	public function apply(Ticket $ticket, Person $person_context = null)
+	public function apply(Ticket $ticket, Person $person_context = null, $logger = null)
 	{
 		$this->was_stopped = false;
 
@@ -233,7 +242,14 @@ class ActionsCollection
 				$action->setPersonContext($person_context);
 			}
 
+			$time = microtime(true);
+
 			$action->apply($ticket);
+
+			if ($logger) {
+				$name = \Orb\Util\Util::getBaseClassname($action);
+				$logger->log(sprintf("[$name] Took %.4f seconds", microtime(true) - $time), \Orb\Log\Logger::DEBUG);
+			}
 
 			if ($action instanceof BreakableAction) {
 				if ($action->shouldBreakAction()) {
