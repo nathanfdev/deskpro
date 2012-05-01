@@ -23,6 +23,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		$('#dp_notify_list').on('click', 'li[data-route]', function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
+
 			self.removeRow($(this));
 			self.close();
 			DeskPRO_Window.runPageRouteFromElement($(this));
@@ -31,6 +32,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 	addRow: function(html_or_el) {
 		var row = $(html_or_el);
+		row.addClass('msg-row');
 		var type = row.data('type');
 
 		$('time.timeago', row).text('').attr('datetime', (new Date()).toUTCString());
@@ -39,9 +41,9 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		var ev = { row: row, type: type };
 		this.fireEvent('addRow');
 
-		this.modCount(type, '+');
-
 		row.insertBefore('#dp_notify_list_dismiss');
+
+		this.modCount(type, '+');
 	},
 
 	addMessage: function(type, message, route) {
@@ -60,8 +62,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		var ev = { row: row, type: type };
 		this.fireEvent('addRow');
 
-		this.modCount(type, '-');
 		row.remove();
+		this.modCount(type, '-');
 	},
 
 	modCount: function(type, op, count) {
@@ -90,12 +92,12 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		}
 
 		// <3 because the dismiss button and the help note are li's
-		if ($('#dp_notify_list').find('> li').length < 3) {
-			$('#dp_notify_list_none').show();
-			$('#dp_notify_list_dismiss').hide();
-		} else {
+		if ($('#dp_notify_list').find('> li.msg-row').length) {
 			$('#dp_notify_list_none').hide();
 			$('#dp_notify_list_dismiss').show();
+		} else {
+			$('#dp_notify_list_none').show();
+			$('#dp_notify_list_dismiss').hide();
 		}
 
 		if (newcount < 1) {
@@ -141,7 +143,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			$('#dp_notify_list li').not('.dismissAll').remove();
+			$('#dp_notify_list li.msg-row').not('.dismissAll').remove();
 			self.modCount('tickets', '=', 0);
 			self.modCount('chat', '=', 0);
 			self.close();
