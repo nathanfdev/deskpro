@@ -2625,6 +2625,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 				self.loadingSections = {};
 
 				Object.each(data, function(sectionData, sectionId) {
+					if (sectionData === null) {
+						// Probably means an error, send it normally
+						self.getSectionData(sectionId);
+					}
 					if (callback_map[sectionId]) {
 						callback_map[sectionId](sectionData);
 					}
