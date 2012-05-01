@@ -4,11 +4,14 @@ pageMeta.pageUrl = '{{ path('agent_feedback_filter') }}?partial=1&cache_id={{cac
 {% if list_type == 'category' %}
 	pageMeta.refreshUrl = '{{ path('agent_feedback_category', {'category_id': category_id}) }}';
 	{% set subgroup_url = path('agent_feedback_category', {'category_id': category_id}) ~ '?subgroup=SUBGROUP_ID' %}
+    pageMeta.url_fragment = '{{ url_fragment('agent_feedback_category', {'category': category}) }}';
 {% elseif list_type == 'status' %}
 	pageMeta.refreshUrl = '{{ path('agent_feedback_status', {'status': status}) }}?';
+    pageMeta.url_fragment = '{{ url_fragment('agent_feedback_status', {'status': status}) }}';
 	{% set subgroup_url = path('agent_feedback_status', {'status': status}) ~ '?subgroup=SUBGROUP_ID' %}
 {% elseif list_type == 'label' %}
 	pageMeta.refreshUrl = '{{ path('agent_feedback_label', {'label': label}) }}?';
+    pageMeta.url_fragment = '{{ url_fragment('agent_feedback_status', {'label': label}) }}';
 {% elseif list_type == 'validating' %}
 	pageMeta.refreshUrl = '{{ path('agent_feedback_validating') }}?';
 {% else %}
