@@ -48,7 +48,7 @@ use Application\DeskPRO\App;
  * This action handles toggling email validation features,
  * and handles sending auto-response to users
  */
-class NewTicketAction implements BreakableAction, ActionInterface
+class NewTicketAction extends AbstractAction implements BreakableAction
 {
 	/**
 	 * True to enable email validation on accounts that have not been validated yet.
