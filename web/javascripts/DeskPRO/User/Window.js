@@ -105,3 +105,33 @@ DeskPRO.User.Window = new Orb.Class({
 		return this.PAGE;
 	}
 });
+
+function Orb_Util_TimeAgo_getPhraseFor(type, num, ago) {
+
+	var phrasepre = 'reltime';
+	if (ago) {
+		phrasepre = 'reltimeago';
+	}
+
+	if (type == 'min') type = 'minute';
+	else if (type == 'mins') type = 'minutes';
+	else if (type == 'sec') type = 'second';
+	else if (type == 'secs') type = 'seconds';
+
+	var phrasename = 'user.general.' + phrasepre + '_x_' + type;
+	if (num == 1) {
+		var phrasename = 'user.general.' + phrasepre + '_1_' + type;
+	}
+	if (type == 'sec' && num <= 0) {
+		var phrasename = 'user.general.' + phrasepre + '_less_second';
+	}
+
+	if (!window.DESKPRO_LANG || !DESKPRO_LANG[phrasename]) {
+		if (window.console && window.console.warn) {
+			console.warn("Missing phrase %s", phrasename);
+		}
+		return 'timeago_missing_phrase: '+ phrasename;
+	}
+
+	return (DESKPRO_LANG[phrasename] || "").replace(/\{0\}/g, num);
+}

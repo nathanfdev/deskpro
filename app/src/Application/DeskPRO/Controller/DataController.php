@@ -78,6 +78,33 @@ class DataController extends AbstractController
 		$js = "window.DESKPRO_LANG = " . json_encode($js_phrases) . ";";
 
 		$response = $this->response;
+		\Application\DeskPRO\HttpFoundation\ResponseUtil::setNeverExpireHeaders($response);
+		$response->headers->set('Content-Type', 'application/javascript');
+		$response->setContent($js);
+
+		return $response;
+	}
+
+	public function userLangJsAction()
+	{
+		$tr = $this->container->getTranslator();
+
+		$js_phrases = array();
+
+		$js_phrases["user.general.reltime_less_second"] = $tr->phrase("user.general.reltime_less_second");
+		$js_phrases["user.general.reltimeago_less_second"] = $tr->phrase("user.general.reltime_less_second");
+
+		foreach (array('reltime', 'reltimeago') as $pre) {
+			foreach (array('second', 'minute', 'hour', 'day', 'week', 'month', 'year') as $name) {
+				$js_phrases["user.general.{$pre}_1_{$name}"] = $tr->phrase("user.general.{$pre}_1_{$name}");
+				$js_phrases["user.general.{$pre}_x_{$name}"] = $tr->phrase("user.general.{$pre}_x_{$name}");
+			}
+		}
+
+		$js = "window.DESKPRO_LANG = " . json_encode($js_phrases) . ";";
+
+		$response = $this->response;
+		\Application\DeskPRO\HttpFoundation\ResponseUtil::setNeverExpireHeaders($response);
 		$response->headers->set('Content-Type', 'application/javascript');
 		$response->setContent($js);
 

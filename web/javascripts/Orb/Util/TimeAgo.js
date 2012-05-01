@@ -251,8 +251,8 @@ Orb.Util.TimeAgo = {
 	 */
 	getPhraseFor: function(type, num, ago) {
 
-		if (Orb_Util_TimeAgo_getPhraseFor) {
-			return Orb_Util_TimeAgo_getPhraseFor(type, num, ago);
+		if (window.Orb_Util_TimeAgo_getPhraseFor) {
+			return window.Orb_Util_TimeAgo_getPhraseFor(type, num, ago);
 		}
 
 		if (type == 'sec' && num <= 0) {

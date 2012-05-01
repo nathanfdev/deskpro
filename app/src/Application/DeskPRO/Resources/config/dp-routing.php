@@ -132,5 +132,11 @@ $collection->add('dp_agent_lang', new Route(
 	array()
 ));
 
+$collection->add('dp_user_lang', new Route(
+	'/internal-data/user-lang.js',
+	array('_controller' => 'DeskPRO:Data:userLangJs'),
+	array(),
+	array()
+));
 
 return $collection;

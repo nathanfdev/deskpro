@@ -66,7 +66,7 @@ class Web
 
 		// Standard header
 		} else {
-			header('Location: ' . Orb_String::getFirstLine($url));
+			header('Location: ' . Strings::getFirstLine($url));
 		}
 
 		exit;

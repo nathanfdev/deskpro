@@ -38,6 +38,10 @@ var Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}'
 {% endif %}
 
 {% if not no_interface_data %}
-<script src="{{ path('dp_agent_lang') }}"></script>
-<script src="{{ path('agent_interface_data_js') }}"></script>
+	{% if app.isDebug() %}
+		<script src="{{ path('dp_agent_lang', {v: security_token('lang')} ) }}"></script>
+	{% else %}
+		<script src="{{ path('dp_agent_lang', {v: app.getSetting('core.deskpro_build')} ) }}"></script>
+	{% endif %}
+	<script src="{{ path('agent_interface_data_js') }}"></script>
 {% endif %}
