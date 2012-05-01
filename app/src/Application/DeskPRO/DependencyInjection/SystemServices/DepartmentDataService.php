@@ -41,6 +41,7 @@ class DepartmentDataService extends BaseRepositoryService
 	protected $has_init = false;
 	protected $cats;
 	protected $cat_ids = array();
+	protected $filtered_nodes = array();
 
 	public static function create(DeskproContainer $container, array $options = null)
 	{
@@ -52,6 +53,11 @@ class DepartmentDataService extends BaseRepositoryService
 		return $o;
 	}
 
+	public function get($dep_id)
+	{
+		return isset($this->cats[$dep_id]) ? $this->cats[$dep_id] : null;
+	}
+
 	protected function preload()
 	{
 		if ($this->has_init) {
@@ -61,7 +67,7 @@ class DepartmentDataService extends BaseRepositoryService
 
 		$this->cats = $this->em->createQuery("
 			SELECT d
-			FROM DeskPRO:Department d
+			FROM DeskPRO:Department d INDEX BY d.id
 			ORDER BY d.display_order ASC
 		")->execute();
 
@@ -74,9 +80,12 @@ class DepartmentDataService extends BaseRepositoryService
 
 			$cats[$c->getId()] = array(
 				'id' => $c->getId(),
-				'parent_id' => $c->parent ? $c->parent->getId() : null,
+				'parent_id' => $c->parent ? $c->parent->getId() : 0,
 				'title' => $c->getTitle()
 			);
+		}
+		foreach ($this->cats as $c) {
+			$c->children->initialize();
 		}
 
 		$this->repos->getInHierarchy($cats);
@@ -105,6 +114,22 @@ class DepartmentDataService extends BaseRepositoryService
 		}
 
 		return $this->getByIds($ids);
+	}
+
+	public function getPersonDepartments(\Application\DeskPRO\Entity\Person $person_context, $app)
+	{
+		$key = md5($person_context->getId() . '.' . $app);
+
+		if (isset($this->filtered_nodes[$key])) {
+			return $this->filtered_nodes[$key];
+		}
+
+		$filter = function ($c) use ($person_context, $app) {
+			return $person_context->getPermissionsManager()->Departments->isAllowed($c->getId(), $app);
+		};
+
+		$this->filtered_nodes[$key] = \Application\DeskPRO\Tree\TreeProxy::makeTreeProxyArray($this->getRootNodes(), $filter);
+		return $this->filtered_nodes[$key];
 	}
 
 	public function getRootNodes()

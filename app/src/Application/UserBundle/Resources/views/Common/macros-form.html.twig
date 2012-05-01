@@ -1,9 +1,9 @@
 {% macro select_options_hierarchy(cat, selected, depth) %}
 	{% if not depth %}{% set depth = 0 %}{% endif %}
 	{% set indent = '&nbsp;'|repeat(depth) %}
-	{% if cat.getChildren()|length %}
+	{% if cat.children|length %}
 		<optgroup label="{{ indent|raw }}{{ cat.title }}">
-			{% for child in cat.getChildren() %}
+			{% for child in cat.children %}
 				{{ _self.select_options_hierarchy(child, selected, depth+1) }}
 			{% endfor %}
 		</optgroup>

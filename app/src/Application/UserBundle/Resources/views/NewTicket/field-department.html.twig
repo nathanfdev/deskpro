@@ -6,7 +6,7 @@
 	<div class="dp-controls dp-fill ticket_department">
 		<select name="newticket[ticket][department_id]">
 			<option value=""></option>
-			{% for cat in app.getDataRepository('Department').getRootNodes() %}
+			{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
 				{{ formmacro.select_options_hierarchy(cat, newticket.ticket.department_id) }}
 			{% endfor %}
 		</select>
