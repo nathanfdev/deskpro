@@ -271,7 +271,7 @@ class FeedbackSearch extends SearcherAbstract
 				break;
 
 			case 'popular':
-				$order_by = "ORDER BY ((total_rating^2)/DATEDIFF(NOW(),date_created)) DESC, date_created DESC";
+				$order_by = "ORDER BY (POW(total_rating+1,2)/DATEDIFF(NOW(),date_created)) DESC, date_created DESC";
 				break;
 
 			case 'most-voted':
