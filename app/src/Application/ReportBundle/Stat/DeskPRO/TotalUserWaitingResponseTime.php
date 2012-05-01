@@ -56,8 +56,8 @@ class TotalUserWaitingResponseTime extends AbstractTicket
 		      ->setParameter(':date_resolved', $this->last_stat_date->format('U'));
 		$this->addQuery('ticket_waiting_time', $query);
 
-		$status_open = Ticket::getStatusInt(Ticket::STATUS_OPEN);
-		
+		$status_open = Ticket::getStatusInt(Ticket::STATUS_AWAITING_AGENT);
+
 		// Get the number of times the resolved tickets went into 'awaiting_user' status
 		$query = $this->createQuery()
 		      ->select('COUNT(tickets_logs.id) as status_change_count')
@@ -106,7 +106,7 @@ class TotalUserWaitingResponseTime extends AbstractTicket
 				'grouping_ref' => $result[str_replace('.', '_', $this->grouping[0])],
 			);
 		}
-		
+
 		return $processedResults;
 	}
 
