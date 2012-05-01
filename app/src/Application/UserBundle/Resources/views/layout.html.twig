@@ -64,9 +64,37 @@
 <div id="dp">
 	<div id="dp_main">
 	<div id="dp_main_inner">
+
+		{% if admin_portal_controls %}
+			<div id="dp_header" class="{% if app.logoblob %}dp-with-logo{% endif %} {% if not app.getSetting('user.portal_simpleheader') %}disabled{% endif %}">
+				<a href="{{ path('user') }}"><img class="logo" {% if app.logoblob %}src="{{ app.logoblob.getDownloadUrl() }}"{% endif %} /></a>
+
+				<h1><a href="{{ path('user') }}">{{ app.getSetting('user.portal_header') }}</a></h1>
+				<h2 {% if not app.getSetting('user.portal_tagline') %}style="display: none"{% endif %}>{{ app.getSetting('user.portal_tagline') }}</h2>
+				{% if admin_portal_controls %}
+					<div id="dp_header_portal_off" style="float:left">
+						{{ phrase('admin.designer.reenable_simple_header') }}
+					</div>
+				{% endif %}
+				<br style="clear:both;height: 1px;overflow: hidden;" />
+			</div>
+		{% else %}
+			{% if app.getSetting('user.portal_simpleheader') %}
+				{% if app.logoblob %}
+					<div id="dp_header">
+						<a href="{{ path('user') }}"><img class="logo" src="{{ app.logoblob.getDownloadUrl() }}" /></a>
+					</div>
+				{% else %}
+					<h1><a href="{{ path('user') }}">{{ app.getSetting('user.portal_header') }}</a></h1>
+					<h2 {% if not app.getSetting('user.portal_tagline') %}style="display: none"{% endif %}>{{ app.getSetting('user.portal_tagline') }}</h2>
+					<br style="clear:both; height: 1px;overflow: hidden;" />
+				{% endif %}
+			{% endif %}
+		{% endif %}
+
 		<div id="dp_header_bar">
 			<section id="dp_header_title">
-				<h1>{{ app.getSetting('core.deskpro_name') }}</h1>
+				<h1>{{ app.getSetting('user.portal_title') }}</h1>
 			</section>
 			<section id="dp_header_search" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
 				<form action="{{ path('user_search') }}" class="dp-form-search" id="dp_omnisearch">

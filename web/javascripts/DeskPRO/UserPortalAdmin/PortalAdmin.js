@@ -236,6 +236,14 @@ var PortalAdmin_SimpleHeader = new Orb.Class({
 			PortalAdmin.tellAdmin('open_logo_editor', { controller: self });
 		});
 
+		var updateHeader = function() {
+			if (self.header.hasClass('disabled')) {
+				PortalAdmin.tellAdmin('disable_logo_area', { controller: this });
+			} else {
+				PortalAdmin.tellAdmin('enable_logo_area', { controller: this });
+			}
+		}
+
 		$('#dp_header_portal_off').on('click', function() {
 			self.header.toggleClass('disabled');
 		});

@@ -79,6 +79,18 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 			case 'update_height':
 				this.updateHeight(data.height);
 				break;
+			case 'enable_logo_area':
+				$.ajax({
+					url: BASE_URL + 'admin/portal/save-editor/enable_logo_area',
+					type: 'POST'
+				});
+				break;
+			case 'disable_logo_area':
+				$.ajax({
+					url: BASE_URL + 'admin/portal/save-editor/disable_logo_area',
+					type: 'POST'
+				});
+				break;
 			case 'open_placeholder_editor':
 				var controller = data.controller;
 

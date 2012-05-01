@@ -123,8 +123,8 @@ class PortalController extends AbstractController
 
 			case 'header_title':
 				$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_logo_blob', null);
-				$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_name', $this->in->getString('title'));
-				$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_tagline', $this->in->getString('tagline'));
+				$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('user.portal_header', $this->in->getString('title'));
+				$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('user.portal_tagline', $this->in->getString('tagline'));
 				break;
 
 			case 'header_logo':
@@ -132,6 +132,14 @@ class PortalController extends AbstractController
 				if ($blob) {
 					$this->container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_logo_blob', $blob->id);
 				}
+				break;
+
+			case 'disable_logo_area':
+				$this->container->getSettingsHandler()->setSetting('user.portal_simpleheader', null);
+				break;
+
+			case 'enable_logo_area':
+				$this->container->getSettingsHandler()->setSetting('user.portal_simpleheader', 1);
 				break;
 		}
 

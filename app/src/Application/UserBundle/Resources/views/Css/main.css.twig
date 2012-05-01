@@ -256,6 +256,53 @@ html#dp_html, html#dp_html body {
 * This includes the top blue bar, the helpdesk title, and the search box
 ***********************************************************************************************************************/
 
+#dp_header {
+	margin: 9px 0 9px 9px;
+	position: relative;
+}
+
+#dp_header img.logo {
+	display: none;
+}
+
+#dp_header.dp-with-logo img.logo {
+	display: block;
+}
+
+#dp_header.disabled.dp-with-logo img.logo {
+	display: none;
+}
+
+#dp_header.dp-with-logo h1,
+#dp_header.dp-with-logo h2 {
+	display: none;
+}
+
+#dp_header h1 {
+	font-size: 14pt;
+	line-height: 100%;
+	float: left;
+}
+
+#dp_header h1 a {
+	color: {{ stylevar.header_name_color }};
+}
+
+#dp_header h2 {
+	border-left: 1px solid {{ stylevar.header_tagline_color }};
+	color: {{ stylevar.header_tagline_color }};
+	font-size: 10pt;
+	padding: 0;
+	margin:  0;
+	line-height: 100%;
+	float: left;
+	margin-left: 10px;
+	padding-left: 10px;
+	margin-top: -0px;
+	line-height: 20px;
+}
+
+
 {% set dp_header_bar_height = 55 %}
 #dp_header_bar {
 	position: relative;
