@@ -60,6 +60,7 @@ class EditEmailTransport extends AbstractType
 
 		$builder->add('transport_type', 'text');
 		$builder->add('backup_transport_type', 'text', array('required' => false));
+		$builder->add('use_backup', 'text', array('required' => false));
 
 		foreach (array('smtp_options', 'backup_smtp_options') as $n) {
 			$options_form = $builder->create($n, 'form');

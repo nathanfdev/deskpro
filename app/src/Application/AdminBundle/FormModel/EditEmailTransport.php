@@ -50,6 +50,7 @@ class EditEmailTransport
 	public $smtp_options = array();
 	public $gmail_options = array();
 
+	public $use_backup;
 	public $backup_transport_type;
 	public $backup_smtp_options = array();
 	public $backup_gmail_options = array();
@@ -111,7 +112,7 @@ class EditEmailTransport
 			$this->transport->title = 'PHP mail()';
 		}
 
-		if ($this->backup_transport_type) {
+		if ($this->backup_transport_type && $this->use_backup) {
 			$this->transport->backup_transport_type = $this->backup_transport_type;
 			if ($this->backup_transport_type == 'smtp') {
 				$this->transport->backup_transport_options = $this->backup_smtp_options;

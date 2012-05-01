@@ -116,7 +116,8 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 
 				$('#backup_form').slideDown();
 			} else {
-				$('#backup_form_none_radio').attr('checked', 'checked').click();
+				$('#backup_form :radio').prop('checked', false);
+				$('#backup_form_none_radio').prop('checked', true);
 				$('#backup_form').slideUp();
 			}
 		});
