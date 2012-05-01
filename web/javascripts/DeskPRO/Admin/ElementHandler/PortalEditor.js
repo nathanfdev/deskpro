@@ -153,6 +153,21 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 				});
 
 				break;
+			case 'toggle_tab':
+
+				var tabName = data.tabName;
+				var on = data.on ? 1 : 0;
+
+				$.ajax({
+					url: BASE_URL + 'admin/portal/save-editor/toggle_tab',
+					type: 'POST',
+					data: {
+						tab: tabName,
+						on: on
+					}
+				});
+				break;
+
 			case 'open_logo_editor':
 				var controller = data.controller;
 				var overlay = new DeskPRO.UI.Overlay({

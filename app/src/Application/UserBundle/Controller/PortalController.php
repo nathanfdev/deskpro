@@ -64,6 +64,17 @@ class PortalController extends AbstractController
 					return $this->redirectRoute('user_tickets_new');
 				}
 			}
+
+			// If tabs are turned off, the home page changes
+			if ($this->container->getSetting('user.portal_tab_news')) {
+
+			} elseif ($this->container->getSetting('user.portal_tab_articles')) {
+				return $this->redirectRoute('user_articles');
+			} elseif ($this->container->getSetting('user.portal_tab_feedback')) {
+				return $this->redirectRoute('user_feedback');
+			} else {
+				return $this->redirectRoute('user_tickets_new');
+			}
 		}
 
         return $this->render('UserBundle:Portal:portal.html.twig', array(

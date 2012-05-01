@@ -149,6 +149,17 @@ class PortalController extends AbstractController
 			case 'portal_title':
 				$this->container->getSettingsHandler()->setSetting('user.portal_title', $this->in->getString('title'));
 				break;
+
+			case 'toggle_tab':
+				if ($this->in->getBool('on')) {
+					$val = 1;
+				} else {
+					$val = 0;
+				}
+
+				$this->container->getSettingsHandler()->setSetting('user.portal_tab_' . $this->in->getStrSimple('tab'), $val);
+
+				break;
 		}
 
 		return $this->createJsonResponse(array('success' => true));

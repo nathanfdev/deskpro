@@ -566,12 +566,12 @@ nav#dp_content_tabs {
 	top: 1px;
 	z-index: 2;
 }
-nav#dp_content_tabs ul {
+nav#dp_content_tabs > ul {
 	margin: 0;
 	padding: 0;
 }
 
-nav#dp_content_tabs ul li {
+nav#dp_content_tabs > ul > li {
 	display: block;
 	float: left;
 	margin-top: 3px;
@@ -592,17 +592,17 @@ nav#dp_content_tabs ul li {
 	cursor: pointer;
 }
 
-nav#dp_content_tabs ul li:hover {
+nav#dp_content_tabs > ul > li:hover {
 	{{ _self.box_shadow('1px 0 2px rgba(0,0,0, 0.4)') }}
 }
-nav#dp_content_tabs ul li.on {
+nav#dp_content_tabs > ul > li.on {
 	{{ _self.box_shadow('1px 0 2px rgba(0,0,0, 0.4)') }}
 	border: 1px solid #c9d0d8;
 	border-bottom: 1px solid #fff;
 	cursor: pointer;
 }
 
-nav#dp_content_tabs ul li:hover h3 {
+nav#dp_content_tabs > ul > li:hover h3 {
 	text-decoration: underline;
 }
 
@@ -646,6 +646,10 @@ nav#dp_content_tabs label {
 * Sidebar
 * This contains the style for sidebar and sidebar blocks
 ***********************************************************************************************************************/
+
+#dp .dp-no-tabs #dp_sidebar_wrapper {
+	padding-top: 0;
+}
 
 #dp_sidebar_wrapper {
 	/* Padding top to align contents of sidebar with that of the page,

@@ -260,6 +260,22 @@ var PortalAdmin_SimpleHeader = new Orb.Class({
 				self.header.toggleClass('disabled');
 			}
 		});
+
+		// Tabs
+		$('#dp_content_tabs li').each(function() {
+			var li = $(this);
+			var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span class="lbloff">OFF</span><span class="lblon">ON</span></li></div>');
+			li.prepend(controls);
+
+			controls.find('.dp-toggle-block').on('click', function() {
+				li.toggleClass('disabled');
+				self.toggleTab(li.data('tab'), !li.hasClass('disabled'));
+			});
+		});
+	},
+
+	toggleTab: function(tabName, on) {
+		PortalAdmin.tellAdmin('toggle_tab', { controller: self, tabName: tabName, on: on });
 	},
 
 	/**
