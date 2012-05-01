@@ -125,7 +125,7 @@ class TicketFiltersController extends AbstractController
 			});
 		}
 
-		$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
+		$term_options = App::getApi('tickets')->getTicketOptions($this->person);
 
 		return $this->render('AdminBundle:TicketFilters:edit.html.twig', array(
 			'filter' => $filter,
