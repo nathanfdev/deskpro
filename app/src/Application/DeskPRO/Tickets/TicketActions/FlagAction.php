@@ -43,7 +43,7 @@ use Application\DeskPRO\App;
 /**
  * Sets flag
  */
-class FlagAction extends AbstractAction, PersonContextInterface
+class FlagAction extends AbstractAction implements PersonContextInterface
 {
 	protected $flag;
 	protected $person_context;
