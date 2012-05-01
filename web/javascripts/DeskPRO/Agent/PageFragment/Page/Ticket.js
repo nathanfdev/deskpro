@@ -203,7 +203,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		formData.push({
 			name: 'last_log_id',
-			value: DeskPRO_Window.getMessageChanneler().getLastMessageId()
+			value: this.getEl('messages_wrap').find('.log-row').last().data('log-id')
 		});
 
 		$.ajax({
