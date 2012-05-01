@@ -1,7 +1,7 @@
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.UserChatFilter';
-pageMeta.fetchResultsUrl = '{{ path('agent_userchat_filterlist_page', {'filter_id': filter_id}) }}';
+pageMeta.fetchResultsUrl = '{{ path('agent_userchat_filterlist', {'filter_id': filter_id}) }}';
 pageMeta.url_fragment = '{{ url_fragment('agent_userchat_filterlist', {'filter_id': filter_id}) }}';
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
@@ -30,13 +30,13 @@ pageMeta.resultIds = {{ chat_ids|json_encode|raw }};
 		<ul class="pagenav {% if page == 1%}no-prev{% endif %} {% if page == max_page %}no-next{% endif %}">
 			<li class="prev"
 			{% if page != 1%}
-			data-route="listpane:{{ path('agent_userchat_filterlist_page', {'p': page - 1, 'filter_id': filter_id, 'group_var': group_var, 'group_val': group_val}) }}"
+			data-route="listpane:{{ path('agent_userchat_filterlist', {'p': page - 1, 'filter_id': filter_id, 'group_var': group_var, 'group_val': group_val}) }}"
 			{% endif %}
 			>
 			</li>
 			<li class="next"
 			{% if page != max_page %}
-			data-route="listpane:{{ path('agent_userchat_filterlist_page', {'p': page + 1, 'filter_id': filter_id, 'group_var': group_var, 'group_val': group_val}) }}"
+			data-route="listpane:{{ path('agent_userchat_filterlist', {'p': page + 1, 'filter_id': filter_id, 'group_var': group_var, 'group_val': group_val}) }}"
 			{% endif %}
 			>
 			</li>

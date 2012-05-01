@@ -2,7 +2,9 @@
 {% if single_type == 'feedback' %}
 	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.FeedbackCommentsValidating';
 	pageMeta.singleType = 'feedback';
+    pageMeta.url_fragment = '{{ url_fragment('agent_feedback_validatingcomments') }}';
 {% else %}
+    pageMeta.url_fragment = '{{ url_fragment('agent_publish_validatingcomments') }}';
 	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments';
 {% endif %}
 </script>

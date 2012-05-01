@@ -1471,35 +1471,49 @@ $collection->add('agent_publish_save_stickysearchwords', new Route(
 	array()
 ));
 
-$collection->add('agent_public_validatingcontent', new Route(
+$collection->add('agent_publish_validatingcontent', new Route(
 	'/publish/content/validating',
 	array('_controller' => 'AgentBundle:Publish:listValidatingContent'),
 	array(),
-	array()
+	array('fragment_type' => 'list', 'fragment_name' => 'validating_content')
 ));
 
-$collection->add('agent_public_validatingcontent_approve', new Route(
+$collection->add('agent_feedback_validatingcontent', new Route(
+	'/feedback/content/validating',
+	array('_controller' => 'AgentBundle:Publish:listValidatingFeedbackContent'),
+	array(),
+	array('fragment_type' => 'list', 'fragment_name' => 'fb_content')
+));
+
+$collection->add('agent_feedback_validatingcomments', new Route(
+	'/feedback/comments/validating',
+	array('_controller' => 'AgentBundle:Publish:listValidatingFeedbackComments'),
+	array(),
+	array('fragment_type' => 'list', 'fragment_name' => 'fb_comments')
+));
+
+$collection->add('agent_publish_validatingcontent_approve', new Route(
 	'/publish/content/approve/{type}/{content_id}.json',
 	array('_controller' => 'AgentBundle:Publish:approveContent'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_public_validatingcontent_disapprove', new Route(
+$collection->add('agent_publish_validatingcontent_disapprove', new Route(
 	'/publish/content/disapprove/{type}/{content_id}.json',
 	array('_controller' => 'AgentBundle:Publish:disapproveContent'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_public_validatingcontent_mass', new Route(
+$collection->add('agent_publish_validatingcontent_mass', new Route(
 	'/publish/content/validating-mass-actions/{action}',
 	array('_controller' => 'AgentBundle:Publish:validatingMassActions'),
 	array(),
 	array()
 ));
 
-$collection->add('agent_public_validatingcontent_next', new Route(
+$collection->add('agent_publish_validatingcontent_next', new Route(
 	'/publish/content/get-next-validating/{type}/{content_id}.json',
 	array('_controller' => 'AgentBundle:Publish:nextValidatingContent'),
 	array(),
@@ -1510,7 +1524,7 @@ $collection->add('agent_publish_validatingcomments', new Route(
 	'/publish/comments/validating',
 	array('_controller' => 'AgentBundle:Publish:listValidatingComments'),
 	array(),
-	array()
+	array('fragment_type' => 'list', 'fragment_name' => 'validating_comments')
 ));
 
 $collection->add('agent_publish_approve_comment', new Route(
@@ -1548,7 +1562,7 @@ $collection->add('agent_public_comment_newticketinfo', new Route(
 	array()
 ));
 
-$collection->add('agent_public_validatingcomments_mass', new Route(
+$collection->add('agent_publish_validatingcomments_mass', new Route(
 	'/publish/comments/validating-mass-actions/{action}',
 	array('_controller' => 'AgentBundle:Publish:validatingCommentsMassActions'),
 	array(),

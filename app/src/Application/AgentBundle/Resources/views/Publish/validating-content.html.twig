@@ -2,8 +2,10 @@
 {% if single_type == 'feedback' %}
 	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.FeedbackContentValidating';
 	pageMeta.singleTyle = 'feedback';
+    pageMeta.url_fragment = '{{ url_fragment('agent_feedback_validatingcontent') }}';
 {% else %}
 	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent';
+    pageMeta.url_fragment = '{{ url_fragment('agent_publish_validatingcontent') }}';
 {% endif %}
 </script>
 {# scroll containers #}

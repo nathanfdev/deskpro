@@ -369,6 +369,18 @@ class PublishController extends AbstractController
 		));
 	}
 
+	public function listValidatingFeedbackCommentsAction()
+	{
+		$this->publish_helper->setEnabledTypes(array('feedback'));
+		return $this->listValidatingCommentsAction();
+	}
+
+	public function listValidatingFeedbackContentAction()
+	{
+		$this->publish_helper->setEnabledTypes(array('feedback'));
+		return $this->listValidatingContentAction();
+	}
+
 	public function approveContentAction($type, $content_id)
 	{
 		$content_validating =  $this->publish_helper->getValidatingContentInfo(1000);
