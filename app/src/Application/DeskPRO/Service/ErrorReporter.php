@@ -89,7 +89,7 @@ class ErrorReporter
 		$data = array_merge($data, self::getBasicData());
 
 		try {
-			$client = new \Zend\Http\Client(null, array('timeout' => 5));
+			$client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/' . $service . '.json');
 			$client->getRequest()->post()->fromArray($data);

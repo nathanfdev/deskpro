@@ -792,7 +792,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$stats = $stats_fetcher->getStats();
 				$stats['import_log'] = $log_file;
 
-				$client = new \Zend\Http\Client(null, array('timeout' => 10));
+				$client = new \Zend\Http\Client(null, array('timeout' => 10, 'strictredirects' => true));
 				$client->setMethod(\Zend\Http\Request::METHOD_POST);
 				$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/report-stats.json');
 				$client->getRequest()->post()->set("from_import", 1);
