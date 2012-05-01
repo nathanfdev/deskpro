@@ -108,9 +108,9 @@ class UrgencyAction implements ActionInterface
 		if (!$this->num) return '';
 
 		if ($this->num < 0) {
-			return $tr->phrase('agent.tickets._action', array('urgency' => abs($this->num)));
+			return $tr->phrase('agent.tickets.decrease_urgency_action', array('amount' => abs($this->num)));
 		} else {
-			return $tr->phrase('agent.tickets._action', array('urgency' => $this->num));
+			return $tr->phrase('agent.tickets.increase_urgency_action', array('amount' => $this->num));
 		}
 	}
 }

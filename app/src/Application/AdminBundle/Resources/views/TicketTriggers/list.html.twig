@@ -51,6 +51,8 @@
 						{% for desc in trigger.getTermDescriptions() %}
 							<span class="term">{{ desc }}</span>
 							{% if not loop.last %}<br /><em class="op">{{ phrase('agent.general.and') }}</em>{% endif %}
+						{% else %}
+							<span class="term">{{ phrase('admin.tickets.any_ticket') }}</span>
 						{% endfor %}
 					</div>
 				</td><td valign="top" width="50%" style="padding-left: 15px;">

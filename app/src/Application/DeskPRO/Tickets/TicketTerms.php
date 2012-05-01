@@ -649,9 +649,15 @@ class TicketTerms
 			$choice = $info['options'];
 
 			if (strpos($op, 'changed') !== false) {
-				$descs[] = $tr->phrase('admin.tickets.changed_to_effect', array('description' => $this->getTermDescription($term, $op, $choice)));
+				$term = $this->getTermDescription($term, $op, $choice);
+				if ($term) {
+					$descs[] = $tr->phrase('admin.tickets.changed_to_effect', array('description' => $term));
+				}
 			} else {
-				$descs[] = $this->getTermDescription($term, $op, $choice);
+				$term = $this->getTermDescription($term, $op, $choice);
+				if ($term) {
+					$descs[] = $term;
+				}
 			}
 		}
 

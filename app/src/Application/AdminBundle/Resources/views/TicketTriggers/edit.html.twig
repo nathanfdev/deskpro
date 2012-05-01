@@ -91,7 +91,7 @@ function TicketTriggerEditPage_initTerms(handler) {
             {% if trigger.sys_name and trigger.sys_name == trigger.title %}
                 {{ phrase('agent.general.triggers_' ~ trigger.sys_name|replace({'.': '_'})) }}
                 <div style="display: none">{{ form_widget(form.title) }}</div>
-            {% elseif trigger.title %}
+            {% else %}
                 {{ form_widget(form.title) }}
 			{% endif %}
 		</div>
@@ -134,7 +134,6 @@ function TicketTriggerEditPage_initTerms(handler) {
 	{% endfor %}
 {% endfor %}
 
-{{ form_rest(form) }}
 </form>
 
 {% if trigger.id %}
