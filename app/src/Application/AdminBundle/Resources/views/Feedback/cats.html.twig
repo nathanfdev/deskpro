@@ -2,11 +2,15 @@
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% import 'AdminBundle:Common:admin-macros.html.twig' as admin %}
 {% extends 'AdminBundle::layout.html.twig' %}
-{% block pagetitle %}
-	<h1>{{ phrase('admin.feedback.feedback_categories') }}</h1>
-	<nav>
-		<a class="clean-white" href="{{ path('admin_feedback_cats_edit', {'category_id': '0'}) }}">{{ phrase('admin.feedback.create_new_category') }}</a>
-	</nav>
+{% block pagebar %}
+<nav>
+	<ul>
+		<li><a href="{{ path('admin_feedback_cats_edit', {'category_id': '0'}) }}">{{ phrase('admin.feedback.create_new_category') }}</a></li>
+	</ul>
+</nav>
+<ul>
+	<li>{{ phrase('admin.feedback.feedback_categories') }}</li>
+</ul>
 {% endblock %}
 {% block content %}
 <div class="dp-page-box">
