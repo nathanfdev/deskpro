@@ -1003,6 +1003,41 @@ $em->getConnection()->executeUpdate("
 ");
 
 $em->getConnection()->executeUpdate("
+	INSERT INTO `stat` (`id`, `author_id`, `parent_stat_id`, `title`, `criteria`, `grouping_ref`, `stat_concept_class`, `variation`, `generate_stats`, `disabled`, `run_frequency`, `last_run`, `date_created`)
+	VALUES
+		(1, NULL, NULL, 'Tickets Opened', 'a:0:{}', 'tickets.date_created', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsOpened', 'neutral', 0, 0, 'hourly', NULL, '2012-05-01 09:08:03'),
+		(2, NULL, NULL, 'First Response Time', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketFirstResponseTime', 'good', 0, 0, 'hourly', NULL, '2012-05-01 09:09:16'),
+		(3, NULL, NULL, 'Tickets Opened', 'a:0:{}', 'tickets.date_created', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsOpened', 'neutral', 0, 0, 'daily', NULL, '2012-05-01 09:10:46'),
+		(4, NULL, NULL, 'First Response time', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketFirstResponseTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:11:31'),
+		(5, NULL, NULL, 'Tickets Opened', 'a:0:{}', 'tickets.date_created', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsOpened', 'bad', 0, 0, 'monthly', NULL, '2012-05-01 09:12:37'),
+		(6, NULL, NULL, 'First Response Time', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketFirstResponseTime', 'bad', 0, 0, 'monthly', NULL, '2012-05-01 09:13:20'),
+		(7, NULL, NULL, 'Open Tickets by Department', 'a:0:{}', 'tickets.department_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsAwaitingAgent', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:16:37'),
+		(8, NULL, NULL, 'Open Tickets by Team', 'a:0:{}', 'tickets.agent_team_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsAwaitingAgent', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:17:05'),
+		(9, NULL, NULL, 'Open Tickets by Agent', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsAwaitingAgent', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:17:36'),
+		(10, NULL, NULL, 'Total User Waiting Time', 'a:1:{i:0;a:3:{s:4:\"type\";s:6:\"status\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:6:\"status\";s:14:\"awaiting_agent\";}}}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalUserWaitingTicketResolvedTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:20:29'),
+		(11, NULL, NULL, 'Backlog Rate', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\RateOfTicketsProcessed', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:21:03'),
+		(12, NULL, NULL, 'Total Agent Waiting Time', 'a:1:{i:0;a:3:{s:4:\"type\";s:6:\"status\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:6:\"status\";s:13:\"awaiting_user\";}}}', 'tickets.department_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalAgentWaitingTicketResolvedTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:23:11'),
+		(13, NULL, NULL, 'Tickets Awaiting Agent', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsAwaitingAgent', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:25:02'),
+		(14, NULL, NULL, 'Rate of Tickets Processed', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\RateOfTicketsProcessed', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:25:21'),
+		(15, NULL, NULL, 'Total User Waiting Time', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalUserWaitingTicketResolvedTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:25:41'),
+		(16, NULL, NULL, 'Time Until Resolution', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalTicketResolveTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:26:19'),
+		(17, NULL, NULL, 'Time Until First Response', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketFirstResponseTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:26:43'),
+		(18, NULL, NULL, 'Number of Ticket Messages', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalTicketMessages', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:27:18'),
+		(19, NULL, NULL, 'Rate of Tickets Processed', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\RateOfTicketsProcessed', 'bad', 0, 0, 'hourly', NULL, '2012-05-01 09:29:16'),
+		(20, NULL, NULL, 'Count of Ticket Messages', 'a:0:{}', 'tickets.department_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalTicketMessages', 'good', 0, 0, 'hourly', NULL, '2012-05-01 09:29:48'),
+		(21, NULL, NULL, 'Total User Waiting Time', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalUserWaitingTicketResolvedTime', 'bad', 0, 0, 'hourly', NULL, '2012-05-01 09:30:27'),
+		(22, NULL, NULL, 'Time Until First Response', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketFirstResponseTime', 'bad', 0, 0, 'hourly', NULL, '2012-05-01 09:30:55'),
+		(23, NULL, NULL, 'Count of tickets awaiting agent', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsAwaitingAgent', 'bad', 0, 0, 'hourly', NULL, '2012-05-01 09:31:31'),
+		(24, NULL, NULL, 'Count of all ticket messages', 'a:0:{}', 'tickets.department_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalTicketMessages', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:32:15'),
+		(25, NULL, NULL, 'Time from ticket creation to ticket resolution', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalTicketResolveTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:33:08'),
+		(26, NULL, NULL, 'Rate of tickets processed', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\RateOfTicketsProcessed', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:33:44'),
+		(27, NULL, NULL, 'Count of open tickets', 'a:0:{}', 'tickets.date_created', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsOpened', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:34:16'),
+		(28, NULL, NULL, 'Total user waiting time', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalUserWaitingTicketResolvedTime', 'bad', 0, 0, 'monthly', NULL, '2012-05-01 09:35:16'),
+		(29, NULL, NULL, 'Count of all ticket messages', 'a:0:{}', 'tickets.department_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalTicketMessages', 'good', 0, 0, 'monthly', NULL, '2012-05-01 09:37:44'),
+		(30, NULL, NULL, 'Count of open tickets', 'a:0:{}', 'tickets.date_created', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsOpened', 'bad', 0, 0, 'monthly', NULL, '2012-05-01 09:38:32')
+");
+
+$em->getConnection()->executeUpdate("
 	INSERT INTO `report_dashboard_stat` (`id`, `report_dashboard_id`, `stat_id`, `title`, `view_class`, `grid_slots`, `grid_columns`, `grid_rows`, `slot_number`, `number_data_points`, `show_legend`, `display_grouping`, `date_created`)
 	VALUES
 		(1, 1, 1, 'Tickets Opened', 'Application\\ReportBundle\\Chart\\AmChart\\LineChart', 2, 2, 2, 0, 24, 0, 0, '2012-05-01 09:08:03'),
@@ -1033,39 +1068,4 @@ $em->getConnection()->executeUpdate("
 		(27, 2, 27, 'Count of open tickets', 'Application\\ReportBundle\\Chart\\AmChart\\LineChart', 1, 1, 1, 11, 30, 0, 0, '2012-05-01 09:34:16'),
 		(28, 3, 28, 'Total user waiting time', 'Application\\ReportBundle\\Chart\\AmChart\\LineChart', 1, 1, 1, 8, 12, 0, 0, '2012-05-01 09:35:16'),
 		(29, 3, 29, 'Count of all ticket messages', 'Application\\ReportBundle\\Chart\\AmChart\\LineChart', 1, 1, 1, 9, 12, 0, 0, '2012-05-01 09:37:44')
-");
-
-$em->getConnection()->executeUpdate("
-	INSERT INTO `stat` (`id`, `author_id`, `parent_stat_id`, `title`, `criteria`, `grouping_ref`, `stat_concept_class`, `variation`, `generate_stats`, `disabled`, `run_frequency`, `last_run`, `date_created`)
-	VALUES
-	(1, 2, NULL, 'Tickets Opened', 'a:0:{}', 'tickets.date_created', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsOpened', 'neutral', 0, 0, 'hourly', NULL, '2012-05-01 09:08:03'),
-	(2, 2, NULL, 'First Response Time', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketFirstResponseTime', 'good', 0, 0, 'hourly', NULL, '2012-05-01 09:09:16'),
-	(3, 2, NULL, 'Tickets Opened', 'a:0:{}', 'tickets.date_created', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsOpened', 'neutral', 0, 0, 'daily', NULL, '2012-05-01 09:10:46'),
-	(4, 2, NULL, 'First Response time', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketFirstResponseTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:11:31'),
-	(5, 2, NULL, 'Tickets Opened', 'a:0:{}', 'tickets.date_created', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsOpened', 'bad', 0, 0, 'monthly', NULL, '2012-05-01 09:12:37'),
-	(6, 2, NULL, 'First Response Time', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketFirstResponseTime', 'bad', 0, 0, 'monthly', NULL, '2012-05-01 09:13:20'),
-	(7, 2, NULL, 'Open Tickets by Department', 'a:0:{}', 'tickets.department_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsAwaitingAgent', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:16:37'),
-	(8, 2, NULL, 'Open Tickets by Team', 'a:0:{}', 'tickets.agent_team_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsAwaitingAgent', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:17:05'),
-	(9, 2, NULL, 'Open Tickets by Agent', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsAwaitingAgent', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:17:36'),
-	(10, 2, NULL, 'Total User Waiting Time', 'a:1:{i:0;a:3:{s:4:\"type\";s:6:\"status\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:6:\"status\";s:14:\"awaiting_agent\";}}}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalUserWaitingTicketResolvedTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:20:29'),
-	(11, 2, NULL, 'Backlog Rate', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\RateOfTicketsProcessed', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:21:03'),
-	(12, 2, NULL, 'Total Agent Waiting Time', 'a:1:{i:0;a:3:{s:4:\"type\";s:6:\"status\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:6:\"status\";s:13:\"awaiting_user\";}}}', 'tickets.department_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalAgentWaitingTicketResolvedTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:23:11'),
-	(13, 2, NULL, 'Tickets Awaiting Agent', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsAwaitingAgent', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:25:02'),
-	(14, 2, NULL, 'Rate of Tickets Processed', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\RateOfTicketsProcessed', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:25:21'),
-	(15, 2, NULL, 'Total User Waiting Time', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalUserWaitingTicketResolvedTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:25:41'),
-	(16, 2, NULL, 'Time Until Resolution', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalTicketResolveTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:26:19'),
-	(17, 2, NULL, 'Time Until First Response', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketFirstResponseTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:26:43'),
-	(18, 2, NULL, 'Number of Ticket Messages', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalTicketMessages', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:27:18'),
-	(19, 2, NULL, 'Rate of Tickets Processed', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\RateOfTicketsProcessed', 'bad', 0, 0, 'hourly', NULL, '2012-05-01 09:29:16'),
-	(20, 2, NULL, 'Count of Ticket Messages', 'a:0:{}', 'tickets.department_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalTicketMessages', 'good', 0, 0, 'hourly', NULL, '2012-05-01 09:29:48'),
-	(21, 2, NULL, 'Total User Waiting Time', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalUserWaitingTicketResolvedTime', 'bad', 0, 0, 'hourly', NULL, '2012-05-01 09:30:27'),
-	(22, 2, NULL, 'Time Until First Response', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketFirstResponseTime', 'bad', 0, 0, 'hourly', NULL, '2012-05-01 09:30:55'),
-	(23, 2, NULL, 'Count of tickets awaiting agent', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsAwaitingAgent', 'bad', 0, 0, 'hourly', NULL, '2012-05-01 09:31:31'),
-	(24, 2, NULL, 'Count of all ticket messages', 'a:0:{}', 'tickets.department_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalTicketMessages', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:32:15'),
-	(25, 2, NULL, 'Time from ticket creation to ticket resolution', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalTicketResolveTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:33:08'),
-	(26, 2, NULL, 'Rate of tickets processed', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\RateOfTicketsProcessed', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:33:44'),
-	(27, 2, NULL, 'Count of open tickets', 'a:0:{}', 'tickets.date_created', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsOpened', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:34:16'),
-	(28, 2, NULL, 'Total user waiting time', 'a:0:{}', 'tickets.agent_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalUserWaitingTicketResolvedTime', 'bad', 0, 0, 'monthly', NULL, '2012-05-01 09:35:16'),
-	(29, 2, NULL, 'Count of all ticket messages', 'a:0:{}', 'tickets.department_id', 'Application\\ReportBundle\\Stat\\DeskPRO\\TotalTicketMessages', 'good', 0, 0, 'monthly', NULL, '2012-05-01 09:37:44'),
-	(30, 2, NULL, 'Count of open tickets', 'a:0:{}', 'tickets.date_created', 'Application\\ReportBundle\\Stat\\DeskPRO\\TicketsOpened', 'bad', 0, 0, 'monthly', NULL, '2012-05-01 09:38:32')
 ");
