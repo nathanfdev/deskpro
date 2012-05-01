@@ -979,7 +979,7 @@ class Upgrade
 		}
 
 		if (is_dir($save_path)) {
-			$save_path .= '/' . basename($version_info['download']);
+			$save_path .= '/' . basename(dirname($version_info['download'])) . '-' . basename($version_info['download']);
 		}
 
 		$save_dir = dirname($save_path);
@@ -1005,7 +1005,7 @@ class Upgrade
 		$this->log(sprintf("downloadLatest: time(%.4f)  file_size(%d)", microtime(true) - $time_start, filesize($save_path)));
 
 		if (filesize($save_path) < 15728640) {
-			//throw new DownloadException(sprintf("Saved file seems too small: $save_path is %d bytes", filesize($save_path)), DownloadException::BAD_FILE);
+			throw new DownloadException(sprintf("Saved file seems too small: $save_path is %d bytes", filesize($save_path)), DownloadException::BAD_FILE);
 		}
 
 		return $save_path;
