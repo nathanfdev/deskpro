@@ -9,7 +9,7 @@
 {% elseif log.action_type == 'participant_removed' %}
 	<span class="type">{{ phrase('agent.tickets.participant_removed') }}</span>: <span class="old-val">{{log.details.name}}</span>
 {% elseif log.action_type == 'ticket_created' %}
-	{{ phrase('agent.general.ticket') }} <span class="new-val">#{{log.details.ticket_id}}</span> {{ phrase('agent.general.ticket') }}
+	{{ phrase('agent.general.ticket') }} <span class="new-val">#{{log.details.ticket_id}}</span> {{ phrase('agent.tickets.lc_created') }}
 {% elseif log.action_type == 'subject' %}
 	{{ phrase('agent.tickets.subject_changed_from') }} <span class="old-val">{{ log.details.old_subject }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.new_subject }}</span>
 {% elseif log.action_type == 'ticket_split' %}

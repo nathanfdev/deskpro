@@ -375,13 +375,14 @@ class SettingsController extends AbstractController
 
 	public function setSilentSettingsAction()
 	{
+		$is_import = $this->container->getSetting('core.deskpro3importer') ?: false;
 		$timezone = $this->in->getString('timezone');
 		$url = $this->in->getString('url');
 
 		if ($timezone && !$this->container->getSetting('core.default_timezone')) {
 			$this->container->get('deskpro.core.settings')->setSetting('core.default_timezone', $timezone);
 		}
-		if ($url && !$this->container->getSetting('core.deskpro_url')) {
+		if ($url && (!$this->container->getSetting('core.deskpro_url') || $is_import)) {
 			$this->container->get('deskpro.core.settings')->setSetting('core.deskpro_url', $url);
 		}
 
