@@ -104,4 +104,10 @@
     'admin.portal.upload_a_new_logo'                       => 'Upload a new logo',
     'admin.portal.warning_dont_want_public_site'           => 'If you do not want a public facing website you can disable the portal. You will still be able to accept tickets from the email gateways, and use HTML widgets on your website, but the user portal will be disabled and traces of the public website such as links in emails will be removed.',
     'admin.portal.website_widgets'                         => 'Website Widgets',
+    'admin.portal.share_widgets'                           => 'Share Widgets',
+    'admin.portal.show_share_widget'                       => 'Enable the share widget on news, articles and feedback',
+    'admin.portal.show_share_widget_facebook'              => 'Show the facebook "Like" button',
+    'admin.portal.show_share_widget_twitter'               => 'Show the twitter "Tweet" button',
+    'admin.portal.show_share_widget_gplus'                 => 'Show the Google Plus "+1" button',
+    'admin.portal.show_share_widget_linkedin'              => 'Show the LinkedIn "Share" button',
 );
