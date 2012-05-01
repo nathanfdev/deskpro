@@ -67,7 +67,7 @@ class AgentNotify implements LogActionInterface
 			);
 		}
 
-		if (!$details['who_emailed') {
+		if (!$details['who_emailed']) {
 			return array();
 		}
 
