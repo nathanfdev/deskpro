@@ -271,7 +271,7 @@ class EmailGatewaysController extends AbstractController
 			$conn = $gateway->getFetcher();
 			$conn->test();
 		} catch (\Exception $e) {
-			return $this->createJsonResponse(array('error' => true, 'error_code' => $e->getCode(), 'error_message' => $e->getMessage()));
+			return $this->createJsonResponse(array('error' => true, 'error_code' => \Orb\Util\Util::getBaseClassname($e) . '::' . $e->getCode(), 'error_message' => $e->getMessage()));
 		}
 
 		return $this->createJsonResponse(array('success' => true));

@@ -125,6 +125,12 @@ class Pop3 extends AbstractFetcher
 
 	public function test()
 	{
-		$this->readNext();
+		try {
+			$x = $this->getStorage()->countMessages();
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
+		return true;
 	}
 }
