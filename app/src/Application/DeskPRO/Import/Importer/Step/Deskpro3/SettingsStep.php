@@ -86,10 +86,44 @@ class SettingsStep extends AbstractDeskpro3Step
 				));
 			}
 
+			$this->importTransport($dp3_settings);
+
 			$this->getDb()->commit();
 		} catch (\Exception $e) {
 			$this->getDb()->rollback();
 			throw $e;
 		}
+	}
+
+	protected function importTransport($dp3_settings)
+	{
+		$settings = new \Orb\Util\OptionsArray($dp3_settings);
+
+		if ($settings->get('use_smtp')) {
+			$type = 'smtp';
+			$transport_options = array(
+				'host'     => $settings->get('smtp_host', 'localhost'),
+				'secure'   => $settings->get('smtp_ssl') ? 'ssl' : false,
+				'port'     => $settings->get('smtp_port', 25),
+				'username' => $settings->get('smtp_user', false),
+				'password' => $settings->get('smtp_pass', false),
+			);
+		} else {
+			$type = 'mail';
+			$transport_options = array();
+		}
+
+		$rec = array(
+			'title'                      => 'Imported Transport',
+			'match_type'                 => 'all',
+			'match_pattern'              => '',
+			'transport_type'             => $type,
+			'transport_options'          => serialize($transport_options),
+			'backup_transport_type'      => '',
+			'backup_transport_options'   => 'a:0:{}',
+			'run_order'                  => 0
+		);
+
+		$this->getDb()->insert('email_transports', $rec);
 	}
 }
