@@ -247,6 +247,10 @@ class GroupingCounter
 
 		$where = "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status != 'validating')";
 		if (is_array($this->ids)) {
+			if(empty($this->ids)) {
+				return array();
+			}
+
 			$where = "WHERE feedback.id IN(" . implode(',', $this->ids) . ")";
 		}
 
