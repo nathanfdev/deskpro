@@ -217,6 +217,33 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 				});
 				overlay.open();
 				break;
+			case 'open_portal_title':
+				var controller = data.controller;
+				var overlay = new DeskPRO.UI.Overlay({
+					contentMethod: 'ajax',
+					destroyOnClose: true,
+					contentAjax: {
+						url: BASE_URL + 'admin/portal/get-editor/portal-title'
+					},
+					onContentSet: function(ev) {
+						var wrapper = ev.wrapperEl;
+						$('.save-text-trigger').on('click', function() {
+							controller.setTitle($('input[name="title"]', wrapper).val());
+
+							$.ajax({
+								url: BASE_URL + 'admin/portal/save-editor/portal_title',
+								type: 'POST',
+								data: {
+									title: wrapper.find('input.title').val()
+								}
+							});
+
+							ev.overlay.close();
+						});
+					}
+				});
+				overlay.open();
+				break;
 		}
 	},
 

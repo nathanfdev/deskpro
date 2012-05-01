@@ -224,10 +224,18 @@ var PortalAdmin_SimpleHeader = new Orb.Class({
 		var  self = this;
 
 		this.header = $(header);
+		this.titleArea = $('#dp_header_title');
 
 		var controls = $('<div class="dp-block-controls"><ul><li class="dp-toggle-block"><span class="lbloff">OFF</span><span class="lblon">ON</span></li><li class="dp-edit"><span>edit</span></li></div>');
 		this.header.prepend(controls);
 		this.header.append('<div class="dp-drag-overlay" id="dp_header_portal_off_drag_overlay" />');
+
+		var titleControls = $('<div class="dp-block-controls"><ul><li class="dp-edit"><span>edit</span></li></div>');
+		this.titleArea.prepend(titleControls);
+
+		titleControls.find('.dp-edit').on('click', function() {
+			PortalAdmin.tellAdmin('open_portal_title', { controller: self });
+		});
 
 		this.header.on('click', '.dp-toggle-block', function() {
 			self.header.toggleClass('disabled');
@@ -289,6 +297,10 @@ var PortalAdmin_SimpleHeader = new Orb.Class({
 		} else {
 			$('#dp_header h2').text(tagline || '').show();
 		}
+	},
+
+	setTitle: function(title) {
+		$('#dp_header_title h1').text(title);
 	}
 });
 

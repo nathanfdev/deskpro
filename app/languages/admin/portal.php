@@ -75,6 +75,7 @@
     'admin.portal.custom_fields'                           => 'Custom Fields',
     'admin.portal.edit_html'                               => 'Edit HTML',
     'admin.portal.edit_logo'                               => 'Edit Logo',
+    'admin.portal.edit_title'                              => 'Edit Title',
     'admin.portal.global_settings'                         => 'Global Settings',
     'admin.portal.integrations'                            => 'Integrations',
     'admin.portal.loading_editor'                          => 'Loading Editor',

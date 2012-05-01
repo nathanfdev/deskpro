@@ -81,6 +81,10 @@ class PortalController extends AbstractController
 			case 'logo':
 				return $this->getLogoEditorAction();
 				break;
+
+			case 'portal-title':
+				return $this->render('AdminBundle:Portal:portal-title-editor.html.twig');
+				break;
 		}
 
 		throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -140,6 +144,10 @@ class PortalController extends AbstractController
 
 			case 'enable_logo_area':
 				$this->container->getSettingsHandler()->setSetting('user.portal_simpleheader', 1);
+				break;
+
+			case 'portal_title':
+				$this->container->getSettingsHandler()->setSetting('user.portal_title', $this->in->getString('title'));
 				break;
 		}
 
