@@ -24,7 +24,7 @@
 		<div class="style-section">
 			<h4>{{ phrase('admin.portal.color_section_header') }}</h4>
 		</div>
-		{% for id in ['header_name_color', 'header_name_color'] %}
+		{% for id in ['header_bar_bg_color', 'header_text_color', 'header_name_color', 'header_tagline_color'] %}
 			{{ _self.style_row(id, default_portal_style) }}
 		{% endfor %}
 
@@ -33,24 +33,7 @@
 		</div>
 		{% for id in [
 			'content_bg_color', 'content_border_color',
-			'content_block_shadow_color', 'content_alt_bg_color', 'comment_backdrop'
-		] %}
-			{{ _self.style_row(id, default_portal_style) }}
-		{% endfor %}
-
-		<div class="style-section">
-			<h4>{{ phrase('admin.portal.color_section_sidebar') }}</h4>
-		</div>
-		{% for id in ['sidebar_block_title_color', 'sidebar_block_border_color'] %}
-			{{ _self.style_row(id, default_portal_style) }}
-		{% endfor %}
-
-		<div class="style-section">
-			<h4>{{ phrase('admin.portal.color_section_buttons') }}</h4>
-		</div>
-		{% for id in [
-			'button_text', 'button_bg_start', 'button_bg_end', 'content_pill_btn_bg',
-			'content_pill_btn_border', 'content_pill_btn_text_color'
+			'dark_well_bg_color', 'light_well_bg_color'
 		] %}
 			{{ _self.style_row(id, default_portal_style) }}
 		{% endfor %}
