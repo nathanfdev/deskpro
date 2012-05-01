@@ -35,10 +35,14 @@ foreach ($paths as $dir) {
 		/** @var \Symfony\Component\Finder\SplFileinfo $file */
 		$filepath = $file->getRealPath();
 
-		$cmd = DP_PHP_PATH . " -l \"" . $file->getRealPath() . "\"";
+		if (strpos($filepath, '/src/vendor/') === false) {
+			$cmd = DP_PHP_PATH . " -l \"" . $file->getRealPath() . "\"";
 
-		$out = null;
-		exec($cmd, $out, $ret);
+			$out = null;
+			exec($cmd, $out, $ret);
+		} else {
+			$ret = true;
+		}
 
 		if ($ret) {
 			echo "\n";
