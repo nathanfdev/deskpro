@@ -12,6 +12,14 @@
 {% block page %}
 
 <div class="setting_field_row">
+	<h4>{{ phrase('agent.general.misc') }}</h4>
+	<div class="setting_fields">
+		<div class="field_row">
+			<label>{{ phrase('admin.portal.show_ratings_explain') }}</label>
+			<input type="text" name="settings[user.show_ratings]" value="{{app.getSetting('user.show_ratings')|default('0')}}" size="20" style="width: 50px" />
+		</div>
+	</div>
+
 	<h4>{{ phrase('admin.portal.share_widgets') }}</h4>
 	<div class="setting_fields" id="share_options">
 		<div class="field_row">

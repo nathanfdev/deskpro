@@ -110,4 +110,5 @@
     'admin.portal.show_share_widget_twitter'               => 'Show the twitter "Tweet" button',
     'admin.portal.show_share_widget_gplus'                 => 'Show the Google Plus "+1" button',
     'admin.portal.show_share_widget_linkedin'              => 'Show the LinkedIn "Share" button',
+	'admin.portal.show_ratings_explain' => 'Show user ratings on content after this many votes, or enter 0 to never show ratings publicly',
 );

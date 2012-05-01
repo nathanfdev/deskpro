@@ -660,4 +660,6 @@
 
 	'agent.general.check_on' => 'ON',
 	'agent.general.check_off' => 'OFF',
+
+	'agent.general.misc' => 'Miscellaneous',
 );
