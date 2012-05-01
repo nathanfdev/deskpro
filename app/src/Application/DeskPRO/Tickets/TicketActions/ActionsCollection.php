@@ -237,7 +237,7 @@ class ActionsCollection
 	 * @param \Application\DeskPRO\Entity\Ticket $ticket
 	 * @param \Application\DeskPRO\Entity\Person $person_context
 	 */
-	public function apply(TicketChangeTracker $ticket_tracker, Ticket $ticket, Person $person_context = null, $logger = null)
+	public function apply(TicketChangeTracker $ticket_tracker = null, Ticket $ticket, Person $person_context = null, $logger = null)
 	{
 		$this->was_stopped = false;
 
@@ -249,11 +249,11 @@ class ActionsCollection
 			$time = microtime(true);
 
 			$metadata = $action->getMetaData();
-			if (isset($metadata['trigger'])) {
+			if ($ticket_tracker && isset($metadata['trigger'])) {
 				$ticket_tracker->setApplyingTrigger($metadata['trigger']);
 			}
 			$action->apply($ticket);
-			if (isset($metadata['trigger'])) {
+			if ($ticket_tracker && isset($metadata['trigger'])) {
 				$ticket_tracker->setApplyingTrigger(null);
 			}
 

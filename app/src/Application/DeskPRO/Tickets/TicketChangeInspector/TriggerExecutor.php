@@ -139,7 +139,7 @@ class TriggerExecutor
 		if (!$person) {
 			$person = $this->tracker->getTicket()->person;
 		}
-		$actions_collection->apply($this->tracker->getTicket(), $person);
+		$actions_collection->apply(null, $this->tracker->getTicket(), $person);
 
 		if ($actions_collection->isBroken()) {
 			$this->is_cancelled = true;
