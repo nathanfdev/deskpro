@@ -1483,6 +1483,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			throw new \InvalidArgumentException("Invalid hidden status `$hstatus`");
 		}
 
+		if($hstatus && $status != 'hidden') {
+			throw new \InvalidArgumentException("Invalid status must be hidden to set a hidden status, got `$status` instead.");
+		}
+
 		$this->setModelField('status', $status);
 		$this->setModelField('hidden_status', $hstatus);
 
