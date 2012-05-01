@@ -48,6 +48,21 @@ class UrlGenerator extends BaseUrlGenerator
 {
 	protected $object_url_generator = null;
 
+	/**
+	 * This is like generate() except it returns JUST the route. Nothing to do with the current base
+	 * path etc is added. This will begin with a slash.
+	 *
+	 * @param $name
+	 * @param array $parameters
+	 * @param bool $absolute
+	 */
+	public function generatePath($name, $parameters = array(), $absolute = false)
+	{
+		$url = $this->generate($name, $parameters, $absolute);
+		$url = preg_replace('#^' . preg_quote($this->context->getBaseUrl(), '#') . '#', '', $url);
+		return $url;
+	}
+
 	protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $absolute)
 	{
 		$url = parent::doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $absolute);

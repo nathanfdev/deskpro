@@ -35,9 +35,9 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$message = App::getOrm()->find('DeskPRO:TicketMessage', 39249);
-		echo $message->getMessageFull();
+		$url = App::get('router')->getGenerator()->generate('admin');
 
+		echo $url;
 		echo "\n";
 	}
 }

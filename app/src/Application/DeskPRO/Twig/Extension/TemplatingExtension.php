@@ -633,8 +633,8 @@ class TemplatingExtension extends \Twig_Extension
 		// But this is based off of 1) The current URL and 2) doesnt work in console
 		// So we use this for when we need to generate a helpdesk URL based on the setting
 
-		$url = $this->container->get('router')->getGenerator()->generate($name, $parameters, false);
-		return App::getSetting('core.deskpro_url') . ltrim($url, '/');
+		$url = $this->container->get('router')->getGenerator()->generatePath($name, $parameters, false);
+		return rtrim(App::getSetting('core.deskpro_url'), '/') . $url;
 	}
 
 	public function urlFragment($name, array $parameters = array())
