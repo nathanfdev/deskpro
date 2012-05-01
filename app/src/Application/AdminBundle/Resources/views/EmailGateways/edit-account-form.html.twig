@@ -258,7 +258,7 @@
 					<div class="dp-form-label">
 						<input type="radio" id="backup_form_none_radio" class="option-trigger transport-type-backup" name="transport[backup_transport_type]" value="NONE" {% if not transport.backup_transport_type %}checked="checked"{% endif %} style="display:none" />
 						<label>
-							<input type="checkbox" id="backup_toggle" class="onoff-slider" {% if transport.backup_transport_type %}checked="checked"{% endif %} />
+							<input type="checkbox" name="transport[use_backup]" id="backup_toggle" class="onoff-slider" {% if transport.backup_transport_type %}checked="checked"{% endif %} />
 							{{ phrase('admin.gateway.backup_outgoing_mail_account') }}
 						</label>
 					</div>
