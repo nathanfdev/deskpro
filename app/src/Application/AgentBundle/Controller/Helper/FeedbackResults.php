@@ -208,7 +208,7 @@ class FeedbackResults
 	protected function _getPageFromFeedbackIds(array $feedback_ids, $page, $per_page)
 	{
 		$page_feedback_ids = Arrays::getPageChunk($feedback_ids, $page, $per_page);
-		$feedback_raw = $this->controller->em->getEntityRepository('DeskPRO:Feedback')->getByIds($page_feedback_ids);
+		$feedback_raw = $this->controller->em->getRepository('DeskPRO:Feedback')->getByIds($page_feedback_ids);
 
 		// - We'll get a page of results, but that actual page isn't going to be
 		// sorted the way we want, because MySQL was just sent a list of ID's.
