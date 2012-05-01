@@ -121,10 +121,11 @@ class FeedbackController extends AbstractController
 		$searcher->setPersonContext($this->person);
 		$searcher->setVisitor($this->session->getVisitor());
 		if ($status != 'any-status') {
-			if ($status == 'gathering-feedback') {
-				$status = 'new';
+			$set_status = $status;
+			if ($set_status == 'gathering-feedback') {
+				$set_status = 'new';
 			}
-			$searcher->addTerm('status', 'is', $status);
+			$searcher->addTerm('status', 'is', $set_status);
 		}
 
 		$status_cat = null;
