@@ -89,6 +89,12 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 	protected $id_after = null;
 
 	/**
+	 * If the change was caused by a trigger, the trigger id
+	 * @var int
+	 */
+	protected $trigger_id = null;
+
+	/**
 	 * @var string
 	 */
 	protected $details = array();
@@ -168,6 +174,7 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'id_object', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'id_object', ));
 		$metadata->mapField(array( 'fieldName' => 'id_before', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'id_before', ));
 		$metadata->mapField(array( 'fieldName' => 'id_after', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'id_after', ));
+		$metadata->mapField(array( 'fieldName' => 'trigger_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'trigger_id', ));
 		$metadata->mapField(array( 'fieldName' => 'details', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'details', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

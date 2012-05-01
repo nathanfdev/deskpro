@@ -42,7 +42,7 @@ use Application\DeskPRO\Entity\CustomDefPerson;
 
 use Application\DeskPRO\App;
 
-class PeopleFieldAction implements ActionInterface
+class PeopleFieldAction extends AbstractAction
 {
 	/**
 	 * @var \Application\DeskPRO\CustomFields\FieldManager

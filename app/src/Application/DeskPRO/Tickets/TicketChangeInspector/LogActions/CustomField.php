@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-class CustomField implements LogActionInterface
+class CustomField extends AbstractLogAction
 {
 	protected $old;
 	protected $new;

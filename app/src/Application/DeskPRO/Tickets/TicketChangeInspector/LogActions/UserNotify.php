@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-class UserNotify implements LogActionInterface
+class UserNotify extends AbstractLogAction
 {
 	protected $type;
 	protected $who_emailed;

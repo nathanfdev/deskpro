@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-class Urgency implements LogActionInterface
+class Urgency extends AbstractLogAction
 {
 	protected $old_urgency;
 	protected $new_urgency;

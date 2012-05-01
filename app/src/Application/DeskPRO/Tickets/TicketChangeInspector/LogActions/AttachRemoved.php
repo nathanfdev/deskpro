@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 
-class AttachRemoved implements LogActionInterface
+class AttachRemoved extends AbstractLogAction
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketAttachment

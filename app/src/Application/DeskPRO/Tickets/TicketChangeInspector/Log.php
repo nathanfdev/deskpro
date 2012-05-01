@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Tickets\TicketChangeTracker;
+use Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\LogActionInterface;
 
 use Orb\Util\Strings;
 
@@ -213,6 +214,9 @@ class Log
 				}
 
 				if ($action) {
+					if (isset($info['trigger_id'])) {
+						$action->setMetaData(array('trigger_id' => $info['trigger_id']));
+					}
 					$actions[] = $action;
 				}
 			}
@@ -230,6 +234,10 @@ class Log
 					$action = new LogActions\ParticipantRemoved($old_val);
 				} else {
 					$action = new LogActions\ParticipantAdded($new_val);
+				}
+
+				if (isset($info['trigger_id'])) {
+					$action->setMetaData(array('trigger_id' => $info['trigger_id']));
 				}
 
 				$actions[] = $action;
@@ -250,6 +258,10 @@ class Log
 					$action = new LogActions\AttachAdded($new_val);
 				}
 
+				if (isset($info['trigger_id'])) {
+					$action->setMetaData(array('trigger_id' => $info['trigger_id']));
+				}
+
 				$actions[] = $action;
 			}
 		}
@@ -263,6 +275,11 @@ class Log
 				if (isset($info['new'])) $new_val = $info['new'];
 
 				$action = new LogActions\CustomField($old_val, $new_val);
+
+				if (isset($info['trigger_id'])) {
+					$action->setMetaData(array('trigger_id' => $info['trigger_id']));
+				}
+
 				$actions[] = $action;
 			}
 		}
@@ -281,6 +298,11 @@ class Log
 				$classname = 'Application\\DeskPRO\\Tickets\\TicketChangeInspector\\LogActions\\' . $classname;
 
 				$action = new $classname($info);
+
+				if (isset($info['trigger_id'])) {
+					$action->setMetaData(array('trigger_id' => $info['trigger_id']));
+				}
+
 				$actions[] = $action;
 			}
 		}
@@ -317,7 +339,7 @@ class Log
 		App::getOrm()->flush();
 	}
 
-	protected function addLogItem($action)
+	protected function addLogItem(LogActionInterface $action)
 	{
 		$ticket_log = new Entity\TicketLog();
 		$ticket_log['person'] = App::getCurrentPerson();
@@ -330,6 +352,11 @@ class Log
 		$ticket_log['ticket'] = $this->ticket;
 		$ticket_log['action_type'] = $action->getLogName();
 		$ticket_log['details'] = $action->getLogDetails();
+
+		$metadata = $action->getMetaData();
+		if (isset($metadata['trigger_id'])) {
+			$ticket_log['trigger_id'] = $metadata['trigger_id'];
+		}
 
 		if ($ticket_log['details']) {
 			App::getOrm()->persist($ticket_log);

@@ -41,7 +41,7 @@ use Application\DeskPRO\Entity\Ticket;
 /**
  * A hidden action used with the SetFromAddress modifier that actual modified the ticket email address
  */
-class SetTicketEmailAction implements ActionInterface
+class SetTicketEmailAction extends AbstractAction
 {
 	protected $email;
 

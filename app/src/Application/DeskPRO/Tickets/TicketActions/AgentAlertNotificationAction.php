@@ -52,7 +52,7 @@ use \Application\DeskPRO\Translate\DelegatePhrase;
  * This is a built-in action, it cannot be added via the trigger interface.
  * (But it can be modified)
  */
-class AgentAlertNotificationAction implements ActionInterface
+class AgentAlertNotificationAction extends AbstractAction
 {
 	/**
 	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker

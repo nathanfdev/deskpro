@@ -43,7 +43,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\Person;
 
-class ReplyAction implements ActionInterface, PersonContextInterface
+class ReplyAction extends AbstractAction, PersonContextInterface
 {
 	protected $reply_text;
 	protected $attach_ids = array();

@@ -41,7 +41,7 @@ use Application\DeskPRO\Entity\Ticket;
 /**
  * Sets status
  */
-class StatusAction implements ActionInterface
+class StatusAction extends AbstractAction
 {
 	protected $status;
 

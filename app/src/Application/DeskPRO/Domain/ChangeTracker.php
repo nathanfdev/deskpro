@@ -71,7 +71,6 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
 
 	public function propertyChanged($sender, $prop, $old_val, $new_val)
 	{
-
 		$this->recordPropertyChanged($prop, $old_val, $new_val);
 	}
 
@@ -106,7 +105,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
 			$old_val = $this->changes[$prop]['old'];
 		}
 
-		$this->changes[$prop] = array('old' => $old_val, 'new' => $new_val);
+		$this->changes[$prop] = $this->getChangeData($prop, $old_val, $new_val);
 	}
 
 
@@ -122,9 +121,20 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
 	{
 		if (!isset($this->changes[$prop])) $this->changes[$prop] = array();
 
-		$this->changes[$prop][] = array('old' => $old_val, 'new' => $new_val);
+		$this->changes[$prop][] = $this->getChangeData($prop, $old_val, $new_val);
 	}
 
+
+	/**
+	 * @param $prop
+	 * @param $old_val
+	 * @param $new_val
+	 * @return array
+	 */
+	public function getChangeData($prop, $old_val, $new_val)
+	{
+		return array('old' => $old_val, 'new' => $new_val);
+	}
 
 
 	/**

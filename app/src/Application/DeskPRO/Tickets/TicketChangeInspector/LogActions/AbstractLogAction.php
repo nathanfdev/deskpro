@@ -37,29 +37,27 @@ namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-class CreatedValidating extends AbstractLogAction
+abstract class AbstractLogAction implements LogActionInterface
 {
-	protected $ticket;
+	/**
+	 * @var array
+	 */
+	protected $metadata = array();
 
-	public function __construct($ticket)
+	/**
+	 * @param array $metadata
+	 * @return mixed
+	 */
+	public function setMetaData(array $metadata)
 	{
-		$this->ticket = $ticket;
+		$this->metadata = $metadata;
 	}
 
-	public function getLogName()
+	/**
+	 * @return array
+	 */
+	public function getMetaData()
 	{
-		return 'ticket_created_validating';
-	}
-
-	public function getLogDetails()
-	{
-		return array(
-			'ticket_id' => $this->ticket['id']
-		);
-	}
-
-	public function getEventType()
-	{
-		return 'ticket_created_validating';
+		return $this->metadata;
 	}
 }

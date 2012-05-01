@@ -41,7 +41,7 @@ use Application\DeskPRO\Entity\Ticket;
 /**
  * A hidden action used with the SetFromName modifier that actual modified the ticket from name
  */
-class SetTicketFromNameAction implements ActionInterface
+class SetTicketFromNameAction extends AbstractAction
 {
 	protected $name;
 

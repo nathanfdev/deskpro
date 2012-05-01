@@ -73,4 +73,17 @@ interface ActionInterface
 	 * @return string
 	 */
 	public function getDescription($as_html = true);
+
+
+	/**
+	 * @param array $metadata
+	 * @return mixed
+	 */
+	public function setMetaData(array $metadata);
+
+
+	/**
+	 * @return array
+	 */
+	public function getMetaData();
 }

@@ -29,37 +29,35 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Tickets
+ * @subpackage Tickets
  */
 
-namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
+namespace Application\DeskPRO\Tickets\TicketActions;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
+use Application\DeskPRO\Entity\Ticket;
 
-class CreatedValidating extends AbstractLogAction
+abstract class AbstractAction implements ActionInterface
 {
-	protected $ticket;
+	/**
+	 * @var array
+	 */
+	protected $metadata = array();
 
-	public function __construct($ticket)
+	/**
+	 * @param array $metadata
+	 * @return mixed
+	 */
+	public function setMetaData(array $metadata)
 	{
-		$this->ticket = $ticket;
+		$this->metadata = $metadata;
 	}
 
-	public function getLogName()
+	/**
+	 * @return array
+	 */
+	public function getMetaData()
 	{
-		return 'ticket_created_validating';
-	}
-
-	public function getLogDetails()
-	{
-		return array(
-			'ticket_id' => $this->ticket['id']
-		);
-	}
-
-	public function getEventType()
-	{
-		return 'ticket_created_validating';
+		return $this->metadata;
 	}
 }

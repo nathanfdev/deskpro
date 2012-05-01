@@ -43,7 +43,7 @@ use Application\DeskPRO\Entity\Person;
 /**
  * Remove participants
  */
-class RemoveParticipants implements ActionInterface
+class RemoveParticipants extends AbstractAction
 {
 	protected $remove_people_ids;
 

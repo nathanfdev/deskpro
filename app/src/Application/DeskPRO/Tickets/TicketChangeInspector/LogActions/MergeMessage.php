@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-class MergeMessage implements LogActionInterface
+class MergeMessage extends AbstractLogAction
 {
 	protected $message;
 	protected $old_ticket_id;

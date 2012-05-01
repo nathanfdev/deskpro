@@ -44,7 +44,7 @@ use Orb\Util\Numbers;
 /**
  * Sets the ticket urgency to a specifc value
  */
-class UrgencySetAction implements ActionInterface
+class UrgencySetAction extends AbstractAction
 {
 	protected $num;
 	protected $allow_lower;

@@ -39,6 +39,7 @@ use Application\DeskPRO\Tickets\TicketActions\CollectionModifierInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Tickets\TicketChangeTracker;
 
 /**
  * A collection of ticket actions
@@ -78,10 +79,10 @@ class ActionsCollection
 		return $this->was_stopped;
 	}
 
-	public function add($action_or_modifier)
+	public function add($action_or_modifier, array $metadata = array())
 	{
 		if ($action_or_modifier instanceof ActionInterface) {
-			$this->addAction($action_or_modifier);
+			$this->addAction($action_or_modifier, $metadata);
 		} elseif ($action_or_modifier instanceof CollectionModifierInterface) {
 			$this->applyCollectionModifier($action_or_modifier);
 		}
@@ -102,7 +103,7 @@ class ActionsCollection
 	 *
 	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $action
 	 */
-	public function addAction(ActionInterface $action)
+	public function addAction(ActionInterface $action, array $metadata = array())
 	{
 		$name = get_class($action);
 
@@ -110,6 +111,8 @@ class ActionsCollection
 			$old_action = $this->actions[$name];
 			$action = $old_action->merge($action);
 		}
+
+		$action->setMetaData($metadata);
 
 		$this->actions[$name] = $action;
 	}
@@ -230,10 +233,11 @@ class ActionsCollection
 	 * Apply actions in this collection to $ticket, using $person_context as
 	 * the context on actions that require it.
 	 *
+	 * @param \Application\DeskPRO\Tickets\TicketChangeTracker
 	 * @param \Application\DeskPRO\Entity\Ticket $ticket
 	 * @param \Application\DeskPRO\Entity\Person $person_context
 	 */
-	public function apply(Ticket $ticket, Person $person_context = null, $logger = null)
+	public function apply(TicketChangeTracker $ticket_tracker, Ticket $ticket, Person $person_context = null, $logger = null)
 	{
 		$this->was_stopped = false;
 
@@ -244,7 +248,14 @@ class ActionsCollection
 
 			$time = microtime(true);
 
+			$metadata = $action->getMetaData();
+			if (isset($metadata['trigger'])) {
+				$ticket_tracker->setApplyingTrigger($metadata['trigger']);
+			}
 			$action->apply($ticket);
+			if (isset($metadata['trigger'])) {
+				$ticket_tracker->setApplyingTrigger(null);
+			}
 
 			if ($logger) {
 				$name = \Orb\Util\Util::getBaseClassname($action);

@@ -43,7 +43,7 @@ use Orb\Util\Arrays;
 /**
  * Adds labels
  */
-class AddLabelsAction implements ActionInterface
+class AddLabelsAction extends AbstractAction
 {
 	protected $add_labels;
 

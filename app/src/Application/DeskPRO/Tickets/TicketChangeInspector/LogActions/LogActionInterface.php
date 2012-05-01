@@ -63,4 +63,16 @@ interface LogActionInterface
 	 * The type of action this represents
 	 */
 	public function getEventType();
+
+
+	/**
+	 * @param array
+	 */
+	public function setMetaData(array $metadata);
+
+
+	/**
+	 * @return array
+	 */
+	public function getMetaData();
 }

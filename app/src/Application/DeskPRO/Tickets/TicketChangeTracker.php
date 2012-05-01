@@ -35,33 +35,88 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketTrigger;
+use Application\DeskPRO\Domain\ChangeTracker;
 
 use Orb\Util\Arrays;
 
 /**
- * The ticket listener listens for changes to a ticket, and then runs inspections once the changes
- * are committed.
- *
- * This is mostly an intermediary event dispatcher that records a batch of changes, and then notifies
- * listeners at the end when the changes are committed. This allows listeners to inspect the full
- * batch of changes to decide what to do (ex trigger criteria etc).
+ * The ticket change tracker listens for changes to a ticket, and then runs inspections once the changes
+ * are committed. The changes can trigger other events and other changes, such as inserting change logs,
+ * sending email notifications or applying triggers.
  */
-class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
+class TicketChangeTracker extends ChangeTracker
 {
+	/**
+	 * @var \Application\DeskPRO\Entity\Ticket
+	 */
 	protected $ticket;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Ticket
+	 */
 	protected $original_ticket = null;
+
+	/**
+	 * @var bool
+	 */
 	protected $is_new_ticket = false;
 
+	/**
+	 * @var \Application\DeskPRO\Tickets\TicketChangeInspector\Log
+	 */
 	protected $log_inspector;
+
+	/**
+	 * @var \Application\DeskPRO\Tickets\TicketChangeInspector\TriggerExecutor
+	 */
 	protected $exec_inspector;
+
+	/**
+	 * @var \Application\DeskPRO\Tickets\TicketChangeInspector\ListUpdater
+	 */
 	protected $list_updater;
+
+	/**
+	 * @var \Application\DeskPRO\Tickets\TicketChangeInspector\SearchUpdater
+	 */
 	protected $search_updater;
+
+	/**
+	 * @var \Application\DeskPRO\Tickets\TicketChangeInspector\DetectFilterMatches
+	 */
 	protected $filter_detector;
+
+	/**
+	 * @var \Application\DeskPRO\Tickets\TicketChangeInspector\NotifyListBuilder
+	 */
 	protected $notify_list_builder;
 
+	/**
+	 * @var bool
+	 */
 	protected $has_non_ignored = false;
+
+	/**
+	 * @var bool
+	 */
 	protected $running = false;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\TicketTrigger
+	 */
+	protected $applying_trigger = null;
+
+	/**
+	 * @var \Orb\Log\Logger
+	 */
+	protected $log;
+
+	/**
+	 * @var float
+	 */
+	protected $start_time;
 
 	/**
 	 * Fields that shouldnt trigger the full logger and filter inspections
@@ -82,11 +137,7 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 		'locked_by_agent', 'date_locked', 'has_attachments',
 	);
 
-	protected $log;
-
-	protected $start_time;
-
-	public function __construct(Entity\Ticket $ticket)
+	public function __construct(Ticket $ticket)
 	{
 		$this->entity = $ticket;
 		$this->ticket = $ticket;
@@ -98,11 +149,19 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 		}
 	}
 
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Person
+	 */
 	public function getPersonPerformer()
 	{
 		return $this->person_context;
 	}
 
+
+	/**
+	 * @return \Orb\Log\Logger
+	 */
 	public function getLog()
 	{
 		if ($this->log) return $this->log;
@@ -121,6 +180,32 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 		return $this->log;
 	}
 
+	/**
+	 * If a trigger is being applied, then this sets it so ticket log and future actions
+	 * know that a trigger is causing the changes.
+	 *
+	 * @param \Application\DeskPRO\Entity\TicketTrigger|null $trigger
+	 */
+	public function setApplyingTrigger(TicketTrigger $trigger = null)
+	{
+		$this->applying_trigger = $trigger;
+	}
+
+	/**
+	 * Get the applying trigger if there is one
+	 */
+	public function getApplyingTrigger()
+	{
+		return $this->applying_trigger;
+	}
+
+
+	/**
+	 * Send a message to the ticket change tracker log.
+	 * To enable the log, enable the `debug.ticket_change_logger` option in config.
+	 *
+	 * @param string $message
+	 */
 	public function logMessage($message)
 	{
 		$this->getLog();
@@ -319,6 +404,16 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 		return $this->original_ticket;
 	}
 
+	public function getChangeData($prop, $old_val, $new_val)
+	{
+		$data = parent::getChangeData($prop, $old_val, $new_val);
+
+		if ($this->applying_trigger) {
+			$data['trigger_id'] = $this->applying_trigger->getId();
+		}
+
+		return $data;
+	}
 
 	public function propertyChanged($sender, $prop, $old_val, $new_val)
 	{

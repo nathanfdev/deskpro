@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-class Priority implements LogActionInterface
+class Priority extends AbstractLogAction
 {
 	protected $old_pri;
 	protected $new_pri;

@@ -40,7 +40,7 @@ use Application\DeskPRO\Entity\Ticket;
 /**
  * Basic action for properties
  */
-abstract class AbstractPropertyAction implements ActionInterface
+abstract class AbstractPropertyAction extends AbstractAction
 {
 	protected $value;
 
@@ -48,16 +48,16 @@ abstract class AbstractPropertyAction implements ActionInterface
 	{
 		$this->value = $value;
 	}
-	
+
 
 	/**
 	 * Get the property name on the ticket object
-	 * 
+	 *
 	 * @return string
 	 */
 	abstract public function getPropertyName();
 
-	
+
 	/**
 	 * Get the property value
 	 *
@@ -82,10 +82,10 @@ abstract class AbstractPropertyAction implements ActionInterface
 		$ticket[$prop] = $val;
 	}
 
-	
+
 	/**
 	 * With properties, the other action always overwrites the previous action.
-	 * 
+	 *
 	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
 	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
 	 */

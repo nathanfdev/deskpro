@@ -43,7 +43,7 @@ use Application\DeskPRO\Entity\Person;
 /**
  * Sets agent
  */
-class AgentAction implements ActionInterface, PersonContextInterface
+class AgentAction extends AbstractAction, PersonContextInterface
 {
 	protected $agent_id;
 	protected $person_context;

@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-class Category implements LogActionInterface
+class Category extends AbstractLogAction
 {
 	protected $old_cat;
 	protected $new_cat;

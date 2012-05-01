@@ -42,7 +42,7 @@ use Application\DeskPRO\Entity\CustomDefTicket;
 
 use Application\DeskPRO\App;
 
-class TicketFieldAction implements ActionInterface
+class TicketFieldAction extends AbstractAction
 {
 	/**
 	 * @var \Application\DeskPRO\CustomFields\FieldManager

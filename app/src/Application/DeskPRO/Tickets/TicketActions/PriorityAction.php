@@ -40,7 +40,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 
-class PriorityAction implements ActionInterface
+class PriorityAction extends AbstractAction
 {
 	protected $priority_id;
 

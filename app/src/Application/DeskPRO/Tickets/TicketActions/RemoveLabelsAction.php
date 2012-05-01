@@ -43,7 +43,7 @@ use Orb\Util\Arrays;
 /**
  * Removes labels
  */
-class RemoveLabelsAction implements ActionInterface
+class RemoveLabelsAction extends AbstractAction
 {
 	protected $remove_labels;
 

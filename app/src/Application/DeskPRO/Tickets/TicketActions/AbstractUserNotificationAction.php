@@ -45,7 +45,7 @@ use Application\DeskPRO\App;
 /**
  * Sets agent
  */
-abstract class AbstractUserNotificationAction implements ActionInterface
+abstract class AbstractUserNotificationAction extends AbstractAction
 {
 	/**
 	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker

@@ -45,7 +45,7 @@ use Orb\Util\Numbers;
 /**
  * Modifies the ticket urgency
  */
-class UrgencyAction implements ActionInterface
+class UrgencyAction extends AbstractAction
 {
 	protected $num;
 

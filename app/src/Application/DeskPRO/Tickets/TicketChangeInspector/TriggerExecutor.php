@@ -292,7 +292,7 @@ class TriggerExecutor
 				foreach ($trigger['actions'] as $action_info) {
 					$action = $factory->createFromInfo($action_info);
 					if ($action) {
-						$actions_collection->add($action);
+						$actions_collection->add($action, array('trigger' => $trigger));
 						$this->tracker->recordExtraMulti('trigger', $trigger);
 					}
 				}
@@ -390,7 +390,7 @@ class TriggerExecutor
 
 		$trigger_apply_time = microtime(true);
 		$this->tracker->logMessage(sprintf('[TriggerExecutor] Applying %d actions', $actions_collection->countActions()));
-		$actions_collection->apply($this->tracker->getTicket(), $person, $this->tracker->getLog());
+		$actions_collection->apply($this->tracker, $this->tracker->getTicket(), $person, $this->tracker->getLog());
 		$this->tracker->logMessage(sprintf('[TriggerExecutor] -- Done in %.4f sections', microtime(true)-$trigger_apply_time));
 
 		$this->tracker->logMessage(sprintf('[TriggerExecutor] Done all work in %.4f seconds', microtime(true)-$time));

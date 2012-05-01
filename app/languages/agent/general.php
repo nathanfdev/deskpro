@@ -662,4 +662,5 @@
 	'agent.general.check_off' => 'OFF',
 
 	'agent.general.misc' => 'Miscellaneous',
+	'agent.general.trigger_x' => 'Trigger {{id}}',
 );

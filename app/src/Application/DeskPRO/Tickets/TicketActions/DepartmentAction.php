@@ -40,7 +40,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 
-class DepartmentAction implements ActionInterface
+class DepartmentAction extends AbstractAction
 {
 	protected $department_id;
 

@@ -40,7 +40,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 
-class ProductAction implements ActionInterface
+class ProductAction extends AbstractAction
 {
 	protected $product_id;
 

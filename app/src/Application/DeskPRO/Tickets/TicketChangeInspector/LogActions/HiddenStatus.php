@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-class HiddenStatus implements LogActionInterface
+class HiddenStatus extends AbstractLogAction
 {
 	protected $old_status;
 	protected $new_status;
