@@ -189,6 +189,13 @@ $collection->add('admin_tickets_filters_edit', new Route(
 	array()
 ));
 
+$collection->add('admin_tickets_filters_delete', new Route(
+	'/tickets/filters/{filter_id}/delete/{security_token}',
+	array('_controller' => 'AdminBundle:TicketFilters:delete'),
+	array('filter_id' => '\\d+'),
+	array()
+));
+
 $collection->add('admin_tickets_filters_new', new Route(
 	'/tickets/filters/new',
 	array('_controller' => 'AdminBundle:TicketFilters:newChooseType'),

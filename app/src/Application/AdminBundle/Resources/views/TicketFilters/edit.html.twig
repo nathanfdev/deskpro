@@ -150,4 +150,10 @@ $(document).ready(function() {
 
 {% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'criteria-tpl', 'term_options': term_options, 'search_context': 'filter' } %}
 
+{% if filter.id %}
+	<div class="delete-link-wrap">
+		<a href="{{ path('admin_tickets_filters_delete', {filter_id: filter.id, security_token: security_token('delete_ticket_filter') }) }}" onclick="return confirm('{{ phrase('agent.general.ask_delete_selected') }}');">{{ phrase('agent.general.delete') }}</a>
+	</div>
+{% endif %}
+
 {% endblock %}

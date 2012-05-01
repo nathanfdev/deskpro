@@ -60,6 +60,7 @@ class TicketFiltersController extends AbstractController
 			'access_tester'  => $access_tester,
 		));
 	}
+
 	############################################################################
 	# edit
 	############################################################################
@@ -135,5 +136,32 @@ class TicketFiltersController extends AbstractController
 			'filter_users' => $filter_users,
 			'filter_users_ignore' => $filter_users_ignore,
 		));
+	}
+
+	############################################################################
+	# delete
+	############################################################################
+
+	public function deleteAction($filter_id, $security_token)
+	{
+		$this->ensureAuthToken('delete_ticket_filter', $security_token);
+
+		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($filter_id);
+		if (!$filter) {
+			return $this->createNotFoundException();
+		}
+
+		$this->db->beginTransaction();
+
+		try {
+			$this->em->remove($filter);
+			$this->em->flush();
+			$this->db->commit();
+		} catch (\Exception $e) {
+			$this->db->rollback();
+			throw $e;
+		}
+
+		return $this->redirectRoute('admin_tickets_filters');
 	}
 }
