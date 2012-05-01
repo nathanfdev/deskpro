@@ -172,7 +172,7 @@
 								</span>
 								<span class="prop-no-change">
 									{% if ticket.agent %}
-										{{ phrase('agent.tickets.remain_unassigned_agent', {'agent':tools.name_or_me(ticket.agent)}) }} {% if app.getSetting('core.use_agent_team') %} | {% endif %}
+										{{ phrase('agent.tickets.remain_assigned_to_agent', {'agent':tools.name_or_me(ticket.agent)}) }} {% if app.getSetting('core.use_agent_team') %} | {% endif %}
 									{% else %}
 										{{ phrase('agent.tickets.remain_unassigned') }} {% if app.getSetting('core.use_agent_team') %} | {% endif %}
 									{% endif %}
@@ -192,7 +192,7 @@
 									</span>
 									<span class="prop-no-change">
 										{% if ticket.agent_team %}
-                                            {{ phrase('agent.tickets.remain_unassigned_team_with_name', {'name':tools.team_name_or_me(ticket.agent_team)}) }}
+                                            {{ phrase('agent.tickets.remain_assigned_to_team', {'name':tools.team_name_or_me(ticket.agent_team)}) }}
 										{% else %}
 											{{ phrase('agent.tickets.remain_unassigned_team') }}
 										{% endif %}
@@ -276,7 +276,7 @@
 				<input type="text" class="filter-box" placeholder="{{ phrase('agent.general.filter') }}" />
 			</header>
 			<ul>
-				<li class="me last-me {% if ticket.agent.id == app.user.id or not ticket.agent %}on{% endif %}">
+				<li class="me last-me">
 					<input type="radio" name="{{replyBaseId}}_agent" value="{{ app.user.id }}" {% if ticket.agent.id == app.user.id or not ticket.agent %}checked="checked"{% endif %} />
 					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.general.me') }}</span></label>
 				</li>
@@ -288,7 +288,7 @@
 
 				{% for agent in agents %}
 					{% if agent.id != app.user.id %}
-						<li {% if ticket.agent.id == agent.id %}class="on"{% endif %}>
+						<li>
 							<input type="radio" name="{{replyBaseId}}_agent" value="{{ agent.id }}" {% if ticket.agent.id == agent.id %}checked="checked"{% endif %} />
 							<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
 							<div class="bound-fade"></div>
