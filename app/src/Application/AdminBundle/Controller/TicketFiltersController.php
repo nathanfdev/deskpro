@@ -123,6 +123,8 @@ class TicketFiltersController extends AbstractController
 				$em->persist($filter);
 				$em->flush();
 			});
+
+			return $this->redirectRoute('admin_tickets_filters');
 		}
 
 		$term_options = App::getApi('tickets')->getTicketOptions($this->person);

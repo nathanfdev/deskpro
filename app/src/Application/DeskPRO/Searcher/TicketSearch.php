@@ -921,14 +921,17 @@ class TicketSearch extends SearcherAbstract
 					$this->affected_fields[] = 'ticket.subject';
 					$field = 'tickets.subject';
 					if (!$this->is_archive) {
-						$joins[] = 'tickets_search_subject';
-						$field = 'tickets_search_subject.subject';
+						$joins[] = array(
+							'tickets_search_subject',
+							"LEFT JOIN tickets_search_subject AS $join_name ON ($join_name.id = tickets.id)"
+						);
+						$field = "$join_name.subject";
 					}
 
-					if ($op == self::OP_IS) {
-						$this->summary[] = $tr->phrase('agent.general.x_is_y', array('field' => $tr->phrase('agent.general.x_is_not_y'), 'value' => $choice));
+					if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+						$this->summary[] = $tr->phrase('agent.general.x_include_y', array('field' => $tr->phrase('agent.general.subject'), 'value' => $choice));
 					} else {
-						$this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => $tr->phrase('agent.general.label'), 'value' => $choice));
+						$this->summary[] = $tr->phrase('agent.general.x_is_not_y', array('field' => $tr->phrase('agent.general.subject'), 'value' => $choice));
 					}
 					$wheres[] = $this->_stringMatch($field, $op, $choice);
 					break;
