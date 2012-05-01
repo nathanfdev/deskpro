@@ -56,7 +56,7 @@ class Pop3 extends AbstractFetcher
 		$options['user']     = $this->gateway['connection_options']['username'];
 		$options['password'] = $this->gateway['connection_options']['password'];
 
-		$this->logger->log("Connecting {$options['user']}@{$options['host']}:{$options['port']}", 'debug');
+		$this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
 
 		if (isset($this->gateway['connection_options']['secure']) AND $this->gateway['connection_options']['secure']) {
 			$options['ssl'] = strtoupper($this->gateway['connection_options']['secure']); // 'ssl' or 'tls'
