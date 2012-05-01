@@ -50,6 +50,11 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 	 */
 	public function indexAction()
 	{
+		// Already logged in
+		if ($this->session->getPerson() && $this->session->getPerson()->is_agent) {
+			return $this->redirectRoute('agent');
+		}
+
 		$has_done_reset = false;
 
 		if ($code = $this->in->getString('reset_code')) {

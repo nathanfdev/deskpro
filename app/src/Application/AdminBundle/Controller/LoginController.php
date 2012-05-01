@@ -50,6 +50,11 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 	 */
 	public function indexAction()
 	{
+		// Already logged in
+		if ($this->session->getPerson() && $this->session->getPerson()->is_agent && $this->session->getPerson()->can_admin) {
+			return $this->redirectRoute('admin');
+		}
+
 		$agent_session_code = !empty($_COOKIE['dpsid-agent']) ? $_COOKIE['dpsid-agent'] : false;
 		$agent_session = null;
 		if ($agent_session_code) {
