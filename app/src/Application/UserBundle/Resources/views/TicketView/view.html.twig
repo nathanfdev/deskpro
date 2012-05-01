@@ -67,7 +67,7 @@
 				<form action="{{ path('user_tickets_addreply', {'ticket_ref': ticket.public_id}) }}" method="POST" class="with-form-validator" enctype="multipart/form-data">
 					<div class="dp-form">
 						{% if errors|length %}
-							<div class="dp-alert dp-alert-error dp-error">
+							<div class="dp-alert dp-alert-error">
 								{{ phrase('user.general.form_errors_correct') }}
 								<!--
 								{{ debug_var(error_fields) }}

@@ -76,7 +76,7 @@ DeskPRO.Form.FormValidator = new Orb.Class({
 	},
 
 	hasErrors: function() {
-		if ($('.dp-error:visible', this.el).length > 0) {
+		if ($('.dp-error', this.el).filter(':visible').length > 0) {
 			return true;
 		}
 
