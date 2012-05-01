@@ -101,6 +101,9 @@ class GenerateStatsFloodFill extends AbstractJob
 		$unix = $end_date->format('U');
 
 		switch ($run_frequency) {
+			case 'hourly':
+				$new_unix = date('U', strtotime("-$points hours", $unix));
+				break;
 			case 'daily':
 				$new_unix = date('U', strtotime("-$points days", $unix));
 				break;

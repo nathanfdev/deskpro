@@ -202,7 +202,7 @@ class Dates
 					$year++;
 				}
 			}
-		} while (--$months);
+		} while (--$mod_months);
 
 		$new_date->setDate($year, $month, $day);
 		return $new_date;

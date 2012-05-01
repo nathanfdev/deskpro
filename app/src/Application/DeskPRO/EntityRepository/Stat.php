@@ -63,7 +63,7 @@ class Stat extends EntityRepository
 	 * @param \DateTime $date The DateTime to check against [defaults to today]
 	 * @return array
 	 */
-	public function getDailyStatIdsRequiringUpdate(\DateTime $date = null)
+	public function getHourlyStatIdsRequiringUpdate(\DateTime $date = null)
 	{
 		if (is_null($date)) {
 			// Get today
@@ -72,6 +72,26 @@ class Stat extends EntityRepository
 
 		$db    = App::getDb();
 		$query = $this->getAllIdsRequiringUpdateQuery('daily');
+		$query .= " AND s.last_run < " . $date->format('U');
+
+		return $db->fetchAllCol($query);
+	}
+
+	/**
+	 * Get the daily stat ids requiring update
+	 *
+	 * @param \DateTime $date The DateTime to check against [defaults to today]
+	 * @return array
+	 */
+	public function getDailyStatIdsRequiringUpdate(\DateTime $date = null)
+	{
+		if (is_null($date)) {
+			// Get today
+			$date = new \DateTime();
+		}
+
+		$db    = App::getDb();
+		$query = $this->getAllIdsRequiringUpdateQuery('hourly');
 		$query .= " AND DATE_FORMAT(s.last_run, '%Y-%m-%d') < '" . $date->format('Y-m-d') . "'";
 
 		return $db->fetchAllCol($query);

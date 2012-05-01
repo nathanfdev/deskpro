@@ -85,7 +85,7 @@
 				{% for graphs in chart.graphs %}
 					<graph gid="{{ loop.index }}">
 						{% for point in graphs.data %}
-							<value xid="{{ loop.index0 }}">{{ chart.formatData(point) }}</value>
+							<value xid="{{ loop.index0 }}">{{ chart.formatData(point)|default('0') }}</value>
 						{% endfor %}
 					</graph>
 				{% endfor %}

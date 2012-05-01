@@ -213,6 +213,9 @@ class ReportDashboardStat extends \Application\DeskPRO\Domain\DomainObject
 		// Add the update period
 		$title .= ' - Last ' . $data_points . ' ';
 		switch (strtolower($this->getStat()->getPeriod())) {
+			case 'hourly':
+				$title .= ' ' . (($data_points > 1) ? 'Hourly' : 'Hour');
+				break;
 			case 'daily':
 				$title .= ' ' . (($data_points > 1) ? 'Days' : 'Day');
 				break;

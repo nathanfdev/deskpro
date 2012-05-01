@@ -44,6 +44,7 @@ use Application\DeskPRO\App;
  */
 class Stat extends \Application\DeskPRO\Domain\DomainObject
 {
+	const FREQUENCY_HOURLY  = "hourly";
 	const FREQUENCY_DAILY   = "daily";
 	const FREQUENCY_MONTHLY = "monthly";
 	const FREQUENCY_YEARLY  = "yearly";
@@ -53,7 +54,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	const VARIATION_NEUTRAL = 'neutral';
 
 	protected static $availableRunFrequencies = array(
-		self::FREQUENCY_DAILY, self::FREQUENCY_MONTHLY, self::FREQUENCY_YEARLY
+		self::FREQUENCY_HOURLY, self::FREQUENCY_DAILY, self::FREQUENCY_MONTHLY, self::FREQUENCY_YEARLY
 	);
 
 	protected static $availableVariations = array(
@@ -439,6 +440,10 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$data_points = 7;
 		switch ($this->run_frequency) {
+			case 'hourly':
+				// Get 24 hours
+				$data_points = 24;
+				break;
 			case 'daily':
 				// Get a week
 				$data_points = 7;
@@ -466,6 +471,9 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$data_points = 7;
 		switch ($this->run_frequency) {
+			case 'hourly':
+				// Get a year
+				$data_points = 60;
 			case 'daily':
 				// Get a year
 				$data_points = 60;
@@ -492,6 +500,9 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$length = '';
 		switch ($this->run_frequency) {
+			case 'hours':
+				$length = 'hours';
+				break;
 			case 'daily':
 				$length = 'days';
 				break;
@@ -518,6 +529,9 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		$repo = App::getEntityRepository('DeskPRO:StatValue');
 
 		switch ($this->run_frequency) {
+			case 'hourly':
+				$stat_value = $repo->getForStatByHour($this->getId(), $date);
+				break;
 			case 'daily':
 				$stat_value = $repo->getForStatByDay($this->getId(), $date);
 				break;
@@ -545,6 +559,9 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		$last = $this->last_run ? $this->last_run : new \DateTime();
 
 		switch ($this->run_frequency) {
+			case 'hourly':
+				$new = $last->modify('-1 hour');
+				break;
 			case 'daily':
 				$new = $last->modify('-1 day');
 				break;
@@ -690,7 +707,7 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 		// Get the data points we care about
 		$data_points = $this->generateDataPoints($end_date, $data_point_count);
 
-		$start_date  = new \DateTime($data_points[0] . '00:00:00');
+		$start_date  = new \DateTime($data_points[0]);
 
 		$stat_value_ids = array();
 
@@ -791,14 +808,17 @@ class Stat extends \Application\DeskPRO\Domain\DomainObject
 
 		for ($i = ($data_point_count - 1); $i >= 0; $i--) {
 			switch ($this->getRunFrequency()) {
+				case 'hourly':
+					$data_point = date('Y-m-d H:i:s', strtotime("-$i hours", $unix));
+					break;
 				case 'daily':
-					$data_point = date('Y-m-d', strtotime("-$i days", $unix));
+					$data_point = date('Y-m-d', strtotime("-$i days", $unix)) . ' 00:00:00';
 					break;
 				case 'monthly':
-					$data_point = date('Y-m-d', strtotime("-$i months", $unix));
+					$data_point = date('Y-m-d', strtotime("-$i months", $unix)) . ' 00:00:00';
 					break;
 				case 'yearly':
-					$data_point = date('Y-m-d', strtotime("-$i years", $unix));
+					$data_point = date('Y-m-d', strtotime("-$i years", $unix)) . ' 00:00:00';
 					break;
 				default:
 					throw new \Exception("Unsupported run frequency " . $this->getRunFrequency());

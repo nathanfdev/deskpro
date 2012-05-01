@@ -26,62 +26,32 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * Orb
+ *
+ * @package Orb
+ * @subpackage Log
+ */
 
-namespace Application\ReportBundle\Stat\DeskPRO;
+namespace Orb\Log\Writer;
+use \Orb\Log\LogItem;
 
-use Application\ReportBundle\Stat\Base\QueryBuilder;
 
 /**
- * Get the number of tickets in 'awaiting_agent' status
+ * This writer just writes using error_log
  */
-class TicketsAwaitingAgent extends AbstractTicket
+class ErrorLog extends AbstractWriter
 {
-	public function init()
+	public function __construct()
 	{
-		parent::init();
-	}
-
-	public function buildConceptQueries()
-	{
-		$query = $this->createQuery()
-		      ->select('COUNT(tickets.id) AS ticket_count')
-		      ->andWhere("tickets.status = 'awaiting_agent'");
-
-		$this->addQuery('awaiting_agent', $query);
-	}
-
-	public function processUngroupedResults($result)
-	{
-		return $result['awaiting_agent'][0]['ticket_count'];
-	}
-
-	public function processGroupedResults($results)
-	{
-		$processedResults = array();
-
-		foreach ($results['awaiting_agent'] as $result) {
-			$processedResults[] = array(
-				'value'       => $result['ticket_count'],
-				'grouping_ref' => $result[str_replace('.', '_', $this->grouping[0])],
-			);
-		}
-
-		return $processedResults;
+		$this->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
 	}
 
 	/**
-	 * Get the formatter
-	 *
-	 * @return FormatterInterface
+	 * Write a message to the log.
 	 */
-	public static function getFormatter()
+	public function _write(LogItem $log_item)
 	{
-		$class = new \Application\ReportBundle\Stat\Formatter\IntegerFormatter();
-
-		return $class;
+		$msg = $log_item[LogItem::MESSAGE_LINE];
+		error_log($msg);
 	}
 }

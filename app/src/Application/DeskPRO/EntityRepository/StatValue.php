@@ -95,12 +95,39 @@ class StatValue extends EntityRepository
 	{
 		return $this->getForStatBuilder($stat_id)
 			    ->andWhere("sv.stat_unix >= :start_unix")
-			    ->andWhere("sv.stat_unix < :end_unix")
+			    ->andWhere("sv.stat_unix <= :end_unix")
 			    ->setParameter('start_unix', $start_date->format('U'))
 			    ->setParameter('end_unix', $end_date->format('U'))
 			    ->orderBy('sv.stat_unix', 'DESC')
 			    ->getQuery()
 			    ->getArrayResult();
+	}
+
+	/**
+	 * Get that StatValue for a hour
+	 *
+	 * @param int $stat_id The Stat id
+	 * @param \DateTime $date The date
+	 * @return StatValue
+	 */
+	public function getForStatByHour($stat_id, \DateTime $date)
+	{
+		$day_start = mktime($date->format('H'), 0, 0, $date->format('n'), $date->format('j'), $date->format('Y'));
+		$day_end   = mktime($date->format('H'), 59, 59, $date->format('n'), $date->format('j'), $date->format('Y'));
+
+		try {
+			$stat_value =
+					$this->getForStatBuilder($stat_id)
+							->andWhere("sv.stat_unix BETWEEN :day_start AND :day_end")
+							->setParameter('day_start', $day_start)
+							->setParameter('day_end', $day_end)
+							->getQuery()
+							->getSingleResult();
+		} catch (\Doctrine\Orm\NoResultException $e) {
+			$stat_value = null;
+		}
+
+		return $stat_value;
 	}
 
 	/**
@@ -139,8 +166,8 @@ class StatValue extends EntityRepository
 	 */
 	public function getForStatByMonth($stat_id, \DateTime $date)
 	{
-		$month_start = Orb\Util\Dates::firstDayInMonth($date->format('n'), $date->format('Y'));
-		$month_end   = Orb\Util\Dates::lastDayInMonth($date->format('n'), $date->format('Y'));
+		$month_start = \Orb\Util\Dates::firstDayInMonth($date->format('n'), $date->format('Y'));
+		$month_end   = \Orb\Util\Dates::lastDayInMonth($date->format('n'), $date->format('Y'));
 
 		try {
 			$stat_value =

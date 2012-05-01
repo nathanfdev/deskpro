@@ -85,7 +85,13 @@ class ChartController extends AbstractController
 	{
 		$dashboard_stat = $this->getDashboardStat($dashboard_stat_id);
 
+		$stat = $dashboard_stat->getStat();
+		if (!$stat->last_run) {
+			$this->processFirstData($stat);
+		}
+
 		$end_date = new \DateTime();
+
 		$chart_type = $this->getRequest()->get('chart_type', '');
 		if (false === $this->getRequest()->get('all', false)) {
 			$points = $dashboard_stat->getNumberDataPoints();
@@ -118,6 +124,57 @@ class ChartController extends AbstractController
 			'dashboard_stat' => $dashboard_stat,
 			'chart'          => $chart
 		));
+	}
+
+	protected function processFirstData(\Application\DeskPRO\Entity\Stat $stat)
+	{
+		$stat_concept_class = $stat->getStatConceptClass();
+
+		$stat_concept = new $stat_concept_class($stat, $stat->getLastFullRun());
+
+		//$logger = new \Application\DeskPRO\Log\Logger();
+		//$logger->addWriter(new \Orb\Log\Writer\ErrorLog());
+		//$stat_concept->setLogger($logger);
+
+		$stat_concept->addGrouping($stat->getGroupingRef());
+
+		$dt = new \DateTime('-1 hours');
+		$dt->setTime($dt->format('H'), 0, 0);
+		$values = $stat_concept->getStats($dt);
+
+		// Check if existing StatValue is set for period
+		$stat_value = $stat->getStatValueForDate(new \DateTime());
+		if (!$stat_value) {
+			// Create a new one
+			$stat_value = new \Application\DeskPRO\Entity\StatValue();
+			$stat_value->setStat($stat);
+		}
+		$stat_value->setValue($values['ungrouped']);
+		$stat_value->setStatUnix(time());
+		$this->em->persist($stat_value);
+
+		// Store the grouped values
+		foreach ($values['grouped'] as $grouped) {
+			// Check if existing StatValueGroup is set for period and reference
+			$stat_value_group = $stat_value->getStatValueGroupForDate(
+				new \DateTime(),
+				$grouped['grouping_ref'],
+				$stat->getRunFrequency()
+			);
+
+			if (!$stat_value_group) {
+				$stat_value_group = new \Application\DeskPRO\Entity\StatValueGroup();
+				$stat_value_group->setStatValue($stat_value);
+			}
+			$stat_value_group->setValue($grouped['value']);
+			$stat_value_group->setGroupingRef($grouped['grouping_ref']);
+			$stat_value_group->setStatUnix(time());
+			$this->em->persist($stat_value_group);
+		}
+
+		$stat->last_run = new \DateTime();
+		$this->em->persist($stat);
+		$this->em->flush();
 	}
 
 	/**

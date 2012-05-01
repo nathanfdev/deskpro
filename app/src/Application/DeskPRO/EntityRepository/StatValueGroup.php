@@ -89,6 +89,33 @@ class StatValueGroup extends EntityRepository
 	}
 
 	/**
+	 * Get the StatValueGroup for a hour
+	 *
+	 * @param int $stat_value_id The StatValue id
+	 * @param string $grouping_ref The grouping ref
+	 * @param \DateTime $date The date
+	 * @return StatValueGroup
+	 */
+	public function getForStatValueByHour($stat_value_id, $grouping_ref, \DateTime $date)
+	{
+		$day_start = mktime($date->format('H'), 0, 0, $date->format('n'), $date->format('j'), $date->format('Y'));
+		$day_end   = mktime($date->format('H'), 59, 59, $date->format('n'), $date->format('j'), $date->format('Y'));
+
+		try {
+			$stat_value_group = $this->getForStatValueBuilder($stat_value_id, $grouping_ref)
+					->andWhere("svg.stat_unix BETWEEN :day_start AND :day_end")
+					->setParameter('day_start', $day_start)
+					->setParameter('day_end', $day_end)
+					->getQuery()
+					->getSingleResult();
+		} catch (\Doctrine\Orm\NoResultException $e) {
+			$stat_value_group = null;
+		}
+
+		return $stat_value_group;
+	}
+
+	/**
 	 * Get the StatValueGroup for a day
 	 *
 	 * @param int $stat_value_id The StatValue id
@@ -125,8 +152,8 @@ class StatValueGroup extends EntityRepository
 	 */
 	public function getForStatValueByMonth($stat_value_id, $grouping_ref, \DateTime $date)
 	{
-		$month_start = Orb\Util\Dates::firstDayInMonth($date->format('n'), $date->format('Y'));
-		$month_end   = Orb\Util\Dates::lastDayInMonth($date->format('n'), $date->format('Y'));
+		$month_start = \Orb\Util\Dates::firstDayInMonth($date->format('n'), $date->format('Y'));
+		$month_end   = \Orb\Util\Dates::lastDayInMonth($date->format('n'), $date->format('Y'));
 
 		try {
 			$stat_value_group = $this->getForStatValueBuilder($stat_value_id, $grouping_ref)

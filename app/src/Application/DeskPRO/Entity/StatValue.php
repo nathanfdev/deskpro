@@ -98,11 +98,14 @@ class StatValue extends \Application\DeskPRO\Domain\DomainObject
 		$repo = App::getEntityRepository('DeskPRO:StatValueGroup');
 
 		switch ($run_frequency) {
+			case 'hourly':
+				$stat_value_group = $repo->getForStatValueByHour($this->id, $grouping_id, $date);
+				break;
 			case 'daily':
 				$stat_value_group = $repo->getForStatValueByDay($this->id, $grouping_id, $date);
 				break;
 			case 'monthly':
-				$stat_value_group = $repo->getForStatValuepByMonth($this->id, $grouping_id, $date);
+				$stat_value_group = $repo->getForStatValueByMonth($this->id, $grouping_id, $date);
 				break;
 			case 'yearly':
 				$stat_value_group = $repo->getForStatValueByYear($this->id, $grouping_id, $date);
