@@ -10,10 +10,9 @@
 	{% endset %}
 	{{ layout.section('', content) }}
 
-	{{ layout.render_top_message(messages|first) }}
 	{% if messages|length > 1 %}
 		{{ layout.sep() }}
-		{{ layout.render_ticket_messages(messages, '', { skip_top: 1}) }}
+		{{ layout.render_ticket_messages(messages, '', { skip_top: 0}) }}
 	{% endif %}
 {% endblock %}
 {% block footer_content %}
