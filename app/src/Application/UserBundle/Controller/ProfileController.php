@@ -262,17 +262,18 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			'validating_email' => $validating_email
 		);
 
-		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($vars, $person, $validating_email) {
+		$container = $this->container;
+		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($vars, $person, $validating_email, $container) {
 			$email_subject = $tr->phrase($vars['email_subject']);
-			$email_body = $this->container->get('templating')->render('DeskPRO:emails_user:new-email-validate.html.twig', $vars);
+			$email_body = $container->get('templating')->render('DeskPRO:emails_user:new-email-validate.html.twig', $vars);
 
-			$message = $this->container->getMailer()->createMessage();
+			$message = $container->getMailer()->createMessage();
 			$message->setTo($validating_email->getEmail(), $person->getDisplayName());
 			$message->setSubject($email_subject);
 			$message->setBody($email_body, 'text/html');
 			$message->enableQueueHint();
 
-			$this->container->getMailer()->send($message);
+			$container->getMailer()->send($message);
 		});
 	}
 
