@@ -23,7 +23,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 					<li class="draggable irremovable" data-item-id="ticket_subject"><label>{{ phrase('admin.tickets.ticket_subject') }}</label></li>
 					<li class="draggable" data-item-id="attachments"><label>{{ phrase('agent.general.attachments') }}</label></li>
 				{% endif %}
-				<li class="draggable" data-item-id="ticket_category" data-edit-title="{{ phrase('agent.general.edit_categories') }}" data-edit-url="{{ path('admin_ticketcats') }}"><label>{{ phrase('agent.general.product') }}</label></li>
+				<li class="draggable" data-item-id="ticket_category" data-edit-title="{{ phrase('agent.general.edit_categories') }}" data-edit-url="{{ path('admin_ticketcats') }}"><label>{{ phrase('agent.general.categories') }}</label></li>
 				<li class="draggable" data-item-id="ticket_product" data-edit-title="{{ phrase('admin.tickets.edit_products') }}" data-edit-url="{{ path('admin_products') }}"><label>{{ phrase('agent.general.product') }}</label></li>
 				<li class="draggable" data-item-id="ticket_priority" data-edit-title="{{ phrase('admin.tickets.edit_priorities') }}" data-edit-url="{{ path('admin_ticketpris') }}"><label>{{ phrase('agent.general.priority') }}</label></li>
 				{% for field in custom_ticket_fields %}
