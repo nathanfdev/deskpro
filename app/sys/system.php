@@ -1174,7 +1174,7 @@ final class License
 	public static function getLicServer()
 	{
 		if (!defined('DP_LIC_SERVER')) {
-			define('DP_LIC_SERVER', 'http://dev.deskprodev.com/lic/index.php');
+			define('DP_LIC_SERVER', 'http://www.deskpro.com/lic');
 		}
 
 		return DP_LIC_SERVER;

@@ -90,7 +90,7 @@ require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Output/OutputInte
 require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterInterface.php';
 
 if (!defined('DP_LIC_SERVER')) {
-	define('DP_LIC_SERVER', 'http://dev.deskprodev.com/lic/index.php');
+	define('DP_LIC_SERVER', 'http://www.deskpro.com/lic');
 }
 
 class Upgrade
