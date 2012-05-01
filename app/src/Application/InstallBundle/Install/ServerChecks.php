@@ -431,7 +431,7 @@ class ServerChecks
 				$this->getLogger()->log("[OK] OpenSSL installed", Logger::DEBUG);
 			} else {
 				$msg = "We recommend installing the OpenSSL extension so you can use resources that require a secure connection such as Google Apps, Facebook and Twitter.";
-				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->getLogger()->log("$msg", Logger::INFO);
 				$this->server_errors['openssl_ext'] = array(
 					'message' => $msg,
 					'level' => 'recommended'
@@ -449,7 +449,7 @@ class ServerChecks
 				$this->getLogger()->log("[OK] APC store installed", Logger::DEBUG);
 			} else {
 				$msg = "We recommend installing the APC extension for PHP to dramatically improve performance";
-				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->getLogger()->log("$msg", Logger::INFO);
 				$this->server_errors['apc_check'] = array(
 					'message' => $msg,
 					'level' => 'recommended'
@@ -468,7 +468,7 @@ class ServerChecks
 					$this->getLogger()->log("[OK] magic_quotes_gpc is disabled", Logger::DEBUG);
 				} else {
 					$msg = "We recommend disabling the `magic_quotes_gpc` setting in your php.ini file.";
-					$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+					$this->getLogger()->log("$msg", Logger::INFO);
 					$this->server_errors['magic_quotes_gpc_check'] = array(
 						'message' => $msg,
 						'level' => 'recommended'
@@ -488,7 +488,7 @@ class ServerChecks
 			} else {
 				$this->has_fatal_server_errors = true;
 				$msg = "You must install and enabled the iconv extension";
-				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+				$this->getLogger()->log("$msg", Logger::INFO);
 				$this->server_errors['iconv_ext'] = array(
 					'message' => $msg,
 					'level' => 'recommended'
