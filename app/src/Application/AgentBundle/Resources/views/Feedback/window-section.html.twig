@@ -4,13 +4,13 @@
 		<h1>{{ phrase('agent.general.pending') }}</h1>
 	</header>
 	<ul class="source-list">
-		<li class="is-nav-item auto-load-route" data-route="listpane:{{ path('agent_feedback_validatingcontent', {'specific_type': 'feedback'}) }}">
+		<li class="is-nav-item auto-load-route" data-route="listpane:{{ path('agent_feedback_validatingcontent') }}">
 			<h3 class="title">
 				<span class="list-counter" id="feedback_validating_count">{{ counts.feedback_awaiting_validation|default(0) }}</span>
 				{{ phrase('agent.feedback.feedback_to_validate') }}
 			</h3>
 		</li>
-		<li class="is-nav-item" data-route="listpane:{{ path('agent_publish_validatingcomments', {'specific_type': 'feedback'}) }}">
+		<li class="is-nav-item" data-route="listpane:{{ path('agent_feedback_validatingcomments') }}">
 			<h3 class="title">
 				<span class="list-counter" id="feedback_comments_validating_count">{{ counts.comments_awaiting_validation|default(0) }}</span>
 				{{ phrase('agent.publish.comments_to_validate') }}

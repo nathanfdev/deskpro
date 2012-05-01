@@ -2176,18 +2176,18 @@ $collection->add('agent_userchat_view', new Route(
 	array('fragment_name' => 'c')
 ));
 
+$collection->add('agent_userchat_filterlist_group_counts', new Route(
+	'/chat/group-count.json',
+	array('_controller' => 'AgentBundle:UserChat:getGroupByCounts'),
+	array(),
+	array()
+));
+
 $collection->add('agent_userchat_filterlist', new Route(
 	'/chat/filter/{filter_id}',
 	array('_controller' => 'AgentBundle:UserChat:filter'),
 	array(),
 	array('fragment_name' => 'ended', 'fragment_type' => 'list')
-));
-
-$collection->add('agent_userchat_filterlist_group_counts', new Route(
-	'/chat/filter/group-count.json',
-	array('_controller' => 'AgentBundle:UserChat:getGroupByCounts'),
-	array(),
-	array()
 ));
 
 $collection->add('agent_userchat_list_new', new Route(

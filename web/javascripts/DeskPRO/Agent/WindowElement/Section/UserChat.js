@@ -84,7 +84,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		$.ajax(
 			{
 				type: 'POST',
-				url: BASE_URL + 'agent/chat/filter/group-count.json',
+				url: BASE_URL + 'agent/chat/group-count.json',
 				data: { filters: this.groups },
 				dataType: 'json',
 				success: function(data) {
