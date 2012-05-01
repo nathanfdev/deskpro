@@ -653,9 +653,8 @@ class UserChatController extends AbstractController
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	public function filterAction()
+	public function filterAction($filter_id)
 	{
-		$filter_id = $this->in->getString('filter_id');
 		$filters = $this->getFilters();
 
 		if(!$filter_id || !in_array($filter_id, $filters))
@@ -781,18 +780,5 @@ class UserChatController extends AbstractController
 		}
 
 		return $filters;
-	}
-
-	/**
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function getChatsPageAction()
-	{
-		$chat_ids = $this->container->getIn()->getCleanValueArray('ids', 'uint', 'discard');
-		$chats = $this->container->getEm()->getRepository('DeskPRO:ChatConversation')->getByIds($chat_ids, true);
-
-		return $this->render('AgentBundle:UserChat:list-page.html.twig', array(
-			'chats' => $chats
-		));
 	}
 }

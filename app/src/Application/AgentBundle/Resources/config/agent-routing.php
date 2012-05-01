@@ -2163,17 +2163,10 @@ $collection->add('agent_userchat_view', new Route(
 ));
 
 $collection->add('agent_userchat_filterlist', new Route(
-	'/chat/filter',
+	'/chat/filter/{filter_id}',
 	array('_controller' => 'AgentBundle:UserChat:filter'),
 	array(),
 	array('fragment_name' => 'ended', 'fragment_type' => 'list')
-));
-
-$collection->add('agent_userchat_filterlist_page', new Route(
-	'/chat/filter',
-	array('_controller' => 'AgentBundle:UserChat:getChatsPage'),
-	array(),
-	array()
 ));
 
 $collection->add('agent_userchat_filterlist_group_counts', new Route(
