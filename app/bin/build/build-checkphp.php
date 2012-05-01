@@ -48,8 +48,12 @@ foreach ($paths as $dir) {
 		} elseif (filesize($file->getRealPath()) == 4096) {
 			$bad_size[] = str_replace(DP_ROOT, '', $file->getRealPath());
 		} else {
-			if ($x++ % 100 === 0) {
+			$x++;
+			if ($x % 10 === 0) {
 				echo ".";
+			}
+			if ($x % 100 == 0) {
+				echo $x;
 			}
 		}
 	}
@@ -71,5 +75,7 @@ if ($bad_size) {
 	exit(1);
 }
 
-echo "No errors detected.\n";
+if (!$has_failed && !$bad_size) {
+	echo "No errors detected.\n";
+}
 exit(0);

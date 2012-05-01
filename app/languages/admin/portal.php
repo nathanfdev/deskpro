@@ -104,6 +104,10 @@
     'admin.portal.upload_a_new_logo'                       => 'Upload a new logo',
     'admin.portal.warning_dont_want_public_site'           => 'If you do not want a public facing website you can disable the portal. You will still be able to accept tickets from the email gateways, and use HTML widgets on your website, but the user portal will be disabled and traces of the public website such as links in emails will be removed.',
     'admin.portal.website_widgets'                         => 'Website Widgets',
+    'admin.portal.website_widgets_overlay'                 => 'Helpdesk Widget',
+    'admin.portal.website_widgets_overlay_explain'         => 'The tab widget places a tab button on the left of your website. When the user clicks the tab, an overlay opens on top of your site where a user can interact with the helpdesk without ever leaving the page they are on.',
+    'admin.portal.website_widgets_chat'                    => 'Chat Widget',
+    'admin.portal.website_widgets_chat_explain'            => 'The chat widget puts a small button on the bottom left of your website. When the user clicks the button, a small chat window opens on top of your site and allows your visitors to chat with any online agents. Users can continue to browse around your site while the chat is active.',
     'admin.portal.share_widgets'                           => 'Share Widgets',
     'admin.portal.show_share_widget'                       => 'Enable the share widget on news, articles and feedback',
     'admin.portal.show_share_widget_facebook'              => 'Show the facebook "Like" button',
@@ -111,4 +115,5 @@
     'admin.portal.show_share_widget_gplus'                 => 'Show the Google Plus "+1" button',
     'admin.portal.show_share_widget_linkedin'              => 'Show the LinkedIn "Share" button',
 	'admin.portal.show_ratings_explain' => 'Show user ratings on content after this many votes, or enter 0 to never show ratings publicly',
+	'admin.portal.website_widget_install' => 'Copy and paste this HTML code into your website. We recommend placing it directly before the &lt;/body&gt; tag.',
 );

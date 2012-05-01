@@ -403,6 +403,13 @@ $collection->add('admin_portal_settings', new Route(
 	array()
 ));
 
+$collection->add('admin_portal_widgets', new Route(
+	'/portal/widgets',
+	array('_controller' => 'AdminBundle:Portal:widgets'),
+	array(),
+	array()
+));
+
 $collection->add('admin_portal_uploadfavicon', new Route(
 	'/portal/upload-favicon',
 	array('_controller' => 'AdminBundle:Portal:uploadFavicon'),

@@ -1,0 +1,61 @@
+{% set this_page = 'website_widgets' %}
+{% extends 'AdminBundle:Portal:layout.html.twig' %}
+{% block pagetitle %}
+<h1>{{ phrase('admin.portal.portal_settings') }}</h1>
+{% endblock %}
+{% block pagebar %}
+<ul>
+	<li><a href="{{ path('admin_portal') }}">{{ phrase('admin.general.portal') }}</a></li>
+	<li>{{ phrase('admin.portal.website_widgets') }}</li>
+</ul>
+{% endblock %}
+{% block page %}
+
+<div class="content-table template-dir">
+	<table width="100%">
+		<thead>
+		<tr>
+			<th class="single-title" colspan="10">
+				<h1 class="noexpand">{{ phrase('admin.portal.website_widgets_overlay') }}</h1>
+			</th>
+		</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<p>{{ phrase('admin.portal.website_widgets_overlay_explain') }}</p>
+
+					{% set code %}{% include 'AdminBundle:Portal:widget-code-overlay.txt.twig' %}{% endset %}
+					<textarea class="code">{{ code|e }}</textarea>
+					<p>{{ phrase('admin.portal.website_widget_install') }}</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<br />
+
+<div class="content-table template-dir">
+	<table width="100%">
+		<thead>
+		<tr>
+			<th class="single-title" colspan="10">
+				<h1 class="noexpand">{{ phrase('admin.portal.website_widgets_chat') }}</h1>
+			</th>
+		</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<p>{{ phrase('admin.portal.website_widgets_chat_explain') }}</p>
+
+					{% set code %}{% include 'AdminBundle:Portal:widget-code-chat.txt.twig' %}{% endset %}
+					<textarea class="code">{{ code|e }}</textarea>
+					<p>{{ phrase('admin.portal.website_widget_install') }}</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+{% endblock %}

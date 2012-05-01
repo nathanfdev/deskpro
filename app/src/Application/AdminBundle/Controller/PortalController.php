@@ -216,4 +216,13 @@ class PortalController extends AbstractController
 	{
 		return $this->render('AdminBundle:Portal:feedback-settings.html.twig');
 	}
+
+	############################################################################
+	# Widget
+	############################################################################
+
+	public function widgetsAction()
+	{
+		return $this->render('AdminBundle:Portal:website-widgets.html.twig');
+	}
 }

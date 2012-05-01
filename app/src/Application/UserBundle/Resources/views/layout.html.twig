@@ -225,7 +225,6 @@
 {% if not app.getSetting('user.disable_chat_element') and not admin_portal_controls and app.user.hasPerm('chat.use') %}
 	{% include 'UserBundle:Common:chat-loader.html.twig' %}
 	<!-- DeskPRO Widget -->
-	<div id="dp_newticket_form" style="display: none"></div>
 	<script type="text/javascript">
 		var DpOverlayWidget_Options = DpOverlayWidget_Options || {};
 		DpOverlayWidget_Options.staticUrl = '{{ asset_url('') }}';

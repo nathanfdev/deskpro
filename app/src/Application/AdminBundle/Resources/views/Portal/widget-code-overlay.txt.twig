@@ -1,0 +1,14 @@
+<!-- DeskPRO Widget -->
+<script type="text/javascript">
+	var DpOverlayWidget_Options = DpOverlayWidget_Options || {};
+	DpOverlayWidget_Options.staticUrl = '{{ asset_url('') }}';
+	DpOverlayWidget_Options.deskproUrl = '{{ url('user') }}';
+	DpOverlayWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
+	(function() {
+		var scr = document.createElement('script');
+		scr.src = '{{ asset('javascripts/DeskPRO/User/WebsiteWidget/Overlay.js') }}';
+		scr.setAttribute('async', 'true');
+		document.documentElement.firstChild.appendChild(scr);
+	})();
+</script>
+<!-- /DeskPRO Widget -->
