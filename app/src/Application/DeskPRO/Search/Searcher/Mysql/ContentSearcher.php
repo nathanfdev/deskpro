@@ -81,12 +81,6 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 			AND MATCH (content_search.content) AGAINST (?)
 		";
 
-		$count_query = "
-			SELECT COUNT(*)
-			FROM content_search
-			WHERE $where
-		";
-
 		$permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
 		$permfilter->setPersonContext($this->person);
 		$perm_join  = $permfilter->getJoin();
@@ -94,6 +88,13 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		if (!$perm_where) {
 			$perm_where = '1';
 		}
+
+		$count_query = "
+			SELECT COUNT(*)
+			FROM content_search
+			$perm_join
+			WHERE $perm_where AND $where
+		";
 
 		$start = ($page - 1) * $per_page;
 		$select_query = "
