@@ -188,6 +188,17 @@ class AgentAlertNotificationAction extends AbstractAction
 					'log_items'          => $log_items,
 				);
 
+				if (!$vars['performer']) {
+					if ($is_new_ticket) {
+						$vars['performer'] = $ticket->person;
+					} elseif ($is_new_agent_reply || $is_new_user_reply) {
+						$message = $this->tracker->getNewReply();
+						if ($message) {
+							$vars['performer'] = $message->person;
+						}
+					}
+				}
+
 				if ($this->notify_info[$agent->id]) {
 					$vars['notify_info'] = $this->notify_info[$agent->id];
 				}
@@ -197,11 +208,11 @@ class AgentAlertNotificationAction extends AbstractAction
 				$cm->fromArray(array(
 					'channel' => 'agent-notify.tickets',
 					'data' => array(
-						'type' => 'tickets',
+						'type'       => 'tickets',
 						'ticket_id'  => $ticket->id,
-						'row' => $tpl_line
+						'row'        => $tpl_line
 					),
-					'for_person' => $agent,
+					'for_person'        => $agent,
 					'created_by_client' => 'sys'
 				));
 				$em->persist($cm);

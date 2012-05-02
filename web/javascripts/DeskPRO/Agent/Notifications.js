@@ -52,7 +52,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		$('<em />').addClass('dismiss').appendTo(row);
 		$('<time />').addClass('timeago').appendTo(row);
-		$('<a />').text(message).data('route', route || '').appendTo(row);
+		$('<a />').text(message).data('route', route || '').appendTo(row).data('route-notabreload', 1).attr('data-route-notabreload', 1);
 
 		this.addRow(row);
 	},

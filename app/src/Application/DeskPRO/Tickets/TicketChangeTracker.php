@@ -310,6 +310,38 @@ class TicketChangeTracker extends ChangeTracker
 		return false;
 	}
 
+	/**
+	 * Check if theres a new reply added
+	 *
+	 * @return bool
+	 */
+	public function hasNewReply()
+	{
+		if ($this->getChangedProperty('messages')) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Get the new reply added
+	 *
+	 * @return mixed
+	 */
+	public function getNewReply()
+	{
+		$messages = $this->getChangedProperty('messages');
+		if ($messages) {
+			$message = array_shift($messages);
+			$message = $message['new'];
+			return $message;
+		}
+
+		return false;
+	}
+
 
 	/**
 	 * Get the ticket
