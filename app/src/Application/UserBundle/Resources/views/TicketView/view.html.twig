@@ -23,7 +23,7 @@
 		<h3 style="margin-bottom: 0">{{ ticket.subject }}</h3>
 		<ul class="dp-post-info">
 			<li class="dp-id"><i class="dp-icon-bookmark"></i> {{ phrase('user.general.ticket_ref') }}: {{ ticket.public_id }}</li>
-			<li class="dp-date"><i class="dp-icon-calendar"></i> {{ ticket.date_created|date('full') }}</li>
+			<li class="dp-date"><i class="dp-icon-calendar"></i> {{ ticket.date_created|date('fulltime') }}</li>
 		</ul>
 	</header>
 	<article class="dp-ticket-info">

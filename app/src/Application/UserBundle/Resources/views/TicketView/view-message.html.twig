@@ -4,7 +4,7 @@
 		<div class="byline" style="margin-left: 48px;">
 			<h4>{{ message.person.display_name }}</h4>
 			<ul class="dp-post-info">
-				<li class="dp-date"><i class="dp-icon-calendar"></i> <span class="timeago" title="{{ message.date_created|date('c') }}">{{ message.date_created|date('fulltime') }}</span></li>
+				<li class="dp-date"><i class="dp-icon-calendar"></i> {{ message.date_created|date('fulltime') }}</li>
 			</ul>
 		</div>
 	</header>
