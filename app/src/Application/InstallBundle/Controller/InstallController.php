@@ -384,6 +384,13 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			exit;
 		}
 
+		$check = $this->getDb()->fetchColumn("SHOW TABLES LIKE 'install_data'");
+		if (!$check) {
+			exit;
+		}
+
+		$this->getLogger()->log('Install::doCreateTablesAction', 'debug');
+
 		$start = microtime(true);
 
 		if (!defined('DP_BUILD_TIME')) {
@@ -453,6 +460,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		flush();
 
 		echo '</body></html>';
+
+		$this->getLogger()->log(sprintf('Install::doCreateTablesAction done in %.4f', microtime(true) - $start), 'debug');
 
 		return new \Symfony\Component\HttpFoundation\Response();
 	}

@@ -199,7 +199,7 @@ $(document).ready(function() {
 		<strong>Done!</strong> You're ready to go to the next step.
 
 		<div class="alert-actions">
-			<a class="btn" href="<?php echo $view['router']->generate('install_create_tables') ?>">Go to step 4: Install database</a>
+			<a class="btn" href="<?php echo $view['router']->generate('install_create_tables') ?>" onclick="this.onclick=function(){return false;};">Go to step 4: Install database</a>
 		</div>
 	</div>
 </div>

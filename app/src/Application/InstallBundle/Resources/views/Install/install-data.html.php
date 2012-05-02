@@ -89,7 +89,7 @@ $(document).ready(function() {
 			</div>
 		</div>
 		<div class="actions">
-			<input class="btn primary" type="submit" value="Create Admin and Finish Installation &rarr;" />
+			<input class="btn primary" type="submit" value="Create Admin and Finish Installation &rarr;" onclick="this.onclick=function(){return false;};" />
 		</div>
 	</fieldset>
 </form>

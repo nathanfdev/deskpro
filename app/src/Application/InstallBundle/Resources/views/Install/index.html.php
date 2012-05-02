@@ -52,7 +52,7 @@
 		<?php endif ?>
 
 		<div class="alert-actions">
-			<a class="btn" href="<?php echo $view['router']->generate('install_verify_files') ?>">Go to step 3: Verify file integrity</a>
+			<a class="btn" href="<?php echo $view['router']->generate('install_verify_files') ?>" onclick="this.onclick=function(){return false;};">Go to step 3: Verify file integrity</a>
 		</div>
 	</div>
 <?php endif ?>

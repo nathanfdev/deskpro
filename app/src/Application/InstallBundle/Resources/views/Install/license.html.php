@@ -19,15 +19,15 @@ Terms and Definitions
 
 An "instance" of the software is a unique installation of the software on a
 system capable of running it, whether used for production purposes or for
-testing. 
+testing.
 An "agent" is a unique account installed in an instance of
-DeskPRO, used by a member of your staff to provide support assistance 
-to your users. 
-An "administrator" or "admin" is an agent with additional administration 
-privileges. 
-A "user" is a unique account installed in an instance of DeskPRO, used 
-by one or more persons to obtain support from your staff. 
-A "ticket" is a single support request tracked in the software. These 
+DeskPRO, used by a member of your staff to provide support assistance
+to your users.
+An "administrator" or "admin" is an agent with additional administration
+privileges.
+A "user" is a unique account installed in an instance of DeskPRO, used
+by one or more persons to obtain support from your staff.
+A "ticket" is a single support request tracked in the software. These
 are normally submitted by your users but can also be created by your agents.
 
 Right To Run
@@ -166,7 +166,7 @@ This Agreement is governed by the laws of England and Wales.
 	<label style="float: none; width: 100%;"><input type="checkbox" id="accept_check" tabindex="1" /> I agree to the above license agreement</label>
 
 	<div class="alert-actions">
-		<a class="btn disabled" tabindex="2" id="next_btn" href="<?php echo $view['router']->generate('install_checks') ?>">Go to step 2: Perform server checks</a>
+		<a class="btn disabled" tabindex="2" id="next_btn" href="<?php echo $view['router']->generate('install_checks') ?>" onclick="this.onclick=function(){return false;};">Go to step 2: Perform server checks</a>
 	</div>
 </div>
 <script type="text/javascript">
