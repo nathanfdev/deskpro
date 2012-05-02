@@ -38,7 +38,9 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 
 			$('#section_done').find('em').hide();
 		} else {
-			$('#section_done').find('label').text((total_count - done_count)+'');
+			var remaining = total_count - done_count;
+			$('#section_done').find('label').text(remaining+'');
+			$('#section_done').find('.steps').text(remaining>1?'steps':'step');
 		}
 	},
 
