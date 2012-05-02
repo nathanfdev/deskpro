@@ -180,12 +180,6 @@
 		</ul>
 		<div class="sep">-</div>
 		<ul>
-			<li data-menu="#users_menu">
-				<a><span class="users">{{ phrase('agent.general.users') }}</span></a>
-			</li>
-		</ul>
-		<div class="sep">-</div>
-		<ul>
 			<li data-menu="#portal_menu">
 				<a href="{{ path('admin_portal') }}"><span class="publish">{{ phrase('admin.general.portal') }}</span></a>
 			</li>
@@ -204,6 +198,9 @@
 			<ul>
 				<li data-menu="#tickets_menu">
 					<a><span class="tickets">{{ phrase('agent.general.tickets') }}</span></a>
+				</li>
+				<li data-menu="#users_menu">
+					<a><span class="users">{{ phrase('admin.menu.crm') }}</span></a>
 				</li>
 				<li {% if app.getSetting('core.apps_kb') %}data-menu="#kb_menu"{% else %}class="off"{% endif %}>
 					<a {% if not app.getSetting('core.apps_kb') %}href="{{ path('admin_apps') }}"{% endif %}><span class="kb">{{ phrase('agent.general.kb') }}</span></a>
