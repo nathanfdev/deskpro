@@ -47,6 +47,7 @@
     'admin.menu.settings_and_features'        => 'Settings &amp; Features',
     'admin.menu.user_groups'                  => 'User Groups',
     'admin.menu.view_logged_errors'           => 'View logged errors',
+    'admin.menu.view_logged_gateway_errors'   => 'View errors that were rejected or produced errors',
     'admin.menu.view_mysql_installation'      => 'View information about your MySQL installation',
     'admin.menu.view_mysql_status'            => 'View information about the status of your MySQL installation',
     'admin.menu.view_php_installation'        => 'View information about your PHP installation',
