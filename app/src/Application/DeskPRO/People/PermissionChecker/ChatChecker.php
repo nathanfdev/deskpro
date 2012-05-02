@@ -57,6 +57,11 @@ class ChatChecker extends AbstractChecker
 			return false;
 		}
 
+		// Cant be an agent chat, obviously
+		if ($convo->is_agent) {
+			return false;
+		}
+
 		#------------------------------
 		# If the user is part of the chat
 		# then we know right away they can view

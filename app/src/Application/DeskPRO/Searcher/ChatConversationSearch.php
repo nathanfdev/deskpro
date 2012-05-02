@@ -142,8 +142,10 @@ class ChatConversationSearch extends SearcherAbstract
 			$parts['where'][] = 'agent_id = ' . $this->person['id'];
 		}
 
+		$sql .= "WHERE chat_conversations.is_agent = 0 ";
+
 		if ($parts['wheres']) {
-			$sql .= "WHERE ";
+			$sql .= " AND ";
 			$sql .= implode(" AND ", $parts['wheres']);
 		}
 
