@@ -421,7 +421,8 @@ class TicketsStep extends AbstractDeskpro3Step
 				}
 			}
 
-			$insert_message['message'] = trim($insert_message['message']);
+			$insert_message['message'] = trim(\Orb\Util\Strings::utf8_bad_strip($insert_message['message']));
+			$insert_message['message'] = nl2br(htmlspecialchars($insert_message['message'], \ENT_QUOTES));
 
 			$search_content[] = $message_info['message'];
 			$insert_message['message'] = nl2br(htmlspecialchars($message_info['message'], \ENT_QUOTES, 'UTF-8'));
@@ -459,6 +460,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		if ($first_charset) {
 			$subject = $ticket_info['subject'];
 			$subject = \Orb\Util\Strings::convertToUtf8($subject, $first_charset);
+			$subject = trim(\Orb\Util\Strings::utf8_bad_strip($subject));
 			if ($subject) {
 				$subject = \Orb\Util\Strings::htmlEntityDecodeUtf8($subject);
 				$up['subject'] = $subject;
