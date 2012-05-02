@@ -36,6 +36,8 @@ namespace Application\DeskPRO\Mail;
 
 use Application\DeskPRO\App;
 
+use Orb\Log\Logger;
+use Orb\Log\Loggable;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -45,20 +47,35 @@ require_once(DP_ROOT . '/vendor/swiftmailer/lib/swift_required.php');
  * This transport takes care of initializing any other transports based on settings
  * etc, and also queuing.
  */
-class Mailer extends \Swift_Mailer
+class Mailer extends \Swift_Mailer implements Loggable
 {
 	/**
 	 * @var \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface
 	 */
 	protected $templating;
 
-	public function __construct(\Swift_Transport $transport, \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating)
+	/**
+	 * @var \Orb\Log\Logger
+	 */
+	protected $logger;
+
+	public function __construct(\Swift_Transport $transport, \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating, Logger $logger = null)
 	{
+		if ($logger) {
+			$this->setLogger($logger);
+		}
+
 		$this->templating = $templating;
+
+		$this->getLogger()->logInfo(sprintf("Setting transport: %s", get_class($transport)));
+		if ($transport instanceof \Orb\Log\Loggable) {
+			$transport->setLogger($this->getLogger());
+		}
 
 		parent::__construct($transport);
 
 		if (App::getConfig('debug.mail.force_to')) {
+			$this->getLogger()->logInfo(sprintf("debug.mail.force_to on: %s", App::getConfig('debug.mail.force_to')));
 			$this->registerPlugin(new \Orb\Mail\Plugins\ForceToAddress(App::getConfig('debug.mail.force_to')));
 		}
 
@@ -73,12 +90,16 @@ class Mailer extends \Swift_Mailer
 				@mkdir($filepath, 0777);
 			}
 
+			$this->getLogger()->logInfo(sprintf("debug.mail.save_to_file on: %s", $filepath));
+
 			$this->registerPlugin(new \Orb\Mail\Plugins\DebugToFile($filepath, App::getConfig('debug.mail.disable_send', false)));
 
 		} else if (App::getConfig('debug.mail.disable_send')) {
 			// As an elseif becaue the DebugToFile can also disable send
 			// If CancelSend is registered first, then the DebugToFile wont fire either
 			// and we'll just have nothing
+
+			$this->getLogger()->logInfo("debug.mail.disable_send");
 
 			$this->registerPlugin(new \Orb\Mail\Plugins\CancelSend());
 		}
@@ -97,17 +118,55 @@ class Mailer extends \Swift_Mailer
 				}
 			}
 
+			$this->getLogger()->logInfo(sprintf("Default from: %s <%s>", $name, $default));
+
 			if ($default) {
 				$this->registerPlugin(new \Orb\Mail\Plugins\DefaultFromAddress($default, $name));
 			}
 		} catch (\Exception $e) {}
 	}
 
+
+	/**
+	 * Get the logger
+	 *
+	 * @return \Orb\Log\Logger
+	 */
+	public function getLogger()
+	{
+		if (!$this->logger) {
+			$this->logger = new Logger();
+		}
+
+		return $this->logger;
+	}
+
+
+	/**
+	 * Set the logger used
+	 *
+	 * @param \Orb\Log\Logger $logger
+	 */
+	public function setLogger(Logger $logger)
+	{
+		$this->logger = $logger;
+	}
+
+
+	/**
+	 * @static
+	 * @param \Swift_Transport $transport
+	 * @return \Application\DeskPRO\Mail\Mailer
+	 */
 	public static function newInstance(\Swift_Transport $transport)
 	{
 		$templating = App::get('templating');
-		return new self($transport, $templating);
+		$inst = self($transport, $templating);
+		$inst->setLogger(App::getSystemService('mail_logger'));
+
+		return $inst;
 	}
+
 
 	/**
 	 * @return \Application\DeskPRO\Mail\Message

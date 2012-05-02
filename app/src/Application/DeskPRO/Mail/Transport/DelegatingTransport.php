@@ -41,12 +41,14 @@ use Orb\Mail\Transport\QueueTransport;
 use Orb\Mail\Message;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Orb\Log\Logger;
+use Orb\Log\Loggable;
 
 /**
  * This transport takes care of initializing any other transports based on settings
  * etc, and also queuing.
  */
-class DelegatingTransport implements \Swift_Transport
+class DelegatingTransport implements \Swift_Transport, Loggable
 {
 	/**
 	 * @var bool
@@ -67,6 +69,11 @@ class DelegatingTransport implements \Swift_Transport
 	 * @var Orb\Mail\Transport\QueueTransport
 	 */
 	protected $queue_transport = null;
+
+	/**
+	 * @var \Orb\Log\Logger
+	 */
+	protected $logger;
 
 	/**
 	 * @param \Swift_Events_EventDispatcher $event_dispatcher
@@ -132,23 +139,32 @@ class DelegatingTransport implements \Swift_Transport
 	public function send(\Swift_Mime_Message $message, &$failedRecipients = null)
 	{
 		if ($message instanceof Message) {
+			$time = microtime(true);
 			$message->prepare();
+			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Preparing message took %.4f seconds", microtime(true)-$time));
 		}
 
 		if ($evt = $this->event_dispatcher->createSendEvent($this, $message)) {
 			$this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
 			if ($evt->bubbleCancelled()) {
+				$this->getLogger()->logInfo("[DelegatingTransport] beforeSendPerformed cancelled message");
 				return 0;
 			}
+		}
+
+		if ($message->isQueueHinted()) {
+			$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Message is queue hinted"));
 		}
 
 		$queue_pref = App::getSetting('core.use_mail_queue');
 		$use_queue = false;
 		if ($queue_pref == 'always' OR ($queue_pref == 'smart' AND $message->isQueueHinted())) {
+			$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Message is set for queue"));
 			$use_queue = true;
 		}
 
-		if ($use_queue && $this->isQueueEnabled()) {
+		if ($use_queue && !$this->isQueueEnabled()) {
+			$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Queueing is disabled"));
 			$use_queue = false;
 		}
 
@@ -158,11 +174,13 @@ class DelegatingTransport implements \Swift_Transport
 		}
 
 		if ($is_retrying && $use_queue) {
+			$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Message is retrying (no queue will happen)"));
 			$use_queue = false;
 		}
 
 		$bcc_list = App::getSetting('core.bcc_all_emails');
 		if ($bcc_list) {
+			$this->getLogger()->logInfo(sprintf("[DelegatingTransport] core.bcc_all_emails on: ", implode(',', $bcc_list)));
 			foreach (explode(',',$bcc_list) as $bcc_e) {
 				$message->addBcc(trim($bcc_e));
 			}
@@ -172,6 +190,9 @@ class DelegatingTransport implements \Swift_Transport
 
 		if ($message->getSpecificTransport()) {
 			$tr = $message->getSpecificTransport();
+
+			$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Specific transport requested: %s", get_class($tr)));
+
 			if (!$tr->isStarted()) $tr->start();
 
 			$success = $tr->send($message, $failedRecipients);
@@ -179,32 +200,54 @@ class DelegatingTransport implements \Swift_Transport
 			$tr= $this->getQueueTransport();
 			if (!$tr->isStarted()) $tr->start();
 
+			$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Sending to queue transport: %s", get_class($tr)));
+
 			$success = $tr->send($message);
 		} else {
 			try {
 				$tr = $this->getTransportForMessage($message);
 				if (!$tr->isStarted()) $tr->start();
 
+				$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Using detected transport: %s", get_class($tr)));
+
 				$success = $tr->send($message, $failedRecipients);
 			} catch (\Swift_TransportException $e) {
-				$backup_tr = $this->getTransportForMessage($message, true);
+				$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Send failed: %s %s %s", $e->getCode(), get_class($e), $e->getMessage()));
+				$success = false;
+			}
 
-				if ($backup_tr) {
-					if (!$backup_tr->isStarted()) $backup_tr->start();
-					$success = $backup_tr->send($message, $failedRecipients);
+			if (!$success) {
+				try {
+					$backup_tr = $this->getTransportForMessage($message, true);
+
+					if ($backup_tr) {
+
+						$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Trying backup transport: %s", get_class($backup_tr)));
+
+						if (!$backup_tr->isStarted()) $backup_tr->start();
+						$success = $backup_tr->send($message, $failedRecipients);
+					}
+				} catch (\Swift_TransportException $e) {
+					$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Backup send failed: %s %s %s", $e->getCode(), get_class($e), $e->getMessage()));
+					$success = false;
 				}
 			}
 
 			if (!$success) {
+				$this->getLogger()->logInfo("[DelegatingTransport] Send failed");
 				if (!$is_retrying && $this->isQueueEnabled()) {
+					$this->getLogger()->logInfo("[DelegatingTransport] Saving to queue to retry later");
 					$success = $this->getQueueTransport()->send($message);
 				} else {
 					$success = false;
 				}
 			} else {
+				$this->getLogger()->logInfo("[DelegatingTransport] Send success");
+
 				// Save a logged copy too
 				$queue_proc = $this->getQueueTransport()->getQueueProcessor();
 				if (!$is_retrying && $queue_proc instanceof DatabaseQueueProcessor) {
+					$this->getLogger()->logInfo("[DelegatingTransport] Saving logged message");
 					$queue_proc->addLoggedMessage($message);
 				}
 			}
@@ -272,5 +315,30 @@ class DelegatingTransport implements \Swift_Transport
 	public function stop()
 	{
 
+	}
+
+	/**
+	 * Get the logger
+	 *
+	 * @return \Orb\Log\Logger
+	 */
+	public function getLogger()
+	{
+		if (!$this->logger) {
+			$this->logger = new Logger();
+		}
+
+		return $this->logger;
+	}
+
+
+	/**
+	 * Set the logger used
+	 *
+	 * @param \Orb\Log\Logger $logger
+	 */
+	public function setLogger(Logger $logger)
+	{
+		$this->logger = $logger;
 	}
 }

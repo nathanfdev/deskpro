@@ -191,6 +191,101 @@ class Logger
 	}
 
 
+	/**
+	 * Shortcut to log a DEBUG message.
+	 *
+	 * @param $message
+	 * @param array $info
+	 */
+	public function logDebug($message, array $info = array())
+	{
+		$this->log($message, self::DEBUG, $info);
+	}
+
+
+	/**
+	 * Shortcut to log an INFO message.
+	 *
+	 * @param $message
+	 * @param array $info
+	 */
+	public function logInfo($message, array $info = array())
+	{
+		$this->log($message, self::INFO, $info);
+	}
+
+
+	/**
+	 * Shortcut to log an ERROR message.
+	 *
+	 * @param $message
+	 * @param array $info
+	 */
+	public function logError($message, array $info = array())
+	{
+		$this->log($message, self::ERR, $info);
+	}
+
+
+	/**
+	 * Shortcut to log an EMERG message.
+	 *
+	 * @param $message
+	 * @param array $info
+	 */
+	public function logEmergency($message, array $info = array())
+	{
+		$this->log($message, self::EMERG, $info);
+	}
+
+
+	/**
+	 * Shortcut to log a CRIT message.
+	 *
+	 * @param $message
+	 * @param array $info
+	 */
+	public function logCritical($message, array $info = array())
+	{
+		$this->log($message, self::CRIT, $info);
+	}
+
+
+	/**
+	 * Shortcut to log an ALERT message.
+	 *
+	 * @param $message
+	 * @param array $info
+	 */
+	public function logAlert($message, array $info = array())
+	{
+		$this->log($message, self::ALERT, $info);
+	}
+
+
+	/**
+	 * Shortcut to log an WARN message.
+	 *
+	 * @param $message
+	 * @param array $info
+	 */
+	public function logWarn($message, array $info = array())
+	{
+		$this->log($message, self::WARN, $info);
+	}
+
+
+	/**
+	 * Shortcut to log an NOTICE message.
+	 *
+	 * @param $message
+	 * @param array $info
+	 */
+	public function logNotice($message, array $info = array())
+	{
+		$this->log($message, self::NOTICE, $info);
+	}
+
 
 	/**
 	 * @param array $info

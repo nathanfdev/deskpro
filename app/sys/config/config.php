@@ -72,12 +72,21 @@ $definition->setArguments(array(
 ));
 $container->setDefinition('session.storage', $definition);
 
+// deskpro.mail_logger
+$definition = new Definition();
+$definition->setClass('Orb\\Log\\Logger');
+$definition->setFactoryService(new Reference('service_container'));
+$definition->setFactoryMethod('getSystemService');
+$definition->setArguments(array('mail_logger'));
+$container->setDefinition('deskpro.mail_logger', $definition);
+
 // swiftmailer.mailer
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Mail\\Mailer');
 $definition->setArguments(array(
 	new Reference('swiftmailer.transport'),
-	new Reference('templating')
+	new Reference('templating'),
+	new Reference('deskpro.mail_logger')
 ));
 $container->setDefinition('swiftmailer.mailer', $definition);
 

@@ -256,12 +256,15 @@ class AgentNotificationAction extends AbstractAction
 			$message->setTemplate($tpl, $vars);
 			$message->setTo($agent->getPrimaryEmailAddress(), $agent->getDisplayName());
 			$message->getHeaders()->get('Message-ID')->setId($tac->getUniqueEmailMessageId());
+
+			$this->tracker->logMessage("[AgentNotificationAction] From address: " . $this->getFromAddress($ticket));
+
 			$message->setFrom($this->getFromAddress($ticket));
 
 			$email_time = microtime(true);
 			App::getMailer()->send($message);
 
-			$this->tracker->logMessage("[AgentNotificationAction] Email: " . $agent_id . ' ' . $agent->getPrimaryEmailAddress());
+			$this->tracker->logMessage("[AgentNotificationAction] Email to " . $agent_id . ' ' . $agent->getPrimaryEmailAddress() . " with template $tpl (took " . sprintf("%.4f", microtime(true)-$email_time) . " s)");
 
 			$change_info['emailed'][] = $agent;
 		}
