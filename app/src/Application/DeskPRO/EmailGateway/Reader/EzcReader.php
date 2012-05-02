@@ -198,7 +198,7 @@ class EzcReader extends AbstractReader
 			if ($part->subType == 'plain') {
 				if (!$part->originalCharset) $part->originalCharset = 'us-ascii';
 
-				$body = new Item\BodyHtml();
+				$body = new Item\BodyText();
 				$body->body = $part->text;
 				$body->body_utf8 = Strings::convertToUtf8($part->text, $part->originalCharset);
 				$body->original_charset = $part->originalCharset;
@@ -208,7 +208,7 @@ class EzcReader extends AbstractReader
 		}
 
 		// Default to a blank body
-		$body = new Item\BodyHtml();
+		$body = new Item\BodyText();
 		$body->body = '';
 		$body->original_charset = 'UTF-8';
 		return $body;

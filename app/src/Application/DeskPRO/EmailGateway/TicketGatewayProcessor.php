@@ -273,7 +273,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
 			}
 
-			$email_info['body'] = nl2br(htmlspecialchars($txt, ENT_QUOTES, 'UTF-8'));
+			$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
 			$email_info['body_is_html'] = false;
 		}
 
@@ -460,10 +460,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
 			}
 
-			$email_info['body'] = nl2br(htmlspecialchars($txt, ENT_QUOTES, 'UTF-8'));
+			$email_info['body'] = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
 			$email_info['body_is_html'] = false;
-
-			$this->logMessage('[TicketGatewayProcessor] Using HTML email with stripped tags');
 		}
 
 		if ($email_info['body_is_html'] && $this->cleaner && $this->cleaner->supportsType('html_email')) {
