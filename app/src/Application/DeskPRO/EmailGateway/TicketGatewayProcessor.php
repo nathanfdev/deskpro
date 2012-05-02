@@ -684,8 +684,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			return null;
 		}
 
-		if (is_array($this->source_info)) {
-			return implode("\n", $this->source_info);
+		if (!is_array($this->source_info)) {
+			$this->source_info = array($this->source_info);
 		}
 		return $this->source_info;
 	}
