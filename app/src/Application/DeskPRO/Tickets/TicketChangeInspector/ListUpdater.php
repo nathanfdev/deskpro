@@ -119,7 +119,7 @@ class ListUpdater
 						'data' => serialize(array(
 							'ticket_id'  => $ticket_id,
 							'filter_id'  => $filter['id'],
-							'op' => 'add'
+							'op' => 'del'
 						)),
 						'for_person_id' => $agent->getId(),
 						'created_by_client' => 'sys',
