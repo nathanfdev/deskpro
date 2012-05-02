@@ -389,7 +389,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			exit;
 		}
 
-		$this->getLogger()->log('Install::doCreateTablesAction', 'debug');
+		$this->getLogger()->log('Install::doCreateTablesAction batch ' . $batch, 'debug');
 
 		$start = microtime(true);
 
@@ -436,6 +436,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 				$install_logger->log('[InstallTables] Failed: ' . $info['exception']->getCode() . ' ' . $info['exception']->getMessage(), 'err');
 				$install_logger->log('[InstallTables] Failed Query: ' . $info['sql'], 'debug');
 				$info['error'] = $info['exception']->getMessage();
+			} else {
+				$install_logger->log('[InstallTables] Success Query: ' . $info['sql'], 'debug');
 			}
 			unset($info['message_line']);
 			unset($info['datetime']);
