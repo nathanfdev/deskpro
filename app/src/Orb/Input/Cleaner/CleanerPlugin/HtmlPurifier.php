@@ -72,6 +72,16 @@ class HtmlPurifier implements CleanerPlugin
 		$value = $purifier->purify($value, $config);
 		$value = Strings::trimHtml($value);
 
+		if ($type == 'html_email') {
+			$value = str_replace(array('<o:p>', '</o:p>'), array('<p>', '</p>'), $value);
+			$value = preg_replace('#<span>(\s|&nbsp;)*</span>#u', '', $value);
+			$value = preg_replace('#\s*<p>(\s|&nbsp;)*</p>\s*#u', '', $value);
+			$value = str_replace('<p>', '', $value);
+			$value = str_replace('</p>', '<__dp_old_p__>', $value);
+			$value = str_replace('<__dp_old_p__><__dp_old_p__>', '<br /><br />', $value);
+			$value = str_replace('<__dp_old_p__>', '<br /><br />', $value);
+		}
+
 		return $value;
 	}
 
@@ -101,34 +111,37 @@ class HtmlPurifier implements CleanerPlugin
 				break;
 
 			case 'html_email':
-				$config->set('HTML.Allowed', 'em,strong,a[href],ul,li,dd,dt,dl,ol,p,span,br,hr,table,thead,tbody,tfoot,tr,td,th,pre,code,div,blockquote');
+				$config->set('HTML.AllowedElements', 'em,strong,a,ul,li,dd,dt,dl,ol,p,span,br,hr,table,thead,tbody,tfoot,tr,td,th,pre,code,div,blockquote');
+				$config->set('HTML.AllowedAttributes', 'a.href,*.style');
 				$config->set('AutoFormat.Linkify', true);
 				$config->set('URI.DisableExternalResources', true);
 				$config->set('AutoFormat.RemoveEmpty', false);
 				$config->set('CSS.AllowedFonts', array(
-					'arial',
-					'comic sans ms',
-					'courier',
-					'courier new',
-					'geneva',
-					'georgia',
-					'helvetica',
-					'helvetica neue',
-					'impact',
-					'lucida grande',
-					'marker felt',
-					'microsoft sans serif',
-					'monaco',
+					'Arial',
+					'Comic Sans MS',
+					'Courier',
+					'Courier New',
+					'Geneva',
+					'Georgia',
+					'Helvetica',
+					'Helvetica Neue',
+					'Impact',
+					'Lucida Grande',
+					'Marker Felt',
+					'Microsoft Sans Serif',
+					'<onaco',
 					'monospace',
 					'monospaced',
-					'palatino',
-					'papyrus',
+					'Palatino',
+					'Papyrus',
 					'sans-serif',
 					'serif',
-					'tahoma',
-					'times',
-					'trebuchet ms',
-					'verdana',
+					'Tahoma',
+					'Times',
+					'Times New Roman',
+					'Trebuchet MS',
+					'Verdana',
+					'Wingdings',
 				));
 				$config->set('CSS.AllowedProperties', array('font-family', 'font-weight', 'font-style', 'font-size', 'color'));
 				$config->set('HTML.Doctype', 'XHTML 1.0 Transitional');

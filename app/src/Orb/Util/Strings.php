@@ -1074,12 +1074,12 @@ class Strings
 		// Handle HTML whitespace
 		do {
 			$old_string = $string;
-			$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#im', '', $string);
-			$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#im', '', $string);
+			$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#imu', '', $string);
+			$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#imu', '', $string);
 
 			// Div wrappers around whitespce
-			$string = preg_replace('#^<div\s*>\s*(<br>|<br />|<br/>|<p>\s*</p>)?\s*</div>#im', '', $string);
-			$string = preg_replace('#<div\s*>\s*(<br>|<br />|<br/>|<p>\s*</p>)?\s*</div>$#im', '', $string);
+			$string = preg_replace('#^<div\s*>\s*(<br>|<br />|<br/>|<p>\s*</p>)?\s*</div>#imu', '', $string);
+			$string = preg_replace('#<div\s*>\s*(<br>|<br />|<br/>|<p>\s*</p>)?\s*</div>$#imu', '', $string);
 
 		} while ($string != $old_string);
 
