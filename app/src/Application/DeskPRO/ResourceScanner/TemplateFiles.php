@@ -98,6 +98,7 @@ class TemplateFiles
 
 				$filepath = $file->getRealPath();
 				$filepath = str_replace('\\', '/', $filepath);
+				$dir = str_replace('\\', '/', $dir);
 
 				$tplname = str_replace($dir . '/', ':', $filepath);
 				$tplname = str_replace('/', ':', $tplname);
