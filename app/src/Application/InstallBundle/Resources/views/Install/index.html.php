@@ -11,6 +11,7 @@
 		<strong>There is a newer version of DeskPRO available</strong><br />
 		The version you are trying to install is version <var><?php echo $this_build ?></var>. A newer version, version <var><?php echo $new_build ?></var>, is available.
 		<div class="alert-actions" style="margin-top: 10px;">
+			<?php $new_download = 'http://www.deskpro.com/downloads/DeskPRO.zip'; ?>
 			<a class="btn primary" href="<?php echo $new_download ?>">Click here to download the new version now</a>
 			<br /><div style="font-size: 10px;">Download URL: <?php echo $new_download ?></div>
 		</div>
