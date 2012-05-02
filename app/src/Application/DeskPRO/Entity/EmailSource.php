@@ -201,7 +201,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'headers', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'headers', ));
 		$metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
 		$metadata->mapField(array( 'fieldName' => 'error_code', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'error_code', ));
-		$metadata->mapField(array( 'fieldName' => 'source_info', 'type' => 'string', 'length' => 10000, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'source_info', ));
+		$metadata->mapField(array( 'fieldName' => 'source_info', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'source_info', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
