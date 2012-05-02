@@ -292,4 +292,8 @@
 	 */
 	'core.apps_downloads' => 1,
 
+	/**
+	 * Max email size to read from gateways
+	 */
+	'core.gateway_max_email' => 20971520,
 );

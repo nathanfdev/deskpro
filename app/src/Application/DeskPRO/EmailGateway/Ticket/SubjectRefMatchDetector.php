@@ -78,7 +78,7 @@ class SubjectRefMatchDetector implements TicketDetectorInterface
 				continue;
 			}
 
-			if ($p = $ticket->findUserByEmail($from)) {
+			if (!$ticket->isArchived() && $p = $ticket->findUserByEmail($from)) {
 				$this->_found_person = $p;
 				return $ticket;
 			}

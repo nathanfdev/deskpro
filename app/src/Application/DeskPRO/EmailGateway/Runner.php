@@ -34,9 +34,12 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\EmailSource;
+use Application\DeskPRO\Entity\EmailGateway;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
+use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Util\Strings;
 
 /**
  * This runs collection and processsing in gateways
@@ -110,7 +113,7 @@ class Runner
 	 * @param \Application\DeskPRO\EntityRepository\EmailGateway $gateway
 	 * @throws \Exception
 	 */
-	public function executeGateway(\Application\DeskPRO\Entity\EmailGateway $gateway)
+	public function executeGateway(EmailGateway $gateway)
 	{
 		$this->logger->log("Start processing {$gateway['title']} {$gateway['gateway_type']}:{$gateway['connection_type']}", 'info');
 		$start_time = microtime(true);
@@ -118,10 +121,18 @@ class Runner
 		/** @var $fetcher \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher */
 		$fetcher = $gateway->getFetcher();
 		$fetcher->setLogger($this->logger);
+		$fetcher->setMaxSize(App::getSetting('core.gateway_max_email'));
 
 		while ($source = $fetcher->readNext()) {
 
 			$this->logger->log("[Gateway {$gateway['id']}] Read source ID {$source['id']}", 'debug');
+
+			// Already marked as an error (e.g., message too big) so we dont
+			// process it through the gateway handlers
+			if ($source->status == 'error') {
+				$this->logger->log(sprintf("Source marked as error :: %s", $source->error_code), 'debug');
+				continue;
+			}
 
 			$reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
 			$reader->setRawSource($source['raw_source']);
@@ -147,18 +158,30 @@ class Runner
 
 				$created_obj = null;
 				if ($pre_processor->isValid()) {
-					/** @var $proc \Application\DeskPRO\EmailGateway\AbstractGatewayProcessor */
-					$proc = $gateway->getNewProcessor($reader, array('logger' => $this->logger));
-					$created_obj = $proc->run();
 
-					if ($proc->isValid()) {
-						$source['status'] = 'complete';
-					} else {
+					try {
+						$proc = $gateway->getNewProcessor($reader, array('logger' => $this->logger));
+						$created_obj = $proc->run();
+
+						if ($proc->isValid()) {
+							$source['status'] = 'complete';
+						} else {
+							$source['status'] = 'error';
+							$source['error_code'] = $proc->getErrorCode();
+						}
+
+						$source['source_info'] = $proc->getSourceInfo();
+					} catch (\Exception $e) {
+
+						$e->_dp_sn = Strings::random(8, Strings::CHARS_KEY);
+
+						$errinfo = KernelErrorHandler::getExceptionInfo($e);
+						KernelErrorHandler::logErrorInfo($e);
+
 						$source['status'] = 'error';
-						$source['error_code'] = $proc->getErrorCode();
+						$source['error_code'] = EmailSource::ERR_SERVER_ERROR;
+						$source['source_info'] = $errinfo;
 					}
-
-					$source['source_info'] = $proc->getSourceInfo();
 				} else {
 					$source['status'] = 'error';
 					$source['error_code'] = $pre_processor->getErrorCode();

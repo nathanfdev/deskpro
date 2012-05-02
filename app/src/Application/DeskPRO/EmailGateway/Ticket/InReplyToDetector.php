@@ -97,9 +97,11 @@ class InReplyToDetector implements TicketDetectorInterface
 				if (!$tac) continue;
 
 				$ticket = $tac->ticket;
+				if (!$ticket->isArchived()) {
+					$this->_found_person = $tac->person;
+					return $ticket;
+				}
 
-				$this->_found_person = $tac->person;
-				return $ticket;
 			}
 		}
 
@@ -113,7 +115,7 @@ class InReplyToDetector implements TicketDetectorInterface
 			foreach ($matches as $m) {
 				$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);
 
-				if ($ticket) {
+				if ($ticket && !$ticket->isArchived()) {
 
 					$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
 

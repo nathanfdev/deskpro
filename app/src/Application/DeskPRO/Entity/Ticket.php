@@ -1281,11 +1281,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getIsArchived()
 	{
-		if ($this->status == 'closed' OR $this->status =='resolved') {
-			return true;
-		}
-
-		return false;
+		return $this->isArchived();
 	}
 
 
@@ -1391,14 +1387,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * Is the ticket active? An active ticket is one that is not closed or hidden.
-	 * This is used to determine what is in the "active" search tables.
+	 * Is the ticket archived? Archived tickets are closed to replies.
 	 *
 	 * @return bool
 	 */
-	public function isActive()
+	public function isArchived()
 	{
-		if ($this->status != 'closed' && $this->status != 'hidden') {
+		if ($this->status != 'closed') {
 			return true;
 		}
 

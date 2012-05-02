@@ -82,9 +82,10 @@ class CodeTicketDetector implements TicketDetectorInterface
 				if (!$tac) continue;
 
 				$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($tac['ticket_id']);
-				$this->_found_person = App::getEntityRepository('DeskPRO:Person')->find($tac['person_id']);
-
-				return $ticket;
+				if (!$ticket->isArchived()) {
+					$this->_found_person = App::getEntityRepository('DeskPRO:Person')->find($tac['person_id']);
+					return $ticket;
+				}
 			}
 		}
 
@@ -97,7 +98,7 @@ class CodeTicketDetector implements TicketDetectorInterface
 			foreach ($matches as $m) {
 				$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);
 
-				if ($ticket) {
+				if ($ticket && !$ticket->isArchived()) {
 
 					$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
 

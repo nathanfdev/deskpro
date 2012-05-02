@@ -44,6 +44,28 @@ use Application\DeskPRO\App;
  */
 class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 {
+	const ERR_SERVER_ERROR      = 'server_error';
+	const ERR_FROM_MISSING      = 'from_missing';
+	const ERR_FROM_INVALID      = 'from_invalid';
+	const ERR_FROM_GATEWAY      = 'from_gateway_address';
+	const ERR_FROM_BANNED       = 'from_banned';
+	const ERR_FROM_DISABLED     = 'from_disabled_user';
+	const ERR_SUBJECT_MISSING   = 'subject_missing';
+	const ERR_MESSAGE_EMPTY     = 'message_missing';
+	const ERR_MESSAGE_TOO_BIG   = 'message_too_big';
+	const ERR_EMPTY             = 'empty';
+	const ERR_DUPE              = 'duplicate_message';
+	const ERR_AUTORESPONDER     = 'autoresponder';
+	const ERR_SPAM              = 'spam';
+	const ERR_REQUIRE_REG       = 'require_reg';
+	const ERR_OBJ_CLOSED        = 'obj_closed';
+	const ERR_OBJ_DELETED       = 'obj_deleted';
+	const ERR_OBJ_UNKNOWN       = 'obj_unknown';
+	const ERR_AUTH_INVALID      = 'auth_invalid';
+	const ERR_AUTH_MISSING      = 'auth_missing';
+	const ERR_DESKPRO_EMAIL     = 'deskpro_email';
+	const ERR_PERM_INSUFFICIENT = 'perm_insufficient';
+
 	/**
 	 * @var int
 	 *

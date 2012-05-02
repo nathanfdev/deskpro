@@ -34,33 +34,12 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\EmailGateway\AbstractGatewayProcessor;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 
 class PreProcessor extends AbstractGatewayProcessor
 {
-	const ERR_FROM_MISSING      = 'from_missing';
-	const ERR_FROM_INVALID      = 'from_invalid';
-	const ERR_FROM_GATEWAY      = 'from_gateway_address';
-	const ERR_FROM_BANNED       = 'from_banned';
-	const ERR_FROM_DISABLED     = 'from_disabled_user';
-	const ERR_SUBJECT_MISSING   = 'subject_missing';
-	const ERR_MESSAGE_EMPTY     = 'message_missing';
-	const ERR_MESSAGE_TOO_BIG   = 'message_too_big';
-	const ERR_EMPTY             = 'empty';
-	const ERR_DUPE              = 'duplicate_message';
-	const ERR_AUTORESPONDER     = 'autoresponder';
-	const ERR_SPAM              = 'spam';
-	const ERR_REQUIRE_REG       = 'require_reg';
-	const ERR_OBJ_CLOSED        = 'obj_closed';
-	const ERR_OBJ_DELETED       = 'obj_deleted';
-	const ERR_OBJ_UNKNOWN       = 'obj_unknown';
-	const ERR_AUTH_INVALID      = 'auth_invalid';
-	const ERR_AUTH_MISSING      = 'auth_missing';
-	const ERR_DESKPRO_EMAIL     = 'deskpro_email';
-	const ERR_PERM_INSUFFICIENT = 'perm_insufficient';
-
 	protected $error = null;
 	protected $source_info = null;
 
@@ -72,7 +51,7 @@ class PreProcessor extends AbstractGatewayProcessor
 
 		$from = $this->reader->getFromAddress()->getEmail();
 		if (!$from) {
-			$this->error = self::ERR_FROM_MISSING;
+			$this->error = EmailSource::ERR_FROM_MISSING;
 			return;
 		}
 
@@ -83,7 +62,7 @@ class PreProcessor extends AbstractGatewayProcessor
 		$validator = new \Orb\Validator\StringEmail();
 
 		if (!$validator->isValid($from)) {
-			$this->error = self::ERR_FROM_INVALID;
+			$this->error = EmailSource::ERR_FROM_INVALID;
 			$this->source_info = array();
 			$this->source_info[] = "Read from address: " . $from;
 			$this->source_info[] = "Errors:\n\n" . $validator->getErrorsDebug();
@@ -96,7 +75,7 @@ class PreProcessor extends AbstractGatewayProcessor
 
 		$gateway_matcher = App::getSystemService('gateway_address_matcher');
 		if ($found_gateway = $gateway_matcher->getMatchingAddress($from, null, $match_address_id)) {
-			$this->error = self::ERR_FROM_GATEWAY;
+			$this->error = EmailSource::ERR_FROM_GATEWAY;
 			$this->source_info[] = "Read from address: " . $from;
 			$this->source_info[] = "Matched gateway: " . $found_gateway->id;
 			$this->source_info[] = "Matched gateway pattern: " . $match_address_id;
@@ -108,7 +87,7 @@ class PreProcessor extends AbstractGatewayProcessor
 		#------------------------------
 
 		if (App::getOrm()->getRepository('DeskPRO:BanEmail')->isEmailBanned($from, $match)) {
-			$this->error = self::ERR_FROM_BANNED;
+			$this->error = EmailSource::ERR_FROM_BANNED;
 			$this->source_info[] = "Read from address: " . $from;
 			$this->source_info[] = "Matched banned email: " . $match;
 			return;
@@ -124,7 +103,7 @@ class PreProcessor extends AbstractGatewayProcessor
 		$attach = $this->reader->getAttachments();
 
 		if (!$subj && !$message && !$message2 && !$attach) {
-			$this->error = self::ERR_EMPTY;
+			$this->error = EmailSource::ERR_EMPTY;
 			return;
 		}
 

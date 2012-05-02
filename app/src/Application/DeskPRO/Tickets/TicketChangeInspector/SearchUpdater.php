@@ -100,7 +100,7 @@ class SearchUpdater
 			'subject' => $this->ticket->subject
 		));
 
-		if ($this->ticket->isActive()) {
+		if (!$this->ticket->isArchived()) {
 			App::getDb()->replace('tickets_search_active', $this->getCloneData());
 			App::getDb()->replace('tickets_search_message_active', $this->getCloneData(true));
 		} else {

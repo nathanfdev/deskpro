@@ -106,7 +106,7 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 
 		$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($match_ptac);
 
-		if ($ticket) {
+		if ($ticket && !$ticket->isArchived()) {
 
 			$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
 

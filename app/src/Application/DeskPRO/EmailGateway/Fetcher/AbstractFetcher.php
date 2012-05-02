@@ -34,7 +34,9 @@
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\EmailGateway;
+use Application\DeskPRO\Entity\EmailSource;
+use Application\DeskPRO\Log\Logger;
 
 /**
  * A fetcher takes makes a conenction to a resource described in
@@ -43,7 +45,7 @@ use Application\DeskPRO\Entity;
 abstract class AbstractFetcher
 {
 	/**
-	 * \Application\DeskPRO\Entity\EmailGateway
+	 * \Application\DeskPRO\EmailGateway
 	 */
 	protected $gateway;
 
@@ -57,11 +59,46 @@ abstract class AbstractFetcher
 	 */
 	protected $logger;
 
-	public function __construct(Entity\EmailGateway $gateway)
+	/**
+	 * The max size in byes to read
+	 * @var int
+	 */
+	protected $max_size = 0;
+
+	/**
+	 * @param \Application\DeskPRO\Entity\EmailGateway $gateway
+	 * @param int $max_size  The max size in bytes to read. 0 to disable.
+	 */
+	public function __construct(EmailGateway $gateway, $max_size = 0)
 	{
 		$this->gateway = $gateway;
-		$this->logger = new \Application\DeskPRO\Log\Logger();
+		$this->logger = new Logger();
+		$this->setMaxSize($max_size);
 	}
+
+
+	/**
+	 * Set the max size to read
+	 *
+	 * @param int $max_size The max size in bytes
+	 */
+	public function setMaxSize($max_size)
+	{
+		$this->max_size = (int)$max_size;
+		if ($this->max_size < 0) $this->max_size = 0;
+	}
+
+
+	/**
+	 * Get the max size
+	 *
+	 * @return int
+	 */
+	public function getMaxSize()
+	{
+		return $this->max_size;
+	}
+
 
 	/**
 	 * @return \Zend\Mail\Storage\AbstractStorage
@@ -78,7 +115,7 @@ abstract class AbstractFetcher
 	/**
 	 * @param $logger \Application\DeskPRO\Log\Logger
 	 */
-	public function setLogger(\Application\DeskPRO\Log\Logger $logger)
+	public function setLogger(Logger $logger)
 	{
 		$this->logger = $logger;
 	}
@@ -130,17 +167,31 @@ abstract class AbstractFetcher
 			# Store the message
 			#------------------------------
 
-			$source = new Entity\EmailSource();
+			$source = new EmailSource();
 			$source->fromArray(array(
 				'gateway' => $this->gateway,
 				'headers' => $raw_message->headers,
 				'status' => 'inserted'
 			));
 
-			$desc = App::getSystemService('filestorage')->createRandomPath();
-			$desc->write($raw_message->content, array(
-				'filename' => 'email.dat',
-			));
+			if ($raw_message->too_big) {
+				$desc = App::getSystemService('filestorage')->createRandomPath();
+				$desc->write($raw_message->headers, array(
+					'filename' => 'headers.dat',
+				));
+
+				$source->status = 'error';
+				$source->error_code = EmailSource::ERR_MESSAGE_TOO_BIG;
+				$source->source_info = array(
+					'size' => $raw_message->size,
+					'max_size' => $this->max_size
+				);
+			} else {
+				$desc = App::getSystemService('filestorage')->createRandomPath();
+				$desc->write($raw_message->content, array(
+					'filename' => 'email.dat',
+				));
+			}
 
 			$blob_id = $desc->getPath();
 			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);

@@ -74,7 +74,7 @@ class Dp3Detector implements TicketDetectorInterface
 			$ticket = $this->userMatchBody($body_text);
 		}
 
-		if ($ticket) {
+		if ($ticket && !$ticket->isArchived()) {
 
 			// In DP3 they must already be on the ticket
 			$person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($from_email);
@@ -90,7 +90,7 @@ class Dp3Detector implements TicketDetectorInterface
 		#------------------------------
 
 		$ticket = $this->techMatchSubject($subject_text);
-		if ($ticket) {
+		if ($ticket && !$ticket->isArchived()) {
 			return $ticket;
 		}
 

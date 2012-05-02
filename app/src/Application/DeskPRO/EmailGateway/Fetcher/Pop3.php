@@ -95,7 +95,13 @@ class Pop3 extends AbstractFetcher
 		$raw_message = new RawMessage();
 		$raw_message->id = 1;
 		$raw_message->headers = $headers;
-		$raw_message->content = $headers . "\n\n" . $this->getStorage()->getRawContent(1);
+		$raw_message->size = $this->getStorage()->getSize(1);
+
+		if (!$this->max_size || $raw_message->size < $this->max_size) {
+			$raw_message->content = $headers . "\n\n" . $this->getStorage()->getRawContent(1);
+		} else {
+			$raw_message->too_big = true;
+		}
 
 		$this->logger->log(sprintf("Got message [1]. Took %0.2f seconds.", microtime(true) - $start_time), 'debug');
 
