@@ -1283,6 +1283,54 @@ body.file-drag-over .dp-drop-file-zone {
 	padding-top: 5px;
 }
 
+#dp .dp-feedback-info-wrap .dp-feedback-status-wrap {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding-left: 53px;
+}
+
+#dp .dp-feedback-info-wrap .dp-feedback-status-wrap .dp-fadeaway {
+	right: auto;
+	left: 0;
+}
+
+#dp .dp-feedback-info-wrap .dp-feedback-status-wrap .dp-feedback-status-wrap-inner {
+	background-color: #fff;
+}
+
+#dp .dp-voted-row .dp-feedback-info-wrap .dp-feedback-status-wrap .dp-feedback-status-wrap-inner {
+	background-color: #FFFAB3;
+}
+
+#dp .dp-voted-row .dp-feedback-info-wrap .dp-feedback-status {
+	position: relative;
+	top: -1px;
+}
+
+#dp .dp-feedback-status {
+	{{ _self.border_radius(15) }}
+	font-size: 12px;
+	text-shadow: 0 1px rgba(255, 255, 255, 0.3);
+	padding: 1px 4px 1px 4px;
+	margin-right: 5px;
+
+	background-color: #EDFCFB;
+	border: 1px solid #118FCF;
+	color: #444;
+}
+
+#dp .dp-new .dp-feedback-status {
+	background-color: #D0FBC2;
+	border: 1px solid #93B289;
+}
+
+#dp .dp-closed .dp-feedback-status {
+	background-color: #FFFADB;
+	border: 1px solid #B1AF80;
+	color: #495A43;
+}
+
 #dp section.dp-feedback-post > header {
 	float: left;
 	width: 100%;
@@ -1883,7 +1931,6 @@ body.file-drag-over .dp-drop-file-zone {
 }
 
 #dp .dp-date  {
-	float:right;
 	font-size: 10px;
 	color: #999;
 }

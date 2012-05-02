@@ -29,6 +29,16 @@
 		<table class="dp-layout" width="100%"><tr>
 			<td width="50" style="padding-right: 16px;">{% include 'UserBundle:Feedback:voting-widget.html.twig' %}</td>
 			<td class="dp-row-contain">
+				<span class="dp-feedback-status" style="float: right; margin-left: 6px;">
+					{% if feedback.status_category %}
+						{{ feedback.status_category.title }}
+					{% else %}
+						{% if feedback.status == 'new' %}{{ phrase('user.feedback.status_new') }}
+						{% elseif feedback.status == 'active' %}{{ phrase('user.feedback.status_active') }}
+						{% elseif feedback.status == 'closed' %}{{ phrase('user.feedback.status_closed') }}
+						{% endif %}
+					{% endif %}
+				</span>
 				<h3 style="margin-bottom: 0">{{ feedback.title }}</h3>
 				<ul class="dp-post-info">
 					<li class="dp-author"><i class="dp-icon-user"></i> {{ feedback.person.display_name }}</li>
