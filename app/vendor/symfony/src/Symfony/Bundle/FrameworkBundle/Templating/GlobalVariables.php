@@ -30,15 +30,13 @@ class GlobalVariables
     /**
      * Returns the security context service.
      *
-     * @return \Symfony\Component\Security\Core\SecurityContext|void The security context
+     * @return Symfony\Component\Security\Core\SecurityContext|void The security context
      */
     public function getSecurity()
     {
         if ($this->container->has('security.context')) {
             return $this->container->get('security.context');
         }
-
-		return null;
     }
 
     /**
@@ -51,16 +49,16 @@ class GlobalVariables
     public function getUser()
     {
         if (!$security = $this->getSecurity()) {
-            return null;
+            return;
         }
 
         if (!$token = $security->getToken()) {
-            return null;
+            return;
         }
 
         $user = $token->getUser();
         if (!is_object($user)) {
-            return null;
+            return;
         }
 
         return $user;
@@ -69,29 +67,25 @@ class GlobalVariables
     /**
      * Returns the current request.
      *
-     * @return \Symfony\Component\HttpFoundation\Request|void The http request object
+     * @return Symfony\Component\HttpFoundation\Request|void The http request object
      */
     public function getRequest()
     {
         if ($this->container->has('request') && $request = $this->container->get('request')) {
             return $request;
         }
-
-		return null;
     }
 
     /**
      * Returns the current session.
      *
-     * @return \Symfony\Component\HttpFoundation\Session|void The session
+     * @return Symfony\Component\HttpFoundation\Session|void The session
      */
     public function getSession()
     {
         if ($request = $this->getRequest()) {
             return $request->getSession();
         }
-
-		return null;
     }
 
     /**
