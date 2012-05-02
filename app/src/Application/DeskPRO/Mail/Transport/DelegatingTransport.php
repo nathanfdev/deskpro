@@ -138,14 +138,27 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 	 */
 	public function send(\Swift_Mime_Message $message, &$failedRecipients = null)
 	{
+		$time_top = microtime(true);
+		$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Begin message :: %s %s", implode(',', $message->getTo()), $message->getSubject()));
+
 		if ($message instanceof Message) {
 			$time = microtime(true);
-			$message->prepare();
+			try {
+				$message->prepare();
+			} catch (\Exception $e) {
+				$this->getLogger()->logError(sprintf("[DelegatingTransport] ERROR preparing: %s %s %s", $e->getCode(), get_class($e), $e->getMessage()));
+				throw $e;
+			}
 			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Preparing message took %.4f seconds", microtime(true)-$time));
 		}
 
 		if ($evt = $this->event_dispatcher->createSendEvent($this, $message)) {
-			$this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
+			try {
+				$this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
+			} catch (\Exception $e) {
+				$this->getLogger()->logError(sprintf("[DelegatingTransport] ERROR executing beforeSendPerformed: %s %s %s", $e->getCode(), get_class($e), $e->getMessage()));
+				throw $e;
+			}
 			if ($evt->bubbleCancelled()) {
 				$this->getLogger()->logInfo("[DelegatingTransport] beforeSendPerformed cancelled message");
 				return 0;
@@ -257,6 +270,8 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 			$evt->setResult($success ? \Swift_Events_SendEvent::RESULT_SUCCESS : \Swift_Events_SendEvent::RESULT_FAILED);
 			$this->event_dispatcher->dispatchEvent($evt, 'sendPerformed');
 		}
+
+		$this->getLogger()->logDebug(sprintf("[DelegatingTransport] DONE in %.4f seconds", microtime(true)-$time_top));
 
 		return $success;
 	}

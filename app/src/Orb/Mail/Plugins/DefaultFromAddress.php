@@ -64,12 +64,14 @@ class DefaultFromAddress implements \Swift_Events_SendListener
 			$message->setFrom($this->from, $this->name);
 		} else {
 			$from = $message->getFrom();
-			$from = array_pop($from);
 
-			// Set the name if we dont have one
-			if (empty($from[1])) {
-				$message->setFrom($from[0], $this->name);
+			foreach ($from as $k => &$v) {
+				if (!$v) {
+					$v = $this->name;
+				}
+				break;
 			}
+			$message->setFrom($from);
 		}
 	}
 }
