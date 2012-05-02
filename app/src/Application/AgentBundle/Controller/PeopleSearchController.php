@@ -272,7 +272,7 @@ class PeopleSearchController extends AbstractController
 	# search
 	############################################################################
 
-	public function searchAction()
+	public function searchAction($letter)
 	{
 		$result_cache = false;
 		if ($this->in->getUint('cache_id')) {
@@ -282,7 +282,7 @@ class PeopleSearchController extends AbstractController
 			}
 		}
 
-		$user_letter = $this->getLetterFromUser();
+		$user_letter = $this->getLetterFromUser($letter);
 
 		#------------------------------
 		# If there's no result set, we're running it for the first time
@@ -483,9 +483,11 @@ class PeopleSearchController extends AbstractController
 		return $selected_letter;
 	}
 
-	protected function getLetterFromUser()
+	protected function getLetterFromUser($letter = null)
 	{
-		$letter = $this->in->getString('letter');
+		if($letter === null) {
+			$letter = $this->in->getString('letter');
+		}
 
 		if (is_string($letter) && strlen($letter) == 1) {
 			if ($letter == '#') {
