@@ -628,7 +628,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 * Get the AJAX poller
 	 */
 	getPoller: function() {
-		return this.poller;
+		return this.messageChanneler.poller;
 	},
 
 	/**
@@ -1730,11 +1730,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.options.messageChanneler.interval = DP_POLLER_INTERVAL;
 		this.messageChanneler = new DeskPRO.MessageChanneler.AjaxChanneler(this.messageBroker, this.options.messageChanneler);
 		//this.messageChanneler = new DeskPRO.MessageChanneler.AbstractChanneler(this.messageBroker, this.options.messageChanneler);
-
-		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {
-			ajaxUrl: BASE_URL + 'agent/poller',
-			interval: 60000
-		});
 	},
 
 	_initRoutes: function() {

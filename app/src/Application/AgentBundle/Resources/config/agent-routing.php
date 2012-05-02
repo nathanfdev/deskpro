@@ -44,13 +44,6 @@ $collection->add('agent_test_tab', new Route(
 	array()
 ));
 
-$collection->add('agent_interface_poller', new Route(
-	'/poller',
-	array('_controller' => 'AgentBundle:Poller:handler'),
-	array(),
-	array()
-));
-
 $collection->add('agent_accept_upload', new Route(
 	'/misc/accept-upload',
 	array('_controller' => 'AgentBundle:Misc:acceptTempUpload'),

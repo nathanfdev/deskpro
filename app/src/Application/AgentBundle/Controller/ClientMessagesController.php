@@ -49,6 +49,10 @@ class ClientMessagesController extends AbstractController
 		$new_since = $this->in->getUint('since');
 		$last_since = $this->person->getPref('agent.ui.last_message_id');
 
+		#------------------------------
+		# Standard client messages
+		#------------------------------
+
 		$data = $this->em->getRepository('DeskPRO:ClientMessage')->getMessageData(
 			$this->person,
 			$this->session,
@@ -62,6 +66,23 @@ class ClientMessagesController extends AbstractController
 			if ($channel == 'chat.new') {
 				$cid = $item[2]['conversation_id'];
 				$item[2]['html'] = $this->forward('AgentBundle:UserChat:getChatAlert', array('id' => $cid))->getContent();
+			}
+		}
+
+		#------------------------------
+		# Poll requests
+		#------------------------------
+
+		$dos = $this->in->getArrayValue('do');
+
+		foreach ($dos as $do) {
+			$do = Strings::dashToCamelCase($do);
+			$method = $do . 'Message';
+			$method_data = $this->$method();
+			$method_data = Arrays::removeFalsey($method_data);
+
+			if ($method_data) {
+				$data['messages'] = array_merge($data['messages'], $method_data);
 			}
 		}
 
@@ -132,5 +153,57 @@ class ClientMessagesController extends AbstractController
 		}
 
 		return $this->createJsonResponse(array('unsubscribed_channels' => $names));
+	}
+
+	############################################################################
+	# getFilterCounts
+	############################################################################
+
+	public function getSysFilterCountsMessage()
+	{
+		$all_counts = App::getApi('tickets.filters')->getAllCountsSystemFilters($this->person);
+
+		return array(array(null, 'filters.counts', array($all_counts)));
+	}
+
+	public function getCustomFilterCountsMessage()
+	{
+		$all_counts = App::getApi('tickets.filters')->getAllCountsCustomFilters($this->person);
+
+		return array(array(null, 'filters.counts', array($all_counts)));
+	}
+
+
+	############################################################################
+	# getFlaggedCounts
+	############################################################################
+
+	public function getFlaggedCountsMessage()
+	{
+		$all_counts = $filters = App::getApi('tickets.filters')->getAllCountsForPersonFlagged($this->person);
+
+		return array(array(null, 'filter-flagged.counts', array($all_counts)));
+	}
+
+	############################################################################
+	# getCheckTickets
+	############################################################################
+
+	public function checkTicketsMessage()
+	{
+		$ticket_ids = $this->in->getCleanValueArray('check-ticket-ids', 'uint', 'discard');
+		$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+
+		$messages = array();
+		foreach ($tickets as $ticket) {
+			$msg_id = 'tickets.check.' . $ticket['id'];
+			$msg_data = array();
+
+			$msg_data['is_locked'] = $ticket->isLocked();
+
+			$messages[$msg_id] = $msg_data;
+		}
+
+		return $messages;
 	}
 }
