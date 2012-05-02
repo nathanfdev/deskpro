@@ -74,7 +74,7 @@
 	'symfony' => array(
 		'into' => DP_ROOT.'/vendor/symfony',
 		'repos' => 'git://github.com/symfony/symfony.git',
-		'version' => 'v2.0.12',
+		'version' => 'v2.0.13',
 	),
 	'symfony_doctrine_migrations' => array(
 		'into' => DP_ROOT.'/vendor/symfony/src/Symfony/Bundle/DoctrineMigrationsBundle',
