@@ -66,8 +66,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 
 	public $creation_system;
 
-	public $is_html = false;
-
 	public $require_login = false;
 
 	protected $mode = 'untrusted';
@@ -232,10 +230,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 			$ticket_message['message'] = $this->ticket->message;
 			if (!$ticket_message['message']) {
 				$ticket_message['message'] = '(no message)';
-			}
-
-			if (!$this->is_html) {
-				$ticket_message['message'] = nl2br(htmlspecialchars($ticket_message['message']));
 			}
 
 			$attach = null;
