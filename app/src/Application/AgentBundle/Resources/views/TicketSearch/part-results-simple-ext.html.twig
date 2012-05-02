@@ -144,6 +144,39 @@
 				<li class="{{field}}">
 					<span class="prop-title">{{ phrase('agent.general.user_waiting') }}:</span>
 					<span class="prop-val">
+						{% if ticket.date_user_waiting %}
+							<time class="timeago timestamp" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c') }}"></time>
+						{% else %}
+							{{ phrase('agent.tickets.na') }}
+						{% endif %}
+					</span>
+				</li>
+			{% elseif field == 'date_last_agent_reply' %}
+				<li class="{{field}}">
+					<span class="prop-title">{{ phrase('agent.general.date_of_last_agent_reply') }}:</span>
+					<span class="prop-val">
+						{% if ticket.date_last_agent_reply %}
+							<time class="timeago timestamp" data-timeago-no-ago="1" datetime="{{ ticket.date_last_agent_reply|date('c') }}"></time>
+						{% else %}
+							{{ phrase('agent.tickets.na') }}
+						{% endif %}
+					</span>
+				</li>
+			{% elseif field == 'date_last_user_reply' %}
+				<li class="{{field}}">
+					<span class="prop-title">{{ phrase('agent.general.date_of_last_user_reply') }}:</span>
+					<span class="prop-val">
+						{% if ticket.date_last_user_reply %}
+							<time class="timeago timestamp" data-timeago-no-ago="1" datetime="{{ ticket.date_last_user_reply|date('c') }}"></time>
+						{% else %}
+							{{ phrase('agent.tickets.na') }}
+						{% endif %}
+					</span>
+				</li>
+			{% elseif field == 'total_user_waiting' %}
+				<li class="{{field}}">
+					<span class="prop-title">{{ phrase('agent.general.total_time_waiting') }}:</span>
+					<span class="prop-val">
 						{% if ticket.real_total_user_waiting %}
 							<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting ~ " seconds")|date('c') }}"></time>
 						{% else %}

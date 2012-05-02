@@ -77,8 +77,32 @@
 				</td>
 			{% elseif field == 'date_user_waiting' %}
 				<td class="{{field}}">
+					{% if ticket.date_user_waiting %}
+						<time class="timestamp timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c') }}">{{ticket.date_user_waiting|date('day')}}</time>
+					{% else %}
+						{{ phrase('agent.tickets.na') }}
+					{% endif %}
+				</td>
+			{% elseif field == 'total_user_waiting' %}
+				<td class="{{field}}">
 					{% if ticket.real_total_user_waiting %}
 						<time class="timeago" data-timeago-no-ago="1" datetime="{{ ("- " ~ ticket.real_total_user_waiting ~ " seconds")|date('c') }}"></time>
+					{% else %}
+						{{ phrase('agent.tickets.na') }}
+					{% endif %}
+				</td>
+			{% elseif field == 'date_last_agent_reply' %}
+				<td class="{{field}}">
+					{% if ticket.date_last_agent_reply %}
+						<time class="timestamp timeago" datetime="{{ ticket.date_last_agent_reply|date('c') }}">{{ticket.date_last_agent_reply|date('day')}}</time>
+					{% else %}
+						{{ phrase('agent.tickets.na') }}
+					{% endif %}
+				</td>
+			{% elseif field == 'date_last_user_reply' %}
+				<td class="{{field}}">
+					{% if ticket.date_last_agent_reply %}
+						<time class="timestamp timeago" datetime="{{ ticket.date_last_user_reply|date('c') }}">{{ticket.date_last_user_reply|date('day')}}</time>
 					{% else %}
 						{{ phrase('agent.tickets.na') }}
 					{% endif %}
