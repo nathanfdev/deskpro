@@ -75,7 +75,7 @@ DeskPRO.Agent.PageHelper.RelatedContent = new Orb.Class({
 			$('.no-related-content', this.listEl).show();
 		}
 
-		this.page.getEl('count_related').text(this.listEl.find('li.related-content').length);
+		this.page.getEl('count_related').text(this.listEl.find('li.related-content:not(.removing)').length);
 	},
 
 
