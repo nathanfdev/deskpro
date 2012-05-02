@@ -81,6 +81,7 @@ DeskPRO.User.Window = new Orb.Class({
 		});
 
 		$('.timeago').timeago();
+		$('input.datepicker, .datepicker input').datepicker();
 
 		$(document).on('click', '.dp-bound-faded', function() {
 			var parent = $(this).parent();
