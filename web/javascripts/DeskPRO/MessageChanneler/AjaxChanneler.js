@@ -48,7 +48,9 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 					return;
 				}
 
-				this.lastMessageId = d[0];
+				if (d[0] && d[0] > this.lastMessageId) {
+					this.lastMessageId = d[0];
+				}
 				this.sendMessage(d[1], d[2]);
 			}, this);
 		}

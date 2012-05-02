@@ -240,7 +240,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	getLastMessageId: function() {
-		return parseInt($('.article.message', this.getEl('messages_wrap')).last().data('message-id') || 0);
+		var id = this.getEl('messages_wrap').find('article.message').last().data('message-id');
+		return id || 0;
 	},
 
 	getLastLogId: function() {
@@ -248,11 +249,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	destroyPage: function() {
-
-		if (this.updateCheckTimeout) {
-			this.updateCheckTimeout = window.clearTimeout(this.updateCheckTimeout);
-		}
-
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.closed', { ticketId: this.getMetaData('ticket_id') });
 	},
 
@@ -272,8 +268,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
 		}
 
+		var new_messages = null;
 		if (data.ticket_messages_block) {
-			var new_messages = $(data.ticket_messages_block).hide();
+			new_messages = $(data.ticket_messages_block).hide();
 			new_messages.appendTo($(this.getEl('messages_wrap'))).slideDown('fast');
 		}
 
@@ -295,7 +292,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		var msgWrap = $('.messages-wrap', this.wrapper);
 
-		this._initMessage(new_messages);
+		if (new_messages) {
+			this._initMessage(new_messages);
+		}
 
 		if (!showAttach) {
 			$('.attachment-list', this.getEl('messages_wrap')).hide();
@@ -379,6 +378,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (this.lastMessageCount) {
 			lastCount = this.lastMessageCount;
 		}
+
 		if (messageEl.hasClass('messages-wrap')) {
 			var articles = messageEl.find('article.message');
 		} else {
@@ -772,5 +772,30 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
 		txt.insertAtCaret(text);
+	},
+
+	doTicketUpdate: function() {
+		var formData = [];
+		formData.push({
+			name: 'last_message_id',
+			value: this.getLastMessageId()
+		});
+		formData.push({
+			name: 'last_log_id',
+			value: this.getEl('messages_wrap').find('.log-row').last().data('log-id')
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/update-views.json',
+			type: 'POST',
+			dataType: 'json',
+			data: formData,
+			context: this,
+			success: function(result) {
+				this.alertTab();
+				this.handleTicketUpdate(result);
+				this.rescanMessageTypes();
+			}
+		});
 	}
 });

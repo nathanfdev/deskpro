@@ -214,6 +214,22 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts, this);
 
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-updated', function (data) {
+			var ticketId = data.ticket_id;
+
+			var tab = DeskPRO_Window.getTabWatcher().findTab('ticket', function(tab) {
+				if (tab && tab.page && tab.page && tab.page.meta.ticket_id == ticketId) {
+					return true;
+				}
+
+				return false;
+			});
+
+			if (tab) {
+				tab.page.doTicketUpdate();
+			}
+		});
+
 		$('#tickets_outline_inbox_list .sub-toggle').on('click', function(ev) {
 			ev.stopPropagation();
 			var li = $(this).parent();

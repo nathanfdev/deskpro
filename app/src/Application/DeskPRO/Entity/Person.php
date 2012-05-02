@@ -748,6 +748,9 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		// password scheme so remove the old one. eg an imported user just changed their password
 		$this->setModelField('password_scheme', null);
 
+		// When a password is set, then they're a user now
+		$this->setModelField('is_user', true);
+
 		$hash = $this->hashPassword($plain_password);
 
 		$pass = $hash;

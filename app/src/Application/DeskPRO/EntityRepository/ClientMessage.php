@@ -55,20 +55,23 @@ class ClientMessage extends EntityRepository
 	{
 		// Automatically ping
 		// AJAX clients dont send ping manually, it's just part of this call
-		$person->loadHelper('ClientChannelSubscriptions', array('session' => $session));
-		$person->getClientChannelSubs()->pingSubscriptions();
+		// Only matters for non-agents, as agents have hard-coded subscriptions
+		if (!$person->is_agent) {
+			$person->loadHelper('ClientChannelSubscriptions', array('session' => $session));
+			$person->getClientChannelSubs()->pingSubscriptions();
+		}
 
 		$data = array('messages' => array(), 'last_id' => -1);
 		$all_messages = false;
 
 		if (!$since) {
-			$last_id = App::getDb()->fetchColumn("SELECT id FROM client_messages ORDER BY id DESC LIMIT 1");
+			$last_id = $this->_em->getConnection()->fetchColumn("SELECT id FROM client_messages ORDER BY id DESC LIMIT 1");
 			if ($last_id) {
 				$data['last_id'] = $last_id;
 			}
 
 		} else {
-			$all_messages = $this->getMessagesForClient($session->getEntityId(), $person['id'], $since);
+			$all_messages = $this->getMessagesForClient($session->getEntityId(), $person, $since);
 		}
 
 		if ($all_messages and $with_last_since) {
@@ -212,18 +215,25 @@ class ClientMessage extends EntityRepository
 	 * @param int|null $since_id
 	 * @return array
 	 */
-	public function getMessagesForClient($client_id, $person_id = null, $since_id = null)
+	public function getMessagesForClient($client_id, $person_or_id = null, $since_id = null)
 	{
-		$channels_obj = App::getEntityRepository('DeskPRO:ClientChannelSubscription')->getSubscriptionsForClient($client_id);
-		$channels = array();
-		foreach ($channels_obj as $ch) {
-			$channels[] = $ch['channel'];
+		$person = null;
+		if ($person_or_id instanceof PersonEntity) {
+			$person = $person_or_id;
+		} elseif ($person_or_id) {
+			$person = $this->_em->find('DeskPRO:Person', $person_or_id);
 		}
 
-		$person = App::findEntity('DeskPRO:Person', $person_id);
+		if ($person) {
+			$person_id = $person->getId();
+		} else {
+			$person_id = 0;
+		}
+
+		$channels = array();
 
 		// Implicit subscriptions
-		if ($person->is_agent && $since_id) {
+		if ($person && $person->is_agent && $since_id) {
 			$channels[] = 'chat.new';
 			$channels[] = 'chat.reassigned';
 			$channels[] = 'chat.unassigned';
@@ -235,6 +245,7 @@ class ClientMessage extends EntityRepository
 			$channels[] = 'agent-notification';
 			$channels[] = 'agent-notify';
 			$channels[] = 'agent-notify.tickets';
+			$channels[] = 'agent.ticket-updated';
 
 			$channels[] = 'agent.filter-update';
 			$channels[] = 'chat.new';
@@ -244,6 +255,11 @@ class ClientMessage extends EntityRepository
 			$channels[] = 'chat.ended';
 			$channels[] = 'chat.depchange';
 			$channels[] = 'chat.invited';
+		} else {
+			$channels_obj = $this->_em->getRepository('DeskPRO:ClientChannelSubscription')->getSubscriptionsForClient($client_id);
+			foreach ($channels_obj as $ch) {
+				$channels[] = $ch['channel'];
+			}
 		}
 
 		return self::getMessagesForClientInChannels($client_id, $person_id, $channels, $since_id);

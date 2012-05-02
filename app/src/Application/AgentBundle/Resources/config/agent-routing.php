@@ -850,6 +850,13 @@ $collection->add('agent_ticket_view', new Route(
 	array('fragment_name' => 't')
 ));
 
+$collection->add('agent_ticket_doupdate', new Route(
+	'/tickets/{ticket_id}/update-views.json',
+	array('_controller' => 'AgentBundle:Ticket:updateViews'),
+	array('ticket_id' => '\\d+'),
+	array('fragment_name' => 't')
+));
+
 $collection->add('agent_ticket_split', new Route(
 	'/tickets/split/{message_id}',
 	array('_controller' => 'AgentBundle:Ticket:split'),

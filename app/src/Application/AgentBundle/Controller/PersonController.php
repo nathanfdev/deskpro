@@ -494,7 +494,7 @@ class PersonController extends AbstractController
 					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 				}
 				if ($this->in->getString('password')) {
-					$person->password = $this->in->getString('password');
+					$person->setPassword($this->in->getString('password'));
 					$this->em->persist($person);
 
 					if ($this->in->getBool('send_email')) {

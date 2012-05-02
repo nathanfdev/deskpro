@@ -602,6 +602,25 @@ class TicketChangeTracker extends ChangeTracker
 		$person_activity = new \Application\DeskPRO\Tickets\TicketChangeInspector\PersonActivity($this);
 		$person_activity->run();
 
+		// Broadcast a change event
+		$client = 'sys';
+		try {
+			if (App::has('session')) {
+				$client = App::get('session')->getEntity()->getId();
+			}
+		} catch (\Exception $e) {}
+
+		App::getDb()->insert('client_messages', array(
+			'channel' => 'agent.ticket-updated',
+			'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+			'date_created' => date('Y-m-d H:i:s'),
+			'data' => serialize(array(
+				'ticket_id'  => $this->ticket->getId(),
+			)),
+			'created_by_client' => $client,
+			'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+		));
+
 		$total_time = microtime(true) - $this->start_time;
 
 		$time = microtime(true);

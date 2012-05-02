@@ -1125,6 +1125,68 @@ class TicketController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
+	public function updateViewsAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$data = $this->_getMessageBlockInfo(
+			$ticket,
+			$this->in->getUint('last_message_id'),
+			$this->in->getUint('last_log_id')
+		);
+
+		// New reply box
+		$participants = $this->em->createQuery("
+			SELECT p
+			FROM DeskPRO:TicketParticipant p
+			LEFT JOIN p.person person
+			LEFT JOIN p.person_email person_email
+			WHERE p.ticket = ?1
+		")->setParameter(1, $ticket)->execute();
+
+		$participant_ids = array();
+		$agent_parts = array();
+		$user_parts = array();
+
+		foreach ($participants as $p) {
+			$participant_ids[] = $p->person->id;
+			if ($p->person->is_agent) {
+				$agent_parts[] = $p;
+			} else {
+				$user_parts[] = $p;
+			}
+		}
+
+
+		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+		$agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
+
+		$replybox = $this->renderView('AgentBundle:Ticket:replybox.html.twig', array(
+			'agents' => $agents,
+			'agent_teams' => $agent_teams,
+			'ticket' => $ticket,
+			'participants' => $participants,
+			'participant_ids' => $participant_ids,
+			'agent_parts' => $agent_parts,
+			'user_parts' => $user_parts,
+			'agent_signature' => $this->person->getPref('agent.ticket_signature'),
+			'ticket_perms' => $this->_getTicketPerms($ticket),
+		));
+
+		$data = array_merge($data, array(
+			'updated_agent_parts_html' => 1,
+			'updated_agent_parts_html_count' => 1,
+			'replybox_html' => $replybox,
+			'agent_id' => $ticket['agent_id'],
+			'agent_team_id' => $ticket['agent_team_id'],
+			'status' => $ticket['status'],
+			'close_tab' => false,
+		));
+
+		return $this->createJsonResponse($data);
+	}
+
+
 	############################################################################
 	# ajax-save-actions
 	############################################################################
