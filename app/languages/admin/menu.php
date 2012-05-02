@@ -54,4 +54,5 @@
 	'admin.menu.check_server_requirements_explain' => 'Check server requirements and view recommended changes',
 	'admin.menu.check_file_integrity' => 'Check File Integrity',
 	'admin.menu.check_file_integrity_explain' => 'Check DeskPRO\'s source file integrity. This will reveal any files are changed or invalid from the default.',
+	'admin.menu.email_gateway_errors' => 'Email Errors and Rejections',
 );

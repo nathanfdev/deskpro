@@ -106,4 +106,13 @@
 	'admin.general.apps_downloads' => 'Downloads',
 	'admin.general.apps_downloads_explain' => 'The downloads applications allows your agents to upload files into a structured downloads section that users can search and browse from your portal.',
 	'admin.general.edit_css' => 'Edit CSS',
+	'admin.general.gateway_error_logs' => 'Gateway Rejections',
+	'admin.general.email_to' => 'To',
+	'admin.general.email_from' => 'From',
+	'admin.general.email_subject' => 'Subject',
+	'admin.general.error_type' => 'Error Type',
+	'admin.general.email_info' => 'Email Info',
+	'admin.general.email_headers' => 'Email Headers',
+	'admin.general.gateway_source_id' => 'Gateway Source {{id}}',
+	'admin.general.download_raw_source' => 'Download Raw Source',
 );

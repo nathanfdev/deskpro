@@ -44,6 +44,9 @@ use Application\DeskPRO\App;
  */
 class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 {
+	const OBJ_TYPE_TICKET = 'ticket';
+	const OBJ_TYPE_TICKET_MESSAGE = 'ticketmessage';
+
 	const ERR_SERVER_ERROR      = 'server_error';
 	const ERR_FROM_MISSING      = 'from_missing';
 	const ERR_FROM_INVALID      = 'from_invalid';
@@ -106,6 +109,21 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $headers;
+
+	/**
+	 * @var string
+	 */
+	protected $header_to = '';
+
+	/**
+	 * @var string
+	 */
+	protected $header_from = '';
+
+	/**
+	 * @var string
+	 */
+	protected $header_subject = '';
 
 	/**
 	 * The current status of the message:
@@ -187,6 +205,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\EmailSource';
 		$metadata->setPrimaryTable(array(
 			'name' => 'email_sources',
 			'indexes' => array(
@@ -199,6 +218,9 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', ));
 		$metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', ));
 		$metadata->mapField(array( 'fieldName' => 'headers', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'headers', ));
+		$metadata->mapField(array( 'fieldName' => 'header_to', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_to', ));
+		$metadata->mapField(array( 'fieldName' => 'header_from', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_from', ));
+		$metadata->mapField(array( 'fieldName' => 'header_subject', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_subject', ));
 		$metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
 		$metadata->mapField(array( 'fieldName' => 'error_code', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'error_code', ));
 		$metadata->mapField(array( 'fieldName' => 'source_info', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'source_info', ));

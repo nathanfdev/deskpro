@@ -1800,4 +1800,37 @@ $collection->add('admin_server_attach_switch', new Route(
 	array()
 ));
 
+
+################################################################################
+# Email gateway errors
+################################################################################
+
+$collection->add('admin_emailgateway_errors', new Route(
+	'/email/gateway-errors',
+	array('_controller' => 'AdminBundle:EmailGatewayErrors:index'),
+	array(),
+	array()
+));
+
+$collection->add('admin_emailgateway_errors_clear', new Route(
+	'/email/gateway-errors/clear/{security_token}',
+	array('_controller' => 'AdminBundle:EmailGatewayErrors:clear'),
+	array(),
+	array()
+));
+
+$collection->add('admin_emailgateway_errors_view', new Route(
+	'/email/gateway-errors/{id}',
+	array('_controller' => 'AdminBundle:EmailGatewayErrors:view'),
+	array(),
+	array()
+));
+
+$collection->add('admin_emailgateway_errors_delete', new Route(
+	'/email/gateway-errors/{id}/delete/{security_token}',
+	array('_controller' => 'AdminBundle:EmailGatewayErrors:delete'),
+	array(),
+	array()
+));
+
 return $collection;

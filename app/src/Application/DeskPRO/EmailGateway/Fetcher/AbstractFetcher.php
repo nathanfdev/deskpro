@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\EmailGateway;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Log\Logger;
+use Orb\Util\Strings;
 
 /**
  * A fetcher takes makes a conenction to a resource described in
@@ -173,6 +174,12 @@ abstract class AbstractFetcher
 				'headers' => $raw_message->headers,
 				'status' => 'inserted'
 			));
+
+			// Rough matching, just for info purposes when browsing a list
+			$source->header_to      = Strings::extractRegexMatch('#^To:\s*(.*?)$#m', $raw_message->headers) ?: '';
+			$source->header_from    = Strings::extractRegexMatch('#^From:\s*(.*?)$#m', $raw_message->headers) ?: '';
+			$source->header_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $raw_message->headers) ?: '';
+			$source->object_type    = 'ticket';
 
 			if ($raw_message->too_big) {
 				$desc = App::getSystemService('filestorage')->createRandomPath();

@@ -663,4 +663,7 @@
 
 	'agent.general.misc' => 'Miscellaneous',
 	'agent.general.trigger_x' => 'Trigger {{id}}',
+
+	'agent.general.download_btn' => 'Download',
+	'agent.general.view' => 'View',
 );

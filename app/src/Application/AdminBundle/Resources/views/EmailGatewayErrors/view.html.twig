@@ -1,0 +1,57 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagebar %}
+	<ul>
+		<li><a href="{{ path('admin_emailgateway_errors') }}">{{ phrase('admin.general.gateway_error_logs') }}</a></li>
+		<li>{{ phrase('admin.general.gateway_source_id', {id: source.id}) }}</li>
+	</ul>
+{% endblock %}
+{% block page %}
+
+<div class="check-grid item-list">
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td width="200"><strong>{{ phrase('agent.general.id') }}</strong></td>
+				<td>
+					<div style="float: right">
+						<a href="{{ path('admin_emailgateway_errors_delete', {id: source.id, security_token: security_token('delete_gateway_error')}) }}">{{ phrase('agent.general.delete') }}</a>
+					</div>
+					{{source.id}}
+				</td>
+			</tr>
+
+			<tr>
+				<td><strong>{{ phrase('agent.general.date') }}</strong></td>
+				<td>{{source.date_created|date('Y-m-d H:m:s')}}</td>
+			</tr>
+
+			<tr>
+				<td><strong>{{ phrase('admin.general.error_type') }}</strong></td>
+				<td>{{source.error_code}}</td>
+			</tr>
+
+			<tr>
+				<td><strong>{{ phrase('admin.general.email_headers') }}</strong></td>
+				<td><textarea style="width:98%; height:200px; font-family:Monaco, 'Courier New', courier, monospace;">{{ source.headers }}</textarea></td>
+			</tr>
+
+			{% if source.blob %}
+				<tr>
+					<td><strong>{{ phrase('admin.general.download_raw_source') }}</strong></td>
+					<td>
+						<a href="{{ source.blob.getDownloadUrl() }}">{{ phrase('agent.general.download_btn') }}</a>
+					</td>
+				</tr>
+			{% endif %}
+
+			<tr>
+				<td><strong>{{ phrase('admin.general.additional_data') }}</strong></td>
+				<td>
+					<textarea style="width:98%; height:200px; font-family:Monaco, 'Courier New', courier, monospace;">{{data_structure}}</textarea>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+{% endblock %}
