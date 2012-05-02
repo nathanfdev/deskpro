@@ -92,7 +92,7 @@
 				{% if mode == 'advanced' %}
 					<div class="dp-email-manage-controls" style="display: none">
 						<strong>{{ phrase('user.general.choose_email') }}:</strong><br />
-						<ul>
+						<ul class="radio-list">
 							{% for email in app.user.emails %}
 								<li>
 									<label><input type="radio" name="dp_inline_email_choice" value="{{ email.email }}" {% if email.id == app.user.primary_email.id %}checked="checked"{% endif %} /> {{ email.email }}</label>
