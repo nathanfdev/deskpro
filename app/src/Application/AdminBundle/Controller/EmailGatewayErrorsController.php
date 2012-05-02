@@ -62,8 +62,6 @@ class EmailGatewayErrorsController extends AbstractController
 		                 ->setMaxResults($per_page)
 		                 ->execute();
 
-		error_log(count($sources));
-
 		return $this->render('AdminBundle:EmailGatewayErrors:index.html.twig', array(
 			'pageinfo'  => $pageinfo,
 			'count'     => $count,
