@@ -46,6 +46,7 @@ class NewNews
 	public $content = '';
 
 	public $slug;
+	public $labels_json;
 	public $labels = array();
 	public $attach = array();
 
@@ -77,10 +78,21 @@ class NewNews
 		$cat = $this->_em->find('DeskPRO:NewsCategory', $this->category_id);
 		$news->category = $cat;
 
-		$news->getLabelManager()->setLabelsArray($this->labels);
-
 		$this->_em->persist($news);
 		$this->_em->flush();
+
+		if ($this->labels_json) {
+			$this->labels = @json_decode($this->labels_json);
+			if (!is_array($this->labels)) {
+				$this->labels = array();
+			}
+		}
+
+		if ($this->labels) {
+			$news->getLabelManager()->setLabelsArray($this->labels);
+			$this->_em->flush();
+		}
+
 		$this->_em->commit();
 
 		$this->_news = $news;

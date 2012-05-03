@@ -65,6 +65,9 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 			data: formData,
 			dataType: 'json',
 			context: this,
+			complete: function() {
+				this.wrapper.parent().removeClass('loading');
+			},
 			success: function(data) {
 
 				if (data.error) {

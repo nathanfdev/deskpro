@@ -52,10 +52,7 @@ class NewFeedback extends AbstractType
 		$builder->add('status_code', 'text');
 		$builder->add('slug', 'text');
 
-		$builder->add('labels', 'collection', array(
-			'type' => 'text',
-			'required' => false,
-		));
+		$builder->add('labels_json', 'hidden');
     }
 
 	public function getDefaultOptions(array $options)

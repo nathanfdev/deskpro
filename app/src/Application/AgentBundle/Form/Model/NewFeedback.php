@@ -46,6 +46,7 @@ class NewFeedback
 	public $content;
 
 	public $slug;
+	public $labels_json;
 	public $labels = array();
 
 	protected $_feedback;
@@ -75,11 +76,23 @@ class NewFeedback
 
 		$cat = $this->_em->find('DeskPRO:FeedbackCategory', $this->category_id);
 		$feedback->category = $cat;
-
-		$feedback->getLabelManager()->setLabelsArray($this->labels);
-
 		$this->_em->persist($feedback);
 		$this->_em->flush();
+
+		if ($this->labels_json) {
+			error_log($this->labels_json);
+			$this->labels = @json_decode($this->labels_json);
+			error_log(print_r($this->labels,1));
+			if (!is_array($this->labels)) {
+				$this->labels = array();
+			}
+		}
+
+		if ($this->labels) {
+			$feedback->getLabelManager()->setLabelsArray($this->labels);
+			$this->_em->flush();
+		}
+
 		$this->_em->commit();
 
 		$this->_feedback = $feedback;

@@ -46,6 +46,7 @@ class NewDownload
 	public $content;
 
 	public $slug;
+	public $labels_json;
 	public $labels = array();
 	public $attach = null;
 
@@ -77,13 +78,22 @@ class NewDownload
 		$cat = $this->_em->find('DeskPRO:DownloadCategory', $this->category_id);
 		$download->category = $cat;
 
-		$download->getLabelManager()->setLabelsArray($this->labels);
-
-        $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
-        $download->blob = $blob;
-
+		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
+		$download->blob = $blob;
 		$this->_em->persist($download);
-		$this->_em->flush();
+
+		if ($this->labels_json) {
+			$this->labels = @json_decode($this->labels_json);
+			if (!is_array($this->labels)) {
+				$this->labels = array();
+			}
+		}
+
+		if ($this->labels) {
+			$download->getLabelManager()->setLabelsArray($this->labels);
+			$this->_em->flush();
+		}
+
 		$this->_em->commit();
 
 		$this->_download = $download;

@@ -52,10 +52,7 @@ class NewDownload extends AbstractType
 		$builder->add('category_id', 'text');
 		$builder->add('slug', 'text');
 
-		$builder->add('labels', 'collection', array(
-			'type' => 'text',
-			'required' => false,
-		));
+		$builder->add('labels_json', 'hidden');
 
         $builder->add('attach', 'hidden');
     }

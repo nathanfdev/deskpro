@@ -61,7 +61,7 @@ class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * After a new association is made, we need to make sure the def table has this
 	 * record.
-	 * 
+	 *
 	 */
 	public function syncWithDef()
 	{
@@ -85,10 +85,10 @@ class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->isMappedSuperclass = true; 
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE); 
-		$metadata->setPrimaryTable(array( 'name' => 'LabelAssocAbstract', )); 
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT); 
+		$metadata->isMappedSuperclass = true;
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setPrimaryTable(array( 'name' => 'LabelAssocAbstract', ));
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->addLifecycleCallback('syncWithDef', 'postPersist');
 	}
 }

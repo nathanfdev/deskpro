@@ -59,9 +59,14 @@ class LabelBlob extends LabelAssocAbstract
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'labels_blobs', ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'labels_blobs',
+			'indexes' => array(
+				'label_idx' => array('columns' => array('label'))
+			)
+		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+		$metadata->mapManyToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'id' => true, 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapField(array( 'fieldName' => 'label', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'label', 'id' => true, ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 	}
 }

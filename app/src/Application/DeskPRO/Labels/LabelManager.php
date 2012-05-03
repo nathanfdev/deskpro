@@ -129,7 +129,9 @@ class LabelManager
 
 		foreach ($labels_raw as $label) {
 			$label = self::normalizeLabel($label);
-			$labels[] = $label;
+			if ($label) {
+				$labels[] = $label;
+			}
 		}
 
 		$existing_labels = $this->getLabelsArray();
