@@ -134,11 +134,19 @@ class ArticleCategory extends AbstractCategoryRepository
 			$searcher->setPersonContext($person_context);
 			$searcher->addTerm(ArticleSearch::TERM_CATEGORY_SPECIFIC, 'is', $cid);
 			$searcher->addTerm(ArticleSearch::TERM_STATUS, 'is', 'published');
-
 			$counts[$cid] = $searcher->getCount();
 		}
 
 		$counts = $this->getTotalCounts($counts);
+
+		// Need to do a total count separately because articles exist in multiple cats,
+		// we cant use that to do a tally
+		$counts['0'] = 0;
+
+		$searcher = new ArticleSearch();
+		$searcher->setPersonContext($person_context);
+		$searcher->addTerm(ArticleSearch::TERM_STATUS, 'is', 'published');
+		$counts['0_total'] = $searcher->getCount();
 
 		return $counts;
 	}

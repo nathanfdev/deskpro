@@ -127,7 +127,7 @@ class ArticleSearch extends SearcherAbstract
 	 */
 	public function getCount()
 	{
-		$sql = "SELECT COUNT(*) FROM articles ";
+		$sql = "SELECT COUNT(DISTINCT id) FROM articles ";
 		$parts = $this->getSqlParts();
 		$order_by = $this->getOrderByPart();
 
