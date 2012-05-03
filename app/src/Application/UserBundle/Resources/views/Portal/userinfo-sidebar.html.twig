@@ -29,13 +29,13 @@
 						<dl>
 							<dt>{{ phrase('user.general.email_address') }}</dt>
 							<dd>
-								<input type="text" value="" name="email" id="dp_login_email" size="40" tabindex="1" />
+								<input type="text" value="" name="email" id="dp_login_email" size="40" />
 							</dd>
 						</dl>
 						<div class="dp-login-section">
 							<dl>
 								<dt>{{ phrase('user.general.password') }} <em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.general.lost_qm') }}</a></em></dt>
-								<dd><input type="password" value="" name="password" id="dp_login_password" size="40" tabindex="2" /></dd>
+								<dd><input type="password" value="" name="password" id="dp_login_password" size="20" /></dd>
 							</dl>
 							<div class="dp-btn-row">
 								<input class="dp-btn" type="submit" value="{{ phrase('user.general.log_in') }}" />
