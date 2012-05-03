@@ -95,7 +95,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 	},
 
 	handleDepChange: function() {
-		this.setDepartment(depId);
+		this.setDepartment(this.depSelect.val());
 	},
 
 	setDepartment: function(department_id) {

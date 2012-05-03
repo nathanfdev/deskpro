@@ -1,13 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" class="dp-simple-iframe">
+<html id="dp_html" xmlns="http://www.w3.org/1999/xhtml" lang="en" class="dp-simple-iframe">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{{ phrase('user.general.deskpro') }}</title>
-	{% include 'UserBundle:Common:resources.html.twig' %}
+	{% include 'UserBundle::layout-resources.html.twig' %}
 	{% block head %}{% endblock %}
 </head>
 <body class="dp-simple-iframe">
 <script type="text/javascript">document.body.className += " with-js";</script>
-<div id="deskpro">{% block content %}{% endblock %}</div>
+<div id="dp">{% block content %}{% endblock %}</div>
 </body>
 </html>
