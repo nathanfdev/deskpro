@@ -38,6 +38,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\Output;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Process\Process;
 
 use Application\DeskPRO\App;
 
@@ -49,6 +51,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 		$this->addOption('reset-routing', null, InputOption::VALUE_NONE, "Deletes cached routing so it will be regenerated next load");
 		$this->addOption('reset-templates', null, InputOption::VALUE_NONE, "Deletes compiled template files");
 		$this->addOption('reset-cache', null, InputOption::VALUE_NONE, "Deletes the `cache` table");
+		$this->addOption('find-unused-templates', null, InputOption::VALUE_NONE, "Tries to find unused templates");
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -77,6 +80,58 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 		} else if ($input->getOption('reset-templates')) {
 			App::getDb()->exec("TRUNCATE TABLE cache");
 			$output->writeln("Done");
+		} else if ($input->getOption('find-unused-templates')) {
+			return $this->executeFindUnusedTemplates($input, $output);
+		}
+	}
+
+	protected function executeFindUnusedTemplates(InputInterface $input, OutputInterface $output)
+	{
+		$out = null;
+		exec('ack --help', $out);
+		$out = implode(' ', $out);
+		if (!$out || strpos($out, 'ACK_OPTIONS') === false) {
+			$output->writeln('This tool requires `ack`. See http://betterthangrep.com/');
+			return 1;
+		}
+
+		$paths = array(
+			'AdminBundle'      => DP_ROOT.'/src/Application/AdminBundle/Resources/views',
+			'AgentBundle'      => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
+			'DeskPRO'          => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
+			'ReportBundle'     => DP_ROOT.'/src/Application/ReportBundle/Resources/views',
+			'UserBundle'       => DP_ROOT.'/src/Application/UserBundle/Resources/views',
+			'BillingBundle'    => DP_ROOT.'/src/Application/BillingBundle/Resources/views',
+		);
+
+		foreach ($paths as $bundle => $dir) {
+			$finder = new \Symfony\Component\Finder\Finder();
+			$finder->files()->name('*.twig')->in($dir);
+
+			foreach ($finder as $file) {
+				/** @var \Symfony\Component\Finder\SplFileinfo $file */
+
+				$filepath = $file->getRealPath();
+
+				$tplname = str_replace($dir . '/', ':', $filepath);
+				$tplname = str_replace('/', ':', $tplname);
+				if (substr_count($tplname, ':') < 2) {
+					$tplname = ':' . $tplname; // for layouts that are in top dir, MyBundle::layout
+				}
+				$tplname = $bundle . $tplname;
+
+				$out = null;
+				$cmd = 'ack -r --literal --count --no-filename --max-count=1 -1 ' . escapeshellarg($tplname) . ' ' . DP_ROOT.'/src ' . DP_ROOT.'/sys';
+				exec($cmd,$out);
+				if (!$out) $out = array(0);
+				$out = implode(' ', $out);
+				$out = (int)$out[0];
+
+				if (!$out) {
+					echo "Template appears to be unused: " . $tplname;
+					echo "\n";
+				}
+			}
 		}
 	}
 }
