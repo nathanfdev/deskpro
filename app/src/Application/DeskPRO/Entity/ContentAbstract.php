@@ -331,14 +331,35 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		return implode($sep, $names);
 	}
 
+	public function getVoteStats()
+	{
+		$x = $this->num_ratings - abs($this->total_rating);
+
+		if ($x % 2 == 1) {
+			$x++; // never happens with correct data, this just error corrects
+		}
+
+		if ($this->total_rating >= 0) {
+			$up   = ($x / 2) + $this->total_rating;
+			$down =  ($x / 2);
+		} else {
+			$up   = ($x / 2);
+			$down = ($x / 2) + abs($this->total_rating);
+		}
+
+		return array('up' => $up, 'down' => $down);
+	}
+
 	public function getUpVotes()
 	{
-		return $this->total_rating;
+		$stats = $this->getVoteStats();
+		return $stats['up'];
 	}
 
 	public function getDownVotes()
 	{
-		return $this->num_ratings - $this->total_rating;
+		$stats = $this->getVoteStats();
+		return $stats['down'];
 	}
 
 	public function getRatingPercent()

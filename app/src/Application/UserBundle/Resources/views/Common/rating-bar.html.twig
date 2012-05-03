@@ -14,7 +14,7 @@
 	</form>
 	{% if app.getSetting('user.show_ratings') and content_object.num_ratings >= app.getSetting('user.show_ratings') %}
 		<div class="dp-show-ratings">
-			{{ phrase('user.general.rating_x_of_y_found_helpful', {'vote_up': content_object.total_rating, 'vote_count': content_object.num_ratings}) }}
+			{{ phrase('user.general.rating_x_of_y_found_helpful', {'vote_up': content_object.up_votes, 'vote_count': content_object.num_ratings}) }}
 		</div>
 	{% endif %}
 </div>
