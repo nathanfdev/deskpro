@@ -24,4 +24,10 @@
     'user.profile.subscriptions'               => 'Subscriptions',
     'user.profile.validation_resent_to'        => 'Validation email was resent to {{email}}',
     'user.profile.votes_in_favor'              => 'Votes in favor of this feedback',
+	'user.profile.current_password_incorrect'  => 'You did not enter your correct current password.',
+	'user.profile.password_mismatch'           => 'The two password boxes did not contain the same password. Please try again.',
+	'user.profile.password_updated'            => 'Your password has been updated successfully.',
+	'user.profile.invalid_password_length'     => 'Please enter a password of at least 5 characters',
+	'user.profile.profile_saved'               => 'Your profile was updated successfully.',
+	'user.profile.invalid_name'                => 'Please enter your name.',
 );

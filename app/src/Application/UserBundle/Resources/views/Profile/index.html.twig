@@ -12,6 +12,16 @@
 			<h1>{{ phrase('user.general.profile') }}</h1>
 		</header>
 		<div class="dp-content-block dp-profile-block">
+			{% if invalid_name %}
+				<div class="dp-alert dp-alert-error">
+					{{ phrase('user.profile.invalid_name') }}
+				</div>
+			{% endif %}
+			{% if profile_saved %}
+				<div class="dp-alert dp-alert-success">
+					{{ phrase('user.profile.profile_saved') }}
+				</div>
+			{% endif %}
 			<div class="dp-control-group">
 				<div class="dp-control-label">
 					<label>{{ phrase('user.general.first_name') }}</label>
@@ -130,6 +140,27 @@
 		<h1>{{ phrase('user.general.change_password') }}</h1>
 	</header>
 	<div class="dp-content-block dp-profile-block">
+		{% if app.session.hasFlash('invalid_repeat_password') %}
+			<div class="dp-alert dp-alert-error">
+				{{ phrase('user.profile.password_mismatch') }}
+			</div>
+		{% endif %}
+		{% if app.session.hasFlash('invalid_current_password') %}
+			<div class="dp-alert dp-alert-error">
+				{{ phrase('user.profile.current_password_incorrect') }}
+			</div>
+		{% endif %}
+		{% if app.session.hasFlash('invalid_password_length') %}
+			<div class="dp-alert dp-alert-error">
+				{{ phrase('user.profile.invalid_password_length') }}
+			</div>
+		{% endif %}
+		{% if app.session.hasFlash('password_saved') %}
+			<div class="dp-alert dp-alert-success">
+				{{ phrase('user.profile.password_updated') }}
+			</div>
+		{% endif %}
+
 		<form action="{{ path('user_profile_changepassword') }}" method="post">
 			<div class="dp-box-content dp-form">
 				<div class="dp-control-group">

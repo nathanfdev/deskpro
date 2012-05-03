@@ -53,20 +53,34 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 	{
 		$form = $this->get('form.factory')->create(new ProfileType(), $this->person);
 
+		$invalid_name = false;
+		$profile_saved = false;
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));
 
-			if ($form->isValid()) {
+			$is_valid = true;
+			if (!$this->person->first_name) {
+				$is_valid = false;
+				$invalid_name = true;
+			} elseif (!in_array($this->person->timezone, \DateTimeZone::listIdentifiers())) {
+				$is_valid = false;
+			}
+
+			if ($is_valid) {
 				$this->em->persist($this->person);
 				$this->em->flush();
+
+				$profile_saved = true;
 			}
 		}
 
 		$validating_emails = $this->em->getRepository('DeskPRO:PersonEmailValidating')->getForPerson($this->person);
 
 		return $this->render('UserBundle:Profile:index.html.twig', array(
-			'form' => $form->createView(),
-			'validating_emails' => $validating_emails,
+			'form'               => $form->createView(),
+			'validating_emails'  => $validating_emails,
+			'invalid_name'       => $invalid_name,
+			'profile_saved'      => $profile_saved,
 		));
 	}
 
@@ -77,35 +91,25 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
 	public function changePasswordAction()
 	{
-		$invalid_current_password = false;
-		$invalid_repeat_password = false;
+		$password = $this->in->getString('password');
+		$password2 = $this->in->getString('password2');
 
-		if ($this->in->getBool('process')) {
+		if (!$this->person->checkPassword($this->in->getString('current_password'))) {
+			$this->session->setFlash('invalid_current_password', 1);
+		} else if ($password != $password2) {
+			$this->session->setFlash('invalid_repeat_password', 1);
+		} elseif (\Orb\Util\Strings::utf8_strlen($password) < 4) {
+			$this->session->setFlash('invalid_password_length', 1);
+		} else {
+			$this->person->setPassword($password);
+			$person = $this->person;
+			$this->em->transactional(function ($em) use ($person) {
+				$em->persist($person);
+			});
 
-			$password = $this->in->getString('password');
-			$password2 = $this->in->getString('password2');
-
-			if (!$this->person->checkPassword($this->in->getString('current_password'))) {
-				$invalid_current_password = true;
-			} else if ($password != $password2) {
-				$invalid_repeat_password = true;
-			} else {
-				$this->person->setPassword($password);
-				$person = $this->person;
-				$this->em->transactional(function ($em) use ($person) {
-					$em->persist($person);
-				});
-				return $this->redirectRoute('user_profile');
-			}
+			$this->session->setFlash('password_saved', 1);
 		}
 
-		if ($invalid_current_password OR $invalid_repeat_password) {
-			$this->session->setFlash('invalid_current_password', $invalid_current_password);
-			$this->session->setFlash('invalid_repeat_password', $invalid_repeat_password);
-			return $this->redirectRoute('user_profile');
-		}
-
-		$this->session->setFlash('password_set', true);
 		return $this->redirectRoute('user_profile');
 	}
 
