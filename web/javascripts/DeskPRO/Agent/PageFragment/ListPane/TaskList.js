@@ -106,7 +106,7 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 			var value = $(this).is(':checked');
 
 			if (value) {
-				$('.task-sub-wrap', row).slideUp();
+				$('.task-sub-wrap', row).hide();
 				row.addClass('completed');
 
 				sendUpdate(row, 'completed', 1);
@@ -114,13 +114,15 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 				updateCount('-', row);
 			} else {
 				row.removeClass('expanded');
-				$('.task-sub-wrap', row).slideDown();
+				$('.task-sub-wrap', row).show();
 				row.removeClass('completed');
 
 				sendUpdate(row, 'completed', 0);
 
 				updateCount('+', row);
 			}
+
+			self.updateUi();
 		});
 		el.on('click', '.opt-trigger.assigned_agent', function(ev) {
 			openForEl = $(this).closest('article.task');
@@ -162,15 +164,17 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 			var row = $(this).closest('article.task');
 			if (row.is('.expanded')) {
 				row.removeClass('expanded');
-				$('.task-info', row).slideUp();
-				$('.task-comments', row).slideUp();
-				$('.new-comment', row).slideUp();
+				$('.task-info', row).hide();
+				$('.task-comments', row).hide();
+				$('.new-comment', row).hide();
+				self.updateUi();
 
 			} else {
 				row.addClass('expanded');
-				$('.task-info', row).slideDown();
-				$('.task-comments', row).slideDown();
-				$('.new-comment', row).slideDown();
+				$('.task-info', row).show();
+				$('.task-comments', row).show();
+				$('.new-comment', row).show();
+				self.updateUi();
 			}
 		});
 
@@ -178,16 +182,18 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 			var row = $(this).closest('article.task');
 			var input = $('.new-comment', row);
 			if (input.is(':visible')) {
-				input.slideUp('fast');
+				input.hide();
 			} else {
-				input.slideDown('fast');
+				input.show();
 			}
+
+			self.updateUi();
 		});
 		el.on('click', '.cancel-comment-trigger', function(ev) {
 			var row = $(this).closest('article.task');
 			var btn = $('.comment-btn', row);
-			$('.new-comment', row).slideUp('fast', function() {
-			});
+			$('.new-comment', row).hide();
+			self.updateUi();
 		});
 
 		el.on('click', '.save-comment-trigger', function(ev) {
@@ -230,14 +236,14 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 					var list = $('ul.task-comment-list', row);
 					$(data.comment_li_html).appendTo(list);
 					$('.task-comments', row).show();
+					self.updateUi();
 				}
 			});
 		});
 
 		el.on('click', '.task-group header', function() {
-			$(this).parent().toggleClass('collapsed');
+			$(this).parent().toggleClass('collapsed')
+			self.updateUi();
 		});
-
-
 	}
 });

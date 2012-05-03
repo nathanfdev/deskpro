@@ -131,7 +131,7 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 		this.lastActiveTab = tabEl;
 		this.lastActiveTab.addClass(this.options.activeClassname);
 		eventData.tabContent.addClass(this.options.activeClassname).show();
-	
+
 		this.lastActiveTabContent = eventData.tabContent;
 
 		var parentContainer = eventData.tabContent.closest('.tabViewDetailContent, .with-page-fragment').first();

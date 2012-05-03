@@ -64,6 +64,7 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 			var row = $(this).closest('.task-row');
 			row.slideUp('fast', function() {
 				row.remove();
+				self.updateUi();
 			});
 		});
 		rowContainer.on('click', '.opt-trigger.assigned_agent', function(ev) {
@@ -144,6 +145,7 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 			}
 
 			rowContainer.append(row);
+			self.updateUi();
 		};
 
 		this.getEl('add_btn').on('click', addTaskRow);
