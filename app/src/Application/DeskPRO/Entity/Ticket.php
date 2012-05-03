@@ -1394,10 +1394,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function isArchived()
 	{
 		if ($this->status != 'closed') {
-			return true;
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 
