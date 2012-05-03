@@ -38,6 +38,7 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 			if (!$(this).val().trim().length) {
 				self.close();
 			} else {
+				self.activateAssist();
 				if (ev.keyCode == '32') {
 					self.searchTimer.exec(true);
 				} else {
@@ -72,13 +73,12 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 		this.isActivated = true;
 		this.updatePosition();
 
-		if (this.searchboxEl.val().trim().length && $('li', this.resultsEl).length) {
-			this.open();
+		if (!this.searchboxEl.val().trim().length) {
+			this.deactivateAssist();
 		} else {
-			this.close();
+			this.open();
+			this.searchTimer.execNow();
 		}
-
-		this.searchTimer.execNow();
 	},
 
 	open: function() {
@@ -136,7 +136,7 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 				this.resultsEl.empty();
 
 				if (!$('li', wrap).length) {
-					this.close();
+
 				} else {
 					this.resultsEl.append(wrap);
 
