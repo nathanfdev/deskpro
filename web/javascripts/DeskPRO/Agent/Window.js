@@ -1272,22 +1272,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		var self = this;
-		if (routeData.tabPlaceholderId) {
-			var errorFn = function(x, t) {
-				DeskPRO_Window.TabBar.removeTabById(routeData.tabPlaceholderId);
-
-				if (t == 'timeout') {
-					DeskPRO_Window.showAlert('The request timed out while trying to load the tab. Please try again.');
-				}
-			};
-		} else {
-			var errorFn = function(x, t) {
-				$('#dp_list_loading').removeClass('on');
-				if (t == 'timeout') {
-					DeskPRO_Window.showAlert('The request timed out. Please try again.');
-				}
-			};
-		}
 
 		if (routeData && routeData.postData) {
 			var xhr = $.ajax({
@@ -1298,7 +1282,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				success: (function(data) {
 					successFn(data);
 				}).bind(this),
-				error: errorFn,
 				noErrorOverride: true,
 				timeout: 20000
 			});
@@ -1312,7 +1295,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				success: (function(data) {
 					successFn(data);
 				}).bind(this),
-				error: errorFn,
 				noErrorOverride: true,
 				timeout: 20000
 			});
@@ -1580,9 +1562,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	_globalHandleAjaxError: function(event, xhr, ajaxOptions, errorThrown, force) {
 
+		console.log(arguments);
 		// status of 0 means aborted
 		// eg. the user hit escape
-		if (!xhr || xhr.status == 0) {
+		if (!xhr || (xhr.status == 0 && xhr.statusText != 'timeout')) {
 			// ignore it, not actually an error
 			return;
 		}
@@ -1641,8 +1624,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		};
 
-		if (xhr.status == '0' || (xhr.statusText && xhr.statusText == 'error')) {
-			this.showAlert($('<div><strong>Network Error</strong><br />The server did not respond. You can try your request again. If the problem persists, notify your administrator.</div>'));
+		if (xhr.statusText == 'timeout') {
+			this.showAlert($('<div><strong>Network Error</strong><br />The request timed out. The server may be too busy to handle your request, or you may have been disconnected from the internet. Try again.</div>'), 'network_error');
 			this.incNetworkError();
 			return;
 		}
@@ -1661,16 +1644,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		// Show overlay about failed
 		if (sn) {
+			var status = (xhr.status || '') + ' ' + (errorThrown || '') + ' ' + (xhr.statusText || '');
+			var url    = ajaxOptions.url;
+			var method = ajaxOptions.type;
+
 			var showsn = 'SN' + sn;
 			if (DESKPRO_PERSON_ISADMIN) {
 				showsn = '<a href="' + BASE_URL + 'admin/server/error-logs/SN' + sn + '">SN' + sn + '</a>';
 			}
 
-			this._showAjaxError('<div>If the error persists, give your administrator this code: ' + showsn + '</div>');
+			this._showAjaxError('<div>If the error persists, give your administrator this code: ' + showsn + '</div><div class="error-details">Here is the raw output returned from the server error:<textarea class="raw">' + Orb.escapeHtml(method) + ' ' + Orb.escapeHtml(url) + "\n" + Orb.escapeHtml(status) + "\n\n" + Orb.escapeHtml(xhr.responseText) + '</textarea></div>');
 		} else {
-			var status = (xhr.status || '') + ' ' + (errorThrown || '') + ' ' + (xhr.statusText || '');
-			var url    = ajaxOptions.url;
-			var method = ajaxOptions.type;
 			this._showAjaxError('<div class="error-details">Here is the raw output returned from the server error:<textarea class="raw">' + Orb.escapeHtml(method) + ' ' + Orb.escapeHtml(url) + "\n" + Orb.escapeHtml(status) + "\n\n" + Orb.escapeHtml(xhr.responseText) + '</textarea></div>');
 		}
 	},
@@ -1681,7 +1665,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('#network_status_tip').addClass('error');
 	},
 
-	_showAjaxError: function(message) {
+	_showAjaxError: function(message, type) {
 
 		var self = this;
 		$('#global_ajax_error_info').empty();

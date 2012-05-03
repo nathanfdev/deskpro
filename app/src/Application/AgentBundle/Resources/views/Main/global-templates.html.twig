@@ -485,13 +485,11 @@
 		<div class="overlay-title">
 			<button class="clean-white small" id="global_ajax_error_submit" style="position: absolute; right: 40px; top: 8px;">{{ phrase('agent.interface.report_this_error_to_deskpro') }}</button>
 			<h4>
-				{{ phrase('agent.general.network_error') }}
+				Error
 			</h4>
 		</div>
 		<div class="overlay-content">
-			<p class="error-desc">
-				{{ phrase('agent.general.network_error_explain') }}.
-			</p>
+			<p class="server-error-desc">{{ phrase('agent.general.server_error_explain') }}.</p>
 			<div id="global_ajax_error_info" style="font-size: 9px; margin-top: 8px;"></div>
 			<div class="loading-on">{{ phrase('agent.interface.error_report_submitting') }}</div>
 			<div class="success-on">

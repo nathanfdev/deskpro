@@ -372,6 +372,7 @@
     'agent.general.name_za'                                 => 'Name (Z-A)',
     'agent.general.network_error'                           => 'Network Error',
     'agent.general.network_error_explain'                   => 'A network exception occurred and your last request did not complete. Please try again.',
+    'agent.general.server_error_explain'                    => 'There was a server error and your last request failed. Please try again.',
     'agent.general.never'                                   => 'Never',
     'agent.general.new_article'                             => 'New Article',
     'agent.general.new_comment'                             => 'New Comment',

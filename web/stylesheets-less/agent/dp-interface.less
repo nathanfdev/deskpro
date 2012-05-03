@@ -452,20 +452,26 @@ input.tab-focus {
 }
 
 #global_ajax_error .ajax-error-overlay {
-	min-width: 550px;
-	min-height: 200px;
+	width: 600px;
+	height: 350px;
 }
 
 #global_ajax_error .error-details .raw {
 	font-size: 10px;
 	font-family: 'Monaco', 'Courier New', monospace;
-	height: 94px;
-	width: 533px;
+	height: 224px;
+	width: 580px;
 	overflow: auto;
-	border: none;
 	padding: 0;
 	margin: 0;
 	outline: none;
+	.box-shadow(none);
+	border: 1px solid #ddd;
+	margin-top: 10px;
+	background: transparent;
+	white-space: nowrap;
+	overflow: auto;
+	color: #555;
 }
 
 #global_ajax_error {
