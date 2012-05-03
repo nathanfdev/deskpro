@@ -189,7 +189,7 @@ class DataInitializer
 
 		$user = Person::newContactPerson(array(
 			'name' => 'DeskPRO Support',
-			'email' => 'support+'.mt_rand(1000,9999).'@deskpro.com',
+			'email' => 'support@deskpro.com',
 			'is_confirmed' => true,
 		));
 		$user->getPrimaryEmail()->is_validated = true;
