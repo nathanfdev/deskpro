@@ -1569,7 +1569,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var is_success = false;
 		if (xhr.status && xhr.status == 200) {
 			is_success = true;
-		} else if (xhr.statusText && xhr.statusText == 'abort') {
+		} else if (xhr.status == 0 || (xhr.statusText && xhr.statusText == 'abort')) {
 			return;
 		}
 
@@ -1584,7 +1584,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	_globalHandleAjaxError: function(event, xhr, ajaxOptions, errorThrown, force) {
 
-		console.log(arguments);
+		// status of 0 means aborted
+		// eg. the user hit escape
+		if (!xhr || xhr.status == 0) {
+			// ignore it, not actually an error
+			return;
+		}
 
 		if (xhr && xhr.status && xhr.status == '404') {
 			this.showAlert($('<div><strong>Not Found</strong><br />The page you are trying to view could not be found. It may have been moved or deleted.</div>'));
