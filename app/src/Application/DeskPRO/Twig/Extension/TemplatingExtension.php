@@ -235,9 +235,9 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function safeLinkUrlsHtml($text)
 	{
-		$text = preg_replace_callback('#(https?:\/\/[^\s<>]+)#i',function($m) {
-			$url = App::getRouter()->generate('agent_redirect_out', array('url' => $m[1]));
-			return '<a href="' . $url . '" target="_blank">' . htmlspecialchars($m[1]) . '</a>';
+		$text = preg_replace_callback('#(?<!\=(\'|"))(https?:\/\/[^\s<>]+)#i',function($m) {
+			$url = App::getRouter()->generate('agent_redirect_out', array('url' => $m[2]));
+			return '<a href="' . $url . '" target="_blank">' . htmlspecialchars($m[2]) . '</a>';
 		}, $text);
 
 		return $text;
@@ -247,9 +247,9 @@ class TemplatingExtension extends \Twig_Extension
 	{
 		$text = htmlspecialchars($text);
 
-		$text = preg_replace_callback('#(https?:\/\/[^\s]+)#i',function($m) {
-			$url = App::getRouter()->generate('agent_redirect_out', array('url' => $m[1]));
-			return '<a href="' . $url . '" target="_blank">' . htmlspecialchars($m[1]) . '</a>';
+		$text = preg_replace_callback('#(?<!\=(\'|"))(https?:\/\/[^\s]+)#i',function($m) {
+			$url = App::getRouter()->generate('agent_redirect_out', array('url' => $m[2]));
+			return '<a href="' . $url . '" target="_blank">' . htmlspecialchars($m[2]) . '</a>';
 		}, $text);
 
 		return $text;
