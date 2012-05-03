@@ -11,10 +11,10 @@ DeskPRO.Agent.Widget.SnippetViewer = new Orb.Class({
 			positionMode: 'side'
 		};
 
+		var self = this;
 		this.setOptions(options);
 
 		if (this.options.triggerElement) {
-			var self = this;
 			$(this.options.triggerElement).on('click', function(ev) {
 				ev.preventDefault();
 				ev.stopPropagation();

@@ -63,13 +63,14 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		this.wrapper.on('click', '.fadeaway', function(ev) {
 			var contentShow = $(this).closest('.content.show');
 			contentShow.toggleClass('expanded');
+			self.updateUi();
 		});
 
 		this.wrapper.on('click', '.add-snippet-trigger', function(ev) {
 			var row = $(this).closest('li');
-			$('.display', row).slideUp('fast', function() {
-				$('.input', row).slideDown('fast');
-			});
+			$('.display', row).hide()
+			$('.input', row).show();
+			self.updateUi();
 		});
 
 		this._initEditing();
@@ -109,10 +110,11 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		$('.perm-type-opt', this.newCatOverlay).on('click', function() {
 			DP.console.log('click');
 			if ($(this).val() == 'team') {
-				$('.perm-teams', self.newCatOverlay).slideDown();
+				$('.perm-teams', self.newCatOverlay).show();
 			} else {
-				$('.perm-teams', self.newCatOverlay).slideUp();
+				$('.perm-teams', self.newCatOverlay).hide();
 			}
+			self.updateUi();
 		});
 
 		this.newCatOverlayObj = new DeskPRO.UI.Overlay({
@@ -144,9 +146,9 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			ev.stopPropagation();
 
 			var row = $(this).closest('li.snippet');
-			$('.edit', row).slideUp('fast', function() {
-				$('.show', row).slideDown();
-			});
+			$('.edit', row).hide();
+			$('.show', row).show();
+			self.updateUi();
 		});
 
 		this.wrapper.on('click', '.snippet .edit-trigger', function(ev) {
@@ -155,9 +157,9 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 			var row = $(this).closest('li.snippet');
 
-			$('.show', row).slideUp('fast', function() {
-				$('.edit', row).slideDown();
-			});
+			$('.show', row).hide();
+			$('.edit', row).show();
+			self.updateUi();
 		});
 
 		this.wrapper.on('click', '.delete-snippet-trigger', function(ev) {
@@ -170,8 +172,9 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				context: this,
 				success: function(data) {
 					var el = $('.snippet-' + data.snippet_id, this.wrapper);
-					el.slideUp(function() {
+					el.fadeOut('fast', function() {
 						el.remove();
+						self.updateUi();
 					});
 				}
 			});
@@ -326,15 +329,14 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					$('.cat-' + data.category_id + ' .new-snippet', this.wrapper).before(new_row);
 					$('input[name="title"], textarea[name="snippet"]', row).val('');
 
-					$('.input', row).slideUp('fast', function() {
-						$('.display', row).slideDown('fast');
-					});
-
+					$('.input', row).hide();
+					$('.display', row).show();
 				} else {
 					$('.snippet-' + data.snippet_id, this.wrapper).replaceWith(new_row);
 				}
-				new_row.slideDown();
+				new_row.show();
 				this.processSnippetRow(new_row);
+				self.updateUi();
 			}
 		});
 	},
