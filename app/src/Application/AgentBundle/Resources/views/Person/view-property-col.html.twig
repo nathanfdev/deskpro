@@ -108,3 +108,39 @@
 	</div>
 {% endif %}
 {# /Organization Box #}
+
+{# Usergroup Box #}
+{% if app.getDataRepository('Usergroup').getUsergroupNames() %}
+	<div class="profile-box-container summary {% if person.getUsergroupIds()|length < 2 %}no-section{% endif %}" id="{{baseId}}_ug_box">
+		<header>
+			{% if perms.edit %}
+			<div class="controls">
+				<span class="edit-gear edit-trigger"></span>
+				<div class="is-loading">{{ phrase('agent.general.saving') }}</div>
+				<button class="cancel cancel-trigger" style="display: none">{{ phrase('agent.general.cancel') }}</button>
+				<button class="save save-trigger" style="display: none">{{ phrase('agent.general.save') }}</button>
+			</div>
+			{% endif %}
+			<h4>{{ phrase('agent.general.usergroups') }}</h4>
+		</header>
+		<section {% if person.getUsergroupIds()|length < 2 %}style="display:none"{% endif %}>
+			<div id="{{baseId}}_ug_display_box" class="contact-list">
+				<ul>
+					{% for id,name in app.getDataRepository('Usergroup').getUsergroupNames() %}
+						<li class="ug-row ug-row-{{ id }}" {% if not person.isMemberOfUsergroup(id) %}style="display: none"{% endif %}>{{ name }}</li>
+					{% endfor %}
+				</ul>
+			</div>
+			<div id="{{baseId}}_ug_edit_box" class="contact-list" style="display: none;">
+				<ul>
+					{% for id,name in app.getDataRepository('Usergroup').getUsergroupNames() %}
+						<div>
+							<label><input type="checkbox" value="{{ id }}" name="usergroup_ids[]" class="ug-check ug-check-{{ id }}" {% if person.isMemberOfUsergroup(id) %}checked="checked"{% endif %} /> {{ name }}</label>
+						</div>
+					{% endfor %}
+				</ul>
+			</div>
+		</section>
+	</div>
+{% endif %}
+{# /Usergroup Box #}

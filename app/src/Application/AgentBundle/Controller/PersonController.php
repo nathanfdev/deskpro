@@ -482,6 +482,34 @@ class PersonController extends AbstractController
 
 				break;
 
+			case 'set-usergroups':
+				$usergroup_ids = $this->in->getCleanValueArray('usergroup_ids', 'uint', 'discard');
+				$usergroup_ids = Arrays::removeFalsey($usergroup_ids);
+
+				if ($usergroup_ids) {
+					$usergroup_ids = array_unique($usergroup_ids);
+
+					// Make sure only valid ones are set
+					$usergroup_ids = $this->container->getDb()->fetchAllCol("
+						SELECT id
+						FROM usergroups
+						WHERE id IN (" . implode(',', $usergroup_ids).")
+							AND sys_name IS NULL
+					");
+				}
+
+				$this->container->getDb()->delete('person2usergroups', array('person_id' => $person->id));
+
+				if ($usergroup_ids) {
+					$inserts = array();
+					foreach ($usergroup_ids as $uid) {
+						$inserts[] = array('person_id' => $person->getId(), 'usergroup_id' => $uid);
+					}
+
+					$this->container->getDb()->batchInsert('person2usergroups', $inserts);
+				}
+				break;
+
 			case 'password':
 				if (!$this->person->hasPerm('agent_people.reset_password')) {
 					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();

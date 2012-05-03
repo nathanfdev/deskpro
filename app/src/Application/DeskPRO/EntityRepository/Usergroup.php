@@ -54,7 +54,7 @@ class Usergroup extends EntityRepository
 	public function getUsergroupNames($for_ids = null)
 	{
 		if ($this->_usergroup_names === null) {
-			$db = App::getDb();
+			$db = $this->_em->getConnection();
 			$this->_usergroup_names = $db->fetchAllKeyValue("
 				SELECT id, title
 				FROM usergroups

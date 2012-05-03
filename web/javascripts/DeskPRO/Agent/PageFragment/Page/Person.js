@@ -378,6 +378,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		if(this.getEl('editname_start').is('.auto-click')) {
 			this.getEl('editname_start').click();
 		}
+
+		this.initUgEditor();
 	},
 
 	refreshPropBox: function() {
@@ -593,6 +595,100 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					sect.reloadLabels();
 				}
 			}
+		});
+	},
+
+	initUgEditor: function() {
+		var self = this;
+		var ugbox = this.getEl('ug_box');
+
+		var editBtn   = ugbox.find('.edit-trigger');
+		var cancelBtn = ugbox.find('.cancel-trigger');
+		var saveBtn   = ugbox.find('.save-trigger');
+
+		var displayBox = this.getEl('ug_display_box');
+		var editBox    = this.getEl('ug_edit_box');
+
+		var showEdit = function() {
+			ugbox.removeClass('loading');
+			editBtn.hide();
+			saveBtn.show();
+			cancelBtn.show();
+			displayBox.hide();
+			editBox.show();
+			ugbox.removeClass('no-section').find('> section').show();
+		};
+		var showSaving = function() {
+			ugbox.addClass('loading');
+			editBtn.hide();
+			saveBtn.hide();
+			cancelBtn.hide();
+			displayBox.show();
+			editBox.hide();
+
+			if (ugbox.find(':checkbox.ug-check:checked').length) {
+				ugbox.find('> section').show();
+				ugbox.removeClass('no-section');
+			} else {
+				ugbox.find('> section').hide();
+				ugbox.addClass('no-section');
+			}
+		};
+		var showNormal = function() {
+			ugbox.removeClass('loading');
+			editBtn.show();
+			saveBtn.hide();
+			cancelBtn.hide();
+			displayBox.show();
+			editBox.hide();
+
+			if (ugbox.find(':checkbox.ug-check:checked').length) {
+				ugbox.find('> section').show();
+				ugbox.removeClass('no-section');
+			} else {
+				ugbox.find('> section').hide();
+				ugbox.addClass('no-section');
+			}
+		};
+
+		editBtn.on('click', function() {
+			showEdit();
+		});
+		cancelBtn.on('click', function() {
+			showNormal();
+		});
+		saveBtn.on('click', function() {
+			var formData = editBox.find(':checkbox.ug-check:checked').serializeArray();
+			formData.push({name: 'action', value: 'set-usergroups'});
+
+			ugbox.find(':checkbox.ug-check:checked').each(function() {
+				var id = $(this).val();
+				displayBox.find('li.ug-row-' + id).show();
+			});
+
+			displayBox.find('li.ug-row').hide();
+			if (ugbox.find(':checkbox.ug-check:checked').length) {
+				ugbox.find('> section').show();
+				ugbox.removeClass('no-section');
+			} else {
+				ugbox.find('> section').hide();
+				ugbox.addClass('no-section');
+			}
+
+			showSaving();
+			$.ajax({
+				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+				type: 'POST',
+				dataType: 'json',
+				data: formData,
+				context: this,
+				complete: function() {
+					showNormal();
+				},
+				success: function(data) {
+					showNormal();
+				}
+			});
 		});
 	}
 });

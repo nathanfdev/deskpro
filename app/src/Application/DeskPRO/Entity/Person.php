@@ -990,7 +990,23 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getUsergroupIds()
 	{
-		$this->getPermissionsManager()->getUsergroupIds();
+		return $this->getPermissionsManager()->getUsergroupIds();
+	}
+
+
+	/**
+	 * Check if a member is in a particular group
+	 *
+	 * @param $usergroup_id
+	 * @return bool
+	 */
+	public function isMemberOfUsergroup($usergroup_id)
+	{
+		if (is_object($usergroup_id)) {
+			$usergroup_id = $usergroup_id->getId();
+		}
+
+		return in_array($usergroup_id, $this->getUsergroupIds());
 	}
 
 

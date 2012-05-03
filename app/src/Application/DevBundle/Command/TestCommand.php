@@ -35,9 +35,6 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$url = App::get('router')->getGenerator()->generate('admin');
-
-		echo $url;
 		echo "\n";
 	}
 }

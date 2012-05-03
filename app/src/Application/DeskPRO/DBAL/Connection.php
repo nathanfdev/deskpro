@@ -197,6 +197,63 @@ class Connection extends \Doctrine\DBAL\Connection
 	}
 
 
+	/**
+	 * Builds SQL for multiple inserts in one go. All items in the values array
+	 * must be keyed the same.
+	 *
+	 * @param string $table
+	 * @param array $multiple_values
+	 */
+	public function batchInsert($table, array $multiple_values)
+	{
+		$cols = null;
+		$cols_count = 0;
+		$params = array();
+
+		$value_parts = array();
+		$value_tpl = '';
+
+		if (!$multiple_values) {
+			throw new \InvalidArgumentException("No values");
+		}
+
+		#------------------------------
+		# Validate values and build params
+		#------------------------------
+
+		foreach ($multiple_values as $vals) {
+			if ($cols === null) {
+				foreach (array_keys($vals) as $k) {
+					$cols[] = $k;
+				}
+				$cols_count = count($cols);
+				$value_tpl = '(' . implode(',', array_fill(0, $cols_count, '?')) . ')';
+			}
+
+			if (count($vals) != $cols_count) {
+				throw new \InvalidArgumentException("A value row has more columns than it should");
+			}
+
+			foreach ($cols as $c) {
+				if (!isset($vals[$c])) {
+					throw new \InvalidArgumentException("A value row is missing the `$c` column");
+				}
+
+				$params[] = $vals[$c];
+			}
+
+			$value_parts[] = $value_tpl;
+		}
+
+		#------------------------------
+		# Build sql
+		#------------------------------
+
+		$sql = "INSERT INTO `$table` (`" . implode('`,`', $cols) ."`) VALUES " . implode(',', $value_parts);
+
+		return $this->executeUpdate($sql, $params);
+	}
+
 
 	/**
 	 * Quote an array of values suitable for IN() clause.
