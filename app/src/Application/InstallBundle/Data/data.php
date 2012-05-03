@@ -17,16 +17,6 @@ $em->flush();
 # Departments
 ################################################################################
 
-##BEGIN:create_department.department1##
-if (!$IMPORT_INSTALL) {
-	$q = new \Application\DeskPRO\Entity\Department();
-	$q['title'] = 'Sales';
-	$q['is_tickets_enabled'] = true;
-	$q['is_chat_enabled'] = true;
-	$em->persist($q);
-	$em->flush();
-}
-
 ##BEGIN:create_department.department2##
 if (!$IMPORT_INSTALL) {
 	$q = new \Application\DeskPRO\Entity\Department();
@@ -37,6 +27,15 @@ if (!$IMPORT_INSTALL) {
 	$em->flush();
 }
 
+##BEGIN:create_department.department1##
+if (!$IMPORT_INSTALL) {
+	$q = new \Application\DeskPRO\Entity\Department();
+	$q['title'] = 'Sales';
+	$q['is_tickets_enabled'] = true;
+	$q['is_chat_enabled'] = true;
+	$em->persist($q);
+	$em->flush();
+}
 
 ################################################################################
 # KB

@@ -36,6 +36,9 @@ namespace Application\InstallBundle\Data;
 
 use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 
 class DataInitializer
 {
@@ -49,6 +52,11 @@ class DataInitializer
 	 */
 	protected $is_import = false;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $admin_user;
+
 	public function __construct(DeskproContainer $container)
 	{
 		$this->container = $container;
@@ -59,11 +67,26 @@ class DataInitializer
 		$this->is_import = true;
 	}
 
+	public function getAdminUser()
+	{
+		if ($this->admin_user) {
+			return $this->admin_user;
+		}
+
+		$this->admin_user = $this->container->getEm()
+				->createQuery("SELECT p FROM DeskPRO:Person p WHERE p.is_agent = true AND p.can_admin = true ORDER BY p.id DESC")
+				->setMaxResults(1)
+				->getOneOrNullResult();
+
+		return $this->admin_user;
+	}
+
 	public function run()
 	{
 		$this->runSearchIndex();
 		$this->runInitPerms();
 		$this->runInitAdminNotifications();
+		$this->runInitInitialData();
 	}
 
 	public function runInitPerms()
@@ -151,5 +174,58 @@ class DataInitializer
 				'value_array' => 'N;',
 			));
 		}
+	}
+
+	public function runInitInitialData()
+	{
+		#------------------------------
+		# Example ticket
+		#------------------------------
+
+		$department = $this->container->getEm()
+				->createQuery("SELECT d FROM DeskPRO:Department d ORDER BY d.id DESC")
+				->setMaxResults(1)
+				->getOneOrNullResult();
+
+		$user = Person::newContactPerson(array(
+			'name' => 'DeskPRO Support',
+			'email' => 'support+'.mt_rand(1000,9999).'@deskpro.com',
+			'is_confirmed' => true,
+		));
+		$user->getPrimaryEmail()->is_validated = true;
+
+		$this->container->getEm()->persist($user);
+
+		$ticket = new Ticket();
+		$ticket->creation_system = Ticket::CREATED_WEB_PERSON;
+		$ticket->person          = $user;
+		$ticket->agent           = $this->getAdminUser();
+		$ticket->department      = $department;
+		$ticket->subject         = 'Welcome to DeskPRO';
+		$ticket->status          = Ticket::STATUS_AWAITING_AGENT;
+
+		$this->container->getEm()->persist($ticket);
+
+		$message = new TicketMessage();
+		$message->person  = $user;
+		$message->ticket  = $ticket;
+		$message->message = <<<STR
+Welcome to DeskPRO!<br /><br />
+
+This is a sample ticket that demonstrates how the system will look when a user submits a new ticket. Feel free to reply, close or delete this whenever you want.<br /><br />
+
+If you run into any problems or have any questions, you can always visit our helpdesk at <a href="http://support.deskpro.com/">support.deskpro.com</a>.<br /><br />
+
+Best Regards,<br /><br />
+
+The DeskPRO Team
+STR;
+		$ticket->addMessage($message);
+
+		$this->container->getEm()->persist($message);
+
+		$this->container->getEm()->flush();
+
+		// Make sure its in ticket active
 	}
 }
