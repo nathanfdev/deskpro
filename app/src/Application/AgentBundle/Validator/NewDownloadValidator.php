@@ -29,78 +29,42 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage AgentBundle
+ * @subpackage UserBundle
  */
 
-namespace Application\AgentBundle\Form\Model;
+namespace Application\AgentBundle\Validator;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ArticleAttachment;
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity;
 
-class NewArticle
+use Orb\Util\Arrays;
+use Orb\Validator\AbstractValidator;
+use Application\AgentBundle\Form\Model\SettingsProfile;
+
+class NewDownloadValidator extends AbstractValidator
 {
-	public $title;
-	public $category_id;
-	public $status;
-	public $content;
-
-	public $slug;
-	public $labels = array();
-	public $attach = array();
-
-	protected $_article;
-
 	/**
-	 * @var \Doctrine\ORM\EntityManager
+	 * @param \Application\AgentBundle\Form\Model\NewDownload $download
+	 * @return bool
 	 */
-	protected $_em;
-
-	public function __construct(Person $person_context)
+	protected function checkIsValid($download)
 	{
-		$this->_person_context = $person_context;
-
-		$this->_em = App::getOrm();
-	}
-
-	public function save()
-	{
-		$this->_em->beginTransaction();
-
-		$article = new Article();
-		$article->person = $this->_person_context;
-		$article->setStatusCode($this->status);
-		$article->title = $this->title;
-		$article->content = $this->content ?: '';
-		$article->slug = $this->slug;
-
-		$cat = $this->_em->find('DeskPRO:ArticleCategory', $this->category_id);
-		$article->addToCategory($cat);
-
-		$article->getLabelManager()->setLabelsArray($this->labels);
-
-		// Message Attachments
-		foreach ($this->attach as $blob_id) {
-
-			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
-
-			$attach = new ArticleAttachment();
-			$attach['blob'] = $blob;
-			$attach['person'] = $this->_person_context;
-
-			$article->addAttachment($attach);
+		if (!$download->category_id) {
+			$this->addError('category_id.invalid');
 		}
 
-		$this->_em->persist($article);
-		$this->_em->flush();
-		$this->_em->commit();
+		if (!$download->title) {
+			$this->addError('title.missing');
+		}
 
-		$this->_article = $article;
-	}
+		if (!$download->status) {
+			$this->addError('status.invalid');
+		}
 
-	public function getArticle()
-	{
-		return $this->_article;
+		if ($this->errors) {
+			return false;
+		}
+
+		return true;
 	}
 }

@@ -358,6 +358,13 @@ class DownloadsController extends AbstractController
 			$form->bindRequest($this->get('request'));
 			$form->isValid();
 
+			$validator = new \Application\AgentBundle\Validator\NewDownloadValidator();
+			if (!$validator->isValid($newdownload)) {
+				return $this->createJsonResponse(array(
+					'error' => true,
+					'error_codes' => $validator->getErrorGroups()
+				));
+			}
 			$newdownload->save();
 
 			$download = $newdownload->getDownload();

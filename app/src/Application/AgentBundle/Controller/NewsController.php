@@ -325,6 +325,13 @@ class NewsController extends AbstractController
 			$form->bindRequest($this->get('request'));
 			$form->isValid();
 
+			$validator = new \Application\AgentBundle\Validator\NewNewsValidator();
+			if (!$validator->isValid($newnews)) {
+				return $this->createJsonResponse(array(
+					'error' => true,
+					'error_codes' => $validator->getErrorGroups()
+				));
+			}
 			$newnews->save();
 
 			$news = $newnews->getNews();

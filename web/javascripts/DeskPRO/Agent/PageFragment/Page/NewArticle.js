@@ -54,6 +54,11 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 	submit: function() {
 		var formData = this.form.serializeArray();
 
+		$('div.error.section', this.wrapper).removeClass('error');
+		$('.error-message-on', this.wrapper).removeClass('error-message-on');
+
+		this.wrapper.parent().addClass('loading');
+
 		$.ajax({
 			url: BASE_URL + 'agent/kb/article/new/save',
 			type: 'POST',
@@ -61,6 +66,14 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			success: function(data) {
+
+				if (data.error) {
+					Array.each(data.error_codes, function(code) {
+						this.showErrorCode(code);
+					}, this);
+					this.updateUi();
+					return;
+				}
 
 				var pending_article_id = this.getEl('pending_article_id').val();
 				if (pending_article_id) {
@@ -77,6 +90,10 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 				}
 			}
 		});
+	},
+
+	showErrorCode: function(code) {
+		$('.' + code + '.error-message', this.wrapper).addClass('error-message-on');
 	},
 
 	setTitle: function(title) {

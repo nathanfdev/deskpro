@@ -754,6 +754,14 @@ class KbController extends AbstractController
 			$form->bindRequest($this->get('request'));
 			$form->isValid();
 
+			$validator = new \Application\AgentBundle\Validator\NewArticleValidator();
+			if (!$validator->isValid($newarticle)) {
+				return $this->createJsonResponse(array(
+					'error' => true,
+					'error_codes' => $validator->getErrorGroups()
+				));
+			}
+
 			$newarticle->save();
 
 			$article = $newarticle->getArticle();

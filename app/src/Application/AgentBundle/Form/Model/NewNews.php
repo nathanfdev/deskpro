@@ -43,7 +43,7 @@ class NewNews
 	public $title;
 	public $category_id;
 	public $status;
-	public $content;
+	public $content = '';
 
 	public $slug;
 	public $labels = array();
@@ -70,7 +70,7 @@ class NewNews
 		$news = new News();
 		$news->person = $this->_person_context;
 		$news->title = $this->title;
-		$news->content = $this->content;
+		$news->content = $this->content ?: '';
 		$news->slug = $this->slug;
 		$news->setStatusCode($this->status);
 

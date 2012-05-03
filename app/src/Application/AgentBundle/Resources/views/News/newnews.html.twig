@@ -20,7 +20,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<span class="num">1</span>
 		<span class="check">{{ phrase('agent.general.done') }}</span>
 	</div>
-	<div class="content">
+	<div class="content dp-control-group>
 		<div class="col">
 			<h4>{{ phrase('agent.general.category') }}</h4>
 			{% include 'AgentBundle:Common:select-standard.html.twig' with {
@@ -33,6 +33,7 @@ pageMeta.baseId = '{{ baseId }}';
 				'categories': news_categories,
 				'selected': state.newnews.category_id
 			} %}
+			<div class="error-message category_id">Please choose a category.</div>
 		</div>
 		<div class="col">
 			<h4 class="light">{{ phrase('agent.general.status') }}</h4>
@@ -57,6 +58,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		<h4>{{ phrase('agent.general.title') }}</h4>
 		<input type="title" name="newnews[title]" id="{{baseId}}_title" value="{{ state.newnews.title }}" />
+		<div class="error-message title">Please enter a title.</div>
 	</div>
 </div>
 

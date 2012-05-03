@@ -54,13 +54,29 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 	submit: function() {
 		var formData = this.form.serializeArray();
 
+		$('div.error.section', this.wrapper).removeClass('error');
+		$('.error-message-on', this.wrapper).removeClass('error-message-on');
+
+		this.wrapper.parent().addClass('loading');
+
 		$.ajax({
 			url: BASE_URL + 'agent/feedback/new/save',
 			type: 'POST',
 			data: formData,
 			dataType: 'json',
 			context: this,
+			complete: function() {
+				this.wrapper.parent().removeClass('loading');
+			},
 			success: function(data) {
+				if (data.error) {
+					Array.each(data.error_codes, function(code) {
+						this.showErrorCode(code);
+					}, this);
+					this.updateUi();
+					return;
+				}
+
 				if (data.success) {
 					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/feedback/view/' + data.feedback_id);
 					this.closeSelf();
@@ -69,6 +85,10 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 				}
 			}
 		});
+	},
+
+	showErrorCode: function(code) {
+		$('.' + code + '.error-message', this.wrapper).addClass('error-message-on');
 	},
 
 	//#################################################################

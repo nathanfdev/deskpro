@@ -43,6 +43,7 @@ pageMeta.baseId = '{{ baseId }}';
 				'categories': article_categories,
 				'selected': state.newarticle.category_id|default(0)
 			} %}
+			<div class="error-message category_id">Please choose a category.</div>
 		</div>
 		<div class="col">
 			<h4 class="light">{{ phrase('agent.general.status') }}</h4>
@@ -67,6 +68,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		<h4>{{ phrase('agent.general.title') }}</h4>
 		<input type="title" name="newarticle[title]" id="{{baseId}}_title" value="{{ state.newarticle.title }}" />
+		<div class="error-message title">Please enter a title.</div>
 	</div>
 </div>
 

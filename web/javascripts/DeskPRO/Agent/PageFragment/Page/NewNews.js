@@ -54,21 +54,39 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 	submit: function() {
 		var formData = this.form.serializeArray();
 
+		$('div.error.section', this.wrapper).removeClass('error');
+		$('.error-message-on', this.wrapper).removeClass('error-message-on');
+
+		this.wrapper.parent().addClass('loading');
+
 		$.ajax({
 			url: BASE_URL + 'agent/news/new/save',
 			type: 'POST',
 			data: formData,
 			dataType: 'json',
 			context: this,
+			complete: function() {
+				this.wrapper.parent().removeClass('loading');
+			},
 			success: function(data) {
-				if (data.success) {
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/news/' + data.news_id);
-					this.closeSelf();
-				} else {
-					alert('There was an error with the form');
+				if (data.error) {
+					Array.each(data.error_codes, function(code) {
+						this.showErrorCode(code);
+					}, this);
+					this.updateUi();
+					return;
 				}
+
+				if (data.news_id) {
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/news/' + data.news_id);
+				}
+				this.closeSelf();
 			}
 		});
+	},
+
+	showErrorCode: function(code) {
+		$('.' + code + '.error-message', this.wrapper).addClass('error-message-on');
 	},
 
 	//#################################################################

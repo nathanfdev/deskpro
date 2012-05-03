@@ -70,7 +70,7 @@ class NewDownload
 		$download = new Download();
 		$download->person = $this->_person_context;
 		$download->title = $this->title;
-		$download->content = $this->content;
+		$download->content = $this->content ?: '';
 		$download->slug = $this->slug;
 		$download->setStatusCode($this->status);
 

@@ -840,6 +840,13 @@ class FeedbackController extends AbstractController
 			$form->bindRequest($this->get('request'));
 			$form->isValid();
 
+			$validator = new \Application\AgentBundle\Validator\NewFeedbackValidator();
+			if (!$validator->isValid($newfeedback)) {
+				return $this->createJsonResponse(array(
+					'error' => true,
+					'error_codes' => $validator->getErrorGroups()
+				));
+			}
 			$newfeedback->save();
 
 			$feedback = $newfeedback->getFeedback();
