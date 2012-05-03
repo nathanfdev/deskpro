@@ -2,13 +2,6 @@
 <div id="dp_nav">
 	<div id="dp_nav_sections" class="deskproPane">
 		<ul>
-			{% if js_debug.useTestSection %}
-				<li id="test_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Test">
-					<div class="count-badge navCounterRed" style="display: none"><span></span></div>
-					<a><span class="devNavIcon">{{ phrase('agent.interface.dev') }}</span></a>
-				</li>
-			{% endif %}
-
 			{% if app.user.hasPerm('agent_tickets.use') %}
 				<li class="dpNavActive" id="tickets_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Tickets">
 					<div class="count-badge navCounterRed" style="display: none"><span></span></div>

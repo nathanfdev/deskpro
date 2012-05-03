@@ -923,10 +923,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			handler = this.sections['twitter_section'];
 		}
 
-		if (!handler && this.DEBUG.useTestSection) {
-			handler = this.sections['test_section'];
-		}
-
 		if (!handler) {
 			DP.console.error('List page fragment has no section: %s: %o', page.getMetaData('fragmentClass', ''), page);
 			return;
