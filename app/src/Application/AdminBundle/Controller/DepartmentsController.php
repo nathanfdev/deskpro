@@ -64,8 +64,8 @@ class DepartmentsController extends AbstractController
 		$agents     = $this->em->getRepository('DeskPRO:Person')->getAgents();
 		$teams      = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 		$usergroups = $this->em->getRepository('DeskPRO:Usergroup')->findAll();
-		$current_options_tickets = $this->em->getRepository('DeskPRO:DepartmentPermission')->getAllPermissionsForAllDepartments('tickets');
-		$current_options_chat = $this->em->getRepository('DeskPRO:DepartmentPermission')->getAllPermissionsForAllDepartments('chat');
+		$current_options_tickets = $this->em->getRepository('DeskPRO:DepartmentPermission')->getAllPersonPermissionsForAllDepartments('tickets');
+		$current_options_chat = $this->em->getRepository('DeskPRO:DepartmentPermission')->getAllPersonPermissionsForAllDepartments('chat');
 
 		return $this->render('AdminBundle:Departments:list.html.twig', array(
 			'all_departments' => $all_departments,
@@ -90,7 +90,7 @@ class DepartmentsController extends AbstractController
 		$this->db->executeUpdate("
 			DELETE
 			FROM department_permissions
-			WHERE department_id = ? AND app = ?
+			WHERE department_id = ? AND app = ? AND person_id IS NOT NULL
 		", array($department_id, $app));
 
 		$agent_ids = $this->in->getCleanValueArray('agent_ids', 'uint', 'discard');

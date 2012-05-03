@@ -71,12 +71,12 @@ class DepartmentPermission extends EntityRepository
 	/**
 	 * @return array
 	 */
-	public function getAllPermissionsForAllDepartments($app)
+	public function getAllPersonPermissionsForAllDepartments($app)
 	{
 		return App::getDb()->fetchAllGrouped("
 			SELECT department_id, person_id
 			FROM department_permissions
-			WHERE app = ?
+			WHERE app = ? AND person_id IS NOT NULL
 		", array($app), 'department_id', null, 'person_id');
 	}
 }

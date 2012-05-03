@@ -103,7 +103,7 @@ class AgentsController extends AbstractController
 
 		$agents_to_deps = $this->db->fetchAllGrouped("
 			SELECT department_id, person_id
-			FROM department_permissions
+			FROM department_permissions WHERE person_id IS NOT NULL
 		", array(), 'person_id', null, 'department_id');
 
 		$overrides_counts = $this->db->fetchAllKeyValue("
