@@ -434,10 +434,14 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$info = $log_item->toArray();
 			if (isset($info['exception'])) {
 				$install_logger->log('[InstallTables] Failed: ' . $info['exception']->getCode() . ' ' . $info['exception']->getMessage(), 'err');
-				$install_logger->log('[InstallTables] Failed Query: ' . $info['sql'], 'debug');
+				if (isset($info['sql'])) {
+					$install_logger->log('[InstallTables] Failed Query: ' . $info['sql'], 'debug');
+				}
 				$info['error'] = $info['exception']->getMessage();
 			} else {
-				$install_logger->log('[InstallTables] Success Query: ' . $info['sql'], 'debug');
+				if (isset($info['sql'])) {
+					$install_logger->log('[InstallTables] Success Query: ' . $info['sql'], 'debug');
+				}
 			}
 			unset($info['message_line']);
 			unset($info['datetime']);
