@@ -18,14 +18,14 @@ pageMeta.perPage = 50;
 pageMeta.peopleResultIds = {{ person_ids|json_encode|raw }};
 </script>
 {% if people|length or selected_letter != '*' %}
-	<div id="people-list-alpha-list">
-		<ul class="source-list">
+	<div id="people-list-alpha-list" {% if not people|length %}class="no-results"{% endif %}>
+		<ul>
 			{% for letter in alphabet %}
-				<li class="nav-item
-				{% if letter.title == selected_letter %}nav-selected{% endif %}
+				<li class="
+				{% if letter.title == selected_letter %}on{% endif %}
 				{% if loop.first %}alpha_list_first{% elseif loop.last %}alpha_list_last{% endif %}"
 				data-route="listpane:{{ path('agent_peoplesearch_customfilter', letter.params ) }}">
-					<span class="title">{{ letter.title }}</span>
+					<span class="title">{% if letter.title == '*' %}&bull;{% else %}{{ letter.title }}{% endif %}</span>
 				</li>
 			{% endfor %}
 		</ul>
