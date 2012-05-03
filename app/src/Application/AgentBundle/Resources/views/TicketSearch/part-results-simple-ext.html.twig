@@ -1,4 +1,4 @@
-<section class="search-reuslts page-set" data-page="{{page}}">
+<section class="search-reuslts page-set" data-page="{{page}}" xmlns="http://www.w3.org/1999/html">
 {% for ticket in tickets %}
 
 {% set ticket_person = ticket.person %}
@@ -10,6 +10,7 @@
 	<div class="top-row">
 		<div class="top-row-left">
 			<h3>
+				<span class="obj-id">#{{ ticket.id }}</span>
 				<a class="subject click-through">
 					{{ ticket.subject }}
 				</a>
