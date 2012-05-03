@@ -208,15 +208,8 @@ class PersonController extends AbstractController
             //$vcard->setPhoto($person->gravatar_url);
 
 
-            if($person->organization_id) {
-                $organisation = $this->em->find('DeskPRO:Organization', $person->organization_id);
-            }
-            else {
-                $organisation = '';
-            }
-
-            if(!empty($organisation)) {
-                $vcard->addOrganization($person['organisation']['name']);
+            if($person->organization) {
+				$vcard->addOrganization($person->organization->name);
             }
 
             if(!empty($person['organization_position'])) {
