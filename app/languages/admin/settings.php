@@ -65,4 +65,5 @@
     'admin.settings.your_site_url'                          => 'Your Site URL',
     'admin.settings.your_website_name'                      => 'Your website name',
     'admin.settings.your_website_url'                       => 'Your website URL',
+	'admin.settings.could_not_find_php_use_real'            => 'We could not detect the path to PHP. Be sure to use the real path to PHP for your server.',
 );

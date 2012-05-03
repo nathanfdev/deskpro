@@ -297,6 +297,25 @@ class SettingsController extends AbstractController
 
 	public function quickSetupAction()
 	{
+		$is_import = $this->container->getSetting('core.deskpro3importer') ?: false;
+
+		if (!$this->container->getSetting('core.done_data_initializer')) {
+			$data_init = new \Application\InstallBundle\Data\DataInitializer($this->container);
+			if ($is_import) {
+				$data_init->setImportMode();
+			}
+
+			$this->db->beginTransaction();
+			try {
+				$data_init->run();
+				$this->container->getSettingsHandler()->setSetting('core.done_data_initializer', 1);
+				$this->db->commit();
+			} catch (\Exception $e) {
+				$this->db->rollback();
+				throw $e;
+			}
+		}
+
 		if (!$this->container->getSetting('core.rewrite_urls') && !$this->container->getSetting('core.done_rewrite_urls_check')) {
 			$this->db->replace('settings', array(
 				'name' => 'core.done_rewrite_urls_check',
@@ -334,8 +353,6 @@ class SettingsController extends AbstractController
 		")->setMaxResults(1)->getOneOrNullResult();
 		$incoming_email_form = $this->forward('AdminBundle:EmailGateways:editAccount', array('id' => $initial_pop ? $initial_pop->getId() : '0'), array('_partial' => 'setup'))->getContent();
 
-		$is_import = $this->container->getSetting('core.deskpro3importer') ?: false;
-
 		// Mark as done
 		if ($this->in->getBool('done')) {
 			$pass = true;
@@ -360,10 +377,13 @@ class SettingsController extends AbstractController
 			}
 		}
 
+		$php_path = $this->container->getPhpBinaryPath();
+
 		return $this->render('AdminBundle:Settings:quick-setup.html.twig', array(
 			'outgoing_email_form' => $outgoing_email_form,
 			'incoming_email_form' => $incoming_email_form,
 			'is_import' => $is_import,
+			'php_path' => $php_path,
 
 			// Existing values
 			'license_code' => $this->container->getSetting('core.license'),

@@ -566,8 +566,6 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 				$this->getOrm()->flush();
 			}
 
-			$data_init = new \Application\InstallBundle\Data\DataInitializer($this->container);
-			$data_init->run();
 			$this->getOrm()->getConnection()->commit();
 		} catch (\Exception $e) {
 			$this->getLogger()->log("[InstallData] Exception {$e->getCode()} {$e->getMessage()}", 'err');

@@ -239,8 +239,6 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
                 $this->getOrm()->flush();
             }
 
-            $data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
-            $data_init->run();
             $this->getOrm()->getConnection()->commit();
         } catch (\Exception $e) {
             $this->getLogger()->log("[InstallData] Exception {$e->getCode()} {$e->getMessage()}", 'err');

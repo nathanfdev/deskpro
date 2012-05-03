@@ -666,4 +666,5 @@
 
 	'agent.general.download_btn' => 'Download',
 	'agent.general.view' => 'View',
+	'agent.general.note_attn' => 'Note',
 );

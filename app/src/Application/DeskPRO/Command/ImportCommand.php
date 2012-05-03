@@ -604,10 +604,6 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				'value' => \Orb\Util\Strings::random(20, \Orb\Util\Strings::CHARS_KEY),
 			));
 
-			$data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
-			$data_init->setImportMode();
-			$data_init->run();
-
 			echo "\n";
 			echo "Proceeding with the import.";
 			echo "\n";

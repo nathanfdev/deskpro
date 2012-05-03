@@ -594,9 +594,17 @@ class TicketChangeTracker extends ChangeTracker
 
 		$this->ticket->unsetTicketLogger();
 
-		$this->getTriggerExecutorInspector()->runPre();
+		$this->getTriggerExecutorInspector();
+		if (!$this->isExtraSet('is_install')) {
+			$this->getTriggerExecutorInspector()->runPre();
+		}
+
 		$this->getListUpdater()->run();
-		$this->getTriggerExecutorInspector()->run();
+
+		if (!$this->isExtraSet('is_install')) {
+			$this->getTriggerExecutorInspector()->run();
+		}
+
 		$this->getLogInspector()->run();
 
 		$person_activity = new \Application\DeskPRO\Tickets\TicketChangeInspector\PersonActivity($this);

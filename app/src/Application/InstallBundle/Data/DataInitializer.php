@@ -91,30 +91,34 @@ class DataInitializer
 
 	public function runInitPerms()
 	{
-		// During import the default cats arent created
-		if (!$this->is_import) {
-			// By default everyone can see the default categories
-			$this->container->getDb()->insert('article_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
-			$this->container->getDb()->insert('news_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
-			$this->container->getDb()->insert('download_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
-			$this->container->getDb()->insert('feedback_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
-
-			// Initial agent has access to all deps
-			$this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'person_id' => 1, 'app' => 'tickets'));
-			$this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'person_id' => 1, 'app' => 'chat'));
-			$this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'person_id' => 1, 'app' => 'tickets'));
-			$this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'person_id' => 1, 'app' => 'chat'));
-
-			// The everyone group has access to all deps too
-			$this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'usergroup_id' => 1, 'app' => 'tickets'));
-			$this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'usergroup_id' => 1, 'app' => 'chat'));
-			$this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'usergroup_id' => 1, 'app' => 'tickets'));
-			$this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'usergroup_id' => 1, 'app' => 'chat'));
+		if ($this->is_import) {
+			return;
 		}
+
+		// By default everyone can see the default categories
+		$this->container->getDb()->insert('article_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
+		$this->container->getDb()->insert('news_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
+		$this->container->getDb()->insert('download_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
+		$this->container->getDb()->insert('feedback_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
+
+		// Initial agent has access to all deps
+		$this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'person_id' => 1, 'app' => 'tickets'));
+		$this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'person_id' => 1, 'app' => 'chat'));
+		$this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'person_id' => 1, 'app' => 'tickets'));
+		$this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'person_id' => 1, 'app' => 'chat'));
+
+		// The everyone group has access to all deps too
+		$this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'usergroup_id' => 1, 'app' => 'tickets'));
+		$this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'usergroup_id' => 1, 'app' => 'chat'));
+		$this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'usergroup_id' => 1, 'app' => 'tickets'));
+		$this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'usergroup_id' => 1, 'app' => 'chat'));
 	}
 
 	public function runSearchIndex()
 	{
+		if ($this->is_import) {
+			return;
+		}
 		$types = array(
 			array('article',   'articles',  'DeskPRO:Article'),
 			array('download',  'downloads', 'DeskPRO:Download'),
@@ -134,6 +138,10 @@ class DataInitializer
 
 	public function runInitAdminNotifications()
 	{
+		if ($this->is_import) {
+			return;
+		}
+
 		$agent = \Application\DeskPRO\App::getOrm()->createQuery("SELECT p FROM DeskPRO:Person p WHERE p.can_admin = 1 ORDER BY p.id ASC")
 			->setMaxResults(1)
 			->getOneOrNullResult();
@@ -178,6 +186,10 @@ class DataInitializer
 
 	public function runInitInitialData()
 	{
+		if ($this->is_import) {
+			return;
+		}
+
 		#------------------------------
 		# Example ticket
 		#------------------------------
@@ -197,6 +209,7 @@ class DataInitializer
 		$this->container->getEm()->persist($user);
 
 		$ticket = new Ticket();
+		$ticket->getTicketLogger()->recordExtra('is_install', true);
 		$ticket->creation_system = Ticket::CREATED_WEB_PERSON;
 		$ticket->person          = $user;
 		$ticket->agent           = $this->getAdminUser();
@@ -225,7 +238,5 @@ STR;
 		$this->container->getEm()->persist($message);
 
 		$this->container->getEm()->flush();
-
-		// Make sure its in ticket active
 	}
 }

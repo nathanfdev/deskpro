@@ -25,8 +25,15 @@
 		<tr>
 			<td>
 				{{ phrase('admin.settings.cron_setup_linux_edit_file') }}
-				<pre class="code-box">* * * * * exampleuser {{ php_path }} -q {{ path }}/cron.php</pre>
-				<div class="small-note-box">{{ phrase('admin.settings.cron_setup_linux_edit_file_user') }}</div>
+				<pre class="code-box">* * * * * exampleuser {{ php_path|default('/path/to/php') }} -q {{ path }}/cron.php</pre>
+				<div class="small-note-box">
+					{{ phrase('admin.settings.cron_setup_linux_edit_file_user') }}
+					{% if not php_path %}
+						<br />
+						<strong>{{ phrase('agent.general.note_attn') }}:</strong>
+						{{ phrase('admin.settings.could_not_find_php_use_real') }}
+					{% endif %}
+				</div>
 				<br />
 				<p>
 					<a href="{{ get_service_url('dp.kb.install.cron') }}">{{ phrase('admin.settings.cron_detailed_instructions') }}</a>
