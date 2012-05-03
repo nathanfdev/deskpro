@@ -474,11 +474,13 @@ class TicketsController extends AbstractController
 	{
 		$ticket  = $this->getTicketOr404($ticket_ref);
 		$message = $this->em->getRepository('DeskPRO:TicketMessage')->getLastAgentReply($ticket);
-		$exist_feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, false);
+		$exist_feedback = null;
 		$no_feedback = false;
 
-		if ($message->person->id == $this->person->id) {
+		if (!$message || $message->person->id == $this->person->id) {
 			$no_feedback = true;
+		} else {
+			$exist_feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, false);
 		}
 
 		if ($this->in->getBool('process')) {
