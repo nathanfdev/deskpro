@@ -547,7 +547,7 @@ class AgentsController extends AbstractController
 	/**
 	 * Edit a team
 	 */
-	public function editTeamAction($team_id)
+	public function editTeamAction($team_id = 0)
 	{
 		if ($team_id) {
 			$team = $this->getAgentTeamOr404($team_id);
@@ -587,17 +587,19 @@ class AgentsController extends AbstractController
 
 		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
-		$usergroup_values = $this->db->fetchAllKeyValue("
-			SELECT name, value
-			FROM permissions
-			LEFT JOIN usergroups ON (usergroups.id = permissions.id)
-			WHERE usergroups.id = ? AND value = 1
-		", array($team_id), 'usergroup_id', 'name', 'value');
+		$team_members = array();
+		if ($team_id) {
+			$team_members = App::getDb()->fetchAllKeyValue("
+				SELECT person_id, 1
+				FROM agent_team_members
+				WHERE team_id = ?
+			", array($team_id), 0, 1);
+		}
 
 		return $this->render('AdminBundle:Agents:edit-team.html.twig', array(
 			'team' => $team,
 			'agents' => $agents,
-			'usergroup_values' => $usergroup_values,
+			'team_members' => $team_members,
 		));
 	}
 
