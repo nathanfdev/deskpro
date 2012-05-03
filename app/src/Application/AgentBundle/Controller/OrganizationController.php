@@ -347,7 +347,7 @@ class OrganizationController extends AbstractController
 		}
 
 		// Editing values
-		foreach ($this->in->getCleanValueArray('new_contact_data') as $id => $input) {
+		foreach ($this->in->getCleanValueArray('contact_data') as $id => $input) {
 			if (!isset($org->contact_data[$id])) {
 				continue;
 			}

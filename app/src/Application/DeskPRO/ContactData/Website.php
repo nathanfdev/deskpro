@@ -51,6 +51,11 @@ class Website extends AbstractContactData
 	public function applyFormData(array $input, ContactDataAbstract $contact_record)
 	{
 		$contact_record->comment = isset($input['comment']) ? $input['comment'] : '';
+
+		if (!preg_match('#^(.*?)://#', $input['url'])) {
+			$input['url'] = 'http://' . $input['url'];
+		}
+
 		$contact_record->field_1 = $input['url'];
 	}
 

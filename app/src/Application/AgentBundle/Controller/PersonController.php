@@ -156,8 +156,8 @@ class PersonController extends AbstractController
 
 			$org_contact_data = array();
 			foreach ($person->organization->contact_data as $cd) {
-				if (!isset($contact_data[$cd->contact_type])) {
-					$contact_data[$cd->contact_type] = array();
+				if (!isset($org_contact_data[$cd->contact_type])) {
+					$org_contact_data[$cd->contact_type] = array();
 				}
 				$org_contact_data[$cd->contact_type][] = $cd->getTemplateVars();
 			}
@@ -667,7 +667,7 @@ class PersonController extends AbstractController
 			}
 
 			// Editing values
-			foreach ($this->in->getCleanValueArray('new_contact_data') as $id => $input) {
+			foreach ($this->in->getCleanValueArray('contact_data') as $id => $input) {
 				if (!isset($person->contact_data[$id])) {
 					continue;
 				}

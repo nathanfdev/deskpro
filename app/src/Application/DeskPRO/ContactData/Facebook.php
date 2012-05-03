@@ -62,6 +62,10 @@ class Facebook extends AbstractContactData
 		} else {
 			$contact_record->field_2 = Strings::extractRegexMatch('#(facebook\.com.*?)$#', $input['profile_url'], $m);
 		}
+
+		if (!$contact_record->field_2) {
+			$contact_record->field_2 = '';
+		}
 	}
 
 	/**
@@ -74,7 +78,7 @@ class Facebook extends AbstractContactData
 		return array(
 			'comment'     => $contact_record->comment,
 			'profile_url' => $contact_record->field_1,
-			'display'     => $contact_record->field_2
+			'display'     => $contact_record->field_2 ?: $contact_record->field_1
 		);
 	}
 }

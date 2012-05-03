@@ -112,11 +112,11 @@
 		 # IM
 		 ############################################}
 
-		 <div class="row-type im {% if contact_data.facebook|length %}with-values{% endif %}">
+		 <div class="row-type im {% if contact_data.instant_message|length %}with-values{% endif %}">
 			<h4>{{ phrase('agent.people.im') }}</h4>
 			<div class="contact-info">
 				<ul>
-					{% for contact in contact_data.facebook %}
+					{% for contact in contact_data.instant_message %}
 						<li data-remove-name="remove_contact_data[]" data-remove-value="{{ contact.id }}">
 							<div class="controls">
 								<span class="remove">x</span>
@@ -131,7 +131,7 @@
 									<option {% if contact.service == 'gtalk' %} {% endif %} value="gtalk">{{ phrase('agent.general.gtalk') }}</option>
 									<option {% if contact.service == 'other' %} {% endif %} value="other">{{ phrase('agent.general.other') }}</option>
 								</select>
-								<input type="text" size="15" class="single-input" name="contact_data[{{ contact.id }}][username]" value="{{ contact.url }}" placeholder="{{ phrase('agent.people.im_account_placeholder') }}" />
+								<input type="text" size="15" class="single-input" name="contact_data[{{ contact.id }}][username]" value="{{ contact.username }}" placeholder="{{ phrase('agent.people.im_account_placeholder') }}" />
 							</div>
 							<div class="label">
 								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('agent.general.add_a_label') }}" />
@@ -162,7 +162,7 @@
 						<input type="text" size="15" class="single-input" name="new_contact_data[instant_message][%id%][username]" value="" placeholder="{{ phrase('agent.people.im_account_placeholder') }}" />
 					</div>
 					<div class="label">
-						<input type="text" size="8" name="new_contact_data[phone][%id%][instant_message]" value="" placeholder="{{ phrase('agent.general.add_a_label') }}" />
+						<input type="text" size="8" name="new_contact_data[instant_message][%id%][instant_message]" value="" placeholder="{{ phrase('agent.general.add_a_label') }}" />
 					</div>
 				<br class="clear" /></li>
 			</script>
@@ -182,7 +182,7 @@
 								<span class="remove">x</span>
 							</div>
 							<div class="input">
-								<input type="text" size="15" class="single-input" name="contact_data[{{ contact.id }}][username]" value="{{ contact.url }}" placeholder="{{ phrase('agent.general.twitter_username') }}" />
+								<input type="text" size="15" class="single-input" name="contact_data[{{ contact.id }}][username]" value="{{ contact.profile_url }}" placeholder="{{ phrase('agent.general.twitter_username') }}" />
 								<input type="hidden" name="contact_data[{{ contact.id }}][display_feed]" value="1" />
 							</div>
 							<div class="label">
@@ -206,7 +206,7 @@
 						<input type="hidden" name="new_contact_data[twitter][%id%][display_feed]" />
 					</div>
 					<div class="label">
-						<input type="text" size="8" name="new_contact_data[phone][%id%][twitter]" value="" placeholder="{{ phrase('agent.general.add_a_label') }}" />
+						<input type="text" size="8" name="new_contact_data[twitter][%id%][twitter]" value="" placeholder="{{ phrase('agent.general.add_a_label') }}" />
 					</div>
 				<br class="clear" /></li>
 			</script>
@@ -226,7 +226,7 @@
 								<span class="remove">x</span>
 							</div>
 							<div class="input">
-								<input type="text" size="15" name="contact_data[{{ contact.id }}][profile_url]" value="{{ contact.url }}" placeholder="{{ phrase('agent.general.linkedin_url') }}" />
+								<input type="text" size="15" name="contact_data[{{ contact.id }}][profile_url]" value="{{ contact.profile_url }}" placeholder="{{ phrase('agent.general.linkedin_url') }}" />
 							</div>
 							<div class="label">
 								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('agent.general.add_a_label') }}" />
@@ -268,7 +268,7 @@
 								<span class="remove">x</span>
 							</div>
 							<div class="input">
-								<input type="text" size="15" class="single-input" name="contact_data[{{ contact.id }}][profile_url]" value="{{ contact.url }}" placeholder="{{ phrase('agent.general.facebook') }} URL" />
+								<input type="text" size="15" class="single-input" name="contact_data[{{ contact.id }}][profile_url]" value="{{ contact.profile_url }}" placeholder="{{ phrase('agent.general.facebook') }} URL" />
 							</div>
 							<div class="label">
 								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('agent.general.add_a_label') }}" />
