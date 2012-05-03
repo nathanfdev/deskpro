@@ -354,7 +354,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			transition: 'none'
 		});
 
-		$('.log-row', messageEl).each(function() {
+		$('.log-row:not(.has-init)', messageEl).each(function() {
+			$(this).addClass('has-init');
 			var expandBtn = $('.expand', this);
 			var el = $(this);
 			expandBtn.on('click', function() {
