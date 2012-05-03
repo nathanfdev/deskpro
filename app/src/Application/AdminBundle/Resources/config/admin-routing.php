@@ -1230,13 +1230,6 @@ $collection->add('admin_usergroups_delete', new Route(
 	array()
 ));
 
-$collection->add('admin_usergroups_browse', new Route(
-	'/usergroups/{id}/browse/{page}',
-	array('_controller' => 'AdminBundle:Usergroups:browse', 'page' => 1),
-	array('id' => '\\d+', 'page' => '\\d+'),
-	array()
-));
-
 ################################################################################
 # Products
 ################################################################################

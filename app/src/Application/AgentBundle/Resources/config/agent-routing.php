@@ -497,6 +497,14 @@ $collection->add('agent_person_ajaxsavecustomfields', new Route(
 	array()
 ));
 
+$collection->add('agent_peoplesearch_usergroup', new Route(
+	'/people-search/usergroup/{id}',
+	array('_controller' => 'AgentBundle:PeopleSearch:showUsergroup'),
+	array(),
+	array('fragment_name' => 'usergroup', 'fragment_type' => 'list')
+));
+
+
 $collection->add('agent_peoplesearch_customfilter', new Route(
 	'/people-search/search/{letter}',
 	array('_controller' => 'AgentBundle:PeopleSearch:search', 'letter' => '*'),

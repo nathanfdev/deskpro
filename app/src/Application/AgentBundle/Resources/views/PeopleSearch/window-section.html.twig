@@ -20,7 +20,7 @@
 					class="usergroup-{{id}} nav-usergroup-{{id}} is-nav-item"
 					id="people_nav_ug_{{id}}"
 					data-usergroup-id="{{id}}"
-					data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][type]=person_usergroup&amp;terms[0][op]=is&amp;terms[0][usergroup]={{id}}"
+					data-route="listpane:{{ path('agent_peoplesearch_usergroup', {id: id}) }}"
 				>
 					<h3 class="title">
 						<span class="list-counter">{{ usergroup_counts[id]|default(0) }}</span>

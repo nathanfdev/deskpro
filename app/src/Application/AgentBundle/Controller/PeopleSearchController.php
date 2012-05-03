@@ -272,7 +272,7 @@ class PeopleSearchController extends AbstractController
 	# search
 	############################################################################
 
-	public function searchAction($letter)
+	public function searchAction($letter, $use_terms = null, $set_view_name = null)
 	{
 		$result_cache = false;
 		if ($this->in->getUint('cache_id')) {
@@ -312,6 +312,9 @@ class PeopleSearchController extends AbstractController
 
 			foreach ($set_terms_map as $name => $info) {
 				$in_val = $this->container->getIn()->getCleanValue('set_term.'.$name, 'raw');
+				if (!$in_val && $use_terms && isset($use_terms[$name])) {
+					$in_val = $use_terms[$name];
+				}
 				if (is_string($in_val)) {
 					$in_val = trim($in_val);
 				} elseif (is_array($in_val)) {
@@ -461,7 +464,31 @@ class PeopleSearchController extends AbstractController
         $titles['languages'] = $this->em->getRepository('DeskPRO:Language')->getTitles();
 		$vars['titles'] = $titles;
 
+		if (!$set_view_name) {
+			$set_view_name = $this->in->getStrSimple('view_name');
+		}
+
+		if ($set_view_name) {
+			$vars['view_name'] = $set_view_name;
+
+			if (strpos($vars['view_name'], '.') !== false) {
+				list ($view_name_type, $view_name_data) = explode('.', $vars['view_name'], 2);
+				$vars['view_name_type'] = $view_name_type;
+				$vars['view_name_data'] = (int)$view_name_data;
+			}
+		}
+
 		return $this->_getResponseForPeople('list', $result_cache['id'], $results_helper, $vars);
+	}
+
+	public function showUsergroupAction($id)
+	{
+		$usergroup = $this->em->find('DeskPRO:Usergroup', $id);
+		if (!$usergroup || $usergroup->is_agent_group) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		return $this->searchAction('*', array('person_usergroup' => $id), 'usergroup.' . $id);
 	}
 
 	protected function applyLetterToSearcher($letter, $searcher)

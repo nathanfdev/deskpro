@@ -1,19 +1,22 @@
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 <script>
-pageMeta.title = {{ page_title|json_encode|raw }};
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PeopleList';
-pageMeta.viewTypeUrl = '{{ path('agent_peoplesearch_customfilter') }}?cache_id={{cache_id}}&view_type=$view_type';
-pageMeta.pageUrl = '{{ path('agent_peoplesearch_customfilter') }}?partial=1&cache_id={{cache_id}}&page=$page';
-pageMeta.refreshUrl = '{{ path('agent_peoplesearch_customfilter') }}?cache_id={{cache_id}}';
-pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
-pageMeta.fetchResultsUrl = '{{ path('agent_peoplesearch_getpage') }}';
+pageMeta.viewTypeUrl = '{{ path('agent_peoplesearch_customfilter') }}?cache_id={{cache_id}}&view_type=$view_type&view_name={{ view_name }}';
+pageMeta.pageUrl = '{{ path('agent_peoplesearch_customfilter') }}?partial=1&cache_id={{cache_id}}&page=$page&view_name={{ view_name }}';
+pageMeta.refreshUrl = '{{ path('agent_peoplesearch_customfilter') }}?cache_id={{cache_id}}&view_name={{ view_name }}';
+pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs', {view_name: view_name}) }}';
+pageMeta.fetchResultsUrl = '{{ path('agent_peoplesearch_getpage', {view_name: view_name}) }}';
 pageMeta.resultId = {{cache_id}};
 pageMeta.cache_id = {{cache_id}};
 {% if not people %}
 	pageMeta.noResults = true;
 {% endif %}
 
-pageMeta.url_fragment = '{{ url_fragment('agent_peoplesearch_customfilter', {'letter': selected_letter}) }}';
+{% if view_name_data and view_name_type == 'usergroup' %}
+	pageMeta.url_fragment = '{{ url_fragment('agent_peoplesearch_usergroup', {'id': view_name_data}) }}';
+{% else %}
+	pageMeta.url_fragment = '{{ url_fragment('agent_peoplesearch_customfilter', {'letter': selected_letter}) }}';
+{% endif %}
 pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
 pageMeta.fetchResultsUrl = '{{ path('agent_peoplesearch_getpage', {'view_type': 'list'}) }}';
 pageMeta.viewType = 'list';

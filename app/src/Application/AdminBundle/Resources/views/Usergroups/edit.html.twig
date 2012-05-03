@@ -12,7 +12,7 @@
 {% endblock %}
 {% block page %}
 
-<form action="{{ path('admin_usergroups_edit', {'id': usergroup.id|default(0)}) }}" method="post">
+<form action="{{ path('admin_usergroups_edit', {'id': usergroup.id|default(0)}) }}" method="post" class="with-form-validator">
 {{ form_token('edit_usergroup') }}
 
 <input type="hidden" name="process" value="1" />
@@ -23,8 +23,12 @@
 			<div class="dp-form-label">
 				<label>{{ phrase('agent.general.title') }}</label>
 			</div>
-			<div class="dp-form-input">
-				{{ form_widget(form.title) }}
+			<div class="dp-form-input  dp-form-row">
+				{{ form_widget(form.title, { attr: {
+					'data-field-validators': 'DeskPRO.Form.LengthValidator',
+					'data-min-len': 1
+				}}) }}
+				<div class="dp-error-explain dp-error-len_too_short">Please enter a title</div>
 			</div>
 		</div>
 
@@ -37,14 +41,16 @@
 			</div>
 		</div>
 
-		<div class="dp-form-row">
-			<div class="dp-form-label">
-				<label>{{ phrase('agent.general.number_of_members') }}</label>
+		{% if usergroup.id %}
+			<div class="dp-form-row">
+				<div class="dp-form-label">
+					<label>{{ phrase('agent.general.number_of_members') }}</label>
+				</div>
+				<div class="dp-form-input">
+					{{ member_count|default('0') }} {% if member_count %}(<a href="{{ path('agent') }}#app.people,usergroup:{{ usergroup.id }}">{{ phrase('admin.user_groups.browse') }}</a>){% endif %}
+				</div>
 			</div>
-			<div class="dp-form-input">
-				{{ member_count|default('0') }} (<a href="{{ path('admin_usergroups_browse', {'id': usergroup.id})}}">{{ phrase('admin.user_groups.browse') }}</a>)
-			</div>
-		</div>
+		{% endif %}
 	</div>
 
 	<div class="dp-form-section">

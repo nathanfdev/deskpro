@@ -161,8 +161,8 @@ class UsergroupsController extends AbstractController
 		#------------------------------
 
 		$form = $this->get('form.factory')->createNamedBuilder('form', 'usergroup');
-		$form->add('title', 'text', array('data' => $usergroup['title']));
-		$form->add('note', 'textarea', array('data' => $usergroup['note']));
+		$form->add('title', 'text', array('data' => $usergroup['title'], 'required' => false));
+		$form->add('note', 'textarea', array('data' => $usergroup['note'], 'required' => false));
 
 		$member_count = 0;
 		if ($id) {
@@ -223,60 +223,5 @@ class UsergroupsController extends AbstractController
 		});
 
 		return $this->redirectRoute('admin_usergroups');
-	}
-
-
-	############################################################################
-	# members
-	############################################################################
-
-	public function browseAction($id, $page = 1)
-	{
-		$usergroup = null;
-		if ($id) {
-			$usergroup = $this->em->getRepository('DeskPRO:Usergroup')->find($id);
-			if (!$usergroup || $usergroup->sys_name) {
-				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-			}
-		}
-
-		if ($id && $id != 1) {
-			$member_count = $this->db->fetchColumn("
-				SELECT COUNT(*)
-				FROM person2usergroups
-				WHERE usergroup_id = ?
-			", array($id));
-		} else {
-			$member_count = $this->db->fetchColumn("
-				SELECT COUNT(*)
-				FROM people
-			", array($id));
-		}
-
-		$per_page = 100;
-		$pageinfo = \Orb\Util\Numbers::getPaginationPages($member_count, $page, $per_page);
-		$page = $pageinfo['curpage'];
-		$offset = ($page - 1) * $per_page;
-
-		$q = $this->em->createQueryBuilder();
-		$q->from('DeskPRO:Person', 'p')
-		  ->select('p')
-		  ->leftJoin('p.usergroups', 'u')
-		  ->orderBy('p.id', 'DESC')
-		  ->setFirstResult($offset)
-		  ->setMaxResults($per_page);
-
-		if ($id) {
-			$q->where('u.id = :usergroup_id')->setParameter('usergroup_id', $id);
-		}
-
-		$people = $q->getQuery()->execute();
-
-		return $this->render('AdminBundle:Usergroups:browse.html.twig', array(
-			'usergroup '=> $usergroup,
-			'people' => $people,
-			'pageinfo' => $pageinfo,
-			'member_count' => $member_count
-		));
 	}
 }
