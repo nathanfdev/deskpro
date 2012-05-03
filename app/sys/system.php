@@ -116,7 +116,10 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 	{
 		global $DP_CONFIG;
 
-		if (session_id() !== '') {
+		if (session_id() != '') {
+			if ($this->container->isServiceInitialized('session')) {
+				$this->container->get('session')->save();
+			}
 			session_write_close();
 		}
 

@@ -66,6 +66,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 	 */
 	protected $session;
 
+	protected $last_save_hash = null;
+
     public function __construct(\Doctrine\ORM\EntityManager $em, $options = null)
     {
         $this->em = $em;
@@ -274,9 +276,18 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 		// because the manager has lost its reference to the session state
 		$id = Session::getIdFromCode($id);
 
+		$save_hash = md5($id . $data);
+
+		// No changes were made to the session
+		if ($this->last_save_hash && $this->last_save_hash == $save_hash) {
+			return true;
+		}
+
+		$this->last_save_hash = $save_hash;
+
 		$sess_rec = array();
 		$sess_rec['data'] = $data;
-		$sess_rec['date_last'] = date('Y-m-d H:i:s', time());
+		$sess_rec['date_last'] = isset($_SESSION['_symfony2']['attributes']['dplast']) ? date('Y-m-d H:i:s', $_SESSION['_symfony2']['attributes']['dplast']) : date('Y-m-d H:i:s', time());
 		$sess_rec['is_person'] = 0;
 		$sess_rec['person_id'] = null;
 		$sess_rec['visitor_id'] = (isset($_SESSION['_symfony2']['attributes']['dpvid']) ? $_SESSION['_symfony2']['attributes']['dpvid'] : null);

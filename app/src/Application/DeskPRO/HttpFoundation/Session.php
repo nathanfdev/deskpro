@@ -146,7 +146,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 	}
 
 
-
 	/**
 	 * Get the current visitor record
 	 *

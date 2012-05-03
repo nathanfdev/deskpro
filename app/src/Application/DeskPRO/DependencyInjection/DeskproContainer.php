@@ -97,6 +97,23 @@ class DeskproContainer extends Container
 		parent::__construct($parameterBag);
 	}
 
+
+	/**
+	 * Checks if a service has been initialized.
+	 *
+	 * has() checks if a service has been initialized OR if it has a definition to create it.
+	 * This just checks if a service has been initialized. You use this when you want to see
+	 * if a certain service has been created already, and you'd use has() to see if a service can be used.
+	 *
+	 * @param $id
+	 * @return bool
+	 */
+	public function isServiceInitialized($id)
+	{
+		return isset($this->services[$id]);
+	}
+
+
 	/**
 	 * This returns a reference to a system service.
 	 *
