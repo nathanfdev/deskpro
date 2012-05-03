@@ -34,8 +34,10 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 
 		this.getEl('org_searchbox').on('orgsearchboxclick orgsearchboxcreate', function() {
 			self.getEl('org_pos').show();
+			self.updateUi();
 		}).on('orgsearchboxcleared', function() {
 			self.getEl('org_pos').hide();
+			self.updateUi();
 		});
 
         DeskPRO_Window.util.fileupload(el, {
