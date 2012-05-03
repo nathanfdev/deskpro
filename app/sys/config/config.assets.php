@@ -138,7 +138,6 @@ $CONFIG['agent_window_sections'] = array(
         'javascripts/DeskPRO/Agent/WindowElement/Section/Tasks.js',
         'javascripts/DeskPRO/Agent/WindowElement/Section/Deals.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/Twitter.js',
-		'javascripts/DeskPRO/Agent/WindowElement/Section/Test.js',
 	)
 );
 
