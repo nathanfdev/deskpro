@@ -409,6 +409,11 @@ $CONFIG['admin_admin_ui'] = array(
 		'javascripts/DeskPRO/Admin/RuleBuilder/TemplateEdit.js',
 		'javascripts/DeskPRO/Agent/RuleBuilder/DateTerm.js',
 		'javascripts/DeskPRO/Agent/RuleBuilder/LabelsTerm.js',
+		'javascripts/DeskPRO/FormValidator/FormValidator.js',
+		'javascripts/DeskPRO/FormValidator/FieldValidator.js',
+		'javascripts/DeskPRO/FormValidator/LengthValidator.js',
+		'javascripts/DeskPRO/FormValidator/EmailValidator.js',
+		'javascripts/DeskPRO/FormValidator/RegexValidator.js',
 	)
 );
 
@@ -548,6 +553,7 @@ $CONFIG['user_common'] = array(
 		'javascripts/DeskPRO/FormValidator/FieldValidator.js',
 		'javascripts/DeskPRO/FormValidator/LengthValidator.js',
 		'javascripts/DeskPRO/FormValidator/EmailValidator.js',
+		'javascripts/DeskPRO/FormValidator/RegexValidator.js',
 		'javascripts/DeskPRO/FormValidator/TwoLevelSelectValidator.js',
 	)
 );

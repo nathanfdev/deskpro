@@ -31,7 +31,7 @@ $(document).ready(function() {
 {% endblock %}
 {% block page %}
 
-<form action="{{ path('admin_tickets_filters_edit', {'filter_id': filter.id|default(0)}) }}" method="post" class="dp-form">
+<form action="{{ path('admin_tickets_filters_edit', {'filter_id': filter.id|default(0)}) }}" method="post" class="dp-form with-form-validator">
 <input type="hidden" name="process" value="1" />
 
 <div class="dp-form-row">
@@ -52,13 +52,20 @@ $(document).ready(function() {
 	<div class="dp-form-label">
 		<label>{{ phrase('agent.general.title') }}</label>
 	</div>
-	<div class="dp-form-input">
-		<input type="text" name="filter[title]" value="{{filter.title}}" />
+	<div class="dp-form-input dp-form-row">
+		<input
+			type="text"
+			name="filter[title]"
+			value="{{filter.title}}"
+			data-field-validators="DeskPRO.Form.LengthValidator"
+			data-min-len="1"
+		/>
+		<div class="dp-error-explain dp-error-pattern_no_match">Please enter a title</div>
 
 		{% if not filter.id %}
-		<input type="hidden" name="filter[person_id]" value="{{filter.person.id|default(0)}}" />
-		<input type="hidden" name="filter[agent_team_id]" value="{{filter.agent_team.id|default(0)}}" />
-		<input type="hidden" name="filter[is_global]" value="{{ filter.is_global + 0 }}" />
+			<input type="hidden" name="filter[person_id]" value="{{filter.person.id|default(0)}}" />
+			<input type="hidden" name="filter[agent_team_id]" value="{{filter.agent_team.id|default(0)}}" />
+			<input type="hidden" name="filter[is_global]" value="{{ filter.is_global + 0 }}" />
 		{% endif %}
 	</div>
 </div>

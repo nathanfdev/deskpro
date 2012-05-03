@@ -320,6 +320,11 @@ DeskPRO.Admin.Window = new Orb.Class({
 			triggerElement: '#new_dashboard_trigger',
 			contentElement: '#new_dashboard_overlay'
 		});
+
+		$('form.with-form-validator').each(function() {
+			var v = new DeskPRO.Form.FormValidator($(this));
+			$(this).data('form-validator-inst', v);
+		});
 	},
 
 	updatePageNavPos: function() {

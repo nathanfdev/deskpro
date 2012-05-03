@@ -115,4 +115,6 @@
 	'admin.general.email_headers' => 'Email Headers',
 	'admin.general.gateway_source_id' => 'Gateway Source {{id}}',
 	'admin.general.download_raw_source' => 'Download Raw Source',
+	'admin.general.you_have_not_created_categories' => 'You have not created any categories yet. Click the "Add New Category" button to create one now.',
+	'admin.general.you_have_not_created_filters' => 'You have not created any filters yet. Click the "Add New Filter" button to create one now.',
 );
