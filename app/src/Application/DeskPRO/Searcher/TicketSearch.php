@@ -630,7 +630,10 @@ class TicketSearch extends SearcherAbstract
 					});
 
 					if ($choice && (!is_array($choice) || !in_array('0', $choice))) {
-						$choice = App::getDataService('Department')->getIdsInTree($choice, true);
+						foreach ((array)$choice as $id) {
+							$choice = array_merge($choice, App::getDataService('Department')->getIdsInTree($id, true));
+						}
+						$choice = array_unique($choice, \SORT_NUMERIC);
 					}
 
 					if (count($choice) == 1) {
