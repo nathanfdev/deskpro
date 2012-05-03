@@ -47,7 +47,7 @@
 					<label>{{ phrase('agent.general.number_of_members') }}</label>
 				</div>
 				<div class="dp-form-input">
-					{{ member_count|default('0') }} {% if member_count %}(<a href="{{ path('agent') }}#app.people,usergroup:{{ usergroup.id }}">{{ phrase('admin.user_groups.browse') }}</a>){% endif %}
+					{{ member_count|default('0') }} {% if member_count %}(<a href="{{ app.getRequest().getBaseUrl() }}/agent/#app.people,usergroup:{{ usergroup.id }}">{{ phrase('admin.user_groups.browse') }}</a>){% endif %}
 				</div>
 			</div>
 		{% endif %}
