@@ -131,14 +131,18 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 		this.lastActiveTab = tabEl;
 		this.lastActiveTab.addClass(this.options.activeClassname);
 		eventData.tabContent.addClass(this.options.activeClassname).show();
-
+	
 		this.lastActiveTabContent = eventData.tabContent;
 
 		var parentContainer = eventData.tabContent.closest('.tabViewDetailContent, .with-page-fragment').first();
 		if (parentContainer) {
-			parentContainer.find('.with-scroll-handler').each(function() {
-				$(this).data('scroll_handler').updateSize();
-			});
+			if (parentContainer.data('page-fragment')) {
+				parentContainer.data('page-fragment').updateUi();
+			} else {
+				parentContainer.find('.with-scroll-handler').each(function() {
+					$(this).data('scroll_handler').updateSize();
+				});
+			}
 		}
 
 		this.fireEvent('tabSwitch', eventData);
