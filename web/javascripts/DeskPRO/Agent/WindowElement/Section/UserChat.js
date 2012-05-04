@@ -38,6 +38,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		DeskPRO_Window.getSectionData('chat_section', (function(data) {
 			this._initSection(data);
 		}).bind(this));
+
+		this.openingChatTimeout = {};
 	},
 
 	_initSection: function(data) {
@@ -228,6 +230,12 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			delete this.dismissedChats[data.conversation_id];
 		}
 
+		// See handleNewChat comment about this
+		if (this.openingChatTimeout[data.conversation_id]) {
+			window.clearTimeout(this.openingChatTimeout[data.conversation_id]);
+			delete this.openingChatTimeout[data.conversation_id];
+		}
+
 		this.handleUpdateCounts();
 	},
 
@@ -243,7 +251,19 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			}
 		} else {
 			if (data.agent_id == DESKPRO_PERSON_ID && !this.isChatOpen(data.conversation_id)) {
-				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
+				var self = this;
+				// Its possible we opened the chat, then closed+unassigned ourselves before the last
+				// poll was done. This would create a series of client messages like:
+				// - Assigned (from opening the chat)
+				// - Unassigned (from leaving)
+				// Then the CM would be delievered, and right here we'd see the assigned-to-me message
+				// and attempt to re-open the chat we just closed.
+				// So we timeout so we can add some logic to see if the chat was closed before running this,
+				// this is just a easy way to process CM messages before running the open (since they're executed in sequence)
+				this.openingChatTimeout[data.conversation_id] = window.setTimeout(function() {
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
+					delete delete self.openingChatTimeout[data.conversation_id];
+				}, 1000);
 			}
 		}
 
@@ -271,6 +291,12 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				name: data.author_name,
 				message: data.subject_line
 			});
+		}
+
+		// See handleNewChat comment about this
+		if (data.old_agent_id == DESKPRO_PERSON_ID && this.openingChatTimeout[data.conversation_id]) {
+			window.clearTimeout(this.openingChatTimeout[data.conversation_id]);
+			delete this.openingChatTimeout[data.conversation_id];
 		}
 
 		this.handleUpdateCounts();
@@ -321,8 +347,12 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		$('#new_user_chat_alert_' + data.conversation_id).remove();
 		DeskPRO_Window.getMessageBroker().sendMessage('chat_convo.' + data.conversation_id + '.reassigned', data);
 
+		// See handleNewChat comment about this
 		if (data.agent_id == DESKPRO_PERSON_ID && !this.isChatOpen(data.conversation_id)) {
-			DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
+			this.openingChatTimeout[data.conversation_id] = window.setTimeout(function() {
+				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
+				delete delete self.openingChatTimeout[data.conversation_id];
+			}, 1000);
 		}
 
 		this.handleUpdateCounts();

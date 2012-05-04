@@ -403,6 +403,18 @@ class UserChatController extends AbstractController
 			$chat_manager->personLeft($convo, $this->person);
 		}
 
+		switch ($this->in->getString('action')) {
+			case 'unassign':
+				if ($convo->agent) {
+					$chat_manager->unassignAgent($convo);
+				}
+				break;
+
+			case 'end':
+				$chat_manager->endChat($convo, $this->person);
+				break;
+		}
+
 		return $this->createJsonCmResponse();
 	}
 

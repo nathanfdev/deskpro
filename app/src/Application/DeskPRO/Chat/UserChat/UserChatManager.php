@@ -256,6 +256,10 @@ class UserChatManager
 	 */
 	public function personJoined(ChatConversation $convo, Person $person)
 	{
+		if ($convo->hasParticipant($person)) {
+			return;
+		}
+
 		$this->em->beginTransaction();
 		try {
 

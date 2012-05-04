@@ -10,6 +10,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 	initPage: function(el) {
 		var self = this;
 
+		var OBJ_ID = this.OBJ_ID;
 		this.el = el;
 
 		if (!this.meta.isEnded) {
@@ -43,8 +44,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			});
 
 			this.addEvent('destroy', function() {
+				DeskPRO_Window.getMessageBroker().removeTaggedListeners(OBJ_ID)
 				DeskPRO_Window.getMessageChanneler().unsubscribeChannel('chat_convo.' + self.meta.conversation_id);
-
 				if (self.meta.isEnded) {
 					return;
 				}
@@ -63,12 +64,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_convo.' + this.meta.conversation_id);
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.newmessage', this.handleNewMessageCm, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.hidden_newmessage', this.handleNewMessageCm, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.ended', this.chatHasEnded, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.reassigned', function(data) { this.chatReassignedTo(data.agent_id); }, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.unassigned', function(data) { this.chatReassignedTo(data.agent_id); }, this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.usertyping', function(data) { this.userTyping(data); }, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.newmessage', this.handleNewMessageCm, this, [this.OBJ_ID]);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.hidden_newmessage', this.handleNewMessageCm, this, [this.OBJ_ID]);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.ended', this.chatHasEnded, this, [this.OBJ_ID]);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.reassigned', function(data) { this.chatReassignedTo(data.agent_id); }, this, [this.OBJ_ID]);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.unassigned', function(data) { this.chatReassignedTo(data.agent_id); }, this, [this.OBJ_ID]);
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.usertyping', function(data) { this.userTyping(data); }, this, [this.OBJ_ID]);
 
 		//------------------------------
 		// Snippets Viewer
@@ -356,14 +357,17 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 	leaveConvo: function(after) {
 		var self = this;
 
+		var action = '';
+		if (after && after == 'unassign') {
+			var action = 'unassign';
+		} else if (after && after == 'end') {
+			var action = 'end';
+		}
+
 		DeskPRO_Window.util.ajaxWithClientMessages({
 			url: BASE_URL + 'agent/chat/leave/' + this.meta.conversation_id,
-			complete: function() {
-				if (after && after == 'unassign') {
-					self.reassignConvo(0);
-				} else if (after && after == 'end') {
-					self.endChat();
-				}
+			data: {
+				action: action
 			}
 		});
 	},
