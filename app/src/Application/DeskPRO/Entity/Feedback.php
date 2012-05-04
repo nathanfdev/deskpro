@@ -182,6 +182,10 @@ class Feedback extends ContentAbstract
 		$this->_onPropertyChanged('status', $this->status, $status);
 		$this->status = $status;
 
+		if ($status == 'approve') {
+			$status = self::STATUS_NEW;
+		}
+
 		switch ($status) {
 			case self::STATUS_NEW:
 				$this['hidden_status'] = null;

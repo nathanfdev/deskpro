@@ -69,6 +69,8 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 			}
 		});
 		this.ownObject(this.selectionBar);
+
+		this.enableHighlightOpenRows('feedback', 'feedback_id', '.row-item.feedback-');
 	},
 
 	listRemove: function(el) {
