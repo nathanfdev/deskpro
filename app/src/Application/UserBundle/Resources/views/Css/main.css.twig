@@ -1799,6 +1799,34 @@ body.file-drag-over #dp .dp-drop-file-zone,
 	top: 20px;
 }
 
+#widget_deskpro .is-showing-related { display: none; }
+#widget_deskpro .not-showing-related { display: block; }
+#widget_deskpro .showing-related .is-showing-related { display: block; }
+#widget_deskpro .showing-related .not-showing-related { display: none; }
+
+#widget_deskpro #left_pane {
+	position: relative;
+}
+
+#widget_deskpro #search_loading {
+	display: block;
+	background: url(../../web/images/spinners/loading-small.gif) no-repeat 50% 50%;
+	height: 16px;
+	width: 16px;
+	position: absolute;
+	top: 30px;
+	right: 7px;
+}
+
+#widget_deskpro #no_results {
+	text-align: center;
+}
+
+#widget_deskpro .widget-content {
+	overflow: auto;
+
+}
+
 /***********************************************************************************************************************
 * Register page
 ***********************************************************************************************************************/

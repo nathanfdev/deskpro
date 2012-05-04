@@ -1,4 +1,5 @@
 <?php return array(
+	'user.downloads.browse_our_x_files'   => 'Browse through our {{count}} files|Browse through our {{count}} files',
     'user.downloads.category'             => 'Folder',
     'user.downloads.label_download'       => 'Download',
     'user.downloads.no_downloads'         => 'There are no downloads yet.',

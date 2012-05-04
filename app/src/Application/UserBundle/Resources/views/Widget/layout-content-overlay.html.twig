@@ -7,17 +7,8 @@
 
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$('a.full-page').on('click', function(ev) {
-				ev.preventDefault();
-				window.open($(this).attr('href'));
-			});
-			$('.dp-open-in-window').on('click', function(ev) {
-				ev.preventDefault();
-
-				var a = $('a.full-page');
-				if (a[0]) {
-					a.click();
-				}
+			$('a').each(function() {
+				$(this).attr('target', '_blank');
 			});
 		});
 	</script>

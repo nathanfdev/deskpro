@@ -195,16 +195,16 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 		var touchCaller = new DeskPRO.TouchCaller({
 			timeout: 200,
 			callback: function() {
-				self.updateResults();
+
 			}
 		});
 
-		this.searchBox.on('keypress', function(ev) {
+		this.searchBox.on('keydown', function(ev) {
 			if (ev.keyCode == 13 && !ev.metaKey) {
 				ev.preventDefault();//dont enter enter key
 				self.updateResults();
 			} else {
-				touchCaller.touch($(this).val().trim());
+				self.updateResults();
 				$('#search_box_clear').show();
 			}
 		});
@@ -214,6 +214,8 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 		$('#search_content_list').empty().hide();
 		$('#new_content_list').show();
 		$('#search_box_clear').hide();
+
+		$('#no_results').hide();
 
 		if (this.searchAjax) {
 			this.searchAjax.abort();
@@ -226,6 +228,7 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 		var q = this.searchBox.val().trim();
 
 		if ($('#left_pane').hasClass('showing-related')) {
+			$('#new_content_list').hide();
 			q = [];
 			this.searchCollect.each(function() {
 				q.push($(this).val());
@@ -246,6 +249,20 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 
 		$('#left_pane').addClass('loading');
 
+
+		$('#search_loading').show();
+
+		if ($('#left_pane').hasClass('showing-related')) {
+			if ($('#search_content_list li').length) {
+				$('#no_results').hide();
+			} else {
+				$('#no_results').hide();
+			}
+		} else {
+			$('#search_loading').hide();
+			$('#no_results').hide();
+		}
+
 		this.searchAjax = $.ajax({
 			url: BASE_URL + 'search/omnisearch/' + encodeURI(q),
 			dataType: 'html',
@@ -258,17 +275,20 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 				ul.find('a').addClass('view-item');
 				var lis = ul.find('> li');
 
+				$('#search_loading').hide();
+
 				$('#new_content_list').hide();
 				$('#search_content_list').empty().append(lis).show();
 
-				var words = q.split(' ');
-				words = words.filter(function(w) {
-					if (w.length > 2) {
-						return true;
+				if ($('#left_pane').hasClass('showing-related')) {
+					if (!$('#search_content_list li').length) {
+						$('#no_results').show();
+					} else {
+						$('#no_results').hide();
 					}
-				});
-
-				DeskPRO.WordHighlighter.highlight($('#search_content_list').get(0), words, true);
+				} else {
+					$('#no_results').hide();
+				}
 			}
 		});
 	},

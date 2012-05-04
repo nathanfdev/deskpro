@@ -1,14 +1,20 @@
-<div class="aside">
+<div id="left_pane" class="aside">
 	<div class="head">
-		<form action="#">
-			<div class="search-form clearfix">
-				<div class="txt">
-					<i class="icon-search"></i>
-					<input type="text" id="search_box" placeholder="{{ phrase('user.general.search_for_something') }}" />
+		<div class="is-showing-related">
+			Showing related content.<br />
+			<a href="#" id="cancel_related">Click here to go back to search</a>.
+		</div>
+		<div class="not-showing-related">
+			<form action="#">
+				<div class="search-form clearfix">
+					<div class="txt">
+						<i class="icon-search"></i>
+						<input type="text" id="search_box" placeholder="{{ phrase('user.general.search_for_something') }}" />
+					</div>
+					<button class="btn" id="search_box_go">{{ phrase('user.general.search') }}</button>
 				</div>
-				<button class="btn" id="search_box_go">{{ phrase('user.general.search') }}</button>
-			</div>
-		</form>
+			</form>
+		</div>
 	</div>
 	<div class="area clearfix">
 		<ul id="new_content_list" class="files-list">
@@ -16,6 +22,8 @@
 				{% include 'UserBundle:Common:searchlist-simplerow.html.twig' with { type: content.type, item: content.item, with_icon: true } %}
 			{% endfor %}
 		</ul>
+		<div id="search_loading" style="display: none;"></div>
+		<ul class="files-list" id="no_results" style="display: none"><li>We could not find anything</li></ul>
 		<ul id="search_content_list" class="files-list" style="display: none"></ul>
 	</div>
 </div>
