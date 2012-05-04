@@ -180,6 +180,10 @@ class FeedbackController extends AbstractController
 			$newfeedback->category_id = $category->getId();
 		}
 
+		if($this->person) {
+			$newfeedback->name = $this->person->name;
+		}
+
 		$form = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
 
 		#------------------------------
