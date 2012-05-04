@@ -818,7 +818,7 @@ class Structure implements PersonContextInterface
 			$cats = $this->em->createQuery("
 				SELECT cat
 				FROM $ent cat INDEX BY cat.id
-				ORDER BY cat.display_order
+				ORDER BY cat.display_order ASC
 			")->setResultCacheDriver($this->cache)->setResultCacheId('categories.recs.'.$ent)
 			  ->execute();
 
@@ -835,7 +835,7 @@ class Structure implements PersonContextInterface
 				$parent_map = $this->em->getConnection()->fetchAll("
 					SELECT id, COALESCE(parent_id, 0) AS parent_id
 					FROM " . $this->em->getRepository($ent)->getTableName() . "
-					ORDER BY display_order DESC
+					ORDER BY display_order ASC
 				");
 				$parent_map = Arrays::keyFromData($parent_map, 'id', 'parent_id');
 

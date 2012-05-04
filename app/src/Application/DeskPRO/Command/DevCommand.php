@@ -81,6 +81,11 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 		} else if ($input->getOption('reset-templates')) {
 			App::getDb()->exec("TRUNCATE TABLE cache");
 			$output->writeln("Done");
+		} else if ($input->getOption('reset-cache')) {
+
+			App::getDb()->exec("TRUNCATE TABLE `cache`");
+			$output->writeln("Done");
+
 		} else if ($input->getOption('reset-symfony')) {
 			$oldcwd = getcwd();
 			chdir(DP_ROOT . '/sys/cache');
