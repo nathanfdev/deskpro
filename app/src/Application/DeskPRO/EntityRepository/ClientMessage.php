@@ -255,11 +255,11 @@ class ClientMessage extends EntityRepository
 			$channels[] = 'chat.ended';
 			$channels[] = 'chat.depchange';
 			$channels[] = 'chat.invited';
-		} else {
-			$channels_obj = $this->_em->getRepository('DeskPRO:ClientChannelSubscription')->getSubscriptionsForClient($client_id);
-			foreach ($channels_obj as $ch) {
-				$channels[] = $ch['channel'];
-			}
+		}
+
+		$channels_obj = $this->_em->getRepository('DeskPRO:ClientChannelSubscription')->getSubscriptionsForClient($client_id);
+		foreach ($channels_obj as $ch) {
+			$channels[] = $ch['channel'];
 		}
 
 		return self::getMessagesForClientInChannels($client_id, $person_id, $channels, $since_id);

@@ -29,73 +29,50 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @category Entities
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Cleanups to client_messages and client_channel_subscriptions
-  */
-class CleanupClientMessages extends AbstractJob
+ * A simple table that records pings from users on speciifc chats. This is to avoid running updates
+ * against the chat table every poll.
+ *
+ * These are cleaned up often.
+ */
+class ChatConversationPing extends \Application\DeskPRO\Domain\DomainObject
 {
-	const DEFAULT_INTERVAL = 300;
+	/**
+	 * @var int
+	 */
+	protected $id = null;
 
-	public function run()
+	/**
+	 * @var int
+	 */
+	protected $chat_id = null;
+
+	/**
+	 * @var int
+	 */
+	protected $ping_time = 0;
+
+	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		#------------------------------
-		# client_messages
-		#------------------------------
-
-		// client messages are nearly instant, so this timesnip is very low
-		$datetime = date('Y-m-d H:i:s', time() - 120);
-
-		$long_lived_channels = array(
-			'agent_chat.new-message'
-		);
-
-		$long_lived_channels = "'" . implode("','", $long_lived_channels) . "'";
-
-		App::getDb()->beginTransaction();
-
-		$num = App::getDb()->executeUpdate("
-			DELETE FROM client_messages
-			WHERE
-				date_created < ? AND channel NOT IN ($long_lived_channels)
-		", array($datetime));
-
-		// Long-lived channels are still only deleted after 3 days
-		$datetime = date('Y-m-d H:i:s', time() - 259200);
-		$num += App::getDb()->executeUpdate("
-			DELETE FROM client_messages
-			WHERE
-				date_created < ? AND channel IN ($long_lived_channels)
-		", array($datetime));
-
-		App::getDb()->commit();
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num old client messages");
-		}
-
-		#------------------------------
-		# client_channel_subscriptions
-		#------------------------------
-
-		$datetime = date('Y-m-d H:i:s', time() - 20); // 10 minutes
-		$num = App::getDb()->executeUpdate("DELETE FROM client_channel_subscriptions WHERE date_ping < ?", array($datetime));
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num stale client channel subscriptions");
-		}
-
-		#------------------------------
-		# chat pings
-		#------------------------------
-
-		App::getDb()->executeUpdate("TRUNCATE TABLE chat_conversation_pings");
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ChatConversationPing';
+		$metadata->setPrimaryTable(array(
+			'name' => 'chat_conversation_pings',
+			'indexes' => array(
+				'chat_id_idx' => array('columns' => array('chat_id')),
+			),
+		));
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'chat_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'chat_id', ));
+		$metadata->mapField(array( 'fieldName' => 'ping_time', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ping_time', ));
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }

@@ -242,7 +242,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
 			$job = App::getEntityRepository('DeskPRO:WorkerJob')->findOneById($input->getOption('job'));
 			if (!$job) {
-				$output->writeln('<warn>No such job exists</warn>');
+				$output->writeln('<error>No such job exists</error>');
 				return 1;
 			}
 

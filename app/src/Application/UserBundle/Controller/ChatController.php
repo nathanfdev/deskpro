@@ -82,6 +82,10 @@ class ChatController extends AbstractController
 			}
 		}
 
+		if ($convo) {
+			$this->container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
+		}
+
 		// Not uint because -1 will be used when no messages have ever existed
 		$since = $this->in->getInt('since');
 
@@ -147,6 +151,8 @@ class ChatController extends AbstractController
 			$chat_manager->addUserMessage($convo, $this->in->getString('content'));
 		}
 
+		$this->container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
+
 		$response = $this->createJsonResponse(array(
 			'conversation_id' => $convo['id'],
 		));
@@ -182,6 +188,8 @@ class ChatController extends AbstractController
 			array('is_html' => true, 'type' => 'file', 'blob_id' => $blob->id)
 		);
 
+		$this->container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
+
 		return $this->createJsonResponse($msg->getInfo());
 	}
 
@@ -201,6 +209,7 @@ class ChatController extends AbstractController
 		}
 
 		$chat_manager->setUserTypingIndicator($convo, $this->in->getString('partial_message'));
+		$this->container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
 
 		return $this->createJsonResponse(array());
 	}
@@ -233,6 +242,7 @@ class ChatController extends AbstractController
 		// If the user is on a new page, tell the agent
 		if ($convo) {
 			$chat_manager->addUserTrack($convo, $session->getVisitor()->getLastPage());
+			$this->container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
 		}
 
 		$response = $this->render('UserBundle:Chat:chat-session.js.php', array(

@@ -77,13 +77,14 @@ class ChatPingTimeout extends AbstractJob
 		# User timeouts
 		#------------------------------
 
-		$cutoff = date('Y-m-d H:i:s', time()); // 60 for users
+		$cutoff = time() - 60;
+		$cutoff = time() - 1;
+
 		$chat_ids = App::getDb()->fetchAllCol("
-			SELECT c.id
+			SELECT DISTINCT c.id
 			FROM chat_conversations c
-			LEFT JOIN sessions AS s ON s.id = c.session_id
-			WHERE c.status = 'open'	AND s.date_last < '$cutoff'
-			ORDER BY s.id ASC
+			LEFT JOIN chat_conversation_pings AS p ON p.chat_id = c.id
+			WHERE c.status = 'open'	AND p.ping_time < $cutoff
 		");
 
 		$count_users = 0;
