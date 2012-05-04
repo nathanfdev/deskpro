@@ -23,22 +23,19 @@
 	</script>
 </head>
 <body id="dp_content_overlay">
-
 	<div id="dp">
 
-		<section class="dp-article-post dp-content-post dp-content-page">
-			<article id="dp_article_content">
-				{% block content %}{% endblock %}
-			</article>
-		</section>
+		<article id="dp_article_content">
+			{% block content %}{% endblock %}
+		</article>
 
 		{% block foot %}
 		<div class="dp-controls">
-			<button class="dp-btn dp-open-in-window" style="float: right">{{ phrase('user.general.widget_open_in_new_window') }}</button>
-			<div class="dp-default dp-control-section">
-				<button class="dp-btn small dp-section-toggle dp-primary dp-set-answered" data-toggle-section=".dp-confirm-answered">{{ phrase('user.general.widget_bad_result') }}</button>
-				<button class="dp-btn small dp-not-answered">{{ phrase('user.general.widget_good_result') }}</button>
-			</div>
+			<a href="{{ content_link }}" target="_blank" class="dp-btn dp-open-in-window" style="float: right"><i class="dp-icon-share"></i> {{ phrase('user.general.widget_open_in_new_window') }}</a>
+			{#<div class="dp-default dp-control-section">
+				<button class="dp-btn dp-section-toggle dp-set-answered" data-toggle-section=".dp-confirm-answered"><i class="dp-icon-ok"></i> {{ phrase('user.general.widget_bad_result') }}</button>
+				<button class="dp-btn dp-not-answered"><i class="dp-icon-remove"></i> {{ phrase('user.general.widget_good_result') }}</button>
+			</div>#}
 		</div>
 		{% endblock %}
 	</div>

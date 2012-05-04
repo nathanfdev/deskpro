@@ -169,8 +169,11 @@ var DpOverlayWidget = new (function() {
 
 				var css = [];
 				css.push('position: fixed');
-				css.push('border: 2px solid #000000');
+				css.push('border: 1px solid #7F8394');
 				css.push('background: #ffffff url(' + options.staticUrl + 'images/spinners/loading-big-circle.gif) no-repeat 50% 50%');
+				css.push('-moz-background-clip: padding');
+				css.push('-webkit-background-clip: padding-box');
+				css.push('background-clip: padding-box');
 				css.push('width: ' + myWidth + 'px');
 				css.push('height: ' + myHeight + 'px');
 				css.push('margin: 0');
@@ -178,21 +181,41 @@ var DpOverlayWidget = new (function() {
 				css.push('box-shadow: none');
 				css.push('top: ' + top + 'px');
 				css.push('left: ' + left + 'px');
+				css.push('-webkit-border-radius: 8px');
+				css.push('-moz-border-radius: 8px');
+				css.push('border-radius: 8px');
 				css.push('z-index: 16001');
+				css.push('box-shadow: 0 0px 3px rgba(0, 0, 0, 0.5)');
 				css = css.join(';');
 				contentWrap = $('<div style="' + css  +'"></div>').appendTo('body');
 
+				var css = [];
+				css.push('position: absolute');
+				css.push('top: 0');
+				css.push('right: 0');
+				css.push('bottom: 0');
+				css.push('left: 0');
+				css.push('-webkit-border-radius: 9px');
+				css.push('-moz-border-radius: 9px');
+				css.push('border-radius: 9px');
+				css.push('overflow: hidden');
+				css.push('-moz-background-clip: padding');
+				css.push('-webkit-background-clip: padding-box');
+				css.push('background-clip: padding-box');
+				css = css.join(';');
+				var inner = $('<div style="' + css  +'"></div>').appendTo(contentWrap);
+
 				css = [];
 				css.push('border: none');
-				css.push('width: 18px');
-				css.push('height: 18px');
+				css.push('width: 28px');
+				css.push('height: 28px');
 				css.push('margin: 0');
 				css.push('padding: 0');
 				css.push('cursor: pointer');
 				css.push('box-shadow: none');
 				css.push('overflow: hidden');
 				css.push('position: absolute');
-				css.push('background: url(' + options.staticUrl + 'images/user/close-btn.png)');
+				css.push('background: url(' + options.staticUrl + 'images/user/widget/btn-close.png)');
 				css.push('top: -10px');
 				css.push('right: -10px');
 				css = css.join(';');
@@ -201,6 +224,7 @@ var DpOverlayWidget = new (function() {
 					ev.preventDefault();
 					contentWrap.fadeOut('fast', function() {
 						contentWrap.remove();
+						contentWrap = null;
 					});
 				});
 
@@ -213,8 +237,7 @@ var DpOverlayWidget = new (function() {
 				css.push('overflow: hidden');
 				css = css.join(';');
 
-				$('<iframe src="' + data + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>')
-					.appendTo(contentWrap);
+				$('<iframe src="' + data + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(inner);
 
 				return;
 		}
