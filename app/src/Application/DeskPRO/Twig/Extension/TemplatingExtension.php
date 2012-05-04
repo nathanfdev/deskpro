@@ -107,6 +107,7 @@ class TemplatingExtension extends \Twig_Extension
 			'get_service_url_raw' => new \Twig_Function_Method($this, 'getServiceUrlRaw', array('is_safe' => array('html'))),
 			'get_instance_ability' => new \Twig_Function_Method($this, 'getInstanceAbility'),
 			'is_array' => new \Twig_Function_Method($this, 'isArray'),
+			'gravatar_for_email' => new \Twig_Function_Method($this, 'gravatar'),
         );
     }
 
@@ -142,6 +143,15 @@ class TemplatingExtension extends \Twig_Extension
 			'lower' => new \Twig_Filter_Method($this, 'strLower'),
         );
     }
+
+	public function gravatar($email, $size = 80)
+	{
+		$hash = strtolower(md5($email));
+		$url = 'http://www.gravatar.com/avatar/' . $hash . '?';
+		$url .= '&d=' . App::get('router')->generate('serve_default_picture', array('s' => $size), true);
+
+		return $url;
+	}
 
 	public function getFirst($var)
 	{

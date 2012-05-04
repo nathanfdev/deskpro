@@ -215,9 +215,10 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setPerson(Person $person)
 	{
-		$this->person_name = $person->getDisplayName(false);
+		$this->setModelField('person', $person);
+		$this->setModelField('person_name', $person->getDisplayName(false));
 		if ($person->getPrimaryEmailAddress()) {
-			$this->person_email = $person->getPrimaryEmailAddress();
+			$this->setModelField('person_email', $person->getPrimaryEmailAddress());
 		}
 	}
 

@@ -77,19 +77,23 @@ pageMeta.baseId = '{{ baseId }}';
                                         </span>
                                     </a>
                                 {% else %}
-                                    {% set convo_display_user_box %}
-                                        <span>
-                                            {% if convo.person_name %}
+									<a class="user-link clean-white">
+										{% if convo.person_email %}
+											<span style="background-image: url('{{ gravatar_for_email(convo.person_email, 20) }}');">
+										{% else %}
+											<span style="background-image: url('{{ path('serve_default_picture', {s: 20}) }}');">
+										{% endif %}
+										<span style="background-image: url('{{ convo.person.getPictureUrl(20) }}');">
+											{% if convo.person_name %}
                                                 {{ convo.person_name }}
                                             {% else %}
                                                 {{ phrase('agent.general.anonymous') }}
                                             {% endif %}
                                             <span class="email"><b data-hide="@parent">{% if convo.person_email %}{{ convo.person_email }}{% else %}{{ phrase('agent.chat.no_email') }}{% endif %}</b></span>
-                                        </span>
-                                    {% endset %}
-                                    {{ convo_display_user_box }}
-                                {% endif %}
-                                    <div class="clear"></div>
+										</span>
+									</a>
+								{% endif %}
+                                <div class="clear"></div>
                             </dd>
                         </dl>
                     </article>
