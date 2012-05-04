@@ -236,7 +236,7 @@ Orb.Util.TimeAgo = {
 	 * @param bool secs True to return seconds instead of ms
 	 */
 	getDateDiff: function(date, secs) {
-		var now_ts  = (new Date().getTime()).getTime();
+		var now_ts  = (new Date()).getTime();
 		var date_ts = date.getTime();
 		var diff    = now_ts - date_ts;
 
