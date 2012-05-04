@@ -92,8 +92,11 @@
 		<div class="fields-row file-row">
 			{% include 'UserBundle:Common:form-upload-input.html.twig'  with { showAsLink: true } %}
 		</div>
-		<div class="btn-holder clearfix">
-			<button class="btn-activity">{{ phrase('user.general.register_send_message') }}</button>
+		<div class="submit-row">
+			<div class="btn-holder clearfix">
+				<button class="btn-activity dp-show-not-loading">{{ phrase('user.general.register_send_message') }}</button>
+				<i class="spinner-flat dp-show-is-loading"></i>
+			</div>
 		</div>
 		<div class="thank-you" id="dp_newticket_done" style="display: none">
 			<h2>{{ phrase('user.general.thank_you') }}</h2>

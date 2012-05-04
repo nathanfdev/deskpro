@@ -286,14 +286,18 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			ev.preventDefault();
 			var data = self.newTicketForm.find('select, input, textarea').serializeArray();
 
+			self.newTicketForm.addClass('dp-mark-loading');
+			$('.error').removeClass('error');
 			$.ajax({
 				url: $(this).attr('action'),
 				type: 'POST',
 				data: data,
 				dataType: 'json',
+				complete: function() {
+					self.newTicketForm.removeClass('dp-mark-loading');
+				},
 				success: function(data) {
 					if (data.is_error) {
-						self.newTicketForm.find('.error').removeClass('error');
 						Object.each(data.errors, function(v,k) {
 							var find = '.dp-form-row-' + k.replace(/\./g, '_');
 							console.log(find);
@@ -323,7 +327,6 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 		this.feedbackCatSelect = this.newFeedbackForm.find('select.category_id');
 		this.feedbackCatId = 0;
 
-		var self = this;
 		this.feedbackCatSelect.on('change', function() {
 			self.handleFeedbackCatChange();
 		});
@@ -333,17 +336,20 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			ev.preventDefault();
 			var data = self.newFeedbackForm.find('select, input, textarea').serializeArray();
 
+			$('.error').removeClass('error');
+			self.newFeedbackForm.addClass('dp-mark-loading');
 			$.ajax({
 				url: $(this).attr('action'),
 				type: 'POST',
 				data: data,
 				dataType: 'json',
+				complete: function() {
+					self.newFeedbackForm.removeClass('dp-mark-loading');
+				},
 				success: function(data) {
 					if (data.is_error) {
-						self.newTicketForm.find('.error').removeClass('error');
 						Object.each(data.errors, function(v,k) {
 							var find = '.dp-form-row-' + k.replace(/\./g, '_');
-							console.log(find);
 							self.newFeedbackForm.find(find).addClass('error');
 						});
 

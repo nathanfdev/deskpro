@@ -30,7 +30,7 @@
 				</span>
 			</div>
 			<div class="txt alignright dp-form-row-person_email">
-				<input type="text" class="email-field" id="dp_newticket_email" name="feedback[person_email]" value="" placeholder="{{ phrase('user.general.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+				<input type="text" class="email-field" id="dp_newticket_email" name="feedback[person_email]" value="" placeholder="{{ phrase('user.general.your_email_address') }}" data-field-validators="DeskPRO.Form.EmailValidator" data-min-len="4" />
 				<span class="tooltip-error">
 					<span>{{ phrase('user.general.register_please_enter_email') }}</span>
 				</span>
@@ -97,7 +97,8 @@
 			</div></td></tr></table>
 		</div>
 		<div class="btn-holder clearfix">
-			<button class="btn-activity">{{ phrase('user.general.register_send_message') }}</button>
+			<button class="btn-activity dp-show-not-loading">{{ phrase('user.general.register_send_message') }}</button>
+			<i class="spinner-flat dp-show-is-loading"></i>
 		</div>
 	</form>
 

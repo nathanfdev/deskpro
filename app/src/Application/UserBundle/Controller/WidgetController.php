@@ -164,10 +164,36 @@ class WidgetController extends AbstractController
 		$validator = new \Application\UserBundle\Validator\NewFeedbackValidator();
 
 		if ($validator->isValid($newfeedback)) {
-			$feedback = $newfeedback->save();
+
+			$hash = md5($newfeedback->title . $newfeedback->content . $newfeedback->category_id);
+
+			$dupe = false;
+			$person_from_email = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($newfeedback->person_email);
+			if ($person_from_email) {
+				$datecut = new \DateTime('-20 minutes');
+				$exist_feedback = $this->container->getEm()->createQuery("
+					SELECT f
+					FROM DeskPRO:Feedback f
+					WHERE f.person = ?0 AND f.date_created > ?1
+				")->setMaxResults(10)->setParameters(array($person_from_email, $datecut))->execute();
+
+				foreach ($exist_feedback as $f) {
+					$hash_check = md5($f->title . $f->content . $f->category->getId());
+					if ($hash == $hash_check) {
+						$dupe = $f->getId();
+					}
+				}
+			}
+
+			if (!$dupe) {
+				$feedback = $newfeedback->save();
+				$feedback_id = $feedback->getId();
+			} else {
+				$feedback_id = $dupe;
+			}
 
 			return $this->createJsonResponse(array(
-				'feedback_id' => $feedback->id
+				'feedback_id' => $feedback_id
 			));
 		} else {
 			$errors = $validator->getErrors(true);
