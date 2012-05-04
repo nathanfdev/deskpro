@@ -2457,21 +2457,39 @@ body.file-drag-over .dp-drop-file-zone {
 	-webkit-box-shadow: 0 0 9px #e7e7e7;
 	-moz-box-shadow: 0 0 9px #e7e7e7;
 }
-#dp .widget-deskpro .widget-logo{
-	background:url(../../web/images/dp-logo-130.png) no-repeat;
-	height:38px;
-	width:130px;
-	overflow:hidden;
-	position:absolute;
-	text-indent:100%;
-	white-space: nowrap;
-	bottom:24px;
-	right:23px;
+#dp .widget-deskpro .widget-logo {
+	float: right;
+	margin: 0 5px 5px 0;
 }
-#dp .widget-deskpro .widget-logo a{
-	height:100%;
-	display:block;
+
+#dp .widget-deskpro .widget-logo {
+	color: #B2B2B2;
+	font-size: 8pt;
+	padding-left: 10px;
 }
+
+#dp .widget-deskpro .widget-logo a {
+	line-height: 16px;
+	display: block;
+	color: #B2B2B2;
+	text-decoration: none;
+	background: url(../../web/images/dp-logo-bw-16.png) no-repeat 100% 50%;
+	padding-right: 20px;
+}
+
+#dp .widget-deskpro .widget-logo a:hover {
+	background-image: url(../../web/images/dp-logo-16.png);
+}
+
+#dp .widget-deskpro .widget-logo a strong {
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+#dp .widget-deskpro .widget-logo a:hover {
+	color: #000;
+}
+
 #dp .widget-deskpro .aside{
 	float:left;
 	width:328px;

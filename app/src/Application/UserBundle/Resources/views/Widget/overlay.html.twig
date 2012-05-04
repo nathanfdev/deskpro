@@ -61,7 +61,9 @@
 			{% include 'UserBundle:Widget:overlay-content-chat.html.twig' %}
 		</div>
 	</div>
-	<strong class="widget-logo"><a href="http://www.deskpro.com/">DeskPRO.com</a></strong>
+	<div class="widget-logo">
+		<a href="http://www.deskpro.com/">{{ phrase('user.general.helpdesk_by', {'deskpro': phrase('user.general.deskpro')}) }}</a>
+	</div>
 </div>
 </div>
 </div>

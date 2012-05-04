@@ -62,6 +62,7 @@
     'user.general.go'                              => 'Go',
     'user.general.helpdesk'                        => 'Helpdesk',
     'user.general.helpdesk_by'                     => 'Helpdesk software by <strong>{{deskpro}}</strong>',
+    'user.general.powered_by'                      => 'Powered by <strong>{{deskpro}}</strong>',
     'user.general.im_already_registered'           => 'I am already a registered user',
     'user.general.im_new_user'                     => 'I am a new user',
     'user.general.is_search_relevant'              => 'Did not find what you were looking for?',
