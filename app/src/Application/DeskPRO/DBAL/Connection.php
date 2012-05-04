@@ -67,6 +67,7 @@ class Connection extends \Doctrine\DBAL\Connection
 	{
 		if (parent::connect()) {
 			$this->exec("SET sql_mode=''");
+			$this->exec("SET NAMES 'UTF8'");
 			return true;
 		}
 
