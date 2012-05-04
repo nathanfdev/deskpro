@@ -285,6 +285,7 @@ $CONFIG['agent_common'] = array(
 		'javascripts/DeskPRO/AjaxPoller/MessagePoller.js',
 		'javascripts/DeskPRO/MessageChanneler/AbstractChanneler.js',
 		'javascripts/DeskPRO/MessageChanneler/AjaxChanneler.js',
+		'javascripts/DeskPRO/Translate.js',
 	)
 );
 
@@ -531,6 +532,7 @@ $CONFIG['user_common'] = array(
 		'javascripts/DeskPRO/UI/Overlay.js',
 		'javascripts/DeskPRO/User/Window.js',
 		'javascripts/DeskPRO/TouchCaller.js',
+		'javascripts/DeskPRO/Translate.js',
 
 		'javascripts/DeskPRO/User/ElementHandler/ElementHandlerAbstract.js',
 		'javascripts/DeskPRO/User/ElementHandler/MoreLoader.js',

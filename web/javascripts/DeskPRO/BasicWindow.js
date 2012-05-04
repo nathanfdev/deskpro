@@ -31,6 +31,7 @@ DeskPRO.BasicWindow = new Orb.Class({
 		this.registry = {};
 
 		this.messageBroker = new DeskPRO.MessageBroker();
+		this.translate = new DeskPRO.Translate();
 
 		if (options) {
 			this.setOptions(options);
@@ -63,6 +64,13 @@ DeskPRO.BasicWindow = new Orb.Class({
 	//#################################################################
 	//# Global registry, getters
 	//#################################################################
+
+	/**
+	 * Return the translate
+	 */
+	getTranslate: function() {
+		return this.translate;
+	},
 
 	/**
 	 * Get a value from the registry.
