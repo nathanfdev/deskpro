@@ -545,19 +545,19 @@ class UserChatController extends AbstractController
 
 	public function listNewChatsAction($department_id)
 	{
-		$department = null;
+		$department = 0;
 		if ($department_id) {
-			$department = $this->em->find('DeskPRO:Department', $department_id);
-
-			if (!$department) {
-				$department = null;
+			if ($department_id == -1) {
+				$department = -1;
+			} else {
+				$department = $this->em->find('DeskPRO:Department', $department_id);
+				if (!$department) {
+					$department = 0;
+				}
 			}
 		}
-		else {
-			$department = null;
-		}
 
-		$convos = $this->em->getRepository('DeskPRO:ChatConversation')->getOpenForAgentAndDepartment(-1, $department);
+		$convos = $this->em->getRepository('DeskPRO:ChatConversation')->getOpenForAgentAndDepartment(0, $department);
 
 		return $this->render('AgentBundle:UserChat:open-list.html.twig', array(
 			'convos' => $convos,
@@ -569,15 +569,16 @@ class UserChatController extends AbstractController
 
 	public function listActiveChatsAction($agent_id)
 	{
-		if ($agent_id > 0) {
-			$agent = $this->em->find('DeskPRO:Person', $agent_id);
-
-			if(!$agent) {
+		$agent = 0;
+		if ($agent_id) {
+			if ($agent_id == -1) {
 				$agent = -1;
+			} else {
+				$agent = $this->em->find('DeskPRO:Person', $agent_id);
+				if (!$agent) {
+					$agent = 0;
+				}
 			}
-		}
-		else {
-			$agent = -1;
 		}
 
 		$convos = $this->em->getRepository('DeskPRO:ChatConversation')->getOpenForAgentAndDepartment($agent, null);

@@ -2200,14 +2200,14 @@ $collection->add('agent_userchat_filterlist', new Route(
 
 $collection->add('agent_userchat_list_new', new Route(
 	'/chat/list-new/{department_id}',
-	array('_controller' => 'AgentBundle:UserChat:listNewChats'),
+	array('_controller' => 'AgentBundle:UserChat:listNewChats', 'department_id' => '-1'),
 	array(),
 	array('fragment_name' => 'new', 'fragment_type' => 'list')
 ));
 
 $collection->add('agent_userchat_list_active', new Route(
 	'/chat/list-active/{agent_id}',
-	array('_controller' => 'AgentBundle:UserChat:listActiveChats'),
+	array('_controller' => 'AgentBundle:UserChat:listActiveChats', 'agent_id' => '-1'),
 	array(),
 	array('fragment_name' => 'active', 'fragment_type' => 'list')
 ));
