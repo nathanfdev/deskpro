@@ -236,7 +236,14 @@ Orb.Util.TimeAgo = {
 	 * @param bool secs True to return seconds instead of ms
 	 */
 	getDateDiff: function(date, secs) {
-		var diff = (new Date().getTime() - date.getTime());
+		var now_ts  = (new Date().getTime()).getTime();
+		var date_ts = date.getTime();
+		var diff    = now_ts - date_ts;
+
+		if (diff < 0) {
+			return 0;
+		}
+
 		if (secs) {
 			diff /= 1000;
 		}
@@ -252,6 +259,10 @@ Orb.Util.TimeAgo = {
 	getPhraseFor: function(type, num, ago) {
 
 		if (window.Orb_Util_TimeAgo_getPhraseFor) {
+			if (num < 0) {
+				num = 0;
+			}
+
 			return window.Orb_Util_TimeAgo_getPhraseFor(type, num, ago);
 		}
 
