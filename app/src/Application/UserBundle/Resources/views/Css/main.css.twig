@@ -505,6 +505,7 @@ section#dp_header_search .dp-btn {
 	background-color: {{ stylevar.content_bg_color }};
 	border: 1px solid {{ stylevar.content_border_color }};
 	{{ _self.border_radius({ tl: 5, tr: 5, bl: 5, br: 5 }) }}
+	overflow: hidden;// to create float container
 }
 
 #dp_breadcrumb_wrap {

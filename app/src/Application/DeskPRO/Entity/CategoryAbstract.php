@@ -216,7 +216,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 	public function getChildren()
 	{
 		if ($this->structure_helper) {
-			return $this->structure_helper->getCategoryHelperForCategory($this)->getChildren($this);
+			//return $this->structure_helper->getCategoryHelperForCategory($this)->getChildren($this);
 		}
 
 		return $this->children;

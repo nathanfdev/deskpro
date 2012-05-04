@@ -21,7 +21,7 @@
 {% endblock %}
 {% block content %}
 
-{% if category_children|length or not articles|length %}
+{% if category_children|length %}
 	<section class="dp-portal-section">
 		<header>
 			{% if category %}
@@ -38,6 +38,7 @@
 			</div>
 		</div>
 	</section>
+	<br style="clear: both; height: 1px; overflow: hidden" />
 {% endif %}
 
 {% if articles %}
