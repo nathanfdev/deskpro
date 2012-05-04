@@ -257,6 +257,21 @@ class Dates
 
 
 	/**
+	 * Take some date show readable form of seconds/minutes/hours/days/years ago
+	 *
+	 * @param  int    $seconds  The seconds
+	 * @param  int    $detail   How much detail to go into, 1-5
+	 * @param  array  $lang     Phrases to use for each unit
+	 * @return string
+	 */
+	public static function dateToAgo(\DateTime $date, $detail = 2, $lang = null)
+	{
+		$ts = $date->getTimestamp();
+		return self::secsToReadable(time() - $ts, $detail, $lang);
+	}
+
+
+	/**
 	 * Take some secondsand show readable form of seconds/minutes/hours/days/years.s
 	 *
 	 * @param  int    $seconds  The seconds

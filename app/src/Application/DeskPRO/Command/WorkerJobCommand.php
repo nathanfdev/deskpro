@@ -57,11 +57,61 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 			->addOption('ignore-interval', 'f', InputOption::VALUE_NONE, 'Always run job(s) even if the job interval has not ellapsed since last run')
 			->addOption('daemon', null, InputOption::VALUE_NONE, 'Runs forever. Only "checkable" jobs supported. php-exec option is required.')
 			->addOption('php-exec', 'p', InputOption::VALUE_REQUIRED, 'Runs jobs as child processes using this path to PHP.')
-			->addOption('options', 'o', InputOption::VALUE_REQUIRED, 'Specify a JSON-encoded array of options to pass to worker jobs');
+			->addOption('options', 'o', InputOption::VALUE_REQUIRED, 'Specify a JSON-encoded array of options to pass to worker jobs')
+			->addOption('info', null, InputOption::VALUE_NONE, 'Don\'t execute anything, just list info about scheduled tasks');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		if ($input->getOption('info')) {
+
+			$jobs = App::getOrm()->createQuery("
+				SELECT j
+				FROM DeskPRO:WorkerJob j
+				ORDER BY j.interval ASC
+			")->execute();
+
+			$last_run = App::getSetting('core.last_cron_run');
+			if (!$last_run) $last_run = 0;
+
+			$time_since_run = time() - $last_run;
+			$is_problem = false;
+			if ($time_since_run > 301) {
+				$is_problem = true;
+			}
+
+			if (!$last_run) {
+				$output->writeln("Last run time: NEVER");
+			} else {
+				$output->writeln(sprintf("Last run time: %s (%s)", date('Y-m-d H:i:s', $last_run), \Orb\Util\Dates::secsToReadable(time()-$last_run, 5)));
+
+				if ($is_problem) {
+					$output->writeln("");
+					$output->writeln("<info>Tasks have not completed successfully in a while which could indicate a problem. Try running this command with --verbose -f to force all jobs to run with output.</info>");
+				}
+			}
+
+			$output->writeln("");
+
+			$format = "%-30s  %-4s  %-16s  %-16s";
+			$output->writeln(sprintf($format, "Job", "Int.", "Last Run", "Next Run"));
+			$output->writeln(sprintf($format, str_repeat('=', 30), str_repeat('=', 4), str_repeat('=', 16), str_repeat('=', 16)));
+
+			foreach ($jobs as $j) {
+				$output->writeln(sprintf(
+					"%-30s  %-4s  %-16s  %-16s",
+					$j->id,
+					$j->getIntervalReadable(),
+					$j->last_run_date ? \Orb\Util\Dates::dateToAgo($j->last_run_date, 3, 'short') : 'Never',
+					$j->next_run_date ? \Orb\Util\Dates::dateToAgo($j->next_run_date, 3, 'short') : 'NA'
+				));
+			}
+
+			$output->writeln("");
+
+			return 0;
+		}
+
 		#------------------------------
 		# Clean up installer error detection
 		#------------------------------
