@@ -798,7 +798,7 @@ nav#dp_content_tabs label {
 * Drop zone targets
 ******************************/
 
-.dp-drop-file-zone {
+#dp .dp-drop-file-zone {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -809,9 +809,10 @@ nav#dp_content_tabs label {
 	background-color: rgba(175, 192, 213, 0.7);
 	z-index: 1000000;
 	display: none;
+	{{ _self.border_radius(5) }}
 }
 
-.dp-drop-file-zone h1 {
+#dp .dp-drop-file-zone h1 {
 	margin: 10px auto 0 auto;
 	width: 300px;
 	text-align: center;
@@ -819,9 +820,12 @@ nav#dp_content_tabs label {
 	background-color: #AFC0D5;
 	font-size: 18px;
 	border: 1px solid #66717F;
+	line-height: 130%;
+	{{ _self.border_radius(5) }}
 }
 
-body.file-drag-over .dp-drop-file-zone {
+body.file-drag-over #dp .dp-drop-file-zone,
+#dp body.file-drag-over .dp-drop-file-zone {
 	display: block;
 }
 
