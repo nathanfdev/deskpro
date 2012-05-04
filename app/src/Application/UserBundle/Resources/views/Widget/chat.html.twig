@@ -22,6 +22,12 @@
 		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.style.css_blob.getDownloadUrl() }}?{{ app.style.css_blob.id }}" media="screen,print" />
 	{% endif %}
 
+	{% if app.isDebug() %}
+		<script src="{{ path('dp_user_lang', { v: security_token('lang') } ) }}"></script>
+	{% else %}
+		<script src="{{ path('dp_user_lang', { v: app.getSetting('core.deskpro_build') } ) }}"></script>
+	{% endif %}
+
 	<link rel="stylesheet" type="text/css" href="{{ asset('stylesheets/user/main-print.css') }}" media="print" />
 	<!--[if IE ]><link href="{{ asset('stylesheets/user/main-ie.css') }}" rel="stylesheet" type="text/css"><![endif]-->
 
@@ -30,6 +36,7 @@
 	<script src="{{ asset('javascripts/DeskPRO/User/ChatWidget/ChatWin.js') }}" type="text/javascript"></script>
 
 	<script type="text/javascript">
+		window.DeskPRO_Window = new DeskPRO.User.Window();
 		var ChatWin = new DeskPRO.User.WebsiteWidget.ChatWin({
 			sessionCode: '{{ session_code }}',
 			conversationId: {{ convo.id|default(0) }},
@@ -42,6 +49,7 @@
 			uploadSecurityToken: '{{ security_token('attach_temp') }}'
 		});
 		$(document).ready(function() {
+			window.DeskPRO_Window.initPage();
 			ChatWin.initPage();
 		});
 	</script>

@@ -437,6 +437,23 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			row.addClass('message-' + message_id);
 		}
 
+		if (type == 'sys') {
+			if (msg.indexOf('{"phrase_id":') === 0) {
+				try {
+					var data = $.parseJSON(msg);
+				} catch(e) {
+					console.error(e);
+					data = {};
+				}
+
+				if (data.phrase_id) {
+					msg = DeskPRO_Window.getTranslate().phrase('agent.userchat.' + data.phrase_id, data);
+				} else {
+					msg = 'unknown phrase';
+				}
+			}
+		}
+
 		if (is_html) {
 			$('.prop-msg', row).html(msg);
 		} else {

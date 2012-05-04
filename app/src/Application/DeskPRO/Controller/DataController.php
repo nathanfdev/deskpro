@@ -61,18 +61,37 @@ class DataController extends AbstractController
 		$tr = $this->container->getTranslator();
 
 		$js_phrases = array();
-		$js_phrases['agent.general.add_a_label'] = $tr->phrase('agent.general.add_a_label');
-		$js_phrases['agent.general.check_on']    = $tr->phrase('agent.general.check_on');
-		$js_phrases['agent.general.check_off']   = $tr->phrase('agent.general.check_off');
+		$js_phrases['agent.general.add_a_label'] = $tr->getPhraseText('agent.general.add_a_label');
+		$js_phrases['agent.general.check_on']    = $tr->getPhraseText('agent.general.check_on');
+		$js_phrases['agent.general.check_off']   = $tr->getPhraseText('agent.general.check_off');
 
-		$js_phrases["agent.general.reltime_less_second"] = $tr->phrase("agent.general.reltime_less_second");
-		$js_phrases["agent.general.reltimeago_less_second"] = $tr->phrase("agent.general.reltime_less_second");
+		$js_phrases["agent.general.reltime_less_second"]    = $tr->getPhraseText("agent.general.reltime_less_second");
+		$js_phrases["agent.general.reltimeago_less_second"] = $tr->getPhraseText("agent.general.reltime_less_second");
 
 		foreach (array('reltime', 'reltimeago') as $pre) {
 			foreach (array('second', 'minute', 'hour', 'day', 'week', 'month', 'year') as $name) {
-				$js_phrases["agent.general.{$pre}_1_{$name}"] = $tr->phrase("agent.general.{$pre}_1_{$name}");
-				$js_phrases["agent.general.{$pre}_x_{$name}"] = $tr->phrase("agent.general.{$pre}_x_{$name}");
+				$js_phrases["agent.general.{$pre}_1_{$name}"] = $tr->getPhraseText("agent.general.{$pre}_1_{$name}");
+				$js_phrases["agent.general.{$pre}_x_{$name}"] = $tr->getPhraseText("agent.general.{$pre}_x_{$name}");
 			}
+		}
+
+		$add_phrases = array(
+			'agent.userchat.message_started',
+			'agent.userchat.message_user_joined',
+			'agent.userchat.message_user_left',
+			'agent.userchat.message_set_department',
+			'agent.userchat.assigned_to',
+			'agent.userchat.msg_new_user_track',
+			'agent.userchat.unassigned',
+			'agent.userchat.msg_agent_timeout',
+			'agent.userchat.msg_user_timeout',
+			'agent.userchat.ended_by',
+			'agent.userchat.ended',
+			'agent.userchat.ended_user',
+		);
+
+		foreach ($add_phrases as $k) {
+			$js_phrases[$k] = $tr->getPhraseText($k);
 		}
 
 		$js = "window.DESKPRO_LANG = " . json_encode($js_phrases) . ";";
@@ -99,6 +118,24 @@ class DataController extends AbstractController
 				$js_phrases["user.general.{$pre}_1_{$name}"] = $tr->phrase("user.general.{$pre}_1_{$name}");
 				$js_phrases["user.general.{$pre}_x_{$name}"] = $tr->phrase("user.general.{$pre}_x_{$name}");
 			}
+		}
+
+		$add_phrases = array(
+			'user.chat.message_started',
+			'user.chat.message_user_joined',
+			'user.chat.message_user_left',
+			'user.chat.message_set_department',
+			'user.chat.assigned_to',
+			'user.chat.unassigned',
+			'user.chat.msg_agent_timeout',
+			'user.chat.msg_user_timeout',
+			'user.chat.ended_by',
+			'user.chat.ended',
+			'user.chat.ended_user',
+		);
+
+		foreach ($add_phrases as $k) {
+			$js_phrases[$k] = $tr->getPhraseText($k);
 		}
 
 		$js = "window.DESKPRO_LANG = " . json_encode($js_phrases) . ";";

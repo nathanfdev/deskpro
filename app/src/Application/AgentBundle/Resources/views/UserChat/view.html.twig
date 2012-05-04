@@ -30,25 +30,7 @@ pageMeta.baseId = '{{ baseId }}';
 <header class="page-header">
     <h4 class="id-number">#{{ convo.id }}</h4>
     <h1>
-		{% set chat_person_name %}
-			{% if convo.person %}
-				<a
-					class="user-link as-popover preload"
-					style="background-image: url('{{ convo.person.getPictureUrl(20) }}');"
-					data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}"
-				>{{ convo.person.display_name }}</a> &lt;{{ convo.person.primary_email_address }}&gt;</a>
-			{% else %}
-                {% if convo.person_name or convo.person_email %}
-                {% set convo_display_name %}
-                    {{ convo.person_name }} {% if convo.person_email %} &lt;{{ convo.person_email }}&gt;{% endif %}
-                {% endset %}
-                {% else %}
-                {% set convo_display_name = phrase('agent.general.anonymous') %}
-                {% endif %}
-                   {{convo_display_name}}
-			{% endif %}
-		{% endset %}
-		{{ phrase('agent.chat.chat_with_x', {'name': chat_person_name}) }}
+		{{ convo.getSubjectLine() }}
 	</h1>
     <div class="clear"></div>
     <div class="meta-line">
@@ -152,7 +134,13 @@ pageMeta.baseId = '{{ baseId }}';
 						{% if message.is_sys %}
 							<div class="message-content">
 								<div class="message">
-									{% if message.is_html %}
+									{% if message.metadata.phrase_id %}
+										{% if message.is_html %}
+											{{ phrase('agent.userchat.'~ message.metadata.phrase_id, message.metadata) }}
+										{% else %}
+											{{ phrase('agent.userchat.'~ message.metadata.phrase_id, message.metadata)|e }}
+										{% endif %}
+									{% elseif message.is_html %}
 										{{message.content|raw}}
 									{% else %}
 										{{message.content}}

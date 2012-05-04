@@ -189,7 +189,7 @@ class UserChatManager
 			$this->em->flush();
 
 			if ($is_new_convo) {
-				$this->addSystemMessage($convo, 'user.chat.message_started', array(), array(
+				$this->addSystemMessage($convo, 'message_started', array(), array(
 					'user_hidden' => true,
 					'is_html' => false,
 				));
@@ -267,7 +267,7 @@ class UserChatManager
 
 			$this->addSystemMessage(
 				$convo,
-				'user.chat.message_user_joined',
+				'message_user_joined',
 				array('name' => $person->display_name),
 				array('user_joined' => true, 'person_name' => $person->display_name, 'person_id' => $person->id)
 			);
@@ -295,7 +295,7 @@ class UserChatManager
 
 			$this->addSystemMessage(
 				$convo,
-				'user.chat.message_user_left',
+				'message_user_left',
 				array('name' => $person->display_name),
 				array('user_left' => true, 'person_name' => $person->display_name, 'person_id' => $person->id)
 			);
@@ -342,7 +342,7 @@ class UserChatManager
 			}
 			$this->addSystemMessage(
 				$convo,
-				'user.chat.message_set_department',
+				'message_set_department',
 				array('name' => $who->display_name, 'department' => $dep_name),
 				array('department_changed' => true, 'new_department_id' => $convo->department_id)
 			);
@@ -395,11 +395,10 @@ class UserChatManager
 			$convo->agent = $agent;
 			$this->em->persist($convo);
 
-			$this->addSystemMessage($convo, 'user.chat.assigned_to', array('name' => $agent->display_name), array(
+			$this->addSystemMessage($convo, 'assigned_to', array('name' => $agent->display_name), array(
 				'chat_assigned' => true,
 				'assigned_to' => $agent->id,
 				'assigned_name' => $agent->getDisplayName(),
-				'assigned_avatar' => $agent->getPictureUrl(40),
 				'assigned_avatar' => $agent->getPictureUrl(16),
 				'old_assigned_to' => $old_agent_id,
 				'old_assigned_name' => $old_agent_name,
@@ -448,7 +447,7 @@ class UserChatManager
 
 			$label = "<a href=\"$url\" target=\"_blank\" title=\"$url\">$url_show</a>";
 
-			$this->addSystemMessage($convo, 'user.chat.msg_new_user_track', array('label' => $label), array(
+			$this->addSystemMessage($convo, 'msg_new_user_track', array('label' => $label), array(
 				'new_user_track' => $url,
 				'user_hidden' => true,
 				'is_html' => true,
@@ -486,7 +485,7 @@ class UserChatManager
 			$convo->agent = null;
 			$this->em->persist($convo);
 
-			$this->addSystemMessage($convo, 'user.chat.unassigned', array(), array('chat_unassigned' => true, 'old_assigned_to' => $old_agent_id, 'old_assigned_name' => $old_agent_name));
+			$this->addSystemMessage($convo, 'unassigned', array(), array('chat_unassigned' => true, 'old_assigned_to' => $old_agent_id, 'old_assigned_name' => $old_agent_name));
 
 			// Try to reassign
 			if ($this->auto_assigner) {
@@ -537,7 +536,7 @@ class UserChatManager
 
 			$this->addSystemMessage(
 				$convo,
-				'user.chat.msg_agent_timeout',
+				'msg_agent_timeout',
 				array('name' => $convo->agent->display_name),
 				array('agent_timed_out' => true)
 			);
@@ -571,7 +570,7 @@ class UserChatManager
 
 			$this->addSystemMessage(
 				$convo,
-				'user.chat.msg_user_timeout',
+				'msg_user_timeout',
 				array(),
 				array('user_timed_out' => true)
 			);
@@ -606,9 +605,9 @@ class UserChatManager
 			$this->em->persist($convo);
 
 			if ($author) {
-				$this->addSystemMessage($convo, 'user.chat.ended_by', array('name' => $author->getDisplayName()), array('chat_ended' => true));
+				$this->addSystemMessage($convo, 'ended_by', array('name' => $author->getDisplayName()), array('chat_ended' => true));
 			} else {
-				$this->addSystemMessage($convo, 'user.chat.ended', array(), array('chat_ended' => true));
+				$this->addSystemMessage($convo, 'ended', array(), array('chat_ended' => true));
 			}
 
 			$this->em->flush();
@@ -654,7 +653,7 @@ class UserChatManager
 		try {
 			$this->em->persist($convo);
 
-			$this->addSystemMessage($convo, 'user.chat.ended_user', array(), array('chat_ended'));
+			$this->addSystemMessage($convo, 'ended_user', array(), array('chat_ended'));
 
 			$this->em->flush();
 
@@ -834,11 +833,19 @@ class UserChatManager
 	/**
 	 * @param $message_id
 	 * @param \Application\DeskPRO\Entity\ChatConversation $convo
-	 * @return void
+	 * @return \Application\DeskPRO\Entity\ChatMessage
 	 */
 	public function addSystemMessage(ChatConversation $convo, $message_id, array $vars = array(), $metadata = array())
 	{
-		$message = $this->tr->phrase($message_id, $vars);
+		$message = $vars;
+		\Orb\Util\Arrays::unshiftAssoc($message, 'phrase_id', $message_id);
+
+		// Metadata is used when rendering the phrase in PHP,
+		// so add vars to the metadata array
+		$metadata = array_merge($metadata, $vars);
+		$metadata['phrase_id'] = $message_id;
+
+		$message = json_encode($message);
 
 		$msg = new ChatMessage();
 		$msg->is_sys = true;

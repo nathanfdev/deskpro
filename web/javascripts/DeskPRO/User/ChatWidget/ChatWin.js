@@ -337,6 +337,27 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 
 		} else if (data.author_type == 'sys') {
 
+			if (data.content.indexOf('{"phrase_id":') === 0) {
+				message = data.content;
+				try {
+					var data = $.parseJSON(message);
+				} catch(e) {
+					console.error(e);
+					data = {};
+				}
+
+				if (data.phrase_id) {
+					message = DeskPRO_Window.getTranslate().phrase('user.chat.' + data.phrase_id, data);
+				} else {
+					message = 'unknown phrase';
+				}
+
+				if (!data.is_html) {
+					message = Orb.escapeHtml(message);
+					message = Orb.linkUrls(message);
+				}
+			}
+
 			tpl = document.getElementById('dp_chat_tpl_sys_message').innerHTML;
 			tpl = tpl.replace(/%message%/g, message);
 
