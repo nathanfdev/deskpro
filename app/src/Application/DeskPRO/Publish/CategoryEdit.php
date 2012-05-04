@@ -83,6 +83,7 @@ class CategoryEdit
 
 		App::getOrm()->persist($obj);
 
+		App::getOrm()->getRepository($entity)->repair();
 		App::getContainer()->getSystemService('publish_structure_cache')->flush();
 		App::getOrm()->flush();
 
@@ -196,20 +197,29 @@ class CategoryEdit
 			WHERE c.id IN (" . implode(',', $ids) . ")
 		")->execute();
 
-		App::getOrm()->beginTransaction();
+		App::getDb()->beginTransaction();
 
-		foreach ($ids as $order => $id) {
-			if (!isset($cats[$id])) {
-				continue;
+		try {
+			foreach ($ids as $order => $id) {
+				if (!isset($cats[$id])) {
+					continue;
+				}
+
+				$cats[$id]['display_order'] = ($order+1) * 10; // 10,20,30, etc
+				App::getOrm()->persist($cats[$id]);
 			}
 
-			$cats[$id]['display_order'] = ($order+1) * 10; // 10,20,30, etc
-			App::getOrm()->persist($cats[$id]);
-		}
+			App::getOrm()->flush();
 
-		App::getContainer()->getSystemService('publish_structure_cache')->flush();
-		App::getOrm()->flush();
-		App::getOrm()->commit();
+			App::getOrm()->getRepository($entity)->repair();
+
+			App::getContainer()->getSystemService('publish_structure_cache')->flush();
+			App::getOrm()->flush();
+			App::getDb()->commit();
+		} catch (\Exception $e) {
+			App::getDb()->rollback();
+			throw $e;
+		}
 	}
 
 	/**
@@ -246,6 +256,8 @@ class CategoryEdit
 
 			App::getOrm()->persist($cats[$id]);
 		}
+
+		App::getOrm()->getRepository($entity)->repair();
 
 		App::getOrm()->flush();
 
@@ -295,6 +307,7 @@ class CategoryEdit
 
 		App::getOrm()->flush();
 
+		App::getOrm()->getRepository($entity)->repair();
 		App::getContainer()->getSystemService('publish_structure_cache')->flush();
 		App::getOrm()->commit();
 

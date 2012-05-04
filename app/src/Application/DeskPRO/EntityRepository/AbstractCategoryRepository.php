@@ -78,7 +78,7 @@ class AbstractCategoryRepository extends AbstractEntityRepository
 	 */
 	public function repair()
 	{
-		$cats = $this->em->getConnection()->fetchAllKeyed("
+		$cats = $this->_em->getConnection()->fetchAllKeyed("
 			SELECT id, parent_id
 			FROM `".$this->getTableName()."`
 			ORDER BY display_order ASC, id ASC
@@ -87,36 +87,41 @@ class AbstractCategoryRepository extends AbstractEntityRepository
 		$flat = Arrays::intoHierarchy($cats);
 		$flat = Arrays::flattenHierarchy($flat);
 
-		$all = $this->em->createQuery("
+		$all = $this->_em->createQuery("
 			SELECT c
-			FROM {$this->entity_name} c INDEX BY c.id
+			FROM {$this->getEntityName()} c INDEX BY c.id
 		")->execute();
 
 		$display_order = 0;
 
 		$current_root = null;
 
-		$this->em->beginTransaction();
+		$this->_em->getConnection()->beginTransaction();
 
-		foreach ($flat as $cid => $cinfo) {
-			$cat = $all[$cid];
+		try {
+			foreach ($flat as $cid => $cinfo) {
+				$cat = $all[$cid];
 
-			$display_order += 10;
-			$cat->display_order = $display_order;
-			$cat->depth = $cinfo['depth'];
+				$display_order += 10;
+				$cat->display_order = $display_order;
+				$cat->depth = $cinfo['depth'];
 
-			if (!$cat->parent) {
-				$current_root = $cat;
-				$cat->root = null;
-			} else {
-				$cat->root = $current_root['id'];
+				if (!$cat->parent) {
+					$current_root = $cat;
+					$cat->root = $cat->getId();
+				} else {
+					$cat->root = $current_root['id'];
+				}
+
+				$this->_em->persist($cat);
 			}
 
-			$this->em->persist($cat);
+			$this->_em->flush();
+			$this->_em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->_em->getConnection()->rollback();
+			throw $e;
 		}
-
-		$this->em->flush();
-		$this->em->commit();
 	}
 
 
