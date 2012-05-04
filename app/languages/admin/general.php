@@ -26,7 +26,7 @@
 	'admin.general.error_see_response'        => 'Click here to see the raw error response returned from the server.',
     'admin.general.error_ssl_feature_link'    => 'Learn how to install OpenSSL.',
     'admin.general.error_ssl_feature_tip'     => 'This feature requires the OpenSSL PHP extension which is currently not installed.',
-    'admin.general.error_ssl_tip'             => 'Secure connections require the OpenSSL PHP extension which is currently not installed.',
+    'admin.general.error_ssl_tip'             => 'Secure connections require the OpenSSL PHP extension which is currently not installed. Click now for more information.',
     'admin.general.file_uploads'              => 'File Uploads',
     'admin.general.first'                     => 'First',
     'admin.general.from_email_address'        => 'From email address',
