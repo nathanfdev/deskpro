@@ -51,6 +51,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 		$this->addOption('reset-routing', null, InputOption::VALUE_NONE, "Deletes cached routing so it will be regenerated next load");
 		$this->addOption('reset-templates', null, InputOption::VALUE_NONE, "Deletes compiled template files");
 		$this->addOption('reset-cache', null, InputOption::VALUE_NONE, "Deletes the `cache` table");
+		$this->addOption('reset-symfony', null, InputOption::VALUE_NONE, "Deletes the symfony and doctrine cache files");
 		$this->addOption('find-unused-templates', null, InputOption::VALUE_NONE, "Tries to find unused templates");
 	}
 
@@ -80,6 +81,13 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 		} else if ($input->getOption('reset-templates')) {
 			App::getDb()->exec("TRUNCATE TABLE cache");
 			$output->writeln("Done");
+		} else if ($input->getOption('reset-symfony')) {
+			$oldcwd = getcwd();
+			chdir(DP_ROOT . '/sys/cache');
+			exec('rm -rf ./dev');
+			exec('rm -rf ./prod');
+			exec('rm -rf ./doctrine-proxies');
+			chdir($oldcwd);
 		} else if ($input->getOption('find-unused-templates')) {
 			return $this->executeFindUnusedTemplates($input, $output);
 		}
