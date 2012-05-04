@@ -1,18 +1,28 @@
 <li class="{{ type }} {{ type }}-{{ item.id }}">
-	{% if q %}
-		<a
-			href="{{ path('user_search', {q: q, c: count, t: security_token(q ~ count), gourl: item.getLink() }) }}"
-			onmouseover="window.status='item.getLink()';"
-			onmouseout="window.status='item.getLink()';"
-			class="view-item"
-			data-content-type="{{ type }}"
-			data-content-id="{{ item.id }}"
-		>
-	{% else %}
-		<a href="{{ item.getLink() }}" class="view-item" data-content-type="{{ type }}" data-content-id="{{ item.id }}">
-	{% endif %}
-		<span>{{ item.title }}</span>
-	</a>
+	<div class="top-row">
+		{% if with_icon %}
+			{% if type == 'article' %}<i class="dp-icon-folder-open"></i>
+			{% elseif type == 'news' %}<i class="dp-icon-bookmark"></i>
+			{% elseif type == 'download' %}<i class="dp-icon-download-alt"></i>
+			{% elseif type == 'feedback' %}<i class="dp-icon-icon-file"></i>
+			{% endif %}
+		{% endif %}
+		{% if q %}
+			<a
+				href="{{ path('user_search', {q: q, c: count, t: security_token(q ~ count), gourl: item.getLink() }) }}"
+				onmouseover="window.status='item.getLink()';"
+				onmouseout="window.status='item.getLink()';"
+				class="view-item"
+				data-content-type="{{ type }}"
+				data-content-id="{{ item.id }}"
+			>
+		{% else %}
+			<a href="{{ item.getLink() }}" class="view-item" data-content-type="{{ type }}" data-content-id="{{ item.id }}">
+		{% endif %}
+			<span>{{ item.title }}</span>
+		</a>
+		<div class="fadeaway"></div>
+	</div>
 	<div class="summary">
 		{% if type == 'article' %}
 			{{ item.getSearchSummary(100) }}
