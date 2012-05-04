@@ -10,9 +10,9 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 	initPage: function() {
 		var self = this;
 
-		$(".widget-descpro select,.file").uniform();
+		$(".widget-deskpro select,.file").uniform();
 
-		$('.widget-descpro .btn-activity, .widget-descpro .textarea, .widget-descpro,.widget-descpro .widget-container,.widget-descpro .btn,.widget-descpro .txt').each(function() {
+		$('.widget-deskpro .btn-activity, .widget-deskpro .textarea, .widget-deskpro,.widget-deskpro .widget-container,.widget-deskpro .btn,.widget-deskpro .txt').each(function() {
 			//PIE.attach(this);
 		});
 
