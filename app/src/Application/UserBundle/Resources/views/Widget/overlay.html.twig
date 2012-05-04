@@ -32,6 +32,9 @@
 	<script type="text/javascript">
 		var OverlayWin = new DeskPRO.User.WebsiteWidget.OverlayWin();
 		$(document).ready(function() {
+			if (!Orb.Compat.WebForms.isPlaceholderSupported()) {
+				Orb.Compat.WebForms.placeholder($('[placeholder]'));
+			}
 			OverlayWin.initPage();
 		});
 	</script>
