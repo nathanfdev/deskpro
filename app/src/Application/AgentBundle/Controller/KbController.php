@@ -370,7 +370,8 @@ class KbController extends AbstractController
 
 			case 'categories':
 				$cat_ids = $this->in->getCleanValueArray('category_ids', 'uint', 'discard');
-				$article->setCategories($cat_ids);
+				$cats = $this->em->getRepository('DeskPRO:ArticleCategory')->getByIds($cat_ids);
+				$article->setCategories($cats);
 				$data['category_ids'] = $article->categories->getKeys();
 				break;
 

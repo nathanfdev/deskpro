@@ -377,7 +377,7 @@ class AgentsController extends AbstractController
 			$ug_ids = $this->in->getCleanValueArray('agent.usergroups', 'uint', 'discard');
 			$usergroups = $this->em->getRepository('DeskPRO:Usergroup')->getByIds($ug_ids);
 
-			$ch = new \Application\DeskPRO\ORM\CollectionHelper($this->em, $agent, 'usergroups');
+			$ch = new \Application\DeskPRO\ORM\CollectionHelper($agent, 'usergroups');
 			$ch->setCollection($usergroups);
 
 			$this->em->flush();

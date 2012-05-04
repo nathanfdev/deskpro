@@ -98,7 +98,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			if (radio.length) {
 				radio.click();
 
-				if (radio.is(':radio') && self.isSingleMode) {
+				if (!self.options.liNoClickClose && (radio.is(':radio') && self.isSingleMode)) {
 					self.close();
 				}
 			}
@@ -343,7 +343,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 
 	close: function() {
 		if(this._hasInit) {
-        this.backdrop.hide();
+        	this.backdrop.hide();
 		}
 
 		if (!this.isOpen()) return;

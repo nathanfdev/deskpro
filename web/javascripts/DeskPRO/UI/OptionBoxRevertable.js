@@ -9,6 +9,8 @@ DeskPRO.UI.OptionBoxRevertable = new Orb.Class({
 
 	initialize: function(options) {
 		var self = this;
+		options = options || {};
+		options.liNoClickClose = true;
 		this.parent(options);
 
 		this.addEvent('preOpen', this.handlePreOpen, this);

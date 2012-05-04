@@ -153,32 +153,8 @@ class Article extends ContentAbstract
 
 	public function setCategories(array $cats)
 	{
-		// Normalize array
-		// Make sure we have real cat objects, index array by id
-		$set = array();
-		foreach ($cats as $cat) {
-			if (!is_object($cat)) {
-				$cat = App::findEntity('DeskPRO:ArticleCategory', $cat);
-			}
-
-			if ($cat) {
-				$set[$cat['id']] = $cat;
-			}
-		}
-
-		// Go through find which ones we need to add or remove
-		$all_ids = $this->categories->getKeys();
-		$new_ids = array_keys($set);
-
-		$add = array_diff($new_ids, $all_ids);
-		$del = array_diff($all_ids, $new_ids);
-
-		foreach ($add as $cid) {
-			$this->categories->add($set[$cid]);
-		}
-		foreach ($del as $cid) {
-			$this->categories->remove($cid);
-		}
+		$helper = new \Application\DeskPRO\ORM\CollectionHelper($this, 'categories');
+		$helper->setCollection($cats);
 	}
 
 	public function setProducts(array $prods)

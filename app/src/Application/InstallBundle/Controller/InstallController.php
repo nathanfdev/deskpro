@@ -548,7 +548,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 				}
 				$this->getOrm()->flush();
 
-				$ch = new \Application\DeskPRO\ORM\CollectionHelper($this->getOrm(), $agent, 'usergroups');
+				$ch = new \Application\DeskPRO\ORM\CollectionHelper($agent, 'usergroups');
 				$ch->setCollection(array($AGENTGROUP_ALL));
 				$this->getOrm()->persist($agent);
 				$this->getOrm()->flush();

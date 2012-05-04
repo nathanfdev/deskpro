@@ -36,16 +36,11 @@ namespace Application\DeskPRO\ORM;
 
 class CollectionHelper
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
 	protected $entity;
 	protected $prop;
 
-	public function __construct(\Doctrine\ORM\EntityManager $em, $entity, $prop)
+	public function __construct($entity, $prop)
 	{
-		$this->em = $em;
 		$this->entity = $entity;
 		$this->prop = $prop;
 	}
