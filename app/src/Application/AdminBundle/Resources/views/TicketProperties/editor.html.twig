@@ -52,7 +52,12 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 {% endblock %}
 {% block pagebar %}
 	<ul>
-		<li>{{ phrase('admin.tickets.ticket_layout_editor') }} {% if department %}{{ department.full_title }}{% else %}{{ phrase('agent.general.default') }}{% endif %}</li>
+		<li>{{ phrase('admin.tickets.ticket_layout_editor') }}</li>
+		{% if department %}
+			<li>{{ department.full_title }}</li>
+		{% else %}
+			<li>{{ phrase('admin.tickets.default_layout') }}</li>
+		{% endif %}
 	</ul>
 {% endblock %}
 {% block content %}
@@ -69,13 +74,13 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 	<input type="checkbox" class="onoff-slider" id="per_department_check" data-update-url="{{ path('admin_tickets_editor_toggleper') }}" {% if app.getSetting('core_tickets.per_department_form') %}checked="checked"{% endif %}/> {{ phrase('admin.tickets.enable_custom_layouts_department') }}
 	{% if app.getSetting('core_tickets.per_department_form') %}
 		<div class="sub">
-            {% set phrase_link1 %}
-            <a class="switcher" href="{{ path('admin_tickets_editor_dep', {'department_id': '0', 'section': section}) }}">{{ phrase('admin.tickets.default_layout') }}</a>
-            {% endset %}
-            <span id="department_switcher" class="switcher"><span>{{ phrase('agent.general.department') }}</span></span>
-            {% set phrase_link2 %}
-            {% endset %}
-            {{ phrase('admin.tickets.edit_or_select_default_layout', {'link1':phrase_link1,'link2':phrase_link2}) }}
+			<span id="department_switcher" class="switcher"><span>
+				{% if department %}
+					{{ department.full_title }}
+				{% else %}
+					{{ phrase('admin.tickets.default_layout') }}
+				{% endif %}
+			</span></span>
 		</div>
 	{% endif %}
 </div>

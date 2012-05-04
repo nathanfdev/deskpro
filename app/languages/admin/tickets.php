@@ -135,7 +135,7 @@
     'admin.tickets.ticket_elements'                        => 'Ticket Elements',
     'admin.tickets.ticket_features_settings'               => 'Ticket Features and Settings',
     'admin.tickets.ticket_filters'                         => 'Ticket Filters',
-    'admin.tickets.ticket_layout_editor'                   => 'Ticket Layout Editor:',
+    'admin.tickets.ticket_layout_editor'                   => 'Ticket Layout Editor',
     'admin.tickets.ticket_message'                         => 'Ticket Message',
     'admin.tickets.ticket_open_for_duration'               => 'Ticket has been open for',
     'admin.tickets.ticket_ref'                             => 'Ticket Ref',
