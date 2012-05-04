@@ -207,6 +207,21 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		return $convo;
 	}
 
+
+	/**
+	 * Setting the person copies their name and email address to the chat row for record keeping
+	 *
+	 * @param Person $person
+	 */
+	public function setPerson(Person $person)
+	{
+		$this->person_name = $person->getDisplayName(false);
+		if ($person->getPrimaryEmailAddress()) {
+			$this->person_email = $person->getPrimaryEmailAddress();
+		}
+	}
+
+
 	public function __construct()
 	{
 		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
@@ -510,33 +525,17 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->subject) {
 			return $this->subject;
 		}
-
-		// TODO this needs to be improved so it doesnt load
-		// the whole messages graph
-
-		$line = '';
-
-		foreach ($this->messages as $message) {
-			if ($message->is_sys) continue;
-			if ($message->author && $message->author->is_agent) continue;
-
-			if ($message->is_html) {
-				$line .= strip_tags($message->content);
-			} else {
-				$line .= $message->content;
-			}
-			if (strlen($line) >= 190) {
-				continue;
-			}
+		if ($this->person_name && $this->person_email) {
+			return $this->person_name . '<' . $this->person_email . '>';
+		}
+		if ($this->person_name) {
+			return $this->person_name;
+		}
+		if ($this->person_email) {
+			return $this->person_email;
 		}
 
-		if (!$line) {
-			$line = 'Chat ' . $this->id;
-		}
-
-		$line = substr($line, 0, 190);
-
-		return $line;
+		return 'Chat ' . $this->id;
 	}
 
 	public function setRatingOverall($rating)

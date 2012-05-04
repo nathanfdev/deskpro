@@ -543,7 +543,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Get a string display name we can call this person.
 	 * @return string
 	 */
-	public function getDisplayName()
+	public function getDisplayName($id_fallback = true)
 	{
 		if ($this['first_name'] AND $this['last_name']) {
 			return $this['first_name'] . ' ' . $this['last_name'];
@@ -566,9 +566,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			$name = ucfirst($name);
 
 			return $name;
-		} else {
+		} elseif ($id_fallback) {
 			return 'ID-' . $this['id'];
 		}
+
+		return null;
 	}
 
 
