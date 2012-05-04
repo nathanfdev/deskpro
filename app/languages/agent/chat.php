@@ -40,7 +40,7 @@
     'agent.chat.show_offline'                     => 'Show Offline',
     'agent.chat.take_chat'                        => 'Take Chat',
     'agent.chat.team_chats'                       => 'Team Chats',
-    'agent.chat.title_active_chats'               => 'Active Chats',
+    'agent.chat.title_active_chats'               => 'All Open Chats',
     'agent.chat.title_chat_id'                    => 'Chat {{chat_id}}',
     'agent.chat.title_ended'                      => 'Ended Chats',
     'agent.chat.title_leave_chat_prompt'          => 'Leave Chat?',
@@ -53,4 +53,5 @@
     'agent.chat.x_by_anonymous'                   => 'Chat {{chat_id}} by Anonymous',
     'agent.chat.x_by_anonymousymous'              => 'Chat by Anonymous',
     'agent.chat.you_have_been_invited'            => 'You have been invited to join a chat',
+	'agent.chat.my_open_chats'                    => 'My Open Chats',
 );
