@@ -50,6 +50,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     protected function configure()
     {
         $this->setName('dp:install');
+		$this->addOption('insert-initial', null, InputOption::VALUE_NONE, "Inserts initial data with initial admin account");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -109,8 +110,78 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         $install_schema->setLogger($logger);
 
         $install_schema->run(false);
-        //$this->createAdmin();
-        //$this->saveSettings();
+
+
+		#------------------------------
+		# Install Data
+		#------------------------------
+
+		if ($input->get('insert-initial')) {
+
+			$agent = new \Application\DeskPRO\Entity\Person();
+			$agent->first_name = 'Admin';
+			$agent->last_name = 'Admin';
+			$agent->setEmail('admin@example.com', true);
+			$agent->setPassword('pass');
+			$agent->is_user = true;
+			$agent->is_confirmed = true;
+			$agent->is_agent_confirmed = true;
+			$agent->is_agent = true;
+			$agent->can_agent = true;
+			$agent->can_admin = true;
+			$agent->can_billing = true;
+			$agent->can_reports = true;
+
+			$this->getOrm()->persist($agent);
+			$this->getOrm()->flush();
+
+			$this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
+
+			// Install data stuff
+			$AGENTGROUP_ALL = null; // should be defiend by the time we finish processing data.php
+			$USERGROUP_EVERYONE = null; // should be defiend by the time we finish processing data.php
+			$AGENT = $agent; // can be used in data.php
+			$WEB_INSTALL = true;
+			$IMPORT_INSTALL = false;
+
+			$install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
+			$em = $this->getOrm();
+			foreach ($install_data as $php) {
+				eval($php);
+			}
+
+			$this->getOrm()->flush();
+
+			// For the all agent group, fetch permissions from the template
+			if ($AGENTGROUP_ALL) {
+				$scanner = new \Application\InstallBundle\Data\AgentGroupPermScanner();
+				foreach ($scanner->getNames() as $p_name) {
+					$p = new \Application\DeskPRO\Entity\Permission();
+					$p->usergroup = $AGENTGROUP_ALL;
+					$p->name = $p_name;
+					$p->value = 1;
+					$this->getOrm()->persist($p);
+				}
+				$this->getOrm()->flush();
+
+				$ch = new \Application\DeskPRO\ORM\CollectionHelper($agent, 'usergroups');
+				$ch->setCollection(array($AGENTGROUP_ALL));
+				$this->getOrm()->persist($agent);
+				$this->getOrm()->flush();
+			}
+
+			if ($USERGROUP_EVERYONE) {
+				$scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
+				foreach ($scanner->getNames() as $p_name) {
+					$p = new \Application\DeskPRO\Entity\Permission();
+					$p->usergroup = $USERGROUP_EVERYONE;
+					$p->name = $p_name;
+					$p->value = 1;
+					$this->getOrm()->persist($p);
+				}
+				$this->getOrm()->flush();
+			}
+		}
     }
 
     private function createDatabase()
@@ -127,127 +198,6 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
                     $dbh->exec("CREATE DATABASE `{$DP_CONFIG['db']['dbname']}`");
                 } catch (\Exception $e) {}
             }
-        }
-    }
-
-    private function saveSettings()
-    {
-        $this->getOrm()->getConnection()->beginTransaction();
-        try {
-            $db = $this->getOrm()->getConnection();
-
-           $db->replace('settings', array(
-                'name' => 'core.install_timestamp',
-                'value' => time(),
-            ));
-            $db->replace('settings', array(
-                'name' => 'core.install_key',
-                'value' => Strings::random(20, Strings::CHARS_KEY),
-            ));
-            $db->replace('settings', array(
-                'name' => 'core.deskpro_build',
-                'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
-            ));
-            $db->replace('settings', array(
-                'name' => 'core.deskpro_version',
-                'value' => date('YmdHis'),
-            ));
-
-            $this->getOrm()->getConnection()->commit();
-
-        } catch (\Exception $e) {
-            $this->getLogger()->log("[InstallDone] Exception {$e->getCode()} {$e->getMessage()}", 'err');
-
-            $einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-            $this->getLogger()->log("[InstallDone] Exception Trace: {$einfo['trace']}", 'debug');
-
-            $this->getOrm()->getConnection()->rollback();
-            throw $e;
-        }
-    }
-
-
-
-    private function createAdmin()
-    {
-        $this->getOrm()->getConnection()->beginTransaction();
-
-        try {
-            $agent = new \Application\DeskPRO\Entity\Person();
-            $agent->first_name = 'Default';
-            $agent->last_name = 'Admin';
-            $agent->setEmail('admin@localhost', true);
-            $agent->setPassword('deskpro');
-            $agent->is_user = true;
-            $agent->is_confirmed = true;
-            $agent->is_agent_confirmed = true;
-            $agent->is_agent = true;
-            $agent->can_agent = true;
-            $agent->can_admin = true;
-            $agent->can_billing = true;
-            $agent->can_reports = true;
-
-            $this->getOrm()->persist($agent);
-            $this->getOrm()->flush();
-
-            $this->getLogger()->log("New admin: {$agent->id} {$agent->display_name} {$agent->email_address}", 'debug');
-
-            $this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
-
-            // Install data stuff
-            $AGENTGROUP_ALL = null; // should be defiend by the time we finish processing data.php
-            $USERGROUP_EVERYONE = null; // should be defiend by the time we finish processing data.php
-            $AGENT = $agent; // can be used in data.php
-            $WEB_INSTALL = true;
-            $IMPORT_INSTALL = false;
-
-            $install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
-            $em = $this->getOrm();
-            foreach ($install_data as $php) {
-                eval($php);
-            }
-
-            $this->getOrm()->flush();
-
-            // For the all agent group, fetch permissions from the template
-            if ($AGENTGROUP_ALL) {
-                $scanner = new \Application\InstallBundle\Data\AgentGroupPermScanner();
-                foreach ($scanner->getNames() as $p_name) {
-                    $p = new \Application\DeskPRO\Entity\Permission();
-                    $p->usergroup = $AGENTGROUP_ALL;
-                    $p->name = $p_name;
-                    $p->value = 1;
-                    $this->getOrm()->persist($p);
-                }
-                $this->getOrm()->flush();
-
-                $ch = new \Application\DeskPRO\ORM\CollectionHelper($agent, 'usergroups');
-                $ch->setCollection(array($AGENTGROUP_ALL));
-                $this->getOrm()->persist($agent);
-                $this->getOrm()->flush();
-            }
-
-            if ($USERGROUP_EVERYONE) {
-                $scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
-                foreach ($scanner->getNames() as $p_name) {
-                    $p = new \Application\DeskPRO\Entity\Permission();
-                    $p->usergroup = $USERGROUP_EVERYONE;
-                    $p->name = $p_name;
-                    $p->value = 1;
-                    $this->getOrm()->persist($p);
-                }
-                $this->getOrm()->flush();
-            }
-
-            $this->getOrm()->getConnection()->commit();
-        } catch (\Exception $e) {
-            $this->getLogger()->log("[InstallData] Exception {$e->getCode()} {$e->getMessage()}", 'err');
-
-            $einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-            $this->getLogger()->log("[InstallData] Exception Trace: {$einfo['trace']}", 'debug');
-
-            $this->getOrm()->getConnection()->rollback();
-            throw $e;
         }
     }
 
