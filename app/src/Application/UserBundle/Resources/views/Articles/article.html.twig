@@ -59,7 +59,7 @@
 
 {% if app.user.hasPerm('articles.comment') %}
 	{% include 'UserBundle:Common:comments-box.html.twig' with {
-		'type': 'feedback',
+		'type': 'article',
 		'comments': comments,
 		'form_action': path('user_articles_newcomment', {'article_id': article.id}),
 		'check_perm': 'articles.comment'

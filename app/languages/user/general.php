@@ -18,6 +18,7 @@
     'user.general.btn_create_chat'                 => 'Start Chat',
     'user.general.cancel'                          => 'Cancel',
     'user.general.category'                        => 'Category',
+    'user.general.categories'                      => 'Categories',
     'user.general.change_email'                    => 'Change email address',
     'user.general.change_password'                 => 'Change Password',
     'user.general.chat'                            => 'Chat',

@@ -329,7 +329,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 			));
 		}
 
-		$insert_faqperms = array_unique($insert_filesperms);
+		$insert_filesperms = array_unique($insert_filesperms);
 		foreach ($insert_filesperms as $v) {
 			if (!$v) continue;
 			$this->getDb()->insert('download_category2usergroup', array(

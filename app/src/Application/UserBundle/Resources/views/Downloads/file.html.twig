@@ -1,3 +1,5 @@
+{% import 'UserBundle:Common:macros-social.html.twig' as social %}
+{% set this_section = 'downloads' %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block head %}
 	<meta property="og:url" content="{{ path('user_downloads_file', {'slug': download.url_slug}) }}" />
@@ -6,65 +8,62 @@
 	<link rel="canonical" href="{{ url('user_downloads_file', {'slug': download.url_slug}) }}" />
 {% endblock %}
 {% block breadcrumb %}
-<li><a href="{{ path('user_downloads') }}">{{ phrase('user.general.downloads') }}</a></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads') }}">{{ phrase('user.general.downloads') }}</a></li>
 	{% for cat in category_path %}
-		<li><a href="{{ path('user_downloads', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
-	<li><a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}">{{ download.title }}</a></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}">{{ download.title }}</a></li>
 {% endblock %}
 {% block page_title %}
 	{{ download.title }} - {{ download.filename }}
 	-
-	Downloads
+	{{ phrase('user.general.downloads') }}
 	{% for cat in category_path %}
 		/ {{cat.title}}
 	{% endfor %}
 {% endblock %}
 {% block content %}
-<div class="dp-download-page">
-	<div class="dp-content-block">
-		<div class="dp-box">
-			<div class="dp-box-header">
-				<h1>{{ download.title }}</h1>
-			</div>
-			<div class="dp-box-content-meta">
-				<div class="by-line">
-					<img src="{{ download.person.getPictureUrl(40) }}" />
-					{{ phrase('user.general.created_by_name_on_date', {'name': download.person.display_name, 'date': article.date_created|date('M d Y')}) }}
-					<br class="dp-clear" style="clear:left" />
-				</div>
-			</div>
-			<div class="dp-box-content-wrapper">
-				<div class="dp-box-content">
-					<div class="dp-post">
-						{{ download.content_html|raw }}
-					</div>
-					<div class="dp-download-btn-wrap">
-						<a class="btn" href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id, 'filename': download.blob.filename}) }}">
-							{{ phrase('user.downloads.label_download') }}: {{ download.filename }} <small>({{ download.readable_filesize }})</small>
-						</a>
-					</div>
 
-					{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': download.labels} %}
-
-					{% if app.user.hasPerm('downloads.rate') %}
-						{% include 'UserBundle:Common:rating-bar.html.twig' with {'content_object': download} %}
-					{% endif %}
-
-					{% if app.getSetting('core.facebook_like') %}
-						{% include 'UserBundle:Common:facebook-like.html.twig' with {'page_permalink': article.permalink} %}
-					{% endif %}
-
-					{% if app.user.hasPerm('downloads.comment') %}
-						{% include 'UserBundle:Common:comments-box.html.twig' with {
-							'comments': comments,
-							'form_action': path('user_downloads_newcomment', {'download_id': download.id}),
-							'check_perm': 'downloads.comment'
-						} %}
-					{% endif %}
-				</div>
+<section class="dp-article-post dp-content-post dp-content-page">
+	<header>
+		<h3 style="margin-bottom: 0">{{ download.title }}</h3>
+		<ul class="dp-post-info">
+			<li class="dp-author"><i class="dp-icon-user"></i> {{ download.person.display_name }}</li>
+			<li class="dp-date"><i class="dp-icon-calendar"></i> {{ download.date_created|date('full') }}</li>
+		</ul>
+	</header>
+	<article id="dp_article_content">
+		<div class="dp-download-btn-wrap">
+			<div class="dp-download-btn">
+				<a class="dp-btn dp-btn-primary" href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id, 'filename': download.blob.filename}) }}">
+					{{ phrase('user.downloads.label_download') }}: {{ download.filename }} <small style="color: #fff;">({{ download.readable_filesize }})</small>
+				</a>
 			</div>
 		</div>
-	</div>
-</div>
+
+		{{ download.content_html|raw }}
+		<br style="clear: right; height: 1px;overflow: hidden" />
+	</article>
+	<footer>
+		{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': download.labels} %}
+
+		{% if app.user.hasPerm('downloads.rate') %}
+			{% include 'UserBundle:Common:rating-bar.html.twig' with {'content_object': download} %}
+		{% endif %}
+
+		{% if app.getSetting('core.show_share_widget') %}
+			{{ social.social_block(path('user_downloads_file', {'slug': download.url_slug}), download.title) }}
+		{% endif %}
+	</footer>
+</section>
+
+{% if app.user.hasPerm('downloads.comment') %}
+	{% include 'UserBundle:Common:comments-box.html.twig' with {
+		'type': 'feedback',
+		'comments': comments,
+		'form_action': path('user_downloads_newcomment', {'download_id': download.id}),
+		'check_perm': 'downloads.comment'
+	} %}
+{% endif %}
+
 {% endblock %}

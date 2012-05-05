@@ -124,8 +124,15 @@ class DownloadsController extends AbstractController
 				->countsOnCollection($downloads);
 		}
 
+		if ($category) {
+			$category_children = $category->getChildren();
+		} else {
+			$category_children = $categories;
+		}
+
 		return $this->render('UserBundle:Downloads:browse.html.twig', array(
 			'categories' => $categories,
+			'category_children' => $category_children,
 			'category' => $category,
 			'category_counts' => $category_counts,
 			'category_path' => $category_path,
