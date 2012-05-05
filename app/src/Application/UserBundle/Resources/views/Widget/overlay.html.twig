@@ -55,7 +55,7 @@
 			<a data-tab-for="#newfeedback" class="btn"><i class="icon icon-mail"></i> {{ phrase('user.feedback.submit_feedback') }}</a>
 			{% if chat_active %}<a data-tab-for="#newchat" class="btn"><i class="icon icon-chat"></i> {{ phrase('user.general.chat_with_us') }}</a>{% endif %}
 		</div>
-		<div class="widget-content">
+		<div class="widget-content" style="overflow:auto; max-height: {{ (app.getRequest().query.get('h')|default(600) - 275) }}px">
 			{% include 'UserBundle:Widget:overlay-content-ticket.html.twig' %}
 			{% include 'UserBundle:Widget:overlay-content-feedback.html.twig' %}
 			{% include 'UserBundle:Widget:overlay-content-chat.html.twig' %}

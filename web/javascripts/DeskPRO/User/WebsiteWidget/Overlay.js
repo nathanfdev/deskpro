@@ -344,7 +344,7 @@ var DpOverlayWidget = new (function() {
 		css.push('overflow: hidden');
 		css = css.join(';');
 
-		var src = options.deskproUrl + 'widget/overlay.html';
+		var src = options.deskproUrl + 'widget/overlay.html?h=' + winHeight;
 		overlayIframe = $('<iframe id="dp_overlay_iframe" name="dp_overlay_iframe" allowtransparency="true" src="' + src + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(overlayWrapInner);
 
 		setHeight(500);
