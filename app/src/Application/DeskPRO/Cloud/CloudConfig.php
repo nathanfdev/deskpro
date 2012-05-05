@@ -34,11 +34,6 @@ class CloudConfig
 			define('DP_DATABASE_PASSWORD',   $site['db_password']);
 			define('DP_DATABASE_NAME',       $site['db_name']);
 			define('DP_TECHNICAL_EMAIL',     'team@deskpro.com');
-
-			global $DP_CONFIG;
-			$DP_CONFIG['debug'] = array();
-			$DP_CONFIG['debug']['dev'] = true;
-			$DP_CONFIG['debug']['raw_assets'] = array('all');
 		} catch (\Exception $e) {
 			self::handleException($e);
 		}
