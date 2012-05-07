@@ -106,7 +106,7 @@ class PriorityAction extends AbstractAction
 	{
 		$tr = App::getTranslator();
 
-		if ($this->category_id == 0) {
+		if ($this->priority_id == 0) {
 			return $tr->phrase('agent.tickets.remove_priority_action');
 		} else {
 			$names = App::getEntityRepository('DeskPRO:TicketPriority')->getNames();
