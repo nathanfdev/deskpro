@@ -1176,11 +1176,11 @@ final class License
 	 */
 	public static function getLicServer()
 	{
-		if (!defined('DP_LIC_SERVER')) {
-			define('DP_LIC_SERVER', 'http://www.deskpro.com/lic');
+		if (!defined('DP_MA_SERVER')) {
+			define('DP_MA_SERVER', 'http://www.deskpro.com/members');
 		}
 
-		return DP_LIC_SERVER;
+		return DP_MA_SERVER;
 	}
 
 

@@ -484,11 +484,11 @@ class SettingsController extends AbstractController
 
 		// If we've never done it, or the check is an hour old
 		if ((!$time || time()-$time > 3600) || !$checked) {
-			\DeskPRO\Kernel\License::getLicense();// loads DP_LIC_SERVER
+			\DeskPRO\Kernel\License::getLicense();// loads DP_MA_SERVER
 
 			$client = new \Zend\Http\Client(null, array('timeout' => 15));
 			$client->setMethod(\Zend\Http\Request::METHOD_GET);
-			$client->setUri(DP_LIC_SERVER . '/ping.json');
+			$client->setUri(DP_MA_SERVER . '/api/ping.json');
 			try {
 				$result = $client->send();
 				$is_connected = true;

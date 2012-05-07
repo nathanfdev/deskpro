@@ -89,8 +89,8 @@ require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/FilenameF
 require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Output/OutputInterface.php';
 require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterInterface.php';
 
-if (!defined('DP_LIC_SERVER')) {
-	define('DP_LIC_SERVER', 'http://www.deskpro.com/lic');
+if (!defined('DP_MA_SERVER')) {
+	define('DP_MA_SERVER', 'http://www.deskpro.com/members');
 }
 
 class Upgrade
@@ -1063,7 +1063,7 @@ class Upgrade
 			return $this->latest_version;
 		}
 
-		$this->latest_version = $this->callService('check-latest-version.json');
+		$this->latest_version = $this->callService('build/check-latest-version.json');
 
 		return $this->latest_version;
 	}
@@ -1206,7 +1206,7 @@ class Upgrade
 	 */
 	public function callService($endpoint, array $post_data = array())
 	{
-		$url = DP_LIC_SERVER . '/' . ltrim($endpoint, '/');
+		$url = DP_MA_SERVER . '/api/' . ltrim($endpoint, '/');
 		return $this->fetchServiceResult($url, $post_data);
 	}
 
