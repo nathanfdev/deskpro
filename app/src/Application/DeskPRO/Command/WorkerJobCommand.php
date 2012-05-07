@@ -138,7 +138,6 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 			if ($check) {
 				$date = new \DateTime('@'.$check);
 				$date_cut = new \DateTime('-15 minutes');
-				$date_cut = new \DateTime('-1 minutes');
 				$diff = \Orb\Util\Dates::secsToReadable(time() - $date->getTimestamp(), 5);
 
 				if ($date_cut < $date) {
