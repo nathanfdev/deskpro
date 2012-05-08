@@ -92,6 +92,7 @@ class StickyWordSearch implements PersonContextInterface
 			return false;
 		});
 		$words = Arrays::removeFalsey($words);
+		$words = array_values($words);
 
 		return $words;
 	}
