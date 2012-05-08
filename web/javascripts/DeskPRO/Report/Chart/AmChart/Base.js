@@ -35,7 +35,8 @@ DeskPRO.Report.Chart.AmChart.Base = new Orb.Class({
 	render: function() {
 
 		var params = {
-			bgcolor:"#FFFFFF"
+			bgcolor:"#FFFFFF",
+			wmode: 'opaque'
 		};
 
 		var setting_url = DeskPRO_Window.getUrl('report_chart_get_settings', {dashboard_stat_id: this.dashboard_stat_id});
