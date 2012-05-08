@@ -149,7 +149,7 @@
     'agent.tickets.set_awaiting_agent'               => 'Set awaiting agent',
     'agent.tickets.set_awaiting_user'                => 'Set awaiting user',
     'agent.tickets.set_category_action'              => 'Set category to {{category}}',
-    'agent.tickets.set_delete'                       => 'Mark For Deletion',
+    'agent.tickets.set_delete'                       => 'Mark For deletion',
     'agent.tickets.set_department_action'            => 'Set department to {{department}}',
     'agent.tickets.set_flag_to_action'               => 'Set flag to {{flag}}',
     'agent.tickets.set_hold'                         => 'Set on hold',
