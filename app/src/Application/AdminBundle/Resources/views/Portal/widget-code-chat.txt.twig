@@ -9,7 +9,7 @@
 
 	(function() {
 		var scr = document.createElement('script');
-		scr.src = '{{ asset('javascripts/DeskPRO/User/ChatWidget/ChatWidget.js') }}';
+		scr.src = '{{ asset_url('javascripts/DeskPRO/User/ChatWidget/ChatWidget.js') }}';
 		scr.setAttribute('async', 'true');
 		document.documentElement.firstChild.appendChild(scr);
 	})();

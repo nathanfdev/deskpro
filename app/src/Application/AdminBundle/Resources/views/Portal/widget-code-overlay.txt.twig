@@ -6,7 +6,7 @@
 	DpOverlayWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
 	(function() {
 		var scr = document.createElement('script');
-		scr.src = '{{ asset('javascripts/DeskPRO/User/WebsiteWidget/Overlay.js') }}';
+		scr.src = '{{ asset_url('javascripts/DeskPRO/User/WebsiteWidget/Overlay.js') }}';
 		scr.setAttribute('async', 'true');
 		document.documentElement.firstChild.appendChild(scr);
 	})();

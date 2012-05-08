@@ -46,7 +46,8 @@
 			assignedAgentAvatarIcon: '{{ convo.agent.getPictureUrl(16)|default(0) }}',
 			initialMessages: {{ convo_messages|json_encode|raw }},
 			uploadTo: '{{ path('user_accept_upload') }}',
-			uploadSecurityToken: '{{ security_token('attach_temp') }}'
+			uploadSecurityToken: '{{ security_token('attach_temp') }}',
+			autoStart: {% if auto_start %}true{% else %}false{% endif %}
 		});
 		$(document).ready(function() {
 			window.DeskPRO_Window.initPage();
@@ -69,18 +70,18 @@
 <div id="dp_chat_start">
 	{% if app.user.id %}
 		{% if not app.user.name %}
-			<input type="text" name="name" placeholder="{{ phrase('user.general.your_name') }}" /><br />
+			<input type="text" name="name" placeholder="{{ phrase('user.general.your_name') }}" value="{{ initial_name }}" /><br />
 		{% else %}
 			{{ app.user.name }}
 		{% endif %}
 		{% if not app.user.email_address %}
-			<input type="text" name="email" placeholder="{{ phrase('user.general.your_email_address') }}" />
+			<input type="text" name="email" placeholder="{{ phrase('user.general.your_email_address') }}" value="{{ initial_email }}" />
 		{% else %}
 			{{ app.user.email_address }}
 		{% endif %}
 	{% else %}
-		<input type="text" name="name" placeholder="{{ phrase('user.general.your_name') }}" /><br />
-		<input type="text" name="email" placeholder="{{ phrase('user.general.your_email_address') }}" />
+		<input type="text" name="name" placeholder="{{ phrase('user.general.your_name') }}" value="{{ initial_name }}"/><br />
+		<input type="text" name="email" placeholder="{{ phrase('user.general.your_email_address') }}" value="{{ initial_email }}" />
 		{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 			<div class="connect-with">
 				{{ phrase('user.general.or_connect_with') }}
@@ -97,11 +98,11 @@
 			{% if dep.children|length %}
 				<optgroup label="{{ dep.title }}">
 					{% for subdep in dep.children %}
-						<option value="{{ subdep.id }}">{{ subdep.title }}</option>
+						<option value="{{ subdep.id }}" {% if subdep.id == initial_department_id %}selected="selected"{% endif %}>{{ subdep.title }}</option>
 					{% endfor %}
 				</optgroup>
 			{% else %}
-				<option value="{{ dep.id }}">{{ dep.title }}</option>
+				<option value="{{ dep.id }}" {% if dep.id == initial_department_id %}selected="selected"{% endif %}>{{ dep.title }}</option>
 			{% endif %}
 		{% endfor %}
 	</select><br />

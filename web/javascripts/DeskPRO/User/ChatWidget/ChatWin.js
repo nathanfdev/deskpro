@@ -157,6 +157,10 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			this.ajaxPoller.send();
 		}
 
+		if (this.options.autoStart) {
+			this.startChat();
+		}
+
 		$('body').fileupload({
 			url: this.options.uploadTo,
 			dropZone: $(document),
@@ -178,7 +182,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 					items[0].blob_id
 					$.ajax({
 						cache: false,
-						url: BASE_URL + 'chat/send-attach/' + self.sessionCode,
+						url: BASE_URL + 'chat/send-attach/' + self.sessionCode + '?__sid=' + self.sessionCode,
 						context: this,
 						data: { send_blob_id: items[0].blob_id },
 						dataType: 'json',
@@ -291,7 +295,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 
 		$.ajax({
 			cache: false,
-			url: BASE_URL + 'chat/send-message/' + this.sessionCode,
+			url: BASE_URL + 'chat/send-message/' + this.sessionCode + '?__sid=' + this.sessionCode,
 			context: this,
 			data: data,
 			dataType: 'json',
@@ -421,7 +425,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		if (userEnded) {
 			$.ajax({
 				cache: false,
-				url: BASE_URL + 'chat/chat-finished/' + this.sessionCode + '?conversation_id=' + this.conversationId + '&is_ajax=1',
+				url: BASE_URL + 'chat/chat-finished/' + this.sessionCode + '?conversation_id=' + this.conversationId + '&is_ajax=1&__sid=' + this.sessionCode,
 				context: this,
 				dataType: 'json',
 				complete: callback || function() {}
@@ -447,7 +451,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 
 		$.ajax({
 			cache: false,
-			url: BASE_URL + 'chat/chat-finished-feedback/' + this.sessionCode + '?conversation_id=' + this.conversationId + '&is_ajax=1',
+			url: BASE_URL + 'chat/chat-finished-feedback/' + this.sessionCode + '?conversation_id=' + this.conversationId + '&is_ajax=1&__sid=' + this.sessionCode,
 			type: 'POST',
 			data: data,
 			context: this,
@@ -601,6 +605,10 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 				send_data.push({
 					name: 'conversation_id',
 					value: self.conversationId
+				});
+				send_data.push({
+					name: '__sid',
+					value: self.sessionCode
 				});
 
 				//------------------------------

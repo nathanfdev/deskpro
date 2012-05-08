@@ -79,6 +79,54 @@ var DpOverlayWidget = new (function() {
 	var lastWinWidth = 0;
 	var hasChangedSinceChildAsked = false;
 
+	var comms = {
+		intervalId: null,
+		lastHash: null,
+		hasPostMessage: window.postMessage,
+		cacheBust: 0,
+		pollingInterval: 130,
+		recieveCallback: null,
+		send: function(message, targetUrl, target) {
+			if (this.hasPostMessage) {
+				target.postMessage(message, targetUrl.replace( /([^:]+:\/\/[^\/]+).*/, '$1'))
+			} else {
+				target.location = targetUrl.replace( /#.*$/, '' ) + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
+			}
+		},
+		setupReciever: function(callback, sourceUrl) {
+			// Unset existing
+			if (callback && this.recieveCallback) {
+				this.recieveCallback = null;
+				this.setupReciever(null, '');
+			}
+
+			this.recieveCallback = callback;
+
+			if (this.hasPostMessage) {
+				if (window.addEventListener) {
+					window[this.recieveCallback ? 'addEventListener' : 'removeEventListener']('message', this.recieveCallback, false);
+				} else {
+					window[this.recieveCallback ? 'attachEvent' : 'detachEvent' ]('onmessage', this.recieveCallback);
+				}
+			} else {
+				if (this.intervalId) {
+					window.clearInterval(this.intervalId);
+				}
+
+				if (this.recieveCallback) {
+					var me = this;
+					this.intervalId = window.setInterval(function() {
+						var hash = document.location.hash;
+						var re = /^#?\d+&/;
+						if (hash !== last_hash && re.test(hash)) {
+							me.lastHash = hash;
+							me.recieveCallback({ data: hash.replace( re, '') });
+						}
+					});
+				}
+			}
+		}
+	};
 
 	/**
 	 * The child iframe talks to us through this method.
@@ -86,45 +134,32 @@ var DpOverlayWidget = new (function() {
 	 * Note that the parent never talks to the child. All communication is done through the child
 	 * asking the parent for information.
 	 *
-	 * @param {String} messageId
-	 * @param {Object} [data]
+	 * @param {Array} messageData
 	 */
-	this.childListen = function(messageId, data) {
+	this.childListen = function(messageData) {
+
+		if (messageData && messageData.data) {
+			messageData = messageData.data;
+		}
+
+		var messageData = messageData.split(':');
+		var messageId = messageData.shift();
+
+		console.log('[ChatWidget] comms recieved: %s %o', messageId, data);
 
 		var self = this;
 		console.log('[Recieving] %s', messageId);
 
 		switch (messageId) {
 
-			// Tell the child if dimentions have changed
-			case 'hasSizeChanged':
-				var x = hasChangedSinceChildAsked;
-				hasChangedSinceChildAsked = false;
-
-				return x;
-
-			// Tell the child about the size of the window
-			case 'winSize':
-				return {
-					width: winWidth,
-					height: winHeight
-				};
-
-			// Tell the child about the size of itself
-			case 'mySize':
-				return {
-					width: overlayIframe.width(),
-					height: overlayIframe.height()
-				};
-
 			case 'closeMe':
-				this.close();
+				self.close();
 				break;
 
 			// When the child wants to resize to a certain height (ie to accomodate more stuff) they send this message
 			// Afterwards we pass back the height we were able to set which may be smaller than it wanted
 			case 'requestHeight':
-				var height = data.height;
+				var height = messageData[0];
 				var winMaxHeight = winHeight - 40;
 
 				if (height > winMaxHeight) {
@@ -135,20 +170,29 @@ var DpOverlayWidget = new (function() {
 
 				setHeight(height);
 
-				return height;
+				break;
 
 			case 'requestChat':
 
+				var data = {
+					name: messageData[0].replace(/__DP_COL__/g, ':'),
+					email: messageData[1].replace(/__DP_COL__/g, ':'),
+					department_id: messageData[2].replace(/__DP_COL__/g, ':')
+				};
 				var preform = $('#dpchat_preform');
 				preform.find('input[name="name"]').val(data.name);
 				preform.find('input[name="email"]').val(data.email);
 				preform.find('select[name="department_id"]').val(data.department_id);
 
-				$('#dpchat_preform_submit').trigger('click');
-
-				DpChat.assignedCallback = function() {
+				if (window.DpChatWidget) {
+					DpChatWidget.open([
+						['name', messageData[0].replace(/__DP_COL__/g, ':')],
+						['email', messageData[1].replace(/__DP_COL__/g, ':')],
+						['department_id', messageData[2].replace(/__DP_COL__/g, ':')],
+						['auto_start', 1]
+					]);
 					self.close();
-				};
+				}
 
 				return;
 
@@ -237,9 +281,12 @@ var DpOverlayWidget = new (function() {
 				css.push('overflow: hidden');
 				css = css.join(';');
 
-				$('<iframe src="' + data + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(inner);
+				var url = messageData[0];
+				url = url.replace(/__DP_COL__/g, ':');
+				url += '#' + encodeURIComponent(document.location.href);
+				$('<iframe src="' + url + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(inner);
 
-				return;
+				break;
 		}
 	};
 
@@ -251,6 +298,8 @@ var DpOverlayWidget = new (function() {
 		if (isOpen) {
 			return;
 		}
+
+		var self = this;
 
 		// Always re-create the iframe so the stage resets
 		if (overlayIframe) {
@@ -345,9 +394,14 @@ var DpOverlayWidget = new (function() {
 		css = css.join(';');
 
 		var src = options.deskproUrl + 'widget/overlay.html?h=' + winHeight;
+		src += '#' + encodeURIComponent(document.location.href);
 		overlayIframe = $('<iframe id="dp_overlay_iframe" name="dp_overlay_iframe" allowtransparency="true" src="' + src + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(overlayWrapInner);
 
 		setHeight(500);
+
+		comms.setupReciever(function(messageData) {
+			self.childListen(messageData);
+		}, src);
 
 		overlayBack.fadeIn('fast');
 		overlayWrap.fadeIn();

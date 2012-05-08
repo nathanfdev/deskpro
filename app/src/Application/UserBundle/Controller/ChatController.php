@@ -247,6 +247,7 @@ class ChatController extends AbstractController
 
 		$response = $this->render('UserBundle:Chat:chat-session.js.php', array(
 			'session' => $session,
+			'session_id' => $session->getSessionCode(),
 			'conversation' => $convo,
 		));
 

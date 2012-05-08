@@ -4,7 +4,7 @@
 			{% if type == 'article' %}<i class="dp-icon-folder-open"></i>
 			{% elseif type == 'news' %}<i class="dp-icon-bookmark"></i>
 			{% elseif type == 'download' %}<i class="dp-icon-download-alt"></i>
-			{% elseif type == 'feedback' %}<i class="dp-icon-icon-file"></i>
+			{% elseif type == 'feedback' %}<i class="dp-icon-file"></i>
 			{% endif %}
 		{% endif %}
 		{% if q %}
@@ -33,5 +33,6 @@
 		{% elseif type == 'feedback' %}
             {{ phrase('user.general.count_votes', {'count': item.total_rating}) }} &middot; {{ phrase('user.general.count_comments', {'count': item.num_comments}) }}
 		{% endif %}
+		<div class="fadeaway"></div>
 	</div>
 </li>

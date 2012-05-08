@@ -4,7 +4,56 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 	Implements: [Orb.Util.Options, Orb.Util.Events],
 
 	initialize: function() {
+		this.comms = {
+			intervalId: null,
+			lastHash: null,
+			hasPostMessage: !!window.postMessage,
+			cacheBust: 0,
+			pollingInterval: 130,
+			recieveCallback: null,
+			send: function(message, targetUrl, target) {
+				if (this.hasPostMessage) {
+					target.postMessage(message, targetUrl.replace( /([^:]+:\/\/[^\/]+).*/, '$1'))
+				} else {
+					target.location = targetUrl.replace( /#.*$/, '' ) + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
+				}
+			},
+			setupReciever: function(callback, sourceUrl) {
+				// Unset existing
+				if (callback && this.recieveCallback) {
+					this.recieveCallback = null;
+					this.setupReciever(null, '');
+				}
 
+				this.recieveCallback = callback;
+
+				if (this.hasPostMessage) {
+					if (window.addEventListener) {
+		        		window[this.recieveCallback ? 'addEventListener' : 'removeEventListener']('message', this.recieveCallback, false);
+		      		} else {
+		        		window[this.recieveCallback ? 'attachEvent' : 'detachEvent' ]('onmessage', this.recieveCallback);
+		      		}
+				} else {
+					if (this.intervalId) {
+						window.clearInterval(this.intervalId);
+					}
+
+					if (this.recieveCallback) {
+						var me = this;
+						this.intervalId = window.setInterval(function() {
+							var hash = document.location.hash;
+		            		var re = /^#?\d+&/;
+							if (hash !== last_hash && re.test(hash)) {
+								me.lastHash = hash;
+								me.recieveCallback({ data: hash.replace( re, '') });
+							}
+						}, this.pollingInterval);
+					}
+				}
+			}
+		};
+
+		this.parentUrl = decodeURIComponent(document.location.hash.replace( /^#/, ''));
 	},
 
 	initPage: function() {
@@ -56,22 +105,23 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 		$(document).on('click', '.view-item', function(ev) {
 			ev.preventDefault();
 
-			var origUrl = $(this).attr('href');
+			var origUrl = $(this).get(0).href;
 			var url = Orb.appendQueryData(origUrl, '_partial', 'overlayWidget');
+			url = url.replace(/:/g, '__DP_COL__');
 
-			self.tellParent('showContentPage', url);
+			self.tellParent('showContentPage', [url]);
 		});
 
 		this.tellParent('ready');
 
 		var lastHeight, currentHeight;
 		lastHeight = $('#widget_deskpro').height();
-		self.tellParent('requestHeight', { height: lastHeight+20 });
+		self.tellParent('requestHeight', [lastHeight]);
 
 		window.setInterval(function() {
 			currentHeight = $('#widget_deskpro').height();
 			if (lastHeight != currentHeight) {
-				self.tellParent('requestHeight', { height: currentHeight+20 });
+				self.tellParent('requestHeight', [currentHeight]);
 			}
 			lastHeight = currentHeight;
 		}, 80);
@@ -153,14 +203,15 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 	 * @param {Object} [data]
 	 */
 	tellParent: function(messageId, data) {
-		data = data || null;
-
-		if (window.parent.DpOverlayWidget) {
-			console.log('[Sending] %s %o', messageId, data);
-			return window.parent.DpOverlayWidget.childListen(messageId, data);
-		} else {
-			console.log('[Sending:No Comms] %s %o', messageId, data);
+		if (typeof data != 'undefined' && !data.join) {
+			data = [data];
 		}
+
+		data = data || [];
+		var messageStr = messageId + ':' + data.join(':');
+		this.comms.send(messageStr, this.parentUrl, window.parent);
+
+		console.log('[OverlayWin] comms.send: %s %o', messageId, data);
 
 		return null;
 	},
@@ -416,11 +467,11 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 
 		this.newChatForm.on('submit', function(ev) {
 			ev.preventDefault();
-			var data = {
-				name: self.newChatForm.find('input[name="name"]').val(),
-				email: self.newChatForm.find('input[name="email"]').val(),
-				department_id: self.newChatForm.find('select[name="department_id"]').val()
-			};
+			var data = [
+				(self.newChatForm.find('input[name="name"]').val() || '').replace(/:/g, '__DP_COL__'),
+				(self.newChatForm.find('input[name="email"]').val() || '').replace(/:/g, '__DP_COL__'),
+				(self.newChatForm.find('select[name="department_id"]').val() || '').replace(/:/g, '__DP_COL__')
+			];
 
 			self.tellParent('requestChat', data);
 

@@ -246,6 +246,11 @@ class WidgetController extends AbstractController
 			'convo' => $convo,
 			'convo_messages' => $convo_messages,
 			'departments' => $departments,
+			'initial_name' => $this->in->getString('name'),
+			'initial_email' => $this->in->getString('email'),
+			'initial_department_id' => $this->in->getUint('department_id'),
+			'initial_department_id' => $this->in->getUint('department_id'),
+			'auto_start' => $this->in->getBool('auto_start')
 		);
 
 		return $this->render('UserBundle:Widget:chat.html.twig', $vars);

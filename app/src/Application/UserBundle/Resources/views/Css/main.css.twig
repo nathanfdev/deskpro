@@ -2496,12 +2496,8 @@ body.file-drag-over #dp .dp-drop-file-zone,
 
 #dp .widget-deskpro{
 	margin: 0 auto;
-	border-radius: 4px;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
 	width:942px;
 	position:relative;
-	background-color:#fbfcff;
 	padding:9px;
 	color:#7a7f87;
 	font:14px/17px 'Helvetica Neue',Helvetica,Arial, sans-serif;
@@ -2776,7 +2772,14 @@ body.file-drag-over #dp .dp-drop-file-zone,
 	height: 20px;
 }
 
-#dp .widget-deskpro .files-list li .top-row .fadeaway {
+#dp .widget-deskpro .files-list li .summary {
+	position: relative;
+	white-space: nowrap;
+	overflow: hidden;
+	height: 18px;
+}
+
+#dp .widget-deskpro .files-list li .fadeaway {
 	background: -moz-linear-gradient(left,  rgba(242,243,247,0) 0%, rgba(242,243,247,0) 58%, rgba(242,243,247,1) 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(242,243,247,0)), color-stop(58%,rgba(242,243,247,0)), color-stop(100%,rgba(242,243,247,1))); /* Chrome,Safari4+ */
 	background: -webkit-linear-gradient(left,  rgba(242,243,247,0) 0%,rgba(242,243,247,0) 58%,rgba(242,243,247,1) 100%); /* Chrome10+,Safari5.1+ */
@@ -2872,6 +2875,7 @@ body.file-drag-over #dp .dp-drop-file-zone,
 #dp .widget-deskpro .widget-content{
 	width:567px;
 	padding:12px 22px 70px 23px;
+	min-height: 425px;
 }
 #dp .widget-deskpro .fields-row{
 	padding:0 0 27px;

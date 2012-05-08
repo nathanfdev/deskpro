@@ -62,7 +62,7 @@ var DpChatWidget = new (function() {
 	/**
 	 * Opens the overlaying iframe
 	 */
-	this.open = function() {
+	this.open = function(data) {
 		if (isOpen) {
 			return;
 		}
@@ -82,7 +82,20 @@ var DpChatWidget = new (function() {
 			css.push('overflow: hidden');
 			css = css.join(';');
 
-			frameSrc = options.deskproUrl + 'widget/chat.html#' + encodeURIComponent(document.location.href);
+			var qs = '?';
+
+			var sid = getCookie('dpchat_sid');
+			if (sid) {
+				qs += '__sid=' + sid;
+			}
+
+			if (data) {
+				for (var i = 0; i < data.length; i++) {
+					qs += '&' + encodeURIComponent(data[i][0]) + '=' + encodeURIComponent(data[i][1]);
+				}
+			}
+
+			frameSrc = options.deskproUrl + 'widget/chat.html' + qs + '#' + encodeURIComponent(document.location.href);
 			chatIframe = $('<iframe id="dp_chat_iframe" name="dp_chat_iframe" src="' + frameSrc + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo('body');
 
 			comms.setupReciever(childListen, frameSrc);
@@ -114,6 +127,26 @@ var DpChatWidget = new (function() {
 	//# Initialize Helpers
 	//##################################################################################################################
 
+	function setCookie(c_name,value,exdays) {
+		var exdate=new Date();
+		exdate.setDate(exdate.getDate() + exdays);
+		var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
+		document.cookie=c_name + "=" + c_value;
+	};
+
+	function getCookie(c_name) {
+		var i,x,y,ARRcookies=document.cookie.split(";");
+
+		for (i=0;i<ARRcookies.length;i++) {
+			x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+			y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+			x=x.replace(/^\s+|\s+$/g,"");
+			if (x==c_name) {
+				return unescape(y);
+			}
+		}
+	};
+
 	function initSession() {
 		// Now load our session script
 		// DeskPRO script that sets/gets session and initial messages
@@ -123,7 +156,12 @@ var DpChatWidget = new (function() {
 		} else {
 			url += encodeURIComponent(document.location.href);
 		}
-		url += '&amp;_2=';
+		url += '&_2=';
+
+		var sid = getCookie('dpchat_sid');
+		if (sid) {
+			url += '&__sid=' + sid;
+		}
 
 		if (DpChatWidget_Options && DpChatWidget_Options.referrerPageUrl) {
 			url += encodeURIComponent(document.location.href);
@@ -131,7 +169,7 @@ var DpChatWidget = new (function() {
 			url += encodeURIComponent(document.referrer);
 		}
 
-		url += '&amp;'+(new Date().getTime());
+		url += '&'+(new Date().getTime());
 
 		if (options.displayType == 'DpWindow') {
 			url += '&amp;is_window=1';
@@ -177,7 +215,11 @@ var DpChatWidget = new (function() {
 	/**
 	 * initWidget() is called when we know we've got jQuery
 	 */
-	this.initWidget = function() {
+	this.initWidget = function(sessionId) {
+
+		if (sessionId) {
+			setCookie('dpchat_sid', sessionId, 7);
+		}
 
 		DpConsole.log('DpChatWidget.initWidget');
 

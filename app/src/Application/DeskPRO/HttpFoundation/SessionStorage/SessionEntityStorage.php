@@ -139,6 +139,9 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 		// We want to use our own sessionid's, so we have to do this check
 		// to see if we need to create a new entity
 		$session_id = empty($_COOKIE[$this->options['name']]) ? null : $_COOKIE[$this->options['name']];
+		if (isset($_REQUEST['__sid'])) {
+			$session_id = $_REQUEST['__sid'];
+		}
 		$session = null;
 		if ($session_id) {
 			$session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_id);
