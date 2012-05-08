@@ -862,7 +862,7 @@ $collection->add('agent_ticket_doupdate', new Route(
 	'/tickets/{ticket_id}/update-views.json',
 	array('_controller' => 'AgentBundle:Ticket:updateViews'),
 	array('ticket_id' => '\\d+'),
-	array('fragment_name' => 't')
+	array()
 ));
 
 $collection->add('agent_ticket_split', new Route(
@@ -1270,7 +1270,7 @@ $collection->add('agent_task_save', new Route(
 	'/tasks/save',
 	array('_controller' => 'AgentBundle:Task:create'),
 	array('_method' => 'POST'),
-	array('fragment_name' => 'nt')
+	array()
 ));
 
 $collection->add('agent_task_view', new Route(
