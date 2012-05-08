@@ -36,6 +36,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
+use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 
 use Application\DeskPRO\App;
 
@@ -111,6 +112,21 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
 	public function browserRequirementsAction()
 	{
-		return $this->render('AgentBundle:Login:browser-requirements.html.twig');
+		if (UserAgentRequirementCheck::passAgentInterface($this->container->get('browser_sniffer'))) {
+			return $this->redirectRoute('agent');
+		}
+
+		$browser = $this->container->get('browser_sniffer');
+
+		return $this->render('AgentBundle:Login:browser-requirements.html.twig', array(
+			'is_ie' => $browser->isBrowser(\Browser::BROWSER_IE)
+		));
+	}
+
+	public function ieCompatModeAction()
+	{
+		return $this->render('AgentBundle:Login:instruct-ie-compat-mode.html.twig', array(
+
+		));
 	}
 }

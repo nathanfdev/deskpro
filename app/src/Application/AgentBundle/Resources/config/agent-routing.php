@@ -257,6 +257,13 @@ $collection->add('agent_browser_requirements', new Route(
 	array()
 ));
 
+$collection->add('agent_browser_requirements_ie_compat', new Route(
+	'/browser-requirements/ie-compat-mode',
+	array('_controller' => 'AgentBundle:Login:ieCompatMode'),
+	array(),
+	array()
+));
+
 $collection->add('agent_login', new Route(
 	'/login',
 	array('_controller' => 'AgentBundle:Login:index'),

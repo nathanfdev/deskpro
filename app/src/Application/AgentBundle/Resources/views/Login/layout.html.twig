@@ -13,8 +13,8 @@
 
 <style type="text/css">
 body {
-	overflow: hidden;
-	background: #fff !important;
+	{% if not is_popup %}overflow: hidden;{% endif %}
+	background: #DEE4EA !important;
 }
 
 #dp_logo {
@@ -41,12 +41,14 @@ body {
 }
 
 #dp_login {
+	{% if not is_popup %}
 	position: absolute;
 	top: 0;
 	right: 0;
 	bottom: 0;
 	left: 0;
 	z-index: 99998;
+	{% endif %}
 
 	background-color: #DFE5EB;
 	background: rgb(158,166,175); /* Old browsers */
@@ -275,6 +277,17 @@ body {
 	padding: 5px;
 }
 
+#dp_login p.note {
+	color: #37341A;
+	font: normal 9pt/15px Arial, Helvetica, sans-serif;
+	margin: 0px 25px 10px 25px;
+	text-align: left;
+
+	background-color: #FFF692;
+	border: 1px solid #B3AC64;
+	padding: 5px;
+}
+
 br.clear {
 	clear: both;
 	height: 1px;
@@ -297,6 +310,13 @@ br.clear {
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
+{% if is_popup %}
+#dp_login .msg-outer {
+	margin: 15px;
+	width: auto;
+}
+{% endif %}
+
 {% if app.usersourceManager.getWithCapability('form_login') %}
 #dp_login dt { width: 120px; }
 {% endif %}
@@ -315,6 +335,8 @@ br.clear {
 	<div id="dp-logo"></div>
 </div>
 
-<a href="http://www.deskpro.com/" id="dp_logo">{{ phrase('agent.general.deskpro') }}</a>
+{% if not is_popup %}
+	<a href="http://www.deskpro.com/" id="dp_logo">{{ phrase('agent.general.deskpro') }}</a>
+{% endif %}
 </body>
 </html>

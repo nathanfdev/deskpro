@@ -18,4 +18,10 @@
     'agent.login.sent_pw_reset_instructions' => 'We sent insutructions on how to reset your password to the email address you provided.',
     'agent.login.supported_browsers'         => 'The following browsers are supported',
     'agent.login.version_x_or_later'         => 'v{{version}} or later',
+	'agent.login.ie_compat_mode_title'       => 'Are you already using IE8 or later? <a href="{{url}}">Make sure Compatibility Mode is not enabled.</a>',
+	'agent.login.ie_compat_mode_explain'     => 'Some versions of IE have a feature called Compatibility Mode meant to make old websites work with the newest browser technology. Sometimes this feature can be turned on erroneously. If you are using IE8 or IE9 but you still see the browser requirements page, it is probable that Compatibility Mode is enabled. To use DeskPRO you need to disable this feature:',
+	'agent.login.ie_compat_mode_step1'       => 'If the Tools menu is not already visible, press the Alt key on your keyboard to reveal the main menu',
+	'agent.login.ie_compat_mode_step2'       => 'From the Tools menu choose Compatibility View Setttings',
+	'agent.login.ie_compat_mode_step3'       => 'Locate this website URL in the list and click the Remove button',
+	'agent.login.ie_compat_mode_step4'       => 'Close this window and refresh the page',
 );
