@@ -198,7 +198,10 @@ class ContentRating
 		}
 
 		$rating = $this->getRating();
-		if (!$rating) {
+		if ($rating) {
+			// Remove the rating to undo its effect on the counters
+			$this->content_object->removeRating($rating);
+		} else {
 			$rating = Rating::create($user_rating, true);
 		}
 
