@@ -170,7 +170,7 @@ class PersonController extends AbstractController
 		$perms = array(
 			'edit'             => $is_editable && $this->person->hasPerm('agent_people.edit'),
 			'delete'           => $is_editable && $this->person->hasPerm('agent_people.delete'),
-			'edit_emails'      => $is_editable && $this->person->hasPerm('agent_people.manage_emails'),
+			'manage_emails'    => $is_editable && $this->person->hasPerm('agent_people.manage_emails'),
 			'reset_password'   => $is_editable && $this->person->hasPerm('agent_people.reset_password'),
 			'notes'            => $is_editable && $this->person->hasPerm('agent_people.notes'),
 			'org_create'       => $is_editable && $this->person->hasPerm('agent_org.create')
@@ -383,13 +383,14 @@ class PersonController extends AbstractController
 				break;
 
 			case 'set-primary-email':
-				if (!$this->person->hasPerm('agent_people.edit_emails')) {
+				if (!$this->person->hasPerm('agent_people.manage_emails')) {
 					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 				}
 
 				$email_id = $this->in->getUint('email_id');
-				if (isset($person->emails[$email_id])) {
-					$person->primary_email = $person->emails[$email_id];
+				$set_email = $person->getEmailId($email_id);
+				if ($set_email) {
+					$person->primary_email = $set_email;
 					$this->em->persist($person);
 				}
 
@@ -618,64 +619,60 @@ class PersonController extends AbstractController
 
 		try {
 
-			if ($this->person->hasPerm('agent_people.edit_emails')) {
+			if ($this->person->hasPerm('agent_people.manage_emails')) {
 				// Editing emails
-				if ($this->person->hasPerm('users.add-emails')) {
-					$email_comments = $this->in->getCleanValueArray('emails_comment', 'string', 'uint');
+				$email_comments = $this->in->getCleanValueArray('emails_comment', 'string', 'uint');
 
-					// Setting comment
-					foreach ($email_comments as $email_id => $comment) {
-						if (isset($person->emails[$email_id])) {
-							$person->emails[$email_id]->comment = $comment;
-							$this->em->persist($person->emails[$email_id]);
-						}
-					}
-
-					// Adding emails
-					$email_comments = $this->in->getCleanValueArray('new_emails_comment', 'string', 'uint');
-					foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $k => $email) {
-
-						if (!\Orb\Validator\StringEmail::isValueValid($email)) {
-							$errors[] = "\"$email\" was not saved because it is an invalid email address";
-							continue;
-						}
-
-						$check = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($email);
-						if ($check) {
-							if ($check->person->id == $person->id) {
-								// silent discard
-							} else {
-								$errors[] = "\"$email\" was not saved because it is already added to another user";
-							}
-							continue;
-						}
-
-						$email_rec = $person->addEmailAddressString($email);
-						$email_rec->comment = isset($email_comments[$k]) ? $email_comments[$k] : '';
-						$this->em->persist($email_rec);
+				// Setting comment
+				foreach ($email_comments as $email_id => $comment) {
+					if (isset($person->emails[$email_id])) {
+						$person->emails[$email_id]->comment = $comment;
+						$this->em->persist($person->emails[$email_id]);
 					}
 				}
 
-				// Removing emails
-				if ($this->person->hasPerm('users.remove-emails')) {
-					foreach ($this->in->getCleanValueArray('remove_emails', 'uint') as $email_id) {
-						if (isset($person->emails[$email_id])) {
+				// Adding emails
+				$email_comments = $this->in->getCleanValueArray('new_emails_comment', 'string', 'uint');
+				foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $k => $email) {
 
-							if ($person->primary_email->id == $email_id) {
-								$changed_primary_email = true;
-								$person->primary_email = null;
-							}
-
-							$this->em->remove($person->emails[$email_id]);
-							$person->emails->remove($email_id);
-						}
+					if (!\Orb\Validator\StringEmail::isValueValid($email)) {
+						$errors[] = "\"$email\" was not saved because it is an invalid email address";
+						continue;
 					}
 
-					if ($changed_primary_email && count($person->emails)) {
-						foreach ($person->emails as $e) {
-							$person->primary_email = $e;
-							break;
+					$check = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($email);
+					if ($check) {
+						if ($check->person->id == $person->id) {
+							// silent discard
+						} else {
+							$errors[] = "\"$email\" was not saved because it is already added to another user";
 						}
+						continue;
+					}
+
+					$email_rec = $person->addEmailAddressString($email);
+					$email_rec->comment = isset($email_comments[$k]) ? $email_comments[$k] : '';
+					$this->em->persist($email_rec);
+				}
+
+				// Removing emails
+				foreach ($this->in->getCleanValueArray('remove_emails', 'uint') as $email_id) {
+					if (isset($person->emails[$email_id])) {
+
+						if ($person->primary_email->id == $email_id) {
+							$changed_primary_email = true;
+							$person->primary_email = null;
+						}
+
+						$this->em->remove($person->emails[$email_id]);
+						$person->emails->remove($email_id);
+					}
+				}
+
+				if ($changed_primary_email && count($person->emails)) {
+					foreach ($person->emails as $e) {
+						$person->primary_email = $e;
+						break;
 					}
 				}
 			} // email perm
@@ -753,7 +750,7 @@ class PersonController extends AbstractController
 
 	public function ajaxSaveOrganizationAction($person_id)
 	{
-		if (!$this->person->hasPerm('agent_people.edit_emails')) {
+		if (!$this->person->hasPerm('agent_people.manage_emails')) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
