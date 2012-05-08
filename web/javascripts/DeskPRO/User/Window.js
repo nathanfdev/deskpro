@@ -13,6 +13,40 @@ DeskPRO.User.Window = new Orb.Class({
 
 	initPage: function() {
 
+		//------------------------------
+		// Fix scrollbar jump
+		//------------------------------
+
+		// Fix the smalle ~15px jump when going between pages that have and dont
+		// have scrollbars. This just adds a margin to scrollbar mages to "re center"
+		// it, taking into account the scrollbar width.
+		var body = $('body');
+
+		var previousWidth = null;
+		var scrollBarWidth;
+
+		var fixScrollbarJump = function () {
+			var currentWidth = body.width();
+			if (currentWidth != previousWidth) {
+				previousWidth = currentWidth;
+
+				if (!scrollBarWidth) {
+					body.css("overflow", "hidden");
+					var scrollBarWidth = body.width() - currentWidth;
+					body.css("overflow", "auto");
+				}
+
+				body.css("margin-left", scrollBarWidth + "px");
+			}
+		};
+
+		$(window).on('resize', fixScrollbarJump);
+		fixScrollbarJump();
+
+		//------------------------------
+		// Correct min heights for clean looking sidebar
+		//------------------------------
+
 		var calcHeights = function() {
 			var h = $('#dp_sidebar').height();
 			$('#dp_content').css({
