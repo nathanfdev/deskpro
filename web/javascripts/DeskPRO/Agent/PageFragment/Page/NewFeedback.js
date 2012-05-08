@@ -201,5 +201,19 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 			}).bind(this)
 		});
 		this.ownObject(this.otherTabs);
+
+		// Attachments
+		DeskPRO_Window.util.fileupload(this.wrapper, { page: this });
+		var list = $('.file-list', this.wrapper);
+		$('input', list[0]).live('click', function() {
+			var el = $(this);
+			var li = el.parent();
+			if (el.is(':checked')) {
+				li.removeClass('unchecked');
+			} else {
+				li.addClass('unchecked');
+			}
+			self.updateUi();
+		});
 	}
 });

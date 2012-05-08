@@ -53,6 +53,13 @@ class NewFeedback extends AbstractType
 		$builder->add('slug', 'text');
 
 		$builder->add('labels_json', 'hidden');
+
+		$builder->add('attach_ids', 'collection', array(
+			'type' => 'hidden',
+			'required' => false,
+			'allow_add' => true,
+			'allow_delete' => true
+		));
     }
 
 	public function getDefaultOptions(array $options)

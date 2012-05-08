@@ -526,6 +526,30 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 					});
 				}
 			});
+
+			// Attachments
+			var list = $('.file-list', this.wrapper);
+
+			DeskPRO_Window.util.fileupload(this.wrapper, {
+				url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=feedback&object_id=' + this.meta.feedback_id,
+				page: this
+			});
+
+			list.on('click', '.delete', function(ev) {
+				ev.preventDefault();
+				ev.stopImmediatePropagation();
+
+				var blob_id = $(this).data('blob-id');
+				$.ajax({
+					url: BASE_URL + 'agent/feedback/view/' + self.meta.feedback_id + '/ajax-save',
+					type: 'POST',
+					data: {action: 'remove-blob', blob_id: blob_id},
+					context: self,
+					dataType: 'json'
+				});
+
+				$(this).parent().fadeOut();
+			});
 		}
 
 		this.getEl('edit_btn').hide();

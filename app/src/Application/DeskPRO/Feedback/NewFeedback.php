@@ -47,9 +47,10 @@ use Application\DeskPRO\Entity\Rating;
  */
 class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 {
-	public $category_id = 0;
-	public $title = '';
-	public $content = '';
+	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	protected $em;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -59,9 +60,15 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 	public $require_login = false;
 	public $person_name = '';
 	public $person_email = '';
+	public $category_id = 0;
+	public $title = '';
+	public $content = '';
+	public $attach_blobs = array();
 
 	public function __construct(Visitor $visitor = null, Person $person = null)
 	{
+		$this->em = App::getOrm();
+
 		$this->visitor = $visitor;
 
 		if ($person && !$person->isGuest()) {
@@ -89,9 +96,24 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 		return $this->person_context;
 	}
 
+
+	/**
+	 * @param array $attach_ids
+	 */
+	public function setAttachBlobs(array $attach_auth_ids)
+	{
+		foreach ($attach_auth_ids as $auth_id) {
+			$blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthId($auth_id);
+			if ($blob) {
+				$this->attach_blobs[] = $blob;
+			}
+		}
+	}
+
+
 	public function save()
 	{
-		App::getOrm()->beginTransaction();
+		$this->em->getConnection()->beginTransaction();
 
 		try {
 
@@ -108,8 +130,8 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 
 			if ($this->person_context->isGuest()) {
 
-				$email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->person_email);
-				$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person_email);
+				$email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($this->person_email);
+				$email_validating = $this->em->getRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person_email);
 
 				// Email already exists on an account
 				// Means use the same person, but depending on the setting we
@@ -134,12 +156,12 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 					if (!$email_validating) {
 						$person = Person::newContactPerson();
 						$person->name = $this->person_name;
-						App::getOrm()->persist($person);
+						$this->em->persist($person);
 
 						$email_validating = new PersonEmailValidating();
 						$email_validating->email = $this->person_email;
 						$email_validating->person = $person;
-						App::getOrm()->persist($email_validating);
+						$this->em->persist($email_validating);
 
 					} else {
 						$person = $email_validating->person;
@@ -151,13 +173,13 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 				} else {
 					$person = Person::newContactPerson();
 					$person->name = $this->person_name;
-					App::getOrm()->persist($person);
+					$this->em->persist($person);
 
 					$email = new PersonEmail();
 					$email->email = $this->person_email;
 					$email->person = $person;
 					$person->addEmailAddress($email);
-					App::getOrm()->persist($email);
+					$this->em->persist($email);
 
 					$email_validating = null;
 				}
@@ -166,11 +188,11 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 
 				if ($this->person_name) {
 					$person->name = $this->person_name;
-					App::getOrm()->persist($person);
+					$this->em->persist($person);
 				}
 			}
 
-			App::getOrm()->flush();
+			$this->em->flush();
 
 			$feedback = new Feedback();
 
@@ -194,8 +216,20 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 				$feedback->setStatusCode('hidden.validating');
 			}
 
-			App::getOrm()->persist($feedback);
-			App::getOrm()->flush();
+			$this->em->persist($feedback);
+
+			foreach ($this->attach_blobs as $blob) {
+				$attach = new \Application\DeskPRO\Entity\FeedbackAttachment();
+				$attach->person   = $person;
+				$attach->feedback = $feedback;
+				$attach->blob     = $blob;
+
+				$feedback->addAttachment($attach);
+				$this->em->persist($attach);
+			}
+
+			$this->em->persist($feedback);
+			$this->em->flush();
 
 			$rating = Rating::create(1);
 			$rating->person = $person;
@@ -204,17 +238,17 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 			}
 			$feedback->addRating($rating);
 
-			App::getOrm()->persist($rating);
-			App::getOrm()->persist($feedback);
+			$this->em->persist($rating);
+			$this->em->persist($feedback);
 
-			App::getOrm()->flush();
+			$this->em->flush();
 
 			if ($email_validating) {
 				$email_validating->addValidatingContent('DeskPRO:Feedback', $feedback->id);
-				App::getOrm()->flush();
+				$this->em->flush();
 			}
 
-			App::getOrm()->commit();
+			$this->em->commit();
 
 			// Send confirmation email
 			App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($feedback, $person, $email_validating, $email, $validating) {
@@ -249,7 +283,7 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 			});
 
 		} catch (\Exception $e) {
-			App::getOrm()->rollback();
+			$this->em->rollback();
 			throw $e;
 		}
 

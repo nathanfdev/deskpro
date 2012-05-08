@@ -277,7 +277,22 @@ JS;
 
 					$article->addAttachment($attach);
 
+					$this->em->persist($attach);
 					$this->em->persist($article);
+					$this->em->flush();
+
+					break;
+
+				case 'feedback':
+					$feedback = $this->em->find('DeskPRO:Feedback', $this->in->getUint('object_id'));
+
+					$attach = new \Application\DeskPRO\Entity\FeedbackAttachment();
+					$attach['blob'] = $blob;
+					$attach['person'] = $this->person;
+
+					$feedback->addAttachment($attach);
+					$this->em->persist($attach);
+					$this->em->persist($feedback);
 					$this->em->flush();
 
 					break;

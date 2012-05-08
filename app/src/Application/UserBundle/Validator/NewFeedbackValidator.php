@@ -57,12 +57,12 @@ class NewFeedbackValidator extends AbstractValidator
 	{
 		$this->newfeedback = $newfeedback;
 
-		$validator = new \Orb\Validator\StringLength(array('min' => 5));
+		$validator = new \Orb\Validator\StringLength(array('min' => 3));
 		if (!$validator->isValid($this->newfeedback->title)) {
 			$this->addError('title.short');
 		}
 
-		$validator = new \Orb\Validator\StringLength(array('min' => 10));
+		$validator = new \Orb\Validator\StringLength(array('min' => 5));
 		if (!$validator->isValid($this->newfeedback->content)) {
 			$this->addError('content.short');
 		}

@@ -26,4 +26,5 @@
     'user.feedback.there_are_x_suggestions'   => 'There is {{count}} suggestion|There are {{count}} suggestions',
     'user.feedback.voting_closed'             => 'Voting closed',
     'user.feedback.voting_closed_explain'     => 'This suggestion has been closed to new votes and comments.',
+	'user.feedback.title_error'               => 'Please enter a title of at least 5 characters',
 );

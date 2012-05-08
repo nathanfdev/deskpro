@@ -77,14 +77,17 @@ class Feedback extends ContentAbstract
 	protected $revisions;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $comments;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $labels;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $custom_data;
 
@@ -94,6 +97,11 @@ class Feedback extends ContentAbstract
 	 * @var string
 	 */
 	protected $popularity = 0;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
+	protected $attachments;
 
 	protected $_is_new = false;
 
@@ -105,8 +113,14 @@ class Feedback extends ContentAbstract
 
 		$this->comments    = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	/**
+	 * Set the validating status
+	 *
+	 * @param string $validating
+	 */
 	public function setValidating($validating)
 	{
 		if (!$validating) {
@@ -116,17 +130,26 @@ class Feedback extends ContentAbstract
 		}
 	}
 
+
+	/**
+	 * @param CustomDataFeedback $data
+	 */
 	public function addCustomData(CustomDataFeedback $data)
 	{
 		$this->custom_data->add($data);
 		$data['feedback'] = $this;
 	}
 
+
+	/**
+	 * @param $rating
+	 */
 	public function addRating($rating)
 	{
 		parent::addRating($rating);
 		$this->recalculatePopularity();
 	}
+
 
 	public function recalculatePopularity()
 	{
@@ -269,11 +292,13 @@ class Feedback extends ContentAbstract
 		return $path;
 	}
 
+
 	public function addLabel($label)
 	{
 		$label['feedback'] = $this;
 		$this->labels->add($label);
 	}
+
 
 	/**
 	 * @return \Application\DeskPRO\Labels\LabelManager
@@ -285,6 +310,18 @@ class Feedback extends ContentAbstract
 		}
 
 		return $this->_label_manager;
+	}
+
+
+	/**
+	 * Add an attachment
+	 *
+	 * @param FeedbackAttachment $attach
+	 */
+	public function addAttachment(FeedbackAttachment $attach)
+	{
+		$this->attachments->add($attach);
+		$attach->feedback = $this;
 	}
 
 	############################################################################
@@ -326,5 +363,6 @@ class Feedback extends ContentAbstract
 		$metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataFeedback', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'feedback', 'orphanRemoval' => true, ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackAttachment', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'feedback',  ));
 	}
 }

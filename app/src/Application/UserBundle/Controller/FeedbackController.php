@@ -126,6 +126,8 @@ class FeedbackController extends AbstractController
 				$set_status = 'new';
 			}
 			$searcher->addTerm('status', 'is', $set_status);
+		} else {
+			$searcher->addTerm('status', 'not', 'hidden');
 		}
 
 		$status_cat = null;
@@ -197,6 +199,9 @@ class FeedbackController extends AbstractController
 			$validator = new \Application\UserBundle\Validator\NewFeedbackValidator();
 
 			$form->bindRequest($this->get('request'));
+
+			$newfeedback->setAttachBlobs($this->in->getCleanValueArray('attach_ids', 'str_simple', 'discard'));
+
 			if ($validator->isValid($newfeedback)) {
 				$feedback = $newfeedback->save();
 

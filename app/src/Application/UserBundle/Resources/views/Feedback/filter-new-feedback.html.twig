@@ -10,6 +10,9 @@
 				<div class="dp-input-prepend">
 					<span class="dp-add-on">{{ phrase('user.feedback.i_suggest_you') }}</span><input type="text" class="dp-suggest-title" id="new_suggest_title" value="{{ newfeedback.title }}" />
 				</div>
+				<div class="dp-help-inline dp-error-explain">
+					{{ phrase('user.feedback.title_error') }}
+				</div>
 			</td>
 			<td style="vertical-align: top;"><button class="dp-btn dp-go-btn dp-btn-success">{{ phrase('user.general.go') }}</button></td>
 		</tr></table>
@@ -54,6 +57,20 @@
 							</div>
 						</div>
 					</div>
+					<div class="dp-control-group {% if error_fields['category_id'] %}dp-error{% endif %}">
+						<label class="dp-control-label"><strong>{{ phrase('user.general.please_choose_a_category') }}</strong></label>
+						<div class="dp-controls">
+							<select name="feedback[category_id]" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="1" data-exclude-blank="1">
+								<option value=""></option>
+								{% for cat in feedback_cats %}
+									{{ formmacro.select_options_hierarchy(cat, newfeedback.category_id) }}
+								{% endfor %}
+							</select>
+							<div class="dp-help-inline dp-error-explain">
+								{{ phrase('user.general.please_choose_a_category') }}
+							</div>
+						</div>
+					</div>
 					<div class="dp-control-group {% if error_fields['content'] %}dp-error{% endif %}">
 						<label class="dp-control-label"><strong>{{ phrase('user.feedback.tell_us_about_idea') }}</strong></label>
 						<div class="dp-controls dp-fill">
@@ -67,20 +84,7 @@
 							<div class="dp-help-inline dp-error-explain">
 								{{ phrase('user.feedback.summary_error') }}
 							</div>
-						</div>
-					</div>
-					<div class="dp-control-group {% if error_fields['category_id'] %}dp-error{% endif %}">
-						<label class="dp-control-label"><strong>{{ phrase('user.general.please_choose_a_category') }}</strong></label>
-						<div class="dp-controls">
-							<select name="feedback[category_id]" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="1" data-exclude-blank="1">
-								<option value=""></option>
-								{% for cat in feedback_cats %}
-									{{ formmacro.select_options_hierarchy(cat, newfeedback.category_id) }}
-								{% endfor %}
-							</select>
-							<div class="dp-help-inline dp-error-explain">
-								{{ phrase('user.general.please_choose_a_category') }}
-							</div>
+							{% include 'UserBundle:Common:form-upload-input.html.twig' %}
 						</div>
 					</div>
 

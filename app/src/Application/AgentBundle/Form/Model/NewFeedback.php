@@ -40,6 +40,11 @@ use Application\DeskPRO\Entity\Person;
 
 class NewFeedback
 {
+	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	protected $em;
+
 	public $title;
 	public $category_id;
 	public $status_code;
@@ -49,23 +54,20 @@ class NewFeedback
 	public $labels_json;
 	public $labels = array();
 
-	protected $_feedback;
+	public $attach_ids;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $_em;
+	protected $_feedback;
 
 	public function __construct(Person $person_context)
 	{
 		$this->_person_context = $person_context;
 
-		$this->_em = App::getOrm();
+		$this->em = App::getOrm();
 	}
 
 	public function save()
 	{
-		$this->_em->beginTransaction();
+		$this->em->beginTransaction();
 
 		$feedback = new Feedback();
 		$feedback->person = $this->_person_context;
@@ -74,15 +76,13 @@ class NewFeedback
 		$feedback->content = $this->content ?: '';
 		$feedback->slug = $this->slug;
 
-		$cat = $this->_em->find('DeskPRO:FeedbackCategory', $this->category_id);
+		$cat = $this->em->find('DeskPRO:FeedbackCategory', $this->category_id);
 		$feedback->category = $cat;
-		$this->_em->persist($feedback);
-		$this->_em->flush();
+		$this->em->persist($feedback);
+		$this->em->flush();
 
 		if ($this->labels_json) {
-			error_log($this->labels_json);
 			$this->labels = @json_decode($this->labels_json);
-			error_log(print_r($this->labels,1));
 			if (!is_array($this->labels)) {
 				$this->labels = array();
 			}
@@ -90,10 +90,26 @@ class NewFeedback
 
 		if ($this->labels) {
 			$feedback->getLabelManager()->setLabelsArray($this->labels);
-			$this->_em->flush();
+			$this->em->flush();
 		}
 
-		$this->_em->commit();
+		if ($this->attach_ids) {
+			foreach ($this->attach_ids as $aid) {
+				$blob = $this->em->getRepository('DeskPRO:Blob')->find($aid);
+				if ($blob) {
+					$attach = new \Application\DeskPRO\Entity\FeedbackAttachment();
+					$attach->person   = $feedback->person;
+					$attach->feedback = $feedback;
+					$attach->blob     = $blob;
+
+					$feedback->addAttachment($attach);
+					$this->em->persist($attach);
+				}
+			}
+			$this->em->flush();
+		}
+
+		$this->em->commit();
 
 		$this->_feedback = $feedback;
 	}

@@ -2,7 +2,7 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewFeedback';
 pageMeta.title = '{{ phrase('agent.general.new_feedback') }}';
-
+pageMeta.uploadAttachUrl = '{{ path('agent_accept_upload') }}';
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
@@ -75,6 +75,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<nav id="{{baseId}}_other_props_tabs_wrap">
 				<ul id="{{baseId}}_other_props_tabs">
 					<li data-tab-for="> .tab-properties">{{ phrase('agent.general.properties') }}</li>
+					<li data-tab-for="> .tab-attach">{{ phrase('agent.general.attachments') }}</li>
 				</ul>
 			</nav>
 			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
@@ -95,6 +96,17 @@ pageMeta.baseId = '{{ baseId }}';
 					</dl>
 				</div>
 				{# /Tab Properties #}
+
+				{# Tab Attach #}
+				<div class="tab-attach" style="display: none">
+					{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newfeedback[attach_ids][]'} %}
+					<h6>{{ phrase('agent.general.attachments') }}</h6>
+					<div class="file-input">
+						<input type="file" name="file-upload" multiple="multiple" />
+					</div>
+					<ul class="files file-list"></ul>
+				</div>
+				{# /Tab Attach #}
 			</div>
 		</div>
 		{# /Tab Container #}

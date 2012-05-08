@@ -404,6 +404,17 @@ class FeedbackController extends AbstractController
 				);
 				break;
 
+			case 'remove-blob':
+				foreach ($feedback->attachments as $k => $attach) {
+					if ($attach->blob['id'] == $this->in->getUint('blob_id')) {
+						$feedback->attachments->remove($k);
+						$this->em->remove($attach);
+						break;
+					}
+				}
+
+				break;
+
 			case 'content':
 
 				$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editfeedback', $this->person->id);

@@ -67,6 +67,7 @@ class Article extends ContentAbstract
 	protected $revisions;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $attachments;
 
