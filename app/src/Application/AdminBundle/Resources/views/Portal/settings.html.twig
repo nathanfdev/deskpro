@@ -11,6 +11,14 @@
 {% endblock %}
 {% block page %}
 
+{% if app.session.getFlash('saved_settings') %}
+	<div class="alert-message success">
+		{{ phrase('admin.settings.saved_success') }}
+	</div>
+{% endif %}
+
+<form action="{{ path('admin_settings_saveform', {type: 'portal', auth: security_token('settings_portal'), return: path('admin_portal_settings')}) }}" method="post">
+
 <div class="setting_field_row">
 	<h4>{{ phrase('agent.general.misc') }}</h4>
 	<div class="setting_fields">
@@ -37,6 +45,8 @@
 <footer class="setting_field_row" style="text-align: center">
 	<button class="clean-white">{{ phrase('admin.general.save_settings') }}</button>
 </footer>
+
+</form>
 
 <script type="text/javascript">
 $(document).ready(function() {
