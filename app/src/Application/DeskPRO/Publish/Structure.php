@@ -768,26 +768,33 @@ class Structure implements PersonContextInterface
 		return $names;
 	}
 
-	protected function _getTotalCounts(array $counts, $cats, \Orb\Util\HierarchyStructure $h)
+	protected function _getTotalCounts(array $counts, $cats, \Orb\Util\HierarchyStructure $h, array &$called_on = null)
 	{
-		$counts['0_total'] = 0;
-
-		foreach ($cats as $cat) {
-			$total = 0;
-			$c_id = $cat['id'];
-			if (isset($counts[$c_id])) {
-				$total = $counts[$c_id];
+		$flat = $h->getFlatHierarchy();
+		$highest = 0;
+		foreach ($flat as $c) {
+			$total_key = $c['id'] . '_total';
+			if (!isset($counts[$total_key])) {
+				$counts[$total_key] = $counts[$c['id']];
 			}
+			if ($c['depth'] > $highest) {
+				$highest = $c['depth'];
+			}
+		}
 
-			foreach ($h->getChildrenIds($cat, false) as $child_id) {
-				if (isset($counts[$child_id])) {
-					$total += $counts[$child_id];
+		while ($highest >= 0) {
+			foreach ($flat as $c) {
+				$total_key = $c['id'] . '_total';
+				if ($c['depth'] == $highest) {
+					foreach ($h->getChildrenIds($c, true) as $subcatid) {
+						$counts[$total_key] += $counts["{$subcatid}_total"];
+					}
 				}
 			}
 
-			$counts["{$c_id}_total"] = $total;
-			$counts['0_total'] += $total;
+			$highest--;
 		}
+
 
 		return $counts;
 	}

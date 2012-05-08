@@ -85,7 +85,7 @@ class ArticlesController extends AbstractController
 
 			$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
 			$searcher->setPersonContext($this->person);
-			$searcher->addTerm('category', 'is', $category['id']);
+			$searcher->addTerm('category_specific', 'is', $category['id']);
 			$searcher->addTerm('status', 'is', 'published');
 			$searcher->setOrderBy('id', 'desc');
 

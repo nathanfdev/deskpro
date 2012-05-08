@@ -78,10 +78,43 @@ class HierarchyStructure
 	 */
 	public $children_key = 'children';
 
+	protected $flat_hierarchy = array();
+
 	public function __construct($cats)
 	{
 		$this->cats = $cats;
 	}
+
+	/**
+	 * @return array
+	 */
+	public function getFlatHierarchy()
+	{
+		if ($this->flat_hierarchy) {
+			return $this->flat_hierarchy;
+		}
+
+		$this->flat_hierarchy = array();
+		$this->_getFlatHierarchyArray($this->flat_hierarchy, 0);
+
+		return $this->flat_hierarchy;
+	}
+
+	public function _getFlatHierarchyArray(&$array, $parent_id, $depth = 0)
+	{
+		foreach ($this->cats as $cat) {
+			if (($cat->parent && $cat->parent->getId() == $parent_id) || (!$parent_id && !$cat->parent)) {
+				$array[$cat->getId()] = array(
+					'id' => $cat->getId(),
+					'parent_id' => $cat->parent ? $cat->parent->getId() : 0,
+					'depth' => $depth,
+					//'category' => $cat
+				);
+				$this->_getFlatHierarchyArray($array, $cat->getId(), $depth+1);
+			}
+		}
+	}
+
 
 
 	/**
