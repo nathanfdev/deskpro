@@ -249,8 +249,8 @@ class KbStep extends AbstractDeskpro3Step
 
 			// Rewrite the old getimage.php to for attachments to go through file.php
 			$new_article->content = str_replace(
-				'/getimage.php?id=' . $attach_info['id'],
-				'/file.php/' . $blob['authcode'] . '/' . $blob['filename'],
+				'https?://(.*?)/getimage\.php?id=' . $attach_info['id'],
+				"![attach:{$blob['authcode']}:{$blob['filename']}]",
 				$new_article->content
 			);
 		}

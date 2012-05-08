@@ -63,7 +63,7 @@ class News extends ContentAbstract
 
 	public function getContentHtml()
 	{
-		$content = $this->content;
+		$content = $this->getContent();
 
 		// Remove the intro separator
 		$content = preg_replace('#[\r\n]+\-{3,}[\r\n]+#', "\n", $content);
@@ -73,7 +73,7 @@ class News extends ContentAbstract
 
 	public function getExcerptHtml()
 	{
-		$content = Strings::standardEol($this->content);
+		$content = Strings::standardEol($this->getContent());
 		if ($pos = strpos($content, '![more]')) {
 			$excerpt = substr($content, $pos);
 		} elseif ($pos = strpos($content, "\n\n")) {
