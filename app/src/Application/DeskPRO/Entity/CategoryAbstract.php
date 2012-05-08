@@ -176,6 +176,8 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 			$cat = $cat->parent;
 		}
 
+		$this->_structure['all_parents'] = array_reverse($this->_structure['all_parents'], true);
+
 		return $this->_structure['all_parents'];
 	}
 

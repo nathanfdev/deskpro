@@ -157,7 +157,13 @@ class HierarchyStructure
 			$ids[] = $cat_id;
 		}
 
-		$ids = array_reverse($ids);
+		$that = $this;
+		uasort($ids, function ($a, $b) use ($that) {
+			$a_depth = $that->cats[$a];
+			$b_depth = $that->cats[$b];
+
+			return ($a_depth < $b_depth) ? -1 : 1;
+		});
 
 		return $ids;
 	}
