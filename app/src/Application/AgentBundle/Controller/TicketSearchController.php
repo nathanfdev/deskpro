@@ -1203,7 +1203,7 @@ class TicketSearchController extends AbstractController
 					}
 
 					$count++;
-					$collection->apply($ticket, $this->person);
+					$collection->apply(null, $ticket, $this->person);
 					$this->em->persist($ticket);
 					$this->em->flush();
 
