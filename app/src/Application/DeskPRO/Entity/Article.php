@@ -121,6 +121,20 @@ class Article extends ContentAbstract
 		return $url;
 	}
 
+	public function setStatus($status)
+	{
+		if ($status == 'approve') {
+			$status = self::STATUS_PUBLISHED;
+		}
+
+		if ($status == self::STATUS_PUBLISHED) {
+			$this->setModelField('status', self::STATUS_PUBLISHED);
+			$this->setModelField('hidden_status', null);
+		} else {
+			$this->setModelField('status', $status);
+		}
+	}
+
 	/**
 	 * Add a label
 	 * @param \Application\DeskPRO\Entity\LabelTicket $label

@@ -65,7 +65,7 @@ class ReservedWords
 		'TINYBLOB' => 1, 'TINYINT' => 1, 'TINYTEXT' => 1, 'TO' => 1, 'TRAILING' => 1, 'TRIGGER' => 1, 'TRUE' => 1, 'UNDO' => 1, 'UNION' => 1, 'UNIQUE' => 1, 'UNLOCK' => 1,
 		'UNSIGNED' => 1, 'UPDATE' => 1, 'USAGE' => 1, 'USE' => 1, 'USING' => 1, 'UTC_DATE' => 1, 'UTC_TIME' => 1, 'UTC_TIMESTAMP' => 1, 'VALUES' => 1, 'VARBINARY' => 1,
 		'VARCHAR' => 1, 'VARCHARACTER' => 1, 'VARYING' => 1, 'WHEN' => 1, 'WHERE' => 1, 'WHILE' => 1, 'WITH' => 1, 'WRITE' => 1, 'XOR' => 1, 'YEAR_MONTH' => 1,
-		'ZEROFILL' => 1, 'GENERAL' => 1, 'IGNORE_SERVER_IDS' => 1, 'MASTER_HEARTBEAT_PERIOD' => 1, 'MAXVALUE' => 1, 'RESIGNAL' => 1, 'SIGNAL' => 1, 'SLOW' => 1
+		'ZEROFILL' => 1, 'GENERAL' => 1, 'IGNORE_SERVER_IDS' => 1, 'MASTER_HEARTBEAT_PERIOD' => 1, 'SLOW' => 1
 	);
 
 	/**

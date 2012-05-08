@@ -61,12 +61,18 @@ class CoreExtension extends Extension
 		$definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\SysQueryLogger', array(new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE)));
 		$container->setDefinition('deskpro.dbal.logger.query_logger', $definition);
 
-		$definition = new Definition('Symfony\Bridge\Doctrine\Logger\DbalLogger', array(new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE)));
+		$definition = new Definition('Symfony\\Bridge\\Doctrine\\Logger\\DbalLogger', array(new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE)));
 		$container->setDefinition('doctrine.query_logger', $definition);
 
+		$definition = new Definition('Application\\DeskPRO\\CacheInvalidator\\QueryListener');
+		$container->setDefinition('deskpro.cache.query_listener', $definition);
+
+		$definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\CacheExec', array(new Reference('deskpro.cache.query_listener')));
+		$container->setDefinition('deskpro.dbal.logger.cache_query_listener', $definition);
+
 		$definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\DelegateLogger');
+		$definition->addMethodCall('addLogger', array(new Reference('deskpro.dbal.logger.cache_query_listener'), 'cache_query_listener'));
 		$definition->addMethodCall('addLogger', array(new Reference('deskpro.dbal.logger.query_logger'), 'query_logger'));
-		//$definition->addMethodCall('addLogger', array(new Reference('doctrine.query_logger'), 'doctrine_query_logger'));
 		$container->setDefinition('doctrine.dbal.logger', $definition);
 
 		$definition = new Definition('Application\\DeskPRO\\Plugin\\PluginManager', array(new Reference('doctrine.orm.entity_manager')));
