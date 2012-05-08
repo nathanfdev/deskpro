@@ -286,6 +286,8 @@ class DownloadsController extends AbstractController
 			$tpl = 'UserBundle:Downloads:file-overlay.html.twig';
 		}
 
+		$this->db->executeUpdate("UPDATE downloads SET view_count = view_count + 1 WHERE id = ?", array($download->getId()));
+
 		return $this->render($tpl, array(
 			'subscription' => $subscription,
 			'rating' => $rating,

@@ -359,6 +359,8 @@ class ArticlesController extends AbstractController
 		$glossary_words = $glossary->findWords($article->content);
 		$word_defs = $glossary->getWordDefs($glossary_words);
 
+		$this->db->executeUpdate("UPDATE articles SET view_count = view_count + 1 WHERE id = ?", array($article->getId()));
+
 		return $this->render($tpl, array(
 			'subscription' => $subscription,
 			'rating' => $rating,

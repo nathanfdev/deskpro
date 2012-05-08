@@ -394,6 +394,8 @@ class FeedbackController extends AbstractController
 			$tpl = 'UserBundle:Feedback:view-overlay.html.twig';
 		}
 
+		$this->db->executeUpdate("UPDATE feedback SET view_count = view_count + 1 WHERE id = ?", array($feedback->getId()));
+
 		return $this->render($tpl, array(
 			'subscription' => $subscription,
 

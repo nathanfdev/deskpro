@@ -218,6 +218,8 @@ class NewsController extends AbstractController
 			$tpl = 'UserBundle:News:view-overlay.html.twig';
 		}
 
+		$this->db->executeUpdate("UPDATE news SET view_count = view_count + 1 WHERE id = ?", array($news->getId()));
+
 		return $this->render($tpl, array(
 			'subscription' => $subscription,
 			'rating' => $rating,
