@@ -933,10 +933,10 @@ $b->is_enabled = true;
 $em->persist($b);
 $em->flush();
 
-##BEGIN:create_portal_block.download_cat_list##
+##BEGIN:create_portal_block.downloads_cat_list##
 $b = new \Application\DeskPRO\Entity\PortalPageDisplay();
 $b->section = 'sidebar';
-$b->type = 'download_cat_list';
+$b->type = 'downloads_cat_list';
 $b->is_enabled = false;
 $em->persist($b);
 $em->flush();
