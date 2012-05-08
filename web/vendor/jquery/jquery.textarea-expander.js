@@ -1,91 +1,39 @@
-/**
- * TextAreaExpander plugin for jQuery
- * v1.0
- * Expands or contracts a textarea height depending on the
- * quatity of content entered by the user in the box.
- *
- * By Craig Buckler, Optimalworks.net
- *
- * As featured on SitePoint.com:
- * http://www.sitepoint.com/blogs/2009/07/29/build-auto-expanding-textarea-1/
- *
- * Please use as you wish at your own risk.
- */
+(function($)
+{
+	// This script was written by Steve Fenton
+	// http://www.stevefenton.co.uk/Content/Jquery-Textarea-Expander/
+	// Feel free to use this jQuery Plugin
+	// Version: 3.0.2
+    // Contributions by:
 
-/**
- * Usage:
- *
- * From JavaScript, use:
- *     $(<node>).TextAreaExpander(<minHeight>, <maxHeight>);
- *     where:
- *       <node> is the DOM node selector, e.g. "textarea"
- *       <minHeight> is the minimum textarea height in pixels (optional)
- *       <maxHeight> is the maximum textarea height in pixels (optional)
- *
- * Alternatively, in you HTML:
- *     Assign a class of "expand" to any <textarea> tag.
- *     e.g. <textarea name="textarea1" rows="3" cols="40" class="expand"></textarea>
- *
- *     Or assign a class of "expandMIN-MAX" to set the <textarea> minimum and maximum height.
- *     e.g. <textarea name="textarea1" rows="3" cols="40" class="expand50-200"></textarea>
- *     The textarea will use an appropriate height between 50 and 200 pixels.
- */
+	$.fn.TextAreaExpander = function (settings) {
 
-(function($) {
-
-	// jQuery plugin definition
-	$.fn.TextAreaExpander = function(minHeight, maxHeight) {
-
-		var hCheck = !($.browser.msie || $.browser.opera);
-
-		// resize a textarea
-		function ResizeTextarea(e) {
-
-			// event or initialize element?
-			e = e.target || e;
-
-			// find content length and box width
-			var vlen = e.value.length, ewidth = e.offsetWidth;
-			if (vlen != e.valLength || ewidth != e.boxWidth) {
-
-				if (hCheck && (vlen < e.valLength || ewidth != e.boxWidth)) e.style.height = "0px";
-				var h = Math.max(e.expandMin, Math.min(e.scrollHeight, e.expandMax));
-
-				e.style.overflow = (e.scrollHeight > h ? "auto" : "hidden");
-				e.style.height = h + "px";
-
-				e.valLength = vlen;
-				e.boxWidth = ewidth;
-
-				$(e).trigger('textareaexpander_expanded');
-				$(document).trigger('textareaexpander_expanded');
-			}
-
-			return true;
+		var config = {
+			classmodifier: "tae"
 		};
 
-		// initialize
-		this.each(function() {
+		if (settings) {
+			$.extend(config, settings);
+		}
 
-			// is a textarea?
-			if (this.nodeName.toLowerCase() != "textarea") return;
+		function CheckContent(element) {
+			if (element.clientHeight < element.scrollHeight){
+				var $elem = $(element);
+				var height = $elem.height() + 5;
+				$elem.height(height);
+				CheckContent(element);
 
-			// set height restrictions
-			var p = this.className.match(/expand(\d+)\-*(\d+)*/i);
-			this.expandMin = minHeight || (p ? parseInt('0'+p[1], 10) : 0);
-			this.expandMax = maxHeight || (p ? parseInt('0'+p[2], 10) : 99999);
-
-			// initial resize
-			ResizeTextarea(this);
-
-			// zero vertical padding and add events
-			if (!this.Initialized) {
-				this.Initialized = true;
-				$(this).bind("keyup", ResizeTextarea).bind("focus", ResizeTextarea);
+				// DESKPRO EDIT: trigger event
+				// used by wrappers to re-calculate heights for js scroller
+				$(element).trigger('textareaexpander_expanded');
 			}
+		}
+
+		return this.each(function () {
+			$(this).addClass(config.classmodifier).css({ overflow: "hidden" });
+			$(this).bind("keyup", function () {
+				CheckContent(this);
+			});
 		});
-
-		return this;
 	};
-
 })(jQuery);
