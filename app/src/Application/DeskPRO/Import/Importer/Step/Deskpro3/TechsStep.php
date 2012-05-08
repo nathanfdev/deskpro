@@ -97,6 +97,10 @@ class TechsStep extends AbstractDeskpro3Step
 				$agent->is_agent_confirmed = true;
 				$agent->is_agent = true;
 
+				if (!$tech['active']) {
+					$agent->is_deleted = true;
+				}
+
 				$this->getEm()->persist($agent);
 				$this->getEm()->flush();
 
