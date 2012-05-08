@@ -78,8 +78,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 
 		this.wrapperEl.detach();
 		this.wrapper = this.wrapperEl.clone();
-		this.wrapper.tinyscrollbar();
-		console.log(this.wrapper);
+		this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(null, this.wrapper);
 		this.backdropEls = null;
 
 		this.countEl = $('.selected-tickets-count', this.getElement());
@@ -100,6 +99,12 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		}
 	},
 
+	updateUi: function() {
+		if (this.scrollerHandler) {
+			this.scrollerHandler.updateSize();
+		}
+	},
+
 
 	/**
 	 * Resets the wrapper back to the original, and then runs all of the init again.
@@ -110,7 +115,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 
 		this.wrapper.remove();
 		this.wrapper = this.wrapperEl.clone();
-		this.wrapper.tinyscrollbar();
+		this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(null, this.wrapper);
 		this._hasInit = false;
 
 		this.hasAnyChange = false;
@@ -295,23 +300,24 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		});
 
 		this.wrapper.bind('fileuploaddone', function() {
-			self.getElById('attach_row').slideDown();
+			self.getElById('attach_row').fadeIn();
 		});
 		this.wrapper.bind('fileuploadstart', function() {
-			self.getElById('attach_row').slideDown();
+			self.getElById('attach_row').fadeIn();
+			self.updatePositions();
 		});
 
 		this.wrapper.on('click', '.remove-attach-trigger', function() {
 
 			var row = $(this).closest('li');
-			row.fadeOut('fast', function() {
-				row.remove();
+			row.remove();
 
-				var rows = $('ul.files li', self.getElById('attach_row'));
-				if (!rows.length) {
-					self.getElById('attach_row').slideUp().addClass('is-hidden');
-				}
-			});
+			var rows = $('ul.files li', self.getElById('attach_row'));
+			if (!rows.length) {
+				self.getElById('attach_row').hide().addClass('is-hidden');
+			}
+
+			self.updatePositions();
 		});
 
 		var noneRow = $('li.no-changes', this.wrapper);
@@ -345,6 +351,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			} else {
 				$(this).remove();
 			}
+			self.updatePositions();
 		});
 
 		this.actionsEditor = new DeskPRO.Form.RuleBuilder($('.actions-builder-tpl', add));
@@ -354,6 +361,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			var x = Orb.getUniqueId();
 			var basename = 'actions_set['+x+']';
 			self.actionsEditor.addNewRow($('.search-terms', actList), basename);
+			self.updatePositions();
 		});
 	},
 
@@ -675,6 +683,8 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		});
 
 		$('button.radio.on', this.wrapper).removeClass('on');
+
+		this.updatePositions();
 	},
 
 
@@ -766,7 +776,7 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 			});
 		}
 
-		this.wrapper.tinyscrollbar_update();
+		this.updateUi();
 	},
 
 	_initMacroOverlay: function() {
@@ -889,6 +899,8 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 				}, this);
 			}
 		});
+
+		this.updatePositions();
 	},
 
 
@@ -921,6 +933,8 @@ DeskPRO.Agent.TicketList.MassActions = new Orb.Class({
 		this.updateCount(null);
 		this.wrapper.addClass('open');
 		//this.updatePreview();
+
+		this.updatePositions();
 	},
 
 

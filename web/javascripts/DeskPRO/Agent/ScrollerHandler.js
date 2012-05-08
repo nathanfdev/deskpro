@@ -5,7 +5,7 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 
 	initialize: function(pageObject, element, options) {
 		this.pageObject = pageObject;
-		this.element = element = $(element);
+		this.element = $(element);
 		this.hasInit = false;
 		var self = this;
 
@@ -19,7 +19,7 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 
 		this.setOptions(options);
 
-		if (pageObject.addEvent && this.options.showEvent) {
+		if (pageObject && pageObject.addEvent && this.options.showEvent) {
 			pageObject.addEvent(this.options.showEvent, function() {
 				this.updateSize();
 			}, this);
