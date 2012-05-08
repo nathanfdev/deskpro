@@ -327,7 +327,7 @@ class ArticlesController extends AbstractController
 		if ($comments_helper) {
 			$comments_widget = $comments_helper->getHtml();
 		} else {
-			$comments = $this->em->getRepository('DeskPRO:ArticleComment')->getComments($article);
+			$comments = $this->em->getRepository('DeskPRO:ArticleComment')->getDisplayComments($article, $this->person, $this->session->getVisitor());
 		}
 
 		if ($this->container->getSetting('core.facebook_like')) {

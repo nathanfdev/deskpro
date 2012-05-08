@@ -262,7 +262,7 @@ class DownloadsController extends AbstractController
 		if ($comments_helper) {
 			$comments_widget = $comments_helper->getHtml();
 		} else {
-			$comments = $this->em->getRepository('DeskPRO:DownloadComment')->getComments($download);
+			$comments = $this->em->getRepository('DeskPRO:DownloadComment')->getDisplayComments($download, $this->person, $this->session->getVisitor());
 		}
 
 		$content_rating = new ContentRating($download, $this->person, $this->session->getVisitor());

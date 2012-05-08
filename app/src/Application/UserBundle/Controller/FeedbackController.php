@@ -378,7 +378,7 @@ class FeedbackController extends AbstractController
 		if ($comments_helper) {
 			$comments_widget = $comments_helper->getHtml();
 		} else {
-			$comments = $this->em->getRepository('DeskPRO:FeedbackComment')->getComments($feedback);
+			$comments = $this->em->getRepository('DeskPRO:FeedbackComment')->getDisplayComments($feedback, $this->person, $this->session->getVisitor());
 		}
 
 		if ($this->container->getSetting('core.facebook_like')) {

@@ -36,6 +36,8 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ORM\QueryPartial;
+use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Entity\Visitor as VisitorEntity;
 
 use Doctrine\ORM\EntityRepository;
 
@@ -73,6 +75,23 @@ class CommentAbstract extends EntityRepository
 				ORDER BY c.id DESC
 			")->setParameter(1, 'visible')->setParameter(2, $object)->execute();
 		}
+	}
+
+	public function getDisplayComments($object, PersonEntity $person_context = null, VisitorEntity $visitor_context)
+	{
+		$params = array('obj_id' => $object->getId());
+		$dql = "SELECT c FROM {$this->_entityName} c WHERE c.".static::FIELD." = :obj_id AND (c.status = 'visible'";
+		if ($person_context && $person_context->getId()) {
+			$dql .= ' OR c.person = :person_id';
+			$params['person_id'] = $person_context->getId();
+		}
+		if ($visitor_context) {
+			$dql .= ' OR c.visitor = :visitor_id';
+			$params['visitor_id'] = $visitor_context->getId();
+		}
+		$dql .= ")";
+
+		return $this->_em->createQuery($dql)->execute($params);
 	}
 
 	public function countAwaitingValidation()

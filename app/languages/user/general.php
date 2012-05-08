@@ -243,4 +243,6 @@
 	'user.general.reltimeago_x_week'      => '{0} weeks ago',
 	'user.general.reltimeago_x_month'     => '{0} months ago',
 	'user.general.reltimeago_x_year'      => '{0} years ago',
+
+	'user.general.your_comment_agent_validation' => 'Your comment is awaiting agent validation before it appears publicly',
 );

@@ -190,7 +190,7 @@ class NewsController extends AbstractController
 		if ($comments_helper) {
 			$comments_widget = $comments_helper->getHtml();
 		} else {
-			$comments = $this->em->getRepository('DeskPRO:NewsComment')->getComments($news);
+			$comments = $this->em->getRepository('DeskPRO:NewsComment')->getDisplayComments($news, $this->person, $this->session->getVisitor());
 		}
 
 		if ($this->container->getSetting('core.facebook_like')) {
