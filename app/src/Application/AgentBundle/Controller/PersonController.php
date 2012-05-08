@@ -657,15 +657,16 @@ class PersonController extends AbstractController
 
 				// Removing emails
 				foreach ($this->in->getCleanValueArray('remove_emails', 'uint') as $email_id) {
-					if (isset($person->emails[$email_id])) {
+					$email_rec = $person->getEmailId($email_id);
+					if ($email_rec) {
 
 						if ($person->primary_email->id == $email_id) {
 							$changed_primary_email = true;
 							$person->primary_email = null;
 						}
 
-						$this->em->remove($person->emails[$email_id]);
-						$person->emails->remove($email_id);
+						$this->em->remove($email_rec);
+						$person->removeEmailAddressId($email_id);
 					}
 				}
 
@@ -724,13 +725,25 @@ class PersonController extends AbstractController
 			$contact_data[$cd->contact_type][] = $cd->getTemplateVars();
 		}
 
+		$is_editable = $this->isPersonEditable($person);
+		$perms = array(
+			'edit'             => $is_editable && $this->person->hasPerm('agent_people.edit'),
+			'delete'           => $is_editable && $this->person->hasPerm('agent_people.delete'),
+			'manage_emails'    => $is_editable && $this->person->hasPerm('agent_people.manage_emails'),
+			'reset_password'   => $is_editable && $this->person->hasPerm('agent_people.reset_password'),
+			'notes'            => $is_editable && $this->person->hasPerm('agent_people.notes'),
+			'org_create'       => $is_editable && $this->person->hasPerm('agent_org.create')
+		);
+
 		$display_html = $this->renderView('AgentBundle:Person:view-contact-display.html.twig', array(
 			'person' => $person,
 			'contact_data' => $contact_data,
+			'perms' => $perms,
 		));
 		$editor_overlay_html = $this->renderView('AgentBundle:Person:contact-overlay.html.twig', array(
 			'person' => $person,
 			'contact_data' => $contact_data,
+			'perms' => $perms,
 		));
 
 		return $this->createJsonResponse(array(
