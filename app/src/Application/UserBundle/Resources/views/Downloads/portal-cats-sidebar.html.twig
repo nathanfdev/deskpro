@@ -15,7 +15,7 @@
 						<i class="dp-icon-folder-close"></i>
 						<a class="dp-fadetitle" href="{{ path('user_downloads', {slug: cat.url_slug}) }}">{{ cat.title }}</a>
 						<div class="dp-fadeaway"></div>
-						<span class="dp-badge dp-small">{{ counts[cat.id ~ '_total']|default(0) }}</span>
+						<a class="dp-badge dp-small" href="{{ path('user_downloads', {slug: cat.url_slug}) }}">{{ counts[cat.id ~ '_total']|default(0) }}</a>
 					</div>
 				</li>
 			{% endfor %}

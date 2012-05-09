@@ -27,4 +27,7 @@
     'user.feedback.voting_closed'             => 'Voting closed',
     'user.feedback.voting_closed_explain'     => 'This suggestion has been closed to new votes and comments.',
 	'user.feedback.title_error'               => 'Please enter a title of at least 5 characters',
+	'user.feedback.browse_our_x_suggestions_open' => '1 item of open and active feedback|{{count}} items of open and active feedback',
+	'user.feedback.browse_our_x_suggestions_closed' => '1 item of closed feedback|{{count}} items of closed feedback',
+	'user.feedback.browse_our_feedback' => 'There are currently {{phrase1}} as well as {{phrase2}}. Upvote feedback you agree with or submit your own.',
 );

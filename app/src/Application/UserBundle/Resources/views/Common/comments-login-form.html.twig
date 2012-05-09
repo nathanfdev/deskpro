@@ -25,8 +25,7 @@
 		<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="50%" style="padding-right: 10px;">
 			<div class="dp-control-group {% if error_fields['person.name'] %}dp-error{% endif %} dp-control-group-person_name">
 				<div class="dp-control-label">
-					<label><strong>{{ phrase('user.general.name') }}</strong></label>
-					<div class="dp-help-inline">{{ phrase('user.general.required') }}</div>
+					<label><strong>{{ phrase('user.general.name') }} *</strong></label>
 				</div>
 				<div class="dp-controls">
 					<input
@@ -45,8 +44,7 @@
 		</td><td valign="top" width="50%" style="padding-left: 10px;">
 			<div class="dp-control-group dp-control-group-person_email" id="comment_login_wrap">
 				<div class="dp-control-label">
-					<label><strong>{{ phrase('user.general.email_address') }}</strong></label>
-					<div class="dp-help-inline">{{ phrase('user.general.required_not_displayed') }}</div>
+					<label><strong>{{ phrase('user.general.email_address') }} *</strong></label>
 				</div>
 				<div class="dp-controls">
 					<input

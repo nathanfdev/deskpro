@@ -6,14 +6,16 @@
 	</header>
 	<article class="dp-written">
 		<p class="dp-summary">
-			{{ phrase('user.feedback.browse_our_x_suggestions', {count: counts[0]['all']|default(0)} )}}
+			{% set phrase1 %}{{ phrase('user.feedback.browse_our_x_suggestions_open', {count: (counts[0]['new'] + counts[0]['active'])|default(0)} )}}{% endset %}
+			{% set phrase2 %}{{ phrase('user.feedback.browse_our_x_suggestions_closed', {count: counts[0]['closed']|default(0)} )}}{% endset %}
+			{{ phrase('user.feedback.browse_our_feedback', { phrase1: phrase1, phrase2: phrase2 }) }}
 		</p>
 		<ul class="dp-cat-list">
 			{% for cat in categories %}
 				<li>
 					<i class="dp-icon-folder-close"></i>
 					<a href="{{ path('user_feedback', {slug: cat.url_slug}) }}">{{ cat.title }}</a>
-					<span class="dp-badge dp-small">{{ counts[cat.id]['all']|default(0) }}</span>
+					<a href="{{ path('user_feedback', {slug: cat.url_slug}) }}" class="dp-badge dp-small">{{ (counts[cat.id]['new'] + counts[cat.id]['active'])|default(0) }}</a>
 				</li>
 			{% endfor %}
 		</ul>

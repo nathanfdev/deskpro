@@ -116,8 +116,7 @@
 							</td><td valign="top" width="50%" style="padding-left: 10px;">
 								<div class="dp-control-group {% if error_fields['person_name'] %}dp-error{% endif %}">
 									<label class="dp-control-label">
-										<strong>{{ phrase('user.general.your_name') }}</strong>
-										<aside>{{ phrase('user.general.required') }}</aside>
+										<strong>{{ phrase('user.general.your_name') }} *</strong>
 									</label>
 									<div class="dp-controls dp-fill">
 										{{ form_widget(form.person_name, {
