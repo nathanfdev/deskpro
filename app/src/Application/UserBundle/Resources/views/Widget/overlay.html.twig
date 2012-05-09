@@ -43,26 +43,28 @@
 		html, body { background: transparent;}
 	</style>
 </head>
-<body>
+<body id="dp_widget_win">
 
 <div id="dp">
 <div class="widget-deskpro" id="widget_deskpro">
-<div class="widget-container clearfix">
+<div class="widget-container">
 	{% include 'UserBundle:Widget:overlay-leftpane.html.twig' %}
 	<div class="content">
-		<div id="dp_overlay_navtabs" class="head clearfix tabset">
+		<div id="dp_overlay_navtabs" class="head tabset">
 			<a data-tab-for="#newticket" class="btn active"><i class="icon icon-call"></i> {{ phrase('user.general.contact_our_agents') }}</a>
 			<a data-tab-for="#newfeedback" class="btn"><i class="icon icon-mail"></i> {{ phrase('user.feedback.submit_feedback') }}</a>
 			{% if chat_active %}<a data-tab-for="#newchat" class="btn"><i class="icon icon-chat"></i> {{ phrase('user.general.chat_with_us') }}</a>{% endif %}
 		</div>
-		<div class="widget-content" style="overflow:auto; max-height: {{ (app.getRequest().query.get('h')|default(600) - 275) }}px">
-			{% include 'UserBundle:Widget:overlay-content-ticket.html.twig' %}
-			{% include 'UserBundle:Widget:overlay-content-feedback.html.twig' %}
-			{% include 'UserBundle:Widget:overlay-content-chat.html.twig' %}
+		<div class="widget-content">
+			<div style="position:relative;">
+				{% include 'UserBundle:Widget:overlay-content-ticket.html.twig' %}
+				{% include 'UserBundle:Widget:overlay-content-feedback.html.twig' %}
+				{% include 'UserBundle:Widget:overlay-content-chat.html.twig' %}
+				<div class="widget-logo">
+					<a href="http://www.deskpro.com/">{{ phrase('user.general.helpdesk_by', {'deskpro': phrase('user.general.deskpro')}) }}</a>
+				</div>
+			</div>
 		</div>
-	</div>
-	<div class="widget-logo">
-		<a href="http://www.deskpro.com/">{{ phrase('user.general.helpdesk_by', {'deskpro': phrase('user.general.deskpro')}) }}</a>
 	</div>
 </div>
 </div>

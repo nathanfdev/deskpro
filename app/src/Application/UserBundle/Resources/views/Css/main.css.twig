@@ -1850,7 +1850,11 @@ body.file-drag-over #dp .dp-drop-file-zone,
 #widget_deskpro .showing-related .not-showing-related { display: none; }
 
 #widget_deskpro #left_pane {
-	position: relative;
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 328px;
 }
 
 #widget_deskpro #search_loading {
@@ -2494,11 +2498,20 @@ body.file-drag-over #dp .dp-drop-file-zone,
 * Website Widget
 ***********************************************************************************************************************/
 
+#dp_widget_win #dp {
+	position: absolute;
+	top: 11px;
+	left: 11px;
+	right: 11px;
+	bottom: 11px;
+}
+
 #dp .widget-deskpro{
-	margin: 0 auto;
-	width:942px;
-	position:relative;
-	padding:9px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
 	color:#7a7f87;
 	font:14px/17px 'Helvetica Neue',Helvetica,Arial, sans-serif;
 }
@@ -2548,7 +2561,11 @@ body.file-drag-over #dp .dp-drop-file-zone,
 	display: block;
 }
 #dp .widget-deskpro .widget-container{
-	position:relative;
+	position:absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 	background:#fff url(../../web/images/user/widget/bg-widget-container.gif) repeat-y;
 	border:1px solid #c5c5c5;
 	box-shadow:0 0 9px #e7e7e7;
@@ -2589,11 +2606,11 @@ body.file-drag-over #dp .dp-drop-file-zone,
 	color: #000;
 }
 
-#dp .widget-deskpro .aside{
-	float:left;
-	width:328px;
-}
 #dp .widget-deskpro .aside .head{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 1px;
 	padding:20px 0 0 24px;
 	height:53px;
 	background:#dce3ff url(../../web/images/user/widget/bg-aside-head.gif) repeat-x;
@@ -2741,7 +2758,15 @@ body.file-drag-over #dp .dp-drop-file-zone,
 	top:9px;
 }
 #dp .widget-deskpro .search-form .btn{width:79px;}
-#dp .widget-deskpro .aside .area{width:100%;}
+#dp .widget-deskpro .aside .area{
+	position: absolute;
+	top: 73px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
 #dp .widget-deskpro .files-list{
 	padding:1px 0 0;
 	margin:0 0 0 -1px;
@@ -2750,6 +2775,7 @@ body.file-drag-over #dp .dp-drop-file-zone,
 }
 #dp .widget-deskpro .files-list ul {
 	margin: 0;
+	margin-top: -1px;
 	padding: 0;
 }
 #dp .widget-deskpro .files-list li{
@@ -2830,10 +2856,17 @@ body.file-drag-over #dp .dp-drop-file-zone,
 	color:#7d9dd4;
 }
 #dp .widget-deskpro .content{
-	width:612px;
-	float:right;
+	position: absolute;
+	top: 0;
+	left: 328px;
+	right: 0;
+	bottom: 0;
 }
 #dp .widget-deskpro .content .head{
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
 	background:url(../../web/images/user/widget/bg-content-head.gif) repeat-x 0 0;
 	border:1px solid #c5c5c5;
 	height:55px;
@@ -2873,10 +2906,20 @@ body.file-drag-over #dp .dp-drop-file-zone,
 #dp .widget-deskpro .facebook-link{background:url(../../web/images/user/widget/icon-facebook.gif) no-repeat;}
 #dp .widget-deskpro .google-link{background:url(../../web/images/user/widget/icon-google.gif) no-repeat;}
 #dp .widget-deskpro .widget-content{
-	width:567px;
-	padding:12px 22px 70px 23px;
-	min-height: 425px;
+	position: absolute;
+	top: 74px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	overflow: auto;
 }
+
+#dp .widget-deskpro .widget-content .tab {
+	position: relative;
+	padding: 20px;
+	padding-bottom: 70px;
+}
+
 #dp .widget-deskpro .fields-row{
 	padding:0 0 27px;
 	width:567px;

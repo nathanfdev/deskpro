@@ -119,7 +119,9 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 		self.tellParent('requestHeight', [lastHeight]);
 
 		window.setInterval(function() {
-			currentHeight = $('#dp').height();
+			currentHeight = $('div.tab.active').height();
+			currentHeight += 20 + 70 + 74 + 11 + 11 + 5;
+
 			if (lastHeight != currentHeight) {
 				self.tellParent('requestHeight', [currentHeight]);
 			}

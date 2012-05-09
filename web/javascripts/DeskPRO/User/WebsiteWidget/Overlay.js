@@ -168,7 +168,7 @@ var DpOverlayWidget = new (function() {
 					height = 350;
 				}
 
-				childRequestedHeight = height;
+				childRequestedHeight = messageData[0];
 				setHeight(height);
 
 				break;
