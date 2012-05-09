@@ -123,7 +123,7 @@ var DpChatWidget = new (function() {
 			css.push('box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
 			css = css.join(';');
 
-			chatIframeWinTab = $('<div id="dp_chat_iframe_wintab" class="dp-chat-iframe-wintab" style="' + css + '">Open chat in a new window</div>').appendTo(chatIframeHolder);
+			chatIframeWinTab = $('<div id="dp_chat_iframe_wintab" class="dp-chat-iframe-wintab" style="' + css + '">Open chat in a new window</div>').on('click', openInWindow).appendTo(chatIframeHolder);
 
 			// Close button
 			var css = [];
@@ -209,6 +209,16 @@ var DpChatWidget = new (function() {
 	//##################################################################################################################
 	//# Initialize Helpers
 	//##################################################################################################################
+
+	function openInWindow() {
+		var src = chatIframe.get(0).src;
+		src = src.replace(/\?/, '?is_window_mode=1&');
+
+		window.open(src, 'dpchatwin','width=500,height=400,location=0,menubar=0,scrollbars=0,status=0,toolbar=0,resizable=1');
+
+		chatIframeHolder.remove();
+		openBtn.hide();
+	};
 
 	function setCookie(c_name,value,exdays) {
 		var exdate=new Date();
@@ -385,6 +395,9 @@ var DpChatWidget = new (function() {
 		$('head').append('<style type="text/css">#dpchat_btn { '+css+ '}</style>');
 
 		openBtn = $('<div id="dpchat_btn" class="dp-hide-print '+ (options.btnClass || '') + '"><div id="dpchat_btn_label"><span class="start-chat">Click here to chat with us</span><span class="open-chat" style="display: none">Open your chat</span></div></div>');
+		if (this.isWindowChat) {
+			openBtn.hide();
+		}
 		openBtn.appendTo('body');
 
 		openBtn.on('click', function(ev) {
@@ -393,10 +406,14 @@ var DpChatWidget = new (function() {
 			self.open();
 		});
 
-		if (this.doResume) {
-			self.open();
+		if (this.isWindowChat) {
+
 		} else {
-			openBtn.show();
+			if (this.doResume) {
+				self.open();
+			} else {
+				openBtn.show();
+			}
 		}
 
 		$('body').addClass('dp-chat-enabled');

@@ -227,7 +227,7 @@ class ChatController extends AbstractController
 			$response->setLastModified(date_create('-1 day'));
 			$response->setExpires(date_create("-1 day"));
 			$response->headers->set('Content-Type', 'text/javascript');
-			//return $response;
+			return $response;
 		}
 
 		// Inits the session which isn't usually created on this controller
@@ -375,42 +375,6 @@ class ChatController extends AbstractController
 		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => true));
-	}
-
-
-	/**
-	 * This inits a session, and sets the various cookies. Then
-	 * calls the dpchat (from the view) to set it on the client.
-	 */
-	public function chatWindowAction($session_code)
-	{
-		// First lets see if anyone is even available for chatting
-		if (!$this->em->getRepository('DeskPRO:Session')->hasAvailableAgents()) {
-			return $this->createResponse('');
-		}
-
-		$session = null;
-		if ($session_code) {
-			$session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_code);
-		}
-
-		if (!$session) {
-			$sessionObj = $this->get('session');
-			$session = $sessionObj->getEntity();
-		}
-
-		$conversation = $this->em->getRepository('DeskPRO:ChatConversation')->getLatestChatForSession($session, false);
-		if ($conversation) {
-			$conversation['is_window'] = true;
-			$this->em->transactional(function ($em) use ($conversation) {
-				$em->persist($conversation);
-				$em->flush();
-			});
-		}
-
-		return $this->render('UserBundle:Chat:window.html.twig', array(
-			'session'  => $session,
-		));
 	}
 
 

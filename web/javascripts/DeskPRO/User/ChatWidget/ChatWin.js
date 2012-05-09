@@ -10,54 +10,71 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		};
 		this.setOptions(options || {});
 
-		this.comms = {
-			intervalId: null,
-			lastHash: null,
-			hasPostMessage: !!window.postMessage,
-			cacheBust: 0,
-			pollingInterval: 130,
-			recieveCallback: null,
-			send: function(message, targetUrl, target) {
-				if (this.hasPostMessage) {
-					target.postMessage(message, targetUrl.replace( /([^:]+:\/\/[^\/]+).*/, '$1'))
-				} else {
-					target.location = targetUrl.replace( /#.*$/, '' ) + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
-				}
-			},
-			setupReciever: function(callback, sourceUrl) {
-				// Unset existing
-				if (callback && this.recieveCallback) {
-					this.recieveCallback = null;
-					this.setupReciever(null, '');
-				}
-
-				this.recieveCallback = callback;
-
-				if (this.hasPostMessage) {
-					if (window.addEventListener) {
-		        		window[this.recieveCallback ? 'addEventListener' : 'removeEventListener']('message', this.recieveCallback, false);
-		      		} else {
-		        		window[this.recieveCallback ? 'attachEvent' : 'detachEvent' ]('onmessage', this.recieveCallback);
-		      		}
-				} else {
-					if (this.intervalId) {
-						window.clearInterval(this.intervalId);
+		if (!this.options.isWindowMode) {
+			this.comms = {
+				intervalId: null,
+				lastHash: null,
+				hasPostMessage: !!window.postMessage,
+				cacheBust: 0,
+				pollingInterval: 130,
+				recieveCallback: null,
+				send: function(message, targetUrl, target) {
+					if (this.hasPostMessage) {
+						target.postMessage(message, targetUrl.replace( /([^:]+:\/\/[^\/]+).*/, '$1'))
+					} else {
+						target.location = targetUrl.replace( /#.*$/, '' ) + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
+					}
+				},
+				setupReciever: function(callback, sourceUrl) {
+					// Unset existing
+					if (callback && this.recieveCallback) {
+						this.recieveCallback = null;
+						this.setupReciever(null, '');
 					}
 
-					if (this.recieveCallback) {
-						var me = this;
-						this.intervalId = window.setInterval(function() {
-							var hash = document.location.hash;
-		            		var re = /^#?\d+&/;
-							if (hash !== last_hash && re.test(hash)) {
-								me.lastHash = hash;
-								me.recieveCallback({ data: hash.replace( re, '') });
-							}
-						}, this.pollingInterval);
+					this.recieveCallback = callback;
+
+					if (this.hasPostMessage) {
+						if (window.addEventListener) {
+							window[this.recieveCallback ? 'addEventListener' : 'removeEventListener']('message', this.recieveCallback, false);
+						} else {
+							window[this.recieveCallback ? 'attachEvent' : 'detachEvent' ]('onmessage', this.recieveCallback);
+						}
+					} else {
+						if (this.intervalId) {
+							window.clearInterval(this.intervalId);
+						}
+
+						if (this.recieveCallback) {
+							var me = this;
+							this.intervalId = window.setInterval(function() {
+								var hash = document.location.hash;
+								var re = /^#?\d+&/;
+								if (hash !== last_hash && re.test(hash)) {
+									me.lastHash = hash;
+									me.recieveCallback({ data: hash.replace( re, '') });
+								}
+							}, this.pollingInterval);
+						}
 					}
 				}
-			}
-		};
+			};
+		} else {
+			this.comms = {
+				intervalId: null,
+				lastHash: null,
+				hasPostMessage: false,
+				cacheBust: 0,
+				pollingInterval: 10000,
+				recieveCallback: null,
+				send: function(message, targetUrl, target) {
+
+				},
+				setupReciever: function(callback, sourceUrl) {
+
+				}
+			};
+		}
 
 		this.parentUrl = decodeURIComponent(document.location.hash.replace( /^#/, ''));
 		this.typingIndicatorTime = null;
@@ -384,6 +401,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 	 * @param {Object} [data]
 	 */
 	tellParent: function(messageId, data) {
+
 		if (typeof data != 'undefined' && !data.join) {
 			data = [data];
 		}

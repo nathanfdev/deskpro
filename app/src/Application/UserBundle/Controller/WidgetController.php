@@ -239,6 +239,12 @@ class WidgetController extends AbstractController
 			}
 		}
 
+		$is_window = $this->in->getBool('is_window_mode');
+		if ($is_window && $convo) {
+			$convo->is_window = true;
+			$this->db->update('chat_conversations', array('is_window' => 1), array('id' => $convo->getId()));
+		}
+
 		$departments = $this->container->getDataService('Department')->getAll();
 
 		$vars = array(
@@ -249,8 +255,8 @@ class WidgetController extends AbstractController
 			'initial_name' => $this->in->getString('name'),
 			'initial_email' => $this->in->getString('email'),
 			'initial_department_id' => $this->in->getUint('department_id'),
-			'initial_department_id' => $this->in->getUint('department_id'),
-			'auto_start' => $this->in->getBool('auto_start')
+			'auto_start' => $this->in->getBool('auto_start'),
+			'is_window_mode' => $is_window
 		);
 
 		return $this->render('UserBundle:Widget:chat.html.twig', $vars);

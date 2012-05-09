@@ -47,7 +47,8 @@
 			initialMessages: {{ convo_messages|json_encode|raw }},
 			uploadTo: '{{ path('user_accept_upload') }}',
 			uploadSecurityToken: '{{ security_token('attach_temp') }}',
-			autoStart: {% if auto_start %}true{% else %}false{% endif %}
+			autoStart: {% if auto_start %}true{% else %}false{% endif %},
+			isWindowMode: {% if is_window_mode %}true{% else %}false{% endif %}
 		});
 		$(document).ready(function() {
 			window.DeskPRO_Window.initPage();
@@ -55,7 +56,7 @@
 		});
 	</script>
 </head>
-<body id="dp_chat">
+<body id="dp_chat" {% if is_window_mode %}class="window-mode"{% endif %}>
 <div id="dp">
 <div id="dp_chat_wrap">
 
