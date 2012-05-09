@@ -23,7 +23,7 @@
 <section class="source-tabs" id="feedback_outline_tabstrip">
 	<ul>
 		<li data-tab-for="#feedback_outline_status"><span>{{ phrase('agent.general.status') }}</span></li>
-		{% if not feedback_cats|length or feedback_cats|length == 1 %}<li data-tab-for="#feedback_outline_category"><span>{{ phrase('agent.general.category') }}</span></li>{% endif %}
+		<li data-tab-for="#feedback_outline_category"><span>{{ phrase('agent.general.type') }}</span></li>
 		<li data-tab-for="#feedback_outline_labels"><span>{{ phrase('agent.general.labels') }}</span></li>
 	</ul>
 </section>

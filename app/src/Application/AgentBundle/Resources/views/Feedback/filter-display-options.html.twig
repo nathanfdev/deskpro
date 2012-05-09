@@ -13,6 +13,6 @@
 {% endblock %}
 {% block display_elements_list %}
 	<li data-field="author"><input type="checkbox" name="author" {% if 'author' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.author') }}</li>
-	<li data-field="category"><input type="checkbox" name="category" {% if 'category' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.category') }}</li>
+	<li data-field="category"><input type="checkbox" name="category" {% if 'category' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.type') }}</li>
 	<li data-field="date_created"><input type="checkbox" name="date_created" {% if 'date_created' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.date_created') }}</li>
 {% endblock %}

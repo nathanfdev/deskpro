@@ -82,7 +82,7 @@ class FeedbackController extends AbstractController
 
 		$category_counts = $this->em->getRepository('DeskPRO:Feedback')->countAllCategoriesGrouped();
 
-		$feedback_cats          = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
+		$feedback_cats      = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
 		$active_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
 		$closed_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 

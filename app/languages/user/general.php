@@ -11,6 +11,7 @@
     'user.general.agent_bar_set_away'              => 'Set status: away',
     'user.general.agents_working'                  => 'Our agents will now read and reply to all of your messages.',
     'user.general.all_categories'                  => 'All Categories',
+	'user.general.all_types'                       => 'All Types',
     'user.general.anonymous'                       => 'Anonymous',
     'user.general.articles'                        => 'Articles',
     'user.general.assigned_agent'                  => 'Assigned Agent',

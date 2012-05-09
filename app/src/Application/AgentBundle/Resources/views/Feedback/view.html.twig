@@ -50,7 +50,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{{ phrase('agent.general.hidden') }}
 			{% endif %}
 		</span></div>
-		<div class="category" id="{{baseId}}_cat_trigger"><span>{{ phrase('agent.general.category') }}: <span id="{{baseId}}_cat_label">{{ feedback.category.full_title }}</span></span></div>
+		<div class="category" id="{{baseId}}_cat_trigger"><span>{{ phrase('agent.general.type') }}: <span id="{{baseId}}_cat_label">{{ feedback.category.full_title }}</span></span></div>
 	</div>
 	<br class="clear" />
 </header>
@@ -295,7 +295,7 @@ pageMeta.baseId = '{{ baseId }}';
 	{{ optionbox.section_end() }}
 {{ optionbox.end(phrase('agent.general.set_status')) }}
 
-{{ optionbox.category_ob(feedback_categories, 'Feedback Category', phrase('agent.general.apply'), {'id': baseId ~ '_cat_ob'}) }}
+{{ optionbox.category_ob(feedback_categories, phrase('agent.general.type'), phrase('agent.general.apply'), {'id': baseId ~ '_cat_ob'}) }}
 
 {# scroll containers #}
 </div></div></div></div>

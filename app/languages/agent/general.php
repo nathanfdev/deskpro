@@ -87,6 +87,8 @@
     'agent.general.cancel'                                  => 'Cancel',
     'agent.general.categories'                              => 'Categories',
     'agent.general.category'                                => 'Category',
+    'agent.general.type'                                => 'Type',
+    'agent.general.types'                                => 'Types',
     'agent.general.cc_address'                              => 'CC\'d Address',
     'agent.general.change_notif_settings'                   => 'Change your notification settings',
     'agent.general.change_password'                         => 'Change Password',

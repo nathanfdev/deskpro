@@ -5,14 +5,14 @@
 				<span class="dp-info-prefix">{{ phrase('user.general.category') }}:</span>
 				{{ category.full_title }}
 			{% else %}
-				{{ phrase('user.general.all_categories') }}
+				{{ phrase('user.general.all_types') }}
 			{% endif %}
 			<b class="dp-caret"></b>
 		</a>
 		<ul class="dp-dropdown-element dp-cat-list" id="dp_feedback_cat_menu">
 			<li {% if depth %}class="dp-sub dp-sub-depth-{{ depth }}"{% endif %}>
 				<i class="dp-icon-repeat"></i>
-				<a href="{{ path('user_feedback', {'status': status, 'order_by': search_options.order_by}) }}">{{ phrase('user.general.all_categories') }}</a>
+				<a href="{{ path('user_feedback', {'status': status, 'order_by': search_options.order_by}) }}">{{ phrase('user.general.all_types') }}</a>
 				<span class="dp-badge dp-small">{{ category_counts[0]['all']|default(0) }}</span>
 			</li>
 			<li class="sep"></li>
