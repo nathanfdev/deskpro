@@ -78,7 +78,7 @@ class SystemLoader implements LoaderInterface
                 $file = DP_ROOT . '/languages/LangPackage.php';
             }
 
-			
+
 			if (!file_exists($file)) {
 				continue;
 			}

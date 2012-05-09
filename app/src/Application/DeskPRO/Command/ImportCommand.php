@@ -550,6 +550,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			try {
 				$install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
 				$em = $this->getContainer()->getEm();
+				$translate = $this->getContainer()->get('deskpro.core.translate');
 
 				$total = $install_data->count();
 				$count = 0;

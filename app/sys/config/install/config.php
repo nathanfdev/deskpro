@@ -56,6 +56,21 @@ $definition->setClass('Application\\DeskPRO\\Settings\\ServiceUrls');
 $definition->addMethodCall('loadPack', array('%kernel.root_dir%/config/service-urls.php'));
 $container->setDefinition('deskpro.service_urls', $definition);
 
+$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\SystemLoader', array(array(DP_ROOT . '/languages')));
+$container->setDefinition('deskpro.core.translate_loader_system', $definition);
+
+$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\CombinationLoader');
+$definition->addMethodCall('addLoader', array(new Reference('deskpro.core.translate_loader_system')));
+$container->setDefinition('deskpro.core.translate_loader', $definition);
+
+// Now create the translate object
+$definition = new Definition('Application\\DeskPRO\\Translate\\Translate', array(
+	new Reference('deskpro.core.translate_loader'),
+	new Reference('event_dispatcher')
+));
+$container->setDefinition('deskpro.core.translate', $definition);
+
+
 ############################################################################
 # Framework Configuration
 ############################################################################

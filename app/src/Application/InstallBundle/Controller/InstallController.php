@@ -530,6 +530,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 			$install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
 			$em = $this->getOrm();
+			$translate = $this->container->get('deskpro.core.translate');
 			foreach ($install_data as $php) {
 				eval($php);
 			}
