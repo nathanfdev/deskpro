@@ -669,8 +669,8 @@ $em->flush();
 ##BEGIN:create_style.master##
 
 $s = new \Application\DeskPRO\Entity\Style();
-$s['title'] = $translate->phrase('user.defaults.default_style');
-$s['note'] = $translate->phrase('user.defaults.default_style');
+$s['title'] = $translate->phrase('agent.defaults.default_style');
+$s['note'] = $translate->phrase('agent.defaults.default_style');
 $s['css_dir'] = 'stylesheets/user';
 $em->persist($s);
 $em->flush();
@@ -966,19 +966,19 @@ $em->flush();
 
 ##BEGIN:agent_teams.default1##
 $t = new \Application\DeskPRO\Entity\AgentTeam();
-$t['name'] = $translate->phrase('user.defaults.team_support_managers');
+$t['name'] = $translate->phrase('agent.defaults.team_support_managers');
 $em->persist($t);
 $em->flush();
 
 ##BEGIN:agent_teams.default2##
 $t = new \Application\DeskPRO\Entity\AgentTeam();
-$t['name'] = $translate->phrase('user.defaults.team_lvl1_support');
+$t['name'] = $translate->phrase('agent.defaults.team_lvl1_support');
 $em->persist($t);
 $em->flush();
 
 ##BEGIN:agent_teams.default3##
 $t = new \Application\DeskPRO\Entity\AgentTeam();
-$t['name'] = $translate->phrase('user.defaults.team_lvl2_support');
+$t['name'] = $translate->phrase('agent.defaults.team_lvl2_support');
 $em->persist($t);
 $em->flush();
 
@@ -989,8 +989,8 @@ $em->flush();
 
 ##BEGIN:usergroups.everyone##
 $g = new \Application\DeskPRO\Entity\Usergroup();
-$g['title'] = $translate->phrase('user.defaults.usergroup_everyone');
-$g['note'] = $translate->phrase('user.defaults.usergroup_everyone_note');
+$g['title'] = $translate->phrase('agent.defaults.usergroup_everyone');
+$g['note'] = $translate->phrase('agent.defaults.usergroup_everyone_note');
 $g['sys_name'] = 'everyone';
 $em->persist($g);
 $em->flush();
@@ -998,8 +998,8 @@ $USERGROUP_EVERYONE = $g;
 
 ##BEGIN:usergroups.agent_all##
 $AGENTGROUP_ALL = new \Application\DeskPRO\Entity\Usergroup();
-$AGENTGROUP_ALL['title'] = $translate->phrase('user.defaults.usergroup_agent_all_perms');
-$AGENTGROUP_ALL['note'] = $translate->phrase('user.defaults.usergroup_agent_all_perms_note');
+$AGENTGROUP_ALL['title'] = $translate->phrase('agent.defaults.usergroup_agent_all_perms');
+$AGENTGROUP_ALL['note'] = $translate->phrase('agent.defaults.usergroup_agent_all_perms_note');
 $AGENTGROUP_ALL['is_agent_group'] = true;
 $em->persist($AGENTGROUP_ALL);
 $em->flush();
@@ -1012,46 +1012,46 @@ $em->flush();
 $em->getConnection()->executeUpdate("
 	INSERT INTO `report_dashboard` (`id`, `author_id`, `title`, `number_columns`, `disabled`, `date_created`, `display_order`)
 	VALUES
-		(1, NULL, '{$translate->phrase('user.defaults.stat_dash_today')}', 4, 0, '2012-05-01 08:56:20', 20),
-		(2, NULL, '{$translate->phrase('user.defaults.stat_dash_monthly')}', 4, 0, '2012-05-01 09:09:42', 30),
-		(3, NULL, '{$translate->phrase('user.defaults.stat_dash_yearly')}', 4, 0, '2012-05-01 09:12:09', 40),
-		(4, NULL, '{$translate->phrase('user.defaults.stat_dash_backlog')}', 4, 0, '2012-05-01 09:15:22', 50),
-		(5, NULL, '{$translate->phrase('user.defaults.stat_dash_agent_performance')}', 4, 0, '2012-05-01 09:24:23', 60)
+		(1, NULL, '{$translate->phrase('agent.defaults.stat_dash_today')}', 4, 0, '2012-05-01 08:56:20', 20),
+		(2, NULL, '{$translate->phrase('agent.defaults.stat_dash_monthly')}', 4, 0, '2012-05-01 09:09:42', 30),
+		(3, NULL, '{$translate->phrase('agent.defaults.stat_dash_yearly')}', 4, 0, '2012-05-01 09:12:09', 40),
+		(4, NULL, '{$translate->phrase('agent.defaults.stat_dash_backlog')}', 4, 0, '2012-05-01 09:15:22', 50),
+		(5, NULL, '{$translate->phrase('agent.defaults.stat_dash_agent_performance')}', 4, 0, '2012-05-01 09:24:23', 60)
 ");
 
 $em->getConnection()->executeUpdate("
 	INSERT INTO `stat` (`id`, `author_id`, `parent_stat_id`, `title`, `criteria`, `grouping_ref`, `stat_concept_class`, `variation`, `generate_stats`, `disabled`, `run_frequency`, `last_run`, `date_created`)
 	VALUES
-		(1, NULL, NULL,  '{$translate->phrase('user.defaults.stat_tickets_opened')}', 'a:0:{}', 'tickets.date_created', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpened', 'neutral', 0, 0, 'hourly', NULL, '2012-05-01 09:08:03'),
-		(2, NULL, NULL,  '{$translate->phrase('user.defaults.stat_first_response_time')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketFirstResponseTime', 'good', 0, 0, 'hourly', NULL, '2012-05-01 09:09:16'),
-		(3, NULL, NULL,  '{$translate->phrase('user.defaults.stat_tickets_opened')}', 'a:0:{}', 'tickets.date_created', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpened', 'neutral', 0, 0, 'daily', NULL, '2012-05-01 09:10:46'),
-		(4, NULL, NULL,  '{$translate->phrase('user.defaults.stat_first_response_time')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketFirstResponseTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:11:31'),
-		(5, NULL, NULL,  '{$translate->phrase('user.defaults.stat_tickets_opened')}', 'a:0:{}', 'tickets.date_created', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpened', 'bad', 0, 0, 'monthly', NULL, '2012-05-01 09:12:37'),
-		(6, NULL, NULL,  '{$translate->phrase('user.defaults.stat_first_response_time')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketFirstResponseTime', 'bad', 0, 0, 'monthly', NULL, '2012-05-01 09:13:20'),
-		(7, NULL, NULL,  '{$translate->phrase('user.defaults.stat_open_tickets_by_department')}', 'a:0:{}', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsAwaitingAgent', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:16:37'),
-		(8, NULL, NULL,  '{$translate->phrase('user.defaults.stat_open_tickets_by_team')}', 'a:0:{}', 'tickets.agent_team_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsAwaitingAgent', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:17:05'),
-		(9, NULL, NULL,  '{$translate->phrase('user.defaults.stat_open_tickets_by_agent')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsAwaitingAgent', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:17:36'),
-		(10, NULL, NULL, '{$translate->phrase('user.defaults.stat_total_user_waiting_time')}', 'a:1:{i:0;a:3:{s:4:\"type\";s:6:\"status\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:6:\"status\";s:14:\"awaiting_agent\";}}}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalUserWaitingTicketResolvedTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:20:29'),
-		(11, NULL, NULL, '{$translate->phrase('user.defaults.stat_backlog_rate')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\RateOfTicketsProcessed', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:21:03'),
-		(12, NULL, NULL, '{$translate->phrase('user.defaults.stat_total_agent_waiting_time')}', 'a:1:{i:0;a:3:{s:4:\"type\";s:6:\"status\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:6:\"status\";s:13:\"awaiting_user\";}}}', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalAgentWaitingTicketResolvedTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:23:11'),
-		(13, NULL, NULL, '{$translate->phrase('user.defaults.stat_tickets_awaiting_agent')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsAwaitingAgent', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:25:02'),
-		(14, NULL, NULL, '{$translate->phrase('user.defaults.stat_rate_of_tickets_processed')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\RateOfTicketsProcessed', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:25:21'),
-		(15, NULL, NULL, '{$translate->phrase('user.defaults.stat_total_user_waiting_time')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalUserWaitingTicketResolvedTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:25:41'),
-		(16, NULL, NULL, '{$translate->phrase('user.defaults.stat_time_until_resolution')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalTicketResolveTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:26:19'),
-		(17, NULL, NULL, '{$translate->phrase('user.defaults.stat_time_until_first_response')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketFirstResponseTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:26:43'),
-		(18, NULL, NULL, '{$translate->phrase('user.defaults.stat_number_of_ticket_messages')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalTicketMessages', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:27:18'),
-		(19, NULL, NULL, '{$translate->phrase('user.defaults.stat_rate_of_tickets_processed')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\RateOfTicketsProcessed', 'bad', 0, 0, 'hourly', NULL, '2012-05-01 09:29:16'),
-		(20, NULL, NULL, '{$translate->phrase('user.defaults.stat_count_of_ticket_messages')}', 'a:0:{}', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalTicketMessages', 'good', 0, 0, 'hourly', NULL, '2012-05-01 09:29:48'),
-		(21, NULL, NULL, '{$translate->phrase('user.defaults.stat_total_user_waiting_time')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalUserWaitingTicketResolvedTime', 'bad', 0, 0, 'hourly', NULL, '2012-05-01 09:30:27'),
-		(22, NULL, NULL, '{$translate->phrase('user.defaults.stat_time_unti_first_response')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketFirstResponseTime', 'bad', 0, 0, 'hourly', NULL, '2012-05-01 09:30:55'),
-		(23, NULL, NULL, '{$translate->phrase('user.defaults.stat_count_of_tickets_awaiting_agent')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsAwaitingAgent', 'bad', 0, 0, 'hourly', NULL, '2012-05-01 09:31:31'),
-		(24, NULL, NULL, '{$translate->phrase('user.defaults.stat_count_of_all_ticket_messages')}', 'a:0:{}', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalTicketMessages', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:32:15'),
-		(25, NULL, NULL, '{$translate->phrase('user.defaults.stat_time_from_ticket_creation_to_ticket_resolution')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalTicketResolveTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:33:08'),
-		(26, NULL, NULL, '{$translate->phrase('user.defaults.stat_rate_of_tickets_processed')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\RateOfTicketsProcessed', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:33:44'),
-		(27, NULL, NULL, '{$translate->phrase('user.defaults.stat_count_of_open_tickets')}', 'a:0:{}', 'tickets.date_created', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpened', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:34:16'),
-		(28, NULL, NULL, '{$translate->phrase('user.defaults.stat_total_user_waiting_time')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalUserWaitingTicketResolvedTime', 'bad', 0, 0, 'monthly', NULL, '2012-05-01 09:35:16'),
-		(29, NULL, NULL, '{$translate->phrase('user.defaults.stat_count_of_all_ticket_messages')}', 'a:0:{}', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalTicketMessages', 'good', 0, 0, 'monthly', NULL, '2012-05-01 09:37:44'),
-		(30, NULL, NULL, '{$translate->phrase('user.defaults.stat_count_of_open_tickets')}', 'a:0:{}', 'tickets.date_created', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpened', 'bad', 0, 0, 'monthly', NULL, '2012-05-01 09:38:32')
+		(1, NULL, NULL,  '{$translate->phrase('agent.defaults.stat_tickets_opened')}', 'a:0:{}', 'tickets.date_created', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpened', 'neutral', 0, 0, 'hourly', NULL, '2012-05-01 09:08:03'),
+		(2, NULL, NULL,  '{$translate->phrase('agent.defaults.stat_first_response_time')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketFirstResponseTime', 'good', 0, 0, 'hourly', NULL, '2012-05-01 09:09:16'),
+		(3, NULL, NULL,  '{$translate->phrase('agent.defaults.stat_tickets_opened')}', 'a:0:{}', 'tickets.date_created', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpened', 'neutral', 0, 0, 'daily', NULL, '2012-05-01 09:10:46'),
+		(4, NULL, NULL,  '{$translate->phrase('agent.defaults.stat_first_response_time')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketFirstResponseTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:11:31'),
+		(5, NULL, NULL,  '{$translate->phrase('agent.defaults.stat_tickets_opened')}', 'a:0:{}', 'tickets.date_created', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpened', 'bad', 0, 0, 'monthly', NULL, '2012-05-01 09:12:37'),
+		(6, NULL, NULL,  '{$translate->phrase('agent.defaults.stat_first_response_time')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketFirstResponseTime', 'bad', 0, 0, 'monthly', NULL, '2012-05-01 09:13:20'),
+		(7, NULL, NULL,  '{$translate->phrase('agent.defaults.stat_open_tickets_by_department')}', 'a:0:{}', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsAwaitingAgent', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:16:37'),
+		(8, NULL, NULL,  '{$translate->phrase('agent.defaults.stat_open_tickets_by_team')}', 'a:0:{}', 'tickets.agent_team_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsAwaitingAgent', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:17:05'),
+		(9, NULL, NULL,  '{$translate->phrase('agent.defaults.stat_open_tickets_by_agent')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsAwaitingAgent', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:17:36'),
+		(10, NULL, NULL, '{$translate->phrase('agent.defaults.stat_total_user_waiting_time')}', 'a:1:{i:0;a:3:{s:4:\"type\";s:6:\"status\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:6:\"status\";s:14:\"awaiting_agent\";}}}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalUserWaitingTicketResolvedTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:20:29'),
+		(11, NULL, NULL, '{$translate->phrase('agent.defaults.stat_backlog_rate')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\RateOfTicketsProcessed', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:21:03'),
+		(12, NULL, NULL, '{$translate->phrase('agent.defaults.stat_total_agent_waiting_time')}', 'a:1:{i:0;a:3:{s:4:\"type\";s:6:\"status\";s:2:\"op\";s:2:\"is\";s:7:\"options\";a:1:{s:6:\"status\";s:13:\"awaiting_user\";}}}', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalAgentWaitingTicketResolvedTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:23:11'),
+		(13, NULL, NULL, '{$translate->phrase('agent.defaults.stat_tickets_awaiting_agent')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsAwaitingAgent', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:25:02'),
+		(14, NULL, NULL, '{$translate->phrase('agent.defaults.stat_rate_of_tickets_processed')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\RateOfTicketsProcessed', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:25:21'),
+		(15, NULL, NULL, '{$translate->phrase('agent.defaults.stat_total_user_waiting_time')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalUserWaitingTicketResolvedTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:25:41'),
+		(16, NULL, NULL, '{$translate->phrase('agent.defaults.stat_time_until_resolution')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalTicketResolveTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:26:19'),
+		(17, NULL, NULL, '{$translate->phrase('agent.defaults.stat_time_until_first_response')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketFirstResponseTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:26:43'),
+		(18, NULL, NULL, '{$translate->phrase('agent.defaults.stat_number_of_ticket_messages')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalTicketMessages', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:27:18'),
+		(19, NULL, NULL, '{$translate->phrase('agent.defaults.stat_rate_of_tickets_processed')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\RateOfTicketsProcessed', 'bad', 0, 0, 'hourly', NULL, '2012-05-01 09:29:16'),
+		(20, NULL, NULL, '{$translate->phrase('agent.defaults.stat_count_of_ticket_messages')}', 'a:0:{}', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalTicketMessages', 'good', 0, 0, 'hourly', NULL, '2012-05-01 09:29:48'),
+		(21, NULL, NULL, '{$translate->phrase('agent.defaults.stat_total_user_waiting_time')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalUserWaitingTicketResolvedTime', 'bad', 0, 0, 'hourly', NULL, '2012-05-01 09:30:27'),
+		(22, NULL, NULL, '{$translate->phrase('agent.defaults.stat_time_unti_first_response')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketFirstResponseTime', 'bad', 0, 0, 'hourly', NULL, '2012-05-01 09:30:55'),
+		(23, NULL, NULL, '{$translate->phrase('agent.defaults.stat_count_of_tickets_awaiting_agent')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsAwaitingAgent', 'bad', 0, 0, 'hourly', NULL, '2012-05-01 09:31:31'),
+		(24, NULL, NULL, '{$translate->phrase('agent.defaults.stat_count_of_all_ticket_messages')}', 'a:0:{}', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalTicketMessages', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:32:15'),
+		(25, NULL, NULL, '{$translate->phrase('agent.defaults.stat_time_from_ticket_creation_to_ticket_resolution')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalTicketResolveTime', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:33:08'),
+		(26, NULL, NULL, '{$translate->phrase('agent.defaults.stat_rate_of_tickets_processed')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\RateOfTicketsProcessed', 'good', 0, 0, 'daily', NULL, '2012-05-01 09:33:44'),
+		(27, NULL, NULL, '{$translate->phrase('agent.defaults.stat_count_of_open_tickets')}', 'a:0:{}', 'tickets.date_created', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpened', 'bad', 0, 0, 'daily', NULL, '2012-05-01 09:34:16'),
+		(28, NULL, NULL, '{$translate->phrase('agent.defaults.stat_total_user_waiting_time')}', 'a:0:{}', 'tickets.agent_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalUserWaitingTicketResolvedTime', 'bad', 0, 0, 'monthly', NULL, '2012-05-01 09:35:16'),
+		(29, NULL, NULL, '{$translate->phrase('agent.defaults.stat_count_of_all_ticket_messages')}', 'a:0:{}', 'tickets.department_id', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TotalTicketMessages', 'good', 0, 0, 'monthly', NULL, '2012-05-01 09:37:44'),
+		(30, NULL, NULL, '{$translate->phrase('agent.defaults.stat_count_of_open_tickets')}', 'a:0:{}', 'tickets.date_created', 'Application\\\\ReportBundle\\\\Stat\\\\DeskPRO\\\\TicketsOpened', 'bad', 0, 0, 'monthly', NULL, '2012-05-01 09:38:32')
 ");
 
 $em->getConnection()->executeUpdate("
