@@ -194,6 +194,13 @@ class FeedbackController extends AbstractController
 			$category = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($category_id);
 		}
 
+		$usergroups = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
+		Arrays::unshiftAssoc($usergroups, '1', 'Everyone');
+		$enabled_groups = array();
+		if ($category_id) {
+			$enabled_groups = $this->container->getDb()->fetchAllCol("SELECT usergroup_id FROM feedback_category2usergroup WHERE category_id = ?", array($category_id));
+		}
+
 		$form = $this->get('form.factory')->create(new EditFeedbackCategoryType($category->id ? false : true), $category);
 
 		if ($this->in->getBool('process')) {
@@ -205,28 +212,37 @@ class FeedbackController extends AbstractController
 
 			$form->bindRequest($this->get('request'));
 
-			if ($form->isValid()) {
-				$this->em->getConnection()->beginTransaction();
+			$this->em->getConnection()->beginTransaction();
 
-				try {
-					$this->em->persist($category);
-					$this->em->flush();
+			try {
+				$this->em->persist($category);
+				$this->em->flush();
 
-					if ($do_move) {
-						$this->db->update('feedback', array('category_id' => $category->id), array('category_id' => $category->parent->id));
-					}
-
-					$this->em->getRepository('DeskPRO:FeedbackCategory')->repair();
-
-					$this->em->getConnection()->commit();
-				} catch (\Exception $e) {
-					$this->em->getConnection()->rollback();
-					throw $e;
+				if ($do_move) {
+					$this->db->update('feedback', array('category_id' => $category->id), array('category_id' => $category->parent->id));
 				}
 
-				$this->session->setFlash('saved', $category->title);
-				return $this->redirectRoute('admin_feedback_cats');
+				$this->em->getRepository('DeskPRO:FeedbackCategory')->repair();
+
+				$this->container->getDb()->delete('feedback_category2usergroup', array('category_id' => $category->getId()));
+				$vals = array();
+				$uids = $this->container->getIn()->getCleanValueArray('usergroups', 'uint', 'discard');
+				$uids = array_unique($uids);
+				foreach ($uids as $uid) {
+					if (isset($usergroups[$uid])) {
+						$vals[] = array('category_id' => $category->getId(), 'usergroup_id' => $uid);
+					}
+				}
+				$this->container->getDb()->batchInsert('feedback_category2usergroup', $vals);
+
+				$this->em->getConnection()->commit();
+			} catch (\Exception $e) {
+				$this->em->getConnection()->rollback();
+				throw $e;
 			}
+
+			$this->session->setFlash('saved', $category->title);
+			return $this->redirectRoute('admin_feedback_cats');
 		}
 
 		$other_cats = $this->em->getRepository('DeskPRO:FeedbackCategory')->getInHierarchy();
@@ -261,11 +277,13 @@ class FeedbackController extends AbstractController
 		}
 
 		return $this->render('AdminBundle:Feedback:cats-edit.html.twig', array(
-			'category' => $category,
-			'form'      => $form->createView(),
-			'count_existing' => $count_existing,
-			'other_cats' => $other_cats,
-			'leaf_ids' => $leaf_ids,
+			'category'        => $category,
+			'form'            => $form->createView(),
+			'count_existing'  => $count_existing,
+			'other_cats'      => $other_cats,
+			'leaf_ids'        => $leaf_ids,
+			'usergroups'      => $usergroups,
+			'enabled_groups'  => $enabled_groups
 		));
 	}
 

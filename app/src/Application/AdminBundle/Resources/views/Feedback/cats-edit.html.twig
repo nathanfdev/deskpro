@@ -32,6 +32,24 @@
 		</div>
 	</div>
 
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>{{ phrase('agent.general.usergroups') }}</label>
+		</div>
+		<div class="dp-form-input">
+			<div class="checkbox-rows" style="width: 400px;">
+				<ul style="max-height: 200px;">
+					{% for id,name in usergroups %}
+						<label>
+							<input type="checkbox" name="usergroups[]" value="{{ id }}" {% if not category.id or id in enabled_groups %}checked="checked"{% endif %} />
+							{{ name }}
+						</label>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+
 	{#
 	{% if form.parent %}
 		<div class="dp-form-row">
