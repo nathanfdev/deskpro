@@ -160,7 +160,7 @@ var DpChatWidget = new (function() {
 
 		var sid = getCookie('dpchat_sid');
 		if (sid) {
-			url += '&__sid=' + sid;
+			url += '&__sid=' + sid + '&';
 		}
 
 		if (DpChatWidget_Options && DpChatWidget_Options.referrerPageUrl) {
@@ -172,7 +172,7 @@ var DpChatWidget = new (function() {
 		url += '&'+(new Date().getTime());
 
 		if (options.displayType == 'DpWindow') {
-			url += '&amp;is_window=1';
+			url += '&is_window=1';
 		}
 
 		DpConsole.log('DpChatWidget.initSession: adding script: ' + url);
