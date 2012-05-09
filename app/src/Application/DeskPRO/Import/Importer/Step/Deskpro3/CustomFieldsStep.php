@@ -188,6 +188,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		$new_field = new CustomDefTicket();
 		$new_field->display_order = $f['displayorder'];
 		$new_field->title = $f['display_name'];
+		$new_field->description = $f['description'];
 
 		$has_choices = false;
 
@@ -250,6 +251,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		$new_field = new CustomDefPerson();
 		$new_field->display_order = $f['displayorder'];
 		$new_field->title = $f['display_name'];
+		$new_field->description = $f['description'];
 
 		$has_choices = false;
 
@@ -311,6 +313,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		$new_field = new CustomDefOrganization();
 		$new_field->display_order = $f['displayorder'];
 		$new_field->title = $f['display_name'];
+		$new_field->description = $f['description'];
 
 		$has_choices = false;
 
@@ -373,6 +376,7 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		$new_field = new CustomDefArticle();
 		$new_field->display_order = $f['displayorder'];
 		$new_field->title = $f['display_name'];
+		$new_field->description = $f['description'];
 
 		$has_choices = false;
 
