@@ -11,11 +11,18 @@
 	$(document).ready(function() {
 		$('#user_type_exist').on('click', function() {
 			$('#user_type_new_form').hide();
+			$('#user_type_exist_pass_form').hide();
 			$('#user_type_exist_form').show();
 		});
 		$('#user_type_new').on('click', function() {
 			$('#user_type_exist_form').hide();
+			$('#user_type_exist_pass_form').hide();
 			$('#user_type_new_form').show();
+		});
+		$('#user_type_exist_pass').on('click', function() {
+			$('#user_type_exist_form').hide();
+			$('#user_type_exist_pass_form').show();
+			$('#user_type_new_form').hide();
 		});
 	});
 </script>
@@ -31,6 +38,8 @@
 			<p>
 		</div>
 	{% endif %}
+
+	{#####################################################################}
 
 	<section class="dp-well">
 		<header>
@@ -83,6 +92,38 @@
 			</form>
 		</article>
 	</section>
+
+	{#####################################################################}
+
+	<section class="dp-well">
+		<header>
+			<label>
+				<h3><input type="radio" name="user_type" id="user_type_exist_pass" {% if this_page == 'reset' %}checked="checked"{% endif %} /> {{ phrase('user.general.ive_lost_password') }}</h3>
+			</label>
+		</header>
+		<article id="user_type_exist_pass_form" class="dp-well dp-well-light" {% if this_page != 'reset' %}style="display:none"{% endif %}>
+			<form action="{{ path('user_login_resetpass_send') }}" class="form login" method="post">
+				<table cellspacing="0" cellpadding="0">
+					<tr>
+						<td width="40%">
+							<div style="padding-bottom: 5px;">
+								{{ phrase('user.general.email_address') }}
+							</div>
+							<div>
+								<input type="text" value="" name="email" id="email" size="40" />
+							</div>
+						</td>
+						<td style="text-align: center; vertical-align: middle;" valign="middle">
+							<input class="dp-btn dp-btn-primary" type="submit" value="{{ phrase('user.general.continue') }}" />
+						</td>
+					</tr>
+				</table>
+			</form>
+		</article>
+	</section>
+
+	{#####################################################################}
+
 	<section class="dp-well">
 		<header>
 			<label>

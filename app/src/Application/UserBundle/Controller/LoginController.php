@@ -464,9 +464,14 @@ HTML;
 
 	public function resetPasswordAction($invalid_email = false, $invalid_code = false)
 	{
+		$register = new \Application\UserBundle\Form\Model\Register();
+		$reg_formtype = new \Application\UserBundle\Form\RegisterType();
+		$form = $this->get('form.factory')->create($reg_formtype, $register);
+
 		return $this->render($this->tpl_prefix . ':reset-password.html.twig', array(
 			'invalid_email' => $invalid_email,
-			'invalid_code' => $invalid_code
+			'invalid_code' => $invalid_code,
+			'form' => $form,
 		));
 	}
 
