@@ -101,7 +101,7 @@ if (!$IMPORT_INSTALL) {
 ##BEGIN:create_feedback.default##
 if (!$IMPORT_INSTALL) {
 	$DEFAULT_IDEA_CAT = new \Application\DeskPRO\Entity\FeedbackCategory();
-	$DEFAULT_IDEA_CAT['title'] = 'General';
+	$DEFAULT_IDEA_CAT['title'] = 'Suggestion';
 	$em->persist($DEFAULT_IDEA_CAT);
 	$em->flush();
 

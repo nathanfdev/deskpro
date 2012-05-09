@@ -53,6 +53,22 @@ class QueryListener
 		}
 
 		switch ($query_id) {
+
+			case 'update_article_categories':
+			case 'insert_article_categories':
+			case 'delete_article_categories':
+			case 'update_downloads_categories':
+			case 'insert_downloads_categories':
+			case 'delete_downloads_categories':
+			case 'update_feedback_categories':
+			case 'insert_feedback_categories':
+			case 'delete_feedback_categories':
+			case 'update_news_categories':
+			case 'insert_news_categories':
+			case 'delete_news_categories':
+				App::getContainer()->getSystemService('publish_structure_cache')->flush();
+				break;
+
 			case 'update_article_to_categories':
 			case 'delete_article_to_categories':
 				App::getContainer()->getSystemService('publish_structure_cache')->flush();

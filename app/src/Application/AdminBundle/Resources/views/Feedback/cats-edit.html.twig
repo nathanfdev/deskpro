@@ -32,6 +32,7 @@
 		</div>
 	</div>
 
+	{#
 	{% if form.parent %}
 		<div class="dp-form-row">
 			<div class="dp-form-label">
@@ -45,6 +46,8 @@
 			</div>
 		</div>
 	{% endif %}
+	#}
+	<input type="hidden" name="feedback_cat[parent]" value="" />
 
 	{% if category.id %}
 		<div class="dp-form-row">
@@ -57,8 +60,6 @@
 		</div>
 	{% endif %}
 </div>
-
-{{ form_rest(form) }}
 
 <button class="btn primary save-trigger">{{ phrase('agent.general.save') }}</button>
 </form>

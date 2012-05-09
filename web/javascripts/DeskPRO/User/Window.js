@@ -122,6 +122,31 @@ DeskPRO.User.Window = new Orb.Class({
 			var link = $('a[href]', parent).first();
 			window.location = link.attr('href');
 		});
+
+		$('.dp-inplace-drop').each(function() {
+			var sel = $(this).find('select').first();
+			var label = $(this).find('.dp-opt-label');
+
+			var updateTitle = function() {
+				var opt = sel.find('option:selected').first();
+				if (!opt[0]) {
+					opt = sel.find('option').first();
+				}
+
+				label.text(opt.text());
+
+				if (sel.data('bind-to')) {
+					var bound = $(sel.data('bind-to'));
+					bound.text(opt.text());
+				}
+			};
+
+			sel.on('change', function() {
+				updateTitle();
+			});
+
+			updateTitle();
+		});
 	},
 
 	getHandler: function(id) {

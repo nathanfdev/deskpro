@@ -103,7 +103,7 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 	}
 
 
-	protected function processCategories($parent_id)
+	protected function processCategories($parent_id, $prefix = array())
 	{
 		if ($parent_id) {
 			$cats = $this->getOldDb()->fetchAll("SELECT * FROM user_idea_categories WHERE parent_id = ?", array($parent_id));
@@ -137,11 +137,14 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 			# Create it
 			#------------------------------
 
+			$prefix[] = $cat['title'];
+
 			$new_cat = new FeedbackCategory();
-			$new_cat->title = $cat['title'];
+			$new_cat->title = implode(' > ', $prefix);
 			$new_cat->display_order = $cat['display_order'];
 			if ($new_parent) {
-				$new_cat->parent = $new_parent;
+				// Cats are single-level
+				//$new_cat->parent = $new_parent;
 			}
 
 			$this->getEm()->persist($new_cat);
@@ -160,7 +163,7 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 			));
 
 			// Process any subcats
-			$this->processCategories($cat['id']);
+			$this->processCategories($cat['id'], $prefix);
 		}
 	}
 }
