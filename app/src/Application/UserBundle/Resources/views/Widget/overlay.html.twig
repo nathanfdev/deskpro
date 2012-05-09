@@ -30,8 +30,10 @@
 	<script src="{{ asset('javascripts/DeskPRO/User/WebsiteWidget/OverlayWin.js') }}" type="text/javascript"></script>
 
 	<script type="text/javascript">
+		window.DeskPRO_Window = new DeskPRO.User.Window();
 		var OverlayWin = new DeskPRO.User.WebsiteWidget.OverlayWin();
 		$(document).ready(function() {
+			window.DeskPRO_Window.initPage();
 			if (!Orb.Compat.WebForms.isPlaceholderSupported()) {
 				Orb.Compat.WebForms.placeholder($('[placeholder]'));
 			}

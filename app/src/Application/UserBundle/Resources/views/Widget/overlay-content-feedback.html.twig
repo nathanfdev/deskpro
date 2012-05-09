@@ -36,48 +36,47 @@
 				</span>
 			</div>
 		</div>
-		<div class="fields-row">
-			<div class="dp-form-row-category_id with-sub-options feedbackCat_id_wrapper" data-field-validators="DeskPRO.Form.TwoLevelSelectValidator">
-				<div class="dp-select-wrapper" style="width: 70%;">
-					<select name="feedback[category_id]" class="parent-option category_id">
-						<option value=""></option>
-						{% for cat in feedback_categories %}
-						<option value="{{cat.id}}">{{cat.title}}</option>
-						{% endfor %}
-					</select>
-					{% for parent_cat in feedback_categories %}
-					{% if parent_cat.children|length %}
-					<div class="dp-sub-options sub-options-category_id sub-options-{{parent_cat.id}}" style="display: none">
-						<select class="sub_category_id">
-							<option value=""></option>
-							{% for cat in parent_cat.children %}
-							<option value="{{cat.id}}">{{cat.title}}</option>
-							{% endfor %}
-						</select>
-					</div>
-					{% endif %}
-					{% endfor %}
-				</div>
-				<span class="tooltip-error">
-					<span>{{ phrase('user.general.please_choose_a_category') }}</span>
-				</span>
+
+		<div class="dp-new-feedback" >
+			<div class="dp-input-prepend">
+				<table cellspacing="0" cellpadding="0" width="100%"><tr>
+					<td width="10" class="dp-msg">
+						<span>{{ phrase('user.feedback.i_have_a') }}</span>
+					</td>
+					<td width="10" class="dp-cat dp-cat2">
+						<div class="dp-form-row-category_id with-sub-options feedbackCat_id_wrapper" data-field-validators="DeskPRO.Form.TwoLevelSelectValidator">
+							<div style="position: relative;" class="dp-inplace-drop">
+								<em><span class="dp-opt-label">&nbsp;</span> <i></i></em>
+								<select name="feedback[category_id]" class="parent-option category_id no-uniform">
+									{% for cat in feedback_categories %}
+										<option value="{{cat.id}}">{{cat.title}}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+						<span class="tooltip-error">
+							<span>{{ phrase('user.general.please_choose_a_category') }}</span>
+						</span>
+					</td>
+					<td class="dp-title">
+						{{ form_widget(feedbackform.title, {
+							'attr': {
+								'data-field-validators': 'DeskPRO.Form.LengthValidator',
+								'data-min-len': 5,
+								'class': 'search-collect',
+								'placeholder': phrase('user.general.enter_short_summary')
+							}
+						}) }}
+					</td>
+				</tr></table>
 			</div>
-		</div>
-		<div class="fields-row">
-			<div class="txt txt-wide dp-form-row-title">
-				{{ form_widget(feedbackform.title, {
-					'attr': {
-						'data-field-validators': 'DeskPRO.Form.LengthValidator',
-						'data-min-len': 5,
-						'class': 'search-collect',
-						'placeholder': phrase('user.general.enter_short_summary')
-					}
-				}) }}
+			<div class="dp-form-row-title">
 				<span class="tooltip-error">
 					<span>{{ phrase('user.feedback.summary_error') }}</span>
 				</span>
 			</div>
 		</div>
+
 		<div class="fields-row message dp-form-row-content">
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td><div style="position: relative">
 				<div class="textarea">
