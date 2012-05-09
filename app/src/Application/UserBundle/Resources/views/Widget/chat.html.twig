@@ -74,9 +74,9 @@
 
 <section class="dp-chat-active-state" id="dp_chat_start">
 	<header>
-		<div class="dp_chatwin_close"><i class="dp-icon-remove-sign"></i> Cancel</div>
+		<div class="dp_chatwin_close"><i class="dp-icon-remove-sign"></i> {{ phrase('user.general.cancel') }}</div>
 
-		<h3>Start chatting with an agent</h3>
+		<h3>{{ phrase('user.chat.start_chatting_with_an_agent') }}</h3>
 	</header>
 	<article>
 		{% if not app.user.id %}
@@ -150,9 +150,9 @@
 
 <section class="dp-chat-active-state" id="dp_chat_finding_agent" style="display: none">
 	<header>
-		<div class="dp_chatwin_close"><i class="dp-icon-remove-sign"></i> Cancel</div>
+		<div class="dp_chatwin_close"><i class="dp-icon-remove-sign"></i> {{ phrase('user.general.cancel') }}</div>
 
-		<h3>Finding an agent</h3>
+		<h3>{{ phrase('user.chat.finding_an_agent') }}</h3>
 	</header>
 	<article>
 		<p>{{ phrase('user.chat.please_wait_for_agent') }}</p>
@@ -165,10 +165,10 @@
 <section class="dp-chat-active-state" id="dp_chat_active" style="display: none">
 	<div id="dp_chat_filedrag">{{ phrase('user.chat.drop_file_here') }}</div>
 	<header>
-		<div class="dp_chatwin_close"><i class="dp-icon-remove-sign"></i> End Chat</div>
+		<div class="dp_chatwin_close"><i class="dp-icon-remove-sign"></i> {{ phrase('user.chat.end_chat') }}</div>
 
 		<div id="dpchat_with_agent" style="display: none"></div>
-		<h3 id="dpchat_without_agent">Finding an agent</h3>
+		<h3 id="dpchat_without_agent">{{ phrase('user.chat.finding_an_agent') }}</h3>
 	</header>
 	<article>
 		<div id="dp_chat_messages_pane">
@@ -189,7 +189,7 @@
 
 <section class="dp-chat-active-state" id="dp_chat_done" style="display: none">
 	<header>
-		<h3>Send us feedback</h3>
+		<h3>{{ phrase('user.chat.send_us_feedback') }}</h3>
 	</header>
 	<article>
 		{# Field is hidden if the user entered an email addy, its sent automatically when chat ended #}

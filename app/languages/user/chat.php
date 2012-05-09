@@ -32,4 +32,7 @@
     'user.chat.transcript_to'           => 'Send a transcript of this chat to',
     'user.chat.unassigned'              => 'Chat unassigned',
     'user.chat.you_are_chatting_with'   => 'You are chatting with',
+	'user.chat.start_chatting_with_an_agent' => 'Start chatting with an agent',
+	'user.chat.finding_an_agent' => 'Finding an agent',
+	'user.chat.send_us_feedback' => 'Send us feedback',
 );
