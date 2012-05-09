@@ -112,22 +112,6 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			self.tellParent('showContentPage', [url]);
 		});
 
-		this.tellParent('ready');
-
-		var lastHeight, currentHeight;
-		lastHeight = $('#widget_deskpro').height();
-		self.tellParent('requestHeight', [lastHeight]);
-
-		window.setInterval(function() {
-			currentHeight = $('div.tab.active').height();
-			currentHeight += 20 + 70 + 74 + 11 + 11 + 5;
-
-			if (lastHeight != currentHeight) {
-				self.tellParent('requestHeight', [currentHeight]);
-			}
-			lastHeight = currentHeight;
-		}, 80);
-
 		// Sync name and email fields, and save them to cookies for next time too
 		var names = $('input.name-field');
 		var emails = $('input.email-field');
@@ -187,14 +171,30 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 		var searchCollect = $('.search-collect');
 		this.searchCollect = searchCollect;
 		var collectToucher = new DeskPRO.TouchCaller({
-			timeout: 200,
+			timeout: 300,
 			callback: function() {
 				self.enableRelatedMode();
 			}
 		});
-		searchCollect.on('keypress', function() {
+		searchCollect.on('keydown', function() {
 			collectToucher.touch();
 		});
+
+		this.tellParent('ready');
+
+		var lastHeight, currentHeight;
+		lastHeight = $('#widget_deskpro').height();
+		self.tellParent('requestHeight', [lastHeight]);
+
+		window.setInterval(function() {
+			currentHeight = $('div.tab.active').height();
+			currentHeight += 20 + 70 + 74 + 11 + 11 + 5;
+
+			if (lastHeight != currentHeight) {
+				self.tellParent('requestHeight', [currentHeight]);
+			}
+			lastHeight = currentHeight;
+		}, 80);
 	},
 
 
@@ -223,12 +223,19 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 	//# Search Bar
 	//##################################################################################################################
 
+	setSearchMode: function(mode) {
+		this.searchMode = mode;
+	},
+
 	enableRelatedMode: function() {
+		this.searchMode = 'related';
 		$('#left_pane').addClass('showing-related');
+		this.searchBox.val('');
 		this.updateResults();
 	},
 
 	disableRelatedMode: function() {
+		this.searchMode = 'latest';
 		$('#left_pane').removeClass('showing-related');
 		this.updateResults();
 	},
@@ -246,24 +253,34 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 		});
 
 		var touchCaller = new DeskPRO.TouchCaller({
-			timeout: 200,
+			timeout: 300,
 			callback: function() {
-
+				self.updateResults();
+				$('#search_box_clear').show();
 			}
 		});
 
 		this.searchBox.on('keydown', function(ev) {
+
+			self.setSearchMode('search');
+
 			if (ev.keyCode == 13 && !ev.metaKey) {
 				ev.preventDefault();//dont enter enter key
 				self.updateResults();
+				return;
+			}
+
+			if (!$(this).val().length) {
+				self.clearSearch();
+				self.searchBox.val('').focus();
 			} else {
-				self.updateResults();
-				$('#search_box_clear').show();
+				touchCaller.touch();
 			}
 		});
 	},
 
 	clearSearch: function() {
+		$('#left_pane').removeClass('showing-related');
 		$('#search_content_list').empty().hide();
 		$('#new_content_list').show();
 		$('#search_box_clear').hide();
@@ -277,11 +294,28 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 	},
 
 	updateResults: function() {
+
+		if (this.searchMode == 'search' || this.searchMode == 'related') {
+			$('#new_content_list').hide();
+			$('#search_content_list').show();
+		} else {
+			$('#new_content_list').show();
+			$('#search_content_list').hide();
+			$('#search_loading').hide();
+			$('#left_pane').removeClass('loading');
+			return;
+		}
+
+		if (this.searchMode == 'related') {
+			$('#left_pane').addClass('showing-related');
+		} else {
+			$('#left_pane').removeClass('showing-related');
+		}
+
 		var self = this;
 		var q = this.searchBox.val().trim();
 
-		if ($('#left_pane').hasClass('showing-related')) {
-			$('#new_content_list').hide();
+		if (this.searchMode == 'related') {
 			q = [];
 			this.searchCollect.each(function() {
 				q.push($(this).val());
@@ -300,20 +334,12 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			this.searchAjax = null;
 		}
 
-		$('#left_pane').addClass('loading');
-
-
-		$('#search_loading').show();
-
-		if ($('#left_pane').hasClass('showing-related')) {
-			if ($('#search_content_list li').length) {
-				$('#no_results').hide();
-			} else {
-				$('#no_results').hide();
+		if (this.searchMode == 'related') {
+			var hasResults = $('#search_content_list').find('li').length;
+			if (!hasResults) {
+				$('#left_pane').addClass('loading');
+				$('#search_loading').show();
 			}
-		} else {
-			$('#search_loading').hide();
-			$('#no_results').hide();
 		}
 
 		this.searchAjax = $.ajax({
@@ -322,23 +348,17 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			context: this,
 			complete: function() {
 				$('#left_pane').removeClass('loading');
+				$('#search_loading').hide();
 			},
 			success: function(html) {
 				var ul = $(html);
 				ul.find('a').addClass('view-item');
 				var lis = ul.find('> li');
 
-				$('#search_loading').hide();
-
-				$('#new_content_list').hide();
 				$('#search_content_list').empty().append(lis).show();
 
-				if ($('#left_pane').hasClass('showing-related')) {
-					if (!$('#search_content_list li').length) {
-						$('#no_results').show();
-					} else {
-						$('#no_results').hide();
-					}
+				if (!$('#search_content_list li').length) {
+					$('#no_results').show();
 				} else {
 					$('#no_results').hide();
 				}

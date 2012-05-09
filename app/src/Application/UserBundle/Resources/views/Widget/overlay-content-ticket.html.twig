@@ -53,7 +53,7 @@
 		</div>
 		<div class="fields-row dp-form-row-ticket_department_id">
 			<select name="newticket[ticket][department_id]">
-				<option value=""></option>
+				<option value="">{{ phrase('user.general.choose_department') }}</option>
 				{% for id,info in ticket_options.departments_hierarchy %}
 					{% if info.children %}
 						<optgroup label="{{ info.title }}">

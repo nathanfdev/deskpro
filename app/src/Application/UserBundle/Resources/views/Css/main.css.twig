@@ -1859,12 +1859,12 @@ body.file-drag-over #dp .dp-drop-file-zone,
 
 #widget_deskpro #search_loading {
 	display: block;
-	background: url(../../web/images/spinners/loading-small.gif) no-repeat 50% 50%;
-	height: 16px;
-	width: 16px;
+	background: url(../../web/images/spinners/loading-big-circle.gif) no-repeat 50% 50%;
+	height: 50px;
 	position: absolute;
 	top: 30px;
-	right: 7px;
+	right: 0px;
+	left: 0;
 }
 
 #widget_deskpro #no_results {
@@ -2515,6 +2515,11 @@ body.file-drag-over #dp .dp-drop-file-zone,
 	color:#7a7f87;
 	font:14px/17px 'Helvetica Neue',Helvetica,Arial, sans-serif;
 }
+
+#dp .widget-deskpro input, #dp .widget-deskpro textarea {
+	{{ _self.box_shadow('none') }}
+}
+
 #dp .widget-deskpro form{
 	margin:0;
 	padding:0;

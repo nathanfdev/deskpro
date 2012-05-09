@@ -43,6 +43,7 @@
     'user.general.date'                            => 'Date',
     'user.general.declined'                        => 'Declined',
     'user.general.department'                      => 'Department',
+    'user.general.choose_department'               => 'Choose a department',
     'user.general.description'                     => 'Description',
     'user.general.deskpro'                         => 'DeskPRO',
     'user.general.done_changing_email'             => 'Done changing email address',
