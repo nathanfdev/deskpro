@@ -401,8 +401,8 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 						return;
 					}
 
-					self.newTicketForm.hide();
 					$('#dp_newticket_done').show();
+					self.newTicketForm.hide();
 				}
 			});
 		});

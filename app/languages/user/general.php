@@ -213,6 +213,7 @@
 	'user.general.type_download' => 'Download',
 	'user.general.type_feedback' => 'Suggestion',
 	'user.general.type_news' => 'News',
+	'user.general.email_us' => 'Email Us',
 
 	// Phrases for the JS 'ago' times
 	'user.general.reltime_less_second' => 'less than a second',

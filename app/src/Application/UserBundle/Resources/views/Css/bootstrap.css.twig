@@ -137,7 +137,8 @@
 #dp label,#dp input,#dp button,#dp select,#dp textarea{font-size:13px;font-weight:normal;line-height:18px;}
 #dp input,#dp button,#dp select,#dp textarea{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;}
 #dp label{display:block;margin-bottom:5px;color:#333333;}
-#dp input,#dp textarea,#dp select,#dp .dp-uneditable-input{display:inline-block;width:210px;height:18px;padding:4px;margin-bottom:9px;font-size:13px;line-height:18px;color:#555555;border:1px solid #cccccc;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;}
+#dp input,#dp textarea,#dp .dp-uneditable-input{display:inline-block;width:210px;height:18px;padding:4px;margin-bottom:9px;font-size:13px;line-height:18px;color:#555555;border:1px solid #cccccc;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;}
+#dp select { display:inline-block; }
 #dp .dp-uneditable-textarea{width:auto;height:auto;}
 #dp label input,#dp label textarea,#dp label select{display:block;}
 #dp input[type="image"],#dp input[type="checkbox"],#dp input[type="radio"]{width:auto;height:auto;padding:0;margin:3px 0;*margin-top:0;line-height:normal;cursor:pointer;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0;border:0 \9;}
@@ -146,7 +147,6 @@
 #dp input[type="button"],#dp input[type="reset"],#dp input[type="submit"]{width:auto;height:auto;}
 #dp select,#dp input[type="file"]{height:28px;*margin-top:4px;line-height:28px;}
 #dp input[type="file"]{line-height:18px \9;}
-#dp select{width:220px;background-color:#ffffff;}
 #dp select[multiple],#dp select[size]{height:auto;}
 #dp input[type="image"]{-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;}
 #dp textarea{height:auto;}
@@ -158,7 +158,7 @@
 #dp .dp-radio.dp-inline+.dp-radio.dp-inline,#dp .dp-checkbox.dp-inline+.dp-checkbox.dp-inline{margin-left:10px;}
 #dp input,#dp textarea{-webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075);-moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075);box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075);-webkit-transition:border linear 0.2s,box-shadow linear 0.2s;-moz-transition:border linear 0.2s,box-shadow linear 0.2s;-ms-transition:border linear 0.2s,box-shadow linear 0.2s;-o-transition:border linear 0.2s,box-shadow linear 0.2s;transition:border linear 0.2s,box-shadow linear 0.2s;}
 #dp input:focus,#dp textarea:focus{border-color:rgba(82, 168, 236, 0.8);-webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);-moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);outline:0;outline:thin dotted \9;}
-#dp input[type="file"]:focus,#dp input[type="radio"]:focus,#dp input[type="checkbox"]:focus,#dp select:focus{-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;outline:thin dotted #333;outline:5px auto -webkit-focus-ring-color;outline-offset:-2px;}
+#dp input[type="file"]:focus,#dp input[type="radio"]:focus,#dp input[type="checkbox"]:focus,{-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;outline:thin dotted #333;outline:5px auto -webkit-focus-ring-color;outline-offset:-2px;}
 #dp .dp-input-mini{width:60px;}
 #dp .dp-input-small{width:90px;}
 #dp .dp-input-medium{width:150px;}
@@ -179,7 +179,7 @@
 #dp input.dp-span3,#dp textarea.dp-span3,#dp .dp-uneditable-input.dp-span3{width:210px;}
 #dp input.dp-span2,#dp textarea.dp-span2,#dp .dp-uneditable-input.dp-span2{width:130px;}
 #dp input.dp-span1,#dp textarea.dp-span1,#dp .dp-uneditable-input.dp-span1{width:50px;}
-#dp input[disabled],#dp select[disabled],#dp textarea[disabled],#dp input[readonly],#dp select[readonly],#dp textarea[readonly]{background-color:#eeeeee;border-color:#ddd;cursor:not-allowed;}
+#dp input[disabled],#dp textarea[disabled],#dp input[readonly],#dp select[readonly],#dp textarea[readonly]{background-color:#eeeeee;border-color:#ddd;cursor:not-allowed;}
 #dp .dp-control-group.dp-warning>label,#dp .dp-control-group.dp-warning .dp-help-block,#dp .dp-control-group.dp-warning .dp-help-inline{color:#c09853;}
 #dp .dp-control-group.dp-warning input,#dp .dp-control-group.dp-warning select,#dp .dp-control-group.dp-warning textarea{color:#c09853;border-color:#c09853;}
 #dp .dp-control-group.dp-warning input:focus,#dp .dp-control-group.dp-warning select:focus,#dp .dp-control-group.dp-warning textarea:focus{border-color:#a47e3c;-webkit-box-shadow:0 0 6px #dbc59e;-moz-box-shadow:0 0 6px #dbc59e;box-shadow:0 0 6px #dbc59e;}

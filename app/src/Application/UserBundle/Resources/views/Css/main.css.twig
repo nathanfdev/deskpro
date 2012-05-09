@@ -2740,7 +2740,7 @@ dp .dp-new-feedback td {
 	position: absolute;
 	top: 11px;
 	left: 11px;
-	right: 11px;
+	right: 15px;
 	bottom: 11px;
 }
 
@@ -2752,10 +2752,6 @@ dp .dp-new-feedback td {
 	left: 0;
 	color:#7a7f87;
 	font:14px/17px 'Helvetica Neue',Helvetica,Arial, sans-serif;
-}
-
-#dp .widget-deskpro input, #dp .widget-deskpro textarea {
-	{{ _self.box_shadow('none') }}
 }
 
 #dp .widget-deskpro form{
@@ -2774,7 +2770,7 @@ dp .dp-new-feedback td {
 #dp .widget-deskpro p{margin:0 0 12px;}
 #dp .widget-deskpro a:hover{text-decoration:none;}
 #dp .widget-deskpro a:focus{outline:none;}
-#dp .widget-deskpro input,textarea,select{
+#dp .widget-deskpro input, #dp .widget-deskpro textarea, #dp .widget-deskpro select{
 	color: #7A7F87;
 	font: 14px/17px 'Helvetica Neue',Helvetica,Arial,sans-serif;
 	vertical-align:middle;
@@ -2832,8 +2828,8 @@ dp .dp-new-feedback td {
 	display: block;
 	color: #B2B2B2;
 	text-decoration: none;
-	background: url(../../web/images/dp-logo-bw-16.png) no-repeat 100% 50%;
-	padding-right: 20px;
+	background: url(../../web/images/dp-logo-bw-16.png) no-repeat 0 50%;
+	padding-left: 20px;
 }
 
 #dp .widget-deskpro .widget-logo a:hover {
@@ -2924,6 +2920,11 @@ dp .dp-new-feedback td {
 	height:33px;
 	position:relative;
 	width:225px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	width:225px;
+	background:url(../../web/images/user/widget/bg-txt-field.gif) repeat-x;
 }
 #dp .widget-deskpro .txt-wide{width:533px;}
 #dp .widget-deskpro .txt.correct{
@@ -3086,6 +3087,8 @@ dp .dp-new-feedback td {
 }
 #dp .widget-deskpro .files-list a{
 	color:#7F8394;
+}
+#dp .widget-deskpro .files-list .top-row a{
 	font-weight: bold;
 	font-size: 110%;
 	text-shadow: 0 1px rgba(255,255,255, 0.3);
@@ -3205,6 +3208,12 @@ div.selector select {
 	padding:8px;
 	position:relative;
 	width:535px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	position:relative;
+	width:535px;
+	background:#fff url(../../web/images/user/widget/bg-txt-field.gif) repeat-x;
 }
 #dp .widget-deskpro .textarea textarea{
 	border:0;
