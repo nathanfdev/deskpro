@@ -110,6 +110,13 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	protected $title = '';
 
 	/**
+	 * The description
+	 *
+	 * @var string
+	 */
+	protected $description = '';
+
+	/**
 	 * The handler class.
 	 *
 	 * May be nullable if the def is a child representing some kind of option.

@@ -46,6 +46,7 @@ abstract class CustomFieldTypeAbstract extends AbstractType
 		#------------------------------
 
 		$builder->add('title', 'text', array('required' => true));
+		$builder->add('description', 'textarea', array('required' => false));
 		$builder->add('handler_class', 'hidden', array('required' => true));
 		$builder->add('validation_type', 'hidden', array('required' => false));
 		$builder->add('agent_validation_type', 'hidden', array('required' => false));

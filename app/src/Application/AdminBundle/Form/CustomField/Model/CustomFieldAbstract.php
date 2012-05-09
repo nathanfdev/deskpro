@@ -41,6 +41,7 @@ use Application\DeskPRO\App;
 abstract class CustomFieldAbstract
 {
 	public $title;
+	public $description;
 	public $handler_class;
 
 	public $required = false;
@@ -63,6 +64,7 @@ abstract class CustomFieldAbstract
 	{
 		$this->_field = $field;
 		$this->title = $field->title;
+		$this->description = $field->description;
 		$this->handler_class = $field->handler_class;
 		$this->custom_css_classname = $field->getOption('custom_css_classname');
 
@@ -91,6 +93,7 @@ abstract class CustomFieldAbstract
 		$field = $this->_field;
 
 		$field->title = $this->title;
+		$field->description = $this->description;
 		if ($this->isNewField()) {
 			$field->handler_class = $this->handler_class;
 		}
