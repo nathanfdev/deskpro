@@ -85,7 +85,7 @@ class FileFinder
             closedir($dh1);
         }
         else {
-            $this->readLangDir($rootdir, $files);
+            $this->readLangDir($rootdir);
         }
         
         return $this->files_temp;

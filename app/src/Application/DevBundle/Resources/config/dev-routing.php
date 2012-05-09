@@ -139,4 +139,11 @@ $collection->add('dev_lang_export_all_po', new Route(
     array()
 ));
 
+$collection->add('dev_lang_phrase_user_context', new Route(
+	'/lang/context/user',
+	array('_controller' => 'DevBundle:Language:showContextUser'),
+	array(),
+	array()
+));
+
 return $collection;

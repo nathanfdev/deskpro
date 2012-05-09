@@ -51,6 +51,53 @@ class LanguageController extends Controller
 		return $this->render('DevBundle:Language:index.html.twig', array('bundles' => Language::$BUNDLES, 'bundle_map' => Language::$BUNDLES_MAP, 'packages' => Language::$PACKAGES));
     }
 
+	public function showContextUserAction()
+	{
+		$vars = array();
+		$found_by_id = array();
+		$errors = array();
+		$prefixes = array();
+		$by_file = array();
+
+		Language::GetPhraseFinder($this->container)->getPhrasesFromTwigFiles('UserBundle', $found_by_id, $errors, $prefixes);
+		Language::GetPhraseFinder($this->container)->getPhrasesFromTwigFiles('DeskPRO', $found_by_id, $errors, $prefixes);
+		Language::GetPhraseFinder($this->container)->getPhrasesFromPHPFiles('UserBundle', $found_by_id, $errors, $prefixes, $by_file);
+
+		$files = Language::GetFileFinder()->getLanguageFileList('user');
+
+		sort($files);
+		$view_struct = array();
+
+		foreach($files as $file) {
+			$phrases = require($file);
+			$key = 'user.'.basename($file, '.php');
+			ksort($phrases);
+
+			$view_struct[$key] = array();
+
+			foreach($phrases as $id => $phrase) {
+				$parts = explode("\n", $phrase, 2);
+
+				if(count($parts)-1) $phrase = $parts['0'].' ...';
+
+				if(isset($found_by_id[$id])) {
+					foreach($found_by_id[$id] as $k => $found) {
+						$found_by_id[$id][$k]['filename'] = preg_replace('/^.*?UserBundle/', '', $found_by_id[$id][$k]['filename']);
+						$found_by_id[$id][$k]['filename'] = preg_replace('#^.*?/views/#', '', $found_by_id[$id][$k]['filename']);
+						$found_by_id[$id][$k]['filename'] = preg_replace('/.html.twig$/', '', $found_by_id[$id][$k]['filename']);
+					}
+
+					$vid = preg_replace('/^user\.[^.]+\./', '', $id);
+					$view_struct[$key][$vid] = array('text' => $phrase, 'files' => $found_by_id[$id]);
+				}
+			}
+		}
+
+		$vars['tree'] = $view_struct;
+
+		return $this->render('DevBundle:Language:show_context_user.html.twig', $vars);
+	}
+
     public function batchReplaceAction()
     {
         set_time_limit(0);
