@@ -96,7 +96,7 @@
 		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'i-voted'}) }}">{{ phrase('user.feedback.i_voted') }}</a>
 	</li>
 	<li class="{% if search_options.order_by == 'most-voted' %}dp-active{% endif %}">
-		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'most-voted'}) }}">{{ phrase('user.feedback.most_voted') }}</a>
+		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'most-voted'}) }}">{{ phrase('user.feedback.most_votes') }}</a>
 	</li>
 	<li class="{% if search_options.order_by == 'newest' %}dp-active{% endif %}">
 		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'newest'}) }}">{{ phrase('user.feedback.newest') }}</a>

@@ -11,7 +11,7 @@
     'user.feedback.i_voted'                   => 'I Voted',
     'user.feedback.label_explain_feedback'    => 'Explain your feedback',
     'user.feedback.label_summary_explain'     => 'A title or a brief summary of what your feedback is about',
-    'user.feedback.most_voted'                => 'Most Voted',
+    'user.feedback.most_votes'                => 'Most Votes',
     'user.feedback.newest'                    => 'Newest',
     'user.feedback.status_active'             => 'Active',
     'user.feedback.status_all'                => 'All',

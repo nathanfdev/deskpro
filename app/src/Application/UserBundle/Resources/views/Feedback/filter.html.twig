@@ -23,7 +23,7 @@
 			<a href="{{ path('user_feedback', {order_by:search_options.order_by}) }}">
 				{% if search_options.order_by == 'popular' %}{{ phrase('user.feedback.status_popular') }}
 				{% elseif search_options.order_by == 'newest' %}{{ phrase('user.feedback.newest') }}
-				{% elseif search_options.order_by == 'most-voted' %}{{ phrase('user.feedback.most_voted') }}
+				{% elseif search_options.order_by == 'most-voted' %}{{ phrase('user.feedback.most_votes') }}
 				{% elseif search_options.order_by == 'i-voted' %}{{ phrase('user.feedback.i_voted') }}
 				{% endif %}
 			</a>
@@ -65,7 +65,7 @@
 		-
 		{% if search_options.order_by == 'popular' %}{{ phrase('user.feedback.status_popular') }}
 		{% elseif search_options.order_by == 'newest' %}{{ phrase('user.feedback.newest') }}
-		{% elseif search_options.order_by == 'most-voted' %}{{ phrase('user.feedback.most_voted') }}
+		{% elseif search_options.order_by == 'most-voted' %}{{ phrase('user.feedback.most_votes') }}
 		{% elseif search_options.order_by == 'i-voted' %}{{ phrase('user.feedback.i_voted') }}
 	{% endif %}
 	{% if category %}
