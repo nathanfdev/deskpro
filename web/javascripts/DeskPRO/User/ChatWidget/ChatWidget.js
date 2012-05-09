@@ -14,7 +14,8 @@ var DpChatWidget = new (function() {
 	var options = {
 		protocol: null,
 		staticUrl: null,
-		deskproUrl: null
+		deskproUrl: null,
+		btnClass: 'dp-chat-btn'
 	};
 
 	var self = this;
@@ -35,6 +36,8 @@ var DpChatWidget = new (function() {
 	 * The chat iFrame
 	 * @var {jQuery}
 	 */
+	var chatIframeHolder;
+	var chatIframeWinTab;
 	var chatIframe;
 	var closingChatIframe;
 
@@ -68,12 +71,92 @@ var DpChatWidget = new (function() {
 		}
 
 		if (!chatIframe) {
-			isNew = true;
 
 			var css = [];
 			css.push('position: fixed');
 			css.push('bottom: 0');
 			css.push('right: 20px');
+			css.push('width: 340px');
+			css.push('height: 350px');
+			css.push('background: #ffffff');
+			css.push('margin: 0');
+			css.push('padding: 0');
+			css.push('box-shadow: none');
+			css.push('border: 3px solid #2A69A9');
+			css.push('border-bottom: none');
+			css.push('-moz-background-clip: padding');
+			css.push('-webkit-background-clip: padding-box');
+			css.push('background-clip: padding-box');
+			css.push('-webkit-border-top-left-radius: 4px');
+			css.push('-webkit-border-top-right-radius: 4px');
+			css.push('-moz-border-radius-topleft: 4px');
+			css.push('-moz-border-radius-topright: 4px');
+			css.push('border-top-left-radius: 4px');
+			css.push('border-top-right-radius: 4px');
+			css.push('-webkit-box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
+			css.push('box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
+			css.push('z-index: 90000');
+			css = css.join(';');
+
+			chatIframeHolder = $('<div id="dp_chat_iframe_holder" class="dp-chat-iframe-holder" style="' + css  +'" />').appendTo('body');
+
+			// The little tabby thing at the top
+			var css = [];
+			css.push('background: #2A69A9');
+			css.push('color: #ffffff');
+			css.push('-webkit-border-top-left-radius: 4px');
+			css.push('-webkit-border-top-right-radius: 4px');
+			css.push('-moz-border-radius-topleft: 4px');
+			css.push('-moz-border-radius-topright: 4px');
+			css.push('border-top-left-radius: 4px');
+			css.push('border-top-right-radius: 4px');
+			css.push('z-index: 90001');
+			css.push('font-size: 10px');
+			css.push('line-height: 100%');
+			css.push('padding: 3px 5px 3px 5px');
+			css.push('position: absolute');
+			css.push('top: -18px');
+			css.push('left: 10px');
+			css.push('font-family: \'Helvetica Neue\',Helvetica,Arial,sans-serif');
+			css.push('cursor: pointer');
+			css.push('-webkit-box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
+			css.push('box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
+			css = css.join(';');
+
+			chatIframeWinTab = $('<div id="dp_chat_iframe_wintab" class="dp-chat-iframe-wintab" style="' + css + '">Open chat in a new window</div>').appendTo(chatIframeHolder);
+
+			// Close button
+			var css = [];
+			css.push('background: #2A69A9');
+			css.push('color: #ffffff');
+			css.push('-webkit-border-radius: 20px');
+			css.push('-moz-border-radius: 20px');
+			css.push('border-radius: 20px');
+			css.push('z-index: 90001');
+			css.push('font-size: 12px');
+			css.push('line-height: 100%');
+			css.push('position: absolute');
+			css.push('top: -8px');
+			css.push('right: -8px');
+			css.push('width: 15px')
+			css.push('height: 15px')
+			css.push('line-height: 15px')
+			css.push('text-align: center')
+			css.push('font-family: Arial,sans-serif');
+			css.push('cursor: pointer');
+			css.push('font-weight: bold');
+			css = css.join(';');
+			$('<div id="dp_chat_iframe_closebtn" class="dp-chat-iframe-closetab" style="' + css + '">–</div>').on('click', function() { self.close() }).appendTo(chatIframeHolder);
+
+
+			isNew = true;
+
+			css = [];
+			css.push('position: absolute');
+			css.push('bottom: 0');
+			css.push('top: 0');
+			css.push('left: 3');
+			css.push('right: 30');
 			css.push('width: 340px');
 			css.push('height: 350px');
 			css.push('margin: 0');
@@ -96,7 +179,7 @@ var DpChatWidget = new (function() {
 			}
 
 			frameSrc = options.deskproUrl + 'widget/chat.html' + qs + '#' + encodeURIComponent(document.location.href);
-			chatIframe = $('<iframe id="dp_chat_iframe" name="dp_chat_iframe" src="' + frameSrc + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo('body');
+			chatIframe = $('<iframe id="dp_chat_iframe" name="dp_chat_iframe" src="' + frameSrc + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(chatIframeHolder);
 
 			comms.setupReciever(childListen, frameSrc);
 
@@ -106,7 +189,7 @@ var DpChatWidget = new (function() {
 		}
 
 		isOpen = true;
-		chatIframe.show();
+		chatIframeHolder.show();
 	};
 
 
@@ -119,7 +202,7 @@ var DpChatWidget = new (function() {
 		}
 
 		isOpen = false;
-		chatIframe.hide();
+		chatIframeHolder.hide();
 	};
 
 
@@ -263,12 +346,19 @@ var DpChatWidget = new (function() {
 		css.push('position: fixed');
 		css.push('bottom: 0');
 		css.push('right: 20px');
-		css.push('height: 20px');
 		css.push('margin: 0');
-		css.push('padding: 5px 15px 5px 15px');
+		css.push('padding: 7px 15px 7px 15px');
+		css.push('line-height: 100%');
 		css.push('box-shadow: none');
-		css.push('border: 1px solid #09184F');
-		css.push('background: #1A2757');
+		css.push('border: 1px solid #0665A4');
+		css.push('border-bottom: none');
+		css.push('-webkit-border-top-left-radius: 4px');
+		css.push('-webkit-border-top-right-radius: 4px');
+		css.push('-moz-border-radius-topleft: 4px');
+		css.push('-moz-border-radius-topright: 4px');
+		css.push('border-top-left-radius: 4px');
+		css.push('border-top-right-radius: 4px');
+		css.push('background: #0A69AB');
 		css.push('color: #fff');
 		css.push('font-family: Arial, sans-serif');
 		css.push('font-weight: bold');
@@ -276,9 +366,25 @@ var DpChatWidget = new (function() {
 		css.push('cursor: pointer');
 		css.push('overflow: hidden');
 		css.push('display: none');
+		css.push('background: rgb(69,84,127)');
+		css.push('background: -moz-linear-gradient(top,  rgba(69,84,127,1) 0%, rgba(6,30,86,1) 100%)');
+		css.push('background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(69,84,127,1)), color-stop(100%,rgba(6,30,86,1)))');
+		css.push('background: -webkit-linear-gradient(top,  rgba(69,84,127,1) 0%,rgba(6,30,86,1) 100%)');
+		css.push('background: -o-linear-gradient(top,  rgba(69,84,127,1) 0%,rgba(6,30,86,1) 100%)');
+		css.push('background: -ms-linear-gradient(top,  rgba(69,84,127,1) 0%,rgba(6,30,86,1) 100%)');
+		css.push('background: linear-gradient(top,  rgba(69,84,127,1) 0%,rgba(6,30,86,1) 100%)');
+		css.push('filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#45547f\', endColorstr=\'#061e56\',GradientType=0 )');
+		css.push('border: 1px solid #001851');
+		css.push('border-bottom: none');
+		css.push('-webkit-box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
+		css.push('box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
+		css.push('text-shadow: 0px 0px 2px #000000');
+		css.push('filter: dropshadow(color=#000000, offx=0, offy=0)');
 		css = css.join(';');
 
-		openBtn = $('<div id="dpchat_btn" class="dp-hide-print" style="'+css+'"><div id="dpchat_btn_label"><span class="start-chat">Click here to chat with us</span><span class="open-chat" style="display: none">Open your chat</span></div></div>');
+		$('head').append('<style type="text/css">#dpchat_btn { '+css+ '}</style>');
+
+		openBtn = $('<div id="dpchat_btn" class="dp-hide-print '+ (options.btnClass || '') + '"><div id="dpchat_btn_label"><span class="start-chat">Click here to chat with us</span><span class="open-chat" style="display: none">Open your chat</span></div></div>');
 		openBtn.appendTo('body');
 
 		openBtn.on('click', function(ev) {
@@ -341,7 +447,9 @@ var DpChatWidget = new (function() {
 
 			case 'destroy':
 				self.close();
-				chatIframe.remove();
+				chatIframeHolder.remove();
+				chatIframeHolder = null;
+				chatIframeWinTab = null;
 				chatIframe = null;
 				comms.setupReciever(null, null);
 				break;

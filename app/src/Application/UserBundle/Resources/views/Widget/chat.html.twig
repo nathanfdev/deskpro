@@ -42,7 +42,7 @@
 			conversationId: {{ convo.id|default(0) }},
 			assignedAgentId: {{ convo.agent.id|default(0) }},
 			assignedAgentName: '{{ convo.agent.display_name|default(0) }}',
-			assignedAgentAvatar: '{{ convo.agent.getPictureUrl(40)|default(0) }}',
+			assignedAgentAvatar: '{{ convo.agent.getPictureUrl(30)|default(0) }}',
 			assignedAgentAvatarIcon: '{{ convo.agent.getPictureUrl(16)|default(0) }}',
 			initialMessages: {{ convo_messages|json_encode|raw }},
 			uploadTo: '{{ path('user_accept_upload') }}',
@@ -56,137 +56,206 @@
 	</script>
 </head>
 <body id="dp_chat">
+<div id="dp">
 <div id="dp_chat_wrap">
 
 <div id="dp_chat_end_confirm" style="display: none">
-	{{ phrase('user.chat.confirm_end_chat') }}
-	<button id="dp_chat_end_no">{{ phrase('user.general.cancel') }}</button>
-	<button id="dp_chat_end_yes">{{ phrase('user.chat.end_chat') }}</button>
+	<article>
+		<p>
+			{{ phrase('user.chat.confirm_end_chat') }}
+		</p>
+		<p>
+			<button class="dp-btn" id="dp_chat_end_no">{{ phrase('user.general.cancel') }}</button>
+			<button class="dp-btn" id="dp_chat_end_yes">{{ phrase('user.chat.end_chat') }}</button>
+		</p>
+	</article>
 </div>
 
-<i id="dp_chatwin_min"></i>
-<i id="dp_chatwin_close"></i>
+<section class="dp-chat-active-state" id="dp_chat_start">
+	<header>
+		<div class="dp_chatwin_close"><i class="dp-icon-remove-sign"></i> Cancel</div>
 
-<div id="dp_chat_start">
-	{% if app.user.id %}
-		{% if not app.user.name %}
-			<input type="text" name="name" placeholder="{{ phrase('user.general.your_name') }}" value="{{ initial_name }}" /><br />
+		<h3>Start chatting with an agent</h3>
+	</header>
+	<article>
+		{% if not app.user.id %}
+			<div class="dp-control-group">
+				<div class="dp-control-label">
+					<label>{{ phrase('user.general.your_name') }}</label>
+				</div>
+				<div class="dp-controls">
+					<input type="text" name="name" placeholder="{{ phrase('user.general.your_name') }}" value="{{ initial_name }}"/>
+				</div>
+			</div>
+			<div class="dp-control-group">
+				<div class="dp-control-label">
+					<label>{{ phrase('user.general.your_email_address') }}</label>
+				</div>
+				<div class="dp-controls">
+					<input type="text" name="email" placeholder="{{ phrase('user.general.your_email_address') }}" value="{{ initial_email }}" />
+				</div>
+			</div>
 		{% else %}
-			{{ app.user.name }}
-		{% endif %}
-		{% if not app.user.email_address %}
-			<input type="text" name="email" placeholder="{{ phrase('user.general.your_email_address') }}" value="{{ initial_email }}" />
-		{% else %}
-			{{ app.user.email_address }}
-		{% endif %}
-	{% else %}
-		<input type="text" name="name" placeholder="{{ phrase('user.general.your_name') }}" value="{{ initial_name }}"/><br />
-		<input type="text" name="email" placeholder="{{ phrase('user.general.your_email_address') }}" value="{{ initial_email }}" />
-		{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
-			<div class="connect-with">
-				{{ phrase('user.general.or_connect_with') }}
-				{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
-					{{ render_usersource(usersource, 'widget_overlay_btn') }}
-				{% endfor %}
+			<div class="dp-control-group">
+				<div class="dp-control-label">
+					<label>{{ phrase('user.general.your_name') }}</label>
+				</div>
+				<div class="dp-controls">
+					{% if not app.user.name %}
+						<input type="text" name="name" placeholder="{{ phrase('user.general.your_name') }}" value="{{ initial_name }}" /><br />
+					{% else %}
+						{{ app.user.name }}
+					{% endif %}
+				</div>
+			</div>
+			<div class="dp-control-group">
+				<div class="dp-control-label">
+					<label>{{ phrase('user.general.your_email_address') }}</label>
+				</div>
+				<div class="dp-controls">
+					{% if not app.user.email_address %}
+					<input type="text" name="email" placeholder="{{ phrase('user.general.your_email_address') }}" value="{{ initial_email }}" />
+				{% else %}
+					{{ app.user.email_address }}
+				{% endif %}
+				</div>
 			</div>
 		{% endif %}
-	{% endif %}
-	<br />
-	<select name="department_id">
-		<option value="0">{{ phrase('user.chat.select_department') }}</option>
-		{% for dep in departments %}
-			{% if dep.children|length %}
-				<optgroup label="{{ dep.title }}">
-					{% for subdep in dep.children %}
-						<option value="{{ subdep.id }}" {% if subdep.id == initial_department_id %}selected="selected"{% endif %}>{{ subdep.title }}</option>
+
+		<div class="dp-control-group">
+			<div class="dp-control-label">
+				<label>{{ phrase('user.general.choose_department') }}</label>
+			</div>
+			<div class="dp-controls">
+				<select name="department_id">
+					<option value="0"></option>
+					{% for dep in departments %}
+						{% if dep.children|length %}
+							<optgroup label="{{ dep.title }}">
+								{% for subdep in dep.children %}
+									<option value="{{ subdep.id }}" {% if subdep.id == initial_department_id %}selected="selected"{% endif %}>{{ subdep.title }}</option>
+								{% endfor %}
+							</optgroup>
+						{% else %}
+							<option value="{{ dep.id }}" {% if dep.id == initial_department_id %}selected="selected"{% endif %}>{{ dep.title }}</option>
+						{% endif %}
 					{% endfor %}
-				</optgroup>
-			{% else %}
-				<option value="{{ dep.id }}" {% if dep.id == initial_department_id %}selected="selected"{% endif %}>{{ dep.title }}</option>
-			{% endif %}
-		{% endfor %}
-	</select><br />
-	<button id="dp_chat_start_go">{{ phrase('user.chat.start_chat') }}</button>
-</div>
+				</select>
+			</div>
+		</div>
+		<button class="dp-btn dp-btn-success" id="dp_chat_start_go">{{ phrase('user.chat.start_chat') }}</button>
+	</article>
+</section>
 
-<div id="dp_chat_finding_agent" style="display: none">
-	<p>{{ phrase('user.chat.please_wait_for_agent') }}</p>
-	<div id="dp_chat_finding_agent_more" style="display: none">
-		{{ phrase('user.chat.notice_still_waiting') }}
-	</div>
-</div>
+<section class="dp-chat-active-state" id="dp_chat_finding_agent" style="display: none">
+	<header>
+		<div class="dp_chatwin_close"><i class="dp-icon-remove-sign"></i> Cancel</div>
 
-<div id="dp_chat_active" style="display: none">
+		<h3>Finding an agent</h3>
+	</header>
+	<article>
+		<p>{{ phrase('user.chat.please_wait_for_agent') }}</p>
+		<div id="dp_chat_finding_agent_more" style="display: none">
+			{{ phrase('user.chat.notice_still_waiting') }}
+		</div>
+	</article>
+</section>
+
+<section class="dp-chat-active-state" id="dp_chat_active" style="display: none">
 	<div id="dp_chat_filedrag">{{ phrase('user.chat.drop_file_here') }}</div>
-	<div id="dp_chat_header_pane">
+	<header>
+		<div class="dp_chatwin_close"><i class="dp-icon-remove-sign"></i> End Chat</div>
+
 		<div id="dpchat_with_agent" style="display: none"></div>
-		<div id="dpchat_without_agent">
-			{{ phrase('user.chat.please_wait_for_agent') }}
+		<h3 id="dpchat_without_agent">Finding an agent</h3>
+	</header>
+	<article>
+		<div id="dp_chat_messages_pane">
+			<div id="uploading_list" class="uploading-list">
+				<ul class="files"></ul>
+			</div>
 		</div>
-	</div>
-	<div id="dp_chat_messages_pane">
-		<div id="uploading_list" class="uploading-list">
-			<ul class="files"></ul>
+		<div id="dp_chat_input_pane">
+			<textarea id="dp_chat_message_input"></textarea>
+			<button id="dp_chat_message_send" class="dp-btn">{{ phrase('user.general.send') }}</button>
+			<div id="dp_chat_message_upload">
+				<a id="dp_chat_upload_link"><i class="dp-icon-file"></i>{{ phrase('user.chat.send_a_file') }}</a>
+				<input type="file" name="attach" id="dp_chat_message_upload_file" />
+			</div>
 		</div>
-	</div>
-	<div id="dp_chat_input_pane">
-		<textarea id="dp_chat_message_input"></textarea>
-		<button id="dp_chat_message_send" class="btn primary">{{ phrase('user.general.send') }}</button>
-		<div id="dp_chat_message_upload">
-			<a id="dp_chat_upload_link">{{ phrase('user.chat.send_a_file') }}</a>
-			<input type="file" name="attach" id="dp_chat_message_upload_file" />
+	</article>
+</section>
+
+<section class="dp-chat-active-state" id="dp_chat_done" style="display: none">
+	<header>
+		<h3>Send us feedback</h3>
+	</header>
+	<article>
+		{# Field is hidden if the user entered an email addy, its sent automatically when chat ended #}
+		<div class="dp-control-group form-row email-field">
+			<div class="dp-control-label">
+				<label>{{ phrase('user.chat.transcript_to') }}</label>
+			</div>
+			<div class="dp-controls">
+				<input type="text" name="email" value="" placeholder="{{ phrase('user.general.your_email_address') }}" />
+			</div>
 		</div>
-	</div>
+
+		<div class="dp-control-group">
+			<div class="dp-control-label">
+				<label>{{ phrase('user.chat.rate_response_time') }}</label>
+			</div>
+			<div class="dp-controls">
+				<select name="rating_response_time">
+					<option value="0"></option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="dp-control-group">
+			<div class="dp-control-label">
+				<label>{{ phrase('user.chat.rate_satisfaction') }}</label>
+			</div>
+			<div class="dp-controls">
+				<select name="rating_overall">
+					<option value="0"></option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="dp-control-group">
+			<div class="dp-control-label">
+				<label>{{ phrase('user.chat.ask_comments') }}</label>
+			</div>
+			<div class="dp-controls">
+				<textarea name="comments"></textarea>
+			</div>
+		</div>
+
+		<div style="padding-bottom: 20px;">
+			<button class="dp-btn dp-btn-success" id="dp_chat_end_real">{{ phrase('user.chat.send_and_close') }}</button>
+		</div>
+	</article>
+</section>
+
 </div>
-
-<div id="dp_chat_done" style="display: none">
-	{# Field is hidden if the user entered an email addy, its sent automatically when chat ended #}
-	<div class="form-row email-field">
-		{% set phrase_part %}
-		<input type="text" name="email" value="" placeholder="{{ phrase('user.general.your_email_address') }}" />
-		{% endset %}
-		{{ phrase('user.chat.transcript_to') }}
-	</div>
-
-	<div class="form-row">
-		{{ phrase('user.chat.rate_response_time') }}
-		<select name="rating_response_time">
-			<option value="0"></option>
-			<option value="1">1</option>
-			<option value="2">2</option>
-			<option value="3">3</option>
-			<option value="4">4</option>
-			<option value="5">5</option>
-		</select>
-	</div>
-
-	<div class="form-row">
-		{{ phrase('user.chat.rate_satisfaction') }}
-		<select name="rating_overall">
-			<option value="0"></option>
-			<option value="1">1</option>
-			<option value="2">2</option>
-			<option value="3">3</option>
-			<option value="4">4</option>
-			<option value="5">5</option>
-		</select>
-	</div>
-
-	<div class="form-row">
-		{{ phrase('user.chat.ask_comments') }}
-		<textarea name="comments"></textarea>
-	</div>
-
-	<button id="dp_chat_end_real">{{ phrase('user.chat.send_and_close') }}</button>
-</div>
-
 </div>
 
 <script type="text/x-deskpro-plain" id="dp_chat_tpl_agent_header">
-	<div class="avatar"><img src="%avatar_url%" /></div>
-	<div class="info">
-		<em>{{ phrase('user.chat.you_are_chatting_with') }}</em>
-		<h1>%name%</h1>
+	<div class="dp-chatting-with">
+		<div class="avatar"><img src="%avatar_url%" /></div>
+		<h3 class="title">{{ phrase('user.chat.you_are_chatting_with') }}</h3>
+		<h3 class="name">%name%</h3>
 	</div>
 </script>
 <script type="text/x-deskpro-plain" id="dp_chat_tpl_user_message">

@@ -87,7 +87,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			self.tellParent('hide', []);
 		});
 
-		$('#dp_chatwin_close').on('click', function(ev) {
+		$('.dp_chatwin_close').on('click', function(ev) {
 			ev.preventDefault();
 			if (self.hasEnded || !self.conversationId) {
 				self.tellParent('destroy', []);
@@ -234,6 +234,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		var data = $('#dp_chat_start').find('input, select').serializeArray();
 		this.sendMessage('', data, { starting: true });
 
+		this.startFindingAgent();
 		$('#dp_chat_start').hide();
 	},
 
@@ -256,6 +257,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			window.clearTimeout(this.findingAgentTimer);
 			this.findingAgentTimer = null;
 		}
+		$('#dp_chat_active').show();
 	},
 
 	sendTypedMessage: function() {
@@ -328,6 +330,9 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		//data.author_name, data.content, data.author_type, data.metadata
 
 		if (data.author_type == 'user') {
+			if (!message.trim().length) {
+				return;
+			}
 
 			tpl = document.getElementById('dp_chat_tpl_user_message').innerHTML;
 			tpl = tpl.replace(/%message%/g, message);
@@ -472,7 +477,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			$('#dp_chat_active').show();
 
 			var tpl = document.getElementById('dp_chat_tpl_agent_header').innerHTML;
-			tpl = tpl.replace(/%avatar_url%/g, avatar);
+			tpl = tpl.replace(/%avatar_url%/g, avatar.replace(/s=40/g, 's=30').replace(/s=16/g, 's=30'));
 			tpl = tpl.replace(/%name%/g, Orb.escapeHtml(name));
 
 			$('#dpchat_without_agent').hide();

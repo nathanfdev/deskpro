@@ -227,7 +227,7 @@ class ChatController extends AbstractController
 			$response->setLastModified(date_create('-1 day'));
 			$response->setExpires(date_create("-1 day"));
 			$response->headers->set('Content-Type', 'text/javascript');
-			return $response;
+			//return $response;
 		}
 
 		// Inits the session which isn't usually created on this controller
