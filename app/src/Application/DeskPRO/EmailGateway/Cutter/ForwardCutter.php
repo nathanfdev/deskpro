@@ -55,7 +55,7 @@ class ForwardCutter
 
 	/**
 	 * Check if a subject matches the pattern for a forwarded message.
-	 * 
+	 *
 	 * @param string $subject
 	 * @return bool
 	 */
@@ -68,7 +68,7 @@ class ForwardCutter
 
 	/**
 	 * Cut out the FWD prefix from subject
-	 * 
+	 *
 	 * @param string $subject
 	 * @return string
 	 */
@@ -77,7 +77,7 @@ class ForwardCutter
 		return preg_replace('#^(FW|FWD|VL|WG|FS|VB|RV|VS):\s*#i', '', trim($subject));
 	}
 
-	
+
 	public function __construct($body, $is_html, $cutter)
 	{
 		$this->body = $body;
@@ -91,11 +91,10 @@ class ForwardCutter
 
 	protected function _process()
 	{
-		$this->forwarded_message = $this->cutter->getForwardedMessage($this->body, $this->is_html);
-		$this->forward_info      = $this->cutter->getForwardInfo($this->body, $this->is_html);
-		$this->reply             = $this->cutter->cutForwardBlock($this->body, $this->is_html);
+		$this->forward_info = $this->cutter->getForwardInfo($this->body, $this->is_html);
+		error_log(print_r($this->forward_info,1));
 
-		if ($this->forwarded_message && !empty($this->forward_info['from_email'])) {
+		if ($this->forward_info['fwd_message_body'] && $this->forward_info['fwd_from_email']) {
 			$this->is_valid = true;
 		}
 	}
@@ -103,7 +102,7 @@ class ForwardCutter
 
 	/**
 	 * Check if the forwarded message was read correctly and has all required information
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function isValid()
@@ -115,23 +114,23 @@ class ForwardCutter
 
 	/**
 	 * Get the users message
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getForwardedMessage()
 	{
-		return $this->forwarded_message;
+		return $this->forward_info['fwd_message_body'];
 	}
 
-	
+
 	/**
 	 * Get the reply above the forwarded message
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getReply()
 	{
-		return $this->reply;
+		return $this->forward_info['message_body'];
 	}
 
 
@@ -141,7 +140,7 @@ class ForwardCutter
 	public function getUserEmailItem()
 	{
 		$item = new \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress();
-		$item->email = $this->forward_info['from_email'];
+		$item->email = $this->forward_info['fwd_from_email'];
 		$item->name  = $this->getUserName();
 
 		return $item;
@@ -150,24 +149,24 @@ class ForwardCutter
 
 	/**
 	 * Get the user email address from the forwarded message
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getUserEmailAddress()
 	{
-		return $This->forward_info['from_email'];
+		return $This->forward_info['fwd_from_email'];
 	}
 
 
 	/**
 	 * Get the users name from the forwarded message (based on their name in From:)
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getUserName()
 	{
-		if (!empty($this->forward_info['from_name'])) {
-			return $this->forward_info['from_name'];
+		if (!empty($this->forward_info['fwd_from_name'])) {
+			return $this->forward_info['fwd_from_name'];
 		}
 
 		return null;

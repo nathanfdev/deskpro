@@ -575,6 +575,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 	protected function runNewForwardedTicket(Entity\Person $agent)
 	{
+		$this->logMessage('[TicketGatewayProcessor] Forwarded ticket by ' . $agent->getId() . ' ' . $agent->getDisplayContact());
+
 		#------------------------------
 		# Read in email props and create cutter
 		#------------------------------
@@ -582,15 +584,17 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$email_info = array();
 		$email_info['subject'] = $this->reader->getSubject()->subject;
 		if ($this->reader->getBodyText()->getBody()) {
-			$email_info['body'] = $this->reader->getBodyHtml()->getBody();
-			$email_info['body_is_html'] = true;
-		} else {
-			$email_info['body'] = nl2br(htmlspecialchars($this->reader->getBodyText()->getBody(), ENT_QUOTES, 'UTF-8'));
+			$email_info['body'] = $this->reader->getBodyText()->getBodyUtf8();
 			$email_info['body_is_html'] = false;
-		}
+		} else {
+			$email_info['body'] = $this->reader->getBodyHtml()->getBodyUtf8();
+			$email_info['body_is_html'] = false;
 
-		if ($email_info['body_is_html'] && $this->cleaner && $this->cleaner->supportsType('html_email')) {
-			$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
+			if ($email_info['body_is_html'] && $this->cleaner && $this->cleaner->supportsType('html_email')) {
+				$email_info['body'] = $this->cleaner->clean($email_info['body'], 'html_email');
+			}
+
+			$email_info['body'] = strip_tags($email_info['body']);
 		}
 
 		$fwd_cutter = new ForwardCutter($email_info['body'], $email_info['body_is_html'], $this->cutterDef);
@@ -604,6 +608,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$this->event_dispatcher->dispatch(self::EVENT_BEFORE_FWD_NEWTICKET, $ev);
 
 		if ($ev->cancel OR !$fwd_cutter->isValid()) {
+			$this->logMessage('[TicketGatewayProcessor] Invalid forward');
+			$this->error = \Application\DeskPRO\Entity\EmailSource::ERR_INVALID_FWD;
 			return null;
 		}
 
@@ -620,7 +626,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if ($person) {
 			$person_processor->passPerson($person_email_item, $person);
 		} else {
-			$person = $person_processor->createPerson($person_email_item, true);
+			$person = $person_processor->createPerson($person_email_item, false);
 		}
 
 		#------------------------------
@@ -636,11 +642,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$newticket->ticket->subject = $email_info['subject'];
 
 		$body = $fwd_cutter->getForwardedMessage();
-		// Send it through cleaner again to fix any unclosed tags that might've resulted
-		// from the cutting process
-		if ($email_info['body_is_html']) {
-			$body = $this->cleaner->clean($body, 'html_email');
-		}
+		$body = nl2br(htmlspecialchars($body, \ENT_QUOTES, 'UTF-8'));
 
 		$newticket->ticket->message = $body;
 
@@ -656,11 +658,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$agent_reply = $fwd_cutter->getReply();
 		if ($agent_reply) {
 
+			$agent_reply = nl2br(htmlspecialchars($agent_reply, \ENT_QUOTES, 'UTF-8'));
+
 			App::getOrm()->beginTransaction();
 			$agent_message = new \Application\DeskPRO\Entity\TicketMessage();
 			$agent_message->email_reader = $this->reader;
 			$agent_message->person = $agent;
-			$agent_message['message'] = strip_tags($agent_reply);
+			$agent_message['message'] = $agent_reply;
 
 			$ticket->addMessage($agent_message);
 

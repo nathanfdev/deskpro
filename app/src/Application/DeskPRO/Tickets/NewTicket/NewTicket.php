@@ -172,6 +172,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				// We know its unique since it passed the validator run before this
 				// New addresses always require validation
 				if (!$person->findEmailAddress($this->person->email)) {
+
 					// Existing validating address already
 					$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->person->email);
 

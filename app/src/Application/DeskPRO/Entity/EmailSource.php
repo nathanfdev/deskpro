@@ -68,6 +68,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	const ERR_AUTH_MISSING      = 'auth_missing';
 	const ERR_DESKPRO_EMAIL     = 'deskpro_email';
 	const ERR_PERM_INSUFFICIENT = 'perm_insufficient';
+	const ERR_INVALID_FWD       = 'invalid_fwd';
 
 	/**
 	 * @var int

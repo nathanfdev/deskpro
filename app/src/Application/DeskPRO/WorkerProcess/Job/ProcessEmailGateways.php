@@ -51,7 +51,17 @@ class ProcessEmailGateways extends AbstractJob
 		$runner = new \Application\DeskPRO\EmailGateway\Runner();
 		$runner->setLogger($logger);
 
-		if ($this->options->get('run_gateway_id')) {
+		if ($this->options->get('run_source_id')) {
+			$sid = $this->options->get('run_source_id');
+			$source = App::getOrm()->find('DeskPRO:EmailSource', $sid);
+			if (!$source) {
+				$this->getLogger()->log("Source with ID $gid", 'NOTICE');
+				return;
+			}
+
+			$runner->executeSource($source);
+
+		} elseif ($this->options->get('run_gateway_id')) {
 			$gid = $this->options->get('run_gateway_id');
 			$this->getLogger()->log("Running specific gateway: $gid", 'DEBUG');
 
@@ -62,11 +72,11 @@ class ProcessEmailGateways extends AbstractJob
 			}
 
 			$runner->setGateways(array($gateway));
+			$runner->execute();
 
 		} else {
 			$runner->loadGatewaysFromDb(false);
+			$runner->execute();
 		}
-
-		$runner->execute();
 	}
 }

@@ -102,10 +102,113 @@ class Runner
 	 */
 	public function execute()
 	{
-		foreach ($this->gateways as $gateway) {
-			$this->executeGateway($gateway);
+		if ($this->gateways) {
+			foreach ($this->gateways as $gateway) {
+				$this->executeGateway($gateway);
+			}
 		}
 	}
+
+
+	/**
+	 * Executes a single source. Good for re-processing.
+	 *
+	 * @param \Application\DeskPRO\Entity\EmailSource $source
+	 * @throws \Exception
+	 */
+	public function executeSource(EmailSource $source)
+	{
+		$gateway = $source->gateway;
+
+		$this->logger->log("Start processing source {$source['id']}", 'info');
+		$start_time = microtime(true);
+
+		// If its an error we cant process (eg message too big we dont have the whole email),
+		// quit out now
+		if ($source->status == 'error' && $source->error_code == 'message_too_big') {
+			$this->logger->log(sprintf("Source marked as error :: %s", $source->error_code), 'debug');
+			return;
+		}
+
+		$reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+		$reader->setRawSource($source['raw_source']);
+		$reader->setProperty('email_source', $source);
+
+		$to = array();
+		foreach ($reader->getToAddresses() as $x) {
+			$to[] = $x->getEmail();
+		}
+		$to = implode(', ', $to);
+
+		$from = $reader->getFromAddress()->getEmail();
+
+		$subj = substr($reader->getSubject()->getSubject(), 0, 40);
+		$this->logger->log("[Message] To: $to :: From: $from :: Subject: $subj", 'debug');
+
+		App::getOrm()->beginTransaction();
+
+		try {
+
+			$pre_processor = new PreProcessor($gateway, $reader, array('logger' => $this->logger));
+			$pre_processor->run();
+
+			$created_obj = null;
+			if ($pre_processor->isValid()) {
+
+				try {
+					$proc = $gateway->getNewProcessor($reader, array('logger' => $this->logger));
+					$created_obj = $proc->run();
+
+					if ($proc->isValid()) {
+						$source['status'] = 'complete';
+					} else {
+						$source['status'] = 'error';
+						$source['error_code'] = $proc->getErrorCode();
+					}
+
+					$source['source_info'] = $proc->getSourceInfo();
+				} catch (\Exception $e) {
+
+					$e->_dp_sn = Strings::random(8, Strings::CHARS_KEY);
+
+					$errinfo = KernelErrorHandler::getExceptionInfo($e);
+					KernelErrorHandler::logErrorInfo($errinfo);
+
+					$source['status'] = 'error';
+					$source['error_code'] = EmailSource::ERR_SERVER_ERROR;
+					$source['source_info'] = $errinfo;
+				}
+			} else {
+				$source['status'] = 'error';
+				$source['error_code'] = $pre_processor->getErrorCode();
+				$source['source_info'] = $pre_processor->getSourceInfo();
+			}
+
+			if ($created_obj) {
+				$source['object_type'] = strtolower(\Orb\Util\Util::getBaseClassname($created_obj));
+				$source['object_id'] = $created_obj->id;
+			}
+
+			if ($created_obj) {
+				$this->logger->log("Created " . get_class($created_obj) . ": " . $created_obj->getId(), 'debug');
+			}
+		} catch (\Exception $e) {
+			App::getOrm()->rollback();
+
+			App::getOrm()->persist($source);
+			App::getOrm()->flush();
+
+			throw $e;
+		}
+
+		App::getOrm()->persist($source);
+		App::getOrm()->flush();
+		App::getOrm()->commit();
+
+		$end_time = microtime(true);
+		$this->logger->log(sprintf("Finished processing source. Took %.2f seconds.", $end_time - $start_time), 'info');
+	}
+
 
 	/**
 	 * Execute a gateway
@@ -176,7 +279,7 @@ class Runner
 						$e->_dp_sn = Strings::random(8, Strings::CHARS_KEY);
 
 						$errinfo = KernelErrorHandler::getExceptionInfo($e);
-						KernelErrorHandler::logErrorInfo($e);
+						KernelErrorHandler::logErrorInfo($errinfo);
 
 						$source['status'] = 'error';
 						$source['error_code'] = EmailSource::ERR_SERVER_ERROR;
@@ -192,17 +295,22 @@ class Runner
 					$source['object_type'] = strtolower(\Orb\Util\Util::getBaseClassname($created_obj));
 					$source['object_id'] = $created_obj->id;
 				}
-				App::getOrm()->persist($source);
-				App::getOrm()->flush();
 
-				App::getOrm()->commit();
-
-				$this->logger->log("Created " . get_class($created_obj) . ": " . $created_obj->getId(), 'debug');
+				if ($created_obj) {
+					$this->logger->log("Created " . get_class($created_obj) . ": " . $created_obj->getId(), 'debug');
+				}
 			} catch (\Exception $e) {
 				App::getOrm()->rollback();
 
+				App::getOrm()->persist($source);
+				App::getOrm()->flush();
+
 				throw $e;
 			}
+
+			App::getOrm()->persist($source);
+			App::getOrm()->flush();
+			App::getOrm()->commit();
 		}
 
 		$end_time = microtime(true);
