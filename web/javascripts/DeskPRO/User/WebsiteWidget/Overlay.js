@@ -77,7 +77,7 @@ var DpOverlayWidget = new (function() {
 
 	var lastWinHeight = 0;
 	var lastWinWidth = 0;
-	var hasChangedSinceChildAsked = false;
+	var childRequestedHeight = 350;
 
 	var comms = {
 		intervalId: null,
@@ -164,10 +164,11 @@ var DpOverlayWidget = new (function() {
 
 				if (height > winMaxHeight) {
 					height = winMaxHeight;
-				} else if (height < 500) {
-					height = 500;
+				} else if (height < 350) {
+					height = 350;
 				}
 
+				childRequestedHeight = height;
 				setHeight(height);
 
 				break;
@@ -397,7 +398,7 @@ var DpOverlayWidget = new (function() {
 		src += '#' + encodeURIComponent(document.location.href);
 		overlayIframe = $('<iframe id="dp_overlay_iframe" name="dp_overlay_iframe" allowtransparency="true" src="' + src + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>').appendTo(overlayWrapInner);
 
-		setHeight(500);
+		setHeight(350);
 
 		comms.setupReciever(function(messageData) {
 			self.childListen(messageData);
@@ -436,6 +437,18 @@ var DpOverlayWidget = new (function() {
 
 	function updatePosition() {
 		overlayWrapInner.css('top', (winHeight - overlayWrapInner.height()) / 2);
+
+		var winMaxHeight = winHeight - 40;
+		var height = overlayWrapInner.height();
+		if (height > winMaxHeight) {
+			setHeight(winMaxHeight);
+		} else if (height < childRequestedHeight) {
+			if (childRequestedHeight > winMaxHeight) {
+				setHeight(winMaxHeight);
+			} else {
+				setHeight(childRequestedHeight);
+			}
+		}
 	};
 
 
@@ -530,8 +543,6 @@ var DpOverlayWidget = new (function() {
 			}
 
 			if (lastWinWidth != winWidth || lastWinHeight != winHeight) {
-				hasChangedSinceChildAsked = true;
-
 				if (repositionTimeout) {
 					window.clearTimeout(repositionTimeout);
 				}
