@@ -2621,6 +2621,7 @@ body.file-drag-over #dp .dp-drop-file-zone,
 	background:#dce3ff url(../../web/images/user/widget/bg-aside-head.gif) repeat-x;
 }
 #dp .widget-deskpro .btn{
+	position: relative;
 	border:1px solid #c2c3c8;
 	float:left;
 	text-decoration:none;
@@ -2628,16 +2629,23 @@ body.file-drag-over #dp .dp-drop-file-zone,
 	height:34px;
 	cursor:pointer;
 	color:#707680;
-	position:relative;
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	font:bold 12px/15px 'Helvetica Neue',Helvetica,Arial, sans-serif;
 }
 #dp .widget-deskpro .btn i.icon{
-	display:inline-block;
-	margin:0 7px 0 0;
-	vertical-align:middle;
+	position: absolute;
+	left: 7px;
+	top: 12px;
+}
+#dp .widget-deskpro .btn i.icon-mail {
+	top: 12px;
+	left: 8px;
+}
+#dp .widget-deskpro .btn:hover i.icon,
+#dp .widget-deskpro .active.btn i.icon {
+	top: 11px;
 }
 #dp .widget-deskpro .btn i.icon-call{
 	width:17px;
@@ -2661,9 +2669,8 @@ body.file-drag-over #dp .dp-drop-file-zone,
 #dp .widget-deskpro .btn:hover i.icon-chat,
 #dp .widget-deskpro .btn.active i.icon-chat{background:url(../../web/images/user/widget/icon-chat-hover.png) no-repeat;}
 #dp .widget-deskpro a.btn{
-	height:26px;
-	line-height: 16px;
-	padding:8px 10px 0;
+	line-height: 34px;
+	padding:0 10px 0 30px;
 }
 #dp .widget-deskpro .btn:hover,
 #dp .widget-deskpro .btn.active{

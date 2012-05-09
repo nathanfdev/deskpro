@@ -199,6 +199,87 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
 	public function omnisearch($query_text, array $limit_types = null)
 	{
-		return $this->query($query_text, 10, 1, $limit_types, true);
+		$per_page = 25; $page = 1; $top = false;
+
+		// Fulltext matches
+		$r = $this->query($query_text, 10, 1, $limit_types, true);
+		if ($r->count()) {
+			return $r;
+		}
+
+		// Otherwise fallback to like
+		$limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
+		if (!$limit_types) {
+			$limit_types = array('article', 'download', 'feedback', 'news');
+		}
+		$limit_types = "'" . implode('\',\'', $limit_types) . "'";
+
+		$query_words = explode(' ', $query_text);
+		if (!$query_words) {
+			return $r;
+		}
+
+		$params = array();
+		$likes = array();
+		foreach ($query_words as $w) {
+			if (strlen($w) <= 2) {
+				continue;
+			}
+
+			$likes[] = "content_search.content LIKE ?";
+			$params[] = '%' . str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w) . '%';
+		}
+		$where = "
+			content_search.object_type IN ($limit_types)
+			AND (" . implode(' OR ', $likes) . ")
+		";
+
+		$permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
+		$permfilter->setPersonContext($this->person);
+		$perm_join  = $permfilter->getJoin();
+		$perm_where = $permfilter->getWhere();
+		if (!$perm_where) {
+			$perm_where = '1';
+		}
+
+		$count_query = "
+			SELECT COUNT(*)
+			FROM content_search
+			$perm_join
+			WHERE $perm_where AND $where
+			LIMIT $per_page
+		";
+
+		$start = ($page - 1) * $per_page;
+		$select_query = "
+			SELECT content_search.object_type, content_search.object_id
+			FROM content_search
+			$perm_join
+			WHERE $perm_where AND $where
+			ORDER BY content_search.object_id DESC
+			LIMIT $start, $per_page
+		";
+
+		$total = App::getDb()->fetchColumn($count_query, $params);
+
+		$results_raw  = App::getDb()->fetchAll($select_query, $params);
+		$results      = array();
+
+		foreach ($results_raw as $result_raw) {
+			$result = Result::newFromArray(array(
+				'id' => $result_raw['object_id'],
+				'content_type' => $result_raw['object_type'],
+			));
+
+			$results[] = $result;
+		}
+
+		if ($total === null) {
+			$total = count($results);
+		}
+
+		$result_set = new ResultSet($total, $results);
+
+		return $result_set;
 	}
 }

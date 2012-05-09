@@ -176,7 +176,7 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 				self.enableRelatedMode();
 			}
 		});
-		searchCollect.on('keydown', function() {
+		searchCollect.on('keyup', function() {
 			collectToucher.touch();
 		});
 
@@ -260,21 +260,19 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			}
 		});
 
-		this.searchBox.on('keydown', function(ev) {
-
+		this.searchBox.on('keyup', function(ev) {
 			self.setSearchMode('search');
-
-			if (ev.keyCode == 13 && !ev.metaKey) {
-				ev.preventDefault();//dont enter enter key
-				self.updateResults();
-				return;
-			}
-
-			if (!$(this).val().length) {
+			if (!$(this).val().trim().length) {
 				self.clearSearch();
 				self.searchBox.val('').focus();
 			} else {
 				touchCaller.touch();
+			}
+		}).on('keydown', function(ev) {
+			if (ev.keyCode == 13 && !ev.metaKey) {
+				ev.preventDefault();//dont enter enter key
+				self.updateResults();
+				return;
 			}
 		});
 	},
@@ -340,6 +338,9 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 				$('#left_pane').addClass('loading');
 				$('#search_loading').show();
 			}
+		} else {
+			$('#left_pane').addClass('loading');
+			$('#search_loading').show();
 		}
 
 		this.searchAjax = $.ajax({
