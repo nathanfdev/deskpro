@@ -57,12 +57,11 @@ class LanguageController extends Controller
 		$found_by_id = array();
 		$errors = array();
 		$prefixes = array();
-		$by_file = array();
 
 		Language::GetPhraseFinder($this->container)->getPhrasesFromTwigFiles('UserBundle', $found_by_id, $errors, $prefixes);
 		Language::GetPhraseFinder($this->container)->getPhrasesFromTwigFiles('DeskPRO', $found_by_id, $errors, $prefixes);
-		Language::GetPhraseFinder($this->container)->getPhrasesFromPHPFiles('UserBundle', $found_by_id, $errors, $prefixes, $by_file);
 
+		$php_files = Language::GetFileFinder()->getPhpFileList('UserBundle');
 		$files = Language::GetFileFinder()->getLanguageFileList('user');
 
 		sort($files);
@@ -78,7 +77,24 @@ class LanguageController extends Controller
 			foreach($phrases as $id => $phrase) {
 				$parts = explode("\n", $phrase, 2);
 
+				foreach($php_files as $php_file) {
+					$data = file_get_contents($php_file);
+
+					$lines = explode("\n", $data);
+
+					foreach($lines as $i => $line) {
+						if(strpos($line, $id) !== false) {
+							if(!isset($found_by_id[$id])) {
+								$found_by_id[$id] = array();
+							}
+
+							$found_by_id[$id][] = array('filename' => $php_file, 'line' => $i);
+						}
+					}
+				}
+
 				if(count($parts)-1) $phrase = $parts['0'].' ...';
+				$vid = preg_replace('/^user\.[^.]+\./', '', $id);
 
 				if(isset($found_by_id[$id])) {
 					foreach($found_by_id[$id] as $k => $found) {
@@ -87,8 +103,10 @@ class LanguageController extends Controller
 						$found_by_id[$id][$k]['filename'] = preg_replace('/.html.twig$/', '', $found_by_id[$id][$k]['filename']);
 					}
 
-					$vid = preg_replace('/^user\.[^.]+\./', '', $id);
 					$view_struct[$key][$vid] = array('text' => $phrase, 'files' => $found_by_id[$id]);
+				}
+				else {
+					$view_struct[$key][$vid] = array('text' => $phrase, 'files' => array());
 				}
 			}
 		}
