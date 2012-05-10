@@ -246,6 +246,14 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 				$tpl = $this->newticket_email_tpl;
 			}
 
+			$change_info = array(
+				'type' => 'user_notify',
+				'notify_type' => ($ticket->creation_system == Ticket::CREATED_WEB_AGENT) ? 'newticket_agent' : 'newticket',
+				'emailed' => array($ticket->person),
+				'cced' => array()
+			);
+			$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
+
 			$this->tracker->logMessage("[NewTicketAction] Sending email " . $tpl);
 
 			$person       = $ticket->person;

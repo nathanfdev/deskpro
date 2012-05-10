@@ -87,6 +87,7 @@
     'agent.tickets.lc_created'                       => 'created',
     'agent.tickets.lc_new_reply'                     => 'new reply',
     'agent.tickets.lc_new_ticket'                    => 'new ticket',
+    'agent.tickets.lc_new_ticket_agent'              => 'new ticket by agent',
     'agent.tickets.load_more'                        => 'Load More',
     'agent.tickets.manage_participants'              => 'Manage people on this ticket',
     'agent.tickets.mark_as_pending_kb_article'       => 'Mark as pending KB article',
