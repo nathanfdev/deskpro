@@ -9,7 +9,7 @@
 		{% endif %}
 		{% if content %}
 			<tr>
-				<td style="font-size:12px; line-height:125%; padding-bottom:15px;{% if not options.content_noindent %}padding-left: 8px;{% endif %}">
+				<td style="font-size:12px; line-height:145%; padding-bottom:15px;">
 					{{ content }}
 				</td>
 			</tr>
@@ -51,7 +51,7 @@
 	<table width="620" border="0" cellspacing="0" cellpadding="3">
 		<tr><td style="font-size:12px; line-height:125%; color: #6D6D6D;">{{ phrase('user.emails.on_x_at_y_z_wrote', { date: time|date('full'), time: time|date('time'), author: author|e }) }}</td></tr>
 		<tr><td style="font-size:12px; line-height:145%; padding-left: 6px;">
-			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="border-left: 1px solid #00174B; color: #00174B; font-size:13px; line-height:135%; padding-left: 8px;">
+			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="border-left: 1px solid #00174B; color: #00174B; font-size:12px; line-height:135%; padding-left: 8px;">
 				{{ message|raw }}
 			</td></tr></table>
 		</td></tr>
@@ -61,7 +61,7 @@
 
 {% macro render_top_message(message, options) %}
 	<table width="620" border="0" cellspacing="0" cellpadding="3">
-		<tr><td style="font-size:13px; line-height:145%;">
+		<tr><td style="font-size:12px; line-height:145%;">
 			{{ message.message_html|raw }}
 		</td></tr>
 	</table>

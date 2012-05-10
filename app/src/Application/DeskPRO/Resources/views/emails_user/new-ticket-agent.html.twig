@@ -4,12 +4,6 @@
 	{{ phrase('user.emails.re_subject', {'subject':ticket.subject}) }}
 {% endblock %}
 {% block content %}
-	{% set content %}
-		{{ layout.greeting(person) }}
-        {{ phrase('user.emails.agent_created_ticket') }}
-	{% endset %}
-	{{ layout.section('', content) }}
-
 	{{ layout.render_top_message(messages|first) }}
 	{% if messages|length > 1 %}
 		{{ layout.sep() }}
