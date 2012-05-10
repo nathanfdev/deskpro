@@ -150,21 +150,19 @@ class DataController extends AbstractController
 
 	public function logJsErrorAction()
 	{
-		$message    = $this->in->getString('message');
-		$ip_address = $this->request->getClientIp();
-		$user_agent = empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'];
-		$referrer   = empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER'];
-		$hash       = $this->in->getString('hash');
+		// The incoming data is sent from ErrorLogger.js
 
-		$logger = App::createNewLogger('error_log.js', null);
-		$logger->log($message, 'WARN', array(
-			'subject'    => $this->in->getString('subject'),
-			'message'    => $this->in->getString('message'), // full message as the summary string is limited to 1000 chars
-			'hash'       => $hash,
-			'ip_address' => $ip_address,
-			'user_agent' => $user_agent,
-			'referrer'   => $referrer,
-		));
+		$info = array(
+			'message'           => $this->in->getString('message'),
+			'trace'             => $this->in->getString('trace'),
+			'script'            => $this->in->getString('script'),
+			'line'              => $this->in->getString('line'),
+			'client_user_agent' => isset($_SERVER['HTTP_REFERER'])    ? $_SERVER['HTTP_REFERER'] : '',
+			'client_request'    => isset($_REQUEST)                   ? implode(', ', array_keys($_REQUEST)) : '',
+			'client_fragment'   => $this->in->getString('fragment'),
+		);
+
+		\Application\DeskPRO\Service\ErrorReporter::reportJsError($info);
 
 		return $this->createJsonResponse(array(
 			'logged' => true

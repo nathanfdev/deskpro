@@ -48,9 +48,15 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 *
 	 */
 	protected $id = null;
+
+	/**
+	 * A string name to uniquely identify the record
+	 *
+	 * @var string
+	 */
+	protected $name = null;
 
 	/**
 	 * The authcode for the session to verify an id
@@ -199,11 +205,13 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setPrimaryTable(array(
 			'name' => 'tmp_data',
 			'indexes' => array(
+				'name_idx' => array('columns' => array('name')),
 				'date_expire_idx' => array('columns' => array('date_expire'))
 			)
 		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'name', ));
 		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
 		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));

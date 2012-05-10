@@ -39,35 +39,46 @@ class ErrorReporter
 {
 	public static function getBasicData()
 	{
-		try {
-			$db = App::getDb();
-		} catch (\Exception $e) {
-			$db = null;
+		if (class_exists('Application\\DeskPRO\\App')) {
+			try {
+				$db = App::getDb();
+			} catch (\Exception $e) {
+				$db = null;
+			}
+			$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($db);
+			$all_stats = $stats_fetcher->getStats();
+		} else {
+			$all_stats = array();
 		}
-		$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($db);
-		$all_stats = $stats_fetcher->getStats();
 
 		$info = array(
+			'root'              => defined('DP_ROOT')                 ? DP_ROOT : '',
 			'os'                => isset($all_stats['server_os'])     ? $all_stats['server_os'] : '',
 			'web_server'        => isset($all_stats['web_server'])    ? $all_stats['web_server'] : '',
 			'php_version'       => isset($all_stats['php_version'])   ? $all_stats['php_version'] : '',
 			'mysql_version'     => isset($all_stats['mysql_version']) ? $all_stats['mysql_version'] : '',
+			'server_ip'         => isset($_SERVER['SERVER_ADDR'])     ? $_SERVER['SERVER_ADDR'] : '',
 			'client_ip'         => isset($_SERVER['REMOTE_ADDR'])     ? $_SERVER['REMOTE_ADDR'] : '',
 			'client_user_agent' => isset($_SERVER['HTTP_REFERER'])    ? $_SERVER['HTTP_REFERER'] : '',
-			'build' => DP_BUILD_TIME,
+			'client_request'    => isset($_REQUEST)                   ? implode(', ', array_keys($_REQUEST)) : '',
+			'build'             => DP_BUILD_TIME,
 		);
 
-		if (defined('DP_INTERFACE')) {
+		if (defined('DP_REQUEST_URL')) {
+			$url = DP_REQUEST_URL;
+		} elseif (defined('DP_INTERFACE')) {
 			$url = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
-			try {
-				$url = App::getRequest()->getUri();
-			} catch (\Exception $e) {}
+			if (class_exists('Application\\DeskPRO\\App')) {
+				try {
+					$url = App::getRequest()->getUri();
+				} catch (\Exception $e) {}
+			}
 		} else {
 			$url = '';
 		}
 
 		if (php_sapi_name() == 'cli') {
-			$url = implode(' ', $_SERVER['argv']);
+			$url = 'Comamnd: ' . implode(' ', $_SERVER['argv']);
 		}
 
 		$info['url'] = $url;
@@ -76,14 +87,129 @@ class ErrorReporter
 		if ((defined('DP_INTERFACE') && DP_INTERFACE != 'install') || (!isset($GLOBALS['DP_IS_INSTALL']) || !$GLOBALS['DP_IS_INSTALL'])) {
 			try {
 				$info['license_id'] = \DeskPRO\Kernel\License::getLicense()->getLicenseId();
+				$info['is_demo']    = \DeskPRO\Kernel\License::getLicense()->isDemo();
 			} catch (\Exception $e) {
 				$info['license_id'] = '';
+				$info['is_demo'] = false;
 			}
 		}
 
 		return $info;
 	}
 
+
+	/**
+	 * Checks a hash against the db to see if we should avoid sending the error report
+	 * too many times. The system sends at most one report a day.
+	 *
+	 * @static
+	 * @param $hash
+	 */
+	public static function shouldThrottleReport($hash)
+	{
+		if (!class_exists('Application\\DeskPRO\\App')) {
+			return false;
+		}
+
+		try {
+			$db = App::getDb();
+			$exist_date = $db->fetchColumn("
+				SELECT date_expire
+				FROM tmp_data
+				WHERE name = ?
+				LIMIT 1
+			", array('submitreport_' . $hash));
+
+			if ($exist_date) {
+				$date = \DateTime::createFromFormat('Y-m-d H:i:s', $exist_date);
+
+				// If its under 24 hours, then we dont send the report
+				if (time() - $date->getTimestamp() < 86400) {
+					return true;
+				}
+			}
+		} catch (\Exception $e) {};
+
+
+		return false;
+	}
+
+
+	/**
+	 * Submits a PHP error. $errinfo is a standard error info array, see KernelErrorHandler::getExceptionInfo
+	 * and KernelErrorHandler::getErrorInfo.
+	 *
+	 * @static
+	 * @param array $errinfo
+	 */
+	public static function reportPhpError(array $errinfo)
+	{
+		$info = self::getBasicData();
+
+		if ($errinfo['type'] == 'exception') {
+			$copy_keys = array(
+				'type', 'session_name', 'exception_type', 'die', 'pri',
+				'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
+				'display'
+			);
+			$info['local_hash'] = md5('php' . $errinfo['exception_type'] . $errinfo['errfile'] . $errinfo['errline']);
+		} else {
+			$copy_keys = array(
+				'type', 'session_name', 'die', 'pri',
+				'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
+				'display'
+			);
+			$info['local_hash'] = md5('php' . $errinfo['errname'] . $errinfo['errfile'] . $errinfo['errline']);
+		}
+
+		$send_info = array();
+		foreach ($copy_keys as $k) {
+			$send_info[$k] = isset($errinfo[$k]) ? $errinfo[$k] : null;
+		}
+
+		$info['error_type'] = 'php';
+		$info['error_info'] = $send_info;
+
+		if (!self::shouldThrottleReport($info['local_hash'])) {
+			self::sendReport('report-error', $info, $timeout = 6);
+		}
+	}
+
+
+	/**
+	 * Submits a JS error. $errinfo is a standard error info array from \Application\DeskPRO\Controller\DataController::logJsErrorAction
+	 *
+	 * @static
+	 * @param array $errinfo
+	 */
+	public static function reportJsError(array $errinfo)
+	{
+		$info = self::getBasicData();
+
+		if ($errinfo['script'] && $errinfo['line']) {
+			$info['local_hash'] = md5('js' . $errinfo['script'] . $errinfo['line']);
+		} else {
+			$info['local_hash'] = md5('js' . $errinfo['message']);
+		}
+
+		$info['error_type'] = 'js';
+		$info['error_info'] = $errinfo;
+
+		if (!self::shouldThrottleReport($info['local_hash'])) {
+			self::sendReport('report-error', $info, $timeout = 6);
+		}
+	}
+
+
+	/**
+	 * Sends a report to the logging server if local_hash exists in $data, it'll save the hash
+	 * to ensure the report isn't re-sent too many times (once every 24 hours).
+	 *
+	 * @static
+	 * @param $service
+	 * @param array $data
+	 * @param int $timeout
+	 */
 	public static function sendReport($service, array $data = array(), $timeout = 5)
 	{
 		$data = array_merge($data, self::getBasicData());
@@ -94,6 +220,18 @@ class ErrorReporter
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/' . $service . '.json');
 			$client->getRequest()->post()->fromArray($data);
 			$r = $client->send();
+
+			error_log($r->getBody());
+
+			if (isset($data['local_hash'])) {
+				App::getDb()->replace('tmp_data', array(
+					'name'         => 'submitreport_' . $data['local_hash'],
+					'auth'         => substr(md5(microtime()) . mt_rand(1,999), 0, 15),
+					'data'         => serialize(array()),
+					'date_created' => date('Y-m-d H:i:s'),
+					'date_expire'  => date('Y-m-d H:i:s', strtotime('+24 hours')),
+				));
+			}
 		} catch (\Exception $e) {}
 	}
 }

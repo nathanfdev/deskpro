@@ -53,6 +53,9 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 		$this->addOption('reset-cache', null, InputOption::VALUE_NONE, "Deletes the `cache` table");
 		$this->addOption('reset-symfony', null, InputOption::VALUE_NONE, "Deletes the symfony and doctrine cache files");
 		$this->addOption('find-unused-templates', null, InputOption::VALUE_NONE, "Tries to find unused templates");
+		$this->addOption('cause-php-exception', null, InputOption::VALUE_NONE, "Throws a new PHP exception (test for error reporting)");
+		$this->addOption('cause-php-error', null, InputOption::VALUE_NONE, "Causes a PHP error (test for error reporting)");
+		$this->addOption('always', null, InputOption::VALUE_REQUIRED, "With cause php error/exception, a number from 0-100 for line");
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -93,9 +96,14 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 			exec('rm -rf ./prod');
 			exec('rm -rf ./doctrine-proxies');
 			chdir($oldcwd);
-		} else if ($input->getOption('find-unused-templates')) {
-			return $this->executeFindUnusedTemplates($input, $output);
+		} else if ($input->getOption('cause-php-exception')) {
+			return $this->executeCausePhpException($input, $output);
+		} else if ($input->getOption('cause-php-error')) {
+			return $this->executeCausePhpError($input, $output);
 		}
+
+		$output->writeln("Unknown command, try --help");
+		return 1;
 	}
 
 	protected function executeFindUnusedTemplates(InputInterface $input, OutputInterface $output)
@@ -146,5 +154,241 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 				}
 			}
 		}
+
+		return 0;
 	}
+
+	protected function executeCausePhpException(InputInterface $input, OutputInterface $output)
+	{
+		$rand = uniqid('e_', true);
+		$rand_code_code = mt_rand(1,1000);
+
+		// Nasty way of faking line number
+		$line = mt_rand(0,100);
+
+		if ($input->getOption('always')) {
+			$line = $input->getOption('always');
+		}
+
+		switch ($line) {
+			case 0: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 1: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 2: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 3: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 4: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 5: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 6: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 7: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 8: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 9: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 10: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 11: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 12: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 13: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 14: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 15: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 16: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 17: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 18: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 19: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 20: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 21: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 22: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 23: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 24: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 25: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 26: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 27: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 28: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 29: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 30: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 31: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 32: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 33: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 34: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 35: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 36: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 37: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 38: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 39: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 40: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 41: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 42: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 43: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 44: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 45: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 46: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 47: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 48: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 49: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 50: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 51: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 52: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 53: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 54: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 55: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 56: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 57: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 58: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 59: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 60: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 61: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 62: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 63: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 64: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 65: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 66: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 67: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 68: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 69: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 70: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 71: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 72: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 73: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 74: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 75: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 76: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 77: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 78: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 79: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 80: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 81: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 82: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 83: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 84: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 85: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 86: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 87: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 88: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 89: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 90: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 91: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 92: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 93: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 94: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 95: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 96: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 97: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 98: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 99: throw new \Exception("Exception $rand", $rand_code_code); break;
+			case 100: throw new \Exception("Exception $rand", $rand_code_code); break;
+		}
+
+		return 1;
+	}
+
+	protected function executeCausePhpError(InputInterface $input, OutputInterface $output)
+	{
+		$line = mt_rand(0,100);
+
+		if ($input->getOption('always')) {
+			$line = $input->getOption('always');
+		}
+
+		switch ($line) {
+			case 0: echo $not_existing; break;
+			case 1: echo $not_existing; break;
+			case 2: $x = array(); $x .= 'abc'; break;
+			case 3: implode(); break;
+			case 4: not_exist_function(); break;
+			case 5: file_get_contents('not_existing_filename'); break;
+			case 6: $obj = new \stdClass(); $obj->not_existing; break;
+			case 7: $x = array(); echo $x['not_existing']; break;
+			case 8: \NotExistingClass::notExistingMethod(); break;
+			case 9: echo $not_existing; break;
+			case 10: file_get_contents('not_existing_filename'); break;
+			case 11: echo $not_existing; break;
+			case 12: $obj = new \stdClass(); $obj->not_existing; break;
+			case 13: echo $not_existing; break;
+			case 14: $x = array(); echo $x['not_existing']; break;
+			case 15: file_get_contents('not_existing_filename'); break;
+			case 16: \NotExistingClass::notExistingMethod(); break;
+			case 17: echo $not_existing; break;
+			case 18: echo $not_existing; break;
+			case 19: echo $not_existing; break;
+			case 20: file_get_contents('not_existing_filename'); break;
+			case 21: $x = array(); echo $x['not_existing']; break;
+			case 22: $x = array(); $x .= 'abc'; break;
+			case 23: echo $not_existing; break;
+			case 24: \NotExistingClass::notExistingMethod(); break;
+			case 25: file_get_contents('not_existing_filename'); break;
+			case 26: $x = array(); $x .= 'abc'; break;
+			case 27: echo $not_existing; break;
+			case 28: $x = array(); echo $x['not_existing']; break;
+			case 29: echo $not_existing; break;
+			case 30: $obj = new \stdClass(); $obj->not_existing; break;
+			case 31: echo $not_existing; break;
+			case 32: \NotExistingClass::notExistingMethod(); break;
+			case 33: implode(); break;
+			case 34: $x = array(); $x .= 'abc'; break;
+			case 35: $x = array(); echo $x['not_existing']; break;
+			case 36: echo $not_existing; break;
+			case 37: echo $not_existing; break;
+			case 38: $x = array(); $x .= 'abc'; break;
+			case 39: implode(); break;
+			case 40: \NotExistingClass::notExistingMethod(); break;
+			case 41: echo $not_existing; break;
+			case 42: $x = array(); echo $x['not_existing']; break;
+			case 43: echo $not_existing; break;
+			case 44: not_exist_function(); break;
+			case 45: echo $not_existing; break;
+			case 46: $x = array(); $x .= 'abc'; break;
+			case 47: echo $not_existing; break;
+			case 48: \NotExistingClass::notExistingMethod(); break;
+			case 49: $x = array(); echo $x['not_existing']; break;
+			case 50: file_get_contents('not_existing_filename'); break;
+			case 51: implode(); break;
+			case 52: not_exist_function(); break;
+			case 53: echo $not_existing; break;
+			case 54: echo $not_existing; break;
+			case 55: file_get_contents('not_existing_filename'); break;
+			case 56: \NotExistingClass::notExistingMethod(); break;
+			case 57: implode(); break;
+			case 58: $x = array(); $x .= 'abc'; break;
+			case 59: echo $not_existing; break;
+			case 60: $obj = new \stdClass(); $obj->not_existing; break;
+			case 61: echo $not_existing; break;
+			case 62: $x = array(); $x .= 'abc'; break;
+			case 63: echo $not_existing; break;
+			case 64: \NotExistingClass::notExistingMethod(); break;
+			case 65: file_get_contents('not_existing_filename'); break;
+			case 66: $obj = new \stdClass(); $obj->not_existing; break;
+			case 67: echo $not_existing; break;
+			case 68: not_exist_function(); break;
+			case 69: implode(); break;
+			case 70: $x = array(); echo $x['not_existing']; break;
+			case 71: echo $not_existing; break;
+			case 72: echo $not_existing; break;
+			case 73: echo $not_existing; break;
+			case 74: $x = array(); $x .= 'abc'; break;
+			case 75: file_get_contents('not_existing_filename'); break;
+			case 76: not_exist_function(); break;
+			case 77: $x = array(); echo $x['not_existing']; break;
+			case 78: $obj = new \stdClass(); $obj->not_existing; break;
+			case 79: echo $not_existing; break;
+			case 80: \NotExistingClass::notExistingMethod(); break;
+			case 81: echo $not_existing; break;
+			case 82: $x = array(); $x .= 'abc'; break;
+			case 83: echo $not_existing; break;
+			case 84: $x = array(); echo $x['not_existing']; break;
+			case 85: file_get_contents('not_existing_filename'); break;
+			case 86: $x = array(); $x .= 'abc'; break;
+			case 87: implode(); break;
+			case 88: \NotExistingClass::notExistingMethod(); break;
+			case 89: echo $not_existing; break;
+			case 90: echo $not_existing; break;
+			case 91: $x = array(); echo $x['not_existing']; break;
+			case 92: not_exist_function(); break;
+			case 93: implode(); break;
+			case 94: $x = array(); $x .= 'abc'; break;
+			case 95: file_get_contents('not_existing_filename'); break;
+			case 96: \NotExistingClass::notExistingMethod(); break;
+			case 97: echo $not_existing; break;
+			case 98: $x = array(); echo $x['not_existing']; break;
+			case 99: echo $not_existing; break;
+			case 100: file_get_contents('not_existing_filename'); break;
+		}
+		return 1;
+	}
+
 }

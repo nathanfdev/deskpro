@@ -849,11 +849,6 @@ class App
 		$writer->addFilter(new \Orb\Log\Filter\PriorityFilter(\Orb\Log\Logger::INFO));
 		$logger->addWriter($writer);
 
-		if (($log_name == 'error_log' || $log_name == 'error_log.js') && !App::getConfig('no_report_errors')) {
-			$writer = new \Application\DeskPRO\Log\Writer\ReportErrors();
-			$logger->addWriter($writer);
-		}
-
 		return $logger;
 	}
 

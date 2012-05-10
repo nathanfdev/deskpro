@@ -892,6 +892,10 @@ class KernelErrorHandler
 			$logger->log($errinfo['summary'], $errinfo['pri'], $errinfo);
 		} catch (\Exception $e) {}
 
+		if (!class_exists('\Application\DeskPRO\App') || !\Application\DeskPRO\App::getConfig('no_report_errors')) {
+			\Application\DeskPRO\Service\ErrorReporter::reportPhpError($errinfo);
+		}
+
 		try {
 			if (App::getConfig('debug.email_on_error')) {
 				$message = App::getMailer()->createMessage();

@@ -52,4 +52,16 @@ class TmpData extends EntityRepository
 
 		return $tmpdata;
 	}
+
+
+	/**
+	 * Get data by its unique name
+	 *
+	 * @param string $name
+	 * @return TmpDataEntity
+	 */
+	public function getByName($name)
+	{
+		return $this->findOneBy(array('name' => $name));
+	}
 }

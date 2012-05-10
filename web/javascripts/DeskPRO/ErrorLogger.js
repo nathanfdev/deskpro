@@ -10,18 +10,9 @@ var DpErrorLog = {
 		if (window.onerror) {
 			this._origHandler = window.onerror;
 		}
-
-		if (window.console.error) {
-			var oldConsole = window.console.error;
-			window.console.error = function(msg) {
-				var args = Array.prototype.slice.call(arguments);
-				DpErrorLog.logError(jsDump.parse(args) + "\n" + printStackTrace().join("\n"));
-				oldConsole.apply(window.console, args);
-			}
-		}
 	},
 
-	logError: function(message, subject) {
+	logError: function(message, trace, script, line) {
 
 		if (!this.saveUrl) {
 			return;
@@ -32,13 +23,16 @@ var DpErrorLog = {
 			message = message.replace(r, '');
 		}
 
+		var data = {
+			message: message || '',
+			trace:   trace   || '',
+			script:  script  || '',
+			line:    line    || '0'
+		};
+
 		$.ajax({
 			url: this.saveUrl,
-			data: {
-				subject: subject,
-				message: message,
-				hash: (window.location && window.location.hash) ? window.location.hash : ''
-			},
+			data: data,
 			error: function() { },// prevents DeskPRO_Window's global error handler from firing on error
 			type: 'POST'
 		});
@@ -51,7 +45,7 @@ var DpErrorLog = {
 			return false;
 		}
 
-		DpErrorLog.logError(message + ' (' + script + ' on line ' + line + ')', script + ':' + line);
+		DpErrorLog.logError(message + ' (' + script + ' on line ' + line + ')', '', script, line);
 
 		if (this._origHandler) {
 			var args = Array.prototype.slice.call(arguments);
@@ -72,7 +66,7 @@ if (DP_DEBUG) {
 
 		var time = (new Date()).getTime() - begin.getTime();
 		if (time > 150) {
-			DpErrorLog.logError("Event took "+time+"ms: " + "\n" + printStackTrace().join("\n"));
+			DpErrorLog.logError("Event took "+time+"ms", printStackTrace().join("\n"));
 		}
 	}
 }
