@@ -58,7 +58,7 @@ class CoreExtension extends Extension
 		$definition = new Definition('Symfony\\Component\\HttpFoundation\\Response');
 		$container->setDefinition('response', $definition);
 
-		$definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\SysQueryLogger', array(new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE)));
+		$definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\SysQueryLogger');
 		$container->setDefinition('deskpro.dbal.logger.query_logger', $definition);
 
 		$definition = new Definition('Symfony\\Bridge\\Doctrine\\Logger\\DbalLogger', array(new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE)));

@@ -288,20 +288,83 @@ class Connection extends \Doctrine\DBAL\Connection
 	{
 		$this->connect();
 
-        // column names are specified as array keys
-        $cols = array();
-        $placeholders = array();
+		// column names are specified as array keys
+		$cols = array();
+		$placeholders = array();
 
-        foreach ($data as $columnName => $value) {
-            $cols[] = $columnName;
-            $placeholders[] = '?';
-        }
+		foreach ($data as $columnName => $value) {
+			$cols[] = $columnName;
+			$placeholders[] = '?';
+		}
 
-        $query = 'REPLACE INTO ' . $tableName
-               . ' (' . implode(', ', $cols) . ')'
-               . ' VALUES (' . implode(', ', $placeholders) . ')';
+		$query = 'REPLACE INTO ' . $tableName
+			   . ' (' . implode(', ', $cols) . ')'
+			   . ' VALUES (' . implode(', ', $placeholders) . ')';
 
-        return $this->executeUpdate($query, array_values($data), $types);
+		return $this->executeUpdate($query, array_values($data), $types);
+	}
+
+
+	/**
+	 * @param string $query
+	 * @param array $params
+	 * @param array $types
+	 * @param \Doctrine\DBAL\Cache\QueryCacheProfile|null $qcp
+	 */
+	public function executeQuery($query, array $params = array(), $types = array(), \Doctrine\DBAL\Cache\QueryCacheProfile $qcp = null)
+	{
+		try {
+			return parent::executeQuery($query, $params, $types, $qcp);
+		} catch (\PDOException $e) {
+			$e->_dp_query = $query;
+			$e->_dp_query_params = $params;
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * @param string $query
+	 * @param array $params
+	 * @param array $types
+	 */
+	public function executeUpdate($query, array $params = array(), array $types = array())
+	{
+		try {
+			return parent::executeUpdate($query, $params, $types);
+		} catch (\PDOException $e) {
+			$e->_dp_query = $query;
+			$e->_dp_query_params = $params;
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * @param string $statement
+	 * @return int
+	 */
+	public function exec($statement)
+	{
+		try {
+			return parent::exec($statement);
+		} catch (\PDOException $e) {
+			$e->_dp_query = $query;
+			$e->_dp_query_params = array();
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * @param string $statement
+	 * @return Statement
+	 */
+	public function prepare($statement)
+	{
+		$this->connect();
+
+		return new Statement($statement, $this);
 	}
 
 

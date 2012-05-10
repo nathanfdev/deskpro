@@ -971,6 +971,10 @@ class KernelErrorHandler
 		$trace = self::formatBacktrace($backtrace);
 		$trace = self::stripPathPrefix($trace);
 
+		if (isset($exception->_dp_query)) {
+			$errstr .= ' -- Query: ' . $exception->_dp_query;
+		}
+
 		$type = get_class($exception);
 		$summary = "[EXCEPTION] $type:$errno $errstr ($errfile:$errline)";
 
