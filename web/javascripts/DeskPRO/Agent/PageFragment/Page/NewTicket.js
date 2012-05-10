@@ -209,7 +209,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var userfields = this.getEl('user_choice');
 		var rechooseBtn = this.getEl('switch_user');
 
-		rechooseBtn.on('click', function() {
+		rechooseBtn.on('click', function(ev) {
+			ev.preventDefault(); // default would be submitting the ticket form
 			showUserChoice();
 		});
 
