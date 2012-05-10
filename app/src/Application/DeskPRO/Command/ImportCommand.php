@@ -238,7 +238,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		#----------------------------------------
 
 		if ($mode == 'run') {
-			$install_token_file = $this->container->getLogDir() . '/install_token.dat';
+			$install_token_file = $this->getContainer()->getLogDir() . '/install_token.dat';
 			if (file_exists($install_token_file)) {
 				$GLOBALS['dp_install_token'] = @file_get_contents($install_token_file);
 			} else {
@@ -802,9 +802,11 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$logger->log(sprintf("Importer complete. Took %0.3f seconds.", $end_time-$start_time), 'INFO');
 
 			$total_time = sprintf("%.03f", microtime(true) - $this->cmd_start_time);
-			$this->total_time = $total_time;
+			$GLOBALS['import_total_time'] = $total_time;
 
 			$logger->log("All Done ($total_time seconds)", 'INFO');
+
+			\Application\DeskPRO\Command\ImportCommand::sendLogFile(false);
 
 			return 0;
 		}
@@ -871,14 +873,14 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		$data = array(
 			'source_type' => 'import.dp3',
-			'total_time' => $this->total_time ? $this->total_time : 'na',
+			'total_time' => isset($GLOBALS['import_total_time']) ? $GLOBALS['import_total_time'] : 'na',
 			'log' => @file_get_contents($import_log_path),
 			'errinfo' => $errinfo ? $errinfo : 0,
 			'install_token' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : ''
 		);
 
 		try {
-			$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($db);
+			$stats_fetcher = new \Application\InstallBundle\Data\ServerStats(App::getDb());
 			$data = array_merge($data, $stats_fetcher->getStats());
 		} catch (\Exception $e) {}
 

@@ -48,6 +48,6 @@ class CleanupDoneStep extends AbstractDeskpro3Step
 
 	public function run($page = 1)
 	{
-		\Application\DeskPRO\Command\ImportCommand::sendLogFile(false);
+
 	}
 }

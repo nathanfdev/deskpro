@@ -1330,6 +1330,52 @@ class Strings
 
 
 	/**
+	 * Strips out invalid UTF-8 characters from strings.
+	 *
+	 * @param $string
+	 * @return string
+	 */
+	public static function utf8_bad_strip($string)
+	{
+		if (function_exists('iconv')) {
+			return @iconv('UTF-8', 'UTF-8//IGNORE', $string);
+		} elseif (function_exists('mb_convert_encoding')) {
+			return @mb_convert_encoding($string, 'UTF-8', 'UTF-8');
+		} else {
+
+			$time = time();
+
+			// see app/vendor/php-utf8/utils/bad.php
+			$UTF8_BAD =
+				'([\x00-\x7F]'.                          # ASCII (including control chars)
+				'|[\xC2-\xDF][\x80-\xBF]'.               # non-overlong 2-byte
+				'|\xE0[\xA0-\xBF][\x80-\xBF]'.           # excluding overlongs
+				'|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}'.    # straight 3-byte
+				'|\xED[\x80-\x9F][\x80-\xBF]'.           # excluding surrogates
+				'|\xF0[\x90-\xBF][\x80-\xBF]{2}'.        # planes 1-3
+				'|[\xF1-\xF3][\x80-\xBF]{3}'.            # planes 4-15
+				'|\xF4[\x80-\x8F][\x80-\xBF]{2}'.        # plane 16
+				'|(.{1}))';                              # invalid byte
+			ob_start();
+			while (preg_match('/'.$UTF8_BAD.'/S', $string, $matches)) {
+				if ( !isset($matches[2])) {
+					echo $matches[0];
+				}
+				$string = substr($str,strlen($matches[0]));
+
+				// Going too long, the string is clearly corrupt!
+				if (time() - $time > 6) {
+					return '';
+				}
+			}
+			$result = ob_get_contents();
+			ob_end_clean();
+			return $result;
+		}
+	}
+
+
+	/**
 	 * Set the path to the php-utf8 library functions, and thereby enable
 	 * dynamic calling of utf8_xxx calls on this string class.
 	 *
