@@ -1,5 +1,5 @@
 <?php return array(
-    'user.knowledgebase.browse_our_x_articles' => 'Our knowledgebase contains 1 question written by our support team to help you answer your question|Our knowledgebase contains 423 questions written by our support team to help you answer your question',
+    'user.knowledgebase.browse_our_x_articles' => 'Our knowledgebase contains 1 question written by our support team to help you answer your question|Our knowledgebase contains {{count}} questions written by our support team to help you answer your question',
     'user.knowledgebase.no_articles'           => 'There are no articles.',
     'user.knowledgebase.no_popular'            => 'There are no popular articles.',
     'user.knowledgebase.number_of_articles'    => '{{count}} article|{{count}} articles',
