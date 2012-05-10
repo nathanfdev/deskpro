@@ -162,10 +162,11 @@ var DpOverlayWidget = new (function() {
 				var height = messageData[0];
 				var winMaxHeight = winHeight - 40;
 
+				if (height < 600) {
+					height = 600;
+				}
 				if (height > winMaxHeight) {
 					height = winMaxHeight;
-				} else if (height < 350) {
-					height = 350;
 				}
 
 				childRequestedHeight = messageData[0];

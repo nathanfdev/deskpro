@@ -168,6 +168,11 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 
 		$('#cancel_related').on('click', function() { self.disableRelatedMode(); });
 
+		$('input, textarea, select').on('change keyup', function() {
+			$(this).parent().removeClass('error');
+			$(this).closest('.fields-row').removeClass('error');
+		});
+
 		var searchCollect = $('.search-collect');
 		this.searchCollect = searchCollect;
 		var collectToucher = new DeskPRO.TouchCaller({
@@ -188,7 +193,7 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 
 		window.setInterval(function() {
 			currentHeight = $('div.tab.active').height();
-			currentHeight += 20 + 70 + 74 + 11 + 11 + 5;
+			currentHeight += 20 + 70 + 74 + 11 + 11 + 5 + 21;
 
 			if (lastHeight != currentHeight) {
 				self.tellParent('requestHeight', [currentHeight]);
