@@ -464,7 +464,9 @@ var DpChatWidget = new (function() {
 
 			case 'destroy':
 				self.close();
-				chatIframeHolder.remove();
+				if (chatIframeHolder) {
+					chatIframeHolder.remove();
+				}
 				chatIframeHolder = null;
 				chatIframeWinTab = null;
 				chatIframe = null;

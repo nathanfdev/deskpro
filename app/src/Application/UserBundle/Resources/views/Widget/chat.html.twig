@@ -284,22 +284,24 @@
 	</div>
 </script>
 
-<script class="dptpl-attach-upload" type="text/x-jquery-tmpl">
-	<li class="uploading">{{ phrase('user.general.uploading') }}: ${name} <span class="cancel">{{ phrase('user.general.remove') }}</span></li>
+<script class="dptpl-attach-upload" type="text/x-tmpl">
+	{{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
+		<li class="uploading">{{ '{%=file.name%}' }} ({{ phrase('user.general.uploading') }})</li>
+	{{ '{% } %}' }}
 </script>
-<script class="dptpl-attach-download" type="text/x-jquery-tmpl">
-	{{ '{{if error}} '}}
-		<li class="error">
-			${error}
-		</li>
-	{{ '{{else}} '}}
-		<li class="uploaded">
-			<input type="hidden" name="{{ blob_field_name }}" value="${blob_auth_id}" />
-			<a href="${download_url}" target="_blank">${filename}</a>
-			<span class="size">${filesize_readable}</span>
-			<span class="remove">{{ phrase('user.general.remove') }}</span>
-		</li>
-	{{ '{{/if}} '}}
+<script class="dptpl-attach-download" type="text/x-tmpl">
+	{{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
+	{{ '{% if (file.error) { %}'}}
+	<li class="error">
+		{{ '{%=file.error%}' }}
+	</li>
+	{{ '{% } else { %}'}}
+	<li>
+		<input type="hidden" name="{{ blob_field_name|default('attach_ids[]') }}" value="{{ '{%=file.blob_auth_id%}' }}" />
+		<label><a href="{{ '{%=file.download_url%}' }}" target="_blank">{{ '{%=file.filename%}' }}</a><span>{{ '{%=file.filesize_readable%}' }}</span></label>
+	</li>
+	{{ '{% } %}' }}
+	{{ '{% } %}' }}
 </script>
 
 </body>

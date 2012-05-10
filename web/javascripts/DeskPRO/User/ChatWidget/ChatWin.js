@@ -188,8 +188,8 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			start: function() {
 				$('document').find('li.attach-error').remove();
 			},
-			uploadTemplate: $('.dptpl-attach-upload'),
-			downloadTemplate: $('.dptpl-attach-download')
+			uploadTemplateId: $('.dptpl-attach-upload').attr('id', Orb.getUniqueId('up')).attr('id'),
+			downloadTemplateId: $('.dptpl-attach-download').attr('id', Orb.getUniqueId('down')).attr('id')
 		});
 
 		$('body').bind('fileuploaddone', function(ev, data) {

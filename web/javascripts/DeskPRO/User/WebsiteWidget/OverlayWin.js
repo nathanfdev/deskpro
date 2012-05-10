@@ -12,6 +12,9 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			pollingInterval: 130,
 			recieveCallback: null,
 			send: function(message, targetUrl, target) {
+				if (!target || !targetUrl) {
+					return;
+				}
 				if (this.hasPostMessage) {
 					target.postMessage(message, targetUrl.replace( /([^:]+:\/\/[^\/]+).*/, '$1'))
 				} else {

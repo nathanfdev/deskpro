@@ -40,8 +40,8 @@
 		<div class="dp-new-feedback" >
 			<div class="dp-input-prepend">
 				<table cellspacing="0" cellpadding="0" width="100%"><tr>
-					<td width="10" class="dp-msg">
-						<span>{{ phrase('user.feedback.i_have_a') }}</span>
+					<td width="50" class="dp-msg">
+						<span style="white-space: nowrap;">{{ phrase('user.feedback.i_have_a') }}</span>
 					</td>
 					<td width="10" class="dp-cat dp-cat2">
 						<div class="dp-form-row-category_id with-sub-options feedbackCat_id_wrapper" data-field-validators="DeskPRO.Form.TwoLevelSelectValidator">
@@ -96,7 +96,7 @@
 			</div></td></tr></table>
 		</div>
 		<div class="btn-holder clearfix">
-			<button class="btn-activity dp-show-not-loading">{{ phrase('user.general.register_send_message') }}</button>
+			<button type="submit" class="btn-activity dp-show-not-loading">{{ phrase('user.general.register_send_message') }}</button>
 			<i class="spinner-flat dp-show-is-loading"></i>
 		</div>
 	</form>
