@@ -41,6 +41,11 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 class DpArrayType extends ArrayType
 {
+	public function getSQLDeclaration(array $fieldDeclaration, \Doctrine\DBAL\Platforms\AbstractPlatform $platform)
+    {
+        return 'LONGBLOB';
+    }
+
 	public function convertToPHPValue($value, \Doctrine\DBAL\Platforms\AbstractPlatform $platform)
 	{
 		try {
