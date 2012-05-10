@@ -260,8 +260,6 @@ class ErrorReporter
 			$client->getRequest()->post()->fromArray($data);
 			$r = $client->send();
 
-			error_log($r->getBody());
-
 			if (isset($data['local_hash'])) {
 				App::getDb()->replace('tmp_data', array(
 					'name'         => 'submitreport_' . $data['local_hash'],

@@ -462,6 +462,9 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 						return 26;
 					}
 				}
+
+				$old_helpdesk_url = $importer->getOldDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('helpdesk_url'));
+				$logger->log('dp_old_url(' . $old_helpdesk_url.')', \Orb\Log\Logger::DEBUG);
 			}
 		}
 
@@ -868,7 +871,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 		$data = array(
 			'source_type' => 'import.dp3',
-			'total_time' => $this->total_time ? $this->total_time : '0',
+			'total_time' => $this->total_time ? $this->total_time : 'na',
 			'log' => @file_get_contents($import_log_path),
 			'errinfo' => $errinfo ? $errinfo : 0,
 			'install_token' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : ''
