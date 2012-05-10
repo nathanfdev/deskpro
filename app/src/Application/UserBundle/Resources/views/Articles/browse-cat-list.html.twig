@@ -21,7 +21,7 @@
 				{% if this_cat_counts %}
 					<div class="dp-view-more">
 						<a href="{{ path('user_articles', {'slug': cat.url_slug}) }}">
-							{{ phrase('user.articles.view_all_x_articles', {'count': '<span class="dp-badge dp-badge-info dp-small">' ~ this_cat_counts ~ '</span>'}) }} &rarr;
+							{{ phrase('user.knowledgebase.view_all_x_articles', {'count': '<span class="dp-badge dp-badge-info dp-small">' ~ this_cat_counts ~ '</span>'}) }} &rarr;
 						</a>
 					</div>
 				{% endif %}

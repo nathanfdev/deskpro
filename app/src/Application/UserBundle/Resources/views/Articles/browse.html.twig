@@ -25,7 +25,7 @@
 	<section class="dp-portal-section">
 		<header>
 			{% if category %}
-				<h1>{{ phrase('user.articles.there_are_x_subcats', {'count': category_children|length}) }}</h1>
+				<h1>{{ phrase('user.knowledgebase.there_are_x_subcats', {'count': category_children|length}) }}</h1>
 			{% else %}
 				<h1>{{ phrase('user.general.knowledgebase') }}</h1>
 			{% endif %}
@@ -46,7 +46,7 @@
 		{% if category %}
 			<header>
 				{% if category %}
-					<h1>{{ phrase('user.articles.there_are_x_articles', {'count': articles|length}) }}</h1>
+					<h1>{{ phrase('user.knowledgebase.there_are_x_articles', {'count': articles|length}) }}</h1>
 				{% endif %}
 			</header>
 		{% endif %}
