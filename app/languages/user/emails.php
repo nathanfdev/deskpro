@@ -1,8 +1,6 @@
 <?php return array(
     'user.emails.added_to_ticket'                 => 'You have been included in a ticket started by {{name}}.',
-    'user.emails.agent_created_ticket'            => 'An agent has created a ticket for you.',
     'user.emails.agent_reset_password'            => 'An agent has reset your account password. You can log in with these credentials',
-    'user.emails.agent_responded'                 => 'An agent has responded to your message.',
     'user.emails.comment_appreciated'             => 'Your comment was used to improve the page.',
     'user.emails.comment_published'               => 'Your comment has been published.',
     'user.emails.feedback_closed'                 => 'Your submitted feedback "{{title}}" was closed: {{status}}',

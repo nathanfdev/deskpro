@@ -11,7 +11,6 @@
     'user.tickets.resolve_my_ticket_btn'             => 'Resolve my ticket',
     'user.tickets.resolve_my_ticket_send_feedback_btn' => 'Resolve my ticket and send feedback',
     'user.tickets.resolve_ticket_explain'              => 'Are you sure you want to resolve your ticket? Once your ticket is resolved, our agents will no longer respond.',
-    'user.tickets.resolved_thanks'                     => 'Your ticket has been resolved',
     'user.tickets.contact_us_explain'                => 'Just fill in this form to create your ticket and our agents will reply to you via email as soon as they can.',
     'user.tickets.email_explain'                     => 'This is where our agent replies will be sent',
     'user.tickets.feedback_close_btn'                => 'I have got what I needed, close my ticket now',
