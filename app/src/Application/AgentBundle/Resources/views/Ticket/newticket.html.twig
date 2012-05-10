@@ -118,8 +118,11 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 		<div class="col">
 			<h4>{{ phrase('agent.general.assignment') }}</h4>
-			<input type="hidden" name="newticket[agent_id]" value="0" id="{{baseId}}_agent_id" />
-			<input type="hidden" name="newticket[agent_team_id]" value="0" id="{{baseId}}_agent_team_id" />
+			{% if ticket.agent.id == app.user.id or not ticket.agent %}{% set agent_id = app.user.id %}
+			{% else %}{% set agent_id = ticket.agent %}{% endif %}
+
+			<input type="hidden" name="newticket[agent_id]" value="{{ agent_id }}" id="{{baseId}}_agent_id" />
+			<input type="hidden" name="newticket[agent_team_id]" value="{{ ticket.agent_team.id }}" id="{{baseId}}_agent_team_id" />
 			<span id="{{baseId}}_assign_btn" class="menu-trigger">
 				<span id="{{baseId}}_agent_label">{{ phrase('agent.general.me') }}</span>
 				{% if app.getSetting('core.use_agent_team') %}{{ phrase('agent.general.and') }} <span id="{{baseId}}_agent_team_label">{{ phrase('agent.general.category') }}</span>{% endif %}
