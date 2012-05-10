@@ -108,6 +108,7 @@ class LicenseController extends AbstractController
 				$client->setMethod(\Zend\Http\Request::METHOD_POST);
 				$client->setUri(DP_MA_SERVER . '/api/license/request-demo.json');
 				$client->getRequest()->post()->set('install_key', $this->settings->get('core.install_key'));
+				$client->getRequest()->post()->set('install_token', $this->settings->get('core.install_token'));
 				$client->getRequest()->post()->set('email_address', $email_address);
 				$client->getRequest()->post()->set('url', $this->request->getUriForPath('/'));
 
@@ -230,6 +231,7 @@ class LicenseController extends AbstractController
 			$client->setUri(DP_MA_SERVER . '/api/license/confirm-demo.json');
 			$client->getRequest()->post()->set('license_code', $license_code);
 			$client->getRequest()->post()->set('install_key', $this->settings->get('core.install_key'));
+			$client->getRequest()->post()->set('install_token', $this->settings->get('core.install_token'));
 
 			$failed = false;
 			try {
@@ -305,6 +307,7 @@ class LicenseController extends AbstractController
 
 		$install_data = array();
 		$install_data['install_key'] = $this->settings->get('core.install_key');
+		$install_data['install_token'] = $this->settings->get('core.install_token');
 		$install_data['email_address'] = $email_address;
 		$install_data['url'] = $this->request->getUriForPath('/');
 		$install_data = json_encode($install_data);

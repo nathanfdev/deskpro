@@ -972,7 +972,7 @@ class KernelErrorHandler
 		$trace = self::stripPathPrefix($trace);
 
 		if (isset($exception->_dp_query)) {
-			$errstr .= ' -- Query: ' . $exception->_dp_query;
+			$errstr .= ' -- Query: ' . substr($exception->_dp_query, 0, 2000);
 		}
 
 		$type = get_class($exception);

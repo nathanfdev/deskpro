@@ -59,7 +59,8 @@ class ErrorReporter
 			'mysql_version'     => isset($all_stats['mysql_version']) ? $all_stats['mysql_version'] : '',
 			'server_ip'         => isset($_SERVER['SERVER_ADDR'])     ? $_SERVER['SERVER_ADDR'] : '',
 			'client_ip'         => isset($_SERVER['REMOTE_ADDR'])     ? $_SERVER['REMOTE_ADDR'] : '',
-			'client_user_agent' => isset($_SERVER['HTTP_REFERER'])    ? $_SERVER['HTTP_REFERER'] : '',
+			'client_referrer'   => isset($_SERVER['HTTP_REFERER'])    ? $_SERVER['HTTP_REFERER'] : '',
+			'client_user_Agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
 			'client_request'    => isset($_REQUEST)                   ? implode(', ', array_keys($_REQUEST)) : '',
 			'build'             => DP_BUILD_TIME,
 		);
@@ -171,7 +172,7 @@ class ErrorReporter
 		$info['error_info'] = $send_info;
 
 		if (!self::shouldThrottleReport($info['local_hash'])) {
-			self::sendReport('report-error', $info, $timeout = 6);
+			self::sendReport('report-error', $info, 6);
 		}
 	}
 
@@ -184,7 +185,7 @@ class ErrorReporter
 	 */
 	public static function reportJsError(array $errinfo)
 	{
-		$info = self::getBasicData();
+		$info = array();
 
 		if ($errinfo['script'] && $errinfo['line']) {
 			$info['local_hash'] = md5('js' . $errinfo['script'] . $errinfo['line']);
@@ -198,6 +199,44 @@ class ErrorReporter
 		if (!self::shouldThrottleReport($info['local_hash'])) {
 			self::sendReport('report-error', $info, $timeout = 6);
 		}
+	}
+
+
+	public static function sendInstallReport($data)
+	{
+		$info = $data;
+
+		if (isset($info['errinfo'])) {
+
+			$errinfo = $info['errinfo'];
+			unset($info['errinfo']);
+
+			if ($errinfo['type'] == 'exception') {
+				$copy_keys = array(
+					'type', 'session_name', 'exception_type', 'die', 'pri',
+					'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
+					'display'
+				);
+				$info['local_hash'] = md5('php' . $errinfo['exception_type'] . $errinfo['errfile'] . $errinfo['errline']);
+			} else {
+				$copy_keys = array(
+					'type', 'session_name', 'die', 'pri',
+					'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
+					'display'
+				);
+				$info['local_hash'] = md5('php' . $errinfo['errname'] . $errinfo['errfile'] . $errinfo['errline']);
+			}
+
+			$send_info = array();
+			foreach ($copy_keys as $k) {
+				$send_info[$k] = isset($errinfo[$k]) ? $errinfo[$k] : null;
+			}
+
+			$info['error_type'] = 'php';
+			$info['error_info'] = $send_info;
+		}
+
+		self::sendReport('report-install', $info, 12);
 	}
 
 
@@ -220,6 +259,8 @@ class ErrorReporter
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/' . $service . '.json');
 			$client->getRequest()->post()->fromArray($data);
 			$r = $client->send();
+
+			error_log($r->getBody());
 
 			if (isset($data['local_hash'])) {
 				App::getDb()->replace('tmp_data', array(

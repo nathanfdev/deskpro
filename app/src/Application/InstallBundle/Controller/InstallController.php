@@ -36,6 +36,7 @@ namespace Application\InstallBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Orb\Util\Strings;
 
@@ -44,6 +45,23 @@ use Orb\Util\Strings;
  */
 class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Controller
 {
+	public function setContainer(ContainerInterface $container = null)
+	{
+		parent::setContainer($container);
+
+		$install_token_file = $this->container->getLogDir() . '/install_token.dat';
+		if (file_exists($install_token_file)) {
+			$GLOBALS['dp_install_token'] = @file_get_contents($install_token_file);
+		} elseif (isset($_COOKIE['dp_install_token'])) {
+			$GLOBALS['dp_install_token'] = $_COOKIE['dp_install_token'];
+		} else {
+			$GLOBALS['dp_install_token'] = Strings::random(40, Strings::CHARS_ALPHANUM_IU) . time();
+		}
+
+		@file_put_contents($install_token_file, $GLOBALS['dp_install_token']);
+		setcookie('dp_install_token', $GLOBALS['dp_install_token'], strtotime('+4 weeks'));
+	}
+
 	/**
 	 * @return \Orb\Log\Logger
 	 */
@@ -157,15 +175,11 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$is_default_logs_dir = false;
 		}
 
-		if (!isset($_POST['stats_opt_out'])) {
-			$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($this->getDb());
-			$stats = $stats_fetcher->getStats();
-			$stats['server_check_errors'] = $server_check->getErrors();
-
-			$data = array('stats' => $stats);
-			$data['is_error'] = $server_check->hasFatalErrors();
-			$data['source_type'] = 'install.web';
-			\Application\DeskPRO\Service\ErrorReporter::sendReport('report-stats', $data, 10);
+		if (isset($_POST['stats_opt_out']) && $_POST['stats_opt_out']) {
+			setcookie('dp_install_stats_opt_out', 1);
+		} elseif ($server_check->hasFatalErrors()) {
+			$e = new \Application\InstallBundle\Install\ServerCheckExpcetion("Server requirements failed: " . implode(', ', array_keys($server_check->getFatalErrors())));
+			$this->sendInstallReport($e);
 		}
 
 		$ini_path = '';
@@ -574,7 +588,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
 			$this->getLogger()->log("[InstallData] Exception Trace: {$einfo['trace']}", 'debug');
 
-			$this->sendInstallReport(true);
+			$this->sendInstallReport($e);
 
 			$this->getOrm()->getConnection()->rollback();
 			throw $e;
@@ -631,6 +645,10 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 				'value' => Strings::random(20, Strings::CHARS_KEY),
 			));
 			$db->replace('settings', array(
+				'name' => 'core.install_token',
+				'value' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
+			));
+			$db->replace('settings', array(
 				'name' => 'core.deskpro_build',
 				'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
 			));
@@ -662,27 +680,48 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 		$base_url = $this->get('request')->getBaseUrl();
 
-		$this->sendInstallReport(false);
+		$this->sendInstallReport();
 
 		return $this->redirect($base_url . '/admin/');
 	}
 
-	public function sendInstallReportErrorAction()
-	{
-		$this->sendInstallReport(true);
-		exit(1);
-	}
-
 	###############################################################################
 
-	public function sendInstallReport($error = false)
+	public function sendInstallReportError()
 	{
+		$type = $this->getString('type');
+
+		$e = new \Exception("Install error: $type");
+		$this->sendInstallReport($e);
+
+		$res = new \Symfony\Component\HttpFoundation\Response('');
+		return $res;
+	}
+
+	public function sendInstallReport($exception = null)
+	{
+		if ($exception) {
+			$errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($exception);
+		} else {
+			$errinfo = 0;
+		}
+
 		$data = array(
+			'source_type' => 'install.web',
 			'log' => @file_get_contents($this->container->getLogDir() . '/install.log'),
-			'is_error' => $error ? 0 : 1,
-			'source_type' => 'install.web'
+			'errinfo' => $errinfo,
+			'install_token' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
+			'nostats' => isset($_COOKIE['stats_opt_out']) && $_COOKIE['stats_opt_out'] ? 1 : 0
 		);
-		\Application\DeskPRO\Service\ErrorReporter::sendReport('report-install', $data, 10);
+
+		if (!isset($_COOKIE['stats_opt_out']) || !$_COOKIE['stats_opt_out']) {
+			try {
+				$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($this->getDb());
+				$data = array_merge($data, $stats_fetcher->getStats());
+			} catch (\Exception $e) {}
+		}
+
+		\Application\DeskPRO\Service\ErrorReporter::sendInstallReport($data);
 	}
 
 	/**

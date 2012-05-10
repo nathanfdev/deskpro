@@ -45,6 +45,7 @@ use Application\DeskPRO\Log\Logger;
 
 use Orb\Util\Util;
 use Orb\Util\Numbers;
+use Orb\Util\Strings;
 
 class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
@@ -57,6 +58,8 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 	 * @var float
 	 */
 	protected $cmd_start_time;
+
+	protected $total_time;
 
 	protected function configure()
 	{
@@ -133,7 +136,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			}
 			if ($count++ > 3) return;
 
-			\Application\DeskPRO\Command\ImportCommand::sendLogFile(true);
+			\Application\DeskPRO\Command\ImportCommand::sendLogFile($log_item['errinfo']);
 		});
 		$logger->addWriter($wr);
 
@@ -234,6 +237,17 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		# Check requirements
 		#----------------------------------------
 
+		if ($mode == 'run') {
+			$install_token_file = $this->container->getLogDir() . '/install_token.dat';
+			if (file_exists($install_token_file)) {
+				$GLOBALS['dp_install_token'] = @file_get_contents($install_token_file);
+			} else {
+				$GLOBALS['dp_install_token'] = Strings::random(40, Strings::CHARS_ALPHANUM_IU) . time();
+			}
+
+			@file_put_contents($install_token_file, $GLOBALS['dp_install_token']);
+		}
+
 		if ($mode == 'run' && !$start_step) {
 
 			$new_download = null;
@@ -290,12 +304,6 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				}
 			}
 
-			$stats['server_check_errors'] = $server_check->getErrors();
-			$data = array('stats' => $stats);
-			$data['is_error'] = $server_check->hasFatalErrors();
-			$data['source_type'] = 'import.dp3';
-			\Application\DeskPRO\Service\ErrorReporter::sendReport('report-stats', $data, 10);
-
 			if ($server_check->hasFatalErrors()) {
 				$str = "There are problems with your server setup that prevents DeskPRO v4 from installing:\n";
 				foreach ($server_check->getFatalErrors() as $err) {
@@ -303,6 +311,10 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				}
 				echo "Fix these problems and try again.\n";
 				$logger->log($str, Logger::ERR);
+
+				$e = new \Application\InstallBundle\Install\ServerCheckExpcetion("Server requirements failed: " . implode(', ', array_keys($server_check->getFatalErrors())));
+				self::sendLogFile($e);
+
 				return 1;
 			}
 		}
@@ -604,6 +616,10 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				'name' => 'core.install_key',
 				'value' => \Orb\Util\Strings::random(20, \Orb\Util\Strings::CHARS_KEY),
 			));
+			$db->replace('settings', array(
+				'name' => 'core.install_token',
+				'value' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
+			));
 
 			echo "\n";
 			echo "Proceeding with the import.";
@@ -782,24 +798,8 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$end_time = microtime(true);
 			$logger->log(sprintf("Importer complete. Took %0.3f seconds.", $end_time-$start_time), 'INFO');
 
-			// Submit stats
-			try {
-				$log_file = @file_get_contents($this->getContainer()->getLogDir() . '/import.log');
-				$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($this->getContainer()->getDb());
-				$stats = $stats_fetcher->getStats();
-				$stats['import_log'] = $log_file;
-
-				$client = new \Zend\Http\Client(null, array('timeout' => 10, 'strictredirects' => true));
-				$client->setMethod(\Zend\Http\Request::METHOD_POST);
-				$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/report-stats.json');
-				$client->getRequest()->post()->set("from_import", 1);
-				foreach ($stats as $k => $v) {
-					$client->getRequest()->post()->set("stats[$k]", $v);
-				}
-				$client->send();
-			} catch (\Exception $e) { }
-
 			$total_time = sprintf("%.03f", microtime(true) - $this->cmd_start_time);
+			$this->total_time = $total_time;
 
 			$logger->log("All Done ($total_time seconds)", 'INFO');
 
@@ -854,7 +854,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 	}
 
-	public static function sendLogFile($is_error)
+	public static function sendLogFile($errinfo = null)
 	{
 		global $DP_CONFIG;
 		if (isset($DP_CONFIG['no_report_errors']) AND $DP_CONFIG['no_report_errors']) {
@@ -867,11 +867,18 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		}
 
 		$data = array(
+			'source_type' => 'import.dp3',
+			'total_time' => $this->total_time ? $this->total_time : '0',
 			'log' => @file_get_contents($import_log_path),
-			'is_error' => $is_error ? 1 : 0,
-			'source_type' => 'import.dp3'
+			'errinfo' => $errinfo ? $errinfo : 0,
+			'install_token' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : ''
 		);
 
-		\Application\DeskPRO\Service\ErrorReporter::sendReport('report-import', $data, 10);
+		try {
+			$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($db);
+			$data = array_merge($data, $stats_fetcher->getStats());
+		} catch (\Exception $e) {}
+
+		\Application\DeskPRO\Service\ErrorReporter::sendInstallReport($data);
 	}
 }

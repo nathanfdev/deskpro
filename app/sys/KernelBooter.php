@@ -222,7 +222,7 @@ class KernelBooter
 		# Handle request
 		#------------------------------
 
-		define('DP_REQUEST_URL', $request->getRequestUri());
+		define('DP_REQUEST_URL', $request->getUri());
 
 		try {
 			$kernel = new $kernel_class($env, $debug);
