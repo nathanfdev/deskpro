@@ -85,8 +85,8 @@ if (!$IMPORT_INSTALL) {
 
 	$DEFAULT_NEWS = new \Application\DeskPRO\Entity\News();
 	$DEFAULT_NEWS->person = $AGENT;
-	$DEFAULT_ARTICLE->title = $translate->phrase('user.defaults.example_news');
-	$DEFAULT_ARTICLE->content = $translate->phrase('user.defaults.example_news_content');
+	$DEFAULT_NEWS->title = $translate->phrase('user.defaults.example_news');
+	$DEFAULT_NEWS->content = $translate->phrase('user.defaults.example_news_content');
 	$DEFAULT_NEWS->status = 'published';
 	$DEFAULT_NEWS->category = $DEFAULT_NEWS_CAT;
 	$em->persist($DEFAULT_NEWS);
