@@ -298,6 +298,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			}
 		}
 
+		$path = $request->getPathInfo();
         if(!App::getSetting('core.install_timestamp') && !preg_match('#^/install/#', $path)) {
             $response = new RedirectResponse($request->getBasePath() . '/index.php/install/');
             return $response;
@@ -341,7 +342,6 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		#------------------------------
 
 		if ($response->headers->get('content-type') == 'text/html' && $type == HttpKernelInterface::MASTER_REQUEST) {
-			$path = $request->getPathInfo();
 
 			#------------------------------
 			# No license
