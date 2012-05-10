@@ -58,6 +58,7 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 		parent::__construct($typesConfig);
 		\Doctrine\DBAL\Types\Type::addType('dpblob', 'Application\\DeskPRO\\DBAL\\Types\\DpBlobType');
 		\Doctrine\DBAL\Types\Type::addType('dpblob_file', 'Application\\DeskPRO\\DBAL\\Types\\DpBlobFileType');
+		\Doctrine\DBAL\Types\Type::overrideType('array', 'Application\\DeskPRO\\DBAL\\Types\\DpArrayType');
 	}
 
 	public function setContainer(ContainerInterface $container = null)
