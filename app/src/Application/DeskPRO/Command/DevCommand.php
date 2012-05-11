@@ -77,17 +77,22 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 			}
 
 			$output->writeln("Done.");
+
+			return 0;
 		} else if ($input->getOption('reset-templates')) {
 			$fs = new \Symfony\Component\Filesystem\Filesystem();
 			$fs->remove(DP_ROOT.'/sys/cache/twig-compiled');
 			$output->writeln("Done");
+			return 0;
 		} else if ($input->getOption('reset-templates')) {
 			App::getDb()->exec("TRUNCATE TABLE cache");
 			$output->writeln("Done");
+			return 0;
 		} else if ($input->getOption('reset-cache')) {
 
 			App::getDb()->exec("TRUNCATE TABLE `cache`");
 			$output->writeln("Done");
+			return 0;
 
 		} else if ($input->getOption('reset-symfony')) {
 			$oldcwd = getcwd();
@@ -96,6 +101,8 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 			exec('rm -rf ./prod');
 			exec('rm -rf ./doctrine-proxies');
 			chdir($oldcwd);
+			$output->writeln("Done.");
+			return 0;
 		} else if ($input->getOption('cause-php-exception')) {
 			return $this->executeCausePhpException($input, $output);
 		} else if ($input->getOption('cause-php-error')) {
