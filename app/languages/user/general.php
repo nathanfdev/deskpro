@@ -12,6 +12,7 @@
     'user.general.agents_working'                  => 'Our agents will now read and reply to all of your messages.',
     'user.general.all_categories'                  => 'All Categories',
 	'user.general.all_types'                       => 'All Types',
+    'user.general.everything'                      => 'Everything',
     'user.general.articles'                        => 'Articles',
     'user.general.assigned_agent'                  => 'Assigned Agent',
     'user.general.attachments'                     => 'Attachments',
