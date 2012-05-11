@@ -1,3 +1,8 @@
+{##
+ # Included at the top of the main content section of every page. It
+ # used to show status messages.
+ ##}
+
 {% if app.session.getFlashes() %}
 	<div class="dp-flashes">
 		{% if app.session.getFlash('new_ticket_login') %}

@@ -1,3 +1,7 @@
+{##
+ # The feedback voting widget displayed in result listings as well as the full view page.
+ ##}
+
 <div
 	data-element-handler="DeskPRO.User.ElementHandler.FeedbackAgreeBtn"
 	class="with-handler dp-feedback-vote {% if feedback.status == 'closed' %}dp-feedback-closed{% endif %} {% if has_voted_ids[feedback.id] or has_voted_this %}dp-voted{% endif %}"

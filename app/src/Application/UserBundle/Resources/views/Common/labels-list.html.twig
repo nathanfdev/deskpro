@@ -1,7 +1,0 @@
-{% if not route %}{% set route = 'user_search_labels' %}{% endif %}
-<div style="background-color: #EDFEFF; border: 1px solid #C1D2D4; margin: 10px; padding: 4px; font-size: 11px;">
-	<strong>{{ phrase('user.general.label_tagged_with') }}: </strong>
-	{% for label in labels %}
-		<a href="{{ path(route, {'labels': label}) }}" style="background-color: #ADD6F0; padding: 3px; color: #416073; text-decoration: none">{{label}}</a>
-	{% endfor %}
-</div>

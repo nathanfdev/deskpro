@@ -1,3 +1,8 @@
+{##
+ # The standard inline login form used in some forms. This asks the user for their email address, but offers
+ # an inline form to log in instead. On the newticket page, this also allows the user to choose amongst their email addresses in the.
+ ##}
+
 <div id="dp_inline_login_row" class="dp-inline-login dp-inline-login-email {% if login_error %}open{% endif %}">
 	{% if app.user.is_guest %}
 		{% if login_error %}

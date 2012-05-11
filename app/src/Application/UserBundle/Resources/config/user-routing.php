@@ -146,13 +146,6 @@ $collection->add('user_register', new Route(
 	array()
 ));
 
-$collection->add('user_register_finish', new Route(
-	'/register/finish',
-	array('_controller' => 'UserBundle:Register:finish'),
-	array(),
-	array()
-));
-
 $collection->add('user_profile', new Route(
 	'/profile',
 	array('_controller' => 'UserBundle:Profile:index'),
@@ -163,13 +156,6 @@ $collection->add('user_profile', new Route(
 $collection->add('user_profile_changepassword', new Route(
 	'/profile/change-password',
 	array('_controller' => 'UserBundle:Profile:changePassword'),
-	array(),
-	array()
-));
-
-$collection->add('user_profile_emails', new Route(
-	'/profile/emails',
-	array('_controller' => 'UserBundle:Profile:emails'),
 	array(),
 	array()
 ));
@@ -205,27 +191,6 @@ $collection->add('user_profile_emails_validate_sendlink', new Route(
 $collection->add('user_profile_emails_setdefault', new Route(
 	'/profile/emails/{email_id}/set-default',
 	array('_controller' => 'UserBundle:Profile:setDefaultEmail'),
-	array(),
-	array()
-));
-
-$collection->add('user_profile_subs', new Route(
-	'/profile/subscriptions',
-	array('_controller' => 'UserBundle:Profile:subscriptions'),
-	array(),
-	array()
-));
-
-$collection->add('user_profile_subadd', new Route(
-	'/profile/subscriptions/add/{type}/{id}',
-	array('_controller' => 'UserBundle:Profile:addSubscription'),
-	array(),
-	array()
-));
-
-$collection->add('user_profile_subdel', new Route(
-	'/profile/subscriptions/remove/{type}/{id}',
-	array('_controller' => 'UserBundle:Profile:delSubscription'),
 	array(),
 	array()
 ));
@@ -413,20 +378,6 @@ $collection->add('user_articles', new Route(
 	array()
 ));
 
-$collection->add('user_articles_recent', new Route(
-	'/kb/recent',
-	array('_controller' => 'UserBundle:Articles:recent'),
-	array(),
-	array()
-));
-
-$collection->add('user_articles_popular', new Route(
-	'/kb/popular',
-	array('_controller' => 'UserBundle:Articles:popular'),
-	array(),
-	array()
-));
-
 $collection->add('user_articles_filter', new Route(
 	'/kb/find',
 	array('_controller' => 'UserBundle:Articles:filter'),
@@ -452,20 +403,6 @@ $collection->add('user_downloads', new Route(
 	'/downloads/{slug}',
 	array('_controller' => 'UserBundle:Downloads:browse', 'slug' => ''),
 	array('slug' => '(\\d+(\\-.*?)?)?'),
-	array()
-));
-
-$collection->add('user_downloads_recent', new Route(
-	'/downloads/recent/{page}',
-	array('_controller' => 'UserBundle:Downloads:recent', 'page' => 1),
-	array('page' => '\\d+'),
-	array()
-));
-
-$collection->add('user_downloads_popular', new Route(
-	'/downloads/popular/{page}',
-	array('_controller' => 'UserBundle:Downloads:popular', 'page' => 1),
-	array('page' => '\\d+'),
 	array()
 ));
 
@@ -598,30 +535,6 @@ $collection->add('user_chat_chatended_feedback', new Route(
 	array(),
 	array()
 ));
-
-$collection->add('user_chat_chatwin', new Route(
-	'/chat/chat-window/{session_code}',
-	array('_controller' => 'UserBundle:Chat:chatWindow'),
-	array(),
-	array()
-));
-
-$collection->add('user_chat_ignoreproactive', new Route(
-	'/chat/ignore-proactive',
-	array('_controller' => 'UserBundle:Chat:proactiveIgnore'),
-	array(),
-	array()
-));
-
-/*
-$collection->add('user_twitter_long_message', new Route(
-	'/twitter-message/{id}',
-	array('_controller' => 'UserBundle:Twitter:message'),
-	array(),
-	array()
-));
-*/
-
 
 $collection->add('user_widget_overlay', new Route(
 	'/widget/overlay.html',

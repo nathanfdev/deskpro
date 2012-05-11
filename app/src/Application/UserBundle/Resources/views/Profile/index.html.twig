@@ -1,3 +1,7 @@
+{##
+ # The user profile page lets them edit their name and timezone, manage email addresses and reset their password.
+ ##}
+
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
 	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_profile') }}">{{ phrase('user.general.profile') }}</a></li>

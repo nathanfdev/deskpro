@@ -1,3 +1,8 @@
+{##
+ # The user controls portion of the comments box. For guests, this will be the name
+ # and email address fields and login options. For registered users, this will list their name.
+ ##}
+
 {% if not app.user.is_guest %}
 <div class="dp-form">
 	<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" style="padding-right: 10px;">

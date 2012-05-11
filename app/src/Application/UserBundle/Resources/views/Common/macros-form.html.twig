@@ -1,3 +1,7 @@
+{##
+ # Standard macros used when rendering forms
+ ##}
+
 {% macro select_options_hierarchy(cat, selected, depth) %}
 	{% if not depth %}{% set depth = 0 %}{% endif %}
 	{% set indent = '&nbsp;'|repeat(depth) %}

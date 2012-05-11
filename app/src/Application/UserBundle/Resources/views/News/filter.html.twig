@@ -1,8 +1,10 @@
-{% set this_section = 'feedback' %}
+{##
+ # The main news page. Usually news is presented on the home page, but if a user clicks through to a category,
+ # then this full listing is displayed with more navigation controls.
+ ##}
+
+{% set this_section = 'news' %}
 {% extends 'UserBundle::layout.html.twig' %}
-{% block head %}
-	<script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/FeedbackInlineNew.js') }}"></script>
-{% endblock %}
 {% macro cat_row(cat, status, selected_cat) %}
 	<li {% if cat.id == selected_cat.id %}class="on"{% endif %}>
 		<a href="{{ path('user_feedback', {'status': status, 'slug': cat.url_slug}) }}">{{ cat.title }}</a>

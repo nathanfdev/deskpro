@@ -107,6 +107,8 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 			return $this->executeCausePhpException($input, $output);
 		} else if ($input->getOption('cause-php-error')) {
 			return $this->executeCausePhpError($input, $output);
+		} else if ($input->getOption('find-unused-templates')) {
+			return $this->executeFindUnusedTemplates($input, $output);
 		}
 
 		$output->writeln("Unknown command, try --help");
@@ -115,28 +117,26 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 
 	protected function executeFindUnusedTemplates(InputInterface $input, OutputInterface $output)
 	{
-		$out = null;
-		exec('ack --help', $out);
-		$out = implode(' ', $out);
-		if (!$out || strpos($out, 'ACK_OPTIONS') === false) {
-			$output->writeln('This tool requires `ack`. See http://betterthangrep.com/');
-			return 1;
-		}
-
 		$paths = array(
-			'AdminBundle'      => DP_ROOT.'/src/Application/AdminBundle/Resources/views',
-			'AgentBundle'      => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
-			'DeskPRO'          => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
-			'ReportBundle'     => DP_ROOT.'/src/Application/ReportBundle/Resources/views',
+			//'AdminBundle'      => DP_ROOT.'/src/Application/AdminBundle/Resources/views',
+			//'AgentBundle'      => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
+			//'DeskPRO'          => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
+			//'ReportBundle'     => DP_ROOT.'/src/Application/ReportBundle/Resources/views',
 			'UserBundle'       => DP_ROOT.'/src/Application/UserBundle/Resources/views',
-			'BillingBundle'    => DP_ROOT.'/src/Application/BillingBundle/Resources/views',
+			//'BillingBundle'    => DP_ROOT.'/src/Application/BillingBundle/Resources/views',
 		);
+
+		$in_files = Finder::create()->in(array(
+			DP_ROOT.'/src/Application',
+			DP_ROOT.'/sys/cache/twig-compiled'
+		))->files();
 
 		foreach ($paths as $bundle => $dir) {
 			$finder = new \Symfony\Component\Finder\Finder();
 			$finder->files()->name('*.twig')->in($dir);
 
 			foreach ($finder as $file) {
+				set_time_limit(200);
 				/** @var \Symfony\Component\Finder\SplFileinfo $file */
 
 				$filepath = $file->getRealPath();
@@ -148,14 +148,26 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 				}
 				$tplname = $bundle . $tplname;
 
-				$out = null;
-				$cmd = 'ack -r --literal --count --no-filename --max-count=1 -1 ' . escapeshellarg($tplname) . ' ' . DP_ROOT.'/src ' . DP_ROOT.'/sys';
-				exec($cmd,$out);
-				if (!$out) $out = array(0);
-				$out = implode(' ', $out);
-				$out = (int)$out[0];
+				$tplname_re = preg_quote($tplname, '/');
 
-				if (!$out) {
+				$found = 0;
+				foreach ($in_files as $f) {
+					$out = null;
+					$cmd = "awk '/" . $tplname_re . "/{ print \"FOUND\"; exit 1; }' " . escapeshellarg($f->getRealPath()) . '';
+					exec($cmd, $out);
+
+					$out = implode('', $out);
+					if (strpos($out, 'FOUND') !== false) {
+						$found++;
+						if ($found >= 2) {
+							// Needs to be two, because the twig file itself will
+							// have the name of the template in it
+							break;
+						}
+					}
+				}
+
+				if ($found < 2) {
 					echo "Template appears to be unused: " . $tplname;
 					echo "\n";
 				}

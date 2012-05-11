@@ -1,3 +1,6 @@
+{##
+ # The main layout for all pages in the user portal.
+ ##}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html id="dp_html" xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
@@ -209,7 +212,32 @@
 {% endif %}
 
 {% if not app.getSetting('user.disable_chat_element') and not admin_portal_controls and app.user.hasPerm('chat.use') %}
-	{% include 'UserBundle:Common:chat-loader.html.twig' %}
+	<!-- DeskPRO Chat Loader -->
+	<script type="text/javascript">
+	var DpChatWidget_Options = DpChatWidget_Options || {};
+	DpChatWidget_Options.staticUrl = '{{ asset_url('') }}';
+	DpChatWidget_Options.deskproUrl = '{{ url('user') }}';
+	DpChatWidget_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
+	DpChatWidget_Options.currentPageUrl = window.location;
+	DpChatWidget_Options.referrerPageUrl = document.referrer;
+	{% if constant('DP_DEBUG') %}var DpChatWidget_EnableDebug = true;{% endif %}
+	{% if app.getSetting('user.chat_intercept_leaving_domains') %}
+	DpChatWidget_Options.interceptLeavingDomains = [
+		{% for domain in app.getSetting('user.chat_intercept_leaving_domains')|explode(',') %}
+			{{ domain|json_encode|raw }}{% if not loop.last %},{% endif %}
+		{% endfor %}
+	];
+	{% endif %}
+
+	(function() {
+		var scr = document.createElement('script');
+		scr.src = '{{ asset('javascripts/DeskPRO/User/ChatWidget/ChatWidget.js') }}';
+		scr.setAttribute('async', 'true');
+		document.documentElement.firstChild.appendChild(scr);
+	})();
+	</script>
+	<!-- /DeskPRO Chat Loader -->
+
 	<!-- DeskPRO Widget -->
 	<script type="text/javascript">
 		var DpOverlayWidget_Options = DpOverlayWidget_Options || {};

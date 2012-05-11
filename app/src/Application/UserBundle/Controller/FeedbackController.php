@@ -464,34 +464,4 @@ class FeedbackController extends AbstractController
 			'slug' => $feedback->getUrlSlug(),
 		));
 	}
-
-
-	public function quickBrowserAction($status, $category_id = 0, $num = 10)
-	{
-		if ($this->container->getSetting('core.interact_require_login')) {
-			return $this->forward('UserBundle:Login:index');
-		}
-
-		if (!$this->person->hasPerm('feedback.comment')) {
-			return $this->renderLoginOrPermissionError();
-		}
-
-		$category = null;
-		if ($category_id) {
-			$category = $this->em->find('DeskPRO:FeedbackCategory', $category_id);
-		}
-
-		$feedback = $this->em->getRepository('DeskPRO:Feedback')->getNewest($status, $num, $category);
-
-		$vars = array(
-			'category' => $category,
-			'feedback' => $feedback
-		);
-
-		if ($this->request->isPartialRequest()) {
-			return $this->render('UserBundle:Feedback:quick-browser-list.html.twig', $vars);
-		} else {
-			return $this->render('UserBundle:Feedback:quick-browser.html.twig', $vars);
-		}
-	}
 }

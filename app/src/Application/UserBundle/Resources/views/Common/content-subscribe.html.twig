@@ -1,9 +1,0 @@
-<div class="subscribe-box">
-	{% if subscription %}
-		{{ phrase('user.general.subscribed_to_page') }}
-		<a href="{{ path('user_profile_subdel', {'type': page_type, 'id': page_id}) }}">{{ phrase('user.general.unsubscribe_link') }}</a>
-		(<a href="{{ path('user_profile_subs') }}">{{ phrase('user.general.manage_all_subscriptions_link') }}</a>)
-	{% else %}
-		<a href="{{ path('user_profile_subadd', {'type': page_type, 'id': page_id}) }}">{{ phrase('user.general.subscribe_link') }}</a>
-	{% endif %}
-</div>

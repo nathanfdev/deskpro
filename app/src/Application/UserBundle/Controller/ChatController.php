@@ -289,25 +289,7 @@ class ChatController extends AbstractController
 			$sent_transcript = (($convo->person && $convo->person->getPrimaryEmailAddress()) || $convo->person_email);
 		}
 
-		if ($this->request->isXmlHttpRequest() || $this->in->getBool('is_ajax')) {
-			return $this->createJsonResponse(array('ended' => true, 'sent_transcript' => $sent_transcript));
-		}
-
-		if ($this->in->getBool('process')) {
-
-			$this->_sendTranscript($convo, $convo->person, '');
-
-			return $this->render('UserBundle:Chat:chat-ended-thanks.html.twig', array(
-				'session'  => $session,
-				'convo'    => $convo,
-			));
-
-		} else {
-			return $this->render('UserBundle:Chat:chat-ended.html.twig', array(
-				'session'  => $session,
-				'convo'    => $convo,
-			));
-		}
+		return $this->createJsonResponse(array('ended' => true, 'sent_transcript' => $sent_transcript));
 	}
 
 	protected function _sendTranscript($convo, $email, $name)
@@ -375,20 +357,6 @@ class ChatController extends AbstractController
 		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => true));
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\HttpKernel\Controller\Response
-	 */
-	public function proactiveIgnoreAction()
-	{
-		$cookie = Cookie::makeCookie('dpchat_no_proactive', time(), '+2 days');
-
-		$response = $this->createJsonResponse('');
-		$response->headers->setCookie($cookie);
-
-		return $response;
 	}
 
 
