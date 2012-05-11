@@ -84,12 +84,16 @@ class LicenseController extends AbstractController
 			$set_website_name = $this->container->getSetting('core.site_name');
 			$set_website_url = $this->container->getSetting('core.site_url');
 			if ($this->in->getString('website_name')) {
+				if (!$set_website_name) {
+					$this->container->get('deskpro.core.settings')->setSetting('core.site_name', $set_website_name);
+				}
 				$set_website_name = $this->in->getString('website_name');
-				$this->container->get('deskpro.core.settings')->setSetting('core.site_name', $set_website_name);
 			}
 			if ($this->in->getString('website_url')) {
+				if (!$set_website_url) {
+					$this->container->get('deskpro.core.settings')->setSetting('core.site_url', $set_website_url);
+				}
 				$set_website_url = $this->in->getString('website_url');
-				$this->container->get('deskpro.core.settings')->setSetting('core.site_url', $set_website_url);
 			}
 
 			if (!$email_address || !\Orb\Validator\StringEmail::isValueValid($email_address)) {
@@ -110,6 +114,8 @@ class LicenseController extends AbstractController
 				$client->getRequest()->post()->set('install_key', $this->settings->get('core.install_key'));
 				$client->getRequest()->post()->set('install_token', $this->settings->get('core.install_token'));
 				$client->getRequest()->post()->set('email_address', $email_address);
+				$client->getRequest()->post()->set('org_name', $set_website_name);
+				$client->getRequest()->post()->set('org_url', $set_website_url);
 				$client->getRequest()->post()->set('url', $this->request->getUriForPath('/'));
 
 				$hostname = gethostname();
