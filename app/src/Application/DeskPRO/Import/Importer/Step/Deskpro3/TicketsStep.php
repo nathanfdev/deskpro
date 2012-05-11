@@ -1434,6 +1434,12 @@ class TicketsStep extends AbstractDeskpro3Step
 
 		$between_where = "BETWEEN $start AND $end";
 
+		$counts = array(
+			'ticket' => 0,
+			'ticket_message' => 0,
+			'ticket_logs' => 0,
+		);
+
 		#------------------------------
 		# Fetch ticket
 		#------------------------------
@@ -1454,6 +1460,7 @@ class TicketsStep extends AbstractDeskpro3Step
 				'tickets_logs' => array(),
 				'tech_ticket_watch' => array()
 			);
+			$counts['ticket']++;
 		}
 		$q->closeCursor();
 		unset($q);
@@ -1482,6 +1489,7 @@ class TicketsStep extends AbstractDeskpro3Step
 		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
 			if (!isset($batch[$r['ticketid']])) continue;
 			$batch[$r['ticketid']]['ticket_message'][] = $r;
+			$counts['ticket_message']++;
 		}
 		$q->closeCursor();
 		unset($q);
@@ -1552,9 +1560,12 @@ class TicketsStep extends AbstractDeskpro3Step
 		while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
 			if (!isset($batch[$r['ticketid']])) continue;
 			$batch[$r['ticketid']]['tickets_logs'][] = $r;
+			$counts['ticket_logs']++;
 		}
 		$q->closeCursor();
 		unset($q);
+
+		$this->logMessage(sprintf("-- Tickets: %d, Messages: %s, Logs: %s", $counts['ticket'], $counts['ticket_message'], $counts['ticket_logs']));
 
 		return $batch;
 	}
