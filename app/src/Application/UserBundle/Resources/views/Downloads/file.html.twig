@@ -50,6 +50,7 @@
 	</article>
 	<footer>
 		{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': download.labels} %}
+		{% include 'UserBundle:Common:related-box.html.twig' with { object: download, type: 'download', related_content: related_content } %}
 
 		{% if app.user.hasPerm('downloads.rate') %}
 			{% include 'UserBundle:Common:rating-bar.html.twig' with {'content_object': download} %}
