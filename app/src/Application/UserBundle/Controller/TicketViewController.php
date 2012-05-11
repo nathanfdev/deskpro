@@ -186,6 +186,53 @@ class TicketViewController extends AbstractController
             return $response;
         }
 
-		return $this->render('UserBundle:TicketView:view.html.twig', $vars);
+		$tpl = 'UserBundle:TicketView:view.html.twig';
+		if ($this->in->getBool('edit')) {
+
+			$newticket = new \Application\DeskPRO\Tickets\EditTicket\EditTicket(
+				$ticket
+			);
+			$newticket_formtype = new \Application\UserBundle\Form\EditTicketType($this->person);
+			$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
+
+			$errors = array();
+			$error_fields = array();
+
+
+			$field_manager = $this->container->getSystemService('ticket_fields_manager');
+			$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+
+			$page_data = $this->em->getRepository('DeskPRO:TicketPageDisplay')->getSectionDataResolve($ticket->department, 'modify', 'default', $is_default);
+
+			$newticket->setPageData($page_data);
+
+			if ($this->in->getBool('process')) {
+
+				$validator = new \Application\UserBundle\Validator\NewTicketValidator();
+				$validator->setPageData($page_data);
+				$form->bindRequest($this->get('request'));
+
+				if ($validator->isValid($newticket)) {
+					$newticket->save();
+					return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
+				} else {
+					$errors = $validator->getErrors(true);
+					$error_fields = $validator->getErrorGroups(true);
+				}
+			}
+
+			$vars = array_merge($vars, array(
+				'default_page_data' => $page_data,
+				'form' => $form->createView(),
+				'newticket' => $newticket,
+				'custom_fields' => $custom_fields,
+				'errors' => $errors,
+				'error_fields' => $error_fields
+			));
+
+			$tpl = 'UserBundle:TicketView:view-modify.html.twig';
+		}
+
+		return $this->render($tpl, $vars);
 	}
 }

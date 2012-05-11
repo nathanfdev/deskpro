@@ -48,6 +48,7 @@
     'user.general.downloads'                       => 'Downloads',
     'user.general.edit_my_profile'                 => 'Edit my profile',
     'user.general.edit_your_profile'               => 'Edit your profile',
+	'user.general.edit'                            => 'Edit',
     'user.general.email_address'                   => 'Email Address',
     'user.general.email_addresses'                 => 'Email Addresses',
     'user.general.enable_js_to_view_comments'      => 'Please enable JavaScript to view comments.',

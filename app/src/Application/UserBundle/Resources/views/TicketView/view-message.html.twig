@@ -1,3 +1,7 @@
+{##
+ # A single message within a ticket in the view ticket page
+ ##}
+
 <li class="{% if message.person.is_agent %}agent-reply{% endif %}">
 	<header>
 		<div class="avatar" style="width: 40px; height: 40px; background-image: url('{{ message.person.getPictureUrl(40) }}');"></div>

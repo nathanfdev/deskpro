@@ -1,3 +1,7 @@
+{##
+ # The view ticket page
+ ##}
+
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
 	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.your_tickets') }}</a></li>
@@ -27,6 +31,9 @@
 		</ul>
 	</header>
 	<article class="dp-ticket-info">
+		<div class="dp-modify-link-row">
+			<i class="dp-icon-pencil"></i> <a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id, edit: 1}) }}">{{ phrase('user.general.edit') }}</a>
+		</div>
 		{% include 'UserBundle:TicketView:view-ticketinfo.html.twig' %}
 	</article>
 	<article class="dp-messages-wrap">

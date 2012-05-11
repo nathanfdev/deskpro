@@ -110,7 +110,7 @@ class TicketPageDisplay extends EntityRepository
 		// then we're auto-generating a 'create' form for everything there is in the system (oh, lawdy!)
 		if ($page_data === null) {
 			$is_resolved = true;
-			$page_data = $this->generateFullSectionData();
+			$page_data = $this->generateFullSectionData($zone);
 		}
 
 		return $page_data;
@@ -122,7 +122,7 @@ class TicketPageDisplay extends EntityRepository
 	 *
 	 * @return array
 	 */
-	public function generateFullSectionData()
+	public function generateFullSectionData($zone = 'create')
 	{
 		$page_data = array();
 
@@ -153,18 +153,20 @@ class TicketPageDisplay extends EntityRepository
 			);
 		}
 
-		$page_data[] = array(
-			'id' => 'ticket_subject',
-			'field_type' => 'ticket_subject'
-		);
-		$page_data[] = array(
-			'id' => 'message',
-			'field_type' => 'message'
-		);
-		$page_data[] = array(
-			'id' => 'attachments',
-			'field_type' => 'attachments'
-		);
+		if ($zone == 'create') {
+			$page_data[] = array(
+				'id' => 'ticket_subject',
+				'field_type' => 'ticket_subject'
+			);
+			$page_data[] = array(
+				'id' => 'message',
+				'field_type' => 'message'
+			);
+			$page_data[] = array(
+				'id' => 'attachments',
+				'field_type' => 'attachments'
+			);
+		}
 
 		return $page_data;
 	}

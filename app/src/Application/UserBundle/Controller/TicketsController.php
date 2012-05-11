@@ -174,46 +174,6 @@ class TicketsController extends AbstractController
 	}
 
 	################################################################################
-	# modify
-	################################################################################
-
-	/**
-	 * Modify ticket
-	 */
-	public function modifyAction($ticket_ref)
-	{
-		$ticket = $this->getTicketOr404($ticket_ref);
-
-		$editticket = new \Application\UserBundle\Tickets\EditTicket\EditTicket(
-			$ticket
-		);
-
-		$editticket_formtype = new EditTicketType($this->person);
-		$form = $this->get('form.factory')->create($editticket_formtype, $editticket);
-
-		if ($this->get('request')->getMethod() == 'POST') {
-			$form->bindRequest($this->get('request'));
-
-			if ($form->isValid()) {
-				$this->em->transactional(function() use ($ticket) {
-					$this->em->persist($ticket);
-					$this->em->flush();
-				});
-
-				return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket_ref));
-			}
-		}
-
-		return $this->render('UserBundle:Tickets:modify-ticket.html.twig', array(
-			'ticket_options' => $editticket_formtype->getTicketOptions(),
-			'editticket_formtype' => $editticket_formtype,
-			'custom_fields' => $editticket_formtype->getTicketFields(),
-			'form' => $form->createView(),
-			'ticket' => $ticket
-		));
-	}
-
-	################################################################################
 	# manage-participants
 	################################################################################
 

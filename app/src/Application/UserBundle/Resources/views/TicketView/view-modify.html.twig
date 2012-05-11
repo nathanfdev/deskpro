@@ -1,0 +1,31 @@
+{##
+ # The view ticket page
+ ##}
+
+{% extends 'UserBundle::layout.html.twig' %}
+{% block breadcrumb %}
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.your_tickets') }}</a></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}">{{ ticket.subject }}</a></li>
+{% endblock %}
+{% block page_title %}
+	{{ ticket.subject }} - {{ phrase('user.tickets.your_tickets') }}
+{% endblock %}
+{% block content %}
+<section class="dp-portal-section dp-new-ticket-section">
+	<article>
+		<form action="{{ path('user_tickets_view', {ticket_ref: ticket.getPublicId(), edit: 1}) }}" method="post" id="dp_newticket_form" enctype="multipart/form-data" class="with-form-validator">
+			<input type="hidden" name="process" value="1" />
+
+			{#--- FIELDS CONTAINER ---#}
+			<div id="fields_container">
+				{# First time outputs items in order and visible depending on the page data #}
+				{% include 'UserBundle:NewTicket:field-list-loop.html.twig' with {'type': 'modify', 'page_data': default_page_data, 'mode': 'default', 'page_data_field_ids': page_data_field_ids }%}
+			</div>
+			{#--- FIELDS CONTAINER ---#}
+
+			<input class="dp-btn dp-btn-primary" type="submit" value="{{ phrase('user.tickets.submit') }}" />
+		</form>
+	</article>
+</section>
+
+{% endblock %}

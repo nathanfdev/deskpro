@@ -22,16 +22,18 @@
 </div>
 {% endif %}
 
-{% if (mode == 'default' and item.field_type == 'message') or (mode =='non_default' and item.id not in page_data_field_ids) %}
-<div data-field-id="message" class="ticket-display-field message" {% if mode == 'non_default' %}style="display: none"{% endif %}>
-	{% include 'UserBundle:NewTicket:field-message.html.twig' %}
-</div>
-{% endif %}
+{% if type != 'modify' %}
+	{% if (mode == 'default' and item.field_type == 'message') or (mode =='non_default' and item.id not in page_data_field_ids) %}
+	<div data-field-id="message" class="ticket-display-field message" {% if mode == 'non_default' %}style="display: none"{% endif %}>
+		{% include 'UserBundle:NewTicket:field-message.html.twig' %}
+	</div>
+	{% endif %}
 
-{% if (mode == 'default' and item.field_type == 'attachments') or (mode =='non_default' and item.id not in page_data_field_ids) %}
-<div data-field-id="attachments" class="ticket-display-field attachments" {% if mode == 'non_default' %}style="display: none"{% endif %}>
-	{% include 'UserBundle:NewTicket:field-attachments.html.twig' %}
-</div>
+	{% if (mode == 'default' and item.field_type == 'attachments') or (mode =='non_default' and item.id not in page_data_field_ids) %}
+	<div data-field-id="attachments" class="ticket-display-field attachments" {% if mode == 'non_default' %}style="display: none"{% endif %}>
+		{% include 'UserBundle:NewTicket:field-attachments.html.twig' %}
+	</div>
+	{% endif %}
 {% endif %}
 
 {% if ticket_options.ticket_categories_hierarchy %}

@@ -64,7 +64,7 @@ class EditTicketType extends AbstractType
 		# Standard fields
 		#------------------------------
 
-		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+		$ticket_options = App::getApi('tickets')->getTicketOptions(App::getCurrentPerson());
 
 		$this->ticket_options = $ticket_options;
 
@@ -98,19 +98,20 @@ class EditTicketType extends AbstractType
 			));
 		}
 
+		$builder->add($ticket_builder);
+
 		#------------------------------
 		# Custom fields
 		#------------------------------
 
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 
-		$ticket_fields_builder = $ticket_builder->create('custom_fields', 'form');
+		$ticket_fields_builder = $ticket_builder->create('custom_ticket_fields', 'form');
 
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array(), $ticket_fields_builder);
 		$this->ticket_fields = $custom_fields;
 
-		$builder->add($ticket_builder);
-		$ticket_builder->add($ticket_fields_builder);
+		$builder->add($ticket_fields_builder);
 	}
 
 	public function getTicketOptions()
@@ -125,6 +126,6 @@ class EditTicketType extends AbstractType
 
 	public function getName()
 	{
-		return 'editticket';
+		return 'newticket';
 	}
 }

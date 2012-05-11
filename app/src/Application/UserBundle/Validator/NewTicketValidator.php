@@ -54,6 +54,18 @@ class NewTicketValidator extends AbstractValidator
 	protected $newticket;
 
 	/**
+	 * @var array
+	 */
+	protected $display_fields = array();
+
+	public function setPageData($page_data)
+	{
+		foreach ($page_data as $i) {
+			$this->display_fields[$i['id']] = $i['id'];
+		}
+	}
+
+	/**
 	 * Check $value to see if its valid.
 	 *
 	 * @param \Application\DeskPRO\Tickets\NewTicket\NewTicket $newticket
@@ -61,6 +73,11 @@ class NewTicketValidator extends AbstractValidator
 	 */
 	protected function checkIsValid($newticket)
 	{
+		$edit_mode = false;
+		if ($newticket instanceof \Application\DeskPRO\Tickets\EditTicket\EditTicket) {
+			$edit_mode = true;
+		}
+
 		$this->newticket = $newticket;
 
 		#------------------------------
@@ -71,19 +88,21 @@ class NewTicketValidator extends AbstractValidator
 		#   basic validations on message etc too, but not much!
 		#------------------------------
 
-		$department_validator = new \Application\DeskPRO\Validator\Department();
-		$department_id = $newticket->ticket->department_id;
+		if (!$this->display_fields || isset($this->display_fields['ticket_department'])) {
+			$department_validator = new \Application\DeskPRO\Validator\Department();
+			$department_id = $newticket->ticket->department_id;
 
-		if (!$department_validator->isValid($department_id)) {
-			$this->addError('ticket.department_id.invalid');
-		} else {
-			$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
-			$ticket_display->addPagesFromDb();
+			if (!$department_validator->isValid($department_id)) {
+				$this->addError('ticket.department_id.invalid');
+			} else {
+				$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
+				$ticket_display->addPagesFromDb();
 
-			$ticket_page = $ticket_display->getPage($department_id);
+				$ticket_page = $ticket_display->getPage($department_id);
 
-			if ($ticket_page) {
-				//$this->_traverseItems($ticket_page);
+				if ($ticket_page) {
+					//$this->_traverseItems($ticket_page);
+				}
 			}
 		}
 
@@ -91,53 +110,61 @@ class NewTicketValidator extends AbstractValidator
 		# Standard ticket fields
 		#------------------------------
 
-		$validator = new \Orb\Validator\StringLength(array('min' => 5));
-		if (!$validator->isValid($this->newticket->ticket->subject)) {
-			$this->addError('ticket.subject.short');
+		if (!$this->display_fields || isset($this->display_fields['ticket_subject'])) {
+			$validator = new \Orb\Validator\StringLength(array('min' => 5));
+			if (!$validator->isValid($this->newticket->ticket->subject)) {
+				$this->addError('ticket.subject.short');
+			}
 		}
 
-		$validator = new \Orb\Validator\StringLength(array('min' => 10));
-		if (!$validator->isValid($this->newticket->ticket->message)) {
-			$this->addError('ticket.message.short');
+		if (!$edit_mode) {
+			if (!$this->display_fields || isset($this->display_fields['ticket_message'])) {
+				$validator = new \Orb\Validator\StringLength(array('min' => 10));
+				if (!$validator->isValid($this->newticket->ticket->message)) {
+					$this->addError('ticket.message.short');
+				}
+			}
 		}
 
 		#------------------------------
 		# Standard person fields
 		#------------------------------
 
-		$validator = new \Orb\Validator\StringLength(array('min' => 2));
-		if (!$validator->isValid($this->newticket->person->name)) {
-			$this->addError('person.name.short');
-		}
-
-		// Guest
-		if (!$this->newticket->person->person_obj) {
-			$validator = new \Orb\Validator\StringEmail();
-			if (!$validator->isValid($this->newticket->person->email)) {
-				$this->addError('person.email.invalid');
+		if (!$edit_mode) {
+			$validator = new \Orb\Validator\StringLength(array('min' => 2));
+			if (!$validator->isValid($this->newticket->person->name)) {
+				$this->addError('person.name.short');
 			}
 
-		// Logged in user
-		} else {
-			$email_check = strtolower($this->newticket->person->email);
-			$found = false;
-			foreach ($this->newticket->person->person_obj->emails as $e) {
-				if ($e['email'] == $email_check) {
-					$found = true;
-					break;
-				}
-			}
-
-			// Its new, so check its valid and not in use
-			if (!$found) {
+			// Guest
+			if (!$this->newticket->person->person_obj) {
 				$validator = new \Orb\Validator\StringEmail();
 				if (!$validator->isValid($this->newticket->person->email)) {
 					$this->addError('person.email.invalid');
-				} else {
-					// Make sure its not already in use
-					$exists = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->newticket->person->email);
-					if ($exists) {
-						$this->addError('person.email.exists');
+				}
+
+			// Logged in user
+			} else {
+				$email_check = strtolower($this->newticket->person->email);
+				$found = false;
+				foreach ($this->newticket->person->person_obj->emails as $e) {
+					if ($e['email'] == $email_check) {
+						$found = true;
+						break;
+					}
+				}
+
+				// Its new, so check its valid and not in use
+				if (!$found) {
+					$validator = new \Orb\Validator\StringEmail();
+					if (!$validator->isValid($this->newticket->person->email)) {
+						$this->addError('person.email.invalid');
+					} else {
+						// Make sure its not already in use
+						$exists = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->newticket->person->email);
+						if ($exists) {
+							$this->addError('person.email.exists');
+						}
 					}
 				}
 			}

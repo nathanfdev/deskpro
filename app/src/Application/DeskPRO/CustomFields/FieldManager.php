@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
-use Orb\Util\Util;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Doctrine\ORM\EntityManager;
@@ -209,7 +208,7 @@ class FieldManager
 			if ($rendered) $has_value = true;
 
 			$custom_fields[$f_def['id']] = array(
-				'elId'            => Util::requestUniqueIdString(),
+				'elId'            => \Orb\Util\Util::requestUniqueIdString(),
 				'hasValue'        => ($value !== null),
 				'id'              => $f_def['id'],
 				'name'            => 'field_' . $f_def['id'],
@@ -219,7 +218,7 @@ class FieldManager
 				'form'            => $form,
 				'formView'        => $formView,
 				'value'           => $value,
-				'field_handler'   => strtolower(Util::getBaseClassname($f_def->getHandler())),
+				'field_handler'   => strtolower(\Orb\Util\Util::getBaseClassname($f_def->getHandler())),
 			);
 		}
 
@@ -244,7 +243,7 @@ class FieldManager
 
 			$custom_fields[$f_def['id']] = array(
 				'rendered'        => $rendered,
-				'elId'            => Util::requestUniqueIdString(),
+				'elId'            => \Orb\Util\Util::requestUniqueIdString(),
 				'hasValue'        => ($value !== null),
 				'id'              => $f_def['id'],
 				'name'            => 'field_' . $f_def['id'],
@@ -252,7 +251,7 @@ class FieldManager
 				'field_def'       => $f_def,
 				'title'           => $f_def['title'],
 				'value'           => $value,
-				'field_handler'   => strtolower(Util::getBaseClassname($f_def->getHandler())),
+				'field_handler'   => strtolower(\Orb\Util\Util::getBaseClassname($f_def->getHandler())),
 			);
 		}
 
