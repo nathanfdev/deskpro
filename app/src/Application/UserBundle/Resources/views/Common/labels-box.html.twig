@@ -3,12 +3,12 @@
  ##}
 
 {% if labels|length %}
-	<div class="dp-labels">
+	<section class="dp-labels-box">
 		<ul>
+			<li class="dp-caption"><i class="dp-icon-tags"></i></li>
 			{% for label in labels %}
-				<li><a href="{{ path('user_search_labels', {'label': label.label}) }}">{{ label.label }}</a></li>
+				<li class="dp-tag"><a href="{{ path('user_search_labels', {'label': label.label}) }}">{{ label.label }}</a></li>
 			{% endfor %}
 		</ul>
-		<br class="dp-clear" style="clear:left" />
-	</div>
+	</section>
 {% endif %}

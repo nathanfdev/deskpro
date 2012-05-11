@@ -976,6 +976,46 @@ body.file-drag-over #dp .dp-drop-file-zone,
 	font-size: 9pt;
 }
 
+#dp section.dp-labels-box {
+	border: 1px solid #D2D0D0;
+	padding: 0;
+	{{ _self.border_radius(5) }}
+	font-size: 9pt;
+	margin-bottom: 10px;
+}
+
+#dp section.dp-labels-box ul {
+	margin: 0;
+	padding: 0;
+}
+
+#dp section.dp-labels-box ul li {
+	display: inline-block;
+	margin: 0;
+	line-height: 100%;
+	padding: 3px 5px;
+}
+
+#dp section.dp-labels-box ul li.dp-caption {
+	border-right: 1px solid #D2D0D0;
+	padding: 7px 9px;
+}
+
+#dp section.dp-labels-box ul li.dp-tag {
+	background-color: #F5F5F5;
+	border: 1px solid #DEDDDD;
+	{{ _self.border_radius(4) }}
+	margin-right: 2px;
+	margin-left: 2px;
+}
+
+#dp section.dp-labels-box ul li i {
+	{{ _self.opacity(0.5) }}
+	position: relative;
+	top: 1px;
+	left: 1px;
+}
+
 /******************************
 * Social Block: Style for the block that contains twitter, facebook and gplus buttons
 ******************************/
