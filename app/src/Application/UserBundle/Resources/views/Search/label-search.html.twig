@@ -4,7 +4,7 @@
 
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_search_labels') }}">{{ phrase('user.search.labels_section_name') }}</a></li>
+	<li><a href="{{ path('user_search_labels') }}">{{ phrase('user.portal.labels_section_name') }}</a></li>
 {% endblock %}
 {% block content %}
 
@@ -17,7 +17,7 @@
 					<div class="dp-input-prepend">
 						<table cellspacing="0" cellpadding="0" width="100%"><tr>
 							<td width="10" class="dp-msg">
-								<span style="white-space: nowrap;">{{ phrase('user.search.searchbox_show_type_prefix') }}</span>
+								<span style="white-space: nowrap;">{{ phrase('user.portal.searchbox_show_type_prefix') }}</span>
 							</td>
 							<td width="10" class="dp-cat dp-cat2">
 								<div style="position: relative;" class="dp-inplace-drop">
@@ -32,7 +32,7 @@
 								</div>
 							</td>
 							<td width="10" class="dp-msg dp-msg2">
-								<span style="white-space: nowrap;">{{ phrase('user.search.searchbox_show_label_prefox') }}</span>
+								<span style="white-space: nowrap;">{{ phrase('user.portal.searchbox_show_label_prefox') }}</span>
 							</td>
 							<td class="dp-title">
 								<input type="text" class="dp-suggest-title" name="label" value="{{ label }}" />
@@ -45,7 +45,7 @@
 			</form>
 		</div>
 		<div class="dp-tag-cloud dp-well dp-well-small dp-well-light">
-			<h4>{{ phrase('user.search.more_labels') }}</h4>
+			<h4>{{ phrase('user.portal.more_labels') }}</h4>
 			<ul>
 				{% for c_label,css_class in cloud %}
 					<li class="dp-{{css_class}}"><a href="{{ path('user_search_labels', {'label': c_label}) }}">{{ c_label }}</a></li>
@@ -58,12 +58,12 @@
 {% if label %}
 	<section class="dp-portal-section">
 		<header>
-			<h1>{{ phrase('user.search.x_search_results', {count: num_results}) }}</h1>
+			<h1>{{ phrase('user.portal.x_search_results', {count: num_results}) }}</h1>
 		</header>
 		<div class="dp-content-block dp-search-block">
 			<div class="dp-content-wrapper">
 				{% if not results and not sticky_results %}
-					<p>{{ phrase('user.search.no_results_help') }}</p>
+					<p>{{ phrase('user.portal.no_results_help') }}</p>
 				{% else %}
 					<ul class="dp-content-list">
 						{% if sticky_results %}

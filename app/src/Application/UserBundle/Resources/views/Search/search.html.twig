@@ -12,12 +12,12 @@
 
 <section class="dp-portal-section">
 	<header>
-		<h1>{{ phrase('user.search.x_search_results', {count: num_results}) }}</h1>
+		<h1>{{ phrase('user.portal.x_search_results', {count: num_results}) }}</h1>
 	</header>
 	<div class="dp-content-block dp-search-block">
 		<div class="dp-content-wrapper">
 			{% if not results and not sticky_results %}
-				<p>{{ phrase('user.search.no_results_help') }}</p>
+				<p>{{ phrase('user.portal.no_results_help') }}</p>
 			{% else %}
 				<ul class="dp-content-list">
 					{% if sticky_results %}

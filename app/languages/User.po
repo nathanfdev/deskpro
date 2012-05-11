@@ -209,16 +209,16 @@ msgstr "You rated this message as unhelpful"
 msgid "user.tickets.your_tickets"
 msgstr "Your Tickets"
 
-msgid "user.search.find_tagged_with"
+msgid "user.portal.find_tagged_with"
 msgstr "Find pages tagged with"
 
-msgid "user.search.labels_section_name"
+msgid "user.portal.labels_section_name"
 msgstr "Search Tags"
 
-msgid "user.search.no_results_help"
+msgid "user.portal.no_results_help"
 msgstr "No results, try using different terms."
 
-msgid "user.search.x_search_results"
+msgid "user.portal.x_search_results"
 msgstr "{{count}} search result|{{count}} search results"
 
 msgid "user.profile.add_email_address"
