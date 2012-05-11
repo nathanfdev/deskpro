@@ -5,7 +5,7 @@ echo DeskPRO's inbuilt task scheduler every minute.
 echo.
 echo To continue; we need to know the full path to where you
 echo have installed PHP on your system. An example might be
-echo C:\wamp\www\php\php-win.exe
+echo C:\Program Files\PHP\php-win.exe
 echo.
 echo Please note that you may have a php.exe in the same folder
 echo You should use php-win.exe which surpresses the display
