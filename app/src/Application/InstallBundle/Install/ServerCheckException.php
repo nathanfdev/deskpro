@@ -34,6 +34,6 @@
 
 namespace Application\InstallBundle\Install;
 
-class ServerCheckExpcetion extends \Exception
+class ServerCheckException extends \Exception
 {
 }

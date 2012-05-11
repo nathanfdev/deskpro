@@ -312,7 +312,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				echo "Fix these problems and try again.\n";
 				$logger->log($str, Logger::ERR);
 
-				$e = new \Application\InstallBundle\Install\ServerCheckExpcetion("Server requirements failed: " . implode(', ', array_keys($server_check->getFatalErrors())));
+				$e = new \Application\InstallBundle\Install\ServerCheckException("Server requirements failed: " . implode(', ', array_keys($server_check->getFatalErrors())));
 				self::sendLogFile($e);
 
 				return 1;

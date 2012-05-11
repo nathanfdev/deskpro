@@ -178,7 +178,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		if (isset($_POST['stats_opt_out']) && $_POST['stats_opt_out']) {
 			setcookie('dp_install_stats_opt_out', 1);
 		} elseif ($server_check->hasFatalErrors()) {
-			$e = new \Application\InstallBundle\Install\ServerCheckExpcetion("Server requirements failed: " . implode(', ', array_keys($server_check->getFatalErrors())));
+			$e = new \Application\InstallBundle\Install\ServerCheckException("Server requirements failed: " . implode(', ', array_keys($server_check->getFatalErrors())));
 			$this->sendInstallReport($e);
 		}
 
