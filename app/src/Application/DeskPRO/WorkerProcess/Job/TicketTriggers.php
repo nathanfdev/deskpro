@@ -99,7 +99,7 @@ class TicketTriggers extends AbstractJob
 					}
 				}
 
-				$actions_collection->apply($ticket, null);
+				$actions_collection->apply($ticket->getTicketLogger(), $ticket, null);
 
 				$d = $ticket[$trigger->getTicketTimeField()];
 

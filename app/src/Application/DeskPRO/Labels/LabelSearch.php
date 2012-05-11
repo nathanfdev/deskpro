@@ -96,7 +96,7 @@ class LabelSearch
 	 *
 	 * @param $label
 	 */
-	public function search($label)
+	public function search($label, $combined = false)
 	{
 		$results = array(
 			'article' => array(),

@@ -126,10 +126,10 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 						$queue_info['date_next_attempt'] = null;
 				}
 
-				$db->execUpdate("
+				$db->executeUpdate("
 					UPDATE sendmail_queue
 					SET attempts = ?, date_next_attempt = ?
-					WHERE id = ?", array($queue_info['attempts'], $queue_info['date_next_attempt'], $queue_id)
+					WHERE id = ?", array(isset($queue_info['attempts']) ? $queue_info['attempts'] : 1, $queue_info['date_next_attempt'], $queue_id)
 				);
 			}
 

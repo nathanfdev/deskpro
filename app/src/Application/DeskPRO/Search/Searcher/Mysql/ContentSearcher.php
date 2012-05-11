@@ -133,13 +133,13 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		return $result_set;
 	}
 
-	public function labelled(array $labels, array $limit_types = null)
+	public function labelled(array $labels, $per_page = 25, $page = 1, array $limit_types = null)
 	{
 		$limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
 		if (!$limit_types) {
 			$limit_types = array('article', 'download', 'feedback', 'news');
 		}
-		$limit_types = implode(',', $limit_types);
+		$limit_types = "'" . implode('\',\'', $limit_types) . "'";
 
 		$label_where = array();
 
@@ -160,14 +160,17 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 			WHERE $where
 		";
 
+		$start = ($page - 1) * $per_page;
 		$select_query = "
-			SELECT object_type, object_id
+			SELECT object_type, object_id, MATCH (content_search.content) AGAINST (?) AS _rel
 			FROM content_search
 			WHERE $where
+			ORDER BY _rel
+			LIMIT $start, $per_page
 		";
 
 		$total        = App::getDb()->fetchColumn($count_query, array($label_where));
-		$results_raw  = App::getDb()->fetchAll($select_query, array($label_where));
+		$results_raw  = App::getDb()->fetchAll($select_query, array($label_where,$label_where));
 		$results      = array();
 
 		foreach ($results_raw as $result_raw) {

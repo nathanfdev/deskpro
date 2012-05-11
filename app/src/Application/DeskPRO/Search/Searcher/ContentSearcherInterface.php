@@ -61,7 +61,7 @@ interface ContentSearcherInterface
 	 * @param  $labels
 	 * @return \Application\DeskPRO\Search\SearcherResult\ResultSet
 	 */
-	public function labelled(array $labels, array $limit_types = null);
+	public function labelled(array $labels, $per_page = 25, $page = 1, array $limit_types = null);
 
 	/**
 	 * Find content similar to $content.

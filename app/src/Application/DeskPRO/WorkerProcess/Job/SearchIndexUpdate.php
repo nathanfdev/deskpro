@@ -75,7 +75,7 @@ class SearchIndexUpdate extends AbstractJob
 
 				$exists = false;
 				try {
-					if (@$this->em->getClassMetadata($info->entity_type)) {
+					if (@$this->em->getClassMetadata($info->entity_class)) {
 						$exists = true;
 					}
 				} catch (\Exception $e) {}
@@ -86,12 +86,12 @@ class SearchIndexUpdate extends AbstractJob
 				}
 
 				if ($op == 'update') {
-					$entity = $this->em->find($info->entity_type, array('id' => $info->id));
+					$entity = $this->em->find($info->entity_class, array('id' => $info->id));
 					if ($entity) {
 						$update[] = $entity;
 					}
 				} else {
-					$doc = new \Application\DeskPRO\Search\Indexer\Document($info->id, $info->entity_type);
+					$doc = new \Application\DeskPRO\Search\Indexer\Document($info->id, $info->entity_class);
 					$delete[] = $doc;
 				}
 				$this->queue->deleteMessage($info);

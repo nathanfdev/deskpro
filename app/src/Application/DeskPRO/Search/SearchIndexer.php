@@ -71,9 +71,11 @@ class SearchIndexer
 
 	public function update($object, $op = 'update')
 	{
+		$type = \Orb\Util\Util::getBaseClassname($object);
+
 		// These flags are used in the importer
-		if (isset($GLOBALS['DP_INDEX_REALTIME'])) {
-			$this->updateNow($object, $content_type, $op);
+		if (isset($GLOBALS['DP_INDEX_REALTIME']) || in_array($type, array('Article', 'Download', 'Feedback', 'News'))) {
+			$this->updateNow($object, $op);
 			return;
 		}
 		if (isset($GLOBALS['DP_INDEX_NOINDEX'])) {
@@ -82,7 +84,7 @@ class SearchIndexer
 
 		$content_type = App::getContainer()->getSearchAdapter()->getContentTypeNameForObject($object);
 
-		$this->queue->send(array('entity_type' => $content_type, 'id' => $object->getId(), 'op' => $op));
+		$this->queue->send(array('entity_class' => get_Class($object), 'id' => $object->getId(), 'op' => $op));
 	}
 
 	public function updateNow($object, $op = 'update')
