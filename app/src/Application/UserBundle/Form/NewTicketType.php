@@ -116,6 +116,7 @@ class NewTicketType extends AbstractType
 		#------------------------------
 
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->mock_person);
+		$this->ticket_options = $ticket_options;
 
 		$this->ticket_options = $ticket_options;
 

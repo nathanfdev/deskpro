@@ -7,7 +7,11 @@
 		<label><strong>{{ phrase('user.general.priority') }}</strong></label>
 	</div>
 	<div class="dp-controls dp-fill ticket_priority">
-		{{ form_widget(form.ticket.priority_id, {'class': 'priority_id'}) }}
+		<select name="newticket[ticket][priority_id]">
+			{% for id,pri in ticket_options.ticket_priorities %}
+				<option value="{{ id }}">{{ pri }}</option>
+			{% endfor %}
+		</select>
 		<div class="dp-help-inline dp-error-explain">
 			{{ phrase('user.tickets.please_choose_priority') }}
 		</div>

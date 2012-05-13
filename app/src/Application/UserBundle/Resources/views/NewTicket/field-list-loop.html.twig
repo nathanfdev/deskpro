@@ -52,7 +52,7 @@
 {% endif %}
 {% endif %}
 
-{% if form.ticket.priority_id %}
+{% if ticket_options.ticket_priorities %}
 {% if (mode == 'default' and item.field_type == 'ticket_priority') or (mode =='non_default' and item.id not in page_data_field_ids) %}
 <div data-field-id="ticket_priority" class="ticket_priority ticket-display-field" {% if mode == 'non_default' %}style="display: none"{% endif %}>
 	{% include 'UserBundle:NewTicket:field-ticket-priority.html.twig' %}
