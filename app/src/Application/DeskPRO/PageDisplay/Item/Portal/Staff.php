@@ -40,7 +40,7 @@ use Application\DeskPRO\Entity\PortalPageDisplay;
 /**
  * Renders the downloads browser
  */
-class Staff extends PortalItemAbstract implements CacheableItem
+class Staff extends PortalItemAbstract
 {
 	public function getCacheOptions()
 	{
