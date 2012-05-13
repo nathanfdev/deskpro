@@ -378,13 +378,6 @@ $collection->add('user_articles', new Route(
 	array()
 ));
 
-$collection->add('user_articles_filter', new Route(
-	'/kb/find',
-	array('_controller' => 'UserBundle:Articles:filter'),
-	array(),
-	array()
-));
-
 $collection->add('user_articles_article', new Route(
 	'/kb/articles/{slug}',
 	array('_controller' => 'UserBundle:Articles:article'),
