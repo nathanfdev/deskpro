@@ -35,4 +35,10 @@
 	'user.chat.start_chatting_with_an_agent' => 'Start chatting with an agent',
 	'user.chat.finding_an_agent' => 'Finding an agent',
 	'user.chat.send_us_feedback' => 'Send us feedback',
+	'user.chat.cancel' => 'Cancel',
+	'user.chat.your_name' => 'Your Name',
+	'user.chat.your_email_address' => 'Your email address',
+	'user.chat.choose_department' => 'Choose department',
+	'user.chat.send' => 'Send',
+	'user.chat.uploading' => 'Uploading...',
 );

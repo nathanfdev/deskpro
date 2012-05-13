@@ -70,7 +70,7 @@
 			{{ phrase('user.chat.confirm_end_chat') }}
 		</p>
 		<p>
-			<button class="dp-btn" id="dp_chat_end_no">{{ phrase('user.general.cancel') }}</button>
+			<button class="dp-btn" id="dp_chat_end_no">{{ phrase('user.chat.cancel') }}</button>
 			<button class="dp-btn" id="dp_chat_end_yes">{{ phrase('user.chat.end_chat') }}</button>
 		</p>
 	</article>
@@ -78,7 +78,7 @@
 
 <section class="dp-chat-active-state" id="dp_chat_start">
 	<header>
-		<div class="dp_chatwin_close"><i class="dp-icon-remove-sign"></i> {{ phrase('user.general.cancel') }}</div>
+		<div class="dp_chatwin_close"><i class="dp-icon-remove-sign"></i> {{ phrase('user.chat.cancel') }}</div>
 
 		<h3>{{ phrase('user.chat.start_chatting_with_an_agent') }}</h3>
 	</header>
@@ -86,28 +86,28 @@
 		{% if not app.user.id %}
 			<div class="dp-control-group">
 				<div class="dp-control-label">
-					<label>{{ phrase('user.general.your_name') }}</label>
+					<label>{{ phrase('user.chat.your_name') }}</label>
 				</div>
 				<div class="dp-controls">
-					<input type="text" name="name" placeholder="{{ phrase('user.general.your_name') }}" value="{{ initial_name }}"/>
+					<input type="text" name="name" placeholder="{{ phrase('user.chat.your_name') }}" value="{{ initial_name }}"/>
 				</div>
 			</div>
 			<div class="dp-control-group">
 				<div class="dp-control-label">
-					<label>{{ phrase('user.general.your_email_address') }}</label>
+					<label>{{ phrase('user.chat.your_email_address') }}</label>
 				</div>
 				<div class="dp-controls">
-					<input type="text" name="email" placeholder="{{ phrase('user.general.your_email_address') }}" value="{{ initial_email }}" />
+					<input type="text" name="email" placeholder="{{ phrase('user.chat.your_email_address') }}" value="{{ initial_email }}" />
 				</div>
 			</div>
 		{% else %}
 			<div class="dp-control-group">
 				<div class="dp-control-label">
-					<label>{{ phrase('user.general.your_name') }}</label>
+					<label>{{ phrase('user.chat.your_name') }}</label>
 				</div>
 				<div class="dp-controls">
 					{% if not app.user.name %}
-						<input type="text" name="name" placeholder="{{ phrase('user.general.your_name') }}" value="{{ initial_name }}" /><br />
+						<input type="text" name="name" placeholder="{{ phrase('user.chat.your_name') }}" value="{{ initial_name }}" /><br />
 					{% else %}
 						{{ app.user.name }}
 					{% endif %}
@@ -115,11 +115,11 @@
 			</div>
 			<div class="dp-control-group">
 				<div class="dp-control-label">
-					<label>{{ phrase('user.general.your_email_address') }}</label>
+					<label>{{ phrase('user.chat.your_email_address') }}</label>
 				</div>
 				<div class="dp-controls">
 					{% if not app.user.email_address %}
-					<input type="text" name="email" placeholder="{{ phrase('user.general.your_email_address') }}" value="{{ initial_email }}" />
+					<input type="text" name="email" placeholder="{{ phrase('user.chat.your_email_address') }}" value="{{ initial_email }}" />
 				{% else %}
 					{{ app.user.email_address }}
 				{% endif %}
@@ -129,7 +129,7 @@
 
 		<div class="dp-control-group">
 			<div class="dp-control-label">
-				<label>{{ phrase('user.general.choose_department') }}</label>
+				<label>{{ phrase('user.chat.choose_department') }}</label>
 			</div>
 			<div class="dp-controls">
 				<select name="department_id">
@@ -154,7 +154,7 @@
 
 <section class="dp-chat-active-state" id="dp_chat_finding_agent" style="display: none">
 	<header>
-		<div class="dp_chatwin_close"><i class="dp-icon-remove-sign"></i> {{ phrase('user.general.cancel') }}</div>
+		<div class="dp_chatwin_close"><i class="dp-icon-remove-sign"></i> {{ phrase('user.chat.cancel') }}</div>
 
 		<h3>{{ phrase('user.chat.finding_an_agent') }}</h3>
 	</header>
@@ -182,7 +182,7 @@
 		</div>
 		<div id="dp_chat_input_pane">
 			<textarea id="dp_chat_message_input"></textarea>
-			<button id="dp_chat_message_send" class="dp-btn">{{ phrase('user.general.send') }}</button>
+			<button id="dp_chat_message_send" class="dp-btn">{{ phrase('user.chat.send') }}</button>
 			<div id="dp_chat_message_upload">
 				<a id="dp_chat_upload_link"><i class="dp-icon-file"></i>{{ phrase('user.chat.send_a_file') }}</a>
 				<input type="file" name="attach" id="dp_chat_message_upload_file" />
@@ -202,7 +202,7 @@
 				<label>{{ phrase('user.chat.transcript_to') }}</label>
 			</div>
 			<div class="dp-controls">
-				<input type="text" name="email" value="" placeholder="{{ phrase('user.general.your_email_address') }}" />
+				<input type="text" name="email" value="" placeholder="{{ phrase('user.chat.your_email_address') }}" />
 			</div>
 		</div>
 
@@ -290,7 +290,7 @@
 
 <script class="dptpl-attach-upload" type="text/x-tmpl">
 	{{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
-		<li class="uploading">{{ '{%=file.name%}' }} ({{ phrase('user.general.uploading') }})</li>
+		<li class="uploading">{{ '{%=file.name%}' }} ({{ phrase('user.chat.uploading') }})</li>
 	{{ '{% } %}' }}
 </script>
 <script class="dptpl-attach-download" type="text/x-tmpl">
