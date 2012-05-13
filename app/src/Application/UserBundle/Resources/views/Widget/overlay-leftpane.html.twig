@@ -5,17 +5,17 @@
 <div id="left_pane" class="aside">
 	<div class="head">
 		<div class="is-showing-related">
-			Showing related content.<br />
-			<a href="#" id="cancel_related">Click here to go back to search</a>.
+			{{ phrase('user.widget.showing_related_content') }}<br />
+			<a href="#" id="cancel_related">{{ phrase('user.widget.go_back_to_search') }}</a>.
 		</div>
 		<div class="not-showing-related">
 			<form action="#">
 				<div class="search-form clearfix">
 					<div class="txt">
 						<i class="icon-search"></i>
-						<input type="text" id="search_box" placeholder="{{ phrase('user.general.search_for_something') }}" />
+						<input type="text" id="search_box" placeholder="{{ phrase('user.widget.search_for_something') }}" />
 					</div>
-					<button class="btn" id="search_box_go">{{ phrase('user.general.search') }}</button>
+					<button class="btn" id="search_box_go">{{ phrase('user.widget.search') }}</button>
 				</div>
 			</form>
 		</div>
@@ -27,7 +27,7 @@
 			{% endfor %}
 		</ul>
 		<div id="search_loading" style="display: none;"></div>
-		<ul class="files-list" id="no_results" style="display: none"><li>We could not find anything</li></ul>
+		<ul class="files-list" id="no_results" style="display: none"><li>{{ phrase('user.widget.could_not_find_anything') }}</li></ul>
 		<ul id="search_content_list" class="files-list" style="display: none"></ul>
 	</div>
 </div>

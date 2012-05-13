@@ -9,7 +9,7 @@
 		{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 			<div class="socials">
 				<div>
-					<span>{{ phrase('user.general.or_connect_with') }}</span>
+					<span>{{ phrase('user.widget.or_connect_with') }}</span>
 					<ul>
 						{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 							<li>{{ render_usersource(usersource, 'widget_overlay_btn') }}</li>
@@ -25,18 +25,18 @@
 					'attr': {
 						'data-field-validators': 'DeskPRO.Form.LengthValidator',
 						'data-min-len': 2,
-						'placeholder': phrase('user.general.your_name'),
+						'placeholder': phrase('user.widget.your_name'),
 						'class': 'name-field'
 					}
 				}) }}
 				<span class="tooltip-error">
-					<span>{{ phrase('user.general.register_enter_name') }}</span>
+					<span>{{ phrase('user.widget.register_enter_name') }}</span>
 				</span>
 			</div>
 			<div class="txt alignright dp-form-row-person_email">
-				<input type="text" class="email-field" id="dp_newticket_email" name="newticket[person][email]" value="" placeholder="{{ phrase('user.general.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
+				<input type="text" class="email-field" id="dp_newticket_email" name="newticket[person][email]" value="" placeholder="{{ phrase('user.widget.your_email_address') }}" data-field-validators="DeskPRO.Form.LengthValidator" data-min-len="4" />
 				<span class="tooltip-error">
-					<span>{{ phrase('user.general.register_please_enter_email') }}</span>
+					<span>{{ phrase('user.widget.register_please_enter_email') }}</span>
 				</span>
 			</div>
 		</div>
@@ -46,18 +46,18 @@
 					'attr': {
 						'data-field-validators': 'DeskPRO.Form.LengthValidator',
 						'data-min-len': 5,
-						'placeholder': phrase('user.general.subject'),
+						'placeholder': phrase('user.widget.subject'),
 						'class': 'search-collect'
 					}
 				}) }}
 				<span class="tooltip-error">
-					<span>{{ phrase('user.tickets.please_choose_subject_at_least') }}</span>
+					<span>{{ phrase('user.widget.please_choose_subject_at_least') }}</span>
 				</span>
 			</div>
 		</div>
 		<div class="fields-row dp-form-row-ticket_department_id">
 			<select name="newticket[ticket][department_id]">
-				<option value="">{{ phrase('user.general.choose_department') }}</option>
+				<option value="">{{ phrase('user.widget.choose_department') }}</option>
 				{% for id,info in ticket_options.departments_hierarchy %}
 					{% if info.children %}
 						<optgroup label="{{ info.title }}">
@@ -71,25 +71,25 @@
 				{% endfor %}
 			</select>
 			<span class="tooltip-error">
-				<span>{{ phrase('user.general.please_choose_a_department') }}</span>
+				<span>{{ phrase('user.widget.please_choose_a_department') }}</span>
 			</span>
 		</div>
 		<div class="fields-row message dp-form-row-ticket_message">
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td><div style="position: relative">
-				<div class="dp-drop-file-zone"><h1>{{ phrase('user.general.register_drop_here_to_attach') }}</h1></div>
+				<div class="dp-drop-file-zone"><h1>{{ phrase('user.widget.register_drop_here_to_attach') }}</h1></div>
 				<div class="textarea">
 					{{ form_widget(ticketform.ticket.message, {
 						'attr': {
 							'class': 'dp-message',
 							'data-field-validators': 'DeskPRO.Form.LengthValidator',
 							'data-min-len': 10,
-							'placeholder': phrase('user.general.message'),
+							'placeholder': phrase('user.widget.message'),
 							'class': addclass
 						}
 					}) }}
 				</div>
 				<span class="tooltip-error">
-					<span>{{ phrase('user.tickets.please_enter_at_least') }}</span>
+					<span>{{ phrase('user.widget.please_enter_at_least') }}</span>
 				</span>
 			</div></td></tr></table>
 		</div>
@@ -98,13 +98,13 @@
 		</div>
 		<div class="submit-row">
 			<div class="btn-holder clearfix">
-				<button type="submit" class="btn-activity dp-show-not-loading">{{ phrase('user.general.register_send_message') }}</button>
+				<button type="submit" class="btn-activity dp-show-not-loading">{{ phrase('user.widget.send') }}</button>
 				<i class="spinner-flat dp-show-is-loading"></i>
 			</div>
 		</div>
 	</form>
 	<div class="thank-you" id="dp_newticket_done" style="display: none">
-		<h2>{{ phrase('user.general.thank_you') }}</h2>
-		<p>{{ phrase('user.general.register_thank_you_for_ticket') }}</p>
+		<h2>{{ phrase('user.widget.thank_you') }}</h2>
+		<p>{{ phrase('user.widget.register_thank_you_for_ticket') }}</p>
 	</div>
 </div>
