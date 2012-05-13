@@ -227,6 +227,13 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			));
 			$old_db->connect();
 			error_reporting($e);
+
+			try {
+				$techs = $old_db->fetchColumn("SELECT COUNT(*) FROM tech");
+			} catch (\Exception $e) {
+				$logger->log("The database details you entered for your DeskPRO v3 database appear to be incorrect. Check config.php to make sure you entered the correct details.\n", Logger::ERR);
+				return 1;
+			}
 		} catch (\Exception $e) {
 			error_reporting($e);
 			$logger->log('There was a problem while trying to connect to your DeskPRO v3 database. Check config.php to make sure you entered the correct details. ' . PHP_EOL . $e->getMessage() . ''  . PHP_EOL, Logger::ERR);
