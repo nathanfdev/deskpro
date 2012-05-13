@@ -107,6 +107,11 @@ class TemplateFiles
 				}
 				$tplname = $bundle . $tplname;
 
+				// Dev templates arent included
+				if (strpos($tplname, ':Dev:') !== false) {
+					continue;
+				}
+
 				$tpl_info[$tplname] = array(
 					'path' => $file->getRealPath(),
 					'last_updated' => 0,
