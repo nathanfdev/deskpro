@@ -259,6 +259,6 @@ class WidgetController extends AbstractController
 			'is_window_mode' => $is_window
 		);
 
-		return $this->render('UserBundle:Widget:chat.html.twig', $vars);
+		return $this->render('UserBundle:Chat:chat.html.twig', $vars);
 	}
 }
