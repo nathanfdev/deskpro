@@ -64,7 +64,7 @@ class AgentModeTicketReassign extends AbstractJob
 
 			$tickets = App::getOrm()->createQuery("
 				SELECT t
-				FROM DeskPRO:Ticket
+				FROM DeskPRO:Ticket t
 				WHERE t.status IN ('awaiting_agent', 'awaiting_user') AND t.agent IN (?)
 				ORDER BY t.id DESC
 			", array($agent_ids))->setMaxResults($max)->execute();
