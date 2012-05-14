@@ -43,6 +43,26 @@ DeskPRO.User.Window = new Orb.Class({
 		$(window).on('resize', fixScrollbarJump);
 		fixScrollbarJump();
 
+		// Prevents default browser action of navigating to a dropped file
+		// if a drop target isnt configured yet (ie no tab open to accept a file)
+		$(document).bind('drop dragover', function (e) {
+			e.preventDefault();
+		});
+
+		$(document).bind('dragover', function (e) {
+			var timeout = window.dropZoneTimeout;
+			if (!timeout) {
+				$('body').addClass('file-drag-over');
+			} else {
+				clearTimeout(timeout);
+			}
+
+			window.dropZoneTimeout = setTimeout(function () {
+				window.dropZoneTimeout = null;
+				$('body').removeClass('file-drag-over');
+			}, 100);
+		});
+
 		//------------------------------
 		// Correct min heights for clean looking sidebar
 		//------------------------------
