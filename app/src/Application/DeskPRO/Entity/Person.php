@@ -1226,6 +1226,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->addEmailAddress($email);
 
 		$this->primary_email = $email;
+
+		return $email;
 	}
 
 
