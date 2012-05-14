@@ -73,7 +73,7 @@ if (!isset($DP_CONFIG['db']['dbname']))    $DP_CONFIG['db']['dbname']    = DP_DA
 if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
 	require(DP_ROOT . '/sys/config/build-time.php');
 } else {
-	echo "Error: /sys/config/build-time.php does not exist. Cannot automatically upgrade.\n";
+	echo "Error: /sys/config/build-time.php does not exist. This means you are using a pristine copy of the DeskPRO source. You will need to run /app/bin/build.php before trying again.\n";
 	exit(1);
 }
 
@@ -185,6 +185,24 @@ class Upgrade
 			$this->outAndLog("To use this tool, the zlib or Zip PHP extensions must be enabled.");
 			exit(1);
 		}
+
+		try {
+			global $DP_CONFIG;
+
+			// Empty the db first
+			$pdo = new \PDO("mysql:host={$DP_CONFIG['db']['host']};dbname={$DP_CONFIG['db']['dbname']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+		} catch (\Exception $e) {
+			$this->outAndLog("There was a problem connecting to the database: " . $e->getMessage());
+			exit(1);
+		}
+
+		try {
+			$tables = $pdo->query("SHOW TABLES")->fetchColumn(0);
+			if (!$tables) {
+				$this->outAndLog("Your database appears to be empty. Did you mean to run the import.php command?");
+				exit(1);
+			}
+		} catch (\Exception $e) { }
 	}
 
 
