@@ -232,49 +232,55 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 			$likes[] = "content_search.content LIKE ?";
 			$params[] = '%' . str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w) . '%';
 		}
-		$where = "
-			content_search.object_type IN ($limit_types)
-			AND (" . implode(' OR ', $likes) . ")
-		";
+		if ($likes) {
+			$where = "
+				content_search.object_type IN ($limit_types)
+				AND (" . implode(' OR ', $likes) . ")
+			";
 
-		$permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
-		$permfilter->setPersonContext($this->person);
-		$perm_join  = $permfilter->getJoin();
-		$perm_where = $permfilter->getWhere();
-		if (!$perm_where) {
-			$perm_where = '1';
-		}
+			$permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
+			$permfilter->setPersonContext($this->person);
+			$perm_join  = $permfilter->getJoin();
+			$perm_where = $permfilter->getWhere();
+			if (!$perm_where) {
+				$perm_where = '1';
+			}
 
-		$count_query = "
-			SELECT COUNT(*)
-			FROM content_search
-			$perm_join
-			WHERE $perm_where AND $where
-			LIMIT $per_page
-		";
+			$count_query = "
+				SELECT COUNT(*)
+				FROM content_search
+				$perm_join
+				WHERE $perm_where AND $where
+				LIMIT $per_page
+			";
 
-		$start = ($page - 1) * $per_page;
-		$select_query = "
-			SELECT content_search.object_type, content_search.object_id
-			FROM content_search
-			$perm_join
-			WHERE $perm_where AND $where
-			ORDER BY content_search.object_id DESC
-			LIMIT $start, $per_page
-		";
+			$start = ($page - 1) * $per_page;
+			$select_query = "
+				SELECT content_search.object_type, content_search.object_id
+				FROM content_search
+				$perm_join
+				WHERE $perm_where AND $where
+				ORDER BY content_search.object_id DESC
+				LIMIT $start, $per_page
+			";
 
-		$total = App::getDb()->fetchColumn($count_query, $params);
+			$total = App::getDb()->fetchColumn($count_query, $params);
 
-		$results_raw  = App::getDb()->fetchAll($select_query, $params);
-		$results      = array();
+			$results_raw  = App::getDb()->fetchAll($select_query, $params);
+			$results      = array();
 
-		foreach ($results_raw as $result_raw) {
-			$result = Result::newFromArray(array(
-				'id' => $result_raw['object_id'],
-				'content_type' => $result_raw['object_type'],
-			));
+			foreach ($results_raw as $result_raw) {
+				$result = Result::newFromArray(array(
+					'id' => $result_raw['object_id'],
+					'content_type' => $result_raw['object_type'],
+				));
 
-			$results[] = $result;
+				$results[] = $result;
+			}
+		} else {
+			$total       = 0;
+			$results_raw = array();
+			$results     = array();
 		}
 
 		if ($total === null) {
