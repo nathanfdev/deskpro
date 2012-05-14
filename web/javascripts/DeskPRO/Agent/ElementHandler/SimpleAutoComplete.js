@@ -5,7 +5,7 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
 
 	initPage: function() {
         var self = this;
-        this.searchUrl = '/DeskPRO/index.php/agent/people-search/search-quick?format=json&limit=10&start_with=a';
+        this.searchUrl = BASE_URL + 'agent/people-search/search-quick?format=json&limit=10&start_with=a';
         this.el.on('click', '.cc-people-search-trigger', function() {
             self.open();
         });
