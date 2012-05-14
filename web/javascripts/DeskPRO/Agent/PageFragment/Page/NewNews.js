@@ -78,7 +78,7 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 				}
 
 				if (data.news_id) {
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/news/' + data.news_id);
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/news/post/' + data.news_id);
 				}
 				this.closeSelf();
 			}

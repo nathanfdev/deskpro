@@ -41,6 +41,20 @@ class QueryListener
 {
 	protected $is_executing = false;
 
+	protected $updates = array();
+
+	public function __construct()
+	{
+		register_shutdown_function(array($this, 'sendUpdates'));
+	}
+
+	public function sendUpdates()
+	{
+		if (in_array('publish_structure_cache', $this->updates)) {
+			App::getContainer()->getSystemService('publish_structure_cache')->flush();
+		}
+	}
+
 	public function handleQuery($sql, array $params)
 	{
 		if ($this->is_executing) return;
@@ -66,12 +80,12 @@ class QueryListener
 			case 'update_news_categories':
 			case 'insert_news_categories':
 			case 'delete_news_categories':
-				App::getContainer()->getSystemService('publish_structure_cache')->flush();
+				$this->updates[] = 'publish_structure_cache';
 				break;
 
 			case 'update_article_to_categories':
 			case 'delete_article_to_categories':
-				App::getContainer()->getSystemService('publish_structure_cache')->flush();
+				$this->updates[] = 'publish_structure_cache';
 				break;
 
 			case 'delete_articles':
@@ -82,7 +96,7 @@ class QueryListener
 			case 'insert_news':
 			case 'insert_downloads':
 			case 'insert_feedback':
-				App::getContainer()->getSystemService('publish_structure_cache')->flush();
+				$this->updates[] = 'publish_structure_cache';
 				break;
 
 			case 'update_articles':
@@ -90,9 +104,9 @@ class QueryListener
 			case 'update_downloads':
 			case 'update_feedback':
 				if (strpos($sql, 'category_id') !== false) {
-					App::getContainer()->getSystemService('publish_structure_cache')->flush();
+					$this->updates[] = 'publish_structure_cache';
 				} elseif (strpos($sql, 'status')) {
-					App::getContainer()->getSystemService('publish_structure_cache')->flush();
+					$this->updates[] = 'publish_structure_cache';
 				}
 				break;
 		}
