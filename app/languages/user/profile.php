@@ -1,6 +1,5 @@
 <?php return array(
     'user.profile.add_email_address'           => 'Add an email address to your account',
-    'user.profile.article_subscriptions'       => 'Article Subscriptions',
     'user.profile.awaiting_validation'         => '(awaiting validation)',
     'user.profile.current_password'            => 'Current Password',
     'user.profile.trying_to_add_invalid_email' => 'The email address you entered is invalid.',
