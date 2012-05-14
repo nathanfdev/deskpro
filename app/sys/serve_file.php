@@ -161,10 +161,6 @@ class FilestorageLoader
 				echo "File not found. (1)";
 			}
 		} catch (\Exception $exception) {
-
-			header("HTTP/1.1 500 Internal Server Error");
-			echo "An error occurred.";
-
 			if (isset($DP_CONFIG['debug']['dev'])) {
 				echo "\n\n[{$exception->getCode()}] {$exception->getMessage()}\n\n";
 
@@ -172,7 +168,32 @@ class FilestorageLoader
 				$trace = self::formatBacktrace($backtrace);
 				echo $trace;
 			}
+
+			$this->handleException($exception);
 		}
+	}
+
+
+	/**
+	 * Handle a fatal exception
+	 *
+	 * @param \Exception $e
+	 */
+	protected function handleException(\Exception $e)
+	{
+		try {
+			$container = $this->bootFullSystem();
+		} catch (\Exception $e) {
+			error_log("Error handling error: {$e->getMessage()}");
+			echo "Error while processing error";
+			exit(1);
+		}
+
+		KernelErrorHandler::handleException($e);
+
+		header("HTTP/1.1 500 Internal Server Error");
+		echo "There was an error while processing your request.";
+		exit(1);
 	}
 
 
