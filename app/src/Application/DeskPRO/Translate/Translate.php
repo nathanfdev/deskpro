@@ -720,6 +720,42 @@ class Translate implements PersonContextInterface
 
 
 	/**
+	 * Just like date() except D, l, F and M are replaced by translated strings.
+	 *
+	 * @param string $format A date format string
+	 * @param int|\DateTime $date_or_ts A DateTime object or a timestamp
+	 */
+	public function date($format, $date_or_ts = null, $prefix = 'user.time.')
+	{
+		if (!$date_or_ts) {
+			$date_or_ts = time();
+		}
+
+		$ts = $date_or_ts;
+		if ($ts instanceof \DateTime) {
+			$ts = $ts->getTimestamp();
+		}
+
+		$format = preg_replace('#(?<!\\\\)([DlFM])#', '\\\\D\\\\P-\\\\$1', $format);
+		$date = date($format, $ts);
+
+		$tr = $this;
+		$date = preg_replace_callback('#DP\-([DlFM])#', function($m) use ($prefix, $tr, $ts) {
+			$seg = date($m[1], $ts);
+			$phrase_name = $prefix . strtolower($seg);
+
+			if ($m[1] == 'F' && $seg == 'May') {
+				$phrase_name = $prefix . 'may_long';
+			}
+
+			return $tr->getPhraseText($phrase_name);
+		},  $date);
+
+		return $date;
+	}
+
+
+	/**
 	 * Check to see if a phrase exists
 	 *
 	 * @param string $phrase_name

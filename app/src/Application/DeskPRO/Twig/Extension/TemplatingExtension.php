@@ -440,7 +440,9 @@ class TemplatingExtension extends \Twig_Extension
 			$date->setTimezone($timezone);
 		}
 
-		return $date->format($format);
+		$ts = $date->getTimestamp();
+
+		return $this->container->getTranslator()->date($format, $ts);
 	}
 
 	public function formToken($name = '', $field_name = '_dp_security_token')

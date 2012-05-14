@@ -110,8 +110,8 @@ class DataController extends AbstractController
 
 		$js_phrases = array();
 
-		$js_phrases["user.general.reltime_less_second"] = $tr->phrase("user.general.reltime_less_second");
-		$js_phrases["user.general.reltimeago_less_second"] = $tr->phrase("user.general.reltime_less_second");
+		$js_phrases["user.time.reltime_less_second"] = $tr->phrase("user.time.reltime_less_second");
+		$js_phrases["user.time.reltimeago_less_second"] = $tr->phrase("user.time.reltime_less_second");
 
 		foreach (array('reltime', 'reltimeago') as $pre) {
 			foreach (array('second', 'minute', 'hour', 'day', 'week', 'month', 'year') as $name) {
