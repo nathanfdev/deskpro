@@ -305,7 +305,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
         }
 
 		// Make sure we arent offline
-		if ($this->isHelpdeskOffline()) {
+		if (!preg_match('#^/admin/?#', $path) && $this->isHelpdeskOffline()) {
 			$response = new Response();
 			$response->setContent(file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/helpdesk-disabled.html'));
 			return $response;

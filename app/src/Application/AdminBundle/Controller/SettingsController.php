@@ -287,7 +287,11 @@ class SettingsController extends AbstractController
 
 		$this->em->getRepository('DeskPRO:Setting')->updateSetting($setting_name, $this->in->getRaw('value'));
 
-		return $this->createJsonResponse(array('success' => true));
+		if ($this->getRequest()->isXmlHttpRequest()) {
+			return $this->createJsonResponse(array('success' => true));
+		}
+
+		return $this->redirectRoute('admin');
 	}
 
 

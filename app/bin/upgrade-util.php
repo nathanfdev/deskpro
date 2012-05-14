@@ -1293,6 +1293,10 @@ function Upgrade_Shutdown_Function()
 		} catch (\Exception $e) {}
 	}
 
+	try {
+		$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
+	} catch (\Exception $e) {}
+
 	$UPGRADE_CLEANUP = null;
 }
 
