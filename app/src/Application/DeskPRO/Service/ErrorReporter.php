@@ -39,31 +39,40 @@ class ErrorReporter
 {
 	public static function getBasicData()
 	{
-		if (class_exists('Application\\DeskPRO\\App')) {
-			try {
-				$db = App::getDb();
-			} catch (\Exception $e) {
-				$db = null;
-			}
-			$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($db);
-			$all_stats = $stats_fetcher->getStats();
+		if (App::getSetting('core.enable_reduced_lic_reports')) {
+			$info = array(
+				'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+				'build'             => DP_BUILD_TIME,
+			);
 		} else {
-			$all_stats = array();
-		}
+			if (class_exists('Application\\DeskPRO\\App')) {
+				try {
+					$db = App::getDb();
+				} catch (\Exception $e) {
+					$db = null;
+				}
+				$stats_fetcher = new \Application\InstallBundle\Data\ServerStats($db);
+				$all_stats = $stats_fetcher->getStats();
+			} else {
+				$all_stats = array();
+			}
 
-		$info = array(
-			'root'              => defined('DP_ROOT')                 ? DP_ROOT : '',
-			'os'                => isset($all_stats['server_os'])     ? $all_stats['server_os'] : '',
-			'web_server'        => isset($all_stats['web_server'])    ? $all_stats['web_server'] : '',
-			'php_version'       => isset($all_stats['php_version'])   ? $all_stats['php_version'] : '',
-			'mysql_version'     => isset($all_stats['mysql_version']) ? $all_stats['mysql_version'] : '',
-			'server_ip'         => isset($_SERVER['SERVER_ADDR'])     ? $_SERVER['SERVER_ADDR'] : '',
-			'client_ip'         => isset($_SERVER['REMOTE_ADDR'])     ? $_SERVER['REMOTE_ADDR'] : '',
-			'client_referrer'   => isset($_SERVER['HTTP_REFERER'])    ? $_SERVER['HTTP_REFERER'] : '',
-			'client_user_Agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
-			'client_request'    => isset($_REQUEST)                   ? implode(', ', array_keys($_REQUEST)) : '',
-			'build'             => DP_BUILD_TIME,
-		);
+			$info = array(
+				'root'              => defined('DP_ROOT')                 ? DP_ROOT : '',
+				'os'                => isset($all_stats['server_os'])     ? $all_stats['server_os'] : '',
+				'web_server'        => isset($all_stats['web_server'])    ? $all_stats['web_server'] : '',
+				'php_version'       => isset($all_stats['php_version'])   ? $all_stats['php_version'] : '',
+				'mysql_version'     => isset($all_stats['mysql_version']) ? $all_stats['mysql_version'] : '',
+				'server_ip'         => isset($_SERVER['SERVER_ADDR'])     ? $_SERVER['SERVER_ADDR'] : '',
+				'client_ip'         => isset($_SERVER['REMOTE_ADDR'])     ? $_SERVER['REMOTE_ADDR'] : '',
+				'client_referrer'   => isset($_SERVER['HTTP_REFERER'])    ? $_SERVER['HTTP_REFERER'] : '',
+				'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+				'client_request'    => isset($_REQUEST)                   ? implode(', ', array_keys($_REQUEST)) : '',
+				'build'             => DP_BUILD_TIME,
+			);
+
+			$info['hostname'] = @gethostname();
+		}
 
 		if (defined('DP_REQUEST_URL')) {
 			$url = DP_REQUEST_URL;
@@ -83,7 +92,6 @@ class ErrorReporter
 		}
 
 		$info['url'] = $url;
-		$info['hostname'] = @gethostname();
 
 		if ((defined('DP_INTERFACE') && DP_INTERFACE != 'install') || (!isset($GLOBALS['DP_IS_INSTALL']) || !$GLOBALS['DP_IS_INSTALL'])) {
 			try {
@@ -269,6 +277,37 @@ class ErrorReporter
 					'date_expire'  => date('Y-m-d H:i:s', strtotime('+24 hours')),
 				));
 			}
+		} catch (\Exception $e) {}
+	}
+
+
+	/**
+	 * Sends a heartbeat
+	 */
+	public static function sendHeartbeat(&$result = null)
+	{
+		$data = self::getBasicData();
+
+		if (!App::getSetting('core.enable_reduced_lic_reports')) {
+			$database_stats = new \Application\DeskPRO\DBAL\DatabaseStats(App::getDb());
+			$data = array_merge($data, $database_stats->getStats());
+
+			$data['setting_core_user_mode'] = App::getSetting('core.user_mode');
+			$data['setting_core_rewrite_urls'] = App::getSetting('core.rewrite_urls');
+			$data['setting_core_site_url'] = App::getSetting('core.site_url');
+			$data['setting_core_install_time'] = App::getSetting('core.install_time');
+			$data['setting_core_filestorage_method'] = App::getSetting('core.filestorage_method');
+		}
+
+		$data['setting_core_deskpro_url'] = App::getSetting('core.deskpro_url');
+		$data['db_id_hash'] = md5(DP_DATABASE_HOST . DP_DATABASE_NAME . DP_DATABASE_USER);
+
+		try {
+			$client = new \Zend\Http\Client(null, array('timeout' => 20, 'strictredirects' => true));
+			$client->setMethod(\Zend\Http\Request::METHOD_POST);
+			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/heartbeat.json');
+			$client->getRequest()->post()->fromArray($data);
+			$r = $client->send();
 		} catch (\Exception $e) {}
 	}
 }

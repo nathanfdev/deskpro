@@ -94,17 +94,27 @@ your responsibility to verify your target equipment meets the minimum
 requirements specified by the software's documentation. Refunds are not
 offered.
 
-Anonymous Server Statistics
+Reporting and Server Statistics
 
-The Software will collect information about your server that will be used for
-statistical analysis. This information does not include any personally
-identified information and cannot be used to track or identify you or your
-website. <span style="border-bottom: 1px dotted #888; cursor: pointer;" id="stats_expand">Click here to see the data that will be sent.</span>
+The Software will occasionally send reports to a DeskPRO Ltd. server:
 
-<div id="stats_list" style="display: none;">PHP version, PHP memory limit, availability of various PHP extensions, MySQL version, MySQL variables including all innodb*, buffer sizes, and max limits, server OS and uname, webserver and version.
+    - Install/Import: During and/or after an install or import, diagnostic information
+      pertaining to the install or import procedure will be submitted. If there are errors,
+      error information will also be included.
 
-</div><input type="checkbox" style="width: 10px;" name="stats_opt_out" /> If you do not want to participate in the anonymous server statistics program,
-check this box to opt out.
+    - Errors: When the server encounters an error, error information will be
+      automatically submitted so our engineers can identify and fix problems
+      as soon as possible.
+
+    - Heartbeat pings: A "heartbeat" is submitted once a day for statistical
+      purposes. This allows us to determine the number of active licenses
+      and installations.
+
+Some reports contain additional data, such as server information or database
+information, that is used for statistical purposes. This data is kept
+private and is never given to third-parties.
+
+<input type="checkbox" style="width: 10px;" name="stats_opt_out" /> If you do not wish to submit additional statistical data, check this box to opt-out.
 
 License Transfer
 

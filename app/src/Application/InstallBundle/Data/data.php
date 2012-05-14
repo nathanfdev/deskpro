@@ -848,6 +848,17 @@ $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\SendmailQueue::DEFAULT_I
 $em->persist($j);
 $em->flush();
 
+##BEGIN:create_jobs.heartbeat##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'heartbeat';
+$j['worker_group'] = 'heartbeat';
+$j['title'] = 'Heartbeat';
+$j['description'] = 'Send heartbeat ping';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\Heartbeat';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\Heartbeat::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
 ##BEGIN:create_jobs.move_blobs##
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'move_blobs';

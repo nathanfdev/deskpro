@@ -133,6 +133,12 @@
 	'core.site_id' => '1',
 
 	/**
+	 * When enabled, error reports and heartbeats dont send server stats,
+	 * and heartbeats dont send db stats
+	 */
+	'core.enable_reduced_lic_reports' => false,
+
+	/**
 	 * The cookie path
 	 */
 	'core.cookie_path' => '/',

@@ -656,6 +656,12 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 				'name' => 'core.deskpro_version',
 				'value' => date('YmdHis'),
 			));
+			if (isset($_COOKIE['dp_install_stats_opt_out']) && $_COOKIE['dp_install_stats_opt_out']) {
+				$db->replace('settings', array(
+					'name' => 'core.enable_reduced_lic_reports',
+					'value' => 1,
+				));
+			}
 
 			if ($rewrite_urls) {
 				$db->replace('settings', array(
