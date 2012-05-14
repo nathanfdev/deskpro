@@ -41,7 +41,7 @@ use Application\DeskPRO\App;
 abstract class CustomFieldAbstract
 {
 	public $title;
-	public $description;
+	public $description = '';
 	public $handler_class;
 
 	public $required = false;
@@ -93,7 +93,7 @@ abstract class CustomFieldAbstract
 		$field = $this->_field;
 
 		$field->title = $this->title;
-		$field->description = $this->description;
+		$field->description = $this->description ?: '';
 		if ($this->isNewField()) {
 			$field->handler_class = $this->handler_class;
 		}
