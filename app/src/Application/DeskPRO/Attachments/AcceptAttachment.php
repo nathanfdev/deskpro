@@ -162,6 +162,13 @@ class AcceptAttachment
 		}
 
 		if (!$error['error_code']) {
+			if (!is_uploaded_file($file->getRealPath()) || !file_exists($file->getRealPath())) {
+				$error['error_code'] = self::ERR_NO_FILE;
+				$error['error_detail'] = '';
+			}
+		}
+
+		if (!$error['error_code']) {
 			$error = null;
 		}
 
