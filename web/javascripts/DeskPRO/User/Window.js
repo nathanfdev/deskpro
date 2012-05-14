@@ -182,12 +182,12 @@ function Orb_Util_TimeAgo_getPhraseFor(type, num, ago) {
 	else if (type == 'sec') type = 'second';
 	else if (type == 'secs') type = 'seconds';
 
-	var phrasename = 'user.general.' + phrasepre + '_x_' + type;
+	var phrasename = 'user.time.' + phrasepre + '_x_' + type;
 	if (num == 1) {
-		var phrasename = 'user.general.' + phrasepre + '_1_' + type;
+		var phrasename = 'user.time.' + phrasepre + '_1_' + type;
 	}
 	if (type == 'sec' && num <= 0) {
-		var phrasename = 'user.general.' + phrasepre + '_less_second';
+		var phrasename = 'user.time.' + phrasepre + '_less_second';
 	}
 
 	if (!window.DESKPRO_LANG || !DESKPRO_LANG[phrasename]) {
