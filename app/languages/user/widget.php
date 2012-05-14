@@ -8,6 +8,7 @@
     'user.widget.i_have_a'                         => 'I have a...',
     'user.widget.message'                          => 'Message',
     'user.widget.or_connect_with'                  => 'Or connect with',
+	'user.widget.choose_department'                => 'Choose Department',
     'user.widget.please_choose_a_category'         => 'Please choose a category',
     'user.widget.please_choose_a_department'       => 'Please select a department',
     'user.widget.please_choose_subject_at_least'   => 'Please enter a subject of at least 5 characters',
@@ -28,4 +29,5 @@
     'user.widget.wait_while_connecting_with_agent' => 'Please wait while we connect you with an agent',
     'user.widget.your_email_address'               => 'Your email address',
     'user.widget.your_name'                        => 'Your name',
+    'user.widget.thank_you'                        => 'Thank You',
 );

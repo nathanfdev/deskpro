@@ -154,7 +154,7 @@ class MainController extends AbstractController
 
 		$email_exists = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($validator->getValidatingEmail()->getEmail());
 		if ($email_exists && $email_exists->person->id != $valdating_email->person->id) {
-			return $this->render('UserBundle:Main:validate-email-exists.html.twig', array(
+			return $this->render('UserBundle:Profile:validate-email-exists.html.twig', array(
 				'email' => $email,
 				'person' => $validator->getPerson(),
 				'ticket_ids' => $validator->getTicketIds()
@@ -171,7 +171,7 @@ class MainController extends AbstractController
 			}
 		}
 
-		return $this->render('UserBundle:Main:validate-email-success.html.twig', array(
+		return $this->render('UserBundle:Profile:validate-email-success.html.twig', array(
 			'email' => $email,
 			'person' => $validator->getPerson(),
 			'ticket_ids' => $validator->getTicketIds()

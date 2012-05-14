@@ -520,14 +520,11 @@ class PersonController extends AbstractController
 					$this->em->persist($person);
 
 					if ($this->in->getBool('send_email')) {
-						$email_body = $this->container->get('templating')->render('DeskPRO:emails_user:agent-changed-password.html.twig', array(
-							'person' => $person
-						));
-
 						$message = $this->container->getMailer()->createMessage();
 						$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-						$message->setSubject('New Password');
-						$message->setBody($email_body, 'text/html');
+						$message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', array(
+							'person' => $person
+						));
 						$message->enableQueueHint();
 						$this->container->getMailer()->send($message);
 					}

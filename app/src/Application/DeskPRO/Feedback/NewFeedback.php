@@ -255,13 +255,10 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 
 				if ($validating == 'existing') {
 					$email_to       = $email->email;
-					$email_subject  = $tr->phrase('user.emails.subj_newfeedback_validate');
 				} elseif ($validating == 'new') {
 					$email_to       = $email_validating->email;
-					$email_subject  = $tr->phrase('user.emails.subj_newfeedback_validate');
 				} else {
 					$email_to       = $person->primary_email_address;
-					$email_subject  = $tr->phrase('user.emails.subj_newfeedback');
 				}
 
 				$vars = array(
@@ -271,12 +268,10 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 					'email' => $email,
 					'validating' => $validating,
 				);
-				$email_body = App::get('templating')->render('DeskPRO:emails_user:feedback-new.html.twig', $vars);
 
 				$message = App::getMailer()->createMessage();
 				$message->setTo($email_to, $person->getDisplayName());
-				$message->setSubject($email_subject);
-				$message->setBody($email_body, 'text/html');
+				$message->setTemplate('DeskPRO:emails_user:feedback-new.html.twig', $vars);
 				$message->enableQueueHint();
 
 				App::getMailer()->send($message);

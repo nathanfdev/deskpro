@@ -74,18 +74,14 @@ class ChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 		}
 
 		if ($show) {
-			$email_subject = "Your feedback has been updated: " . $feedback['title'];
-			$email_body = App::get('templating')->render('DeskPRO:emails_user:feedback-updated.html.twig', array(
+			$message = App::getMailer()->createMessage();
+			$message->setTo($this->entity['user_email'], $this->entity['user_email']);
+			$message->setTemplate('DeskPRO:emails_user:feedback-updated.html.twig', array(
 				'feedback' => $feedback,
 				'changed_status' => $changed_status,
 				'changed_status_cat' => $changed_status_cat,
 				'show' => $show
 			));
-
-			$message = App::getMailer()->createMessage();
-			$message->setTo($this->entity['user_email'], $this->entity['user_email']);
-			$message->setSubject($email_subject);
-			$message->setBody($email_body, 'text/html');
 			$message->enableQueueHint();
 
 			App::getMailer()->send($message);

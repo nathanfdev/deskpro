@@ -1,8 +1,10 @@
-{% extends 'DeskPRO:emails_user:layout.html.twig' %}
-{% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
+{% extends 'DeskPRO:emails_common:layout.html.twig' %}
+{% block email_subject %}
+	{{ phrase('user.email_subjects.validate_your_email') }}
+{% endblock %}
 {% block content %}
-	{{ layout.section_start() }}
-    {{ phrase('user.emails.you_registered') }}<br />
+	<p>
+    	{{ phrase('user.emails.you_registered') }}<br />
 		<a href="{{ url('user_validate_email', {'id': vemail.id, 'auth': vemail.auth}) }}">
-	{{ layout.section_end() }}
+	</p>
 {% endblock %}

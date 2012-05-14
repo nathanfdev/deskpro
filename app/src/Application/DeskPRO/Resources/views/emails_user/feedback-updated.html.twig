@@ -1,26 +1,25 @@
-{% extends 'DeskPRO:emails_user:layout.html.twig' %}
-{% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
-{% block email_teaser_link %}
-	{{ phrase('user.emails.view_feedback') }}:<br />
-	<a href="{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}">
-		{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}
-	</a>
+{##
+ # Sent to a user when their feedback status has been updated
+ ##}
+
+{% extends 'DeskPRO:emails_common:layout.html.twig' %}
+{% block email_subject %}
+	{{ phrase('user.email_subjects.feedback_updated') }}
 {% endblock %}
 {% block content %}
-	{{ layout.section_start() }}
+	<p>
 		{% if show == 'validated' %}
-        {{ phrase('user.emails.feedback_published', {'title':feedback.title}) }}
+	        {{ phrase('user.emails.feedback_published', {'title':feedback.title}) }}
 		{% elseif show == 'closed' %}
             {{ phrase('user.emails.feedback_closed', {'title':feedback.title, 'status':feedback.status_category.title}) }}
         {% elseif show == 'closed' %}
             {{ phrase('user.emails.feedback_updated', {'title': feedback.title, 'status':feedback.statuscategory.title}) }}
         {% endif %}
-	{{ layout.section_end() }}
-
-	{{ layout.section_start() }}
+	</p>
+	<p>
         {{ phrase('user.emails.feedback_votes', {'count': feedback.votes}) }}
 		<a href="{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}">
 			{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}
 		</a>
-	{{ layout.section_end() }}
+	</p>
 {% endblock %}

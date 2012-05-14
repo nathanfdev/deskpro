@@ -98,15 +98,13 @@ class Register
 			$this->em->getConnection()->commit();
 
 			if ($email_validating) {
-				$email_body = App::get('templating')->render('DeskPRO:emails_user:register-validate.html.twig', array(
-					'vemail' => $email_validating
-				));
 				$tr = App::getTranslator();
 
 				$message = App::getMailer()->createMessage();
 				$message->setTo($email_validating->email, $this->name);
-				$message->setSubject($tr->phrase('user.emails.sbj_validate_email'));
-				$message->setBody($email_body, 'text/html');
+				$message->setTemplate('DeskPRO:emails_user:register-validate.html.twig', array(
+					'vemail' => $email_validating
+				));
 				App::getMailer()->send($message);
 			}
 

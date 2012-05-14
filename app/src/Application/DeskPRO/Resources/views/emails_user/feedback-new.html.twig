@@ -1,23 +1,23 @@
-{% extends 'DeskPRO:emails_user:layout.html.twig' %}
-{% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
-{% block email_teaser_link %}
-	{% if feedback.status == 'visible' %}
-		{{ phrase('user.emails.view_feedback') }}:<br />
-		<a href="{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}">
-			{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}
-		</a>
+{##
+ # Sent to a user after they've posted new feedback
+ ##}
+
+{% extends 'DeskPRO:emails_common:layout.html.twig' %}
+{% block email_subject %}
+	{% if validating == 'existing' or validating == 'new' %}
+		{{ phrase('user.email_subjects.newfeedback_validate') }}
+	{% else %}
+		{{ phrase('user.email_subjects.newfeedback') }}
 	{% endif %}
 {% endblock %}
 {% block content %}
-	{{ layout.section_start() }}
-		<p>{{ phrase('user.emails.thank_you_for_feedback', {'title':feedback.title}) }}</p>
-		{% if validating %}
-			{% if feedback.status == 'visible' %}
-                {{ phrase('user.emails.validate_with_link') }}
-			{% else %}
-                {{ phrase('user.emails.validate_for_feedback') }}
-			{% endif %}
-			{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
+	<p>{{ phrase('user.emails.thank_you_for_feedback', {'title':feedback.title}) }}</p>
+	{% if validating %}
+		{% if feedback.status == 'visible' %}
+			{{ phrase('user.emails.validate_with_link') }}
+		{% else %}
+			{{ phrase('user.emails.validate_for_feedback') }}
 		{% endif %}
-	{{ layout.section_end() }}
+		{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
+	{% endif %}
 {% endblock %}

@@ -1,16 +1,16 @@
-{% extends 'DeskPRO:emails_user:layout.html.twig' %}
-{% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
+{% extends 'DeskPRO:emails_common:layout.html.twig' %}
+{% block email_subject %}
+	{{ phrase('user.email_subjects.ticket_participant_added') }}
+{% endblock %}
 {% block content %}
 	<!--ACCESS CODE: (#{{access_code_full}})-->
 	{% if is_first %}
-		{{ layout.section_start() }}
+		<p>
             {{ phrase('user.emails.added_to_ticket', {'name':ticket.person.display_name}) }}
-		{{ layout.section_end() }}
+		</p>
 	{% endif %}
 
-	{{ layout.section_start(ticket.subject) }}
-		{% for message in messages %}
-			{{ message.message_html|raw }}
-		{% endfor %}
-	{{ layout.section_end() }}
+	{% for message in messages %}
+		{{ message.message_html|raw }}
+	{% endfor %}
 {% endblock %}

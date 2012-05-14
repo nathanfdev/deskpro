@@ -185,27 +185,22 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 				App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr, $lang) use ($obj, $person, $email_validating, $email, $validating) {
 
 					if ($validating == 'existing') {
-						$email_to       = $email->email;
-						$email_subject  = $tr->phrase('user.emails.subj_newcomment_validate');
-					} elseif ($validating == 'new') {
-						$email_to       = $email_validating->email;
-						$email_subject  = $tr->phrase('user.emails.subj_newcomment_validate');
+						$email_to = $email->email;
+					} else {
+						$email_to = $email_validating->email;
 					}
 
 					$vars = array(
 						'comment' => $obj,
-
 						'person' => $person,
 						'email_validating' => $email_validating,
 						'email' => $email,
 						'validating' => $validating,
 					);
-					$email_body = App::get('templating')->render('DeskPRO:emails_user:comment-new.html.twig', $vars);
 
 					$message = App::getMailer()->createMessage();
 					$message->setTo($email_to, $person->getDisplayName());
-					$message->setSubject($email_subject);
-					$message->setBody($email_body, 'text/html');
+					$message->setTemplate('DeskPRO:emails_user:comment-new.html.twig', $vars);
 					$message->enableQueueHint();
 
 					App::getMailer()->send($message);

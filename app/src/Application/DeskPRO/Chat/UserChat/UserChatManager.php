@@ -698,13 +698,9 @@ class UserChatManager
 			'convo_messages' => $convo_messages
 		);
 
-		$email_subject = 'Chat Transcript';
-		$email_body = App::get('templating')->render('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
-
 		$message = App::getMailer()->createMessage();
 		$message->setTo($email, $name);
-		$message->setSubject($email_subject);
-		$message->setBody($email_body, 'text/html');
+		$message->setTemplateEngine('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
 		$message->enableQueueHint();
 
 		App::getMailer()->send($message);

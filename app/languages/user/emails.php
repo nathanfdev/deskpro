@@ -13,20 +13,9 @@
     'user.emails.link_validate'                   => 'Simply click on the following link to validate to your email address',
     'user.emails.on_x_at_y_z_wrote'               => 'On {{date}} at {{time}}, {{author}} wrote:',
     'user.emails.re_subject'                      => 'RE: {{subject}}',
-    'user.emails.sbj_validate_email'              => 'Validate your email address',
-    'user.emails.secondary_not_unique'            => 'You recently tried to add this email address, {{validating_email}}, as a secondary address on the account whose primary email address is {{primary_email}}.',
-    'user.emails.subj_newcomment_validate'        => 'Thank you for your comment',
-    'user.emails.subj_newemail_exists'            => 'You tried to add a secondary email address...',
-    'user.emails.subj_newemail_validate'          => 'Validate your email address',
-    'user.emails.subj_newfeedback'                => 'Thank you for submitting your feedback',
-    'user.emails.subj_newfeedback_validate'       => 'Thank you for submitting your feedback (validation required)',
-    'user.emails.subj_newticket_validate'         => 'Validate your email address for your new ticket',
-    'user.emails.subject'                         => '{{ticket_subject}}',
     'user.emails.thank_you_for_feedback'          => 'Thank you for submitting your feedback "{{title}}"',
     'user.emails.thank_you_for_for_comment'       => 'Thank you for your comment on {{link}}.',
-    'user.emails.the_email_is_already_attached'   => 'However, {{validating_email}} is already attached to a different account. If you would like to merge these two accounts together, please reply to this email and one of our agents will be happy to help.',
     'user.emails.ticket_received'                 => 'Your ticket has been recieved and our agents will reply to you as soon as they can.',
-    'user.emails.to_validate_with_link'           => 'To validate your email address, click on the link below',
     'user.emails.user_flooded_email'              => 'You recently sent an email to our helpdesk. Our automated system has detected that you have sent many messages in rapid succession.
 To protect against an auto-responder loop our helpdesk will not send to you any more automatic notification emails. You will continue to receive replies by our staff and you can continue in replying to them, you will simply not receive automatic confirmations of any replies you make.',
     'user.emails.validate_first'                  => 'Thank you for contacting us.
@@ -34,7 +23,6 @@ Before our agents will read and reply to your message, you must validate your em
     'user.emails.validate_for_comment'            => 'Before your comment will be displayed publicly you must validate your email address by clicking on the following link:',
     'user.emails.validate_for_feedback'           => 'Before your feedback will be displayed publicly you must validate your email address by clicking on the following link:',
     'user.emails.validate_with_link'              => 'Please validate your email address online by clicking the following link:',
-    'user.emails.view_feedback'                   => 'View your feedback online at',
     'user.emails.warning_confirmation_emails_off' => 'Warning: Confirmation emails turned off',
     'user.emails.you_registered'                  => 'Thank you for registering an account.
 Before you will be able to use your account, you must click on the following link to validate your email address',

@@ -1,3 +1,13 @@
-{% set content = comment.getObject() %}{% set phrase_link %}<a href="{{ object_path(content) }}">{{ content.title }}</a>{% endset %}
-{{ phrase('user.emails.thank_you_for_for_comment', {'link': phrase_link}) }}
-{{ phrase('user.emails.comment_published') }}
+{##
+ # Sent to a user after an agent approves their comment
+ ##}
+
+{% extends 'DeskPRO:emails_common:layout.html.twig' %}
+{% block email_subject %}
+	{{ phrase('user.email_subjects.your_comment_was_approved') }}
+{% endblock %}
+{% block content %}
+	{% set content = comment.getObject() %}{% set phrase_link %}<a href="{{ object_path(content) }}">{{ content.title }}</a>{% endset %}
+	{{ phrase('user.emails.thank_you_for_for_comment', {'link': phrase_link}) }}
+	{{ phrase('user.emails.comment_published') }}
+{% endblock %}

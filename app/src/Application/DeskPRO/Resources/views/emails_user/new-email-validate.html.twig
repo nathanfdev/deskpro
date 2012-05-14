@@ -1,10 +1,11 @@
 {% extends 'DeskPRO:emails_user:layout.html.twig' %}
 {% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
+{% block email_subject %}
+	{{ phrase('user.email_subjects.newemail_validate') }}
+{% endblock %}
 {% block content %}
-	{{ layout.section_start('Validation required', 2) }}
-		{{ phrase('user.emails.finish_adding_secondary') }}:<br />
-		<a href="{{ url('user_validate_email', {'id': validating_email.id, 'auth': validating_email.auth}) }}">
-			{{ url('user_validate_email', {'id': validating_email.id, 'auth': validating_email.auth}) }}
-		</a>
-	{{ layout.section_end() }}
+	{{ phrase('user.emails.finish_adding_secondary') }}:<br />
+	<a href="{{ url('user_validate_email', {'id': validating_email.id, 'auth': validating_email.auth}) }}">
+		{{ url('user_validate_email', {'id': validating_email.id, 'auth': validating_email.auth}) }}
+	</a>
 {% endblock %}

@@ -1,7 +1,6 @@
 <?php return array(
     'user.general.access_ticket_online'                => 'View and manage this ticket online:',
     'user.general.add'                                 => 'Add',
-    'user.general.add_reply'                           => 'Add Reply',
     'user.general.add_using_name_and_email'            => 'Add using name and email',
     'user.general.agents_working'                      => 'Our agents will now read and reply to all of your messages.',
     'user.general.all_categories'                      => 'All Categories',
@@ -72,7 +71,6 @@
     'user.general.news'                                => 'News',
     'user.general.next'                                => 'Next',
     'user.general.no_definition'                       => 'No definition',
-    'user.general.open'                                => 'Open',
     'user.general.open_tickets'                        => 'Open Tickets',
     'user.general.or_connect_with'                     => 'Or connect with',
     'user.general.page'                                => 'Page',
@@ -95,7 +93,6 @@
     'user.general.register_or_login_below'             => '{{link}} or login below.',
     'user.general.register_password_min_length'        => 'Please enter a password of at least 5 characters.',
     'user.general.register_password_mismatch'          => 'The two password fields did not match.',
-    'user.general.register_wait_while'                 => 'Please wait while we connect you to an agent',
     'user.general.related_articles'                    => 'Related Articles',
     'user.general.related_downloads'                   => 'Related Downloads',
     'user.general.related_feedback'                    => 'Related Feedback',
@@ -119,7 +116,6 @@
     'user.general.tab_home_note'                       => 'Welcome &amp; News',
     'user.general.tab_kb_note'                         => 'Read help articles',
     'user.general.thank_you'                           => 'Thank you',
-    'user.general.ticket_participants'                 => 'Ticket participants',
     'user.general.ticket_ref'                          => 'Ticket Ref',
     'user.general.ticket_starter'                      => 'Ticket Starter',
     'user.general.tickets'                             => 'Tickets',
@@ -145,4 +141,5 @@
     'user.general.your_email_address'                  => 'Your Email Address',
     'user.general.your_name'                           => 'Your Name',
     'user.general.your_profile'                        => 'Your Profile',
+	'user.general.register_drop_here_to_attach'        => 'Drop your file here to upload it'
 );

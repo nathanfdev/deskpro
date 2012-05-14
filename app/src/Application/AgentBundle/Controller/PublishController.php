@@ -292,11 +292,6 @@ class PublishController extends AbstractController
 	protected function _sendCommentApprovedNotification($comment)
 	{
 		if ($comment->getUserEmail()) {
-			$email_subject = 'Your comment was published';
-			$email_body = $this->container->get('templating')->render('DeskPRO:emails_user:comment-approved.html.twig', array(
-				'comment' => $comment
-			));
-
 			$message = $this->container->getMailer()->createMessage();
 			if ($comment->person) {
 				$message->setTo($comment->person->getPrimaryEmailAddress(), $comment->person->getDisplayName());
@@ -305,6 +300,9 @@ class PublishController extends AbstractController
 			}
 			$message->setSubject($email_subject);
 			$message->setBody($email_body, 'text/html');
+			$message->setTemplate('DeskPRO:emails_user:comment-approved.html.twig', array(
+				'comment' => $comment
+			));
 			$message->enableQueueHint();
 			$this->container->getMailer()->send($message);
 		}
@@ -313,19 +311,15 @@ class PublishController extends AbstractController
 	public function _sendCommentDeletedNotification($comment)
 	{
 		if ($comment->getUserEmail()) {
-			$email_subject = 'Your comment was read';
-			$email_body = $this->container->get('templating')->render('DeskPRO:emails_user:comment-deleted.html.twig', array(
-				'comment' => $comment
-			));
-
 			$message = $this->container->getMailer()->createMessage();
 			if ($comment->person) {
 				$message->setTo($comment->person->getPrimaryEmailAddress(), $comment->person->getDisplayName());
 			} else {
 				$message->setTo($comment->getUserEmail());
 			}
-			$message->setSubject($email_subject);
-			$message->setBody($email_body, 'text/html');
+			$message->setTemplate('DeskPRO:emails_user:comment-deleted.html.twig', array(
+				'comment' => $comment
+			));
 			$message->enableQueueHint();
 			$this->container->getMailer()->send($message);
 		}

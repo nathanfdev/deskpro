@@ -55,4 +55,5 @@
     'user.tickets.you_rated_helpful'                   => 'You rated this message as helpful',
     'user.tickets.you_rated_unhelpful'                 => 'You rated this message as unhelpful',
     'user.tickets.your_tickets'                        => 'Your Tickets',
+	'user.tickets.ticket_was_closed'                   => 'Your ticket was resolved successfully',
 );
