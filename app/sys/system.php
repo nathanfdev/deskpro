@@ -305,7 +305,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
         }
 
 		// Make sure we arent offline
-		if (!preg_match('#^/admin/?#', $path) && $this->isHelpdeskOffline()) {
+		if ($this->isHelpdeskOffline()) {
 			$response = new Response();
 			$response->setContent(file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/helpdesk-disabled.html'));
 			return $response;
@@ -419,7 +419,14 @@ abstract class AbstractKernel extends BaseAbstractKernel
 
 	public function isHelpdeskOffline()
 	{
-		if (App::getSetting('core.helpdesk_disabled') || is_file(DP_ROOT.'/helpdesk-offline.trigger')) {
+		// Offline setting applies to all but admin
+		if (App::getSetting('core.helpdesk_disabled') && DP_INTERFACE != 'admin') {
+			return true;
+		}
+
+		// Offline file is inserted on cmdline upgrade,
+		// we want to disable all access
+		if (is_file(DP_ROOT.'/helpdesk-offline.trigger')) {
 			return true;
 		}
 
