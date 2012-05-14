@@ -74,7 +74,7 @@ class Register
 					$email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->email);
 					if (!$email_validating) {
 						$email_validating = new PersonEmailValidating();
-						$email_validating->email = $this->person->email;
+						$email_validating->email = $this->email;
 						$email_validating->person = $person;
 					}
 
