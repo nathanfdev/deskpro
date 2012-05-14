@@ -83,9 +83,17 @@ class CategoryEdit
 
 		App::getOrm()->persist($obj);
 
-		App::getOrm()->getRepository($entity)->repair();
-		App::getContainer()->getSystemService('publish_structure_cache')->flush();
+		App::getOrm()->getRepository(get_class($obj))->repair();
 		App::getOrm()->flush();
+
+		// By default also add 'Everyone' permission
+		$perm_table = App::getOrm()->getRepository(get_class($obj))->getPermissionTableName();
+		App::getDb()->insert($perm_table, array(
+			'category_id'  => $obj->getId(),
+			'usergroup_id' => '1'
+		));
+
+		App::getContainer()->getSystemService('publish_structure_cache')->flush();
 
 		return $obj;
 	}

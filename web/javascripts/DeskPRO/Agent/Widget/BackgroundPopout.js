@@ -218,6 +218,7 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 			this.pop.destroy();
 			this.pop = null;
 		}
+		this.template = null;
 	},
 
 
@@ -225,5 +226,6 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 		if (!this.pop) return;
 		this.pop.destroy();
 		this.pop = null;
+		this.template = null;
 	}
 });

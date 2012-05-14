@@ -95,7 +95,7 @@ class PublishController extends AbstractController
 		$counts['all_drafts']            = $this->publish_helper->getDraftsCount(false);
 		$counts['pending']               = $this->db->fetchColumn("SELECT COUNT(*) FROM article_pending_create");
 
-		$usergroups = $this->em->getRepository('DeskPRO:Usergroup')->findAll();
+		$usergroups = $this->container->getDataService('Usergroup')->getUserUsergroups();
 
 		$data['section_html'] = $this->renderView('AgentBundle:Publish:window-section.html.twig', array(
 			'usergroups'            => $usergroups,

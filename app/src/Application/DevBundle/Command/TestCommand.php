@@ -35,6 +35,10 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$usergroups = $this->getContainer()->getDataService('Usergroup')->getUserUsergroups();
+
+		var_dump($usergroups);
+
 		echo "\n";
 	}
 }

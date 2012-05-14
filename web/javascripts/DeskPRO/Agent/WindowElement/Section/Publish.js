@@ -89,6 +89,17 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		};
 
 		Array.each(types, function(type) {
+
+			var updateNewOverlay = function() {
+				if (type == 'articles' && DeskPRO_Window.newArticleLoader) {
+					DeskPRO_Window.newArticleLoader.clear();
+				} else if (type == 'downloads' && DeskPRO_Window.newDownloadLoader) {
+					DeskPRO_Window.newDownloadLoader.clear();
+				} else if (type == 'news' && DeskPRO_Window.newNewsLoader) {
+					DeskPRO_Window.newNewsLoader.clear();
+				}
+			};
+
 			var listEl = $('#publish_outline_'+type+'cat_list');
 			var ed = new DeskPRO.UI.CatListEditor({
 				listEl: listEl,
@@ -166,6 +177,9 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 							li.data('category-id', info.id);
 							$('.is-nav-item', li).data('route', 'listpane:' + info.url).attr('data-route', 'listpane:' + info.url);;
 							$('.list-counter', li).attr('id', type + '_cat_count_' + info.id);
+
+							// The new overlays need to be reloaded if a new cat was added
+							updateNewOverlay();
 						}
 					});
 				}
@@ -224,6 +238,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 						},
 						success: function(info) {
 							li.remove();
+							updateNewOverlay();
 						}
 					});
 				};

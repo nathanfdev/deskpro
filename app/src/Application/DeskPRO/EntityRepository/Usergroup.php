@@ -45,6 +45,33 @@ class Usergroup extends EntityRepository
 	protected $_agent_usergroup_names = null;
 
 
+	/**
+	 * @return \Application\DeskPRO\Entity\Usergroup[]
+	 */
+	public function getUserUsergroups()
+	{
+		return $this->_em->createQuery("
+			SELECT ug
+			FROM DeskPRO:Usergroup ug
+			WHERE ug.is_agent_group = 0
+			ORDER BY ug.title ASC
+		")->execute();
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Usergroup[]
+	 */
+	public function getAgentUsergroups()
+	{
+		return $this->_em->createQuery("
+			SELECT ug
+			FROM DeskPRO:Usergroup ug
+			WHERE ug.is_agent_group = true
+			ORDER BY ug.title ASC
+		")->execute();
+	}
+
 
 	/**
 	 * Get an array of id=>name for usergroups.
