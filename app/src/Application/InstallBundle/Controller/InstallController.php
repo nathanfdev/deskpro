@@ -693,7 +693,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 	###############################################################################
 
-	public function sendInstallReportError()
+	public function sendInstallReportErrorAction()
 	{
 		$type = $this->getString('type');
 
