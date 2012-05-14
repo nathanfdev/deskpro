@@ -59,6 +59,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+		// Clear caches, including doctrine query caches
+		App::getDb()->exec("TRUNCATE TABLE cache");
+
 		$manager = new \Application\InstallBundle\Upgrade\Manager($this->getContainer());
 
 		#------------------------------
