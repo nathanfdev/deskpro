@@ -194,6 +194,9 @@ class NewTicketController extends AbstractController
 			foreach ($default_page->getPageDisplay('default')->data as $info) {
 				$page_data_field_ids[] = $info['id'];
 			}
+		} else {
+			$default_page_data = array();
+			$page_data_field_ids = array();
 		}
 
 		$tpl = 'UserBundle:NewTicket:new-ticket.html.twig';
