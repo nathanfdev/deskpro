@@ -23,6 +23,7 @@
     'agent.chat.msg_part_joined'                  => '{{person_name}} has joined',
     'agent.chat.msg_part_left'                    => '{{person_name}} has left',
     'agent.chat.msg_unassigned_agent'             => '{{agent_name}} was unassigned',
+    'agent.chat.my_open_chats'                    => 'My Open Chats',
     'agent.chat.new_agent_reply_by'               => 'New agent reply by {{name}}',
     'agent.chat.new_chat'                         => 'New Chat',
     'agent.chat.new_ticket_by'                    => 'New ticket by {{name}} ({{email}})',
@@ -53,5 +54,4 @@
     'agent.chat.x_by_anonymous'                   => 'Chat {{chat_id}} by Anonymous',
     'agent.chat.x_by_anonymousymous'              => 'Chat by Anonymous',
     'agent.chat.you_have_been_invited'            => 'You have been invited to join a chat',
-	'agent.chat.my_open_chats'                    => 'My Open Chats',
 );

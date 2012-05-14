@@ -11,6 +11,7 @@
     'user.emails.greeting'                        => 'Dear {{name}},',
     'user.emails.link_reset_password'             => 'You requested a password reset. To reset your password, click on the link below:',
     'user.emails.link_validate'                   => 'Simply click on the following link to validate to your email address',
+    'user.emails.on_x_at_y_z_wrote'               => 'On {{date}} at {{time}}, {{author}} wrote:',
     'user.emails.re_subject'                      => 'RE: {{subject}}',
     'user.emails.sbj_validate_email'              => 'Validate your email address',
     'user.emails.secondary_not_unique'            => 'You recently tried to add this email address, {{validating_email}}, as a secondary address on the account whose primary email address is {{primary_email}}.',
@@ -39,5 +40,4 @@ Before our agents will read and reply to your message, you must validate your em
 Before you will be able to use your account, you must click on the following link to validate your email address',
     'user.emails.you_replied'                     => 'Thank you for your reply. Our agents will respond to you as soon as they can.',
     'user.emails.your_chat_transcript'            => 'Thank you for chatting with us. Here is your chat transcript.',
-	'user.emails.on_x_at_y_z_wrote'               => 'On {{date}} at {{time}}, {{author}} wrote:'
 );

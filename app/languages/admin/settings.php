@@ -13,6 +13,7 @@
     'admin.settings.continue_to_advanced_settings'          => 'Continue to Advanced Settings',
     'admin.settings.cookie_domain'                          => 'Cookie Domain',
     'admin.settings.cookie_path'                            => 'Cookie Path',
+    'admin.settings.could_not_find_php_use_real'            => 'We could not detect the path to PHP. Be sure to use the real path to PHP for your server.',
     'admin.settings.cron_detailed_instructions'             => 'Click here for detailed instructions',
     'admin.settings.cron_explain'                           => 'To perform tasks such as processing email, running triggers and sending notifications DeskPRO requires that you schedule the <var>cron.php</var> file in the root folder to be regularly run with a cron script (on linux) or a scheduled task (on windows). It is recommend that you run the <var>cron.php</var> file every minute.',
     'admin.settings.cron_notice_php_path_not_found'         => 'Note: We could not automatically detect the path to the PHP binary. You should edit <var>config.php</var> to specify the path, and then refresh this page for the proper command.',
@@ -50,6 +51,7 @@
     'admin.settings.revert_all_settings'                    => 'Revert ALL Settings',
     'admin.settings.revert_settings'                        => 'Revert Settings',
     'admin.settings.revert_settings_to_default'             => 'Revert setting back to default',
+    'admin.settings.saved_success'                          => 'Settings were saved successfully',
     'admin.settings.select_timezone'                        => 'Please select a timezone',
     'admin.settings.set_value'                              => 'Set Value',
     'admin.settings.sort'                                   => 'Sort',
@@ -65,6 +67,4 @@
     'admin.settings.your_site_url'                          => 'Your Site URL',
     'admin.settings.your_website_name'                      => 'Your website name',
     'admin.settings.your_website_url'                       => 'Your website URL',
-	'admin.settings.could_not_find_php_use_real'            => 'We could not detect the path to PHP. Be sure to use the real path to PHP for your server.',
-	'admin.settings.saved_success' => 'Settings were saved successfully',
 );

@@ -7,6 +7,8 @@
     'user.error.attach_server_error'        => 'There was a problem with our server while trying to accept your attachment. Please try again.',
     'user.error.attach_size'                => 'Your attachment is too large. The maximum file size is {{error_detail}}',
     'user.error.downloads_not_found'        => 'The file you are looking for could not be found. It may have been deleted.',
+    'user.error.error'                      => 'Error',
+    'user.error.error_log_code'             => 'Error Code',
     'user.error.expired_token'              => 'The page you are trying to access has expire. Go back and try again.',
     'user.error.feedback_not_found'         => 'The feedback you are looking for could not be found. It may have been deleted.',
     'user.error.invalid_email'              => 'Invalid email address',
@@ -22,8 +24,6 @@
     'user.error.not_found'                  => 'The page you are looking for was not found.',
     'user.error.not_found_title'            => 'Not Found',
     'user.error.not_validated_email'        => 'Email address is not validated',
+    'user.error.server_error_explain'       => 'There was a server error that prevented the page from loading. Please try again.',
     'user.error.validate_to_use'            => 'That email address has not been validated yet. You need to validate the email address before you can set it as your account default.',
-    'user.error.error' => 'Error',
-    'user.error.server_error_explain' => 'There was a server error that prevented the page from loading. Please try again.',
-    'user.error.error_log_code' => 'Error Code',
 );
