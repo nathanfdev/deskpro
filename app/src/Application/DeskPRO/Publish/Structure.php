@@ -795,6 +795,13 @@ class Structure implements PersonContextInterface
 			$highest--;
 		}
 
+		$counts['0'] = 0;
+		$counts['0_total'] = 1;
+
+		foreach ($cats as $c) {
+			$k = $c['id'] . '_total';
+			$counts['0_total'] += isset($counts[$k]) ? $counts[$k] : 0;
+		}
 
 		return $counts;
 	}
