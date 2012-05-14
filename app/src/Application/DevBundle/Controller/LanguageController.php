@@ -190,7 +190,7 @@ class LanguageController extends Controller
 
             foreach($pairs as $id=>$text) {
                 $id = str_pad($id, $length);
-                $data .= "    {$id} => {$text},\n";
+                $data .= "\t{$id} => {$text},\n";
             }
 
             $data .= ');';
