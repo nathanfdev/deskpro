@@ -600,6 +600,14 @@ class Translate implements PersonContextInterface
 	public function phrase($phrase_name, array $vars = array(), $language = null)
 	{
         $debug = App::getConfig('debug.language_test_mode');
+
+		if ($debug == 'user') {
+			if (substr($phrase_name, 0, 4) != 'user') {
+				echo $phrase_name;
+				die();
+			}
+		}
+
 		if ($debug == 'japanese') {
 
 			// Don't try this as single string array. PHP can't handle UTF8 like that :).
