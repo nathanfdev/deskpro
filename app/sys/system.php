@@ -1005,6 +1005,7 @@ class KernelErrorHandler
 			'errfile'        => $errfile,
 			'errline'        => $errline,
 			'display'        => $display,
+			'build'          => DP_BUILD_TIME
 		);
 	}
 
@@ -1073,6 +1074,7 @@ class KernelErrorHandler
 			'errfile'      => $errfile,
 			'errline'      => $errline,
 			'display'      => $display,
+			'build'        => DP_BUILD_TIME
 		);
 	}
 
