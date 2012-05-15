@@ -95,6 +95,7 @@ class FilestorageLoader
 
 		global $DP_CONFIG;
 		require_once DP_ROOT.'/sys/load_config.php';
+		dp_load_config();
 
 		#------------------------------
 		# Run appropriate action
@@ -843,6 +844,8 @@ class FilestorageLoader
 		global $DP_CONFIG;
 		$this->pdo = new \PDO("mysql:dbname={$DP_CONFIG['db']['dbname']};host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
 		$this->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+		$this->pdo->exec("SET sql_mode=''");
+		$this->pdo->exec("SET NAMES 'UTF8'");
 
 		return $this->pdo;
 	}
