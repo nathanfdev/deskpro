@@ -90,7 +90,7 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 			}
 
 			if ($ret & self::PROCESS_FAILURE) {
-				switch ($queue_info['attemps']) {
+				switch ($queue_info['attempts']) {
 					case 1:
 						$queue_info['date_next_attempt'] = date('Y-m-d H:m:s', strtotime('+5 minutes'));
 						break;
