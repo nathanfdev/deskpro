@@ -91,11 +91,17 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 
 		$queue = $this->container->getQueue('search_object_update');
 
-		foreach ($this->updates['updates'] as $ent) {
-			$queue->send(array('entity_class' => get_class($ent), 'id' => $ent->id, 'op' => 'update'));
+		foreach ($this->updates['updates'] as $info) {
+			$id = $info['id'] ?: $info['ent']->getId();
+			if ($id) {
+				$queue->send(array('entity_class' => $info['entity'], 'id' => $id, 'op' => 'update'));
+			}
 		}
-		foreach ($this->updates['deletes'] as $ent) {
-			$queue->send(array('entity_class' => get_class($ent), 'id' => $ent->id, 'op' => 'delete'));
+		foreach ($this->updates['deletes'] as $info) {
+			$id = $info['id'] ?: $info['ent']->getId();
+			if ($id) {
+				$queue->send(array('entity_class' => $info['entity'], 'id' => $id, 'op' => 'delete'));
+			}
 		}
 
 		$this->updates = array('updates' => array(), 'deletes' => array());
@@ -181,10 +187,10 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 
 		if ($update || $delete) {
 			foreach ($update as $ent) {
-				$this->updates['updates'][] = $ent;
+				$this->updates['updates'][] = array('entity' => get_class($ent), 'id' => $ent->getId(), 'ent' => $ent);
 			}
 			foreach ($delete as $ent) {
-				$this->updates['deletes'][] = $ent;
+				$this->updates['deletes'][] = array('entity' => get_class($ent), 'id' => $ent->getId(), 'ent' => $ent);
 			}
 		}
 

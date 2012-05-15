@@ -57,7 +57,7 @@ class TicketFilter implements FilterInterface
 		}
 
 		$uow = $this->em->getUnitOfWork();
-		$changeset = $uow->getEntityChangeSet();
+		$changeset = $uow->getEntityChangeSet($ticket);
 
 		$valid_triggers = array(
 			'language', 'department', 'category', 'priority', 'workflow', 'product',
