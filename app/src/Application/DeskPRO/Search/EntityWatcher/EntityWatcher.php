@@ -73,9 +73,34 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 	 */
 	protected $is_running = false;
 
+	/**
+	 * @var array
+	 */
+	protected $updates = array('updates' => array(), 'deletes' => array());
+
 	public function __construct(DeskproContainer $container)
 	{
 		$this->container = $container;
+		register_shutdown_function(array($this, 'flushUpdates'));
+	}
+
+	public function flushUpdates()
+	{
+		if ($this->is_running) return;
+		$this->is_running = true;
+
+		$queue = $this->container->getQueue('search_object_update');
+
+		foreach ($this->updates['updates'] as $ent) {
+			$queue->send(array('entity_class' => get_class($ent), 'id' => $ent->id, 'op' => 'update'));
+		}
+		foreach ($this->updates['deletes'] as $ent) {
+			$queue->send(array('entity_class' => get_class($ent), 'id' => $ent->id, 'op' => 'delete'));
+		}
+
+		$this->updates = array('updates' => array(), 'deletes' => array());
+
+		$this->is_running = false;
 	}
 
 	protected function _lazyInit()
@@ -155,12 +180,11 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 		}
 
 		if ($update || $delete) {
-			$queue = $this->container->getQueue('search_object_update');
 			foreach ($update as $ent) {
-				$queue->send(array('entity_class' => get_class($ent), 'id' => $ent->id, 'op' => 'update'));
+				$this->updates['updates'][] = $ent;
 			}
 			foreach ($delete as $ent) {
-				$queue->send(array('entity_class' => get_class($ent), 'id' => $ent->id, 'op' => 'delete'));
+				$this->updates['deletes'][] = $ent;
 			}
 		}
 
