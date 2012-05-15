@@ -81,7 +81,7 @@ class Mailer extends \Swift_Mailer implements Loggable
 
 		if (App::getConfig('debug.mail.save_to_file')) {
 			$filepath = App::getConfig('debug.mail.save_to_file');
-			if ($filepath === true) {
+			if ($filepath === true || is_numeric($filepath)) {
 				$filepath = '%log_dir%/emails';
 			}
 
