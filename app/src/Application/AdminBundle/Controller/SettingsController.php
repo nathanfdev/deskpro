@@ -58,6 +58,7 @@ class SettingsController extends AbstractController
 				'core.cookie_path'             => $_POST['settings']['core.cookie_path'],
 				'core.cookie_domain'           => $_POST['settings']['core.cookie_domain'],
 				'core.use_gravatar'            => empty($_POST['settings']['core.use_gravatar']) ? 0 : 1,
+				'core.rewrite_urls'            => empty($_POST['settings']['core.rewrite_urls']) ? 0 : 1,
 				'core.redirect_correct_url'    => empty($_POST['settings']['core.redirect_correct_url']) ? 0 : 1,
 
 				'core.attach_agent_maxsize'    => (int)$_POST['settings']['core.attach_agent_maxsize'],

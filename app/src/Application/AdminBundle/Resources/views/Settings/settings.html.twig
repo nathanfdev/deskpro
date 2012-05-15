@@ -54,6 +54,10 @@
 				{{ phrase('admin.settings.notice_helpdesk_disabled') }}</label>
 		</div>
 		<div class="field_row">
+			<label><input type="checkbox" name="settings[core.rewrite_urls]" {% if app.getSetting('core.rewrite_urls') %}checked="checked"{% endif %} />
+				{{ phrase('admin.settings.rewrite_urls_desc') }}</label>
+		</div>
+		<div class="field_row">
 			<label><input type="checkbox" name="settings[core.redirect_correct_url]" {% if app.getSetting('core.redirect_correct_url') %}checked="checked"{% endif %} />
 				{{ phrase('admin.settings.notice_always_redirect_users') }}
 		</div>

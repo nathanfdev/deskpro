@@ -67,4 +67,5 @@
 	'admin.settings.your_site_url'                          => 'Your Site URL',
 	'admin.settings.your_website_name'                      => 'Your website name',
 	'admin.settings.your_website_url'                       => 'Your website URL',
+	'admin.settings.rewrite_urls_desc'                      => 'Enable clean URLs. When this is disabled, URLs will contain a /index.php/ segment. You can only enable this option if your server supports URL rewriting.'
 );
