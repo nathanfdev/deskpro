@@ -470,7 +470,12 @@ abstract class AbstractKernel extends BaseAbstractKernel
 	{
 		$path = $request->getPathInfo();
 
-		// Excluse ajax requests
+		// Exclude admin interface
+		if (DP_INTERFACE == 'admin') {
+			return null;
+		}
+
+		// Exclude ajax requests
 		if ($request->isXmlHttpRequest()) {
 			return null;
 		}
