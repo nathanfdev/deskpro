@@ -533,6 +533,7 @@
 	'agent.general.set_agent_team'                          => 'Set Agent Team',
 	'agent.general.set_assignments'                         => 'Set assignments',
 	'agent.general.set_category'                            => 'Set Category',
+	'agent.general.set_type'                                => 'Set Type',
 	'agent.general.set_department'                          => 'Set Department',
 	'agent.general.set_field_name'                          => 'Set: {{field}}',
 	'agent.general.set_flag'                                => 'Set Flag',
