@@ -179,7 +179,7 @@ class CompaniesStep extends AbstractDeskpro3Step
 
 					case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
 						$val = str_replace('|||', '', $company_info[$name]);
-						$new_val = $this->getMappedNewId('org_def_choice', $val);
+						$new_val = $this->getMappedNewId('org_def_choice', $field_info['id'].'_'.$val);
 						if ($new_val) {
 							$this->getDb()->insert('custom_data_organizations', array(
 								'organization_id' => $org['id'],
@@ -192,7 +192,7 @@ class CompaniesStep extends AbstractDeskpro3Step
 					case 'Application\\DeskPRO\\CustomFields\\Handler\\ChoiceMulti':
 						$vals = explode('|||', $company_info[$name]);
 						foreach ($vals as $val) {
-							$new_val = $this->getMappedNewId('org_def_choice', $val);
+							$new_val = $this->getMappedNewId('org_def_choice', $field_info['id'].'_'.$val);
 							if ($new_val) {
 								$this->getDb()->insert('custom_data_organizations', array(
 									'organization_id' => $org['id'],

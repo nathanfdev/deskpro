@@ -192,6 +192,10 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 
 		$has_choices = false;
 
+		if ($f['formtype'] == 'select2') {
+			$f = $this->transform2lvToSelect($f);
+		}
+
 		switch ($f['formtype']) {
 			case 'input':
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
@@ -255,6 +259,10 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 
 		$has_choices = false;
 
+		if ($f['formtype'] == 'select2') {
+			$f = $this->transform2lvToSelect($f);
+		}
+
 		switch ($f['formtype']) {
 			case 'input':
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
@@ -316,6 +324,10 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 		$new_field->description = $f['description'];
 
 		$has_choices = false;
+
+		if ($f['formtype'] == 'select2') {
+			$f = $this->transform2lvToSelect($f);
+		}
 
 		switch ($f['formtype']) {
 			case 'input':
@@ -380,6 +392,10 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 
 		$has_choices = false;
 
+		if ($f['formtype'] == 'select2') {
+			$f = $this->transform2lvToSelect($f);
+		}
+
 		switch ($f['formtype']) {
 			case 'input':
 				$new_field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
@@ -418,5 +434,40 @@ class CustomFieldsStep extends AbstractDeskpro3Step
 				$this->saveMappedId('kb_def_choice', $f['id'] . '_' . $choice_info[0], $child->id);
 			}
 		}
+	}
+
+
+	/**
+	 * Converts a 2lvl select box into a normal select box
+	 *
+	 * @param array $f
+	 * @return array
+	 */
+	protected function transform2lvToSelect(array $f)
+	{
+		$f['formtype'] = 'select';
+
+		$data = unserialize($f['data']);
+		$newdata = array();
+		foreach ($data[0] as $parent) {
+			if (isset($data[$parent['key']])) {
+				foreach ($data[$parent['key']] as $child) {
+					$newdata[] = array(
+						$child['key'],
+						'',
+						$parent['value'] . ' > ' . $child['value']
+					);
+				}
+			} else {
+				$newdata[] = array(
+					$parent['key'],
+					'',
+					$parent['value']
+				);
+			}
+		}
+
+		$f['data'] = serialize($newdata);
+		return $f;
 	}
 }
