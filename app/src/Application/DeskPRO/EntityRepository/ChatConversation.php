@@ -98,7 +98,7 @@ class ChatConversation extends AbstractEntityRepository
 
 		$qb = $this->createQueryBuilder('c');
 		$qb->orderBy('c.id', 'DESC');
-		$qb->where('c.status = :status');
+		$qb->where('c.status = :status AND c.is_agent = false');
 		$params['status'] = 'open';
 
 		if (is_object($agent)) {
@@ -121,8 +121,9 @@ class ChatConversation extends AbstractEntityRepository
 		} elseif ($department == -1) {
 			// no dep criteria
 		} else {
-			$qb->andWhere('c.department = :dep');
-			$params['dep'] = $department;
+			$children = App::getDataService('Department')->getIdsInTree($department, true);
+			$qb->andWhere('c.department IN (:dep)');
+			$params['dep'] = $children;
 		}
 
 		return $qb->getQuery()->execute($params);

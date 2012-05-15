@@ -245,7 +245,7 @@ class WidgetController extends AbstractController
 			$this->db->update('chat_conversations', array('is_window' => 1), array('id' => $convo->getId()));
 		}
 
-		$departments = $this->container->getDataService('Department')->getAll();
+		$departments = $this->container->getDataService('Department')->getPersonDepartments($sessionObj->getPerson() ?: $this->person, 'chat');
 
 		$vars = array(
 			'session_code' => $session->getSessionCode(),

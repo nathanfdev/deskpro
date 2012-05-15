@@ -109,7 +109,8 @@
 					{% if not app.user.name %}
 						<input type="text" name="name" placeholder="{{ phrase('user.chat.your_name') }}" value="{{ initial_name }}" /><br />
 					{% else %}
-						{{ app.user.name }}
+						<strong style="font-size: 110%;">{{ app.user.name }}</strong>
+						<input type="hidden" name="name" value="{{ app.user.name }}" /><br />
 					{% endif %}
 				</div>
 			</div>
@@ -119,10 +120,11 @@
 				</div>
 				<div class="dp-controls">
 					{% if not app.user.email_address %}
-					<input type="text" name="email" placeholder="{{ phrase('user.chat.your_email_address') }}" value="{{ initial_email }}" />
-				{% else %}
-					{{ app.user.email_address }}
-				{% endif %}
+						<input type="text" name="email" placeholder="{{ phrase('user.chat.your_email_address') }}" value="{{ initial_email }}" />
+					{% else %}
+						<strong style="font-size: 110%;">{{ app.user.email_address }}</strong>
+						<input type="hidden" name="email" value="{{ app.user.email_address }}" />
+					{% endif %}
 				</div>
 			</div>
 		{% endif %}
@@ -154,7 +156,7 @@
 
 <section class="dp-chat-active-state" id="dp_chat_finding_agent" style="display: none">
 	<header>
-		<div class="dp_chatwin_close"><i class="dp-icon-remove-sign"></i> {{ phrase('user.chat.cancel') }}</div>
+		<div class="dp_chatwin_close"><i class="dp-icon-remove-sign"></i> {{ phrase('user.chat.end_chat') }}</div>
 
 		<h3>{{ phrase('user.chat.finding_an_agent') }}</h3>
 	</header>
@@ -207,43 +209,36 @@
 		</div>
 
 		<div class="dp-control-group">
-			<div class="dp-control-label">
-				<label>{{ phrase('user.chat.rate_response_time') }}</label>
-			</div>
 			<div class="dp-controls">
-				<select name="rating_response_time">
-					<option value="0"></option>
-					<option value="1">1</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
-					<option value="5">5</option>
-				</select>
-			</div>
-		</div>
-
-		<div class="dp-control-group">
-			<div class="dp-control-label">
-				<label>{{ phrase('user.chat.rate_satisfaction') }}</label>
-			</div>
-			<div class="dp-controls">
-				<select name="rating_overall">
-					<option value="0"></option>
-					<option value="1">1</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
-					<option value="5">5</option>
-				</select>
-			</div>
-		</div>
-
-		<div class="dp-control-group">
-			<div class="dp-control-label">
-				<label>{{ phrase('user.chat.ask_comments') }}</label>
-			</div>
-			<div class="dp-controls">
-				<textarea name="comments"></textarea>
+				<table cellspacing="0" cellpadding="0" class="dp-layout">
+					<tr>
+						<td style="padding-right: 5px; padding-bottom: 4px;">{{ phrase('user.chat.rate_response_time') }}:</td>
+						<td style="padding-bottom: 4px;">
+							<select name="rating_response_time">
+								<option value="0"></option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td style="padding-right: 5px">{{ phrase('user.chat.rate_satisfaction') }}:</td>
+						<td>
+							<select name="rating_overall">
+								<option value="0"></option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+							</select>
+						</td>
+					</tr>
+				</table>
+				<textarea name="comments" style="width: 95%; margin-top: 3px;" placeholder="{{ phrase('user.chat.ask_comments') }}"></textarea>
 			</div>
 		</div>
 

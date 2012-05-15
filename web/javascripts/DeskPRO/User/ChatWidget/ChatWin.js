@@ -6,7 +6,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 	initialize: function(options) {
 
 		this.options = {
-			findingAgentTimeout: 55000
+			findingAgentTimeout: 8000
 		};
 		this.setOptions(options || {});
 
@@ -247,7 +247,11 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 	},
 
 	startChat: function() {
-		this.hasEmailAddress = !!$('#dp_chat_start').find('input[name="email"]').val();
+		if ($('#dp_chat_start').find('input[name="email"]').val().length) {
+			this.hasEmailAddress = true;
+		} else {
+			this.hasEmailAddress = false;
+		}
 		var data = $('#dp_chat_start').find('input, select').serializeArray();
 		this.sendMessage('', data, { starting: true });
 

@@ -32,4 +32,5 @@
 	'user.chat.you_are_chatting_with'        => 'You are chatting with',
 	'user.chat.your_email_address'           => 'Your email address',
 	'user.chat.your_name'                    => 'Your Name',
+	'user.chat.author_you'                   => 'You',
 );

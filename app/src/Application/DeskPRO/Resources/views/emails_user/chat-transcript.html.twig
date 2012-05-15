@@ -10,9 +10,39 @@
 	<p>{{ phrase('user.emails.your_chat_transcript') }}</p>
 
 	{% for message in convo_messages|reverse %}
-		<div class="message {% if message.is_sys %}sys{% elseif message.author.is_agent %}agent{% else %}user{% endif%}">
-			<span class="author">{% if message.is_sys %}*{% else %}&lt;{{message.author_name}}&gt;{% endif %}</span>
-			<span class="message">{{message.content}}</span>
-		</div>
+		{% if message.is_sys %}
+			<p>
+				[{{ message.date_created|date('g:ia') }}] *
+				{% if message.metadata.phrase_id %}
+					{% if message.is_html %}
+						{{ phrase('user.chat.'~ message.metadata.phrase_id, message.metadata) }}
+					{% else %}
+						{{ phrase('user.chat.'~ message.metadata.phrase_id, message.metadata)|e }}
+					{% endif %}
+				{% elseif message.is_html %}
+					{{message.content|raw}}
+				{% else %}
+					{{message.content}}
+				{% endif %}
+			</p>
+		{% elseif message.author.is_agent and message.author.id != convo.person.id %}
+			<p style="background-color: #EDEDED">
+				[{{ message.date_created|date('g:ia') }}] {{ message.author.display_name }}:
+				{% if message.is_html %}
+					{{message.content|raw}}
+				{% else %}
+					{{message.content}}
+				{% endif %}
+			</p>
+		{% else %}
+			<p style="background-color: #EDEDED">
+				[{{ message.date_created|date('g:ia') }}] {{ phrase('user.chat.author_you') }}:
+				{% if message.is_html %}
+					{{message.content|raw}}
+				{% else %}
+					{{message.content}}
+				{% endif %}
+			</p>
+		{% endif %}
 	{% endfor %}
 {% endblock %}

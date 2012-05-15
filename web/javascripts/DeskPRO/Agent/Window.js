@@ -288,6 +288,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 					});
 				});
 
+				$(el).on('click', function() {
+					Tipped.hideAll();
+				});
+
 				return $(el).fileupload(options);
 			},
 
@@ -373,6 +377,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (!this.openSection) {
 			this.switchToSection($('#dp_nav [data-section-handler]').first().attr('id'));
 		}
+
+		this.messageChanneler.poller.send();
 
 		/**
 		 * After everything is init'ed we'll start our GC

@@ -220,11 +220,15 @@ var DpChatWidget = new (function() {
 		openBtn.hide();
 	};
 
-	function setCookie(c_name,value,exdays) {
-		var exdate=new Date();
-		exdate.setDate(exdate.getDate() + exdays);
-		var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
-		document.cookie=c_name + "=" + c_value;
+	function setCookie(name,value,days) {
+		if (days) {
+			var date = new Date();
+			date.setTime(date.getTime()+(days*24*60*60*1000));
+			var expires = "; expires="+date.toGMTString();
+		} else {
+			var expires = "";
+		}
+		document.cookie = name+"="+value+expires+"; path=/";
 	};
 
 	function getCookie(c_name) {

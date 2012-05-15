@@ -51,7 +51,7 @@ class ClientMessage extends EntityRepository
 	 * @param int $since
 	 * @return array
 	 */
-	public function getMessageData(PersonEntity $person, HttpSession $session, $since = 0, $with_last_since = null)
+	public function getMessageData(PersonEntity $person, HttpSession $session, $since = 0, $with_last_since = null, $is_initial = false)
 	{
 		// Automatically ping
 		// AJAX clients dont send ping manually, it's just part of this call
@@ -108,6 +108,31 @@ class ClientMessage extends EntityRepository
 				if ($message['id'] > $data['last_id']) {
 					$data['last_id'] = $message['id'];
 				}
+			}
+		}
+
+		// If this is the first poll, check if there are any chats waiting to be taken and show those as alerts
+		if ($is_initial && $person->is_agent) {
+			$convos = $this->_em->getRepository('DeskPRO:ChatConversation')->getOpenForAgentAndDepartment(0, -1);
+			foreach ($convos as $c) {
+				$chatdata = array(
+					'conversation_id'=> $c->getId(),
+					'author_id' => $c->person ? $c->person->getId() : 0,
+					'author_name' => $c->person ? $c->person->getDisplayName() : 0,
+					'author_email' => $c->person ? $c->person->getEmailAddress() : 0,
+					'subject_line' => 'Chat ' . $c->getId(),
+					'agent_id' => 0,
+					'agent_name' => '',
+					'department_id' => $c->department ? $c->department->getId() : 0,
+					'department_name' => $c->department ? $c->department->getTitle() : '',
+					'date_created' => $c->date_created->getTimestamp()
+				);
+
+				$data['messages'][] = array(
+					null,
+					'chat.new',
+					$chatdata
+				);
 			}
 		}
 

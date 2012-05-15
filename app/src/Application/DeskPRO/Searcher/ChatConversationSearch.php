@@ -46,6 +46,7 @@ class ChatConversationSearch extends SearcherAbstract
 	const TERM_ID                   = 'id';
 	const TERM_AGENT_ID             = 'agent_id';
 	const TERM_DEPARTMENT_ID        = 'department_id';
+	const TERM_DEPARTMENT_ID_SPECIFIC = 'department_id_specific';
 	const TERM_DATE_CREATED         = 'date_created';
 	const TERM_STATUS               = 'status';
 
@@ -253,8 +254,17 @@ class ChatConversationSearch extends SearcherAbstract
 					}
 					break;
 				case self::TERM_DEPARTMENT_ID:
-					$children[] = $choice;
-					$children = App::getDataService('Department')->getIdsInTree($choice, true);
+					$children = array();
+					foreach ((array)$choice as $did) {
+						$children[] = $did;
+						$children = array_merge($choice, App::getDataService('Department')->getIdsInTree($did, true));
+					}
+					$wheres[] = $this->_choiceMatch('chat_conversations.department_id', $op, $children, true);
+					break;
+
+				case self::TERM_DEPARTMENT_ID_SPECIFIC:
+					$choice = (array)$choice;
+					$children[] = array_pop($choice);
 					$wheres[] = $this->_choiceMatch('chat_conversations.department_id', $op, $children, true);
 					break;
 

@@ -57,7 +57,8 @@ class ClientMessagesController extends AbstractController
 			$this->person,
 			$this->session,
 			$new_since,
-			($this->in->getBool('is_initial_poll') ? $last_since : null)
+			($this->in->getBool('is_initial_poll') ? $last_since : null),
+			$this->in->getBool('is_initial_poll')
 		);
 
 		// We inject a rendered view for new chats, so loop through the messages to do that
