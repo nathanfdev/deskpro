@@ -1081,7 +1081,7 @@ class Upgrade
 			return $this->latest_version;
 		}
 
-		$this->latest_version = $this->callService('build/check-latest-version.json');
+		$this->latest_version = $this->callService('check-latest-version.json');
 
 		return $this->latest_version;
 	}
