@@ -343,11 +343,11 @@
 {##############################################################}
 
 <ul id="feedback_category_menu" data-menu-type="feedback-category-menu" data-menu-flag="copy-menu">
-	{% for cat in feedback_categories %}
+	{% for cat in app.getDataRepository('FeedbackCategory').getRootNodes() %}
 		{% if last_with_child %}
-			<li>-</li>
+			<li class="sep">-</li>
 		{% endif %}
-		{% if cat.children %}
+		{% if cat.children|length %}
 			<li data-category-id="{{cat.id}}" class="section-title cat-{{cat.id}}">{{cat.title}}</li>
 			{% for subcat in cat.children %}
 				<li data-category-id="{{subcat.id}}" data-parent-id="{{cat.id}}" class="cat-{{cat.id}} cat-{{subcat.id}}">{{subcat.title}}</li>
@@ -371,7 +371,7 @@
 		data-status-type="active"
 		data-option-value="active"
 	>{{ phrase('agent.feedback.status_active') }}</li>
-	{% for cat in feedback_active_status_cats %}
+	{% for cat in app.getDataRepository('FeedbackStatusCategory').getActiveCategories() %}
 		<li
 			class="status-{{cat.id}}"
 			data-status-type="active"
@@ -383,7 +383,7 @@
 		data-status-type="closed"
 		data-option-value="closed"
 	>{{ phrase('agent.tickets.status_closed') }}</li>
-	{% for cat in feedback_closed_status_cats %}
+	{% for cat in app.getDataRepository('FeedbackStatusCategory').getClosedCategories() %}
 		<li
 			class="status-{{cat.id}}"
 			data-status-type="closed"

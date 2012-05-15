@@ -123,6 +123,7 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 		}
 
 		foreach ($cats as $cat) {
+
 			#------------------------------
 			# Make sure we havent already done them
 			#------------------------------
@@ -134,33 +135,44 @@ class FeedbackCatsStep extends AbstractDeskpro3Step
 			}
 
 			#------------------------------
+			# Subcageory: We're mapping to the parent
+			#------------------------------
+
+			if ($parent_id) {
+				$new_parent_cat_id = $this->getMappedNewId('feedback_cat', $parent_id);
+				$this->saveMappedId('feedback_cat', $cat['id'], $new_parent_cat_id);
+
+			#------------------------------
 			# Create it
 			#------------------------------
 
-			$prefix[] = $cat['title'];
+			} else {
 
-			$new_cat = new FeedbackCategory();
-			$new_cat->title = implode(' > ', $prefix);
-			$new_cat->display_order = $cat['display_order'];
-			if ($new_parent) {
-				// Cats are single-level
-				//$new_cat->parent = $new_parent;
+				$prefix[] = $cat['title'];
+
+				$new_cat = new FeedbackCategory();
+				$new_cat->title = implode(' > ', $prefix);
+				$new_cat->display_order = $cat['display_order'];
+				if ($new_parent) {
+					// Cats are single-level
+					//$new_cat->parent = $new_parent;
+				}
+
+				$this->getEm()->persist($new_cat);
+				$this->getEm()->flush();
+
+				$this->getDb()->insert('feedback_category2usergroup', array(
+					'category_id' => $new_cat->id,
+					'usergroup_id' => 1
+				));
+
+				$this->saveMappedId('feedback_cat', $cat['id'], $new_cat->id);
+
+				$this->db->insert('import_datastore', array(
+					'typename' => 'dp3_ideacatid_' . $cat['id'],
+					'data' => $new_cat->id
+				));
 			}
-
-			$this->getEm()->persist($new_cat);
-			$this->getEm()->flush();
-
-			$this->getDb()->insert('feedback_category2usergroup', array(
-				'category_id' => $new_cat->id,
-				'usergroup_id' => 1
-			));
-
-			$this->saveMappedId('feedback_cat', $cat['id'], $new_cat->id);
-
-			$this->db->insert('import_datastore', array(
-				'typename' => 'dp3_ideacatid_' . $cat['id'],
-				'data' => $new_cat->id
-			));
 
 			// Process any subcats
 			$this->processCategories($cat['id'], $prefix);
