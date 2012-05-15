@@ -1085,6 +1085,8 @@ class KernelErrorHandler
 
 	public static function stripPathPrefix($content)
 	{
+		$content = str_replace('\\', '/', $content);
+
 		$prefix = DP_ROOT . '/';
 		$content = str_replace($prefix, '', $content);
 
