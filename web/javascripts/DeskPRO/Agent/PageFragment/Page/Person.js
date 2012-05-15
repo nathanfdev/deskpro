@@ -54,6 +54,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					if (self.labelsInput && self.labelsInput.options.textarea.textext()[0]) {
 						self.labelsInput.options.textarea.textext()[0].originalWidth = w;
 						self.labelsInput.options.textarea.textext()[0].invalidateBounds();
+
+						$(self.labelsInput.options.textarea).on('postInvalidate', function() {
+							self.updateUi();
+						});
 					}
 				}, 500);
 			});
