@@ -73,50 +73,6 @@
 	<table width="100%">
 		<thead>
 			<tr>
-				<th >{{ phrase('admin.general.setting') }}</th>
-				<th width="200">{{ phrase('agent.general.value') }}</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>
-					<h3>{{ phrase('admin.general.file_uploads') }}</h3>
-					<p>{{ phrase('admin.server.required_for_upload') }}</p>
-				</td>
-				<td>{{ php_vars.file_uploads }}
-			</tr>
-
-			<tr>
-				<td>
-					<h3>{{ phrase('admin.server.upload_tmp_dir') }}</h3>
-					<p>{{ phrase('admin.server.php_upload_location') }}</p>
-				</td>
-				<td>{{ php_vars.upload_tmp_dir }}
-			</tr>
-
-			<tr>
-				<td>
-					<h3>{{ phrase('admin.server.upload_max_filesize') }}</h3>
-					<p>{{ phrase('admin.server.max_single_file_size') }}</p>
-				</td>
-				<td>{{ php_vars.upload_max_filesize }}
-			</tr>
-
-			<tr>
-				<td>
-					<h3>{{ phrase('admin.server.post_max_size') }}</h3>
-					<p>{{ phrase('admin.server.max_post_size') }}</p>
-				</td>
-				<td>{{ php_vars.post_max_size }}
-			</tr>
-		</tbody>
-	</table>
-</div><br />
-
-<div class="check-grid item-list">
-	<table width="100%">
-		<thead>
-			<tr>
 				<th colspan="10">{{ phrase('admin.server.test_a_file_upload') }}</th>
 			</tr>
 		</thead>
@@ -127,7 +83,7 @@
 						{% if failed %}<h3>{{ phrase('admin.server.failed') }}</h3><br />{{ failed }}
 						{% else %}
 							<h3>{{ phrase('admin.server.success') }}</h3>
-							{{ phrase('admin.server.download_attachment') }}: <a href="{{ attach.getDownloadUrl() }}">{{ attach.getDownloadUrl() }}</a><br />
+							<a href="{{ attach.getDownloadUrl() }}">{{ phrase('admin.server.download_attachment') }}</a>
 						{% endif %}
 					</td>
 				</tr>
@@ -143,6 +99,81 @@
 		</tbody>
 	</table>
 </div>
+<br />
+
+<div class="check-grid item-list">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th>{{ phrase('admin.server.php_settings') }}</th>
+				<th width="200">{{ phrase('agent.general.value') }}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<h3><a href="http://www.php.net/manual/en/ini.core.php#ini.file-uploads">file_uploads</a></h3>
+					<p>{{ phrase('admin.server.required_for_upload') }}</p>
+				</td>
+				<td>{{ php_vars.file_uploads }}
+			</tr>
+
+			<tr>
+				<td>
+					<h3><a href="http://www.php.net/manual/en/ini.core.php#ini.upload-tmp-dir">upload_tmp_dir</a></h3>
+					<p>{{ phrase('admin.server.php_upload_location') }}</p>
+				</td>
+				<td>{{ php_vars.upload_tmp_dir }}
+			</tr>
+
+			<tr>
+				<td>
+					<h3><a href="http://www.php.net/manual/en/ini.core.php#ini.upload-max-filesize">upload_max_filesize</a></h3>
+					<p>{{ phrase('admin.server.max_single_file_size') }}</p>
+				</td>
+				<td>{{ php_vars.upload_max_filesize }}
+			</tr>
+
+			<tr>
+				<td>
+					<h3><a href="http://www.php.net/manual/en/ini.core.php#ini.post-max-size">post_max_size</a></h3>
+					<p>{{ phrase('admin.server.max_post_size') }}</p>
+				</td>
+				<td>{{ php_vars.post_max_size }}</td>
+			</tr>
+
+			<tr>
+				<td>
+					<h3><a href="http://www.php.net/manual/en/ini.core.php#ini.memory-limit">memory_limit</a></h3>
+					<p>{{ phrase('admin.server.upload_memory_limit_explain') }}</p>
+				</td>
+				<td>{{ php_vars.post_max_size }}</td>
+			</tr>
+
+			<tr>
+				<td>
+					<h3>{{ phrase('admin.server.upload_effect_max') }}</h3>
+					<p>{{ phrase('admin.server.upload_effect_max_explain') }}</p>
+				</td>
+				<td>{{ effective_max_display }}</td>
+			</tr>
+
+			<tr>
+				<td colspan="2">
+					<p>
+						{{ phrase('admin.server.edit_php_ini_to_make_changes') }}
+						<a href="{{ get_service_url('dp.kb.editing_php_ini') }}">{{ phrase('admin.server.learn_about_editing_php_ini') }}</a>
+					<p>
+					{% if php_ini %}
+						<p>
+							{{ phrase('admin.server.we_detected_php_ini_at', {path: php_ini}) }}
+						</p>
+					{% endif %}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div><br />
 
 {% if not moving_id %}
 <div id="switch_confirm" style="display: none; width: 500px; height: 300px">

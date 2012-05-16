@@ -298,11 +298,17 @@ class ServerController extends AbstractController
 		$total_size = $this->container->getDb()->fetchColumn("SELECT SUM(filesize) FROM blobs");
 		$total_size_readable = Numbers::filesizeDisplay($total_size);
 
+		$php_ini = \Orb\Util\Env::getPhpIniPath();
+		$effective_max = \Orb\Util\Env::getEffectiveMaxUploadSize();
+
 		return $this->render('AdminBundle:Server:attachments.html.twig', array(
 			'php_vars' => $php_vars,
 			'has_uploaded' => $has_uploaded,
 			'attach' => $attach,
 			'failed' => $failed,
+			'php_ini' => $php_ini,
+			'effective_max' => $effective_max,
+			'effective_max_display' => Numbers::filesizeDisplay($effective_max),
 
 			'filestorage_path' => $filestorage_path,
 			'use_fs' => $use_fs,

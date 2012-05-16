@@ -96,7 +96,7 @@ class Env
 
 		$mem = self::getMemoryLimit();
 		if ($mem != -1) {
-			$min = min($min, $mem);
+			$min = min($min, $mem / 3);
 		}
 
 		return $min;

@@ -70,7 +70,7 @@
 	'agent.general.attach_error_not_allowed_exts'           => 'The type of file you uploaded is not allowed.',
 	'agent.general.attach_error_not_in_allowed_exts'        => 'Only the following file types can be uploaded: {{error_detail}}',
 	'agent.general.attach_error_server_error'               => 'There was a problem with our server while trying to accept your attachment. Please try again.',
-	'agent.general.attach_error_size'                       => 'Your attachment is too large. The maximum file size is {{error_detail}}',
+	'agent.general.attach_error_size'                       => 'Your attachment is too large.',
 	'agent.general.attachments'                             => 'Attachments',
 	'agent.general.author'                                  => 'Author',
 	'agent.general.awaiting_validation'                     => 'Awaiting Validation',
