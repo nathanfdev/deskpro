@@ -44,24 +44,15 @@ class LogItemEntity extends \Orb\Log\Writer\AbstractWriter
 {
 	public function _write(\Orb\Log\LogItem $log_item)
 	{
-		$log = new Entity\LogItem();
-		$log['log_name']       = $log_item->getLogName();
-		$log['session_name']   = $log_item->getSessionName();
-		$log['message']        = $log_item->getMessage();
-		$log['priority']       = $log_item->getPriority();
-		$log['priority_name']  = $log_item->getPriorityName();
-		$log['date_created']   = $log_item->getDatetime();
-
-		if ($log_item->getFlag() !== null) {
-			$log['flag'] = $log_item->getFlag();
-		}
-
-		$info = $log_item->getExtra();
-		if ($info) {
-			$log['data'] = $info;
-		}
-		
-		App::getOrm()->persist($log);
-		App::getOrm()->flush();
+		App::getDb()->insert('log_items', array(
+			'log_name'         => $log_item->getLogName(),
+			'session_name'     => $log_item->getSessionName(),
+			'message'          => $log_item->getMessage(),
+			'priority'         => $log_item->getPriority(),
+			'priority_name'    => $log_item->getPriorityName(),
+			'date_created'     => $log_item->getDatetime()->format('Y-m-d H:i:s'),
+			'flag'             => $log_item->getFlag() ?: null,
+			'data'             => $log_item->getExtra() ? serialize($log_item->getExtra()) : null,
+		));
 	}
 }

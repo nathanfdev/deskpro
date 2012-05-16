@@ -98,7 +98,7 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 			}
 		}
 		foreach ($this->updates['deletes'] as $info) {
-			$id = $info['id'] ?: $info['ent']->getId();
+			$id = $info['id'];
 			if ($id) {
 				$queue->send(array('entity_class' => $info['entity'], 'id' => $id, 'op' => 'delete'));
 			}

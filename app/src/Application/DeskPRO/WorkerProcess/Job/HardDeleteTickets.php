@@ -75,7 +75,9 @@ class HardDeleteTickets extends AbstractJob
 
 			try {
 				$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($ticket_id);
+				$ticket->setNoLog(true);
 				App::getOrm()->remove($ticket);
+				App::getOrm()->flush();
 				App::getOrm()->commit();
 			} catch (\Exception $e) {
 				App::getOrm()->rollback();

@@ -41,13 +41,13 @@ use Application\DeskPRO\Search\Indexer\Document;
 class Ticket extends AbstractContentType
 {
 	const ENTITY_NAME = 'DeskPRO:Ticket';
-	
+
 	public function objectToDocument($ticket)
 	{
 		$data = array();
 		$data['id'] = $ticket['id'];
 		$data['content_type'] = 'ticket';
-		$data['title'] = $ticket['title'];
+		$data['title'] = $ticket['subject'];
 		$data['content'] = $ticket['content'];
 		$data['labels'] = array();
 

@@ -92,7 +92,7 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Other data, such as backtrace or debug info
 	 *
-	 * @var string
+	 * @var array
 	 */
 	protected $data = null;
 
