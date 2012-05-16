@@ -11,12 +11,12 @@
 	</div>
 	{% endif %}
 	{% if app.getSetting('core.use_product') %}
-	<div class="ticket_product product_id standard-field item {% if not ticket.product %}no-value{% endif %}" data-item-type="ticket_product">
+	<div class="product standard-field item {% if not ticket.product %}no-value{% endif %}" data-item-type="product">
 		<div class="title">
-			<span class="menu-trigger product_id label">{{ phrase('agent.general.product') }}:</span>
+			<span class="menu-trigger product label">{{ phrase('agent.general.product') }}:</span>
 		</div>
 		<div class="content">
-			<span class="prop-val menu-trigger product_id">{{ticket.product.full_title|default(phrase('agent.general.none'))}}</span>
+			<span class="prop-val menu-trigger product">{{ticket.product.full_title|default(phrase('agent.general.none'))}}</span>
 		</div>
 	</div>
 	{% endif %}
@@ -64,19 +64,25 @@
 				<option value="0">{{ phrase('agent.general.none') }}</option>
 				{% for cat in ticket_options.ticket_categories_hierarchy %}
 					<option {% if ticket.category.id == cat.id %}selected="selected"{% endif %} value="{{ cat.id }}">{{ "--"|repeat(cat.depth) }} {{ cat.title }}</option>
+					{% for subcat in cat.children %}
+						<option {% if ticket.category.id == subcat.id %}selected="selected"{% endif %} value="{{ subcat.id }}">-- {{ subcat.title }}</option>
+					{% endfor %}
 				{% endfor %}
 			</select>
 		</div>
 	</div>
 	{% endif %}
 	{% if app.getSetting('core.use_product') %}
-	<div class="ticket_product product_id standard-field item" data-item-type="ticket_product">
+	<div class="ticket_product product standard-field item" data-item-type="product">
 		<div class="title">{{ phrase('agent.general.product') }}:</div>
 		<div class="content">
-			<select name="ticket[product]_id" data-prop-id="product_id" class="prop-input-product_id">
+			<select name="ticket[product_id]d" data-prop-id="product" class="prop-input-product">
 				<option value="0">{{ phrase('agent.general.none') }}</option>
 				{% for prod in ticket_options.products_hierarchy %}
-					<option {% if ticket.product.id == prod.id %}selected="selected"{% endif %} value="{{ prod.id }}">{{ "--"|repeat(prod.depth) }} {{ prod.title }}</option>
+					<option {% if ticket.product.id == prod.id %}selected="selected"{% endif %} value="{{ prod.id }}">{{ prod.title }}</option>
+					{% for subprod in prod.children %}
+						<option {% if ticket.product.id == subprod.id %}selected="selected"{% endif %} value="{{ subprod.id }}">-- {{ subprod.title }}</option>
+					{% endfor %}
 				{% endfor %}
 			</select>
 		</div>
