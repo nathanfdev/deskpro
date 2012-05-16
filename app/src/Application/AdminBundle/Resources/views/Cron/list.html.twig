@@ -30,20 +30,6 @@
 				{% endif %}
 			</td>
 		</tr>
-		{% if is_problem %}
-			<tr>
-				<td>
-					<div class="alert-message block-message error" style="margin: 10px;">
-						The scheduled tasks do not appear to be running, or the time between executions is too high. You should
-						ensure <var>/cron.php</var> is running once a minute.
-
-						<br />
-						<br />
-						<a href="{{ path('admin_settings_cron') }}">Click here for more information</a>.
-					</div>
-				</td>
-			</tr>
-		{% endif %}
 		</tbody>
 	</table>
 </div>

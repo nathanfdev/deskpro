@@ -50,6 +50,19 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 		$this->person = $this->session->getPerson();
 		$this->person->loadHelper('HelpMessages');
+
+		$last_run = $this->container->getSetting('core.last_cron_run');
+		if (!$last_run) $last_run = 0;
+
+		$time_since_run = time() - $last_run;
+		$is_problem = false;
+		if ($time_since_run > 301) {
+			$is_problem = true;
+		}
+
+		$this->get('templating.globals')->setVariable('cron_last_run', $last_run);
+		$this->get('templating.globals')->setVariable('cron_time_since_last_run', $time_since_run);
+		$this->get('templating.globals')->setVariable('cron_is_problem', $is_problem);
 	}
 
 
