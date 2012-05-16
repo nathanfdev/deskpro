@@ -25,7 +25,7 @@
 		<tr>
 			<td>
 				{{ phrase('admin.settings.cron_setup_linux_edit_file') }}
-				<pre class="code-box">* * * * * exampleuser {{ php_path|default('/path/to/php') }} -q {{ path }}/cron.php</pre>
+				<code class="code-box nowrap">* * * * * exampleuser {{ php_path|default('/path/to/php') }} -q {{ constant('DP_WEB_ROOT') }}/cron.php</code>
 				<div class="small-note-box">
 					{{ phrase('admin.settings.cron_setup_linux_edit_file_user') }}
 					{% if not php_path %}
