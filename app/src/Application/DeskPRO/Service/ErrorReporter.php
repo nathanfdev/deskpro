@@ -39,7 +39,16 @@ class ErrorReporter
 {
 	public static function getBasicData()
 	{
-		if (App::getSetting('core.enable_reduced_lic_reports')) {
+		$reduced_lic_reports = false;
+		if (class_exists('Application\\DeskPRO\\App')) {
+			try {
+				if (App::getSetting('core.enable_reduced_lic_reports')) {
+					$reduced_lic_reports = true;
+				}
+			} catch (\Exception $e) {}
+		}
+
+		if ($reduced_lic_reports) {
 			$info = array(
 				'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
 				'build'             => DP_BUILD_TIME,
