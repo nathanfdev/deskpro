@@ -1,6 +1,6 @@
 <?php if (!defined('DP_ROOT')) exit('No access'); ?>
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
-<?php $view['slots']->start('subtitle') ?>Step 5: Install initial data objects<?php $view['slots']->stop() ?>
+<?php $view['slots']->start('subtitle') ?>Step 5: Create Your Admin Account<?php $view['slots']->stop() ?>
 <?php $failed = false ?>
 <script type="text/javascript">
 var validate = function() {
