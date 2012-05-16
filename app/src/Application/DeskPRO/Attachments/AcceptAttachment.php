@@ -109,6 +109,11 @@ class AcceptAttachment
 		}
 
 		if ($file === null) {
+			// This means the file is too big and PHP basically rejected the whole request data
+			if (isset($_SERVER['CONTENT_LENGTH']) && empty($_POST) && empty($_FILES)) {
+				return array('error_code' => self::ERR_SIZE, 'error_detail' => \Orb\Util\Env::getEffectiveMaxUploadSize());
+			}
+
 			return array('error_code' => self::ERR_NO_FILE, 'error_detail' => 'null_file');
 		}
 
