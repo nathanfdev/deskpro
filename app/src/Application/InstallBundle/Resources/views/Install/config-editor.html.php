@@ -27,7 +27,7 @@
 		<div class="clearfix">
 			<label>Database Password</label>
 			<div class="input">
-				<input type="text" name="DP_DATABASE_PASSWORD" value="<?php if ($exist['DP_DATABASE_PASSWORD']) echo $exist['DP_DATABASE_PASSWORD']; else echo 'root'; ?>" size="30" />
+				<input type="text" name="DP_DATABASE_PASSWORD" value="<?php if ($exist['DP_DATABASE_PASSWORD']) echo $exist['DP_DATABASE_PASSWORD']; else echo ''; ?>" size="30" />
 			</div>
 		</div>
 		<div class="clearfix">
