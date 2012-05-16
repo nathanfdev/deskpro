@@ -502,7 +502,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$ticket->email_gateway = $this->gateway;
 		$ticket->email_gateway_address = $this->gateway_address;
 
-		if ($this->gateway_address->match_type == 'match_type') {
+		if ($this->gateway_address && $this->gateway_address->match_type == 'exact') {
 			$ticket->notify_email = $this->gateway_address->match_pattern;
 		}
 

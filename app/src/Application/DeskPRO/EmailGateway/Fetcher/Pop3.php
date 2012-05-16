@@ -44,6 +44,11 @@ class Pop3 extends AbstractFetcher
 	protected $read_count = 0;
 
 	/**
+	 * @var array
+	 */
+	protected $message_list = null;
+
+	/**
 	 * Initiates the connection
 	 *
 	 * @return \Zend\Mail\Storage\Pop3
@@ -68,37 +73,63 @@ class Pop3 extends AbstractFetcher
 	}
 
 	/**
+	 * Get a list of message IDs
+	 */
+	protected function _initMessageList()
+	{
+		if ($this->message_list !== null) {
+			return;
+		}
+
+		$list = $this->getStorage()->getUniqueId();
+
+		$this->message_list = array();
+		foreach ($list as $num => $id) {
+			$this->message_list[] = array('id' => $id, 'num' => $num);
+		}
+
+		$this->logger->log("Message list contains " . count($this->message_list) . " messages", 'debug');
+	}
+
+	/**
 	 * Reads the next message in the inbox
 	 *
 	 * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
 	 */
 	protected function _readNext()
 	{
-		$this->getStorage();// init connection
+		$this->getStorage();
+		$this->_initMessageList();
 
 		$this->read_count++;
 		$this->logger->log("Trying to read next ({$this->read_count} call)", 'debug');
 
+		$next = array_shift($this->message_list);
+		if (!$next) {
+			return null;
+		}
+
+		$message_id   = $next['id'];
+		$message_num  = $next['num'];
+
 		$start_time = microtime(true);
 
+		$this->logger->log("Fetching message $message_num :: $message_id", 'debug');
+
 		try {
-			$headers = $this->getStorage()->getRawHeader(1);
-		} catch (\Zend\Mail\Protocol\Exception $e) {
-			// means there is none
-			$this->logger->log("No more messages", 'debug');
-			return null;
+			$headers = $this->getStorage()->getRawHeader($message_num);
 		} catch (\Exception $e) {
 			$this->logger->log("Exception: {$e->getMessage()} {$e->getTraceAsString()}", 'crit');
 			throw $e;
 		}
 
 		$raw_message = new RawMessage();
-		$raw_message->id = 1;
+		$raw_message->id = $message_num;
 		$raw_message->headers = $headers;
-		$raw_message->size = $this->getStorage()->getSize(1);
+		$raw_message->size = $this->getStorage()->getSize($message_num);
 
 		if (!$this->max_size || $raw_message->size < $this->max_size) {
-			$raw_message->content = $headers . "\n\n" . $this->getStorage()->getRawContent(1);
+			$raw_message->content = $headers . "\n\n" . $this->getStorage()->getRawContent($message_num);
 		} else {
 			$raw_message->too_big = true;
 		}

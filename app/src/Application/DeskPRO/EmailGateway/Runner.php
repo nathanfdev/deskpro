@@ -56,9 +56,32 @@ class Runner
 	 */
 	protected $gateways;
 
+	/**
+	 * When non-0, sets the PHP time limit per iteration
+	 *
+	 * @var int
+	 */
+	protected $set_time_limit = 0;
+
 	public function __construct()
 	{
 		$this->logger = new \Application\DeskPRO\Log\Logger();
+	}
+
+
+	/**
+	 * Set the PHP time limit for a single message. This uses set_time_limit()
+	 * and resets it every iteration.
+	 *
+	 * This is used as an infinite-loop type preventative measure. PHP will halt
+	 * the script, and whatever message that was being processed will be stuck in the 'inserted'
+	 * state.
+	 *
+	 * @param $time_limit
+	 */
+	public function setPhpTimeLimit($time_limit)
+	{
+		$this->set_time_limit = $time_limit;
 	}
 
 
@@ -98,13 +121,24 @@ class Runner
 
 
 	/**
-	 * @throws \Exception
+	 * @param int $time_limit The max time spent processing email before we break.
 	 */
-	public function execute()
+	public function execute($time_limit = 0)
 	{
+		$exec_start = time();
+
+		if (!$time_limit) {
+			$time_limit = 9999999999;
+		}
+
 		if ($this->gateways) {
 			foreach ($this->gateways as $gateway) {
-				$this->executeGateway($gateway);
+				$this->executeGateway($gateway, $time_limit);
+
+				$time_limit -= (time() - $exec_start);
+				if ($time_limit <= 0) {
+					break;
+				}
 			}
 		}
 	}
@@ -213,10 +247,16 @@ class Runner
 	/**
 	 * Execute a gateway
 	 *
+	 * $time_limit is the max time before the while loop breaks. The method will usually continue to process mail
+	 * until there is no email left. If you specify a time limit then the process will break after $time_limit seconds.
+	 * Note this check is done after processing of a message, it does not abort. This means that it's possible the time
+	 * limit will be exceeded (e.g., time limit of 10, message starts processing at 9 seconds so it continues).
+	 *
 	 * @param \Application\DeskPRO\EntityRepository\EmailGateway $gateway
+	 * @param int $time_limit The max time spent processing email before we break.
 	 * @throws \Exception
 	 */
-	public function executeGateway(EmailGateway $gateway)
+	public function executeGateway(EmailGateway $gateway, $time_limit = 0)
 	{
 		$this->logger->log("Start processing {$gateway['title']} {$gateway['gateway_type']}:{$gateway['connection_type']}", 'info');
 		$start_time = microtime(true);
@@ -226,7 +266,13 @@ class Runner
 		$fetcher->setLogger($this->logger);
 		$fetcher->setMaxSize(App::getSetting('core.gateway_max_email'));
 
+		$exec_start = time();
+
 		while ($source = $fetcher->readNext()) {
+
+			if ($this->set_time_limit) {
+				@set_time_limit($this->set_time_limit);
+			}
 
 			$this->logger->log("[Gateway {$gateway['id']}] Read source ID {$source['id']}", 'debug');
 
@@ -311,6 +357,11 @@ class Runner
 			App::getOrm()->persist($source);
 			App::getOrm()->flush();
 			App::getOrm()->commit();
+
+			$time_so_far = time() - $exec_start;
+			if ($time_limit && $time_so_far >= $time_limit) {
+				break;
+			}
 		}
 
 		$end_time = microtime(true);
