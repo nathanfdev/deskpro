@@ -593,14 +593,21 @@ HTML;
 		}
 
 		if (!$code_data OR !$person) {
-			return $this->resetPasswordAction(false, true);
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
+		$errors = array();
 		if ($this->in->getBool('process')) {
 			$pass = $this->in->getString('password');
 			$pass2 = $this->in->getString('password2');
 
-			if ($pass == $pass2) {
+			if ($pass != $pass2) {
+				$errors['password.mismatch'] = 1;
+			} elseif (\Orb\Util\Strings::utf8_strlen($pass) < 5) {
+				$errors['password.short'] = 1;
+			}
+
+			if (!$errors) {
 				$person->setPassword($pass);
 				$this->em->transactional(function ($em) use ($person, $code_data) {
 					$em->persist($person);
@@ -613,7 +620,8 @@ HTML;
 		}
 
 		return $this->render($this->tpl_prefix . ':reset-password-newpass.html.twig', array(
-			'code' => $code_data->getCode()
+			'code' => $code_data->getCode(),
+			'errors' => $errors
 		));
 	}
 
