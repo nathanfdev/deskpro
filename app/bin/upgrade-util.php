@@ -1546,8 +1546,8 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$this->out();
 
 		$this->out(
-			"<info>Welcome to the DeskPRO interactive upgrader. "
-			."For help please visit http://support.deskpro.com</info>"
+			"<info>Welcome to the DeskPRO interactive upgrader.\n"
+			."For help please visit: http://support.deskpro.com</info>"
 		);
 
 		$this->out();
@@ -1646,7 +1646,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$this->out("<info>Download was successful. Pacakge saved to:\n{$this->dl_distro}\n</info>");
 		$this->out();
 
-		$this->out("<prompt>Before we install the updates, you should generate back up first. You can back up both your files and your database.</prompt>");
+		$this->out("<prompt>Before we install the updates, you should generate a back up first. You can back up both your files and your database.\n</prompt>");
 
 		while(true) {
 			$this->out("Do you want to back up your current source files? [Y/n]> ", false);
@@ -1656,11 +1656,11 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			$this->answer_backup_db = $this->dialogHelper->askConfirmation($this, '', true);
 
 			$this->out();
-			$this->out("<comment>Backup files:" . ($this->answer_backup_db ? "YES" : "NO") . "</comment>");
+			$this->out("<comment>Backup files: " . ($this->answer_backup_db ? "YES" : "NO") . "</comment>");
 			$this->out("<comment>Backup database: " . ($this->answer_backup_files ? "YES" : "NO") . "</comment>");
 
 			$this->out();
-			$this->out("<prompt>Are you ready to continue? Answer 'n' to re-input backup options.</prompt>");
+			$this->out("<prompt>Are you ready to continue?\nAnswer 'n' to re-input backup options.</prompt>");
 			$this->out("Continue with the upgrade? [Y/n]> ", false);
 
 			$ret = $this->dialogHelper->askConfirmation($this, '', true);
