@@ -359,7 +359,7 @@ class Upgrade
 
 		if (!$this->isInstanceOutdated()) {
 			if (!$is_quiet) {
-				$this->out("You are all up to date!");
+				$this->out("You are all up to date.");
 			}
 			exit(0);
 		}
@@ -479,7 +479,7 @@ class Upgrade
 			$this->restoreDbFromZip($this->db_backup);
 		}
 
-		$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
+		unlink(DP_ROOT.'/helpdesk-offline.trigger');
 
 		$this->revert_checkpoint = null;
 	}
@@ -599,14 +599,14 @@ class Upgrade
 			throw new MysqlBackupException("Could not find path to `mysqldump` command", MysqlBackupException::NO_MYSQLDUMP);
 		}
 
-		$f = "{$DP_CONFIG['db']['dbname']}-" . date('Y-m-d-H-i-s') . '.sql';
+		$f = date('Y-m-d') . '-database.sql';
 		$f_full = $this->getBackupDir() . '/' . $f;
 
 		if (file_exists($f_full)) {
 			throw new MysqlBackupException("Target backup file already exists: $f_full", MysqlBackupException::FILE_EXISTS);
 		}
 
-		$cmd = $mysql_dump_path . " --opt -Q -h{$DP_CONFIG['db']['host']} -u{$DP_CONFIG['db']['user']} -p{$DP_CONFIG['db']['password']} {$DP_CONFIG['db']['dbname']} > $f";
+		$cmd = $mysql_dump_path . " --opt -Q -h{$DP_CONFIG['db']['host']} -u{$DP_CONFIG['db']['user']} --password='{$DP_CONFIG['db']['password']}' {$DP_CONFIG['db']['dbname']} > $f";
 
 		$this->log("Backup directory:  {$this->getBackupDir()}");
 		$this->log("Backup command:    $cmd");
@@ -642,7 +642,7 @@ class Upgrade
 			return false;
 		}
 
-		$backup_path = $this->getBackupDir() . '/' . $f . '.zip';
+		$backup_path = $this->getBackupDir() . '/' . str_replace('.sql', '', $f) . '.zip';
 		rename($f_full, $backup_path);
 
 		return $backup_path;
@@ -803,7 +803,7 @@ class Upgrade
 
 		$tmp_dir = $this->zip->decompressZip($zip_path);
 
-		if ($ret) {
+		if (!$tmp_dir) {
 			throw new UpgradeFilesException("Failed to extract zip", MysqlRestoreException::EXTRACT_ERROR);
 		}
 
@@ -869,7 +869,7 @@ class Upgrade
 	{
 		$time_start = microtime(true);
 
-		$f = '/files-' . date('Y-m-d-H-i-s');
+		$f = '/' . date('Y-m-d') . '-files';
 		$backup_dir = $this->getBackupDir() . $f;
 		if (is_dir($backup_dir)) {
 			throw new FileBackupException("Backup directory already exists: $backup_dir", FileBackupException::FILE_EXISTS);
@@ -1046,7 +1046,7 @@ class Upgrade
 		$this->log(sprintf("runCheckVersion: current(%s)   latest(%s)", DP_BUILD_TIME, $version_info['build']));
 
 		if ($this->isInstanceOutdated()) {
-			$this->out("Your instance is outdated! You should upgrade.");
+			$this->out("Your instance is outdated. You should upgrade.");
 		} else {
 			$this->out("Your instance is up to date.");
 		}
@@ -1278,6 +1278,34 @@ class Upgrade
 		} else {
 			$UPGRADE_CLEANUP[$name] = $value;
 		}
+	}
+
+	/**
+	 * @static
+	 * @param int $bytes
+	 * @return string
+	 */
+	public static function getFilesizeDisplay($bytes)
+	{
+		if (!$bytes OR $bytes < 1) {
+			return array('number' => 0, 'symbol' => 'B');
+	    }
+
+	    $all_symbols = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
+        $exp = floor(log($bytes)/log(1024));
+        $val = $bytes/pow(1024, floor($exp));
+
+        $sym = '';
+        if (isset($all_symbols[$exp])) {
+            $sym = $all_symbols[$exp];
+        }
+
+		$parts=  array(
+			'number' => $val,
+			'symbol' => $sym
+		);
+
+		return sprintf('%.2f %s', $parts['number'], $parts['symbol']);
 	}
 }
 
@@ -1612,7 +1640,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			$ret = $this->dialogHelper->askConfirmation($this, '', false);
 
 			if (!$ret) {
-				$this->out("\nBye!");
+				$this->out("\n");
 				exit(0);
 			}
 
@@ -1648,6 +1676,9 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$this->out("<prompt>Before we install the updates, you should generate a back up first. You can back up both your files and your database.\n</prompt>");
 
+		$db_backup_path   = $this->upgrade->getBackupDir() . '/' . date('Y-m-d') . '-database.zip';
+		$file_backup_path = $this->upgrade->getBackupDir() . '/' . date('Y-m-d') . '-files.zip';
+
 		while(true) {
 			$this->out("Do you want to back up your current source files? [Y/n]> ", false);
 			$this->answer_backup_files = $this->dialogHelper->askConfirmation($this, '', true);
@@ -1658,6 +1689,13 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 			$this->out();
 			$this->out("<comment>Backup files: " . ($this->answer_backup_db ? "YES" : "NO") . "</comment>");
 			$this->out("<comment>Backup database: " . ($this->answer_backup_files ? "YES" : "NO") . "</comment>");
+
+			if ($this->answer_backup_files && is_file($file_backup_path)) {
+				$this->out("<warn>WARNING: File backup for today already exists. It will be overwritten if you continue.</warn>");
+			}
+			if ($this->answer_backup_db && is_file($db_backup_path)) {
+				$this->out("<warn>WARNING: Database backup for today already exists. It will be overwritten if you continue.</warn>");
+			}
 
 			$this->out();
 			$this->out("<prompt>Are you ready to continue?\nAnswer 'n' to re-input backup options.</prompt>");
@@ -1672,6 +1710,13 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$fileutil = new FilesystemUtil();
 		$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
+
+		if (is_file($db_backup_path)) {
+			$fileutil->remove($db_backup_path);
+		}
+		if (is_file($file_backup_path)) {
+			$fileutil->remove($file_backup_path);
+		}
 
 		#------------------------------
 		# Backup files
@@ -1692,13 +1737,15 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 			$this->revert_checkpoint = 'files';
 			$this->out("<info>DONE</info>");
+
+			$this->out(sprintf("    File: %s :: %s", Upgrade::getFilesizeDisplay(filesize($file_backup_path)), $file_backup_path));
 		}
 
 		#------------------------------
 		# Install files
 		#------------------------------
 
-		$this->out(sprintf("%-40s", "<info>[*] Installing files ...</info>"), false);
+		$this->out(sprintf("%-55s", "<info>[*] Installing files ...</info>"), false);
 
 		try {
 			$this->upgrade->installFilesFromZip($this->dl_distro, false);
@@ -1714,7 +1761,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		#------------------------------
 
 		if ($this->answer_backup_db) {
-			$this->out(sprintf("%-40s", "<info>[*] Backing up database ...</info>"), false);
+			$this->out(sprintf("%-55s", "<info>[*] Backing up database ...</info>"), false);
 
 			try {
 				$this->db_backup = $this->upgrade->backupDatabase();
@@ -1722,6 +1769,8 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 				$this->upgrade->outAndLog($e->getMessage());
 				$this->errorExit("There was a problem backing up your database.");
 			}
+
+			$this->out(sprintf("    File: %s :: %s", Upgrade::getFilesizeDisplay(filesize($db_backup_path)), $db_backup_path));
 
 			$this->revert_checkpoint = 'db';
 			$this->out("<info>DONE</info>");
@@ -1731,7 +1780,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		# Run upgrader
 		#------------------------------
 
-		$this->out(sprintf("%-40s", "<info>[*] Installing database updates</info>"));
+		$this->out(sprintf("%-55s", "<info>[*] Installing database updates</info>"));
 
 		$php_path = $this->upgrade->getPhpBinaryPath();
 
@@ -1750,9 +1799,9 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$this->outHeader("DONE");
 		$this->out();
 
-		$this->out("<info>DeskPRO has been upgraded successfully!</info>");
+		$this->out("<info>DeskPRO has been upgraded successfully.</info>");
 		$this->out();
-		$this->out('Bye!');
+		$this->out('');
 	}
 
 
@@ -1784,7 +1833,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		if ($version >= DP_BUILD_TIME) {
 			$this->out("<info>Your database and source file builds correspond. No database upgrades need to be run.</info>");
 			$this->out();
-			$this->out("Bye!");
+			$this->out("");
 			exit(0);
 		}
 
@@ -1798,7 +1847,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$ret = $this->dialogHelper->askConfirmation($this, '', true);
 		if (!$ret) {
 			$this->out();
-			$this->out("Bye!");
+			$this->out("");
 			exit(0);
 		}
 
@@ -1864,9 +1913,9 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
 		$this->outHeader("DONE");
 
-		$this->out("<info>DeskPRO has been upgraded successfully!</info>");
+		$this->out("<info>DeskPRO has been upgraded successfully.</info>");
 		$this->out();
-		$this->out('Bye!');
+		$this->out('');
 	}
 
 
