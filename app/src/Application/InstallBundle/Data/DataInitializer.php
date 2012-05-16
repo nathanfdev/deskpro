@@ -194,6 +194,9 @@ class DataInitializer
 		# Example ticket
 		#------------------------------
 
+		// TODO finish sample ticket and deskpro-deskpro comms
+		return;
+
 		$department = $this->container->getEm()
 				->createQuery("SELECT d FROM DeskPRO:Department d ORDER BY d.id DESC")
 				->setMaxResults(1)
