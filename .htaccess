@@ -1,15 +1,38 @@
+# Protect hidden files and directories
 <Files ~ "^config\.php|cron\.php|import\.php|upgrade\.php|schedule\.bat$">
 	Order allow,deny
 	Allow from none
 	Deny from all
 </Files>
 
+# Don't show directory listings for URLs which map to a directory.
+Options -Indexes
+
+# Set the default handler.
+DirectoryIndex index.php index.html index.htm
+
+# Override PHP settings that cannot be changed at runtime.
+<IfModule mod_php5.c>
+  php_flag magic_quotes_gpc                 off
+  php_flag magic_quotes_sybase              off
+  php_flag register_globals                 off
+  php_flag session.auto_start               off
+  php_value mbstring.http_input             pass
+  php_value mbstring.http_output            pass
+  php_flag mbstring.encoding_translation    off
+  php_value memory_limit                    256M
+  php_value max_execution_time              18000
+  php_flag zend.ze1_compatibility_mode      Off	
+</IfModule>
+
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 
-	# If you are getting 404 errors then you may need to uncomment
-	# the following line and change it to the path of DeskPRO.
-	#RewriteBase /deskpro
+	# Uncomment the following line and set the path as relative to your web root
+	RewriteBase /deskpro
+
+	# block direct access to any files/folders beginning with . (e.g. git/subversion)
+	RewriteRule "(^|/)\." - [F]
 
 	RewriteCond %{REQUEST_FILENAME} -f [OR]
 	RewriteCond %{REQUEST_FILENAME} -l [OR]
