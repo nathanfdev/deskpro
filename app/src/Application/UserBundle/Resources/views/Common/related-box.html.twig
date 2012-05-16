@@ -1,6 +1,7 @@
 {##
  # The block that lists related content in content pages
  ##}
+{% if related_content['articles']|length or related_content['feedback']|length or related_content['news']|length or related_content['downloads']|length %}
 <div class="dp-related-list dp-well dp-well-small">
 	<table cellpadding="0" cellspacing="0" width="100%"><tr>
 		{% set count = 0 %}
@@ -45,3 +46,4 @@
 		{% endfor %}
 	</tr></table>
 </div>
+{% endif %}
