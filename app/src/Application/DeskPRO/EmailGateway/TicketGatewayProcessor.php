@@ -531,7 +531,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		// Set the proper email address on the ticket from the users account
 		if ($this->reader->getFromAddress()->email != $person->getPrimaryEmailAddress()) {
-			$email_rec = $person->findEmailAddress($this->reader->getFromAddress());
+			$email_rec = $person->findEmailAddress($this->reader->getFromAddress()->getEmail());
 			if ($email_rec) {
 				$ticket->person_email = $email_rec;
 			}
