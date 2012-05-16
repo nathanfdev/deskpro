@@ -68,24 +68,24 @@ class Pop3 extends AbstractFetcher
 			$this->logger->log('SSL Enabled', 'debug');
 		}
 
-		$storage = new \Zend\Mail\Storage\Pop3($options);
+		$storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3($options);
 		return $storage;
 	}
 
 	/**
 	 * Get a list of message IDs
 	 */
-	protected function _initMessageList()
+	protected function _initMessageList($reload = false)
 	{
-		if ($this->message_list !== null) {
+		if (!$reload && $this->message_list !== null) {
 			return;
 		}
 
-		$list = $this->getStorage()->getUniqueId();
+		$list = $this->getStorage()->getSize();
 
 		$this->message_list = array();
-		foreach ($list as $num => $id) {
-			$this->message_list[] = array('id' => $id, 'num' => $num);
+		foreach ($list as $num => $size) {
+			$this->message_list[] = array('num' => $num, 'size' => $size);
 		}
 
 		$this->logger->log("Message list contains " . count($this->message_list) . " messages", 'debug');
@@ -109,27 +109,33 @@ class Pop3 extends AbstractFetcher
 			return null;
 		}
 
-		$message_id   = $next['id'];
+		$message_size = $next['size'];
 		$message_num  = $next['num'];
 
 		$start_time = microtime(true);
 
-		$this->logger->log("Fetching message $message_num :: $message_id", 'debug');
-
-		try {
-			$headers = $this->getStorage()->getRawHeader($message_num);
-		} catch (\Exception $e) {
-			$this->logger->log("Exception: {$e->getMessage()} {$e->getTraceAsString()}", 'crit');
-			throw $e;
-		}
+		$this->logger->log("Fetching message $message_num", 'debug');
 
 		$raw_message = new RawMessage();
 		$raw_message->id = $message_num;
-		$raw_message->headers = $headers;
-		$raw_message->size = $this->getStorage()->getSize($message_num);
+		$raw_message->size = $message_size;
 
 		if (!$this->max_size || $raw_message->size < $this->max_size) {
-			$raw_message->content = $headers . "\n\n" . $this->getStorage()->getRawContent($message_num);
+			$raw_message->content = $this->getStorage()->getProtocol()->retrieve($message_num);
+			$headers = null;
+
+			$EOL = "\n";
+			if (strpos($raw_message->content, $EOL . $EOL)) {
+				list($headers, ) = explode($EOL . $EOL, $raw_message->content, 2);
+			} else if ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
+				list($headers, ) = explode("\r\n\r\n", $raw_message->content, 2);
+			} else if ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
+				list($headers, ) = explode("\n\n", $raw_message->content, 2);
+			} else {
+				@list($headers, ) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+			}
+
+			$raw_message->headers = $headers;
 		} else {
 			$raw_message->too_big = true;
 		}
@@ -149,11 +155,6 @@ class Pop3 extends AbstractFetcher
 		$this->logger->log("Marking message as deleted: $id", 'debug');
 		try {
 			$this->getStorage()->removeMessage($id);
-		} catch (\Zend\Mail\Protocol\Exception $e) {
-			$this->logger->log("-- Result: {$e->getCode()} {$e->getMessage()}", 'debug');
-			/* usually reading a pop message marks it for deletion, which
-			 throws an -ERR. So we'll ignore it
-			 */
 		} catch (\Exception $e) {
 			$this->logger->log("Exception: {$e->getMessage()} {$e->getTraceAsString()}", 'crit');
 			throw $e;

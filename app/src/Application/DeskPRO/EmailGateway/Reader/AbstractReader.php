@@ -40,6 +40,8 @@ use Orb\Util\Arrays;
 
 abstract class AbstractReader
 {
+	protected $vals = array();
+
 	protected $properties = array();
 
 	public function setProperty($name, $value)
@@ -67,12 +69,11 @@ abstract class AbstractReader
 	 */
 	public function getBodyText()
 	{
-		static $v;
-		if (!$v) {
-			$v = $this->_getBodyText();
+		if (!isset($this->vals['body_text'])) {
+			$this->vals['body_text'] = $this->_getBodyText();
 		}
 
-		return $v;
+		return $this->vals['body_text'];
 	}
 
 	/**
@@ -80,12 +81,11 @@ abstract class AbstractReader
 	 */
 	public function getBodyHtml()
 	{
-		static $v;
-		if (!$v) {
-			$v = $this->_getBodyHtml();
+		if (!isset($this->vals['body_html'])) {
+			$this->vals['body_html'] = $this->_getBodyHtml();
 		}
 
-		return $v;
+		return $this->vals['body_html'];
 	}
 
 	/**
@@ -93,12 +93,11 @@ abstract class AbstractReader
 	 */
 	public function getAttachments()
 	{
-		static $v;
-		if (!$v) {
-			$v = $this->_getAttachments();
+		if (!isset($this->vals['attach'])) {
+			$this->vals['attach'] = $this->_getAttachments();
 		}
 
-		return $v;
+		return $this->vals['attach'];
 	}
 
 	/**
@@ -106,12 +105,11 @@ abstract class AbstractReader
 	 */
 	public function getSubject()
 	{
-		static $v;
-		if (!$v) {
-			$v = $this->_getSubject();
+		if (!isset($this->vals['subject'])) {
+			$this->vals['subject'] = $this->_getSubject();
 		}
 
-		return $v;
+		return $this->vals['subject'];
 	}
 
 	/**
@@ -119,12 +117,11 @@ abstract class AbstractReader
 	 */
 	public function getFromAddress()
 	{
-		static $v;
-		if (!$v) {
-			$v = $this->_getFromAddress();
+		if (!isset($this->vals['from_address'])) {
+			$this->vals['from_address'] = $this->_getFromAddress();
 		}
 
-		return $v;
+		return $this->vals['from_address'];
 	}
 
 	/**
@@ -132,12 +129,11 @@ abstract class AbstractReader
 	 */
 	public function getToAddresses()
 	{
-		static $v;
-		if (!$v) {
-			$v = $this->_getToAddresses();
+		if (!isset($this->vals['to_address'])) {
+			$this->vals['to_address'] = $this->_getToAddresses();
 		}
 
-		return $v;
+		return $this->vals['to_address'];
 	}
 
 	/**
@@ -145,12 +141,11 @@ abstract class AbstractReader
 	 */
 	public function getCcAddresses()
 	{
-		static $v;
-		if (!$v) {
-			$v = $this->_getCcAddresses();
+		if (!isset($this->vals['cc_addresses'])) {
+			$this->vals['cc_addresses'] = $this->_getCcAddresses();
 		}
 
-		return $v;
+		return $this->vals['cc_addresses'];
 	}
 
 	/**
@@ -158,12 +153,12 @@ abstract class AbstractReader
 	 */
 	public function getHeader($header)
 	{
-		static $v = array();
-		if (!isset($v[$header])) {
-			$v[$header] = $this->_getHeader($header);
+		if (!isset($this->vals['headers']) || !isset($this->vals['headers'][$header])) {
+			if (!isset($this->vals['headers'])) $this->vals['headers'] = array();
+			$this->vals['headers'][$header] = $this->_getHeader($header);
 		}
 
-		return $v[$header];
+		return $this->vals['headers'][$header];
 	}
 
 	abstract protected function _setRawSource($source);

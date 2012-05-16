@@ -77,6 +77,12 @@ abstract class AbstractFetcher
 		$this->setMaxSize($max_size);
 	}
 
+	public function __destruct()
+	{
+		if ($this->storage) {
+			try { $this->storage->close(); } catch (\Exception $e) {}
+		}
+	}
 
 	/**
 	 * Set the max size to read
@@ -112,6 +118,7 @@ abstract class AbstractFetcher
 
 		return $this->storage;
 	}
+
 
 	/**
 	 * @param $logger \Application\DeskPRO\Log\Logger
@@ -156,7 +163,15 @@ abstract class AbstractFetcher
 	 */
 	public function readNext()
 	{
-		$raw_message = $this->_readNext();
+		try {
+			$raw_message = $this->_readNext();
+		} catch (\Exception $e) {
+			if ($this->storage) {
+				try { $this->storage->close(); } catch (\Exception $e) {}
+			}
+			throw $e;
+		}
+
 		if (!$raw_message) {
 			return null;
 		}
@@ -218,6 +233,9 @@ abstract class AbstractFetcher
 
 		} catch (\Exception $e) {
 			App::getOrm()->rollback();
+			if ($this->storage) {
+				try { $this->storage->close(); } catch (\Exception $e) {}
+			}
 			throw $e;
 		}
 
