@@ -45,7 +45,7 @@ class RefreshStylesheets
 	 *
 	 * @param \Application\DeskPRO\DependencyInjection\DeskproContainer $container
 	 */
-	public function refresh(DeskproContainer $container)
+	public static function refresh(DeskproContainer $container)
 	{
 		$style = $container->getSystemService('style');
 
@@ -54,7 +54,7 @@ class RefreshStylesheets
 			$desc->delete();
 
 			$style->css_blob = null;
-			$container->getDb()->update('styles', array('css_blob_id' => null), array('id' => $style->getId()));
+			$container->getDb()->update('styles', array('css_blob_id' => null, 'css_updated' => date('Y-m-d H:i:s')), array('id' => $style->getId()));
 		}
 	}
 }

@@ -19,11 +19,11 @@
 {% if app.isDebug() %}
 	{{ dp_asset_html('user_vendors') }}
 	{{ dp_asset_html('user_common') }}
-	<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBasePath() }}/file.php/res-user/main.css?{{ app.style.css_updated|date('u')|crc32 }}&amp;reload=1" media="screen,print" />
+	<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBasePath() }}/file.php/res-user/main.css?{{ app.style.css_updated|date('U') }}&amp;reload=1" media="screen,print" />
 {% else %}
 	{{ dp_asset_html('user') }}
 	{% if not app.style.css_blob or admin_portal_controls %}
-		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBasePath() }}/file.php/res-user/main.css?{{ app.style.css_updated|date('u')|crc32 }}&amp;reload=1" media="screen,print" />
+		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.request.getBasePath() }}/file.php/res-user/main.css?{{ app.style.css_updated|date('U') }}&amp;reload=1" media="screen,print" />
 	{% else %}
 		<link id="dp_stylesheet" rel="stylesheet" type="text/css" href="{{ app.style.css_blob.getDownloadUrl() }}?{{ app.style.css_blob.id }}" media="screen,print" />
 	{% endif %}
