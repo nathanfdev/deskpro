@@ -48,7 +48,7 @@ class ChatConversation extends AbstractContentType
 		$data = array();
 		$data['id'] = $convo['id'];
 		$data['content_type'] = 'chat_conversation';
-		$data['content'] = $convo['title'] . "\n" . $convo['content'] . "\n";
+		$data['content'] = $convo['subject'] . "\n" . $convo['content'] . "\n";
 
 		$content = array();
 		$content[] = $ticket['subject'];
