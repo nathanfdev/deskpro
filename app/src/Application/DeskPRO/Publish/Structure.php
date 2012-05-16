@@ -796,7 +796,7 @@ class Structure implements PersonContextInterface
 		}
 
 		$counts['0'] = 0;
-		$counts['0_total'] = 1;
+		$counts['0_total'] = 0;
 
 		foreach ($cats as $c) {
 			$k = $c['id'] . '_total';
