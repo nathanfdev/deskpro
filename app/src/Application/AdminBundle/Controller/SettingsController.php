@@ -382,6 +382,9 @@ class SettingsController extends AbstractController
 			}
 
 			if ($pass) {
+
+				\Application\DeskPRO\Service\ErrorReporter::sendInstallStatusPing('initial_done');
+
 				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '1');
 				return $this->redirectRoute('admin');
 			}
@@ -447,6 +450,7 @@ class SettingsController extends AbstractController
 	public function checkCronAction()
 	{
 		if ($this->container->getSetting('core.last_cron_run')) {
+			\Application\DeskPRO\Service\ErrorReporter::sendInstallStatusPing('cron');
 			return $this->createJsonResponse(array('cron_okay' => true));
 		}
 

@@ -124,6 +124,9 @@ class EmailTransportsController extends AbstractController
 
 				if ($transport->match_type == 'all') {
 					$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.default_from_email', $this->in->getString('default_from_email'));
+					if (!$this->container->getSetting('core.setup_initial')) {
+						\Application\DeskPRO\Service\ErrorReporter::sendInstallStatusPing('outemail');
+					}
 				}
 
 				if ($this->request->isXmlHttpRequest()) {

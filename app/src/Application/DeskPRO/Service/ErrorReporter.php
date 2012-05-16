@@ -319,4 +319,26 @@ class ErrorReporter
 			$r = $client->send();
 		} catch (\Exception $e) {}
 	}
+
+
+	/**
+	 * Sends a ping to the install log server about status of an installation.
+	 *
+	 * @param $step
+	 */
+	public static function sendInstallStatusPing($step)
+	{
+		$data = array(
+			'install_token' => App::getSetting('core.install_token'),
+			'step' => $step
+		);
+
+		try {
+			$client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
+			$client->setMethod(\Zend\Http\Request::METHOD_POST);
+			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api//data-submit/ping-install.json');
+			$client->getRequest()->post()->fromArray($data);
+			$r = $client->send();
+		} catch (\Exception $e) {}
+	}
 }

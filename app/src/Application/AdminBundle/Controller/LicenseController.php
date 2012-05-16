@@ -290,6 +290,8 @@ class LicenseController extends AbstractController
 			throw $e;
 		}
 
+		\Application\DeskPRO\Service\ErrorReporter::sendInstallStatusPing('license');
+
 		if ($this->request->isXmlHttpRequest()) {
 			return $this->createJsonResponse(array(
 				'success' => true

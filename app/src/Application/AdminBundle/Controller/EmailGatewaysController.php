@@ -208,6 +208,10 @@ class EmailGatewaysController extends AbstractController
 
 				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.task_completed_incoming_email', time());
 
+				if (!$this->container->getSetting('core.setup_initial')) {
+					\Application\DeskPRO\Service\ErrorReporter::sendInstallStatusPing('inemail');
+				}
+
 				if ($this->request->isXmlHttpRequest()) {
 					return $this->createJsonResponse(array('success' => true));
 				}
