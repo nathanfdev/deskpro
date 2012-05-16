@@ -168,6 +168,10 @@ class TemplatesController extends AbstractController
 		$name = $this->in->getString('name');
 		$this->db->delete('templates', array('name' => $name));
 
+		if ($name == 'UserBundle:Css:main.css.twig') {
+			\Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
+		}
+
 		return $this->createJsonResponse(array('success' => true, 'name' => $name));
 	}
 
@@ -219,6 +223,10 @@ class TemplatesController extends AbstractController
 		} catch (\Exception $e) {
 			$this->db->rollback();
 			throw $e;
+		}
+
+		if ($name == 'UserBundle:Css:main.css.twig') {
+			\Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
 		}
 
 		return $this->createJsonResponse(array('success' => true, 'name' => $name));

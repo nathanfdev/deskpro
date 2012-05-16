@@ -99,29 +99,13 @@ class PortalController extends AbstractController
 	{
 		switch ($type) {
 			case 'css_var':
-
-				$this->get('deskpro.core.settings')->getGroup('user_style');
-
 				$css_vars = $this->in->getCleanValueArray('vars', 'string', 'string');
-				$set_settings = array();
 				foreach ($css_vars as $name => $value) {
 					$setting_name = 'user_style.' . $name;
-					$set_settings[$setting_name] = $value;
-					$this->em->getRepository('DeskPRO:Setting')->updateSetting($setting_name, $value);
+					$this->container->getSettingsHandler()->setSetting($setting_name, $value);
 				}
 
-				$this->get('deskpro.core.settings')->setTemporarySettingValues($set_settings);
-
-				$css = $this->container->get('templating')->render('UserBundle:Css:main.css.twig', array());
-
-				$desc = $this->container->getFilestorage()->createRandomPath();
-				$desc->write($css, array(
-					'content_type' => 'text/css',
-					'filename' => 'main.css'
-				));
-				$blob_id = $desc->getPath();
-
-				$this->db->update('styles', array('css_blob_id' => $blob_id), array('id' => $this->container->getSystemService('style')->getId()));
+				\Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
 
 				break;
 
