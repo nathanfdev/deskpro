@@ -1546,7 +1546,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$this->out();
 
 		$this->out(
-			"<info>Welcome to the DeskPRO interactive upgrader."
+			"<info>Welcome to the DeskPRO interactive upgrader. "
 			."For help please visit http://support.deskpro.com</info>"
 		);
 
