@@ -25,7 +25,7 @@ echo.
 echo.
 GOTO Label1
 )
-schtasks /create /tn DeskPRO /sc MINUTE /tr "%php% -q %~dp0cron.php"
+schtasks /create /tn DeskPRO /sc MINUTE /tr "\"%php%\" -q \"%~dp0cron.php\""
 echo %DATE% %TIME% > data\tmp\schedule.txt
 echo.
 echo It will take 60 seconds for the scheduled task to begin
