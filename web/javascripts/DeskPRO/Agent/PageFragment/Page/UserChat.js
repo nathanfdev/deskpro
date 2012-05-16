@@ -491,6 +491,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 	sendMessage: function(msg) {
 		DeskPRO_Window.util.ajaxWithClientMessages({
+			type: 'POST',
 			url: BASE_URL + 'agent/chat/send-message/' + this.meta.conversation_id,
 			data: {content: msg}
 		});

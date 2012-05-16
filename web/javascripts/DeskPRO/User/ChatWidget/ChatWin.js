@@ -320,6 +320,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			cache: false,
 			url: BASE_URL + 'chat/send-message/' + this.sessionCode + '?__sid=' + this.sessionCode,
 			context: this,
+			type: 'POST',
 			data: data,
 			dataType: 'json',
 			success: function(data) {
