@@ -95,6 +95,11 @@ class SettingsController extends AbstractController
 
 		// set_settings contains an array of names that should be set
 		// If no value, it means its a null value (aka to be unset/set to default)
+		foreach ($this->in->getCleanValueArray('set_settings_falseable', 'str_simple', 'discard') as $k) {
+			if (!isset($set_settings[$k])) {
+				$set_settings[$k] = 0;
+			}
+		}
 		foreach ($this->in->getCleanValueArray('set_settings', 'str_simple', 'discard') as $k) {
 			if (!isset($set_settings[$k])) {
 				$set_settings[$k] = null;

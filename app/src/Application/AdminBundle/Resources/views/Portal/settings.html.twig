@@ -29,6 +29,11 @@
 	</div>
 
 	<h4>{{ phrase('admin.portal.share_widgets') }}</h4>
+	<input type="hidden" name="set_settings_falseable[]" value="core.show_share_widget" />
+	<input type="hidden" name="set_settings_falseable[]" value="core.show_share_facebook" />
+	<input type="hidden" name="set_settings_falseable[]" value="core.show_share_twitter" />
+	<input type="hidden" name="set_settings_falseable[]" value="core.show_share_gplus" />
+	<input type="hidden" name="set_settings_falseable[]" value="core.show_share_linkedin" />
 	<div class="setting_fields" id="share_options">
 		<div class="field_row">
 			<label><input type="checkbox" id="share_master" name="settings[core.show_share_widget]" {% if app.getSetting('core.show_share_widget') %}checked="checked"{% endif %} /> {{ phrase('admin.portal.show_share_widget') }}</label>
