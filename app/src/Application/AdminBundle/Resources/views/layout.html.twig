@@ -65,17 +65,19 @@
 </head>
 <body class="{% if is_demo %}is-demo{% endif %} {% if is_post_install %}post-install{% endif %}" {% if page_handler %}data-element-handler="{{ page_handler }}"{% endif %}>
 
-{% if not is_post_install and app.getSetting('core.helpdesk_disabled') %}
-	<div class="helpdesk-disabled-notice">
-		<a class="btn primary" href="{{ path('admin_settings_set', {'setting_name':'core.helpdesk_disabled', 'security_token': security_token('set_setting')}) }}">{{ phrase('admin.general.click_to_reenable_helpdesk') }}</a>
-		{{ phrase('admin.general.helpdesk_currently_disabled') }}
-	</div>
-{% elseif app.getVariable('cron_is_problem') %}
-	<div class="helpdesk-disabled-notice">
-		The scheduled tasks do not appear to be running, or the time between executions is too high. You should	ensure <var>/cron.php</var> is running once a minute.
+{% if app.getSetting('core.setup_initial') %}
+	{% if not is_post_install and app.getSetting('core.helpdesk_disabled') %}
+		<div class="helpdesk-disabled-notice">
+			<a class="btn primary" href="{{ path('admin_settings_set', {'setting_name':'core.helpdesk_disabled', 'security_token': security_token('set_setting')}) }}">{{ phrase('admin.general.click_to_reenable_helpdesk') }}</a>
+			{{ phrase('admin.general.helpdesk_currently_disabled') }}
+		</div>
+	{% elseif app.getVariable('cron_is_problem') %}
+		<div class="helpdesk-disabled-notice">
+			The scheduled tasks do not appear to be running, or the time between executions is too high. You should	ensure <var>/cron.php</var> is running once a minute.
 
-		<a class="btn primary" href="{{ path('admin_settings_cron') }}">Click here for more information</a>
-	</div>
+			<a class="btn primary" href="{{ path('admin_settings_cron') }}">Click here for more information</a>
+		</div>
+	{% endif %}
 {% endif %}
 
 {% block header %}
