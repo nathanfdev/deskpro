@@ -44,7 +44,11 @@ class MainController extends AbstractController
 
 	public function dashVersionInfoAction()
 	{
-		$version_info = \Application\DeskPRO\Service\LicenseService::compareVersion();
+		try {
+			$version_info = \Application\DeskPRO\Service\LicenseService::compareVersion();
+		} catch (\Exception $e) {
+			$version_info = null;
+		}
 
 		return $this->render('AdminBundle:Main:part-version-info.html.twig', array(
 			'version_info' => $version_info
