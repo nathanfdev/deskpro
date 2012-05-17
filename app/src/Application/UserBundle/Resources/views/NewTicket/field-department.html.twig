@@ -3,19 +3,25 @@
  ##}
 
 {% import 'UserBundle:Common:macros-form.html.twig' as formmacro %}
-<div class="dp-control-group {% if error_fields['ticket.department_id'] %}dp-error{% endif %}">
-	<div class="dp-control-label">
-		<label><strong>{{ phrase('user.general.department') }} *</strong></label>
-	</div>
-	<div class="dp-controls dp-fill ticket_department">
-		<select name="newticket[ticket][department_id]">
-			<option value=""></option>
-			{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
-				{{ formmacro.select_options_hierarchy(cat, newticket.ticket.department_id) }}
-			{% endfor %}
-		</select>
-		<div class="dp-help-inline dp-error-explain">
-			{{ phrase('user.general.please_choose_a_department') }}
+{% if app.user.getPermissionsManager().get('Departments').getAllowed('tickets')|length == 1 %}
+	{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
+		<input type="hidden" name="newticket[ticket][department_id]" value="{{ cat.id }}" />
+	{% endfor %}
+{% else %}
+	<div class="dp-control-group {% if error_fields['ticket.department_id'] %}dp-error{% endif %}">
+		<div class="dp-control-label">
+			<label><strong>{{ phrase('user.general.department') }} *</strong></label>
+		</div>
+		<div class="dp-controls dp-fill ticket_department">
+			<select name="newticket[ticket][department_id]">
+				<option value=""></option>
+				{% for cat in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
+					{{ formmacro.select_options_hierarchy(cat, newticket.ticket.department_id) }}
+				{% endfor %}
+			</select>
+			<div class="dp-help-inline dp-error-explain">
+				{{ phrase('user.general.please_choose_a_department') }}
+			</div>
 		</div>
 	</div>
-</div>
+{% endif %}
