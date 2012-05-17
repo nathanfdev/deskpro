@@ -207,6 +207,8 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 			return $ent->download;
 		} elseif ($ent instanceof \Application\DeskPRO\Entity\LabelFeedback) {
 			return $ent->feedback;
+		} elseif ($ent instanceof \Application\DeskPRO\Entity\TicketMessage) {
+			return $ent->ticket;
 		}
 
 		return $ent;

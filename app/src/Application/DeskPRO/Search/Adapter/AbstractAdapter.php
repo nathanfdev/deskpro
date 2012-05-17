@@ -169,16 +169,18 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 	 */
 	public function getContentTypeNameForObject($object)
 	{
-		$class = get_class($object);
-		if (!isset($this->class_to_contenttype[$class])) {
-			foreach ($this->class_to_contenttype as $class => $class_type) {
-				if ($object instanceof $class) {
-					return $class_type;
-				}
+		$obj_class = get_class($object);
+		if (isset($this->class_to_contenttype[$obj_class])) {
+			return $this->class_to_contenttype[$obj_class];
+		}
+
+		foreach ($this->class_to_contenttype as $class => $class_type) {
+			if ($object instanceof $class) {
+				return $class_type;
 			}
 		}
 
-		return $this->class_to_contenttype[$class];
+		throw new \InvalidArgumentException("Unknown searchable object: `" . $obj_class . "`");
 	}
 
 
