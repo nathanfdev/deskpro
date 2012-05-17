@@ -1,4 +1,10 @@
 <?php
+########################################################################################################################
+# DESKPRO EDIT
+# Added _dp_parse_failed and handling of corrupt attachment data.
+# If an attachment is invalid (sometimes in spam), then decoding could cause a warning. This edit
+# suppresses the warning, and then causes the attachment to return null (fail) instead.
+########################################################################################################################
 /**
  * File containing the ezcMailFileParser class
  *
@@ -84,6 +90,8 @@ class ezcMailFileParser extends ezcMailPartParser
      * @var bool
      */
     private $dataWritten = false;
+
+	public $_dp_parse_failed = false;
 
     /**
      * Constructs a new ezcMailFileParser with maintype $mainType subtype $subType
@@ -229,6 +237,9 @@ class ezcMailFileParser extends ezcMailPartParser
      */
     public function parseBody( $line )
     {
+		if ($this->_dp_parse_failed) {
+			return;
+		}
         if ( $line !== '' )
         {
             if ( $this->dataWritten === false )
@@ -237,7 +248,11 @@ class ezcMailFileParser extends ezcMailPartParser
                 $this->dataWritten = true;
             }
 
-            fwrite( $this->fp, $line );
+			// If the attachment is corrupt it'll cause an error in some
+			// cases when we try to decode it if using a stream filter
+            if (!@fwrite( $this->fp, $line )) {
+				$this->_dp_parse_failed = true;
+			}
         }
     }
 
@@ -253,6 +268,10 @@ class ezcMailFileParser extends ezcMailPartParser
         fclose( $this->fp );
         $this->fp = null;
 
+		// Parsing failed
+		if ($this->_dp_parse_failed) {
+			return null;
+		}
 
         // FIXME: DIRTY PGP HACK
         // When we have PGP support these lines should be removed. They are here now to hide

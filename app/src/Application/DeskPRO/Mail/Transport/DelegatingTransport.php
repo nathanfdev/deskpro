@@ -141,7 +141,7 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 	public function send(\Swift_Mime_Message $message, &$failedRecipients = null)
 	{
 		$time_top = microtime(true);
-		$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Begin message :: %s %s", implode(',', $message->getTo()), $message->getSubject()));
+		$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Begin message :: %s %s", implode(',', (array)$message->getTo()), $message->getSubject()));
 
 		if ($message instanceof Message) {
 			$time = microtime(true);
