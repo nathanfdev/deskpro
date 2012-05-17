@@ -171,6 +171,8 @@ class EmailTransportsController extends AbstractController
 				$tr = $transport->getTransport();
 			}
 
+			$this->container->getSettingsHandler()->setTemporarySettingValues('core.default_from_email', $this->in->getString('send_from'));
+
 			$message = $this->container->getMailer()->createMessage();
 			$message->setTo($this->in->getString('send_to'));
 			$message->setFrom($this->in->getString('send_from'));
@@ -182,10 +184,20 @@ class EmailTransportsController extends AbstractController
 			$this->container->getMailer()->send($message, $failed);
 
 			if ($failed) {
-				return $this->createJsonResponse(array('error' => true, 'error_code' => 'dp_1', 'error_message' => 'Connection succeeded, but the server was unable or unwilling to deliver the test email to ' . $this->in->getString('send_to')));
+				return $this->createJsonResponse(array(
+					'error' => true,
+					'error_code' => 'dp_1',
+					'error_message' => 'Connection succeeded, but the server was unable or unwilling to deliver the test email to ' . $this->in->getString('send_to'),
+					'log' => implode("\n", $this->container->getMailer()->getLogMessages())
+				));
 			}
 		} catch (\Exception $e) {
-			return $this->createJsonResponse(array('error' => true, 'error_code' => $e->getCode(), 'error_message' => $e->getMessage()));
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'error_code' => $e->getCode(),
+				'error_message' => $e->getMessage(),
+				'log' => implode("\n", $this->container->getMailer()->getLogMessages())
+			));
 		}
 
 		return $this->createJsonResponse(array('success' => true));

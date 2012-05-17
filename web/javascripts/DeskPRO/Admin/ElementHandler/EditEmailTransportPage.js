@@ -40,7 +40,14 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 				$('.show-error-message', el).show().on('click', function() {
 					$(this).hide();
 					el.find('.error-msg').show();
-				});
+				})
+
+				if ($('#default_from_email')[0]) {
+					$('#test_send_from_tr').val($('#default_from_email').val());
+					$('#test_send_from_tr').on('keyup', function(ev) {
+						$('#default_from_email').val($(this).val());
+					});
+				}
 
 				if ($('#transport_form').length) {
 					var postData = $('#transport_form').serializeArray();
@@ -66,7 +73,7 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 				}
 
 				if (setmail) {
-					$('#test_send_from').val(setmail);
+					$('#test_send_from_tr').val(setmail);
 				}
 
 				self.testPostData = postData;
@@ -99,7 +106,8 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 
 						$('.success', el).hide();
 						$('.error', el).show();
-						$('.error-msg', el).text(data.error_code + ' ' + data.error_message);
+						$('.error-msg .error-msg-text', el).text('[' + data.error_code + '] ' + data.error_message);
+						$('.error-msg .error-msg-log', el).text(data.log);
 					}
 				}
 			});

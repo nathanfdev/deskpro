@@ -127,6 +127,8 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 		$db_proc = new DatabaseQueueProcessor();
 		$this->queue_transport = new QueueTransport($db_proc, $this->event_dispatcher);
 
+		$this->attachLoggerOnce($this->queue_transport);
+
 		return $this->queue_transport;
 	}
 
@@ -205,6 +207,7 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 			$tr = $message->getSpecificTransport();
 
 			$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Specific transport requested: %s", get_class($tr)));
+			$this->attachLoggerOnce($tr);
 
 			if (!$tr->isStarted()) $tr->start();
 
@@ -308,6 +311,8 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 			$tr = new \Swift_MailTransport();
 		}
 
+		$this->attachLoggerOnce($tr);
+
 		return $tr;
 	}
 
@@ -355,5 +360,23 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 	public function setLogger(Logger $logger)
 	{
 		$this->logger = $logger;
+	}
+
+
+	/**
+	 * Attaches the logger plugin once
+	 *
+	 * @param \Swift_Transport $tr
+	 */
+	protected function attachLoggerOnce(\Swift_Transport $tr)
+	{
+		static $done_trs = array();
+
+		$hash = spl_object_hash($tr);
+		if (!isset($done_trs[$hash])) {
+			$tr->registerPlugin(new \Swift_Plugins_LoggerPlugin(new \Application\DeskPRO\Mail\Loggers\OrbLogger($this->getLogger())));
+		}
+
+		$done_trs[$hash] = true;
 	}
 }

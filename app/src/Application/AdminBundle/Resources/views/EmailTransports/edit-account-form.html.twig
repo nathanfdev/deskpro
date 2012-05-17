@@ -303,14 +303,18 @@
 </div>
 </form>
 
-<div id="test_settings_overlay" style="width: 500px; height: 300px; overflow:auto; display: none;">
+<div id="test_settings_overlay" style="width: 600px; height: 390px; overflow:auto; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay close-trigger"></span>
 		<h4>{{ phrase('admin.general.test_outgoing_email') }}</h4>
 	</div>
 	<div class="overlay-content">
 		<div style="margin-bottom: 3px;">{{ phrase('admin.general.send_a_test_email_to') }}: <input type="text" class="small" name="send_to" value="{{ app.user.primaryEmailAddress() }}" /></div>
-		{{ phrase('admin.general.from_email_address') }}: <input type="text" class="small" name="send_from" id="test_send_from" value="" />
+		{% if partial == 'setup' or transport.match_type == 'all' %}
+			<input type="hidden" name="send_from" id="test_send_from_tr" value="" />
+		{% else %}
+			{{ phrase('admin.general.from_email_address') }}: <input type="text" class="small" name="send_from" id="test_send_from_tr" value="" />
+		{% endif %}
 		<div class="result">
 			<div class="is-loading loading-icon-big"><br /><br /></div>
 			<div class="is-not-loading">
@@ -320,7 +324,10 @@
 				<div class="error" style="display:none">
 					{{ phrase('admin.general.error_sending_test') }}
 					<a class="show-error-message">{{ phrase('admin.general.error_see_response') }}</a>
-					<div class="error-msg" style="display: none; margin-top: 8px; padding: 8px; background-color: #fff;"></div>
+					<div class="error-msg" style="display: none; margin-top: 8px; padding: 8px; background-color: #fff;">
+						<div class="error-msg-text"></div>
+						<textarea class="error-msg-log" style="width: 95%; height: 150px; font-size: 11px; font-family: Monaco, Courier, monospace; white-space: nowrap; overflow: auto;" wrap="off"></textarea>
+					</div>
 				</div>
 			</div>
 		</div>

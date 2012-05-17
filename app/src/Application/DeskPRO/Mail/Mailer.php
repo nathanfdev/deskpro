@@ -59,8 +59,12 @@ class Mailer extends \Swift_Mailer implements Loggable
 	 */
 	protected $logger;
 
+	protected $messagesLog = 0;
+
 	public function __construct(\Swift_Transport $transport, \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating, Logger $logger = null)
 	{
+		$this->messagesLog = new \Orb\Log\Writer\ArrayWriter();
+
 		if ($logger) {
 			$this->setLogger($logger);
 		}
@@ -126,6 +130,13 @@ class Mailer extends \Swift_Mailer implements Loggable
 		} catch (\Exception $e) {}
 	}
 
+	/**
+	 * @return array
+	 */
+	public function getLogMessages()
+	{
+		return $this->messagesLog->getMessages();
+	}
 
 	/**
 	 * Get the logger
@@ -150,6 +161,7 @@ class Mailer extends \Swift_Mailer implements Loggable
 	public function setLogger(Logger $logger)
 	{
 		$this->logger = $logger;
+		$this->logger->addWriter($this->messagesLog);
 	}
 
 
