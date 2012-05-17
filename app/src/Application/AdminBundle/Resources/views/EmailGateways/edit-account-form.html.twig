@@ -70,7 +70,10 @@
 								{% if get_instance_ability('can_use_secure_smtp') %}
 									<td>{{ form_widget(form.pop3_options.secure, {'attr': {'class': 'small'}}) }}</td>
 								{% else %}
-									{{ phrase('agent.general.no') }} <a href="{{ get_service_url('dp.kb.install.error_openssl') }}" class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.general.error_ssl_tip') }}"></a>
+									<td>
+										<input type="checkbox" disabled="disabled" />
+										<a href="{{ get_service_url('dp.kb.install.error_openssl') }}" class="tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.general.error_ssl_tip') }}" style="font-size: 90%; padding-left: 10px;">Why is this option disabled?</a>
+									</td>
 								{% endif %}
 							</tr>
 							<tr>
@@ -192,7 +195,10 @@
 									{% if get_instance_ability('can_use_secure_smtp') %}
 										<td>{{ form_widget(trans_form.smtp_options.secure, {'attr': {'class': 'small'}}) }}</td>
 									{% else %}
-										<td>{{ phrase('agent.general.no') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.general.error_ssl_tip') }}."></span></td>
+										<td>
+											<input type="checkbox" disabled="disabled" />
+											<a href="{{ get_service_url('dp.kb.install.error_openssl') }}" class="tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.general.error_ssl_tip') }}" style="font-size: 90%; padding-left: 10px;">Why is this option disabled?</a>
+										</td>
 									{% endif %}
 								</tr>
 								<tr>
@@ -293,7 +299,10 @@
 										{% if get_instance_ability('can_use_secure_smtp') %}
 											<td>{{ form_widget(trans_form.backup_smtp_options.secure, {'attr': {'class': 'small'}}) }}</td>
 										{% else %}
-											<td>{{ phrase('agent.general.no') }} <a href="{{ get_service_url('dp.kb.install.error_openssl') }}" class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.general.error_ssl_tip') }}"></a></td>
+											<td>
+												<input type="checkbox" disabled="disabled" />
+												<a href="{{ get_service_url('dp.kb.install.error_openssl') }}" class="tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.general.error_ssl_tip') }}" style="font-size: 90%; padding-left: 10px;">Why is this option disabled?</a>
+											</td>
 										{% endif %}
 									</tr>
 									<tr>
