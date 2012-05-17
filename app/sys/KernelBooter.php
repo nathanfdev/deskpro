@@ -376,6 +376,9 @@ class KernelBooter
 				echo "\n";
 				exit;
 			}
+
+			// Otherwise unknown error we'll throw up
+			throw $e;
 		}
 
 		$app = new \Symfony\Bundle\FrameworkBundle\Console\Application($kernel);
