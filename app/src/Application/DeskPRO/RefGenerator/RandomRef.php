@@ -101,6 +101,11 @@ class RandomRef implements RefGeneratorInterface
 	 */
 	public function extractRefs($string, $ldelim = '\b', $rdelim = '\b')
 	{
-		return Strings::extractRegexMatch('#('.$ldelim.')([0-9A-Z]{8})('.$rdelim.')#', $string, 2);
+		$m = null;
+		if (preg_match_all('#('.$ldelim.')([0-9A-Z]{8})('.$rdelim.')#', $string, $m, \PREG_PATTERN_ORDER)) {
+			return $m[2];
+		}
+
+		return array();
 	}
 }
