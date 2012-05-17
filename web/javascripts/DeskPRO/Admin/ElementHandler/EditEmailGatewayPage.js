@@ -27,6 +27,9 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 
 				var postData = $('#gateway_form').serializeArray();
 				self.testPostData = postData;
+			},
+			onOverlayOpened: function() {
+				$('button.test-trigger', '#test_gateway_settings_overlay').click();
 			}
 		});
 
@@ -46,12 +49,21 @@ DeskPRO.Admin.ElementHandler.EditEmailGatewayPage = new Orb.Class({
 				},
 				success: function(data) {
 					if (data.success) {
-						$('.success', el).show();
+						$('.success', el).show().find('.placeholder-num').text(data.count+'');
 					} else {
+						$('.success', el).hide();
 						$('.error', el).show();
+						$('.error-explain', el).text(data.error_explain);
 						$('.error-msg', el).hide();
 						$('.show-error-message', el).show();
-						$('.error-msg', el).text(data.error_code + ' ' + data.error_message);
+						$('.error-msg .error-msg-text', el).text(data.error_code + ' ' + data.error_message);
+						$('.error-msg .error-msg-log', el).text(data.log);
+
+						if (data.error_code == '0') {
+							$('.show-error-message', el).hide();
+						} else {
+							$('.show-error-message', el).show();
+						}
 					}
 				}
 			});

@@ -68,6 +68,8 @@ class Pop3 extends AbstractFetcher
 			$this->logger->log('SSL Enabled', 'debug');
 		}
 
+		$options['logger'] = $this->logger;
+
 		$storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3($options);
 		return $storage;
 	}
@@ -161,6 +163,13 @@ class Pop3 extends AbstractFetcher
 		}
 	}
 
+
+	/**
+	 * Tests the connection and returns the number of messages on success
+	 *
+	 * @return bool
+	 * @throws \Exception
+	 */
 	public function test()
 	{
 		try {
@@ -169,6 +178,6 @@ class Pop3 extends AbstractFetcher
 			throw $e;
 		}
 
-		return true;
+		return $x;
 	}
 }

@@ -271,14 +271,72 @@ class EmailGatewaysController extends AbstractController
 		$form->bindRequest($this->get('request'));
 		$editgateway->apply();
 
-		try {
-			$conn = $gateway->getFetcher();
-			$conn->test();
-		} catch (\Exception $e) {
-			return $this->createJsonResponse(array('error' => true, 'error_code' => \Orb\Util\Util::getBaseClassname($e) . '::' . $e->getCode(), 'error_message' => $e->getMessage()));
+		$logger = new \Orb\Log\Logger();
+		$array_writer = new \Orb\Log\Writer\ArrayWriter();
+		$logger->addWriter($array_writer);
+
+		if ($gateway->connection_type == 'pop3') {
+			if (empty($editgateway->pop3_options['host']) || empty($editgateway->pop3_options['username']) || empty($editgateway->pop3_options['password'])) {
+				return $this->createJsonResponse(array(
+					'error' => true,
+					'error_explain' => 'Host, username and password must all be supplied',
+					'error_code' => '0',
+					'error_message' => 'Missing parameters',
+					'log' => ''
+				));
+			}
+		} elseif ($gateway->connection_type == 'gmail') {
+			if (empty($editgateway->gmail_options['username']) || empty($editgateway->gmail_options['password'])) {
+				return $this->createJsonResponse(array(
+					'error' => true,
+					'error_explain' => 'You must enter both a username and password',
+					'error_code' => '0',
+					'error_message' => 'Missing parameters',
+					'log' => ''
+				));
+			}
 		}
 
-		return $this->createJsonResponse(array('success' => true));
+		try {
+			$conn = $gateway->getFetcher();
+			$conn->setLogger($logger);
+
+			$count = $conn->test();
+		} catch (\Exception $e) {
+
+			$explain = 'There was an error while connecting to the server';
+
+			if ($e->getCode() == \Application\DeskPRO\EmailGateway\Storage\Pop3::ERR_CONNECT) {
+				if ($gateway->connection_type == 'pop3') {
+					$explain = 'There was an error while trying to connect to the server. Make sure the host and port you specified is correct.';
+				} elseif ($gateway->connection_type == 'gmail') {
+					$explain = 'There was an error while trying to connect to the Google servers. This may be a temporary problem, you should try again.';
+				}
+			} elseif ($e->getCode() == \Application\DeskPRO\EmailGateway\Storage\Pop3::ERR_LOGIN) {
+				if ($gateway->connection_type == 'pop3') {
+					$explain = 'Your username and password appear to be invalid.';
+				} elseif ($gateway->connection_type == 'gmail') {
+					$explain = 'Your username and password appear to be invalid.';
+				}
+			}
+
+			if ($e->getPrevious()) {
+				$e = $e->getPrevious();
+			}
+
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'error_explain' => $explain,
+				'error_code' => \Orb\Util\Util::getBaseClassname($e) . '::' . $e->getCode(),
+				'error_message' => $e->getMessage(),
+				'log' => implode("\n", $array_writer->getMessages())
+			));
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'count' => $count,
+		));
 	}
 
 	############################################################################

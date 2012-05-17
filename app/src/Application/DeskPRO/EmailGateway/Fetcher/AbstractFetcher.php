@@ -36,7 +36,7 @@ namespace Application\DeskPRO\EmailGateway\Fetcher;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\EmailGateway;
 use Application\DeskPRO\Entity\EmailSource;
-use Application\DeskPRO\Log\Logger;
+use Orb\Log\Logger;
 use Orb\Util\Strings;
 
 /**

@@ -32,63 +32,74 @@
  * @subpackage
  */
 
-namespace Application\DeskPRO\EmailGateway\Storage;
+namespace Application\DeskPRO\EmailGateway\Protocol;
 
-use Application\DeskPRO\EmailGateway\Protocol\Pop3 as Pop3Protocol;
+use Orb\Log\Logger;
 use Zend\Mail\Protocol\Exception;
 
-class Pop3 extends \Zend\Mail\Storage\Pop3
+class Pop3 extends \Zend\Mail\Protocol\Pop3
 {
-	const ERR_CONNECT = 1;
-	const ERR_LOGIN = 2;
+	/**
+	 * @var \Orb\Log\Logger
+	 */
+	protected $logger;
 
-	public function __construct($params)
-    {
-        if (is_array($params)) {
-            $params = (object)$params;
-        }
-
-        $this->_has['fetchPart'] = false;
-        $this->_has['top']       = null;
-        $this->_has['uniqueid']  = null;
-
-        if ($params instanceof Pop3Protocol) {
-            $this->_protocol = $params;
-            return;
-        }
-
-        if (!isset($params->user)) {
-            throw new Exception\InvalidArgumentException('need at least user in params');
-        }
-
-        $host     = isset($params->host)     ? $params->host     : 'localhost';
-        $password = isset($params->password) ? $params->password : '';
-        $port     = isset($params->port)     ? $params->port     : null;
-        $ssl      = isset($params->ssl)      ? $params->ssl      : false;
-		$logger   = isset($params->logger)   ? $params->logger   : null;
-
-        $this->_protocol = new Pop3Protocol();
-		if ($logger) {
-			$this->_protocol->setLogger($logger);
-		}
-
-		try {
-			$this->_protocol->connect($host, $port, $ssl, $logger);
-		} catch (Exception\RuntimeException $e) {
-			$new_e = new Exception\RuntimeException('There was an error connecting to the server', self::ERR_CONNECT, $e);
-			throw $new_e;
-		}
-
-		try {
-			$this->_protocol->login($params->user, $password);
-		} catch (Exception\RuntimeException $e) {
-			$new_e = new Exception\RuntimeException('Your username or password is invalid', self::ERR_LOGIN, $e);
-			throw $new_e;
-		}
-    }
-
-	public function getProtocol()
+	public function __construct($host = '', $port = null, $ssl = false, Logger $logger = null)
 	{
-		return $this->_protocol;
+		$this->logger = $logger;
+		parent::__construct($host, $port, $ssl);
+	}
+
+	public function setLogger(Logger $logger = null)
+	{
+		$this->logger = $logger;
+	}
+
+	public function sendRequest($request)
+	{
+		if ($this->logger) $this->logger->logDebug("[Request] " . $request);
+
+		return parent::sendRequest($request);
+	}
+
+	public function readResponse($multiline = false)
+	{
+		$result = @fgets($this->_socket);
+        if (!is_string($result)) {
+			if ($this->logger) $this->logger->logDebug("[Response] read failed - connection closed?");
+            throw new Exception\RuntimeException('read failed - connection closed?');
+        }
+
+        $result = trim($result);
+        if (strpos($result, ' ')) {
+            list($status, $message) = explode(' ', $result, 2);
+        } else {
+            $status = $result;
+            $message = '';
+        }
+
+        if ($status != '+OK') {
+			if ($this->logger) $this->logger->logDebug("[Response] $status");
+            throw new Exception\RuntimeException('last request failed');
+        }
+
+        if ($multiline) {
+            $message = '';
+            $line = fgets($this->_socket);
+			$log_msg = '';
+            while ($line && rtrim($line, "\r\n") != '.') {
+                if ($line[0] == '.') {
+                    $line = substr($line, 1);
+                }
+                $message .= $line;
+                $line = fgets($this->_socket);
+				if ($this->logger && !isset($log_msg[1000])) {
+					$log_msg .= $line;
+				}
+            }
+			if ($this->logger) $this->logger->logDebug("[Response] $status $log_msg");
+        }
+
+        return $message;
 	}
 }
