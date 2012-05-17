@@ -360,9 +360,21 @@ class KernelBooter
 		$kernel = new \DeskPRO\Kernel\CliKernel($env, $debug);
 		$kernel->boot($mode);
 
-		if ($enforce_offline_mode || ($mode == 'cron' && !App::getSetting('core.setup_initial'))) {
-			if ($kernel->isHelpdeskOffline()) {
-				return null;
+		try {
+			if ($enforce_offline_mode || ($mode == 'cron' && !App::getSetting('core.setup_initial'))) {
+				if ($kernel->isHelpdeskOffline()) {
+					return null;
+				}
+			}
+		} catch (\PDOException $e) {
+			global $DP_CONFIG;
+			if ($e->getCode() == '42S02' || @$DP_CONFIG['db']['user'] == 'YOUR_DATABASE_USER' || @$DP_CONFIG['db']['password'] == 'YOUR_DATABASE_PASS' || @$DP_CONFIG['db']['dbname'] == 'YOUR_DATABASE_NAME') {
+				echo "DeskPRO is not yet installed. If you believe this a mistake, check your config.php\n";
+				echo "file and ensure the database connection details are correct.\n";
+				echo "\n";
+				echo "The connection attempt resulted in the following error:\n[{$e->getCode()}] {$e->getMessage()}";
+				echo "\n";
+				exit;
 			}
 		}
 
