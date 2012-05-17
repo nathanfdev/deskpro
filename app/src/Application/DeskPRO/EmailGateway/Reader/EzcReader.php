@@ -133,6 +133,14 @@ class EzcReader extends AbstractReader
 
 	protected function _getFromAddress()
 	{
+		if (!$this->mail->from || !$this->mail->from->email) {
+			$email = new Item\EmailAddress();
+			$email->name = '';
+			$email->name_utf8 = '';
+			$email->email = '';
+			return $email;
+		}
+
 		if (!$this->mail->from->charset) $this->mail->from->charset = 'us-ascii';
 
 		$email = new Item\EmailAddress();
@@ -145,6 +153,14 @@ class EzcReader extends AbstractReader
 
 	protected function _getSubject()
 	{
+		if (!$this->mail->subject) {
+			$subject = new Item\Subject();
+			$subject->subject = '';
+			$subject->subject_utf8 = '';
+			$subject->original_charset = 'UTF-8';
+			return $subject;
+		}
+
 		if (!$this->mail->subjectCharset) $this->mail->subjectCharset = 'us-ascii';
 
 		$subject = new Item\Subject();
