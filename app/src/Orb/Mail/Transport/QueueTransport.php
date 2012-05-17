@@ -95,6 +95,6 @@ class QueueTransport implements \Swift_Transport
 
 	public function registerPlugin(\Swift_Events_EventListener $plugin)
 	{
-		$this->_eventDispatcher->bindEventListener($plugin);
+		$this->_event_dispatcher->bindEventListener($plugin);
 	}
 }
