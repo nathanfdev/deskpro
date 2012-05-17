@@ -112,6 +112,11 @@
 
 	{% if not is_import %}
 		<div class="dp_admin_pagebar">
+			<nav>
+				<ul>
+					<li class="undo-tick-trigger" id="section_config_smtp_edit" {% if not default_transport %}style="display: none"{% endif %}><a>Edit</a></li>
+				</ul>
+			</nav>
 			<ul>
 				<li>Configure Outgoing Email</li>
 			</ul>
@@ -129,6 +134,11 @@
 		<br />
 
 		<div class="dp_admin_pagebar">
+			<nav>
+				<ul>
+					<li class="undo-tick-trigger" id="section_config_pop3_edit" {% if not initial_pop %}style="display: none"{% endif %}><a>Edit</a></li>
+				</ul>
+			</nav>
 			<ul>
 				<li>Configure Incoming Email</li>
 			</ul>

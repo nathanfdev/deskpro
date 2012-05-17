@@ -22,6 +22,12 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 
 		this.totalStepCount = $('.mega-tick').length;
 
+		$('.undo-tick-trigger').on('click', function() {
+			var boxId = $(this).attr('id').replace(/_edit$/, '');
+			$('#' + boxId).find('.mega-tick').fadeOut();
+			$(this).fadeOut();
+		});
+
 		self.recountSteps();
 		window.setTimeout(function() {
 			self.sessionPing();
@@ -304,6 +310,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 				success: function(data) {
 					if (data.success) {
 						wrapper.find('.mega-tick')[self.showFn]();
+						$('#section_config_smtp_edit').fadeIn();
 						self.recountSteps();
 					}
 				}
@@ -367,6 +374,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 				success: function(data) {
 					if (data.success) {
 						wrapper.find('.mega-tick')[self.showFn]();
+						$('#section_config_pop3_edit').fadeIn();
 						self.recountSteps();
 					} else {
 						wrapper.find('.errors-box').show().find('.error-message').text(data.error_message).show();
