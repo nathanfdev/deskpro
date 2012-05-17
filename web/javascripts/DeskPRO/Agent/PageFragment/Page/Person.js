@@ -47,6 +47,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		if (input) {
 			input.width(propBox.width() - 140);
 
+			self.hasInitTxtbox = false;
+
 			this.wrapper.on('dp_resize', function() {
 				window.setTimeout(function() {
 					var w = propBox.width() - 140;
@@ -54,11 +56,15 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					if (self.labelsInput && self.labelsInput.options.textarea.textext()[0]) {
 						self.labelsInput.options.textarea.textext()[0].originalWidth = w;
 						self.labelsInput.options.textarea.textext()[0].invalidateBounds();
+					}
 
+					// Make sure only runs once or we'll infinite loop the browser
+					if (!self.hasInitTxtbox) {
 						$(self.labelsInput.options.textarea).on('postInvalidate', function() {
-							//self.updateUi();
+							self.updateUi();
 						});
 					}
+					self.hasInitTxtbox = true;
 				}, 500);
 			});
 		}
