@@ -84,7 +84,7 @@
 	'twig' => array(
 		'into' => DP_ROOT.'/vendor/twig',
 		'repos' => 'git://github.com/fabpot/Twig.git',
-		'version' => 'v1.8.0',
+		'version' => 'v1.8.1',
 	),
 	'zend' => array(
 		'into' => DP_ROOT.'/vendor/zend',
