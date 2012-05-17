@@ -98,4 +98,9 @@ class MainController extends AbstractController
 		$this->setup_guide->skipNextTask();
 		return $this->redirectRoute('admin');
 	}
+
+	public function sessionPingAction()
+	{
+		return $this->createJsonResponse(array('okay' => 1));
+	}
 }

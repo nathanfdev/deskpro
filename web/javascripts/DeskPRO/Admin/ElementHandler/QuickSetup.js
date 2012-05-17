@@ -23,6 +23,9 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 		this.totalStepCount = $('.mega-tick').length;
 
 		self.recountSteps();
+		window.setTimeout(function() {
+			self.sessionPing();
+		}, 300000);
 	},
 
 	recountSteps: function() {
@@ -47,6 +50,21 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 	scrollToSection: function(section) {
 		var title = $(section);
 		$('html,body').animate({scrollTop: title.offset().top - 45 }, 600);
+	},
+
+	/**
+	 * Simple request to ping our session to keep it alive while on this page
+	 */
+	sessionPing: function() {
+		var self = this;
+		$.ajax({
+			url: BASE_URL + 'admin/session-ping.json',
+			complete: function() {
+				window.setTimeout(function() {
+					self.sessionPing();
+				}, 300000);
+			}
+		});
 	},
 
 	//##################################################################################################################
