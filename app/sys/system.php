@@ -88,6 +88,17 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		$this->container->kernel = $this;
 	}
 
+	protected function initializeContainer()
+	{
+		if ($this->environment == 'dev') {
+			$routing_cache_cleaner = new \Application\DeskPRO\Routing\CacheCleaner();
+			if (!$routing_cache_cleaner->isFresh()) {
+				$routing_cache_cleaner->clearCache();
+			}
+		}
+
+		parent::initializeContainer();
+	}
 
 	public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 	{
