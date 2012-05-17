@@ -171,7 +171,7 @@ class EmailTransportsController extends AbstractController
 				$tr = $transport->getTransport();
 			}
 
-			$this->container->getSettingsHandler()->setTemporarySettingValues('core.default_from_email', $this->in->getString('send_from'));
+			$this->container->getSettingsHandler()->setTemporarySettingValues(array('core.default_from_email' => $this->in->getString('send_from')));
 
 			$message = $this->container->getMailer()->createMessage();
 			$message->setTo($this->in->getString('send_to'));
