@@ -56,7 +56,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 						self.labelsInput.options.textarea.textext()[0].invalidateBounds();
 
 						$(self.labelsInput.options.textarea).on('postInvalidate', function() {
-							self.updateUi();
+							//self.updateUi();
 						});
 					}
 				}, 500);
