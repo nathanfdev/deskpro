@@ -170,14 +170,14 @@ class ErrorReporter
 				'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
 				'display'
 			);
-			$info['local_hash'] = md5('php' . $errinfo['exception_type'] . str_replace(array('\\', '/', '.'), '', $errinfo['errfile']) . $errinfo['errline']);
+			$info['local_hash'] = md5('php' . $errinfo['exception_type'] . $errinfo['errfile'] . $errinfo['errline']);
 		} else {
 			$copy_keys = array(
 				'type', 'session_name', 'die', 'pri',
 				'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
 				'display'
 			);
-			$info['local_hash'] = md5('php' . $errinfo['errname'] . str_replace(array('\\', '/', '.'), '', $errinfo['errfile']) . $errinfo['errline']);
+			$info['local_hash'] = md5('php' . $errinfo['errname'] . $errinfo['errfile'] . $errinfo['errline']);
 		}
 
 		$send_info = array();
@@ -205,7 +205,7 @@ class ErrorReporter
 		$info = array();
 
 		if ($errinfo['script'] && $errinfo['line']) {
-			$info['local_hash'] = md5('js' . str_replace(array('\\', '/', '.'), '', $errinfo['script']) . $errinfo['line']);
+			$info['local_hash'] = md5('js' . $errinfo['script'] . $errinfo['line']);
 		} else {
 			$info['local_hash'] = md5('js' . $errinfo['message']);
 		}
@@ -234,14 +234,14 @@ class ErrorReporter
 					'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
 					'display'
 				);
-				$info['local_hash'] = md5('php' . $errinfo['exception_type'] . str_replace(array('\\', '/', '.'), '', $errinfo['errfile']) . $errinfo['errline']);
+				$info['local_hash'] = md5('php' . $errinfo['exception_type'] . $errinfo['errfile'] . $errinfo['errline']);
 			} else {
 				$copy_keys = array(
 					'type', 'session_name', 'die', 'pri',
 					'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
 					'display'
 				);
-				$info['local_hash'] = md5('php' . $errinfo['errname'] . str_replace(array('\\', '/', '.'), '', $errinfo['errfile']) . $errinfo['errline']);
+				$info['local_hash'] = md5('php' . $errinfo['errname'] . $errinfo['errfile'] . $errinfo['errline']);
 			}
 
 			$send_info = array();

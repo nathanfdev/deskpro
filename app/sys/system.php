@@ -985,14 +985,13 @@ class KernelErrorHandler
 
 	public static function getExceptionInfo(\Exception $exception)
 	{
-		$errno = $exception->getCode();
-		$errstr = $exception->getMessage();
+		$errno   = $exception->getCode();
+		$errstr  = self::stripPathPrefix($exception->getMessage());
 		$errfile = self::stripPathPrefix($exception->getFile());
 		$errline = $exception->getLine();
 
 		$backtrace = $exception->getTrace();
 		$trace = self::formatBacktrace($backtrace);
-		$trace = self::stripPathPrefix($trace);
 
 		if (isset($exception->_dp_query)) {
 			$errstr .= ' -- Query: ' . substr($exception->_dp_query, 0, 2000);
@@ -1062,6 +1061,10 @@ class KernelErrorHandler
 				$pri = 'NOTICE';
 				$errname = "E_DEPRECATED";
 				break;
+
+			default:
+				$pri = 'ERR';
+				$errname = 'UNKNOWN';
 		}
 
 		$display = true;
@@ -1069,11 +1072,11 @@ class KernelErrorHandler
 			$display = false;
 		}
 
+		$errstr  = self::stripPathPrefix($errstr);
 		$errfile = self::stripPathPrefix($errfile);
 
 		$backtrace = debug_backtrace();
 		$trace = self::formatBacktrace($backtrace);
-		$trace = self::stripPathPrefix($trace);
 
 		$summary = "[$errname:$errno] $errstr ($errfile:$errline)";
 
@@ -1098,11 +1101,11 @@ class KernelErrorHandler
 	{
 		$content = str_replace('\\', '/', $content);
 
-		$prefix = DP_ROOT . '/';
-		$content = str_replace($prefix, '', $content);
+		$prefix = str_replace('\\', '/', DP_ROOT) . '/';
+		$content = str_replace($prefix, '/app/', $content);
 
-		$prefix = DP_WEB_ROOT . '/';
-		$content = str_replace($prefix, '', $content);
+		$prefix = str_replace('\\', '/', DP_WEB_ROOT) . '/';
+		$content = str_replace($prefix, '/', $content);
 
 		return $content;
 	}
@@ -1119,6 +1122,7 @@ class KernelErrorHandler
 			$line = '';
 
 			if (!empty($v['file'])) {
+				$v['file'] = self::stripPathPrefix($v['file']);
 				$prefix .= "[{$v['file']}:{$v['line']}] ";
 			}
 
@@ -1161,7 +1165,7 @@ class KernelErrorHandler
         if (is_resource($var)) {
             return '[resource]';
         }
-        return str_replace("\n", '', var_export((string) $var, true));
+        return str_replace("\n", '', var_export(self::stripPathPrefix((string)$var), true));
     }
 }
 
