@@ -54,6 +54,11 @@ class LanguageToPOCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+		if (!dp_get_config('debug.dev')) {
+			$output->write("Dev mode is not enabled.");
+			return 0;
+		}
+
         $packages = array('user', 'agent', 'admin');
 
         foreach($packages as $package) {

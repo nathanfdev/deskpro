@@ -50,6 +50,11 @@ class DevCheckReservedWordsCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		if (!dp_get_config('debug.dev')) {
+			$output->write("Dev mode is not enabled");
+			return 0;
+		}
+
 		echo "Checking database tables for fields named after reserved words ... ";
 
 		$time_start = microtime(true);

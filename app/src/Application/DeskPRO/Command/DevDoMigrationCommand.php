@@ -61,6 +61,11 @@ class DevDoMigrationCommand extends \Symfony\Bundle\DoctrineMigrationsBundle\Com
 
 	public function execute(InputInterface $input, OutputInterface $output)
 	{
+		if (!dp_get_config('debug.dev')) {
+			$output->write("Dev mode is not enabled. Did you mean to use the upgrade.php command?");
+			return 0;
+		}
+
         set_time_limit(0);
 		$check = App::getDb()->fetchColumn("SHOW TABLES LIKE 'dev_migration_versions'");
 		if (!$check) {

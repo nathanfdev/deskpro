@@ -60,6 +60,10 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		if (!dp_get_config('debug.dev')) {
+			$output->write("Dev mode is not enabled");
+			return 0;
+		}
 		if ($input->getOption('reset-routing')) {
 			$output->writeln("Deleting cached routing ...");
 

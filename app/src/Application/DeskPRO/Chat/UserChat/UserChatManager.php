@@ -120,7 +120,7 @@ class UserChatManager
 	/**
 	 * Start a new chat conversation, or if its within time and sitll open, resume the previous.
 	 *
-	 * @return void
+	 * @return \Application\DeskPRO\Entity\ChatConversation
 	 */
 	public function startChat(array $chat_options, $is_window_mode = false)
 	{

@@ -82,6 +82,11 @@ class Version<version> extends AbstractMigration
 
 	public function execute(InputInterface $input, OutputInterface $output)
 	{
+		if (!dp_get_config('debug.dev')) {
+			$output->write("Dev mode is not enabled. Did you mean to use the upgrade.php command?");
+			return 0;
+		}
+
 		DoctrineCommandHelper::setApplicationEntityManager($this->getApplication(), $input->getOption('em'));
 
 		$configuration = $this->getMigrationConfiguration($input, $output);

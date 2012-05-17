@@ -53,6 +53,11 @@ class GenerateSchemaFileCommand extends \Symfony\Bundle\FrameworkBundle\Command\
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		if (!dp_get_config('debug.dev')) {
+			$output->write("Dev mode is not enabled.");
+			return 0;
+		}
+
 		$em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
 		$sc = new \Application\InstallBundle\Data\GenerateSchema($em);
