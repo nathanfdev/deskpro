@@ -66,6 +66,7 @@ class MysqlAdapter extends AbstractAdapter
 		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\Feedback', 'feedback');
 		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\News', 'news');
 		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\Ticket', 'ticket');
+		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\TicketMessage', 'ticket_message');
 		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\ChatConversation', 'chat_conversation');
 	}
 
