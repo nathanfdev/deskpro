@@ -20,4 +20,5 @@
 	'user.profile.set_as_primary_address'      => 'Set as primary address',
 	'user.profile.trying_to_add_invalid_email' => 'The email address you entered is invalid.',
 	'user.profile.validation_resent_to'        => 'Validation email was resent to {{email}}',
+	'user.profile.reset_password_current_logged_in' => 'Note you are currently logged in as {{email}}. Requesting a password reset will log you out.',
 );

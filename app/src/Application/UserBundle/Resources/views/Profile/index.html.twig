@@ -169,7 +169,10 @@
 			<div class="dp-box-content dp-form">
 				<div class="dp-control-group">
 					<div class="dp-control-label">
-						<label>{{ phrase('user.profile.current_password') }}</label>
+						<label>
+							{{ phrase('user.profile.current_password') }}
+							<em style="padding-left:8px;"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.general.lost_qm') }}</a></em>
+						</label>
 					</div>
 					<div class="dp-controls dp-fill">
 						<input type="password" name="current_password" value="" />

@@ -92,12 +92,8 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		));
 	}
 
-	public function logoutAction($auth)
+	protected function _logoutPerson()
 	{
-		if (!\Orb\Util\Util::checkStaticSecurityToken($auth, md5(App::getAppSecret() . 'user_logout'))) {
-			return $this->redirectRoute('user');
-		}
-
 		// When an agent actually logs out, we should be clearing the state
 		$person = $this->session->getPerson();
 		if ($person['is_agent']) {
@@ -122,6 +118,15 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie($cookie_name);
 			$cookie->send();
 		}
+	}
+
+	public function logoutAction($auth)
+	{
+		if (!\Orb\Util\Util::checkStaticSecurityToken($auth, md5(App::getAppSecret() . 'user_logout'))) {
+			return $this->redirectRoute('user');
+		}
+
+		$this->_logoutPerson();
 
 		if ($this->in->getString('quicklogout') == 'ajax') {
 			if ($this->in->getString('callback')) {
@@ -581,6 +586,9 @@ HTML;
 		if ($this->request->isXmlHttpRequest()) {
 			return $this->createJsonResponse(array('success' =>1 ));
 		}
+
+		$this->_logoutPerson();
+
 		return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array());
 	}
 
@@ -615,6 +623,7 @@ HTML;
 					$em->flush();
 				});
 
+				$this->session->setFlash('password_reset', 1);
 				return $this->redirectRoute($this->route_prefix . '_login');
 			}
 		}

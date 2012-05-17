@@ -56,6 +56,11 @@
 			</label>
 		</header>
 		<article id="user_type_exist_form" class="dp-well dp-well-light" {% if this_page != 'login' %}style="display:none"{% endif %}>
+			{% if app.session.hasFlash('password_reset') %}
+				<div class="dp-alert dp-alert-success">
+					{{ phrase('user.profile.password_updated') }}
+				</div>
+			{% endif %}
 			{% if failed_login_name %}
 				<div class="dp-alert dp-alert-error">
 					{{ phrase('user.general.login_error') }}
@@ -118,6 +123,9 @@
 						</td>
 					</tr>
 				</table>
+				{% if app.user.id %}
+					<p style="font-size: 90%">{{ phrase('user.profile.reset_password_current_logged_in', {email: app.user.getEmailAddress()}) }}</p>
+				{% endif %}
 			</form>
 		</article>
 	</section>
