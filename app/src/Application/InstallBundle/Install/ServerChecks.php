@@ -430,7 +430,7 @@ class ServerChecks
 			if (extension_loaded('openssl')) {
 				$this->getLogger()->log("[OK] OpenSSL installed", Logger::DEBUG);
 			} else {
-				$msg = "We recommend installing the OpenSSL extension so you can use resources that require a secure connection such as Google Apps, Facebook and Twitter.";
+				$msg = "We recommend installing the OpenSSL extension so you can use resources that require a secure connection such as Gmail or Google Apps, Facebook and Twitter.";
 				$this->getLogger()->log("$msg", Logger::INFO);
 				$this->server_errors['openssl_ext'] = array(
 					'message' => $msg,

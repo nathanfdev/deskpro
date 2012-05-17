@@ -185,7 +185,7 @@ class EmailGatewaysController extends AbstractController
 								$gateway->linked_transport = new \Application\DeskPRO\Entity\EmailTransport();
 							}
 
-							$gateway->linked_transport->title = 'Google Apps: ' . $editgateway->address;
+							$gateway->linked_transport->title = 'Gmail / Google Apps: ' . $editgateway->address;
 							$gateway->linked_transport->match_type = 'exact';
 							$gateway->linked_transport->match_pattern = $editgateway->address;
 							$gateway->linked_transport->transport_type = 'gmail';

@@ -106,7 +106,7 @@ class EditEmailTransport
 			$this->transport->title = $this->smtp_options['host'] . ':' . $this->smtp_options['username'];
 			$this->transport->transport_options = $this->smtp_options;
 		} elseif ($this->transport_type == 'gmail') {
-			$this->transport->title = 'Google Apps: ' . $this->gmail_options['username'];
+			$this->transport->title = 'Gmail / Google Apps: ' . $this->gmail_options['username'];
 			$this->transport->transport_options = $this->gmail_options;
 		} else {
 			$this->transport->title = 'PHP mail()';

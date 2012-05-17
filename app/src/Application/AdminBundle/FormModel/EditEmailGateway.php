@@ -121,7 +121,7 @@ class EditEmailGateway
 			$this->gateway->title = "{$this->pop3_options['host']} : {$this->pop3_options['username']}";
 		} elseif ($this->connection_type == 'gmail') {
 			$this->gateway->connection_options = $this->gmail_options;
-			$this->gateway->title = "Google Apps : {$this->gmail_options['username']}";
+			$this->gateway->title = "Gmail / Google Apps : {$this->gmail_options['username']}";
 		}
 
 		$this->gateway->gateway_type = $this->gateway_type;

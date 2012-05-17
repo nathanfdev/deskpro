@@ -60,7 +60,7 @@
 	'admin.general.gateway_error_logs'              => 'Gateway Rejections',
 	'admin.general.gateway_source_id'               => 'Gateway Source {{id}}',
 	'admin.general.general'                         => 'General',
-	'admin.general.google_apps'                     => 'Google Apps',
+	'admin.general.google_apps'                     => 'Gmail / Google Apps',
 	'admin.general.helpdesk'                        => 'Helpdesk',
 	'admin.general.helpdesk_currently_disabled'     => 'The helpdesk is currently disabled. Agents and users will not be able to use the system, and emails will not be processed.',
 	'admin.general.home'                            => 'Home',
