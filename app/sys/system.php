@@ -1005,6 +1005,13 @@ class KernelErrorHandler
 			$display = false;
 		}
 
+		$prev = $exception->getPrevious();
+		if ($prev) {
+			$previnfo = self::getExceptionInfo($prev);
+			$summary .= ", " . $previnfo['summary'];
+			$trace .= "\n\nn(Alt Exception)\n" . $previnfo['trace'];
+		}
+
 		return array(
 			'type'           => 'exception',
 			'session_name'   => isset($exception->_dp_sn) ? $exception->_dp_sn : null,
