@@ -88,6 +88,10 @@ class PortalController extends AbstractController
 		$entity_name = 'DeskPRO:' . ucfirst($object_type);
 		$content_object = $this->em->find($entity_name, $object_id);
 
+		if (!$content_object) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
 		$perm_name = false;
 		switch ($entity_name) {
 			case 'DeskPRO:Article':  $perm_name = 'articles.rate'; break;
