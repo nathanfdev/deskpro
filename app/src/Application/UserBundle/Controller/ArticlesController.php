@@ -322,9 +322,18 @@ class ArticlesController extends AbstractController
 
 		$newcomment_formtype = new NewCommentFormType($this->person);
 		$form = $this->get('form.factory')->create($newcomment_formtype, $new_comment);
+		$validator = new \Application\UserBundle\Validator\NewCommentValidator();
 
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));
+
+			if (!$validator->isValid($new_comment)) {
+				$this->session->setFlash('comment_error', $validator->getErrors(true));
+				return $this->redirectRoute('user_articles_article', array(
+					'slug' => $article->getUrlSlug()
+				));
+			}
+
 			$comment = $new_comment->save();
 
 			if ($new_comment->require_login) {

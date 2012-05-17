@@ -32,6 +32,14 @@
 						</li>
 					{% elseif app.user.hasPerm(check_perm) %}
 					<li class="new-comment {% if not app.user.is_guest %}no-nav{% endif %}" id="comments_login_info">
+						{% if app.getSession().getFlash('comment_error') %}
+							<div class="dp-alert dp-alert-error">
+								{% for type,x in app.getSession().getFlash('comment_error') %}
+									{% if type == 'email.invalid' %}- {{ phrase('user.general.form_fix_email') }}<br />{% endif %}
+									{% if type == 'name.short' %}- {{ phrase('user.general.please_enter_your_name') }}{% endif %}
+								{% endfor %}
+							</div>
+						{% endif %}
 						<form action="{{ form_action }}" method="post" class="with-form-validator">
 							<div class="login-area">
 								<div class="inner-wrap">

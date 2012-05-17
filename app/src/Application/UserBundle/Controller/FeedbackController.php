@@ -438,13 +438,18 @@ class FeedbackController extends AbstractController
 		);
 
 		$newcomment_formtype = new NewCommentFormType($this->person);
-		/**
-		 *
-		 */
 		$form = $this->get('form.factory')->create($newcomment_formtype, $new_comment);
+		$validator = new \Application\UserBundle\Validator\NewCommentValidator();
 
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));
+
+			if (!$validator->isValid($new_comment)) {
+				$this->session->setFlash('comment_error', $validator->getErrors(true));
+				return $this->redirectRoute('user_feedback_view', array(
+					'slug' => $feedback->getUrlSlug(),
+				));
+			}
 
 			if ($form->isValid()) {
 				$comment = $new_comment->save();
