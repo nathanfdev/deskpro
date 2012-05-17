@@ -26,84 +26,25 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
- */
+* DeskPRO
+*
+* @package DeskPRO
+*/
 
-namespace Application\DeskPRO\Service;
-use Application\DeskPRO\App;
+namespace Application\AdminBundle\Controller;
 
-class LicenseService
+use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\AdminBundle\Form\EditFeedbackCategoryType;
+use Orb\Util\Arrays;
+
+class HelpController extends AbstractController
 {
-	/**
-	 * @return array
-	 */
-	public static function getLatestVersion()
+	public function upgradeAction()
 	{
-		static $latest = null;
-
-		if ($latest === null) {
-			$latest = self::fetchServiceResult('build/check-latest-version.json');
-		}
-
-		return $latest;
-	}
-
-
-	/**
-	 * Compares current build to the latest build available.
-	 *
-	 * Data returned:
-	 * - build: <timestamp>
-	 * - build_link: <url>
-	 * - your_build: <timestamp>
-	 * - count_behind: <int>
-	 *
-	 * @return array
-	 */
-	public static function compareVersion()
-	{
-		static $data = null;
-
-		if ($data === null) {
-			$data = self::fetchServiceResult('build/compare-version.json', array('my_build' => DP_BUILD_TIME));
-		}
-
-		return $data;
-	}
-
-
-	/**
-	 * @param string $endpoint
-	 * @param array $post_data
-	 * @return array
-	 */
-	public static function fetchServiceResult($endpoint, array $post_data = array())
-	{
-		$url = \DeskPRO\Kernel\License::getLicServer() . '/api/' . ltrim($endpoint, '/');
-
-		$context = stream_context_create(array(
-			'http' => array(
-				'timeout'  => 8,
-				'method'   => 'POST',
-				'header'   => 'Content-type: application/x-www-form-urlencoded',
-				'content'  => http_build_query($post_data, null, '&')
-			)
+		$php_path = $this->container->getPhpBinaryPath();
+		return $this->render('AdminBundle:Help:upgrade.html.twig', array(
+			'php_path' => $php_path
 		));
-
-		$result = @file_get_contents($url, null, $context);
-
-		if (!$result) {
-			throw new \RuntimeException("No response from server: $url $result");
-		}
-
-		$res_data = @json_decode($result, true);
-		if (!is_array($res_data)) {
-			throw new \RuntimeException("Invalid JSON response from server: $url $result");
-		}
-
-		return $res_data;
 	}
 }

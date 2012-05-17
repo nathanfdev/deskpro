@@ -435,6 +435,7 @@ $CONFIG['admin_admin_handlers'] = array(
 		'javascripts/DeskPRO/Admin/ElementHandler/PortalEditor.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/LabelsPage.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/RadioExpander.js',
+		'javascripts/DeskPRO/Admin/ElementHandler/DashVersion.js',
 	)
 );
 

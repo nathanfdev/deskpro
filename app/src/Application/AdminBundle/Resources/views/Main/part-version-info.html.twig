@@ -1,0 +1,13 @@
+{% if version_info %}
+	{{ phrase('admin.general.latest_deskpro_build') }}
+	<span class="label {% if version_info.build == constant('DP_BUILD_TIME') %}success{% else %}important{% endif %}">{{ version_info.build|date('Y-m-d.H') }}</span>
+
+	<article class="box-hint" style="text-align: center">
+		{% if version_info.build == constant('DP_BUILD_TIME') %}
+			<p>{{ phrase('admin.general.you_are_up_to_date') }}</p>
+		{% else %}
+			<p>{{ phrase('admin.general.you_are_outdated_by_x_buils', {count: version_info.count_behind}) }}</p>
+			<a class="btn primary" href="{{ path('admin_help_upgrade') }}">{{ phrase('admin.general.click_here_for_upgrade_instructions') }}</a>
+		{% endif %}
+	</article>
+{% endif %}

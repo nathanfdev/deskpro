@@ -5,6 +5,22 @@
 		<li>{{ phrase('admin.menu.admin_dashboard') }}</li>
 	</ul>
 {% endblock %}
+{% block sidebar_right %}
+	<div style="min-height: 400px;">
+		<div class="dp-page-box">
+			<div class="resource-item-list">
+				<header>
+					<h4>{{ phrase('admin.general.deskpro_version') }}</h4>
+				</header>
+				<article data-element-handler="DeskPRO.Admin.ElementHandler.DashVersion">
+					{{ phrase('admin.general.your_current_deskpro_build') }}
+					<span class="label success">{{ constant('DP_BUILD_TIME')|date('Y-m-d.H') }}</span>
+					<div id="version_info_expanded"></div>
+				</article>
+			</div>
+		</div>
+	</div>
+{% endblock %}
 {% block page %}
 
 <p>{{ phrase('admin.menu.click_to_configure') }}</p>

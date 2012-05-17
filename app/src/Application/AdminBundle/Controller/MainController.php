@@ -39,17 +39,16 @@ class MainController extends AbstractController
 {
     public function indexAction()
 	{
-		// If we just came from the agent interface, lets redirect the
-		// person back where they just were
-		$ref = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : false;
-		$old_url = $this->session->get('admin_last_page');
-		if ($old_url AND $ref AND strpos($ref, '/agent/') !== false AND strpos($ref, '/admin/') === false) {
-			$this->session->remove('admin_last_page');
-
-			return $this->redirect($old_url);
-		}
-
 		return $this->render('AdminBundle:Main:index.html.twig');
+	}
+
+	public function dashVersionInfoAction()
+	{
+		$version_info = \Application\DeskPRO\Service\LicenseService::compareVersion();
+
+		return $this->render('AdminBundle:Main:part-version-info.html.twig', array(
+			'version_info' => $version_info
+		));
 	}
 
 	public function acceptTempUploadAction()

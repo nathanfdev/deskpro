@@ -1,0 +1,117 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block pagebar %}
+	<ul>
+		<li>Upgrading DeskPRO</li>
+	</ul>
+{% endblock %}
+{% block page %}
+<div class="page-content agent-listing" style="padding-top: 0;">
+	<div class="content-table">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th class="single-title">Using the interactive upgrader</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<p>
+							DeskPRO includes an automatic interactive upgrader that makes keeping your helpdesk up to date easy.
+							All you need to do run the "upgrade.php" file from the command-line.
+						</p>
+
+						<div style="text-align: center;">
+							<img src="{{ asset('images/instructions/interactive-upgrader.png') }}" />
+						</div>
+
+						<p>
+							Run this command to start the upgrader and then follow the simple on-screen instructions:
+						</p>
+						<code class="code-box nowrap">{{ php_path|default('/path/to/php') }} {{ constant('DP_WEB_ROOT') }}/upgrade.php</code>
+						<div class="small-note-box">
+							{% if not php_path %}
+								<br />
+								<strong>{{ phrase('agent.general.note_attn') }}:</strong>
+								{{ phrase('admin.settings.could_not_find_php_use_real') }}
+							{% endif %}
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div class="page-content agent-listing" style="padding-top: 0;">
+	<div class="content-table">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th class="single-title">Manually downloading updates</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<div class="box-section">
+							<h2>Step 1: Download newest version</h2>
+							<p>
+								Download the latest DeskPRO version from <a href="http://deskpro.com/downloads/DeskPRO.zip">deskpro.com/downloads/DeskPRO.zip</a>
+							</p>
+						</div>
+
+						<div class="box-section">
+							<h2>Step 2: Make a backup</h2>
+							<p>
+								You should make a backup of your current files and database. You can use the upgrade utility that comes with DeskPRO to help you with these tasks.
+							</p>
+							<p>
+								To make a backup of your files and database, run these commands:
+							</p>
+							<code class="code-box nowrap">
+								{{ php_path|default('/path/to/php') }} {{ constant('DP_WEB_ROOT') }}/upgrade.php --backup-files<br />
+								{{ php_path|default('/path/to/php') }} {{ constant('DP_WEB_ROOT') }}/upgrade.php --backup-db
+							</code>
+							<div class="small-note-box">
+								{% if not php_path %}
+									<br />
+									<strong>{{ phrase('agent.general.note_attn') }}:</strong>
+									{{ phrase('admin.settings.could_not_find_php_use_real') }}
+								{% endif %}
+							</div>
+						</div>
+
+						<div class="box-section">
+							<h2>Step 3: Install updated files</h2>
+							<p>
+								Extract the .zip package you downloaded and copy all of the files to your DeskPRO installation directory,
+								overwriting old files.
+							</p>
+							<ul class="standard-list" style="margin-left: 15px;">
+								<li>Make sure you keep your config.php file</li>
+								<li>Make sure you keep everything under the data/ directory</li>
+							</ul>
+						</div>
+
+						<div class="box-section">
+							<h2>Step 4: Install database updates</h2>
+							Finally, execute the command to run the database queries required to upgrade your database:
+							<code class="code-box nowrap">
+								{{ php_path|default('/path/to/php') }} {{ constant('DP_WEB_ROOT') }}/upgrade.php --run-db-upgrade
+							</code>
+							<div class="small-note-box">
+								{% if not php_path %}
+									<br />
+									<strong>{{ phrase('agent.general.note_attn') }}:</strong>
+									{{ phrase('admin.settings.could_not_find_php_use_real') }}
+								{% endif %}
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+{% endblock %}

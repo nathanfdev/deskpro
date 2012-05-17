@@ -119,4 +119,10 @@
 	'admin.general.yes'                             => 'Yes',
 	'admin.general.you_have_not_created_categories' => 'You have not created any categories yet. Click the "Add New Category" button to create one now.',
 	'admin.general.you_have_not_created_filters'    => 'You have not created any filters yet. Click the "Add New Filter" button to create one now.',
+	'admin.general.deskpro_version' => 'DeskPRO Version',
+	'admin.general.your_current_deskpro_build' => 'Your current DeskPRO version:',
+	'admin.general.latest_deskpro_build' => 'The newest DeskPRO version is:',
+	'admin.general.you_are_up_to_date' => 'Your helpdesk is all up to date.',
+	'admin.general.you_are_outdated_by_x_buils' => 'Your helpdesk is outdated by {{count}} versions|Your helpdesk is outdated by {{count}} versions',
+	'admin.general.click_here_for_upgrade_instructions' => 'Click here to upgrade your helpdesk',
 );

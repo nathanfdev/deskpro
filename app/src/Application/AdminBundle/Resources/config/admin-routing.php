@@ -5,13 +5,6 @@ use Symfony\Component\Routing\Route;
 
 $collection = new RouteCollection();
 
-$collection->add('admin', new Route(
-	'/',
-	array('_controller' => 'AdminBundle:Main:index'),
-	array(),
-	array()
-));
-
 $collection->add('admin_session_ping', new Route(
 	'/session-ping.json',
 	array('_controller' => 'AdminBundle:Main:sessionPing'),
@@ -58,6 +51,35 @@ $collection->add('admin_networkcheck', new Route(
 $collection->add('admin_skip_setup_todo', new Route(
 	'/misc/skip-setup-todo',
 	array('_controller' => 'AdminBundle:Main:skipSetupStep'),
+	array(),
+	array()
+));
+
+################################################################################
+# Dashboard
+################################################################################
+
+$collection->add('admin', new Route(
+	'/',
+	array('_controller' => 'AdminBundle:Main:index'),
+	array(),
+	array()
+));
+
+$collection->add('admin_dash_versioninfo', new Route(
+	'/dashboard/load-version-info.html',
+	array('_controller' => 'AdminBundle:Main:dashVersionInfo'),
+	array(),
+	array()
+));
+
+################################################################################
+# Help
+################################################################################
+
+$collection->add('admin_help_upgrade', new Route(
+	'/help/upgrade',
+	array('_controller' => 'AdminBundle:Help:upgrade'),
 	array(),
 	array()
 ));

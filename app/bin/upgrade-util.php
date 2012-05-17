@@ -158,6 +158,8 @@ class Upgrade
 			$this->runAction_restoreFiles();
 		} elseif (in_array('--install-latest-files', $argv)) {
 			$this->runAction_installLatestFiles();
+		} elseif (in_array('--run-db-upgrade', $argv)) {
+			$this->runAction_dbUpgrade();
 		} elseif (in_array('--auto', $argv)) {
 			$this->runAction_auto();
 		} else {
@@ -294,6 +296,11 @@ class Upgrade
 
 		$this->out("\t--check-version");
 		$this->out("\t\tOutputs information about your current version and the latest version of DeskPRO available");
+		$this->out('');
+
+		$this->out("\t--run-db-upgrade");
+		$this->out("\t\tIf the database is out of date with the files on the filesystem, then any required database");
+		$this->out("\t\tupdates will be executed.");
 		$this->out('');
 
 		$this->out("\t--backup-db");
@@ -482,6 +489,26 @@ class Upgrade
 		unlink(DP_ROOT.'/helpdesk-offline.trigger');
 
 		$this->revert_checkpoint = null;
+	}
+
+	####################################################################################################################
+	# run-db-upgrade
+	####################################################################################################################
+
+	public function runAction_dbUpgrade()
+	{
+		$php_path = $this->getPhpBinaryPath();
+		if (!$php_path) {
+			$this->outAndLog("Cannot find path to `php` binary");
+		}
+
+		chdir(DP_ROOT);
+		$cmd = "$php_path cmd.php dp:upgrade 2>&1";
+		$out = '';
+		passthru($cmd, $ret);
+		chdir(DP_START_DIR);
+
+		return $ret;
 	}
 
 	####################################################################################################################
