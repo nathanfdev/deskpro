@@ -56,17 +56,13 @@ class WarnNewticketFloodAction extends AbstractUserNotificationAction
 
 		$vars['ticket'] = $ticket;
 		$vars['person'] = $person;
-		$vars['participants'] = $parts;
 		$vars['access_code'] = $ticket->getAccessCode();
 
 		$from_address = App::getSetting('core.default_from_email');
 
-		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $tpl_suffix, $only_cc_ids) {
-			$email_subject = 'Warning: Confirmation emails turned off';
-			$email_body = App::get('templating')->render('gateway-autoresponse-warn.html.twig', $vars);
-
-			$message->setSubject($email_subject);
-			$message->setBody($email_body, 'text/html');
+		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr) use ($vars, $from_address, $ticket, $person) {
+			$message = App::getMailer()->createMessage();
+			$message->setTemplate('DeskPRO:emails_user:gateway-autoresponse-warn.html.twig', $vars);
 			$message->setFrom($from_address);
 
 			App::getMailer()->send($message);

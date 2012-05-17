@@ -302,4 +302,9 @@
 	 * Max email size to read from gateways
 	 */
 	'core.gateway_max_email' => 20971520,
+
+	/**
+	 * True to disable floodchecking in gateway
+	 */
+	'core.disable_gateway_floodcheck' => false,
 );

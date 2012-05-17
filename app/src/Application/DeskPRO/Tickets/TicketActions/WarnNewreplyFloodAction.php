@@ -43,7 +43,7 @@ use Application\DeskPRO\Tickets\TicketChangeTracker;
 use Application\DeskPRO\Translate\DelegatePhrase;
 use Application\DeskPRO\App;
 
-class WarnNewticketFloodAction extends AbstractUserNotificationAction
+class WarnNewreplyFloodAction extends AbstractUserNotificationAction
 {
 	/**
 	 * Apply the property to the ticket
@@ -56,14 +56,13 @@ class WarnNewticketFloodAction extends AbstractUserNotificationAction
 
 		$vars['ticket'] = $ticket;
 		$vars['person'] = $person;
-		$vars['participants'] = $parts;
 		$vars['access_code'] = $ticket->getAccessCode();
 
 		$from_address = App::getSetting('core.default_from_email');
 
-		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr) use ($tpl, $vars, $from_address, $ticket, $person, $parts, $tpl_suffix, $only_cc_ids) {
+		App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function($tr) use ($vars, $from_address, $ticket, $person) {
 			$message = App::getMailer()->createMessage();
-			$message->setTemplate('gateway-autoresponse-warn.html.twig', $vars);
+			$message->setTemplate('DeskPRO:emails_user:gateway-autoresponse-warn.html.twig', $vars);
 			$message->setFrom($from_address);
 
 			App::getMailer()->send($message);

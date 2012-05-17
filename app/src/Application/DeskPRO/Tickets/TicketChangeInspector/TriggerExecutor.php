@@ -311,7 +311,7 @@ class TriggerExecutor
 		# Flood checks / autoreply checks
 		#------------------------------
 
-		if (!DP_DEBUG) {
+		if (!DP_DEBUG && !App::getSetting('core.disable_gateway_floodcheck')) {
 			$is_autoreply = false;
 
 			if (in_array('new_ticket', $this->event_types)) {
@@ -368,6 +368,7 @@ class TriggerExecutor
 
 				$messages = $this->tracker->getChangedProperty('messages');
 				foreach ($messages as $m) {
+					$m = $m['new'];
 					if ($m->email_reader && $m->email_reader->isFromRobot()) {
 						$is_autoreply = true;
 					}
