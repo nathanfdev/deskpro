@@ -34,7 +34,9 @@
 
 	{{ design.dpgrid_col({ class: 'l r', style: "width: 580px;"}) }}
 		<span class="grab-handle"></span>
-		<h2><a class="edit-trigger">{{department.title}}</a></h2>
+		<h2>
+			<a class="edit-trigger" data-user-title="{{ department.getRealUserTitle() }}">{{department.title}} {% if department.getRealUserTitle() %}<span style="color: #666; font-size: 11px; font-weight: normal; padding-left: 10px;">User title: {{ department.getRealUserTitle() }}</span>{% endif %}</a>
+		</h2>
 	{{ design.dpgrid_col_end() }}
 
 	{{ design.dpgrid_col({ class: 'l r l-margin r-margin alt', style: "width: 140px"}) }}

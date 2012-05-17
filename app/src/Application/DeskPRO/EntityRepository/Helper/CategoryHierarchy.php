@@ -155,6 +155,11 @@ class CategoryHierarchy
 		if (is_array($reset)) {
 			$cats = $reset;
 		} else {
+			$select = 'id, parent_id, title';
+			if ($this->table_name == 'departments') {
+				$select = 'id, parent_id, title, user_title';
+			}
+
 			$cats = $this->em->getConnection()->fetchAllKeyed("
 				SELECT id, parent_id, title
 				FROM {$this->table_name}
@@ -165,6 +170,11 @@ class CategoryHierarchy
 		$this->_cat_ids = array();
 		foreach ($cats as &$c) {
 			$c['url_slug'] = $c['id'] . '-' . Strings::slugifyTitle($c['title']);
+
+			if (!isset($c['user_title']) || !$c['user_title']) {
+				$c['user_title'] = $c['title'];
+			}
+
 			$this->_cat_ids[] = $c['id'];
 		}
 		unset($c);

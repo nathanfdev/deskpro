@@ -112,9 +112,11 @@ DeskPRO.Admin.Departments.AjaxSave = new Orb.Class({
 		var self = this;
 		var depId = row.data('department-id');
 		var currentTitle = row.find('a.edit-trigger').text().trim();
+		var currentUserTitle = row.find('a.edit-trigger').data('user-title');
 
 		this.currentEditDep = depId;
 		$('#editdep_title').val(currentTitle);
+		$('#editdep_user_title').val(currentUserTitle);
 		$('#editdep_depid').val(depId);
 
 		if (!this.editOverlay) {

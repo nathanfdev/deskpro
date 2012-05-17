@@ -69,6 +69,11 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	protected $title;
 
 	/**
+	 * @var string
+	 */
+	protected $user_title = '';
+
+	/**
 	 * @var bool
 	 */
 	protected $is_tickets_enabled = true;
@@ -97,6 +102,20 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	public function getId()
 	{
 		return $this->id;
+	}
+
+	public function getRealUserTitle()
+	{
+		return $this->user_title;
+	}
+
+	public function getUserTitle()
+	{
+		if ($this->user_title) {
+			return $this->user_title;
+		}
+
+		return $this->title;
 	}
 
 	public function getParentId()
@@ -133,6 +152,16 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		return $this->parent['title'] . $sep . $this->title;
 	}
 
+	public function getFullUserTitle($sep = null)
+	{
+		if ($sep === null) $sep = ' > ';
+
+		if (!$this->parent) {
+			return $this->getUserTitle();
+		}
+
+		return $this->parent->getUserTitle() . $sep . $this->getUserTitle();
+	}
 
 	/**
 	 * Add a child department
@@ -216,6 +245,7 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
+		$metadata->mapField(array( 'fieldName' => 'user_title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'user_title', ));
 		$metadata->mapField(array( 'fieldName' => 'is_tickets_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_tickets_enabled', ));
 		$metadata->mapField(array( 'fieldName' => 'is_chat_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_chat_enabled', ));
 		$metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));

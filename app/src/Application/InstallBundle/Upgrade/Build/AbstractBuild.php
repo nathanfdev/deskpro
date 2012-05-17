@@ -113,6 +113,7 @@ abstract class AbstractBuild
 	public function execMutateSql($sql)
 	{
 		echo "\t-> " . $sql;
+		echo "\n";
 		$this->container->getDb()->exec($sql);
 	}
 

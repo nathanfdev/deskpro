@@ -38,11 +38,11 @@
 				{% if info.children %}
 				<optgroup label="{{ info.title }}">
 					{% for subid,subinfo in info.children %}
-					<option value="{{subinfo.id}}">{{subinfo.title}}</option>
+					<option value="{{subinfo.id}}">{{subinfo.user_title}}</option>
 					{% endfor %}
 				</optgroup>
 				{% else %}
-				<option value="{{info.id}}">{{info.title}}</option>
+				<option value="{{info.id}}">{{info.user_title}}</option>
 				{% endif %}
 				{% endfor %}
 			</select>

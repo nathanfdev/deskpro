@@ -588,6 +588,7 @@
 	'agent.general.time_waiting'                            => 'Waiting Time',
 	'agent.general.timezone'                                => 'Timezone',
 	'agent.general.title'                                   => 'Title',
+	'agent.general.user_title'                              => 'User Title',
 	'agent.general.title_grouped_by_x'                      => 'Grouped: {{fieldname}}',
 	'agent.general.title_grouped_by_xy'                     => 'Grouped: {{fieldname}} and {{fieldname2}}',
 	'agent.general.to'                                      => 'To',

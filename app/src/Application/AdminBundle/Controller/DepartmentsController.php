@@ -144,6 +144,8 @@ class DepartmentsController extends AbstractController
 			$department->title = $this->in->getString('title');
 		}
 
+		$department->user_title = $this->in->getString('user_title');
+
 		$this->em->getConnection()->beginTransaction();
 
 		try {
@@ -163,6 +165,7 @@ class DepartmentsController extends AbstractController
 	{
 		$department = new \Application\DeskPRO\Entity\Department();
 		$department->title = $this->in->getString('title');
+		$department->user_title = $this->in->getString('user_title');
 
 		if (!$department->title) {
 			$department->title = 'Untitled';

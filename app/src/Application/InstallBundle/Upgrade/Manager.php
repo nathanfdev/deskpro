@@ -38,6 +38,23 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
+/**
+ * This manages database upgrade scripts. An upgrade script is just a class with queries to process
+ * the database from a previous version into the current version. It brings the database up to date
+ * with whatever the current filesystem version is.
+ *
+ * Database upgrade scripts are timestamps just like the deskpro build is. But although we call these
+ * upgrade scripts "Build scripts," they do not directly correlate with official builds. That is,
+ * a build scripts timestamp is typically the timestamp at which the dev implemented it, while a
+ * deskpro package (zip file) build time is when it was actually generated and packaged.
+ *
+ * The database contains a setting `core.deskpro_build`. We call this the "database version".
+ * The filesystem contains a file /app/sys/config/build-time.php that defines DP_BUILD_TIME.
+ * We call this the "filesystem version"
+ *
+ * This manager simply detects when the database version is older than the filesystem time,
+ * and then runs all upgrade classes between the two points.
+ */
 class Manager
 {
 	/**

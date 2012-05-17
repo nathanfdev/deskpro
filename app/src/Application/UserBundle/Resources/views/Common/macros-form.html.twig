@@ -6,12 +6,12 @@
 	{% if not depth %}{% set depth = 0 %}{% endif %}
 	{% set indent = '&nbsp;'|repeat(depth) %}
 	{% if cat.children|length %}
-		<optgroup label="{{ indent|raw }}{{ cat.title }}">
+		<optgroup label="{{ indent|raw }}{% if cat.user_title is defined %}{{ cat.user_title }}{% else %}{{ cat.title }}{% endif %}">
 			{% for child in cat.children %}
 				{{ _self.select_options_hierarchy(child, selected, depth+1) }}
 			{% endfor %}
 		</optgroup>
 	{% else %}
-		<option value="{{ cat.id }}" {% if selected == cat.id %}selected="selected"{% endif %}>{{ indent|raw }}{{ cat.title }}</option>
+		<option value="{{ cat.id }}" {% if selected == cat.id %}selected="selected"{% endif %}>{{ indent|raw }}{% if cat.user_title is defined %}{{ cat.user_title }}{% else %}{{ cat.title }}{% endif %}</option>
 	{% endif %}
 {% endmacro %}

@@ -144,7 +144,7 @@
 								{% endfor %}
 							</optgroup>
 						{% else %}
-							<option value="{{ dep.id }}" {% if dep.id == initial_department_id %}selected="selected"{% endif %}>{{ dep.title }}</option>
+							<option value="{{ dep.id }}" {% if dep.id == initial_department_id %}selected="selected"{% endif %}>{{ dep.user_title }}</option>
 						{% endif %}
 					{% endfor %}
 				</select>

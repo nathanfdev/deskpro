@@ -29,57 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage AdminBundle
+ * @subpackage
  */
 
-namespace Application\AdminBundle\Form;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
-use Orb\Util\Arrays;
-
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
-
-class EditDepartmentType extends AbstractType
+class Build1337255835 extends AbstractBuild
 {
-	protected $is_new;
-
-	public function __construct($is_new)
+	public function run()
 	{
-		$this->is_new = $is_new;
-	}
-
-	public function buildForm(FormBuilder $builder, array $options)
-	{
-		$builder->add('title', 'text');
-		$builder->add('user_title', 'text');
-
-		$builder->add('is_tickets_enabled', 'checkbox', array(
-			'required' => false,
-		));
-		$builder->add('is_chat_enabled', 'checkbox', array(
-			'required' => false,
-		));
-
-		if ($this->is_new) {
-			$builder->add('parent', 'entity', array(
-				'class' => 'DeskPRO:Department',
-				'property' => 'title',
-				'query_builder' => function(\Doctrine\ORM\EntityRepository $er) {
-						return $er->createQueryBuilder('p')
-								->where('p.parent IS NULL')
-								->orderBy('p.display_order', 'ASC');
-				},
-				'empty_value' => '',
-				'required' => false,
-			));
-		}
-	}
-
-	public function getName()
-	{
-		return 'department';
+		$this->out("Adding user_title to departments table");
+		$this->execMutateSql("ALTER TABLE `departments` ADD `user_title` VARCHAR(255)  NOT NULL  DEFAULT ''  AFTER `title`");
 	}
 }

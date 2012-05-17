@@ -125,4 +125,5 @@
 	'admin.general.you_are_up_to_date' => 'Your helpdesk is all up to date.',
 	'admin.general.you_are_outdated_by_x_buils' => 'Your helpdesk is outdated by {{count}} versions|Your helpdesk is outdated by {{count}} versions',
 	'admin.general.click_here_for_upgrade_instructions' => 'Click here to upgrade your helpdesk',
+	'admin.general.user_title_explain' => 'This is the title that will appear to users. You can leave this blank and users will see the same title as agents do.',
 );

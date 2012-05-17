@@ -36,7 +36,7 @@
 		{% endfor %}
 	{{ design.dpgrid_end() }}
 
-<div id="editdep_overlay" style="width: 400px; height: 180px; display: none;">
+<div id="editdep_overlay" style="width: 400px; height: 300px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
 		<h4>{{ phrase('admin.departments.edit_department_title') }}</h4>
@@ -52,6 +52,17 @@
 					<input type="text" name="title" id="editdep_title" value="" />
 				</div>
 			</div>
+			<div class="dp-form-row">
+				<div class="dp-form-label">
+					<label>
+						{{ phrase('agent.general.user_title') }}
+						<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.general.user_title_explain') }}"></span>
+					</label>
+				</div>
+				<div class="dp-form-input">
+					<input type="text" name="user_title" id="editdep_user_title" value="" />
+				</div>
+			</div>
 		</form>
 	</div>
 	<div class="overlay-footer">
@@ -59,7 +70,7 @@
 	</div>
 </div>
 
-<div id="newdep_overlay" style="width: 400px; height: 230px; display: none;">
+<div id="newdep_overlay" style="width: 400px; height: 330px; display: none;">
 	<div class="overlay-title">
 		<span class="close-overlay"></span>
 		<h4>{{ phrase('admin.departments.new_department') }}</h4>
@@ -72,6 +83,17 @@
 				</div>
 				<div class="dp-form-input">
 					<input type="text" name="title" id="newdep_title" value="" />
+				</div>
+			</div>
+			<div class="dp-form-row">
+				<div class="dp-form-label">
+					<label>
+						{{ phrase('agent.general.user_title') }}
+						<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('admin.general.user_title_explain') }}"></span>
+					</label>
+				</div>
+				<div class="dp-form-input">
+					<input type="text" name="user_title" id="newdep_user_title" value="" />
 				</div>
 			</div>
 
