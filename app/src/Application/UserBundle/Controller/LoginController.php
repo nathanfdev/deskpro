@@ -476,7 +476,7 @@ HTML;
 		return $this->render($this->tpl_prefix . ':reset-password.html.twig', array(
 			'invalid_email' => $invalid_email,
 			'invalid_code' => $invalid_code,
-			'form' => $form,
+			'form' => $form->createView(),
 		));
 	}
 
