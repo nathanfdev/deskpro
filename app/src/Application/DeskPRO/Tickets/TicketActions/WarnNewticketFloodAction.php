@@ -56,7 +56,6 @@ class WarnNewticketFloodAction extends AbstractUserNotificationAction
 
 		$vars['ticket'] = $ticket;
 		$vars['person'] = $person;
-		$vars['access_code'] = $ticket->getAccessCode();
 
 		$from_address = App::getSetting('core.default_from_email');
 
@@ -64,6 +63,7 @@ class WarnNewticketFloodAction extends AbstractUserNotificationAction
 			$message = App::getMailer()->createMessage();
 			$message->setTemplate('DeskPRO:emails_user:gateway-autoresponse-warn.html.twig', $vars);
 			$message->setFrom($from_address);
+			$message->setTo($person->getEmailAddress());
 
 			App::getMailer()->send($message);
 		});
