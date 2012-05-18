@@ -348,7 +348,7 @@ class ArticleSearch extends SearcherAbstract
 
 				case self::TERM_CATEGORY:
 				case self::TERM_CATEGORY_SPECIFIC:
-					$base_ids = (array)(is_array($choice['category']) ? $choice['category'] : $choice);
+					$base_ids = (array)(is_array($choice) ? $choice['category'] : $choice);
 					$ids = array();
 
 					if ($term == self::TERM_CATEGORY_SPECIFIC) {

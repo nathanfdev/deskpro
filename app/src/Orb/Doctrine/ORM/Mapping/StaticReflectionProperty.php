@@ -38,7 +38,7 @@
  * Declaration of Orb\Doctrine\ORM\Mapping\StaticReflectionProperty::getValue() should be compatible with that of ReflectionProperty::getValue()
  */
 
-$__olde = error_reporting(E_ALL);
+$__olde = error_reporting(E_ALL ^ E_STRICT);
 require __DIR__.'/StaticReflectionProperty_Real.php';
 error_reporting($__olde);
 unset($__olde);
