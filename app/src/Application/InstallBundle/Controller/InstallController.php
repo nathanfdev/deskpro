@@ -502,8 +502,15 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 		$this->getLogger()->log('Install::installData', 'debug');
 
-		return $this->render('InstallBundle:Install:install-data.html.php', array(
+		$is_webinstall = true;
+		if ($this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.install_via_cmd'")) {
+			$is_webinstall = false;
+		} elseif ($this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro3importer'")) {
+			$is_webinstall = false;
+		}
 
+		return $this->render('InstallBundle:Install:install-data.html.php', array(
+			'is_webinstall' => $is_webinstall,
 		));
 	}
 

@@ -1,6 +1,10 @@
 <?php if (!defined('DP_ROOT')) exit('No access'); ?>
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
-<?php $view['slots']->start('subtitle') ?>Step 5: Create Your Admin Account<?php $view['slots']->stop() ?>
+<?php if ($is_webinstall) { ?>
+	<?php $view['slots']->start('subtitle') ?>Step 5: Create Your Admin Account<?php $view['slots']->stop() ?>
+<?php } else { ?>
+	<?php $view['slots']->start('subtitle') ?>Create Your Admin Account<?php $view['slots']->stop() ?>
+<?php } ?>
 <?php $failed = false ?>
 <script type="text/javascript">
 var validate = function() {

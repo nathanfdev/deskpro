@@ -184,6 +184,11 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 				$this->getOrm()->flush();
 			}
 		}
+
+		App::getDb()->replace('settings', array(
+			'name' => 'core.install_via_cmd',
+			'value' => 1,
+		));
     }
 
     private function createDatabase()
