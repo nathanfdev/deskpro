@@ -143,11 +143,14 @@ class EmailTransportsController extends AbstractController
 			$tpl = 'AdminBundle:EmailTransports:edit-account-form.html.twig';
 		}
 
+		$default_php_mail = $this->container->getSysConfig('instance_data.install_flags.default_php_mail');
+
 		return $this->render($tpl, array(
 			'transport' => $transport,
 			'form' => $form->createView(),
 			'edittrans' => $edittrans,
-			'partial' => $this->request->isPartialRequest()
+			'partial' => $this->request->isPartialRequest(),
+			'default_php_mail' => $default_php_mail,
 		));
 	}
 

@@ -112,7 +112,7 @@ class ErrorReporter
 			}
 		}
 
-		$instance_data = include(DP_ROOT.'/sys/config/instance-data.php');
+		$instance_data = dp_get_config('instance_data.report');
 		if ($instance_data) {
 			$info = array_merge($instance_data, $info);
 		}

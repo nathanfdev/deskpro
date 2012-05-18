@@ -121,7 +121,7 @@ class LicenseController extends AbstractController
 					'url'           => $this->request->getUriForPath('/'),
 				);
 
-				$instance_data = include(DP_ROOT.'/sys/config/instance-data.php');
+				$instance_data = $this->container->getSysConfig('instance_data.report');
 				if ($instance_data) {
 					$data = array_merge($instance_data, $data);
 				}

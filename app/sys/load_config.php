@@ -76,6 +76,32 @@ function dp_load_config()
 
 
 /**
+ * Loads a PHP array file into config
+ *
+ * @param string $file
+ * @param string $key
+ */
+function dp_load_file_into_config($file, $key)
+{
+	global $DP_CONFIG;
+	if (isset($DP_CONFIG[$key])) {
+		return;
+	}
+
+	if (is_file($file)) {
+		$data = include($file);
+		if (is_array($data)) {
+			$DP_CONFIG[$key] = $data;
+		} else {
+			$DP_CONFIG[$key] = array();
+		}
+	} else {
+		$DP_CONFIG[$key] = array();
+	}
+}
+
+
+/**
  * Get a value from config using dot notation
  *
  * @param string $key
@@ -100,12 +126,19 @@ function dp_get_config($path, $default = null)
 		return $default;
 	}
 
+	$depth = 0;
 	while ($key = array_shift($parts)) {
 		if (!isset($array[$key])) {
-			return $default;
+			if ($depth == 0 && $key == 'instance_data') {
+				dp_load_file_into_config(DP_ROOT.'/sys/config/instance-data.php', 'instance_data');
+				$array = $DP_CONFIG;
+			} else {
+				return $default;
+			}
 		}
 
 		$array = $array[$key];
+		$depth++;
 	}
 
 	return $array;

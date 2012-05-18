@@ -470,8 +470,7 @@ class DeskproContainer extends Container
 			return $GLOBALS['DP_CONFIG'];
 		}
 
-		$value = Arrays::getValue($GLOBALS['DP_CONFIG'], $name);
-		if ($value === null) $value = $default;
+		$value = dp_get_config($name, $default);
 
 		return $value;
 	}

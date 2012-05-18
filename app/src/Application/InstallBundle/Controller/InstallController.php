@@ -615,22 +615,26 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		$this->getLogger()->log('Install::installDone', 'debug');
 
 		$rewrite_urls = false;
-		try {
+		if ($this->container->getSysConfig('instance_data.install_flags.rewrite_urls')) {
+			$rewrite_urls = true;
+		} else {
+			try {
 
-			$url = $this->get('request')->getUriForPath('/__checkurlrewrite');
-			$url_noindex = str_replace('/index.php/', '/', $url);
+				$url = $this->get('request')->getUriForPath('/__checkurlrewrite');
+				$url_noindex = str_replace('/index.php/', '/', $url);
 
-			$client = new \Zend\Http\Client(null, array('timeout' => 5));
-			$client->setMethod(\Zend\Http\Request::METHOD_GET);
-			$client->setUri($url_noindex);
-			$result = $client->send();
-			$this->getLogger()->log('core.rewrite_urls check result: ' . $result->getBody(), 'debug');
-			if ($result->isSuccess() && strpos($result->getBody(), 'dp_check_url_ok') !== false) {
-				$this->getLogger()->log('Enabling core.rewrite_urls', 'debug');
-				$rewrite_urls = true;
-			}
+				$client = new \Zend\Http\Client(null, array('timeout' => 5));
+				$client->setMethod(\Zend\Http\Request::METHOD_GET);
+				$client->setUri($url_noindex);
+				$result = $client->send();
+				$this->getLogger()->log('core.rewrite_urls check result: ' . $result->getBody(), 'debug');
+				if ($result->isSuccess() && strpos($result->getBody(), 'dp_check_url_ok') !== false) {
+					$this->getLogger()->log('Enabling core.rewrite_urls', 'debug');
+					$rewrite_urls = true;
+				}
 
-		} catch (\Exception $e) {}
+			} catch (\Exception $e) {}
+		}
 
 		$this->getOrm()->getConnection()->beginTransaction();
 		try {
