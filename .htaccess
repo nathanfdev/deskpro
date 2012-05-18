@@ -1,5 +1,5 @@
 # Protect hidden files and directories
-<Files ~ "^config\.php|cron\.php|import\.php|upgrade\.php|schedule\.bat$">
+<Files ~ "^config\.php|config\.new\.php|cron\.php|import\.php|upgrade\.php|schedule\.bat|web\.config$">
 	Order allow,deny
 	Allow from none
 	Deny from all
