@@ -108,53 +108,6 @@
 			</div>
 		</div>
 	</div>
-	<br />
-
-	{% if not is_import %}
-		<div class="dp_admin_pagebar">
-			<nav>
-				<ul>
-					<li class="undo-tick-trigger" id="section_config_smtp_edit" {% if not default_transport %}style="display: none"{% endif %}><a>Edit</a></li>
-				</ul>
-			</nav>
-			<ul>
-				<li>Configure Outgoing Email</li>
-			</ul>
-		</div>
-		<div class="dp_admin_page" id="section_config_smtp">
-			<div class="mega-tick" {% if not default_transport %}style="display: none"{% endif %}></div>
-			<div class="dp_admin_page_inner">
-				<div class="dp-page-box">
-					<div class="page-content">
-						{% include 'AdminBundle:Settings:quick-setup-outgoing-email.html.twig' %}
-					</div>
-				</div>
-			</div>
-		</div>
-		<br />
-
-		<div class="dp_admin_pagebar">
-			<nav>
-				<ul>
-					<li class="undo-tick-trigger" id="section_config_pop3_edit" {% if not initial_pop %}style="display: none"{% endif %}><a>Edit</a></li>
-				</ul>
-			</nav>
-			<ul>
-				<li>Configure Incoming Email</li>
-			</ul>
-		</div>
-		<div class="dp_admin_page" id="section_config_pop3">
-			<div class="mega-tick" {% if not initial_pop %}style="display: none"{% endif %}></div>
-			<div class="dp_admin_page_inner">
-				<div class="dp-page-box">
-					<div class="page-content" style="position:relative;">
-						{% include 'AdminBundle:Settings:quick-setup-incoming-email.html.twig' %}
-					</div>
-				</div>
-			</div>
-		</div>
-		<br />
-	{% endif %}
 
 	<div class="setup-done-section" id="section_done">
 		<button class="clean-white disabled" data-url="{{ path('admin_welcome', {done: 1}) }}">Continue &rarr;</button>
