@@ -34,6 +34,9 @@ DirectoryIndex index.php index.html index.htm
 	# block direct access to any files/folders beginning with . (e.g. git/subversion)
 	RewriteRule "(^|/)\." - [F]
 
+	RewriteRule ^admin/.*$ index.php [NC,L]
+	RewriteRule ^agent/.*$ index.php [NC,L]
+
 	RewriteCond %{REQUEST_FILENAME} -f [OR]
 	RewriteCond %{REQUEST_FILENAME} -l [OR]
 	RewriteCond %{REQUEST_FILENAME} -d
