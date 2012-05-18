@@ -446,17 +446,19 @@ class Translate implements PersonContextInterface
 
     public static function reportMissingPhrases() {
         if(count(self::$_missing_phrases)) {
-            $logger = App::createNewLogger('missing_phrase_logger', null);
-            $message = "'The following phrases are missing:\n";
+			try {
+				$logger = App::createNewLogger('missing_phrase_logger', null);
+				$message = "'The following phrases are missing:\n";
 
-            foreach(self::$_missing_phrases as $phrase) {
-                $message .= "{$phrase}\n";
-            }
+				foreach(self::$_missing_phrases as $phrase) {
+					$message .= "{$phrase}\n";
+				}
 
-            $logger->log($message, 'WARN', array(
-                'subject'    => '[DeskPRO Missing Phrases]',
-                'message'    => $message
-            ));
+				$logger->log($message, 'WARN', array(
+					'subject'    => '[DeskPRO Missing Phrases]',
+					'message'    => $message
+				));
+			} catch(\Exception $e) {}
         }
     }
 

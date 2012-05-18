@@ -45,7 +45,14 @@ class QueryListener
 
 	public function __construct()
 	{
-		register_shutdown_function(array($this, 'sendUpdates'));
+		register_shutdown_function(array($this, 'sendUpdatesQuiet'));
+	}
+
+	public function sendUpdatesQuiet()
+	{
+		try {
+			$this->sendUpdates();
+		} catch (\Exception $e) {}
 	}
 
 	public function sendUpdates()

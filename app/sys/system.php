@@ -806,6 +806,7 @@ class UserKernel extends AbstractKernel
 class KernelErrorHandler
 {
 	public static $is_logging = false;
+	public static $is_handling_exception = false;
 	public static $wrote_log_file = false;
 	public static $wrote_php_log = false;
 
@@ -856,6 +857,12 @@ class KernelErrorHandler
 
 	public static function handleException(\Exception $exception)
 	{
+		if (self::$is_handling_exception) {
+			return;
+		}
+
+		self::$is_handling_exception = true;
+
 		$errinfo = self::getExceptionInfo($exception);
 		self::logErrorInfo($errinfo);
 
@@ -884,6 +891,8 @@ class KernelErrorHandler
 			if ($code == 0) $code = 1;
 			exit($code);
 		}
+
+		self::$is_handling_exception = false;
 	}
 
 	public static function tryCleanup()
