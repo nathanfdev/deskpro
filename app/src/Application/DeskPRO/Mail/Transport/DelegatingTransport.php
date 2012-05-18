@@ -295,7 +295,6 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 		if (!$from_address) $from_address = '';
 		else $from_address = $from_address[0];
 
-
 		$from_account = App::getEntityRepository('DeskPRO:EmailTransport')->findTransportForAddress($from_address);
 		if ($from_account) {
 			if ($get_backup_transport) {
@@ -311,7 +310,9 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 			$tr = new \Swift_MailTransport();
 		}
 
-		$this->attachLoggerOnce($tr);
+		if ($tr) {
+			$this->attachLoggerOnce($tr);
+		}
 
 		return $tr;
 	}
