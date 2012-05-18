@@ -111,12 +111,22 @@ class LicenseController extends AbstractController
 				$client = new \Zend\Http\Client(null, array('timeout' => 15, 'strictredirects' => true));
 				$client->setMethod(\Zend\Http\Request::METHOD_POST);
 				$client->setUri(DP_MA_SERVER . '/api/license/request-demo.json');
-				$client->getRequest()->post()->set('install_key', $this->settings->get('core.install_key'));
-				$client->getRequest()->post()->set('install_token', $this->settings->get('core.install_token'));
-				$client->getRequest()->post()->set('email_address', $email_address);
-				$client->getRequest()->post()->set('org_name', $set_website_name);
-				$client->getRequest()->post()->set('org_url', $set_website_url);
-				$client->getRequest()->post()->set('url', $this->request->getUriForPath('/'));
+
+				$data = array(
+					'install_key'   => $this->settings->get('core.install_key'),
+					'install_token' => $this->settings->get('core.install_token'),
+					'email_address' => $email_address,
+					'org_name'      => $set_website_name,
+					'org_url'       => $set_website_url,
+					'url'           => $this->request->getUriForPath('/'),
+				);
+
+				$instance_data = include(DP_ROOT.'/sys/instance-data.php');
+				if ($instance_data) {
+					$data = array_merge($instance_data, $data);
+				}
+
+				$client->getRequest()->post()->fromArray($data);
 
 				$hostname = gethostname();
 
