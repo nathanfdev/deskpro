@@ -655,7 +655,7 @@ class Upgrade
 		fseek($fh, -256000, \SEEK_END);
 		$code = fread($fh, 256000);
 
-		if (strpos($code, 'INSERT INTO `worker_jobs`') === false) {
+		if (strpos($code, 'CREATE TABLE `worker_jobs`') === false) {
 			$this->log("Database dump seems invalid.");
 			throw new MysqlBackupException("Database dump seems invalid", MysqlBackupException::DUMP_ERROR);
 		}
