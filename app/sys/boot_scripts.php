@@ -21,6 +21,10 @@ switch ($_GET['_sys']) {
 		require DP_ROOT . '/sys/scripts/checkurl.php';
 		break;
 
+	case 'checkurlpath':
+		require DP_ROOT . '/sys/scripts/checkurlpath.php';
+		break;
+
 	case 'dev_run_migrations':
 		if (!$is_authed) die('Invalid auth code.');
 		require DP_ROOT . '/sys/scripts/dev_run_migrations.php';

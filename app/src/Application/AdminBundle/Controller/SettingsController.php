@@ -332,7 +332,7 @@ class SettingsController extends AbstractController
 				'value' => time(),
 			));
 
-			$url = $this->request->getUriForPath('/__checkurlrewrite');
+			$url = $this->request->getUriForPath('/__checkurlrewrite/path');
 			$url_noindex = str_replace('/index.php/', '/', $url);
 
 			$client = new \Zend\Http\Client(null, array('timeout' => 5));
@@ -423,7 +423,7 @@ class SettingsController extends AbstractController
 			$this->container->get('deskpro.core.settings')->setSetting('core.app_secret', Strings::random(50, Strings::CHARS_ALPHANUM_IU));
 		}
 
-		$url = $this->request->getUriForPath('/__checkurlrewrite');
+		$url = $this->request->getUriForPath('/__checkurlrewrite/path');
 		$url_noindex = str_replace('/index.php/', '/', $url);
 
 		try {

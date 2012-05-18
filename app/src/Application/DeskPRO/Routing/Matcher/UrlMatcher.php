@@ -33,11 +33,6 @@
 
 namespace Application\DeskPRO\Routing\Matcher;
 
-use Symfony\Component\Routing\Matcher\Exception\MethodNotAllowedException;
-use Symfony\Component\Routing\Matcher\Exception\NotFoundException;
-use Symfony\Component\Routing\Route;
-use Symfony\Component\Routing\RouteCollection;
-
 use Orb\Util\Strings;
 
 class UrlMatcher extends \Symfony\Component\Routing\Matcher\UrlMatcher
@@ -75,23 +70,11 @@ class UrlMatcher extends \Symfony\Component\Routing\Matcher\UrlMatcher
 			if ($locale) {
 				$this->got_locale = $locale;
 
-				// Remove it from the 
+				// Remove it from the
 				$pathinfo = preg_replace('#^/(.*?)/#', '/', $pathinfo);
 			}
 		}
 
 		return parent::match($pathinfo);
-	}
-
-	protected function mergeDefaults($params, $defaults)
-	{
-		$parameters = array_merge($this->defaults, $defaults);
-		foreach ($params as $key => $value) {
-			if (!is_int($key)) {
-				$parameters[$key] = urldecode($value);
-			}
-		}
-
-		return $parameters;
 	}
 }

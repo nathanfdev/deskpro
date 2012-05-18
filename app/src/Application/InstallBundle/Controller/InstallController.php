@@ -198,6 +198,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		$new_download = null;
 		$this_build = date('Y-m-d', DP_BUILD_TIME);
 		$new_build = 0;
+		/*
 		try {
 			$latest_version = \Application\DeskPRO\Service\LicenseService::getLatestVersion();
 			$new_build = date('Y-m-d', $latest_version['build']);
@@ -205,6 +206,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 				$new_download = $latest_version['download'];
 			}
 		} catch (\Exception $e) {}
+		*/
 
 
 		return $this->render('InstallBundle:Install:index.html.php', array(
@@ -627,7 +629,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		} else {
 			try {
 
-				$url = $this->get('request')->getUriForPath('/__checkurlrewrite');
+				$url = $this->get('request')->getUriForPath('/__checkurlrewrite/path');
 				$url_noindex = str_replace('/index.php/', '/', $url);
 
 				$client = new \Zend\Http\Client(null, array('timeout' => 5));
