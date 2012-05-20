@@ -1,6 +1,6 @@
 <?php if (!defined('DP_ROOT')) exit('No access'); ?>
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
-<?php $view['slots']->start('subtitle') ?>Step 3: Verifying file integrity<?php $view['slots']->stop() ?>
+<?php $view['slots']->start('subtitle') ?>Step 4: Verifying file integrity<?php $view['slots']->stop() ?>
 <script type="text/javascript">
 window.DpStatus = {
 	allCount: <?php echo $count ?>,
@@ -199,7 +199,7 @@ $(document).ready(function() {
 		<strong>Done!</strong> You're ready to go to the next step.
 
 		<div class="alert-actions">
-			<a class="btn" href="<?php echo $view['router']->generate('install_create_tables') ?>" onclick="this.onclick=function(){return false;};">Go to step 4: Install database</a>
+			<a class="btn" href="<?php echo $view['router']->generate('install_create_tables') ?>" onclick="this.onclick=function(){return false;};">Go to step 5: Install database</a>
 		</div>
 	</div>
 </div>

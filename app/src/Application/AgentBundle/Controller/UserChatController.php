@@ -376,9 +376,11 @@ class UserChatController extends AbstractController
 			$convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 		}
 
-		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
-		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
-		$chat_manager->addMessage($convo, $this->person, $this->in->getString('content'));
+		if ($this->in->getString('content')) {
+			/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+			$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
+			$chat_manager->addMessage($convo, $this->person, $this->in->getString('content'));
+		}
 
 		return $this->createJsonCmResponse();
 	}

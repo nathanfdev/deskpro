@@ -180,11 +180,45 @@ class DepartmentsController extends AbstractController
 			$department->parent = $parent;
 		}
 
+		$agent_ids = $this->db->fetchAllCol("
+			SELECT id FROM people WHERE is_agent = 1
+		");
+
 		$this->em->getConnection()->beginTransaction();
 
 		try {
 			$this->em->persist($department);
 			$this->em->flush();
+
+			$dep_perms = array();
+			foreach ($agent_ids as $aid) {
+				$dep_perms[] = array(
+					'department_id' => $department->getId(),
+					'usergroup_id' => null,
+					'person_id' => $aid,
+					'app' => 'tickets'
+				);
+				$dep_perms[] = array(
+					'department_id' => $department->getId(),
+					'usergroup_id' => null,
+					'person_id' => $aid,
+					'app' => 'chat'
+				);
+			}
+			$dep_perms[] = array(
+				'department_id' => $department->getId(),
+				'usergroup_id' => 1,
+				'person_id' => null,
+				'app' => 'tickets'
+			);
+			$dep_perms[] = array(
+				'department_id' => $department->getId(),
+				'usergroup_id' => 1,
+				'person_id' => null,
+				'app' => 'chat'
+			);
+
+			$this->db->batchInsert('department_permissions', $dep_perms);
 
 			$this->em->getConnection()->commit();
 		} catch (\Exception $e) {

@@ -227,6 +227,13 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		));
 	}
 
+	public function installRewriteCheckAction()
+	{
+		return $this->render('InstallBundle:Install:check-rewrite.html.php', array(
+
+		));
+	}
+
 	###############################################################################
 	# config-editor
 	###############################################################################

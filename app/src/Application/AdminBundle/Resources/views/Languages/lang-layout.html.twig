@@ -1,6 +1,7 @@
 {% extends 'AdminBundle::layout.html.twig' %}
+{% set page_nav_fixed = 1 %}
 {% block page_nav %}
-<div data-element-handler="DeskPRO.Admin.ElementHandler.PortalNav" id="portal_nav">
+<div data-element-handler="DeskPRO.Admin.ElementHandler.PortalNav" id="portal_nav" class="fixed">
 	<section class="top">
 		<header>
 			<h4>{{ phrase('agent.general.language') }}</h4>

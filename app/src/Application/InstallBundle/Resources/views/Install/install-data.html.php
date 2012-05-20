@@ -1,7 +1,7 @@
 <?php if (!defined('DP_ROOT')) exit('No access'); ?>
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
 <?php if ($is_webinstall) { ?>
-	<?php $view['slots']->start('subtitle') ?>Step 5: Create Your Admin Account<?php $view['slots']->stop() ?>
+	<?php $view['slots']->start('subtitle') ?>Step 6: Create Your Admin Account<?php $view['slots']->stop() ?>
 <?php } else { ?>
 	<?php $view['slots']->start('subtitle') ?>Create Your Admin Account<?php $view['slots']->stop() ?>
 <?php } ?>

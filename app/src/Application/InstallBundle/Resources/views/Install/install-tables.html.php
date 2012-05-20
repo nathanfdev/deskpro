@@ -1,6 +1,6 @@
 <?php if (!defined('DP_ROOT')) exit('No access'); ?>
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
-<?php $view['slots']->start('subtitle') ?>Step 4: Installing database tables<?php $view['slots']->stop() ?>
+<?php $view['slots']->start('subtitle') ?>Step 5: Installing database tables<?php $view['slots']->stop() ?>
 <script type="text/javascript">
 var installStatus = {
 	update: function(info) {
@@ -166,7 +166,7 @@ $(document).ready(function() {
 		<strong>Done!</strong> You're ready to go to the next step.
 
 		<div class="alert-actions">
-			<a class="btn" href="<?php echo $view['router']->generate('install_install_data') ?>">Go to step 5: Create your admin account</a>
+			<a class="btn" href="<?php echo $view['router']->generate('install_install_data') ?>">Go to step 6: Create your admin account</a>
 		</div>
 	</div>
 </div>

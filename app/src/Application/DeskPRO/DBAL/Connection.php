@@ -236,7 +236,7 @@ class Connection extends \Doctrine\DBAL\Connection
 			}
 
 			foreach ($cols as $c) {
-				if (!isset($vals[$c])) {
+				if (!array_key_exists($c, $vals)) {
 					throw new \InvalidArgumentException("A value row is missing the `$c` column");
 				}
 

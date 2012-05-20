@@ -309,7 +309,7 @@
 {% set page_nav %}{% block page_nav %}{% endblock %}{% endset %}
 {% set page_nav_inner %}{% block page_nav_inner %}{% endblock %}{% endset %}
 {% if page_nav|trim|length or page_nav_inner|trim|length %}
-	<div id="dp_page_nav">
+	<div id="dp_page_nav" {% if page_nav_fixed %}class="fixed"{% endif %}>
 		{% if page_nav_inner|trim|length %}
 			{{ page_nav_inner|raw }}
 		{% else %}

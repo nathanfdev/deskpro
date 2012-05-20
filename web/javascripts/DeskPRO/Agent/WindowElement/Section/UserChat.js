@@ -160,6 +160,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		var el = $('#userchat_list_' + (id != '0'?id:'allagents') + '_counter');
 		var newCount = DeskPRO_Window.util.modCountEl(el, op, count);
 
+		var oldCount = prseInt(el.text().trim()) || 0;
+
 		if (id != '0') {
 			var row = el.closest('li');
 
@@ -174,6 +176,12 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		}
 		else {
 			this.handleUpdateCounts();
+		}
+
+		var newCount = prseInt(el.text().trim()) || 0;
+
+		if (oldCount != newCount) {
+			DeskPRO_Window.runPageRouteFromElement(el.closest('[data-route]'));
 		}
 	},
 

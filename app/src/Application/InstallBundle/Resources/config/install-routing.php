@@ -12,6 +12,13 @@ $collection->add('install_checks', new Route(
 	array()
 ));
 
+$collection->add('install_check_urls', new Route(
+	'/url-rewriting-check',
+	array('_controller' => 'InstallBundle:Install:installRewriteCheck'),
+	array(),
+	array()
+));
+
 $collection->add('install_license', new Route(
 	'/',
 	array('_controller' => 'InstallBundle:Install:license'),
