@@ -1020,7 +1020,7 @@ class KernelErrorHandler
 		if ($prev) {
 			$previnfo = self::getExceptionInfo($prev);
 			$summary .= ", " . $previnfo['summary'];
-			$trace .= "\n\nn(Alt Exception)\n" . $previnfo['trace'];
+			$trace .= "\n\n(Alt Exception)\n" . $previnfo['trace'];
 		}
 
 		$errinfo = array(

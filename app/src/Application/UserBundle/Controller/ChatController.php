@@ -66,7 +66,6 @@ class ChatController extends AbstractController
 		$session = $chat_manager->getSession();
 		$convo = $chat_manager->getChat();
 
-
 		if (!$convo) {
 			// It might've been closed, but we still want the events to tell about it being closed!
 			if ($this->in->getUint('conversation_id')) {

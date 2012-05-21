@@ -32,6 +32,7 @@
 <div class="dp-register-page">
 
 	{% if from_ticket.id %}
+		{% set this_page = 'login' %}
 		<div class="dp-alert dp-alert-success">
 			<p>
 				{{ phrase('user.general.explain_register_for_online_tickets') }}
