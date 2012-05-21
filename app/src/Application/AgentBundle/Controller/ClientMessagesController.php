@@ -91,8 +91,14 @@ class ClientMessagesController extends AbstractController
 		// to deliver offline messages (such as chats) the next time the user logs in
 		if ($new_since && $new_since > $last_since) {
 			$pref = $this->person->setPreference('agent.ui.last_message_id', $new_since);
-			$this->em->persist($pref);
-			$this->em->flush();
+
+			$this->container->getDb()->replace('people_prefs', array(
+				'name'         => $pref->name,
+				'value_str'    => $new_since,
+				'value_array'  => null,
+				'date_expire'  => null,
+				'person_id'    => $this->person->getId()
+			));
 		}
 
 		return $this->createJsonResponse($data);
