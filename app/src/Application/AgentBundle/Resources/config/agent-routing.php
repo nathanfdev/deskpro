@@ -51,6 +51,13 @@ $collection->add('agent_accept_upload', new Route(
 	array()
 ));
 
+$collection->add('agent_submit_deskpro_feedback', new Route(
+	'/misc/submit-deskpro-feedback.json',
+	array('_controller' => 'AgentBundle:Misc:submitDeskproFeedback'),
+	array(),
+	array()
+));
+
 $collection->add('agent_parse_vcard', new Route(
     '/misc/parse-vcard',
     array('_controller' => 'AgentBundle:Misc:parseVCard'),

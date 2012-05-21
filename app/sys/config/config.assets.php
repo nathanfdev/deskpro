@@ -256,6 +256,7 @@ $CONFIG['agent_element_handlers'] = array(
 		'javascripts/DeskPRO/Agent/ElementHandler/OmniSearchSheet.js',
 		'javascripts/DeskPRO/Agent/ElementHandler/OmniQuickSearch.js',
 		'javascripts/DeskPRO/Admin/ElementHandler/RadioExpander.js',
+		'javascripts/DeskPRO/Agent/ElementHandler/DeskproSubmitFeedback.js',
 	)
 );
 

@@ -566,4 +566,10 @@ JS;
 		$code = $this->session->getEntity()->generateSecurityToken('password_confirm' . $this->person->secret_string);
 		return $this->createJsonResponse(array('code' => $code));
 	}
+
+	public function submitDeskproFeedbackAction()
+	{
+		\Application\DeskPRO\Service\ErrorReporter::sendFeedback($this->person, $this->in->getString('message'));
+		return $this->createJsonResponse(array('success' => true));
+	}
 }

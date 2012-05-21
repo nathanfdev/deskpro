@@ -346,4 +346,28 @@ class ErrorReporter
 			$r = $client->send();
 		} catch (\Exception $e) {}
 	}
+
+
+	/**
+	 * @static
+	 * @param $person
+	 * @param $message
+	 */
+	public static function sendFeedback($person, $message)
+	{
+		$data = array(
+			'message' => $message,
+			'name' => $person->getDisplayName(),
+			'email' => $person->getEmailAddress(),
+			'url' => App::getSetting('core.deskpro_url')
+		);
+
+		try {
+			$client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
+			$client->setMethod(\Zend\Http\Request::METHOD_POST);
+			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/submit-feedback.json');
+			$client->getRequest()->post()->fromArray($data);
+			$r = $client->send();
+		} catch (\Exception $e) {}
+	}
 }
