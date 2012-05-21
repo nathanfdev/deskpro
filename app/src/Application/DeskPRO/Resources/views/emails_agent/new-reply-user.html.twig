@@ -6,6 +6,8 @@
 	{% endif %}
 {% endblock %}
 {% block content %}
+{{ phrase('agent.emails.reply_above_line') }}
+<br /><br />
 
 {% if is_new_agent_reply %}{{ phrase('agent.emails.agent_replied', {'subject':ticket.subject}) }}
 {% elseif is_new_user_reply %}{{ phrase('agent.emails.user_replied', {'subject':ticket.subject}) }}

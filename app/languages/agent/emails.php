@@ -18,4 +18,5 @@
 	'agent.emails.user_ip'                         => 'User IP',
 	'agent.emails.user_replied'                    => 'A user has replied to "{{subject}}"',
 	'agent.emails.your_initial_password'           => 'Your initial password',
+	'agent.emails.reply_above_line'                => '=== Enter your reply above this line ===',
 );
