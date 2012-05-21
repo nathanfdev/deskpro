@@ -418,6 +418,10 @@ var DpOverlayWidget = new (function() {
 			return;
 		}
 
+		if (contentWrap) {
+			contentWrap.remove();
+		}
+
 		isOpen = false;
 		overlayBack.fadeOut('fast');
 		overlayWrap.fadeOut('fast');
