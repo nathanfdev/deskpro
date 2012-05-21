@@ -9,6 +9,6 @@
 	'agent.userchat.message_user_left'      => '{{name}} left the chat',
 	'agent.userchat.msg_agent_timeout'      => '{{name}} is not responding. Please wait while will try to find another agent.',
 	'agent.userchat.msg_new_user_track'     => 'User is viewing: {{label}}',
-	'agent.userchat.msg_user_timeout'       => '{{name}} is not responding.',
+	'agent.userchat.msg_user_timeout'       => 'User is not responding.',
 	'agent.userchat.unassigned'             => 'Chat unassigned',
 );
