@@ -219,7 +219,7 @@ class Generic implements ForwardDef, QuoteDef
 
 		// -----Original Message-----
 		// From: John Doe
-		$parts = preg_split("#(>*\s*)?-----Original Message-----\n(>*\s*)?From:\s", $body, 2);
+		$parts = preg_split("#(>*\s*)?-----Original Message-----\n(>*\s*)?From:\s#", $body, 2);
 		if (isset($parts[1])) {
 			return $parts[0];
 		}
