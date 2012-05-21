@@ -730,6 +730,9 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 		$this->sendInstallReport();
 
+		@unlink($this->container->getLogDir() . '/install_token.dat');
+		setcookie('dp_install_token', null, strtotime('-4 weeks'));
+
 		return $this->redirect($base_url . '/admin/');
 	}
 

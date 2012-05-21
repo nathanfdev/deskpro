@@ -813,6 +813,9 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 			$logger->log("All Done ($total_time seconds)", 'INFO');
 
+			// Cleanup install token
+			@unlink($this->getContainer()->getLogDir() . '/install_token.dat');
+
 			\Application\DeskPRO\Command\ImportCommand::sendLogFile(false);
 
 			return 0;
