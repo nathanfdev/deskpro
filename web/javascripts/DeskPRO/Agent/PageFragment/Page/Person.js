@@ -390,6 +390,44 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		}
 
 		this.initUgEditor();
+
+		if (this.getEl('approve_user')[0]) {
+
+			DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.removed', function(info) {
+				DeskPRO_Window.removePage(self);
+			}, this);
+			DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.confirmed', function(info) {
+				if (info.person_id == self.meta.person_id) {
+					this.wrapper.find('.validating-bar').remove();
+				}
+			}, this);
+
+			this.getEl('approve_user').on('click', function(ev) {
+				ev.preventDefault();
+				DeskPRO_Window.util.ajaxWithClientMessages({
+					url: BASE_URL + 'agent/people/validate/approve',
+					data: { 'people_ids[]': self.meta.person_id },
+					success: function() {
+						var route = self.meta.routeData.url;
+						DeskPRO_Window.removePage(self);
+						DeskPRO_Window.runPageRoute('page:'+route);
+
+						DeskPRO_Window.getMessageBroker().sendMessage('agent.person.confirmed', { person_id: self.meta.person_id });
+					}
+				});
+			});
+			this.getEl('delete_user').on('click', function(ev) {
+				ev.preventDefault();
+				DeskPRO_Window.util.ajaxWithClientMessages({
+					url: BASE_URL + 'agent/people/validate/delete',
+					data: { 'people_ids[]': self.meta.person_id },
+					success: function() {
+						DeskPRO_Window.removePage(self);
+						DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: self.meta.person_id });
+					}
+				});
+			});
+		}
 	},
 
 	refreshPropBox: function() {

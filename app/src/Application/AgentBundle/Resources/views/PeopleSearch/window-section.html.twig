@@ -8,6 +8,12 @@
 	</header>
 	<article>
 		<ul class="source-list" id="people_outline_people_list">
+			<li class="is-nav-item" id="people_nav_awaiting_validation" {% if not validating_count %}style="display: none"{% endif %}>
+				<h3 class="title" data-route="listpane:{{ path('agent_people_validate_list') }}">
+					<span class="list-counter">{{ validating_count|default(0) }}</span>
+					Awaiting Validation
+				</h3>
+			</li>
 			<li class="people nav-people is-nav-item" id="people_nav_all">
 				<h3 class="title auto-load-route " data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}">
 					<span class="list-counter">{{ people_count }}</span>
@@ -21,6 +27,7 @@
 					id="people_nav_ug_{{id}}"
 					data-usergroup-id="{{id}}"
 					data-route="listpane:{{ path('agent_peoplesearch_usergroup', {id: id}) }}"
+					{% if not usergroup_counts[id] %}style="display: none"{% endif %}
 				>
 					<h3 class="title">
 						<span class="list-counter">{{ usergroup_counts[id]|default(0) }}</span>

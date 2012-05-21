@@ -434,6 +434,27 @@ $collection->add('agent_people_viewsession', new Route(
 	array()
 ));
 
+$collection->add('agent_people_validate_list', new Route(
+	'/people/validate/list',
+	array('_controller' => 'AgentBundle:PeopleSearch:validateList'),
+	array(),
+	array()
+));
+
+$collection->add('agent_people_validate_approve', new Route(
+	'/people/validate/approve',
+	array('_controller' => 'AgentBundle:PeopleSearch:validateApprove'),
+	array(),
+	array()
+));
+
+$collection->add('agent_people_validate_delete', new Route(
+	'/people/validate/delete',
+	array('_controller' => 'AgentBundle:PeopleSearch:validateDelete'),
+	array(),
+	array()
+));
+
 $collection->add('agent_people_new', new Route(
 	'/people/new',
 	array('_controller' => 'AgentBundle:Person:newPerson'),
@@ -550,6 +571,13 @@ $collection->add('agent_peoplesearch_quickfind_search', new Route(
 $collection->add('agent_peoplesearch_getsectiondata', new Route(
 	'/people/get-section-data.json',
 	array('_controller' => 'AgentBundle:PeopleSearch:getSectionData'),
+	array(),
+	array()
+));
+
+$collection->add('agent_peoplesearch_getsectiondata_reloadcounts', new Route(
+	'/people/get-section-data/reload-counts.json',
+	array('_controller' => 'AgentBundle:PeopleSearch:reloadCounts'),
 	array(),
 	array()
 ));

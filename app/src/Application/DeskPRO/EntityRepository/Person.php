@@ -342,4 +342,19 @@ class Person extends AbstractEntityRepository
 			FROM people
 		");
 	}
+
+
+	/**
+	 * Get the count of users awaiting validation by agnets
+	 *
+	 * @return int
+	 */
+	public function getAgentValidatingCount()
+	{
+		return App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM people
+			WHERE is_agent_confirmed = 0
+		");
+	}
 }

@@ -153,10 +153,13 @@ class EmailValidator
 			if ($this->ticket_ids) {
 				foreach ($this->ticket_ids as $ticket_id) {
 					$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
-					$ticket->status = 'awaiting_agent';
 
 					$ticket->person_email_validating = null;
 					$ticket->person_email = $email;
+
+					if ($this->person->is_agent_confirmed) {
+						$ticket->setStatus('awaiting_agent');
+					}
 
 					$this->em->persist($ticket);
 					$this->em->flush();
@@ -179,8 +182,10 @@ class EmailValidator
 						}
 
 						$feedback->validating = null;
-						if ($feedback->status_code == 'hidden.validating') {
-							$feedback->status = 'visible';
+						if ($feedback->status_code == 'hidden.user_validating') {
+							if ($this->person->is_agent_confirmed) {
+								$feedback->setStatus('new');
+							}
 						}
 
 						$notify_send = new \Application\DeskPRO\Notifications\NewFeedbackNotification($feedback);
@@ -203,8 +208,10 @@ class EmailValidator
 						}
 
 						$comment->validating = null;
-						if ($comment->status == 'validating') {
-							$comment->status = 'visible';
+						if ($comment->status == 'user_validating') {
+							if ($this->person->is_agent_confirmed) {
+								$comment->setStatus('visible');
+							}
 						}
 
 						App::getOrm()->transactional(function ($em) use ($comment) {

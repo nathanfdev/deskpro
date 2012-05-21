@@ -45,8 +45,7 @@ class TestController extends Controller
 {
     public function indexAction()
     {
-
-		exit;
-		return $this->render('DevBundle:Test:test.html.twig');
+		$res = new \Symfony\Component\HttpFoundation\Response('');
+		return $res;
     }
 }

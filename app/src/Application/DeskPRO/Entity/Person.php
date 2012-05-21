@@ -138,14 +138,14 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var bool
 	 */
-	protected $is_confirmed = false;
+	protected $is_confirmed = true;
 
 	/**
 	 * Has this user ever confirmed themselves via email?
 	 *
 	 * @var bool
 	 */
-	protected $is_agent_confirmed = false;
+	protected $is_agent_confirmed = true;
 
 	/**
 	 * Is the user deleted?
@@ -406,11 +406,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public static function newRegularPerson()
 	{
 		$person = new self();
-
-		// Whatever code implements will override this based on settings
-		$person->is_agent_confirmed= true;
-		$person->is_confirmed = true;
-
 		return $person;
 	}
 

@@ -4,11 +4,17 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 	Extends: DeskPRO.Agent.WindowElement.Section.AbstractSection,
 
 	init: function() {
+
 		this.buttonEl = $('#people_section');
 
 		this.urlFragmentName = 'people';
 
 		this.setSectionElement($('<section id="people_outline"></section>'));
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.new_registration', function(info) { this.reloadCounts(); }, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.added', function(info) { this.reloadCounts(); }, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.confirmed', function(info) { this.reloadCounts(); }, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.removed', function(info) { this.reloadCounts(); }, this);
 
 		this.reload();
 	},
@@ -32,6 +38,47 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 				this.fireEvent('sectionInit');
 			}
 		}).bind(this));
+	},
+
+	reloadCounts: function() {
+		$.ajax({
+			url: BASE_URL + 'agent/people/get-section-data/reload-counts.json',
+			dataType: 'json',
+			context: this,
+			success: function(countData) {
+				this.setCountData(countData);
+			}
+		});
+	},
+
+	setCountData: function(countData) {
+		if (typeof countData.people_count != 'undefined') {
+			$('#people_nav_all').find('span.list-counter').text(countData.people_count + '');
+		}
+
+		if (typeof countData.usergroup_counts != 'undefined') {
+			Object.each(countData.usergroup_counts, function(count, uid) {
+				var el = $('#people_nav_ug_' + uid);
+				el.find('span.list-counter').text(count+'');
+
+				if (!parseInt(count)) {
+					el.hide();
+				} else {
+					el.show();
+				}
+			});
+		}
+
+		if (typeof countData.validating_count != 'undefined') {
+			var el = $('#people_nav_awaiting_validation');
+			el.find('span.list-counter').text(countData.validating_count+'');
+
+			if (!parseInt(countData.validating_count)) {
+				el.hide();
+			} else {
+				el.show();
+			}
+		}
 	},
 
 	reloadLabels: function() {

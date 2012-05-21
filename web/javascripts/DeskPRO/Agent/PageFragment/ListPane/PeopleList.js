@@ -178,6 +178,44 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		if (this.meta.viewType != 'list') {
 			this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
 		}
+
+		this.wrapper.on('click', 'button.agent-confirm-approve', function(ev) {
+			ev.preventDefault();
+			var el = $(this);
+			DeskPRO_Window.util.ajaxWithClientMessages({
+				url: BASE_URL + 'agent/people/validate/approve',
+				data: { 'people_ids[]': el.data('person-id') },
+				success: function() {
+					DeskPRO_Window.getMessageBroker().sendMessage('agent.person.confirmed', { person_id: el.data('person-id') });
+					el.closest('.validation-row').remove();
+					self.updateUi();
+				}
+			});
+		});
+		this.wrapper.on('click', 'button.agent-confirm-delete', function(ev) {
+			ev.preventDefault();
+			var el = $(this);
+			DeskPRO_Window.util.ajaxWithClientMessages({
+				url: BASE_URL + 'agent/people/validate/delete',
+				data: { 'people_ids[]': el.data('person-id') },
+				success: function() {
+					DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: el.data('person-id') });
+					el.closest('article.row-item').remove();
+					self.updateUi();
+				}
+			});
+		});
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.removed', function(info) {
+			var row = self.wrapper.find('article.person-' + info.person_id);
+			row.remove();
+			self.updateUi();
+		});
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.person.confirmed', function(info) {
+			var row = self.wrapper.find('article.person-' + info.person_id);
+			row.find('.validation-row').remove();
+			self.updateUi();
+		});
 	},
 
 	destroyPage: function() {

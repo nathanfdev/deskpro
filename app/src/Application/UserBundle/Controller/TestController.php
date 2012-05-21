@@ -43,7 +43,6 @@ class TestController extends AbstractController
 {
 	public function indexAction()
 	{
-		$this->container->getIn()->getCleaner()->clean('<b>test</b>', 'html_email');
-		return $this->render('UserBundle:Test:index.html.twig');
+		return $this->createResponse('');
 	}
 }
