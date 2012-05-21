@@ -2,11 +2,11 @@
  # The priority select box of the new ticket form
  ##}
 
-<div class="dp-control-group {% if error_fields['ticket.priority_id'] %}dp-error{% endif %}">
+<div class="dp-control-group {% if error_fields['ticket.priority_id'] %}dp-error{% endif %} ticket_priority">
 	<div class="dp-control-label">
 		<label><strong>{{ phrase('user.general.priority') }}</strong></label>
 	</div>
-	<div class="dp-controls dp-fill ticket_priority">
+	<div class="dp-controls dp-fill">
 		<select name="newticket[ticket][priority_id]">
 			{% for id,pri in ticket_options.ticket_priorities %}
 				<option value="{{ id }}">{{ pri }}</option>

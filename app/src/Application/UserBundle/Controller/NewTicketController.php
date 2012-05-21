@@ -183,6 +183,7 @@ class NewTicketController extends AbstractController
 		}
 
 		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('create');
+		$ticket_display->setPersonContext($this->person);
 		$ticket_display->addPagesFromDb();
 		$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
 

@@ -84,6 +84,15 @@ class TreeProxy implements \ArrayAccess
 
 
 	/**
+	 * @return mixed
+	 */
+	public function getObject()
+	{
+		return $this->__obj;
+	}
+
+
+	/**
 	 * Get the children that pas the filter, with each child itself being wrapped with the same filter.
 	 *
 	 * @return array

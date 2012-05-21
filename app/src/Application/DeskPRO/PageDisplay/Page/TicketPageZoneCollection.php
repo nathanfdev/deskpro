@@ -94,32 +94,46 @@ class TicketPageZoneCollection implements PersonContextInterface
 		if ($this->zone == 'agent') {
 			$this->generateAgentZone();
 			return;
-
-		}
-		$dep_page_displays = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getFromZone($this->zone);
-
-		if (!$dep_page_displays) {
-			$this->generateUserZone();
-			return;
 		}
 
-		$dep_page_displays = Arrays::groupItems($dep_page_displays, 'department_id');
+		$deps = App::getDataService('Department')->getPersonDepartments(App::getCurrentPerson(), 'tickets');
+		foreach ($deps as $d) {
+			if (count($d->children)) {
+				foreach ($d->children as $dc) {
+					$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionDataResolve($dc->getObject(), $this->zone);
 
-		$default_page = null;
+					$page = new TicketPageDisplay();
+					$page->zone = $this->zone;
+					$page->department = $dc->getObject();
+					$page->data = $page_data;
 
-		foreach ($dep_page_displays as $dep_id => $page_displays) {
-			$dep = null;
-			if ($dep_id) {
-				$dep = App::findEntity('DeskPRO:Department', $dep_id);
-				if (!$dep) {
-					continue;
+					$ticket_page_zone = new TicketPageZone($this->zone, $dc->getObject());
+					$ticket_page_zone->addPageDisplay($page);
+					$this->addPage($ticket_page_zone);
 				}
-			}
+			} else {
+				$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionDataResolve($d->getObject(), $this->zone);
 
-			$ticket_page_zone = new TicketPageZone($this->zone, $dep);
-			$ticket_page_zone->addPageDisplays($page_displays);
-			$this->addPage($ticket_page_zone);
+				$page = new TicketPageDisplay();
+				$page->zone = $this->zone;
+				$page->department = $d->getObject();
+				$page->data = $page_data;
+
+				$ticket_page_zone = new TicketPageZone($this->zone, $d->getObject());
+				$ticket_page_zone->addPageDisplay($page);
+				$this->addPage($ticket_page_zone);
+			}
 		}
+
+		$page_data = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionDataResolve(null, $this->zone);
+		$page = new TicketPageDisplay();
+		$page->zone = $this->zone;
+		$page->department = null;
+		$page->data = $page_data;
+
+		$ticket_page_zone = new TicketPageZone($this->zone, null);
+		$ticket_page_zone->addPageDisplay($page);
+		$this->addPage($ticket_page_zone);
 	}
 
 
