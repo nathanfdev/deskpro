@@ -57,8 +57,6 @@ class UserNotificationNewReplyUserAction extends AbstractUserNotificationAction
 			return;
 		}
 
-		$this->via_message = $this->tracker->getNewUserReply();
-
 		$change_info = array(
 			'type' => 'user_notify',
 			'notify_type' => 'newreply',
