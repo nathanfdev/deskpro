@@ -925,7 +925,9 @@ class KernelErrorHandler
 		} catch (\Exception $e) {}
 
 		if (!class_exists('\Application\DeskPRO\App') || !\Application\DeskPRO\App::getConfig('no_report_errors')) {
-			\Application\DeskPRO\Service\ErrorReporter::reportPhpError($errinfo);
+			if (!(isset($errinfo['no_send_error']) && $errinfo['no_send_error'])) {
+				\Application\DeskPRO\Service\ErrorReporter::reportPhpError($errinfo);
+			}
 		}
 
 		try {
@@ -1021,7 +1023,7 @@ class KernelErrorHandler
 			$trace .= "\n\nn(Alt Exception)\n" . $previnfo['trace'];
 		}
 
-		return array(
+		$errinfo = array(
 			'type'           => 'exception',
 			'session_name'   => isset($exception->_dp_sn) ? $exception->_dp_sn : null,
 			'exception'      => $exception,
@@ -1038,6 +1040,8 @@ class KernelErrorHandler
 			'display'        => $display,
 			'build'          => DP_BUILD_TIME
 		);
+
+		return $errinfo;
 	}
 
 	public static function getErrorInfo($errno, $errstr, $errfile, $errline)

@@ -29,73 +29,34 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Twig
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Twig;
+namespace Application\DeskPRO\Twig\CacheWarmer;
 
-class Environment extends \Twig_Environment
+class TemplateCacheCacheWarmer extends \Symfony\Bundle\TwigBundle\CacheWarmer\TemplateCacheCacheWarmer
 {
-	public function __construct(\Twig_LoaderInterface $loader = null, $options = array())
-	{
-		static $has_done = false;
+	public function warmUp($cacheDir)
+    {
+        $twig = $this->container->get('twig');
+		parent::warmUp($cacheDir);
 
-		if (defined('DP_DEBUG') && (empty($options['auto_reload']) || $options['auto_reload'] === null)) {
-			if (DP_DEBUG) {
-				$options['auto_reload'] = true;
-			} else {
-				$options['auto_reload'] = false;
-			}
-		}
+		// And our extra ones...
+		$extra = array(
+			'TwigBundle:Exception:error.html.twig',
+			'TwigBundle:Exception:error403.html.twig',
+			'TwigBundle:Exception:error404.html.twig',
+			'TwigBundle:Exception:exception.html.twig',
+			'TwigBundle:Exception:exception_full.html.twig',
+			'TwigBundle::layout.html.twig',
+		);
 
-		if (!$has_done) {
-			stream_wrapper_register('dptpl', 'Application\\DeskPRO\\Twig\\Loader\\DbStreamWrapper', 0);
-		}
-
-		parent::__construct($loader, $options);
-	}
-
-	/**
-	 * If theres a custom template with an error, then
-	 * we'll try and use the default template instead.
-	 *
-	 * @param $name
-	 * @return string
-	 */
-	public function markCustomTemplateAsCrashed($name)
-	{
-		if ($this->loader->dbHasTemplate($name)) {
-			$this->loader->markCustomTemplateAsCrashed($name);
-		}
-	}
-
-	/**
-	 * Check if a particular template is a custom template
-	 *
-	 * @param $name
-	 * @return mixed
-	 */
-	public function isCustomTemplate($name)
-	{
-		return $this->loader->dbHasTemplate((string)$name);
-	}
-
-
-	public function getCacheFilename($name)
-	{
-		if (!$this->loader->dbHasTemplate($name)) {
-			return parent::getCacheFilename($name);
-		}
-
-		return 'dptpl://load/' . $name;
-	}
-
-	public function isTemplateFresh($name, $time)
-	{
-		if ($this->loader->dbHasTemplate($name)) {
-			return true;
-		}
-
-		return $this->loader->isFresh($name, $time);
-	}
+        foreach ($extra as $template_name) {
+            try {
+                $twig->loadTemplate($template_name);
+            } catch (\Twig_Error $e) {
+                // problem during compilation, give up
+            }
+        }
+    }
 }

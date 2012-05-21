@@ -37,6 +37,8 @@ $container->setParameter('doctrine_migrations.table_name', 'dev_migration_versio
 $container->setParameter('twig.extension.form.class', 'Application\\DeskPRO\\Twig\\Extension\\FormExtension');
 $container->setParameter('doctrine.orm.entity_manager.class', 'Application\\DeskPRO\\ORM\\EntityManager');
 $container->setParameter('templating.locator.class', 'Application\\DeskPRO\\Templating\\Loader\\TemplateLocator');
+$container->setParameter('templating.engine.twig.class', 'Application\\DeskPRO\\Twig\\TwigEngine');
+$container->setParameter('twig.cache_warmer.class', 'Application\\DeskPRO\\Twig\\CacheWarmer\\TemplateCacheCacheWarmer');
 
 ############################################################################
 # Services

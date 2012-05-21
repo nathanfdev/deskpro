@@ -54,6 +54,11 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 	 */
 	protected $style_template_info = null;
 
+	/**
+	 * @var null
+	 */
+	protected $crashed_custom_templates = array();
+
 	public function __construct(FileLocatorInterface $locator, TemplateNameParserInterface $parser)
 	{
 		parent::__construct($locator, $parser);
@@ -76,8 +81,17 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 		}
 	}
 
+	public function markCustomTemplateAsCrashed($name)
+	{
+		$this->crashed_custom_templates[$name] = true;
+	}
+
 	public function dbHasTemplate($name)
 	{
+		if (isset($this->crashed_custom_templates[(string)$name])) {
+			return false;
+		}
+
 		$this->_initStyle();
 		if (isset($this->style_template_info[(string)$name])) {
 			return true;
@@ -93,7 +107,7 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 
 		// DB templates are always "fresh" because theyre compiled
 		// as soon as they're saved
-		if (isset($this->style_template_info[$str_name])) {
+		if (!isset($this->crashed_custom_templates[$str_name]) && isset($this->style_template_info[$str_name])) {
 			return true;
 		}
 
@@ -111,7 +125,7 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 		$this->_initStyle();
 
 		$str_name = (string)$name;
-		if (isset($this->style_template_info[$str_name])) {
+		if (!isset($this->crashed_custom_templates[$str_name]) && isset($this->style_template_info[$str_name])) {
 			return App::getDb()->fetchColumn("
 				SELECT template_code
 				FROM templates
@@ -128,7 +142,7 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 
 		$logicalName = (string)$template;
 
-		if (isset($this->style_template_info[$logicalName])) {
+		if (!isset($this->crashed_custom_templates[$logicalName]) && isset($this->style_template_info[$logicalName])) {
 			return false;
 		}
 

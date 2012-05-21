@@ -29,73 +29,42 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Twig
+ * @subpackage
  */
 
 namespace Application\DeskPRO\Twig;
 
-class Environment extends \Twig_Environment
+class TwigEngine extends \Symfony\Bundle\TwigBundle\TwigEngine
 {
-	public function __construct(\Twig_LoaderInterface $loader = null, $options = array())
-	{
-		static $has_done = false;
+	public function render($name, array $parameters = array())
+    {
+		$is_custom_template = $this->environment->isCustomTemplate($name);
+		if (!$is_custom_template) {
+			return parent::render($name, $parameters);
+		} else {
+			try {
+				return parent::render($name, $parameters);
+			} catch (\Twig_Error_Syntax $e) {
+				$exception = $e;
+			} catch (\Twig_Error_Runtime $e) {
+				$exception = $e;
+			} catch (\Exception $e) {
+				throw $e;
+			}
 
-		if (defined('DP_DEBUG') && (empty($options['auto_reload']) || $options['auto_reload'] === null)) {
-			if (DP_DEBUG) {
-				$options['auto_reload'] = true;
-			} else {
-				$options['auto_reload'] = false;
+			$errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($exception);
+			$errinfo['no_send_error'] = true;
+			\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($errinfo);
+
+			$this->environment->markCustomTemplateAsCrashed((string)$name);
+
+			try {
+				return $this->render($name, $parameters);
+			} catch (\Twig_Error_Loader $e) {
+				// Means there was only ever the custom one,
+				// so lets just throw the original exception up
+				throw $exception;
 			}
 		}
-
-		if (!$has_done) {
-			stream_wrapper_register('dptpl', 'Application\\DeskPRO\\Twig\\Loader\\DbStreamWrapper', 0);
-		}
-
-		parent::__construct($loader, $options);
-	}
-
-	/**
-	 * If theres a custom template with an error, then
-	 * we'll try and use the default template instead.
-	 *
-	 * @param $name
-	 * @return string
-	 */
-	public function markCustomTemplateAsCrashed($name)
-	{
-		if ($this->loader->dbHasTemplate($name)) {
-			$this->loader->markCustomTemplateAsCrashed($name);
-		}
-	}
-
-	/**
-	 * Check if a particular template is a custom template
-	 *
-	 * @param $name
-	 * @return mixed
-	 */
-	public function isCustomTemplate($name)
-	{
-		return $this->loader->dbHasTemplate((string)$name);
-	}
-
-
-	public function getCacheFilename($name)
-	{
-		if (!$this->loader->dbHasTemplate($name)) {
-			return parent::getCacheFilename($name);
-		}
-
-		return 'dptpl://load/' . $name;
-	}
-
-	public function isTemplateFresh($name, $time)
-	{
-		if ($this->loader->dbHasTemplate($name)) {
-			return true;
-		}
-
-		return $this->loader->isFresh($name, $time);
-	}
+    }
 }
