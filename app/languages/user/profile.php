@@ -21,4 +21,5 @@
 	'user.profile.trying_to_add_invalid_email' => 'The email address you entered is invalid.',
 	'user.profile.validation_resent_to'        => 'Validation email was resent to {{email}}',
 	'user.profile.reset_password_current_logged_in' => 'Note you are currently logged in as {{email}}. Requesting a password reset will log you out.',
+	'user.profile.you_are_waiting_agent_validation' => 'Your registration is currently being validated by our agents. Any content you submit will become active after our agents confirm your account.',
 );

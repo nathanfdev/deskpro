@@ -213,12 +213,14 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface
 				$ticket['person_email'] = $email;
 			}
 
-			$ticket['status'] = 'awaiting_agent';
-
 			if ($this->require_login) {
 				$ticket->setStatus('hidden.temp');
 			} elseif ($email_validating) {
 				$ticket->setStatus('hidden.validating');
+			} elseif (!$person->is_confirmed || !$person->is_agent_confirmed) {
+				$ticket['status'] = 'hidden.validating';
+			} else {
+				$ticket['status'] = 'awaiting_agent';
 			}
 
 			foreach (array('department_id', 'category_id', 'product_id', 'priority_id') as $prop) {

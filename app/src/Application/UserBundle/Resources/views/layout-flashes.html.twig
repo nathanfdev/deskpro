@@ -16,3 +16,10 @@
 		{% endif %}
 	</div>
 {% endif %}
+{% if app.user.id and not app.user.is_agent_confirmed %}
+	<div class="dp-flashes">
+		<div class="dp-alert dp-alert-error">
+			{{ phrase('user.profile.you_are_waiting_agent_validation') }}
+		</div>
+	</div>
+{% endif %}

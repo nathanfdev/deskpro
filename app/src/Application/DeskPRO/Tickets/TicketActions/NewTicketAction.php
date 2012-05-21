@@ -169,7 +169,10 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 	public function apply(Ticket $ticket)
 	{
 		$validating = false;
+		$do_change_validating = false;
 		if ($ticket->person_email_validating) {
+
+			$do_change_validating = true;
 
 			// We always insert new addresses as validating first
 			// So if its new, then we only enable actual validation when the enable_validation
@@ -190,10 +193,13 @@ class NewTicketAction extends AbstractAction implements BreakableAction
 
 		if ($this->op_mode == 'pre') {
 			$this->op_mode = 'run';
-			if ($validating) {
-				$ticket->setStatus('hidden.validating');
-			} else {
-				$ticket->setStatus('awaiting_agent');
+
+			if ($do_change_validating) {
+				if ($validating) {
+					$ticket->setStatus('hidden.validating');
+				} else {
+					$ticket->setStatus('awaiting_agent');
+				}
 			}
 
 			App::getOrm()->persist($ticket);
