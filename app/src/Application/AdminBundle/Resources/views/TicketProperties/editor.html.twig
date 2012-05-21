@@ -228,7 +228,20 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
  ############################}
 <script type="text/x-deskpro-plain" id="rendered_field_ticket_department">
 	<div class="subject">
-		<select><option></option><option>------------------</option></select>
+		<select>
+			<option>Choose a department...</option>
+			{% for dep in app.getDataRepository('Department').getPersonDepartments(app.user, 'tickets') %}
+				{% if dep.children|length %}
+					<optgroup label="{{ dep.title }}">
+						{% for sub in dep.children %}
+							<option>{{ sub.title }}</option>
+						{% endfor %}
+					</optgroup>
+				{% else %}
+					<option>{{ dep.title }}</option>
+				{% endif %}
+			{% endfor %}
+		</select>
 	</div>
 </script>
 
