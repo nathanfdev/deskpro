@@ -75,6 +75,9 @@ class Message extends \Orb\Mail\Message
 				$subject = str_replace(array("\r\n", "\n"), ' ', $subject);
 				$subject = trim($subject);
 
+				// Subjects from the template will be escaped due to auto-escaping in twig
+				$subject = html_entity_decode($subject, \ENT_QUOTES, 'UTF-8');
+
 				$body = trim($body);
 			} else {
 				$subject = '';
