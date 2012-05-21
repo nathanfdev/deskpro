@@ -409,7 +409,7 @@ class UserChatManager
 			$cm = new ClientMessage();
 			$cm->fromArray(array(
 				'channel' => 'chat.reassigned',
-				'data' => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id)),
+				'data' => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id, 'new_agent_name' => $agent->display_name)),
 				'created_by_client' => $this->getCurrentClientId(),
 			));
 

@@ -22,6 +22,11 @@
 			<span class="wait-timer" data-time="{{ waiting_secs }}">{{ phrase('agent.chat.count_seconds', {'count':waiting_secs}) }}</span>
 		</div>
 
+		<div class="row taken" style="display: none">
+			<label>Chat Taken by</label>
+			<span class="place-assigned-name"></span>
+		</div>
+
 		{% if url %}
 			<div class="row url">
 				<label>{{ phrase('agent.chat.user_is_viewing') }}</label>
@@ -50,7 +55,8 @@
 		{% endif %}
 	</div>
 	<footer>
-		<button class="clean-white small dismiss-trigger">{{ phrase('agent.general.dismiss') }}</button>
+		<button class="clean-white small dismiss-trigger">{{ phrase('agent.general.dismiss') }} <span class="place-countdown" style="display: none"></span></button>
 		<button class="clean-white small accept-trigger">{{ phrase('agent.chat.take_chat') }}</button>
+		<button class="clean-white small join-trigger" style="display: none">Join Chat</button>
 	</footer>
 </section>

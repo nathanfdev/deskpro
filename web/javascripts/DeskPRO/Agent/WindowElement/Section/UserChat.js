@@ -178,7 +178,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			this.handleUpdateCounts();
 		}
 
-		var newCount = prseInt(el.text().trim()) || 0;
+		var newCount = parseInt(el.text().trim()) || 0;
 
 		if (oldCount != newCount) {
 			DeskPRO_Window.runPageRouteFromElement(el.closest('[data-route]'));
@@ -352,7 +352,28 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			this.dismissedChats[data.conversation_id] = true;
 		}
 
-		$('#new_user_chat_alert_' + data.conversation_id).remove();
+		var notifyWin = $('#new_user_chat_alert_' + data.conversation_id);
+		if (notifyWin[0]) {
+			notifyWin.find('.waiting.row').hide();
+			notifyWin.find('.taken.row').show().find('.place-assigned-name').text(data.new_agent_name);
+			notifyWin.find('button.accept-trigger').hide();
+			notifyWin.find('button.join-trigger').show();
+			notifyWin.find('audio').remove();
+
+			notifyWin.data('dismiss-count', 100);
+			var updateFn = function() {
+				notifyWin.find();
+				var count = parseInt(notifyWin.data('dismiss-count')) - 1;
+				notifyWin.data('dismiss-count', count);
+				notifyWin.find('button.dismiss-trigger').find('.place-countdown').show().text('(' + count + ')');
+				if (count == 0) {
+					notifyWin.remove();
+				} else {
+					window.setTimeout(updateFn, 1000);
+				}
+			}
+			updateFn();
+		}
 		DeskPRO_Window.getMessageBroker().sendMessage('chat_convo.' + data.conversation_id + '.reassigned', data);
 
 		// See handleNewChat comment about this
@@ -397,7 +418,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			self.dismissedChats[data.conversation_id] = true;
 			window.clearTimeout(waitTimer);
 		});
-		$('.accept-trigger', alertEl).on('click', function(ev) {
+		$('.accept-trigger, .join-trigger', alertEl).on('click', function(ev) {
 			ev.stopPropagation();
 			DeskPRO_Window.runPageRouteFromElement(this);
 			if (audio) {
