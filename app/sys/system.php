@@ -1185,7 +1185,11 @@ class KernelErrorHandler
         if (is_resource($var)) {
             return '[resource]';
         }
-        return str_replace("\n", '', var_export(self::stripPathPrefix((string)$var), true));
+		$str = (string)$var;
+		if (strlen($str) > 1000) {
+			$str = substr($str, 0, 1000) . "...(clipped)";
+		}
+        return str_replace("\n", '', var_export(self::stripPathPrefix($str), true));
     }
 }
 
