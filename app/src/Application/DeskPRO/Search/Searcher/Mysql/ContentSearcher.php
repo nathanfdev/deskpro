@@ -78,7 +78,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
 		$where = "
 			content_search.object_type IN ($limit_types)
-			AND MATCH (content_search.content) AGAINST (?)
+			AND MATCH (content_search.content) AGAINST (? IN BOOLEAN MODE)
 		";
 
 		$permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
@@ -98,7 +98,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
 		$start = ($page - 1) * $per_page;
 		$select_query = "
-			SELECT content_search.object_type, content_search.object_id, MATCH (content_search.content) AGAINST (?) AS _rel
+			SELECT content_search.object_type, content_search.object_id, MATCH (content_search.content) AGAINST (? IN BOOLEAN MODE) AS _rel
 			FROM content_search
 			$perm_join
 			WHERE $perm_where AND $where
@@ -162,7 +162,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
 		$start = ($page - 1) * $per_page;
 		$select_query = "
-			SELECT object_type, object_id, MATCH (content_search.content) AGAINST (?) AS _rel
+			SELECT object_type, object_id, MATCH (content_search.content) AGAINST (? IN BOOLEAN MODE) AS _rel
 			FROM content_search
 			WHERE $where
 			ORDER BY _rel

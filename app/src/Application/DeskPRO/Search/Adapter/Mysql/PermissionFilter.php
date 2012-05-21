@@ -104,7 +104,7 @@ class PermissionFilter implements PersonContextInterface
 			$dis_ids = $this->person_context->PermissionsManager->ArticleCategories->getDisallowedCategories();
 			if ($dis_ids) {
 				$dis_ids = implode(',', $dis_ids);
-				$join[] = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'article' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id LIKE 'category_id%' AND $jn.content NOT IN ($dis_ids))";
+				$join[] = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'article' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id LIKE 'category_id%' AND $jn.content IN ($dis_ids))";
 				$where[] = "$jn.object_id IS NULL";
 			}
 		}
@@ -115,7 +115,7 @@ class PermissionFilter implements PersonContextInterface
 			$dis_ids = $this->person_context->PermissionsManager->NewsCategories->getDisallowedCategories();
 			if ($dis_ids) {
 				$dis_ids = implode(',', $dis_ids);
-				$join[] = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'news' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content NOT IN ($dis_ids))";
+				$join[] = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'news' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($dis_ids))";
 				$where[] = "$jn.object_id IS NULL";
 			}
 		}
@@ -126,7 +126,7 @@ class PermissionFilter implements PersonContextInterface
 			$dis_ids = $this->person_context->PermissionsManager->NewsCategories->getDisallowedCategories();
 			if ($dis_ids) {
 				$dis_ids = implode(',', $dis_ids);
-				$join[] = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'feedback' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content NOT IN ($dis_ids))";
+				$join[] = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'feedback' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($dis_ids))";
 				$where[] = "$jn.object_id IS NULL";
 			}
 		}
@@ -137,7 +137,7 @@ class PermissionFilter implements PersonContextInterface
 			$dis_ids = $this->person_context->PermissionsManager->NewsCategories->getDisallowedCategories();
 			if ($dis_ids) {
 				$dis_ids = implode(',', $dis_ids);
-				$join[] = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'download' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content NOT IN ($dis_ids))";
+				$join[] = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'download' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($dis_ids))";
 				$where[] = "$jn.object_id IS NULL";
 			}
 		}
