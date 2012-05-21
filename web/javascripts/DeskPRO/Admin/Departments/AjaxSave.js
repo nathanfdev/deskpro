@@ -119,6 +119,21 @@ DeskPRO.Admin.Departments.AjaxSave = new Orb.Class({
 		$('#editdep_user_title').val(currentUserTitle);
 		$('#editdep_depid').val(depId);
 
+		var group = row.closest('.department-group');
+		var parentId = group.find('> article.top').data('department-id');
+		if (parentId != depId) {
+			$('#editcat_parent_row').show();
+			$('#editcat_parent_id').find('option[value="'+parentId+'"]').prop('selected', true);
+		} else {
+			if (group.find('> article.child')[0]) {
+				$('#editcat_parent_row').hide();
+				$('#editcat_parent_id').find('option[value="0"]').prop('selected', true);
+			} else {
+				$('#editcat_parent_row').show();
+				$('#editcat_parent_id').find('option[value="0"]').prop('selected', true);
+			}
+		}
+
 		if (!this.editOverlay) {
 			this.editOverlay = new DeskPRO.UI.Overlay({
 				contentElement: $('#editdep_overlay')

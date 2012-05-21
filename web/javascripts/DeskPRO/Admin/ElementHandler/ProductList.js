@@ -46,6 +46,21 @@ DeskPRO.Admin.ElementHandler.ProductList = new Orb.Class({
 		$('#editcat_title').val(currentTitle);
 		$('#editcat_catid').val(catId);
 
+		var group = row.closest('.department-group');
+		var parentId = group.find('> article.top').data('category-id');
+		if (parentId != catId) {
+			$('#editcat_parent_row').show();
+			$('#editcat_parent_id').find('option[value="'+parentId+'"]').prop('selected', true);
+		} else {
+			if (group.find('> article.child')[0]) {
+				$('#editcat_parent_row').hide();
+				$('#editcat_parent_id').find('option[value="0"]').prop('selected', true);
+			} else {
+				$('#editcat_parent_row').show();
+				$('#editcat_parent_id').find('option[value="0"]').prop('selected', true);
+			}
+		}
+
 		if (!this.editOverlay) {
 			this.editOverlay = new DeskPRO.UI.Overlay({
 				contentElement: $('#editcat_overlay')

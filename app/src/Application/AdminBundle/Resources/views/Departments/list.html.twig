@@ -63,6 +63,19 @@
 					<input type="text" name="user_title" id="editdep_user_title" value="" />
 				</div>
 			</div>
+			<div class="dp-form-row" id="editcat_parent_row">
+				<div class="dp-form-label">
+					<label>Parent</label>
+				</div>
+				<div class="dp-form-input">
+					<select name="parent_id" id="editcat_parent_id">
+						<option value="0">{{ phrase('admin.general.no_parent') }}</option>
+						{% for department in all_departments %}
+							<option value="{{ department.id }}">{{ department.title }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
 		</form>
 	</div>
 	<div class="overlay-footer">

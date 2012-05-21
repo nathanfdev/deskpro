@@ -84,6 +84,18 @@ class ProductsController extends AbstractController
 			$product->title = $this->in->getString('title');
 		}
 
+		$parent_id = $this->in->getUint('parent_id');
+		if (!count($product->getChildren())) {
+			if (!$parent_id || $parent_id == $product->getId()) {
+				$product->parent = null;
+			} else {
+				$parent_prod = $this->em->find('DeskPRO:Product', $parent_id);
+				if ($parent_prod && !count($parent_prod->parent)) {
+					$product->parent = $parent_prod;
+				}
+			}
+		}
+
 		$this->em->getConnection()->beginTransaction();
 
 		try {

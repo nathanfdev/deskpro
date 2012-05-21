@@ -146,6 +146,18 @@ class DepartmentsController extends AbstractController
 
 		$department->user_title = $this->in->getString('user_title');
 
+		$parent_id = $this->in->getUint('parent_id');
+		if (!count($department->getChildren())) {
+			if (!$parent_id || $parent_id == $department->getId()) {
+				$department->parent = null;
+			} else {
+				$parent_dep = $this->em->find('DeskPRO:Department', $parent_id);
+				if ($parent_dep && !count($parent_dep->parent)) {
+					$department->parent = $parent_dep;
+				}
+			}
+		}
+
 		$this->em->getConnection()->beginTransaction();
 
 		try {

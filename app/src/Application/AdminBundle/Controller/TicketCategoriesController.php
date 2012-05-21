@@ -84,6 +84,18 @@ class TicketCategoriesController extends AbstractController
 			$category->title = $this->in->getString('title');
 		}
 
+		$parent_id = $this->in->getUint('parent_id');
+		if (!count($category->getChildren())) {
+			if (!$parent_id || $parent_id == $category->getId()) {
+				$category->parent = null;
+			} else {
+				$parent_cat = $this->em->find('DeskPRO:TicketCategory', $parent_id);
+				if ($parent_cat && !count($parent_cat->parent)) {
+					$category->parent = $parent_cat;
+				}
+			}
+		}
+
 		$this->em->getConnection()->beginTransaction();
 
 		try {

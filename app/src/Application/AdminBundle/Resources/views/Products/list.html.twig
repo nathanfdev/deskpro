@@ -45,7 +45,7 @@
 	{% endif %}
 
 
-	<div id="editcat_overlay" style="width: 400px; height: 180px; display: none;">
+	<div id="editcat_overlay" style="width: 400px; height: 230px; display: none;">
 		<div class="overlay-title">
 			<span class="close-overlay"></span>
 			<h4>{{ phrase('admin.products.edit_product_title') }}</h4>
@@ -59,6 +59,19 @@
 					<div class="dp-form-input">
 						<input type="hidden" name="product_id" id="editcat_catid" value="" />
 						<input type="text" name="title" id="editcat_title" value="" />
+					</div>
+				</div>
+				<div class="dp-form-row" id="editcat_parent_row">
+					<div class="dp-form-label">
+						<label>Parent</label>
+					</div>
+					<div class="dp-form-input">
+						<select name="parent_id" id="editcat_parent_id">
+							<option value="0">{{ phrase('admin.general.no_parent') }}</option>
+							{% for product in all_products %}
+								<option value="{{ product.id }}">{{ product.title }}</option>
+							{% endfor %}
+						</select>
 					</div>
 				</div>
 			</form>
