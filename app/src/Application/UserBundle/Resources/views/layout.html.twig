@@ -212,6 +212,7 @@
 {% endif %}
 
 {% if not app.getSetting('user.disable_chat_element') and not admin_portal_controls and app.user.hasPerm('chat.use') %}
+	{% if not app.getRequest().query.has('nochat') %}
 	<!-- DeskPRO Chat Loader -->
 	<script type="text/javascript">
 	var DpChatWidget_Options = DpChatWidget_Options || {};
@@ -237,6 +238,7 @@
 	})();
 	</script>
 	<!-- /DeskPRO Chat Loader -->
+	{% endif %}
 
 	<!-- DeskPRO Widget -->
 	<script type="text/javascript">

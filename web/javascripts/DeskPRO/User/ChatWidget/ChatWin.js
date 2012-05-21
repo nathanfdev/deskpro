@@ -79,6 +79,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		this.parentUrl = decodeURIComponent(document.location.hash.replace( /^#/, ''));
 		this.typingIndicatorTime = null;
 		this.hasStarted = false;
+		this.hasBeenAssigned = false;
 		this.sessionCode = options.sessionCode || null;
 		this.lastMessageId = 0;
 		this.conversationId = options.conversationId || 0;
@@ -241,7 +242,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			window.open(BASE_URL + 'new-ticket', 'dp_newticket');
+			window.open(BASE_URL + 'new-ticket?nochat', 'dp_newticket');
 			self.endChatReal();
 		});
 	},
@@ -279,6 +280,8 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			this.findingAgentTimer = null;
 		}
 		$('#dp_chat_active').show();
+
+		this.hasBeenAssigned = true;
 	},
 
 	sendTypedMessage: function() {
@@ -463,6 +466,14 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		this.ajaxPoller.disable = true;
 		this.ajaxPoller._clearDelays();
 
+		if (!this.hasBeenAssigned) {
+			this.tellParent('destroy', []);
+			if (this.options.isWindowMode) {
+				window.close();
+			}
+			return;
+		}
+
 		$('#dp_chat_start').hide();
 		$('#dp_chat_finding_agent').hide();
 		$('#dp_chat_active').hide();
@@ -489,6 +500,9 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 					callback();
 				}
 				self.tellParent('destroy', []);
+				if (this.options.isWindowMode) {
+					window.close();
+				}
 			}
 		});
 	},
