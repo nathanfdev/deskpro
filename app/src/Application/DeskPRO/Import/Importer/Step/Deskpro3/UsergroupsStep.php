@@ -313,11 +313,6 @@ class UsergroupsStep extends AbstractDeskpro3Step
 				'department_id' => $v,
 				'app' => 'tickets'
 			));
-			$this->getDb()->insert('department_permissions', array(
-				'usergroup_id' => $ug_id,
-				'department_id' => $v,
-				'app' => 'chat'
-			));
 		}
 
 		$insert_faqperms = array_unique($insert_faqperms);
