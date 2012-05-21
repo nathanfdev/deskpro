@@ -305,11 +305,18 @@ ul#dp_notify_list li{
 	border-bottom: 1px solid #E3E4E6;
 	float: left;
 	width: 100%;
+	padding-bottom: 6px;
+	overflow: hidden;
+	min-height: 24px;
 }
 ul#dp_notify_list li a{
 	line-height: 24px;
-	padding: 8px;
+	position: absolute;
+	top: 0px;
+	left: 5px;
+	height: 24px;
 	color: #5F5D5E;
+	white-space: nowrap;
 }
 ul#dp_notify_list li:hover a{
 	color: #302F2F;
@@ -321,17 +328,25 @@ ul#dp_notify_list li span{
 	float: right;
 }
 ul#dp_notify_list li .timeago {
-	float: right;
+	position: absolute;
+	top: 2px;
+	padding-right: 19px;
+	padding-left: 8px;
+	right: 0;
 	color: lighten(@body-text-color, 30%);
-	margin: 5px 5px 0 0;
+	margin: 0;
+	background-color: #F1F1F1;
+	z-index: 1;
 }
 ul#dp_notify_list li .dismiss {
-	float: right;
+	position: absolute;
+	top: 7px;
+	right: 4px;
 	.iconbase(10px, 10px);
 	background-image: url(../../images/agent/icons/delete-small.png) /** sprite-ref: ui-v */;
 	cursor: pointer;
-	margin: 7px 5px 0 0;
 	.opacity(50);
+	z-index: 2;
 }
 ul#dp_notify_list li em:hover {
 	.opacity(100);
@@ -386,8 +401,7 @@ ul#dp_notify_list li.notifPaging span{
 
 ul#dp_notify_list li .info {
 	clear: both;
-	position: relative;
-	top: -4px;
+	margin-top: 20px;
 	margin-left: 10px;
 	font-size: 9px;
 }

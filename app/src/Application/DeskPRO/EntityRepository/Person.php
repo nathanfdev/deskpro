@@ -61,7 +61,7 @@ class Person extends AbstractEntityRepository
 		if (($agents = $this->getIdentityHelper()->getCollection('agents')) === null) {
 			$agents = $this->getEntityManager()->createQuery("
 				SELECT p
-				FROM DeskPRO:Person p
+				FROM DeskPRO:Person p INDEX BY p.id
 				WHERE p.is_agent = true
 				ORDER BY p.first_name ASC, p.last_name ASC
 			")->execute();

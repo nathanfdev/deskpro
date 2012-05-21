@@ -1,0 +1,9 @@
+{% extends 'DeskPRO:emails_common:layout.html.twig' %}
+{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
+{% block email_subject %}
+	New feedback: {{ feedback.title }} {% if feedback.getStatusCode() == 'hidden.validating' %}(requires validation){% endif %}
+{% endblock %}
+{% block content %}
+	Feedback "{{ feedback.title }}" by {{ feedback.person.getDisplayContact() }}
+	{% if feedback.getStatusCode() == 'hidden.validating' %}requires validation{% endif %}
+{% endblock %}

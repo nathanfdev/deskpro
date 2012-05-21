@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Mail;
 
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Application\DeskPRO\Entity\Person;
 
 class Message extends \Orb\Mail\Message
 {
@@ -115,6 +116,18 @@ class Message extends \Orb\Mail\Message
 		$this->template = $name;
 		$this->template_vars = $vars;
 	}
+
+
+	/**
+	 * A shortcut to set to and name
+	 *
+	 * @param Person $person
+	 */
+	public function setToPerson(Person $person)
+	{
+		$this->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+	}
+
 
 	/**
 	 * @static

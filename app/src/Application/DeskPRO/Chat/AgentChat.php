@@ -116,6 +116,26 @@ class AgentChat
 			$em->flush();
 		});
 
+		// If any of the targets are not online, we might need to nofigy them of the message via email
+		if (!$message->is_sys) {
+			foreach ($conversation->participants as $part) {
+				if ($part['id'] == $this->person['id']) {
+					continue;
+				}
+				$session = App::getOrm()->getRepository('DeskPRO:Session')->getSessionForPerson($part->person);
+
+				if ($session && $part->person->getPref('agent_notif.chat_message.email')) {
+					$message = App::getMailer()->createMessage();
+					$message->setTemplate('DeskPRO:emails_agent:new-agent-chat-message.html.twig', array(
+						'message' => $message
+					));
+					$message->setToPerson($part->person);
+					$message->enableQueueHint();
+					App::getMailer()->send($message);
+				}
+			}
+		}
+
 		return array(
 			'conversation' => $conversation,
 			'new_message'  => $chat_message

@@ -1,0 +1,8 @@
+{% extends 'DeskPRO:emails_common:layout.html.twig' %}
+{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
+{% block email_subject %}
+	New comment by {{ comment.getUserName() }} on "{{ comment.getObject().title }}" {% if comment.status == 'validating' %}(requires validation){% endif %}
+{% endblock %}
+{% block content %}
+	New comment by {{ comment.getUserDisplayContact() }} on "{{ comment.getObject().title }}" {% if comment.status == 'validating' %}(requires validation){% endif %}
+{% endblock %}

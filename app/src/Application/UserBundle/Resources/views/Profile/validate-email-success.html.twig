@@ -1,17 +1,17 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block content %}
-<div class="dp-error-page">
-	<div class="dp-content-block">
-		<div class="dp-box">
-			<div class="dp-box-content-wrapper">
-				<div class="dp-box-content">
-					<p>
-						{{ phrase('user.general.you_have_validated') }}
-						{% if ticket_ids|length %}{{ phrase('user.general.agents_working') }}{% endif %}
-					</p>
-				</div>
-			</div>
-		</div>
+
+<section class="dp-portal-section">
+	<div class="dp-content-block dp-profile-block">
+		<p>
+			{{ phrase('user.general.you_have_validated') }}
+			{% if ticket_ids|length %}{{ phrase('user.general.agents_working') }}{% endif %}
+		</p>
+		{% if not app.user.id %}
+			<p>
+				<a class="dp-btn dp-btn-primary" href="{{ path('user_login') }}">{{ phrase('user.general.log_in') }}</a>
+			</p>
+		{% endif %}
 	</div>
-</div>
+</section>
 {% endblock %}

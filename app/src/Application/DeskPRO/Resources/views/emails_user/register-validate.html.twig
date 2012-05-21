@@ -3,8 +3,9 @@
 	{{ phrase('user.email_subjects.validate_your_email') }}
 {% endblock %}
 {% block content %}
-	<p>
-    	{{ phrase('user.emails.you_registered') }}<br />
-		<a href="{{ url('user_validate_email', {'id': vemail.id, 'auth': vemail.auth}) }}">
-	</p>
+	{{ phrase('user.emails.you_registered') }}:
+
+	<br /><br />
+
+	<a href="{{ url('user_validate_email', {'id': vemail.id, 'auth': vemail.auth}) }}">{{ url('user_validate_email', {'id': vemail.id, 'auth': vemail.auth}) }}</a>
 {% endblock %}

@@ -79,10 +79,15 @@ class Register
 					}
 
 					$person->is_user = false;
+					$person->is_confirmed = false;
 				} else {
 					$person->addEmailAddressString($this->email);
 					$person->is_user = true;
 				}
+			}
+
+			if (App::getSetting('core.user_mode') == 'require_reg_agent_validation') {
+				$person->is_agent_confirmed = false;
 			}
 
 			$person->name = $this->name;
@@ -107,6 +112,9 @@ class Register
 				));
 				App::getMailer()->send($message);
 			}
+
+			$send_notify = new \Application\DeskPRO\Notifications\NewRegistrationNotification($person);
+			$send_notify->send();
 
 			return $person;
 		} catch (\Exception $e) {

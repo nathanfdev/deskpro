@@ -75,7 +75,7 @@ class Session extends EntityRepository
 		$ids = App::getDb()->fetchAllCol("
 			SELECT person_id
 			FROM sessions
-			WHERE date_last >= ? AND active_status = ?
+			WHERE date_last >= ? AND active_status = ? AND person_id IS NOT NULL
 		", array($datecut, 'available'));
 
 		return $ids;

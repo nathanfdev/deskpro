@@ -212,6 +212,9 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 				});
 			}
 
+			$send_notify = new \Application\DeskPRO\Notifications\NewCommentNotification($obj);
+			$send_notify->send();
+
 			App::getOrm()->commit();
 
 			return $obj;

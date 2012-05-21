@@ -406,6 +406,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public static function newRegularPerson()
 	{
 		$person = new self();
+
+		// Whatever code implements will override this based on settings
+		$person->is_agent_confirmed= true;
+		$person->is_confirmed = true;
+
 		return $person;
 	}
 

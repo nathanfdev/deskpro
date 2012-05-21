@@ -1,0 +1,8 @@
+{% extends 'DeskPRO:emails_common:layout.html.twig' %}
+{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
+{% block email_subject %}
+	New regsitration: {{ person.getDisplayContact() }} {% if not person.is_agent_confirmed %}(requires validation){% endif %}
+{% endblock %}
+{% block content %}
+	New regsitration: {{ person.getDisplayContact() }} {% if not person.is_agent_confirmed %}(requires validation){% endif %}
+{% endblock %}

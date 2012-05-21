@@ -193,6 +193,24 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * @return string
+	 */
+	public function getUserDisplayContact()
+	{
+		if ($this->person) {
+			return $this->person->getDisplayContact();
+		} else {
+			$display = $this->getUserName();
+			if ($this->getUserEmail()) {
+				$display .= ' <'. $this->getUserEmail() . '>';
+			}
+
+			return $display;
+		}
+	}
+
+
+	/**
 	 * Set the visitor of the person who made this comment. If the name
 	 * and email arent set they will be set to values of the visitor.
 	 *

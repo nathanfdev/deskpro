@@ -1,0 +1,9 @@
+<li class="ticket" data-type="tickets" data-route="listpane:{{ path('agent_publish_validatingcomments') }}">
+	<em class="dismiss"></em>
+	<time class="timeago"></time>
+	<a>New comment on {{ comment.getObject().title }}</a>
+	<div class="info">
+		Comment by {{ comment.getUserDisplayContact() }}
+		{% if comment.status == 'validating' %}requires validation{% endif %}
+	</div>
+</li>

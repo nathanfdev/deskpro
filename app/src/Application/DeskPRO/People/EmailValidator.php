@@ -93,7 +93,7 @@ class EmailValidator
 	public function __construct(PersonEmailValidating $validating_email)
 	{
 		$this->validating_email = $validating_email;
-		$this->person = $validating_email->person;
+		$this->person = App::getOrm()->find('DeskPRO:Person', $validating_email->person->getId());
 
 		$this->em = App::getOrm();
 		$this->db = $this->em->getConnection();
@@ -112,9 +112,10 @@ class EmailValidator
 	 */
 	public function validate()
 	{
-		$this->em->getConnection()->beginTransaction();
-
 		$exist_email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($this->validating_email->email);
+		$this->ticket_ids = $this->em->getRepository('DeskPRO:Ticket')->getTicketIdsWithValidatingEmail($this->validating_email);
+
+		$this->em->getConnection()->beginTransaction();
 
 		try {
 			if (!$exist_email) {
@@ -130,12 +131,25 @@ class EmailValidator
 				$email = $exist_email;
 			}
 
-			$this->person->is_confirmed = true;
-			$this->em->persist($this->person);
 			$this->em->flush();
 
+			if (!$this->person->primary_email) {
+				$this->person->primary_email = $email;
+			}
+
+			$is_newly_confirmed = false;
+			if (!$this->person->is_confirmed) {
+				$is_newly_confirmed = true;
+			}
+
+			$this->person->is_confirmed = true;
+
+			$this->db->update('people', array(
+				'is_confirmed' => 1,
+				'primary_email_id' => $email->getId()
+			), array('id' => $this->person->getId()));
+
 			// Find tickets with this email awaiting validation
-			$this->ticket_ids = $this->em->getRepository('DeskPRO:Ticket')->getTicketIdsWithValidatingEmail($this->validating_email);
 			if ($this->ticket_ids) {
 				foreach ($this->ticket_ids as $ticket_id) {
 					$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
@@ -169,6 +183,9 @@ class EmailValidator
 							$feedback->status = 'visible';
 						}
 
+						$notify_send = new \Application\DeskPRO\Notifications\NewFeedbackNotification($feedback);
+						$notify_send->send();
+
 						App::getOrm()->transactional(function ($em) use ($feedback) {
 							$em->persist($feedback);
 							$em->flush();
@@ -192,6 +209,10 @@ class EmailValidator
 
 						App::getOrm()->transactional(function ($em) use ($comment) {
 							$em->persist($comment);
+
+							$send_notify = new \Application\DeskPRO\Notifications\NewCommentNotification($comment);
+							$send_notify->send();
+
 							$em->flush();
 						});
 				}
@@ -199,6 +220,11 @@ class EmailValidator
 
 			$this->em->remove($this->validating_email);
 			$this->em->flush();
+
+			if ($is_newly_confirmed) {
+				$send_notify = new \Application\DeskPRO\Notifications\NewRegistrationNotification($this->person);
+				$send_notify->send();
+			}
 
 			$this->em->getConnection()->commit();
 

@@ -204,6 +204,9 @@ class FeedbackController extends AbstractController
 
 			if ($validator->isValid($newfeedback)) {
 				$feedback = $newfeedback->save();
+				
+				$notify_send = new \Application\DeskPRO\Notifications\NewFeedbackNotification($feedback);
+				$notify_send->send();
 
 				if ($newfeedback->require_login) {
 					return $this->redirectRoute('user_login', array('return' => $this->generateUrl('user_feedback_newfeedback_finishlogin', array('feedback_id' => $feedback->id))));
