@@ -96,6 +96,11 @@ class CleanupClientMessages extends AbstractJob
 		# chat pings
 		#------------------------------
 
-		App::getDb()->executeUpdate("TRUNCATE TABLE chat_conversation_pings");
+		$cutoff = time() - 180;
+
+		App::getDb()->executeUpdate("
+			DELETE FROM chat_conversation_pings
+			WHERE ping_time < $cutoff
+		");
 	}
 }
