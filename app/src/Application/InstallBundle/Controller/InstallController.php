@@ -496,6 +496,14 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 		$this->getLogger()->log(sprintf('Install::doCreateTablesAction done in %.4f', microtime(true) - $start), 'debug');
 
+		$prev_time = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build='default' AND name='install_time'");
+		if (!$prev_time) {
+			$prev_time = 0.0;
+		}
+		$prev_time = (float)$prev_time;
+		$prev_time += microtime(true) - $start;
+		$this->getDb()->replace('install_data', array('build' =>'default', 'name' => 'install_time', 'data' => sprintf('%.4f', $prev_time)));
+
 		return new \Symfony\Component\HttpFoundation\Response();
 	}
 
@@ -530,6 +538,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		}
 
 		$this->getLogger()->log('Install::installDataSave', 'debug');
+
+		$start = microtime(true);
 
 		$this->getOrm()->getConnection()->beginTransaction();
 
@@ -613,6 +623,14 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$this->getOrm()->getConnection()->rollback();
 			throw $e;
 		}
+
+		$prev_time = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build='default' AND name='install_time'");
+		if (!$prev_time) {
+			$prev_time = 0.0;
+		}
+		$prev_time = (float)$prev_time;
+		$prev_time += microtime(true) - $start;
+		$this->getDb()->replace('install_data', array('build' =>'default', 'name' => 'install_time', 'data' => sprintf('%.4f', $prev_time)));
 
 		$url = $this->generateUrl('install_install_done', array(), true);
 		return $this->redirect($url, 302);
@@ -736,12 +754,18 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$errinfo = 0;
 		}
 
+		$install_time = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build='default' AND name='install_time'");
+		if (!$install_time) {
+			$install_time = 0.0;
+		}
+
 		$data = array(
 			'source_type' => 'install.web',
 			'log' => @file_get_contents($this->container->getLogDir() . '/install.log'),
 			'errinfo' => $errinfo,
 			'install_token' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
-			'nostats' => isset($_COOKIE['stats_opt_out']) && $_COOKIE['stats_opt_out'] ? 1 : 0
+			'nostats' => isset($_COOKIE['stats_opt_out']) && $_COOKIE['stats_opt_out'] ? 1 : 0,
+			'total_time' => $install_time
 		);
 
 		if (!isset($_COOKIE['stats_opt_out']) || !$_COOKIE['stats_opt_out']) {
