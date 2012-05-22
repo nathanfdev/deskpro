@@ -374,8 +374,6 @@ class SettingsController extends AbstractController
 					}
 				}
 
-				\Application\DeskPRO\Service\ErrorReporter::sendInstallStatusPing('initial_done');
-
 				$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.setup_initial', '1');
 				return $this->redirectRoute('admin');
 			}
@@ -394,6 +392,9 @@ class SettingsController extends AbstractController
 			'last_cron_run' => $this->container->getSetting('core.last_cron_run'),
 			'default_transport' => $default_transport,
 			'initial_pop' => $initial_pop,
+
+			'ma_server' => \DeskPRO\Kernel\License::getLicServer(),
+			'install_token' => App::getSetting('core.install_token')
 		));
 	}
 
@@ -442,7 +443,6 @@ class SettingsController extends AbstractController
 	public function checkCronAction()
 	{
 		if ($this->container->getSetting('core.last_cron_run')) {
-			\Application\DeskPRO\Service\ErrorReporter::sendInstallStatusPing('cron');
 			return $this->createJsonResponse(array('cron_okay' => true));
 		}
 

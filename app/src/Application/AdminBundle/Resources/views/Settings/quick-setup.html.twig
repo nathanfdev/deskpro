@@ -3,6 +3,10 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% import 'AdminBundle:Common:design-macros.html.twig' as design %}
 {% block html_head %}
+<script type="text/javascript">
+var MA_SERVER = '{{ ma_server }}';
+var INSTALL_TOKEN = '{{ install_token }}';
+</script>
 <script type="text/javascript" src="{{ asset('vendor/detect_timezone.js') }}"></script>
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/QuickSetup.js') }}"></script>
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/EditEmailTransportPage.js') }}"></script>

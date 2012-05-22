@@ -34,6 +34,19 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 		}, 300000);
 	},
 
+	sendStatusPing: function(type) {
+		var data = {
+			install_token: INSTALL_TOKEN,
+			step: type
+		};
+		$.ajax({
+			url: MA_SERVER + '/api/data-submit/ping-install.json',
+			dataType: 'html',
+			data: data,
+			timeout: 15000
+		});
+	},
+
 	recountSteps: function() {
 		var checks = $('.mega-tick');
 		var total_count = this.totalStepCount;
@@ -46,6 +59,8 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 			});
 
 			$('#section_done').find('em').hide();
+
+			this.sendStatusPing('initial_done');
 		} else {
 			var remaining = total_count - done_count;
 			$('#section_done').find('label').text(remaining+'');
@@ -155,6 +170,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 					$('#section_install_cron').find('.mega-tick')[self.showFn]();
 					$('#cron_errors').hide();
 					self.recountSteps();
+					self.sendStatusPing('cron');
 				}
 			}
 		});
@@ -254,6 +270,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 					if (data.success) {
 						$('#section_enter_license').find('.mega-tick')[self.showFn]();
 						self.recountSteps();
+						self.sendStatusPing('license');
 					} else {
 						enterlicGroup.find('.errors-box').show().find('.lic-err-code').text(data.error_code);
 					}
@@ -312,6 +329,7 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 						wrapper.find('.mega-tick')[self.showFn]();
 						$('#section_config_smtp_edit').fadeIn();
 						self.recountSteps();
+						self.sendStatusPing('outemail');
 					}
 				}
 			});
