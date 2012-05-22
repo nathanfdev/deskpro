@@ -137,6 +137,7 @@
 	'user.general.welcome_back_guest'                  => 'Welcome back, guest',
 	'user.general.welcome_back_x'                      => 'Welcome back, {{name}}',
 	'user.general.widget_open_in_new_window'           => 'Open this in a new window',
+	'user.general.widget_open_full_page'               => 'Open full page',
 	'user.general.you'                                 => 'You',
 	'user.general.you_have_validated'                  => 'Thank you for validating your email address.',
 	'user.general.your_comment_agent_validation'       => 'Your comment is awaiting agent validation before it appears publicly',
@@ -145,4 +146,9 @@
 	'user.general.your_profile'                        => 'Your Profile',
 	'user.general.back'                                => 'Back',
 	'user.general.go_back'                             => 'Go Back',
+	'user.general.this_answered_my_question' => 'This answered my question',
+	'user.general.this_did_not_answer_my_question' => 'This did not answer my question',
+	'user.general.answered_success_message' => 'We are happy we were able to answer your question. Do you still want to email us?',
+	'user.general.i_dont_need_to_email' => 'I do not need to contact you anymore',
+	'user.general.i_still_want_to_email' => 'I still want to submit my question',
 );
