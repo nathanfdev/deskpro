@@ -48,9 +48,9 @@
 				<td>
 					<ul>
 						{% for part in user_participants %}
-							<tr>
+							<li>
 								{{ part.person.display_name }} &lt;{{ part.person.email_address }}&gt;
-							</tr>
+							</li>
 						{% endfor %}
 					</ul>
 				</td>

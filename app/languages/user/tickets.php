@@ -56,4 +56,8 @@
 	'user.tickets.you_rated_helpful'                   => 'You rated this message as helpful',
 	'user.tickets.you_rated_unhelpful'                 => 'You rated this message as unhelpful',
 	'user.tickets.your_tickets'                        => 'Your Tickets',
+	'user.tickets.join_ticket'                         => 'Join Ticket',
+	'user.tickets.add_me_to_ticket'                    => 'Add me to the ticket',
+	'user.tickets.dont_add_me_to_ticket'               => 'No thanks',
+	'user.tickets.join_explain' => 'You are about to become a participant on the ticket "{{subject}}" by {{name}}.<br /><br />You will be able to read and interact with the ticket, and you will be sent email notifications when the ticket is updated. Note that the action of adding yourself to the ticket will be logged, and your participation will be public to other ticket participants.',
 );

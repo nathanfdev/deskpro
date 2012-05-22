@@ -104,9 +104,18 @@ class TicketViewController extends AbstractController
 					// If they came here through the access code but arent on the ticket,
 					// then we need to add them so they can see it
 					if (!$ticket->hasParticipantPerson($this->person)) {
-						$ticket->addParticipantPerson($this->person);
-						$this->em->persist($ticket);
-						$this->em->flush();
+
+						if ($this->in->getBool('join')) {
+							$ticket->addParticipantPerson($this->person);
+							$this->em->persist($ticket);
+							$this->em->flush();
+							return $this->viewTicket($ticket, $display_data);
+						} else {
+							return $this->render('UserBundle:TicketView:part-join.html.twig', array(
+								'ticket' => $ticket,
+								'request_ref' => $ticket_ref,
+							));
+						}
 					}
 
 					if ($ticket) {
@@ -146,8 +155,10 @@ class TicketViewController extends AbstractController
 			$vars = array_merge($vars, $display_data);
 		}
 
-        if($is_pdf)
-        {
+		$user_participants = $ticket->getUserParticipants();
+		$vars['user_participants'] = $user_participants;
+
+        if($is_pdf) {
             $content_html = $this->renderView('DeskPRO:pdf_user:view_ticket.html.twig', $vars);
 
             $mpdf = new \mPDF_mPDF
@@ -227,7 +238,7 @@ class TicketViewController extends AbstractController
 				'newticket' => $newticket,
 				'custom_fields' => $custom_fields,
 				'errors' => $errors,
-				'error_fields' => $error_fields
+				'error_fields' => $error_fields,
 			));
 
 			$tpl = 'UserBundle:TicketView:view-modify.html.twig';
