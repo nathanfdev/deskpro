@@ -123,18 +123,21 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 		DP.console.log('depItems %o', depItems);
 
+		$('.ticket-display-field').hide();
+
 		Array.each(depItems, function(item) {
 			var itemId = this.getItemId(item);
-			var itemEl = $('.' + itemId);
+			var itemEl = $('.' + itemId).closest('.ticket-display-field');
 
-			itemEl.detach().appendTo('#fields_container').addClass('field-enabled');
+			// Detach and re-attach to correct ordering
+			itemEl.detach().appendTo('#fields_container');
 
 			// Turn on criteria-less fields now
 			if (!item.check) {
 				itemEl.show();
 			} else {
-				itemEl.addClass('with-criteria');
-				this.depItemsWithChecked = true;
+				//itemEl.addClass('with-criteria');
+				//this.depItemsWithChecked = true;
 			}
 		}, this);
 

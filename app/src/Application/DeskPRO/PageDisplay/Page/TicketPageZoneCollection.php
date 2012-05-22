@@ -274,6 +274,21 @@ class TicketPageZoneCollection implements PersonContextInterface
 	}
 
 
+
+	/**
+	 * @return TicketPageZone|array
+	 */
+	public function getPagesData()
+	{
+		$data = array();
+
+		foreach ($this->department_pages as $dep_id => $page) {
+			$data[$dep_id] = $page->getPageDisplay('default')->data;
+		}
+		return $data;
+	}
+
+
 	public function compileJs()
 	{
 		$part = array();

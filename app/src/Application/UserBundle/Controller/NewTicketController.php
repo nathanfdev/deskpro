@@ -200,6 +200,13 @@ class NewTicketController extends AbstractController
 			$page_data_field_ids = array();
 		}
 
+		$unique_items = array();
+		foreach ($ticket_display->getPagesData() as $page) {
+			foreach ($page as $item) {
+				$unique_items[$item['id']] = $item;
+			}
+		}
+
 		$tpl = 'UserBundle:NewTicket:new-ticket.html.twig';
 		$redirect_after = '';
 		if ($format == 'iframe') {
@@ -212,6 +219,7 @@ class NewTicketController extends AbstractController
 
 		return $this->render($tpl, array(
 			'set_dep_id' => $set_dep_id,
+			'all_items' => $unique_items,
 
 			'newticket' => $newticket,
 			'ticket_options' => $newticket_formtype->getTicketOptions(),
