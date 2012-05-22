@@ -32,9 +32,9 @@ DeskPRO.User.SuggestedContentOverlay = new Orb.Class({
 
 		var self = this;
 
-		this.overlayEl = $(this.options.template).hide().appendTo('body');
+		this.overlayEl = $(this.options.template).hide().appendTo('#dp');
 		this.controlsWrap = $('.dp-controls', this.overlayEl).hide();
-		this.backdropEl = $('<div class="dp-backdrop dp-faded" />').appendTo('body');
+		this.backdropEl = $('<div class="dp-backdrop dp-faded" />').appendTo('#dp');
 		this.backdropEl.on('click', function(el) {
 			self.close();
 		});
@@ -113,52 +113,32 @@ DeskPRO.User.SuggestedContentOverlay = new Orb.Class({
 			return;
 		}
 
-		var h =this.overlayEl.height();
+		var h = this.overlayEl.height();
+		var w = this.overlayEl.width();
 
 		var winH = $(window).height();
+		var winW = $(window).width();
 		h = winH * 0.7;
+		w = winW * 0.6;
 
 		if (h < 250) {
 			h = 250;
+		}
+		if (w < 400) {
+			w = 400;
 		}
 
 		if (h > this.options.maxHeight) {
 			h = this.options.maxHeight;
 		}
 
-		var viewTop = $(document).scrollTop();
-		var viewBtm = viewTop + winH;
-
-		if (this.options.openNear) {
-			var relatedContainer = $(this.options.openNear);
-			var cPos = relatedContainer.offset();
-			var cWidth = relatedContainer.outerWidth();
-
-			var btm = cPos.top + h;
-
-			if (btm > viewBtm) {
-				pos.top = viewTop + 20;
-			} else {
-				pos.top = viewTop + 50;
-			}
-
-			var addW = 40;
-			pos.top = cPos.left;
-			pos.left = cPos.left - (addW / 2);
-			pos.width = cWidth + addW;
-		}
+		this.overlayEl.css('height', h);
+		this.overlayEl.css('width', w);
 
 		this.overlayEl.css({
-			top: pos.top,
-			left: pos.left
+			top: (winH / 2) - (h / 2),
+			left: (winW / 2) - (w / 2)
 		});
-
-		if (pos.width) {
-			this.overlayEl.css('width', pos.width);
-		}
-		if (h) {
-			this.overlayEl.css('height', h);
-		}
 
 		this.overlayEl.fadeIn('fast').addClass('open');
 		this.backdropEl.show();

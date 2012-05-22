@@ -205,7 +205,7 @@ class DownloadsController extends AbstractController
 		$download->category->structure_helper = $structure;
 
 		$tpl = 'UserBundle:Downloads:file.html.twig';
-		if ($this->in->getString('_partial') == 'overlayWidget') {
+		if ($this->in->getString('_partial') == 'overlayWidget' || $this->in->getString('_partial') == 'overlaySuggest') {
 			$tpl = 'UserBundle:Downloads:file-overlay.html.twig';
 		}
 

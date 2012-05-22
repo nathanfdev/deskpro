@@ -3636,3 +3636,156 @@ dp .dp-labels-search td {
 	list-style-type: none;
 	margin: 0 0 10px 0;
 }
+
+#dp .dp-overlay-outer {
+	position: fixed;
+	top: 30px;
+
+	background-color: #fff;
+	border: 1px solid #B4B6B8;
+	z-index: 10000;
+
+	box-shadow: 3px 1px 7px 0px rgba(120, 120, 120, 0.6);
+}
+
+#dp .dp-post-overlay {
+	width: 620px;
+	height: 350px;
+}
+
+#dp .dp-overlay {
+	position: absolute;
+	top: 0; right: 0; bottom: 0; left: 0;
+}
+
+#dp .dp-overlay .dp-overlay-inner {
+	position: absolute;
+	top: 1px; right: 1px; bottom: 1px; left: 1px;
+	z-index: 100;
+}
+
+#dp .dp-overlay .dp-title {
+	height: 25px;
+
+	background-color: #ECF0F4;
+	border-bottom: 1px solid #C9CACA;
+}
+
+#dp .dp-overlay .dp-title button {
+	margin-top: 1px;
+	margin-left: 3px;
+}
+
+#dp .dp-overlay .dp-title h3 {
+	line-height: 25px;
+	font-size: 14px;
+	font-weight: normal;
+	padding-left: 8px;
+}
+
+#dp .dp-overlay .dp-content {
+	position: absolute;
+	top: 0; right: 0; bottom: 0; left: 0;
+	overflow: auto;
+
+	font-size: 11px;
+}
+
+#dp .dp-overlay h3.title {
+	margin: 10px 10px 0 10px;
+	margin-bottom: 0;
+	padding-bottom: 6px;
+}
+
+#dp .dp-with-title .dp-content {
+	top: 26px;
+}
+#dp .dp-with-footer .dp-content {
+	bottom: 26px;
+}
+
+#dp .dp-overlay .dp-content .dp-post {
+	padding: 10px;
+}
+
+#dp .dp-overlay .dp-content .dp-post p {
+	line-height: 130%;
+}
+
+#dp .dp-overlay .dp-controls {
+	margin: 0;
+	padding: 10px;
+	text-align: center;
+
+	background-color: #ECF0F4;
+	border-top: 1px solid #D9DBDB;
+}
+
+#dp .dp-overlay .dp-controls button {
+	margin-left: 8px;
+	margin-right: 8px;
+}
+
+#dp .dp-overlay .dp-controls p {
+
+}
+
+#dp .dp-overlay .dp-open-full {
+	float: right;
+	z-index: 102;
+	margin-right: 15px;
+	margin-top: 7px;
+	cursor: pointer;
+}
+
+#dp .dp-backdrop {
+	position: fixed;
+	top: 0; right: 0; bottom: 0; left: 0;
+	z-index: 1000;
+}
+
+#dp .dp-backdrop.dp-faded {
+	background-color: rgba(255,255,255, 0.5);
+}
+
+#dp .dp-overlay .dp-close-btn {
+	top: -10px;
+	right: -10px;
+	z-index: 101;
+}
+
+#dp .dp-close-btn {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 18px;
+	height: 18px;
+	display: block;
+
+	background: url(../../web/images/user/close-btn.png) no-repeat top right;
+	cursor: pointer;
+	overflow: hidden;
+	text-indent: -100px;
+}
+
+#dp .dp-overlay .dp-comments-placeholder {
+	font-size: 13px;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	border: 1px solid transparent;
+	border-bottom: 1px solid #D9DBDB;
+	margin:  0 -1px 0 -1px;
+	cursor: pointer;
+}
+
+#dp .dp-overlay .dp-comments-placeholder span {
+	background: url(../../images/icons/bullet_toggle_plus.png) no-repeat 0 50%;
+	padding-left: 18px;
+}
+
+#dp .dp-overlay .dp-comments-placeholder.open span {
+	background: url(../../images/icons/bullet_toggle_minus.png) no-repeat 0 50%;
+}
+
+#dp .dp-overlay .dp-comments-placeholder:hover {
+	border: 1px solid #D9DBDB;
+}

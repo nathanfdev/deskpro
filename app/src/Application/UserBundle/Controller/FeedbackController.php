@@ -204,7 +204,7 @@ class FeedbackController extends AbstractController
 
 			if ($validator->isValid($newfeedback)) {
 				$feedback = $newfeedback->save();
-				
+
 				$notify_send = new \Application\DeskPRO\Notifications\NewFeedbackNotification($feedback);
 				$notify_send->send();
 
@@ -393,7 +393,7 @@ class FeedbackController extends AbstractController
 		$related_content = $related_finder->getRelatedEntities();
 
 		$tpl = 'UserBundle:Feedback:view.html.twig';
-		if ($this->in->getString('_partial') == 'overlayWidget') {
+		if ($this->in->getString('_partial') == 'overlayWidget' || $this->in->getString('_partial') == 'overlaySuggest') {
 			$tpl = 'UserBundle:Feedback:view-overlay.html.twig';
 		}
 

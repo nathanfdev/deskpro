@@ -214,7 +214,7 @@ class NewsController extends AbstractController
 		}
 
 		$tpl = 'UserBundle:News:view.html.twig';
-		if ($this->in->getString('_partial') == 'overlayWidget') {
+		if ($this->in->getString('_partial') == 'overlayWidget' || $this->in->getString('_partial') == 'overlaySuggest') {
 			$tpl = 'UserBundle:News:view-overlay.html.twig';
 		}
 

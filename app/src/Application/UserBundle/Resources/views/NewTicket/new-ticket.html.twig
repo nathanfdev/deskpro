@@ -127,7 +127,7 @@ var ticketReader = {
 			</div>
 			{#--- FIELDS CONTAINER ---#}
 
-			<div class="dp-related-search" id="dp_newticket_related_container" style="display: none">
+			<div class="dp-related-search dp-well" id="dp_newticket_related_container" style="display: none">
 				<h4>{{ phrase('user.tickets.we_found_helpful_content') }}</h4>
 				<div class="subline">{{ phrase('user.general.title_links_safe') }}</div>
 				<div class="dp-list results">
@@ -144,6 +144,33 @@ var ticketReader = {
 		</form>
 	</article>
 </section>
+
+<script type="text/x-deskpro-plain" class="related-content-overlay-tpl">
+	<div class="dp-overlay-outer dp-post-overlay">
+	<div class="dp-overlay">
+		<div class="dp-overlay-inner">
+			<span class="dp-close-btn">close</span>
+			<div class="dp-content">
+				<span class="dp-open-full"><a>Open full page</a></span>
+				<div class="dp-content-holder">
+					<div class="dp-loading-msg">Loading</div>
+				</div>
+				<div class="dp-controls">
+					<div class="dp-default dp-control-section">
+						<button class="dp-btn dp-btn-success dp-section-toggle primary dp-set-answered" data-toggle-section=".dp-confirm-answered">This answered my question</button>
+						<button class="dp-btn dp-not-answered">This did not answer my question</button>
+					</div>
+					<div class="dp-confirm-answered dp-control-section" style="display:none">
+						<p>We are happy we were able to answer your question. Do you still want to email us?</p>
+						<button class="dp-btn dp-success dp-answererd" data-type="close">I do not need to contact you anymore</button>
+						<button class="dp-btn dp-answererd" data-type="ticket">I still want to submit a question</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+</script>
 
 </div>
 {% endblock %}

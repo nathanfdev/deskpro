@@ -158,7 +158,7 @@ DeskPRO.User.InlineSuggestions = new Orb.Class({
 	openSuggestedContent: function(aEl) {
 
 		var origUrl = aEl.attr('href');
-		var url = Orb.appendQueryData(origUrl, '_partial', 'overlay');
+		var url = Orb.appendQueryData(origUrl, '_partial', 'overlaySuggest');
 		var contentType = aEl.data('content-type');
 		var contentId = aEl.data('content-id');
 		var self = this;
