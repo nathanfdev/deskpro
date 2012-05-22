@@ -347,6 +347,8 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		/** @var $response \Symfony\Component\HttpFoundation\Response */
 		$response = $this->getHttpKernel()->handle($request, $type, $catch);
 
+		$path = $request->getPathInfo();
+
 		#------------------------------
 		# License checks
 		#------------------------------
@@ -754,7 +756,6 @@ class UserKernel extends AbstractKernel
 
 	public function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 	{
-		return null;
 		$is_installed = App::getSetting('core.setup_initial');
 		if (!$is_installed) {
 			return null;
