@@ -11,7 +11,7 @@
 	{{ layout.section('', content) }}
 
 	{% if messages|length > 1 %}
-		{{ layout.sep() }}
+		<br />
 		{{ layout.render_ticket_messages(messages, '', { skip_top: 0}) }}
 	{% endif %}
 {% endblock %}

@@ -6,7 +6,7 @@
 {% block content %}
 	{{ layout.render_top_message(messages|first) }}
 	{% if messages|length > 1 %}
-		{{ layout.sep() }}
+		<br />
 		{{ layout.render_ticket_messages(messages, '', { skip_top: 1}) }}
 	{% endif %}
 {% endblock %}

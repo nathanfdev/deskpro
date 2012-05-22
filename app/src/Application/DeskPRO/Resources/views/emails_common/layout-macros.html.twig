@@ -1,15 +1,15 @@
 {% macro section(title, content, options) %}
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom:15px;">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding:0;margin:0;">
 		{% if title %}
 			<tr>
-				<td style="font-size:18px; color:#242424; padding-top:6px; padding-bottom:6px;">
+				<td style="{{ _self.standard_font() }} font-size:18px; color:#242424; padding-bottom:4px;">
 					{{ title }}
 				</td>
 			</tr>
 		{% endif %}
 		{% if content %}
 			<tr>
-				<td style="font-size:12px; line-height:145%; padding-bottom:15px;">
+				<td style="{{ _self.standard_font() }} font-size:12px; line-height:125%; padding-bottom:0;">
 					{{ content }}
 				</td>
 			</tr>
@@ -17,29 +17,30 @@
 	</table>
 {% endmacro %}
 
+{% macro standard_font() %}font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;{% endmacro %}
 {% macro link_style() %}color: #0065A3;text-decoration: underline;{% endmacro %}
 {% macro info_link_style() %}color: #949494;text-decoration: underline;{% endmacro %}
 
 {% macro info_section(content, options) %}
-	<p style="margin: 0; padding: 0;">{{ content }}</p>
+	<p style="{{ _self.standard_font() }} font-size: 12px; margin: 0; padding: 0;">{{ content }}</p>
 {% endmacro %}
 
 {% macro sep() %}
-	<p style="height: 2px; padding: 0; margin: 15px 0 15px 0; background-color: #C5C5C5;">&nbsp;</p>
+	<div style="font-size: 12px; line-height: 100%; padding: 0; margin: 15px 0 0 0; border-top: 2px solid #C5C5C5;">&nbsp;</div>
 {% endmacro %}
 
 {% macro messages_section(title, content, options) %}
-<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:15px;margin-bottom:15px;">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
 	{% if title %}
 	<tr>
-		<td style="font-size:18px; color:#242424; padding-top:6px; padding-bottom:6px;">
+		<td style="{{ _self.standard_font() }} font-size:18px; color:#242424; padding-top:6px; padding-bottom:6px;">
 			{{ title }}
 		</td>
 	</tr>
 	{% endif %}
 	{% if content %}
 	<tr>
-		<td style="font-size:12px; line-height:125%;">
+		<td style="{{ _self.standard_font() }} font-size:12px; line-height:125%;">
 			{{ content }}
 		</td>
 	</tr>
@@ -49,19 +50,19 @@
 
 {% macro message(author, time, message, options) %}
 	<table width="620" border="0" cellspacing="0" cellpadding="3">
-		<tr><td style="font-size:12px; line-height:125%; color: #6D6D6D;">{{ phrase('user.emails.on_x_at_y_z_wrote', { date: time|date('full'), time: time|date('time'), author: author|e }) }}</td></tr>
-		<tr><td style="font-size:12px; line-height:145%; padding-left: 6px;">
-			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="border-left: 1px solid #00174B; color: #00174B; font-size:12px; line-height:135%; padding-left: 8px;">
+		<tr><td style="{{ _self.standard_font() }} font-size:12px; line-height:125%; color: #6D6D6D;">{{ phrase('user.emails.on_x_at_y_z_wrote', { date: time|date('full'), time: time|date('time'), author: author|e }) }}</td></tr>
+		<tr><td style="{{ _self.standard_font() }} font-size:12px; line-height:125%; padding-left: 6px;">
+			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="{{ _self.standard_font() }} border-left: 1px solid #00174B; color: #00174B; font-size:12px; line-height:125%; padding-left: 8px;">
 				{{ message|raw }}
 			</td></tr></table>
 		</td></tr>
-		<tr><td><br /></td></tr>
+		<tr><td style="padding-bottom: 6px;"><br /></td></tr>
 	</table>
 {% endmacro %}
 
 {% macro render_top_message(message, options) %}
 	<table width="620" border="0" cellspacing="0" cellpadding="3">
-		<tr><td style="font-size:12px; line-height:145%;">
+		<tr><td style="{{ _self.standard_font() }} font-size:12px; line-height:125%;">
 			{{ message.message_html|raw }}
 		</td></tr>
 	</table>

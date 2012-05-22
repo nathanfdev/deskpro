@@ -1,12 +1,13 @@
 {% extends 'DeskPRO:emails_common:email-internal.html.twig' %}
+{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_body %}
 <!--DP_TOP_MARK-->
 <html style="padding:0;margin:0;">
 <body style="padding:0;margin:0;">
-<!--DP_TOP_MARK--><div style="color:#FFFFFF;text-size:8px;height:1px;overflow:hidden;display:none;">_______________________.</div>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; color:#000000; font-size:12px;">
+<!--DP_TOP_MARK--><div style="color:#FFFFFF;font-size:1px;line-height: 1px;">_______________________.</div>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" style="{{ layout.standard_font() }}">
 	<tr>
-		<td valign="top" style="color:#242424; background-color: #FFFFFF" bgcolor="#FFFFFF">{% block content %}{% endblock %}</td>
+		<td valign="top" style="{{ layout.standard_font() }} color:#242424; background-color: #FFFFFF; padding: 0;" bgcolor="#FFFFFF">{% block content %}{% endblock %}</td>
 	</tr>
 	{% set footer_content %}{% block footer_content %}{% endblock %}{% endset %}
 	{% include 'DeskPRO:emails_common:layout-footer.html.twig' %}

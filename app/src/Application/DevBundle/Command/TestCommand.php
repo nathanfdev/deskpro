@@ -35,8 +35,6 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		print_r(App::getOrm()->getRepository('DeskPRO:Session')->getAvailableAgentIds());
-
 		echo "\n";
 	}
 }
