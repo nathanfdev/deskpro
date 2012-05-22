@@ -633,7 +633,11 @@ class Upgrade
 			throw new MysqlBackupException("Target backup file already exists: $f_full", MysqlBackupException::FILE_EXISTS);
 		}
 
-		$cmd = $mysql_dump_path . " --opt -Q -h{$DP_CONFIG['db']['host']} -u{$DP_CONFIG['db']['user']} --password='{$DP_CONFIG['db']['password']}' {$DP_CONFIG['db']['dbname']} > $f";
+		$pass = '';
+		if ($DP_CONFIG['db']['password']) {
+			$pass = " --password='{$DP_CONFIG['db']['password']}' ";
+		}
+		$cmd = $mysql_dump_path . " --opt -Q -h{$DP_CONFIG['db']['host']} -u{$DP_CONFIG['db']['user']}{$pass}{$DP_CONFIG['db']['dbname']} > $f";
 
 		$this->log("Backup directory:  {$this->getBackupDir()}");
 		$this->log("Backup command:    $cmd");
@@ -868,7 +872,11 @@ class Upgrade
 		# Restore dump
 		#------------------------------
 
-		$cmd = "$mysql_path -h{$DP_CONFIG['db']['host']} -u{$DP_CONFIG['db']['user']} -p{$DP_CONFIG['db']['password']} {$DP_CONFIG['db']['dbname']} < $sql_filename";
+		$pass = '';
+		if ($DP_CONFIG['db']['password']) {
+			$pass = " --password='{$DP_CONFIG['db']['password']}' ";
+		}
+		$cmd = "$mysql_path -h{$DP_CONFIG['db']['host']} -u{$DP_CONFIG['db']['user']}{$pass}{$DP_CONFIG['db']['dbname']} < $sql_filename";
 
 		$ret = $this->execCommand($cmd, $tmp_dir);
 		if ($ret) {
