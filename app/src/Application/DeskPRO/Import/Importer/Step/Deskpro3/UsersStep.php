@@ -160,6 +160,24 @@ class UsersStep extends AbstractDeskpro3Step
 		$usergroup_ids     = $user_batch['usergroup_ids'];
 
 		#------------------------------
+		# Validate email addresses
+		#------------------------------
+
+		$check_emails = $user_emails;
+		$user_emails = array();
+
+		foreach ($check_emails as $email_info) {
+			if (\Orb\Validator\StringEmail::isValueValid($email_info['email'])) {
+				$user_emails[] = $email_info;
+			}
+		}
+
+		if (!$user_emails) {
+			$this->logMessage("-- User {$user_id} has no valid emails");
+			return;
+		}
+
+		#------------------------------
 		# Make sure their email doesnt already match someone in the system
 		#------------------------------
 
