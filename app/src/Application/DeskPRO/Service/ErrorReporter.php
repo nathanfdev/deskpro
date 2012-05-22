@@ -102,6 +102,10 @@ class ErrorReporter
 
 		$info['url'] = $url;
 
+		if (isset($GLOBALS['DP_CONFIG']['debug']['dev']) && $GLOBALS['DP_CONFIG']['debug']['dev']) {
+			$info['DEV_MODE'] = 1;
+		}
+
 		if ((defined('DP_INTERFACE') && DP_INTERFACE != 'install') || (!isset($GLOBALS['DP_IS_INSTALL']) || !$GLOBALS['DP_IS_INSTALL'])) {
 			try {
 				$info['license_id'] = \DeskPRO\Kernel\License::getLicense()->getLicenseId();
