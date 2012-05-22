@@ -23,9 +23,9 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 					<li class="draggable irremovable" data-item-id="ticket_subject"><label>{{ phrase('admin.tickets.ticket_subject') }}</label></li>
 					<li class="draggable" data-item-id="attachments"><label>{{ phrase('agent.general.attachments') }}</label></li>
 				{% endif %}
-				<li class="draggable" data-item-id="ticket_category" data-edit-title="{{ phrase('agent.general.edit_categories') }}" data-edit-url="{{ path('admin_ticketcats') }}"><label>{{ phrase('agent.general.categories') }}</label></li>
-				<li class="draggable" data-item-id="ticket_product" data-edit-title="{{ phrase('admin.tickets.edit_products') }}" data-edit-url="{{ path('admin_products') }}"><label>{{ phrase('agent.general.product') }}</label></li>
-				<li class="draggable" data-item-id="ticket_priority" data-edit-title="{{ phrase('admin.tickets.edit_priorities') }}" data-edit-url="{{ path('admin_ticketpris') }}"><label>{{ phrase('agent.general.priority') }}</label></li>
+				{% if term_options.ticket_categories_full %}<li class="draggable" data-item-id="ticket_category" data-edit-title="{{ phrase('agent.general.edit_categories') }}" data-edit-url="{{ path('admin_ticketcats') }}"><label>{{ phrase('agent.general.categories') }}</label></li>{% endif %}
+				{% if term_options.products %}<li class="draggable" data-item-id="ticket_product" data-edit-title="{{ phrase('admin.tickets.edit_products') }}" data-edit-url="{{ path('admin_products') }}"><label>{{ phrase('agent.general.product') }}</label></li>{% endif %}
+				{% if term_options.priorities %}<li class="draggable" data-item-id="ticket_priority" data-edit-title="{{ phrase('admin.tickets.edit_priorities') }}" data-edit-url="{{ path('admin_ticketpris') }}"><label>{{ phrase('agent.general.priority') }}</label></li>{% endif %}
 				{% for field in custom_ticket_fields %}
 				<li class="draggable" data-item-id="ticket_field[{{field.field_def.id}}]" data-edit-title="{{ phrase('admin.general.edit_field') }}" data-edit-url="{{ path('admin_customdeftickets_edit', {field_id: field.field_def.id}) }}">
 				<label>{{field.title}}</label>
@@ -266,44 +266,53 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 {############################
  # Category field value
  ############################}
-<script type="text/x-deskpro-plain" id="rendered_field_ticket_category">
-	<div class="ticket-category">
-		<select class="ticket-category-input field-value">
-			<option>{{ phrase('admin.tickets.choose_a_category') }}</option>
-			{% for id,label in term_options.ticket_categories_full %}
-				<option value="{{id}}">{{label}}</option>
-			{% endfor %}
-		</select>
-	</div>
-</script>
+
+{% if term_options.ticket_categories_full %}
+	<script type="text/x-deskpro-plain" id="rendered_field_ticket_category">
+		<div class="ticket-category">
+			<select class="ticket-category-input field-value">
+				<option>{{ phrase('admin.tickets.choose_a_category') }}</option>
+				{% for id,label in term_options.ticket_categories_full %}
+					<option value="{{id}}">{{label}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</script>
+{% endif %}
 
 {############################
  # Product field value
  ############################}
-<script type="text/x-deskpro-plain" id="rendered_field_ticket_product">
-	<div class="ticket-product">
-		<select class="ticket-product-input field-value">
-			<option>{{ phrase('admin.tickets.choose_a_product') }}</option>
-			{% for id,label in term_options.products %}
-				<option value="{{id}}">{{label}}</option>
-			{% endfor %}
-		</select>
-	</div>
-</script>
+
+{% if term_options.products %}
+	<script type="text/x-deskpro-plain" id="rendered_field_ticket_product">
+		<div class="ticket-product">
+			<select class="ticket-product-input field-value">
+				<option>{{ phrase('admin.tickets.choose_a_product') }}</option>
+				{% for id,label in term_options.products %}
+					<option value="{{id}}">{{label}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</script>
+{% endif %}
 
 {############################
  # Priority field value
  ############################}
-<script type="text/x-deskpro-plain" id="rendered_field_ticket_priority">
-	<div class="ticket-priority">
-		<select class="ticket-priority-input field-value">
-			<option>{{ phrase('admin.tickets.choose_a_priority') }}</option>
-			{% for id,label in term_options.priorities %}
-				<option value="{{id}}">{{label}}</option>
-			{% endfor %}
-		</select>
-	</div>
-</script>
+
+{% if term_options.priorities %}
+	<script type="text/x-deskpro-plain" id="rendered_field_ticket_priority">
+		<div class="ticket-priority">
+			<select class="ticket-priority-input field-value">
+				<option>{{ phrase('admin.tickets.choose_a_priority') }}</option>
+				{% for id,label in term_options.priorities %}
+					<option value="{{id}}">{{label}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</script>
+{% endif %}
 
 {############################
  # Custom fields
@@ -330,6 +339,8 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 {############################
  # Criteria options
  ############################}
+
+{% if term_options.products or term_options.ticket_categories_full or term_options.priorities or term_options.ticket_workflows %}
 <div id="criteria_tpl" class="search-builder-tpl" style="display:none">
 	<div class="row">
 		<div class="term">
@@ -410,6 +421,7 @@ var TICKET_DISPLAY_DATA = {{ page_data|json_encode|raw }};
 		</div>
 	{% endif %}
 </div>
+{% endif %}
 
 <div class="optionbox" id="department_ob">
 	<section data-section-name="department">

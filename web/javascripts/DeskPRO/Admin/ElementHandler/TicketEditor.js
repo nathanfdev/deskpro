@@ -134,6 +134,10 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 					$('.dp-block-controls li.dp-edit-fields', formItem).remove();
 				}
 
+				if (!document.getElementById('criteria_tpl')) {
+					$('.dp-block-controls li.edit-field-trigger', formItem).remove();
+				}
+
 				formItem.insertAfter(el);
                 $('.Date.customfield input', formItem).datepicker();
 
@@ -339,6 +343,10 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 				});
 			} else {
 				$('.dp-block-controls li.dp-edit-fields', formItem).remove();
+			}
+
+			if (!document.getElementById('criteria_tpl')) {
+				$('.dp-block-controls li.edit-field-trigger', formItem).remove();
 			}
 
 			$('#admin_ticket_editor_items').append(formItem);
