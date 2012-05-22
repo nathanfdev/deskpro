@@ -1,44 +1,44 @@
 {##
  # The form displayed to get user feedback of a ticket message. This is in a popup window.
  ##}
-
-{% extends 'UserBundle::layout-simple-popup.html.twig' %}
+{% extends 'UserBundle::layout.html.twig' %}
+{% block breadcrumb %}
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.your_tickets') }}</a></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}">{{ ticket.subject }}</a></li>
+{% endblock %}
 {% block content %}
-<div class="dp-content-block dp-ticket-page with-handler" data-element-handler="DeskPRO.User.ElementHandler.TicketView">
-	<div class="dp-box">
-		<div class="dp-box-header">
-			<h4>{{ phrase('user.tickets.feedback_message_title', {'name': message.person.display_name}) }}</h4>
-		</div>
-
-		<div class="dp-box-content-wrapper">
-			<div class="dp-box-content">
-				<form action="{{ path('user_tickets_feedback_save', {'ticket_ref': ticket.ref, 'message_id': message.id}) }}" method="post">
-				<div class="dp-form">
-					<div class="dp-form-row">
-						<div class="dp-form-label">
-							<label>{{ phrase('user.tickets.was_reply_helpful') }}</label>
-						</div>
-						<div class="dp-form-input">
-							<label><input type="radio" name="rating" value="1" {% if feedback.rating == 1 %}checked="checked"{% endif %} /> {{ phrase('user.tickets.rate_helpful') }}</label>
-							&nbsp;&nbsp;&nbsp;
-							<label><input type="radio" name="rating" value="0" {% if feedback.rating == -1 %}checked="checked"{% endif %} /> {{ phrase('user.tickets.rate_unhelpful') }}</label>
-						</div>
-					</div>
-
-					<div class="dp-form-row">
-						<div class="dp-form-label">
-							<label>{{ phrase('user.tickets.feedback_message_leave_comment') }}</label>
-						</div>
-						<div class="dp-form-input">
-							<textarea name="message" style="width: 95%; height: 60px;">{{ feedback.message }}</textarea>
-						</div>
-					</div>
-
-					<input class="btn primary" type="submit" value="{{ phrase('user.general.submit_feedback') }}" />
+<section class="dp-portal-section dp-new-feedback-section">
+	<header>
+		<h1>{{ phrase('user.tickets.feedback_message_title', {'name': message.person.display_name}) }}</h1>
+	</header>
+	<article>
+		<form action="{{ path('user_tickets_feedback_save', {'ticket_ref': ticket.ref, 'message_id': message.id}) }}" method="post">
+			<div class="dp-control-group">
+				<div class="dp-control-label">
+					<label>{{ phrase('user.tickets.was_reply_helpful') }}</label>
 				</div>
-				</form>
+				<div class="dp-controls">
+					<label style="margin:0;display:inline;"><input type="radio" name="rating" value="1" {% if feedback.rating == 1 %}checked="checked"{% endif %} style="display: inline" /> {{ phrase('user.tickets.rate_helpful') }}</label>
+					&nbsp;&nbsp;&nbsp;
+					<label style="margin:0;display:inline;"><input type="radio" name="rating" value="0" {% if feedback.rating == -1 %}checked="checked"{% endif %} style="display: inline" /> {{ phrase('user.tickets.rate_unhelpful') }}</label>
+				</div>
 			</div>
-		</div>
-	</div>
-</div>
+
+			<br />
+
+			<div class="dp-control-group">
+				<div class="dp-control-label">
+					<label>{{ phrase('user.tickets.feedback_message_leave_comment') }}</label>
+				</div>
+				<div class="dp-controls">
+					<textarea name="message" style="width: 95%; height: 60px;">{{ feedback.message }}</textarea>
+				</div>
+			</div>
+
+			<p>
+				<button class="dp-btn dp-btn-primary" type="submit">{{ phrase('user.general.submit_feedback') }}</button>
+			</p>
+		</form>
+	</article>
+</section>
 {% endblock %}

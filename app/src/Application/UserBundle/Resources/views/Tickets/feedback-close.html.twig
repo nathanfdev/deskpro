@@ -4,17 +4,20 @@
  # have to manually close the window so there needs to be some kind of message.
  ##}
 
-{% extends 'UserBundle::layout-simple-popup.html.twig' %}
-{% block head %}
-<script type="text/javascript">
-window.close();
-$(document).ready(function() {
-	window.close();
-});
-</script>
+{% extends 'UserBundle::layout.html.twig' %}
+{% block breadcrumb %}
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.your_tickets') }}</a></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}">{{ ticket.subject }}</a></li>
 {% endblock %}
 {% block content %}
-	<h4>{{ phrase('user.tickets.ticket_was_closed') }}</h4>
-
-	<button class="dp-butotn small" onclick="window.close();" style="margin-top: 10px;">{{ phrase('user.general.close_window') }}</button>
+<section class="dp-portal-section dp-new-feedback-section">
+	<article>
+		<p>
+			{{ phrase('user.tickets.ticket_was_closed') }}
+		</p>
+		<p>
+			<a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}" class="dp-btn dp-btn-primary">{{ phrase('user.general.go_back') }}</a>
+		</p>
+	</article>
+</section>
 {% endblock %}

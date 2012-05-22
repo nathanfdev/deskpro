@@ -42,6 +42,7 @@
 	'user.general.form_errors_correct'                 => 'Oops! There are mistakes with your form. Correct the highlighted fields and then try again.',
 	'user.general.form_fix_email'                      => 'Enter a valid email address',
 	'user.general.go'                                  => 'Go',
+	'user.general.or'                                  => 'or',
 	'user.general.helpdesk_by'                         => 'Helpdesk software by <strong>{{deskpro}}</strong>',
 	'user.general.im_already_registered'               => 'I am already a registered user',
 	'user.general.im_new_user'                         => 'I am a new user',
@@ -142,4 +143,6 @@
 	'user.general.your_email_address'                  => 'Your Email Address',
 	'user.general.your_name'                           => 'Your Name',
 	'user.general.your_profile'                        => 'Your Profile',
+	'user.general.back'                                => 'Back',
+	'user.general.go_back'                             => 'Go Back',
 );
