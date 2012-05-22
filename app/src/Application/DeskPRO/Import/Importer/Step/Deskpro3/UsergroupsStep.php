@@ -268,7 +268,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		$cat_perms = $this->getOldDb()->fetchAllCol("SELECT catid FROM files_permissions WHERE groupid = ?", array($group_info['id']));
 		foreach ($this->files_cats as $cat) {
 			if (in_array($cat['id'], $cat_perms)) {
-				$insert_filesperms[] = $this->getMappedNewId('faq_cat', $cat['id']);
+				$insert_filesperms[] = $this->getMappedNewId('file_cat', $cat['id']);
 			}
 		}
 
