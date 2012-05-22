@@ -25,8 +25,15 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 
 		var totalWidth = newWidth - this.LEFT_START - this.CENTER_START;
 		var listWidth = totalWidth * 0.40;
-		if (listWidth < 370) {
-			listWidth = 370;
+
+		if (typeof Modernizr != 'undefined' && Modernizr.ipad) {
+			if (listWidth < 370) {
+				listWidth = 370;
+			}
+		} else {
+			if (listWidth < 370) {
+				listWidth = 370;
+			}
 		}
 
 		$('#dp_list').width(listWidth);

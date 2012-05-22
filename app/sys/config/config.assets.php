@@ -58,6 +58,9 @@ $CONFIG['agent'] = array(
 $CONFIG['agent_vendors'] = array(
 	'out' => 'js/agent-vendors.js',
 	'files' => array(
+		'vendor/modernizr.min.js',
+		'javascripts/Orb/modernizr-ext.js',
+
 		'vendor/stacktrace.js',
 		'vendor/jsdump.js',
 		'vendor/jquery/jquery.min.js',
@@ -106,7 +109,6 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/tipped/js/tipped/tipped.js',
 
 		'vendor/mootools/mootools-core.min.js',
-		'vendor/modernizr.min.js',
 		'vendor/notificon/notificon.min.js',
 	)
 );
@@ -265,7 +267,6 @@ $CONFIG['agent_common'] = array(
 	'files' => array(
 		'javascripts/DeskPRO/DP.js',
 		'javascripts/DeskPRO/ErrorLogger.js',
-		'javascripts/Orb/modernizr-ext.js',
 		'javascripts/Orb/Orb.js',
 		'javascripts/Orb/Class.js',
 		'javascripts/Orb/Util/Options.js',
@@ -519,7 +520,6 @@ $CONFIG['user_portaladmin_css'] = array(
 $CONFIG['user_common'] = array(
 	'out' => 'js/user-common.js',
 	'files' => array(
-		'javascripts/Orb/modernizr-ext.js',
 		'javascripts/Orb/Orb.js',
 		'javascripts/DeskPRO/DP.js',
 		'javascripts/Orb/Class.js',
@@ -564,6 +564,9 @@ $CONFIG['user_common'] = array(
 $CONFIG['user_vendors'] = array(
 	'out' => 'js/user-vendors.js',
 	'files' => array(
+		'vendor/modernizr.min.js',
+		'javascripts/Orb/modernizr-ext.js',
+
 		'vendor/jquery/jquery.min.js',
 		'vendor/jquery/jquery-ui/jquery-ui.min.js',
 		'vendor/jquery/jquery.cookie.js',
@@ -580,7 +583,6 @@ $CONFIG['user_vendors'] = array(
 		'vendor/jquery/fileupload/jquery.fileupload-ui.js',
 
 		'vendor/mootools/mootools-core.min.js',
-		'vendor/modernizr.min.js',
 		'vendor/PIE/PIE.js',
 		'vendor/bootstrap/bootstrap-custom.js',
 	)
