@@ -101,6 +101,21 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		return true;
 	}
 
+	public function ensureCorrectBuild()
+	{
+		if (!defined('DP_BUILD_TIME')) {
+			return;
+		}
+
+		$install_build = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 'default' AND name = 'install_build'");
+		if ($install_build != DP_BUILD_TIME) {
+			$this->getLogger()->log('install_data has wrong build', 'err');
+
+			echo deskpro_install_basic_error('The database tables already installed are from a previous build of DeskPRO. If you are re-installing DeskPRO, you need to use a new database. Contact support@deskpro.com if you need assistance.');
+			exit;
+		}
+	}
+
 	###############################################################################
 	# index
 	###############################################################################
@@ -380,6 +395,12 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 					  PRIMARY KEY (`build`,`name`)
 					) ENGINE=InnoDB DEFAULT CHARSET=latin1
 				");
+
+				$db->insert('install_data', array(
+					'build' => 'default',
+					'name' => 'install_build',
+					'data' => DP_BUILD_TIME
+				));
 			} catch (\Exception $e) {
 				$this->getLogger()->log('Failed to craete install_data: ' . $e->getCode() . ' ' . $e->getMessage(), 'err');
 
@@ -400,6 +421,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			}
 		}
 
+		$this->ensureCorrectBuild();
+
 		return $this->render('InstallBundle:Install:install-tables.html.php', array(
 
 		));
@@ -410,6 +433,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		if (!$this->ensureNotInstalled()) {
 			exit;
 		}
+
+		$this->ensureCorrectBuild();
 
 		$check = $this->getDb()->fetchColumn("SHOW TABLES LIKE 'install_data'");
 		if (!$check) {
@@ -517,6 +542,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			return $this->redirect($this->generateUrl('install'));
 		}
 
+		$this->ensureCorrectBuild();
+
 		$this->getLogger()->log('Install::installData', 'debug');
 
 		$is_webinstall = true;
@@ -536,6 +563,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		if (!$this->ensureNotInstalled()) {
 			return $this->redirect($this->generateUrl('install'));
 		}
+
+		$this->ensureCorrectBuild();
 
 		$this->getLogger()->log('Install::installDataSave', 'debug');
 
@@ -646,6 +675,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			return $this->redirect($this->generateUrl('install'));
 		}
 
+		$this->ensureCorrectBuild();
+
 		$this->getLogger()->log('Install::installDone', 'debug');
 
 		$rewrite_urls = false;
@@ -681,6 +712,10 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$db->replace('settings', array(
 				'name' => 'core.install_timestamp',
 				'value' => time(),
+			));
+			$db->replace('settings', array(
+				'name' => 'core.install_build',
+				'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
 			));
 			$db->replace('settings', array(
 				'name' => 'core.install_key',
