@@ -123,6 +123,13 @@ class EmailTransportsController extends AbstractController
 				}
 
 				if ($transport->match_type == 'all') {
+
+					// 'All' must always be singular
+					$this->container->getDb()->executeUpdate("
+						DELETE FROM email_transports
+						WHERE match_type = 'all' AND id != ?
+					", array($transport->getId()));
+
 					$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.default_from_email', $this->in->getString('default_from_email'));
 					if (!$this->container->getSetting('core.setup_initial')) {
 						\Application\DeskPRO\Service\ErrorReporter::sendInstallStatusPing('outemail');
