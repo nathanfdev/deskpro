@@ -235,61 +235,6 @@ class LicenseController extends AbstractController
 			return $this->redirectRoute('admin_license_input', array('invalid' => $lic->getLicenseCodeError()));
 		}
 
-		#------------------------------
-		# Check against lic server
-		#------------------------------
-
-		if (!$lic->has('no_confirm_license')) {
-
-			// Check it against the license server now
-			$client = new \Zend\Http\Client(null, array('timeout' => 15, 'strictredirects' => true));
-			$client->setMethod(\Zend\Http\Request::METHOD_POST);
-			$client->setUri(DP_MA_SERVER . '/api/license/confirm-demo.json');
-			$client->getRequest()->post()->set('license_code', $license_code);
-			$client->getRequest()->post()->set('install_key', $this->settings->get('core.install_key'));
-			$client->getRequest()->post()->set('install_token', $this->settings->get('core.install_token'));
-
-			$failed = false;
-			try {
-				$result = $client->send();
-
-				if ($result->isClientError() || $result->isServerError()) {
-					$failed = 'server_error';
-				} else {
-					$data = @json_decode($result->getBody(), true);
-					if (!$data) {
-						$failed = 'server_error';
-					} else {
-						if (isset($data['error'])) {
-							$failed = $data['error_code'];
-						}
-					}
-				}
-			} catch (\Zend\Http\Client\Adapter\Exception $e) {
-				if ($e->getCode() == \Zend\Http\Client\Adapter\Exception\TimeoutException::READ_TIMEOUT) {
-					$failed = 'timeout';
-				} else {
-					$failed = true;
-				}
-			} catch (\Exception $e) {
-				$failed = true;
-			}
-
-			if ($failed) {
-				if ($this->request->isXmlHttpRequest()) {
-					return $this->createJsonResponse(array(
-						'error' => true,
-						'error_code' => $failed === true ? 'unknown_request_error' : 'req_' . $failed
-					));
-				}
-				if ($failed === true) {
-					return $this->redirectRoute('admin_license_input', array('invalid' => 'unknown_request_error'));
-				} else {
-					return $this->redirectRoute('admin_license_input', array('invalid' => 'req_' . $failed));
-				}
-			}
-		}
-
 		$this->em->getConnection()->beginTransaction();
 
 		try {
