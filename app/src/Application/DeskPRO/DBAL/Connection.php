@@ -349,7 +349,7 @@ class Connection extends \Doctrine\DBAL\Connection
 		try {
 			return parent::exec($statement);
 		} catch (\PDOException $e) {
-			$e->_dp_query = $query;
+			$e->_dp_query = is_string($statement) ? $statement : null;
 			$e->_dp_query_params = array();
 			throw $e;
 		}
