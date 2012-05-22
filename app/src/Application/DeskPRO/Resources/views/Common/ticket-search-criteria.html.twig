@@ -289,8 +289,11 @@
 				<option value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
 				<option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
 				<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
-				<option value="closed">{{ phrase('agent.tickets.status_closed') }}</option>
-				<option value="hidden">{{ phrase('agent.general.hidden_awaiting_validating_spam') }}</option>
+
+				{% if search_context != 'filter' %}
+					<option value="closed">{{ phrase('agent.tickets.status_closed') }}</option>
+					<option value="hidden">{{ phrase('agent.general.hidden_awaiting_validating_spam') }}</option>
+				{% endif %}
 			</select>
 		</div>
 	</div>

@@ -214,7 +214,7 @@ class SettingsController extends AbstractController
 			$filter = new Entity\TicketFilter;
 		}
 
-		$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
+		$term_options = App::getApi('tickets')->getTicketOptions($this->person);
 
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
