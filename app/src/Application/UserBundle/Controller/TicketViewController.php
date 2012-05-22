@@ -94,38 +94,36 @@ class TicketViewController extends AbstractController
 
 					$ticket = $this->em->getRepository('DeskPRO:Ticket')->getByAccessCode($ticket_ref);
 
-					// If they arent a user they can register now
-					if ($ticket && $this->person->isGuest()) {
-						$this->session->set('ticket_from_ptac_register', $ticket->id);
-						$this->session->save();
-						return $this->redirectRoute('user_register');
-					}
-
-					// If they came here through the access code but arent on the ticket,
-					// then we need to add them so they can see it
-					if (!$ticket->hasParticipantPerson($this->person)) {
-
-						if ($this->in->getBool('join')) {
-							$ticket->addParticipantPerson($this->person);
-							$this->em->persist($ticket);
-							$this->em->flush();
-							return $this->viewTicket($ticket, $display_data);
-						} else {
-							return $this->render('UserBundle:TicketView:part-join.html.twig', array(
-								'ticket' => $ticket,
-								'request_ref' => $ticket_ref,
-							));
-						}
-					}
-
 					if ($ticket) {
-						return $this->viewTicket($ticket, $display_data);
+						// If they arent a user they can register now
+						if ($ticket && $this->person->isGuest()) {
+							$this->session->set('ticket_from_ptac_register', $ticket->id);
+							$this->session->save();
+							return $this->redirectRoute('user_register');
+						}
+
+						// If they came here through the access code but arent on the ticket,
+						// then we need to add them so they can see it
+						if (!$ticket->hasParticipantPerson($this->person)) {
+
+							if ($this->in->getBool('join')) {
+								$ticket->addParticipantPerson($this->person);
+								$this->em->persist($ticket);
+								$this->em->flush();
+								return $this->viewTicket($ticket, $display_data);
+							} else {
+								return $this->render('UserBundle:TicketView:part-join.html.twig', array(
+									'ticket' => $ticket,
+									'request_ref' => $ticket_ref,
+								));
+							}
+						}
 					}
 					break;
 			}
 		}
 
-		return $this->createNotFoundException();
+		throw $this->createNotFoundException();
 	}
 
 	###########################################################################
