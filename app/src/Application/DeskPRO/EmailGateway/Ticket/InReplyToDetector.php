@@ -89,8 +89,12 @@ class InReplyToDetector implements TicketDetectorInterface
 		# Try to find TAC
 		#------------------------------
 
+		$auth_len = App::getSetting('core_tickets.ptac_auth_code_len');
+		$authcode_min_len = $auth_len + 1;
+		$authcode_max_len = $auth_len + 7;
+
 		$matches = null;
-		if (preg_match_all('#(?<!P)TAC\-([A-Z0-9]{6,11})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
+		if (preg_match_all('#(?<!P)TAC\-([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
 
 			foreach ($matches as $m) {
 				$tac = App::getEntityRepository('DeskPRO:TicketAccessCode')->findByAccessCode($m[1]);
@@ -110,7 +114,7 @@ class InReplyToDetector implements TicketDetectorInterface
 		#------------------------------
 
 		$matches = null;
-		if (preg_match_all('#PTAC\-([A-Z0-9]{6,11})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
+		if (preg_match_all('#PTAC\-([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
 
 			foreach ($matches as $m) {
 				$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);

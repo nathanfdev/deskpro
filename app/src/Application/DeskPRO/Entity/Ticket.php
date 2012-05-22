@@ -159,6 +159,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $linked_chat = null;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $attachments;
 
@@ -167,14 +168,17 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $access_codes;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $messages;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $custom_data;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $labels;
 
