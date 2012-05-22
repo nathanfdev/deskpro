@@ -123,7 +123,7 @@ $(document).ready(function() {
 		<tr id="url_basepath_wrong" style="display: none">
 			<td>
 				<span class="label important" style="float:right">PROBLEM</span>
-				We have detected that your server supporst URL writing, but it is not configured properly. This can sometimes happen if the document root of your
+				We have detected that your server supports URL writing, but it is not configured properly. This can sometimes happen if the document root of your
 				site and the directory that DeskPRO is being served from are different (for example, if you use Apache Aliases).
 				<br /><br />
 

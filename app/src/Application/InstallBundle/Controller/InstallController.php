@@ -693,7 +693,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 				$client->setUri($url_noindex);
 				$result = $client->send();
 				$this->getLogger()->log('core.rewrite_urls check result: ' . $result->getBody(), 'debug');
-				if ($result->isSuccess() && strpos($result->getBody(), 'dp_check_url_ok') !== false) {
+				if ($result->isSuccess() && strpos($result->getBody(), 'dp_check_ok') !== false) {
 					$this->getLogger()->log('Enabling core.rewrite_urls', 'debug');
 					$rewrite_urls = true;
 				}
@@ -705,10 +705,6 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		try {
 			$db = $this->getOrm()->getConnection();
 
-			$db->replace('settings', array(
-				'name' => 'core.done_rewrite_urls_check',
-				'value' => time(),
-			));
 			$db->replace('settings', array(
 				'name' => 'core.install_timestamp',
 				'value' => time(),

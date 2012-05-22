@@ -361,25 +361,16 @@ class SettingsController extends AbstractController
 
 			if ($pass) {
 
-				if (!$this->container->getSetting('core.rewrite_urls') && !$this->container->getSetting('core.done_rewrite_urls_check')) {
-					$this->db->replace('settings', array(
-						'name' => 'core.done_rewrite_urls_check',
-						'value' => time(),
-					));
-
-					$url = $this->request->getUriForPath('/__checkurlrewrite/path');
-					$url_noindex = str_replace('/index.php/', '/', $url);
-
+				if (!$this->container->getSetting('core.rewrite_urls')) {
 					$client = new \Zend\Http\Client(null, array('timeout' => 5));
 					$client->setMethod(\Zend\Http\Request::METHOD_GET);
-					$client->setUri($url_noindex);
+					$client->setUri($this->container->getSetting('core.deskpro_url') . '__checkurlrewrite/path');
 					$result = $client->send();
-					if ($result->isSuccess() && strpos($result->getBody(), 'dp_check_url_ok') !== false) {
+					if ($result->isSuccess() && strpos($result->getBody(), 'dp_check_okay') !== false) {
 						$this->db->replace('settings', array(
 							'name' => 'core.rewrite_urls',
 							'value' => '1',
 						));
-						return $this->redirectRoute('admin_welcome');
 					}
 				}
 
@@ -416,7 +407,8 @@ class SettingsController extends AbstractController
 			$this->container->get('deskpro.core.settings')->setSetting('core.default_timezone', $timezone);
 		}
 		if ($url && (!$this->container->getSetting('core.deskpro_url') || $is_import)) {
-			$this->container->get('deskpro.core.settings')->setSetting('core.deskpro_url', $url);
+			$url = preg_replace('#index\.php/?(.*?)$#', '', $url);
+			$this->container->get('deskpro.core.settings')->setSetting('core.deskpro_url', rtrim($url, '/') . '/');
 		}
 
 		if ($this->container->getSetting('core.app_secret') == 'APP_SERCRET') {
@@ -431,7 +423,7 @@ class SettingsController extends AbstractController
 			$client->setMethod(\Zend\Http\Request::METHOD_GET);
 			$client->setUri($url_noindex);
 			$result = $client->send();
-			if ($result->isSuccess() && strpos($result->getBody(), 'dp_check_url_ok') !== false) {
+			if ($result->isSuccess() && strpos($result->getBody(), 'dp_check_ok') !== false) {
 				$this->db->replace('settings', array(
 					'name' => 'core.rewrite_urls',
 					'value' => '1',
