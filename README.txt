@@ -62,7 +62,7 @@ USING WINDOWS?
        (The location of PHP will depend upon where you have PHP installed; update appropriately)
 
 10. Follow the on-screen instructions.
-11. Log into DeskPRO using your browser
+11. Log into DeskPRO v4 using your browser
 
 USING LINUX?
   | - 12. Schedule a cron task to run /cron.php every minute
@@ -75,7 +75,7 @@ Done!
 * For very old DeskPRO installations (released before 17th Setember 2008 - DeskPRO v3.2.2 and earlier) the
 system will need to upgrade your existing installation. The upgrader will alert you to this and recommend
 appropriate backup options. If you are running a trial upgrade to DeskPRO v4 and are leaving your current
-DeskPRO v3 operational; you should clone your current DeskPRO v3 database.
+DeskPRO v3 operational; you should clone your current DeskPRO v3 database before running an import.
 
 ######################################################
 # Getting Help and Submitting Bugs                   #
@@ -83,4 +83,4 @@ DeskPRO v3 operational; you should clone your current DeskPRO v3 database.
 
 If you encounter a bug or an error, please email us with as much detail as you can to support@deskpro.com
 
-To receive technical support, email support@deskpro.com or visit our helpdesk at http://support.deskpro.com/
+To receive technical support, email support@deskpro.com or visit our helpdesk at http://helpdesk.deskpro.com/
