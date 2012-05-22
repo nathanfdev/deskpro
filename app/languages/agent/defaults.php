@@ -7,7 +7,7 @@
 	'agent.defaults.stat_count_of_tickets_awaiting_agent'                => 'Count of tickets awaiting agent',
 	'agent.defaults.stat_dash_agent_performance'                         => 'Agent Performance',
 	'agent.defaults.stat_dash_backlog'                                   => 'Backlog',
-	'agent.defaults.stat_dash_monthly'                                   => 'Monthyly',
+	'agent.defaults.stat_dash_monthly'                                   => 'Monthly',
 	'agent.defaults.stat_dash_today'                                     => 'Today',
 	'agent.defaults.stat_dash_yearly'                                    => 'Yearly',
 	'agent.defaults.stat_first_response_time'                            => 'First Response Time',
