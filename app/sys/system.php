@@ -309,11 +309,10 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			}
 		}
 
-		$path = $request->getPathInfo();
-        if(!App::getSetting('core.install_timestamp') && !preg_match('#^/install/#', $path)) {
-            $response = new RedirectResponse($request->getBasePath() . '/index.php/install/');
-            return $response;
-        }
+		if (!App::getSetting('core.install_build') && strpos($request->getRequestUri(), '/index.php/install/') === false) {
+			$response = new RedirectResponse($request->getBasePath() . '/index.php/install/');
+			return $response;
+		}
 
 		// Make sure we arent offline
 		if ($this->isHelpdeskOffline()) {
@@ -755,6 +754,7 @@ class UserKernel extends AbstractKernel
 
 	public function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 	{
+		return null;
 		$is_installed = App::getSetting('core.setup_initial');
 		if (!$is_installed) {
 			return null;

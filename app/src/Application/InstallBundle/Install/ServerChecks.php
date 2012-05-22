@@ -549,7 +549,7 @@ class ServerChecks
 	 * @param array $db_conf
 	 * @return bool
 	 */
-	public function checkDatabase(array $db_conf)
+	public function checkDatabase(array $db_conf, $should_be_empty = false)
 	{
 		$db_conf['driver'] = 'pdo_mysql';
 
@@ -605,6 +605,24 @@ class ServerChecks
 				);
 
 				return false;
+			}
+
+			if ($should_be_empty) {
+				$this->getLogger()->log("[CHECK] Checking for empty database", Logger::DEBUG);
+				$tables = $db->fetchAll("SHOW TABLES");
+				if ($tables) {
+					$this->has_fatal_db_errors = true;
+					$msg = "DeskPRO needs to be installed into an empty database";
+					$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
+					$this->server_errors['db_not_empty'] = array(
+						'message' => $msg,
+						'level' => 'fatal'
+					);
+
+					return false;
+				} else {
+					$this->getLogger()->log("[OK] Database is empty", Logger::DEBUG);
+				}
 			}
 		}
 

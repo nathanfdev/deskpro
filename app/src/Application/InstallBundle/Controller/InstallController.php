@@ -89,6 +89,11 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		try {
 			$this->getDb()->connect();
 
+			$is_dp4 = $this->getDb()->fetchColumn("SHOW TABLES LIKE 'worker_jobs'");
+			if (!$is_dp4) {
+				return true;
+			}
+
 			$installed = $this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.install_timestamp'));
 			if ($installed) {
 				return false;
@@ -107,13 +112,24 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			return;
 		}
 
-		$install_build = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 'default' AND name = 'install_build'");
-		if ($install_build != DP_BUILD_TIME) {
-			$this->getLogger()->log('install_data has wrong build', 'err');
+		try {
+			$install_build = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 'default' AND name = 'install_build'");
+			if ($install_build != DP_BUILD_TIME) {
+				$this->getLogger()->log('install_data has wrong build', 'err');
 
-			echo deskpro_install_basic_error('The database tables already installed are from a previous build of DeskPRO. If you are re-installing DeskPRO, you need to use a new database. Contact support@deskpro.com if you need assistance.');
-			exit;
+				echo deskpro_install_basic_error('The database tables already installed are from a previous build of DeskPRO. If you are re-installing DeskPRO, you need to use a new database. Contact support@deskpro.com if you need assistance.');
+				exit;
+			}
+		} catch (\Exception $e) {
+			return;
 		}
+	}
+
+	public function upgradeAction($version)
+	{
+		return $this->render('InstallBundle:Install:dp3-upgrade.html.php', array(
+			'version' => $version
+		));
 	}
 
 	###############################################################################
@@ -166,7 +182,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 					}
 				}
 
-				$server_check->checkDatabase(App::getConfig('db'));
+				$server_check->checkDatabase(App::getConfig('db'), true);
 
 				if (!$server_check->hasDbErrors()) {
 					try {
@@ -181,6 +197,15 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		}
 
 		$is_fatal = $server_check->hasFatalErrors();
+
+		if ($server_check->hasErrorType('db_not_empty')) {
+			try {
+				$is_dp3 = $this->getDb()->fetchColumn("SELECT `value` FROM settings WHERE name = 'deskpro_version'");
+				if ($is_dp3) {
+					return $this->upgradeAction($is_dp3);
+				}
+			} catch (\Exception $e) {}
+		}
 
 		$logs_dir_info_full = $this->container->getKernel()->getUserLogDir();
 		$logs_dir_info = str_replace(DP_WEB_ROOT, '', $logs_dir_info_full);
@@ -298,15 +323,15 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 	public function licenseAction()
 	{
         try {
-            if(count($this->getDoctrine()->getConnection()->fetchAll('SHOW TABLES'))) {
+			$has_tables = $this->getDb()->fetchColumn("SHOW TABLES LIKE 'worker_jobs'");
+            if($has_tables) {
 				if (!$this->ensureNotInstalled()) {
 					// Redirect to base if already installed
 					return $this->redirect($this->container->getRequest()->getBaseUrl());
 				}
                 return $this->redirect($this->generateUrl('install_install_data'));
             }
-        }
-        catch(\Exception $e) {}
+        } catch(\Exception $e) {}
 
 		return $this->render('InstallBundle:Install:license.html.php', array(
 
@@ -788,7 +813,10 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$errinfo = 0;
 		}
 
-		$install_time = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build='default' AND name='install_time'");
+		$install_time = 0;
+		try {
+			$install_time = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build='default' AND name='install_time'");
+		} catch (\Exception $e){}
 		if (!$install_time) {
 			$install_time = 0.0;
 		}
