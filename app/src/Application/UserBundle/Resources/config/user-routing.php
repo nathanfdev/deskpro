@@ -212,7 +212,7 @@ $collection->add('user_search_labels', new Route(
 $collection->add('user_search_omnisearch', new Route(
 	'/search/omnisearch/{query}',
 	array('_controller' => 'UserBundle:Search:omnisearch'),
-	array(),
+	array('query' => '.+'),
 	array()
 ));
 
