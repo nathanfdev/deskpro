@@ -242,7 +242,7 @@ class TicketSearchController extends AbstractController
 
 			foreach ($tickets as $t) {
 				$ticket_changes = $collection->getApplyActions($t, $this->person);
-				$collection->apply($t, $this->person);
+				$collection->apply(null, $t, $this->person);
 
 				if ($ticket_changes) {
 					$ticket_changed_fields = array();
