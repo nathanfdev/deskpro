@@ -215,25 +215,69 @@ DeskPRO.Admin.ElementHandler.QuickSetup = new Orb.Class({
 			enterlicGroup.find('.errors-box').hide();
 			reqlicGroup.find('.errors-box').hide().find('.error-item').hide();
 
+			this.licSentTo = $('#lic_email_address').val().trim();
+			if (!this.licSentTo.length) {
+				reqlicGroup.find('.errors-box').show().find('li.error_email').show();
+			}
+			if (!$('#lic_website_name').val().trim().length) {
+				reqlicGroup.find('.errors-box').show().find('li.error_site_name').show();
+			}
+			if (!$('#lic_website_url').val().trim().length) {
+				reqlicGroup.find('.errors-box').show().find('li.error_site_url').show();
+			}
+			if (reqlicGroup.find('.errors-box').is(':visible')) {
+				return;
+			}
+
+			var url = window.location.href + '';
+			url = url.replace(/\/index\.php\/(.*?)$/, '');
+
 			var form = $(this);
 			var formData = form.serializeArray();
+			formData.push({
+				name: 'url',
+				value: url
+			});
 
 			form.addClass('mark-loading');
+
 			$.ajax({
-				url: $(this).attr('action'),
+				url: $(this).data('lic-request-url'),
 				type: 'POST',
 				data: formData,
-				dataTyoe: 'json',
+				dataType: 'jsonp',
+				timeout: 12000,
 				complete: function() {
 					form.removeClass('mark-loading');
+				},
+				error: function() {
+					var errbox = reqlicGroup.find('.errors-box').show();
+					var data = {
+						error_codes: {unknown_request_error: 1}
+					};
+					Object.each(data.error_codes, function(v,code) {
+						code = code.replace(/\./g, '_');
+						errbox.find('.error_' + code).show();
+					});
 				},
 				success: function(data) {
 					if (data.success) {
 						enterlicGroup.find('.demo-sent-message').show();
 						wrapper.find('.page-radio-group').removeClass('open');
 						enterlicGroup.addClass('open').find(':radio').prop('checked', true);
+						$('#place_lic_email').text($('#lic_email_address').val().trim());
 					} else {
+						if (data.error_code && data.error_code == 'invalid_email') {
+							var data = {
+								error_codes: {email: 1}
+							};
+						} else {
+							var data = {
+								error_codes: {unknown_request_error: 1}
+							};
+						}
 						var errbox = reqlicGroup.find('.errors-box').show();
+
 						Object.each(data.error_codes, function(v,code) {
 							code = code.replace(/\./g, '_');
 							errbox.find('.error_' + code).show();
