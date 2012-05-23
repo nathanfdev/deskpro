@@ -10,11 +10,7 @@
 	{% set phrase_link %}<a href="{{ comment.object.permalink }}">{{ comment.object.title }}</a>{% endset %}
 	<p>{{ phrase('user.emails.comment_thank-you', {'link':phrase_link}) }}</p>
 	{% if validating %}
-		{% if feedback.status == 'visible' %}
-			{{ phrase('user.emails.validate_with_link') }}
-		{% else %}
-			{{ phrase('user.emails.comment_validate') }}
-		{% endif %}
+		{{ phrase('user.emails.comment_validate-email') }}
 		{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
 	{% endif %}
 {% endblock %}

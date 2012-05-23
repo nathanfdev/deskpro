@@ -28,7 +28,7 @@
 							{% set phrase_link2 %}
 							<a href="{{ path('user_login') }}">{{ phrase('user.general.log_in') }}</a>
 							{% endset %}
-							{{ phrase('user.general.comments_add_a_comment', {'link1':phrase_link1,'link2':phrase_link2}) }}
+							{{ phrase('user.general.comments_add-comment', {'link1':phrase_link1,'link2':phrase_link2}) }}
 						</li>
 					{% elseif app.user.hasPerm(check_perm) %}
 					<li class="new-comment {% if not app.user.is_guest %}no-nav{% endif %}" id="comments_login_info">
@@ -44,7 +44,7 @@
 							<div class="login-area">
 								<div class="inner-wrap">
 									<div>
-										<textarea name="new_comment[content]" cols="120" rows="5" placeholder="{{ phrase('user.general.comments_add_a_comment') }}"></textarea>
+										<textarea name="new_comment[content]" cols="120" rows="5" placeholder="{{ phrase('user.general.comments_add-comment') }}"></textarea>
 									</div>
 									<div id="comments_form_login_area" data-element-handler="DeskPRO.User.ElementHandler.CommentFormLogin" class="with-handler">{% include 'UserBundle:Common:comments-login-form.html.twig' %}</div>
 									<div style="padding-top: 0">

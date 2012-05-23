@@ -13,11 +13,7 @@
 {% block content %}
 	<p>{{ phrase('user.emails.feedback_thank-you', {'title':feedback.title}) }}</p>
 	{% if validating %}
-		{% if feedback.status == 'visible' %}
-			{{ phrase('user.emails.validate_with_link') }}
-		{% else %}
-			{{ phrase('user.emails.feedback_validate') }}
-		{% endif %}
+		{{ phrase('user.emails.feedback_validate-email') }}
 		{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
 	{% endif %}
 {% endblock %}

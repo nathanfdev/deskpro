@@ -1,7 +1,7 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_subject %}
-{{ phrase('user.emails.re_subject', {'subject':ticket.subject}) }}
+{{ phrase('user.email_subjects.re', {'subject':ticket.subject}) }}
 {% endblock %}
 {% block content %}
 	{{ layout.render_top_message(messages|first) }}

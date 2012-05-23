@@ -13,7 +13,6 @@
 	'user.error.invalid_email-explain'   => 'We could not find that email address on your account.',
 	'user.error.not-found'               => 'The page you are looking for was not found.',
 	'user.error.not-found-title'         => 'Not Found',
-	'user.error.not_allowed_you'         => 'You are not allowed to perform that action.',
 	'user.error.permission-denied'       => 'Sorry, the action you are trying to perform is not allowed.',
 	'user.error.permission-denied-login' => 'You are currently logged out. <a href="{{login_url}}">Log in</a> and try again.',
 	'user.error.permission-denied-title' => 'You are not allowed to do that',

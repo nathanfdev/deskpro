@@ -5,7 +5,7 @@
 {% if app.user.id %}
 	<section class="dp-sidebar-block">
 		<header>
-			<h3>{{ phrase('user.portal.welcome_back_x', {name: app.user.first_name|default(app.user.display_name)}) }}</h3>
+			<h3>{{ phrase('user.portal.sidebar_welcome-user', {name: app.user.first_name|default(app.user.display_name)}) }}</h3>
 		</header>
 		<article class="dp-written">
 			<ul>
@@ -18,7 +18,7 @@
 {% else %}
 	<section class="dp-sidebar-block">
 		<header>
-			<h3>{{ phrase('user.portal.welcome_back_guest') }}</h3>
+			<h3>{{ phrase('user.portal.welcome-back-guest') }}</h3>
 		</header>
 		<article class="dp-written">
 			<div class="dp-summary">

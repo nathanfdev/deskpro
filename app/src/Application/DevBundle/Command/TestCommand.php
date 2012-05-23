@@ -51,19 +51,19 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 		);
 
 		$list = array(
-'user.general.feedback' => 'user.feedback.feedback',
-'user.general.knowledgebase' => 'user.knowledgebase.knowledgebase',
-'user.general.related_articles' => 'user.knowledgebase.related_articles',
-'user.general.related_downloads' => 'user.downloads.related_downloads',
-'user.general.related_news' => 'user.news.related_news',
-'user.general.type_article' => 'user.knowledgebase.type_article',
-'user.general.type_download' => 'user.downloads.type_download',
-'user.general.type_news' => 'user.news.type_news',
-'user.general.latest_news' => 'user.news.latest_news',
-'user.general.news' => 'user.news.news',
-'user.general.lost_password_explain' => 'user.profile.lost_password_explain',
-'user.general.lost_password_sent' => 'user.profile.lost_password_sent',
-'user.general.posted_date' => 'user.news.posted_date',
+		'user.portal.everything' => 'user.portal.search-everything',
+		'user.portal.is_search_relevant' => 'user.portal.search_unhelpful',
+		'user.portal.online_staff' => 'user.portal.online-staff',
+		'user.portal.our_staff' => 'user.portal.our-staff',
+		'user.portal.searchbox_show_label_prefox' => 'user.portal.search_label-search_with',
+		'user.portal.searchbox_show_type_prefix' => 'search_label-search_show',
+		'user.portal.twitter_user_link' => 'user.portal.twitter-user-link',
+		'user.portal.twitter_view_more' => 'user.portal.twitter-view-more',
+		'user.portal.view_more_search_results' => 'user.portal.search_more-results',
+		'user.portal.we_are_here_to_help' => 'user.portal.sidebar_staff-description',
+		'user.portal.welcome_back_guest' => 'user.portal.welcome-back-guest',
+		'user.portal.welcome_back_x' => 'user.portal.sidebar_welcome-user',
+		'user.portal.x_search_results' => 'user.portal.search_result-count',
 		);
 
 		/*

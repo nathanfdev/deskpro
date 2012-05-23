@@ -120,7 +120,7 @@
 								<li class="dp-tab-news {% if this_section == 'news' %}on{% endif %} {% if not app.getSetting('user.portal_tab_news') %}disabled{% endif %}" data-tab="news">
 									<a href="{{ path('user') }}">
 										<i class="dp-icon-home"></i> <h3>{{ phrase('user.portal.tab_home') }}</h3>
-										<label>{{ phrase('user.general.tab_home-description') }}</label>
+										<label>{{ phrase('user.portal.tab_home-description') }}</label>
 									</a>
 								</li>
 							{% endif %}
@@ -182,9 +182,9 @@
 		<div class="results"></div>
 		<div class="foot">
 			<div class="dp-more-link">
-				<button class="dp-btn dp-btn-success">{{ phrase('user.portal.view_more_search_results')}} &rarr;</button>
+				<button class="dp-btn dp-btn-success">{{ phrase('user.portal.search_more-results')}} &rarr;</button>
 			</div>
-			<h4>{{ phrase('user.portal.is_search_relevant') }}</h4>
+			<h4>{{ phrase('user.portal.search_unhelpful') }}</h4>
 			<ul>
 				<li class="ticket"><a href="{{ path('user_tickets_new') }}">{{ phrase('user.tickets.contact-us') }}</a></li>
 				<li class="feedback"><a href="{{ path('user_feedback_new') }}">{{ phrase('user.feedback.create_feedback') }}</a></li>

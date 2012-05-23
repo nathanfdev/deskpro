@@ -1,7 +1,7 @@
 <?php return array(
 	'user.general.add'                           => 'Add',
 	'user.general.attachments'                   => 'Attachments',
-	'user.general.comments_add_a_comment'        => 'Add a comment',
+	'user.general.comments_add-comment'          => 'Add a comment',
 	'user.general.comments_logged_in_as'         => 'Logged In As',
 	'user.general.comments_no_comments'          => 'There are no comments.',
 	'user.general.comments_please_enter_email'   => 'Please enter your email address',

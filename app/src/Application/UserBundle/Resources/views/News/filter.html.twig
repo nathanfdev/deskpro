@@ -18,7 +18,7 @@
 	</li>
 {% endmacro %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news') }}">{{ phrase('user.news.news') }}</a></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news') }}">{{ phrase('user.news.title') }}</a></li>
 	{% if category %}
 		{% for cat in category.getTreeParents() %}
 			<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{ cat.title }}</a></li>
@@ -27,7 +27,7 @@
 	{% endif %}
 {% endblock %}
 {% block page_title %}
-	{{ phrase('user.news.news') }}
+	{{ phrase('user.news.title') }}
 	{% if category %}
 		{% for cat in category.getTreeParents() %}
 			- {{ cat.title }}
@@ -39,7 +39,7 @@
 
 <section class="dp-portal-section dp-new-feedback-section">
 	<header>
-		<h1>{{ phrase('user.news.news') }}</h1>
+		<h1>{{ phrase('user.news.title') }}</h1>
 	</header>
 </section>
 

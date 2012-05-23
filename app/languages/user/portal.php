@@ -1,17 +1,17 @@
 <?php return array(
-	'user.general.tab_home-description'         => 'Welcome &amp; News',
+	'user.portal.tab_home-description'          => 'Welcome &amp; News',
 	'user.portal.button-start-chat'             => 'Start Chat',
-	'user.portal.everything'                    => 'Everything',
-	'user.portal.is_search_relevant'            => 'Did not find what you were looking for?',
-	'user.portal.labels_section_name'           => 'Search Tags',
+	'user.portal.search-everything'             => 'Everything', // search-everything
+	'user.portal.search_unhelpful'            => 'If the above search results did not help ...', // search_unhelpful
+	'user.portal.search_labels_title'           => 'Search Labels',
 	'user.portal.login-box_cancel-button'       => 'Cancel',
 	'user.portal.more_labels'                   => 'More Labels',
 	'user.portal.no_results_help'               => 'No results, try using different terms.',
-	'user.portal.online_staff'                  => 'Online Staff',
-	'user.portal.our_staff'                     => 'Our Staff',
+	'user.portal.online-staff'                  => 'Online Staff', // online-staff
+	'user.portal.our-staff'                     => 'Our Staff', // our-staff
 	'user.portal.search'                        => 'Search',
-	'user.portal.searchbox_show_label_prefox'   => 'labelled with',
-	'user.portal.searchbox_show_type_prefix'    => 'Show',
+	'user.portal.search_label-search_with'   => 'labelled with', //search_label-search_with
+	'search_label-search_show'    => 'Show',//search_label-search_show
 	'user.portal.share_this'                    => 'Share this',
 	'user.portal.tab_feedback'                  => 'Feedback',
 	'user.portal.tab_feedback-description'      => 'Customer Suggestions',
@@ -20,11 +20,11 @@
 	'user.portal.tab_knowledgebase-description' => 'Read help articles',
 	'user.portal.tab_tickets'                   => 'Contact Us',
 	'user.portal.tab_tickets-description'       => 'We are here to help',
-	'user.portal.twitter_user_link'             => '@{{name}} on twitter',
-	'user.portal.twitter_view_more'             => 'View more from @{{name}} &rarr;',
-	'user.portal.view_more_search_results'      => 'View more search results',
-	'user.portal.we_are_here_to_help'           => 'Our friendly support staff are here to help.',
-	'user.portal.welcome_back_guest'            => 'Welcome back, guest',
-	'user.portal.welcome_back_x'                => 'Welcome back, {{name}}',
-	'user.portal.x_search_results'              => '{{count}} search result|{{count}} search results',
+	'user.portal.twitter-user-link'             => '@{{name}} on twitter', // hyphen
+	'user.portal.twitter-view-more'             => 'View more from @{{name}} &rarr;', // hyphen
+	'user.portal.search_more-results'      => 'View more search results', // search_more-results
+	'user.portal.sidebar_staff-description'           => 'Our friendly support staff are here to help.', // sidebar_staff-description
+	'user.portal.welcome-back-guest'            => 'Welcome back, guest', // sidebar_welcome-guest
+	'user.portal.sidebar_welcome-user'                => 'Welcome back, {{name}}', // sidebar_welcome-user
+	'user.portal.search_result-count'              => '{{count}} search result|{{count}} search results', // search_count
 );

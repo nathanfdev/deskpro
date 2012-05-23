@@ -10,16 +10,16 @@
 					{{ title }}
 				{% else %}
 					{% if online %}
-                        {{ phrase('user.portal.online_staff') }}
+                        {{ phrase('user.portal.online-staff') }}
 					{% else %}
-                        {{ phrase('user.portal.our_staff') }}
+                        {{ phrase('user.portal.our-staff') }}
 					{% endif %}
 				{% endif %}
 			</h3>
 		</header>
 		<article class="dp-written">
 			<p class="dp-summary">
-				{{ phrase('user.portal.we_are_here_to_help') }}
+				{{ phrase('user.portal.sidebar_staff-description') }}
 			</p>
 			<ul class="dp-clearfix dp-person-list {% if staff|length > 5 %}dp-compact{% endif %}">
 				{% for agent in staff %}

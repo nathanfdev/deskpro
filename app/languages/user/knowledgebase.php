@@ -1,6 +1,5 @@
 <?php return array(
 	'user.knowledgebase.article_not_found'   => 'The article could not be found.',
-	'user.knowledgebase.articles'            => 'Articles',
 	'user.knowledgebase.knowledgebase'       => 'Knowledgebase',
 	'user.knowledgebase.link_view-all'       => 'View {{count}} article|View all {{count}} articles',
 	'user.knowledgebase.related_articles'    => 'Related Articles',
