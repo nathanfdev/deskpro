@@ -94,7 +94,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 				return true;
 			}
 
-			$installed = $this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.install_timestamp'));
+			$installed = $this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.install_build'));
 			if ($installed) {
 				return false;
 			}

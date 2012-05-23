@@ -810,6 +810,10 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				'name' => 'core.install_timestamp',
 				'value' => time(),
 			));
+			App::getDb()->replace('settings', array(
+				'name' => 'core.install_build',
+				'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
+			));
 
 			// Mark that we've done this import
 			App::getDb()->replace('settings', array(
