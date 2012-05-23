@@ -82,6 +82,15 @@ DeskPRO.Admin.Window = new Orb.Class({
 				return html;
 			}
 		};
+
+		$(document).ajaxError(this.ajaxGlobalErrorHandler.bind(this));
+	},
+
+	ajaxGlobalErrorHandler: function(event, xhr, ajaxOptions, errorThrown, force) {
+		// Session timed out / cookies cleared
+		if (xhr && xhr.status && xhr.status == '403') {
+			window.location = BASE_URL + 'admin/';
+		}
 	},
 
 	initPage: function() {
