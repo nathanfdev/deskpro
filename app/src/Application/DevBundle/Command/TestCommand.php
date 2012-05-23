@@ -50,8 +50,18 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 			//'widget.php'
 		);
 
-		$list = array();
+		$list = array(
+			'user.error.articles_not_found' => 'user.knowledgebase.article_not_found',
+			'user.error.downloads_not_found' => 'user.downloads.file_not_found',
+			'user.error.feedback_not_found' => 'user.feedback.feedback_not_found',
+			'user.error.last_email' => 'user.profile.error_last_email',
+			'user.error.last_email_explain' => 'user.profile.error_last_email_explain',
+			'user.error.news_not_found' => 'user.news.news_not_found',
+			'user.error.validate_to_use' => 'user.profile.error_validate_to_use',
+			'user.error.not_validated_email' => 'user.profile.error_validate_to_use_tilte',
+		);
 
+		/*
 		foreach ($files as $f) {
 			$f1 = DP_ROOT.'/languages/user/' . $f;
 			$f2 = DP_ROOT.'/languages2/user/' . $f;
@@ -94,6 +104,7 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 		}
 
 		exit;
+		*/
 		$files = \Symfony\Component\Finder\Finder::create()->files()->in(array(
 			DP_ROOT.'/languages/user',
 			DP_ROOT.'/src/Application/UserBundle',

@@ -260,7 +260,7 @@ class FeedbackController extends AbstractController
 	{
 		$feedback = $this->em->getRepository('DeskPRO:Feedback')->find($feedback_id);
 		if (!$feedback) {
-			return $this->renderStandardError('@user.error.feedback_not_found', '@user.error.not-found', 404);
+			return $this->renderStandardError('@user.feedback.feedback_not_found', '@user.error.not-found', 404);
 		}
 
 		if ($this->person['id']) {
@@ -342,7 +342,7 @@ class FeedbackController extends AbstractController
 	{
 		$feedback = $this->em->getRepository('DeskPRO:Feedback')->getBySlug($slug);
 		if (!$feedback) {
-			return $this->renderStandardError('@user.error.feedback_not_found', '@user.error.not-found', 404);
+			return $this->renderStandardError('@user.feedback.feedback_not_found', '@user.error.not-found', 404);
 		}
 
 		// Auto-correct URL
@@ -427,7 +427,7 @@ class FeedbackController extends AbstractController
 	{
 		$feedback = $this->em->getRepository('DeskPRO:Feedback')->find($feedback_id);
 		if (!$feedback) {
-			return $this->renderStandardError('@user.error.feedback_not_found', '@user.error.not-found', 404);
+			return $this->renderStandardError('@user.feedback.feedback_not_found', '@user.error.not-found', 404);
 		}
 
 		if ($feedback->getStatus() == 'closed') {

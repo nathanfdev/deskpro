@@ -204,7 +204,7 @@ class ArticlesController extends AbstractController
 	{
 		$article = $this->em->getRepository('DeskPRO:Article')->getBySlug($slug);
 		if (!$article) {
-			return $this->renderStandardError('@user.error.articles_not_found', '@user.error.not-found', 404);
+			return $this->renderStandardError('@user.knowledgebase.article_not_found', '@user.error.not-found', 404);
 		}
 
 		// Auto-correct URL
@@ -311,7 +311,7 @@ class ArticlesController extends AbstractController
 
 		$article = $this->em->getRepository('DeskPRO:Article')->find($article_id);
 		if (!$article) {
-			return $this->renderStandardError('@user.error.articles_not_found', '@user.error.not-found', 404);
+			return $this->renderStandardError('@user.knowledgebase.article_not_found', '@user.error.not-found', 404);
 		}
 
 		$new_comment = new \Application\DeskPRO\Comments\NewComment(

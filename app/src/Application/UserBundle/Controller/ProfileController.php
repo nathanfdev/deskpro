@@ -130,7 +130,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		}
 
 		if (!$email['is_validated']) {
-			return $this->renderStandardError('@user.error.validate_to_use', '@user.error.not_validated_email', 409);
+			return $this->renderStandardError('@user.profile.error_validate_to_use', '@user.profile.error_validate_to_use_tilte', 409);
 		}
 
 		$person = $this->person;
@@ -173,7 +173,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		}
 
 		if (!$pass_count) {
-			return $this->renderStandardError('@user.error.last_email_explain', '@user.error.last_email', 409);
+			return $this->renderStandardError('@user.profile.error_last_email_explain', '@user.profile.error_last_email', 409);
 		}
 
 		#------------------------------
