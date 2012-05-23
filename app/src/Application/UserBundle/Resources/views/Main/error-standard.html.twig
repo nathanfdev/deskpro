@@ -17,7 +17,7 @@
 	<header>
 		{% if app.getLastException()._dp_sn %}
 			<div style="float: right; font-size: 11px; color: #5A6467;">
-				{{ phrase('user.error.error_title_log_code') }}: {{ app.getLastException()._dp_sn }}
+				{{ phrase('user.error.error_code') }}: {{ app.getLastException()._dp_sn }}
 			</div>
 		{% endif %}
 		<h3 style="margin-bottom: 0">

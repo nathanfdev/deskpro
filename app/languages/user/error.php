@@ -1,5 +1,4 @@
 <?php return array(
-	'user.downloads.file_not_found'            => 'The file you are looking for could not be found. It may have been deleted.',
 	'user.error.attach_ext-allowed'            => 'Only the following file types can be uploaded: {{error_detail}}',
 	'user.error.attach_ext-not-allow'          => 'The type of file you uploaded is not allowed.',
 	'user.error.attach_failed'                 => 'Your attachment failed to upload (did you cancel it?). You should try again.',
@@ -17,13 +16,6 @@
 	'user.error.not_allowed_you'               => 'You are not allowed to perform that action.',
 	'user.error.permission-denied'             => 'Sorry, the action you are trying to perform is not allowed.',
 	'user.error.permission-denied-title'       => 'You are not allowed to do that',
-	'user.error.permission-login'              => 'You are currently logged out. <a href="{{login_url}}">Log in</a> and try again.',
+	'user.error.permission-denied-login'       => 'You are currently logged out. <a href="{{login_url}}">Log in</a> and try again.',
 	'user.error.server-error'                  => 'There was a server error that prevented the page from loading. Please try again.',
-	'user.feedback.feedback_not_found'         => 'The feedback you are looking for could not be found. It may have been deleted.',
-	'user.knowledgebase.article_not_found'     => 'The article could not be found.',
-	'user.news.news_not_found'                 => 'The post you are looking for could not be found. It may have been deleted.',
-	'user.profile.error_last_email'            => 'That is your last email address',
-	'user.profile.error_last_email_explain'    => 'You can not remove your last email address. Try adding a new one first, and then you can delete this one. If you already have other addresses, make sure you have validated them.',
-	'user.profile.error_validate_to_use'       => 'That email address has not been validated yet. You need to validate the email address before you can set it as your account default.',
-	'user.profile.error_validate_to_use_tilte' => 'Email address is not validated',
 );

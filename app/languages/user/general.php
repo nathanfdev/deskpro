@@ -37,6 +37,7 @@
 	'user.general.upload-drag'                   => 'Drop your file here to upload it',
 	'user.general.upload_a_file'                 => 'Upload a file',
 	'user.general.uploading'                     => 'Uploading:',
+	'user.general.you'                           => 'You',
 	'user.general.your_comment_agent_validation' => 'Your comment is awaiting agent validation before it appears publicly',
 	'user.general.your_email_address'            => 'Your Email Address',
 	'user.general.your_name'                     => 'Your Name',

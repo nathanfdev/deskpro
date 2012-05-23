@@ -161,7 +161,7 @@
 						</div>
 						<div class="dp-controls dp-fill">
 							{{ form_widget(form.email) }}
-							{% if errors['email.invalid'] %}<div class="dp-help-inline dp-error-explain">{{ phrase('user.profile.please_enter_your_email') }}</div>{% endif %}
+							{% if errors['email.invalid'] %}<div class="dp-help-inline dp-error-explain">{{ phrase('user.general.please_enter_your_email') }}</div>{% endif %}
 							{% if errors['email.in_use'] %}<div class="dp-help-inline dp-error-explain">{{ phrase('user.profile.register_email_exists') }}</div>{% endif %}
 						</div>
 					</div>

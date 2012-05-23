@@ -6,7 +6,7 @@
 {% set page_noindex = true %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> {{ phrase('user.error.permission-denied_title') }}</li>
+	<li><span class="dp-divider">&rarr;</span> {{ phrase('user.error.permission-denied-title') }}</li>
 {% endblock %}
 {% block content %}
 
@@ -20,7 +20,7 @@
 			{% if error_title %}
 				{{ error_title }}
 			{% else %}
-				{{ phrase('user.error.permission-denied_title') }}
+				{{ phrase('user.error.permission-denied-title') }}
 			{% endif %}
 		</h3>
 	</header>
@@ -33,7 +33,7 @@
 
 		{% if app.user.is_guest %}
 			<p>
-				{{ phrase('user.error.permission-denied_help', {'login_url': path('user_login')}) }}
+				{{ phrase('user.error.permission-denied-login', {'login_url': path('user_login')}) }}
 			</p>
 		{% endif %}
 	</article>

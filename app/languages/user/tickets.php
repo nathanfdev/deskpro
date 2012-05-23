@@ -10,7 +10,7 @@
 	'user.tickets.check_email'                         => 'check your email',
 	'user.tickets.click_to_close'                      => 'Click to close this ticket',
 	'user.tickets.close_window'                        => 'Close Window',
-	'user.tickets.contact_us'                          => 'Contact Us',
+	'user.tickets.contact-us'                          => 'Contact Us',
 	'user.tickets.contact_us_explain'                  => 'Just fill in this form to create your ticket and our agents will reply to you via email as soon as they can.',
 	'user.tickets.content-suggestions_answered'        => 'We are happy we were able to answer your question. Do you still want to email us?',
 	'user.tickets.department'                          => 'Department',
