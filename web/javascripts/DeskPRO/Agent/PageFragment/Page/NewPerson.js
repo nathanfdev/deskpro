@@ -84,7 +84,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 						DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/people/' + data.person_id);
 					}
 
-					DeskPRO_Window.getMessageBroker().sendMessage('agent.person.added', { person_id: self.meta.person_id });
+					DeskPRO_Window.getMessageBroker().sendMessage('agent.person.added', { person_id: data.person_id });
 					this.closeSelf();
 				} else {
 					alert('There was an error with the form');
