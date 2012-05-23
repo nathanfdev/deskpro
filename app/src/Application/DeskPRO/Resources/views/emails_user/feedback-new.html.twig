@@ -5,18 +5,18 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% block email_subject %}
 	{% if validating == 'existing' or validating == 'new' %}
-		{{ phrase('user.email_subjects.newfeedback_validate') }}
+		{{ phrase('user.email_subjects.feedback_new_validate') }}
 	{% else %}
-		{{ phrase('user.email_subjects.newfeedback') }}
+		{{ phrase('user.email_subjects.feedback_new') }}
 	{% endif %}
 {% endblock %}
 {% block content %}
-	<p>{{ phrase('user.emails.thank_you_for_feedback', {'title':feedback.title}) }}</p>
+	<p>{{ phrase('user.emails.feedback_thank-you', {'title':feedback.title}) }}</p>
 	{% if validating %}
 		{% if feedback.status == 'visible' %}
 			{{ phrase('user.emails.validate_with_link') }}
 		{% else %}
-			{{ phrase('user.emails.validate_for_feedback') }}
+			{{ phrase('user.emails.feedback_validate') }}
 		{% endif %}
 		{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
 	{% endif %}

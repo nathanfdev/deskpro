@@ -10,6 +10,6 @@
 	<div class="dp-feedback-count"><i class="dp-arrow-outer"></i><i class="dp-arrow-inner"></i><em>{{ feedback.total_rating|default(0) }}</em></div>
 	<span class="dp-feedback-btn">
 		{% if feedback.status == 'closed' %}{{ phrase('user.feedback.voting_closed') }}
-		{% else %}<i class="dp-icon-thumbup"></i><span>{{ phrase('user.feedback.i_agree') }}</span>{% endif %}
+		{% else %}<i class="dp-icon-thumbup"></i><span>{{ phrase('user.feedback.voting_button-yes') }}</span>{% endif %}
 	</span>
 </div>

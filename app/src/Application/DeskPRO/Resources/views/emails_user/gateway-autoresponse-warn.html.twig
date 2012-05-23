@@ -1,7 +1,7 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% block email_subject %}
-	{{ phrase('user.emails.warning_confirmation_emails_off') }}
+	{{ phrase('user.emails.ticket_no-autoresponse') }}
 {% endblock %}
 {% block content %}
-    {{ phrase('user.emails.user_flooded_email') }}
+    {{ phrase('user.emails.ticket_flood') }}
 {% endblock %}

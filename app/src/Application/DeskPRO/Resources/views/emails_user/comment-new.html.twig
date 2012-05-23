@@ -4,16 +4,16 @@
 
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% block email_subject %}
-	{{ phrase('user.email_subjects.thanks_for_your_comment') }}
+	{{ phrase('user.email_subjects.comment-confirmation') }}
 {% endblock %}
 {% block content %}
 	{% set phrase_link %}<a href="{{ comment.object.permalink }}">{{ comment.object.title }}</a>{% endset %}
-	<p>{{ phrase('user.emails.thank_you_for_for_comment', {'link':phrase_link}) }}</p>
+	<p>{{ phrase('user.emails.comment_thank-you', {'link':phrase_link}) }}</p>
 	{% if validating %}
 		{% if feedback.status == 'visible' %}
 			{{ phrase('user.emails.validate_with_link') }}
 		{% else %}
-			{{ phrase('user.emails.validate_for_comment') }}
+			{{ phrase('user.emails.comment_validate') }}
 		{% endif %}
 		{{ url('user_validate_email', {'id': email_validating.id, 'auth': email_validating.auth }) }}
 	{% endif %}

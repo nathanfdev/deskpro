@@ -3,9 +3,9 @@
 {% block email_subject %}Validate your email address (RE: {{ ticket.subject }}){% endblock %}
 {% block content %}
 	{% set content %}
-    {{ phrase('user.emails.validate_first') }}
+    {{ phrase('user.emails.ticket_validate') }}
 	<br /><br />
-	{{ phrase('user.emails.link_validate') }}:<br />
+	{{ phrase('user.emails.profile_email_link-validate') }}:<br />
 	<a href="{{ url('user_validate_email', {'id': ticket.person_email_validating.id, 'auth': ticket.person_email_validating.auth}) }}">
 		{{ url('user_validate_email', {'id': ticket.person_email_validating.id, 'auth': ticket.person_email_validating.auth}) }}
 	</a>

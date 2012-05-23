@@ -1,4 +1,6 @@
 <?php return array(
+	'agent.tickets.active_tickets_term'                 => 'Ticket is active',
+	'agent.tickets.active_tickets_term_explain'         => 'You can only create filters on active tickets. Active tickets are awaiting user, awaiting agent or resolved. Closed or hidden tickets are archived and cannot be filtered on. You can still find closed and hidden tickets by performing a search from the search bar.',
 	'agent.tickets.add_attachments'                     => 'Add attachments',
 	'agent.tickets.add_labels_action'                   => 'Add labels: {{labels}}',
 	'agent.tickets.add_parts_action'                    => 'Add participants: {{parts}}',
@@ -211,6 +213,4 @@
 	'agent.tickets.user_waiting_x_and_total_y'          => 'User has been waiting <time>{{waiting}}</time> for a reply and a total of <time>{{total}}</time> since the ticket started.',
 	'agent.tickets.your_teams_tickets'                  => 'Your teams tickets',
 	'agent.tickets.your_tickets'                        => 'Your tickets',
-	'agent.tickets.active_tickets_term'                 => 'Ticket is active',
-	'agent.tickets.active_tickets_term_explain'         => 'You can only create filters on active tickets. Active tickets are awaiting user, awaiting agent or resolved. Closed or hidden tickets are archived and cannot be filtered on. You can still find closed and hidden tickets by performing a search from the search bar.',
 );

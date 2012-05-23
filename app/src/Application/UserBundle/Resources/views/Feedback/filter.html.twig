@@ -29,9 +29,9 @@
 			<span class="dp-divider">&rarr;</span>
 			<a href="{{ path('user_feedback', {order_by:search_options.order_by}) }}">
 				{% if search_options.order_by == 'popular' %}{{ phrase('user.feedback.status_popular') }}
-				{% elseif search_options.order_by == 'newest' %}{{ phrase('user.feedback.newest') }}
-				{% elseif search_options.order_by == 'most-voted' %}{{ phrase('user.feedback.most_votes') }}
-				{% elseif search_options.order_by == 'i-voted' %}{{ phrase('user.feedback.i_voted') }}
+				{% elseif search_options.order_by == 'newest' %}{{ phrase('user.feedback.sort_newest') }}
+				{% elseif search_options.order_by == 'most-voted' %}{{ phrase('user.feedback.sort_most-votes') }}
+				{% elseif search_options.order_by == 'i-voted' %}{{ phrase('user.feedback.sort_i-voted') }}
 				{% endif %}
 			</a>
 		</li>
@@ -71,9 +71,9 @@
 	{% if not (status == 'any-status' and search_options.order_by == 'popular' and not category) %}
 		-
 		{% if search_options.order_by == 'popular' %}{{ phrase('user.feedback.status_popular') }}
-		{% elseif search_options.order_by == 'newest' %}{{ phrase('user.feedback.newest') }}
-		{% elseif search_options.order_by == 'most-voted' %}{{ phrase('user.feedback.most_votes') }}
-		{% elseif search_options.order_by == 'i-voted' %}{{ phrase('user.feedback.i_voted') }}
+		{% elseif search_options.order_by == 'newest' %}{{ phrase('user.feedback.sort_newest') }}
+		{% elseif search_options.order_by == 'most-voted' %}{{ phrase('user.feedback.sort_most-votes') }}
+		{% elseif search_options.order_by == 'i-voted' %}{{ phrase('user.feedback.sort_i-voted') }}
 	{% endif %}
 	{% if category %}
 		{% for cat in category.getTreeParents() %}
@@ -106,7 +106,7 @@
 	</header>
 	<article>
 		<p>
-			{{ phrase('user.feedback.explain') }}
+			{{ phrase('user.feedback.description') }}
 		</p>
 	</article>
 </section>
@@ -116,7 +116,7 @@
 {% if not just_form %}
 	<section class="dp-portal-section dp-feedback-section">
 		<header>
-			<h1>{{ phrase('user.feedback.there_are_x_suggestions', {'count': num_results}) }}</h1>
+			<h1>{{ phrase('user.feedback.title-feedback', {'count': num_results}) }}</h1>
 		</header>
 		<div class="dp-content-block dp-articles-block">
 			<div class="dp-content-wrapper">

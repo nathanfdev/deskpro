@@ -110,7 +110,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	public function renderLoginOrPermissionError($return_url = '')
 	{
 		if ($this->person->id) {
-			return $this->renderStandardError('@user.error.not_allowed_you');
+			return $this->renderStandardError('@user.error.permission-denied_you');
 		}
 
 		return $this->forward('UserBundle:Login:index', array(), array('return' => $return_url));
@@ -147,6 +147,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function renderStandardTokenError()
 	{
-		return $this->renderStandardError('@user.error.expired_token');
+		return $this->renderStandardError('@user.error.expired-token');
 	}
 }

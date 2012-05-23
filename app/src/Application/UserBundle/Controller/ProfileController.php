@@ -126,7 +126,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$email = $this->person->getEmailId($email_id);
 
 		if (!$email) {
-			return $this->renderStandardError('@user.error.invalid_email_explain', '@user.error.invalid_email', 404);
+			return $this->renderStandardError('@user.error.invalid_email-explain', '@user.error.invalid_email', 404);
 		}
 
 		if (!$email['is_validated']) {
@@ -156,7 +156,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$email = $this->person->getEmailId($email_id);
 
 		if (!$email) {
-			return $this->renderStandardError('@user.error.invalid_email_explain', '@user.error.invalid_email', 404);
+			return $this->renderStandardError('@user.error.invalid_email-explain', '@user.error.invalid_email', 404);
 		}
 
 		#------------------------------
@@ -196,7 +196,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$validating_email = $this->em->find('DeskPRO:PersonEmailValidating', $email_id);
 
 		if (!$validating_email || $validating_email->person['id'] != $this->person['id']) {
-			return $this->renderStandardError('@user.error.invalid_email_explain', '@user.error.invalid_email', 404);
+			return $this->renderStandardError('@user.error.invalid_email-explain', '@user.error.invalid_email', 404);
 		}
 
 		$this->em->transactional(function ($em) use ($validating_email) {
@@ -285,7 +285,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$validating_email = $this->em->find('DeskPRO:PersonEmailValidating', $email_id);
 
 		if (!$validating_email || $validating_email->person['id'] != $this->person['id']) {
-			return $this->renderStandardError('@user.error.invalid_email_explain', '@user.error.invalid_email', 404);
+			return $this->renderStandardError('@user.error.invalid_email-explain', '@user.error.invalid_email', 404);
 		}
 
 		$this->_doSendValidationEmail($validating_email);

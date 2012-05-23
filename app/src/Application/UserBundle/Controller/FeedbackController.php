@@ -94,7 +94,7 @@ class FeedbackController extends AbstractController
 			}
 
 			if (!$category) {
-				return $this->renderStandardError('@user.error.not_found_title', '@user.error.not_found', 404);
+				return $this->renderStandardError('@user.error.not-found_title', '@user.error.not-found', 404);
 			}
 
 			$cat_id = $category['id'];
@@ -260,7 +260,7 @@ class FeedbackController extends AbstractController
 	{
 		$feedback = $this->em->getRepository('DeskPRO:Feedback')->find($feedback_id);
 		if (!$feedback) {
-			return $this->renderStandardError('@user.error.feedback_not_found', '@user.error.not_found', 404);
+			return $this->renderStandardError('@user.error.feedback_not_found', '@user.error.not-found', 404);
 		}
 
 		if ($this->person['id']) {
@@ -342,7 +342,7 @@ class FeedbackController extends AbstractController
 	{
 		$feedback = $this->em->getRepository('DeskPRO:Feedback')->getBySlug($slug);
 		if (!$feedback) {
-			return $this->renderStandardError('@user.error.feedback_not_found', '@user.error.not_found', 404);
+			return $this->renderStandardError('@user.error.feedback_not_found', '@user.error.not-found', 404);
 		}
 
 		// Auto-correct URL
@@ -427,11 +427,11 @@ class FeedbackController extends AbstractController
 	{
 		$feedback = $this->em->getRepository('DeskPRO:Feedback')->find($feedback_id);
 		if (!$feedback) {
-			return $this->renderStandardError('@user.error.feedback_not_found', '@user.error.not_found', 404);
+			return $this->renderStandardError('@user.error.feedback_not_found', '@user.error.not-found', 404);
 		}
 
 		if ($feedback->getStatus() == 'closed') {
-			return $this->renderStandardError('@user.feedback.voting_closed', '@user.feedback.voting_closed_explain');
+			return $this->renderStandardError('@user.feedback.voting_closed', '@user.feedback.voting_closed-explain');
 		}
 
 		$new_comment = new \Application\DeskPRO\Comments\NewComment(

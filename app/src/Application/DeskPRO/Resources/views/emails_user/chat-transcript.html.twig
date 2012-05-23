@@ -7,7 +7,7 @@
 	{{ phrase('user.email_subjects.chat_transcript') }}
 {% endblock %}
 {% block content %}
-	<p>{{ phrase('user.emails.your_chat_transcript') }}</p>
+	<p>{{ phrase('user.emails.chat_transcript') }}</p>
 
 	{% for message in convo_messages|reverse %}
 		{% if message.is_sys %}

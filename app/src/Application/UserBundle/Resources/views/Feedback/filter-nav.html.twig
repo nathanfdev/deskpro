@@ -42,7 +42,7 @@
 	<li class="dp-dropdown dp-alt-option dp-last" style="float: left;">
 		<a href="#" class="dp-dropdown-toggle" data-toggle="dp-dropdown">
 			{% if status == 'any-status' %}
-				{{ phrase('user.feedback.any_status') }}
+				{{ phrase('user.feedback.status_any') }}
 			{% else %}
 				<span class="dp-info-prefix">{{ phrase('user.general.status') }}:</span>
 				{% if status_cat %}
@@ -59,7 +59,7 @@
 		<ul class="dp-dropdown-element dp-cat-list" id="dp_feedback_cat_menu">
 			<li>
 				<i class="dp-icon-repeat"></i>
-				<a href="{{ path('user_feedback', {'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ phrase('user.feedback.any_status') }}</a>
+				<a href="{{ path('user_feedback', {'slug': category.url_slug|default('all-categories'), 'order_by': search_options.order_by}) }}">{{ phrase('user.feedback.status_any') }}</a>
 				<span class="dp-badge dp-small">{{ status_counts['all']|default(0) }}</span>
 			</li>
 			<li class="sep"></li>
@@ -98,13 +98,13 @@
 	</li>
 
 	<li class="{% if search_options.order_by == 'i-voted' %}dp-active{% endif %}">
-		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'i-voted'}) }}">{{ phrase('user.feedback.i_voted') }}</a>
+		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'i-voted'}) }}">{{ phrase('user.feedback.sort_i-voted') }}</a>
 	</li>
 	<li class="{% if search_options.order_by == 'most-voted' %}dp-active{% endif %}">
-		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'most-voted'}) }}">{{ phrase('user.feedback.most_votes') }}</a>
+		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'most-voted'}) }}">{{ phrase('user.feedback.sort_most-votes') }}</a>
 	</li>
 	<li class="{% if search_options.order_by == 'newest' %}dp-active{% endif %}">
-		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'newest'}) }}">{{ phrase('user.feedback.newest') }}</a>
+		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'newest'}) }}">{{ phrase('user.feedback.sort_newest') }}</a>
 	</li>
 	<li class="{% if search_options.order_by == 'popular' %}dp-active{% endif %}">
 		<a href="{{ path('user_feedback', {'status': status, 'slug': category.url_slug|default('all-categories'), 'order_by': 'popular'}) }}">{{ phrase('user.feedback.status_popular') }}</a>

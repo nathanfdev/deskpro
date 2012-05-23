@@ -30,7 +30,7 @@
 	<section class="dp-portal-section">
 		<header>
 			{% if category %}
-				<h1>{{ phrase('user.downloads.there_are_x_subcats', {'count': category_children|length}) }}</h1>
+				<h1>{{ phrase('user.downloads.title-categories', {'count': category_children|length}) }}</h1>
 			{% else %}
 				<h1>{{ phrase('user.downloads.categories') }}</h1>
 			{% endif %}
@@ -49,7 +49,7 @@
 {% if downloads|length %}
 	<section class="dp-portal-section">
 		<header>
-			<h1>{{ phrase('user.downloads.there_are_x_files', {'count': downloads|length}) }}</h1>
+			<h1>{{ phrase('user.downloads.title-files', {'count': downloads|length}) }}</h1>
 		</header>
 		<div class="dp-content-block dp-articles-block">
 			<div class="dp-content-wrapper">

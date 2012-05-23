@@ -12,7 +12,7 @@
 	<article>
 		<div class="dp-post">{{ download.content_html|raw }}</div>
 		<p><a class="dp-btn dp-btn-primary" href="{{ path('serve_blob', {'blob_auth_id': download.blob.auth_id, 'filename': download.blob.filename}) }}">
-			{{ phrase('user.downloads.label_download') }}: {{ download.filename }} ({{ download.readable_filesize }})
+			{{ phrase('user.downloads.button-download') }}: {{ download.filename }} ({{ download.readable_filesize }})
 		</a></p>
 	</article>
 </section>

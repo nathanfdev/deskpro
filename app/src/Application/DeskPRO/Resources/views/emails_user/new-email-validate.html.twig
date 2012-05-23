@@ -1,10 +1,10 @@
 {% extends 'DeskPRO:emails_user:layout.html.twig' %}
 {% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
 {% block email_subject %}
-	{{ phrase('user.email_subjects.newemail_validate') }}
+	{{ phrase('user.email_subjects.emial_new-confirm') }}
 {% endblock %}
 {% block content %}
-	{{ phrase('user.emails.finish_adding_secondary') }}:<br />
+	{{ phrase('user.emails.profile_email-new-confirm') }}:<br />
 	<a href="{{ url('user_validate_email', {'id': validating_email.id, 'auth': validating_email.auth}) }}">
 		{{ url('user_validate_email', {'id': validating_email.id, 'auth': validating_email.auth}) }}
 	</a>

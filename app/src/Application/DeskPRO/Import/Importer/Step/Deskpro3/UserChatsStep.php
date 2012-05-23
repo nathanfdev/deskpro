@@ -281,9 +281,9 @@ class UserChatsStep extends AbstractDeskpro3Step
 					$message['person_name'] = 'sys';
 
 					if ($old_agent && !$new_agent) {
-						$message['content'] = App::getTranslator()->phrase('user.chat.unassigned');
+						$message['content'] = App::getTranslator()->phrase('user.chat.message_unassigned');
 					} elseif (!$old_agent && $new_agent) {
-						$message['content'] = App::getTranslator()->phrase('user.chat.assigned_to', array(
+						$message['content'] = App::getTranslator()->phrase('user.chat.message_assigned', array(
 							'name' => $new_agent->getDisplayName()
 						));
 					} else {

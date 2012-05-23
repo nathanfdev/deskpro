@@ -108,7 +108,7 @@ class PortalController extends AbstractController
 
 		if ($content_object instanceof \Application\DeskPRO\Entity\Feedback) {
 			if ($content_object == 'closed') {
-				return $this->renderStandardError('@user.feedback.voting_closed', '@user.feedback.voting_closed_explain');
+				return $this->renderStandardError('@user.feedback.voting_closed', '@user.feedback.voting_closed-explain');
 			}
 		}
 

@@ -5,7 +5,7 @@
 {% set page_noindex = true %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> {{ phrase('user.error.error') }}</li>
+	<li><span class="dp-divider">&rarr;</span> {{ phrase('user.error.error_title') }}</li>
 {% endblock %}
 {% block content %}
 
@@ -17,14 +17,14 @@
 	<header>
 		{% if app.getLastException()._dp_sn %}
 			<div style="float: right; font-size: 11px; color: #5A6467;">
-				{{ phrase('user.error.error_log_code') }}: {{ app.getLastException()._dp_sn }}
+				{{ phrase('user.error.error_title_log_code') }}: {{ app.getLastException()._dp_sn }}
 			</div>
 		{% endif %}
 		<h3 style="margin-bottom: 0">
 			{% if error_title %}
 				{{ error_title }}
 			{% else %}
-				{{ phrase('user.error.error') }}
+				{{ phrase('user.error.error_title') }}
 			{% endif %}
 		</h3>
 	</header>
@@ -32,7 +32,7 @@
 		{% if error_message %}
 			{{ error_message }}
 		{% else %}
-			{{ phrase('user.error.server_error_explain') }}
+			{{ phrase('user.error.server-error') }}
 		{% endif %}
 	</article>
 </section>

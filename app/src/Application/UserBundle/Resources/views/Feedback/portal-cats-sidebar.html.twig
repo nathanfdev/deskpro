@@ -10,9 +10,9 @@
 	</header>
 	<article class="dp-written">
 		<p class="dp-summary">
-			{% set phrase1 %}{{ phrase('user.feedback.browse_our_x_suggestions_open', {count: (counts[0]['new'] + counts[0]['active'])|default(0)} )}}{% endset %}
-			{% set phrase2 %}{{ phrase('user.feedback.browse_our_x_suggestions_closed', {count: counts[0]['closed']|default(0)} )}}{% endset %}
-			{{ phrase('user.feedback.browse_our_feedback', { phrase1: phrase1, phrase2: phrase2 }) }}
+			{% set phrase1 %}{{ phrase('user.feedback.title-status', {count: (counts[0]['new'] + counts[0]['active'])|default(0)} )}}{% endset %}
+			{% set phrase2 %}{{ phrase('user.feedback.title-feedback-closed', {count: counts[0]['closed']|default(0)} )}}{% endset %}
+			{{ phrase('user.feedback.sidebar_description', { phrase1: phrase1, phrase2: phrase2 }) }}
 		</p>
 		<ul class="dp-cat-list">
 			{% for cat in categories %}

@@ -73,7 +73,7 @@ class NewsController extends AbstractController
 			}
 
 			if (!$category) {
-				return $this->renderStandardError('@user.error.not_found_title', '@user.error.not_found', 404);
+				return $this->renderStandardError('@user.error.not-found_title', '@user.error.not-found', 404);
 			}
 
 			// Auto-correct URL
@@ -161,7 +161,7 @@ class NewsController extends AbstractController
 	{
 		$news = $this->em->getRepository('DeskPRO:News')->getBySlug($slug);
 		if (!$news) {
-			return $this->renderStandardError('@user.error.news_not_found', '@user.error.not_found', 404);
+			return $this->renderStandardError('@user.error.news_not_found', '@user.error.not-found', 404);
 		}
 
 		// Auto-correct URL
@@ -256,7 +256,7 @@ class NewsController extends AbstractController
 
 		$post = $this->em->getRepository('DeskPRO:News')->find($post_id);
 		if (!$post) {
-			return $this->renderStandardError('@user.error.news_not_found', '@user.error.not_found', 404);
+			return $this->renderStandardError('@user.error.news_not_found', '@user.error.not-found', 404);
 		}
 
 		$new_comment = new \Application\DeskPRO\Comments\NewComment(

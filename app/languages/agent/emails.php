@@ -8,6 +8,7 @@
 	'agent.emails.notice_account_login'            => 'Your account was used to successfully log in.',
 	'agent.emails.notice_login_attempt'            => 'Someone tried to log in using your account.',
 	'agent.emails.referring_page'                  => 'Referring Page',
+	'agent.emails.reply_above_line'                => '=== Enter your reply above this line ===',
 	'agent.emails.section_title_ticket_properties' => 'Ticket Properties',
 	'agent.emails.subject_email_change_merge'      => 'Confirm email change and accout merger',
 	'agent.emails.subject_new_ticket'              => 'New Ticket: {{ticket_subject}}',
@@ -18,5 +19,4 @@
 	'agent.emails.user_ip'                         => 'User IP',
 	'agent.emails.user_replied'                    => 'A user has replied to "{{subject}}"',
 	'agent.emails.your_initial_password'           => 'Your initial password',
-	'agent.emails.reply_above_line'                => '=== Enter your reply above this line ===',
 );

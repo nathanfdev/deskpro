@@ -110,8 +110,8 @@ class DataController extends AbstractController
 
 		$js_phrases = array();
 
-		$js_phrases["user.time.reltime_less_second"] = $tr->phrase("user.time.reltime_less_second");
-		$js_phrases["user.time.reltimeago_less_second"] = $tr->phrase("user.time.reltime_less_second");
+		$js_phrases["user.time.time_less_second"] = $tr->phrase("user.time.time_less_second");
+		$js_phrases["user.time.time-ago_less_second"] = $tr->phrase("user.time.time_less_second");
 
 		foreach (array('reltime', 'reltimeago') as $pre) {
 			foreach (array('second', 'minute', 'hour', 'day', 'week', 'month', 'year') as $name) {
@@ -122,16 +122,16 @@ class DataController extends AbstractController
 
 		$add_phrases = array(
 			'user.chat.message_started',
-			'user.chat.message_user_joined',
-			'user.chat.message_user_left',
-			'user.chat.message_set_department',
-			'user.chat.assigned_to',
-			'user.chat.unassigned',
-			'user.chat.msg_agent_timeout',
-			'user.chat.msg_user_timeout',
-			'user.chat.ended_by',
-			'user.chat.ended',
-			'user.chat.ended_user',
+			'user.chat.message_user-joined',
+			'user.chat.message_user-left',
+			'user.chat.message_set-department',
+			'user.chat.message_assigned',
+			'user.chat.message_unassigned',
+			'user.chat.message_agent-timeout',
+			'user.chat.message_user-timeout',
+			'user.chat.message_ended_by',
+			'user.chat.message_ended',
+			'user.chat.message_ended_user',
 		);
 
 		foreach ($add_phrases as $k) {
