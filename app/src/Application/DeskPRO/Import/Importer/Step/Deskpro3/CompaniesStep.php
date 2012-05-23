@@ -137,7 +137,7 @@ class CompaniesStep extends AbstractDeskpro3Step
 			// Usergroup relations
 			//---
 
-			$ug_rels = $this->getOldDb()->fetchAll("SELECT groupid FROM user_company2group WHERE companyid = ?", array(
+			$ug_rels = $this->getOldDb()->fetchAllCol("SELECT groupid FROM user_company2group WHERE companyid = ?", array(
 				$company_info['id']
 			));
 
