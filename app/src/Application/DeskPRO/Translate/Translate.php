@@ -746,16 +746,33 @@ class Translate implements PersonContextInterface
 			$ts = $ts->getTimestamp();
 		}
 
+		// D: Mon
+		// l: Monday
+		// F: January
+		// M: Jan
+
 		$format = preg_replace('#(?<!\\\\)([DlFM])#', '\\\\D\\\\P-\\\\$1', $format);
 		$date = date($format, $ts);
 
 		$tr = $this;
 		$date = preg_replace_callback('#DP\-([DlFM])#', function($m) use ($prefix, $tr, $ts) {
-			$seg = date($m[1], $ts);
-			$phrase_name = $prefix . strtolower($seg);
 
-			if ($m[1] == 'F' && $seg == 'May') {
-				$phrase_name = $prefix . 'may_long';
+			switch ($m[1]) {
+				case 'D':
+					$phrase_name = $prefix . 'short-day_' . strtolower(date('l', $ts));
+					break;
+				case 'l':
+					$phrase_name = $prefix . 'long-day_' . strtolower(date('l', $ts));
+					break;
+				case 'F':
+					$phrase_name = $prefix . 'long-month_' . strtolower(date('F', $ts));
+					break;
+				case 'M':
+					$phrase_name = $prefix . 'short-month_' . strtolower(date('F', $ts));
+					break;
+				default:
+					// never matches
+					return 'unkown segment';
 			}
 
 			return $tr->getPhraseText($phrase_name);
