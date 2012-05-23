@@ -469,11 +469,9 @@ class AgentsController extends AbstractController
 		if ($is_new) {
 
 			// Send welcome email
-			$email_body = $this->container->get('templating')->render('DeskPRO:emails_agent:agent-welcome.html.twig', array('agent' => $agent));
 			$message = $this->container->getMailer()->createMessage();
-			$message->setTo($agent->getPrimaryEmailAddress(), $agent->getDisplayName());
-			$message->setSubject('Your new agent account');
-			$message->setBody($email_body, 'text/html');
+			$message->setToPerson($agent);
+			$message->setTemplate('DeskPRO:emails_agent:agent-welcome.html.twig', array('agent' => $agent));
 			$this->container->getMailer()->send($message);
 
 			$this->em->getRepository('DeskPRO:Setting')->updateSetting('core.task_completed_add_agents', time());
