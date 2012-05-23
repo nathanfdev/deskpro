@@ -270,7 +270,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				// this is just a easy way to process CM messages before running the open (since they're executed in sequence)
 				this.openingChatTimeout[data.conversation_id] = window.setTimeout(function() {
 					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
-					delete delete self.openingChatTimeout[data.conversation_id];
+					delete self.openingChatTimeout[data.conversation_id];
 				}, 1000);
 			}
 		}
