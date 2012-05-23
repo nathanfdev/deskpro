@@ -486,10 +486,28 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		if ($tables && $mode == 'run' && !$start_step) {
 
 			try {
-				$is_installed = $db->fetchColumn("SELECT value FROM settings WHERE name = 'core.install_timestamp'");
-				if ($is_installed) {
-					$logger->log("The import has already been processed. You should now try logging in to the admin interface at /admin/."  . PHP_EOL, Logger::ERR);
+				$is_dp3       = $db->fetchColumn("SELECT `value` FROM settings WHERE name = 'deskpro_version'");
+				$is_installed = $db->fetchColumn("SELECT `value` FROM settings WHERE name = 'core.install_timestamp'");
+				$is_imported  = $db->fetchColumn("SELECT `value` FROM settings WHERE name = 'core.install_timestamp'");
+
+				if ($is_dp3) {
+					$logger->log(
+						"You have inserted database details for an existing DeskPRO v3 database into your config.php. "
+						."You should put your DeskPRO v3 configuration into the 'import' section of config.php file instead. "
+						."The database section at the top of the file should be used for a NEW database that DeskPRO v4 will use. "
+						."Refer to the README.txt file for more information.\n"
+					, Logger::ERR);
 					return 22;
+				} elseif ($is_imported) {
+					$logger->log("The import has already been processed. You should now try logging in to the admin interface at /admin/."  . PHP_EOL, Logger::ERR);
+					return 23;
+				} elseif ($is_installed) {
+					$logger->log(
+						"It appears as though you have already installed DeskPRO into this database. "
+						."The import tool needs to work on an empty database. You should create a new "
+						."database, update your config.php file, and then you can re-run this tool.\n"
+					, Logger::ERR);
+					return 24;
 				}
 			} catch (\Exception $e) {}
 
@@ -782,6 +800,11 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 			// Clear caches like kb/news/ideas/files category caches
 			App::getDb()->executeUpdate('TRUNCATE TABLE cache');
+
+			App::getDb()->replace('settings', array(
+				'name' => 'core.imported_timestamp',
+				'value' => time(),
+			));
 
 			App::getDb()->replace('settings', array(
 				'name' => 'core.install_timestamp',
