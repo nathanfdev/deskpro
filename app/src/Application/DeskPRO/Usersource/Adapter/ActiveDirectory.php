@@ -36,7 +36,7 @@ namespace Application\DeskPRO\Usersource\Adapter;
 
 use Orb\Auth\Identity;
 
-class ActiveDirecotry extends AbstractAdapter
+class ActiveDirectory extends AbstractAdapter
 {
 	public function getFieldsFromIdentity(Identity $identity)
 	{

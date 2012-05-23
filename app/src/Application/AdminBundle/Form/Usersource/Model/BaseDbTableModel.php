@@ -83,7 +83,7 @@ class BaseDbTableModel
 	public function save(\Application\DeskPRO\ORM\EntityManager $em)
 	{
 		$this->_usersource->title = $this->title;
-		$this->_usersource->lost_password_url = $this->lost_password_url;
+		$this->_usersource->lost_password_url = $this->lost_password_url ?: '';
 
 		$options = array(
 			'db_dsn'           => $this->db_dsn,

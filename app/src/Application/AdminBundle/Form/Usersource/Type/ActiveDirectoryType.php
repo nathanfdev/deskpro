@@ -46,7 +46,7 @@ class ActiveDirectoryType extends AbstractType
 		$builder->add('title', 'text', array('required' => true));
 		$builder->add('lost_password_url', 'text', array('required' => false));
 		$builder->add('secure', 'choice', array('required' => false, 'choices' => array('useStartTls' => 'TLS', 'useSsl' => 'SSL')));
-		$builder->add('port', 'text', array('required' => true));
+		$builder->add('port', 'text', array('required' => false));
 		$builder->add('host', 'text', array('required' => true));
 		$builder->add('baseDn', 'text', array('required' => true));
 		$builder->add('username', 'text', array('required' => true));
