@@ -57,7 +57,7 @@
 							{{ phrase('agent.general.google') }}
 						</li>
 					{% endif %}
-					{% for usersource in usersources %}{% if usersource.source_type != 'facebook' and usersource.source_type != 'google' %}
+					{% for usersource in usersources %}{% if usersource.source_type != 'facebook' and usersource.source_type != 'google' and usersource.source_type != 'twitter' %}
 						<li>
 							<input class="onoff-slider" type="checkbox" value="1" onclick="window.location='{{ path('admin_userreg_usersource_toggle', {id: usersource.id}) }}';" {% if usersource.is_enabled %}checked="checked"{% endif %} />
 							{{ usersource.title }}
