@@ -17,7 +17,7 @@
 {% endblock %}
 {% block footer_content %}
 	{% set content %}
-        {{ phrase('user.general.access_ticket_online') }}
+        {{ phrase('user.emails.ticket_access_ticket_online') }}
 		<a href="{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}" style="{{ layout.info_link_style() }}">
 			{{ url_full('user_tickets_view', {'ticket_ref': ticket.access_code}) }}
 		</a>

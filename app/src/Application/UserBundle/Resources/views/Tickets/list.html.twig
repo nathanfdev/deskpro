@@ -4,7 +4,7 @@
 
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets') }}">{{ phrase('user.general.tickets') }}</a></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.tickets') }}</a></li>
 {% endblock %}
 {% block page_title %}{{ phrase('user.tickets.your_tickets') }}{% endblock %}
 {% block content %}
@@ -17,7 +17,7 @@
 					<a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id }) }}">{{ ticket.subject }}</a>
 					{% if 0 %}
 					<a target="_blank" href="{{ path('user_tickets_view', {'ticket_ref': ticket.id, 'pdf': 1}) }}">
-						<img src="{{ asset('images/filetypes/page_white_acrobat.png') }}" alt="{{ phrase('user.general.download_pdf') }}" />
+						<img src="{{ asset('images/filetypes/page_white_acrobat.png') }}" alt="{{ phrase('user.tickets.download_pdf') }}" />
 					</a>
 					{% endif %}
 				</h4>
@@ -46,7 +46,7 @@
 {% if active_tickets|length %}
 	<section class="dp-ticketlist-section dp-portal-section">
 		<header>
-			<h1>{{ phrase('user.general.open_tickets') }}</h1>
+			<h1>{{ phrase('user.tickets.open_tickets') }}</h1>
 		</header>
 		<div class="dp-content-block">
 			<div class="dp-content-wrapper">

@@ -26,13 +26,13 @@
 		{% endif %}
 		<h3 style="margin-bottom: 0">{{ ticket.subject }}</h3>
 		<ul class="dp-post-info">
-			<li class="dp-id"><i class="dp-icon-bookmark"></i> {{ phrase('user.general.ticket_ref') }}: {{ ticket.public_id }}</li>
+			<li class="dp-id"><i class="dp-icon-bookmark"></i> {{ phrase('user.tickets.ticket_ref') }}: {{ ticket.public_id }}</li>
 			<li class="dp-date"><i class="dp-icon-calendar"></i> {{ ticket.date_created|date('fulltime') }}</li>
 		</ul>
 	</header>
 	<article class="dp-ticket-info">
 		<div class="dp-modify-link-row">
-			<i class="dp-icon-pencil"></i> <a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id, edit: 1}) }}">{{ phrase('user.general.edit') }}</a>
+			<i class="dp-icon-pencil"></i> <a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id, edit: 1}) }}">{{ phrase('user.tickets.edit') }}</a>
 		</div>
 		{% include 'UserBundle:TicketView:view-ticketinfo.html.twig' %}
 	</article>
@@ -75,7 +75,7 @@
 					<div class="dp-form">
 						{% if errors|length %}
 							<div class="dp-alert dp-alert-error">
-								{{ phrase('user.general.form_errors_correct') }}
+								{{ phrase('user.tickets.form_errors_correct') }}
 								<!--
 								{{ debug_var(error_fields) }}
 								{{ debug_var(errors) }}

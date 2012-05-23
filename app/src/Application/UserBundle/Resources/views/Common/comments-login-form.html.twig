@@ -42,7 +42,7 @@
 						data-min-len="2"
 						/>
 					<div class="dp-help-inline dp-error-explain">
-						{{ phrase('user.general.register_enter_name') }}
+						{{ phrase('user.general.please_enter_your_name') }}
 					</div>
 				</div>
 			</div>
@@ -62,7 +62,7 @@
 						/>
 					{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 					<div class="connect-with">
-						{{ phrase('user.general.or_connect_with') }}
+						{{ phrase('user.profile.or_connect_with') }}
 						{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 						{{ render_usersource(usersource, 'widget_overlay_btn') }}
 						{% endfor %}

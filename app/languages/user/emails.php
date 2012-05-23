@@ -18,6 +18,7 @@
 	'user.emails.re_subject'                  => 'RE: {{subject}}',
 	'user.emails.register-confirm'            => 'Thank you for registering an account.
 Before you will be able to use your account, you must click on the following link to validate your email address',
+	'user.emails.ticket_access_ticket_online' => 'View and manage this ticket online:',
 	'user.emails.ticket_cc-new'               => 'You have been included in a ticket started by {{name}}.',
 	'user.emails.ticket_flood'                => 'You recently sent an email to our helpdesk. Our automated system has detected that you have sent many messages in rapid succession.
 To protect against an auto-responder loop our helpdesk will not send to you any more automatic notification emails. You will continue to receive replies by our staff and you can continue in replying to them, you will simply not receive automatic confirmations of any replies you make.',

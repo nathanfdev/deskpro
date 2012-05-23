@@ -51,14 +51,19 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAware
 		);
 
 		$list = array(
-			'user.error.articles_not_found' => 'user.knowledgebase.article_not_found',
-			'user.error.downloads_not_found' => 'user.downloads.file_not_found',
-			'user.error.feedback_not_found' => 'user.feedback.feedback_not_found',
-			'user.error.last_email' => 'user.profile.error_last_email',
-			'user.error.last_email_explain' => 'user.profile.error_last_email_explain',
-			'user.error.news_not_found' => 'user.news.news_not_found',
-			'user.error.validate_to_use' => 'user.profile.error_validate_to_use',
-			'user.error.not_validated_email' => 'user.profile.error_validate_to_use_tilte',
+'user.general.feedback' => 'user.feedback.feedback',
+'user.general.knowledgebase' => 'user.knowledgebase.knowledgebase',
+'user.general.related_articles' => 'user.knowledgebase.related_articles',
+'user.general.related_downloads' => 'user.downloads.related_downloads',
+'user.general.related_news' => 'user.news.related_news',
+'user.general.type_article' => 'user.knowledgebase.type_article',
+'user.general.type_download' => 'user.downloads.type_download',
+'user.general.type_news' => 'user.news.type_news',
+'user.general.latest_news' => 'user.news.latest_news',
+'user.general.news' => 'user.news.news',
+'user.general.lost_password_explain' => 'user.profile.lost_password_explain',
+'user.general.lost_password_sent' => 'user.profile.lost_password_sent',
+'user.general.posted_date' => 'user.news.posted_date',
 		);
 
 		/*

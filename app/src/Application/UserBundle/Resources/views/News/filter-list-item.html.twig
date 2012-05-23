@@ -5,7 +5,7 @@
 {% import 'UserBundle:Common:macros-social.html.twig' as social %}
 <li>
 	<section class="dp-news-post dp-content-post">
-		<div class="dp-cal-date" title="{{ phrase('user.general.posted_date', {'date':news.date_created|date('M d Y @ H:i:s')}) }}">
+		<div class="dp-cal-date" title="{{ phrase('user.news.posted_date', {'date':news.date_created|date('M d Y @ H:i:s')}) }}">
 			<div class="dp-month">{{ news.date_created|date('M')|upper }}</div>
 			<div class="dp-day">{{ news.date_created|date('d') }}</div>
 		</div>

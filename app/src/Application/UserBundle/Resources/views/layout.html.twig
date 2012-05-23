@@ -96,7 +96,7 @@
 			<section id="dp_header_search" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.OmniSearch">
 				<form action="{{ path('user_search') }}" class="dp-form-search" id="dp_omnisearch">
 					<input type="input" name="q" id="dp_search" value="{{ query }}" />
-					<button class="dp-btn" type="submit">{{ phrase('user.general.search') }}</button>
+					<button class="dp-btn" type="submit">{{ phrase('user.portal.search') }}</button>
 				</form>
 			</section>
 		</div>
@@ -119,32 +119,32 @@
 							{% if admin_portal_controls or app.getSetting('user.portal_tab_news') %}
 								<li class="dp-tab-news {% if this_section == 'news' %}on{% endif %} {% if not app.getSetting('user.portal_tab_news') %}disabled{% endif %}" data-tab="news">
 									<a href="{{ path('user') }}">
-										<i class="dp-icon-home"></i> <h3>{{ phrase('user.general.tab_home') }}</h3>
-										<label>{{ phrase('user.general.tab_home_note') }}</label>
+										<i class="dp-icon-home"></i> <h3>{{ phrase('user.portal.tab_home') }}</h3>
+										<label>{{ phrase('user.general.tab_home-description') }}</label>
 									</a>
 								</li>
 							{% endif %}
 							{% if app.user.hasPerm('articles.use') and (admin_portal_controls or app.getSetting('user.portal_tab_articles')) %}
 								<li class="dp-tab-articles {% if this_section == 'articles' %}on{% endif %} {% if not app.getSetting('user.portal_tab_articles') %}disabled{% endif %}" data-tab="articles">
 									<a href="{{ path('user_articles') }}">
-										<i class="dp-icon-folder-open"></i> <h3>{{ phrase('user.general.knowledgebase') }}</h3>
-										<label>{{ phrase('user.general.tab_kb_note') }}</label>
+										<i class="dp-icon-folder-open"></i> <h3>{{ phrase('user.portal.tab_knowledgebase') }}</h3>
+										<label>{{ phrase('user.portal.tab_knowledgebase-description') }}</label>
 									</a>
 								</li>
 							{% endif %}
 							{% if app.user.hasPerm('feedback.use') and (admin_portal_controls or app.getSetting('user.portal_tab_feedback')) %}
 								<li class="dp-tab-feedback {% if this_section == 'feedback' %}on{% endif %} {% if not app.getSetting('user.portal_tab_feedback') %}disabled{% endif %}" data-tab="feedback">
 									<a href="{{ path('user_feedback') }}">
-										<i class="dp-icon-file"></i> <h3>{{ phrase('user.general.feedback') }}</h3>
-										<label>{{ phrase('user.general.tab_feedback_note') }}</label>
+										<i class="dp-icon-file"></i> <h3>{{ phrase('user.portal.tab_feedback') }}</h3>
+										<label>{{ phrase('user.portal.tab_feedback-description') }}</label>
 									</a>
 								</li>
 							{% endif %}
 							{% if admin_portal_controls or app.getSetting('user.portal_tab_tickets') %}
 								<li class="dp-tab-contact {% if this_section == 'tickets' %}on{% endif %} {% if not app.getSetting('user.portal_tab_tickets') %}disabled{% endif %}" data-tab="tickets">
 									<a href="{{ path('user_tickets_new') }}">
-										<i class="dp-icon-inbox"></i> <h3>{{ phrase('user.general.contact_us') }}</h3>
-										<label>{{ phrase('user.general.tab_contact_note') }}</label>
+										<i class="dp-icon-inbox"></i> <h3>{{ phrase('user.portal.tab_tickets') }}</h3>
+										<label>{{ phrase('user.portal.tab_tickets-description') }}</label>
 									</a>
 								</li>
 							{% endif %}
@@ -182,13 +182,13 @@
 		<div class="results"></div>
 		<div class="foot">
 			<div class="dp-more-link">
-				<button class="dp-btn dp-btn-success">{{ phrase('user.general.view_more_search_results')}} &rarr;</button>
+				<button class="dp-btn dp-btn-success">{{ phrase('user.portal.view_more_search_results')}} &rarr;</button>
 			</div>
-			<h4>{{ phrase('user.general.is_search_relevant') }}</h4>
+			<h4>{{ phrase('user.portal.is_search_relevant') }}</h4>
 			<ul>
-				<li class="ticket"><a href="{{ path('user_tickets_new') }}">{{ phrase('user.general.contact_us') }}</a></li>
-				<li class="feedback"><a href="{{ path('user_feedback_new') }}">{{ phrase('user.general.create_feedback') }}</a></li>
-				<li class="chat dp-chat-trigger no-omni-trigger"><a href="#">{{ phrase('user.general.btn_create_chat') }}</a></li>
+				<li class="ticket"><a href="{{ path('user_tickets_new') }}">{{ phrase('user.tickets.contact-us') }}</a></li>
+				<li class="feedback"><a href="{{ path('user_feedback_new') }}">{{ phrase('user.feedback.create_feedback') }}</a></li>
+				<li class="chat dp-chat-trigger no-omni-trigger"><a href="#">{{ phrase('user.portal.button-start-chat') }}</a></li>
 			</ul>
 		</div>
 	</div>

@@ -18,7 +18,7 @@
 	<ul>
 		{% for part in ticket.user_participants %}
 		<li>
-			<small>(<a href="{{ path('user_tickets_participants_remove', {'ticket_ref': ticket.ref, 'person_id': part.person.id}) }}">{{ phrase('user.general.remove_participant') }}</a>)</small> &nbsp;
+			<small>(<a href="{{ path('user_tickets_participants_remove', {'ticket_ref': ticket.ref, 'person_id': part.person.id}) }}">{{ phrase('user.tickets.remove_participant') }}</a>)</small> &nbsp;
 			{% if part.person.display_name != part.person.primary_email_address %}
 				{{ part.person.display_name }} ({{ part.person.primary_email_address }})
 			{% else %}
@@ -30,7 +30,7 @@
 {% endif %}
 
 <form action="{{ path('user_tickets_participants_add', {'ticket_ref':ticket.ref}) }}" method="post">
-	{{ phrase('user.general.add_using_name_and_email') }}:<br />
+	{{ phrase('user.tickets.cc_form_add_title') }}:<br />
 	{{ phrase('user.general.first_name') }}: {{ form_widget(newpart_form.first_name) }} &nbsp;&nbsp;
 	{{ phrase('user.general.last_name') }}: {{ form_widget(newpart_form.last_name) }}
 	<br />

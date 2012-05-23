@@ -4,16 +4,16 @@
 
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_profile') }}">{{ phrase('user.general.profile') }}</a></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_profile') }}">{{ phrase('user.profile.profile') }}</a></li>
 {% endblock %}
-{% block page_title %}{{ phrase('user.general.your_profile') }}{% endblock %}
+{% block page_title %}{{ phrase('user.profile.your_profile') }}{% endblock %}
 {% block content %}
 
 <form accept="{{ path('user_profile') }}" method="POST">
 
 	<section class="dp-portal-section">
 		<header>
-			<h1>{{ phrase('user.general.profile') }}</h1>
+			<h1>{{ phrase('user.profile.profile') }}</h1>
 		</header>
 		<div class="dp-content-block dp-profile-block">
 			{% if invalid_name %}
@@ -44,7 +44,7 @@
 			</div>
 			<div class="dp-control-group">
 				<div class="dp-control-label">
-					<label>{{ phrase('user.general.timezone') }}</label>
+					<label>{{ phrase('user.profile.timezone') }}</label>
 				</div>
 				<div class="dp-controls dp-fill">
 					{{ form_widget(form.timezone) }}
@@ -105,7 +105,7 @@
 									{% else %}
 										<a href="{{ path('user_profile_emails_setdefault', {'email_id': email.id}) }}">{{ phrase('user.profile.set_as_primary_address') }}</a>
 										&bull;
-										<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_remove', {'email_id': email.id}) }}">{{ phrase('user.general.ucfirst_delete') }}</a>
+										<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_remove', {'email_id': email.id}) }}">{{ phrase('user.profile.ucfirst_delete') }}</a>
 									{% endif %}
 								</div>
 								{{ email.email }}
@@ -116,9 +116,9 @@
 						<tr class="validating">
 							<td>
 								<div class="dp-controls">
-									<a href="{{ path('user_profile_emails_validate_sendlink', {'email_id': email.id}) }}">{{ phrase('user.general.resend_validation_email') }}</a>
+									<a href="{{ path('user_profile_emails_validate_sendlink', {'email_id': email.id}) }}">{{ phrase('user.profile.resend_validation_email') }}</a>
 									&bull;
-									<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_validate_remove', {'email_id': email.id}) }}">{{ phrase('user.general.ucfirst_delete') }}</a>
+									<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_validate_remove', {'email_id': email.id}) }}">{{ phrase('user.profile.ucfirst_delete') }}</a>
 								</div>
 								{{ email.email }} <em>{{ phrase('user.profile.awaiting_validation') }}</em>
 							</td>
@@ -141,7 +141,7 @@
 
 <section class="dp-portal-section">
 	<header>
-		<h1>{{ phrase('user.general.change_password') }}</h1>
+		<h1>{{ phrase('user.profile.change_password') }}</h1>
 	</header>
 	<div class="dp-content-block dp-profile-block">
 		{% if app.session.hasFlash('invalid_repeat_password') %}
@@ -171,7 +171,7 @@
 					<div class="dp-control-label">
 						<label>
 							{{ phrase('user.profile.current_password') }}
-							<em style="padding-left:8px;"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.general.lost_qm') }}</a></em>
+							<em style="padding-left:8px;"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.profile.lost_qm') }}</a></em>
 						</label>
 					</div>
 					<div class="dp-controls dp-fill">
@@ -180,7 +180,7 @@
 				</div>
 				<div class="dp-control-group">
 					<div class="dp-control-label">
-						<label>{{ phrase('user.general.new_password') }}</label>
+						<label>{{ phrase('user.profile.new_password') }}</label>
 					</div>
 					<div class="dp-controls dp-fill">
 						<input type="password" name="password" value="" />
@@ -188,14 +188,14 @@
 				</div>
 				<div class="dp-control-group">
 					<div class="dp-control-label">
-						<label>{{ phrase('user.general.repeat_password') }}</label>
+						<label>{{ phrase('user.profile.repeat_password') }}</label>
 					</div>
 					<div class="dp-controls dp-fill">
 						<input type="password" name="password2" value="" />
 					</div>
 				</div>
 
-				<button class="dp-btn dp-btn-primary">{{ phrase('user.general.change_password') }}</button>
+				<button class="dp-btn dp-btn-primary">{{ phrase('user.profile.change_password') }}</button>
 			</div>
 		</form>
 	</div>

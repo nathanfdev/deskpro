@@ -80,7 +80,7 @@
 	<header>
 		<div class="dp_chatwin_close"><i class="dp-icon-remove-sign"></i> {{ phrase('user.chat.window_cancel') }}</div>
 
-		<h3>{{ phrase('user.chat.form_create_button-submitting_with_an_agent') }}</h3>
+		<h3>{{ phrase('user.chat.form_create_title') }}</h3>
 	</header>
 	<article>
 		{% if not app.user.id %}
@@ -188,7 +188,7 @@
 			<textarea id="dp_chat_message_input"></textarea>
 			<button id="dp_chat_message_send" class="dp-btn">{{ phrase('user.chat.form_chat_button-submit') }}</button>
 			<div id="dp_chat_message_upload">
-				<a id="dp_chat_upload_link"><i class="dp-icon-file"></i>{{ phrase('user.chat.form_chat_button-submit_a_file') }}</a>
+				<a id="dp_chat_upload_link"><i class="dp-icon-file"></i>{{ phrase('form_chat_send-file') }}</a>
 				<input type="file" name="attach" id="dp_chat_message_upload_file" />
 			</div>
 		</div>
@@ -197,7 +197,7 @@
 
 <section class="dp-chat-active-state" id="dp_chat_done" style="display: none">
 	<header>
-		<h3>{{ phrase('user.chat.form_chat_button-submit_us_feedback') }}</h3>
+		<h3>{{ phrase('user.chat.form_feedback_title') }}</h3>
 	</header>
 	<article>
 		{# Field is hidden if the user entered an email addy, its sent automatically when chat ended #}
@@ -245,7 +245,7 @@
 		</div>
 
 		<div style="padding-bottom: 20px;">
-			<button class="dp-btn dp-btn-success" id="dp_chat_end_real">{{ phrase('user.chat.form_chat_button-submit_and_close') }}</button>
+			<button class="dp-btn dp-btn-success" id="dp_chat_end_real">{{ phrase('user.chat.form_feedback_button-submit') }}</button>
 		</div>
 	</article>
 </section>

@@ -12,7 +12,7 @@
 	<link rel="canonical" href="{{ url('user_feedback_view', {'slug': feedback.url_slug}) }}" />
 {% endblock %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_feedback') }}">{{ phrase('user.general.feedback') }}</a></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_feedback') }}">{{ phrase('user.feedback.feedback') }}</a></li>
 	{% for cat in category_path %}
 		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_feedback', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
@@ -21,7 +21,7 @@
 {% block page_title %}
 	{{ feedback.title }}
 	-
-	{{ phrase('user.general.feedback') }}
+	{{ phrase('user.feedback.feedback') }}
 	{% for cat in category_path %}
 		/ {{ cat.title }}
 	{% endfor %}

@@ -6,7 +6,7 @@
 {% set this_section = 'downloads' %}
 {% extends 'UserBundle::layout.html.twig' %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads') }}">{{ phrase('user.general.downloads') }}</a></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads') }}">{{ phrase('user.downloads.downloads') }}</a></li>
 	{% if category %}
 		{% for cat in category_path %}
 			<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
@@ -15,7 +15,7 @@
 	{% endif %}
 {% endblock %}
 {% block page_title %}
-	{{ phrase('user.general.downloads') }}
+	{{ phrase('user.downloads.downloads') }}
 	{% if category %}
 		/
 		{% for cat in category_path %}

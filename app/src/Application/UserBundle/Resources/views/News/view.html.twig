@@ -12,7 +12,7 @@
 	<link rel="canonical" href="{{ url('user_news_view', {'slug': news.url_slug}) }}" />
 {% endblock %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news') }}">{{ phrase('user.general.news') }}</a></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news') }}">{{ phrase('user.news.news') }}</a></li>
 	{% for cat in news.category.getTreeParents() %}
 		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
@@ -22,7 +22,7 @@
 {% block page_title %}
 	{{ news.title }}
 	-
-	{{ phrase('user.general.news') }}
+	{{ phrase('user.news.news') }}
 	{% for cat in category_path %}
 		/ {{cat.title}}
 	{% endfor %}
@@ -30,7 +30,7 @@
 {% block content %}
 
 <section class="dp-news-post dp-content-post dp-content-page">
-	<div class="dp-cal-date" title="{{ phrase('user.general.posted_date', {'date':news.date_created|date('M d Y @ H:i:s')}) }}">
+	<div class="dp-cal-date" title="{{ phrase('user.news.posted_date', {'date':news.date_created|date('M d Y @ H:i:s')}) }}">
 		<div class="dp-month">{{ news.date_created|date('M')|upper }}</div>
 		<div class="dp-day">{{ news.date_created|date('d') }}</div>
 	</div>

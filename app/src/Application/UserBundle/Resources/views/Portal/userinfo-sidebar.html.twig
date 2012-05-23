@@ -5,12 +5,12 @@
 {% if app.user.id %}
 	<section class="dp-sidebar-block">
 		<header>
-			<h3>{{ phrase('user.general.welcome_back_x', {name: app.user.first_name|default(app.user.display_name)}) }}</h3>
+			<h3>{{ phrase('user.portal.welcome_back_x', {name: app.user.first_name|default(app.user.display_name)}) }}</h3>
 		</header>
 		<article class="dp-written">
 			<ul>
-				<li><a href="{{ path('user_profile') }}">{{ phrase('user.general.edit_your_profile') }}</a></li>
-				{% if ticket_count %}<li><a href="{{ path('user_tickets') }}">{{ phrase('user.general.view_your_x_tickets', {count: ticket_count })}}</a></li>{% endif %}
+				<li><a href="{{ path('user_profile') }}">{{ phrase('user.profile.edit_your_profile') }}</a></li>
+				{% if ticket_count %}<li><a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.view_your_x_tickets', {count: ticket_count })}}</a></li>{% endif %}
 				<li><a href="{{ path('user_logout', {'auth': static_security_token('user_logout', 0) }) }}">{{ phrase('user.general.log_out') }}</a></li>
 			</ul>
 		</article>
@@ -18,15 +18,12 @@
 {% else %}
 	<section class="dp-sidebar-block">
 		<header>
-			<h3>{{ phrase('user.general.welcome_back_guest') }}</h3>
+			<h3>{{ phrase('user.portal.welcome_back_guest') }}</h3>
 		</header>
 		<article class="dp-written">
 			<div class="dp-summary">
 				{% if app.getSetting('core.user_mode') != 'closed' %}
-					{% set phrase_link %}
-					<a href="{{ path('user_register') }}">{{ phrase('user.general.register') }}</a>
-					{% endset %}
-					{{ phrase('user.general.register_or_login_below', {'link': phrase_link}) }}
+					{{ phrase('user.profile.register_or_login_below', {'url': path('user_register')}) }}
 				{% else %}
 					{{ phrase('user.general.login_below') }}
 				{% endif %}
@@ -42,7 +39,7 @@
 						</dl>
 						<div class="dp-login-section">
 							<dl>
-								<dt>{{ phrase('user.general.password') }} <em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.general.lost_qm') }}</a></em></dt>
+								<dt>{{ phrase('user.profile.password') }} <em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.profile.lost_qm') }}</a></em></dt>
 								<dd><input type="password" value="" name="password" id="dp_login_password" size="20" /></dd>
 							</dl>
 							<div class="dp-btn-row">
@@ -50,7 +47,7 @@
 							</div>
 							{% if app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
 								<div class="dp-usersource-list">
-									{{ phrase('user.general.or_connect_with') }}
+									{{ phrase('user.profile.or_connect_with') }}
 									{% for usersource in app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
 										{{ render_usersource(usersource, 'login_pull_btn') }}
 									{% endfor %}
@@ -59,21 +56,21 @@
 						</div>
 						<div class="dp-reset-section" style="display: none">
 							<div class="dp-reset-desc">
-								{{ phrase('user.general.lost_password_explain') }}
+								{{ phrase('user.profile.lost_password_explain') }}
 								<br />
 								<div class="dp-btn-row">
 									<div class="not-loading">
-										<button class="dp-btn dp-do-send">{{ phrase('user.general.lost_password_send_btn') }}</button>
-										<br /><a class="back">{{ phrase('user.general.cancel') }}</a>
+										<button class="dp-btn dp-do-send">{{ phrase('user.profile.lost_password_send_btn') }}</button>
+										<br /><a class="back">{{ phrase('user.portal.login-box_cancel-button') }}</a>
 									</div>
 									<div class="is-loading">
-										{{ phrase('user.general.please_wait') }}
+										{{ phrase('user.general.loading') }}
 									</div>
 								</div>
 							</div>
 							<div class="dp-reset-sent" style="display: none">
-								{{ phrase('user.general.lost_password_sent') }}
-								<center><br /><br /><a class="back">{{ phrase('user.general.lost_password_back_btn') }}</a></center>
+								{{ phrase('user.profile.lost_password_sent') }}
+								<center><br /><br /><a class="back">{{ phrase('user.profile.lost_password_back_btn') }}</a></center>
 							</div>
 						</div>
 					</div>

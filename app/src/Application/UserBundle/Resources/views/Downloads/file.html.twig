@@ -12,7 +12,7 @@
 	<link rel="canonical" href="{{ url('user_downloads_file', {'slug': download.url_slug}) }}" />
 {% endblock %}
 {% block breadcrumb %}
-	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads') }}">{{ phrase('user.general.downloads') }}</a></li>
+	<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads') }}">{{ phrase('user.downloads.downloads') }}</a></li>
 	{% for cat in category_path %}
 		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_downloads', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
@@ -21,7 +21,7 @@
 {% block page_title %}
 	{{ download.title }} - {{ download.filename }}
 	-
-	{{ phrase('user.general.downloads') }}
+	{{ phrase('user.downloads.downloads') }}
 	{% for cat in category_path %}
 		/ {{cat.title}}
 	{% endfor %}

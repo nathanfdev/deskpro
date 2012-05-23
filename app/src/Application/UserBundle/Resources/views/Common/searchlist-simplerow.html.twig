@@ -32,7 +32,7 @@
 		{% elseif type == 'download' %}
 			{{ item.getFileName() }} &middot; {{ item.getReadableFileSize() }}
 		{% elseif type == 'feedback' %}
-            {{ phrase('user.general.count_votes', {'count': item.total_rating}) }} &middot; <a href="{{ item.getLink() }}" class="view-item" data-content-type="{{ type }}" data-content-id="{{ item.id }}">{{ phrase('user.general.count_comments', {'count': item.num_comments}) }}</a>
+            {{ phrase('user.feedback.count_votes', {'count': item.total_rating}) }} &middot; <a href="{{ item.getLink() }}" class="view-item" data-content-type="{{ type }}" data-content-id="{{ item.id }}">{{ phrase('user.general.count_comments', {'count': item.num_comments}) }}</a>
 		{% endif %}
 		<div class="fadeaway"></div>
 	</div>

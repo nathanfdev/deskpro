@@ -10,7 +10,7 @@
 {% else %}
 	<div class="dp-control-group {% if error_fields['ticket.department_id'] %}dp-error{% endif %} ticket_department">
 		<div class="dp-control-label">
-			<label><strong>{{ phrase('user.general.department') }} *</strong></label>
+			<label><strong>{{ phrase('user.tickets.department') }} *</strong></label>
 		</div>
 		<div class="dp-controls dp-fill">
 			<select name="newticket[ticket][department_id]" class="department_id">
@@ -20,7 +20,7 @@
 				{% endfor %}
 			</select>
 			<div class="dp-help-inline dp-error-explain">
-				{{ phrase('user.general.please_choose_a_department') }}
+				{{ phrase('user.tickets.please_choose_a_department') }}
 			</div>
 		</div>
 	</div>

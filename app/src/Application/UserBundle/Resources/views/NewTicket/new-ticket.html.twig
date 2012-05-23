@@ -56,13 +56,13 @@ var ticketReader = {
 </script>
 <link rel="stylesheet" type="text/css" href="{{ asset('stylesheets/vendor/jquery-ui/portal-theme/jquery-ui.css') }}" />
 {% endblock %}
-{% block page_title %}{{ phrase('user.general.new_ticket') }}{% endblock %}
+{% block page_title %}{{ phrase('user.tickets.new_ticket') }}{% endblock %}
 {% block breadcrumb %}
 	{% if is_user_loggedin() %}
 		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets') }}">{{ phrase('user.tickets.your_tickets') }}</a></li>
-		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets_new') }}">{{ phrase('user.general.new_ticket') }}</a></li>
+		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets_new') }}">{{ phrase('user.tickets.new_ticket') }}</a></li>
 	{% else %}
-		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets_new') }}">{{ phrase('user.general.new_ticket') }}</a></li>
+		<li><span class="dp-divider">&rarr;</span> <a href="{{ path('user_tickets_new') }}">{{ phrase('user.tickets.new_ticket') }}</a></li>
 	{% endif %}
 {% endblock %}
 {% block content %}
@@ -73,7 +73,7 @@ var ticketReader = {
 >
 <section class="dp-portal-section dp-new-feedback-section">
 	<header>
-		<h1>{{ phrase('user.general.contact_us') }}</h1>
+		<h1>{{ phrase('user.tickets.new_form_title') }}</h1>
 	</header>
 	<article>
 		<p>
@@ -126,7 +126,7 @@ var ticketReader = {
 
 			<div class="dp-related-search dp-well" id="dp_newticket_related_container" style="display: none">
 				<h4>{{ phrase('user.tickets.we_found_helpful_content') }}</h4>
-				<div class="subline">{{ phrase('user.general.title_links_safe') }}</div>
+				<div class="subline">{{ phrase('user.tickets.title_links_safe') }}</div>
 				<div class="dp-list results">
 				</div>
 				<div class="more-link" style="display: none;">
@@ -146,21 +146,21 @@ var ticketReader = {
 	<div class="dp-overlay-outer dp-post-overlay">
 	<div class="dp-overlay">
 		<div class="dp-overlay-inner">
-			<span class="dp-close-btn">{{ phrase('user.general.close_window') }}</span>
+			<span class="dp-close-btn">{{ phrase('user.tickets.close_window') }}</span>
 			<div class="dp-content">
-				<span class="dp-open-full"><a>{{ phrase('user.general.widget_open_full_page') }}</a></span>
+				<span class="dp-open-full"><a>{{ phrase('user.tickets.widget_open_full_page') }}</a></span>
 				<div class="dp-content-holder">
 					<div class="dp-loading-msg">{{ phrase('user.general.loading') }}</div>
 				</div>
 				<div class="dp-controls">
 					<div class="dp-default dp-control-section">
-						<button class="dp-btn dp-btn-success dp-section-toggle primary dp-set-answered" data-toggle-section=".dp-confirm-answered">{{ phrase('user.general.this_answered_my_question') }}</button>
-						<button class="dp-btn dp-not-answered">{{ phrase('user.general.this_did_not_answer_my_question') }}</button>
+						<button class="dp-btn dp-btn-success dp-section-toggle primary dp-set-answered" data-toggle-section=".dp-confirm-answered">{{ phrase('user.tickets.this_answered_my_question') }}</button>
+						<button class="dp-btn dp-not-answered">{{ phrase('user.tickets.this_did_not_answer_my_question') }}</button>
 					</div>
 					<div class="dp-confirm-answered dp-control-section" style="display:none">
-						<p>{{ phrase('user.general.answered_success_message') }}</p>
-						<button class="dp-btn dp-success dp-answererd" data-type="close">{{ phrase('user.general.i_dont_need_to_email') }}</button>
-						<button class="dp-btn dp-answererd" data-type="ticket">{{ phrase('user.general.i_still_want_to_email') }}</button>
+						<p>{{ phrase('user.tickets.content-suggestions_answered') }}</p>
+						<button class="dp-btn dp-success dp-answererd" data-type="close">{{ phrase('user.tickets.i_dont_need_to_email') }}</button>
+						<button class="dp-btn dp-answererd" data-type="ticket">{{ phrase('user.tickets.i_still_want_to_email') }}</button>
 					</div>
 				</div>
 			</div>

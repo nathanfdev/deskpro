@@ -6,17 +6,17 @@
 	<li class="dp-dropdown dp-active dp-first" style="float: left;">
 		<a href="#" class="dp-dropdown-toggle" data-toggle="dp-dropdown">
 			{% if category.id %}
-				<span class="dp-info-prefix">{{ phrase('user.general.category') }}:</span>
+				<span class="dp-info-prefix">{{ phrase('user.news.category') }}:</span>
 				{{ category.full_title }}
 			{% else %}
-				{{ phrase('user.general.all_categories') }}
+				{{ phrase('user.news.all-categories') }}
 			{% endif %}
 			<b class="dp-caret"></b>
 		</a>
 		<ul class="dp-dropdown-element dp-cat-list">
 			<li {% if depth %}class="dp-sub dp-sub-depth-{{ depth }}"{% endif %}>
 				<i class="dp-icon-repeat"></i>
-				<a href="{{ path('user_news') }}">{{ phrase('user.general.all_categories') }}</a>
+				<a href="{{ path('user_news') }}">{{ phrase('user.news.all-categories') }}</a>
 				<span class="dp-badge dp-small">{{ category_counts['0_total']|default(0) }}</span>
 			</li>
 			<li class="sep"></li>
