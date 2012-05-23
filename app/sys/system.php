@@ -483,7 +483,7 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		$path = $request->getPathInfo();
 
 		// Exclude admin interface
-		if (DP_INTERFACE == 'admin') {
+		if (DP_INTERFACE == 'admin' || isset($_REQUEST['admin_portal_controls'])) {
 			return null;
 		}
 
