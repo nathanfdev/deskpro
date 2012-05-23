@@ -111,6 +111,7 @@ $DP_CONFIG['dir_logs'] = '';
 ######################################################
 
 $DP_CONFIG['enable_debug_trace'] = false;
+$DP_CONFIG['enable_debug_trace_keep'] = false;
 
 ######################################################
 # OPTIONAL : Slow Page Logs                          #
