@@ -9,7 +9,7 @@
 		{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 		<div class="socials">
 			<div>
-				<span>{{ phrase('user.widget.or_connect_with') }}</span>
+				<span>{{ phrase('user.widget.login-connect') }}</span>
 				<ul>
 					{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
 					<li>{{ render_usersource(usersource, 'widget_overlay_btn') }}</li>
@@ -25,18 +25,18 @@
 					'attr': {
 						'data-field-validators': 'DeskPRO.Form.LengthValidator',
 						'data-min-len': 2,
-						'placeholder': phrase('user.widget.your_name'),
+						'placeholder': phrase('user.widget.name'),
 						'class': 'name-field'
 					}
 				}) }}
 				<span class="tooltip-error">
-					<span>{{ phrase('user.widget.register_enter_name') }}</span>
+					<span>{{ phrase('user.widget.form_error_name') }}</span>
 				</span>
 			</div>
 			<div class="txt alignright dp-form-row-person_email">
-				<input type="text" class="email-field" id="dp_newticket_email" name="feedback[person_email]" value="" placeholder="{{ phrase('user.widget.your_email_address') }}" data-field-validators="DeskPRO.Form.EmailValidator" data-min-len="4" />
+				<input type="text" class="email-field" id="dp_newticket_email" name="feedback[person_email]" value="" placeholder="{{ phrase('user.widget.email') }}" data-field-validators="DeskPRO.Form.EmailValidator" data-min-len="4" />
 				<span class="tooltip-error">
-					<span>{{ phrase('user.widget.register_please_enter_email') }}</span>
+					<span>{{ phrase('user.widget.form_error_email') }}</span>
 				</span>
 			</div>
 		</div>
@@ -45,7 +45,7 @@
 			<div class="dp-input-prepend">
 				<table cellspacing="0" cellpadding="0" width="100%"><tr>
 					<td width="50" class="dp-msg">
-						<span style="white-space: nowrap;">{{ phrase('user.widget.i_have_a') }}</span>
+						<span style="white-space: nowrap;">{{ phrase('user.widget.feedback_form_prefix') }}</span>
 					</td>
 					<td width="10" class="dp-cat dp-cat2">
 						<div class="dp-form-row-category_id with-sub-options feedbackCat_id_wrapper" data-field-validators="DeskPRO.Form.TwoLevelSelectValidator">
@@ -59,7 +59,7 @@
 							</div>
 						</div>
 						<span class="tooltip-error">
-							<span>{{ phrase('user.widget.please_choose_a_category') }}</span>
+							<span>{{ phrase('user.widget.feedback_form_error_type') }}</span>
 						</span>
 					</td>
 					<td class="dp-title">
@@ -68,7 +68,7 @@
 								'data-field-validators': 'DeskPRO.Form.LengthValidator',
 								'data-min-len': 5,
 								'class': 'search-collect',
-								'placeholder': phrase('user.widget.enter_short_summary')
+								'placeholder': phrase('user.widget.feedback_form_subject')
 							}
 						}) }}
 					</td>
@@ -76,7 +76,7 @@
 			</div>
 			<div class="dp-form-row-title">
 				<span class="tooltip-error">
-					<span>{{ phrase('user.widget.summary_error') }}</span>
+					<span>{{ phrase('user.widget.feedback_form_error_subject') }}</span>
 				</span>
 			</div>
 		</div>
@@ -89,24 +89,24 @@
 							'class': 'dp-message',
 							'data-field-validators': 'DeskPRO.Form.LengthValidator',
 							'data-min-len': 10,
-							'placeholder': phrase('user.widget.message'),
+							'placeholder': phrase('user.widget.feedback_form_message'),
 							'class': addclass
 						}
 					}) }}
 				</div>
 				<span class="tooltip-error">
-					<span>{{ phrase('user.widget.desc_error') }}</span>
+					<span>{{ phrase('user.widget.feedback_form_error_message') }}</span>
 				</span>
 			</div></td></tr></table>
 		</div>
 		<div class="btn-holder clearfix">
-			<button type="submit" class="btn-activity dp-show-not-loading">{{ phrase('user.widget.send') }}</button>
+			<button type="submit" class="btn-activity dp-show-not-loading">{{ phrase('user.widget.feedback_form_submit') }}</button>
 			<i class="spinner-flat dp-show-is-loading"></i>
 		</div>
 	</form>
 
 	<div class="thank-you" id="dp_newfeedback_done" style="display: none">
-		<h2>{{ phrase('user.widget.thank_you') }}</h2>
-		<p>{{ phrase('user.widget.register_thank_you_for_feedback') }}</p>
+		<h2>{{ phrase('user.widget.feedback_form_completed-title') }}</h2>
+		<p>{{ phrase('user.widget.feedback_form_completed') }}</p>
 	</div>
 </div>
