@@ -290,7 +290,7 @@ class DepartmentsController extends AbstractController
 			LIMIT 1
 		");
 
-		$has_tickets = ($ticket_count || $chat_count);
+		$has_data = ($ticket_count || $chat_count);
 
 		if ($has_data) {
 			$move_department = $this->em->getRepository('DeskPRO:Department')->find($this->in->getUint('move_to_department'));
@@ -307,7 +307,7 @@ class DepartmentsController extends AbstractController
 
 		$this->em->beginTransaction();
 
-		if ($has_tickets) {
+		if ($has_data) {
 			$this->db->executeUpdate("
 				UPDATE tickets
 				SET department_id = ?
