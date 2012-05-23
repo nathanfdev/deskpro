@@ -136,6 +136,13 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			}
 			if ($count++ > 3) return;
 
+			// Dont send log immediately unless its a critial error,
+			// notices etc will be sent in normal log at the end of a process,
+			// these instant-report-sendings are meant for fatal type errors.
+			if (isset($log_item['errinfo']) && isset($log_item['errinfo']['die']) && !$log_item['errinfo']['die']) {
+				return;
+			}
+
 			\Application\DeskPRO\Command\ImportCommand::sendLogFile($log_item['errinfo']);
 		});
 		$logger->addWriter($wr);
