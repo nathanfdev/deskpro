@@ -168,6 +168,7 @@ class UsersStep extends AbstractDeskpro3Step
 
 		foreach ($check_emails as $email_info) {
 			if (\Orb\Validator\StringEmail::isValueValid($email_info['email'])) {
+				$email_info['email'] = strtolower($email_info['email']);
 				$user_emails[] = $email_info;
 			}
 		}
@@ -187,10 +188,23 @@ class UsersStep extends AbstractDeskpro3Step
 
 		$found = null;
 		foreach ($user_emails as $email_info) {
-			$check_exist_email = $this->getMappedNewId('tech_email', strtolower($email_info['email']));
+			$check_exist_email = $this->getMappedNewId('tech_email', $email_info['email']);
 			if ($check_exist_email) {
 				$found = $check_exist_email;
 				break;
+			}
+		}
+
+		// Second less likely way a dupe could be is if the DP3 database had case-insensitive collation,
+		// then the unique index on emails wouldnt always work so we need to check for that too
+
+		if (!$found) {
+			foreach ($user_emails as $email_info) {
+				$check_exist_email = $this->getMappedNewId('user_email', $email_info['email']);
+				if ($check_exist_email) {
+					$found = $check_exist_email;
+					break;
+				}
 			}
 		}
 
@@ -312,6 +326,8 @@ class UsersStep extends AbstractDeskpro3Step
 			if (!$default_email_id || $email_info['id'] == $user_info['default_emailid']) {
 				$default_email_id = $this->db->lastInsertId();
 			}
+
+			$this->saveMappedId('user_email', $email_info['email'], $insert_person['id']);
 		}
 
 		$this->db->update('people', array('primary_email_id' => $default_email_id), array('id' => $insert_person['id']));
