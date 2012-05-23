@@ -93,6 +93,7 @@
 	'user.general.register_enter_name'                 => 'Please enter your name.',
 	'user.general.register_enter_valid_email'          => 'Please enter a valid email address.',
 	'user.general.register_or_login_below'             => '{{link}} or login below.',
+	'user.general.login_below'                         => 'Have an account? Login below.',
 	'user.general.register_password_min_length'        => 'Please enter a password of at least 5 characters.',
 	'user.general.register_password_mismatch'          => 'The two password fields did not match.',
 	'user.general.related_articles'                    => 'Related Articles',

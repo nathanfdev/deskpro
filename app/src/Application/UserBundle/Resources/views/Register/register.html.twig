@@ -132,73 +132,74 @@
 	</section>
 
 	{#####################################################################}
+	{% if app.getSetting('core.user_mode') != 'closed' %}
+		<section class="dp-well">
+			<header>
+				<label>
+					<h3><input type="radio" name="user_type" id="user_type_new" {% if this_page == 'register' %}checked="checked"{% endif %} /> {{ phrase('user.general.im_new_user') }}</h3>
+				</label>
+			</header>
+			<article id="user_type_new_form" class="dp-well dp-well-light" {% if this_page != 'register' %}style="display:none"{% endif %}>
+				<form action="{{ path('user_register') }}" method="post">
+					<input type="hidden" name="process" value="1" />
 
-	<section class="dp-well">
-		<header>
-			<label>
-				<h3><input type="radio" name="user_type" id="user_type_new" {% if this_page == 'register' %}checked="checked"{% endif %} /> {{ phrase('user.general.im_new_user') }}</h3>
-			</label>
-		</header>
-		<article id="user_type_new_form" class="dp-well dp-well-light" {% if this_page != 'register' %}style="display:none"{% endif %}>
-			<form action="{{ path('user_register') }}" method="post">
-				<input type="hidden" name="process" value="1" />
-
-				<div class="dp-control-group {% if error_fields['name'] %}dp-error{% endif %}">
-					<div class="dp-control-label">
-						<label>{{ phrase('user.general.your_name') }} *</label>
-					</div>
-					<div class="dp-controls dp-fill">
-						{{ form_widget(form.name) }}
-						<div class="dp-help-inline dp-error-explain">
-							{{ phrase('user.general.register_enter_name') }}
+					<div class="dp-control-group {% if error_fields['name'] %}dp-error{% endif %}">
+						<div class="dp-control-label">
+							<label>{{ phrase('user.general.your_name') }} *</label>
+						</div>
+						<div class="dp-controls dp-fill">
+							{{ form_widget(form.name) }}
+							<div class="dp-help-inline dp-error-explain">
+								{{ phrase('user.general.register_enter_name') }}
+							</div>
 						</div>
 					</div>
-				</div>
 
-				<div class="dp-control-group {% if error_fields['email'] %}dp-error{% endif %}">
-					<div class="dp-control-label">
-						<label>{{ phrase('user.general.your_email_address') }} *</label>
+					<div class="dp-control-group {% if error_fields['email'] %}dp-error{% endif %}">
+						<div class="dp-control-label">
+							<label>{{ phrase('user.general.your_email_address') }} *</label>
+						</div>
+						<div class="dp-controls dp-fill">
+							{{ form_widget(form.email) }}
+							{% if errors['email.invalid'] %}<div class="dp-help-inline dp-error-explain">{{ phrase('user.general.register_enter_valid_email') }}</div>{% endif %}
+							{% if errors['email.in_use'] %}<div class="dp-help-inline dp-error-explain">{{ phrase('user.general.register_email_exists') }}</div>{% endif %}
+						</div>
 					</div>
-					<div class="dp-controls dp-fill">
-						{{ form_widget(form.email) }}
-						{% if errors['email.invalid'] %}<div class="dp-help-inline dp-error-explain">{{ phrase('user.general.register_enter_valid_email') }}</div>{% endif %}
-						{% if errors['email.in_use'] %}<div class="dp-help-inline dp-error-explain">{{ phrase('user.general.register_email_exists') }}</div>{% endif %}
-					</div>
-				</div>
 
-				<div class="dp-control-group {% if error_fields['password'] %}dp-error{% endif %}">
-					<div class="dp-control-label">
-						<label>{{ phrase('user.general.password') }} *</label>
+					<div class="dp-control-group {% if error_fields['password'] %}dp-error{% endif %}">
+						<div class="dp-control-label">
+							<label>{{ phrase('user.general.password') }} *</label>
+						</div>
+						<div class="dp-controls dp-fill">
+							{{ form_widget(form.password) }}
+						</div>
+						{% if errors['password.short'] %}<div class="dp-help-inline dp-error-explain">{{ phrase('user.general.register_password_min_length') }}</div>{% endif %}
+						{% if errors['password.mismatch'] %}<div class="dp-help-inline dp-error-explain">{{ phrase('user.general.register_password_mismatch') }}</div>{% endif %}
 					</div>
-					<div class="dp-controls dp-fill">
-						{{ form_widget(form.password) }}
-					</div>
-					{% if errors['password.short'] %}<div class="dp-help-inline dp-error-explain">{{ phrase('user.general.register_password_min_length') }}</div>{% endif %}
-					{% if errors['password.mismatch'] %}<div class="dp-help-inline dp-error-explain">{{ phrase('user.general.register_password_mismatch') }}</div>{% endif %}
-				</div>
 
-				<div class="dp-control-group">
-					<div class="dp-control-label">
-						<label>{{ phrase('user.profile.label_repeat_password') }} *</label>
+					<div class="dp-control-group">
+						<div class="dp-control-label">
+							<label>{{ phrase('user.profile.label_repeat_password') }} *</label>
+						</div>
+						<div class="dp-controls dp-fill">
+							{{ form_widget(form.password2) }}
+						</div>
 					</div>
-					<div class="dp-controls dp-fill">
-						{{ form_widget(form.password2) }}
-					</div>
-				</div>
 
-				<div class="dp-control-group">
-					<div class="dp-control-label">
-						<label>{{ phrase('user.general.label_captcha') }} *</label>
+					<div class="dp-control-group">
+						<div class="dp-control-label">
+							<label>{{ phrase('user.general.label_captcha') }} *</label>
+						</div>
+						<div class="dp-controls dp-fill">
+							{% include 'UserBundle:Common:recaptcha.html.twig' %}
+						</div>
 					</div>
-					<div class="dp-controls dp-fill">
-						{% include 'UserBundle:Common:recaptcha.html.twig' %}
-					</div>
-				</div>
 
-				<input class="dp-btn dp-btn-primary" type="submit" value="{{ phrase('user.tickets.submit') }}" />
-			</form>
-		</article>
-	</section>
+					<input class="dp-btn dp-btn-primary" type="submit" value="{{ phrase('user.tickets.submit') }}" />
+				</form>
+			</article>
+		</section>
+	{% endif %}
 </div>
 
 {% endblock %}
