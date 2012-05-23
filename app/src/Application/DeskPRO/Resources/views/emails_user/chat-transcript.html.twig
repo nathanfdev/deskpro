@@ -36,7 +36,7 @@
 			</p>
 		{% else %}
 			<p style="background-color: #EDEDED">
-				[{{ message.date_created|date('g:ia') }}] {{ phrase('user.chat.author_you') }}:
+				[{{ message.date_created|date('g:ia') }}] {% if message.author %}{{ message.author.display_name }}{% else %}{{ convo.person_email }}{% endif %}:
 				{% if message.is_html %}
 					{{message.content|raw}}
 				{% else %}

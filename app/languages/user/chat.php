@@ -1,5 +1,4 @@
 <?php return array(
-	'user.chat.author_you'                      => 'You',
 	'user.chat.email'                           => 'Your email address',
 	'user.chat.form_chat_button-submit'         => 'Send',
 	'user.chat.form_chat_send-file'             => 'Send a file from your computer',
