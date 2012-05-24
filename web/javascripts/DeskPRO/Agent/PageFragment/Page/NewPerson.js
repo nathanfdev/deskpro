@@ -55,6 +55,13 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
         });
 	},
 
+	markForReload: function() {
+		if (!this.markedForReload) {
+			this.markedForReload = true;
+			this.addEvent('deactivate', this.closeSelf.bind(this));
+		}
+	},
+
 	closeSelf: function() {
 		var ev = {cancel: false};
 		this.fireEvent('closeSelf', ev);

@@ -13,6 +13,14 @@ pageMeta.baseId = '{{ baseId }}';
 
 <a class="tab-anchor" href="#">&nbsp;</a>
 
+<a class="tab-anchor" href="#">&nbsp;</a>
+
+<div class="form-header-error" style="display: none">
+	There are no categories defined. Before you can add posts to the news section,
+	you need to define a category.
+</div>
+<div class="form-outer">
+
 <form id="{{baseId}}_newnews" class="keybound-submit">
 
 <div class="first section cat-section" id="{{baseId}}_cat_section">
@@ -134,4 +142,5 @@ pageMeta.baseId = '{{ baseId }}';
 
 </form>
 
+</div>
 {{ agentui.scroll.containers.end() }}

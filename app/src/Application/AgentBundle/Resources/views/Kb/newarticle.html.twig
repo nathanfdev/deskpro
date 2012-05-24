@@ -13,6 +13,12 @@ pageMeta.baseId = '{{ baseId }}';
 
 <a class="tab-anchor" href="#">&nbsp;</a>
 
+<div class="form-header-error" style="display: none">
+	There are no categories defined. Before you can add articles to the knowledgebase section,
+	you need to define a category.
+</div>
+<div class="form-outer">
+
 <form id="{{baseId}}_newarticle" class="keybound-submit">
 <input type="hidden" name="pending_article_id" id="{{baseId}}_pending_article_id" value="0" />
 
@@ -38,7 +44,7 @@ pageMeta.baseId = '{{ baseId }}';
 				'id': baseId ~ '_cat',
 				'add_classname': 'category_id',
 				'add_attr': '',
-				'with_blank': 1,
+				'with_blank': 0,
 				'blank_title': '',
 				'categories': article_categories,
 				'selected': state.newarticle.category_id|default(0)
@@ -145,4 +151,5 @@ pageMeta.baseId = '{{ baseId }}';
 
 </form>
 
+</div>
 {{ agentui.scroll_containers_end() }}

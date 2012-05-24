@@ -16,6 +16,12 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
 
+		if (!this.getEl('cat').find('option')[0]) {
+			this.wrapper.find('.form-header-error').show();
+			this.wrapper.find('.form-outer').hide();
+			this.markForReload();
+		}
+
 		this.form = $('form', this.wrapper).on('submit', function(ev) {
 			ev.preventDefault();
 			self.submit();
@@ -40,6 +46,13 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 		// We'll manually remove the node ourselves
 		var el = this.wrapper.find('.article-section').get(0);
 		el.parentNode.removeChild(el);
+	},
+
+	markForReload: function() {
+		if (!this.markedForReload) {
+			this.markedForReload = true;
+			this.addEvent('deactivate', this.closeSelf.bind(this));
+		}
 	},
 
 	closeSelf: function() {
@@ -80,6 +93,8 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 				if (data.news_id) {
 					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/news/post/' + data.news_id);
 				}
+
+				this.markForReload();
 				this.closeSelf();
 			}
 		});

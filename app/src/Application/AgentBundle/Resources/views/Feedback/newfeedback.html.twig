@@ -10,6 +10,14 @@ pageMeta.baseId = '{{ baseId }}';
 
 <a class="tab-anchor" href="#">&nbsp;</a>
 
+<a class="tab-anchor" href="#">&nbsp;</a>
+
+<div class="form-header-error" style="display: none">
+	There are no types defined. Before you can add types to the feedback section,
+	you need to define a category.
+</div>
+<div class="form-outer">
+
 <form id="{{baseId}}_newfeedback" class="keybound-submit">
 
 <div class="first section cat-section" id="{{baseId}}_cat_section">
@@ -25,7 +33,7 @@ pageMeta.baseId = '{{ baseId }}';
 				'id': baseId ~ '_cat',
 				'add_classname': 'category_id',
 				'add_attr': '',
-				'with_blank': 1,
+				'with_blank': 0,
 				'blank_title': '',
 				'categories': feedback_categories,
 				'selected': state.newfeedback.category_id|default(0)
@@ -124,4 +132,5 @@ pageMeta.baseId = '{{ baseId }}';
 
 </form>
 
+</div>
 {{ agentui.scroll.containers.end() }}

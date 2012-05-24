@@ -16,6 +16,12 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
 
+		if (!this.getEl('cat').find('option')[0]) {
+			this.wrapper.find('.form-header-error').show();
+			this.wrapper.find('.form-outer').hide();
+			this.markForReload();
+		}
+
 		this.form = $('form', this.wrapper).on('submit', function(ev) {
 			ev.preventDefault();
 			self.submit();
@@ -33,6 +39,13 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 			listenOn: this.getEl('newarticle')
 		});
 		this.ownObject(this.stateSaver);
+	},
+
+	markForReload: function() {
+		if (!this.markedForReload) {
+			this.markedForReload = true;
+			this.addEvent('deactivate', this.closeSelf.bind(this));
+		}
 	},
 
 	closeSelf: function() {
@@ -87,6 +100,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 
 				if (data.success) {
 					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/kb/article/' + data.article_id);
+					this.markForReload();
 					this.closeSelf();
 				} else {
 					alert('There was an error with the form');
