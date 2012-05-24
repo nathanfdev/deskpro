@@ -64,6 +64,11 @@
 	<script src="{{ path('dp_agent_lang') }}"></script>
 </head>
 <body class="{% if is_demo %}is-demo{% endif %} {% if is_post_install %}post-install{% endif %}" {% if page_handler %}data-element-handler="{{ page_handler }}"{% endif %}>
+<div id="please_wait_overlay" style="display: none;">
+	<article>
+		Loading
+	</article>
+</div>
 
 {% if app.getSetting('core.setup_initial') %}
 	{% if not is_post_install and app.getSetting('core.helpdesk_disabled') %}
@@ -73,7 +78,7 @@
 		</div>
 	{% elseif app.getVariable('cron_is_problem') %}
 		<div class="helpdesk-disabled-notice">
-			The scheduled tasks are either not running or the time between executions is too high. 
+			The scheduled tasks are either not running or the time between executions is too high.
 			<a class="btn primary" href="{{ path('admin_settings_cron') }}">Fix This</a>
 		</div>
 	{% endif %}
