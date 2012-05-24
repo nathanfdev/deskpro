@@ -8,6 +8,11 @@ pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
+<div class="form-header-error" style="display: none">
+	There are no categories defined. Before you can add files to the downloads section,
+	you need to define a category.
+</div>
+<div class="form-outer">
 
 {{ agentui.scroll_containers('page-new-download page-new-content') }}
 
@@ -28,7 +33,7 @@ pageMeta.baseId = '{{ baseId }}';
 				'id': baseId ~ '_cat',
 				'add_classname': 'category_id',
 				'add_attr': '',
-				'with_blank': 1,
+				'with_blank': 0,
 				'blank_title': '',
 				'categories': download_categories,
 				'selected': state.newdownload.category_id
@@ -68,9 +73,11 @@ pageMeta.baseId = '{{ baseId }}';
 		<span class="check">{{ phrase('agent.general.done') }}</span>
 	</div>
 	<div class="content">
-		<h4>{{ phrase('agent.general.usergroup_everyone') }}</h4>
-		<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.general.upload') }}</button>
-		{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newdownload[attach]', noremove: true} %}
+		<h4>File</h4>
+		<div id="{{baseId}}_file_section_up">
+			<input type="file" name="file-upload" multiple="multiple" />
+		</div>
+		{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newdownload[attach]' } %}
         <ul class="files file-list"></ul>
 	</div>
 </div>
@@ -135,4 +142,5 @@ pageMeta.baseId = '{{ baseId }}';
 
 </form>
 
+</div>
 {{ agentui.scroll_containers_end() }}

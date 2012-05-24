@@ -16,6 +16,12 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
 
+		if (!this.getEl('cat').find('option')[0]) {
+			this.wrapper.find('.form-header-error').show();
+			this.wrapper.find('.form-outer').hide();
+			this.markForReload();
+		}
+
 		this.form = $('form', this.wrapper).on('submit', function(ev) {
 			ev.preventDefault();
 			self.submit();
@@ -34,6 +40,13 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 			listenOn: this.getEl('newdownload')
 		});
 		this.ownObject(this.stateSaver);
+	},
+
+	markForReload: function() {
+		if (!this.markedForReload) {
+			this.markedForReload = true;
+			this.addEvent('deactivate', this.closeSelf.bind(this));
+		}
 	},
 
 	destroyPage: function() {
@@ -80,6 +93,7 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 				}
 
 				if (data.success) {
+					this.markForReload();
 					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/downloads/file/' + data.download_id);
 					this.closeSelf();
 				} else {
@@ -140,17 +154,13 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 	_initFileSection: function() {
 
         var self = this;
+		var upinput = this.getEl('file_section_up');
 
-        // Attachments
 		var list = $('.file-list', this.wrapper);
-		$('input', list[0]).live('click', function() {
-			var el = $(this);
-			var li = el.parent();
-			if (el.is(':checked')) {
-				li.removeClass('unchecked');
-			} else {
-				li.addClass('unchecked');
-			}
+		list.on('click', '.remove-attach-trigger', function() {
+			 $('ul.file-list', self.wrapper).empty();
+			upinput.show();
+			self.updateUi();
 		});
 
 		DeskPRO_Window.util.fileupload(this.wrapper, {
@@ -159,6 +169,8 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 
         this.wrapper.bind('fileuploaddone', function() {
             self.getEl('file_section').addClass('done');
+			upinput.hide();
+			self.updateUi();
         });
         this.wrapper.bind('fileuploadadd', function() {
             $('ul.file-list', self.wrapper).empty();
@@ -177,9 +189,7 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 			width: this.wrapper.width() - 80
 		});
 
-		// Make the size of the message box based off of the height of the window
-		var h = $(window).height();
-		this.getEl('content').css('height', Math.max(h - 500, 200));
+		this.getEl('content').css('height', 250);
 
 		DP.rteTextarea(this.getEl('content'), {
 			setup: function(ed) {

@@ -362,9 +362,13 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		if (this.options.destroyOnClose) {
 			this.page.fireEvent('deactivate');
 			this.destroy();
-		} else if (this.page) {
-			this.page.fireEvent('deactivate');
-			this.page.fireEvent('popover-closed');
+		} else {
+			if (this.page) {
+				this.page.fireEvent('deactivate');
+			}
+			if (this.page) {
+				this.page.fireEvent('popover-closed');
+			}
 		}
 	},
 

@@ -91,9 +91,9 @@ class NewDownload
 
 		if ($this->labels) {
 			$download->getLabelManager()->setLabelsArray($this->labels);
-			$this->_em->flush();
 		}
 
+		$this->_em->flush();
 		$this->_em->commit();
 
 		$this->_download = $download;
