@@ -53,7 +53,7 @@ class GenerateSchemaFileCommand extends \Symfony\Bundle\FrameworkBundle\Command\
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		if (!dp_get_config('debug.dev')) {
+		if (!isset($GLOBALS['DP_CONFIG']['debug']['dev']) || !$GLOBALS['DP_CONFIG']['debug']['dev']) {
 			$output->write("Dev mode is not enabled.");
 			return 0;
 		}
