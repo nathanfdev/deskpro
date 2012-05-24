@@ -54,28 +54,14 @@ if (!defined('DP_WEB_ROOT')) {
 	define('DP_WEB_ROOT', realpath(dirname(__FILE__) . '/../../'));
 }
 
+define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
+
 @ini_set('memory_limit', -1);
 @ini_set('memory_limit', 268435456);
 @set_time_limit(0);
 
-require DP_ROOT . '/../config.php';
-
-if (!isset($DP_CONFIG) || !is_array($DP_CONFIG)) {
-	$DP_CONFIG = array();
-}
-
-if (!isset($DP_CONFIG['db'])) $DP_CONFIG['db'] = array();
-if (!isset($DP_CONFIG['db']['host']))      $DP_CONFIG['db']['host']      = DP_DATABASE_HOST;
-if (!isset($DP_CONFIG['db']['user']))      $DP_CONFIG['db']['user']      = DP_DATABASE_USER;
-if (!isset($DP_CONFIG['db']['password']))  $DP_CONFIG['db']['password']  = DP_DATABASE_PASSWORD;
-if (!isset($DP_CONFIG['db']['dbname']))    $DP_CONFIG['db']['dbname']    = DP_DATABASE_NAME;
-
-if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
-	require(DP_ROOT . '/sys/config/build-time.php');
-} else {
-	echo "Error: /sys/config/build-time.php does not exist. This means you are using a pristine copy of the DeskPRO source. You will need to run /app/bin/build.php before trying again.\n";
-	exit(1);
-}
+require DP_ROOT . '/src/Application/InstallBundle/Install/server_check_functions.php';
+require DP_ROOT . '/sys/load_config.php';
 
 require DP_ROOT.'/vendor/symfony/src/Symfony/Component/HttpKernel/Util/Filesystem.php';
 require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Process/ExecutableFinder.php';
@@ -91,9 +77,58 @@ require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputF
 require DP_ROOT.'/src/Orb/Util/Numbers.php';
 require DP_ROOT.'/src/Orb/Util/Env.php';
 
+dp_load_config();
+
 if (!defined('DP_MA_SERVER')) {
 	define('DP_MA_SERVER', 'http://www.deskpro.com/members');
 }
+
+########################################################################################################################
+# Basic requirement checks
+########################################################################################################################
+
+$errors = array();
+
+if (!deskpro_install_check_version()) {
+	$errors[] = "The version of PHP you have is too old. DeskPRO requires PHP v5.3.2 or newer. You need to upgrade your version.";
+}
+
+if (!deskpro_install_check_pcre()) {
+	$errors[] = "PHP is configured with a `pcre.backtrack_limit` value that is too low. Edit your php.ini configuration and change it to at least 100000.";
+}
+
+if (!deskpro_install_check_safemode()) {
+	$errors[] = "PHP currently has <code>safe_mode</code> enabled. DeskPRO requires safe_mode to be set to \"Off\". You need to edit your PHP configuration to make this change.";
+}
+
+if (deskpro_install_check_pdo()) {
+	if (deskpro_install_check_pdo_mysql()) {
+		// ok
+	} else {
+		$errors[] = "PDO (http://php.net/manual/en/book.pdo.php) is installed, but the MySQL driver is not. You need to install pdo_mysql into your php.ini file.";
+	}
+} else {
+	$errors[] = "PDO (http://php.net/manual/en/book.pdo.php) is not installed. You need to install PDO into your php.ini file.";
+}
+
+if ($errors) {
+	echo "There are problems with your server or PHP configuration that prevents this tool from running:\n";
+	foreach ($errors as $e) {
+		echo "- " . $e;
+		echo "\n";
+	}
+	echo "\n";
+	echo "We have automatically detected the path to your php.ini file at:\n";
+	echo \Orb\Util\Env::getPhpIniPath();
+	echo "\n\n";
+	echo "If you require assistance, email support@deskpro.com\n\n";
+	exit(1);
+}
+unset($errors);
+
+########################################################################################################################
+# Upgrade class
+########################################################################################################################
 
 class Upgrade
 {
