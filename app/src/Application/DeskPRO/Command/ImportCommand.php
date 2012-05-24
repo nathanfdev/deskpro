@@ -460,7 +460,11 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 						}
 
 						$f = "{$config['db_name']}-" . date('Y-m-d-H-i-s') . '.sql';
-						$cmd = $mysqldump_path . " --opt -Q -h{$config['db_host']} -u{$config['db_user']} -p{$config['db_password']} {$config['db_name']} > $f";
+						$pass = '';
+						if ($config['db_password']) {
+							$pass = " --password='{$config['db_password']}' ";
+						}
+						$cmd = $mysqldump_path . " --opt -Q -h{$config['db_host']} -u{$config['db_user']}{$pass}{$config['db_name']} > $f";
 
 						$proc = new \Symfony\Component\Process\Process($cmd, $this->getContainer()->getBackupDir());
 						$proc->setTimeout(10000);
