@@ -23,47 +23,58 @@
 
 						<form class="dp-form" method="POST" action="{{ path('admin_upgrade') }}">
 							<input type="hidden" name="start" value="1" />
-							<div class="dp-form-row">
-								<div class="dp-form-label">
-									<label>Options</label>
+							<div {% if app.getVariable('cron_is_problem') %}style="opacity: 0.4"{% endif %}>
+								<div class="dp-form-row">
+									<div class="dp-form-label">
+										<label>Options</label>
+									</div>
+									<div class="dp-form-input">
+										When: <select name="minutes">
+											<option value="0">As soon as possible</option>
+											<option value="5" selected="selected">5 minutes</option>
+											<option value="10">10 minutes</option>
+											<option value="15">15 minutes</option>
+											<option value="30">30 minutes</option>
+											<option value="30">45 minutes</option>
+											<option value="60">1 hour</option>
+											<option value="90">1.5 hours</option>
+											<option value="60">2 hours</option>
+										</select>
+										<br />
+										<input type="checkbox" name="backup_files" value="1" checked="checked" /> Backup the current DeskPRO source files
+										<br />
+										<input type="checkbox" name="backup_db" value="1" checked="checked" /> Backup your database
+									</div>
 								</div>
-								<div class="dp-form-input">
-									When: <select name="minutes">
-										<option value="0">As soon as possible</option>
-										<option value="5" selected="selected">5 minutes</option>
-										<option value="10">10 minutes</option>
-										<option value="15">15 minutes</option>
-										<option value="30">30 minutes</option>
-										<option value="30">45 minutes</option>
-										<option value="60">1 hour</option>
-										<option value="90">1.5 hours</option>
-										<option value="60">2 hours</option>
-									</select>
-									<br />
-									<input type="checkbox" name="backup_files" value="1" checked="checked" /> Backup the current DeskPRO source files
-									<br />
-									<input type="checkbox" name="backup_db" value="1" checked="checked" /> Backup your database
+
+								<div class="dp-form-row">
+									<div class="dp-form-label">
+										<label>Send a message to online agents about the pending upgrade</label>
+									</div>
+									<div class="dp-form-input">
+										<input type="text" name="agent_message" value="" />
+									</div>
+								</div>
+								<div class="dp-form-row">
+									<div class="dp-form-label">
+										<label>Show a warning on your helpdesk portal about the pending upgrade</label>
+									</div>
+									<div class="dp-form-input">
+										<input type="text" name="user_message" value="" />
+									</div>
 								</div>
 							</div>
 
-							<div class="dp-form-row">
-								<div class="dp-form-label">
-									<label>Send a message to online agents about the pending upgrade</label>
-								</div>
-								<div class="dp-form-input">
-									<input type="text" name="agent_message" value="" />
-								</div>
-							</div>
-							<div class="dp-form-row">
-								<div class="dp-form-label">
-									<label>Show a warning on your helpdesk portal about the pending upgrade</label>
-								</div>
-								<div class="dp-form-input">
-									<input type="text" name="user_message" value="" />
-								</div>
-							</div>
-
-							<p><button class="btn primary">Schedule Upgrade</button></p>
+							{% if app.getVariable('cron_is_problem') %}
+								<p>
+									Scheduled tasks do not appear to be running. The automatic upgrader requires scheduled tasks.
+								</p>
+							<p>
+									<a class="btn primary" href="{{ path('admin_settings_cron') }}">Click here for information on scheduled tasks</a>
+								</p>
+							{% else %}
+								<p><button class="btn primary">Schedule Upgrade</button></p>
+							{% endif %}
 						</form>
 					</td>
 				</tr>
