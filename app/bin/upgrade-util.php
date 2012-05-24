@@ -88,6 +88,8 @@ require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/FileTypeF
 require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/FilenameFilterIterator.php';
 require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Output/OutputInterface.php';
 require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterInterface.php';
+require DP_ROOT.'/src/Orb/Util/Numbers.php';
+require DP_ROOT.'/src/Orb/Util/Env.php';
 
 if (!defined('DP_MA_SERVER')) {
 	define('DP_MA_SERVER', 'http://www.deskpro.com/members');
@@ -138,8 +140,12 @@ class Upgrade
 	{
 		$this->argv = $argv;
 
-		$this->checkEnv();
+		if (in_array('--auto', $argv)) {
+			register_shutdown_function('DeskPRO\\Tools\\Upgrade_Shutdown_Function');
+			$this->runAction_auto();
+		}
 
+		$this->checkEnv();
 		register_shutdown_function('DeskPRO\\Tools\\Upgrade_Shutdown_Function');
 
 		if (in_array('--help', $argv)) {
@@ -160,8 +166,6 @@ class Upgrade
 			$this->runAction_installLatestFiles();
 		} elseif (in_array('--run-db-upgrade', $argv)) {
 			$this->runAction_dbUpgrade();
-		} elseif (in_array('--auto', $argv)) {
-			$this->runAction_auto();
 		} else {
 			$this->runAction_interactive();
 		}
@@ -361,10 +365,50 @@ class Upgrade
 	{
 		$time_start = microtime(true);
 
-		$is_quiet      = in_array('--quiet', $this->argv);
-		$is_error_halt = in_array('--error-halt', $this->argv);
+		$is_quiet        = in_array('--quiet', $this->argv);
+		$is_error_halt = true;
+		$is_status_write = in_array('--write-status-file', $this->argv);
+
+		$skip_file_backup = in_array('--skip-backup-file', $this->argv);
+		$skip_db_backup   = in_array('--skip-backup-db', $this->argv);
+
+		if ($is_status_write) {
+
+			if (file_exists(DP_WEB_ROOT . '/auto-update-status.txt') && !unlink(DP_WEB_ROOT . '/auto-update-status.txt')) {
+				$this->outAndLog("Could not delete previous auto-update-status.log file");
+				exit(1);
+			}
+
+			$that = $this;
+			$write_status = function($code, $message = '') use ($that) {
+				$fp = fopen(DP_WEB_ROOT . '/auto-update-status.txt', 'a');
+				$time = time();
+
+				if (is_array($message)) {
+					$message = json_encode($message);
+				}
+
+				fwrite($fp, "STATUS(" . $code . ")@$time#$message\n");
+				fclose($fp);
+			};
+
+			if (!($fp = fopen(DP_WEB_ROOT . '/auto-update-status.txt', 'w'))) {
+				$this->outAndLog("Could not write update status file");
+				exit(1);
+			}
+
+			fclose($fp);
+
+		} else {
+			$write_status = function($code, $message = '') {
+				// null
+			};
+		}
+
+		$write_status("start");
 
 		if (!$this->isInstanceOutdated()) {
+			$write_status("done");
 			if (!$is_quiet) {
 				$this->out("You are all up to date.");
 			}
@@ -376,11 +420,45 @@ class Upgrade
 		$mysql_path      = $this->getMysqlBinaryPath();
 
 		if (!$php_path || !$mysql_path || !$mysql_dump_path) {
-			if (!$php_path)        $this->outAndLog("Cannot find path to `php` binary");
-			if (!$mysql_dump_path) $this->outAndLog("Cannot find path to `mysqldump` binary");
-			if (!$mysql_path)      $this->outAndLog("Cannot find path to `mysql` binary");
+			$unknown_binary_paths = array();
+			if (!$php_path)        { $this->outAndLog("Cannot find path to `php` binary"); $unknown_binary_paths[] = "php"; }
+			if (!$mysql_dump_path) { $this->outAndLog("Cannot find path to `mysqldump` binary"); $unknown_binary_paths[] = "mysqldump"; }
+			if (!$mysql_path)      { $this->outAndLog("Cannot find path to `mysql` binary"); $unknown_binary_paths[] = "mysql"; }
+
+			$write_status("error_unknown_binary", $unknown_binary_paths);
+
 			exit(10);
 		}
+
+		#----------------------------------------
+		# Requirements check
+		#----------------------------------------
+
+		try {
+			if (!is_dir($this->getBackupDir()) || !is_writable($this->getBackupDir())) {
+				$write_status('error_backup_dir', $this->getBackupDir());
+				$this->outAndLog("Backup directory does not exist or is not writable: " . $this->getBackupDir());
+				exit(1);
+			}
+
+			if (!is_dir($this->getLogDir()) || !is_writable($this->getLogDir())) {
+				$write_status('error_log_dir', $this->getLogDir());
+				$this->outAndLog("Log directory does not exist or is not writable: " . $this->getLogDir());
+				exit(1);
+			}
+		} catch (\Exception $e) {} // to catch error about log
+
+		try {
+			$this->zip = new ZipStrategy($this);
+		} catch (\Exception $e) {
+			$write_status('error_zip_ext', \Orb\Util\Env::getPhpIniPath());
+			$this->outAndLog("To use this tool, the zlib or Zip PHP extensions must be enabled.");
+			exit(1);
+		}
+
+		#----------------------------------------
+		# Do upgrade
+		#----------------------------------------
 
 		// Shutdown helpdesk
 		$fileutil = new FilesystemUtil();
@@ -389,15 +467,32 @@ class Upgrade
 		$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
 
 		try {
-			if (!$is_quiet) $this->out("Doing file backup ...");
-			$this->file_backup = $this->backupFiles();
-			if (!$is_quiet) $this->out("-> Done");
+			$write_status("file_backup_start");
+			if (!$skip_file_backup) {
+				if (!$is_quiet) $this->out("Doing file backup ...");
+				$this->file_backup = $this->backupFiles(true);
+				if (!$is_quiet) $this->out("-> Done");
+			}
+			$write_status("file_backup_done");
+		} catch (\Exception $e) {
+			$write_status("error_backup_files", $e->getMessage());
+			$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
+			$this->out($e->getCode() . ' ' . $e->getMessage());
+			$this->logException($e);
+			exit(14);
+		}
 
-			if (!$is_quiet) $this->out("Doing database backup ... ");
-			$this->db_backup = $this->backupDatabase();
-			if (!$is_quiet) $this->out("-> Done");
+		try {
+			$write_status("database_backup_start");
+			if (!$skip_db_backup) {
+				if (!$is_quiet) $this->out("Doing database backup ... ");
+				$this->db_backup = $this->backupDatabase(true);
+				if (!$is_quiet) $this->out("-> Done");
+			}
+			$write_status("database_backup_end");
 
 		} catch (\Exception $e) {
+			$write_status("error_backup_db", $e->getMessage());
 			$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
@@ -405,10 +500,13 @@ class Upgrade
 		}
 
 		try {
+			$write_status("downloading_update_start");
 			if (!$is_quiet) $this->out("Downloading latest source ...");
 			$new_source_zip = $this->downloadLatest();
 			if (!$is_quiet) $this->out("-> Done");
+			$write_status("downloading_update_done");
 		} catch (\Exception $e) {
+			$write_status("error_downloading_update", $e->getMessage());
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
 			exit(20);
@@ -417,10 +515,13 @@ class Upgrade
 		try {
 			$this->revert_checkpoint = 'files';
 
+			$write_status("installing_files_start");
 			if (!$is_quiet) $this->out("Installing latest source files ...");
 			$this->installFilesFromZip($new_source_zip, false);
 			if (!$is_quiet) $this->out("-> Done");
+			$write_status("installing_files_done");
 		} catch (\Exception $e) {
+			$write_status("error_installing_files", $e->getMessage());
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
 
@@ -434,6 +535,7 @@ class Upgrade
 
 		if (!$is_quiet) $this->out("Performing database upgrades ...");
 
+		$write_status("updating_db_start");
 		chdir(DP_ROOT);
 		if ($is_quiet) {
 			$cmd = "$php_path cmd.php dp:upgrade 2>&1";
@@ -444,8 +546,10 @@ class Upgrade
 			passthru($cmd, $ret);
 		}
 		chdir(DP_START_DIR);
+		$write_status("updating_db_end");
 
 		if ($ret) {
+			$write_status("error_updating_db");
 			$this->outAndLog("Upgrade returned erorr status $ret");
 			if ($out) {
 				foreach ($out as $l) {
@@ -454,6 +558,7 @@ class Upgrade
 			}
 
 			if (!$is_error_halt) {
+				$write_status("reverting_files");
 				$this->revertAutoUpgrade();
 				$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
 			}
@@ -463,6 +568,8 @@ class Upgrade
 
 		if (!$is_quiet) $this->out("-> Done");
 		$fileutil->remove(DP_ROOT.'/helpdesk-offline.trigger');
+
+		$write_status("done");
 
 		$this->revert_checkpoint = null;
 		$str = sprintf("Upgrade done in %.4f seconds", microtime(true) - $time_start);
@@ -615,7 +722,7 @@ class Upgrade
 		}
 	}
 
-	public function backupDatabase()
+	public function backupDatabase($overwrite = false)
 	{
 		global $DP_CONFIG;
 
@@ -630,7 +737,12 @@ class Upgrade
 		$f_full = $this->getBackupDir() . '/' . $f;
 
 		if (file_exists($f_full)) {
-			throw new MysqlBackupException("Target backup file already exists: $f_full", MysqlBackupException::FILE_EXISTS);
+			if ($overwrite) {
+				unlink($f_full);
+			}
+			if (file_exists($f_full)) {
+				throw new MysqlBackupException("Target backup file already exists: $f_full", MysqlBackupException::FILE_EXISTS);
+			}
 		}
 
 		$pass = '';
@@ -642,6 +754,7 @@ class Upgrade
 		$this->log("Backup directory:  {$this->getBackupDir()}");
 		$this->log("Backup command:    $cmd");
 
+		$out = null;
 		$ret = $this->execCommand($cmd, $this->getBackupDir(), $out);
 
 		if ($ret) {
@@ -954,6 +1067,9 @@ class Upgrade
 		}
 
 		$backup_file = $this->getBackupDir() . '/' . $f . '.zip';
+		if (is_file($backup_file)) {
+			unlink($backup_file);
+		}
 		rename($f_path, $backup_file);
 
 		return $backup_file;
@@ -1058,7 +1174,7 @@ class Upgrade
 		$this->log(sprintf("downloadLatest: time(%.4f)  file_size(%d)", microtime(true) - $time_start, filesize($save_path)));
 
 		if (filesize($save_path) < 15728640) {
-			throw new DownloadException(sprintf("Saved file seems too small: $save_path is %d bytes", filesize($save_path)), DownloadException::BAD_FILE);
+			//throw new DownloadException(sprintf("Saved file seems too small: $save_path is %d bytes", filesize($save_path)), DownloadException::BAD_FILE);
 		}
 
 		return $save_path;

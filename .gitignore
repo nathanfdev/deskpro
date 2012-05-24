@@ -17,6 +17,7 @@
 /app/sys/config/template-map.php
 /app/sys/Resources/distro-checksums.php
 /app/src/Application/InstallBundle/Data/schema.php
+/auto-update-status.txt
 
 /data/logs/*
 !/data/logs/index.html

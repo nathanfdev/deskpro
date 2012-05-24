@@ -29,57 +29,64 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\DeskPRO\Command;
+
+namespace Application\DeskPRO\Command;
+
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output\Output;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\Entity;
 
-/**
- * This cleans up various temporary data
- */
-class CleanupTmpData extends AbstractJob
+use Orb\Util\Strings;
+
+class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	const DEFAULT_INTERVAL = 900; // 15 mins
-
-	public function run()
+	protected function configure()
 	{
-		$datetime = date('Y-m-d H:i:s', time());
+		$this->setName('dp:internal-upgrade-runner');
+	}
 
-		#------------------------------
-		# Temp data
-		#------------------------------
-
-		$num = App::getDb()->executeUpdate("
-			DELETE FROM tmp_data
-			WHERE date_expire > ?",
-		array($datetime));
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num stale user temp data entries");
+	protected function execute(InputInterface $input, OutputInterface $output)
+	{
+		if (!$this->getContainer()->getPhpBinaryPath()) {
+			$output->write('<error>Could not find path to PHP</error>');
+			return;
 		}
 
-		#------------------------------
-		# Prefs
-		#------------------------------
+		$cmd = "'" . $this->getContainer()->getPhpBinaryPath() . "'";
+		$cmd .= " '" . DP_ROOT.'/bin/upgrade-util.php' . "'";
+		//$cmd .= ' --auto --quiet --write-status-file';
+		$cmd .= ' --auto --write-status-file';
 
-		$num = App::getDb()->executeUpdate("
-			DELETE FROM people_prefs
-			WHERE date_expire > ?",
-		array($datetime));
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num stale user preference entries");
+		if (1 || !$this->getContainer()->getSetting('core.upgrade_backup_files')) {
+			$cmd .= ' --skip-backup-file';
+		}
+		if (1 || !$this->getContainer()->getSetting('core.upgrade_backup_db')) {
+			$cmd .= ' --skip-backup-db ';
 		}
 
-		#------------------------------
-		# Try to delete old update status file
-		#------------------------------
+		/*
+		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_time', null);
+		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_set_at', null);
+		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_files', null);
+		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_db', null);
+		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_agent_notice', null);
+		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_user_notice', null);
+		*/
 
-		if (file_exists(DP_WEB_ROOT.'/auto-update-status.txt') && App::getSetting('core.last_auto_upgrade_time') < time()-180) {
-			@unlink(DP_WEB_ROOT.'/auto-update-status.txt');
-		}
+		$ret = null;
+		passthru($cmd, $ret);
+
+		$this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', time());
+
+		return $ret;
 	}
 }

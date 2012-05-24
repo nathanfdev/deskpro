@@ -1,0 +1,129 @@
+Orb.createNamespace('DeskPRO.Admin.ElementHandler');
+
+DeskPRO.Admin.ElementHandler.UpgradeWatch = new Orb.Class({
+	Extends: DeskPRO.ElementHandler,
+
+	init: function() {
+		var self = this;
+		this.startTime = parseInt(this.el.data('start-time'));
+		this.hasInitialPoll = false;
+
+		this.startCheckTimeout = window.setInterval(function() {
+			var now = (new Date()).getTime();
+			now /= 1000;
+
+			if (now > (self.startTime - 10)) {
+				self.begin();
+			}
+		}, 1000);
+	},
+
+	begin: function() {
+		var self = this;
+		window.clearTimeout(this.startCheckTimeout);
+		this.startCheckTimeout = null;
+
+		$('#waiting').hide();
+		$('#upgrade_started').show();
+		this.startPollTimer();
+	},
+
+	startPollTimer: function() {
+
+		var self = this;
+
+		var url = BASE_URL;
+		url = url.replace(/\/index\.php\//, '/');
+
+		this.pollFileTimeout = window.setTimeout(function() {
+			$.ajax({
+				url: url + 'auto-update-status.txt',
+				cache: false,
+				error: function() {
+					self.startPollTimer();
+				},
+				dataType: 'text',
+				success: function(content) {
+					content = content.trim();
+					var lines = content.split(/\n+/);
+
+					if (!content.length) {
+						self.startPollTimer();
+						return;
+					}
+
+					var last_time = self.hasInitialPoll || 0;
+					var restart_timer = true;
+					Array.each(lines, function(last) {
+						var m = /^STATUS\((.*?)\)@([0-9]+)#(.*?)$/.exec(last);
+						if (m) {
+							var time = parseInt(m[2]);
+							if (time >= last_time) {
+								console.log("Line: %s", last);
+								self.updateStatus(m[1], m[3], m[2]);
+								if (m[1] == 'done' || m[1].indexOf('error_') === 0) {
+									restart_timer = false;
+								}
+								last_time = time;
+							}
+						}
+					});
+					self.hasInitialPoll = last_time;
+
+					if (restart_timer) {
+						self.startPollTimer();
+					}
+				}
+			})
+		}, 1000);
+	},
+
+	updateStatus: function(code, message, time) {
+
+		console.log("Code: %s, Message: %s, Time: %d", code, message, time);
+
+		$('li.on').removeClass('on');
+
+		if (code.indexOf('error_') === 0) {
+			this.handleError(code, message);
+			return;s
+		}
+
+		switch (code) {
+			case 'start':
+				$('li.step-start').addClass('done on');
+				break;
+			case 'file_backup_start':
+				$('li.step-backup-files').addClass('done on');
+				break;
+			case 'database_backup_start':
+				$('li.step-backup-db').addClass('done on');
+				break;
+			case 'downloading_update_start':
+				$('li.step-download').addClass('done on');
+				break;
+			case 'installing_files_start':
+				$('li.step-install-files').addClass('done on');
+				break;
+			case 'updating_db_start':
+				$('li.step-install-db').addClass('done on');
+				break;
+			case 'updating_db_start':
+				$('li.step-install-db').addClass('done on');
+				break;
+			case 'done':
+				$('li.step-done').addClass('done');
+				break;
+		}
+
+		if (code == 'done') {
+			$('#done').show();
+		}
+	},
+
+	handleError: function(code, message) {
+		$('li.done').last().removeClass('done');
+		$('#error').show();
+		$('.' + code).show().find('.place-message').text(message);
+	}
+});

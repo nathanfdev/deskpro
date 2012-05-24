@@ -269,9 +269,22 @@ class KernelBooter
 			return;
 		}
 
+		$do_upgrade = false;
+		try {
+			if (\Application\DeskPRO\App::getSetting('core.upgrade_time') && \Application\DeskPRO\App::getSetting('core.upgrade_time') <= time()) {
+				$do_upgrade = true;
+			}
+		} catch (\Exception $e) {throw $e;}
+
 		$argv = $_SERVER['argv'];
 		array_shift($argv); // remove cron.php
-		array_unshift($argv, 'cron.php', 'dp:worker-job'); // so we can add the command name in the right spot
+
+		if ($do_upgrade) {
+			array_unshift($argv, 'cron.php', 'dp:internal-upgrade-runner');
+		} else {
+			array_unshift($argv, 'cron.php', 'dp:worker-job'); // so we can add the command name in the right spot
+		}
+
 		$input = new \Symfony\Component\Console\Input\ArgvInput($argv);
 
 		$GLOBALS['DP_IS_IN_CLI'] = true;

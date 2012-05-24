@@ -4068,3 +4068,38 @@ ul.standard-list li {
 .dp-form-row.dp-error .dp-error-explain {
 	display: block;
 }
+
+#upgrade_started {
+	padding: 10px;
+	h3 {
+		font-size: 18px;
+		margin: 0 0 10px 0;
+	}
+
+	ul li {
+		font-size: 12px;
+		.opacity(50);
+		margin:5px 0 10px 0;
+
+		span {
+			padding-left: 22px;
+			background: url(../../images/agent/chat/win-min.png) no-repeat 0 50%;
+		}
+
+		&.done {
+			.opacity(100);
+			span {
+				background: url(../../images/agent/icons/check.png) no-repeat 0 50%;
+			}
+		}
+		&.on span {
+			background: url(../../images/spinners/loading-small-flat.gif) no-repeat 0 50% !important;
+		}
+	}
+
+	#error {
+		background-color: #FFE0E4;
+		border: 2px solid #D5211A;
+		padding: 10px;
+	}
+}

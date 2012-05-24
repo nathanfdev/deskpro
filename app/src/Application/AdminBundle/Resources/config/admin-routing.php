@@ -85,6 +85,31 @@ $collection->add('admin_help_upgrade', new Route(
 ));
 
 ################################################################################
+# Upgrade
+################################################################################
+
+$collection->add('admin_upgrade', new Route(
+	'/upgrade',
+	array('_controller' => 'AdminBundle:Upgrade:start'),
+	array(),
+	array()
+));
+
+$collection->add('admin_upgrade_abort', new Route(
+	'/upgrade/abort',
+	array('_controller' => 'AdminBundle:Upgrade:stop'),
+	array(),
+	array()
+));
+
+$collection->add('admin_upgrade_watch', new Route(
+	'/upgrade/watch',
+	array('_controller' => 'AdminBundle:Upgrade:watch'),
+	array(),
+	array()
+));
+
+################################################################################
 # License
 ################################################################################
 

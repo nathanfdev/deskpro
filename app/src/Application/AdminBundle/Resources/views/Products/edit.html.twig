@@ -1,0 +1,50 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% block pagebar %}
+	<ul>
+		<li><a href="{{ path('admin_products') }}">{{ phrase('agent.general.products') }}</a></li>
+		{% if product.id %}
+			<li>{{ phrase('admin.products.edit_product') }}</li>
+		{% else %}
+			<li>{{ phrase('admin.products.new_product') }}</li>
+		{% endif %}
+	</ul>
+{% endblock %}
+{% block page %}
+
+<form action="{{ path('admin_products_edit', {'product_id': product.id|default(0)}) }}" method="post">
+<input type="hidden" name="process" value="1" />
+
+<div class="dp-form">
+	<div class="dp-form-row">
+		<div class="dp-form-label">
+			<label>{{ phrase('agent.general.title') }}</label>
+		</div>
+		<div class="dp-form-input">
+			{{ form_widget(form.title) }}
+		</div>
+	</div>
+
+	{% if form.parent %}
+		<div class="dp-form-row">
+			<div class="dp-form-label">
+				<label>{{ phrase('admin.products.parent_product') }}</label>
+			</div>
+			<div class="dp-form-input">
+				{{ form_widget(form.parent) }}
+			</div>
+		</div>
+	{% endif %}
+</div>
+
+{{ form_rest(form) }}
+
+<button class="btn primary save-trigger">{{ phrase('agent.general.save') }}</button>
+</form>
+
+{% if product.id %}
+<div class="delete-link-wrap">
+	<a href="{{ path('admin_products_del', {'product_id': product.id}) }}">{{ phrase('agent.general.delete') }}</a>
+</div>
+{% endif %}
+{% endblock %}

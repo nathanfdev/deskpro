@@ -1,0 +1,107 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% import 'AdminBundle:Common:design-macros.html.twig' as design %}
+{% import 'AdminBundle:Common:admin-macros.html.twig' as admin %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/ElementHandler/UpgradeWatch.js') }}"></script>
+{% endblock %}
+{% block pagebar %}
+	<ul>
+		<li>Upgrade Status</li>
+	</ul>
+{% endblock %}
+{% block page %}
+<div
+	data-start-time="{{ app.getSetting('core.upgrade_time') }}"
+	data-element-handler="DeskPRO.Admin.ElementHandler.UpgradeWatch"
+>
+	<div id="waiting">
+		Upgrade is scheduled for {{ app.getSetting('core.upgrade_time')|date('fulltime') }}
+		(<a href="{{ path('admin_upgrade_abort') }}">cancel</a>).
+	</div>
+	<div id="upgrade_started" style="display: none;">
+		<h3>Upgrading</h3>
+		<ul>
+			<li class="step-preload done on"><span>Waiting for process to begin</span></li>
+			<li class="step-start"><span>Started</span></li>
+			<li class="step-backup-files"><span>Backing up files</span></li>
+			<li class="step-backup-db"><span>Backing up database</span></li>
+			<li class="step-download"><span>Download latest version</span></li>
+			<li class="step-install-files"><span>Installing files</span></li>
+			<li class="step-install-db"><span>Installing database updates</span></li>
+			<li class="step-done"><span>Done</span></li>
+		</ul>
+		<div id="error" style="display: none">
+			<strong>Error</strong><br />
+			<div style="display: none" class="error_unknown_binary">
+				<p>
+					The upgrade utility requires the path to the command-line binaries for php, mysql and mysqldump.
+					The following paths could not be detected automatically: <span class="place-message"></span>
+				</p>
+				<p>
+					Edit your config.php file to specify the paths, and then re-schedule the upgrade.
+				</p>
+			</div>
+			<div style="display: none" class="error_backup_dir">
+				<p>
+					The upgrade utility requires a writable backup directory. The backup directory is not
+					writable, or not writable by the user executing scheduled tasks (which also performs upgrades).
+					You will need to make the backup directory writable before trying again.
+				</p>
+				<p>
+					The backup directory path is: <span class="place-message"></span>
+				</p>
+			</div>
+			<div style="display: none" class="error_log_dir">
+				<p>
+					The upgrade utility requires a writable logs directory. The logs directory is not
+					writable, or not writable by the user executing scheduled tasks (which also performs upgrades).
+					You will need to make the logs directory writable before trying again.
+				</p>
+				<p>
+					The logs directory path is: <span class="place-message"></span>
+				</p>
+			</div>
+			<div style="display: none" class="error_zip_ext">
+				<p>
+					The upgrade utility requires the <a href="http://php.net/manual/en/book.zlib.php">zlib</a>
+					or <a href="http://php.net/manual/en/book.zip.php">Zip</a> extension installed. You will
+					need to install or activate one of these extensions before trying agian.
+				</p>
+				<p>
+					You will have to install the extension into php.ini located at: <span class="place-message"></span>
+				</p>
+			</div>
+			<div style="display: none" class="error_backup_files">
+				<p>
+					There was a problem while trying to make backups of your helpdesk:
+				</p>
+				<p class="place-message"></p>
+			</div>
+			<div style="display: none" class="error_backup_db">
+				<p>
+					There was a problem while trying to make database backups of your helpdesk:
+				</p>
+				<p class="place-message"></p>
+			</div>
+			<div style="display: none" class="error_downloading_update">
+				<p>
+					THe upgrade utility could not download the latest version of DeskPRO.
+					This may be due to a firewall or other network problem.
+				</p>
+				<p class="place-message"></p>
+			</div>
+			<div style="display: none" class="error_installing_files">
+				<p>
+					THe upgrade utility encountered an error while trying to install the updated
+					files from the newest version of DeskPRO.
+				</p>
+				<p class="place-message"></p>
+			</div>
+		</div>
+		<div id="done" style="display: none">
+			<strong>Done!</strong><br />
+			Your helpdesk has been upgraded successfully.
+		</div>
+	</div>
+</div>
+{% endblock %}

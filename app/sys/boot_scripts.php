@@ -8,6 +8,9 @@ $is_authed = (md5_file(DP_CONFIG_FILE) == $_GET['_']);
 }
 
 switch ($_GET['_sys']) {
+	case 'blank':
+		break;
+
 	case 'memtest':
 		if (!$is_authed) die('Invalid auth code.');
 		require DP_ROOT . '/sys/scripts/memtest.php';
