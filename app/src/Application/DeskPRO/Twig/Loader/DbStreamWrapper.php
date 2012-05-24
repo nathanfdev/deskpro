@@ -264,7 +264,7 @@ class DbStreamWrapper
 		return true;
 	}
 
-	
+
 	/**
 	 * Signal that stream_select is not supported by returning false
 	 *

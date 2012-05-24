@@ -403,18 +403,18 @@ class UserChatController extends AbstractController
 		if ($convo->status == 'open') {
 			$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
 			$chat_manager->personLeft($convo, $this->person);
-		}
 
-		switch ($this->in->getString('action')) {
-			case 'unassign':
-				if ($convo->agent) {
-					$chat_manager->unassignAgent($convo);
-				}
-				break;
+			switch ($this->in->getString('action')) {
+				case 'unassign':
+					if ($convo->agent) {
+						$chat_manager->unassignAgent($convo);
+					}
+					break;
 
-			case 'end':
-				$chat_manager->endChat($convo, $this->person);
-				break;
+				case 'end':
+					$chat_manager->endChat($convo, $this->person);
+					break;
+			}
 		}
 
 		return $this->createJsonCmResponse();
