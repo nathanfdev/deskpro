@@ -263,4 +263,16 @@ class DbStreamWrapper
 	{
 		return true;
 	}
+
+	
+	/**
+	 * Signal that stream_select is not supported by returning false
+	 *
+	 * @param int $cast_as
+	 * @return bool
+	 */
+	public function stream_cast($cast_as)
+	{
+		return false;
+	}
 }
