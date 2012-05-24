@@ -598,8 +598,15 @@ $CONFIG['agent_css'] = array(
 	'out' => 'css/agent-all.css',
 	'post_filters' => array('image_gradients', 'smartsprites', 'css'),
 	'references' => array(
-		'agent_vendors_css',
 		'agent_interface_css',
+	)
+);
+
+$CONFIG['agent_vendor_out_css'] = array(
+	'out' => 'css/agent-vendors-all.css',
+	'post_filters' => array('css'),
+	'references' => array(
+		'agent_vendors_css',
 	)
 );
 

@@ -31,6 +31,7 @@ var Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}'
 	<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
 {% else %}
 	{{ dp_asset_html('agent') }}
+	{{ dp_asset_html('agent_vendor_out_css') }}
 	{{ dp_asset_html('agent_css') }}
 	{{ dp_asset_html('agent_interface_print_css', {'media':'print'}) }}
 
