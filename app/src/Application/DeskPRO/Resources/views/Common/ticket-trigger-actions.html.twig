@@ -148,11 +148,11 @@
 			</select>
 		</div>
 	</div>
-	{% if term_options.categories %}
+	{% if term_options.ticket_categories %}
 		<div class="type" title="{{ phrase('agent.general.set_category') }}" data-rule-type="category">
 			<div class="options">
 				<select name="category">
-					{% for id,label in term_options.categories %}
+					{% for id,label in term_options.ticket_categories %}
 						<option value="{{id}}">{{label}}</option>
 					{% endfor %}
 				</select>

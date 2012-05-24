@@ -342,7 +342,7 @@
 		</div>
 	{% endif %}
 
-	{% if 'category' not in no_show_fields and term_options.categories %}
+	{% if 'category' not in no_show_fields and term_options.ticket_categories %}
 		<div class="type" title="{{ phrase('agent.general.category') }}" data-rule-type="category" data-term-type="GenericMenuTerm" data-term-triggers="cat,category">
 			<div class="op">
 				<select name="op" class="op">
@@ -359,7 +359,7 @@
 			</div>
 			<div class="options">
 				<select name="category">
-					{% for id,label in term_options.categories %}
+					{% for id,label in term_options.ticket_categories %}
 						<option value="{{id}}">{{label}}</option>
 					{% endfor %}
 				</select>
