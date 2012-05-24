@@ -160,7 +160,7 @@ class PeopleResultsDisplay
 		if ($this->primary_emails === null) {
 			$primary_email_ids = array();
 			foreach ($this->people as $p) {
-				if ($person->primary_email) {
+				if ($p->primary_email) {
 					$primary_email_ids[] = $p->primary_email->getId();
 				}
 			}
