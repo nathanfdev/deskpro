@@ -1,12 +1,12 @@
 <?php return array(
 	'user.defaults.article_category_general'      => 'General',
-	'user.defaults.article_example_content'       => 'This is an example knowledgebase article. Feel free to edit or delete it.',
+	'user.defaults.article_example_content'       => 'This is an example knowledgebase article. Feel free to edit or delete it from the agent interface.',
 	'user.defaults.article_example_title'         => 'Example Article',
 	'user.defaults.department_sales'              => 'Sales',
 	'user.defaults.department_support'            => 'Support',
 	'user.defaults.download_category_general'     => 'General',
 	'user.defaults.feedback_example_title'        => 'Example Suggestion',
-	'user.defaults.feedback_example_content'      => 'This is an example suggestion. Feel free to edit or delete it.',
+	'user.defaults.feedback_example_content'      => 'This is an example suggestion. Feel free to edit or delete it from the agent interface.',
 	'user.defaults.feedback_status_completed'     => 'Completed',
 	'user.defaults.feedback_status_declined'      => 'Declined',
 	'user.defaults.feedback_status_duplicate'     => 'Duplicate',
@@ -18,6 +18,6 @@
 	'user.defaults.feedback_type_suggestion'      => 'Suggestion',
 	'user.defaults.language_english'              => 'English',
 	'user.defaults.news_category_general'         => 'General',
-	'user.defaults.news_example_content'          => 'This is an example news post. Feel free to edit or delete it.',
+	'user.defaults.news_example_content'          => 'This is an example news post. Feel free to edit or delete it from the agent interface.',
 	'user.defaults.news_example_title'            => 'Example News Post',
 );
