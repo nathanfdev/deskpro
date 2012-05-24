@@ -132,6 +132,7 @@ class DataController extends AbstractController
 			'user.chat.message_ended_by',
 			'user.chat.message_ended',
 			'user.chat.message_ended_user',
+            'user.chat.window_open-new'
 		);
 
 		foreach ($add_phrases as $k) {

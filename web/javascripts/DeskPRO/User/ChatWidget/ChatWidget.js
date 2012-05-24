@@ -123,7 +123,7 @@ var DpChatWidget = new (function() {
 			css.push('box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
 			css = css.join(';');
 
-			chatIframeWinTab = $('<div id="dp_chat_iframe_wintab" class="dp-chat-iframe-wintab" style="' + css + '">Open chat in a new window</div>').on('click', openInWindow).appendTo(chatIframeHolder);
+			chatIframeWinTab = $('<div id="dp_chat_iframe_wintab" class="dp-chat-iframe-wintab" style="' + css + '">' + DESKPRO_LANG['user.chat.window_open-new'] + '</div>').on('click', openInWindow).appendTo(chatIframeHolder);
 
 			// Close button
 			var css = [];
