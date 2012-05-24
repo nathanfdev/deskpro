@@ -1,9 +1,11 @@
 <?php return array(
+	'user.defaults.article_category_general'      => 'General',
 	'user.defaults.article_example_content'       => 'This is an example knowledgebase article. Feel free to edit or delete it.',
 	'user.defaults.article_example_title'         => 'Example Article',
 	'user.defaults.department_sales'              => 'Sales',
 	'user.defaults.department_support'            => 'Support',
-	'user.defaults.feedback_example'              => 'Example Suggestion',
+	'user.defaults.download_category_general'     => 'General',
+	'user.defaults.feedback_example_title'        => 'Example Suggestion',
 	'user.defaults.feedback_example_content'      => 'This is an example suggestion. Feel free to edit or delete it.',
 	'user.defaults.feedback_status_completed'     => 'Completed',
 	'user.defaults.feedback_status_declined'      => 'Declined',

@@ -6,7 +6,7 @@
 
 ##BEGIN:locale.language##
 $l = new \Application\DeskPRO\Entity\Language();
-$l['title'] = $translate->phrase('user.defaults.lang_english');
+$l['title'] = $translate->phrase('user.defaults.language_english');
 $l['locale'] = 'en_US';
 $l['language_package'] = 'DeskproLanguages\\LangPackage';
 $em->persist($l);
@@ -44,14 +44,14 @@ if (!$IMPORT_INSTALL) {
 ##BEGIN:create_article.default##
 if (!$IMPORT_INSTALL) {
 	$DEFAULT_ARTICLE_CAT = new \Application\DeskPRO\Entity\ArticleCategory();
-	$DEFAULT_ARTICLE_CAT['title'] = $translate->phrase('user.defaults.category_general');
+	$DEFAULT_ARTICLE_CAT['title'] = $translate->phrase('user.defaults.article_category_general');
 	$em->persist($DEFAULT_ARTICLE_CAT);
 	$em->flush();
 
 	$DEFAULT_ARTICLE = new \Application\DeskPRO\Entity\Article();
 	$DEFAULT_ARTICLE->person = $AGENT;
-	$DEFAULT_ARTICLE->title = $translate->phrase('user.defaults.example_article');
-	$DEFAULT_ARTICLE->content = $translate->phrase('user.defaults.example_article_content');
+	$DEFAULT_ARTICLE->title = $translate->phrase('user.defaults.article_example_title');
+	$DEFAULT_ARTICLE->content = $translate->phrase('user.defaults.article_example_content');
 	$DEFAULT_ARTICLE->status = 'published';
 	$DEFAULT_ARTICLE->addToCategory($DEFAULT_ARTICLE_CAT);
 	$em->persist($DEFAULT_ARTICLE);
@@ -66,7 +66,7 @@ if (!$IMPORT_INSTALL) {
 ##BEGIN:create_download_cat.default##
 if (!$IMPORT_INSTALL) {
 	$q = new \Application\DeskPRO\Entity\DownloadCategory();
-	$q['title'] = $translate->phrase('user.defaults.category_general');
+	$q['title'] = $translate->phrase('user.defaults.downloads_category_general');
 	$em->persist($q);
 	$em->flush();
 }
@@ -79,14 +79,14 @@ if (!$IMPORT_INSTALL) {
 ##BEGIN:create_news.default##
 if (!$IMPORT_INSTALL) {
 	$DEFAULT_NEWS_CAT = new \Application\DeskPRO\Entity\NewsCategory();
-	$DEFAULT_NEWS_CAT['title'] = $translate->phrase('user.defaults.category_general');
+	$DEFAULT_NEWS_CAT['title'] = $translate->phrase('user.defaults.news_category_general');
 	$em->persist($DEFAULT_NEWS_CAT);
 	$em->flush();
 
 	$DEFAULT_NEWS = new \Application\DeskPRO\Entity\News();
 	$DEFAULT_NEWS->person = $AGENT;
-	$DEFAULT_NEWS->title = $translate->phrase('user.defaults.example_news');
-	$DEFAULT_NEWS->content = $translate->phrase('user.defaults.example_news_content');
+	$DEFAULT_NEWS->title = $translate->phrase('user.defaults.news_example_title');
+	$DEFAULT_NEWS->content = $translate->phrase('user.defaults.news_example_content');
 	$DEFAULT_NEWS->status = 'published';
 	$DEFAULT_NEWS->category = $DEFAULT_NEWS_CAT;
 	$em->persist($DEFAULT_NEWS);
@@ -101,21 +101,21 @@ if (!$IMPORT_INSTALL) {
 ##BEGIN:create_feedback.default##
 if (!$IMPORT_INSTALL) {
 	$DEFAULT_IDEA_CAT = new \Application\DeskPRO\Entity\FeedbackCategory();
-	$DEFAULT_IDEA_CAT['title'] = $translate->phrase('user.defaults.feedback_suggestion');
+	$DEFAULT_IDEA_CAT['title'] = $translate->phrase('user.defaults.feedback_type_suggestion');
 	$em->persist($DEFAULT_IDEA_CAT);
 	$em->flush();
 
 	$cat = new \Application\DeskPRO\Entity\FeedbackCategory();
-	$cat['title'] = $translate->phrase('user.defaults.feedback_feature_request');
+	$cat['title'] = $translate->phrase('user.defaults.feedback_type_feature-request');
 	$em->persist($cat);
 	$em->flush();
 
 	$cat = new \Application\DeskPRO\Entity\FeedbackCategory();
-	$cat['title'] = $translate->phrase('user.defaults.feedback_bug_report');
+	$cat['title'] = $translate->phrase('user.defaults.feedback_type_bug-report');
 	$em->persist($cat);
 	$em->flush();
 
-	foreach (array('planning', 'started', 'under_review') as $t) {
+	foreach (array('planning', 'started', 'under-review') as $t) {
 		$s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
 		$s->status_type = 'active';
 		$s->title = $translate->phrase('user.defaults.feedback_status_' . $t);
@@ -132,8 +132,8 @@ if (!$IMPORT_INSTALL) {
 
 	$DEFAULT_IDEA = new \Application\DeskPRO\Entity\Feedback();
 	$DEFAULT_IDEA->person = $AGENT;
-	$DEFAULT_IDEA->title = $translate->phrase('user.defaults.example_feedback');
-	$DEFAULT_IDEA->content = $translate->phrase('user.defaults.example_feedback_content');
+	$DEFAULT_IDEA->title = $translate->phrase('user.defaults.feedback_example_title');
+	$DEFAULT_IDEA->content = $translate->phrase('user.defaults.feedback_example_content');
 	$DEFAULT_IDEA->status = 'new';
 	$DEFAULT_IDEA->category = $DEFAULT_IDEA_CAT;
 	$em->persist($DEFAULT_IDEA);
