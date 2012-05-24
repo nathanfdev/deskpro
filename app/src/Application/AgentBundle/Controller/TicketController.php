@@ -1235,7 +1235,7 @@ class TicketController extends AbstractController
 			}
 
 			if ($this->in->getBool('with_set_agent_parts')) {
-				$agents = $this->em->getRepository('DeskPRO:Person')->getPeopleFromIds($this->in->getCleanValueArray('agent_part_ids', 'uint', 'discard'));
+				$agents = $this->em->getRepository('DeskPRO:Person')->getPeopleFromIds($this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard'));
 				$ticket->setAgentParticipants($agents);
 			}
 

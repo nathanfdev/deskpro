@@ -556,6 +556,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * Check if a person ID or a person object is current a participant.
 	 *
 	 * @param  $person_or_id
+	 * @param $only_parts Only check participants (not assigned agent)
 	 * @return bool
 	 */
 	public function hasParticipantPerson($person_or_id)
@@ -565,7 +566,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$person_id = $person_or_id['id'];
 		}
 
-		foreach ($this->getParticipants() as $p) {
+		foreach ($this->participants as $p) {
 			if ($p['person']['id'] == $person_id) {
 				return $p;
 			}

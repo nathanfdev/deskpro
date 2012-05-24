@@ -39,11 +39,11 @@ use Application\DeskPRO\Entity;
 
 class ParticipantRemoved extends AbstractLogAction
 {
-	protected $part;
+	protected $person;
 
 	public function __construct($part)
 	{
-		$this->part = $part;
+		$this->person = $part;
 	}
 
 	public function getLogName()
@@ -53,18 +53,18 @@ class ParticipantRemoved extends AbstractLogAction
 
 	public function getLogDetails()
 	{
-		if (!$this->part) {
+		if (!$this->person) {
 			return array();
 		}
 
 		return array(
-			'id_before' => $this->part->id,
+			'id_before' => $this->person->id,
 			'id_after'  => null,
 
-			'person_id' => $this->part->person ? $this->part->person->id : 0,
-			'name'      => $this->part->getDisplayName(),
-			'email'     => $this->part->getPrimaryEmailAddress(),
-			'is_agent'  => $this->part->person ? $this->part->person->is_agent : false
+			'person_id' => $this->person ? $this->person->id : 0,
+			'name'      => $this->person->getDisplayName(),
+			'email'     => $this->person->getPrimaryEmailAddress(),
+			'is_agent'  => $this->person ? $this->person->is_agent : false
 		);
 	}
 
