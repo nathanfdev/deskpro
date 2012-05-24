@@ -57,6 +57,12 @@ class UpgradeController extends AbstractController
 			$this->container->getSettingsHandler()->setSetting('core.upgrade_agent_notice', $this->in->getString('agent_message'));
 			$this->container->getSettingsHandler()->setSetting('core.upgrade_user_notice', $this->in->getString('user_message'));
 
+			if ($this->in->getString('agent_message')) {
+				$agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
+				$agent_ids = array_keys($this->em->getRepository('DeskPRO:Person')->getAgents());
+				$agent_chat->sendAgentMessage($this->in->getString('agent_message'), $agent_ids, 0);
+			}
+
 			return $this->redirectRoute('admin_upgrade_watch');
 		}
 

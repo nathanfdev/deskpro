@@ -122,14 +122,14 @@ class AgentChat
 				if ($part['id'] == $this->person['id']) {
 					continue;
 				}
-				$session = App::getOrm()->getRepository('DeskPRO:Session')->getSessionForPerson($part->person);
+				$session = App::getOrm()->getRepository('DeskPRO:Session')->getSessionForPerson($part);
 
-				if ($session && $part->person->getPref('agent_notif.chat_message.email')) {
+				if ($session && $part->getPref('agent_notif.chat_message.email')) {
 					$message = App::getMailer()->createMessage();
 					$message->setTemplate('DeskPRO:emails_agent:new-agent-chat-message.html.twig', array(
 						'message' => $message
 					));
-					$message->setToPerson($part->person);
+					$message->setToPerson($part);
 					$message->enableQueueHint();
 					App::getMailer()->send($message);
 				}

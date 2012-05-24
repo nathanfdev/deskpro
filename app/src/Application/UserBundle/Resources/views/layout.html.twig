@@ -59,6 +59,11 @@
 {% endif %}
 
 <div id="dp">
+
+	{% if app.getSetting('core.upgrade_user_notice') %}
+		<div id="dp_top_notice">{{ app.getSetting('core.upgrade_user_notice') }}</div>
+	{% endif %}
+
 	<div id="dp_main">
 	<div id="dp_main_inner">
 
