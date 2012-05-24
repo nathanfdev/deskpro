@@ -183,8 +183,7 @@ class EmailTransportsController extends AbstractController
 			$message = $this->container->getMailer()->createMessage();
 			$message->setTo($this->in->getString('send_to'));
 			$message->setFrom($this->in->getString('send_from'));
-			$message->setSubject('Test DeskPRO Email');
-			$message->setBody('This is a test of the DeskPRO email system.');
+			$message->setTemplate('DeskPRO:emails_agent:test-email.html.twig');
 			$message->setForceTransport($tr);
 
 			$failed = array();

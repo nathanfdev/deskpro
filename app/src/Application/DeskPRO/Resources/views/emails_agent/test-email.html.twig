@@ -1,0 +1,9 @@
+{% set is_noreply = true %}
+{% extends 'DeskPRO:emails_common:layout.html.twig' %}
+{% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
+{% block email_subject %}DeskPRO Test Email{% endblock %}
+{% block content %}
+	This is a test of the DeskPRO email system.
+	<br /><br />
+	If you recieved this, your email settings are correct.
+{% endblock %}

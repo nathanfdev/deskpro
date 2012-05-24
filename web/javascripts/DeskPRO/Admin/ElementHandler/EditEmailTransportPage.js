@@ -17,12 +17,29 @@ DeskPRO.Admin.ElementHandler.EditEmailTransportPage = new Orb.Class({
 		});
 
 		this.el.on('click', '.test-account-settings', function() {
+
+			if ($('#default_from_email')[0] && $('#default_from_email').val().indexOf('@') === -1) {
+				$('#default_from_email').parent().find('.dp-error').show();
+				return;
+			}
+
 			self.mode = '';
 			if ($(this).is('.backup')) {
 				self.mode = 'backup';
 			}
 
 			self.overlay.open();
+		});
+
+		$('#transport_gmail_options_username').on('keyup', function(ev) {
+			if ($('input[name="transport[transport_type]"]:checked').val() == 'gmail') {
+				$('#default_from_email').val($(this).val());
+			}
+		});
+		$('#default_from_email').on('keyup', function(ev) {
+			if ($('input[name="transport[transport_type]"]:checked').val() == 'gmail') {
+				$('#transport_gmail_options_username').val($(this).val());
+			}
 		});
 
 		var overlayId = 'test_settings_overlay';

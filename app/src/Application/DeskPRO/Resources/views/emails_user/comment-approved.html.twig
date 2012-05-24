@@ -1,7 +1,7 @@
 {##
  # Sent to a user after an agent approves their comment
  ##}
-
+{% set is_noreply = true %}
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% block email_subject %}
 	{{ phrase('user.email_subjects.comment-approved') }}

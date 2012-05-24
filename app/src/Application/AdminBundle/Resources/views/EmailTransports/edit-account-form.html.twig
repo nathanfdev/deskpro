@@ -14,7 +14,11 @@
 					<label>{{ phrase('admin.gateway.default_from_email') }}</label>
 				</div>
 				<div class="dp-form-input">
-					<input type="text" name="default_from_email" id="default_from_email" value="{{ app.getSetting('core.default_from_email') }}" /><br />
+					<p>
+						This email address is used by default when sending welcome emails, confirmation emails or other "noreply" type emails.
+					</p>
+					<input type="text" name="default_from_email" id="default_from_email" value="{{ app.getSetting('core.default_from_email') }}" onkeypress="$(this).parent().find('.dp-error').hide();" /><br />
+					<div class="dp-error" style="display: none;">Please enter an email address</div>
 				</div>
 			</div>
 		{% endif %}

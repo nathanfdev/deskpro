@@ -1,7 +1,7 @@
 {##
  # Sent to a user after they completed a chat and want an email transcript
  ##}
-
+{% set is_noreply = true %}
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% block email_subject %}
 	{{ phrase('user.email_subjects.chat_transcript') }}
