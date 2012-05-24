@@ -65,16 +65,31 @@
 			padding: 20px;
 			padding-top: 25px;
 		}
+
+		.next-loading {
+			display: block;
+			background: transparent url(../../web/images/spinners/loading-small-flat.gif) no-repeat 0 50%;
+
+			overflow: hidden;
+			width: 16px;
+			height: 27px;
+			margin: 3px 0 0 8px;
+			display: none;
+		}
+
+		.submit-area.clicked .next-loading { display: block; }
+		.submit-area.clicked .btn { display: none; }
 	</style>
 	<script type="text/javascript">
-		function sendReportError(type)
-		{
+		function sendReportError(type) {
 			type = type || '';
 
 			$.ajax({
 				url: '<?php echo $view['router']->generate('install_send_install_report_error') ?>?type=' + type
 			});
 		}
+
+
 	</script>
 	<?php $view['slots']->output('head') ?>
 </head>

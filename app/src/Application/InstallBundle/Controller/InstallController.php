@@ -592,7 +592,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		$this->ensureCorrectBuild();
 
 		if (
-			$this->getIn()->getString('admin.first_name')
+			!$this->getIn()->getString('admin.first_name')
 			|| !$this->getIn()->getString('admin.last_name')
 			|| !\Orb\Validator\StringEmail::isValueValid($this->getIn()->getString('admin.email'))
 			|| !$this->getIn()->getString('admin.password')

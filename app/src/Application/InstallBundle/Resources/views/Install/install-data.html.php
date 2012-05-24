@@ -48,6 +48,8 @@ $(document).ready(function() {
 
 			return;
 		}
+
+		$('.submit-area').addClass('clicked');
 	});
 });
 </script>
@@ -92,8 +94,9 @@ $(document).ready(function() {
 				<input type="password" id="password2" name="admin[password2]" value="" size="30" />
 			</div>
 		</div>
-		<div class="actions">
-			<input class="btn primary" type="submit" value="Create Admin and Finish Installation &rarr;" onclick="this.onclick=function(){return false;};" />
+		<div class="alert-actions submit-area">
+			<input class="btn primary" type="submit" value="Create Admin and Finish Installation &rarr;" />
+			<span class="next-loading"></span>
 		</div>
 	</fieldset>
 </form>

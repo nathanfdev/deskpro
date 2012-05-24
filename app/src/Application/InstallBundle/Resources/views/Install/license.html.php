@@ -175,8 +175,9 @@ This Agreement is governed by the laws of England and Wales.
 <div class="alert-message block-message warn" id="agreement_box">
 	<label style="float: none; width: 100%;"><input type="checkbox" id="accept_check" tabindex="1" /> I agree to the above license agreement</label>
 
-	<div class="alert-actions">
-		<a class="btn disabled" tabindex="2" id="next_btn" href="<?php echo $view['router']->generate('install_checks') ?>" onclick="this.onclick=function(){return false;};">Go to step 2: Perform server checks</a>
+	<div class="alert-actions submit-area">
+		<a class="btn disabled" tabindex="2" id="next_btn" href="<?php echo $view['router']->generate('install_checks') ?>" onclick="if (!$(this).hasClass('disabled')) { $(this).parent().addClass('clicked'); }">Go to step 2: Perform server checks</a>
+		<span class="next-loading"></span>
 	</div>
 </div>
 <script type="text/javascript">

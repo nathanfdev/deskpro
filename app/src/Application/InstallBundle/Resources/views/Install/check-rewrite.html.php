@@ -145,7 +145,8 @@ $(document).ready(function() {
 </table>
 
 <div class="alert-message block-message success">
-	<div class="alert-actions">
-		<a class="btn" href="<?php echo $view['router']->generate('install_verify_files') ?>" onclick="this.onclick=function(){return false;};">Go to step 4: Verify file integrity</a>
+	<div class="alert-actions submit-area">
+		<a class="btn" href="<?php echo $view['router']->generate('install_verify_files') ?>" onclick="$(this).parent().addClass('clicked');">Go to step 4: Verify file integrity</a>
+		<span class="next-loading"></span>
 	</div>
 </div>

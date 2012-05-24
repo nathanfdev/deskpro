@@ -165,8 +165,9 @@ $(document).ready(function() {
 	<div class="alert-message block-message success">
 		<strong>Done!</strong> You're ready to go to the next step.
 
-		<div class="alert-actions">
-			<a class="btn" href="<?php echo $view['router']->generate('install_install_data') ?>">Go to step 6: Create your admin account</a>
+		<div class="alert-actions submit-area">
+			<a class="btn disabled" tabindex="2" id="next_btn" href="<?php echo $view['router']->generate('install_checks') ?>" onclick="if (!$(this).hasClass('disabled')) { $(this).parent().addClass('clicked'); }">Go to step 6: Create your admin account</a>
+			<span class="next-loading"></span>
 		</div>
 	</div>
 </div>
