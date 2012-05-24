@@ -59,7 +59,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					}
 
 					// Make sure only runs once or we'll infinite loop the browser
-					if (!self.hasInitTxtbox) {
+					if (self.labelsInput && !self.hasInitTxtbox) {
 						$(self.labelsInput.options.textarea).on('postInvalidate', function() {
 							self.updateUi();
 						});
