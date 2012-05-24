@@ -56,7 +56,7 @@ class ActiveDirectory extends AbstractAdapter
 	 */
 	protected function _createAuthAdapterObject()
 	{
-		return new \Orb\Auth\Adapter\ActiveDirectory($this->usersource->options);
+		return new \Orb\Auth\Adapter\ActiveDirectory(array($this->usersource->options));
 	}
 
 
