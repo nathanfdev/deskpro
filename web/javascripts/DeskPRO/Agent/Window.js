@@ -475,9 +475,30 @@ DeskPRO.Agent.Window = new Orb.Class({
 			var fragmentName = parts[1];
 			var args = parts[4];
 
-			args = args.split(':');
+			if (!args.length) {
+				args = [];
+			} else {
+				args = args.split(':');
+			}
 
 			if (!this.fragmentRouter.hasFragment(fragmentName)) {
+				return;
+			}
+
+			var argRequired = false;
+			switch (fragmentName) {
+				case 'knowledgebase':
+				case 'news':
+				case 'downloads':
+				case 'category':
+				case 'status':
+				case 'label':
+				case 'ended':
+					argRequired = true;
+					break;
+			}
+
+			if (argRequired && !args.length) {
 				return;
 			}
 
