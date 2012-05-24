@@ -5,6 +5,73 @@
 	</ul>
 {% endblock %}
 {% block page %}
+
+<div class="page-content agent-listing" style="padding-top: 0;">
+	<div class="content-table">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th colspan="2" class="single-title">Schedule Automatic Upgrade</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<p>
+							The automatic upgrader lets you upgrade DeskPRO from your browser with a few clicks.
+						</p>
+
+						<form class="dp-form" method="POST" action="{{ path('admin_upgrade') }}">
+							<input type="hidden" name="start" value="1" />
+							<div class="dp-form-row">
+								<div class="dp-form-label">
+									<label>Options</label>
+								</div>
+								<div class="dp-form-input">
+									When: <select name="minutes">
+										<option value="0">As soon as possible</option>
+										<option value="5" selected="selected">5 minutes</option>
+										<option value="10">10 minutes</option>
+										<option value="15">15 minutes</option>
+										<option value="30">30 minutes</option>
+										<option value="30">45 minutes</option>
+										<option value="60">1 hour</option>
+										<option value="90">1.5 hours</option>
+										<option value="60">2 hours</option>
+									</select>
+									<br />
+									<input type="checkbox" name="backup_files" value="1" checked="checked" /> Backup the current DeskPRO source files
+									<br />
+									<input type="checkbox" name="backup_db" value="1" checked="checked" /> Backup your database
+								</div>
+							</div>
+
+							<div class="dp-form-row">
+								<div class="dp-form-label">
+									<label>Send a message to online agents about the pending upgrade</label>
+								</div>
+								<div class="dp-form-input">
+									<input type="text" name="agent_message" value="" />
+								</div>
+							</div>
+							<div class="dp-form-row">
+								<div class="dp-form-label">
+									<label>Show a warning on your helpdesk portal about the pending upgrade</label>
+								</div>
+								<div class="dp-form-input">
+									<input type="text" name="user_message" value="" />
+								</div>
+							</div>
+
+							<p><button class="btn primary">Schedule Upgrade</button></p>
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
 <div class="page-content agent-listing" style="padding-top: 0;">
 	<div class="content-table">
 		<table width="100%">

@@ -18,8 +18,7 @@
 		Upgrade is scheduled for {{ app.getSetting('core.upgrade_time')|date('fulltime') }}
 		(<a href="{{ path('admin_upgrade_abort') }}">cancel</a>).
 	</div>
-	<div id="upgrade_started" style="display: none;">
-		<h3>Upgrading</h3>
+	<div id="upgrade_started">
 		<ul>
 			<li class="step-preload done on"><span>Waiting for process to begin</span></li>
 			<li class="step-start"><span>Started</span></li>
