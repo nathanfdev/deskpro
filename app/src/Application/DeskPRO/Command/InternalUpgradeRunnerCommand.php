@@ -61,8 +61,8 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			return;
 		}
 
-		$cmd = "'" . $this->getContainer()->getPhpBinaryPath() . "'";
-		$cmd .= " '" . DP_ROOT.'/bin/upgrade-util.php' . "'";
+		$cmd = "\"" . $this->getContainer()->getPhpBinaryPath() . "\"";
+		$cmd .= " \"" . DP_ROOT.'/bin/upgrade-util.php' . "\"";
 		$cmd .= ' --auto --quiet --write-status-file';
 
 		if (!$this->getContainer()->getSetting('core.upgrade_backup_files')) {
