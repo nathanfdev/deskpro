@@ -39,16 +39,16 @@
 			<input type="hidden" name="install_token" value="{{ app.getSetting('core.install_token') }}" />
 			<table cellspacing="0" cellpadding="0" class="form-table" width="100%">
 				<tr>
-					<td class="label" width="250" valign="middle">Send license to:</td>
-					<td><input type="text" id="lic_email_address" name="email_address" value="{{ app.user.primary_email_address }}" /></td>
-				</tr>
-				<tr>
-					<td class="label" valign="middle">Your organization name:</td>
+					<td class="label" valign="middle">Your Organization's Name:</td>
 					<td><input type="text" id="lic_website_name" name="website_name" value="{{ app.getSetting('core.site_name') }}" /></td>
 				</tr>
 				<tr>
-					<td class="label"  valign="middle">Your organization website URL:</td>
+					<td class="label"  valign="middle">Your Organization's Website URL:</td>
 					<td><input type="text" id="lic_website_url" name="website_url" value="{{ app.getSetting('core.site_url') }}" /></td>
+				</tr>
+				<tr>
+					<td class="label" width="250" valign="middle">Email Address to Send License:</td>
+					<td><input type="text" id="lic_email_address" name="email_address" value="{{ app.user.primary_email_address }}" /></td>
 				</tr>
 				<tr>
 					<td>&nbsp;</td>
