@@ -623,6 +623,7 @@ class TicketSearch extends SearcherAbstract
 					}
 					break;
 				case self::TERM_DEPARTMENT:
+
 					$this->affected_fields[] = 'ticket.department_id';
 					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.department'), $op, $choice, function($choice) {
 						$titles = App::getDataService('Department')->getNames((array)$choice);
@@ -630,7 +631,8 @@ class TicketSearch extends SearcherAbstract
 					});
 
 					if ($choice && (!is_array($choice) || !in_array('0', $choice))) {
-						foreach ((array)$choice as $id) {
+						$choice = (array)$choice;
+						foreach ($choice as $id) {
 							$choice = array_merge($choice, App::getDataService('Department')->getIdsInTree($id, true));
 						}
 						$choice = array_unique($choice, \SORT_NUMERIC);
