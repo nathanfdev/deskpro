@@ -29,4 +29,5 @@ schtasks /create /tn DeskPRO /sc MINUTE /tr "\"%php%\" -q \"%~dp0cron.php\""
 echo %DATE% %TIME% > data\tmp\schedule.txt
 echo.
 echo It will take 60 seconds for the scheduled task to begin
+"%php%" "app\src\Application\InstallBundle\Install\WinSetup.php" "%php%"
 pause
