@@ -1,11 +1,11 @@
 <?php return array(
-	'user.chat.email'                           => 'Your email address',
+	'user.chat.email'                           => 'Your Email Address',
 	'user.chat.form_chat_button-submit'         => 'Send',
-	'user.chat.form_chat_send-file'             => 'Send a file from your computer',
-	'user.chat.form_create_button-submit'       => 'Start Chatting',
+	'user.chat.form_chat_send-file'             => 'Upload a File',
+	'user.chat.form_create_button-submit'       => 'Start Chat',
 	'user.chat.form_create_department'          => 'Choose department',
-	'user.chat.form_create_title'               => 'Start chatting with an agent',
-	'user.chat.form_feedback_button-submit'     => 'Send and close this window',
+	'user.chat.form_create_title'               => 'Start a Live Chat with an Agent',
+	'user.chat.form_feedback_button-submit'     => 'Send Feedback & Close Window',
 	'user.chat.form_feedback_comments'          => 'Comments?',
 	'user.chat.form_feedback_rate-satisfaction' => 'Rate your overall satisfaction',
 	'user.chat.form_feedback_rate-time'         => 'Rate our response time',
@@ -18,7 +18,7 @@
 	'user.chat.message_ended-by'                => 'Chat ended by {{name}}',
 	'user.chat.message_ended-by-user'           => 'Chat ended by user',
 	'user.chat.message_finding-agent'           => 'Finding an agent',
-	'user.chat.message_long-wait'               => 'We are still trying to find an available agent to take your chat. Do you want to cancel your chat and <a class="cancel-and-newticket-trigger">submit a new ticket instead?</a>',
+	'user.chat.message_long-wait'               => 'We are still trying to find an available agent to take your chat; this normally takes less than a minute. <br /><br />In a rush? <a class="cancel-and-newticket-trigger">leave us a message instead?</a>',
 	'user.chat.message_set-department'          => '{{name}} set department to {{department}}',
 	'user.chat.message_started'                 => 'Chat started',
 	'user.chat.message_unassigned'              => 'Chat unassigned',
@@ -32,4 +32,5 @@
 	'user.chat.window_cancel-confirm'           => 'Are you sure you want to end your chat?',
 	'user.chat.window_end-chat'                 => 'End Chat',
 	'user.chat.window_upload-drag'              => 'Drop your file here to upload it',
+    'user.chat.window_open-new'                 => 'Open this chat in a new window'
 );
