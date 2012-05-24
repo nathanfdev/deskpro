@@ -124,7 +124,7 @@ class AgentChat
 				}
 				$session = App::getOrm()->getRepository('DeskPRO:Session')->getSessionForPerson($part);
 
-				if ($session && $part->getPref('agent_notif.chat_message.email')) {
+				if (!$session && $part->getPref('agent_notif.chat_message.email')) {
 					$email_message = App::getMailer()->createMessage();
 					$email_message->setTemplate('DeskPRO:emails_agent:new-agent-chat-message.html.twig', array(
 						'message' => $chat_message

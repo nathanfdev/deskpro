@@ -1,10 +1,10 @@
 {% extends 'DeskPRO:emails_common:layout.html.twig' %}
 {% import 'DeskPRO:emails_common:layout-macros.html.twig' as layout %}
 {% block email_subject %}
-	New chat message from {{ message.person.getDisplayName() }}
+	New chat message from {{ message.author.getDisplayName() }}
 {% endblock %}
 {% block content %}
-	{{ message.person.getDisplayContact() }} sent you a chat message:
+	{{ message.author.getDisplayContact() }} sent you a chat message:
 	<br /><br />
 	{{ message.getContentHtml()|raw }}
 {% endblock %}
