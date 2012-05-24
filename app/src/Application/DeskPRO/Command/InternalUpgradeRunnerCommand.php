@@ -63,24 +63,21 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 
 		$cmd = "'" . $this->getContainer()->getPhpBinaryPath() . "'";
 		$cmd .= " '" . DP_ROOT.'/bin/upgrade-util.php' . "'";
-		//$cmd .= ' --auto --quiet --write-status-file';
-		$cmd .= ' --auto --write-status-file';
+		$cmd .= ' --auto --quiet --write-status-file';
 
-		if (1 || !$this->getContainer()->getSetting('core.upgrade_backup_files')) {
+		if (!$this->getContainer()->getSetting('core.upgrade_backup_files')) {
 			$cmd .= ' --skip-backup-file';
 		}
-		if (1 || !$this->getContainer()->getSetting('core.upgrade_backup_db')) {
+		if (!$this->getContainer()->getSetting('core.upgrade_backup_db')) {
 			$cmd .= ' --skip-backup-db ';
 		}
 
-		/*
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_time', null);
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_set_at', null);
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_files', null);
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_db', null);
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_agent_notice', null);
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_user_notice', null);
-		*/
 
 		$ret = null;
 		passthru($cmd, $ret);
