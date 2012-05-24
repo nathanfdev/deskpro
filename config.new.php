@@ -124,6 +124,15 @@ $DP_CONFIG['enable_slow_page_log'] = false;
 $DP_CONFIG['enable_slow_page_log_minquerytime'] = false;
 
 ######################################################
+# OPTIONAL : Usersource Log                          #
+#                                                    #
+# Enables log for external usersource adapters for   #
+# troubleshooting.                                   #
+######################################################
+
+$DP_CONFIG['enable_usersource_log'] = false;
+
+######################################################
 # OPTIONAL : Mail Debug                              #
 #                                                    #
 # Sometimes a support agent may ask you to enable    #
