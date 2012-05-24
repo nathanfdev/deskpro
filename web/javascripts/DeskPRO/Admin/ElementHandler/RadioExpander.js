@@ -32,7 +32,7 @@ DeskPRO.Admin.ElementHandler.RadioExpander = new Orb.Class({
 			switchtoradio($(this));
 		});
 
-		this.el.on('click', '.' + groupClass, function() {
+		this.el.on('click', '.' + groupClass + ':not(.on)', function() {
 			var radio = $(this).find('.option-trigger');
 			if (radio.length) {
 				radio.prop('checked', 'checked');
