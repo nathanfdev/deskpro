@@ -30,17 +30,24 @@
 				</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>
-							{{ phrase('admin.settings.cron_setup_linux_edit_file') }}
-							<code class="code-box nowrap">* * * * * exampleuser {{ php_path }} -q {{ constant('DP_WEB_ROOT') }}/cron.php</div>
-							<div class="small-note-box">{{ phrase('admin.settings.cron_setup_linux_edit_file_user') }}</div>
-							<br />
-							<p>
-								<a href="{{ get_service_url('dp.kb.install.cron') }}">{{ phrase('admin.settings.cron_detailed_instructions') }}</a>
-							</p>
-						</td>
-					</tr>
+				<tr>
+					<td>
+						{{ phrase('admin.settings.cron_setup_linux_edit_file') }}
+						<code class="code-box nowrap">* * * * * exampleuser {{ php_path|default('/path/to/php') }} -q {{ constant('DP_WEB_ROOT') }}/cron.php</code>
+						<div class="small-note-box">
+							{{ phrase('admin.settings.cron_setup_linux_edit_file_user') }}
+							{% if not php_path %}
+								<br />
+								<strong>{{ phrase('agent.general.note_attn') }}:</strong>
+								{{ phrase('admin.settings.could_not_find_php_use_real') }}
+							{% endif %}
+						</div>
+						<br />
+						<p>
+							<a href="{{ get_service_url('dp.kb.install.cron') }}">{{ phrase('admin.settings.cron_detailed_instructions') }}</a>
+						</p>
+					</td>
+				</tr>
 				</tbody>
 			</table>
 		</div>
@@ -60,10 +67,17 @@
 				<tbody>
 				<tr>
 					<td>
-						{{ phrase('admin.settings.cron_setup_linux_edit_file') }}
-						<code class="code-box nowrap">* * * * * exampleuser {{ php_path }} -q {{ constant('DP_WEB_ROOT') }}/cron.php</code>
-						<div class="small-note-box">{{ phrase('admin.settings.cron_setup_linux_edit_file_user') }}</div>
-						<br />
+						<h2>Option 1:</h2>
+						<ol class="number-list">
+							<li>Open the folder where you have installed DeskPRO: {{ constant('DP_WEB_ROOT') }}</li>
+							<li>Run the file called schedule.bat</li>
+						</ol>
+
+						<h2>Option 2:</h2>
+						<ol class="number-list">
+							<li>Manually open Windows Scheduled Tasks</li>
+							<li>Create a scheduled task for php-win.exe to run {{ constant('DP_WEB_ROOT') }}/cron.php every minute.</li>
+						</ol>
 						<p>
 							<a href="{{ get_service_url('dp.kb.install.cron') }}">{{ phrase('admin.settings.cron_detailed_instructions') }}</a>
 						</p>
