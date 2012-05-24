@@ -357,7 +357,7 @@ class KbStep extends AbstractDeskpro3Step
 		foreach ($words as $w) {
 			$this->getDb()->insert('search_sticky_result', array(
 				'word' => $w,
-				'object_type' => 'article',
+				'object_type' => 'DeskPRO:Article',
 				'object_id' => $new_article->id
 			));
 		}
