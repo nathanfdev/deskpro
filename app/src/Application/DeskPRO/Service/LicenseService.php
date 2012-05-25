@@ -103,7 +103,7 @@ class LicenseService
 			throw new \RuntimeException("No response from server: $url $result");
 		}
 
-		$res_data = @json_decode($result, true);
+		$res_data = json_decode($result, true);
 		if (!is_array($res_data)) {
 			throw new \RuntimeException("Invalid JSON response from server: $url $result");
 		}

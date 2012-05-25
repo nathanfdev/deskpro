@@ -35,6 +35,8 @@ DeskPRO.Admin.ElementHandler.UpgradeWatch = new Orb.Class({
 		var url = BASE_URL;
 		url = url.replace(/\/index\.php\//, '/');
 
+		var min_time = parseFloat(this.startTime);
+
 		this.pollFileTimeout = window.setTimeout(function() {
 			$.ajax({
 				url: url + 'auto-update-status.txt',
@@ -52,7 +54,7 @@ DeskPRO.Admin.ElementHandler.UpgradeWatch = new Orb.Class({
 						return;
 					}
 
-					var last_time = self.hasInitialPoll || 0;
+					var last_time = self.hasInitialPoll || min_time;
 					var restart_timer = true;
 					var is_error = false;
 					Array.each(lines, function(last) {
@@ -85,6 +87,7 @@ DeskPRO.Admin.ElementHandler.UpgradeWatch = new Orb.Class({
 		console.log("Code: %s, Message: %s, Time: %d", code, message, time);
 
 		$('li.on').removeClass('on');
+		$('em.on').removeClass('on');
 
 		if (code.indexOf('error_') === 0) {
 			this.handleError(code, message);
@@ -96,13 +99,22 @@ DeskPRO.Admin.ElementHandler.UpgradeWatch = new Orb.Class({
 				$('li.step-start').addClass('done on');
 				break;
 			case 'basic_checks_start':
-				$('li.step-start').addClass('done on');
+				$('li.step-checks').addClass('done on');
 				break;
-			case 'basic_checks_done':
-				$('li.step-start').addClass('done');
+			case 'helpdesk_offline':
+				$('li.step-disable-hd').addClass('done on');
 				break;
 			case 'file_backup_start':
 				$('li.step-backup-files').addClass('done on');
+				break;
+			case 'file_backup_copy_start':
+				$('em.step-backup-files-copy').addClass('done on');
+				break;
+			case 'file_backup_zip_start':
+				$('em.step-backup-files-zip').addClass('done on');
+				break;
+			case 'file_backup_cleanup_start':
+				$('em.step-backup-files-cleanup').addClass('done on');
 				break;
 			case 'database_backup_start':
 				$('li.step-backup-db').addClass('done on');

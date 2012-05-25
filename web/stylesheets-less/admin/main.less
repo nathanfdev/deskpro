@@ -4081,6 +4081,18 @@ ul.standard-list li {
 			background: url(../../images/agent/chat/win-min.png) no-repeat 0 50%;
 		}
 
+		span > em {
+			.opacity(50);
+			font-style: normal;
+			&.done {
+				.opacity(100);
+			}
+			&.on {
+				.opacity(100);
+				font-style: italic;
+			}
+		}
+
 		&.done {
 			.opacity(100);
 			span {

@@ -71,20 +71,25 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			fclose($fp);
 		};
 
-		if (!$this->getContainer()->getPhpBinaryPath()) {
-			$write_status('error_php_path');
-			$write_status("error_unknown_binary", array('php'));
-			$write_status("error_basic_checks_fail");
-			$output->write('<error>Could not find path to PHP</error>');
-			return 1;
-		}
-
 		$skip_seg = '';
 		if (!$this->getContainer()->getSetting('core.upgrade_backup_files')) {
 			$skip_seg .= ' --skip-backup-file';
 		}
 		if (!$this->getContainer()->getSetting('core.upgrade_backup_db')) {
 			$skip_seg .= ' --skip-backup-db ';
+		}
+
+		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_time', null);
+		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_set_at', null);
+		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_files', null);
+		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_db', null);
+
+		if (!dp_get_php_path(true)) {
+			$write_status('error_php_path');
+			$write_status("error_unknown_binary", array('php'));
+			$write_status("error_basic_checks_fail");
+			$output->write('<error>Could not find path to PHP</error>');
+			return 1;
 		}
 
 		$cmd = sprintf(
@@ -94,14 +99,14 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			$skip_seg
 		);
 
-		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_time', null);
-		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_set_at', null);
-		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_files', null);
-		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_db', null);
-
 		set_time_limit(0);
 		$ret = null;
-		passthru($cmd, $ret);
+		exec($cmd, $out, $ret);
+
+		$str = implode("\n", $out);
+		if ($str) {
+			echo $str;
+		}
 
 		$this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', time());
 

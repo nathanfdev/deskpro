@@ -467,9 +467,9 @@ class Upgrade
 		# Binary Paths
 		#---
 
-		$php_path        = $this->getPhpBinaryPath();
-		$mysql_dump_path = $this->getMysqldumpBinaryPath();
-		$mysql_path      = $this->getMysqlBinaryPath();
+		$php_path        = dp_get_php_path(true);
+		$mysql_dump_path = dp_get_mysqldump_path(true);
+		$mysql_path      = dp_get_mysql_path(true);
 
 		$this->log("php: $php_path\n");
 		$this->log("mysql: $mysql_path\n");
@@ -599,14 +599,13 @@ class Upgrade
 		// Shutdown helpdesk
 		$fileutil = new FilesystemUtil();
 
-		if (!$is_quiet) $this->out("Turning helpdesk off");
-		$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
-
 		try {
 			$write_status("file_backup_start");
 			if (!$skip_file_backup) {
 				if (!$is_quiet) $this->out("Doing file backup ...");
-				$this->file_backup = $this->backupFiles(true);
+				$this->file_backup = $this->backupFiles(function($status) use ($write_status) {
+					$write_status('file_backup_' . $status);
+				});
 				if (!$is_quiet) $this->out("-> Done");
 			}
 			$write_status("file_backup_done");
@@ -668,6 +667,10 @@ class Upgrade
 		}
 
 		$this->revert_checkpoint = 'db';
+
+		if (!$is_quiet) $this->out("Turning helpdesk off");
+		$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
+		$write_status('helpdesk_offline');
 
 		if (!$is_quiet) $this->out("Performing database upgrades ...");
 
@@ -1076,8 +1079,12 @@ class Upgrade
 		}
 	}
 
-	public function backupFiles()
+	public function backupFiles($status_callback = null)
 	{
+		if (!$status_callback) {
+			$status_callback = function($code) {};
+		}
+
 		$time_start = microtime(true);
 
 		$f = '/' . date('Y-m-d') . '-files';
@@ -1089,6 +1096,8 @@ class Upgrade
 		if (!mkdir($backup_dir, 0755, true)) {
 			throw new FileBackupException("Could not create backup directory: $backup_dir", FileBackupException::PERM_ERROR);
 		}
+
+		$status_callback('copy_start');
 
 		$finder = new \Symfony\Component\Finder\Finder();
 		$finder->in(DP_WEB_ROOT)->files();
@@ -1121,19 +1130,29 @@ class Upgrade
 			$count_file++;
 		}
 
+		$status_callback('copy_done');
+
 		$this->log(sprintf("backupFiles: time(%.4f)   file_count(%d)    dir_count(%d)", microtime(true) - $time_start, $count_file, $count_dir));
 
+		$status_callback('zip_start');
+
 		$f_path = $this->compressFile($backup_dir);
+
+		$status_callback('zip_done');
 
 		if (!$f_path) {
 			return false;
 		}
+
+		$status_callback('cleanup_start');
 
 		$backup_file = $this->getBackupDir() . '/' . $f . '.zip';
 		if (is_file($backup_file)) {
 			unlink($backup_file);
 		}
 		rename($f_path, $backup_file);
+
+		$status_callback('cleanup_done');
 
 		return $backup_file;
 	}

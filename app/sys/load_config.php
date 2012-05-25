@@ -287,7 +287,7 @@ function dp_find_binary($name, array $use_suffixes = null)
  *
  * @return string
  */
-function dp_get_php_path()
+function dp_get_php_path($test = false)
 {
 	static $path = null;
 
@@ -296,13 +296,30 @@ function dp_get_php_path()
 			$path = dp_get_config('php_path');
 		}
 		if (!$path) {
-			//$path = dp_find_binary('php');
+			$path = dp_find_binary('php');
 		}
 
 		if (!$path) {
-			$path = null;
+			$path = false;
 		} else {
 			$path = escapeshellarg($path);
+		}
+	}
+
+	static $pass_test = null;
+	if ($path && $test && $pass_test === null) {
+		$out = null;
+		$ret = null;
+
+		// php -v: PHP 5.3.10 (cli) (built: May 18 2012 10:07:25) etc
+		exec($path . " -v", $out, $ret);
+
+		$out = is_array($out) ? implode("\n", $out) : (string)$out;
+		if (!$ret || stripos($out, 'php') !== false) {
+			$pass_test = true;
+		} else {
+			$pass_test = false;
+			$path = false;
 		}
 	}
 
@@ -315,7 +332,7 @@ function dp_get_php_path()
  *
  * @return string
  */
-function dp_get_mysqldump_path()
+function dp_get_mysqldump_path($test = false)
 {
 	static $path = null;
 
@@ -328,9 +345,26 @@ function dp_get_mysqldump_path()
 		}
 
 		if (!$path) {
-			$path = null;
+			$path = false;
 		} else {
 			$path = escapeshellarg($path);
+		}
+	}
+
+	static $pass_test = null;
+	if ($path && $test && $pass_test === null) {
+		$out = null;
+		$ret = null;
+
+		// mysqldump (no args): Usage: mysqldump [OPTIONS] database [tables]  etc
+		exec($path, $out, $ret);
+
+		$out = is_array($out) ? implode("\n", $out) : (string)$out;
+		if (!$ret || stripos($out, 'mysql') !== false) {
+			$pass_test = true;
+		} else {
+			$pass_test = false;
+			$path = false;
 		}
 	}
 
@@ -343,7 +377,7 @@ function dp_get_mysqldump_path()
  *
  * @return string
  */
-function dp_get_mysql_path()
+function dp_get_mysql_path($test = false)
 {
 	static $path = null;
 
@@ -356,9 +390,26 @@ function dp_get_mysql_path()
 		}
 
 		if (!$path) {
-			$path = null;
+			$path = false;
 		} else {
 			$path = escapeshellarg($path);
+		}
+	}
+
+	static $pass_test = null;
+	if ($path && $test && $pass_test === null) {
+		$out = null;
+		$ret = null;
+
+		// mysql --help: Lots of stuff but we can find mysql
+		exec($path . " --help", $out, $ret);
+
+		$out = is_array($out) ? implode("\n", $out) : (string)$out;
+		if (!$ret || stripos($out, 'mysqldump') !== false) {
+			$pass_test = true;
+		} else {
+			$pass_test = false;
+			$path = false;
 		}
 	}
 
