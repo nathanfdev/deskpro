@@ -53,5 +53,4 @@
 	'agent.chat.warning_email_address_not_unique' => 'The user entered an email address that matches an existing account in the system, but the user is not currently logged in. Be careful not to expose sensitive information in case the user is an imposter.',
 	'agent.chat.x_by_anonymous'                   => 'Chat {{chat_id}} by Anonymous',
 	'agent.chat.x_by_anonymousymous'              => 'Chat by Anonymous',
-	'agent.chat.you_have_been_invited'            => 'You have been invited to join a chat',
 );

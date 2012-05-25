@@ -267,7 +267,7 @@ class UserChatManager
 
 			$this->addSystemMessage(
 				$convo,
-				'message_user_joined',
+				'message_user-joined',
 				array('name' => $person->display_name),
 				array('user_joined' => true, 'person_name' => $person->display_name, 'person_id' => $person->id)
 			);
@@ -295,7 +295,7 @@ class UserChatManager
 
 			$this->addSystemMessage(
 				$convo,
-				'message_user_left',
+				'message_user-left',
 				array('name' => $person->display_name),
 				array('user_left' => true, 'person_name' => $person->display_name, 'person_id' => $person->id)
 			);
@@ -342,7 +342,7 @@ class UserChatManager
 			}
 			$this->addSystemMessage(
 				$convo,
-				'message_set_department',
+				'message_set-department',
 				array('name' => $who->display_name, 'department' => $dep_name),
 				array('department_changed' => true, 'new_department_id' => $convo->department_id)
 			);
@@ -395,7 +395,7 @@ class UserChatManager
 			$convo->agent = $agent;
 			$this->em->persist($convo);
 
-			$this->addSystemMessage($convo, 'assigned_to', array('name' => $agent->display_name), array(
+			$this->addSystemMessage($convo, 'message_assigned', array('name' => $agent->display_name), array(
 				'chat_assigned' => true,
 				'assigned_to' => $agent->id,
 				'assigned_name' => $agent->getDisplayName(),
@@ -485,7 +485,7 @@ class UserChatManager
 			$convo->agent = null;
 			$this->em->persist($convo);
 
-			$this->addSystemMessage($convo, 'unassigned', array(), array('chat_unassigned' => true, 'old_assigned_to' => $old_agent_id, 'old_assigned_name' => $old_agent_name));
+			$this->addSystemMessage($convo, 'message_unassigned', array(), array('chat_unassigned' => true, 'old_assigned_to' => $old_agent_id, 'old_assigned_name' => $old_agent_name));
 
 			// Try to reassign
 			if ($this->auto_assigner) {
@@ -536,7 +536,7 @@ class UserChatManager
 
 			$this->addSystemMessage(
 				$convo,
-				'msg_agent_timeout',
+				'message_agent-timeout',
 				array('name' => $convo->agent->display_name),
 				array('agent_timed_out' => true)
 			);
@@ -570,7 +570,7 @@ class UserChatManager
 
 			$this->addSystemMessage(
 				$convo,
-				'msg_user_timeout',
+				'message_user-timeout',
 				array(),
 				array('user_timed_out' => true)
 			);
@@ -605,9 +605,9 @@ class UserChatManager
 			$this->em->persist($convo);
 
 			if ($author) {
-				$this->addSystemMessage($convo, 'ended_by', array('name' => $author->getDisplayName()), array('chat_ended' => true));
+				$this->addSystemMessage($convo, 'message_ended-by', array('name' => $author->getDisplayName()), array('chat_ended' => true));
 			} else {
-				$this->addSystemMessage($convo, 'ended', array(), array('chat_ended' => true));
+				$this->addSystemMessage($convo, 'message_ended', array(), array('chat_ended' => true));
 			}
 
 			$this->em->flush();
@@ -653,7 +653,7 @@ class UserChatManager
 		try {
 			$this->em->persist($convo);
 
-			$this->addSystemMessage($convo, 'ended_user', array(), array('chat_ended'));
+			$this->addSystemMessage($convo, 'message_ended-by-user', array(), array('chat_ended'));
 
 			$this->em->flush();
 
