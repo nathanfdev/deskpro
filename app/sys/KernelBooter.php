@@ -280,6 +280,7 @@ class KernelBooter
 		array_shift($argv); // remove cron.php
 
 		if ($do_upgrade) {
+			$argv = array();
 			array_unshift($argv, 'cron.php', 'dp:internal-upgrade-runner');
 		} else {
 			array_unshift($argv, 'cron.php', 'dp:worker-job'); // so we can add the command name in the right spot

@@ -56,21 +56,43 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		if (file_exists(DP_WEB_ROOT . '/auto-update-status.txt')) {
+			@unlink(DP_WEB_ROOT . '/auto-update-status.txt');
+		}
+		$write_status = function($code, $message = '') {
+			$fp = fopen(DP_WEB_ROOT . '/auto-update-status.txt', 'a');
+			$time = time();
+
+			if (is_array($message)) {
+				$message = json_encode($message);
+			}
+
+			fwrite($fp, "STATUS(" . $code . ")@$time#$message\n");
+			fclose($fp);
+		};
+
 		if (!$this->getContainer()->getPhpBinaryPath()) {
+			$write_status('error_php_path');
+			$write_status("error_unknown_binary", array('php'));
+			$write_status("error_basic_checks_fail");
 			$output->write('<error>Could not find path to PHP</error>');
-			return;
+			return 1;
 		}
 
-		$cmd = "\"" . $this->getContainer()->getPhpBinaryPath() . "\"";
-		$cmd .= " \"" . DP_ROOT.'/bin/upgrade-util.php' . "\"";
-		$cmd .= ' --auto --quiet --write-status-file';
-
+		$skip_seg = '';
 		if (!$this->getContainer()->getSetting('core.upgrade_backup_files')) {
-			$cmd .= ' --skip-backup-file';
+			$skip_seg .= ' --skip-backup-file';
 		}
 		if (!$this->getContainer()->getSetting('core.upgrade_backup_db')) {
-			$cmd .= ' --skip-backup-db ';
+			$skip_seg .= ' --skip-backup-db ';
 		}
+
+		$cmd = sprintf(
+			"%s %s --auto --quiet --write-status-file %s",
+			dp_get_php_path(),
+			escapeshellarg(DP_ROOT.'/bin/upgrade-util.php'),
+			$skip_seg
+		);
 
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_time', null);
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_set_at', null);

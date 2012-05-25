@@ -417,7 +417,7 @@ class Upgrade
 			$that = $this;
 			$write_status = function($code, $message = '') use ($that) {
 				$fp = fopen(DP_WEB_ROOT . '/auto-update-status.txt', 'a');
-				$time = time();
+				$time = microtime(true);
 
 				if (is_array($message)) {
 					$message = json_encode($message);
@@ -450,46 +450,134 @@ class Upgrade
 			exit(0);
 		}
 
+		#----------------------------------------
+		# Requirement Checks
+		#----------------------------------------
+
+		$write_status("basic_checks_start");
+
+		$checks_fail = false;
+
+		#---
+		# Binary Paths
+		#---
+
 		$php_path        = $this->getPhpBinaryPath();
 		$mysql_dump_path = $this->getMysqldumpBinaryPath();
 		$mysql_path      = $this->getMysqlBinaryPath();
 
-		if (!$php_path || !$mysql_path || !$mysql_dump_path) {
-			$unknown_binary_paths = array();
-			if (!$php_path)        { $this->outAndLog("Cannot find path to `php` binary"); $unknown_binary_paths[] = "php"; }
-			if (!$mysql_dump_path) { $this->outAndLog("Cannot find path to `mysqldump` binary"); $unknown_binary_paths[] = "mysqldump"; }
-			if (!$mysql_path)      { $this->outAndLog("Cannot find path to `mysql` binary"); $unknown_binary_paths[] = "mysql"; }
+		$this->log("php: $php_path\n");
+		$this->log("mysql: $mysql_path\n");
+		$this->log("mysqldump: $mysql_dump_path\n");
 
-			$write_status("error_unknown_binary", $unknown_binary_paths);
-
-			exit(10);
+		if ($is_status_write) {
+			if ($php_path) $write_status('php_path_okay'); else $write_status('error_php_path');
+			if ($mysql_dump_path) $write_status('mysqldump_path_okay'); else $write_status('error_mysqldump_path');
+			if ($mysql_path) $write_status('mysql_path_okay'); else $write_status('error_mysql_path');
 		}
 
-		#----------------------------------------
+		if (!$php_path || !$mysql_path || !$mysql_dump_path) {
+			$unknown_binary_paths = array();
+			if (!$php_path)        $this->outAndLog("Cannot find path to `php` binary");
+			if (!$mysql_dump_path) $this->outAndLog("Cannot find path to `mysqldump` binary");
+			if (!$mysql_path)      $this->outAndLog("Cannot find path to `mysql` binary");
+
+			$write_status("error_unknown_binary", $unknown_binary_paths);
+			$checks_fail = true;
+		}
+
+		#---
 		# Requirements check
-		#----------------------------------------
+		#---
 
 		try {
 			if (!is_dir($this->getBackupDir()) || !is_writable($this->getBackupDir())) {
 				$write_status('error_backup_dir', $this->getBackupDir());
 				$this->outAndLog("Backup directory does not exist or is not writable: " . $this->getBackupDir());
-				exit(1);
+				$checks_fail = true;
+			} else {
+				$write_status('backup_dir_okay');
 			}
 
 			if (!is_dir($this->getLogDir()) || !is_writable($this->getLogDir())) {
 				$write_status('error_log_dir', $this->getLogDir());
 				$this->outAndLog("Log directory does not exist or is not writable: " . $this->getLogDir());
-				exit(1);
+				$checks_fail = true;
+			} else {
+				$write_status('log_dir_okay');
 			}
 		} catch (\Exception $e) {} // to catch error about log
 
 		try {
 			$this->zip = new ZipStrategy($this);
+			$write_status('zip_ext_okay');
 		} catch (\Exception $e) {
 			$write_status('error_zip_ext', \Orb\Util\Env::getPhpIniPath());
 			$this->outAndLog("To use this tool, the zlib or Zip PHP extensions must be enabled.");
-			exit(1);
+			$checks_fail = true;
 		}
+
+		#---
+		# File permissions: CHeck a few dirs/files to make sure we can write them all
+		#---
+
+		$check = array(
+			DP_ROOT,
+			DP_ROOT.'/src',
+			DP_ROOT.'/sys',
+			DP_ROOT.'/sys/cache',
+			DP_ROOT.'/sys/cache',
+			DP_ROOT.'/sys/cache/prod',
+			DP_ROOT.'/sys/system.php',
+			DP_ROOT.'/sys/vendor',
+		);
+
+		$write_fail = false;
+		foreach ($check as $f) {
+			if (file_exists($f) && !is_writable($f)) {
+				$write_fail = $f;
+				break;
+			}
+		}
+		if ($write_fail) {
+
+			$this->log("Failed write check on: $write_fail");
+
+			$guess_user = 'unknown';
+			if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
+				$uinfo = @posix_getpwuid(@posix_geteuid());
+				if (isset($uinfo['name'])) {
+					$guess_user = $uinfo['name'];
+				}
+			} elseif (function_exists('get_current_user')) {
+				if (@get_current_user()) {
+					$guess_user = @get_current_user();
+				}
+			}
+
+			$owner_user = 'unknown';
+			if (function_exists('posix_geteuid') && function_exists('fileowner')) {
+				$uinfo = @posix_getpwuid(@fileowner($write_fail));
+				if (isset($uinfo['name'])) {
+					$owner_user = $uinfo['name'];
+				}
+			}
+
+			$checks_fail = true;
+			$write_status("error_permissions", sprintf("User who is running the utility: %s, User who owns the files: %s", $guess_user, $owner_user));
+			$this->outAndLog("Found insufficient write permissions to DeskPRO files. Does this user own them or have permission to write?");
+			$this->outAndLog(sprintf("Current user: %s, File owner: %s", $guess_user, $owner_user));
+		} else {
+			$write_status("permissions_okay");
+		}
+
+		if ($checks_fail) {
+			$write_status("error_basic_checks_fail");
+			$this->outAndLog("Failed basic checks");
+			exit(10);
+		}
+
+		$write_status("basic_checks_done");
 
 		#----------------------------------------
 		# Do upgrade
@@ -837,100 +925,17 @@ class Upgrade
 
 	public function getMysqldumpBinaryPath()
 	{
-		static $mysql_dump_path = null;
-
-		if ($mysql_dump_path === null) {
-			global $DP_CONFIG;
-
-			if (!empty($DP_CONFIG['mysqldump_path'])) {
-				$mysql_dump_path = $DP_CONFIG['mysqldump_path'];
-			}
-			if (!$mysql_dump_path) {
-				$finder = new \Symfony\Component\Process\ExecutableFinder();
-				$finder->addSuffix('');
-				$finder->addSuffix('.exe');
-				$finder->addSuffix('.bat');
-				$finder->addSuffix('.cmd');
-				$finder->addSuffix('.com');
-				$mysql_dump_path = $finder->find('mysqldump');
-			}
-
-			if (!$mysql_dump_path) {
-				$mysql_dump_path = false;
-			}
-
-			$mysql_dump_path = escapeshellarg($mysql_dump_path);
-		}
-
-		return $mysql_dump_path;
+		return dp_get_mysqldump_path();
 	}
 
 	public function getMysqlBinaryPath()
 	{
-		static $mysql_path = null;
-
-		if ($mysql_path === null) {
-			global $DP_CONFIG;
-
-			if (!empty($DP_CONFIG['mysql_path'])) {
-				$mysql_path = $DP_CONFIG['mysql_path'];
-			} elseif ($this->getMysqldumpBinaryPath()) {
-				$dir = dirname($this->getMysqldumpBinaryPath());
-				if (is_file($dir . '/mysql')) {
-					$mysql_path = $dir . '/mysql';
-				} elseif (is_file($dir . '/mysql.exe')) {
-					$mysql_path = $dir . '/mysql.exe';
-				}
-			}
-
-			if (!$mysql_path) {
-				$finder = new \Symfony\Component\Process\ExecutableFinder();
-				$finder->addSuffix('');
-				$finder->addSuffix('.exe');
-				$finder->addSuffix('.bat');
-				$finder->addSuffix('.cmd');
-				$finder->addSuffix('.com');
-				$mysql_path = $finder->find('mysql');
-			}
-
-			if (!$mysql_path) {
-				$mysql_path = false;
-			}
-
-			$mysql_path = escapeshellarg($mysql_path);
-		}
-
-		return $mysql_path;
+		return dp_get_mysql_path();
 	}
 
 	public function getPhpBinaryPath()
 	{
-		static $php_path = null;
-
-		if ($php_path === null) {
-			global $DP_CONFIG;
-
-			if (!empty($DP_CONFIG['php_path'])) {
-				$php_path = $DP_CONFIG['php_path'];
-			}
-			if (!$php_path) {
-				$finder = new \Symfony\Component\Process\ExecutableFinder();
-				$finder->addSuffix('');
-				$finder->addSuffix('.exe');
-				$finder->addSuffix('.bat');
-				$finder->addSuffix('.cmd');
-				$finder->addSuffix('.com');
-				$php_path = $finder->find('php');
-			}
-
-			if (!$php_path) {
-				$php_path = false;
-			}
-
-			$php_path = escapeshellarg($php_path);
-		}
-
-		return $php_path;
+		return dp_get_php_path();
 	}
 
 	####################################################################################################################

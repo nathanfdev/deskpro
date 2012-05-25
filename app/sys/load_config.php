@@ -197,3 +197,134 @@ function dp_get_blob_dir()
 
 	return $blob_dir;
 }
+
+
+/**
+ * Try to locate a binary in the current path
+ *
+ * Based on Symfony\Component\Process\ExecutableFinder
+ *
+ * @param $name
+ * @param array|null $use_suffixes
+ * @return mixed|null|string
+ */
+function dp_find_binary($name, array $use_suffixes = null)
+{
+	if (!$use_suffixes) {
+		$use_suffixes = array('', '.exe', '.bat', '.cmd', '.com');
+	}
+
+	$is_windows = (0 === stripos(PHP_OS, 'win'));
+
+	if (ini_get('open_basedir')) {
+		$searchPath = explode(PATH_SEPARATOR, getenv('open_basedir'));
+		$dirs = array();
+		foreach ($searchPath as $path) {
+			if (is_dir($path)) {
+				$dirs[] = $path;
+			} else {
+				$file = str_replace(dirname($path), '', $path);
+				if ($file == $name && is_executable($path)) {
+					return $path;
+				}
+			}
+		}
+	} else {
+		$dirs = explode(PATH_SEPARATOR, getenv('PATH') ? getenv('PATH') : getenv('Path'));
+	}
+
+	$suffixes = DIRECTORY_SEPARATOR == '\\' ? (getenv('PATHEXT') ? explode(PATH_SEPARATOR, getenv('PATHEXT')) : $use_suffixes) : array('');
+	foreach ($suffixes as $suffix) {
+		foreach ($dirs as $dir) {
+			if (is_file($file = $dir.DIRECTORY_SEPARATOR.$name.$suffix) && ($is_windows || is_executable($file))) {
+				return $file;
+			}
+		}
+	}
+
+	return null;
+}
+
+
+/**
+ * Get the path to the PHP CLI binary. Returns null if we can't locate it and php_path isn't configured.
+ *
+ * @return string
+ */
+function dp_get_php_path()
+{
+	static $path = null;
+
+	if ($path === null) {
+		if (dp_get_config('php_path')) {
+			$path = dp_get_config('php_path');
+		}
+		if (!$path) {
+			//$path = dp_find_binary('php');
+		}
+
+		if (!$path) {
+			$path = null;
+		} else {
+			$path = escapeshellarg($path);
+		}
+	}
+
+	return $path;
+}
+
+
+/**
+ * Get the path to the mysqldump binary. Returns null if we can't locate it and mysqldump_path isn't configured.
+ *
+ * @return string
+ */
+function dp_get_mysqldump_path()
+{
+	static $path = null;
+
+	if ($path === null) {
+		if (dp_get_config('mysqldump_path')) {
+			$path = dp_get_config('mysqldump_path');
+		}
+		if (!$path) {
+			$path = dp_find_binary('mysqldump');
+		}
+
+		if (!$path) {
+			$path = null;
+		} else {
+			$path = escapeshellarg($path);
+		}
+	}
+
+	return $path;
+}
+
+
+/**
+ * Get the path to the mysql binary. Returns null if we can't locate it and mysql_path isn't configured.
+ *
+ * @return string
+ */
+function dp_get_mysql_path()
+{
+	static $path = null;
+
+	if ($path === null) {
+		if (dp_get_config('mysql_path')) {
+			$path = dp_get_config('mysql_path');
+		}
+		if (!$path) {
+			$path = dp_find_binary('mysql_path');
+		}
+
+		if (!$path) {
+			$path = null;
+		} else {
+			$path = escapeshellarg($path);
+		}
+	}
+
+	return $path;
+}

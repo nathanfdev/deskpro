@@ -54,14 +54,16 @@ DeskPRO.Admin.ElementHandler.UpgradeWatch = new Orb.Class({
 
 					var last_time = self.hasInitialPoll || 0;
 					var restart_timer = true;
+					var is_error = false;
 					Array.each(lines, function(last) {
-						var m = /^STATUS\((.*?)\)@([0-9]+)#(.*?)$/.exec(last);
+						var m = /^STATUS\((.*?)\)@([0-9\.]+)#(.*?)$/.exec(last);
 						if (m) {
-							var time = parseInt(m[2]);
+							var time = parseFloat(m[2]);
 							if (time >= last_time) {
 								console.log("Line: %s", last);
 								self.updateStatus(m[1], m[3], m[2]);
 								if (m[1] == 'done' || m[1].indexOf('error_') === 0) {
+									is_error = m[1].indexOf('error_') === 0;
 									restart_timer = false;
 								}
 								last_time = time;
@@ -86,11 +88,14 @@ DeskPRO.Admin.ElementHandler.UpgradeWatch = new Orb.Class({
 
 		if (code.indexOf('error_') === 0) {
 			this.handleError(code, message);
-			return;s
+			return;
 		}
 
 		switch (code) {
 			case 'start':
+				$('li.step-start').addClass('done on');
+				break;
+			case 'basic_checks_start':
 				$('li.step-start').addClass('done on');
 				break;
 			case 'file_backup_start':
@@ -122,8 +127,11 @@ DeskPRO.Admin.ElementHandler.UpgradeWatch = new Orb.Class({
 	},
 
 	handleError: function(code, message) {
-		$('li.done').last().removeClass('done');
 		$('#error').show();
-		$('.' + code).show().find('.place-message').text(message);
+
+		$('.' + code).show();
+		if (message && message.trim().length) {
+			$('.' + code).find('.place-message').text(message);
+		}
 	}
 });

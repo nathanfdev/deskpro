@@ -485,23 +485,7 @@ class DeskproContainer extends Container
 	 */
 	public function getPhpBinaryPath()
 	{
-		static $php_path = null;
-
-		if ($php_path === null) {
-			$php_path = $this->getSysConfig('php_path');
-			if (!$php_path) {
-				$finder = new \Symfony\Component\Process\PhpExecutableFinder();
-				$php_path = $finder->find();
-			}
-
-			if (!$php_path) {
-				$php_path = false;
-			}
-
-			$php_path = escapeshellarg($php_path);
-		}
-
-		return $php_path;
+		return dp_get_php_path();
 	}
 
 
@@ -514,28 +498,7 @@ class DeskproContainer extends Container
 	 */
 	public function getMysqldumpBinaryPath()
 	{
-		static $mysqdump_path = null;
-
-		if ($mysqdump_path === null) {
-			$mysqdump_path = $this->getSysConfig('mysqldump_path');
-			if (!$mysqdump_path) {
-				$finder = new \Symfony\Component\Process\ExecutableFinder();
-				$finder->addSuffix('');
-				$finder->addSuffix('.exe');
-				$finder->addSuffix('.bat');
-				$finder->addSuffix('.cmd');
-				$finder->addSuffix('.com');
-				$mysqdump_path = $finder->find('mysqldump');
-			}
-
-			if (!$mysqdump_path) {
-				$mysqdump_path = false;
-			}
-
-			$mysqdump_path = escapeshellarg($mysqdump_path);
-		}
-
-		return $mysqdump_path;
+		return dp_get_mysqldump_path();
 	}
 
 
@@ -548,40 +511,7 @@ class DeskproContainer extends Container
 	 */
 	public function getMysqlBinaryPath()
 	{
-		static $mysql_path = null;
-
-		if ($mysql_path === null) {
-			global $DP_CONFIG;
-
-			if (!empty($DP_CONFIG['mysql_path'])) {
-				$mysql_path = $DP_CONFIG['mysql_path'];
-			} elseif ($this->getMysqldumpBinaryPath()) {
-				$dir = dirname($this->getMysqldumpBinaryPath());
-				if (is_file($dir . '/mysql')) {
-					$mysql_path = $dir . '/mysql';
-				} elseif (is_file($dir . '/mysql.exe')) {
-					$mysql_path = $dir . '/mysql.exe';
-				}
-			}
-
-			if (!$mysql_path) {
-				$finder = new \Symfony\Component\Process\ExecutableFinder();
-				$finder->addSuffix('');
-				$finder->addSuffix('.exe');
-				$finder->addSuffix('.bat');
-				$finder->addSuffix('.cmd');
-				$finder->addSuffix('.com');
-				$mysql_path = $finder->find('mysql');
-			}
-
-			if (!$mysql_path) {
-				$mysql_path = false;
-			}
-
-			$mysql_path = escapeshellarg($mysql_path);
-		}
-
-		return $mysql_path;
+		return dp_get_mysql_path();
 	}
 
 
