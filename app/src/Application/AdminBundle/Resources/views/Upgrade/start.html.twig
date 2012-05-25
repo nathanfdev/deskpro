@@ -1,81 +1,112 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block pagebar %}
-	<ul>
+<ul xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 		<li>Upgrading DeskPRO</li>
 	</ul>
 {% endblock %}
 {% block page %}
 
-<div class="page-content agent-listing" style="padding-top: 0;">
-	<div class="content-table">
+<div class="alert-message block-message info" style="border: 2px solid #CADFE5; margin-bottom: 15px;">
+	<h3>Your Version</h3>
+	<p>
+		You are currently running: {{ current_version|date('Y-m-d.H') }}
+	</p>
+	<br />
+
+	{% if version_info.build %}
+		<h3>Latest Version</h3>
+		<p>
+			The latest version is: {{ version_info.build|date('Y-m-d.H') }}
+		</p>
+		{% if version_info.count_behind %}
+			<p>You are <span class="label" style="text-shadow: none; color: #000;">{{ version_info.count_behind }} version{% if version_info.count_behind != 1 %}s{% endif %} behind</span>. You can upgrade using one of the options outlined below.</p>
+		{% else %}
+			<p>Your helpdesk is all up to date.</p>
+		{% endif %}
+	{% else %}
+		<p>
+			We were unable to make a network connection to our server to retrieve version information. This may indicate your server is behind a firewall.
+		</p>
+	{% endif %}
+</div>
+
+{% if version_info.build %}
+	{% set network_okay = true %}
+{% else %}
+	{% set network_okay = false %}
+{% endif %}
+
+{#######################################################################################################################
+ # Automatic
+ ######################################################################################################################}
+
+<div class="page-content" style="padding-top: 0;">
+	<div class="content-table template-dir">
 		<table width="100%">
 			<thead>
 				<tr>
-					<th colspan="2" class="single-title">Schedule Automatic Upgrade</th>
+					<th colspan="2" class="single-title">
+						<h1 class="toggle-section expanded">Schedule Automatic Upgrade</h1>
+					</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td>
-						<p>
-							The automatic upgrader lets you upgrade DeskPRO from your browser with a few clicks.
-						</p>
+						<div style="position:relative">
 
-						<form class="dp-form" method="POST" action="{{ path('admin_upgrade') }}">
-							<input type="hidden" name="start" value="1" />
-							<div {% if app.getVariable('cron_is_problem') %}style="opacity: 0.4"{% endif %}>
-								<div class="dp-form-row">
-									<div class="dp-form-label">
-										<label>Options</label>
-									</div>
-									<div class="dp-form-input">
-										When: <select name="minutes">
-											<option value="0">As soon as possible</option>
-											<option value="5" selected="selected">5 minutes</option>
-											<option value="10">10 minutes</option>
-											<option value="15">15 minutes</option>
-											<option value="30">30 minutes</option>
-											<option value="30">45 minutes</option>
-											<option value="60">1 hour</option>
-											<option value="90">1.5 hours</option>
-											<option value="60">2 hours</option>
-										</select>
-										<br />
-										<input type="checkbox" name="backup_files" value="1" checked="checked" /> Backup the current DeskPRO source files
-										<br />
-										<input type="checkbox" name="backup_db" value="1" checked="checked" /> Backup your database
-									</div>
-								</div>
+							{% if not network_okay %}
+								<div class="warning-block-overlay">
+									<article>
+										<p>
+											We could not make a connection to our server. The automatic ugprader requires an active connection
+											to our server so we can download updates.
+										</p>
 
-								<div class="dp-form-row">
-									<div class="dp-form-label">
-										<label>Send a message to online agents about the pending upgrade</label>
-									</div>
-									<div class="dp-form-input">
-										<input type="text" name="agent_message" value="" />
-									</div>
+										<p>
+											If your server is behind a firewall, disable it now and then refresh the page.
+										</p>
+									</article>
 								</div>
-								<div class="dp-form-row">
-									<div class="dp-form-label">
-										<label>Show a warning on your helpdesk portal about the pending upgrade</label>
-									</div>
-									<div class="dp-form-input">
-										<input type="text" name="user_message" value="" />
-									</div>
-								</div>
-							</div>
-
-							{% if app.getVariable('cron_is_problem') %}
-								<p>
-									Scheduled tasks do not appear to be running. The automatic upgrader requires scheduled tasks.
-								</p>
-							<p>
-									<a class="btn primary" href="{{ path('admin_settings_cron') }}">Click here for information on scheduled tasks</a>
-								</p>
-							{% else %}
-								<p><button class="btn primary">Schedule Upgrade</button></p>
 							{% endif %}
-						</form>
+
+							<form class="dp-form" method="POST" action="{{ path('admin_upgrade') }}">
+								<input type="hidden" name="start" value="1" />
+								<div {% if app.getVariable('cron_is_problem') %}style="opacity: 0.4"{% endif %}>
+									<p style="margin-bottom: 15px">
+										Start the upgrade:
+										&nbsp;&nbsp;<br />
+										<label><input type="radio" name="minutes" value="0" checked="checked" /> Now</label>
+										&nbsp;&nbsp;
+										<label><input type="radio" name="minutes" value="0" /> Wait 5 minutes to allow agents to finish their work</label>
+									</p>
+
+									<p style="margin-bottom: 15px">
+										Before applying the upgrade:
+										&nbsp;&nbsp;<br />
+										<label><input type="checkbox" name="backup_files" value="1" checked="checked" /> Backup the current DeskPRO source files</label>
+										&nbsp;&nbsp;
+										<label><input type="checkbox" name="backup_db" value="1" checked="checked" /> Backup my database</label>
+									</p>
+
+									<p style="margin-bottom: 18px">
+										While the helpdesk is offline, show this message to users:
+										<input style="margin-top: 3px;" type="text" name="user_message" value="{{ app.getSetting('core.helpdesk_disabled_message') }}" />
+									</p>
+								</div>
+
+								{% if app.getVariable('cron_is_problem') %}
+									<p>
+										Scheduled tasks do not appear to be running. The automatic upgrader requires scheduled tasks.
+									</p>
+									<p>
+										<a class="btn primary" href="{{ path('admin_settings_cron') }}">Click here for information on scheduled tasks</a>
+									</p>
+								{% else %}
+									<p><button class="btn primary">Schedule Upgrade &rarr;</button></p>
+								{% endif %}
+							</form>
+						</div>
 					</td>
 				</tr>
 			</tbody>
@@ -83,15 +114,21 @@
 	</div>
 </div>
 
+{#######################################################################################################################
+ # Interactive
+ ######################################################################################################################}
+
 <div class="page-content agent-listing" style="padding-top: 0;">
-	<div class="content-table">
+	<div class="content-table template-dir">
 		<table width="100%">
 			<thead>
 				<tr>
-					<th class="single-title">Using the interactive upgrader</th>
+					<th colspan="2" class="single-title">
+						<h1 class="toggle-section">Using the interactive upgrader from the command-line</h1>
+					</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody style="display: none">
 				<tr>
 					<td>
 						<p>
@@ -121,15 +158,21 @@
 	</div>
 </div>
 
+{#######################################################################################################################
+ # Manual
+ ######################################################################################################################}
+
 <div class="page-content agent-listing" style="padding-top: 0;">
-	<div class="content-table">
+	<div class="content-table template-dir">
 		<table width="100%">
 			<thead>
 				<tr>
-					<th class="single-title">Manually downloading updates</th>
+					<th colspan="2" class="single-title">
+						<h1 class="toggle-section {% if not network_okay %}expanded{% endif %}">Manually downloading updates</h1>
+					</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody style="{% if network_okay %}display: none{% endif %}">
 				<tr>
 					<td>
 						<div class="box-section">
@@ -192,4 +235,17 @@
 		</table>
 	</div>
 </div>
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('h1.toggle-section').on('click', function() {
+			if ($(this).hasClass('expanded')) {
+				$(this).removeClass('expanded').closest('table').find('tbody').hide();
+			} else {
+				$(this).addClass('expanded').closest('table').find('tbody').show();
+			}
+		});
+	});
+</script>
 {% endblock %}

@@ -289,6 +289,8 @@ abstract class AbstractKernel extends BaseAbstractKernel
 			$this->boot();
 		}
 
+		$path = $request->getPathInfo();
+
 		if (!deskpro_install_check_pdo_mysql()) {
 			$response = new RedirectResponse($request->getBasePath() . '/index.php/install/');
 			return $response;
@@ -315,9 +317,26 @@ abstract class AbstractKernel extends BaseAbstractKernel
 		}
 
 		// Make sure we arent offline
-		if ($this->isHelpdeskOffline()) {
+		if (!preg_match('#^/admin/?#', $path) && $this->isHelpdeskOffline()) {
 			$response = new Response();
-			$response->setContent(file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/helpdesk-disabled.html'));
+
+			$offline_message = null;
+			if (file_exists(dp_get_tmp_dir() . '/helpdesk-offline-message.txt')) {
+				$offline_message = file_get_contents(dp_get_tmp_dir() . '/helpdesk-offline-message.txt');
+			} else {
+				try {
+					$offline_message = App::getSetting('core.helpdesk_disabled_message');
+				} catch (\Exception $e) {}
+			}
+
+			if (!$offline_message) {
+				$offline_message = 'The helpdesk is currently offline for maintenance. Please try again soon.';
+			}
+
+			$page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/helpdesk-disabled.html');
+			$page_html = str_replace('{{ OFFLINE_MESSAGE }}', $offline_message, $page_html);
+
+			$response->setContent($page_html);
 			return $response;
 		}
 
@@ -346,8 +365,6 @@ abstract class AbstractKernel extends BaseAbstractKernel
 
 		/** @var $response \Symfony\Component\HttpFoundation\Response */
 		$response = $this->getHttpKernel()->handle($request, $type, $catch);
-
-		$path = $request->getPathInfo();
 
 		#------------------------------
 		# License checks

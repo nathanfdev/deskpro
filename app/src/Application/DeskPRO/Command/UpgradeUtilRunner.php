@@ -71,8 +71,6 @@ class UpgradeUtilRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_set_at', null);
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_files', null);
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_db', null);
-		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_agent_notice', null);
-		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_user_notice', null);
 
 		$ret = null;
 		passthru($cmd, $ret);

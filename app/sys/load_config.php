@@ -200,6 +200,24 @@ function dp_get_blob_dir()
 
 
 /**
+ * @return string
+ */
+function dp_get_tmp_dir()
+{
+	dp_load_config();
+
+	global $DP_CONFIG;
+	if (isset($DP_CONFIG['dir_tmp']) && $DP_CONFIG['dir_tmp']) {
+		$backup_dir = $DP_CONFIG['dir_tmp'];
+	} else {
+		$backup_dir = DP_WEB_ROOT . '/data/tmp';
+	}
+
+	return $backup_dir;
+}
+
+
+/**
  * Try to locate a binary in the current path
  *
  * Based on Symfony\Component\Process\ExecutableFinder

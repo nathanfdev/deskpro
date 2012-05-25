@@ -68,7 +68,11 @@ class LicenseService
 		static $data = null;
 
 		if ($data === null) {
-			$data = self::fetchServiceResult('build/compare-version.json', array('my_build' => DP_BUILD_TIME));
+			try {
+				$data = self::fetchServiceResult('build/compare-version.json', array('my_build' => DP_BUILD_TIME));
+			} catch (\Exception $e) {
+				$data = array();
+			}
 		}
 
 		return $data;

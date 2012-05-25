@@ -3750,10 +3750,6 @@ tr.adv-setting {
 			padding: 7px 10px 7px 10px !important;
 		}
 
-		td:hover {
-			background-color: #F8F8F8;
-		}
-
 		&.simple {
 			td:hover { background-color: #fff; }
 		}
@@ -4120,5 +4116,25 @@ ul.standard-list li {
 		text-align: center;
 		background: #fff url(../../images/spinners/editor-loading.gif) no-repeat 50% 18px;
 		margin: 150px auto 0 auto;
+	}
+}
+
+.warning-block-overlay {
+	position: absolute;
+	top: -2px;
+	right: -2px;
+	bottom: -2px;
+	left: -2px;
+	background: rgba(189,189,189,0.5);
+
+	article {
+		margin: 10px auto 0 auto;
+		padding: 15px;
+		width: 450px;
+		background: #fff;
+		border: 2px solid #A5A7A7;
+		text-align: center;
+		.rounded(5px);
+		.box-shadow();
 	}
 }

@@ -57,6 +57,13 @@
 	'core.helpdesk_disabled' => false,
 
 	/**
+	 * The default message to show when helpdesk is disabled
+	 * Note that this is actually written to a file when updated, this record is kept just
+	 * as the default.
+	 */
+	'core.helpdesk_disabled_message' => 'Our helpdesk is temporarily offline for maintanance. We will be back up in about 10 minutes.',
+
+	/**
 	 * The URL to the DeskPRO installation
 	 */
 	'core.deskpro_url' => '',

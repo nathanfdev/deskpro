@@ -54,13 +54,14 @@ class UpgradeController extends AbstractController
 			$this->container->getSettingsHandler()->setSetting('core.upgrade_set_at', time());
 			$this->container->getSettingsHandler()->setSetting('core.upgrade_backup_files', $this->in->getInt('backup_files'));
 			$this->container->getSettingsHandler()->setSetting('core.upgrade_backup_db', $this->in->getInt('backup_db'));
-			$this->container->getSettingsHandler()->setSetting('core.upgrade_agent_notice', $this->in->getString('agent_message'));
-			$this->container->getSettingsHandler()->setSetting('core.upgrade_user_notice', $this->in->getString('user_message'));
 
-			if ($this->in->getString('agent_message')) {
+			$this->container->getSettingsHandler()->setSetting('core.helpdesk_disabled_message', $this->in->getString('user_message'));
+			@file_put_contents(dp_get_tmp_dir() . '/helpdesk-offline-message.txt', $this->in->getString('user_message'));
+
+			if ($mins) {
 				$agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
 				$agent_ids = array_keys($this->em->getRepository('DeskPRO:Person')->getAgents());
-				$agent_chat->sendAgentMessage($this->in->getString('agent_message'), $agent_ids, 0);
+				$agent_chat->sendAgentMessage("Warning: The helpdesk will go down for maintenance in 5 minutes.", $agent_ids, 0);
 			}
 
 			return $this->redirectRoute('admin_upgrade_watch');
@@ -68,6 +69,7 @@ class UpgradeController extends AbstractController
 
 		return $this->render('AdminBundle:Upgrade:start.html.twig', array(
 			'version_info' => $version_info,
+			'current_version' => DP_BUILD_TIME
 		));
 	}
 
@@ -98,8 +100,6 @@ class UpgradeController extends AbstractController
 		$this->container->getSettingsHandler()->setSetting('core.upgrade_set_at', null);
 		$this->container->getSettingsHandler()->setSetting('core.upgrade_backup_files', null);
 		$this->container->getSettingsHandler()->setSetting('core.upgrade_backup_db', null);
-		$this->container->getSettingsHandler()->setSetting('core.upgrade_agent_notice', null);
-		$this->container->getSettingsHandler()->setSetting('core.upgrade_user_notice', null);
 		return $this->redirectRoute('admin_upgrade');
 	}
 }

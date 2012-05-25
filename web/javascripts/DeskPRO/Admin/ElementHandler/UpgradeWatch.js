@@ -98,6 +98,9 @@ DeskPRO.Admin.ElementHandler.UpgradeWatch = new Orb.Class({
 			case 'basic_checks_start':
 				$('li.step-start').addClass('done on');
 				break;
+			case 'basic_checks_done':
+				$('li.step-start').addClass('done');
+				break;
 			case 'file_backup_start':
 				$('li.step-backup-files').addClass('done on');
 				break;
