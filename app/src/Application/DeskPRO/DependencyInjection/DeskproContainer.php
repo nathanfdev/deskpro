@@ -498,9 +498,7 @@ class DeskproContainer extends Container
 				$php_path = false;
 			}
 
-			if (strpos($php_path, ' ') !== false) {
-				$php_path = "\"$php_path\"";
-			}
+			$php_path = escapeshellarg($php_path);
 		}
 
 		return $php_path;
@@ -534,12 +532,56 @@ class DeskproContainer extends Container
 				$mysqdump_path = false;
 			}
 
-			if (strpos($mysqdump_path, ' ') !== false) {
-				$mysqdump_path = "\"$mysqdump_path\"";
-			}
+			$mysqdump_path = escapeshellarg($mysqdump_path);
 		}
 
 		return $mysqdump_path;
+	}
+
+
+	/**
+	 * Gets the path to the 'mysql' binary.
+	 *
+	 * * Returns false if the path could not be found and if 'mysql_path' in config is not set.
+	 *
+	 * @return string
+	 */
+	public function getMysqlBinaryPath()
+	{
+		static $mysql_path = null;
+
+		if ($mysql_path === null) {
+			global $DP_CONFIG;
+
+			if (!empty($DP_CONFIG['mysql_path'])) {
+				$mysql_path = $DP_CONFIG['mysql_path'];
+			} elseif ($this->getMysqldumpBinaryPath()) {
+				$dir = dirname($this->getMysqldumpBinaryPath());
+				if (is_file($dir . '/mysql')) {
+					$mysql_path = $dir . '/mysql';
+				} elseif (is_file($dir . '/mysql.exe')) {
+					$mysql_path = $dir . '/mysql.exe';
+				}
+			}
+
+			if (!$mysql_path) {
+				$finder = new \Symfony\Component\Process\ExecutableFinder();
+				$finder->addSuffix('');
+				$finder->addSuffix('.exe');
+				$finder->addSuffix('.bat');
+				$finder->addSuffix('.cmd');
+				$finder->addSuffix('.com');
+				$mysql_path = $finder->find('mysql');
+			}
+
+			if (!$mysql_path) {
+				$mysql_path = false;
+			}
+
+			$mysql_path = escapeshellarg($mysql_path);
+		}
+
+		return $mysql_path;
 	}
 
 

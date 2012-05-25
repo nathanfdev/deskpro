@@ -782,9 +782,17 @@ class Upgrade
 
 		$pass = '';
 		if ($DP_CONFIG['db']['password']) {
-			$pass = " --password='{$DP_CONFIG['db']['password']}' ";
+			$pass = " --password=" . escapeshellarg($DP_CONFIG['db']['password']) . " ";
 		}
-		$cmd = $mysql_dump_path . " --opt -Q -h{$DP_CONFIG['db']['host']} -u{$DP_CONFIG['db']['user']}{$pass}{$DP_CONFIG['db']['dbname']} > $f";
+		$cmd = sprintf(
+			"%s --opt -Q -h%s -u%s%s%s > %s",
+			$mysql_dump_path,
+			escapeshellarg($DP_CONFIG['db']['host']),
+			escapeshellarg($DP_CONFIG['db']['user']),
+			$pass,
+			escapeshellarg($DP_CONFIG['db']['dbname']),
+			escapeshellarg($f)
+		);
 
 		$this->log("Backup directory:  {$this->getBackupDir()}");
 		$this->log("Backup command:    $cmd");
@@ -851,9 +859,7 @@ class Upgrade
 				$mysql_dump_path = false;
 			}
 
-			if (strpos($mysql_dump_path, ' ') !== false) {
-				$mysql_dump_path = "\"$mysql_dump_path\"";
-			}
+			$mysql_dump_path = escapeshellarg($mysql_dump_path);
 		}
 
 		return $mysql_dump_path;
@@ -891,9 +897,7 @@ class Upgrade
 				$mysql_path = false;
 			}
 
-			if (strpos($mysql_path, ' ') !== false) {
-				$mysql_path = "\"$mysql_path\"";
-			}
+			$mysql_path = escapeshellarg($mysql_path);
 		}
 
 		return $mysql_path;
@@ -923,9 +927,7 @@ class Upgrade
 				$php_path = false;
 			}
 
-			if (strpos($php_path, ' ') !== false) {
-				$php_path = "\"$php_path\"";
-			}
+			$php_path = escapeshellarg($php_path);
 		}
 
 		return $php_path;
@@ -1022,9 +1024,17 @@ class Upgrade
 
 		$pass = '';
 		if ($DP_CONFIG['db']['password']) {
-			$pass = " --password='{$DP_CONFIG['db']['password']}' ";
+			$pass = " --password=".escapeshellarg($DP_CONFIG['db']['password'])." ";
 		}
-		$cmd = "$mysql_path -h{$DP_CONFIG['db']['host']} -u{$DP_CONFIG['db']['user']}{$pass}{$DP_CONFIG['db']['dbname']} < $sql_filename";
+		$cmd = sprintf(
+			'%s -h%s -u%s%s%s < %s',
+			$mysql_path,
+			escapeshellarg($DP_CONFIG['db']['host']),
+			escapeshellarg($DP_CONFIG['db']['user']),
+			$pass,
+			escapeshellarg($DP_CONFIG['db']['dbname']),
+			escapeshellarg($sql_filename)
+		);
 
 		$ret = $this->execCommand($cmd, $tmp_dir);
 		if ($ret) {
