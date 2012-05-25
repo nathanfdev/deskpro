@@ -215,7 +215,12 @@ class Upgrade
 			}
 
 			if (!is_dir($this->getLogDir()) || !is_writable($this->getLogDir())) {
-				$this->outAndLog("Backup directory does not exist or is not writable: " . $this->getBackupDir());
+				$this->outAndLog("Log  directory does not exist or is not writable: " . $this->not());
+				exit(1);
+			}
+
+			if (!is_dir($this->getTmpDir()) || !is_writable($this->getTmpDir())) {
+				$this->outAndLog("Tmp directory does not exist or is not writable: " . $this->getTmpDir());
 				exit(1);
 			}
 		} catch (\Exception $e) {} // to catch error about log
@@ -505,6 +510,14 @@ class Upgrade
 				$checks_fail = true;
 			} else {
 				$write_status('log_dir_okay');
+			}
+
+			if (!is_dir($this->getTmpDir()) || !is_writable($this->getTmpDir())) {
+				$write_status('error_tmp_dir', $this->getTmpDir());
+				$this->outAndLog("Tmp directory does not exist or is not writable: " . $this->getTmpDir());
+				$checks_fail = true;
+			} else {
+				$write_status('tmp_dir_okay');
 			}
 		} catch (\Exception $e) {} // to catch error about log
 
@@ -1068,7 +1081,7 @@ class Upgrade
 		$time_start = microtime(true);
 
 		$f = '/' . date('Y-m-d') . '-files';
-		$backup_dir = $this->getBackupDir() . $f;
+		$backup_dir = $this->getTmpDir() . $f;
 		if (is_dir($backup_dir)) {
 			throw new FileBackupException("Backup directory already exists: $backup_dir", FileBackupException::FILE_EXISTS);
 		}
@@ -1194,7 +1207,7 @@ class Upgrade
 		$time_start = microtime(true);
 
 		if (!$save_path) {
-			$save_path = $this->getBackupDir();
+			$save_path = $this->getTmpDir();
 		}
 
 		if (is_dir($save_path)) {
@@ -1369,18 +1382,16 @@ class Upgrade
 	 */
 	public function getBackupDir()
 	{
-		static $backup_dir = null;
+		return dp_get_backup_dir();
+	}
 
-		if ($backup_dir === null) {
-			global $DP_CONFIG;
-			if (isset($DP_CONFIG['dir_backups']) && $DP_CONFIG['dir_backups']) {
-				$backup_dir = $DP_CONFIG['dir_backups'];
-			} else {
-				$backup_dir = DP_WEB_ROOT . '/data/backups';
-			}
-		}
 
-		return $backup_dir;
+	/**
+	 * @return string
+	 */
+	public function getTmpDir()
+	{
+		return dp_get_tmp_dir();
 	}
 
 
@@ -1389,18 +1400,7 @@ class Upgrade
 	 */
 	public function getLogDir()
 	{
-		static $log_dir = null;
-
-		if ($log_dir === null) {
-			global $DP_CONFIG;
-			if (isset($DP_CONFIG['dir_logs']) && $DP_CONFIG['dir_logs']) {
-				$log_dir = $DP_CONFIG['dir_logs'];
-			} else {
-				$log_dir = DP_WEB_ROOT . '/data/logs';
-			}
-		}
-
-		return $log_dir;
+		return dp_get_log_dir();
 	}
 
 

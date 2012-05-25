@@ -14,7 +14,7 @@
 	'dp.kb.install.error_ctype_ext'       => 'http://support.deskpro.com/',
 	'dp.kb.install.error_image_manip'     => 'http://support.deskpro.com/',
 	'dp.kb.install.error_memory_limit'    => 'http://support.deskpro.com/',
-	'dp.kb.install.error_logs_dir'        => 'http://support.deskpro.com/',
+	'dp.kb.install.error_data_dir'        => 'http://support.deskpro.com/',
 	'dp.kb.install.error_openssl'         => 'http://support.deskpro.com/',
 	'dp.kb.install.error_error_apc'       => 'http://support.deskpro.com/',
 	'dp.kb.install.error_magic_quotes'    => 'http://support.deskpro.com/',

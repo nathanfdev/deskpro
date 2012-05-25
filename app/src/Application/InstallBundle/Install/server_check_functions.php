@@ -77,6 +77,37 @@ function deskpro_install_check_writable()
 	return true;
 }
 
+function deskpro_install_check_data_writable($data_dir = null)
+{
+	if (!$data_dir) {
+		$data_dir = DP_WEB_ROOT . '/data';
+	}
+
+	$dirs = array(
+		$data_dir . '/backups',
+		$data_dir . '/debug',
+		$data_dir . '/files',
+		$data_dir . '/logs',
+		$data_dir . '/tmp',
+	);
+
+	$failed = false;
+	foreach ($dirs as $d) {
+		if (!is_dir($d)) {
+			@mkdir($d, 0777, true);
+		}
+		if (!is_writable($d)) {
+			$failed = true;
+		}
+	}
+
+	if ($failed) {
+		return false;
+	}
+
+	return true;
+}
+
 function deskpro_install_basic_error($message, $title = 'DeskPRO Installation')
 {
 	// We dont know the root path yet, so lets just inline the CSS

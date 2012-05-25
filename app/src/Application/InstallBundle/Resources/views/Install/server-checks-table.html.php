@@ -216,28 +216,22 @@
 <tr>
 	<td>
 		<?php $failed = false ?>
-		<?php if (!isset($errors['logs_write'])): ?>
+		<?php if (!isset($errors['data_write'])): ?>
 		<span class="label success" style="float:right">OK</span>
 		<?php else: $failed = true; ?>
 		<span class="label important" style="float:right">FAIL</span>
 		<?php endif ?>
-		Check that the logs directory is writable
+		Check that the data directory is writable
 		<?php if ($failed): ?>
 		<div class="alert-message block-message error">
-			<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_logs_dir') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
-			The logs directory (<?php echo $logs_dir_info ?>) must exist and be writable.
+			<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_data_dir') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
+			The data directory (<?php echo $data_dir ?>) and all sub-directories must be writable.
 		</div>
-			<?php if ($is_default_logs_dir): ?>
-				<p>
-					We recommend making the entire data/ directory (and everything under it) writable. Some features you may want to use later will require write access, so we recommend making the
-					changes now for easier setup.
-				</p>
-			<?php endif ?>
 			<?php if (strpos(strtoupper(PHP_OS), 'WIN') === 0): ?>
 			<?php else: ?>
 				<p>
 					On Linux systems, you can run this command from the terminal:
-					<code>chmod -R 0777 <?php if ($is_default_logs_dir): ?><?php echo DP_WEB_ROOT ?>/data<?php else: ?><?php echo $logs_dir_info_full ?><?php endif ?></code>
+					<code>chmod -R 0777 <?php echo $data_dir ?></code>
 				</p>
 			<?php endif ?>
 		<?php endif ?>

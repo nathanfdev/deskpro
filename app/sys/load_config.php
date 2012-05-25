@@ -148,6 +148,24 @@ function dp_get_config($path, $default = null)
 /**
  * @return string
  */
+function dp_get_data_dir()
+{
+	dp_load_config();
+
+	global $DP_CONFIG;
+	if (isset($DP_CONFIG['dir_data']) && $DP_CONFIG['dir_data']) {
+		$log_dir = $DP_CONFIG['dir_data'];
+	} else {
+		$log_dir = DP_WEB_ROOT . '/data';
+	}
+
+	return $log_dir;
+}
+
+
+/**
+ * @return string
+ */
 function dp_get_log_dir()
 {
 	dp_load_config();
@@ -156,7 +174,7 @@ function dp_get_log_dir()
 	if (isset($DP_CONFIG['dir_logs']) && $DP_CONFIG['dir_logs']) {
 		$log_dir = $DP_CONFIG['dir_logs'];
 	} else {
-		$log_dir = DP_WEB_ROOT . '/data/logs';
+		$log_dir = dp_get_data_dir() . '/logs';
 	}
 
 	return $log_dir;
@@ -174,7 +192,7 @@ function dp_get_backup_dir()
 	if (isset($DP_CONFIG['dir_backups']) && $DP_CONFIG['dir_backups']) {
 		$backup_dir = $DP_CONFIG['dir_backups'];
 	} else {
-		$backup_dir = DP_WEB_ROOT . '/data/backups';
+		$backup_dir = dp_get_data_dir() . '/backups';
 	}
 
 	return $backup_dir;
@@ -192,7 +210,7 @@ function dp_get_blob_dir()
 	if (isset($DP_CONFIG['dir_files']) && $DP_CONFIG['dir_files']) {
 		$blob_dir = $DP_CONFIG['dir_files'];
 	} else {
-		$blob_dir = DP_WEB_ROOT . '/data/files';
+		$blob_dir = dp_get_data_dir() . '/files';
 	}
 
 	return $blob_dir;
@@ -210,7 +228,7 @@ function dp_get_tmp_dir()
 	if (isset($DP_CONFIG['dir_tmp']) && $DP_CONFIG['dir_tmp']) {
 		$backup_dir = $DP_CONFIG['dir_tmp'];
 	} else {
-		$backup_dir = DP_WEB_ROOT . '/data/tmp';
+		$backup_dir = dp_get_data_dir() . '/tmp';
 	}
 
 	return $backup_dir;

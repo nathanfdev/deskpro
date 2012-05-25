@@ -38,9 +38,9 @@
 			{% elseif code == 'memory_limit' %}
 				PHP's <a href="http://php.net/manual/en/ini.core.php#ini.memory-limit">memory limit</a> is set too low.
 				Edit your php.ini and set memory_limit to at least 128M.
-			{% elseif code == 'logs_write' %}
-				The logs directory is not writable by the user that executes the scheduled task.
-				Ensure that the user who runs the task is able to write to your logs directory at {{ log_dir }}
+			{% elseif code == 'data_write' %}
+				The data directory is not writable by the user that executes the scheduled task.
+				Ensure that the user who runs the task is able to write to your data directory at {{ data_dir }}
 			{% elseif code == 'db_connect' %}
 				The scheduled task was unable to connect to the MySQL database.
 			{% endif %}

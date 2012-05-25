@@ -327,7 +327,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 				$logger->log($str, Logger::ERR);
 
 				$e = new \Application\InstallBundle\Install\ServerCheckException("Server requirements failed: " . implode(', ', array_keys($server_check->getFatalErrors())));
-				self::sendLogFile($e);
+				self::sendLogFile(\DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e));
 
 				return 1;
 			}
@@ -524,6 +524,29 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 				$old_helpdesk_url = $importer->getOldDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('helpdesk_url'));
 				$logger->log('dp_old_url(' . $old_helpdesk_url.')', \Orb\Log\Logger::DEBUG);
+			}
+
+			$output->writeln(
+				"The import process is about to begin. The process is automatic and you will not need to do anything,\n"
+				."So it is safe to leave this tool running unattended.\n"
+			);
+
+			if ($config['store_attachment_files']) {
+				$output->writeln(
+					"Note that attachments will be copied to the filesystem (under /data/files). You can disable this\n"
+					."option in config.php by turning off 'store_attachment_files'.\n"
+				);
+			}
+
+			try {
+				$yes = $this->getHelper('dialog')->askConfirmation($output, 'Are ready to continue? [Y/n]> ');
+			} catch (\Exception $e) {
+				$yes = false;
+			}
+			if ($yes) {
+				echo "Aborted. You can re-run this command again at any time.\n";
+				echo "\n";
+				return 0;
 			}
 		}
 

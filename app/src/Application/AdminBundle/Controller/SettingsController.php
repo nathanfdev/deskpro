@@ -471,7 +471,7 @@ class SettingsController extends AbstractController
 			$cron_errors = $this->renderView('AdminBundle:Settings:quick-setup-cron-errors.html.twig', array(
 				'error_codes' => $error_codes,
 				'ini_path' => $ini_path,
-				'log_dir' => dp_get_log_dir()
+				'data_dir' => dp_get_data_dir()
 			));
 		}
 

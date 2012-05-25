@@ -516,19 +516,19 @@ class ServerChecks
 		}
 
 		#------------------------------
-		# logs_write
+		# data_write
 		#------------------------------
 
-		if ($type == 'logs_write' || $type == 'all') {
-			$this->getLogger()->log("[CHECK] Checking if logs dir is writable", Logger::DEBUG);
-			$dir = App::getKernel()->getUserLogDir();
-			if (is_dir($dir) && is_writable($dir)) {
-				$this->getLogger()->log("[OK] Logs dir is writable", Logger::DEBUG);
+		if ($type == 'data_write' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking if data directories are writable", Logger::DEBUG);
+			$dir = dp_get_data_dir();
+			if (deskpro_install_check_data_writable(dp_get_data_dir())) {
+				$this->getLogger()->log("[OK] Data dirs are writable", Logger::DEBUG);
 			} else {
 				$this->has_fatal_server_errors = true;
-				$msg = "The " . str_replace(DP_WEB_ROOT, '', $dir) . " directory must exist and be writable";
+				$msg = "The data directory and all sub-directories must exist and be writable (path: $dir).";
 				$this->getLogger()->log("[FATAL] $msg", Logger::INFO);
-				$this->server_errors['logs_write'] = array(
+				$this->server_errors['data_write'] = array(
 					'message' => $msg,
 					'level' => 'fatal'
 				);
