@@ -88,16 +88,16 @@ class LicenseService
 	{
 		$url = \DeskPRO\Kernel\License::getLicServer() . '/api/' . ltrim($endpoint, '/');
 
-		$context = stream_context_create(array(
-			'http' => array(
-				'timeout'  => 8,
-				'method'   => 'POST',
-				'header'   => 'Content-type: application/x-www-form-urlencoded',
-				'content'  => http_build_query($post_data, null, '&')
-			)
-		));
-
-		$result = @file_get_contents($url, null, $context);
+		try {
+			$client = new \Zend\Http\Client(null, array('timeout' => 8, 'strictredirects' => true));
+			$client->setMethod(\Zend\Http\Request::METHOD_POST);
+			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/' . ltrim($endpoint, '/'));
+			$client->getRequest()->post()->fromArray($post_data);
+			$r = $client->send();
+			$result = $r->getBody();
+		} catch (\Exception $e) {
+			$result = '';
+		}
 
 		if (!$result) {
 			throw new \RuntimeException("No response from server: $url $result");

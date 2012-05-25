@@ -869,32 +869,6 @@ class App
 
 
 	/**
-	 * Gets the time the current codebase was built from /sys/config/build-time.php
-	 *
-	 * Note: In some dev environments when no build constant exists and no build file exists,
-	 * this may return 0.
-	 *
-	 * @return int
-	 */
-	public static function getBuildTime()
-	{
-		if (defined('DP_BUILD_TIME')) {
-			return DP_BUILD_TIME;
-		}
-
-		if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
-			require_once DP_ROOT.'/sys/config/build-time.php';
-			if (defined('DP_BUILD_TIME')) {
-				return DP_BUILD_TIME;
-			}
-		}
-
-		define('DP_BUILD_TIME', 0);
-		return 0;
-	}
-
-
-	/**
 	 * Get information about the DeskPRO system bundles.
 	 *
 	 * @static
