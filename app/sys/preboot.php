@@ -46,11 +46,25 @@ if (!deskpro_install_check_safemode()) {
 	$errors_codes[] = 'safe_mode';
 }
 
+if (php_sapi_name() == 'cli') {
+	if (!deskpro_install_check_pdo()) {
+		$errors[] = "PHP on the command-line does not have PDO installed. It is possible you have to install 'pdo' into a separate php.ini file (noted below) for command-line usage.";
+		$errors_codes[] = 'pdo_ext';
+	} elseif (!deskpro_install_check_pdo()) {
+		$errors[] = "PHP on the command-line has PDO installed, but not the MySQL driver. It is possible you have to install 'pdo_mysql' into a separate php.ini file (noted below) for command-line usage.";
+		$errors_codes[] = 'pdo_mysql_ext';
+	}
+}
+
 if ($errors) {
 	if (php_sapi_name() == 'cli') {
 		$msg = "There are problems with your server that prevent DeskPRO from executing this command:\n\n";
 		$msg .= '- ' . implode("\n- ", $errors);
 		$msg .= "\n\n";
+
+		$ini_path = deskpro_install_guess_phpini_path();
+
+		$msg .= "The path to php.ini that is being use on the command-line:\n" . $ini_path . "\n\n";
 
 		if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'cron') {
 			$msg_codes = array();
@@ -58,12 +72,13 @@ if ($errors) {
 				$msg_codes[] = 'error: ' . $e;
 			}
 
-			$ini_path = deskpro_install_guess_phpini_path();
 			if ($ini_path) {
 				$msg_codes[] = "ini_path: $ini_path";
 			}
 			@file_put_contents(dp_get_log_dir().'/cron-boot-errors.log', $msg . "###\n\n" . implode("\n", $msg_codes));
 		}
+
+		echo $msg;
 	} else {
 		$errors = '<ul><li>' . implode('</li><li>', $errors) . '</li></ul>';
 		echo deskpro_install_basic_error($errors);
