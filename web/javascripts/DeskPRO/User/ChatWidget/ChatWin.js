@@ -143,6 +143,13 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			$('#no_feedback').val('1');
 			self.endChatReal();
 		});
+		$('#dp_chat_end_real_unassigned').on('click', function(ev) {
+			ev.preventDefault();
+			self.tellParent('destroy', []);
+			if (self.options.isWindowMode) {
+				window.close();
+			}
+		});
 
 		$('#dp_chat_message_input').on('keypress', (function(ev) {
 			if (ev.keyCode == 13 && !ev.metaKey) {
@@ -494,21 +501,18 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		this.ajaxPoller.disable = true;
 		this.ajaxPoller._clearDelays();
 
-		if (!this.hasBeenAssigned) {
-			this.tellParent('destroy', []);
-			if (this.options.isWindowMode) {
-				window.close();
-			}
-			return;
-		}
-
 		$('#dp_chat_start').hide();
 		$('#dp_chat_finding_agent').hide();
 		$('#dp_chat_active').hide();
-		$('#dp_chat_done').show();
 
-		if (this.hasEmailAddress) {
-			$('#dp_chat_done').find('.form-row.email-field').hide();
+
+		if (!this.hasBeenAssigned) {
+			$('#dp_chat_done_unassigned').show();
+		} else {
+			$('#dp_chat_done').show();
+			if (this.hasEmailAddress) {
+				$('#dp_chat_done').find('.form-row.email-field').hide();
+			}
 		}
 	},
 
@@ -528,7 +532,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 					callback();
 				}
 				self.tellParent('destroy', []);
-				if (this.options.isWindowMode) {
+				if (self.options.isWindowMode) {
 					window.close();
 				}
 			}

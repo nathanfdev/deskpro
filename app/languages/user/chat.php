@@ -37,5 +37,8 @@
     'user.chat.window_open-new'                 => 'Open this chat in a new window',
 	'user.chat.window_start-button'             => 'Click here to chat with us',
 	'user.chat.window_resume-button'            => 'Open your chat',
-	'user.chat.form_feedback_close-window'      => 'No thanks, just close the window',
+	'user.chat.no-action_close-window'          => 'No thanks, just close the window',
+	'user.chat.submit-ticket-title'             => 'Email us instead',
+	'user.chat.ended-no-agent'                  => 'We are sorry we could not take your chat right now. If you still need to contact us, you can email us instead and our agents will respond as quickly as they can.',
+	'user.chat.submit-ticket-button'            => 'Email Us',
 );

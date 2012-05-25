@@ -244,7 +244,23 @@
 
 		<div style="padding-bottom: 20px;">
 			<button class="dp-btn dp-btn-success" id="dp_chat_end_real">{{ phrase('user.chat.form_feedback_button-submit') }}</button>
-			<span class="dp-link" id="dp_chat_end_real_alt">{{ phrase('user.chat.form_feedback_close-window') }}</span>
+			<span class="dp-link" id="dp_chat_end_real_alt">{{ phrase('user.chat.no-action_close-window') }}</span>
+		</div>
+	</article>
+</section>
+
+<section class="dp-chat-active-state" id="dp_chat_done_unassigned" style="display: none">
+	<header>
+		<h3>{{ phrase('user.chat.submit-ticket-title') }}</h3>
+	</header>
+	<article>
+		<p>
+			{{ phrase('user.chat.ended-no-agent') }}
+		</p>
+
+		<div style="padding-bottom: 20px;">
+			<button class="dp-btn dp-btn-success cancel-and-newticket-trigger">{{ phrase('user.chat.submit-ticket-button') }}</button>
+			<span class="dp-link" id="dp_chat_end_real_unassigned">{{ phrase('user.chat.no-action_close-window') }}</span>
 		</div>
 	</article>
 </section>
