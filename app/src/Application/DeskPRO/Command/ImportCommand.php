@@ -462,10 +462,10 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 						$f = "{$config['db_name']}-" . date('Y-m-d-H-i-s') . '.sql';
 						$pass = '';
 						if ($config['db_password']) {
-							$pass = " --password=".escapeshellarg($config['db_password'])." ";
+							$pass = "--password=".escapeshellarg($config['db_password']);
 						}
 						$cmd = sprintf(
-							"%s --opt -Q -h%s -u%s%s%s > %s",
+							"%s --opt -Q -h%s -u%s %s %s > %s",
 							$mysqldump_path,
 							escapeshellarg($config['db_host']),
 							escapeshellarg($config['db_user']),

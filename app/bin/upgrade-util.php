@@ -782,10 +782,10 @@ class Upgrade
 
 		$pass = '';
 		if ($DP_CONFIG['db']['password']) {
-			$pass = " --password=" . escapeshellarg($DP_CONFIG['db']['password']) . " ";
+			$pass = "--password=" . escapeshellarg($DP_CONFIG['db']['password']);
 		}
 		$cmd = sprintf(
-			"%s --opt -Q -h%s -u%s%s%s > %s",
+			"%s --opt -Q -h%s -u%s %s %s > %s",
 			$mysql_dump_path,
 			escapeshellarg($DP_CONFIG['db']['host']),
 			escapeshellarg($DP_CONFIG['db']['user']),
@@ -1024,10 +1024,10 @@ class Upgrade
 
 		$pass = '';
 		if ($DP_CONFIG['db']['password']) {
-			$pass = " --password=".escapeshellarg($DP_CONFIG['db']['password'])." ";
+			$pass = "--password=".escapeshellarg($DP_CONFIG['db']['password']);
 		}
 		$cmd = sprintf(
-			'%s -h%s -u%s%s%s < %s',
+			'%s -h%s -u%s %s %s < %s',
 			$mysql_path,
 			escapeshellarg($DP_CONFIG['db']['host']),
 			escapeshellarg($DP_CONFIG['db']['user']),
