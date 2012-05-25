@@ -99,6 +99,14 @@ class LanguagesController extends AbstractController
 	{
 		$vars = $this->getLangInfo($language_id);
 
+		if ($this->in->getBool('process')) {
+			$lang = $vars['language'];
+			$lang->title = $this->in->getString('language.title');
+			$lang->locale = $this->in->getString('language.locale');
+			$this->em->persist($lang);
+			$this->em->flush();
+		}
+
 		$packs_reader = new \Application\DeskPRO\ResourceScanner\LanguagePacks();
 		$vars['packs'] = $packs_reader->getPacks();
 
