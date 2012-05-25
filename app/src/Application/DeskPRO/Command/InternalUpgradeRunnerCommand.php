@@ -79,6 +79,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_agent_notice', null);
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_user_notice', null);
 
+		set_time_limit(0);
 		$ret = null;
 		passthru($cmd, $ret);
 
