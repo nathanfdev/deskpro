@@ -123,6 +123,42 @@
 	</div>
 </div>
 <div class="setting_field_row">
+	<h4>
+		Time Format
+		<br /><span style="font-size: 11px"><a href="http://php.net/date">See PHP date formatting</a>
+	</h4>
+	<div class="setting_fields">
+		<div class="field_row">
+			<table cellspacing="0" cellpadding="0"><tr>
+				<td style="padding-right: 10px;">
+					<label>Full date and time format</label>
+					<input type="text" name="settings[core.date_fulltime]" value="{{app.getSetting('core.date_fulltime')}}" size="15" />
+				</td>
+				<td>
+					<label>Full date</label>
+					<input type="text" name="settings[core.date_full]" value="{{app.getSetting('core.date_full')}}" size="15" />
+				</td>
+				<td style="padding-left: 10px;">
+					<label>Date</label>
+					<input type="text" name="settings[core.date_day]" value="{{app.getSetting('core.date_day')}}" size="15" />
+				</td>
+			</tr></table>
+		</div>
+		<div class="field_row">
+			<table cellspacing="0" cellpadding="0"><tr>
+				<td style="padding-right: 10px;">
+					<label>Short Date</label>
+					<input type="text" name="settings[core.date_day_short]" value="{{app.getSetting('core.date_day_short')}}" size="15" />
+				</td>
+				<td>
+					<label>Time</label>
+					<input type="text" name="settings[core.date_time]" value="{{app.getSetting('core.date_time')}}" size="15" />
+				</td>
+			</tr></table>
+		</div>
+	</div>
+</div>
+<div class="setting_field_row">
 	<h4>{{ phrase('agent.general.advanced') }}</h4>
 	<div class="setting_fields">
 		<div class="field_row">

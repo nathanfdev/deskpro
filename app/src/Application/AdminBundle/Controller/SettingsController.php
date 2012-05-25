@@ -68,6 +68,12 @@ class SettingsController extends AbstractController
 				'core.attach_user_maxsize'     => (int)$_POST['settings']['core.attach_user_maxsize'],
 				'core.attach_user_must_exts'   => $_POST['settings']['core.attach_user_must_exts'],
 				'core.attach_user_not_exts'    => $_POST['settings']['core.attach_user_not_exts'],
+
+				'core.date_fulltime'    => $_POST['settings']['core.date_fulltime'],
+				'core.date_full'    => $_POST['settings']['core.date_full'],
+				'core.date_day'    => $_POST['settings']['core.date_day'],
+				'core.date_day_short'    => $_POST['settings']['core.date_day_short'],
+				'core.date_time'    => $_POST['settings']['core.date_time'],
 			);
 			array_walk($update_settings, 'trim');
 
