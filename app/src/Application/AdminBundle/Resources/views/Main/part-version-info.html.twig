@@ -7,7 +7,7 @@
 			<p>{{ phrase('admin.general.you_are_up_to_date') }}</p>
 		{% else %}
 			<p>{{ phrase('admin.general.you_are_outdated_by_x_buils', {count: version_info.count_behind}) }}</p>
-			<a class="btn primary" href="{{ path('admin_help_upgrade') }}">{{ phrase('admin.general.click_here_for_upgrade_instructions') }}</a>
+			<a class="btn primary" href="{{ path('admin_upgrade') }}">{{ phrase('admin.general.click_here_for_upgrade_instructions') }}</a>
 		{% endif %}
 	</article>
 {% endif %}
