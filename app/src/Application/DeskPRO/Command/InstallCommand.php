@@ -185,6 +185,12 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 			}
 		}
 
+		App::getDb()->replace('install_data', array(
+			'build' => 'default',
+			'name' => 'install_build',
+			'data' => DP_BUILD_TIME
+		));
+
 		App::getDb()->replace('settings', array(
 			'name' => 'core.install_via_cmd',
 			'value' => 1,
