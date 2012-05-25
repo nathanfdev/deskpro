@@ -123,7 +123,11 @@ var DpChatWidget = new (function() {
 			css.push('box-shadow:  0px -1px 3px 1px rgba(0, 0, 0, 0.2)');
 			css = css.join(';');
 
-			chatIframeWinTab = $('<div id="dp_chat_iframe_wintab" class="dp-chat-iframe-wintab" style="' + css + '">' + DESKPRO_LANG['user.chat.window_open-new'] + '</div>').on('click', openInWindow).appendTo(chatIframeHolder);
+			var phrase = 'Open this chat in a new window';
+			if (typeof DESKPRO_LANG != 'undefined' && DESKPRO_LANG['user.chat.window_open-new']) {
+				phrase = DESKPRO_LANG['user.chat.window_open-new'];
+			}
+			chatIframeWinTab = $('<div id="dp_chat_iframe_wintab" class="dp-chat-iframe-wintab" style="' + css + '">' + phrase + '</div>').on('click', openInWindow).appendTo(chatIframeHolder);
 
 			// Close button
 			var css = [];
@@ -398,7 +402,18 @@ var DpChatWidget = new (function() {
 
 		$('head').append('<style type="text/css">#dpchat_btn { '+css+ '}</style>');
 
-		openBtn = $('<div id="dpchat_btn" class="dp-hide-print '+ (options.btnClass || '') + '"><div id="dpchat_btn_label"><span class="start-chat">Click here to chat with us</span><span class="open-chat" style="display: none">Open your chat</span></div></div>');
+		var phrase1 = 'Click here to chat with us';
+		var phrase2 = 'Open your chat';
+		if (typeof DESKPRO_LANG != 'undefined') {
+			if (DESKPRO_LANG['user.chat.window_start-button']) {
+				phrase1 = DESKPRO_LANG['user.chat.window_start-button'];
+			}
+			if (DESKPRO_LANG['user.chat.window_resume-button']) {
+				phrase2 = DESKPRO_LANG['user.chat.window_resume-button'];
+			}
+		}
+
+		openBtn = $('<div id="dpchat_btn" class="dp-hide-print '+ (options.btnClass || '') + '"><div id="dpchat_btn_label"><span class="start-chat">'+phrase1+'</span><span class="open-chat" style="display: none">'+phrase2+'</span></div></div>');
 		if (this.isWindowChat) {
 			openBtn.hide();
 		}

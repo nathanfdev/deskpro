@@ -32,5 +32,7 @@
 	'user.chat.window_cancel-confirm'           => 'Are you sure you want to end your chat?',
 	'user.chat.window_end-chat'                 => 'End Chat',
 	'user.chat.window_upload-drag'              => 'Drop your file here to upload it',
-    'user.chat.window_open-new'                 => 'Open this chat in a new window'
+    'user.chat.window_open-new'                 => 'Open this chat in a new window',
+	'user.chat.window_start-button'             => 'Click here to chat with us',
+	'user.chat.window_resume-button'            => 'Open your chat',
 );
