@@ -541,12 +541,18 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setRatingOverall($rating)
 	{
-		$this->rating_overall = Numbers::bound($rating, 1, 5);
+		if ($rating != 1 && $rating != -1) {
+			$rating = 0;
+		}
+		$this->rating_overall = $rating;
 	}
 
 	public function setRatingResponseTime($rating)
 	{
-		$this->rating_response_time = Numbers::bound($rating, 1, 5);
+		if ($rating != 1 && $rating != -1) {
+			$rating = 0;
+		}
+		$this->rating_response_time = $rating;
 	}
 
 	/**

@@ -217,13 +217,14 @@
 
 		<div class="dp-control-group">
 			<div class="dp-controls">
+				<input type="hidden" id="no_feedback" name="no_feedback" value="0" />
 				<table cellspacing="0" cellpadding="0" class="dp-layout">
 					<tr>
 						<td style="padding-right: 5px; padding-bottom: 4px;">{{ phrase('user.chat.form_feedback_rate-time') }}</td>
 						<td style="padding-bottom: 4px;">
 							<select name="rating_response_time">
 								<option value="1">{{ phrase('user.chat.form_feedback_rate-satisfied') }}</option>
-								<option value="0">{{ phrase('user.chat.form_feedback_rate-unsatisfied') }}</option>
+								<option value="-1">{{ phrase('user.chat.form_feedback_rate-unsatisfied') }}</option>
 							</select>
 						</td>
 					</tr>
@@ -232,7 +233,7 @@
 						<td>
 							<select name="rating_overall">
 								<option value="1">{{ phrase('user.chat.form_feedback_rate-satisfied') }}</option>
-								<option value="0">{{ phrase('user.chat.form_feedback_rate-unsatisfied') }}</option>
+								<option value="-1">{{ phrase('user.chat.form_feedback_rate-unsatisfied') }}</option>
 							</select>
 						</td>
 					</tr>

@@ -342,14 +342,16 @@ class ChatController extends AbstractController
 			$this->_sendTranscript($convo, $convo->person_email, '');
 		}
 
-		if ($this->in->getString('comments')) {
-			$convo->rating_comment = $this->in->getString('comments');
-		}
-		if ($this->in->getUint('rating_response_time')) {
-			$convo->rating_response_time = $this->in->getUint('rating_response_time');
-		}
-		if ($this->in->getUint('rating_overall')) {
-			$convo->rating_overall = $this->in->getUint('rating_overall');
+		if (!$this->in->getBool('no_feedback')) {
+			if ($this->in->getString('comments')) {
+				$convo->rating_comment = $this->in->getString('comments');
+			}
+			if ($this->in->getUint('rating_response_time')) {
+				$convo->rating_response_time = $this->in->getInt('rating_response_time');
+			}
+			if ($this->in->getUint('rating_overall')) {
+				$convo->rating_overall = $this->in->getInt('rating_overall');
+			}
 		}
 
 		$this->em->persist($convo);

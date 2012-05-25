@@ -140,6 +140,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		});
 		$('#dp_chat_end_real_alt').on('click', function(ev) {
 			ev.preventDefault();
+			$('#no_feedback').val('1');
 			self.endChatReal();
 		});
 
