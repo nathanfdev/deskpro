@@ -138,6 +138,10 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			ev.preventDefault();
 			self.endChatReal();
 		});
+		$('#dp_chat_end_real_alt').on('click', function(ev) {
+			ev.preventDefault();
+			self.endChatReal();
+		});
 
 		$('#dp_chat_message_input').on('keypress', (function(ev) {
 			if (ev.keyCode == 13 && !ev.metaKey) {
