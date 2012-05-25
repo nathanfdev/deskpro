@@ -252,7 +252,7 @@
 		<?php else: $failed = true; ?>
 		<span class="label notice" style="float:right">RECOMMENDED</span>
 		<?php endif ?>
-		Checking for the <a href="http://www.php.net/manual/en/apc.installation.php">OpenSSL</a> extension
+		Checking for the <a href="http://www.php.net/manual/en/openssl.installation.php">OpenSSL</a> extension
 		<?php if ($failed): ?>
 		<div class="alert-message block-message info">
 			<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_openssl') ?>" class="kb-read-more" target="_blank">Read more about this</a>
@@ -274,7 +274,7 @@
 		<?php if ($failed): ?>
 		<div class="alert-message block-message info">
 			<a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_apc') ?>" class="kb-read-more" target="_blank">Read more about this</a>
-			We recommend installing the APC extension to dramatically improve performance.
+			We recommend installing the <a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a> to dramatically improve performance.
 		</div>
 		<?php endif ?>
 	</td>
