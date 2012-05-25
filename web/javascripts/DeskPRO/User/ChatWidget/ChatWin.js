@@ -6,7 +6,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 	initialize: function(options) {
 
 		this.options = {
-			findingAgentTimeout: 8000
+			findingAgentTimeout: 30000
 		};
 		this.setOptions(options || {});
 
@@ -269,6 +269,25 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			console.log('ChatWin.startFindingAgent timeout');
 			$('#dp_chat_finding_agent_more').show();
 		}, this.options.findingAgentTimeout);
+
+		this.findingAgentProgressTimeout = window.setInterval(function() {
+			var bar = $('#dp_chat_finding_agent_loading').find('.dp-bar');
+			if (!bar.data('cur-status')) bar.data('cur-status', 1);
+
+			var setWidth = parseInt(bar.data('cur-status'));
+			if (setWidth == 100) {
+				setWidth = 1;
+			} else {
+				var pieces = Math.floor(100 / (self.options.findingAgentTimeout / 1000));
+				setWidth += pieces;
+				if (setWidth > 100) {
+					setWidth = 100;
+				}
+			}
+
+			bar.css('width', setWidth + '%');
+			bar.data('cur-status', setWidth);
+		}, 1000);
 	},
 
 	foundAgent: function() {
@@ -278,6 +297,10 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		if (this.findingAgentTimer) {
 			window.clearTimeout(this.findingAgentTimer);
 			this.findingAgentTimer = null;
+		}
+		if (this.findingAgentProgressTimeout) {
+			window.clearTimeout(this.findingAgentProgressTimeout);
+			this.findingAgentProgressTimeout = null;
 		}
 		$('#dp_chat_active').show();
 
