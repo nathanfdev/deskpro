@@ -937,10 +937,13 @@ class KernelErrorHandler
 		self::logToFile($errinfo);
 		unset($errinfo['exception']);
 
-		try {
-			$logger = App::createNewLogger('error_log', null);
-			$logger->log($errinfo['summary'], $errinfo['pri'], $errinfo);
-		} catch (\Exception $e) {}
+		// Only log to db when the error logger isn't overriden (as is case in install/import)
+		if (empty($GLOBALS['DP_ERR_LOGGER'])) {
+			try {
+				$logger = App::createNewLogger('error_log', null);
+				$logger->log($errinfo['summary'], $errinfo['pri'], $errinfo);
+			} catch (\Exception $e) {}
+		}
 
 		if (!class_exists('\Application\DeskPRO\App') || !\Application\DeskPRO\App::getConfig('no_report_errors')) {
 			if (!(isset($errinfo['no_send_error']) && $errinfo['no_send_error'])) {
