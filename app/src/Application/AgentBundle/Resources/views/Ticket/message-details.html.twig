@@ -38,10 +38,10 @@
 		<dd>{{ message.visitor.user_agent }}</dd>
 
 		<dt>{{ phrase('agent.general.initial_visit') }}</dt>
-		<dd>{{ message.visitor.date_created|date('M j, Y H:ia') }}</dd>
+		<dd>{{ message.visitor.date_created|date('fulltime') }}</dd>
 
 		<dt>{{ phrase('agent.general.last_activity') }}</dt>
-		<dd>{{ message.visitor.date_last|date('M j, Y H:ia') }}</dd>
+		<dd>{{ message.visitor.date_last|date('fulltime') }}</dd>
 
 		<dt>{{ phrase('agent.general.landing_page') }}</dt>
 		<dd>{{ message.visitor.landing_page }}</dd>

@@ -146,7 +146,7 @@ pageMeta.baseId = '{{ baseId }}';
 										{{message.content}}
 									{% endif %}
 								</div>
-								<time>{{ message.date_created|date('g:ia') }}</time>
+								<time>{{ message.date_created|date('time') }}</time>
 							</div>
 						{% elseif message.author.is_agent and message.author.id != convo.person.id %}
 							<div class="message-content">
@@ -160,7 +160,7 @@ pageMeta.baseId = '{{ baseId }}';
 										<span class="bubbleLeft"></span>
 									</div>
 								</div>
-								<time>{{ message.date_created|date('g:ia') }}</time>
+								<time>{{ message.date_created|date('time') }}</time>
 							</div>
 						{% else %}
 							<div class="message-content">
@@ -174,7 +174,7 @@ pageMeta.baseId = '{{ baseId }}';
 										<span class="bubbleRight"></span>
 									</div>
 								</div>
-								<time>{{ message.date_created|date('g:ia') }}</time>
+								<time>{{ message.date_created|date('time') }}</time>
 							</div>
 						{% endif %}
 					</div>

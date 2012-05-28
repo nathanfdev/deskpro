@@ -312,7 +312,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				<th>{{ phrase('agent.general.created') }}:</th>
 				<td>
 					<time class="timeago" datetime="{{ticket.date_created|date('c')}}"></time>
-					{{ phrase('agent.tickets.on') }} {{ ticket.date_created|date('M j Y H:ia') }}
+					{{ phrase('agent.tickets.on') }} {{ ticket.date_created|date('fulltime') }}
 				</td>
 			</tr>
 

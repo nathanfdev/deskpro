@@ -24,7 +24,7 @@
 				Time tasks were last executed:
 				{% if last_run %}
 					{{ relative_time(time_since_run) }} ago
-					({{ last_run|date('Y-m-d H:i:s') }})
+					({{ last_run|date('fulltime') }})
 				{% else %}
 					Never
 				{% endif %}
@@ -51,10 +51,10 @@
 					<td>{{ job.title }}</td>
 					<td style="text-align:center">{{ job.interval_readable }}</td>
 					<td style="text-align:center">
-						{% if job.last_run_date %}{{ job.last_run_date|date('Y-m-d H:i:s') }}{% else %}{{ phrase('agent.general.never') }}{% endif %}
+						{% if job.last_run_date %}{{ job.last_run_date|date('fulltime') }}{% else %}{{ phrase('agent.general.never') }}{% endif %}
 					</td>
 					<td style="text-align:center">
-						{{ job.next_run_date|date('Y-m-d H:i:s') }}
+						{{ job.next_run_date|date('fulltime') }}
 					</td>
 				</tr>
 			{% endfor %}

@@ -28,7 +28,7 @@
 		{% if type == 'article' %}
 			{{ item.getSearchSummary(100) }}
 		{% elseif type == 'news' %}
-			{{ item.date_created|date('Y-m-d') }} &middot; <a href="{{ item.getLink() }}" class="view-item" data-content-type="{{ type }}" data-content-id="{{ item.id }}">{{ phrase('user.general.count_comments', {'count': item.num_comments}) }}</a>
+			{{ item.date_created|date('day') }} &middot; <a href="{{ item.getLink() }}" class="view-item" data-content-type="{{ type }}" data-content-id="{{ item.id }}">{{ phrase('user.general.count_comments', {'count': item.num_comments}) }}</a>
 		{% elseif type == 'download' %}
 			{{ item.getFileName() }} &middot; {{ item.getReadableFileSize() }}
 		{% elseif type == 'feedback' %}
