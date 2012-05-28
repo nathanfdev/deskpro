@@ -54,6 +54,8 @@ class UpgradeController extends AbstractController
 			$this->container->getSettingsHandler()->setSetting('core.upgrade_set_at', time());
 			$this->container->getSettingsHandler()->setSetting('core.upgrade_backup_files', $this->in->getInt('backup_files'));
 			$this->container->getSettingsHandler()->setSetting('core.upgrade_backup_db', $this->in->getInt('backup_db'));
+			$this->container->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', null);
+			$this->container->getSettingsHandler()->setSetting('core.upgrade_started', null);
 
 			$this->container->getSettingsHandler()->setSetting('core.helpdesk_disabled_message', $this->in->getString('user_message'));
 			@file_put_contents(dp_get_tmp_dir() . '/helpdesk-offline-message.txt', $this->in->getString('user_message'));
@@ -71,6 +73,17 @@ class UpgradeController extends AbstractController
 			'version_info' => $version_info,
 			'current_version' => DP_BUILD_TIME
 		));
+	}
+
+	public function checkStartedAction()
+	{
+		if ($this->container->getSetting('core.upgrade_started')) {
+			return $this->createJsonResponse(array('started' => true));
+		} elseif ($this->container->getSetting('core.upgrade_error_writeperm')) {
+			return $this->createJsonResponse(array('write_perm_error' => true));
+		} else {
+			return $this->createJsonResponse(array('waiting' => true));
+		}
 	}
 
 	public function watchAction()

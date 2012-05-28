@@ -60,15 +60,22 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			@unlink(DP_WEB_ROOT . '/auto-update-status.txt');
 		}
 		$write_status = function($code, $message = '') {
-			$fp = fopen(DP_WEB_ROOT . '/auto-update-status.txt', 'a');
+			$fp = @fopen(DP_WEB_ROOT . '/auto-update-status.txt', 'a');
+			if (!$fp) {
+				return false;
+			}
 			$time = time();
 
 			if (is_array($message)) {
 				$message = json_encode($message);
 			}
 
-			fwrite($fp, "STATUS(" . $code . ")@$time#$message\n");
-			fclose($fp);
+			if (!@fwrite($fp, "STATUS(" . $code . ")@$time#$message\n")) {
+				return false;
+			}
+			@fclose($fp);
+
+			return true;
 		};
 
 		$skip_seg = '';
@@ -79,10 +86,20 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			$skip_seg .= ' --skip-backup-db ';
 		}
 
+		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
+		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', null);
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_time', null);
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_set_at', null);
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_files', null);
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_db', null);
+
+		if (!$write_status('runner_start')) {
+			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', 1);
+			$output->write('<error>Could not write upgrade status file to root dir: ' . DP_WEB_ROOT . '</error>');
+			return 1;
+		}
+
+		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', 1);
 
 		if (!dp_get_php_path(true)) {
 			$write_status('error_php_path');
@@ -109,6 +126,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 		}
 
 		$this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', time());
+		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
 
 		return $ret;
 	}

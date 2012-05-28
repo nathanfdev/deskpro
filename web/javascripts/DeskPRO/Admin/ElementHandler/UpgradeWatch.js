@@ -8,6 +8,9 @@ DeskPRO.Admin.ElementHandler.UpgradeWatch = new Orb.Class({
 		this.startTime = parseInt(this.el.data('start-time'));
 		this.hasInitialPoll = false;
 
+		// This determines the poll mode
+		this.hasStarted = false;
+
 		this.startCheckTimeout = window.setInterval(function() {
 			var now = (new Date()).getTime();
 			now /= 1000;
@@ -32,54 +35,90 @@ DeskPRO.Admin.ElementHandler.UpgradeWatch = new Orb.Class({
 
 		var self = this;
 
-		var url = BASE_URL;
-		url = url.replace(/\/index\.php\//, '/');
+		//------------------------------
+		// Polling status file
+		//------------------------------
 
-		var min_time = parseFloat(this.startTime);
+		if (this.hasStarted) {
+			var url = BASE_URL;
+			url = url.replace(/\/index\.php\//, '/');
 
-		this.pollFileTimeout = window.setTimeout(function() {
-			$.ajax({
-				url: url + 'auto-update-status.txt',
-				cache: false,
-				error: function() {
-					self.startPollTimer();
-				},
-				dataType: 'text',
-				success: function(content) {
-					content = content.trim();
-					var lines = content.split(/\n+/);
+			var min_time = parseFloat(this.startTime);
 
-					if (!content.length) {
+			this.pollFileTimeout = window.setTimeout(function() {
+				$.ajax({
+					url: url + 'auto-update-status.txt',
+					cache: false,
+					error: function() {
 						self.startPollTimer();
-						return;
-					}
+					},
+					dataType: 'text',
+					success: function(content) {
+						content = content.trim();
+						var lines = content.split(/\n+/);
 
-					var last_time = self.hasInitialPoll || min_time;
-					var restart_timer = true;
-					var is_error = false;
-					Array.each(lines, function(last) {
-						var m = /^STATUS\((.*?)\)@([0-9\.]+)#(.*?)$/.exec(last);
-						if (m) {
-							var time = parseFloat(m[2]);
-							if (time >= last_time) {
-								console.log("Line: %s", last);
-								self.updateStatus(m[1], m[3], m[2]);
-								if (m[1] == 'done' || m[1].indexOf('error_') === 0) {
-									is_error = m[1].indexOf('error_') === 0;
-									restart_timer = false;
-								}
-								last_time = time;
-							}
+						if (!content.length) {
+							self.startPollTimer();
+							return;
 						}
-					});
-					self.hasInitialPoll = last_time;
 
-					if (restart_timer) {
+						var last_time = self.hasInitialPoll || min_time;
+						var restart_timer = true;
+						var is_error = false;
+						Array.each(lines, function(last) {
+							var m = /^STATUS\((.*?)\)@([0-9\.]+)#(.*?)$/.exec(last);
+							if (m) {
+								var time = parseFloat(m[2]);
+								if (time >= last_time) {
+									console.log("Line: %s", last);
+									self.updateStatus(m[1], m[3], m[2]);
+									if (m[1] == 'done' || m[1].indexOf('error_') === 0) {
+										is_error = m[1].indexOf('error_') === 0;
+										restart_timer = false;
+									}
+									last_time = time;
+								}
+							}
+						});
+						self.hasInitialPoll = last_time;
+
+						if (restart_timer) {
+							self.startPollTimer();
+						}
+					}
+				})
+			}, 1000);
+
+		//------------------------------
+		// Polling has started
+		//------------------------------
+
+		} else {
+			var url = this.el.data('check-started-url');
+
+			this.pollFileTimeout = window.setTimeout(function() {
+				$.ajax({
+					url: url,
+					cache: false,
+					error: function() {
+						self.startPollTimer();
+					},
+					dataType: 'json',
+					success: function(data) {
+						if (data.write_perm_error) {
+							self.handleError('error_write_perm');
+							return;
+						}
+
+						if (data.started) {
+							self.hasStarted = true;
+						}
+
 						self.startPollTimer();
 					}
-				}
-			})
-		}, 1000);
+				})
+			}, 1000);
+		}
 	},
 
 	updateStatus: function(code, message, time) {

@@ -13,6 +13,7 @@
 <div
 	data-start-time="{{ app.getSetting('core.upgrade_time') }}"
 	data-element-handler="DeskPRO.Admin.ElementHandler.UpgradeWatch"
+	data-check-started-url="{{ path('admin_upgrade_watch_checkstarted') }}"
 >
 	<div id="waiting">
 		Upgrade is scheduled for {{ app.getSetting('core.upgrade_time')|date('fulltime') }}
@@ -32,6 +33,17 @@
 			<li class="step-done"><span>Done</span></li>
 		</ul>
 		<div id="error" style="display: none">
+			<div style="display:none" class="error_write_perm">
+				<h3>Write permissions failed</h3>
+				<p>
+					The upgrade utility requires write permission to the root DeskPRO directory, and all sub-directories and files.
+					This means the user running the scheduled task needs permission to write and delete DeskPRO files. Typically
+					this is done by making sure your scheduled task user is the same user who owns the files.
+				</p>
+				<p>
+					In this case, the upgrade utility detected that the status file at /auto-update-status.txt could not be written.
+				</p>
+			</div>
 			<div style="display:none" class="error_basic_checks_fail">
 				<div style="display:none" class="error_php_path">
 					<h3>Could not find the path to 'php'</h3>

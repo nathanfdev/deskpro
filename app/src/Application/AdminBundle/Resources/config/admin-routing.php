@@ -98,6 +98,13 @@ $collection->add('admin_upgrade_watch', new Route(
 	array()
 ));
 
+$collection->add('admin_upgrade_watch_checkstarted', new Route(
+	'/upgrade/watch/check-started.json',
+	array('_controller' => 'AdminBundle:Upgrade:checkStarted'),
+	array(),
+	array()
+));
+
 ################################################################################
 # License
 ################################################################################
