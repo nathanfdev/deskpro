@@ -61,6 +61,8 @@ class SearchIndexUpdate extends AbstractJob
 
 	public function run()
 	{
+		$time = time();
+
 		$this->em = App::getContainer()->getEm();
 		$this->db = $this->em->getConnection();
 		$this->queue = App::getContainer()->getQueue('search_object_update');
@@ -102,6 +104,10 @@ class SearchIndexUpdate extends AbstractJob
 			}
 			if ($delete) {
 				App::getContainer()->getSearchAdapter()->deleteDocumentsFromIndex($delete);
+			}
+
+			if (time() - $time > 30) {
+				break;
 			}
 
 			$batch = $this->queue->receive(20);
