@@ -141,7 +141,7 @@ DeskPRO.Admin.ElementHandler.UpgradeWatch = new Orb.Class({
 				$('li.step-checks').addClass('done on');
 				break;
 			case 'helpdesk_offline':
-				$('li.step-disable-hd').addClass('done on');
+				$('li.step-disable-hd').addClass('done');
 				break;
 			case 'file_backup_start':
 				$('li.step-backup-files').addClass('done on');
