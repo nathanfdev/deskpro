@@ -26,5 +26,11 @@
 			{% include 'ReportBundle:Overview:tickets-resolved.html.twig' with { data: tickets_resolved_data } %}
 		</div>
 
+		<br />
+
+		<div data-element-handler="DeskPRO.Admin.ElementHandler.OverviewStat.StandardWithGroup"	data-update-url="{{ path('report_overview_update_stat', {type: 'tickets_response_time'}) }}">
+			{% include 'ReportBundle:Overview:tickets-response-time.html.twig' with { data: tickets_response_time_data } %}
+		</div>
+
 	</td></tr></table>
 {% endblock %}

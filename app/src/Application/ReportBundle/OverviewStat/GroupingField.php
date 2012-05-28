@@ -40,20 +40,20 @@ use Orb\Util\Strings;
 
 class GroupingField
 {
-	const DEPARTMENT = 'department';
-	const TICKET_CATEGORY = 'ticket_category';
-	const TICKET_WORKFLOW = 'ticket_workflow';
-	const TICKET_PRIORITY = 'ticket_priority';
-	const LANGUAGE = 'language';
-	const PRODUCT = 'product';
-	const TICKET_FIELD = 'ticket_field';
-	const USER_FIELD = 'user_field';
-	const AGENT = 'agent';
-	const AGENT_TEAM = 'agent_team';
-	const TICKET_URGENCY = 'ticket_urgency';
-	const ORGANIZATION = 'organization';
-	const USER = 'user';
-	const USERGROUP = 'usergroup';
+	const DEPARTMENT            = 'department';
+	const TICKET_CATEGORY       = 'ticket_category';
+	const TICKET_WORKFLOW       = 'ticket_workflow';
+	const TICKET_PRIORITY       = 'ticket_priority';
+	const LANGUAGE              = 'language';
+	const PRODUCT               = 'product';
+	const TICKET_FIELD          = 'ticket_field';
+	const USER_FIELD            = 'user_field';
+	const AGENT                 = 'agent';
+	const AGENT_TEAM            = 'agent_team';
+	const TICKET_URGENCY        = 'ticket_urgency';
+	const ORGANIZATION          = 'organization';
+	const USER                  = 'user';
+	const USERGROUP             = 'usergroup';
 
 	/**
 	 * @var string
@@ -140,6 +140,10 @@ class GroupingField
 
 			case self::USER:
 				return array('select' => 'tickets.person_id', 'group_by' => 'tickets.person_id', 'join' => '', 'where' => '');
+				break;
+
+			case self::ORGANIZATION:
+				return array('select' => 'COALESCE(tickets.organization_id, 0) AS org_id', 'group_by' => 'org_id', 'join' => '', 'where' => '');
 				break;
 
 			case self::TICKET_FIELD:

@@ -1,7 +1,12 @@
-{% macro grouping_field_select(grouping_field)%}
+{% macro grouping_field_select(grouping_field, options)%}
 	<span class="drop-option">
 	<i></i>
 	<select class="grouping-field" name="grouping_field">
+
+		{% if options.none %}
+			<option {% if not grouping_field %}selected="selected"{% endif %} value="">None</option>
+		{% endif %}
+
 		<optgroup label="Ticket Fields">
 		<option {% if grouping_field == 'department' %}selected="selected"{% endif %} value="department">Department</option>
 		<option {% if grouping_field == 'agent' %}selected="selected"{% endif %} value="agent">Agent</option>

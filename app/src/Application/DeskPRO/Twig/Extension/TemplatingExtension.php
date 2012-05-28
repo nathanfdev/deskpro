@@ -108,6 +108,7 @@ class TemplatingExtension extends \Twig_Extension
 			'get_instance_ability' => new \Twig_Function_Method($this, 'getInstanceAbility'),
 			'is_array' => new \Twig_Function_Method($this, 'isArray'),
 			'gravatar_for_email' => new \Twig_Function_Method($this, 'gravatar'),
+			'time_group_phrase' => new \Twig_Function_Method($this, 'getTimeGroupPhrase'),
         );
     }
 
@@ -143,6 +144,44 @@ class TemplatingExtension extends \Twig_Extension
 			'lower' => new \Twig_Filter_Method($this, 'strLower'),
         );
     }
+
+	public function getTimeGroupPhrase($time)
+	{
+		static $time_phrases = array(
+			300        => '< 5 minutes',
+			900        => '5 - 15 minutes',
+			1800       => '15 - 30 minutes',
+			3600       => '30 - 60 minutes',
+			7200       => '1 - 2 hours',
+			10800      => '2 - 3 hours',
+			14400      => '3 - 4 hours',
+			21600      => '4 - 6 hours',
+			43200      => '6 - 12 hours',
+			86400      => '12 - 24 hours',
+			172800     => '1 - 2 days',
+			259200     => '2 - 3 days',
+			345600     => '3 - 4 days',
+			432000     => '4 - 5 days',
+			518400     => '5 - 6 days',
+			604800     => '6 - 7 days',
+			1209600    => '1 - 2 weeks',
+			1814400    => '2 - 3 weeks',
+			2419200    => '3 - 4 weeks',
+			4838400    => '1 - 2 months',
+			7257600    => '2 - 3 months',
+			9676800    => '3 - 4 months',
+			12096000   => '4 - 5 months',
+			14515200   => '5 - 6 months',
+		);
+
+		foreach ($time_phrases as $min => $phrase) {
+			if ($time <= $min) {
+				return $phrase;
+			}
+		}
+
+		return '> 6 months';
+	}
 
 	public function gravatar($email, $size = 80)
 	{
@@ -464,7 +503,11 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function debugVar($var)
 	{
-		return print_r($var, true);
+		ob_start();
+		var_dump($var, true);
+		$str = ob_end_clean();
+
+		return $str;
 	}
 
 	public function getType($var, $basename = true)

@@ -40,8 +40,9 @@ class OverviewController extends AbstractController
 	{
 		return $this->render('ReportBundle:Overview:index.html.twig', array(
 			'tickets_status_data' => $this->getValues('tickets_status'),
-			'tickets_awaiting_agent_data' => $this->getValues('tickets_awaiting_agent', array('grouping_field' => 'department')),
-			'tickets_resolved_data' => $this->getValues('tickets_resolved', array('grouping_field' => 'department')),
+			'tickets_awaiting_agent_data' => $this->getValues('tickets_awaiting_agent'),
+			'tickets_resolved_data' => $this->getValues('tickets_resolved'),
+			'tickets_response_time_data' => $this->getValues('tickets_response_time'),
 		));
 	}
 
@@ -57,6 +58,13 @@ class OverviewController extends AbstractController
 				$date_choice = $this->in->getString('date_choice');
 				return $this->render('ReportBundle:Overview:tickets-resolved.html.twig', array(
 					'data' => $this->getValues('tickets_resolved', array('grouping_field' => $grouping_field, 'date_choice' => $date_choice)))
+				);
+
+			case 'tickets_response_time':
+				$grouping_field = $this->in->getString('grouping_field');
+				$date_choice = $this->in->getString('date_choice');
+				return $this->render('ReportBundle:Overview:tickets-response-time.html.twig', array(
+					'data' => $this->getValues('tickets_response_time', array('grouping_field' => $grouping_field, 'date_choice' => $date_choice)))
 				);
 
 			default:
@@ -81,7 +89,6 @@ class OverviewController extends AbstractController
 				);
 
 			case 'tickets_resolved':
-
 				$date_choice = $options->get('date_choice');
 				switch ($date_choice) {
 					case 'this_week':
@@ -119,7 +126,88 @@ class OverviewController extends AbstractController
 					'titles'         => $stat->getTitles(),
 					'values'         => $stat->getValues(),
 					'max'            => $stat->getMax(),
-					'sum' => $sum,
+					'sum'            => $sum,
+				);
+
+			case 'tickets_response_time':
+				$date_choice = $options->get('date_choice');
+				switch ($date_choice) {
+					case 'this_week':
+						$date = $this->person->getDateTime();
+						$interval = new \DateInterval('P1D');
+						$date->sub($interval);
+						break;
+					case 'this_week':
+						$date = $this->person->getDateTime();
+						$interval = new \DateInterval('P7D');
+						$date->sub($interval);
+						break;
+					case 'this_month':
+						$date = $this->person->getDateTime();
+						$date->setDate($date->format('Y'), 1, 1);
+						break;
+					case 'this_year':
+						$date = $this->person->getDateTime();
+						$date->setDate($date->format('Y') - 1, 1, 1);
+						break;
+					default:
+						$options->set('date_choice', 'today');
+						$date = $this->person->getDateTime();
+						break;
+				}
+
+				$date2 = $this->person->getDateTime();
+
+				if ($options->get('grouping_field')) {
+					$gf = new \Application\ReportBundle\OverviewStat\GroupingField($options->get('grouping_field'));
+				} else {
+					$gf = null;
+				}
+				$stat = new \Application\ReportBundle\OverviewStat\TicketsResponseTime($gf, $date, $date2);
+
+				$group_max = array();
+				$group_keys = array();
+				$group_total = array();
+				$max = 0;
+				if ($options->get('grouping_field')) {
+					foreach ($stat->getValues() as $time_group => $sub_info) {
+						$group_max[$time_group] = 0;
+						$group_total[$time_group] = 0;
+						foreach ($sub_info as $subid => $count) {
+							$group_total[$time_group] += $count;
+							if ($count > $group_max[$time_group]) {
+								$group_max[$time_group] = $count;
+							}
+						}
+					}
+
+					foreach (array_keys($stat->getSubgroupTitles()) as $k => $id) {
+						$group_keys[$k] = sprintf("%02X%02X%02X", mt_rand(0, 255), mt_rand(0, 255), mt_rand(0, 255));
+					}
+
+					if ($group_max) {
+						$max = max($group_max);
+					}
+				} else {
+					if ($stat->getValues()) {
+						$max = max($stat->getValues());
+					}
+				}
+
+				if (!$max) {
+					$max = 1;
+				}
+
+				return array(
+					'grouping_field' => $options->get('grouping_field'),
+					'group_max'      => $group_max,
+					'date_choice'    => $options->get('date_choice'),
+					'titles'         => $stat->getTitles(),
+					'sub_titles'     => $stat->getSubgroupTitles(),
+					'group_keys'     => $group_keys,
+					'group_total'    => $group_total,
+					'values'         => $stat->getValues(),
+					'max'            => $max,
 				);
 
 			case 'tickets_awaiting_agent':
@@ -131,7 +219,7 @@ class OverviewController extends AbstractController
 					'titles'         => $stat->getTitles(),
 					'values'         => $stat->getValues(),
 					'max'            => $stat->getMax(),
-					'sum' => $sum,
+					'sum'            => $sum,
 				);
 
 			default:
