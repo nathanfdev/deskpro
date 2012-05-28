@@ -617,6 +617,10 @@ class Upgrade
 			exit(14);
 		}
 
+		if (!$is_quiet) $this->out("Turning helpdesk off");
+		$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
+		$write_status('helpdesk_offline');
+
 		try {
 			$write_status("database_backup_start");
 			if (!$skip_db_backup) {
@@ -646,10 +650,6 @@ class Upgrade
 			$this->logException($e);
 			exit(20);
 		}
-
-		if (!$is_quiet) $this->out("Turning helpdesk off");
-		$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
-		$write_status('helpdesk_offline');
 
 		try {
 			$this->revert_checkpoint = 'files';
