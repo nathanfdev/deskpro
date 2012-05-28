@@ -527,14 +527,17 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			}
 
 			$output->writeln(
-				"The import process is about to begin. The process is automatic and you will not need to do anything,\n"
-				."So it is safe to leave this tool running unattended.\n"
+				"\n" .
+				"The import process is about to begin.\n" . 
+				"The process is automatic and you will not need to do anything,\n" .
+				"It safe to leave this tool running unattended.\n"
 			);
 
 			if ($config['store_attachment_files']) {
 				$output->writeln(
-					"Note that attachments will be copied to the filesystem (under /data/files). You can disable this\n"
-					."option in config.php by turning off 'store_attachment_files'.\n"
+					"\n" .
+					"Note that attachments will be copied to the filesystem (under /data/files).\n" .
+					"You can disable this option in config.php.\n"
 				);
 			}
 
