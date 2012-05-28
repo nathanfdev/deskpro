@@ -33,8 +33,19 @@ var validate = function() {
 	if ($('#password').val() != $('#password2').val()) {
 		ret = false;
 		$('#password').closest('div.clearfix').addClass('error');
+		$('#password_mismatch').show();
+		$('#password_empty').hide();
 	} else {
 		$('#password').closest('div.clearfix').removeClass('error');
+
+		if (!$('#password').val().trim().length) {
+			ret = false;
+			$('#password').closest('div.clearfix').addClass('error');
+			$('#password_mismatch').hide();
+			$('#password_empty').show();
+		} else {
+			$('#password').closest('div.clearfix').removeClass('error');
+		}
 	}
 
 	return ret;
@@ -85,7 +96,10 @@ $(document).ready(function() {
 			<label>Password</label>
 			<div class="input">
 				<input type="password" id="password" name="admin[password]" value="" size="30" />
-				<span class="help-inline e">The two password fields do not match</span>
+				<span class="help-inline e">
+					<span id="password_mismatch">The two password fields do not match</span>
+					<span id="password_empty">Please enter a password</span>
+				</span>
 			</div>
 		</div>
 		<div class="clearfix">
