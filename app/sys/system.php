@@ -773,14 +773,15 @@ class UserKernel extends AbstractKernel
 
 	public function preResponseHandled(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 	{
-		$is_installed = App::getSetting('core.setup_initial');
-		if (!$is_installed) {
-			return null;
-		}
-
+		// Run parent first for correct index.php/no-index.php redirection
 		$response = parent::preResponseHandled($request, $type, $catch);
 		if ($response) {
 			return $response;
+		}
+
+		$is_installed = App::getSetting('core.setup_initial');
+		if (!$is_installed) {
+			return null;
 		}
 
 		$redirect_corrections = App::getSetting('core.redirect_correct_url');
