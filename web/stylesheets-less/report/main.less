@@ -755,3 +755,106 @@ h2 {
 .datepicker > span.hidden {
     display:none;
 }
+
+
+section.report-wrapper {
+	> header {
+		border: 1px solid #D9DBDB;
+		border-bottom: none;
+		.border-radius(5px, 5px, 0, 0);
+		background: #F5F5F5;
+
+		h2 {
+			padding: 5px;
+			font-size: 12pt;
+			font-weight: bold;
+			line-height: 100%;
+			color: #000;
+		}
+
+		.ui-datepicker-trigger {display: none;}
+
+		.drop-option {
+			position: relative;
+
+			i {
+				background: url(../../images/agent/button-downarrow.png) no-repeat 100% 50%;
+				padding-right: 12px;
+				text-decoration: underline;
+				cursor: pointer;
+			}
+
+			select {
+				position: absolute;
+				z-index: 1;
+				top: 0;
+				left: 0;
+				.opacity(0);
+				cursor: pointer;
+			}
+		}
+	}
+
+	> article {
+		position: relative;
+		border: 1px solid #D9DBDB;
+		padding: 8px;
+
+		.loading-overlay {
+			position: absolute;
+			top: 0;
+			right: 0;
+			left: 0;
+			bottom: 0;
+
+			background: rgba(255, 255, 255, 0.6);
+
+			strong {
+				display: block;
+				width: 300px;
+				margin: 60px auto 0 auto;
+				background: #fff url(../../images/spinners/loading-big-circle.gif) no-repeat 50% 10px;
+				border: 1px solid #7F818A;
+				.rounded(5px);
+				padding: 50px 0 10px 0;
+				text-align: center;
+			}
+		}
+
+		tr.total-row {
+			td {
+				border-top: 10px solid #fff;
+				background: #EBF2FE;
+
+			}
+		}
+	}
+}
+
+section.report-wrapper table.stat-table {
+	tr > td {
+		padding: 2px;
+		vertical-align: middle;
+	}
+	tr > td.title {
+		text-align: right;
+		span {
+			white-space: nowrap;
+			display: block;
+		}
+	}
+}
+
+section.report-wrapper table.stat-value {
+	tr > td.value > div {
+		background-color: #AAC9E5;
+		border: 1px solid darken(#AAC9E5, 25%);
+	}
+}
+
+.date-choice {
+	background: url(../../images/agent/button-downarrow.png) no-repeat 100% 50%;
+	padding-right: 12px;
+	text-decoration: underline;
+	cursor: pointer;
+}

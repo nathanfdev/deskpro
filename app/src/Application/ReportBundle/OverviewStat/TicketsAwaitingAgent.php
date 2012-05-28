@@ -29,89 +29,82 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage AgentBundle
+ * @subpackage
  */
 
-namespace Application\AgentBundle\Form\Model;
+namespace Application\ReportBundle\OverviewStat;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ArticleAttachment;
-use Application\DeskPRO\Entity\Person;
 
-class NewArticle
+class TicketsAwaitingAgent extends AbstractTableOverviewStat
 {
-	public $title;
-	public $category_id;
-	public $status;
-	public $content;
-
-	public $slug;
-	public $labels = array();
-	public $attach = array();
-	public $labels_json;
-
-	protected $_article;
+	/**
+	 * @var GroupingField
+	 */
+	protected $grouping_field;
 
 	/**
-	 * @var \Doctrine\ORM\EntityManager
+	 * @var int[]
 	 */
-	protected $_em;
+	protected $values = null;
 
-	public function __construct(Person $person_context)
+	/**
+	 * @var array
+	 */
+	protected $titles = null;
+
+	public function __construct(GroupingField $grouping_field)
 	{
-		$this->_person_context = $person_context;
-
-		$this->_em = App::getOrm();
+		$this->grouping_field = $grouping_field;
 	}
 
-	public function save()
+
+	/**
+	 * @return string[]
+	 */
+	public function getTitles()
 	{
-		$this->_em->beginTransaction();
-
-		$article = new Article();
-		$article->person = $this->_person_context;
-		$article->setStatusCode($this->status);
-		$article->title = $this->title;
-		$article->content = $this->content ?: '';
-		$article->slug = $this->slug;
-
-		$cat = $this->_em->find('DeskPRO:ArticleCategory', $this->category_id);
-		$article->addToCategory($cat);
-
-		if ($this->labels_json) {
-			$this->labels = @json_decode($this->labels_json);
-			if (!is_array($this->labels)) {
-				$this->labels = array();
-			}
-		}
-
-		if ($this->labels) {
-			$article->getLabelManager()->setLabelsArray($this->labels);
-		}
-
-		// Message Attachments
-		foreach ($this->attach as $blob_id) {
-
-			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
-
-			$attach = new ArticleAttachment();
-			$attach['blob'] = $blob;
-			$attach['person'] = $this->_person_context;
-
-			$article->addAttachment($attach);
-		}
-
-		$this->_em->persist($article);
-		$this->_em->flush();
-
-		$this->_em->commit();
-
-		$this->_article = $article;
+		return $this->grouping_field->getTitles();
 	}
 
-	public function getArticle()
+
+	/**
+	 * @return int[]
+	 */
+	public function getValues()
 	{
-		return $this->_article;
+		if ($this->values !== null) {
+			return $this->values;
+		}
+
+		$group_field = $this->grouping_field->getFieldName();
+		$join = $this->grouping_field->getJoin();
+
+		$sql = "
+			SELECT $group_field, COUNT(*)
+			FROM tickets_search_active AS tickets
+			$join
+			WHERE tickets.status = 'awaiting_agent'
+			GROUP BY $group_field
+		";
+
+		$this->values = App::getDb()->fetchAllKeyValue($sql);
+
+		return $this->values;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getMax()
+	{
+		$max = max($this->getValues());
+
+		if ($max < 10) {
+			$max = 10;
+		}
+
+		return $max;
 	}
 }

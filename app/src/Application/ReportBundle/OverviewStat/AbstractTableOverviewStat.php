@@ -29,89 +29,41 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage AgentBundle
+ * @subpackage
  */
 
-namespace Application\AgentBundle\Form\Model;
+namespace Application\ReportBundle\OverviewStat;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ArticleAttachment;
-use Application\DeskPRO\Entity\Person;
-
-class NewArticle
+abstract class AbstractTableOverviewStat
 {
-	public $title;
-	public $category_id;
-	public $status;
-	public $content;
-
-	public $slug;
-	public $labels = array();
-	public $attach = array();
-	public $labels_json;
-
-	protected $_article;
+	/**
+	 * Gets a id => array(info) array of titles. Titles can have children.
+	 *
+	 * @abstract
+	 * @return mixed
+	 */
+	abstract function getTitles();
 
 	/**
-	 * @var \Doctrine\ORM\EntityManager
+	 * Gets an id => xxx of counts.
+	 *
+	 * @abstract
+	 * @return mixed
 	 */
-	protected $_em;
+	abstract function getValues();
 
-	public function __construct(Person $person_context)
+
+	/**
+	 * @return int
+	 */
+	public function getMax()
 	{
-		$this->_person_context = $person_context;
+		$max = max($this->getValues());
 
-		$this->_em = App::getOrm();
-	}
-
-	public function save()
-	{
-		$this->_em->beginTransaction();
-
-		$article = new Article();
-		$article->person = $this->_person_context;
-		$article->setStatusCode($this->status);
-		$article->title = $this->title;
-		$article->content = $this->content ?: '';
-		$article->slug = $this->slug;
-
-		$cat = $this->_em->find('DeskPRO:ArticleCategory', $this->category_id);
-		$article->addToCategory($cat);
-
-		if ($this->labels_json) {
-			$this->labels = @json_decode($this->labels_json);
-			if (!is_array($this->labels)) {
-				$this->labels = array();
-			}
+		if ($max < 10) {
+			$max = 10;
 		}
 
-		if ($this->labels) {
-			$article->getLabelManager()->setLabelsArray($this->labels);
-		}
-
-		// Message Attachments
-		foreach ($this->attach as $blob_id) {
-
-			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
-
-			$attach = new ArticleAttachment();
-			$attach['blob'] = $blob;
-			$attach['person'] = $this->_person_context;
-
-			$article->addAttachment($attach);
-		}
-
-		$this->_em->persist($article);
-		$this->_em->flush();
-
-		$this->_em->commit();
-
-		$this->_article = $article;
-	}
-
-	public function getArticle()
-	{
-		return $this->_article;
+		return $max;
 	}
 }

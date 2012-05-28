@@ -1,0 +1,30 @@
+{% set this_page = 'report_agent_feedback_feed' %}
+{% extends 'ReportBundle::layout.html.twig' %}
+
+{% block html_head %}
+	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Report/ElementHandler/OverviewStat/StandardWithGroup.js') }}"></script>
+{% endblock %}
+
+{% block pagebar %}
+{% endblock %}
+
+{% block page %}
+	<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="padding-right: 6px;" width="50%">
+
+		<div>
+			{% include 'ReportBundle:Overview:tickets-status.html.twig' with { data: tickets_status_data } %}
+		</div>
+
+		<br />
+
+		<div data-element-handler="DeskPRO.Admin.ElementHandler.OverviewStat.StandardWithGroup"	data-update-url="{{ path('report_overview_update_stat', {type: 'tickets_awaiting_agent'}) }}">
+			{% include 'ReportBundle:Overview:tickets-awaiting-agent.html.twig' with { data: tickets_awaiting_agent_data } %}
+		</div>
+	</td><td style="padding-left: 6px" width="50%">
+
+		<div data-element-handler="DeskPRO.Admin.ElementHandler.OverviewStat.StandardWithGroup"	data-update-url="{{ path('report_overview_update_stat', {type: 'tickets_resolved'}) }}">
+			{% include 'ReportBundle:Overview:tickets-resolved.html.twig' with { data: tickets_resolved_data } %}
+		</div>
+
+	</td></tr></table>
+{% endblock %}

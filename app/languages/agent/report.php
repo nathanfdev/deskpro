@@ -45,4 +45,5 @@
 	'agent.report.updates'                                        => 'Updates',
 	'agent.report.view_chart'                                     => 'View Chart',
 	'agent.report.x'                                              => '[x]',
+	'agent.report.overview'                                       => 'Overview',
 );

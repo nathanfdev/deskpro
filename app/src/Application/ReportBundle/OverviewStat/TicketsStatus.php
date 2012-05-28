@@ -29,89 +29,53 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage AgentBundle
+ * @subpackage
  */
 
-namespace Application\AgentBundle\Form\Model;
+namespace Application\ReportBundle\OverviewStat;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ArticleAttachment;
-use Application\DeskPRO\Entity\Person;
 
-class NewArticle
+class TicketsStatus extends AbstractTableOverviewStat
 {
-	public $title;
-	public $category_id;
-	public $status;
-	public $content;
+	/**
+	 * @var int[]
+	 */
+	protected $values = null;
 
-	public $slug;
-	public $labels = array();
-	public $attach = array();
-	public $labels_json;
-
-	protected $_article;
 
 	/**
-	 * @var \Doctrine\ORM\EntityManager
+	 * @return string[]
 	 */
-	protected $_em;
-
-	public function __construct(Person $person_context)
+	public function getTitles()
 	{
-		$this->_person_context = $person_context;
-
-		$this->_em = App::getOrm();
+		return array(
+			'awaiting_agent' => 'Awaiting Agent',
+			'awaiting_user'  => 'Awaiting User',
+			'resolved'       => 'Resolved',
+			'closed'         => 'Closed',
+			'hidden'         => 'Hidden'
+		);
 	}
 
-	public function save()
+
+	/**
+	 * @return int[]
+	 */
+	public function getValues()
 	{
-		$this->_em->beginTransaction();
-
-		$article = new Article();
-		$article->person = $this->_person_context;
-		$article->setStatusCode($this->status);
-		$article->title = $this->title;
-		$article->content = $this->content ?: '';
-		$article->slug = $this->slug;
-
-		$cat = $this->_em->find('DeskPRO:ArticleCategory', $this->category_id);
-		$article->addToCategory($cat);
-
-		if ($this->labels_json) {
-			$this->labels = @json_decode($this->labels_json);
-			if (!is_array($this->labels)) {
-				$this->labels = array();
-			}
+		if ($this->values !== null) {
+			return $this->values;
 		}
 
-		if ($this->labels) {
-			$article->getLabelManager()->setLabelsArray($this->labels);
-		}
+		$sql = "
+			SELECT tickets.status, COUNT(*)
+			FROM tickets_search_active AS tickets
+			GROUP BY tickets.status
+		";
 
-		// Message Attachments
-		foreach ($this->attach as $blob_id) {
+		$this->values = App::getDb()->fetchAllKeyValue($sql);
 
-			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
-
-			$attach = new ArticleAttachment();
-			$attach['blob'] = $blob;
-			$attach['person'] = $this->_person_context;
-
-			$article->addAttachment($attach);
-		}
-
-		$this->_em->persist($article);
-		$this->_em->flush();
-
-		$this->_em->commit();
-
-		$this->_article = $article;
-	}
-
-	public function getArticle()
-	{
-		return $this->_article;
+		return $this->values;
 	}
 }

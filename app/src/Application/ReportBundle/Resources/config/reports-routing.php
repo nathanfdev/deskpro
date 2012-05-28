@@ -32,7 +32,14 @@ $collection->add('report_login_authenticate_local', new Route(
 
 $collection->add('report', new Route(
 	'/',
-	array('_controller' => 'ReportBundle:Dashboard:index'),
+	array('_controller' => 'ReportBundle:Overview:index'),
+	array(),
+	array()
+));
+
+$collection->add('report_overview_update_stat', new Route(
+	'/overview/update-stat/{type}',
+	array('_controller' => 'ReportBundle:Overview:updateStat'),
 	array(),
 	array()
 ));
@@ -62,6 +69,13 @@ $collection->add('report_trend_clone', new Route(
 	'/trends/{stat_id}/clone',
 	array('_controller' => 'ReportBundle:Trend:clone'),
 	array('stat_id' => '\\d+'),
+	array()
+));
+
+$collection->add('report_trend_dashboard_index', new Route(
+	'/trends/dashboards',
+	array('_controller' => 'ReportBundle:Dashboard:index'),
+	array('dashboard_id' => '\\d+'),
 	array()
 ));
 
