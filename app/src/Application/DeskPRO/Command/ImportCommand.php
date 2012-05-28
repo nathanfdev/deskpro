@@ -543,7 +543,7 @@ class ImportCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			} catch (\Exception $e) {
 				$yes = false;
 			}
-			if ($yes) {
+			if (!$yes) {
 				echo "Aborted. You can re-run this command again at any time.\n";
 				echo "\n";
 				return 0;
