@@ -1,0 +1,44 @@
+{% macro grouping_field_select(grouping_field)%}
+	<span class="drop-option">
+	<i></i>
+	<select class="grouping-field" name="grouping_field">
+		<optgroup label="Ticket Fields">
+		<option {% if grouping_field == 'department' %}selected="selected"{% endif %} value="department">Department</option>
+		<option {% if grouping_field == 'agent' %}selected="selected"{% endif %} value="agent">Agent</option>
+
+		{% if app.getDataRepository('AgentTeam').getTeamNames() %}
+			<option {% if grouping_field == 'agent_team' %}selected="selected"{% endif %} value="agent_team">Agent Team</option>
+		{% endif %}
+		{% if app.getDataRepository('TicketCategory').getNames() %}
+			<option {% if grouping_field == 'ticket_category' %}selected="selected"{% endif %} value="ticket_category">Category</option>
+		{% endif %}
+		{% if app.getDataRepository('TicketWorkflow').getNames() %}
+			<option {% if grouping_field == 'ticket_workflow' %}selected="selected"{% endif %} value="ticket_workflow">Workflow</option>
+		{% endif %}
+		{% if app.getDataRepository('TicketPriority').getNames() %}
+			<option {% if grouping_field == 'ticket_priority' %}selected="selected"{% endif %} value="ticket_priority">Priority</option>
+		{% endif %}
+
+		<option {% if grouping_field == 'ticket_urgency' %}selected="selected"{% endif %} value="ticket_urgency">Urgency</option>
+
+		{% if app.getDataRepository('Product').getNames() %}
+			<option {% if grouping_field == 'product' %}selected="selected"{% endif %} value="product">Product</option>
+		{% endif %}
+		{% if app.getDataRepository('Language').getTitles() %}
+			<option {% if grouping_field == 'language' %}selected="selected"{% endif %} value="language">Language</option>
+		{% endif %}
+
+		{% for field_def in app.getCustomFieldManager('tickets').getFields() %}
+			<option {% if grouping_field == ('ticket_field.' ~ field_def.id) %}selected="selected"{% endif %} value="ticket_field.{{ field_def.id }}">{{ field_def.title }}</option>
+		{% endfor %}
+		</optgroup>
+		<optgroup label="User Fields">
+			<option {% if grouping_field == 'user' %}selected="selected"{% endif %} value="user">User</option>
+			<option {% if grouping_field == 'organization' %}selected="selected"{% endif %} value="organization">Organization</option>
+			<option {% if grouping_field == 'usergroup' %}selected="selected"{% endif %} value="usergroup">Usergroup</option>
+			{% for field_def in app.getCustomFieldManager('people').getFields() %}
+				<option {% if grouping_field == ('user_field.' ~ field_def.id) %}selected="selected"{% endif %} value="user_field.{{ field_def.id }}">{{ field_def.title }}</option>
+			{% endfor %}
+		</optgroup>
+	</select>
+{% endmacro %}

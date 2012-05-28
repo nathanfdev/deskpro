@@ -76,7 +76,7 @@ class TicketsResolved extends AbstractTableOverviewStat
 	 */
 	public function getTitles()
 	{
-		return $this->grouping_field->getTitles();
+		return $this->grouping_field->getTitles($this->getValues());
 	}
 
 
@@ -89,18 +89,17 @@ class TicketsResolved extends AbstractTableOverviewStat
 			return $this->values;
 		}
 
-		$group_field = $this->grouping_field->getFieldName();
-		$join = $this->grouping_field->getJoin();
+		$group_field = $this->grouping_field->getFieldInfo();
 
 		$d1 = $this->date_start->format('Y-m-d H:i:s');
 		$d2 = $this->date_end->format('Y-m-d H:i:s');
 
 		$sql = "
-			SELECT $group_field, COUNT(*)
+			SELECT {$group_field['select']}, COUNT(*)
 			FROM tickets
-			$join
-			WHERE tickets.status = 'resolved' AND tickets.date_resolved BETWEEN '$d1' AND '$d2'
-			GROUP BY $group_field
+			{$group_field['join']}
+			WHERE tickets.status = 'resolved' AND tickets.date_resolved BETWEEN '$d1' AND '$d2' {$group_field['where']}
+			GROUP BY {$group_field['group_by']}
 		";
 
 		$this->values = App::getDb()->fetchAllKeyValue($sql);

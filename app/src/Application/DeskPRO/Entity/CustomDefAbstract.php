@@ -388,6 +388,21 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @return bool
+	 */
+	public function isChoiceType()
+	{
+		switch ($this->handler_class) {
+			case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
+			case 'Application\\DeskPRO\\CustomFields\\Handler\\ChoiceMultie':
+				return true;
+
+			default:
+				return false;
+		}
+	}
+
 
 	############################################################################
 	# Doctrine Metadata

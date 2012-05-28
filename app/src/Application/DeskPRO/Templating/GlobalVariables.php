@@ -103,6 +103,18 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::getSystemService("{$ent}Data");
 	}
 
+	public function getCustomFieldManager($type)
+	{
+		switch ($type) {
+			case 'tickets':
+				return App::getSystemService('ticket_fields_manager');
+			case 'people':
+				return App::getSystemService('person_fields_manager');
+		}
+
+		return null;
+	}
+
 	public function getBrowserSniffer()
 	{
 		return App::get('browser_sniffer');

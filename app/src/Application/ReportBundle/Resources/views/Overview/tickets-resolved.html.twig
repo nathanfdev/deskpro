@@ -1,3 +1,4 @@
+{% import 'ReportBundle:Overview:macros.html.twig' as macros %}
 <section class="report-wrapper">
 	<header>
 		<h2>
@@ -16,24 +17,7 @@
 				<i></i>
 			</span>
 
-			| Showing Grouped by
-			<span class="drop-option">
-				<select class="grouping-field" name="grouping_field">
-					{% for field,title in {
-						'department': 'Department',
-						'agent': 'Agent',
-						'agent_team': 'Agent Team',
-						'ticket_category': 'Category',
-						'ticket_workflow': 'Workflow',
-						'ticket_priority': 'Priority',
-						'language': 'Language',
-						'product': 'Product'
-					} %}
-						<option {% if data.grouping_field == field %}selected="selected"{% endif %} value="{{ field }}">{{ title }}</option>
-					{% endfor %}
-				</select>
-				<i></i>
-			</span>
+			| Showing Grouped by {{ macros.grouping_field_select(data.grouping_field) }}
 		</h2>
 	</header>
 	<article>

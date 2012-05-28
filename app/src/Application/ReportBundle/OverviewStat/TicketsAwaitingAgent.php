@@ -64,7 +64,7 @@ class TicketsAwaitingAgent extends AbstractTableOverviewStat
 	 */
 	public function getTitles()
 	{
-		return $this->grouping_field->getTitles();
+		return $this->grouping_field->getTitles($this->getValues());
 	}
 
 
@@ -77,15 +77,14 @@ class TicketsAwaitingAgent extends AbstractTableOverviewStat
 			return $this->values;
 		}
 
-		$group_field = $this->grouping_field->getFieldName();
-		$join = $this->grouping_field->getJoin();
+		$group_field = $this->grouping_field->getFieldInfo();
 
 		$sql = "
-			SELECT $group_field, COUNT(*)
+			SELECT {$group_field['select']}, COUNT(*)
 			FROM tickets_search_active AS tickets
-			$join
-			WHERE tickets.status = 'awaiting_agent'
-			GROUP BY $group_field
+			{$group_field['join']}
+			WHERE tickets.status = 'awaiting_agent' {$group_field['where']}
+			GROUP BY {$group_field['group_by']}
 		";
 
 		$this->values = App::getDb()->fetchAllKeyValue($sql);
