@@ -647,6 +647,10 @@ class Upgrade
 			exit(20);
 		}
 
+		if (!$is_quiet) $this->out("Turning helpdesk off");
+		$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
+		$write_status('helpdesk_offline');
+
 		try {
 			$this->revert_checkpoint = 'files';
 
@@ -667,10 +671,6 @@ class Upgrade
 		}
 
 		$this->revert_checkpoint = 'db';
-
-		if (!$is_quiet) $this->out("Turning helpdesk off");
-		$fileutil->touch(DP_ROOT.'/helpdesk-offline.trigger');
-		$write_status('helpdesk_offline');
 
 		if (!$is_quiet) $this->out("Performing database upgrades ...");
 
