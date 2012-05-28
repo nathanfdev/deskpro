@@ -360,7 +360,7 @@ function dp_get_mysqldump_path($test = false)
 		exec($path, $out, $ret);
 
 		$out = is_array($out) ? implode("\n", $out) : (string)$out;
-		if (!$ret || stripos($out, 'mysql') !== false) {
+		if (!$ret || stripos($out, 'mysqldump') !== false) {
 			$pass_test = true;
 		} else {
 			$pass_test = false;
@@ -405,7 +405,7 @@ function dp_get_mysql_path($test = false)
 		exec($path . " --help", $out, $ret);
 
 		$out = is_array($out) ? implode("\n", $out) : (string)$out;
-		if (!$ret || stripos($out, 'mysqldump') !== false) {
+		if (!$ret || stripos($out, 'mysql') !== false) {
 			$pass_test = true;
 		} else {
 			$pass_test = false;
