@@ -386,7 +386,7 @@ function dp_get_mysql_path($test = false)
 			$path = dp_get_config('mysql_path');
 		}
 		if (!$path) {
-			$path = dp_find_binary('mysql_path');
+			$path = dp_find_binary('mysql');
 		}
 
 		if (!$path) {
