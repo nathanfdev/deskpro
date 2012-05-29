@@ -1782,6 +1782,22 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @return string
+	 */
+	public function getRememberMeCookieCode()
+	{
+		return \Orb\Util\Util::generateStaticSecurityToken(sha1(App::getAppSecret() . $this->secret_string));
+	}
+
+	/**
+	 * @param $code
+	 * @return bool
+	 */
+	public function validateRememberMeCookieCode($code)
+	{
+		return \Orb\Util\Util::checkStaticSecurityToken($code, sha1(App::getAppSecret() . $this->secret_string));
+	}
 
 	############################################################################
 	# Doctrine Metadata

@@ -74,6 +74,16 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 		parent::start();
 
+		if ((!empty($_COOKIE['dpreme']) && strpos($_COOKIE['dpreme'], '-') !== false) && (empty($_SESSION['_symfony2']['auth_person_id']) || !$_SESSION['_symfony2']['auth_person_id'])) {
+			list ($person_id, $cookie_code) = explode('-', $_COOKIE['dpreme'], 2);
+
+			$person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
+			if ($person && $person->validateRememberMeCookieCode($cookie_code)) {
+				$_SESSION['_symfony2']['auth_person_id'] = $person->getId();
+				$this->attributes['auth_person_id'] = $person->getId();
+			}
+		}
+
 		// Also make sure the user is a visitor
 		$vis = null;
 		if ($this->getEntity()->visitor) {
@@ -127,8 +137,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 		$this->visitor = $vis;
 
-        if($this->getPerson() && $this->getPerson()->IsAgent
-        && !preg_match('#^/agent/(client-messages/|poller|.*/new)#', $path)) {
+        if($this->getPerson() && $this->getPerson()->is_agent && !preg_match('#^/agent/(client-messages/|poller|.*/new)#', $path)) {
             $agent = $this->getPerson();
             $date_active = new \DateTime();
             list($hour, $minute) = explode(':', $date_active->format('H:i'));

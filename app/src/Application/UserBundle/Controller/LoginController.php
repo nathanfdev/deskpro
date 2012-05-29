@@ -233,6 +233,12 @@ HTML;
 			$this->em->flush();
 		}
 
+		// Remember me cookie
+		if ($this->in->getBool('remember_me')) {
+			$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dpreme', $person->getId() . '-' . $person->getRememberMeCookieCode(), 'never');
+			$cookie->send();
+		}
+
 		if ($return) {
 			return $this->redirect($return);
 		} else {
