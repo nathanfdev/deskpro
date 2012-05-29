@@ -99,6 +99,8 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 			return 1;
 		}
 
+		@chmod(DP_WEB_ROOT . '/auto-update-status.txt', 0777);
+
 		$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', 1);
 
 		if (!dp_get_php_path(true)) {

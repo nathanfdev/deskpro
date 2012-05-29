@@ -210,7 +210,7 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 		$file_path_full = $dir_path_full . DIRECTORY_SEPARATOR . $filename;
 
 		if (!is_dir($dir_path_full)) {
-			if (!mkdir($dir_path_full, 0755, true)) {
+			if (!mkdir($dir_path_full, 0777, true)) {
 				throw new \RuntimeException("Could not create filesystem storage directory");
 			}
 		}
@@ -218,6 +218,7 @@ class Filesystem extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			if (!file_put_contents($file_path_full, $data)) {
 				throw new \RuntimeException("Could not write file to storage directory: $file_path_full");
 			}
+			@chmod($file_path_full, 0777);
 		} else {
 			if (!touch($file_path_full)) {
 				throw new \RuntimeException("Could not write file to storage directory: $file_path_full");

@@ -287,6 +287,7 @@ class Upgrade
 			if (!$this->log_fh) {
 				throw new \Exception("Could not open log file: " . $this->getLogDir() . '/upgrade.log');
 			}
+			@chmod($this->getLogDir() . '/upgrade.log');
 
 			$this->registerCleanupParam('close_log_fh', $this->log_fh);
 
@@ -446,6 +447,7 @@ class Upgrade
 		}
 
 		$write_status("start");
+		@chmod(DP_WEB_ROOT . '/auto-update-status.txt', 0777);
 
 		if (!$this->isInstanceOutdated()) {
 			$write_status("done");

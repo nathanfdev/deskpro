@@ -53,6 +53,13 @@ class Stream extends AbstractWriter
 	 */
 	protected $_did_open_stream = false;
 
+	/**
+	 * Chmod the file if we created it
+	 *
+	 * @var null
+	 */
+	protected $chmod_mode = 0777;
+
 	protected $stream_url = null;
 	protected $stream_mode = 'a';
 	protected $close_after_write = false;
@@ -60,6 +67,17 @@ class Stream extends AbstractWriter
 	public function enableNewStreamPerWrite()
 	{
 		$this->close_after_write = true;
+	}
+
+	/**
+	 * If we created a new file, chmod it to this mode. Set to null
+	 * to not chmod the file (in which case the default mask is used, typically 0755).
+	 *
+	 * @param $chmod
+	 */
+	public function setChmod($chmod)
+	{
+		$this->chmod_mode = $chmod;
 	}
 
 	/**
@@ -98,9 +116,17 @@ class Stream extends AbstractWriter
 		if (!$this->_stream) {
 			$mode = $this->stream_mode;
 			$stream_or_url = $this->stream_url;
+			$is_made = false;
+			if (!file_exists($stream_or_url)) {
+				$is_made = true;
+			}
 			if (!($this->_stream = @fopen($stream_or_url, $mode, false))) {
 				$msg = "\"$stream_or_url\" cannot be opened with mode \"$mode\"";
 				throw new \RuntimeException($msg);
+			}
+
+			if ($is_made && $this->chmod_mode !== null) {
+				@chmod($stream_or_url, $this->chmod_mode);
 			}
 
 			$this->_did_open_stream = true;
