@@ -21,6 +21,10 @@
 	</header>
 	<article>
 		<div class="loading-overlay" style="display: none"><strong>Loading</strong></div>
-		{{ macros.stat_table(data) }}
+		{% if data.values %}
+			{{ macros.stat_table(data) }}
+		{% else %}
+			{{ macros.no_data() }}
+		{% endif %}
 	</article>
 </section>

@@ -58,8 +58,14 @@ class TicketsOpenedHour extends AbstractTableOverviewStat
 	 */
 	protected $titles = null;
 
-	public function __construct(\DateTime $date_start, \DateTime $date_end)
+	/**
+	 * @var string
+	 */
+	protected $date_group;
+
+	public function __construct($date_group, \DateTime $date_start, \DateTime $date_end)
 	{
+		$this->date_group = $date_group;
 		$this->date_start = $date_start;
 		$this->date_end   = $date_end;
 	}
@@ -70,9 +76,67 @@ class TicketsOpenedHour extends AbstractTableOverviewStat
 	 */
 	public function getTitles()
 	{
-		$titles = array_combine(range(1, 23), range(1,23));
-		$titles['0'] = '0';
+		switch ($this->date_group) {
+			case 'hour':
+				$titles = array_combine(range(1, 23), range(1,23));
+				$titles['0'] = 0;
 
+				foreach ($titles as &$x) {
+					if ($x == 0) {
+						$x = '12am';
+					} elseif ($x == 12) {
+						$x = '12pm';
+					} elseif ($x < 12) {
+						$x = $x . 'am';
+					} else {
+						$x = ($x-12) . 'pm';
+					}
+				}
+
+				break;
+
+			case 'weekday':
+				// Sunday is start of week in MySQL, hence weird indexes
+				$titles = array(
+					0 => 'Monday',
+					1 => 'Tuesday',
+					2 => 'Wednesday',
+					3 => 'Thursday',
+					4 => 'Friday',
+					5 => 'Saturday',
+					6 => 'Sunday',
+				);
+				break;
+
+			case 'day':
+				$days = \Orb\Util\Dates::daysInMonth($this->date_start->format('n'), $this->date_start->format('Y'));
+				$titles = array();
+				foreach (range(1,$days) as $d) {
+					$titles[$d] = $d . \Orb\Util\Numbers::ordinalSuffix($d);
+				}
+
+				break;
+
+			case 'month':
+				$titles = array(
+					1  => 'Jan',
+					2  => 'Feb',
+					3  => 'Mar',
+					4  => 'Apr',
+					5  => 'May',
+					6  => 'Jun',
+					7  => 'Jul',
+					8  => 'Aug',
+					9  => 'Sep',
+					10 => 'Oct',
+					11 => 'Nov',
+					12 => 'Dec',
+				);
+				break;
+
+			default:
+				throw new \InvalidArgumentException("Unknown date group: {$this->date_group}");
+		}
 		return $titles;
 	}
 
@@ -96,11 +160,32 @@ class TicketsOpenedHour extends AbstractTableOverviewStat
 		// Get offset of original date from UTC, we need for mysql
 		$offset = $date1->getTimestamp() - $this->date_start->getTimestamp();
 
+		switch ($this->date_group) {
+			case 'hour':
+				$date_group = "HOUR(DATE_SUB(tickets.date_created, INTERVAL $offset SECOND))";
+				break;
+
+			case 'weekday':
+				$date_group = "WEEKDAY(DATE_SUB(tickets.date_created, INTERVAL $offset SECOND))";
+				break;
+
+			case 'day':
+				$date_group = "DAYOFMONTH(DATE_SUB(tickets.date_created, INTERVAL $offset SECOND))";
+				break;
+
+			case 'month':
+				$date_group = "MONTH(DATE_SUB(tickets.date_created, INTERVAL $offset SECOND))";
+				break;
+
+			default:
+				throw new \InvalidArgumentException("Unknown date group: {$this->date_group}");
+		}
+
 		$sql = "
-			SELECT HOUR(DATE_SUB(tickets.date_created, INTERVAL $offset SECOND)) AS hour, COUNT(*)
+			SELECT $date_group AS date_group, COUNT(*)
 			FROM tickets
 			WHERE tickets.status = 'resolved' AND tickets.date_resolved BETWEEN '$d1' AND '$d2'
-			GROUP BY hour
+			GROUP BY date_group
 		";
 
 		$this->values = App::getDb()->fetchAllKeyValue($sql);

@@ -308,4 +308,30 @@ class Numbers
 	{
 		return Colors::hex2rgb($hex);
 	}
+
+
+	/**
+	 * Get the ordinal suffix for a number
+	 *
+	 * @param $number
+	 */
+	public static function ordinalSuffix($number)
+	{
+		if (!$number) {
+			return '';
+		}
+
+		if ($number % 100 > 10 && $number % 100 < 14) {
+			$suffix = 'th';
+		} else {
+			switch(substr($number, -1, 1)) {
+				case '1': $suffix = 'st'; break;
+				case '2': $suffix = 'nd'; break;
+				case '3': $suffix = 'rd'; break;
+				default:  $suffix = 'th';
+			}
+    	}
+
+		return $suffix;
+	}
 }

@@ -110,7 +110,7 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
 		}
 
 		$now = time();
-		$field = TimeTitles::makeTimeFieldSelect("(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting))))");
+		$field = TimeTitles::makeTimeFieldSelect("($now - UNIX_TIMESTAMP(tickets.date_user_waiting))");
 
 		if ($this->grouping_field) {
 			$group_field = $this->grouping_field->getFieldInfo();
@@ -118,7 +118,7 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
 				SELECT {$group_field['select']}, $field, COUNT(*)
 				FROM tickets
 				{$group_field['join']}
-				WHERE tickets.status IN ('awaiting_agent', 'awaiting_user') {$group_field['where']}
+				WHERE tickets.status IN ('awaiting_agent') {$group_field['where']}
 				GROUP BY {$group_field['group_by']}, time_group
 				ORDER BY time_group ASC
 			";

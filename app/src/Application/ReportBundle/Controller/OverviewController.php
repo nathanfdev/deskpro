@@ -90,7 +90,6 @@ class OverviewController extends AbstractController
 					'data' => $this->getValues('kb_views_hour')
 				));
 
-
 			case 'chats_created':
 				$grouping_field = $this->in->getString('grouping_field');
 				$date_choice = $this->in->getString('date_choice');
@@ -124,33 +123,36 @@ class OverviewController extends AbstractController
 				$date_choice = $options->get('date_choice');
 				switch ($date_choice) {
 					case 'this_week':
-						$date = $this->person->getDateTime();
-						$interval = new \DateInterval('P1D');
-						$date->sub($interval);
-						break;
-					case 'this_week':
-						$date = $this->person->getDateTime();
-						$interval = new \DateInterval('P7D');
-						$date->sub($interval);
+						if (date('D') == 'Mon') {
+							$date = $this->person->getDateTime();
+						} else {
+							$date = $this->person->getDateForTime('last monday');
+						}
+
+						$date_group = 'weekday';
 						break;
 					case 'this_month':
 						$date = $this->person->getDateTime();
-						$date->setDate($date->format('Y'), 1, 1);
+						$date->setDate((int)$date->format('Y'), (int)$date->format('n'), 1);
+						$date_group = 'day';
 						break;
 					case 'this_year':
 						$date = $this->person->getDateTime();
-						$date->setDate($date->format('Y') - 1, 1, 1);
+						$date->setDate($date->format('Y'), 1, 1);
+						$date_group = 'month';
 						break;
 					default:
 						$options->set('date_choice', 'today');
 						$date = $this->person->getDateTime();
-						$date->setTime(0,0,0);
+						$date_group = 'hour';
 						break;
 				}
 
+				$date->setTime(0,0,0);
+
 				$date2 = $this->person->getDateTime();
 
-				$stat = new \Application\ReportBundle\OverviewStat\TicketsOpenedHour($date, $date2);
+				$stat = new \Application\ReportBundle\OverviewStat\TicketsOpenedHour($date_group, $date, $date2);
 				$sum = array_sum($stat->getValues());
 
 				return array(

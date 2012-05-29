@@ -72,7 +72,11 @@
 					{% if data.group_total[id] %}
 						<table width="100%"><tr>
 							{% set perc = (data.group_total[id] / data.max|default(1)) * 100 %}
-							<td width="{{ perc }}%">
+							{% if perc < 1.0 %}
+								<td width="1%">
+							{% else %}
+								<td width="{{ perc }}%">
+							{% endif %}
 								<table width="100%" class="stat-value stat-value-multi">
 									<tr>
 									{% for subid, subtitle in data.sub_titles %}
@@ -96,4 +100,10 @@
 		</tr>
 	{% endfor %}
 	</table>
+{% endmacro %}
+
+{% macro no_data() %}
+	<div class="no-data">
+		<h3>No matching data</h3>
+	</div>
 {% endmacro %}

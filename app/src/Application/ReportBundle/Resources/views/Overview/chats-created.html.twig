@@ -39,30 +39,34 @@
 	</header>
 	<article>
 		<div class="loading-overlay" style="display: none"><strong>Loading</strong></div>
-		<table class="stat-table" width="100%">
-			{% for id, title in data.titles %}
-				{% if data.values[id] %}
-					<tr>
-						<td class="title"><span>{{ title }}</span></td>
-						<td width="100%">
-							<table width="100%" class="stat-value"><tr>
-								{% set perc = (data.values[id] / data.max|default(1)) * 100 %}
-								{% if perc < 1.0 %}
-									<td class="value" width="1%"><div>&nbsp;</div></td>
-									<td width="{{ 100 - 1 }}%">{{ data.values[id] }}</td>
-								{% else %}
-									<td class="value" width="{{ perc }}%"><div>&nbsp;</div></td>
-									<td width="{{ 100 - perc }}%">{{ data.values[id] }}</td>
-								{% endif %}
-							</tr></table>
-						</td>
-					</tr>
-				{% endif %}
-			{% endfor %}
-			<tr class="total-row">
-				<td class="title">Total:</td>
-				<td class="val">{{ data.sum }}</td>
-			</tr>
-		</table>
+		{% if data.values[id] %}
+			<table class="stat-table" width="100%">
+				{% for id, title in data.titles %}
+					{% if data.values[id] %}
+						<tr>
+							<td class="title"><span>{{ title }}</span></td>
+							<td width="100%">
+								<table width="100%" class="stat-value"><tr>
+									{% set perc = (data.values[id] / data.max|default(1)) * 100 %}
+									{% if perc < 1.0 %}
+										<td class="value" width="1%"><div>&nbsp;</div></td>
+										<td width="{{ 100 - 1 }}%">{{ data.values[id] }}</td>
+									{% else %}
+										<td class="value" width="{{ perc }}%"><div>&nbsp;</div></td>
+										<td width="{{ 100 - perc }}%">{{ data.values[id] }}</td>
+									{% endif %}
+								</tr></table>
+							</td>
+						</tr>
+					{% endif %}
+				{% endfor %}
+				<tr class="total-row">
+					<td class="title">Total:</td>
+					<td class="val">{{ data.sum }}</td>
+				</tr>
+			</table>
+		{% else %}
+			{{ macros.no_data() }}
+		{% endif %}
 	</article>
 </section>
