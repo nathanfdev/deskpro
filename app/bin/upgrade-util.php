@@ -54,28 +54,30 @@ if (!defined('DP_WEB_ROOT')) {
 	define('DP_WEB_ROOT', realpath(dirname(__FILE__) . '/../../'));
 }
 
-define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
+if (!defined('DP_CONFIG_FILE')) {
+	define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
+}
 
 @ini_set('memory_limit', -1);
 @ini_set('memory_limit', 268435456);
 @set_time_limit(0);
 
-require DP_ROOT . '/src/Application/InstallBundle/Install/server_check_functions.php';
-require DP_ROOT . '/sys/load_config.php';
+require_once DP_ROOT . '/src/Application/InstallBundle/Install/server_check_functions.php';
+require_once DP_ROOT . '/sys/load_config.php';
 
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/HttpKernel/Util/Filesystem.php';
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Process/ExecutableFinder.php';
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Finder.php';
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Glob.php';
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/SplFileInfo.php';
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/RecursiveDirectoryIterator.php';
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/ExcludeDirectoryFilterIterator.php';
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/FileTypeFilterIterator.php';
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/FilenameFilterIterator.php';
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Output/OutputInterface.php';
-require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterInterface.php';
-require DP_ROOT.'/src/Orb/Util/Numbers.php';
-require DP_ROOT.'/src/Orb/Util/Env.php';
+require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/HttpKernel/Util/Filesystem.php';
+require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Process/ExecutableFinder.php';
+require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Finder.php';
+require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Glob.php';
+require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/SplFileInfo.php';
+require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/RecursiveDirectoryIterator.php';
+require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/ExcludeDirectoryFilterIterator.php';
+require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/FileTypeFilterIterator.php';
+require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Finder/Iterator/FilenameFilterIterator.php';
+require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Output/OutputInterface.php';
+require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterInterface.php';
+require_once DP_ROOT.'/src/Orb/Util/Numbers.php';
+require_once DP_ROOT.'/src/Orb/Util/Env.php';
 
 dp_load_config();
 
@@ -1732,13 +1734,13 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		# Load the required Symfony libs
 		#------------------------------
 
-		require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterStyleInterface.php';
-		require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterStyle.php';
-		require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatter.php';
-		require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/HelperInterface.php';
-		require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/Helper.php';
-		require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/DialogHelper.php';
-		require DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/FormatterHelper.php';
+		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterStyleInterface.php';
+		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatterStyle.php';
+		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Formatter/OutputFormatter.php';
+		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/HelperInterface.php';
+		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/Helper.php';
+		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/DialogHelper.php';
+		require_once DP_ROOT.'/vendor/symfony/src/Symfony/Component/Console/Helper/FormatterHelper.php';
 
 		#------------------------------
 		# Create helpers
@@ -1876,6 +1878,37 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 	public function	runAction_downloadAndInstallChoice()
 	{
 		$this->out();
+
+		#---
+		# File permissions: CHeck a few dirs/files to make sure we can write them all
+		#---
+
+		$check = array(
+			DP_ROOT,
+			DP_ROOT.'/src',
+			DP_ROOT.'/sys',
+			DP_ROOT.'/sys/cache',
+			DP_ROOT.'/sys/cache',
+			DP_ROOT.'/sys/cache/prod',
+			DP_ROOT.'/sys/system.php',
+			DP_ROOT.'/sys/vendor',
+		);
+
+		$write_fail = false;
+		foreach ($check as $f) {
+			if (file_exists($f) && !is_writable($f)) {
+				$write_fail = $f;
+				break;
+			}
+		}
+
+		if ($write_fail) {
+			$this->upgrade->log("Failed write permission check on: $write_fail");
+			$this->errorExit(
+				"This command requires permission to delete and write all files in the DeskPRO directory. We detected a permission error that would prevent the "
+				."upgrade from completing successfully. Check to make sure this user has permission on all DeskPRO files, and then try again."
+			);
+		}
 
 		#------------------------------
 		# Download
