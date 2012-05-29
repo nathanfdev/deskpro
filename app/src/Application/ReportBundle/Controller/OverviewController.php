@@ -46,6 +46,7 @@ class OverviewController extends AbstractController
 			'tickets_resolved_data'          => $this->getValues('tickets_resolved'),
 			'tickets_response_time_data'     => $this->getValues('tickets_response_time'),
 			'tickets_user_waiting_time_data' => $this->getValues('tickets_user_waiting_time'),
+			'tickets_opened_hour_data'       => $this->getValues('tickets_opened_hour'),
 		));
 	}
 
@@ -76,6 +77,12 @@ class OverviewController extends AbstractController
 					'data' => $this->getValues('tickets_user_waiting_time', array('grouping_field' => $grouping_field))
 				));
 
+			case 'tickets_opened_hour':
+				$date_choice = $this->in->getString('date_choice');
+				return $this->render('ReportBundle:Overview:tickets-opened-hour.html.twig', array(
+					'data' => $this->getValues('tickets_opened_hour', array('date_choice' => $date_choice))
+				));
+
 			default:
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown type $type");
 		}
@@ -94,7 +101,49 @@ class OverviewController extends AbstractController
 					'titles'         => $stat->getTitles(),
 					'values'         => $stat->getValues(),
 					'max'            => $stat->getMax(),
-					'sum' => $sum,
+					'sum'            => $sum,
+				);
+
+			case 'tickets_opened_hour':
+
+				$date_choice = $options->get('date_choice');
+				switch ($date_choice) {
+					case 'this_week':
+						$date = $this->person->getDateTime();
+						$interval = new \DateInterval('P1D');
+						$date->sub($interval);
+						break;
+					case 'this_week':
+						$date = $this->person->getDateTime();
+						$interval = new \DateInterval('P7D');
+						$date->sub($interval);
+						break;
+					case 'this_month':
+						$date = $this->person->getDateTime();
+						$date->setDate($date->format('Y'), 1, 1);
+						break;
+					case 'this_year':
+						$date = $this->person->getDateTime();
+						$date->setDate($date->format('Y') - 1, 1, 1);
+						break;
+					default:
+						$options->set('date_choice', 'today');
+						$date = $this->person->getDateTime();
+						$date->setTime(0,0,0);
+						break;
+				}
+
+				$date2 = $this->person->getDateTime();
+
+				$stat = new \Application\ReportBundle\OverviewStat\TicketsOpenedHour($date, $date2);
+				$sum = array_sum($stat->getValues());
+
+				return array(
+					'titles'         => $stat->getTitles(),
+					'date_choice'    => $options->get('date_choice'),
+					'values'         => $stat->getValues(),
+					'max'            => $stat->getMax(),
+					'sum'            => $sum,
 				);
 
 			case 'tickets_resolved':
@@ -121,6 +170,7 @@ class OverviewController extends AbstractController
 					default:
 						$options->set('date_choice', 'today');
 						$date = $this->person->getDateTime();
+						$date->setTime(0,0,0);
 						break;
 				}
 
@@ -162,6 +212,7 @@ class OverviewController extends AbstractController
 					default:
 						$options->set('date_choice', 'today');
 						$date = $this->person->getDateTime();
+						$date->setTime(0,0,0);
 						break;
 				}
 
