@@ -570,6 +570,33 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			$is_webinstall = false;
 		}
 
+		// If it's not a web install, then we should do server checks here since there could be something wrong (oh noes)
+		if (!$is_webinstall) {
+			$this->getLogger()->log('Install::installDataAction (post command-install check)', 'debug');
+
+			$server_check = new \Application\InstallBundle\Install\ServerChecks();
+			$server_check->setLogger($this->getLogger());
+			$server_check->checkServer();
+			$is_fatal = $server_check->hasFatalErrors();
+
+			if ($is_fatal) {
+
+				$e = new \Application\InstallBundle\Install\ServerCheckException("Server requirements failed (post command-install): " . implode(', ', array_keys($server_check->getFatalErrors())));
+				$this->sendInstallReport($e);
+
+				$data_dir = dp_get_data_dir();
+				$ini_path = \Orb\Util\Env::getPhpIniPath();
+
+				return $this->render('InstallBundle:Install:install-data-serverchecks.html.php', array(
+					'errors' => $server_check->getErrors(),
+					'is_fatal' => $is_fatal,
+					'data_dir' => $data_dir,
+					'ini_path' => $ini_path,
+					'is_webinstall' => $is_webinstall,
+				));
+			}
+		}
+
 		return $this->render('InstallBundle:Install:install-data.html.php', array(
 			'is_webinstall' => $is_webinstall,
 		));
