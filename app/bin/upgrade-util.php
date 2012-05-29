@@ -597,6 +597,23 @@ class Upgrade
 		$write_status("basic_checks_done");
 
 		#----------------------------------------
+		# Download newest version
+		#----------------------------------------
+
+		try {
+			$write_status("downloading_update_start");
+			if (!$is_quiet) $this->out("Downloading latest source ...");
+			$new_source_zip = $this->downloadLatest();
+			if (!$is_quiet) $this->out("-> Done");
+			$write_status("downloading_update_done");
+		} catch (\Exception $e) {
+			$write_status("error_downloading_update", $e->getMessage());
+			$this->out($e->getCode() . ' ' . $e->getMessage());
+			$this->logException($e);
+			exit(20);
+		}
+
+		#----------------------------------------
 		# Do upgrade
 		#----------------------------------------
 
@@ -640,19 +657,6 @@ class Upgrade
 			$this->out($e->getCode() . ' ' . $e->getMessage());
 			$this->logException($e);
 			exit(15);
-		}
-
-		try {
-			$write_status("downloading_update_start");
-			if (!$is_quiet) $this->out("Downloading latest source ...");
-			$new_source_zip = $this->downloadLatest();
-			if (!$is_quiet) $this->out("-> Done");
-			$write_status("downloading_update_done");
-		} catch (\Exception $e) {
-			$write_status("error_downloading_update", $e->getMessage());
-			$this->out($e->getCode() . ' ' . $e->getMessage());
-			$this->logException($e);
-			exit(20);
 		}
 
 		try {
