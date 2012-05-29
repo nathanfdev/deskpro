@@ -304,7 +304,7 @@ class OverviewController extends AbstractController
 						break;
 					case 'this_year':
 						$date = $this->person->getDateTime();
-						$date->setDate($date->format('Y') - 1, 1, 1);
+						$date->setDate($date->format('Y'), 1, 1);
 						break;
 					default:
 						$options->set('date_choice', 'today');
