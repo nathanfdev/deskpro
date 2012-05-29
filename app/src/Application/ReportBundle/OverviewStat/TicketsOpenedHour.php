@@ -184,7 +184,7 @@ class TicketsOpenedHour extends AbstractTableOverviewStat
 		$sql = "
 			SELECT $date_group AS date_group, COUNT(*)
 			FROM tickets
-			WHERE tickets.status = 'resolved' AND tickets.date_resolved BETWEEN '$d1' AND '$d2'
+			WHERE tickets.status != 'hidden' AND tickets.date_created BETWEEN '$d1' AND '$d2'
 			GROUP BY date_group
 		";
 
