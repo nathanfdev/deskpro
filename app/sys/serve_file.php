@@ -241,7 +241,7 @@ class FilestorageLoader
 			return;
 		}
 
-		require DP_ROOT . '/src/Orb/Util/Numbers.php';
+		require DP_ROOT . '/src/Orb/Util/Colors.php';
 		require DP_ROOT . '/src/Orb/Images/Util.php';
 
 		$start_color = isset($_REQUEST['start_color']) ? (string)$_REQUEST['start_color'] : '000000';
@@ -252,7 +252,7 @@ class FilestorageLoader
 			if (!strpos($color, '(') || !strpos($color, ')')) {
 				$color = preg_replace('#[^a-fA-F0-9]#', '', $color);
 				if (strlen($color) == 6 || strlen($color) == 3) {
-					$color = \Orb\Util\Numbers::hex2rgb($color);
+					$color = \Orb\Util\Colors::hex2rgb($color);
 					if ($color) {
 						$color = 'rgb(' . implode(',', $color) . ')';
 					} else {
