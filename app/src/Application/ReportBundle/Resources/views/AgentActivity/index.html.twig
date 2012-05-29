@@ -99,7 +99,7 @@
                     'maxDate': new Date({{ today|date('Y') }}, {{ today|date('m') }} -1, {{ today|date('d') }})
                 }
         );
-        $('.datepicker > a').on('click', function(){
+        $('.datepicker').on('click', function(){
             if($('.datepicker > span').hasClass('hidden')) {
                 $('.datepicker > span').removeClass('hidden');
                 $('.reports-popup-page-overlay').removeClass('hidden');
