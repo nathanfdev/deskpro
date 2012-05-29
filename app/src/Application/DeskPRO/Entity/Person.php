@@ -1749,6 +1749,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return new \DateTime("now", $this->getDateTimezone());
 	}
 
+	public function getDateForTime($time)
+	{
+		return new \DateTime($time, $this->getDateTimezone());
+	}
+
 	public function getTimezoneOffset($as_string = false)
 	{
 		$user_offset = $this->getDateTimezone()->getOffset(new \DateTime("now"));

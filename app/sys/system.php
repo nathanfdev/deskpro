@@ -170,6 +170,8 @@ abstract class BaseAbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		$content = str_replace("'" . DP_ROOT, 'DP_ROOT.\'', $content);
 		// Correct double slash paths
 		$content = str_replace('prod//', 'prod/', $content);
+		// Empty logs dir that isn't used (we get it from conf)
+		$content = preg_replace("#'kernel\.logs_dir' => '(.*?)'#", "'kernel.logs_dir' => ''", $content);
 
 		$cache->write($content, $container->getResources());
 	}

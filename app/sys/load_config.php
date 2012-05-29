@@ -166,6 +166,24 @@ function dp_get_data_dir()
 /**
  * @return string
  */
+function dp_get_debug_dir()
+{
+	dp_load_config();
+
+	global $DP_CONFIG;
+	if (isset($DP_CONFIG['dir_debug']) && $DP_CONFIG['dir_debug']) {
+		$log_dir = $DP_CONFIG['dir_debug'];
+	} else {
+		$log_dir = dp_get_data_dir() . '/debug';
+	}
+
+	return $log_dir;
+}
+
+
+/**
+ * @return string
+ */
 function dp_get_log_dir()
 {
 	dp_load_config();

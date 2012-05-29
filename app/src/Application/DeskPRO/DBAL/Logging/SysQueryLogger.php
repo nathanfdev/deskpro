@@ -345,7 +345,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			$write = trim($write);
 			$write .= "\n";
 
-			file_put_contents(DP_WEB_ROOT.'/data/logs/slow-page-log.log', $write, \FILE_APPEND | \LOCK_EX);
+			file_put_contents(dp_get_log_dir().'/slow-page-log.log', $write, \FILE_APPEND | \LOCK_EX);
 		}
 	}
 }

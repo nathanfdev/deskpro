@@ -68,7 +68,7 @@ class KernelBooter
 				$debug_dir = $DP_CONFIG['enable_debug_trace_dir'];
 				$is_custom = true;
 			} else {
-				$debug_dir = DP_WEB_ROOT . '/data/debug';
+				$debug_dir = dp_get_debug_dir() . '/data/debug';
 				$is_custom = false;
 			}
 
