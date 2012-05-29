@@ -68,15 +68,6 @@ function deskpro_install_check_memory_limit()
 	return true;
 }
 
-function deskpro_install_check_writable()
-{
-	if (!is_writable(DP_ROOT.'/sys/cache')) {
-		return false;
-	}
-
-	return true;
-}
-
 function deskpro_install_check_data_writable($data_dir = null)
 {
 

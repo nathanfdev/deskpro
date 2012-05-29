@@ -34,11 +34,6 @@ if (!deskpro_install_check_config()) {
 	echo "config_file\n";
 }
 
-if (!deskpro_install_check_writable()) {
-	$fail = true;
-	echo "cache_writable\n";
-}
-
 // Fatal errors, cant continue
 if ($fail) {
 	exit;
