@@ -204,7 +204,7 @@ class GroupingField
 					return array(
 						'select' => 'COALESCE(custom_data_person.input, 0) AS group_field',
 						'group_by' => 'group_field',
-						'join' => 'LEFT JOIN custom_data_ticket ON (custom_data_person.person_id = tickets.person_id AND custom_data_person.field_id = ' . $this->field_id  .')',
+						'join' => 'LEFT JOIN custom_data_person ON (custom_data_person.person_id = tickets.person_id AND custom_data_person.field_id = ' . $this->field_id  .')',
 						'where' => ''
 					);
 				}

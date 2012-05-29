@@ -144,7 +144,7 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
 			$sql = "
 				SELECT $field, COUNT(*)
 				FROM tickets
-				WHERE tickets.status IN ('awaiting_agent', 'awaiting_user')
+				WHERE tickets.status IN ('awaiting_agent')
 				GROUP BY time_group
 			";
 

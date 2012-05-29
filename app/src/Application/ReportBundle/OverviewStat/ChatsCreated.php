@@ -36,8 +36,13 @@ namespace Application\ReportBundle\OverviewStat;
 
 use Application\DeskPRO\App;
 
-class TicketsOpenedHour extends AbstractTableOverviewStat
+class ChatsCreated extends AbstractTableOverviewStat
 {
+	/**
+	 * @var ChatGroupingField
+	 */
+	protected $grouping_field;
+
 	/**
 	 * @var \DateTime
 	 */
@@ -58,10 +63,11 @@ class TicketsOpenedHour extends AbstractTableOverviewStat
 	 */
 	protected $titles = null;
 
-	public function __construct(\DateTime $date_start, \DateTime $date_end)
+	public function __construct(ChatGroupingField $grouping_field, \DateTime $date_start, \DateTime $date_end)
 	{
-		$this->date_start = $date_start;
-		$this->date_end   = $date_end;
+		$this->grouping_field = $grouping_field;
+		$this->date_start     = \Orb\Util\Dates::convertToUtcDateTime($date_start);
+		$this->date_end       = \Orb\Util\Dates::convertToUtcDateTime($date_end);
 	}
 
 
@@ -70,10 +76,7 @@ class TicketsOpenedHour extends AbstractTableOverviewStat
 	 */
 	public function getTitles()
 	{
-		$titles = array_combine(range(1, 23), range(1,23));
-		$titles['0'] = '0';
-
-		return $titles;
+		return $this->grouping_field->getTitles($this->getValues());
 	}
 
 
@@ -86,21 +89,17 @@ class TicketsOpenedHour extends AbstractTableOverviewStat
 			return $this->values;
 		}
 
-		// Convert input datetime which has timezone data, into UTC for db range
-		$date1 = \Orb\Util\Dates::convertToUtcDateTime($this->date_start);
-		$date2 = \Orb\Util\Dates::convertToUtcDateTime($this->date_end);
+		$group_field = $this->grouping_field->getFieldInfo();
 
-		$d1 = $date1->format('Y-m-d H:i:s');
-		$d2 = $date2->format('Y-m-d H:i:s');
-
-		// Get offset of original date from UTC, we need for mysql
-		$offset = $date1->getTimestamp() - $this->date_start->getTimestamp();
+		$d1 = $this->date_start->format('Y-m-d H:i:s');
+		$d2 = $this->date_end->format('Y-m-d H:i:s');
 
 		$sql = "
-			SELECT HOUR(DATE_SUB(tickets.date_created, INTERVAL $offset SECOND)) AS hour, COUNT(*)
-			FROM tickets
-			WHERE tickets.status = 'resolved' AND tickets.date_resolved BETWEEN '$d1' AND '$d2'
-			GROUP BY hour
+			SELECT {$group_field['select']}, COUNT(*)
+			FROM chat_conversations
+			{$group_field['join']}
+			WHERE chat_conversations.is_agent = 0 AND chat_conversations.date_created BETWEEN '$d1' AND '$d2' {$group_field['where']}
+			GROUP BY {$group_field['group_by']}
 		";
 
 		$this->values = App::getDb()->fetchAllKeyValue($sql);
@@ -109,12 +108,21 @@ class TicketsOpenedHour extends AbstractTableOverviewStat
 	}
 
 
+	/**
+	 * @return int
+	 */
 	public function getMax()
 	{
 		if (!$this->getValues()) {
-			return 1;
+			return 10;
 		}
 
-		return max($this->getValues());
+		$max = max($this->getValues());
+
+		if ($max < 10) {
+			$max = 10;
+		}
+
+		return $max;
 	}
 }

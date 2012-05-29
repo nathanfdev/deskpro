@@ -47,6 +47,7 @@ class OverviewController extends AbstractController
 			'tickets_response_time_data'     => $this->getValues('tickets_response_time'),
 			'tickets_user_waiting_time_data' => $this->getValues('tickets_user_waiting_time'),
 			'tickets_opened_hour_data'       => $this->getValues('tickets_opened_hour'),
+			'chats_created_data'             => $this->getValues('chats_created'),
 		));
 	}
 
@@ -82,6 +83,13 @@ class OverviewController extends AbstractController
 				return $this->render('ReportBundle:Overview:tickets-opened-hour.html.twig', array(
 					'data' => $this->getValues('tickets_opened_hour', array('date_choice' => $date_choice))
 				));
+
+			case 'chats_created':
+				$grouping_field = $this->in->getString('grouping_field');
+				$date_choice = $this->in->getString('date_choice');
+				return $this->render('ReportBundle:Overview:chats-created.html.twig', array(
+					'data' => $this->getValues('chats_created', array('grouping_field' => $grouping_field, 'date_choice' => $date_choice)))
+				);
 
 			default:
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown type $type");
@@ -262,6 +270,48 @@ class OverviewController extends AbstractController
 				$sum = array_sum($stat->getValues());
 				return array(
 					'grouping_field' => $options->get('grouping_field', 'department'),
+					'titles'         => $stat->getTitles(),
+					'values'         => $stat->getValues(),
+					'max'            => $stat->getMax(),
+					'sum'            => $sum,
+				);
+
+			case 'chats_created':
+				$date_choice = $options->get('date_choice');
+				switch ($date_choice) {
+					case 'this_week':
+						$date = $this->person->getDateTime();
+						$interval = new \DateInterval('P1D');
+						$date->sub($interval);
+						break;
+					case 'this_week':
+						$date = $this->person->getDateTime();
+						$interval = new \DateInterval('P7D');
+						$date->sub($interval);
+						break;
+					case 'this_month':
+						$date = $this->person->getDateTime();
+						$date->setDate($date->format('Y'), 1, 1);
+						break;
+					case 'this_year':
+						$date = $this->person->getDateTime();
+						$date->setDate($date->format('Y') - 1, 1, 1);
+						break;
+					default:
+						$options->set('date_choice', 'today');
+						$date = $this->person->getDateTime();
+						$date->setTime(0,0,0);
+						break;
+				}
+
+				$date2 = $this->person->getDateTime();
+
+				$gf = new \Application\ReportBundle\OverviewStat\ChatGroupingField($options->get('grouping_field', 'department'));
+				$stat = new \Application\ReportBundle\OverviewStat\ChatsCreated($gf, $date, $date2);
+				$sum = array_sum($stat->getValues());
+				return array(
+					'grouping_field' => $options->get('grouping_field', 'department'),
+					'date_choice'    => $options->get('date_choice'),
 					'titles'         => $stat->getTitles(),
 					'values'         => $stat->getValues(),
 					'max'            => $stat->getMax(),
