@@ -109,14 +109,4 @@ class KbViewsHour extends AbstractTableOverviewStat
 
 		return $this->values;
 	}
-
-
-	public function getMax()
-	{
-		if (!$this->getValues()) {
-			return 1;
-		}
-
-		return max($this->getValues());
-	}
 }

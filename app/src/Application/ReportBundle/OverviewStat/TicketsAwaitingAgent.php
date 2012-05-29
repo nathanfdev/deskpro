@@ -91,19 +91,4 @@ class TicketsAwaitingAgent extends AbstractTableOverviewStat
 
 		return $this->values;
 	}
-
-
-	/**
-	 * @return int
-	 */
-	public function getMax()
-	{
-		$max = max($this->getValues());
-
-		if ($max < 10) {
-			$max = 10;
-		}
-
-		return $max;
-	}
 }

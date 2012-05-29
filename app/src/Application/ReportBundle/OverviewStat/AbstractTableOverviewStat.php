@@ -64,8 +64,8 @@ abstract class AbstractTableOverviewStat
 
 		$max = max($this->getValues());
 
-		if ($max < 8) {
-			$max = 8;
+		if ($max < 3) {
+			$max = 3;
 		}
 
 		return $max;

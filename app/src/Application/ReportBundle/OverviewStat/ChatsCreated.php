@@ -106,23 +106,4 @@ class ChatsCreated extends AbstractTableOverviewStat
 
 		return $this->values;
 	}
-
-
-	/**
-	 * @return int
-	 */
-	public function getMax()
-	{
-		if (!$this->getValues()) {
-			return 10;
-		}
-
-		$max = max($this->getValues());
-
-		if ($max < 10) {
-			$max = 10;
-		}
-
-		return $max;
-	}
 }
