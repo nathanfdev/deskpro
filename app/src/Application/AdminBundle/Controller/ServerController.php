@@ -86,7 +86,7 @@ class ServerController extends AbstractController
 
 		if (!$is_fatal) {
 			$has_db_checks = true;
-			$server_check->checkDatabase(App::getConfig('db'));
+			$server_check->checkDatabase(App::getConfig('db'), false);
 		}
 
 		$is_fatal = $server_check->hasFatalErrors();

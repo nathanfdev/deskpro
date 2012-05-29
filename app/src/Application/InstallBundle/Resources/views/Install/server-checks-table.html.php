@@ -357,6 +357,7 @@
 		</td>
 	</tr>
 
+	<?php if (!$skip_empty_check): ?>
 	<tr>
 		<td>
 			<?php $failed = false ?>
@@ -377,5 +378,6 @@
 	</tr>
 		<?php endif ?>
 	</tbody>
+	<?php endif ?>
 </table>
 <?php endif ?>
