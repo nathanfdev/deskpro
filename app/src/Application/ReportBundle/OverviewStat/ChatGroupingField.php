@@ -60,9 +60,9 @@ class ChatGroupingField extends GroupingField
 
 			case self::ORGANIZATION:
 				return array(
-					'select' => 'COALESCE(organizations.organization_id, 0) AS org_id',
+					'select' => 'COALESCE(organizations.id, 0) AS org_id',
 					'group_by' => 'org_id',
-					'join' => 'LEFT JOIN person ON (chat_conversations.person_id = person.id) LEFT JOIN organizations ON (organizations.id = person.organization_id)',
+					'join' => 'LEFT JOIN people ON (chat_conversations.person_id = people.id) LEFT JOIN organizations ON (organizations.id = people.organization_id)',
 					'where' => ''
 				);
 				break;
