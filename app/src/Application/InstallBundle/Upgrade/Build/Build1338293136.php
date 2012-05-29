@@ -42,7 +42,7 @@ class Build1338293136 extends AbstractBuild
 		$this->execMutateSql("CREATE TABLE page_view_log (id INT AUTO_INCREMENT NOT NULL, object_type INT NOT NULL, object_id INT NOT NULL, person_id INT DEFAULT NULL, date_created DATETIME NOT NULL, INDEX object_idx (object_type, object_id), INDEX date_created_idx (date_created), PRIMARY KEY(id)) ENGINE = InnoDB");
 		$this->execMutateSql("
 			INSERT INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`)
-			VALUES ('update_view_counts', 'update_view_counts', 'Update View Counts', 'Updates view counts on objects', 'Application\\DeskPRO\\WorkerProcess\\Job\\UpdateViewCounts', X'613A303A7B7D', 600, NULL)
+			VALUES ('update_view_counts', 'update_view_counts', 'Update View Counts', 'Updates view counts on objects', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\UpdateViewCounts', X'613A303A7B7D', 600, NULL)
 		");
 	}
 }
