@@ -361,6 +361,8 @@ class TicketsStep extends AbstractDeskpro3Step
 		// used in ticket logs below
 		$message_map = array();
 
+		$last_agent_message_id = 0;
+
 		foreach ($ticket_messages as $message_info) {
 
 			if ($message_info['techid']) {
@@ -434,6 +436,10 @@ class TicketsStep extends AbstractDeskpro3Step
 
 			$message_map[$message_info['id']] = $insert_message['id'];
 
+			if (!$last_agent_message_id && $message_info['techid']) {
+				$last_agent_message_id = $insert_message['id'];
+			}
+
 			if ($save_raw) {
 				$this->db->insert('tickets_messages_raw', array(
 					'message_id' => $insert_message['id'],
@@ -465,6 +471,18 @@ class TicketsStep extends AbstractDeskpro3Step
 				$subject = \Orb\Util\Strings::htmlEntityDecodeUtf8($subject);
 				$up['subject'] = $subject;
 			}
+		}
+
+		if ($ticket_info['rating'] && $last_agent_message_id) {
+			$insert_ticket_feedback = array(
+				'ticket_id'    => $insert_ticket['id'],
+				'message_id'   => $last_agent_message_id,
+				'person_id'    => $new_person_id,
+				'rating'       => ($ticket_info['rating'] < 3 ? -1 : 1),
+				'message'      => '',
+				'date_created' => date('Y-m-d H:i:s', $ticket_info['timestamp_rating'] ?: time())
+			);
+			$this->db->insert('ticket_feedback', $insert_ticket_feedback);
 		}
 
 		if ($up) {
