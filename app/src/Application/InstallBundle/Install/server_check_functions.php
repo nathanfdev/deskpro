@@ -80,7 +80,7 @@ function deskpro_install_check_writable()
 function deskpro_install_check_data_writable($data_dir = null)
 {
 	if (!$data_dir) {
-		$data_dir = DP_WEB_ROOT . '/data';
+		$data_dir = dp_get_data_dir();
 	}
 
 	$dirs = array(
