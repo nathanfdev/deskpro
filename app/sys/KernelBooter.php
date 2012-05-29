@@ -64,20 +64,11 @@ class KernelBooter
 			if (!function_exists('xdebug_start_trace')) {
 				exit('To use the `enable_debug_trace` setting, the xdebug extension must be installed');
 			}
-			if (isset($DP_CONFIG['enable_debug_trace_dir'])) {
-				$debug_dir = $DP_CONFIG['enable_debug_trace_dir'];
-				$is_custom = true;
-			} else {
-				$debug_dir = dp_get_debug_dir() . '/data/debug';
-				$is_custom = false;
-			}
+
+			$debug_dir = dp_get_debug_dir();
 
 			if (!is_dir($debug_dir) || !is_writable($debug_dir)) {
-				if ($is_custom) {
-					exit('The debug output directory you supplied in `enable_debug_trace_dir` does not exist or is not writable.');
-				} else {
-					exit('The debug output directory at /data/debug does not exist or is not writable.');
-				}
+				exit('The debug output directory at ' . $debug_dir . ' does not exist or is not writable.');
 			}
 
 			$file = $debug_dir . DIRECTORY_SEPARATOR . date('YmdHis') . '-' . mt_rand(10000,99999);

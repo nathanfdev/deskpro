@@ -154,12 +154,12 @@ function dp_get_data_dir()
 
 	global $DP_CONFIG;
 	if (isset($DP_CONFIG['dir_data']) && $DP_CONFIG['dir_data']) {
-		$log_dir = $DP_CONFIG['dir_data'];
+		$dir_data = $DP_CONFIG['dir_data'];
 	} else {
-		$log_dir = DP_WEB_ROOT . '/data';
+		$dir_data = DP_WEB_ROOT . '/data';
 	}
 
-	return $log_dir;
+	return $dir_data;
 }
 
 
@@ -168,16 +168,7 @@ function dp_get_data_dir()
  */
 function dp_get_debug_dir()
 {
-	dp_load_config();
-
-	global $DP_CONFIG;
-	if (isset($DP_CONFIG['dir_debug']) && $DP_CONFIG['dir_debug']) {
-		$log_dir = $DP_CONFIG['dir_debug'];
-	} else {
-		$log_dir = dp_get_data_dir() . '/debug';
-	}
-
-	return $log_dir;
+	return dp_get_data_dir() . '/debug';
 }
 
 
@@ -186,16 +177,7 @@ function dp_get_debug_dir()
  */
 function dp_get_log_dir()
 {
-	dp_load_config();
-
-	global $DP_CONFIG;
-	if (isset($DP_CONFIG['dir_logs']) && $DP_CONFIG['dir_logs']) {
-		$log_dir = $DP_CONFIG['dir_logs'];
-	} else {
-		$log_dir = dp_get_data_dir() . '/logs';
-	}
-
-	return $log_dir;
+	return dp_get_data_dir() . '/logs';
 }
 
 
@@ -204,16 +186,7 @@ function dp_get_log_dir()
  */
 function dp_get_backup_dir()
 {
-	dp_load_config();
-
-	global $DP_CONFIG;
-	if (isset($DP_CONFIG['dir_backups']) && $DP_CONFIG['dir_backups']) {
-		$backup_dir = $DP_CONFIG['dir_backups'];
-	} else {
-		$backup_dir = dp_get_data_dir() . '/backups';
-	}
-
-	return $backup_dir;
+	return dp_get_data_dir() . '/backups';
 }
 
 
@@ -222,16 +195,7 @@ function dp_get_backup_dir()
  */
 function dp_get_blob_dir()
 {
-	dp_load_config();
-
-	global $DP_CONFIG;
-	if (isset($DP_CONFIG['dir_files']) && $DP_CONFIG['dir_files']) {
-		$blob_dir = $DP_CONFIG['dir_files'];
-	} else {
-		$blob_dir = dp_get_data_dir() . '/files';
-	}
-
-	return $blob_dir;
+	return dp_get_data_dir() . '/files';
 }
 
 
@@ -240,16 +204,7 @@ function dp_get_blob_dir()
  */
 function dp_get_tmp_dir()
 {
-	dp_load_config();
-
-	global $DP_CONFIG;
-	if (isset($DP_CONFIG['dir_tmp']) && $DP_CONFIG['dir_tmp']) {
-		$backup_dir = $DP_CONFIG['dir_tmp'];
-	} else {
-		$backup_dir = dp_get_data_dir() . '/tmp';
-	}
-
-	return $backup_dir;
+	return dp_get_data_dir() . '/tmp';
 }
 
 
