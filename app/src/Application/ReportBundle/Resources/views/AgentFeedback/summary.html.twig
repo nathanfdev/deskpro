@@ -45,12 +45,8 @@
     });
 </script>
 {% endblock %}
-
-{% block pagebar %}
-{% endblock %}
-
-{% block page %}
-<style type="text/css">
+{% block html_head %}
+<style>
 .reports_agent_feedback_summary_section > table .border-right {
     border-right-style: dashed;
     border-right-color: #AAAAAA;
@@ -107,12 +103,18 @@ button.datepicker-btn-done {
     display: none;
 }​
 </style>
+{% endblock %}
+
+{% block pagebar %}
+{% endblock %}
+
+{% block page %}
 <div class="reports_agent_feedback_summary_section">
     <table>
         <tr>
             <td class="border-right datepicker-cell"><span class="datepicker nodays drop-down"><a>{{ view_date|date('M Y') }}<em></em></a><span class="hidden ui-widget-content ui-corner-all"><span></span><button class="datepicker-btn-done">Done</button></span></span></td>
             {% for agent in agents %}
-                <th class="{% if not loop.last %}border-right{% endif %}" colspan="2">{{ agent.name }}</th>
+                <th class="{% if not loop.last %}border-right{% endif %}" colspan="2">{{ agent.getDisplayName() }}</th>
             {% endfor %}
         </tr>
         {% for i,day in days %}
@@ -120,13 +122,17 @@ button.datepicker-btn-done {
                 <td class="border-right left-column">{{ day|date('jS') }}</td>
 
                 {% for agent in agents %}
-                    <td class="rating_1">
-                        <img src="{{ asset('images/report/feedback/rating_1.png') }}" />
-                        {{ summary[i][agent.id][1]|default(0) }}
+                    <td class="rating_1 {% if not summary[i][agent.id][1] %}no-feedback{% endif %}">
+						<div>
+							<img src="{{ asset('images/report/feedback/rating_1.png') }}" />
+							{{ summary[i][agent.id][1]|default(0) }}
+						</div>
                     </td>
-                    <td class="rating_0 {% if not loop.last %}border-right{% endif %}">
-                        <img src="{{ asset('images/report/feedback/rating_0.png') }}" />
-                        {{ summary[i][agent.id][0]|default(0) }}
+                    <td class="rating_0 {% if not loop.last %}border-right{% endif %} {% if not summary[i][agent.id][0] %}no-feedback{% endif %}">
+						<div>
+							<img src="{{ asset('images/report/feedback/rating_0.png') }}" />
+							{{ summary[i][agent.id][0]|default(0) }}
+						</div>
                     </td>
                 {% endfor %}
             </tr>
@@ -134,13 +140,17 @@ button.datepicker-btn-done {
         <tr class="border-top">
             <td class="border-right left-column">Total</td>
             {% for agent in agents %}
-                <td class="rating_1">
-                    <img src="{{ asset('images/report/feedback/rating_1.png') }}" />
-                    {{ totals[agent.id][1] }}
+                <td class="rating_1 {% if not totals[agent.id][1] %}no-feedback{% endif %}">
+					<div>
+						<img src="{{ asset('images/report/feedback/rating_1.png') }}" />
+						{{ totals[agent.id][1]|default(0) }}
+					</div>
                 </td>
-                <td class="rating_0 {% if not loop.last %}border-right{% endif %}">
-                    <img src="{{ asset('images/report/feedback/rating_0.png') }}" />
-                    {{ totals[agent.id][0] }}
+                <td class="rating_0 {% if not loop.last %}border-right{% endif %} {% if not totals[agent.id][0] %}no-feedback{% endif %}">
+					<div>
+						<img src="{{ asset('images/report/feedback/rating_0.png') }}" />
+						{{ totals[agent.id][0]|default(0) }}
+					</div>
                 </td>
             {% endfor %}
         </tr>
