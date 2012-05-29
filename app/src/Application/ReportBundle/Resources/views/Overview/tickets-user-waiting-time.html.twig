@@ -1,0 +1,13 @@
+{% import 'ReportBundle:Overview:macros.html.twig' as macros %}
+<section class="report-wrapper">
+	<header>
+		<h2>
+			User Waiting Time
+			| Showing Grouped by {{ macros.grouping_field_select(data.grouping_field, {none: true}) }}
+		</h2>
+	</header>
+	<article>
+		<div class="loading-overlay" style="display: none"><strong>Loading</strong></div>
+		{{ macros.stat_table(data) }}
+	</article>
+</section>

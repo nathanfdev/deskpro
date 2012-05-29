@@ -32,5 +32,11 @@
 			{% include 'ReportBundle:Overview:tickets-response-time.html.twig' with { data: tickets_response_time_data } %}
 		</div>
 
+		<br />
+
+		<div data-element-handler="DeskPRO.Admin.ElementHandler.OverviewStat.StandardWithGroup"	data-update-url="{{ path('report_overview_update_stat', {type: 'tickets_user_waiting_time'}) }}">
+			{% include 'ReportBundle:Overview:tickets-user-waiting-time.html.twig' with { data: tickets_user_waiting_time_data } %}
+		</div>
+
 	</td></tr></table>
 {% endblock %}

@@ -34,15 +34,18 @@
 
 namespace Application\ReportBundle\Controller;
 
+use Orb\Util\Numbers;
+
 class OverviewController extends AbstractController
 {
 	public function indexAction()
 	{
 		return $this->render('ReportBundle:Overview:index.html.twig', array(
-			'tickets_status_data' => $this->getValues('tickets_status'),
-			'tickets_awaiting_agent_data' => $this->getValues('tickets_awaiting_agent'),
-			'tickets_resolved_data' => $this->getValues('tickets_resolved'),
-			'tickets_response_time_data' => $this->getValues('tickets_response_time'),
+			'tickets_status_data'            => $this->getValues('tickets_status'),
+			'tickets_awaiting_agent_data'    => $this->getValues('tickets_awaiting_agent'),
+			'tickets_resolved_data'          => $this->getValues('tickets_resolved'),
+			'tickets_response_time_data'     => $this->getValues('tickets_response_time'),
+			'tickets_user_waiting_time_data' => $this->getValues('tickets_user_waiting_time'),
 		));
 	}
 
@@ -66,6 +69,12 @@ class OverviewController extends AbstractController
 				return $this->render('ReportBundle:Overview:tickets-response-time.html.twig', array(
 					'data' => $this->getValues('tickets_response_time', array('grouping_field' => $grouping_field, 'date_choice' => $date_choice)))
 				);
+
+			case 'tickets_user_waiting_time':
+				$grouping_field = $this->in->getString('grouping_field');
+				return $this->render('ReportBundle:Overview:tickets-user-waiting-time.html.twig', array(
+					'data' => $this->getValues('tickets_user_waiting_time', array('grouping_field' => $grouping_field))
+				));
 
 			default:
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown type $type");
@@ -165,49 +174,35 @@ class OverviewController extends AbstractController
 				}
 				$stat = new \Application\ReportBundle\OverviewStat\TicketsResponseTime($gf, $date, $date2);
 
-				$group_max = array();
-				$group_keys = array();
-				$group_total = array();
-				$max = 0;
-				if ($options->get('grouping_field')) {
-					foreach ($stat->getValues() as $time_group => $sub_info) {
-						$group_max[$time_group] = 0;
-						$group_total[$time_group] = 0;
-						foreach ($sub_info as $subid => $count) {
-							$group_total[$time_group] += $count;
-							if ($count > $group_max[$time_group]) {
-								$group_max[$time_group] = $count;
-							}
-						}
-					}
-
-					foreach (array_keys($stat->getSubgroupTitles()) as $k => $id) {
-						$group_keys[$k] = sprintf("%02X%02X%02X", mt_rand(0, 255), mt_rand(0, 255), mt_rand(0, 255));
-					}
-
-					if ($group_max) {
-						$max = max($group_max);
-					}
-				} else {
-					if ($stat->getValues()) {
-						$max = max($stat->getValues());
-					}
-				}
-
-				if (!$max) {
-					$max = 1;
-				}
-
 				return array(
 					'grouping_field' => $options->get('grouping_field'),
-					'group_max'      => $group_max,
+					'group_max'      => $stat->getGroupMax(),
 					'date_choice'    => $options->get('date_choice'),
 					'titles'         => $stat->getTitles(),
 					'sub_titles'     => $stat->getSubgroupTitles(),
-					'group_keys'     => $group_keys,
-					'group_total'    => $group_total,
+					'group_keys'     => $stat->getGroupColors(),
+					'group_total'    => $stat->getGroupTotal(),
 					'values'         => $stat->getValues(),
-					'max'            => $max,
+					'max'            => $stat->getMax(),
+				);
+
+			case 'tickets_user_waiting_time':
+				if ($options->get('grouping_field')) {
+					$gf = new \Application\ReportBundle\OverviewStat\GroupingField($options->get('grouping_field'));
+				} else {
+					$gf = null;
+				}
+				$stat = new \Application\ReportBundle\OverviewStat\TicketsUserWaitingTime($gf);
+
+				return array(
+					'grouping_field' => $options->get('grouping_field'),
+					'group_max'      => $stat->getGroupMax(),
+					'titles'         => $stat->getTitles(),
+					'sub_titles'     => $stat->getSubgroupTitles(),
+					'group_keys'     => $stat->getGroupColors(),
+					'group_total'    => $stat->getGroupTotal(),
+					'values'         => $stat->getValues(),
+					'max'            => $stat->getMax(),
 				);
 
 			case 'tickets_awaiting_agent':

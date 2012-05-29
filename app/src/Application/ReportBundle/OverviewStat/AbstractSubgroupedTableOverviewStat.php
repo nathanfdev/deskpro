@@ -34,73 +34,112 @@
 
 namespace Application\ReportBundle\OverviewStat;
 
-class TimeTitles
+abstract class AbstractSubgroupedTableOverviewStat extends AbstractTableOverviewStat
 {
-	public static $time_phrases = array(
-		300        => '< 5 minutes',
-		900        => '5 - 15 minutes',
-		1800       => '15 - 30 minutes',
-		3600       => '30 - 60 minutes',
-		7200       => '1 - 2 hours',
-		10800      => '2 - 3 hours',
-		14400      => '3 - 4 hours',
-		21600      => '4 - 6 hours',
-		43200      => '6 - 12 hours',
-		86400      => '12 - 24 hours',
-		172800     => '1 - 2 days',
-		259200     => '2 - 3 days',
-		345600     => '3 - 4 days',
-		432000     => '4 - 5 days',
-		518400     => '5 - 6 days',
-		604800     => '6 - 7 days',
-		1209600    => '1 - 2 weeks',
-		1814400    => '2 - 3 weeks',
-		2419200    => '3 - 4 weeks',
-		4838400    => '1 - 2 months',
-		7257600    => '2 - 3 months',
-		9676800    => '3 - 4 months',
-		12096000   => '4 - 5 months',
-		14515200   => '5 - 6 months',
-		'9000000000' => '> 6 months'
-	);
+	/**
+	 * @var GroupingField
+	 */
+	protected $grouping_field;
 
-	public static function getValuesArray($values)
+	/**
+	 * @var array
+	 */
+	protected $group_max = null;
+
+	/**
+	 * @var array
+	 */
+	protected $group_total = null;
+
+	/**
+	 * @var array
+	 */
+	protected $group_colors = null;
+
+
+	/**
+	 * @return string[]
+	 */
+	abstract public function getSubgroupTitles();
+
+
+	/**
+	 * @return int[]
+	 */
+	public function getGroupMax()
 	{
-		$new_values = array();
-
-		foreach ($values as $group => $v) {
-			$new_values[$group] = self::selectTimeGroup($v);
-		}
-
-		return $new_values;
+		$this->_initGroupInfo();
+		return $this->group_max;
 	}
 
-	public static function selectTimeGroup($time)
-	{
-		$time_phrases = self::$time_phrases;
 
-		foreach ($time_phrases as $min => $phrase) {
-			if ($time <= $min) {
-				return $phrase;
+	/**
+	 * @return int[]
+	 */
+	public function getGroupTotal()
+	{
+		$this->_initGroupInfo();
+		return $this->group_total;
+	}
+
+
+	/**
+	 * @return int[]
+	 */
+	public function getGroupColors()
+	{
+		$this->_initGroupInfo();
+		return $this->group_colors;
+	}
+
+
+	/**
+	 * @return void
+	 */
+	protected function _initGroupInfo()
+	{
+		if (!$this->grouping_field) {
+			return;
+		}
+
+		if ($this->group_max !== null) {
+			return;
+		}
+
+		$group_max = array();
+		$group_total = array();
+
+		foreach ($this->getValues() as $master_group => $sub_info) {
+			$group_max[$master_group] = 0;
+			$group_total[$master_group] = 0;
+			foreach ($sub_info as $subid => $count) {
+				$group_total[$master_group] += $count;
+				if ($count > $group_max[$master_group]) {
+					$group_max[$master_group] = $count;
+				}
 			}
 		}
 
-		return 'bad time';
+		$group_colors = \Orb\Util\Colors::getColorsForKeys(array_keys($this->getSubgroupTitles()));
+
+		$this->group_max     = $group_max;
+		$this->group_total   = $group_total;
+		$this->group_colors  = $group_colors;
 	}
 
-	public static function makeTimeFieldSelect($field)
+	/**
+	 * @return int
+	 */
+	public function getMax()
 	{
-		$times = array_keys(TimeTitles::$time_phrases);
-
-		$sql = "CASE ";
-
-		$parts = array();
-		foreach ($times as $t) {
-			$parts[] = " WHEN $field <= $t THEN $t ";
+		if (!$this->getValues()) {
+			return 1;
 		}
 
-		$sql .= implode('', $parts) . " ELSE 9000000000 END AS time_group";
+		if ($this->grouping_field) {
+			return max($this->getGroupTotal());
+		}
 
-		return $sql;
+		return max($this->getValues());
 	}
 }

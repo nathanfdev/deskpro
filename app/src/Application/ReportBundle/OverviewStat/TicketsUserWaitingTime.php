@@ -36,18 +36,8 @@ namespace Application\ReportBundle\OverviewStat;
 
 use Application\DeskPRO\App;
 
-class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
+class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
 {
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_start;
-
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_end;
-
 	/**
 	 * @var int[]
 	 */
@@ -58,11 +48,9 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 	 */
 	protected $titles = null;
 
-	public function __construct(GroupingField $grouping_field = null, \DateTime $date_start, \DateTime $date_end)
+	public function __construct(GroupingField $grouping_field = null)
 	{
 		$this->grouping_field = $grouping_field;
-		$this->date_start     = \Orb\Util\Dates::convertToUtcDateTime($date_start);
-		$this->date_end       = \Orb\Util\Dates::convertToUtcDateTime($date_end);
 	}
 
 
@@ -121,10 +109,8 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 			return $this->values;
 		}
 
-		$d1 = $this->date_start->format('Y-m-d H:i:s');
-		$d2 = $this->date_end->format('Y-m-d H:i:s');
-
-		$field = TimeTitles::makeTimeFieldSelect('tickets.total_to_first_reply');
+		$now = time();
+		$field = TimeTitles::makeTimeFieldSelect("(tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting))))");
 
 		if ($this->grouping_field) {
 			$group_field = $this->grouping_field->getFieldInfo();
@@ -132,7 +118,7 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 				SELECT {$group_field['select']}, $field, COUNT(*)
 				FROM tickets
 				{$group_field['join']}
-				WHERE tickets.status != 'hidden' AND tickets.date_created BETWEEN '$d1' AND '$d2' AND tickets.total_to_first_reply != 0 {$group_field['where']}
+				WHERE tickets.status IN ('awaiting_agent', 'awaiting_user') {$group_field['where']}
 				GROUP BY {$group_field['group_by']}, time_group
 				ORDER BY time_group ASC
 			";
@@ -158,7 +144,7 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 			$sql = "
 				SELECT $field, COUNT(*)
 				FROM tickets
-				WHERE tickets.status != 'hidden' AND tickets.date_created BETWEEN '$d1' AND '$d2' AND tickets.total_to_first_reply != 0
+				WHERE tickets.status IN ('awaiting_agent', 'awaiting_user')
 				GROUP BY time_group
 			";
 
