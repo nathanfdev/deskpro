@@ -413,7 +413,7 @@ class KbStep extends AbstractDeskpro3Step
 				case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
 				case 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea':
 					$this->getDb()->insert('custom_data_article', array(
-						'article_id' => $article['id'],
+						'article_id' => $new_article->id,
 						'field_id' => $field->id,
 						'input' => $article[$name]
 					));
@@ -424,7 +424,7 @@ class KbStep extends AbstractDeskpro3Step
 					$new_val = $this->getMappedNewId('kb_def_choice', $field_info['id'].'_'.$val);
 					if ($new_val) {
 						$this->getDb()->insert('custom_data_article', array(
-							'article_id' => $article['id'],
+							'article_id' => $new_article->id,
 							'field_id' => $new_val,
 							'value' => 1
 						));
@@ -437,7 +437,7 @@ class KbStep extends AbstractDeskpro3Step
 						$new_val = $this->getMappedNewId('kb_def_choice', $field_info['id'].'_'.$val);
 						if ($new_val) {
 							$this->getDb()->insert('custom_data_article', array(
-								'article_id' => $article['id'],
+								'article_id' => $new_article->id,
 								'field_id' => $new_val,
 								'value' => 1
 							));
