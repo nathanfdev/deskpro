@@ -29,45 +29,69 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @subpackage WorkerProcess
  */
 
-namespace Application\ReportBundle\OverviewStat;
+namespace Application\DeskPRO\WorkerProcess\Job;
 
-abstract class AbstractTableOverviewStat
+use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
+
+use Application\DeskPRO\App;
+use Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\Mail\Transport\DelegatingTransport;
+use Application\DeskPRO\Entity\PageViewLog;
+
+/**
+ * Updates viewcounts on articles
+ */
+class UpdateViewCounts extends AbstractJob
 {
-	/**
-	 * Gets a id => array(info) array of titles. Titles can have children.
-	 *
-	 * @abstract
-	 * @return mixed
-	 */
-	abstract function getTitles();
+	const DEFAULT_INTERVAL = 600; // 10 minutes
 
-	/**
-	 * Gets an id => xxx of counts.
-	 *
-	 * @abstract
-	 * @return mixed
-	 */
-	abstract function getValues();
-
-
-	/**
-	 * @return int
-	 */
-	public function getMax()
+	public function run()
 	{
-		if (!$this->getValues()) {
-			return 1;
+		$last_time = App::getSetting('core.last_viewcount_update');
+		if (!$last_time) {
+			$last_time = time() - 600;
 		}
 
-		$max = max($this->getValues());
+		$update_objects = App::getDb()->fetchAll("
+			SELECT object_type, object_id, COUNT(*) AS count
+			FROM page_view_log
+			WHERE date_created > '?'
+			GROUP BY object_type, object_id
+			LIMIT 250
+		", array(date('Y-m-d', $last_time)));
 
-		if ($max < 8) {
-			$max = 8;
+		try {
+			App::getDb()->beginTransaction();
+
+			foreach ($update_objects as $obj) {
+				switch ($obj['object_type']) {
+					case PageViewLog::TYPE_ARTICLE:  $table = 'articles';  break;
+					case PageViewLog::TYPE_DOWNLOAD: $table = 'downloads'; break;
+					case PageViewLog::TYPE_FEEDBACK: $table = 'feedback';  break;
+					case PageViewLog::TYPE_NEWS:     $table = 'news';      break;
+					default: $table = null;
+				}
+
+				if (!$table) {
+					continue;
+				}
+
+				App::getDb()->executeUpdate("
+					UPDATE $table
+					SET view_count = view_count + ?
+					WHERE id = ?
+				", array($obj['count'], $obj['object_id']));
+			}
+
+			App::get('deskpro.core.settings')->setSetting('core.last_viewcount_update', time());
+
+			App::getDb()->commit();
+		} catch (\Exception $e) {
+			App::getDb()->rollback();
+			throw $e;
 		}
-
-		return $max;
 	}
 }

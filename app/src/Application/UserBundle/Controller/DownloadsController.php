@@ -162,17 +162,6 @@ class DownloadsController extends AbstractController
 			return $this->redirectRoute('user_downloads_file', array('slug' => $download->getUrlSlug()), 301);
 		}
 
-		// Get the user subscription
-		$subscription = false;
-		if (!$this->person->isGuest()) {
-			$subscription = $this->em->getRepository('DeskPRO:ContentSubscription')->getSubscription($download, $this->person);
-			if ($subscription) {
-				$subscription->touch();
-				$this->em->persist($subscription);
-				$this->em->flush();
-			}
-		}
-
 		$category = $download->category;
 		$category_path = $category->getTreeParents();
 
@@ -209,10 +198,9 @@ class DownloadsController extends AbstractController
 			$tpl = 'UserBundle:Downloads:file-overlay.html.twig';
 		}
 
-		$this->db->executeUpdate("UPDATE downloads SET view_count = view_count + 1 WHERE id = ?", array($download->getId()));
+		$this->container->getSystemService('view_log')->view($download);
 
 		return $this->render($tpl, array(
-			'subscription' => $subscription,
 			'rating' => $rating,
 			'rating_log_search_id' => $rating_log_search_id,
 

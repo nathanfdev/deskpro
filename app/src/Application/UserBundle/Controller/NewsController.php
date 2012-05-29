@@ -169,17 +169,6 @@ class NewsController extends AbstractController
 			return $this->redirectRoute('user_news_view', array('slug' => $news->getUrlSlug()), 301);
 		}
 
-		// Get the user subscription
-		$subscription = false;
-		if (!$this->person->isGuest()) {
-			$subscription = $this->em->getRepository('DeskPRO:ContentSubscription')->getSubscription($news, $this->person);
-			if ($subscription) {
-				$subscription->touch();
-				$this->em->persist($subscription);
-				$this->em->flush();
-			}
-		}
-
 		$categories = $this->em->getRepository('DeskPRO:NewsCategory')->getRootNodes();
 		$category = $news->category;
 		$category_path = $category->getTreeParents();
@@ -218,10 +207,9 @@ class NewsController extends AbstractController
 			$tpl = 'UserBundle:News:view-overlay.html.twig';
 		}
 
-		$this->db->executeUpdate("UPDATE news SET view_count = view_count + 1 WHERE id = ?", array($news->getId()));
+		$this->container->getSystemService('view_log')->view($news);
 
 		return $this->render($tpl, array(
-			'subscription' => $subscription,
 			'rating' => $rating,
 			'rating_log_search_id' => $rating_log_search_id,
 			'news' => $news,

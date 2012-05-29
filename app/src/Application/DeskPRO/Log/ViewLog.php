@@ -32,42 +32,72 @@
  * @subpackage
  */
 
-namespace Application\ReportBundle\OverviewStat;
+namespace Application\DeskPRO\Log;
 
-abstract class AbstractTableOverviewStat
+use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\HttpFoundation\Session;
+
+use Application\DeskPRO\Entity\PageViewLog;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Feedback;
+
+class ViewLog
 {
 	/**
-	 * Gets a id => array(info) array of titles. Titles can have children.
-	 *
-	 * @abstract
-	 * @return mixed
+	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
-	abstract function getTitles();
+	protected $db;
 
 	/**
-	 * Gets an id => xxx of counts.
-	 *
-	 * @abstract
-	 * @return mixed
+	 * @var \Application\DeskPRO\HttpFoundation\Session
 	 */
-	abstract function getValues();
+	protected $session;
 
-
-	/**
-	 * @return int
-	 */
-	public function getMax()
+	public function __construct(Connection $db, Session $session = null)
 	{
-		if (!$this->getValues()) {
-			return 1;
+		$this->db = $db;
+		$this->session = $session;
+	}
+
+
+	/**
+	 * Log a view on an object
+	 *
+	 * @param mixed $object
+	 * @return int
+	 * @throws \InvalidArgumentException
+	 */
+	public function view($object)
+	{
+		$type = null;
+		if ($object instanceof Article) {
+			$type = PageViewLog::TYPE_ARTICLE;
+		} elseif ($object instanceof Download) {
+			$type = PageViewLog::TYPE_DOWNLOAD;
+		} elseif ($object instanceof News) {
+			$type = PageViewLog::TYPE_NEWS;
+		} elseif ($object instanceof Feedback) {
+			$type = PageViewLog::TYPE_FEEDBACK;
 		}
 
-		$max = max($this->getValues());
-
-		if ($max < 8) {
-			$max = 8;
+		if (!$type) {
+			throw new \InvalidArgumentException("Invalid object type. Got `" . get_class($object) . "`");
 		}
 
-		return $max;
+		$person_id = null;
+		if ($this->session && $this->session->getEntity()->person && $this->session->getEntity()->person->getId()) {
+			$person_id = $this->session->getEntity()->person->getId();
+		}
+
+		$this->db->insert('page_view_log', array(
+			'object_type'   => $type,
+			'object_id'     => $object->getId(),
+			'person_id'     => $person_id,
+			'date_created'  => date('Y-m-d H:i:s')
+		));
+
+		return $this->db->lastInsertId();
 	}
 }

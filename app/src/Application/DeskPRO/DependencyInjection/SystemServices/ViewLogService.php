@@ -29,45 +29,23 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @category DependencyInjection
  */
 
-namespace Application\ReportBundle\OverviewStat;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-abstract class AbstractTableOverviewStat
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Usersource\UsersourceManager;
+
+class ViewLogService
 {
-	/**
-	 * Gets a id => array(info) array of titles. Titles can have children.
-	 *
-	 * @abstract
-	 * @return mixed
-	 */
-	abstract function getTitles();
-
-	/**
-	 * Gets an id => xxx of counts.
-	 *
-	 * @abstract
-	 * @return mixed
-	 */
-	abstract function getValues();
-
-
-	/**
-	 * @return int
-	 */
-	public function getMax()
+	public static function create(DeskproContainer $container)
 	{
-		if (!$this->getValues()) {
-			return 1;
-		}
+		$view_log = new \Application\DeskPRO\Log\ViewLog(
+			$container->getDb(),
+			$container->getSession()
+		);
 
-		$max = max($this->getValues());
-
-		if ($max < 8) {
-			$max = 8;
-		}
-
-		return $max;
+		return $view_log;
 	}
 }

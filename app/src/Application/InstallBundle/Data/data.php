@@ -918,6 +918,17 @@ $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\TicketTriggers::DEFAULT_
 $em->persist($j);
 $em->flush();
 
+##BEGIN:create_jobs.article_publish_state##
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'update_view_counts';
+$j['worker_group'] = 'update_view_counts';
+$j['title'] = 'Update View Counts';
+$j['description'] = 'Updates view counts on objects';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\UpdateViewCounts';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\UpdateViewCounts::DEFAULT_INTERVAL;
+$em->persist($j);
+$em->flush();
+
 ################################################################################
 # Portal Blocks
 ################################################################################

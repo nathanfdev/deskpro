@@ -32,6 +32,12 @@
 		<div data-element-handler="DeskPRO.Admin.ElementHandler.OverviewStat.StandardWithGroup"	data-update-url="{{ path('report_overview_update_stat', {type: 'chats_created'}) }}">
 			{% include 'ReportBundle:Overview:chats-created.html.twig' with { data: chats_created_data } %}
 		</div>
+
+		<br />
+
+		<div data-element-handler="DeskPRO.Admin.ElementHandler.OverviewStat.StandardWithGroup"	data-update-url="{{ path('report_overview_update_stat', {type: 'kb_views_hour'}) }}">
+			{% include 'ReportBundle:Overview:kb-views-hour.html.twig' with { data: kb_views_hour_data } %}
+		</div>
 	</td><td style="padding-left: 6px" width="50%">
 
 		<div data-element-handler="DeskPRO.Admin.ElementHandler.OverviewStat.StandardWithGroup"	data-update-url="{{ path('report_overview_update_stat', {type: 'tickets_resolved'}) }}">

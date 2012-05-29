@@ -355,19 +355,6 @@ class FeedbackController extends AbstractController
 
 	private function viewFeedback($feedback, $errors = null)
 	{
-
-
-		// Get the user subscription
-		$subscription = false;
-		if (!$this->person->isGuest()) {
-			$subscription = $this->em->getRepository('DeskPRO:ContentSubscription')->getSubscription($feedback, $this->person);
-			if ($subscription) {
-				$subscription->touch();
-				$this->em->persist($subscription);
-				$this->em->flush();
-			}
-		}
-
 		$categories = $this->em->getRepository('DeskPRO:FeedbackCategory')->getRootNodes();
 
 		$category = $feedback->category;
@@ -397,11 +384,9 @@ class FeedbackController extends AbstractController
 			$tpl = 'UserBundle:Feedback:view-overlay.html.twig';
 		}
 
-		$this->db->executeUpdate("UPDATE feedback SET view_count = view_count + 1 WHERE id = ?", array($feedback->getId()));
+		$this->container->getSystemService('view_log')->view($feedback);
 
 		return $this->render($tpl, array(
-			'subscription' => $subscription,
-
 			'num_votes_this' => $num_votes_this,
 
 			'feedback'          => $feedback,
