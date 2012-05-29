@@ -24,6 +24,7 @@ $container->setParameter('router.options.generator_class', 'Application\\DeskPRO
 $container->setParameter('router.options.generator_base_class', 'Application\\DeskPRO\\Routing\\Generator\\UrlGenerator');
 $container->setParameter('templating.globals.class', 'Application\\DeskPRO\\Templating\\GlobalVariables');
 $container->setParameter('templating.asset.url_package.class', 'Application\\DeskPRO\\Templating\\Asset\\UrlPackage');
+$container->setParameter('templating.asset.path_package.class', 'Application\\DeskPRO\\Templating\\Asset\\PathPackage');
 $container->setParameter('templating.cache_warmer.template_paths.class', 'Application\\DeskPRO\\CacheWarmer\\TemplatePathsCacheWarmer');
 $container->setParameter('router.class', 'Application\\DeskPRO\\Routing\\Router');
 $container->setParameter('router.options.generator_dumper_class', 'Application\\DeskPRO\\Routing\\Generator\\Dumper\\PhpGeneratorDumper');
