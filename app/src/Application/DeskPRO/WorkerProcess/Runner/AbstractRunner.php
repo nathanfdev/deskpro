@@ -106,6 +106,11 @@ abstract class AbstractRunner
 
 		$mtime_start = microtime(true);
 		$logger->log("Job {$worker_job['id']} start", Logger::DEBUG, array('flag' => 'job_start'));
+
+		$worker_job['last_run_date'] = new \DateTime();
+		App::getOrm()->persist($worker_job);
+		App::getOrm()->flush();
+
 		$job->run();
 
 		$mtime_end = microtime(true);
@@ -113,10 +118,6 @@ abstract class AbstractRunner
 		$mtime_total = sprintf("%.5f", $mtime_total);
 
 		$logger->log("Job {$worker_job['id']} done in {$mtime_total}s", Logger::INFO, array('flag' => 'job_end'));
-
-		$worker_job['last_run_date'] = new \DateTime();
-		App::getOrm()->persist($worker_job);
-		App::getOrm()->flush();
 
 		if ($this->job_time_limit) {
 			@set_time_limit(0);
