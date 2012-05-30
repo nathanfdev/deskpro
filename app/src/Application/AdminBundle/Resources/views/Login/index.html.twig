@@ -272,6 +272,23 @@
 		overflow: hidden;
 	}
 
+	#lost_explain {
+		line-height: 120%;
+		font-weight: normal;
+		font-size: 11px;
+		padding-top: 4px;
+	}
+
+	#lost_explain .code {
+		display: block;
+		font-family: 'Monaco', 'Courier New', monospace;
+		margin-top: 4px;
+		padding: 3px;
+		overflow: scroll;
+		width: 340px;
+		white-space: nowrap;
+	}
+
 	{% if app.usersourceManager.getWithCapability('form_login') %}
 	#dp_login dt { width: 120px; }
 	{% endif %}
@@ -305,7 +322,12 @@
 
 					<dt>{{ phrase('agent.general.password') }}</dt>
 					<dd class="password">
+						<a href="#" id="lost_link">{{ phrase('agent.general.lost_qm') }}</a>
 						<input type="password" class="text" value="" name="password" id="password" size="40"  tabindex="2" />
+						<div style="text-align: left; display: none;" id="lost_explain">
+							To reset admin passwords, use the command-line utility:
+							<div class="code">/path/to/php /path/to/deskpro/app/cmd.php dp:agents --reset-password</div>
+						</div>
 					</dd>
 
 					<dt></dt>
@@ -326,6 +348,11 @@ var el = document.getElementById('email');
 if (el) {
 	el.focus();
 }
+
+$('#lost_link').on('click', function(ev) {
+	ev.preventDefault();
+	$('#lost_explain').slideToggle();
+});
 </script>
 </body>
 </html>
