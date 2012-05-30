@@ -51,7 +51,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$this->person = $this->session->getPerson();
 		$this->person->loadHelper('HelpMessages');
 
-		$last_run = $this->container->getSetting('core.last_cron_run');
+		$last_run = $this->container->getSetting('core.last_cron_start');
 		if (!$last_run) $last_run = 0;
 
 		$time_since_run = time() - $last_run;

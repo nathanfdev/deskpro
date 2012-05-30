@@ -126,6 +126,8 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		# Run
 		#------------------------------
 
+		App::getDb()->replace('settings', array('name' => 'core.last_cron_start', 'value' => time()));
+
 		$cron_id = 'dp-cron';
 		if ($input->getOption('job')) {
 			$cron_id .= '-' . $input->getOption('job');
