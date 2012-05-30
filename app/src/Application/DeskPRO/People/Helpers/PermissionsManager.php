@@ -91,6 +91,11 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	protected $checkers = array();
 
 	/**
+	 * @var array
+	 */
+	protected $dirty_caches = array();
+
+	/**
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 */
 	public function __construct(Person $person)
@@ -124,6 +129,8 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		sort($this->usergroup_ids, SORT_NUMERIC);
 
 		$this->usergroups_key = PermissionCache::generateUsergroupSetKey($this->usergroup_ids);
+
+		register_shutdown_function(array($this, 'flushCache'));
 	}
 
 
@@ -201,8 +208,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		# Fetch from the cache first
 		#-------------------------
 
-		/* TODO make sure caches are being deleted when ug's and perms are udpated
-		$caches = App::getEntityRepository('DeskPRO:PermissionCache')->loadPermissionTypes($this->usergroups_key, $this->person->id, $this->queued_types);
+		$caches = App::getEntityRepository('DeskPRO:PermissionCache')->loadPermissionTypes($this->usergroups_key, $this->person->getId(), $this->queued_types);
 
 		foreach ($caches as $cache) {
 			$loader = $cache->perms;
@@ -210,7 +216,6 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
 			$this->loaders[strtolower($name)] = $loader;
 		}
-		*/
 
 		#-------------------------
 		# Load the rest for the first time
@@ -235,22 +240,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
 			$this->loaders[strtolower($name)] = $loader;
 
-			//$do_cache[] = PermissionCache::newFromLoader($loader, $this->person->id);
-		}
-
-		if (false && $do_cache) {
-			App::getOrm()->beginTransaction();
-			try {
-				foreach ($do_cache as $c) {
-					App::getOrm()->persist($c);
-				}
-
-				App::getOrm()->flush();
-				App::getOrm()->commit();
-			} catch (\Exception $e) {
-				App::getOrm()->rollback();
-				throw $e;
-			}
+			$this->dirty_caches[] = PermissionCache::newFromLoader($loader, $this->person->getId());
 		}
 	}
 
@@ -330,6 +320,34 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		return $this->get('Usergroups')->getPermission($name) ? true : false;
 	}
 
+
+	/**
+	 * Flush any pending permission group caches that need to be written
+	 */
+	public function flushCache()
+	{
+		if (!$this->dirty_caches) {
+			return;
+		}
+
+		try {
+			foreach ($this->dirty_caches as $c) {
+				$insert_cache = array(
+					'name'            => $c->getName(),
+					'usergroup_key'   => $c->getUsergroupKey(),
+					'usergroup_ids'   => implode(',', $c->getUsergroupIds()),
+					'perms'           => serialize($c->getPerms())
+				);
+
+				App::getDb()->replace('permissions_cache', $insert_cache);
+			}
+		} catch (\Exception $e) {
+			$info = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+			\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($info);
+		}
+
+		$this->dirty_caches = array();
+	}
 
 
 	/**

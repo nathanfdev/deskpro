@@ -57,8 +57,19 @@ class QueryListener
 
 	public function sendUpdates()
 	{
-		if (in_array('publish_structure_cache', $this->updates)) {
+		if (!$this->updates) {
+			return;
+		}
+
+		$updates = array_flip($this->updates);
+		$this->updates = array();
+
+		if (isset($updates['publish_structure_cache'])) {
 			App::getContainer()->getSystemService('publish_structure_cache')->flush();
+		}
+
+		if (isset($updates['permissions'])) {
+			App::getDb()->exec("TRUNCATE TABLE permissions_cache");
 		}
 	}
 
@@ -74,6 +85,17 @@ class QueryListener
 		}
 
 		switch ($query_id) {
+			case 'update_departments':
+			case 'insert_departments':
+			case 'delete_departments':
+			case 'update_department_permissions':
+			case 'insert_department_permissions':
+			case 'delete_department_permissions':
+			case 'update_usergroups':
+			case 'insert_usergroups':
+			case 'delete_usergroups':
+				$this->updates[] = 'permissions';
+				break;
 
 			case 'update_article_categories':
 			case 'insert_article_categories':
@@ -88,11 +110,13 @@ class QueryListener
 			case 'insert_news_categories':
 			case 'delete_news_categories':
 				$this->updates[] = 'publish_structure_cache';
+				$this->updates[] = 'permissions';
 				break;
 
 			case 'update_article_to_categories':
 			case 'delete_article_to_categories':
 				$this->updates[] = 'publish_structure_cache';
+				$this->updates[] = 'permissions';
 				break;
 
 			case 'delete_articles':
