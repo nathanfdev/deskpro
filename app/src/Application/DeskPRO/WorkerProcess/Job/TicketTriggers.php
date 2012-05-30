@@ -77,7 +77,7 @@ class TicketTriggers extends AbstractJob
 
 		$this->logger->log("Trigger {$trigger->id}: " . $searcher->getSql(), 'DEBUG');
 
-		$ticket_ids = $searcher->getMatches(array('offset' => 0, 'limit' => 1000));
+		$ticket_ids = $searcher->getMatches(array('offset' => 0, 'limit' => 100));
 
 		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids);
 
