@@ -51,6 +51,6 @@ class FeedbackFetcher extends AbstractFetcher
 	 */
 	function getEntities(array $related_ids)
 	{
-		return App::getEntityRepository('DeskPRO:Feedback')->findById($related_ids, $this->person);
+		return App::getEntityRepository('DeskPRO:Feedback')->getByIdsWithContext($related_ids, $this->person);
 	}
 }

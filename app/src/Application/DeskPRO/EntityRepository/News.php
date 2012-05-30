@@ -61,17 +61,23 @@ class News extends AbstractEntityRepository
 		if (!$ids) return array();
 
 		if ($person_context) {
+
+			$cat_ids = $person_context->getPermissionsManager()->NewsCategories->getAllowedCategories();
+			if (!$cat_ids) {
+				return array();
+			}
+
 			$posts = $this->getEntityManager()->createQuery("
 				SELECT p
 				FROM DeskPRO:News p INDEX BY p.id
-				WHERE p.id IN (" . implode(',', $ids) . ")
+				WHERE p.id IN (" . implode(',', $ids) . ") AND p.category IN (?0) AND p.status = 'published'
 				ORDER BY p.id DESC
-			")->execute();
+			")->execute(array($cat_ids));
 		} else {
 			$posts = $this->getEntityManager()->createQuery("
 				SELECT p
 				FROM DeskPRO:News p INDEX BY p.id
-				WHERE p.id IN (" . implode(',', $ids) . ")
+				WHERE p.id IN (" . implode(',', $ids) . ") AND p.status = 'published'
 				ORDER BY p.id DESC
 			")->execute();
 		}

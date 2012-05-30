@@ -61,12 +61,18 @@ class Download extends AbstractEntityRepository
 		if (!$ids) return array();
 
 		if ($person_context) {
+
+			$cat_ids = $person_context->getPermissionsManager()->DownloadCategories->getAllowedCategories();
+			if (!$cat_ids) {
+				return array();
+			}
+
 			$downloads = $this->getEntityManager()->createQuery("
 				SELECT d
 				FROM DeskPRO:Download d INDEX BY d.id
-				WHERE d.id IN (" . implode(',', $ids) . ")
+				WHERE d.id IN (" . implode(',', $ids) . ") AND d.category IN (?0) AND d.status = 'published'
 				ORDER BY d.id DESC
-			")->execute();
+			")->execute(array($cat_ids));
 		} else {
 			$downloads = $this->getEntityManager()->createQuery("
 				SELECT d

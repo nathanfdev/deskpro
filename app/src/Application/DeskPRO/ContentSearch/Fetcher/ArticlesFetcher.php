@@ -51,6 +51,6 @@ class ArticlesFetcher extends AbstractFetcher
 	 */
 	function getEntities(array $related_ids)
 	{
-		return App::getEntityRepository('DeskPRO:Article')->getByIds($related_ids, $this->person);
+		return App::getEntityRepository('DeskPRO:Article')->getByIdsWithContext($related_ids, $this->person);
 	}
 }

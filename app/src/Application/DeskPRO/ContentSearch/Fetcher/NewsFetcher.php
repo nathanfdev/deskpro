@@ -51,6 +51,6 @@ class NewsFetcher extends AbstractFetcher
 	 */
 	function getEntities(array $related_ids)
 	{
-		return App::getEntityRepository('DeskPRO:News')->getByIds($related_ids, $this->person);
+		return App::getEntityRepository('DeskPRO:News')->getByIdsWithContext($related_ids, $this->person);
 	}
 }

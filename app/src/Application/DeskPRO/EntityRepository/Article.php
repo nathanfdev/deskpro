@@ -132,25 +132,26 @@ class Article extends AbstractEntityRepository
 		if (!$ids) return array();
 
 		if ($person_context) {
-			//$cat_ids = $person_context->getPermissionsManager()->ArticleCategories->getAllowedCategories();
-			//if (!$cat_ids) return array();
 
-			//WHERE a.id IN (" . implode(',', $ids) . " AND a.is_published = true AND cat.id IN (" . implode(',',$cat_ids) . ")
+			$cat_ids = $person_context->getPermissionsManager()->ArticleCategories->getAllowedCategories();
+			if (!$cat_ids) {
+				return array();
+			}
 
 			$articles = $this->getEntityManager()->createQuery("
 				SELECT a
 				FROM DeskPRO:Article a INDEX BY a.id
 				LEFT JOIN a.categories cat
-				WHERE a.id IN (" . implode(',', $ids) . ")
+				WHERE a.id IN (" . implode(',', $ids) . ") AND cat.id IN (?0) AND a.status = 'published'
 				ORDER BY a.id DESC
-			")->execute();
+			")->execute(array($cat_ids));
 
 		} else {
 			$articles = $this->getEntityManager()->createQuery("
 				SELECT a
 				FROM DeskPRO:Article a INDEX BY a.id
 				LEFT JOIN a.categories cat
-				WHERE a.id IN (" . implode(',', $ids) . ")
+				WHERE a.id IN (" . implode(',', $ids) . ") AND a.status = 'published'
 				ORDER BY a.id DESC
 			")->execute();
 		}

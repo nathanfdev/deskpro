@@ -51,6 +51,6 @@ class DownloadsFetcher extends AbstractFetcher
 	 */
 	function getEntities(array $related_ids)
 	{
-		return App::getEntityRepository('DeskPRO:Download')->getByIds($related_ids, $this->person);
+		return App::getEntityRepository('DeskPRO:Download')->getByIdsWithContext($related_ids, $this->person);
 	}
 }
