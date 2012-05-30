@@ -739,6 +739,8 @@ class Upgrade
 			$this->outAndLog($str);
 		}
 
+		$this->sendLog();
+
 		exit(0);
 	}
 
@@ -863,6 +865,15 @@ class Upgrade
 		));
 
 		$this->registerCleanupParam('unlink_scratch_dir', null);
+
+		// New build time
+		$build_file = @file_get_contents(DP_ROOT.'/app/sys/config/build-time.php');
+		if ($build_file) {
+			$m = null;
+			if (preg_match('#([0-9]{10})#', $build_file, $m)) {
+				define('DP_NEW_BUILD_TIME', $m[1]);
+			}
+		}
 
 		$this->log(sprintf('installFilesFromZip: time(%.4f)', microtime(true) - $time_start));
 	}
@@ -1341,6 +1352,40 @@ class Upgrade
 
 
 	####################################################################################################################
+
+	public function sendLog()
+	{
+		$log = @file_get_contents(dp_get_log_dir() . '/upgrade.log');
+		if (!$log) $log = '';
+
+		if (defined('DP_NEW_BUILD_TIME')) {
+			$build = DP_NEW_BUILD_TIME;
+		} elseif (defined('DP_BUILD_TIME')) {
+			$build = DP_BUILD_TIME;
+		} else {
+			$build = 0;
+		}
+
+		$license_id = null;
+		try {
+			global $DP_CONFIG;
+			if (!empty($DP_CONFIG)) {
+				$pdo = new \PDO("mysql:host={$DP_CONFIG['db']['host']};dbname={$DP_CONFIG['db']['dbname']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+				$license_code = $pdo->query("SELECT value FROM settings WHERE name = 'core.license'")->fetch(\PDO::FETCH_NUM);$license_code = trim($license_code);
+				$license_code = str_replace(array("\n", "\r", " ", "\t"), "", $license_code);
+				$license_code = base64_decode($license_code);
+				$license_id   = substr($license_code, 0, 14);
+			}
+		} catch (\Exception $e) {}
+
+		try {
+			$this->callService('/data-submit/report-upgrade.json', array(
+				'log' => $log,
+				'build' => $build,
+				'license_id' => $license_id
+			));
+		} catch (\Exception $e) {}
+	}
 
 	/**
 	 * Compress a file or directory with ZIP.
@@ -2073,6 +2118,8 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$this->out("<info>DeskPRO has been upgraded successfully.</info>");
 		$this->out();
 		$this->out('');
+
+		$this->upgrade->sendLog();
 	}
 
 
@@ -2187,6 +2234,8 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 		$this->out("<info>DeskPRO has been upgraded successfully.</info>");
 		$this->out();
 		$this->out('');
+
+		$this->upgrade->sendLog();
 	}
 
 

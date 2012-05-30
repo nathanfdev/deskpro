@@ -35,6 +35,7 @@
 			</div>
 
 			<input type="hidden" name="process" value="1" />
+			<input type="hidden" name="build" value="{{ constant('DP_BUILD_TIME') }}" />
 			<input type="hidden" name="install_key" value="{{ app.getSetting('core.install_key') }}" />
 			<input type="hidden" name="install_token" value="{{ app.getSetting('core.install_token') }}" />
 			<table cellspacing="0" cellpadding="0" class="form-table" width="100%">
