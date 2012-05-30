@@ -10,7 +10,6 @@
 
 # cache and log files
 /app/sys/cache/*
-!/app/sys/cache/index.html
 /app/sys/bootstrap.php
 /app/sys/compiled.php
 /app/sys/config/build-time.php
@@ -21,19 +20,11 @@
 
 /data/is_installed.dat
 /data/logs/*
-!/data/logs/index.html
 /data/logs/emails/*
-!/data/logs/emails/index.html
 /data/debug/*
-!/data/debug/index.html
 /data/tmp/*
-!/data/tmp/index.html
-
 /data/backups/*
-!/data/backups/index.html
-
 /data/files/*
-!/data/files/index.html
 
 /web/build
 /web/stylesheets/agent
