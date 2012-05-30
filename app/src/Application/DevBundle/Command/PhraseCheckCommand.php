@@ -36,8 +36,7 @@ class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 
-        /* TODO
-         *
+        /*
          * Words defined in language files but only used from within PHP scripts (and not templates)
          * will currently generate a false positive. Either need to scan .php files as well or create
          * a list of phrases manually to ingore.

@@ -344,7 +344,6 @@ class Log
 		$ticket_log = new Entity\TicketLog();
 		$ticket_log['person'] = App::getCurrentPerson();
 
-		// TODO should always have a person, but need to handle system events (time escalations)
 		if (!$ticket_log['person'] OR !$ticket_log['person']['id']) {
 			$ticket_log['person'] = $this->ticket->person;
 		}

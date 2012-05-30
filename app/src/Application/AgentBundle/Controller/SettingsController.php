@@ -72,7 +72,7 @@ class SettingsController extends AbstractController
 
 		// Check for dupe emails where a user already exists, we'll send a merge request
 		// -> Only do this when the other user is a plain user and not an agent
-		// TODO: user merge
+		// FEATURE: user merge
 		if (false) {
 			$check_exists = $this->em->getRepository('DeskPRO:Person')->findByEmail($edit_profile->email);
 			if ($check_exists && $check_exists->getId() != $this->person->getId() && !$check_exists->is_agent) {

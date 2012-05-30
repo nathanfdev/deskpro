@@ -194,7 +194,7 @@ class DataInitializer
 		# Example ticket
 		#------------------------------
 
-		// TODO finish sample ticket and deskpro-deskpro comms
+		// FEATURE: sample ticket
 		return;
 
 		$department = $this->container->getEm()

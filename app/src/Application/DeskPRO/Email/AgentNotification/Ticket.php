@@ -41,9 +41,6 @@ use Orb\Util\Arrays;
 
 /**
  * Used to send email notifications
- *
- * TODO need to sort out 'from' addresses so they use the proper
- * ticket account.
  */
 class Ticket
 {

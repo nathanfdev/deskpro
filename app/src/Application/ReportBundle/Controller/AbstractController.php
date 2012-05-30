@@ -88,8 +88,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			return $this->redirect($this->get('router')->generate('report_login', array('return' => $return)));
 		}
 
-		if (!$this->_userHasPermissions()) {
-			// TODO implement no perms
+		if (!$this->_userHasPermissions() || 1) {
+			return $this->renderStandardPermissionError('You do not have permission to use the reports interface.');
 		}
 	}
 
@@ -108,5 +108,21 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			$url = $this->request->getRequestUri();
 		}
 		$this->session->set('report_last_page', $url);
+	}
+
+	public function renderStandardPermissionError($error_message = '', $error_title = '', $code = 200, array $vars = array())
+	{
+		$tpl = 'ReportBundle:Common:error-permission.html.twig';
+
+		$vars = array_merge($vars, array(
+			'error_message' => $error_message,
+			'error_title'   => $error_title
+		));
+
+		$res = $this->render($tpl, $vars);
+
+		$res->setStatusCode($code);
+
+		return $res;
 	}
 }

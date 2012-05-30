@@ -166,10 +166,6 @@ abstract class CustomDefAbstractController extends AbstractController
 
 				$this->getTemplateVars(); // to get routebasename
 				return $this->redirectRoute($this->getListingRoute());
-			} else {
-				// TODO proper handling
-				print_r($form->getErrors());
-				exit;
 			}
 		}
 

@@ -41,11 +41,6 @@ use Orb\Util\Arrays;
 
 /**
  * Used to send email notifications
- *
- * TODO need to sort out 'from' addresses so they use the proper
- * ticket account.
- * TODO: separate notification tpye constants from AgentNotification, since
- * we're using them for user notifications too
  */
 class Ticket
 {

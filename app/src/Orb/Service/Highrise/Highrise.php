@@ -39,8 +39,6 @@ namespace Orb\Service\Highrise;
  * The interface to all Highrise API usage. Specific actions are delegated to Resource
  * classes.
  *
- * TODO: Still need to implement all the other API calls.
- *
  * @see http://developer.37signals.com/highrise/
  * @property Orb\Service\Highrise\Resource\Person person
  */
@@ -81,7 +79,7 @@ class Highrise
 
 	/**
 	 * Send a GET request.
-	 * 
+	 *
 	 * @param string $resource The resource to fetch with leading slash. Will be prepended with highrise url.
 	 * @param array $params Any GET params to specify
 	 * @return \Zend\Http\Response
@@ -100,7 +98,7 @@ class Highrise
 	}
 
 
-	
+
 	/**
 	 * Send a POST request.
 	 *
@@ -128,7 +126,7 @@ class Highrise
 	}
 
 
-	
+
 	/**
 	 * Send a PUT request.
 	 *
@@ -143,7 +141,7 @@ class Highrise
 	}
 
 
-	
+
 	/**
 	 * Send a DELETE request.
 	 *
@@ -164,8 +162,8 @@ class Highrise
 		return $http->request(\Zend\Http\Client::DELETE);
 	}
 
-	
-	
+
+
 	/**
 	 * Set the HTTPclient to use. If null, a default client will be set.
 	 *
@@ -272,7 +270,7 @@ class Highrise
 		return implode("\n", $xml);
 	}
 
-	
+
 
 	/**
 	 * Dynamically get resource objects.
