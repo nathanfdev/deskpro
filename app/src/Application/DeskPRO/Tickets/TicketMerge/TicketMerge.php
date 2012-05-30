@@ -95,8 +95,7 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 
 	public function checkPersonPermission()
 	{
-		// TODO:permissions
-		return true;
+		return $this->person->PermissionsManager->TicketChecker->canMerge($this->ticket, $this->other_ticket);
 	}
 
 	public function merge()

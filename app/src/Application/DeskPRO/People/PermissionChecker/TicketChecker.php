@@ -282,4 +282,33 @@ class TicketChecker extends AbstractChecker
 
 		return false;
 	}
+
+
+	/**
+	 * Check if two tickets can be merged. To be able to merge, both tickets must give try for the 'merge' permission.
+	 *
+	 * @param Ticket $ticket1
+	 * @param Ticket $ticket2
+	 * @return bool
+	 */
+	public function canMerge(Ticket $ticket1, Ticket $ticket2)
+	{
+		foreach (array($ticket1, $ticket2) as $ticket) {
+			if (($ticket->agent && $ticket->agent->id == $this->person->id) || $ticket->agent_team && $this->person->getHelper('Agent')->isTeamMember($ticket->agent_team->id)) {
+				$set_suffix = 'own';
+			} elseif (!$ticket->agent && !$ticket->agent_team) {
+				$set_suffix = 'unassigned';
+			} else if($ticket->hasParticipantPerson($this->person)) {
+				$set_suffix = 'followed';
+			} else {
+				$set_suffix = 'others';
+			}
+
+			if (!$this->person->hasPerm("agent_tickets.modify_merge_{$set_suffix}")) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 }
