@@ -131,6 +131,11 @@ function deskpro_handle_boot_db_exception($e)
 			$error_info .= "<hr />More information may be available in in data/logs/error.log";
 		}
 
+		if (class_exists('DeskPRO\Kernel\KernelErrorHandler')) {
+			$e_info = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+			\DeskPRO\Kernel\KernelErrorHandler::logToFile($e_info);
+		}
+
 		echo deskpro_install_basic_error("There was a problem connecting to the database. Please try again.$error_info", 'Error');
 		exit;
 	}

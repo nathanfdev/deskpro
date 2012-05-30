@@ -1001,12 +1001,12 @@ class KernelErrorHandler
 		// Always write error line to standard error log
 		@error_log($line, 0);
 
-		if (class_exists('Application\DeskPRO\App') && App::getLogDir() && ($fh = @fopen(App::getLogDir() . '/error.log', 'a')) !== false) {
+		if (dp_get_log_dir() && ($fh = @fopen(dp_get_log_dir() . '/error.log', 'a')) !== false) {
 			$written = @fwrite($fh, $str);
 			@fclose($fh);
 
 			if ($written) {
-				self::$wrote_log_file = App::getLogDir() . '/error.log';
+				self::$wrote_log_file = dp_get_log_dir() . '/error.log';
 
 				// Max 5MB
 				if (filesize(self::$wrote_log_file) > 5242880) {

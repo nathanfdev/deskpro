@@ -357,7 +357,7 @@
 		</td>
 	</tr>
 
-	<?php if (!$skip_empty_check): ?>
+	<?php if (!isset($skip_empty_check) || !$skip_empty_check): ?>
 	<tr>
 		<td>
 			<?php $failed = false ?>

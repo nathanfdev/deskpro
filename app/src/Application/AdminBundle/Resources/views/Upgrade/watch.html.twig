@@ -52,18 +52,15 @@
 						You will need to locate the executable and then supply its path in config.php.
 					</p>
 				</div>
-				<div style="display:none" class="error_mysql_path">
-					<h3>Could not find the path to 'mysql'</h3>
-					<p>
-						The upgrade utility requires the path to the MySQL executable but we could not detect it automatically.
-						You will need to locate the executable and then supply its path in config.php.
-					</p>
-				</div>
 				<div style="display:none" class="error_mysqldump_path">
 					<h3>Could not find the path to 'mysqldump'</h3>
 					<p>
 						The upgrade utility requires the path to the MySQL Dump executable but we could not detect it automatically.
 						You will need to locate the executable and then supply its path in config.php.
+					</p>
+					<p>
+						Note: If you want to manage backups manually, deselect the "Backup my database" option when scheduling the upgrade.
+						The database backup step will be skipped and this requirement will no longer be necessary.
 					</p>
 				</div>
 				<div style="display:none" class="error_backup_dir">
@@ -104,12 +101,16 @@
 					<p>
 						You will have to install the extension into php.ini located at: <span class="place-message"></span>
 					</p>
+					<p>
+						Note: If you want to manage backups manually, deselect the "Backup the current DeskPRO source files" option when scheduling the upgrade.
+						The file backup step will be skipped and this requirement will no longer be necessary.
+					</p>
 				</div>
 			</div>
 			<div style="display: none" class="error_backup_files">
 				<h3>Backup error</h3>
 				<p>
-					There was a problem while trying to make backups of your helpdesk. The upgrade was aborted.
+					There was a problem while trying to make backups of your helpdesk files. The upgrade was aborted.
 				</p>
 				<p class="place-message"></p>
 			</div>
@@ -119,11 +120,15 @@
 					There was a problem while trying to make database backups of your helpdesk. The upgrade was aborted.
 				</p>
 				<p class="place-message"></p>
+				<p>
+					Note: If you want to manage backups manually, deselect the "Backup my database" option when scheduling the upgrade.
+					The database backup step will be skipped and the upgrade will continue past this step.
+				</p>
 			</div>
 			<div style="display: none" class="error_downloading_update">
 				<h3>Download error</h3>
 				<p>
-					THe upgrade utility could not download the latest version of DeskPRO.
+					The upgrade utility could not download the latest version of DeskPRO.
 					This may be due to a firewall or other network problem. The upgrade was aborted.
 				</p>
 				<p class="place-message"></p>
@@ -131,7 +136,7 @@
 			<div style="display: none" class="error_installing_files">
 				<h3>Install error</h3>
 				<p>
-					THe upgrade utility encountered an error while trying to install the updated
+					The upgrade utility encountered an error while trying to install the updated
 					files from the newest version of DeskPRO.
 				</p>
 				<p class="place-message"></p>
@@ -141,9 +146,22 @@
 					to support@deskpro.com for assistance.
 				</p>
 			</div>
+			<div style="display: none" class="error_updating_db">
+				<h3>Install error while applying database updates</h3>
+				<p>
+					The upgrade utility encountered an error while trying to run database updates.
+					You should refer to data/logs/upgrade.log for more information.
+				</p>
+				<p class="place-message"></p>
+				<p>
+					<strong>This could mean you have half-updated helpdesk!</strong> Leaving your helpdesk
+					in this state can result in errors. We recommend sending data/logs/upgrade.log
+					to support@deskpro.com for assistance.
+				</p>
+			</div>
 			<p>
-<br />
-			<a class="btn primary" href="{{ path('admin_upgrade') }}">Problem Fixed, Try Again</a>
+				<br />
+				<a class="btn primary" href="{{ path('admin_upgrade') }}">Problem Fixed, Try Again</a>
 			</p>
 		</div>
 		<div id="done" style="display: none">

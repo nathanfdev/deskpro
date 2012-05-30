@@ -472,24 +472,30 @@ class Upgrade
 		#---
 
 		$php_path        = dp_get_php_path(true);
-		$mysql_dump_path = dp_get_mysqldump_path(true);
-		$mysql_path      = dp_get_mysql_path(true);
-
 		$this->log("php: $php_path\n");
-		$this->log("mysql: $mysql_path\n");
-		$this->log("mysqldump: $mysql_dump_path\n");
+
+		if (!$skip_db_backup) {
+			$mysql_dump_path = dp_get_mysqldump_path(true);
+			$this->log("mysqldump: $mysql_dump_path\n");
+		} else {
+			$mysql_dump_path = null;
+		}
 
 		if ($is_status_write) {
 			if ($php_path) $write_status('php_path_okay'); else $write_status('error_php_path');
-			if ($mysql_dump_path) $write_status('mysqldump_path_okay'); else $write_status('error_mysqldump_path');
-			if ($mysql_path) $write_status('mysql_path_okay'); else $write_status('error_mysql_path');
+
+			if (!$skip_db_backup) {
+				if ($mysql_dump_path) $write_status('mysqldump_path_okay'); else $write_status('error_mysqldump_path');
+			}
 		}
 
-		if (!$php_path || !$mysql_path || !$mysql_dump_path) {
+		if (!$php_path || (!$skip_db_backup && !$mysql_dump_path)) {
 			$unknown_binary_paths = array();
 			if (!$php_path)        $this->outAndLog("Cannot find path to `php` binary");
-			if (!$mysql_dump_path) $this->outAndLog("Cannot find path to `mysqldump` binary");
-			if (!$mysql_path)      $this->outAndLog("Cannot find path to `mysql` binary");
+
+			if (!$skip_db_backup) {
+				if (!$mysql_dump_path) $this->outAndLog("Cannot find path to `mysqldump` binary");
+			}
 
 			$write_status("error_unknown_binary", $unknown_binary_paths);
 			$checks_fail = true;
@@ -500,12 +506,14 @@ class Upgrade
 		#---
 
 		try {
-			if (!is_dir($this->getBackupDir()) || !is_writable($this->getBackupDir())) {
-				$write_status('error_backup_dir', $this->getBackupDir());
-				$this->outAndLog("Backup directory does not exist or is not writable: " . $this->getBackupDir());
-				$checks_fail = true;
-			} else {
-				$write_status('backup_dir_okay');
+			if (!$skip_file_backup || !$skip_db_backup) {
+				if (!is_dir($this->getBackupDir()) || !is_writable($this->getBackupDir())) {
+					$write_status('error_backup_dir', $this->getBackupDir());
+					$this->outAndLog("Backup directory does not exist or is not writable: " . $this->getBackupDir());
+					$checks_fail = true;
+				} else {
+					$write_status('backup_dir_okay');
+				}
 			}
 
 			if (!is_dir($this->getLogDir()) || !is_writable($this->getLogDir())) {
@@ -628,6 +636,8 @@ class Upgrade
 					$write_status('file_backup_' . $status);
 				});
 				if (!$is_quiet) $this->out("-> Done");
+			} else {
+				$this->log('file backup skipped');
 			}
 			$write_status("file_backup_done");
 		} catch (\Exception $e) {
@@ -648,6 +658,8 @@ class Upgrade
 				if (!$is_quiet) $this->out("Doing database backup ... ");
 				$this->db_backup = $this->backupDatabase(true);
 				if (!$is_quiet) $this->out("-> Done");
+			} else {
+				$this->log('database backup skipped');
 			}
 			$write_status("database_backup_end");
 
