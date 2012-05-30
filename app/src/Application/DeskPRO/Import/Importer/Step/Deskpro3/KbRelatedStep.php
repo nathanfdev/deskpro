@@ -57,13 +57,14 @@ class KbRelatedStep extends AbstractDeskpro3Step
 			$id2 = $this->getMappedNewId('faq_article', $related['related_article']);
 
 			if (!$id1 || !$id2) {
+				print_r($related);
 				continue;
 			}
 
 			$this->getDb()->insert('related_content', array(
-				'object_type'     => 'article',
+				'object_type'     => 'articles',
 				'object_id'       => $id1,
-				'rel_object_type' => 'article',
+				'rel_object_type' => 'articles',
 				'rel_object_id'   => $id2
 			));
 		}
