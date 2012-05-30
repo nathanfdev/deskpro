@@ -124,10 +124,22 @@
 </div>
 <div class="setting_field_row">
 	<h4>
-		Time Format
+		Dates and Times
 		<br /><span style="font-size: 11px"><a href="http://php.net/date">See PHP date formatting</a>
 	</h4>
 	<div class="setting_fields">
+		<div class="field_row">
+			<table cellspacing="0" cellpadding="0"><tr>
+				<td style="padding-right: 10px;">
+					<label>Default Timezone</label>
+					<select name="settings[core.default_timezone]">
+						{% for tz in timezone_options %}
+							<option value="{{ tz }}" {% if app.getSetting('core.default_timezone') == tz %}selected="selected"{% endif %}>{{ tz }}</option>
+						{% endfor %}
+					</select>
+				</td>
+			</tr></table>
+		</div>
 		<div class="field_row">
 			<table cellspacing="0" cellpadding="0"><tr>
 				<td style="padding-right: 10px;">

@@ -60,6 +60,7 @@ class SettingsController extends AbstractController
 				'core.use_gravatar'            => empty($_POST['settings']['core.use_gravatar']) ? 0 : 1,
 				'core.rewrite_urls'            => empty($_POST['settings']['core.rewrite_urls']) ? 0 : 1,
 				'core.redirect_correct_url'    => empty($_POST['settings']['core.redirect_correct_url']) ? 0 : 1,
+				'core.default_timezone'        => empty($_POST['settings']['core.default_timezone']) ? "UTC" : $_POST['settings']['core.default_timezone'],
 
 				'core.attach_agent_maxsize'    => (int)$_POST['settings']['core.attach_agent_maxsize'],
 				'core.attach_agent_must_exts'  => $_POST['settings']['core.attach_agent_must_exts'],
@@ -86,9 +87,12 @@ class SettingsController extends AbstractController
 
 		$max_filesize = \Orb\Util\Env::getEffectiveMaxUploadSize();
 
+		$timezone_options = \DateTimeZone::listIdentifiers();
+
 		return $this->render('AdminBundle:Settings:settings.html.twig', array(
 			'max_uploadsize' => $max_filesize,
-			'max_uploadsize_readable' => \Orb\Util\Numbers::filesizeDisplay($max_filesize)
+			'max_uploadsize_readable' => \Orb\Util\Numbers::filesizeDisplay($max_filesize),
+			'timezone_options' => $timezone_options,
 		));
 	}
 
