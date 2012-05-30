@@ -1358,6 +1358,8 @@ class Upgrade
 		$log = @file_get_contents(dp_get_log_dir() . '/upgrade.log');
 		if (!$log) $log = '';
 
+		$old_build = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0';
+
 		if (defined('DP_NEW_BUILD_TIME')) {
 			$build = DP_NEW_BUILD_TIME;
 		} elseif (defined('DP_BUILD_TIME')) {
@@ -1371,16 +1373,21 @@ class Upgrade
 			global $DP_CONFIG;
 			if (!empty($DP_CONFIG)) {
 				$pdo = new \PDO("mysql:host={$DP_CONFIG['db']['host']};dbname={$DP_CONFIG['db']['dbname']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
-				$license_code = $pdo->query("SELECT value FROM settings WHERE name = 'core.license'")->fetch(\PDO::FETCH_NUM);$license_code = trim($license_code);
-				$license_code = str_replace(array("\n", "\r", " ", "\t"), "", $license_code);
-				$license_code = base64_decode($license_code);
-				$license_id   = substr($license_code, 0, 14);
+				$license_code = $pdo->query("SELECT value FROM settings WHERE name = 'core.license'")->fetch(\PDO::FETCH_NUM);
+				if ($license_code) {
+					$license_code = $license_code[0];
+					$license_code = trim($license_code);
+					$license_code = str_replace(array("\n", "\r", " ", "\t"), "", $license_code);
+					$license_code = base64_decode($license_code);
+					$license_id   = substr($license_code, 0, 14);
+				}
 			}
 		} catch (\Exception $e) {}
 
 		try {
 			$this->callService('/data-submit/report-upgrade.json', array(
 				'log' => $log,
+				'old_build' => $old_build,
 				'build' => $build,
 				'license_id' => $license_id
 			));
@@ -1530,7 +1537,9 @@ class Upgrade
 			)
 		));
 
+		$this->log('Calling: ' . $url);
 		$result = @file_get_contents($url, null, $context);
+		$this->log('-> ' . $result);
 
 		if (!$result) {
 			throw new ServiceCallException("No response from server: $url $result", ServiceCallException::INVALID_RESPONSE);
