@@ -147,7 +147,22 @@ DeskPRO.Agent.Window = new Orb.Class({
 					value: DeskPRO_Window.getLastClientMessageId()
 				});
 
-				var old_success = options.success || function() {};
+				var old_success = function() {};
+				if (options.success) {
+					if (options.context) old_success = options.success.bind(options.context);
+					else old_success = options.success;
+				}
+
+				var old_complete = function() {};
+				if (options.complete) {
+					if (options.context) old_complete = options.complete.bind(options.context);
+					else old_complete = options.complete;
+				}
+
+				options.complete = function() {
+					DeskPRO_Window.getMessageChanneler().poller.unpause();
+					old_complete();
+				}
 
 				options.success = function(data) {
 					if (data.client_messages) {
@@ -158,6 +173,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				options.dataType = 'json';
 
+				DeskPRO_Window.getMessageChanneler().poller.pause();
 				$.ajax(options);
 			},
 

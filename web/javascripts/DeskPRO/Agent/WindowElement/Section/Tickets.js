@@ -698,8 +698,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	},
 
 	changeFlagCountsForSwitch: function(info) {
-		console.log(info);
-
 		if (info.old_flag) {
 			var old_flag_count = parseInt($('#ticket_flag_' + info.old_flag + '_count').text());
 			this.updateFlagCountFor(info.old_flag, old_flag_count-1);

@@ -218,7 +218,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		}).delay(650, this);
 
 		if (this.updateUrl) {
-			$.ajax({
+			DeskPRO_Window.util.ajaxWithClientMessages({
 				type: 'POST',
 				url: this.updateUrl,
 				data: data,
@@ -276,7 +276,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		}).delay(650, this);
 
 		if (this.updateUrl) {
-			$.ajax({
+			DeskPRO_Window.util.ajaxWithClientMessages({
 				type: 'POST',
 				url: this.updateUrl,
 				data: data,

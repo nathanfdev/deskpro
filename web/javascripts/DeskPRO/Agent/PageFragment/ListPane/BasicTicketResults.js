@@ -41,13 +41,13 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 			var sels = [];
 			Array.each(ticket_ids, function(val) {
 				this.resultsHelper.removeResultId(val);
-				sels.push('.ticket-' + val);
+				sels.push('article.ticket-' + val);
 				this.countTotal--;
 			}, this);
 
 			sels = sels.join(', ');
 
-			$(sels, this.contentWrapper).fadeOut(400, function() {
+			$(sels, this.contentWrapper).addClass('removing').fadeOut(400, function() {
 				$(this).remove();
 				self.updateTicketCountLabels();
 				self.updateUi();
@@ -56,6 +56,11 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.ticket_updated', function(info) {
 			var ticketId = info.ticket_id;
+			var row = $('article.ticket-' + ticketId, self.contentWrapper);
+			if (row[0] && row.hasClass('removing')) {
+				return;
+			}
+
 			self.addTicket(ticketId, true);
 		}, null, [this.OBJ_ID]);
 
@@ -215,6 +220,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 		var self = this;
 		var el = $('.ticket-' + ticket_id, this.contentWrapper);
 
+		el.addClass('removing');
 		el.animate({ height: 'toggle', opacity: 'toggle' }, 'slow', function() {
 			self.resultsHelper.removeResultId(ticket_id);
 			el.remove();
@@ -434,7 +440,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Orb.Class({
 				// Change the displayed label for some visual feedback
 				$('.label label', sortMenuBtn).text(label);
 				sortMenuBtn.find('.order-dir').hide();
-				console.log('.order-dir.' + prop.split('_').pop());
 				sortMenuBtn.find('.order-dir.' + prop.split('_').pop()).show();
 
 

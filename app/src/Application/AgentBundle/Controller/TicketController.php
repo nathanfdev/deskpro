@@ -1284,6 +1284,19 @@ class TicketController extends AbstractController
 			'custom_fields' => $custom_fields
 		));
 
+		$client_messages = false;
+		if ($this->in->getUint('client_messages_since')) {
+			$client_messages = $this->em->getRepository('DeskPRO:ClientMessage')->getMessageData(
+				$this->person,
+				$this->session,
+				$this->in->getUint('client_messages_since')
+			);
+		}
+
+		if ($client_messages) {
+			$data['client_messages'] = $client_messages;
+		}
+
 		return $this->createJsonResponse($data);
 	}
 

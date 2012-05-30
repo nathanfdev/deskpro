@@ -23,6 +23,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 		this.messageBroker = null;
 
 		this.maxDelayTimers = [];
+		this.isPaused = false;
 
 		this.autoSendTimeout = null;
 
@@ -38,6 +39,15 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 		this.setOptions(options);
 
 		this.autoSendTimeout = this.send.delay(this.options.interval, this);
+	},
+
+
+	pause: function() {
+		this.isPaused = true;
+	},
+
+	unpause: function() {
+		this.isPaused = false;
 	},
 
 
@@ -111,6 +121,12 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 	send: function() {
 
 		this._clearDelays();
+
+		if (this.isPaused) {
+			// Paused, reset timer and dont do anything
+			this.autoSendTimeout = this.send.delay(this.options.interval, this);
+			return;
+		}
 
 		if (!this.options.alwaysRequest && !this.filterdData.length) {
 			this.autoSendTimeout = this.send.delay(this.options.interval, this);
@@ -201,16 +217,16 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 	 */
 	_handleAjaxSuccess: function (data, sent_info) {
 
+		// Start auto timer
+		this.autoSendTimeout = this.send.delay(this.options.interval, this);
+
 		this.resetSentItems(sent_info);
 
 		this.fireEvent('ajaxSuccess', data);
-
-		// Start auto timer
-		this.autoSendTimeout = this.send.delay(this.options.interval, this);
 	},
 
 	resetSentItems: function(sent_info) {
-		var item = null;
+		var item;
 		while (item = sent_info.shift()) {
 			var item_name = item[0];
 			var item_data = item[1];
@@ -233,12 +249,12 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 	_handleAjaxError: function (sent_info, xhr, textStatus, errorThrown) {
 		this.resetSentItems(sent_info);
 
+		// Start auto timer
+		this.autoSendTimeout = this.send.delay(this.options.interval, this);
+
 		DP.console.error("Polling Error %s for %o", textStatus, xhr);
 
 		this.fireEvent('ajaxError', [xhr, textStatus, errorThrown]);
-
-		// Start auto timer
-		this.autoSendTimeout = this.send.delay(this.options.interval, this);
 	},
 
 
