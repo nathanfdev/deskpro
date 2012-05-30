@@ -310,19 +310,21 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	 */
 	public function hasPerm($name)
 	{
-		if ($name == 'articles.use' && !App::getSetting('core.apps_kb')) {
+		$is_closed = (App::getSetting('core.user_mode') == 'closed' && !$this->person->getId());
+
+		if ($name == 'articles.use' && (!App::getSetting('core.apps_kb') || $is_closed)) {
 			return false;
 		}
-		if ($name == 'feedback.use' && !App::getSetting('core.apps_feedback')) {
+		if ($name == 'feedback.use' && (!App::getSetting('core.apps_feedback') || $is_closed)) {
 			return false;
 		}
-		if ($name == 'downloads.use' && !App::getSetting('core.apps_downloads')) {
+		if ($name == 'downloads.use' && (!App::getSetting('core.apps_downloads') || $is_closed)) {
 			return false;
 		}
-		if ($name == 'news.use' && !App::getSetting('core.apps_news')) {
+		if ($name == 'news.use' && (!App::getSetting('core.apps_news') || $is_closed)) {
 			return false;
 		}
-		if ($name == 'chat.use' && !App::getSetting('core.apps_chat')) {
+		if ($name == 'chat.use' && (!App::getSetting('core.apps_chat') || $is_closed)) {
 			return false;
 		}
 		return $this->get('Usergroups')->getPermission($name) ? true : false;
