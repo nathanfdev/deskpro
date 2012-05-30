@@ -743,6 +743,9 @@ class Translate implements PersonContextInterface
 
 		$ts = $date_or_ts;
 		if ($ts instanceof \DateTime) {
+			// getTimestamp will return the underlaying timestamp of the Date,
+			// it doesnt apply any timezone offsets. So we'll need to convert it now
+			$ts = \Orb\Util\Dates::convertToUtcDateTime($date_or_ts);
 			$ts = $ts->getTimestamp();
 		}
 

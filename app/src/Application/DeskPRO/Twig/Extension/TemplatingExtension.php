@@ -454,7 +454,7 @@ class TemplatingExtension extends \Twig_Extension
 				break;
 		}
 
-		if (!$date instanceof \DateTime) {
+		if (!($date instanceof \DateTime)) {
 			if (ctype_digit((string) $date)) {
 				$date = new \DateTime('@'.$date);
 				$date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
@@ -468,20 +468,18 @@ class TemplatingExtension extends \Twig_Extension
 		}
 
 		if ($timezone instanceof \Application\DeskPRO\Entity\Person) {
-			$timezone = new \DateTimeZone($timezone->timezone);
+			$timezone = $timezone->getDateTimezone();
 		}
 
 		if (null !== $timezone) {
-			if (!$timezone instanceof \DateTimeZone) {
+			if (!($timezone instanceof \DateTimeZone)) {
 				$timezone = new \DateTimeZone($timezone);
 			}
-
-			$date->setTimezone($timezone);
 		}
 
-		$ts = $date->getTimestamp();
+		$date->setTimezone($timezone);
 
-		return $this->container->getTranslator()->date($format, $ts);
+		return $this->container->getTranslator()->date($format, $date);
 	}
 
 	public function formToken($name = '', $field_name = '_dp_security_token')
