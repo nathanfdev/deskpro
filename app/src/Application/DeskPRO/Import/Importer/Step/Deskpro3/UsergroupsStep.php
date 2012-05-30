@@ -222,6 +222,7 @@ class UsergroupsStep extends AbstractDeskpro3Step
 		foreach ($this->ticket_cats as $cat) {
 			// top levels are on if theyre added or theyre set to inherit (ie inherit from parent 0 magically means give permission)
 			if ($cat['perm_inherit'] || in_array($cat['id'], $dep_perms)) {
+				$insert_depperms[] = $this->getMappedNewId('ticket_category', $cat['id']);
 				if ($cat['children']) {
 					foreach ($cat['children'] as $subcat) {
 						if ($subcat['perm_inherit']) {
@@ -230,8 +231,6 @@ class UsergroupsStep extends AbstractDeskpro3Step
 							$insert_depperms[] = $this->getMappedNewId('ticket_category', $subcat['id']);
 						}
 					}
-				} else {
-					$insert_depperms[] = $this->getMappedNewId('ticket_category', $cat['id']);
 				}
 			}
 		}
@@ -244,7 +243,8 @@ class UsergroupsStep extends AbstractDeskpro3Step
 
 		$cat_perms = $this->getOldDb()->fetchAllCol("SELECT catid FROM faq_permissions WHERE groupid = ?", array($group_info['id']));
 		foreach ($this->faq_cats as $cat) {
-			if ($cat['perm_inherit'] || in_array($cat['id'], $dep_perms)) {
+			if ($cat['perm_inherit'] || in_array($cat['id'], $cat_perms)) {
+				$insert_faqperms[] = $this->getMappedNewId('faq_cat', $cat['id']);
 				if ($cat['children']) {
 					foreach ($cat['children'] as $subcat) {
 						if ($subcat['perm_inherit']) {
@@ -253,8 +253,6 @@ class UsergroupsStep extends AbstractDeskpro3Step
 							$insert_faqperms[] = $this->getMappedNewId('faq_cat', $subcat['id']);
 						}
 					}
-				} else {
-					$insert_faqperms[] = $this->getMappedNewId('faq_cat', $cat['id']);
 				}
 			}
 		}
