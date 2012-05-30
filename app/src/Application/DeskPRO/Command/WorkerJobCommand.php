@@ -142,21 +142,20 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 				$date_cut = new \DateTime('-15 minutes');
 				$diff = \Orb\Util\Dates::secsToReadable(time() - $date->getTimestamp(), 5);
 
-				if ($date_cut < $date) {
+				if (0 and $date_cut < $date) {
 					if ($input->getOption('verbose')) { $output->writeln("$cron_id is still active. Running for {$diff} (since " . $date->format('Y-m-d H:i:s') . ")"); }
 					return 0;
 				} else {
-					$title = "WARNING: Cron ($cron_id) has been active for {$diff}";
+
+					$title = "WARNING: Cron ($cron_id) has been active for {$diff}. Assuming crashed process, resuming.";
+
+					$e = new \Exception($title);
+					$e_info = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+					\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e_info);
+
 					$text = "Cron ($cron_id) has been marked as active for {$diff} (since " . $date->format('Y-m-d H:i:s') . ").\n\n"
 							. "This is most likely caused by a fatal error that prevented the runner from resetting the timer.\n\n"
 							. "Cron will now resume, but this is a problem you should investigate. Refer to the error log files and contact support@deskpro.com.";
-					if (App::getConfig('technical_email')) {
-						$message = App::getMailer()->createMessage();
-						$message->setSubject($title);
-						$message->setBody($text, 'text/plain');
-						$message->setTo(App::getConfig('technical_email'));
-						App::getMailer()->send($message);
-					}
 
 					$output->writeln($title);
 					$output->writeln($text);

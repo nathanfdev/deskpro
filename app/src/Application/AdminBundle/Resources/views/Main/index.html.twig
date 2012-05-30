@@ -6,23 +6,203 @@
 	</ul>
 {% endblock %}
 {% block sidebar_right %}
-	<div style="min-height: 400px;">
-		<div class="dp-page-box">
-			<div class="resource-item-list">
-				<header>
-					<h4>{{ phrase('admin.general.deskpro_version') }}</h4>
-				</header>
-				<article data-element-handler="DeskPRO.Admin.ElementHandler.DashVersion">
-					{{ phrase('admin.general.your_current_deskpro_build') }}
-					<span class="label success">{{ constant('DP_BUILD_TIME')|date('Y-m-d.H') }}</span>
-					<div id="version_info_expanded"></div>
-				</article>
-			</div>
+	<div class="dp-page-box">
+		<div class="resource-item-list">
+			<header>
+				<h4>{{ phrase('admin.general.deskpro_version') }}</h4>
+			</header>
+			<article data-element-handler="DeskPRO.Admin.ElementHandler.DashVersion">
+				{{ phrase('admin.general.your_current_deskpro_build') }}
+				<span class="label success">{{ constant('DP_BUILD_TIME')|date('Y-m-d.H') }}</span>
+				<div id="version_info_expanded"></div>
+			</article>
+		</div>
+	</div>
+
+	<div class="dp-page-box">
+		<div class="resource-item-list">
+			<header>
+				<h4>Quick Stats</h4>
+			</header>
+			<article>
+				<ul>
+					<li>
+						Tickets Created Today: {{ stats.created_today }}
+					</li>
+					<li>
+						Tickets Resolved Today: {{ stats.resolved_today }}
+					</li>
+					<li>
+						Tickets Awaiting Agent: {{ stats.awaiting_agent }}
+					</li>
+				</ul>
+			</article>
+		</div>
+	</div>
+
+	<div class="dp-page-box">
+		<div class="resource-item-list">
+			<header>
+				<h4>Online Agents</h4>
+			</header>
+			<article>
+				<ul>
+					{% for agent in online_agents %}
+					<li style="line-height: 40px;">
+						<div style="background: url({{ agent.getPictureUrl(35) }}) no-repeat 0 50%; padding-left: 40px;">{{ agent.display_name }}</div>
+					</li>
+					{% endfor %}
+				</ul>
+				<div style="font-size: 11px; padding-top: 4px; text-align: right;">
+					And {{ count_online_users }} online users.
+				</div>
+			</article>
 		</div>
 	</div>
 {% endblock %}
 {% block page %}
 
-<p>{{ phrase('admin.menu.click_to_configure') }}</p>
+<p>
+	Hi {{ app.user.first_name|default(app.user.display_name) }}, welcome to DeskPRO.
+</p>
+<p>
+	If you need any help using DeskPRO, please contact our customer service team on our helpdesk
+	at <a href="http://support.deskpro.com/">support.deskpro.com</a> or email <a href="mailto:support@deskpro.com">support@deskpro.com</a>.
+</p>
+
+{% if is_cron_problem or error_count %}
+<div class="content-table" style="border: 1px solid #A31612;">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th class="single-title" colspan="2">
+					<div style="background: url({{ asset('images/agent/icons/flag-red.png') }}) no-repeat 0 50%; line-height: 18px; padding-left: 18px;">Problems</div>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% if error_count %}
+				<tr>
+					<td>
+						There are <a href="{{ path('admin_server_error_logs') }}">{{ error_count }} logged errors</a> that you should investigate.
+					</td>
+				</tr>
+			{% endif %}
+			{% if cron_is_problem %}
+				<tr>
+					<td>
+						The scheduled tasks are either not running or the time between executions is too high.
+						<a href="{{ path('admin_settings_cron') }}">Learn how to fix this</a>.
+					</td>
+				</tr>
+			{% elseif is_cron_crash %}
+				<tr>
+					<td>
+						<p>
+							There may be a problem with scheduled tasks. Tasks appear to be configured on your server correctly,
+							but the job has been marked as active for {{ cron_running_time }}.
+							This almost certainly means there was a fatal error during processing and tasks did not exit cleanly.
+						</p>
+
+						<p>
+							You should investigate the <a href="{{ path('admin_server_error_logs') }}">error logs</a> and <a href="{{ path('admin_server_cron_logs') }}">task logs</a>, or contact
+							<a href="mailto:support@deskpro.com">support@deskpro.com</a>
+						</p>
+					</td>
+				</tr>
+			{% endif %}
+		</tbody>
+	</table>
+</div>
+
+<br />
+{% endif %}
+
+
+<div class="content-table">
+	<table width="100%">
+		<thead>
+			<tr>
+				<th class="single-title" colspan="2">Your License</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="title">License ID</td>
+				<td class="prop">{{ lic.getLicenseId() }}</td>
+			</tr>
+			{% if lic.get('org') %}
+				<tr>
+					<td class="title">Licensor</td>
+					<td class="prop">{{ lic.get('org') }}</td>
+				</tr>
+			{% endif %}
+			{% if lic.isDemo() %}
+				<tr>
+					<td class="title">Demo License</td>
+					<td class="prop">Expires {{ lic.getExpireDate()|date('day') }}</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td class="title">Agents</td>
+					<td class="prop">{{ lic.getMaxAgents()|default('Unlimited') }}</td>
+				</tr>
+				<tr>
+					<td class="title">Expires</td>
+					<td class="prop">{{ lic.getExpireDate()|date('day') }}</td>
+				</tr>
+
+				<tr>
+					<td class="" colspan="2" style="text-align: center">
+						<a href="" class="btn">Add Agents</a>
+						<a href="{{ path('admin_license_input') }}" class="btn">Update License</a>
+					</td>
+				</tr>
+			{% endif %}
+		</tbody>
+	</table>
+</div>
+
+<br />
+
+{% if 1 or notice_items %}
+	<div class="content-table">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th class="single-title" colspan="2">Notices</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% if 1 or notice_items.apc_check %}
+					<tr>
+						<td>
+							We recommend installing the <a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a> to dramatically improve performance.
+							<a href="{{ get_service_url('dp.kb.install.error_apc') }}" target="_blank">Read more about this</a>.
+						</td>
+					</tr>
+				{% endif %}
+				{% if notice_items.openssl_ext %}
+					<tr>
+						<td>
+							We recommend installing the OpenSSL extension so you can use web resources that require a secure connection (such as Gmail or Google Apps, secure email servers, Facebook or Twitter).
+							<a href="{{ get_service_url('dp.kb.install.error_openssl') }}" target="_blank">Read more about this</a>.
+						</td>
+					</tr>
+				{% endif %}
+				{% if notice_items.magic_quotes_gpc_check %}
+					<tr>
+						<td>
+							We recommend disabling <code>magic_quotes_gpc</code> in your php.ini for a small performance improvement.
+							<a href="{{ get_service_url('dp.kb.install.error_magic_quotes') }}" target="_blank">Read more about this</a>.
+						</td>
+					</tr>
+				{% endif %}
+			</tbody>
+		</table>
+	</div>
+{% endif %}
+
+<br /><br /><br /><br /><br /><br /><br /><br /><br />
 
 {% endblock %}

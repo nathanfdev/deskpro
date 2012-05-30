@@ -56,22 +56,6 @@ class LicenseController extends AbstractController
 	}
 
 	############################################################################
-	# index
-	############################################################################
-
-	public function indexAction()
-	{
-		if (!License::getLicense()->hasLicense()) {
-			return $this->redirectRoute('admin_license_reqdemo');
-		}
-
-		return $this->render('AdminBundle:License:license.html.twig', array(
-			'lic' => License::getLicense()
-		));
-	}
-
-
-	############################################################################
 	# request-demo
 	############################################################################
 
@@ -252,7 +236,7 @@ class LicenseController extends AbstractController
 		}
 
 		$this->session->setFlash('saved', "License code");
-		return $this->redirectRoute('admin_license');
+		return $this->redirectRoute('admin');
 	}
 
 	############################################################################
